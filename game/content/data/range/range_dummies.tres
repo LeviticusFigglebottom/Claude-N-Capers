@@ -8,10 +8,54 @@ script = ExtResource("1_sn5bu")
 id = &"range_dummy.light"
 name_key = &"ui.range.dummy.light"
 enemy_id = &"enemy.tac_light"
+enemy_path = "res://systems/ai/data/enemies/tac_light.tres"
+respawn_delay_s = 1.5
+
+[sub_resource type="Resource" id="Resource_heavy"]
+script = ExtResource("1_sn5bu")
+id = &"range_dummy.heavy"
+name_key = &"ui.range.dummy.heavy"
+enemy_id = &"enemy.tac_heavy"
+enemy_path = "res://systems/ai/data/enemies/tac_heavy.tres"
+health = PackedFloat32Array(160, 160, 320, 480, 960, 960)
+headshot_mult = PackedFloat32Array(2, 2, 4, 6, 4, 3)
+respawn_delay_s = 1.5
+frontal_armor = true
+armor_body_mult = 0.0
+
+[sub_resource type="Resource" id="Resource_bulwark"]
+script = ExtResource("1_sn5bu")
+id = &"range_dummy.bulwark"
+name_key = &"ui.range.dummy.bulwark"
+enemy_id = &"enemy.bulwark"
+enemy_path = "res://systems/ai/data/enemies/bulwark.tres"
 health = PackedFloat32Array(80, 80, 160, 240, 480, 480)
+headshot_mult = PackedFloat32Array(2, 2, 4, 6, 4, 3)
+respawn_delay_s = 1.5
+shield = true
+shield_pierce_mult = 0.25
+
+[sub_resource type="Resource" id="Resource_wrecker"]
+script = ExtResource("1_sn5bu")
+id = &"range_dummy.wrecker"
+name_key = &"ui.range.dummy.wrecker"
+enemy_id = &"enemy.wrecker"
+enemy_path = "res://systems/ai/data/enemies/wrecker.tres"
+health = PackedFloat32Array(2000, 2000, 4000, 6000, 12000, 12000)
+headshot_mult = PackedFloat32Array(5, 5, 10, 15, 10, 7.5)
+respawn_delay_s = 3.0
+plate_health = PackedFloat32Array(150, 160)
+
+[sub_resource type="Resource" id="Resource_corpsman"]
+script = ExtResource("1_sn5bu")
+id = &"range_dummy.corpsman"
+name_key = &"ui.range.dummy.corpsman"
+enemy_id = &"enemy.corpsman"
+enemy_path = "res://systems/ai/data/enemies/corpsman.tres"
+health = PackedFloat32Array(300, 300, 600, 900, 1800, 1800)
 headshot_mult = PackedFloat32Array(2, 2, 4, 6, 4, 3)
 respawn_delay_s = 1.5
 
 [resource]
 script = ExtResource("2_r5dlp")
-dummies = Array[ExtResource("1_sn5bu")]([SubResource("Resource_pc2q5")])
+dummies = Array[ExtResource("1_sn5bu")]([SubResource("Resource_pc2q5"), SubResource("Resource_heavy"), SubResource("Resource_bulwark"), SubResource("Resource_wrecker"), SubResource("Resource_corpsman")])

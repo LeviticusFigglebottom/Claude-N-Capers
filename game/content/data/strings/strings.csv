@@ -1529,3 +1529,28 @@ ui.lobby.slot.mask,Mask: {name}
 ui.lobby.slot.illegal,Illegal loadout: the host will not launch it.
 ui.lobby.custom_mask,Custom mask
 ui.lobby.client_launch_missing,"The host started the heist, but joining a running heist is not available in this build yet."
+ui.range.target_hp_plate,{hp} / {max}  ·  plate {plate}
+ui.range.dummy.heavy,Heavy Tactical Dummy
+ui.range.dummy.bulwark,Bulwark Shield Dummy
+ui.range.dummy.wrecker,Wrecker Plate Dummy
+ui.range.dummy.corpsman,Corpsman Dummy
+ui.range.moving_sign,{name}  ·  {speed} m/s
+ui.range.area.moving,Moving Targets
+ui.range.area.armory,Armory
+ui.range.lane_moving,{m}  ·  {name} (moving {speed} m/s)
+ui.range.lane_named,{m}  ·  {name}
+ui.range.ro.armor,Armor
+ui.range.armor.none,None
+ui.range.armor.frontal,Front plate (non-AP body x{mult})
+ui.range.armor.shield,"Shield (AP x{mult}, else blocked)"
+ui.range.armor.plates,Face plates {hp} HP
+ui.range.blocked,Blocked
+ui.range.falloff_graph,Damage Falloff
+ui.range.graph_marker,{m} m: {dmg}
+ui.range.per_dummy,Time to Kill by Dummy
+ui.range.per_dummy_hint,At the readout distance and difficulty: body  ·  head
+ui.range.fmt.ttk_pair,{body}  ·  {head}
+ui.range.fmt.ttk_short,{shots} / {time} s
+ui.range.ls.via_shield,{zone} (through shield)
+ui.range.ls.plate,Plate {n}: {hp} HP left
+ui.range.ls.plate_broken,Plate {n} broken
