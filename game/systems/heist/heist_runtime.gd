@@ -96,6 +96,8 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	options = p_options
 	difficulty_def = p_options.get("difficulty_def") as DifficultyDef
 	if difficulty_def == null:
+		difficulty_def = ContentDB.difficulty(p_difficulty as Enums.Difficulty)
+	if difficulty_def == null:
 		difficulty_def = DifficultyDef.new()
 		difficulty_def.difficulty = p_difficulty as Enums.Difficulty
 	GameRng.begin_run(run_seed)
