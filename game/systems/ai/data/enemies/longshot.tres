@@ -15,6 +15,13 @@ weapon = &"weapon.npc_sniper"
 detection_preset = &"police"
 params = {
 "_note": "L4.7 Longshot (PD2 Sniper). damage per shot by Difficulty 100-240, halved beyond 30 m except CATACLYSM, bypasses armor gating. health PD2-shaped design values (◇). Perch-only spawn. Behaviour numbers: systems/ai/specials/special_tweak.tres.",
-"scene": "res://systems/ai/npc/npc_longshot.tscn"
+"armor_body_mult": 1.0,
+"explosive_mult": 1.0,
+"frontal_armor": 1.0,
+"frontal_armor_arc_deg": 0.0,
+"plate_health": [],
+"scene": "res://systems/ai/npc/npc_longshot.tscn",
+"shield": false,
+"shield_pierce_mult": 1.0
 }
 voice = &"longshot"

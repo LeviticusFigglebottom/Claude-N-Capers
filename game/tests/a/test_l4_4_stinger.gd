@@ -33,6 +33,8 @@ func _launch(mates: int = 1) -> void:
 	_listen(EventBus.special_spawned, &"special")
 	_listen(EventBus.audio_cue_requested, &"cue")
 	_listen(EventBus.crew_tased, &"tased")
+	_listen(EventBus.crew_tase_ended, &"tase_ended")
+	_listen(EventBus.crew_revived, &"revived")
 	for c: CrewController in _rt.crew_members():
 		Modifiers.set_source(c.slot, &"test.immune", {&"defense.damage_taken_mult": 0.0})
 		c.set_masked()
@@ -51,6 +53,14 @@ func _count_cue(id: StringName) -> int:
 	var n: int = 0
 	for e: Array in _events:
 		if e[0] == &"cue" and e[1] == id:
+			n += 1
+	return n
+
+
+func _count(tag: StringName, a: Variant) -> int:
+	var n: int = 0
+	for e: Array in _events:
+		if e[0] == tag and e[1] == a:
 			n += 1
 	return n
 
@@ -175,6 +185,9 @@ func test_l4_4_kill_breaks_tase() -> void:
 	assert_false(c.weapons.involuntary_fire, "involuntary fire off")
 	assert_eq(b.last_break_reason, &"killed")
 	assert_true(c.weapons.can_fire(), "can fire again")
+	# D-049: a broken tase is crew_tase_ended, never crew_revived.
+	assert_eq(_count(&"tase_ended", c.slot), 1, "crew_tase_ended(slot) once")
+	assert_eq(_count(&"revived", c.slot), 0, "a broken tase is not a revive")
 
 
 func test_l4_4_los_loss_breaks_tase() -> void:
@@ -189,6 +202,8 @@ func test_l4_4_los_loss_breaks_tase() -> void:
 	var freed: bool = await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.NORMAL, 1.0)
 	assert_true(freed, "LOS loss breaks the tase")
 	assert_eq(b.last_break_reason, &"los")
+	assert_eq(_count(&"tase_ended", c.slot), 1, "crew_tase_ended on LOS break")
+	assert_eq(_count(&"revived", c.slot), 0, "no crew_revived on LOS break")
 
 
 func test_l4_4_long_tase_helpless_and_retarget() -> void:
@@ -205,12 +220,15 @@ func test_l4_4_long_tase_helpless_and_retarget() -> void:
 	var ended: bool = await wait_until(func() -> bool: return b.last_break_reason == &"helpless", 3.0)
 	assert_true(ended, "long tase ends the beam")
 	assert_eq(c.crew_state, Enums.CrewState.TASED, "victim stays helpless until revived")
+	assert_eq(_count(&"tase_ended", c.slot), 1, "the beam end is a crew_tase_ended")
 	assert_false(c.weapons.involuntary_fire, "no more auto-fire")
 	assert_eq(c.health.downs_used, 0, "downs silently: no down counted")
 	var retarget: bool = await wait_until(func() -> bool: return b.combat_target == mate, 3.0)
 	assert_true(retarget, "retargets the next standing crew member")
 	c.health.revive(1)
 	assert_eq(c.crew_state, Enums.CrewState.NORMAL, "revive frees the helpless victim")
+	assert_eq(_count(&"revived", c.slot), 1, "a real revive still emits crew_revived")
+	assert_eq(_count(&"tase_ended", c.slot), 1, "no second crew_tase_ended")
 
 
 func test_l4_4_pair_takes_two_targets() -> void:

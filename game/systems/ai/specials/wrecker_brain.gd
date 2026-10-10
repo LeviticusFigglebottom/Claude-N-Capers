@@ -10,7 +10,7 @@
 ## - Presentation [R]: cue.wrecker_roar on activation (intro), cue.wrecker_step every
 ##   wrecker_step_interval_s while moving (heavy footstep loop; C's cue def is audible 30 m).
 ## - Data (EnemyDef.params): stun_immune (NpcBase.stun ignores ECM feedback), explosive_mult 1.1
-##   (NpcHitRules), faceplate_hp 150 / visor_hp 160 (WreckerArmor). special_spawned(&"wrecker") [R].
+##   (NpcHitRules), plate_health [150, 160] (WreckerArmor). special_spawned(&"wrecker") [R].
 class_name WreckerBrain
 extends PoliceBrain
 

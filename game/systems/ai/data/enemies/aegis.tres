@@ -17,9 +17,15 @@ params = {
 "_note": "L4.9 Aegis squad shield placeholder (PD2 Phalanx), used only when enemy.bulwark has no EnemyDef. At most 10% max HP per hit (x6 explosives), no flinch. Health ◇.",
 "aegis": true,
 "aim_delay_s": 0.7,
+"armor_body_mult": 1.0,
+"explosive_mult": 1.0,
 "fire_interval_s": 0.8,
+"frontal_armor": 1.0,
+"frontal_armor_arc_deg": 0.0,
 "no_flinch": true,
+"plate_health": [],
 "shield": true,
+"shield_pierce_mult": 0.25,
 "surrender_immune": true
 }
 voice = &"police"

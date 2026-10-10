@@ -14,14 +14,18 @@ move_speed = 3.5
 weapon = &"weapon.npc_lmg"
 detection_preset = &"police"
 params = {
-"_note": "L4.6 Wrecker-S (PD2 Bulldozer, LMG). Counts toward the enemy.wrecker special limit (D-022). Faceplate/visor HP are the same on every difficulty (PD2); health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇).",
+"_note": "L4.6 Wrecker-S (PD2 Bulldozer, LMG). Counts toward the enemy.wrecker special limit (D-022). Faceplate/visor HP (plate_health) are the same on every difficulty (PD2); health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇).",
 "aim_delay_s": 0.8,
+"armor_body_mult": 1.0,
 "ecm_feedback_immune": true,
 "explosive_mult": 1.1,
-"faceplate_hp": 150.0,
 "fire_interval_s": 0.12,
+"frontal_armor": 1.0,
+"frontal_armor_arc_deg": 0.0,
+"plate_health": [150.0, 160.0],
 "scene": "res://systems/ai/npc/npc_wrecker.tscn",
-"stun_immune": true,
-"visor_hp": 160.0
+"shield": false,
+"shield_pierce_mult": 1.0,
+"stun_immune": true
 }
 voice = &"wrecker"

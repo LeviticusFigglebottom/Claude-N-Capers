@@ -4,11 +4,14 @@
 ## and also LOS of crew shots behind it (the server LOS check). NPC LOS ignores shields
 ## (CombatSystem.has_npc_los). It is carried as a child of its Bulwark and is reparented in place to
 ## the heist's dynamic root when the Bulwark dies: a dropped shield still blocks (L4.5).
-## Hits (docs/contracts/damage.md: the shield is a hit target): BULLET without `info.shield_pierce` and
-## MELEE are blocked (amount 0, no damage_applied: nothing was damaged). A shield-piercing BULLET
-## (WeaponStats.shield_pierce / weapon.shield_pierce) continues along its direction and hits whatever is
-## behind at x CombatTweak.shield_pierce_damage_mult (0.25); FIRE passes at shield_fire_damage_mult.
-## The forwarded hit is the single take_hit of that target (the shield itself takes no damage).
+## Hits (docs/contracts/damage.md v1.1: the shield is a hit target): BULLET without `info.shield_pierce`,
+## MELEE and anything else are BLOCKED: damage_applied [R] with amount 0 and `blocked = true` (victim =
+## the carrier's net id, 0 for a dropped shield) so hit markers can show the block. A shield-piercing
+## BULLET (attacker side: WeaponStats.shield_pierce / weapon.shield_pierce -> info.shield_pierce)
+## continues along its direction and hits whatever is behind at x `pierce_mult` (the carrier's
+## EnemyDef.params.shield_pierce_mult, D-052; fallback CombatTweak.shield_pierce_damage_mult 0.25);
+## FIRE passes at CombatTweak.shield_fire_damage_mult. The forwarded hit is the single take_hit of that
+## target (it emits damage_applied; the shield itself takes no damage).
 ## Explosions go around shields (Explosion ignores this group for LOS, PD2 behaviour).
 class_name BulwarkShield
 extends AnimatableBody3D
@@ -27,6 +30,9 @@ var blocked_hits: int = 0
 var pierced_hits: int = 0
 ## L4.5 stagger: guard dropped (no collision, lowered); hits pass to the Bulwark behind.
 var guard_down: bool = false
+## Damage factor of a shield-piercing round (set from the carrier's EnemyDef in attach_to(), kept when
+## dropped). < 0 = CombatTweak.shield_pierce_damage_mult.
+var pierce_mult: float = -1.0
 
 
 func _ready() -> void:
@@ -39,6 +45,9 @@ func _ready() -> void:
 ## Server: attach to `npc` at `local_pos` (the shield never collides with its carrier).
 func attach_to(npc: NpcBase, local_pos: Vector3) -> void:
 	carrier = npc
+	var a: Dictionary = NpcHitRules.armor_of(npc.enemy_def)
+	if bool(a["shield"]) or (npc.enemy_def != null and npc.enemy_def.params.has("shield_pierce_mult")):
+		pierce_mult = float(a["shield_pierce_mult"])
 	if get_parent() != npc:
 		if get_parent() != null:
 			get_parent().remove_child(self)
@@ -77,7 +86,7 @@ func drop(new_parent: Node) -> void:
 
 
 func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
-	var out: Dictionary = info.duplicate()
+	var out: Dictionary = CombatSystem.ensure_info_v11(info.duplicate())
 	out["amount"] = 0.0
 	out["killed"] = false
 	out["blocked_by_shield"] = true
@@ -85,15 +94,15 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		return out
 	struck.emit(info)
 	var tw: CombatTweak = CombatTweak.data()
-	var type: int = int(info.get("type", Enums.DamageType.BULLET))
-	var mult: float = 0.0
-	if type == Enums.DamageType.FIRE:
-		mult = tw.shield_fire_damage_mult
-	elif type == Enums.DamageType.BULLET and bool(info.get("shield_pierce", false)):
-		mult = tw.shield_pierce_damage_mult
+	var mult: float = pass_mult(info)
 	if mult <= 0.0:
 		blocked_hits += 1
+		out["blocked"] = true
+		out["crit"] = false
 		blocked.emit(info)
+		var victim: int = victim_net_id()
+		EventBus.damage_applied.emit(victim, attacker_net_id, out)
+		Net.replicate_event(&"damage_applied", [victim, attacker_net_id, out])
 		return out
 	var behind: Dictionary = _trace_behind(info, tw)
 	if behind.is_empty():
@@ -105,6 +114,23 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	fwd["position"] = behind["position"]
 	fwd["shield_pierced"] = true
 	return CombatSystem.deliver_hit(behind["target"] as Object, fwd, attacker_net_id)
+
+
+## damage_applied victim of a blocked hit: the carrier's net id, 0 for a dropped shield.
+func victim_net_id() -> int:
+	return carrier.net_id if carrier != null and is_instance_valid(carrier) else 0
+
+
+## Damage factor of `info` through this shield: shield_pierce BULLET -> pierce_mult (CombatTweak
+## fallback), FIRE -> shield_fire_damage_mult, else 0 (blocked).
+func pass_mult(info: Dictionary) -> float:
+	var tw: CombatTweak = CombatTweak.data()
+	var type: int = int(info.get("type", Enums.DamageType.BULLET))
+	if type == Enums.DamageType.FIRE:
+		return tw.shield_fire_damage_mult
+	if type == Enums.DamageType.BULLET and bool(info.get("shield_pierce", false)):
+		return pierce_mult if pierce_mult >= 0.0 else tw.shield_pierce_damage_mult
+	return 0.0
 
 
 ## What the round hits after passing this shield: {target, zone, position} or {}.

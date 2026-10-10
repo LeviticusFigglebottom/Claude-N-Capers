@@ -162,19 +162,28 @@ func notify_noise(position: Vector3, kind: StringName, source_net_id: int) -> vo
 ## BODY damage after the attacker's falloff/modifiers. This NPC applies its zone multiplier (HEAD:
 ## EnemyDef.headshot_mult[difficulty] x info.headshot_bonus, L3.3), the S3.6 one-shot rule, then
 ## emits damage_applied [R] (and npc_killed via die()) itself. Returns the final DamageInfo.
+## damage.md v1.0 addendum: `info.crit` multiplies by the HEAD zone multiplier on any zone (stacks on
+## a head hit), except on an armored head (Wrecker plates up). v1.1: final_info always carries
+## `pierced_armor`, `shield_pierce`, `blocked` (false here: shields are their own target) and `crit`.
 func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
-	var out: Dictionary = info.duplicate()
+	var out: Dictionary = CombatSystem.ensure_info_v11(info.duplicate())
 	if not Net.is_authority() or not alive:
 		out["amount"] = 0.0
 		out["killed"] = false
 		return out
 	var amount: float = float(info.get("amount", 0.0))
 	amount = NpcHitRules.pre_zone(self, info, amount, out)  # A3-06: L3.4 armor, L4.2 plate, L3.6, L4.6
-	if int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD and not bool(out.get("head_armored", false)):
-		var zone_mult: float = 1.0
-		if enemy_def != null and enemy_def.headshot_mult.size() > 0:
-			zone_mult = enemy_def.headshot_mult[clampi(difficulty, 0, enemy_def.headshot_mult.size() - 1)]
+	var zone_mult: float = 1.0
+	if enemy_def != null and enemy_def.headshot_mult.size() > 0:
+		zone_mult = enemy_def.headshot_mult[clampi(difficulty, 0, enemy_def.headshot_mult.size() - 1)]
+	var head_armored: bool = bool(out.get("head_armored", false))
+	if int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD and not head_armored:
 		amount *= zone_mult * float(info.get("headshot_bonus", 1.0))  # L3.3
+	if bool(info.get("crit", false)):
+		if head_armored:
+			out["crit"] = false  # plates / armored head: no crit
+		else:
+			amount *= zone_mult  # D-027 crit: the HEAD multiplier on any zone
 	if one_shot_when_unalerted and (alert_state == Enums.AlertState.CALM or alert_state == Enums.AlertState.CURIOUS):
 		amount = maxf(amount, health)  # S3.6
 	var director: AssaultDirector = HeistRuntime.get_service(G.SVC_DIRECTOR) as AssaultDirector

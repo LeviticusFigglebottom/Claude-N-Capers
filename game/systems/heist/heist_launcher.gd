@@ -1,8 +1,9 @@
 ## Entry point to start a heist (test_hooks.md). Owner: ENV A.
 ## `await HeistLauncher.launch(&"glasshouse", 1001, Enums.Difficulty.ROUTINE, self)`
 ## Co-op (A3-07): the host's launch() sends the bring-up to every client through
-## `Net.lobby_send(BRING_UP_KIND, ...)`; a client builds its replica with `join_running(data)`, or
-## calls `auto_join()` once in the lobby to do it on arrival (heist/README.md "Co-op").
+## `Net.lobby_send(BRING_UP_KIND, ...)`; a client `await`s `launch_client()` (the counterpart of
+## launch(): returns the replica once the host's bring-up arrived), builds it by hand with
+## `join_running(data)`, or calls `auto_join()` once in the lobby (heist/README.md "Co-op").
 class_name HeistLauncher
 extends RefCounted
 
@@ -17,6 +18,10 @@ const BUILTIN_MAPS: Dictionary = {
 
 static var _registry: Dictionary = {}
 static var _auto_join: Dictionary = {}
+## launch_client() calls waiting for a bring-up (auto_join stands aside while > 0).
+static var _client_pending: int = 0
+## Bumped by cancel_launch_client(): every pending launch_client() returns null.
+static var _client_gen: int = 0
 
 
 ## Register an id -> map scene path (used until the lead publishes a heist catalog, QA-1).
@@ -123,6 +128,62 @@ static func join_running(data: Dictionary, parent: Node = null, options: Diction
 	return rt
 
 
+## Client (A3-07, B's lobby): the client-side counterpart of launch(). Waits for the host's next
+## bring-up (Net.lobby_message kind BRING_UP_KIND from peer 1), builds the replica with
+## join_running(data, parent, options) INSIDE the message handler (so the replication RPCs right
+## behind it find their nodes), then awaits two physics frames like launch() and returns the replica
+## HeistRuntime (`rt.is_replica == true`). Call it before the host calls launch() (at the latest on the
+## lobby's own "starting" message: lobby messages are reliable and ordered, so the bring-up comes after).
+## `timeout_s` <= 0 waits until the bring-up, a host loss or cancel_launch_client().
+## Returns null: on the authority (host / solo: use launch()), when the bring-up is rejected
+## (version mismatch, unknown map: Log.error), on timeout, when the connection to the host is lost
+## (`multiplayer.server_disconnected`) or the session ends (`Net.leave()` -> Net.session_ended), and
+## when cancel_launch_client() is called. While it waits, auto_join() does not also build a replica.
+## TODO(net round 4): also fail on Net.connection_failed / Net.host_lost once net.gd has them.
+static func launch_client(parent: Node = null, options: Dictionary = {}, timeout_s: float = 0.0) -> HeistRuntime:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if Net.is_authority():
+		Log.error(&"heist", "launch_client() is client-only (the host calls launch())")
+		return null
+	var state: Dictionary = {"done": false, "rt": null}
+	var on_msg: Callable = func(from_peer: int, kind: StringName, data: Dictionary) -> void:
+		if bool(state["done"]) or kind != BRING_UP_KIND or from_peer != 1:
+			return
+		state["done"] = true
+		state["rt"] = join_running(data, parent if is_instance_valid(parent) else null, options)
+	var on_lost: Callable = func() -> void:
+		state["done"] = true
+	var mp: MultiplayerAPI = tree.root.multiplayer
+	Net.lobby_message.connect(on_msg)
+	Net.session_ended.connect(on_lost)
+	mp.server_disconnected.connect(on_lost)
+	_client_pending += 1
+	var gen: int = _client_gen
+	var deadline_ms: int = Time.get_ticks_msec() + int(timeout_s * 1000.0) if timeout_s > 0.0 else -1
+	while not bool(state["done"]) and gen == _client_gen:
+		if deadline_ms >= 0 and Time.get_ticks_msec() > deadline_ms:
+			Log.warn(&"heist", "launch_client(): no bring-up from the host within %.1f s" % timeout_s)
+			break
+		await tree.process_frame
+	_client_pending -= 1
+	Net.lobby_message.disconnect(on_msg)
+	Net.session_ended.disconnect(on_lost)
+	if mp.server_disconnected.is_connected(on_lost):
+		mp.server_disconnected.disconnect(on_lost)
+	var v: Variant = state["rt"]
+	if v == null or not is_instance_valid(v):
+		return null
+	var rt: HeistRuntime = v as HeistRuntime
+	await tree.physics_frame
+	await tree.physics_frame
+	return rt if is_instance_valid(rt) else null
+
+
+## Client: every pending launch_client() returns null (lobby left / cancelled by the UI).
+static func cancel_launch_client() -> void:
+	_client_gen += 1
+
+
 ## Client (A3-07): join every heist the host launches from now on (call once in the lobby).
 ## `on_joined(rt: HeistRuntime)` runs after each replica is built. stop_auto_join() undoes it.
 static func auto_join(parent: Node = null, options: Dictionary = {}, on_joined: Callable = Callable()) -> void:
@@ -138,7 +199,7 @@ static func stop_auto_join() -> void:
 
 
 static func _on_lobby_message(from_peer: int, kind: StringName, data: Dictionary) -> void:
-	if kind != BRING_UP_KIND or Net.is_authority() or from_peer != 1:
+	if kind != BRING_UP_KIND or Net.is_authority() or from_peer != 1 or _client_pending > 0:
 		return
 	var parent: Node = _auto_join.get("parent") as Node if is_instance_valid(_auto_join.get("parent")) else null
 	var rt: HeistRuntime = join_running(data, parent, _auto_join.get("options", {}) as Dictionary)

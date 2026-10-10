@@ -1,12 +1,14 @@
 ## A3-07 loopback client process (launched by test_a3_07_coop_loopback.gd, never shipped):
 ## godot --headless --path game res://tests/a/coop_loopback_client.tscn -- --port=N [--timeout=S]
-## Joins the host on localhost, builds the heist replica through HeistLauncher.auto_join, and
+## Joins the host on localhost, builds the heist replica through `await HeistLauncher.launch_client()`
+## (`--join=auto`: HeistLauncher.auto_join instead), and
 ## answers the host's LoopbackProbe commands. Quits on "quit", on disconnect or after the timeout.
 extends Node
 
 const PROBE: GDScript = preload("res://tests/a/coop_loopback_probe.gd")
 
 var _deadline_ms: int = 0
+var _probe: Node = null
 
 
 func _ready() -> void:
@@ -19,15 +21,31 @@ func _ready() -> void:
 	_deadline_ms = Time.get_ticks_msec() + int(float(args.get("timeout", "120")) * 1000.0)
 	var probe: Node = PROBE.new()
 	probe.name = PROBE.NODE_NAME
+	_probe = probe
 	get_tree().root.add_child.call_deferred(probe)
 	multiplayer.server_disconnected.connect(_quit)
 	multiplayer.connection_failed.connect(_quit)
-	HeistLauncher.auto_join()
+	var auto: bool = String(args.get("join", "")) == "auto"
+	if auto:
+		HeistLauncher.auto_join()
 	var err: Error = Net.join("127.0.0.1", port)
 	if err != OK:
 		Log.error(&"loopback", "client: join failed (%d)" % err)
 		_quit()
+		return
 	Log.info(&"loopback", "client: joining 127.0.0.1:%d" % port)
+	if not auto:
+		_launch_client()
+
+
+func _launch_client() -> void:
+	var rt: HeistRuntime = await HeistLauncher.launch_client(null, {}, float(_deadline_ms - Time.get_ticks_msec()) / 1000.0)
+	if rt == null:
+		Log.warn(&"loopback", "client: launch_client() returned null")
+		return
+	if is_instance_valid(_probe):
+		_probe.set(&"launched_rt", rt)
+	Log.info(&"loopback", "client: launch_client() returned the replica")
 
 
 func _process(_delta: float) -> void:

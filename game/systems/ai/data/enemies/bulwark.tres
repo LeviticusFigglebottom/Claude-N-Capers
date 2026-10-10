@@ -16,7 +16,14 @@ detection_preset = &"police"
 params = {
 "_note": "L4.5 Bulwark (PD2 Shield). Frontal ballistic shield (systems/ai/specials/bulwark_shield.tscn). health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇). Behaviour numbers: systems/ai/specials/heavy_special_tweak.tres.",
 "aim_delay_s": 0.7,
+"armor_body_mult": 1.0,
+"explosive_mult": 1.0,
 "fire_interval_s": 0.4,
-"scene": "res://systems/ai/npc/npc_bulwark.tscn"
+"frontal_armor": 1.0,
+"frontal_armor_arc_deg": 0.0,
+"plate_health": [],
+"scene": "res://systems/ai/npc/npc_bulwark.tscn",
+"shield": true,
+"shield_pierce_mult": 0.25
 }
 voice = &"police"

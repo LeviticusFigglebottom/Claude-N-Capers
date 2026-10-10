@@ -7,7 +7,7 @@
 ##   replicated ids whose node left the tree (bag secured, small loot taken, NPC despawned) ->
 ##   `_rpc_despawn` (reliable);
 ## * at SYNC_HZ: discrete state diffs per entity (NetEntityCodec.state_of) plus service state
-##   (interaction sessions per crew slot, known codes, custody timers, phase) -> `_rpc_state`
+##   (interaction sessions per crew slot, known codes, custody timers, phase, captain) -> `_rpc_state`
 ##   (reliable, only what changed), and transforms of NPCs, crew and loose bags -> `_rpc_xforms`
 ##   (unreliable_ordered, only what moved).
 ## Client: applies the above (`HeistRuntime.start(..., {"bring_up": ...})` builds the map and adopts map ids first).
@@ -22,6 +22,14 @@ extends Node
 signal replica_spawned(node: Node)
 ## Client: the host's phase / went_loud (HeistRuntime mirrors them).
 signal phase_replicated(phase: int, went_loud: bool)
+## Client: the host's Commander Brandt state changed (ui_hud v1.3, D-049; LocalHudModel reads
+## captain_state()).
+signal captain_replicated(present: bool, resistance: float)
+## Client: the connection to the host dropped while this replica runs (multiplayer.server_disconnected).
+## Nothing is torn down here: the app flow (ENV B) shows its "host left" result, then calls
+## HeistRuntime.teardown() and Net.leave(). `host_lost_at_s` keeps the heist time it happened.
+## TODO(net round 4): connect Net.host_lost instead once game/core/net.gd has it.
+signal host_lost()
 
 const SERVICE: StringName = &"net_sync"
 const NODE_NAME: String = "NetSync"
@@ -31,11 +39,15 @@ const SVC_INTERACTION: String = "isys"
 const SVC_CODES: String = "codes"
 const SVC_CUSTODY: String = "custody"
 const SVC_RUNTIME: String = "rt"
+## ui_hud v1.3: {"present": bool, "resistance": float 0..1} of the director's AegisCaptain.
+const SVC_CAPTAIN: String = "captain"
 
 ## Client: counters for tests and diagnostics.
 var spawns_applied: int = 0
 var despawns_applied: int = 0
 var states_applied: int = 0
+## Client: heist_time_s when host_lost fired (< 0 = never).
+var host_lost_at_s: float = -1.0
 
 var _runtime: HeistRuntime = null
 var _begun: bool = false
@@ -47,6 +59,8 @@ var _last_state: Dictionary[int, Dictionary] = {}
 var _last_xform: Dictionary[int, Variant] = {}
 var _last_services: Dictionary = {}
 var _accum: float = 0.0
+## Client: last replicated captain state (see captain_state()).
+var _captain: Dictionary = {"present": false, "resistance": 0.0}
 
 
 ## False while `node`'s networked heist has not sent its bring-up yet: clients have no replica of
@@ -61,6 +75,21 @@ static func can_rpc(node: Node) -> bool:
 
 func _ready() -> void:
 	_runtime = HeistRuntime.of(self)
+	if not multiplayer.server_disconnected.is_connected(_on_server_disconnected):
+		multiplayer.server_disconnected.connect(_on_server_disconnected)
+
+
+func _exit_tree() -> void:
+	if multiplayer != null and multiplayer.server_disconnected.is_connected(_on_server_disconnected):
+		multiplayer.server_disconnected.disconnect(_on_server_disconnected)
+
+
+func _on_server_disconnected() -> void:
+	if host_lost_at_s >= 0.0:
+		return
+	host_lost_at_s = _runtime.heist_time_s if _runtime != null else 0.0
+	Log.warn(&"net", "connection to the host lost")
+	host_lost.emit()
 
 
 ## Server: true once begin() ran (clients have the heist replica).
@@ -181,7 +210,21 @@ func services_state() -> Dictionary:
 	if custody != null:
 		out[SVC_CUSTODY] = custody.net_state()
 	out[SVC_RUNTIME] = {"phase": int(_runtime.phase), "loud": _runtime.went_loud}
+	out[SVC_CAPTAIN] = captain_state()
 	return out
+
+
+## Commander Brandt for the HUD (ui_hud v1.3): {"present": bool, "resistance": float 0..1 (damage
+## reduction of every enemy; 0 when absent / not yet in position)}. Server: read from the director's
+## AegisCaptain. Client: the last value replicated by the host (services diff, SYNC_HZ).
+func captain_state() -> Dictionary:
+	if not Net.is_authority():
+		return _captain.duplicate()
+	var dir: AssaultDirector = _runtime.service(G.SVC_DIRECTOR) as AssaultDirector if _runtime != null else null
+	if dir == null or dir.captain == null:
+		return {"present": false, "resistance": 0.0}
+	var present: bool = dir.captain.active
+	return {"present": present, "resistance": clampf(dir.captain.resistance, 0.0, 1.0) if present else 0.0}
 
 
 func _physics_process(delta: float) -> void:
@@ -314,6 +357,13 @@ func apply_services(svc: Dictionary) -> void:
 	if svc.has(SVC_RUNTIME):
 		var r: Dictionary = svc[SVC_RUNTIME] as Dictionary
 		phase_replicated.emit(int(r.get("phase", _runtime.phase)), bool(r.get("loud", _runtime.went_loud)))
+	if svc.has(SVC_CAPTAIN) and not Net.is_authority():
+		var cs: Dictionary = svc[SVC_CAPTAIN] as Dictionary
+		var next: Dictionary = {"present": bool(cs.get("present", false)),
+			"resistance": clampf(float(cs.get("resistance", 0.0)), 0.0, 1.0)}
+		if next != _captain:
+			_captain = next
+			captain_replicated.emit(bool(next["present"]), float(next["resistance"]))
 
 
 @rpc("authority", "call_remote", "reliable")
