@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import math
 
+import bmesh
 from mathutils import Vector
 
 from lib import geo, uv
@@ -68,7 +69,7 @@ class Mats:
 
     # B4-04 additions (requested from ENV C's library through the lead)
     def wood(self):
-        return self.ctx.material("wood_walnut", "#5A3B28", roughness=0.55)
+        return self.ctx.material("wood_veneer_walnut", "#5A3B28", roughness=0.55)
 
     def rubber(self):
         return self.ctx.material("rubber_black", "#232325", roughness=0.95)
@@ -256,7 +257,7 @@ def build_can(ctx, mats: Mats, length: float, r: float, overlap: float = 0.0, pa
         mb.cylinder(r * 0.90, 0.0018, segments=32, centre=(0.0, y_back + 0.0025 + i * 0.0035, 0.0), axis="Y",
                     mat=steel)
     body0 = y_back + collar_len
-    mb.cylinder(r, length - (body0), segments=40, centre=(0.0, (length + body0) / 2, 0.0), axis="Y", mat=matte)
+    mb.cylinder(r, length - (body0), segments=40, centre=(0.0, (length + body0) / 2, 0.0), axis="Y", mat=steel)
     # two wrench-flat bands
     for y in (body0 + 0.012, length - 0.018):
         mb.cylinder(r + 0.0005, 0.006, segments=8, centre=(0.0, y, 0.0), axis="Y", mat=matte)
@@ -355,7 +356,7 @@ def build_scope(ctx, mats: Mats, length: float, tube_r: float, obj_r: float, eye
     body = finish(mb, name, bevel=0.0008, segments=1, parent=parent)
     # turret knurl rings + rings/mounts
     rg = ctx.builder()
-    mat = rg.material(mats.matte())
+    mat = rg.material(mats.alu())
     rg.cylinder(0.0122, 0.004, segments=24, centre=(0.0, sy, z + tube_r + 0.013), axis="Z", mat=mat)
     rg.cylinder(0.0122, 0.004, segments=24, centre=(tube_r + 0.013, sy, z), axis="X", mat=mat)
     for ry in ring_ys:
@@ -379,12 +380,13 @@ def _cone_y(mb, r0, r1, y0, y1, z, mat, segments=32):
     bm = mb.bm
     va = [bm.verts.new((p[0], y0, p[1])) for p in a]
     vb = [bm.verts.new((p[0], y1, p[1])) for p in b]
+    faces = []
     for i in range(segments):
         j = (i + 1) % segments
         f = bm.faces.new((va[i], va[j], vb[j], vb[i]))
         f.material_index = mat
-    import bmesh as _bm
-    _bm.ops.recalc_face_normals(bm, faces=[f for v in va for f in v.link_faces])
+        faces.append(f)
+    bmesh.ops.recalc_face_normals(bm, faces=faces)
 
 
 def build_rail_reflex(ctx, mats: Mats, parent=None, name: str = "ReflexSight"):
