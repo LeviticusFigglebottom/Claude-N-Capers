@@ -8,7 +8,7 @@ const MARKER_V_TOL: float = 0.5
 const COVER_STEP: float = 0.5
 const MAX_SAMPLES_PER_ROOM: int = 900
 const COVER_MIN: float = 0.95
-## Clearance probe: a walkable sample must fit this cylinder (agent radius 0.35 + margin).
+## Clearance probe: a walkable sample must fit this cylinder (player radius 0.35 + margin).
 const CLEAR_RADIUS: float = 0.5
 const CLEAR_HEIGHT: float = 1.6
 const MAX_SLOPE_DEG: float = 40.0
@@ -30,10 +30,12 @@ func run(ctx: LcContext) -> void:
 	_check_furniture(ctx)
 
 
-## heist_map.md §3: agent radius 0.35, height 1.8, climb 0.3, slope 40; layer `walkable` (bit 1).
+## heist_map.md §3 (v1.1, D-025): NPC agent radius 0.3, height 1.8, climb 0.3, slope 40,
+## cell size / height 0.1 (project defaults); layer `walkable` (bit 1).
 func _check_settings(ctx: LcContext) -> void:
 	var nm: NavigationMesh = ctx.nav_region.navigation_mesh
-	var want: Dictionary = {"agent_radius": 0.35, "agent_height": 1.8, "agent_max_climb": 0.3, "agent_max_slope": 40.0}
+	var want: Dictionary = {"agent_radius": 0.3, "agent_height": 1.8, "agent_max_climb": 0.3, "agent_max_slope": 40.0,
+		"cell_size": 0.1, "cell_height": 0.1}
 	for k: String in want.keys():
 		if absf(float(nm.get(k)) - float(want[k])) > 0.001:
 			fail(ctx, ctx.nav_region, null, "navmesh %s = %.2f, contract says %.2f" % [k, nm.get(k), want[k]])
