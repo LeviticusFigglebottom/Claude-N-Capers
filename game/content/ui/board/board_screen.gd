@@ -34,6 +34,8 @@ var map_view: BoardMapView
 var status_label: Label
 var empty_label: Label
 var card: VBoxContainer
+## The contract card's panel; its edge takes the heist accent (UiAccent, B4-07).
+var card_panel: PanelContainer
 var portrait: ContactPortrait
 var contact_label: Label
 var role_label: Label
@@ -143,8 +145,8 @@ func _build_legend(parent: HBoxContainer) -> void:
 
 func _build_card(side: VBoxContainer) -> void:
 	card = UiBuild.vbox(6)
-	var panel: PanelContainer = UiBuild.panel(card)
-	side.add_child(panel)
+	card_panel = UiBuild.panel(card)
+	side.add_child(card_panel)
 	var top: HBoxContainer = UiBuild.hbox(16)
 	card.add_child(top)
 	portrait = ContactPortrait.new()
@@ -181,7 +183,7 @@ func _build_card(side: VBoxContainer) -> void:
 	empty_label = UiBuild.label(&"ui.board.empty", UiBuild.DIM)
 	for l: Label in [payout_label, pro_desc_label, empty_label]:
 		card.add_child(l)
-	take_button = UiBuild.button(&"ui.board.take")
+	take_button = UiBuild.primary(UiBuild.button(&"ui.board.take"))
 	take_button.pressed.connect(take_selected)
 	card.add_child(take_button)
 
@@ -326,6 +328,8 @@ func _fill_card(c: Dictionary) -> void:
 	var cid: StringName = StringName(c["contact_id"])
 	var contact: ContactDef = ContactDef.find(cid) if cid != &"" else null
 	portrait.set_contact(contact)
+	UiAccent.accent_panel(card_panel, UiAccent.for_heist(heist_id))
+	heist_label.add_theme_color_override(&"font_color", UiAccent.text_color(heist_id))
 	heist_label.text = UiText.t(StringName("heist.%s.name" % heist_id))
 	subtitle_label.text = "%s  |  %s" % [UiText.t(StringName("heist.%s.subtitle" % heist_id)),
 			UiText.t(_mode_key(int(c["mode"])))]
