@@ -1,0 +1,69 @@
+# Walkthrough detour whitelist for Night Deposit (tools/levelcheck/README.md "walkthrough").
+# Format: <spawn name|path|*> <target name|path|*>. Owner: ENV C (C2). Every entry is a > 3x
+# path/straight ratio that follows from the APPROVED plan (docs/design/heists/night_deposit.md,
+# D-040), not from a navigation fault: the target is reachable and the path is the shortest legal walk.
+#
+# The basement has ONE stair core (G2, x 7-10, z 0-6, at the back of the building; doc vertical
+# data + support-space check "1 stair core for 2 floors"). Everything in the basement's south half
+# (vault B8/B9, count room B11, depository B12) lies right under the banking hall, 4-10 m from the
+# Harbor St / quay spawns in a straight line (through the hall floor and the 0.8 m vault slab).
+# The walk is: sidewalk -> ATM vestibule or bronze doors -> hall -> teller gate -> G8 -> G7 -> the
+# stair at the north wall -> B5 -> back south (or, from the quay, the same plus Harbor St), 45-76 m.
+# Lot spawns (behind the building, next to the stair) stay under 3x for every target.
+#
+# 1) Vault B9 (cage cash, Co-op pallet, safe-deposit box walls) and the antechamber B8.
+* Gameplay/Vault/CageCash
+* Gameplay/Vault/CageCash/UsePoint
+* Gameplay/Vault/CageCash/Visual/LootSpawnPlaceholder
+* Gameplay/Vault/CoopCashBricks
+* Gameplay/Vault/CoopCashBricks/UsePoint
+* Gameplay/Vault/CoopCashBricks/Visual/LootSpawnPlaceholder
+* Gameplay/Vault/DepositBoxWallE/Box5
+* Gameplay/Vault/DepositBoxWallE/Box5/UsePoint
+* Gameplay/Vault/DepositBoxWallE/Box6
+* Gameplay/Vault/DepositBoxWallE/Box6/UsePoint
+* Gameplay/Vault/DepositBoxWallE/Box7
+* Gameplay/Vault/DepositBoxWallE/Box7/UsePoint
+* Gameplay/Vault/DepositBoxWallE/Box8
+* Gameplay/Vault/DepositBoxWallE/Box8/UsePoint
+* Gameplay/Vault/DepositBoxWallE/BoxLoot5
+* Gameplay/Vault/DepositBoxWallE/BoxLoot5/UsePoint
+* Gameplay/Vault/DepositBoxWallE/BoxLoot6
+* Gameplay/Vault/DepositBoxWallE/BoxLoot6/UsePoint
+* Gameplay/Vault/DepositBoxWallE/BoxLoot7
+* Gameplay/Vault/DepositBoxWallE/BoxLoot7/UsePoint
+* Gameplay/Vault/DepositBoxWallE/BoxLoot8
+* Gameplay/Vault/DepositBoxWallE/BoxLoot8/UsePoint
+* Gameplay/Vault/DepositBoxWallW/Box1
+* Gameplay/Vault/DepositBoxWallW/Box1/UsePoint
+* Gameplay/Vault/DepositBoxWallW/Box2
+* Gameplay/Vault/DepositBoxWallW/Box2/UsePoint
+* Gameplay/Vault/DepositBoxWallW/Box3
+* Gameplay/Vault/DepositBoxWallW/Box3/UsePoint
+* Gameplay/Vault/DepositBoxWallW/Box4
+* Gameplay/Vault/DepositBoxWallW/Box4/UsePoint
+* Gameplay/Vault/DepositBoxWallW/BoxLoot1
+* Gameplay/Vault/DepositBoxWallW/BoxLoot1/UsePoint
+* Gameplay/Vault/DepositBoxWallW/BoxLoot2
+* Gameplay/Vault/DepositBoxWallW/BoxLoot2/UsePoint
+* Gameplay/Vault/DepositBoxWallW/BoxLoot3
+* Gameplay/Vault/DepositBoxWallW/BoxLoot3/UsePoint
+* Gameplay/Vault/DepositBoxWallW/BoxLoot4
+* Gameplay/Vault/DepositBoxWallW/BoxLoot4/UsePoint
+#
+# 2) Count room / depository B11-B12 (south-east basement, under G12/G13).
+* Gameplay/Depository/DepositorySafe
+* Gameplay/Depository/DepositorySafe/UsePoint
+* Gameplay/Depository/NightDropBags
+* Gameplay/Depository/NightDropBags/UsePoint
+* Gameplay/Depository/NightDropBags/Visual/LootSpawnPlaceholder
+* Gameplay/Doors/DepositoryDoor
+* Gameplay/Doors/DepositoryDoor/UsePoint
+#
+# 3) West basement doors (B1/B6) seen from the quay spawns east of the steps.
+* Gameplay/Doors/RecordsDoor/UsePoint
+* Gameplay/Doors/XferDoor/UsePoint
+#
+# 4) Basement cameras (their floor UsePoints in B5/B8/B11) seen from the street/quay spawns.
+* Variants/Group_camera/Slot_cam_a/CameraC6
+* Variants/Group_camera/Slot_cam_a/CameraC6/UsePoint
