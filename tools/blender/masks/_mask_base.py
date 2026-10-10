@@ -41,6 +41,15 @@ chin ~0.22 m. Loops are lists of (u, v); any winding is accepted.
 Determinism: pure math, no randomness (pass ``ctx.rng`` into your ornaments if you want variation).
 Geometry is built with explicit chamfer rings (no bmesh bevel), so UVs are projected last
 (``uv.box_project``) per the pipeline rule "chamfer first, UV after".
+
+Customisable base masks (QB-50b, game/content/docs/masks.md)
+------------------------------------------------------------
+``build_mask(..., uv_mode="front")`` replaces the box projection with :func:`front_project`:
+UV0 x across the face (0 = the viewer's left looking at the front = Blender/Godot +X), y forehead
+(0) to chin (1) in Godot, normalised to the mask's bounds. Pass the same material for every role
+(:func:`base_materials`) to get the single surface the mask shader expects. ``surface_extra``,
+``outline_fn`` and ``holes_fn`` let a script reshape the skin, the outline (ears, ruffs: see
+:func:`radial_union`) and cut extra holes (vents).
 """
 
 from __future__ import annotations
@@ -358,8 +367,9 @@ class FaceSurface:
 
     H = 1e-5
 
-    def __init__(self, p: dict[str, Any]) -> None:
+    def __init__(self, p: dict[str, Any], extra: Callable[[float, float], float] | None = None) -> None:
         self.p = p
+        self.extra = extra  # optional extra forward displacement (u, v) -> m
         self.R = float(p["wrap_radius"])
         self.W0 = float(p["face_half_width"])
         half = float(p["eye_spacing"]) * 0.5
@@ -406,6 +416,8 @@ class FaceSurface:
             mw = float(p["mouth_width"]) * 0.5
             f += 0.0035 * _gauss(au, mw) * (_gauss(v - mv - 0.006, 0.005) + _gauss(v - mv + 0.006, 0.005))
             f -= 0.0020 * _gauss(au, mw) * _gauss(v - mv, 0.0018)
+        if self.extra is not None:
+            f += self.extra(u, v)
         return f
 
     def base(self, u: float, v: float) -> Vector:
@@ -517,10 +529,88 @@ class MaskShape:
         return out
 
 
+def _ray_far(c: Point2, d: Point2, loop: Sequence[Point2]) -> float:
+    """Farthest hit distance of the ray c + t d (t > 0) with the closed ``loop`` (0 = no hit)."""
+    best = 0.0
+    n = len(loop)
+    for i in range(n):
+        a, b = loop[i], loop[(i + 1) % n]
+        ex, ey = b[0] - a[0], b[1] - a[1]
+        den = d[0] * ey - d[1] * ex
+        if abs(den) < 1e-12:
+            continue
+        wx, wy = a[0] - c[0], a[1] - c[1]
+        t = (wx * ey - wy * ex) / den
+        s = (wx * d[1] - wy * d[0]) / den
+        if t > 0 and 0.0 <= s <= 1.0:
+            best = max(best, t)
+    return best
+
+
+def radial_union(loops: Sequence[Sequence[Point2]], centre: Point2 = (0.0, 0.0), n: int = 360,
+                 keep: Sequence[Point2] = ()) -> Loop2:
+    """Outline of the union of star-shaped ``loops`` as seen from ``centre`` (CCW, ``n`` rays).
+
+    Good for a face outline plus ears/tufts/ruff spikes. Points in ``keep`` (tips) are inserted
+    exactly so sharp tips are not rounded off by the ray sampling."""
+    out: list[tuple[float, Point2]] = []
+    for i in range(n):
+        a = 2 * math.pi * i / n
+        d = (math.cos(a), math.sin(a))
+        r = max(_ray_far(centre, d, lp) for lp in loops)
+        out.append((a, (centre[0] + d[0] * r, centre[1] + d[1] * r)))
+    for k in keep:
+        a = math.atan2(k[1] - centre[1], k[0] - centre[0]) % (2 * math.pi)
+        out.append((a, (float(k[0]), float(k[1]))))
+    out.sort(key=lambda e: e[0])
+    # drop ray samples that crowd a kept tip (they would make a sliver)
+    res: Loop2 = []
+    kept = {(float(k[0]), float(k[1])) for k in keep}
+    for idx, (_a, q) in enumerate(out):
+        if q not in kept:
+            prev_q, next_q = out[idx - 1][1], out[(idx + 1) % len(out)][1]
+            if (prev_q in kept and math.dist(prev_q, q) < 0.002) or (next_q in kept and math.dist(next_q, q) < 0.002):
+                continue
+        res.append(q)
+    return res
+
+
+def disc(cu: float, cv: float, r: float, n: int = 12) -> Loop2:
+    """Circle loop (CCW) - rivets, studs, round holes."""
+    return [(cu + r * math.cos(2 * math.pi * i / n), cv + r * math.sin(2 * math.pi * i / n)) for i in range(n)]
+
+
+def front_project(bm: bmesh.types.BMesh, layer_name: str = "UVMap") -> tuple[float, float, float]:
+    """Front planar UV0 along the mask's forward axis (masks.md), normalised to the mesh bounds.
+
+    Godot UV0: x = 0 at the viewer's left looking at the front (Blender +X), 1 at the right; y = 0
+    at the top (forehead), 1 at the bottom (chin). glTF flips V on export, so the Blender V stored
+    here is ``(z - zmin) / height``. Centred: x = 0 maps to 0.5 exactly. Returns (half_w, zmin, zmax)."""
+    layer = bm.loops.layers.uv.get(layer_name) or bm.loops.layers.uv.new(layer_name)
+    half_w = max(abs(v.co.x) for v in bm.verts)
+    zmin = min(v.co.z for v in bm.verts)
+    zmax = max(v.co.z for v in bm.verts)
+    h = zmax - zmin
+    for f in bm.faces:
+        for lp in f.loops:
+            co = lp.vert.co
+            lp[layer].uv = (0.5 - 0.5 * co.x / half_w, (co.z - zmin) / h)
+    return half_w, zmin, zmax
+
+
 # --- triangulation and slabs -------------------------------------------------------------------
-def triangulate(outer: Loop2, holes: Sequence[Loop2], res: float) -> tuple[list[Point2], list[tuple[int, int, int]], list[list[int]]]:
+Refine = tuple[float, float, float, float, float]  # (cu, cv, half_u, half_v, res): finer ellipse
+
+
+def _in_refine(q: Point2, refine: Sequence[Refine]) -> bool:
+    return any(((q[0] - cu) / ru) ** 2 + ((q[1] - cv) / rv) ** 2 <= 1.0 for cu, cv, ru, rv, _r in refine)
+
+
+def triangulate(outer: Loop2, holes: Sequence[Loop2], res: float,
+                refine: Sequence[Refine] = ()) -> tuple[list[Point2], list[tuple[int, int, int]], list[list[int]]]:
     """Constrained Delaunay triangulation of a region with interior points on a hex grid.
 
+    ``refine`` regions (ellipses) get their own finer hex grid (sculpted detail: lips, nostrils).
     Returns (points, triangles, loop_ids) where loop_ids[k] lists the point index of every vertex
     of loop k (outer first, then holes) in loop order."""
     loops = [outer] + list(holes)
@@ -536,22 +626,30 @@ def triangulate(outer: Loop2, holes: Sequence[Loop2], res: float) -> tuple[list[
     segs = [(loop[i], loop[(i + 1) % len(loop)]) for loop in loops for i in range(len(loop))]
     us = [p[0] for p in outer]
     vs = [p[1] for p in outer]
-    dy = res * math.sqrt(3) / 2
-    r0 = math.floor(min(vs) / dy)
-    r1 = math.ceil(max(vs) / dy)
-    min_d = 0.55 * res
-    for r in range(r0, r1 + 1):
-        v = r * dy
-        shift = 0.5 * res if r % 2 else 0.0
-        c0 = math.floor((min(us) - shift) / res)
-        c1 = math.ceil((max(us) - shift) / res)
-        for c in range(c0, c1 + 1):
-            q = (c * res + shift, v)
-            if not point_in_loop(q, outer) or any(point_in_loop(q, h) for h in holes):
-                continue
-            if min(_seg_dist(q, a, b) for a, b in segs) < min_d:
-                continue
-            pts.append(q)
+    grids = [(res, min(us), max(us), min(vs), max(vs), None)]
+    grids += [(rr, cu - ru, cu + ru, cv - rv, cv + rv, (cu, cv, ru, rv, rr)) for cu, cv, ru, rv, rr in refine]
+    for g_res, u0, u1, v0, v1, region in grids:
+        dy = g_res * math.sqrt(3) / 2
+        r0 = math.floor(v0 / dy)
+        r1 = math.ceil(v1 / dy)
+        min_d = 0.55 * g_res
+        for r in range(r0, r1 + 1):
+            v = r * dy
+            shift = 0.5 * g_res if r % 2 else 0.0
+            c0 = math.floor((u0 - shift) / g_res)
+            c1 = math.ceil((u1 - shift) / g_res)
+            for c in range(c0, c1 + 1):
+                q = (c * g_res + shift, v)
+                if region is None:
+                    if refine and _in_refine(q, refine):
+                        continue
+                elif not _in_refine(q, [region]) or _in_refine(q, refine[:refine.index(region)]):
+                    continue
+                if not point_in_loop(q, outer) or any(point_in_loop(q, h) for h in holes):
+                    continue
+                if min(_seg_dist(q, a, b) for a, b in segs) < min_d:
+                    continue
+                pts.append(q)
     out_v, _e, out_f, orig_v, _oe, _of = geometry.delaunay_2d_cdt(
         [Vector(p) for p in pts], edges, [], 0, 1e-9)
     remap = [0] * len(pts)
@@ -619,7 +717,8 @@ def _outward3(surf: FaceSurface, a: Point2, b: Point2, off: float) -> Vector:
 
 def slab(mb: geo.MeshBuilder, surf: FaceSurface, outer: Sequence[Point2], holes: Sequence[Sequence[Point2]],
          lo: float, hi: float, chamfer: float, mat_top: int, mat_side: int, mat_bottom: int | None,
-         res: float, res_back: float, edge_res: float, bottom: bool = True) -> None:
+         res: float, res_back: float, edge_res: float, bottom: bool = True,
+         refine: Sequence[Refine] = ()) -> None:
     """Thick surface patch between skin offsets ``lo`` and ``hi`` with chamfered rims.
 
     Rings, from the top: top face (inset by ``chamfer``) -> 45 deg chamfer -> wall -> (if
@@ -630,8 +729,9 @@ def slab(mb: geo.MeshBuilder, surf: FaceSurface, outer: Sequence[Point2], holes:
     loops = [o] + hs
     insets = [offset_loop(lp, chamfer) for lp in loops]
 
-    def face_patch(off: float, r: float, mat: int, flip: bool) -> list[list[bmesh.types.BMVert]]:
-        pts, tris, ids = triangulate(insets[0], insets[1:], r)
+    def face_patch(off: float, r: float, mat: int, flip: bool,
+                   rf: Sequence[Refine] = ()) -> list[list[bmesh.types.BMVert]]:
+        pts, tris, ids = triangulate(insets[0], insets[1:], r, rf)
         verts = [bm.verts.new(surf.point(u, v, off)) for u, v in pts]
         for t in tris:
             f = bm.faces.new([verts[i] for i in t])
@@ -654,7 +754,7 @@ def slab(mb: geo.MeshBuilder, surf: FaceSurface, outer: Sequence[Point2], holes:
             exp = _outward3(surf, loop2[i], loop2[j], off).normalized() + surf.normal(*c) * up
             _orient(f, exp)
 
-    top_rings = face_patch(hi, res, mat_top, False)
+    top_rings = face_patch(hi, res, mat_top, False, refine)
     bot_mat = mat_bottom if mat_bottom is not None else mat_side
     bot_rings = face_patch(lo, res_back, bot_mat, True) if bottom else None
     for k, loop2 in enumerate(loops):
@@ -730,6 +830,16 @@ ACCENT_LACQUER: MatSpec = ("char_mask_lacquer_dark", "#1F2026", 0.40, 0.0)  # co
 INNER_MATTE: MatSpec = ("char_mask_inner", "#2A2724", 0.85, 0.0)
 
 
+BASE_NEUTRAL: MatSpec = ("char_mask_base", "#B4B1AB", 0.45, 0.0)  # tinted at runtime (material_override)
+
+
+def base_materials(ctx, spec: MatSpec = BASE_NEUTRAL) -> dict[str, bpy.types.Material]:
+    """One colour-neutral material for every role: customisable base masks have a single surface."""
+    lib_id, color, rough, metal = spec
+    m = ctx.material(lib_id, color, roughness=rough, metallic=metal)
+    return {"primary": m, "accent": m, "inner": m}
+
+
 def materials(ctx, primary: MatSpec = PRIMARY_GOLD, accent: MatSpec = ACCENT_LACQUER,
               inner: MatSpec = INNER_MATTE) -> dict[str, bpy.types.Material]:
     """Material roles -> ``M_<id>`` materials (placeholder colours until the library .tres exist)."""
@@ -743,30 +853,47 @@ Ornament = Callable[[MaskKit], None]
 
 
 def build_mask(ctx, params: dict[str, Any] | None, mats: dict[str, bpy.types.Material],
-               ornaments: Sequence[Ornament] = (), name: str = "Mask") -> bpy.types.Object:
+               ornaments: Sequence[Ornament] = (), name: str = "Mask",
+               surface_extra: Callable[[float, float], float] | None = None,
+               outline_fn: Callable[[MaskShape], Loop2] | None = None,
+               holes_fn: Callable[[MaskShape], list[Loop2]] | None = None,
+               uv_mode: str = "box", refine: Sequence[Refine] = ()) -> bpy.types.Object:
     """Build the shell plus ornaments as one mesh object ``name`` at the face-centre pivot.
 
     Shell: outer skin + rim chamfers + wall in ``primary``, inner skin in ``inner``. Ornament
     functions receive a :class:`MaskKit`. Afterwards: box-projected UVs (1024 px/m, after all
     chamfers), sharp edges by angle and weighted normals (``geo.finish_hard_surface``).
-    Records the pivot definition and triangle count in SOURCE.txt (``ctx.source_extra``)."""
+    Records the pivot definition and triangle count in SOURCE.txt (``ctx.source_extra``).
+
+    ``surface_extra(u, v)`` adds forward displacement to the skin, ``outline_fn(shape)`` replaces the
+    outline, ``holes_fn(shape)`` adds shell holes; ``uv_mode="front"`` uses :func:`front_project`;
+    ``refine`` lists finer-mesh ellipses on the shell's outer skin (see :func:`triangulate`)."""
     p = params_with_defaults(params)
-    surf = FaceSurface(p)
+    surf = FaceSurface(p, surface_extra)
     shape = MaskShape(p, surf)
     mb = geo.MeshBuilder()
     slots = {role: mb.material(m) for role, m in mats.items()}
     kit = MaskKit(ctx=ctx, params=p, surf=surf, shape=shape, mb=mb, slots=slots)
     t = float(p["thickness"])
-    slab(mb, surf, shape.outline(), shape.holes(), -t, 0.0, float(p["chamfer"]),
+    outline = outline_fn(shape) if outline_fn is not None else shape.outline()
+    holes = shape.holes() + (holes_fn(shape) if holes_fn is not None else [])
+    slab(mb, surf, outline, holes, -t, 0.0, float(p["chamfer"]),
          slots["primary"], slots["primary"], slots["inner"], float(p["res"]), float(p["res_back"]),
-         float(p["edge_res"]), bottom=True)
+         float(p["edge_res"]), bottom=True, refine=refine)
     print(f"[mask] shell: {mb.tri_count()} tris")
     for fn in ornaments:
         before = mb.tri_count()
         fn(kit)
         print(f"[mask] {fn.__name__}: {mb.tri_count() - before} tris")
     tris = mb.tri_count()
-    uv.box_project(mb.bm, density=uv.DENSITY_FIRST_PERSON)
+    if uv_mode == "front":
+        hw, z0, z1 = front_project(mb.bm)
+        ctx.source_extra["uv0"] = (f"front planar along -Z (Godot), x 0..1 = +X..-X (viewer's left to right), "
+                                   f"y 0..1 = top..bottom; bounds x +-{hw:.4f} m, z {z0:.4f}..{z1:.4f} m")
+    elif uv_mode == "box":
+        uv.box_project(mb.bm, density=uv.DENSITY_FIRST_PERSON)
+    else:
+        raise ValueError(f"unknown uv_mode {uv_mode!r}")
     obj = mb.to_object(name)
     geo.finish_hard_surface(obj, angle_deg=30.0)
     ctx.source_extra["pivot"] = ("face centre: midway between the eye centres at eye (cornea) depth; "

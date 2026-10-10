@@ -206,3 +206,26 @@ func _default_owned(kind: String) -> int:
 	for p: MaskPartDef in MaskCatalog.parts(kind):
 		n += 1 if p.default_owned else 0
 	return n
+
+
+func test_mask_colours_respect_albedo_floor() -> void:
+	# style guide albedo floor (D-035; lead note on ENV D's mask): no channel below ~0.12.
+	var colors: Array[Color] = []
+	var preset: MaskDef = ContentDB.mask(&"mask.gilded_heron")
+	colors.append(preset.color_a)
+	colors.append(preset.color_b)
+	var text: String = FileAccess.get_file_as_string("res://content/data/masks/parts/colors.tres")
+	var rx: RegEx = RegEx.create_from_string("Color\\(([^)]*)\\)")
+	for m: RegExMatch in rx.search_all(text):
+		var p: PackedStringArray = m.get_string(1).split(",")
+		colors.append(Color(float(p[0]), float(p[1]), float(p[2])))
+	for c: Color in colors:
+		assert_true(c.r >= 0.119 and c.g >= 0.119 and c.b >= 0.119, "colour %s under the albedo floor" % c)
+
+
+func test_gilded_heron_uses_env_d_mesh() -> void:
+	var preset: MaskDef = ContentDB.mask(&"mask.gilded_heron")
+	assert_true(preset.model != null, "ENV D mesh wired")
+	var n: Node = preset.model.instantiate()
+	assert_true(n is Node3D)
+	n.free()

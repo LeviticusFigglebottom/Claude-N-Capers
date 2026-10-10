@@ -65,3 +65,6 @@ New prefab requests from ENV C go to the lead as a status-file question.
 | `safe` | `code_group`, `time_lock_s`, KEYCARD method bound to a reader (A2-08) |
 | `laser_grid` | `beam_count`, `period_s`, `off_s`, `phase_s`, `sweep_beams`; optional visual nodes `Beam0..n` (horizontal for static/timed_off, vertical for sweeping) |
 | `deployable` (runtime only) | `res://systems/prefabs/deployable/deployable.tscn` (`DeployablePrefab`): `kind`, `deployable_id`; visual = `DeployableDef.model`, else a `Body` placeholder |
+| `bag_lift` (P2, Night Deposit) | Cash/bag lift between floors: `targets: Array[NodePath]` (landing markers), `travel_s`, `capacity` (bags). Bags placed in the car + interact to send. Visual: `Car`, `DoorL/DoorR`, `Panel`. (QC-11, D-040) |
+| `hack_terminal` (P2) | Timed silent hack (server rack, time-lock override): `duration_s`, `interruptions` (like drill jams: rolled count; fix = re-interact), `targets`. Visual: `Screen` (A swaps materials for progress), `Panel`. (QC-12, D-040) |
+| `escape_zone` (v1.2, QC-19) | `escape_type`: one of `&"van"`, `&"boat"`, `&"heli"`, `&"lift"`, `&"zipline"`, `&"walk"`. `arrival_delay_s` (heli/boat approach after activation; 0 = present). `bag_only` (zipline: bags secured by line, crew leave by another escape). Visual nodes per type: van `Body/DoorL/DoorR`, heli `Body/Rotor`, boat `Body`. (D-042) |

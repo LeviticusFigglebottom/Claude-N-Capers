@@ -52,6 +52,22 @@ xvfb-run -a -s "-screen 0 1920x1080x24" /opt/godot/godot --path game --resolutio
   (magenta), UsePoints (cyan), escape zones (green) and secure zones (magenta). If a map has no
   lights or no WorldEnvironment, the renderer adds neutral fill light for the shot. This is never
   saved to the map.
+* Blueprint (pre-planning board, `docs/contracts/preplanning.md`, D-038):
+  `tools/levelcheck/render_shots.sh <id> blueprint`, which runs `review_shots.tscn -- --blueprint`.
+  It writes `docs/levels/<id>/blueprint.png` (floors side by side, 2 per row, one shared scale),
+  `docs/levels/<id>/blueprint_floor<i>.png`, and a copy at
+  `game/world/heists/<id>/<id>_blueprint.png`. PNGs are downscaled until each is ≤ 1 MB.
+  * Framing and look: like the plans (non-exterior rooms + 2 m, ortho cut at floor + 1.5 m), but
+    clean. Navy ground, blue floors, off-white walls, light-blue furniture footprints, door leaves
+    and windows, and stair treads shaded by height.
+  * Labels: each room shows `PURPOSE` + `room_id` at its centre. Each floor also gets a title,
+    a north mark and a 5 m scale bar.
+  * Hidden: debug markers, variant content (hidden information), Lighting, and props with a
+    footprint under 0.2 m².
+  * Wall cut: kit wall meshes are open at top and bottom, so walls come from collision rather
+    than the render. Point queries on a 4 cm grid at floor + 1.2 m inside the floor's rooms
+    (+0.8 m) mark wall pixels. Solids with a walkable top within 1 m above the sample (landings,
+    stair ramps) are left to the render.
 * Tests: `tools/ci/run_tests.sh c validate` (fixtures + mutation tests + geometry unit tests).
 
 ## Conventions map authors MUST follow

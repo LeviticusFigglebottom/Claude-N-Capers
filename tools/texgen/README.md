@@ -79,6 +79,8 @@ are flat trim paint.
 
 ## Map conventions
 
+* PNGs are only rewritten when their bytes change (unchanged files keep their mtime, so Godot
+  does not re-import them).
 * **Albedo** sRGB PNG (RGBA for `glass_clear`, alpha = opacity). Import: VRAM, BPTC
   (`compress/high_quality=true`) because S3TC/BC1 tints dark neutrals green.
 * **ORM** linear PNG: R = AO, G = roughness, B = metallic. Materials set `metallic = 1`,
@@ -92,6 +94,11 @@ are flat trim paint.
 ## Colour rules (style_guide.md §3), enforced in `materials/base.py:finalize`
 
 * Albedo per-texel **linear luminance clamped to 0.04–0.85** (inside the sRGB 30–240 band too).
+  **D-038 exception:** black polymers, rubber and black paint/anodize set a per-material
+  `lum_min` in the preset, never below `rules.lum_min_black` (0.02; the build fails if lower).
+  Currently `polymer_black` (mean 0.027), `polymer_stipple` (0.025), `rubber_black` (0.025),
+  `alu_anodized_black` (0.029). Everything else, including `trim_interior` (so its rubber strips
+  stay at 0.04), keeps 0.04.
 * HSV **saturation ≤ 0.75** (of the sRGB-encoded value).
 * **Metals** (metallic > 0.5): roughness ≥ 0.15.
 * The build **fails** if any albedo texel is within RGB distance 40 of the interactable accent `#4FD1E8`.
@@ -106,8 +113,8 @@ edit, `build.py --preset <name>`. Global `scales.wear` / `scales.grime` scale al
 pristine ~0.3, docks heavy ~1.8). Per-material `wear`, `grime`, `grime_color`, `grime_darken`,
 `grime_low`, `relief_ref_mm` tune `materials/base.py:weather`. Optional per-material `specular`
 is written as `metallic_specular` (dielectric F0 scale, Godot default 0.5); the dark polymers (0.4)
-and rubber (0.35) use it so their sheen doesn't wash them out grey. Dark weapon materials sit just
-above the 0.04 luminance floor (polymer_black mean 0.044, rubber_black 0.041, metal_matte 0.10).
+and rubber (0.35) use it so their sheen doesn't wash them out grey. `metal_matte` is dark gunmetal
+(mean 0.10).
 
 ## Modules
 
