@@ -7,7 +7,7 @@
 [sub_resource type="Resource" id="Resource_kgih8"]
 script = ExtResource("2_ahcon")
 color_a = Color(0.9, 0.87, 0.8, 1)
-color_b = Color(0.08, 0.08, 0.09, 1)
+color_b = Color(0.12, 0.12, 0.12, 1)
 id = &"mask_colors.bone_ink"
 display_name = "Bone Ink"
 default_owned = true
@@ -15,7 +15,7 @@ default_owned = true
 [sub_resource type="Resource" id="Resource_b8leu"]
 script = ExtResource("2_ahcon")
 color_a = Color(0.75, 0.22, 0.12, 1)
-color_b = Color(0.1, 0.08, 0.07, 1)
+color_b = Color(0.12, 0.12, 0.12, 1)
 id = &"mask_colors.ember_soot"
 display_name = "Ember Soot"
 default_owned = true
@@ -23,7 +23,7 @@ default_owned = true
 [sub_resource type="Resource" id="Resource_vf3hc"]
 script = ExtResource("2_ahcon")
 color_a = Color(0.82, 0.66, 0.28, 1)
-color_b = Color(0.08, 0.08, 0.1, 1)
+color_b = Color(0.122, 0.125, 0.149, 1)
 id = &"mask_colors.gilt_night"
 display_name = "Gilt Night"
 default_owned = true
@@ -53,7 +53,7 @@ display_name = "Violet Static"
 [sub_resource type="Resource" id="Resource_r2p5f"]
 script = ExtResource("2_ahcon")
 color_a = Color(0.12, 0.25, 0.65, 1)
-color_b = Color(0.95, 0.5, 0.1, 1)
+color_b = Color(0.95, 0.5, 0.12, 1)
 id = &"mask_colors.cobalt_flare"
 display_name = "Cobalt Flare"
 
@@ -74,7 +74,7 @@ display_name = "Rose Cinder"
 [sub_resource type="Resource" id="Resource_vk0q1"]
 script = ExtResource("2_ahcon")
 color_a = Color(0.95, 0.95, 0.93, 1)
-color_b = Color(0.75, 0.1, 0.1, 1)
+color_b = Color(0.75, 0.12, 0.12, 1)
 id = &"mask_colors.signal_white"
 display_name = "Signal White"
 
