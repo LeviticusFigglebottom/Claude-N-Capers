@@ -23,7 +23,8 @@ func before_each() -> void:
 	_flow = (load("res://content/ui/menus/menu_flow.tscn") as PackedScene).instantiate() as MenuFlow
 	add_child(_flow)
 	await wait_frames(1)
-	_flow.main_menu.play_button.pressed.emit()
+	_flow.main_menu.safehouse_button.pressed.emit()
+	_flow.hub.station_button(&"planning").pressed.emit()
 	_flow.heist_select.next_button.pressed.emit()
 	_flow.briefing_screen.continue_button.pressed.emit()
 	await wait_frames(1)

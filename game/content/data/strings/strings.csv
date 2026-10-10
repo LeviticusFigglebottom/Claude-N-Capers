@@ -1420,3 +1420,22 @@ ui.preplan.point.pp_gondola_west,"Gondola: west facade, level 41"
 ui.preplan.point.pp_gondola_north,"Gondola: north facade, level 42"
 ui.preplan.point.pp_riser_l41,Riser panel: level 41
 ui.preplan.point.pp_riser_l42,Riser panel: level 42
+ui.menu.safehouse,Safehouse
+ui.hub.title,The Safehouse
+ui.hub.subtitle,Every job starts at one of these stations.
+ui.hub.main_menu,Main Menu
+ui.hub.station.board,The Board
+ui.hub.station.board.desc,"Live contracts from your contacts, pro jobs and the broker."
+ui.hub.station.planning,Planning Table
+ui.hub.station.planning.desc,Pick any heist and difficulty yourself.
+ui.hub.station.armory,Armory
+ui.hub.station.armory.desc,"Weapons, mods, armor, skills and perk decks."
+ui.hub.station.masks,Mask Bench
+ui.hub.station.masks.desc,"Compose, save and equip masks."
+ui.hub.station.range,Firing Range
+ui.hub.station.range.desc,Try any weapon and mod on the lanes.
+ui.hub.profile.title,PROFILE
+ui.hub.profile.xp,{xp} / {next} XP to the next level
+ui.hub.profile.xp_max,Max level
+ui.hub.profile.skill_points,Skill points: {points} of {total} free
+ui.hub.profile.perk_points,Perk points: {points} free

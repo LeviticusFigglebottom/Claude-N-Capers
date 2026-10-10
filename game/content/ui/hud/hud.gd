@@ -20,6 +20,9 @@ const TOAST_S: float = 3.0
 @export var model_path: NodePath
 ## Discover the model through group G.LOCAL_HUD_MODEL when nothing is bound.
 @export var auto_find_model: bool = true
+## Heist being played (MenuFlow sets it before adding the HUD): accents the objectives panel
+## (UiAccent.for_heist, B4-07). Empty = no accent.
+@export var heist_id: StringName = &""
 
 var model: Node = null
 var chevrons: DetectionChevrons
@@ -73,6 +76,8 @@ func _build() -> void:
 	ammo = _place(AmmoPanel.new(), Control.PRESET_BOTTOM_RIGHT, Vector2(-388, -200), Vector2(340, 160)) as AmmoPanel
 	teammates = _place(TeammatePanels.new(), Control.PRESET_CENTER_LEFT, Vector2(48, -120), Vector2(260, 400)) as TeammatePanels
 	objectives = _place(ObjectivesPanel.new(), Control.PRESET_TOP_LEFT, Vector2(48, 48), Vector2(520, 200)) as ObjectivesPanel
+	if heist_id != &"":
+		objectives.set_accent(UiAccent.for_heist(heist_id))
 	assault = _place(AssaultBanner.new(), Control.PRESET_CENTER_TOP, Vector2(-260, 40), Vector2(520, 56)) as AssaultBanner
 	pager = _place(PagerPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-200, 110), Vector2(400, 200)) as PagerPanel
 	status = _place(StatusPanel.new(), Control.PRESET_TOP_RIGHT, Vector2(-448, 48), Vector2(400, 180)) as StatusPanel

@@ -12,6 +12,8 @@ const HUD: StringName = &"HudLabel"
 const HUD_BIG: StringName = &"HudBigLabel"
 const HUD_PANEL: StringName = &"HudPanel"
 const BANNER_PANEL: StringName = &"BannerPanel"
+## The screen's main forward action (Launch, Continue, Confirm, Take): brass-edged button (B4-07).
+const PRIMARY: StringName = &"PrimaryButton"
 
 
 static func theme() -> Theme:
@@ -34,6 +36,12 @@ static func button(key: StringName, args: Dictionary = {}) -> Button:
 	b.text = UiText.t(key, args)
 	b.focus_mode = Control.FOCUS_ALL
 	b.custom_minimum_size = Vector2(320, 0)
+	return b
+
+
+## Marks `b` as the screen's primary action (theme variation PrimaryButton). Returns `b`.
+static func primary(b: Button) -> Button:
+	b.theme_type_variation = PRIMARY
 	return b
 
 
