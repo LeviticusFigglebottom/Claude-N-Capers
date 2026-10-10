@@ -34,6 +34,8 @@ func _draw() -> void:
 			_masks(c, u, w)
 		&"range":
 			_range(c, u, w)
+		&"crew":
+			_crew(c, u, w)
 		_:
 			draw_circle(c, u * 0.2, color)
 
@@ -91,3 +93,14 @@ func _range(c: Vector2, u: float, w: float) -> void:
 	draw_circle(c, u * 0.14, color)
 	for d: Vector2 in [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]:
 		draw_line(c + d * u * 0.68, c + d * u * 0.85, color, w)
+
+
+## Crew net: four heads on a link line (co-op lobby, B4-11).
+func _crew(c: Vector2, u: float, w: float) -> void:
+	draw_line(c + Vector2(-0.78, 0.36) * u, c + Vector2(0.78, 0.36) * u, Color(color, 0.55), w)
+	for i: int in range(4):
+		var x: float = -0.6 + float(i) * 0.4
+		var head: Vector2 = c + Vector2(x, -0.12) * u
+		draw_circle(head, u * 0.15, color)
+		draw_arc(head + Vector2(0, 0.3) * u, u * 0.17, PI, TAU, 12, Color(color, 0.85), w, true)
+		draw_line(head + Vector2(0, 0.3) * u, c + Vector2(x, 0.34) * u, Color(color, 0.55), w)
