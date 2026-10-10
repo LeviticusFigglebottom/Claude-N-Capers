@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.spare_body_bags"
+effect = 0
+category = &"gear"
+base_cost = 1000
+favors = 1
+grants = {
+&"stealth.body_bags_extra": 1
+}
+tags = Array[StringName]([&"stealth"])

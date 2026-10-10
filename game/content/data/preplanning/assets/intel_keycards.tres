@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.intel_keycards"
+effect = 2
+category = &"intel"
+base_cost = 1500
+favors = 1
+reveal_variant_group = &"keycard"
+tags = Array[StringName]([&"stealth"])
