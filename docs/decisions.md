@@ -150,3 +150,7 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - QA-11: approved. NPCs and AI teammates open unlocked doors on their path (instant in loud, a 0.6 s animation in stealth). Guards use keycard doors their post authorises. In loud, police breach locked doors (P3). Doors toggle nav links.
 - QA-12: the alarm reason list is in events.md. `pager_failed(&"cancelled")` on going loud is not an alarm.
 - No separate loud-AI environment: A1-09/A1-10 are already implemented. ENV A's queue was under 2 h, so P2 stealth-complete tasks A2-01..A2-07 are dispatched now (roadmap). P4 modifier hooks come after them.
+
+## D-033 — 2026-10-10 — A-M2/A-M3 merged: P1 systems complete on trunk
+- Merged env/b-content @ 8554760 (state-tolerant tests), then env/a-core @ b2586fc (detection, guard AI, civilians, pagers incl. juggling and the cap, bodies, bags, prefab behaviour incl. drill jams, combat on the D-026 single hit path, downs/bleedout/revive, assault director wave cycle, Patrol Officer/TAC Light AI, AI teammates, modifier hooks, sandbox gate test). Trunk check_all PASS: 432 tests, 0 failed.
+- The P1 gate now waits only on ENV C's Glasshouse G1 map (and art for G2). ENV A's sandbox already passes the gate scenarios.

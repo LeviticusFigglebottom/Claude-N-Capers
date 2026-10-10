@@ -44,6 +44,7 @@ const KEYCARD_ITEM: StringName = &"item.keycard"
 var is_open: bool = false
 var locked: bool = false
 
+var _open_stim_id: int = 0
 var _leaf_bodies: Array[AnimatableBody3D] = []
 var _leaves: Array[Node3D] = []
 
@@ -99,6 +100,11 @@ func unlock() -> void:
 	_apply_unlocked_interaction()
 
 
+## Server: open (keycard readers, devices, missions).
+func open() -> void:
+	set_open(true)
+
+
 ## Server: open or close (instant in A1-03; animation is M2).
 func set_open(open: bool) -> void:
 	if not Net.is_authority():
@@ -111,7 +117,28 @@ func set_open(open: bool) -> void:
 		var outward: bool = swing == Swing.OUTWARD
 		_leaves[i].rotation.y = angle * (-sign_inward if outward else sign_inward)
 	_sync_leaf_bodies()
-	# A1-03 behaviour (M2): replicate open state to clients.
+	_update_open_stimulus()
+	# A1-03 behaviour (M2): replicate open state to clients; nav link / obstacle toggling.
+
+
+## S4.2: an open `suspicious_when_open` door is an `open_door` stimulus.
+func _update_open_stimulus() -> void:
+	var st: StealthDirector = _stealth()
+	if st == null:
+		return
+	var want: bool = is_open and suspicious_when_open
+	if want and _open_stim_id == 0:
+		_open_stim_id = st.register_stimulus(null, &"open_door", {"position": global_position + Vector3.UP})
+	elif not want and _open_stim_id != 0:
+		st.unregister_stimulus(_open_stim_id)
+		_open_stim_id = 0
+
+
+func _exit_tree() -> void:
+	var st: StealthDirector = _stealth()
+	if st != null and _open_stim_id != 0:
+		st.unregister_stimulus(_open_stim_id)
+	_open_stim_id = 0
 
 
 func _nominal_width() -> float:

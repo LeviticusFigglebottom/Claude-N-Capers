@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="CrewAiTweak" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/ai/crew_ai/crew_ai_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+follow_max_m = 8.0
+follow_stop_m = 4.5
+follow_min_m = 3.0
+sprint_beyond_m = 6.0
+cover_search_radius_m = 8.0
+cover_taken_m = 1.0
+cover_arrive_m = 0.6
+revive_range_m = 1.2
+revive_settle_speed = 0.3
+engage_range_m = 40.0
+scan_interval_s = 0.2
+reaction_time_s = 0.35
+shot_interval_s = 0.3
+aim_error_m = 0.12
+head_aim_chance = 0.25
+chest_height_m = 1.15
+fire_cone_deg = 4.0
+turn_speed_deg = 720.0
+tactical_reload_frac = 0.5
+repath_interval_s = 0.5
+repath_goal_move_m = 1.0
+waypoint_reach_m = 0.45

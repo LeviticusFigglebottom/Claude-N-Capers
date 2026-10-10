@@ -1,18 +1,15 @@
 ## Local human input -> CrewIntent (crew_intent.md). Owner: ENV A.
-## The ONLY place raw `Input` is read for gameplay. Added by CrewManager under the local
+## The ONLY place raw `Input` is read for gameplay. Added by HeistRuntime under the local
 ## player's CrewController on every peer. Integration-test bot intents (HeistRuntime) take
-## precedence over this node while held.
+## precedence over this node while held. Actions are defined in project.godot (D-025, QA-4).
+##
+## Contextual keys (PD2 style):
+##   F (`interact` / `shout`): hold to interact when an interactable is aimed at, otherwise a
+##     press is a shout (intimidate / mark).
+##   G (`mask_up` / `throw_item` / `drop_bag`): hold to mask up while unmasked; while masked and
+##     carrying a bag a press throws the bag; otherwise a press throws the throwable.
 class_name PlayerInput
 extends Node
-
-## Default bindings, registered at runtime when project.godot has no such action (QA-4).
-const DEFAULT_BINDINGS: Dictionary = {
-	&"move_forward": KEY_W, &"move_back": KEY_S, &"move_left": KEY_A, &"move_right": KEY_D,
-	&"sprint": KEY_SHIFT, &"crouch": KEY_CTRL, &"jump": KEY_SPACE, &"interact": KEY_F,
-	&"reload": KEY_R, &"shout": KEY_E, &"melee": KEY_V, &"throw_item": KEY_G, &"deploy": KEY_4,
-	&"mask_up": KEY_G, &"slot_primary": KEY_1, &"slot_secondary": KEY_2, &"drop_bag": KEY_X,
-}
-const MOUSE_BINDINGS: Dictionary = {&"fire": MOUSE_BUTTON_LEFT, &"aim": MOUSE_BUTTON_RIGHT}
 
 @export var mouse_sensitivity: float = 0.0025
 
@@ -20,28 +17,14 @@ var enabled: bool = true
 var _yaw: float = 0.0
 var _pitch: float = 0.0
 var _crew: CrewController = null
+## Slot to restore when `swap_weapon` toggles.
+var _last_slot: int = Enums.WeaponSlot.SECONDARY
 
 
 func _ready() -> void:
 	_crew = get_parent() as CrewController
 	if _crew != null:
 		_yaw = _crew.look_yaw
-	ensure_actions()
-
-
-static func ensure_actions() -> void:
-	for a: StringName in DEFAULT_BINDINGS:
-		if not InputMap.has_action(a):
-			InputMap.add_action(a)
-			var ev: InputEventKey = InputEventKey.new()
-			ev.physical_keycode = DEFAULT_BINDINGS[a]
-			InputMap.action_add_event(a, ev)
-	for a: StringName in MOUSE_BINDINGS:
-		if not InputMap.has_action(a):
-			InputMap.add_action(a)
-			var mb: InputEventMouseButton = InputEventMouseButton.new()
-			mb.button_index = MOUSE_BINDINGS[a]
-			InputMap.action_add_event(a, mb)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -59,33 +42,43 @@ func _physics_process(_delta: float) -> void:
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and rt.has_bot_intent(_crew.slot):
 		return
-	_crew.apply_intent(build_intent())
+	_crew.apply_intent(build_intent(rt))
 
 
-func build_intent() -> CrewIntent:
-	# This file is the sanctioned input component (crew_intent.md). check_banned.py's filename
-	# exemption for *input*.gd never matches (QA-6), so the singleton is read through `inp`.
-	var inp: Object = Engine.get_singleton(&"Input")
+func build_intent(rt: HeistRuntime) -> CrewIntent:
 	var i: CrewIntent = CrewIntent.new()
-	i.move = inp.get_vector(&"move_left", &"move_right", &"move_back", &"move_forward")
+	i.move = Input.get_vector(&"move_left", &"move_right", &"move_back", &"move_forward")
 	i.look_yaw = _yaw
 	i.look_pitch = _pitch
-	i.sprint = inp.is_action_pressed(&"sprint")
-	i.crouch = inp.is_action_pressed(&"crouch")
-	i.jump = inp.is_action_pressed(&"jump")
-	i.fire = inp.is_action_pressed(&"fire")
-	i.aim = inp.is_action_pressed(&"aim")
-	i.reload = inp.is_action_pressed(&"reload")
-	i.interact = inp.is_action_pressed(&"interact")
-	i.shout = inp.is_action_pressed(&"shout")
-	i.melee = inp.is_action_pressed(&"melee")
-	i.throw_item = inp.is_action_pressed(&"throw_item")
-	i.deploy = inp.is_action_pressed(&"deploy")
-	i.mask_up = inp.is_action_pressed(&"mask_up")
-	i.drop_bag = inp.is_action_just_pressed(&"drop_bag")
-	i.throw_bag = inp.is_action_pressed(&"drop_bag") and inp.is_action_pressed(&"aim")
-	if inp.is_action_just_pressed(&"slot_primary"):
+	i.sprint = Input.is_action_pressed(&"sprint")
+	i.crouch = Input.is_action_pressed(&"crouch")
+	i.jump = Input.is_action_pressed(&"jump")
+	i.fire = Input.is_action_pressed(&"fire")
+	i.aim = Input.is_action_pressed(&"aim")
+	i.reload = Input.is_action_pressed(&"reload")
+	i.melee = Input.is_action_pressed(&"melee")
+	i.deploy = Input.is_action_pressed(&"deploy")
+	# F: interact when aiming at something usable, else shout.
+	var isys: InteractionSystem = rt.interaction if rt != null else null
+	var aimed: bool = isys != null and (isys.aimed_component(_crew) != null or not isys.session(_crew.slot).is_empty())
+	var f_held: bool = Input.is_action_pressed(&"interact") or Input.is_action_pressed(&"shout")
+	i.interact = f_held and aimed
+	i.shout = not i.interact and (Input.is_action_just_pressed(&"shout") or Input.is_action_just_pressed(&"interact"))
+	# G: mask up (hold) / throw bag / throwable.
+	var g_held: bool = Input.is_action_pressed(&"mask_up")
+	var g_pressed: bool = Input.is_action_just_pressed(&"mask_up") or Input.is_action_just_pressed(&"throw_item") \
+		or Input.is_action_just_pressed(&"drop_bag")
+	if not _crew.masked:
+		i.mask_up = g_held
+	elif _crew.is_carrying_bag():
+		i.throw_bag = g_pressed
+	else:
+		i.throw_item = g_pressed
+	if Input.is_action_just_pressed(&"slot_primary"):
 		i.weapon_slot = Enums.WeaponSlot.PRIMARY
-	elif inp.is_action_just_pressed(&"slot_secondary"):
+	elif Input.is_action_just_pressed(&"slot_secondary"):
 		i.weapon_slot = Enums.WeaponSlot.SECONDARY
+	elif Input.is_action_just_pressed(&"swap_weapon"):
+		_last_slot = Enums.WeaponSlot.PRIMARY if _last_slot == Enums.WeaponSlot.SECONDARY else Enums.WeaponSlot.SECONDARY
+		i.weapon_slot = _last_slot
 	return i

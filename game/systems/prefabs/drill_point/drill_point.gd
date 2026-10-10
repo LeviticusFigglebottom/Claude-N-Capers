@@ -1,6 +1,8 @@
 ## Where a drill / thermal drill / saw is placed (S9.3, S9.4). Owner: ENV A.
 ## Interaction = place the device (InteractionTweak.drill_place_s); the device runs `duration_s`
-## (-1 = default per device), jams per Modifiers, and opens `target` (calls its `unlock()`).
+## (-1 = default per device) × `interaction.device_speed_mult`, jams (DeviceRunner, GameRng
+## &"devices"), the same Interactable becomes "fix" (kind &"fix_drill", drill_fix_s) while jammed,
+## and on finish it calls `open_by_device()` on `target` (Safe, vault...) or `unlock()` + open.
 ## The drill art is a separate device visual with a `Bit` node (visual_slots.md); the placeholder
 ## only marks the spot. -Z points into the lock.
 class_name DrillPoint
@@ -23,6 +25,10 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/drill_point/dril
 @export var loud_only: bool = false
 @export var casing_allowed: bool = false
 @export var noise: StringName = &"silent"
+
+var runner: DeviceRunner = null
+
+var _place_time: float = 0.0
 
 
 func _placeholder_scene() -> PackedScene:
@@ -47,7 +53,85 @@ func effective_duration() -> float:
 			return tw.drill_duration_s
 
 
+## Device kind id used in device_started.
+func device_kind() -> StringName:
+	match device:
+		Device.THERMAL:
+			return &"thermal"
+		Device.SAW:
+			return &"saw"
+	return &"drill"
+
+
+## Running device state (DeviceRunner.State).
+func device_state() -> int:
+	return runner.state
+
+
 func _prefab_ready() -> void:
+	runner = DeviceRunner.new(self, device_kind())
+	runner.state_changed.connect(_on_device_state)
+	runner.finished.connect(_on_device_finished)
+	_place_time = interactable.interaction_time_s
 	interactable.kind = &"place_drill"
-	# A1-03 behaviour (M2): device spawn, device_started/jammed/restarted/finished, 25 m noise
-	# (12.5 m occluded), jams via GameRng.stream(&"drills"), fix interaction, unlock target.
+	interactable.extra_check = _availability
+	interactable.completed.connect(_on_completed)
+
+
+func _physics_process(delta: float) -> void:
+	if runner != null:
+		runner.tick(delta)
+
+
+func _exit_tree() -> void:
+	if runner != null:
+		runner.shutdown()
+
+
+func _availability(_crew: Node) -> StringName:
+	if runner == null or runner.state == DeviceRunner.State.IDLE or runner.state == DeviceRunner.State.JAMMED:
+		return InteractableComponent.BLOCK_NONE
+	return InteractableComponent.BLOCK_STATE
+
+
+func _on_completed(crew: Node) -> void:
+	if not Net.is_authority() or runner == null:
+		return
+	var slot: int = int(crew.get(&"slot")) if crew != null else -1
+	match runner.state:
+		DeviceRunner.State.IDLE:
+			runner.place(slot, effective_duration())
+		DeviceRunner.State.JAMMED:
+			runner.fix(slot)
+
+
+func _on_device_state(s: int) -> void:
+	match s:
+		DeviceRunner.State.JAMMED:
+			interactable.kind = &"fix_drill"
+			interactable.interaction_time_s = Tweak.interaction().drill_fix_s
+			interactable.prompt_key = &"ui.prompt.fix_drill"
+		DeviceRunner.State.DONE:
+			interactable.enabled = false
+		_:
+			interactable.kind = &"place_drill"
+			interactable.interaction_time_s = _place_time
+
+
+func _on_device_finished() -> void:
+	open_target(get_node_or_null(target) if not target.is_empty() else null)
+
+
+## Open what a finished device was drilling (Safe/vault `open_by_device()`, else door unlock + open).
+static func open_target(t: Node) -> void:
+	if t == null:
+		return
+	if t.has_method(&"open_by_device"):
+		t.call(&"open_by_device")
+		return
+	if t.has_method(&"unlock"):
+		t.call(&"unlock")
+	if t.has_method(&"set_open"):
+		t.call(&"set_open", true)
+	elif t.has_method(&"open"):
+		t.call(&"open")

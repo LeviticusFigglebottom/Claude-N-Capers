@@ -2,6 +2,10 @@
 ## Hosts a child `Zone` (MapZone ESCAPE, BoxShape3D centred on the origin footprint, bottom at
 ## floor, sized by `zone_size_m`). HeistMission.activate_escape() calls `activate()` on this node.
 ## The zone stays in the escape_zone group while inactive; only `monitoring` is toggled.
+## While active (server): once every human crew member not in custody stands inside `Zone`, the heist
+## ends with success: `HeistRuntime.end_heist(true, escaped)` where `escaped` = humans inside + AI
+## teammates not in custody (they come along). Without humans (bot-only tests) slot 0 counts as
+## the human.
 class_name EscapeZone
 extends GameplayPrefab
 
@@ -34,9 +38,48 @@ func activate() -> void:
 	_apply_active()
 
 
+func _physics_process(_delta: float) -> void:
+	if not active or not Net.is_authority():
+		return
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if rt == null or rt.phase == Enums.HeistPhase.ENDED:
+		return
+	var escaped: Array[int] = escaping_slots(rt)
+	if not escaped.is_empty():
+		rt.end_heist(true, escaped)
+
+
+## Slots that escape now, or [] while a required (human, not in custody) crew member is outside.
+func escaping_slots(rt: HeistRuntime) -> Array[int]:
+	var crew: Array[CrewController] = rt.crew_members()
+	var humans: Array[CrewController] = []
+	for c: CrewController in crew:
+		if not c.is_ai:
+			humans.append(c)
+	if humans.is_empty():
+		for c: CrewController in crew:
+			if c.slot == 0:
+				humans.append(c)
+	var required: Array[CrewController] = []
+	for c: CrewController in humans:
+		if c.crew_state != Enums.CrewState.CUSTODY:
+			required.append(c)
+	var out: Array[int] = []
+	if required.is_empty():
+		return out
+	for c: CrewController in required:
+		if not ZoneUtil.contains(zone, c.global_position + Vector3.UP * 0.5):
+			return []
+		out.append(c.slot)
+	for c: CrewController in crew:
+		if not humans.has(c) and c.crew_state != Enums.CrewState.CUSTODY:
+			out.append(c.slot)
+	out.sort()
+	return out
+
+
 func _apply_active() -> void:
 	if zone != null:
 		zone.set_deferred(&"monitoring", active)
 	if visual_root != null:
 		visual_root.visible = active
-	# A1-03 behaviour (M2): crew inside an active zone -> escape / end_heist.
