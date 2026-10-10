@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MaskDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://contracts/data/mask_def.gd" id="1_mask"]
+[ext_resource type="PackedScene" uid="uid://bu6arhm24rhu" path="res://assets/masks/mask_base_owl/mask_base_owl.glb" id="2_model"]
+
+[resource]
+script = ExtResource("1_mask")
+id = &"mask.night_circuit"
+display_name = "Night Circuit"
+model = ExtResource("2_model")
+color_a = Color(0.56, 0.82, 0.66, 1)
+color_b = Color(0.16, 0.17, 0.18, 1)
+material_id = &"polymer_stipple"
+pattern_id = &"mask_pattern.circuit"
+unlock = &"unlock.payday_card"
+metadata/mask_base = &"mask_base.owl"

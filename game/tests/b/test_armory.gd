@@ -7,8 +7,14 @@ const NEW_WEAPONS: Array[StringName] = [
 	&"weapon.warden_45", &"weapon.hornet_9", &"weapon.corsair_ar", &"weapon.plowman_12",
 	&"weapon.rampart_lmg", &"weapon.heron_308",
 ]
-## Weapon families with a viewmodel anim set + fire cue pair (characters.md, audio_cues.md).
-const ANIM_SETS: Array[StringName] = [&"pistol", &"smg", &"rifle", &"shotgun", &"lmg", &"sniper"]
+## Weapon families with a viewmodel anim set + fire cue pair (characters.md, audio_cues.md). B4-12 adds
+## `akimbo` (pairs; D-050) and `revolver`.
+const ANIM_SETS: Array[StringName] = [&"pistol", &"smg", &"rifle", &"shotgun", &"lmg", &"sniper", &"akimbo", &"revolver"]
+## Cue family per anim set where they differ: pairs fire pistol rounds (D-050).
+const CUE_FAMILY: Dictionary = {&"akimbo": &"pistol"}
+## PD2 exceptions to the class -> slot rule: short shotguns in the secondary slot (Locomotive analog) and
+## akimbo pairs in the primary slot.
+const SECONDARY_PRIMARY_CLASS: Array[StringName] = [&"weapon.mule_12"]
 const PRIMARY_CLASSES: Array[int] = [
 	Enums.WeaponClass.ASSAULT_RIFLE, Enums.WeaponClass.SHOTGUN, Enums.WeaponClass.LMG, Enums.WeaponClass.SNIPER,
 ]
@@ -58,7 +64,7 @@ func _stock_stats(w: WeaponDef) -> WeaponStats:
 func test_one_new_weapon_per_class_plus_a_heavy_pistol() -> void:
 	for id: StringName in NEW_WEAPONS:
 		assert_true(ContentDB.weapon(id) != null, "%s exists" % id)
-	assert_eq(_weapon_of_class(Enums.WeaponClass.PISTOL).size(), 2, "two pistols")
+	assert_true(_weapon_of_class(Enums.WeaponClass.PISTOL).size() >= 2, "at least two pistols")
 	for c: int in [Enums.WeaponClass.SMG, Enums.WeaponClass.ASSAULT_RIFLE, Enums.WeaponClass.SHOTGUN,
 			Enums.WeaponClass.LMG, Enums.WeaponClass.SNIPER]:
 		assert_true(_weapon_of_class(c as Enums.WeaponClass).size() >= 1, "class %s" % Enums.WeaponClass.keys()[c])
@@ -79,7 +85,11 @@ func test_makers_are_original_and_set() -> void:
 
 func test_slots_follow_pd2() -> void:
 	for w: WeaponDef in ContentDB.all_weapons():
-		if PRIMARY_CLASSES.has(int(w.weapon_class)):
+		if SECONDARY_PRIMARY_CLASS.has(w.id):
+			assert_eq(w.slot, Enums.WeaponSlot.SECONDARY, "%s is a secondary (PD2 short shotgun)" % w.id)
+		elif w.anim_set == &"akimbo":
+			assert_eq(w.slot, Enums.WeaponSlot.PRIMARY, "%s: PD2 akimbo pairs are primaries" % w.id)
+		elif PRIMARY_CLASSES.has(int(w.weapon_class)):
 			assert_eq(w.slot, Enums.WeaponSlot.PRIMARY, "%s is a primary" % w.id)
 		else:
 			# PD2: pistols and SMGs are secondaries
@@ -146,7 +156,7 @@ func test_class_stat_shapes() -> void:
 ##   reload_empty_time_s = start + mag x per_round + end_empty
 ## and no mod adds raw reload time (a tube mod changes the totals through mag_size only).
 func test_shell_by_shell_reload_fields() -> void:
-	const SHELL_LOADED: Array[StringName] = [&"weapon.plowman_12"]
+	const SHELL_LOADED: Array[StringName] = [&"weapon.plowman_12", &"weapon.mule_12"]
 	for w: WeaponDef in ContentDB.all_weapons():
 		var b: WeaponStats = w.base
 		var shell: bool = SHELL_LOADED.has(w.id)
@@ -193,8 +203,9 @@ func test_plowman_reload_timings() -> void:
 func test_cues_and_anim_sets_follow_the_contract_pattern() -> void:
 	for w: WeaponDef in ContentDB.all_weapons():
 		assert_has(ANIM_SETS, w.anim_set, "%s anim set" % w.id)
-		assert_eq(w.fire_cue, StringName("cue.weapon_%s_fire" % w.anim_set), "%s fire cue" % w.id)
-		assert_eq(w.fire_cue_suppressed, StringName("cue.weapon_%s_fire_suppressed" % w.anim_set), "%s suppressed cue" % w.id)
+		var family: StringName = CUE_FAMILY.get(w.anim_set, w.anim_set)
+		assert_eq(w.fire_cue, StringName("cue.weapon_%s_fire" % family), "%s fire cue" % w.id)
+		assert_eq(w.fire_cue_suppressed, StringName("cue.weapon_%s_fire_suppressed" % family), "%s suppressed cue" % w.id)
 
 
 func test_every_weapon_has_three_optional_mods_and_stock_defaults() -> void:

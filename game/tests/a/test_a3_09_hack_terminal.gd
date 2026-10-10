@@ -155,3 +155,63 @@ func test_defaults_from_tweak_and_zero_interruptions() -> void:
 	var done: bool = await wait_until(func() -> bool: return hack.state == HackTerminal.State.DONE, 2.0)
 	assert_true(done, "no interruptions: straight through")
 	assert_true(_of(&"device_jammed").is_empty())
+
+
+## Lockdowns: pause(reason) / resume(reason) stack by reason; paused = timer frozen, interaction
+## blocked, device_jammed / device_restarted(-1) for the HUD.
+func test_pause_resume_stacked_reasons() -> void:
+	var hack: HackTerminal = ATestMaps.add_prefab(_rt, "hack_terminal", Vector3(0, 0, -6), func(n: Node) -> void:
+		var h: HackTerminal = n as HackTerminal
+		h.duration_s = 1.5
+		h.interruptions = Vector2i(0, 0)) as HackTerminal
+	await wait_physics_frames(2)
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	c.set_masked()
+	hack.start_hack(0)
+	await wait_seconds(0.3)
+	hack.pause(&"lockdown")
+	assert_true(hack.is_paused() and hack.is_jammed(), "paused, jammed for the HUD")
+	assert_eq(hack.pause_reasons(), [&"lockdown"] as Array[StringName])
+	assert_eq(_of(&"device_jammed").size(), 1, "pausing a running hack = device_jammed")
+	assert_eq(hack.interactable.availability(c), HackTerminal.BLOCK_PAUSED, "blocked while paused")
+	var p0: float = hack.progress
+	assert_true(p0 > 0.05 and p0 < 1.0, "ran a little (%.2f)" % p0)
+	await wait_seconds(0.4)
+	assert_eq(hack.progress, p0, "timer frozen")
+	hack.pause(&"mission")
+	hack.pause(&"mission")
+	hack.resume(&"lockdown")
+	assert_true(hack.is_paused(), "still paused by the other reason")
+	assert_true(_of(&"device_restarted").is_empty(), "no restart yet")
+	hack.resume(&"mission")
+	assert_false(hack.is_paused(), "all reasons gone")
+	assert_eq(_of(&"device_restarted").size(), 1, "device_restarted on resume")
+	assert_eq(_of(&"device_restarted")[0][2], -1, "by the mission (slot -1)")
+	assert_eq(_of(&"device_jammed").size(), 1, "one jam for the whole pause")
+	var done: bool = await wait_until(func() -> bool: return hack.state == HackTerminal.State.DONE, 3.0)
+	assert_true(done, "finishes after the resume")
+
+
+func test_pause_on_alarm_and_events() -> void:
+	var hack: HackTerminal = ATestMaps.add_prefab(_rt, "hack_terminal", Vector3(0, 0, -6), func(n: Node) -> void:
+		var h: HackTerminal = n as HackTerminal
+		h.duration_s = 30.0
+		h.interruptions = Vector2i(0, 0)
+		h.pause_on_alarm = true
+		h.pause_on_event = &"voice_line_requested"
+		h.resume_on_event = &"item_picked_up") as HackTerminal
+	await wait_physics_frames(2)
+	hack.start_hack(0)
+	EventBus.voice_line_requested.emit(&"test", &"test.lockdown", {})
+	assert_eq(hack.pause_reasons(), [&"voice_line_requested"] as Array[StringName], "event pauses (3 args)")
+	EventBus.item_picked_up.emit(&"item.test", 0)
+	assert_false(hack.is_paused(), "resume event (2 args)")
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(2)
+	assert_true(hack.pause_reasons().has(HackTerminal.REASON_ALARM), "alarm pauses it")
+	var p0: float = hack.progress
+	await wait_seconds(0.3)
+	assert_eq(hack.progress, p0, "frozen in the lockdown")
+	hack.resume(HackTerminal.REASON_ALARM)
+	await wait_seconds(0.2)
+	assert_true(hack.progress > p0, "a mission script lifts the lockdown")

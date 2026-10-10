@@ -78,3 +78,16 @@ func test_modifiers_list_accepts_array_values() -> void:
 	assert_eq(l.size(), 2)
 	assert_eq(l[1]["_source"], &"skill.b", "entry keeps its own _source")
 	Modifiers.clear_all()
+
+
+## D-052: hosting, leaving and hosting again leaves exactly one handler connected (no double-connect error).
+func test_net_host_twice_after_leave() -> void:
+	var port: int = 30000 + GameRng.stream(&"test_net").randi_range(0, 9999)
+	assert_eq(Net.host(port, "A"), OK, "first host")
+	Net.leave()
+	assert_false(multiplayer.peer_connected.is_connected(Net._on_peer_connected), "leave disconnects handlers")
+	assert_eq(Net.host(port, "B"), OK, "second host on the same port")
+	assert_true(multiplayer.peer_connected.is_connected(Net._on_peer_connected), "host connects handlers")
+	assert_eq(String(Net.crew[0]["display_name"]), "B")
+	Net.leave()
+	Net.start_solo("Tester", 3)

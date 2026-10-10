@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://baux8prlam4yp" path="res://assets/weapons/wpn_sparrow_mp/wpn_sparrow_mp.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 30.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 880.0
+spread_deg_hip = 4.5
+spread_deg_ads = 2.0
+recoil_kick_deg = 0.9
+recoil_horizontal_deg = 0.7
+falloff_start_m = 12.0
+falloff_end_m = 26.0
+falloff_min_mult = 0.45
+mag_size = 20
+total_ammo = 140
+reload_time_s = 1.8
+reload_empty_time_s = 2.4
+equip_time_s = 0.3
+ads_time_s = 0.18
+concealment = 28
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 7.0
+ammo_pickup_min = 4.0
+ammo_pickup_max = 9.0
+suppressed = false
+noise_radius_m = 60.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.sparrow_mp"
+display_name = "Sparrow MP"
+manufacturer = "Halvard Arms"
+weapon_class = 0
+slot = 1
+fire_modes = Array[StringName]([&"auto", &"semi"])
+base = SubResource("base")
+price = 22000
+unlock_level = 5
+mod_slots = {
+2: [&"mod.sparrow_suppressor"],
+3: [&"mod.sparrow_iron_sights", &"mod.sparrow_reflex_sight"],
+6: [&"mod.sparrow_wire_stock"],
+7: [&"mod.sparrow_standard_mag", &"mod.sparrow_extended_mag"]
+}
+default_mods = {
+3: &"mod.sparrow_iron_sights",
+7: &"mod.sparrow_standard_mag"
+}
+fire_cue = &"cue.weapon_pistol_fire"
+fire_cue_suppressed = &"cue.weapon_pistol_fire_suppressed"
+anim_set = &"pistol"
+model = ExtResource("3")

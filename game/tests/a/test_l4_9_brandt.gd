@@ -1,6 +1,7 @@
 ## A3-02 L4.9 Commander Brandt + Aegis squad: arrival on eligible difficulty (also solo, D-015),
 ## resistance stacking (10% +5%/5 s up to 50%), per-hit cap (10% max HP, x6 explosives), cannot be
-## killed, retreat at 20% HP or ~3 shields, assault lock (no FADE while he is on the map).
+## killed, retreat at 20% HP or ~3 shields, assault lock (no FADE while he is on the map), "in position"
+## as a real destination (tagged / defensive TacticalPoint, squad formation, timeout fallback).
 extends TestCase
 
 const DEFAULT_TWEAK: String = "res://systems/director/director_tweak.tres"
@@ -23,6 +24,7 @@ func _tweak() -> DirectorTweak:
 	tw.assault_groups = []
 	tw.control_special_groups = []
 	tw.captain_settle_s = 0.2
+	tw.captain_position_timeout_s = 0.2  # the destination walk has its own tests
 	tw.aegis_resist_step_s = 0.5
 	tw.captain_despawn_s = 0.0
 	return tw
@@ -225,3 +227,73 @@ func test_l4_9_assault_locked_while_present() -> void:
 	d.captain.retreat(&"test")
 	ok = await wait_until(func() -> bool: return d.assault_phase == Enums.AssaultPhase.FADE, 3.0)
 	assert_true(ok, "the assault resumes and fades after he retreats")
+
+
+## A TacticalPoint tagged captain_position near the crew is the squad's destination: Brandt and his
+## shields walk there (formation slots), resistance only starts once he arrives.
+func test_l4_9_moves_to_a_defensive_point_before_stacking() -> void:
+	var tw: DirectorTweak = _tweak()
+	tw.captain_position_timeout_s = 100.0
+	tw.aegis_shields = 4
+	tw.captain_retreat_shields = -1
+	await _launch(tw)
+	var d: AssaultDirector = _director()
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(3)
+	var spawn: Vector3 = d.valid_spawn_points()[0].global_position
+	var crew: Vector3 = _rt.crew_members()[0].global_position
+	var tp: TacticalPoint = TacticalPoint.new()
+	tp.name = "BrandtHold"
+	tp.kind = TacticalPoint.Kind.COVER
+	tp.tags = [tw.captain_position_tag] as Array[StringName]
+	_rt.map.add_child(tp)
+	var dir: Vector3 = Vector3(crew.x - spawn.x, 0.0, crew.z - spawn.z)
+	tp.global_position = Vector3(spawn.x, crew.y, spawn.z) + dir.normalized().cross(Vector3.UP) * 3.0  # beside the spawn
+	var c: AegisCaptain = d.captain
+	assert_true(c.summon(), "Brandt summoned")
+	assert_eq(c.position_point, tp, "the tagged point is the destination")
+	var bb: PoliceBrain = c.brandt.get_node("Brain") as PoliceBrain
+	assert_true(bb.has_order() and bb.order_position.distance_to(tp.global_position) < 0.01, "Brandt ordered there")
+	for i: int in range(c.shields.size()):
+		var sb: PoliceBrain = c.shields[i].get_node("Brain") as PoliceBrain
+		assert_true(sb.order_position.distance_to(c.formation_slot(i, c.shields.size())) < 0.01, "shield %d in formation" % i)
+	await wait_physics_frames(5)
+	assert_false(c.in_position, "not in position before arriving")
+	assert_near(d.aegis_resistance(), 0.0, 0.0001, "no resistance on the way")
+	var ok: bool = await wait_until(func() -> bool: return c.in_position, 15.0)
+	assert_true(ok, "arrives (at %s, spawn %s, point %s, mode %s, alert %d, motor %s)" % [c.brandt.global_position, spawn, tp.global_position,
+		bb.mode, c.brandt.alert_state, (c.brandt.get_node("Motor") as NpcMotor).target])
+	assert_true(c.reached_destination, "in position by arrival, not the timeout")
+	assert_true(AegisCaptain.flat_dist(c.brandt.global_position, tp.global_position) <= tw.captain_position_arrive_m + 0.05,
+		"Brandt at the point")
+	assert_near(d.aegis_resistance(), 0.10, 0.001, "stacking starts on arrival")
+	c.retreat(&"test")
+	assert_false(bb.has_order(), "orders cleared on retreat")
+
+
+func test_l4_9_destination_choice_and_timeout_fallback() -> void:
+	var tw: DirectorTweak = _tweak()
+	tw.captain_position_timeout_s = 0.5
+	tw.captain_retreat_shields = -1
+	await _launch(tw)
+	var d: AssaultDirector = _director()
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(3)
+	var c: AegisCaptain = d.captain
+	var crew: Vector3 = _rt.crew_members()[0].global_position
+	# Untagged: the COVER / SHIELD_ANCHOR point whose distance to the crew is closest to pref_m.
+	var picked: TacticalPoint = c.pick_position()
+	if picked != null:
+		var dd: float = AegisCaptain.flat_dist(picked.global_position, crew)
+		assert_true(dd >= tw.captain_position_min_m and dd <= tw.captain_position_max_m, "in the band (%.1f m)" % dd)
+	# A far tagged point: he never gets there in time, the timeout puts him in position anyway.
+	var tp: TacticalPoint = TacticalPoint.new()
+	tp.kind = TacticalPoint.Kind.SHIELD_ANCHOR
+	tp.tags = [tw.captain_position_tag] as Array[StringName]
+	_rt.map.add_child(tp)
+	tp.global_position = crew + Vector3(0, 0, 60)
+	assert_eq(c.pick_position(), tp, "a tagged point wins")
+	assert_true(c.summon())
+	var ok: bool = await wait_until(func() -> bool: return c.in_position, 3.0)
+	assert_true(ok, "timeout fallback")
+	assert_false(c.reached_destination, "not by arrival")

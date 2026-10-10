@@ -10,6 +10,10 @@ signal session_started(is_host: bool)
 signal session_ended()
 ## Lobby/menu messages between peers (pre-planning votes, ready states...). D-038.
 signal lobby_message(from_peer: int, kind: StringName, data: Dictionary)
+## Client: the connection to the host is up / could not be made / was lost (D-052).
+signal connected_to_host()
+signal connection_failed()
+signal host_lost()
 
 const MAX_CREW: int = 4
 const DEFAULT_PORT: int = 27655
@@ -17,6 +21,8 @@ const AI_PEER: int = 0
 
 ## crew_slot -> CrewSlotInfo dictionary: { "peer_id": int, "is_ai": bool, "display_name": String }
 var crew: Dictionary[int, Dictionary] = {}
+
+var _join_name: String = "Player"
 
 
 func is_authority() -> bool:
@@ -42,6 +48,7 @@ func host(port: int = DEFAULT_PORT, display_name: String = "Host") -> Error:
 	var err: Error = peer.create_server(port, MAX_CREW - 1)
 	if err != OK:
 		return err
+	_disconnect_handlers()
 	multiplayer.multiplayer_peer = peer
 	crew.clear()
 	_assign_slot(1, false, display_name)
@@ -51,17 +58,25 @@ func host(port: int = DEFAULT_PORT, display_name: String = "Host") -> Error:
 	return OK
 
 
-func join(address: String, port: int = DEFAULT_PORT) -> Error:
+## Client: connect to a host. `display_name` is sent to the host once connected (it names our slot).
+## Outcome arrives as connected_to_host / connection_failed; host_lost if the host goes away later.
+func join(address: String, port: int = DEFAULT_PORT, display_name: String = "Player") -> Error:
 	var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
 	var err: Error = peer.create_client(address, port)
 	if err != OK:
 		return err
+	_disconnect_handlers()
+	_join_name = display_name
 	multiplayer.multiplayer_peer = peer
+	multiplayer.connected_to_server.connect(_on_connected_to_server)
+	multiplayer.connection_failed.connect(_on_connection_failed)
+	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	session_started.emit(false)
 	return OK
 
 
 func leave() -> void:
+	_disconnect_handlers()
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	crew.clear()
 	session_ended.emit()
@@ -178,3 +193,47 @@ func _rpc_lobby(kind: StringName, data: Dictionary) -> void:
 	if sender == 0:
 		sender = local_peer_id()
 	lobby_message.emit(sender, kind, data)
+
+
+## Host and client handlers are connected per session; leave()/host()/join() clear the previous ones
+## so a second session never double-connects (D-052).
+func _disconnect_handlers() -> void:
+	var pairs: Array = [
+		[multiplayer.peer_connected, _on_peer_connected],
+		[multiplayer.peer_disconnected, _on_peer_disconnected],
+		[multiplayer.connected_to_server, _on_connected_to_server],
+		[multiplayer.connection_failed, _on_connection_failed],
+		[multiplayer.server_disconnected, _on_server_disconnected],
+	]
+	for p: Array in pairs:
+		var sig: Signal = p[0]
+		if sig.is_connected(p[1]):
+			sig.disconnect(p[1])
+
+
+func _on_connected_to_server() -> void:
+	_rpc_hello.rpc_id(1, _join_name)
+	connected_to_host.emit()
+
+
+func _on_connection_failed() -> void:
+	connection_failed.emit()
+	leave()
+
+
+func _on_server_disconnected() -> void:
+	host_lost.emit()
+	leave()
+
+
+## Server: a joining client names its slot.
+@rpc("any_peer", "call_remote", "reliable")
+func _rpc_hello(display_name: String) -> void:
+	if not is_authority():
+		return
+	var slot: int = slot_of_peer(multiplayer.get_remote_sender_id())
+	if slot < 0:
+		return
+	crew[slot]["display_name"] = display_name.strip_edges().left(24)
+	crew_changed.emit()
+	_sync_crew()

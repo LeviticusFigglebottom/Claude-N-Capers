@@ -36,7 +36,7 @@ const PHYSICAL_ROWS: Array[Array] = [
 ]
 const READOUT_ROWS: Array[Array] = [
 	["ro_target", &"ui.range.ro.target"], ["ro_distance", &"ui.range.ro.distance"], ["ro_health", &"ui.range.ro.health"],
-	["ro_falloff", &"ui.range.ro.falloff"], ["ro_body", &"ui.range.ro.body_damage"],
+	["ro_armor", &"ui.range.ro.armor"], ["ro_falloff", &"ui.range.ro.falloff"], ["ro_body", &"ui.range.ro.body_damage"],
 	["ro_head", &"ui.range.ro.head_damage"], ["ro_dps", &"ui.range.ro.dps"],
 	["ro_sustained", &"ui.range.ro.sustained_dps"], ["ro_ttk_body", &"ui.range.ro.ttk_body"],
 	["ro_ttk_head", &"ui.range.ro.ttk_head"],
@@ -55,6 +55,8 @@ var exit_button: Button
 var mod_options: Dictionary = {}
 var focus_chain: Array[Control] = []
 var interactive: bool = true
+## B4-13 falloff graph (right panel).
+var falloff_graph: RangeFalloffGraph
 
 var _values: Dictionary = {}   # row id -> Label
 var _mods_box: VBoxContainer
@@ -62,7 +64,11 @@ var _ammo_label: Label
 var _hint_label: Label
 var _crosshair: Label
 var _weapon_ids: Array[StringName] = []
-var _lane_distances: PackedFloat32Array = PackedFloat32Array()
+var _lane_labels: PackedStringArray = PackedStringArray()
+## B4-13: the per-dummy-type TTK table (dummy id -> value Label).
+var _dummy_grid: GridContainer
+var _dummy_values: Dictionary = {}
+var _tweak: RangeTweak = null
 var _difficulty: int = 0
 var _readout_lane: int = 0
 ## True when the FALLBACK range camera is the shooter (no ENV A crew controller).
@@ -71,8 +77,11 @@ var _fallback_camera: bool = true
 
 ## Call before adding to the tree. `fallback_camera`: the shooter is the fallback RangeSpectator
 ## (other aim-mode controls, and a notice), not ENV A's crew member.
-func setup(lane_distances: PackedFloat32Array, difficulty: int, readout_lane: int, fallback_camera: bool) -> void:
-	_lane_distances = lane_distances
+## `lane_labels`: one readout-target option per range target (lane order).
+func setup(lane_labels: PackedStringArray, difficulty: int, readout_lane: int, fallback_camera: bool,
+		range_tweak: RangeTweak = null) -> void:
+	_lane_labels = lane_labels
+	_tweak = range_tweak
 	_difficulty = difficulty
 	_readout_lane = readout_lane
 	_fallback_camera = fallback_camera
@@ -148,19 +157,65 @@ func show_stats(stats: WeaponStats) -> void:
 	_set_value("phys_reload_empty", UiText.t(&"ui.range.fmt.s", {"value": _num(stats.reload_empty_time_s, 2)}))
 
 
-## RangeMath.readout() for the selected dummy, plus its display name.
-func show_readout(r: Dictionary, dummy_name: String) -> void:
+## RangeDamageModel.readout() (or RangeMath.readout()) for the selected dummy, plus its display
+## name and armor description.
+func show_readout(r: Dictionary, dummy_name: String, armor_text: String = "") -> void:
 	_set_value("ro_target", dummy_name)
+	_set_value("ro_armor", armor_text if armor_text != "" else UiText.t(&"ui.range.armor.none"))
 	_set_value("ro_distance", UiText.t(&"ui.range.fmt.m", {"value": _num(float(r["distance_m"]), 1)}))
 	_set_value("ro_health", UiText.t(&"ui.range.fmt.hp", {"value": _num(float(r["health"]), 0)}))
 	_set_value("ro_falloff", UiText.t(&"ui.range.fmt.mult", {"value": _num(float(r["falloff_mult"]), 2)}))
-	_set_value("ro_body", _num(float(r["body_damage"]), 1))
-	_set_value("ro_head", UiText.t(&"ui.range.fmt.head", {
-		"value": _num(float(r["head_damage"]), 1), "mult": _num(float(r["headshot_mult"]), 2)}))
+	var body_blocked: bool = bool(r.get("body_blocked", false))
+	var head_blocked: bool = bool(r.get("head_blocked", false))
+	_set_value("ro_body", UiText.t(&"ui.range.blocked") if body_blocked else _num(float(r["body_damage"]), 1))
+	if head_blocked:
+		_set_value("ro_head", UiText.t(&"ui.range.blocked"))
+	else:
+		_set_value("ro_head", UiText.t(&"ui.range.fmt.head", {
+			"value": _num(float(r["head_damage"]), 1), "mult": _num(float(r["headshot_mult"]), 2)}))
 	_set_value("ro_dps", UiText.t(&"ui.range.fmt.dps", {"value": _num(float(r["dps"]), 1)}))
 	_set_value("ro_sustained", UiText.t(&"ui.range.fmt.dps", {"value": _num(float(r["sustained_dps"]), 1)}))
-	_set_value("ro_ttk_body", _ttk(int(r["shots_body"]), float(r["ttk_body_s"])))
-	_set_value("ro_ttk_head", _ttk(int(r["shots_head"]), float(r["ttk_head_s"])))
+	_set_value("ro_ttk_body", _ttk(int(r["shots_body"]), float(r["ttk_body_s"]), body_blocked))
+	_set_value("ro_ttk_head", _ttk(int(r["shots_head"]), float(r["ttk_head_s"]), head_blocked))
+
+
+## Falloff graph for the resolved weapon with a marker at the readout distance.
+func show_falloff(stats: WeaponStats, distance_m: float) -> void:
+	if falloff_graph != null:
+		falloff_graph.show_falloff(stats, distance_m)
+
+
+## Per-dummy-type TTK table: rows of {id, name, readout} (RangeDamageModel.readout at the readout
+## distance). Rows are created on the first call and updated in place afterwards.
+func show_dummy_table(rows: Array[Dictionary]) -> void:
+	for row: Dictionary in rows:
+		var id: StringName = StringName(row["id"])
+		var value: Label = _dummy_values.get(id) as Label
+		if value == null:
+			var name_label: Label = _small(UiBuild.label(&"", UiBuild.DIM))
+			name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			_dummy_grid.add_child(name_label)
+			value = _small(UiBuild.label(&""))
+			value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+			value.set_meta(&"name_label", name_label)
+			_dummy_grid.add_child(value)
+			_dummy_values[id] = value
+		(value.get_meta(&"name_label") as Label).text = String(row["name"])
+		value.text = dummy_row_text(row["readout"] as Dictionary)
+
+
+## "body N shots, t s · head ..." for one per-dummy readout.
+static func dummy_row_text(r: Dictionary) -> String:
+	var body: String = _ttk_short(int(r["shots_body"]), float(r["ttk_body_s"]))
+	var head: String = _ttk_short(int(r["shots_head"]), float(r["ttk_head_s"]))
+	return UiText.t(&"ui.range.fmt.ttk_pair", {"body": body, "head": head})
+
+
+## Current text of a per-dummy row (tests).
+func dummy_value_text(dummy_id: StringName) -> String:
+	var l: Label = _dummy_values.get(dummy_id) as Label
+	return l.text if l != null else ""
 
 
 ## Last hit: {distance_m, amount, zone, killed, health_after} or empty for "no shot yet".
@@ -171,8 +226,19 @@ func show_last_shot(d: Dictionary) -> void:
 		return
 	_set_value("ls_distance", UiText.t(&"ui.range.fmt.m", {"value": _num(float(d.get("distance_m", 0.0)), 1)}))
 	_set_value("ls_damage", _num(float(d.get("amount", 0.0)), 1))
-	_set_value("ls_zone", UiText.t(zone_key(int(d.get("zone", Enums.HitZone.BODY)))))
-	if bool(d.get("killed", false)):
+	var zone_text: String = UiText.t(zone_key(int(d.get("zone", Enums.HitZone.BODY))))
+	if bool(d.get("via_shield", false)):
+		zone_text = UiText.t(&"ui.range.ls.via_shield", {"zone": zone_text})
+	_set_value("ls_zone", zone_text)
+	if bool(d.get("blocked", false)):
+		_set_value("ls_result", UiText.t(&"ui.range.blocked"))
+	elif int(d.get("plate_stage", -1)) >= 0:
+		if bool(d.get("plate_broken", false)):
+			_set_value("ls_result", UiText.t(&"ui.range.ls.plate_broken", {"n": int(d["plate_stage"]) + 1}))
+		else:
+			_set_value("ls_result", UiText.t(&"ui.range.ls.plate", {
+				"n": int(d["plate_stage"]) + 1, "hp": _num(float(d.get("plate_health_after", 0.0)), 1)}))
+	elif bool(d.get("killed", false)):
 		_set_value("ls_result", UiText.t(&"ui.range.ls.killed"))
 	else:
 		_set_value("ls_result", UiText.t(&"ui.range.fmt.hp", {"value": _num(float(d.get("health_after", 0.0)), 1)}))
@@ -263,15 +329,36 @@ func _build_right() -> void:
 	var box: VBoxContainer = _side_panel(false, RIGHT_WIDTH)
 	box.add_child(_small(UiBuild.label(&"ui.range.readout_lane", UiBuild.DIM)))
 	readout_option = UiBuild.option_button()
-	for d: float in _lane_distances:
-		readout_option.add_item(UiText.t(&"ui.range.marker", {"m": roundi(d)}))
-	if _lane_distances.size() > 0:
-		readout_option.select(clampi(_readout_lane, 0, _lane_distances.size() - 1))
+	for label: String in _lane_labels:
+		readout_option.add_item(label)
+	if _lane_labels.size() > 0:
+		readout_option.select(clampi(_readout_lane, 0, _lane_labels.size() - 1))
 	readout_option.item_selected.connect(func(i: int) -> void: readout_lane_selected.emit(i))
 	box.add_child(readout_option)
+	var buttons: HBoxContainer = UiBuild.hbox(12)
+	box.add_child(buttons)
 	box.add_child(_section(&"ui.range.readout", READOUT_ROWS))
 	box.add_child(_section(&"ui.range.last_shot", LAST_SHOT_ROWS))
-	var buttons: HBoxContainer = UiBuild.hbox(12)
+	var graph_box: VBoxContainer = UiBuild.vbox(2)
+	var graph_title: Label = UiBuild.label(&"ui.range.falloff_graph", UiBuild.HEADER)
+	graph_title.add_theme_font_size_override(&"font_size", 24)
+	graph_box.add_child(graph_title)
+	falloff_graph = RangeFalloffGraph.new()
+	falloff_graph.name = "FalloffGraph"
+	falloff_graph.setup(_tweak if _tweak != null else RangeTweak.new())
+	graph_box.add_child(falloff_graph)
+	box.add_child(graph_box)
+	var dummies: VBoxContainer = UiBuild.vbox(2)
+	var dummies_title: Label = UiBuild.label(&"ui.range.per_dummy", UiBuild.HEADER)
+	dummies_title.add_theme_font_size_override(&"font_size", 24)
+	dummies.add_child(dummies_title)
+	dummies.add_child(_small(UiBuild.label(&"ui.range.per_dummy_hint", UiBuild.DIM)))
+	_dummy_grid = GridContainer.new()
+	_dummy_grid.columns = 2
+	_dummy_grid.add_theme_constant_override(&"h_separation", 16)
+	_dummy_grid.add_theme_constant_override(&"v_separation", 2)
+	dummies.add_child(_dummy_grid)
+	box.add_child(dummies)
 	reset_button = UiBuild.button(&"ui.range.reset_targets")
 	exit_button = UiBuild.button(&"ui.range.exit")
 	for b: Button in [reset_button, exit_button]:
@@ -280,7 +367,6 @@ func _build_right() -> void:
 		buttons.add_child(b)
 	reset_button.pressed.connect(func() -> void: reset_requested.emit())
 	exit_button.pressed.connect(func() -> void: exit_requested.emit())
-	box.add_child(buttons)
 	show_last_shot({})
 
 
@@ -382,10 +468,18 @@ func _set_value(row_id: String, text: String) -> void:
 		l.text = text
 
 
-func _ttk(shots: int, seconds: float) -> String:
+func _ttk(shots: int, seconds: float, blocked: bool = false) -> String:
+	if blocked:
+		return UiText.t(&"ui.range.blocked")
 	if shots <= 0 or is_inf(seconds):
 		return UiText.t(&"ui.range.none")
 	return UiText.t(&"ui.range.fmt.ttk", {"shots": shots, "time": _num(seconds, 3)})
+
+
+static func _ttk_short(shots: int, seconds: float) -> String:
+	if shots <= 0 or is_inf(seconds):
+		return UiText.t(&"ui.range.blocked")
+	return UiText.t(&"ui.range.fmt.ttk_short", {"shots": shots, "time": _num(seconds, 2)})
 
 
 func _on_weapon_selected(index: int) -> void:

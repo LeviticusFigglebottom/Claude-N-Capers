@@ -1,7 +1,8 @@
 ## Wrecker brain (A3-01b, L4.6; PD2 Bulldozer). Owner: ENV A. Server only. Child `Brain` of
-## npc_wrecker.tscn (siblings Motor, Gunner, Weakpoints = WreckerArmor). Variants Wrecker-G / -B / -S
-## (pump / semi-auto / LMG) are EnemyDefs enemy.wrecker_g|_b|_s on the same scene (fire numbers in
-## EnemyDef.params); all count toward the `enemy.wrecker` special limit (PoliceSpecialKit.limit_key).
+## npc_wrecker.tscn (siblings Motor, Gunner, Weakpoints = WreckerArmor). Variants Wrecker-G / -B / -S / -M
+## (pump / semi-auto / LMG / minigun) are EnemyDefs enemy.wrecker_g|_b|_s|_m on the same scene (fire
+## numbers in EnemyDef.params; -M: 2x HP, spin_up_s / spin_down_s for NpcGunner, Cataclysm-only group
+## group.special_wrecker_m); all count toward the `enemy.wrecker` special limit (PoliceSpecialKit.limit_key).
 ## Extends the PoliceBrain pattern with:
 ## - Pressure: no cover, no flank; a short standoff band (wrecker_standoff_*) so it keeps walking into
 ##   the crew at EnemyDef.move_speed while its gunner fires (NpcGunner fires while moving).

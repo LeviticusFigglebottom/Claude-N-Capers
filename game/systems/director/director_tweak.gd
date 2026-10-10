@@ -103,8 +103,18 @@ extends Resource
 @export var aegis_def: EnemyDef
 @export var aegis_shields: int = 10
 @export var aegis_spread_m: float = 1.4
-## He counts as "in position" this long after arriving (◇).
+## Without a defensive destination he counts as "in position" this long after arriving (◇).
 @export var captain_settle_s: float = 2.0
+## Destination (L4.9 "in position"): a TacticalPoint tagged captain_position_tag (nearest the crew
+## centroid), else the COVER / SHIELD_ANCHOR point whose distance to the crew centroid is in
+## [min, max] and closest to pref (m). The squad moves there in formation; resistance starts when
+## Brandt is within captain_position_arrive_m of it, or after captain_position_timeout_s (fallback).
+@export var captain_position_tag: StringName = &"captain_position"
+@export var captain_position_min_m: float = 8.0
+@export var captain_position_pref_m: float = 15.0
+@export var captain_position_max_m: float = 35.0
+@export var captain_position_arrive_m: float = 1.5
+@export var captain_position_timeout_s: float = 30.0
 ## Damage resistance for every enemy while he is in position: base, +step every step_s, up to max.
 @export var aegis_resist_base: float = 0.10
 @export var aegis_resist_step: float = 0.05

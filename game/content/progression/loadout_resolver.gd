@@ -244,6 +244,28 @@ static func team_modifier_sources(loadout: Loadout) -> Dictionary:
 	return out
 
 
+## TEAM sources of a whole crew (B4-14), for the server at heist start:
+##   for source in crew_team_modifier_sources(loadouts): Modifiers.set_source(Modifiers.TEAM, source, ...)
+## Equal source names (same team skill or same perk deck held by several players) count once, and
+## the strongest copy wins instead of the last one set: the most unlocked cards for `team_perk.*`, the
+## higher level (aced over basic) for `team_skill.*`. Ties keep the earlier loadout. Cards and aced
+## grants are cumulative, so the strongest copy holds every grant of the weaker ones.
+static func crew_team_modifier_sources(loadouts: Array) -> Dictionary:
+	var out: Dictionary = {}
+	var rank: Dictionary = {}
+	for item: Variant in loadouts:
+		var l: Loadout = item as Loadout
+		if l == null:
+			continue
+		var sources: Dictionary = team_modifier_sources(l)
+		for s: Variant in sources:
+			var r: int = _team_source_rank(l, StringName(s))
+			if not out.has(s) or r > int(rank[s]):
+				out[s] = sources[s]
+				rank[s] = r
+	return out
+
+
 ## &"perk.foreman" -> &"team_perk.foreman".
 static func team_perk_source(deck_id: StringName) -> StringName:
 	return StringName(TEAM_PERK_SOURCE_PREFIX + String(deck_id).trim_prefix("perk."))
@@ -282,6 +304,18 @@ static func _deck(loadout: Loadout) -> PerkDeckDef:
 
 static func _unlocked_cards(loadout: Loadout, deck: PerkDeckDef) -> int:
 	return clampi(loadout.perk_deck_cards, 0, deck.cards.size())
+
+
+## Strength of one of `loadout`'s TEAM sources: unlocked cards (perk deck) or skill level.
+static func _team_source_rank(loadout: Loadout, source: StringName) -> int:
+	var deck: PerkDeckDef = _deck(loadout)
+	if deck != null and team_perk_source(deck.id) == source:
+		return _unlocked_cards(loadout, deck)
+	var tree: SkillTreeDef = SkillPoints.tree_def()
+	for sid: Variant in loadout.skills:
+		if tree.team_source(StringName(sid)) == source:
+			return int(loadout.skills[sid])
+	return 0
 
 
 ## The `team.*` grants (team = true) or every other grant (team = false).

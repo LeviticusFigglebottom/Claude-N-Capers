@@ -65,7 +65,8 @@ static func roll(run_seed: int, slot: int, difficulty: int, profile: PlayerProfi
 
 
 ## Unowned, droppable items of an item type (sorted ids). Weapon mods: every mod that is not a
-## weapon's stock part. Mask parts: every part that is not default-owned.
+## weapon's stock part. Mask parts: every available part that is not default-owned (hidden bases
+## waiting for ENV D's mesh never drop), plus the locked presets with `unlock.payday_card`.
 static func pool(type: StringName, profile: PlayerProfile) -> Array[StringName]:
 	var out: Array[StringName] = []
 	match type:
@@ -83,6 +84,9 @@ static func pool(type: StringName, profile: PlayerProfile) -> Array[StringName]:
 				for p: MaskPartDef in MaskCatalog.parts(kind):
 					if not p.default_owned and not MaskLocker.is_part_owned(profile, p.id):
 						out.append(p.id)
+			for md: MaskDef in MaskCatalog.payday_presets():
+				if not MaskLocker.is_drop_owned(profile, md.id):
+					out.append(md.id)
 	ContentDB.sort_ids(out)
 	return out
 
@@ -108,6 +112,8 @@ static func grant(profile: PlayerProfile, card: Dictionary) -> bool:
 			ContentDB.sort_ids(profile.owned_mods)
 			return true
 		MASK_PART:
+			if MaskCatalog.is_preset_id(item):
+				return MaskLocker.grant_preset(profile, item)
 			return MaskLocker.grant_part(profile, item)
 	return false
 

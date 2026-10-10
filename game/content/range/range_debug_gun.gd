@@ -107,7 +107,9 @@ static func make_info(s: WeaponStats, id: StringName, distance_m: float, zone: i
 	var info: Dictionary = Damage.info(RangeMath.pellet_damage(s, distance_m), Enums.DamageType.BULLET, zone,
 			id, pos, dir, attacker_net_id)
 	info["headshot_bonus"] = s.headshot_mult
-	info["pierced_armor"] = s.armor_pierce > 0.0
+	# Attacker-side pierce flags (L3.4): armor_pierce is a chance, rolled here; shield_pierce a flag.
+	info["pierced_armor"] = s.armor_pierce >= 1.0 or (s.armor_pierce > 0.0 and GameRng.stream(RNG_STREAM).randf() < s.armor_pierce)
+	info["shield_pierce"] = s.shield_pierce
 	info["distance_m"] = distance_m
 	return info
 

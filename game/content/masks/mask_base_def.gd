@@ -1,11 +1,15 @@
 ## Mask base shape (pd2_fidelity P8). Owner: ENV B (data); the mesh is ENV D's (D-027).
-## `model_path` is ENV D's glb (`res://assets/masks/mask_<name>.glb`, characters.md); while it does
-## not exist MaskComposer builds an original procedural placeholder from the shape numbers below.
+## `model_path` is ENV D's glb (`res://assets/masks/mask_base_<name>/mask_base_<name>.glb`); while it
+## does not exist MaskComposer builds an original procedural placeholder from the shape numbers below,
+## unless `requires_model` is set: then the base is HIDDEN (MaskCatalog.is_available) until the glb
+## exists (B4-15: slots requested from ENV D light up when the mesh lands; masks.md "Requested bases").
 ## Placeholder space: u = -1..1 across the face, v = -1..1 chin to forehead; sizes in meters.
 class_name MaskBaseDef
 extends MaskPartDef
 
 @export_file("*.glb", "*.tscn") var model_path: String = ""
+## Hidden from pickers, payday card pools and compositions until `model_path` exists (no placeholder).
+@export var requires_model: bool = false
 @export_group("Placeholder shape")
 @export var width_m: float = 0.18
 @export var height_m: float = 0.23

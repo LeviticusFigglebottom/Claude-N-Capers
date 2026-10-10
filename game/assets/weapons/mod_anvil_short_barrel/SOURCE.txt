@@ -1,0 +1,9 @@
+asset: mod_anvil_short_barrel
+script: tools/blender/weapons/anvil_lmg_mods.py
+params: {"part": "barrel_short"}
+seed: 3495807332  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category weapons --asset mod_anvil_short_barrel
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 25000
+tris_lod0: 2564
