@@ -219,3 +219,7 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - QA-25: new `Loadout.mask_descriptor` (contract). ENV B's resolver fills it, the client sends it with its loadout at join, and ENV A replicates it to every peer's CrewView.
 - QA-26: mounted visuals and collision stay on the room side of the pivot (wall: −Z only; ceiling: −Y only). ENV A fixes the ceiling camera collision.
 - heist_map.md now references A's extended variant rule fields (force_if, slot_requires, min_difficulty, per-difficulty group weights).
+
+## D-044 — 2026-10-10 — First-person viewmodel sets merged
+- ENV D's `char_arms_fp` now has all 6 sets (pistol, smg, rifle, shotgun, lmg, sniper), with clip lengths matching the weapon data (test-enforced). characters.md v1.4 records the shotgun shell-by-shell and sniper bolt conventions; visual_slots.md adds `FeedCover` for LMGs.
+- ENV B: add `FeedCover` to the Rampart LMG model and set the Plowman reload data to 0.4 / 0.4333 / 0.4 (1.2 empty).
