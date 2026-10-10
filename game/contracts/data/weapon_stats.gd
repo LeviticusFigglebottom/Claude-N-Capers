@@ -7,7 +7,7 @@ extends Resource
 
 @export var damage: float = 0.0               ## per pellet/bullet, body hit, at close range
 @export var pellets: int = 1
-@export var headshot_mult: float = 2.0
+@export var headshot_mult: float = 1.0       ## weapon headshot BONUS (x target's zone mult), damage.md
 @export var fire_rate_rpm: float = 0.0
 @export var spread_deg_hip: float = 0.0       ## cone half-angle hip-fire
 @export var spread_deg_ads: float = 0.0

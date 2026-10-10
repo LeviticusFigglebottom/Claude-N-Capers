@@ -14,7 +14,8 @@ static func ids() -> Array[StringName]:
 	for sub: String in d.get_directories():
 		if ResourceLoader.exists(def_path(StringName(sub))):
 			out.append(StringName(sub))
-	out.sort()
+	# StringName `<` compares interned pointers, not text: sort by String for a stable order.
+	out.sort_custom(func(a: StringName, b: StringName) -> bool: return String(a) < String(b))
 	return out
 
 

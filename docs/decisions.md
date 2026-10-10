@@ -104,3 +104,11 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - QA-6: the check_banned.py `*input*` exemption bug is fixed. Revert the Engine.get_singleton workaround.
 - QA-7: nav cell size/height 0.1 (project defaults), NPC agent radius 0.3 m. 0.05 is too costly for full heists. Rebake the sandbox at 0.1.
 - QA-8: the UsePoint convention is confirmed and written into heist_map.md.
+
+## D-026 — 2026-10-10 — Damage contract; answers QB-20..27; StringName sort rule
+- New contract `docs/contracts/damage.md` + `Damage` helper. There is a single hit path: the attacker calls `target.take_hit(info, attacker)` once, and the target applies zone, armor and resistance and emits `damage_applied` itself (QB-27).
+- QB-26: the target's zone multiplier (EnemyDef) is canonical. `WeaponStats.headshot_mult` is now a weapon headshot *bonus*, default 1.0 (schema default changed). ENV B must set the P9 to 1.0.
+- QB-20: types are written into ui_hud.md. QB-22: viewmodel conventions are accepted into visual_slots.md (origin, Slide +Z, optional AimPoint, mod-owned Muzzle wins), and the Stock<ModType> naming is in data_schemas.md. QB-24: `G.RANGE_TARGET` added.
+- QB-25: ENV A implements `CrewController.spawn_for_range(parent, xform, loadout) -> Node` + `set_loadout(loadout)` (standalone crew member with weapon runtime, no HeistRuntime) in A-M3.
+- QB-21/QB-23: ENV C adds the 9 weapon M_ materials (emissive/transparent library ids are fine) and the pistol reload cues `cue.weapon_pistol_mag_out|mag_in|slide_release`.
+- Rule: StringName `<` compares pointers. Sorting StringName arrays is non-deterministic across load orders (it broke `test_catalog_uses_registry_defs` on the merged tree). Sort by String. HeistRegistry is fixed. B must fix HeistCatalog and LoadoutResolver skill-id ordering.
