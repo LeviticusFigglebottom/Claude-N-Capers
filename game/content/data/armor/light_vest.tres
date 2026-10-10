@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArmorDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/armor_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"armor.light_vest"
+display_name = "Light Vest"
+armor = 50.0
+dodge = -0.05
+move_speed_mult = 0.9755
+concealment = 26
+stamina_mult = 0.9747
+unlock_level = 7

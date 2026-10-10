@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MeleeDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/melee_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"melee.folding_knife"
+display_name = "Folding Knife"
+damage = 50.0
+charged_damage = 120.0
+charge_time_s = 1.0
+range_m = 1.8
+knockdown = 0.2
+concealment = 30
+silent = true
+price = 0

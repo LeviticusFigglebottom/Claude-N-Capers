@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="DifficultyDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/difficulty_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+difficulty = 0
+display_name = "Routine"
+payout_mult = 1.0
+xp_mult = 1.0
+enemy_cap = 16
+assault_intensity = 0.6
+special_limits = {
+&"enemy.bulwark": 2,
+&"enemy.stinger": 1,
+&"enemy.corpsman": 1,
+&"enemy.phantom": 0,
+&"enemy.wrecker": 1
+}
+detection_speed_mult = 1.0
+civilian_kill_penalty = 2000
+params = {
+"revive_health_frac": 0.4,
+"armor_invuln_s": 0.45,
+"custody_auto_release_s": 119.0,
+"hostage_assault_delay_s": 30.0
+}

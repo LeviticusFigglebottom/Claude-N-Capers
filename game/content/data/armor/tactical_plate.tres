@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArmorDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/armor_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"armor.tactical_plate"
+display_name = "Tactical Plate"
+armor = 110.0
+dodge = -0.25
+move_speed_mult = 0.6196
+concealment = 12
+stamina_mult = 0.7797
+unlock_level = 31

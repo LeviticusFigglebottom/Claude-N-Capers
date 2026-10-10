@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="DifficultyDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/difficulty_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+difficulty = 4
+display_name = "Lethal"
+payout_mult = 7.2
+xp_mult = 11.5
+enemy_cap = 32
+assault_intensity = 1.15
+special_limits = {
+&"enemy.bulwark": 4,
+&"enemy.stinger": 3,
+&"enemy.corpsman": 3,
+&"enemy.phantom": 2,
+&"enemy.wrecker": 2
+}
+detection_speed_mult = 1.0
+civilian_kill_penalty = 12000
+params = {
+"revive_health_frac": 0.1,
+"armor_invuln_s": 0.35,
+"custody_auto_release_s": -1.0,
+"hostage_assault_delay_s": 10.0
+}
