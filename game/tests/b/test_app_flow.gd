@@ -145,7 +145,9 @@ func test_launch_options_without_plan() -> void:
 	assert_eq((opts["loadouts"] as Dictionary)[1], l)
 	assert_false(opts.has("preplan"), "direct launch / no plan: no preplan key")
 	assert_false(MenuFlow.build_launch_options(2, 1, l, {}).has("preplan"))
-	var plan: Dictionary = PreplanPlan.resolve_ids(&"glasshouse", [] as Array)
+	assert_eq(PreplanPlan.resolve_ids(&"glasshouse", [] as Array), {}, "no accepted id: no plan")
+	assert_eq(PreplanPlan.resolve_ids(&"glasshouse", [&"asset.not_in_catalog"]), {}, "unknown ids only: no plan")
+	var plan: Dictionary = PreplanPlan.resolve_ids(&"glasshouse", [&"asset.extra_cable_ties"])
 	assert_eq(MenuFlow.build_launch_options(0, 0, l, plan)["preplan"], plan)
 
 
