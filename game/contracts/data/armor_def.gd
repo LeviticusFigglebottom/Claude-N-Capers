@@ -10,3 +10,5 @@ extends Resource
 @export var concealment: int = 0
 @export var stamina_mult: float = 1.0
 @export var unlock_level: int = 0
+## Skill required to equip (e.g. Breacher Plate needs the Iron Man analog); &"" = none.
+@export var unlock_skill: StringName = &""
