@@ -76,8 +76,17 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `placeholder_base_payout/placeholder_mode` used only while `HeistRegistry.get_def(id)` is null),
   plus build-wide `unlocked_difficulties` and the default `solo_ai_teammates`.
   `entries_from(defs, list)` is the pure builder (tests).
-* `Hud` binds to the node in group `G.LOCAL_HUD_MODEL` (ui_hud.md v1.1), polled while unbound and
-  rediscovered if the model is freed; `bind(model)` still works. `MockHudModel` joins the same group.
+* `Hud` binds its widgets DIRECTLY to the node in group `G.LOCAL_HUD_MODEL` (ENV A's LocalHudModel,
+  ui_hud.md v1.1; no adapter), polled while unbound and rediscovered if the model is freed; MenuFlow
+  relies on that discovery in heists. `bind(model)` still works. `MockHudModel` (demo/tests) joins the
+  same group. `MarkedTargets` draws a diamond per `marked_targets` entry; `InteractionPanel` fills a
+  missing `{key}` prompt arg from the `interact` InputMap binding.
+* Firing range (`range/firing_range.tscn`, B1-05): the shooter is ENV A's crew member from
+  `CrewController.spawn_for_range` (`RangeCrewBridge`, the range's only door into A's runtime), with
+  `set_loadout(resolved)` on every swap; panel mode pauses the crew's PlayerInput (`RangeModeInput`).
+  Last shot / damage numbers follow `EventBus.damage_applied` from the range's targets with
+  attacker = the crew's net id. `RangeSpectator` + `RangeDebugGun` are a FALLBACK only (hook missing,
+  or `use_fallback_shooter` for tests).
 
 * `SkillPoints` (`progression/skill_points.gd`): `points_for_level`, `cost_of`, `spent_total`,
   `spent_in_subtree`, `can_unlock`, `validate`, `is_legal`. Tree structure: `SkillTreeDef` at

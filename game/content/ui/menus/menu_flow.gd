@@ -192,9 +192,7 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 		Log.error(&"ui", "HeistLauncher.launch(%s) returned null; back to the main menu" % heist_id)
 		_leave_heist()
 		return
-	var hud_model: Node = runtime.get(&"hud_model") as Node
-	if hud_model != null and _hud is Hud:
-		(_hud as Hud).bind(hud_model)
+	# The HUD binds HeistRuntime's LocalHudModel itself through group G.LOCAL_HUD_MODEL (ui_hud.md v1.1).
 	heist_launched.emit(runtime)
 
 

@@ -1,5 +1,5 @@
-## Stand-in for ENV A's LocalHudModel (contracts/ui_hud.md) until it ships. Owner: ENV B.
-## The HUD binds to these exact property and signal names; the real model should match them
+## Stand-in for ENV A's LocalHudModel (contracts/ui_hud.md v1.1) for the HUD demo and tests. Owner:
+## ENV B. Same property and signal names as the real model
 ## (duck-typed: the HUD reads properties with get() and connects signals by name). Like the real
 ## model it joins group G.LOCAL_HUD_MODEL in _ready, so HUD discovery works in the demo and tests.
 ## Every property setter emits its group's change signal, so assign new Arrays/Dictionaries
