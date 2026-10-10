@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.persuader.leverage"
+display_name = "Leverage"
+tree = &"ringleader"
+subtree = &"persuader"
+tier = 4
+cost_basic = 4
+cost_aced = 8
+desc_basic = "While you hold at least one hostage or converted ally, regenerate 1.5% health every 5 s."
+desc_aced = "The regeneration rises to 4.5% every 5 s."
+grants_basic = {
+&"ability.hostage_regen": {
+"per_hostage": 0.015,
+"max_hostages": 1,
+"interval": 5.0
+}
+}
+grants_aced = {
+&"ability.hostage_regen": {
+"per_hostage": 0.045,
+"max_hostages": 1,
+"interval": 5.0
+}
+}

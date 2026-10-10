@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.undying.last_stand"
+display_name = "Last Stand"
+tree = &"outlaw"
+subtree = &"undying"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "When you would go down, keep fighting for 3 s first, moving 60% slower."
+desc_aced = "You keep fighting for 6 s, and your ammo is not used up meanwhile."
+grants_basic = {
+&"defense.swan_song": {
+"duration": 3.0,
+"speed_penalty": 0.6,
+"infinite_ammo": false
+}
+}
+grants_aced = {
+&"defense.swan_song": {
+"duration": 6.0,
+"speed_penalty": 0.6,
+"infinite_ammo": true
+}
+}

@@ -1,0 +1,141 @@
+[gd_resource type="Resource" script_class="SkillTreeDef" format=3]
+
+[ext_resource type="Script" path="res://content/defs/skill_tree_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+trees = Array[StringName]([&"ringleader", &"bruiser", &"wrench", &"shade", &"outlaw"])
+subtrees = {
+&"ringleader": [&"field_medic", &"persuader", &"marksman"],
+&"bruiser": [&"scattergun", &"juggernaut", &"quartermaster"],
+&"wrench": [&"sapper", &"breacher", &"gunnery"],
+&"shade": [&"infiltrator", &"slipstream", &"quiet_professional"],
+&"outlaw": [&"two_gun", &"undying", &"scrapper"]
+}
+layout = {
+&"field_medic": [[&"skill.field_medic.triage"], [&"skill.field_medic.bedside_manner", &"skill.field_medic.numbing_agent"], [&"skill.field_medic.field_kit", &"skill.field_medic.house_call"], [&"skill.field_medic.rally_cry"]],
+&"persuader": [[&"skill.persuader.zip_and_tie"], [&"skill.persuader.silver_tongue", &"skill.persuader.turncoat"], [&"skill.persuader.captive_audience", &"skill.persuader.accomplice"], [&"skill.persuader.leverage"]],
+&"marksman": [[&"skill.marksman.steady_aim"], [&"skill.marksman.snap_shot", &"skill.marksman.deliberate_fire"], [&"skill.marksman.economy", &"skill.marksman.reload_rhythm"], [&"skill.marksman.grazing_fire"]],
+&"scattergun": [[&"skill.scattergun.outnumbered"], [&"skill.scattergun.pump_action", &"skill.scattergun.heavy_shot"], [&"skill.scattergun.long_barrel", &"skill.scattergun.hip_fire"], [&"skill.scattergun.momentum"]],
+&"juggernaut": [[&"skill.juggernaut.thick_skin"], [&"skill.juggernaut.hold_the_line", &"skill.juggernaut.hauler"], [&"skill.juggernaut.shoulder_check", &"skill.juggernaut.clean_shot"], [&"skill.juggernaut.plated"]],
+&"quartermaster": [[&"skill.quartermaster.scrounger"], [&"skill.quartermaster.lead_rain", &"skill.quartermaster.strip_loader"], [&"skill.quartermaster.penetrator_loads", &"skill.quartermaster.second_crate"], [&"skill.quartermaster.pack_mule"]],
+&"sapper": [[&"skill.sapper.mount_up"], [&"skill.sapper.calibrated", &"skill.sapper.lean_build"], [&"skill.sapper.silent_partner", &"skill.sapper.two_kits"], [&"skill.sapper.battery"]],
+&"breacher": [[&"skill.breacher.tinker"], [&"skill.breacher.charge_shaping", &"skill.breacher.overclocked_bits"], [&"skill.breacher.extra_charges", &"skill.breacher.percussive_maintenance"], [&"skill.breacher.hot_floor"]],
+&"gunnery": [[&"skill.gunnery.firm_grip"], [&"skill.gunnery.knockdown", &"skill.gunnery.hip_discipline"], [&"skill.gunnery.run_and_gun", &"skill.gunnery.hardball"], [&"skill.gunnery.anatomy"]],
+&"infiltrator": [[&"skill.infiltrator.plain_sight"], [&"skill.infiltrator.tidy_up", &"skill.infiltrator.gut_feeling"], [&"skill.infiltrator.light_fingers", &"skill.infiltrator.signal_flood"], [&"skill.infiltrator.jammer_jockey"]],
+&"slipstream": [[&"skill.slipstream.light_step"], [&"skill.slipstream.free_running", &"skill.slipstream.deep_pockets"], [&"skill.slipstream.cornered", &"skill.slipstream.grounded"], [&"skill.slipstream.slippery"]],
+&"quiet_professional": [[&"skill.quiet_professional.bolt"], [&"skill.quiet_professional.low_profile", &"skill.quiet_professional.hushed_hands"], [&"skill.quiet_professional.cheap_shot", &"skill.quiet_professional.price_tag"], [&"skill.quiet_professional.ambusher"]],
+&"two_gun": [[&"skill.two_gun.quick_holster"], [&"skill.two_gun.extended_clip", &"skill.two_gun.both_hands"], [&"skill.two_gun.steel_core", &"skill.two_gun.rhythm"], [&"skill.two_gun.hot_streak"]],
+&"undying": [[&"skill.undying.cats_luck"], [&"skill.undying.second_lease", &"skill.undying.back_on_your_feet"], [&"skill.undying.last_stand", &"skill.undying.playing_possum"], [&"skill.undying.comeback"]],
+&"scrapper": [[&"skill.scrapper.iron_jaw"], [&"skill.scrapper.wind_up", &"skill.scrapper.heavy_hands"], [&"skill.scrapper.riposte", &"skill.scrapper.red_mist"], [&"skill.scrapper.nothing_to_lose"]]
+}
+tier_sizes = Array[int]([1, 2, 2, 1])
+tier_thresholds = Array[int]([0, 1, 3, 18])
+tier_cost_basic = Array[int]([1, 2, 3, 4])
+tier_cost_aced = Array[int]([3, 4, 6, 8])
+points_per_level = 1
+bonus_every_levels = 10
+bonus_points = 2
+max_level = 100
+respec_cost = 0
+team_key_prefix = "team."
+team_source_prefix = "team_skill."
+blocked_on_keys = {
+"skill.field_medic.triage:basic": ["defense.reviving_damage_taken_mult"],
+"skill.field_medic.triage:aced": ["ability.revive_target_health_mult"],
+"skill.field_medic.bedside_manner:basic": ["deploy.deploy_speed_mult"],
+"skill.field_medic.bedside_manner:aced": ["deploy.medical_user_buff"],
+"skill.field_medic.numbing_agent:basic": ["ability.revive_target_buff"],
+"skill.field_medic.numbing_agent:aced": ["ability.revive_target_buff"],
+"skill.field_medic.field_kit:aced": ["deploy.fak_auto_revive"],
+"skill.persuader.turncoat:aced": ["ability.convert_damage_mult", "ability.convert_speed_mult"],
+"skill.persuader.captive_audience:basic": ["stealth.noise_intimidates_civilians"],
+"skill.persuader.accomplice:basic": ["ability.convert_owner_buff"],
+"skill.persuader.accomplice:aced": ["ability.convert_owner_buff"],
+"skill.marksman.steady_aim:aced": ["weapon.still_spread_mult"],
+"skill.marksman.snap_shot:basic": ["movement.ads_speed_penalty_mult"],
+"skill.marksman.snap_shot:aced": ["weapon.moving_spread_mult"],
+"skill.marksman.economy:basic": ["weapon.headshot_refund"],
+"skill.marksman.economy:aced": ["weapon.headshot_refund"],
+"skill.marksman.reload_rhythm:aced": ["weapon.kill_reload_buff"],
+"skill.marksman.grazing_fire:basic": ["weapon.graze"],
+"skill.marksman.grazing_fire:aced": ["weapon.graze"],
+"skill.scattergun.outnumbered:basic": ["defense.outnumbered"],
+"skill.scattergun.outnumbered:aced": ["defense.outnumbered"],
+"skill.scattergun.long_barrel:aced": ["weapon.falloff_range_mult"],
+"skill.scattergun.hip_fire:basic": ["movement.shoot_while_sprinting.shotgun"],
+"skill.scattergun.hip_fire:aced": ["weapon.hip_fire_rate_mult"],
+"skill.scattergun.momentum:basic": ["weapon.kill_damage_buff"],
+"skill.scattergun.momentum:aced": ["weapon.kill_damage_buff"],
+"skill.juggernaut.thick_skin:aced": ["defense.flashbang_duration_mult"],
+"skill.juggernaut.hold_the_line:aced": ["defense.interact_damage_taken_mult"],
+"skill.juggernaut.shoulder_check:basic": ["team.armor_regen_rate_mult"],
+"skill.juggernaut.shoulder_check:aced": ["weapon.shield_knockback"],
+"skill.quartermaster.scrounger:basic": ["weapon.ammo_pickup_range_mult"],
+"skill.quartermaster.scrounger:aced": ["weapon.kill_ammo_drop"],
+"skill.quartermaster.lead_rain:basic": ["deploy.ammo_bag_bulletstorm"],
+"skill.quartermaster.lead_rain:aced": ["deploy.ammo_bag_bulletstorm"],
+"skill.quartermaster.pack_mule:aced": ["weapon.ammo_pickup_throwable"],
+"skill.sapper.mount_up:basic": ["deploy.sentry_cost_mult"],
+"skill.sapper.mount_up:aced": ["deploy.sentry_shield"],
+"skill.sapper.calibrated:basic": ["deploy.sentry_accuracy_mult"],
+"skill.sapper.calibrated:aced": ["deploy.sentry_turn_speed_mult"],
+"skill.sapper.lean_build:basic": ["deploy.sentry_cost_mult"],
+"skill.sapper.lean_build:aced": ["deploy.sentry_health_mult"],
+"skill.sapper.silent_partner:basic": ["deploy.sentry_modes"],
+"skill.sapper.silent_partner:aced": ["deploy.sentry_modes"],
+"skill.sapper.two_kits:basic": ["deploy.deploy_speed_mult"],
+"skill.breacher.tinker:basic": ["interaction.device_fix_speed_mult", "deploy.deploy_speed_mult"],
+"skill.breacher.charge_shaping:basic": ["deploy.trip_mine_radius_mult"],
+"skill.breacher.hot_floor:basic": ["deploy.trip_mine_fire"],
+"skill.breacher.hot_floor:aced": ["deploy.trip_mine_fire"],
+"skill.gunnery.knockdown:basic": ["weapon.stagger_chance_add"],
+"skill.gunnery.knockdown:aced": ["weapon.stagger_chance_add"],
+"skill.gunnery.hip_discipline:basic": ["weapon.hip_spread_mult"],
+"skill.gunnery.hip_discipline:aced": ["weapon.moving_spread_mult"],
+"skill.gunnery.run_and_gun:aced": ["weapon.kill_reload_buff"],
+"skill.gunnery.anatomy:basic": ["weapon.body_expertise"],
+"skill.gunnery.anatomy:aced": ["weapon.body_expertise"],
+"skill.infiltrator.plain_sight:basic": ["stealth.casing_can_mark"],
+"skill.infiltrator.plain_sight:aced": ["loot.small_loot_value_mult"],
+"skill.slipstream.light_step:basic": ["movement.sprint_speed_mult"],
+"skill.slipstream.light_step:aced": ["defense.sprint_dodge_add"],
+"skill.slipstream.free_running:aced": ["movement.sprint_any_direction"],
+"skill.slipstream.cornered:basic": ["defense.armor_broken_stagger"],
+"skill.slipstream.cornered:aced": ["defense.armor_broken_stagger"],
+"skill.slipstream.slippery:basic": ["defense.dodge_per_concealment"],
+"skill.slipstream.slippery:aced": ["defense.dodge_per_concealment"],
+"skill.quiet_professional.bolt:basic": ["defense.armor_break_speed_buff"],
+"skill.quiet_professional.bolt:aced": ["defense.armor_break_speed_buff"],
+"skill.quiet_professional.low_profile:basic": ["defense.target_priority_mult"],
+"skill.quiet_professional.low_profile:aced": ["stealth.concealment_add.suppressed"],
+"skill.quiet_professional.hushed_hands:basic": ["weapon.recoil_mult.suppressed", "weapon.ads_speed_mult.suppressed"],
+"skill.quiet_professional.hushed_hands:aced": ["weapon.spread_mult.suppressed"],
+"skill.quiet_professional.cheap_shot:basic": ["weapon.crit_per_concealment"],
+"skill.quiet_professional.cheap_shot:aced": ["weapon.crit_per_concealment"],
+"skill.quiet_professional.price_tag:aced": ["stealth.mark_far_damage_mult", "stealth.mark_by_aim"],
+"skill.quiet_professional.ambusher:basic": ["weapon.unseen_strike"],
+"skill.quiet_professional.ambusher:aced": ["weapon.unseen_strike"],
+"skill.two_gun.extended_clip:aced": ["weapon.fire_rate_mult"],
+"skill.two_gun.both_hands:basic": ["weapon.recoil_mult.akimbo"],
+"skill.two_gun.both_hands:aced": ["weapon.recoil_mult.akimbo", "weapon.ammo_total_mult.akimbo"],
+"skill.two_gun.rhythm:basic": ["weapon.hit_stack_buff"],
+"skill.two_gun.hot_streak:basic": ["weapon.hit_stack_buff"],
+"skill.two_gun.hot_streak:aced": ["weapon.hit_stack_buff"],
+"skill.undying.cats_luck:basic": ["defense.bleedout_health_mult"],
+"skill.undying.second_lease:basic": ["defense.post_revive_buff"],
+"skill.undying.second_lease:aced": ["defense.post_revive_buff"],
+"skill.undying.back_on_your_feet:basic": ["defense.post_revive_buff"],
+"skill.undying.playing_possum:basic": ["defense.bleedout_pause_unseen"],
+"skill.undying.comeback:aced": ["defense.self_revive_refill_on_doctor_bag"],
+"skill.scrapper.iron_jaw:basic": ["defense.melee_damage_taken_mult"],
+"skill.scrapper.iron_jaw:aced": ["weapon.melee_knockdown_mult"],
+"skill.scrapper.wind_up:basic": ["weapon.melee_bloodthirst"],
+"skill.scrapper.wind_up:aced": ["weapon.kill_reload_buff"],
+"skill.scrapper.riposte:basic": ["defense.melee_counter"],
+"skill.scrapper.nothing_to_lose:basic": ["defense.healing_received_mult"],
+"skill.scrapper.nothing_to_lose:aced": ["defense.healing_received_mult"]
+}
+unlocks = {
+"skill.juggernaut.plated:aced": &"armor.breacher_plate"
+}

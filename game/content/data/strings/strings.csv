@@ -485,3 +485,308 @@ ui.range.fmt.head,{value} (x{mult})
 ui.range.fmt.ttk,"{shots} shots, {time} s"
 item.mod.p9_iron_sights.name,Standard Iron Sights
 item.mod.p9_standard_mag.name,Standard Magazine
+ui.skills.title,Skills
+ui.skills.basic,Basic
+ui.skills.aced,Aced
+ui.skills.tier,Tier {tier}
+ui.skills.points_available,Skill points: {points}
+ui.skills.points_spent,Spent in {subtree}: {points}
+ui.skills.cost,Cost: {points}
+ui.skills.respec,Reset Skills
+ui.skills.respec_free,Resetting skills is free.
+ui.skills.team,Crew-wide
+ui.skills.blocked,Not active yet
+ui.skills.reason.unknown_skill,Unknown skill.
+ui.skills.reason.already_aced,Already aced.
+ui.skills.reason.tier_locked,Spend {need} points in lower tiers of this subtree first ({have} spent).
+ui.skills.reason.not_enough_points,Needs {cost} skill points.
+ui.skills.tree.ringleader,Ringleader
+ui.skills.subtree.field_medic,Field Medic
+ui.skills.subtree.persuader,Persuader
+ui.skills.subtree.marksman,Marksman
+ui.skills.tree.bruiser,Bruiser
+ui.skills.subtree.scattergun,Scattergun
+ui.skills.subtree.juggernaut,Juggernaut
+ui.skills.subtree.quartermaster,Quartermaster
+ui.skills.tree.wrench,Wrench
+ui.skills.subtree.sapper,Sapper
+ui.skills.subtree.breacher,Breacher
+ui.skills.subtree.gunnery,Gunnery
+ui.skills.tree.shade,Shade
+ui.skills.subtree.infiltrator,Infiltrator
+ui.skills.subtree.slipstream,Slipstream
+ui.skills.subtree.quiet_professional,Quiet Professional
+ui.skills.tree.outlaw,Outlaw
+ui.skills.subtree.two_gun,Two-Gun
+ui.skills.subtree.undying,Undying
+ui.skills.subtree.scrapper,Scrapper
+skill.field_medic.triage.name,Triage
+skill.field_medic.triage.basic,Take 30% less damage while reviving a crew member and for 5 s afterwards.
+skill.field_medic.triage.aced,Crew members you revive get up with 30% more health.
+skill.field_medic.bedside_manner.name,Bedside Manner
+skill.field_medic.bedside_manner.basic,Deploy First Aid Kits and Doctor Bags 50% faster.
+skill.field_medic.bedside_manner.aced,Crew members who use your First Aid Kits or Doctor Bags take 10% less damage for 120 s.
+skill.field_medic.numbing_agent.name,Numbing Agent
+skill.field_medic.numbing_agent.basic,Crew members you revive take 30% less damage for 5 s.
+skill.field_medic.numbing_agent.aced,That damage reduction rises to 80%.
+skill.field_medic.field_kit.name,Field Kit
+skill.field_medic.field_kit.basic,Carry 7 more First Aid Kits.
+skill.field_medic.field_kit.aced,Carry 3 more First Aid Kits. A crew member who goes down within 5 m of one of your placed kits uses it automatically and stays up (at most once every 20 s).
+skill.field_medic.house_call.name,House Call
+skill.field_medic.house_call.basic,Carry 2 Doctor Bags instead of 1.
+skill.field_medic.house_call.aced,Your Doctor Bags have 2 more charges (4 each).
+skill.field_medic.rally_cry.name,Rally Cry
+skill.field_medic.rally_cry.basic,Revive crew members 100% faster. Shouting at a crew member gives them 20% more movement and reload speed for 10 s.
+skill.field_medic.rally_cry.aced,Shout at a downed crew member up to 9 m away to revive them instantly. Once every 20 s.
+skill.persuader.zip_and_tie.name,Zip & Tie
+skill.persuader.zip_and_tie.basic,Carry 4 more cable ties. Tie hostages 75% faster.
+skill.persuader.zip_and_tie.aced,"You and your crew absorb 5 damage from every hit for each hostage you hold, up to 8 hostages. Crew-wide; does not stack with another Zip & Tie."
+skill.persuader.silver_tongue.name,Silver Tongue
+skill.persuader.silver_tongue.basic,Your shouts reach civilians 50% further.
+skill.persuader.silver_tongue.aced,You can keep 2 converted enemies at once.
+skill.persuader.turncoat.name,Turncoat
+skill.persuader.turncoat.basic,"Your shouts can make low-tier police surrender. Hold the shout on a surrendered non-special enemy to convert them into an ally (loud only, 1 at a time)."
+skill.persuader.turncoat.aced,"Converted allies deal 35% more damage, and converting takes 65% less time."
+skill.persuader.captive_audience.name,Captive Audience
+skill.persuader.captive_audience.basic,"Your gunfire intimidates nearby civilians, and intimidated civilians stay down 50% longer."
+skill.persuader.captive_audience.aced,"When you go down, a hostage near you can revive you. Once per heist."
+skill.persuader.accomplice.name,Accomplice
+skill.persuader.accomplice.basic,"While you have a converted ally, you move 10% faster. Your converted allies take 45% less damage."
+skill.persuader.accomplice.aced,"While you have a converted ally, you have 30% more health. Your converted allies take a further 54% less damage."
+skill.persuader.leverage.name,Leverage
+skill.persuader.leverage.basic,"While you hold at least one hostage or converted ally, regenerate 1.5% health every 5 s."
+skill.persuader.leverage.aced,The regeneration rises to 4.5% every 5 s.
+skill.marksman.steady_aim.name,Steady Aim
+skill.marksman.steady_aim.basic,+8 stability (8% less recoil) with all weapons.
+skill.marksman.steady_aim.aced,+16 accuracy (16% tighter spread) while standing still.
+skill.marksman.snap_shot.name,Snap Shot
+skill.marksman.snap_shot.basic,Aim down sights 100% faster with all weapons and move at full speed while aiming.
+skill.marksman.snap_shot.aced,"+16 accuracy while moving with SMGs, assault rifles and sniper rifles."
+skill.marksman.deliberate_fire.name,Deliberate Fire
+skill.marksman.deliberate_fire.basic,"+8 accuracy with SMGs, assault rifles and sniper rifles."
+skill.marksman.deliberate_fire.aced,"+12 more accuracy with SMGs, assault rifles and sniper rifles."
+skill.marksman.economy.name,Economy
+skill.marksman.economy.basic,"3 headshots within 6 s with an SMG, assault rifle or sniper rifle put 1 round back in the magazine."
+skill.marksman.economy.aced,Only 2 headshots are needed.
+skill.marksman.reload_rhythm.name,Reload Rhythm
+skill.marksman.reload_rhythm.basic,"Reload SMGs, assault rifles and sniper rifles 15% faster."
+skill.marksman.reload_rhythm.aced,A headshot kill with one of them doubles your reload speed for 4 s.
+skill.marksman.grazing_fire.name,Grazing Fire
+skill.marksman.grazing_fire.basic,Sniper rifle hits also deal 20% of their damage to every enemy within 1 m of the bullet's path.
+skill.marksman.grazing_fire.aced,"If the hit is a headshot kill, the graze deals 100% of the damage."
+skill.scattergun.outnumbered.name,Outnumbered
+skill.scattergun.outnumbered.basic,"When 3 or more enemies are within 18 m, deal 15% more damage for 7 s."
+skill.scattergun.outnumbered.aced,You also take 10% less damage for those 7 s.
+skill.scattergun.pump_action.name,Pump Action
+skill.scattergun.pump_action.basic,Reload shotguns 15% faster.
+skill.scattergun.pump_action.aced,Reload shotguns a further 17% faster (35% in total) and aim them down sights 125% faster.
+skill.scattergun.heavy_shot.name,Heavy Shot
+skill.scattergun.heavy_shot.basic,+8 stability and 5% more damage with shotguns.
+skill.scattergun.heavy_shot.aced,Shotgun damage rises to 15% more in total.
+skill.scattergun.long_barrel.name,Long Barrel
+skill.scattergun.long_barrel.basic,Shotguns are 40% more accurate.
+skill.scattergun.long_barrel.aced,Shotgun damage starts falling off 50% further away.
+skill.scattergun.hip_fire.name,Hip Fire
+skill.scattergun.hip_fire.basic,Fire shotguns from the hip while sprinting.
+skill.scattergun.hip_fire.aced,Shotguns fire 35% faster from the hip.
+skill.scattergun.momentum.name,Momentum
+skill.scattergun.momentum.basic,A shotgun kill gives you 75% more shotgun damage for 20 s.
+skill.scattergun.momentum.aced,The bonus applies to all your weapons (a shotgun kill still triggers it). Swap weapons 80% faster.
+skill.juggernaut.thick_skin.name,Thick Skin
+skill.juggernaut.thick_skin.basic,Your armor regenerates 15% faster.
+skill.juggernaut.thick_skin.aced,Flashbangs blind you for 75% less time.
+skill.juggernaut.hold_the_line.name,Hold the Line
+skill.juggernaut.hold_the_line.basic,Taking damage no longer interrupts your interactions.
+skill.juggernaut.hold_the_line.aced,Take 50% less damage while interacting.
+skill.juggernaut.hauler.name,Hauler
+skill.juggernaut.hauler.basic,Throw bags 50% further.
+skill.juggernaut.hauler.aced,Bags slow you 10% less.
+skill.juggernaut.shoulder_check.name,Shoulder Check
+skill.juggernaut.shoulder_check.basic,Your crew's armor regenerates 25% faster. Crew-wide; does not stack with another Shoulder Check.
+skill.juggernaut.shoulder_check.aced,"Your hits can knock Bulwarks back: melee always, ranged with a chance that rises with weapon damage."
+skill.juggernaut.clean_shot.name,Clean Shot
+skill.juggernaut.clean_shot.basic,Each headshot restores 5 armor (at most once every 2 s).
+skill.juggernaut.clean_shot.aced,Each headshot restores 25 armor instead.
+skill.juggernaut.plated.name,Plated
+skill.juggernaut.plated.basic,+30% armor.
+skill.juggernaut.plated.aced,"Unlocks the Breacher Plate, the heaviest armor (170 armor, 1 concealment)."
+skill.quartermaster.scrounger.name,Scrounger
+skill.quartermaster.scrounger.basic,Pick up ammo from 50% further away.
+skill.quartermaster.scrounger.aced,Every 6th enemy you kill drops an extra ammo box.
+skill.quartermaster.lead_rain.name,Lead Rain
+skill.quartermaster.lead_rain.basic,"Crew members who refill from your ammo bags don't use ammo for up to 5 s; the more they took, the longer."
+skill.quartermaster.lead_rain.aced,The effect lasts up to 15 s longer.
+skill.quartermaster.strip_loader.name,Strip Loader
+skill.quartermaster.strip_loader.basic,Reload all weapons 10% faster.
+skill.quartermaster.strip_loader.aced,Swap weapons 25% faster.
+skill.quartermaster.penetrator_loads.name,Penetrator Loads
+skill.quartermaster.penetrator_loads.basic,"Your rounds pierce Bulwark shields, but you carry 15% less ammo."
+skill.quartermaster.penetrator_loads.aced,The ammo penalty is removed.
+skill.quartermaster.second_crate.name,Second Crate
+skill.quartermaster.second_crate.basic,Carry 2 ammo bags instead of 1.
+skill.quartermaster.second_crate.aced,Your ammo bags hold 50% more ammo.
+skill.quartermaster.pack_mule.name,Pack Mule
+skill.quartermaster.pack_mule.basic,Carry 25% more ammo for all weapons.
+skill.quartermaster.pack_mule.aced,Ammo boxes give 75% more ammo and have a 5% chance (+1% for every box without one) to hold a throwable.
+skill.sapper.mount_up.name,Mount Up
+skill.sapper.mount_up.basic,Sentry guns cost 5% less of your ammo to deploy.
+skill.sapper.mount_up.aced,Your sentry guns get a protective shield.
+skill.sapper.calibrated.name,Calibrated
+skill.sapper.calibrated.basic,Your sentry guns are 100% more accurate.
+skill.sapper.calibrated.aced,Your sentry guns turn 150% faster and carry 50% more ammo.
+skill.sapper.lean_build.name,Lean Build
+skill.sapper.lean_build.basic,Sentry guns cost a further 5% less of your ammo to deploy.
+skill.sapper.lean_build.aced,Your sentry guns have 150% more health.
+skill.sapper.silent_partner.name,Silent Partner
+skill.sapper.silent_partner.basic,Switch your sentry guns to quiet mode: enemies are much less likely to target them.
+skill.sapper.silent_partner.aced,"Switch your sentry guns to armor-piercing rounds: 75% lower fire rate, 250% more damage, pierces enemies and shields."
+skill.sapper.two_kits.name,Two Kits
+skill.sapper.two_kits.basic,Deploy and use all deployables 100% faster.
+skill.sapper.two_kits.aced,Carry a second deployable type (half the usual amount of it).
+skill.sapper.battery.name,Battery
+skill.sapper.battery.basic,Carry 1 more sentry gun.
+skill.sapper.battery.aced,Carry 2 more sentry guns.
+skill.breacher.tinker.name,Tinker
+skill.breacher.tinker.basic,Fix drills and saws 25% faster and place trip mines 20% faster. Your drills and saws are silent: guards and civilians must see them to react.
+skill.breacher.tinker.aced,Your drills and saws have a 10% chance to restart by themselves after jamming.
+skill.breacher.charge_shaping.name,Charge Shaping
+skill.breacher.charge_shaping.basic,Your trip mines have a 30% larger blast radius.
+skill.breacher.charge_shaping.aced,Use trip mines as shaped charges on doors and safes.
+skill.breacher.overclocked_bits.name,Overclocked Bits
+skill.breacher.overclocked_bits.basic,Drill and saw timers are 15% shorter.
+skill.breacher.overclocked_bits.aced,They are 30% shorter in total.
+skill.breacher.extra_charges.name,Extra Charges
+skill.breacher.extra_charges.basic,Carry 4 more trip mines.
+skill.breacher.extra_charges.aced,Carry 3 more trip mines (7 in total).
+skill.breacher.percussive_maintenance.name,Percussive Maintenance
+skill.breacher.percussive_maintenance.basic,Your drills and saws have a further 20% chance to restart by themselves after jamming.
+skill.breacher.percussive_maintenance.aced,Hit a jammed drill or saw with your melee weapon for a 50% chance to restart it (one try per jam).
+skill.breacher.hot_floor.name,Hot Floor
+skill.breacher.hot_floor.basic,Your trip mines leave a 4 m wide fire for 10 s when they go off.
+skill.breacher.hot_floor.aced,The fire lasts 10 s longer and covers a 50% larger area.
+skill.gunnery.firm_grip.name,Firm Grip
+skill.gunnery.firm_grip.basic,+8 accuracy (8% tighter spread) with all weapons.
+skill.gunnery.firm_grip.aced,+16 stability (16% less recoil) with all weapons.
+skill.gunnery.knockdown.name,Knockdown
+skill.gunnery.knockdown.basic,Your shots have a 5% chance to stagger enemies (Wreckers and Commander Brandt are immune).
+skill.gunnery.knockdown.aced,The stagger chance rises to 20%.
+skill.gunnery.hip_discipline.name,Hip Discipline
+skill.gunnery.hip_discipline.basic,+12 accuracy when firing from the hip.
+skill.gunnery.hip_discipline.aced,The accuracy penalty for moving is 20% smaller.
+skill.gunnery.run_and_gun.name,Run and Gun
+skill.gunnery.run_and_gun.basic,Fire any weapon while sprinting.
+skill.gunnery.run_and_gun.aced,"Killing 2 enemies with an automatic SMG, LMG, assault rifle or special weapon makes your next reload up to 100% faster (at least 40% for large magazines)."
+skill.gunnery.hardball.name,Hardball
+skill.gunnery.hardball.basic,"SMGs, LMGs and assault rifles hold 15 more rounds per magazine."
+skill.gunnery.hardball.aced,All your ranged weapons pierce body armor.
+skill.gunnery.anatomy.name,Anatomy
+skill.gunnery.anatomy.basic,"Automatic fire with SMGs, LMGs, assault rifles and special weapons applies 30% of the headshot bonus to body hits."
+skill.gunnery.anatomy.aced,90% of the headshot bonus applies.
+skill.infiltrator.plain_sight.name,Plain Sight
+skill.infiltrator.plain_sight.basic,"While casing, you are detected 25% more slowly and can mark guards and cameras."
+skill.infiltrator.plain_sight.aced,Pick up small loot and items while casing. Small loot you pick up is worth 30% more.
+skill.infiltrator.tidy_up.name,Tidy Up
+skill.infiltrator.tidy_up.basic,Carry 1 more body bag.
+skill.infiltrator.tidy_up.aced,Carry 2 body bag cases.
+skill.infiltrator.gut_feeling.name,Gut Feeling
+skill.infiltrator.gut_feeling.basic,Stand still for 3.5 s in stealth to mark every enemy within 10 m automatically.
+skill.infiltrator.gut_feeling.aced,Answer pagers 50% faster.
+skill.infiltrator.light_fingers.name,Light Fingers
+skill.infiltrator.light_fingers.basic,Loop a camera for 25 s so it sees nothing (one camera at a time).
+skill.infiltrator.light_fingers.aced,"Pick locks 100% faster, and pick the locks of small safes."
+skill.infiltrator.signal_flood.name,Signal Flood
+skill.infiltrator.signal_flood.basic,ECM jams and ECM feedback last 25% longer.
+skill.infiltrator.signal_flood.aced,Place an ECM on a keycard door (4 s) or an ATM (8 s) to open it. The ECM is used up.
+skill.infiltrator.jammer_jockey.name,Jammer Jockey
+skill.infiltrator.jammer_jockey.basic,Carry 2 ECM jammers.
+skill.infiltrator.jammer_jockey.aced,ECM jams and feedback last a further 25% longer. Pagers of guards killed during a jam stay silent until it ends.
+skill.slipstream.light_step.name,Light Step
+skill.slipstream.light_step.basic,25% more stamina. Sprint 25% faster.
+skill.slipstream.light_step.aced,+10% dodge while sprinting.
+skill.slipstream.free_running.name,Free Running
+skill.slipstream.free_running.basic,Move 10% faster.
+skill.slipstream.free_running.aced,"Sprint in any direction, and reload while sprinting."
+skill.slipstream.deep_pockets.name,Deep Pockets
+skill.slipstream.deep_pockets.basic,+2 concealment on your melee weapon.
+skill.slipstream.deep_pockets.aced,+4 concealment on your armor.
+skill.slipstream.cornered.name,Cornered
+skill.slipstream.cornered.basic,"While your armor is broken, your first shot on each enemy staggers it."
+skill.slipstream.cornered.aced,The effect lasts 6 s after your armor comes back.
+skill.slipstream.grounded.name,Grounded
+skill.slipstream.grounded.basic,"When a Stinger tases you, there is a 30% chance it backfires and knocks the Stinger back."
+skill.slipstream.grounded.aced,Interact within 2 s of being tased to shock the Stinger and break free.
+skill.slipstream.slippery.name,Slippery
+skill.slipstream.slippery.basic,"+1% dodge for every 3 points your detection risk is below 35, up to +10%."
+skill.slipstream.slippery.aced,"+1% dodge for every point below 35, up to +10%."
+skill.quiet_professional.bolt.name,Bolt
+skill.quiet_professional.bolt.basic,"When your armor breaks, move 30% faster for 5 s."
+skill.quiet_professional.bolt.aced,Your crew gets the speed boost too.
+skill.quiet_professional.low_profile.name,Low Profile
+skill.quiet_professional.low_profile.basic,Enemies are 35% less likely to target you.
+skill.quiet_professional.low_profile.aced,"+1 concealment for each suppressed weapon you carry, and suppressors cost 2 less concealment."
+skill.quiet_professional.hushed_hands.name,Hushed Hands
+skill.quiet_professional.hushed_hands.basic,+8 stability and 100% faster aiming with suppressed weapons.
+skill.quiet_professional.hushed_hands.aced,+12 accuracy with suppressed weapons.
+skill.quiet_professional.cheap_shot.name,Cheap Shot
+skill.quiet_professional.cheap_shot.basic,"+3% critical hit chance for every 3 points your detection risk is below 35, up to 30%."
+skill.quiet_professional.cheap_shot.aced,"+3% for every point below 35, up to 30%."
+skill.quiet_professional.price_tag.name,Price Tag
+skill.quiet_professional.price_tag.basic,Enemies you mark take 15% more damage.
+skill.quiet_professional.price_tag.aced,Marks last twice as long. Marked enemies more than 10 m away take a further 50% more damage. Mark specials by aiming at them.
+skill.quiet_professional.ambusher.name,Ambusher
+skill.quiet_professional.ambusher.basic,"If you lose no armor or health for 4 s, gain +35% critical hit chance for 6 s."
+skill.quiet_professional.ambusher.aced,The critical hit bonus lasts 18 s.
+skill.two_gun.quick_holster.name,Quick Holster
+skill.two_gun.quick_holster.basic,Draw and holster pistols in 33% less time.
+skill.two_gun.quick_holster.aced,+8 accuracy with pistols.
+skill.two_gun.extended_clip.name,Extended Clip
+skill.two_gun.extended_clip.basic,Pistols hold 5 more rounds per magazine.
+skill.two_gun.extended_clip.aced,Pistols fire 50% faster.
+skill.two_gun.both_hands.name,Both Hands
+skill.two_gun.both_hands.basic,+8 stability with akimbo weapons.
+skill.two_gun.both_hands.aced,"+8 more stability with akimbo weapons, and they carry 50% more ammo."
+skill.two_gun.steel_core.name,Steel Core
+skill.two_gun.steel_core.basic,Pistol rounds have a 50% chance to pierce body armor.
+skill.two_gun.steel_core.aced,"Pistol rounds always pierce body armor, and pistols deal 15% more damage."
+skill.two_gun.rhythm.name,Rhythm
+skill.two_gun.rhythm.basic,"Each pistol hit gives +10% accuracy for 10 s, stacking 4 times."
+skill.two_gun.rhythm.aced,Reload pistols 50% faster.
+skill.two_gun.hot_streak.name,Hot Streak
+skill.two_gun.hot_streak.basic,Each pistol hit gives +20% pistol damage for 2 s.
+skill.two_gun.hot_streak.aced,The bonus lasts 4 s.
+skill.undying.cats_luck.name,Cat's Luck
+skill.undying.cats_luck.basic,You have 50% more health while bleeding out.
+skill.undying.cats_luck.aced,You can go down 1 more time before custody.
+skill.undying.second_lease.name,Second Lease
+skill.undying.second_lease.basic,"For 10 s after being revived, reload and swap weapons 100% faster."
+skill.undying.second_lease.aced,For those 10 s you also move 30% faster.
+skill.undying.back_on_your_feet.name,Back on Your Feet
+skill.undying.back_on_your_feet.basic,Take 30% less damage for 10 s after being revived.
+skill.undying.back_on_your_feet.aced,Get up with 40% more health.
+skill.undying.last_stand.name,Last Stand
+skill.undying.last_stand.basic,"When you would go down, keep fighting for 3 s first, moving 60% slower."
+skill.undying.last_stand.aced,"You keep fighting for 6 s, and your ammo is not used up meanwhile."
+skill.undying.playing_possum.name,Playing Possum
+skill.undying.playing_possum.basic,"While you are down, your bleedout timer pauses whenever no enemy can see you."
+skill.undying.playing_possum.aced,Bleed out 15 s more slowly.
+skill.undying.comeback.name,Comeback
+skill.undying.comeback.basic,"While bleeding out, kill an enemy to get back up. 1 charge per heist."
+skill.undying.comeback.aced,Using a Doctor Bag restores your charge.
+skill.scrapper.iron_jaw.name,Iron Jaw
+skill.scrapper.iron_jaw.basic,Take 50% less damage from melee attacks.
+skill.scrapper.iron_jaw.aced,Your melee strikes are 50% more likely to knock enemies down.
+skill.scrapper.wind_up.name,Wind Up
+skill.scrapper.wind_up.basic,"Each kill adds +100% damage to your next melee hit, up to +1600%. A melee kill spends it."
+skill.scrapper.wind_up.aced,A melee kill gives 50% faster reloads for 10 s.
+skill.scrapper.heavy_hands.name,Heavy Hands
+skill.scrapper.heavy_hands.basic,Deal 100% more melee damage.
+skill.scrapper.heavy_hands.aced,Charge melee attacks 50% faster.
+skill.scrapper.riposte.name,Riposte
+skill.scrapper.riposte.basic,"While charging a melee attack, counter enemies that strike you and knock them down."
+skill.scrapper.riposte.aced,You also counter Phantom kicks.
+skill.scrapper.red_mist.name,Red Mist
+skill.scrapper.red_mist.basic,"Below 50% health, deal up to 250% more melee damage the lower your health is."
+skill.scrapper.red_mist.aced,Ranged weapons gain up to 100% more damage the same way.
+skill.scrapper.nothing_to_lose.name,Nothing to Lose
+skill.scrapper.nothing_to_lose.basic,"Your max health drops to 30% and healing on you is 75% weaker, but you take 10% less damage."
+skill.scrapper.nothing_to_lose.aced,"Take 25% less damage instead, and healing is no longer weakened."

@@ -17,6 +17,8 @@
 ##   weapon caps at 30, skill/perk bonuses still raise the total).
 ## * modifiers = merged skill grants (basic, plus aced) and unlocked perk-deck card grants, merged by
 ##   ModifierKeys type (MULT multiply, ADD sum, FLAG or, PARAMS last wins). Unknown keys rejected.
+##   Crew-wide skill grants (`team.*`) are excluded; team_modifier_sources() returns them per skill as
+##   TEAM sources `team_skill.<skill_id>` (modifiers.md non-stacking rule).
 ##
 ## P1 RULE (data-driven, D-022 QB-11): an empty weapon/melee/armor slot contributes
 ## `ConcealmentCurve.empty_slot_concealment` (30), so the P1 pistol-only loadout is not penalized
@@ -138,7 +140,8 @@ static func curve_tweak() -> ConcealmentCurve:
 
 
 ## Merged modifier grants from skills (Loadout.skills: id -> 1 basic / 2 aced) and the first
-## `perk_deck_cards` cards of the perk deck.
+## `perk_deck_cards` cards of the perk deck. Crew-wide skill grants (`team.*`) are NOT included: they go
+## to the TEAM scope through team_modifier_sources() so the same skill never stacks (modifiers.md).
 static func resolve_modifiers(loadout: Loadout) -> Dictionary:
 	var out: Dictionary = {}
 	var skill_ids: Array = loadout.skills.keys()
@@ -148,15 +151,47 @@ static func resolve_modifiers(loadout: Loadout) -> Dictionary:
 		var skill: SkillDef = ContentDB.by_id(ContentDB.SKILLS, StringName(sid)) as SkillDef
 		if skill == null or level <= 0:
 			continue
-		_merge(out, skill.grants_basic, "skill %s" % sid)
+		_merge(out, _team_split(skill.grants_basic, false), "skill %s" % sid)
 		if level >= 2:
-			_merge(out, skill.grants_aced, "skill %s aced" % sid)
+			_merge(out, _team_split(skill.grants_aced, false), "skill %s aced" % sid)
 	if loadout.perk_deck != &"":
 		var deck: PerkDeckDef = ContentDB.by_id(ContentDB.PERKS, loadout.perk_deck) as PerkDeckDef
 		if deck != null:
 			var n: int = mini(loadout.perk_deck_cards, deck.cards.size())
 			for i: int in range(n):
 				_merge(out, deck.cards[i].get("grants", {}), "%s card %d" % [deck.id, i + 1])
+	return out
+
+
+## Crew-wide skill grants of one loadout: { &"team_skill.<skill_id>": {team key: value} }. The server
+## calls Modifiers.set_source(Modifiers.TEAM, source, grants) for every crew member's entries; equal
+## source names from two players overwrite each other, so a team skill counts once (PD2).
+static func team_modifier_sources(loadout: Loadout) -> Dictionary:
+	var out: Dictionary = {}
+	var tree: SkillTreeDef = SkillPoints.tree_def()
+	var skill_ids: Array = loadout.skills.keys()
+	ContentDB.sort_ids(skill_ids)
+	for sid: Variant in skill_ids:
+		var level: int = int(loadout.skills[sid])
+		var skill: SkillDef = ContentDB.by_id(ContentDB.SKILLS, StringName(sid)) as SkillDef
+		if skill == null or level <= 0:
+			continue
+		var grants: Dictionary = {}
+		_merge(grants, _team_split(skill.grants_basic, true), "skill %s" % sid)
+		if level >= 2:
+			_merge(grants, _team_split(skill.grants_aced, true), "skill %s aced" % sid)
+		if not grants.is_empty():
+			out[tree.team_source(skill.id)] = grants
+	return out
+
+
+## The `team.*` grants (team = true) or every other grant (team = false).
+static func _team_split(grants: Dictionary, team: bool) -> Dictionary:
+	var tree: SkillTreeDef = SkillPoints.tree_def()
+	var out: Dictionary = {}
+	for key: Variant in grants:
+		if tree.is_team_key(StringName(key)) == team:
+			out[key] = grants[key]
 	return out
 
 

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.two_gun.hot_streak"
+display_name = "Hot Streak"
+tree = &"outlaw"
+subtree = &"two_gun"
+tier = 4
+cost_basic = 4
+cost_aced = 8
+desc_basic = "Each pistol hit gives +20% pistol damage for 2 s."
+desc_aced = "The bonus lasts 4 s."
+grants_basic = {}
+grants_aced = {}

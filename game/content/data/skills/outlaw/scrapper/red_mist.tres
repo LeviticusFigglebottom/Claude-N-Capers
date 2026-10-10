@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.scrapper.red_mist"
+display_name = "Red Mist"
+tree = &"outlaw"
+subtree = &"scrapper"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Below 50% health, deal up to 250% more melee damage the lower your health is."
+desc_aced = "Ranged weapons gain up to 100% more damage the same way."
+grants_basic = {
+&"defense.berserk": {
+"threshold": 0.5,
+"max_damage_mult": 3.5,
+"ranged_max_damage_mult": 1.0
+}
+}
+grants_aced = {
+&"defense.berserk": {
+"threshold": 0.5,
+"max_damage_mult": 3.5,
+"ranged_max_damage_mult": 2.0
+}
+}
