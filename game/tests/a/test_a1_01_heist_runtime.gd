@@ -134,3 +134,30 @@ func test_teardown_clears_services_and_ids() -> void:
 	rt.teardown()
 	assert_true(Ids.lookup(id) == null, "ids reset")
 	assert_false(Services.has(&"interaction"), "services cleared")
+
+
+func test_resolver_rejects_forward_references() -> void:
+	GameRng.begin_run(6)
+	var t: HeistVariantTable = HeistVariantTable.new()
+	t.rules = [
+		{"group": &"b", "pick": Vector2i(1, 1), "requires": {&"a": []}},
+		{"group": &"a", "pick": Vector2i(1, 1)},
+	]
+	var slots: Dictionary = {}
+	for g: StringName in [&"a", &"b"]:
+		var vs: VariantSlot = VariantSlot.new()
+		vs.slot_group = g
+		vs.slot_id = &"s1"
+		slots[g] = [vs]
+	Log.capture = true
+	Log.captured.clear()
+	var r: Dictionary = VariantResolver.resolve(t, slots, Enums.Difficulty.ROUTINE)
+	Log.capture = false
+	var logged: bool = false
+	for line: String in Log.captured:
+		if line.contains("not resolved earlier"):
+			logged = true
+	assert_true(logged, "forward reference logged as contract violation (heist_map.md v1.1)")
+	assert_eq((r[&"b"] as Array).size(), 0, "forward reference counts as not active")
+	for g: Variant in slots:
+		(slots[g][0] as VariantSlot).free()

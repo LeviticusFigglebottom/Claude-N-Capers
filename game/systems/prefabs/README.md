@@ -65,14 +65,51 @@ Scene path = `res://systems/prefabs/<name>/<name>.tscn`. Placeholder = `<name>/<
 | `zipline` | `Zipline` | Node3D | `end: NodePath` | `zipline_attach_s` | none | P2 |
 | `laser_grid` | `LaserGrid` | Node3D | `pattern: StringName` (&"static"; `sweeping`, `timed_off`), `size_m: Vector3` (2, 2, 0.1) | not interactive | none | `Trigger` Area3D (layer 10, mask players). S9.10, P2 |
 
-## Stub behaviour shipped in A1-03
+## Behaviour (A1-03 stubs + A1-07)
 
-* `door`: on completion (server only) it unlocks if needed and toggles open/closed. NONE opens
-  instantly. LOCKPICK uses `interaction.lockpick_speed_mult`. KEYCARD requires and consumes
-  `item.keycard`. CODE, ELECTRONIC, BARRED and VAULT block the interaction until `unlock()` is
-  called. After unlocking, the door is a plain open/close door.
-* `keycard_pickup`: grants `item.keycard`, emits `item_picked_up` [R] and frees itself.
-* `small_loot`: emits `small_loot_taken(value, slot)` [R] and frees itself.
-* `escape_zone.activate()`.
+Server-authoritative; every fact is an EventBus emit + `Net.replicate_event` (events.md). Numbers
+live in InteractionTweak ("Device jams", "Glass"), StealthTweak and LootTweak.
 
-Everything else is marked `# A1-03 behaviour (M2)` in its script.
+* `door`: on completion it unlocks if needed and toggles open/closed. NONE opens instantly.
+  LOCKPICK uses `interaction.lockpick_speed_mult`. KEYCARD requires and consumes `item.keycard`.
+  CODE, ELECTRONIC, BARRED and VAULT block the interaction until `unlock()` (keypad, keycard
+  reader, drill). `open()` = `set_open(true)`. `suspicious_when_open`: an `open_door` stimulus while
+  open. Nav link / obstacle toggling: M2.
+* `keycard_pickup`: grants `item.keycard`, emits `item_picked_up` and frees itself.
+* `keycard_reader`: consumes the keycard, calls `unlock()` then `set_open(true)` / `open()` on each
+  of `targets`, Led goes green. Single use.
+* `small_loot`: emits `small_loot_taken(value, slot)` and frees itself.
+* `display_case`: Interactable = smash (kind `break_glass`, `glass_break_s`, instant by default) or
+  open with `requires_item` (kind `open_case`, no shatter). Shooting it (`apply_damage`, the
+  `Collision` body carries `hit_owner`) also shatters. Shatter: `Glass` hidden, `glass_broken`,
+  `cue.glass_break`, noise `&"glass"` 15 m, `broken_glass` stimulus; `glass_breaks_alarm` ->
+  `alarm_raised(&"glass_alarm")`. Then the same Interactable takes the loot (kind `take_loot`,
+  `small_loot_s`) -> `small_loot_taken(value, slot)`; value = ContentDB `loot_id` value, else
+  `LootTweak.display_case_default_value`.
+* `window`: `openable` -> kind `open_window` slides `Sash` up (GlassBody off while open); else
+  `breakable` -> kind `break_window`. `apply_damage` on a breakable window shatters it like a case
+  (GlassBody collision off).
+* `loot_spawn`: kind `bag_loot`, not while carrying; each completion spawns a LootBag of `loot_id`
+  (`moved = true`) on the crew member's back; disabled at `remaining == 0`.
+* `drill_point` / `safe`: `DeviceRunner` (drill_point/device_runner.gd). Place (drill_place_s) ->
+  runs `duration_s` × `interaction.device_speed_mult` (safe: `safe_drill_duration_s[size]`), jams
+  rolled at placement on GameRng `&"devices"` (1-3 candidates × `device_jam_chance_mult`, 15-90 %),
+  jammed -> same Interactable becomes kind `fix_drill` (drill_fix_s); auto-restart chance
+  `interaction.device_auto_restart_chance` rolled at placement and per fix (restart after 5-10 s).
+  Running in stealth: noise `&"drill"` (`drill_radius_m`) every `device_noise_interval_s` unless
+  `stealth.silent_devices`, and a `drill` stimulus. Events device_started/jammed/restarted/finished,
+  cues drill_loop/jam/done. Finish -> `target.open_by_device()`, else `unlock()` + open.
+  `Safe.open_by_device()` swings `Door` and enables the loot prefabs placed under the safe
+  (disabled while closed). Safe `lockpick` needs `interaction.can_lockpick_safes`; saw/c4/code: P2.
+* `secure_zone`: its `Zone` (like any SECURE_LOOT MapZone) secures bags resting in it 0.5 s
+  (LootManager).
+* `body_container`: body bags in its `Zone` are hidden from stealth up to `capacity`
+  (`store_bag` / `release_bag`, `stored`).
+* `escape_zone`: `activate()`; while active, once every human crew member not in custody is inside
+  `Zone`, `HeistRuntime.end_heist(true, escaped)` (AI teammates not in custody come along; with no
+  humans slot 0 counts as the human). `escaping_slots(rt)` exposes the check.
+* `alarm_button`: `use_point_position()`, `press(by_net_id)` -> `alarm_raised(&"alarm_button")`.
+* `phone`: `use_point_position()`, `call_police(by_net_id)` -> `alarm_raised(&"phone_call")`.
+
+Still `# A1-03 behaviour (M2/P2)`: camera_station, security_camera, keypad, code_note, ladder,
+zipline, laser_grid.

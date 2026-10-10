@@ -28,4 +28,5 @@ func _prefab_ready() -> void:
 	var col: CollisionObject3D = get_node_or_null(^"Collision") as CollisionObject3D
 	if col != null and not vehicle_collision:
 		col.queue_free()
-	# A1-03 behaviour (M2, A1-07): secure bags resting 0.5 s inside (loot_secured).
+	# Securing (A1-07) is LootManager's: any bag resting LootTweak.secure_rest_s inside a
+	# SECURE_LOOT MapZone (this `Zone` or a map-placed one) emits loot_secured. Door animation: M2.

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="GuardTweak" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/ai/data/guard_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+fallback_walk_speed = 1.6
+fallback_run_speed = 3.5
+route_min_points = 4
+route_max_points = 8
+route_attempts = 6
+route_tag = &"guard"
+nearest_graph_max_m = 25.0
+post_look_interval_s = Vector2(5, 10)
+look_around_angle_deg = 60.0
+look_hold_s = 1.2
+post_return_m = 0.6
+curious_beat_s = 1.5
+investigate_arrive_m = 1.2
+combat_standoff_min_m = 6.0
+combat_standoff_max_m = 15.0
+combat_standoff_pref_m = 10.0
+combat_fire_range_m = 30.0
+combat_retarget_s = 0.5

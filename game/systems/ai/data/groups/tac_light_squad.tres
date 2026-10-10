@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SpawnGroupDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/director/spawn_group_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"group.tac_light_squad"
+unit_ids = Array[StringName]([&"enemy.tac_light"])
+unit_counts = PackedInt32Array(3)
+weights = PackedFloat32Array(1, 2, 3, 3, 3, 3)
+phases = PackedInt32Array(2, 3)

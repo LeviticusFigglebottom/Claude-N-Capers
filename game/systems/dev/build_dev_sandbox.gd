@@ -282,15 +282,15 @@ func _build_lighting(lighting: Node3D) -> void:
 # --- Navigation ----------------------------------------------------------------------
 
 ## Bakes from the Geometry static colliders only (prefabs toggle their own obstacles at runtime).
-## Cell size 0.05: with agent radius 0.35 a 0.25 cell erodes 0.5 m per side and closes 0.9 m doors.
+## Project nav defaults (D-025): cell 0.1 / 0.1, NPC agent radius 0.3 -> 0.9 m doors keep a 0.3 m lane.
 func _bake(nav: NavigationRegion3D, geo: Node3D) -> int:
 	var nm: NavigationMesh = NavigationMesh.new()
-	nm.agent_radius = 0.35
+	nm.agent_radius = 0.3
 	nm.agent_height = 1.8
 	nm.agent_max_climb = 0.3
 	nm.agent_max_slope = 40.0
-	nm.cell_size = 0.05
-	nm.cell_height = 0.05
+	nm.cell_size = 0.1
+	nm.cell_height = 0.1
 	nm.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
 	nm.geometry_collision_mask = 1
 	nm.geometry_source_geometry_mode = NavigationMesh.SOURCE_GEOMETRY_ROOT_NODE_CHILDREN
