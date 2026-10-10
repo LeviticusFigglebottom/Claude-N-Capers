@@ -111,8 +111,8 @@ func test_exclusive_group() -> void:
 	var b: PreplanBoard = _board()
 	var other: PreplanAssetDef = PreplanAssetDef.new()
 	other.id = &"asset.test_other_entry"
-	other.point_categories = [&"spawn"]
-	other.exclusive_group = &"spawn"
+	other.point_categories = [&"player_spawn"]
+	other.exclusive_group = &"player_spawn"
 	b.assets[other.id] = other
 	var p2: PreplanPlan = PreplanPlan.new(b)
 	assert_eq(p2.add(&"asset.alternate_entry", SPAWN_W, 0), PreplanPlan.OK)
@@ -177,7 +177,7 @@ func test_heist_def_preplanning_overrides_and_extends() -> void:
 		"disable": ["asset.intel_cameras"],
 		"assets": {
 			&"asset.ammo_bag_drop": {"cost": 500, "favors": 1, "point_ids": ["pp_side_kerb"]},
-			&"asset.inside_keycard": {"force_variants": {"keycard": ["kc_breakroom"]}, "cost": 2000,
+			&"asset.heist_keycard": {"force_variants": {"keycard": ["kc_breakroom"]}, "cost": 2000,
 					"favors": 3, "category": "access", "tags": ["stealth"]},
 			&"asset.zip_ties_drop": {"drop": "body_bag_case", "point_categories": ["drop_zone"], "favors": 1,
 					"cost": 300, "params": {"count": 2}},
@@ -194,12 +194,12 @@ func test_heist_def_preplanning_overrides_and_extends() -> void:
 	assert_eq(b.assets_for_point(KERB).has(&"asset.ammo_bag_drop"), true)
 	assert_false(b.assets_for_point(DROP).has(&"asset.ammo_bag_drop"), "slot restricts to one point")
 	assert_true(PreplanBoard.generic_assets()[&"asset.ammo_bag_drop"].point_ids.is_empty(), "generic def untouched")
-	var kc: PreplanAssetDef = b.asset(&"asset.inside_keycard")
+	var kc: PreplanAssetDef = b.asset(&"asset.heist_keycard")
 	assert_eq(kc.force_variants, {&"keycard": [&"kc_breakroom"] as Array[StringName]})
-	assert_has(b.crew_assets(), &"asset.inside_keycard")
+	assert_has(b.crew_assets(), &"asset.heist_keycard")
 	assert_eq(b.asset(&"asset.zip_ties_drop").drop, &"deployable.body_bag_case")
 	var p: PreplanPlan = PreplanPlan.new(b)
-	assert_eq(p.add(&"asset.inside_keycard", &"", 0), PreplanPlan.OK)
+	assert_eq(p.add(&"asset.heist_keycard", &"", 0), PreplanPlan.OK)
 	assert_eq(p.add(&"asset.zip_ties_drop", DROP, 0), PreplanPlan.OK)
 	assert_eq(p.add(&"asset.back_way_out", &"", 0), PreplanPlan.OK)
 	var res: Dictionary = p.apply()
@@ -209,7 +209,7 @@ func test_heist_def_preplanning_overrides_and_extends() -> void:
 	assert_eq(res["escape_tag"], &"escape_alley")
 	assert_has(b.assets_for_point(DROP), &"asset.zip_ties_drop")
 	var ids: Array[StringName] = b.asset_ids()
-	assert_true(ids.find(&"asset.ammo_bag_drop") < ids.find(&"asset.inside_keycard"), "supply before access")
+	assert_true(ids.find(&"asset.ammo_bag_drop") < ids.find(&"asset.heist_keycard"), "supply before access")
 
 
 func test_merge_reports_bad_data() -> void:
@@ -354,3 +354,58 @@ func test_blueprint_from_nodes() -> void:
 
 ## Contract: points are the Marker3Ds under <Map>/Preplan, read by instancing the map scene without
 ## adding it to the tree; the board falls back to the placeholder when the map has none.
+
+
+## D-046 QC-20/QC-23: top-level `asset.*` overrides merge like `assets{}`; favors come from the HeistDef.
+func test_top_level_asset_overrides_and_heist_favors() -> void:
+	var def: HeistDef = HeistDef.new()
+	def.id = &"test_heist"
+	def.preplanning = {
+		"favors": 4,
+		"disable": [&"asset.intel_cameras"],
+		&"asset.inside_keycard": {"cost": 1500, "favors": 1, "effect": "force_variant", "point_categories": [&"insider"]},
+		"assets": {&"asset.ammo_bag_drop": {"favors": 3}},
+	}
+	var b: PreplanBoard = PreplanBoard.build(&"test_heist", Enums.Difficulty.ROUTINE, def)
+	assert_eq(b.errors, [] as Array[String])
+	assert_eq(b.favors_budget, 4)
+	assert_eq(b.favors_of(&"asset.ammo_bag_drop"), 3, "assets{} override")
+	assert_eq(b.asset(&"asset.inside_keycard").effect, &"force_variant", "top-level override")
+	assert_false(b.assets.has(&"asset.intel_cameras"))
+	var a: PreplanAssetDef = PreplanAssetDef.new()
+	a.id = &"asset.x"
+	a.effect = &"teleport"
+	assert_false(a.validate().is_empty(), "unknown effect rejected")
+
+
+## D-046 QC-22: force_variant library assets take the chosen point's variant into force_variants.
+func test_force_variant_library_assets() -> void:
+	for id: StringName in [&"asset.inside_keycard", &"asset.propped_door"]:
+		var a: PreplanAssetDef = PreplanBoard.generic_assets().get(id) as PreplanAssetDef
+		assert_true(a != null, "%s in the library" % id)
+		if a == null:
+			continue
+		assert_eq(a.effect, &"force_variant")
+		assert_true(a.is_located())
+		assert_eq(a.validate(), [] as Array[String])
+	var bp: PreplanBlueprint = PreplanBlueprint.new()
+	bp.points = [{"id": &"pp_insider_breakroom", "category": &"insider", "label": &"", "floor": 0, "pos": Vector2.ZERO,
+		"params": {"variant_group": &"keycard", "variant_slot": &"kc_breakroom"}}]
+	var b: PreplanBoard = PreplanBoard.build(&"", Enums.Difficulty.ROUTINE, null, null, bp)
+	var p: PreplanPlan = PreplanPlan.new(b)
+	assert_eq(p.add(&"asset.inside_keycard", &"pp_insider_breakroom", 0), PreplanPlan.OK)
+	var res: Dictionary = p.apply()
+	assert_eq(res["force_variants"], {&"keycard": [&"kc_breakroom"] as Array[StringName]})
+
+
+## D-046 QC-22: strings for the Glasshouse PREPLAN_POINTs (glasshouse.tscn `Preplan`) and the new assets.
+func test_glasshouse_point_and_asset_strings() -> void:
+	var table: Dictionary = StringTable.parse_csv()
+	for pid: String in ["pp_alley_dumpsters", "pp_alley_hvac", "pp_side_kerb", "pp_spawn_alley_west",
+			"pp_spawn_alley_mouth", "pp_escape_alley_west", "pp_escape_side_street", "pp_insider_breakroom", "pp_back_door"]:
+		assert_has(table, "ui.preplan.point.%s" % pid)
+	for a: String in ["inside_keycard", "propped_door"]:
+		assert_has(table, "item.asset.%s.name" % a)
+		assert_has(table, "item.asset.%s.desc" % a)
+	for c: String in ["drop_zone", "player_spawn", "escape", "access", "insider"]:
+		assert_has(table, "ui.preplan.category.%s" % c)

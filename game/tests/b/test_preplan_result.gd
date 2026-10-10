@@ -99,7 +99,7 @@ func test_points_read_from_the_map_scene() -> void:
 	map.add_child(pre)
 	pre.owner = map
 	var pts: Array = [["pp_drop_roof", &"drop_zone", Vector3(3, 6, 4), 1, {}],
-			["pp_back_lot", &"spawn", Vector3(-5, 0, 0), 0, {"spawn_tag": &"preplan_spawn_lot"}],
+			["pp_back_lot", &"player_spawn", Vector3(-5, 0, 0), 0, {"spawn_tag": &"preplan_spawn_lot"}],
 			["pp_van_lot", &"escape", Vector3(40, 0, 30), 0, {"variant_group": &"escape", "variant_slot": &"esc_lot"}]]
 	for d: Array in pts:
 		var m: Marker3D = Marker3D.new()
@@ -145,6 +145,28 @@ func test_glasshouse_board_builds_with_fallback_points() -> void:
 	assert_true(b.blueprint.point_ids().size() >= 5, "points from the map or the placeholder")
 	if def != null and PreplanBoard.is_legacy_format(def.preplanning):
 		assert_eq(b.assets.size(), PreplanBoard.generic_assets().size(), "pre-contract data ignored")
-	assert_true(PreplanBoard.is_legacy_format({&"asset.x": {}}))
+	assert_true(PreplanBoard.is_legacy_format({&"asset.x": {"slot": &"keycard"}}), "pre-D-038 entry fields")
+	assert_false(PreplanBoard.is_legacy_format({&"asset.x": {}}), "top-level asset overrides are allowed (QC-20)")
 	assert_false(PreplanBoard.is_legacy_format({"assets": {}}))
 	assert_false(PreplanBoard.is_legacy_format({}))
+
+
+## Item: apply() emits exactly the PreplanResult v1 keys listed in docs/contracts/preplanning.md, and
+## resolve_ids() works with exactly (heist_id, ids) as the contract calls it.
+func test_result_keys_match_the_contract_doc() -> void:
+	var doc: String = ProjectSettings.globalize_path("res://").path_join("../docs/contracts/preplanning.md")
+	if FileAccess.file_exists(doc):
+		var block: String = FileAccess.get_file_as_string(doc).get_slice("## Launch", 1).get_slice("```", 1)
+		var rx: RegEx = RegEx.create_from_string("(?m)^\\{?\\s*\"([a-z_]+)\":")
+		var keys: Array[String] = []
+		for m: RegExMatch in rx.search_all(block):
+			keys.append(m.get_string(1))
+		assert_eq(keys, PreplanPlan.RESULT_KEYS, "RESULT_KEYS = the contract's list")
+	var res: Dictionary = PreplanPlan.resolve_ids(&"test_heist", [&"asset.extra_cable_ties"])
+	var got: Array[String] = []
+	for k: Variant in res:
+		got.append(String(k))
+	got.sort()
+	var want: Array[String] = PreplanPlan.RESULT_KEYS.duplicate()
+	want.sort()
+	assert_eq(got, want, "apply() keys")

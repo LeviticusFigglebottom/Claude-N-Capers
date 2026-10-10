@@ -35,6 +35,8 @@ const EVENTS: Array[StringName] = [
 	&"escape_available", &"heist_success", &"heist_failed", &"stealth_success",
 	&"reloading", &"bagging_body", &"going_loud", &"reviving", &"cops_incoming", &"guard_down",
 	&"stealth_abort", &"cuff_warning", &"dev_start",
+	# AI teammate acknowledges an order (D-043 QA-24): id vo.crew.ack_<CrewOrders order>, speaker crew.
+	&"order_ack",
 	# Briefing screen (B2-02): local UI playback, never replicated. Briefing lines also carry
 	# "heist": StringName (the heist id) and "order": int (playback order within that heist).
 	&"briefing",
