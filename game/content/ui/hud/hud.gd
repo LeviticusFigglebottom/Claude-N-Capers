@@ -1,6 +1,6 @@
 ## In-heist HUD root (contracts/ui_hud.md, D-009). Owner: ENV B.
 ## Binds ONLY to the local HUD model and EventBus. The widgets bind DIRECTLY to the model, which
-## speaks the ui_hud.md v1.2 binding shape (v1.2 adds `custody`) (ENV A's LocalHudModel; MockHudModel for the demo/tests).
+## speaks the ui_hud.md v1.3 binding shape (v1.2 adds `custody`, v1.3 `captain_present`/`captain_resistance`) (ENV A's LocalHudModel; MockHudModel for the demo/tests).
 ## Model resolution, in order:
 ##   1. bind(model) called by the owner (tests, hud_demo);
 ##   2. exported `model_path`;
@@ -36,6 +36,7 @@ var assault: AssaultBanner
 var teammates: TeammatePanels
 var status: StatusPanel
 var custody: CustodyPanel
+var captain: CaptainPanel
 var toast_label: Label
 var secured_bags: int = 0
 var _lookup_t: float = 0.0
@@ -62,7 +63,7 @@ func bind(m: Node) -> void:
 
 
 func widgets() -> Array[HudWidget]:
-	return [chevrons, marks, interaction, vitals, ammo, pager, objectives, assault, teammates, status, custody]
+	return [chevrons, marks, interaction, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain]
 
 
 func _build() -> void:
@@ -83,6 +84,7 @@ func _build() -> void:
 	pager = _place(PagerPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-200, 110), Vector2(400, 200)) as PagerPanel
 	status = _place(StatusPanel.new(), Control.PRESET_TOP_RIGHT, Vector2(-448, 48), Vector2(400, 180)) as StatusPanel
 	custody = _place(CustodyPanel.new(), Control.PRESET_CENTER, Vector2(-300, -200), Vector2(600, 130)) as CustodyPanel
+	captain = _place(CaptainPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-260, 104), Vector2(520, 84)) as CaptainPanel
 	toast_label = UiBuild.label(&"", UiBuild.HUD_BIG)
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(toast_label, Control.PRESET_CENTER, Vector2(-500, -260), Vector2(1000, 60))

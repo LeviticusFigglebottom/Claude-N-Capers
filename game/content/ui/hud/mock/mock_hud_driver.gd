@@ -1,5 +1,5 @@
 ## Scripted demo driver for MockHudModel: loops a ~40 s timeline through casing, detection, a
-## pager, going loud, assault phases, damage and downs, so every HUD widget is exercised.
+## pager, going loud, assault phases, Commander Brandt (captain), damage and downs, so every HUD widget is exercised.
 ## Deterministic (time-based, no RNG). Owner: ENV B. Used by hud_demo.tscn.
 class_name MockHudDriver
 extends Node
@@ -67,6 +67,8 @@ func _continuous() -> void:
 		var p: float = fmod(t, 4.0) / 4.0
 		model.pagers = [{"pager_id": 1, "time_left_s": 10.0 * (1.0 - p), "answering": true, "progress": p}]
 		model.interaction = {"text_key": &"ui.prompt.answer_pager", "args": {"key": "F"}, "progress": p, "blocked_reason": &""}
+	if _stage == 7 or _stage == 8:
+		model.captain_resistance = minf(0.1 + 0.05 * floorf((t - 28.0) / 1.0), 0.5)  # 10% +5%/step, cap 50%
 	if _stage >= 6 and _stage <= 8:
 		model.health = maxf(model.max_health * (1.0 - fmod(t, 4.0) / 4.0), 1.0)
 
@@ -78,6 +80,8 @@ func _enter_stage(stage: int) -> void:
 			model.detection = []
 			model.pagers = []
 			model.assault_phase = Enums.AssaultPhase.NONE
+			model.captain_present = false
+			model.captain_resistance = 0.0
 			model.crew_state = Enums.CrewState.NORMAL
 			model.bleedout_s = -1.0
 			model.interaction = {"text_key": &"ui.prompt.mask_up", "args": {"key": "G"}, "progress": 0.0, "blocked_reason": &""}
@@ -110,6 +114,9 @@ func _enter_stage(stage: int) -> void:
 			model.warnings = [&"phantom"]
 		7:
 			model.assault_phase = Enums.AssaultPhase.SUSTAIN
+			model.captain_resistance = 0.1
+			model.captain_present = true
+			model.warnings = [&"phantom", &"captain"]
 			model.armor = 0.0
 			model.ammo = {Enums.WeaponSlot.SECONDARY: {"mag": 4, "reserve": 60}}
 		8:
@@ -124,6 +131,7 @@ func _enter_stage(stage: int) -> void:
 			]
 		9:
 			model.assault_phase = Enums.AssaultPhase.FADE
+			model.captain_present = false
 			model.crew_state = Enums.CrewState.NORMAL
 			model.bleedout_s = -1.0
 			model.carried_bag = {}

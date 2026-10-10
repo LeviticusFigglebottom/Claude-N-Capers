@@ -81,6 +81,9 @@ ui.hud.teammate_downed,{name} is down
 ui.hud.teammate_custody,{name} is in custody
 ui.hud.phantom_warning,Phantom nearby
 ui.hud.stinger_warning,Stinger charging
+ui.hud.captain_warning,Commander Brandt on site
+ui.hud.captain,Commander Brandt
+ui.hud.captain_resistance,Aegis field: {pct}% damage resistance
 ui.hud.interaction_progress,{percent}%
 ui.prompt.interact,Hold {key} to interact
 ui.prompt.answer_pager,Hold {key} to answer the pager

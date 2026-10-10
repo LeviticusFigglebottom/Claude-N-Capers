@@ -123,7 +123,9 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `entries_from(defs, map_exists)` is the pure builder (tests).
 * `Hud` binds its widgets DIRECTLY to the node in group `G.LOCAL_HUD_MODEL` (ENV A's LocalHudModel,
   ui_hud.md v1.2; no adapter; v1.2 `custody` drives `CustodyPanel`: negotiation / auto-release timers while in
-  custody, a trade hint for the highlighted hostage while free), polled while unbound and rediscovered if the model is freed; MenuFlow
+  custody, a trade hint for the highlighted hostage while free; v1.3 (D-049) `captain_changed` / `captain_present` /
+  `captain_resistance` drive `CaptainPanel`: Brandt's name + Aegis resistance bar, and the status panel then drops
+  its `captain` warning line), polled while unbound and rediscovered if the model is freed; MenuFlow
   relies on that discovery in heists. `bind(model)` still works. `MockHudModel` (demo/tests) joins the
   same group. `MarkedTargets` draws a diamond per `marked_targets` entry; `InteractionPanel` fills a
   missing `{key}` prompt arg from the `interact` InputMap binding.
