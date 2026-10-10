@@ -1,0 +1,8 @@
+asset: arch_wall_ext_door_service_w200_h300
+script: tools/blender/greybox/wall_openings.py
+params: {"exterior": true, "height": 3.0, "openings": [[0.4, 1.6, 0.0, 2.2]], "thickness": 0.4, "width": 2.0}
+seed: 1193846738  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category greybox --asset arch_wall_ext_door_service_w200_h300
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 500

@@ -1,0 +1,8 @@
+asset: arch_wall_int_w200_h350
+script: tools/blender/greybox/walls.py
+params: {"exterior": false, "height": 3.5, "thickness": 0.2, "width": 2.0}
+seed: 4282601188  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category greybox --asset arch_wall_int_w200_h350
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 500

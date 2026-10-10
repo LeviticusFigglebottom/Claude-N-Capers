@@ -1,0 +1,8 @@
+asset: arch_door_frame_double_t40
+script: tools/blender/greybox/doors.py
+params: {"kind": "double", "leaf": false, "wall_t": 0.4}
+seed: 2770480102  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category greybox --asset arch_door_frame_double_t40
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 500
