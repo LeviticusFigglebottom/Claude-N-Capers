@@ -7,6 +7,12 @@
 ##   holds the sibling `UncuffInteractable` (kind &"uncuff", uncuff_s) on them.
 ## - Any other state change (downed, custody) ends the cuffs without touching that state.
 ## Signals are local; crew_state_changed on the CrewController is the replicated-by-sync source.
+## Events (D-038 QA-17): crew_cuffed(crew_slot, by_net_id) [R] on cuff; crew_uncuffed(crew_slot,
+## by_crew_slot) [R] when freed (-1 = freed themselves, also when another state change such as
+## downed / custody ends the cuffs).
+## L2.12 (A3-04): `cuff_downed(by_net_id)`: police cuff a DOWNED crew member who is not shooting
+## (PoliceBrain at CustodyTweak.police_cuff_range_m). Self-free after police_cuff_self_free_s; freed
+## (alone or by a teammate) they go back to DOWNED (CrewHealth pauses the bleedout while cuffed).
 class_name CrewCuffs
 extends Node
 
@@ -22,6 +28,8 @@ var cuffed_left: float = 0.0
 var cooldown_left: float = 0.0
 ## Net id of the guard that applied the cuffs (0 when not cuffed).
 var cuffed_by_net_id: int = 0
+## State the crew member returns to when freed (NORMAL; DOWNED after a police cuff, L2.12).
+var restore_state: Enums.CrewState = Enums.CrewState.NORMAL
 
 var _crew: CrewController = null
 var _uncuff: InteractableComponent = null
@@ -45,6 +53,13 @@ static func can_cuff(crew: CrewController) -> bool:
 		return false
 	var c: CrewCuffs = of(crew)
 	return c == null or c.cooldown_left <= 0.0
+
+
+## L2.12: police may cuff `crew` now (DOWNED and not shooting, L2.5).
+static func can_police_cuff(crew: CrewController) -> bool:
+	if crew == null or crew.crew_state != Enums.CrewState.DOWNED:
+		return false
+	return crew.weapons == null or not crew.weapons.is_shooting()
 
 
 func _ready() -> void:
@@ -83,7 +98,24 @@ func cuff(by_net_id: int) -> bool:
 	if _uncuff != null:
 		_uncuff.enabled = true
 	cuffed.emit(by_net_id)
+	_emit(&"crew_cuffed", [_crew.slot, by_net_id])
 	Log.info(&"stealth", "slot %d cuffed by %d" % [_crew.slot, by_net_id])
+	return true
+
+
+## Server (L2.12): police cuff a downed, non-shooting crew member. Returns false when not allowed.
+func cuff_downed(by_net_id: int) -> bool:
+	if _crew == null or not Net.is_authority() or not CrewCuffs.can_police_cuff(_crew):
+		return false
+	cuffed_left = CustodyTweak.data().police_cuff_self_free_s
+	cuffed_by_net_id = by_net_id
+	restore_state = Enums.CrewState.DOWNED
+	_crew.set_crew_state(Enums.CrewState.CUFFED)
+	if _uncuff != null:
+		_uncuff.enabled = true
+	cuffed.emit(by_net_id)
+	_emit(&"crew_cuffed", [_crew.slot, by_net_id])
+	Log.info(&"combat", "slot %d (downed) cuffed by police %d" % [_crew.slot, by_net_id])
 	return true
 
 
@@ -92,8 +124,11 @@ func free_crew(by_slot: int = -1) -> void:
 	if _crew == null or not Net.is_authority() or not is_cuffed():
 		return
 	_end()
-	_crew.set_crew_state(Enums.CrewState.NORMAL)
+	var back: Enums.CrewState = restore_state
+	restore_state = Enums.CrewState.NORMAL
+	_crew.set_crew_state(back)
 	freed.emit(by_slot)
+	_emit(&"crew_uncuffed", [_crew.slot, by_slot])
 	Log.info(&"stealth", "slot %d freed from cuffs (by %d)" % [_crew.slot, by_slot])
 
 
@@ -122,6 +157,9 @@ func _end() -> void:
 func _on_crew_state_changed(old_state: int, new_state: int) -> void:
 	if old_state == Enums.CrewState.CUFFED and new_state != Enums.CrewState.CUFFED and cuffed_left > 0.0:
 		_end()  # downed / custody / freed elsewhere
+		restore_state = Enums.CrewState.NORMAL
+		if Net.is_authority():
+			_emit(&"crew_uncuffed", [_crew.slot, -1])
 
 
 func _uncuff_check(helper: Node) -> StringName:
@@ -134,3 +172,8 @@ func _uncuff_check(helper: Node) -> StringName:
 
 func _on_uncuff_completed(helper: Node) -> void:
 	free_crew(int(helper.get(&"slot")) if helper != null else -1)
+
+
+func _emit(sig: StringName, args: Array) -> void:
+	EventBus.emit_signal.callv([sig] + args)
+	Net.replicate_event(sig, args)

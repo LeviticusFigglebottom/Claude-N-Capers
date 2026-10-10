@@ -8,10 +8,22 @@
 ##     press is a shout (intimidate / mark).
 ##   G (`mask_up` / `throw_item` / `drop_bag`): hold to mask up while unmasked; while masked and
 ##     carrying a bag a press throws the bag; otherwise a press throws the throwable.
+##   T (`order_menu`, A3-05): tap = contextual AI teammate order (CrewOrders.contextual_order):
+##     aimed AI carrying a bag -> drop_bag; aimed downed crew -> revive; aimed AI -> hold here /
+##     follow toggle; aimed bag -> carry_bag; aimed point -> hold there; nothing -> follow. The order
+##     stays on the intent for CrewAiTweak.order_latch_s (the server routes it once).
 class_name PlayerInput
 extends Node
 
 @export var mouse_sensitivity: float = 0.0025
+## Gamepad look: radians per second at full stick deflection (yaw; pitch uses the same rate).
+@export var gamepad_look_speed: float = 3.0
+## Radial deadzone of the right stick (0..1).
+@export var gamepad_deadzone: float = 0.2
+## Response curve exponent (1 = linear; 2 = finer aim near the centre).
+@export var gamepad_curve: float = 1.5
+@export var gamepad_invert_y: bool = false
+@export var gamepad_requires_capture: bool = false
 
 var enabled: bool = true
 var _yaw: float = 0.0
@@ -19,6 +31,10 @@ var _pitch: float = 0.0
 var _crew: CrewController = null
 ## Slot to restore when `swap_weapon` toggles.
 var _last_slot: int = Enums.WeaponSlot.SECONDARY
+## A3-05: the order being sent (latched for a few ticks) and the last follow/hold given per AI net id.
+var _order: Dictionary = {}
+var _order_ticks: int = 0
+var _ai_stances: Dictionary = {}
 
 
 func _ready() -> void:
@@ -32,13 +48,42 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	var mm: InputEventMouseMotion = event as InputEventMouseMotion
 	if mm != null and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		_yaw -= mm.relative.x * mouse_sensitivity
-		_pitch = clampf(_pitch - mm.relative.y * mouse_sensitivity, -deg_to_rad(89.0), deg_to_rad(89.0))
+		add_look(-mm.relative.x * mouse_sensitivity, -mm.relative.y * mouse_sensitivity)
 
 
-func _physics_process(_delta: float) -> void:
+## QB-46: paused input stops building intents; resuming re-reads the crew's look direction.
+func set_paused(paused: bool) -> void:
+	enabled = not paused
+	if not paused and _crew != null:
+		_yaw = _crew.look_yaw
+		_pitch = _crew.look_pitch
+
+
+## Add yaw/pitch (radians); pitch clamped to +-89 degrees.
+func add_look(d_yaw: float, d_pitch: float) -> void:
+	_yaw += d_yaw
+	_pitch = clampf(_pitch + d_pitch, -deg_to_rad(89.0), deg_to_rad(89.0))
+
+
+## QB-49: right-stick look delta (radians) for `delta` seconds from a stick vector (x right, y down,
+## as Input.get_vector(look_left, look_right, look_up, look_down) returns it).
+func gamepad_look_delta(stick: Vector2, delta: float) -> Vector2:
+	var mag: float = stick.length()
+	if mag <= gamepad_deadzone or mag <= 0.0:
+		return Vector2.ZERO
+	var scaled: float = pow(clampf((mag - gamepad_deadzone) / maxf(1.0 - gamepad_deadzone, 0.001), 0.0, 1.0), gamepad_curve)
+	var v: Vector2 = stick / mag * scaled * gamepad_look_speed * delta
+	return Vector2(-v.x, v.y if gamepad_invert_y else -v.y)
+
+
+func _physics_process(delta: float) -> void:
 	if not enabled or _crew == null:
 		return
+	if not gamepad_requires_capture or Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		var stick: Vector2 = Input.get_vector(&"look_left", &"look_right", &"look_up", &"look_down", 0.0)
+		var d: Vector2 = gamepad_look_delta(stick, delta)
+		if d != Vector2.ZERO:
+			add_look(d.x, d.y)
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and rt.has_bot_intent(_crew.slot):
 		return
@@ -81,4 +126,22 @@ func build_intent(rt: HeistRuntime) -> CrewIntent:
 	elif Input.is_action_just_pressed(&"swap_weapon"):
 		_last_slot = Enums.WeaponSlot.PRIMARY if _last_slot == Enums.WeaponSlot.SECONDARY else Enums.WeaponSlot.SECONDARY
 		i.weapon_slot = _last_slot
+	_order_input(rt, i)
 	return i
+
+
+## A3-05 `order_menu` tap -> CrewIntent order fields (see the header).
+func _order_input(rt: HeistRuntime, i: CrewIntent) -> void:
+	if rt != null and Input.is_action_just_pressed(&"order_menu"):
+		var tw: CrewAiTweak = load(CrewAiBrain.TWEAK_PATH) as CrewAiTweak
+		_order = CrewOrders.contextual_order(rt, _crew, _ai_stances, tw)
+		_order_ticks = maxi(1, int(ceil(tw.order_latch_s * float(Engine.physics_ticks_per_second))))
+		var o: StringName = _order["order"]
+		if (o == &"follow" or o == &"hold") and int(_order["target"]) != 0:
+			_ai_stances[int(_order["target"])] = o
+	if _order_ticks <= 0:
+		return
+	_order_ticks -= 1
+	i.order = _order["order"]
+	i.order_target_net_id = int(_order["target"])
+	i.order_position = _order["position"]

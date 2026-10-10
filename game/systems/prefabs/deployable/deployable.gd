@@ -6,7 +6,7 @@
 ##   ammo_bag       kind &"use_ammo_bag": refills both weapons from a shared pool (`ammo_left`, in
 ##                  "full loadouts": 4 uses = 400 %); each crew member takes only what is missing.
 ##   body_bag_case  kind &"take_body_bag": +1 body bag up to the crew member's cap; `uses_left` (3).
-##   ecm            kind &"ecm_feedback" (S8.6, gated by stealth.ecm_feedback): EcmSystem stuns.
+##   ecm            kind &"ecm_feedback" (S8.6, every ECM, D-038): EcmSystem stuns.
 ## Floor object: origin at the floor, front -Z faces the crew member who placed it. Group
 ## G.DEPLOYABLE. Visual: DeployableDef.model when set, else a box placeholder (`Body`).
 class_name DeployablePrefab
