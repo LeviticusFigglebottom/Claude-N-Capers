@@ -8,6 +8,8 @@ extends Node
 signal crew_changed()
 signal session_started(is_host: bool)
 signal session_ended()
+## Lobby/menu messages between peers (pre-planning votes, ready states...). D-038.
+signal lobby_message(from_peer: int, kind: StringName, data: Dictionary)
 
 const MAX_CREW: int = 4
 const DEFAULT_PORT: int = 27655
@@ -159,3 +161,20 @@ func _rpc_crew(new_crew: Dictionary) -> void:
 	for k: Variant in new_crew:
 		crew[int(k)] = new_crew[k]
 	crew_changed.emit()
+
+
+## Send a lobby message to every peer (including self). Data must be network-serializable.
+## Solo/offline: delivered locally only.
+func lobby_send(kind: StringName, data: Dictionary) -> void:
+	if not multiplayer.has_multiplayer_peer() or multiplayer.multiplayer_peer is OfflineMultiplayerPeer:
+		lobby_message.emit(local_peer_id(), kind, data)
+		return
+	_rpc_lobby.rpc(kind, data)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _rpc_lobby(kind: StringName, data: Dictionary) -> void:
+	var sender: int = multiplayer.get_remote_sender_id()
+	if sender == 0:
+		sender = local_peer_id()
+	lobby_message.emit(sender, kind, data)
