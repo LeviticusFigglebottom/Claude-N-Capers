@@ -13,8 +13,8 @@ check.akimbo_fire_ads_l: reach_err=0.0mm step=6.3deg
 check.akimbo_fire_l: reach_err=0.0mm step=8.7deg
 check.akimbo_holster: reach_err=0.0mm step=5.4deg
 check.akimbo_idle: reach_err=0.0mm step=0.1deg
-check.akimbo_reload: reach_err=0.0mm step=13.5deg
-check.akimbo_reload_empty: reach_err=0.0mm step=13.5deg
+check.akimbo_reload: reach_err=0.0mm step=8.3deg
+check.akimbo_reload_empty: reach_err=0.0mm step=12.7deg
 check.akimbo_sprint: reach_err=0.0mm step=2.7deg
 check.lmg_ads_idle: reach_err=0.0mm step=0.0deg
 check.lmg_draw: reach_err=0.0mm step=9.0deg
@@ -37,10 +37,10 @@ check.pistol_reload: reach_err=0.0mm step=31.6deg
 check.pistol_reload_empty: reach_err=0.0mm step=33.4deg
 check.pistol_sprint: reach_err=0.0mm step=8.8deg
 check.revolver_ads_idle: reach_err=0.0mm step=0.0deg
-check.revolver_draw: reach_err=0.0mm step=16.1deg
+check.revolver_draw: reach_err=0.0mm step=17.9deg
 check.revolver_fire: reach_err=0.0mm step=13.2deg
 check.revolver_fire_ads: reach_err=0.0mm step=7.9deg
-check.revolver_holster: reach_err=0.0mm step=16.1deg
+check.revolver_holster: reach_err=0.0mm step=17.9deg
 check.revolver_idle: reach_err=0.0mm step=0.1deg
 check.revolver_reload: reach_err=1.0mm step=85.3deg
 check.revolver_reload_empty: reach_err=1.0mm step=85.3deg
@@ -95,8 +95,8 @@ clip.akimbo_fire_ads_l: 3f loop=False events=shot@0
 clip.akimbo_fire_l: 3f loop=False events=shot@0
 clip.akimbo_holster: 15f loop=False events=gone@15
 clip.akimbo_idle: 90f loop=True
-clip.akimbo_reload: 60f loop=False events=mag_out_r@8,mag_out_l@10,mag_in_r@30,mag_in_l@33,done@52
-clip.akimbo_reload_empty: 78f loop=False events=mag_out_r@8,mag_out_l@10,mag_in_r@30,mag_in_l@33,slide_release_r@51,slide_release_l@55,done@69
+clip.akimbo_reload: 90f loop=False events=mag_out_r@12,mag_out_l@14,mag_in_r@45,mag_in_l@48,done@82
+clip.akimbo_reload_empty: 108f loop=False events=mag_out_r@11,mag_out_l@13,mag_in_r@42,mag_in_l@45,slide_release_r@71,slide_release_l@75,done@99
 clip.akimbo_sprint: 18f loop=True
 clip.lmg_ads_idle: 90f loop=True
 clip.lmg_draw: 27f loop=False events=ready@27
@@ -119,10 +119,10 @@ clip.pistol_reload: 45f loop=False events=mag_out@6,mag_swap@15,mag_in@29,done@3
 clip.pistol_reload_empty: 63f loop=False events=mag_out@6,mag_swap@15,mag_in@29,slide_release@45,done@56
 clip.pistol_sprint: 18f loop=True
 clip.revolver_ads_idle: 90f loop=True
-clip.revolver_draw: 14f loop=False events=ready@14
+clip.revolver_draw: 12f loop=False events=ready@12
 clip.revolver_fire: 9f loop=False events=shot@0
 clip.revolver_fire_ads: 9f loop=False events=shot@0
-clip.revolver_holster: 14f loop=False events=gone@14
+clip.revolver_holster: 12f loop=False events=gone@12
 clip.revolver_idle: 90f loop=True
 clip.revolver_reload: 72f loop=False events=crane_open@10,eject@22,loader_show@32,speedloader_in@44,loader_drop@48,crane_close@58,done@64
 clip.revolver_reload_empty: 72f loop=False events=crane_open@10,eject@22,loader_show@32,speedloader_in@44,loader_drop@48,crane_close@58,done@64
