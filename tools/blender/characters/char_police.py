@@ -1,14 +1,22 @@
 """Police first responders (D1-02, pd2_fidelity L4.2): Patrol Officer and TAC Light.
 
-* ``char_patrol_officer``: navy (#1E2A44) uniform, long-sleeved shirt with flapped pockets, a navy
-  stab vest with hi-vis (#D7E34A) bands front and back and a hi-vis back panel, silver badge,
-  shoulder speaker-mic, duty belt with holstered pistol, radio, cuff pouch and torch. Bare head.
-* ``char_tac_light``: charcoal (#2B2F33) tactical uniform, plate carrier (front/back plates,
-  cummerbund, shoulder straps, three magazine pouches, admin and radio pouches), high-cut helmet
-  with rails and ear protection, gloves, knee pads, boots, drop-leg holster. At 30 m it reads as a
-  bulky, helmeted, boxy-torso figure, unlike the slim, bare-headed, striped Patrol Officer.
+* ``char_patrol_officer``: navy (#1E2A44) uniform, long-sleeved shirt, a boxy navy duty/stab vest
+  standing well off the shirt (wider and squarer than any jacket) with hi-vis (#D7E34A) bands, a
+  hi-vis back panel and hi-vis epaulettes, padded shoulders, side straps with buckles, two front and
+  two side pouches, a vest-mounted radio (antenna up) with a coiled cable to a speaker-mic on the
+  right epaulette, silver badge; duty belt with holstered pistol, cuff/glove pouches and torch;
+  police patrol cap (tall structured crown, flat top, chequered hi-vis/navy band, silver badge).
+* ``char_tac_light``: charcoal (#2B2F33) tactical uniform, plate carrier (front/back plates, deep
+  cummerbund, padded shoulder straps, three magazine pouches, admin and radio pouches), an
+  oversized high-cut helmet with rails and big ear-pro cups, gloves, knee pads, boots, drop-leg
+  holster.
 
-Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (TAC).
+30 m silhouettes (``_review/outfits_silhouette_30m.png``): Patrol = tall flat-topped cap + wide,
+straight-sided vest torso; TAC = round, wide helmet + square padded shoulders + narrower chest with a
+deep cummerbund; Halden Security = flat saucer cap on a slim shirted torso; suits/civilians are
+bare-headed with tapered torsos.
+
+Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (cap, helmet).
 No blend shapes (baked at the params below).
 """
 
@@ -86,7 +94,9 @@ def patrol(kit: Kit) -> None:
     nk = g.Neck(fit)
     neck_z = nk.point(0.0, 0.0).z
     cy = fit.ring_centre("chest").y
-    # stab vest with hi-vis bands
+    chest_z = fit.ring_centre("chest").z
+    # duty stab vest with hi-vis bands: a stiff, boxy carrier standing off the shirt (wider and
+    # squarer than any jacket at 30 m), padded shoulders
     bands = ((1.255, 1.300), (1.105, 1.145))
 
     def vest_mat(c: Vector, _r: str) -> str:
@@ -100,12 +110,22 @@ def patrol(kit: Kit) -> None:
             return c.z > neck_z - 0.045 * k * smoothstep(0.11 * k, 0.0, abs(c.x)) - 0.008 * k
         return c.z > neck_z + 0.012 * k
 
-    vest = g.upper_shell(fit, vest_mat, bottom_z=base["belt_z"] + 0.03 * k, base=0.014, sleeveless=True,
-                         hull=kit.hull(), top_cut=cut, iters=4, waist_blouse=0.0, min_off=0.008 * k)
+    def shoulder_pad(p: Vector, r: str) -> float:
+        d = 0.0
+        for sfx in ("L", "R"):
+            sh_pt = Vector(fit.J[f"shoulder.{sfx}"])
+            dd = (p - sh_pt - Vector((0, 0, 0.035 * k))).length
+            d += 0.010 * k * smoothstep(0.11 * k, 0.03 * k, dd)
+        return d
+
+    vest = g.upper_shell(fit, vest_mat, bottom_z=base["belt_z"] + 0.03 * k, base=0.016, sleeveless=True,
+                         hull=kit.hull(), top_cut=cut, iters=4, waist_blouse=0.0, min_off=0.009 * k,
+                         extra=shoulder_pad)
     vm = vest.mesh
+    box = g.box_out(vm, chest_z + 0.02 * k, chest_z + 0.13 * k, 0.034 * k, 0.020 * k, 0.016 * k, power=4.0)
     for loop in o.boundary_loops(vm.f):
         o.straighten_loop(vm, loop, iters=3)
-    o.hem_all(vm, thick=0.009 * k, depth=0.015 * k)
+    o.hem_all(vm, thick=0.013 * k, depth=0.018 * k)
     kit.add_soft(vm)
     vh = Hull(fit, [vm])
     det = Mesh()
@@ -117,29 +137,90 @@ def patrol(kit: Kit) -> None:
         back.append(hit[0] if hit[0] is not None else Vector((x, -0.12, 1.195 * k)))
     o.strip(det, vh, back, 0.034 * k, 0.0025 * k, HIVIS, side_hint=Vector((0, 0, 1)), segs_across=2,
             chamfer=0.003 * k)
-    # hi-vis shoulder tabs
+    # hi-vis epaulettes on the vest shoulders
     for sx in (-1.0, 1.0):
         sh_pt = Vector(fit.J["shoulder.R" if sx > 0 else "shoulder.L"])
         start = nk.point(sx * math.pi / 2, 0.0, 0.016 * k)
-        end = Vector((sh_pt.x - sx * 0.01 * k, sh_pt.y + 0.004 * k, sh_pt.z + 0.06 * k))
-        path = [start.lerp(end, t) for t in [i / 6 for i in range(7)]]
-        o.strip(det, vh, path, 0.02 * k, 0.003 * k, HIVIS, segs_across=1, chamfer=0.003 * k)
+        end = Vector((sh_pt.x - sx * 0.005 * k, sh_pt.y + 0.004 * k, sh_pt.z + 0.07 * k))
+        path = []
+        for q in [start.lerp(end, t) for t in [i / 6 for i in range(7)]]:
+            # drop onto the padded vest shoulder from above (never onto the shirt under it)
+            hit = vh.cast(Vector((q.x, q.y, q.z + 0.3)), Vector((0, 0, -1)), 0.6)
+            path.append(hit[0] if hit[0] is not None else q)
+        o.strip(det, vh, path, 0.024 * k, 0.005 * k, HIVIS, segs_across=1, chamfer=0.003 * k, cast_back=0.05)
     kit.add_soft(det)
     hull = kit.hull()
     gear = Mesh()
-    gear.extend(gk.shield_badge(hull, Vector((-0.095 * k, 0.2, 1.37 * k)), Vector((0, 1, 0.1)), 0.042, 0.05,
+    gear.extend(gk.shield_badge(hull, Vector((-0.095 * k, 0.3, 1.37 * k)), Vector((0, 1, 0.1)), 0.042, 0.05,
                                 "char_metal_silver", "char_metal_silver", k=k))
-    mic, _exit = gk.speaker_mic(hull, Vector((0.11 * k, 0.2, 1.36 * k)), Vector((0.2, 1.0, 0.1)), k=k)
+    # side straps joining the front and back panels (elastic + buckle), two per side
+    for sx in (-1.0, 1.0):
+        for z in (1.12, 1.23):
+            mtx, loc = o.surface_frame(hull, Vector((sx * 0.4, box["cy"], z * k)), Vector((sx, 0, 0)), up=o.UP)
+            gp = o.Gear()
+            gp.box((-0.050 * k, -0.019 * k, -0.002 * k), (0.050 * k, 0.019 * k, 0.005 * k), "polymer_black")
+            gp.box((-0.016 * k, -0.023 * k, 0.003 * k), (0.016 * k, 0.023 * k, 0.012 * k), "polymer_black")
+            gp.bevel(0.002 * k, 1, 30.0)
+            gear.extend(gp.to_mesh(mtx, anchor=loc))
+    # vest-front pouches between the hi-vis bands (notebook, gloves) and two side pouches
+    for x in (-0.085, 0.085):
+        mtx, loc = o.surface_frame(hull, Vector((x * k, 0.3, 1.20 * k)), Vector((0, 1, 0)))
+        gp = o.Gear()
+        gp.box((-0.040 * k, -0.042 * k, 0.0), (0.040 * k, 0.040 * k, 0.030 * k), NAVY)
+        gp.box((-0.042 * k, 0.012 * k, 0.026 * k), (0.042 * k, 0.046 * k, 0.036 * k), NAVY)    # flap
+        gp.bevel(0.004 * k, 1, 30.0)
+        gp.cyl(0.005 * k, 0.004 * k, centre=(0.0, 0.026 * k, 0.038 * k), axis="Z", segs=10, mat="char_metal_silver")
+        gear.extend(gp.to_mesh(mtx, anchor=loc))
+    for sx in (-1.0, 1.0):
+        a = sx * math.radians(68.0)
+        d = Vector((math.sin(a), math.cos(a), 0.0))
+        mtx, loc = o.surface_frame(hull, Vector((0.0, box["cy"], 1.17 * k)) + d * 0.1, d)
+        gp = o.Gear()
+        gp.box((-0.034 * k, -0.05 * k, 0.0), (0.034 * k, 0.045 * k, 0.040 * k), NAVY)
+        gp.box((-0.036 * k, 0.015 * k, 0.036 * k), (0.036 * k, 0.050 * k, 0.046 * k), NAVY)
+        gp.bevel(0.005 * k, 1, 30.0)
+        gear.extend(gp.to_mesh(mtx, anchor=loc))
+    # radio on the right chest of the vest (antenna up past the shoulder line) with a coiled cable
+    # to the speaker-mic clipped on the right epaulette
+    mtx, loc = o.surface_frame(hull, Vector((0.105 * k, 0.3, 1.315 * k)), Vector((0.12, 1, 0)))
+    rw, rh, rd = 0.058 * k, 0.11 * k, 0.036 * k
+    gp = o.Gear()
+    gp.box((-rw / 2 - 0.005 * k, -rh / 2, 0.0), (rw / 2 + 0.005 * k, rh / 2 - 0.02 * k, 0.012 * k), "polymer_black")
+    gp.box((-rw / 2, -rh / 2, 0.008 * k), (rw / 2, rh / 2, 0.008 * k + rd), "polymer_black")
+    gp.box((-rw / 2 + 0.007 * k, -rh / 2 + 0.012 * k, 0.008 * k + rd - 0.001), (rw / 2 - 0.007 * k, -0.004 * k,
+           0.008 * k + rd + 0.002 * k), "rubber_black")
+    gp.bevel(0.004 * k, 1, 30.0)
+    gp.cyl(0.0048 * k, 0.13 * k, centre=(-rw / 2 + 0.013 * k, rh / 2 + 0.065 * k, 0.008 * k + rd * 0.5), axis="Y",
+           segs=8, mat="rubber_black")
+    gp.cyl(0.007 * k, 0.014 * k, centre=(rw / 2 - 0.014 * k, rh / 2 + 0.007 * k, 0.008 * k + rd * 0.5), axis="Y",
+           segs=10, mat="rubber_black")
+    gp.cyl(0.003 * k, 0.004 * k, centre=(0.0, rh / 2 + 0.002 * k, 0.008 * k + rd * 0.5), axis="Y", segs=6,
+           mat="char_led_red")
+    gear.extend(gp.to_mesh(mtx, anchor=loc))
+    radio_jack = mtx @ Vector((rw / 2 - 0.014 * k, rh / 2 + 0.014 * k, 0.008 * k + rd * 0.5))
+    sh_r = Vector(fit.J["shoulder.R"])
+    mic_at = Vector((sh_r.x - 0.035 * k, sh_r.y + 0.02 * k, sh_r.z + 0.07 * k))
+    mic, mic_exit = gk.speaker_mic(hull, mic_at, Vector((0.25, 0.75, 0.6)), k=k)
     gear.extend(mic)
     gear.extend(gk.buckle(belt, "char_metal_silver", w=0.05, h=0.04))
     gear.extend(gk.holster(belt, math.radians(100.0)))
-    a_radio = math.radians(-105.0)
-    gear.extend(gk.radio(belt, a_radio))
     gear.extend(gk.pouch(belt, math.radians(-150.0), 0.07, 0.06, 0.03, "char_leather_black", snap="char_metal_silver"))
     gear.extend(gk.pouch(belt, math.radians(150.0), 0.06, 0.06, 0.028, "char_leather_black", snap="char_metal_silver"))
+    gear.extend(gk.pouch(belt, math.radians(-105.0), 0.05, 0.075, 0.03, "char_leather_black", snap="char_metal_silver"))
     gear.extend(gk.flashlight(belt, math.radians(-55.0)))
     kit.add_gear(gear)
-    kit.seats["Hip"] = belt.point(a_radio, dz=0.0, out=0.045 * k)
+    hull = kit.hull()
+    kit.add_soft(gk.coil_cable(fit, hull, radio_jack, mic_exit,
+                               [radio_jack.lerp(mic_exit, 0.5) + Vector((0.012 * k, 0.025 * k, 0.0))], k=k,
+                               coil_r=0.005, coil_from=0.15, coil_to=0.85))
+    kit.seats["Hip"] = belt.point(math.radians(-105.0), dz=0.0, out=0.045 * k)
+    # police patrol cap: tall structured crown, flat top, chequered hi-vis/navy (Sillitoe) band,
+    # black chin strap, silver badge; taller and squarer than the Halden saucer cap at range
+    cap, info = gk.peaked_cap(fit, NAVY, (HIVIS, NAVY), "char_visor_gloss", "char_leather_black", flare=1.07,
+                              rise=(0.050, 0.068), band_h=0.048, check_rows=3, crown_dome=0.003,
+                              badge_mats=("char_metal_silver", NAVY), visor_reach=0.062)
+    kit.add_head(cap)
+    kit.notes["hat"] = "police patrol cap, chequered band (Headwear), crown top z {:.3f} m".format(info["crown_top_z"])
 
 
 def tac(kit: Kit) -> None:
@@ -171,8 +252,8 @@ def tac(kit: Kit) -> None:
     o.patch(pc, hull, Vector((0.0, 0.0, 1.27 * k)), Vector((-1, 0, 0)), Vector((0, 0, 1)),
             o.rounded_rect(0.32 * k, 0.35 * k, 0.03 * k, 3), 0.040 * k, TAC_GEAR, cast_dir=Vector((0, 1, 0)),
             rings=4, chamfer=0.008 * k)
-    cb = gk.Belt(fit, Hull(fit, [base["shirt"]], body_regions=set()), 1.15 * k, height=0.13, thick=0.018, drop=0.0,
-                 gap=0.004)
+    cb = gk.Belt(fit, Hull(fit, [base["shirt"]], body_regions=set()), 1.15 * k, height=0.15, thick=0.028, drop=0.0,
+                 gap=0.006)
     pc.extend(cb.mesh(TAC_GEAR))
     ph = Hull(fit, [pc, base["shirt"]])
     nk = g.Neck(fit)
@@ -189,6 +270,18 @@ def tac(kit: Kit) -> None:
     kit.add_soft(pc)
     hull = kit.hull()
     gear = Mesh()
+    # padded carrier shoulders: thick pads on the straps over the shoulder tops (squares the
+    # shoulder line so TAC never reads as the Patrol officer in silhouette)
+    for sx in (-1.0, 1.0):
+        sh_pt = Vector(fit.J["shoulder.R" if sx > 0 else "shoulder.L"])
+        top = nk.point(sx * math.pi / 2, 0.0).lerp(sh_pt, 0.62)
+        mtx, loc = o.surface_frame(hull, Vector((top.x, top.y, top.z + 0.2)), Vector((sx * 0.25, 0.0, 1.0)),
+                                   up=Vector((0, 1, 0)))
+        gp = o.Gear()
+        gp.box((-0.040 * k, -0.062 * k, -0.004 * k), (0.040 * k, 0.062 * k, 0.026 * k), TAC_GEAR)
+        gp.box((-0.030 * k, -0.050 * k, 0.022 * k), (0.030 * k, 0.050 * k, 0.032 * k), TAC_GEAR)
+        gp.bevel(0.006 * k, 1, 30.0)
+        gear.extend(gp.to_mesh(mtx, anchor=loc))
     # magazine pouches (3) + admin pouch on the front plate
     for i, x in enumerate((-0.065, 0.0, 0.065)):
         mtx, loc = o.surface_frame(hull, Vector((x * k, 0.3, 1.19 * k)), Vector((0, 1, 0)))
@@ -227,7 +320,7 @@ def tac(kit: Kit) -> None:
     gp.bevel(0.004 * k, 1, 30.0)
     gear.extend(gp.to_mesh(mtx @ o.Matrix.Rotation(math.radians(6.0), 4, "Z"), anchor=loc))
     kit.add_gear(gear)
-    helm, info = gk.helmet(fit, "char_tac_helmet")
+    helm, info = gk.helmet(fit, "char_tac_helmet", gap=0.031, cup_r=0.041)
     kit.add_head(helm)
     kit.notes["hat"] = "helmet + ear protection (Headwear), top z {:.3f} m".format(info["top_z"])
     kit.seats["Hip"] = belt.point(math.radians(140.0), dz=0.0, out=0.05 * k)

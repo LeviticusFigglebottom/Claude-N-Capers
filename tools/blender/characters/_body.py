@@ -45,7 +45,8 @@ SKIN_TONES = ("#E3BFA3", "#D2A283", "#B7835F", "#956446", "#704630", "#4C3022")
 #: Hair colours, library ids ``char_hair_<name>``.
 HAIR_COLORS = {"dark": "#2B2420", "brown": "#5B3B26", "blond": "#B3925C", "grey": "#9A9690"}
 EYE_COLOR = "#D9D3C8"          # char_eye (sclera)
-IRIS_COLOR = "#3E2C20"         # char_eye_iris (iris + pupil, one flat colour until a texture exists)
+IRIS_COLOR = "#6B4C34"         # char_eye_iris (iris ring; the pupil is char_lash)
+LASH_COLOR = "#3B2E28"         # char_lash (upper lid margin / lash line, pupil)
 HAIR_STYLES = _headmod.HAIR_STYLES   # none, buzz, short, side_part, bob, bald
 
 #: Default parameters (``char_body_base``).
@@ -121,7 +122,7 @@ def _seg_dist(p: Vec, a: Vec, b: Vec) -> float:
 # =============================================================================================
 @dataclass
 class MeshData:
-    """Vertex/face soup. ``face_mat`` in {"skin","eye","iris","brow","hair"}; ``vert_rigid`` maps a
+    """Vertex/face soup. ``face_mat`` in {"skin","eye","iris","lash","brow","hair"}; ``vert_rigid`` maps a
     vertex to a single bone it is weighted to 100 % (eyes, ears, brows, fingertips...)."""
 
     verts: list = field(default_factory=list)
@@ -887,8 +888,9 @@ _TILES = {  # region -> (u0, v0, w, h) per side (None = centre)
 
 def _uv_point(region: str, mat: str, side: int, p: Vec, k: float) -> tuple[str, float, float]:
     sfx = "R" if side > 0 else "L"
-    if mat != "skin" or (region == "head" and abs(p[0]) > 0.072 * k and p[2] < 1.69 * k and p[1] < 0.0):
-        # eyes, brows, hair, ears: planar front/side projection in a shared tile
+    if mat != "skin" or (region == "head" and side != 0):
+        # eyes, brows, hair, ears (head parts carry a side; the head skin is side 0): planar
+        # front/side projection in a shared tile
         return "parts", 0.5 + p[0] / (0.4 * k), (p[2] / k - 1.45) / 0.4
     if region == "head":
         q = sub(p, mul(HEAD_CENTRE, k))
@@ -946,7 +948,7 @@ def _make_object(name: str, data: BodyData, mats: dict, armature, weights: list[
     me = bpy.data.meshes.new(name)
     me.from_pydata([tuple(v) for v in data.basis], [], [tuple(f) for f in data.faces])
     order = []
-    for mname in ("skin", "eye", "iris", "brow", "hair"):
+    for mname in ("skin", "eye", "iris", "lash", "brow", "hair"):
         if mname in data.face_mat:
             order.append(mname)
             me.materials.append(mats[mname])
@@ -1000,7 +1002,8 @@ def build_body(ctx, armature, params: dict | None = None) -> dict:
     skin = _material(ctx, f"char_skin_{int(p['skin'])}", SKIN_TONES[int(p["skin"]) - 1], 0.55)
     hair_mat = _material(ctx, f"char_hair_{p['hair_color']}", HAIR_COLORS[p["hair_color"]], 0.6)
     mats = {"skin": skin, "eye": _material(ctx, "char_eye", EYE_COLOR, 0.25),
-            "iris": _material(ctx, "char_eye_iris", IRIS_COLOR, 0.2), "brow": hair_mat, "hair": hair_mat}
+            "iris": _material(ctx, "char_eye_iris", IRIS_COLOR, 0.2), "lash": _material(ctx, "char_lash", LASH_COLOR, 0.5),
+            "brow": hair_mat, "hair": hair_mat}
     out = {"Body": _make_object("Body", body, mats, armature, body_weights(body)), "Hair": None, "data": body}
     if hair.faces:
         out["Hair"] = _make_object("Hair", hair, mats, armature, [{"head": 1.0} for _ in hair.basis])
