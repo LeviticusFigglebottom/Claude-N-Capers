@@ -24,6 +24,7 @@ signal crew_changed()            ## crew
 signal masked_changed()          ## masked, casing
 signal custody_changed()         ## custody (v1.2)
 signal captain_changed()         ## captain_present, captain_resistance (v1.3)
+signal stamina_changed()         ## stamina, exhausted (v1.4)
 
 ## PD2 display units (health 0..max_health, armor 0..max_armor).
 var health: float = 100.0:
@@ -190,6 +191,15 @@ var captain_resistance: float = 0.0:
 	set(v):
 		captain_resistance = v
 		captain_changed.emit()
+## v1.4 (B4-19): sprint stamina 0..1 (1 = full) and the exhausted flag (no sprint until recovered).
+var stamina: float = 1.0:
+	set(v):
+		stamina = v
+		stamina_changed.emit()
+var exhausted: bool = false:
+	set(v):
+		exhausted = v
+		stamina_changed.emit()
 ## v1.2: the crew member followed without a HeistRuntime (firing range); see track().
 var tracked_crew: Node = null
 

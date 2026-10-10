@@ -164,7 +164,9 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   ui_hud.md v1.2; no adapter; v1.2 `custody` drives `CustodyPanel`: negotiation / auto-release timers while in
   custody, a trade hint for the highlighted hostage while free; v1.3 (D-049) `captain_changed` / `captain_present` /
   `captain_resistance` drive `CaptainPanel`: Brandt's name + Aegis resistance bar, and the status panel then drops
-  its `captain` warning line), polled while unbound and rediscovered if the model is freed; MenuFlow
+  its `captain` warning line; v1.4 (B4-19, ahead of ENV A) `stamina_changed` / `stamina` 0..1 / `exhausted` drive
+  `StaminaBar` above the vitals: shown while stamina < 1 or exhausted, `HudTweak.stamina_exhausted_color` tint
+  while exhausted, hidden when the model lacks the fields), polled while unbound and rediscovered if the model is freed; MenuFlow
   relies on that discovery in heists. `bind(model)` still works. `MockHudModel` (demo/tests) joins the
   same group. `MarkedTargets` draws a diamond per `marked_targets` entry; `InteractionPanel` fills a
   missing `{key}` prompt arg from the `interact` InputMap binding.

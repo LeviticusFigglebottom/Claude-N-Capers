@@ -23,6 +23,9 @@ const DEFAULT_PATH: String = "res://content/data/ui/hud_tweak.tres"
 @export var assault_color: Color = Color(1.0, 0.25, 0.2)
 ## Captain widget (ui_hud v1.3): Commander Brandt's name and Aegis resistance bar.
 @export var captain_color: Color = Color(0.95, 0.55, 0.95)
+## Stamina bar (ui_hud v1.4, B4-19): normal fill, and the tint while `exhausted`.
+@export var stamina_color: Color = Color(0.95, 0.9, 0.55)
+@export var stamina_exhausted_color: Color = Color(1.0, 0.45, 0.25)
 @export var delta_better_color: Color = Color(0.35, 0.9, 0.4)
 @export var delta_worse_color: Color = Color(1.0, 0.35, 0.3)
 ## Marked targets (S2.9 marks; the outline shader comes later): diamond above each marked unit.
