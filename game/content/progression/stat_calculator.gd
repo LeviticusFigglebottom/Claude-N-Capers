@@ -5,6 +5,7 @@
 ##   "damage": float, "accuracy": int 0..100, "stability": int 0..100, "concealment": int,
 ##   "threat": int 0..43, "mag": int, "total_ammo": int, "rof": float (rpm),
 ##   "reload": float (s, tactical), "reload_empty": float (s) }
+##   (reload values via LoadoutResolver.reload_times: shell-fed weapons are derived per D-045)
 ## delta(base, modded) -> { key: {"base", "modded", "diff", "changed": bool, "better": bool} }
 ##   for each DisplayStatTweak.delta_keys entry; "better" drives green (true) / red (false).
 class_name StatCalculator
@@ -21,6 +22,7 @@ static func display(stats: WeaponStats) -> Dictionary:
 	var recoil: float = stats.recoil_kick_deg + stats.recoil_horizontal_deg * t.stability_horizontal_weight
 	var stab: float = _linear_score(recoil, t.stability_recoil_best_deg, t.stability_recoil_worst_deg, t.stability_max)
 	var threat: float = clampf(stats.suppression * t.threat_scale, 0.0, t.threat_max)
+	var reload: Vector2 = LoadoutResolver.reload_times(stats)  # D-045 shell-fed totals
 	return {
 		"damage": snappedf(dmg, 0.1),
 		"accuracy": roundi(acc),
@@ -30,8 +32,8 @@ static func display(stats: WeaponStats) -> Dictionary:
 		"mag": stats.mag_size,
 		"total_ammo": stats.total_ammo,
 		"rof": stats.fire_rate_rpm,
-		"reload": stats.reload_time_s,
-		"reload_empty": stats.reload_empty_time_s,
+		"reload": reload.x,
+		"reload_empty": reload.y,
 	}
 
 

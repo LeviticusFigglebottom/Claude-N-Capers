@@ -5,7 +5,11 @@
 ## * resolved_primary / resolved_secondary = WeaponDef.base.plus(delta) for each mod in its slot,
 ##   where an equipped mod replaces the weapon's default (stock) mod of the same ModType. Then
 ##   clamps: concealment to the curve's weapon range (0..30), spreads >= 0, mag >= 1,
-##   total_ammo >= mag. Skill modifiers are NOT baked in (ENV A applies them at runtime).
+##   total_ammo >= mag. Shell-fed weapons (`reload_per_round_s > 0`, D-045) then get DERIVED totals
+##   after mods and clamps: reload_time_s = reload_start_s + mag_size x reload_per_round_s + reload_end_s,
+##   reload_empty_time_s = reload_start_s + mag_size x reload_per_round_s + reload_end_empty_s
+##   (Plowman: 0.4 + 6 x 0.4333 + 0.4 / 1.2 = 3.4 s / 4.2 s); a tube mod changes the totals through
+##   mag_size only, and its raw reload deltas must be 0. Skill modifiers are NOT baked in (ENV A applies them at runtime).
 ## * Illegal mods (unknown id, not listed in the weapon's mod_slots for its type, a second mod in
 ##   the same slot, or a declared conflict) are rejected with Log.error and ignored.
 ## * concealment_total = primary + secondary + melee + armor + bonus; detection_risk via the
@@ -350,4 +354,23 @@ static func _clamp(s: WeaponStats) -> WeaponStats:
 	s.spread_deg_ads = maxf(s.spread_deg_ads, 0.0)
 	s.mag_size = maxi(s.mag_size, 1)
 	s.total_ammo = maxi(s.total_ammo, s.mag_size)
+	_derive_shell_reload(s)
 	return s
+
+
+## D-045 (data_schemas.md "Shell-by-shell reload timing"): a shell-fed weapon's reload totals are
+## derived from the resolved timings and magazine size, never summed from mod deltas.
+static func _derive_shell_reload(s: WeaponStats) -> void:
+	var t: Vector2 = reload_times(s)
+	s.reload_time_s = t.x
+	s.reload_empty_time_s = t.y
+
+
+## (tactical, empty) reload seconds of a stat block: derived per D-045 for shell-fed weapons
+## (`reload_per_round_s > 0`), else the stored reload_time_s / reload_empty_time_s. StatCalculator
+## uses this so unresolved base stats display the same totals as resolved ones.
+static func reload_times(s: WeaponStats) -> Vector2:
+	if s.reload_per_round_s <= 0.0:
+		return Vector2(s.reload_time_s, s.reload_empty_time_s)
+	var load_s: float = s.reload_start_s + float(s.mag_size) * s.reload_per_round_s
+	return Vector2(load_s + s.reload_end_s, load_s + s.reload_end_empty_s)
