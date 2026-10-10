@@ -21,8 +21,8 @@ extends RefCounted
 const ASSET_DIR: String = "res://content/data/preplanning/assets"
 const BLUEPRINT_DIR: String = "res://content/data/preplanning/blueprints"
 const PLACEHOLDER_BLUEPRINT_PATH: String = "res://content/data/preplanning/placeholder_blueprint.tres"
-## Contract heist_map.md §1: res://world/heists/<id>/<id>_variants.tres (HeistVariantTable).
-const VARIANTS_PATH: String = "res://world/heists/%s/%s_variants.tres"
+## Contract heist_map.md §1: `<id>_variants.tres` (HeistVariantTable) next to HeistRegistry.def_path(id).
+const VARIANTS_FILE: String = "%s_variants.tres"
 
 ## Top-level keys of HeistDef.preplanning (contract v1.0).
 const PREPLANNING_KEYS: Array[String] = ["favors", "disable", "assets"]
@@ -83,11 +83,11 @@ static func build(p_heist_id: StringName, p_difficulty: int, def: HeistDef = nul
 
 
 ## Variant groups of a heist: the rule groups and rare-event `force_active` groups of its
-## HeistVariantTable (VARIANTS_PATH) plus the `variant_group` params of the blueprint's points.
+## HeistVariantTable (variants_path()) plus the `variant_group` params of the blueprint's points.
 ## Empty when the heist has no variant table (groups unknown).
 static func heist_variant_groups(p_heist_id: StringName, bp: PreplanBlueprint = null) -> Array[StringName]:
 	var out: Array[StringName] = []
-	var path: String = VARIANTS_PATH % [p_heist_id, p_heist_id]
+	var path: String = variants_path(p_heist_id)
 	if p_heist_id == &"" or not ResourceLoader.exists(path):
 		return out
 	var table: HeistVariantTable = load(path) as HeistVariantTable
@@ -107,6 +107,11 @@ static func heist_variant_groups(p_heist_id: StringName, bp: PreplanBlueprint = 
 		for pt: Dictionary in bp.points:
 			add.call((pt.get("params", {}) as Dictionary).get("variant_group"))
 	return out
+
+
+## The heist's HeistVariantTable path (heist_map.md §1 convention, beside its HeistDef).
+static func variants_path(p_heist_id: StringName) -> String:
+	return HeistRegistry.def_path(p_heist_id).get_base_dir().path_join(VARIANTS_FILE % p_heist_id)
 
 
 ## Groups named by `a`'s reveals / force_variants that are not in `groups`.
