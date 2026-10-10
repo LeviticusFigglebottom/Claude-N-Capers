@@ -1,0 +1,115 @@
+# Walkthrough detour whitelist for Shadow Ledger (tools/levelcheck/README.md "walkthrough").
+# Format: <spawn name|path|*> <target name|path|*>. Owner: ENV C (C2). Every entry is a > 3x
+# path/straight ratio that follows from the APPROVED plan (docs/design/heists/shadow_ledger.md,
+# D-042, "Walkthrough whitelist": the vertical pairs exceed 3x because the tower's stairs are the
+# only way between floors). The targets are reachable; the path is the shortest legal walk.
+# Doc vertical data: L40 0.0, L41 3.6, L42 8.0, roof 11.6. The passenger lifts are locked out and
+# the service lift only serves L40, so floors connect through Stair A (x 12-15, L40 -> roof) and
+# Stair B (x 21-24, L40 -> L42) only, 4.4-11.6 m of climb with ~6 m of U-stair per storey.
+#
+# 1) Service-level spawns (pre-planning `asset.alternate_entry`, S1 at L40, x 26-27.4). Everything
+#    above them is reached through Stair B (one route), then along K10/K16 or M10/M15; the K11
+#    server room, the K13 security room and the L42 east wing (art hall, study, boardroom, linen /
+#    J42) are 1-2 storeys straight above S1 (4-16 m straight, 25-60 m walked). The roof pad (E1) is
+#    3 storeys up and needs Stair B -> L42 -> M15 -> M9 -> Stair A -> roof. Stair A's L40 landing
+#    gate (the P1 police gate) is only reachable via L41 (the S1 / Stair A doors on L40 are sealed).
+* Gameplay/Doors/ArtHallDoors/UsePoint
+* Gameplay/Doors/ArtHallStaffDoor/UsePoint
+* Gameplay/Doors/BoardroomDoor/UsePoint
+* Gameplay/Doors/CageGate
+* Gameplay/Doors/CageGate/UsePoint
+* Gameplay/Doors/ElectricalL41/UsePoint
+* Gameplay/Doors/ElectricalL42/UsePoint
+* Gameplay/Doors/HeadHousePlantDoor/UsePoint
+* Gameplay/Doors/ITDoor/UsePoint
+* Gameplay/Doors/K4Door/UsePoint
+* Gameplay/Doors/K5Door/UsePoint
+* Gameplay/Doors/LinenL42/UsePoint
+* Gameplay/Doors/PantryDoor/UsePoint
+* Gameplay/Doors/PlantDoor/UsePoint
+* Gameplay/Doors/ReceptionGlassE/UsePoint
+* Gameplay/Doors/SecurityDoor/UsePoint
+* Gameplay/Doors/ServerDoor
+* Gameplay/Doors/ServerDoor/UsePoint
+* Gameplay/Doors/SliderEast
+* Gameplay/Doors/SliderEast/UsePoint
+* Gameplay/Doors/StairAGate
+* Gameplay/Doors/StairAGate/UsePoint
+* Gameplay/Doors/StudyDoor
+* Gameplay/Doors/StudyDoor/UsePoint
+* Gameplay/Doors/StudyFacadeDoor
+* Gameplay/Doors/StudyFacadeDoor/UsePoint
+* Gameplay/Doors/WineRoomDoor/UsePoint
+* Gameplay/Misc/AlarmReception/UsePoint
+* Gameplay/Misc/AlarmSecurity/UsePoint
+* Gameplay/Misc/CameraStation/UsePoint
+* Gameplay/Misc/HumidorCigars1/UsePoint
+* Gameplay/Misc/HumidorCigars2/UsePoint
+* Gameplay/Misc/MoorBracelet/UsePoint
+* Gameplay/Misc/Painting1
+* Gameplay/Misc/Painting1/UsePoint
+* Gameplay/Misc/Painting1/Visual/LootSpawnPlaceholder
+* Gameplay/Misc/Painting2
+* Gameplay/Misc/Painting2/UsePoint
+* Gameplay/Misc/Painting2/Visual/LootSpawnPlaceholder
+* Gameplay/Misc/PhoneAssistant/UsePoint
+* Gameplay/Misc/PhoneIT/UsePoint
+* Gameplay/Misc/PhoneMoor/UsePoint
+* Gameplay/Misc/PhonePantry/UsePoint
+* Gameplay/Misc/PhoneReception/UsePoint
+* Gameplay/Misc/PhoneSecurity/UsePoint
+* Gameplay/Server/CageLock
+* Gameplay/Server/CageLock/UsePoint
+* Gameplay/Server/Drives1
+* Gameplay/Server/Drives1/UsePoint
+* Gameplay/Server/Drives1/Visual/LootSpawnPlaceholder
+* Gameplay/Server/Drives2
+* Gameplay/Server/Drives2/UsePoint
+* Gameplay/Server/Drives2/Visual/LootSpawnPlaceholder
+* Gameplay/Server/Drives3
+* Gameplay/Server/Drives3/UsePoint
+* Gameplay/Server/Drives3/Visual/LootSpawnPlaceholder
+* Gameplay/Server/HackTerminal
+* Gameplay/Server/HackTerminal/UsePoint
+* Gameplay/Server/ServerReader
+* Gameplay/Server/ServerReader/UsePoint
+* Gameplay/Study/StudyReader
+* Gameplay/Study/StudyReader/UsePoint
+* Gameplay/Study/StudySafe
+* Gameplay/Study/StudySafe/LedgerBooks
+* Gameplay/Study/StudySafe/LedgerBooks/UsePoint
+* Gameplay/Study/StudySafe/LedgerBooks/Visual/LootSpawnPlaceholder
+* Gameplay/Study/StudySafe/StudyValuables1/UsePoint
+* Gameplay/Study/StudySafe/StudyValuables2/UsePoint
+* Gameplay/Study/StudySafe/StudyValuables3/UsePoint
+* Gameplay/Study/StudySafe/UsePoint
+* Variants/Group_code_note/Slot_code_contractor/CodeNote
+* Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint
+* Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone
+* Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone
+* Variants/Group_keycard/Slot_kc_cleaner/Keycard
+* Variants/Group_keycard/Slot_kc_cleaner/Keycard/UsePoint
+* Variants/Group_laptop/Slot_lap_boardroom/Laptop
+* Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint
+* Variants/Group_laptop/Slot_lap_boardroom/Laptop/Visual/LootSpawnPlaceholder
+#
+# 2) Roof spawns (default, SW corner x 2-6, z 13-15) and the OOB respawns next to them. The L41 south
+#    -west rooms (K17 archive safe, K18 break room, K8 doors) and the L42 west rooms (guest suite,
+#    dining slider) are 1-2 storeys straight below (4-9 m); the walk goes round the plant block to
+#    the head house, down Stair A and back west along K16 / M9 (30-45 m).
+* Gameplay/Doors/ArchiveDoor/UsePoint
+* Gameplay/Doors/BathDoor/UsePoint
+* Gameplay/Doors/BreakRoomDoor/UsePoint
+* Gameplay/Doors/K8DoorN/UsePoint
+* Gameplay/Doors/K8DoorS/UsePoint
+* Gameplay/Doors/SliderDining
+* Gameplay/Doors/SliderDining/UsePoint
+* Gameplay/Doors/SuiteDoor/UsePoint
+* Gameplay/Misc/AlarmGuestSuite/UsePoint
+* Gameplay/Misc/ArchiveSafe
+* Gameplay/Misc/ArchiveSafe/ArchiveCash
+* Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint
+* Gameplay/Misc/ArchiveSafe/ArchiveCash/Visual/LootSpawnPlaceholder
+* Gameplay/Misc/ArchiveSafe/UsePoint
+* Gameplay/Misc/PhoneBreakRoom/UsePoint
+* Gameplay/Misc/PhoneGuestSuite/UsePoint

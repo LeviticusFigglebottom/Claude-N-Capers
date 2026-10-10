@@ -156,6 +156,10 @@ const STAIR: Dictionary = {
 	"riser": 4.0 / 22.0, "tread": 0.28, "risers_per_flight": 11, "landing_z": [0.2, 1.4],
 	"f1_x": [7.1, 8.3], "f2_x": [8.7, 9.9], "landing_x": [7.1, 9.9], "landing_y": -2.0,
 	"divider_x": [8.3, 8.7], "b14_z": 3.5, "ramp_t": 0.3,
+	# Wall handrails on both sides of both flights (§2 MUST, lead ruling): round bar, centre `rail_h`
+	# above the nosing line (top ~0.88 m over the true nosings; the validator line runs below the bottom
+	# nosing, so it reads 0.93-1.05 m), `rail_off` out from the wall face, brackets, wall returns.
+	"rail_h": 0.86, "rail_off": 0.07, "rail_r": 0.02,
 }
 
 ## Railings (collision panel + rails/posts): [name, box]. Height 1.05 above the floor they stand on.

@@ -123,21 +123,26 @@ static func wall_yaw(w: int) -> float:
 	return [PI, PI * 0.5, 0.0, -PI * 0.5][w]
 
 
-## Register a door opening at a world position on the floor (centre of the opening). `swing_depth`:
+## Register a door opening at a world position on the floor (centre of the opening). `width` is
+## the leaf width (0.9 single, 1.8 double, 1.1 service). `frame_pad` (m per side) keeps the frame's
+## architraves clear: the GSR door frames (prop_door_*) reach 0.125 (single/service) to 0.175
+## (double) beyond the leaf on each side; the default 0.18 covers all of them. `swing_depth`:
 ## -1 = the leaf swings into the room (keep-out width + 0.15, >= 1 m), 0 = swings out (0.3 m threshold).
-func add_door(world_pos: Vector3, width: float, swing_depth: float = -1.0, top: float = 2.2) -> void:
+func add_door(world_pos: Vector3, width: float, swing_depth: float = -1.0, top: float = 2.2,
+		frame_pad: float = 0.18) -> void:
 	var l: Vector3 = to_local(world_pos)
 	var wu: Vector2 = nearest_wall(l)
-	openings.append({"wall": int(wu.x), "u": wu.y, "width": width, "bottom": 0.0, "top": top, "door": true,
+	openings.append({"wall": int(wu.x), "u": wu.y, "width": width, "bottom": 0.0, "top": top, "door": true, "pad": frame_pad,
 		"swing": 0.3 if swing_depth == 0.0 else maxf(swing_depth if swing_depth > 0.0 else width + 0.15, 1.0)})
 
 
 ## Register a window: world position of the sill centre, width and the sill/head heights above
 ## the floor.
-func add_window(world_pos: Vector3, width: float, sill: float, head: float) -> void:
+func add_window(world_pos: Vector3, width: float, sill: float, head: float, frame_pad: float = 0.06) -> void:
 	var l: Vector3 = to_local(world_pos)
 	var wu: Vector2 = nearest_wall(l)
-	openings.append({"wall": int(wu.x), "u": wu.y, "width": width, "bottom": sill, "top": head, "door": false, "swing": 0.0})
+	openings.append({"wall": int(wu.x), "u": wu.y, "width": width, "bottom": sill, "top": head, "door": false, "swing": 0.0,
+		"pad": frame_pad})
 
 
 ## Register a world-space keep-out box.
