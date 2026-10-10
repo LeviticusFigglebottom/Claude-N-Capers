@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.quartermaster.strip_loader"
+display_name = "Strip Loader"
+tree = &"bruiser"
+subtree = &"quartermaster"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "Reload all weapons 10% faster."
+desc_aced = "Swap weapons 25% faster."
+grants_basic = {
+&"weapon.reload_speed_mult.all": 1.1
+}
+grants_aced = {
+&"weapon.swap_speed_mult.all": 1.25
+}

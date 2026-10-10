@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.field_medic.rally_cry"
+display_name = "Rally Cry"
+tree = &"ringleader"
+subtree = &"field_medic"
+tier = 4
+cost_basic = 4
+cost_aced = 8
+desc_basic = "Revive crew members 100% faster. Shouting at a crew member gives them 20% more movement and reload speed for 10 s."
+desc_aced = "Shout at a downed crew member up to 9 m away to revive them instantly. Once every 20 s."
+grants_basic = {
+&"interaction.revive_speed_mult": 0.5,
+&"ability.inspire": {
+"range": 0.0,
+"cooldown": 0.0,
+"buff_move_mult": 1.2,
+"buff_reload_mult": 1.2,
+"buff_duration": 10.0
+}
+}
+grants_aced = {
+&"ability.inspire": {
+"range": 9.0,
+"cooldown": 20.0,
+"buff_move_mult": 1.2,
+"buff_reload_mult": 1.2,
+"buff_duration": 10.0
+}
+}

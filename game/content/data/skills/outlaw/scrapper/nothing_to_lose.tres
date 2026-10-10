@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.scrapper.nothing_to_lose"
+display_name = "Nothing to Lose"
+tree = &"outlaw"
+subtree = &"scrapper"
+tier = 4
+cost_basic = 4
+cost_aced = 8
+desc_basic = "Your max health drops to 30% and healing on you is 75% weaker, but you take 10% less damage."
+desc_aced = "Take 25% less damage instead, and healing is no longer weakened."
+grants_basic = {
+&"defense.health_mult": 0.3,
+&"defense.damage_taken_mult": 0.9
+}
+grants_aced = {
+&"defense.damage_taken_mult": 0.8333
+}

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.field_medic.bedside_manner"
+display_name = "Bedside Manner"
+tree = &"ringleader"
+subtree = &"field_medic"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "Deploy First Aid Kits and Doctor Bags 50% faster."
+desc_aced = "Crew members who use your First Aid Kits or Doctor Bags take 10% less damage for 120 s."
+grants_basic = {}
+grants_aced = {}

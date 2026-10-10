@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.two_gun.quick_holster"
+display_name = "Quick Holster"
+tree = &"outlaw"
+subtree = &"two_gun"
+tier = 1
+cost_basic = 1
+cost_aced = 3
+desc_basic = "Draw and holster pistols in 33% less time."
+desc_aced = "+8 accuracy with pistols."
+grants_basic = {
+&"weapon.swap_speed_mult.pistol": 1.5
+}
+grants_aced = {
+&"weapon.spread_mult.pistol": 0.92
+}

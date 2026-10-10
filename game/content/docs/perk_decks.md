@@ -1,0 +1,271 @@
+# Perk decks (B4-02): data layout, proposed PARAMS schemas, requested keys
+
+Owner: ENV B. Status: **proposal for lead review.** ENV A implements the mechanics and writes the
+final schema in `game/systems/modifiers_params.md` (contracts/modifiers.md). Until then, this file
+records what our data grants.
+
+Spec: pd2_fidelity.md P4 and the P-decks table. Reference: pd2_research.md §3.2 and Appendix B.
+Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). Tests:
+`game/tests/b/test_perk_decks.gd`, `game/tests/b/test_perk_resolver.gd`.
+
+## Layout
+
+* 14 decks, each with 9 cards `{name, desc, cost, grants}`. Costs follow PD2: 200, 300, 400, 600,
+  1000, 1600, 2400, 3200, 4000 (13,700 per deck).
+* Cards 1, 3, 5, 7 and 9 are unique to the deck. Cards 2, 4, 6 and 8 are the shared cards, and they
+  are identical in every deck, including the string keys:
+
+| # | Ours | PD2 | Grants | Not covered (requested key) |
+|---|---|---|---|---|
+| 2 | Headhunter | Helmet Popping | `weapon.headshot_mult.all` 1.25 | none |
+| 4 | Low Profile | Blending In | `stealth.concealment_add.all` 1 | +45% XP, −15% armor move penalty |
+| 6 | Go Bag | Walk-in Closet | `weapon.ammo_pickup_mult.all` 1.35 | armor bag |
+| 8 | Hustle | Fast and Furious | `weapon.damage_mult.all` 1.05 | +20% doctor bag interaction speed |
+| 9 | (completion bonus) | Deck Completion Bonus | none | +10% better PAYDAY card quality |
+
+* Strings: `perk.<deck>.name` and `perk.<deck>.desc` for the deck, and
+  `perk.<deck>.card<n>.name/.desc` for unique cards. Shared cards use
+  `perk.shared.card<n>.name/.desc`. The completion bonus line is `perk.shared.completion.desc`
+  (the UI shows it under card 9). `PerkDeckDef.display_name` is an English debug fallback, and
+  `description` holds the strings key.
+* `LoadoutResolver.resolve_modifiers` merges cards `1..min(perk_deck_cards, 9)` of the active deck,
+  in order: MULT multiplies, ADD sums, FLAG ors, PARAMS last wins.
+
+### Authoring rules
+
+1. **PARAMS re-grant the full dict.** A PARAMS key is last-granted-wins, and the resolver does not
+   merge fields. A card that changes a deck mechanic therefore grants the complete updated dict:
+   all earlier fields plus the changed or new ones. `test_params_regrants_carry_full_dict`
+   enforces this (a later grant must keep every field of the earlier grant). Fields that a later
+   card switches on start at a neutral value when they are needed from card 1
+   (`perk.infiltrator.close_range_dr` 0.0, `perk.anarchist.health_to_armor_*` 0.0).
+2. **Cumulative MULTs are per-card ratios.** PD2 adds deck bonuses (Muscle +10/+10/+20/+60% =
+   +100%), but our MULT type is a product. Each card therefore grants `cum(n) / cum(n−1)`, so after
+   any number of unlocked cards the product equals PD2's cumulative value. Example: Bulk
+   `defense.health_mult` is 1.1, 1.0909091, 1.1666667, 1.4285714, giving 1.1, 1.2, 1.4, 2.0. A
+   skill's MULT on the same key still multiplies on top (◇ PD2 adds skill and perk multipliers;
+   the lead should decide whether ENV A sums `(m−1)` across sources instead).
+3. **"Armor recovery rate +X%"** in PD2 shortens the armor regen *delay*. We grant
+   `defense.armor_regen_delay_mult` 0.9 per +10%.
+4. **Team keys** (`team.*`) are assumed to apply to every crew member, the granter included. Where
+   the PD2 text gives a personal total ("crew +10%, you +20%"), the personal key carries the ratio
+   (Foreman `defense.health_mult` 1.0909091 × `team.health_mult` 1.1 = 1.2).
+5. "Medium range" or "close range" in PD2 text = 18 m (◇ PD2 `close_combat_distance` 1800 cm).
+6. Deck throwables use `perk.throwable {item_id}`. The item ids `throwable.steady_flask` (Composure)
+   and `throwable.boss_injector` (Overlord) must be authored by the armory task (B4-04).
+7. ◇ = value not verified against PD2 source (research §5). The lead tunes these.
+
+## Decks (summary)
+
+| Deck | PD2 | Signature key | Generic keys used |
+|---|---|---|---|
+| Foreman | Crew Chief | `team.damage_reduction_hostage`, `team.*`, `perk.crew_chief` | `team.stamina_mult` 1.5, `team.health_mult` 1.1, `team.armor_mult` 1.05, `defense.health_mult`, `defense.armor_mult` |
+| Bulk | Muscle | `perk.muscle` | `defense.health_mult` → 2.0 |
+| Ironclad | Armorer | `perk.armorer` | `defense.armor_mult` → 1.35, `defense.armor_regen_delay_mult` 0.9 |
+| Slipper | Rogue | `perk.rogue_dodge_stack` | `defense.dodge_add` 0.45, `weapon.armor_pierce_add.all` 0.25, `weapon.swap_speed_mult.all` 1.8 |
+| Hustler | Crook | `perk.crook` | `defense.dodge_add` 0.15, `defense.armor_regen_delay_mult` 0.9 |
+| Clean Sweep | Hitman / Sociopath | `perk.sociopath` | `defense.armor_mult` → 1.2, `defense.armor_regen_delay_mult` 0.9 |
+| Prowler | Burglar | `perk.burglar` | `defense.dodge_add` 0.3, `stealth.body_bag_speed_mult` 0.8, `interaction.lockpick_speed_mult` 0.8, `stealth.pager_answer_speed_mult` 0.9, `movement.crouch_speed_mult` 1.1 |
+| Knuckles | Infiltrator | `perk.infiltrator` | none |
+| Bloodletter | Grinder | `perk.grinder` | `defense.health_mult` → 1.4, `weapon.armor_pierce_add.all` 0.2 |
+| Composure | Stoic | `perk.stoic`, `perk.throwable` | none |
+| Overclock | Anarchist | `perk.anarchist` | none |
+| Incumbent | Ex-President | `perk.ex_president` | `defense.health_mult` → 1.4, `defense.dodge_add` 0.15 |
+| Long Odds | Gambler | `perk.gambler` | `defense.health_mult` → 1.4 |
+| Overlord | Kingpin | `perk.kingpin`, `perk.throwable` | `defense.health_mult` → 1.8 |
+
+Notes on PD2 deviations:
+* **Clean Sweep** merges Hitman and Sociopath (fidelity table). Its cards are: Sociopath Tension
+  (card 1), Clean Hit (card 3), Overdose (card 5) and Showdown (card 7), then Hitman's Tooth and
+  Claw (card 9). Sociopath's OVERDOG card is left out because Knuckles already has it.
+* **Slipper**: Rogue's "80% faster swap" is a swap speed of 1.8 (◇ PD2 swap speed multiplier), not
+  a swap time of ×0.2.
+* **Hustler**: the vest bonus applies to every armor except the Tailored Suit (research: "ballistic
+  vests"). The fidelity table says "mid vests only". ◇ The lead decides whether heavy plates count.
+* **Bloodletter**: the PD2 Euphoria armor-pierce "20%" is read as the total (card 5 +0.1, card 9
+  +0.1).
+* **Incumbent**: card 5 gives +15 dodge (the PD2 note says Life of Ice gives 15, not 10).
+* **Overclock**: the immunity cooldown on card 1 is 15 s (◇ PD2 text truncated, Armorer value).
+
+## Proposed PARAMS schemas
+
+All lengths are in meters, times in seconds, health and armor in PD2 display units. Fractions are
+0..1. "Card" is the first card that sets the field. Later cards re-grant the full dict.
+
+### `perk.crew_chief` (Foreman)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| team_dr | float | fraction | 0.08 | 1 | Damage reduction for every crew member. |
+| self_low_health_threshold | float | fraction of max HP | 0.5 | 1 | Below this, the holder's own team_dr is multiplied. |
+| self_low_health_dr_mult | float | × | 2.0 | 1 | Multiplier of team_dr for the holder below the threshold. |
+| close_range_m | float | m | 18.0 ◇ | 3 | "Medium range" radius. |
+| close_range_dr | float | fraction | 0.08 | 3 | Holder damage reduction while an enemy is within close_range_m (PD2 note: 8%, not 6%). |
+| hostage_health_per | float | fraction | 0.06 | 9 | Crew max-health bonus per hostage. |
+| hostage_stamina_per | float | fraction | 0.12 | 9 | Crew stamina bonus per hostage. |
+| hostage_max_count | int | count | 4 | 9 | Hostages counted for the two fields above. |
+
+Card 9 also grants `team.damage_reduction_hostage {per: 0.08, max: 0.08}`: 8% crew damage
+reduction while there is at least one hostage. Card 3's +25% shout distance needs a requested key.
+
+### `perk.muscle` (Bulk)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| aggro_near_crew_mult | float | × | 1.15 | 3 | Enemy target-selection weight on the holder while within near_crew_m of a teammate. |
+| near_crew_m | float | m | 8.0 ◇ | 3 | "Close to your crew members". |
+| panic_chance | float | 0..1 | 0.1 ◇ | 7 | Chance per firearm hit to panic enemies (PD2 value unverified). |
+| panic_radius_m | float | m | 6.0 ◇ | 7 | Panic radius around the hit enemy. |
+| regen_fraction | float | fraction of max HP | 0.03 | 9 | Health restored per interval. |
+| regen_interval_s | float | s | 5.0 | 9 | Regen interval. |
+
+### `perk.armorer` (Ironclad)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| break_immunity_s | float | s | 2.0 | 7 | Health-damage immunity when armor reaches 0. |
+| break_immunity_cooldown_s | float | s | 15.0 | 7 | Minimum time between immunities. |
+| team_regen_delay_mult | float | × | 0.9 | 9 | Armor regen delay multiplier for the whole crew, holder included (PD2 Liquid Armor). Could become a `team.armor_regen_delay_mult` key instead. |
+
+### `perk.rogue_dodge_stack` (Slipper)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| aggro_near_crew_mult | float | × | 0.85 | 3 | Target-selection weight near teammates (less likely to be targeted). |
+| near_crew_m | float | m | 8.0 ◇ | 3 | As in perk.muscle. |
+
+Dodge, swap speed and armor pierce use generic keys. The registry description ("dodge ramps on
+miss") does not match PD2 Rogue; we suggest rewording it to "Slipper: reduced aggro near crew".
+
+### `perk.crook` (Hustler)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| vest_armor_ids | Array[StringName] | ids | all armors except armor.tailored_suit | 3 | Armors that get the bonus. |
+| vest_dodge_add | float | 0..1 | 0.05 → 0.15 → 0.25 | 3/5/7 | Dodge added while wearing one of those armors (cumulative). |
+| vest_armor_mult | float | × | 1.2 → 1.4 → 1.65 | 3/5/7 | Max armor multiplier while wearing one of them (cumulative). |
+
+### `perk.sociopath` (Clean Sweep)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| kill_armor | float | armor | 30.0 | 1 | Armor restored per kill. |
+| kill_armor_cooldown_s | float | s | 1.0 | 1 | Cooldown of kill_armor. |
+| close_range_m | float | m | 18.0 ◇ | 3 | Medium range. |
+| close_range_dr | float | fraction | 0.08 | 3 | Damage reduction while an enemy is within close_range_m. |
+| melee_kill_health_fraction | float | fraction of max HP | 0.1 | 3 | Health on a melee kill. |
+| melee_kill_cooldown_s | float | s | 1.0 | 3 | Cooldown of the melee heal. |
+| close_kill_armor | float | armor | 30.0 | 5 | Extra armor for a kill within close_range_m (own 1 s cooldown, ◇ shared with kill_armor?). |
+| close_kill_panic_chance | float | 0..1 | 0.75 | 7 | Chance that a kill within close_range_m spreads panic. |
+| close_kill_panic_cooldown_s | float | s | 1.0 | 7 | Panic cooldown. |
+| panic_radius_m | float | m | 6.0 ◇ | 7 | Panic radius around the killed enemy. |
+| forced_regen_after_break_s | float | s | 1.5 | 9 | Armor starts regenerating this long after breaking, whatever the regen delay or damage taken. |
+
+### `perk.burglar` (Prowler)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| still_aggro_mult | float | × | 0.9 → 0.85 → 0.8 | 3/5/7 | Target-selection weight while standing still or crouching. |
+| still_regen_delay_mult | float | × | 0.8 | 9 | Armor regen delay multiplier while standing still or crouching. |
+
+### `perk.infiltrator` (Knuckles)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| surrounded_min_enemies | int | count | 3 | 1 | Enemies within surrounded_radius_m needed for surrounded_dr. |
+| surrounded_radius_m | float | m | 6.0 ◇ | 1 | "Surrounded" radius. |
+| surrounded_dr | float | fraction | 0.12 | 1 | Damage reduction while surrounded. |
+| melee_chain_mult | float | × | 10.0 | 1 | Melee damage of the 2nd and later hits inside the window. A miss resets the chain. |
+| melee_chain_window_s | float | s | 1.0 → 7.0 | 1/5 | Window after a melee hit (PD2 hidden +6 s on Advanced Close Combat). |
+| close_range_m | float | m | 18.0 ◇ | 1 | Medium range. |
+| close_range_dr | float | fraction | 0 → 0.08 → 0.16 → 0.24 | 1/3/5/7 | Damage reduction while an enemy is within close_range_m. |
+| melee_hit_heal_fraction | float | fraction of max HP | 0.2 | 9 | Heal on a melee hit. |
+| melee_hit_heal_cooldown_s | float | s | 10.0 | 9 | Cooldown of that heal. |
+
+### `perk.grinder` (Bloodletter)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| allowed_armor_ids | Array[StringName] | ids | tailored_suit, light_vest | 1 | The mechanic only works in these armors. |
+| heal_per_tick | float | HP | 1 → 2 → 3 → 4 | 1/3/5/7 | Health per tick per stack. |
+| tick_s | float | s | 0.3 | 1 | Tick interval. |
+| duration_s | float | s | 3.0 → 4.2 | 1/9 | Lifetime of a stack. |
+| stack_cooldown_s | float | s | 1.5 | 1 | Minimum time between new stacks (gained by damaging an enemy). |
+
+### `perk.stoic` (Composure)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| delayed_fraction | float | fraction | 0.75 | 1 | Part of each hit converted into damage over time. The rest applies now. |
+| dot_duration_s | float | s | 12.0 | 1 | Time over which the delayed part is applied. |
+| flask_cooldown_s | float | s | 10.0 | 1 | Flask cooldown. Drinking cancels all pending DoT. |
+| kill_cooldown_reduction_s | float | s | 1.0 | 1 | Flask cooldown reduction per kill. |
+| armor_to_health | float | fraction | 1.0 | 3 | Fraction of armor removed and added to max health (1.0 = all). |
+| auto_negate_after_s | float | s | 4.0 | 5 | Pending DoT is cancelled after this long without damage. |
+| low_health_threshold | float | fraction | 0.35 | 7 | Below this, kills use the next field. |
+| low_health_kill_cooldown_reduction_s | float | s | 2.0 | 7 | Flask cooldown reduction per kill at low health. |
+| negate_heal_fraction | float | fraction | 0.5 | 9 | Heal by this part of the remaining DoT whenever DoT is cancelled. |
+
+Card 1 also grants `perk.throwable {item_id: &"throwable.steady_flask"}`.
+
+### `perk.anarchist` (Overclock)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| tick_by_armor | Dictionary[StringName, [float, float]] | armor, s | suit [1, 2] … breacher [6, 10] ◇ | 1 | Per armor id: [armor per tick, tick interval]. It replaces the normal delayed full regen with continuous ticks. |
+| break_immunity_s | float | s | 2.0 | 1 | Health immunity on armor break. |
+| break_immunity_cooldown_s | float | s | 15.0 ◇ | 1 | Its cooldown. |
+| health_to_armor_fraction | float | fraction | 0 → 0.5 | 1/3 | Part of max health removed. |
+| health_to_armor_ratio | float | × | 0 → 1.0 → 1.1 → 1.2 | 1/3/5/7 | Armor gained per health removed. |
+| damage_dealt_armor | float | armor | 30.0 | 9 | Armor gained when dealing damage (PD2 note: 30, not 10). |
+| damage_dealt_armor_cooldown_s | float | s | 1.5 | 9 | Its cooldown. |
+
+### `perk.ex_president` (Incumbent)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| store_per_kill | float | HP | 4 → 8 → 12 | 1/3/7 | Health banked per crew kill while the holder's armor is above 0. |
+| max_store_by_armor | Dictionary[StringName, float] | HP | suit 24 … breacher 60 ◇ | 1 | Bank cap per armor id (PD2 table unverified). |
+| max_store_mult | float | × | 1.0 → 1.5 | 1/5 | Multiplier of the bank cap. |
+| kill_regen_speedup_fraction | float | fraction | 0.1 ◇ | 9 | Per kill, cut this fraction × (1 − armor_tier/6) from the remaining armor regen delay. Reset when armor recovers. |
+
+The bank pays out when armor breaks and starts to regenerate.
+
+### `perk.gambler` (Long Odds)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| heal_min / heal_max | float | HP | 16 / 24 | 1 | Ammo pickup heal, rolled on `GameRng.stream(&"perks")`. |
+| heal_bonus | float | HP | 0 → 8 → 16 | 1/7/9 | Flat amount added to the heal. |
+| cooldown_s | float | s | 3.0 | 1 | Heal cooldown. |
+| lowest_health_bonus_per_ally | float | fraction | 0.2 | 1 | +heal per teammate with more health than the holder. |
+| lowest_health_max_stacks | int | count | 3 | 1 | Cap of that bonus. |
+| team_ammo_share | float | fraction of a pickup | 0.5 | 3 | Ammo that the holder's pickups give each teammate. |
+| team_ammo_share_cooldown_s | float | s | 5.0 | 3 | Its cooldown. |
+| team_heal_fraction | float | fraction | 0.5 | 5 | Teammates heal for this part of the holder's pickup heal. |
+
+### `perk.kingpin` (Overlord)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| heal_fraction | float | fraction | 0.75 | 1 | Part of damage taken that is healed while the injector is active. |
+| duration_s | float | s | 6.0 | 1 | Injector effect duration. |
+| cooldown_s | float | s | 30.0 | 1 | Injector cooldown. |
+| kill_cooldown_reduction_s | float | s | 1.0 | 1 | Cooldown reduction per kill. |
+| draws_aggro | bool | flag | true | 5 | Nearby enemies prefer the holder while active. |
+| low_health_threshold | float | fraction | 0.5 | 7 | Below this, the heal is boosted. |
+| low_health_heal_bonus | float | fraction | 0.25 | 7 | heal_fraction × (1 + bonus) below the threshold. |
+| overheal_per_cooldown_s | float | HP | 50.0 | 9 | Every this much healing while at full health cuts 1 s from the cooldown (PD2 note: 50, not 5). |
+
+Card 1 also grants `perk.throwable {item_id: &"throwable.boss_injector"}`.
+
+### `perk.throwable` (Composure, Overlord)
+| Field | Type | Semantics |
+|---|---|---|
+| item_id | StringName | Throwable id that replaces the equipped throwable while the deck is active. |
+
+### `team.damage_reduction_hostage` (Foreman card 9; registry schema `{per, max}`)
+`per` = damage reduction per hostage, `max` = cap. We grant `{per: 0.08, max: 0.08}`, which means
+8% as soon as there is one hostage.
+
+## Requested keys (no registry key yet, not granted in data)
+
+| Proposed key | Type | Used by | Semantics |
+|---|---|---|---|
+| `progression.xp_mult` | MULT | shared card 4 (1.45) | Heist XP multiplier (payout calculator). |
+| `movement.armor_penalty_mult` | MULT | shared card 4 (0.85) | Scales the armor's move-speed penalty `(1 − ArmorDef.move_speed_mult)`. |
+| `deploy.armor_bag` | FLAG | shared card 6 | Unlocks the armor bag deployable (change armor mid-heist). |
+| `interaction.doctor_bag_speed_mult` | MULT | shared card 8 (0.8333 = 20% faster) | Doctor bag use time multiplier (lower = faster). |
+| `progression.card_drop_quality_add` | ADD | card 9 completion bonus (0.1) | Chance that a PAYDAY card rolls the next quality tier. |
+| `ability.shout_range_mult` | MULT | Foreman card 3 (1.25) | Shout distance (all shout targets). The existing `stealth.civilian_intimidate_range_mult` only covers civilians. |
+| `team.armor_regen_delay_mult` | MULT | Ironclad card 9 (0.9), optional | Crew-wide armor regen delay. It would replace `perk.armorer.team_regen_delay_mult`. |
+
+Questions for the lead (◇): sum versus product for MULTs from skills and perk cards (rule 2);
+whether `team.*` includes the granter (rule 4); whether heavy plates count as "vests" for Hustler;
+rewording the registry descriptions of `perk.rogue_dodge_stack` and `perk.crook` to match PD2.

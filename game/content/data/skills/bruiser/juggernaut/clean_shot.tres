@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.juggernaut.clean_shot"
+display_name = "Clean Shot"
+tree = &"bruiser"
+subtree = &"juggernaut"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Each headshot restores 5 armor (at most once every 2 s)."
+desc_aced = "Each headshot restores 25 armor instead."
+grants_basic = {
+&"defense.bullseye": {
+"armor": 5.0,
+"cooldown": 2.0
+}
+}
+grants_aced = {
+&"defense.bullseye": {
+"armor": 25.0,
+"cooldown": 2.0
+}
+}

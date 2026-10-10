@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.scattergun.heavy_shot"
+display_name = "Heavy Shot"
+tree = &"bruiser"
+subtree = &"scattergun"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "+8 stability and 5% more damage with shotguns."
+desc_aced = "Shotgun damage rises to 15% more in total."
+grants_basic = {
+&"weapon.recoil_mult.shotgun": 0.92,
+&"weapon.damage_mult.shotgun": 1.05
+}
+grants_aced = {
+&"weapon.damage_mult.shotgun": 1.095
+}

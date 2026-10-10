@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.quartermaster.scrounger"
+display_name = "Scrounger"
+tree = &"bruiser"
+subtree = &"quartermaster"
+tier = 1
+cost_basic = 1
+cost_aced = 3
+desc_basic = "Pick up ammo from 50% further away."
+desc_aced = "Every 6th enemy you kill drops an extra ammo box."
+grants_basic = {}
+grants_aced = {}

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.breacher.tinker"
+display_name = "Tinker"
+tree = &"wrench"
+subtree = &"breacher"
+tier = 1
+cost_basic = 1
+cost_aced = 3
+desc_basic = "Fix drills and saws 25% faster and place trip mines 20% faster. Your drills and saws are silent: guards and civilians must see them to react."
+desc_aced = "Your drills and saws have a 10% chance to restart by themselves after jamming."
+grants_basic = {
+&"stealth.silent_devices": true
+}
+grants_aced = {
+&"interaction.device_auto_restart_chance": 0.1
+}

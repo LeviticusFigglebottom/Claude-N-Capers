@@ -257,3 +257,18 @@ func test_range_strings_exist() -> void:
 	for kind: StringName in [ContentDB.WEAPONS, ContentDB.MODS]:
 		for res: Resource in ContentDB.all_of(kind):
 			assert_has(table, String(UiText.item_key(StringName(res.get(&"id")))), "loadout swap option name")
+
+
+func test_crit_applies_head_mult_on_any_zone() -> void:
+	var t: RangeTarget = _target()
+	var hm: float = t.headshot_mult()
+	var bi: Dictionary = _info(10.0)
+	bi["crit"] = true
+	var body: Dictionary = t.take_hit(bi, 0)
+	assert_near(float(body["amount"]), 10.0 * hm, 0.001, "body crit = body x head mult")
+	t.reset_target()
+	var hi: Dictionary = _info(10.0, Enums.HitZone.HEAD)
+	hi["crit"] = true
+	var head: Dictionary = t.take_hit(hi, 0)
+	assert_near(float(head["amount"]), 10.0 * hm * hm, 0.001, "head crit stacks")
+	t.queue_free()

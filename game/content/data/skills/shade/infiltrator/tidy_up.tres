@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.infiltrator.tidy_up"
+display_name = "Tidy Up"
+tree = &"shade"
+subtree = &"infiltrator"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "Carry 1 more body bag."
+desc_aced = "Carry 2 body bag cases."
+grants_basic = {
+&"stealth.body_bags_extra": 1
+}
+grants_aced = {
+&"deploy.extra.body_bag_case": 1
+}
