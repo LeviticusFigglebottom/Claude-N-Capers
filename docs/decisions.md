@@ -202,3 +202,8 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - `docs/design/heists/night_deposit.md` approved. A closed bank with a basement vault (keycard + time-lock code, or a server hack, then a time-lock hold; loud uses the thermal drill), 3 stealth routes, and a variable table where every row changes a decision. Exceeding the pager cap on Brutal is intended. ENV C may start G1.
 - QC-11 `bag_lift` and QC-12 `hack_terminal` prefabs are added to gameplay_prefabs.md and dispatched to ENV A (A3-09). QC-13 `loot.cash_bricks` → ENV B (B4-09). QC-14: new `MapZone.Kind.OUT_OF_BOUNDS` (appended to the enum), respawning at PLAYER SpawnPoints tagged `oob_respawn`, never an alarm.
 - `floor_heights` must be ascending and contain 0.0. Basements are negative.
+
+## D-041 — 2026-10-10 — Animation set merged; viewmodel contract (QD-5)
+- Merged D1-03: 47 humanoid clips (all 28 P1 clips plus 19 P2; the remaining 6 come with the P3 specials).
+- characters.md v1.3 records clip speeds, turn and death conventions, event frames, the third-person weapon grip, and the **first-person viewmodel contract** (`char_arms_fp` with `weapon`/`magazine` helper bones, one AnimationLibrary per anim_set, played as "<set>/<clip>").
+- Library material rule: every `game/world/materials/*.tres`, `char_*` included, must satisfy ENV C's ORM-PBR library test.
