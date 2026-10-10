@@ -13,5 +13,9 @@ cost_basic = 1
 cost_aced = 3
 desc_basic = "Sentry guns cost 5% less of your ammo to deploy."
 desc_aced = "Your sentry guns get a protective shield."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"deploy.sentry_cost_mult": 0.95
+}
+grants_aced = {
+&"deploy.sentry_shield": true
+}

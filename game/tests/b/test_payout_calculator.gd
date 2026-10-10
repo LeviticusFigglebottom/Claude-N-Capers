@@ -235,3 +235,14 @@ func test_defaults_load_without_args() -> void:
 			"subtotal", "crew_alive_mult", "gross", "total", "stash", "spending", "xp_lines", "xp_total",
 			"stealth_bonus_consumed", "stealth_bonus_banked"]:
 		assert_has(out, k)
+
+
+func test_xp_mult_joins_additive_line() -> void:
+	var plain: Dictionary = PayoutCalculator.compute(_result(), _diff(1.0, 1.0, 4000), _tweak(), false, 0, 1.0)
+	var boosted: Dictionary = PayoutCalculator.compute(_result(), _diff(1.0, 1.0, 4000), _tweak(), false, 0, 1.0, 1.45)
+	var add_plain: int = _xp(plain, PayoutCalculator.XP_ADDITIVE)
+	var before_additive: int = int(plain["xp_total"]) - add_plain
+	assert_eq(_xp(boosted, PayoutCalculator.XP_ADDITIVE),
+			roundi(float(before_additive) * (float(add_plain) / float(before_additive) + 0.45)),
+			"Low Profile +45% XP is additive with the crew-alive bonus (PD2)")
+	assert_eq(int(boosted["total"]), int(plain["total"]), "cash unaffected")

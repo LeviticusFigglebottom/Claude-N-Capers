@@ -17,5 +17,10 @@ grants_basic = {
 &"stealth.mark_damage_bonus_mult": 1.15
 }
 grants_aced = {
-&"stealth.mark_duration_mult": 2.0
+&"stealth.mark_duration_mult": 2.0,
+&"stealth.mark_far_damage_mult": {
+"min_distance": 10.0,
+"mult": 1.5
+},
+&"stealth.mark_by_aim": true
 }

@@ -45,7 +45,7 @@ func test_zero_cards_or_no_deck_grants_nothing() -> void:
 func test_four_cards_merge_only_unlocked_cards() -> void:
 	var m: Dictionary = LoadoutResolver.resolve_modifiers(_loadout(&"perk.bulk", 4))
 	var expected: Array = [&"defense.health_mult", &"perk.muscle", &"weapon.headshot_mult.all",
-		&"stealth.concealment_add.all"]
+		&"stealth.concealment_add.all", &"progression.xp_mult", &"movement.armor_penalty_mult"]
 	assert_eq(m.size(), expected.size(), "keys: %s" % [m.keys()])
 	for k: Variant in expected:
 		assert_has(m, k)
@@ -61,6 +61,11 @@ func test_nine_cards_include_every_shared_card() -> void:
 	assert_eq(m[&"stealth.concealment_add.all"], 1)
 	assert_near(float(m[&"weapon.ammo_pickup_mult.all"]), 1.35)
 	assert_near(float(m[&"weapon.damage_mult.all"]), 1.05)
+	assert_near(float(m[&"progression.xp_mult"]), 1.45)
+	assert_near(float(m[&"movement.armor_penalty_mult"]), 0.85)
+	assert_eq(m[&"deploy.armor_bag"], true)
+	assert_near(float(m[&"interaction.doctor_bag_speed_mult"]), 0.8333)
+	assert_near(float(m[&"progression.card_drop_quality_add"]), 0.1)
 	var p: Dictionary = m[&"perk.infiltrator"]
 	assert_near(float(p["close_range_dr"]), 0.24, 0.0001, "card 7 value, re-granted by card 9")
 	assert_near(float(p["melee_hit_heal_fraction"]), 0.2)
@@ -96,3 +101,67 @@ func test_real_deck_params_last_wins() -> void:
 	assert_false((three[&"perk.stoic"] as Dictionary).has("negate_heal_fraction"))
 	assert_has(nine[&"perk.stoic"], "negate_heal_fraction")
 	assert_eq(nine[&"perk.throwable"], {"item_id": &"throwable.steady_flask"})
+
+
+## D-031 QB-35: perk-deck `team.*` grants go to the TEAM source team_perk.<deck>, never to the personal
+## modifiers; only unlocked cards count.
+func test_team_perk_grants_route_to_team_perk_source() -> void:
+	var nine: Loadout = _loadout(&"perk.foreman", 9)
+	var personal: Dictionary = LoadoutResolver.resolve_modifiers(nine)
+	for key: Variant in personal:
+		assert_false(String(key).begins_with("team."), "team key %s kept out of personal modifiers" % key)
+	assert_has(personal, &"ability.shout_range_mult", "Foreman card 3 shout range is personal")
+	var team: Dictionary = LoadoutResolver.team_modifier_sources(nine)
+	assert_eq(team.keys(), [&"team_perk.foreman"])
+	var g: Dictionary = team[&"team_perk.foreman"]
+	assert_eq(g.size(), 4, "keys: %s" % [g.keys()])
+	assert_near(float(g[&"team.stamina_mult"]), 1.5)
+	assert_near(float(g[&"team.health_mult"]), 1.1)
+	assert_near(float(g[&"team.armor_mult"]), 1.05)
+	assert_eq(g[&"team.damage_reduction_hostage"], {"per": 0.08, "max": 0.08})
+	assert_eq(LoadoutResolver.team_modifier_sources(_loadout(&"perk.foreman", 2)), {}, "card 3 still locked")
+	var five: Dictionary = LoadoutResolver.team_modifier_sources(_loadout(&"perk.foreman", 5))
+	assert_eq((five[&"team_perk.foreman"] as Dictionary).keys().size(), 2, "cards 3 and 5")
+	assert_eq(LoadoutResolver.team_perk_source(&"perk.foreman"), &"team_perk.foreman")
+
+
+## Ironclad card 9 (Liquid Armor analog) is the crew-wide team.armor_regen_delay_mult (it replaces the old
+## perk.armorer.team_regen_delay_mult field).
+func test_ironclad_team_regen_delay_is_a_team_key() -> void:
+	var l: Loadout = _loadout(&"perk.ironclad", 9)
+	var team: Dictionary = LoadoutResolver.team_modifier_sources(l)
+	assert_eq(team, {&"team_perk.ironclad": {&"team.armor_regen_delay_mult": 0.9}})
+	var armorer: Dictionary = LoadoutResolver.resolve_modifiers(l)[&"perk.armorer"]
+	assert_false(armorer.has("team_regen_delay_mult"))
+
+
+## Skills and the deck together: both TEAM sources, and two players with the same deck write the same
+## source, so Modifiers counts the aura once; it applies to the granter's slot too.
+func test_team_perk_does_not_stack_across_players_and_applies_to_granter() -> void:
+	var a: Loadout = _loadout(&"perk.foreman", 9)
+	a.skills = {&"skill.persuader.zip_and_tie": 2}
+	var b: Loadout = _loadout(&"perk.foreman", 9)
+	var ta: Dictionary = LoadoutResolver.team_modifier_sources(a)
+	var keys: Array = ta.keys()
+	ContentDB.sort_ids(keys)
+	assert_eq(keys, [&"team_perk.foreman", &"team_skill.skill.persuader.zip_and_tie"])
+	Modifiers.clear_all()
+	for l: Loadout in [a, b]:
+		var src: Dictionary = LoadoutResolver.team_modifier_sources(l)
+		for s: Variant in src:
+			Modifiers.set_source(Modifiers.TEAM, StringName(s), src[s])
+	assert_near(Modifiers.mult(0, &"team.health_mult"), 1.1, 0.0001, "same deck twice counts once")
+	assert_near(Modifiers.mult(1, &"team.health_mult"), 1.1, 0.0001, "granter's slot gets it too")
+	Modifiers.clear_all()
+
+
+func test_every_deck_nine_cards_resolves_without_errors() -> void:
+	Log.capture = true
+	for d: Variant in ContentDB.all_of(ContentDB.PERKS):
+		var l: Loadout = _loadout((d as PerkDeckDef).id, 9)
+		var m: Dictionary = LoadoutResolver.resolve_modifiers(l)
+		LoadoutResolver.team_modifier_sources(l)
+		LoadoutResolver.resolve(l)
+		assert_true(m.size() >= 9, "%s resolves %d keys" % [l.perk_deck, m.size()])
+	var errors: Array = Log.captured.filter(func(line: String) -> bool: return line.begins_with("[ERROR]"))
+	assert_eq(errors.size(), 0, "no errors: %s" % [errors])

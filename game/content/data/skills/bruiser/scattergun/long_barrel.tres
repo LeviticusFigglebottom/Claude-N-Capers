@@ -16,4 +16,6 @@ desc_aced = "Shotgun damage starts falling off 50% further away."
 grants_basic = {
 &"weapon.spread_mult.shotgun": 0.6
 }
-grants_aced = {}
+grants_aced = {
+&"weapon.falloff_range_mult.shotgun": 1.5
+}

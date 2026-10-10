@@ -26,10 +26,14 @@ const SIGNATURE: Dictionary = {
 ## Fast and Furious (the parts that have registry keys).
 const SHARED: Dictionary = {
 	1: {&"weapon.headshot_mult.all": 1.25},
-	3: {&"stealth.concealment_add.all": 1},
-	5: {&"weapon.ammo_pickup_mult.all": 1.35},
-	7: {&"weapon.damage_mult.all": 1.05},
+	3: {&"stealth.concealment_add.all": 1, &"progression.xp_mult": 1.45, &"movement.armor_penalty_mult": 0.85},
+	5: {&"weapon.ammo_pickup_mult.all": 1.35, &"deploy.armor_bag": true},
+	7: {&"weapon.damage_mult.all": 1.05, &"interaction.doctor_bag_speed_mult": 0.8333},
 }
+## Deck completion bonus (PD2): every deck's card 9 grants this too (D-031).
+const COMPLETION: Dictionary = {&"progression.card_drop_quality_add": 0.1}
+## D-031 QB-37: Hustler's vest bonus applies to Light Vest, Patrol Vest and Heavy Vest only.
+const HUSTLER_VESTS: Array[StringName] = [&"armor.light_vest", &"armor.patrol_vest", &"armor.heavy_vest"]
 
 var _strings: Dictionary = {}
 
@@ -145,9 +149,36 @@ func test_each_deck_grants_its_signature_key() -> void:
 			if (card["grants"] as Dictionary).has(sig):
 				found = true
 		assert_true(found, "%s never grants %s" % [deck.id, sig])
-	var foreman: Dictionary = _resolve(&"perk.foreman", 9)
+	var foreman: Dictionary = _team(&"perk.foreman", 9)
 	for k: StringName in [&"team.health_mult", &"team.armor_mult", &"team.stamina_mult"]:
 		assert_has(foreman, k, "Foreman team aura")
+
+
+func test_card_nine_grants_completion_bonus() -> void:
+	for d: Variant in _decks():
+		var deck: PerkDeckDef = d as PerkDeckDef
+		var grants: Dictionary = deck.cards[8]["grants"]
+		for k: Variant in COMPLETION:
+			assert_eq(grants.get(k), COMPLETION[k], "%s card 9 completion bonus" % deck.id)
+
+
+## D-031 QB-37: perk.crook vest set = Light, Patrol and Heavy Vest (PD2 LBV/BV/HBV), on every card.
+func test_hustler_vests_are_light_patrol_heavy_only() -> void:
+	var deck: PerkDeckDef = ContentDB.by_id(ContentDB.PERKS, &"perk.hustler") as PerkDeckDef
+	var seen: int = 0
+	for card: Dictionary in deck.cards:
+		var crook: Variant = (card["grants"] as Dictionary).get(&"perk.crook")
+		if crook == null:
+			continue
+		seen += 1
+		var ids: Array = (crook as Dictionary)["vest_armor_ids"]
+		assert_eq(ids, HUSTLER_VESTS as Array, "Hustler vest set")
+		for id: Variant in ids:
+			assert_true(ContentDB.armor(StringName(id)) != null, "%s exists" % id)
+	assert_eq(seen, 3, "cards 3, 5 and 7 grant perk.crook")
+	var crook9: Dictionary = _resolve(&"perk.hustler", 9)[&"perk.crook"]
+	for excluded: StringName in [&"armor.tailored_suit", &"armor.flak_rig", &"armor.tactical_plate", &"armor.breacher_plate"]:
+		assert_false((crook9["vest_armor_ids"] as Array).has(excluded), "%s gets no Hustler bonus" % excluded)
 
 
 ## PARAMS is last-granted-wins, so a card that upgrades a deck mechanic re-grants the whole dict:
@@ -180,7 +211,8 @@ func test_pd2_cumulative_values() -> void:
 	assert_near(float(_resolve(&"perk.incumbent", 9)[&"defense.health_mult"]), 1.4, 0.0001)
 	assert_near(float(_resolve(&"perk.bloodletter", 9)[&"weapon.armor_pierce_add.all"]), 0.2, 0.0001)
 	var foreman: Dictionary = _resolve(&"perk.foreman", 9)
-	assert_near(float(foreman[&"team.health_mult"]) * float(foreman[&"defense.health_mult"]), 1.2, 0.0001)
+	var foreman_team: Dictionary = _team(&"perk.foreman", 9)
+	assert_near(float(foreman_team[&"team.health_mult"]) * float(foreman[&"defense.health_mult"]), 1.2, 0.0001)
 	var crook: Dictionary = _resolve(&"perk.hustler", 9)[&"perk.crook"]
 	assert_near(float(crook["vest_armor_mult"]), 1.65, 0.0001)
 	assert_near(float(crook["vest_dodge_add"]), 0.25, 0.0001)
@@ -194,3 +226,11 @@ func _resolve(deck_id: StringName, cards: int) -> Dictionary:
 	l.perk_deck = deck_id
 	l.perk_deck_cards = cards
 	return LoadoutResolver.resolve_modifiers(l)
+
+
+## The deck's crew-wide grants (TEAM source team_perk.<deck>), D-031 QB-35.
+func _team(deck_id: StringName, cards: int) -> Dictionary:
+	var l: Loadout = Loadout.new()
+	l.perk_deck = deck_id
+	l.perk_deck_cards = cards
+	return LoadoutResolver.team_modifier_sources(l).get(LoadoutResolver.team_perk_source(deck_id), {})

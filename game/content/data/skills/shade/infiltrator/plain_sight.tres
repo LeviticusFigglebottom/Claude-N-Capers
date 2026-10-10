@@ -14,8 +14,10 @@ cost_aced = 3
 desc_basic = "While casing, you are detected 25% more slowly and can mark guards and cameras."
 desc_aced = "Pick up small loot and items while casing. Small loot you pick up is worth 30% more."
 grants_basic = {
-&"stealth.casing_detection_rate_mult": 0.75
+&"stealth.casing_detection_rate_mult": 0.75,
+&"stealth.casing_can_mark": true
 }
 grants_aced = {
-&"stealth.casing_can_pickup_items": true
+&"stealth.casing_can_pickup_items": true,
+&"loot.small_loot_value_mult": 1.3
 }

@@ -17,5 +17,6 @@ grants_basic = {
 &"movement.speed_mult": 1.1
 }
 grants_aced = {
-&"movement.reload_while_sprinting": true
+&"movement.reload_while_sprinting": true,
+&"movement.sprint_any_direction": true
 }

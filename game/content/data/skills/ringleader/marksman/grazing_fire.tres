@@ -13,5 +13,19 @@ cost_basic = 4
 cost_aced = 8
 desc_basic = "Sniper rifle hits also deal 20% of their damage to every enemy within 1 m of the bullet's path."
 desc_aced = "If the hit is a headshot kill, the graze deals 100% of the damage."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"weapon.graze": {
+"class": "sniper",
+"radius": 1.0,
+"frac": 0.2,
+"headshot_kill_frac": 0.2
+}
+}
+grants_aced = {
+&"weapon.graze": {
+"class": "sniper",
+"radius": 1.0,
+"frac": 0.2,
+"headshot_kill_frac": 1.0
+}
+}

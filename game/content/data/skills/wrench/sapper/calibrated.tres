@@ -13,7 +13,10 @@ cost_basic = 2
 cost_aced = 4
 desc_basic = "Your sentry guns are 100% more accurate."
 desc_aced = "Your sentry guns turn 150% faster and carry 50% more ammo."
-grants_basic = {}
+grants_basic = {
+&"deploy.sentry_accuracy_mult": 0.5
+}
 grants_aced = {
-&"deploy.capacity_mult.sentry": 1.5
+&"deploy.capacity_mult.sentry": 1.5,
+&"deploy.sentry_turn_speed_mult": 2.5
 }

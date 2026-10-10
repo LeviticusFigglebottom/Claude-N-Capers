@@ -100,12 +100,17 @@ func _process(_delta: float) -> void:
 		_refresh_readout()
 
 
-## The first weapon in ContentDB with stock parts, in its own slot.
+## The starter weapon (lowest unlock level, then price; ties by id order) with stock parts, in its
+## own slot. Not simply the first id: the armory grows (B4-04) and ids sort alphabetically.
 static func default_loadout() -> Loadout:
 	var l: Loadout = Loadout.new()
-	var weapons: Array = ContentDB.all_weapons()
-	if not weapons.is_empty():
-		_put_weapon(l, weapons[0] as WeaponDef)
+	var best: WeaponDef = null
+	for w: WeaponDef in ContentDB.all_weapons():
+		if best == null or w.unlock_level < best.unlock_level \
+				or (w.unlock_level == best.unlock_level and w.price < best.price):
+			best = w
+	if best != null:
+		_put_weapon(l, best)
 	return l
 
 

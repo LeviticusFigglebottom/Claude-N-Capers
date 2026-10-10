@@ -16,4 +16,6 @@ desc_aced = "Flashbangs blind you for 75% less time."
 grants_basic = {
 &"defense.armor_regen_rate_mult": 1.15
 }
-grants_aced = {}
+grants_aced = {
+&"defense.flashbang_duration_mult": 0.25
+}

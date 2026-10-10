@@ -13,5 +13,12 @@ cost_basic = 1
 cost_aced = 3
 desc_basic = "Take 30% less damage while reviving a crew member and for 5 s afterwards."
 desc_aced = "Crew members you revive get up with 30% more health."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"defense.reviving_damage_taken_mult": {
+"mult": 0.7,
+"linger_s": 5.0
+}
+}
+grants_aced = {
+&"ability.revive_target_health_mult": 1.3
+}

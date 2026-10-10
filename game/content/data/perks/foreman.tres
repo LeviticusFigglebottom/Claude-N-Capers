@@ -31,6 +31,7 @@ cards = Array[Dictionary]([{
 "cost": 400,
 "grants": {
 &"team.stamina_mult": 1.5,
+&"ability.shout_range_mult": 1.25,
 &"perk.crew_chief": {
 "team_dr": 0.08,
 "self_low_health_threshold": 0.5,
@@ -44,7 +45,9 @@ cards = Array[Dictionary]([{
 "desc": "perk.shared.card4.desc",
 "cost": 600,
 "grants": {
-&"stealth.concealment_add.all": 1
+&"stealth.concealment_add.all": 1,
+&"progression.xp_mult": 1.45,
+&"movement.armor_penalty_mult": 0.85
 }
 }, {
 "name": "perk.foreman.card5.name",
@@ -59,7 +62,8 @@ cards = Array[Dictionary]([{
 "desc": "perk.shared.card6.desc",
 "cost": 1600,
 "grants": {
-&"weapon.ammo_pickup_mult.all": 1.35
+&"weapon.ammo_pickup_mult.all": 1.35,
+&"deploy.armor_bag": true
 }
 }, {
 "name": "perk.foreman.card7.name",
@@ -74,13 +78,15 @@ cards = Array[Dictionary]([{
 "desc": "perk.shared.card8.desc",
 "cost": 3200,
 "grants": {
-&"weapon.damage_mult.all": 1.05
+&"weapon.damage_mult.all": 1.05,
+&"interaction.doctor_bag_speed_mult": 0.8333
 }
 }, {
 "name": "perk.foreman.card9.name",
 "desc": "perk.foreman.card9.desc",
 "cost": 4000,
 "grants": {
+&"progression.card_drop_quality_add": 0.1,
 &"team.damage_reduction_hostage": {
 "per": 0.08,
 "max": 0.08

@@ -13,5 +13,21 @@ cost_basic = 1
 cost_aced = 3
 desc_basic = "When 3 or more enemies are within 18 m, deal 15% more damage for 7 s."
 desc_aced = "You also take 10% less damage for those 7 s."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"defense.outnumbered": {
+"enemies": 3,
+"radius": 18.0,
+"damage_mult": 1.15,
+"damage_taken_mult": 1.0,
+"duration": 7.0
+}
+}
+grants_aced = {
+&"defense.outnumbered": {
+"enemies": 3,
+"radius": 18.0,
+"damage_mult": 1.15,
+"damage_taken_mult": 0.9,
+"duration": 7.0
+}
+}

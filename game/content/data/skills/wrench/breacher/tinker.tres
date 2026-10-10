@@ -14,7 +14,9 @@ cost_aced = 3
 desc_basic = "Fix drills and saws 25% faster and place trip mines 20% faster. Your drills and saws are silent: guards and civilians must see them to react."
 desc_aced = "Your drills and saws have a 10% chance to restart by themselves after jamming."
 grants_basic = {
-&"stealth.silent_devices": true
+&"stealth.silent_devices": true,
+&"interaction.device_fix_speed_mult": 0.8,
+&"deploy.deploy_speed_mult.trip_mine": 0.8333
 }
 grants_aced = {
 &"interaction.device_auto_restart_chance": 0.1
