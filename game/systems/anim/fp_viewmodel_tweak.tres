@@ -10,6 +10,76 @@ weapon_bone = &"weapon"
 magazine_bone = &"magazine"
 fps = 30.0
 clip_events = {
+&"akimbo_draw": {
+&"ready": 15
+},
+&"akimbo_fire": {
+&"shot": 0
+},
+&"akimbo_fire_ads": {
+&"shot": 0
+},
+&"akimbo_fire_ads_l": {
+&"shot": 0
+},
+&"akimbo_fire_l": {
+&"shot": 0
+},
+&"akimbo_holster": {
+&"gone": 15
+},
+&"akimbo_reload": {
+&"mag_out_r": 8,
+&"mag_out_l": 10,
+&"mag_in_r": 30,
+&"mag_in_l": 33,
+&"done": 52
+},
+&"akimbo_reload_empty": {
+&"mag_out_r": 8,
+&"mag_out_l": 10,
+&"mag_in_r": 30,
+&"mag_in_l": 33,
+&"slide_release_r": 51,
+&"slide_release_l": 55,
+&"done": 69
+},
+&"pistol_fire_auto": {
+&"shot": 0
+},
+&"pistol_fire_auto_ads": {
+&"shot": 0
+},
+&"revolver_draw": {
+&"ready": 14
+},
+&"revolver_fire": {
+&"shot": 0
+},
+&"revolver_fire_ads": {
+&"shot": 0
+},
+&"revolver_holster": {
+&"gone": 14
+},
+&"revolver_reload": {
+&"crane_open": 10,
+&"eject": 22,
+&"loader_show": 32,
+&"speedloader_in": 44,
+&"loader_drop": 48,
+&"crane_close": 58,
+&"done": 64
+},
+&"revolver_reload_empty": {
+&"crane_open": 10,
+&"eject": 22,
+&"loader_show": 32,
+&"speedloader_in": 44,
+&"loader_drop": 48,
+&"crane_close": 58,
+&"done": 64
+},
 &"lmg_draw": {
 &"ready": 27
 },
