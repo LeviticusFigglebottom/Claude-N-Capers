@@ -1308,3 +1308,34 @@ ui.payday_cards.mask_kind.base,Mask shape
 ui.payday_cards.mask_kind.material,Mask material
 ui.payday_cards.mask_kind.colors,Mask colours
 ui.payday_cards.mask_kind.pattern,Mask pattern
+ui.board.title,The Board
+ui.board.subtitle,Contracts from your contacts. Each stays up for {minutes} minutes; new ones land all the time.
+ui.board.level_stash,Level {level}  |  Stash: {amount}
+ui.board.empty,No contracts on the board right now.
+ui.board.contact,From {name}
+ui.board.difficulty,Difficulty: {name}
+ui.board.payout,Contract pay: {amount}
+ui.board.expires,Expires in {time}
+ui.board.pro,PRO JOB
+ui.board.pro_desc,"No restarts: fail it and the contract is gone. +{pct}% XP."
+ui.board.take,Take Contract
+ui.board.pin_tooltip,"{heist}, {difficulty}"
+ui.board.legend_pro,Red badge: pro job
+ui.board.broker.title,Contract Broker
+ui.board.broker.desc,"Buy any contract you have unlocked, paid from the stash. No refunds."
+ui.board.broker.heist,Heist
+ui.board.broker.difficulty,Difficulty
+ui.board.broker.cost,Price: {amount}
+ui.board.broker.buy,Buy Contract
+ui.board.broker.locked_level,{name} (level {level})
+ui.board.broker.reason.unknown_heist,Unknown heist.
+ui.board.broker.reason.locked,That difficulty is locked.
+ui.board.broker.reason.stash,Not enough money in the stash.
+ui.board.district.docks,Docks
+ui.board.district.financial,Financial District
+ui.board.district.harbor,Harbor
+ui.board.district.harlow,Harlow
+ui.board.district.midtown,Midtown
+ui.board.district.southfield,Southfield
+ui.board.district.uptown,Uptown
+ui.board.district.westside,Westside
