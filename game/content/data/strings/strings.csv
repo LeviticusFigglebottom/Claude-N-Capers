@@ -1,0 +1,381 @@
+keys,en
+ui.menu.title,CAPERWORKS
+ui.menu.play,Play
+ui.menu.solo,Solo with Crew AI
+ui.menu.host,Host Game
+ui.menu.join,Join Game
+ui.menu.firing_range,Firing Range
+ui.menu.loadout,Loadout
+ui.menu.options,Options
+ui.menu.quit,Quit
+ui.menu.back,Back
+ui.menu.confirm,Confirm
+ui.menu.cancel,Cancel
+ui.menu.resume,Resume
+ui.menu.leave_heist,Leave Heist
+ui.menu.quit_confirm,Leave the game? Unsecured loot stays behind.
+ui.menu.profile,Profile {index}
+ui.menu.level,Level {level}
+ui.menu.stash,Stash: {amount}
+ui.menu.spending,Spending: {amount}
+ui.heist_select.title,Select a Job
+ui.heist_select.contact,Contact: {name}
+ui.heist_select.difficulty,Difficulty
+ui.heist_select.last_breath,Last Breath
+ui.heist_select.last_breath_desc,"One down before custody. Higher stakes, same pay."
+ui.heist_select.pro_job,Pro Job
+ui.heist_select.pro_job_desc,No restarts. Fail and the contract is gone.
+ui.heist_select.payout,Contract pay: {amount}
+ui.heist_select.modes_stealth_loud,Stealth or loud
+ui.heist_select.modes_stealth_only,Stealth only
+ui.heist_select.modes_loud_only,Loud only
+ui.heist_select.start,Start Heist
+ui.heist_select.crew_ai,Fill empty slots with crew AI
+ui.loadout.title,Loadout
+ui.loadout.primary,Primary
+ui.loadout.secondary,Secondary
+ui.loadout.melee,Melee
+ui.loadout.throwable,Throwable
+ui.loadout.deployable,Deployable
+ui.loadout.armor,Armor
+ui.loadout.mask,Mask
+ui.loadout.mods,Modifications
+ui.loadout.equip,Equip
+ui.loadout.equipped,Equipped
+ui.loadout.locked,Locked
+ui.loadout.requires_level,Requires level {level}
+ui.loadout.requires_skill,Requires skill: {skill}
+ui.loadout.concealment_total,Concealment {value}
+ui.loadout.detection_risk,Detection risk {value}
+ui.loadout.stat_delta_up,+{value}
+ui.loadout.stat_delta_down,-{value}
+ui.hud.health,Health
+ui.hud.armor,Armor
+ui.hud.downs_left,Downs left: {count}
+ui.hud.bleedout,Bleeding out {seconds}
+ui.hud.custody,In custody
+ui.hud.custody_release,Release in {seconds}
+ui.hud.custody_trade,Waiting for a hostage trade
+ui.hud.ammo,{mag} / {reserve}
+ui.hud.cable_ties,Cable ties: {count}
+ui.hud.body_bags,Body bags: {count}
+ui.hud.hostages,Hostages: {count}
+ui.hud.carrying,Carrying: {loot}
+ui.hud.pager,Pager {seconds}
+ui.hud.pagers_left,Pagers left: {count}
+ui.hud.ecm,Jammer {seconds}
+ui.hud.objectives,Objectives
+ui.hud.casing,Casing
+ui.hud.masked,Masked
+ui.hud.mask_up_hint,Hold {key} to mask up
+ui.hud.assault,Police assault in progress
+ui.hud.assault_anticipation,Police assault incoming
+ui.hud.assault_wave,Wave {wave}
+ui.hud.alarm,Alarm raised
+ui.hud.escape_available,Escape available
+ui.hud.secured,Secured: {count} bags
+ui.hud.teammate_downed,{name} is down
+ui.hud.teammate_custody,{name} is in custody
+ui.hud.phantom_warning,Phantom nearby
+ui.hud.stinger_warning,Stinger charging
+ui.hud.interaction_progress,{percent}%
+ui.prompt.interact,Hold {key} to interact
+ui.prompt.answer_pager,Hold {key} to answer the pager
+ui.prompt.bag_body,Hold {key} to bag the body
+ui.prompt.tie_civilian,Hold {key} to tie up
+ui.prompt.intimidate,Press {key} to shout
+ui.prompt.pick_lock,Hold {key} to pick the lock
+ui.prompt.use_keycard,Hold {key} to use the keycard
+ui.prompt.place_drill,Hold {key} to place the drill
+ui.prompt.fix_drill,Hold {key} to fix the drill
+ui.prompt.take_loot,Hold {key} to take the loot
+ui.prompt.pick_up_bag,Hold {key} to pick up the bag
+ui.prompt.secure_bag,Hold {key} to secure the bag
+ui.prompt.throw_bag,Press {key} to throw the bag
+ui.prompt.break_case,Press {key} to break the case
+ui.prompt.revive,Hold {key} to revive {name}
+ui.prompt.mask_up,Hold {key} to mask up
+ui.prompt.open_door,Press {key} to open
+ui.prompt.close_door,Press {key} to close
+ui.prompt.take_keycard,Press {key} to take the keycard
+ui.prompt.take_small_loot,Hold {key} to grab it
+ui.prompt.use_doctor_bag,Hold {key} to use the doctor bag
+ui.prompt.use_ammo_bag,Hold {key} to refill ammo
+ui.prompt.take_body_bag,Hold {key} to take a body bag
+ui.prompt.deploy,Hold {key} to deploy {item}
+ui.prompt.trade_hostage,Hold {key} to trade the hostage
+ui.prompt.open_window,Press {key} to open the window
+ui.prompt.climb,Press {key} to climb
+ui.prompt.blocked.casing,Suspicious actions not allowed
+ui.prompt.blocked.need_keycard,Requires a keycard
+ui.prompt.blocked.need_body_bag,No body bags left
+ui.prompt.blocked.need_cable_tie,No cable ties left
+ui.prompt.blocked.carrying_bag,Hands full
+ui.prompt.blocked.need_skill,Requires a skill
+ui.prompt.blocked.in_use,Someone is already on it
+ui.prompt.blocked.locked,Locked
+ui.prompt.blocked.need_item,Requires {item}
+ui.results.title,Payday
+ui.results.success,Heist complete
+ui.results.failure,Heist failed
+ui.results.stealth,Clean job. Nobody knew we were there.
+ui.results.loud,Went loud
+ui.results.time,Time: {time}
+ui.results.kills,Kills
+ui.results.specials_killed,Specials killed
+ui.results.downs,Downs
+ui.results.civilians_killed,Civilians killed
+ui.results.pagers_answered,Pagers answered: {count}
+ui.results.cash_header,Cash
+ui.results.contract,Contract pay
+ui.results.loot,Secured loot
+ui.results.loot_line,{loot} x{count}
+ui.results.small_loot,Small loot
+ui.results.difficulty_mult,Difficulty x{mult}
+ui.results.crew_alive,Crew alive bonus x{mult}
+ui.results.civilian_penalty,Cleanup costs (civilians)
+ui.results.subtotal,Subtotal
+ui.results.total,Total payout
+ui.results.stash,To the stash
+ui.results.spending,Spending cash
+ui.results.xp_header,Experience
+ui.results.xp.base,Heist experience
+ui.results.xp.pro,Pro job bonus
+ui.results.xp.difficulty,Difficulty bonus
+ui.results.xp.custody,Custody penalty
+ui.results.xp.additive,Crew and gear bonuses
+ui.results.xp.stealth,Stealth bonus
+ui.results.xp_total,Total experience
+ui.results.level_up,Level up! Now level {level}
+ui.results.continue,Continue
+ui.difficulty.routine,Routine
+ui.difficulty.tense,Tense
+ui.difficulty.hazardous,Hazardous
+ui.difficulty.brutal,Brutal
+ui.difficulty.lethal,Lethal
+ui.difficulty.cataclysm,Cataclysm
+ui.difficulty.last_breath,Last Breath
+ui.stat.damage,Damage
+ui.stat.accuracy,Accuracy
+ui.stat.stability,Stability
+ui.stat.concealment,Concealment
+ui.stat.threat,Threat
+ui.stat.magazine,Magazine
+ui.stat.total_ammo,Total Ammo
+ui.stat.rate_of_fire,Rate of Fire
+ui.stat.reload,Reload
+ui.stat.detection_risk,Detection Risk
+ui.stat.armor,Armor
+ui.stat.health,Health
+ui.stat.dodge,Dodge
+ui.stat.movement,Movement
+ui.stat.stamina,Stamina
+item.weapon.kestrel_p9.name,Kestrel P9
+item.weapon.kestrel_p9.desc,"A compact nine-millimetre service pistol. Light, quiet to carry, forgiving to learn."
+item.mask.gilded_heron.name,Gilded Heron
+item.mask.gilded_heron.desc,"Lacquered gold over a long, patient face. It has seen worse jobs than yours."
+item.mod.p9_suppressor.name,Hushwell Suppressor
+item.mod.p9_suppressor.desc,Turns gunfire into a polite cough. Heavier at the muzzle and a little less punch.
+item.mod.p9_reflex_sight.name,Pinpoint Reflex Sight
+item.mod.p9_reflex_sight.desc,A red dot for quicker shots on target. Adds bulk under a jacket.
+item.mod.p9_extended_mag.name,Long-Reach Magazine
+item.mod.p9_extended_mag.desc,"More rounds between reloads. Sticks out of the grip, slows the swap."
+item.melee.folding_knife.name,Folding Knife
+item.melee.folding_knife.desc,"Small, quiet and always in the pocket."
+item.armor.tailored_suit.name,Tailored Suit
+item.armor.tailored_suit.desc,"No armor, all elegance. Nobody looks twice at a good suit."
+item.armor.light_vest.name,Light Vest
+item.armor.light_vest.desc,Thin ballistic panels that vanish under a coat.
+item.armor.patrol_vest.name,Patrol Vest
+item.armor.patrol_vest.desc,The standard compromise between coverage and mobility.
+item.armor.heavy_vest.name,Heavy Vest
+item.armor.heavy_vest.desc,Reinforced panels front and back. You will feel it on the stairs.
+item.armor.flak_rig.name,Flak Rig
+item.armor.flak_rig.desc,"Shoulder-to-hip protection. Hard to hide, harder to put down."
+item.armor.tactical_plate.name,Tactical Plate
+item.armor.tactical_plate.desc,Ceramic plates for people who expect a long day.
+item.armor.breacher_plate.name,Breacher Plate
+item.armor.breacher_plate.desc,Full plate carrier for walking through the front door. Requires training to move in.
+item.deployable.doctor_bag.name,Doctor Bag
+item.deployable.doctor_bag.desc,Patches the crew up and resets their downs. Two uses.
+item.deployable.ammo_bag.name,Ammo Bag
+item.deployable.ammo_bag.desc,A heavy bag of spare magazines for the whole crew.
+item.deployable.body_bag_case.name,Body Bag Case
+item.deployable.body_bag_case.desc,Holds three body bags for a tidy crew.
+item.loot.jewelry.name,Jewelry
+item.loot.jewelry.desc,"Rings, necklaces and watches in a padded bag."
+item.loot.cash.name,Cash
+item.loot.cash.desc,"Bundled bills. Light, honest money."
+item.loot.body_bag.name,Body Bag
+item.loot.body_bag.desc,Heavy and awkward. Out of sight is out of mind.
+heist.glasshouse.name,Glasshouse
+heist.glasshouse.subtitle,Vossberg Jewelers
+heist.glasshouse.brief,Vossberg keeps the good stones in the back and the cameras in the front. Odile wants the back.
+objective.glasshouse.case_store,Case the store
+objective.glasshouse.find_keycard,Find a keycard
+objective.glasshouse.open_back_room,Get into the back room
+objective.glasshouse.drill_safe,Drill the safe
+objective.glasshouse.take_jewelry,Bag the jewelry
+objective.glasshouse.secure_loot,Secure the bags ({count}/{total})
+objective.glasshouse.wait_escape,Hold out until the van arrives
+objective.glasshouse.escape,Get to the van
+contact.odile_vance,Odile Vance
+contact.hollis_reyes,"Hollis ""Hammer"" Reyes"
+contact.accountant,The Accountant
+contact.mercer,Mercer
+crew.rook,Rook
+crew.sable,Sable
+crew.dutch,Dutch
+crew.wren,Wren
+enemy.security_officer,Security Officer
+enemy.camera_operator,Camera Operator
+enemy.civilian,Civilian
+enemy.patrol_officer,Patrol Officer
+enemy.tac_light,TAC Light
+enemy.tac_heavy,TAC Heavy
+enemy.frd_agent,FRD Agent
+enemy.phantom,Phantom
+enemy.stinger,Stinger
+enemy.bulwark,Bulwark
+enemy.wrecker,Wrecker
+enemy.longshot,Longshot
+enemy.corpsman,Corpsman
+enemy.commander_brandt,Commander Brandt
+enemy.aegis,Aegis Trooper
+voice.vo.mercer.heist_start_casing_1,"Alright, you're in. Keep the masks in your pockets and look like you belong."
+voice.vo.mercer.heist_start_casing_2,"Take your time. Count the cameras, count the guards, and try to look bored."
+voice.vo.mercer.crew_masked_1,Mask's on. No more pretending to shop.
+voice.vo.mercer.crew_masked_2,"Faces covered. From here on, it counts."
+voice.vo.mercer.pager_started_1,His pager's going. Somebody pick that up and be convincing.
+voice.vo.mercer.pager_started_2,Pager. Answer it before his boss gets curious.
+voice.vo.mercer.pager_answered_1,They bought it. Nicely done.
+voice.vo.mercer.pager_answered_2,Dispatch is satisfied. For now.
+voice.vo.mercer.pager_last_answer_1,That's the last one they'll buy.
+voice.vo.mercer.pager_last_answer_2,That was your last free pass. No more bodies with radios.
+voice.vo.mercer.pager_limit_1,Too many check-ins. Dispatch knows something's wrong. Here comes the noise.
+voice.vo.mercer.pager_limit_2,Nobody believes a fifth all-clear. They're calling it in.
+voice.vo.mercer.pager_failed_1,Nobody answered. That's an alarm.
+voice.vo.mercer.pager_failed_2,Silence on the pager. They're sending company.
+voice.vo.mercer.body_discovered_1,Someone found a body. That's going to be hard to explain.
+voice.vo.mercer.body_discovered_2,A body's been spotted. Get ready.
+voice.vo.mercer.camera_spotted_1,Camera's got you. Not ideal.
+voice.vo.mercer.camera_spotted_2,You're on tape. Somebody's watching that monitor.
+voice.vo.mercer.alarm_raised_1,"And there's the alarm. Quiet's over, so let's be quick instead."
+voice.vo.mercer.alarm_raised_2,"Alarm's up. Police are on their way. Plan B, everyone."
+voice.vo.mercer.device_started_1,Drill's running. Keep it company.
+voice.vo.mercer.device_started_2,"Drill's on. It'll take a while, so get comfortable."
+voice.vo.mercer.device_jammed_1,Drill's stopped. Somebody give it some encouragement.
+voice.vo.mercer.device_jammed_2,"The drill's jammed again. Cheap hardware, I know."
+voice.vo.mercer.device_finished_1,Drill's through. Go see what we paid for.
+voice.vo.mercer.device_finished_2,That's done. Door's open.
+voice.vo.mercer.assault_anticipation_1,They're gathering outside. Find cover and top up your ammo.
+voice.vo.mercer.assault_anticipation_2,It's gone quiet out there. That's never good. Get ready.
+voice.vo.mercer.assault_build_1,Here they come. Heads down.
+voice.vo.mercer.assault_build_2,Assault's starting. Stay close and stay alive.
+voice.vo.mercer.assault_fade_1,They're pulling back. Use the breather.
+voice.vo.mercer.assault_fade_2,"Assault's thinning out. Breathe, reload, keep working."
+voice.vo.mercer.assault_control_1,Quiet for now. Get the work done before they regroup.
+voice.vo.mercer.assault_control_2,"They're regrouping. You have a minute, maybe two."
+voice.vo.mercer.loot_secured_1,That bag's secured.
+voice.vo.mercer.loot_secured_2,Another one in the van. Good.
+voice.vo.mercer.loot_secured_3,Bag's safe. Keep them coming.
+voice.vo.mercer.escape_available_1,"Van's here. Leave whenever you're ready, or stay and get greedy."
+voice.vo.mercer.escape_available_2,Your ride is waiting. I'd use it.
+voice.vo.mercer.crew_downed_1,Someone's down. Get them up.
+voice.vo.mercer.crew_downed_2,Crew member down. Don't leave them there.
+voice.vo.mercer.crew_custody_1,"They've got one of you. We'll get them back, but finish the job first."
+voice.vo.mercer.crew_custody_2,One in custody. I'll start working on a trade.
+voice.vo.mercer.heist_success_1,That's a clean exit. Drinks are on the contract.
+voice.vo.mercer.heist_success_2,Done. Everyone home and the money's moving.
+voice.vo.mercer.heist_failed_1,That one's gone. We'll talk about it later.
+voice.vo.mercer.heist_failed_2,Pull out. There's nothing left worth getting caught for.
+voice.vo.mercer.stealth_success_1,In and out and nobody the wiser. That's how it's supposed to go.
+voice.vo.mercer.stealth_success_2,Not a single shot fired. I'm almost impressed.
+voice.vo.rook.pager_started_1,Pager. On it.
+voice.vo.rook.pager_started_2,Pager going off. Covering it.
+voice.vo.rook.reloading_1,Reloading.
+voice.vo.rook.reloading_2,Changing mags.
+voice.vo.rook.device_jammed_1,Drill's jammed.
+voice.vo.rook.device_jammed_2,Drill's stuck. Need hands on it.
+voice.vo.rook.bagging_body_1,Bagging the body.
+voice.vo.rook.bagging_body_2,Putting this one away.
+voice.vo.rook.going_loud_1,"We're loud. Masks on, guns up."
+voice.vo.rook.going_loud_2,Quiet's done. Work fast.
+voice.vo.rook.crew_downed_1,I'm down. Need a hand.
+voice.vo.rook.crew_downed_2,Hit hard. Somebody get me up.
+voice.vo.rook.reviving_1,Got you. Stay with me.
+voice.vo.rook.reviving_2,Picking you up.
+voice.vo.rook.cops_incoming_1,Cops coming in.
+voice.vo.rook.cops_incoming_2,Contact. Police inbound.
+voice.vo.rook.loot_secured_1,Bag's in.
+voice.vo.rook.loot_secured_2,Secured one.
+voice.vo.rook.guard_down_1,Guard's down.
+voice.vo.rook.guard_down_2,Guard handled.
+voice.vo.rook.civilian_killed_1,Civilian down. That's on our tab.
+voice.vo.rook.civilian_killed_2,Watch the civilians.
+voice.vo.sable.pager_started_1,There goes his pager. Mine.
+voice.vo.sable.pager_started_2,Pager. I'll do the voice.
+voice.vo.sable.reloading_1,"Reloading, cover me."
+voice.vo.sable.reloading_2,Out. Reloading.
+voice.vo.sable.device_jammed_1,Drill quit on us.
+voice.vo.sable.device_jammed_2,Drill's sulking again.
+voice.vo.sable.bagging_body_1,Tucking this one in.
+voice.vo.sable.bagging_body_2,Bagging him. Nobody look.
+voice.vo.sable.going_loud_1,"Well, that's subtle gone."
+voice.vo.sable.going_loud_2,Loud it is. Try to keep up.
+voice.vo.sable.crew_downed_1,I'm down. Not my best moment.
+voice.vo.sable.crew_downed_2,"Down. Hurry up, would you?"
+voice.vo.sable.reviving_1,Up you get.
+voice.vo.sable.reviving_2,"On your feet, I'm not carrying you."
+voice.vo.sable.cops_incoming_1,Company at the door.
+voice.vo.sable.cops_incoming_2,More of them. Of course.
+voice.vo.sable.loot_secured_1,One more for the stash.
+voice.vo.sable.loot_secured_2,Bag's in the van.
+voice.vo.sable.guard_down_1,Guard's sleeping now.
+voice.vo.sable.guard_down_2,One less uniform.
+voice.vo.sable.civilian_killed_1,We don't shoot the shoppers.
+voice.vo.sable.civilian_killed_2,Civilian down. Sloppy.
+voice.vo.dutch.pager_started_1,Pager's buzzing. I got it.
+voice.vo.dutch.pager_started_2,Radio's squawking. Handling it.
+voice.vo.dutch.reloading_1,Reloading!
+voice.vo.dutch.reloading_2,Swapping mags. Give me a sec.
+voice.vo.dutch.device_jammed_1,Damn drill's jammed.
+voice.vo.dutch.device_jammed_2,Drill's dead. Kicking it back on.
+voice.vo.dutch.bagging_body_1,Bagging him up.
+voice.vo.dutch.bagging_body_2,"Into the bag, big fella."
+voice.vo.dutch.going_loud_1,Here we go. Loud and proud.
+voice.vo.dutch.going_loud_2,Masks on. Let's dance.
+voice.vo.dutch.crew_downed_1,I'm down! Medic!
+voice.vo.dutch.crew_downed_2,Took one. Need a doc!
+voice.vo.dutch.reviving_1,Gotcha. Up.
+voice.vo.dutch.reviving_2,"Hold still, picking you up."
+voice.vo.dutch.cops_incoming_1,Cops! Lots of 'em!
+voice.vo.dutch.cops_incoming_2,Here they come!
+voice.vo.dutch.loot_secured_1,Bag's secured.
+voice.vo.dutch.loot_secured_2,That's one more paid.
+voice.vo.dutch.guard_down_1,Guard down.
+voice.vo.dutch.guard_down_2,Got the guard.
+voice.vo.dutch.civilian_killed_1,"Hey, leave the civvies alone!"
+voice.vo.dutch.civilian_killed_2,Civilian's down. Costs us.
+voice.vo.wren.pager_started_1,Pager! I'll get it!
+voice.vo.wren.pager_started_2,"His pager's beeping, I'm on it."
+voice.vo.wren.reloading_1,"Reloading, reloading!"
+voice.vo.wren.reloading_2,Empty! Reloading!
+voice.vo.wren.device_jammed_1,The drill stopped!
+voice.vo.wren.device_jammed_2,"Drill's jammed, someone fix it!"
+voice.vo.wren.bagging_body_1,"Bagging the body, gimme a second."
+voice.vo.wren.bagging_body_2,Body going in the bag.
+voice.vo.wren.going_loud_1,We're loud! We're loud!
+voice.vo.wren.going_loud_2,"Okay, plan B, plan B!"
+voice.vo.wren.crew_downed_1,I'm down! Help!
+voice.vo.wren.crew_downed_2,"Can't get up, need a medic!"
+voice.vo.wren.reviving_1,"I got you, I got you."
+voice.vo.wren.reviving_2,"Hang on, getting you up!"
+voice.vo.wren.cops_incoming_1,Cops incoming!
+voice.vo.wren.cops_incoming_2,More cops! Heads up!
+voice.vo.wren.loot_secured_1,Bag secured!
+voice.vo.wren.loot_secured_2,That one's in!
+voice.vo.wren.guard_down_1,Guard down!
+voice.vo.wren.guard_down_2,"Got him, guard's out."
+voice.vo.wren.civilian_killed_1,"Whoa, civilian down!"
+voice.vo.wren.civilian_killed_2,"Careful, that was a civilian!"

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArmorDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/armor_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"armor.patrol_vest"
+display_name = "Patrol Vest"
+armor = 60.0
+dodge = -0.1
+move_speed_mult = 0.9511
+concealment = 23
+stamina_mult = 0.9259
+unlock_level = 1
