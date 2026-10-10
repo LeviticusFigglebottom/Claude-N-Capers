@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.undying.back_on_your_feet"
+display_name = "Back on Your Feet"
+tree = &"outlaw"
+subtree = &"undying"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "Take 30% less damage for 10 s after being revived."
+desc_aced = "Get up with 40% more health."
+grants_basic = {
+&"defense.post_revive_buff": {
+"duration": 10.0,
+"reload_mult": 1.0,
+"swap_mult": 1.0,
+"move_mult": 1.0,
+"damage_taken_mult": 0.7
+}
+}
+grants_aced = {
+&"defense.revived_health_mult": 1.4
+}

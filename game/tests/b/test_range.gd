@@ -51,7 +51,12 @@ func test_scene_instantiates_headless() -> void:
 	var r: FiringRange = await _spawn_range()
 	assert_true(r.is_inside_tree())
 	assert_true(r.overlay != null, "overlay built")
-	assert_true(r.spectator != null, "no CrewController yet -> temporary range camera")
+	# State-tolerant (D-027 integration): ENV A's crew via RangeCrewBridge when CrewController
+	# provides spawn_for_range, otherwise the temporary range camera. Exactly one shooter.
+	if r.crew != null:
+		assert_true(r.spectator == null, "real crew spawned -> no temporary range camera")
+	else:
+		assert_true(r.spectator != null, "no range crew -> temporary range camera")
 	assert_eq(r.targets.size(), r.layout.lane_count())
 	assert_true(r.level.get_node("Floor").get_child_count() > 0, "greybox floor pieces instanced")
 	assert_true(r.level.get_node("Walls").get_child_count() > 0, "greybox wall pieces instanced")
@@ -257,3 +262,18 @@ func test_range_strings_exist() -> void:
 	for kind: StringName in [ContentDB.WEAPONS, ContentDB.MODS]:
 		for res: Resource in ContentDB.all_of(kind):
 			assert_has(table, String(UiText.item_key(StringName(res.get(&"id")))), "loadout swap option name")
+
+
+func test_crit_applies_head_mult_on_any_zone() -> void:
+	var t: RangeTarget = _target()
+	var hm: float = t.headshot_mult()
+	var bi: Dictionary = _info(10.0)
+	bi["crit"] = true
+	var body: Dictionary = t.take_hit(bi, 0)
+	assert_near(float(body["amount"]), 10.0 * hm, 0.001, "body crit = body x head mult")
+	t.reset_target()
+	var hi: Dictionary = _info(10.0, Enums.HitZone.HEAD)
+	hi["crit"] = true
+	var head: Dictionary = t.take_hit(hi, 0)
+	assert_near(float(head["amount"]), 10.0 * hm * hm, 0.001, "head crit stacks")
+	t.queue_free()

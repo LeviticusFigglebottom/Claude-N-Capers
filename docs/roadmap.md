@@ -16,6 +16,22 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | **P5** | Content: Gallery Night, Meridian Federal, Rolling Thunder, Afterhours; music ×3; civilian mode | Each heist passes G3 plus a ghost run and a loud run bot on 5 seeds |
 | **P6** | Co-op hardening, drop-in, performance, polish, Notoriety | 4-client soak test, perf budgets in CI |
 
+## P2: Stealth complete (ENV A tasks dispatched early under the utilization policy, D-032)
+
+| Id | Task | Fidelity rows |
+|---|---|---|
+| A2-01 | Doors on the nav graph: NPC/AI teammates open unlocked doors on their path; guards use keycard doors they're authorised for; nav links toggle with door state | (QA-11) |
+| A2-02 | Cameras complete: security room + `camera_station` operator (kill/dominate → all cameras off), operator dispatches a guard to investigate a broken camera, Titan cameras (Lethal+) | S8.1, S8.2 |
+| A2-03 | ECM jammer runtime: deploy, chaining, cameras/phones jam, doors/ATM open with skill, feedback stun, pager-delay skill | S8.4–S8.6, S5.6 |
+| A2-04 | Keypads + code notes, safes with methods and time locks, saws, laser grids, zipline | S9.4, S9.7, S9.8, S9.10, S9.11 |
+| A2-05 | Guard cuff flow (yell, pause, cuff, 4 min cooldown, 60 s self-free), body-shot misfire, marking + Sixth Sense | S3.2, S3.7, S2.9 |
+| A2-06 | Deployables runtime: doctor bag, FAK, ammo bag, body bag case, ECM; dodge rolls | L2.11, L2.4, S6.2 |
+| A2-07 | Restrained/hostage stimuli, stealth-only heist mode (alarm = fail), pre-planning asset hooks (spawn choice, asset drops, modifier assets) | S6.4, S11.3, C3 |
+
+| B2-01 | Pre-planning + assets UI: HeistDef.preplanning, favors budget, location choice on the map blueprint, asset purchase, plan vote stub | C3 |
+| B2-02 | Briefing screen: contact portrait slot, objectives, loot, escape options | C2 |
+| B2-03 | Mask customization data/UI (base shapes from ENV D, colours/patterns/materials) | P8 |
+
 ## P1: Vertical slice (detailed)
 
 **Slice definition.** One small heist (**Glasshouse**: jewelry store). One guard type (Security

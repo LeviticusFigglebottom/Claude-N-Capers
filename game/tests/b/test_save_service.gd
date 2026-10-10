@@ -120,12 +120,12 @@ func test_v0_migrates() -> void:
 
 ## D-022 QB-13: v1 -> v2 adds banked_stealth_mult = 1.0 and keeps everything else.
 func test_v1_migrates_to_v2_with_empty_stealth_bank() -> void:
-	assert_eq(SaveService.CURRENT_VERSION, 2)
+	assert_true(SaveService.CURRENT_VERSION >= 2)
 	var v1: Dictionary = _sample().to_dict()
 	v1["version"] = 1
 	v1.erase("banked_stealth_mult")
 	var m: Dictionary = SaveService.migrate(v1)
-	assert_eq(int(m["version"]), 2)
+	assert_eq(int(m["version"]), SaveService.CURRENT_VERSION)
 	assert_near(float(m["banked_stealth_mult"]), 1.0)
 	assert_eq(int(m["cash"]), 1234)
 	assert_false(v1.has("banked_stealth_mult"), "input not mutated")
@@ -138,6 +138,49 @@ func test_v1_migrates_to_v2_with_empty_stealth_bank() -> void:
 	# A v1 file that somehow already carries the field keeps its value.
 	v1["banked_stealth_mult"] = 1.15
 	assert_near(float(SaveService.migrate(v1)["banked_stealth_mult"]), 1.15)
+
+
+## B4-03: v2 -> v3 turns the loadout's skills into skill set 0 and the equipped deck's card count into
+## that deck's progress; a round trip keeps every set and the per-deck progress.
+func test_v2_migrates_to_v3_skill_sets_and_perk_cards() -> void:
+	assert_eq(SaveService.CURRENT_VERSION, 3)
+	var v2: Dictionary = _sample().to_dict()
+	v2["version"] = 2
+	v2.erase("skill_sets")
+	v2.erase("active_skill_set")
+	v2.erase("perk_cards")
+	(v2["loadout"] as Dictionary)["skills"] = {"skill.slipstream.light_step": 2}
+	var m: Dictionary = SaveService.migrate(v2)
+	assert_eq(int(m["version"]), 3)
+	assert_eq(int(m["active_skill_set"]), 0)
+	assert_eq((m["skill_sets"] as Array).size(), 1)
+	assert_eq(int(((m["skill_sets"] as Array)[0] as Dictionary)["skill.slipstream.light_step"]), 2)
+	assert_eq(int((m["perk_cards"] as Dictionary)["perk.test"]), 4)
+	DirAccess.make_dir_recursive_absolute(TEST_ROOT)
+	_write(SaveService.profile_path(SLOT), JSON.stringify(v2))
+	var q: PlayerProfile = SaveService.load_profile(SLOT)
+	assert_eq(int(q.loadout.skills[&"skill.slipstream.light_step"]), 2)
+	assert_eq(int(q.perk_cards[&"perk.test"]), 4)
+
+
+func test_skill_sets_round_trip_and_switch() -> void:
+	var p: PlayerProfile = _sample()
+	p.loadout.skills = {&"skill.slipstream.light_step": 1}
+	p.switch_skill_set(2)
+	assert_eq(p.active_skill_set, 2)
+	assert_eq(p.loadout.skills.size(), 0, "new set starts empty")
+	p.loadout.skills[&"skill.juggernaut.thick_skin"] = 2
+	p.perk_cards[&"perk.bulk"] = 9
+	assert_eq(SaveService.save_profile(p, SLOT), OK)
+	var q: PlayerProfile = SaveService.load_profile(SLOT)
+	assert_eq(q.active_skill_set, 2)
+	assert_eq(q.skill_sets.size(), 3)
+	assert_eq(int(q.loadout.skills[&"skill.juggernaut.thick_skin"]), 2)
+	assert_eq(int(q.skill_set(0)[&"skill.slipstream.light_step"]), 1)
+	assert_eq(int(q.perk_cards[&"perk.bulk"]), 9)
+	q.switch_skill_set(0)
+	assert_eq(int(q.loadout.skills[&"skill.slipstream.light_step"]), 1)
+	assert_eq(int(q.skill_set(2)[&"skill.juggernaut.thick_skin"]), 2, "previous active set kept")
 
 
 func test_future_version_refused() -> void:

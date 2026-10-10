@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.scattergun.long_barrel"
+display_name = "Long Barrel"
+tree = &"bruiser"
+subtree = &"scattergun"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Shotguns are 40% more accurate."
+desc_aced = "Shotgun damage starts falling off 50% further away."
+grants_basic = {
+&"weapon.spread_mult.shotgun": 0.6
+}
+grants_aced = {
+&"weapon.falloff_range_mult.shotgun": 1.5
+}

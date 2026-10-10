@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.infiltrator.light_fingers"
+display_name = "Light Fingers"
+tree = &"shade"
+subtree = &"infiltrator"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Loop a camera for 25 s so it sees nothing (one camera at a time)."
+desc_aced = "Pick locks 100% faster, and pick the locks of small safes."
+grants_basic = {
+&"stealth.camera_loop": true
+}
+grants_aced = {
+&"interaction.lockpick_speed_mult": 0.5,
+&"interaction.can_lockpick_safes": true
+}

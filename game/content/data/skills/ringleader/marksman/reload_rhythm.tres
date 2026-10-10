@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.marksman.reload_rhythm"
+display_name = "Reload Rhythm"
+tree = &"ringleader"
+subtree = &"marksman"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Reload SMGs, assault rifles and sniper rifles 15% faster."
+desc_aced = "A headshot kill with one of them doubles your reload speed for 4 s."
+grants_basic = {
+&"weapon.reload_speed_mult.smg": 1.15,
+&"weapon.reload_speed_mult.assault_rifle": 1.15,
+&"weapon.reload_speed_mult.sniper": 1.15
+}
+grants_aced = {
+&"weapon.kill_reload_buff": {
+"trigger": "headshot_kill",
+"kills": 1,
+"classes": ["smg", "assault_rifle", "sniper"],
+"reload_mult": 2.0,
+"duration": 4.0,
+"min_mult": 2.0,
+"mag_falloff": 0.0,
+"mag_falloff_from": 0
+}
+}

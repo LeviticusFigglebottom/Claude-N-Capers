@@ -9,6 +9,13 @@ const EXPECTED: Array[String] = [
 	"rubber_black", "fabric_upholstery", "leather_dark", "plastic_matte", "brick_red", "asphalt",
 	"tile_ceramic_white", "vinyl_floor", "metal_painted", "trim_interior",
 ]
+## First-person weapon materials (D-026): 1 UV unit = 1 m, 1024 px/m.
+const WEAPON: Array[String] = [
+	"polymer_black", "polymer_stipple", "steel_blued", "steel_bare", "metal_matte", "paint_white",
+	"brass_cartridge", "glass_lens_tint",
+]
+## Untextured by design: a reticle is a tiny emissive mesh; textures would add nothing.
+const EMISSIVE: Array[String] = ["emissive_reticle_red"]
 const TRIM_TABLE: String = "res://assets/textures/trim_interior/trim_table.json"
 
 
@@ -24,14 +31,16 @@ func _library_ids() -> Array[String]:
 
 func test_expected_library_present() -> void:
 	var ids: Array[String] = _library_ids()
-	for id: String in EXPECTED:
+	for id: String in EXPECTED + WEAPON + EMISSIVE:
 		assert_has(ids, id, "library material missing")
 
 
 func test_every_library_material_is_orm_pbr() -> void:
 	var ids: Array[String] = _library_ids()
-	assert_true(ids.size() >= EXPECTED.size(), "too few library materials")
+	assert_true(ids.size() >= EXPECTED.size() + WEAPON.size(), "too few library materials")
 	for id: String in ids:
+		if id in EMISSIVE:
+			continue
 		var res: Resource = load(MATERIAL_DIR + id + ".tres")
 		assert_true(res is ORMMaterial3D, "%s is not ORMMaterial3D" % id)
 		var mat: ORMMaterial3D = res as ORMMaterial3D
@@ -47,13 +56,27 @@ func test_every_library_material_is_orm_pbr() -> void:
 		assert_near(mat.roughness, 1.0, 0.0001, "%s roughness multiplier" % id)
 		assert_false(mat.uv1_triplanar, "%s must use mesh UVs, not triplanar" % id)
 		assert_eq(String(mat.resource_name), "M_" + id, "resource_name")
+		var tile_m: float = float(mat.get_meta(&"uv_tile_m", 0.0))
+		assert_near(tile_m, 1.0 if id in WEAPON else 2.0, 0.0001, "%s uv_tile_m" % id)
+
+
+func test_emissive_materials() -> void:
+	for id: String in EMISSIVE:
+		var mat: StandardMaterial3D = load(MATERIAL_DIR + id + ".tres") as StandardMaterial3D
+		assert_true(mat != null, "%s is not a StandardMaterial3D" % id)
+		if mat == null:
+			continue
+		assert_true(mat.emission_enabled, "%s emission" % id)
+		assert_true(mat.emission_energy_multiplier >= 1.0, "%s must be bright enough to glow" % id)
+		assert_eq(String(mat.resource_name), "M_" + id, "resource_name")
 
 
 func test_glass_is_transparent() -> void:
-	var glass: ORMMaterial3D = load(MATERIAL_DIR + "glass_clear.tres") as ORMMaterial3D
-	assert_true(glass != null, "glass_clear missing")
-	if glass != null:
-		assert_eq(glass.transparency, BaseMaterial3D.TRANSPARENCY_ALPHA, "glass transparency")
+	for id: String in ["glass_clear", "glass_lens_tint"]:
+		var glass: ORMMaterial3D = load(MATERIAL_DIR + id + ".tres") as ORMMaterial3D
+		assert_true(glass != null, "%s missing" % id)
+		if glass != null:
+			assert_eq(glass.transparency, BaseMaterial3D.TRANSPARENCY_ALPHA, "%s transparency" % id)
 
 
 func test_luts_import_as_3d_textures() -> void:

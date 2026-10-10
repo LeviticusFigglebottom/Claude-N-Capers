@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SpawnGroupDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/director/spawn_group_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"group.patrol_pair"
+unit_ids = Array[StringName]([&"enemy.patrol_officer"])
+unit_counts = PackedInt32Array(2)
+weights = PackedFloat32Array(3, 2, 1, 1, 1, 1)
+phases = PackedInt32Array(2, 3, 5)

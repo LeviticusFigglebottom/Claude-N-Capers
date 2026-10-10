@@ -1,0 +1,120 @@
+[gd_resource type="Resource" script_class="PerkDeckDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/perk_deck_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"perk.knuckles"
+display_name = "Knuckles"
+description = "perk.knuckles.desc"
+cards = Array[Dictionary]([{
+"name": "perk.knuckles.card1.name",
+"desc": "perk.knuckles.card1.desc",
+"cost": 200,
+"grants": {
+&"perk.infiltrator": {
+"surrounded_min_enemies": 3,
+"surrounded_radius_m": 6.0,
+"surrounded_dr": 0.12,
+"melee_chain_mult": 10.0,
+"melee_chain_window_s": 1.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.0
+}
+}
+}, {
+"name": "perk.shared.card2.name",
+"desc": "perk.shared.card2.desc",
+"cost": 300,
+"grants": {
+&"weapon.headshot_mult.all": 1.25
+}
+}, {
+"name": "perk.knuckles.card3.name",
+"desc": "perk.knuckles.card3.desc",
+"cost": 400,
+"grants": {
+&"perk.infiltrator": {
+"surrounded_min_enemies": 3,
+"surrounded_radius_m": 6.0,
+"surrounded_dr": 0.12,
+"melee_chain_mult": 10.0,
+"melee_chain_window_s": 1.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.08
+}
+}
+}, {
+"name": "perk.shared.card4.name",
+"desc": "perk.shared.card4.desc",
+"cost": 600,
+"grants": {
+&"stealth.concealment_add.all": 1,
+&"progression.xp_mult": 1.45,
+&"movement.armor_penalty_mult": 0.85
+}
+}, {
+"name": "perk.knuckles.card5.name",
+"desc": "perk.knuckles.card5.desc",
+"cost": 1000,
+"grants": {
+&"perk.infiltrator": {
+"surrounded_min_enemies": 3,
+"surrounded_radius_m": 6.0,
+"surrounded_dr": 0.12,
+"melee_chain_mult": 10.0,
+"melee_chain_window_s": 7.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.16
+}
+}
+}, {
+"name": "perk.shared.card6.name",
+"desc": "perk.shared.card6.desc",
+"cost": 1600,
+"grants": {
+&"weapon.ammo_pickup_mult.all": 1.35,
+&"deploy.armor_bag": true
+}
+}, {
+"name": "perk.knuckles.card7.name",
+"desc": "perk.knuckles.card7.desc",
+"cost": 2400,
+"grants": {
+&"perk.infiltrator": {
+"surrounded_min_enemies": 3,
+"surrounded_radius_m": 6.0,
+"surrounded_dr": 0.12,
+"melee_chain_mult": 10.0,
+"melee_chain_window_s": 7.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.24
+}
+}
+}, {
+"name": "perk.shared.card8.name",
+"desc": "perk.shared.card8.desc",
+"cost": 3200,
+"grants": {
+&"weapon.damage_mult.all": 1.05,
+&"interaction.doctor_bag_speed_mult": 0.8333
+}
+}, {
+"name": "perk.knuckles.card9.name",
+"desc": "perk.knuckles.card9.desc",
+"cost": 4000,
+"grants": {
+&"progression.card_drop_quality_add": 0.1,
+&"perk.infiltrator": {
+"surrounded_min_enemies": 3,
+"surrounded_radius_m": 6.0,
+"surrounded_dr": 0.12,
+"melee_chain_mult": 10.0,
+"melee_chain_window_s": 7.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.24,
+"melee_hit_heal_fraction": 0.2,
+"melee_hit_heal_cooldown_s": 10.0
+}
+}
+}])

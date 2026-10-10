@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.gunnery.run_and_gun"
+display_name = "Run and Gun"
+tree = &"wrench"
+subtree = &"gunnery"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Fire any weapon while sprinting."
+desc_aced = "Killing 2 enemies with an automatic SMG, LMG, assault rifle or special weapon makes your next reload up to 100% faster (at least 40% for large magazines)."
+grants_basic = {
+&"movement.shoot_while_sprinting.all": true
+}
+grants_aced = {
+&"weapon.kill_reload_buff": {
+"trigger": "auto_kills",
+"kills": 2,
+"classes": ["smg", "lmg", "assault_rifle", "special"],
+"reload_mult": 2.0,
+"duration": 0.0,
+"min_mult": 1.4,
+"mag_falloff": 0.01,
+"mag_falloff_from": 20
+}
+}

@@ -1,6 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://systems/player/crew_controller.gd" id="1"]
+[ext_resource type="Script" path="res://systems/combat/crew_health.gd" id="2"]
+[ext_resource type="Script" path="res://systems/combat/crew_weapons.gd" id="3"]
+[ext_resource type="Script" path="res://systems/interaction/interactable_component.gd" id="4"]
 
 [sub_resource type="CapsuleShape3D" id="cap"]
 radius = 0.35
@@ -29,3 +32,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
 [node name="Camera" type="Camera3D" parent="Head"]
 current = false
 fov = 75.0
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2")
+
+[node name="Weapons" type="Node" parent="."]
+script = ExtResource("3")
+
+[node name="ReviveInteractable" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+script = ExtResource("4")
+kind = &"revive"
+enabled = false
+interaction_time_s = 6.0
+speed_modifier_key = &"interaction.revive_speed_mult"
+prompt_key = &"ui.prompt.revive"
+priority = 100

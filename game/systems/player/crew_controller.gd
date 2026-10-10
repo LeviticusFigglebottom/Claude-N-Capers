@@ -1,6 +1,9 @@
 ## First-person crew member (human, AI teammate or test bot). Owner: ENV A.
 ## Contracts: crew_intent.md (single entry point `apply_intent`), heist_map.md §7 (capsule sizes),
 ## pd2_fidelity S1.1 (casing limits), S1.2 (mask-up), S1.5 (movement makes NO noise), S10.1 (bags).
+## Combat (A1-08): child components `Health` (CrewHealth: health/armor/downs/bleedout/revive) and
+## `Weapons` (CrewWeapons: ammo, firing, hit claims), exposed as `health` / `weapons` (the HUD
+## duck-typed interface). `take_hit(info, attacker_net_id)` is the single hit entry point (damage.md).
 ##
 ## Authority: the server simulates every slot from its held intent. A remote human predicts its
 ## own movement locally and sends intent + position at 30 Hz; the server sanity-checks speed and
@@ -15,6 +18,7 @@ signal carried_bag_changed(bag: Node)
 
 const COLLISION_LAYER_PLAYERS: int = 1 << 2
 const COLLISION_MASK_WORLD: int = (1 << 0) | (1 << 1) | (1 << 3)
+const SCENE_PATH: String = "res://systems/player/crew_member.tscn"
 
 @export var slot: int = -1
 
@@ -34,8 +38,14 @@ var body_bags: int = 0
 var cable_ties: int = 0
 var items: Dictionary[StringName, int] = {}
 var carried_bag: Node = null
+## First-person weapon visual (ENV B WeaponVisual, visual_slots.md) when attached; its
+## get_marker(&"Muzzle") is the tracer/noise origin (CrewWeapons._muzzle_position()).
+var weapon_visual: Node3D = null
 ## Mask-up hold progress 0..1 (HUD).
 var mask_progress: float = 0.0
+## D-014 / L6.1: an AI teammate waiting at the van in stealth (CrewAiBrain); the StealthDirector
+## never observes a hidden crew member.
+var stealth_hidden: bool = false
 ## Last intent applied (held by the server for this tick).
 var intent: CrewIntent = CrewIntent.new()
 
@@ -44,6 +54,9 @@ var _jump_latch: bool = false
 var _remote_pos: Vector3 = Vector3.INF
 var _send_accum: float = 0.0
 
+## Combat components (A1-08); null only for a scene without them.
+@onready var health: CrewHealth = get_node_or_null("Health") as CrewHealth
+@onready var weapons: CrewWeapons = get_node_or_null("Weapons") as CrewWeapons
 @onready var _collision: CollisionShape3D = $Collision
 @onready var _head: Node3D = $Head
 
@@ -71,7 +84,7 @@ func setup(p_slot: int, info: Dictionary, p_loadout: Loadout) -> void:
 	peer_id = int(info.get("peer_id", 0))
 	is_ai = bool(info.get("is_ai", false))
 	display_name = String(info.get("display_name", "Crew %d" % p_slot))
-	loadout = p_loadout
+	loadout = CrewWeapons.build_loadout(p_loadout)  # resolved; default kestrel + suppressor if null
 	name = "Crew%d" % p_slot
 	var tw: CrewTweak = Tweak.crew()
 	body_bags = mini(tw.body_bags_base + int(Modifiers.add(slot, &"stealth.body_bags_extra")),
@@ -81,6 +94,44 @@ func setup(p_slot: int, info: Dictionary, p_loadout: Loadout) -> void:
 
 func is_local() -> bool:
 	return not is_ai and peer_id == Net.local_peer_id()
+
+
+## Instant loadout swap (firing range, QB-25): re-resolve, re-arm weapons, refill health/armor.
+func set_loadout(p_loadout: Loadout) -> void:
+	loadout = CrewWeapons.build_loadout(p_loadout)
+	if weapons != null:
+		weapons.set_loadout(loadout)
+	if health != null:
+		health.reset_full()
+
+
+## QB-25: a standalone, masked, locally controlled crew member (PlayerInput + Weapons + Health) for
+## ENV B's firing range. Works without a HeistRuntime. Returns the CrewController.
+static func spawn_for_range(parent: Node, xform: Transform3D, p_loadout: Loadout) -> Node:
+	var crew: CrewController = (load(SCENE_PATH) as PackedScene).instantiate() as CrewController
+	var local_slot: int = Net.local_slot()
+	crew.setup(local_slot if local_slot >= 0 else 0,
+		{"peer_id": Net.local_peer_id(), "is_ai": false, "display_name": "Range"}, p_loadout)
+	crew.masked = true
+	crew.mask_progress = 1.0
+	parent.add_child(crew)
+	NetIds.claim(crew)
+	crew.teleport(xform)
+	var pin: PlayerInput = PlayerInput.new()
+	pin.name = "PlayerInput"
+	crew.add_child(pin)
+	return crew
+
+
+## Server: the single hit entry point (docs/contracts/damage.md). CrewHealth applies armor, gating and
+## downs (head x1 from NPC fire) and emits damage_applied itself.
+func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
+	if health == null:
+		var out: Dictionary = info.duplicate()
+		out["amount"] = 0.0
+		out["killed"] = false
+		return out
+	return health.take_hit(info, attacker_net_id)
 
 
 ## Casing mode = unmasked (S1.1).
@@ -193,6 +244,8 @@ func _physics_process(delta: float) -> void:
 		_tick_server_actions(delta)
 	elif is_local():
 		_simulate(delta)  # client-side prediction of own movement
+		if weapons != null:
+			weapons.client_tick(intent, delta)
 		_client_send(delta)
 
 
@@ -256,6 +309,10 @@ func _tick_server_actions(delta: float) -> void:
 				set_masked(false)
 		else:
 			mask_progress = 0.0
+	if health != null:
+		health.server_tick(delta)
+	if weapons != null:
+		weapons.server_tick(intent, delta)
 	if _runtime != null and _runtime.interaction != null:
 		_runtime.interaction.tick(self, intent, delta)
 	if _runtime != null:

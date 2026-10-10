@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.gunnery.anatomy"
+display_name = "Anatomy"
+tree = &"wrench"
+subtree = &"gunnery"
+tier = 4
+cost_basic = 4
+cost_aced = 8
+desc_basic = "Automatic fire with SMGs, LMGs, assault rifles and special weapons applies 30% of the headshot bonus to body hits."
+desc_aced = "90% of the headshot bonus applies."
+grants_basic = {
+&"weapon.body_expertise": {
+"frac": 0.3,
+"auto_only": true,
+"classes": ["smg", "lmg", "assault_rifle", "special"]
+}
+}
+grants_aced = {
+&"weapon.body_expertise": {
+"frac": 0.9,
+"auto_only": true,
+"classes": ["smg", "lmg", "assault_rifle", "special"]
+}
+}

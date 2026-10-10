@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.quartermaster.pack_mule"
+display_name = "Pack Mule"
+tree = &"bruiser"
+subtree = &"quartermaster"
+tier = 4
+cost_basic = 4
+cost_aced = 8
+desc_basic = "Carry 25% more ammo for all weapons."
+desc_aced = "Ammo boxes give 75% more ammo and have a 5% chance (+1% for every box without one) to hold a throwable."
+grants_basic = {
+&"weapon.ammo_total_mult.all": 1.25
+}
+grants_aced = {
+&"weapon.ammo_pickup_mult.all": 1.75,
+&"weapon.ammo_pickup_throwable": {
+"base_chance": 0.05,
+"step": 0.01
+}
+}

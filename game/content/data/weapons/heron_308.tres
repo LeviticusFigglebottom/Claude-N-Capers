@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://4v7n4io6musi" path="res://assets/weapons/wpn_heron_308/wpn_heron_308.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 230.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 50.0
+spread_deg_hip = 5.0
+spread_deg_ads = 0.1
+recoil_kick_deg = 3.0
+recoil_horizontal_deg = 0.6
+falloff_start_m = 25.0
+falloff_end_m = 60.0
+falloff_min_mult = 1.35
+mag_size = 5
+total_ammo = 40
+reload_time_s = 3.0
+reload_empty_time_s = 3.8
+equip_time_s = 0.8
+ads_time_s = 0.4
+concealment = 6
+armor_pierce = 1.0
+shield_pierce = true
+wall_pierce = true
+suppression = 30.0
+ammo_pickup_min = 1.0
+ammo_pickup_max = 2.0
+suppressed = false
+noise_radius_m = 100.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.heron_308"
+display_name = "Heron .308"
+manufacturer = "Marrow & Kell"
+weapon_class = 5
+slot = 0
+fire_modes = Array[StringName]([&"bolt"])
+base = SubResource("base")
+price = 48000
+unlock_level = 14
+mod_slots = {
+2: [&"mod.heron_suppressor"],
+3: [&"mod.heron_scope_4x", &"mod.heron_scope_10x"],
+5: [&"mod.heron_bipod"],
+7: [&"mod.heron_standard_mag", &"mod.heron_extended_mag"]
+}
+default_mods = {
+3: &"mod.heron_scope_4x",
+7: &"mod.heron_standard_mag"
+}
+fire_cue = &"cue.weapon_sniper_fire"
+fire_cue_suppressed = &"cue.weapon_sniper_fire_suppressed"
+anim_set = &"sniper"
+model = ExtResource("3")

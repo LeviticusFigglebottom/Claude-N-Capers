@@ -1,6 +1,6 @@
 ## A local player's persistent progression profile. Owner: ENV B. Persisted by SaveService.
 ##
-## JSON shape (version 2; see SaveService for migrations):
+## JSON shape (version 3; see SaveService for migrations):
 ##   version: int, profile_name: String,
 ##   cash: int (spending cash), stash: int (offshore, "the stash"; pd2_fidelity S10.4),
 ##   xp: int (total), level: int (0..100; pd2_fidelity P1),
@@ -12,6 +12,13 @@
 ##   banked_stealth_mult: float (v2, D-022 QB-13): stealth XP bonus banked by the last successful
 ##     stealth heist, applied to the NEXT payday (PayoutCalculator.compute(..., banked_stealth_mult)).
 ##     1.0 = nothing banked.
+##   skill_sets: Array of skill dicts (v3, PD2 P2 "multiple skill sets"): id -> 1 basic / 2 aced.
+##     active_skill_set: int index into skill_sets. The active set is ALSO loadout.skills, which is
+##     authoritative: to_dict() writes loadout.skills into skill_sets[active_skill_set] and from_dict()
+##     reads it back the same way. Switch sets with switch_skill_set(); the UI pads the array to its
+##     configured count (ProgressionUiTweak.skill_set_count).
+##   perk_cards: Dictionary deck id -> unlocked card count 0..9 (v3, PD2 P4: each deck has its own
+##     progress). loadout.perk_deck_cards mirrors the active deck's entry (PerkProgress.sync()).
 ##   stats: Dictionary String -> int counters (heists_completed, ...).
 ##   settings: Dictionary of JSON values, stored as-is (JSON numbers come back as float).
 ## StringNames are written as strings and converted back on load.
@@ -26,7 +33,7 @@ const LOADOUT_ID_FIELDS: Array[String] = [
 ]
 const LOADOUT_LIST_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 
-var version: int = 2
+var version: int = 3
 var profile_name: String = ""
 var cash: int = 0
 var stash: int = 0
@@ -37,6 +44,9 @@ var owned_weapons: Array[StringName] = []
 var owned_mods: Array[StringName] = []
 var owned_masks: Array[StringName] = []
 var loadout: Loadout = Loadout.new()
+var skill_sets: Array[Dictionary] = []
+var active_skill_set: int = 0
+var perk_cards: Dictionary = {}
 var stats: Dictionary = {}
 var settings: Dictionary = {}
 
@@ -65,6 +75,20 @@ static func from_dict(d: Dictionary) -> PlayerProfile:
 	p.owned_masks = _to_names(d.get("owned_masks", []))
 	var ld: Variant = d.get("loadout", {})
 	p.loadout = loadout_from_dict(ld as Dictionary if ld is Dictionary else {})
+	p.skill_sets = []
+	var sets: Variant = d.get("skill_sets", [])
+	if sets is Array:
+		for e: Variant in (sets as Array):
+			p.skill_sets.append(_skills_from(e))
+	p.active_skill_set = maxi(int(d.get("active_skill_set", 0)), 0)
+	while p.skill_sets.size() <= p.active_skill_set:
+		p.skill_sets.append({})
+	p.skill_sets[p.active_skill_set] = p.loadout.skills.duplicate()
+	p.perk_cards = {}
+	var pc: Variant = d.get("perk_cards", {})
+	if pc is Dictionary:
+		for k: Variant in (pc as Dictionary):
+			p.perk_cards[StringName(String(k))] = int((pc as Dictionary)[k])
 	p.stats = {}
 	var st: Variant = d.get("stats", {})
 	if st is Dictionary:
@@ -79,6 +103,9 @@ func to_dict() -> Dictionary:
 	var st: Dictionary = {}
 	for k: Variant in stats:
 		st[String(k)] = int(stats[k])
+	var pc: Dictionary = {}
+	for k: Variant in perk_cards:
+		pc[String(k)] = int(perk_cards[k])
 	return {
 		"version": version,
 		"profile_name": profile_name,
@@ -91,9 +118,33 @@ func to_dict() -> Dictionary:
 		"owned_mods": _to_strings(owned_mods),
 		"owned_masks": _to_strings(owned_masks),
 		"loadout": loadout_to_dict(loadout),
+		"skill_sets": _skill_sets_to_list(),
+		"active_skill_set": active_skill_set,
+		"perk_cards": pc,
 		"stats": st,
 		"settings": settings.duplicate(true),
 	}
+
+
+## Make skill set `index` active: the current loadout.skills is stored in its slot first, then the
+## chosen set becomes loadout.skills. Grows skill_sets as needed. Negative index is ignored.
+func switch_skill_set(index: int) -> void:
+	if index < 0:
+		return
+	while skill_sets.size() <= maxi(index, active_skill_set):
+		skill_sets.append({})
+	skill_sets[active_skill_set] = loadout.skills.duplicate()
+	active_skill_set = index
+	loadout.skills = skill_sets[index].duplicate()
+
+
+## Skill set `index` as stored (the active one is read from loadout.skills). Empty when unknown.
+func skill_set(index: int) -> Dictionary:
+	if index == active_skill_set:
+		return loadout.skills
+	if index < 0 or index >= skill_sets.size():
+		return {}
+	return skill_sets[index]
 
 
 ## Increment a stats counter (e.g. &"heists_completed").
@@ -110,10 +161,7 @@ static func loadout_to_dict(l: Loadout) -> Dictionary:
 	for f: String in LOADOUT_LIST_FIELDS:
 		out[f] = _to_strings(l.get(f) as Array)
 	out["perk_deck_cards"] = l.perk_deck_cards
-	var sk: Dictionary = {}
-	for k: Variant in l.skills:
-		sk[String(k)] = int(l.skills[k])
-	out["skills"] = sk
+	out["skills"] = _skills_to(l.skills)
 	return out
 
 
@@ -124,11 +172,30 @@ static func loadout_from_dict(d: Dictionary) -> Loadout:
 	for f: String in LOADOUT_LIST_FIELDS:
 		l.set(f, _to_names(d.get(f, [])))
 	l.perk_deck_cards = int(d.get("perk_deck_cards", 0))
-	var sk: Variant = d.get("skills", {})
-	if sk is Dictionary:
-		for k: Variant in (sk as Dictionary):
-			l.skills[StringName(String(k))] = int((sk as Dictionary)[k])
+	l.skills = _skills_from(d.get("skills", {}))
 	return l
+
+
+func _skill_sets_to_list() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for i: int in range(maxi(skill_sets.size(), active_skill_set + 1)):
+		out.append(_skills_to(skill_set(i)))
+	return out
+
+
+static func _skills_to(skills: Dictionary) -> Dictionary:
+	var sk: Dictionary = {}
+	for k: Variant in skills:
+		sk[String(k)] = int(skills[k])
+	return sk
+
+
+static func _skills_from(v: Variant) -> Dictionary:
+	var out: Dictionary = {}
+	if v is Dictionary:
+		for k: Variant in (v as Dictionary):
+			out[StringName(String(k))] = int((v as Dictionary)[k])
+	return out
 
 
 static func _to_names(v: Variant) -> Array[StringName]:

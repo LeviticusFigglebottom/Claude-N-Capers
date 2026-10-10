@@ -6,12 +6,15 @@
 ## - New keys: ask the lead (status file question); the lead adds them here.
 ##
 ## Types: MULT (product of sources, default 1.0), ADD (sum, default 0), FLAG (any source true),
-##        PARAMS (Dictionary; last-granted wins; used for perk-deck signature mechanics).
+##        PARAMS (Dictionary; last-granted wins; used for perk-deck signature mechanics),
+##        LIST (every source's Dictionary is kept: Modifiers.list(); for triggered effects several
+##        skills grant independently, D-031).
+## Weapon qualifiers: a weapon class (Enums.WeaponClass lowercased), `suppressed`, `akimbo`, or `all`.
 ## Keys ending in `.<class>` accept a weapon-class qualifier (see Enums.WeaponClass names) or `.all`.
 class_name ModifierKeys
 extends RefCounted
 
-enum Type { MULT, ADD, FLAG, PARAMS }
+enum Type { MULT, ADD, FLAG, PARAMS, LIST }
 
 ## key -> [Type, phase_introduced, description]
 const KEYS: Dictionary = {
@@ -126,14 +129,87 @@ const KEYS: Dictionary = {
 	&"perk.gambler": [Type.PARAMS, 4, "Long Odds: ammo pickups heal you and the team."],
 	&"perk.kingpin": [Type.PARAMS, 4, "Overlord: injector throwable, heal from damage taken for 6 s."],
 	&"perk.sociopath": [Type.PARAMS, 4, "Clean Sweep: kills near enemies restore armor/health on cooldowns."],
-	&"perk.rogue_dodge_stack": [Type.PARAMS, 4, "Slipper: dodge ramps on miss / weapon swap speed."],
-	&"perk.crook": [Type.PARAMS, 4, "Hustler: light-armor dodge + armor bonus."],
+	&"perk.rogue_dodge_stack": [Type.PARAMS, 4, "Slipper: reduced aggro near crew (dodge/swap/AP via generic keys)."],
+	&"perk.crook": [Type.PARAMS, 4, "Hustler: dodge + armor bonus in Light/Patrol/Heavy vests only."],
 	&"perk.burglar": [Type.PARAMS, 4, "Prowler: stealth interaction/bag speed + low-concealment dodge."],
 	&"perk.infiltrator": [Type.PARAMS, 4, "Knuckles: close-range damage reduction, melee buffs."],
 	&"perk.muscle": [Type.PARAMS, 4, "Bulk: health regen, threat increase."],
 	&"perk.armorer": [Type.PARAMS, 4, "Ironclad: armor bonus, brief invulnerability on armor break."],
 	&"perk.crew_chief": [Type.PARAMS, 4, "Foreman: team-wide stacking buffs."],
 	&"perk.throwable": [Type.PARAMS, 4, "Deck-granted throwable item replacing grenades {item_id}."],
+
+	# --- P4 skill + perk keys (ENV B requests QB-31/QB-32, approved D-031) ---------
+	&"defense.reviving_damage_taken_mult": [Type.PARAMS, 4, "Incoming damage x mult while you hold a revive interaction and for..."],
+	&"ability.revive_target_health_mult": [Type.MULT, 4, "Health a crew member YOU revive gets up with (the reviver's skill;..."],
+	&"ability.revive_target_buff": [Type.PARAMS, 4, "A crew member you revive takes damage x damage_taken_mult for duration s."],
+	&"deploy.medical_user_buff": [Type.PARAMS, 4, "Anyone using your First Aid Kit or Doctor Bag takes damage x damage_taken_mult for..."],
+	&"deploy.fak_auto_revive": [Type.PARAMS, 4, "A crew member downed within radius m of your placed First Aid Kit consumes it and is..."],
+	&"defense.bleedout_health_mult": [Type.MULT, 4, "Bleedout HP (100 base, L2.5)."],
+	&"defense.post_revive_buff": [Type.LIST, 4, "Buffs on yourself for duration s after being revived (1.0 = none). Basic/aced..."],
+	&"defense.bleedout_pause_unseen": [Type.FLAG, 4, "Bleedout timer pauses while no enemy has line of sight to you (counts again as..."],
+	&"defense.self_revive_refill_on_doctor_bag": [Type.FLAG, 4, "Using a Doctor Bag restores your defense.self_revive_charges to..."],
+	&"defense.healing_received_mult": [Type.MULT, 4, "All healing you receive (bags, kits, regen, perks)."],
+	&"ability.convert_damage_mult": [Type.MULT, 4, "Damage dealt by your converted allies."],
+	&"ability.convert_speed_mult": [Type.MULT, 4, "Convert interaction time (lower = faster)."],
+	&"ability.convert_owner_buff": [Type.PARAMS, 4, "While you own at least one living convert: your move speed and max health..."],
+	&"stealth.noise_intimidates_civilians": [Type.FLAG, 4, "Your unsuppressed gunfire acts as an intimidation shout on civilians..."],
+	&"weapon.still_spread_mult": [Type.MULT, 4, "Spread multiplier while you stand still."],
+	&"weapon.moving_spread_mult": [Type.MULT, 4, "Multiplier on the moving-spread penalty (lower = smaller penalty)."],
+	&"weapon.hip_spread_mult": [Type.MULT, 4, "Spread multiplier for hip fire only."],
+	&"weapon.fire_rate_mult": [Type.MULT, 4, "Rate of fire (higher = faster)."],
+	&"weapon.hip_fire_rate_mult": [Type.MULT, 4, "Rate of fire while hip firing (single-shot weapons)."],
+	&"weapon.falloff_range_mult": [Type.MULT, 4, "Scales falloff_start/falloff_end distances."],
+	&"movement.ads_speed_penalty_mult": [Type.MULT, 4, "Move-speed penalty while aiming down sights (0 = no penalty)."],
+	&"weapon.kill_damage_buff": [Type.LIST, 4, "A kill with trigger_class gives damage x damage_mult for duration s, to that class or..."],
+	&"weapon.kill_reload_buff": [Type.LIST, 4, "auto_kills"],
+	&"weapon.hit_stack_buff": [Type.LIST, 4, "damage), per_hit: float, max_stacks: int, duration: float}"],
+	&"weapon.headshot_refund": [Type.PARAMS, 4, "headshots headshots within window s refund refund rounds to the magazine."],
+	&"weapon.graze": [Type.PARAMS, 4, "Hits deal frac of the damage to enemies within radius m of the trajectory; headshot_kill_frac..."],
+	&"weapon.body_expertise": [Type.PARAMS, 4, "Fraction of the headshot bonus applied to non-head hits for automatic fire."],
+	&"weapon.stagger_chance_add": [Type.ADD, 4, "Chance per hit to stagger a non-immune enemy."],
+	&"weapon.unseen_strike": [Type.PARAMS, 4, "After idle_s without losing armor/health, +crit_add crit chance for duration s (taking..."],
+	&"weapon.crit_per_concealment": [Type.PARAMS, 4, "Crit chance from detection risk below threshold_dr (35): +per_step per..."],
+	&"weapon.melee_bloodthirst": [Type.PARAMS, 4, "Each non-melee kill adds per_kill to the next melee hit's multiplier (cap..."],
+	&"weapon.melee_knockdown_mult": [Type.MULT, 4, "Knockdown chance of your melee hits."],
+	&"weapon.shield_knockback": [Type.FLAG, 4, "Hits can knock Bulwarks back (melee 100%, ranged by damage)."],
+	&"defense.outnumbered": [Type.PARAMS, 4, "With enemies+ enemies within radius m: damage and damage-taken multipliers for duration s."],
+	&"defense.flashbang_duration_mult": [Type.MULT, 4, "Flashbang blind duration."],
+	&"defense.interact_damage_taken_mult": [Type.MULT, 4, "Incoming damage while holding an interaction."],
+	&"defense.armor_break_speed_buff": [Type.PARAMS, 4, "On armor break: move speed for duration s, also for the crew if team."],
+	&"defense.target_priority_mult": [Type.MULT, 4, "Weight of you in enemy target selection (lower = targeted less)."],
+	&"defense.armor_broken_stagger": [Type.PARAMS, 4, "While armor is broken (and persist_s after it recovers) your first hit on each..."],
+	&"defense.dodge_per_concealment": [Type.PARAMS, 4, "Dodge from detection risk below threshold_dr (35), same shape as..."],
+	&"defense.sprint_dodge_add": [Type.ADD, 4, "Dodge added while sprinting."],
+	&"defense.melee_damage_taken_mult": [Type.MULT, 4, "Incoming melee damage."],
+	&"defense.melee_counter": [Type.FLAG, 4, "While charging melee, an enemy melee strike on you is countered (knockdown, no damage)."],
+	&"movement.sprint_speed_mult": [Type.MULT, 4, "Sprint speed."],
+	&"movement.sprint_any_direction": [Type.FLAG, 4, "Sprint sideways/backwards."],
+	&"team.armor_regen_rate_mult": [Type.MULT, 4, "Crew-wide armor regeneration speed (team key, non-stacking)."],
+	&"stealth.casing_can_mark": [Type.FLAG, 4, "Mark guards and cameras while casing."],
+	&"loot.small_loot_value_mult": [Type.MULT, 4, "Value of small loot (cash/jewelry pickups) you pick up."],
+	&"stealth.mark_far_damage_mult": [Type.PARAMS, 4, "Extra damage multiplier on your marked enemies beyond min_distance m."],
+	&"stealth.mark_by_aim": [Type.FLAG, 4, "Aiming at a special for a moment marks it (any weapon)."],
+	&"deploy.deploy_speed_mult": [Type.MULT, 4, "Deploy/use time of deployables (lower = faster)."],
+	&"deploy.sentry_cost_mult": [Type.MULT, 4, "Fraction of your ammo a sentry costs to deploy."],
+	&"deploy.sentry_shield": [Type.FLAG, 4, "Your sentries have a frontal shield."],
+	&"deploy.sentry_accuracy_mult": [Type.MULT, 4, "Sentry spread (lower = more accurate)."],
+	&"deploy.sentry_turn_speed_mult": [Type.MULT, 4, "Sentry rotation speed."],
+	&"deploy.sentry_health_mult": [Type.MULT, 4, "Sentry health."],
+	&"deploy.sentry_modes": [Type.PARAMS, 4, "Unlocks switchable sentry modes (interact to cycle)."],
+	&"deploy.trip_mine_radius_mult": [Type.MULT, 4, "Trip mine blast radius."],
+	&"deploy.trip_mine_fire": [Type.PARAMS, 4, "Detonations leave a fire area."],
+	&"deploy.ammo_bag_bulletstorm": [Type.PARAMS, 4, "Users of your ammo bags fire without using ammo for a duration scaled by the..."],
+	&"weapon.ammo_pickup_range_mult": [Type.MULT, 4, "Ammo box pickup radius."],
+	&"weapon.kill_ammo_drop": [Type.PARAMS, 4, "Every n-th kill drops an extra ammo box."],
+	&"weapon.ammo_pickup_throwable": [Type.PARAMS, 4, "Ammo boxes may contain a throwable; chance grows by step per box without one,..."],
+	&"interaction.device_fix_speed_mult": [Type.MULT, 4, "Time to fix a jammed drill/saw (lower = faster)."],
+	&"progression.xp_mult": [Type.MULT, 4, "Heist XP multiplier (payout calculator)."],
+	&"movement.armor_penalty_mult": [Type.MULT, 4, "Scales the armor's move-speed penalty (1 − ArmorDef.move_speed_mult)."],
+	&"deploy.armor_bag": [Type.FLAG, 4, "Unlocks the armor bag deployable (change armor mid-heist)."],
+	&"interaction.doctor_bag_speed_mult": [Type.MULT, 4, "Doctor bag use time multiplier (lower = faster)."],
+	&"progression.card_drop_quality_add": [Type.ADD, 4, "Chance that a PAYDAY card rolls the next quality tier."],
+	&"ability.shout_range_mult": [Type.MULT, 4, "Shout distance (all shout targets). The existing..."],
+	&"team.armor_regen_delay_mult": [Type.MULT, 4, "Crew-wide armor regen delay. It would replace perk.armorer.team_regen_delay_mult."],
 }
 
 

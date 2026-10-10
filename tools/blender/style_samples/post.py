@@ -78,7 +78,12 @@ def main() -> None:
     img = np.asarray(Image.open(a.src).convert("RGB"))
     rng = np.random.Generator(np.random.PCG64(a.seed))
     res = grade(img, st["grade"], rng)
-    Image.fromarray(res, "RGB").save(a.out, format="PNG", optimize=True)
+    im = Image.fromarray(res, "RGB")
+    im.save(a.out, format="PNG", optimize=True)
+    if pathlib.Path(a.out).stat().st_size > 2_000_000:
+        # grain defeats PNG compression: fall back to a 256-colour dithered palette (<= ~2 MB budget)
+        im.quantize(colors=256, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.FLOYDSTEINBERG).save(
+            a.out, format="PNG", optimize=True)
     print(f"[post] {a.out} {pathlib.Path(a.out).stat().st_size / 1e6:.2f} MB")
 
 

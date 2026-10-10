@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.field_medic.numbing_agent"
+display_name = "Numbing Agent"
+tree = &"ringleader"
+subtree = &"field_medic"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "Crew members you revive take 30% less damage for 5 s."
+desc_aced = "That damage reduction rises to 80%."
+grants_basic = {
+&"ability.revive_target_buff": {
+"damage_taken_mult": 0.7,
+"duration": 5.0
+}
+}
+grants_aced = {
+&"ability.revive_target_buff": {
+"damage_taken_mult": 0.2,
+"duration": 5.0
+}
+}

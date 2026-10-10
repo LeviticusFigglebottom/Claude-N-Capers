@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.slipstream.slippery"
+display_name = "Slippery"
+tree = &"shade"
+subtree = &"slipstream"
+tier = 4
+cost_basic = 4
+cost_aced = 8
+desc_basic = "+1% dodge for every 3 points your detection risk is below 35, up to +10%."
+desc_aced = "+1% dodge for every point below 35, up to +10%."
+grants_basic = {
+&"defense.dodge_per_concealment": {
+"per_step": 0.01,
+"points_per_step": 3,
+"threshold_dr": 35,
+"max": 0.1
+}
+}
+grants_aced = {
+&"defense.dodge_per_concealment": {
+"per_step": 0.01,
+"points_per_step": 1,
+"threshold_dr": 35,
+"max": 0.1
+}
+}

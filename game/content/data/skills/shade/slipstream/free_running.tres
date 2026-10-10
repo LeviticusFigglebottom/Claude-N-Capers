@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.slipstream.free_running"
+display_name = "Free Running"
+tree = &"shade"
+subtree = &"slipstream"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "Move 10% faster."
+desc_aced = "Sprint in any direction, and reload while sprinting."
+grants_basic = {
+&"movement.speed_mult": 1.1
+}
+grants_aced = {
+&"movement.reload_while_sprinting": true,
+&"movement.sprint_any_direction": true
+}

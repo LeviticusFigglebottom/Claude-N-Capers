@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.persuader.zip_and_tie"
+display_name = "Zip & Tie"
+tree = &"ringleader"
+subtree = &"persuader"
+tier = 1
+cost_basic = 1
+cost_aced = 3
+desc_basic = "Carry 4 more cable ties. Tie hostages 75% faster."
+desc_aced = "You and your crew absorb 5 damage from every hit for each hostage you hold, up to 8 hostages. Crew-wide; does not stack with another Zip & Tie."
+grants_basic = {
+&"stealth.cable_ties_extra": 4,
+&"stealth.cable_tie_speed_mult": 0.25
+}
+grants_aced = {
+&"team.damage_reduction_hostage": {
+"per": 5.0,
+"max": 8
+}
+}

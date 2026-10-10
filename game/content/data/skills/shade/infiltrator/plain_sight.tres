@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.infiltrator.plain_sight"
+display_name = "Plain Sight"
+tree = &"shade"
+subtree = &"infiltrator"
+tier = 1
+cost_basic = 1
+cost_aced = 3
+desc_basic = "While casing, you are detected 25% more slowly and can mark guards and cameras."
+desc_aced = "Pick up small loot and items while casing. Small loot you pick up is worth 30% more."
+grants_basic = {
+&"stealth.casing_detection_rate_mult": 0.75,
+&"stealth.casing_can_mark": true
+}
+grants_aced = {
+&"stealth.casing_can_pickup_items": true,
+&"loot.small_loot_value_mult": 1.3
+}

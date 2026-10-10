@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.quiet_professional.hushed_hands"
+display_name = "Hushed Hands"
+tree = &"shade"
+subtree = &"quiet_professional"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "+8 stability and 100% faster aiming with suppressed weapons."
+desc_aced = "+12 accuracy with suppressed weapons."
+grants_basic = {
+&"weapon.recoil_mult.suppressed": 0.92,
+&"weapon.ads_speed_mult.suppressed": 2.0
+}
+grants_aced = {
+&"weapon.spread_mult.suppressed": 0.88
+}

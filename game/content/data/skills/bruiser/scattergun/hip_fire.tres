@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.scattergun.hip_fire"
+display_name = "Hip Fire"
+tree = &"bruiser"
+subtree = &"scattergun"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Fire shotguns from the hip while sprinting."
+desc_aced = "Shotguns fire 35% faster from the hip."
+grants_basic = {
+&"movement.shoot_while_sprinting.shotgun": true
+}
+grants_aced = {
+&"weapon.hip_fire_rate_mult.shotgun": 1.35
+}

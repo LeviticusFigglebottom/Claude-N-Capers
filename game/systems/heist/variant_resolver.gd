@@ -8,7 +8,9 @@
 ##   difficulty_add  Array[int] indexed by Enums.Difficulty: extra picks.
 ##   requires        {other_group: [slot_ids]}: roll only if any listed slot is active (else 0 picks).
 ##                   An empty list means "any slot of other_group".
-##   excludes        {other_group: [slot_ids]}: pick 0 if any listed slot is active (QA-3 to confirm).
+##   excludes        {other_group: [slot_ids]}: pick 0 if any listed slot is active (D-025 QA-3).
+## Rules may only reference groups resolved by EARLIER rules (heist_map.md v1.1); a forward or
+## unknown reference is a contract violation (Log.error) and counts as "not active".
 ## Slots whose group has no rule stay active (logged as a warning).
 ## Rare events are rolled first; `force_active` effects pin a slot active in its group.
 class_name VariantResolver
@@ -70,6 +72,7 @@ static func resolve(table: HeistVariantTable, slots_by_group: Dictionary, diffic
 			var dadd: Array = rule.get("difficulty_add", [])
 			if difficulty >= 0 and difficulty < dadd.size():
 				n += int(dadd[difficulty])
+			_validate_refs(rule, result, group)
 			if not _conditions_ok(rule, result):
 				n = 0
 			var chosen: Array[StringName] = []
@@ -147,6 +150,14 @@ static func _has_slot(slots: Array, slot_id: StringName) -> bool:
 		if s.slot_id == slot_id:
 			return true
 	return false
+
+
+static func _validate_refs(rule: Dictionary, so_far: Dictionary, group: StringName) -> void:
+	for key: String in ["requires", "excludes"]:
+		var refs: Dictionary = rule.get(key, {})
+		for og: Variant in refs:
+			if not so_far.has(StringName(og)):
+				Log.error(&"variants", "contract violation: rule '%s' %s group '%s' which is not resolved earlier in the table" % [group, key, og])
 
 
 static func _conditions_ok(rule: Dictionary, so_far: Dictionary) -> bool:

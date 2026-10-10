@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only paint_white --preset gsr
+module: tools/texgen/materials/paint_white.py
+preset: tools/texgen/presets/gsr.py
+seed: 4281564548 (zlib.crc32('paint_white'))
+size_px: 1024
+tile_m: 1.0 (1 UV unit = 1.0 m)
+texel_density_px_per_m: 1024
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.691, "albedo_lum_mean_linear": 0.6852, "albedo_lum_min_linear": 0.677, "ao_mean": 1.0, "metallic_mean": 0.0, "roughness_mean": 0.453}

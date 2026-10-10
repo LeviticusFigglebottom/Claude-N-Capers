@@ -1,0 +1,93 @@
+[gd_resource type="Resource" script_class="PerkDeckDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/perk_deck_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"perk.prowler"
+display_name = "Prowler"
+description = "perk.prowler.desc"
+cards = Array[Dictionary]([{
+"name": "perk.prowler.card1.name",
+"desc": "perk.prowler.card1.desc",
+"cost": 200,
+"grants": {
+&"defense.dodge_add": 0.2
+}
+}, {
+"name": "perk.shared.card2.name",
+"desc": "perk.shared.card2.desc",
+"cost": 300,
+"grants": {
+&"weapon.headshot_mult.all": 1.25
+}
+}, {
+"name": "perk.prowler.card3.name",
+"desc": "perk.prowler.card3.desc",
+"cost": 400,
+"grants": {
+&"stealth.body_bag_speed_mult": 0.8,
+&"perk.burglar": {
+"still_aggro_mult": 0.9
+}
+}
+}, {
+"name": "perk.shared.card4.name",
+"desc": "perk.shared.card4.desc",
+"cost": 600,
+"grants": {
+&"stealth.concealment_add.all": 1,
+&"progression.xp_mult": 1.45,
+&"movement.armor_penalty_mult": 0.85
+}
+}, {
+"name": "perk.prowler.card5.name",
+"desc": "perk.prowler.card5.desc",
+"cost": 1000,
+"grants": {
+&"defense.dodge_add": 0.05,
+&"interaction.lockpick_speed_mult": 0.8,
+&"perk.burglar": {
+"still_aggro_mult": 0.85
+}
+}
+}, {
+"name": "perk.shared.card6.name",
+"desc": "perk.shared.card6.desc",
+"cost": 1600,
+"grants": {
+&"weapon.ammo_pickup_mult.all": 1.35,
+&"deploy.armor_bag": true
+}
+}, {
+"name": "perk.prowler.card7.name",
+"desc": "perk.prowler.card7.desc",
+"cost": 2400,
+"grants": {
+&"defense.dodge_add": 0.05,
+&"stealth.pager_answer_speed_mult": 0.9,
+&"perk.burglar": {
+"still_aggro_mult": 0.8
+}
+}
+}, {
+"name": "perk.shared.card8.name",
+"desc": "perk.shared.card8.desc",
+"cost": 3200,
+"grants": {
+&"weapon.damage_mult.all": 1.05,
+&"interaction.doctor_bag_speed_mult": 0.8333
+}
+}, {
+"name": "perk.prowler.card9.name",
+"desc": "perk.prowler.card9.desc",
+"cost": 4000,
+"grants": {
+&"progression.card_drop_quality_add": 0.1,
+&"movement.crouch_speed_mult": 1.1,
+&"perk.burglar": {
+"still_aggro_mult": 0.8,
+"still_regen_delay_mult": 0.8
+}
+}
+}])

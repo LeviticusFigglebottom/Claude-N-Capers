@@ -207,14 +207,14 @@ ambient_light_color = Color(0.6, 0.62, 0.66, 1)
 ambient_light_energy = 0.6
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_wisnj"]
-vertices = PackedVector3Array(-8.15, 0.100000024, -12.5, -7.75, 0.100000024, -12.5, -7.75, 0.100000024, -14.6, -8.45, 0.100000024, -12.2, -19.6, 0.100000024, -14.6, -19.6, 0.100000024, -0.05000019, -8.45, 0.100000024, -0.09999943, 7.800001, 0.100000024, -12.5, 7.800001, 0.100000024, -14.6, 8.200001, 0.100000024, -12.5, 8.5, 0.100000024, -12.2, 19.650002, 0.100000024, -14.6, 8.5, 0.100000024, -0.14999962, 19.650002, 0.100000024, -0.09999943, -0.049999237, 0.100000024, 0, 0.10000038, 0.100000024, 0, 0.14999962, 0.100000024, -0.25, -0.10000038, 0.100000024, -0.25, -7, 0.100000024, -1.9499998, -6.75, 0.100000024, -1.75, -0.35000038, 0.100000024, -0.4499998, 0.39999962, 0.100000024, -0.4499998, 2.5500011, 0.100000024, -6.8, 2.5500011, 0.100000024, -11.5, -7.5, 0.100000024, -11.5, 3.1000004, 0.100000024, -0.4499998, 3.1499996, 0.100000024, -6.5, 2.75, 0.100000024, -6.55, -6.7, 0.100000024, -0.4499998, -7.5, 0.100000024, -1.9499998, 5.450001, 0.100000024, -6.95, 5.6000004, 0.100000024, -6.95, 5.6499996, 0.100000024, -7.25, 5.3999996, 0.100000024, -7.25, 5.8999996, 0.100000024, -7.45, 7.550001, 0.100000024, -7.45, 7.550001, 0.100000024, -11.5, 5.1499996, 0.100000024, -7.45, 3.5, 0.100000024, -11.5, 3.5, 0.100000024, -7.45, 5.3999996, 0.100000024, -6.75, 5.6499996, 0.100000024, -6.7, 7.550001, 0.100000024, -0.4499998, 7.550001, 0.100000024, -6.5, 5.8999996, 0.100000024, -6.5, 5.1000004, 0.100000024, -6.5, -7.5, 0.8500001, -1.25, -7.5, 0.8500001, -0.75, -7.3999996, 0.8500001, -0.75, 8.5, 0.100000024, 0.15000057, 8.25, 0.100000024, 0.4499998, 7.8500004, 0.100000024, 0.5, 7.8999996, 0.100000024, 14.65, 19.650002, 0.100000024, 14.65, -8.4, 0.100000024, 0.3000002, -8.15, 0.100000024, 0.5, -19.6, 0.100000024, 14.65, -7.8999996, 0.100000024, 14.65, -7.8499994, 0.100000024, 0.5, 0.10000038, 0.100000024, 0.19999981, -0.049999237, 0.100000024, 0.19999981, 0.70000076, 0.100000024, 0.5, 0.30000114, 0.100000024, 0.4499998, -0.25, 0.100000024, 0.4499998, -0.6499996, 0.100000024, 0.5, -0.6000004, 0.100000024, 14.65, 0.6499996, 0.100000024, 14.65)
-polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(0, 3, 2), PackedInt32Array(2, 3, 4), PackedInt32Array(6, 5, 3), PackedInt32Array(3, 5, 4), PackedInt32Array(2, 8, 1), PackedInt32Array(1, 8, 7), PackedInt32Array(9, 7, 8), PackedInt32Array(9, 8, 10), PackedInt32Array(10, 8, 11), PackedInt32Array(12, 10, 13), PackedInt32Array(13, 10, 11), PackedInt32Array(15, 14, 16), PackedInt32Array(16, 14, 17), PackedInt32Array(20, 19, 18), PackedInt32Array(17, 20, 16), PackedInt32Array(16, 20, 21), PackedInt32Array(21, 20, 22), PackedInt32Array(22, 20, 23), PackedInt32Array(23, 20, 18), PackedInt32Array(23, 18, 24), PackedInt32Array(27, 26, 25), PackedInt32Array(27, 25, 22), PackedInt32Array(22, 25, 21), PackedInt32Array(20, 28, 19), PackedInt32Array(18, 29, 24), PackedInt32Array(31, 30, 32), PackedInt32Array(32, 30, 33), PackedInt32Array(36, 35, 34), PackedInt32Array(33, 37, 32), PackedInt32Array(32, 37, 34), PackedInt32Array(34, 37, 38), PackedInt32Array(34, 38, 36), PackedInt32Array(37, 39, 38), PackedInt32Array(30, 31, 40), PackedInt32Array(40, 31, 41), PackedInt32Array(44, 43, 42), PackedInt32Array(41, 44, 40), PackedInt32Array(40, 44, 45), PackedInt32Array(45, 44, 42), PackedInt32Array(45, 42, 25), PackedInt32Array(25, 26, 45), PackedInt32Array(48, 47, 46), PackedInt32Array(49, 12, 13), PackedInt32Array(50, 49, 13), PackedInt32Array(50, 13, 51), PackedInt32Array(51, 13, 52), PackedInt32Array(52, 13, 53), PackedInt32Array(5, 6, 54), PackedInt32Array(54, 55, 5), PackedInt32Array(5, 55, 56), PackedInt32Array(56, 55, 57), PackedInt32Array(57, 55, 58), PackedInt32Array(60, 14, 59), PackedInt32Array(59, 14, 15), PackedInt32Array(62, 61, 63), PackedInt32Array(63, 61, 64), PackedInt32Array(64, 61, 66), PackedInt32Array(64, 66, 65), PackedInt32Array(59, 62, 60), PackedInt32Array(60, 62, 63), PackedInt32Array(58, 64, 57), PackedInt32Array(57, 64, 65), PackedInt32Array(61, 51, 66), PackedInt32Array(66, 51, 52)]
+vertices = PackedVector3Array(-8.2, 0.20000002, -12.5, -7.5999994, 0.20000002, -12.5, -7.7, 0.20000002, -14.6, -8.4, 0.20000002, -12.3, -19.6, 0.20000002, -14.6, -19.6, 0.20000002, -0.5, -8.4, 0.20000002, -0.5, 7.700001, 0.20000002, -12.5, 7.800001, 0.20000002, -14.6, 8.300001, 0.20000002, -12.5, 8.5, 0.20000002, -12.3, 19.7, 0.20000002, -14.6, 8.5, 0.20000002, -0.5999994, 19.7, 0.20000002, -0.5999994, -0.10000038, 0.20000002, 0, 0.10000038, 0.20000002, 0, 0.30000114, 0.20000002, -0.39999962, -0.29999924, 0.20000002, -0.39999962, 2.6000004, 0.20000002, -6.7, 2.6000004, 0.20000002, -11.5, -7.5, 0.20000002, -11.5, -6.8999996, 0.20000002, -1.8999996, 3.3000011, 0.20000002, -0.39999962, 3.3999996, 0.20000002, -6.5, 2.8000011, 0.20000002, -6.5, -6.7, 0.20000002, -1.6999998, -6.7, 0.20000002, -0.39999962, -7.5, 0.20000002, -1.8999996, 5.3999996, 0.20000002, -6.8999996, 5.6000004, 0.20000002, -6.8999996, 5.800001, 0.20000002, -7.3999996, 5.200001, 0.20000002, -7.3999996, 7.6000004, 0.20000002, -11.5, 3.5, 0.20000002, -11.5, 3.5, 0.20000002, -7.3999996, 7.6000004, 0.20000002, -7.3999996, 5.800001, 0.20000002, -6.5, 5.200001, 0.20000002, -6.5, 7.6000004, 0.20000002, -0.39999962, 7.6000004, 0.20000002, -6.5, 8.5, 0.20000002, 0.19999981, 8.1, 0.20000002, 0.5, 8.1, 0.20000002, 14.700001, 19.7, 0.20000002, 14.700001, -8.4, 0.20000002, 0.3000002, -8.099999, 0.20000002, 0.5, -19.6, 0.20000002, 14.700001, -8.099999, 0.20000002, 14.700001, 0.30000114, 0.20000002, 0.5, -0.29999924, 0.20000002, 0.5)
+polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(0, 3, 2), PackedInt32Array(2, 3, 4), PackedInt32Array(6, 5, 3), PackedInt32Array(3, 5, 4), PackedInt32Array(1, 2, 7), PackedInt32Array(7, 2, 8), PackedInt32Array(9, 7, 8), PackedInt32Array(9, 8, 10), PackedInt32Array(10, 8, 11), PackedInt32Array(12, 10, 13), PackedInt32Array(13, 10, 11), PackedInt32Array(14, 17, 15), PackedInt32Array(15, 17, 16), PackedInt32Array(16, 17, 18), PackedInt32Array(18, 17, 19), PackedInt32Array(19, 17, 21), PackedInt32Array(19, 21, 20), PackedInt32Array(24, 23, 22), PackedInt32Array(24, 22, 18), PackedInt32Array(18, 22, 16), PackedInt32Array(25, 17, 26), PackedInt32Array(20, 21, 27), PackedInt32Array(17, 25, 21), PackedInt32Array(28, 31, 29), PackedInt32Array(29, 31, 30), PackedInt32Array(31, 33, 30), PackedInt32Array(30, 33, 32), PackedInt32Array(31, 34, 33), PackedInt32Array(32, 35, 30), PackedInt32Array(28, 29, 37), PackedInt32Array(37, 29, 36), PackedInt32Array(37, 36, 38), PackedInt32Array(37, 38, 22), PackedInt32Array(22, 23, 37), PackedInt32Array(36, 39, 38), PackedInt32Array(40, 12, 13), PackedInt32Array(40, 13, 41), PackedInt32Array(41, 13, 42), PackedInt32Array(42, 13, 43), PackedInt32Array(5, 6, 44), PackedInt32Array(44, 45, 5), PackedInt32Array(5, 45, 47), PackedInt32Array(5, 47, 46), PackedInt32Array(14, 15, 49), PackedInt32Array(49, 15, 48), PackedInt32Array(49, 48, 47), PackedInt32Array(47, 48, 42), PackedInt32Array(48, 41, 42), PackedInt32Array(45, 49, 47)]
 geometry_parsed_geometry_type = 1
 geometry_collision_mask = 1
-cell_size = 0.05
-cell_height = 0.05
+cell_size = 0.1
+cell_height = 0.1
 agent_height = 1.8
-agent_radius = 0.35
+agent_radius = 0.3
 agent_max_climb = 0.3
 agent_max_slope = 40.0
 
@@ -257,292 +257,292 @@ size = Vector3(16, 3, 3)
 [sub_resource type="BoxShape3D" id="BoxShape3D_2j3lf"]
 size = Vector3(16, 3, 12)
 
-[node name="DevSandbox" type="Node3D" unique_id=610093448]
+[node name="DevSandbox" type="Node3D" unique_id=1251960131]
 script = ExtResource("1_arl5d")
 heist_def = ExtResource("2_upjv5")
 variant_table = ExtResource("3_sfawv")
 floor_heights = PackedFloat32Array(0)
 review_cameras = Array[NodePath]([NodePath("ReviewCameras/Overview"), NodePath("ReviewCameras/YardToDoor")])
 
-[node name="Geometry" type="Node3D" parent="." unique_id=1699398020]
+[node name="Geometry" type="Node3D" parent="." unique_id=959475116]
 
-[node name="Floor" type="StaticBody3D" parent="Geometry" unique_id=2024858957]
+[node name="Floor" type="StaticBody3D" parent="Geometry" unique_id=201396727]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Floor" unique_id=2018894578]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Floor" unique_id=1542373342]
 shape = SubResource("BoxShape3D_ai1x0")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Floor" unique_id=228787073]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Floor" unique_id=1110079033]
 mesh = SubResource("BoxMesh_2gf1w")
 
-[node name="WallNorth" type="StaticBody3D" parent="Geometry" unique_id=2078800010]
+[node name="WallNorth" type="StaticBody3D" parent="Geometry" unique_id=464654853]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -15.15)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/WallNorth" unique_id=643545300]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/WallNorth" unique_id=390475340]
 shape = SubResource("BoxShape3D_hi1vr")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/WallNorth" unique_id=2127390821]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/WallNorth" unique_id=616179798]
 mesh = SubResource("BoxMesh_f7fm2")
 
-[node name="WallSouth" type="StaticBody3D" parent="Geometry" unique_id=661877240]
+[node name="WallSouth" type="StaticBody3D" parent="Geometry" unique_id=97481537]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 15.15)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/WallSouth" unique_id=222800649]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/WallSouth" unique_id=843220302]
 shape = SubResource("BoxShape3D_esrb6")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/WallSouth" unique_id=1205526099]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/WallSouth" unique_id=1731723006]
 mesh = SubResource("BoxMesh_1wrhb")
 
-[node name="WallWest" type="StaticBody3D" parent="Geometry" unique_id=748682353]
+[node name="WallWest" type="StaticBody3D" parent="Geometry" unique_id=850627078]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.15, 1.5, 0)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/WallWest" unique_id=473620628]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/WallWest" unique_id=1223971154]
 shape = SubResource("BoxShape3D_388xs")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/WallWest" unique_id=2059797636]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/WallWest" unique_id=2140012218]
 mesh = SubResource("BoxMesh_kj0uq")
 
-[node name="WallEast" type="StaticBody3D" parent="Geometry" unique_id=51562873]
+[node name="WallEast" type="StaticBody3D" parent="Geometry" unique_id=1100250659]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.15, 1.5, 0)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/WallEast" unique_id=1707235482]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/WallEast" unique_id=646618689]
 shape = SubResource("BoxShape3D_8iwgx")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/WallEast" unique_id=249375529]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/WallEast" unique_id=710394192]
 mesh = SubResource("BoxMesh_336gn")
 
-[node name="Building" type="Node3D" parent="Geometry" unique_id=1422353264]
+[node name="Building" type="Node3D" parent="Geometry" unique_id=1045404589]
 
-[node name="SouthWallW" type="StaticBody3D" parent="Geometry/Building" unique_id=135271353]
+[node name="SouthWallW" type="StaticBody3D" parent="Geometry/Building" unique_id=2056158873]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.275, 1.5, 0)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/SouthWallW" unique_id=1725827248]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/SouthWallW" unique_id=1523066594]
 shape = SubResource("BoxShape3D_0v2o6")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/SouthWallW" unique_id=455731846]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/SouthWallW" unique_id=1054547592]
 mesh = SubResource("BoxMesh_tuyco")
 
-[node name="SouthWallE" type="StaticBody3D" parent="Geometry/Building" unique_id=61334251]
+[node name="SouthWallE" type="StaticBody3D" parent="Geometry/Building" unique_id=2087846842]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.275, 1.5, 0)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/SouthWallE" unique_id=755507665]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/SouthWallE" unique_id=1841744543]
 shape = SubResource("BoxShape3D_8p2b3")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/SouthWallE" unique_id=1999966218]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/SouthWallE" unique_id=923205366]
 mesh = SubResource("BoxMesh_ey0d4")
 
-[node name="SouthLintel" type="StaticBody3D" parent="Geometry/Building" unique_id=1396101598]
+[node name="SouthLintel" type="StaticBody3D" parent="Geometry/Building" unique_id=1948553052]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.55, 0)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/SouthLintel" unique_id=2066443167]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/SouthLintel" unique_id=1763943163]
 shape = SubResource("BoxShape3D_lj6wr")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/SouthLintel" unique_id=36959367]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/SouthLintel" unique_id=617126416]
 mesh = SubResource("BoxMesh_y81qa")
 
-[node name="NorthWall" type="StaticBody3D" parent="Geometry/Building" unique_id=1806176494]
+[node name="NorthWall" type="StaticBody3D" parent="Geometry/Building" unique_id=749753047]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -12)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/NorthWall" unique_id=1589586633]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/NorthWall" unique_id=1335821463]
 shape = SubResource("BoxShape3D_r5tqr")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/NorthWall" unique_id=572486751]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/NorthWall" unique_id=1920607130]
 mesh = SubResource("BoxMesh_nwcvl")
 
-[node name="WestWall" type="StaticBody3D" parent="Geometry/Building" unique_id=148683028]
+[node name="WestWall" type="StaticBody3D" parent="Geometry/Building" unique_id=1889120972]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1.5, -6)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/WestWall" unique_id=1801501069]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/WestWall" unique_id=868460718]
 shape = SubResource("BoxShape3D_0xfuf")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/WestWall" unique_id=1793585898]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/WestWall" unique_id=1670283168]
 mesh = SubResource("BoxMesh_e1d50")
 
-[node name="EastWallN" type="StaticBody3D" parent="Geometry/Building" unique_id=1536375230]
+[node name="EastWallN" type="StaticBody3D" parent="Geometry/Building" unique_id=59162243]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1.5, -8)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/EastWallN" unique_id=1251453281]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/EastWallN" unique_id=193177897]
 shape = SubResource("BoxShape3D_hjqux")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/EastWallN" unique_id=2051925260]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/EastWallN" unique_id=837814732]
 mesh = SubResource("BoxMesh_6u06b")
 
-[node name="EastWallS" type="StaticBody3D" parent="Geometry/Building" unique_id=104664470]
+[node name="EastWallS" type="StaticBody3D" parent="Geometry/Building" unique_id=1028353190]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1.5, -1.5)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/EastWallS" unique_id=689548341]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/EastWallS" unique_id=1131894326]
 shape = SubResource("BoxShape3D_4440d")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/EastWallS" unique_id=2115397578]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/EastWallS" unique_id=108463513]
 mesh = SubResource("BoxMesh_t40ny")
 
-[node name="WindowSill" type="StaticBody3D" parent="Geometry/Building" unique_id=1957806736]
+[node name="WindowSill" type="StaticBody3D" parent="Geometry/Building" unique_id=1560152907]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.45, -3.5)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/WindowSill" unique_id=1335232561]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/WindowSill" unique_id=1426440985]
 shape = SubResource("BoxShape3D_qkvyt")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/WindowSill" unique_id=975040336]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/WindowSill" unique_id=459596766]
 mesh = SubResource("BoxMesh_b57ca")
 
-[node name="WindowHead" type="StaticBody3D" parent="Geometry/Building" unique_id=2042177877]
+[node name="WindowHead" type="StaticBody3D" parent="Geometry/Building" unique_id=1002886724]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2.55, -3.5)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/WindowHead" unique_id=663858170]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/WindowHead" unique_id=1880484642]
 shape = SubResource("BoxShape3D_euusl")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/WindowHead" unique_id=1331945140]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/WindowHead" unique_id=2128884679]
 mesh = SubResource("BoxMesh_ru2t7")
 
-[node name="BackRoomWallW" type="StaticBody3D" parent="Geometry/Building" unique_id=1666685394]
+[node name="BackRoomWallW" type="StaticBody3D" parent="Geometry/Building" unique_id=1395248834]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.5, -9.4)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/BackRoomWallW" unique_id=289832221]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/BackRoomWallW" unique_id=737501040]
 shape = SubResource("BoxShape3D_lhpr3")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/BackRoomWallW" unique_id=1389097356]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/BackRoomWallW" unique_id=1799317573]
 mesh = SubResource("BoxMesh_68eo4")
 
-[node name="BackRoomWallS1" type="StaticBody3D" parent="Geometry/Building" unique_id=222522336]
+[node name="BackRoomWallS1" type="StaticBody3D" parent="Geometry/Building" unique_id=840241392]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.075, 1.5, -7)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/BackRoomWallS1" unique_id=1275191212]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/BackRoomWallS1" unique_id=1133150502]
 shape = SubResource("BoxShape3D_05g7b")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/BackRoomWallS1" unique_id=586440774]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/BackRoomWallS1" unique_id=1280786293]
 mesh = SubResource("BoxMesh_0uwkk")
 
-[node name="BackRoomWallS2" type="StaticBody3D" parent="Geometry/Building" unique_id=1839811588]
+[node name="BackRoomWallS2" type="StaticBody3D" parent="Geometry/Building" unique_id=1329525218]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.925, 1.5, -7)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/BackRoomWallS2" unique_id=532024419]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/BackRoomWallS2" unique_id=2077244415]
 shape = SubResource("BoxShape3D_uu5fo")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/BackRoomWallS2" unique_id=1567341179]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/BackRoomWallS2" unique_id=456914602]
 mesh = SubResource("BoxMesh_bwhhj")
 
-[node name="PhoneDesk" type="StaticBody3D" parent="Geometry/Building" unique_id=157685113]
+[node name="PhoneDesk" type="StaticBody3D" parent="Geometry/Building" unique_id=1121185926]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.375, -1)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/PhoneDesk" unique_id=851267822]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/PhoneDesk" unique_id=1930095736]
 shape = SubResource("BoxShape3D_0kv11")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/PhoneDesk" unique_id=467430712]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/PhoneDesk" unique_id=1424016773]
 mesh = SubResource("BoxMesh_0efmi")
 
-[node name="BackRoomLintel" type="StaticBody3D" parent="Geometry/Building" unique_id=652860671]
+[node name="BackRoomLintel" type="StaticBody3D" parent="Geometry/Building" unique_id=1590435634]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 2.55, -7)
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/BackRoomLintel" unique_id=1545680741]
+[node name="Collision" type="CollisionShape3D" parent="Geometry/Building/BackRoomLintel" unique_id=819728886]
 shape = SubResource("BoxShape3D_flo3n")
 
-[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/BackRoomLintel" unique_id=1399360560]
+[node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/BackRoomLintel" unique_id=452446176]
 mesh = SubResource("BoxMesh_ao8fs")
 
-[node name="Props" type="Node3D" parent="." unique_id=1346595992]
+[node name="Props" type="Node3D" parent="." unique_id=2111722762]
 
-[node name="Lighting" type="Node3D" parent="." unique_id=1760781094]
+[node name="Lighting" type="Node3D" parent="." unique_id=131404666]
 
-[node name="Sun" type="DirectionalLight3D" parent="Lighting" unique_id=392086607]
+[node name="Sun" type="DirectionalLight3D" parent="Lighting" unique_id=1096983276]
 transform = Transform3D(0.81915206, -0.46984634, 0.32898995, 0, 0.57357645, 0.81915206, -0.57357645, -0.6710101, 0.46984634, 0, 0, 0)
 shadow_enabled = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Lighting" unique_id=1130760787]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Lighting" unique_id=1344206278]
 environment = SubResource("Environment_h37s7")
 
-[node name="Navigation" type="NavigationRegion3D" parent="." unique_id=1190545844]
+[node name="Navigation" type="NavigationRegion3D" parent="." unique_id=924618891]
 navigation_mesh = SubResource("NavigationMesh_wisnj")
 
-[node name="Zones" type="Node3D" parent="." unique_id=1443519246]
+[node name="Zones" type="Node3D" parent="." unique_id=1046073059]
 
-[node name="PublicYard" type="Area3D" parent="Zones" unique_id=1745252609]
+[node name="PublicYard" type="Area3D" parent="Zones" unique_id=675764527]
 collision_layer = 512
 collision_mask = 0
 script = ExtResource("4_hgq4p")
 kind = 1
 zone_id = &"yard"
 
-[node name="Shape" type="CollisionShape3D" parent="Zones/PublicYard" unique_id=1135648737]
+[node name="Shape" type="CollisionShape3D" parent="Zones/PublicYard" unique_id=2067848834]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 7.5)
 shape = SubResource("BoxShape3D_nmyk5")
 
-[node name="Shape1" type="CollisionShape3D" parent="Zones/PublicYard" unique_id=2006011919]
+[node name="Shape1" type="CollisionShape3D" parent="Zones/PublicYard" unique_id=34964053]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1.5, -7.5)
 shape = SubResource("BoxShape3D_qkys2")
 
-[node name="Shape2" type="CollisionShape3D" parent="Zones/PublicYard" unique_id=2039385171]
+[node name="Shape2" type="CollisionShape3D" parent="Zones/PublicYard" unique_id=1839637499]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1.5, -7.5)
 shape = SubResource("BoxShape3D_a001l")
 
-[node name="Shape3" type="CollisionShape3D" parent="Zones/PublicYard" unique_id=1570141015]
+[node name="Shape3" type="CollisionShape3D" parent="Zones/PublicYard" unique_id=467300778]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -13.5)
 shape = SubResource("BoxShape3D_qp784")
 
-[node name="RestrictedBuilding" type="Area3D" parent="Zones" unique_id=10255]
+[node name="RestrictedBuilding" type="Area3D" parent="Zones" unique_id=651878861]
 collision_layer = 512
 collision_mask = 0
 script = ExtResource("4_hgq4p")
 zone_id = &"building"
 
-[node name="Shape" type="CollisionShape3D" parent="Zones/RestrictedBuilding" unique_id=1138378435]
+[node name="Shape" type="CollisionShape3D" parent="Zones/RestrictedBuilding" unique_id=255512144]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -6)
 shape = SubResource("BoxShape3D_8li7j")
 
-[node name="SecureLootVan" type="Area3D" parent="Zones" unique_id=857760112]
+[node name="SecureLootVan" type="Area3D" parent="Zones" unique_id=1572041179]
 collision_layer = 512
 collision_mask = 0
 script = ExtResource("4_hgq4p")
 kind = 2
 zone_id = &"van"
 
-[node name="Shape" type="CollisionShape3D" parent="Zones/SecureLootVan" unique_id=1823632078]
+[node name="Shape" type="CollisionShape3D" parent="Zones/SecureLootVan" unique_id=1455528411]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 1.5, 11)
 shape = SubResource("BoxShape3D_cdm3h")
 
-[node name="EscapeVan" type="Area3D" parent="Zones" unique_id=1399676291]
+[node name="EscapeVan" type="Area3D" parent="Zones" unique_id=560452407]
 collision_layer = 512
 collision_mask = 0
 script = ExtResource("4_hgq4p")
 kind = 3
 zone_id = &"escape_van"
 
-[node name="Shape" type="CollisionShape3D" parent="Zones/EscapeVan" unique_id=2047446322]
+[node name="Shape" type="CollisionShape3D" parent="Zones/EscapeVan" unique_id=2035179013]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 1.5, 10)
 shape = SubResource("BoxShape3D_6c8kf")
 
-[node name="BodyHideDumpster" type="Area3D" parent="Zones" unique_id=1077853446]
+[node name="BodyHideDumpster" type="Area3D" parent="Zones" unique_id=82373026]
 collision_layer = 512
 collision_mask = 0
 script = ExtResource("4_hgq4p")
 kind = 4
 zone_id = &"dumpster"
 
-[node name="Shape" type="CollisionShape3D" parent="Zones/BodyHideDumpster" unique_id=666102038]
+[node name="Shape" type="CollisionShape3D" parent="Zones/BodyHideDumpster" unique_id=1870039256]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.75, 1.5, 12.75)
 shape = SubResource("BoxShape3D_8147n")
 
-[node name="Rooms" type="Node3D" parent="." unique_id=1790612444]
+[node name="Rooms" type="Node3D" parent="." unique_id=1231370632]
 
-[node name="Yard" type="Area3D" parent="Rooms" unique_id=821552314]
+[node name="Yard" type="Area3D" parent="Rooms" unique_id=1942709472]
 collision_layer = 512
 collision_mask = 0
 monitoring = false
@@ -550,23 +550,23 @@ script = ExtResource("5_54uw3")
 room_id = &"yard"
 purpose = &"exterior"
 
-[node name="Shape" type="CollisionShape3D" parent="Rooms/Yard" unique_id=1505115758]
+[node name="Shape" type="CollisionShape3D" parent="Rooms/Yard" unique_id=1170733504]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 7.5)
 shape = SubResource("BoxShape3D_ybdgw")
 
-[node name="Shape1" type="CollisionShape3D" parent="Rooms/Yard" unique_id=238530570]
+[node name="Shape1" type="CollisionShape3D" parent="Rooms/Yard" unique_id=1220498895]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1.5, -7.5)
 shape = SubResource("BoxShape3D_vqmgh")
 
-[node name="Shape2" type="CollisionShape3D" parent="Rooms/Yard" unique_id=59971848]
+[node name="Shape2" type="CollisionShape3D" parent="Rooms/Yard" unique_id=1281122029]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1.5, -7.5)
 shape = SubResource("BoxShape3D_nf665")
 
-[node name="Shape3" type="CollisionShape3D" parent="Rooms/Yard" unique_id=2074763225]
+[node name="Shape3" type="CollisionShape3D" parent="Rooms/Yard" unique_id=1145286545]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -13.5)
 shape = SubResource("BoxShape3D_5uh3x")
 
-[node name="Building" type="Area3D" parent="Rooms" unique_id=402373726]
+[node name="Building" type="Area3D" parent="Rooms" unique_id=1878781432]
 collision_layer = 512
 collision_mask = 0
 monitoring = false
@@ -574,109 +574,109 @@ script = ExtResource("5_54uw3")
 room_id = &"building"
 purpose = &"sales_floor"
 
-[node name="Shape" type="CollisionShape3D" parent="Rooms/Building" unique_id=437607841]
+[node name="Shape" type="CollisionShape3D" parent="Rooms/Building" unique_id=367739791]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -6)
 shape = SubResource("BoxShape3D_2j3lf")
 
-[node name="Spawns" type="Node3D" parent="." unique_id=1511026180]
+[node name="Spawns" type="Node3D" parent="." unique_id=1843496186]
 
-[node name="Player0" type="Marker3D" parent="Spawns" unique_id=1246885925]
+[node name="Player0" type="Marker3D" parent="Spawns" unique_id=1317991469]
 transform = Transform3D(0.8778956, 0, 0.47885212, 0, 1, 0, -0.47885215, 0, 0.87789553, 6, 0.05, 11)
 script = ExtResource("6_4ii37")
 kind = 0
 tags = Array[StringName]([&"crew_van_0"])
 
-[node name="Player1" type="Marker3D" parent="Spawns" unique_id=1949122370]
+[node name="Player1" type="Marker3D" parent="Spawns" unique_id=30907939]
 transform = Transform3D(0.8436615, 0, 0.5368755, 0, 1, 0, -0.5368755, 0, 0.8436615, 7, 0.05, 11)
 script = ExtResource("6_4ii37")
 kind = 0
 tags = Array[StringName]([&"crew_van_1"])
 
-[node name="Player2" type="Marker3D" parent="Spawns" unique_id=39426453]
+[node name="Player2" type="Marker3D" parent="Spawns" unique_id=1244980882]
 transform = Transform3D(0.80873615, 0, 0.58817166, 0, 1, 0, -0.5881717, 0, 0.8087361, 8, 0.05, 11)
 script = ExtResource("6_4ii37")
 kind = 0
 tags = Array[StringName]([&"crew_van_2"])
 
-[node name="Player3" type="Marker3D" parent="Spawns" unique_id=1038170297]
+[node name="Player3" type="Marker3D" parent="Spawns" unique_id=210865035]
 transform = Transform3D(0.7739573, 0, 0.6332378, 0, 1, 0, -0.6332378, 0, 0.7739573, 9, 0.05, 11)
 script = ExtResource("6_4ii37")
 kind = 0
 tags = Array[StringName]([&"crew_van_3"])
 
-[node name="GuardInsideWest" type="Marker3D" parent="Spawns" unique_id=138228698]
+[node name="GuardInsideWest" type="Marker3D" parent="Spawns" unique_id=285136643]
 transform = Transform3D(-0.8741573, 0, -0.4856429, 0, 1, 0, 0.48564294, 0, -0.87415725, -5, 0.05, -9)
 script = ExtResource("6_4ii37")
 tags = Array[StringName]([&"guard_inside"])
 patrol_graph = NodePath("../../Patrols/Main")
 
-[node name="GuardInsideEast" type="Marker3D" parent="Spawns" unique_id=1382163492]
+[node name="GuardInsideEast" type="Marker3D" parent="Spawns" unique_id=154772729]
 transform = Transform3D(-0.8320503, 0, 0.5547002, 0, 1.0000001, 0, -0.5547002, 0, -0.8320503, 2, 0.05, -3)
 script = ExtResource("6_4ii37")
 tags = Array[StringName]([&"guard_inside"])
 patrol_graph = NodePath("../../Patrols/Main")
 
-[node name="GuardYard" type="Marker3D" parent="Spawns" unique_id=865197340]
+[node name="GuardYard" type="Marker3D" parent="Spawns" unique_id=6224529]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -14, 0.05, 8)
 script = ExtResource("6_4ii37")
 tags = Array[StringName]([&"guard_yard"])
 patrol_graph = NodePath("../../Patrols/Main")
 
-[node name="CivilianBrowse" type="Marker3D" parent="Spawns" unique_id=1332262441]
+[node name="CivilianBrowse" type="Marker3D" parent="Spawns" unique_id=191624584]
 transform = Transform3D(0.8320503, 0, -0.5547002, 0, 1.0000001, 0, 0.5547002, 0, 0.8320503, -4, 0.05, 6)
 script = ExtResource("6_4ii37")
 kind = 2
 tags = Array[StringName]([&"civ_customer"])
 idle_activity = &"browse"
 
-[node name="CivilianPhone" type="Marker3D" parent="Spawns" unique_id=1082977625]
+[node name="CivilianPhone" type="Marker3D" parent="Spawns" unique_id=1891128639]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 4, 0.05, 9)
 script = ExtResource("6_4ii37")
 kind = 2
 tags = Array[StringName]([&"civ_customer"])
 idle_activity = &"phone"
 
-[node name="PoliceWest" type="Marker3D" parent="Spawns" unique_id=201506529]
+[node name="PoliceWest" type="Marker3D" parent="Spawns" unique_id=753798718]
 transform = Transform3D(-0.1543769, 0, -0.988012, 0, 1, 0, 0.9880121, 0, -0.15437688, -19.2, 0.05, 0)
 script = ExtResource("6_4ii37")
 kind = 3
 tags = Array[StringName]([&"police_west"])
 
-[node name="PoliceNorth" type="Marker3D" parent="Spawns" unique_id=1661617849]
+[node name="PoliceNorth" type="Marker3D" parent="Spawns" unique_id=1102538315]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0, 0.05, -14.2)
 script = ExtResource("6_4ii37")
 kind = 3
 tags = Array[StringName]([&"police_north"])
 
-[node name="PoliceEast" type="Marker3D" parent="Spawns" unique_id=295668264]
+[node name="PoliceEast" type="Marker3D" parent="Spawns" unique_id=201145304]
 transform = Transform3D(-0.38461536, 0, 0.9230769, 0, 1, 0, -0.9230769, 0, -0.38461536, 19.2, 0.05, -5)
 script = ExtResource("6_4ii37")
 kind = 3
 tags = Array[StringName]([&"police_east"])
 
-[node name="PoliceSouth" type="Marker3D" parent="Spawns" unique_id=1382447946]
+[node name="PoliceSouth" type="Marker3D" parent="Spawns" unique_id=2022221987]
 transform = Transform3D(0.88148, 0, -0.4722214, 0, 1, 0, 0.4722214, 0, 0.88148, -6, 0.05, 14.2)
 script = ExtResource("6_4ii37")
 kind = 3
 tags = Array[StringName]([&"police_south"])
 
-[node name="CameraOperator" type="Marker3D" parent="Spawns" unique_id=1054080939]
+[node name="CameraOperator" type="Marker3D" parent="Spawns" unique_id=170612160]
 transform = Transform3D(-0.8462329, 0, -0.53281325, 0, 1, 0, 0.5328133, 0, -0.84623283, -6.8, 0.05, -10.8)
 script = ExtResource("6_4ii37")
 kind = 5
 tags = Array[StringName]([&"security_staff"])
 
-[node name="Patrols" type="Node3D" parent="." unique_id=1738959241]
+[node name="Patrols" type="Node3D" parent="." unique_id=1391360656]
 
-[node name="Main" type="Node3D" parent="Patrols" unique_id=1815597405]
+[node name="Main" type="Node3D" parent="Patrols" unique_id=1501362317]
 script = ExtResource("7_0g40l")
 
-[node name="InWest" type="Marker3D" parent="Patrols/Main" unique_id=2119563912]
+[node name="InWest" type="Marker3D" parent="Patrols/Main" unique_id=2030317057]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -2)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../InNorthWest"), NodePath("../DoorIn"), NodePath("../InHub")])
 
-[node name="InNorthWest" type="Marker3D" parent="Patrols/Main" unique_id=1585056230]
+[node name="InNorthWest" type="Marker3D" parent="Patrols/Main" unique_id=767818382]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -10)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../InWest"), NodePath("../InNorth"), NodePath("../InHub")])
@@ -684,12 +684,12 @@ pause_range = Vector2(2, 5)
 face_marker_forward = true
 pause_anim = &"check_door"
 
-[node name="InNorth" type="Marker3D" parent="Patrols/Main" unique_id=374811392]
+[node name="InNorth" type="Marker3D" parent="Patrols/Main" unique_id=1546400682]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -10)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../InNorthWest"), NodePath("../InEast"), NodePath("../InHub")])
 
-[node name="InEast" type="Marker3D" parent="Patrols/Main" unique_id=1598309080]
+[node name="InEast" type="Marker3D" parent="Patrols/Main" unique_id=2047002397]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -3.5)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../InNorth"), NodePath("../DoorIn")])
@@ -697,27 +697,27 @@ pause_range = Vector2(2, 5)
 face_marker_forward = true
 pause_anim = &"lean"
 
-[node name="InHub" type="Marker3D" parent="Patrols/Main" unique_id=1602755611]
+[node name="InHub" type="Marker3D" parent="Patrols/Main" unique_id=2120809714]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -6)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../InWest"), NodePath("../InNorthWest"), NodePath("../InNorth"), NodePath("../DoorIn")])
 
-[node name="DoorIn" type="Marker3D" parent="Patrols/Main" unique_id=2129426517]
+[node name="DoorIn" type="Marker3D" parent="Patrols/Main" unique_id=2107962614]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.2)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../InWest"), NodePath("../InEast"), NodePath("../InHub"), NodePath("../DoorOut")])
 
-[node name="DoorOut" type="Marker3D" parent="Patrols/Main" unique_id=415589242]
+[node name="DoorOut" type="Marker3D" parent="Patrols/Main" unique_id=75750888]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.2)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../DoorIn"), NodePath("../YardSouth")])
 
-[node name="YardSouth" type="Marker3D" parent="Patrols/Main" unique_id=629628606]
+[node name="YardSouth" type="Marker3D" parent="Patrols/Main" unique_id=1836905854]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../DoorOut"), NodePath("../YardWest"), NodePath("../YardEast"), NodePath("../CivBench"), NodePath("../CivVan")])
 
-[node name="YardWest" type="Marker3D" parent="Patrols/Main" unique_id=156087706]
+[node name="YardWest" type="Marker3D" parent="Patrols/Main" unique_id=2035213832]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 4)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../YardSouth"), NodePath("../YardNorthWest"), NodePath("../CivBench")])
@@ -725,24 +725,24 @@ pause_range = Vector2(2, 5)
 face_marker_forward = true
 pause_anim = &"smoke"
 
-[node name="YardNorthWest" type="Marker3D" parent="Patrols/Main" unique_id=752045987]
+[node name="YardNorthWest" type="Marker3D" parent="Patrols/Main" unique_id=506461983]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, -13.5)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../YardWest"), NodePath("../YardNorthEast")])
 
-[node name="YardNorthEast" type="Marker3D" parent="Patrols/Main" unique_id=512906877]
+[node name="YardNorthEast" type="Marker3D" parent="Patrols/Main" unique_id=1966361082]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, -13.5)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../YardNorthWest"), NodePath("../YardEast")])
 pause_range = Vector2(2, 5)
 face_marker_forward = true
 
-[node name="YardEast" type="Marker3D" parent="Patrols/Main" unique_id=929853335]
+[node name="YardEast" type="Marker3D" parent="Patrols/Main" unique_id=1167336919]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 3)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../YardNorthEast"), NodePath("../YardSouth"), NodePath("../CivVan")])
 
-[node name="CivBench" type="Marker3D" parent="Patrols/Main" unique_id=745370206]
+[node name="CivBench" type="Marker3D" parent="Patrols/Main" unique_id=70261567]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 11)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../YardSouth"), NodePath("../YardWest"), NodePath("../CivVan")])
@@ -751,7 +751,7 @@ face_marker_forward = true
 pause_anim = &"phone"
 tags = Array[StringName]([&"civilian"])
 
-[node name="CivVan" type="Marker3D" parent="Patrols/Main" unique_id=1992985124]
+[node name="CivVan" type="Marker3D" parent="Patrols/Main" unique_id=1147903482]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
 script = ExtResource("8_14vdq")
 links = Array[NodePath]([NodePath("../YardSouth"), NodePath("../YardEast"), NodePath("../CivBench")])
@@ -759,188 +759,188 @@ pause_range = Vector2(2, 5)
 face_marker_forward = true
 tags = Array[StringName]([&"civilian"])
 
-[node name="Tactical" type="Node3D" parent="." unique_id=557679909]
+[node name="Tactical" type="Node3D" parent="." unique_id=2064779236]
 
-[node name="CoverBuildingSW" type="Marker3D" parent="Tactical" unique_id=424041818]
+[node name="CoverBuildingSW" type="Marker3D" parent="Tactical" unique_id=677883749]
 transform = Transform3D(0.09053575, 0, -0.99589324, 0, 1.0000001, 0, 0.99589324, 0, 0.09053575, -8.8, 0, 0.8)
 script = ExtResource("9_e5x7f")
 
-[node name="CoverBuildingSE" type="Marker3D" parent="Tactical" unique_id=1351748466]
+[node name="CoverBuildingSE" type="Marker3D" parent="Tactical" unique_id=1366678824]
 transform = Transform3D(0.09053575, 0, 0.99589324, 0, 1.0000001, 0, -0.99589324, 0, 0.09053575, 8.8, 0, 0.8)
 script = ExtResource("9_e5x7f")
 
-[node name="CoverBuildingNW" type="Marker3D" parent="Tactical" unique_id=1573435465]
+[node name="CoverBuildingNW" type="Marker3D" parent="Tactical" unique_id=979988912]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -8.8, 0, -12.8)
 script = ExtResource("9_e5x7f")
 
-[node name="CoverBuildingNE" type="Marker3D" parent="Tactical" unique_id=161880730]
+[node name="CoverBuildingNE" type="Marker3D" parent="Tactical" unique_id=1961476201]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 8.8, 0, -12.8)
 script = ExtResource("9_e5x7f")
 
-[node name="CoverInsideWest" type="Marker3D" parent="Tactical" unique_id=563413533]
+[node name="CoverInsideWest" type="Marker3D" parent="Tactical" unique_id=1085576037]
 transform = Transform3D(-0.6401844, 0, -0.7682213, 0, 1.0000001, 0, 0.7682213, 0, -0.6401844, -7.2, 0, -6)
 script = ExtResource("9_e5x7f")
 
-[node name="CoverBackRoomCorner" type="Marker3D" parent="Tactical" unique_id=1681877667]
+[node name="CoverBackRoomCorner" type="Marker3D" parent="Tactical" unique_id=1354820314]
 transform = Transform3D(-0.9581681, 0, 0.28620607, 0, 1, 0, -0.28620607, 0, -0.9581681, 2.3, 0, -7.7)
 script = ExtResource("9_e5x7f")
 
-[node name="CoverVan" type="Marker3D" parent="Tactical" unique_id=1898252496]
+[node name="CoverVan" type="Marker3D" parent="Tactical" unique_id=325740315]
 transform = Transform3D(0.6459423, 0, 0.76338625, 0, 1, 0, -0.7633863, 0, 0.6459422, 13, 0, 11)
 script = ExtResource("9_e5x7f")
 
-[node name="EntryFrontDoor" type="Marker3D" parent="Tactical" unique_id=1283660429]
+[node name="EntryFrontDoor" type="Marker3D" parent="Tactical" unique_id=428371916]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 script = ExtResource("9_e5x7f")
 kind = 1
 breachable = true
 
-[node name="EntryWindow" type="Marker3D" parent="Tactical" unique_id=490976245]
+[node name="EntryWindow" type="Marker3D" parent="Tactical" unique_id=707008552]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 9, 0, -3.5)
 script = ExtResource("9_e5x7f")
 kind = 1
 breachable = true
 
-[node name="FlankEast" type="Marker3D" parent="Tactical" unique_id=1897141960]
+[node name="FlankEast" type="Marker3D" parent="Tactical" unique_id=116790856]
 transform = Transform3D(-0.6, 0, 0.8, 0, 1, 0, -0.8, 0, -0.6, 14, 0, -8)
 script = ExtResource("9_e5x7f")
 kind = 2
 
-[node name="Gameplay" type="Node3D" parent="." unique_id=1625696537]
+[node name="Gameplay" type="Node3D" parent="." unique_id=178883857]
 
-[node name="FrontDoor" type="Node3D" parent="Gameplay" unique_id=198397405 instance=ExtResource("10_2sw0a")]
+[node name="FrontDoor" type="Node3D" parent="Gameplay" unique_id=2116785806 instance=ExtResource("10_2sw0a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 script = ExtResource("11_sixh1")
 lock = 1
 width_m = 0.9
 
-[node name="BackRoomDoor" type="Node3D" parent="Gameplay" unique_id=205215062 instance=ExtResource("10_2sw0a")]
+[node name="BackRoomDoor" type="Node3D" parent="Gameplay" unique_id=848907147 instance=ExtResource("10_2sw0a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.5, 0, -7)
 script = ExtResource("11_sixh1")
 lock = 2
 width_m = 0.9
 
-[node name="BackRoomReader" type="Node3D" parent="Gameplay" unique_id=40864074 instance=ExtResource("12_sp2o2")]
+[node name="BackRoomReader" type="Node3D" parent="Gameplay" unique_id=482869882 instance=ExtResource("12_sp2o2")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.6, 1.2, -6.85)
 script = ExtResource("13_kgysg")
 targets = Array[NodePath]([NodePath("../BackRoomDoor")])
 
-[node name="DisplayCaseA" type="Node3D" parent="Gameplay" unique_id=710779832 instance=ExtResource("14_w2ufi")]
+[node name="DisplayCaseA" type="Node3D" parent="Gameplay" unique_id=1298804496 instance=ExtResource("14_w2ufi")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -5)
 script = ExtResource("15_iair6")
 loot_id = &"loot.jewelry"
 
-[node name="DisplayCaseB" type="Node3D" parent="Gameplay" unique_id=216376027 instance=ExtResource("14_w2ufi")]
+[node name="DisplayCaseB" type="Node3D" parent="Gameplay" unique_id=1526010045 instance=ExtResource("14_w2ufi")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -9)
 script = ExtResource("15_iair6")
 loot_id = &"loot.jewelry"
 
-[node name="SmallLootA" type="Node3D" parent="Gameplay" unique_id=2101283399 instance=ExtResource("16_wmj37")]
+[node name="SmallLootA" type="Node3D" parent="Gameplay" unique_id=587928422 instance=ExtResource("16_wmj37")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.3, 0, -11.3)
 script = ExtResource("17_k64km")
 
-[node name="SmallLootB" type="Node3D" parent="Gameplay" unique_id=937014143 instance=ExtResource("16_wmj37")]
+[node name="SmallLootB" type="Node3D" parent="Gameplay" unique_id=39342997 instance=ExtResource("16_wmj37")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.4, 0, -4)
 script = ExtResource("17_k64km")
 
-[node name="LootSpawnJewelry" type="Node3D" parent="Gameplay" unique_id=1968473555 instance=ExtResource("18_wu60g")]
+[node name="LootSpawnJewelry" type="Node3D" parent="Gameplay" unique_id=691738225 instance=ExtResource("18_wu60g")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -1.5)
 script = ExtResource("19_ie2qi")
 loot_id = &"loot.jewelry"
 count = 2
 
-[node name="BackRoomSafe" type="Node3D" parent="Gameplay" unique_id=1984867590 instance=ExtResource("20_2qfaq")]
+[node name="BackRoomSafe" type="Node3D" parent="Gameplay" unique_id=964982917 instance=ExtResource("20_2qfaq")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 7.2, 0, -11.3)
 script = ExtResource("21_uum7j")
 
-[node name="SafeDrillPoint" type="Node3D" parent="Gameplay" unique_id=1092325236 instance=ExtResource("22_2khrk")]
+[node name="SafeDrillPoint" type="Node3D" parent="Gameplay" unique_id=1360489034 instance=ExtResource("22_2khrk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.2, 1, -10.93)
 script = ExtResource("23_b5oia")
 target = NodePath("../BackRoomSafe")
 
-[node name="VanSecure" type="Node3D" parent="Gameplay" unique_id=1995922794 instance=ExtResource("24_fs7qg")]
+[node name="VanSecure" type="Node3D" parent="Gameplay" unique_id=1838319418 instance=ExtResource("24_fs7qg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 0, 11)
 script = ExtResource("25_klk31")
 zone_size_m = Vector3(5, 3, 6)
 
-[node name="VanEscape" type="Node3D" parent="Gameplay" unique_id=276079970 instance=ExtResource("26_kbri3")]
+[node name="VanEscape" type="Node3D" parent="Gameplay" unique_id=683979661 instance=ExtResource("26_kbri3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 0, 10)
 script = ExtResource("27_nbv40")
 zone_size_m = Vector3(9, 3, 10)
 objective_tag = &"escape_van"
 
-[node name="Dumpster" type="Node3D" parent="Gameplay" unique_id=814875725 instance=ExtResource("28_lcp3v")]
+[node name="Dumpster" type="Node3D" parent="Gameplay" unique_id=541918542 instance=ExtResource("28_lcp3v")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -17.75, 0, 12.75)
 script = ExtResource("29_d02by")
 
-[node name="OfficePhone" type="Node3D" parent="Gameplay" unique_id=626610292 instance=ExtResource("30_be418")]
+[node name="OfficePhone" type="Node3D" parent="Gameplay" unique_id=474682606 instance=ExtResource("30_be418")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -7.5, 0.75, -1)
 script = ExtResource("31_oirlt")
 
-[node name="AlarmButton" type="Node3D" parent="Gameplay" unique_id=1634046117 instance=ExtResource("32_q2532")]
+[node name="AlarmButton" type="Node3D" parent="Gameplay" unique_id=1661055549 instance=ExtResource("32_q2532")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.85, 1.2, -9)
 script = ExtResource("33_1uif7")
 
-[node name="CameraLobby" type="Node3D" parent="Gameplay" unique_id=2099688978 instance=ExtResource("34_mptc8")]
+[node name="CameraLobby" type="Node3D" parent="Gameplay" unique_id=1465238148 instance=ExtResource("34_mptc8")]
 transform = Transform3D(-0.8364611, 0.06668055, -0.54395443, 0, 0.99257004, 0.12167402, 0.5480262, 0.101775594, -0.8302463, -7.6, 2.7, -11.6)
 script = ExtResource("35_ppp15")
 
-[node name="EastWindow" type="Node3D" parent="Gameplay" unique_id=1430929997 instance=ExtResource("36_xq2ms")]
+[node name="EastWindow" type="Node3D" parent="Gameplay" unique_id=1356539554 instance=ExtResource("36_xq2ms")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 8, 0.9, -3.5)
 script = ExtResource("37_601hm")
 
-[node name="Variants" type="Node3D" parent="." unique_id=1928482349]
+[node name="Variants" type="Node3D" parent="." unique_id=632413120]
 
-[node name="Keycard1" type="Node3D" parent="Variants" unique_id=1738905384]
+[node name="Keycard1" type="Node3D" parent="Variants" unique_id=946048297]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 0, -8.5)
 script = ExtResource("38_t5ck0")
 slot_group = &"keycard"
 slot_id = &"keycard_1"
 prefab = ExtResource("39_7kyrv")
 
-[node name="Keycard2" type="Node3D" parent="Variants" unique_id=618317423]
+[node name="Keycard2" type="Node3D" parent="Variants" unique_id=136201984]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, -13)
 script = ExtResource("38_t5ck0")
 slot_group = &"keycard"
 slot_id = &"keycard_2"
 prefab = ExtResource("39_7kyrv")
 
-[node name="Keycard3" type="Node3D" parent="Variants" unique_id=253219486]
+[node name="Keycard3" type="Node3D" parent="Variants" unique_id=1409494827]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 0, -12)
 script = ExtResource("38_t5ck0")
 slot_group = &"keycard"
 slot_id = &"keycard_3"
 prefab = ExtResource("39_7kyrv")
 
-[node name="GuardExtra1" type="Node3D" parent="Variants" unique_id=887855030]
+[node name="GuardExtra1" type="Node3D" parent="Variants" unique_id=2120376918]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0.05, -2)
 script = ExtResource("38_t5ck0")
 slot_group = &"guard_extra"
 slot_id = &"guard_extra_1"
 
-[node name="Guard" type="Marker3D" parent="Variants/GuardExtra1" unique_id=125285880]
+[node name="Guard" type="Marker3D" parent="Variants/GuardExtra1" unique_id=1607548706]
 script = ExtResource("6_4ii37")
 tags = Array[StringName]([&"guard_extra"])
 patrol_graph = NodePath("../../../Patrols/Main")
 
-[node name="GuardExtra2" type="Node3D" parent="Variants" unique_id=1208457119]
+[node name="GuardExtra2" type="Node3D" parent="Variants" unique_id=1161424074]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.05, -10)
 script = ExtResource("38_t5ck0")
 slot_group = &"guard_extra"
 slot_id = &"guard_extra_2"
 
-[node name="Guard" type="Marker3D" parent="Variants/GuardExtra2" unique_id=1752579494]
+[node name="Guard" type="Marker3D" parent="Variants/GuardExtra2" unique_id=1693177064]
 script = ExtResource("6_4ii37")
 tags = Array[StringName]([&"guard_extra"])
 patrol_graph = NodePath("../../../Patrols/Main")
 
-[node name="Mission" type="Node" parent="." unique_id=1658066944]
+[node name="Mission" type="Node" parent="." unique_id=245837036]
 script = ExtResource("40_0vnol")
 
-[node name="ReviewCameras" type="Node3D" parent="." unique_id=1689282171]
+[node name="ReviewCameras" type="Node3D" parent="." unique_id=2057940453]
 
-[node name="Overview" type="Marker3D" parent="ReviewCameras" unique_id=1591308042]
+[node name="Overview" type="Marker3D" parent="ReviewCameras" unique_id=698923974]
 transform = Transform3D(1, 0, 0, 0, 0.63059264, 0.776114, 0, -0.776114, 0.63059264, 0, 32, 24)
 
-[node name="YardToDoor" type="Marker3D" parent="ReviewCameras" unique_id=2082615869]
+[node name="YardToDoor" type="Marker3D" parent="ReviewCameras" unique_id=764192549]
 transform = Transform3D(0.6305926, -0.086054325, 0.77132845, 0, 0.9938339, 0.11087846, -0.776114, -0.06991913, 0.62670434, 16, 3.5, 13)

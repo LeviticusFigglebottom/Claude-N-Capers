@@ -51,3 +51,30 @@ func test_crew_intent_roundtrip() -> void:
 	assert_eq(j.move, i.move)
 	assert_true(j.interact)
 	assert_eq(j.order, &"hold")
+
+
+func test_modifiers_list_and_multi_qualifiers() -> void:
+	Modifiers.clear_all()
+	Modifiers.set_source(0, &"skills", {
+		&"weapon.hit_stack_buff": {"class": "pistol", "per_hit": 0.02},
+		&"weapon.recoil_mult.suppressed": 0.8,
+		&"weapon.recoil_mult.pistol": 0.9,
+	})
+	Modifiers.set_source(0, &"perk", {&"weapon.hit_stack_buff": {"class": "smg", "per_hit": 0.01}})
+	var l: Array[Dictionary] = Modifiers.list(0, &"weapon.hit_stack_buff")
+	assert_eq(l.size(), 2, "LIST keeps every source")
+	assert_near(Modifiers.mult(0, &"weapon.recoil_mult", [&"pistol", &"suppressed"]), 0.72)
+	assert_near(Modifiers.mult(0, &"weapon.recoil_mult", &"pistol"), 0.9)
+	assert_true(ModifierKeys.is_known(&"weapon.kill_reload_buff"))
+	assert_eq(ModifierKeys.type_of(&"weapon.kill_reload_buff"), ModifierKeys.Type.LIST)
+	Modifiers.clear_all()
+
+
+func test_modifiers_list_accepts_array_values() -> void:
+	Modifiers.clear_all()
+	Modifiers.set_source(0, &"skills", {&"weapon.kill_reload_buff": [
+		{"trigger": "headshot_kill", "_source": &"skill.a"}, {"trigger": "melee_kill", "_source": &"skill.b"}]})
+	var l: Array[Dictionary] = Modifiers.list(0, &"weapon.kill_reload_buff")
+	assert_eq(l.size(), 2)
+	assert_eq(l[1]["_source"], &"skill.b", "entry keeps its own _source")
+	Modifiers.clear_all()

@@ -1,0 +1,83 @@
+[gd_resource type="Resource" script_class="PerkDeckDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/perk_deck_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"perk.ironclad"
+display_name = "Ironclad"
+description = "perk.ironclad.desc"
+cards = Array[Dictionary]([{
+"name": "perk.ironclad.card1.name",
+"desc": "perk.ironclad.card1.desc",
+"cost": 200,
+"grants": {
+&"defense.armor_mult": 1.1
+}
+}, {
+"name": "perk.shared.card2.name",
+"desc": "perk.shared.card2.desc",
+"cost": 300,
+"grants": {
+&"weapon.headshot_mult.all": 1.25
+}
+}, {
+"name": "perk.ironclad.card3.name",
+"desc": "perk.ironclad.card3.desc",
+"cost": 400,
+"grants": {
+&"defense.armor_mult": 1.0909091
+}
+}, {
+"name": "perk.shared.card4.name",
+"desc": "perk.shared.card4.desc",
+"cost": 600,
+"grants": {
+&"stealth.concealment_add.all": 1,
+&"progression.xp_mult": 1.45,
+&"movement.armor_penalty_mult": 0.85
+}
+}, {
+"name": "perk.ironclad.card5.name",
+"desc": "perk.ironclad.card5.desc",
+"cost": 1000,
+"grants": {
+&"defense.armor_mult": 1.0833333
+}
+}, {
+"name": "perk.shared.card6.name",
+"desc": "perk.shared.card6.desc",
+"cost": 1600,
+"grants": {
+&"weapon.ammo_pickup_mult.all": 1.35,
+&"deploy.armor_bag": true
+}
+}, {
+"name": "perk.ironclad.card7.name",
+"desc": "perk.ironclad.card7.desc",
+"cost": 2400,
+"grants": {
+&"defense.armor_regen_delay_mult": 0.9,
+&"perk.armorer": {
+"break_immunity_s": 2.0,
+"break_immunity_cooldown_s": 15.0
+}
+}
+}, {
+"name": "perk.shared.card8.name",
+"desc": "perk.shared.card8.desc",
+"cost": 3200,
+"grants": {
+&"weapon.damage_mult.all": 1.05,
+&"interaction.doctor_bag_speed_mult": 0.8333
+}
+}, {
+"name": "perk.ironclad.card9.name",
+"desc": "perk.ironclad.card9.desc",
+"cost": 4000,
+"grants": {
+&"progression.card_drop_quality_add": 0.1,
+&"defense.armor_mult": 1.0384615,
+&"team.armor_regen_delay_mult": 0.9
+}
+}])

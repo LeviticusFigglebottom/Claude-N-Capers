@@ -17,6 +17,21 @@
 ##   weapon caps at 30, skill/perk bonuses still raise the total).
 ## * modifiers = merged skill grants (basic, plus aced) and unlocked perk-deck card grants, merged by
 ##   ModifierKeys type (MULT multiply, ADD sum, FLAG or, PARAMS last wins). Unknown keys rejected.
+##   Crew-wide grants (`team.*`) are excluded: team_modifier_sources() returns them as TEAM sources,
+##   `team_skill.<skill_id>` per skill and `team_perk.<deck>` per perk deck (modifiers.md
+##   non-stacking rule; D-031 QB-35: TEAM sources apply to the granter too, so there is no personal copy).
+## * LIST keys (D-031, ModifierKeys.Type.LIST: weapon.kill_reload_buff, weapon.hit_stack_buff,
+##   weapon.kill_damage_buff) are NOT merged. modifiers[key] is an Array[Dictionary] with one entry per
+##   granting skill or perk card: a copy of the granted Dictionary plus
+##   `"_source": StringName(<skill id>)` (e.g. &"skill.gunnery.run_and_gun") or
+##   `"_source": StringName(<deck id>.card<n>)` (e.g. &"perk.foreman.card3"). Inside one skill the aced
+##   Dictionary replaces the basic one (aced re-grants the full dict). Entries are ordered by `_source`
+##   with ContentDB.id_less (ContentDB.sort_ids order). Example, Reload Rhythm + Run and Gun aced:
+##     modifiers[&"weapon.kill_reload_buff"] = [
+##       {"trigger": "auto_kills", ..., "_source": &"skill.gunnery.run_and_gun"},
+##       {"trigger": "headshot_kill", ..., "_source": &"skill.marksman.reload_rhythm"}]
+## * `stealth.concealment_add.suppressed` counts once per filled primary/secondary whose resolved stats
+##   are `suppressed` (Low Profile aced).
 ##
 ## P1 RULE (data-driven, D-022 QB-11): an empty weapon/melee/armor slot contributes
 ## `ConcealmentCurve.empty_slot_concealment` (30), so the P1 pistol-only loadout is not penalized
@@ -29,7 +44,12 @@ const LOG_CHANNEL: StringName = &"loadout"
 const CURVE_TWEAK: StringName = &"concealment_curve"
 const CONCEALMENT_ADD_KEY: StringName = &"stealth.concealment_add"
 ## Qualifiers of CONCEALMENT_ADD_KEY. &"all" always counts; the others only while the slot is filled.
-const CONCEALMENT_QUALIFIERS: Array[StringName] = [&"all", &"primary", &"secondary", &"melee", &"armor"]
+## &"suppressed" counts once per suppressed weapon (primary/secondary).
+const CONCEALMENT_QUALIFIERS: Array[StringName] = [&"all", &"primary", &"secondary", &"melee", &"armor", &"suppressed"]
+const SUPPRESSED_QUALIFIER: StringName = &"suppressed"
+## TEAM source of a perk deck's crew-wide grants: `team_perk.<deck id without "perk.">` (D-031 QB-35).
+const TEAM_PERK_SOURCE_PREFIX: String = "team_perk."
+const LIST_SOURCE_FIELD: String = "_source"
 
 
 static func resolve(loadout: Loadout) -> Loadout:
@@ -124,9 +144,23 @@ static func concealment_bonus_from(loadout: Loadout, modifiers: Dictionary) -> i
 		if not CONCEALMENT_QUALIFIERS.has(qualifier):
 			Log.error(LOG_CHANNEL, "unknown concealment qualifier in %s" % k)
 			continue
-		if qualifier == &"all" or StringName(loadout.get(qualifier)) != &"":
+		if qualifier == SUPPRESSED_QUALIFIER:
+			bonus += float(modifiers[key]) * suppressed_weapon_count(loadout)
+		elif qualifier == &"all" or StringName(loadout.get(qualifier)) != &"":
 			bonus += float(modifiers[key])
 	return roundi(bonus)
+
+
+## Equipped primary/secondary weapons whose resolved stats are suppressed (0..2).
+static func suppressed_weapon_count(loadout: Loadout) -> int:
+	var n: int = 0
+	for pair: Array in [[loadout.primary, loadout.primary_mods], [loadout.secondary, loadout.secondary_mods]]:
+		var mods: Array[StringName] = []
+		mods.assign(pair[1])
+		var s: WeaponStats = resolve_weapon(StringName(pair[0]), mods)
+		if s != null and s.suppressed:
+			n += 1
+	return n
 
 
 static func detection_risk_for_total(total: int) -> int:
@@ -138,26 +172,123 @@ static func curve_tweak() -> ConcealmentCurve:
 
 
 ## Merged modifier grants from skills (Loadout.skills: id -> 1 basic / 2 aced) and the first
-## `perk_deck_cards` cards of the perk deck.
+## `perk_deck_cards` cards of the perk deck. Crew-wide grants (`team.*`) are NOT included: they go to the
+## TEAM scope through team_modifier_sources() so the same skill or deck never stacks (modifiers.md).
+## LIST keys hold Array[Dictionary], one `_source`-tagged entry per skill / card (header).
 static func resolve_modifiers(loadout: Loadout) -> Dictionary:
 	var out: Dictionary = {}
-	var skill_ids: Array = loadout.skills.keys()
-	ContentDB.sort_ids(skill_ids)  # by text: PARAMS grants are last-wins
-	for sid: Variant in skill_ids:
-		var level: int = int(loadout.skills[sid])
-		var skill: SkillDef = ContentDB.by_id(ContentDB.SKILLS, StringName(sid)) as SkillDef
-		if skill == null or level <= 0:
+	for sid: StringName in _sorted_skill_ids(loadout):
+		var skill: SkillDef = ContentDB.by_id(ContentDB.SKILLS, sid) as SkillDef
+		if skill == null:
 			continue
-		_merge(out, skill.grants_basic, "skill %s" % sid)
-		if level >= 2:
-			_merge(out, skill.grants_aced, "skill %s aced" % sid)
-	if loadout.perk_deck != &"":
-		var deck: PerkDeckDef = ContentDB.by_id(ContentDB.PERKS, loadout.perk_deck) as PerkDeckDef
-		if deck != null:
-			var n: int = mini(loadout.perk_deck_cards, deck.cards.size())
-			for i: int in range(n):
-				_merge(out, deck.cards[i].get("grants", {}), "%s card %d" % [deck.id, i + 1])
+		_accumulate(out, _team_split(_skill_grants(skill, int(loadout.skills[sid])), false), sid)
+	var deck: PerkDeckDef = _deck(loadout)
+	if deck != null:
+		for i: int in range(_unlocked_cards(loadout, deck)):
+			var source: StringName = card_source(deck, i)
+			var grants: Dictionary = {}
+			_merge(grants, deck.cards[i].get("grants", {}), String(source))
+			_accumulate(out, _team_split(grants, false), source)
+	for key: Variant in out:
+		if out[key] is Array:
+			(out[key] as Array).sort_custom(
+				func(a: Dictionary, b: Dictionary) -> bool:
+					return ContentDB.id_less(a[LIST_SOURCE_FIELD], b[LIST_SOURCE_FIELD])
+			)
 	return out
+
+
+## Crew-wide grants of one loadout, for Modifiers.set_source(Modifiers.TEAM, source, grants):
+## { &"team_skill.<skill_id>": {team key: value}, &"team_perk.<deck>": {team key: value} }. The server
+## sets them for every crew member; equal source names from two players overwrite each other, so a
+## team skill or perk deck counts once (PD2). They also apply to the granter (D-031 QB-35), which is
+## why resolve_modifiers() leaves them out.
+static func team_modifier_sources(loadout: Loadout) -> Dictionary:
+	var out: Dictionary = {}
+	var tree: SkillTreeDef = SkillPoints.tree_def()
+	for sid: StringName in _sorted_skill_ids(loadout):
+		var skill: SkillDef = ContentDB.by_id(ContentDB.SKILLS, sid) as SkillDef
+		if skill == null:
+			continue
+		var grants: Dictionary = _team_split(_skill_grants(skill, int(loadout.skills[sid])), true)
+		if not grants.is_empty():
+			out[tree.team_source(skill.id)] = grants
+	var deck: PerkDeckDef = _deck(loadout)
+	if deck != null:
+		var grants: Dictionary = {}
+		for i: int in range(_unlocked_cards(loadout, deck)):
+			_merge(grants, _team_split(deck.cards[i].get("grants", {}), true), String(card_source(deck, i)))
+		if not grants.is_empty():
+			out[team_perk_source(deck.id)] = grants
+	return out
+
+
+## &"perk.foreman" -> &"team_perk.foreman".
+static func team_perk_source(deck_id: StringName) -> StringName:
+	return StringName(TEAM_PERK_SOURCE_PREFIX + String(deck_id).trim_prefix("perk."))
+
+
+## LIST `_source` of a perk card: &"<deck id>.card<n>" (n from 1), e.g. &"perk.foreman.card3".
+static func card_source(deck: PerkDeckDef, index: int) -> StringName:
+	return StringName("%s.card%d" % [deck.id, index + 1])
+
+
+static func _sorted_skill_ids(loadout: Loadout) -> Array[StringName]:
+	var ids: Array = []
+	for sid: Variant in loadout.skills:
+		if int(loadout.skills[sid]) > 0:
+			ids.append(StringName(sid))
+	ContentDB.sort_ids(ids)  # by text: PARAMS grants are last-wins
+	var out: Array[StringName] = []
+	out.assign(ids)
+	return out
+
+
+## One skill's grants at `level` (1 basic, 2 aced): basic merged with aced (aced LIST/PARAMS replace).
+static func _skill_grants(skill: SkillDef, level: int) -> Dictionary:
+	var grants: Dictionary = {}
+	_merge(grants, skill.grants_basic, "skill %s" % skill.id)
+	if level >= 2:
+		_merge(grants, skill.grants_aced, "skill %s aced" % skill.id)
+	return grants
+
+
+static func _deck(loadout: Loadout) -> PerkDeckDef:
+	if loadout.perk_deck == &"":
+		return null
+	return ContentDB.by_id(ContentDB.PERKS, loadout.perk_deck) as PerkDeckDef
+
+
+static func _unlocked_cards(loadout: Loadout, deck: PerkDeckDef) -> int:
+	return clampi(loadout.perk_deck_cards, 0, deck.cards.size())
+
+
+## The `team.*` grants (team = true) or every other grant (team = false).
+static func _team_split(grants: Dictionary, team: bool) -> Dictionary:
+	var tree: SkillTreeDef = SkillPoints.tree_def()
+	var out: Dictionary = {}
+	for key: Variant in grants:
+		if tree.is_team_key(StringName(key)) == team:
+			out[key] = grants[key]
+	return out
+
+
+## Adds one source's (already merged, known-key) grants: LIST keys append a `_source`-tagged copy,
+## everything else merges by type.
+static func _accumulate(into: Dictionary, grants: Dictionary, source: StringName) -> void:
+	var rest: Dictionary = {}
+	for key: Variant in grants:
+		var k: StringName = StringName(key)
+		if ModifierKeys.type_of(k) != ModifierKeys.Type.LIST:
+			rest[k] = grants[key]
+			continue
+		var entry: Dictionary = (grants[key] as Dictionary).duplicate(true)
+		entry[LIST_SOURCE_FIELD] = source
+		if not into.has(k):
+			var list: Array[Dictionary] = []
+			into[k] = list
+		(into[k] as Array).append(entry)
+	_merge(into, rest, String(source))
 
 
 static func _merge(into: Dictionary, grants: Dictionary, source: String) -> void:
@@ -167,6 +298,9 @@ static func _merge(into: Dictionary, grants: Dictionary, source: String) -> void
 			Log.error(LOG_CHANNEL, "%s grants unregistered modifier key %s" % [source, k])
 			continue
 		var v: Variant = grants[key]
+		if ModifierKeys.type_of(k) == ModifierKeys.Type.LIST and not v is Dictionary:
+			Log.error(LOG_CHANNEL, "%s grants LIST key %s with a non-Dictionary value" % [source, k])
+			continue
 		if not into.has(k):
 			into[k] = v
 			continue

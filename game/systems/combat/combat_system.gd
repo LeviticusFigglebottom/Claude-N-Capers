@@ -1,0 +1,171 @@
+## Server-side hit-claim validation and damage helpers (A1-08, L3.8, architecture.md §3). Owner: ENV A.
+##
+## Every player shot becomes a HIT CLAIM, produced by the shooter's CrewWeapons (locally on the
+## server for solo/host/AI/bots, on the owning client for remote humans, sent by RPC):
+##   { "seq": int, "weapon_slot": int (Enums.WeaponSlot), "weapon_id": StringName,
+##     "origin": Vector3, "direction": Vector3,
+##     "hits": [ { "target_id": int, "zone": int (Enums.HitZone), "distance": float, "position": Vector3,
+##                 "target": Object (server-local claims only; stripped before an RPC) } ] }
+## `hits` holds one entry per pellet that struck a damageable hitbox (empty = miss/world hit).
+## validate_and_apply() checks (in order) the shooter's state (S1.1 casing, CUSTODY...), shot seq,
+## weapon slot, rate of fire, ammo, origin; consumes the round, emits weapon_fired + the S4.3 noise,
+## then per hit: target resolves (object ref / net id / server re-raycast), range, distance sanity,
+## hit point near a character target, LOS ray (world layers) - and delivers ONE
+## `target.take_hit(Damage.info(...), shooter_net_id)` (docs/contracts/damage.md, D-026).
+##
+## Headshots (damage.md QB-26): `info.amount` is BODY damage; `info.headshot_bonus` =
+## WeaponStats.headshot_mult (a bonus, default 1.0) x weapon.headshot_mult modifiers. The target
+## applies its own zone multiplier (NpcBase: EnemyDef.headshot_mult[difficulty] x headshot_bonus).
+## Targets emit damage_applied themselves; this file never does.
+class_name CombatSystem
+extends RefCounted
+
+const REJECT_NONE: StringName = &""
+
+
+## Server: validate a claim from `shooter` and apply it. Returns
+## { "accepted": bool, "reason": StringName, "results": Array[Dictionary] (resolved DamageInfo per hit) }.
+static func validate_and_apply(claim: Dictionary, shooter: CrewController) -> Dictionary:
+	var out: Dictionary = {"accepted": false, "reason": REJECT_NONE, "results": [] as Array[Dictionary]}
+	if not Net.is_authority() or shooter == null or not is_instance_valid(shooter):
+		out["reason"] = &"not_authority"
+		return out
+	var w: CrewWeapons = shooter.weapons
+	if w == null:
+		out["reason"] = &"no_weapons"
+		return out
+	var reason: StringName = w.server_check_shot(claim)
+	if reason != REJECT_NONE:
+		out["reason"] = reason
+		Log.debug(&"combat", "slot %d claim rejected: %s" % [shooter.slot, reason])
+		return out
+	w.server_commit_shot(claim)
+	out["accepted"] = true
+	var tw: CombatTweak = CombatTweak.data()
+	var origin: Vector3 = claim.get("origin", shooter.eye_position())
+	var ws: int = int(claim.get("weapon_slot", w.equipped_slot))
+	var hits: Array = claim.get("hits", [])
+	var results: Array[Dictionary] = []
+	for h: Variant in hits:
+		var hit: Dictionary = h as Dictionary
+		if hit == null:
+			continue
+		var res: Dictionary = _apply_hit(shooter, w, ws, origin, hit, StringName(claim.get("weapon_id", &"")), tw)
+		if not res.is_empty():
+			results.append(res)
+	out["results"] = results
+	return out
+
+
+static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin: Vector3,
+		hit: Dictionary, weapon_id: StringName, tw: CombatTweak) -> Dictionary:
+	var pos: Vector3 = hit.get("position", origin)
+	var target: Object = _claimed_target(shooter, origin, hit)
+	if target == null:
+		return {}
+	var dist: float = origin.distance_to(pos)
+	if dist > tw.hitscan_max_range_m:
+		return {}
+	if absf(dist - float(hit.get("distance", dist))) > tw.claim_distance_tolerance_m:
+		return {}
+	var body: CharacterBody3D = target as CharacterBody3D
+	if body != null and pos.distance_to(target_center(body)) > tw.claim_target_tolerance_m:
+		return {}
+	if not has_los(shooter, origin, pos, [shooter, target]):
+		return {}
+	var info: Dictionary = Damage.info(w.damage_at(ws, dist), Enums.DamageType.BULLET,
+		int(hit.get("zone", Enums.HitZone.BODY)), weapon_id, pos, (pos - origin).normalized(), shooter.net_id)
+	info["headshot_bonus"] = w.headshot_bonus(ws)
+	return deliver_hit(target, info, shooter.net_id)
+
+
+## Target of a claimed hit: the local object reference (server-made claims), the net id, or a
+## server re-raycast toward the claimed point (targets without a net id, e.g. ENV B range targets).
+static func _claimed_target(shooter: CrewController, origin: Vector3, hit: Dictionary) -> Object:
+	var obj: Variant = hit.get("target")
+	if obj is Object and is_instance_valid(obj) and can_take_hit(obj as Object):
+		return obj as Object
+	var by_id: Node = Ids.lookup(int(hit.get("target_id", 0)))
+	if by_id != null and can_take_hit(by_id):
+		return by_id
+	var pos: Vector3 = hit.get("position", origin)
+	var seg: Vector3 = pos - origin
+	if seg.length() < 0.01:
+		return null
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
+		origin, pos + seg.normalized() * 0.1, CombatTweak.data().hitscan_mask)
+	q.collide_with_areas = true
+	q.exclude = [shooter.get_rid()]
+	var res: Dictionary = shooter.get_world_3d().direct_space_state.intersect_ray(q)
+	return resolve_collider(res.get("collider")) if not res.is_empty() else null
+
+
+## The object receiving hits for a physics collider (damage.md: Damage.find_target), falling back to
+## the legacy `hit_owner` meta (pre-D-026 prefabs) when no `take_hit` receiver is found.
+static func resolve_collider(collider: Variant) -> Object:
+	var col: Object = collider as Object if collider is Object else null
+	if col == null:
+		return null
+	var t: Object = Damage.find_target(col)
+	if t != null:
+		return t
+	if col.has_meta(&"hit_owner"):
+		var legacy: Object = col.get_meta(&"hit_owner") as Object
+		if legacy != null and is_instance_valid(legacy) and can_take_hit(legacy):
+			return legacy
+	return null
+
+
+static func can_take_hit(o: Object) -> bool:
+	return o != null and (o.has_method(&"take_hit") or o.has_method(&"apply_damage"))
+
+
+## The single hit call (damage.md): `target.take_hit(info, attacker)` once; the target emits
+## damage_applied itself. Legacy targets with only `apply_damage` are called through it.
+static func deliver_hit(target: Object, info: Dictionary, attacker_net_id: int) -> Dictionary:
+	var r: Variant = null
+	if target.has_method(&"take_hit"):
+		r = target.call(&"take_hit", info, attacker_net_id)
+	elif target.has_method(&"apply_damage"):
+		r = target.call(&"apply_damage", info, attacker_net_id)
+	return r as Dictionary if r is Dictionary else info
+
+
+## Damage.info (damage.md) plus the A1-08 extension `bypass_armor_gate` (snipers, L2.2).
+static func make_damage_info(amount: float, type: int, zone: int, weapon_id: StringName, position: Vector3,
+		direction: Vector3, bypass_armor_gate: bool = false, attacker_net_id: int = 0) -> Dictionary:
+	var d: Dictionary = Damage.info(amount, type, zone, weapon_id, position, direction, attacker_net_id)
+	d["bypass_armor_gate"] = bypass_armor_gate
+	return d
+
+
+## L3.2 falloff multiplier: 1 up to start, linear to min_mult at end (min_mult > 1 = snipers gain).
+static func falloff_mult(stats: WeaponStats, distance: float) -> float:
+	if stats == null or distance <= stats.falloff_start_m:
+		return 1.0
+	if distance >= stats.falloff_end_m or stats.falloff_end_m <= stats.falloff_start_m:
+		return stats.falloff_min_mult
+	var t: float = (distance - stats.falloff_start_m) / (stats.falloff_end_m - stats.falloff_start_m)
+	return lerpf(1.0, stats.falloff_min_mult, t)
+
+
+## Centre of mass of a character node (NPC or crew) for claim tolerance and NPC aim.
+static func target_center(target: Node3D) -> Vector3:
+	return target.global_position + Vector3(0.0, 0.9, 0.0)
+
+
+## True when nothing on the world layers blocks `from` -> `to` (excluding the given bodies).
+static func has_los(ctx: Node3D, from: Vector3, to: Vector3, exclude_nodes: Array = []) -> bool:
+	var tw: CombatTweak = CombatTweak.data()
+	var seg: Vector3 = to - from
+	if seg.length() < 0.01:
+		return true
+	var end: Vector3 = to - seg.normalized() * minf(0.05, seg.length() * 0.5)
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, end, tw.los_mask)
+	var ex: Array[RID] = []
+	for n: Variant in exclude_nodes:
+		var co: CollisionObject3D = n as CollisionObject3D
+		if co != null and is_instance_valid(co):
+			ex.append(co.get_rid())
+	q.exclude = ex
+	return ctx.get_world_3d().direct_space_state.intersect_ray(q).is_empty()

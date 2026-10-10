@@ -51,8 +51,9 @@ def main() -> None:
                 im = Image.open(p).convert("RGB").resize((cw, ch), Image.LANCZOS)
                 sheet.paste(im, (x, y0 + rowlab))
             else:
-                d.rectangle((x, y0 + rowlab, x + cw, y0 + rowlab + ch), outline=(120, 40, 40), width=3)
-                d.text((x + 20, y0 + rowlab + 20), f"missing {sid}/{asset}.png", fill=(220, 80, 80), font=font(20))
+                d.rectangle((x, y0 + rowlab, x + cw, y0 + rowlab + ch), fill=(36, 36, 42), outline=(90, 90, 100), width=2)
+                msg = "officer pending (ENV D)" if asset == "officer" else f"missing {sid}/{asset}.png"
+                d.text((x + cw // 2, y0 + rowlab + ch // 2), msg, fill=(200, 195, 185), font=font(26), anchor="mm")
     sheet.save(a.out, format="PNG", optimize=True)
     print(f"[sheet] {a.out} {pathlib.Path(a.out).stat().st_size / 1e6:.2f} MB")
 

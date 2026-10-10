@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.persuader.turncoat"
+display_name = "Turncoat"
+tree = &"ringleader"
+subtree = &"persuader"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "Your shouts can make low-tier police surrender. Hold the shout on a surrendered non-special enemy to convert them into an ally (loud only, 1 at a time)."
+desc_aced = "Converted allies deal 35% more damage, and converting takes 65% less time."
+grants_basic = {
+&"ability.intimidate_cops": true,
+&"ability.converts_max": 1
+}
+grants_aced = {
+&"ability.convert_damage_mult": 1.35,
+&"ability.convert_speed_mult": 0.35
+}

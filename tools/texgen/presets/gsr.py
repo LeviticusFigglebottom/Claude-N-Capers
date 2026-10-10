@@ -103,6 +103,34 @@ PRESET = {
             "paint": "#4B5157", "steel": "#B4B7BA", "rough": (0.4, 0.5), "steel_rough": 0.32,
             "chip": 0.5, "wear": 0.5, "grime": 0.35,
         },
+        # ---- First-person weapon materials (D-026; 1 m tiles at 1024 px/m) ----
+        "polymer_black": {
+            "base": "#3E3F41", "rough": (0.55, 0.66), "grain_cells_per_m": 300, "wear": 0.25,
+            "grime": 0.2, "relief_ref_mm": 0.1,
+        },
+        "polymer_stipple": {
+            "base": "#3D3E40", "rough": (0.62, 0.78), "stipple_cells_per_m": 220, "stipple_mm": 0.35,
+            "wear": 0.35, "grime": 0.3, "relief_ref_mm": 0.1,
+        },
+        "steel_blued": {
+            "base": "#4C525C", "worn": "#ACAFB3", "rough": (0.3, 0.4), "worn_rough": 0.28,
+            "holster_wear": 0.35, "wear": 0.3, "grime": 0.1,
+        },
+        "steel_bare": {"base": "#B7B9BC", "rough": (0.22, 0.32), "streak": 0.05, "wear": 0.0, "grime": 0.05},
+        "metal_matte": {"base": "#8F9296", "rough": (0.5, 0.6), "wear": 0.2, "grime": 0.2},
+        "paint_white": {"base": "#DAD8D2", "rough": (0.4, 0.5), "wear": 0.1, "grime": 0.25},
+        "brass_cartridge": {
+            "base": "#E5C17C", "tarnish": "#8E6A3A", "rough": (0.17, 0.26), "tarnish_rough": 0.45,
+            "wear": 0.0, "grime": 0.15,
+        },
+        "glass_lens_tint": {
+            "tint": "#7E9A86", "dirt": "#8A877E", "alpha": 0.3, "dirt_alpha": 0.45,
+            "rough": (0.02, 0.05), "dirt_rough": 0.35, "wear": 0.0, "grime": 0.15,
+        },
+        # Emissive, untextured (signage/emissive colours are exempt from the saturation cap).
+        "emissive_reticle_red": {
+            "albedo": "#2A0605", "emission": "#FF1A10", "emission_energy": 1.0, "roughness": 0.5,
+        },
         # Trim sheet colour overrides (sources are library materials; see trim.py).
         "trim_interior": {"paint": "#E2DCD0", "paint_rough": 0.38, "wear": 0.15, "grime": 0.2},
     },

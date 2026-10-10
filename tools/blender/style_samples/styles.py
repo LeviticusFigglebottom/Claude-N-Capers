@@ -34,6 +34,13 @@ STYLES: dict[str, dict] = {
         "wear": 0.25,                # edge wear / cavity grime strength
         "micro": 0.0,                # high-frequency bump / roughness breakup
         "fingerprints": 0.0,
+        "glass_smudge": 0.0,         # roughness amplitude of smudges/wipes/dust on glass
+        "dust": 0.0,                 # dust on up-facing surfaces
+        "brushed_metal": 0.0,        # anisotropic brushed finish on metals
+        "velvet_fuzz": 0.0,          # velvet sheen + fibre micro-normal
+        "micro_normal": 0.0,         # strength of high-frequency micro bump (also skin pores)
+        "fabric_weave_scale": 1.0, "fabric_weave_strength": 1.0,
+        "caustics": False,
         "posterize": 0,              # albedo steps (0 = off)
         "saturation": 1.0,           # albedo saturation multiplier
         "skin_sss": 0.35, "skin_sss_scale": 0.004, "skin_rough": 0.5,
@@ -42,7 +49,7 @@ STYLES: dict[str, dict] = {
         "rig": "soft_practical",
         "world_strength": 0.25,
         "world_color": (0.55, 0.62, 0.78),
-        "exposure": 0.0,
+        "exposure": -0.3,
         "look": "AgX - Base Contrast",
         "samples": 64,
         "dof_fstop": 4.0,
@@ -65,6 +72,9 @@ STYLES: dict[str, dict] = {
         "wear": 0.1,
         "micro": 0.0,
         "fingerprints": 0.0,
+        "glass_smudge": 0.0, "dust": 0.0, "brushed_metal": 0.0, "velvet_fuzz": 0.0, "micro_normal": 0.0,
+        "fabric_weave_scale": 0.5, "fabric_weave_strength": 0.3,
+        "caustics": False,
         "posterize": 5,
         "saturation": 0.85,
         "skin_sss": 0.12, "skin_sss_scale": 0.003, "skin_rough": 0.55,
@@ -94,6 +104,13 @@ STYLES: dict[str, dict] = {
         "wear": 0.6,
         "micro": 1.0,
         "fingerprints": 1.0,
+        "glass_smudge": 0.14,
+        "dust": 1.0,
+        "brushed_metal": 1.0,
+        "velvet_fuzz": 1.0,
+        "micro_normal": 1.5,
+        "fabric_weave_scale": 1.6, "fabric_weave_strength": 1.5,
+        "caustics": True,
         "posterize": 0,
         "saturation": 0.92,
         "skin_sss": 1.0, "skin_sss_scale": 0.006, "skin_rough": 0.42,
@@ -105,7 +122,7 @@ STYLES: dict[str, dict] = {
         "look": "AgX - Base Contrast",
         "samples": 96,
         "dof_fstop": 2.8,
-        "bloom": 0.15,
+        "bloom": 0.05,
         "grade": {"contrast": 1.12, "saturation": 0.98, "lift": (0.004, 0.004, 0.005),
                   "gain": (1.0, 1.0, 0.99), "vignette": 0.22, "grain": 0.022,
                   "chroma_ab": 1.2, "curve_toe": 0.0},

@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.scattergun.momentum"
+display_name = "Momentum"
+tree = &"bruiser"
+subtree = &"scattergun"
+tier = 4
+cost_basic = 4
+cost_aced = 8
+desc_basic = "A shotgun kill gives you 75% more shotgun damage for 20 s."
+desc_aced = "The bonus applies to all your weapons (a shotgun kill still triggers it). Swap weapons 80% faster."
+grants_basic = {
+&"weapon.kill_damage_buff": {
+"trigger_class": "shotgun",
+"damage_mult": 1.75,
+"duration": 20.0,
+"all_weapons": false
+}
+}
+grants_aced = {
+&"weapon.swap_speed_mult.all": 1.8,
+&"weapon.kill_damage_buff": {
+"trigger_class": "shotgun",
+"damage_mult": 1.75,
+"duration": 20.0,
+"all_weapons": true
+}
+}

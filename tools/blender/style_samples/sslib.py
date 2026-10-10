@@ -220,9 +220,10 @@ def material(name: str, st: dict, base, rough: float = 0.5, metal: float = 0.0, 
         g = nb.math("ADD", nb.math("MULTIPLY", nb.ramp(streak, 0.3, 0.7), 0.6), nb.math("MULTIPLY", nb.ramp(rings, 0.35, 0.65), 0.4))
         color_out = nb.mix(_scale_rgb(base, 0.6), _scale_rgb(base, 1.25), g)
     elif kind in ("fabric", "velvet"):
-        weave = nb.noise(co, 900.0 if kind == "fabric" else 400.0, 1.0, 0.5)
+        ws = st.get("fabric_weave_scale", 1.0)
+        weave = nb.noise(co, (900.0 if kind == "fabric" else 400.0) * ws, 1.0, 0.5)
         color_out = nb.mix(_scale_rgb(base, 0.85), _scale_rgb(base, 1.12), weave)
-        bump_out = (weave, 0.12 if kind == "fabric" else 0.05)
+        bump_out = (weave, (0.12 if kind == "fabric" else 0.05) * st.get("fabric_weave_strength", 1.0))
     # --- style treatment ---
     v = st["variation"]
     if surf == "painterly":
@@ -292,7 +293,37 @@ def material(name: str, st: dict, base, rough: float = 0.5, metal: float = 0.0, 
         scr_m = nb.math("MULTIPLY", scr_m, 0.25 if kind in ("metal", "paint", "wood", "plastic", "glass") else 0.0)
         rough_out = nb.math("ADD", rough_out, scr_m)
         if bump_out is None and kind not in ("glass", "gem"):
-            bump_out = (nb.noise(co, 350.0, 3.0, 0.6), 0.04)
+            bump_out = (nb.noise(co, 350.0, 3.0, 0.6), 0.04 * st.get("micro_normal", 1.0))
+
+    brushed = st.get("brushed_metal", 0.0)
+    if kind == "metal" and brushed > 0:
+        # brushed finish: anisotropic lobe plus streaks stretched along the brushing direction
+        bm_ = nb.node("ShaderNodeMapping")
+        bm_.inputs["Scale"].default_value = (2.0, 900.0, 900.0)
+        nb.link(co, bm_.inputs["Vector"])
+        streak = nb.noise(bm_.outputs[0], 1.0, 4.0, 0.6)
+        rough_out = nb.math("ADD", rough_out, nb.math("MULTIPLY", nb.math("SUBTRACT", streak, 0.5), 0.18 * brushed))
+        p.inputs["Anisotropic"].default_value = 0.75 * brushed
+        bump_out = (streak, 0.05 * brushed)
+
+    dust = st.get("dust", 0.0)
+    if dust > 0 and kind not in ("glass", "gem", "emission"):
+        # dust settles on up-facing surfaces, broken up by low-frequency noise
+        geo2 = nb.node("ShaderNodeNewGeometry")
+        sepn = nb.node("ShaderNodeSeparateXYZ")
+        nb.link(geo2.outputs["Normal"], sepn.inputs[0])
+        up = nb.ramp(sepn.outputs["Z"], 0.55, 0.95)
+        dm = nb.math("MULTIPLY", up, nb.ramp(nb.noise(co, 12.0, 4.0, 0.6), 0.4, 0.75))
+        dm = nb.math("MULTIPLY", dm, 0.35 * dust, clamp=True)
+        color_out = nb.mix(color_out if color_out is not None else col, (0.40, 0.38, 0.35), dm)
+        rough_out = nb.math("ADD", rough_out if rough_out is not None else rough, nb.math("MULTIPLY", dm, 0.6))
+
+    fuzz = st.get("velvet_fuzz", 0.0)
+    if kind == "velvet" and fuzz > 0:
+        p.inputs["Sheen Weight"].default_value = 1.0
+        p.inputs["Sheen Roughness"].default_value = 0.5
+        fib = nb.noise(co, 3000.0, 2.0, 0.7)
+        bump_out = (fib, 0.35 * fuzz)
 
     if kind in ("glass",):
         fp = st["fingerprints"]
@@ -305,7 +336,13 @@ def material(name: str, st: dict, base, rough: float = 0.5, metal: float = 0.0, 
             nb.link(co, ring.inputs["Vector"])
             smudge = nb.math("MULTIPLY", blobs, nb.ramp(ring.outputs["Fac"], 0.3, 0.9))
             dust = nb.math("MULTIPLY", nb.ramp(nb.noise(co, 140.0, 2.0), 0.62, 0.75), 0.6)
-            rough_out = nb.math("ADD", nb.math("MULTIPLY", nb.math("ADD", smudge, dust), 0.22 * fp), rough)
+            wv = nb.node("ShaderNodeTexWave", wave_type="BANDS", bands_direction="DIAGONAL")
+            wv.inputs["Scale"].default_value = 5.0
+            wv.inputs["Distortion"].default_value = 5.0
+            nb.link(co, wv.inputs["Vector"])
+            wipe = nb.math("MULTIPLY", nb.ramp(wv.outputs["Fac"], 0.9, 0.98), 0.35)
+            amt = st.get("glass_smudge", 0.22) * fp
+            rough_out = nb.math("ADD", nb.math("MULTIPLY", nb.math("ADD", nb.math("ADD", smudge, dust), wipe), amt), rough)
         else:
             rough_out = None
         color_out = None
@@ -544,8 +581,8 @@ def light_rig(st: dict, target, cam_loc, size: float, gain: float = 1.0):
         out.append(_spot("Key", _orbit(target, cam_loc, -70, 48, d), target, 260 * s2 * gain, kelvin(4300), 0.015, 32, 0.25))
         out.append(_area("RimMagenta", _orbit(target, cam_loc, 140, 18, d), target, 80 * s2 * gain,
                          hex_lin("#FF3EA5"), size * 0.25, "RECTANGLE", size * 1.4))
-        out.append(_area("RimTeal", _orbit(target, cam_loc, -145, 22, d), target, 70 * s2 * gain,
-                         (0.03, 0.42, 0.40), size * 0.25, "RECTANGLE", size * 1.4))
+        out.append(_area("RimTeal", _orbit(target, cam_loc, -145, 22, d), target, 130 * s2 * gain,
+                         (0.01, 0.45, 0.42), size * 0.25, "RECTANGLE", size * 1.4))
     elif rig == "softbox_bounce":
         out.append(_area("Softbox", _orbit(target, cam_loc, -45, 32, d), target, 70 * s2 * gain, kelvin(4800), size * 1.5))
         out.append(_area("Bounce", _orbit(target, cam_loc, 70, 0, d * 0.8), target, 14 * s2 * gain, kelvin(4500),
@@ -598,7 +635,8 @@ def setup_render(st: dict, args, res=(1600, 1000)):
     cy.transmission_bounces = 12
     cy.transparent_max_bounces = 8
     cy.caustics_reflective = False
-    cy.caustics_refractive = False
+    cy.caustics_refractive = bool(st.get("caustics", False))
+    cy.filter_glossy = 0.8 if st.get("caustics", False) else 0.0
     cy.sample_clamp_indirect = 6.0
     cy.blur_glossy = 0.5
     sc.render.threads_mode = "FIXED"

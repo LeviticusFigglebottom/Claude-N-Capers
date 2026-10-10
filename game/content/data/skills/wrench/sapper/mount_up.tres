@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.sapper.mount_up"
+display_name = "Mount Up"
+tree = &"wrench"
+subtree = &"sapper"
+tier = 1
+cost_basic = 1
+cost_aced = 3
+desc_basic = "Sentry guns cost 5% less of your ammo to deploy."
+desc_aced = "Your sentry guns get a protective shield."
+grants_basic = {
+&"deploy.sentry_cost_mult": 0.95
+}
+grants_aced = {
+&"deploy.sentry_shield": true
+}

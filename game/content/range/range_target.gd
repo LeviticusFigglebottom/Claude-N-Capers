@@ -97,6 +97,8 @@ func take_hit(info: Dictionary, attacker_net_id: int) -> Dictionary:
 	var zone: int = int(info.get("zone", Enums.HitZone.BODY))
 	var bonus: float = float(info.get("headshot_bonus", 1.0))
 	var amount: float = maxf(float(info.get("amount", 0.0)), 0.0) * zone_mult(zone, bonus)
+	if bool(info.get("crit", false)):
+		amount *= headshot_mult()  # damage.md D-027: crit adds the HEAD mult on any zone (stacks on head)
 	health = maxf(health - amount, 0.0)
 	var killed: bool = health <= RangeMath.EPS
 	out["amount"] = amount
