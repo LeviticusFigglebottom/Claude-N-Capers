@@ -12,10 +12,15 @@
 ## range_dummies.tres (EnemyDef stopgap, D-010). Weapon numbers are LoadoutResolver output; the
 ## loadout panel lets the player pick any weapon and mod from ContentDB without owning it (P7).
 ##
-## Shooter: ENV A's crew controller through RangeCrewBridge when it exists; otherwise the TEMPORARY
-## RangeSpectator camera + RangeDebugGun (delete both when A1-08 lands). Hits from any source reach
-## the targets through the RangeTarget hit API, and every hit updates the damage numbers, the last
-## shot and the readout here.
+## Shooter: ENV A's real crew member (CrewController.spawn_for_range through RangeCrewBridge): its
+## first-person camera, PlayerInput and CrewWeapons runtime fire hitscan claims that CombatSystem
+## validates and delivers ONCE to RangeTarget.take_hit (damage.md single hit path). Loadout swaps
+## call the crew's set_loadout(resolved). Panel mode pauses the crew input (RangeModeInput).
+## FALLBACK ONLY (CrewController or its range hook missing, or `use_fallback_shooter` set for
+## tests): the RangeSpectator camera + RangeDebugGun.
+## Last shot, damage numbers and the readout lane follow EventBus.damage_applied emitted by this
+## range's targets with attacker = the shooter's net id; ammo comes from the crew's weapons
+## (CrewWeapons HUD interface; LocalHudModel needs a HeistRuntime, which the range has none of).
 class_name FiringRange
 extends Node3D
 
@@ -32,6 +37,8 @@ const READOUT_MOVE_EPS_M: float = 0.1
 @export var layout: RangeLayout
 @export var dummy_table: RangeDummyTable
 @export var tweak: RangeTweak
+## Tests/tooling: use the fallback range camera even when ENV A's crew controller exists.
+@export var use_fallback_shooter: bool = false
 
 var loadout: Loadout = null
 var resolved: Loadout = null
@@ -43,8 +50,12 @@ var targets: Array[RangeTarget] = []
 var markers: Array[Node3D] = []
 var readout_lane: int = 0
 var last_shot: Dictionary = {}
+## FALLBACK shooter (null while the real crew is used).
 var spectator: RangeSpectator = null
+## ENV A's CrewController (null in fallback mode).
 var crew: Node = null
+var mode_input: RangeModeInput = null
+var viewmodel: WeaponVisual = null
 var overlay: RangeOverlay = null
 var level: Node3D = null
 var fx_root: Node3D = null
@@ -69,15 +80,17 @@ func _ready() -> void:
 	RangeBuilder.build_level(layout, tweak, level)
 	markers = RangeBuilder.build_markers(layout, tweak, level)
 	targets = RangeBuilder.build_targets(layout, dummy, difficulty, tweak, level)
-	for t: RangeTarget in targets:
-		t.damaged.connect(_on_target_damaged)
+	EventBus.damage_applied.connect(_on_damage_applied)
 	fx_root = Node3D.new()
 	fx_root.name = "Fx"
 	add_child(fx_root)
 	if loadout == null:
 		loadout = default_loadout()
-	crew = RangeCrewBridge.try_spawn(self, Transform3D(Basis.IDENTITY, layout.spawn_position), loadout)
-	if crew == null:
+	if not use_fallback_shooter:
+		crew = RangeCrewBridge.try_spawn(self, Transform3D(Basis.IDENTITY, layout.spawn_position), loadout)
+	if crew != null:
+		_setup_crew()
+	else:
 		_spawn_spectator()
 	_build_overlay()
 	_apply_loadout()
@@ -85,6 +98,8 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if EventBus.damage_applied.is_connected(_on_damage_applied):
+		EventBus.damage_applied.disconnect(_on_damage_applied)
 	if spectator != null:
 		spectator.set_aim_active(false)
 
@@ -94,6 +109,12 @@ func _process(_delta: float) -> void:
 		return
 	if spectator != null:
 		overlay.show_ammo(spectator.gun.ammo, weapon_stats.mag_size, spectator.gun.is_reloading())
+	elif crew != null and is_instance_valid(crew):
+		var a: Dictionary = RangeCrewBridge.ammo(crew)
+		if not a.is_empty():
+			if int(a["mag"]) <= 0 and int(a["reserve"]) <= 0 and not bool(a["reloading"]):
+				RangeCrewBridge.push_loadout(crew, resolved)  # the range never runs dry: re-arm
+			overlay.show_ammo(int(a["mag"]), int(a["mag_size"]), bool(a["reloading"]), int(a["reserve"]))
 	var pos: Vector3 = _shooter_position()
 	if pos.distance_to(_readout_from) > READOUT_MOVE_EPS_M:
 		_readout_from = pos
@@ -158,9 +179,20 @@ func set_readout_lane(lane: int) -> void:
 	_refresh_readout()
 
 
+## Stand every target back up; the crew is re-armed (full magazine and reserve) too.
 func reset_targets() -> void:
 	for t: RangeTarget in targets:
 		t.reset_target()
+	if crew != null and resolved != null:
+		RangeCrewBridge.push_loadout(crew, resolved)
+
+
+## Net id the range's last-shot readout follows: the crew's (attacker id of its hits), else the
+## fallback gun's.
+func shooter_net_id() -> int:
+	if crew != null:
+		return RangeCrewBridge.net_id(crew)
+	return spectator.attacker_net_id if spectator != null else -1
 
 
 ## RangeMath.readout() for the readout lane's dummy with the resolved weapon, at the live distance
@@ -184,6 +216,8 @@ func set_aim_mode(on: bool) -> void:
 	aim_mode = on
 	if spectator != null:
 		spectator.set_aim_active(on)
+	if mode_input != null:
+		mode_input.set_aim_active(on)
 	if overlay != null:
 		overlay.set_interactive(not on)
 
@@ -212,7 +246,10 @@ func _apply_loadout() -> void:
 		return
 	if spectator != null:
 		spectator.gun.equip(weapon_def.id, weapon_stats, weapon_def.fire_modes.has(&"auto"))
-	RangeCrewBridge.push_loadout(crew, resolved)
+	if crew != null:
+		RangeCrewBridge.push_loadout(crew, resolved)
+		var mods: Array[StringName] = loadout.primary_mods if loadout.primary != &"" else loadout.secondary_mods
+		viewmodel = RangeCrewBridge.attach_viewmodel(crew, weapon_def, mods, tweak.viewmodel_offset)
 	if overlay != null:
 		overlay.show_weapon(weapon_def, mods_by_type())
 	_refresh_readout()
@@ -229,7 +266,17 @@ func _refresh_readout() -> void:
 		overlay.show_stats(weapon_stats)
 
 
-func _on_target_damaged(target: RangeTarget, info: Dictionary, _attacker_net_id: int) -> void:
+## EventBus.damage_applied (damage.md): only hits on this range's targets by the range shooter.
+func _on_damage_applied(victim_net_id: int, attacker_net_id: int, info: Dictionary) -> void:
+	if attacker_net_id != shooter_net_id():
+		return
+	for t: RangeTarget in targets:
+		if is_instance_valid(t) and t.net_id == victim_net_id and t.net_id != Ids.INVALID:
+			_on_target_damaged(t, info)
+			return
+
+
+func _on_target_damaged(target: RangeTarget, info: Dictionary) -> void:
 	var pos: Vector3 = info.get("position", Vector3.ZERO)
 	if pos == Vector3.ZERO:
 		pos = target.zone_position(int(info.get("zone", Enums.HitZone.BODY)) as Enums.HitZone)
@@ -248,12 +295,22 @@ func _on_target_damaged(target: RangeTarget, info: Dictionary, _attacker_net_id:
 		overlay.readout_option.select(readout_lane)
 
 
+## Where shots start: the fallback camera, or the crew's eye (CrewWeapons hitscan origin).
 func _shooter_position() -> Vector3:
 	if spectator != null:
 		return spectator.global_position
-	if crew is Node3D:
-		return (crew as Node3D).global_position
-	return layout.spawn_position
+	if crew != null and is_instance_valid(crew):
+		return RangeCrewBridge.eye_position(crew)
+	return layout.spawn_position + Vector3.UP * layout.eye_height_m
+
+
+func _setup_crew() -> void:
+	RangeCrewBridge.activate_camera(crew)
+	mode_input = RangeModeInput.new()
+	mode_input.name = "RangeModeInput"
+	mode_input.crew = crew
+	add_child(mode_input)
+	mode_input.aim_requested.connect(set_aim_mode)
 
 
 func _spawn_spectator() -> void:

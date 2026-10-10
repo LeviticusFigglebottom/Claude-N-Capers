@@ -438,11 +438,13 @@ ui.range.target_hp,{hp} / {max}
 ui.range.damage_body,{value}
 ui.range.damage_head,{value}!
 ui.range.ammo,{ammo} / {mag}
+ui.range.ammo_reserve,{ammo} / {mag}  ·  reserve {reserve}
 ui.range.reloading,Reloading...
 ui.range.crosshair,+
 ui.range.hint_panels,Click the range or press Tab / Start to aim. Esc / B leaves the range.
+ui.range.hint_aim_crew,WASD move · Shift sprint · Ctrl/C crouch · Space jump · Mouse look · LMB fire · RMB aim · R reload · 1/2 weapon · Tab / Esc menu
 ui.range.hint_aim,WASD move · Q/E down/up · Mouse look · LMB fire · RMB aim · R reload · Tab / Esc menu
-ui.range.temp_camera,Temporary range camera (until the crew controller ships)
+ui.range.temp_camera,Fallback range camera (crew controller unavailable)
 ui.range.dummy.light,Light Tactical Dummy
 ui.range.zone.body,Body
 ui.range.zone.head,Head

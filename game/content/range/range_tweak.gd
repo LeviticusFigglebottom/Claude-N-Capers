@@ -31,7 +31,11 @@ extends Resource
 @export var sign_pixel_size: float = 0.006
 @export var sign_color: Color = Color(1.0, 0.86, 0.3)
 
-@export_group("Range camera (temporary tool)")
+@export_group("Crew (ENV A controller)")
+## Weapon model position in the crew camera's space (presentation only).
+@export var viewmodel_offset: Vector3 = Vector3(0.18, -0.2, -0.4)
+
+@export_group("Fallback range camera (only without the crew controller)")
 @export var move_speed_mps: float = 6.0
 @export var sprint_mult: float = 3.0
 @export var mouse_look_deg_per_px: float = 0.12

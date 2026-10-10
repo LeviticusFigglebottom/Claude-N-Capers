@@ -65,15 +65,17 @@ var _weapon_ids: Array[StringName] = []
 var _lane_distances: PackedFloat32Array = PackedFloat32Array()
 var _difficulty: int = 0
 var _readout_lane: int = 0
-var _temp_tool: bool = true
+## True when the FALLBACK range camera is the shooter (no ENV A crew controller).
+var _fallback_camera: bool = true
 
 
-## Call before adding to the tree.
-func setup(lane_distances: PackedFloat32Array, difficulty: int, readout_lane: int, temp_tool: bool) -> void:
+## Call before adding to the tree. `fallback_camera`: the shooter is the fallback RangeSpectator
+## (other aim-mode controls, and a notice), not ENV A's crew member.
+func setup(lane_distances: PackedFloat32Array, difficulty: int, readout_lane: int, fallback_camera: bool) -> void:
 	_lane_distances = lane_distances
 	_difficulty = difficulty
 	_readout_lane = readout_lane
-	_temp_tool = temp_tool
+	_fallback_camera = fallback_camera
 
 
 func _ready() -> void:
@@ -176,11 +178,19 @@ func show_last_shot(d: Dictionary) -> void:
 		_set_value("ls_result", UiText.t(&"ui.range.fmt.hp", {"value": _num(float(d.get("health_after", 0.0)), 1)}))
 
 
-func show_ammo(ammo: int, mag: int, reloading: bool) -> void:
+## Magazine `ammo` of `mag`; `reserve` < 0 = no reserve shown (the fallback gun has infinite ammo).
+func show_ammo(ammo: int, mag: int, reloading: bool, reserve: int = -1) -> void:
 	if reloading:
 		_ammo_label.text = UiText.t(&"ui.range.reloading")
+	elif reserve >= 0:
+		_ammo_label.text = UiText.t(&"ui.range.ammo_reserve", {"ammo": ammo, "mag": mag, "reserve": reserve})
 	else:
 		_ammo_label.text = UiText.t(&"ui.range.ammo", {"ammo": ammo, "mag": mag})
+
+
+## Current ammo line (tests).
+func ammo_text() -> String:
+	return _ammo_label.text if _ammo_label != null else ""
 
 
 ## Panel mode (true) or aim mode (false).
@@ -188,7 +198,8 @@ func set_interactive(on: bool) -> void:
 	interactive = on
 	if _hint_label == null:
 		return
-	_hint_label.text = UiText.t(&"ui.range.hint_panels" if on else &"ui.range.hint_aim")
+	var aim_key: StringName = &"ui.range.hint_aim" if _fallback_camera else &"ui.range.hint_aim_crew"
+	_hint_label.text = UiText.t(&"ui.range.hint_panels" if on else aim_key)
 	_crosshair.visible = not on
 	for c: Control in focus_chain:
 		c.focus_mode = Control.FOCUS_ALL if on else Control.FOCUS_NONE
@@ -288,7 +299,7 @@ func _build_bottom() -> void:
 	_hint_label = UiBuild.label(&"", UiBuild.HUD)
 	_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	bottom.add_child(_hint_label)
-	if _temp_tool:
+	if _fallback_camera:
 		var temp: Label = _small(UiBuild.label(&"ui.range.temp_camera", UiBuild.HUD))
 		temp.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		bottom.add_child(temp)
