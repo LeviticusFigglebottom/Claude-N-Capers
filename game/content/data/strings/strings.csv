@@ -172,6 +172,8 @@ ui.stat.movement,Movement
 ui.stat.stamina,Stamina
 item.weapon.kestrel_p9.name,Kestrel P9
 item.weapon.kestrel_p9.desc,"A compact nine-millimetre service pistol. Light, quiet to carry, forgiving to learn."
+item.mask.gilded_heron.name,Gilded Heron
+item.mask.gilded_heron.desc,"Lacquered gold over a long, patient face. It has seen worse jobs than yours."
 item.mod.p9_suppressor.name,Hushwell Suppressor
 item.mod.p9_suppressor.desc,Turns gunfire into a polite cough. Heavier at the muzzle and a little less punch.
 item.mod.p9_reflex_sight.name,Pinpoint Reflex Sight
