@@ -50,3 +50,9 @@ Unmarked events are server-only facts (clients learn the outcome through synced 
 { "amount": float, "type": int (Enums.DamageType), "zone": int (Enums.HitZone), "weapon_id": StringName,
   "position": Vector3, "direction": Vector3, "crit": bool, "pierced_armor": bool, "killed": bool }
 ```
+
+## Alarm reasons (`alarm_raised(reason, source_net_id)`, D-032)
+`&"guard_radio"`, `&"civilian_call"`, `&"phone_call"`, `&"alarm_button"`, `&"glass_alarm"`, `&"pager_failed"`,
+`&"pager_limit"`, `&"camera"`, `&"laser"`, `&"scripted"` (mission), `&"loud_action"` (e.g. C4 in view).
+When the heist goes loud, pending pagers end with `pager_failed(pager_id, &"cancelled")`. That is not an alarm,
+and audio/voice must ignore that reason.

@@ -1,4 +1,4 @@
-# Contract: test hooks for integration gates (v1.0)
+# Contract: test hooks for integration gates (v1.1)
 
 Producer: **ENV A** (P1). Consumer: **LEAD** integration tests (`game/tests/integration/`) and
 ENV C's walkthrough bot. These APIs exist in shipping code (not test-only builds) but are inert
@@ -24,6 +24,7 @@ func teleport_crew(slot: int, xform: Transform3D) -> void    # authority only
 func npcs(role: StringName = &"") -> Array[Node]             # role: &"guard", &"civilian", &"police", &"special"...
 func find_by_tag(objective_tag: StringName) -> Array[Node]   # gameplay prefabs by objective_tag
 func detection_value(observer: Node, slot: int) -> float
+func isolate_npc(npc: Node) -> void                         # TEST ONLY: despawn every other NPC (QA-9, D-032)
 func teardown() -> void                                      # frees everything, Services.clear(), Ids.reset()
 ```
 
