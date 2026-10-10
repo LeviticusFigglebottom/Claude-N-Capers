@@ -122,6 +122,12 @@ static func tweak(tweak_name: StringName) -> Resource:
 	return res
 
 
+## TESTS/TOOLING ONLY: adds (or replaces) one resource in the index of `kind` under `key`, e.g. a
+## test-only SkillDef. Gone after clear_cache(). Never call from game code.
+static func inject(kind: StringName, key: Variant, res: Resource) -> void:
+	_table(kind)[key] = res
+
+
 ## Drop every cache (tests, hot reload).
 static func clear_cache() -> void:
 	_index.clear()

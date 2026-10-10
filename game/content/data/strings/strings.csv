@@ -145,6 +145,7 @@ ui.results.xp.difficulty,Difficulty bonus
 ui.results.xp.custody,Custody penalty
 ui.results.xp.additive,Crew and gear bonuses
 ui.results.xp.stealth,Stealth bonus
+ui.results.stealth_bonus_banked,Stealth bonus banked for your next job: +{pct}%
 ui.results.xp_total,Total experience
 ui.results.level_up,Level up! Now level {level}
 ui.results.continue,Continue

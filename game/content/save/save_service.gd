@@ -6,10 +6,11 @@
 ## A file whose version is newer than CURRENT_VERSION is refused (default returned, file untouched).
 ## Migrations: add `_migrate_<n>_to_<n+1>(d: Dictionary) -> Dictionary` and register it in
 ## migrate(); a dict without "version" is v0.
+## Versions: 1 = first shipped shape; 2 = adds `banked_stealth_mult` (D-022 QB-13).
 class_name SaveService
 extends RefCounted
 
-const CURRENT_VERSION: int = 1
+const CURRENT_VERSION: int = 2
 const DEFAULT_ROOT_DIR: String = "user://profiles"
 
 ## Tests point this at e.g. `user://test_profiles`.
@@ -95,6 +96,8 @@ static func migrate(data: Dictionary) -> Dictionary:
 		match v:
 			0:
 				d = _migrate_0_to_1(d)
+			1:
+				d = _migrate_1_to_2(d)
 			_:
 				Log.error(&"save", "no migration from version %d" % v)
 				return d
@@ -103,7 +106,10 @@ static func migrate(data: Dictionary) -> Dictionary:
 	return d
 
 
-## Adds a heist payout (PayoutCalculator.compute() output: "stash", "spending", "xp_total").
+## Adds a heist payout (PayoutCalculator.compute() output: "stash", "spending", "xp_total",
+## "stealth_bonus_consumed", "stealth_bonus_banked"). Stealth bank (D-022 QB-13): a consumed bank
+## resets to 1.0, then a newly banked bonus (> 1.0) replaces it. Pass the profile's
+## banked_stealth_mult to PayoutCalculator.compute() for the same payday.
 ## `level_for_xp` (e.g. XpCurve.level_for_xp) recomputes level; without it only xp is stored.
 static func apply_heist_payout(p: PlayerProfile, payout: Dictionary, level_for_xp: Callable = Callable()) -> void:
 	if p == null:
@@ -111,6 +117,11 @@ static func apply_heist_payout(p: PlayerProfile, payout: Dictionary, level_for_x
 	p.stash += int(payout.get("stash", 0))
 	p.cash += int(payout.get("spending", 0))
 	p.xp += int(payout.get("xp_total", 0))
+	if bool(payout.get("stealth_bonus_consumed", false)):
+		p.banked_stealth_mult = 1.0
+	var banked: float = float(payout.get("stealth_bonus_banked", 1.0))
+	if banked > 1.0:
+		p.banked_stealth_mult = banked
 	if level_for_xp.is_valid():
 		p.level = int(level_for_xp.call(p.xp))
 
@@ -126,6 +137,13 @@ static func _migrate_0_to_1(d: Dictionary) -> Dictionary:
 	for k: String in ["stats", "settings", "loadout"]:
 		if not d.get(k) is Dictionary:
 			d[k] = {}
+	return d
+
+
+## v1 -> v2: stealth bonus bank (D-022 QB-13); nothing banked.
+static func _migrate_1_to_2(d: Dictionary) -> Dictionary:
+	if not (d.get("banked_stealth_mult") is float or d.get("banked_stealth_mult") is int):
+		d["banked_stealth_mult"] = 1.0
 	return d
 
 

@@ -1,10 +1,11 @@
 {
-	"version": 1,
+	"version": 2,
 	"profile_name": "Crew",
 	"cash": 0,
 	"stash": 0,
 	"xp": 0,
 	"level": 0,
+	"banked_stealth_mult": 1.0,
 	"owned_weapons": ["weapon.kestrel_p9"],
 	"owned_mods": ["mod.p9_suppressor", "mod.p9_reflex_sight", "mod.p9_extended_mag"],
 	"owned_masks": [],
