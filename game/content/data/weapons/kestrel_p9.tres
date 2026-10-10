@@ -2,12 +2,13 @@
 
 [ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
 [ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dljwo1uvm7fti" path="res://assets/weapons/wpn_kestrel_p9/wpn_kestrel_p9.glb" id="3"]
 
 [sub_resource type="Resource" id="base"]
 script = ExtResource("2")
 damage = 35.0
 pellets = 1
-headshot_mult = 2.0
+headshot_mult = 1.0
 fire_rate_rpm = 480.0
 spread_deg_hip = 3.0
 spread_deg_ads = 1.0
@@ -54,3 +55,4 @@ default_mods = {
 fire_cue = &"cue.weapon_pistol_fire"
 fire_cue_suppressed = &"cue.weapon_pistol_fire_suppressed"
 anim_set = &"pistol"
+model = ExtResource("3")

@@ -26,6 +26,21 @@ static var _paths: Dictionary = {}
 static var _tweaks: Dictionary = {}
 
 
+## Sorts an array of ids (StringName/String, or int enum keys) in place by their TEXT. Never use Array.sort() on
+## StringNames: `<` compares interned pointers, so the order depends on load order (D-026,
+## architecture.md §8).
+static func sort_ids(ids: Array) -> void:
+	ids.sort_custom(id_less)
+
+
+## Comparator for ids (usable with sort_custom / bsearch_custom): ints (enum keys such as
+## Enums.Difficulty) numerically, everything else by its text.
+static func id_less(a: Variant, b: Variant) -> bool:
+	if a is int and b is int:
+		return int(a) < int(b)
+	return str(a) < str(b)
+
+
 static func weapon(id: StringName) -> WeaponDef:
 	return by_id(WEAPONS, id) as WeaponDef
 
@@ -72,7 +87,7 @@ static func by_id(kind: StringName, key: Variant) -> Resource:
 static func all_of(kind: StringName) -> Array:
 	var table: Dictionary = _table(kind)
 	var keys: Array = table.keys()
-	keys.sort()
+	sort_ids(keys)
 	var out: Array = []
 	for k: Variant in keys:
 		out.append(table[k])

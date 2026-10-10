@@ -1,4 +1,4 @@
-## Main menu: Play solo, Firing Range (coming soon), Settings (stub), Quit. Owner: ENV B.
+## Main menu: Play solo, Firing Range, Settings (stub), Quit. Owner: ENV B.
 ## Shows the profile's level and money. Signals are handled by MenuFlow.
 class_name MainMenu
 extends UiScreen
@@ -26,9 +26,7 @@ func build_ui() -> void:
 	spacer.custom_minimum_size = Vector2(0, 24)
 	root.add_child(spacer)
 	play_button = UiBuild.button(&"ui.menu.solo")
-	range_button = UiBuild.button(&"ui.menu.firing_range_soon")
-	range_button.disabled = true
-	range_button.tooltip_text = UiText.t(&"ui.menu.coming_soon")
+	range_button = UiBuild.button(&"ui.menu.firing_range")
 	settings_button = UiBuild.button(&"ui.menu.options")
 	quit_button = UiBuild.button(&"ui.menu.quit")
 	for b: Button in [play_button, range_button, settings_button, quit_button]:

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="RangeLayout" format=3]
+
+[ext_resource type="PackedScene" path="res://assets/arch/arch_floor_w400/arch_floor_w400.glb" id="1_mbvtu"]
+[ext_resource type="Script" path="res://content/range/range_layout.gd" id="2_lce66"]
+[ext_resource type="PackedScene" path="res://assets/arch/arch_wall_int_w400_h400/arch_wall_int_w400_h400.glb" id="3_we7me"]
+
+[resource]
+script = ExtResource("2_lce66")
+floor_piece = ExtResource("1_mbvtu")
+wall_piece = ExtResource("3_we7me")
+lane_target_distances = PackedFloat32Array(80, 40, 20, 10, 5, 15, 30, 60, 100)
+marker_distances = PackedFloat32Array(5, 10, 15, 20, 30, 40, 60, 80, 100)
+floor_piece_size_m = 4.0
+wall_piece_length_m = 4.0
+back_z_m = 6.0
+far_z_m = -106.0
+width_m = 24.0
+lane_width_m = 2.5
+lane_dummy = &"range_dummy.light"
+default_readout_lane = 3
+marker_sign_height_m = 0.9
+marker_sign_inset_m = 1.0
+marker_sign_yaw_deg = 50.0
+target_sign_height_m = 2.5
+marker_line_width_m = 0.08
+lane_line_width_m = 0.05
+bench_z_m = -0.45
+bench_depth_m = 0.5
+bench_height_m = 1.0
+spawn_position = Vector3(0.0, 0.0, 0.0)
+eye_height_m = 1.65

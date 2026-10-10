@@ -142,7 +142,7 @@ static func curve_tweak() -> ConcealmentCurve:
 static func resolve_modifiers(loadout: Loadout) -> Dictionary:
 	var out: Dictionary = {}
 	var skill_ids: Array = loadout.skills.keys()
-	skill_ids.sort()
+	ContentDB.sort_ids(skill_ids)  # by text: PARAMS grants are last-wins
 	for sid: Variant in skill_ids:
 		var level: int = int(loadout.skills[sid])
 		var skill: SkillDef = ContentDB.by_id(ContentDB.SKILLS, StringName(sid)) as SkillDef

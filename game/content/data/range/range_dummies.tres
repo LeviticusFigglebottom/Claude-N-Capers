@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RangeDummyTable" format=3]
+
+[ext_resource type="Script" path="res://content/range/range_dummy_def.gd" id="1_sn5bu"]
+[ext_resource type="Script" path="res://content/range/range_dummy_table.gd" id="2_r5dlp"]
+
+[sub_resource type="Resource" id="Resource_pc2q5"]
+script = ExtResource("1_sn5bu")
+id = &"range_dummy.light"
+name_key = &"ui.range.dummy.light"
+enemy_id = &"enemy.tac_light"
+health = PackedFloat32Array(80, 80, 160, 240, 480, 480)
+headshot_mult = PackedFloat32Array(2, 2, 4, 6, 4, 3)
+respawn_delay_s = 1.5
+
+[resource]
+script = ExtResource("2_r5dlp")
+dummies = Array[ExtResource("1_sn5bu")]([SubResource("Resource_pc2q5")])

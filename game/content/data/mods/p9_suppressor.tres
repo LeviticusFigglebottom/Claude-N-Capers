@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://contracts/data/weapon_mod_def.gd" id="1"]
 [ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dq5okwmq6he5s" path="res://assets/weapons/mod_p9_suppressor/mod_p9_suppressor.glb" id="3"]
 
 [sub_resource type="Resource" id="delta"]
 script = ExtResource("2")
@@ -28,3 +29,4 @@ mod_type = 2
 delta = SubResource("delta")
 price = 3000
 unlock = &""
+model = ExtResource("3")
