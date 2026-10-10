@@ -1,4 +1,5 @@
-"""First-person clips for every ``FPSet`` (D1-03 pistol, D-034 smg / rifle / shotgun / lmg / sniper).
+"""First-person clips for every ``FPSet`` (D1-03 pistol, D-034 smg / rifle / shotgun / lmg / sniper,
+D-050 akimbo (``_arms_akimbo``) / revolver (speedloader: ``_arms_revolver``) / pistol fire_auto).
 Private helper of ``_arms``; pure numpy. ``fp_clips(sk, set)`` -> ``{<set>_<clip>: Clip}``.
 
 Shared clips (all sets): ``idle*``, ``ads_idle*``, ``sprint*`` (loops), ``draw``, ``holster``,
@@ -26,8 +27,8 @@ import numpy as np
 import _anim as A
 from _anim import FPS, TAU, Clip, HandShape, Skeleton, Solver, hand_shape, mslerp, rxd, ryd, rzd, smooth, unit, v3, weapon_frame
 from _arms_choreo import I3, Choreo, Hand, Key, State, as_cam, grip_hand, hand_at, mag_cam, realize
-from _arms_sets import (BOLT_LIFT_DEG, BOLT_TRAVEL, PUMP_TRAVEL, SHELL_END, SHELL_END_EMPTY, SHELL_LOOP, SHELL_START,
-                        SHOTGUN_SHELLS, FPSet)
+from _arms_sets import (BOLT_LIFT_DEG, BOLT_TRAVEL, PISTOL_AUTO_RECOIL, PUMP_TRAVEL, SHELL_END, SHELL_END_EMPTY,
+                        SHELL_LOOP, SHELL_START, SHOTGUN_SHELLS, FPSet)
 
 #: Magazine held by its base: index straight up the front edge, the other fingers wrapped round it.
 MAG_BASE_SHAPE = HandShape(curl={"index": (72.0, 12.0, 6.0), "middle": (80.0, 58.0, 30.0), "ring": (84.0, 62.0, 32.0),
@@ -213,9 +214,9 @@ def apply_recoil(st: State, rec: dict, k: float) -> None:
     st.wf = (R @ rxd(rec["pitch"] * k) @ ryd(rec["roll"] * k) @ rzd(rec.get("yaw", 0.0) * k), o2)
 
 
-def clip_fire(kit: Kit, s: FPSet, N: int, ads: bool):
+def clip_fire(kit: Kit, s: FPSet, N: int, ads: bool, scale: float = 1.0):
     wf = ads_frame(s) if ads else hold_frame(s.hip)
-    rec = s.recoil_ads if ads else s.recoil
+    rec = {k: v * scale for k, v in (s.recoil_ads if ads else s.recoil).items()}
     kick_n = 9 if s.name == "shotgun" else N
 
     def post(f: int, st: State) -> None:
@@ -637,6 +638,9 @@ def clip_box_reload(kit: Kit, s: FPSet, N: int, empty: bool):
 # =============================================================================================
 def state_fns(sk: Skeleton, s: FPSet) -> dict:
     """``{clip: f -> State}`` for every clip of the set."""
+    if s.support == "akimbo":
+        from _arms_akimbo import akimbo_fns  # noqa: PLC0415 - imports this module
+        return akimbo_fns(sk, s)
     kit = Kit(sk, s)
     out = {}
     for clip in s.clips:
@@ -653,6 +657,8 @@ def state_fns(sk: Skeleton, s: FPSet) -> dict:
             fn = clip_draw(kit, s, N, reverse=True)
         elif clip in ("fire", "fire_ads"):
             fn = clip_fire(kit, s, N, clip == "fire_ads")
+        elif clip in ("fire_auto", "fire_auto_ads"):
+            fn = clip_fire(kit, s, N, clip == "fire_auto_ads", PISTOL_AUTO_RECOIL)
         elif clip in ("bolt", "bolt_ads"):
             fn = clip_bolt(kit, s, N, clip == "bolt_ads")
         elif clip == "reload_start":
@@ -668,6 +674,9 @@ def state_fns(sk: Skeleton, s: FPSet) -> dict:
             n_end = SHELL_END_EMPTY if empty else SHELL_END
             parts.append((n_end, shells_end(kit, s, n_end, empty)))
             fn = concat(parts)
+        elif clip in ("reload", "reload_empty") and s.reload == "speedloader":
+            from _arms_revolver import clip_speedloader  # noqa: PLC0415 - imports this module
+            fn = clip_speedloader(kit, s, N, s.ev(clip))
         elif clip in ("reload", "reload_empty") and s.reload == "box":
             fn = clip_box_reload(kit, s, N, clip == "reload_empty")
         elif clip in ("reload", "reload_empty"):
