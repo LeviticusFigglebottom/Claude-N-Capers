@@ -467,6 +467,50 @@ def weapon_rifle_fire_suppressed(rng: np.random.Generator, v: int) -> np.ndarray
     return _suppressed(rng, v, puff_hz=1000, dur=0.4, action=1.2)
 
 
+def weapon_pistol_mag_out(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Mag release: thumb-button click (2.8-4.6 kHz), short polymer slide-out rasp (2.2 kHz band),
+    soft palm catch. Niche: single 0.3 s event, brighter/lighter than mag_in."""
+    dur = 0.32
+    y = np.zeros(nsamp(dur))
+    place(y, click(rng, (2800.0 * rng.uniform(0.95, 1.05), 4600.0), 0.05, 10, 0.008, 0.9), 0)
+    rd = 0.09 + 0.02 * rng.random()
+    rasp = filters.bp(noise.white(rd, rng), 2200 * rng.uniform(0.9, 1.1), 1.4)
+    rasp *= env.segments([(0, 0), (rd * 0.3, 1), (rd, 0)], rd) * 0.5
+    place(y, rasp, nsamp(0.025))
+    catch = thud(rng, 260 * rng.uniform(0.9, 1.1), 0.08, 0.5) * 0.35
+    place(y, catch, nsamp(0.12 + 0.02 * rng.random()))
+    return fade(y, 0, 0.03)
+
+
+def weapon_pistol_mag_in(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Mag seated: slide-in scrape then a firm clack (1.6-3.4 kHz modes, longer ring) with a
+    180 Hz palm-slap body. Niche: lower, heavier than mag_out."""
+    dur = 0.3
+    y = np.zeros(nsamp(dur))
+    sd = 0.05
+    scrape = filters.bp(noise.white(sd, rng), 3200, 1.5) * env.segments([(0, 0), (sd, 1)], sd) * 0.35
+    place(y, scrape, 0)
+    t0 = nsamp(sd)
+    place(y, click(rng, (1600.0 * rng.uniform(0.95, 1.05), 2500.0, 3400.0), 0.12, 14, 0.014, 1.3), t0)
+    place(y, thud(rng, 180 * rng.uniform(0.92, 1.08), 0.12, 0.6) * 0.7, t0)
+    place(y, click(rng, (4200.0, 5900.0), 0.03, 8, 0.004, 0.35), t0 + nsamp(0.012))  # latch catch
+    return fade(y, 0, 0.03)
+
+
+def weapon_pistol_slide_release(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Slide slams home: spring-driven steel-on-steel snap with a bright metallic ring
+    (2.1/3.9/6.3 kHz, ~60 ms) and a small frame thump. Niche: sharpest, most metallic of the three."""
+    dur = 0.28
+    y = np.zeros(nsamp(dur))
+    pre = filters.bp(noise.white(0.018, rng), 5000, 2.0) * np.linspace(0.0, 0.4, nsamp(0.018))  # spring travel
+    place(y, pre, 0)
+    t0 = nsamp(0.018)
+    k = rng.uniform(0.96, 1.04)
+    place(y, click(rng, (2100.0 * k, 3900.0 * k, 6300.0 * k), 0.2, 18, 0.02, 1.6), t0)
+    place(y, thud(rng, 140, 0.1, 0.4) * 0.5, t0)
+    return fade(y, 0, 0.04)
+
+
 def reload_pistol(rng: np.random.Generator, v: int) -> np.ndarray:
     """Mag out, mag in, slide rack. Niche: sparse metallic clicks 2-6 kHz in a 1.3 s rhythm."""
     dur = 1.35
@@ -644,6 +688,12 @@ CUES: list[CueSpec] = [
     CueSpec("weapon_rifle_fire", weapon_rifle_fire, bus="Weapons", variations=4, max_distance=110.0, pitch_jitter=0.03),
     CueSpec("weapon_rifle_fire_suppressed", weapon_rifle_fire_suppressed, bus="Weapons", variations=3,
             max_distance=30.0, pitch_jitter=0.04, volume_db=-4.0),
+    CueSpec("weapon_pistol_mag_out", weapon_pistol_mag_out, bus="Weapons", variations=3, max_distance=10.0,
+            pitch_jitter=0.03, volume_db=-6.0, note="D-026 viewmodel foley"),
+    CueSpec("weapon_pistol_mag_in", weapon_pistol_mag_in, bus="Weapons", variations=3, max_distance=10.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-026 viewmodel foley"),
+    CueSpec("weapon_pistol_slide_release", weapon_pistol_slide_release, bus="Weapons", variations=3,
+            max_distance=12.0, pitch_jitter=0.03, volume_db=-5.0, note="D-026 viewmodel foley"),
     CueSpec("reload_pistol", reload_pistol, bus="Weapons", max_distance=12.0, volume_db=-4.0),
     CueSpec("reload_rifle", reload_rifle, bus="Weapons", max_distance=12.0, volume_db=-4.0),
     CueSpec("dry_fire", dry_fire, bus="Weapons", max_distance=8.0, pitch_jitter=0.03, volume_db=-6.0),

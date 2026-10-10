@@ -34,6 +34,15 @@ cue.weapon_rifle_fire[4]	Weapons	False	1.4	1	-22.45	-22.28	-1.41	2891
 cue.weapon_rifle_fire_suppressed[1]	Weapons	False	0.42	1	-20.76	-20.55	-1.25	4407
 cue.weapon_rifle_fire_suppressed[2]	Weapons	False	0.42	1	-20.5	-20.29	-1.15	4133
 cue.weapon_rifle_fire_suppressed[3]	Weapons	False	0.397	1	-19.86	-19.86	-1.26	4583
+cue.weapon_pistol_mag_out[1]	Weapons	False	0.317	1	-20.46	-20.46	-0.94	3541
+cue.weapon_pistol_mag_out[2]	Weapons	False	0.317	1	-20.7	-20.7	-1.19	3547
+cue.weapon_pistol_mag_out[3]	Weapons	False	0.317	1	-20.79	-20.79	-1.47	3737
+cue.weapon_pistol_mag_in[1]	Weapons	False	0.297	1	-20.11	-20.11	-1.33	3768
+cue.weapon_pistol_mag_in[2]	Weapons	False	0.297	1	-19.64	-19.64	-1.24	3873
+cue.weapon_pistol_mag_in[3]	Weapons	False	0.297	1	-21.18	-21.18	-1.09	4321
+cue.weapon_pistol_slide_release[1]	Weapons	False	0.277	1	-18.36	-18.36	-1.16	4347
+cue.weapon_pistol_slide_release[2]	Weapons	False	0.277	1	-18.34	-18.34	-1.33	4375
+cue.weapon_pistol_slide_release[3]	Weapons	False	0.277	1	-17.97	-17.97	-1.15	4414
 cue.reload_pistol	Weapons	False	1.35	1	-21.94	-20.82	-1.35	5822
 cue.reload_rifle	Weapons	False	2.3	1	-23.37	-21.4	-1.08	4912
 cue.dry_fire	Weapons	False	0.087	1	-18.95	-18.95	-1.2	4614

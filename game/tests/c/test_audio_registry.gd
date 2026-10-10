@@ -9,6 +9,8 @@ const P1_CUES: Array[StringName] = [
 	&"cue.weapon_pistol_fire_suppressed", &"cue.weapon_rifle_fire", &"cue.reload_pistol", &"cue.reload_rifle",
 	&"cue.dry_fire", &"cue.hitmarker", &"cue.headshot", &"cue.police_siren_far", &"cue.assault_start",
 	&"cue.crew_downed", &"cue.revive",
+	# D-026 pistol foley (ENV B viewmodel)
+	&"cue.weapon_pistol_mag_out", &"cue.weapon_pistol_mag_in", &"cue.weapon_pistol_slide_release",
 ]
 const LOOPS: Array[StringName] = [
 	&"cue.pager_beep", &"cue.pager_radio", &"cue.alarm_bell", &"cue.drill_loop", &"cue.police_siren_far",
@@ -55,6 +57,11 @@ func test_every_stream_loads_with_length() -> void:
 		assert_true(_reg.get_cue(id).loop, "%s is a loop" % id)
 	assert_true(_reg.get_cue(&"cue.glass_break").streams.size() >= 3, "glass_break variations")
 	assert_true(_reg.get_cue(&"cue.weapon_pistol_fire").streams.size() >= 3, "pistol variations")
+	for id: StringName in [&"cue.weapon_pistol_mag_out", &"cue.weapon_pistol_mag_in", &"cue.weapon_pistol_slide_release"]:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c.streams.size() >= 3, "%s variations" % id)
+		assert_eq(c.bus, &"Weapons", "%s bus" % id)
+		assert_false(c.loop, "%s one-shot" % id)
 
 
 func test_buses_resolve() -> void:
