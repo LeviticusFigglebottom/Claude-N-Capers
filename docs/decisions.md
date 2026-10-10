@@ -227,3 +227,13 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 ## D-045 — 2026-10-10 — Shell-by-shell reload formula; trunk hotfix
 - ENV D's viewmodel test and ENV B's armory test encoded different shotgun reload formulas, and the merge of D's FP sets turned trunk red (my mistake: the push ran despite a failed test, because a grep in the command chain masked the exit code. The lead now gates pushes on the runner's exit code).
 - Ruling: the PD2-style formula in data_schemas.md (derived after mods, with a new `WeaponStats.reload_end_empty_s` for the empty pump). ENV B updates the Plowman data, mod deltas, resolver derivation and test_armory. ENV D re-enables its shotgun length check afterwards (temporarily excluded by the lead).
+
+## D-046 — 2026-10-10 — Pre-planning data shape (QC-20..23)
+- QC-20: `HeistDef.preplanning` keeps asset overrides at the **top level** (`"asset.<id>": {...}`), matching
+  `PreplanBoard.merge`. preplanning.md updated; no `"assets"` sub-dictionary.
+- QC-21: PREPLAN_POINT category for crew spawns is `player_spawn` (B's library wins; contract updated).
+- QC-22: ENV B adds library/strings for Glasshouse's heist-only `asset.inside_keycard` and `asset.propped_door`
+  (force_variant) plus `ui.preplan.point.<point_id>` strings for the 9 points.
+- QC-23: favors budget is design data (Glasshouse 4). ENV B makes `test_buying_deducts_budget` read the def's value
+  first; ENV C then sets Glasshouse favors to 4 (order matters so trunk stays green).
+- Glasshouse VoxelGI (script-baked under xvfb) accepted for P1; LightmapGI revisited if Godot exposes a scriptable bake.
