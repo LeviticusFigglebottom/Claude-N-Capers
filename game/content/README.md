@@ -8,7 +8,7 @@ current when an API changes.
 content/
   data/                     every balance number (.tres / .csv); no constants in scripts
     weapons/ mods/ melee/ armor/ deployables/ loot/ throwables/ difficulty/ masks/
-    tweak/                  concealment_curve.tres, display_stats.tres, payout.tres, xp_curve.tres
+    tweak/                  concealment_curve.tres, display_stats.tres, payout.tres, perk_points.tres, xp_curve.tres
     strings/strings.csv     all player-facing text (columns: keys,en)
     voice/lines.tres        voice line table (VoiceLineTable); text lives in strings.csv
   defs/                     content-side Resource schemas + ContentDB lookup
@@ -86,15 +86,15 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   &"team_perk.<deck>": grants}` (e.g. `team_perk.foreman`) for `Modifiers.set_source(TEAM, ...)`;
   `resolve_modifiers` excludes every `team.*` grant (skills and perk cards). TEAM sources apply to the
   granter too (D-031 QB-35), so there is no personal copy; equal source names from two players count once.
-* **LIST keys** (D-031: `weapon.kill_reload_buff`, `weapon.hit_stack_buff`, `weapon.kill_damage_buff`):
+* **LIST keys** (D-031: `weapon.kill_reload_buff`, `weapon.hit_stack_buff`, `weapon.kill_damage_buff`;
+  D-034: `defense.post_revive_buff`):
   `resolve_modifiers(loadout)[key]` is an `Array[Dictionary]`, one entry per granting skill or perk card
   (never merged): the granted Dictionary plus `"_source": StringName` = the skill id
   (`&"skill.gunnery.run_and_gun"`) or `&"<deck id>.card<n>"`, sorted by `_source` (ContentDB.sort_ids
   order). Inside one skill the aced Dictionary replaces the basic one. Example:
   `[{"trigger": "auto_kills", ..., "_source": &"skill.gunnery.run_and_gun"}, {"trigger": "headshot_kill",
-  ..., "_source": &"skill.marksman.reload_rhythm"}]`. NOTE: `Modifiers.list()` currently expects ONE
-  Dictionary per (slot, source); handing this Array to `set_source(slot, &"skills", ...)` needs
-  `list()` to also accept an Array value (append each entry, keeping its own `_source`).
+  ..., "_source": &"skill.marksman.reload_rhythm"}]`. `Modifiers.list()` accepts this Array as one
+  source's value; each entry keeps its own `_source` (D-034 QB-38).
 * `stealth.concealment_add.suppressed` counts once per suppressed primary/secondary
   (`LoadoutResolver.suppressed_weapon_count`).
 * Perk decks: `data/perks/<deck>.tres` (`perk.<deck>`); param schemas: `content/docs/perk_decks.md`.

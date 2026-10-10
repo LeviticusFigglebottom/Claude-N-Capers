@@ -4,7 +4,8 @@
 class_name DisplayStatTweak
 extends Resource
 
-## damage shown = damage * pellets^(pellet_exponent) * damage_scale (exponent 0 = per pellet).
+## damage shown = damage * pellets^(pellet_exponent) * damage_scale (exponent 0 = per pellet,
+## 1 = pellet damage x pellets, the PD2 shotgun display: Plowman 16 x 10 = 160; D-034 QB-43).
 @export var damage_scale: float = 1.0
 @export var damage_pellet_exponent: float = 0.0
 ## Accuracy 0..accuracy_max: linear in ADS spread between best (=max) and worst (=0) degrees.
