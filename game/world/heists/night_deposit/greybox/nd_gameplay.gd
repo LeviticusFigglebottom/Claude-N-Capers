@@ -8,6 +8,7 @@ extends "res://world/heists/night_deposit/greybox/nd_builder_base.gd"
 const CODE_GROUP: StringName = &"nd_time_lock"
 const VAULT_DOOR_VISUAL: String = "res://world/heists/night_deposit/greybox/vault_door_visual.tscn"
 const BOAT_DROP_VISUAL: String = "res://world/heists/night_deposit/greybox/boat_drop_visual.tscn"
+const CASH_LIFT_VISUAL: String = "res://world/heists/night_deposit/greybox/cash_lift_visual.tscn"
 const CAMERA_POSITIONS: Dictionary = {
 	# id: [pivot on the wall face, yaw (front -Z into the room)] (doc §Sightlines, 2.6-3.0 m).
 	"C1": [Vector3(20.3, 2.8, 10.1), 180.0], "C2": [Vector3(0.6, 2.8, 19.8), 0.0],
@@ -42,7 +43,7 @@ func prefab(parent: Node3D, kind: String, nm: String, pos: Vector3, yaw: float, 
 	inst.owner = map_root
 	if use_point != null:
 		place_use_point(inst, use_point as Vector3)
-	if obstruct_body and kind in ["safe", "body_container", "secure_zone", "camera_station"]:
+	if obstruct_body and kind in ["safe", "body_container", "secure_zone", "camera_station", "hack_terminal"]:
 		_obstruct_prefab(inst)
 	return inst
 
@@ -261,29 +262,30 @@ func _build_misc(gp: Node3D) -> void:
 	_cash_lift(misc)
 
 
-## Cash lift (bag_lift, QC-11 / A3-09). Until the prefab is on trunk: a placeholder node with the
-## intended name `CashLift` and its landing markers (bags go up the stair meanwhile, doc §Loot path).
+## Cash lift (bag_lift, QC-11 / A3-09; doc §Loot path: bags only, 2 per cycle, 8 s). Landing 0 = G1
+## (the prefab; the car waits by the sally door), landing 1 = B1 (`LandingBasement`, BASE below). Front
+## -Z faces west through the shaft hatch (yaw 90). Greybox visual `cash_lift_visual.tscn`: the car fits
+## the 1.25 m shaft, `DoorL`/`DoorR` are empty anchors (0.6 m leaves sliding the 0.45 m tweak would
+## pass through the shaft walls; the hatch is open), and `Panel` is an anchor too: the panels are
+## shaft-wall dressing above each hatch (build_greybox.gd). The Interactable (focus point) sits on the G1
+## panel; LandingPanel1 copies that offset to the B1 panel.
 func _cash_lift(misc: Node3D) -> void:
-	var landing_g: Vector3 = Vector3(5.0, 0.0, 1.8)
-	var landing_b: Vector3 = Vector3(5.0, L.BASE, 1.8)
-	var lift: Node3D = prefab(misc, "bag_lift", "CashLift", Vector3(6.25, 0.0, 1.8), -90.0,
-		{"travel_s": 8.0, "capacity": 2, "objective_tag": &"cash_lift"}, null, {}, false) \
-		if prefab_scene("bag_lift", true) != null else null
+	var car: Vector3 = L.LIFT["car"]
+	var py: float = float(L.LIFT["panel_y"])
+	var lift: Node3D = prefab(misc, "bag_lift", "CashLift", car, 90.0,
+		{"travel_s": 8.0, "capacity": 2, "car_size_m": Vector3(1.1, 1.2, 1.05), "objective_tag": &"cash_lift",
+			"visual_scene": load(CASH_LIFT_VISUAL)},
+		Vector3(car.x - 1.3, 0.0, car.z), {}, false)
 	if lift == null:
-		lift = node3d("CashLift", Vector3(6.25, 0.0, 1.8))
-		lift.set_meta(&"placeholder_for", "bag_lift")
-		lift.set_meta(&"objective_tag", &"cash_lift")
-		lift.set_meta(&"travel_s", 8.0)
-		lift.set_meta(&"capacity", 2)
-		add(misc, lift)
-	for lm: Array in [["LandingGround", landing_g], ["LandingBasement", landing_b]]:
-		var m: Marker3D = Marker3D.new()
-		m.name = String(lm[0])
-		m.position = (lm[1] as Vector3) - lift.position
-		add(lift, m)
-	if lift.get(&"targets") != null:
-		lift.set(&"targets", [lift.get_path_to(lift.get_node("LandingGround")),
-			lift.get_path_to(lift.get_node("LandingBasement"))] as Array[NodePath])
+		return
+	var it: Node3D = lift.get_node_or_null("Interactable") as Node3D
+	if it != null:
+		it.position = Vector3(0.0, py, -0.75)
+	var m: Marker3D = Marker3D.new()
+	m.name = "LandingBasement"
+	m.position = Vector3(0.0, L.BASE, 0.0)
+	add(lift, m)
+	lift.set(&"targets", [lift.get_path_to(m)] as Array[NodePath])
 
 
 # --- Variants ---------------------------------------------------------------------------------
@@ -324,6 +326,10 @@ func _variants_guards(variants: Node3D) -> void:
 	var rx: VariantSlot = _slot(g, "guard_post", "rover_exterior", 1.0)
 	spawn(rx, "GuardRoverExterior", "GUARD", Vector3(7.5, 0.0, -2.2), 0.0, ["guard_rover", "guard_rover_exterior"], "",
 		"Exterior")
+	# Empty helper slot: the doc's weighted rover COUNT (Routine 0 / 1 rover at 0.3 / 0.7) as a slot
+	# weight, since `pick` counts roll uniformly: 9/7 against three rovers of 1 = P(no rover) 0.3.
+	# Brutal+ (pick 2, weight 1 via weights_by_difficulty) = 1 or 2 rovers at 0.5 / 0.5.
+	_slot(g, "guard_post", "rover_none", 9.0 / 7.0)
 
 
 ## Cameras (doc C1-C8 in three sets), the staffed security room, and the two civilians.
@@ -349,17 +355,16 @@ func _variants_security(variants: Node3D) -> void:
 	_slot(cl, "cleaner", "cleaner_none", 0.3)
 
 
-## Time-lock code: the carried code (manager) or one written note (doc `code_note` row).
+## Time-lock code (doc `code_note` row, pick 1 at 1/1/1/1.5): one written note, or the night manager
+## carries it (`code_on_manager`, eligible only with `mgr_in` via the rule's slot_requires).
 func _variants_code(variants: Node3D) -> void:
-	var cc: Node3D = _group(variants, "code_carrier")
-	var om: VariantSlot = _slot(cc, "code_carrier", "code_on_manager", 1.5, {"code_group": CODE_GROUP})
+	var cn: Node3D = _group(variants, "code_note")
+	var om: VariantSlot = _slot(cn, "code_note", "code_on_manager", 1.5, {"code_group": CODE_GROUP})
 	var m: Marker3D = Marker3D.new()
 	m.name = "ManagerCarriesCode"
 	m.position = Vector3(22.6, 0.0, 13.2)
 	m.set_meta(&"code_group", CODE_GROUP)
 	add(om, m)
-	_slot(cc, "code_carrier", "code_in_note", 3.0)
-	var cn: Node3D = _group(variants, "code_note")
 	var notes: Array = [
 		["code_manager_planner", Vector3(24.3, 0.75, 14.45), Vector3(24.3, 0.0, 13.4)],
 		["code_break_board", Vector3(14.8, 0.9, 0.55), Vector3(14.8, 0.0, 1.3)],
@@ -384,27 +389,20 @@ func _variants_keycard(variants: Node3D) -> void:
 		prefab(s, "keycard_pickup", "Keycard", r[2], 0.0, {"objective_tag": &"keycard"}, r[3])
 
 
-## Server room (code-free alternative). hack_terminal (QC-12, A3-09) is not on trunk: a keypad with
-## no code group and a 60 s hold stands in (node `HackTerminal`, objective_tag `server_hack`).
+## Server room (code-free alternative): the hack_terminal rack (QC-12, A3-09; node `HackTerminal`,
+## objective_tag `server_hack`) against the north wall. Doc §Objectives: 3 x 20 s with 2 random reboot
+## interruptions = duration_s 60, interruptions (2, 2) (rolled on GameRng &"devices", restart by
+## re-interacting). Stealth only: the mission also disables it on the loud lockdown.
 func _variants_server(variants: Node3D) -> void:
 	var sg: Node3D = _group(variants, "server_room")
-	var rows: Array = [["srv_basement", 0.6, Vector3(24.0, L.BASE + 1.2, 0.2)], ["srv_ground", 0.4, Vector3(24.0, 1.2, 0.2)]]
+	var rows: Array = [["srv_basement", 0.6, Vector3(24.0, L.BASE, 0.72)], ["srv_ground", 0.4, Vector3(24.0, 0.0, 0.72)]]
 	for r: Array in rows:
 		var s: VariantSlot = _slot(sg, "server_room", String(r[0]), float(r[1]))
-		var pos: Vector3 = r[2]
 		if String(r[0]) == "srv_ground":
 			prop_box(s, "ServerRackG6", Vector3(25.45, 0.0, 1.5), Vector3(0.6, 2.0, 1.2), 0.0, "rack", false, "trim")
-		var hack: Node3D = null
-		if prefab_scene("hack_terminal", true) != null:
-			hack = prefab(s, "hack_terminal", "HackTerminal", pos, 180.0,
-				{"duration_s": 60.0, "interruptions": 2, "objective_tag": &"server_hack"}, null, {"mount": "wall"})
-		else:
-			hack = prefab(s, "keypad", "HackTerminal", pos, 180.0,
-				{"code_group": &"", "interaction_time_s": 60.0, "stealth_only": true, "objective_tag": &"server_hack"},
-				null, {"mount": "wall", "kind": "keypad", "placeholder_for": "hack_terminal"})
-		if hack != null:
-			hack.set_meta(&"hack_stages", 3)
-			hack.set_meta(&"hack_stage_s", 20.0)
+		prefab(s, "hack_terminal", "HackTerminal", r[2], 180.0,
+			{"duration_s": 60.0, "interruptions": Vector2i(2, 2), "stealth_only": true, "objective_tag": &"server_hack"},
+			null, {"kind": "hack_terminal"})
 
 
 ## Areaway grate gate: unlocked (3 s, silent) or padlocked (lockpick 8 s).

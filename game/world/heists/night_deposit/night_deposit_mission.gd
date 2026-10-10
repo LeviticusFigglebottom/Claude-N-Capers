@@ -155,11 +155,6 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 	elif _is_tagged(interactable_net_id, TAG_TIME_LOCK):
 		if not _lockdown:
 			_start_time_lock(&"code")
-	elif _is_tagged(interactable_net_id, TAG_SERVER_HACK):
-		# hack_terminal placeholder (keypad hold); the real prefab reports device_finished.
-		if not _lockdown:
-			complete(&"server")
-			_start_time_lock(&"server")
 	elif _is_tagged(interactable_net_id, TAG_VAULT_LOOT):
 		_check_vault_loot()
 
@@ -175,7 +170,7 @@ func _on_item_picked_up(item_id: StringName, _crew_slot: int) -> void:
 ## The mission API cannot tell which civilian it was; any domination while he carries the code
 ## reveals it (the cleaner never carries one; tidy up when ENV A exposes spawn tags on the event).
 func _on_civilian_dominated(_npc_net_id: int, crew_slot: int) -> void:
-	if _code_known or not _slot_active(&"code_carrier", &"code_on_manager"):
+	if _code_known or not _slot_active(&"code_note", &"code_on_manager"):
 		return
 	var codes: Object = Services.get_service(SVC_CODES)
 	if codes != null and codes.has_method(&"reveal"):
@@ -246,6 +241,8 @@ func _on_device_finished(device_net_id: int) -> void:
 		complete(&"vault_drill")
 		_open_vault()
 	elif _is_tagged(device_net_id, TAG_SERVER_HACK):
+		# hack_terminal (QC-12): device_finished after the 60 s run and its reboots (device_jammed /
+		# device_restarted in between). Starting the hack is only an interaction, never the finish.
 		if not _lockdown:
 			complete(&"server")
 			_start_time_lock(&"server")

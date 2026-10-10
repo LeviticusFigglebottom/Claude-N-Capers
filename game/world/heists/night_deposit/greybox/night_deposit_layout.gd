@@ -255,8 +255,13 @@ const AREAWAY: Dictionary = {
 	"ladder_yaw": -90.0, "cage_h": 2.2,
 }
 
-## Cash lift (bags only) G1 <-> B1 in the NE corner of the sally port: shaft footprint.
-const LIFT: Dictionary = {"box": [5.6, 1.1, 6.9, 2.5], "door_x": 5.6, "door_z": [1.35, 2.25]}
+## Cash lift (bags only) G1 <-> B1 in the NE corner of the sally port: shaft footprint, the bag_lift
+## car floor centre at G1 = landing 0 (0.05 m sill so the car floor rests on the slab; B1 is BASE below),
+## and the bag hatch in the west shaft wall on each floor (z range, sill/head above the floor: 0.8 m
+## high, too low for a crouched crew capsule) with the call panel above it, `panel_y` above the car
+## floor (`cash_lift_visual.tscn` Panel at G1, a dressed panel at B1 for the runtime LandingPanel1).
+const LIFT: Dictionary = {"box": [5.6, 1.1, 6.9, 2.5], "car": Vector3(6.25, 0.05, 1.8), "hatch_z": [1.2, 2.4],
+	"hatch_y": [0.45, 1.25], "panel_y": 1.45}
 
 
 # --- Site -----------------------------------------------------------------------------------

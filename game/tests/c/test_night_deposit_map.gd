@@ -8,13 +8,12 @@ const REQUIRED: Dictionary = {
 	"Zones": "Node3D", "Rooms": "Node3D", "Spawns": "Node3D", "Patrols": "Node3D", "Tactical": "Node3D",
 	"Gameplay": "Node3D", "Variants": "Node3D", "Mission": "Node", "Preplan": "Node3D", "ReviewCameras": "Node3D",
 }
-## Design doc variable table (+ the code_carrier helper group) -> slot ids.
+## Design doc variable table (+ the `rover_none` helper slot for the weighted rover count) -> slot ids.
 const GROUPS: Dictionary = {
 	"keycard": ["kc_manager_desk", "kc_teller_drawer", "kc_break_locker", "kc_security", "kc_records"],
-	"code_note": ["code_manager_planner", "code_break_board", "code_records_ledger"],
-	"code_carrier": ["code_on_manager", "code_in_note"],
+	"code_note": ["code_manager_planner", "code_break_board", "code_records_ledger", "code_on_manager"],
 	"server_room": ["srv_basement", "srv_ground"],
-	"guard_post": ["rover_ground", "rover_basement", "rover_exterior"],
+	"guard_post": ["rover_ground", "rover_basement", "rover_exterior", "rover_none"],
 	"camera": ["cam_a", "cam_b", "cam_c"],
 	"security_room_staffed": ["sec_staffed", "sec_empty"],
 	"vent_open": ["vent_open", "vent_locked"],
@@ -113,6 +112,10 @@ func test_variable_table_coverage() -> void:
 		for key: String in ["requires", "excludes"]:
 			for og: Variant in (rule.get(key, {}) as Dictionary):
 				assert_has(ruled, String(og), "rule `%s` %s references earlier group `%s`" % [g, key, og])
+		var sr: Dictionary = rule.get("slot_requires", {})
+		for sid0: Variant in sr:
+			for og2: Variant in (sr[sid0] as Dictionary):
+				assert_has(ruled, String(og2), "rule `%s` slot_requires references earlier group `%s`" % [g, og2])
 		ruled.append(g)
 	for g2: String in GROUPS:
 		var have: Array = slots.get(g2, [])
@@ -206,18 +209,103 @@ func test_rule_constraints_hold() -> void:
 	for s: int in range(200):
 		GameRng.begin_run(7000 + s)
 		var v: Dictionary = VariantResolver.resolve(_map.variant_table, slots, Enums.Difficulty.ROUTINE)
-		var carrier: Array = v.get(&"code_carrier", [])
-		if carrier.has(&"code_on_manager"):
+		var code: Array = v.get(&"code_note", [])
+		assert_eq(code.size(), 1, "one code source (a note or the manager)")
+		if code.has(&"code_on_manager"):
 			assert_true((v.get(&"night_manager", []) as Array).has(&"mgr_in"), "code_on_manager needs the manager")
-			assert_true((v.get(&"code_note", []) as Array).is_empty(), "a carried code excludes the notes")
-		else:
-			assert_eq((v.get(&"code_note", []) as Array).size(), 1, "one written code note")
 		assert_eq((v.get(&"keycard", []) as Array).size(), 1, "exactly one keycard")
 		assert_eq((v.get(&"escape", []) as Array).size(), 1, "exactly one escape")
 		assert_eq((v.get(&"laser_pattern", []) as Array).size(), 1, "one laser pattern")
-		assert_true((v.get(&"guard_post", []) as Array).size() <= 1, "Routine: 0-1 rover")
+		assert_eq((v.get(&"guard_post", []) as Array).size(), 1, "Routine: one guard_post pick")
+		assert_true(_rovers(v) <= 1, "Routine: 0-1 rover")
+		assert_false((v.get(&"rare", []) as Array).has(&"armored_car_early"), "armored_car_early is Brutal+ only")
 		assert_has([60.0, 90.0, 120.0], float(v.get(&"time_lock_s", 0.0)), "time_lock_s rolled")
 	GameRng.begin_run(9001)
 	var vb: Dictionary = VariantResolver.resolve(_map.variant_table, slots, Enums.Difficulty.BRUTAL)
-	var n_b: int = (vb.get(&"guard_post", []) as Array).size()
+	var n_b: int = _rovers(vb)
 	assert_true(n_b >= 1 and n_b <= 2, "Brutal: 1-2 rovers")
+
+
+func _rovers(v: Dictionary) -> int:
+	var n: int = 0
+	for sid: Variant in (v.get(&"guard_post", []) as Array):
+		if StringName(sid) != &"rover_none":
+			n += 1
+	return n
+
+
+## Doc per-difficulty weights (Routine vs Brutal) take effect: frequencies over 1000 seeds.
+func test_difficulty_weights() -> void:
+	if _map == null or _map.variant_table == null:
+		fail("map missing")
+		return
+	var slots: Dictionary = VariantResolver.collect_slots(_map)
+	var runs: int = 1000
+	var stats: Dictionary = {}
+	for d: int in [Enums.Difficulty.ROUTINE, Enums.Difficulty.BRUTAL]:
+		var c: Dictionary = {"tl120": 0, "tl60": 0, "staffed": 0, "static": 0, "no_rover": 0, "two_rovers": 0,
+			"armored": 0, "on_manager": 0}
+		for s: int in range(runs):
+			GameRng.begin_run(20000 + s)
+			var v: Dictionary = VariantResolver.resolve(_map.variant_table, slots, d)
+			var tl: float = float(v.get(&"time_lock_s", 0.0))
+			c["tl120"] += 1 if is_equal_approx(tl, 120.0) else 0
+			c["tl60"] += 1 if is_equal_approx(tl, 60.0) else 0
+			c["staffed"] += 1 if (v.get(&"security_room_staffed", []) as Array).has(&"sec_staffed") else 0
+			c["static"] += 1 if (v.get(&"laser_pattern", []) as Array).has(&"laser_static") else 0
+			var r: int = _rovers(v)
+			c["no_rover"] += 1 if r == 0 else 0
+			c["two_rovers"] += 1 if r == 2 else 0
+			c["armored"] += 1 if (v.get(&"rare", []) as Array).has(&"armored_car_early") else 0
+			c["on_manager"] += 1 if (v.get(&"code_note", []) as Array).has(&"code_on_manager") else 0
+		stats[d] = c
+	var ro: Dictionary = stats[Enums.Difficulty.ROUTINE]
+	var br: Dictionary = stats[Enums.Difficulty.BRUTAL]
+	Log.info(&"test", "night_deposit weights over %d seeds: Routine %s | Brutal %s" % [runs, ro, br])
+	var f: Callable = func(n: int) -> float: return float(n) / float(runs)
+	# time_lock_s: 120 s at 0.2 (Routine) vs 0.5 (Brutal); 60 s at 0.4 vs 0.1.
+	assert_near(f.call(ro["tl120"]), 0.2, 0.05, "Routine time_lock_s 120 ~ 0.2")
+	assert_near(f.call(br["tl120"]), 0.5, 0.05, "Brutal time_lock_s 120 ~ 0.5")
+	assert_near(f.call(ro["tl60"]), 0.4, 0.05, "Routine time_lock_s 60 ~ 0.4")
+	assert_near(f.call(br["tl60"]), 0.1, 0.04, "Brutal time_lock_s 60 ~ 0.1")
+	assert_near(f.call(ro["staffed"]), 0.6, 0.05, "Routine security room staffed ~ 0.6")
+	assert_near(f.call(br["staffed"]), 0.75, 0.05, "Brutal security room staffed ~ 0.75")
+	assert_near(f.call(ro["static"]), 0.5, 0.05, "Routine static lasers ~ 0.5")
+	assert_near(f.call(br["static"]), 0.2, 0.05, "Brutal static lasers ~ 0.2")
+	assert_near(f.call(ro["no_rover"]), 0.3, 0.05, "Routine: no rover ~ 0.3 (doc 0.3 / 0.7)")
+	assert_eq(int(ro["two_rovers"]), 0, "Routine never has 2 rovers")
+	assert_eq(int(br["no_rover"]), 0, "Brutal always has a rover")
+	assert_near(f.call(br["two_rovers"]), 0.5, 0.06, "Brutal: 2 rovers ~ 0.5")
+	assert_eq(int(ro["armored"]), 0, "armored_car_early gated to Brutal+ (min_difficulty)")
+	assert_near(f.call(br["armored"]), 0.08, 0.03, "Brutal armored_car_early ~ 8%")
+	# code_on_manager: 0.5 (mgr_in) x 1.5 / 4.5 = 1/6.
+	assert_near(f.call(ro["on_manager"]), 1.0 / 6.0, 0.04, "code_on_manager ~ 1/6 (needs mgr_in)")
+
+
+## Real ENV A prefabs replace the G1 placeholders (QC-11 bag_lift, QC-12 hack_terminal).
+func test_lift_and_hack_prefabs() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	var lift: BagLift = _map.get_node_or_null("Gameplay/Misc/CashLift") as BagLift
+	assert_true(lift != null, "Gameplay/Misc/CashLift is a BagLift")
+	if lift != null:
+		assert_eq(lift.objective_tag, &"cash_lift")
+		assert_near(lift.travel_s, 8.0, 0.001, "doc: 8 s per trip")
+		assert_eq(lift.capacity, 2, "doc: 2 bags per cycle")
+		assert_eq(lift.targets.size(), 1, "one other landing (B1)")
+		assert_near(lift.position.y, 0.05, 0.001, "landing 0 = G1 car floor (0.05 m sill)")
+		var b: Node3D = lift.get_node_or_null(lift.targets[0]) as Node3D
+		assert_true(b != null, "LandingBasement resolves")
+		if b != null:
+			assert_near((lift.transform * b.position).y, -3.95, 0.001, "landing 1 = B1 car floor")
+	var hacks: Array[Node] = _map.get_node("Variants/Group_server_room").find_children("HackTerminal", "", true, false)
+	assert_eq(hacks.size(), 2, "one hack terminal per server_room slot")
+	for h: Node in hacks:
+		var ht: HackTerminal = h as HackTerminal
+		assert_true(ht != null, "%s/HackTerminal is a HackTerminal" % h.get_parent().name)
+		if ht != null:
+			assert_eq(ht.objective_tag, &"server_hack")
+			assert_near(ht.duration_s, 60.0, 0.001, "doc: 60 s (3 x 20 s)")
+			assert_eq(ht.interruptions, Vector2i(2, 2), "doc: 2 reboot interruptions")
+			assert_true(ht.stealth_only, "stealth only")
