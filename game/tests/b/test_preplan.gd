@@ -1,5 +1,6 @@
-## B2-01: pre-planning data, board merge, plan rules (budget, favors, points, exclusivity), cost
-## scaling, plan vote tie-break and the apply() hand-off shape.
+## B2-01 / B4-08: pre-planning data, board merge (contract preplanning.md v1.0 format), map points,
+## plan rules (budget, favors, points, exclusivity), cost scaling and payment (own assets, split
+## plans), plan vote tie-break and relay, the PreplanResult v1 shape and resolve_ids().
 extends TestCase
 
 const DROP: StringName = &"pp_alley_dumpsters"
@@ -37,8 +38,8 @@ func test_generic_assets_are_valid_and_grant_known_keys() -> void:
 		assert_eq(a2.validate(), [] as Array[String], "valid %s" % id)
 		for k: Variant in a2.grants:
 			assert_true(ModifierKeys.is_known(StringName(String(k))), "%s grants known key %s" % [id, k])
-		if a2.effect == PreplanAssetDef.Effect.SPAWN:
-			assert_true(ContentDB.deployable(a2.spawn_item) != null, "%s spawns a real deployable" % id)
+		if a2.drop != &"":
+			assert_true(ContentDB.deployable(a2.drop) != null, "%s drops a real deployable" % id)
 
 
 func test_every_asset_has_strings() -> void:
@@ -110,9 +111,8 @@ func test_exclusive_group() -> void:
 	var b: PreplanBoard = _board()
 	var other: PreplanAssetDef = PreplanAssetDef.new()
 	other.id = &"asset.test_other_entry"
-	other.effect = PreplanAssetDef.Effect.PLAYER_SPAWN
-	other.point_categories = [&"player_spawn"]
-	other.exclusive_group = &"player_spawn"
+	other.point_categories = [&"spawn"]
+	other.exclusive_group = &"spawn"
 	b.assets[other.id] = other
 	var p2: PreplanPlan = PreplanPlan.new(b)
 	assert_eq(p2.add(&"asset.alternate_entry", SPAWN_W, 0), PreplanPlan.OK)
@@ -175,11 +175,15 @@ func test_heist_def_preplanning_overrides_and_extends() -> void:
 	def.preplanning = {
 		"favors": 6,
 		"disable": ["asset.intel_cameras"],
-		&"asset.ammo_bag_drop": {"cost": 500, "favors": 1, "slot": "pp_side_kerb"},
-		&"asset.inside_keycard": {"force_variant": {"group": "keycard", "slot": "kc_breakroom"}, "cost": 2000,
-				"favors": 3, "category": "access", "tags": ["stealth"]},
-		&"asset.zip_ties_drop": {"spawn": "body_bag_case", "slot": "drop_zone", "favors": 1, "cost": 300},
-		&"asset.heist_ties": {"grants": {&"stealth.cable_ties_extra": 4}, "cost": 100, "favors": 1},
+		"assets": {
+			&"asset.ammo_bag_drop": {"cost": 500, "favors": 1, "point_ids": ["pp_side_kerb"]},
+			&"asset.inside_keycard": {"force_variants": {"keycard": ["kc_breakroom"]}, "cost": 2000,
+					"favors": 3, "category": "access", "tags": ["stealth"]},
+			&"asset.zip_ties_drop": {"drop": "body_bag_case", "point_categories": ["drop_zone"], "favors": 1,
+					"cost": 300, "params": {"count": 2}},
+			&"asset.heist_ties": {"grants": {&"stealth.cable_ties_extra": 4}, "cost": 100, "favors": 1},
+			&"asset.back_way_out": {"escape_tag": "escape_alley", "cost": 700, "favors": 1},
+		},
 	}
 	var b: PreplanBoard = PreplanBoard.build(&"test_heist", Enums.Difficulty.ROUTINE, def)
 	assert_eq(b.errors, [] as Array[String])
@@ -191,10 +195,18 @@ func test_heist_def_preplanning_overrides_and_extends() -> void:
 	assert_false(b.assets_for_point(DROP).has(&"asset.ammo_bag_drop"), "slot restricts to one point")
 	assert_true(PreplanBoard.generic_assets()[&"asset.ammo_bag_drop"].point_ids.is_empty(), "generic def untouched")
 	var kc: PreplanAssetDef = b.asset(&"asset.inside_keycard")
-	assert_eq(kc.effect, PreplanAssetDef.Effect.FORCE_VARIANT)
-	assert_eq(kc.force_variant_slot, &"kc_breakroom")
+	assert_eq(kc.force_variants, {&"keycard": [&"kc_breakroom"] as Array[StringName]})
 	assert_has(b.crew_assets(), &"asset.inside_keycard")
-	assert_eq(b.asset(&"asset.zip_ties_drop").spawn_item, &"deployable.body_bag_case")
+	assert_eq(b.asset(&"asset.zip_ties_drop").drop, &"deployable.body_bag_case")
+	var p: PreplanPlan = PreplanPlan.new(b)
+	assert_eq(p.add(&"asset.inside_keycard", &"", 0), PreplanPlan.OK)
+	assert_eq(p.add(&"asset.zip_ties_drop", DROP, 0), PreplanPlan.OK)
+	assert_eq(p.add(&"asset.back_way_out", &"", 0), PreplanPlan.OK)
+	var res: Dictionary = p.apply()
+	assert_eq(res["force_variants"], {&"keycard": [&"kc_breakroom"] as Array[StringName]})
+	assert_eq(res["drops"], [{"asset": &"asset.zip_ties_drop", "kind": &"deployable.body_bag_case", "point": DROP,
+			"params": {"count": 2}}])
+	assert_eq(res["escape_tag"], &"escape_alley")
 	assert_has(b.assets_for_point(DROP), &"asset.zip_ties_drop")
 	var ids: Array[StringName] = b.asset_ids()
 	assert_true(ids.find(&"asset.ammo_bag_drop") < ids.find(&"asset.inside_keycard"), "supply before access")
@@ -203,11 +215,14 @@ func test_heist_def_preplanning_overrides_and_extends() -> void:
 func test_merge_reports_bad_data() -> void:
 	var errs: Array[String] = []
 	var m: Dictionary = PreplanBoard.merge(PreplanBoard.generic_assets(), {
-		&"asset.ammo_bag_drop": {"price": 5},
+		"assets": {
+			&"asset.ammo_bag_drop": {"price": 5},
+			&"asset.broken": "nope",
+			&"no_prefix": {},
+		},
 		"bogus": 1,
-		&"asset.broken": "nope",
-	}, [] as Array[StringName], errs)
-	assert_eq(errs.size(), 3, str(errs))
+	}, errs)
+	assert_eq(errs.size(), 4, str(errs))
 	assert_true(m["assets"].has(&"asset.ammo_bag_drop"))
 	var bad: PreplanAssetDef = PreplanAssetDef.new()
 	bad.id = &"asset.bad"
@@ -215,8 +230,13 @@ func test_merge_reports_bad_data() -> void:
 	assert_eq(bad.validate().size(), 1, "unknown modifier key rejected")
 	var no_payload: PreplanAssetDef = PreplanAssetDef.new()
 	no_payload.id = &"asset.empty"
-	no_payload.effect = PreplanAssetDef.Effect.SPAWN
-	assert_eq(no_payload.validate().size(), 2, "spawn needs an item and a point")
+	assert_eq(no_payload.validate().size(), 1, "a crew asset needs an effect")
+	no_payload.drop = &"deployable.ammo_bag"
+	assert_eq(no_payload.validate().size(), 1, "a drop needs a point")
+	var dep: PreplanAssetDef = PreplanAssetDef.new()
+	dep.id = &"asset.feedback"
+	dep.grants = {&"stealth.ecm_feedback": true}
+	assert_eq(dep.validate().size(), 1, "D-038 QA-16: the deprecated ECM feedback flag is rejected")
 
 
 func test_vote_majority_and_host_tie_break() -> void:
@@ -252,7 +272,7 @@ func test_plan_vote_group_holds_the_winner() -> void:
 	assert_eq(p.count_of(&"asset.escape_position"), 1)
 	assert_eq(p.add(&"asset.escape_position", ESC_W, 0), PreplanPlan.OK, "add on a vote asset = vote")
 	assert_eq(p.count_of(&"asset.escape_position"), 1, "vote group holds one option")
-	assert_eq(int(p.selections[p.index_at(ESC_W)]["buyer"]), 0, "plans are paid by the host")
+	assert_eq(int(p.selections[p.index_at(ESC_W)]["buyer"]), PreplanPlan.SPLIT, "plans are split among the humans")
 	assert_eq(p.index_at(ESC_S), -1, "1:1 -> host's option")
 	assert_eq(p.vote(5, &"asset.escape_position", ESC_S), PreplanPlan.R_NOT_VOTER)
 	p.remove(&"asset.escape_position", ESC_W, 0)
@@ -268,13 +288,17 @@ func test_apply_output_shape() -> void:
 	assert_eq(p.add(&"asset.alternate_entry", SPAWN_W, 0), PreplanPlan.OK)
 	assert_eq(p.vote(0, &"asset.escape_position", ESC_S), PreplanPlan.OK)
 	var h: Dictionary = p.apply()
-	for k: String in ["version", "heist_id", "difficulty", "favors_budget", "favors_used", "cash_spent",
-			"modifier_sources", "spawns", "reveal_variant_groups", "force_variants", "player_spawn_tag", "plan"]:
-		assert_has(h, k)
+	var keys: Array[String] = []
+	keys.assign(h.keys())
+	keys.sort()
+	var want: Array[String] = PreplanPlan.RESULT_KEYS.duplicate()
+	want.sort()
+	assert_eq(keys, want, "exactly the PreplanResult v1 keys")
 	assert_eq(int(h["version"]), PreplanPlan.HANDOFF_VERSION)
-	assert_eq(h["heist_id"], &"test_heist")
-	assert_eq(int(h["difficulty"]), Enums.Difficulty.HAZARDOUS)
-	assert_eq(int(h["favors_used"]), 1 + 2 + 1 + 1 + 1)
+	var plan_d: Dictionary = h["plan"]
+	assert_eq(plan_d["heist_id"], &"test_heist")
+	assert_eq(int(plan_d["difficulty"]), Enums.Difficulty.HAZARDOUS)
+	assert_eq(int(plan_d["favors_used"]), 1 + 2 + 1 + 1 + 1)
 	var mods: Dictionary = h["modifier_sources"]
 	assert_eq(mods.keys(), [&"asset.extra_cable_ties"])
 	for src: Variant in mods:
@@ -282,15 +306,18 @@ func test_apply_output_shape() -> void:
 		for key: Variant in mods[src]:
 			assert_true(ModifierKeys.is_known(key), "known key %s" % key)
 	assert_eq(int(mods[&"asset.extra_cable_ties"][&"stealth.cable_ties_extra"]), 2)
-	assert_eq(h["spawns"], [{"asset": &"asset.ammo_bag_drop", "item": &"deployable.ammo_bag", "point": DROP}])
-	assert_eq(h["reveal_variant_groups"], [&"keycard"])
-	assert_eq(h["force_variants"], [{"asset": &"asset.escape_position", "group": &"escape", "slot": &"esc_pell"}])
-	assert_eq(h["player_spawn_tag"], &"preplan_spawn_alley")
+	assert_eq(h["drops"], [{"asset": &"asset.ammo_bag_drop", "kind": &"deployable.ammo_bag", "point": DROP, "params": {}}])
+	assert_eq(h["reveals"], [&"keycard"] as Array[StringName])
+	assert_eq(h["force_variants"], {&"escape": [&"esc_pell"] as Array[StringName]}, "from the escape point's params")
+	assert_eq(h["spawn_tag"], &"preplan_spawn_alley", "from the spawn point's params")
+	assert_eq(h["escape_tag"], &"")
 	var cash: Dictionary = h["cash_spent"]
-	assert_eq(int(cash[1]), b.cost_of(&"asset.extra_cable_ties"))
+	var plan_cost: int = b.cost_of(&"asset.escape_position")
+	assert_eq(int(cash[1]), b.cost_of(&"asset.extra_cable_ties") + plan_cost / 2, "own asset + half the plan")
 	assert_eq(int(cash[0]), p.cash_cost(0))
-	var rt: PreplanPlan = PreplanPlan.from_dict(b, h["plan"])
-	assert_eq(rt.apply(), h, "plan dict round-trips to the same hand-off")
+	assert_eq(int(cash[0]) + int(cash[1]), p.cash_cost(), "every dollar paid once")
+	var rt: PreplanPlan = PreplanPlan.from_dict(b, JSON.parse_string(JSON.stringify(plan_d)) as Dictionary)
+	assert_eq(rt.apply(), h, "plan dict survives JSON and round-trips to the same result")
 
 
 func test_modifier_sources_apply_to_team() -> void:
@@ -309,13 +336,21 @@ func test_blueprint_from_nodes() -> void:
 	var m: Marker3D = Marker3D.new()
 	m.name = "pp_roof"
 	m.position = Vector3(3, 4.2, -2)
-	m.set_meta(&"preplan_category", &"drop_zone")
-	m.set_meta(&"preplan_floor", 1)
+	m.set_meta(&"category", &"drop_zone")
+	m.set_meta(&"floor", 1)
+	m.set_meta(&"label", &"ui.preplan.point.pp_alley_hvac")
+	m.set_meta(&"params", {"spawn_tag": &"x"})
 	root.add_child(m)
 	var bp: PreplanBlueprint = PreplanBlueprint.from_nodes([m] as Array[Node], PreplanBoard.blueprint_for(&""))
 	assert_eq(bp.point_ids(), [&"pp_roof"] as Array[StringName])
 	assert_eq(bp.category_of(&"pp_roof"), &"drop_zone")
 	assert_eq(bp.point(&"pp_roof")["pos"], Vector2(3, -2))
 	assert_eq(int(bp.point(&"pp_roof")["floor"]), 1)
+	assert_eq(bp.point(&"pp_roof")["label"], &"ui.preplan.point.pp_alley_hvac")
+	assert_eq(bp.point(&"pp_roof")["params"], {"spawn_tag": &"x"})
 	assert_true(bp.shapes.size() > 0, "schematic kept from base")
 	root.queue_free()
+
+
+## Contract: points are the Marker3Ds under <Map>/Preplan, read by instancing the map scene without
+## adding it to the tree; the board falls back to the placeholder when the map has none.

@@ -7,8 +7,10 @@
 ##   var s: PreplanningScreen = preload(".../preplanning_screen.tscn").instantiate()
 ##   s.setup(&"glasshouse", Enums.Difficulty.BRUTAL, profile)    # before or after add_child
 ##   s.confirmed.connect(func(plan: Dictionary) -> void: options["preplan"] = plan)
-## `confirmed(plan)` carries PreplanPlan.apply() (shape: content/docs/preplanning.md). On confirm the
-## local player's share is deducted from profile.cash and, with save_on_confirm, saved to profile_slot.
+## `confirmed(plan)` carries the PreplanResult (PreplanPlan.apply(); contract docs/contracts/preplanning.md).
+## On confirm the local player's share (own assets + their part of voted plans) is deducted from
+## profile.cash and, with save_on_confirm, saved to profile_slot. Plan votes go through
+## Net.lobby_send / Net.lobby_message (PlanVote.send_cast); solo, Net delivers them locally at once.
 ## Keyboard / gamepad: arrows move between markers (by position) and lists; Enter / A picks; Esc / B
 ## leaves the asset list (back to its marker), or leaves the screen.
 class_name PreplanningScreen
@@ -122,19 +124,47 @@ func show_crew_assets() -> void:
 	refresh()
 
 
-## Buy (or vote for) `asset_id` at the selected point. Returns the PreplanPlan reason (&"" = done).
+## Buy (or vote for) `asset_id` at the selected point. Returns the PreplanPlan reason (&"" = done;
+## for a vote: sent, applied when Net delivers it, which solo is immediate).
 func buy(asset_id: StringName) -> StringName:
-	var r: StringName = plan.add(asset_id, selected_point, local_slot, cash_by_slot())
+	var a: PreplanAssetDef = board.asset(asset_id)
+	var r: StringName = PreplanPlan.OK
+	if a != null and a.vote_group != &"":
+		r = _can_take(asset_id)
+		if r == PreplanPlan.OK:
+			PlanVote.send_cast(PlanVote.option_key(asset_id, selected_point))
+	else:
+		r = plan.add(asset_id, selected_point, local_slot, cash_by_slot())
 	reason_label.text = "" if r == PreplanPlan.OK else _reason_text(r, asset_id)
 	refresh()
 	return r
 
 
 func remove(asset_id: StringName) -> bool:
-	var ok: bool = plan.remove(asset_id, selected_point, local_slot)
+	var a: PreplanAssetDef = board.asset(asset_id)
+	var ok: bool = true
+	if a != null and a.vote_group != &"":
+		PlanVote.send_retract(a.vote_group)
+	else:
+		ok = plan.remove(asset_id, selected_point, local_slot)
 	reason_label.text = ""
 	refresh()
 	return ok
+
+
+## Net.lobby_message: apply plan votes from any peer (the local player's own votes come back here too).
+func on_lobby_message(from_peer: int, kind: StringName, data: Dictionary) -> void:
+	if plan == null or not PlanVote.is_vote_message(kind):
+		return
+	var slot: int = Net.slot_of_peer(from_peer)
+	if slot < 0 and from_peer == Net.local_peer_id():
+		slot = local_slot
+	if slot < 0:
+		return
+	var r: StringName = plan.receive_vote(slot, kind, data)
+	if r != PreplanPlan.OK:
+		Log.warn(&"preplan", "vote from slot %d rejected: %s" % [slot, r])
+	refresh()
 
 
 ## Is `asset_id` part of the plan at the selected point (for a vote option: is it the local vote)?
@@ -180,6 +210,16 @@ func refresh() -> void:
 	vote_label.text = _vote_text()
 	blueprint_view.refresh(plan, selected_point)
 	crew_button.set_pressed_no_signal(selected_point == &"")
+
+
+func _enter_tree() -> void:
+	if not Net.lobby_message.is_connected(on_lobby_message):
+		Net.lobby_message.connect(on_lobby_message)
+
+
+func _exit_tree() -> void:
+	if Net.lobby_message.is_connected(on_lobby_message):
+		Net.lobby_message.disconnect(on_lobby_message)
 
 
 func _init_plan() -> void:

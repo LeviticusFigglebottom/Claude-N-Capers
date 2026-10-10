@@ -2,7 +2,7 @@
 ## pre-planning -> loadout (-> masks / skills / perk deck) -> launch -> HUD -> payday. Owner: ENV B.
 ## Back is symmetrical at every step (loadout -> pre-planning refunds the confirmed plan's cash, so a
 ## re-confirm never charges twice). The confirmed plan goes to HeistLauncher as options["preplan"]
-## (PreplanPlan.apply(); proposed in content/docs/preplanning.md, pending the lead's QB-PP2).
+## (the PreplanResult v1 from PreplanPlan.apply(); contract docs/contracts/preplanning.md, D-038).
 ## Screens only emit signals; this node swaps them (no scene changes, so the whole flow
 ## also runs inside tests). Launch uses ENV A's HeistLauncher (contracts/test_hooks.md), looked up
 ## dynamically; without it a stub screen offers a sample payday.
@@ -326,8 +326,8 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 
 
 ## HeistLauncher.launch options (contracts/test_hooks.md): `ai_teammates`, `loadouts` = {slot: resolved
-## Loadout}, and `preplan` = PreplanPlan.apply() when a plan was confirmed (omitted when `plan` is
-## empty). `preplan` is ENV B's proposal (QB-PP2, pending the lead); launchers that do not know it ignore it.
+## Loadout}, and `preplan` = the PreplanResult v1 (PreplanPlan.apply(), contract preplanning.md) when a
+## plan was confirmed (omitted when `plan` is empty, e.g. direct launch).
 static func build_launch_options(ai_teammates: int, local_slot: int, resolved: Loadout,
 		plan: Dictionary = {}) -> Dictionary:
 	var options: Dictionary = {"ai_teammates": ai_teammates, "loadouts": {local_slot: resolved}}

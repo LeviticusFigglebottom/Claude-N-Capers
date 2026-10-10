@@ -18,6 +18,8 @@ const ITEM_IDS: Array[String] = [
 	"loot.jewelry", "loot.cash", "loot.body_bag",
 ]
 
+const VOICE_LINES_PATH: String = "res://content/data/voice/lines.tres"
+
 var _table: Dictionary = {}
 var _dups: Array[String] = []
 
@@ -105,7 +107,7 @@ func test_qa14_keys_and_blocked_rename() -> void:
 		assert_has(_table, k)
 	for k: String in _table.keys():
 		assert_false(k.begins_with("ui.prompt.blocked."), "renamed to ui.blocked.*: %s" % k)
-	var table: VoiceLineTable = load("res://content/data/voice/lines.tres") as VoiceLineTable
+	var table: VoiceLineTable = _voice_table()
 	for id: StringName in [&"vo.guard.cuff_warning", &"vo.mercer.abort"]:
 		assert_eq(table.line(id).get("text_key", &""), StringName("voice.%s" % id), "line %s" % id)
 
@@ -113,7 +115,7 @@ func test_qa14_keys_and_blocked_rename() -> void:
 ## Every literal prompt / blocked key and voice line id in ENV A's and ENV C's code exists (read-only scan).
 func test_keys_requested_by_systems_exist() -> void:
 	var rx: RegEx = RegEx.create_from_string("\\b(ui\\.(?:blocked|prompt)\\.[a-z0-9_.]*[a-z0-9_]|vo\\.[a-z]+\\.[a-z0-9_]+)\\b")
-	var table: VoiceLineTable = load("res://content/data/voice/lines.tres") as VoiceLineTable
+	var table: VoiceLineTable = _voice_table()
 	var files: Array[String] = []
 	for root: String in ["res://systems", "res://world", "res://core"]:
 		_collect_code(root, files)
@@ -163,3 +165,7 @@ func _collect_code(dir_path: String, out: Array[String]) -> void:
 			out.append(dir_path.path_join(f))
 	for sub: String in d.get_directories():
 		_collect_code(dir_path.path_join(sub), out)
+
+
+func _voice_table() -> VoiceLineTable:
+	return load(VOICE_LINES_PATH) as VoiceLineTable

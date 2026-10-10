@@ -5,9 +5,8 @@
 [resource]
 script = ExtResource("1")
 id = &"asset.intel_cameras"
-effect = 2
 category = &"intel"
-base_cost = 1200
+cost = 1200
 favors = 1
-reveal_variant_group = &"camera"
+reveals = Array[StringName]([&"camera"])
 tags = Array[StringName]([&"stealth"])

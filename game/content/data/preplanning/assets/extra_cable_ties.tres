@@ -5,9 +5,8 @@
 [resource]
 script = ExtResource("1")
 id = &"asset.extra_cable_ties"
-effect = 0
 category = &"gear"
-base_cost = 800
+cost = 800
 favors = 1
 grants = {
 &"stealth.cable_ties_extra": 2
