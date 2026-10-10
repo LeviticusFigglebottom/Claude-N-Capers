@@ -241,3 +241,11 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   format-string prefix is completed by some line.
 - D-045 closed: B's resolver derives shotgun reload totals (35b3bcc); ENV D's shotgun clip check re-enabled.
 - Glasshouse VoxelGI (script-baked under xvfb) accepted for P1; LightmapGI revisited if Godot exposes a scriptable bake.
+
+## D-047 — 2026-10-10 — Runtime script errors fail the test run
+- A GDScript runtime error aborts the test function and the runner counted it as a pass (found in the 4-env merge:
+  `test_app_flow.gd:149`, `test_masks.gd:163`). `tools/ci/run_tests.sh` now fails on any `SCRIPT ERROR:` line and lists
+  them. Tests that exercise error paths use `push_error`/`Log.error` (which print `ERROR:`), never runtime faults.
+- Merge fixes (lead, B-owned files): pre-planning screen tests count markers on the shown floor (Glasshouse has an
+  upstairs insider point); mask placeholder test accepts ENV D's model; strings for A's `bag_lift`/`hack_terminal`
+  prompts; `PreplanPlan.resolve_ids` returns `{}` only when ids were given and none was accepted.

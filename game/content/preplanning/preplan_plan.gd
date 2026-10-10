@@ -273,7 +273,7 @@ static func resolve_ids(heist_id: StringName, ids: Array, difficulty: int = Enum
 			Log.warn(&"preplan", "resolve_ids(%s): %s@%s rejected (%s)" % [heist_id, id, pid, r])
 		else:
 			accepted += 1
-	if accepted == 0:
+	if accepted == 0 and not ids.is_empty():
 		return {}  # LEAD: nothing resolved = no pre-planning (ENV A's PreplanAssets.is_active)
 	var res: Dictionary = p.apply()
 	res["cash_spent"] = {}

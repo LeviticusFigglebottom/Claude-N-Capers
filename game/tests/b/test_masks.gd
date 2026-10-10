@@ -159,7 +159,13 @@ func test_placeholder_visual() -> void:
 		assert_true(aabb.size.x > 0.1 and aabb.size.y > 0.1, "%s face-sized" % p.id)
 		assert_true(aabb.position.z < 0.0, "%s bulges toward -Z" % p.id)
 	var node: Node3D = MaskComposer.instantiate(MaskComposer.compose(COMP))
-	var mi: MeshInstance3D = node.get_node("Placeholder") as MeshInstance3D
+	# LEAD: with ENV D's base meshes on trunk the composition may use the model instead of "Placeholder".
+	var found: Array[Node] = node.find_children("*", "MeshInstance3D", true, false)
+	assert_false(found.is_empty(), "mask has a mesh")
+	if found.is_empty():
+		node.free()
+		return
+	var mi: MeshInstance3D = found[0] as MeshInstance3D
 	assert_true(mi.material_override is ShaderMaterial)
 	assert_eq((mi.material_override as ShaderMaterial).get_shader_parameter(&"pattern"), int(MaskPatternDef.Procedural.SPLIT))
 	node.free()
