@@ -143,3 +143,10 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - QB-36: `interaction.revive_speed_mult` is a time multiplier (lower = faster), like every `interaction.*` key.
 - QB-37: Hustler's vest bonus applies to **Light Vest, Patrol Vest and Heavy Vest only** (PD2 "ballistic vests" LBV/BV/HBV analogs). Overrules "all except suit".
 - Trunk hygiene: the lead set ENV B's reminder test `test_requested_keys_are_not_grantable_yet` to SKIP while `blocked_on_keys` is non-empty, so trunk stays green. ENV B grants the keys, clears the list and may restore the strict test.
+
+## D-032 — 2026-10-10 — Answers QA-9..12; ENV A P2 queue; no loud-AI split
+- QA-9: new TEST-ONLY hook `HeistRuntime.isolate_npc(npc)` (test_hooks.md v1.1). The P1 gate step 4 isolates the target guard before the pager test. Being spotted by others is correct gameplay, not a pager bug.
+- QA-10: `loot.body_bag` weight must be HEAVY (S6.3); ENV B fixes the data. The P9 headshot_mult is already 1.0 on trunk (A's branch was stale).
+- QA-11: approved. NPCs and AI teammates open unlocked doors on their path (instant in loud, a 0.6 s animation in stealth). Guards use keycard doors their post authorises. In loud, police breach locked doors (P3). Doors toggle nav links.
+- QA-12: the alarm reason list is in events.md. `pager_failed(&"cancelled")` on going loud is not an alarm.
+- No separate loud-AI environment: A1-09/A1-10 are already implemented. ENV A's queue was under 2 h, so P2 stealth-complete tasks A2-01..A2-07 are dispatched now (roadmap). P4 modifier hooks come after them.
