@@ -3,6 +3,51 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-10 15:05 UTC — B1-03, B1-05, D-024 app shell (all P1 B tasks delivered)
+### Done
+- D-024 app shell (f50c21c):
+  - Direct launch: `godot --path game -- --heist=<id> [--seed=n] [--difficulty=0..5]` (`LaunchArgs`). It skips the menus, launches solo with the saved loadout, and spawns the HUD and payday screen. Bad input logs an error and shows the main menu.
+  - The HUD finds its model via `G.LOCAL_HUD_MODEL`, and the mock joins that group.
+  - The heist list comes from `HeistRegistry`; the Glasshouse placeholder shows only while its def is missing. No `res://world` paths remain.
+- B1-03 (9e6eb48): `tools/blender/weapons/kestrel_p9.py` and `kestrel_p9_mods.py` on ENV C's lib, built with Blender 4.5.14 and deterministic (12/12 identical).
+  - Tris: pistol 8,510; suppressor 3,424; extended magazine 2,000; reflex sight 1,108; standard magazine 788; iron sights 224.
+  - All 10 visual_slots markers, plus a moving `Slide` node.
+  - `WeaponVisual` (content/weapons) attaches mods at their markers per ModType and hides replaced stock parts.
+  - Data `model` fields are wired. Previews: `game/assets/weapons/kestrel_p9_preview_*.png`.
+- B1-05 (ed3308e + 00307fd): firing range `content/range/firing_range.tscn`, opened from the main menu.
+  - Hall built from arch_* pieces: 9 lanes, with signs and lines at 5/10/15/20/30/40/60/80/100 m (layout comes from data).
+  - Silhouette targets with head and body hitboxes; HP per difficulty from a B-owned dummy table (light-TAC row) until EnemyDef ships.
+  - Damage numbers; a stat panel; free weapon and mod swap; a difficulty selector; DPS and TTK readouts.
+- `check_all.sh --env b` @ HEAD: PASS (155 tests, 0 failed, 5 skipped).
+### Stopgaps to delete when ENV A lands A1-02/A1-08
+- `content/range/range_spectator_input.gd` and `range_debug_gun.gd`: the temporary range camera and debug hitscan. The range uses ENV A's crew via `RangeCrewBridge` when it exists.
+- `RangeDummyDef.health/headshot_mult`: a copy of the light-TAC row, to switch to `EnemyDef` (D-010). `RangeMath`: switch to ENV A's runtime as the reference.
+### Target hit API (for ENV A)
+- `RangeHitbox` (StaticBody3D, layer 5 "hitboxes") with `get_damage_target() -> RangeTarget` and `get_hit_zone() -> Enums.HitZone`.
+- `RangeTarget.apply_damage(info: DamageInfo dict, attacker_net_id) -> Dictionary`, where amount is final damage.
+- `take_hit(info, attacker)`, where amount is body damage; the target applies the zone and crit multipliers itself.
+- The target also listens to `EventBus.damage_applied` for its own `net_id` (from `Ids.next()`). Use one path per shot, never both. Group `&"range_target"`.
+### In progress
+- —
+### Blocked
+- B1-08 mask mesh (ENV C).
+### Questions for lead
+- QB-20 (contract precision, ui_hud.md v1.1): please state the types: `detection[].kind` = Enums.ObserverKind, `marked_targets[].kind` = StringName, `objectives[].state` = Enums.ObjectiveState, `carried_bag.weight` = Enums.LootWeight, `ammo` keys = int WeaponSlot. Also, interaction `args` formats `blocked_reason` too.
+- QB-21 (materials, ENV C): the weapons use M_polymer_black, M_polymer_stipple, M_steel_blued, M_steel_bare, M_metal_matte, M_paint_white, M_brass_cartridge, M_glass_lens_tint (alpha 0.3) and M_emissive_reticle_red. None exists in world/materials yet, so they import with flat placeholder colours and a warning. Can ENV C add them? Is a library id OK for the emissive and transparent ones?
+- QB-22 (viewmodel conventions, ENV A + visual_slots.md):
+  - The weapon origin is the firing-hand pivot (grip centre plane, mid-grip, 20 mm below the grip top). Is that OK?
+  - `Slide` cycles along local +Z.
+  - Proposal: add an optional `AimPoint` marker (ADS alignment) and allow mods to carry their own `Muzzle` (suppressor tip). ENV A should then use `WeaponVisual.get_marker(&"Muzzle")`.
+  - On pistols, `SideRail` and `Underbarrel` share the dust-cover rail.
+  - Stock-part naming (`StockSight`, `StockMagazine`, ...) could go into data_schemas.md.
+- QB-23 (cues): beyond `cue.weapon_pistol_fire(_suppressed)`, do we want `cue.weapon_pistol_mag_out/mag_in/slide_release` for reloads?
+- QB-24 (range group): add `G.RANGE_TARGET = &"range_target"` to ids.gd and groups.md? Range targets are kept out of `G.ENEMY` and `G.NPC` on purpose, so AI never treats them as enemies.
+- QB-25 (range crew contract): proposed `CrewController.spawn_for_range(parent, xform, loadout) -> Node`, plus `set_loadout(loadout)` for instant swaps, for ENV A to implement. The range already looks these up dynamically.
+- QB-26 (headshots): `WeaponStats.headshot_mult` (P9 = 2.0) and `EnemyDef.headshot_mult[difficulty]` overlap. The range uses the enemy value and treats the weapon one as a fallback; multiplying both would give ×4. Which is canonical? Should one be removed or redefined as a bonus?
+- QB-27 (hit path): should ENV A call the target directly (`apply_damage`/`take_hit`) or only emit `damage_applied`? Either works, but never both. Also, consider putting the hitbox convention (layer 5 + `get_damage_target`/`get_hit_zone`) into a contract.
+### Ready for integration
+- yes (B1-03, B1-05, D-024 app shell); `check_all.sh --env b` result: PASS
+
 ## 2026-10-10 14:20 UTC — B1-04 (B-M2 UI), D-022 follow-ups
 ### Done
 - D-022 follow-ups (d940c9e):
