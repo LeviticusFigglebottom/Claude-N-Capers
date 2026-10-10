@@ -1,5 +1,5 @@
 # Glasshouse: Vossberg Jewelers (glasshouse)
-Status: DRAFT (ENV C, 2026-10-10), submitted for G0 review
+Status: APPROVED (lead, 2026-10-10) (D-023). Required changes 1–4 folded in by ENV C on 2026-10-10.
 
 ## Fiction
 - **Who:** Vossberg Jewelers, a family-run high-end jeweler (est. 1962, now run by Greta Vossberg)
@@ -15,6 +15,11 @@ Status: DRAFT (ENV C, 2026-10-10), submitted for G0 review
 
 ## Modes
 - **Stealth + loud.** Size S (8–15 min stealth, 10–18 min loud).
+- **Drilling in stealth is a deliberate last resort.** The workshop safe is ~9 m from the floor
+  guard's post, through 2 walls. That is inside the drill's 12.5 m occluded noise radius (S4.3), so
+  an unskilled drill alerts the floor guard (and the BOH rover). Drilling is viable only after the
+  guards are dealt with (pagers) or with silent devices (`stealth.silent_devices`, S9.3). This is
+  intended: the keycard is the clean path, and the drill trades pagers or a skill for time.
 - **Stealth:** casing as a customer is possible from the street, the sales floor and the alley
   (all PUBLIC). The safe opens with the **manager's keycard** (random location) or with a **drill**
   (noisy: 25 m audible). Required loot: 2 bags. The hard parts: one long staff corridor, many
@@ -42,7 +47,21 @@ Status: DRAFT (ENV C, 2026-10-10), submitted for G0 review
   the shopfront; (3) warm-lit window display boxes along Harlow Ave.
 - **Play space:** x −14…+32, z −8…+34 (alley to the far sidewalk of Harlow Ave; the alley west end
   to the garage facade). The edges are closed by facades, parked vehicles, a closed alley gate (west)
-  and street dressing. Nothing looks into the void.
+  and street dressing. Nothing looks into the void. Each edge is closed as follows (the `bounds`
+  validator checks every one):
+
+| Edge | Closure |
+|---|---|
+| Alley, west end (x −14) | A 2.4 m steel **alley gate** (chained) between the Castellan back wall and the Kessel Row yard wall. Behind it, a 6 m stub of alley ends in a brick wall with a parked dumpster (P4 police spawn hidden behind the gate). |
+| Alley, Pell St mouth (x 19–21, z −6…0) | Open to Pell St (it is the alley exit). Beyond it, Pell St north is closed at z −8 by a **parked box truck across the far lane plus construction barriers and a hoarding fence**; the P3 spawn is behind the truck. |
+| Alley, north side (z −7) | The Kessel Row backs: continuous 2-storey facades with fenced yards (2.2 m fences). |
+| Harlow Ave, west end (x −14) | The street continues as a vista: facades on both sides run to x −40, then a **bend in the avenue** (facade across the view axis at x −45), parked cars, a bus shelter. Players are stopped at x −14 by a road-works fence across the sidewalk and street (barriers + work van). |
+| Harlow Ave, east end (x +32) | Same treatment beyond the Pell St intersection: facades to x +55, then a T-junction facade; road-works barriers at x +32. |
+| Pell St south of Harlow (x 21–29, z > 30) | Facades on both sides plus a closed **underpass/parking ramp** facade at z 40. |
+| South (z 30–32) | Hotel + café facades (3–5 storeys) with a lit hotel canopy. |
+| East (x 30–32) | The 3-level parking garage facade (open deck slots show its interior ceilings and parked cars; geometry inside to 6 m depth). |
+| Up | Procedural blue-hour sky. Every rooftop seen from street level has a parapet and roof equipment. |
+
 
 ## Floor plans
 1 char = 0.5 m. Each character is a **grid point** (x = 0.5·col). Lines are **wall centre lines**:
@@ -52,8 +71,9 @@ exterior 0.4 m, interior 0.2 m. Origin is the NW corner of the building. +x is e
 Legend: `#` exterior wall, `|`/`-` interior wall, `D` door, `W` window, `G` guard post,
 `K` keycard candidate slot, `L` loot (`L` on a wall = wall display cases), `S` safe, `(O)` chandelier
 display (landmark), `======` sales counter, `^` stair up-flight, `v` return flight, `=` (upper) void
-over the up-flight with a 1.05 m railing `rrr`, `H` roof hatch (fixed ladder), `#mon` camera
-station console. Escape `E` and spawns `P` are on the site plan.
+over the up-flight with a 1.05 m railing `rrr`, `H` roof hatch (fixed ladder), `M` monitor wall /
+camera station console (U2, against the solid west wall), `o` operator seat (faces the monitors; the
+alley window is to the operator's right). Escape `E` and spawns `P` are on the site plan.
 
 **Vertical data** (`HeistMap.floor_heights = [0.0, 4.2]`):
 
@@ -150,11 +170,11 @@ break-room window. `d` back door. `*`/`NEON` is the corner sign.
   0.0 ###WWWW#######WWWW######W############
       #U1        |U2       |U3  |G8   |U8 #
   1.0 #          |         |    |     |   #
-      #          |         |    |=  v |   #
-  2.0 #          |      #mon    |     |H  #
-      # K        |K        |    |=  v |   #
+      #          |M        |    |=  v |   #
+  2.0 #          |Mo       |    |     |H  #
+      # K        |M        |    |=  v |   #
   3.0 #          |         |    |     |   #
-      #          |         |    |=  v |   #
+      #          |       K |    |=  v |   #
   4.0 #          |         |    |     |   #
       #-----D---------D------D--rrr   -D--#
   5.0 #U4               G                 #
@@ -193,7 +213,7 @@ Sizes are between wall centre lines. Clear size = minus 0.1–0.2 m per side.
 | G5 | sales_floor | 13 × 6 | 3.6 | `sales_floor_jewelry` | Chandelier display (landmark, centre), 3 west wall cases, 2 island cases, 1 rear island, sales counter (0.9 m, register, card terminal) with the staff door behind it, consultation table with 2 chairs, bench by the window, shopfront window boxes (sill 0.3). Double glass entry door (1.8 m). |
 | G6 | sales_floor (private salon) | 5 × 6 | 3.2 | `salon_private` | By-appointment viewing room: 2 high-value cases, sofa, coffee table, mirror, armchairs, vitrine. Windows to Pell St and Harlow Ave. Door from G5 (variable lock); back door from G4 (lockpick). |
 | U1 | break_room | 5.5 × 4.5 | 3.0 | `break_room` | Fridge, counter with sink, microwave and coffee, table with 4 chairs, lockers, bulletin board. North window to the alley with the **fire-escape landing** (variable: open/latched). |
-| U2 | security_room | 5 × 4.5 | 3.0 | `security_office` | `camera_station` (P2), desk, monitor wall, key cabinet, guard lockers, coffee. North window overlooks the **alley and back door**. |
+| U2 | security_room | 5 × 4.5 | 3.0 | `security_office` | `camera_station` (P2) with its monitor wall against the solid **west** wall (U1 partition) and the operator seat facing west, so the north alley window is at the operator's right; desk, key cabinet (east wall, `K`), guard lockers, coffee. North window overlooks the **alley and back door**. |
 | U3 | restroom | 2.5 × 4.5 | 3.0 | `restroom_single` | Staff WC over G3. High frosted window. |
 | U4 | corridor | 18 × 1.5 | 3.0 | `corridor_office` | Upper spine. Stair arrival at x 14.5–16; 1.05 m railing along the void (x 13–14.5). |
 | U8 | corridor (upper lobby) | 2 × 4.5 | 3.0 | `corridor_service` | Roof hatch ladder (locked in P1), extinguisher, fire-exit sign pointing down the stair. |
@@ -225,6 +245,22 @@ upper floor reaches it via the stair, 18 m max travel).
   window boxes) and G6 when it is unlocked. Staff (`staff` points) go counter ↔ G4 ↔ G3 WC ↔ U1 break
   room ↔ U5. The jeweler goes G2 bench ↔ U1 coffee ↔ G3 WC, so he periodically leaves the workshop
   (a 40–70 s absence window).
+
+### Civilian roster (spawn data)
+
+| NPC | Count | Presence | Spawn tags | Idle activity (`SpawnPoint.idle_activity`) | PatrolPoint tags used |
+|---|---|---|---|---|---|
+| Sales associate (counter) | 1 | always | `civ_staff_counter` | `desk_work` (register) | `staff`, `staff_floor` |
+| Sales associate (floor) | 1 | always | `civ_staff_floor` | `browse` (tending cases) | `staff`, `staff_floor` |
+| Jeweler | 0–1 | `jeweler` = `jw_working` | `civ_staff_workshop` | `desk_work` (bench) | `staff`, `staff_boh` (G2, U1 coffee, G3 WC) |
+| Admin clerk | 0–1 | `admin_clerk` = `clerk_in` | `civ_staff_admin` | `desk_work` | `staff`, `staff_upper` (U5, U1, U3) |
+| Manager (Greta Vossberg) | 0–1 | rare event `nervous_manager` | `civ_staff_manager` | `phone` | `staff`, `staff_upper` |
+| Customers | 2–5 | scalar `customers` | `civ_customer` | `browse` / `queue` / `sit` | `civilian` (G5 and G6 when unlocked) |
+
+**Civilians in total:** Routine 4–8 (2 associates + 0–2 variable staff + 2–4 customers; +1 if
+`nervous_manager`). Brutal 5–9 (3–5 customers). The two associates are what route 1 has to read:
+the counter associate works the register end, and the floor associate circulates between the cases
+and the salon door. The window to move behind the counter opens when both are at the east half of the floor.
 
 ## Sightlines
 - **Floor guard post (G5, inside the entrance, facing N):** covers the whole sales floor, the counter
