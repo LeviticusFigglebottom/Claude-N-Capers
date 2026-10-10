@@ -38,6 +38,11 @@ REVIEW_CELLS = {
                 "shotgun_fire_ads:9", "shotgun_reload_loop:2", "shotgun_reload_loop:6", "shotgun_reload_end_empty:17"],
     "lmg": ["lmg_idle:0", "lmg_ads_idle:0", "lmg_sprint:4", "lmg_reload:24", "lmg_reload:60", "lmg_reload:100",
             "lmg_reload:116", "lmg_reload:132", "lmg_reload_empty:160"],
+    "akimbo": ["akimbo_idle:0", "akimbo_ads_idle:0", "akimbo_sprint:4", "akimbo_fire:1", "akimbo_fire_l:1",
+               "akimbo_reload:4", "akimbo_reload:11", "akimbo_reload_empty:50", "akimbo_draw:9"],
+    "revolver": ["revolver_idle:0", "revolver_ads_idle:0", "revolver_fire:1", "revolver_reload:12",
+                 "revolver_reload:22", "revolver_reload:40", "revolver_reload:46", "revolver_reload:56",
+                 "revolver_sprint:4"],
     "sniper": ["sniper_idle:0", "sniper_ads_idle:0", "sniper_sprint:4", "sniper_fire:1", "sniper_bolt:9",
                "sniper_bolt:12", "sniper_bolt_ads:12", "sniper_reload:22", "sniper_reload:47"],
 }
@@ -78,6 +83,95 @@ def _import_weapon(asset: str):
     return gun, {o.name: o for o in objs}, rest
 
 
+def _box(name, lo, hi, mat, bev: float = 0.0):
+    import bmesh
+    me = bpy.data.meshes.new(name)
+    bm = bmesh.new()
+    bmesh.ops.create_cube(bm, size=1.0)
+    lo, hi = np.array(lo, float), np.array(hi, float)
+    for v in bm.verts:
+        v.co = tuple(lo + (np.array(v.co) + 0.5) * (hi - lo))
+    if bev > 0.0:
+        bmesh.ops.bevel(bm, geom=list(bm.edges), offset=bev, segments=2, affect="EDGES")
+    bm.to_mesh(me)
+    bm.free()
+    me.materials.append(mat)
+    ob = bpy.data.objects.new(name, me)
+    scene.link(ob)
+    return ob
+
+
+def _tube(name, c, r, y0, y1, mat, seg: int = 24, flutes: int = 0):
+    """A cylinder along weapon +Y (Blender weapon axes) centred on ``c`` (x, z)."""
+    import bmesh
+    me = bpy.data.meshes.new(name)
+    bm = bmesh.new()
+    bmesh.ops.create_cone(bm, cap_ends=True, segments=seg, radius1=r, radius2=r, depth=y1 - y0)
+    for v in bm.verts:
+        x, y, z = v.co
+        if flutes:
+            a = math.atan2(y, x)
+            k = 1.0 - 0.10 * max(0.0, math.cos(flutes * a)) ** 8
+            x, y = x * k, y * k
+        v.co = (c[0] + x, (y0 + y1) * 0.5 + z, c[1] + y)
+    bm.to_mesh(me)
+    bm.free()
+    me.materials.append(mat)
+    me.shade_smooth()
+    ob = bpy.data.objects.new(name, me)
+    scene.link(ob)
+    return ob
+
+
+def _revolver_proxy(s):
+    """Scratch-only Marshal .357 stand-in (never exported): frame + barrel (static), Crane group
+    (crane arm, fluted cylinder, ejector rod) and a Speedloader with six rounds."""
+    from lib import materials
+    steel = materials.material("review_rev_steel", "#2E3034", 0.35)
+    wood = materials.material("review_rev_wood", "#5B3B27", 0.6)
+    brass = materials.material("review_rev_brass", "#B48A3E", 0.3)
+    loader_m = materials.material("review_rev_loader", "#1E1F22", 0.5)
+    m = s.markers
+    cyl, cr, cl = m["cyl"], m["cyl_r"], m["cyl_len"]
+    y0, y1 = cyl[1] - cl / 2, cyl[1] + cl / 2
+    static = [
+        _box("RevFrameTop", (-0.011, y0 - 0.055, 0.050), (0.011, y1 + 0.004, 0.060), steel, 0.002),
+        _box("RevFrameRear", (-0.012, y0 - 0.050, 0.004), (0.012, y0 - 0.001, 0.058), steel, 0.002),
+        _box("RevFrameLow", (-0.011, y0 - 0.020, 0.000), (0.011, y1 + 0.010, 0.012), steel, 0.002),
+        _box("RevFrameFront", (-0.010, y1 + 0.001, 0.004), (0.010, y1 + 0.012, 0.060), steel, 0.002),
+        _box("RevHammer", (-0.003, y0 - 0.062, 0.046), (0.003, y0 - 0.044, 0.068), steel),
+        _box("RevGuard", (-0.003, 0.0, -0.022), (0.003, 0.050, -0.016), steel),
+        _box("RevTrigger", (-0.003, 0.020, -0.015), (0.003, 0.028, 0.002), steel),
+        _box("RevSightRear", (-0.006, -0.030, 0.058), (0.006, -0.022, 0.066), steel),
+        _box("RevSightFront", (-0.0015, 0.150, 0.058), (0.0015, 0.158, 0.068), steel),
+        _tube("RevBarrel", (0.0, 0.047), 0.0085, y1, 0.160, steel),
+        _tube("RevShroud", (0.0, cyl[2]), 0.0065, y1, 0.112, steel),
+    ]
+    grip = _box("RevGrip", (-0.0145, -0.050, -0.080), (0.0145, -0.012, 0.010), wood, 0.004)
+    grip.matrix_world = Matrix.Rotation(math.radians(-18.0), 4, "X") @ grip.matrix_world
+    bpy.context.view_layer.update()
+    grip.data.transform(grip.matrix_world)
+    grip.matrix_world = Matrix.Identity(4)
+    static.append(grip)
+    h = m["hinge"]
+    crane = [_tube("RevCylinder", (cyl[0], cyl[2]), cr, y0, y1, steel, 36, flutes=6),
+             _box("RevCraneArm", (h[0] - 0.003, y1 + 0.0005, h[2] - 0.003), (cyl[0] + 0.003, y1 + 0.005, cyl[2] + 0.003),
+                  steel),
+             _tube("RevRod", (cyl[0], cyl[2]), 0.0028, y1, m["rod_tip"][1], steel, 12)]
+    for i in range(6):
+        a = math.radians(60.0 * i)
+        crane.append(_tube(f"RevCase{i}", (cyl[0] + 0.0115 * math.cos(a), cyl[2] + 0.0115 * math.sin(a)), 0.0048,
+                           y0 - 0.0012, y0, brass, 12))
+    ld = m["loader"]
+    loader = [_tube("RevLoader", (ld[0], ld[2]), 0.020, y0 - 0.020, y0 - 0.006, loader_m, 32),
+              _tube("RevLoaderKnob", (ld[0], ld[2]), 0.007, y0 - 0.030, y0 - 0.020, loader_m, 16)]
+    for i in range(6):
+        a = math.radians(60.0 * i)
+        loader.append(_tube(f"RevRound{i}", (ld[0] + 0.0115 * math.cos(a), ld[2] + 0.0115 * math.sin(a)), 0.0045,
+                            y0 - 0.006, y0 + 0.026, brass, 12))
+    return static, crane, loader
+
+
 def _shell(mat):
     me = bpy.data.meshes.new("ShellProxy")
     import bmesh
@@ -103,8 +197,17 @@ def render(out: pathlib.Path, args: list[str]) -> None:
     fns = CL.state_fns(sk, s)
     arm = F.build_arms_rig()
     F.build_arms_mesh(_Ctx(), arm, {"skin": 2})
-    gun, parts, rest = _import_weapon(s.weapon)
+    rev = None
+    if (REPO / f"game/assets/weapons/{s.weapon}/{s.weapon}.glb").exists():
+        gun, parts, rest = _import_weapon(s.weapon)
+    else:                                         # no marshal model yet: scratch proxy (never exported)
+        rev = _revolver_proxy(s)
+        gun, parts, rest = None, {}, {}
     mag_node = next((o for n, o in parts.items() if n.startswith("StockMagazine")), None)
+    gun_l, mag_l = None, None
+    if s.support == "akimbo":                     # the second gun (WeaponVisual on hand.L in game)
+        gun_l, parts_l, rest_l = _import_weapon(s.weapon)
+        mag_l = next((o for n, o in parts_l.items() if n.startswith("StockMagazine")), None)
     from lib import materials
     shell = _shell(materials.material("review_shell", "#B0322A", 0.4))
     cam = bpy.data.cameras.new("FP")
@@ -130,7 +233,25 @@ def render(out: pathlib.Path, args: list[str]) -> None:
         A.apply_frame(arm, sv)
         Rw, pw = weapon_of(sk, sv)
         Mg = _m(Rw, pw)
-        gun.matrix_world = Mg
+        if gun is not None:
+            gun.matrix_world = Mg
+        if gun_l is not None:
+            gun_l.matrix_world = _m(*st.extra["wf_l"])
+            bpy.context.view_layer.update()
+            if mag_l is not None:
+                mag_l.matrix_world = _m(*st.extra["mag_l"]) @ rest_l[mag_l.name]
+        if rev is not None:
+            import _arms_revolver as RV
+            static, crane, loader = rev
+            for o in static:
+                o.matrix_world = Mg
+            Rc, tc = RV.crane_frame(s, st.extra.get("crane", 0.0))
+            for o in crane:
+                o.matrix_world = Mg @ _m(Rc, tc)
+            Rm, pm = magazine_of(sk, sv)
+            for o in loader:
+                o.matrix_world = _m(Rm, pm)
+                o.hide_render = not st.extra.get("loader", False)
         bpy.context.view_layer.update()
         if mag_node is not None:
             Rm, pm = magazine_of(sk, sv)
