@@ -5,7 +5,13 @@
 ## - arrives at the valid police spawn point nearest the crew with `aegis_shields` shields
 ##   (enemy.bulwark when its EnemyDef exists, else the enemy.aegis placeholder), all flagged META_AEGIS.
 ## - while he is on the map (`locks_assault()`) the director never enters FADE.
-## - once in position (captain_settle_s after arrival) every enemy (roles police/special) takes
+## - "in position" is a real destination: at summon he picks a defensive TacticalPoint (one tagged
+##   captain_position_tag, nearest the crew centroid; else a COVER / SHIELD_ANCHOR point
+##   captain_position_min_m..max_m from the centroid, closest to pref_m) and the squad moves there in
+##   formation (PoliceBrain.set_order_position: Brandt on the point, shields on a ring of
+##   aegis_spread_m around it) and holds it. He is in position on arrival (captain_position_arrive_m)
+##   or after captain_position_timeout_s; without any point, captain_settle_s after arrival (fallback).
+## - once in position every enemy (roles police/special) takes
 ##   damage x (1 - resistance): base 10%, +5% every 5 s, up to 50%; cue.aegis_pulse on every step.
 ## - he and his shields take at most captain_hit_cap_frac of max HP per hit (x6 from explosives);
 ##   no flinch (EnemyDef.params.no_flinch / META_NO_FLINCH for flinch logic); he cannot be killed.
@@ -30,6 +36,9 @@ const BRANDT_PATH: String = "res://systems/ai/data/enemies/brandt.tres"
 const AEGIS_PATH: String = "res://systems/ai/data/enemies/aegis.tres"
 const RETREAT_HP: StringName = &"hp"
 const RETREAT_FORMATION: StringName = &"formation"
+## TacticalPoint groups searched for a tagged destination (COVER / SHIELD_ANCHOR also untagged).
+const POSITION_GROUPS: Array[StringName] = [G.COVER_POINT, &"shield_anchor", &"flank_point", G.SNIPER_PERCH]
+const DEFENSIVE_GROUPS: Array[StringName] = [G.COVER_POINT, &"shield_anchor"]
 
 var director: AssaultDirector = null
 var brandt: NpcBase = null
@@ -42,6 +51,11 @@ var resistance: float = 0.0
 ## Once per heist day (a HeistRuntime is one day).
 var spawned_today: bool = false
 var retreat_reason: StringName = &""
+## Defensive destination (null = none, the settle timer applies) and its position.
+var position_point: TacticalPoint = null
+var destination: Vector3 = Vector3.INF
+## True when in_position came from reaching the destination (not a timeout).
+var reached_destination: bool = false
 
 var _t_active: float = 0.0
 var _step_t: float = 0.0
@@ -104,6 +118,10 @@ func summon() -> bool:
 	spawned_today = true
 	active = true
 	in_position = false
+	reached_destination = false
+	position_point = pick_position()
+	destination = position_point.global_position if position_point != null else Vector3.INF
+	_order_squad()
 	resistance = 0.0
 	retreat_reason = &""
 	_t_active = 0.0
@@ -130,6 +148,80 @@ func shield_def() -> EnemyDef:
 	if tw().aegis_def != null:
 		return tw().aegis_def
 	return load(AEGIS_PATH) as EnemyDef if ResourceLoader.exists(AEGIS_PATH) else null
+
+
+## Defensive TacticalPoint for the squad (see the header), or null.
+func pick_position() -> TacticalPoint:
+	var rt: HeistRuntime = director.runtime()
+	if rt == null or rt.map == null:
+		return null
+	var crew: Array[CrewController] = []
+	for c: CrewController in rt.crew_members():
+		if c.crew_state != Enums.CrewState.CUSTODY:
+			crew.append(c)
+	if crew.is_empty():
+		return null
+	var centroid: Vector3 = Vector3.ZERO
+	for c: CrewController in crew:
+		centroid += c.global_position
+	centroid /= float(crew.size())
+	var tag: StringName = tw().captain_position_tag
+	var best: TacticalPoint = null
+	var best_d: float = INF
+	if tag != &"":
+		for g: StringName in POSITION_GROUPS:
+			for n: Node in rt.map.get_slots(g):
+				var tp: TacticalPoint = n as TacticalPoint
+				if tp == null or not tp.tags.has(tag):
+					continue
+				var d: float = flat_dist(tp.global_position, centroid)
+				if d < best_d:
+					best_d = d
+					best = tp
+	if best != null:
+		return best
+	var best_score: float = INF
+	for g: StringName in DEFENSIVE_GROUPS:
+		for n: Node in rt.map.get_slots(g):
+			var tp: TacticalPoint = n as TacticalPoint
+			if tp == null:
+				continue
+			var d: float = flat_dist(tp.global_position, centroid)
+			if d < tw().captain_position_min_m or d > tw().captain_position_max_m:
+				continue
+			var score: float = absf(d - tw().captain_position_pref_m)
+			if score < best_score:
+				best_score = score
+				best = tp
+	return best
+
+
+## Formation slot of squad member `i` of `n` (shields on a ring around the destination).
+func formation_slot(i: int, n: int) -> Vector3:
+	if destination == Vector3.INF:
+		return Vector3.INF
+	var ang: float = TAU * float(i) / float(maxi(n, 1))
+	return destination + Vector3(cos(ang), 0.0, sin(ang)) * tw().aegis_spread_m
+
+
+func _order_squad() -> void:
+	if destination == Vector3.INF:
+		return
+	var b: PoliceBrain = _brain(brandt)
+	if b != null:
+		b.set_order_position(destination)
+	for i: int in range(shields.size()):
+		var sb: PoliceBrain = _brain(shields[i])
+		if sb != null:
+			sb.set_order_position(formation_slot(i, shields.size()))
+
+
+static func _brain(npc: NpcBase) -> PoliceBrain:
+	return npc.get_node_or_null(^"Brain") as PoliceBrain if is_instance_valid(npc) else null
+
+
+static func flat_dist(a: Vector3, b: Vector3) -> float:
+	return Vector2(a.x - b.x, a.z - b.z).length()
 
 
 ## Shields still in formation (alive, not broken up).
@@ -172,6 +264,12 @@ func retreat(reason: StringName) -> void:
 		if is_instance_valid(s) and s.has_meta(META_AEGIS):
 			s.remove_meta(META_AEGIS)  # PD2 phalanx breakup: the rest fight on as normal units
 			s.remove_meta(META_NO_FLINCH)
+		var sb: PoliceBrain = _brain(s)
+		if sb != null:
+			sb.clear_order()
+	var bb: PoliceBrain = _brain(brandt)
+	if bb != null:
+		bb.clear_order()
 	shields.clear()
 	var id: int = brandt.net_id if is_instance_valid(brandt) else 0
 	Log.info(&"director", "Commander Brandt retreats (%s)" % reason)
@@ -197,7 +295,15 @@ func _physics_process(delta: float) -> void:
 		return
 	_t_active += delta
 	if not in_position:
-		if _t_active >= tw().captain_settle_s:
+		var settled: bool = false
+		if destination == Vector3.INF:
+			settled = _t_active >= tw().captain_settle_s
+		elif flat_dist(brandt.global_position, destination) <= tw().captain_position_arrive_m:
+			settled = true
+			reached_destination = true
+		else:
+			settled = _t_active >= tw().captain_position_timeout_s
+		if settled:
 			in_position = true
 			_step_t = 0.0
 			_set_resistance(tw().aegis_resist_base)

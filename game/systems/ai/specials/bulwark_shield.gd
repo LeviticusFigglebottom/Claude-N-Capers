@@ -14,6 +14,8 @@ class_name BulwarkShield
 extends AnimatableBody3D
 
 signal blocked(info: Dictionary)
+## Every hit on the shield (server, before blocking / piercing): BulwarkBrain stagger (L4.5).
+signal struck(info: Dictionary)
 
 const GROUP: StringName = &"bulwark_shield"
 const LAYER_WORLD_DYNAMIC: int = 1 << 1
@@ -23,6 +25,8 @@ var carrier: NpcBase = null
 var dropped: bool = false
 var blocked_hits: int = 0
 var pierced_hits: int = 0
+## L4.5 stagger: guard dropped (no collision, lowered); hits pass to the Bulwark behind.
+var guard_down: bool = false
 
 
 func _ready() -> void:
@@ -42,6 +46,16 @@ func attach_to(npc: NpcBase, local_pos: Vector3) -> void:
 	position = local_pos
 	rotation = Vector3.ZERO
 	npc.add_collision_exception_with(self)
+
+
+## Server: raise (`up`) or drop the guard. Down = no collision (bullets and bodies pass), the shield is
+## held lowered at `local_pos`, tilted forward.
+func set_guard(up: bool, local_pos: Vector3) -> void:
+	guard_down = not up
+	collision_layer = LAYER_WORLD_DYNAMIC if up else 0
+	if carrier != null and get_parent() == carrier:
+		position = local_pos
+		rotation = Vector3.ZERO if up else Vector3(-PI * 0.3, 0.0, 0.0)
 
 
 ## The Bulwark died: the shield stays where it is (reparented under `new_parent`, transform kept).
@@ -69,6 +83,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	out["blocked_by_shield"] = true
 	if not Net.is_authority():
 		return out
+	struck.emit(info)
 	var tw: CombatTweak = CombatTweak.data()
 	var type: int = int(info.get("type", Enums.DamageType.BULLET))
 	var mult: float = 0.0

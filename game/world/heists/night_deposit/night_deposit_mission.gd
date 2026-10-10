@@ -40,6 +40,11 @@ const GLITCH_TIME_LOCK_S: float = 10.0
 const ARMORED_CAR_AT_S: float = 720.0
 const FOG_LIFTS_AT_S: float = 480.0
 const COURIER_BAGS: int = 2
+const ARMORED_CAR_GUARDS: int = 2
+const ARMORED_CAR_SPAWN_TAG: StringName = &"guard_armored_car"
+## World static (layer 1), as the generator's prop_box bodies.
+const CAR_COLLISION_LAYER: int = 1
+const ARMORED_CAR_NODE: NodePath = ^"../Variants/Group_armored_car/Slot_armored_car_bay/ArmoredCar"
 
 var _lockdown: bool = false
 var _vault_open: bool = false
@@ -123,8 +128,10 @@ func _apply_scalars() -> void:
 func _schedule_rare_events() -> void:
 	if _rare(RARE_FOG):
 		start_timer(&"fog_lifts", FOG_LIFTS_AT_S, _on_fog_lifts)
+	# armored_car_early is Brutal+ through the table's min_difficulty; the difficulty check stays as a guard.
 	if _rare(RARE_ARMORED_CAR) and difficulty >= Enums.Difficulty.BRUTAL:
-		start_timer(&"armored_car", ARMORED_CAR_AT_S, _on_armored_car)
+		_set_armored_car_present(false)
+		schedule_at(ARMORED_CAR_AT_S, &"armored_car", _on_armored_car)
 
 
 func _on_fog_lifts() -> void:
@@ -134,13 +141,28 @@ func _on_fog_lifts() -> void:
 		we.environment.fog_density *= 0.25
 
 
-## Brutal+ bad event: the armoured car arrives with 2 extra guards (G1 -> B1). Spawning them needs an
-## ENV A hook (timed NPC spawn); until then the line plays and the objective data flags it.
+## Brutal+ bad event (doc §Rare events): at 12:00 elapsed the armoured car (forced variant slot
+## `armored_car_bay`, hidden until now) pulls into the lot and 2 extra guards (pagers) step out at its
+## rear, then walk graph `ArmoredCar` (lot -> G1 -> stair -> B1). Stealth only: once loud the police
+## assault is the pressure, so neither the car nor the guards come.
 func _on_armored_car() -> void:
 	if went_loud:
 		return
+	_set_armored_car_present(true)
 	say(&"vo.mercer.night_deposit_armored_car")
-	update_objective_data(&"secure", {"armored_car": true})
+	var guards: Array[Node] = spawn_guards(ARMORED_CAR_GUARDS, ARMORED_CAR_SPAWN_TAG)
+	update_objective_data(&"secure", {"armored_car": true, "extra_guards": guards.size()})
+
+
+## The forced armoured car body: hidden and without collision until it arrives.
+func _set_armored_car_present(on: bool) -> void:
+	var car: Node3D = get_node_or_null(ARMORED_CAR_NODE) as Node3D
+	if car == null:
+		return
+	car.visible = on
+	var body: CollisionObject3D = car as CollisionObject3D
+	if body != null:
+		body.collision_layer = CAR_COLLISION_LAYER if on else 0
 
 
 # --- Stealth flow -----------------------------------------------------------------------------

@@ -397,7 +397,7 @@ static func _try_floor(st: _State, asset: String, center: bool, near: int, radiu
 		if near >= 0:
 			var c: Vector3 = _anchor_point(st, near)
 			pos = Vector3(c.x + st.rng.randf_range(-radius, radius), 0.0, c.z + st.rng.randf_range(-radius, radius))
-		elif center:
+		elif center and t < TRIES / 2:
 			pos = Vector3(st.rng.randfn(0.0, sx * 0.15), 0.0, st.rng.randfn(0.0, sz * 0.15))
 		else:
 			pos = Vector3(st.rng.randf_range(-sx, sx), 0.0, st.rng.randf_range(-sz, sz))
@@ -419,9 +419,25 @@ static func _try_floor(st: _State, asset: String, center: bool, near: int, radiu
 			continue
 		if not _lone_ok(st, box):
 			continue
+		if clr > 0.0 and not _halo_free(st, box, clr * 0.6):
+			continue
 		_add(st, asset, lx, "center" if center else "floor")
 		return true
 	return false
+
+
+## Free-standing furniture keeps a ring of `clr` free of other floor furniture and keep-outs, so its
+## chairs / users fit around it (tables, executive desks, podiums).
+static func _halo_free(st: _State, box: AABB, clr: float) -> bool:
+	var halo := AABB(Vector3(box.position.x - clr, 0.0, box.position.z - clr), Vector3(box.size.x + 2.0 * clr, 1.2, box.size.z + 2.0 * clr))
+	for h: AABB in st.hard:
+		if _hit(halo, h):
+			return false
+	for p: Dictionary in st.placed:
+		var b: AABB = p["box"]
+		if b.position.y < 0.5 and b.size.y > 0.05 and _hit(halo, b):
+			return false
+	return true
 
 
 ## Rugs (thin support props) under a floor prop: the prop must sit fully on one (lifted by its
@@ -700,6 +716,11 @@ static func _place_optional(st: _State) -> void:
 				break
 		if pick == &"":
 			pick = StringName(String(kinds[kinds.size() - 1]))
+		# an optional kind never floods a room: at most counts.y (default 2) of it
+		var cap: int = (st.kit.counts[pick] as Vector2i).y if st.kit.counts.has(pick) else 2
+		if _count_kind(st, pick) >= cap:
+			fails += 1
+			continue
 		var n: int = _pick_count(st, pick)
 		var ok: bool = false
 		for i: int in range(n):

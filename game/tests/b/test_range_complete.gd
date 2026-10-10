@@ -124,6 +124,7 @@ func test_shield_blocks_without_pierce_and_passes_quarter_with_it() -> void:
 func test_shield_pierce_fallback_from_shooter_stats() -> void:
 	var t: RangeTarget = _target(&"range_dummy.bulwark")
 	var legacy: Dictionary = Damage.info(40.0, Enums.DamageType.BULLET, Enums.HitZone.BODY, HERON, Vector3.ZERO, Vector3.FORWARD, 1)
+	legacy.erase("shield_pierce")  # LEAD (D-052): Damage.info now always carries the key; rebuild the legacy shape
 	assert_false(legacy.has("shield_pierce"), "pre-A3-06 info shape")
 	t.pierce_fallback = LoadoutResolver.resolve_weapon(HERON, [])
 	var res: Dictionary = t.shield_node.take_hit(legacy, 1)

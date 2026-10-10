@@ -309,6 +309,7 @@ func build_variants(variants: Node3D) -> void:
 	_variants_vent(variants)
 	_variants_lasers(variants)
 	_variants_loot_escape(variants)
+	_variants_armored_car(variants)
 
 
 func _variants_guards(variants: Node3D) -> void:
@@ -455,3 +456,16 @@ func _variants_loot_escape(variants: Node3D) -> void:
 		null, {"kind": "boat_hatch"}, false)
 	prefab(e2, "escape_zone", "BoatEscapeE2", Vector3(8.5, -1.2, 34.7), 0.0,
 		{"objective_tag": &"escape_boat", "escape_type": &"boat", "zone_size_m": Vector3(5.6, 3.0, 1.2)})
+
+
+## Rare `armored_car_early` (Brutal+): group `armored_car` rolls no slot (pick 0); the rare event's
+## force_active pins `armored_car_bay`. The mission hides the car until it arrives (12:00) and then
+## spawns the 2 guards at its rear. `armored_car_none` only satisfies the >= 2 slots rule.
+func _variants_armored_car(variants: Node3D) -> void:
+	var g: Node3D = _group(variants, "armored_car")
+	var bay: VariantSlot = _slot(g, "armored_car", "armored_car_bay", 1.0, {"label": "armoured car"})
+	var body: Array = L.ARMORED_CAR["body"]
+	prop_box(bay, "ArmoredCar", body[0], body[1], 0.0, "vehicle", false, "vehicle")
+	for sp: Array in L.ARMORED_CAR["spawns"]:
+		spawn(bay, String(sp[0]), "GUARD", sp[1], float(sp[2]), ["scripted", "guard_armored_car"], "", "ArmoredCar")
+	_slot(g, "armored_car", "armored_car_none", 1.0)

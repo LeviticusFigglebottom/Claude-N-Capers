@@ -28,6 +28,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -59,6 +60,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -92,17 +94,18 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
  "prop_awning": {
   "aabb": [
    -1.52,
-   -0.4,
-   -1.0,
+   -0.3269,
+   -1.0109,
    3.04,
-   0.7,
-   1.0
+   0.6069,
+   1.0109
   ],
   "clear": 0.0,
   "fixture": false,
@@ -123,6 +126,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 2.75
  },
@@ -154,6 +158,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -185,6 +190,7 @@
   "standoff": 4.5,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -216,6 +222,7 @@
   "standoff": 4.5,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -247,6 +254,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -280,6 +288,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -311,6 +320,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -342,6 +352,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -373,6 +384,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -404,6 +416,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -435,6 +448,7 @@
   "standoff": 2.9,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -476,6 +490,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -507,6 +522,7 @@
   "standoff": 3.7,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -538,6 +554,7 @@
   "standoff": 3.7,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -569,6 +586,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -604,6 +622,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -635,6 +654,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -666,6 +686,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -697,6 +718,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 1.45
  },
@@ -728,6 +750,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 1.5
  },
@@ -759,17 +782,18 @@
   "standoff": 2.2,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
  "prop_bust_display": {
   "aabb": [
-   -0.0978,
+   -0.111,
    0.0,
-   -0.0723,
-   0.1955,
+   -0.052,
+   0.222,
    0.3,
-   0.1445
+   0.104
   ],
   "clear": 0.0,
   "fixture": false,
@@ -794,6 +818,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -828,6 +853,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -862,6 +888,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -895,6 +922,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -926,6 +954,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -957,6 +986,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -991,6 +1021,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1025,6 +1056,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1059,6 +1091,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1094,6 +1127,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1125,6 +1159,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1159,6 +1194,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1190,6 +1226,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1221,6 +1258,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1252,6 +1290,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1283,6 +1322,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1314,6 +1354,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1345,6 +1386,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1379,6 +1421,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1410,6 +1453,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1423,10 +1467,10 @@
    0.679
   ],
   "clear": 0.0,
-  "fixture": false,
+  "fixture": true,
   "glb": "res://assets/props/prop_display_case_island/prop_display_case_island.glb",
   "group": "display_case",
-  "has_light": false,
+  "has_light": true,
   "hosts": [],
   "keepout": [],
   "kind": "display_case",
@@ -1446,6 +1490,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1459,10 +1504,10 @@
    0.756
   ],
   "clear": 0.0,
-  "fixture": false,
+  "fixture": true,
   "glb": "res://assets/props/prop_display_case_island_long/prop_display_case_island_long.glb",
   "group": "display_case",
-  "has_light": false,
+  "has_light": true,
   "hosts": [],
   "keepout": [],
   "kind": "display_case",
@@ -1482,6 +1527,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1495,10 +1541,10 @@
    2.454
   ],
   "clear": 0.0,
-  "fixture": false,
+  "fixture": true,
   "glb": "res://assets/props/prop_display_case_round/prop_display_case_round.glb",
   "group": "display_case",
-  "has_light": false,
+  "has_light": true,
   "hosts": [],
   "keepout": [],
   "kind": "display_case",
@@ -1518,6 +1564,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1531,10 +1578,10 @@
    0.679
   ],
   "clear": 0.0,
-  "fixture": false,
+  "fixture": true,
   "glb": "res://assets/props/prop_display_case_vitrine/prop_display_case_vitrine.glb",
   "group": "display_case",
-  "has_light": false,
+  "has_light": true,
   "hosts": [],
   "keepout": [],
   "kind": "display_case",
@@ -1554,6 +1601,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1567,10 +1615,10 @@
    0.575
   ],
   "clear": 0.0,
-  "fixture": false,
+  "fixture": true,
   "glb": "res://assets/props/prop_display_case_wall/prop_display_case_wall.glb",
   "group": "display_case",
-  "has_light": false,
+  "has_light": true,
   "hosts": [],
   "keepout": [],
   "kind": "display_case",
@@ -1590,6 +1638,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1627,6 +1676,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1664,6 +1714,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1701,6 +1752,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1738,6 +1790,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1775,6 +1828,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1812,6 +1866,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1849,6 +1904,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1886,6 +1942,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1920,6 +1977,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1954,6 +2012,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1988,6 +2047,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2022,6 +2082,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2056,6 +2117,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2090,6 +2152,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2124,6 +2187,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2158,6 +2222,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2192,6 +2257,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2226,6 +2292,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2260,6 +2327,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2294,6 +2362,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2325,17 +2394,18 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
  "prop_drill_device": {
   "aabb": [
-   -0.2608,
-   -0.4269,
+   -0.285,
+   -0.3252,
    0.0,
-   0.5216,
-   0.8132,
-   0.65
+   0.57,
+   0.6102,
+   0.7077
   ],
   "clear": 0.0,
   "fixture": false,
@@ -2357,6 +2427,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2391,6 +2462,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2422,6 +2494,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 2.32
  },
@@ -2453,6 +2526,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2484,6 +2558,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 1.05
  },
@@ -2515,6 +2590,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2546,6 +2622,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2577,6 +2654,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2611,6 +2689,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2646,6 +2725,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2679,6 +2759,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.85
  },
@@ -2710,6 +2791,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 1.2
  },
@@ -2741,6 +2823,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2772,6 +2855,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2803,6 +2887,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2841,6 +2926,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.92,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2874,6 +2960,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2905,6 +2992,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 1.5
  },
@@ -2938,6 +3026,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -2970,6 +3059,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3002,6 +3092,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3040,6 +3131,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.9,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3073,6 +3165,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3106,6 +3199,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3137,6 +3231,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 1.2
  },
@@ -3168,6 +3263,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3199,6 +3295,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3230,6 +3327,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3261,6 +3359,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3295,6 +3394,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3328,6 +3428,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3362,6 +3463,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3395,6 +3497,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 1.55
  },
@@ -3426,6 +3529,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 1.45
  },
@@ -3459,6 +3563,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3490,6 +3595,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3521,6 +3627,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3561,6 +3668,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3592,6 +3700,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 3.6
  },
@@ -3632,6 +3741,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3663,6 +3773,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 1.5
  },
@@ -3694,6 +3805,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.3
  },
@@ -3738,6 +3850,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.9,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3769,6 +3882,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3800,6 +3914,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3833,6 +3948,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.7
  },
@@ -3873,6 +3989,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3913,6 +4030,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3948,6 +4066,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -3980,17 +4099,18 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
  "prop_plant_small": {
   "aabb": [
-   -0.1106,
+   -0.0842,
    0.0,
-   -0.0958,
-   0.2226,
-   0.2763,
-   0.1944
+   -0.067,
+   0.1714,
+   0.3681,
+   0.1497
   ],
   "clear": 0.0,
   "fixture": false,
@@ -4018,17 +4138,18 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
  "prop_plant_tall": {
   "aabb": [
-   -0.3725,
+   -0.2986,
    0.0,
-   -0.4011,
-   0.7408,
-   1.671,
-   0.8056
+   -0.2688,
+   0.6297,
+   1.4059,
+   0.525
   ],
   "clear": 0.0,
   "fixture": false,
@@ -4049,6 +4170,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4080,6 +4202,7 @@
   "standoff": 0.9,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4111,6 +4234,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4142,6 +4266,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4175,6 +4300,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4206,6 +4332,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4241,6 +4368,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4272,6 +4400,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4303,6 +4432,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4338,6 +4468,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4369,6 +4500,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 1.2
  },
@@ -4404,6 +4536,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4439,6 +4572,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4470,6 +4604,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4501,6 +4636,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4532,6 +4668,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4563,6 +4700,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4594,6 +4732,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4625,6 +4764,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 2.3
  },
@@ -4656,6 +4796,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4689,6 +4830,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 1.15
  },
@@ -4720,6 +4862,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4751,6 +4894,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4785,6 +4929,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4816,6 +4961,7 @@
   "standoff": 3.4,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4847,6 +4993,7 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4881,6 +5028,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4912,6 +5060,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 1.5
  },
@@ -4943,6 +5092,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -4974,6 +5124,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 1.45
  },
@@ -5005,6 +5156,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5039,6 +5191,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5073,6 +5226,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5104,6 +5258,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5135,6 +5290,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 1.52
  },
@@ -5166,6 +5322,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 1.52
  },
@@ -5197,6 +5354,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 1.52
  },
@@ -5230,17 +5388,18 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 1.85
  },
  "prop_wall_lamp": {
   "aabb": [
-   -0.08,
-   -0.12,
-   -0.22,
-   0.16,
-   0.24,
-   0.22
+   -0.14,
+   -0.07,
+   -0.45,
+   0.28,
+   0.2361,
+   0.45
   ],
   "clear": 0.0,
   "fixture": true,
@@ -5261,6 +5420,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 2.4
  },
@@ -5292,6 +5452,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5323,6 +5484,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5356,6 +5518,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5389,6 +5552,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5423,6 +5587,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5456,6 +5621,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5489,6 +5655,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5522,6 +5689,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5560,17 +5728,18 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.9,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
  "veh_car_sedan_navy": {
   "aabb": [
-   -1.01,
+   -1.02,
    0.0,
-   -2.33,
-   2.02,
-   1.4392,
-   4.665
+   -2.32,
+   2.04,
+   1.44,
+   4.646
   ],
   "clear": 0.0,
   "fixture": false,
@@ -5591,17 +5760,18 @@
   "standoff": 5.2,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
  "veh_car_sedan_silver": {
   "aabb": [
-   -1.01,
+   -1.02,
    0.0,
-   -2.33,
-   2.02,
-   1.4392,
-   4.665
+   -2.32,
+   2.04,
+   1.44,
+   4.646
   ],
   "clear": 0.0,
   "fixture": false,
@@ -5622,17 +5792,18 @@
   "standoff": 5.2,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
  "veh_car_sedan_wine": {
   "aabb": [
-   -1.01,
+   -1.02,
    0.0,
-   -2.33,
-   2.02,
-   1.4392,
-   4.665
+   -2.32,
+   2.04,
+   1.44,
+   4.646
   ],
   "clear": 0.0,
   "fixture": false,
@@ -5653,6 +5824,7 @@
   "standoff": 5.2,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5689,6 +5861,7 @@
   "standoff": 0.0,
   "support": false,
   "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  }

@@ -165,6 +165,37 @@ class Part(geo.MeshBuilder):
         self._set_mat(faces, self.m(key))
         return faces
 
+    def leaf(self, base: Vec3, tip: Vec3, width: float, key: str, up: Vec3 = (0, 0, 1), fold: float = 0.25):
+        """Thin two-sided leaf blade from ``base`` to ``tip`` (diamond outline, folded along the
+        midrib by ``fold`` x width so it catches light from both sides)."""
+        b, t = Vector(base), Vector(tip)
+        d = t - b
+        if d.length < 1e-6:
+            return []
+        side = d.cross(Vector(up))
+        if side.length < 1e-6:
+            side = d.cross(Vector((1, 0, 0)))
+        side.normalize()
+        nrm = side.cross(d).normalized()
+        mid = b + d * 0.42
+        hw = width * 0.5
+        lift = nrm * (width * fold)
+        th = nrm * 0.0015
+        bm = self.bm
+        faces = []
+        for sgn in (1.0, -1.0):
+            o = th * sgn
+            vb = bm.verts.new(b + o)
+            vt = bm.verts.new(t + o)
+            vm = bm.verts.new(mid + o + lift * 0.3)
+            vl = bm.verts.new(mid - side * hw + o + lift)
+            vr = bm.verts.new(mid + side * hw + o + lift)
+            quads = ((vb, vl, vm), (vl, vt, vm), (vb, vm, vr), (vm, vt, vr))
+            for q in quads:
+                faces.append(bm.faces.new(q if sgn > 0 else tuple(reversed(q))))
+        self._set_mat(faces, self.m(key))
+        return faces
+
     def torus(self, big_r: float, small_r: float, centre: Vec3, key: str, segs: int = 32, rsegs: int = 8,
               axis: str = "Z", arc: float = 2 * math.pi):
         """Torus (or a torus arc) around ``axis`` through ``centre``."""

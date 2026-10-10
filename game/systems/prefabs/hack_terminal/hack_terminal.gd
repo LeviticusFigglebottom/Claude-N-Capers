@@ -9,6 +9,13 @@
 ## device_jammed / device_restarted(net_id, slot) / device_finished [R]; cues cue.hack_start,
 ## cue.hack_interrupt, cue.hack_done. On finish every `targets` node is opened like a finished drill
 ## (DrillPoint.open_target: `open_by_device()`, else `unlock()` + open).
+## Pause (lockdowns, mission scripts): `pause(reason)` / `resume(reason)` stack by reason (a set: the
+## hack is paused while any reason is held). Paused = the run timer is frozen and the interaction is
+## blocked (BLOCK_PAUSED); `is_paused()` / `pause_reasons()` for the HUD. Pausing a RUNNING hack emits
+## device_jammed [R] + cue.hack_interrupt (HUD shows it like a jam); resuming it emits
+## device_restarted(net_id, -1) [R] + cue.hack_start. `pause_on_alarm` pauses with reason &"alarm" on
+## EventBus.alarm_raised; `pause_on_event` / `resume_on_event` name EventBus signals that pause /
+## resume it (reason = the signal name).
 ## Visual: `Screen` (MeshInstance3D; its material_override follows the state) and `Panel`.
 class_name HackTerminal
 extends GameplayPrefab
@@ -17,6 +24,9 @@ enum State { IDLE, RUNNING, INTERRUPTED, DONE }
 
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/hack_terminal/hack_terminal_placeholder.tscn")
 const KIND: StringName = &"hack"
+## Existing string ("Out of order"); a dedicated key needs ENV B (strings.csv).
+const BLOCK_PAUSED: StringName = &"ui.blocked.disabled"
+const REASON_ALARM: StringName = &"alarm"
 ## Screen colour per State (placeholder feedback; art may ignore it).
 const SCREEN_COLORS: Array[Color] = [
 	Color(0.15, 0.2, 0.25), Color(0.2, 0.75, 0.35), Color(0.85, 0.2, 0.15), Color(0.6, 1.0, 0.7),
@@ -31,6 +41,12 @@ const SCREEN_COLORS: Array[Color] = [
 ## Collision box size (m), placed on the pivot; ZERO = fit to the visual (or use the visual's own
 ## `Collision`), see GameplayPrefab "Collision fitting".
 @export var collision_size_override: Vector3 = Vector3.ZERO
+## Lockdown: the alarm pauses the hack (reason &"alarm"; a mission script may resume(&"alarm")).
+@export var pause_on_alarm: bool = false
+## EventBus signal name that pauses the hack (reason = the name); empty = none.
+@export var pause_on_event: StringName = &""
+## EventBus signal name that resumes it (removes the `pause_on_event` reason); empty = none.
+@export var resume_on_event: StringName = &""
 @export_group("Interaction")
 ## -1 = InteractionTweak.hack_start_s.
 @export var interaction_time_s: float = -1.0
@@ -51,6 +67,9 @@ var pending_interruptions: Array[float] = []
 var rolled_interruptions: int = 0
 
 var _start_time: float = 0.0
+## Pause reasons held (keys; values true).
+var _pause: Dictionary = {}
+var _event_cbs: Array[Array] = []
 var _screen_mats: Array[StandardMaterial3D] = []
 
 
@@ -79,6 +98,66 @@ func _prefab_ready() -> void:
 		m.emission = c
 		_screen_mats.append(m)
 	_update_screen()
+	if pause_on_alarm:
+		_listen(&"alarm_raised", REASON_ALARM, true)
+	if pause_on_event != &"":
+		_listen(pause_on_event, pause_on_event, true)
+	if resume_on_event != &"":
+		_listen(resume_on_event, pause_on_event, false)
+
+
+func _exit_tree() -> void:
+	for c: Array in _event_cbs:
+		var sig: Signal = c[0]
+		if sig.is_connected(c[1]):
+			sig.disconnect(c[1])
+	_event_cbs.clear()
+
+
+## Server: pause for `reason` (stacked by reason; idempotent per reason).
+func pause(reason: StringName) -> void:
+	if not Net.is_authority() or _pause.has(reason):
+		return
+	var was: bool = is_paused()
+	_pause[reason] = true
+	if was:
+		return
+	Log.info(LOG_CHANNEL, "%s: hack paused (%s)" % [name, reason])
+	if state == State.RUNNING:
+		_emit_fact(&"device_jammed", [net_id])
+		_cue(&"cue.hack_interrupt", global_position)
+	_update_screen()
+
+
+## Server: drop `reason`; the hack runs again once no reason is left.
+func resume(reason: StringName) -> void:
+	if not Net.is_authority() or not _pause.has(reason):
+		return
+	_pause.erase(reason)
+	if is_paused():
+		return
+	Log.info(LOG_CHANNEL, "%s: hack resumed (%s)" % [name, reason])
+	if state == State.RUNNING:
+		_emit_fact(&"device_restarted", [net_id, -1])
+		_cue(&"cue.hack_start", global_position)
+	_update_screen()
+
+
+func is_paused() -> bool:
+	return not _pause.is_empty()
+
+
+## Held pause reasons (insertion order).
+func pause_reasons() -> Array[StringName]:
+	var out: Array[StringName] = []
+	for k: Variant in _pause.keys():
+		out.append(k as StringName)
+	return out
+
+
+## HUD: the run is stalled (interrupted, or paused while running).
+func is_jammed() -> bool:
+	return state == State.INTERRUPTED or (state == State.RUNNING and is_paused())
 
 
 ## Effective run time (s) before the start.
@@ -122,7 +201,7 @@ func restart_hack(crew_slot: int) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if state != State.RUNNING or not Net.is_authority():
+	if state != State.RUNNING or not Net.is_authority() or is_paused():
 		return
 	progress = minf(progress + delta / duration, 1.0)
 	if not pending_interruptions.is_empty() and progress >= pending_interruptions[0] and progress < 1.0:
@@ -153,6 +232,8 @@ func _roll_interruptions() -> void:
 
 
 func _availability(_crew: Node) -> StringName:
+	if is_paused() and state != State.DONE:
+		return BLOCK_PAUSED
 	if state == State.IDLE or state == State.INTERRUPTED:
 		return InteractableComponent.BLOCK_NONE
 	return InteractableComponent.BLOCK_STATE
@@ -185,5 +266,22 @@ func _set_state(s: State) -> void:
 
 func _update_screen() -> void:
 	var screen: MeshInstance3D = visual_node("Screen") as MeshInstance3D
-	if screen != null and int(state) < _screen_mats.size():
-		screen.material_override = _screen_mats[int(state)]
+	var idx: int = int(State.INTERRUPTED) if is_paused() and state != State.DONE else int(state)
+	if screen != null and idx < _screen_mats.size():
+		screen.material_override = _screen_mats[idx]
+
+
+## Connect EventBus.`sig_name` (any arity up to 6) to pause / resume `reason`.
+func _listen(sig_name: StringName, reason: StringName, pausing: bool) -> void:
+	if not EventBus.has_signal(sig_name):
+		Log.warn(LOG_CHANNEL, "%s: EventBus has no signal `%s`" % [name, sig_name])
+		return
+	var cb: Callable = func(_a: Variant = null, _b: Variant = null, _c: Variant = null, _d: Variant = null,
+			_e: Variant = null, _f: Variant = null) -> void:
+		if pausing:
+			pause(reason)
+		else:
+			resume(reason)
+	var sig: Signal = Signal(EventBus, sig_name)
+	sig.connect(cb)
+	_event_cbs.append([sig, cb])

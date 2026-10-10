@@ -8,6 +8,11 @@ metadata/fixture = true
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
 
+[node name="Lamp" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
 [node name="Light" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
 omni_range = 3.5
@@ -16,3 +21,5 @@ light_color = Color(1, 0.7059, 0.4196, 1)
 light_energy = 0.8
 light_size = 0.05
 shadow_enabled = false
+
+[editable path="Model"]

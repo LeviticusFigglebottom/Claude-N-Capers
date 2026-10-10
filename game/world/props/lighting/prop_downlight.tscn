@@ -9,6 +9,11 @@ metadata/fixture = true
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
 
+[node name="Downlight" parent="Model"]
+visibility_range_end = 25
+visibility_range_end_margin = 2.5
+visibility_range_fade_mode = 1
+
 [node name="Light" type="SpotLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, -0.04, 0)
 spot_range = 4.5
@@ -18,3 +23,5 @@ light_color = Color(1, 0.7059, 0.4196, 1)
 light_energy = 1.8
 light_size = 0.05
 shadow_enabled = false
+
+[editable path="Model"]
