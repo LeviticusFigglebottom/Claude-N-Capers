@@ -3,6 +3,34 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-10 20:40 UTC: P3 wave (A3-01..A3-03, A3-06, A3-09, A3-10, D-043 follow-ups, AnimDriver)
+### Done (97035c6, 8899bb7, 8e1b83d; trunk 4138f96 merged)
+- A3-01 specials, all with capsule placeholders carrying contract node names + EnemyDefs + brains + tests:
+  Phantom (charge/kick → CLOAKER_DOWNED, sidestep dodge, 10 s cooldown, never the last player standing, play-dead, ECM-feedback immune),
+  Stinger (1 s windup, tase → TASED + involuntary fire ×3 spread 15° up, broken by kill/LOS, pairs),
+  Longshot (SNIPER_PERCH only, tracking laser, 1.2 s lock, >30 m halving, bypasses armor gating),
+  Bulwark (separate shield body, blocks all but shield-pierce ×0.25, fixates, anchors doorways, bang cue, shield stays on death),
+  Wrecker G/B/S (Faceplate 150 → Visor 160 → head; stun-immune; ×1.1 explosives; shared enemy.wrecker cap),
+  Corpsman (heal/revive one ally ≤7 m through walls, 3 s cd, no medic-on-medic). Wrecker-M minigun and Bulwark stagger not done.
+- A3-06: NPC body armor vs AP, TAC Heavy frontal plate, wall piercing (layer 9), suppression (hunch/dive, 30 s resistance, specials immune), `Explosion.apply` (×(1−d/r)^0.1, LOS).
+- A3-02 Commander Brandt + Aegis: Hazardous+, wave ≥ 2, 50%/wave, once per heist (also solo, D-015); 10 shields; resistance 10% +5%/5 s to 50%; per-hit cap 10% max HP (×6 explosives); cannot die; retreats at 20% HP or ≤ 3 shields; assault locked while present; captain_arrived/retreated [R]; HUD warning `captain`.
+- A3-03 director: drama (L1.2), stage escalation 50/75/100% (L1.3), specials in waves and between waves, factions by difficulty (L1.5: tac/frd/sentinel/zero), special caps from DifficultyDef.special_limits (L4.11).
+- A3-09: bag_lift, hack_terminal, OUT_OF_BOUNDS (oob_respawn spawns, loot returns), HeistMission `schedule_at` + `spawn_guards`, device cues verified; A3-10: rule `weights_by_difficulty` for slot groups, escape_zone escape_type/arrival_delay_s/bag_only, no ladders with a bag.
+- D-043: LocalHudModel `custody`/`custody_changed`; masks from `Loadout.mask_descriptor` replicated to all peers; security_camera `mount_mode` (ceiling collision below pivot).
+- AnimDriver: drives ENV D's humanoid set when a contract visual exists (capsules unaffected); characters swap in by setting EnemyDef.visual.
+- QC (Night Deposit) items: (1) camera collision is already on the room side in ENV A (wall z∈[−0.45,0], ceiling y≤0 via `mount_mode`); (2) laser_grid placeholder posts follow `size_m`; (3) `oob_respawn` spawns are excluded from crew start spawns (A3-09); (4) `HeistMission._on_civilian_dominated(civilian, slot)` / `_on_guard_dominated(npc, slot)`; (5) QC-25 timed spawns via `schedule_at` + `spawn_guards` (example in heist/README.md).
+- `check_all.sh --env a` PASS (898 tests, 0 failed, no SCRIPT ERRORs).
+### In progress
+- Item 6 (prefab collision from visual AABB), A3-07 co-op hardening, C4 → `Explosion.apply`, first-person viewmodel animation (characters.md v1.4).
+### Questions for lead
+- QA-27 (strings for ENV B): ui.prompt.send_lift/call_lift/start_hack/restart_hack (done by B), ui.blocked.lift_full, ui.prompt.trade_hostage/convert/cable_tie (done), vo.crew.ack_follow/hold/carry_bag/drop_bag/revive, vo.guard.cuff_warning, vo.mercer.abort.
+- QA-28 (cues for ENV C): cue.phantom_hum/charge, cue.stinger_windup/arc, cue.longshot_report, cue.bulwark_bang, cue.wrecker_roar/step/plate_crack, cue.corpsman_heal, cue.brandt_arrival, cue.aegis_pulse, cue.bag_lift_start/arrive, cue.hack_start/interrupt/done, cue.escape_arrive.
+- QA-29 (groups.md): proposed ids faction.tac/frd/sentinel/zero, enemy.frd_agent, enemy.brandt, enemy.aegis, enemy.wrecker_g/_b/_s, enemy.tac_heavy; `params.visual_variant` per faction; GUARD SpawnPoint tag `scripted` (not spawned at load; mission spawns).
+- QA-30 (events.md): `special_spawned` is emitted by the special's brain on start (not the director); a broken tase emits `crew_revived(slot, -1)` (no tase-ended event); Brandt resistance is server-only (ui_hud field?).
+- QA-31: DifficultyDef.special_limits has no `enemy.longshot` key (limited only by free perches).
+### Ready for integration
+- yes; `check_all.sh --env a` result: PASS
+
 ## 2026-10-10 19:10 UTC: A2-08, A3-04, A3-05, A3-08 (trunk 0748a0e merged)
 ### Done (8a9bb6b)
 - A2-08: resolver `force_if`, `slot_requires`, rare `min_difficulty`, scalar `weights_by_difficulty` (documented in game/systems/heist/README.md "Variant rule fields (A2-08)" for heist_map.md); window glass collision from the visual's `Glass` AABB; safe `keycard` method (`Safe.reader` or reader `targets`); door `push_bar` (inside = −Z side); camera collision kept in front of the wall pivot.

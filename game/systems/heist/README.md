@@ -227,3 +227,17 @@ func _on_mission_start() -> void:
   carrier's last in-bounds standing position (+0.3 m) is used. A bag whose probe point
   (origin + `LootTweak.zone_probe_up_m`) is in a zone goes back there at rest (signal
   `bag_returned(bag)`). A bag that never had a valid position stays put (warning).
+
+## Mission hooks for dominated NPCs (QC, Night Deposit)
+Override in `<id>_mission.gd`:
+- `_on_civilian_dominated(civilian: Node, crew_slot: int)`: fires on `civilian_intimidated` with the civilian NPC node.
+- `_on_guard_dominated(npc: Node, crew_slot: int)`: fires on `guard_dominated` (guards and surrendered cops).
+
+Timed NPC spawns (QC-25, e.g. Night Deposit `armored_car_early`, Brutal+ at 720 s):
+```gdscript
+func _on_mission_start() -> void:
+	if difficulty >= Enums.Difficulty.BRUTAL:
+		schedule_at(720.0, &"armored_car_early", func() -> void: spawn_guards(2, &"armored_car"))
+```
+GUARD SpawnPoints tagged `scripted` are not spawned at load; `spawn_guards(count, tag)` spawns at GUARD
+SpawnPoints carrying `tag`.
