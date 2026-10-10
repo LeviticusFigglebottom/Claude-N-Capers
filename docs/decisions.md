@@ -170,3 +170,8 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - style_guide.md §1 is updated. The `a_gsr` renders are the reference bar.
 - ENV D: drop the noir/photo officer variants. The head/officer fix becomes the GSR character baseline for D1-02.
 - ENV C/B/D: remove "parametric across directions" as a requirement. Keep code clean, but stop spending effort on non-GSR presets.
+
+## D-036 — 2026-10-10 — P1 gate placement made map-agnostic (QC-6); officer v2 + rig merged
+- QC-6: the gate no longer teleports bots to fixed offsets. `BotUtil.find_clear_point(target, dist, behind)` searches navmesh points with architectural line of sight: behind sweeps ±110° (outside the 120° FOV), in front ±45° with props blocking. `_launch` waits for `BotUtil.nav_ready`. Verified against ENV C's Glasshouse G1 snapshot (0152852): **gate steps 1, 2, 4 and 8 PASS**. The floor guard post stays as approved.
+- QC-8: ENV C drops its duplicate `test_glasshouse_gate.gd`. The lead's gate is the only P1 gate.
+- Merged env/d-art: GSR officer v2 reference render, rig_humanoid (52 contract bones) + parametric body generator, mask_gilded_heron. ENV B points `mask.gilded_heron` MaskDef.model at `res://assets/masks/mask_gilded_heron/mask_gilded_heron.glb`.

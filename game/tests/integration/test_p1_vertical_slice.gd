@@ -23,6 +23,12 @@ func after_each() -> void:
 
 func _launch(seed_value: int, difficulty: int = Enums.Difficulty.ROUTINE) -> Object:
 	var rt: Object = await _launcher.call(&"launch", HEIST, seed_value, difficulty, self, {"ai_teammates": 3})
+	# Let the navigation map sync before bots query it (D-036): wait until a closest-point query
+	# near the crew returns a real navmesh point (iteration ids alone proved unreliable).
+	var crew: Node3D = rt.call(&"crew_controller", 0) as Node3D
+	if crew != null:
+		await wait_until(func() -> bool: return BotUtil.nav_ready(crew), 10.0)
+	await wait_physics_frames(2)
 	return rt
 
 
@@ -74,8 +80,12 @@ func test_02_casing_and_no_noise() -> void:
 	var public_zones: Array[Node] = (rt.get(&"map") as HeistMap).get_slots(G.CASING_PUBLIC_AREA)
 	assert_true(public_zones.size() >= 1, "map has a PUBLIC zone")
 	# Behind-the-guard sprint/jump test (masked): place bot 1 m behind guard, outside FOV.
-	var behind: Transform3D = guard.global_transform.translated_local(Vector3(0, 0, 1.0))
-	rt.call(&"teleport_crew", 0, behind)
+	var behind_v: Variant = BotUtil.find_clear_point(guard, 1.6, true)
+	if behind_v == null:
+		fail("no clear navmesh point behind the guard")
+		await _teardown(rt)
+		return
+	rt.call(&"teleport_crew", 0, behind_v)
 	var mask: CrewIntent = CrewIntent.new()
 	mask.mask_up = true
 	rt.call(&"set_bot_intent", 0, mask)
@@ -116,7 +126,12 @@ func test_04_pager_answer() -> void:
 		rt.call(&"isolate_npc", guard)
 		await wait_physics_frames(2)
 	# Stand 3 m in front of the guard's back, masked, aim at head, fire.
-	rt.call(&"teleport_crew", 0, guard.global_transform.translated_local(Vector3(0, 0, 3.0)))
+	var shot_v: Variant = BotUtil.find_clear_point(guard, 3.0, true)
+	if shot_v == null:
+		fail("no clear firing point behind the guard")
+		await _teardown(rt)
+		return
+	rt.call(&"teleport_crew", 0, shot_v)
 	var i: CrewIntent = CrewIntent.new()
 	i.mask_up = true
 	rt.call(&"set_bot_intent", 0, i)
@@ -133,7 +148,9 @@ func test_04_pager_answer() -> void:
 		var ans: CrewIntent = CrewIntent.new()
 		ans.interact = true
 		ans.interact_target_net_id = guard.get(&"net_id") if guard.get(&"net_id") != null else 0
-		rt.call(&"teleport_crew", 0, guard.global_transform.translated_local(Vector3(0, 0, 1.0)))
+		var ans_v: Variant = BotUtil.find_clear_point(guard, 1.0, true)
+		if ans_v != null:
+			rt.call(&"teleport_crew", 0, ans_v)
 		rt.call(&"set_bot_intent", 0, ans)
 		var answered: bool = await wait_until(func() -> bool: return not pager_answered.is_empty(), 14.0)
 		assert_true(answered, "pager answered after 10 s hold")
@@ -157,7 +174,9 @@ func test_08_loud_transition_and_assault() -> void:
 	var crew: Node3D = rt.call(&"crew_controller", 0)
 	if not guards.is_empty():
 		var g: Node3D = guards[0]
-		rt.call(&"teleport_crew", 0, g.global_transform.translated_local(Vector3(0, 0, -6.0)))
+		var seen_v: Variant = BotUtil.find_clear_point(g, 6.0, false)
+		if seen_v != null:
+			rt.call(&"teleport_crew", 0, seen_v)
 	var i: CrewIntent = CrewIntent.new()
 	i.mask_up = true
 	rt.call(&"set_bot_intent", 0, i)
