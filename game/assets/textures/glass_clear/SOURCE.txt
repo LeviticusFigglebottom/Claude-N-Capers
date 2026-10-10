@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only glass_clear --preset gsr
+module: tools/texgen/materials/glass_clear.py
+preset: tools/texgen/presets/gsr.py
+seed: 3015680946 (zlib.crc32('glass_clear'))
+size_px: 512
+tile_m: 2.0 (1 UV unit = 2.0 m)
+texel_density_px_per_m: 256
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.8391, "albedo_lum_mean_linear": 0.8263, "albedo_lum_min_linear": 0.4214, "ao_mean": 1.0, "metallic_mean": 0.0, "roughness_mean": 0.065}

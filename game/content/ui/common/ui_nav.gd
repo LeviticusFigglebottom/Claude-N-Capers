@@ -37,22 +37,6 @@ static func global_class(class_id: StringName) -> Script:
 	return null
 
 
-## First node under `root` (depth-first, root included) whose script is the global class `class_id`.
-static func find_node_of_class(root: Node, class_id: StringName) -> Node:
-	if root == null:
-		return null
-	var s: Script = root.get_script() as Script
-	while s != null:
-		if s.get_global_name() == class_id:
-			return root
-		s = s.get_base_script()
-	for child: Node in root.get_children():
-		var hit: Node = find_node_of_class(child, class_id)
-		if hit != null:
-			return hit
-	return null
-
-
 static func _chain(controls: Array[Control], wrap: bool, prev_side: Side, next_side: Side) -> void:
 	var n: int = controls.size()
 	for i: int in range(n):

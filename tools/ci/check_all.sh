@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Full validation gate. Owner: LEAD.
-# usage: tools/ci/check_all.sh [--env a|b|c] [--no-levels]
+# usage: tools/ci/check_all.sh [--env a|b|c|d] [--no-levels]
 # Run by every env before reporting "ready for integration" and by the lead before merging.
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -24,6 +24,10 @@ step "gdlint"
 if command -v gdlint >/dev/null; then
   (cd "$ROOT" && gdlint game/core game/contracts game/systems game/content game/world game/tests 2>&1 | tail -30) || FAIL=1
 else echo "gdlint not installed (pip install -r tools/requirements.txt) - skipped"; fi
+
+step "committed .import files valid"
+BAD="$(cd "$ROOT" && git ls-files '*.import' | xargs -r grep -l '^valid=false' 2>/dev/null)"
+if [[ -n "$BAD" ]]; then echo "invalid .import files committed (re-import before committing):"; echo "$BAD"; FAIL=1; else echo ok; fi
 
 step "banned patterns"
 python3 "$ROOT/tools/ci/check_banned.py" || FAIL=1

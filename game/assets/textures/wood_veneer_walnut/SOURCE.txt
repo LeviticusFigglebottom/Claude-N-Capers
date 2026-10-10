@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only wood_veneer_walnut --preset gsr
+module: tools/texgen/materials/wood_veneer_walnut.py
+preset: tools/texgen/presets/gsr.py
+seed: 3257955452 (zlib.crc32('wood_veneer_walnut'))
+size_px: 1024
+tile_m: 2.0 (1 UV unit = 2.0 m)
+texel_density_px_per_m: 512
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.0986, "albedo_lum_mean_linear": 0.0748, "albedo_lum_min_linear": 0.04, "ao_mean": 0.996, "metallic_mean": 0.0, "roughness_mean": 0.4}

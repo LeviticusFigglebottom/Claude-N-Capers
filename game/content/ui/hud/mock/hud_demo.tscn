@@ -27,5 +27,3 @@ model_path = NodePath("../MockHudModel")
 [node name="HudLayer" type="CanvasLayer" parent="."]
 
 [node name="Hud" parent="HudLayer" instance=ExtResource("3_hud")]
-model_path = NodePath("../../MockHudModel")
-auto_find_model = false

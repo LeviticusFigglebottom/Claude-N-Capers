@@ -21,6 +21,7 @@ PREFIX_CATEGORY: dict[str, str] = {
     "mod": "weapons",
     "fx": "fx",
     "veh": "props",
+    "mask": "masks",
 }
 
 MATERIAL_PREFIX = "M_"

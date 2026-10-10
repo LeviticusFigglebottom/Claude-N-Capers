@@ -32,3 +32,8 @@ Producer of hits: ENV A (weapons, melee, explosives, sentries, NPC fire). Damage
   `info.headshot_bonus` together with `weapon.headshot_mult` modifiers and the shared Headhunter perk
   card. For zone HEAD the target applies `zone_mult × headshot_bonus`. Shotguns: any pellet on the head
   counts (pd2_fidelity L3.3).
+
+## Crits and weak points (v1.0 addendum, D-027)
+* `info.crit = true` ⇒ the target additionally multiplies by its own HEAD zone multiplier on any zone. On a
+  head hit the two stack (PD2 behaviour).
+* Zone `WEAKPOINT` on a target without plates counts ×1. Firing-range dummies never emit `npc_killed`.

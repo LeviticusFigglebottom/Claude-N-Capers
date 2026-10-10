@@ -1,8 +1,9 @@
-## Heists offered by the menus, built from res://content/data/ui/heist_list.tres. Owner: ENV B.
-## The HeistDef (ENV C) is loaded from the data-listed path when it exists; otherwise the entry is a
-## placeholder using the list's fallback values (pay preview, mode) and the strings.csv name.
+## Heists offered by the menus. Owner: ENV B. Heists come from HeistRegistry (core, D-024: no hard
+## paths into world/); per-heist UI data and placeholders from res://content/data/ui/heist_list.tres.
+## A heist listed there with placeholder fields shows as a placeholder only while the registry has
+## no def for it (HeistRegistry.get_def returns null quietly, so no error spam).
 ##
-## entries() -> Array[Dictionary] of
+## entries() -> Array[Dictionary] sorted by id, of
 ##   { "id": StringName, "name_key": StringName, "subtitle_key": StringName, "brief_key": StringName,
 ##     "base_payout": int (UNSCALED, like HeistResult.contract_pay), "mode": int (Enums.HeistMode),
 ##     "def": HeistDef or null, "placeholder": bool }
@@ -24,23 +25,46 @@ static func heist_list() -> UiHeistList:
 
 
 static func entries() -> Array[Dictionary]:
+	var defs: Dictionary = {}
+	for id: StringName in HeistRegistry.ids():
+		var def: HeistDef = HeistRegistry.get_def(id)
+		if def != null:
+			defs[id] = def
+	return entries_from(defs, heist_list())
+
+
+## Pure builder behind entries(): `defs` is { heist id: HeistDef } (the registry's view).
+static func entries_from(defs: Dictionary, list: UiHeistList) -> Array[Dictionary]:
+	var ids_found: Array[StringName] = []
+	for id: Variant in defs:
+		ids_found.append(StringName(id))
+	for id: Variant in list.heists:
+		var data: Dictionary = list.heists[id] as Dictionary
+		if not defs.has(StringName(id)) and data.has("placeholder_base_payout"):
+			ids_found.append(StringName(id))
+	ContentDB.sort_ids(ids_found)
 	var out: Array[Dictionary] = []
-	for e: Dictionary in heist_list().entries:
-		var id: StringName = StringName(e.get("id", &""))
-		var def: HeistDef = null
-		var path: String = String(e.get("def_path", ""))
-		if path != "" and ResourceLoader.exists(path):
-			def = load(path) as HeistDef
+	for id: StringName in ids_found:
+		var def: HeistDef = defs.get(id) as HeistDef
+		var data: Dictionary = list.heists.get(id, {}) as Dictionary
 		out.append({
 			"id": id,
 			"name_key": StringName("heist.%s.name" % id),
 			"subtitle_key": StringName("heist.%s.subtitle" % id),
 			"brief_key": StringName("heist.%s.brief" % id),
-			"base_payout": def.base_payout if def != null else int(e.get("placeholder_base_payout", 0)),
-			"mode": int(def.mode) if def != null else int(e.get("placeholder_mode", 0)),
+			"base_payout": def.base_payout if def != null else int(data.get("placeholder_base_payout", 0)),
+			"mode": int(def.mode) if def != null else int(data.get("placeholder_mode", 0)),
 			"def": def,
 			"placeholder": def == null,
 		})
+	return out
+
+
+## Ids of every heist the menus offer (registry + placeholders); direct launch validates against it.
+static func ids() -> Array[StringName]:
+	var out: Array[StringName] = []
+	for e: Dictionary in entries():
+		out.append(StringName(e["id"]))
 	return out
 
 

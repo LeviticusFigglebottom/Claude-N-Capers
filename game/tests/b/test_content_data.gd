@@ -218,3 +218,30 @@ func test_loot_weights_and_values() -> void:
 	assert_eq(ContentDB.loot(&"loot.body_bag").value, 0)
 	assert_true(ContentDB.loot(&"loot.jewelry").value > 0)
 	assert_true(ContentDB.loot(&"loot.cash").value > 0)
+
+
+## D-026: ids sort by TEXT, never by interned StringName pointer. The ids are interned in
+## reverse-alphabetical order so a pointer-order sort would likely invert them.
+func test_sort_ids_sorts_by_text_not_intern_order() -> void:
+	var stamp: int = Time.get_ticks_usec()
+	var zz: StringName = StringName("zz_sort_test_b_%d" % stamp)
+	var mm: StringName = StringName("mm_sort_test_b_%d" % stamp)
+	var aa: StringName = StringName("aa_sort_test_a_%d" % stamp)
+	var typed: Array[StringName] = [zz, mm, aa]
+	ContentDB.sort_ids(typed)
+	assert_eq(typed, [aa, mm, zz] as Array[StringName], "typed StringName array sorted by text")
+	var untyped: Array = [zz, aa, mm]
+	ContentDB.sort_ids(untyped)
+	assert_eq(untyped, [aa, mm, zz], "untyped array sorted by text")
+	assert_true(ContentDB.id_less(aa, zz))
+	assert_false(ContentDB.id_less(zz, aa))
+	var ints: Array = [10, 2, 1]
+	ContentDB.sort_ids(ints)
+	assert_eq(ints, [1, 2, 10], "int keys sort numerically")
+
+
+func test_all_of_is_sorted_by_id_text() -> void:
+	var prev: String = ""
+	for w: WeaponDef in ContentDB.all_of(ContentDB.WEAPONS):
+		assert_true(prev <= String(w.id), "all_of order by text: %s after %s" % [w.id, prev])
+		prev = String(w.id)
