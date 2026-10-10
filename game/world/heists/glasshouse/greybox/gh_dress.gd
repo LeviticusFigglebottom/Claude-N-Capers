@@ -16,8 +16,6 @@ const OUTLINE_Z: Array[float] = [0.0, 12.0]
 ## Neon: lit facade only (shadowed so nothing reaches the salon / stock room through the walls).
 const NEON_RANGE: float = 4.5
 const NEON_ENERGY: float = 1.6
-## Prop door frames are wider than the opening (casing 0.125-0.175 m a side).
-const DOOR_CASING: float = 0.3
 ## Exit signs go above the frame head (catalog z 2.32 puts the sign's bottom inside the 2.27 m frame).
 const EXIT_SIGN_Z: float = 2.36
 
@@ -189,7 +187,7 @@ func _finish_node(n: Node3D, asset: String, mode: String, mount: String, xf: Tra
 			lt.omni_range = NEON_RANGE
 			lt.light_energy = NEON_ENERGY
 	if kind == "exit_sign" and mode == "above_door":
-		n.position.y += EXIT_SIGN_Z - 2.32
+		n.position.y += maxf(0.0, EXIT_SIGN_Z - float((_cat[asset] as Dictionary).get("z", EXIT_SIGN_Z)))
 	if mount != "" or mode == "on" or mode == "ceiling" or kind == "awning":
 		return
 	var bb: AABB = aabb(asset)
@@ -299,7 +297,7 @@ func _room_door(room: KitRoom, boxes: Array, u: AABB, d: Array) -> void:
 		var into: bool = back.dot(u.get_center() - pos) > 0.0
 		var swing: String = String(d[5])
 		var in_room: bool = swing == "DOUBLE" or (swing == "INWARD" and into) or (swing == "OUTWARD" and not into)
-		room.add_door(pos, width + DOOR_CASING, -1.0 if in_room else 0.0)
+		room.add_door(pos, width, -1.0 if in_room else 0.0)
 		return
 	for b: Variant in boxes:
 		var sb: AABB = _box(b)
@@ -362,7 +360,7 @@ func _exterior_room(e: Array) -> Array:
 		var width: float = _door_width(String(d[1]))
 		var wl: Vector2 = room.nearest_wall(room.to_local(pos))
 		if int(wl.x) == 0 and absf(room.to_local(pos).z + room.size.z * 0.5) < 0.5:
-			room.add_door(pos, width + DOOR_CASING, -1.0 if String(d[5]) == "DOUBLE" else 0.0)
+			room.add_door(pos, width, -1.0 if String(d[5]) == "DOUBLE" else 0.0)
 		var hw: float = width * 0.5 + 0.4
 		room.add_keep_out(AABB(Vector3(pos.x - maxf(hw, 1.5), pos.y, pos.z - maxf(hw, 1.5)),
 			Vector3(maxf(hw, 1.5) * 2.0, 2.4, maxf(hw, 1.5) * 2.0)))
@@ -471,3 +469,45 @@ func _collect_node(n: Node) -> void:
 
 func _gx(n: Node3D) -> Transform3D:
 	return _b.call(&"_global_xform", n)
+
+
+# --- Generated visuals --------------------------------------------------------------------------
+
+## Visual scenes (library materials, world-scaled UVs) for gameplay items without catalog art, at
+## `paths` = [keycard, cash stack, jewelry stack, empty]. Pivot bottom-centre, front -Z. Returns
+## an error message or "".
+static func make_visuals(art: RefCounted, res: GDScript, paths: Array) -> String:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(String(paths[0]).get_base_dir()))
+	art.add_tint("gh_card_white", "plastic_matte", Color(0.93, 0.93, 0.95))
+	art.add_tint("gh_cash_green", "plastic_matte", Color(0.55, 0.68, 0.5))
+	var specs: Array = [
+		[paths[0], "GhKeycard", [[Vector3(0.086, 0.004, 0.054), Vector3(0.0, 0.002, 0.0), "gh_card_white"],
+			[Vector3(0.078, 0.0025, 0.012), Vector3(0.0, 0.00525, -0.014), "rubber_black"]]],
+		[paths[1], "GhCashStack", [[Vector3(0.16, 0.05, 0.075), Vector3(0.0, 0.025, 0.0), "gh_cash_green"],
+			[Vector3(0.03, 0.056, 0.081), Vector3(0.0, 0.028, 0.0), "plaster_painted"]]],
+		[paths[2], "GhJewelryStack", [[Vector3(0.36, 0.05, 0.24), Vector3(0.0, 0.025, 0.0), "leather_dark"],
+			[Vector3(0.34, 0.05, 0.22), Vector3(0.0, 0.075, 0.0), "leather_dark"],
+			[Vector3(0.32, 0.05, 0.2), Vector3(0.0, 0.125, 0.0), "leather_dark"],
+			[Vector3(0.12, 0.08, 0.12), Vector3(0.06, 0.19, 0.0), "wood_veneer_walnut"]]],
+		[paths[3], "GhEmpty", []],
+	]
+	for v: Array in specs:
+		var path: String = String(v[0])
+		var root: Node3D = Node3D.new()
+		root.name = String(v[1])
+		if not (v[2] as Array).is_empty():
+			var mi: MeshInstance3D = MeshInstance3D.new()
+			mi.name = "Mesh"
+			mi.mesh = art.local_box_mesh(v[2])
+			root.add_child(mi)
+			mi.owner = root
+		var ps: PackedScene = PackedScene.new()
+		var err: int = ps.pack(root)
+		root.free()
+		var old_uid: String = res.read_uid(path)
+		if err == OK:
+			err = ResourceSaver.save(ps, path)
+		if err != OK:
+			return "cannot save %s (%d)" % [path, err]
+		res.normalize_scene(path, old_uid)
+	return ""

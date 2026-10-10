@@ -204,10 +204,31 @@ const BLOCKS: Array = [
 	["SouthEastBlock", [32.2, -0.3, 34.2, 55.0, 13.0, 50.0], "facade_b"],
 	["PellSouthRamp", [18.2, -0.3, 40.0, 32.2, 6.0, 48.0], "concrete"],
 	["HotelCanopy", [-4.0, 3.4, 32.4, 4.0, 3.6, 34.2], "trim"],
-	# Garage decks (levels 2 and 3, open slots facing Pell St) and parapets.
-	["GarageDeck2", [32.2, 2.8, -16.0, 38.2, 3.0, 12.2], "concrete"],
-	["GarageDeck3", [32.2, 5.8, -16.0, 38.2, 6.0, 12.2], "concrete"],
-	["GarageRoof", [32.2, 8.8, -16.0, 38.2, 9.0, 12.2], "concrete"],
+	# Garage decks (levels 2 and 3, open slots facing Pell St) and parapets. Level 3 is cut back over
+	# the L2 -> L3 ramp (GARAGE_RAMP, back lane x 36.4-38.0); columns, end parapets, kerbs, the north
+	# end wall, railings and stall markings complete the structure (C1-08 review).
+	["GarageDeck2", [32.2, 2.8, -16.0, 38.2, 3.0, 12.2], "slab"],
+	["GarageDeck3", [32.2, 5.8, -16.0, 36.2, 6.0, 12.2], "slab"],
+	["GarageDeck3Back", [36.2, 5.8, -16.0, 38.2, 6.0, -6.5], "slab"],
+	["GarageRoof", [32.2, 8.8, -16.0, 38.2, 9.0, 12.2], "slab"],
+	["GarageNorthWall", [32.2, 2.8, -16.3, 38.2, 10.0, -16.0], "concrete"],
+	["GarageEndS2", [32.5, 3.0, 11.9, 38.2, 4.0, 12.2], "concrete"],
+	["GarageEndS3", [32.5, 6.0, 11.9, 36.2, 7.0, 12.2], "concrete"],
+	["GarageEndSRoof", [32.5, 9.0, 11.9, 38.2, 10.0, 12.2], "concrete"],
+	["GarageKerb2", [32.5, 3.0, -16.0, 32.7, 3.15, 11.9], "concrete"],
+	["GarageKerb3", [32.5, 6.0, -16.0, 32.7, 6.15, 11.9], "concrete"],
+	["GarageCol2A", [32.2, 3.0, -15.7, 32.6, 5.8, -15.3], "concrete"],
+	["GarageCol2B", [32.2, 3.0, -10.1, 32.6, 5.8, -9.7], "concrete"],
+	["GarageCol2C", [32.2, 3.0, -4.5, 32.6, 5.8, -4.1], "concrete"],
+	["GarageCol2D", [32.2, 3.0, 1.9, 32.6, 5.8, 2.3], "concrete"],
+	["GarageCol2E", [32.2, 3.0, 6.7, 32.6, 5.8, 7.1], "concrete"],
+	["GarageCol2F", [32.2, 3.0, 11.5, 32.6, 5.8, 11.9], "concrete"],
+	["GarageCol3A", [32.2, 6.0, -15.7, 32.6, 8.8, -15.3], "concrete"],
+	["GarageCol3B", [32.2, 6.0, -10.1, 32.6, 8.8, -9.7], "concrete"],
+	["GarageCol3C", [32.2, 6.0, -4.5, 32.6, 8.8, -4.1], "concrete"],
+	["GarageCol3D", [32.2, 6.0, 1.9, 32.6, 8.8, 2.3], "concrete"],
+	["GarageCol3E", [32.2, 6.0, 6.7, 32.6, 8.8, 7.1], "concrete"],
+	["GarageCol3F", [32.2, 6.0, 11.5, 32.6, 8.8, 11.9], "concrete"],
 	["GarageParapet2", [32.2, 3.0, -16.0, 32.5, 4.0, 12.2], "concrete"],
 	["GarageParapet3", [32.2, 6.0, -16.0, 32.5, 7.0, 12.2], "concrete"],
 	["GarageParapetRoof", [32.2, 9.0, -16.0, 32.5, 10.0, 12.2], "concrete"],
@@ -233,6 +254,13 @@ const FENCES: Array = [
 	["HarlowEastRoadworks", "z", 32.5, 12.21, 34.19, ROAD_Y, 2.4, [[22.2, 24.2, ROAD_Y, ROAD_Y + 2.2]], "fence"],
 	["PellNorthHoarding", "x", -8.0, 18.21, 32.19, ROAD_Y, 2.4, [[22.2, 24.2, ROAD_Y, ROAD_Y + 2.2]], "fence"],
 ]
+
+## Garage L2 -> L3 ramp: top surface from `low` up to `high` (centre line), width, slab thickness;
+## a 1.0 m concrete upstand on its open (west) side.
+const GARAGE_RAMP: Dictionary = {"low": Vector3(37.2, 3.0, 11.5), "high": Vector3(37.2, 6.0, -6.5), "width": 1.6,
+	"thick": 0.25, "upstand_x": 36.33}
+## Garage stall lines (paint) on the deck tops: [deck top y, x0, x1, z0, z1, pitch].
+const GARAGE_STALLS: Array = [[3.0, 33.0, 35.8, -15.0, 11.0, 2.6], [6.0, 33.0, 35.8, -15.0, 11.0, 2.6]]
 
 # --- Props --------------------------------------------------------------------------------------
 
@@ -388,6 +416,9 @@ const CEILING_LIGHTS: Array = [
 const WALL_LIGHTS: Array = [
 	["WindowBoxLightA", Vector3(2.05, 2.95, 11.8), 0.0, Color(1.0, 0.8, 0.56), 0.9, 3.0, Vector3(2.0, 0.08, 0.12)],
 	["WindowBoxLightC", Vector3(8.0, 2.95, 11.8), 0.0, Color(1.0, 0.8, 0.56), 0.9, 3.0, Vector3(2.0, 0.08, 0.12)],
+	# Alley bulkheads: the fire-escape landing / break-room window, and the upper alley wall.
+	["LandingBulkhead", Vector3(2.25, 6.75, -0.2), 0.0, Color(1.0, 0.85, 0.66), 1.2, 6.0, Vector3(0.3, 0.18, 0.14)],
+	["AlleyBulkheadUpper", Vector3(10.0, 6.75, -0.2), 0.0, Color(0.95, 0.93, 0.88), 1.0, 8.0, Vector3(0.3, 0.18, 0.14)],
 ]
 
 # --- Spawns, patrols, tactical -------------------------------------------------------------

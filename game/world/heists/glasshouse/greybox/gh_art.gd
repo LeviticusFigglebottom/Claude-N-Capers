@@ -12,7 +12,7 @@ const LIBRARY: Array[String] = [
 	"plaster_painted", "drywall_painted", "concrete", "terrazzo", "marble_cream", "carpet_commercial",
 	"ceiling_tile", "wood_veneer_walnut", "brushed_steel", "chrome", "brass", "glass_clear",
 	"rubber_black", "fabric_upholstery", "leather_dark", "plastic_matte", "brick_red", "asphalt",
-	"tile_ceramic_white", "vinyl_floor", "metal_painted",
+	"tile_ceramic_white", "vinyl_floor", "metal_painted", "paint_white",
 ]
 ## Door frame casing beyond the opening (prop door frames: 1.15 / 2.15 / 1.35 m for 0.9 / 1.8 / 1.1).
 const DOOR_CASING: float = 0.18
@@ -61,7 +61,8 @@ const CLASS_MAT: Dictionary = {
 ## "@room" = the finish of the room the face looks into; "@parapet" = concrete above the roof only.
 const CLASS_FACES: Dictionary = {
 	"wall_ext": ["", "concrete", "brick_red"], "wall": ["", "@parapet", "@room"], "floor": ["", "", "drywall_painted"],
-	"roof": ["plaster_painted", "concrete", ""], "asphalt": ["", "asphalt", "concrete"], "stair": ["", "terrazzo", "terrazzo"],
+	"roof": ["plaster_painted", "concrete", ""], "slab": ["concrete", "concrete", "concrete"],
+	"asphalt": ["", "asphalt", "concrete"], "stair": ["", "terrazzo", "terrazzo"],
 	"none": ["", "", ""],
 }
 const BASEBOARD_H: float = 0.125

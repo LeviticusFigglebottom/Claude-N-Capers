@@ -30,12 +30,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 383 props checked
+- 389 props checked
 
 
 ## clipping: Nothing clips
 
-- 383 props, 23 doors checked
+- 389 props, 23 doors checked
 
 
 ## scale: Human scale
@@ -60,36 +60,38 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Rooms/RoomU7` (storage): ceiling median 3.00 m (rule 2.6-3.0)
 - `Geometry/Building/Stair/FlightUp`: ramp collision enveloping the steps (max 0.175 m above the treads)
 - `Geometry/Building/Stair/FlightUp`: 12 risers, 0.000 -> 2.100 m
+- `Geometry/Building/Stair/FlightUp` rails: -X wall, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 0.00 m; +X partly walled, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 2.04 m
 - `Geometry/Building/Stair/FlightReturn`: ramp collision enveloping the steps (max 0.175 m above the treads)
 - `Geometry/Building/Stair/FlightReturn`: 12 risers, 2.100 -> 4.200 m
+- `Geometry/Building/Stair/FlightReturn` rails: -X open, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 3.12 m; +X wall, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 0.00 m
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1271 polygons, cell 0.10/0.10 m
+- navmesh: 1277 polygons, cell 0.10/0.10 m
 - 141 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomG1` | 16 | 16 | 100% |
 | `Rooms/RoomG7` | 1 | 1 | 100% |
-| `Rooms/RoomG2` | 45 | 45 | 100% |
+| `Rooms/RoomG2` | 31 | 31 | 100% |
 | `Rooms/RoomG3` | 22 | 22 | 100% |
 | `Rooms/RoomG4` | 70 | 70 | 100% |
-| `Rooms/RoomG8` | 2 | 2 | 100% |
+| `Rooms/RoomG8` | 0 | 0 | 100% |
 | `Rooms/RoomG9` | 0 | 0 | 100% |
 | `Rooms/RoomG10` | 18 | 18 | 100% |
 | `Rooms/RoomG5` | 95 | 95 | 100% |
 | `Rooms/RoomG6` | 30 | 30 | 100% |
-| `Rooms/RoomU1` | 27 | 27 | 100% |
+| `Rooms/RoomU1` | 25 | 25 | 100% |
 | `Rooms/RoomU2` | 41 | 41 | 100% |
 | `Rooms/RoomU3` | 26 | 26 | 100% |
 | `Rooms/RoomU4` | 70 | 70 | 100% |
 | `Rooms/RoomU8` | 16 | 16 | 100% |
-| `Rooms/RoomU5` | 65 | 65 | 100% |
+| `Rooms/RoomU5` | 71 | 71 | 100% |
 | `Rooms/RoomU6` | 38 | 38 | 100% |
 | `Rooms/RoomU7` | 39 | 39 | 100% |
 | `Rooms/RoomX1` | 556 | 554 | 100% |
-| `Rooms/RoomX2` | 742 | 742 | 100% |
+| `Rooms/RoomX2` | 739 | 739 | 100% |
 
 
 ## reachability: Reachability (per variant)

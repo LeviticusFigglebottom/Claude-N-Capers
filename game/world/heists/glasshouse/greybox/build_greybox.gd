@@ -140,48 +140,17 @@ func _build() -> void:
 	if err != OK:
 		_fail("cannot save %s (%d)" % [SCENE_PATH, err])
 		return
+	R.strip_nested_overrides(SCENE_PATH)
 	R.normalize_scene(SCENE_PATH, old_scene_uid)
 	print("glasshouse: saved %s (navmesh polygons: %d)" % [SCENE_PATH, polys])
 	quit(0)
 
 
-## Generated visuals (library materials, world-scaled UVs) for gameplay items without catalog art:
-## keycard, cash stack, jewelry stack. Pivot bottom-centre, front -Z.
 func _make_visuals() -> bool:
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(ART_DIR))
-	_art.add_tint("gh_card_white", "plastic_matte", Color(0.93, 0.93, 0.95))
-	_art.add_tint("gh_cash_green", "plastic_matte", Color(0.55, 0.68, 0.5))
-	var specs: Array = [
-		[VIS_KEYCARD, "GhKeycard", [[Vector3(0.086, 0.004, 0.054), Vector3(0.0, 0.002, 0.0), "gh_card_white"],
-			[Vector3(0.078, 0.0025, 0.012), Vector3(0.0, 0.00525, -0.014), "rubber_black"]]],
-		[VIS_CASH, "GhCashStack", [[Vector3(0.16, 0.05, 0.075), Vector3(0.0, 0.025, 0.0), "gh_cash_green"],
-			[Vector3(0.03, 0.056, 0.081), Vector3(0.0, 0.028, 0.0), "plaster_painted"]]],
-		[VIS_JEWELRY, "GhJewelryStack", [[Vector3(0.36, 0.05, 0.24), Vector3(0.0, 0.025, 0.0), "leather_dark"],
-			[Vector3(0.34, 0.05, 0.22), Vector3(0.0, 0.075, 0.0), "leather_dark"],
-			[Vector3(0.32, 0.05, 0.2), Vector3(0.0, 0.125, 0.0), "leather_dark"],
-			[Vector3(0.12, 0.08, 0.12), Vector3(0.06, 0.19, 0.0), "wood_veneer_walnut"]]],
-		[VIS_EMPTY, "GhEmpty", []],
-	]
-	for v: Array in specs:
-		var path: String = String(v[0])
-		var root: Node3D = Node3D.new()
-		root.name = String(v[1])
-		if not (v[2] as Array).is_empty():
-			var mi: MeshInstance3D = MeshInstance3D.new()
-			mi.name = "Mesh"
-			mi.mesh = _art.local_box_mesh(v[2])
-			root.add_child(mi)
-			mi.owner = root
-		var ps: PackedScene = PackedScene.new()
-		var err: int = ps.pack(root)
-		root.free()
-		var old_uid: String = R.read_uid(path)
-		if err == OK:
-			err = ResourceSaver.save(ps, path)
-		if err != OK:
-			_fail("cannot save %s (%d)" % [path, err])
-			return false
-		R.normalize_scene(path, old_uid)
+	var err: String = D.make_visuals(_art, R, [VIS_KEYCARD, VIS_CASH, VIS_JEWELRY, VIS_EMPTY])
+	if err != "":
+		_fail(err)
+		return false
 	return true
 
 
@@ -488,6 +457,116 @@ func _build_stair(bld: Node3D) -> void:
 			_box(ret, "Step%02dB" % k2, Vector3(float(rx[0]), g9_top, g9_z), Vector3(float(rx[1]), top, zb), "stair")
 	_art.acc.flush(ret, _root, {}, ["StairReturn"])
 	_vis_group = "Interior"
+	_stair_rails(core, rise, tread, z_land, n)
+
+
+## Stair handrails (level_standards §2: every flight, 1.05 m above the nosing line): a wall rail on
+## each flight's outer side, a steel balustrade (top rail, mid rail, a baluster per tread) on each
+## well side, and a guard across the well at the half landing. Collision boxes follow the rails; the outer rails sit inside
+## the agent's wall clearance and the balustrades at the flight edge, so the navmesh is unchanged.
+func _stair_rails(core: Node3D, rise: float, tread: float, z_land: float, n: int) -> void:
+	var st: Dictionary = L.STAIR
+	var ux: Array = st["up_x"]
+	var rx: Array = st["ret_x"]
+	var rails: Node3D = _add(core, _node3d("Handrails")) as Node3D
+	var z_low: float = z_land + float(n - 1) * tread
+	# Real nosing lines (top of the first riser to the top of the last one), as levelcheck measures
+	# them. Rail tops 1.05 m above (wall handrail 0.85-1.1, guard 1.0-1.1).
+	var up_a: Vector3 = Vector3(0.0, rise, z_low)
+	var up_b: Vector3 = Vector3(0.0, rise * n, z_land)
+	var rt_a: Vector3 = Vector3(0.0, rise * (n + 1), z_land)
+	var rt_b: Vector3 = Vector3(0.0, rise * 2 * n, z_low)
+	var h: float = 1.05
+	_bar(rails, "WallRailUp", up_a + Vector3(float(ux[0]) + 0.06, h - 0.02, 0.0), up_b + Vector3(float(ux[0]) + 0.06, h - 0.02, 0.0),
+		Vector2(0.04, 0.04), "brushed_steel", true)
+	_bar(rails, "WallRailReturn", rt_a + Vector3(float(rx[1]) - 0.06, h - 0.02, 0.0),
+		rt_b + Vector3(float(rx[1]) - 0.06, h - 0.02, 0.0), Vector2(0.04, 0.04), "brushed_steel", true)
+	# Well side: a steel balustrade, sloped top rail plus one baluster per tread (all with collision).
+	for side: Array in [["Up", float(ux[1]) + 0.02, up_a, up_b], ["Return", float(rx[0]) - 0.02, rt_a, rt_b]]:
+		var x: float = float(side[1])
+		var a: Vector3 = side[2]
+		var b: Vector3 = side[3]
+		_bar(rails, "BalustradeRail" + String(side[0]), a + Vector3(x, h - 0.02, 0.0), b + Vector3(x, h - 0.02, 0.0),
+			Vector2(0.05, 0.04), "brushed_steel", true)
+		_bar(rails, "BalustradeMidRail" + String(side[0]), a + Vector3(x, h * 0.5, 0.0), b + Vector3(x, h * 0.5, 0.0),
+			Vector2(0.03, 0.03), "brushed_steel", true)
+		var posts: Node3D = _add(rails, _node3d("Balusters" + String(side[0]))) as Node3D
+		for k: int in range(1, n + 1):
+			var f: float = (float(k) - 0.5) / float(n)
+			var p: Vector3 = a.lerp(b, f)
+			# Tread under the post (up: tread j spans z_land + (n-1-j)..(n-j) treads; return: tread
+			# n+1+i spans z_land + i..i+1 treads).
+			var i: int = int(floor((p.z - z_land) / tread))
+			var j: int = clampi(n - 1 - i, 1, n - 1) if String(side[0]) == "Up" else clampi(n + 1 + i, n + 1, 2 * n - 1)
+			var floor_y: float = rise * float(j)
+			_box(posts, "Post%02d" % k, Vector3(x - 0.015, floor_y, p.z - 0.015),
+				Vector3(x + 0.015, p.y + h - 0.05, p.z + 0.015), "")
+			var pm: MeshInstance3D = MeshInstance3D.new()
+			pm.name = "Mesh"
+			pm.mesh = _art.local_box_mesh([[Vector3(0.03, p.y + h - 0.05 - floor_y, 0.03), Vector3.ZERO, "brushed_steel"]])
+			_add(posts.get_child(posts.get_child_count() - 1), pm)
+	var lw: Node3D = _box(rails, "LandingWellGuard", Vector3(float(ux[1]), rise * n, z_land),
+		Vector3(float(rx[0]), rise * n + h, z_land + 0.03), "")
+	var gm: MeshInstance3D = MeshInstance3D.new()
+	gm.name = "Mesh"
+	gm.mesh = _art.local_box_mesh([[Vector3(float(rx[0]) - float(ux[1]), h - 0.04, 0.03), Vector3(0.0, -0.02, 0.0), "glass_clear"],
+		[Vector3(float(rx[0]) - float(ux[1]), 0.04, 0.05), Vector3(0.0, h * 0.5 - 0.02, 0.0), "brushed_steel"]])
+	_add(lw, gm)
+
+
+## A straight bar (rail, balustrade, ramp) whose centre line runs from `a` to `b`; `size` = cross
+## section (width across, height up). Mesh with library materials; optional box collision.
+func _bar(parent: Node3D, nm: String, a: Vector3, b: Vector3, size: Vector2, key: String, collide: bool) -> Node3D:
+	var dir: Vector3 = b - a
+	var length: float = dir.length()
+	var xf: Transform3D = Transform3D(Basis.looking_at(dir / length, Vector3.UP), (a + b) * 0.5)
+	var root: Node3D
+	if collide:
+		var body: StaticBody3D = StaticBody3D.new()
+		body.collision_layer = 1
+		body.collision_mask = 0
+		root = body
+	else:
+		root = Node3D.new()
+	root.name = nm
+	root.transform = xf
+	_add(parent, root)
+	var box: Vector3 = Vector3(size.x, size.y, length)
+	if collide:
+		var col: CollisionShape3D = CollisionShape3D.new()
+		col.name = "Collision"
+		col.shape = _box_shape(box)
+		_add(root, col)
+	var mi: MeshInstance3D = MeshInstance3D.new()
+	mi.name = "Mesh"
+	mi.mesh = _art.local_box_mesh([[box, Vector3.ZERO, key]])
+	_add(root, mi)
+	return root
+
+
+## Neighbour garage (C1-08 review): the L2 -> L3 ramp with its upstand, railings on the open
+## parapets and along the L3 cut-out, and painted stall lines.
+func _build_garage(parent: Node3D) -> void:
+	var g: Node3D = _add(parent, _node3d("GarageDetail")) as Node3D
+	var rp: Dictionary = L.GARAGE_RAMP
+	var lo: Vector3 = rp["low"]
+	var hi: Vector3 = rp["high"]
+	var t: float = float(rp["thick"])
+	var up: Vector3 = Basis.looking_at((hi - lo).normalized(), Vector3.UP).y
+	_bar(g, "Ramp", lo - up * t * 0.5, hi - up * t * 0.5, Vector2(float(rp["width"]), t), "concrete", true)
+	var ux: float = float(rp["upstand_x"])
+	var off: Vector3 = Vector3(ux - lo.x, 0.0, 0.0) + up * 0.45
+	_bar(g, "RampUpstand", lo + off, hi + off, Vector2(0.15, 1.0), "concrete", true)
+	_railing(g, "GarageRailL2", Vector3(32.3, 4.0, -15.95), Vector3(32.4, 4.45, 11.85))
+	_railing(g, "GarageRailL3", Vector3(32.3, 7.0, -15.95), Vector3(32.4, 7.45, 11.85))
+	_railing(g, "GarageRailL3Cut", Vector3(36.1, 6.0, -6.45), Vector3(36.15, 7.05, 11.85))
+	for s: Array in L.GARAGE_STALLS:
+		var y: float = float(s[0]) + 0.004
+		var z: float = float(s[3])
+		while z <= float(s[4]) + 0.001:
+			_art.acc.quad("Neighbours", "paint_white", Vector3(float(s[1]), y, z), Vector3(float(s[2]), y, z),
+				Vector3(float(s[2]), y, z + 0.1), Vector3(float(s[1]), y, z + 0.1), Vector3.UP)
+			z += float(s[5])
 
 
 ## Static (non-interactive) glazing: kit window visual + a glass blocker filling the opening.
@@ -556,6 +635,7 @@ func _build_site(geo: Node3D) -> void:
 	var blocks: Node3D = _add(site, _node3d("Blocks")) as Node3D
 	for b: Array in L.BLOCKS:
 		_box_a(blocks, String(b[0]), b[1], String(b[2]))
+	_build_garage(blocks)
 	_vis_group = "Street"
 	var fences: Node3D = _add(site, _node3d("Closures")) as Node3D
 	for f: Array in L.FENCES:
@@ -1205,13 +1285,13 @@ func _variants_loot_escape(variants: Node3D) -> void:
 	_slot(xl, "extra_loot", "xl_none", 0.4)
 	var esc: Node3D = _group(variants, "escape")
 	var e1: VariantSlot = _slot(esc, "escape", "esc_alley_west", 0.65, {"label": "E1"})
-	_prefab(e1, "secure_zone", "VanSecureE1", Vector3(-8.5, 0.0, -3.2), -90.0, {},
+	_prefab(e1, "secure_zone", "VanSecureE1", Vector3(-8.62, 0.0, -3.2), -90.0, {},
 		null, {"kind": "vehicle"})
 	# Escape area: the alley behind the van, rear bumper to the fire-escape ladder (5.8 x 7 m).
 	_prefab(e1, "escape_zone", "VanEscapeE1", Vector3(-2.4, 0.0, -3.2), -90.0,
 		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(5.8, 3.0, 7.0)})
 	var e2: VariantSlot = _slot(esc, "escape", "esc_pell", 0.35, {"label": "E2"})
-	_prefab(e2, "secure_zone", "VanSecureE2", Vector3(22.4, L.ROAD_Y, 7.0), 0.0, {"zone_size_m": Vector3(6.0, 3.0, 8.0)},
+	_prefab(e2, "secure_zone", "VanSecureE2", Vector3(22.4, L.ROAD_Y, 7.1), 0.0, {"zone_size_m": Vector3(6.0, 3.0, 8.0)},
 		null, {"kind": "vehicle"})
 	# Escape area: Pell St carriageway behind the van (7.8 x 4 m, kerb to kerb).
 	_prefab(e2, "escape_zone", "VanEscapeE2", Vector3(25.2, L.ROAD_Y, 2.3), 0.0,
