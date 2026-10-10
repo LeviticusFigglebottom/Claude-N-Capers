@@ -278,6 +278,51 @@ func test_board_take_uses_the_pin_flag() -> void:
 	await wait_frames(1)
 
 
+## QB-BRD1 (D-049): a failed pro job consumes its Board contract (no restart): the pin is locked for
+## the rest of its rotation; a success, or a failed non-pro run, consumes nothing.
+func test_failed_pro_job_consumes_the_contract() -> void:
+	var f: MenuFlow = _flow()
+	await wait_frames(1)
+	f.open_station(&"board")
+	await wait_frames(2)
+	var b: BoardScreen = f.board_screen
+	var t: Dictionary = {"now": Time.get_unix_time_from_system()}
+	b.clock = func() -> float: return float(t["now"])
+	b.refresh_board()
+	b.select_slot(0)
+	b.contracts[0]["is_pro"] = true
+	var key: String = BoardContracts.contract_key(b.contracts[0])
+	assert_true(b.take_selected())
+	assert_true(f.is_pro)
+	f._on_heist_ended({"success": true})
+	assert_true(f.consumed_contracts.is_empty(), "a successful pro job consumes nothing here")
+	f._on_heist_ended({"success": false, "fail_reason": &"all_custody"})
+	assert_true(f.consumed_contracts.has(key), "failed pro job: contract consumed")
+	f.open_station(&"board")
+	await wait_frames(1)
+	b.select_slot(0)
+	assert_true(bool(b.selected_contract()["consumed"]))
+	assert_true(b.take_button.disabled, "Take locked")
+	assert_true(b.consumed_label.visible)
+	assert_true(b.map_view.pins[0].modulate.a < 1.0, "pin dimmed")
+	assert_false(b.take_selected(), "can't relaunch it")
+	assert_eq(f.current, b as Control)
+	b.select_slot(1)
+	assert_false(b.take_button.disabled, "other contracts stay open")
+	# The slot's next rotation is a new contract.
+	t["now"] = float(b.contracts[0]["expires_at"]) + 1.0
+	b.refresh_board()
+	b.select_slot(0)
+	assert_false(bool(b.selected_contract()["consumed"]), "next rotation is a fresh contract")
+	# A failed non-pro (planning table) run consumes nothing.
+	f.consumed_contracts.clear()
+	f._on_heist_chosen(&"glasshouse", Enums.Difficulty.ROUTINE)
+	f._on_heist_ended({"success": false})
+	assert_true(f.consumed_contracts.is_empty())
+	f.queue_free()
+	await wait_frames(1)
+
+
 func test_build_launch_options_is_pro_key() -> void:
 	var l: Loadout = Loadout.new()
 	assert_false(MenuFlow.build_launch_options(3, 0, l).has("is_pro"))

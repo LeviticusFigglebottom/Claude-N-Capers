@@ -7,6 +7,10 @@
 ## purchase after the stash was charged and, with save_on_buy, saved); back_requested() (UiScreen;
 ## Esc / gamepad B). `clock` (Callable() -> float Unix seconds) replaces the system clock in tests.
 ##
+## Pro jobs have no restart (QB-BRD1, D-049): `consumed` (BoardContracts.contract_key() -> true,
+## shared with MenuFlow) marks failed pro contracts; their pin is dimmed and Take is locked until the
+## slot rotates to a new contract.
+##
 ## Navigation: pins move spatially (BoardMapView); right from the map's edge reaches Take; left from
 ## the side panel returns to the selected pin. Focusing a pin selects it; pressing it jumps to Take.
 class_name BoardScreen
@@ -23,6 +27,8 @@ var profile: PlayerProfile = null
 var tweak: BoardTweak = null
 var city: BoardCityMap = null
 var heist_pool: Array[Dictionary] = []
+## BoardContracts.contract_key() -> true for consumed (failed pro) contracts. MenuFlow shares its dict.
+var consumed: Dictionary = {}
 var contracts: Array[Dictionary] = []
 var selected_slot: int = -1
 ## Optional time source (tests): Callable() -> float Unix seconds.
@@ -45,6 +51,7 @@ var difficulty_label: Label
 var payout_label: Label
 var pro_label: Label
 var pro_desc_label: Label
+var consumed_label: Label
 var time_label: Label
 var take_button: Button
 var broker_heist: OptionButton
@@ -181,7 +188,10 @@ func _build_card(side: VBoxContainer) -> void:
 	pro_desc_label = UiBuild.label(&"", UiBuild.DIM)
 	pro_desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	empty_label = UiBuild.label(&"ui.board.empty", UiBuild.DIM)
-	for l: Label in [payout_label, pro_desc_label, empty_label]:
+	consumed_label = UiBuild.label(&"ui.board.consumed")
+	consumed_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	consumed_label.add_theme_color_override(&"font_color", city.pro_color.lightened(0.45))
+	for l: Label in [payout_label, pro_desc_label, consumed_label, empty_label]:
 		card.add_child(l)
 	take_button = UiBuild.primary(UiBuild.button(&"ui.board.take"))
 	take_button.pressed.connect(take_selected)
@@ -229,6 +239,8 @@ func now() -> float:
 ## Regenerate every slot's contract for the current time, keeping the selected slot.
 func refresh_board() -> void:
 	contracts = BoardContracts.generate(now(), _level(), heist_pool, tweak, city, build_gate)
+	for c: Dictionary in contracts:
+		c["consumed"] = consumed.has(BoardContracts.contract_key(c))
 	if map_view == null:
 		return
 	map_view.set_contracts(contracts)
@@ -260,6 +272,8 @@ func select_slot(slot: int) -> void:
 	empty_label.visible = not has
 	pro_label.visible = has and bool(c["is_pro"])
 	pro_desc_label.visible = pro_label.visible
+	consumed_label.visible = has and bool(c.get("consumed", false))
+	take_button.disabled = consumed_label.visible
 	if has:
 		_fill_card(c)
 		var pin_path: NodePath = take_button.get_path_to(map_view.pins[selected_slot])
@@ -272,10 +286,10 @@ func selected_contract() -> Dictionary:
 
 
 ## Take the selected contract: emits contract_chosen unless it expired meanwhile (then the board
-## refreshes and nothing is emitted). Returns whether it emitted.
+## refreshes and nothing is emitted) or it is a consumed pro job. Returns whether it emitted.
 func take_selected() -> bool:
 	var c: Dictionary = selected_contract()
-	if c.is_empty():
+	if c.is_empty() or bool(c.get("consumed", false)):
 		return false
 	if BoardContracts.time_left(c, now()) <= 0.0:
 		refresh_board()

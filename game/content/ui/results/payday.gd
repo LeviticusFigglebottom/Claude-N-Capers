@@ -10,6 +10,9 @@
 ## PaydayCards.roll(result.seed, local slot, ...). Pick one (mouse / ui_accept), or the timer
 ## (PaydayCardsTable.pick_time_s, 30 s) picks `auto_pick`; all three are revealed, the picked reward
 ## is granted (PaydayCards.grant) and saved, and Continue is enabled again.
+## Leaving with an unpicked card (QB-PC1, D-049): the screen leaving the tree, the app quitting
+## (WM close request), a new result replacing this one, or MenuFlow leaving the heist auto-pick it
+## with the same deterministic `auto_pick` as the timeout (finish_card_pick()); no save change.
 ## Continue emits continue_pressed; if nobody listens it returns to the main menu scene.
 class_name PaydayScreen
 extends UiScreen
@@ -93,6 +96,7 @@ func build_ui() -> void:
 
 ## Show a HeistResult. Computes the payout and (unless apply_to_profile is false) banks it.
 func show_result(heist_result: Dictionary) -> void:
+	finish_card_pick()
 	result = heist_result
 	if profile == null:
 		profile = SaveService.load_profile(profile_slot)
@@ -166,14 +170,33 @@ func pick(index: int) -> void:
 			continue_button.grab_focus.call_deferred()
 
 
+## Auto-pick an offered, unpicked card exactly like the timeout does (auto_pick of the roll), for
+## every way of leaving the screen (QB-PC1). No-op when there is no pending pick. Returns whether it picked.
+func finish_card_pick() -> bool:
+	if not has_card_pick():
+		return false
+	auto_picked = true
+	pick(int(card_roll.get("auto_pick", 0)))
+	_update_timer_label()
+	return true
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		finish_card_pick()
+
+
+func _exit_tree() -> void:
+	finish_card_pick()
+
+
 ## Advance the pick timer (called from _process; tests call it directly).
 func tick(delta: float) -> void:
 	if not cards_stage or picked_index >= 0:
 		return
 	time_left = maxf(time_left - delta, 0.0)
 	if time_left <= 0.0:
-		auto_picked = true
-		pick(int(card_roll.get("auto_pick", 0)))
+		finish_card_pick()
 	_update_timer_label()
 
 

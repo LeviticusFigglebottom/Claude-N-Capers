@@ -1339,6 +1339,7 @@ ui.board.payout,Contract pay: {amount}
 ui.board.expires,Expires in {time}
 ui.board.pro,PRO JOB
 ui.board.pro_desc,"No restarts: fail it and the contract is gone. +{pct}% XP."
+ui.board.consumed,"Pro job failed: this contract is burned until the board rotates."
 ui.board.take,Take Contract
 ui.board.pin_tooltip,"{heist}, {difficulty}"
 ui.board.legend_pro,Red badge: pro job

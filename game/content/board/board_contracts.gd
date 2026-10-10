@@ -18,6 +18,7 @@
 ##   "difficulty": int, "is_pro": bool, "contact_id": StringName, "payout": int (contract pay preview,
 ##   PayoutCalculator-consistent), "base_payout": int, "mode": int, "placeholder": bool,
 ##   "district": StringName, "map_pos": Vector2 (map units), "starts_at": float, "expires_at": float }
+##   BoardScreen adds "consumed": bool (a failed pro job, no restart; QB-BRD1).
 class_name BoardContracts
 extends RefCounted
 
@@ -112,6 +113,12 @@ static func contract_for(slot: int, bucket: int, allowed: Array[int], heist_pool
 		"district": city.heist_district(id) if city != null else &"",
 		"map_pos": pos, "starts_at": starts, "expires_at": starts + period,
 	}
+
+
+## Stable identity of one contract (slot + rotation bucket): the key a consumed pro job is locked
+## under (QB-BRD1). The next bucket of the same slot is a new contract.
+static func contract_key(contract: Dictionary) -> String:
+	return "%d:%d" % [int(contract.get("slot", -1)), int(contract.get("bucket", 0))]
 
 
 ## Seconds until `contract` expires (>= 0).
