@@ -16,6 +16,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | reachability | PASS | 0 | 0 |
 | walkthrough | PASS | 0 | 0 |
 | patrols | PASS | 0 | 0 |
+| lasers | PASS | 0 | 0 |
 | materials | skipped | 0 | 0 |
 | zfight | skipped | 0 | 0 |
 | lights | skipped | 0 | 0 |
@@ -134,4 +135,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - graph `bank`: 41 points, 4 guard(s)
 - graph `exterior`: 6 points, 1 guard(s)
 - 2 patrol graph(s)
+
+
+## lasers: Laser grid bypass gaps
+
+- `Variants/Group_laser_pattern/Slot_laser_static/AntechamberLasers`: beams x -4.43..4.43 m; -X side: clear 0.95 m, capsule standing; +X side: clear 0.00 m, capsule none
+- `Variants/Group_laser_pattern/Slot_laser_sweep/AntechamberLasers`: pattern `sweeping`, bypass gap not required
+- `Variants/Group_laser_pattern/Slot_laser_timed/AntechamberLasers`: pattern `timed_off`, bypass gap not required
+- 3 laser grid(s), 1 with an asserted bypass gap
 

@@ -423,8 +423,8 @@ func _variants_vent(variants: Node3D) -> void:
 func _variants_lasers(variants: Node3D) -> void:
 	var lg: Node3D = _group(variants, "laser_pattern")
 	var rows: Array = [
-		# static: a squeeze gap at the west end (x 9.1-9.8) beside the inspection-passage wall.
-		["laser_static", 0.5, Vector3(14.35, L.BASE, 8.5), {"pattern": &"static", "size_m": Vector3(9.1, 2.0, 0.1),
+		# static: a bypass gap at the west end (x 9.1-10.05, 0.95 m clear; D-048 needs >= 0.8 m) beside the wall.
+		["laser_static", 0.5, Vector3(14.475, L.BASE, 8.5), {"pattern": &"static", "size_m": Vector3(8.85, 2.0, 0.1),
 			"beam_count": 4}],
 		["laser_sweep", 0.2, Vector3(14.0, L.BASE, 8.5), {"pattern": &"sweeping", "size_m": Vector3(9.8, 2.2, 0.1),
 			"sweep_beams": 2, "period_s": 6.0}],

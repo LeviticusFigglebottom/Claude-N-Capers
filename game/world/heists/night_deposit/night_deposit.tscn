@@ -11502,9 +11502,9 @@ slot_id = &"laser_static"
 weight = 0.5
 
 [node name="AntechamberLasers" type="Node3D" parent="Variants/Group_laser_pattern/Slot_laser_static" unique_id=102044 instance=ExtResource("60_nd")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.35, -4, 8.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.475, -4, 8.5)
 script = ExtResource("61_nd")
-size_m = Vector3(9.1, 2, 0.1)
+size_m = Vector3(8.85, 2, 0.1)
 objective_tag = &"antechamber_lasers"
 metadata/kind = "laser_grid"
 
