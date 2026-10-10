@@ -29,10 +29,9 @@ preplanning = {
 &"asset.insider_code": {
 "category": &"intel",
 "cost": 1500,
-"effect": "reveal",
 "favors": 1,
 "point_categories": [&"insider"],
-"reveal_variant_group": &"code_note",
+"reveals": [&"code_note"],
 "tags": [&"stealth"]
 },
 &"asset.intel_cameras": {
@@ -45,9 +44,8 @@ preplanning = {
 "category": &"access",
 "cost": 1000,
 "favors": 1,
-"force_variant": {
-"group": &"vent_open",
-"slot": &"vent_open"
+"force_variants": {
+&"vent_open": [&"vent_open"]
 },
 "point_categories": [&"insider"],
 "tags": [&"stealth"]

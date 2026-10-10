@@ -75,7 +75,7 @@ func test_l4_11_limits_read_from_difficulty_def() -> void:
 	assert_eq(d.roster.special_limit(&"enemy.corpsman"), 3, "Brutal: 3 Corpsmen")
 	assert_eq(d.roster.special_limit(&"enemy.phantom"), 2, "Brutal: 2 Phantoms")
 	assert_eq(d.roster.special_limit(&"enemy.wrecker_s"), 2, "Brutal: 2 Wreckers (shared)")
-	assert_eq(d.roster.special_limit(&"enemy.longshot"), -1, "no key: unlimited (perches limit Longshots)")
+	assert_eq(d.roster.special_limit(&"enemy.longshot"), 3, "Brutal: 3 Longshots (D-049; perches still cap them)")
 
 
 func test_l4_11_queue_respects_cap() -> void:

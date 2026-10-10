@@ -396,7 +396,7 @@ the exterior rover is the natural candidate. That is the intended Brutal skill c
    ECM or with C1 looped while the hall guard faces west on his loop → G9 → teller gate (lockpick) →
    G8 → G7. This is the fastest route to G11/G12 (manager keycard/code).
 
-**Time-lock hold:** after the code is entered (or the server hack is started), the vault opens after
+**Time-lock hold:** after the code is entered (or the server hack **finishes**), the vault opens after
 `time_lock_s`. The crew must keep the basement quiet that long: patrols keep coming to B5/B8. This
 is the **heist's tension beat**.
 
@@ -484,7 +484,7 @@ Each variable changes a decision.
 | `code_note` | `code_manager_planner` (G12), `code_break_board` (G4), `code_records_ledger` (B6), `code_on_manager` (the night manager carries it; requires `night_manager`) | 1, 1, 1, 1.5; pick 1 | **Route, or whether you must intimidate the manager** (cable tie + shout window) to read it. `code_on_manager` excludes the others' notes. |
 | `server_room` | `srv_basement` (B4), `srv_ground` (G6 storage rack) | 0.6, 0.4 | **The code-free alternative:** hacking avoids the code hunt but costs 60 s plus interruptions and puts a crew member far from the vault (ground variant). |
 | `time_lock_s` (scalar) | 60, 90, 120 | Routine 0.4/0.4/0.2; Brutal 0.1/0.4/0.5 | **How long to hold the basement**, which decides whether to clear or pager the basement guard before starting it. |
-| `guard_post` | `rover_ground`, `rover_basement`, `rover_exterior` (the 2 base posts are fixed spawns) | pick 0–1 Routine (0.3/0.7), 1–2 Brutal; `difficulty_add` | **Which route is covered:** exterior locks down the lot/vent, basement makes the time-lock hold harder, ground covers the front. |
+| `guard_post` | `rover_ground`, `rover_basement`, `rover_exterior`, plus the empty `rover_none` (the 2 base posts are fixed spawns; `rover_none` encodes the rover-count weights, since the resolver rolls counts uniformly: Routine pick 1 with `rover_none` 9/7 against 1 each, so P(no rover) = 0.3; Brutal+ pick 2 with `rover_none` 1, so 1 or 2 rovers at 50/50) | pick 0–1 Routine (0.3/0.7), 1–2 Brutal; `difficulty_add` | **Which route is covered:** exterior locks down the lot/vent, basement makes the time-lock hold harder, ground covers the front. |
 | `camera` | `cam_a` (C1, C3, C5, C6), `cam_b` (C2, C4, C5, C7), `cam_c` (C1, C4, C6, C8) | 1, 1, 1 | **Which entry needs a loop/ECM:** C4 covers the sally door, C7 the lot and grate, C1 the ATM door. |
 | `security_room_staffed` | `sec_staffed`, `sec_empty` | Routine 0.6/0.4; Brutal 0.75/0.25 | **Kill/dominate the operator** (a pager, which counts toward Brutal's cap) **or live with cameras**. |
 | `vent_open` | `vent_open` (grate unlocked), `vent_locked` (padlock: lockpick 8 s) | 0.5, 0.5 | **The cost of the areaway route.** |

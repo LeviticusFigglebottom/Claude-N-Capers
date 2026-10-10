@@ -47,9 +47,9 @@ static func make_def() -> HeistDef:
 			&"asset.escape_position": {"point_categories": [&"escape"]},
 			&"asset.intel_keycards": {"point_categories": [&"insider"]},
 			&"asset.intel_cameras": {"point_categories": [&"insider"]},
-			&"asset.insider_code": {"effect": "reveal", "reveal_variant_group": &"code_note", "category": &"intel",
+			&"asset.insider_code": {"reveals": [&"code_note"], "category": &"intel",
 				"point_categories": [&"insider"], "cost": 1500, "favors": 1, "tags": [&"stealth"]},
-			&"asset.vent_access": {"force_variant": {"group": &"vent_open", "slot": &"vent_open"},
+			&"asset.vent_access": {"force_variants": {&"vent_open": [&"vent_open"]},
 				"category": &"access", "point_categories": [&"insider"], "cost": 1000, "favors": 1, "tags": [&"stealth"]},
 		},
 	}
@@ -58,10 +58,10 @@ static func make_def() -> HeistDef:
 	return d
 
 
-## Variable table (doc §Variable table). Resolver limits (A3-10 not on trunk): no per-difficulty
-## weights (Routine weights are used), no weighted pick counts (guard_post 0-1 is uniform), no
-## per-difficulty scalar weights (time_lock_s uses Routine 0.4/0.4/0.2), no `min_difficulty` on rare
-## events (the mission gates armored_car_early to Brutal+).
+## Variable table (doc §Variable table, §Rare events). Per-difficulty weights (A2-08 / A3-10) apply
+## from Brutal up (keys are exact difficulties, so Brutal / Lethal / Cataclysm are listed one by one;
+## Routine to Hazardous keep the Routine weights). guard_post: the doc's weighted rover count goes
+## through the empty `rover_none` slot (see nd_gameplay.gd); Brutal+ picks 2 with it at weight 1.
 static func make_variants() -> HeistVariantTable:
 	var t: HeistVariantTable = null
 	if ResourceLoader.exists(VARIANTS_PATH):
@@ -70,35 +70,46 @@ static func make_variants() -> HeistVariantTable:
 		t = HeistVariantTable.new()
 	var brutal_plus: Array[int] = [0, 0, 0, 1, 1, 1]
 	t.rules = [
-		{"group": &"guard_post", "pick": Vector2i(0, 1), "difficulty_add": brutal_plus},
+		{"group": &"guard_post", "pick": Vector2i(1, 1), "difficulty_add": brutal_plus,
+			"weights_by_difficulty": _brutal_plus({&"rover_none": 1.0})},
 		{"group": &"camera", "pick": Vector2i(1, 1)},
-		{"group": &"security_room_staffed", "pick": Vector2i(1, 1)},
+		{"group": &"security_room_staffed", "pick": Vector2i(1, 1),
+			"weights_by_difficulty": _brutal_plus({&"sec_staffed": 0.75, &"sec_empty": 0.25})},
 		{"group": &"night_manager", "pick": Vector2i(1, 1)},
-		# code_on_manager needs the manager: its own group, rolled only when mgr_in (1.5 vs 3 = the
-		# doc's 1.5 / (1 + 1 + 1 + 1.5)); a carried code excludes the written notes.
-		{"group": &"code_carrier", "pick": Vector2i(1, 1), "requires": {&"night_manager": [&"mgr_in"]}},
-		{"group": &"code_note", "pick": Vector2i(1, 1), "excludes": {&"code_carrier": [&"code_on_manager"]}},
+		# The carried code needs the manager; pick 1 makes it exclude the written notes (doc row).
+		{"group": &"code_note", "pick": Vector2i(1, 1),
+			"slot_requires": {&"code_on_manager": {&"night_manager": [&"mgr_in"]}}},
 		{"group": &"keycard", "pick": Vector2i(1, 1)},
 		{"group": &"server_room", "pick": Vector2i(1, 1)},
 		{"group": &"vent_open", "pick": Vector2i(1, 1)},
-		{"group": &"laser_pattern", "pick": Vector2i(1, 1)},
+		{"group": &"laser_pattern", "pick": Vector2i(1, 1),
+			"weights_by_difficulty": _brutal_plus({&"laser_static": 0.2, &"laser_sweep": 0.4, &"laser_timed": 0.4})},
 		{"group": &"cleaner", "pick": Vector2i(1, 1)},
 		{"group": &"escape", "pick": Vector2i(1, 1)},
 		{"group": &"extra_loot", "pick": Vector2i(1, 1)},
 	]
 	t.rare_events = [
 		{"id": &"time_lock_glitch", "chance": 0.04, "good": true, "effects": {"time_lock_s": 10.0}},
-		{"id": &"armored_car_early", "chance": 0.08, "good": false,
-			"effects": {"min_difficulty": Enums.Difficulty.BRUTAL, "at_s": 720.0, "extra_guards": 2}},
+		{"id": &"armored_car_early", "chance": 0.08, "good": false, "min_difficulty": Enums.Difficulty.BRUTAL,
+			"effects": {"at_s": 720.0, "extra_guards": 2}},
 		{"id": &"fog_lifts", "chance": 0.10, "good": false, "effects": {"at_s": 480.0, "boat_delay_s": 60.0}},
 		{"id": &"co_op_courier", "chance": 0.05, "good": true, "effects": {"depository_bags_add": 2}},
 	]
 	t.scalars = [
-		{"id": &"time_lock_s", "values": [60.0, 90.0, 120.0], "weights": PackedFloat32Array([0.4, 0.4, 0.2])},
+		{"id": &"time_lock_s", "values": [60.0, 90.0, 120.0], "weights": PackedFloat32Array([0.4, 0.4, 0.2]),
+			"weights_by_difficulty": _brutal_plus(PackedFloat32Array([0.1, 0.4, 0.5]))},
 		{"id": &"depository_bags", "values": [3, 4, 5], "weights": PackedFloat32Array([0.4, 0.4, 0.2])},
 		{"id": &"deposit_boxes", "values": [4, 6, 8], "weights": PackedFloat32Array([1.0, 1.0, 1.0])},
 	]
 	return t
+
+
+## {Brutal: v, Lethal: v, Cataclysm: v} (weights_by_difficulty keys are exact difficulties).
+static func _brutal_plus(v: Variant) -> Dictionary:
+	var out: Dictionary = {}
+	for d: int in [Enums.Difficulty.BRUTAL, Enums.Difficulty.LETHAL, Enums.Difficulty.CATACLYSM]:
+		out[d] = v
+	return out
 
 
 # --- Determinism --------------------------------------------------------------------------------
