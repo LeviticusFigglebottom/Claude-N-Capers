@@ -1579,6 +1579,22 @@ voice.vo.mercer.night_deposit_armored_car,Armored car's early. Two more guards a
 voice.vo.mercer.night_deposit_fog_lifts,Fog's lifting. Anyone on the street can see the quay now.
 voice.vo.mercer.night_deposit_escape_eta,Your ride's {seconds} seconds out. Hold.
 voice.vo.mercer.night_deposit_escape,Ride's here. Bags in.
+voice.vo.mercer.shadow_ledger_intro,"Calder Tower, top floors, and the rain's doing us favours. Laptop first, then the server room. Masks stay in your pockets until you need them."
+voice.vo.accountant.shadow_ledger_contact_intro,"I want the whole ledger, every page of it. And when you leave, nobody in that building may ever learn it was gone."
+voice.vo.mercer.shadow_ledger_laptop_found,"That's the partners' laptop. It holds the key, so treat it like it's made of glass."
+voice.vo.mercer.shadow_ledger_keycard_found,Keycard. That gets you past the server room door.
+voice.vo.mercer.shadow_ledger_code_found,Cage code's yours. No need to make noise in the server room.
+voice.vo.mercer.shadow_ledger_cage_open,Cage is open. The terminal at the back releases the drive bays.
+voice.vo.mercer.shadow_ledger_hack_started,Release is running: {seconds} seconds. Keep the floor quiet while it works.
+voice.vo.mercer.shadow_ledger_hack_interrupted,The release stopped. Get back on that terminal.
+voice.vo.mercer.shadow_ledger_hack_done,Bays are unlocked. Pull the drives and bag them.
+voice.vo.mercer.shadow_ledger_lasers,Laser grid in the study. Remember it on your way back out.
+voice.vo.mercer.shadow_ledger_time_lock_started,Study safe's on its time lock: {seconds} seconds. Nobody needs to stand and watch it.
+voice.vo.mercer.shadow_ledger_time_lock_open,"Study safe's open. The books are a bonus, if you have the hands."
+voice.vo.mercer.shadow_ledger_last_pager,That's {answered} on the pagers. Nobody gets to reach for another one.
+voice.vo.mercer.shadow_ledger_required_secured,Laptop and two drives are out. The job's done; everything else is greed.
+voice.vo.mercer.shadow_ledger_escape,Your way out is the {escape}. Go.
+voice.vo.mercer.shadow_ledger_abort,"Alarm. That means they're wiping the drives, and there's nothing left worth taking. Pull out."
 item.weapon.drover_762.name,Drover 762
 item.weapon.drover_762.desc,"Graff-Lindqvist's long-stroke battle rifle. Heavy 7.62 rounds, walnut furniture and a kick to match."
 item.mod.drover_suppressor.name,Bulkhead Suppressor
