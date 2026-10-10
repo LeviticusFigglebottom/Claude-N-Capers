@@ -54,9 +54,12 @@ func drop(new_parent: Node) -> void:
 		carrier.remove_collision_exception_with(self)
 	carrier = null
 	if new_parent != null and get_parent() != new_parent:
-		get_parent().remove_child(self)
+		var was_in_tree: bool = is_inside_tree()
+		if get_parent() != null:
+			get_parent().remove_child(self)
 		new_parent.add_child(self)
-		global_transform = xf
+		if was_in_tree:
+			global_transform = xf
 
 
 func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
