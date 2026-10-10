@@ -1,5 +1,5 @@
 # Night Deposit: Harbor Savings & Loan (night_deposit)
-Status: DRAFT (ENV C, 2026-10-10), submitted for G0 review
+Status: APPROVED (lead, 2026-10-10) (D-040)
 
 ## Fiction
 - **Who:** Harbor Savings & Loan, Pier District branch. A 1931 stone bank on the corner of Harbor
