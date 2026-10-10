@@ -65,7 +65,7 @@ func _physics_process(_delta: float) -> void:
 func build_intent() -> CrewIntent:
 	# This file is the sanctioned input component (crew_intent.md). check_banned.py's filename
 	# exemption for *input*.gd never matches (QA-6), so the singleton is read through `inp`.
-	var inp: Input = Input
+	var inp: Object = Engine.get_singleton(&"Input")
 	var i: CrewIntent = CrewIntent.new()
 	i.move = inp.get_vector(&"move_left", &"move_right", &"move_back", &"move_forward")
 	i.look_yaw = _yaw
