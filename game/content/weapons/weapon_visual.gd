@@ -29,14 +29,6 @@ const MARKER_FOR_MOD_TYPE: Dictionary = {
 	Enums.ModType.STOCK: &"StockMount",
 	Enums.ModType.MAGAZINE: &"Magwell",
 }
-## ModType -> stock part node (a child of the marker) hidden when a non-default mod is attached.
-const STOCK_PART_FOR_MOD_TYPE: Dictionary = {
-	Enums.ModType.SIGHT: &"StockSight",
-	Enums.ModType.MAGAZINE: &"StockMagazine",
-	Enums.ModType.BARREL: &"StockBarrel",
-	Enums.ModType.GRIP: &"StockGrip",
-	Enums.ModType.STOCK: &"StockStock",
-}
 const MOD_NODE_PREFIX: String = "Mod_"
 
 var weapon: WeaponDef
@@ -105,13 +97,23 @@ func markers() -> Dictionary:
 	return out
 
 
+## Stock (default) part name for a ModType, data_schemas.md §Weapons: `Stock<ModType>` in PascalCase
+## (SIGHT -> `StockSight`, BARREL_EXT -> `StockBarrelExt`, STOCK -> `StockStock`).
+static func stock_part_name(mod_type: Enums.ModType) -> StringName:
+	return StringName("Stock" + String(Enums.ModType.keys()[mod_type]).to_lower().to_pascal_case())
+
+
+## The stock part hidden when a non-default mod of `mod_type` is attached: preferably a child of the
+## slot's marker (`SightRail/StockSight`), else anywhere in the base model; null when the model has none.
 func stock_part(mod_type: Enums.ModType) -> Node3D:
-	if not STOCK_PART_FOR_MOD_TYPE.has(mod_type) or not MARKER_FOR_MOD_TYPE.has(mod_type):
+	var part_name: String = String(stock_part_name(mod_type))
+	if MARKER_FOR_MOD_TYPE.has(mod_type):
+		var marker: Node3D = get_base_marker(MARKER_FOR_MOD_TYPE[mod_type])
+		if marker != null and marker.has_node(NodePath(part_name)):
+			return marker.get_node(NodePath(part_name)) as Node3D
+	if model == null:
 		return null
-	var marker: Node3D = get_base_marker(MARKER_FOR_MOD_TYPE[mod_type])
-	if marker == null:
-		return null
-	return marker.get_node_or_null(NodePath(String(STOCK_PART_FOR_MOD_TYPE[mod_type]))) as Node3D
+	return model.find_child(part_name, true, false) as Node3D
 
 
 func _equip(mod: WeaponModDef) -> void:

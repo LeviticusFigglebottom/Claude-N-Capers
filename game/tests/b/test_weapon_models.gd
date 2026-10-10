@@ -126,3 +126,12 @@ func _field_int(text: String, key: String) -> int:
 		if line.begins_with(key + ":"):
 			return line.substr(key.length() + 1).strip_edges().to_int()
 	return -1
+
+
+## data_schemas.md §Weapons: stock parts are named Stock<ModType> (D-026 QB-22).
+func test_stock_part_names_follow_contract() -> void:
+	assert_eq(WeaponVisual.stock_part_name(Enums.ModType.SIGHT), &"StockSight")
+	assert_eq(WeaponVisual.stock_part_name(Enums.ModType.MAGAZINE), &"StockMagazine")
+	assert_eq(WeaponVisual.stock_part_name(Enums.ModType.BARREL), &"StockBarrel")
+	assert_eq(WeaponVisual.stock_part_name(Enums.ModType.BARREL_EXT), &"StockBarrelExt")
+	assert_eq(WeaponVisual.stock_part_name(Enums.ModType.FOREGRIP), &"StockForegrip")
