@@ -7,6 +7,72 @@
 			"id": "body_base",
 			"scene": "res://world/characters/_test/body_base.tscn",
 			"test": true
+		},
+		{
+			"asset": "char_civilian_customer_a",
+			"id": "civilian_customer_a",
+			"scene": "res://world/characters/civilian_customer_a/civilian_customer_a.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_civilian_customer_b",
+			"id": "civilian_customer_b",
+			"scene": "res://world/characters/civilian_customer_b/civilian_customer_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_civilian_jeweler",
+			"id": "civilian_jeweler",
+			"scene": "res://world/characters/civilian_jeweler/civilian_jeweler.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_civilian_manager",
+			"id": "civilian_manager",
+			"scene": "res://world/characters/civilian_manager/civilian_manager.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_civilian_sales",
+			"id": "civilian_sales",
+			"scene": "res://world/characters/civilian_sales/civilian_sales.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_crew_body",
+			"id": "crew_body",
+			"scene": "res://world/characters/crew_body/crew_body.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_crew_body_b",
+			"id": "crew_body_b",
+			"scene": "res://world/characters/crew_body_b/crew_body_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_patrol_officer",
+			"id": "patrol_officer",
+			"scene": "res://world/characters/patrol_officer/patrol_officer.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer",
+			"id": "security_officer",
+			"scene": "res://world/characters/security_officer/security_officer.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_b",
+			"id": "security_officer_b",
+			"scene": "res://world/characters/security_officer_b/security_officer_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_tac_light",
+			"id": "tac_light",
+			"scene": "res://world/characters/tac_light/tac_light.tscn",
+			"test": false
 		}
 	],
 	"version": 1
