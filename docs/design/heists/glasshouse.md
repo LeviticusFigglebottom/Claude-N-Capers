@@ -395,7 +395,8 @@ Each variable changes a decision.
   (pools of light, dim surroundings). Receiving 5000 K fluorescents, dimmer. Security office dim with
   a cool monitor glow. Break room 3500 K. Offices 4000 K panels plus desk lamps. Every light has a fixture.
 - **Global illumination:** VoxelGI for the interior, ReflectionProbe per room, OccluderInstance3D for
-  the shell. LightmapGI is being evaluated (style guide §7).
+  the shell. LightmapGI cannot be baked from a script (editor-only), so VoxelGI is baked by
+  `greybox/bake_gi.gd` under xvfb (D-046). **Re-bake it after every geometry regeneration.**
 - **Ambience:** `amb_glasshouse_interior` (room tone, HVAC, faint jazz from the sales floor speakers),
   `amb_street_dusk` (traffic, distant city). The alley adds condenser hum.
 - **Music:** `glasshouse` (stealth 60–90 BPM bed with a glassy bell motif; assault 120–150 BPM).
