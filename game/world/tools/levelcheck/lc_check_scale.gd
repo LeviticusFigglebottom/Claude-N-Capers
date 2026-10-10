@@ -12,6 +12,8 @@ const DOOR_DOUBLE: Vector2 = Vector2(1.8, 1.8)
 const VAULT_DOOR_W: Vector2 = Vector2(1.8, 2.4)
 const VAULT_DOOR_H: Vector2 = Vector2(2.0, 2.4)
 const LOCK_VAULT: int = 6
+## Max difference between a door prefab's `width_m` and its measured leaf width.
+const DOOR_WIDTH_MATCH: float = 0.05
 ## purpose -> allowed ceiling height range (m). level_standards §2.6.
 const CEILING: Dictionary = {
 	# residential / office 2.6-3.0
@@ -143,6 +145,13 @@ func _check_door(ctx: LcContext, d: Node3D) -> void:
 	if not ok:
 		fail(ctx, d, null, "door width %.3f m (%d leaf%s): single 0.9, double 1.8, service (meta service) 1.0-1.2, vault 1.8-2.4"
 			% [total_w, leaves, ", vault" if vault else ""])
+	# Door prefabs size their gameplay opening (doorway crossing, leaf collision) from `width_m`
+	# (0 = contract default), independently of the visual: both must agree.
+	if "width_m" in d and float(d.get("width_m")) > 0.0:
+		var wm: float = float(d.get("width_m"))
+		if absf(wm - total_w) > DOOR_WIDTH_MATCH:
+			fail(ctx, d, null, "door width_m %.3f m disagrees with its visual leaf width %.3f m (placeholder visual?)"
+				% [wm, total_w])
 
 
 func _check_ceiling(ctx: LcContext, r: RoomVolume) -> void:
