@@ -88,6 +88,7 @@ static func from_dict(d: Dictionary) -> PlayerProfile:
 			p.custom_masks.append(_strings_dict(e))
 	var ld: Variant = d.get("loadout", {})
 	p.loadout = loadout_from_dict(ld as Dictionary if ld is Dictionary else {})
+	p.loadout.mask_descriptor = LoadoutResolver.mask_descriptor_for(p.loadout, p)  # derived, never saved
 	p.skill_sets = []
 	var sets: Variant = d.get("skill_sets", [])
 	if sets is Array:

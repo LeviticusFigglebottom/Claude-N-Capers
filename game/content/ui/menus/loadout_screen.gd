@@ -168,6 +168,7 @@ func current_loadout() -> Loadout:
 	l.armor = _selected_id(armor_option)
 	l.deployable = _selected_id(deployable_option)
 	l.mask = _selected_id(mask_option)
+	l.mask_descriptor = LoadoutResolver.mask_descriptor_for(l, profile)  # D-043 QA-25: travels with launch
 	return l
 
 

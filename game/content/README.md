@@ -36,8 +36,14 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   all_loots/all_throwables/all_difficulties()`, `tweak(name) -> Resource` (`&"concealment_curve"` ...). UI text comes
   from strings.csv `item.<id>.name` (display_name in .tres is a debug fallback). Unknown id →
   `Log.error` + null. Scans `res://content/data/<kind>/` with `ResourceLoader.list_directory`.
-* `LoadoutResolver.resolve(loadout: Loadout) -> Loadout` (returns a resolved copy): resolved
-  weapon stats (base + mods, clamps), `concealment_total`, `detection_risk`, `modifiers`.
+* `LoadoutResolver.resolve(loadout: Loadout, profile: PlayerProfile = null) -> Loadout` (returns a resolved
+  copy): resolved weapon stats (base + mods, clamps; shell-fed reload totals derived per D-045),
+  `concealment_total`, `detection_risk`, `modifiers`, and `mask_descriptor` (D-043 QA-25:
+  `mask_descriptor_for(loadout, profile)` = the worn custom mask's `MaskCatalog.descriptor`, {} for presets /
+  none; without a profile the loadout's own descriptor is kept while it names the same mask. It is filled on
+  the profile loadout by `PlayerProfile.from_dict` and `MaskLocker.equip/save_custom/clear_custom`, and on
+  the launch loadout by `LoadoutScreen.current_loadout()`; never saved). `LoadoutResolver.reload_times(stats)
+  -> Vector2(tactical, empty)`.
   `LoadoutResolver.concealment_breakdown(loadout) -> Dictionary` for UI
   (`primary, secondary, melee, armor, bonus, total, detection_risk`).
   `LoadoutResolver.concealment_bonus(loadout) -> int` / `concealment_bonus_from(loadout, modifiers)`:

@@ -1,7 +1,8 @@
 ## Single source of truth for resolved weapon stats, concealment and detection risk
 ## (contracts/data_schemas.md, pd2_fidelity.md S2.4, P6). Owner: ENV B.
 ##
-## resolve(loadout) returns a resolved COPY of the loadout:
+## resolve(loadout, profile = null) returns a resolved COPY of the loadout:
+## * mask_descriptor = mask_descriptor_for(loadout, profile) (custom masks only; {} for presets/none).
 ## * resolved_primary / resolved_secondary = WeaponDef.base.plus(delta) for each mod in its slot,
 ##   where an equipped mod replaces the weapon's default (stock) mod of the same ModType. Then
 ##   clamps: concealment to the curve's weapon range (0..30), spreads >= 0, mag >= 1,
@@ -57,8 +58,9 @@ const TEAM_PERK_SOURCE_PREFIX: String = "team_perk."
 const LIST_SOURCE_FIELD: String = "_source"
 
 
-static func resolve(loadout: Loadout) -> Loadout:
+static func resolve(loadout: Loadout, profile: PlayerProfile = null) -> Loadout:
 	var out: Loadout = loadout.duplicate(true) as Loadout
+	out.mask_descriptor = mask_descriptor_for(loadout, profile)
 	out.resolved_primary = resolve_weapon(loadout.primary, loadout.primary_mods)
 	out.resolved_secondary = resolve_weapon(loadout.secondary, loadout.secondary_mods)
 	var bd: Dictionary = concealment_breakdown(loadout)
@@ -66,6 +68,20 @@ static func resolve(loadout: Loadout) -> Loadout:
 	out.detection_risk = int(bd["detection_risk"])
 	out.modifiers = resolve_modifiers(loadout)
 	return out
+
+
+## Loadout.mask_descriptor (D-043 QA-25): the equipped CUSTOM mask's MaskCatalog.descriptor(); {} for a
+## preset mask or no mask (the preset id in `mask` is enough). Needs the owning profile for a custom
+## mask; without one the loadout's existing descriptor is kept when it still names the same mask
+## (filled earlier by LoadoutScreen.current_loadout() / PlayerProfile.from_dict(), so the launched
+## loadout and ENV A's resolve() of an already-resolved loadout both carry it).
+static func mask_descriptor_for(loadout: Loadout, profile: PlayerProfile = null) -> Dictionary:
+	if not MaskCatalog.is_custom_id(loadout.mask):
+		return {}
+	if profile != null:
+		return MaskCatalog.descriptor(loadout.mask, profile)
+	var d: Dictionary = loadout.mask_descriptor
+	return d.duplicate(true) if String(d.get("id", "")) == String(loadout.mask) else {}
 
 
 ## Resolved stats for one weapon id + equipped mod ids, or null for an empty slot / unknown weapon.
