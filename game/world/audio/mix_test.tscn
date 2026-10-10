@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/audio/mix_test.gd" id="1_mix"]
+[ext_resource type="Script" path="res://world/audio/cue_player.gd" id="2_cue"]
+[ext_resource type="Script" path="res://world/audio/music_director.gd" id="3_mus"]
+
+[node name="MixTest" type="Node3D"]
+script = ExtResource("1_mix")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+current = true
+
+[node name="CuePlayer" type="Node" parent="."]
+script = ExtResource("2_cue")
+listen_to_event_bus = false
+
+[node name="MusicDirector" type="Node" parent="."]
+script = ExtResource("3_mus")
+listen_to_event_bus = false
