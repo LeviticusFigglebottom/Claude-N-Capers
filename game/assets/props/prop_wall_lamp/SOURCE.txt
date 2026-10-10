@@ -1,0 +1,8 @@
+asset: prop_wall_lamp
+script: tools/blender/props/exterior.py
+params: {"cat": {"fixture": true, "group": "exterior", "kind": "wall_lamp", "light": {"color": "#FFC58F", "energy": 1.2, "pos": [0.0, -0.1, -0.2], "range": 6.0, "type": "omni"}, "place": "wall_mount", "z": 2.4}, "fn": "wall_lamp"}
+seed: 3033812459  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_wall_lamp
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

@@ -25,6 +25,9 @@ REC_TOP_Z = 0.118
 REC_HW = 0.0255
 COVER_Y0, COVER_Y1 = -0.020, 0.160
 COVER_TOP_Z = 0.132
+COVER_HINGE_R = 0.0060
+COVER_HINGE = (0.0, COVER_Y0 - 0.004, REC_TOP_Z + 0.002)   # rear hinge axis = FeedCover origin (Blender coords)
+COVER_OPEN_DEG = 78.0                                       # visual_slots.md (ENV A animates it)
 RAIL_TOP_Z = COVER_TOP_Z + 0.0062
 SIGHT_RAIL_Y = 0.050
 

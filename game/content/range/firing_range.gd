@@ -19,8 +19,10 @@
 ## FALLBACK ONLY (CrewController or its range hook missing, or `use_fallback_shooter` set for
 ## tests): the RangeSpectator camera + RangeDebugGun.
 ## Last shot, damage numbers and the readout lane follow EventBus.damage_applied emitted by this
-## range's targets with attacker = the shooter's net id; ammo comes from the crew's weapons
-## (CrewWeapons HUD interface; LocalHudModel needs a HeistRuntime, which the range has none of).
+## range's targets with attacker = the shooter's net id; ammo comes from ENV A's LocalHudModel
+## following the crew through `track(crew)` (ui_hud.md v1.2; `hud_model`), with the magazine size from
+## the resolved stats and the reloading flag from the crew's weapons. Without the model (older A) the
+## crew's weapons are read directly (CrewWeapons HUD interface).
 class_name FiringRange
 extends Node3D
 
@@ -54,6 +56,8 @@ var last_shot: Dictionary = {}
 var spectator: RangeSpectator = null
 ## ENV A's CrewController (null in fallback mode).
 var crew: Node = null
+## ENV A's LocalHudModel tracking `crew` (null in fallback mode or when A has no track()).
+var hud_model: Node = null
 var mode_input: RangeModeInput = null
 var viewmodel: WeaponVisual = null
 var overlay: RangeOverlay = null
@@ -110,15 +114,29 @@ func _process(_delta: float) -> void:
 	if spectator != null:
 		overlay.show_ammo(spectator.gun.ammo, weapon_stats.mag_size, spectator.gun.is_reloading())
 	elif crew != null and is_instance_valid(crew):
-		var a: Dictionary = RangeCrewBridge.ammo(crew)
+		var a: Dictionary = _crew_ammo()
 		if not a.is_empty():
 			if int(a["mag"]) <= 0 and int(a["reserve"]) <= 0 and not bool(a["reloading"]):
 				RangeCrewBridge.push_loadout(crew, resolved)  # the range never runs dry: re-arm
+				if hud_model != null and hud_model.has_method(&"refresh"):
+					hud_model.call(&"refresh")  # poll now, not at the model's poll_hz
 			overlay.show_ammo(int(a["mag"]), int(a["mag_size"]), bool(a["reloading"]), int(a["reserve"]))
 	var pos: Vector3 = _shooter_position()
 	if pos.distance_to(_readout_from) > READOUT_MOVE_EPS_M:
 		_readout_from = pos
 		_refresh_readout()
+
+
+## {mag, mag_size, reserve, reloading} of the crew's equipped weapon: through the tracking HUD model when
+## there is one, else straight from the crew's weapons.
+func _crew_ammo() -> Dictionary:
+	if hud_model != null and is_instance_valid(hud_model):
+		var m: Dictionary = RangeCrewBridge.ammo_from_model(hud_model)
+		if not m.is_empty():
+			m["mag_size"] = weapon_stats.mag_size
+			m["reloading"] = RangeCrewBridge.reloading(crew)
+			return m
+	return RangeCrewBridge.ammo(crew)
 
 
 ## The starter weapon (lowest unlock level, then price; ties by id order) with stock parts, in its
@@ -311,6 +329,7 @@ func _setup_crew() -> void:
 	mode_input.crew = crew
 	add_child(mode_input)
 	mode_input.aim_requested.connect(set_aim_mode)
+	hud_model = RangeCrewBridge.track_hud_model(self, crew)
 
 
 func _spawn_spectator() -> void:

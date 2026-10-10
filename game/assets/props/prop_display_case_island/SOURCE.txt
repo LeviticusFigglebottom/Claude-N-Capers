@@ -1,0 +1,8 @@
+asset: prop_display_case_island
+script: tools/blender/props/display_cases.py
+params: {"cat": {"kind": "display_case", "prefab": "display_case"}, "d": 0.6, "kind": "island", "w": 1.2}
+seed: 2346291239  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_display_case_island
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

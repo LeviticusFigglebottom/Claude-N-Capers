@@ -105,7 +105,9 @@ func test_full_path_and_back_navigation() -> void:
 	assert_eq(_focused(), f.loadout_screen.weapon_option as Control, "loadout: first control focused")
 	assert_eq(f.loadout_screen.profile, f.profile, "loadout edits the same profile")
 	assert_has(f.preplan["modifier_sources"], CREW_ASSET)
-	assert_eq(StringName(f.preplan["heist_id"]), &"glasshouse")
+	assert_eq(int(f.preplan["version"]), PreplanPlan.HANDOFF_VERSION)
+	assert_eq(StringName((f.preplan["plan"] as Dictionary)["heist_id"]), &"glasshouse")
+	assert_eq(int((f.preplan["cash_spent"] as Dictionary)[0]), pp.board.cost_of(CREW_ASSET))
 	assert_eq(SaveService.load_profile(0).cash, START_CASH - cost, "charged once on confirm")
 	# loadout Back -> pre-planning refunds; confirming again charges once
 	f.loadout_screen.back_button.pressed.emit()
@@ -128,7 +130,10 @@ func test_full_path_and_back_navigation() -> void:
 	assert_eq(int(opts["ai_teammates"]), ai)
 	assert_eq((opts["loadouts"] as Dictionary)[0], resolved)
 	assert_eq(opts["preplan"], f.preplan)
-	assert_eq(int((opts["preplan"] as Dictionary)["difficulty"]), Enums.Difficulty.BRUTAL)
+	var result: Dictionary = opts["preplan"] as Dictionary
+	assert_eq(int((result["plan"] as Dictionary)["difficulty"]), Enums.Difficulty.BRUTAL)
+	for k: String in PreplanPlan.RESULT_KEYS:
+		assert_has(result, k, "PreplanResult v1 key")
 	f.queue_free()
 	await wait_frames(1)
 
@@ -140,7 +145,9 @@ func test_launch_options_without_plan() -> void:
 	assert_eq((opts["loadouts"] as Dictionary)[1], l)
 	assert_false(opts.has("preplan"), "direct launch / no plan: no preplan key")
 	assert_false(MenuFlow.build_launch_options(2, 1, l, {}).has("preplan"))
-	var plan: Dictionary = {"version": 1, "heist_id": &"glasshouse"}
+	assert_eq(PreplanPlan.resolve_ids(&"glasshouse", [] as Array), {}, "no accepted id: no plan")
+	assert_eq(PreplanPlan.resolve_ids(&"glasshouse", [&"asset.not_in_catalog"]), {}, "unknown ids only: no plan")
+	var plan: Dictionary = PreplanPlan.resolve_ids(&"glasshouse", [&"asset.extra_cable_ties"])
 	assert_eq(MenuFlow.build_launch_options(0, 0, l, plan)["preplan"], plan)
 
 

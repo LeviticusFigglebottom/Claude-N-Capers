@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BoardTweak" format=3]
+
+[ext_resource type="Script" path="res://content/board/board_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+board_seed = 52817
+slot_count = 8
+rotation_s = 600.0
+stagger_slots = true
+difficulty_weights = Array[float]([1.0, 1.3, 1.3, 1.1, 0.7, 0.45])
+difficulty_min_level = Array[int]([0, 0, 0, 0, 80, 80])
+respect_build_unlocks = true
+pro_chance = 0.2
+pro_min_difficulty = 1
+fallback_contacts = Array[StringName]([&"contact.vance", &"contact.reyes", &"contact.accountant"])
+broker_cost_by_difficulty = Array[int]([12000, 24000, 48000, 90000, 200000, 360000])
+broker_cost_payout_fraction = 0.05
+pin_jitter = 0.03
+pin_margin = 0.04

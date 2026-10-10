@@ -1,0 +1,8 @@
+asset: prop_gift_boxes
+script: tools/blender/props/backofhouse.py
+params: {"cat": {"group": "storage", "hosts": ["packing_bench", "table", "workbench"], "kind": "gift_boxes", "place": "on"}, "fn": "gift_boxes"}
+seed: 122848250  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_gift_boxes
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

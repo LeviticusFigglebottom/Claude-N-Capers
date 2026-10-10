@@ -1,0 +1,98 @@
+[gd_resource type="Resource" script_class="HeistVariantTable" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_variant_table.gd" id="1_h8hqg"]
+
+[resource]
+script = ExtResource("1_h8hqg")
+rules = Array[Dictionary]([{
+"difficulty_add": Array[int]([0, 0, 0, 1, 1, 1]),
+"group": &"guard_post",
+"pick": Vector2i(0, 1)
+}, {
+"group": &"camera",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"security_room_staffed",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"night_manager",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"code_carrier",
+"pick": Vector2i(1, 1),
+"requires": {
+&"night_manager": [&"mgr_in"]
+}
+}, {
+"excludes": {
+&"code_carrier": [&"code_on_manager"]
+},
+"group": &"code_note",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"keycard",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"server_room",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"vent_open",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"laser_pattern",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"cleaner",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"escape",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"extra_loot",
+"pick": Vector2i(1, 1)
+}])
+rare_events = Array[Dictionary]([{
+"chance": 0.04,
+"effects": {
+"time_lock_s": 10.0
+},
+"good": true,
+"id": &"time_lock_glitch"
+}, {
+"chance": 0.08,
+"effects": {
+"at_s": 720.0,
+"extra_guards": 2,
+"min_difficulty": 3
+},
+"good": false,
+"id": &"armored_car_early"
+}, {
+"chance": 0.1,
+"effects": {
+"at_s": 480.0,
+"boat_delay_s": 60.0
+},
+"good": false,
+"id": &"fog_lifts"
+}, {
+"chance": 0.05,
+"effects": {
+"depository_bags_add": 2
+},
+"good": true,
+"id": &"co_op_courier"
+}])
+scalars = Array[Dictionary]([{
+"id": &"time_lock_s",
+"values": [60.0, 90.0, 120.0],
+"weights": PackedFloat32Array(0.4, 0.4, 0.2)
+}, {
+"id": &"depository_bags",
+"values": [3, 4, 5],
+"weights": PackedFloat32Array(0.4, 0.4, 0.2)
+}, {
+"id": &"deposit_boxes",
+"values": [4, 6, 8],
+"weights": PackedFloat32Array(1, 1, 1)
+}])

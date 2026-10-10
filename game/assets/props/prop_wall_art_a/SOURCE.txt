@@ -1,0 +1,8 @@
+asset: prop_wall_art_a
+script: tools/blender/props/sales.py
+params: {"art": "a", "cat": {"group": "salon", "kind": "picture", "place": "wall_mount", "z": 1.52}, "fn": "art", "h": 0.6, "w": 0.8}
+seed: 1678560684  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_wall_art_a
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

@@ -301,8 +301,8 @@ func _render_plans(out_dir: String, warm: int, label: String) -> void:
 		var img: Image = await _grab(warm)
 		var file: String = "plan_floor%d.jpg" % i
 		var size: int = save_jpg(img, out_dir.path_join(file))
-		print("  floor %d (%.2f m) -> %s (%d KB)" % [i, fh[i], file, size / 1024])
-		md.append("## Floor %d (%.2f m)" % [i, fh[i]])
+		print("  floor %d (%s) -> %s (%d KB)" % [i, fmt_height(fh[i]), file, size / 1024])
+		md.append("## %s (%s)" % [floor_name(fh, i).capitalize(), fmt_height(fh[i])])
 		md.append("")
 		md.append("![floor %d](%s)" % [i, file])
 		md.append("")
@@ -462,6 +462,29 @@ func _render_blueprint(out_dir: String, extra_path: String, warm: int, label: St
 		print("  blueprint -> %s" % extra_path)
 
 
+## Floor name by height, not index: 0.0 -> GROUND FLOOR, below ground -> BASEMENT B1, B2...
+## (B1 nearest the ground), above -> FLOOR 1, 2... counted from the ground floor.
+static func floor_name(fh: PackedFloat32Array, i: int) -> String:
+	var ground: int = -1
+	for k: int in range(fh.size()):
+		if absf(fh[k]) < 0.001:
+			ground = k
+	if ground < 0:
+		return "LEVEL %d" % i
+	if i == ground:
+		return "GROUND FLOOR"
+	if i < ground:
+		return "BASEMENT B%d" % (ground - i)
+	return "FLOOR %d" % (i - ground)
+
+
+## Signed height with a real minus sign: "+4.2 m", "−4.0 m", "0.0 m".
+static func fmt_height(y: float) -> String:
+	if absf(y) < 0.05:
+		return "0.0 m"
+	return "%s%.1f m" % ["+" if y > 0.0 else "−", absf(y)]
+
+
 ## Floors side by side (2 per row), separated by a thin gap in the ground colour.
 static func _compose(floors: Array[Image]) -> Image:
 	if floors.size() == 1:
@@ -503,16 +526,19 @@ func _apply_blueprint_materials() -> void:
 render_mode unshaded, cull_disabled;
 uniform vec3 face_color : source_color = vec3(0.13, 0.29, 0.52);
 uniform vec3 cut_color : source_color = vec3(0.93, 0.96, 1.0);
+uniform vec3 high_color : source_color = vec3(0.93, 0.96, 1.0);
 uniform float floor_y = 0.0;
 uniform float height_tint = 0.0;
 void fragment() {
 	vec3 wp = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	float h = clamp((wp.y - floor_y) / 1.5, 0.0, 1.0);
-	ALBEDO = FRONT_FACING ? mix(face_color, cut_color, h * height_tint) : cut_color;
+	ALBEDO = FRONT_FACING ? mix(face_color, high_color, h * height_tint) : cut_color;
 	DEPTH = FRONT_FACING ? FRAGCOORD.z : min(FRAGCOORD.z + 0.02, 1.0);
 }
 """
-	var shell: ShaderMaterial = _bp_mat(sh, BP_FLOOR, BP_LINE, 0.55)
+	# Cut shell solids render dark: walls come from the collision poché (_cut_overlay), so what is
+	# left cut in the render is neighbouring site masses, which should read as "outside".
+	var shell: ShaderMaterial = _bp_mat(sh, BP_FLOOR, BP_GROUND.darkened(0.25), 0.55)
 	var furn: ShaderMaterial = _bp_mat(sh, BP_FURN, BP_FURN.lightened(0.25), 0.0)
 	var door: ShaderMaterial = _bp_mat(sh, BP_DOOR, BP_DOOR, 0.0)
 	var small: Dictionary = {}
@@ -546,6 +572,7 @@ static func _bp_mat(sh: Shader, face: Color, cut: Color, height_tint: float) -> 
 	m.shader = sh
 	m.set_shader_parameter(&"face_color", Vector3(face.r, face.g, face.b))
 	m.set_shader_parameter(&"cut_color", Vector3(cut.r, cut.g, cut.b))
+	m.set_shader_parameter(&"high_color", Vector3(BP_LINE.r, BP_LINE.g, BP_LINE.b))
 	m.set_shader_parameter(&"height_tint", height_tint)
 	return m
 
@@ -582,8 +609,8 @@ func _blueprint_labels(fi: int, label: String) -> CanvasLayer:
 		lb.reset_size()
 		lb.position = sp - lb.size * 0.5
 	var title: Label = Label.new()
-	var fname: String = "GROUND FLOOR" if fi == 0 else "FLOOR %d" % fi
-	title.text = "%s  -  %s  (+%.1f m)" % [label.to_upper(), fname, _map.floor_heights[fi]]
+	title.text = "%s  -  %s  (%s)" % [label.to_upper(), floor_name(_map.floor_heights, fi),
+		fmt_height(_map.floor_heights[fi])]
 	title.position = Vector2(28, 18)
 	title.add_theme_font_size_override(&"font_size", 34)
 	title.add_theme_color_override(&"font_color", BP_LINE)

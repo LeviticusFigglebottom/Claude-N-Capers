@@ -1,0 +1,8 @@
+asset: prop_window_display_box
+script: tools/blender/props/sales.py
+params: {"cat": {"clear": 0.4, "group": "sales", "kind": "window_display", "place": "floor"}, "fn": "display_box"}
+seed: 1131329559  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_window_display_box
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

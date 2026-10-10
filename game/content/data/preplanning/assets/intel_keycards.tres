@@ -5,9 +5,8 @@
 [resource]
 script = ExtResource("1")
 id = &"asset.intel_keycards"
-effect = 2
 category = &"intel"
-base_cost = 1500
+cost = 1500
 favors = 1
-reveal_variant_group = &"keycard"
+reveals = Array[StringName]([&"keycard"])
 tags = Array[StringName]([&"stealth"])

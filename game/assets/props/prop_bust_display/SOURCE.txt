@@ -1,0 +1,8 @@
+asset: prop_bust_display
+script: tools/blender/props/sales.py
+params: {"cat": {"group": "sales", "hosts": ["counter_service", "table", "credenza"], "kind": "bust", "place": "on"}, "fn": "bust"}
+seed: 3240661528  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_bust_display
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

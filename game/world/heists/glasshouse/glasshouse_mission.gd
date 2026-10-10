@@ -31,18 +31,18 @@ var _escape_open: bool = false
 
 func _on_mission_start() -> void:
 	say(&"glasshouse.intro")
-	add_objective(&"casing", &"obj.glasshouse.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
+	add_objective(&"casing", &"objective.glasshouse.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
 	if _slot_active(&"safe_state", &"safe_open"):
-		add_objective(&"keycard", &"obj.glasshouse.keycard", Enums.ObjectiveState.COMPLETED, {"skipped": true})
+		add_objective(&"keycard", &"objective.glasshouse.keycard", Enums.ObjectiveState.COMPLETED, {"skipped": true})
 	else:
-		add_objective(&"keycard", &"obj.glasshouse.keycard")
+		add_objective(&"keycard", &"objective.glasshouse.keycard")
 		require_items(&"keycard", ITEM_KEYCARD)
-	add_objective(&"workshop_door", &"obj.glasshouse.workshop_door")
-	add_objective(&"safe", &"obj.glasshouse.safe", Enums.ObjectiveState.ACTIVE, {"methods": [&"keycard", &"drill"]})
-	add_objective(&"safe_loot", &"obj.glasshouse.safe_loot", Enums.ObjectiveState.HIDDEN)
-	add_objective(&"secure", &"obj.glasshouse.secure", Enums.ObjectiveState.ACTIVE, {"bags": MIN_BAGS, "optional_more": true})
+	add_objective(&"workshop_door", &"objective.glasshouse.workshop_door")
+	add_objective(&"safe", &"objective.glasshouse.safe", Enums.ObjectiveState.ACTIVE, {"methods": [&"keycard", &"drill"]})
+	add_objective(&"safe_loot", &"objective.glasshouse.safe_loot", Enums.ObjectiveState.HIDDEN)
+	add_objective(&"secure", &"objective.glasshouse.secure", Enums.ObjectiveState.ACTIVE, {"bags": MIN_BAGS, "optional_more": true})
 	require_loot(&"secure", MIN_BAGS)
-	add_objective(&"escape", &"obj.glasshouse.escape", Enums.ObjectiveState.HIDDEN)
+	add_objective(&"escape", &"objective.glasshouse.escape", Enums.ObjectiveState.HIDDEN)
 	on_event(&"interaction_completed", _on_interaction_completed)
 	on_event(&"device_finished", _on_device_finished)
 	on_event(&"device_jammed", _on_device_jammed)

@@ -5,10 +5,9 @@
 [resource]
 script = ExtResource("1")
 id = &"asset.alternate_entry"
-effect = 4
 category = &"entry"
-base_cost = 500
+cost = 500
 favors = 1
-point_categories = Array[StringName]([&"player_spawn"])
-exclusive_group = &"player_spawn"
+point_categories = Array[StringName]([&"spawn"])
+exclusive_group = &"spawn"
 tags = Array[StringName]([&"stealth", &"loud"])

@@ -340,6 +340,12 @@ replaces Feign Death (random self-revive); Gut Feeling aced (pagers) replaces in
 Hold the Line basic (no interrupt) and Charge Shaping aced (trip mines as shaped charges) use registry
 verbs in place of PD2 filler.
 
+**ECM feedback (D-038 QA-16).** Feedback is built into every ECM (PD2 U100+, S8.6). The
+`stealth.ecm_feedback` FLAG is deprecated: no skill, perk card or pre-planning asset grants it, and
+`test_skill_data.test_deprecated_ecm_feedback_flag_never_granted` guards that. Signal Flood and Jammer
+Jockey keep `stealth.ecm_feedback_duration_mult` (still registered and read by the ECM system): their
+decision is when to pop feedback, since the longer stun covers a whole guard sweep or a room clear.
+
 ## Requested keys
 
 Registered at phase 4 by D-031 and granted in the skill tables above. This section is the param schema

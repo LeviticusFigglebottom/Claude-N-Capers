@@ -1,0 +1,8 @@
+generator: python3 tools/blender/characters/make_materials.py --only char_skin_2
+palette: tools/blender/characters/_outfit_palette.py (all_char_materials)
+kind: skin; colour #D2A283; roughness 0.55; metallic 0.0
+seed: 2193025166 (zlib.crc32('char_skin_2'))
+size_px: 256; tile_m: 2.0 (1 UV unit = 2.0 m); texel_density_px_per_m: 128
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+texgen (ENV C, read-only): noise, ops, materials.base.finalize, io, godot
+edit policy: generated, never edit by hand

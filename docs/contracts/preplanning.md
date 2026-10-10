@@ -26,6 +26,8 @@ PD2 rows: C3 (assets, favors, plans, votes), C1/C2 (board and briefing hand-off)
 | `reveals` | Array[StringName] | variant groups shown on the HUD/blueprint (insider info) |
 
 `HeistDef.preplanning` (ENV C data): `{ "favors": int, "disable": [asset ids], "assets": { asset_id: {override fields} } }`.
+A new id under `"assets"` adds a heist-only asset (needs `effect`/payload). `favors` is the heist's design budget
+(typically 3–4); tests read it from the def, never hard-code it (D-046).
 
 ## PREPLAN_POINT (map)
 

@@ -3,6 +3,51 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-10 19:40 UTC — B4-05, B4-06, B4-08, B4-09, B4-10, QB-50b; B4-07 in progress
+### Done
+- B4-08 (49d6cc7, 7df8a7a, 539c53d), D-038/D-039 follow-ups:
+  - Glasshouse objective ids come from the G0 `[tag]`s; the guessed keys are removed and the rule is in the README.
+  - QA-14 strings added, plus keys A's code already used but we lacked. A test scans systems/world/core for prompt, blocked and voice keys and fails on any missing one.
+  - `ui.prompt.blocked.*` renamed to `ui.blocked.*`.
+  - QA-16: the deprecated key is rejected by validation and a data-scan test.
+  - PreplanResult v1 exactly per preplanning.md: drops[].kind, spawn_tag, escape_tag, reveals, force_variants, cash_spent; `resolve_ids()`; points from `<Map>/Preplan` instanced off-tree; split payment for voted assets; votes via `Net.lobby_send`.
+- B4-05 payday card pick (f7e51d6):
+  - Three cards (cash, XP, weapon mod, mask part), deterministic from (run seed, slot), with tiers per difficulty. The `progression.card_drop_quality_add` shift applies.
+  - Never offers an owned item. 30 s auto-pick; successful heists only.
+- B4-06 the Board + broker (d9f8377):
+  - City map drawn in code; 8 staggered rotating contracts (600 s), deterministic from the time bucket.
+  - Lethal and Cataclysm need level 80; pro jobs 20% from Tense up.
+  - Broker costs $12k–$360k ◇ + 5% of the payout.
+- B4-09 Night Deposit (5d44618):
+  - `loot.cash_bricks` (MEDIUM, $1,600 ◇).
+  - 12 objective strings from the doc's tags, plus Accountant briefing lines and Mercer's closing line.
+- B4-10 Shadow Ledger (6ab8a80):
+  - Loot `ledger_laptop` (LIGHT), `ledger_drives`, `ledger_books` and `painting` (MEDIUM), values ◇.
+  - Assets `intel_laptop`, `gondola_left_hung` and `riser_panel` per the doc.
+  - 13 objective strings, plus briefing lines.
+- QB-50b (1af10b6, 3ec98cb): mask base mesh paths use the pipeline layout; the placeholder UV now has u=0 at +X (matching D's meshes); the mask preview starts at a 35° 3/4 view.
+- `check_all.sh --env b`:
+  - B4-08 and B4-10 each passed the full check on their own commits (725 tests, 0 failed).
+  - The merged HEAD with trunk, after B4-10, is being re-run now.
+### In progress
+- B4-07: safehouse hub UI layer (stations + `MenuFlow.open_station(id)` for ENV C's 3D hub), Board wired into the flow with is_pro, and the GSR theme / per-heist accent pass.
+### Blocked
+- —
+### Questions for lead
+- QB-PC1: should an unpicked payday card survive a quit? That needs a save v5 `pending_card`; today quitting forfeits it.
+- QB-PC2: boosts and skins are omitted from the card table until those systems exist. OK?
+- QB-BRD1: the Board replaces heist select as the job source (B4-07 wires it; heist select stays at the planning table for now). Who enforces the pro-job "no restart" on failure: MenuFlow or A?
+- QB-BRD2: in co-op, should clients see the host's board (seed + bucket via lobby) or their own?
+- QB-BRD3: broker prices and level gates are placeholders and need a balance pass.
+- QB-52: Night Deposit and Shadow Ledger small loot: add a `loot.small_valuables` def, or just a cash amount via HeistResult `small_loot`? What values?
+- QB-53: `asset.intel_laptop` shows on every heist, since generic assets aren't filtered. Should heists without a `laptop` variant `disable` it (ENV C), or should it be a heist-only asset?
+- QB-54: Night Deposit's preplan points (`pp_insider_code`, `pp_insider_keycard`, `pp_vent`) have no library asset. Should ENV C define them in HeistDef.preplanning, or should B add library assets?
+- QB-55: placeholder heists (Night Deposit, Shadow Ledger) show in the menus but fail to launch until their map and def exist. Keep them visible, or hide them until G1?
+- For ENV C: Glasshouse `HeistDef.preplanning` still uses the old shape (ignored with one warning), and its map has no `<Map>/Preplan` node yet.
+- For ENV A: PreplanAssets still reads `options["preplanning"]` with the old shape. The contract's DifficultyDef asset-cost multiplier doesn't exist, so it lives in `PreplanTweak.cost_mult` for now.
+### Ready for integration
+- yes after the HEAD re-run passes (see the next message to the lead)
+
 ## 2026-10-10 18:40 UTC — range on A's runtime, HUD adapter removed, D-034 follow-ups, B2-01/02/03
 ### Done
 - Range on ENV A's crew and weapon runtime (6b7c1af).

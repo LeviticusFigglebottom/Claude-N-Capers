@@ -8,6 +8,12 @@ const DOOR_H: Vector2 = Vector2(2.1, 2.1)
 const DOOR_SINGLE: Vector2 = Vector2(0.9, 0.9)
 const DOOR_SERVICE: Vector2 = Vector2(1.0, 1.2)
 const DOOR_DOUBLE: Vector2 = Vector2(1.8, 1.8)
+## Vault doors (meta kind = "vault_door", or a door prefab with lock = VAULT): round or square.
+const VAULT_DOOR_W: Vector2 = Vector2(1.8, 2.4)
+const VAULT_DOOR_H: Vector2 = Vector2(2.0, 2.4)
+const LOCK_VAULT: int = 6
+## Max difference between a door prefab's `width_m` and its measured leaf width.
+const DOOR_WIDTH_MATCH: float = 0.05
 ## purpose -> allowed ceiling height range (m). level_standards §2.6.
 const CEILING: Dictionary = {
 	# residential / office 2.6-3.0
@@ -27,6 +33,8 @@ const CEILING: Dictionary = {
 	&"loading_dock": Vector2(3.5, 6.0), &"garage": Vector2(3.5, 6.0), &"workshop": Vector2(3.5, 6.0),
 	# vaults are not in the §2.6 table: office minimum up to banking-hall maximum (lead to confirm).
 	&"vault": Vector2(2.6, 6.0),
+	# plant / mechanical rooms are not in §2.6 either: like warehouse/industrial (lead to confirm).
+	&"plant": Vector2(2.6, 6.0),
 	# atrium <= 10
 	&"atrium": Vector2(3.0, 10.0),
 }
@@ -98,9 +106,14 @@ static func _in(v: float, r: Vector2, tol: float = TOL) -> bool:
 	return v >= r.x - tol and v <= r.y + tol
 
 
+static func is_vault_door(d: Node) -> bool:
+	return LcUtil.meta_s(d, &"kind") == &"vault_door" or ("lock" in d and int(d.get("lock")) == LOCK_VAULT)
+
+
 func _check_door(ctx: LcContext, d: Node3D) -> void:
 	var total_w: float = 0.0
 	var leaves: int = 0
+	var vault: bool = is_vault_door(d)
 	for leaf_name: String in ["Leaf", "Leaf2"]:
 		var leaf: Node3D = d.find_child(leaf_name, true, false) as Node3D
 		if leaf == null:
@@ -114,19 +127,31 @@ func _check_door(ctx: LcContext, d: Node3D) -> void:
 		var sy: float = leaf.global_basis.y.length()
 		total_w += lb.size.x * sx
 		leaves += 1
-		if not _in(lb.size.y * sy, DOOR_H):
-			fail(ctx, leaf, null, "door leaf height %.3f m, need %.2f m" % [lb.size.y * sy, DOOR_H.x])
+		var hgt: float = lb.size.y * sy
+		if vault and not _in(hgt, VAULT_DOOR_H):
+			fail(ctx, leaf, null, "vault door height %.3f m, need %.1f-%.1f m" % [hgt, VAULT_DOOR_H.x, VAULT_DOOR_H.y])
+		elif not vault and not _in(hgt, DOOR_H):
+			fail(ctx, leaf, null, "door leaf height %.3f m, need %.2f m" % [hgt, DOOR_H.x])
 	if leaves == 0:
 		return
 	var service: bool = LcUtil.meta_b(d, &"service")
 	var ok: bool
-	if leaves == 2:
+	if vault:
+		ok = _in(total_w, VAULT_DOOR_W)
+	elif leaves == 2:
 		ok = _in(total_w, DOOR_DOUBLE)
 	else:
 		ok = _in(total_w, DOOR_SINGLE) or (service and _in(total_w, DOOR_SERVICE))
 	if not ok:
-		fail(ctx, d, null, "door width %.3f m (%d leaf): single 0.9, double 1.8, service (meta service) 1.0-1.2"
-			% [total_w, leaves])
+		fail(ctx, d, null, "door width %.3f m (%d leaf%s): single 0.9, double 1.8, service (meta service) 1.0-1.2, vault 1.8-2.4"
+			% [total_w, leaves, ", vault" if vault else ""])
+	# Door prefabs size their gameplay opening (doorway crossing, leaf collision) from `width_m`
+	# (0 = contract default), independently of the visual: both must agree.
+	if "width_m" in d and float(d.get("width_m")) > 0.0:
+		var wm: float = float(d.get("width_m"))
+		if absf(wm - total_w) > DOOR_WIDTH_MATCH:
+			fail(ctx, d, null, "door width_m %.3f m disagrees with its visual leaf width %.3f m (placeholder visual?)"
+				% [wm, total_w])
 
 
 func _check_ceiling(ctx: LcContext, r: RoomVolume) -> void:

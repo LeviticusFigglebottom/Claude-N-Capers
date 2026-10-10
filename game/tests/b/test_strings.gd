@@ -5,7 +5,7 @@ const REQUIRED_KEYS: Array[String] = [
 	"ui.prompt.answer_pager", "ui.prompt.bag_body", "ui.prompt.tie_civilian", "ui.prompt.pick_lock",
 	"ui.prompt.use_keycard", "ui.prompt.place_drill", "ui.prompt.fix_drill", "ui.prompt.take_loot",
 	"ui.prompt.secure_bag", "ui.prompt.break_case", "ui.prompt.revive", "ui.prompt.mask_up",
-	"ui.prompt.open_door", "ui.prompt.interact", "ui.prompt.blocked.casing",
+	"ui.prompt.open_door", "ui.prompt.interact", "ui.blocked.casing",
 	"ui.stat.damage", "ui.stat.accuracy", "ui.stat.stability", "ui.stat.concealment", "ui.stat.threat",
 	"ui.stat.magazine", "ui.stat.total_ammo", "ui.stat.rate_of_fire", "ui.stat.reload",
 	"ui.stat.detection_risk", "heist.glasshouse.name", "ui.results.stealth_bonus_banked",
@@ -17,6 +17,8 @@ const ITEM_IDS: Array[String] = [
 	"deployable.doctor_bag", "deployable.ammo_bag", "deployable.body_bag_case",
 	"loot.jewelry", "loot.cash", "loot.body_bag",
 ]
+
+const VOICE_LINES_PATH: String = "res://content/data/voice/lines.tres"
 
 var _table: Dictionary = {}
 var _dups: Array[String] = []
@@ -37,7 +39,7 @@ func test_csv_parses_without_duplicates() -> void:
 func test_required_keys_present() -> void:
 	for k: String in REQUIRED_KEYS:
 		assert_has(_table, k)
-	assert_eq(_table.get("ui.prompt.blocked.casing", ""), "Suspicious actions not allowed")
+	assert_eq(_table.get("ui.blocked.casing", ""), "Suspicious actions not allowed")
 
 
 func test_every_p1_item_has_name_and_desc() -> void:
@@ -93,3 +95,100 @@ func test_missing_key_warns_once_and_returns_key() -> void:
 	Log.captured.clear()
 	assert_eq(hits, 1, "warned exactly once")
 	assert_false(StringTable.has(key))
+
+
+## D-038 QA-14: the keys ENV A requests; `ui.blocked.*` is canonical (no `ui.prompt.blocked.*` left).
+func test_qa14_keys_and_blocked_rename() -> void:
+	for k: String in ["ui.blocked.code_unknown", "ui.blocked.requires_bag", "ui.blocked.no_deployable",
+			"ui.blocked.no_space", "ui.prompt.enter_code", "ui.prompt.read_note", "ui.prompt.place_saw",
+			"ui.prompt.place_c4", "ui.prompt.start_time_lock", "ui.prompt.zipline_bag",
+			"ui.prompt.use_first_aid_kit", "ui.prompt.ecm_feedback", "ui.prompt.uncuff",
+			"ui.prompt.suspicious_not_allowed", "voice.vo.guard.cuff_warning", "voice.vo.mercer.abort"]:
+		assert_has(_table, k)
+	for k: String in _table.keys():
+		assert_false(k.begins_with("ui.prompt.blocked."), "renamed to ui.blocked.*: %s" % k)
+	var table: VoiceLineTable = _voice_table()
+	for id: StringName in [&"vo.guard.cuff_warning", &"vo.mercer.abort"]:
+		assert_eq(table.line(id).get("text_key", &""), StringName("voice.%s" % id), "line %s" % id)
+
+
+## Every literal prompt / blocked key and voice line id in ENV A's and ENV C's code exists (read-only scan).
+func test_keys_requested_by_systems_exist() -> void:
+	var rx: RegEx = RegEx.create_from_string("\\b(ui\\.(?:blocked|prompt)\\.[a-z0-9_.]*[a-z0-9_]|vo\\.[a-z]+\\.[a-z0-9_]+)\\b")
+	var table: VoiceLineTable = _voice_table()
+	var files: Array[String] = []
+	for root: String in ["res://systems", "res://world", "res://core"]:
+		_collect_code(root, files)
+	var found: int = 0
+	for path: String in files:
+		for m: RegExMatch in rx.search_all(FileAccess.get_file_as_string(path)):
+			var k: String = m.get_string(1)
+			found += 1
+			if k.begins_with("vo.") and k.ends_with("_"):
+				# Format-string prefix (e.g. "vo.crew.ack_%s"): some line must complete it.
+				assert_true(_has_line_prefix(table, k), "voice lines %s* (used in %s)" % [k, path])
+			elif k.begins_with("vo."):
+				assert_false(table.line(StringName(k)).is_empty(), "voice line %s (used in %s)" % [k, path])
+			else:
+				assert_has(_table, k, "used in %s" % path)
+	assert_true(found > 10, "scan found %d keys" % found)
+
+
+## D-039: objective ids are the heist design doc's `[tag]`s, never guesses.
+func test_glasshouse_objectives_follow_the_design_doc() -> void:
+	var tags: Array[String] = ["casing", "keycard", "workshop_door", "safe", "safe_loot", "secure", "escape"]
+	var doc: String = ProjectSettings.globalize_path("res://").path_join("../docs/design/heists/glasshouse.md")
+	if FileAccess.file_exists(doc):
+		var text: String = FileAccess.get_file_as_string(doc)
+		var sec: String = text.get_slice("## Objectives", 1).get_slice("\n## ", 0)
+		var rx: RegEx = RegEx.create_from_string("`\\[([a-z_]+)\\]`")
+		var doc_tags: Array[String] = []
+		for m: RegExMatch in rx.search_all(sec):
+			if not doc_tags.has(m.get_string(1)):
+				doc_tags.append(m.get_string(1))
+		assert_eq(doc_tags, tags, "design doc tags")
+	var ph: Dictionary = BriefingModel.ui_data().placeholder_heists.get(&"glasshouse", {}) as Dictionary
+	var ids: Array[String] = []
+	for id: Variant in ph.get("objectives", []) as Array:
+		ids.append(String(id))
+	assert_eq(ids, tags, "briefing placeholder objective ids")
+	for t: String in tags:
+		assert_has(_table, "objective.glasshouse.%s" % t)
+	for k: String in _table.keys():
+		if k.begins_with("objective.glasshouse."):
+			assert_has(tags, k.trim_prefix("objective.glasshouse."), "no guessed objective key: %s" % k)
+
+
+## D-043 QA-24: every AI teammate order is acknowledged with `vo.crew.ack_<order>`: crew_ai_brain.gd builds
+## the id as "vo.crew.ack_%s" % order for any order accepted by CrewOrders.is_order(), i.e. CrewOrders.ORDERS
+## (read from A's class here, so a new order without a line fails).
+func test_crew_order_acks_exist() -> void:
+	var table: VoiceLineTable = _voice_table()
+	for o: StringName in CrewOrders.ORDERS:
+		var l: Dictionary = table.line(StringName("vo.crew.ack_%s" % o))
+		assert_eq(l.get("speaker", &""), &"crew", "ack line for %s" % o)
+		assert_has(_table, "voice.vo.crew.ack_%s" % o)
+	for k: String in ["ui.blocked.push_bar_outside", "ui.prompt.trade_hostage", "ui.prompt.convert", "ui.prompt.cable_tie"]:
+		assert_has(_table, k)
+
+
+func _has_line_prefix(table: VoiceLineTable, prefix: String) -> bool:
+	for l: Dictionary in table.lines:
+		if String(l.get("id", "")).begins_with(prefix):
+			return true
+	return false
+
+
+func _collect_code(dir_path: String, out: Array[String]) -> void:
+	var d: DirAccess = DirAccess.open(dir_path)
+	if d == null:
+		return
+	for f: String in d.get_files():
+		if f.ends_with(".gd") or f.ends_with(".tscn") or f.ends_with(".tres"):
+			out.append(dir_path.path_join(f))
+	for sub: String in d.get_directories():
+		_collect_code(dir_path.path_join(sub), out)
+
+
+func _voice_table() -> VoiceLineTable:
+	return load(VOICE_LINES_PATH) as VoiceLineTable

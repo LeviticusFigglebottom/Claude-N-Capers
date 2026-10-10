@@ -138,11 +138,13 @@ func test_class_stat_shapes() -> void:
 		assert_true(w.base.ammo_pickup_max >= w.base.ammo_pickup_min, "%s pickup range" % w.id)
 
 
-## D-034 QB-43: shell-by-shell reload. Only weapons that load single rounds set the three fields
-## (Plowman 12 tube); detachable-magazine weapons (Heron .308's 5-round box) keep a magazine reload
-## (all 0). For a shell-loaded weapon, reload_empty_time_s = start + mag x per_round + end (full tube
-## from empty) and reload_time_s = start + (mag - 1) x per_round + end (one shell still loaded), also
-## after every mod (a tube mod's reload deltas = extra shells x per_round).
+## D-034 QB-43 / D-045: shell-by-shell reload. Only weapons that load single rounds set the per-round
+## fields (Plowman 12 tube); detachable-magazine weapons (Heron .308's 5-round box) keep a magazine
+## reload (all 0). For a shell-loaded weapon the resolver derives, after every mod (data_schemas.md
+## "Shell-by-shell reload timing"):
+##   reload_time_s       = start + mag x per_round + end
+##   reload_empty_time_s = start + mag x per_round + end_empty
+## and no mod adds raw reload time (a tube mod changes the totals through mag_size only).
 func test_shell_by_shell_reload_fields() -> void:
 	const SHELL_LOADED: Array[StringName] = [&"weapon.plowman_12"]
 	for w: WeaponDef in ContentDB.all_weapons():
@@ -150,7 +152,7 @@ func test_shell_by_shell_reload_fields() -> void:
 		var shell: bool = SHELL_LOADED.has(w.id)
 		assert_eq(b.reload_per_round_s > 0.0, shell, "%s shell-by-shell = %s" % [w.id, shell])
 		if not shell:
-			assert_eq([b.reload_start_s, b.reload_end_s], [0.0, 0.0], "%s magazine reload" % w.id)
+			assert_eq([b.reload_start_s, b.reload_end_s, b.reload_end_empty_s], [0.0, 0.0, 0.0], "%s magazine reload" % w.id)
 			continue
 		var mods: Array[StringName] = [&""]
 		for slot: Variant in w.mod_slots:
@@ -160,11 +162,32 @@ func test_shell_by_shell_reload_fields() -> void:
 			var picked: Array[StringName] = []
 			if mid != &"":
 				picked.append(mid)
+				var d: WeaponStats = ContentDB.mod(mid).delta
+				for f: String in ["reload_time_s", "reload_empty_time_s", "reload_per_round_s", "reload_start_s", "reload_end_s", "reload_end_empty_s"]:
+					assert_eq(float(d.get(f)), 0.0, "%s adds no raw %s to a shell-fed weapon" % [mid, f])
 			var s: WeaponStats = LoadoutResolver.resolve_weapon(w.id, picked)
-			var full: float = s.reload_start_s + s.mag_size * s.reload_per_round_s + s.reload_end_s
-			assert_near(s.reload_empty_time_s, full, 0.001, "%s +%s empty reload" % [w.id, mid])
-			assert_near(s.reload_time_s, full - s.reload_per_round_s, 0.001, "%s +%s tactical reload" % [w.id, mid])
+			var load_s: float = s.reload_start_s + s.mag_size * s.reload_per_round_s
+			assert_near(s.reload_time_s, load_s + s.reload_end_s, 0.001, "%s +%s tactical reload" % [w.id, mid])
+			assert_near(s.reload_empty_time_s, load_s + s.reload_end_empty_s, 0.001, "%s +%s empty reload" % [w.id, mid])
+			var disp: Dictionary = StatCalculator.display(s)
+			assert_near(float(disp["reload"]), s.reload_time_s, 0.001, "%s +%s display reload" % [w.id, mid])
+			assert_near(float(disp["reload_empty"]), s.reload_empty_time_s, 0.001, "%s +%s display empty reload" % [w.id, mid])
 	assert_eq(ContentDB.weapon(&"weapon.heron_308").base.reload_per_round_s, 0.0, "Heron: detachable mag")
+
+
+## D-044/D-045 Plowman timings: 0.4 / 0.4333 / 0.4 (1.2 empty) -> 3.4 s / 4.2 s with the 6-shell tube.
+func test_plowman_reload_timings() -> void:
+	var b: WeaponStats = ContentDB.weapon(&"weapon.plowman_12").base
+	assert_near(b.reload_start_s, 0.4, 0.0001, "start")
+	assert_near(b.reload_per_round_s, 0.4333, 0.0001, "per shell")
+	assert_near(b.reload_end_s, 0.4, 0.0001, "end")
+	assert_near(b.reload_end_empty_s, 1.2, 0.0001, "end empty")
+	var s: WeaponStats = LoadoutResolver.resolve_weapon(&"weapon.plowman_12", [] as Array[StringName])
+	assert_eq(s.mag_size, 6, "stock tube")
+	assert_near(s.reload_time_s, 3.4, 0.001, "tactical 3.4 s")
+	assert_near(s.reload_empty_time_s, 4.2, 0.001, "empty 4.2 s")
+	var ext: WeaponStats = LoadoutResolver.resolve_weapon(&"weapon.plowman_12", [&"mod.plowman_extended_tube"] as Array[StringName])
+	assert_near(ext.reload_time_s - s.reload_time_s, (ext.mag_size - s.mag_size) * s.reload_per_round_s, 0.001, "tube adds shells only")
 
 
 func test_cues_and_anim_sets_follow_the_contract_pattern() -> void:

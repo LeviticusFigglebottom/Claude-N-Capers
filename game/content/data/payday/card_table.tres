@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="PaydayCardsTable" format=3]
+
+[ext_resource type="Script" path="res://content/progression/payday_cards_table.gd" id="1_pct"]
+
+[resource]
+script = ExtResource("1_pct")
+types = Array[StringName]([&"cash", &"xp", &"weapon_mod", &"mask_part"])
+type_weights = Array[PackedFloat32Array]([PackedFloat32Array(30, 30, 25, 15), PackedFloat32Array(28, 28, 27, 17), PackedFloat32Array(26, 26, 28, 20), PackedFloat32Array(24, 24, 30, 22), PackedFloat32Array(22, 22, 31, 25), PackedFloat32Array(20, 20, 32, 28)])
+tier_weights = Array[PackedFloat32Array]([PackedFloat32Array(80, 17, 3), PackedFloat32Array(75, 20, 5), PackedFloat32Array(70, 23, 7), PackedFloat32Array(64, 27, 9), PackedFloat32Array(58, 30, 12), PackedFloat32Array(50, 34, 16)])
+card_count = 3
+pick_time_s = 30.0
+quality_max_steps = 1
+fallback_type = &"cash"
+cash_by_tier = PackedInt32Array(20000, 40000, 70000)
+cash_difficulty_mult = PackedFloat32Array(1, 1.08, 1.16, 1.24, 1.32, 1.43)
+cash_round = 1000
+xp_by_tier = PackedInt32Array(1000, 2500, 5000)
+xp_difficulty_mult = PackedFloat32Array(1, 1.8, 3.5, 6, 7, 8.5)
+xp_round = 100
+item_tiers = {
+&"mask_base.bruiser": 2,
+&"mask_base.owl": 2,
+&"mask_colors.cobalt_flare": 1,
+&"mask_colors.rose_cinder": 1,
+&"mask_material.blued_steel": 1,
+&"mask_material.chrome": 2,
+&"mask_material.marble": 2,
+&"mask_material.walnut": 1,
+&"mask_pattern.chevron": 1,
+&"mask_pattern.diamonds": 1,
+&"mod.corsair_suppressor": 1,
+&"mod.heron_scope_10x": 2,
+&"mod.heron_scope_4x": 1,
+&"mod.heron_suppressor": 1,
+&"mod.hornet_suppressor": 1,
+&"mod.p9_suppressor": 1,
+&"mod.plowman_choke": 1,
+&"mod.rail_prism_scope": 2,
+&"mod.rail_reflex_sight": 1,
+&"mod.rampart_box_200": 2,
+&"mod.w45_compensator": 1,
+&"mod.w45_suppressor": 1
+}
+tier_colors = PackedColorArray(0.62, 0.66, 0.7, 1, 0.36, 0.62, 0.86, 1, 0.92, 0.68, 0.22, 1)
+type_colors = {
+&"cash": Color(0.26, 0.5, 0.34, 1),
+&"mask_part": Color(0.56, 0.25, 0.22, 1),
+&"weapon_mod": Color(0.3, 0.36, 0.46, 1),
+&"xp": Color(0.5, 0.38, 0.62, 1)
+}

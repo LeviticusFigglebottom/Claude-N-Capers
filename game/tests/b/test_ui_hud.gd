@@ -30,6 +30,25 @@ func test_ammo_updates_on_signal() -> void:
 	assert_eq(_hud.ammo.ammo_label.text, UiText.t(&"ui.hud.ammo", {"mag": 3, "reserve": 70}))
 
 
+## ui_hud.md v1.2 (D-043 QA-22): custody widget bound to custody_changed / custody.
+func test_custody_widget() -> void:
+	var c: CustodyPanel = _hud.custody
+	assert_false(c.visible, "no custody: hidden")
+	_model.custody = {"in_custody": true, "negotiation_left_s": 25.0, "auto_release_left_s": 90.0, "highlighted_hostage_net_id": 0}
+	assert_true(c.visible and c.title_label.visible)
+	assert_eq(c.negotiation_label.text, UiText.t(&"ui.hud.custody_negotiation", {"seconds": UiText.clock(25.0)}))
+	assert_true(c.release_label.visible)
+	assert_eq(c.release_label.text, UiText.t(&"ui.hud.custody_release", {"seconds": UiText.clock(90.0)}))
+	_model.custody = {"in_custody": true, "negotiation_left_s": 0.0, "auto_release_left_s": -1.0, "highlighted_hostage_net_id": 0}
+	assert_eq(c.negotiation_label.text, UiText.t(&"ui.hud.custody_trade"), "trade possible now")
+	assert_false(c.release_label.visible, "no auto release")
+	_model.custody = {"in_custody": false, "negotiation_left_s": 0.0, "auto_release_left_s": -1.0, "highlighted_hostage_net_id": 42}
+	assert_true(c.visible and c.hostage_label.visible, "free player: trade hint for the highlighted hostage")
+	assert_false(c.title_label.visible)
+	_model.custody = {}
+	assert_false(c.visible)
+
+
 func test_vitals_and_downs() -> void:
 	_model.max_health = 200.0
 	_model.health = 50.0
@@ -51,8 +70,8 @@ func test_interaction_prompt_and_blocked_reason() -> void:
 	assert_near(_hud.interaction.progress_bar.value, 0.4)
 	assert_false(_hud.interaction.blocked_label.visible)
 	_model.interaction = {"text_key": &"ui.prompt.pick_lock", "args": {"key": "F"}, "progress": 0.0,
-			"blocked_reason": &"ui.prompt.blocked.casing"}
-	assert_eq(_hud.interaction.blocked_label.text, UiText.t(&"ui.prompt.blocked.casing"))
+			"blocked_reason": &"ui.blocked.casing"}
+	assert_eq(_hud.interaction.blocked_label.text, UiText.t(&"ui.blocked.casing"))
 
 
 func test_detection_chevron_colors() -> void:
@@ -80,7 +99,7 @@ func test_detection_chevron_colors() -> void:
 func test_pager_objectives_assault_bag_crew_mask() -> void:
 	_model.pagers = [{"pager_id": 4, "time_left_s": 8.0, "answering": false, "progress": 0.0}]
 	assert_eq(_hud.pager.pager_labels[0].text, UiText.t(&"ui.hud.pager", {"seconds": UiText.clock(8.0)}))
-	_model.objectives = [{"id": &"a", "text_key": &"objective.glasshouse.find_keycard", "args": {},
+	_model.objectives = [{"id": &"a", "text_key": &"objective.glasshouse.keycard", "args": {},
 			"state": Enums.ObjectiveState.ACTIVE}]
 	assert_true(_hud.objectives.visible)
 	assert_eq(_hud.objectives.list_box.get_child_count(), 1)

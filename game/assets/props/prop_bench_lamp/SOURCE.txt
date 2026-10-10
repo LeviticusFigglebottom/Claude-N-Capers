@@ -1,0 +1,8 @@
+asset: prop_bench_lamp
+script: tools/blender/props/backofhouse.py
+params: {"cat": {"fixture": true, "group": "workshop", "hosts": ["jeweler_bench"], "kind": "task_lamp", "light": {"angle": 40, "color": "#FFE4CE", "energy": 1.5, "pos": [0.0, 0.44, -0.26], "range": 2.0, "type": "spot"}, "place": "on"}, "fn": "bench_lamp"}
+seed: 1720690142  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_bench_lamp
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

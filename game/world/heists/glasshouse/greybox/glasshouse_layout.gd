@@ -73,11 +73,11 @@ const INT_WALLS: Array = [
 
 ## Slabs: ground floor, upper floor (hole over the stair core x 13-16, z 0-4.48), roof.
 const SLABS: Array = [
-	["SlabGround", [-0.2, -0.3, -0.2, 18.2, 0.0, 12.2], "floor"],
+	["SlabGround", [-0.2, -0.3, -0.2, 18.2, 0.0, 12.2], "none"],
 	["SlabUpperW", [0.2, 4.0, 0.2, 13.0, 4.2, 11.8], "floor"],
 	["SlabUpperCore", [13.0, 4.0, 4.48, 16.0, 4.2, 11.8], "floor"],
 	["SlabUpperE", [16.0, 4.0, 0.2, 17.8, 4.2, 11.8], "floor"],
-	["SlabRoof", [0.2, 7.6, 0.2, 17.8, 7.8, 11.8], "ceiling"],
+	["SlabRoof", [0.2, 7.6, 0.2, 17.8, 7.8, 11.8], "roof"],
 ]
 
 ## Ceilings (0.05 m thick, underside at the room's ceiling height).
@@ -98,7 +98,7 @@ const CEILINGS: Array = [
 ## 24 risers x 0.175 = 4.2, treads 0.28, width 1.2.
 const STAIR: Dictionary = {
 	"riser": 0.175, "tread": 0.28, "risers_per_flight": 12, "landing_z": [0.2, 1.4],
-	"up_x": [13.1, 14.3], "ret_x": [14.7, 15.9], "landing_x": [13.1, 15.9],
+	"up_x": [13.105, 14.3], "ret_x": [14.7, 15.895], "landing_x": [13.105, 15.895],
 	"g9_z": 3.0, "g9_ceiling_top": 2.85,
 }
 
@@ -227,11 +227,11 @@ const BLOCKS: Array = [
 
 ## Fences with gates (the gates are door prefabs in DOORS): [name, axis, fixed, from, to, y0, y1, openings, material].
 const FENCES: Array = [
-	["AlleyGateFence", "z", -14.0, -6.2, -0.2, 0.0, 2.4, [[-4.2, -2.2, 0.0, 2.2]], "fence"],
-	["KesselYardFence", "x", -6.25, -20.0, 18.2, 0.0, 2.2, [], "fence"],
-	["HarlowWestRoadworks", "z", -14.0, 12.2, 34.2, ROAD_Y, 2.4, [[22.2, 24.2, ROAD_Y, ROAD_Y + 2.2]], "fence"],
-	["HarlowEastRoadworks", "z", 32.5, 12.2, 34.2, ROAD_Y, 2.4, [[22.2, 24.2, ROAD_Y, ROAD_Y + 2.2]], "fence"],
-	["PellNorthHoarding", "x", -8.0, 18.2, 32.2, ROAD_Y, 2.4, [[22.2, 24.2, ROAD_Y, ROAD_Y + 2.2]], "fence"],
+	["AlleyGateFence", "z", -14.0, -6.19, -0.21, 0.0, 2.4, [[-4.2, -2.2, 0.0, 2.2]], "fence"],
+	["KesselYardFence", "x", -6.25, -19.99, 18.19, 0.0, 2.2, [], "fence"],
+	["HarlowWestRoadworks", "z", -14.0, 12.21, 34.19, ROAD_Y, 2.4, [[22.2, 24.2, ROAD_Y, ROAD_Y + 2.2]], "fence"],
+	["HarlowEastRoadworks", "z", 32.5, 12.21, 34.19, ROAD_Y, 2.4, [[22.2, 24.2, ROAD_Y, ROAD_Y + 2.2]], "fence"],
+	["PellNorthHoarding", "x", -8.0, 18.21, 32.19, ROAD_Y, 2.4, [[22.2, 24.2, ROAD_Y, ROAD_Y + 2.2]], "fence"],
 ]
 
 # --- Props (gameplay-relevant blockers; placeholder boxes) ----------------------------------
@@ -242,6 +242,9 @@ const PROPS: Array = [
 	["SalesCounter", Vector3(3.5, 0.0, 7.5), Vector3(2.6, 0.9, 0.6), 0.0, "counter_service", true, "counter"],
 	["ConsultTable", Vector3(11.8, 0.0, 7.6), Vector3(1.0, 0.75, 0.8), 0.0, "table", true, "prop"],
 	["WindowBench", Vector3(5.0, 0.0, 11.4), Vector3(1.6, 0.45, 0.45), 0.0, "bench", false, "prop"],
+	# Shopfront window display boxes (bays A and C; bay B has the bench), lit from above (WALL_LIGHTS).
+	["WindowBoxA", Vector3(2.05, 0.0, 11.565), Vector3(2.3, 0.3, 0.45), 0.0, "window_box", true, "counter"],
+	["WindowBoxC", Vector3(8.0, 0.0, 11.565), Vector3(2.4, 0.3, 0.45), 0.0, "window_box", true, "counter"],
 	# G6 salon
 	["SalonSofa", Vector3(15.5, 0.0, 11.35), Vector3(2.0, 0.8, 0.8), 180.0, "sofa", false, "prop"],
 	["SalonCoffeeTable", Vector3(15.5, 0.0, 10.2), Vector3(1.0, 0.45, 0.6), 0.0, "table", true, "prop"],
@@ -357,8 +360,13 @@ const WALL_LIGHTS: Array = [
 	["BackDoorLamp", Vector3(3.5, 2.6, -0.2), 0.0, Color(1.0, 0.85, 0.65), 0.8, 6.0, Vector3(0.3, 0.2, 0.2)],
 	["AlleyLampEast", Vector3(13.5, 3.2, -0.2), 0.0, Color(0.95, 0.95, 1.0), 0.7, 8.0, Vector3(0.3, 0.2, 0.2)],
 	["AlleyLampWest", Vector3(-7.0, 3.2, -0.2), 0.0, Color(0.95, 0.95, 1.0), 0.7, 8.0, Vector3(0.3, 0.2, 0.2)],
-	["NeonVossbergSouth", Vector3(15.5, 3.4, 12.2), 180.0, Color(1.0, 0.24, 0.65), 1.2, 7.0, Vector3(2.6, 0.6, 0.1)],
-	["NeonVossbergEast", Vector3(18.2, 3.4, 9.0), -90.0, Color(1.0, 0.24, 0.65), 1.2, 7.0, Vector3(2.6, 0.6, 0.1)],
+	["WindowBoxLightA", Vector3(2.05, 2.95, 11.8), 0.0, Color(1.0, 0.8, 0.56), 0.9, 3.0, Vector3(2.0, 0.08, 0.12)],
+	["WindowBoxLightC", Vector3(8.0, 2.95, 11.8), 0.0, Color(1.0, 0.8, 0.56), 0.9, 3.0, Vector3(2.0, 0.08, 0.12)],
+	["MonitorWall", Vector3(5.6, 5.85, 2.0), -90.0, Color(0.55, 0.75, 1.0), 0.6, 3.5, Vector3(1.4, 0.6, 0.05)],
+	["TaskLampBenchA", Vector3(8.5, 1.55, 0.2), 180.0, Color(0.92, 0.96, 1.0), 0.7, 2.5, Vector3(0.3, 0.1, 0.18)],
+	["TaskLampBenchB", Vector3(9.75, 1.55, 0.2), 180.0, Color(0.92, 0.96, 1.0), 0.7, 2.5, Vector3(0.3, 0.1, 0.18)],
+	["NeonVossbergSouth", Vector3(15.5, 3.4, 12.2), 180.0, Color(1.0, 0.24, 0.65), 0.9, 4.5, Vector3(2.6, 0.6, 0.1)],
+	["NeonVossbergEast", Vector3(18.2, 3.4, 9.0), -90.0, Color(1.0, 0.24, 0.65), 0.9, 4.5, Vector3(2.6, 0.6, 0.1)],
 ]
 
 # --- Spawns, patrols, tactical -------------------------------------------------------------
@@ -493,6 +501,21 @@ const TACTICAL: Array = [
 	["SniperHotelRoof", "SNIPER_PERCH", Vector3(0.0, 17.0, 36.0), 0.0, ["hotel_roof", "p3"], false],
 	["SniperGarageL2", "SNIPER_PERCH", Vector3(33.2, 3.0, 0.0), 90.0, ["garage_l2", "p3"], false],
 ]
+
+## Pre-planning points (contracts/preplanning.md, heist_map.md v1.2): [id, category, pos, floor,
+## params]. Labels are strings keys `ui.preplan.point.<id>`. Categories follow ENV B's asset library.
+const PREPLAN_POINTS: Array = [
+	["pp_alley_dumpsters", "drop_zone", Vector3(8.0, 0.0, -2.2), 0, {}],
+	["pp_alley_hvac", "drop_zone", Vector3(13.8, 0.0, -2.2), 0, {}],
+	["pp_side_kerb", "drop_zone", Vector3(20.6, 0.0, 6.0), 0, {}],
+	["pp_spawn_alley_west", "spawn", Vector3(-12.5, 0.0, -3.3), 0, {"spawn_tag": &"preplan_spawn_alley"}],
+	["pp_spawn_alley_mouth", "spawn", Vector3(19.6, 0.0, -2.4), 0, {"spawn_tag": &"preplan_spawn_alley_mouth"}],
+	["pp_escape_alley_west", "escape", Vector3(-8.5, 0.0, -3.2), 0, {"variant_group": &"escape", "variant_slot": &"esc_alley_west"}],
+	["pp_escape_side_street", "escape", Vector3(22.4, -0.15, 7.0), 0, {"variant_group": &"escape", "variant_slot": &"esc_pell"}],
+	["pp_insider_breakroom", "insider", Vector3(1.2, 4.2, 2.6), 1, {"variant_group": &"keycard", "variant_slot": &"kc_breakroom"}],
+	["pp_back_door", "access", Vector3(3.5, 0.0, -1.0), 0, {"variant_group": &"back_door", "variant_slot": &"back_propped"}],
+]
+
 
 # --- Rooms and zones ------------------------------------------------------------------------
 

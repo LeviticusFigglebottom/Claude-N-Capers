@@ -159,7 +159,13 @@ func test_placeholder_visual() -> void:
 		assert_true(aabb.size.x > 0.1 and aabb.size.y > 0.1, "%s face-sized" % p.id)
 		assert_true(aabb.position.z < 0.0, "%s bulges toward -Z" % p.id)
 	var node: Node3D = MaskComposer.instantiate(MaskComposer.compose(COMP))
-	var mi: MeshInstance3D = node.get_node("Placeholder") as MeshInstance3D
+	# LEAD: with ENV D's base meshes on trunk the composition may use the model instead of "Placeholder".
+	var found: Array[Node] = node.find_children("*", "MeshInstance3D", true, false)
+	assert_false(found.is_empty(), "mask has a mesh")
+	if found.is_empty():
+		node.free()
+		return
+	var mi: MeshInstance3D = found[0] as MeshInstance3D
 	assert_true(mi.material_override is ShaderMaterial)
 	assert_eq((mi.material_override as ShaderMaterial).get_shader_parameter(&"pattern"), int(MaskPatternDef.Procedural.SPLIT))
 	node.free()
@@ -229,3 +235,61 @@ func test_gilded_heron_uses_env_d_mesh() -> void:
 	var n: Node = preset.model.instantiate()
 	assert_true(n is Node3D)
 	n.free()
+
+
+func test_base_mesh_paths_exist() -> void:
+	# ENV D's base meshes (QB-50b): pipeline layout assets/masks/mask_base_<name>/mask_base_<name>.glb.
+	var text: String = FileAccess.get_file_as_string("res://content/data/masks/parts/bases.tres")
+	var rx: RegEx = RegEx.create_from_string("model_path = \"([^\"]+)\"")
+	var found: int = 0
+	for m: RegExMatch in rx.search_all(text):
+		found += 1
+		assert_true(ResourceLoader.exists(m.get_string(1)), "missing base mesh %s" % m.get_string(1))
+	assert_eq(found, 5, "five base shapes")
+
+
+func test_placeholder_uv_origin_is_viewer_left() -> void:
+	# masks.md: u = 0 at +X (the viewer's left looking at the mask front), v = 0 at the top.
+	var mesh: Mesh = MaskComposer.placeholder_mesh(MaskCatalog.part(&"mask_base.visage") as MaskBaseDef)
+	assert_true(mesh != null)
+	var arrays: Array = mesh.surface_get_arrays(0)
+	var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+	var right_most: int = 0
+	for i: int in range(verts.size()):
+		if verts[i].x > verts[right_most].x:
+			right_most = i
+	assert_true(uvs[right_most].x < 0.1, "+X edge maps to u ~ 0")
+
+
+## D-043 QA-25: Loadout.mask_descriptor carries the worn CUSTOM mask to every peer; {} for presets/none.
+func test_loadout_mask_descriptor() -> void:
+	var p: PlayerProfile = PlayerProfile.new_default()
+	var r: Loadout = LoadoutResolver.resolve(p.loadout, p)
+	assert_eq(p.loadout.mask, &"mask.gilded_heron")
+	assert_eq(r.mask_descriptor, {}, "preset: {}")
+	MaskLocker.save_custom(p, 2, COMP)
+	assert_true(MaskLocker.equip(p, &"mask.custom.2"))
+	var want: Dictionary = MaskCatalog.descriptor(&"mask.custom.2", p)
+	assert_eq(p.loadout.mask_descriptor, want, "equip fills the profile loadout")
+	r = LoadoutResolver.resolve(p.loadout, p)
+	assert_eq(r.mask_descriptor, want, "resolve(loadout, profile)")
+	assert_eq(LoadoutResolver.resolve(p.loadout).mask_descriptor, want, "kept without a profile")
+	assert_eq(LoadoutResolver.resolve(r).mask_descriptor, want, "re-resolving keeps it (ENV A)")
+	assert_eq(MaskCatalog.from_descriptor(r.mask_descriptor).id, &"mask.custom.2")
+	var other: Loadout = p.loadout.duplicate(true) as Loadout
+	other.mask = &"mask.custom.5"
+	assert_eq(LoadoutResolver.resolve(other).mask_descriptor, {}, "a stale descriptor for another mask is dropped")
+	assert_eq(SaveService.save_profile(p, SLOT), OK)
+	var q: PlayerProfile = SaveService.load_profile(SLOT)
+	assert_eq(q.loadout.mask_descriptor, want, "derived again on load (never saved)")
+	assert_false(JSON.stringify(q.to_dict()).contains("mask_descriptor"), "not persisted")
+	MaskLocker.clear_custom(q, 2)
+	assert_eq(q.loadout.mask_descriptor, {}, "clearing the worn slot clears it")
+	var ls: LoadoutScreen = (load("res://content/ui/menus/loadout.tscn") as PackedScene).instantiate() as LoadoutScreen
+	ls.setup(p)
+	add_child(ls)
+	await wait_frames(1)
+	assert_eq(ls.current_loadout().mask_descriptor, want, "the launch loadout carries it")
+	ls.queue_free()
+	await wait_frames(1)

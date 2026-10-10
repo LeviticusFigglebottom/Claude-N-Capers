@@ -36,7 +36,7 @@ func setup_initial() -> void:
 	model.casing = true
 	model.masked = false
 	model.objectives = [
-		{"id": &"case", "text_key": &"objective.glasshouse.case_store", "args": {}, "state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"casing", "text_key": &"objective.glasshouse.casing", "args": {}, "state": Enums.ObjectiveState.ACTIVE},
 	]
 	model.crew = [
 		_mate(1, "crew.sable", 1.0, 1.0, Enums.CrewState.NORMAL),
@@ -85,7 +85,7 @@ func _enter_stage(stage: int) -> void:
 			model.casing = false
 			model.masked = true
 			model.interaction = {"text_key": &"ui.prompt.pick_lock", "args": {"key": "F"}, "progress": 0.0,
-					"blocked_reason": &"ui.prompt.blocked.need_keycard"}
+					"blocked_reason": &"ui.blocked.need_keycard"}
 		2:
 			model.carried_bag = {"loot_id": &"loot.jewelry", "weight": Enums.LootWeight.LIGHT}
 			model.hostages = 2
@@ -100,8 +100,8 @@ func _enter_stage(stage: int) -> void:
 			model.camera_alarm_s = -1.0
 			model.assault_phase = Enums.AssaultPhase.ANTICIPATION
 			model.objectives = [
-				{"id": &"case", "text_key": &"objective.glasshouse.case_store", "args": {}, "state": Enums.ObjectiveState.COMPLETED},
-				{"id": &"secure", "text_key": &"objective.glasshouse.secure_loot", "args": {"count": 1, "total": 4},
+				{"id": &"casing", "text_key": &"objective.glasshouse.casing", "args": {}, "state": Enums.ObjectiveState.COMPLETED},
+				{"id": &"secure", "text_key": &"objective.glasshouse.secure", "args": {"count": 1, "total": 4},
 						"state": Enums.ObjectiveState.ACTIVE},
 			]
 		6:

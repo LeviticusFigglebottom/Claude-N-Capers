@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"security_office"
+purpose = &"security_room"
+required_items = Array[StringName]([&"desk", &"chair", &"monitor", &"key_cabinet", &"lockers", &"credenza", &"coffee_machine", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"file_cabinet": 1.5,
+&"picture": 1
+}
+clutter_groups = {
+&"desk": {
+"anchors": Array[StringName]([&"desk"]),
+"count": Vector2i(2, 4),
+"items": {&"binders": 1, &"mug": 2, &"notebook": 1.5, &"papers": 3, &"pen_cup": 1.5, &"plant_small": 0.6},
+"radius": 0.6
+},
+&"floor": {
+"anchors": Array[StringName]([&"wall", &"door"]),
+"count": Vector2i(0, 1),
+"items": {&"bag": 1, &"bin": 2, &"box": 1},
+"radius": 0.8
+}
+}
+min_density = 0.4
+max_density = 1.8
+min_props = 10
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 20
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"chair": PackedStringArray("prop_chair_office"),
+&"desk": PackedStringArray("prop_desk_office"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"picture": PackedStringArray("prop_notice_frame")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.4}
+notes = "U2: the camera_station prefab (monitor wall, west wall) is placed by the map (keep-out). Desk, key cabinet (east wall), guard lockers, coffee on the credenza. Dim; monitor glow."

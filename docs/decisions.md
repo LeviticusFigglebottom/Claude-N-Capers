@@ -227,3 +227,39 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 ## D-045 — 2026-10-10 — Shell-by-shell reload formula; trunk hotfix
 - ENV D's viewmodel test and ENV B's armory test encoded different shotgun reload formulas, and the merge of D's FP sets turned trunk red (my mistake: the push ran despite a failed test, because a grep in the command chain masked the exit code. The lead now gates pushes on the runner's exit code).
 - Ruling: the PD2-style formula in data_schemas.md (derived after mods, with a new `WeaponStats.reload_end_empty_s` for the empty pump). ENV B updates the Plowman data, mod deltas, resolver derivation and test_armory. ENV D re-enables its shotgun length check afterwards (temporarily excluded by the lead).
+
+## D-046 — 2026-10-10 — Pre-planning data shape (QC-20..23); integration hotfix
+- QC-20 (final): the contract's shape `HeistDef.preplanning = {favors, disable, "assets": {asset_id: overrides}}`; no
+  top-level asset keys (B e9e5e5b, C f04cc90).
+- QC-21 (final): crew-spawn PREPLAN_POINT category is **`spawn`** (the original contract; B's library and C's points).
+  An intermediate `player_spawn` ruling was withdrawn; rulings crossed because trunk lagged (see D-048 process note).
+- QC-22: ENV B adds library/strings for Glasshouse's heist-only `asset.inside_keycard` and `asset.propped_door`
+  (force_variant) plus `ui.preplan.point.<point_id>` strings for the 9 points.
+- QC-23: favors budget is design data (Glasshouse 4). ENV B makes `test_buying_deducts_budget` read the def's value
+  first (done, 26bdb2d); Glasshouse favors set to 4 in the lead merge.
+- `PreplanPlan.resolve_ids` returns `{}` when no id was accepted (nothing resolved = no pre-planning).
+- ENV B added the A3-04/05 prompt strings and `vo.crew.ack_<order>` lines (8079505); the strings scan checks that a
+  format-string prefix is completed by some line.
+- D-045 closed: B's resolver derives shotgun reload totals (35b3bcc); ENV D's shotgun clip check re-enabled.
+- Glasshouse VoxelGI (script-baked under xvfb) accepted for P1; LightmapGI revisited if Godot exposes a scriptable bake.
+
+## D-047 — 2026-10-10 — Runtime script errors fail the test run
+- A GDScript runtime error aborts the test function and the runner counted it as a pass (found in the 4-env merge:
+  `test_app_flow.gd:149`, `test_masks.gd:163`). `tools/ci/run_tests.sh` now fails on any `SCRIPT ERROR:` line and lists
+  them. Tests that exercise error paths use `push_error`/`Log.error` (which print `ERROR:`), never runtime faults.
+- Merge fixes (lead, B-owned files): pre-planning screen tests count markers on the shown floor (Glasshouse has an
+  upstairs insider point); mask placeholder test accepts ENV D's model; strings for A's `bag_lift`/`hack_terminal`
+  prompts; `PreplanPlan.resolve_ids` returns `{}` only when ids were given and none was accepted.
+
+## D-048 — 2026-10-10 — Night Deposit G1 approved; rulings; data-shape announcement rule
+- Night Deposit G1 approved (C 7875192/d79c8eb; lead reviewed plans, contact sheet and full-size shots).
+- Validator: floors named by height, interactive-only walk targets, `vault_door` 1.8–2.4 m, `plant` ceiling 2.6–6.0 m.
+- Ceilings beyond the §2.6 table use per-room overrides justified in the design doc; the table stays generic.
+- One consumable keycard (vault gate); other staff doors LOCKPICK + NPC-authorised. Sally shutter = breach ENTRY.
+- QC-24: a static-laser bypass is a discoverable stealth route, clear width ≥ 0.8 m upright or crouched (capsule
+  radius 0.35, no prone); validator asserts the capsule fits.
+- QC-25 (ENV A): timed NPC spawn hook in HeistMission. Also ENV A: camera hitbox behind pivot, laser_grid `size_m`,
+  `oob_respawn` excluded from default crew spawns, dominated-civilian identity in the mission API, prefab collision
+  sized from the visual AABB (export override).
+- Per-heist UI accent: shadow_ledger `#CFE3EE` (style guide §3). `options["is_pro"]` documented in test_hooks.md.
+- Process: the lead announces data-shape rulings only once they are on origin trunk (D-046 churn).

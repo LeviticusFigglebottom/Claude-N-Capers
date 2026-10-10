@@ -5,11 +5,10 @@
 [resource]
 script = ExtResource("1")
 id = &"asset.body_bag_case_drop"
-effect = 1
 category = &"supply"
-base_cost = 1000
+cost = 1000
 favors = 2
 point_categories = Array[StringName]([&"drop_zone"])
 max_count = 2
-spawn_item = &"deployable.body_bag_case"
+drop = &"deployable.body_bag_case"
 tags = Array[StringName]([&"stealth"])

@@ -1,0 +1,8 @@
+asset: prop_counter_sales
+script: tools/blender/props/sales.py
+params: {"cat": {"clear": 1.0, "group": "sales", "kind": "counter_service", "place": "wall", "support": true}, "fn": "counter"}
+seed: 1778320687  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_counter_sales
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

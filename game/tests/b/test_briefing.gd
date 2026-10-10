@@ -53,7 +53,7 @@ func test_objectives_rendered() -> void:
 		assert_false(t.contains("{"), "no unresolved args: %s" % t)
 		assert_false(t.contains("objective."), "key resolved: %s" % t)
 	if HeistRegistry.get_def(HEIST) == null:
-		assert_eq(texts[0], "1. %s" % _strings["objective.glasshouse.case_store"])
+		assert_eq(texts[0], "1. %s" % _strings["objective.glasshouse.casing"])
 	s.queue_free()
 
 
@@ -153,7 +153,7 @@ func test_model_from_a_heist_def() -> void:
 	def.briefing = "Literal briefing text."
 	def.mode = Enums.HeistMode.LOUD_ONLY
 	def.base_payout = 10000
-	def.objectives = [&"case_store", &"no_such_step", &"secure_loot"] as Array[StringName]
+	def.objectives = [&"casing", &"no_such_step", &"secure"] as Array[StringName]
 	def.loot = [&"loot.cash"] as Array[StringName]
 	def.escape_options = [&"boat", &"zeppelin"] as Array[StringName]
 	var m: Dictionary = BriefingModel.build(HEIST, Enums.Difficulty.BRUTAL, def)
@@ -163,7 +163,7 @@ func test_model_from_a_heist_def() -> void:
 	assert_eq(m["mode_key"], &"ui.heist_select.modes_loud_only")
 	assert_eq(int(m["contract_pay"]), HeistCatalog.contract_preview(10000, Enums.Difficulty.BRUTAL))
 	var obj: Array = m["objectives"] as Array
-	assert_eq(String((obj[0] as Dictionary)["text"]), String(_strings["objective.glasshouse.case_store"]))
+	assert_eq(String((obj[0] as Dictionary)["text"]), String(_strings["objective.glasshouse.casing"]))
 	assert_eq(String((obj[1] as Dictionary)["text"]), "No such step", "missing key falls back to the id")
 	assert_eq(String((obj[2] as Dictionary)["text"]), "Secure the bags", "counters stripped")
 	var esc: Array = m["escape_options"] as Array

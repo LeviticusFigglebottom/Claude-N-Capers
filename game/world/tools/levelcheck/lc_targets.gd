@@ -3,6 +3,11 @@
 class_name LcTargets
 extends RefCounted
 
+## Prefab files (scene or script basename) that carry an objective_tag but are never walked to:
+## observers and traps (a camera's default tag only lets mission scripts find it).
+const NON_INTERACTIVE_PREFABS: Array[String] = ["security_camera", "laser_grid"]
+const NON_INTERACTIVE_KINDS: Array[StringName] = [&"camera", &"security_camera", &"laser_grid"]
+
 
 ## Navigation targets the crew must reach. Each: { name, node, pos, kind, zone }.
 ## kind: objective | loot_spawn | secure_zone | escape_zone | use_point.
@@ -22,7 +27,7 @@ static func collect(ctx: LcContext) -> Array[Dictionary]:
 		elif n is Node3D and is_loot_spawn(n):
 			out.append({"name": ctx.node_path(n), "node": n, "pos": (n as Node3D).global_position,
 				"kind": "loot_spawn", "zone": null})
-		elif n is Node3D and objective_tag(n) != &"":
+		elif n is Node3D and is_walk_objective(n):
 			var up: Node3D = n.get_node_or_null("UsePoint") as Node3D
 			var pos: Vector3 = up.global_position if up != null else (n as Node3D).global_position
 			out.append({"name": ctx.node_path(n), "node": n, "pos": pos, "kind": "objective", "zone": null})
@@ -63,6 +68,20 @@ static func is_loot_spawn(n: Node) -> bool:
 		return true
 	var sc: Script = n.get_script() as Script
 	return sc != null and sc.resource_path.get_file().begins_with("loot_spawn")
+
+
+## Walk-to objective: non-empty objective_tag on an *interactive* node (a `UsePoint` child or an
+## `Interactable` descendant) that is not an observer/trap prefab.
+static func is_walk_objective(n: Node) -> bool:
+	if objective_tag(n) == &"":
+		return false
+	if LcUtil.meta_s(n, &"kind") in NON_INTERACTIVE_KINDS:
+		return false
+	var sc: Script = n.get_script() as Script
+	for f: String in [n.scene_file_path.get_file().get_basename(), sc.resource_path.get_file().get_basename() if sc != null else ""]:
+		if f in NON_INTERACTIVE_PREFABS:
+			return false
+	return n.get_node_or_null("UsePoint") != null or n.find_child("Interactable", true, false) != null
 
 
 static func objective_tag(n: Node) -> StringName:

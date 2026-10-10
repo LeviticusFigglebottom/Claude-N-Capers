@@ -15,12 +15,20 @@ func _screen(cash: int, difficulty: int = Enums.Difficulty.BRUTAL) -> Preplannin
 	return s
 
 
+func _expected_favors(heist_id: StringName) -> int:
+	var def: HeistDef = HeistRegistry.get_def(heist_id)
+	var pre: Dictionary = def.preplanning if def != null else {}
+	if pre.has("favors") and not PreplanBoard.is_legacy_format(pre):
+		return int(pre["favors"])
+	return PreplanTweak.load_default().default_favors
+
+
 func test_scene_instantiates_with_markers_and_placeholder() -> void:
 	var s: PreplanningScreen = _screen(50000)
 	await wait_frames(2)
 	assert_true(s.get_child_count() > 0)
 	assert_eq(s.heist_id, &"glasshouse")
-	assert_eq(s.blueprint_view.markers.size(), s.board.active_point_ids().size())
+	assert_eq(s.blueprint_view.markers.size(), _points_on_floor(s, s.blueprint_view.floor_index))
 	assert_true(s.blueprint_view.markers.size() >= 5, "markers drawn")
 	assert_eq(s.placeholder_label.visible, s.board.blueprint.placeholder)
 	assert_eq(s.selected_point, &"", "starts on crew assets")
@@ -46,7 +54,10 @@ func test_buying_deducts_budget() -> void:
 	assert_eq(s.buy(&"asset.ammo_bag_drop"), PreplanPlan.OK)
 	assert_eq(s.cash_left(), 50000 - cost)
 	assert_eq(s.plan.favors_used(), 2)
-	assert_true(s.favors_label.text.contains("2 / 10"), s.favors_label.text)
+	# D-046 QC-23: the budget is the HeistDef's preplanning.favors (else the tweak default), never 10.
+	var budget: int = _expected_favors(&"glasshouse")
+	assert_eq(s.board.favors_budget, budget)
+	assert_true(s.favors_label.text.contains("2 / %d" % budget), s.favors_label.text)
 	assert_true(s.cash_label.text.contains(UiText.group_digits(50000 - cost)), s.cash_label.text)
 	assert_true(s.is_selected(&"asset.ammo_bag_drop"))
 	assert_eq(s.buy(&"asset.doctor_bag_drop"), PreplanPlan.R_POINT_TAKEN)
@@ -66,13 +77,21 @@ func test_cash_limit_and_vote() -> void:
 	assert_eq(s.buy(&"asset.extra_cable_ties"), PreplanPlan.R_CASH, "no spending cash")
 	s.profile.cash = 100000
 	s.show_point(&"pp_escape_side_street")
+	var sent: Array[StringName] = []
+	var listen: Callable = func(_peer: int, kind: StringName, _data: Dictionary) -> void: sent.append(kind)
+	Net.lobby_message.connect(listen)
 	assert_eq(s.buy(&"asset.escape_position"), PreplanPlan.OK)
+	Net.lobby_message.disconnect(listen)
+	assert_eq(sent, [PlanVote.MSG_CAST] as Array[StringName], "the vote went through Net.lobby_send (solo: local)")
 	assert_true(s.is_selected(&"asset.escape_position"))
+	assert_eq(s.plan.cash_cost(s.local_slot), s.board.cost_of(&"asset.escape_position"), "solo: the one human pays the plan")
 	assert_true(s.vote_label.text.contains(UiText.t(&"ui.preplan.point.pp_escape_side_street")), s.vote_label.text)
 	s.show_point(&"pp_escape_alley_west")
 	assert_eq(s.buy(&"asset.escape_position"), PreplanPlan.OK, "re-vote moves the plan")
 	assert_eq(s.plan.count_of(&"asset.escape_position"), 1)
 	assert_eq(s.plan.index_at(&"pp_escape_side_street"), -1)
+	s.remove(&"asset.escape_position")
+	assert_eq(s.plan.count_of(&"asset.escape_position"), 0, "retract went through Net too")
 	s.queue_free()
 	await wait_frames(1)
 
@@ -88,7 +107,9 @@ func test_confirm_emits_handoff_and_charges() -> void:
 	s.confirm_button.pressed.emit()
 	assert_eq(got.size(), 1)
 	assert_has(got[0]["modifier_sources"], &"asset.spare_body_bags")
-	assert_eq(int(got[0]["difficulty"]), Enums.Difficulty.BRUTAL)
+	assert_eq(int((got[0]["plan"] as Dictionary)["difficulty"]), Enums.Difficulty.BRUTAL)
+	assert_eq((got[0].keys() as Array).size(), PreplanPlan.RESULT_KEYS.size(), "exactly the PreplanResult v1 keys")
+	assert_eq(int((got[0]["cash_spent"] as Dictionary)[s.local_slot]), cost)
 	assert_eq(s.profile.cash, 50000 - cost, "spending cash paid on confirm")
 	var backs: Array[int] = [0]
 	s.back_requested.connect(func() -> void: backs[0] += 1)
@@ -109,7 +130,16 @@ func test_setup_after_ready_rebuilds() -> void:
 	s.setup(&"glasshouse", Enums.Difficulty.LETHAL, p)
 	await wait_frames(1)
 	assert_eq(s.board.difficulty, Enums.Difficulty.LETHAL)
-	assert_eq(s.blueprint_view.markers.size(), s.board.active_point_ids().size())
+	assert_eq(s.blueprint_view.markers.size(), _points_on_floor(s, s.blueprint_view.floor_index))
 	assert_true(s.cash_label.text.contains("1,234"), s.cash_label.text)
 	s.queue_free()
 	await wait_frames(1)
+
+
+## LEAD: the blueprint draws one floor at a time (Glasshouse has an upstairs insider point).
+func _points_on_floor(s: PreplanningScreen, floor_index: int) -> int:
+	var n: int = 0
+	for pid: StringName in s.board.active_point_ids():
+		if int(s.board.blueprint.point(pid).get("floor", 0)) == floor_index:
+			n += 1
+	return n

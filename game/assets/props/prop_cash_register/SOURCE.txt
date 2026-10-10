@@ -1,0 +1,8 @@
+asset: prop_cash_register
+script: tools/blender/props/sales.py
+params: {"cat": {"group": "sales", "hosts": ["counter_service"], "kind": "register", "place": "on"}, "fn": "register"}
+seed: 3969760656  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_cash_register
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

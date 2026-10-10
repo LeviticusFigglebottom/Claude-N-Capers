@@ -1,0 +1,18 @@
+asset: char_civilian_jeweler
+script: tools/blender/characters/char_civilians.py
+params: {"age": 0.75, "build": 0.2, "gender": 0.0, "hair": "short", "hair_color": "grey", "height": 1.74, "look": "apron", "skin": 1}
+seed: 1600075421  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_civilian_jeweler
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0872, 0.1008] (model [0.0000, 1.2708, 0.1189], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0792, -0.0867] (model [0.0000, 1.6286, -0.0750], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1691, 0.0495, 0.0320] (model [0.1691, 0.9814, 0.0345], Godot axes, rest pose)
+body_faces_culled: 4514
+body_params: {"age": 0.75, "build": 0.2, "gender": 0.0, "hair": "short", "hair_color": "grey", "height": 1.74, "skin": 1}
+bones: 52
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 25430
+tris_by_mesh: {"Body": 9652, "Gear": 108, "Hair": 1000, "Headwear": 782, "Outfit": 13888}

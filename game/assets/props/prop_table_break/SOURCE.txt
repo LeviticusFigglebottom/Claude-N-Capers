@@ -1,0 +1,8 @@
+asset: prop_table_break
+script: tools/blender/props/staff.py
+params: {"cat": {"clear": 0.7, "group": "kitchen", "kind": "table", "place": "center", "support": true}, "fn": "table_break"}
+seed: 3629268249  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_table_break
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

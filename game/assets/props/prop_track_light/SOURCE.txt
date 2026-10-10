@@ -1,0 +1,8 @@
+asset: prop_track_light
+script: tools/blender/props/staff.py
+params: {"cat": {"fixture": true, "group": "lighting", "kind": "light_fixture", "light": {"angle": 50, "color": "#FFB46B", "energy": 2.2, "pos": [0.0, -0.2, 0.0], "range": 5.0, "type": "spot"}, "place": "ceiling"}, "fn": "track_light"}
+seed: 3275710187  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_track_light
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

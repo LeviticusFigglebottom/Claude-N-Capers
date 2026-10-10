@@ -17,9 +17,12 @@ class_name VoiceLineTable
 extends Resource
 
 ## Contacts (vance, reyes, accountant) speak only briefing lines (B2-02); see ContactDef.voice_speaker.
+## &"guard" = any guard NPC (ENV A requests guard lines by id, e.g. StealthTweak.cuff_yell_line).
 const SPEAKERS: Array[StringName] = [
-	&"mercer", &"rook", &"sable", &"dutch", &"wren", &"crew", &"vance", &"reyes", &"accountant",
+	&"mercer", &"rook", &"sable", &"dutch", &"wren", &"crew", &"vance", &"reyes", &"accountant", &"guard",
 ]
+## The heisters: the only speakers that &"crew" lines stand in for.
+const HEISTERS: Array[StringName] = [&"rook", &"sable", &"dutch", &"wren"]
 ## Known trigger vocabulary: EventBus signal names first, then semantic tags.
 const EVENTS: Array[StringName] = [
 	# EventBus signals
@@ -31,6 +34,9 @@ const EVENTS: Array[StringName] = [
 	&"assault_anticipation", &"assault_build", &"assault_fade", &"assault_control",
 	&"escape_available", &"heist_success", &"heist_failed", &"stealth_success",
 	&"reloading", &"bagging_body", &"going_loud", &"reviving", &"cops_incoming", &"guard_down",
+	&"stealth_abort", &"cuff_warning", &"dev_start",
+	# AI teammate acknowledges an order (D-043 QA-24): id vo.crew.ack_<CrewOrders order>, speaker crew.
+	&"order_ack",
 	# Briefing screen (B2-02): local UI playback, never replicated. Briefing lines also carry
 	# "heist": StringName (the heist id) and "order": int (playback order within that heist).
 	&"briefing",
@@ -48,7 +54,7 @@ func lines_for(event: StringName, speaker: StringName = &"") -> Array[Dictionary
 		if StringName(l.get("event", &"")) != event:
 			continue
 		var sp: StringName = StringName(l.get("speaker", &""))
-		if speaker == &"" or sp == speaker or (sp == &"crew" and speaker != &"mercer"):
+		if speaker == &"" or sp == speaker or (sp == &"crew" and HEISTERS.has(speaker)):
 			out.append(l)
 	return out
 

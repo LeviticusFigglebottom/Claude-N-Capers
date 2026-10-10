@@ -19,6 +19,9 @@ extends RefCounted
 const CONTROLLER_CLASS: StringName = &"CrewController"
 const SPAWN_METHOD: StringName = &"spawn_for_range"
 const SET_LOADOUT_METHOD: StringName = &"set_loadout"
+## ENV A's HUD model (ui_hud.md v1.2): `track(crew)` follows a crew member without a HeistRuntime.
+const HUD_MODEL_CLASS: StringName = &"LocalHudModel"
+const HUD_MODEL_NAME: String = "RangeHudModel"
 ## Name of the PlayerInput child added by CrewController.spawn_for_range.
 const INPUT_NODE: String = "PlayerInput"
 ## First-person weapon model under the crew camera (presentation only).
@@ -110,6 +113,43 @@ static func input_enabled(crew: Node) -> bool:
 
 
 ## Equipped weapon ammo: {mag, mag_size, reserve, reloading}; {} without crew weapons.
+## A LocalHudModel under `parent` tracking `crew` (ui_hud.md v1.2 `track(crew)`), or null when ENV A's
+## model (or its track()) is missing. The range reads ammo through it like the in-heist HUD does.
+static func track_hud_model(parent: Node, crew: Node) -> Node:
+	var s: Script = UiNav.global_class(HUD_MODEL_CLASS)
+	if s == null or parent == null or crew == null or not is_instance_valid(crew):
+		return null
+	var m: Object = s.new()
+	if not m is Node or not m.has_method(&"track"):
+		if m is Node:
+			(m as Node).free()
+		return null
+	var model: Node = m as Node
+	model.name = HUD_MODEL_NAME
+	parent.add_child(model)
+	model.call(&"track", crew)
+	return model
+
+
+## {mag, reserve} of the equipped slot from a HUD model's `ammo` / `equipped_slot` (v1.1 shape), or {}.
+static func ammo_from_model(model: Node) -> Dictionary:
+	if model == null or not is_instance_valid(model):
+		return {}
+	var all: Variant = model.get(&"ammo")
+	if not all is Dictionary:
+		return {}
+	var e: Variant = (all as Dictionary).get(int(model.get(&"equipped_slot")), null)
+	if not e is Dictionary:
+		return {}
+	return {"mag": int((e as Dictionary).get("mag", 0)), "reserve": int((e as Dictionary).get("reserve", 0))}
+
+
+## The crew's weapons `reloading` flag (not part of the HUD model).
+static func reloading(crew: Node) -> bool:
+	var w: Object = crew.get(&"weapons") as Object if crew != null and is_instance_valid(crew) else null
+	return w != null and bool(w.get(&"reloading"))
+
+
 static func ammo(crew: Node) -> Dictionary:
 	var w: Object = crew.get(&"weapons") as Object if crew != null and is_instance_valid(crew) else null
 	if w == null:

@@ -1,0 +1,8 @@
+asset: prop_bollard_concrete
+script: tools/blender/props/exterior.py
+params: {"cat": {"group": "exterior", "kind": "bollard", "place": "row", "standoff": 3.7}, "fn": "bollard", "steel": false}
+seed: 3440691141  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_bollard_concrete
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

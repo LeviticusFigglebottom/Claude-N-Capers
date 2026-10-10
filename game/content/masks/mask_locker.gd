@@ -70,6 +70,7 @@ static func save_custom(profile: PlayerProfile, index: int, comp: Dictionary) ->
 	while profile.custom_masks.size() <= index:
 		profile.custom_masks.append({})
 	profile.custom_masks[index] = MaskComposer.normalized(comp)
+	sync_descriptor(profile)
 	return MaskCatalog.custom_id(index)
 
 
@@ -80,6 +81,7 @@ static func clear_custom(profile: PlayerProfile, index: int) -> void:
 	profile.custom_masks[index] = {}
 	if profile.loadout.mask == MaskCatalog.custom_id(index):
 		profile.loadout.mask = &""
+	sync_descriptor(profile)
 
 
 ## Owned preset or filled custom slot ("" = no mask is always equippable).
@@ -100,7 +102,14 @@ static func equip(profile: PlayerProfile, mask_id: StringName) -> bool:
 	if profile == null or not is_equippable(profile, mask_id):
 		return false
 	profile.loadout.mask = mask_id
+	sync_descriptor(profile)
 	return true
+
+
+## Refresh profile.loadout.mask_descriptor (D-043 QA-25) after the worn mask or its slot changed.
+static func sync_descriptor(profile: PlayerProfile) -> void:
+	if profile != null and profile.loadout != null:
+		profile.loadout.mask_descriptor = LoadoutResolver.mask_descriptor_for(profile.loadout, profile)
 
 
 ## Every mask id the profile can equip: owned presets (sorted), then filled custom slots in order.

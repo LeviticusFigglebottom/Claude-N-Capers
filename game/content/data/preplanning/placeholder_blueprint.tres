@@ -72,7 +72,7 @@ points = Array[Dictionary]([{
 "params": {},
 "pos": Vector2(23, 2)
 }, {
-"category": &"player_spawn",
+"category": &"spawn",
 "floor": 0,
 "id": &"pp_spawn_alley_west",
 "label": &"ui.preplan.point.pp_spawn_alley_west",
@@ -81,7 +81,7 @@ points = Array[Dictionary]([{
 },
 "pos": Vector2(-11, -3)
 }, {
-"category": &"player_spawn",
+"category": &"spawn",
 "floor": 0,
 "id": &"pp_spawn_alley_mouth",
 "label": &"ui.preplan.point.pp_spawn_alley_mouth",

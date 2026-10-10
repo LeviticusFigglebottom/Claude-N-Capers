@@ -1,18 +1,29 @@
-## The crew's pre-planning selection for one heist (B2-01, C3). Owner: ENV B. Pure logic.
+## The crew's pre-planning selection for one heist (B2-01, C3; contract docs/contracts/preplanning.md
+## v1.0, D-038). Owner: ENV B. Pure logic: the single resolver from assets to a PreplanResult.
 ##
-## A selection is {"asset": StringName, "point": StringName (&"" for crew assets), "buyer": int slot}.
-## Rules (PD2): favors are a TEAM budget per heist; cash is paid by the buyer from spending cash;
-## at most one asset per point; an asset has a max count; one asset per exclusive group; vote groups
-## (plans) hold one option, the PlanVote winner, paid by the host (◇ ours).
+## A selection is {"asset": StringName, "point": StringName (&"" for crew assets), "buyer": int slot,
+## or SPLIT for a voted plan}. Rules (PD2): favors are a TEAM budget per heist; each player pays for
+## the assets they place from their own spending cash; at most one asset per point; an asset has a
+## max count; one asset per exclusive group; vote groups (plans) hold one option, the PlanVote
+## winner, whose cost is split equally among the human crew (AI never pays).
 ##
-##   var plan := PreplanPlan.new(board)
+##   var plan := PreplanPlan.new(board, host_slot, human_slots)
 ##   plan.add(&"asset.ammo_bag_drop", &"pp_alley_dumpsters", 0, {0: profile.cash})  # -> &"" or a reason
-##   plan.vote(0, &"asset.escape_position", &"pp_escape_pell", {0: profile.cash})
-##   var handoff: Dictionary = plan.apply()   # pure data for the host (shape: content/docs/preplanning.md)
+##   plan.vote(0, &"asset.escape_position", &"pp_escape_side_street", {0: profile.cash})
+##   var result: Dictionary = plan.apply()          # PreplanResult v1 -> options["preplan"]
+##   PreplanPlan.resolve_ids(&"glasshouse", [&"asset.extra_cable_ties"])   # dev path, no UI
 class_name PreplanPlan
 extends RefCounted
 
+## PreplanResult version (contract preplanning.md).
 const HANDOFF_VERSION: int = 1
+## Exactly the keys of a PreplanResult v1 (contract preplanning.md).
+const RESULT_KEYS: Array[String] = [
+	"version", "modifier_sources", "drops", "spawn_tag", "escape_tag", "force_variants", "reveals",
+	"cash_spent", "plan",
+]
+## Buyer of a voted plan: the cost is split equally among the human crew (PlanVote.voters).
+const SPLIT: int = -1
 
 ## Reasons returned by can_add/add/vote (&"" = allowed). UI text: ui.preplan.reason.<reason>.
 const OK: StringName = &""
@@ -48,13 +59,50 @@ func favors_left() -> int:
 	return board.favors_budget - favors_used()
 
 
-## Spending cash of the plan; `buyer` = -1 for the whole crew.
-func cash_cost(buyer: int = -1) -> int:
+## Slots that share a voted plan's cost: the human crew (the voters), else the host alone.
+func payers() -> Array[int]:
+	if not votes.voters.is_empty():
+		return votes.voters.duplicate()
+	return [votes.host_slot] as Array[int]
+
+
+## What `slot` pays for one selection. A SPLIT selection is divided equally among payers(); the
+## remainder of the integer division goes to the host (or the first payer when the host is not one).
+func share_of(sel: Dictionary, slot: int) -> int:
+	var c: int = board.cost_of(StringName(sel["asset"]))
+	var buyer: int = int(sel["buyer"])
+	if buyer != SPLIT:
+		return c if buyer == slot else 0
+	var who: Array[int] = payers()
+	if not who.has(slot):
+		return 0
+	var share: int = c / who.size()
+	var rest_to: int = votes.host_slot if who.has(votes.host_slot) else who[0]
+	return share + (c - share * who.size() if slot == rest_to else 0)
+
+
+## Spending cash `slot` pays for the plan; `slot` = -1 for the whole crew.
+func cash_cost(slot: int = -1) -> int:
 	var n: int = 0
 	for s: Dictionary in selections:
-		if buyer < 0 or int(s["buyer"]) == buyer:
-			n += board.cost_of(StringName(s["asset"]))
+		n += board.cost_of(StringName(s["asset"])) if slot < 0 else share_of(s, slot)
 	return n
+
+
+## slot -> spending cash, for every slot that pays something.
+func cash_by_payer() -> Dictionary:
+	var slots: Array[int] = payers()
+	for s: Dictionary in selections:
+		var b: int = int(s["buyer"])
+		if b != SPLIT and not slots.has(b):
+			slots.append(b)
+	slots.sort()
+	var out: Dictionary = {}
+	for slot: int in slots:
+		var c: int = cash_cost(slot)
+		if c > 0:
+			out[slot] = c
+	return out
 
 
 func count_of(asset_id: StringName) -> int:
@@ -117,8 +165,7 @@ func vote(slot: int, asset_id: StringName, point_id: StringName, cash_by_slot: D
 	if a == null:
 		return R_UNKNOWN
 	var gi: int = _group_index(a.vote_group)
-	var payer: int = votes.host_slot
-	var r: StringName = _check(asset_id, point_id, payer, cash_by_slot, gi)
+	var r: StringName = _check(asset_id, point_id, SPLIT, cash_by_slot, gi)
 	if r != OK:
 		return r
 	if not votes.cast(slot, a.vote_group, PlanVote.option_key(asset_id, point_id)):
@@ -139,65 +186,113 @@ func validate(cash_by_slot: Dictionary = {}) -> Array[String]:
 	return out
 
 
-## Hand-off for the heist start (pure data; ENV A / the host applies it). Shape:
-## { "version": 1, "heist_id", "difficulty", "favors_budget", "favors_used",
-##   "cash_spent": {slot: int},
-##   "modifier_sources": {&"asset.<id>": {key: value}},  # Modifiers.set_source(Modifiers.TEAM, name, grants)
-##   "spawns": [{"asset", "item": deployable id, "point": PREPLAN_POINT id}],
-##   "reveal_variant_groups": [StringName],
-##   "force_variants": [{"asset", "group", "slot"}],
-##   "player_spawn_tag": StringName (&"" = default spawns),
-##   "plan": to_dict() }
+## The PreplanResult (contract preplanning.md, version 1) for options["preplan"]. ENV A applies it
+## and never re-resolves the catalog:
+## { "version": 1,
+##   "modifier_sources": {asset_id: {key: value}},   # Modifiers.set_source(TEAM, asset_id, ...)
+##   "drops": [{"asset", "kind": StringName, "point": point id, "params": {}}],
+##   "spawn_tag": StringName,                        # &"" = default spawns
+##   "escape_tag": StringName,                       # &"" = mission default
+##   "force_variants": {group: [slot ids]},
+##   "reveals": [group],
+##   "cash_spent": {crew_slot: int},                 # already charged by ENV B (charge_profile)
+##   "plan": to_dict() }                             # selections, votes, heist, difficulty, favors
 func apply() -> Dictionary:
 	var mods: Dictionary = {}
-	var spawns: Array[Dictionary] = []
+	var drops: Array[Dictionary] = []
 	var reveals: Array[StringName] = []
-	var forces: Array[Dictionary] = []
+	var forces: Dictionary = {}
 	var spawn_tag: StringName = &""
-	var cash: Dictionary = {}
+	var escape_tag: StringName = &""
 	for s: Dictionary in _sorted_selections():
 		var id: StringName = StringName(s["asset"])
 		var pid: StringName = StringName(s["point"])
 		var a: PreplanAssetDef = board.asset(id)
 		if a == null:
 			continue
-		var buyer: int = int(s["buyer"])
-		cash[buyer] = int(cash.get(buyer, 0)) + board.cost_of(id)
-		var params: Dictionary = board.blueprint.point(pid).get("params", {}) as Dictionary
-		match a.effect:
-			PreplanAssetDef.Effect.MODIFIERS:
-				mods[id] = a.grants.duplicate(true)
-			PreplanAssetDef.Effect.SPAWN:
-				spawns.append({"asset": id, "item": a.spawn_item, "point": pid})
-			PreplanAssetDef.Effect.REVEAL:
-				if not reveals.has(a.reveal_variant_group):
-					reveals.append(a.reveal_variant_group)
-			PreplanAssetDef.Effect.FORCE_VARIANT:
-				var g: StringName = a.force_variant_group
-				var sl: StringName = a.force_variant_slot
-				if sl == &"":
-					g = StringName(params.get("variant_group", g))
-					sl = StringName(params.get("variant_slot", &""))
-				forces.append({"asset": id, "group": g, "slot": sl})
-			PreplanAssetDef.Effect.PLAYER_SPAWN:
-				spawn_tag = StringName(params.get("spawn_tag", &""))
+		var params: Dictionary = board.blueprint.point(pid).get("params", {}) as Dictionary if pid != &"" else {}
+		if not a.grants.is_empty():
+			mods[id] = a.grants.duplicate(true)
+		if a.drop != &"":
+			drops.append({"asset": id, "kind": a.drop, "point": pid, "params": a.drop_params.duplicate(true)})
+		for g: StringName in a.reveals:
+			if not reveals.has(g):
+				reveals.append(g)
+		var fv: Dictionary = a.force_variants
+		if fv.is_empty() and params.has("variant_group") and params.has("variant_slot"):
+			fv = {StringName(String(params["variant_group"])): [StringName(String(params["variant_slot"]))]}
+		for g: Variant in fv:
+			var key: StringName = StringName(String(g))
+			var slots: Array = forces.get(key, []) as Array
+			for sl: Variant in fv[g] as Array:
+				if not slots.has(StringName(String(sl))):
+					slots.append(StringName(String(sl)))
+			forces[key] = slots
+		var st: StringName = a.spawn_tag if a.spawn_tag != &"" else StringName(String(params.get("spawn_tag", "")))
+		if st != &"":
+			spawn_tag = st
+		var et: StringName = a.escape_tag if a.escape_tag != &"" else StringName(String(params.get("escape_tag", "")))
+		if et != &"":
+			escape_tag = et
+	var typed_forces: Dictionary = {}
+	for g: Variant in forces:
+		var slots_typed: Array[StringName] = []
+		slots_typed.assign(forces[g] as Array)
+		typed_forces[g] = slots_typed
 	return {
 		"version": HANDOFF_VERSION,
-		"heist_id": board.heist_id,
-		"difficulty": board.difficulty,
-		"favors_budget": board.favors_budget,
-		"favors_used": favors_used(),
-		"cash_spent": cash,
 		"modifier_sources": mods,
-		"spawns": spawns,
-		"reveal_variant_groups": reveals,
-		"force_variants": forces,
-		"player_spawn_tag": spawn_tag,
+		"drops": drops,
+		"spawn_tag": spawn_tag,
+		"escape_tag": escape_tag,
+		"force_variants": typed_forces,
+		"reveals": reveals,
+		"cash_spent": cash_by_payer(),
 		"plan": to_dict(),
 	}
 
 
-## Deduct `slot`'s share from a profile's spending cash. Returns the amount charged (0 if it can't pay).
+## Dev path (ENV A's `options["preplanning"]`, contract preplanning.md): a PreplanResult from asset
+## ids without UI, through the same rules. An id may name its point as "asset.<id>@<point id>";
+## otherwise a located asset takes the first free allowed point in blueprint order. Slot 0 buys
+## everything and votes alone; nothing is charged (cash_spent is empty). Rejected ids are logged.
+## When no id is accepted (none given, all unknown or refused) the result is {} = no plan, so ENV A's
+## preplan stays inactive (test_c3_unknown_dev_id_ignored). Only (heist_id, ids) are required.
+static func resolve_ids(heist_id: StringName, ids: Array, difficulty: int = Enums.Difficulty.ROUTINE,
+		def: HeistDef = null) -> Dictionary:
+	var b: PreplanBoard = PreplanBoard.build(heist_id, difficulty, def)
+	var p: PreplanPlan = PreplanPlan.new(b, 0, [0] as Array[int])
+	for raw: Variant in ids:
+		var o: Dictionary = PlanVote.parse_option(StringName(String(raw)))
+		var id: StringName = StringName(o["asset"])
+		var pid: StringName = StringName(o["point"])
+		var a: PreplanAssetDef = b.asset(id)
+		if a != null and a.is_located() and pid == &"":
+			pid = p.first_free_point(id)
+		var r: StringName = p.add(id, pid, 0)
+		if r != OK:
+			Log.warn(&"preplan", "resolve_ids(%s): %s@%s rejected (%s)" % [heist_id, id, pid, r])
+	if p.selections.is_empty():
+		return {}
+	var res: Dictionary = p.apply()
+	res["cash_spent"] = {}
+	return res
+
+
+## First point (blueprint order) where `asset_id` may be added for slot 0 now, or &"".
+func first_free_point(asset_id: StringName) -> StringName:
+	for pid: StringName in board.blueprint.point_ids():
+		var a: PreplanAssetDef = board.asset(asset_id)
+		if a != null and a.vote_group != &"":
+			if _check(asset_id, pid, SPLIT, {}, _group_index(a.vote_group)) == OK:
+				return pid
+		elif can_add(asset_id, pid, 0) == OK:
+			return pid
+	return &""
+
+
+## Deduct `slot`'s share (own assets + its part of voted plans) from a profile's spending cash.
+## Returns the amount charged (0 if it can't pay).
 func charge_profile(profile: PlayerProfile, slot: int) -> int:
 	var c: int = cash_cost(slot)
 	if profile == null or c > profile.cash:
@@ -206,12 +301,33 @@ func charge_profile(profile: PlayerProfile, slot: int) -> int:
 	return c
 
 
+## Apply a plan-vote lobby message (Net.lobby_message, PlanVote.MSG_*) from crew `slot`. Not
+## cash-checked (a peer only knows its own cash; the host re-validates on confirm). Returns the
+## PreplanPlan reason (OK = applied).
+func receive_vote(slot: int, kind: StringName, data: Dictionary) -> StringName:
+	match kind:
+		PlanVote.MSG_CAST:
+			var o: Dictionary = PlanVote.parse_option(StringName(String(data.get("option", ""))))
+			return vote(slot, StringName(o["asset"]), StringName(o["point"]))
+		PlanVote.MSG_RETRACT:
+			var g: StringName = StringName(String(data.get("group", "")))
+			if not votes.voters.is_empty() and not votes.voters.has(slot):
+				return R_NOT_VOTER
+			votes.retract(slot, g)
+			_resolve_vote(g)
+			return OK
+	return R_UNKNOWN
+
+
 ## Network / save form (JSON-safe apart from StringNames).
 func to_dict() -> Dictionary:
 	var sel: Array = []
 	for s: Dictionary in _sorted_selections():
 		sel.append({"asset": s["asset"], "point": s["point"], "buyer": s["buyer"]})
-	return {"heist_id": board.heist_id, "difficulty": board.difficulty, "selections": sel, "votes": votes.to_dict()}
+	return {
+		"heist_id": board.heist_id, "difficulty": board.difficulty, "favors_budget": board.favors_budget,
+		"favors_used": favors_used(), "selections": sel, "votes": votes.to_dict(),
+	}
 
 
 static func from_dict(p_board: PreplanBoard, d: Dictionary) -> PreplanPlan:
@@ -237,7 +353,7 @@ func _check(asset_id: StringName, point_id: StringName, buyer: int, cash_by_slot
 		return r
 	var count: int = 0
 	var favors: int = 0
-	var cash: int = 0
+	var spent: Dictionary = {}
 	for i: int in range(selections.size()):
 		if i == ignore:
 			continue
@@ -251,9 +367,14 @@ func _check(asset_id: StringName, point_id: StringName, buyer: int, cash_by_slot
 		elif other != null and _shares_group(a, other):
 			return R_EXCLUSIVE
 		favors += board.favors_of(sid)
-		if int(s["buyer"]) == buyer:
-			cash += board.cost_of(sid)
-	return _check_limits(a, count, favors, cash, buyer, cash_by_slot)
+		for slot: Variant in cash_by_slot:
+			spent[slot] = int(spent.get(slot, 0)) + share_of(s, int(slot))
+	var cash_ok: bool = true
+	var candidate: Dictionary = {"asset": asset_id, "point": point_id, "buyer": buyer}
+	for slot: Variant in cash_by_slot:
+		if int(spent.get(slot, 0)) + share_of(candidate, int(slot)) > int(cash_by_slot[slot]):
+			cash_ok = false
+	return _check_limits(a, count, favors, cash_ok)
 
 
 func _check_point(a: PreplanAssetDef, point_id: StringName) -> StringName:
@@ -266,8 +387,9 @@ func _check_point(a: PreplanAssetDef, point_id: StringName) -> StringName:
 	return OK
 
 
-## `count` / `favors` / `cash`: copies of this asset, favors of the plan and the buyer's cash, without it.
-func _check_limits(a: PreplanAssetDef, count: int, favors: int, cash: int, buyer: int, cash_by_slot: Dictionary) -> StringName:
+## `count` / `favors`: copies of this asset and favors of the plan, without it; `cash_ok`: every
+## cash-checked slot can pay its share with it.
+func _check_limits(a: PreplanAssetDef, count: int, favors: int, cash_ok: bool) -> StringName:
 	var r: StringName = OK
 	if count > 0 and a.exclusive_group != &"":
 		r = R_EXCLUSIVE
@@ -275,7 +397,7 @@ func _check_limits(a: PreplanAssetDef, count: int, favors: int, cash: int, buyer
 		r = R_MAX_COUNT
 	elif favors + a.favors > board.favors_budget:
 		r = R_FAVORS
-	elif cash_by_slot.has(buyer) and cash + board.tweak.scaled_cost(a.base_cost, board.difficulty) > int(cash_by_slot[buyer]):
+	elif not cash_ok:
 		r = R_CASH
 	return r
 
@@ -302,7 +424,7 @@ func _resolve_vote(group: StringName) -> void:
 	if w == &"":
 		return
 	var o: Dictionary = PlanVote.parse_option(w)
-	selections.append({"asset": o["asset"], "point": o["point"], "buyer": votes.host_slot})
+	selections.append({"asset": o["asset"], "point": o["point"], "buyer": SPLIT})
 
 
 func _sorted_selections() -> Array[Dictionary]:

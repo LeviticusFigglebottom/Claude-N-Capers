@@ -139,8 +139,10 @@ def door(ctx: AssetContext, kind: str, wall_t: float, with_leaf: bool) -> None:
     col = mb.copy()
     mb.bevel(BEVEL * 0.6)
     uv.box_project(mb.bm, density=uv.DENSITY_NEAR)
-    geo.finish_hard_surface(mb.to_object("Frame"))
-    geo.collision_from_builder(col, "trimesh")
+    frame = mb.to_object("Frame")
+    geo.finish_hard_surface(frame)
+    # visual_slots.md: the door prefab looks up `Frame/Collision` (StaticBody3D under the Frame mesh).
+    geo.collision_from_builder(col, "trimesh", parent=frame)
     if not with_leaf:
         return
     leaf_w = d["leaf"]

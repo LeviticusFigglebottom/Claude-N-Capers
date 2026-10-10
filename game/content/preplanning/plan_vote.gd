@@ -1,11 +1,17 @@
 ## Plan votes (B2-01 stub, PD2 C3): for each vote group (e.g. &"escape") every human crew slot votes
 ## for one option; the majority wins and the HOST breaks ties. Solo: the host's vote decides.
-## Owner: ENV B. Pure logic: the lobby relays votes through the Net API (no RPCs here; see
-## content/docs/preplanning.md question QB-PP4). AI teammates never vote.
+## Owner: ENV B. AI teammates never vote.
+## Relay (contract preplanning.md, D-038): a vote is sent with PlanVote.send_cast / send_retract
+## (`Net.lobby_send`), and every peer, the sender included, applies it when `Net.lobby_message`
+## delivers it (PreplanPlan.receive_vote). Solo: Net delivers locally at once. No RPCs here.
 ##
 ## Options are PlanVote.option_key(asset_id, point_id) -> &"asset.escape_position@pp_escape_pell".
 class_name PlanVote
 extends RefCounted
+
+## Lobby message kinds. Data: MSG_CAST {"option": String}, MSG_RETRACT {"group": String}.
+const MSG_CAST: StringName = &"preplan.vote_cast"
+const MSG_RETRACT: StringName = &"preplan.vote_retract"
 
 ## Crew slot of the host (tie-breaker).
 var host_slot: int = 0
@@ -22,6 +28,20 @@ func _init(p_host_slot: int = 0, p_voters: Array[int] = []) -> void:
 
 static func option_key(asset_id: StringName, point_id: StringName) -> StringName:
 	return StringName("%s@%s" % [asset_id, point_id])
+
+
+## Send the local player's vote for `option` to every peer (self included).
+static func send_cast(option: StringName) -> void:
+	Net.lobby_send(MSG_CAST, {"option": String(option)})
+
+
+## Withdraw the local player's vote in `group` on every peer (self included).
+static func send_retract(group: StringName) -> void:
+	Net.lobby_send(MSG_RETRACT, {"group": String(group)})
+
+
+static func is_vote_message(kind: StringName) -> bool:
+	return kind == MSG_CAST or kind == MSG_RETRACT
 
 
 ## &"asset.x@pp_y" -> {"asset": &"asset.x", "point": &"pp_y"}

@@ -1,11 +1,16 @@
 ## Single source of truth for resolved weapon stats, concealment and detection risk
 ## (contracts/data_schemas.md, pd2_fidelity.md S2.4, P6). Owner: ENV B.
 ##
-## resolve(loadout) returns a resolved COPY of the loadout:
+## resolve(loadout, profile = null) returns a resolved COPY of the loadout:
+## * mask_descriptor = mask_descriptor_for(loadout, profile) (custom masks only; {} for presets/none).
 ## * resolved_primary / resolved_secondary = WeaponDef.base.plus(delta) for each mod in its slot,
 ##   where an equipped mod replaces the weapon's default (stock) mod of the same ModType. Then
 ##   clamps: concealment to the curve's weapon range (0..30), spreads >= 0, mag >= 1,
-##   total_ammo >= mag. Skill modifiers are NOT baked in (ENV A applies them at runtime).
+##   total_ammo >= mag. Shell-fed weapons (`reload_per_round_s > 0`, D-045) then get DERIVED totals
+##   after mods and clamps: reload_time_s = reload_start_s + mag_size x reload_per_round_s + reload_end_s,
+##   reload_empty_time_s = reload_start_s + mag_size x reload_per_round_s + reload_end_empty_s
+##   (Plowman: 0.4 + 6 x 0.4333 + 0.4 / 1.2 = 3.4 s / 4.2 s); a tube mod changes the totals through
+##   mag_size only, and its raw reload deltas must be 0. Skill modifiers are NOT baked in (ENV A applies them at runtime).
 ## * Illegal mods (unknown id, not listed in the weapon's mod_slots for its type, a second mod in
 ##   the same slot, or a declared conflict) are rejected with Log.error and ignored.
 ## * concealment_total = primary + secondary + melee + armor + bonus; detection_risk via the
@@ -53,8 +58,9 @@ const TEAM_PERK_SOURCE_PREFIX: String = "team_perk."
 const LIST_SOURCE_FIELD: String = "_source"
 
 
-static func resolve(loadout: Loadout) -> Loadout:
+static func resolve(loadout: Loadout, profile: PlayerProfile = null) -> Loadout:
 	var out: Loadout = loadout.duplicate(true) as Loadout
+	out.mask_descriptor = mask_descriptor_for(loadout, profile)
 	out.resolved_primary = resolve_weapon(loadout.primary, loadout.primary_mods)
 	out.resolved_secondary = resolve_weapon(loadout.secondary, loadout.secondary_mods)
 	var bd: Dictionary = concealment_breakdown(loadout)
@@ -62,6 +68,20 @@ static func resolve(loadout: Loadout) -> Loadout:
 	out.detection_risk = int(bd["detection_risk"])
 	out.modifiers = resolve_modifiers(loadout)
 	return out
+
+
+## Loadout.mask_descriptor (D-043 QA-25): the equipped CUSTOM mask's MaskCatalog.descriptor(); {} for a
+## preset mask or no mask (the preset id in `mask` is enough). Needs the owning profile for a custom
+## mask; without one the loadout's existing descriptor is kept when it still names the same mask
+## (filled earlier by LoadoutScreen.current_loadout() / PlayerProfile.from_dict(), so the launched
+## loadout and ENV A's resolve() of an already-resolved loadout both carry it).
+static func mask_descriptor_for(loadout: Loadout, profile: PlayerProfile = null) -> Dictionary:
+	if not MaskCatalog.is_custom_id(loadout.mask):
+		return {}
+	if profile != null:
+		return MaskCatalog.descriptor(loadout.mask, profile)
+	var d: Dictionary = loadout.mask_descriptor
+	return d.duplicate(true) if String(d.get("id", "")) == String(loadout.mask) else {}
 
 
 ## Resolved stats for one weapon id + equipped mod ids, or null for an empty slot / unknown weapon.
@@ -350,4 +370,23 @@ static func _clamp(s: WeaponStats) -> WeaponStats:
 	s.spread_deg_ads = maxf(s.spread_deg_ads, 0.0)
 	s.mag_size = maxi(s.mag_size, 1)
 	s.total_ammo = maxi(s.total_ammo, s.mag_size)
+	_derive_shell_reload(s)
 	return s
+
+
+## D-045 (data_schemas.md "Shell-by-shell reload timing"): a shell-fed weapon's reload totals are
+## derived from the resolved timings and magazine size, never summed from mod deltas.
+static func _derive_shell_reload(s: WeaponStats) -> void:
+	var t: Vector2 = reload_times(s)
+	s.reload_time_s = t.x
+	s.reload_empty_time_s = t.y
+
+
+## (tactical, empty) reload seconds of a stat block: derived per D-045 for shell-fed weapons
+## (`reload_per_round_s > 0`), else the stored reload_time_s / reload_empty_time_s. StatCalculator
+## uses this so unresolved base stats display the same totals as resolved ones.
+static func reload_times(s: WeaponStats) -> Vector2:
+	if s.reload_per_round_s <= 0.0:
+		return Vector2(s.reload_time_s, s.reload_empty_time_s)
+	var load_s: float = s.reload_start_s + float(s.mag_size) * s.reload_per_round_s
+	return Vector2(load_s + s.reload_end_s, load_s + s.reload_end_empty_s)

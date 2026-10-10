@@ -1,0 +1,8 @@
+asset: prop_printer
+script: tools/blender/props/staff.py
+params: {"cat": {"clear": 0.8, "group": "office", "kind": "printer", "place": "wall"}, "fn": "printer"}
+seed: 3048765304  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_printer
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

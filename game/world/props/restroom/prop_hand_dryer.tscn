@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_hand_dryer/prop_hand_dryer.glb" id="1_model"]
+
+[node name="PropHandDryer" type="Node3D"]
+metadata/kind = &"hand_dryer"
+metadata/mount = &"wall"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

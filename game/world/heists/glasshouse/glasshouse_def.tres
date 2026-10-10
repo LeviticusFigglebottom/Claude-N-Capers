@@ -13,60 +13,35 @@ base_payout = 40000
 loot = Array[StringName]([&"loot.jewelry", &"loot.cash"])
 objectives = Array[StringName]([&"casing", &"keycard", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"])
 preplanning = {
-&"asset.body_bag_drop": {
-"cost": 0,
-"favors": 0,
-"grants": {},
-"slot": &"Tactical/PreplanBodyBagDrop"
+"assets": {
+&"asset.alternate_entry": {
+"point_categories": [&"spawn"]
+},
+&"asset.body_bag_case_drop": {
+"point_categories": [&"drop_zone"]
+},
+&"asset.escape_position": {
+"point_categories": [&"escape"]
 },
 &"asset.inside_keycard": {
-"cost": 0,
-"favors": 0,
-"grants": {
-"force_active": {
-"group": &"keycard",
-"slot": &"kc_breakroom"
-}
-},
-"slot": &"keycard"
+"category": &"access",
+"cost": 1500,
+"effect": "force_variant",
+"favors": 1,
+"point_categories": [&"insider"],
+"tags": [&"stealth"]
 },
 &"asset.propped_door": {
-"cost": 0,
-"favors": 0,
-"grants": {
-"force_active": {
-"group": &"back_door",
-"slot": &"back_propped"
+"category": &"access",
+"cost": 1000,
+"effect": "force_variant",
+"favors": 1,
+"point_categories": [&"access"],
+"tags": [&"stealth"]
 }
 },
-"slot": &"back_door"
-},
-&"asset.van_position": {
-"cost": 0,
-"favors": 0,
-"grants": {
-"choose_group": &"escape"
-},
-"slot": &"escape"
-},
-&"asset.zip_ties_drop": {
-"cost": 0,
-"favors": 0,
-"grants": {},
-"slot": &"Tactical/PreplanZipTiesDrop"
-},
-&"preplan_spawn_alley": {
-"cost": 0,
-"favors": 0,
-"grants": {},
-"slot": &"preplan_spawn_alley"
-},
-&"preplan_spawn_alley_mouth": {
-"cost": 0,
-"favors": 0,
-"grants": {},
-"slot": &"preplan_spawn_alley_mouth"
-}
+"disable": [&"asset.intel_cameras"],
+"favors": 4
 }
 escape_options = Array[StringName]([&"van"])
 music_track = &"glasshouse"

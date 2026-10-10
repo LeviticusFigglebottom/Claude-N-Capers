@@ -1,0 +1,8 @@
+asset: prop_outlet
+script: tools/blender/props/staff.py
+params: {"cat": {"group": "corridor", "kind": "outlet", "place": "wall_mount", "z": 0.3}, "fn": "outlet"}
+seed: 3219918201  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_outlet
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

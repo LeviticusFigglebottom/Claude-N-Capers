@@ -16,6 +16,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | reachability | PASS | 0 | 0 |
 | walkthrough | PASS | 0 | 0 |
 | patrols | PASS | 0 | 0 |
+| lasers | PASS | 0 | 0 |
 | materials | skipped | 0 | 0 |
 | zfight | skipped | 0 | 0 |
 | lights | skipped | 0 | 0 |
@@ -29,12 +30,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 153 props checked
+- 160 props checked
 
 
 ## clipping: Nothing clips
 
-- 153 props, 23 doors checked
+- 160 props, 23 doors checked
 
 
 ## scale: Human scale
@@ -65,7 +66,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 1356 polygons, cell 0.10/0.10 m
+- navmesh: 1225 polygons, cell 0.10/0.10 m
 - 144 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -93,12 +94,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 43 variant configuration(s), 68040 spawn->target path queries
+- 43 variant configuration(s), 67524 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 900 / 900 spawn->target walks ok
+- 888 / 888 spawn->target walks ok
 
 
 ## patrols: Patrol graphs
@@ -106,4 +107,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - graph `building`: 39 points, 3 guard(s)
 - graph `alley`: 6 points, 1 guard(s)
 - 2 patrol graph(s)
+
+
+## lasers: Laser grid bypass gaps
+
+- 0 laser grid(s), 0 with an asserted bypass gap
 
