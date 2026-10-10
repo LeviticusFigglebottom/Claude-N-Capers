@@ -14,11 +14,15 @@
 ## DeployablePrefab (systems/prefabs/deployable). An ECM aimed at a keycard reader with
 ## stealth.ecm_opens_doors attaches to it instead (S8.5, EcmSystem.attach_to_reader).
 ##
+## Armor bag (QB-58, Walk-in Closet): only with `deploy.armor_bag`; the crew member starts in
+## DeployableTweak.armor_bag_start_armor and the placed bag holds the loadout's armor (wear_armor on use).
+##
 ## PUBLIC API: deployable_id(slot) / deployable_count(slot) / deploy_progress(slot) (0..1, -1 idle)
 ##   give(slot, id, count = -1)       -> server/test hook: set the slot's deployable (count -1 = loadout rule)
 ##   place(crew, id = &"") -> Node    -> server: place one now (no hold), returns the prefab or null
 ##   placed(kind = &"") -> Array[Node] -> placed deployables in this heist
 ##   static def_for(id) -> DeployableDef
+##   static wear_armor(crew, armor_id)  -> server: change armor now (full armor, health kept)
 class_name DeployableSystem
 extends Node
 
@@ -45,6 +49,8 @@ var _inv: Dictionary[int, Array] = {}
 ## slot -> seconds held.
 var _hold: Dictionary[int, float] = {}
 var _needs_release: Dictionary[int, bool] = {}
+## QB-58: slot -> ArmorDef id stored in that slot's armor bag.
+var _bag_armor: Dictionary[int, StringName] = {}
 
 
 func _ready() -> void:
@@ -122,9 +128,38 @@ func _on_crew_spawned(slot: int, crew: Node) -> void:
 			if def == null:
 				Log.warn(&"deployables", "slot %d: unknown deployable %s" % [slot, id])
 				continue
+			if def.kind == &"armor_bag" and not _setup_armor_bag(c):
+				continue
 			rows.append({"id": id, "count": count_for(slot, def)})
 	_inv[slot] = rows
 	_sync(slot)
+
+
+## QB-58: an armor bag needs deploy.armor_bag; the bag keeps the loadout armor, the crew member
+## starts in DeployableTweak.armor_bag_start_armor. False = not allowed (no bag).
+func _setup_armor_bag(c: CrewController) -> bool:
+	if not Modifiers.flag(c.slot, &"deploy.armor_bag"):
+		Log.warn(&"deployables", "slot %d: armor bag needs deploy.armor_bag (Walk-in Closet)" % c.slot)
+		return false
+	var start: StringName = DeployableTweak.data().armor_bag_start_armor
+	_bag_armor[c.slot] = c.loadout.armor if c.loadout.armor != &"" else start
+	if c.loadout.armor != start:
+		wear_armor(c, start)
+	return true
+
+
+## Server: `crew` changes into ArmorDef `armor_id` now (armor bag): max armor recomputed and filled,
+## health kept. The crew member's loadout is copied first (the caller's Loadout is not changed).
+static func wear_armor(crew: CrewController, armor_id: StringName) -> void:
+	if crew == null or crew.loadout == null:
+		return
+	var l: Loadout = crew.loadout.duplicate() as Loadout
+	l.armor = armor_id
+	crew.loadout = l
+	if crew.health != null:
+		crew.health.max_armor = crew.health.compute_max_armor()
+		crew.health.armor = crew.health.max_armor
+		crew.health.regen_delay_left = 0.0
 
 
 ## Server/test hook: give `slot` deployable `id` (replaces the inventory). count -1 = loadout rule.
@@ -278,6 +313,8 @@ func place(crew: CrewController, id: StringName = &"") -> Node:
 	row["count"] = int(row["count"]) - 1
 	var p: DeployablePrefab = (load(SCENE) as PackedScene).instantiate() as DeployablePrefab
 	p.setup(def, slot, uses_for(slot, def))
+	if def.kind == &"armor_bag":
+		p.bag_armor = _bag_armor.get(slot, &"")
 	p.name = "Deployable_%s_%d" % [def.kind, _runtime.dynamic_root.get_child_count()]
 	var reader: Node = spot.get("reader") as Node
 	if reader != null:

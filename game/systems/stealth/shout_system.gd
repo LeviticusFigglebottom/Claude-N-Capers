@@ -10,6 +10,8 @@
 ## S2.9 (A2-05): a shout that affects no civilian marks the markable target (guard, special, camera:
 ## StealthDirector.mark_kind_of) nearest the aim line within mark_cone_half_deg / mark_range_m with
 ## line of sight, for the whole crew. Unmasked (casing) crew mark only with `stealth.casing_can_mark`.
+## QB-61: `ability.shout_range_mult` scales the civilian shout range and the mark range (guards,
+## specials, cameras) as well as the police surrender range (PoliceSurrender.shout_target).
 ## L5.1 (A3-04): the shout also addresses the police NPC nearest the aim line
 ## (PoliceSurrender.shout_target), which may surrender (PoliceSurrender.on_shouted); a cop that
 ## reacts counts as affected (no marking).
@@ -91,6 +93,7 @@ func mark_target_for(crew: CrewController) -> Node3D:
 	var eye: Vector3 = crew.eye_position()
 	var aim: Vector3 = crew.aim_direction()
 	var half: float = deg_to_rad(tw.mark_cone_half_deg)
+	var mark_range: float = tw.mark_range_m * Modifiers.mult(crew.slot, &"ability.shout_range_mult")  # QB-61
 	var cands: Array[Node3D] = []
 	for n: Node in rt.npcs():
 		cands.append(n as Node3D)
@@ -104,7 +107,7 @@ func mark_target_for(crew: CrewController) -> Node3D:
 		var point: Vector3 = _mark_point(c)
 		var to: Vector3 = point - eye
 		var ang: float = aim.angle_to(to)
-		if to.length() > tw.mark_range_m or ang > half or ang >= best_ang:
+		if to.length() > mark_range or ang > half or ang >= best_ang:
 			continue
 		if not _clear_to(crew, eye, point, c):
 			continue
@@ -138,7 +141,8 @@ func targets_for(crew: CrewController) -> Array[NpcBase]:
 	if rt == null:
 		return out
 	var tw: StealthTweak = Tweak.stealth()
-	var range_m: float = tw.shout_range_m * Modifiers.mult(crew.slot, &"stealth.civilian_intimidate_range_mult")
+	var range_m: float = tw.shout_range_m * Modifiers.mult(crew.slot, &"stealth.civilian_intimidate_range_mult") \
+		* Modifiers.mult(crew.slot, &"ability.shout_range_mult")  # QB-61: every shout target
 	var half_cone: float = deg_to_rad(tw.shout_cone_deg) * 0.5
 	var eye: Vector3 = crew.eye_position()
 	var aim: Vector3 = crew.aim_direction()

@@ -14,6 +14,17 @@ extends Resource
 ## Max yaw/pitch speed is unbounded: intents carry absolute angles.
 @export var max_pitch_deg: float = 89.0
 
+@export_group("Stamina (QB-60, PD2 movement_state.stamina)")
+## Pool before movement.stamina_mult x team.stamina_mult x ArmorDef.stamina_mult.
+@export var stamina_base: float = 50.0
+@export var stamina_drain_per_s: float = 2.0
+@export var stamina_regen_per_s: float = 3.0
+## Regeneration starts this long after the last drain (s).
+@export var stamina_regen_delay_s: float = 3.0
+## Needed to jump, and to sprint again after running dry.
+@export var stamina_min_threshold: float = 4.0
+@export var stamina_jump_cost: float = 2.0
+
 @export_group("Body")
 @export var capsule_radius: float = 0.35
 @export var height_standing: float = 1.8

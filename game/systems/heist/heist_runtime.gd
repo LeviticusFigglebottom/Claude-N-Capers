@@ -72,6 +72,8 @@ var _loot_secured: Array[Dictionary] = []
 var _small_loot: int = 0
 var _pagers_answered: int = 0
 var _ended: bool = false
+## QB-L2: slot -> effective Loadout (LoadoutModifiers.effective_loadouts), pushed before the crew spawns.
+var _crew_loadouts: Dictionary = {}
 
 
 ## Nearest HeistRuntime above `node`, else the current one.
@@ -147,6 +149,8 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	VariantResolver.configure_pending(pending)
 	_apply_rare_modifiers()
 	preplan.apply_modifiers()  # C3: TEAM sources `asset.<id>`, before the crew reads modifiers
+	_crew_loadouts = LoadoutModifiers.effective_loadouts(options.get("loadouts", {}), Net.all_slots())
+	LoadoutModifiers.push(_crew_loadouts)  # QB-L2: skills + perk deck, before the crew spawns
 	_claim_map_ids(map)
 	_spawn_npcs()
 	_spawn_crew()
@@ -300,6 +304,9 @@ func _create_services() -> void:
 	var deployables: DeployableSystem = DeployableSystem.new()  # A2-06 (L2.11, S6.2)
 	deployables.name = "DeployableSystem"
 	register_service(DeployableSystem.SERVICE, deployables)
+	var ammo: AmmoPickupSystem = AmmoPickupSystem.new()  # QB-57: enemy ammo drops + walk-over pickup
+	ammo.name = "AmmoPickupSystem"
+	register_service(AmmoPickupSystem.SERVICE, ammo)
 	var hostage_stimuli: HostageStimuli = HostageStimuli.new()  # A2-07 (S6.4)
 	hostage_stimuli.name = "HostageStimuli"
 	add_child(hostage_stimuli)
@@ -443,7 +450,7 @@ func _spawn_crew() -> void:
 	var scene: PackedScene = load(CREW_SCENE) as PackedScene
 	for slot: int in Net.all_slots():
 		var crew: CrewController = scene.instantiate() as CrewController
-		crew.setup(slot, Net.crew[slot], loadouts.get(slot) as Loadout)
+		crew.setup(slot, Net.crew[slot], _crew_loadouts.get(slot, loadouts.get(slot)) as Loadout)
 		dynamic_root.add_child(crew)
 		var xf: Transform3D = Transform3D.IDENTITY
 		if not spawns.is_empty():

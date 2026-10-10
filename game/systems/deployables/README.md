@@ -29,6 +29,9 @@ plus the common interaction exports. Visual = `DeployableDef.model`, else a box 
 | ammo_bag | `use_ammo_bag` | shared 400 % pool, takes only what is missing |
 | body_bag_case | `take_body_bag` | +1 body bag up to the cap, holds 3 |
 | ecm | `ecm_feedback` | S8.6 feedback (built into every ECM, D-038; `stealth.ecm_feedback` is deprecated and ignored) |
+| armor_bag | `use_armor_bag` | QB-58 (Walk-in Closet, needs `deploy.armor_bag`): the owner starts in `DeployableTweak.armor_bag_start_armor`; using the bag puts on the loadout armor (full armor, health kept); 1 use, owner only |
+
+Doctor bag use time × the user's `interaction.doctor_bag_speed_mult` (QB-59).
 
 ## ECM
 `is_jamming()`, `time_left()`, `is_flashing()` (last 8 s), `queued_count()`, `pager_delay_active()`,

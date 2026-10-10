@@ -1,0 +1,148 @@
+[gd_resource type="Resource" script_class="PerkTweak" format=3]
+
+[ext_resource type="Script" path="res://systems/combat/perks/perk_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+defaults = Dictionary[StringName, Dictionary]({
+&"perk.crew_chief": {
+"team_dr": 0.08,
+"self_low_health_threshold": 0.5,
+"self_low_health_dr_mult": 2.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.0,
+"hostage_health_per": 0.0,
+"hostage_stamina_per": 0.0,
+"hostage_max_count": 4
+},
+&"perk.muscle": {
+"aggro_near_crew_mult": 1.0,
+"near_crew_m": 8.0,
+"panic_chance": 0.0,
+"panic_radius_m": 6.0,
+"regen_fraction": 0.0,
+"regen_interval_s": 5.0
+},
+&"perk.armorer": {
+"break_immunity_s": 0.0,
+"break_immunity_cooldown_s": 15.0
+},
+&"perk.rogue_dodge_stack": {
+"aggro_near_crew_mult": 1.0,
+"near_crew_m": 8.0
+},
+&"perk.crook": {
+"vest_armor_ids": [&"armor.light_vest", &"armor.patrol_vest", &"armor.heavy_vest"],
+"vest_dodge_add": 0.0,
+"vest_armor_mult": 1.0
+},
+&"perk.sociopath": {
+"kill_armor": 30.0,
+"kill_armor_cooldown_s": 1.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.0,
+"melee_kill_health_fraction": 0.0,
+"melee_kill_cooldown_s": 1.0,
+"close_kill_armor": 0.0,
+"close_kill_panic_chance": 0.0,
+"close_kill_panic_cooldown_s": 1.0,
+"panic_radius_m": 6.0,
+"forced_regen_after_break_s": 0.0
+},
+&"perk.burglar": {
+"still_aggro_mult": 1.0,
+"still_regen_delay_mult": 1.0
+},
+&"perk.infiltrator": {
+"surrounded_min_enemies": 3,
+"surrounded_radius_m": 6.0,
+"surrounded_dr": 0.12,
+"melee_chain_mult": 10.0,
+"melee_chain_window_s": 1.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.0,
+"melee_hit_heal_fraction": 0.0,
+"melee_hit_heal_cooldown_s": 10.0
+},
+&"perk.grinder": {
+"allowed_armor_ids": [&"armor.tailored_suit", &"armor.light_vest"],
+"heal_per_tick": 1.0,
+"tick_s": 0.3,
+"duration_s": 3.0,
+"stack_cooldown_s": 1.5
+},
+&"perk.stoic": {
+"delayed_fraction": 0.75,
+"dot_duration_s": 12.0,
+"flask_cooldown_s": 10.0,
+"kill_cooldown_reduction_s": 1.0,
+"armor_to_health": 0.0,
+"auto_negate_after_s": 0.0,
+"low_health_threshold": 0.35,
+"low_health_kill_cooldown_reduction_s": 0.0,
+"negate_heal_fraction": 0.0
+},
+&"perk.anarchist": {
+"tick_by_armor": {
+&"armor.tailored_suit": [1.0, 2.0],
+&"armor.light_vest": [1.5, 3.0],
+&"armor.patrol_vest": [2.0, 4.0],
+&"armor.heavy_vest": [3.5, 6.0],
+&"armor.flak_rig": [4.0, 7.0],
+&"armor.tactical_plate": [4.5, 8.0],
+&"armor.breacher_plate": [6.0, 10.0]
+},
+"break_immunity_s": 2.0,
+"break_immunity_cooldown_s": 15.0,
+"health_to_armor_fraction": 0.0,
+"health_to_armor_ratio": 0.0,
+"damage_dealt_armor": 0.0,
+"damage_dealt_armor_cooldown_s": 1.5
+},
+&"perk.ex_president": {
+"store_per_kill": 4.0,
+"max_store_by_armor": {
+&"armor.tailored_suit": 24.0,
+&"armor.light_vest": 30.0,
+&"armor.patrol_vest": 36.0,
+&"armor.heavy_vest": 42.0,
+&"armor.flak_rig": 48.0,
+&"armor.tactical_plate": 54.0,
+&"armor.breacher_plate": 60.0
+},
+"max_store_mult": 1.0,
+"kill_regen_speedup_fraction": 0.0
+},
+&"perk.gambler": {
+"heal_min": 16.0,
+"heal_max": 24.0,
+"heal_bonus": 0.0,
+"cooldown_s": 3.0,
+"lowest_health_bonus_per_ally": 0.2,
+"lowest_health_max_stacks": 3,
+"team_ammo_share": 0.0,
+"team_ammo_share_cooldown_s": 5.0,
+"team_heal_fraction": 0.0
+},
+&"perk.kingpin": {
+"heal_fraction": 0.75,
+"duration_s": 6.0,
+"cooldown_s": 30.0,
+"kill_cooldown_reduction_s": 1.0,
+"draws_aggro": false,
+"low_health_threshold": 0.5,
+"low_health_heal_bonus": 0.0,
+"overheal_per_cooldown_s": 0.0
+},
+&"perk.throwable": {
+"item_id": &""
+}
+})
+panic_stun_s = 2.0
+still_speed_threshold = 0.3
+max_damage_reduction = 0.9
+kingpin_aggro_mult = 2.0
+kingpin_aggro_radius_m = 18.0
+anarchist_fallback_tick = Vector2(1, 2)
+ex_president_fallback_store = 24.0
+armor_tiers = Array[StringName]([&"armor.tailored_suit", &"armor.light_vest", &"armor.patrol_vest", &"armor.heavy_vest", &"armor.flak_rig", &"armor.tactical_plate", &"armor.breacher_plate"])
