@@ -8,8 +8,8 @@ extends Control
 const SILHOUETTES: Array[StringName] = [&"bun", &"cap", &"veiled", &"headset"]
 
 var contact: ContactDef = null
-var bg_color: Color = Color(0.06, 0.07, 0.09, 1)
-var figure_color: Color = Color(0.12, 0.13, 0.16, 1)
+var bg_color: Color = Color(0.08, 0.07, 0.065, 1)
+var figure_color: Color = Color(0.15, 0.135, 0.125, 1)
 ## The art node currently filling the slot (null while the placeholder silhouette is drawn).
 var art: Node = null
 

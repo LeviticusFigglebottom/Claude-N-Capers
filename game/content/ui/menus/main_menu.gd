@@ -1,14 +1,14 @@
-## Main menu: Play solo, Firing Range, Settings (stub), Quit. Owner: ENV B.
+## Main menu: Safehouse (the hub, B4-07), Firing Range, Settings (stub), Quit. Owner: ENV B.
 ## Shows the profile's level and money. Signals are handled by MenuFlow.
 class_name MainMenu
 extends UiScreen
 
-signal play_solo_requested()
+signal safehouse_requested()
 signal firing_range_requested()
 signal settings_requested()
 signal quit_requested()
 
-var play_button: Button
+var safehouse_button: Button
 var range_button: Button
 var settings_button: Button
 var quit_button: Button
@@ -19,21 +19,26 @@ func build_ui() -> void:
 	var root: VBoxContainer = UiBuild.vbox(16)
 	root.alignment = BoxContainer.ALIGNMENT_CENTER
 	UiBuild.screen_margin(self, root)
-	root.add_child(UiBuild.label(&"ui.menu.title", UiBuild.HEADER))
+	var header: HBoxContainer = UiBuild.hbox(20)
+	header.add_child(UiAccent.strip(UiAccent.table().fallback, 6.0))
+	var titles: VBoxContainer = UiBuild.vbox(4)
+	titles.add_child(UiBuild.label(&"ui.menu.title", UiBuild.HEADER))
 	profile_label = UiBuild.label(&"", UiBuild.DIM)
-	root.add_child(profile_label)
+	titles.add_child(profile_label)
+	header.add_child(titles)
+	root.add_child(header)
 	var spacer: Control = Control.new()
 	spacer.custom_minimum_size = Vector2(0, 24)
 	root.add_child(spacer)
-	play_button = UiBuild.button(&"ui.menu.solo")
+	safehouse_button = UiBuild.button(&"ui.menu.safehouse")
 	range_button = UiBuild.button(&"ui.menu.firing_range")
 	settings_button = UiBuild.button(&"ui.menu.options")
 	quit_button = UiBuild.button(&"ui.menu.quit")
-	for b: Button in [play_button, range_button, settings_button, quit_button]:
+	for b: Button in [safehouse_button, range_button, settings_button, quit_button]:
 		b.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		root.add_child(b)
 		focus_chain.append(b)
-	play_button.pressed.connect(play_solo_requested.emit)
+	safehouse_button.pressed.connect(safehouse_requested.emit)
 	range_button.pressed.connect(firing_range_requested.emit)
 	settings_button.pressed.connect(settings_requested.emit)
 	quit_button.pressed.connect(quit_requested.emit)

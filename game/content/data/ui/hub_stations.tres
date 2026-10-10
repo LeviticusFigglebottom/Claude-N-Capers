@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="HubStationList" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://content/ui/data/hub_station_list.gd" id="1"]
+[ext_resource type="Script" path="res://content/ui/data/hub_station.gd" id="2"]
+
+[sub_resource type="Resource" id="st_board"]
+script = ExtResource("2")
+id = &"board"
+title_key = &"ui.hub.station.board"
+desc_key = &"ui.hub.station.board.desc"
+icon_kind = &"board"
+target = &"board"
+
+[sub_resource type="Resource" id="st_planning"]
+script = ExtResource("2")
+id = &"planning"
+title_key = &"ui.hub.station.planning"
+desc_key = &"ui.hub.station.planning.desc"
+icon_kind = &"planning"
+target = &"heist_select"
+
+[sub_resource type="Resource" id="st_armory"]
+script = ExtResource("2")
+id = &"armory"
+title_key = &"ui.hub.station.armory"
+desc_key = &"ui.hub.station.armory.desc"
+icon_kind = &"armory"
+target = &"loadout"
+
+[sub_resource type="Resource" id="st_masks"]
+script = ExtResource("2")
+id = &"masks"
+title_key = &"ui.hub.station.masks"
+desc_key = &"ui.hub.station.masks.desc"
+icon_kind = &"masks"
+target = &"masks"
+
+[sub_resource type="Resource" id="st_range"]
+script = ExtResource("2")
+id = &"range"
+title_key = &"ui.hub.station.range"
+desc_key = &"ui.hub.station.range.desc"
+icon_kind = &"range"
+target = &"firing_range"
+
+[resource]
+script = ExtResource("1")
+stations = Array[ExtResource("2")]([SubResource("st_board"), SubResource("st_planning"), SubResource("st_armory"), SubResource("st_masks"), SubResource("st_range")])

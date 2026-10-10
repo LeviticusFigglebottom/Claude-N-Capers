@@ -50,6 +50,8 @@ var reason_label: Label
 var plan_label: Label
 var vote_label: Label
 var placeholder_label: Label
+## Heist accent strip beside the title (UiAccent, B4-07).
+var accent_strip: ColorRect
 var back_button: Button
 var confirm_button: Button
 var _list: VBoxContainer
@@ -247,8 +249,11 @@ func _rebuild() -> void:
 
 func _build_top() -> HBoxContainer:
 	var top: HBoxContainer = UiBuild.hbox(24)
+	accent_strip = UiAccent.strip(UiAccent.for_heist(heist_id))
+	top.add_child(accent_strip)
 	top.add_child(UiBuild.label(&"ui.preplan.title", UiBuild.HEADER))
 	var sub: Label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	sub.add_theme_color_override(&"font_color", UiAccent.text_color(heist_id, UiAccent.app_bg()))
 	sub.text = "%s  |  %s" % [UiText.t(StringName("heist.%s.name" % heist_id)), UiText.t(UiText.difficulty_key(difficulty))]
 	sub.size_flags_vertical = Control.SIZE_SHRINK_END
 	top.add_child(sub)
@@ -337,7 +342,7 @@ func _build_panel() -> PanelContainer:
 func _build_bottom() -> HBoxContainer:
 	var bottom: HBoxContainer = UiBuild.hbox(16)
 	back_button = UiBuild.button(&"ui.menu.back")
-	confirm_button = UiBuild.button(&"ui.preplan.confirm")
+	confirm_button = UiBuild.primary(UiBuild.button(&"ui.preplan.confirm"))
 	back_button.pressed.connect(back_requested.emit)
 	confirm_button.pressed.connect(confirm)
 	bottom.add_child(back_button)

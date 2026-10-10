@@ -25,6 +25,9 @@ const STAT_ROWS: Array[Array] = [
 
 ## Profile slot (SaveService) this screen edits.
 @export var profile_slot: int = 0
+## Armory mode (B4-07, opened from the safehouse hub): no heist to launch, so no Launch button;
+## Back saves and returns to the hub.
+@export var hub_mode: bool = false
 
 var profile: PlayerProfile
 var weapon_option: OptionButton
@@ -90,7 +93,7 @@ func build_ui() -> void:
 	var nav: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(nav)
 	back_button = UiBuild.button(&"ui.menu.back")
-	launch_button = UiBuild.button(&"ui.heist_select.start")
+	launch_button = UiBuild.primary(UiBuild.button(&"ui.heist_select.start"))
 	skills_button = UiBuild.button(&"ui.loadout.skills")
 	perks_button = UiBuild.button(&"ui.loadout.perk_deck")
 	for b: Button in [skills_button, perks_button]:
@@ -103,6 +106,7 @@ func build_ui() -> void:
 	nav.add_child(skills_button)
 	nav.add_child(perks_button)
 	nav.add_child(launch_button)
+	launch_button.visible = not hub_mode
 	_fill_options()
 	_rebuild_mod_rows()
 	_rebuild_focus()
@@ -331,11 +335,15 @@ func _rebuild_focus() -> void:
 		focus_chain.append(mod_options[t] as Control)
 	for c: Control in [melee_option, armor_option, deployable_option, mask_option, masks_button, launch_button,
 			skills_button, perks_button, back_button]:
-		focus_chain.append(c)
+		if c != launch_button or not hub_mode:
+			focus_chain.append(c)
 	if is_inside_tree():
 		UiNav.chain_vertical(focus_chain)
 		UiNav.chain_horizontal([mask_option, masks_button] as Array[Control], false)
-		UiNav.chain_horizontal([back_button, skills_button, perks_button, launch_button] as Array[Control], false)
+		var nav: Array[Control] = [back_button, skills_button, perks_button]
+		if not hub_mode:
+			nav.append(launch_button)
+		UiNav.chain_horizontal(nav, false)
 
 
 func _on_weapon_changed(_index: int) -> void:
