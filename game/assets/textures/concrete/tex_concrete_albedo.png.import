@@ -3,11 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bf13y1mgsp2my"
-valid=false
+path.bptc="res://.godot/imported/tex_concrete_albedo.png-ddb16d8d9f2216ee4c1c3a0fa20d88cf.bptc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
 
 [deps]
 
 source_file="res://assets/textures/concrete/tex_concrete_albedo.png"
+dest_files=["res://.godot/imported/tex_concrete_albedo.png-ddb16d8d9f2216ee4c1c3a0fa20d88cf.bptc.ctex"]
 
 [params]
 

@@ -3,11 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bf0ugk24383vv"
-valid=false
+path.s3tc="res://.godot/imported/tex_drywall_painted_normal.png-3f639eb0553d204d8b84d6c37d9b29b7.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
 
 [deps]
 
 source_file="res://assets/textures/drywall_painted/tex_drywall_painted_normal.png"
+dest_files=["res://.godot/imported/tex_drywall_painted_normal.png-3f639eb0553d204d8b84d6c37d9b29b7.s3tc.ctex"]
 
 [params]
 

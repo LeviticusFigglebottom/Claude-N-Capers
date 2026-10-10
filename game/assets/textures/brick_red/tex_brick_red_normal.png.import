@@ -3,11 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dncj1fa8jd427"
-valid=false
+path.s3tc="res://.godot/imported/tex_brick_red_normal.png-47a16b4a9ec023cbf6819bd597eb8c04.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
 
 [deps]
 
 source_file="res://assets/textures/brick_red/tex_brick_red_normal.png"
+dest_files=["res://.godot/imported/tex_brick_red_normal.png-47a16b4a9ec023cbf6819bd597eb8c04.s3tc.ctex"]
 
 [params]
 

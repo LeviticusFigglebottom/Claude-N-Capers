@@ -3,11 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://de2fu7lejvxni"
-valid=false
+path.s3tc="res://.godot/imported/tex_plaster_painted_orm.png-26e0ef1e48e30a818b731cd97525c080.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
 
 [deps]
 
 source_file="res://assets/textures/plaster_painted/tex_plaster_painted_orm.png"
+dest_files=["res://.godot/imported/tex_plaster_painted_orm.png-26e0ef1e48e30a818b731cd97525c080.s3tc.ctex"]
 
 [params]
 

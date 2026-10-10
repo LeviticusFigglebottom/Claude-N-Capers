@@ -3,11 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://nebo7k160rbs"
-valid=false
+path.bptc="res://.godot/imported/tex_vinyl_floor_albedo.png-16cedf8e902fb66498742ba67453f4fd.bptc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
 
 [deps]
 
 source_file="res://assets/textures/vinyl_floor/tex_vinyl_floor_albedo.png"
+dest_files=["res://.godot/imported/tex_vinyl_floor_albedo.png-16cedf8e902fb66498742ba67453f4fd.bptc.ctex"]
 
 [params]
 
