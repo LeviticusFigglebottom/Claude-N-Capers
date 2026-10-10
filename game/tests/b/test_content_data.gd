@@ -120,6 +120,15 @@ func test_special_limits_use_canonical_enemy_ids() -> void:
 			assert_true(int(def.special_limits[k]) >= 0, "%s %s limit >= 0" % [def.display_name, k])
 
 
+
+## QA-31: Longshot (sniper) caps per difficulty (Routine 1, Tense 2, Hazardous 2, Brutal 3, Lethal 3, Cataclysm 4).
+func test_longshot_special_limits() -> void:
+	var want: Array[int] = [1, 2, 2, 3, 3, 4]
+	for d: int in range(want.size()):
+		var def: DifficultyDef = ContentDB.difficulty(d)
+		assert_eq(int(def.special_limits.get(&"enemy.longshot", -1)), want[d], "%s longshot cap" % def.display_name)
+
+
 func test_breacher_plate_is_skill_gated() -> void:
 	assert_eq(ContentDB.armor(&"armor.breacher_plate").unlock_skill, &"skill.juggernaut.plated")
 	for a: ArmorDef in ContentDB.all_armors():

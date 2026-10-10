@@ -32,8 +32,8 @@ func _tweak(board_seed: int = 11) -> BoardTweak:
 
 func _pool() -> Array[Dictionary]:
 	return [
-		{"id": &"glasshouse", "base_payout": 40000, "mode": 0, "contact": &"contact.vance", "placeholder": false},
-		{"id": &"night_deposit", "base_payout": 60000, "mode": 0, "contact": &"", "placeholder": true},
+		{"id": &"glasshouse", "base_payout": 40000, "mode": 0, "contact": &"contact.vance"},
+		{"id": &"night_deposit", "base_payout": 60000, "mode": 0, "contact": &""},
 	]
 
 
@@ -182,8 +182,8 @@ func test_pool_contacts() -> void:
 	def.id = &"glasshouse"
 	def.contact = &"contact.reyes"
 	var entries: Array[Dictionary] = [
-		{"id": &"glasshouse", "base_payout": 40000, "mode": 0, "def": def, "placeholder": false},
-		{"id": &"night_deposit", "base_payout": 60000, "mode": 0, "def": null, "placeholder": true},
+		{"id": &"glasshouse", "base_payout": 40000, "mode": 0, "def": def},
+		{"id": &"night_deposit", "base_payout": 60000, "mode": 0, "def": null},
 	]
 	var pool: Array[Dictionary] = BoardContracts.pool_from(entries, _city)
 	assert_eq(pool[0]["contact"], &"contact.reyes", "HeistDef.contact first")

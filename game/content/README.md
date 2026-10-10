@@ -115,14 +115,17 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   4.5:1), plus `UiAccent.strip(color)`, `accent_panel(panel, color)`, `contrast_ratio(a, b)`. Applied on
   the briefing, pre-planning, the Board's contract card and the HUD objectives panel (`Hud.heist_id`,
   set by MenuFlow).
-* `HeistCatalog.entries()/ids()`: heists from `HeistRegistry` (core); `data/ui/heist_list.tres`
-  (`UiHeistList`) holds per-heist UI data keyed by id (`solo_ai_teammates`, and
-  `placeholder_base_payout/placeholder_mode` used only while `HeistRegistry.get_def(id)` is null),
+* `HeistCatalog.entries()/ids()`: heists from `HeistRegistry` (core) that have BOTH a HeistDef and
+  a map scene (`HeistRegistry.map_scene_path` exists; QB-55, D-049). No placeholder heists: menus, the
+  Board, the broker and direct launch only offer playable heists (Shadow Ledger appears with its G1).
+  `data/ui/heist_list.tres` (`UiHeistList`) holds per-heist UI data keyed by id (`solo_ai_teammates`),
   plus build-wide `unlocked_difficulties` and the default `solo_ai_teammates`.
-  `entries_from(defs, list)` is the pure builder (tests).
+  `entries_from(defs, map_exists)` is the pure builder (tests).
 * `Hud` binds its widgets DIRECTLY to the node in group `G.LOCAL_HUD_MODEL` (ENV A's LocalHudModel,
   ui_hud.md v1.2; no adapter; v1.2 `custody` drives `CustodyPanel`: negotiation / auto-release timers while in
-  custody, a trade hint for the highlighted hostage while free), polled while unbound and rediscovered if the model is freed; MenuFlow
+  custody, a trade hint for the highlighted hostage while free; v1.3 (D-049) `captain_changed` / `captain_present` /
+  `captain_resistance` drive `CaptainPanel`: Brandt's name + Aegis resistance bar, and the status panel then drops
+  its `captain` warning line), polled while unbound and rediscovered if the model is freed; MenuFlow
   relies on that discovery in heists. `bind(model)` still works. `MockHudModel` (demo/tests) joins the
   same group. `MarkedTargets` draws a diamond per `marked_targets` entry; `InteractionPanel` fills a
   missing `{key}` prompt arg from the `interact` InputMap binding.

@@ -67,12 +67,20 @@ var preplan: Dictionary = {}
 ## The chosen contract is a pro job (Board pin flagged pro). Heist select, the broker and direct
 ## launch are never pro. Goes to options["is_pro"] and PaydayScreen.is_pro.
 var is_pro: bool = false
+## Pro jobs have no restart (QB-BRD1, D-049): BoardContracts.contract_key() -> true for every pro
+## Board contract whose heist failed this session. Shared with the Board, which locks those pins for
+## the rest of their rotation (they can't be taken again, so the briefing can't relaunch them).
+## Session-scoped (not saved): a contract only lives for one rotation anyway.
+var consumed_contracts: Dictionary = {}
 ## Station list (data/ui/hub_stations.tres).
 var stations: HubStationList
 var _heist_id: StringName = &""
 var _difficulty: int = Enums.Difficulty.ROUTINE
 var _in_heist: CanvasLayer = null
 var _hud: Control = null
+var _heist_payday: PaydayScreen = null
+## The Board contract of the current contract path ({} = heist select, broker or direct launch).
+var _board_contract: Dictionary = {}
 ## Where briefing Back returns (heist select or the Board).
 var _briefing_back: Control = null
 ## Where the firing range returns (main menu or hub).
@@ -170,6 +178,7 @@ func _open_board() -> void:
 	if board_screen == null:
 		board_screen = BOARD_SCENE.instantiate() as BoardScreen
 		board_screen.profile_slot = profile_slot
+		board_screen.consumed = consumed_contracts
 		board_screen.setup(_menu_profile())
 		board_screen.visible = false
 		add_child(board_screen)
@@ -206,6 +215,7 @@ func _connect_loadout_subscreens(ls: LoadoutScreen) -> void:
 ## Board contract taken (or bought from the broker) -> briefing; Back from the briefing returns to the Board.
 func _on_contract_chosen(heist_id: StringName, difficulty: int, pro: bool) -> void:
 	_start_contract(heist_id, difficulty, pro, board_screen)
+	_board_contract = board_screen.selected_contract() if pro else {}
 
 
 func _add(scene: PackedScene) -> Control:
@@ -228,6 +238,7 @@ func _on_heist_chosen(heist_id: StringName, difficulty: int) -> void:
 ## A fresh contract path: drops any older pre-planning / loadout screens and shows the briefing.
 func _start_contract(heist_id: StringName, difficulty: int, pro: bool, back_to: Control) -> void:
 	is_pro = pro
+	_board_contract = {}
 	_briefing_back = back_to
 	_heist_id = heist_id
 	_difficulty = difficulty
@@ -448,6 +459,7 @@ func direct_launch(args: Dictionary) -> bool:
 		return false
 	_heist_id = heist_id
 	is_pro = false
+	_board_contract = {}
 	_difficulty = int(args.get("difficulty", Enums.Difficulty.ROUTINE))
 	var run_seed: int = int(args["seed"]) if bool(args.get("has_seed", false)) else _time_seed()
 	Log.info(&"ui", "direct launch: %s seed=%d difficulty=%d" % [_heist_id, run_seed, _difficulty])
@@ -524,16 +536,30 @@ func _spawn_in_heist_ui() -> void:
 	pd.visible = false
 	pd.continue_pressed.connect(_leave_heist)
 	_in_heist.add_child(pd)
+	_heist_payday = pd
 	EventBus.heist_ended.connect(_on_heist_ended, CONNECT_ONE_SHOT)
 
 
-func _on_heist_ended(_result: Dictionary) -> void:
+func _on_heist_ended(result: Dictionary) -> void:
+	if is_pro and not bool(result.get("success", false)):
+		consume_pro_contract()
 	if _hud != null and is_instance_valid(_hud):
 		_hud.visible = false
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
+## A failed pro job: its Board contract is gone for the rest of its rotation (QB-BRD1, no restart).
+func consume_pro_contract() -> void:
+	if not _board_contract.is_empty():
+		consumed_contracts[BoardContracts.contract_key(_board_contract)] = true
+		Log.info(&"ui", "pro job failed: contract %s consumed" % BoardContracts.contract_key(_board_contract))
+	_board_contract = {}
+
+
 func _leave_heist() -> void:
+	if _heist_payday != null and is_instance_valid(_heist_payday):
+		_heist_payday.finish_card_pick()  # QB-PC1: leaving with an unpicked card auto-picks it
+	_heist_payday = null
 	if runtime != null and is_instance_valid(runtime) and runtime.has_method(&"teardown"):
 		runtime.call(&"teardown")
 	runtime = null

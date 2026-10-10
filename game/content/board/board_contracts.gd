@@ -13,17 +13,18 @@
 ##   jitter x, y.
 ##
 ## Pool entry (pool()): { "id": StringName, "base_payout": int (UNSCALED), "mode": int,
-##   "contact": StringName ("" = pick from fallback_contacts), "placeholder": bool }
+##   "contact": StringName ("" = pick from fallback_contacts) }
 ## Contract (generate()/contract_for()): { "slot": int, "bucket": int, "heist_id": StringName,
 ##   "difficulty": int, "is_pro": bool, "contact_id": StringName, "payout": int (contract pay preview,
-##   PayoutCalculator-consistent), "base_payout": int, "mode": int, "placeholder": bool,
+##   PayoutCalculator-consistent), "base_payout": int, "mode": int,
 ##   "district": StringName, "map_pos": Vector2 (map units), "starts_at": float, "expires_at": float }
+##   BoardScreen adds "consumed": bool (a failed pro job, no restart; QB-BRD1).
 class_name BoardContracts
 extends RefCounted
 
 
-## Heists offered on the board: HeistCatalog.entries() (registry + listed placeholders while the
-## registry has no def), with the contact from HeistDef.contact, else the city map's entry.
+## Heists offered on the board: HeistCatalog.entries() (registry def + map scene, QB-55), with the
+## contact from HeistDef.contact, else the city map's entry.
 static func pool(city: BoardCityMap = null) -> Array[Dictionary]:
 	return pool_from(HeistCatalog.entries(), city if city != null else BoardCityMap.load_default())
 
@@ -39,7 +40,7 @@ static func pool_from(entries: Array[Dictionary], city: BoardCityMap) -> Array[D
 			contact = city.heist_contact(id)
 		out.append({
 			"id": id, "base_payout": int(e.get("base_payout", 0)), "mode": int(e.get("mode", 0)),
-			"contact": contact, "placeholder": bool(e.get("placeholder", false)),
+			"contact": contact,
 		})
 	return out
 
@@ -108,10 +109,15 @@ static func contract_for(slot: int, bucket: int, allowed: Array[int], heist_pool
 		"slot": slot, "bucket": bucket, "heist_id": id, "difficulty": difficulty, "is_pro": is_pro,
 		"contact_id": contact, "payout": HeistCatalog.contract_preview(int(heist.get("base_payout", 0)), difficulty),
 		"base_payout": int(heist.get("base_payout", 0)), "mode": int(heist.get("mode", 0)),
-		"placeholder": bool(heist.get("placeholder", false)),
 		"district": city.heist_district(id) if city != null else &"",
 		"map_pos": pos, "starts_at": starts, "expires_at": starts + period,
 	}
+
+
+## Stable identity of one contract (slot + rotation bucket): the key a consumed pro job is locked
+## under (QB-BRD1). The next bucket of the same slot is a new contract.
+static func contract_key(contract: Dictionary) -> String:
+	return "%d:%d" % [int(contract.get("slot", -1)), int(contract.get("bucket", 0))]
 
 
 ## Seconds until `contract` expires (>= 0).

@@ -81,6 +81,9 @@ ui.hud.teammate_downed,{name} is down
 ui.hud.teammate_custody,{name} is in custody
 ui.hud.phantom_warning,Phantom nearby
 ui.hud.stinger_warning,Stinger charging
+ui.hud.captain_warning,Commander Brandt on site
+ui.hud.captain,Commander Brandt
+ui.hud.captain_resistance,Aegis field: {pct}% damage resistance
 ui.hud.interaction_progress,{percent}%
 ui.prompt.interact,Hold {key} to interact
 ui.prompt.answer_pager,Hold {key} to answer the pager
@@ -1245,6 +1248,10 @@ item.asset.inside_keycard.name,Inside keycard
 item.asset.inside_keycard.desc,An insider leaves a keycard at this spot before the job.
 item.asset.propped_door.name,Propped door
 item.asset.propped_door.desc,Someone on staff leaves this door propped open tonight.
+item.asset.insider_code.name,Insider: time-lock code
+item.asset.insider_code.desc,"An insider writes down tonight's time-lock code. You know where the note is."
+item.asset.vent_access.name,Vent access
+item.asset.vent_access.desc,A maintenance contact leaves the vent grille unscrewed for you.
 item.asset.escape_position.name,Van position
 item.asset.escape_position.desc,"The getaway van waits here. A plan: the crew votes, the host breaks ties."
 ui.masks.title,Masks
@@ -1339,6 +1346,7 @@ ui.board.payout,Contract pay: {amount}
 ui.board.expires,Expires in {time}
 ui.board.pro,PRO JOB
 ui.board.pro_desc,"No restarts: fail it and the contract is gone. +{pct}% XP."
+ui.board.consumed,"Pro job failed: this contract is burned until the board rotates."
 ui.board.take,Take Contract
 ui.board.pin_tooltip,"{heist}, {difficulty}"
 ui.board.legend_pro,Red badge: pro job
