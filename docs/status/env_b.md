@@ -3,6 +3,31 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-10 15:40 UTC — D-026 review fixes (B1-03, B1-04, B1-05)
+### Done
+- StringName sort bug: every id sort now goes through `ContentDB.sort_ids()/id_less()` (by text; ints numerically). This covers `ContentDB.all_of`, the HeistCatalog, and the resolver's skill order (PARAMS last-wins is deterministic). Regression tests create `zz_` ids before `aa_` ids at runtime. The catalog test is now order-proof.
+- damage.md: `RangeTarget.take_hit(info, attacker)` is the only hit path. HEAD = dummy zone mult × `info.headshot_bonus`. The target emits `damage_applied` itself and returns final_info. `apply_damage` and the `damage_applied` listener are removed. Targets join `G.RANGE_TARGET`. The debug gun uses `Damage.find_target/zone_of/info`.
+- `weapon.kestrel_p9` headshot_mult = 1.0 (weapon bonus). Range golden unchanged: 35 × 2 × 1.0 = 70 at Routine.
+- WeaponVisual stock parts follow the `Stock<ModType>` rule. The glbs already matched, so no rebuild.
+- The HUD binds to ENV A's shipped `LocalHudModel` through `content/ui/hud/hud_model_adapter.gd` (stopgap; see QB-28). MenuFlow binds `runtime.hud_model` after launch.
+- `check_all.sh --env b` on a fresh trunk merge, run twice: PASS both times (194 tests, 0 failed, 7 skipped). The 4 P1 gate tests skip waiting for ENV C's Glasshouse map; the direct-launch stub test skips now that HeistLauncher exists; 1 is the P4 stub; 1 other skip.
+### In progress
+- —
+### Blocked
+- B1-08 mask mesh (ENV C).
+### Questions for lead
+- QB-28: ENV A's `LocalHudModel` does not follow ui_hud.md v1.1.
+  - It uses a single `changed(property)` signal.
+  - It uses `ammo_mag/ammo_reserve`, `detection_indicators`, `pager_timers`, `teammates`, `ecm_time_left`, `camera_countdown`, `phantom_warning/stinger_warning` and `bleedout_time_left`.
+  - It has no `deployable_id/throwable_id/pagers_max`, and `marked_targets` are bare net ids.
+  - It never joins `G.LOCAL_HUD_MODEL`.
+  - Our adapter bridges the gap for now. Our guesses: `pagers_max` = 4 from HudTweak; `pagers_answered` counted from EventBus; pager progress = 1 − time_left/answer_s; marked kind is empty.
+  - Please have ENV A conform to v1.1 and join the group, so the adapter can be deleted, or amend the contract.
+- QB-29 (damage.md): a crit off the head can't be expressed, because the target applies `headshot_bonus` only on HEAD. In PD2 a crit deals headshot damage on any zone. Should `crit` make the target apply its head multiplier regardless of zone?
+- QB-30 (damage.md): WEAKPOINT on targets without plates. Range dummies now take ×1 for WEAKPOINT. Range dummies don't emit `npc_killed`, since they aren't NPCs. Please confirm both.
+### Ready for integration
+- yes; `check_all.sh --env b` result: PASS
+
 ## 2026-10-10 15:05 UTC — B1-03, B1-05, D-024 app shell (all P1 B tasks delivered)
 ### Done
 - D-024 app shell (f50c21c):
@@ -22,11 +47,8 @@ Newest entry first, keep the last 10.
 ### Stopgaps to delete when ENV A lands A1-02/A1-08
 - `content/range/range_spectator_input.gd` and `range_debug_gun.gd`: the temporary range camera and debug hitscan. The range uses ENV A's crew via `RangeCrewBridge` when it exists.
 - `RangeDummyDef.health/headshot_mult`: a copy of the light-TAC row, to switch to `EnemyDef` (D-010). `RangeMath`: switch to ENV A's runtime as the reference.
-### Target hit API (for ENV A)
-- `RangeHitbox` (StaticBody3D, layer 5 "hitboxes") with `get_damage_target() -> RangeTarget` and `get_hit_zone() -> Enums.HitZone`.
-- `RangeTarget.apply_damage(info: DamageInfo dict, attacker_net_id) -> Dictionary`, where amount is final damage.
-- `take_hit(info, attacker)`, where amount is body damage; the target applies the zone and crit multipliers itself.
-- The target also listens to `EventBus.damage_applied` for its own `net_id` (from `Ids.next()`). Use one path per shot, never both. Group `&"range_target"`.
+### Target hit API
+- Superseded by damage.md (D-026); see the entry above.
 ### In progress
 - —
 ### Blocked
