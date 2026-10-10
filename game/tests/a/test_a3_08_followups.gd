@@ -176,7 +176,7 @@ func test_qb_47_local_camera_current_and_weapon_visual() -> void:
 	assert_true(c.weapon_visual is WeaponVisual, "WeaponVisual attached")
 	if not (c.weapon_visual is WeaponVisual):
 		return
-	assert_eq(c.weapon_visual.get_parent(), cam, "under the camera")
+	assert_true(cam.is_ancestor_of(c.weapon_visual), "under the camera (directly, or on the first-person arms)")
 	assert_eq((c.weapon_visual as WeaponVisual).weapon.id, c.weapons.weapon_id(c.weapons.equipped_slot), "equipped weapon")
 	assert_true((c.weapon_visual as WeaponVisual).get_marker(&"Muzzle") != null, "Muzzle marker for CrewWeapons")
 	assert_true(_crew(1).weapon_visual == null, "no viewmodel for the AI teammate")
@@ -188,7 +188,8 @@ func test_qb_47_local_camera_current_and_weapon_visual() -> void:
 	c.set_loadout(l2)
 	assert_eq((c.weapon_visual as WeaponVisual).weapon.id, &"weapon.warden_45", "rebuilt on set_loadout")
 	await wait_frames(1)
-	assert_eq(cam.get_children().filter(func(n: Node) -> bool: return n is WeaponVisual).size(), 1, "one viewmodel")
+	assert_eq(cam.find_children("*", "WeaponVisual", true, false).filter(
+		func(n: Node) -> bool: return not n.is_queued_for_deletion()).size(), 1, "one viewmodel")
 
 
 func test_qb_47_mask_at_head_socket_when_masked() -> void:
