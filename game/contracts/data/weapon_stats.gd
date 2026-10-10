@@ -20,6 +20,10 @@ extends Resource
 @export var total_ammo: int = 0               ## reserve incl. magazine
 @export var reload_time_s: float = 0.0        ## tactical reload
 @export var reload_empty_time_s: float = 0.0
+## Shell-by-shell reload (shotguns, some snipers; QB-43). 0 = whole-magazine reload.
+@export var reload_per_round_s: float = 0.0
+@export var reload_start_s: float = 0.0         ## raise/open before the first round
+@export var reload_end_s: float = 0.0           ## close/pump after the last round
 @export var equip_time_s: float = 0.5
 @export var ads_time_s: float = 0.25
 @export var concealment: int = 0              ## 0..30; contributes to detection risk
@@ -67,6 +71,9 @@ func plus(d: WeaponStats) -> WeaponStats:
 	r.total_ammo += d.total_ammo
 	r.reload_time_s += d.reload_time_s
 	r.reload_empty_time_s += d.reload_empty_time_s
+	r.reload_per_round_s += d.reload_per_round_s
+	r.reload_start_s += d.reload_start_s
+	r.reload_end_s += d.reload_end_s
 	r.concealment += d.concealment
 	r.armor_pierce += d.armor_pierce
 	r.shield_pierce = r.shield_pierce or d.shield_pierce
