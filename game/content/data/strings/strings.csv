@@ -1039,3 +1039,48 @@ item.mod.heron_bipod.desc,"Folding legs under the forend. Tames the kick, adds w
 item.mod.heron_standard_mag.name,Five-Round Magazine
 item.mod.heron_extended_mag.name,Ten-Round Magazine
 item.mod.heron_extended_mag.desc,"Five more rounds in a longer box. Slower to swap, harder to hide."
+ui.loadout.skills,Skills
+ui.loadout.perk_deck,Perk Deck
+ui.loadout.skills_summary,Skill points spent: {spent} of {total}
+ui.loadout.perk_summary,Perk deck: {deck} ({cards}/9 cards)
+ui.loadout.perk_none,Perk deck: none
+ui.skills.level,Level {level}
+ui.skills.points_left,Skill points: {points} of {total}
+ui.skills.sets,Skill set
+ui.skills.set,Set {n}
+ui.skills.state.locked,Locked
+ui.skills.state.available,Available
+ui.skills.state.basic,Basic
+ui.skills.state.aced,Aced
+ui.skills.button_cost,{state} · {cost}
+ui.skills.tier_open,Always open
+ui.skills.tier_gate,Opens at {need}
+ui.skills.spent,Spent: {points}
+ui.skills.meta,{tree} · {subtree} · Tier {tier}
+ui.skills.part_header,{part} · {cost} pts
+ui.skills.buy_basic,Take Basic ({cost})
+ui.skills.buy_aced,Ace ({cost})
+ui.skills.refund,Refund
+ui.skills.refund_points,Refund (+{points})
+ui.skills.respec_confirm,Press again to reset
+ui.skills.blocked_partial,Part of this effect is not active yet.
+ui.skills.unlocks,Unlocks: {item}
+ui.skills.hint,"Click / A / Enter: invest. Right-click / X / Delete: refund. LB / RB or Page Up / Down: switch tree. Resetting skills is free."
+ui.skills.reason.not_owned,You have not taken this skill.
+ui.skills.reason.refund_breaks_tier,Can't refund: a higher-tier skill in this subtree needs these points. Refund it first.
+ui.perks.title,Perk Decks
+ui.perks.points,Perk points: {points}
+ui.perks.equip,Equip Deck
+ui.perks.equipped,Equipped
+ui.perks.not_equipped,Not equipped
+ui.perks.deck_entry,{name}   {cards}/{total}
+ui.perks.deck_entry_active,{name}   {cards}/{total}   (equipped)
+ui.perks.card_header,Card {n} · {cost} pts
+ui.perks.unlock_next,Unlock card {n} ({cost} pts)
+ui.perks.all_unlocked,All cards unlocked
+ui.perks.state.unlocked,Unlocked
+ui.perks.state.next,Next to unlock
+ui.perks.state.locked,Locked
+ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available). Perk points come from experience.
+ui.perks.dev_unlocked,Dev build: every perk card is unlocked.
+ui.perks.hint,"Select a deck to see its cards; press it to equip. Only the equipped deck is active, with every card unlocked in it."

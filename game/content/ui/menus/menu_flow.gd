@@ -17,12 +17,16 @@ const STUB_SCENE: PackedScene = preload("res://content/ui/menus/stub_screen.tscn
 const PAYDAY_SCENE: PackedScene = preload("res://content/ui/results/payday.tscn")
 const HUD_SCENE: PackedScene = preload("res://content/ui/hud/hud.tscn")
 const RANGE_SCENE: PackedScene = preload("res://content/range/firing_range.tscn")
+const SKILLS_SCENE: PackedScene = preload("res://content/ui/progression/skill_tree_screen.tscn")
+const PERKS_SCENE: PackedScene = preload("res://content/ui/progression/perk_deck_screen.tscn")
 
 var main_menu: MainMenu
 var heist_select: HeistSelect
 var loadout_screen: LoadoutScreen
 var stub_screen: StubScreen
 var payday: PaydayScreen
+## Skill tree / perk deck screen while open from the loadout screen (B4-03), else null.
+var progression_screen: UiScreen = null
 var current: Control
 var firing_range: FiringRange = null
 var runtime: Object = null
@@ -86,7 +90,34 @@ func _on_heist_chosen(heist_id: StringName, difficulty: int) -> void:
 	loadout_screen = _add(LOADOUT_SCENE) as LoadoutScreen
 	loadout_screen.back_requested.connect(show_screen.bind(heist_select))
 	loadout_screen.launch_requested.connect(_on_launch_requested)
+	loadout_screen.skills_requested.connect(open_progression.bind(SKILLS_SCENE))
+	loadout_screen.perk_deck_requested.connect(open_progression.bind(PERKS_SCENE))
 	show_screen(loadout_screen)
+
+
+## Skill tree / perk deck (B4-03): edits the loadout screen's profile (already saved by the loadout
+## screen), saves itself, and Back returns to the refreshed loadout screen.
+func open_progression(scene: PackedScene) -> void:
+	if loadout_screen == null:
+		return
+	close_progression(false)
+	var s: UiScreen = scene.instantiate() as UiScreen
+	s.call(&"setup", loadout_screen.profile)
+	s.set(&"profile_slot", loadout_screen.profile_slot)
+	s.visible = false
+	add_child(s)
+	s.back_requested.connect(close_progression.bind(true))
+	progression_screen = s
+	show_screen(s)
+
+
+func close_progression(show_loadout: bool = true) -> void:
+	if progression_screen != null:
+		progression_screen.queue_free()
+		progression_screen = null
+	if show_loadout and loadout_screen != null:
+		loadout_screen.refresh()
+		show_screen(loadout_screen)
 
 
 ## Firing range (B1-05): a 3D scene added next to the flow; the menu hides until it exits.

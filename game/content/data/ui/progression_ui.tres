@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ProgressionUiTweak" format=3]
+
+[ext_resource type="Script" path="res://content/ui/data/progression_ui_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+skill_set_count = 3
+xp_per_perk_point = 500
+dev_unlock_all_perks = false
+deck_order = Array[StringName]([&"perk.foreman", &"perk.bulk", &"perk.ironclad", &"perk.slipper", &"perk.hustler", &"perk.clean_sweep", &"perk.prowler", &"perk.knuckles", &"perk.bloodletter", &"perk.composure", &"perk.overclock", &"perk.incumbent", &"perk.long_odds", &"perk.overlord"])
+skill_locked_color = Color(0.22, 0.23, 0.26, 1)
+skill_available_color = Color(0.45, 0.5, 0.58, 1)
+skill_basic_color = Color(0.35, 0.65, 1, 1)
+skill_aced_color = Color(1, 0.75, 0.25, 1)
+owned_tint = 0.22
+note_color = Color(0.6, 0.63, 0.68, 1)
+reason_color = Color(1, 0.45, 0.35, 1)
+card_unlocked_color = Color(1, 0.75, 0.25, 1)
+card_next_color = Color(0.45, 0.5, 0.58, 1)
+card_locked_color = Color(0.22, 0.23, 0.26, 1)
