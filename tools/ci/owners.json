@@ -45,7 +45,9 @@
         "game/assets/masks/**",
         "tools/blender/masks/**",
         "game/world/materials/char_*",
-        "docs/art/style_samples/*/officer*"
+        "docs/art/style_samples/*/officer*",
+        "tools/blender/style_samples/officer.py",
+        "tools/blender/style_samples/head.py"
       ]
     },
     "d": {
@@ -59,7 +61,9 @@
         "game/world/materials/char_*",
         "docs/art/style_samples/*/officer*",
         "game/tests/d/**",
-        "docs/status/env_d.md"
+        "docs/status/env_d.md",
+        "tools/blender/style_samples/officer.py",
+        "tools/blender/style_samples/head.py"
       ]
     }
   },
