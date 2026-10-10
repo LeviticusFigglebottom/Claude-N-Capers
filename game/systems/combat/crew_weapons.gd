@@ -206,7 +206,7 @@ func headshot_bonus(ws: int) -> float:
 func set_deployable(id: StringName, count: int) -> void:
 	deployable_id = id
 	deployable_count = count
-	if Net.is_authority() and _crew != null and _remote_owned():
+	if Net.is_authority() and _crew != null and _remote_owned() and HeistNetSync.can_rpc(_crew):
 		_rpc_deployable.rpc_id(_crew.peer_id, id, count)
 
 
@@ -573,7 +573,7 @@ func _rpc_hit_claim(claim: Dictionary) -> void:
 
 
 func _sync_ammo(ws: int) -> void:
-	if not Net.is_authority() or _crew == null or not _remote_owned():
+	if not Net.is_authority() or _crew == null or not _remote_owned() or not HeistNetSync.can_rpc(_crew):
 		return
 	_rpc_ammo.rpc_id(_crew.peer_id, ws, mag(ws), reserve(ws))
 

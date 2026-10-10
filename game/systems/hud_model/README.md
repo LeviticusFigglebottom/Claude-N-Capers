@@ -72,10 +72,10 @@ The header of `local_hud_model.gd` is the authoritative list: `crew.health`, `cr
 
 ## Known gaps
 
-- Custody timers and the highlighted hostage are server state; remote clients see `-1` / `0` until
-  custody replication lands.
-
-- Interaction progress/blocked reason come from server-side `InteractionSystem` state; on a remote
-  client they stay 0/empty until per-crew interaction replication lands.
+- Co-op (A3-07): custody timers + the highlighted hostage, interaction progress/blocked reason per
+  crew slot, known codes and crew vitals/inventory are mirrored to clients by `HeistNetSync`
+  (heist/README.md "Co-op"), so the table above holds on clients too, at the 15 Hz sync rate. Remote
+  clients still have no prompt for interactables the server adds at runtime (corpse bagging, hostage
+  trade) and the deployable inventory rows come from `crew.weapons` only.
 - `interaction.args` is `{}` unless the component exposes `prompt_args`; the input key name
   (e.g. `{"key": "F"}`) is presentation and left to ENV B.

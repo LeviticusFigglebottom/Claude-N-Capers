@@ -28,6 +28,9 @@ const SCREEN_COLORS: Array[Color] = [
 @export var interruptions: Vector2i = Vector2i(-1, -1)
 ## What the hack opens (Door, Safe, ...).
 @export var targets: Array[NodePath] = []
+## Collision box size (m), placed on the pivot; ZERO = fit to the visual (or use the visual's own
+## `Collision`), see GameplayPrefab "Collision fitting".
+@export var collision_size_override: Vector3 = Vector3.ZERO
 @export_group("Interaction")
 ## -1 = InteractionTweak.hack_start_s.
 @export var interaction_time_s: float = -1.0

@@ -145,6 +145,28 @@ func open() -> void:
 func set_open(open: bool) -> void:
 	if not Net.is_authority():
 		return
+	_apply_open(open)
+	_update_open_stimulus()
+	var by: int = _opened_by_net_id if open else 0
+	_opened_by_net_id = 0
+	open_changed.emit(open, by)
+	# A3-07: clients get is_open / locked through HeistNetSync -> _apply_net_state().
+
+
+## Client (A3-07, HeistNetSync): mirror the server's `is_open` / `locked` (leaves, collision, nav).
+func _apply_net_state(state: Dictionary) -> void:
+	if state.has("locked") and not bool(state["locked"]) and locked:
+		locked = false
+		_apply_unlocked_interaction()
+	if state.has("ie") and interactable != null:
+		interactable.enabled = bool(state["ie"])
+	if state.has("is_open") and bool(state["is_open"]) != is_open:
+		_apply_open(bool(state["is_open"]))
+		open_changed.emit(is_open, 0)
+	_update_nav_link()
+
+
+func _apply_open(open: bool) -> void:
 	is_open = open
 	var angle: float = deg_to_rad(Tweak.interaction().door_open_angle_deg) if open else 0.0
 	for i: int in range(_leaves.size()):
@@ -153,12 +175,7 @@ func set_open(open: bool) -> void:
 		var outward: bool = swing == Swing.OUTWARD
 		_leaves[i].rotation.y = angle * (-sign_inward if outward else sign_inward)
 	_sync_leaf_bodies()
-	_update_open_stimulus()
 	_update_nav_link()
-	var by: int = _opened_by_net_id if open else 0
-	_opened_by_net_id = 0
-	open_changed.emit(open, by)
-	# A1-03 behaviour (M2): replicate open state to clients.
 
 
 # --- NPC doors (A2-01, QA-11) -------------------------------------------------------------

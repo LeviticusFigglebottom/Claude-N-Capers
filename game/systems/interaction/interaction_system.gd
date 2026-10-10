@@ -14,6 +14,8 @@ var _sessions: Dictionary[int, Dictionary] = {}
 var _needs_release: Dictionary[int, bool] = {}
 ## slot -> last blocked reason (HUD).
 var _blocked: Dictionary[int, StringName] = {}
+## Client mirror (A3-07): slot -> [owner_net_id, component name, progress 0..1, blocked reason].
+var _remote: Dictionary[int, Array] = {}
 
 
 func tick(crew: CrewController, intent: CrewIntent, delta: float) -> void:
@@ -125,21 +127,73 @@ func holders_of(comp: InteractableComponent) -> Array[int]:
 	return out
 
 
+## Active session of `slot` ({} = none). On a client: the replicated mirror
+## {"comp", "progress" (0..1), "duration": 1.0, "remote": true} (A3-07).
 func session(slot: int) -> Dictionary:
+	if not Net.is_authority():
+		return _remote_session(slot)
 	return _sessions.get(slot, {})
 
 
 func blocked_reason(slot: int) -> StringName:
+	if not Net.is_authority():
+		return StringName((_remote[slot] as Array)[3]) if _remote.has(slot) else &""
 	return _blocked.get(slot, &"")
 
 
 ## Progress 0..1 of slot's active interaction (0 if none).
 func progress(slot: int) -> float:
+	if not Net.is_authority():
+		return float((_remote[slot] as Array)[2]) if _remote.has(slot) and int((_remote[slot] as Array)[0]) != 0 else 0.0
 	if not _sessions.has(slot):
 		return 0.0
 	var s: Dictionary = _sessions[slot]
 	var dur: float = s["duration"]
 	return 1.0 if dur <= 0.0 else clampf(float(s["progress"]) / dur, 0.0, 1.0)
+
+
+## Server (A3-07): per-slot session state for clients' HUD models:
+## {slot: [owner_net_id (0 = none), component node name, progress 0..1, blocked reason]}.
+func net_sessions() -> Dictionary:
+	var out: Dictionary = {}
+	for slot: int in _sessions:
+		var comp: InteractableComponent = _sessions[slot]["comp"]
+		if is_instance_valid(comp):
+			out[slot] = [comp.owner_net_id(), String(comp.name), snappedf(progress(slot), 0.001), _blocked.get(slot, &"")]
+	for slot: int in _blocked:
+		if not out.has(slot):
+			out[slot] = [0, "", 0.0, _blocked[slot]]
+	return out
+
+
+## Client (A3-07): replace the mirror with the server's net_sessions().
+func apply_net_sessions(d: Dictionary) -> void:
+	var changed: Array[int] = []
+	for k: Variant in d:
+		changed.append(int(k))
+	for slot: int in _remote:
+		if not changed.has(slot):
+			changed.append(slot)
+	_remote.clear()
+	for k: Variant in d:
+		_remote[int(k)] = d[k] as Array
+	for slot: int in changed:
+		session_changed.emit(slot)
+
+
+func _remote_session(slot: int) -> Dictionary:
+	if not _remote.has(slot):
+		return {}
+	var a: Array = _remote[slot]
+	var owner: Node = Ids.lookup(int(a[0]))
+	if owner == null:
+		return {}
+	var comp: InteractableComponent = owner.get_node_or_null(NodePath(String(a[1]))) as InteractableComponent
+	if comp == null:
+		comp = owner.find_child(String(a[1]), true, false) as InteractableComponent
+	if comp == null:
+		return {}
+	return {"comp": comp, "progress": float(a[2]), "duration": 1.0, "remote": true}
 
 
 ## Cancel slot's interaction (release, movement, damage S9.1, state change).
