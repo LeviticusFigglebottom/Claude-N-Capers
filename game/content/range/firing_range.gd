@@ -8,9 +8,15 @@
 ## owner (MenuFlow) frees the scene; the range releases the mouse in _exit_tree.
 ##
 ## Level = RangeBuilder from range_layout.tres (greybox kit floors/walls, lane lines, distance
-## markers, one static RangeTarget per lane). Dummy HP/headshot multipliers per difficulty come from
-## range_dummies.tres (EnemyDef stopgap, D-010). Weapon numbers are LoadoutResolver output; the
-## loadout panel lets the player pick any weapon and mod from ContentDB without owning it (P7).
+## markers, one static RangeTarget per lane) plus B4-13's extra lanes: a moving-target area (targets
+## on lateral RangeTracks, 2-5 m/s) and an armory area (frontal-plate, shield, staged-plate and
+## plain special dummies). `targets` = static lanes first, then the extra lanes. Dummy HP/headshot
+## multipliers per difficulty come from ENV A's EnemyDef via range_dummies.tres (B stopgap rows only
+## for enemies A has not shipped, D-010). Weapon numbers are LoadoutResolver output; the loadout
+## panel lets the player pick any weapon and mod from ContentDB without owning it (P7).
+## Readout: the selected target's RangeDamageModel (the function its take_hit uses) gives
+## shots/TTK/DPS with armor, shield and plate math; a per-dummy-type table does the same for every
+## dummy type at the readout distance; the falloff graph plots RangeMath.shot_damage vs distance.
 ##
 ## Shooter: ENV A's real crew member (CrewController.spawn_for_range through RangeCrewBridge): its
 ## first-person camera, PlayerInput and CrewWeapons runtime fire hitscan claims that CombatSystem
@@ -65,7 +71,8 @@ var level: Node3D = null
 var fx_root: Node3D = null
 var aim_mode: bool = false
 
-var _readout_from: Vector3 = Vector3.INF
+var _readout_dist: float = -INF
+var _readout_cooldown: float = 0.0
 
 
 ## Optional, before entering the tree: the loadout to start with and the dummy difficulty.
@@ -84,6 +91,7 @@ func _ready() -> void:
 	RangeBuilder.build_level(layout, tweak, level)
 	markers = RangeBuilder.build_markers(layout, tweak, level)
 	targets = RangeBuilder.build_targets(layout, dummy, difficulty, tweak, level)
+	targets.append_array(RangeBuilder.build_extra_lanes(layout, dummy_table, difficulty, tweak, level))
 	EventBus.damage_applied.connect(_on_damage_applied)
 	fx_root = Node3D.new()
 	fx_root.name = "Fx"
@@ -108,7 +116,7 @@ func _exit_tree() -> void:
 		spectator.set_aim_active(false)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if overlay == null or weapon_stats == null:
 		return
 	if spectator != null:
@@ -121,9 +129,10 @@ func _process(_delta: float) -> void:
 				if hud_model != null and hud_model.has_method(&"refresh"):
 					hud_model.call(&"refresh")  # poll now, not at the model's poll_hz
 			overlay.show_ammo(int(a["mag"]), int(a["mag_size"]), bool(a["reloading"]), int(a["reserve"]))
-	var pos: Vector3 = _shooter_position()
-	if pos.distance_to(_readout_from) > READOUT_MOVE_EPS_M:
-		_readout_from = pos
+	# Re-run the readout when the shooter-to-target distance changed (shooter or moving target),
+	# at most every tweak.readout_refresh_s (the per-dummy table simulates every shot).
+	_readout_cooldown -= delta
+	if _readout_cooldown <= 0.0 and absf(readout_distance() - _readout_dist) > READOUT_MOVE_EPS_M:
 		_refresh_readout()
 
 
@@ -194,6 +203,8 @@ func set_difficulty(diff: int) -> void:
 
 func set_readout_lane(lane: int) -> void:
 	readout_lane = clampi(lane, 0, maxi(targets.size() - 1, 0))
+	if overlay != null and overlay.readout_option.selected != readout_lane:
+		overlay.readout_option.select(readout_lane)
 	_refresh_readout()
 
 
@@ -213,13 +224,61 @@ func shooter_net_id() -> int:
 	return spectator.attacker_net_id if spectator != null else -1
 
 
-## RangeMath.readout() for the readout lane's dummy with the resolved weapon, at the live distance
-## from the shooter to the dummy's body (what falloff will use), not the lane's nominal distance.
+## The readout lane's dummy with the resolved weapon, at the live distance from the shooter to the
+## dummy's body (what falloff will use), not the lane's nominal distance. Shots/TTK/damage come from
+## the target's own RangeDamageModel (the function its take_hit uses: armor, shield, plates), with
+## RangeMath for falloff and timing (RangeDamageModel.readout).
 func readout() -> Dictionary:
 	if weapon_stats == null or targets.is_empty():
 		return {}
-	var t: RangeTarget = targets[readout_lane]
-	return RangeMath.readout(weapon_stats, t.max_health, t.headshot_mult(), readout_distance())
+	return targets[readout_lane].model.readout(weapon_stats, readout_distance())
+
+
+## B4-13: the same readout for every dummy type in range_dummies.tres at the current difficulty and
+## readout distance: [{id, name, readout}].
+func dummy_readouts() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	if weapon_stats == null:
+		return out
+	var d: float = readout_distance()
+	for def: RangeDummyDef in dummy_table.dummies:
+		out.append({"id": def.id, "name": UiText.t(def.name_key),
+				"readout": RangeDamageModel.from_def(def, difficulty).readout(weapon_stats, d)})
+	return out
+
+
+## One-line armor description of a dummy model (readout "Armor" row).
+static func armor_text(m: RangeDamageModel) -> String:
+	var parts: PackedStringArray = PackedStringArray()
+	if m.frontal_armor:
+		parts.append(UiText.t(&"ui.range.armor.frontal", {"mult": RangeOverlay._num(m.armor_body_mult, 2)}))
+	if m.shield:
+		parts.append(UiText.t(&"ui.range.armor.shield", {"mult": RangeOverlay._num(m.shield_pierce_mult, 2)}))
+	if not m.plate_health.is_empty():
+		var hp: PackedStringArray = PackedStringArray()
+		for p: float in m.plate_health:
+			hp.append(RangeOverlay._num(p, 0))
+		parts.append(UiText.t(&"ui.range.armor.plates", {"hp": " / ".join(hp)}))
+	if parts.is_empty():
+		return UiText.t(&"ui.range.armor.none")
+	return ", ".join(parts)
+
+
+## Option text of every range target, in lane order.
+func lane_labels() -> PackedStringArray:
+	var out: PackedStringArray = PackedStringArray()
+	for t: RangeTarget in targets:
+		var m: String = UiText.t(&"ui.range.marker", {"m": roundi(t.distance_m)})
+		if t.lane < layout.lane_count():
+			out.append(m)
+		else:
+			var def: RangeLaneDef = layout.extra_lanes[t.lane - layout.lane_count()]
+			var dname: String = UiText.t(t.dummy.name_key) if t.dummy != null else ""
+			if def.is_moving():
+				out.append(UiText.t(&"ui.range.lane_moving", {"name": dname, "m": m, "speed": snappedf(def.speed_mps, 0.1)}))
+			else:
+				out.append(UiText.t(&"ui.range.lane_named", {"name": dname, "m": m}))
+	return out
 
 
 ## Shooter -> readout target body distance (m).
@@ -264,6 +323,8 @@ func _apply_loadout() -> void:
 		return
 	if spectator != null:
 		spectator.gun.equip(weapon_def.id, weapon_stats, weapon_def.fire_modes.has(&"auto"))
+	for t: RangeTarget in targets:
+		t.pierce_fallback = weapon_stats  # pierce flags for infos from runtimes without them (RangeTarget)
 	if crew != null:
 		RangeCrewBridge.push_loadout(crew, resolved)
 		var mods: Array[StringName] = loadout.primary_mods if loadout.primary != &"" else loadout.secondary_mods
@@ -277,11 +338,16 @@ func _apply_loadout() -> void:
 func _refresh_readout() -> void:
 	if overlay == null or targets.is_empty():
 		return
-	var name_text: String = UiText.t(dummy.name_key) if dummy != null else ""
+	var t: RangeTarget = targets[readout_lane]
+	var name_text: String = UiText.t(t.dummy.name_key) if t.dummy != null else ""
 	var r: Dictionary = readout()
+	_readout_dist = readout_distance()
+	_readout_cooldown = tweak.readout_refresh_s
 	if not r.is_empty():
-		overlay.show_readout(r, name_text)
+		overlay.show_readout(r, name_text, armor_text(t.model))
 		overlay.show_stats(weapon_stats)
+		overlay.show_falloff(weapon_stats, float(r["distance_m"]))
+		overlay.show_dummy_table(dummy_readouts())
 
 
 ## EventBus.damage_applied (damage.md): only hits on this range's targets by the range shooter.
@@ -352,7 +418,7 @@ func _build_overlay() -> void:
 	add_child(layer)
 	overlay = RangeOverlay.new()
 	overlay.name = "RangeOverlay"
-	overlay.setup(layout.lane_target_distances, difficulty, readout_lane, spectator != null)
+	overlay.setup(lane_labels(), difficulty, readout_lane, spectator != null, tweak)
 	layer.add_child(overlay)
 	overlay.weapon_selected.connect(select_weapon)
 	overlay.mod_selected.connect(set_mod)

@@ -39,6 +39,10 @@ func _dummy() -> RangeDummyDef:
 	return table.dummy(&"range_dummy.light")
 
 
+func _enemy() -> EnemyDef:
+	return load(_dummy().enemy_path) as EnemyDef
+
+
 func _target(diff: int = Enums.Difficulty.ROUTINE) -> RangeTarget:
 	var t: RangeTarget = RangeTarget.new()
 	t.setup(_dummy(), diff, load(FiringRange.TWEAK_PATH) as RangeTweak, 0, 10.0)
@@ -61,7 +65,7 @@ func test_scene_instantiates_headless() -> void:
 		assert_true(r.spectator == null, "real crew spawned -> no fallback range camera")
 	else:
 		assert_true(r.spectator != null, "no range crew -> fallback range camera")
-	assert_eq(r.targets.size(), r.layout.lane_count())
+	assert_eq(r.targets.size(), r.layout.lane_count() + r.layout.extra_lanes.size(), "static + extra lanes")
 	assert_true(r.level.get_node("Floor").get_child_count() > 0, "greybox floor pieces instanced")
 	assert_true(r.level.get_node("Walls").get_child_count() > 0, "greybox wall pieces instanced")
 	assert_eq(r.current_weapon_id(), P9)
@@ -77,7 +81,7 @@ func test_layout_is_built_from_data() -> void:
 		assert_near(float(m.get_meta(&"distance_m")), expected[i])
 		assert_near(m.position.z, -expected[i], 0.001, "marker at -distance")
 	assert_eq(get_tree().get_nodes_in_group(RangeBuilder.MARKER_GROUP).size(), expected.size())
-	for t: RangeTarget in r.targets:
+	for t: RangeTarget in r.targets.slice(0, r.layout.lane_count()):
 		assert_near(t.position.z, -r.layout.lane_target_distances[t.lane], 0.001)
 		assert_near(t.position.x, r.layout.lane_x(t.lane), 0.001)
 	assert_true(r.layout.length_m() >= 100.0, "range is longer than the last marker")
@@ -85,17 +89,20 @@ func test_layout_is_built_from_data() -> void:
 
 func test_target_dies_at_dummy_hp() -> void:
 	var t: RangeTarget = _target(Enums.Difficulty.ROUTINE)
-	assert_near(t.max_health, 80.0)
-	var res: Dictionary = t.take_hit(_info(79.0), 1)
+	var e: EnemyDef = _enemy()
+	assert_true(_dummy().uses_enemy_def(), "light dummy reads ENV A's EnemyDef (D-010)")
+	assert_near(t.max_health, e.health[Enums.Difficulty.ROUTINE], 0.001, "Routine HP from EnemyDef")
+	var hp: float = t.max_health
+	var res: Dictionary = t.take_hit(_info(hp - 1.0), 1)
 	assert_false(bool(res["killed"]))
 	assert_near(t.health, 1.0)
 	assert_true(t.alive)
 	res = t.take_hit(_info(1.0), 1)
-	assert_true(bool(res["killed"]), "dies exactly at 80 HP")
+	assert_true(bool(res["killed"]), "dies exactly at its HP")
 	assert_false(t.alive)
 	assert_true(t.take_hit(_info(10.0), 1).is_empty(), "a downed target ignores hits")
 	t.set_difficulty(Enums.Difficulty.BRUTAL)
-	assert_near(t.max_health, 240.0, 0.001, "Brutal HP from range_dummies.tres")
+	assert_near(t.max_health, e.health[Enums.Difficulty.BRUTAL], 0.001, "Brutal HP from EnemyDef")
 	assert_true(t.alive, "difficulty change resets the target")
 	t.queue_free()
 
@@ -112,21 +119,25 @@ func test_target_auto_resets_after_death() -> void:
 
 func test_headshot_multiplier_applies() -> void:
 	var t: RangeTarget = _target(Enums.Difficulty.ROUTINE)
-	var res: Dictionary = t.take_hit(_info(35.0, Enums.HitZone.HEAD), 1)
-	assert_near(float(res["amount"]), 70.0, 0.001, "Routine: 35 x dummy 2 x weapon bonus 1.0")
+	var e: EnemyDef = _enemy()
+	var hs_r: float = e.headshot_mult[Enums.Difficulty.ROUTINE]
+	var hs_b: float = e.headshot_mult[Enums.Difficulty.BRUTAL]
+	assert_near(t.headshot_mult(), hs_r, 0.0001, "headshot mult from EnemyDef")
+	var res: Dictionary = t.take_hit(_info(1.0, Enums.HitZone.HEAD), 1)
+	assert_near(float(res["amount"]), hs_r, 0.001, "Routine: 1 x EnemyDef head mult x weapon bonus 1.0")
 	t.set_difficulty(Enums.Difficulty.BRUTAL)
-	res = t.take_hit(_info(35.0, Enums.HitZone.HEAD), 1)
-	assert_near(float(res["amount"]), 210.0, 0.001, "Brutal x6")
+	res = t.take_hit(_info(1.0, Enums.HitZone.HEAD), 1)
+	assert_near(float(res["amount"]), hs_b, 0.001, "Brutal head mult")
 	res = t.take_hit(_info(10.0, Enums.HitZone.BODY), 1)
 	assert_near(float(res["amount"]), 10.0, 0.001, "body x1")
-	t.set_difficulty(Enums.Difficulty.BRUTAL)
-	var bonus: Dictionary = _info(10.0, Enums.HitZone.HEAD)
+	t.reset_target()
+	var bonus: Dictionary = _info(1.0, Enums.HitZone.HEAD)
 	bonus["headshot_bonus"] = 1.5
 	res = t.take_hit(bonus, 1)
-	assert_near(float(res["amount"]), 90.0, 0.001, "head: dummy x6 x weapon bonus 1.5")
+	assert_near(float(res["amount"]), hs_b * 1.5, 0.001, "head: dummy mult x weapon bonus 1.5")
 	bonus["zone"] = Enums.HitZone.BODY
 	res = t.take_hit(bonus, 1)
-	assert_near(float(res["amount"]), 10.0, 0.001, "the headshot bonus only applies to HEAD")
+	assert_near(float(res["amount"]), 1.0, 0.001, "the headshot bonus only applies to HEAD")
 	t.queue_free()
 
 
@@ -165,17 +176,23 @@ func test_ttk_readout_equals_hand_computed() -> void:
 	r.set_readout_lane(_lane_at(r, 10.0))
 	var ro: Dictionary = r.readout()
 	assert_true(float(ro["distance_m"]) < 15.0, "10 m lane stays before the P9's falloff start")
-	# Routine 80 HP: body 35 -> 3 shots, 2 intervals of 60/480 s; head 70 -> 2 shots.
-	assert_eq(int(ro["shots_body"]), 3)
-	assert_near(float(ro["ttk_body_s"]), 0.25)
-	assert_eq(int(ro["shots_head"]), 2)
-	assert_near(float(ro["ttk_head_s"]), 0.125)
+	# EnemyDef HP (Routine 80): body 35 -> ceil(HP / 35) shots, intervals of 60/480 s.
+	var e: EnemyDef = _enemy()
+	var hp: float = e.health[Enums.Difficulty.ROUTINE]
+	var shots: int = ceili(hp / 35.0 - RangeMath.EPS)
+	assert_eq(int(ro["shots_body"]), shots)
+	assert_near(float(ro["ttk_body_s"]), RangeMath.time_to_kill_s(r.weapon_stats, shots))
+	var head_shots: int = ceili(hp / (35.0 * e.headshot_mult[Enums.Difficulty.ROUTINE]) - RangeMath.EPS)
+	assert_eq(int(ro["shots_head"]), head_shots)
+	assert_near(float(ro["ttk_head_s"]), RangeMath.time_to_kill_s(r.weapon_stats, head_shots))
 	assert_near(float(ro["dps"]), 35.0 * 8.0, 0.001, "35 dmg x 8 shots/s")
 	r.set_difficulty(Enums.Difficulty.BRUTAL)
 	ro = r.readout()
-	assert_eq(int(ro["shots_body"]), 7, "240 HP / 35")
-	assert_near(float(ro["ttk_body_s"]), 0.75)
-	assert_eq(r.overlay.value_text("ro_ttk_body"), UiText.t(&"ui.range.fmt.ttk", {"shots": 7, "time": "0.75"}))
+	shots = ceili(e.health[Enums.Difficulty.BRUTAL] / 35.0 - RangeMath.EPS)
+	assert_eq(int(ro["shots_body"]), shots, "Brutal HP / 35")
+	assert_near(float(ro["ttk_body_s"]), RangeMath.time_to_kill_s(r.weapon_stats, shots))
+	assert_eq(r.overlay.value_text("ro_ttk_body"), UiText.t(&"ui.range.fmt.ttk",
+			{"shots": shots, "time": RangeOverlay._num(RangeMath.time_to_kill_s(r.weapon_stats, shots), 3)}))
 	# Across a magazine: 1000 HP / 35 = 29 shots, one empty reload (17-round mag, 2.1 s).
 	var s: WeaponStats = r.weapon_stats
 	assert_near(RangeMath.time_to_kill_s(s, 29), 27.0 * 0.125 + 2.1, 0.0001)
