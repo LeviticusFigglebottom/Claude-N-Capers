@@ -174,6 +174,8 @@ Units: **meters, seconds, kilograms, degrees in data / radians in code**. +Y up,
   (see `docs/roadmap.md`). A phase is complete only when its gate passes on trunk.
 * Headless simulation: systems must run with `--headless`. Anything visual-only (shaders,
   post FX) is optional at runtime when `DisplayServer.get_name() == "headless"`.
+* Tests that write to `user://` must use a per-process root (e.g. `user://test_<pid>/`), because every checkout
+  shares one `user://` and parallel runs collide (ENV B finding, D-039).
 * Bots: integration tests drive crew members through `CrewInput` intents (the same intent API
   used by players and AI teammates), never by poking internal state.
 
