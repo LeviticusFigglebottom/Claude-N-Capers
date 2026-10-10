@@ -8,7 +8,7 @@
 	"banked_stealth_mult": 1.0,
 	"owned_weapons": ["weapon.kestrel_p9"],
 	"owned_mods": ["mod.p9_suppressor", "mod.p9_reflex_sight", "mod.p9_extended_mag"],
-	"owned_masks": [],
+	"owned_masks": ["mask.gilded_heron"],
 	"loadout": {
 		"primary": "",
 		"primary_mods": [],
@@ -19,7 +19,7 @@
 		"deployable": "deployable.doctor_bag",
 		"deployable_secondary": "",
 		"armor": "armor.tailored_suit",
-		"mask": "",
+		"mask": "mask.gilded_heron",
 		"perk_deck": "",
 		"perk_deck_cards": 0,
 		"skills": {}

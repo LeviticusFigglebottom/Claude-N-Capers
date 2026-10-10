@@ -21,7 +21,7 @@ static func t(key: StringName, args: Dictionary = {}) -> String:
 ## "$12,345" style money (sign kept), via `ui.common.money`.
 static func money(amount: int) -> String:
 	var prefix: String = "-" if amount < 0 else ""
-	return t(&"ui.common.money", {"amount": prefix + group_digits(absi(amount))})
+	return prefix + t(&"ui.common.money", {"amount": group_digits(absi(amount))})
 
 
 ## 12345 -> "12,345".
