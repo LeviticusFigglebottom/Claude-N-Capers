@@ -51,8 +51,8 @@ session state (not saved): a contract lives one rotation only.
   
   The same seed, slot, bucket, level and pool always give the same contract. So a crew whose clocks
   agree sees the same board, apart from level gating.
-* **Pool:** `HeistCatalog.entries()`, which lists the registry heists plus placeholder heists while
-  the registry has no def for them. The contact comes from `HeistDef.contact`, then the city map's
+* **Pool:** `HeistCatalog.entries()`: registry heists with a HeistDef and a map scene (QB-55; no
+  placeholders). The contact comes from `HeistDef.contact`, then the city map's
   `heists[id].contact`, then a deterministic pick from `fallback_contacts`.
 * **Payout preview** is `HeistCatalog.contract_preview(base, difficulty)`. It runs through
   PayoutCalculator, so it matches heist select and the payday screen.

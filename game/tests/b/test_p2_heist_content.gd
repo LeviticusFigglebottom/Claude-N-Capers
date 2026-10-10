@@ -114,12 +114,6 @@ func test_night_deposit_briefing() -> void:
 	_check_briefing(&"night_deposit", &"contact.accountant", 3)
 
 
-func test_night_deposit_catalog_placeholder() -> void:
-	var data: Dictionary = HeistCatalog.heist_list().heists.get(&"night_deposit", {}) as Dictionary
-	assert_eq(int(data.get("placeholder_base_payout", 0)), 90000, "ENV C's proposed base payout")
-	assert_eq(int(data.get("placeholder_mode", -1)), Enums.HeistMode.STEALTH_OR_LOUD)
-
-
 # --- B4-10 Shadow Ledger ---
 
 func test_shadow_ledger_loot() -> void:
@@ -136,9 +130,6 @@ func test_shadow_ledger_objectives_follow_the_design_doc() -> void:
 
 func test_shadow_ledger_briefing() -> void:
 	_check_briefing(&"shadow_ledger", &"contact.accountant", 3)
-	var data: Dictionary = HeistCatalog.heist_list().heists.get(&"shadow_ledger", {}) as Dictionary
-	assert_eq(int(data.get("placeholder_base_payout", 0)), 110000, "D-042 base payout")
-	assert_eq(int(data.get("placeholder_mode", -1)), Enums.HeistMode.STEALTH_ONLY)
 
 
 func test_shadow_ledger_assets_validate() -> void:
