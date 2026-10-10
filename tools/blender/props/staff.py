@@ -59,7 +59,7 @@ VARIANTS = {
     "prop_bag_floor": {"fn": "bag_floor", "cat": {"kind": "bag", "place": "wall", "group": "clutter"}},
     # corridor + wall details
     "prop_fire_extinguisher": {"fn": "extinguisher", "cat": {"kind": "fire_extinguisher", "place": "wall_mount", "z": 1.05, "group": "corridor"}},
-    "prop_exit_sign": {"fn": "exit_sign", "cat": {"kind": "exit_sign", "place": "above_door", "z": 2.32, "fixture": True, "group": "corridor"}},
+    "prop_exit_sign": {"fn": "exit_sign", "cat": {"kind": "exit_sign", "place": "above_door", "z": 2.35, "fixture": True, "group": "corridor"}},
     "prop_bench_corridor": {"fn": "bench_corridor", "cat": {"kind": "bench", "place": "wall", "clear": 0.6, "group": "corridor"}},
     "prop_light_switch": {"fn": "switch", "cat": {"kind": "switch", "place": "wall_mount", "z": 1.2, "group": "corridor"}},
     "prop_outlet": {"fn": "outlet", "cat": {"kind": "outlet", "place": "wall_mount", "z": 0.3, "group": "corridor"}},
@@ -285,8 +285,14 @@ def _desk_exec(k: Kit, p: dict) -> None:
     o = k.obj("Desk")
     a = o.part(bevel=0.005, segments=2)
     t = o.part(bevel=0.0015)
-    a.bx((-w / 2, -d / 2, h - 0.04), (w / 2, d / 2, h), "walnut")
-    t.bx((-w / 2 + 0.15, -d / 2 + 0.12, h - 0.0005), (w / 2 - 0.15, d / 2 - 0.12, h + 0.0015), "leather")
+    # walnut top as a frame round a flush leather writing surface (one plane at 0.75, no overlaps)
+    ix0, ix1, iy0, iy1 = -w / 2 + 0.15, w / 2 - 0.15, -d / 2 + 0.12, d / 2 - 0.12
+    a.bx((-w / 2, -d / 2, h - 0.04), (w / 2, iy0, h), "walnut")
+    a.bx((-w / 2, iy1, h - 0.04), (w / 2, d / 2, h), "walnut")
+    a.bx((-w / 2, iy0, h - 0.04), (ix0, iy1, h), "walnut")
+    a.bx((ix1, iy0, h - 0.04), (w / 2, iy1, h), "walnut")
+    lt = o.part(bevel=0.0)
+    lt.bx((ix0, iy0, h - 0.04), (ix1, iy1, h), "leather")
     for sx in (-1, 1):
         x0, x1 = sorted((sx * (w / 2 - 0.02), sx * (w / 2 - 0.45)))
         a.bx((x0, -d / 2 + 0.03, 0.0), (x1, d / 2 - 0.03, h - 0.04), "walnut")

@@ -195,12 +195,14 @@ static func _reserve_openings(st: _State) -> void:
 		var w: int = int(o["wall"])
 		var u: float = float(o["u"])
 		var hw: float = float(o["width"]) * 0.5
-		st.wall_holes.append({"wall": w, "u0": u - hw - 0.08, "u1": u + hw + 0.08, "z0": float(o["bottom"]) - 0.05,
-			"z1": float(o["top"]) + 0.05})
+		var pad: float = float(o.get("pad", 0.08))
+		# the frame/architrave occupies the wall `pad` around the opening (and 0.09 above a door)
+		st.wall_holes.append({"wall": w, "u0": u - hw - pad, "u1": u + hw + pad, "z0": float(o["bottom"]) - 0.05,
+			"z1": float(o["top"]) + (0.09 if bool(o["door"]) else 0.05)})
 		if bool(o["door"]):
 			var depth: float = float(o["swing"])
-			var a: Vector3 = r.wall_point(w, u - hw - 0.1)
-			var b: Vector3 = r.wall_point(w, u + hw + 0.1) + KitRoom.wall_normal(w) * depth
+			var a: Vector3 = r.wall_point(w, u - hw - maxf(pad, 0.1))
+			var b: Vector3 = r.wall_point(w, u + hw + maxf(pad, 0.1)) + KitRoom.wall_normal(w) * depth
 			var box := AABB(a, Vector3.ZERO).expand(b)
 			box.position.y = 0.0
 			box.size.y = float(o["top"]) + 0.05
@@ -629,7 +631,7 @@ static func _try_above_door(st: _State, asset: String) -> bool:
 		var w: int = int(o["wall"])
 		var lx: Transform3D = _wall_xf(st, asset, w, float(o["u"]), zc, MOUNT_GAP - PropCatalog.aabb(StringName(asset)).end.z)
 		var box: AABB = _box_of(st, asset, lx)
-		if box.position.y < float(o["top"]) + 0.01:
+		if box.position.y < float(o["top"]) + 0.072:  # clear of the 0.07 m architrave
 			continue
 		var clash: bool = false
 		for p: Dictionary in st.placed:

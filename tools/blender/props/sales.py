@@ -158,7 +158,7 @@ def _podium(k: Kit, p: dict) -> None:
     hard.bx((-s / 2, -s / 2, 0.0), (s / 2, s / 2, h - 0.03), "walnut")
     hard.bx((-s / 2 - 0.015, -s / 2 - 0.015, h - 0.03), (s / 2 + 0.015, s / 2 + 0.015, h), "felt_rose")
     trim.bx((-s / 2 - 0.004, -s / 2 - 0.004, 0.0), (s / 2 + 0.004, s / 2 + 0.004, 0.05), "brass")
-    trim.bx((-s / 2 - 0.016, -s / 2 - 0.016, h - 0.034), (s / 2 + 0.016, s / 2 + 0.016, h - 0.028), "brass")
+    trim.bx((-s / 2 - 0.006, -s / 2 - 0.006, h - 0.042), (s / 2 + 0.006, s / 2 + 0.006, h - 0.036), "brass")
     disp = o.part(bevel=0.0)
     soft = o.part(bevel=0.003, segments=2)
     if p["top"] == "bust":
