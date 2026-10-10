@@ -79,6 +79,14 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 * `Hud` binds to the node in group `G.LOCAL_HUD_MODEL` (ui_hud.md v1.1), polled while unbound and
   rediscovered if the model is freed; `bind(model)` still works. `MockHudModel` joins the same group.
 
+* `SkillPoints` (`progression/skill_points.gd`): `points_for_level`, `cost_of`, `spent_total`,
+  `spent_in_subtree`, `can_unlock`, `validate`, `is_legal`. Tree structure: `SkillTreeDef` at
+  `data/skills/trees.tres`. Design + requested keys: `content/docs/skills.md`.
+* `LoadoutResolver.team_modifier_sources(loadout)` -> `{&"team_skill.<id>": grants}` for
+  `Modifiers.set_source(TEAM, ...)`; `resolve_modifiers` excludes `team.*` skill grants.
+* Perk decks: `data/perks/<deck>.tres` (`perk.<deck>`); param schemas: `content/docs/perk_decks.md`.
+* `ContentDB` scans each kind folder recursively; resources without an `id` are skipped.
+
 ## Rules
 Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, every string through
 `StringTable`, only grant keys from `ModifierKeys.KEYS`. Code that builds a mod delta starts from
