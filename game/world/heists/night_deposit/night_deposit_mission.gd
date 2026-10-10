@@ -75,8 +75,8 @@ func _on_mission_start() -> void:
 	on_event(&"item_picked_up", _on_item_picked_up)
 	on_event(&"loot_secured", _on_bag_secured)
 	on_event(&"assault_phase_changed", _on_assault_phase_changed)
-	on_event(&"civilian_tied", _on_civilian_dominated)
-	on_event(&"civilian_intimidated", _on_civilian_dominated)
+	on_event(&"civilian_tied", _on_nd_civilian_dominated)
+	on_event(&"civilian_intimidated", _on_nd_civilian_dominated)
 	_apply_scalars()
 	_schedule_rare_events()
 
@@ -174,7 +174,7 @@ func _on_item_picked_up(item_id: StringName, _crew_slot: int) -> void:
 ## code_on_manager: dominating the night manager makes him read out the code (cable tie + shout).
 ## The mission API cannot tell which civilian it was; any domination while he carries the code
 ## reveals it (the cleaner never carries one; tidy up when ENV A exposes spawn tags on the event).
-func _on_civilian_dominated(_npc_net_id: int, crew_slot: int) -> void:
+func _on_nd_civilian_dominated(_npc_net_id: int, crew_slot: int) -> void:
 	if _code_known or not _slot_active(&"code_carrier", &"code_on_manager"):
 		return
 	var codes: Object = Services.get_service(SVC_CODES)

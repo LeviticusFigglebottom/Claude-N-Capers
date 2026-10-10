@@ -284,3 +284,11 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - QB-54: heist-only assets for Night Deposit's points are defined by ENV C under `HeistDef.preplanning.assets`; B adds strings.
 - QB-55: a heist shows in menus only when its def and map exist (HeistRegistry); Night Deposit shows, Shadow Ledger after G1.
 - Pull-forward for ENV B: B4-11..B4-15 (roadmap).
+
+## D-050 — 2026-10-10 — Armory batch 2 contract additions (B4-12)
+- `WeaponDef.akimbo: bool` (lead, contracts/data): the `akimbo` qualifier derives from it, not from anim_set.
+- visual_slots: akimbo = one model + `Offhand` marker, WeaponVisual instances the offhand gun (`offhand`,
+  `get_offhand_marker`), ENV A reparents it to the left-hand socket; revolver `Crane` + child `Cylinder`.
+- New FP anim sets `akimbo` and `revolver` (ENV D), plus a fast pistol auto-fire clip for the Sparrow (≈880 rpm).
+- audio_cues: rows for bag lift, hack, escape vehicles, `cue.weapon_revolver_fire`; looping tells stop on end facts
+  (`crew_tase_ended`) or locally.
