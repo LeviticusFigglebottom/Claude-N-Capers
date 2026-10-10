@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_desk"]
+albedo_color = Color(0.4, 0.4, 0.45, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_screens"]
+albedo_color = Color(0.2, 0.5, 0.7, 1)
+
+[sub_resource type="BoxMesh" id="box_desk_2"]
+material = SubResource("mat_desk")
+size = Vector3(1.6, 0.75, 0.8)
+
+[sub_resource type="BoxMesh" id="box_screens_3"]
+material = SubResource("mat_screens")
+size = Vector3(1.4, 0.5, 0.05)
+
+[node name="CameraStationPlaceholder" type="Node3D"]
+
+[node name="Desk" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.375, 0)
+mesh = SubResource("box_desk_2")
+
+[node name="Screens" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0.25)
+mesh = SubResource("box_screens_3")
+
+[node name="Seat" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.75)

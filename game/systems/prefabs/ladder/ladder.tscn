@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://systems/prefabs/ladder/ladder.gd" id="1_ladder"]
+
+[node name="Ladder" type="Node3D"]
+script = ExtResource("1_ladder")
+
+[node name="Visual" type="Node3D" parent="."]

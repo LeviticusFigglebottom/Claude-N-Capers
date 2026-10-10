@@ -27,7 +27,7 @@ func tick(crew: CrewController, intent: CrewIntent, delta: float) -> void:
 			cancel(slot)
 		return
 	if _sessions.has(slot):
-		_advance(crew, intent, delta)
+		_advance(crew, delta)
 		return
 	if _needs_release.get(slot, false):
 		return
@@ -189,7 +189,7 @@ func _start(crew: CrewController, comp: InteractableComponent, aimed: bool) -> v
 		_complete(slot)
 
 
-func _advance(crew: CrewController, intent: CrewIntent, delta: float) -> void:
+func _advance(crew: CrewController, delta: float) -> void:
 	var slot: int = crew.slot
 	var s: Dictionary = _sessions[slot]
 	var comp: InteractableComponent = s["comp"]

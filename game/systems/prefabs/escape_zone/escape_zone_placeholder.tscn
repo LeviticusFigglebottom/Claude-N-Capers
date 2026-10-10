@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_area"]
+transparency = 1
+albedo_color = Color(0.2, 0.9, 0.3, 0.5)
+
+[sub_resource type="BoxMesh" id="box_area_1"]
+material = SubResource("mat_area")
+size = Vector3(4, 0.02, 4)
+
+[node name="EscapeZonePlaceholder" type="Node3D"]
+
+[node name="Area" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
+mesh = SubResource("box_area_1")

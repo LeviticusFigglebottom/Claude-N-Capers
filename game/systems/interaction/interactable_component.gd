@@ -67,29 +67,36 @@ func owner_net_id() -> int:
 
 ## Reason key why `crew` cannot use this now (&"" = available).
 func availability(crew: Node) -> StringName:
-	if not enabled or not is_inside_tree():
-		return BLOCK_DISABLED
-	var rt: Node = HeistRuntime.of(self)
-	if rt != null:
-		var ph: int = int(rt.get(&"phase"))
-		var loud: bool = ph == Enums.HeistPhase.LOUD or bool(rt.get(&"went_loud"))
-		if stealth_only and loud:
-			return BLOCK_PHASE
-		if loud_only and not loud:
-			return BLOCK_PHASE
-	if crew != null:
-		if int(crew.get(&"crew_state")) != Enums.CrewState.NORMAL:
-			return BLOCK_STATE
-		if not casing_allowed and not bool(crew.get(&"masked")):
-			return BLOCK_CASING
-		if not allowed_with_bag and crew.call(&"is_carrying_bag"):
-			return BLOCK_STATE
-		if requires_item != &"" and int(crew.call(&"item_count", requires_item)) <= 0:
-			return BLOCK_ITEM
-	if extra_check.is_valid():
+	var reason: StringName = BLOCK_DISABLED if not enabled or not is_inside_tree() else _phase_block()
+	if reason == BLOCK_NONE and crew != null:
+		reason = _crew_block(crew)
+	if reason == BLOCK_NONE and extra_check.is_valid():
 		var r: Variant = extra_check.call(crew)
-		if r is StringName and r != BLOCK_NONE:
-			return r
+		if r is StringName:
+			reason = r
+	return reason
+
+
+func _phase_block() -> StringName:
+	var rt: Node = HeistRuntime.of(self)
+	if rt == null:
+		return BLOCK_NONE
+	var ph: int = int(rt.get(&"phase"))
+	var loud: bool = ph == Enums.HeistPhase.LOUD or bool(rt.get(&"went_loud"))
+	if (stealth_only and loud) or (loud_only and not loud):
+		return BLOCK_PHASE
+	return BLOCK_NONE
+
+
+func _crew_block(crew: Node) -> StringName:
+	if int(crew.get(&"crew_state")) != Enums.CrewState.NORMAL:
+		return BLOCK_STATE
+	if not casing_allowed and not bool(crew.get(&"masked")):
+		return BLOCK_CASING
+	if not allowed_with_bag and crew.call(&"is_carrying_bag"):
+		return BLOCK_STATE
+	if requires_item != &"" and int(crew.call(&"item_count", requires_item)) <= 0:
+		return BLOCK_ITEM
 	return BLOCK_NONE
 
 

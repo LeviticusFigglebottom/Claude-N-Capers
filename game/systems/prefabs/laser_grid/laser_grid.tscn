@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://systems/prefabs/laser_grid/laser_grid.gd" id="1_laser_grid"]
+
+[sub_resource type="BoxShape3D" id="shape_shape_0"]
+size = Vector3(2, 2, 0.1)
+
+[node name="LaserGrid" type="Node3D"]
+script = ExtResource("1_laser_grid")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Trigger" type="Area3D" parent="."]
+collision_layer = 512
+collision_mask = 4
+
+[node name="Shape" type="CollisionShape3D" parent="Trigger"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("shape_shape_0")

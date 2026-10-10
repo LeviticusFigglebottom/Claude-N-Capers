@@ -13,6 +13,23 @@ signal objectives_changed()
 ## Mercer is the default speaker for mission lines (C8).
 const SPEAKER_MERCER: StringName = &"mercer"
 
+## Read-only runtime facts for mission scripts.
+var phase: int:
+	get:
+		return _runtime.phase if _runtime != null else Enums.HeistPhase.LOADING
+var went_loud: bool:
+	get:
+		return _runtime != null and _runtime.went_loud
+var difficulty: int:
+	get:
+		return _runtime.difficulty if _runtime != null else Enums.Difficulty.ROUTINE
+var bags_secured: int:
+	get:
+		return _bags_secured
+var secured_value: int:
+	get:
+		return _loot_value
+
 var _runtime: HeistRuntime = null
 ## objective id -> { "id", "text_key", "state", "data", "order" }
 var _objectives: Dictionary[StringName, Dictionary] = {}
@@ -100,14 +117,6 @@ func require_loot(objective_id: StringName, count: int = 1) -> void:
 	_check_reqs()
 
 
-func bags_secured() -> int:
-	return _bags_secured
-
-
-func secured_value() -> int:
-	return _loot_value
-
-
 # --- Events, timers, voice -----------------------------------------------------------
 
 ## Connect to an EventBus signal; disconnected automatically at teardown.
@@ -152,20 +161,8 @@ func find_tagged(tag: StringName) -> Array[Node]:
 	return _runtime.find_by_tag(tag) if _runtime != null else []
 
 
-func phase() -> int:
-	return _runtime.phase if _runtime != null else Enums.HeistPhase.LOADING
-
-
-func went_loud() -> bool:
-	return _runtime != null and _runtime.went_loud
-
-
 func variant(group_or_scalar: StringName) -> Variant:
 	return _runtime.variants.get(group_or_scalar) if _runtime != null else null
-
-
-func difficulty() -> int:
-	return _runtime.difficulty if _runtime != null else Enums.Difficulty.ROUTINE
 
 
 ## C10: make escape zones tagged `tag` (all escape zones if empty) available.

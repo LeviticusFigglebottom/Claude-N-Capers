@@ -1,0 +1,54 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_frame"]
+albedo_color = Color(0.9, 0.9, 0.88, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_glass"]
+transparency = 1
+albedo_color = Color(0.7, 0.85, 0.95, 0.35)
+
+[sub_resource type="BoxMesh" id="box_sill_2"]
+material = SubResource("mat_frame")
+size = Vector3(1.12, 0.06, 0.15)
+
+[sub_resource type="BoxMesh" id="box_top_3"]
+material = SubResource("mat_frame")
+size = Vector3(1.12, 0.06, 0.15)
+
+[sub_resource type="BoxMesh" id="box_sidel_4"]
+material = SubResource("mat_frame")
+size = Vector3(0.06, 1.2, 0.15)
+
+[sub_resource type="BoxMesh" id="box_sider_5"]
+material = SubResource("mat_frame")
+size = Vector3(0.06, 1.2, 0.15)
+
+[sub_resource type="BoxMesh" id="box_glass_6"]
+material = SubResource("mat_glass")
+size = Vector3(1, 1.2, 0.01)
+
+[node name="WindowPlaceholder" type="Node3D"]
+
+[node name="Frame" type="Node3D" parent="."]
+
+[node name="Sill" type="MeshInstance3D" parent="Frame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.03, 0)
+mesh = SubResource("box_sill_2")
+
+[node name="Top" type="MeshInstance3D" parent="Frame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.23, 0)
+mesh = SubResource("box_top_3")
+
+[node name="SideL" type="MeshInstance3D" parent="Frame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.53, 0.6, 0)
+mesh = SubResource("box_sidel_4")
+
+[node name="SideR" type="MeshInstance3D" parent="Frame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.53, 0.6, 0)
+mesh = SubResource("box_sider_5")
+
+[node name="Sash" type="Node3D" parent="."]
+
+[node name="Glass" type="MeshInstance3D" parent="Sash"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+mesh = SubResource("box_glass_6")
