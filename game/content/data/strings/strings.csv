@@ -30,6 +30,7 @@ ui.heist_select.modes_stealth_loud,Stealth or loud
 ui.heist_select.modes_stealth_only,Stealth only
 ui.heist_select.modes_loud_only,Loud only
 ui.heist_select.start,Start Heist
+ui.heist_select.next,Briefing
 ui.heist_select.crew_ai,Fill empty slots with crew AI
 ui.loadout.title,Loadout
 ui.loadout.primary,Primary
@@ -438,11 +439,13 @@ ui.range.target_hp,{hp} / {max}
 ui.range.damage_body,{value}
 ui.range.damage_head,{value}!
 ui.range.ammo,{ammo} / {mag}
+ui.range.ammo_reserve,{ammo} / {mag}  ·  reserve {reserve}
 ui.range.reloading,Reloading...
 ui.range.crosshair,+
 ui.range.hint_panels,Click the range or press Tab / Start to aim. Esc / B leaves the range.
+ui.range.hint_aim_crew,WASD move · Shift sprint · Ctrl/C crouch · Space jump · Mouse look · LMB fire · RMB aim · R reload · 1/2 weapon · Tab / Esc menu
 ui.range.hint_aim,WASD move · Q/E down/up · Mouse look · LMB fire · RMB aim · R reload · Tab / Esc menu
-ui.range.temp_camera,Temporary range camera (until the crew controller ships)
+ui.range.temp_camera,Fallback range camera (crew controller unavailable)
 ui.range.dummy.light,Light Tactical Dummy
 ui.range.zone.body,Body
 ui.range.zone.head,Head
@@ -1084,3 +1087,180 @@ ui.perks.state.locked,Locked
 ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available). Perk points come from experience.
 ui.perks.dev_unlocked,Dev build: every perk card is unlocked.
 ui.perks.hint,"Select a deck to see its cards; press it to equip. Only the equipped deck is active, with every card unlocked in it."
+heist.glasshouse.briefing,"Vossberg Jewelers sits on the corner of Harlow Avenue and Pell Street and stays open late for its private viewing week. Tonight the estate consignment waits in the workshop safe. Case the floor as customers, find the manager's keycard and take the back route. If it goes loud, the safe locks down: drill it and hold until the van arrives. Odile wants at least two bags before Friday."
+contact.role.fence,Fence
+contact.role.fixer,Fixer
+contact.role.insider,Insider
+contact.role.handler,Handler on comms
+ui.briefing.title,Briefing
+ui.briefing.difficulty,Difficulty: {name}
+ui.briefing.mode,Approach: {mode}
+ui.briefing.intel,The Job
+ui.briefing.objectives,Objectives
+ui.briefing.objective_line,{index}. {text}
+ui.briefing.objectives_none,Your contact will brief you on site.
+ui.briefing.loot,Loot
+ui.briefing.loot_line,{loot}: {value} per bag
+ui.briefing.loot_none,No bagged loot on this job.
+ui.briefing.escape,Escape
+ui.briefing.escape.van,Van
+ui.briefing.escape.boat,Boat
+ui.briefing.escape.heli,Helicopter
+ui.briefing.escape.walk,On foot
+ui.briefing.escape_unknown,Mercer will improvise.
+ui.briefing.contract_pay,Contract pay: {amount}
+ui.briefing.blueprint,Blueprint
+ui.briefing.blueprint_pending,Floor plans arrive with the casing photos.
+ui.briefing.play,Play Briefing
+ui.briefing.stop,Stop Briefing
+ui.briefing.continue,Continue
+ui.briefing.subtitle,{speaker}: {text}
+ui.briefing.subtitle_idle,Play the briefing to hear from your contact.
+ui.briefing.no_lines,No recorded briefing for this job.
+ui.briefing.placeholder,Provisional intel: details may change before the job.
+voice.vo.vance.briefing_glasshouse_1,"Vossberg Jewelers, darling. Harlow and Pell. On Thursday the estate consignment sleeps in the workshop safe; on Friday it goes to people with better manners than you."
+voice.vo.vance.briefing_glasshouse_2,The windows are for tourists. The good pieces are in the back. Find the manager's keycard and you won't need to make a racket.
+voice.vo.vance.briefing_glasshouse_3,Two bags is the least I'll accept. Bring me more and I may even remember your names. Don't keep me waiting.
+voice.vo.reyes.briefing_glasshouse_1,"A jewelry store? Not my usual. Odile's paying me to say hello, so: Vossberg, two floors, rent-a-cops from Halden Security."
+voice.vo.reyes.briefing_glasshouse_2,"If it goes loud, the safe locks itself down. Bring a drill, hold that back corridor and wait for the van like grown-ups."
+voice.vo.accountant.briefing_glasshouse_1,Vossberg's insurer filed the Thursday consignment as low risk. That is an error I would like you to correct.
+voice.vo.accountant.briefing_glasshouse_2,"Two bags of stones covers my margin. Anything beyond that is your bonus. Keep the receipts in your head, not on paper."
+voice.vo.mercer.briefing_glasshouse_1,"I'll be on comms the whole way. Walk in like customers, count the cameras and don't touch anything you can't carry."
+ui.briefing.heist,{name}: {subtitle}
+ui.preplan.title,Pre-planning
+ui.preplan.placeholder,PLACEHOLDER BLUEPRINT
+ui.preplan.crew_assets,Crew assets
+ui.preplan.crew_assets_meta,No map location: the whole crew gets these.
+ui.preplan.crew_short,crew
+ui.preplan.map_hint,Pick a numbered point on the blueprint to place an asset.
+ui.preplan.favors,Favors: {used} / {budget}
+ui.preplan.cash,Spending cash {cash}  |  this plan {cost}  |  left {left}
+ui.preplan.your_plan,Your plan
+ui.preplan.plan_empty,"Nothing bought yet. Assets are one-use, and any crew member can buy them."
+ui.preplan.plan_line,{name} @ {where} ({cost})
+ui.preplan.vote_none,not chosen (left to chance)
+ui.preplan.plan_more,+{n} more
+ui.preplan.vote_line,{group}: {choice}  ({cast}/{voters} votes)
+ui.preplan.vote_solo,"Solo: your vote decides every plan."
+ui.preplan.vote_host_ties,"Plans need a majority vote; the host breaks ties."
+ui.preplan.confirm,Confirm plan
+ui.preplan.hint,"Spending cash is paid when you confirm. Esc / B returns from a list to the blueprint."
+ui.preplan.nothing_here,No assets for this point.
+ui.preplan.invalid,The plan is over budget or breaks a rule. Remove something first.
+ui.preplan.row,"{name}  -  {cost}, {favors} favors"
+ui.preplan.row_owned,Bought: {name}  (refund {cost})
+ui.preplan.row_vote,"Vote: {name}  -  {cost}, {favors} favors"
+ui.preplan.row_vote_cast,Your vote: {name}  (withdraw)
+ui.preplan.scale,{m} m
+ui.preplan.north,N
+ui.preplan.floor.ground,Ground floor
+ui.preplan.floor.upper,Upper floor
+ui.preplan.category.drop_zone,Drop zone: supplies are left here before the job.
+ui.preplan.category.player_spawn,Entry point: the crew starts here instead.
+ui.preplan.category.escape,Escape: where the van waits.
+ui.preplan.category.access,Access point.
+ui.preplan.reason.unknown_asset,This asset is not offered on this job.
+ui.preplan.reason.needs_point,Place this asset on a point of the blueprint.
+ui.preplan.reason.no_point_needed,This asset has no map location.
+ui.preplan.reason.wrong_point,This asset cannot be placed here.
+ui.preplan.reason.point_taken,Something is already placed on this point.
+ui.preplan.reason.max_count,No more of this asset can be bought.
+ui.preplan.reason.exclusive,Another asset of the same kind is already in the plan.
+ui.preplan.reason.favors,Needs {favors} favors ({left} left).
+ui.preplan.reason.cash,Costs {cost}; you have {cash} left.
+ui.preplan.reason.not_voter,Only crew members can vote.
+ui.preplan.tag.stealth,stealth
+ui.preplan.tag.loud,loud
+ui.preplan.vote_group.escape,Escape
+ui.preplan.bp.backs,Back yards
+ui.preplan.bp.alley,Service alley
+ui.preplan.bp.neighbour,Neighbour
+ui.preplan.bp.target,Target
+ui.preplan.bp.side_street,Side street
+ui.preplan.bp.garage,Garage
+ui.preplan.bp.sidewalk,Sidewalk
+ui.preplan.bp.avenue,Avenue
+ui.preplan.bp.facades,Facades
+ui.preplan.point.pp_alley_dumpsters,Alley dumpsters
+ui.preplan.point.pp_alley_hvac,Alley HVAC units
+ui.preplan.point.pp_side_kerb,Side street kerb
+ui.preplan.point.pp_spawn_alley_west,Alley west end
+ui.preplan.point.pp_spawn_alley_mouth,Alley mouth
+ui.preplan.point.pp_escape_alley_west,Van: alley west
+ui.preplan.point.pp_escape_side_street,Van: side street
+item.asset.body_bag_case_drop.name,Body bag case drop
+item.asset.body_bag_case_drop.desc,A case of body bags is stashed here before the job.
+item.asset.ammo_bag_drop.name,Ammo bag drop
+item.asset.ammo_bag_drop.desc,An ammo bag waits here for when things get loud.
+item.asset.doctor_bag_drop.name,Doctor bag drop
+item.asset.doctor_bag_drop.desc,A doctor bag waits here for when things get loud.
+item.asset.intel_keycards.name,Insider: keycards
+item.asset.intel_keycards.desc,An insider tells you where the keycards are tonight.
+item.asset.intel_cameras.name,Insider: camera layout
+item.asset.intel_cameras.desc,You know which cameras are live before you walk in.
+item.asset.intel_guard_posts.name,Insider: guard posts
+item.asset.intel_guard_posts.desc,You know where the guards are posted tonight.
+item.asset.extra_cable_ties.name,Extra cable ties
+item.asset.extra_cable_ties.desc,Every crew member carries 2 more cable ties.
+item.asset.spare_body_bags.name,Spare body bags
+item.asset.spare_body_bags.desc,Every crew member carries 1 more body bag.
+item.asset.alternate_entry.name,Alternate entry
+item.asset.alternate_entry.desc,The crew starts the job from this point.
+item.asset.escape_position.name,Van position
+item.asset.escape_position.desc,"The getaway van waits here. A plan: the crew votes, the host breaks ties."
+ui.masks.title,Masks
+ui.masks.open,Masks
+ui.masks.equipped,Equipped: {name}
+ui.masks.none,No mask
+ui.masks.your_masks,Your masks
+ui.masks.custom_slot,Custom mask {n}
+ui.masks.empty_slot,Empty slot {n}
+ui.masks.base,Base
+ui.masks.material,Material
+ui.masks.colors,Colours
+ui.masks.pattern,Pattern
+ui.masks.save_slot,Save into
+ui.masks.save,Save mask
+ui.masks.equip,Equip
+ui.masks.equipped_tag,{name} (worn)
+ui.masks.locked,{name} (locked)
+ui.masks.status.unsaved,Unsaved changes: save the mask into a custom slot to wear it.
+ui.masks.status.saved,Saved as {name}.
+ui.masks.status.equipped,{name} is your mask for the next job.
+ui.masks.status.ready,"{name}: press Equip to wear it."
+ui.masks.status.locked_parts,Some of these parts are locked. New parts drop from paydays.
+ui.masks.status.empty_slot,This slot is empty. Build a mask and save it here.
+ui.masks.preview_hint,Drag with the mouse or use the right stick to turn the mask.
+ui.masks.hint,"Pick a mask on the left, change its parts on the right, save it into a custom slot, then equip it."
+item.mask_base.heron.name,Heron
+item.mask_base.visage.name,Plain Visage
+item.mask_base.vulpine.name,Vulpine
+item.mask_base.bruiser.name,Bruiser
+item.mask_base.owl.name,Night Owl
+item.mask_material.lacquer.name,Lacquer
+item.mask_material.matte.name,Matte Shell
+item.mask_material.gilt.name,Gilt
+item.mask_material.leather.name,Saddle Leather
+item.mask_material.chrome.name,Mirror Chrome
+item.mask_material.walnut.name,Walnut
+item.mask_material.marble.name,Marble
+item.mask_material.blued_steel.name,Blued Steel
+item.mask_material.rubber.name,Rubber
+item.mask_colors.bone_ink.name,Bone and Ink
+item.mask_colors.ember_soot.name,Ember and Soot
+item.mask_colors.gilt_night.name,Gilt and Night
+item.mask_colors.harbor_fog.name,Harbor Fog
+item.mask_colors.jade_rust.name,Jade and Rust
+item.mask_colors.violet_static.name,Violet Static
+item.mask_colors.cobalt_flare.name,Cobalt Flare
+item.mask_colors.moss_bark.name,Moss and Bark
+item.mask_colors.rose_cinder.name,Rose Cinder
+item.mask_colors.signal_white.name,Signal White
+item.mask_pattern.solid.name,Solid
+item.mask_pattern.split.name,Split Face
+item.mask_pattern.brow_band.name,Brow Band
+item.mask_pattern.stripes.name,Stripes
+item.mask_pattern.chevron.name,Chevrons
+item.mask_pattern.dots.name,Dots
+item.mask_pattern.sash.name,Sash
+item.mask_pattern.diamonds.name,Diamonds

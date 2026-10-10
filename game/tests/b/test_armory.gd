@@ -138,6 +138,35 @@ func test_class_stat_shapes() -> void:
 		assert_true(w.base.ammo_pickup_max >= w.base.ammo_pickup_min, "%s pickup range" % w.id)
 
 
+## D-034 QB-43: shell-by-shell reload. Only weapons that load single rounds set the three fields
+## (Plowman 12 tube); detachable-magazine weapons (Heron .308's 5-round box) keep a magazine reload
+## (all 0). For a shell-loaded weapon, reload_empty_time_s = start + mag x per_round + end (full tube
+## from empty) and reload_time_s = start + (mag - 1) x per_round + end (one shell still loaded), also
+## after every mod (a tube mod's reload deltas = extra shells x per_round).
+func test_shell_by_shell_reload_fields() -> void:
+	const SHELL_LOADED: Array[StringName] = [&"weapon.plowman_12"]
+	for w: WeaponDef in ContentDB.all_weapons():
+		var b: WeaponStats = w.base
+		var shell: bool = SHELL_LOADED.has(w.id)
+		assert_eq(b.reload_per_round_s > 0.0, shell, "%s shell-by-shell = %s" % [w.id, shell])
+		if not shell:
+			assert_eq([b.reload_start_s, b.reload_end_s], [0.0, 0.0], "%s magazine reload" % w.id)
+			continue
+		var mods: Array[StringName] = [&""]
+		for slot: Variant in w.mod_slots:
+			for mid: Variant in w.mod_slots[slot]:
+				mods.append(StringName(mid))
+		for mid: StringName in mods:
+			var picked: Array[StringName] = []
+			if mid != &"":
+				picked.append(mid)
+			var s: WeaponStats = LoadoutResolver.resolve_weapon(w.id, picked)
+			var full: float = s.reload_start_s + s.mag_size * s.reload_per_round_s + s.reload_end_s
+			assert_near(s.reload_empty_time_s, full, 0.001, "%s +%s empty reload" % [w.id, mid])
+			assert_near(s.reload_time_s, full - s.reload_per_round_s, 0.001, "%s +%s tactical reload" % [w.id, mid])
+	assert_eq(ContentDB.weapon(&"weapon.heron_308").base.reload_per_round_s, 0.0, "Heron: detachable mag")
+
+
 func test_cues_and_anim_sets_follow_the_contract_pattern() -> void:
 	for w: WeaponDef in ContentDB.all_weapons():
 		assert_has(ANIM_SETS, w.anim_set, "%s anim set" % w.id)

@@ -5,7 +5,6 @@
 [resource]
 script = ExtResource("1")
 skill_set_count = 3
-xp_per_perk_point = 500
 dev_unlock_all_perks = false
 deck_order = Array[StringName]([&"perk.foreman", &"perk.bulk", &"perk.ironclad", &"perk.slipper", &"perk.hustler", &"perk.clean_sweep", &"perk.prowler", &"perk.knuckles", &"perk.bloodletter", &"perk.composure", &"perk.overclock", &"perk.incumbent", &"perk.long_odds", &"perk.overlord"])
 skill_locked_color = Color(0.22, 0.23, 0.26, 1)

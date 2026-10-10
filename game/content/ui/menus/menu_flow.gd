@@ -1,5 +1,9 @@
-## Front-end flow controller: main menu -> heist select -> loadout -> launch -> HUD -> payday.
-## Owner: ENV B. Screens only emit signals; this node swaps them (no scene changes, so the whole flow
+## Front-end flow controller (pd2_fidelity C2/C3 order): main menu -> heist select -> briefing ->
+## pre-planning -> loadout (-> masks / skills / perk deck) -> launch -> HUD -> payday. Owner: ENV B.
+## Back is symmetrical at every step (loadout -> pre-planning refunds the confirmed plan's cash, so a
+## re-confirm never charges twice). The confirmed plan goes to HeistLauncher as options["preplan"]
+## (PreplanPlan.apply(); proposed in content/docs/preplanning.md, pending the lead's QB-PP2).
+## Screens only emit signals; this node swaps them (no scene changes, so the whole flow
 ## also runs inside tests). Launch uses ENV A's HeistLauncher (contracts/test_hooks.md), looked up
 ## dynamically; without it a stub screen offers a sample payday.
 ## App shell (D-024): core/boot.gd routes here. It owns launch, the HUD/payday layer, and
@@ -17,12 +21,19 @@ const STUB_SCENE: PackedScene = preload("res://content/ui/menus/stub_screen.tscn
 const PAYDAY_SCENE: PackedScene = preload("res://content/ui/results/payday.tscn")
 const HUD_SCENE: PackedScene = preload("res://content/ui/hud/hud.tscn")
 const RANGE_SCENE: PackedScene = preload("res://content/range/firing_range.tscn")
+const BRIEFING_SCENE: PackedScene = preload("res://content/ui/briefing/briefing_screen.tscn")
+const PREPLAN_SCENE: PackedScene = preload("res://content/ui/preplanning/preplanning_screen.tscn")
+const MASKS_SCENE: PackedScene = preload("res://content/ui/masks/mask_screen.tscn")
 const SKILLS_SCENE: PackedScene = preload("res://content/ui/progression/skill_tree_screen.tscn")
 const PERKS_SCENE: PackedScene = preload("res://content/ui/progression/perk_deck_screen.tscn")
 
 var main_menu: MainMenu
 var heist_select: HeistSelect
+var briefing_screen: BriefingScreen
+var preplanning_screen: PreplanningScreen
 var loadout_screen: LoadoutScreen
+## Mask screen while open from the loadout screen (B2-03), else null.
+var mask_screen: MaskScreen = null
 var stub_screen: StubScreen
 var payday: PaydayScreen
 ## Skill tree / perk deck screen while open from the loadout screen (B4-03), else null.
@@ -30,6 +41,12 @@ var progression_screen: UiScreen = null
 var current: Control
 var firing_range: FiringRange = null
 var runtime: Object = null
+## Profile slot the menu path edits (pre-planning, loadout, masks, skills share one PlayerProfile).
+var profile_slot: int = 0
+## The profile shared by the menu path screens (loaded when a heist is chosen).
+var profile: PlayerProfile = null
+## Confirmed pre-planning plan (PreplanPlan.apply()); {} = none (direct launch, or not confirmed yet).
+var preplan: Dictionary = {}
 var _heist_id: StringName = &""
 var _difficulty: int = Enums.Difficulty.ROUTINE
 var _in_heist: CanvasLayer = null
@@ -85,14 +102,124 @@ func _show_stub(message_key: StringName, sample_payday: bool) -> void:
 func _on_heist_chosen(heist_id: StringName, difficulty: int) -> void:
 	_heist_id = heist_id
 	_difficulty = difficulty
-	if loadout_screen != null:
-		loadout_screen.queue_free()
-	loadout_screen = _add(LOADOUT_SCENE) as LoadoutScreen
-	loadout_screen.back_requested.connect(show_screen.bind(heist_select))
+	preplan = {}
+	profile = SaveService.load_profile(profile_slot)
+	_free_screen(preplanning_screen)
+	preplanning_screen = null
+	_free_screen(loadout_screen)
+	loadout_screen = null
+	if briefing_screen == null:
+		briefing_screen = BRIEFING_SCENE.instantiate() as BriefingScreen
+		briefing_screen.setup(heist_id, difficulty)
+		briefing_screen.visible = false
+		add_child(briefing_screen)
+		briefing_screen.back_requested.connect(show_screen.bind(heist_select))
+		briefing_screen.continue_requested.connect(_on_briefing_continue)
+	else:
+		briefing_screen.setup(heist_id, difficulty)
+	show_screen(briefing_screen)
+
+
+## Briefing -> pre-planning (a fresh board for this heist + difficulty on the shared profile).
+func _on_briefing_continue(heist_id: StringName, difficulty: int) -> void:
+	_heist_id = heist_id
+	_difficulty = difficulty
+	preplan = {}
+	_free_screen(preplanning_screen)
+	preplanning_screen = PREPLAN_SCENE.instantiate() as PreplanningScreen
+	preplanning_screen.profile_slot = profile_slot
+	preplanning_screen.setup(heist_id, difficulty, _menu_profile())
+	preplanning_screen.visible = false
+	add_child(preplanning_screen)
+	preplanning_screen.back_requested.connect(show_screen.bind(briefing_screen))
+	preplanning_screen.confirmed.connect(_on_preplan_confirmed)
+	show_screen(preplanning_screen)
+
+
+## Pre-planning confirmed (cash already charged and saved by the screen) -> loadout.
+func _on_preplan_confirmed(plan: Dictionary) -> void:
+	preplan = plan
+	_free_screen(loadout_screen)
+	loadout_screen = LOADOUT_SCENE.instantiate() as LoadoutScreen
+	loadout_screen.profile_slot = profile_slot
+	loadout_screen.setup(_menu_profile())
+	loadout_screen.visible = false
+	add_child(loadout_screen)
+	loadout_screen.back_requested.connect(_on_loadout_back)
 	loadout_screen.launch_requested.connect(_on_launch_requested)
 	loadout_screen.skills_requested.connect(open_progression.bind(SKILLS_SCENE))
 	loadout_screen.perk_deck_requested.connect(open_progression.bind(PERKS_SCENE))
+	loadout_screen.masks_requested.connect(open_masks)
 	show_screen(loadout_screen)
+
+
+## Loadout -> pre-planning: the plan is not used yet, so its local cash share is refunded (the screen
+## keeps its selections; confirming again charges again).
+func _on_loadout_back() -> void:
+	refund_preplan()
+	if preplanning_screen == null:
+		show_screen(briefing_screen)
+		return
+	preplanning_screen.refresh()
+	show_screen(preplanning_screen)
+
+
+## Gives the confirmed plan's local cash share back to the profile and saves it. Returns the amount.
+func refund_preplan() -> int:
+	if preplan.is_empty():
+		return 0
+	var slot: int = preplanning_screen.local_slot if preplanning_screen != null else 0
+	var amount: int = int((preplan.get("cash_spent", {}) as Dictionary).get(slot, 0))
+	preplan = {}
+	if amount > 0:
+		var p: PlayerProfile = _menu_profile()
+		p.cash += amount
+		SaveService.save_profile(p, profile_slot)
+	return amount
+
+
+## Mask screen (B2-03) on the loadout screen's profile (committed and saved first by the loadout
+## screen); Back returns to the loadout screen with its mask picker re-read from the profile.
+func open_masks() -> void:
+	if loadout_screen == null:
+		return
+	close_masks(false)
+	mask_screen = MASKS_SCENE.instantiate() as MaskScreen
+	mask_screen.setup(loadout_screen.profile)
+	mask_screen.profile_slot = loadout_screen.profile_slot
+	mask_screen.visible = false
+	add_child(mask_screen)
+	mask_screen.back_requested.connect(close_masks.bind(true))
+	mask_screen.mask_changed.connect(_on_mask_changed)
+	show_screen(mask_screen)
+
+
+func close_masks(show_loadout: bool = true) -> void:
+	if mask_screen != null:
+		mask_screen.queue_free()
+		mask_screen = null
+	if show_loadout and loadout_screen != null:
+		loadout_screen.refresh_masks()
+		loadout_screen.refresh()
+		show_screen(loadout_screen)
+
+
+func _on_mask_changed(_mask_id: StringName) -> void:
+	if loadout_screen != null:
+		loadout_screen.refresh_masks()
+
+
+func _menu_profile() -> PlayerProfile:
+	if profile == null:
+		profile = SaveService.load_profile(profile_slot)
+	return profile
+
+
+## Removes a screen from the flow right away (so it never shows up in show_screen's sweep again).
+func _free_screen(screen: Control) -> void:
+	if screen != null and is_instance_valid(screen):
+		remove_child(screen)
+		screen.queue_free()
 
 
 ## Skill tree / perk deck (B4-03): edits the loadout screen's profile (already saved by the loadout
@@ -143,7 +270,7 @@ func close_firing_range() -> void:
 
 
 func _on_launch_requested(loadout: Loadout) -> void:
-	launch(_heist_id, _difficulty, loadout, _time_seed())
+	launch(_heist_id, _difficulty, loadout, _time_seed(), preplan)
 
 
 ## Direct launch (D-024): `args` from LaunchArgs.parse(). Skips the menus and launches `heist_id`
@@ -172,8 +299,10 @@ func direct_launch(args: Dictionary) -> bool:
 
 ## The single launch path (Launch button and direct launch): solo session, resolved loadout,
 ## HUD + payday layer, then HeistLauncher.launch (ENV A, looked up dynamically). Without the
-## launcher the stub screen is shown and no in-heist UI is spawned.
-func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: int) -> void:
+## launcher the stub screen is shown and no in-heist UI is spawned. `plan` = the confirmed
+## pre-planning plan ({} for direct launch); see build_launch_options().
+func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: int,
+		plan: Dictionary = {}) -> void:
 	var launcher: Script = UiNav.global_class(&"HeistLauncher")
 	if launcher == null:
 		_show_stub(&"ui.stub.launcher_missing", true)
@@ -184,7 +313,7 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 	var ai: int = HeistCatalog.heist_list().solo_ai_for(heist_id)
 	var profile: PlayerProfile = SaveService.load_profile()
 	Net.start_solo(profile.profile_name, ai)
-	var options: Dictionary = {"ai_teammates": ai, "loadouts": {Net.local_slot(): resolved}}
+	var options: Dictionary = build_launch_options(ai, Net.local_slot(), resolved, plan)
 	visible = false
 	_spawn_in_heist_ui()
 	runtime = await launcher.call(&"launch", heist_id, run_seed, difficulty, null, options)
@@ -192,10 +321,19 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 		Log.error(&"ui", "HeistLauncher.launch(%s) returned null; back to the main menu" % heist_id)
 		_leave_heist()
 		return
-	var hud_model: Node = runtime.get(&"hud_model") as Node
-	if hud_model != null and _hud is Hud:
-		(_hud as Hud).bind(hud_model)
+	# The HUD binds HeistRuntime's LocalHudModel itself through group G.LOCAL_HUD_MODEL (ui_hud.md v1.1).
 	heist_launched.emit(runtime)
+
+
+## HeistLauncher.launch options (contracts/test_hooks.md): `ai_teammates`, `loadouts` = {slot: resolved
+## Loadout}, and `preplan` = PreplanPlan.apply() when a plan was confirmed (omitted when `plan` is
+## empty). `preplan` is ENV B's proposal (QB-PP2, pending the lead); launchers that do not know it ignore it.
+static func build_launch_options(ai_teammates: int, local_slot: int, resolved: Loadout,
+		plan: Dictionary = {}) -> Dictionary:
+	var options: Dictionary = {"ai_teammates": ai_teammates, "loadouts": {local_slot: resolved}}
+	if not plan.is_empty():
+		options["preplan"] = plan
+	return options
 
 
 ## Menu-side seed (not gameplay RNG): the run seed handed to HeistLauncher.

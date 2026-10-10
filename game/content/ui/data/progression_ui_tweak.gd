@@ -1,6 +1,6 @@
 ## Skill tree / perk deck screen data (B4-03). Data: res://content/data/ui/progression_ui.tres.
-## Owner: ENV B. The perk point rate lives here until the lead decides where it belongs (question
-## QB perk points); it is read by PerkProgress.
+## Owner: ENV B. The perk point rate moved to content/data/tweak/perk_points.tres (PerkPointTweak,
+## D-034 QB-45); xp_per_perk_point below only forwards to it for existing readers.
 class_name ProgressionUiTweak
 extends Resource
 
@@ -8,10 +8,8 @@ const DEFAULT_PATH: String = "res://content/data/ui/progression_ui.tres"
 
 ## PD2 P2 "multiple skill sets": how many sets the selector offers (PlayerProfile.skill_sets).
 @export var skill_set_count: int = 3
-## Perk points (PD2 P4): earned = floor(total XP / xp_per_perk_point), spent = cost of every unlocked
-## card of every deck; cards unlock in order. ◇ The rate is ours, not PD2's (question for the lead).
-@export var xp_per_perk_point: int = 500
-## Dev builds: every card of every deck counts as unlocked (no perk points needed).
+## Dev builds: every card of every deck counts as unlocked (no perk points needed). A dev/UI switch,
+## not balance, so it stays here.
 @export var dev_unlock_all_perks: bool = false
 ## Perk deck list order (ids); decks missing here follow, sorted by id.
 @export var deck_order: Array[StringName] = []
@@ -29,6 +27,11 @@ const DEFAULT_PATH: String = "res://content/data/ui/progression_ui.tres"
 @export var card_unlocked_color: Color = Color(1.0, 0.75, 0.25)
 @export var card_next_color: Color = Color(0.45, 0.5, 0.58)
 @export var card_locked_color: Color = Color(0.22, 0.23, 0.26)
+
+## Perk points (PD2 P4): read-only forward to PerkPointTweak (balance data, not UI; D-034 QB-45).
+var xp_per_perk_point: int:
+	get:
+		return PerkPointTweak.current().xp_per_perk_point
 
 
 static func load_default() -> ProgressionUiTweak:

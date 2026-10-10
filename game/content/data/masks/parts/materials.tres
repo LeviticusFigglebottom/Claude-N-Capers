@@ -1,0 +1,113 @@
+[gd_resource type="Resource" script_class="MaskPartList" format=3]
+
+[ext_resource type="Script" path="res://content/masks/mask_part_def.gd" id="1_3q0c8"]
+[ext_resource type="Material" path="res://world/materials/paint_white.tres" id="2_x8y6b"]
+[ext_resource type="Script" path="res://content/masks/mask_material_def.gd" id="3_ktq15"]
+[ext_resource type="Material" path="res://world/materials/plastic_matte.tres" id="4_rahdi"]
+[ext_resource type="Material" path="res://world/materials/brass.tres" id="5_jwtjh"]
+[ext_resource type="Material" path="res://world/materials/leather_dark.tres" id="6_t1ehk"]
+[ext_resource type="Material" path="res://world/materials/chrome.tres" id="7_d5viv"]
+[ext_resource type="Material" path="res://world/materials/wood_veneer_walnut.tres" id="8_i1lqn"]
+[ext_resource type="Material" path="res://world/materials/marble_cream.tres" id="9_tv5qh"]
+[ext_resource type="Material" path="res://world/materials/steel_blued.tres" id="10_5ibvv"]
+[ext_resource type="Material" path="res://world/materials/rubber_black.tres" id="11_btaij"]
+[ext_resource type="Script" path="res://content/masks/mask_part_list.gd" id="12_coas7"]
+
+[sub_resource type="Resource" id="Resource_jkanb"]
+script = ExtResource("3_ktq15")
+material_id = &"paint_white"
+library_material = ExtResource("2_x8y6b")
+roughness = 0.25
+detail_strength = 0.25
+detail_mean = 0.685
+id = &"mask_material.lacquer"
+display_name = "Lacquer"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_sv32n"]
+script = ExtResource("3_ktq15")
+material_id = &"plastic_matte"
+library_material = ExtResource("4_rahdi")
+roughness = 0.85
+detail_strength = 0.3
+detail_mean = 0.155
+id = &"mask_material.matte"
+display_name = "Matte"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_llemd"]
+script = ExtResource("3_ktq15")
+material_id = &"brass"
+library_material = ExtResource("5_jwtjh")
+metallic = 1.0
+roughness = 0.3
+detail_mean = 0.59
+id = &"mask_material.gilt"
+display_name = "Gilt"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_7mia0"]
+script = ExtResource("3_ktq15")
+material_id = &"leather_dark"
+library_material = ExtResource("6_t1ehk")
+roughness = 0.7
+detail_strength = 0.7
+detail_mean = 0.05
+id = &"mask_material.leather"
+display_name = "Leather"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_drm5c"]
+script = ExtResource("3_ktq15")
+material_id = &"chrome"
+library_material = ExtResource("7_d5viv")
+metallic = 1.0
+roughness = 0.08
+detail_strength = 0.2
+detail_mean = 0.579
+id = &"mask_material.chrome"
+display_name = "Chrome"
+
+[sub_resource type="Resource" id="Resource_ebhiw"]
+script = ExtResource("3_ktq15")
+material_id = &"wood_veneer_walnut"
+library_material = ExtResource("8_i1lqn")
+roughness = 0.55
+detail_strength = 0.8
+detail_mean = 0.078
+id = &"mask_material.walnut"
+display_name = "Walnut"
+
+[sub_resource type="Resource" id="Resource_eveee"]
+script = ExtResource("3_ktq15")
+material_id = &"marble_cream"
+library_material = ExtResource("9_tv5qh")
+roughness = 0.3
+detail_strength = 0.7
+detail_mean = 0.624
+id = &"mask_material.marble"
+display_name = "Marble"
+
+[sub_resource type="Resource" id="Resource_ht48o"]
+script = ExtResource("3_ktq15")
+material_id = &"steel_blued"
+library_material = ExtResource("10_5ibvv")
+metallic = 0.9
+roughness = 0.35
+detail_mean = 0.084
+id = &"mask_material.blued_steel"
+display_name = "Blued Steel"
+
+[sub_resource type="Resource" id="Resource_2vtjv"]
+script = ExtResource("3_ktq15")
+material_id = &"rubber_black"
+library_material = ExtResource("11_btaij")
+roughness = 0.95
+detail_strength = 0.4
+detail_mean = 0.05
+id = &"mask_material.rubber"
+display_name = "Rubber"
+
+[resource]
+script = ExtResource("12_coas7")
+entries = Array[ExtResource("1_3q0c8")]([SubResource("Resource_jkanb"), SubResource("Resource_sv32n"), SubResource("Resource_llemd"), SubResource("Resource_7mia0"), SubResource("Resource_drm5c"), SubResource("Resource_ebhiw"), SubResource("Resource_eveee"), SubResource("Resource_ht48o"), SubResource("Resource_2vtjv")])

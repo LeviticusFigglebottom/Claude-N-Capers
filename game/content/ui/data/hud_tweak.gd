@@ -23,9 +23,11 @@ const DEFAULT_PATH: String = "res://content/data/ui/hud_tweak.tres"
 @export var assault_color: Color = Color(1.0, 0.25, 0.2)
 @export var delta_better_color: Color = Color(0.35, 0.9, 0.4)
 @export var delta_worse_color: Color = Color(1.0, 0.35, 0.3)
-## Pager answers per heist shown as "pagers left" when the bound model has no `pagers_max`
-## (HudModelAdapter; PD2 S5.2: 4).
-@export var pagers_max: int = 4
+## Marked targets (S2.9 marks; the outline shader comes later): diamond above each marked unit.
+@export var mark_color: Color = Color(1.0, 0.85, 0.25)
+@export var mark_size_px: float = 14.0
+## Height above the marked unit's world_pos (its feet) where the marker is drawn, m.
+@export var mark_height_m: float = 2.1
 
 
 static func load_default() -> HudTweak:

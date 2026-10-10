@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.extra_cable_ties"
+effect = 0
+category = &"gear"
+base_cost = 800
+favors = 1
+grants = {
+&"stealth.cable_ties_extra": 2
+}
+tags = Array[StringName]([&"stealth", &"loud"])

@@ -1,5 +1,5 @@
-## Base for HUD widgets. Owner: ENV B. A widget reads ONLY the local HUD model (LocalHudModel, or
-## MockHudModel until ENV A ships it; contracts/ui_hud.md) and EventBus. The model is duck-typed:
+## Base for HUD widgets. Owner: ENV B. A widget reads ONLY the local HUD model (ENV A's
+## LocalHudModel, or MockHudModel in the demo/tests; contracts/ui_hud.md v1.1) and EventBus. The model is duck-typed:
 ## properties are read with get(), change signals are connected by name, missing ones are skipped.
 class_name HudWidget
 extends Control

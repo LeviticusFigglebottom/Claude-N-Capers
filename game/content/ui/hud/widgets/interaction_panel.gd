@@ -1,6 +1,10 @@
 ## Interaction prompt (tr(text_key) with args), hold progress bar and blocked reason (S9.1, S1.1).
+## The input key name is presentation (hud_model README): when the model's args carry no `key`,
+## the first keyboard binding of INTERACT_ACTION is filled in for the `{key}` placeholder.
 class_name InteractionPanel
 extends HudWidget
+
+const INTERACT_ACTION: StringName = &"interact"
 
 var prompt_label: Label
 var progress_bar: ProgressBar
@@ -35,10 +39,25 @@ func refresh() -> void:
 	visible = key != &""
 	if not visible:
 		return
-	prompt_label.text = UiText.t(key, it.get("args", {}) as Dictionary)
+	var args: Dictionary = (it.get("args", {}) as Dictionary).duplicate()
+	if not args.has("key"):
+		args["key"] = action_key_text(INTERACT_ACTION)
+	prompt_label.text = UiText.t(key, args)
 	var p: float = float(it.get("progress", 0.0))
 	progress_bar.visible = p > 0.0
 	progress_bar.value = p
 	var blocked: StringName = StringName(it.get("blocked_reason", &""))
 	blocked_label.visible = blocked != &""
-	blocked_label.text = UiText.t(blocked, it.get("args", {}) as Dictionary) if blocked != &"" else ""
+	blocked_label.text = UiText.t(blocked, args) if blocked != &"" else ""
+
+
+## Display text of the first keyboard binding of an InputMap action ("F"), or "" when unbound.
+static func action_key_text(action: StringName) -> String:
+	if not InputMap.has_action(action):
+		return ""
+	for ev: InputEvent in InputMap.action_get_events(action):
+		var k: InputEventKey = ev as InputEventKey
+		if k != null:
+			var code: Key = k.physical_keycode if k.physical_keycode != KEY_NONE else k.keycode
+			return OS.get_keycode_string(code)
+	return ""

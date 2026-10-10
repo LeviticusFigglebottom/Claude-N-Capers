@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.ammo_bag_drop"
+effect = 1
+category = &"supply"
+base_cost = 1200
+favors = 2
+point_categories = Array[StringName]([&"drop_zone"])
+max_count = 2
+spawn_item = &"deployable.ammo_bag"
+tags = Array[StringName]([&"loud"])

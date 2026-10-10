@@ -1,7 +1,7 @@
-## STOPGAP range tooling (B1-05), NOT gameplay: a debug hitscan driven by LoadoutResolver-resolved
-## WeaponStats so the range works before ENV A's weapon runtime exists. DELETE when A1-08 lands
-## (the range then spawns ENV A's crew controller, whose real weapon hits RangeTarget through the
-## damage.md single hit path). Owner: ENV B.
+## FALLBACK ONLY (B1-05), NOT gameplay: a debug hitscan driven by LoadoutResolver-resolved
+## WeaponStats, fired by the fallback RangeSpectator. The range normally shoots with ENV A's crew
+## member and CrewWeapons runtime (RangeCrewBridge); this is used only when CrewController or its
+## spawn_for_range hook is missing (or FiringRange.use_fallback_shooter is set). Owner: ENV B.
 ##
 ## Rate of fire, magazine, tactical/empty reload, ADS/hip spread cone (rolled on
 ## GameRng.stream(&"range")), per-pellet rays, falloff by distance (RangeMath) and the shotgun

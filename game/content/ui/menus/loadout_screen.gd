@@ -5,12 +5,16 @@
 ## B4-03: "Skills" / "Perk Deck" buttons ask MenuFlow to open the skill tree / perk deck screens on
 ## the same PlayerProfile (commit_to_profile() first); refresh() afterwards picks up their changes
 ## (skills and perk cards feed LoadoutResolver's concealment bonus, so DR updates).
+## B2-01: the mask picker lists MaskLocker.available_ids() (owned presets + filled custom slots,
+## names from MaskCatalog.display_name) so an equipped `mask.custom.<n>` survives a save; "Masks"
+## (masks_requested) opens the mask screen; refresh_masks() re-reads the picker from the profile.
 class_name LoadoutScreen
 extends UiScreen
 
 signal launch_requested(loadout: Loadout)
 signal skills_requested()
 signal perk_deck_requested()
+signal masks_requested()
 
 ## [display key, strings key] in panel order (StatCalculator.display keys).
 const STAT_ROWS: Array[Array] = [
@@ -38,6 +42,7 @@ var launch_button: Button
 var back_button: Button
 var skills_button: Button
 var perks_button: Button
+var masks_button: Button
 var skills_summary_label: Label
 var perk_summary_label: Label
 var _stat_value_labels: Dictionary = {}
@@ -77,6 +82,10 @@ func build_ui() -> void:
 	armor_option = _row(left, &"ui.loadout.armor")
 	deployable_option = _row(left, &"ui.loadout.deployable")
 	mask_option = _row(left, &"ui.loadout.mask")
+	masks_button = UiBuild.button(&"ui.masks.open")
+	masks_button.custom_minimum_size = Vector2(180, 0)
+	masks_button.pressed.connect(_on_progression.bind(masks_requested))
+	mask_option.get_parent().add_child(masks_button)
 	cols.add_child(_build_stats_panel())
 	var nav: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(nav)
@@ -248,14 +257,31 @@ func _fill_options() -> void:
 	_fill_from(melee_option, ContentDB.all_melees(), profile.loadout.melee, false)
 	_fill_from(armor_option, ContentDB.all_armors(), profile.loadout.armor, false)
 	_fill_from(deployable_option, ContentDB.all_deployables(), profile.loadout.deployable, true)
-	var masks: Array = []
-	for m: Resource in ContentDB.all_of(ContentDB.MASKS):
-		var md: MaskDef = m as MaskDef
-		if md != null and (md.unlock == &"" or profile.owned_masks.has(md.id)):
-			masks.append(md)
-	_fill_from(mask_option, masks, profile.loadout.mask, true)
+	_fill_masks(profile.loadout.mask)
 	for o: OptionButton in [melee_option, armor_option, deployable_option, mask_option]:
 		o.item_selected.connect(_on_item_changed)
+
+
+## Re-read the mask picker from the profile (after the mask screen edited / equipped masks).
+func refresh_masks() -> void:
+	_fill_masks(profile.loadout.mask)
+
+
+## Mask ids offered by the picker ("" = none first), in picker order.
+func mask_ids() -> Array[StringName]:
+	var out: Array[StringName] = []
+	for i: int in range(mask_option.item_count):
+		out.append(StringName(mask_option.get_item_metadata(i)))
+	return out
+
+
+func _fill_masks(selected: StringName) -> void:
+	mask_option.clear()
+	_add_item(mask_option, UiText.t(&"ui.loadout.none"), &"")
+	for id: StringName in MaskLocker.available_ids(profile):
+		_add_item(mask_option, MaskCatalog.display_name(id), id)
+	if not _select_id(mask_option, selected):
+		mask_option.select(0)
 
 
 func _fill_from(o: OptionButton, defs: Array, selected: StringName, allow_none: bool) -> void:
@@ -302,11 +328,12 @@ func _rebuild_focus() -> void:
 	types.sort()
 	for t: Variant in types:
 		focus_chain.append(mod_options[t] as Control)
-	for c: Control in [melee_option, armor_option, deployable_option, mask_option, launch_button, skills_button,
-			perks_button, back_button]:
+	for c: Control in [melee_option, armor_option, deployable_option, mask_option, masks_button, launch_button,
+			skills_button, perks_button, back_button]:
 		focus_chain.append(c)
 	if is_inside_tree():
 		UiNav.chain_vertical(focus_chain)
+		UiNav.chain_horizontal([mask_option, masks_button] as Array[Control], false)
 		UiNav.chain_horizontal([back_button, skills_button, perks_button, launch_button] as Array[Control], false)
 
 
