@@ -1541,7 +1541,9 @@ ui.range.lane_moving,{m}  ·  {name} (moving {speed} m/s)
 ui.range.lane_named,{m}  ·  {name}
 ui.range.ro.armor,Armor
 ui.range.armor.none,None
-ui.range.armor.frontal,Front plate (non-AP body x{mult})
+ui.range.armor.frontal,"Front plate {arc}° (non-AP body x{mult})"
+ui.range.armor.body,Body armour (non-AP body x{mult})
+ui.range.armor.explosive,Explosives x{mult}
 ui.range.armor.shield,"Shield (AP x{mult}, else blocked)"
 ui.range.armor.plates,Face plates {hp} HP
 ui.range.blocked,Blocked

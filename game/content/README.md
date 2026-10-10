@@ -159,6 +159,10 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   attacker = the crew's net id. Ammo is read through a `LocalHudModel` that `track(crew)`s the range's crew
   (`FiringRange.hud_model`, ui_hud.md v1.2), falling back to the crew's weapons. `RangeSpectator` + `RangeDebugGun` are a FALLBACK only (hook missing,
   or `use_fallback_shooter` for tests).
+  Dummies (`data/range/range_dummies.tres`) mirror ENV A's EnemyDefs through `enemy_path`: health,
+  headshot mult and armour (`RangeDummyDef.armor()` = `NpcHitRules.armor_of(def)`, D-052 canonical keys;
+  a mirror reader covers trees without A3-08). `RangeDamageModel` applies them with NpcHitRules /
+  BulwarkShield / WreckerArmor semantics; pierce flags are attacker-side only (D-053).
 
 * `BriefingScreen` (`ui/briefing/briefing_screen.tscn`, C2): `setup(heist_id, difficulty)`; signals
   `continue_requested(heist_id, difficulty)`, `back_requested()`. Data: `BriefingModel.build()`;
