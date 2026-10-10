@@ -75,7 +75,10 @@ func test_l4_11_limits_read_from_difficulty_def() -> void:
 	assert_eq(d.roster.special_limit(&"enemy.corpsman"), 3, "Brutal: 3 Corpsmen")
 	assert_eq(d.roster.special_limit(&"enemy.phantom"), 2, "Brutal: 2 Phantoms")
 	assert_eq(d.roster.special_limit(&"enemy.wrecker_s"), 2, "Brutal: 2 Wreckers (shared)")
-	assert_eq(d.roster.special_limit(&"enemy.longshot"), -1, "no key: unlimited (perches limit Longshots)")
+	# QA-31/D-049: ENV B sets Longshot caps (1/2/2/3/3/4); without the key the cap is -1 (perches limit them).
+	var limits: Dictionary = _rt.difficulty_def.special_limits
+	var want: int = int(limits.get(&"enemy.longshot", limits.get("enemy.longshot", -1)))
+	assert_eq(d.roster.special_limit(&"enemy.longshot"), want, "Longshot cap read from DifficultyDef")
 
 
 func test_l4_11_queue_respects_cap() -> void:

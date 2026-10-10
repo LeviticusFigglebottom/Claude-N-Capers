@@ -323,7 +323,7 @@ voice.vo.mercer.stealth_success_2,Not a single shot fired. I'm almost impressed.
 voice.vo.mercer.abort,"That's the alarm. This one was quiet or nothing, so we're done. Pull out."
 voice.vo.mercer.pager_last,That was the last pager they'll swallow. Keep the rest breathing.
 voice.vo.mercer.dev_start,Test run. Nothing here is real except the bullets.
-voice.vo.guard.cuff_warning,"Hands where I can see them! Don't you move!"
+voice.vo.guard.cuff_warning,Hands where I can see them! Don't you move!
 voice.vo.crew.ack_follow,On you.
 voice.vo.crew.ack_hold,Holding here.
 voice.vo.crew.ack_carry_bag,Got the bag.
@@ -1019,7 +1019,7 @@ item.weapon.corsair_ar.desc,"Brannock's workhorse carbine. Keeps its punch at an
 item.weapon.plowman_12.name,Plowman 12
 item.weapon.plowman_12.desc,"A Tillman Ironworks pump gun with a walnut stock. Ten pellets per shell, devastating up close, polite at a distance."
 item.weapon.rampart_lmg.name,Rampart
-item.weapon.rampart_lmg.desc,"A belt-fed Graff-Lindqvist machine gun. A hundred rounds of covering fire and nowhere to hide it."
+item.weapon.rampart_lmg.desc,A belt-fed Graff-Lindqvist machine gun. A hundred rounds of covering fire and nowhere to hide it.
 item.weapon.heron_308.name,Heron .308
 item.weapon.heron_308.desc,"Marrow & Kell's bolt-action rifle. Punches through armor, shields and thin walls, and hits harder the farther it reaches."
 item.mod.w45_suppressor.name,Quietus Suppressor
@@ -1104,7 +1104,7 @@ ui.skills.refund_points,Refund (+{points})
 ui.skills.respec_confirm,Press again to reset
 ui.skills.blocked_partial,Part of this effect is not active yet.
 ui.skills.unlocks,Unlocks: {item}
-ui.skills.hint,"Click / A / Enter: invest. Right-click / X / Delete: refund. LB / RB or Page Up / Down: switch tree. Resetting skills is free."
+ui.skills.hint,Click / A / Enter: invest. Right-click / X / Delete: refund. LB / RB or Page Up / Down: switch tree. Resetting skills is free.
 ui.skills.reason.not_owned,You have not taken this skill.
 ui.skills.reason.refund_breaks_tier,Can't refund: a higher-tier skill in this subtree needs these points. Refund it first.
 ui.perks.title,Perk Decks
@@ -1177,10 +1177,10 @@ ui.preplan.plan_line,{name} @ {where} ({cost})
 ui.preplan.vote_none,not chosen (left to chance)
 ui.preplan.plan_more,+{n} more
 ui.preplan.vote_line,{group}: {choice}  ({cast}/{voters} votes)
-ui.preplan.vote_solo,"Solo: your vote decides every plan."
-ui.preplan.vote_host_ties,"Plans need a majority vote; the host breaks ties."
+ui.preplan.vote_solo,Solo: your vote decides every plan.
+ui.preplan.vote_host_ties,Plans need a majority vote; the host breaks ties.
 ui.preplan.confirm,Confirm plan
-ui.preplan.hint,"Spending cash is paid when you confirm. Esc / B returns from a list to the blueprint."
+ui.preplan.hint,Spending cash is paid when you confirm. Esc / B returns from a list to the blueprint.
 ui.preplan.nothing_here,No assets for this point.
 ui.preplan.invalid,The plan is over budget or breaks a rule. Remove something first.
 ui.preplan.row,"{name}  -  {cost}, {favors} favors"
@@ -1249,7 +1249,7 @@ item.asset.inside_keycard.desc,An insider leaves a keycard at this spot before t
 item.asset.propped_door.name,Propped door
 item.asset.propped_door.desc,Someone on staff leaves this door propped open tonight.
 item.asset.insider_code.name,Insider: time-lock code
-item.asset.insider_code.desc,"An insider writes down tonight's time-lock code. You know where the note is."
+item.asset.insider_code.desc,An insider writes down tonight's time-lock code. You know where the note is.
 item.asset.vent_access.name,Vent access
 item.asset.vent_access.desc,A maintenance contact leaves the vent grille unscrewed for you.
 item.asset.escape_position.name,Van position
@@ -1273,7 +1273,7 @@ ui.masks.locked,{name} (locked)
 ui.masks.status.unsaved,Unsaved changes: save the mask into a custom slot to wear it.
 ui.masks.status.saved,Saved as {name}.
 ui.masks.status.equipped,{name} is your mask for the next job.
-ui.masks.status.ready,"{name}: press Equip to wear it."
+ui.masks.status.ready,{name}: press Equip to wear it.
 ui.masks.status.locked_parts,Some of these parts are locked. New parts drop from paydays.
 ui.masks.status.empty_slot,This slot is empty. Build a mask and save it here.
 ui.masks.preview_hint,Drag with the mouse or use the right stick to turn the mask.
@@ -1345,8 +1345,8 @@ ui.board.difficulty,Difficulty: {name}
 ui.board.payout,Contract pay: {amount}
 ui.board.expires,Expires in {time}
 ui.board.pro,PRO JOB
-ui.board.pro_desc,"No restarts: fail it and the contract is gone. +{pct}% XP."
-ui.board.consumed,"Pro job failed: this contract is burned until the board rotates."
+ui.board.pro_desc,No restarts: fail it and the contract is gone. +{pct}% XP.
+ui.board.consumed,Pro job failed: this contract is burned until the board rotates.
 ui.board.take,Take Contract
 ui.board.pin_tooltip,"{heist}, {difficulty}"
 ui.board.legend_pro,Red badge: pro job

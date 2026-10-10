@@ -126,6 +126,29 @@ func hostage_candidates() -> Array[NpcBase]:
 	return out
 
 
+# --- Replication (A3-07) ---------------------------------------------------------------------------
+
+## Server: {"entries": {slot: [negotiation_left, auto_left, order]}, "hl": highlighted hostage net_id}.
+func net_state() -> Dictionary:
+	var entries: Dictionary = {}
+	for slot: int in _entries:
+		var e: Dictionary = _entries[slot]
+		entries[slot] = [snappedf(float(e["negotiation_left"]), 0.1), snappedf(float(e["auto_left"]), 0.1), int(e["order"])]
+	return {"entries": entries, "hl": NetIds.of(highlighted_hostage())}
+
+
+## Client: mirror the server's custody timers so the HUD queries above work on every peer.
+func apply_net_state(d: Dictionary) -> void:
+	if Net.is_authority():
+		return
+	_entries.clear()
+	var entries: Dictionary = d.get("entries", {}) as Dictionary
+	for k: Variant in entries:
+		var a: Array = entries[k] as Array
+		_entries[int(k)] = {"negotiation_left": float(a[0]), "auto_left": float(a[1]), "order": int(a[2]), "announced": true}
+	_highlight = Ids.lookup(int(d.get("hl", 0))) as NpcBase
+
+
 # --- Tick -------------------------------------------------------------------------------------------
 
 func _physics_process(delta: float) -> void:

@@ -4,6 +4,7 @@
 [ext_resource type="ArrayMesh" path="res://world/characters/patrol_officer/patrol_officer_body.res" id="mesh_body"]
 [ext_resource type="ArrayMesh" path="res://world/characters/patrol_officer/patrol_officer_gear.res" id="mesh_gear"]
 [ext_resource type="ArrayMesh" path="res://world/characters/patrol_officer/patrol_officer_hair.res" id="mesh_hair"]
+[ext_resource type="ArrayMesh" path="res://world/characters/patrol_officer/patrol_officer_headwear.res" id="mesh_headwear"]
 [ext_resource type="ArrayMesh" path="res://world/characters/patrol_officer/patrol_officer_outfit.res" id="mesh_outfit"]
 
 [sub_resource type="Skin" id="skin_0"]
@@ -546,6 +547,11 @@ skeleton = NodePath("..")
 
 [node name="Hair" type="MeshInstance3D" parent="Skeleton3D" unique_id=360853833]
 mesh = ExtResource("mesh_hair")
+skin = SubResource("skin_0")
+skeleton = NodePath("..")
+
+[node name="Headwear" type="MeshInstance3D" parent="Skeleton3D" unique_id=583985126]
+mesh = ExtResource("mesh_headwear")
 skin = SubResource("skin_0")
 skeleton = NodePath("..")
 

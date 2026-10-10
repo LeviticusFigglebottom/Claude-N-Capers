@@ -263,3 +263,44 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   sized from the visual AABB (export override).
 - Per-heist UI accent: shadow_ledger `#CFE3EE` (style guide §3). `options["is_pro"]` documented in test_hooks.md.
 - Process: the lead announces data-shape rulings only once they are on origin trunk (D-046 churn).
+
+## D-049 — 2026-10-10 — Answers QA-27..31, QB-PC1/2, QB-BRD1..3, QB-52..55
+- QA-27: strings/voice lines are ENV B's (most landed in 8079505/e9e5e5b); B adds the rest from A's list.
+- QA-28: cue ids accepted; ENV C synthesizes them (audio_cues.md list extended by C).
+- QA-29: accepted for groups.md: factions `faction.tac|frd|sentinel|zero`; enemy ids as listed (already canonical);
+  `params.visual_variant` per faction; GUARD SpawnPoint tag `scripted` = not spawned at load, mission spawns it.
+- QA-30: `special_spawned` emitted by the special's brain on start. A broken tase must NOT reuse `crew_revived`:
+  EventBus gains `crew_tase_ended(slot: int)` (lead). Captain resistance: ui_hud.md gains `captain_resistance: float`
+  (0..1; server value replicated via Net; ENV A writes, ENV B shows a widget while Brandt is on the field).
+- QA-31: DifficultyDef.special_limits gains `enemy.longshot` (Routine..Cataclysm: 1,2,2,3,3,4), still capped by free perches.
+- QB-PC1: no save change; quitting with an unpicked card auto-picks it (same deterministic roll as the 30 s auto-pick).
+- QB-PC2: boosts and skins stay out of the card table until those systems exist.
+- QB-BRD1: MenuFlow (ENV B) enforces pro-job no-restart; ENV A only reports the failure.
+- QB-BRD2: each player has their own Board; a lobby runs the host's contract (shared via lobby message).
+- QB-BRD3: prices and level gates stay placeholders; balance pass in P6.
+- QB-52: no new loot def. Small loot = `small_loot` prefab `value` → HeistResult cash. Night Deposit 800–2,400,
+  Shadow Ledger 1,200–3,000 per item (before difficulty multiplier).
+- QB-53: ENV B hides a generic asset whose payload references a variant group the heist does not have (no C work).
+- QB-54: heist-only assets for Night Deposit's points are defined by ENV C under `HeistDef.preplanning.assets`; B adds strings.
+- QB-55: a heist shows in menus only when its def and map exist (HeistRegistry); Night Deposit shows, Shadow Ledger after G1.
+- Pull-forward for ENV B: B4-11..B4-15 (roadmap).
+
+## D-050 — 2026-10-10 — Armory batch 2 contract additions (B4-12)
+- `WeaponDef.akimbo: bool` (lead, contracts/data): the `akimbo` qualifier derives from it, not from anim_set.
+- visual_slots: akimbo = one model + `Offhand` marker, WeaponVisual instances the offhand gun (`offhand`,
+  `get_offhand_marker`), ENV A reparents it to the left-hand socket; revolver `Crane` + child `Cylinder`.
+- New FP anim sets `akimbo` and `revolver` (ENV D), plus a fast pistol auto-fire clip for the Sparrow (≈880 rpm).
+- audio_cues: rows for bag lift, hack, escape vehicles, `cue.weapon_revolver_fire`; looping tells stop on end facts
+  (`crew_tase_ended`) or locally.
+
+## D-051 — 2026-10-10 — QA-32/33; mission voice lines; round-3 integration fixes
+- QA-32: fitted collision order = visual `Collision` child → visual AABB → `collision_size_override` (visual_slots.md).
+- QA-33: multi-process loopback tests are allowed in CI: port 0 / random free port passed by args, hard timeout ≤ 60 s,
+  child always killed in teardown, the test FAILS (never skips) if the child cannot spawn, runtime < 30 s.
+- Mission voice ids follow groups.md `vo.<speaker>.<heist>_<line>`; VoiceLineTable gains the event tag `mission`
+  (lines requested directly by HeistMission.say). Lead added draft lines/text for Glasshouse and Night Deposit;
+  ENV B owns the wording.
+- Night Deposit's 0.03 m camera Collision workaround removed (A3-07 keeps the hitbox room-side; it clipped walls).
+- laser_grid placeholder posts are inset by half their width so the grid stays within `size_m`.
+- New HeistMission virtual hooks use the `_on_mission_` prefix (ENV A) to avoid clashes with map scripts.
+- Characters: ENV D head pass + 30 m silhouette approved for P1 (acfbd8f).

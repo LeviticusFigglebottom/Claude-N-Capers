@@ -28,6 +28,16 @@ const DEVICE_CUES: Array[StringName] = [
 	&"cue.keypad_accept", &"cue.c4_armed", &"cue.c4_explode", &"cue.time_lock_start", &"cue.time_lock_done",
 	&"cue.laser_trip", &"cue.zipline_attach",
 ]
+## QA-28 / D-049: P3 special tells (Enemies bus) and new prefab cues (World bus).
+const SPECIAL_CUES: Array[StringName] = [
+	&"cue.phantom_hum", &"cue.phantom_charge", &"cue.stinger_windup", &"cue.stinger_arc", &"cue.longshot_report",
+	&"cue.bulwark_bang", &"cue.wrecker_roar", &"cue.wrecker_step", &"cue.wrecker_plate_crack", &"cue.corpsman_heal",
+	&"cue.brandt_arrival", &"cue.aegis_pulse",
+]
+const PREFAB_CUES: Array[StringName] = [
+	&"cue.bag_lift_start", &"cue.bag_lift_arrive", &"cue.hack_start", &"cue.hack_interrupt", &"cue.hack_done",
+	&"cue.escape_arrive",
+]
 const LOOPS: Array[StringName] = [
 	&"cue.pager_beep", &"cue.pager_radio", &"cue.alarm_bell", &"cue.drill_loop", &"cue.police_siren_far",
 ]
@@ -93,6 +103,46 @@ func test_device_cues() -> void:
 	assert_eq(player.last_cue, &"cue.laser_trip", "laser_tripped maps to laser_trip")
 	EventBus.interaction_completed.emit(12, 0, &"keypad")
 	assert_eq(player.last_cue, &"cue.keypad_accept", "keypad completion beeps")
+	player.queue_free()
+
+
+func test_special_and_prefab_cues() -> void:
+	if _reg == null:
+		skip("no registry")
+		return
+	for id: StringName in SPECIAL_CUES:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c != null, "registry has %s" % id)
+		if c != null:
+			assert_eq(c.bus, &"Enemies", "%s bus" % id)
+	for id: StringName in PREFAB_CUES:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c != null, "registry has %s" % id)
+		if c != null:
+			assert_eq(c.bus, &"World", "%s bus" % id)
+	for id: StringName in [&"cue.phantom_hum", &"cue.stinger_arc", &"cue.aegis_pulse"]:
+		assert_true(_reg.get_cue(id) != null and _reg.get_cue(id).loop, "%s loops" % id)
+	assert_true(_reg.get_cue(&"cue.longshot_report").max_distance >= 200.0, "longshot carries 200+ m")
+	assert_eq(_reg.get_cue(&"cue.escape_arrive").streams.size(), 3, "van / boat / heli variants (random fallback)")
+	for id: StringName in [&"cue.escape_arrive_van", &"cue.escape_arrive_boat", &"cue.escape_arrive_heli"]:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c != null and c.streams.size() == 1, "%s is one fixed stream" % id)
+		if c != null:
+			assert_eq(c.bus, &"World", "%s bus" % id)
+			assert_true(c.max_distance >= 150.0, "%s carries far" % id)
+	var player: CuePlayer = _make_player()
+	EventBus.device_started.emit(77, &"hack", 30.0)
+	assert_eq(player.last_cue, &"cue.hack_start")
+	assert_false(player.is_loop_active(&"device_77"), "hack has no loop")
+	EventBus.device_jammed.emit(77)
+	assert_eq(player.last_cue, &"cue.hack_interrupt")
+	EventBus.device_finished.emit(77)
+	assert_eq(player.last_cue, &"cue.hack_done")
+	EventBus.captain_arrived.emit(88)
+	assert_eq(player.last_cue, &"cue.aegis_pulse")
+	assert_true(player.is_loop_active(&"captain_88"), "aegis loop while captain is present")
+	EventBus.captain_retreated.emit(88)
+	assert_false(player.is_loop_active(&"captain_88"), "aegis loop stops on retreat")
 	player.queue_free()
 
 

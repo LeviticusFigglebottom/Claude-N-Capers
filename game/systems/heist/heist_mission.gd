@@ -67,6 +67,16 @@ func _on_alarm(_reason: StringName) -> void:
 	pass
 
 
+## A civilian was intimidated (dominated) by `crew_slot`; `civilian` is the NPC node (QC Night Deposit).
+func _on_civilian_dominated(_civilian: Node, _crew_slot: int) -> void:
+	pass
+
+
+## A guard or cop was dominated / surrendered to `crew_slot`.
+func _on_guard_dominated(_npc: Node, _crew_slot: int) -> void:
+	pass
+
+
 # --- Objectives ------------------------------------------------------------------------
 
 func add_objective(objective_id: StringName, text_key: StringName,
@@ -257,6 +267,8 @@ func _bind(rt: HeistRuntime) -> void:
 	_internal(&"alarm_raised", func(reason: StringName, _src: int) -> void: _on_alarm(reason))
 	_internal(&"item_picked_up", _on_item_picked)
 	_internal(&"loot_secured", _on_loot_secured)
+	_internal(&"civilian_intimidated", func(id: int, slot: int) -> void: _on_civilian_dominated(Ids.lookup(id), slot))
+	_internal(&"guard_dominated", func(id: int, slot: int) -> void: _on_guard_dominated(Ids.lookup(id), slot))
 
 
 func _unbind() -> void:

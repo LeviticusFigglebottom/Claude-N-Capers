@@ -1,7 +1,7 @@
 ## Helpers for stable network ids (architecture.md §3). Owner: ENV A.
 ## Server: `NetIds.claim(node)` allocates an id via `Ids.next()` and registers the node.
-## Map-placed prefabs are claimed by HeistRuntime in tree order after variant resolution, so a
-## client that loads the same map can reproduce the mapping from the replicated path table (P3).
+## Map-placed prefabs are claimed by HeistRuntime in tree order after variant resolution; a client
+## loads the same map and adopts the ids from the bring-up path table (A3-07, HeistNetSync).
 class_name NetIds
 extends RefCounted
 
