@@ -950,6 +950,8 @@ class Gait:
     hand_amount: float = 1.0
     head_bob_comp: float = 0.6    # how much the head counters the trunk pitch bob
     upper: Callable | None = None  # upper(sk, pose, ph, f): override arms / trunk
+    exact_pivot: bool = False     # rotate the foot (yaw included) about its contact point: zero slide at
+                                  # any toe_out (False keeps the D1-03 formula, exact only for small toe_out)
 
     @property
     def stride(self) -> float:
@@ -987,7 +989,10 @@ class Gait:
             toe = max(0.0, -self.toeoff) * (1.0 - smooth(0.0, 0.45, w))
         R = foot_rot(yaw, pitch)
         pivot = g["heel"] if pitch >= 0.0 else g["ball"]
-        ankle = pivot + dirv * d + base + R @ rzd(-yaw) @ (g["ankle"] - pivot) + v3(0.0, 0.0, lift)
+        if self.exact_pivot:
+            ankle = pivot + dirv * d + base + R @ (g["ankle"] - pivot) + v3(0.0, 0.0, lift)
+        else:
+            ankle = pivot + dirv * d + base + R @ rzd(-yaw) @ (g["ankle"] - pivot) + v3(0.0, 0.0, lift)
         return ankle, R, rad(toe), stance
 
     def contact(self, sk: Skeleton, sfx: str, ph: float) -> np.ndarray | None:

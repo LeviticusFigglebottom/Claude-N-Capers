@@ -654,6 +654,14 @@ def gaits(table: dict) -> dict[str, Gait]:
                             strike=10.0, toeoff=-30.0, lean=12.0, pelvis_yaw=6.0, pelvis_roll=3.5, arm_swing=26.0,
                             arm_add=30.0, elbow=55.0, hand="loose_fist", centre={"L": (0.0, -0.06), "R": (0.0, -0.06)},
                             sway=0.016, upper=_carry_upper),
+        "shield_walk": g("shield_walk", beta=0.64, lift=0.055, drop=0.085, bob=0.010, strike=10.0, toeoff=-24.0, lean=8.0,
+                         pelvis_yaw=3.0, pelvis_roll=2.5, width=0.05, toe_out=12.0, sway=0.022, chest_counter=1.0,
+                         head_bob_comp=0.8, centre={"L": (0.0, 0.03), "R": (0.0, -0.09)}, upper=_shield_upper,
+                         exact_pivot=True),
+        "dozer_walk": g("dozer_walk", beta=0.60, lift=0.06, lift_skew=0.7, drop=0.06, bob=0.032, strike=14.0, toeoff=-20.0,
+                        flat_at=0.12, heel_rise=0.66, lean=6.0, pelvis_yaw=6.0, pelvis_roll=5.5, width=0.075, toe_out=13.0,
+                        sway=0.05, chest_counter=2.0, head_bob_comp=0.9, centre={"L": (0.0, -0.03), "R": (0.0, -0.03)},
+                        upper=_dozer_upper, exact_pivot=True),
     }
     # strafes: the trailing leg must never cross the leading one (see _anim.Gait); walk_back rolls
     # toe-first (strike < 0) and lifts the heel last (toeoff > 0)
@@ -1022,6 +1030,288 @@ def clamp(x: float) -> float:
 
 
 # =============================================================================================
+# specials (P3): Phantom kick, Bulwark shield, Corpsman heal, Wrecker walk
+# =============================================================================================
+#: Bulwark shield grip (HandL/Socket = ``grip_offset(sk, "L")``, the weapon convention mirrored): the
+#: shield's pivot is its vertical handle, held in the left fist like a pistol grip, so the socket's
+#: -Z (Blender +Y "muzzle") is the shield's face normal pointing forward and the socket's +Y runs up
+#: the handle (char_bulwark_shield, _special_shield.py: same pivot and axes, attached without
+#: rotation). ``SHIELD_HANDLE`` is the handle in body space at the braced stance (1.78 m), carried
+#: a little left of centre, tilted ``SHIELD_PITCH`` deg top-back and turned ``SHIELD_YAW`` deg with
+#: the trunk (the wrist stays within ~12 deg of straight). ``SHIELD`` mirrors that asset for the
+#: review proxy and the bang target: centre panel width, wing width and angle, height, thickness,
+#: the face in front of the grip and the panel centre relative to the grip (m, deg).
+SHIELD_HANDLE = v3(-0.10, 0.34, 1.08)
+SHIELD_PITCH = 8.0
+SHIELD_YAW = -4.0
+SHIELD = {"w": 0.42, "wing": 0.13, "wing_deg": 24.0, "h": 1.10, "t": 0.022, "face": 0.078, "up": -0.05}
+
+
+def shield_frame(sk: Skeleton, dx: float = 0.0, dy: float = 0.0, dz: float = 0.0, yaw: float = 0.0,
+                 pitch: float = 0.0, roll: float = 0.0) -> tuple[np.ndarray, np.ndarray]:
+    """The shield (handle) frame: facing +Y (``SHIELD_YAW`` / ``SHIELD_PITCH``), moved by (dx, dy,
+    dz) m and turned further (deg)."""
+    k = sk.scale
+    return weapon_frame(SHIELD_HANDLE * k + v3(dx, dy, dz) * k, yaw=SHIELD_YAW + yaw, pitch=SHIELD_PITCH + pitch,
+                        roll=roll)
+
+
+def hold_shield(sk: Skeleton, pose: Pose, wf) -> None:
+    """Left fist on the vertical handle (HandL/Socket convention), elbow down and out."""
+    hold_weapon(sk, pose, wf, pole=v3(-0.1, -0.15, -1.0), sfx="L", twist=0.6, clav=0.5)
+    pose.hands["L"] = hand_shape("grip")
+
+
+def shield_pistol_frame(sk: Skeleton, t: float = 0.0, sway: float = 1.0) -> tuple[np.ndarray, np.ndarray]:
+    """One-handed pistol just outside the shield's right edge, at the sight line."""
+    k = sk.scale
+    o = v3(0.33 * k + 0.003 * k * sway * math.sin(TAU * t / 3.0), 0.40 * k,
+           1.37 * k + 0.004 * k * sway * math.sin(TAU * t / 1.5))
+    return weapon_frame(o, yaw=4.0 + 0.6 * sway * math.sin(TAU * t / 3.0 + 0.7), pitch=0.5 * sway * math.sin(TAU * t / 1.5))
+
+
+def shield_stance(sk: Skeleton, pose: Pose) -> None:
+    """Braced behind the shield: low, wide, left foot forward, the left shoulder turned in."""
+    k = sk.scale
+    pose.hip = v3(0.01 * k, -0.03 * k, -0.075 * k)
+    stand(sk, pose, spread=0.07, stagger_l=0.12, stagger_r=-0.11, yaw_l=8, yaw_r=24)
+    spine(pose, lean=7, twist=-4, chest_lean=6, chest_twist=-5, neck=(-5, 0, 4), head=(-5, 0, 5), hips=(4, 0, -4))
+
+
+def shield_idle(sk: Skeleton, t: float = 0.0, sway: float = 1.0) -> Pose:
+    pose = Pose()
+    shield_stance(sk, pose)
+    hold_shield(sk, pose, shield_frame(sk))
+    hold_pistol(sk, pose, shield_pistol_frame(sk, t, sway), one_hand=True)
+    breathe(pose, t, 1.5, 0.8 * sway)
+    return pose
+
+
+def _shield_upper(sk: Skeleton, pose: Pose, ph: float, f: int) -> None:
+    """shield_walk: the trunk stays square and braced; the shield rides the hips with some inertia
+    (half the bob, a lagging sway), the pistol stays at the sight line beside its right edge."""
+    k = sk.scale
+    add_rot(pose, "spine", rzd(-4.0))
+    add_rot(pose, "chest", rzd(-5.0))
+    look(pose, yaw=8.0)
+    hz = (pose.hip[2] / k + 0.085)
+    hx = pose.hip[0] / k
+    lag = math.cos(TAU * (ph - 0.08))
+    wf = shield_frame(sk, dx=0.4 * hx, dz=0.55 * hz, yaw=1.2 * lag, roll=-0.8 * lag)
+    hold_shield(sk, pose, wf)
+    R, o = shield_pistol_frame(sk, 0.0, 0.0)
+    o = o + v3(0.3 * hx * k, 0.0, 0.7 * hz * k)
+    hold_pistol(sk, pose, (R @ rxd(0.8 * math.sin(TAU * 2 * (ph - 0.1))), o), one_hand=True)
+
+
+def _shield_bang(sk: Skeleton, N: int, hits: tuple) -> callable:
+    """Braced; the pistol rises over the shield's top right corner and chops its butt down onto the
+    rim on every ``hits`` frame (the shield and the trunk jolt on impact), then returns to aim."""
+    k = sk.scale
+    # the top edge of the centre panel near its right corner, on the panel's mid-plane
+    rim = A.wf_point(shield_frame(sk), v3(0.15 * k, (SHIELD["face"] + SHIELD["t"] / 2.0) * k,
+                                         (SHIELD["up"] + SHIELD["h"] / 2.0) * k))
+    hit_wf = weapon_frame(rim + v3(0.0, 0.0, 0.084 * k), yaw=24.0, pitch=22.0, roll=-8.0)
+    top_wf = weapon_frame(rim + v3(0.02 * k, -0.06 * k, 0.25 * k), yaw=18.0, pitch=52.0, roll=-4.0)
+    first, last = hits[0], hits[-1]
+    gap = min(hits[i + 1] - hits[i] for i in range(len(hits) - 1)) if len(hits) > 1 else 6
+
+    def height(f: int) -> float:
+        """0 = at the rim (impact), 1 = top of the chop."""
+        best = 1.0
+        for h in hits:
+            d = f - h
+            if -gap / 2.0 <= d <= 0:
+                best = min(best, 1.0 - A.ease_in(1.0 + d / (gap / 2.0), 2.2))   # accelerating chop
+            elif 0 < d <= gap / 2.0:
+                best = min(best, A.ease_out(d / (gap / 2.0), 2.0))              # rebound
+        return best
+
+    def fn(f: int) -> Pose:
+        t = f / FPS
+        pose = shield_idle(sk, t, 0.0)
+        aim = shield_pistol_frame(sk, 0.0, 0.0)
+        u = height(f)
+        chop = (A.mslerp(hit_wf[0], top_wf[0], u), A.lerp(hit_wf[1], top_wf[1], u))
+        w = smooth(0.0, first - gap / 2.0, f) * (1.0 - smooth(last + 1.0, N, f))
+        wf = (A.mslerp(aim[0], chop[0], w), A.lerp(aim[1], chop[1], w) + v3(0.10 * k, -0.03 * k, 0.06 * k) * math.sin(math.pi * w))
+        hold_pistol(sk, pose, wf, one_hand=True)
+        jolt = sum(pulse((f - h) / FPS, 0.5 / FPS, 4.0 / FPS) for h in hits if f >= h)
+        hold_shield(sk, pose, shield_frame(sk, dz=-0.012 * jolt, dy=0.006 * jolt, pitch=-1.5 * jolt))
+        add_rot(pose, "chest", rxd(-1.4 * jolt) @ rzd(-2.0 * w))
+        look(pose, yaw=-4.0 * w, pitch=3.0 * w + 1.5 * jolt)
+        pose.hip = pose.hip + v3(0.0, 0.0, -0.006 * k * jolt)
+        return pose
+    return fn
+
+
+def _heal_ally(sk: Skeleton, solver: Solver, N: int, at: int) -> Keys:
+    """Corpsman: drops into a lunge towards the ally in front, jabs an auto-injector with the left
+    fist (``heal`` at frame ``at``), holds it for a beat and comes back up. The rifle hangs from the
+    right hand pointing at the floor."""
+    k = sk.scale
+
+    def rifle_low(pose: Pose, dz: float = 0.0, lean: float = 0.0) -> None:
+        wf = weapon_frame(v3(0.215 * k, 0.10 * k + 0.25 * k * lean, (0.99 + dz) * k), yaw=8.0, pitch=-62.0 + 20.0 * lean,
+                          roll=-6.0)
+        hold_weapon(sk, pose, wf, pole=v3(0.7, -0.3, -0.6), twist=0.6)
+        pose.hands["R"] = hand_shape("trigger")
+
+    up = _stand_key(sk)
+    stand(sk, up, spread=0.03, stagger_l=0.06, stagger_r=-0.04, yaw_l=8, yaw_r=12)
+    spine(up, lean=4, chest_lean=3, neck=(2, 0, 0), head=(4, 0, 0))
+    rifle_low(up)
+    arm_fk(sk, up, "L", add=32.0, swing=10.0, flex=40.0, twist=16.0)
+    up.hands["L"] = hand_shape("fist", 0.8)
+
+    def lunge(depth: float, reach: float, press: float) -> Pose:
+        p = Pose()
+        p.hip = v3(0.0, 0.07 * k * depth, -0.27 * k * depth - 0.02 * k)
+        plant(sk, p, "L", (-0.03 * k, 0.30 * k * depth + 0.06 * k, 0.0), yaw=8.0)
+        plant(sk, p, "R", (0.05 * k, -0.24 * k * depth - 0.04 * k, 0.010 * k * depth), yaw=-18.0, pitch=-40.0 * depth, toe=46.0 * depth,
+              pivot="ball")
+        spine(p, lean=18 * depth, chest_lean=8 * depth, twist=4 * depth, neck=(-6 * depth, 0, 0),
+              head=(4 * depth + 6 * press, 0, -3), hips=(12 * depth, 0, 2))
+        rifle_low(p, dz=-0.25 * depth, lean=depth)
+        pre = Solver(sk).solve(p)
+        sh = pre.P["upper_arm.L"]
+        tgt = v3(-0.07 * k, sh[1] + (0.30 + 0.20 * reach + 0.07 * press) * k, sh[2] - (0.30 + 0.06 * reach + 0.05 * press) * k)
+        hand_on(sk, p, "L", tgt, unit(v3(0.15, 0.55, -0.80 - 0.2 * press)), v3(0.95, 0.15, 0.1),
+                pole=v3(-0.75, -0.1, -0.6), along_share=0.55, twist=0.5, clav=0.8)
+        hs = hand_shape("fist", 0.95)
+        hs.thumb = (hs.thumb[0], hs.thumb[1] + 14.0 * press, hs.thumb[2] + 20.0 * press)   # thumb on the plunger
+        p.hands["L"] = hs
+        return p
+
+    keys = [(0, up, "inout"), (int(at * 0.62), lunge(0.85, 0.6, 0.0), "inout"), (at - 2, lunge(1.0, 1.0, 0.0), "out"),
+            (at, lunge(1.0, 1.0, 1.0), "snap"), (at + 7, lunge(1.0, 0.9, 0.6), "inout"),
+            (N, up.copy(), "inout")]
+    return Keys(solver, keys)
+
+
+def _kick_charge(sk: Skeleton, solver: Solver, N: int) -> Keys:
+    """Phantom windup (PhantomBrain: phantom_windup_s, motor stopped, facing the target): a tense
+    rise, then a deep sprinter's coil with a quick step back, ending leaning into the sprint."""
+    k = sk.scale
+    a = idle_alert(sk, 0, 90)
+
+    def fists(p: Pose, l_sw: float, r_sw: float, flex: float = 88.0) -> None:
+        arm_fk(sk, p, "L", add=26.0, swing=l_sw, flex=flex, twist=18.0, clav_fwd=0.06 * l_sw)
+        arm_fk(sk, p, "R", add=26.0, swing=r_sw, flex=flex, twist=18.0, clav_fwd=0.06 * r_sw)
+        for s in ("L", "R"):
+            p.hands[s] = hand_shape("fist", 0.9)
+
+    rise = Pose()
+    rise.hip = v3(0.0, -0.02 * k, -0.02 * k)
+    stand(sk, rise, spread=0.045, stagger_l=0.07, stagger_r=-0.05, yaw_l=7, yaw_r=12)
+    spine(rise, lean=-2, chest_lean=-4, neck=(-2, 0, 0), head=(-4, 0, 0), hips=(-1, 0, 0))
+    fists(rise, 12.0, 8.0, 84.0)
+    for s in ("L", "R"):
+        rise.D[f"clavicle.{s}"] = ryd(-A.side_x(s) * 8.0)
+
+    def coil(depth: float, fwd: float, heel: float) -> Pose:
+        p = Pose()
+        p.hip = v3(0.02 * k, (-0.05 + 0.17 * fwd) * k, (-0.13 * depth - 0.02) * k)
+        plant(sk, p, "L", (0.0, 0.16 * k, 0.0), yaw=6.0)
+        plant(sk, p, "R", (0.03 * k, -0.30 * k, 0.0002 * k * heel), yaw=-10.0, pitch=-heel, toe=1.15 * heel, pivot="ball")
+        spine(p, lean=12 + 16 * fwd, chest_lean=8 + 8 * fwd, twist=-6 + 4 * fwd, chest_twist=-4,
+              neck=(-14 - 8 * fwd, 0, 2), head=(-12 - 8 * fwd, 0, 3), hips=(10 + 8 * fwd, 0, -6))
+        fists(p, 34.0 - 18.0 * fwd, -38.0 + 30.0 * fwd)
+        return p
+
+    def step_lift(f: int, pose: Pose) -> None:
+        u = (f - 4) / 6.0
+        if 0.0 < u < 1.0 and "R" in pose.legs:
+            pose.legs["R"].ankle = pose.legs["R"].ankle + v3(0.0, 0.0, 0.06 * k * math.sin(math.pi * u))
+
+    return Keys(solver, [(0, a, "inout"), (4, rise, "inout"), (10, coil(1.0, 0.0, 34.0), "heavy"),
+                         (N, coil(0.85, 1.0, 52.0), "snap")], post=step_lift)
+
+
+def _kick_hit(sk: Skeleton, solver: Solver, N: int, impact: int) -> Keys:
+    """Phantom flying kick (PhantomBrain._kick, in range at the end of the sprint): take-off from the
+    left foot, right knee chambered, the right leg shoots out sole-first at chest height (``impact``),
+    re-chambers, lands staggered with a deep absorb and recovers to an alert crouch."""
+    k = sk.scale
+
+    def arms(p: Pose, l_sw: float, r_sw: float, l_out: float = 10.0, r_out: float = 10.0, flex: float = 80.0) -> None:
+        arm_fk(sk, p, "L", add=24.0, swing=l_sw, out=l_out, flex=flex, twist=16.0)
+        arm_fk(sk, p, "R", add=24.0, swing=r_sw, out=r_out, flex=flex, twist=16.0)
+        for s in ("L", "R"):
+            p.hands[s] = hand_shape("fist", 0.9)
+
+    run = Pose()
+    run.hip = v3(0.0, -0.02 * k, -0.08 * k)
+    plant(sk, run, "L", (0.0, 0.20 * k, 0.0), yaw=6.0)
+    plant(sk, run, "R", (0.02 * k, -0.30 * k, 0.009 * k), yaw=-8.0, pitch=-44.0, toe=50.0, pivot="ball")
+    spine(run, lean=10, chest_lean=6, twist=4, neck=(-8, 0, 0), head=(-8, 0, -2), hips=(6, 0, 6))
+    arms(run, -30.0, 36.0)
+
+    take = Pose()
+    take.hip = v3(0.0, 0.10 * k, -0.02 * k)
+    plant(sk, take, "L", (0.0, 0.20 * k, 0.008 * k), yaw=6.0, pitch=-34.0, toe=39.0, pivot="ball")
+    take.legs["R"] = A.LegIK(ankle=v3(0.11 * k, 0.32 * k, 0.52 * k), foot=rxd(-34.0), toe=0.0, pole=v3(0.1, 1.0, 0.7))
+    spine(take, lean=-2, chest_lean=-2, neck=(2, 0, 0), head=(2, 0, 0), hips=(-6, 0, 4))
+    arms(take, 46.0, -26.0, 14.0, 18.0, 70.0)
+
+    def air(z: float, ext: float) -> Pose:
+        p = Pose()
+        p.hip = v3(0.0, (0.06 + 0.02 * ext) * k, z * k)
+        hz = sk.head["thigh.R"][2] + z * k
+        knee_ank = v3(0.11 * k, 0.34 * k, hz - 0.42 * k)
+        out_ank = v3(0.09 * k, 0.93 * k, hz - 0.08 * k)
+        p.legs["R"] = A.LegIK(ankle=A.lerp(knee_ank, out_ank, ext), foot=rxd(-30.0 + 105.0 * ext), toe=A.rad(-10.0 * ext),
+                              pole=v3(0.1, 1.0 - 0.4 * ext, 0.8 + 0.6 * ext))
+        p.legs["L"] = A.LegIK(ankle=v3(-0.10 * k, -0.14 * k, hz - 0.62 * k), foot=rxd(-40.0), toe=A.rad(20.0),
+                              pole=v3(-0.1, 1.0, -0.1))
+        spine(p, lean=-6 - 12 * ext, chest_lean=-2 - 4 * ext, side=2 * ext, neck=(6 + 6 * ext, 0, 0), head=(6 + 6 * ext, 0, -2),
+              hips=(-8 - 10 * ext, 0, 8 * ext))
+        arms(p, 30.0 + 20 * ext, -24.0 - 14 * ext, 18.0 + 10 * ext, 22.0 + 8 * ext, 60.0 - 20 * ext)
+        return p
+
+    land = Pose()
+    land.hip = v3(0.01 * k, 0.07 * k, -0.20 * k)
+    plant(sk, land, "R", (0.02 * k, 0.30 * k, 0.0), yaw=-8.0)
+    plant(sk, land, "L", (-0.03 * k, -0.16 * k, 0.006 * k), yaw=12.0, pitch=-30.0, toe=34.0, pivot="ball")
+    spine(land, lean=20, chest_lean=10, neck=(-10, 0, 0), head=(-8, 0, 0), hips=(12, 0, -4))
+    arms(land, 20.0, 26.0, 26.0, 26.0, 60.0)
+
+    rec = Pose()
+    rec.hip = v3(0.0, 0.04 * k, -0.07 * k)
+    plant(sk, rec, "R", (0.02 * k, 0.22 * k, 0.0), yaw=-8.0)
+    plant(sk, rec, "L", (-0.03 * k, -0.10 * k, 0.0), yaw=14.0)
+    spine(rec, lean=8, chest_lean=4, neck=(-2, 0, 0), head=(2, 0, 0), hips=(4, 0, -4))
+    arms(rec, 16.0, 12.0, 6.0, 6.0, 52.0)
+    for s in ("L", "R"):
+        rec.hands[s] = hand_shape("loose_fist", 0.9)
+
+    return Keys(solver, [(0, run, "inout"), (3, take, "out"), (impact, air(0.17, 1.0), "snap"),
+                         (impact + 3, air(0.13, 0.15), "inout"), (impact + 6, land, "heavy"),
+                         (impact + 9, land.copy(), "out"), (N, rec, "inout")])
+
+
+def _dozer_upper(sk: Skeleton, pose: Pose, ph: float, f: int) -> None:
+    """dozer_walk: a big gun held low across the hips, carried by the counter-swinging chest; each
+    heel strike sends a small shudder up the trunk."""
+    k = sk.scale
+    shud = 0.0
+    for strike in (0.0, 0.5):
+        d = (ph - strike) % 1.0
+        shud += pulse(d * 1.1, 0.02, 0.16)
+    add_rot(pose, "spine", rxd(-1.6 * shud))
+    add_rot(pose, "chest", rxd(-1.0 * shud))
+    add_rot(pose, "head", rxd(1.6 * shud))
+    pose.hip = pose.hip + v3(0.0, 0.0, -0.006 * k * shud)
+    pre = Solver(sk).solve(pose)
+    Wc = pre.W["chest"]
+    o = A.bone_point(pre, sk, "chest", v3(0.12 * k, 0.12 * k, -0.17 * k))
+    wf = (Wc @ rzd(12.0) @ rxd(-6.0), o)
+    hold_weapon(sk, pose, wf, pole=v3(0.85, -0.25, -0.5), twist=0.6)
+    pose.hands["R"] = hand_shape("trigger")
+    rifle_support(sk, pose, wf, pole=v3(-0.7, -0.2, -0.7), at=RIFLE["left_ik"] + v3(0.0, -0.08, -0.005))
+
+
+# =============================================================================================
 # registry
 # =============================================================================================
 def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
@@ -1051,6 +1341,9 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
                                                 "investigate_look", "phone_call", "pager_answer", "smoke", "browse"))
         elif name in ("fire_pistol", "fire_rifle"):
             out[name] = Clip(name, N, loop, _fire(sk, name == "fire_rifle", N), speed, None, ev)
+        elif name == "shield_bang":
+            hits = tuple(sorted(int(v) for e, v in ev.items() if e.startswith("bang")))
+            out[name] = Clip(name, N, loop, _shield_bang(sk, N, hits), speed, None, ev, reach_fix=False)
         elif name in ("turn_l", "turn_r"):
             out[name] = Clip(name, N, loop, _turn(sk, N, 1.0 if name == "turn_l" else -1.0), speed, None, ev,
                              reach_fix=False)
@@ -1059,7 +1352,9 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
                      "death_front": lambda s, so, n: _death(s, so, n, True),
                      "death_back": lambda s, so, n: _death(s, so, n, False), "hit_react": _hit_react,
                      "radio_call": _radio_call, "throw_bag": _throw_bag, "drill_place": _drill_place,
-                     "surrender": _surrender, "melee": _melee}[name]
+                     "surrender": _surrender, "melee": _melee, "kick_charge": _kick_charge,
+                     "kick_hit": lambda s, so, n, ev=ev: _kick_hit(s, so, n, int(ev["impact"])),
+                     "heal_ally": lambda s, so, n, ev=ev: _heal_ally(s, so, n, int(ev["heal"]))}[name]
             out[name] = Clip(name, N, loop, maker(sk, solver, N), speed, None, ev, reach_fix=False)
         if name in floor:
             out[name].floor = floor[name]
