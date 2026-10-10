@@ -11,6 +11,14 @@ placeholder_heists = {
 "escape_options": Array[StringName]([&"van"]),
 "loot": Array[StringName]([&"loot.jewelry", &"loot.cash"]),
 "objectives": Array[StringName]([&"casing", &"keycard", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"])
+},
+&"night_deposit": {
+"briefing": "heist.night_deposit.briefing",
+"contact": &"contact.accountant",
+"escape_options": Array[StringName]([&"van", &"boat"]),
+"loot": Array[StringName]([&"loot.cash", &"loot.cash_bricks"]),
+"objectives": Array[StringName]([&"casing", &"keycard", &"code", &"server", &"vault_gate", &"time_lock", &"time_lock_wait", &"vault_loot", &"depository", &"secure", &"escape", &"vault_drill"])
+}
 }
 }
 fallback_contact = &"contact.mercer"

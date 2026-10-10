@@ -1339,3 +1339,36 @@ ui.board.district.midtown,Midtown
 ui.board.district.southfield,Southfield
 ui.board.district.uptown,Uptown
 ui.board.district.westside,Westside
+item.loot.cash_bricks.name,Cash Bricks
+item.loot.cash_bricks.desc,Shrink-wrapped bricks of undeclared bills off the Co-op pallet. Dense and slow to carry.
+heist.night_deposit.name,Night Deposit
+heist.night_deposit.subtitle,Harbor Savings & Loan
+heist.night_deposit.brief,A cartel front drops its week of cash down a bank's night chute. The Accountant wants the chute and the vault cage.
+heist.night_deposit.briefing,"Harbor Savings & Loan, Pier District branch, stands on the corner of Harbor Street and Wharf Lane. Every Friday night the Ortega Fisheries Co-op drops its takings down the night depository chute, and the bags wait in the basement until the 06:00 armoured car. The Co-op's friends keep more cash in the vault cage. The bank is closed: case it from the ATM lobby, find the vault keycard and the time-lock code (or hack the lock from the server room), then hold the basement while the time lock runs. If it goes loud, the vault seals itself: drill the door and hold the basement. The Accountant wants at least four bags."
+objective.night_deposit.casing,Case the bank
+objective.night_deposit.keycard,Find the vault keycard
+objective.night_deposit.code,Find the time-lock code
+objective.night_deposit.server,Hack the time lock from the server room
+objective.night_deposit.vault_gate,Get through the vault gate and the lasers
+objective.night_deposit.time_lock,Start the time lock
+objective.night_deposit.time_lock_wait,Hold the basement until the time lock opens
+objective.night_deposit.vault_loot,Bag the cage and the Co-op pallet
+objective.night_deposit.depository,Open the depository safe
+objective.night_deposit.secure,Secure the bags ({count}/{total})
+objective.night_deposit.escape,Get to the escape
+objective.night_deposit.vault_drill,Drill the vault door
+voice.vo.accountant.briefing_night_deposit_1,The Ortega Fisheries Co-op sells remarkably little fish and banks a remarkable amount of money. All of it goes through Harbor Savings and Loan.
+voice.vo.accountant.briefing_night_deposit_2,Every Friday night the week's takings go down the night chute and sit in the basement until the armoured car at six. Their favoured customers keep more in the vault cage. I want both.
+voice.vo.accountant.briefing_night_deposit_3,Money that was never declared cannot be reported stolen. Four bags settles my account. Anything more is yours.
+voice.vo.mercer.briefing_night_deposit_1,"Half two in the morning and the fog's on our side. Read the hall through the ATM glass, find a keycard and that code, and stay patient while the time lock runs."
+ui.preplan.category.insider,Insider: someone on the inside arranges this before the job.
+ui.preplan.point.pp_drop_lot,Staff lot dumpster
+ui.preplan.point.pp_drop_quay,Quay bollards
+ui.preplan.point.pp_spawn_lot,Staff parking lot
+ui.preplan.point.pp_spawn_quay,Quay steps
+ui.preplan.point.pp_escape_van,Van: staff lot
+ui.preplan.point.pp_escape_boat,Boat: quay steps
+ui.preplan.point.pp_insider_code,Insider: time-lock code
+ui.preplan.point.pp_insider_keycard,Insider: vault keycard
+ui.preplan.point.pp_vent,Insider: areaway grate
+ui.preplan.point.pp_blueprint_cams,Insider: camera plans

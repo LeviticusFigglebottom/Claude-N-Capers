@@ -68,6 +68,10 @@ grants. `test_perk_throwables_exist` checks every `perk.throwable` item id resol
 ## Loot: `loot/`
 Jewelry $1,000 LIGHT ◇, cash $1,200 LIGHT ◇, body bag $0 HEAVY (S6.3, D-032). Base values before the
 difficulty multiplier.
+P2 heists (PD2 bag shape: a heavier bag is worth more per bag, but less per second of carrying):
+| id | weight | value | heist | src |
+|---|---|---|---|---|
+| `loot.cash_bricks` | MEDIUM | $1,600 | Night Deposit (Co-op pallet) | weight: lead (B4-09; the C doc asked HEAVY); value ◇ (1.33× LIGHT cash) |
 
 ## Difficulty: `difficulty/` (Routine, Tense, Hazardous, Brutal, Lethal, Cataclysm = PD2 Normal, Hard, Very Hard, Overkill, Mayhem, Death Sentence)
 | | Rou | Ten | Haz | Bru | Let | Cat | Src |

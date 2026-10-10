@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="LootDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/loot_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"loot.cash_bricks"
+display_name = "Cash Bricks"
+weight = 1
+value = 1600
+conceals = false
