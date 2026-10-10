@@ -10,8 +10,9 @@ How art scenes (ENV C props/characters, ENV B weapons) plug into ENV A gameplay 
 * No scripts that affect gameplay. Visual-only scripts (animated FX) allowed under `world/`.
 * Mounted items: collision and meshes stay on the room side of the pivot. Wall mounts extend only toward −Z;
   ceiling mounts (top-centre pivot) extend only downward (−Y) (QA-26, D-043).
-* No collision in the visual scene **unless** a child named `Collision` (StaticBody3D) is provided for
-  prefabs that declare "visual supplies collision" below; otherwise the prefab owns collision.
+* Collision (D-051, QA-32): every prefab with fitted collision uses a visual-supplied `Collision` child
+  (StaticBody3D) when present, else fits its box to the visual's AABB (pivot rules above), else uses the
+  prefab's `collision_size_override` export. Visuals add no other collision.
 * Materials: from the shared material library (`world/materials/`) or generated per asset;
   **never** default material.
 * LODs: `GeometryInstance3D.visibility_range_*` or importer LODs as the style guide specifies.
@@ -36,6 +37,8 @@ How art scenes (ENV C props/characters, ENV B weapons) plug into ENV A gameplay 
 | weapons, extra (QB-22) | origin = firing-hand pivot (grip centre plane, mid-grip, 20 mm below the grip top); `Slide` cycles along local +Z; optional `AimPoint` (ADS eye alignment, −Z down the bore). A mod may carry its own `Muzzle` (e.g. a suppressor tip): `WeaponVisual.get_marker(&"Muzzle")` returns the outermost one, and ENV A must use it for tracers, flash and the noise origin. On pistols `SideRail` and `Underbarrel` may share the dust-cover rail. |
 | weapons, animated parts (QB-42/44) | `Pump` (shotgun fore-end, slides along local +Z then back), `Bolt` (bolt handle: rotates then slides +Z), `Slide` (pistols). ENV A animates them per fire/reload. On tube-fed weapons `Magwell` sits at the loading port. Bipods are a flat stability bonus in data until a deploy mechanic exists. |
 | weapons, LMG (D-044) | `FeedCover` (pivot at the rear hinge, rotates about local X, open 78°). ENV A plays cover_open/close in reloads. |
+| weapons, akimbo (B4-12, D-050) | One gun model plus an `Offhand` marker (the left gun's rest pose); `WeaponVisual` instances the same model again at `Offhand` with the same mods and exposes `offhand` / `get_offhand_marker(name)`. ENV A reparents the offhand gun to the left-hand socket. |
+| weapons, revolver (B4-12, D-050) | `Crane` (pivot at the crane hinge, swings out to the left about local Z, ~80°) with child `Cylinder` (rotates 60° about local Z per shot). Speedloader reloads use the magazine fields. |
 | characters | see characters.md |
 
 ENV A must ship placeholder visuals with the **same named nodes** so swapping art changes nothing.

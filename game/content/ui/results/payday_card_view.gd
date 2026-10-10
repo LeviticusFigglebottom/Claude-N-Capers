@@ -6,11 +6,11 @@ extends Button
 
 const CARD_SIZE: Vector2 = Vector2(300, 460)
 const CORNER: float = 14.0
-const BACK_COLOR: Color = Color(0.1, 0.11, 0.14, 1)
-const BACK_LINE: Color = Color(0.85, 0.62, 0.18, 1)
-const FACE_COLOR: Color = Color(0.88, 0.86, 0.8, 1)
-const INK: Color = Color(0.1, 0.1, 0.12, 1)
-const FOCUS_COLOR: Color = Color(1, 0.86, 0.45, 1)
+const BACK_COLOR: Color = Color(0.125, 0.11, 0.096, 1)
+const BACK_LINE: Color = Color(0.788, 0.635, 0.153, 1)
+const FACE_COLOR: Color = Color(0.89, 0.86, 0.8, 1)
+const INK: Color = Color(0.11, 0.094, 0.078, 1)
+const FOCUS_COLOR: Color = Color(0.31, 0.82, 0.91, 1)
 const BAND_H: float = 64.0
 ## Height kept free under the type label for the drawn icon (centre ICON_Y from the card top).
 const ICON_ZONE_H: float = 170.0

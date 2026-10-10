@@ -42,6 +42,8 @@ var subtitle_label: Label
 var play_button: Button
 var continue_button: Button
 var back_button: Button
+## Heist accent strip beside the header (UiAccent, B4-07).
+var accent_strip: ColorRect
 
 var _line_index: int = -1
 var _timer: Timer
@@ -77,7 +79,7 @@ func build_ui() -> void:
 	nav.alignment = BoxContainer.ALIGNMENT_END
 	root.add_child(nav)
 	back_button = UiBuild.button(&"ui.menu.back")
-	continue_button = UiBuild.button(&"ui.briefing.continue")
+	continue_button = UiBuild.primary(UiBuild.button(&"ui.briefing.continue"))
 	back_button.pressed.connect(_on_back)
 	continue_button.pressed.connect(_on_continue)
 	nav.add_child(back_button)
@@ -92,6 +94,8 @@ func build_ui() -> void:
 func _build_header(root: VBoxContainer) -> void:
 	var header: HBoxContainer = UiBuild.hbox(24)
 	root.add_child(header)
+	accent_strip = UiAccent.strip(UiAccent.for_heist(heist_id))
+	header.add_child(accent_strip)
 	var left: VBoxContainer = UiBuild.vbox(4)
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(left)
@@ -184,6 +188,8 @@ func refresh() -> void:
 	heist_label.text = UiText.t(&"ui.briefing.heist", {
 		"name": UiText.t(StringName(model["name_key"])), "subtitle": UiText.t(StringName(model["subtitle_key"])),
 	})
+	accent_strip.color = UiAccent.for_heist(heist_id)
+	heist_label.add_theme_color_override(&"font_color", UiAccent.text_color(heist_id, UiAccent.app_bg()))
 	placeholder_label.visible = bool(model["placeholder"])
 	difficulty_label.text = UiText.t(&"ui.briefing.difficulty", {"name": UiText.t(UiText.difficulty_key(difficulty))})
 	mode_label.text = UiText.t(&"ui.briefing.mode", {"mode": UiText.t(StringName(model["mode_key"]))})

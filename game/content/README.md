@@ -74,7 +74,8 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 
 ## App shell and UI (D-024)
 * `MenuFlow` (`ui/menus/menu_flow.tscn`) is the app shell; `core/boot.gd` routes to it. Flow (B2-01,
-  pd2_fidelity C2/C3 order): main menu -> heist select -> **briefing** -> **pre-planning** -> loadout
+  B4-07, pd2_fidelity C2/C3/C9 order): main menu -> "Safehouse" -> **hub** (`HubMenu`) -> The Board
+  (`contract_chosen`) or the planning table (heist select) -> **briefing** -> **pre-planning** -> loadout
   (-> Masks / Skills / Perk Deck and back) -> launch -> HUD -> payday. Back is symmetrical at every
   step; Back from the loadout refunds the confirmed plan's local cash share (re-confirm charges once).
   Every screen focuses its first control when shown (keyboard/gamepad). The menu path shares one
@@ -89,14 +90,42 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   pre-planning plan (seed defaults to the time, difficulty to Routine; unknown heist or bad value logs an error and stays on the main menu).
   Parsing: `LaunchArgs.parse(args) -> {direct, heist_id, has_seed, seed, difficulty, errors}`,
   `LaunchArgs.validate_heist(id, known_ids)`. `MenuFlow.direct_launch(parsed) -> bool`.
-* `HeistCatalog.entries()/ids()`: heists from `HeistRegistry` (core); `data/ui/heist_list.tres`
-  (`UiHeistList`) holds per-heist UI data keyed by id (`solo_ai_teammates`, and
-  `placeholder_base_payout/placeholder_mode` used only while `HeistRegistry.get_def(id)` is null),
+* **Safehouse hub (B4-07, C9).** `HubMenu` (`ui/hub/hub_menu.tscn`) is the 2D layer of the safehouse:
+  station cards + a profile summary (level, XP bar, spending, stash, free skill/perk points). Stations are
+  data: `data/ui/hub_stations.tres` (`HubStationList` of `HubStation {id, title_key, desc_key, icon_kind,
+  target}`). Ids: `board`, `planning`, `armory`, `masks`, `range`.
+  **`MenuFlow.open_station(id: StringName) -> bool`** opens one (false + `Log.error` for an unknown id);
+  it is the API **ENV C's 3D safehouse interactables call** (find the MenuFlow node, call it with the
+  station id), works from any menu state, refunds a confirmed-but-unlaunched plan, and Back on every
+  station returns to the hub. Armory = `LoadoutScreen.hub_mode` (no Launch; Masks/Skills/Perk Deck as
+  usual). Briefing Back returns to where the contract came from (Board or heist select). After a heist
+  (or the stub/sample payday) the flow returns "home": the hub once the safehouse was entered, else the
+  main menu (`MenuFlow.show_home()`).
+* **Pro jobs.** A Board pin's `is_pro` is stored on `MenuFlow.is_pro` (heist select, broker and direct
+  launch are never pro), goes into the launch options as `options["is_pro"] = true` (key omitted when
+  false; `build_launch_options(ai, slot, resolved, plan, pro)`, `launch_options_for(loadout)`), and into
+  `PaydayScreen.is_pro` -> `PayoutCalculator.compute(..., is_pro)` (HeistResult does not carry it).
+* **GSR theme + accents (B4-07, D-035).** `ui/theme/caper_theme.tres`: warm-neutral darks, brass house
+  accent, chamfered corners (`corner_detail = 1` on top-left/bottom-right), the style guide's cyan
+  `#4FD1E8` reserved for focus/highlight, `Screen/colors/background|accent|highlight`, variations
+  `PrimaryButton` (`UiBuild.primary(b)`: a screen's main forward action) and `StationButton`. Text
+  colours keep >= 4.5:1 contrast on the surfaces they sit on (`test_ui_accent.gd`). Per-heist accents
+  (style_guide §3) are data in `data/ui/heist_accents.tres` (`UiHeistAccents`); screens use
+  `UiAccent.for_heist(id)` for strips/edges and `UiAccent.text_color(id)` for accent text (lifted to
+  4.5:1), plus `UiAccent.strip(color)`, `accent_panel(panel, color)`, `contrast_ratio(a, b)`. Applied on
+  the briefing, pre-planning, the Board's contract card and the HUD objectives panel (`Hud.heist_id`,
+  set by MenuFlow).
+* `HeistCatalog.entries()/ids()`: heists from `HeistRegistry` (core) that have BOTH a HeistDef and
+  a map scene (`HeistRegistry.map_scene_path` exists; QB-55, D-049). No placeholder heists: menus, the
+  Board, the broker and direct launch only offer playable heists (Shadow Ledger appears with its G1).
+  `data/ui/heist_list.tres` (`UiHeistList`) holds per-heist UI data keyed by id (`solo_ai_teammates`),
   plus build-wide `unlocked_difficulties` and the default `solo_ai_teammates`.
-  `entries_from(defs, list)` is the pure builder (tests).
+  `entries_from(defs, map_exists)` is the pure builder (tests).
 * `Hud` binds its widgets DIRECTLY to the node in group `G.LOCAL_HUD_MODEL` (ENV A's LocalHudModel,
   ui_hud.md v1.2; no adapter; v1.2 `custody` drives `CustodyPanel`: negotiation / auto-release timers while in
-  custody, a trade hint for the highlighted hostage while free), polled while unbound and rediscovered if the model is freed; MenuFlow
+  custody, a trade hint for the highlighted hostage while free; v1.3 (D-049) `captain_changed` / `captain_present` /
+  `captain_resistance` drive `CaptainPanel`: Brandt's name + Aegis resistance bar, and the status panel then drops
+  its `captain` warning line), polled while unbound and rediscovered if the model is freed; MenuFlow
   relies on that discovery in heists. `bind(model)` still works. `MockHudModel` (demo/tests) joins the
   same group. `MarkedTargets` draws a diamond per `marked_targets` entry; `InteractionPanel` fills a
   missing `{key}` prompt arg from the `interact` InputMap binding.

@@ -21,3 +21,5 @@ extends Resource
 @export var fire_cue_suppressed: StringName = &""
 ## Animation set id for first-person viewmodel (contracts/characters.md)
 @export var anim_set: StringName = &"pistol"
+## Two guns (D-050): the `akimbo` modifier qualifier comes from this flag, never from anim_set.
+@export var akimbo: bool = false

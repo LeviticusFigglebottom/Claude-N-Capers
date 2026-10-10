@@ -78,6 +78,13 @@ P2 heists (PD2 bag shape: a heavier bag is worth more per bag, but less per seco
 | `loot.painting` | MEDIUM | $1,500 | Shadow Ledger art hall ×2, reusable by `gallery_night` | weight V (doc); value ◇ |
 Shadow Ledger's archive safe uses the existing `loot.cash`.
 
+**Small loot (QB-52, D-049): no loot def.** Small loot (cash stacks, jewellery, deposit-box contents
+picked up by hand, not bagged) gets its value from the map prefab that spawns it (ENV A/C), which
+reports the sum in `HeistResult.small_loot`; `PayoutCalculator` scales it by difficulty
+(`PayoutTweak.small_loot_scaled_by_difficulty`). `loot.small_loot_value_mult` (Plain Sight aced) belongs
+to the pickup side (ENV A). Per-item ranges before the difficulty
+multiplier (recorded from the G0 docs): **Night Deposit $800–2,400**, **Shadow Ledger $1,200–3,000**.
+
 ## Difficulty: `difficulty/` (Routine, Tense, Hazardous, Brutal, Lethal, Cataclysm = PD2 Normal, Hard, Very Hard, Overkill, Mayhem, Death Sentence)
 | | Rou | Ten | Haz | Bru | Let | Cat | Src |
 |---|---|---|---|---|---|---|---|
@@ -86,6 +93,7 @@ Shadow Ledger's archive safe uses the existing `loot.cash`.
 | enemy_cap | 16 | 20 | 24 | 28 | 32 | 36 | ◇ |
 | assault_intensity | 0.6 | 0.75 | 0.9 | 1.0 | 1.15 | 1.3 | ◇ |
 | bulwark/stinger/corpsman/phantom/wrecker caps | 2/1/1/0/1 ◇ | 3/1/2/0/1 ◇ | 4/2/2/1/2 ◇ | 4/2/3/2/2 V | 4/3/3/2/2 V(taser)/◇ | 4/3/3/2/3 V(dozer)/◇ | §2.6, L4.11 |
+| longshot cap | 1 | 2 | 2 | 3 | 3 | 4 | lead QA-31 (also bounded by free perches) |
 | detection_speed_mult | 1 | 1 | 1 | 1 | 1 | 1 | ◇ (no research says otherwise) |
 | civilian_kill_penalty | 2000 | 3000 | 5000 | 8000 | 12000 | 16000 | ◇ (PD2 range $2k–$51k incl. job tier) |
 | revive_health_frac | 0.4 | 0.4 | 0.4 | 0.4 | 0.1 | 0.1 | V (60% / 90% lost) |

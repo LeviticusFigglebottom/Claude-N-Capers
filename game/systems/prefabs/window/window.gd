@@ -69,6 +69,22 @@ func set_open(open: bool) -> void:
 	_set_glass_collision(not open and not broken)
 
 
+## Client (A3-07, HeistNetSync): mirror `broken` / `is_open` (glass, sash, collision, prompt).
+func _apply_net_state(state: Dictionary) -> void:
+	if bool(state.get("broken", broken)) and not broken:
+		broken = true
+		var glass: Node3D = visual_node("Glass") as Node3D
+		if glass != null:
+			glass.visible = false
+		_apply_state()
+	if state.has("is_open") and openable:
+		is_open = bool(state["is_open"])
+		var sash: Node3D = visual_node("Sash") as Node3D
+		if sash != null:
+			sash.position.y = _sash_closed_y + (Tweak.interaction().window_sash_open_m if is_open else 0.0)
+	_set_glass_collision(not is_open and not broken)
+
+
 ## Server: smash the glass (S9.9).
 func break_glass(_by_net_id: int = 0) -> void:
 	if not Net.is_authority() or broken or not breakable:
@@ -117,37 +133,7 @@ func _apply_state() -> void:
 
 ## A2-08: the glass AABB in this prefab's space (merged over Glass meshes), or an empty AABB.
 func glass_aabb() -> AABB:
-	var glass: Node3D = visual_node("Glass") as Node3D
-	if glass == null:
-		return AABB()
-	var meshes: Array[MeshInstance3D] = []
-	var stack: Array[Node] = [glass]
-	while not stack.is_empty():
-		var n: Node = stack.pop_back()
-		var mi: MeshInstance3D = n as MeshInstance3D
-		if mi != null and mi.mesh != null:
-			meshes.append(mi)
-		for c: Node in n.get_children():
-			stack.append(c)
-	var out: AABB = AABB()
-	var first: bool = true
-	for mi: MeshInstance3D in meshes:
-		var box: AABB = _to_local_space(mi) * mi.get_aabb()
-		out = box if first else out.merge(box)
-		first = false
-	return out
-
-
-## Transform of `n` relative to this prefab (works whether or not it is in the tree).
-func _to_local_space(n: Node3D) -> Transform3D:
-	var t: Transform3D = Transform3D.IDENTITY
-	var cur: Node = n
-	while cur != null and cur != self:
-		var c3: Node3D = cur as Node3D
-		if c3 != null:
-			t = c3.transform * t
-		cur = cur.get_parent()
-	return t
+	return merged_mesh_aabb(visual_node("Glass"))
 
 
 func _fit_glass_body() -> void:
@@ -161,7 +147,7 @@ func _fit_glass_body() -> void:
 	shape.size = Vector3(box.size.x, box.size.y, maxf(box.size.z, GLASS_MIN_DEPTH_M))
 	cs.shape = shape
 	var parent3d: Node3D = cs.get_parent() as Node3D
-	cs.transform = Transform3D(Basis.IDENTITY, _to_local_space(parent3d).affine_inverse() * box.get_center())
+	cs.transform = Transform3D(Basis.IDENTITY, xform_to_self(parent3d).affine_inverse() * box.get_center())
 
 
 func _set_glass_collision(on: bool) -> void:

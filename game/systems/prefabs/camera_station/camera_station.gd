@@ -39,6 +39,9 @@ const DISPATCHABLE_STATES: Array[int] = [Enums.AlertState.CALM, Enums.AlertState
 
 ## SpawnPoint (CAMERA_OPERATOR) whose NPC operates this station.
 @export var operator_spawn: NodePath
+## Collision box size (m), placed on the pivot; ZERO = fit to the visual (or use the visual's own
+## `Collision`), see GameplayPrefab "Collision fitting".
+@export var collision_size_override: Vector3 = Vector3.ZERO
 @export_group("Interaction")
 ## -1 = InteractionTweak.camera_loop_s.
 @export var interaction_time_s: float = -1.0

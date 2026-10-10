@@ -25,6 +25,7 @@ signal crew_revived(crew_slot: int, by_crew_slot: int)
 signal crew_custody(crew_slot: int)
 signal crew_traded(crew_slot: int, hostage_net_id: int)
 signal crew_tased(crew_slot: int, by_net_id: int)
+signal crew_tase_ended(crew_slot: int)
 signal crew_cloaker_downed(crew_slot: int, by_net_id: int)
 signal crew_cuffed(crew_slot: int, by_net_id: int)
 signal crew_uncuffed(crew_slot: int, by_crew_slot: int)  # -1 = freed themselves

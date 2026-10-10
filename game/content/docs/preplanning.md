@@ -75,8 +75,13 @@ multiplier; DifficultyDef has none yet, so the tweak holds it.) Default favors: 
 The gondola and riser assets are limited by `point_ids` (Shadow Ledger's insider points, D-042), not by
 the `insider` category, so they never appear on another heist's insider points (Night Deposit's
 `pp_vent` / `pp_insider_*`). One variant group has one slot, hence the exclusive groups.
-`asset.intel_laptop` is a crew asset and so is offered on every heist: a heist without a `laptop`
-variant group should `disable` it in `HeistDef.preplanning` (ENV C).
+**Variant groups (QB-53, D-049).** The board hides a library asset whose `reveals` or `force_variants`
+names a variant group the heist does not have (`PreplanBoard.hidden_assets`), so `asset.intel_laptop`
+(reveals `laptop`) only shows where a `laptop` group exists; no `disable` is needed. The heist's groups
+(`PreplanBoard.heist_variant_groups`) are the rule groups and rare-event `force_active` groups of
+`world/heists/<id>/<id>_variants.tres` plus the `variant_group` params of its pre-planning points. A
+heist with no variant table hides nothing (groups unknown). An asset listed in the heist's own
+`preplanning.assets` that names a missing group is a board error instead.
 
 ## Per-heist data: `HeistDef.preplanning` (ENV C data, merged by `PreplanBoard.merge`)
 Contract format:

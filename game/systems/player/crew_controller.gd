@@ -52,6 +52,9 @@ var intent: CrewIntent = CrewIntent.new()
 var _runtime: HeistRuntime = null
 var _jump_latch: bool = false
 var _remote_pos: Vector3 = Vector3.INF
+## A3-07: bumped by every server teleport of a remote-owned crew member; the owner echoes it with its
+## positions, so positions sent before the owner applied the teleport are ignored, not rejected.
+var _teleport_seq: int = 0
 var _send_accum: float = 0.0
 
 ## Combat components (A1-08); null only for a scene without them.
@@ -232,7 +235,8 @@ func set_masked(forced: bool = false) -> void:
 		Net.replicate_event(&"crew_masked", [slot])
 		if CrewView.of(self) != null:
 			CrewView.of(self).replicate_mask_descriptor()  # QA-25: descriptor before the mask-up
-		_rpc_masked.rpc(forced)
+		if HeistNetSync.can_rpc(self):
+			_rpc_masked.rpc(forced)
 	Log.info(&"crew", "slot %d masked (forced=%s)" % [slot, forced])
 
 
@@ -257,6 +261,9 @@ func teleport(xform: Transform3D) -> void:
 	_remote_pos = Vector3.INF
 	if _runtime != null and _runtime.interaction != null:
 		_runtime.interaction.cancel(slot)
+	if Net.is_authority() and _has_remote_owner() and _is_networked():
+		_teleport_seq += 1
+		_rpc_owner_teleport.rpc_id(peer_id, xform, _teleport_seq)  # A3-07: the owner predicts; move it too
 
 
 func _physics_process(delta: float) -> void:
@@ -365,7 +372,26 @@ func _apply_stance(crouch: bool) -> void:
 		_head.position = Vector3(0.0, eye_height(), 0.0)
 
 
-# --- Networking (skeleton; co-op hardening in P3/P6) ---------------------------
+# --- Networking (A3-07; drop-in is P6) -----------------------------------------
+## Server -> owner: `teleport()` of a remote human (spawn, custody release, out of bounds, test hooks)
+## and the reconcile after a rejected position. Transforms of crew members a peer does not own
+## arrive through HeistNetSync (NetEntityCodec.apply_xform).
+
+func _is_networked() -> bool:
+	if _runtime == null or _runtime.net_sync == null or not _runtime.net_sync.is_begun():
+		return false  # before the bring-up the owner has no replica of this node yet
+	return is_inside_tree() and multiplayer.has_multiplayer_peer() \
+		and not multiplayer.multiplayer_peer is OfflineMultiplayerPeer \
+		and multiplayer.get_peers().has(peer_id)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_owner_teleport(xform: Transform3D, seq: int) -> void:
+	if Net.is_authority() or not is_local():
+		return
+	teleport(xform)
+	_teleport_seq = seq
+
 
 func _client_send(delta: float) -> void:
 	_send_accum += delta
@@ -373,18 +399,19 @@ func _client_send(delta: float) -> void:
 	if _send_accum < period:
 		return
 	_send_accum = 0.0
-	_rpc_client_intent.rpc_id(1, intent.to_dict(), global_position)
+	_rpc_client_intent.rpc_id(1, intent.to_dict(), global_position, _teleport_seq)
 
 
 @rpc("any_peer", "call_remote", "unreliable_ordered")
-func _rpc_client_intent(d: Dictionary, pos: Vector3) -> void:
+func _rpc_client_intent(d: Dictionary, pos: Vector3, seq: int) -> void:
 	if not Net.is_authority():
 		return
 	if multiplayer.get_remote_sender_id() != peer_id:
 		Log.warn(&"net", "intent for slot %d from wrong peer %d" % [slot, multiplayer.get_remote_sender_id()])
 		return
 	intent = CrewIntent.from_dict(d)
-	_remote_pos = pos
+	if seq == _teleport_seq:  # else: sent before the owner applied our last teleport
+		_remote_pos = pos
 
 
 func _accept_remote_position() -> void:
@@ -393,6 +420,9 @@ func _accept_remote_position() -> void:
 	var d: float = global_position.distance_to(_remote_pos)
 	if d > tw.teleport_reject_m:
 		Log.warn(&"net", "slot %d position rejected (%.1f m jump)" % [slot, d])
+		if _is_networked():  # A3-07: reconcile the owner back to the server position
+			_teleport_seq += 1
+			_rpc_owner_teleport.rpc_id(peer_id, Transform3D(Basis(Vector3.UP, look_yaw), global_position), _teleport_seq)
 	elif d <= max_step + 0.05 or crew_state == Enums.CrewState.NORMAL:
 		global_position = _remote_pos
 	look_yaw = intent.look_yaw

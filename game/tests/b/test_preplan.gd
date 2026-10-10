@@ -411,3 +411,4 @@ func test_glasshouse_point_and_asset_strings() -> void:
 		assert_has(table, "item.asset.%s.desc" % a)
 	for c: String in ["drop_zone", "spawn", "escape", "access", "insider"]:
 		assert_has(table, "ui.preplan.category.%s" % c)
+

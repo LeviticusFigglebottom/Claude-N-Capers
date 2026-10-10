@@ -15,6 +15,8 @@ listed. All data ids follow `groups.md`. The code headers are authoritative for 
 | HeistDef, HeistVariantTable | C | `world/heists/<id>/` | A, B |
 
 ## Weapons and mods
+* `WeaponDef.akimbo: bool` (D-050): a pair of guns; Modifiers queries add the `akimbo` qualifier from it.
+  Akimbo pairs are PISTOL class in the primary slot (PD2); anim_set `akimbo`.
 * `WeaponDef.base` = stats with stock parts. Resolved stats = `base.plus(mod.delta)` for each equipped
   mod, then clamps (concealment 0–30, spread ≥ 0, mag ≥ 1), then skill modifiers are applied **at
   runtime by A** (mods are baked into resolved stats; skills are not, so the UI can show both).

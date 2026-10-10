@@ -13,9 +13,60 @@ var rt: HeistRuntime = await HeistLauncher.launch(heist_id, seed, difficulty, pa
 })
 ```
 
-The launch is server-side. Run it after the pre-planning vote has settled. Clients learn the chosen
-assets from the lobby, and the effects reach them through the usual replication (variants in
-`heist_loaded`, modifiers, spawned nodes).
+The launch is server-side. Run it after the pre-planning vote has settled. In a live co-op session the
+host's `launch()` sends the bring-up to every connected client (below); clients never call `launch()`.
+
+## Co-op: client bring-up and replication (A3-07, net.md)
+
+```gdscript
+# Client, once in the lobby (after Net.join): build the replica whenever the host launches.
+HeistLauncher.auto_join(null, {}, func(rt: HeistRuntime) -> void: hud.bind(rt.hud_model))
+# ...or by hand from the Net.lobby_message(from_peer == 1, HeistLauncher.BRING_UP_KIND, data):
+var rt: HeistRuntime = HeistLauncher.join_running(data)   # synchronous; null on error
+```
+
+**Bring-up** (`HeistNetSync.bring_up()`, sent by `launch()` right after `HeistRuntime.start()` and
+before any physics frame, through `Net.lobby_send(HeistLauncher.BRING_UP_KIND, data)` because the
+client has no heist node yet). `data` (version `HeistLauncher.BRING_UP_VERSION` = 1):
+
+| Key | Meaning |
+|---|---|
+| `heist_id`, `seed`, `difficulty`, `map_scene` | Same map (`map_scene` = the host's res:// path; else `map_path(heist_id)`). The client calls `GameRng.begin_run(seed)`. |
+| `variants` | The host's resolved dict. The client **applies** it (`VariantResolver.apply`), it never rolls. |
+| `map_ids` | `{path relative to the map: net_id}` for every map-placed entity with a net id (host claims them in tree order). The client adopts them with `NetIds.adopt`; unresolved paths land in `rt.replica_missing_ids` (+ `Log.error`). |
+| `crew_ids` | `{slot: net_id}`. |
+| `phase`, `went_loud`, `heist_time_s`, `preplan` | Phase machine state; the normalized PreplanResult (TEAM modifiers re-applied on the client). |
+| `runtime_path` | The host's HeistRuntime node path. RPC paths must match: launch under the tree root (the default) on both sides; `join_running(data, null)` picks the same parent. |
+| `snapshot` | `{spawns: [descriptor], states: {net_id: state}, services: {...}}`: every dynamic entity and the full discrete state at launch. |
+
+The client builds the runtime with `HeistRuntime.start(..., {"bring_up": data})` (`rt.is_replica == true`):
+same services (HUD model, interaction, stealth... all idle behind `Net.is_authority()`), no mission
+binding, no AI brains, no director. `heist_loaded` is emitted by the replica itself (not relayed).
+
+**Replication** (`HeistNetSync`, child `NetSync` of HeistRuntime, service `&"net_sync"`; idle in solo):
+
+| What | How | Rate |
+|---|---|---|
+| Dynamic entities (NPCs, crew, loot bags, deployables, pre-plan drops: any child of `dynamic_root` with a `net_id`) | `_rpc_spawn([{scene, script, name, net_id, xform, params}])`, built by `NetEntityCodec.describe/instantiate`. NPC replicas drop `Brain`/`Motor`/`Gunner`/`NavAgent`; bags are frozen (host physics). | every physics frame (new children) |
+| Despawns (bag secured, small loot taken, NPC removed, any replicated id leaving the tree) | `_rpc_despawn(ids)` | every physics frame |
+| Discrete state (door open/locked, glass broken, camera off, device state/progress, pickups, deployable uses, NPC alert/alive/health, crew state/mask/vitals/inventory/carried bag, bag carrier/secured) | `_rpc_state(diffs, services)`: only changed keys. Prefabs may implement `_net_state()` / `_apply_net_state(state)` (Door, WindowPrefab, DisplayCase, SecurityCamera do); otherwise `NetEntityCodec.GENERIC_PROPS` are mirrored. | 15 Hz, reliable |
+| Service state: interaction session per crew slot (HUD progress / blocked reason), known codes (A2-04), custody timers + highlighted hostage, phase / went_loud | `InteractionSystem.net_sessions()`, `CodeRegistry.net_state()`, `CustodySystem.net_state()` and their `apply_*` mirrors | 15 Hz, reliable, on change |
+| Transforms: NPCs, crew members the peer does not own (position, look yaw/pitch, crouch), loose bags | `_rpc_xforms` (only what moved) | 15 Hz, unreliable_ordered |
+| Own crew member | client-predicted; intent + position at 30 Hz (`CrewController`). Server `teleport()` of a remote human is sent to its owner (`_rpc_owner_teleport`, with a sequence number so stale positions are ignored); a rejected position (> `teleport_reject_m`) is reconciled the same way. | |
+
+RPCs that would reach a client before its bring-up (mask-up at a LOUD_ONLY start, deployable/ammo
+HUD syncs at spawn) are skipped while `HeistNetSync.can_rpc(node)` is false: that state travels with
+the bring-up snapshot.
+
+Known gaps (P6 / follow-ups): drop-in mid-heist (the bring-up goes only to peers connected at launch);
+events relayed for an entity can reach a client just before that entity's spawn (same frame);
+remote transforms are applied without interpolation; components added at runtime by server-only code
+(the body-bag interactable on corpses, police surrender/trade interactables, brain-built nodes) do not
+exist on replicas, so the HUD shows no prompt for them on clients; DeployableSystem inventory rows,
+Brandt's per-hit resistance and AssaultDirector internals are not mirrored (the HUD gets the assault
+phase from events); a host `teardown()` does not tear clients down (they get `heist_ended` [R]).
+Test: `tests/a/test_a3_07_coop_loopback.gd` (host in the test process, client in a second headless
+process; see its header for why one process with two SceneMultiplayer branches cannot work).
 
 ## Heist modes (S11.3, `HeistDef.mode`, mirrored in `HeistRuntime.heist_mode`)
 
@@ -227,3 +278,17 @@ func _on_mission_start() -> void:
   carrier's last in-bounds standing position (+0.3 m) is used. A bag whose probe point
   (origin + `LootTweak.zone_probe_up_m`) is in a zone goes back there at rest (signal
   `bag_returned(bag)`). A bag that never had a valid position stays put (warning).
+
+## Mission hooks for dominated NPCs (QC, Night Deposit)
+Override in `<id>_mission.gd`:
+- `_on_civilian_dominated(civilian: Node, crew_slot: int)`: fires on `civilian_intimidated` with the civilian NPC node.
+- `_on_guard_dominated(npc: Node, crew_slot: int)`: fires on `guard_dominated` (guards and surrendered cops).
+
+Timed NPC spawns (QC-25, e.g. Night Deposit `armored_car_early`, Brutal+ at 720 s):
+```gdscript
+func _on_mission_start() -> void:
+	if difficulty >= Enums.Difficulty.BRUTAL:
+		schedule_at(720.0, &"armored_car_early", func() -> void: spawn_guards(2, &"armored_car"))
+```
+GUARD SpawnPoints tagged `scripted` are not spawned at load; `spawn_guards(count, tag)` spawns at GUARD
+SpawnPoints carrying `tag`.

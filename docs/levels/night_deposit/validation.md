@@ -30,12 +30,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 202 props checked
+- 203 props checked
 
 
 ## clipping: Nothing clips
 
-- 202 props, 36 doors checked
+- 203 props, 36 doors checked
 
 
 ## scale: Human scale
@@ -85,8 +85,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 1666 polygons, cell 0.10/0.10 m
-- 168 markers checked
+- navmesh: 1672 polygons, cell 0.10/0.10 m
+- 169 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomG1` | 99 | 99 | 100% |
@@ -94,7 +94,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomG3` | 54 | 54 | 100% |
 | `Rooms/RoomG4` | 26 | 26 | 100% |
 | `Rooms/RoomG5` | 45 | 45 | 100% |
-| `Rooms/RoomG6` | 74 | 74 | 100% |
+| `Rooms/RoomG6` | 65 | 65 | 100% |
 | `Rooms/RoomG7` | 102 | 102 | 100% |
 | `Rooms/RoomG8` | 107 | 107 | 100% |
 | `Rooms/RoomG9` | 567 | 567 | 100% |
@@ -106,7 +106,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomB2` | 66 | 66 | 100% |
 | `Rooms/RoomB13` | 4 | 4 | 100% |
 | `Rooms/RoomB3` | 42 | 42 | 100% |
-| `Rooms/RoomB4` | 56 | 56 | 100% |
+| `Rooms/RoomB4` | 47 | 47 | 100% |
 | `Rooms/RoomB5` | 102 | 102 | 100% |
 | `Rooms/RoomB6` | 207 | 207 | 100% |
 | `Rooms/RoomB7` | 51 | 51 | 100% |
@@ -122,12 +122,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 35 variant configuration(s), 96630 spawn->target path queries
+- 35 variant configuration(s), 97635 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 1905 / 1905 spawn->target walks ok
+- 1935 / 1935 spawn->target walks ok
 
 
 ## patrols: Patrol graphs

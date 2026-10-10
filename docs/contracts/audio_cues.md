@@ -35,6 +35,13 @@ Buses: `Master > Music, SFX (> Weapons, Enemies, World, UI), Voice, Ambience`.
 | cue.longshot_report | Longshot | distant heavy crack | 3 |
 | cue.corpsman_heal | Corpsman | bright 2-note chime | 3 |
 | cue.brandt_arrival / aegis_pulse | captain | horn sting / low pulse | 3 |
+| cue.bag_lift_start / bag_lift_arrive | `bag_lift` prefab (A, CueEmitter/audio_cue_requested) | motor whine + cage rattle / bell + brake clunk | 2 |
+| cue.hack_start / hack_interrupt / hack_done | `hack_terminal` (device_* kind `&"hack"`) | keyboard burst + fan / error buzz / confirm chirp | 2 |
+| cue.escape_arrive (+ `_van`, `_boat`, `_heli`) | escape vehicle arrives (A via audio_cue_requested) | engine approach + horn / outboard + bump / rotor swell | 2 |
+| cue.weapon_revolver_fire | revolver anim set (B4-12) | heavy single crack + cylinder click tail | 4 |
+
+Special-action cues have no dedicated EventBus signals: ENV A triggers them with `audio_cue_requested` or a
+`CueEmitter`. Looping tells stop on the matching end fact (`crew_tase_ended` for `stinger_arc`, D-049) or locally.
 
 Music: `world/audio/music/<track>/` stems `stealth, control, anticipation, assault, fade` (plus
 `win`, `lose` stingers) driven by C's `MusicDirector` listening to the phase signals.
