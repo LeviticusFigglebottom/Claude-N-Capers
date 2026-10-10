@@ -124,7 +124,10 @@ func test_keys_requested_by_systems_exist() -> void:
 		for m: RegExMatch in rx.search_all(FileAccess.get_file_as_string(path)):
 			var k: String = m.get_string(1)
 			found += 1
-			if k.begins_with("vo."):
+			if k.begins_with("vo.") and k.ends_with("_"):
+				# Format-string prefix (e.g. "vo.crew.ack_%s"): some line must complete it.
+				assert_true(_has_line_prefix(table, k), "voice lines %s* (used in %s)" % [k, path])
+			elif k.begins_with("vo."):
 				assert_false(table.line(StringName(k)).is_empty(), "voice line %s (used in %s)" % [k, path])
 			else:
 				assert_has(_table, k, "used in %s" % path)
@@ -154,6 +157,24 @@ func test_glasshouse_objectives_follow_the_design_doc() -> void:
 	for k: String in _table.keys():
 		if k.begins_with("objective.glasshouse."):
 			assert_has(tags, k.trim_prefix("objective.glasshouse."), "no guessed objective key: %s" % k)
+
+
+## D-043 QA-24: every AI teammate order is acknowledged with `vo.crew.ack_<order>` (crew_ai_brain).
+func test_crew_order_acks_exist() -> void:
+	var table: VoiceLineTable = _voice_table()
+	for o: StringName in CrewOrders.ORDERS:
+		var l: Dictionary = table.line(StringName("vo.crew.ack_%s" % o))
+		assert_eq(l.get("speaker", &""), &"crew", "ack line for %s" % o)
+		assert_has(_table, "voice.vo.crew.ack_%s" % o)
+	for k: String in ["ui.blocked.push_bar_outside", "ui.prompt.trade_hostage", "ui.prompt.convert", "ui.prompt.cable_tie"]:
+		assert_has(_table, k)
+
+
+func _has_line_prefix(table: VoiceLineTable, prefix: String) -> bool:
+	for l: Dictionary in table.lines:
+		if String(l.get("id", "")).begins_with(prefix):
+			return true
+	return false
 
 
 func _collect_code(dir_path: String, out: Array[String]) -> void:

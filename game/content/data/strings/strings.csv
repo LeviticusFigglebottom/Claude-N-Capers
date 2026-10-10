@@ -105,6 +105,8 @@ ui.prompt.use_ammo_bag,Hold {key} to refill ammo
 ui.prompt.take_body_bag,Hold {key} to take a body bag
 ui.prompt.deploy,Hold {key} to deploy {item}
 ui.prompt.trade_hostage,Hold {key} to trade the hostage
+ui.prompt.convert,Hold {key} to convert
+ui.prompt.cable_tie,Hold {key} to cuff
 ui.prompt.open_window,Press {key} to open the window
 ui.prompt.climb,Press {key} to climb
 ui.prompt.enter_code,Hold {key} to enter the code
@@ -137,6 +139,7 @@ ui.blocked.code_unknown,You don't know the code
 ui.blocked.requires_bag,You need to carry a bag
 ui.blocked.no_deployable,You have none left
 ui.blocked.no_space,No room to place it here
+ui.blocked.push_bar_outside,Opens from the other side
 ui.results.title,Payday
 ui.results.success,Heist complete
 ui.results.failure,Heist failed
@@ -311,6 +314,11 @@ voice.vo.mercer.abort,"That's the alarm. This one was quiet or nothing, so we're
 voice.vo.mercer.pager_last,That was the last pager they'll swallow. Keep the rest breathing.
 voice.vo.mercer.dev_start,Test run. Nothing here is real except the bullets.
 voice.vo.guard.cuff_warning,"Hands where I can see them! Don't you move!"
+voice.vo.crew.ack_follow,On you.
+voice.vo.crew.ack_hold,Holding here.
+voice.vo.crew.ack_carry_bag,Got the bag.
+voice.vo.crew.ack_drop_bag,Dropping it.
+voice.vo.crew.ack_revive,Coming to get you up.
 voice.vo.rook.pager_started_1,Pager. On it.
 voice.vo.rook.pager_started_2,Pager going off. Covering it.
 voice.vo.rook.reloading_1,Reloading.
