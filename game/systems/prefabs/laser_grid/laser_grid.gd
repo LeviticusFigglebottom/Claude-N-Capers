@@ -128,6 +128,13 @@ func _build_beams() -> void:
 		_beam_visuals.append(visual_node("Beam%d" % i) as Node3D)
 	if not using_placeholder:
 		return
+	# Placeholder posts sit at the passage edges (±size_m.x/2) and span size_m.y (QC Night Deposit).
+	for post: String in ["PostL", "PostR"]:
+		var pm: Node3D = visual_node(post) as Node3D
+		if pm != null:
+			var side: float = -1.0 if post == "PostL" else 1.0
+			pm.position = Vector3(side * size_m.x * 0.5, size_m.y * 0.5, 0.0)
+			pm.scale = Vector3(1.0, size_m.y / 2.0, 1.0)
 	# Placeholder: Beam0..3 are 2 m horizontal bars; fit them to the pattern and size.
 	for i: int in range(4):
 		var m: Node3D = visual_node("Beam%d" % i) as Node3D

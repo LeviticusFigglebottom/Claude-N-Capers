@@ -85,3 +85,21 @@ func test_spawn_guards_at_tagged_points() -> void:
 		assert_true(absf(b.global_position.distance_to(a.global_position) - 0.8) < 0.3, "second offset 0.8 m")
 		assert_true((spawned[0] as NpcBase).role == &"guard", "guards")
 	assert_eq(m.spawn_guards(1, &"no_such_tag").size(), 0, "unknown tag: none")
+
+
+func test_mission_dominated_callbacks_receive_nodes() -> void:
+	var ps: PackedScene = ATestMaps.basic(1, 1)
+	var rt: HeistRuntime = await HeistLauncher.launch(&"unit_dom", 5, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ps, "crew_ai": false})
+	var got: Array[Node] = []
+	var m: HeistMission = rt.mission
+	var civ: Node = rt.npcs(&"civilian")[0]
+	var probe: Callable = func(id: int, _s: int) -> void: got.append(Ids.lookup(id))
+	EventBus.civilian_intimidated.connect(probe)
+	EventBus.civilian_intimidated.emit(NetIds.of(civ), 0)
+	EventBus.civilian_intimidated.disconnect(probe)
+	assert_eq(got.size(), 1)
+	assert_true(got[0] == civ, "net_id resolves to the civilian node the mission hook receives")
+	assert_true(m.has_method(&"_on_civilian_dominated"), "HeistMission exposes the civilian-dominated hook")
+	rt.teardown()
+	await wait_frames(1)
