@@ -1,0 +1,12 @@
+asset: arch_stair_landing_f400
+script: tools/blender/greybox/stairs.py
+params: {"floor_to_floor": 4.0, "layout": "landing"}
+seed: 603429842  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category greybox --asset arch_stair_landing_f400
+edit policy: generated file, never edit by hand; change the script and rebuild
+flights: [11, 11]
+riser_m: 0.1818
+risers: 22
+tread_m: 0.28
+tri_budget: 500

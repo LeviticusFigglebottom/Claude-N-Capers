@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "grey_glass"
+transparency = 1
+cull_mode = 2
+albedo_color = Color(0.611765, 0.760784, 0.721569, 0.35)
+metallic_specular = 0.5
+roughness = 0.1

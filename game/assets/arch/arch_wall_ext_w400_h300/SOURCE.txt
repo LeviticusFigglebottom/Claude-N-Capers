@@ -1,0 +1,8 @@
+asset: arch_wall_ext_w400_h300
+script: tools/blender/greybox/walls.py
+params: {"exterior": true, "height": 3.0, "thickness": 0.4, "width": 4.0}
+seed: 1036272321  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category greybox --asset arch_wall_ext_w400_h300
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 500
