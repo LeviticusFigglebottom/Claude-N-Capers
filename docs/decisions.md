@@ -329,3 +329,14 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - L1 (from ENV B): modifiers.md perk.stoic example and the perk.burglar / team.armor_regen_delay_mult descriptions.
 - QC-33: open-side guards pass at top ≥ 1.0 m; the 1.0–1.1 m band applies to handrails only.
 - B pull-forward B4-16..B4-20 (save v2, workshop orbit view, armory batch 3, stamina widget, achievements stub).
+
+## D-055 — 2026-10-10 — Armory batch 3 contract; round-5 integration
+- visual_slots: batch-3 nodes Breech, Lever, StringUpper/StringLower, String, PilotLight, Blade, Rotor (B4-18);
+  8 new FP anim sets for ENV D (break_action, lever, bow, crossbow, launcher, flamethrower, saw, minigun).
+- audio_cues v1.1: per-set weapon cue ids from ENV C (B4-18). Weapons without a suppressor slot leave
+  `fire_cue_suppressed` empty.
+- P3 special models (ENV D d45511f) approved; contact portraits approved (Odile provisional until the feminine-head pass).
+- Asset determinism: Blender glTF tangent export is nondeterministic (~1/4 builds); ENV D fixes the exporter settings
+  (style guide §6 byte-reproducibility).
+- Round 5 hotfixes: a removed call to the uncommitted `PerkHooks` (ENV A re-adds it with the class); lead_push lints
+  first; envs validate pushes from a clean checkout of the exact commit.
