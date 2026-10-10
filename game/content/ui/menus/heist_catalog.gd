@@ -42,7 +42,7 @@ static func entries_from(defs: Dictionary, list: UiHeistList) -> Array[Dictionar
 		var data: Dictionary = list.heists[id] as Dictionary
 		if not defs.has(StringName(id)) and data.has("placeholder_base_payout"):
 			ids_found.append(StringName(id))
-	ids_found.sort()
+	ContentDB.sort_ids(ids_found)
 	var out: Array[Dictionary] = []
 	for id: StringName in ids_found:
 		var def: HeistDef = defs.get(id) as HeistDef

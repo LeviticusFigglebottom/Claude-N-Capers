@@ -146,11 +146,17 @@ func test_catalog_uses_registry_defs() -> void:
 	var other: HeistDef = HeistDef.new()
 	other.id = &"aardvark"
 	other.base_payout = 1000
-	var e: Array[Dictionary] = HeistCatalog.entries_from({&"glasshouse": def, &"aardvark": other},
-			HeistCatalog.heist_list())
-	assert_eq(e.size(), 2, "placeholder dropped once the def exists")
-	assert_eq(e[0]["id"], &"aardvark", "sorted by id")
+	# Intern a fresh id that sorts LAST by text before one that sorts FIRST, so a pointer-order
+	# sort (StringName `<`) would put them the wrong way round (D-026).
+	var late: HeistDef = HeistDef.new()
+	late.id = StringName("zz_catalog_sort_%d" % Time.get_ticks_usec())
+	other.id = StringName("aa_catalog_sort_%d" % Time.get_ticks_usec())
+	var defs: Dictionary = {late.id: late, &"glasshouse": def, other.id: other}
+	var e: Array[Dictionary] = HeistCatalog.entries_from(defs, HeistCatalog.heist_list())
+	assert_eq(e.size(), 3, "placeholder dropped once the def exists")
+	assert_eq(e[0]["id"], other.id, "sorted by id text")
 	assert_eq(e[1]["id"], &"glasshouse")
+	assert_eq(e[2]["id"], late.id)
 	assert_false(bool(e[1]["placeholder"]))
 	assert_eq(int(e[1]["base_payout"]), 55000)
 	assert_eq(int(e[1]["mode"]), Enums.HeistMode.STEALTH_ONLY)
