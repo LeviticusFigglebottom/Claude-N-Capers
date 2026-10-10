@@ -8,7 +8,7 @@ Names, makers and models are original. Display units: PD2 (damage, armor, health
 Modeled on PD2's starter pistol feel.
 | Stat | Value | Src |
 |---|---|---|
-| damage / headshot | 35 / ×2.0 | starter-pistol feel ◇ |
+| damage / headshot bonus | 35 / ×1.0 | starter-pistol feel ◇; the bonus multiplies the target's own headshot multiplier (damage.md, D-026) |
 | rpm cap, mag, total | 480, 17, 153 | ◇ (PD2-like) |
 | falloff start/end/min | 15 m / 30 m / 0.5 | L3.2 "pistols moderate", numbers ◇ |
 | spread hip/ADS | 3.0° / 1.0° | ◇ |

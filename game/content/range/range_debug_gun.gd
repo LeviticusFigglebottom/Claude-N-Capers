@@ -1,7 +1,7 @@
 ## STOPGAP range tooling (B1-05), NOT gameplay: a debug hitscan driven by LoadoutResolver-resolved
 ## WeaponStats so the range works before ENV A's weapon runtime exists. DELETE when A1-08 lands
 ## (the range then spawns ENV A's crew controller, whose real weapon hits RangeTarget through the
-## documented hit API). Owner: ENV B.
+## damage.md single hit path). Owner: ENV B.
 ##
 ## Rate of fire, magazine, tactical/empty reload, ADS/hip spread cone (rolled on
 ## GameRng.stream(&"range")), per-pellet rays, falloff by distance (RangeMath) and the shotgun
@@ -57,8 +57,10 @@ func reload() -> void:
 	_reload_left = maxf(_reload_left, 0.01)
 
 
-## Fire one shot from `origin` along `aim` (-Z of the basis). Returns the applied hit infos
-## (RangeTarget.take_hit results, each with `distance_m`). Empty when it could not fire or missed.
+## Fire one shot from `origin` along `aim` (-Z of the basis). Returns the final infos of the hits
+## (`take_hit` results, each with `distance_m`). Empty when it could not fire or missed.
+## Hits follow docs/contracts/damage.md: targets/zones come from Damage.find_target/zone_of and
+## each pellet calls `take_hit` exactly once with body damage after falloff.
 func fire(space: PhysicsDirectSpaceState3D, origin: Vector3, aim: Basis, ads: bool, attacker_net_id: int = 0) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	if not can_fire():
@@ -68,38 +70,46 @@ func fire(space: PhysicsDirectSpaceState3D, origin: Vector3, aim: Basis, ads: bo
 	var spread: float = deg_to_rad(stats.spread_deg_ads if ads else stats.spread_deg_hip)
 	var rng: RandomNumberGenerator = GameRng.stream(RNG_STREAM)
 	var hits: Array[Dictionary] = []
-	var head_targets: Array[RangeTarget] = []
+	var head_targets: Array[Object] = []
 	for i: int in range(maxi(stats.pellets, 1)):
 		var dir: Vector3 = cone_direction(aim, spread, rng.randf(), rng.randf())
 		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(origin, origin + dir * max_range_m, RAY_MASK)
 		var hit: Dictionary = space.intersect_ray(q)
-		var hb: RangeHitbox = hit.get("collider") as RangeHitbox if not hit.is_empty() else null
-		if hb == null or hb.target == null:
+		if hit.is_empty():
 			continue
+		var collider: Object = hit.get("collider") as Object
+		var target: Object = Damage.find_target(collider)
+		if target == null:
+			continue
+		var zone: int = Damage.zone_of(collider)
 		var pos: Vector3 = hit["position"]
-		hits.append({"hitbox": hb, "position": pos, "direction": dir, "distance": origin.distance_to(pos)})
-		if hb.zone == Enums.HitZone.HEAD and not head_targets.has(hb.target):
-			head_targets.append(hb.target)
+		hits.append({"target": target, "zone": zone, "position": pos, "direction": dir, "distance": origin.distance_to(pos)})
+		if zone == Enums.HitZone.HEAD and not head_targets.has(target):
+			head_targets.append(target)
 	if ammo <= 0:
 		reload()
 	for h: Dictionary in hits:
-		var hb: RangeHitbox = h["hitbox"]
-		var zone: int = Enums.HitZone.HEAD if head_targets.has(hb.target) else int(hb.zone)
-		var info: Dictionary = make_info(stats, weapon_id, float(h["distance"]), zone, h["position"], h["direction"])
-		var applied: Dictionary = hb.target.take_hit(info, attacker_net_id)
+		var target: Object = h["target"]
+		# Shotguns: any pellet on the head makes every pellet on that target a headshot (L3.3).
+		var zone: int = Enums.HitZone.HEAD if head_targets.has(target) else int(h["zone"])
+		var info: Dictionary = make_info(stats, weapon_id, float(h["distance"]), zone, h["position"], h["direction"], attacker_net_id)
+		var applied: Dictionary = target.call(&"take_hit", info, attacker_net_id)
 		if not applied.is_empty():
 			out.append(applied)
 	return out
 
 
-## DamageInfo (contracts/events.md) for one pellet: body damage after falloff; the target applies
-## its zone multiplier. `distance_m` is an extra key for the range readout.
-static func make_info(s: WeaponStats, id: StringName, distance_m: float, zone: int, pos: Vector3, dir: Vector3) -> Dictionary:
-	return {
-		"amount": RangeMath.pellet_damage(s, distance_m), "type": Enums.DamageType.BULLET, "zone": zone,
-		"weapon_id": id, "position": pos, "direction": dir, "crit": false,
-		"pierced_armor": s.armor_pierce > 0.0, "killed": false, "distance_m": distance_m,
-	}
+## DamageInfo (Damage.info, contracts/damage.md) for one pellet: body damage after falloff; the
+## target applies its zone multiplier x `headshot_bonus` (the weapon headshot bonus).
+## `distance_m` is an extra key for the range readout.
+static func make_info(s: WeaponStats, id: StringName, distance_m: float, zone: int, pos: Vector3, dir: Vector3,
+		attacker_net_id: int = 0) -> Dictionary:
+	var info: Dictionary = Damage.info(RangeMath.pellet_damage(s, distance_m), Enums.DamageType.BULLET, zone,
+			id, pos, dir, attacker_net_id)
+	info["headshot_bonus"] = s.headshot_mult
+	info["pierced_armor"] = s.armor_pierce > 0.0
+	info["distance_m"] = distance_m
+	return info
 
 
 ## Uniform direction inside a cone of half-angle `spread_rad` around -Z of `aim`.

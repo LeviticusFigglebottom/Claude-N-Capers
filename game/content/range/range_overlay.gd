@@ -122,7 +122,7 @@ func show_weapon(def: WeaponDef, mods: Dictionary) -> void:
 
 
 ## Live weapon stats: StatCalculator display numbers and the physical values.
-func show_stats(stats: WeaponStats, headshot_mult_used: float) -> void:
+func show_stats(stats: WeaponStats) -> void:
 	var disp: Dictionary = StatCalculator.display(stats)
 	for row: Array in DISPLAY_ROWS:
 		var key: String = String(row[0])
@@ -135,7 +135,7 @@ func show_stats(stats: WeaponStats, headshot_mult_used: float) -> void:
 		_set_value(key, text)
 	_set_value("phys_damage", _num(stats.damage, 2))
 	_set_value("phys_pellets", str(stats.pellets))
-	_set_value("phys_headshot", UiText.t(&"ui.range.fmt.mult", {"value": _num(headshot_mult_used, 2)}))
+	_set_value("phys_headshot", UiText.t(&"ui.range.fmt.mult", {"value": _num(stats.headshot_mult, 2)}))
 	_set_value("phys_rpm", UiText.t(&"ui.range.fmt.rpm", {"value": _num(stats.fire_rate_rpm, 0)}))
 	_set_value("phys_falloff_start", UiText.t(&"ui.range.fmt.m", {"value": _num(stats.falloff_start_m, 1)}))
 	_set_value("phys_falloff_end", UiText.t(&"ui.range.fmt.m", {"value": _num(stats.falloff_end_m, 1)}))

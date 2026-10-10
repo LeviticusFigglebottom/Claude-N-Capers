@@ -221,7 +221,7 @@ func _refresh_readout() -> void:
 	var r: Dictionary = readout()
 	if not r.is_empty():
 		overlay.show_readout(r, name_text)
-		overlay.show_stats(weapon_stats, float(r["headshot_mult"]))
+		overlay.show_stats(weapon_stats)
 
 
 func _on_target_damaged(target: RangeTarget, info: Dictionary, _attacker_net_id: int) -> void:

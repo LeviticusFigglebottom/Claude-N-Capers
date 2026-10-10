@@ -2,23 +2,21 @@
 ## HP from RangeDummyTable for the selected difficulty, and an automatic reset after death.
 ## Owner: ENV B. Range-only: it is not an NPC and runs no AI.
 ##
-## HIT API (ENV A's weapon runtime can use either path; never both for the same shot):
-## 1. Direct call. A hitscan that hits a RangeHitbox (physics layer 5 "hitboxes") resolves the
-##    target with `hitbox.get_damage_target()` and calls
-##      `apply_damage(info: Dictionary, attacker_net_id: int = 0) -> Dictionary`
-##    with a DamageInfo dictionary (contracts/events.md). `info.amount` is FINAL damage: falloff and
-##    the zone multiplier already applied (query `headshot_mult()` for the dummy's per-difficulty
-##    multiplier, as EnemyDef.headshot_mult would give). Or call
-##      `take_hit(info, attacker_net_id) -> Dictionary`
-##    with the body damage after falloff: the target applies its own zone multiplier (HEAD and
-##    WEAKPOINT x headshot_mult(), `crit` x headshot_mult() again, L3.3), then apply_damage().
-## 2. EventBus. On `EventBus.damage_applied(victim_net_id, attacker_net_id, info)` the target
-##    applies `info.amount` (final) when `victim_net_id == net_id`. Other ids are ignored.
-## Both return/emit the applied info with `killed` set and `health_after` added. The target does
-## not emit EventBus events (Combat owns damage_applied / npc_killed).
+## HIT API: docs/contracts/damage.md v1.0, the single hit path. On the server the attacker calls
+##   `take_hit(info: Dictionary, attacker_net_id: int) -> Dictionary`
+## exactly once per hit, with `info = Damage.info(...)`. `info.amount` is BODY damage (after falloff
+## and attacker-side modifiers, before zone). The target applies its zone multiplier: for HEAD,
+## `headshot_mult()` (the RangeDummyDef row for the difficulty, copying the EnemyDef it imitates)
+## x `info.headshot_bonus` (weapon headshot bonus, default 1.0). Other zones take x1 (a range dummy
+## has no weak points). It then emits `EventBus.damage_applied(net_id, attacker_net_id, final_info)`
+## itself and returns final_info with the final `amount`, `killed` and `health_after`. A downed
+## target ignores hits and returns {}. It never listens to damage_applied (that would apply hits
+## twice) and never emits npc_killed (range dummies are not NPCs).
+## Hitboxes (RangeHitbox, physics layer 5) implement get_damage_target() / get_hit_zone(), so
+## `Damage.find_target(collider)` and `Damage.zone_of(collider)` resolve them.
 ##
-## Group: GROUP (&"range_target", proposed as G.RANGE_TARGET). Net id: allocated from Ids on the
-## authority and registered with Ids.register(), so Ids.lookup(net_id) returns the target.
+## Group: G.RANGE_TARGET. Net id: allocated from Ids on the authority and registered with
+## Ids.register(), so Ids.lookup(net_id) returns the target.
 class_name RangeTarget
 extends Node3D
 
@@ -26,8 +24,6 @@ signal damaged(target: RangeTarget, info: Dictionary, attacker_net_id: int)
 signal died(target: RangeTarget)
 signal reset_done(target: RangeTarget)
 
-## Proposed contract group name (ask: G.RANGE_TARGET in ids.gd).
-const GROUP: StringName = &"range_target"
 # Silhouette model (meters, origin = ground below the board centre, facing +Z = the shooting line).
 const STAND_TOP: float = 0.85
 const TORSO_SIZE: Vector3 = Vector3(0.46, 0.55, 0.03)
@@ -66,18 +62,12 @@ func setup(def: RangeDummyDef, diff: int, range_tweak: RangeTweak, lane_index: i
 
 
 func _ready() -> void:
-	add_to_group(GROUP)
+	add_to_group(G.RANGE_TARGET)
 	_build_visual()
 	if Net.is_authority():
 		net_id = Ids.next()
 		Ids.register(net_id, self)
-	EventBus.damage_applied.connect(_on_damage_applied)
 	_refresh_label()
-
-
-func _exit_tree() -> void:
-	if EventBus.damage_applied.is_connected(_on_damage_applied):
-		EventBus.damage_applied.disconnect(_on_damage_applied)
 
 
 func _process(delta: float) -> void:
@@ -93,30 +83,28 @@ func headshot_mult() -> float:
 	return dummy.headshot_mult_for(difficulty) if dummy != null else 1.0
 
 
-## Body damage in, zone multiplier applied here (see header).
-func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
-	var out: Dictionary = info.duplicate()
-	var hs: float = headshot_mult()
-	var mult: float = RangeMath.zone_mult(int(info.get("zone", Enums.HitZone.BODY)), hs)
-	if bool(info.get("crit", false)):
-		mult *= hs
-	out["amount"] = float(info.get("amount", 0.0)) * mult
-	return apply_damage(out, attacker_net_id)
+## Multiplier the target applies to a hit's body damage (damage.md): HEAD takes the dummy's
+## headshot multiplier x the attacker's `headshot_bonus`; every other zone takes x1.
+func zone_mult(zone: int, headshot_bonus: float = 1.0) -> float:
+	return RangeMath.zone_mult(zone, headshot_mult(), headshot_bonus)
 
 
-## Final damage in (see header). Returns the applied info (`killed`, `health_after`), or an empty
-## dictionary when the target is down and ignores hits.
-func apply_damage(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
+## The single hit path (see header). Body damage in, final info out; emits damage_applied.
+func take_hit(info: Dictionary, attacker_net_id: int) -> Dictionary:
 	if not alive:
 		return {}
 	var out: Dictionary = info.duplicate()
-	var amount: float = maxf(float(info.get("amount", 0.0)), 0.0)
+	var zone: int = int(info.get("zone", Enums.HitZone.BODY))
+	var bonus: float = float(info.get("headshot_bonus", 1.0))
+	var amount: float = maxf(float(info.get("amount", 0.0)), 0.0) * zone_mult(zone, bonus)
 	health = maxf(health - amount, 0.0)
 	var killed: bool = health <= RangeMath.EPS
 	out["amount"] = amount
 	out["killed"] = killed
 	out["health_after"] = health
+	out["attacker_net_id"] = attacker_net_id
 	_refresh_label()
+	EventBus.damage_applied.emit(net_id, attacker_net_id, out)
 	damaged.emit(self, out, attacker_net_id)
 	if killed:
 		_die()
@@ -160,12 +148,6 @@ func _die() -> void:
 	_animate_fall(true)
 	_respawn_left = dummy.respawn_delay_s if dummy != null else 1.0
 	died.emit(self)
-
-
-func _on_damage_applied(victim_net_id: int, attacker_net_id: int, info: Dictionary) -> void:
-	if victim_net_id == Ids.INVALID or victim_net_id != net_id:
-		return
-	apply_damage(info, attacker_net_id)
 
 
 func _animate_fall(down: bool) -> void:

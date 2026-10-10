@@ -450,7 +450,7 @@ ui.range.zone.limb,Limb
 ui.range.zone.weakpoint,Weak Point
 ui.range.phys.damage,Damage per bullet
 ui.range.phys.pellets,Pellets
-ui.range.phys.headshot_mult,Headshot multiplier (dummy)
+ui.range.phys.headshot_mult,Headshot bonus (weapon)
 ui.range.phys.fire_rate,Fire rate
 ui.range.phys.falloff_start,Falloff starts
 ui.range.phys.falloff_end,Falloff ends

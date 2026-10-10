@@ -44,11 +44,7 @@ func _target(diff: int = Enums.Difficulty.ROUTINE) -> RangeTarget:
 
 
 func _info(amount: float, zone: int = Enums.HitZone.BODY) -> Dictionary:
-	return {
-		"amount": amount, "type": Enums.DamageType.BULLET, "zone": zone, "weapon_id": P9,
-		"position": Vector3.ZERO, "direction": Vector3.FORWARD, "crit": false,
-		"pierced_armor": false, "killed": false,
-	}
+	return Damage.info(amount, Enums.DamageType.BULLET, zone, P9, Vector3.ZERO, Vector3.FORWARD, 1)
 
 
 func test_scene_instantiates_headless() -> void:
@@ -81,14 +77,14 @@ func test_layout_is_built_from_data() -> void:
 func test_target_dies_at_dummy_hp() -> void:
 	var t: RangeTarget = _target(Enums.Difficulty.ROUTINE)
 	assert_near(t.max_health, 80.0)
-	var res: Dictionary = t.apply_damage(_info(79.0))
+	var res: Dictionary = t.take_hit(_info(79.0), 1)
 	assert_false(bool(res["killed"]))
 	assert_near(t.health, 1.0)
 	assert_true(t.alive)
-	res = t.apply_damage(_info(1.0))
+	res = t.take_hit(_info(1.0), 1)
 	assert_true(bool(res["killed"]), "dies exactly at 80 HP")
 	assert_false(t.alive)
-	assert_true(t.apply_damage(_info(10.0)).is_empty(), "a downed target ignores hits")
+	assert_true(t.take_hit(_info(10.0), 1).is_empty(), "a downed target ignores hits")
 	t.set_difficulty(Enums.Difficulty.BRUTAL)
 	assert_near(t.max_health, 240.0, 0.001, "Brutal HP from range_dummies.tres")
 	assert_true(t.alive, "difficulty change resets the target")
@@ -97,7 +93,7 @@ func test_target_dies_at_dummy_hp() -> void:
 
 func test_target_auto_resets_after_death() -> void:
 	var t: RangeTarget = _target()
-	t.apply_damage(_info(500.0))
+	t.take_hit(_info(500.0), 1)
 	assert_false(t.alive)
 	var ok: bool = await wait_until(func() -> bool: return t.alive, t.dummy.respawn_delay_s + 2.0)
 	assert_true(ok, "stands back up after respawn_delay_s")
@@ -107,14 +103,36 @@ func test_target_auto_resets_after_death() -> void:
 
 func test_headshot_multiplier_applies() -> void:
 	var t: RangeTarget = _target(Enums.Difficulty.ROUTINE)
-	var res: Dictionary = t.take_hit(_info(35.0, Enums.HitZone.HEAD))
-	assert_near(float(res["amount"]), 70.0, 0.001, "Routine x2")
+	var res: Dictionary = t.take_hit(_info(35.0, Enums.HitZone.HEAD), 1)
+	assert_near(float(res["amount"]), 70.0, 0.001, "Routine: 35 x dummy 2 x weapon bonus 1.0")
 	t.set_difficulty(Enums.Difficulty.BRUTAL)
-	res = t.take_hit(_info(35.0, Enums.HitZone.HEAD))
+	res = t.take_hit(_info(35.0, Enums.HitZone.HEAD), 1)
 	assert_near(float(res["amount"]), 210.0, 0.001, "Brutal x6")
-	res = t.take_hit(_info(10.0, Enums.HitZone.BODY))
+	res = t.take_hit(_info(10.0, Enums.HitZone.BODY), 1)
 	assert_near(float(res["amount"]), 10.0, 0.001, "body x1")
+	t.set_difficulty(Enums.Difficulty.BRUTAL)
+	var bonus: Dictionary = _info(10.0, Enums.HitZone.HEAD)
+	bonus["headshot_bonus"] = 1.5
+	res = t.take_hit(bonus, 1)
+	assert_near(float(res["amount"]), 90.0, 0.001, "head: dummy x6 x weapon bonus 1.5")
+	bonus["zone"] = Enums.HitZone.BODY
+	res = t.take_hit(bonus, 1)
+	assert_near(float(res["amount"]), 10.0, 0.001, "the headshot bonus only applies to HEAD")
 	t.queue_free()
+
+
+func test_headshot_readout_uses_weapon_bonus() -> void:
+	var s: WeaponStats = LoadoutResolver.resolve_weapon(P9, [])
+	assert_near(s.headshot_mult, 1.0, 0.0001, "P9 weapon headshot bonus is 1.0 (D-026)")
+	var ro: Dictionary = RangeMath.readout(s, 80.0, 2.0, 5.0)
+	assert_near(float(ro["head_damage"]), 70.0, 0.0001, "35 x 2 x 1.0")
+	var bonus: WeaponStats = s.duplicate() as WeaponStats
+	bonus.headshot_mult = 1.5
+	ro = RangeMath.readout(bonus, 80.0, 2.0, 5.0)
+	assert_near(float(ro["head_damage"]), 105.0, 0.0001, "35 x 2 x 1.5")
+	var info: Dictionary = RangeDebugGun.make_info(bonus, P9, 5.0, Enums.HitZone.HEAD, Vector3.ZERO, Vector3.FORWARD)
+	assert_near(float(info["amount"]), 35.0, 0.0001, "info.amount is body damage")
+	assert_near(float(info["headshot_bonus"]), 1.5, 0.0001, "weapon bonus travels in the info")
 
 
 func test_falloff_matches_resolved_stats() -> void:
@@ -172,16 +190,34 @@ func test_loadout_swap_changes_panel_stats() -> void:
 	assert_eq(r.spectator.gun.ammo, expected.mag_size, "range gun re-equipped")
 
 
-func test_damage_applied_listener_scoped_to_own_ids() -> void:
+func test_take_hit_is_the_single_hit_path() -> void:
 	var t: RangeTarget = _target()
 	assert_true(t.net_id != Ids.INVALID, "target has a net id")
 	assert_eq(Ids.lookup(t.net_id), t)
-	EventBus.damage_applied.emit(t.net_id + 1000, 1, _info(30.0))
-	assert_near(t.health, 80.0, 0.001, "other victim ignored")
-	EventBus.damage_applied.emit(Ids.INVALID, 1, _info(30.0))
-	assert_near(t.health, 80.0, 0.001, "invalid id ignored")
+	assert_true(t.is_in_group(G.RANGE_TARGET), "joins G.RANGE_TARGET")
+	assert_false(t.has_method(&"apply_damage"), "no second public hit API")
+	var seen: Array[Dictionary] = []
+	var on_applied: Callable = func(victim: int, attacker: int, info: Dictionary) -> void:
+		seen.append({"victim": victim, "attacker": attacker, "info": info})
+	EventBus.damage_applied.connect(on_applied)
+	var res: Dictionary = t.take_hit(_info(30.0), 7)
+	EventBus.damage_applied.disconnect(on_applied)
+	assert_eq(seen.size(), 1, "the target emits damage_applied exactly once itself")
+	assert_eq(int(seen[0]["victim"]), t.net_id)
+	assert_eq(int(seen[0]["attacker"]), 7)
+	assert_near(float((seen[0]["info"] as Dictionary)["amount"]), 30.0, 0.001)
+	assert_near(t.health, 50.0, 0.001, "applied once, not again through the event")
+	assert_false(bool(res["killed"]))
 	EventBus.damage_applied.emit(t.net_id, 1, _info(30.0))
-	assert_near(t.health, 50.0, 0.001, "own id applies info.amount")
+	assert_near(t.health, 50.0, 0.001, "targets never act on damage_applied")
+	t.queue_free()
+
+
+func test_hitboxes_resolve_through_damage_helper() -> void:
+	var t: RangeTarget = _target()
+	for hb: RangeHitbox in t.hitboxes():
+		assert_eq(Damage.find_target(hb), t)
+		assert_eq(Damage.zone_of(hb), int(hb.zone))
 	t.queue_free()
 
 

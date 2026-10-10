@@ -7,9 +7,10 @@
 ##
 ## * falloff_mult(d): 1.0 up to falloff_start_m, then linear to falloff_min_mult at falloff_end_m,
 ##   constant after. min_mult > 1 means damage GROWS with range (snipers). ARs use start = end = 9999.
-## * Headshot multiplier is per enemy per difficulty (L3.3): the dummy row's value. The weapon's own
-##   WeaponStats.headshot_mult is only a fallback when the dummy row has none (QB for the lead).
-## * Crits are a separate multiplicative headshot (L3.3).
+## * Headshots (damage.md v1.0): head damage = body x the TARGET's zone multiplier (the dummy row,
+##   per enemy per difficulty, L3.3) x the weapon headshot BONUS (WeaponStats.headshot_mult, default
+##   1.0, sent as DamageInfo.headshot_bonus). Other zones take x1 on a range dummy.
+## * Crits roll on the attacker side (damage.md); the range readout ignores them.
 ## * Shotguns: damage is per pellet, every pellet is assumed to hit for DPS/TTK; any pellet on the
 ##   head makes the whole shot a headshot (handled by RangeDebugGun).
 ## * TTK: shots fired back to back at fire_rate_rpm; every emptied magazine adds an empty reload
@@ -29,17 +30,16 @@ static func falloff_mult(s: WeaponStats, distance_m: float) -> float:
 	return lerpf(1.0, s.falloff_min_mult, t)
 
 
-## Headshot multiplier used against a dummy (per enemy per difficulty, weapon value as fallback).
+## Total head multiplier against a dummy: the dummy's zone multiplier x the weapon headshot bonus.
 static func headshot_mult(s: WeaponStats, dummy_headshot_mult: float) -> float:
-	if dummy_headshot_mult > 0.0:
-		return dummy_headshot_mult
-	return s.headshot_mult
+	return dummy_headshot_mult * s.headshot_mult
 
 
-## Multiplier a hit zone receives (HEAD and WEAKPOINT take the headshot multiplier).
-static func zone_mult(zone: int, hs_mult: float) -> float:
-	if zone == Enums.HitZone.HEAD or zone == Enums.HitZone.WEAKPOINT:
-		return hs_mult
+## Multiplier a hit zone receives on a range dummy (damage.md): HEAD takes the target's headshot
+## multiplier x the attacker's headshot bonus, everything else x1.
+static func zone_mult(zone: int, target_headshot_mult: float, headshot_bonus: float = 1.0) -> float:
+	if zone == Enums.HitZone.HEAD:
+		return target_headshot_mult * headshot_bonus
 	return 1.0
 
 
