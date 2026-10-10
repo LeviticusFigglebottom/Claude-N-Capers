@@ -13,5 +13,21 @@ cost_basic = 4
 cost_aced = 8
 desc_basic = "Each pistol hit gives +20% pistol damage for 2 s."
 desc_aced = "The bonus lasts 4 s."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"weapon.hit_stack_buff": {
+"class": "pistol",
+"stat": "damage",
+"per_hit": 0.2,
+"max_stacks": 1,
+"duration": 2.0
+}
+}
+grants_aced = {
+&"weapon.hit_stack_buff": {
+"class": "pistol",
+"stat": "damage",
+"per_hit": 0.2,
+"max_stacks": 1,
+"duration": 4.0
+}
+}

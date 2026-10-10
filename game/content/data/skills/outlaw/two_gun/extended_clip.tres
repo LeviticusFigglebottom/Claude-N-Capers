@@ -16,4 +16,6 @@ desc_aced = "Pistols fire 50% faster."
 grants_basic = {
 &"weapon.mag_extra.pistol": 5
 }
-grants_aced = {}
+grants_aced = {
+&"weapon.fire_rate_mult.pistol": 1.5
+}

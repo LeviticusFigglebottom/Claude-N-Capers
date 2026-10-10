@@ -13,7 +13,9 @@ cost_basic = 3
 cost_aced = 6
 desc_basic = "While you are down, your bleedout timer pauses whenever no enemy can see you."
 desc_aced = "Bleed out 15 s more slowly."
-grants_basic = {}
+grants_basic = {
+&"defense.bleedout_pause_unseen": true
+}
 grants_aced = {
 &"defense.bleedout_time_add": 15.0
 }

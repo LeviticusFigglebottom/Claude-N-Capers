@@ -18,4 +18,15 @@ grants_basic = {
 &"weapon.reload_speed_mult.assault_rifle": 1.15,
 &"weapon.reload_speed_mult.sniper": 1.15
 }
-grants_aced = {}
+grants_aced = {
+&"weapon.kill_reload_buff": {
+"trigger": "headshot_kill",
+"kills": 1,
+"classes": ["smg", "assault_rifle", "sniper"],
+"reload_mult": 2.0,
+"duration": 4.0,
+"min_mult": 2.0,
+"mag_falloff": 0.0,
+"mag_falloff_from": 0
+}
+}

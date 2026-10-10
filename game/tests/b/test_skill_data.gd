@@ -1,11 +1,20 @@
 ## B4-01: the 90 skills as data (pd2_fidelity.md P2/P3): structure, costs, ids, grants against the
-## ModifierKeys registry, blocked parts, strings and the design doc (content/docs/skills.md).
+## ModifierKeys registry, no blocked parts (D-031), strings and the design doc (content/docs/skills.md).
 extends TestCase
 
 const DOC_PATH: String = "res://content/docs/skills.md"
 ## DeployableDef.kind values (qualifier of deploy.extra / deploy.capacity_mult).
 const DEPLOY_KINDS: Array[String] = ["ammo_bag", "doctor_bag", "fak", "ecm", "trip_mine", "sentry", "body_bag_case"]
-const DEPLOY_QUALIFIED: Array[String] = ["deploy.extra", "deploy.capacity_mult"]
+const DEPLOY_QUALIFIED: Array[String] = ["deploy.extra", "deploy.capacity_mult", "deploy.deploy_speed_mult"]
+## Deploy keys that also accept `.all` (every deployable kind).
+const DEPLOY_ALL_OK: Array[String] = ["deploy.deploy_speed_mult"]
+## Non-weapon keys that take a weapon-class qualifier (D-031).
+const WEAPON_QUALIFIED_OTHER: Array[String] = ["movement.shoot_while_sprinting"]
+## Weapon qualifiers besides the weapon classes and `all` (D-031).
+const EXTRA_WEAPON_QUALIFIERS: Array[String] = ["suppressed", "akimbo"]
+## MULT keys whose registry description allows 0 ("0 = no penalty").
+const MULT_ZERO_OK: Array[StringName] = [&"movement.ads_speed_penalty_mult"]
+const PERK_DOC_PATH: String = "res://content/docs/perk_decks.md"
 ## pd2_fidelity.md P3 signature skills (our names).
 const SIGNATURE: Array[String] = [
 	"Rally Cry", "Zip & Tie", "Turncoat", "Captive Audience", "Leverage", "Clean Shot", "Plated", "Tinker",
@@ -108,35 +117,44 @@ func test_every_grant_is_a_registered_key_with_valid_qualifier_and_type() -> voi
 				assert_true(_value_ok(k, grants[key]), "%s: value %s does not fit the type of %s" % [s.id, grants[key], k])
 
 
-func test_every_part_has_grants_or_is_listed_blocked() -> void:
+func test_every_part_has_grants_or_an_unlock() -> void:
 	var by_id: Dictionary = _by_id()
 	for s: SkillDef in _skills:
 		for part: String in PARTS:
 			var grants: Dictionary = s.grants_basic if part == "basic" else s.grants_aced
 			var tag: String = "%s:%s" % [s.id, part]
-			var listed: bool = _tree.blocked_on_keys.has(tag) or _tree.unlocks.has(tag)
-			assert_true(not grants.is_empty() or listed, "%s has no grant and is not listed blocked/unlock" % tag)
-	for tag: Variant in _tree.blocked_on_keys.keys() + _tree.unlocks.keys():
+			assert_true(not grants.is_empty() or _tree.unlocks.has(tag), "%s has no grant and no unlock" % tag)
+	for tag: Variant in _tree.unlocks.keys():
 		var bits: PackedStringArray = String(tag).split(":")
 		assert_eq(bits.size(), 2, "tag form %s" % tag)
 		assert_true(by_id.has(StringName(bits[0])) and PARTS.has(bits[1]), "tag names a skill part: %s" % tag)
 
 
-## A requested key must still be missing from the registry (or use a qualifier it does not accept). When
-## the lead adds one, this fails: grant it in the skill and drop it from blocked_on_keys.
-func test_requested_keys_are_not_grantable_yet() -> void:
-	# LEAD (D-031): the requested keys were registered on trunk; ENV B now grants them and empties
-	# blocked_on_keys. Until then this reminder reports as SKIP so trunk stays green.
-	if not _tree.blocked_on_keys.is_empty():
-		skip("D-031: requested keys registered; ENV B to grant them and clear blocked_on_keys")
-		return
-	for tag: Variant in _tree.blocked_on_keys:
-		var keys: Array = _tree.blocked_on_keys[tag]
-		assert_false(keys.is_empty(), "%s lists keys" % tag)
-		for key: Variant in keys:
-			var k: StringName = StringName(key)
-			assert_true(String(k).count(".") >= 1, "%s: key form %s" % [tag, k])
-			assert_false(ModifierKeys.is_known(k) and _qualifier_ok(k), "%s: %s is grantable now; grant it" % [tag, k])
+## D-031: every requested key was registered and is granted, so nothing is blocked any more. Every key in
+## the "Requested keys" tables of skills.md and perk_decks.md must be granted by a skill / a perk card
+## (exactly, or as a qualified form of it), and must be grantable (known key, valid qualifier).
+func test_no_blocked_parts_and_every_requested_key_is_granted() -> void:
+	assert_eq(_tree.blocked_on_keys, {}, "blocked_on_keys is empty (D-031)")
+	var skill_keys: Dictionary = {}
+	for s: SkillDef in _skills:
+		for grants: Dictionary in [s.grants_basic, s.grants_aced]:
+			for key: Variant in grants:
+				skill_keys[StringName(key)] = true
+	var perk_keys: Dictionary = {}
+	for d: Variant in ContentDB.all_of(ContentDB.PERKS):
+		for card: Dictionary in (d as PerkDeckDef).cards:
+			for key: Variant in (card["grants"] as Dictionary):
+				perk_keys[StringName(key)] = true
+	var skill_req: Array[StringName] = _requested_keys(DOC_PATH)
+	var perk_req: Array[StringName] = _requested_keys(PERK_DOC_PATH)
+	assert_true(skill_req.size() >= 60, "skills.md lists the requested keys (%d)" % skill_req.size())
+	assert_eq(perk_req.size(), 7, "perk_decks.md lists 7 requested keys")
+	for k: StringName in skill_req:
+		assert_true(_is_granted(k, skill_keys), "requested skill key %s is granted" % k)
+	for k: StringName in perk_req:
+		assert_true(_is_granted(k, perk_keys), "requested perk key %s is granted" % k)
+	for k: Variant in skill_keys:
+		assert_true(ModifierKeys.is_known(k) and _qualifier_ok(k), "%s is grantable" % k)
 
 
 func test_plated_exists_and_unlocks_breacher_plate() -> void:
@@ -171,6 +189,21 @@ func test_team_skills_use_only_team_keys_for_crew_effects() -> void:
 				if _tree.is_team_key(StringName(key)) and not team_skills.has(String(s.id)):
 					team_skills.append(String(s.id))
 	assert_has(team_skills, "skill.persuader.zip_and_tie", "Zip & Tie aced is crew-wide")
+	assert_has(team_skills, "skill.juggernaut.shoulder_check", "Shoulder Check basic is crew-wide")
+	assert_eq(team_skills.size(), 2, "team skills: %s" % [team_skills])
+
+
+## D-031 QB-36: interaction.* speed keys are time multipliers (lower = faster); every skill that makes an
+## interaction faster grants a value below 1.
+func test_interaction_time_multipliers_below_one() -> void:
+	for s: SkillDef in _skills:
+		for grants: Dictionary in [s.grants_basic, s.grants_aced]:
+			for key: Variant in grants:
+				var k: String = String(key)
+				if k.begins_with("interaction.") and k.ends_with("speed_mult"):
+					assert_true(float(grants[key]) < 1.0, "%s %s = %s must be < 1 (faster)" % [s.id, k, grants[key]])
+	var rally: SkillDef = _by_id()[&"skill.field_medic.rally_cry"]
+	assert_near(float(rally.grants_basic[&"interaction.revive_speed_mult"]), 0.5, 0.0001, "100% faster revive")
 
 
 ## The design doc covers every tier-3/4 skill (decision note) and every requested key.
@@ -204,18 +237,47 @@ func _qualifier_ok(key: StringName) -> bool:
 		for q: StringName in LoadoutResolver.CONCEALMENT_QUALIFIERS:
 			allowed.append(String(q))
 	elif DEPLOY_QUALIFIED.has(base):
-		allowed = DEPLOY_KINDS
-	elif parts[0] == "weapon":
+		allowed = DEPLOY_KINDS.duplicate()
+		if DEPLOY_ALL_OK.has(base):
+			allowed.append("all")
+	elif parts[0] == "weapon" or WEAPON_QUALIFIED_OTHER.has(base):
 		allowed.append("all")
+		allowed.append_array(EXTRA_WEAPON_QUALIFIERS)
 		for c: int in Enums.WeaponClass.values():
 			allowed.append(String(Enums.weapon_class_qualifier(c as Enums.WeaponClass)))
 	return allowed.has(parts[2])
 
 
+## Backticked keys in the first column of the "## Requested keys" tables of a design doc.
+func _requested_keys(path: String) -> Array[StringName]:
+	var section: String = FileAccess.get_file_as_string(path).get_slice("## Requested keys", 1)
+	var out: Array[StringName] = []
+	var re: RegEx = RegEx.create_from_string("^\\| `([a-z_]+\\.[a-z_.]+)` \\|")
+	for line: String in section.split("\n"):
+		var m: RegExMatch = re.search(line)
+		if m != null and not out.has(StringName(m.get_string(1))):
+			out.append(StringName(m.get_string(1)))
+	return out
+
+
+## `key` is granted as is, or a qualified form of it (`weapon.still_spread_mult` -> `.all`).
+func _is_granted(key: StringName, granted: Dictionary) -> bool:
+	if granted.has(key):
+		return true
+	for g: Variant in granted:
+		if ModifierKeys.base_key(StringName(g)) == key:
+			return true
+	return false
+
+
 func _value_ok(key: StringName, v: Variant) -> bool:
 	match ModifierKeys.type_of(key):
 		ModifierKeys.Type.MULT:
+			if MULT_ZERO_OK.has(ModifierKeys.base_key(key)) or MULT_ZERO_OK.has(key):
+				return (v is float or v is int) and float(v) >= 0.0
 			return (v is float or v is int) and float(v) > 0.0
+		ModifierKeys.Type.LIST:
+			return v is Dictionary and not (v as Dictionary).is_empty()
 		ModifierKeys.Type.ADD:
 			return v is float or v is int
 		ModifierKeys.Type.FLAG:

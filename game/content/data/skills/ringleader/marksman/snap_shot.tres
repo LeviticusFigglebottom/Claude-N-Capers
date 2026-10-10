@@ -14,6 +14,11 @@ cost_aced = 4
 desc_basic = "Aim down sights 100% faster with all weapons and move at full speed while aiming."
 desc_aced = "+16 accuracy while moving with SMGs, assault rifles and sniper rifles."
 grants_basic = {
-&"weapon.ads_speed_mult.all": 2.0
+&"weapon.ads_speed_mult.all": 2.0,
+&"movement.ads_speed_penalty_mult": 0.0
 }
-grants_aced = {}
+grants_aced = {
+&"weapon.moving_spread_mult.smg": 0.84,
+&"weapon.moving_spread_mult.assault_rifle": 0.84,
+&"weapon.moving_spread_mult.sniper": 0.84
+}

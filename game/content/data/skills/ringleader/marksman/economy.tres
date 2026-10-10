@@ -13,5 +13,19 @@ cost_basic = 3
 cost_aced = 6
 desc_basic = "3 headshots within 6 s with an SMG, assault rifle or sniper rifle put 1 round back in the magazine."
 desc_aced = "Only 2 headshots are needed."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"weapon.headshot_refund": {
+"classes": ["smg", "assault_rifle", "sniper"],
+"headshots": 3,
+"window": 6.0,
+"refund": 1
+}
+}
+grants_aced = {
+&"weapon.headshot_refund": {
+"classes": ["smg", "assault_rifle", "sniper"],
+"headshots": 2,
+"window": 6.0,
+"refund": 1
+}
+}

@@ -13,7 +13,9 @@ cost_basic = 1
 cost_aced = 3
 desc_basic = "You have 50% more health while bleeding out."
 desc_aced = "You can go down 1 more time before custody."
-grants_basic = {}
+grants_basic = {
+&"defense.bleedout_health_mult": 1.5
+}
 grants_aced = {
 &"defense.downs_extra": 1
 }

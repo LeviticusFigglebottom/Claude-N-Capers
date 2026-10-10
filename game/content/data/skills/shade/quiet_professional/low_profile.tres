@@ -13,5 +13,9 @@ cost_basic = 2
 cost_aced = 4
 desc_basic = "Enemies are 35% less likely to target you."
 desc_aced = "+1 concealment for each suppressed weapon you carry, and suppressors cost 2 less concealment."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"defense.target_priority_mult": 0.65
+}
+grants_aced = {
+&"stealth.concealment_add.suppressed": 3
+}

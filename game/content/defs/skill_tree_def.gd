@@ -11,7 +11,7 @@
 ## * Team skills: a grant whose key starts with `team_key_prefix` is crew-wide; LoadoutResolver hands it to
 ##   the TEAM scope as source `team_source_prefix + skill_id` so the same skill never stacks.
 ## * `blocked_on_keys`: "<skill_id>:basic|aced" -> Array of modifier keys requested from the lead (not yet in
-##   ModifierKeys). That part of the skill is inactive until the key ships.
+##   ModifierKeys). That part of the skill is inactive until the key ships. Empty since D-031 (tested).
 ## * `unlocks`: "<skill_id>:basic|aced" -> item id the part unlocks through the item's own data
 ##   (ArmorDef.unlock_skill), not through a modifier grant.
 class_name SkillTreeDef

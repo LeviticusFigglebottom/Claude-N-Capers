@@ -13,5 +13,19 @@ cost_basic = 3
 cost_aced = 6
 desc_basic = "+3% critical hit chance for every 3 points your detection risk is below 35, up to 30%."
 desc_aced = "+3% for every point below 35, up to 30%."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"weapon.crit_per_concealment": {
+"per_step": 0.03,
+"points_per_step": 3,
+"threshold_dr": 35,
+"max": 0.3
+}
+}
+grants_aced = {
+&"weapon.crit_per_concealment": {
+"per_step": 0.03,
+"points_per_step": 1,
+"threshold_dr": 35,
+"max": 0.3
+}
+}

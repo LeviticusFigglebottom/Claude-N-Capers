@@ -13,7 +13,9 @@ cost_basic = 3
 cost_aced = 6
 desc_basic = "Deploy and use all deployables 100% faster."
 desc_aced = "Carry a second deployable type (half the usual amount of it)."
-grants_basic = {}
+grants_basic = {
+&"deploy.deploy_speed_mult.all": 0.5
+}
 grants_aced = {
 &"deploy.second_deployable": true
 }

@@ -13,5 +13,13 @@ cost_basic = 2
 cost_aced = 4
 desc_basic = "Deploy First Aid Kits and Doctor Bags 50% faster."
 desc_aced = "Crew members who use your First Aid Kits or Doctor Bags take 10% less damage for 120 s."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"deploy.deploy_speed_mult.fak": 0.6667,
+&"deploy.deploy_speed_mult.doctor_bag": 0.6667
+}
+grants_aced = {
+&"deploy.medical_user_buff": {
+"damage_taken_mult": 0.9,
+"duration": 120.0
+}
+}

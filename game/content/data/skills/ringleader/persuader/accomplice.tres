@@ -14,8 +14,16 @@ cost_aced = 6
 desc_basic = "While you have a converted ally, you move 10% faster. Your converted allies take 45% less damage."
 desc_aced = "While you have a converted ally, you have 30% more health. Your converted allies take a further 54% less damage."
 grants_basic = {
-&"ability.convert_health_mult": 1.82
+&"ability.convert_health_mult": 1.82,
+&"ability.convert_owner_buff": {
+"move_mult": 1.1,
+"health_mult": 1.0
+}
 }
 grants_aced = {
-&"ability.convert_health_mult": 2.17
+&"ability.convert_health_mult": 2.17,
+&"ability.convert_owner_buff": {
+"move_mult": 1.1,
+"health_mult": 1.3
+}
 }

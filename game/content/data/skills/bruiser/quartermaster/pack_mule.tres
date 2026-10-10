@@ -17,5 +17,9 @@ grants_basic = {
 &"weapon.ammo_total_mult.all": 1.25
 }
 grants_aced = {
-&"weapon.ammo_pickup_mult.all": 1.75
+&"weapon.ammo_pickup_mult.all": 1.75,
+&"weapon.ammo_pickup_throwable": {
+"base_chance": 0.05,
+"step": 0.01
+}
 }

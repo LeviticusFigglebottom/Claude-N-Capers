@@ -17,4 +17,7 @@ grants_basic = {
 &"ability.intimidate_cops": true,
 &"ability.converts_max": 1
 }
-grants_aced = {}
+grants_aced = {
+&"ability.convert_damage_mult": 1.35,
+&"ability.convert_speed_mult": 0.35
+}

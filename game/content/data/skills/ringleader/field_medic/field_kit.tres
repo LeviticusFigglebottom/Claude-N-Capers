@@ -17,5 +17,9 @@ grants_basic = {
 &"deploy.extra.fak": 7
 }
 grants_aced = {
-&"deploy.extra.fak": 3
+&"deploy.extra.fak": 3,
+&"deploy.fak_auto_revive": {
+"radius": 5.0,
+"cooldown": 20.0
+}
 }

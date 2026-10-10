@@ -13,5 +13,11 @@ cost_basic = 1
 cost_aced = 3
 desc_basic = "Pick up ammo from 50% further away."
 desc_aced = "Every 6th enemy you kill drops an extra ammo box."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"weapon.ammo_pickup_range_mult": 1.5
+}
+grants_aced = {
+&"weapon.kill_ammo_drop": {
+"every_n_kills": 6
+}
+}

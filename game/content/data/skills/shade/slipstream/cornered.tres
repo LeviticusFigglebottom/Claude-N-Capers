@@ -13,5 +13,13 @@ cost_basic = 3
 cost_aced = 6
 desc_basic = "While your armor is broken, your first shot on each enemy staggers it."
 desc_aced = "The effect lasts 6 s after your armor comes back."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"defense.armor_broken_stagger": {
+"persist_s": 0.0
+}
+}
+grants_aced = {
+&"defense.armor_broken_stagger": {
+"persist_s": 6.0
+}
+}
