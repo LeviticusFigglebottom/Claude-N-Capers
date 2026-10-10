@@ -1,0 +1,498 @@
+## Root of a running heist: owns the map, the phase machine, services and crew. Owner: ENV A.
+## Contracts: test_hooks.md (public API used by LEAD gates), events.md (lifecycle facts),
+## heist_map.md (map structure), architecture.md §3-§5 (authority, services, events).
+## Gameplay managers are children of this node (not autoloads), so teardown leaves nothing behind.
+## Phase machine (A1-01): LOADING -> CASING -> STEALTH -> LOUD -> ESCAPE -> ENDED (S11.2: the
+## STEALTH -> LOUD change is a state change only; the same HeistMap instance persists).
+class_name HeistRuntime
+extends Node
+
+## Server-side fact: a stealth noise event (S4.3). Consumed by the stealth director.
+signal noise_made(position: Vector3, radius: float, kind: StringName, source_net_id: int)
+signal phase_changed(old_phase: int, new_phase: int)
+signal crew_spawned(slot: int, crew: Node)
+signal npc_spawned(npc: Node)
+
+const CREW_SCENE: String = "res://systems/player/crew_member.tscn"
+const NPC_SCENES: Dictionary = {
+	&"guard": "res://systems/ai/npc/npc_guard.tscn",
+	&"civilian": "res://systems/ai/npc/npc_civilian.tscn",
+	&"police": "res://systems/ai/npc/npc_police.tscn",
+}
+
+static var _current: HeistRuntime = null
+
+var map: HeistMap = null
+var phase: Enums.HeistPhase = Enums.HeistPhase.LOADING
+var variants: Dictionary = {}
+var run_seed: int = 0
+var heist_id: StringName = &""
+var difficulty: int = Enums.Difficulty.ROUTINE
+var difficulty_def: DifficultyDef = null
+var options: Dictionary = {}
+## True once the alarm has sounded (stays true through ESCAPE/ENDED).
+var went_loud: bool = false
+var interaction: InteractionSystem = null
+var mission: HeistMission = null
+var hud_model: LocalHudModel = null
+## Container for runtime-spawned entities (NPCs, crew, bags).
+var dynamic_root: Node3D = null
+
+var _crew: Dictionary[int, CrewController] = {}
+var _bot_intents: Dictionary[int, CrewIntent] = {}
+var _services: Dictionary[StringName, Node] = {}
+var _crew_tick_handlers: Array[Callable] = []
+var _start_msec: int = 0
+var _stats: Dictionary[int, Dictionary] = {}
+var _loot_secured: Array[Dictionary] = []
+var _small_loot: int = 0
+var _pagers_answered: int = 0
+var _ended: bool = false
+
+
+## Nearest HeistRuntime above `node`, else the current one.
+static func of(node: Node) -> HeistRuntime:
+	var n: Node = node
+	while n != null:
+		var rt: HeistRuntime = n as HeistRuntime
+		if rt != null:
+			return rt
+		n = n.get_parent()
+	if _current != null and is_instance_valid(_current):
+		return _current
+	return null
+
+
+static func current() -> HeistRuntime:
+	return _current if _current != null and is_instance_valid(_current) else null
+
+
+## architecture.md §5: HeistRuntime.get_service(&"stealth").
+static func get_service(service_name: StringName) -> Node:
+	var rt: HeistRuntime = current()
+	if rt != null and rt._services.has(service_name):
+		return rt._services[service_name]
+	return Services.get_service(service_name) as Node
+
+
+func _enter_tree() -> void:
+	_current = self
+	process_physics_priority = -100
+
+
+func _exit_tree() -> void:
+	if _current == self:
+		_current = null
+
+
+# --- Startup (HeistLauncher) ---------------------------------------------------
+
+## Server: build the heist. Returns false on a contract violation (logged).
+func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_difficulty: int, p_options: Dictionary) -> bool:
+	heist_id = p_heist_id
+	run_seed = p_seed
+	difficulty = p_difficulty
+	options = p_options
+	difficulty_def = p_options.get("difficulty_def") as DifficultyDef
+	if difficulty_def == null:
+		difficulty_def = DifficultyDef.new()
+		difficulty_def.difficulty = p_difficulty as Enums.Difficulty
+	GameRng.begin_run(run_seed)
+	_start_msec = Time.get_ticks_msec()
+	var inst: Node = map_scene.instantiate()
+	map = inst as HeistMap
+	if map == null:
+		Log.error(&"heist", "contract violation: map root of '%s' is not a HeistMap" % heist_id)
+		inst.free()
+		return false
+	# heist_map.md §5: resolve and strip inactive variant content BEFORE anything spawns.
+	var slots: Dictionary = VariantResolver.collect_slots(map)
+	variants = VariantResolver.resolve(map.variant_table, slots, difficulty)
+	var pending: Array = VariantResolver.apply(slots, variants)
+	Log.info(&"variants", "seed %d resolved %s" % [run_seed, variants])
+	_create_services()
+	add_child(map)
+	move_child(map, 0)
+	dynamic_root = Node3D.new()
+	dynamic_root.name = "Dynamic"
+	add_child(dynamic_root)
+	VariantResolver.configure_pending(pending)
+	_apply_rare_modifiers()
+	_claim_map_ids(map)
+	_spawn_npcs()
+	_spawn_crew()
+	_connect_events()
+	mission = map.get_node_or_null("Mission") as HeistMission
+	if mission == null and map.get_node_or_null("Mission") != null:
+		Log.error(&"heist", "contract violation: %s/Mission does not extend HeistMission" % heist_id)
+	if mission != null:
+		mission._bind(self)
+	var mode: int = map.heist_def.mode if map.heist_def != null else Enums.HeistMode.STEALTH_OR_LOUD
+	if mode == Enums.HeistMode.LOUD_ONLY:
+		_set_phase(Enums.HeistPhase.LOUD)
+		went_loud = true
+	elif bool(options.get("skip_casing", false)):
+		_set_phase(Enums.HeistPhase.STEALTH)
+	else:
+		_set_phase(Enums.HeistPhase.CASING)
+	EventBus.heist_loaded.emit(heist_id, run_seed, variants)
+	Net.replicate_event(&"heist_loaded", [heist_id, run_seed, variants])
+	if mission != null:
+		mission._on_mission_start()
+	return true
+
+
+func _create_services() -> void:
+	interaction = InteractionSystem.new()
+	interaction.name = "InteractionSystem"
+	register_service(&"interaction", interaction)
+	hud_model = LocalHudModel.new()
+	hud_model.name = "LocalHudModel"
+	add_child(hud_model)
+	var factories: Array = options.get("extra_services", [])
+	for f: Variant in factories:
+		if f is Callable:
+			var n: Node = (f as Callable).call(self)
+			if n != null and not n.is_inside_tree():
+				add_child(n)
+
+
+## Register a manager node (adds it as a child if needed and publishes it in Services).
+func register_service(service_name: StringName, node: Node) -> void:
+	if node.get_parent() == null:
+		add_child(node)
+	_services[service_name] = node
+	Services.register(service_name, node)
+
+
+func service(service_name: StringName) -> Node:
+	return _services.get(service_name)
+
+
+## Systems (weapons, shout, bags...) hook per-crew server ticks here: func(crew, intent, delta).
+func add_crew_tick_handler(handler: Callable) -> void:
+	_crew_tick_handlers.append(handler)
+
+
+func crew_actions_tick(crew: CrewController, intent: CrewIntent, delta: float) -> void:
+	for h: Callable in _crew_tick_handlers:
+		if h.is_valid():
+			h.call(crew, intent, delta)
+
+
+func _apply_rare_modifiers() -> void:
+	if map.variant_table == null:
+		return
+	for ev: Dictionary in map.variant_table.rare_events:
+		var ev_id: StringName = StringName(ev.get("id", &""))
+		if not (variants.get(VariantResolver.RARE_KEY, []) as Array).has(ev_id):
+			continue
+		var fx: Dictionary = ev.get("effects", {})
+		if fx.has("modifier_team"):
+			Modifiers.set_source(Modifiers.TEAM, StringName("rare.%s" % ev_id), fx["modifier_team"])
+
+
+func _claim_map_ids(root: Node) -> void:
+	var stack: Array[Node] = [root]
+	while not stack.is_empty():
+		var n: Node = stack.pop_front()
+		if n.get(&"net_id") != null and NetIds.of(n) == Ids.INVALID:
+			NetIds.claim(n)
+		for c: Node in n.get_children():
+			stack.append(c)
+
+
+func _spawn_npcs() -> void:
+	for sp_node: Node in map.get_slots(G.GUARD_SPAWN):
+		_spawn_npc_at(&"guard", sp_node as SpawnPoint)
+	for sp_node: Node in map.get_slots(G.CIVILIAN_SPAWN):
+		_spawn_npc_at(&"civilian", sp_node as SpawnPoint)
+
+
+## Server: spawn an NPC of `role` at a SpawnPoint (or a transform). Returns the NPC.
+func spawn_npc(role: StringName, xform: Transform3D, info: Dictionary = {}) -> NpcBase:
+	var path: String = NPC_SCENES.get(role, "")
+	if path == "":
+		Log.error(&"heist", "no NPC scene for role %s" % role)
+		return null
+	var npc: NpcBase = (load(path) as PackedScene).instantiate() as NpcBase
+	npc.setup_npc(difficulty, info)
+	dynamic_root.add_child(npc, true)
+	npc.global_transform = xform
+	NetIds.claim(npc)
+	npc_spawned.emit(npc)
+	return npc
+
+
+func _spawn_npc_at(role: StringName, sp: SpawnPoint) -> void:
+	if sp == null:
+		return
+	var info: Dictionary = {
+		"tags": sp.tags, "idle_activity": sp.idle_activity,
+		"patrol_graph": sp.get_node_or_null(sp.patrol_graph) if not sp.patrol_graph.is_empty() else null,
+		"spawn_point": sp,
+	}
+	spawn_npc(role, sp.global_transform, info)
+
+
+func _spawn_crew() -> void:
+	var spawns: Array[Node] = []
+	for n: Node in map.get_slots(G.PLAYER_SPAWN):
+		var sp: SpawnPoint = n as SpawnPoint
+		var alt: bool = false
+		for t: StringName in sp.tags:
+			if String(t).begins_with("preplan"):
+				alt = true
+		if not alt:
+			spawns.append(sp)
+	if spawns.is_empty():
+		Log.error(&"heist", "contract violation: no PLAYER SpawnPoints in %s" % heist_id)
+	var loadouts: Dictionary = options.get("loadouts", {})
+	var scene: PackedScene = load(CREW_SCENE) as PackedScene
+	for slot: int in Net.all_slots():
+		var crew: CrewController = scene.instantiate() as CrewController
+		crew.setup(slot, Net.crew[slot], loadouts.get(slot) as Loadout)
+		dynamic_root.add_child(crew)
+		var xf: Transform3D = Transform3D.IDENTITY
+		if not spawns.is_empty():
+			var sp3: Node3D = spawns[slot % spawns.size()] as Node3D
+			xf = sp3.global_transform
+			if slot >= spawns.size():
+				xf.origin += Vector3(0.8 * (slot / spawns.size()), 0.0, 0.0)
+		crew.teleport(xf)
+		NetIds.claim(crew)
+		_crew[slot] = crew
+		_stats[slot] = {"kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0}
+		if crew.is_local():
+			var pin: PlayerInput = PlayerInput.new()
+			pin.name = "PlayerInput"
+			crew.add_child(pin)
+		EventBus.crew_member_joined.emit(slot, crew.peer_id, crew.is_ai)
+		Net.replicate_event(&"crew_member_joined", [slot, crew.peer_id, crew.is_ai])
+		crew_spawned.emit(slot, crew)
+
+
+# --- Phase machine ----------------------------------------------------------------
+
+func _set_phase(p: Enums.HeistPhase) -> void:
+	if p == phase:
+		return
+	var old: int = phase
+	phase = p
+	Log.info(&"heist", "phase %s -> %s" % [Enums.HeistPhase.keys()[old], Enums.HeistPhase.keys()[p]])
+	phase_changed.emit(old, p)
+	EventBus.heist_phase_changed.emit(old, p)
+	Net.replicate_event(&"heist_phase_changed", [old, p])
+
+
+func _connect_events() -> void:
+	EventBus.alarm_raised.connect(_on_alarm_raised)
+	EventBus.crew_masked.connect(_on_crew_masked)
+	EventBus.npc_killed.connect(_on_npc_killed)
+	EventBus.civilian_killed.connect(_on_civilian_killed)
+	EventBus.crew_downed.connect(_on_crew_downed)
+	EventBus.loot_secured.connect(_on_loot_secured)
+	EventBus.small_loot_taken.connect(_on_small_loot)
+	EventBus.pager_answered.connect(_on_pager_answered)
+
+
+func _disconnect_events() -> void:
+	for pair: Array in [
+		[EventBus.alarm_raised, _on_alarm_raised], [EventBus.crew_masked, _on_crew_masked],
+		[EventBus.npc_killed, _on_npc_killed], [EventBus.civilian_killed, _on_civilian_killed],
+		[EventBus.crew_downed, _on_crew_downed], [EventBus.loot_secured, _on_loot_secured],
+		[EventBus.small_loot_taken, _on_small_loot], [EventBus.pager_answered, _on_pager_answered],
+	]:
+		var sig: Signal = pair[0]
+		if sig.is_connected(pair[1]):
+			sig.disconnect(pair[1])
+
+
+func _on_alarm_raised(reason: StringName, _source: int) -> void:
+	if not Net.is_authority() or went_loud or _ended:
+		return
+	went_loud = true
+	Log.info(&"heist", "alarm (%s): going loud" % reason)
+	# S1.2: any alarm masks everyone.
+	for slot: int in _crew:
+		_crew[slot].set_masked(true)
+	if phase == Enums.HeistPhase.CASING or phase == Enums.HeistPhase.STEALTH:
+		_set_phase(Enums.HeistPhase.LOUD)
+
+
+func _on_crew_masked(_slot: int) -> void:
+	if phase == Enums.HeistPhase.CASING:
+		_set_phase(Enums.HeistPhase.STEALTH)
+
+
+## Mission: escape is available (C10).
+func enter_escape_phase() -> void:
+	if phase != Enums.HeistPhase.ENDED:
+		_set_phase(Enums.HeistPhase.ESCAPE)
+
+
+## Server: finish the heist and emit heist_ended(result) [R] (events.md HeistResult).
+func end_heist(success: bool, escaped_slots: Array[int] = []) -> Dictionary:
+	if _ended:
+		return {}
+	_ended = true
+	var crew_rows: Array[Dictionary] = []
+	for slot: int in Net.all_slots():
+		var st: Dictionary = _stats.get(slot, {})
+		var c: CrewController = _crew.get(slot)
+		crew_rows.append({
+			"slot": slot, "is_ai": c.is_ai if c != null else true,
+			"kills": int(st.get("kills", 0)), "specials_killed": int(st.get("specials_killed", 0)),
+			"downs": int(st.get("downs", 0)), "civilians_killed": int(st.get("civilians_killed", 0)),
+			"in_custody": c != null and c.crew_state == Enums.CrewState.CUSTODY,
+			"escaped": escaped_slots.has(slot) or (success and escaped_slots.is_empty()),
+		})
+	var result: Dictionary = {
+		"heist_id": heist_id, "success": success, "stealth": not went_loud,
+		"time_s": float(Time.get_ticks_msec() - _start_msec) / 1000.0, "difficulty": difficulty,
+		"contract_pay": map.heist_def.base_payout if map != null and map.heist_def != null else 0,
+		"loot": _loot_secured.duplicate(true), "small_loot": _small_loot, "crew": crew_rows,
+		"pagers_answered": _pagers_answered, "seed": run_seed, "variants": variants.duplicate(true),
+	}
+	_set_phase(Enums.HeistPhase.ENDED)
+	EventBus.heist_ended.emit(result)
+	Net.replicate_event(&"heist_ended", [result])
+	return result
+
+
+func _slot_of_net_id(id: int) -> int:
+	var n: Node = Ids.lookup(id)
+	var c: CrewController = n as CrewController
+	return c.slot if c != null else -1
+
+
+func _on_npc_killed(npc_id: int, killer_id: int, _info: Dictionary) -> void:
+	var s: int = _slot_of_net_id(killer_id)
+	if s >= 0 and _stats.has(s):
+		_stats[s]["kills"] = int(_stats[s]["kills"]) + 1
+		var npc: NpcBase = Ids.lookup(npc_id) as NpcBase
+		if npc != null and npc.enemy_def != null and npc.enemy_def.is_special:
+			_stats[s]["specials_killed"] = int(_stats[s]["specials_killed"]) + 1
+
+
+func _on_civilian_killed(_npc_id: int, slot: int) -> void:
+	if _stats.has(slot):
+		_stats[slot]["civilians_killed"] = int(_stats[slot]["civilians_killed"]) + 1
+
+
+func _on_crew_downed(slot: int, _downs: int) -> void:
+	if _stats.has(slot):
+		_stats[slot]["downs"] = int(_stats[slot]["downs"]) + 1
+
+
+func _on_loot_secured(_bag: int, loot_id: StringName, value: int) -> void:
+	_loot_secured.append({"loot_id": loot_id, "value": value})
+
+
+func _on_small_loot(value: int, _slot: int) -> void:
+	_small_loot += value
+
+
+func _on_pager_answered(_pid: int, _slot: int, total: int) -> void:
+	_pagers_answered = total
+
+
+# --- Noise (S4.3) ---------------------------------------------------------------
+
+## Server: broadcast a NoiseEvent. Movement never calls this (S1.5).
+func make_noise(position: Vector3, radius: float, kind: StringName, source_net_id: int = 0) -> void:
+	if not Net.is_authority() or radius <= 0.0:
+		return
+	noise_made.emit(position, radius, kind, source_net_id)
+
+
+# --- Test hooks (docs/contracts/test_hooks.md) -------------------------------------
+
+func crew_controller(slot: int) -> Node:
+	return _crew.get(slot)
+
+
+func crew_members() -> Array[CrewController]:
+	var out: Array[CrewController] = []
+	for s: int in Net.all_slots():
+		if _crew.has(s) and is_instance_valid(_crew[s]):
+			out.append(_crew[s])
+	return out
+
+
+## Held: applied every physics tick until replaced/cleared.
+func set_bot_intent(slot: int, intent: CrewIntent) -> void:
+	_bot_intents[slot] = intent
+
+
+func clear_bot_intent(slot: int) -> void:
+	_bot_intents.erase(slot)
+	var c: CrewController = _crew.get(slot)
+	if c != null:
+		c.apply_intent(CrewIntent.new())
+
+
+func has_bot_intent(slot: int) -> bool:
+	return _bot_intents.has(slot)
+
+
+func teleport_crew(slot: int, xform: Transform3D) -> void:
+	if not Net.is_authority():
+		return
+	var c: CrewController = _crew.get(slot)
+	if c != null:
+		c.teleport(xform)
+
+
+## Alive NPCs, optionally filtered by role (&"guard", &"civilian", &"police", &"special").
+func npcs(role: StringName = &"") -> Array[Node]:
+	var out: Array[Node] = []
+	for n: Node in get_tree().get_nodes_in_group(G.NPC):
+		var npc: NpcBase = n as NpcBase
+		if npc == null or not is_ancestor_of(npc) or not npc.alive:
+			continue
+		if role == &"" or npc.role == role:
+			out.append(npc)
+	return out
+
+
+## Gameplay prefabs (anything with an `objective_tag`) inside this heist.
+func find_by_tag(objective_tag: StringName) -> Array[Node]:
+	var out: Array[Node] = []
+	var stack: Array[Node] = [self]
+	while not stack.is_empty():
+		var n: Node = stack.pop_front()
+		var t: Variant = n.get(&"objective_tag")
+		if t != null and StringName(t) == objective_tag:
+			out.append(n)
+		for c: Node in n.get_children():
+			stack.append(c)
+	return out
+
+
+func detection_value(observer: Node, slot: int) -> float:
+	var st: Node = service(G.SVC_STEALTH)
+	if st != null and st.has_method(&"detection_value"):
+		return float(st.call(&"detection_value", observer, slot))
+	return 0.0
+
+
+## Frees everything: Services.clear(), Ids.reset().
+func teardown() -> void:
+	_disconnect_events()
+	if mission != null and is_instance_valid(mission):
+		mission._unbind()
+	_bot_intents.clear()
+	Services.clear()
+	Modifiers.clear_all()
+	if get_parent() != null:
+		get_parent().remove_child(self)
+	queue_free()
+	Ids.reset()
+
+
+func _physics_process(_delta: float) -> void:
+	for slot: int in _bot_intents:
+		var c: CrewController = _crew.get(slot)
+		if c != null:
+			c.apply_intent(_bot_intents[slot])
