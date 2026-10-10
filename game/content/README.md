@@ -77,6 +77,14 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `PlayerProfile.pro_job_locks` (`lock/prune/is_locked`); MenuFlow mirrors them into `consumed_contracts`.
 * `MaskLocker.grant_unlock(profile, unlock_id)` records the unlock in `PlayerProfile.unlocks` and owns its
   presets; `apply_unlocks(profile)` re-owns them on load. `ContentDB.has(kind, id)` = lookup without an error.
+* **Achievements (B4-20 stub).** `AchievementDef` (`defs/achievement_def.gd`; data `data/achievements/*.tres`,
+  ContentDB kind `achievements`): `id`, `name_key`/`desc_key`, `condition` {`event`: heist_completed |
+  heist_failed | stash_earned | level_reached, filters `heist`, `difficulty_min`, `stealth`, `loud`, `pro`,
+  `count`}, `unlock` (granted via `MaskLocker.grant_unlock`), `order`. `Achievements` (`progression/achievements.gd`):
+  `all()`, `on_payday(profile, result, payout, is_pro) -> newly unlocked ids` (PaydayScreen._apply, before the
+  save), `record(profile, event, ctx)`, `progress/is_unlocked`. State: `PlayerProfile.achievements` (save v5).
+  Screen: `AchievementsScreen` (`ui/achievements/`), from the hub profile panel (`HubMenu.achievements_requested`
+  -> `MenuFlow._open_achievements()`); payday lists unlocks (`ui.results.achievement_unlocked`).
 * `ContentDB.inject(kind, key, res)`: tests/tooling only (test-only SkillDef/PerkDeckDef);
   `clear_cache()` drops it.
 * `XpCurve.level_for_xp(xp)`, `xp_for_level(level)`. `VoiceLineTable` at `data/voice/lines.tres`.

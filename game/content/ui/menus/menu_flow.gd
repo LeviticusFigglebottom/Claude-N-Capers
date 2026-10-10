@@ -35,6 +35,7 @@ const PERKS_SCENE: PackedScene = preload("res://content/ui/progression/perk_deck
 const HUB_SCENE: PackedScene = preload("res://content/ui/hub/hub_menu.tscn")
 const BOARD_SCENE: PackedScene = preload("res://content/ui/board/board_screen.tscn")
 const LOBBY_SCENE: PackedScene = preload("res://content/ui/lobby/lobby_screen.tscn")
+const ACHIEVEMENTS_SCENE: PackedScene = preload("res://content/ui/achievements/achievements_screen.tscn")
 ## HubStation.target values open_station() understands.
 const TARGET_BOARD: StringName = &"board"
 const TARGET_HEIST_SELECT: StringName = &"heist_select"
@@ -113,6 +114,7 @@ func _ready() -> void:
 	stub_screen = _add(STUB_SCENE) as StubScreen
 	main_menu.safehouse_requested.connect(show_hub)
 	hub.station_requested.connect(open_station)
+	hub.achievements_requested.connect(_open_achievements)
 	hub.back_requested.connect(_on_hub_back)
 	main_menu.firing_range_requested.connect(open_firing_range)
 	main_menu.settings_requested.connect(_show_stub.bind(&"ui.menu.settings_soon", false))
@@ -203,6 +205,18 @@ func _open_board() -> void:
 		_sync_pro_locks()
 		board_screen.setup(_menu_profile())
 	show_screen(board_screen)
+
+
+## Achievements screen (B4-20) from the hub's profile panel; Back frees it and returns to the hub.
+func _open_achievements() -> void:
+	var screen: AchievementsScreen = ACHIEVEMENTS_SCENE.instantiate() as AchievementsScreen
+	screen.setup(SaveService.load_profile(profile_slot))
+	screen.visible = false
+	add_child(screen)
+	screen.back_requested.connect(func() -> void:
+		_free_screen(screen)
+		show_hub())
+	show_screen(screen)
 
 
 ## Live persisted pro-job locks of the menu profile -> consumed_contracts (expired ones skipped).

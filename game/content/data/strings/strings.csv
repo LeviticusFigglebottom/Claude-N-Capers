@@ -1716,3 +1716,28 @@ item.mod.sparrow_wire_stock.desc,A clip-on wire stock that makes full auto contr
 item.mod.sparrow_standard_mag.name,Twenty-Round Magazine
 item.mod.sparrow_extended_mag.name,Thirty-Two-Round Magazine
 item.mod.sparrow_extended_mag.desc,"Thirty-two rounds sticking well out of the grip. Slower to swap, harder to hide."
+ui.hub.achievements,Achievements
+ui.achievements.title,ACHIEVEMENTS
+ui.achievements.subtitle,The jobs the crew will be remembered for.
+ui.achievements.count,{unlocked} of {total} unlocked
+ui.achievements.progress,{progress} / {target}
+ui.achievements.unlocked,Unlocked
+ui.achievements.locked,In progress
+ui.achievements.reward,Reward: {name}
+ui.results.achievement_unlocked,Achievement unlocked: {name}
+achievement.first_score.name,First Score
+achievement.first_score.desc,Complete any heist.
+achievement.glasshouse_regular.name,Regular at the Glasshouse
+achievement.glasshouse_regular.desc,Complete Glasshouse three times.
+achievement.ghost_crew.name,Ghost Crew
+achievement.ghost_crew.desc,Complete five heists without raising the alarm.
+achievement.make_some_noise.name,Make Some Noise
+achievement.make_some_noise.desc,Complete a loud heist on Hazardous or higher.
+achievement.pro_closer.name,Pro Closer
+achievement.pro_closer.desc,Complete a pro job from the Board.
+achievement.cataclysm_clear.name,Nothing Left Standing
+achievement.cataclysm_clear.desc,Complete any heist on Cataclysm. Unlocks the Oxblood Herald mask.
+achievement.offshore_million.name,Offshore Million
+achievement.offshore_million.desc,"Bank a total of 1,000,000 in the offshore stash."
+achievement.seasoned.name,Seasoned
+achievement.seasoned.desc,Reach reputation level 25.

@@ -24,7 +24,7 @@
 	"active_skill_set": 0,
 	"perk_cards": {"perk.bulk": 40, "perk.unknown_deck": 2, "perk.prowler": "two"},
 	"unlocks": ["unlock.achievement.cataclysm_clear", "not_an_unlock"],
-	"achievements": {"achievement.deleted": {"progress": 3, "unlocked": false}, "achievement.cataclysm_clear": "yes"},
+	"achievements": {"achievement.first_score": {"progress": 1, "unlocked": true}, "achievement.deleted": {"progress": 3, "unlocked": false}, "achievement.cataclysm_clear": "yes"},
 	"pro_job_locks": {"0:123": 1000.0, "garbage": 5.0, "1:9": "soon"},
 	"stats": {"heists_completed": 2, "heists_failed": "none"},
 	"settings": "loud"

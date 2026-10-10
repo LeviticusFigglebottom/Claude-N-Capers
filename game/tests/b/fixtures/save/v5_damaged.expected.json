@@ -23,7 +23,7 @@
 	"active_skill_set": 0,
 	"perk_cards": {"perk.bulk": 9},
 	"unlocks": ["unlock.achievement.cataclysm_clear"],
-	"achievements": {},
+	"achievements": {"achievement.first_score": {"progress": 1, "unlocked": true}},
 	"pro_job_locks": {"0:123": 1000.0},
 	"stats": {"heists_completed": 2},
 	"settings": {}
