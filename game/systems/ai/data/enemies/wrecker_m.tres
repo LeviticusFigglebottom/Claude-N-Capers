@@ -15,6 +15,8 @@ weapon = &"weapon.npc_minigun"
 detection_preset = &"police"
 params = {
 "_note": "L4.6 Wrecker-M (PD2 Minigun Dozer): 2x Wrecker HP, minigun (spin_up_s before each burst, then fire_interval_s 0.05 = 1200 RPM; spins down after spin_down_s without a target). Cataclysm only (group.special_wrecker_m). Counts toward the enemy.wrecker special limit (D-022). Faceplate/visor HP (plate_health) as every Wrecker; health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇).",
+"advance_speed": 1.8,
+"anim_walk_clip": "dozer_walk",
 "aim_delay_s": 0.4,
 "armor_body_mult": 1.0,
 "ecm_feedback_immune": true,

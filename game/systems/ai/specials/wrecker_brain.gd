@@ -5,7 +5,8 @@
 ## group.special_wrecker_m); all count toward the `enemy.wrecker` special limit (PoliceSpecialKit.limit_key).
 ## Extends the PoliceBrain pattern with:
 ## - Pressure: no cover, no flank; a short standoff band (wrecker_standoff_*) so it keeps walking into
-##   the crew at EnemyDef.move_speed while its gunner fires (NpcGunner fires while moving).
+##   the crew at a walk (EnemyDef.params.advance_speed 1.8 m/s, PD2; dozer_walk) while its gunner fires
+##   (NpcGunner fires while moving); EnemyDef.move_speed only for director orders (repositioning).
 ## - Shield formation: with an allied Bulwark within formation_join_m it walks behind it instead.
 ## - Presentation [R]: cue.wrecker_roar on activation (intro), cue.wrecker_step every
 ##   wrecker_step_interval_s while moving (heavy footstep loop; C's cue def is audible 30 m).
@@ -67,6 +68,11 @@ func _activate() -> void:
 	if not roared:
 		roared = true
 		PoliceSpecialKit.cue(_npc, &"cue.wrecker_roar", _npc.head_position())
+
+
+## PD2: walks while advancing (EnemyDef.params.advance_speed), runs only to reposition / flank.
+func _move_speed(move_mode: StringName) -> float:
+	return PoliceSpecialKit.heavy_move_speed(_npc, move_mode, _run_speed())
 
 
 func _find_cover(_t: Node3D) -> TacticalPoint:

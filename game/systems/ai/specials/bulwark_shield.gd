@@ -13,6 +13,10 @@
 ## FIRE passes at CombatTweak.shield_fire_damage_mult. The forwarded hit is the single take_hit of that
 ## target (it emits damage_applied; the shield itself takes no damage).
 ## Explosions go around shields (Explosion ignores this group for LOS, PD2 behaviour).
+## Grip (characters.md v1.2/v1.4): when the carrier's character visual has a skeleton, the shield (body and
+## its Visual) follows `HandL/Socket` each physics frame, oriented by it (socket -Z = shield face) while the
+## guard is up; with no socket (capsule placeholder) it stays at the carrier-local offset. Collision,
+## blocking and dropping are unchanged.
 class_name BulwarkShield
 extends AnimatableBody3D
 
@@ -22,6 +26,10 @@ signal struck(info: Dictionary)
 
 const GROUP: StringName = &"bulwark_shield"
 const LAYER_WORLD_DYNAMIC: int = 1 << 1
+## BoneAttachment3D marker whose `Socket` is the shield grip.
+const GRIP_MARKER: String = "HandL"
+## Seconds between socket lookups while the carrier has no animated visual (placeholder).
+const GRIP_LOOKUP_S: float = 0.5
 
 ## The carrying Bulwark (null once dropped).
 var carrier: NpcBase = null
@@ -33,6 +41,10 @@ var guard_down: bool = false
 ## Damage factor of a shield-piercing round (set from the carrier's EnemyDef in attach_to(), kept when
 ## dropped). < 0 = CombatTweak.shield_pierce_damage_mult.
 var pierce_mult: float = -1.0
+## The carrier visual's HandL/Socket the shield follows (null = the attach offset).
+var grip_socket: Node3D = null
+
+var _grip_lookup_left: float = 0.0
 
 
 func _ready() -> void:
@@ -40,6 +52,29 @@ func _ready() -> void:
 	collision_layer = LAYER_WORLD_DYNAMIC
 	collision_mask = 0
 	sync_to_physics = false
+
+
+func _physics_process(delta: float) -> void:
+	follow_grip(delta)
+
+
+## Align to the carrier's grip socket (guard up, carried). Returns true when aligned; false = offset kept.
+func follow_grip(delta: float = 0.0) -> bool:
+	if dropped or guard_down or carrier == null or not is_instance_valid(carrier) or get_parent() != carrier \
+			or not is_inside_tree():
+		return false
+	if grip_socket == null or not is_instance_valid(grip_socket) or not grip_socket.is_inside_tree():
+		grip_socket = null
+		_grip_lookup_left -= delta
+		if _grip_lookup_left > 0.0:
+			return false
+		_grip_lookup_left = GRIP_LOOKUP_S
+		grip_socket = AnimDriver.socket_of(carrier, GRIP_MARKER)
+		if grip_socket == null or not grip_socket.is_inside_tree():
+			grip_socket = null
+			return false
+	global_transform = grip_socket.global_transform.orthonormalized()
+	return true
 
 
 ## Server: attach to `npc` at `local_pos` (the shield never collides with its carrier).
@@ -55,6 +90,9 @@ func attach_to(npc: NpcBase, local_pos: Vector3) -> void:
 	position = local_pos
 	rotation = Vector3.ZERO
 	npc.add_collision_exception_with(self)
+	grip_socket = null
+	_grip_lookup_left = 0.0
+	follow_grip()
 
 
 ## Server: raise (`up`) or drop the guard. Down = no collision (bullets and bodies pass), the shield is

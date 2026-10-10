@@ -146,6 +146,7 @@ func _pick_target() -> void:
 		var d: float = c.global_position.distance_squared_to(_npc.global_position)
 		if c.crew_state != Enums.CrewState.NORMAL and not _cuffable_near(c, d):
 			d += 1.0e6  # prefer standing targets (L2.12: a cuffable downed one nearby counts as standing)
+		d /= PerkHooks.aggro_weight(c, _npc)  # perk hook (QB-62: perk target-selection weight)
 		if d < best_any:
 			best_any = d
 			any = c
@@ -256,9 +257,16 @@ func _tick_cuff(t: Node3D) -> bool:
 
 func _move_to(pos: Vector3, new_mode: StringName) -> void:
 	mode = new_mode
-	anim_hint = &"run"
-	if _motor.target == Vector3.INF or _motor.target.distance_to(pos) > 0.5:
-		_motor.go_to(pos, _run_speed())
+	var sp: float = _move_speed(new_mode)
+	anim_hint = &"run" if sp >= _run_speed() else &"walk"
+	if _motor.target == Vector3.INF or _motor.target.distance_to(pos) > 0.5 or not is_equal_approx(_motor.speed, sp):
+		_motor.go_to(pos, sp)
+
+
+## Motor speed for a move in `move_mode` (&"approach", &"cover", &"flank", &"order", ...). Default: run
+## (EnemyDef.move_speed); heavy specials walk while advancing (BulwarkBrain / WreckerBrain).
+func _move_speed(_move_mode: StringName) -> float:
+	return _run_speed()
 
 
 func _hold(tpos: Vector3) -> void:

@@ -15,6 +15,8 @@ weapon = &"weapon.npc_shotgun"
 detection_preset = &"police"
 params = {
 "_note": "L4.6 Wrecker-G (PD2 Bulldozer, pump shotgun). Counts toward the enemy.wrecker special limit (D-022). Faceplate/visor HP (plate_health) are the same on every difficulty (PD2); health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇).",
+"advance_speed": 1.8,
+"anim_walk_clip": "dozer_walk",
 "aim_delay_s": 0.8,
 "armor_body_mult": 1.0,
 "ecm_feedback_immune": true,
