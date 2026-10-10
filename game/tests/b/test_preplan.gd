@@ -444,3 +444,26 @@ func test_assets_for_missing_variant_groups_are_hidden() -> void:
 	# No variant table on disk: groups unknown, nothing hidden.
 	assert_eq(PreplanBoard.heist_variant_groups(&"test_heist"), [] as Array[StringName])
 	assert_true(_board().assets.has(&"asset.intel_laptop"))
+
+
+## QB-54 (D-049): every asset a registered HeistDef.preplanning lists (and every library asset) has
+## name/desc strings; Night Deposit's heist-only assets are covered even before its def is on trunk.
+func test_every_heist_preplan_asset_has_strings() -> void:
+	var table: Dictionary = StringTable.parse_csv()
+	var ids: Array[String] = ["asset.insider_code", "asset.vent_access"]  # Night Deposit (ENV C)
+	for id: Variant in PreplanBoard.generic_assets():
+		ids.append(String(id))
+	var heists: int = 0
+	for def: HeistDef in HeistRegistry.all():
+		heists += 1
+		var pre: Dictionary = def.preplanning
+		var listed: Variant = pre.get("assets", {})
+		for id: Variant in listed as Dictionary if listed is Dictionary else {}:
+			ids.append(String(id))
+		for k: Variant in pre:  # legacy top-level "asset.<id>" keys (PreplanBoard.merge tolerates them)
+			if String(k).begins_with(PreplanBoard.ASSET_PREFIX):
+				ids.append(String(k))
+	assert_true(heists >= 1, "registry has heists")
+	for id: String in ids:
+		assert_has(table, "item.%s.name" % id, "%s name" % id)
+		assert_has(table, "item.%s.desc" % id, "%s desc" % id)

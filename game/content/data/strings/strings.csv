@@ -1245,6 +1245,10 @@ item.asset.inside_keycard.name,Inside keycard
 item.asset.inside_keycard.desc,An insider leaves a keycard at this spot before the job.
 item.asset.propped_door.name,Propped door
 item.asset.propped_door.desc,Someone on staff leaves this door propped open tonight.
+item.asset.insider_code.name,Insider: time-lock code
+item.asset.insider_code.desc,"An insider writes down tonight's time-lock code. You know where the note is."
+item.asset.vent_access.name,Vent access
+item.asset.vent_access.desc,A maintenance contact leaves the vent grille unscrewed for you.
 item.asset.escape_position.name,Van position
 item.asset.escape_position.desc,"The getaway van waits here. A plan: the crew votes, the host breaks ties."
 ui.masks.title,Masks
