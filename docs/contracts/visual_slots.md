@@ -10,8 +10,9 @@ How art scenes (ENV C props/characters, ENV B weapons) plug into ENV A gameplay 
 * No scripts that affect gameplay. Visual-only scripts (animated FX) allowed under `world/`.
 * Mounted items: collision and meshes stay on the room side of the pivot. Wall mounts extend only toward −Z;
   ceiling mounts (top-centre pivot) extend only downward (−Y) (QA-26, D-043).
-* No collision in the visual scene **unless** a child named `Collision` (StaticBody3D) is provided for
-  prefabs that declare "visual supplies collision" below; otherwise the prefab owns collision.
+* Collision (D-051, QA-32): every prefab with fitted collision uses a visual-supplied `Collision` child
+  (StaticBody3D) when present, else fits its box to the visual's AABB (pivot rules above), else uses the
+  prefab's `collision_size_override` export. Visuals add no other collision.
 * Materials: from the shared material library (`world/materials/`) or generated per asset;
   **never** default material.
 * LODs: `GeometryInstance3D.visibility_range_*` or importer LODs as the style guide specifies.

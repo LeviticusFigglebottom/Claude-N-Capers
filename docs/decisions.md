@@ -292,3 +292,15 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - New FP anim sets `akimbo` and `revolver` (ENV D), plus a fast pistol auto-fire clip for the Sparrow (≈880 rpm).
 - audio_cues: rows for bag lift, hack, escape vehicles, `cue.weapon_revolver_fire`; looping tells stop on end facts
   (`crew_tase_ended`) or locally.
+
+## D-051 — 2026-10-10 — QA-32/33; mission voice lines; round-3 integration fixes
+- QA-32: fitted collision order = visual `Collision` child → visual AABB → `collision_size_override` (visual_slots.md).
+- QA-33: multi-process loopback tests are allowed in CI: port 0 / random free port passed by args, hard timeout ≤ 60 s,
+  child always killed in teardown, the test FAILS (never skips) if the child cannot spawn, runtime < 30 s.
+- Mission voice ids follow groups.md `vo.<speaker>.<heist>_<line>`; VoiceLineTable gains the event tag `mission`
+  (lines requested directly by HeistMission.say). Lead added draft lines/text for Glasshouse and Night Deposit;
+  ENV B owns the wording.
+- Night Deposit's 0.03 m camera Collision workaround removed (A3-07 keeps the hitbox room-side; it clipped walls).
+- laser_grid placeholder posts are inset by half their width so the grid stays within `size_m`.
+- New HeistMission virtual hooks use the `_on_mission_` prefix (ENV A) to avoid clashes with map scripts.
+- Characters: ENV D head pass + 30 m silhouette approved for P1 (acfbd8f).
