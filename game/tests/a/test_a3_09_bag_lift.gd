@@ -27,7 +27,7 @@ func after_each() -> void:
 	await wait_frames(1)
 
 
-func _lift(capacity: int = 2) -> BagLift:
+func _lift(capacity: int = 2, extra: Callable = Callable()) -> BagLift:
 	var top: Marker3D = Marker3D.new()
 	top.name = "LiftTop"
 	_rt.map.get_node(^"Gameplay").add_child(top)
@@ -37,7 +37,9 @@ func _lift(capacity: int = 2) -> BagLift:
 		var l: BagLift = n as BagLift
 		l.targets = [NodePath("../LiftTop")] as Array[NodePath]
 		l.travel_s = 2.0
-		l.capacity = capacity) as BagLift
+		l.capacity = capacity
+		if extra.is_valid():
+			extra.call(l)) as BagLift
 
 
 func _bags(n: int) -> Array[LootBag]:
@@ -72,7 +74,7 @@ func test_bags_ride_to_the_other_landing_and_back() -> void:
 	assert_eq(lift.panels.size(), 2, "a panel per landing")
 	assert_eq(lift.interactable.kind, &"send_lift", "landing 0 panel sends")
 	assert_eq(lift.panels[1].kind, &"call_lift", "landing 1 panel calls")
-	for n: String in ["Car", "DoorL", "DoorR", "Panel"]:
+	for n: String in ["Car", "DoorL", "DoorR", "Panel"]:  # Panel: optional, in the placeholder
 		assert_true(lift.visual_node(n) != null, "visual node %s" % n)
 	var door_l: Node3D = lift.visual_node("DoorL") as Node3D
 	var open_x: float = door_l.position.x
@@ -129,3 +131,72 @@ func test_capacity_blocks_and_top_panel_sends() -> void:
 	var ok: bool = await wait_until(func() -> bool: return not lift.is_moving(), 3.0)
 	assert_true(ok)
 	assert_eq(lift.panels[1].kind, &"send_lift", "top panel sends now")
+
+
+## Door travel follows car_size_m (car-sized shafts); explicit door_open_m; door_fold keeps the leaves
+## inside the car's side walls.
+func test_door_travel_scales_with_car_size() -> void:
+	var tw: InteractionTweak = Tweak.interaction()
+	var lift: BagLift = _lift(2, func(l: BagLift) -> void: l.car_size_m = Vector3(2.0, 1.2, 1.6))
+	await wait_physics_frames(2)
+	assert_near(lift.door_travel(), 1.0 - tw.bag_lift_door_margin_m, 0.001, "half the car width minus the margin")
+	var door_r: Node3D = lift.visual_node("DoorR") as Node3D
+	assert_near(door_r.position.x, 0.3 + lift.door_travel(), 0.001, "DoorR slid by the travel")
+	var shape: BoxShape3D = (lift.get_node("CarBody/Shape") as CollisionShape3D).shape as BoxShape3D
+	assert_near(shape.size.x, 2.0, 0.001, "CarBody floor follows car_size_m.x")
+	assert_near(shape.size.z, 1.6, 0.001, "CarBody floor follows car_size_m.z")
+	lift.door_open_m = 0.3
+	assert_near(lift.door_travel(), 0.3, 0.001, "explicit door_open_m")
+	lift.door_open_m = -1.0
+	lift.door_fold = true
+	lift._set_doors(true)
+	var s: float = tw.bag_lift_door_fold_scale
+	assert_near(lift.door_travel(), 0.3 * (1.0 - s), 0.001, "fold: the outer edge stays")
+	var door_l: Node3D = lift.visual_node("DoorL") as Node3D
+	assert_near(door_l.scale.x, s, 0.001, "leaf folded")
+	assert_true(door_l.position.x - 0.3 * s >= -0.6 - 0.001, "folded leaf stays inside the car width")
+	lift._set_doors(false)
+	assert_near(door_l.scale.x, 1.0, 0.001, "closed: full width")
+	assert_near(door_l.position.x, -0.3, 0.001, "closed: at rest")
+
+
+## A `Panel` child of the prefab root (outside the car visual) replaces the visual's Panel, carries the
+## interaction and is copied to the other landing.
+func test_external_panel() -> void:
+	var lift: BagLift = _lift(2, func(l: BagLift) -> void:
+		var m: MeshInstance3D = MeshInstance3D.new()
+		m.name = "Panel"
+		m.mesh = BoxMesh.new()
+		m.position = Vector3(1.1, 1.3, -0.75)
+		l.add_child(m))
+	await wait_physics_frames(3)
+	assert_true(lift.panel_external, "root Panel used")
+	assert_eq(lift.panel_node, lift.get_node("Panel"))
+	assert_false((lift.visual_node("Panel") as Node3D).visible, "the visual's Panel is hidden")
+	assert_true(lift.interactable.global_position.distance_to(lift.panel_node.global_position) < 0.001,
+		"landing 0's Interactable sits on the panel")
+	var copy: Node3D = lift.get_node_or_null("LandingPanelVisual1") as Node3D
+	assert_true(copy != null, "panel copied to landing 1")
+	if copy != null:
+		assert_true(copy.global_position.distance_to(lift.panel_node.global_position + Vector3(0, TOP_Y, 0)) < 0.01,
+			"same offset from landing 1")
+	assert_true(lift.panels[1].global_position.distance_to(copy.global_position if copy != null else Vector3.INF) < 0.01,
+		"landing 1's panel interaction on the copy")
+	assert_false(lift.required_visual_nodes().has("Panel"), "Panel is optional in the visual")
+
+
+## A bag that falls into the open shaft (car away) goes back in front of the landing it fell in at.
+func test_bag_falling_into_shaft_returns_to_landing() -> void:
+	var lift: BagLift = _lift()
+	await wait_physics_frames(2)
+	lift.travel_s = 0.0
+	assert_true(lift.send(1), "empty car up")
+	assert_eq(lift.landing, 1)
+	var loot: LootManager = _rt.service(G.SVC_LOOT) as LootManager
+	var bag: LootBag = loot.spawn_bag(&"loot.cash", Transform3D(Basis.IDENTITY, LIFT_POS + Vector3(0, 1.0, 0)))
+	var back: bool = await wait_until(func() -> bool: return lift.returned_bags >= 1, 3.0)
+	assert_true(back, "returned")
+	await wait_physics_frames(10)
+	assert_true(bag.global_position.z < LIFT_POS.z - 0.8, "in front of the car (z %.2f)" % bag.global_position.z)
+	assert_true(absf(bag.global_position.y) < 0.6, "at landing 0 (y %.2f)" % bag.global_position.y)
+	assert_true(bag.interactable.enabled and not bag.freeze, "pick-up-able again")

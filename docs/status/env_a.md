@@ -3,6 +3,20 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-10 21:15 UTC: A3-07 co-op, prefab collision fit, C4 (trunk merged)
+### Done (61411c3, 9619875, b4138ed)
+- A3-07: `HeistNetSync` (service `net_sync`): host bring-up via `Net.lobby_send(&"heist_bring_up")` (seed, resolved variants applied not rolled, map path→net_id table, crew ids, phase, preplan, full snapshot); `HeistLauncher.join_running()`; dynamic spawn/despawn RPCs; 15 Hz changed-key state (doors, glass, cameras, devices, NPC alert/health, crew vitals/inventory/bag, bags, interaction sessions → client HUD progress, known codes, custody); 15 Hz transforms. Two-process ENet loopback test (`test_a3_07_coop_loopback.gd`) asserts parity. Gaps (heist/README "Co-op"): no drop-in (P6), runtime-only interactables (corpse bagging, trade/surrender) absent on replicas, no transform interpolation, deployable inventories not mirrored.
+- Lead item 6: prefab box collision fitted from the visual AABB (pivot-aware), or the visual's `Collision`, or `collision_size_override`; C4 now calls `Explosion.apply`.
+- QA-31: test_l4_11 reads the Longshot cap from DifficultyDef.
+- `check_all.sh --env a` PASS (905 tests, 0 failed).
+### In progress
+- bag_lift door travel/panel/floor/shaft doors + hack_terminal pause; Wrecker-M, Bulwark stagger, Brandt destination; first-person viewmodel animation (characters.md v1.4); after round 3: `crew_tase_ended`, ui_hud v1.3 captain fields.
+### Questions for lead
+- QA-32 (visual_slots.md): every collision-fitted prefab now accepts a visual-supplied `Collision` StaticBody3D (not only "visual supplies collision" prefabs); please reflect it in the contract.
+- QA-33: the co-op loopback test spawns a second headless Godot process (OS.create_process, ENet localhost 27731+); a single-process two-branch test is not meaningful with process-wide autoloads (Net/Ids/EventBus). OK for CI?
+### Ready for integration
+- yes; `check_all.sh --env a` result: PASS
+
 ## 2026-10-10 20:40 UTC: P3 wave (A3-01..A3-03, A3-06, A3-09, A3-10, D-043 follow-ups, AnimDriver)
 ### Done (97035c6, 8899bb7, 8e1b83d; trunk 4138f96 merged)
 - A3-01 specials, all with capsule placeholders carrying contract node names + EnemyDefs + brains + tests:

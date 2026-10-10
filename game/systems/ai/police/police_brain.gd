@@ -14,6 +14,8 @@
 ## - FADE (L1.1): no retreat in P1. Units keep fighting; the director just stops reinforcing.
 ## - L2.12 (A3-04): a DOWNED target that is not shooting within CustodyTweak.police_cuff_approach_m
 ##   is walked up to and cuffed at police_cuff_range_m (CrewCuffs.cuff_downed).
+## - Squad order (A3-02 L4.9, AegisCaptain): `order_position` set = run there and hold it (no cover,
+##   flank or standoff; targeting and fire as usual) until clear_order().
 ## - L5.1 (A3-04): SURRENDERED / TIED / CONVERTED are owned by PoliceSurrender (not ACTIVE_STATES).
 class_name PoliceBrain
 extends Node
@@ -38,6 +40,8 @@ var cover_point: TacticalPoint = null
 ## Animation hint for the visual layer (characters.md names).
 var anim_hint: StringName = &"idle"
 var spawn_position: Vector3 = Vector3.ZERO
+## Squad order (L4.9): position to move to and hold, Vector3.INF = none.
+var order_position: Vector3 = Vector3.INF
 
 var _npc: NpcBase = null
 var _motor: NpcMotor = null
@@ -111,6 +115,21 @@ func _activate() -> void:
 		_flank_point = _find_flank_point()
 
 
+## Server: move to `pos` and hold it (squad formation, L4.9).
+func set_order_position(pos: Vector3) -> void:
+	order_position = pos
+	_flank_point = null
+	_release_cover()
+
+
+func clear_order() -> void:
+	order_position = Vector3.INF
+
+
+func has_order() -> bool:
+	return order_position != Vector3.INF
+
+
 # --- Targeting ---------------------------------------------------------------------------
 
 func _pick_target() -> void:
@@ -155,7 +174,7 @@ func _choose_position() -> void:
 	if t == null:
 		_release_cover()
 		return
-	if _flank_point != null:
+	if _flank_point != null or has_order():
 		return
 	if cover_point != null and not _cover_ok(cover_point, t):
 		_release_cover()
@@ -168,6 +187,16 @@ func _choose_position() -> void:
 
 func _tick_move(delta: float) -> void:
 	var t: Node3D = combat_target as Node3D
+	if has_order():
+		if _flat(order_position - _npc.global_position).length() > tweak.arrive_m:
+			_move_to(order_position, &"order")
+		elif t != null:
+			_hold(t.global_position)
+		else:
+			mode = &"hold"
+			anim_hint = &"idle_alert"
+			_motor.stop()
+		return
 	if t == null:
 		_motor.stop()
 		mode = &"idle"

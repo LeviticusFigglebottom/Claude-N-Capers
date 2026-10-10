@@ -11,7 +11,12 @@
 ##   (cue.bulwark_bang [R], anim_hint shield_bang) and holds fire for bulwark_bang_hold_s.
 ## - Formation: the NPC is in PoliceSpecialKit.BULWARK_GROUP while alive, so other specials can take
 ##   the spot behind it (PoliceSpecialKit.spot_behind_bulwark).
-## - special_spawned(net_id, &"bulwark") [R] on start. Stagger (shock-and-awe) is not modelled yet.
+## - Stagger (shock-and-awe-like, HeavySpecialTweak "Bulwark stagger"): a single shield hit of at least
+##   bulwark_stagger_hit_damage, or an explosion that damages it, staggers it for bulwark_stagger_s:
+##   the guard drops (BulwarkShield.set_guard(false): lowered, no collision, so frontal hits reach the
+##   body), it neither moves nor fires (anim_hint hit_react), then bulwark_stagger_cooldown_s before
+##   the next. Aegis shields (AegisCaptain.META_NO_FLINCH) never stagger.
+## - special_spawned(net_id, &"bulwark") [R] on start.
 class_name BulwarkBrain
 extends PoliceBrain
 
@@ -24,9 +29,13 @@ var shield: BulwarkShield = null
 ## Fixated crew member (L4.5).
 var fixated: CrewController = null
 var bangs: int = 0
+## L4.5 stagger count (tests / debug).
+var staggers: int = 0
 
 var _bang_left: float = 0.0
 var _bang_hold_left: float = 0.0
+var _stagger_left: float = 0.0
+var _stagger_cd: float = 0.0
 
 
 func _ready() -> void:
@@ -42,6 +51,7 @@ func _ready() -> void:
 		tweak.standoff_max_m = special_tweak.bulwark_standoff_max_m
 		tweak.flank_chance = 0.0
 	_npc.add_to_group(PoliceSpecialKit.BULWARK_GROUP)
+	_npc.damaged.connect(_on_damaged)
 	_attach_shield.call_deferred()  # the NpcBase is still setting up its children
 
 
@@ -53,6 +63,17 @@ func _start() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _stagger_cd > 0.0:
+		_stagger_cd -= delta
+	if _stagger_left > 0.0:
+		_stagger_left -= delta
+		wants_to_fire = false
+		anim_hint = &"hit_react"
+		if _motor != null:
+			_motor.stop()
+		if _stagger_left <= 0.0:
+			_raise_guard()
+		return
 	super._physics_process(delta)
 	if not _active or _npc == null or not _npc.alive or _npc.is_stunned():
 		return
@@ -77,6 +98,46 @@ func bang() -> void:
 	PoliceSpecialKit.cue(_npc, &"cue.bulwark_bang", shield.global_position if shield != null else Vector3.INF)
 
 
+func is_staggered() -> bool:
+	return _stagger_left > 0.0
+
+
+## Server: stagger now (guard down for bulwark_stagger_s). False when dead, Aegis, without a carried
+## shield, already staggered or cooling down.
+func stagger() -> bool:
+	if not Net.is_authority() or _npc == null or not _npc.alive or _npc.has_meta(AegisCaptain.META_NO_FLINCH):
+		return false
+	if shield == null or not is_instance_valid(shield) or shield.dropped or _stagger_left > 0.0 or _stagger_cd > 0.0:
+		return false
+	staggers += 1
+	_stagger_left = maxf(special_tweak.bulwark_stagger_s, 0.01)
+	_stagger_cd = _stagger_left + special_tweak.bulwark_stagger_cooldown_s
+	_bang_hold_left = 0.0
+	wants_to_fire = false
+	anim_hint = &"hit_react"
+	if _motor != null:
+		_motor.stop()
+	shield.set_guard(false, special_tweak.bulwark_stagger_shield_offset)
+	return true
+
+
+func _raise_guard() -> void:
+	_stagger_left = 0.0
+	if shield != null and is_instance_valid(shield) and not shield.dropped:
+		shield.set_guard(true, special_tweak.bulwark_shield_offset)
+
+
+func _on_shield_struck(info: Dictionary) -> void:
+	if float(info.get("amount", 0.0)) >= special_tweak.bulwark_stagger_hit_damage:
+		stagger()
+
+
+func _on_damaged(info: Dictionary, _attacker: int) -> void:
+	if special_tweak.bulwark_stagger_on_explosion and float(info.get("amount", 0.0)) > 0.0 \
+			and int(info.get("type", Enums.DamageType.BULLET)) == Enums.DamageType.EXPLOSION:
+		stagger()
+
+
 func _attach_shield() -> void:
 	var ps: PackedScene = special_tweak.bulwark_shield_scene
 	if ps == null:
@@ -87,6 +148,7 @@ func _attach_shield() -> void:
 		Log.error(&"ai", "BulwarkBrain: bulwark_shield_scene root is not a BulwarkShield")
 		return
 	shield.attach_to(_npc, special_tweak.bulwark_shield_offset)
+	shield.struck.connect(_on_shield_struck)
 
 
 # --- PoliceBrain overrides -------------------------------------------------------------------
@@ -133,5 +195,7 @@ func _on_died(info: Dictionary, killer_net_id: int) -> void:
 	super._on_died(info, killer_net_id)
 	_npc.remove_from_group(PoliceSpecialKit.BULWARK_GROUP)
 	if shield != null and is_instance_valid(shield):
+		if shield.guard_down:
+			_raise_guard()  # a dropped shield still blocks
 		var parent: Node = _runtime.dynamic_root if _runtime != null else _npc.get_parent()
 		shield.drop.call_deferred(parent)  # not inside the hit/physics callback that killed us

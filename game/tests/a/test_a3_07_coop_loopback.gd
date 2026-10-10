@@ -12,17 +12,29 @@
 ## branch in the host process would run the server code paths and share the host's id registry and
 ## event bus, so its "parity" would prove nothing. A second process exercises the real client path.
 ## The client's stdout is inherited, so its SCRIPT ERROR lines fail CI like ours (D-047).
+## D-051 conditions: random free port (retried on bind failure) passed to the child on its command
+## line; whole test hard-capped at HARD_TIMEOUT_S (the child self-quits after the same time); the child
+## is always killed in after_each / after_all (OS.kill fallback); failing to bind or spawn FAILS.
 extends TestCase
 
 const PROBE: GDScript = preload("res://tests/a/coop_loopback_probe.gd")
 const CLIENT_SCENE: String = "res://tests/a/coop_loopback_client.tscn"
-const BASE_PORT: int = 27731
+## Ephemeral range for the random server port (IANA dynamic ports).
+const PORT_MIN: int = 49152
+const PORT_MAX: int = 65000
+const PORT_TRIES: int = 12
+const HARD_TIMEOUT_S: float = 60.0
 const SEED: int = 7071
 
 var _probe: Node = null
 var _pid: int = -1
 var _rt: HeistRuntime = null
 var _reports: Dictionary = {}
+var _deadline_ms: int = 0
+
+
+func after_each() -> void:
+	_cleanup()
 
 
 func after_all() -> void:
@@ -30,9 +42,10 @@ func after_all() -> void:
 
 
 func test_host_client_parity() -> void:
+	_deadline_ms = Time.get_ticks_msec() + int(HARD_TIMEOUT_S * 1000.0)
 	var port: int = _host()
 	if port < 0:
-		skip("cannot open an ENet server on localhost")
+		fail("cannot open an ENet server on localhost (%d random ports tried)" % PORT_TRIES)
 		return
 	_probe = PROBE.new()
 	_probe.name = PROBE.NODE_NAME
@@ -40,19 +53,19 @@ func test_host_client_parity() -> void:
 	_probe.connect(&"reported", _on_reported)
 	var args: PackedStringArray = PackedStringArray([
 		"--headless", "--path", ProjectSettings.globalize_path("res://"), CLIENT_SCENE, "--", "--port=%d" % port,
-		"--timeout=180",
+		"--timeout=%d" % int(HARD_TIMEOUT_S),
 	])
 	_pid = OS.create_process(OS.get_executable_path(), args)
-	assert_true(_pid > 0, "client process started")
-	var joined: bool = await wait_until(func() -> bool: return Net.human_slots().size() >= 2, 60.0)
+	if _pid <= 0:
+		fail("client process could not be spawned (%s)" % OS.get_executable_path())
+		return
+	var joined: bool = await wait_until(func() -> bool: return Net.human_slots().size() >= 2, _budget(30.0))
 	assert_true(joined, "client connected and got a crew slot")
 	if not joined:
-		_cleanup()
 		return
 	_rt = await HeistLauncher.launch(&"dev_sandbox", SEED, Enums.Difficulty.ROUTINE, get_tree().root, {"skip_casing": true})
 	assert_true(_rt != null, "host launched the dev_sandbox")
 	if _rt == null:
-		_cleanup()
 		return
 	var snap: Dictionary = await _snapshot()
 	var ok: bool = bool(snap.get("has_rt", false))
@@ -64,7 +77,7 @@ func test_host_client_parity() -> void:
 		await _check_interaction(slot)
 		await _check_alarm()
 		await _check_door_code_bag()
-	_cleanup()
+	assert_true(Time.get_ticks_msec() <= _deadline_ms, "finished within the %.0f s hard timeout" % HARD_TIMEOUT_S)
 
 
 func _check_bring_up(snap: Dictionary) -> void:
@@ -99,7 +112,7 @@ func _check_intent_moves(slot: int) -> void:
 	intent.move = Vector2(0.0, 1.0)
 	intent.look_yaw = crew.look_yaw
 	_probe.call(&"command", "intent", {"intent": intent.to_dict()})
-	var moved: bool = await wait_until(func() -> bool: return crew.global_position.distance_to(p0) > 1.0, 10.0)
+	var moved: bool = await wait_until(func() -> bool: return crew.global_position.distance_to(p0) > 1.0, _budget(10.0))
 	assert_true(moved, "client intent moved its crew on the server (%.2f m)" % crew.global_position.distance_to(p0))
 	_probe.call(&"command", "clear_intent", {})
 	await wait_seconds(0.3)
@@ -127,7 +140,7 @@ func _check_interaction(slot: int) -> void:
 	intent.interact = true
 	intent.interact_target_net_id = loot_id
 	_probe.call(&"command", "intent", {"intent": intent.to_dict()})
-	var ok: bool = await wait_until(func() -> bool: return done[0], 10.0)
+	var ok: bool = await wait_until(func() -> bool: return done[0], _budget(10.0))
 	EventBus.interaction_completed.disconnect(on_done)
 	_probe.call(&"command", "clear_intent", {})
 	assert_true(ok, "client interaction on SmallLootA completed on the server")
@@ -163,7 +176,7 @@ func _check_door_code_bag() -> void:
 	EventBus.loot_secured.connect(on_secured)
 	var zone: Node3D = _rt.map.get_node(^"Zones/SecureLootVan/Shape") as Node3D
 	bag.release(Vector3(zone.global_position.x, 0.3, zone.global_position.z), Vector3.ZERO, false)
-	var ok: bool = await wait_until(func() -> bool: return secured[0], 10.0)
+	var ok: bool = await wait_until(func() -> bool: return secured[0], _budget(10.0))
 	EventBus.loot_secured.disconnect(on_secured)
 	assert_true(ok, "bag secured on the server")
 	await wait_seconds(0.4)
@@ -183,11 +196,20 @@ func _check_alarm() -> void:
 
 # --- Helpers -------------------------------------------------------------------------------------
 
+## A random free port (test code: a local RNG is fine, D-051), retried on bind failure.
 func _host() -> int:
-	for i: int in range(8):
-		if Net.host(BASE_PORT + i, "Host") == OK:
-			return BASE_PORT + i
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.randomize()
+	for i: int in range(PORT_TRIES):
+		var port: int = rng.randi_range(PORT_MIN, PORT_MAX)
+		if Net.host(port, "Host") == OK:
+			return port
 	return -1
+
+
+## `cap` seconds, but never past the test's hard deadline.
+func _budget(cap: float) -> float:
+	return clampf(minf(cap, float(_deadline_ms - Time.get_ticks_msec()) / 1000.0), 0.05, cap)
 
 
 func _on_reported(kind: String, data: Dictionary) -> void:
@@ -197,7 +219,7 @@ func _on_reported(kind: String, data: Dictionary) -> void:
 func _snapshot(args: Dictionary = {}) -> Dictionary:
 	_reports.erase("snapshot")
 	_probe.call(&"command", "snapshot", args)
-	await wait_until(func() -> bool: return _reports.has("snapshot"), 10.0)
+	await wait_until(func() -> bool: return _reports.has("snapshot"), _budget(10.0))
 	return _reports.get("snapshot", {}) as Dictionary
 
 

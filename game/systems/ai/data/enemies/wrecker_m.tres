@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://contracts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"enemy.wrecker_m"
+display_name = "Wrecker-M"
+is_special = true
+health = PackedFloat32Array(4000, 4000, 8000, 16000, 32000, 48000)
+headshot_mult = PackedFloat32Array(2.5, 2.5, 2.5, 2.5, 2.5, 2.5)
+damage = PackedFloat32Array(8, 8, 12, 16, 24, 32)
+move_speed = 3.0
+weapon = &"weapon.npc_minigun"
+detection_preset = &"police"
+params = {
+"_note": "L4.6 Wrecker-M (PD2 Minigun Dozer): 2x Wrecker HP, minigun (spin_up_s before each burst, then fire_interval_s 0.05 = 1200 RPM; spins down after spin_down_s without a target). Cataclysm only (group.special_wrecker_m). Counts toward the enemy.wrecker special limit (D-022). Faceplate/visor HP as every Wrecker; health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇).",
+"aim_delay_s": 0.4,
+"ecm_feedback_immune": true,
+"explosive_mult": 1.1,
+"faceplate_hp": 150.0,
+"fire_interval_s": 0.05,
+"scene": "res://systems/ai/npc/npc_wrecker.tscn",
+"spin_down_s": 1.5,
+"spin_up_s": 1.2,
+"stun_immune": true,
+"visor_hp": 160.0
+}
+voice = &"wrecker"
