@@ -8,6 +8,13 @@ extends Node3D
 @export var variant_table: HeistVariantTable
 ## Floors: index -> finished floor height (m). Used by validate_level for stair/height checks.
 @export var floor_heights: PackedFloat32Array = PackedFloat32Array([0.0])
+## Optional display names per floor, parallel to floor_heights (e.g. "L40"); empty = named by height (QC-32).
+@export var floor_names: PackedStringArray = PackedStringArray()
+
+
+## Display name of floor `index`: floor_names when set, else "" (callers fall back to height naming).
+func floor_name(index: int) -> String:
+	return floor_names[index] if index >= 0 and index < floor_names.size() else ""
 ## Fixed camera positions for the review screenshot set (Marker3D/Camera3D children paths).
 @export var review_cameras: Array[NodePath] = []
 

@@ -17,3 +17,12 @@ API: `game/core/net.gd`. Architecture: architecture.md §3.
 * Integration test `tests/integration/test_coop_loopback.gd` (LEAD, P3) runs a host plus a client in
   one process via two `SceneMultiplayer` branches and asserts state parity.
 * Late join (drop-in) mid-heist: P6. Until then, joining is lobby-only.
+
+## Client heist launch (A3-07, D-054)
+* `HeistLauncher.launch_client(parent = null, options = {}, timeout_s = 0.0) -> HeistRuntime` (await) on a client after
+  `Net.join()` connected and before the host's `HeistLauncher.launch()`, at the latest in the lobby's "starting"
+  message handler. It waits for the host's bring-up lobby message (`HeistLauncher.BRING_UP_KIND`, version
+  `BRING_UP_VERSION`), builds the replica (`is_replica`, `heist_loaded` already emitted, `rt.hud_model` = the client's).
+* Returns null (never throws) on the authority, a rejected bring-up, timeout, host lost / session ended, or
+  `HeistLauncher.cancel_launch_client()`. Clients receive `heist_ended` [R]; the app flow then calls `rt.teardown()`
+  and `Net.leave()`. Full details: game/systems/heist/README.md "Client heist launch".

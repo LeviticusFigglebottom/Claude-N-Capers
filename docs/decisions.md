@@ -321,3 +321,11 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   revolver Crane/Cylinder/Speedloader details; revolver reload_empty = reload.
 - Damage v1.1 follow-up: ENV B's range keeps a shooter-stats shield-pierce fallback only for legacy info dicts
   without the key; ENV A sets `shield_pierce` attacker-side (then the fallback is dead code to remove).
+
+## D-054 — 2026-10-10 — floor_names, stamina HUD, client launch, round-5 docs
+- QC-32: `HeistMap.floor_names` (optional, parallel to floor_heights) + `floor_name(i)`.
+- ui_hud v1.4 `stamina_changed` (stamina 0..1, exhausted) for ENV A's minimal stamina system (QB-60); B builds the widget.
+- net.md / test_hooks.md: `HeistLauncher.launch_client` (A3-07) documented as the client entry point.
+- L1 (from ENV B): modifiers.md perk.stoic example and the perk.burglar / team.armor_regen_delay_mult descriptions.
+- QC-33: open-side guards pass at top ≥ 1.0 m; the 1.0–1.1 m band applies to handrails only.
+- B pull-forward B4-16..B4-20 (save v2, workshop orbit view, armory batch 3, stamina widget, achievements stub).

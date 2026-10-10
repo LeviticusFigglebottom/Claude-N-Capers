@@ -27,6 +27,7 @@ func find_by_tag(objective_tag: StringName) -> Array[Node]   # gameplay prefabs 
 func detection_value(observer: Node, slot: int) -> float
 func isolate_npc(npc: Node) -> void                         # TEST ONLY: despawn every other NPC (QA-9, D-032)
 func teardown() -> void                                      # frees everything, Services.clear(), Ids.reset()
+# Co-op client (D-054): static HeistLauncher.launch_client(parent, options, timeout_s) -> HeistRuntime (net.md)
 ```
 
 Bots aim by setting `look_yaw/look_pitch` toward a target; helper `CrewIntent` construction lives in

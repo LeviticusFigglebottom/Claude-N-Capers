@@ -131,7 +131,7 @@ const KEYS: Dictionary = {
 	&"perk.sociopath": [Type.PARAMS, 4, "Clean Sweep: kills near enemies restore armor/health on cooldowns."],
 	&"perk.rogue_dodge_stack": [Type.PARAMS, 4, "Slipper: reduced aggro near crew (dodge/swap/AP via generic keys)."],
 	&"perk.crook": [Type.PARAMS, 4, "Hustler: dodge + armor bonus in Light/Patrol/Heavy vests only."],
-	&"perk.burglar": [Type.PARAMS, 4, "Prowler: stealth interaction/bag speed + low-concealment dodge."],
+	&"perk.burglar": [Type.PARAMS, 4, "Prowler: standing still or crouching lowers enemy targeting weight and armor regen delay {still_aggro_mult, still_regen_delay_mult}; its stealth speed/dodge cards use generic keys."],
 	&"perk.infiltrator": [Type.PARAMS, 4, "Knuckles: close-range damage reduction, melee buffs."],
 	&"perk.muscle": [Type.PARAMS, 4, "Bulk: health regen, threat increase."],
 	&"perk.armorer": [Type.PARAMS, 4, "Ironclad: armor bonus, brief invulnerability on armor break."],
@@ -209,7 +209,7 @@ const KEYS: Dictionary = {
 	&"interaction.doctor_bag_speed_mult": [Type.MULT, 4, "Doctor bag use time multiplier (lower = faster)."],
 	&"progression.card_drop_quality_add": [Type.ADD, 4, "Chance that a PAYDAY card rolls the next quality tier."],
 	&"ability.shout_range_mult": [Type.MULT, 4, "Shout distance (all shout targets). The existing..."],
-	&"team.armor_regen_delay_mult": [Type.MULT, 4, "Crew-wide armor regen delay. It would replace perk.armorer.team_regen_delay_mult."],
+	&"team.armor_regen_delay_mult": [Type.MULT, 4, "Crew-wide armor regen delay multiplier (lower = sooner; Ironclad card 9)."],
 }
 
 
