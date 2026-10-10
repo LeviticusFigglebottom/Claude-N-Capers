@@ -12,7 +12,10 @@ heists = {
 &"night_deposit": {
 "placeholder_base_payout": 90000,
 "placeholder_mode": 0
-}
+},
+&"shadow_ledger": {
+"placeholder_base_payout": 110000,
+"placeholder_mode": 1
 }
 }
 unlocked_difficulties = Array[int]([0, 3])

@@ -1372,3 +1372,51 @@ ui.preplan.point.pp_insider_code,Insider: time-lock code
 ui.preplan.point.pp_insider_keycard,Insider: vault keycard
 ui.preplan.point.pp_vent,Insider: areaway grate
 ui.preplan.point.pp_blueprint_cams,Insider: camera plans
+item.loot.ledger_laptop.name,Ledger Laptop
+item.loot.ledger_laptop.desc,"The partners' laptop: the decryption key and a working copy of the ledger. Light, and the whole job."
+item.loot.ledger_drives.name,Ledger Drives
+item.loot.ledger_drives.desc,A bay of encrypted drives pulled from the array. Worthless without the laptop.
+item.loot.ledger_books.name,Ledger Books
+item.loot.ledger_books.desc,"The printed master books, bound in leather. Every shell company, in the partners' own hand."
+item.loot.painting.name,Painting
+item.loot.painting.desc,"A framed canvas, carefully cut and rolled. Handle it like it's worth more than you."
+heist.shadow_ledger.name,Shadow Ledger
+heist.shadow_ledger.subtitle,Kessler & Moor
+heist.shadow_ledger.brief,A law firm on top of Calder Tower keeps the books for people who don't exist. Take them without anyone ever knowing.
+heist.shadow_ledger.briefing,"Kessler & Moor, a private-wealth and law practice, holds the top two floors of Calder Tower on Calder Street. Its off-book client ledger exists three times: an encrypted drive array in the server cage, the partners' laptop with the decryption key, and the printed master books in Kessler's time-locked study safe. The crew starts on the roof under a climber's line from Arden Tower. Find the laptop, get into the server room, open the cage and release the drive bays, then get the laptop and two drive bags out. This one is stealth only: one alarm and the firm wipes the array, and the job is over."
+objective.shadow_ledger.casing,Case the roof
+objective.shadow_ledger.laptop,Find and bag the ledger laptop
+objective.shadow_ledger.keycard,Get a keycard for the server room
+objective.shadow_ledger.server_door,Get into the server room
+objective.shadow_ledger.cage_code,Find the cage code
+objective.shadow_ledger.cage,Open the server cage
+objective.shadow_ledger.hack,Release the drive bays
+objective.shadow_ledger.drives,Bag the drives
+objective.shadow_ledger.secure,Secure the laptop and the drives ({count}/{total})
+objective.shadow_ledger.study_safe,Open the study safe and bag the books
+objective.shadow_ledger.paintings,Take the paintings
+objective.shadow_ledger.archive_safe,Open the archive safe
+objective.shadow_ledger.escape,Get to the escape
+voice.vo.accountant.briefing_shadow_ledger_1,Kessler and Moor wash money for people who would rather it had never been dirty. They keep a ledger of who owns what. I would like to own it.
+voice.vo.accountant.briefing_shadow_ledger_2,The drives hold the data and the partners' laptop holds the key. Bring me the laptop and two drives. The printed books are a courtesy I would appreciate.
+voice.vo.accountant.briefing_shadow_ledger_3,"A ledger is only worth something if nobody knows it was read. No alarm. If they notice, they wipe it, and I have paid you for nothing."
+voice.vo.mercer.briefing_shadow_ledger_1,"Forty-two floors, heavy rain, and you start on the roof. One alarm and we walk away with nothing, so take it slow and don't let anyone reach a radio."
+ui.briefing.escape.zipline,Zipline
+ui.briefing.escape.service_lift,Service lift
+item.asset.intel_laptop.name,Insider: laptop location
+item.asset.intel_laptop.desc,You know where the partners left the ledger laptop tonight.
+item.asset.gondola_left_hung.name,Window-washer gondola
+item.asset.gondola_left_hung.desc,The facade crew leaves the gondola hung at this side of the building: a way in that no camera watches.
+item.asset.riser_panel.name,Loose riser panel
+item.asset.riser_panel.desc,Someone unbolts a services-riser panel on this floor. Climb down the riser and step out here.
+ui.preplan.point.pp_spawn_roof,"Roof, under the line"
+ui.preplan.point.pp_spawn_service,Service level lobby
+ui.preplan.point.pp_drop_plant,"Roof plant, behind the air handler"
+ui.preplan.point.pp_drop_refuse,Service level refuse room
+ui.preplan.point.pp_escape_heli,Helicopter: roof pad
+ui.preplan.point.pp_escape_line,Zipline: east parapet
+ui.preplan.point.pp_escape_service,Service lift: level 40
+ui.preplan.point.pp_gondola_west,"Gondola: west facade, level 41"
+ui.preplan.point.pp_gondola_north,"Gondola: north facade, level 42"
+ui.preplan.point.pp_riser_l41,Riser panel: level 41
+ui.preplan.point.pp_riser_l42,Riser panel: level 42

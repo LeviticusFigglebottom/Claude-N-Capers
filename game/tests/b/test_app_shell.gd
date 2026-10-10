@@ -140,6 +140,7 @@ func test_catalog_placeholder_while_def_missing() -> void:
 	for x: Dictionary in e:
 		pay[StringName(x["id"])] = int(x["base_payout"])
 	assert_eq(pay.get(&"night_deposit", 0), 90000)
+	assert_eq(pay.get(&"shadow_ledger", 0), 110000)
 
 
 func test_catalog_uses_registry_defs() -> void:

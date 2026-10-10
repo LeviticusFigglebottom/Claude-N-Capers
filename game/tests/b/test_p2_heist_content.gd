@@ -11,6 +11,13 @@ const ND_TAGS: Array[String] = [
 	"casing", "keycard", "code", "server", "vault_gate", "time_lock", "time_lock_wait",
 	"vault_loot", "depository", "secure", "escape", "vault_drill",
 ]
+## Source: docs/design/heists/shadow_ledger.md (ENV C, approved in D-042), same rule as ND_TAGS.
+const SL_TAGS: Array[String] = [
+	"casing", "laptop", "keycard", "server_door", "cage_code", "cage", "hack", "drives", "secure",
+	"study_safe", "paintings", "archive_safe", "escape",
+]
+const SL_ASSETS: Array[StringName] = [&"asset.intel_laptop", &"asset.gondola_left_hung", &"asset.riser_panel"]
+
 var _table: Dictionary = {}
 
 
@@ -112,3 +119,77 @@ func test_night_deposit_catalog_placeholder() -> void:
 	assert_eq(int(data.get("placeholder_base_payout", 0)), 90000, "ENV C's proposed base payout")
 	assert_eq(int(data.get("placeholder_mode", -1)), Enums.HeistMode.STEALTH_OR_LOUD)
 
+
+# --- B4-10 Shadow Ledger ---
+
+func test_shadow_ledger_loot() -> void:
+	_check_loot(&"loot.ledger_laptop", Enums.LootWeight.LIGHT)
+	_check_loot(&"loot.ledger_drives", Enums.LootWeight.MEDIUM)
+	# MEDIUM is the lead's decision (B4-10); the C doc's QC-15 asked for LIGHT.
+	_check_loot(&"loot.ledger_books", Enums.LootWeight.MEDIUM)
+	_check_loot(&"loot.painting", Enums.LootWeight.MEDIUM)
+
+
+func test_shadow_ledger_objectives_follow_the_design_doc() -> void:
+	_check_objectives("shadow_ledger", SL_TAGS)
+
+
+func test_shadow_ledger_briefing() -> void:
+	_check_briefing(&"shadow_ledger", &"contact.accountant", 3)
+	var data: Dictionary = HeistCatalog.heist_list().heists.get(&"shadow_ledger", {}) as Dictionary
+	assert_eq(int(data.get("placeholder_base_payout", 0)), 110000, "D-042 base payout")
+	assert_eq(int(data.get("placeholder_mode", -1)), Enums.HeistMode.STEALTH_ONLY)
+
+
+func test_shadow_ledger_assets_validate() -> void:
+	PreplanBoard.clear_cache()
+	var g: Dictionary = PreplanBoard.generic_assets()
+	for id: StringName in SL_ASSETS:
+		assert_true(g.has(id), String(id))
+		if not g.has(id):
+			continue
+		var a: PreplanAssetDef = g[id] as PreplanAssetDef
+		assert_eq(a.validate(), [] as Array[String], "valid %s" % id)
+		assert_true(a.grants.is_empty(), "%s grants nothing" % id)
+		assert_has(_table, "item.%s.name" % id)
+		assert_has(_table, "item.%s.desc" % id)
+	var laptop: PreplanAssetDef = g[&"asset.intel_laptop"] as PreplanAssetDef
+	assert_false(laptop.is_located(), "crew asset")
+	assert_eq(laptop.reveals, [&"laptop"] as Array[StringName])
+	assert_has(_table, "ui.preplan.category.insider")
+
+
+## The gondola/riser assets take their forced slot from the chosen point's params (doc's
+## Pre-planning table), never from a point of another kind.
+func test_shadow_ledger_entry_assets_force_the_point_slot() -> void:
+	var bp: PreplanBlueprint = PreplanBlueprint.new()
+	bp.heist_id = &"shadow_ledger"
+	var rows: Array = [
+		[&"pp_gondola_west", {"variant_group": &"gondola", "variant_slot": &"gon_west_l41"}],
+		[&"pp_gondola_north", {"variant_group": &"gondola", "variant_slot": &"gon_north_l42"}],
+		[&"pp_riser_l41", {"variant_group": &"vent_open", "variant_slot": &"vent_l41"}],
+		[&"pp_riser_l42", {"variant_group": &"vent_open", "variant_slot": &"vent_l42"}],
+		[&"pp_insider_code", {}],
+	]
+	for i: int in range(rows.size()):
+		bp.points.append({"id": rows[i][0], "category": &"insider", "pos": Vector2(i * 4, 0), "floor": 0,
+				"label": StringName("ui.preplan.point.%s" % rows[i][0]), "params": rows[i][1]})
+		if String(rows[i][0]) != "pp_insider_code":
+			assert_has(_table, "ui.preplan.point.%s" % rows[i][0])
+	var def: HeistDef = HeistDef.new()
+	def.id = &"shadow_ledger"
+	var b: PreplanBoard = PreplanBoard.build(&"shadow_ledger", Enums.Difficulty.ROUTINE, def, null, bp)
+	assert_eq(b.errors, [] as Array[String])
+	assert_false(b.assets_for_point(&"pp_insider_code").has(&"asset.gondola_left_hung"), "point ids only")
+	assert_false(b.assets_for_point(&"pp_insider_code").has(&"asset.riser_panel"), "point ids only")
+	var p: PreplanPlan = PreplanPlan.new(b)
+	assert_eq(p.add(&"asset.riser_panel", &"pp_gondola_west", 0), PreplanPlan.R_WRONG_POINT)
+	assert_eq(p.add(&"asset.gondola_left_hung", &"pp_gondola_north", 0), PreplanPlan.OK)
+	assert_ne(p.add(&"asset.gondola_left_hung", &"pp_gondola_west", 0), PreplanPlan.OK, "one gondola slot")
+	assert_eq(p.add(&"asset.riser_panel", &"pp_riser_l41", 0), PreplanPlan.OK)
+	assert_eq(p.add(&"asset.intel_laptop", &"", 0), PreplanPlan.OK)
+	var r: Dictionary = p.apply()
+	var fv: Dictionary = r["force_variants"] as Dictionary
+	assert_eq(fv.get(&"gondola"), [&"gon_north_l42"] as Array[StringName])
+	assert_eq(fv.get(&"vent_open"), [&"vent_l41"] as Array[StringName])
+	assert_has(r["reveals"] as Array, &"laptop")

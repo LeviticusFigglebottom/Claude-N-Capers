@@ -72,6 +72,11 @@ P2 heists (PD2 bag shape: a heavier bag is worth more per bag, but less per seco
 | id | weight | value | heist | src |
 |---|---|---|---|---|
 | `loot.cash_bricks` | MEDIUM | $1,600 | Night Deposit (Co-op pallet) | weight: lead (B4-09; the C doc asked HEAVY); value ◇ (1.33× LIGHT cash) |
+| `loot.ledger_laptop` | LIGHT | $2,000 | Shadow Ledger (required) | weight V (doc QC-15); value ◇ (one bag, the key to the data) |
+| `loot.ledger_drives` | MEDIUM | $1,800 | Shadow Ledger (required ×2, 3 spawn) | weight V (doc); value ◇ |
+| `loot.ledger_books` | MEDIUM | $2,400 | Shadow Ledger (optional, time-locked safe) | weight: lead (B4-10; the doc asked LIGHT); value ◇ (greed bag: costs a keycard + a time-lock hold) |
+| `loot.painting` | MEDIUM | $1,500 | Shadow Ledger art hall ×2, reusable by `gallery_night` | weight V (doc); value ◇ |
+Shadow Ledger's archive safe uses the existing `loot.cash`.
 
 ## Difficulty: `difficulty/` (Routine, Tense, Hazardous, Brutal, Lethal, Cataclysm = PD2 Normal, Hard, Very Hard, Overkill, Mayhem, Death Sentence)
 | | Rou | Ten | Haz | Bru | Let | Cat | Src |

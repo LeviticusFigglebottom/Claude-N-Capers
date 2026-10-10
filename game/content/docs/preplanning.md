@@ -59,6 +59,15 @@ multiplier; DifficultyDef has none yet, so the tweak holds it.) Default favors: 
 | `asset.spare_body_bags` | `grants` `stealth.body_bags_extra` +1 | crew | 1,000 | 1 |
 | `asset.alternate_entry` | spawn tag from the point's `params.spawn_tag` | `spawn`, exclusive | 500 | 1 |
 | `asset.escape_position` | forced variant from the point's `params.variant_group/variant_slot` | `escape`, vote group `escape` (cost split) | 1,000 | 1 |
+| `asset.intel_laptop` (B4-10) | `reveals` `laptop` | crew | 1,500 ◇ | 1 ◇ |
+| `asset.gondola_left_hung` (B4-10) | forced variant from the point's params (`gondola` / `gon_west_l41` or `gon_north_l42`) | `point_ids` `pp_gondola_west`, `pp_gondola_north`; exclusive `gondola` | 2,000 ◇ | 2 ◇ |
+| `asset.riser_panel` (B4-10) | forced variant from the point's params (`vent_open` / `vent_l41` or `vent_l42`) | `point_ids` `pp_riser_l41`, `pp_riser_l42`; exclusive `vent_open` | 1,500 ◇ | 2 ◇ |
+
+The gondola and riser assets are limited by `point_ids` (Shadow Ledger's insider points, D-042), not by
+the `insider` category, so they never appear on another heist's insider points (Night Deposit's
+`pp_vent` / `pp_insider_*`). One variant group has one slot, hence the exclusive groups.
+`asset.intel_laptop` is a crew asset and so is offered on every heist: a heist without a `laptop`
+variant group should `disable` it in `HeistDef.preplanning` (ENV C).
 
 ## Per-heist data: `HeistDef.preplanning` (ENV C data, merged by `PreplanBoard.merge`)
 Contract format:
