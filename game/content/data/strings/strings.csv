@@ -1554,3 +1554,26 @@ ui.range.fmt.ttk_short,{shots} / {time} s
 ui.range.ls.via_shield,{zone} (through shield)
 ui.range.ls.plate,Plate {n}: {hp} HP left
 ui.range.ls.plate_broken,Plate {n} broken
+voice.vo.mercer.glasshouse_intro,"Vossberg's at closing time. The good pieces sit in the workshop safe, not the window. Walk the floor first, masks in your pockets."
+voice.vo.mercer.glasshouse_keycard_found,That's the manager's card. The safe reader in the workshop will take it.
+voice.vo.mercer.glasshouse_workshop_open,Workshop door's open. Safe's on the north wall.
+voice.vo.mercer.glasshouse_drill_jam,Drill's jammed. Somebody give it a hand.
+voice.vo.mercer.glasshouse_last_pager,That's {answered}. That's the last one they'll buy.
+voice.vo.mercer.glasshouse_lockdown,Alarm's up and the safe went into lockdown. Reader's dead. Put the drill on it.
+voice.vo.mercer.glasshouse_van_eta,Van's {seconds} seconds out. Hold what you've got.
+voice.vo.mercer.glasshouse_escape,"Van's at the curb. Bags in, then you."
+voice.vo.mercer.night_deposit_intro,Harbor Savings closed hours ago. The Co-op's drop is in the basement. Case it from the ATM lobby and the lot.
+voice.vo.accountant.night_deposit_contact_intro,The Co-op washes its money through Harbor S&L. Take the night drop and the cage. They can't report what they never declared.
+voice.vo.mercer.night_deposit_keycard_found,"That card opens the vault gate downstairs. One swipe, so don't waste it."
+voice.vo.mercer.night_deposit_code_found,You've got the time-lock code.
+voice.vo.mercer.night_deposit_lasers,Laser grid in the antechamber. Find the gap or time it.
+voice.vo.mercer.night_deposit_time_lock_started,Time lock's counting: {seconds} seconds. Keep the basement quiet.
+voice.vo.mercer.night_deposit_time_lock_30,Thirty seconds on the lock.
+voice.vo.mercer.night_deposit_time_lock_open,Vault's open. Bag the cage.
+voice.vo.mercer.night_deposit_drill_jam,Thermal drill's stalled. Get it going again.
+voice.vo.mercer.night_deposit_last_pager,That was the fourth pager. No more of those.
+voice.vo.mercer.night_deposit_lockdown,Alarm. The vault sealed itself. Thermal drill on the door.
+voice.vo.mercer.night_deposit_armored_car,Armored car's early. Two more guards at the sally port.
+voice.vo.mercer.night_deposit_fog_lifts,Fog's lifting. Anyone on the street can see the quay now.
+voice.vo.mercer.night_deposit_escape_eta,Your ride's {seconds} seconds out. Hold.
+voice.vo.mercer.night_deposit_escape,Ride's here. Bags in.

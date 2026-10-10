@@ -40,6 +40,8 @@ const EVENTS: Array[StringName] = [
 	# Briefing screen (B2-02): local UI playback, never replicated. Briefing lines also carry
 	# "heist": StringName (the heist id) and "order": int (playback order within that heist).
 	&"briefing",
+	# Mission script lines (ENV C say(); D-048): id vo.<speaker>.<heist>_<line>, ctx args per line.
+	&"mission",
 ]
 
 @export var lines: Array[Dictionary] = []
