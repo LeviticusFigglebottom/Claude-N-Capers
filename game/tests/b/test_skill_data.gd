@@ -284,3 +284,26 @@ func _value_ok(key: StringName, v: Variant) -> bool:
 			return v is bool
 		_:
 			return v is Dictionary and not (v as Dictionary).is_empty()
+
+
+## D-038 QA-16: ECM feedback is built into every ECM; nothing in our data grants the deprecated flag.
+func test_deprecated_ecm_feedback_flag_never_granted() -> void:
+	var rx: RegEx = RegEx.create_from_string("\"stealth\\.ecm_feedback\"")
+	var files: Array[String] = []
+	_collect_tres("res://content/data", files)
+	assert_true(files.size() > 50, "scanned %d data files" % files.size())
+	for path: String in files:
+		assert_true(rx.search(FileAccess.get_file_as_string(path)) == null, "%s grants stealth.ecm_feedback" % path)
+	for id: Variant in PreplanBoard.generic_assets():
+		assert_false((PreplanBoard.generic_assets()[id] as PreplanAssetDef).grants.has(&"stealth.ecm_feedback"))
+
+
+func _collect_tres(dir_path: String, out: Array[String]) -> void:
+	var d: DirAccess = DirAccess.open(dir_path)
+	if d == null:
+		return
+	for f: String in d.get_files():
+		if f.ends_with(".tres"):
+			out.append(dir_path.path_join(f))
+	for sub: String in d.get_directories():
+		_collect_tres(dir_path.path_join(sub), out)
