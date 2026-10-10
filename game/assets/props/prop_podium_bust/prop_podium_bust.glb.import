@@ -51,10 +51,10 @@ _subresources={
 "use_external/fallback_path": "res://world/props/materials/pr_felt_rose.tres",
 "use_external/path": "res://world/props/materials/pr_felt_rose.tres"
 },
-"M_pr_suede": {
+"M_pr_velvet_charcoal": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://world/props/materials/pr_suede.tres",
-"use_external/path": "res://world/props/materials/pr_suede.tres"
+"use_external/fallback_path": "res://world/props/materials/pr_velvet_charcoal.tres",
+"use_external/path": "res://world/props/materials/pr_velvet_charcoal.tres"
 }
 }
 }

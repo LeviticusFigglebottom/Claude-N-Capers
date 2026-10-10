@@ -1,6 +1,6 @@
 asset: prop_display_case_round
 script: tools/blender/props/display_cases.py
-params: {"cat": {"kind": "display_case", "prefab": "display_case"}, "d": 2.4, "kind": "round", "w": 2.4}
+params: {"cat": {"kind": "display_case", "light": {"color": "#FFB46B", "energy": 0.6, "pos": [0, 0.98, 0], "range": 2.2, "specular": 0.05, "type": "omni"}, "prefab": "display_case"}, "d": 2.4, "kind": "round", "w": 2.4}
 seed: 285712002  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category props --asset prop_display_case_round

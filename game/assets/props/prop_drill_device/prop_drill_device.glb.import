@@ -55,6 +55,11 @@ _subresources={
 "use_external/enabled": true,
 "use_external/fallback_path": "res://world/props/materials/pr_metal_orange.tres",
 "use_external/path": "res://world/props/materials/pr_metal_orange.tres"
+},
+"M_pr_plastic_black": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_plastic_black.tres",
+"use_external/path": "res://world/props/materials/pr_plastic_black.tres"
 }
 }
 }
