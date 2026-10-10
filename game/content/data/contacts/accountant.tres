@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ContactDef" format=3]
+
+[ext_resource type="Script" path="res://content/defs/contact_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"contact.accountant"
+display_name_key = &"contact.accountant"
+role_key = &"contact.role.insider"
+silhouette = &"veiled"
+accent_color = Color(0.36, 0.78, 0.62, 1)
+voice_speaker = &"accountant"
+is_handler = false

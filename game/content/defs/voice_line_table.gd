@@ -16,7 +16,10 @@
 class_name VoiceLineTable
 extends Resource
 
-const SPEAKERS: Array[StringName] = [&"mercer", &"rook", &"sable", &"dutch", &"wren", &"crew"]
+## Contacts (vance, reyes, accountant) speak only briefing lines (B2-02); see ContactDef.voice_speaker.
+const SPEAKERS: Array[StringName] = [
+	&"mercer", &"rook", &"sable", &"dutch", &"wren", &"crew", &"vance", &"reyes", &"accountant",
+]
 ## Known trigger vocabulary: EventBus signal names first, then semantic tags.
 const EVENTS: Array[StringName] = [
 	# EventBus signals
@@ -28,6 +31,9 @@ const EVENTS: Array[StringName] = [
 	&"assault_anticipation", &"assault_build", &"assault_fade", &"assault_control",
 	&"escape_available", &"heist_success", &"heist_failed", &"stealth_success",
 	&"reloading", &"bagging_body", &"going_loud", &"reviving", &"cops_incoming", &"guard_down",
+	# Briefing screen (B2-02): local UI playback, never replicated. Briefing lines also carry
+	# "heist": StringName (the heist id) and "order": int (playback order within that heist).
+	&"briefing",
 ]
 
 @export var lines: Array[Dictionary] = []
