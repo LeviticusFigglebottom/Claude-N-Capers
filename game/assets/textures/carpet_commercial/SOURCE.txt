@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only carpet_commercial --preset gsr
+module: tools/texgen/materials/carpet_commercial.py
+preset: tools/texgen/presets/gsr.py
+seed: 1879267493 (zlib.crc32('carpet_commercial'))
+size_px: 1024
+tile_m: 2.0 (1 UV unit = 2.0 m)
+texel_density_px_per_m: 512
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.1369, "albedo_lum_mean_linear": 0.1071, "albedo_lum_min_linear": 0.0623, "ao_mean": 0.952, "metallic_mean": 0.0, "roughness_mean": 0.956}

@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only plastic_matte --preset gsr
+module: tools/texgen/materials/plastic_matte.py
+preset: tools/texgen/presets/gsr.py
+seed: 4141507532 (zlib.crc32('plastic_matte'))
+size_px: 512
+tile_m: 2.0 (1 UV unit = 2.0 m)
+texel_density_px_per_m: 256
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.1588, "albedo_lum_mean_linear": 0.1551, "albedo_lum_min_linear": 0.1517, "ao_mean": 0.999, "metallic_mean": 0.0, "roughness_mean": 0.561}
