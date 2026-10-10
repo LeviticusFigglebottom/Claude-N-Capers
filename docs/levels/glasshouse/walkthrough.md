@@ -9,8 +9,8 @@ Result: **PASS** (0 failure(s))
 |---|---|---|---|---|---|---|
 | `Spawns/CasingHarlow1` | `Gameplay/Doors/BackDoor` | objective | 15.1 | 28.1 | 1.86 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Doors/BackDoor/UsePoint` | use_point | 15.1 | 28.1 | 1.86 | ok |
-| `Spawns/CasingHarlow1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 13.4 | 26.5 | 1.97 | ok |
-| `Spawns/CasingHarlow1` | `Gameplay/Doors/ReceivingDoor/UsePoint` | use_point | 9.2 | 22.6 | 2.46 | ok |
+| `Spawns/CasingHarlow1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 13.4 | 26.5 | 1.98 | ok |
+| `Spawns/CasingHarlow1` | `Gameplay/Doors/ReceivingDoor/UsePoint` | use_point | 9.2 | 22.7 | 2.46 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Doors/WorkshopDoor` | objective | 10.2 | 26.6 | 2.60 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Doors/WorkshopDoor/UsePoint` | use_point | 10.2 | 26.6 | 2.60 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 12.5 | 23.7 | 1.89 | ok |
@@ -51,14 +51,14 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow1` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 13.2 | 29.9 | 2.27 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Workshop/SafeKeycardReader` | objective | 14.2 | 30.4 | 2.15 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 14.2 | 30.4 | 2.15 | ok |
-| `Spawns/CasingHarlow1` | `Gameplay/Workshop/SafeLoot` | loot_spawn | 13.7 | 30.2 | 2.21 | ok |
-| `Spawns/CasingHarlow1` | `Gameplay/Workshop/SafeLoot/Visual/LootSpawnPlaceholder` | loot_spawn | 13.7 | 30.2 | 2.21 | ok |
+| `Spawns/CasingHarlow1` | `Gameplay/Workshop/SafeLoot` | loot_spawn | 13.7 | 30.3 | 2.22 | ok |
+| `Spawns/CasingHarlow1` | `Gameplay/Workshop/SafeLoot/Visual/LootSpawnPlaceholder` | loot_spawn | 13.7 | 30.3 | 2.22 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Workshop/SafeLoot/UsePoint` | use_point | 12.8 | 29.4 | 2.30 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/WallCaseA/UsePoint` | use_point | 6.6 | 18.4 | 2.80 | ok |
-| `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/WallCaseB/UsePoint` | use_point | 5.1 | 18.2 | 3.55 | detour (whitelisted) |
-| `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/WallCaseC/UsePoint` | use_point | 3.7 | 17.7 | 4.77 | detour (whitelisted) |
-| `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/IslandCaseA/UsePoint` | use_point | 5.2 | 16.0 | 3.05 | detour (whitelisted) |
-| `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/IslandCaseB/UsePoint` | use_point | 9.6 | 13.4 | 1.40 | ok |
+| `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/WallCaseB/UsePoint` | use_point | 5.1 | 18.3 | 3.57 | detour (whitelisted) |
+| `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/WallCaseC/UsePoint` | use_point | 3.7 | 17.8 | 4.79 | detour (whitelisted) |
+| `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/IslandCaseA/UsePoint` | use_point | 5.2 | 16.0 | 3.06 | detour (whitelisted) |
+| `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/IslandCaseB/UsePoint` | use_point | 9.6 | 13.1 | 1.36 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/RearIslandCase/UsePoint` | use_point | 8.9 | 12.8 | 1.44 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/SalonCaseA/UsePoint` | use_point | 12.8 | 13.1 | 1.03 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 14.3 | 14.7 | 1.03 | ok |
@@ -72,12 +72,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow1` | `Variants/Group_open_window/Slot_ow_breakroom_latched/BreakRoomWindow/UsePoint` | use_point | 15.7 | 35.4 | 2.26 | ok |
 | `Spawns/CasingHarlow1` | `Variants/Group_keycard/Slot_kc_breakroom/Keycard` | objective | 12.7 | 45.3 | 3.58 | detour (whitelisted) |
 | `Spawns/CasingHarlow1` | `Variants/Group_keycard/Slot_kc_breakroom/Keycard/UsePoint` | use_point | 12.7 | 45.3 | 3.58 | detour (whitelisted) |
-| `Spawns/CasingHarlow1` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags` | loot_spawn | 13.5 | 26.6 | 1.97 | ok |
-| `Spawns/CasingHarlow1` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/Visual/LootSpawnPlaceholder` | loot_spawn | 13.5 | 26.6 | 1.97 | ok |
+| `Spawns/CasingHarlow1` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags` | loot_spawn | 13.5 | 26.6 | 1.98 | ok |
+| `Spawns/CasingHarlow1` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/Visual/LootSpawnPlaceholder` | loot_spawn | 13.5 | 26.6 | 1.98 | ok |
 | `Spawns/CasingHarlow1` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/UsePoint` | use_point | 13.4 | 26.4 | 1.97 | ok |
-| `Spawns/CasingHarlow1` | `Variants/Group_escape/Slot_esc_alley_west/VanSecureE1/Zone` | secure_zone | 20.8 | 37.0 | 1.78 | ok |
+| `Spawns/CasingHarlow1` | `Variants/Group_escape/Slot_esc_alley_west/VanSecureE1/Zone` | secure_zone | 20.8 | 37.1 | 1.79 | ok |
 | `Spawns/CasingHarlow1` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1` | objective | 18.4 | 34.1 | 1.85 | ok |
-| `Spawns/CasingHarlow1` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1/Zone` | escape_zone | 20.2 | 33.6 | 1.67 | ok |
+| `Spawns/CasingHarlow1` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1/Zone` | escape_zone | 20.2 | 33.7 | 1.67 | ok |
 | `Spawns/CasingHarlow1` | `Variants/Group_estate/Slot_estate_bag/EstateBag` | loot_spawn | 13.1 | 19.6 | 1.49 | ok |
 | `Spawns/CasingHarlow1` | `Variants/Group_estate/Slot_estate_bag/EstateBag/Visual/LootSpawnPlaceholder` | loot_spawn | 13.1 | 19.6 | 1.49 | ok |
 | `Spawns/CasingHarlow1` | `Variants/Group_estate/Slot_estate_bag/EstateBag/UsePoint` | use_point | 13.9 | 18.7 | 1.35 | ok |
@@ -120,20 +120,20 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow2` | `Gameplay/Windows/ShopBayC/UsePoint` | use_point | 4.1 | 4.1 | 1.00 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Windows/SalonSouth/UsePoint` | use_point | 11.1 | 11.1 | 1.00 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Windows/SalonEast/UsePoint` | use_point | 15.2 | 17.7 | 1.17 | ok |
-| `Spawns/CasingHarlow2` | `Gameplay/Workshop/WorkshopSafe` | objective | 12.9 | 28.4 | 2.19 | ok |
-| `Spawns/CasingHarlow2` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 12.9 | 28.4 | 2.19 | ok |
+| `Spawns/CasingHarlow2` | `Gameplay/Workshop/WorkshopSafe` | objective | 12.9 | 28.4 | 2.20 | ok |
+| `Spawns/CasingHarlow2` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 12.9 | 28.4 | 2.20 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 12.9 | 28.5 | 2.21 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 12.9 | 28.5 | 2.21 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Workshop/SafeKeycardReader` | objective | 13.8 | 29.0 | 2.10 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 13.8 | 29.0 | 2.10 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Workshop/SafeLoot` | loot_spawn | 13.4 | 28.8 | 2.16 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Workshop/SafeLoot/Visual/LootSpawnPlaceholder` | loot_spawn | 13.4 | 28.8 | 2.16 | ok |
-| `Spawns/CasingHarlow2` | `Gameplay/Workshop/SafeLoot/UsePoint` | use_point | 12.5 | 27.9 | 2.24 | ok |
+| `Spawns/CasingHarlow2` | `Gameplay/Workshop/SafeLoot/UsePoint` | use_point | 12.5 | 28.0 | 2.24 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/DisplayCases/WallCaseA/UsePoint` | use_point | 7.1 | 16.9 | 2.40 | ok |
-| `Spawns/CasingHarlow2` | `Gameplay/DisplayCases/WallCaseB/UsePoint` | use_point | 5.7 | 16.8 | 2.92 | ok |
-| `Spawns/CasingHarlow2` | `Gameplay/DisplayCases/WallCaseC/UsePoint` | use_point | 4.5 | 16.3 | 3.59 | detour (whitelisted) |
-| `Spawns/CasingHarlow2` | `Gameplay/DisplayCases/IslandCaseA/UsePoint` | use_point | 5.3 | 14.5 | 2.75 | ok |
-| `Spawns/CasingHarlow2` | `Gameplay/DisplayCases/IslandCaseB/UsePoint` | use_point | 8.6 | 12.0 | 1.39 | ok |
+| `Spawns/CasingHarlow2` | `Gameplay/DisplayCases/WallCaseB/UsePoint` | use_point | 5.7 | 16.8 | 2.93 | ok |
+| `Spawns/CasingHarlow2` | `Gameplay/DisplayCases/WallCaseC/UsePoint` | use_point | 4.5 | 16.3 | 3.61 | detour (whitelisted) |
+| `Spawns/CasingHarlow2` | `Gameplay/DisplayCases/IslandCaseA/UsePoint` | use_point | 5.3 | 14.5 | 2.76 | ok |
+| `Spawns/CasingHarlow2` | `Gameplay/DisplayCases/IslandCaseB/UsePoint` | use_point | 8.6 | 11.6 | 1.35 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/DisplayCases/RearIslandCase/UsePoint` | use_point | 8.0 | 11.4 | 1.42 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/DisplayCases/SalonCaseA/UsePoint` | use_point | 11.4 | 11.7 | 1.02 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 12.9 | 13.2 | 1.03 | ok |
@@ -147,8 +147,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow2` | `Variants/Group_open_window/Slot_ow_breakroom_latched/BreakRoomWindow/UsePoint` | use_point | 15.8 | 34.0 | 2.15 | ok |
 | `Spawns/CasingHarlow2` | `Variants/Group_keycard/Slot_kc_breakroom/Keycard` | objective | 13.0 | 43.9 | 3.39 | detour (whitelisted) |
 | `Spawns/CasingHarlow2` | `Variants/Group_keycard/Slot_kc_breakroom/Keycard/UsePoint` | use_point | 13.0 | 43.9 | 3.39 | detour (whitelisted) |
-| `Spawns/CasingHarlow2` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags` | loot_spawn | 13.4 | 25.1 | 1.88 | ok |
-| `Spawns/CasingHarlow2` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/Visual/LootSpawnPlaceholder` | loot_spawn | 13.4 | 25.1 | 1.88 | ok |
+| `Spawns/CasingHarlow2` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags` | loot_spawn | 13.4 | 25.2 | 1.88 | ok |
+| `Spawns/CasingHarlow2` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/Visual/LootSpawnPlaceholder` | loot_spawn | 13.4 | 25.2 | 1.88 | ok |
 | `Spawns/CasingHarlow2` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/UsePoint` | use_point | 13.4 | 25.0 | 1.86 | ok |
 | `Spawns/CasingHarlow2` | `Variants/Group_escape/Slot_esc_alley_west/VanSecureE1/Zone` | secure_zone | 21.4 | 35.6 | 1.67 | ok |
 | `Spawns/CasingHarlow2` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1` | objective | 18.9 | 32.6 | 1.73 | ok |
@@ -157,10 +157,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow2` | `Variants/Group_estate/Slot_estate_bag/EstateBag/Visual/LootSpawnPlaceholder` | loot_spawn | 11.9 | 18.2 | 1.53 | ok |
 | `Spawns/CasingHarlow2` | `Variants/Group_estate/Slot_estate_bag/EstateBag/UsePoint` | use_point | 12.6 | 17.3 | 1.37 | ok |
 | `Spawns/CasingHarlow2` | `Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint` | use_point | 7.6 | 42.3 | 5.58 | detour (whitelisted) |
-| `Spawns/CasingHarlow3` | `Gameplay/Doors/BackDoor` | objective | 15.3 | 25.2 | 1.65 | ok |
-| `Spawns/CasingHarlow3` | `Gameplay/Doors/BackDoor/UsePoint` | use_point | 15.3 | 25.2 | 1.65 | ok |
+| `Spawns/CasingHarlow3` | `Gameplay/Doors/BackDoor` | objective | 15.3 | 25.3 | 1.65 | ok |
+| `Spawns/CasingHarlow3` | `Gameplay/Doors/BackDoor/UsePoint` | use_point | 15.3 | 25.3 | 1.65 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 13.8 | 23.6 | 1.71 | ok |
-| `Spawns/CasingHarlow3` | `Gameplay/Doors/ReceivingDoor/UsePoint` | use_point | 9.5 | 19.8 | 2.07 | ok |
+| `Spawns/CasingHarlow3` | `Gameplay/Doors/ReceivingDoor/UsePoint` | use_point | 9.5 | 19.8 | 2.08 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Doors/WorkshopDoor` | objective | 9.3 | 23.8 | 2.55 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Doors/WorkshopDoor/UsePoint` | use_point | 9.3 | 23.8 | 2.55 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 10.7 | 20.9 | 1.95 | ok |
@@ -197,34 +197,34 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow3` | `Gameplay/Windows/SalonEast/UsePoint` | use_point | 13.8 | 16.2 | 1.17 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Workshop/WorkshopSafe` | objective | 12.8 | 27.0 | 2.11 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 12.8 | 27.0 | 2.11 | ok |
-| `Spawns/CasingHarlow3` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 12.8 | 27.0 | 2.12 | ok |
-| `Spawns/CasingHarlow3` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 12.8 | 27.0 | 2.12 | ok |
+| `Spawns/CasingHarlow3` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 12.8 | 27.1 | 2.12 | ok |
+| `Spawns/CasingHarlow3` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 12.8 | 27.1 | 2.12 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Workshop/SafeKeycardReader` | objective | 13.6 | 27.6 | 2.03 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 13.6 | 27.6 | 2.03 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Workshop/SafeLoot` | loot_spawn | 13.2 | 27.4 | 2.07 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Workshop/SafeLoot/Visual/LootSpawnPlaceholder` | loot_spawn | 13.2 | 27.4 | 2.07 | ok |
-| `Spawns/CasingHarlow3` | `Gameplay/Workshop/SafeLoot/UsePoint` | use_point | 12.3 | 26.5 | 2.15 | ok |
-| `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/WallCaseA/UsePoint` | use_point | 7.8 | 15.5 | 1.98 | ok |
-| `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/WallCaseB/UsePoint` | use_point | 6.6 | 15.3 | 2.31 | ok |
-| `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/WallCaseC/UsePoint` | use_point | 5.6 | 14.9 | 2.64 | ok |
+| `Spawns/CasingHarlow3` | `Gameplay/Workshop/SafeLoot/UsePoint` | use_point | 12.3 | 26.5 | 2.16 | ok |
+| `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/WallCaseA/UsePoint` | use_point | 7.8 | 15.5 | 1.99 | ok |
+| `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/WallCaseB/UsePoint` | use_point | 6.6 | 15.4 | 2.32 | ok |
+| `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/WallCaseC/UsePoint` | use_point | 5.6 | 14.9 | 2.65 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/IslandCaseA/UsePoint` | use_point | 5.7 | 13.1 | 2.29 | ok |
-| `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/IslandCaseB/UsePoint` | use_point | 7.8 | 10.6 | 1.36 | ok |
+| `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/IslandCaseB/UsePoint` | use_point | 7.8 | 10.2 | 1.31 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/RearIslandCase/UsePoint` | use_point | 7.2 | 9.9 | 1.37 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/SalonCaseA/UsePoint` | use_point | 10.1 | 10.3 | 1.02 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 11.5 | 11.8 | 1.02 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Misc/RegisterCash/UsePoint` | use_point | 8.4 | 15.9 | 1.89 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Misc/PhoneCounter/UsePoint` | use_point | 7.8 | 14.1 | 1.80 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 7.7 | 40.8 | 5.33 | detour (whitelisted) |
-| `Spawns/CasingHarlow3` | `Gameplay/Misc/AlarmBackDoor/UsePoint` | use_point | 13.9 | 23.7 | 1.70 | ok |
+| `Spawns/CasingHarlow3` | `Gameplay/Misc/AlarmBackDoor/UsePoint` | use_point | 13.9 | 23.8 | 1.70 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 14.1 | 38.1 | 2.71 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 12.7 | 37.0 | 2.92 | ok |
 | `Spawns/CasingHarlow3` | `Variants/Group_open_window/Slot_ow_breakroom_latched/BreakRoomWindow` | objective | 16.1 | 32.6 | 2.02 | ok |
 | `Spawns/CasingHarlow3` | `Variants/Group_open_window/Slot_ow_breakroom_latched/BreakRoomWindow/UsePoint` | use_point | 16.1 | 32.6 | 2.02 | ok |
 | `Spawns/CasingHarlow3` | `Variants/Group_keycard/Slot_kc_breakroom/Keycard` | objective | 13.4 | 42.4 | 3.16 | detour (whitelisted) |
 | `Spawns/CasingHarlow3` | `Variants/Group_keycard/Slot_kc_breakroom/Keycard/UsePoint` | use_point | 13.4 | 42.4 | 3.16 | detour (whitelisted) |
-| `Spawns/CasingHarlow3` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags` | loot_spawn | 13.5 | 23.7 | 1.76 | ok |
-| `Spawns/CasingHarlow3` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/Visual/LootSpawnPlaceholder` | loot_spawn | 13.5 | 23.7 | 1.76 | ok |
-| `Spawns/CasingHarlow3` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/UsePoint` | use_point | 13.6 | 23.5 | 1.73 | ok |
+| `Spawns/CasingHarlow3` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags` | loot_spawn | 13.5 | 23.8 | 1.76 | ok |
+| `Spawns/CasingHarlow3` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/Visual/LootSpawnPlaceholder` | loot_spawn | 13.5 | 23.8 | 1.76 | ok |
+| `Spawns/CasingHarlow3` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/UsePoint` | use_point | 13.6 | 23.6 | 1.73 | ok |
 | `Spawns/CasingHarlow3` | `Variants/Group_escape/Slot_esc_alley_west/VanSecureE1/Zone` | secure_zone | 22.1 | 34.2 | 1.55 | ok |
 | `Spawns/CasingHarlow3` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1` | objective | 19.5 | 31.2 | 1.60 | ok |
 | `Spawns/CasingHarlow3` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1/Zone` | escape_zone | 20.8 | 30.8 | 1.48 | ok |
@@ -234,8 +234,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow3` | `Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint` | use_point | 7.9 | 40.9 | 5.19 | detour (whitelisted) |
 | `Spawns/CasingHarlow4` | `Gameplay/Doors/BackDoor` | objective | 15.6 | 23.9 | 1.53 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Doors/BackDoor/UsePoint` | use_point | 15.6 | 23.9 | 1.53 | ok |
-| `Spawns/CasingHarlow4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 14.2 | 22.3 | 1.56 | ok |
-| `Spawns/CasingHarlow4` | `Gameplay/Doors/ReceivingDoor/UsePoint` | use_point | 10.0 | 18.4 | 1.84 | ok |
+| `Spawns/CasingHarlow4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 14.2 | 22.3 | 1.57 | ok |
+| `Spawns/CasingHarlow4` | `Gameplay/Doors/ReceivingDoor/UsePoint` | use_point | 10.0 | 18.5 | 1.84 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Doors/WorkshopDoor` | objective | 9.2 | 22.4 | 2.44 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Doors/WorkshopDoor/UsePoint` | use_point | 9.2 | 22.4 | 2.44 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 10.0 | 19.5 | 1.95 | ok |
@@ -270,20 +270,20 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow4` | `Gameplay/Windows/ShopBayC/UsePoint` | use_point | 1.8 | 1.8 | 1.00 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Windows/SalonSouth/UsePoint` | use_point | 8.2 | 8.2 | 1.00 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Windows/SalonEast/UsePoint` | use_point | 12.4 | 14.7 | 1.18 | ok |
-| `Spawns/CasingHarlow4` | `Gameplay/Workshop/WorkshopSafe` | objective | 12.8 | 25.6 | 2.00 | ok |
-| `Spawns/CasingHarlow4` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 12.8 | 25.6 | 2.00 | ok |
+| `Spawns/CasingHarlow4` | `Gameplay/Workshop/WorkshopSafe` | objective | 12.8 | 25.7 | 2.00 | ok |
+| `Spawns/CasingHarlow4` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 12.8 | 25.7 | 2.00 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 12.8 | 25.7 | 2.00 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 12.8 | 25.7 | 2.00 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Workshop/SafeKeycardReader` | objective | 13.5 | 26.2 | 1.94 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 13.5 | 26.2 | 1.94 | ok |
-| `Spawns/CasingHarlow4` | `Gameplay/Workshop/SafeLoot` | loot_spawn | 13.2 | 26.0 | 1.97 | ok |
-| `Spawns/CasingHarlow4` | `Gameplay/Workshop/SafeLoot/Visual/LootSpawnPlaceholder` | loot_spawn | 13.2 | 26.0 | 1.97 | ok |
+| `Spawns/CasingHarlow4` | `Gameplay/Workshop/SafeLoot` | loot_spawn | 13.2 | 26.1 | 1.97 | ok |
+| `Spawns/CasingHarlow4` | `Gameplay/Workshop/SafeLoot/Visual/LootSpawnPlaceholder` | loot_spawn | 13.2 | 26.1 | 1.97 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Workshop/SafeLoot/UsePoint` | use_point | 12.3 | 25.2 | 2.04 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/DisplayCases/WallCaseA/UsePoint` | use_point | 8.8 | 14.2 | 1.62 | ok |
-| `Spawns/CasingHarlow4` | `Gameplay/DisplayCases/WallCaseB/UsePoint` | use_point | 7.7 | 14.0 | 1.81 | ok |
-| `Spawns/CasingHarlow4` | `Gameplay/DisplayCases/WallCaseC/UsePoint` | use_point | 6.9 | 13.5 | 1.96 | ok |
+| `Spawns/CasingHarlow4` | `Gameplay/DisplayCases/WallCaseB/UsePoint` | use_point | 7.7 | 14.1 | 1.82 | ok |
+| `Spawns/CasingHarlow4` | `Gameplay/DisplayCases/WallCaseC/UsePoint` | use_point | 6.9 | 13.6 | 1.97 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/DisplayCases/IslandCaseA/UsePoint` | use_point | 6.5 | 11.8 | 1.81 | ok |
-| `Spawns/CasingHarlow4` | `Gameplay/DisplayCases/IslandCaseB/UsePoint` | use_point | 7.2 | 9.2 | 1.28 | ok |
+| `Spawns/CasingHarlow4` | `Gameplay/DisplayCases/IslandCaseB/UsePoint` | use_point | 7.2 | 8.9 | 1.23 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/DisplayCases/RearIslandCase/UsePoint` | use_point | 6.8 | 8.6 | 1.27 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/DisplayCases/SalonCaseA/UsePoint` | use_point | 8.8 | 8.9 | 1.01 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 10.2 | 10.5 | 1.03 | ok |
@@ -300,9 +300,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow4` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags` | loot_spawn | 13.8 | 22.4 | 1.63 | ok |
 | `Spawns/CasingHarlow4` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/Visual/LootSpawnPlaceholder` | loot_spawn | 13.8 | 22.4 | 1.63 | ok |
 | `Spawns/CasingHarlow4` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/UsePoint` | use_point | 14.0 | 22.2 | 1.59 | ok |
-| `Spawns/CasingHarlow4` | `Variants/Group_escape/Slot_esc_alley_west/VanSecureE1/Zone` | secure_zone | 22.9 | 32.8 | 1.44 | ok |
+| `Spawns/CasingHarlow4` | `Variants/Group_escape/Slot_esc_alley_west/VanSecureE1/Zone` | secure_zone | 22.9 | 32.9 | 1.44 | ok |
 | `Spawns/CasingHarlow4` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1` | objective | 20.2 | 29.9 | 1.48 | ok |
-| `Spawns/CasingHarlow4` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1/Zone` | escape_zone | 21.2 | 29.4 | 1.39 | ok |
+| `Spawns/CasingHarlow4` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1/Zone` | escape_zone | 21.2 | 29.5 | 1.39 | ok |
 | `Spawns/CasingHarlow4` | `Variants/Group_estate/Slot_estate_bag/EstateBag` | loot_spawn | 9.6 | 15.4 | 1.60 | ok |
 | `Spawns/CasingHarlow4` | `Variants/Group_estate/Slot_estate_bag/EstateBag/Visual/LootSpawnPlaceholder` | loot_spawn | 9.6 | 15.4 | 1.60 | ok |
 | `Spawns/CasingHarlow4` | `Variants/Group_estate/Slot_estate_bag/EstateBag/UsePoint` | use_point | 10.3 | 14.5 | 1.41 | ok |
@@ -357,7 +357,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/DisplayCases/WallCaseA/UsePoint` | use_point | 20.0 | 24.7 | 1.23 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/DisplayCases/WallCaseB/UsePoint` | use_point | 20.8 | 26.2 | 1.26 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/DisplayCases/WallCaseC/UsePoint` | use_point | 21.7 | 27.7 | 1.28 | ok |
-| `Spawns/PreplanAlleyMouth1` | `Gameplay/DisplayCases/IslandCaseA/UsePoint` | use_point | 18.9 | 25.4 | 1.34 | ok |
+| `Spawns/PreplanAlleyMouth1` | `Gameplay/DisplayCases/IslandCaseA/UsePoint` | use_point | 18.9 | 25.3 | 1.34 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/DisplayCases/IslandCaseB/UsePoint` | use_point | 13.2 | 19.6 | 1.49 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/DisplayCases/RearIslandCase/UsePoint` | use_point | 13.9 | 20.3 | 1.46 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/DisplayCases/SalonCaseA/UsePoint` | use_point | 12.0 | 13.8 | 1.15 | ok |
@@ -623,8 +623,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/SalonBackDoor/UsePoint` | use_point | 29.7 | 34.3 | 1.15 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/SalonDoor` | objective | 27.2 | 35.3 | 1.30 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/SalonDoor/UsePoint` | use_point | 27.2 | 35.3 | 1.30 | ok |
-| `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/MainEntrance` | objective | 27.5 | 36.7 | 1.33 | ok |
-| `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 27.5 | 36.7 | 1.33 | ok |
+| `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/MainEntrance` | objective | 27.5 | 36.4 | 1.32 | ok |
+| `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 27.5 | 36.4 | 1.32 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 17.3 | 52.6 | 3.04 | detour (whitelisted) |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 21.9 | 47.6 | 2.17 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/WCUpperDoor/UsePoint` | use_point | 25.2 | 44.1 | 1.75 | ok |
@@ -636,8 +636,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 2.2 | 2.2 | 1.00 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/HarlowWestGate` | objective | 24.4 | 61.8 | 2.53 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/HarlowWestGate/UsePoint` | use_point | 24.4 | 61.8 | 2.53 | ok |
-| `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/HarlowEastGate` | objective | 50.6 | 59.0 | 1.17 | ok |
-| `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/HarlowEastGate/UsePoint` | use_point | 50.6 | 59.0 | 1.17 | ok |
+| `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/HarlowEastGate` | objective | 50.6 | 58.9 | 1.17 | ok |
+| `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/HarlowEastGate/UsePoint` | use_point | 50.6 | 58.9 | 1.17 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/PellNorthGate` | objective | 36.2 | 36.3 | 1.00 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Doors/PellNorthGate/UsePoint` | use_point | 36.2 | 36.3 | 1.00 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Windows/ShopBayA/UsePoint` | use_point | 19.9 | 44.4 | 2.23 | ok |
@@ -698,8 +698,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/SalonBackDoor/UsePoint` | use_point | 30.0 | 36.2 | 1.21 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/SalonDoor` | objective | 27.7 | 37.2 | 1.34 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/SalonDoor/UsePoint` | use_point | 27.7 | 37.2 | 1.34 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/MainEntrance` | objective | 28.1 | 38.7 | 1.37 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 28.1 | 38.7 | 1.37 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/MainEntrance` | objective | 28.1 | 38.4 | 1.36 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 28.1 | 38.4 | 1.36 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 17.8 | 54.5 | 3.07 | detour (whitelisted) |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 22.3 | 49.5 | 2.22 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/WCUpperDoor/UsePoint` | use_point | 25.5 | 46.0 | 1.80 | ok |
@@ -709,16 +709,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/StockDoor/UsePoint` | use_point | 27.0 | 44.6 | 1.65 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/AlleyGate` | objective | 1.1 | 1.1 | 1.00 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 1.1 | 1.1 | 1.00 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/HarlowWestGate` | objective | 25.6 | 63.7 | 2.49 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/HarlowWestGate/UsePoint` | use_point | 25.6 | 63.7 | 2.49 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/HarlowEastGate` | objective | 51.2 | 61.0 | 1.19 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/HarlowEastGate/UsePoint` | use_point | 51.2 | 61.0 | 1.19 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/HarlowWestGate` | objective | 25.6 | 63.8 | 2.49 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/HarlowWestGate/UsePoint` | use_point | 25.6 | 63.8 | 2.49 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/HarlowEastGate` | objective | 51.2 | 60.9 | 1.19 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/HarlowEastGate/UsePoint` | use_point | 51.2 | 60.9 | 1.19 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/PellNorthGate` | objective | 36.0 | 37.1 | 1.03 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/PellNorthGate/UsePoint` | use_point | 36.0 | 37.1 | 1.03 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Windows/ShopBayA/UsePoint` | use_point | 20.8 | 46.3 | 2.23 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Windows/ShopBayB/UsePoint` | use_point | 23.1 | 43.1 | 1.87 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Windows/ShopBayC/UsePoint` | use_point | 25.6 | 39.9 | 1.56 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Windows/SalonSouth/UsePoint` | use_point | 31.8 | 42.0 | 1.32 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Windows/ShopBayA/UsePoint` | use_point | 20.8 | 46.4 | 2.23 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Windows/ShopBayB/UsePoint` | use_point | 23.1 | 43.2 | 1.87 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Windows/ShopBayC/UsePoint` | use_point | 25.6 | 40.0 | 1.56 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Windows/SalonSouth/UsePoint` | use_point | 31.8 | 41.9 | 1.32 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Windows/SalonEast/UsePoint` | use_point | 33.2 | 42.2 | 1.27 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Workshop/WorkshopSafe` | objective | 19.4 | 30.4 | 1.57 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 19.4 | 30.4 | 1.57 | ok |
@@ -773,8 +773,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/SalonBackDoor/UsePoint` | use_point | 30.6 | 35.1 | 1.15 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/SalonDoor` | objective | 28.7 | 36.1 | 1.26 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/SalonDoor/UsePoint` | use_point | 28.7 | 36.1 | 1.26 | ok |
-| `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/MainEntrance` | objective | 29.3 | 37.5 | 1.28 | ok |
-| `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 29.3 | 37.5 | 1.28 | ok |
+| `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/MainEntrance` | objective | 29.3 | 37.2 | 1.27 | ok |
+| `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 29.3 | 37.2 | 1.27 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 18.7 | 53.4 | 2.85 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 23.0 | 48.4 | 2.10 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/WCUpperDoor/UsePoint` | use_point | 26.2 | 44.9 | 1.71 | ok |
@@ -784,16 +784,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/StockDoor/UsePoint` | use_point | 27.6 | 43.4 | 1.57 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/AlleyGate` | objective | 1.4 | 1.4 | 1.00 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 1.4 | 1.4 | 1.00 | ok |
-| `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/HarlowWestGate` | objective | 27.6 | 62.6 | 2.27 | ok |
-| `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/HarlowWestGate/UsePoint` | use_point | 27.6 | 62.6 | 2.27 | ok |
-| `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/HarlowEastGate` | objective | 52.2 | 59.9 | 1.15 | ok |
-| `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/HarlowEastGate/UsePoint` | use_point | 52.2 | 59.9 | 1.15 | ok |
+| `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/HarlowWestGate` | objective | 27.6 | 62.7 | 2.27 | ok |
+| `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/HarlowWestGate/UsePoint` | use_point | 27.6 | 62.7 | 2.27 | ok |
+| `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/HarlowEastGate` | objective | 52.2 | 59.8 | 1.15 | ok |
+| `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/HarlowEastGate/UsePoint` | use_point | 52.2 | 59.8 | 1.15 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/PellNorthGate` | objective | 35.8 | 36.0 | 1.00 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Doors/PellNorthGate/UsePoint` | use_point | 35.8 | 36.0 | 1.00 | ok |
-| `Spawns/PreplanAlleyWest3` | `Gameplay/Windows/ShopBayA/UsePoint` | use_point | 22.3 | 45.2 | 2.03 | ok |
-| `Spawns/PreplanAlleyWest3` | `Gameplay/Windows/ShopBayB/UsePoint` | use_point | 24.5 | 42.0 | 1.72 | ok |
-| `Spawns/PreplanAlleyWest3` | `Gameplay/Windows/ShopBayC/UsePoint` | use_point | 26.8 | 38.8 | 1.45 | ok |
-| `Spawns/PreplanAlleyWest3` | `Gameplay/Windows/SalonSouth/UsePoint` | use_point | 32.8 | 40.9 | 1.25 | ok |
+| `Spawns/PreplanAlleyWest3` | `Gameplay/Windows/ShopBayA/UsePoint` | use_point | 22.3 | 45.3 | 2.03 | ok |
+| `Spawns/PreplanAlleyWest3` | `Gameplay/Windows/ShopBayB/UsePoint` | use_point | 24.5 | 42.1 | 1.72 | ok |
+| `Spawns/PreplanAlleyWest3` | `Gameplay/Windows/ShopBayC/UsePoint` | use_point | 26.8 | 38.9 | 1.45 | ok |
+| `Spawns/PreplanAlleyWest3` | `Gameplay/Windows/SalonSouth/UsePoint` | use_point | 32.8 | 40.8 | 1.24 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Windows/SalonEast/UsePoint` | use_point | 34.0 | 41.1 | 1.21 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Workshop/WorkshopSafe` | objective | 19.9 | 29.3 | 1.47 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 19.9 | 29.3 | 1.47 | ok |
@@ -848,8 +848,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/SalonBackDoor/UsePoint` | use_point | 30.9 | 35.2 | 1.14 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/SalonDoor` | objective | 29.2 | 36.2 | 1.24 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/SalonDoor/UsePoint` | use_point | 29.2 | 36.2 | 1.24 | ok |
-| `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/MainEntrance` | objective | 29.9 | 37.6 | 1.26 | ok |
-| `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 29.9 | 37.6 | 1.26 | ok |
+| `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/MainEntrance` | objective | 29.9 | 37.3 | 1.25 | ok |
+| `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 29.9 | 37.3 | 1.25 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 19.2 | 53.5 | 2.78 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 23.5 | 48.5 | 2.07 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/WCUpperDoor/UsePoint` | use_point | 26.6 | 45.0 | 1.69 | ok |
@@ -861,14 +861,14 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 2.3 | 2.3 | 1.00 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/HarlowWestGate` | objective | 28.6 | 62.7 | 2.19 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/HarlowWestGate/UsePoint` | use_point | 28.6 | 62.7 | 2.19 | ok |
-| `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/HarlowEastGate` | objective | 52.7 | 59.9 | 1.14 | ok |
-| `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/HarlowEastGate/UsePoint` | use_point | 52.7 | 59.9 | 1.14 | ok |
-| `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/PellNorthGate` | objective | 35.8 | 36.0 | 1.01 | ok |
-| `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/PellNorthGate/UsePoint` | use_point | 35.8 | 36.0 | 1.01 | ok |
+| `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/HarlowEastGate` | objective | 52.7 | 59.8 | 1.13 | ok |
+| `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/HarlowEastGate/UsePoint` | use_point | 52.7 | 59.8 | 1.13 | ok |
+| `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/PellNorthGate` | objective | 35.8 | 35.9 | 1.01 | ok |
+| `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/PellNorthGate/UsePoint` | use_point | 35.8 | 35.9 | 1.01 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Windows/ShopBayA/UsePoint` | use_point | 23.1 | 45.3 | 1.96 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Windows/ShopBayB/UsePoint` | use_point | 25.2 | 42.1 | 1.67 | ok |
-| `Spawns/PreplanAlleyWest4` | `Gameplay/Windows/ShopBayC/UsePoint` | use_point | 27.5 | 38.9 | 1.41 | ok |
-| `Spawns/PreplanAlleyWest4` | `Gameplay/Windows/SalonSouth/UsePoint` | use_point | 33.3 | 40.9 | 1.23 | ok |
+| `Spawns/PreplanAlleyWest4` | `Gameplay/Windows/ShopBayC/UsePoint` | use_point | 27.5 | 38.9 | 1.42 | ok |
+| `Spawns/PreplanAlleyWest4` | `Gameplay/Windows/SalonSouth/UsePoint` | use_point | 33.3 | 40.8 | 1.23 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Windows/SalonEast/UsePoint` | use_point | 34.4 | 41.1 | 1.20 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Workshop/WorkshopSafe` | objective | 20.3 | 29.4 | 1.45 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 20.3 | 29.4 | 1.45 | ok |
