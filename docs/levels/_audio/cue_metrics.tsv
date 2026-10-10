@@ -147,6 +147,9 @@ cue.hack_done	World	False	0.62	1	-18.13	-17.87	-10.78	2374
 cue.escape_arrive[1]	World	False	1.4	1	-17.96	-17.58	-7.14	1929
 cue.escape_arrive[2]	World	False	3.0	1	-18.0	-16.42	-4.18	567
 cue.escape_arrive[3]	World	False	4.0	1	-19.22	-19.14	-1.1	1559
+cue.escape_arrive_van	World	False	1.4	1	-17.96	-17.58	-7.14	1929
+cue.escape_arrive_boat	World	False	3.0	1	-18.0	-16.42	-4.18	567
+cue.escape_arrive_heli	World	False	4.0	1	-19.22	-19.14	-1.1	1559
 cue.amb_glasshouse_interior	Ambience	True	20.0	2	-17.43	-18.02	-2.09	318
 cue.amb_street_dusk	Ambience	True	30.0	2	-16.6	-18.03	-1.23	1362
 mus_glasshouse_stealth	Music	True	54.857	2	-15.44	-16.04	-3.9	2609

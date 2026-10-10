@@ -12,7 +12,7 @@ from typing import Callable
 import numpy as np
 
 from synth import env, filters, fx, granular, noise, osc, seq
-from synth.core import SR, fade, fit, loop_xfade, midi_hz, nsamp, place, stereo, tvec
+from synth.core import SR, fade, fit, loop_xfade, midi_hz, nsamp, place, rng_for, stereo, tvec
 
 
 @dataclass(frozen=True)
@@ -1206,6 +1206,19 @@ def escape_arrive(rng: np.random.Generator, v: int) -> np.ndarray:
     return fade((body + turbine) * swell, 0, 0.3)
 
 
+def _escape_variant(k: int, label: str) -> Callable[[np.random.Generator, int], np.ndarray]:
+    """Fixed escape_arrive variant: renders exactly cue.escape_arrive's variation k (same seed)."""
+    def fn(rng: np.random.Generator, v: int) -> np.ndarray:
+        return escape_arrive(rng_for("cue.escape_arrive", str(k)), k)
+    fn.__name__ = fn.__qualname__ = f"escape_arrive(variant {k}: {label}, seed of cue.escape_arrive#{k})"
+    return fn
+
+
+escape_arrive_van = _escape_variant(0, "van horn")
+escape_arrive_boat = _escape_variant(1, "boat horn")
+escape_arrive_heli = _escape_variant(2, "heli rotor swell")
+
+
 # ============================================================ ambience beds
 
 
@@ -1366,6 +1379,9 @@ CUES: list[CueSpec] = [
     CueSpec("hack_done", hack_done, max_distance=15.0, volume_db=-3.0, note="QA-28"),
     CueSpec("escape_arrive", escape_arrive, variations=3, max_distance=200.0,
             note="QA-28: _1 van horn, _2 boat horn, _3 heli rotor swell (variant index chosen by caller or random)"),
+    CueSpec("escape_arrive_van", escape_arrive_van, max_distance=200.0, note="QA-28 fixed variant"),
+    CueSpec("escape_arrive_boat", escape_arrive_boat, max_distance=200.0, note="QA-28 fixed variant"),
+    CueSpec("escape_arrive_heli", escape_arrive_heli, max_distance=200.0, note="QA-28 fixed variant"),
     CueSpec("amb_glasshouse_interior", amb_glasshouse_interior, bus="Ambience", positional=False, loop=True,
             volume_db=-14.0, norm="bed"),
     CueSpec("amb_street_dusk", amb_street_dusk, bus="Ambience", positional=False, loop=True, volume_db=-12.0,

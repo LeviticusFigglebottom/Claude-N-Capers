@@ -123,7 +123,13 @@ func test_special_and_prefab_cues() -> void:
 	for id: StringName in [&"cue.phantom_hum", &"cue.stinger_arc", &"cue.aegis_pulse"]:
 		assert_true(_reg.get_cue(id) != null and _reg.get_cue(id).loop, "%s loops" % id)
 	assert_true(_reg.get_cue(&"cue.longshot_report").max_distance >= 200.0, "longshot carries 200+ m")
-	assert_eq(_reg.get_cue(&"cue.escape_arrive").streams.size(), 3, "van / boat / heli variants")
+	assert_eq(_reg.get_cue(&"cue.escape_arrive").streams.size(), 3, "van / boat / heli variants (random fallback)")
+	for id: StringName in [&"cue.escape_arrive_van", &"cue.escape_arrive_boat", &"cue.escape_arrive_heli"]:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c != null and c.streams.size() == 1, "%s is one fixed stream" % id)
+		if c != null:
+			assert_eq(c.bus, &"World", "%s bus" % id)
+			assert_true(c.max_distance >= 150.0, "%s carries far" % id)
 	var player: CuePlayer = _make_player()
 	EventBus.device_started.emit(77, &"hack", 30.0)
 	assert_eq(player.last_cue, &"cue.hack_start")
