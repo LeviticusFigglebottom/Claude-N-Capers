@@ -5,6 +5,11 @@
 ## lines in C6 order with level progress (XpCurve), crew stats, then applies the payout to the
 ## profile (SaveService.apply_heist_payout + save_profile) once per shown result.
 ## With `listen_heist_ended` it shows itself on EventBus.heist_ended (in-heist use).
+## Card pick (P9, B4-05; content/docs/payday_cards.md): after a successful heist that pays into the
+## profile, Continue on the summary opens the card stage: 3 face-down PaydayCardViews rolled by
+## PaydayCards.roll(result.seed, local slot, ...). Pick one (mouse / ui_accept), or the timer
+## (PaydayCardsTable.pick_time_s, 30 s) picks `auto_pick`; all three are revealed, the picked reward
+## is granted (PaydayCards.grant) and saved, and Continue is enabled again.
 ## Continue emits continue_pressed; if nobody listens it returns to the main menu scene.
 class_name PaydayScreen
 extends UiScreen
@@ -16,6 +21,8 @@ const MENU_SCENE: String = "res://content/ui/menus/menu_flow.tscn"
 @export var listen_heist_ended: bool = false
 @export var apply_to_profile: bool = true
 @export var profile_slot: int = 0
+## Offer the payday card pick after a successful heist (only when apply_to_profile is on).
+@export var cards_enabled: bool = true
 
 var profile: PlayerProfile
 ## PayoutCalculator.compute output for the shown result.
@@ -28,7 +35,23 @@ var level_bar: ProgressBar
 var continue_button: Button
 var xp_before: int = 0
 var xp_after: int = 0
+## PaydayCards.roll output for the shown result ({} = no card pick).
+var card_roll: Dictionary = {}
+## Index of the picked card (-1 = not picked yet).
+var picked_index: int = -1
+## True when the timer picked the card.
+var auto_picked: bool = false
+## Seconds left on the card stage before the auto-pick.
+var time_left: float = 0.0
+var cards_stage: bool = false
+var card_views: Array[PaydayCardView] = []
+var timer_label: Label
+var card_result_label: Label
 var _content: VBoxContainer
+var _summary: ScrollContainer
+var _cards_root: VBoxContainer
+var _cards_row: HBoxContainer
+var _cards_title: Label
 var _applied: bool = false
 
 
@@ -48,6 +71,8 @@ func build_ui() -> void:
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	root.add_child(scroll)
+	_summary = scroll
+	_build_cards_stage(root)
 	_content = UiBuild.vbox(20)
 	_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(_content)
@@ -74,8 +99,138 @@ func show_result(heist_result: Dictionary) -> void:
 	_applied = false
 	if apply_to_profile:
 		_apply()
+	card_roll = {}
+	picked_index = -1
+	auto_picked = false
+	cards_stage = false
+	if apply_to_profile and cards_enabled and bool(payout.get("success", false)):
+		card_roll = PaydayCards.roll(int(result.get("seed", 0)), Net.local_slot(), int(result.get("difficulty", 0)),
+				profile, PaydayCards.quality_add_for(profile))
+		time_left = PaydayCards.table().pick_time_s
 	if _content != null:
 		_render()
+		_set_stage(false)
+
+
+## True while a card pick is offered and not done yet.
+func has_card_pick() -> bool:
+	return not card_roll.is_empty() and picked_index < 0
+
+
+## Switch to the card stage: face-down cards, timer running, Continue disabled until a pick.
+func show_cards() -> void:
+	if card_roll.is_empty() or _cards_root == null:
+		return
+	_set_stage(true)
+	for v: PaydayCardView in card_views:
+		_cards_row.remove_child(v)
+		v.queue_free()
+	card_views.clear()
+	var cards: Array = card_roll.get("cards", []) as Array
+	for i: int in range(cards.size()):
+		var v: PaydayCardView = PaydayCardView.new()
+		v.setup(i, PaydayCards.table())
+		v.pressed.connect(pick.bind(i))
+		_cards_row.add_child(v)
+		card_views.append(v)
+	var chain: Array[Control] = []
+	for v: PaydayCardView in card_views:
+		chain.append(v)
+	UiNav.chain_horizontal(chain)
+	for v: PaydayCardView in card_views:
+		v.set_focus_neighbor(SIDE_BOTTOM, v.get_path_to(continue_button))
+	continue_button.disabled = picked_index < 0
+	if picked_index >= 0:
+		_reveal()
+	_update_timer_label()
+	focus_chain = chain
+	focus_chain.append(continue_button)
+	focus_default()
+
+
+## Pick card `index` (player or timer): reveals all cards, grants the reward and saves the profile.
+func pick(index: int) -> void:
+	var cards: Array = card_roll.get("cards", []) as Array
+	if picked_index >= 0 or index < 0 or index >= cards.size():
+		return
+	picked_index = index
+	if PaydayCards.grant(profile, cards[index] as Dictionary) and apply_to_profile:
+		SaveService.save_profile(profile, profile_slot)
+	_reveal()
+	if continue_button != null:
+		continue_button.disabled = false
+		if is_visible_in_tree():
+			continue_button.grab_focus.call_deferred()
+
+
+## Advance the pick timer (called from _process; tests call it directly).
+func tick(delta: float) -> void:
+	if not cards_stage or picked_index >= 0:
+		return
+	time_left = maxf(time_left - delta, 0.0)
+	if time_left <= 0.0:
+		auto_picked = true
+		pick(int(card_roll.get("auto_pick", 0)))
+	_update_timer_label()
+
+
+func _process(delta: float) -> void:
+	if is_visible_in_tree():
+		tick(delta)
+
+
+func _build_cards_stage(root: VBoxContainer) -> void:
+	_cards_root = UiBuild.vbox(24)
+	_cards_root.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_cards_root.alignment = BoxContainer.ALIGNMENT_CENTER
+	_cards_root.visible = false
+	root.add_child(_cards_root)
+	_cards_title = UiBuild.label(&"ui.payday_cards.title", UiBuild.SUBHEADER)
+	_cards_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_cards_root.add_child(_cards_title)
+	var hint: Label = UiBuild.label(&"ui.payday_cards.hint", UiBuild.DIM)
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_cards_root.add_child(hint)
+	_cards_row = UiBuild.hbox(48)
+	_cards_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	_cards_root.add_child(_cards_row)
+	timer_label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	timer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_cards_root.add_child(timer_label)
+	card_result_label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	card_result_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_cards_root.add_child(card_result_label)
+
+
+func _set_stage(cards: bool) -> void:
+	cards_stage = cards
+	_summary.visible = not cards
+	_cards_root.visible = cards
+	if not cards:
+		continue_button.disabled = false
+		focus_chain.clear()
+		focus_chain.append(continue_button)
+		card_result_label.text = ""
+
+
+func _reveal() -> void:
+	var cards: Array = card_roll.get("cards", []) as Array
+	for i: int in range(mini(card_views.size(), cards.size())):
+		card_views[i].reveal(cards[i] as Dictionary, i == picked_index)
+	if picked_index >= 0 and picked_index < cards.size():
+		card_result_label.text = UiText.t(&"ui.payday_cards.you_got",
+				{"reward": PaydayCardView.reward_text(cards[picked_index] as Dictionary)})
+	_update_timer_label()
+
+
+func _update_timer_label() -> void:
+	if timer_label == null:
+		return
+	if picked_index >= 0:
+		timer_label.text = UiText.t(&"ui.payday_cards.auto_picked") if auto_picked else ""
+	else:
+		timer_label.text = UiText.t(&"ui.payday_cards.timer", {"seconds": ceili(time_left)})
+	timer_label.visible = timer_label.text != ""
 
 
 ## PayoutCalculator.compute for `crew_slot` with the profile's banked stealth multiplier (D-022).
@@ -239,6 +394,11 @@ func _on_heist_ended(heist_result: Dictionary) -> void:
 
 
 func _on_continue() -> void:
+	if not cards_stage and has_card_pick():
+		show_cards()
+		return
+	if cards_stage and picked_index < 0:
+		return
 	if continue_pressed.get_connections().is_empty():
 		get_tree().change_scene_to_file(MENU_SCENE)
 		return
