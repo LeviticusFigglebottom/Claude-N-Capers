@@ -107,8 +107,11 @@ func test_04_pager_answer() -> void:
 		await _teardown(rt)
 		return
 	var guard: Node3D = guards[0]
-	_isolate(rt as HeistRuntime, guard)
 	var crew: Node3D = rt.call(&"crew_controller", 0)
+	# QA-9: other NPCs would (correctly) spot the masked bot; this step tests pagers, so isolate.
+	if rt.has_method(&"isolate_npc"):
+		rt.call(&"isolate_npc", guard)
+		await wait_physics_frames(2)
 	# Stand 3 m in front of the guard's back, masked, aim at head, fire.
 	rt.call(&"teleport_crew", 0, guard.global_transform.translated_local(Vector3(0, 0, 3.0)))
 	var i: CrewIntent = CrewIntent.new()
@@ -175,7 +178,6 @@ func test_08_loud_transition_and_assault() -> void:
 	EventBus.assault_phase_changed.disconnect(on_phase)
 	await _teardown(rt)
 
-
 # 5. Releasing a pager early with nobody else answering raises the alarm.
 func test_05_pager_release_early_alarm() -> void:
 	if not _ready_or_skip():
@@ -185,7 +187,7 @@ func test_05_pager_release_early_alarm() -> void:
 	var on_alarm: Callable = func(r: StringName, _s: int) -> void: alarms.append(r)
 	EventBus.alarm_raised.connect(on_alarm)
 	var guard: NpcBase = rt.npcs(&"guard")[0] as NpcBase
-	_isolate(rt, guard)
+	rt.isolate_npc(guard)
 	var crew: CrewController = rt.crew_controller(0) as CrewController
 	crew.set_masked()
 	guard.die({}, crew.net_id)
@@ -276,15 +278,6 @@ func test_11_escape_success() -> void:
 		assert_true(int(results[0]["contract_pay"]) > 0, "contract pay")
 	EventBus.heist_ended.disconnect(on_end)
 	await _teardown(rt)
-
-
-## Sandbox adaptation: the pager steps test pager mechanics, so other observers (who would see
-## the masked bot and raise the alarm before the answer completes) are removed. See QA-9.
-func _isolate(rt: HeistRuntime, keep: Node) -> void:
-	for n: Node in rt.npcs():
-		if n != keep:
-			n.get_parent().remove_child(n)
-			n.queue_free()
 
 
 ## A MapZone's node origin need not be its volume centre: use its first collision shape.

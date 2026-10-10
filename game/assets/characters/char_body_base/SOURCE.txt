@@ -1,0 +1,11 @@
+asset: char_body_base
+script: tools/blender/characters/body_base.py
+params: {"age": 0.25, "build": 0.4, "gender": 0.0, "hair": "short", "hair_color": "dark", "height": 1.78, "skin": 2}
+seed: 1533581883  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_body_base
+edit policy: generated file, never edit by hand; change the script and rebuild
+body_tris: 16572
+bones: 52
+shape_keys: build,gender,age
+tri_budget: 35000
