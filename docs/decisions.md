@@ -202,3 +202,28 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - `docs/design/heists/night_deposit.md` approved. A closed bank with a basement vault (keycard + time-lock code, or a server hack, then a time-lock hold; loud uses the thermal drill), 3 stealth routes, and a variable table where every row changes a decision. Exceeding the pager cap on Brutal is intended. ENV C may start G1.
 - QC-11 `bag_lift` and QC-12 `hack_terminal` prefabs are added to gameplay_prefabs.md and dispatched to ENV A (A3-09). QC-13 `loot.cash_bricks` → ENV B (B4-09). QC-14: new `MapZone.Kind.OUT_OF_BOUNDS` (appended to the enum), respawning at PLAYER SpawnPoints tagged `oob_respawn`, never an alarm.
 - `floor_heights` must be ascending and contain 0.0. Basements are negative.
+
+## D-041 — 2026-10-10 — Animation set merged; viewmodel contract (QD-5)
+- Merged D1-03: 47 humanoid clips (all 28 P1 clips plus 19 P2; the remaining 6 come with the P3 specials).
+- characters.md v1.3 records clip speeds, turn and death conventions, event frames, the third-person weapon grip, and the **first-person viewmodel contract** (`char_arms_fp` with `weapon`/`magazine` helper bones, one AnimationLibrary per anim_set, played as "<set>/<clip>").
+- Library material rule: every `game/world/materials/*.tres`, `char_*` included, must satisfy ENV C's ORM-PBR library test.
+
+## D-042 — 2026-10-10 — Shadow Ledger G0 APPROVED; QC-15..19
+- `docs/design/heists/shadow_ledger.md` approved: a stealth-only tower top (L40–L42 + roof, floor heights [0, 3.6, 8.0, 11.6], stairs verified), the ledger in three forms with laptop + 2 drive bags required, 5 entries, 3 escapes each with a different loot path, and keycards consumed so the optional safe can cost the main objective. Solo cuff = fail, as intended. ENV C may start G1 after the Night Deposit G1 (Glasshouse G2 stays first).
+- Accepted: 0.3 m curtain-wall sills in the executive rooms, the 1.4 m plenum, The Accountant as contact for both P2 heists, base payout $110,000, and a walkthrough whitelist for vertical tower paths.
+- QC-15/16 → ENV B (B4-10). QC-17: **no ladder climbing while carrying a bag** (PD2; fidelity S10.1b). QC-18/19 → ENV A (A3-10). escape_zone `escape_type` set, `arrival_delay_s` and `bag_only` are in gameplay_prefabs.md.
+
+## D-043 — 2026-10-10 — Answers QA-21..26
+- QA-21: the order routing is confirmed and written into crew_intent.md. QA-22: ui_hud v1.2 adds `custody_changed`/`custody` and `track()`/`tracked_crew`.
+- QA-23/24 → ENV B (strings ui.blocked.push_bar_outside, ui.prompt.trade_hostage/convert/cable_tie, vo.crew.ack_*).
+- QA-25: new `Loadout.mask_descriptor` (contract). ENV B's resolver fills it, the client sends it with its loadout at join, and ENV A replicates it to every peer's CrewView.
+- QA-26: mounted visuals and collision stay on the room side of the pivot (wall: −Z only; ceiling: −Y only). ENV A fixes the ceiling camera collision.
+- heist_map.md now references A's extended variant rule fields (force_if, slot_requires, min_difficulty, per-difficulty group weights).
+
+## D-044 — 2026-10-10 — First-person viewmodel sets merged
+- ENV D's `char_arms_fp` now has all 6 sets (pistol, smg, rifle, shotgun, lmg, sniper), with clip lengths matching the weapon data (test-enforced). characters.md v1.4 records the shotgun shell-by-shell and sniper bolt conventions; visual_slots.md adds `FeedCover` for LMGs.
+- ENV B: add `FeedCover` to the Rampart LMG model and set the Plowman reload data to 0.4 / 0.4333 / 0.4 (1.2 empty).
+
+## D-045 — 2026-10-10 — Shell-by-shell reload formula; trunk hotfix
+- ENV D's viewmodel test and ENV B's armory test encoded different shotgun reload formulas, and the merge of D's FP sets turned trunk red (my mistake: the push ran despite a failed test, because a grep in the command chain masked the exit code. The lead now gates pushes on the runner's exit code).
+- Ruling: the PD2-style formula in data_schemas.md (derived after mods, with a new `WeaponStats.reload_end_empty_s` for the empty pump). ENV B updates the Plowman data, mod deltas, resolver derivation and test_armory. ENV D re-enables its shotgun length check afterwards (temporarily excluded by the lead).

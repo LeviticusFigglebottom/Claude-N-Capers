@@ -7,10 +7,15 @@
 ## `interaction_time_s` is set). Shooting a breakable window (`take_hit`, damage.md) breaks it too:
 ## `Glass` hidden, GlassBody off, glass_broken [R], 15 m noise, `broken_glass` stimulus (S9.9).
 ## `noise` is the interaction's noise profile.
+## A2-08: at ready the `GlassBody` box is fitted to the visual's `Glass`: the merged AABB of every
+## MeshInstance3D at or under `Glass` (in this prefab's space, sash closed). Depth is at least
+## GLASS_MIN_DEPTH_M. Without a Glass mesh the saved 1.0 x 1.2 m box stays.
 class_name WindowPrefab
 extends GameplayPrefab
 
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/window/window_placeholder.tscn")
+## Minimum GlassBody depth (m) so thin glass still blocks movement.
+const GLASS_MIN_DEPTH_M: float = 0.05
 
 @export var breakable: bool = true
 @export var openable: bool = false
@@ -44,6 +49,7 @@ func _default_interaction_time() -> float:
 
 func _prefab_ready() -> void:
 	_route_hits(get_node_or_null(^"GlassBody"))
+	_fit_glass_body()
 	var sash: Node3D = visual_node("Sash") as Node3D
 	if sash != null:
 		_sash_closed_y = sash.position.y
@@ -107,6 +113,55 @@ func _apply_state() -> void:
 		interactable.enabled = true
 	else:
 		interactable.enabled = false
+
+
+## A2-08: the glass AABB in this prefab's space (merged over Glass meshes), or an empty AABB.
+func glass_aabb() -> AABB:
+	var glass: Node3D = visual_node("Glass") as Node3D
+	if glass == null:
+		return AABB()
+	var meshes: Array[MeshInstance3D] = []
+	var stack: Array[Node] = [glass]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		var mi: MeshInstance3D = n as MeshInstance3D
+		if mi != null and mi.mesh != null:
+			meshes.append(mi)
+		for c: Node in n.get_children():
+			stack.append(c)
+	var out: AABB = AABB()
+	var first: bool = true
+	for mi: MeshInstance3D in meshes:
+		var box: AABB = _to_local_space(mi) * mi.get_aabb()
+		out = box if first else out.merge(box)
+		first = false
+	return out
+
+
+## Transform of `n` relative to this prefab (works whether or not it is in the tree).
+func _to_local_space(n: Node3D) -> Transform3D:
+	var t: Transform3D = Transform3D.IDENTITY
+	var cur: Node = n
+	while cur != null and cur != self:
+		var c3: Node3D = cur as Node3D
+		if c3 != null:
+			t = c3.transform * t
+		cur = cur.get_parent()
+	return t
+
+
+func _fit_glass_body() -> void:
+	var cs: CollisionShape3D = get_node_or_null(^"GlassBody/Shape") as CollisionShape3D
+	if cs == null:
+		return
+	var box: AABB = glass_aabb()
+	if box.size.x <= 0.0 or box.size.y <= 0.0:
+		return
+	var shape: BoxShape3D = BoxShape3D.new()
+	shape.size = Vector3(box.size.x, box.size.y, maxf(box.size.z, GLASS_MIN_DEPTH_M))
+	cs.shape = shape
+	var parent3d: Node3D = cs.get_parent() as Node3D
+	cs.transform = Transform3D(Basis.IDENTITY, _to_local_space(parent3d).affine_inverse() * box.get_center())
 
 
 func _set_glass_collision(on: bool) -> void:

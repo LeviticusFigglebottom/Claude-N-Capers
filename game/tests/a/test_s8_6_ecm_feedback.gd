@@ -1,4 +1,4 @@
-## A2-03 / S8.6: ECM feedback. Interacting with a placed ECM (stealth.ecm_feedback) stuns non-Cloaker
+## A2-03 / S8.6: ECM feedback. Interacting with a placed ECM (built into every ECM, D-038) stuns non-Cloaker
 ## enemies within 15 m for 6 s (no radio progress, blind, motor still); in stealth it is an ALARM
 ## stimulus, so alerted guards radio once they recover. 4 min recharge, retrigger needs
 ## stealth.ecm_feedback_retrigger.
@@ -23,9 +23,9 @@ func after_each() -> void:
 	await wait_frames(1)
 
 
-func _launch(flag: bool) -> void:
-	if flag:
-		Modifiers.set_source(0, &"test", {&"stealth.ecm_feedback": true})
+func _launch(deprecated_flag: Variant = null) -> void:
+	if deprecated_flag != null:  # D-038: the deprecated key is ignored either way
+		Modifiers.set_source(0, &"test", {&"stealth.ecm_feedback": deprecated_flag})
 	var l: Loadout = Loadout.new()
 	l.deployable = &"deployable.ecm"
 	_rt = await HeistLauncher.launch(&"unit_map", 86, Enums.Difficulty.ROUTINE, self,
@@ -79,17 +79,25 @@ func _trigger(p: DeployablePrefab) -> void:
 	await wait_physics_frames(2)
 
 
-func test_s8_6_feedback_gated_by_flag() -> void:
-	await _launch(false)
+func test_s8_6_feedback_built_into_every_ecm() -> void:
+	await _launch()
 	var p: DeployablePrefab = await _place_ecm()
 	assert_eq(p.interactable.kind, &"ecm_feedback")
-	assert_ne(p.interactable.availability(_rt.crew_controller(0)), InteractableComponent.BLOCK_NONE, "no feedback without the flag")
+	assert_eq(p.interactable.availability(_rt.crew_controller(0)), InteractableComponent.BLOCK_NONE,
+		"feedback available without any skill (D-038 QA-16)")
 	await _trigger(p)
-	assert_true(_of(&"feedback").is_empty(), "nothing triggered")
+	assert_eq(_of(&"feedback").size(), 1, "triggered without stealth.ecm_feedback")
+
+
+func test_s8_6_deprecated_flag_false_is_ignored() -> void:
+	await _launch(false)
+	var p: DeployablePrefab = await _place_ecm()
+	assert_eq(p.interactable.availability(_rt.crew_controller(0)), InteractableComponent.BLOCK_NONE,
+		"stealth.ecm_feedback = false does not disable it")
 
 
 func test_s8_6_feedback_stuns_in_radius_and_alerts_in_stealth() -> void:
-	await _launch(true)
+	await _launch()
 	var gs: Array[NpcBase] = _guards()
 	var p: DeployablePrefab = await _place_ecm()
 	var phantom: NpcBase = ATestMaps.add_npc_observer(_rt, &"guard", Vector3(3, 0.05, -6), Vector3(0, 0, -1))
@@ -119,7 +127,7 @@ func test_s8_6_feedback_stuns_in_radius_and_alerts_in_stealth() -> void:
 
 
 func test_s8_6_stun_duration_and_recharge() -> void:
-	await _launch(true)
+	await _launch()
 	var gs: Array[NpcBase] = _guards()
 	var p: DeployablePrefab = await _place_ecm()
 	var ecm: EcmSystem = HeistRuntime.get_service(&"ecm") as EcmSystem

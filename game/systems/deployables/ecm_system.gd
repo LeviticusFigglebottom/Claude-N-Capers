@@ -4,7 +4,8 @@
 ## ECMs chain: a second one queues until the first ends), S8.5 (stealth.ecm_opens_doors: placed on a
 ## keycard reader it is consumed and opens the reader's doors after 4 s), S8.6 (feedback: interact
 ## with a placed ECM -> 15 m stun of 6 s of non-Cloaker enemies + an `alarm` noise in stealth;
-## gated by stealth.ecm_feedback; retrigger after 4 min with stealth.ecm_feedback_retrigger), S5.6
+## built into every ECM (D-038 QA-16; the deprecated stealth.ecm_feedback key is ignored);
+## retrigger after 4 min with stealth.ecm_feedback_retrigger), S5.6
 ## (stealth.ecm_pager_delay: pagers of guards killed during that jam pause their 12 s window).
 ##
 ## Cameras: while jamming every SecurityCamera of the heist is set_suppressed(&"ecm", true) (blind;
@@ -189,13 +190,10 @@ func _tick_doors(delta: float) -> void:
 
 # --- Feedback (S8.6) -----------------------------------------------------------------------------
 
-## Why `crew` cannot trigger feedback on `ecm` (&"" = available).
-func feedback_block(ecm: DeployablePrefab, crew: CrewController) -> StringName:
+## Why a crew member cannot trigger feedback on `ecm` (&"" = available). Every ECM has feedback
+## (D-038 QA-16); `_crew` is kept for API stability.
+func feedback_block(ecm: DeployablePrefab, _crew: CrewController) -> StringName:
 	if ecm.ecm_state == DeployablePrefab.EcmState.DOOR:
-		return InteractableComponent.BLOCK_DISABLED
-	var gate: bool = Modifiers.flag(ecm.owner_slot, &"stealth.ecm_feedback") \
-		or (crew != null and Modifiers.flag(crew.slot, &"stealth.ecm_feedback"))
-	if not gate:
 		return InteractableComponent.BLOCK_DISABLED
 	if ecm.feedback_used:
 		if ecm.feedback_recharge_left > 0.0 or not Modifiers.flag(ecm.owner_slot, &"stealth.ecm_feedback_retrigger"):

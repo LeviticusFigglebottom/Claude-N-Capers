@@ -10,6 +10,9 @@
 ## S2.9 (A2-05): a shout that affects no civilian marks the markable target (guard, special, camera:
 ## StealthDirector.mark_kind_of) nearest the aim line within mark_cone_half_deg / mark_range_m with
 ## line of sight, for the whole crew. Unmasked (casing) crew mark only with `stealth.casing_can_mark`.
+## L5.1 (A3-04): the shout also addresses the police NPC nearest the aim line
+## (PoliceSurrender.shout_target), which may surrender (PoliceSurrender.on_shouted); a cop that
+## reacts counts as affected (no marking).
 ## Installation: until HeistRuntime creates it, the first CivilianBrain self-installs it with
 ## `ShoutSystem.ensure(runtime)` (service SERVICE + crew tick handler).
 class_name ShoutSystem
@@ -64,6 +67,10 @@ func shout(crew: CrewController) -> Array[Node]:
 		var brain: Node = npc.get_node_or_null(^"Brain")
 		if brain != null and brain.has_method(&"on_shouted") and bool(brain.call(&"on_shouted", crew)):
 			affected.append(npc)
+	var rt0: HeistRuntime = _runtime if _runtime != null else HeistRuntime.of(crew)
+	var cop: NpcBase = PoliceSurrender.shout_target(crew, rt0)  # L5.1 (A3-04)
+	if cop != null and PoliceSurrender.on_shouted(cop, crew):
+		affected.append(cop)
 	shouted.emit(crew.slot, affected)
 	if affected.is_empty():
 		var t: Node3D = mark_target_for(crew)

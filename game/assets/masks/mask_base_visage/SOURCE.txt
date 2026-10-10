@@ -1,0 +1,12 @@
+asset: mask_base_visage
+script: tools/blender/masks/base_visage.py
+params: {"bottom": -0.121, "brow": 0.85, "cheek": 1.0, "chin_point": 0.002, "coverage": "full", "edge_res": 0.0045, "eye_height": 0.0135, "eye_shape": "almond", "eye_tilt_deg": 3.0, "eye_width": 0.033, "jaw": 1.15, "jaw_taper": 0.33, "mouth": "none", "nose": 1.15, "res": 0.0075, "res_back": 0.014, "side_arc": 0.103, "top": 0.11, "top_peak": 0.004}
+seed: 3391723914  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category masks --asset mask_base_visage
+edit policy: generated file, never edit by hand; change the script and rebuild
+coverage: full
+pivot: face centre: midway between the eye centres at eye (cornea) depth; Blender +Y = Godot -Z = forward, +Z = up
+tri_budget: 8000
+tris_lod0: 4252
+uv0: front planar along -Z (Godot), x 0..1 = +X..-X (viewer's left to right), y 0..1 = top..bottom; bounds x +-0.0744 m, z -0.1222..0.1129 m

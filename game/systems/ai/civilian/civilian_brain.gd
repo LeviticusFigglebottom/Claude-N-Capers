@@ -17,6 +17,8 @@
 ## TIED: cable tie hold (`TieInteractable`, enabled only while DOWN). Permanent; joins G.HOSTAGE,
 ##   registers a `restrained` stimulus, CivilianTargets recounts hostages.
 ## Intimidated/tied civilians do not observe (NpcBase.BLIND_STATES).
+## A3-04 (L2.10): a tied civilian can be traded for a crew member in custody (CustodySystem ->
+## release_as_hostage, then the node is freed).
 class_name CivilianBrain
 extends Node
 
@@ -163,6 +165,19 @@ func _on_tie_completed(crew: Node) -> void:
 		_restrained_stimulus_id = st.register_stimulus(_npc, &"restrained")  # S6.4
 	if _targets != null:
 		_targets.recount_hostages()
+
+
+## A3-04 (L2.10): this tied civilian was traded for a crew member and leaves play (CustodySystem
+## frees the node): drop the restrained stimulus and the hostage group.
+func release_as_hostage() -> void:
+	var st: StealthDirector = _stealth()
+	if st != null and _restrained_stimulus_id != 0:
+		st.unregister_stimulus(_restrained_stimulus_id)
+	_restrained_stimulus_id = 0
+	if _npc != null:
+		_npc.remove_from_group(G.HOSTAGE)
+	mode = Mode.DEAD
+	anim_hint = &""
 
 
 # --- Panic (S3.1, S7.4, S11.2) ------------------------------------------------------

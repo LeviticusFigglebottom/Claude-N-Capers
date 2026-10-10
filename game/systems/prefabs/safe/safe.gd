@@ -12,6 +12,13 @@
 ##   c4        kind &"place_c4"     c4_place_s, consumes `item.c4`; after c4_fuse_s it blows the lock:
 ##             noise &"explosion" (c4_noise_radius_m), cue.c4_explode, device_started/finished(&"c4")
 ## A drill_point whose `target` is this safe also works (`open_by_device()`).
+## A2-08 KEYCARD: with &"keycard" in `methods` the safe is opened by a keycard_reader (the safe's
+## own Interactable never offers it). Wire it either way (both may be set, it opens once):
+##   * the reader's `targets` lists the safe, or
+##   * the safe's `reader` export points at the reader (the safe binds itself at ready).
+## A completed reader (keycard, or ECM on the reader) calls `open_by_keycard()`: the lock is beaten
+## (beaten_by = &"keycard"), then the time lock applies as for any method. Without &"keycard" in
+## `methods` the call is ignored with a warning.
 ## Time lock (`time_lock_s` > 0, vaults): beating the lock does not open the door. The same
 ## Interactable becomes kind &"start_time_lock" (hold time_lock_start_s, a normal hold: interrupted =
 ## start again); then the timer runs time_lock_s (device_started(net_id, &"time_lock", s) ...
@@ -47,6 +54,9 @@ const METHOD_UI: Dictionary = {
 @export var code_group: StringName = &""
 ## S9.8: vault time lock in s (0 = none), see the header.
 @export var time_lock_s: float = 0.0
+## A2-08: keycard_reader that opens this safe (`methods` must contain &"keycard"). Optional: the
+## reader's own `targets` listing this safe works the same.
+@export var reader: NodePath = NodePath("")
 @export_group("Interaction")
 ## -1 = InteractionTweak.drill_place_s (placing the drill on `DrillPoint`).
 @export var interaction_time_s: float = -1.0
@@ -102,6 +112,7 @@ func _prefab_ready() -> void:
 	interactable.completed.connect(_on_completed)
 	for p: GameplayPrefab in _inner_loot():
 		p.interactable.enabled = false
+	_bind_reader()
 	# A1-03 behaviour (P3): size-dependent collision; hackable time-lock panel.
 
 
@@ -109,6 +120,16 @@ func _prefab_ready() -> void:
 ## door now, or arms the time lock first (`time_lock_s` > 0).
 func open_by_device() -> void:
 	_lock_beaten(&"device")
+
+
+## Server: a bound keycard_reader was used (A2-08 KEYCARD method).
+func open_by_keycard() -> void:
+	if not Net.is_authority():
+		return
+	if not methods.has(&"keycard"):
+		Log.warn(LOG_CHANNEL, "%s: keycard reader used but `methods` has no &\"keycard\"" % name)
+		return
+	_lock_beaten(&"keycard")
 
 
 ## Server: swing the door open now (also skips a time lock; missions).
@@ -308,6 +329,18 @@ func _lock_beaten(how: StringName) -> void:
 		_apply_ui(&"time_lock")
 	else:
 		swing_open()
+
+
+func _bind_reader() -> void:
+	if reader.is_empty():
+		return
+	var r: KeycardReader = get_node_or_null(reader) as KeycardReader
+	if r == null:
+		Log.error(LOG_CHANNEL, "%s: `reader` %s is not a KeycardReader" % [name, reader])
+		return
+	if not methods.has(&"keycard"):
+		Log.warn(LOG_CHANNEL, "%s: `reader` set but `methods` has no &\"keycard\"" % name)
+	r.bind_target(self)
 
 
 ## Loot prefabs inside this safe (descendants outside `Visual`).

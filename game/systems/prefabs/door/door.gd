@@ -18,6 +18,13 @@
 ## P3 police breach hooks there). Nav: the baked navmesh passes through doorways (heist_map.md §3);
 ## a `NavLink` NavigationLink3D through the doorway is enabled while the door is passable (open, or
 ## openable by NPCs) for maps whose bake closes the doorway.
+## A2-08 push-bar doors (fire exits, `push_bar`): while CLOSED the door opens only from its inside,
+## the front (-Z, UsePoint) side: a crew member / NPC whose position in the door's local space has
+## z < 0. From outside (z >= 0) the interaction is blocked (BLOCK_PUSH_BAR_OUTSIDE) and NPC doors
+## logic treats it as locked from that side (`can_npc_open` false; the NavLink is one-way -Z -> +Z
+## while closed). Opening from inside still follows `lock`. Once open it is a normal door (either
+## side may close it); closed again, it is one-way again. Pair it with swing INWARD (opens away from
+## the pusher, toward +Z / outside).
 class_name Door
 extends GameplayPrefab
 
@@ -38,6 +45,8 @@ const KEYCARD_ITEM: StringName = &"item.keycard"
 const GROUP: StringName = &"door"
 ## Doorway margin beyond the opening's half width that still counts as crossing it (m).
 const CROSS_MARGIN_M: float = 0.25
+## A2-08: push-bar door used from its outside while closed.
+const BLOCK_PUSH_BAR_OUTSIDE: StringName = &"ui.blocked.push_bar_outside"
 
 @export var lock: Lock = Lock.NONE
 @export var swing: Swing = Swing.INWARD
@@ -51,6 +60,8 @@ const CROSS_MARGIN_M: float = 0.25
 ## A2-01 (QA-11): a guard whose SpawnPoint tags contain one of these may open this door while it is
 ## locked (keycard post); never for BARRED / VAULT. Empty = no NPC opens it while locked.
 @export var npc_authorized_tags: Array[StringName] = []
+## A2-08: one-way fire exit; while closed it opens only from the inside (-Z, UsePoint side).
+@export var push_bar: bool = false
 @export_group("Interaction")
 ## -1 = default by lock (InteractionTweak.door_open_s / lockpick_door_s / keycard_s).
 @export var interaction_time_s: float = -1.0
@@ -160,8 +171,15 @@ func passable_for(agent: Node) -> bool:
 ## Whether `agent` may open this door now: unlocked, or locked (not BARRED / VAULT) for a guard
 ## whose SpawnPoint tags meet `npc_authorized_tags`. Crew AI only opens unlocked doors.
 func can_npc_open(agent: Node) -> bool:
-	if is_open or not locked:
+	if is_open:
 		return true
+	if push_bar and not is_inside(agent):
+		return false
+	return not locked or _guard_authorised(agent)
+
+
+## Locked door (not BARRED / VAULT): `agent` is a guard whose SpawnPoint tags meet the post tags.
+func _guard_authorised(agent: Node) -> bool:
 	if lock == Lock.BARRED or lock == Lock.VAULT or npc_authorized_tags.is_empty():
 		return false
 	var npc: NpcBase = agent as NpcBase
@@ -173,6 +191,15 @@ func can_npc_open(agent: Node) -> bool:
 			if (t is StringName or t is String) and npc_authorized_tags.has(StringName(t)):
 				return true
 	return false
+
+
+## A2-08: true when `who` (a Node3D) stands on the door's inside (local z < 0, the -Z / UsePoint
+## side). A node without a position counts as outside.
+func is_inside(who: Node) -> bool:
+	var n3: Node3D = who as Node3D
+	if n3 == null or not n3.is_inside_tree() or not is_inside_tree():
+		return false
+	return (global_transform.affine_inverse() * n3.global_position).z < 0.0
 
 
 ## Server: `agent` asks to pass. Opens after the stealth delay (instantly in loud) through
@@ -278,6 +305,8 @@ func _update_nav_link() -> void:
 		return
 	_nav_link.enabled = is_open or not locked or (not npc_authorized_tags.is_empty() \
 		and lock != Lock.BARRED and lock != Lock.VAULT)
+	# A2-08: closed push-bar doors pass inside (-Z, start) -> outside (+Z, end) only.
+	_nav_link.bidirectional = is_open or not push_bar
 
 
 ## S4.2: an open `suspicious_when_open` door is an `open_door` stimulus.
@@ -328,7 +357,9 @@ func _setup_interactable() -> void:
 	interactable.completed.connect(_on_completed)
 
 
-func _availability(_crew: Node) -> StringName:
+func _availability(crew: Node) -> StringName:
+	if push_bar and not is_open and not is_inside(crew):
+		return BLOCK_PUSH_BAR_OUTSIDE
 	if not locked:
 		return InteractableComponent.BLOCK_NONE
 	match lock:

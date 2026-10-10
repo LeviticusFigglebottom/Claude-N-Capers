@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.1)
+# Contract: HUD data (v1.2)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -48,3 +48,10 @@ application flow. It launches heists through `HeistLauncher`, spawns the HUD/pay
 and calls `HeistRuntime.teardown()` and `Net.leave()` after the results screen. `core/boot.gd` routes to it,
 and the app shell handles `--heist=<id> [--seed=] [--difficulty=]` direct-launch flags. ENV A never
 instantiates UI.
+
+## v1.2 (QA-22, D-043)
+| Signal | Properties |
+|---|---|
+| `custody_changed` | `custody` {} or {in_custody: bool, negotiation_left_s: float, auto_release_left_s: float (< 0 = none), highlighted_hostage_net_id: int} |
+* `LocalHudModel.track(crew: Node)` / `tracked_crew` lets the HUD follow a crew member without a HeistRuntime
+  (firing range, spectating).
