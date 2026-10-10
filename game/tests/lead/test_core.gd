@@ -68,3 +68,13 @@ func test_modifiers_list_and_multi_qualifiers() -> void:
 	assert_true(ModifierKeys.is_known(&"weapon.kill_reload_buff"))
 	assert_eq(ModifierKeys.type_of(&"weapon.kill_reload_buff"), ModifierKeys.Type.LIST)
 	Modifiers.clear_all()
+
+
+func test_modifiers_list_accepts_array_values() -> void:
+	Modifiers.clear_all()
+	Modifiers.set_source(0, &"skills", {&"weapon.kill_reload_buff": [
+		{"trigger": "headshot_kill", "_source": &"skill.a"}, {"trigger": "melee_kill", "_source": &"skill.b"}]})
+	var l: Array[Dictionary] = Modifiers.list(0, &"weapon.kill_reload_buff")
+	assert_eq(l.size(), 2)
+	assert_eq(l[1]["_source"], &"skill.b", "entry keeps its own _source")
+	Modifiers.clear_all()
