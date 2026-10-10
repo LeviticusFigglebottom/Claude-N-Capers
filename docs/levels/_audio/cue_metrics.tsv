@@ -110,6 +110,15 @@ cue.revive	World	False	1.2	1	-18.02	-16.78	-2.99	2899
 cue.door_open	World	False	0.997	1	-20.33	-19.26	-0.89	3846
 cue.door_close	World	False	0.697	1	-20.5	-19.07	-1.27	2241
 cue.keycard_beep	World	False	0.397	1	-17.99	-17.99	-10.99	3764
+cue.keypad_accept	World	False	0.247	1	-18.01	-18.01	-3.02	2050
+cue.c4_armed	World	False	0.447	1	-17.99	-17.51	-10.35	4482
+cue.c4_explode[1]	World	False	4.0	1	-18.68	-19.51	-1.02	3450
+cue.c4_explode[2]	World	False	4.0	1	-18.88	-19.7	-1.0	3424
+cue.c4_explode[3]	World	False	4.0	1	-18.21	-18.71	-1.17	3470
+cue.time_lock_start	World	False	2.8	1	-19.58	-20.16	-1.2	2320
+cue.time_lock_done	World	False	2.2	1	-18.45	-16.56	-1.05	2490
+cue.laser_trip	World	False	0.317	1	-17.96	-17.96	-12.73	5003
+cue.zipline_attach	World	False	1.1	1	-18.53	-19.68	-0.79	1060
 cue.lockpick	World	True	3.0	1	-22.14	-22.09	-1.24	8555
 cue.ui_click	UI	False	0.042	1	-24.68	-24.68	-1.35	1277
 cue.amb_glasshouse_interior	Ambience	True	20.0	2	-17.43	-18.02	-2.09	318

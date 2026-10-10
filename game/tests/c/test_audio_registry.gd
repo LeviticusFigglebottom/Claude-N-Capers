@@ -23,6 +23,11 @@ const FAMILY_CUES: Array[StringName] = [
 	&"cue.weapon_sniper_fire_suppressed", &"cue.weapon_sniper_mag_out", &"cue.weapon_sniper_mag_in",
 	&"cue.weapon_sniper_bolt",
 ]
+## QA-15 device cues (ENV A): one-shots on the World bus.
+const DEVICE_CUES: Array[StringName] = [
+	&"cue.keypad_accept", &"cue.c4_armed", &"cue.c4_explode", &"cue.time_lock_start", &"cue.time_lock_done",
+	&"cue.laser_trip", &"cue.zipline_attach",
+]
 const LOOPS: Array[StringName] = [
 	&"cue.pager_beep", &"cue.pager_radio", &"cue.alarm_bell", &"cue.drill_loop", &"cue.police_siren_far",
 ]
@@ -65,6 +70,30 @@ func test_weapon_family_cues() -> void:
 		var want: int = 3 if String(id).ends_with("_fire") or String(id).ends_with("_suppressed") else 2
 		assert_true(c.streams.size() >= want, "%s has >= %d variations" % [id, want])
 	assert_false(_reg.has_cue(&"cue.weapon_shotgun_mag_out"), "shotgun loads shells, no mag cues")
+
+
+func test_device_cues() -> void:
+	if _reg == null:
+		skip("no registry")
+		return
+	for id: StringName in DEVICE_CUES:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c != null, "registry has %s" % id)
+		if c == null:
+			continue
+		assert_eq(c.bus, &"World", "%s bus" % id)
+		assert_false(c.loop, "%s one-shot" % id)
+		assert_true(c.positional, "%s positional" % id)
+	var boom: AudioCueDef = _reg.get_cue(&"cue.c4_explode")
+	if boom != null:
+		assert_true(boom.streams.size() >= 3, "c4_explode variations")
+		assert_true(boom.max_distance >= 150.0, "c4_explode carries far")
+	var player: CuePlayer = _make_player()
+	EventBus.laser_tripped.emit(11)
+	assert_eq(player.last_cue, &"cue.laser_trip", "laser_tripped maps to laser_trip")
+	EventBus.interaction_completed.emit(12, 0, &"keypad")
+	assert_eq(player.last_cue, &"cue.keypad_accept", "keypad completion beeps")
+	player.queue_free()
 
 
 func test_every_stream_loads_with_length() -> void:
