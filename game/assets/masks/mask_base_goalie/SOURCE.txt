@@ -1,0 +1,12 @@
+asset: mask_base_goalie
+script: tools/blender/masks/base_goalie.py
+params: {"bottom": -0.124, "brow": 0.5, "cheek": 0.9, "chin_point": 0.0, "coverage": "full", "eye_height": 0.0175, "eye_shape": "almond", "eye_tilt_deg": 5.0, "eye_width": 0.037, "face_half_width": 0.09, "jaw": 1.0, "jaw_taper": 0.27, "mouth": "none", "nose": 0.85, "res": 0.0095, "res_back": 0.015, "side_arc": 0.106, "top": 0.116, "wrap_radius": 0.1}
+seed: 3785923805  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category masks --asset mask_base_goalie
+edit policy: generated file, never edit by hand; change the script and rebuild
+coverage: full
+pivot: face centre: midway between the eye centres at eye (cornea) depth; Blender +Y = Godot -Z = forward, +Z = up
+tri_budget: 8000
+tris_lod0: 7514
+uv0: front planar along -Z (Godot), x 0..1 = +X..-X (viewer's left to right), y 0..1 = top..bottom; bounds x +-0.0820 m, z -0.1235..0.1151 m

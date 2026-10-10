@@ -3,6 +3,7 @@
 ## QB-50b: the five customisable base masks (content/docs/masks.md): one colour-neutral surface
 ## (the mask shader is applied as material_override), front-projected UV0 (x 0 = viewer's left
 ## = +X, y 0 = top), pivot at the face centre, -Z forward.
+## B4-15: five more bases (skull, theatre, gasmask, demon, goalie) under the same contract.
 ## Run after `godot --import`.
 extends TestCase
 
@@ -10,12 +11,18 @@ const MASK_PATH: String = "res://assets/masks/mask_gilded_heron/mask_gilded_hero
 const MATERIAL_PREFIX: String = "M_char_mask_"
 const LIBRARY_PREFIX: String = "res://world/materials/char_mask_"
 # QB-50b customisable base masks
-const BASE_NAMES: Array[String] = ["heron", "visage", "vulpine", "bruiser", "owl"]
+const BASE_NAMES: Array[String] = [
+	"heron", "visage", "vulpine", "bruiser", "owl", "skull", "theatre", "gasmask", "demon", "goalie",
+]
 const BASE_MATERIAL: String = "M_char_mask_base"
 const BASE_LIBRARY: String = "res://world/materials/char_mask_base.tres"
 const BASE_TRI_BUDGET: int = 8000
-## Masks whose front-most point is a centred beak/snout/nose.
-const CENTRED_FRONT: Array[String] = ["heron", "visage", "vulpine", "owl"]
+## Masks whose front-most point is a centred beak/snout/nose/teeth/canister below the eye line.
+const CENTRED_FRONT: Array[String] = [
+	"heron", "visage", "vulpine", "owl", "skull", "theatre", "gasmask", "demon",
+]
+## The respirator pushes well forward of the face (its filter canister).
+const PROTRUDING_FRONT: Dictionary[String, float] = {"gasmask": -0.09}
 
 
 func _load_mask() -> Node3D:
@@ -173,6 +180,9 @@ func test_base_masks_pivot_is_face_centre_and_front_is_minus_z() -> void:
 		assert_true(-box.position.z > box.end.z, "%s extends further to -Z (front) than to +Z" % base_name)
 		var tip: Vector3 = _front_point(meshes)
 		assert_true(tip.z < -0.025, "%s front point in front of the face (z = %.3f)" % [base_name, tip.z])
+		if PROTRUDING_FRONT.has(base_name):
+			var want: float = PROTRUDING_FRONT[base_name]
+			assert_true(tip.z < want, "%s protrudes forward (front z = %.3f < %.3f)" % [base_name, tip.z, want])
 		if base_name in CENTRED_FRONT:
 			assert_near(tip.x, 0.0, 0.003, "%s front point on the centreline" % base_name)
 			assert_true(tip.y < 0.0, "%s beak/snout/nose below the eye line (y = %.3f)" % [base_name, tip.y])
