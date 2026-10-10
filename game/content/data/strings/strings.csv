@@ -1455,3 +1455,109 @@ ui.hub.profile.xp,{xp} / {next} XP to the next level
 ui.hub.profile.xp_max,Max level
 ui.hub.profile.skill_points,Skill points: {points} of {total} free
 ui.hub.profile.perk_points,Perk points: {points} free
+item.weapon.drover_762.name,Drover 762
+item.weapon.drover_762.desc,"Graff-Lindqvist's long-stroke battle rifle. Heavy 7.62 rounds, walnut furniture and a kick to match."
+item.mod.drover_suppressor.name,Bulkhead Suppressor
+item.mod.drover_suppressor.desc,"A heavy can over the slant brake. Quiet enough for stealth, but the round loses a little punch."
+item.mod.drover_iron_sights.name,Standard Iron Sights
+item.mod.drover_folding_stock.name,Side-Folding Stock
+item.mod.drover_folding_stock.desc,Folds the stock along the side for a smaller profile. Harder to hold steady.
+item.mod.drover_standard_mag.name,Standard Magazine
+item.mod.drover_extended_mag.name,Forty-Round Magazine
+item.mod.drover_extended_mag.desc,Ten more rounds in a deeper curve. Longer to swap and harder to hide.
+item.weapon.mastiff_45.name,Mastiff .45
+item.weapon.mastiff_45.desc,"A Tillman Ironworks .45 submachine gun. Slow, blunt and heavy-hitting, with a wire stock and a stick magazine."
+item.mod.mastiff_suppressor.name,Hush Barrel Can
+item.mod.mastiff_suppressor.desc,"A fat can for the .45. Silent, with a little less punch."
+item.mod.mastiff_iron_sights.name,Standard Iron Sights
+item.mod.mastiff_vertical_grip.name,Shroud Foregrip
+item.mod.mastiff_vertical_grip.desc,A foregrip on the shroud rail. Tames the climb and adds bulk.
+item.mod.mastiff_standard_mag.name,Standard Magazine
+item.mod.mastiff_extended_mag.name,Thirty-Five-Round Stick
+item.mod.mastiff_extended_mag.desc,A longer stick with a witness window. Ten more rounds and a slower reload.
+item.weapon.anvil_lmg.name,Anvil
+item.weapon.anvil_lmg.desc,"Tillman's belt-fed 7.62 workhorse. A hundred heavy rounds, a walnut stock, and nothing about it is discreet."
+item.mod.anvil_short_barrel.name,Assault Barrel
+item.mod.anvil_short_barrel.desc,"A short quick-change barrel. Easier to carry and hide, but it spreads more."
+item.mod.anvil_iron_sights.name,Tangent Leaf Sight
+item.mod.anvil_bipod.name,Trestle Bipod
+item.mod.anvil_bipod.desc,"A folding bipod on the gas rail. Steadier bursts, slower to aim."
+item.mod.anvil_box_100.name,Hundred-Round Box
+item.mod.anvil_box_150.name,Hundred-Fifty-Round Box
+item.mod.anvil_box_150.desc,"A bigger belt box. Fifty more rounds, heavier to carry and slower to reload."
+item.weapon.condor_50.name,Condor .50
+item.weapon.condor_50.desc,"Marrow & Kell's .50 anti-materiel rifle. Five rounds that go through armor, shields and walls, and a very loud report."
+item.mod.condor_suppressor.name,Thunderhead Suppressor
+item.mod.condor_suppressor.desc,"The biggest can in the armory. It silences a .50, but costs damage and bulk."
+item.mod.condor_scope_6x.name,Fixed 6x Scope
+item.mod.condor_scope_12x.name,Longwatch 12x Scope
+item.mod.condor_scope_12x.desc,A 12x scope with parallax adjustment. Reaches the far roof and slows the shouldering.
+item.mod.condor_bipod.name,Heavy Bipod
+item.mod.condor_bipod.desc,"A heavy bipod that soaks up recoil. Slower to aim, harder to hide."
+item.mod.condor_standard_mag.name,Five-Round Magazine
+item.mod.condor_extended_mag.name,Eight-Round Magazine
+item.mod.condor_extended_mag.desc,"Three more rounds. Bulkier, with a slower reload."
+item.weapon.mule_12.name,Mule 12
+item.weapon.mule_12.desc,"A stockless Tillman pump gun short enough for the secondary slot. Five shells, loaded one at a time."
+item.mod.mule_ghost_ring.name,Ghost Ring Sights
+item.mod.mule_folding_stock.name,Skeleton Stock
+item.mod.mule_folding_stock.desc,A skeleton stock for steadier follow-ups. The Mule no longer fits under a jacket.
+item.mod.mule_standard_tube.name,Five-Shell Tube
+item.mod.mule_extended_tube.name,Extended Tube
+item.mod.mule_extended_tube.desc,Two more shells under the barrel. Each shell still loads one at a time.
+item.weapon.akimbo_warden_45.name,Warden .45 Pair
+item.weapon.akimbo_warden_45.desc,"Two Warden .45s, one in each hand. Twice the rounds and twice the noise, at the cost of accuracy."
+item.mod.akimbo_w45_compensator.name,Ridgeline Compensator Pair
+item.mod.akimbo_w45_compensator.desc,"Matched compensators keep both muzzles down. They lengthen the slides, so no suppressors."
+item.mod.akimbo_w45_suppressor.name,Quietus Suppressor Pair
+item.mod.akimbo_w45_suppressor.desc,"A matched pair of .45 cans. Quiet, a little weaker, and bulky twice over."
+item.mod.akimbo_w45_iron_sights.name,Standard Iron Sights
+item.mod.akimbo_w45_reflex_sight.name,Glint Slide Reflex Pair
+item.mod.akimbo_w45_reflex_sight.desc,Red dots on both slides for faster shots. More to hide.
+item.mod.akimbo_w45_standard_mag.name,Standard Magazines
+item.mod.akimbo_w45_extended_mag.name,Twelve-Round Magazines
+item.mod.akimbo_w45_extended_mag.desc,Twelve-round magazines in both guns. Longer grips and a slower reload.
+item.weapon.marshal_357.name,Marshal .357
+item.weapon.marshal_357.desc,"Marrow & Kell's stainless six-shooter. Each .357 round hits hard, and a speedloader refills all six at once."
+item.mod.marshal_long_barrel.name,Six-Inch Barrel
+item.mod.marshal_long_barrel.desc,"A six-inch barrel. More damage and accuracy, harder to draw and hide."
+item.mod.marshal_snub_barrel.name,Snub Barrel
+item.mod.marshal_snub_barrel.desc,"A snub barrel that vanishes in a pocket. It costs damage, accuracy and control."
+item.mod.marshal_iron_sights.name,Adjustable Rear Sight
+item.mod.marshal_reflex_sight.name,Topstrap Reflex
+item.mod.marshal_reflex_sight.desc,"A small red dot on the top strap. Faster to aim, slightly harder to hide."
+item.mod.marshal_rubber_grip.name,Cushion Grip
+item.mod.marshal_rubber_grip.desc,A finger-grooved rubber grip that soaks up the recoil. A little bulkier.
+item.mod.marshal_cylinder.name,Six-Shot Cylinder
+item.weapon.falchion_dmr.name,Falchion DMR
+item.weapon.falchion_dmr.desc,Brannock's semi-automatic 7.62 marksman rifle. Twenty heavy rounds that hit as hard at a hundred meters as at ten.
+item.mod.falchion_suppressor.name,Longcoat Suppressor
+item.mod.falchion_suppressor.desc,"A long 7.62 can over the brake. Silent, with less damage per round."
+item.mod.falchion_iron_sights.name,Standard Iron Sights
+item.mod.falchion_bipod.name,Marksman Bipod
+item.mod.falchion_bipod.desc,"A marksman's bipod. Flatter follow-up shots, slower to aim."
+item.mod.falchion_standard_mag.name,Twenty-Round Magazine
+item.mod.falchion_extended_mag.name,Twenty-Five-Round Magazine
+item.mod.falchion_extended_mag.desc,Five more rounds. Bulkier and a little slower to reload.
+item.weapon.wasp_pdw.name,Wasp PDW
+item.weapon.wasp_pdw.desc,"A compact Brannock PDW. The magazine goes in the grip, it fires fast, and it hides under a jacket."
+item.mod.wasp_suppressor.name,Stinger Suppressor
+item.mod.wasp_suppressor.desc,"A slim can over the flash hider. Near silent, with a slight damage cost."
+item.mod.wasp_iron_sights.name,Standard Iron Sights
+item.mod.wasp_end_cap.name,Stock Removed
+item.mod.wasp_end_cap.desc,"The stock comes off and an end cap goes on. Smaller, but much harder to control."
+item.mod.wasp_standard_mag.name,Thirty-Round Magazine
+item.mod.wasp_extended_mag.name,Forty-Round Magazine
+item.mod.wasp_extended_mag.desc,"Forty rounds through the grip. Longer, and slower to swap."
+item.weapon.sparrow_mp.name,Sparrow MP
+item.weapon.sparrow_mp.desc,"Halvard's select-fire machine pistol. Full auto from a pistol frame, if you can hold it on target."
+item.mod.sparrow_suppressor.name,Whisperline Suppressor
+item.mod.sparrow_suppressor.desc,"A slim 9 mm can. Silent full auto, a little weaker."
+item.mod.sparrow_iron_sights.name,Standard Iron Sights
+item.mod.sparrow_reflex_sight.name,Pinpoint Slide Reflex
+item.mod.sparrow_reflex_sight.desc,A slide-cut red dot for quicker aim. Adds a little bulk.
+item.mod.sparrow_wire_stock.name,Clip-On Wire Stock
+item.mod.sparrow_wire_stock.desc,A clip-on wire stock that makes full auto controllable. Ruins the pocket-pistol profile.
+item.mod.sparrow_standard_mag.name,Twenty-Round Magazine
+item.mod.sparrow_extended_mag.name,Thirty-Two-Round Magazine
+item.mod.sparrow_extended_mag.desc,"Thirty-two rounds sticking well out of the grip. Slower to swap, harder to hide."

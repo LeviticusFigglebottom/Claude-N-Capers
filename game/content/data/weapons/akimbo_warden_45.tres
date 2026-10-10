@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dsqwokkunqr5k" path="res://assets/weapons/wpn_akimbo_warden_45/wpn_akimbo_warden_45.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 62.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 400.0
+spread_deg_hip = 4.2
+spread_deg_ads = 2.4
+recoil_kick_deg = 1.5
+recoil_horizontal_deg = 0.9
+falloff_start_m = 15.0
+falloff_end_m = 30.0
+falloff_min_mult = 0.5
+mag_size = 16
+total_ammo = 128
+reload_time_s = 3.0
+reload_empty_time_s = 3.6
+equip_time_s = 0.5
+ads_time_s = 0.25
+concealment = 23
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 11.0
+ammo_pickup_min = 3.0
+ammo_pickup_max = 6.0
+suppressed = false
+noise_radius_m = 70.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.akimbo_warden_45"
+display_name = "Warden .45 Pair"
+manufacturer = "Marrow & Kell"
+weapon_class = 0
+slot = 0
+fire_modes = Array[StringName]([&"semi"])
+base = SubResource("base")
+price = 36000
+unlock_level = 16
+mod_slots = {
+1: [&"mod.akimbo_w45_compensator"],
+2: [&"mod.akimbo_w45_suppressor"],
+3: [&"mod.akimbo_w45_iron_sights", &"mod.akimbo_w45_reflex_sight"],
+7: [&"mod.akimbo_w45_standard_mag", &"mod.akimbo_w45_extended_mag"]
+}
+default_mods = {
+3: &"mod.akimbo_w45_iron_sights",
+7: &"mod.akimbo_w45_standard_mag"
+}
+fire_cue = &"cue.weapon_pistol_fire"
+fire_cue_suppressed = &"cue.weapon_pistol_fire_suppressed"
+anim_set = &"akimbo"
+model = ExtResource("3")

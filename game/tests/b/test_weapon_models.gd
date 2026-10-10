@@ -14,12 +14,28 @@ const STOCK_PARTS: Dictionary = {
 	&"weapon.plowman_12": [&"StockSight", &"StockMagazine", &"StockStock"],
 	&"weapon.rampart_lmg": [&"StockSight", &"StockMagazine", &"StockBarrel"],
 	&"weapon.heron_308": [&"StockSight", &"StockMagazine"],
+	# B4-12
+	&"weapon.drover_762": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.mastiff_45": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.anvil_lmg": [&"StockSight", &"StockMagazine", &"StockBarrel"],
+	&"weapon.condor_50": [&"StockSight", &"StockMagazine"],
+	&"weapon.mule_12": [&"StockSight", &"StockMagazine"],
+	&"weapon.akimbo_warden_45": [&"StockSight", &"StockMagazine"],
+	&"weapon.marshal_357": [&"StockSight", &"StockMagazine", &"StockBarrel", &"StockGrip"],
+	&"weapon.falchion_dmr": [&"StockSight", &"StockMagazine"],
+	&"weapon.wasp_pdw": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.sparrow_mp": [&"StockSight", &"StockMagazine"],
 }
 ## Overall length range (Muzzle to StockMount / rear-most marker), metres.
 const LENGTH_RANGE: Dictionary = {
 	&"weapon.warden_45": Vector2(0.18, 0.26), &"weapon.hornet_9": Vector2(0.28, 0.40),
 	&"weapon.corsair_ar": Vector2(0.62, 0.78), &"weapon.plowman_12": Vector2(0.65, 0.78),
 	&"weapon.rampart_lmg": Vector2(0.72, 0.86), &"weapon.heron_308": Vector2(0.80, 0.92),
+	&"weapon.drover_762": Vector2(0.66, 0.78), &"weapon.mastiff_45": Vector2(0.36, 0.46),
+	&"weapon.anvil_lmg": Vector2(0.78, 0.90), &"weapon.condor_50": Vector2(1.00, 1.12),
+	&"weapon.mule_12": Vector2(0.44, 0.52), &"weapon.akimbo_warden_45": Vector2(0.18, 0.26),
+	&"weapon.marshal_357": Vector2(0.17, 0.25), &"weapon.falchion_dmr": Vector2(0.78, 0.90),
+	&"weapon.wasp_pdw": Vector2(0.30, 0.38), &"weapon.sparrow_mp": Vector2(0.16, 0.24),
 }
 const WEAPONS_DIR: String = "res://assets/weapons"
 
@@ -264,7 +280,8 @@ func test_every_model_asset_is_within_budget() -> void:
 		assert_true(tris <= budget, "%s: %d tris <= %d" % [id, tris, budget])
 
 
-## The heaviest kit (largest mod per slot) still fits the 25k first-person budget.
+## The heaviest kit (largest mod per slot) still fits the 25k first-person budget. An akimbo model
+## (`Offhand` marker) is drawn twice with the same kit, so its kit counts double (D-050).
 func test_heaviest_full_kit_fits_the_fp_budget() -> void:
 	for w: WeaponDef in ContentDB.all_weapons():
 		var total: int = _tris_of(w.model)
@@ -275,6 +292,10 @@ func test_heaviest_full_kit_fits_the_fp_budget() -> void:
 				if StringName(w.default_mods.get(slot, &"")) != m.id:
 					worst = maxi(worst, _tris_of(m.model))
 			total += worst
+		var inst: Node = w.model.instantiate()
+		if inst.find_child(String(WeaponVisual.OFFHAND_MARKER), true, false) != null:
+			total *= 2
+		inst.free()
 		assert_true(total <= FP_WEAPON_TRI_BUDGET, "%s full kit %d tris" % [w.id, total])
 
 
@@ -306,4 +327,114 @@ func test_rampart_feed_cover_hinge() -> void:
 	var before: Vector3 = sight.global_position
 	cover.rotation.x = deg_to_rad(78.0)
 	assert_true(sight.global_position.y > before.y + 0.03, "opening lifts the rail (front edge up)")
+	v.queue_free()
+
+
+func _model_of(weapon_id: StringName) -> WeaponVisual:
+	var v: WeaponVisual = WeaponVisual.new()
+	add_child(v)
+	v.setup_ids(weapon_id, [] as Array[StringName])
+	return v
+
+
+func _local(v: WeaponVisual, n: Node3D) -> Vector3:
+	return v.model.global_transform.affine_inverse() * n.global_position
+
+
+## B4-12: animated parts. Pump guns carry `Pump`; bolt guns carry a `Bolt` whose origin is ON the bore
+## axis (ENV A lifts it about local Z, then slides it +Z), the Heron .308 included (fixed in B4-12).
+func test_animated_parts_and_pivots() -> void:
+	for id: StringName in [&"weapon.plowman_12", &"weapon.mule_12"]:
+		var v: WeaponVisual = _model_of(id)
+		assert_true(v.model.find_child("Pump", true, false) is Node3D, "%s Pump" % id)
+		v.queue_free()
+	for id: StringName in [&"weapon.heron_308", &"weapon.condor_50"]:
+		var v: WeaponVisual = _model_of(id)
+		var bolt: Node3D = v.model.find_child("Bolt", true, false) as Node3D
+		assert_true(bolt != null, "%s Bolt" % id)
+		if bolt != null:
+			var p: Vector3 = _local(v, bolt)
+			var bore: Vector3 = _local(v, v.get_base_marker(&"Muzzle"))
+			assert_near(p.x, 0.0, 0.0005, "%s bolt pivot on the centre plane" % id)
+			assert_near(p.y, bore.y, 0.0005, "%s bolt pivot at bore height" % id)
+			assert_true(p.z > -0.05 and p.z < 0.06, "%s bolt pivot at the receiver rear (%f)" % [id, p.z])
+		v.queue_free()
+
+
+## D-044 rule for every belt-fed LMG: a rear-hinged `FeedCover` carrying the optics rail.
+func test_anvil_feed_cover_hinge() -> void:
+	var v: WeaponVisual = _model_of(&"weapon.anvil_lmg")
+	var cover: Node3D = v.model.find_child("FeedCover", true, false) as Node3D
+	assert_true(cover != null, "FeedCover node")
+	if cover == null:
+		v.queue_free()
+		return
+	assert_true(cover.rotation.is_zero_approx(), "closed = rotation 0")
+	var mesh: MeshInstance3D = cover as MeshInstance3D
+	if mesh != null:
+		var box: AABB = mesh.get_aabb()
+		assert_true(box.end.z < 0.012 and box.position.z < -0.15, "cover lies in front of the rear hinge: %s" % box)
+	var sight: Node3D = v.get_marker(&"SightRail")
+	assert_true(cover.is_ancestor_of(sight), "SightRail rides on the feed cover")
+	var before: Vector3 = sight.global_position
+	cover.rotation.x = deg_to_rad(78.0)
+	assert_true(sight.global_position.y > before.y + 0.03, "opening lifts the rail")
+	v.queue_free()
+
+
+## Revolver (B4-12): `Crane` (hinge pivot) swings the `Cylinder` out to the left with a positive rotation
+## about local Z; the cylinder turns about its own axis; the speedloader `Magwell` rides on the cylinder.
+func test_revolver_crane_and_cylinder() -> void:
+	var v: WeaponVisual = _model_of(&"weapon.marshal_357")
+	var crane: Node3D = v.model.find_child("Crane", true, false) as Node3D
+	var cyl: Node3D = v.model.find_child("Cylinder", true, false) as Node3D
+	assert_true(crane != null and cyl != null and crane.is_ancestor_of(cyl), "Crane/Cylinder")
+	if crane == null or cyl == null:
+		v.queue_free()
+		return
+	var magwell: Node3D = v.get_base_marker(&"Magwell")
+	assert_true(cyl.is_ancestor_of(magwell), "Magwell rides on the cylinder")
+	# Magwell convention: the insertion axis is the marker's up axis (Blender +Z = Godot +Y)
+	assert_true(magwell.global_basis.y.normalized().dot(Vector3.FORWARD) > 0.99, "speedloader goes in forward (-Z)")
+	var bore: Vector3 = _local(v, v.get_base_marker(&"Muzzle"))
+	var c0: Vector3 = _local(v, cyl)
+	assert_near(c0.x, 0.0, 0.0005, "cylinder axis on the centre plane")
+	assert_true(c0.y < bore.y - 0.008, "cylinder axis below the bore (top chamber in line)")
+	crane.rotation.z = deg_to_rad(80.0)
+	var c1: Vector3 = _local(v, cyl)
+	assert_true(c1.x < c0.x - 0.015, "crane swings the cylinder out to the left (%s -> %s)" % [c0, c1])
+	crane.rotation.z = 0.0
+	cyl.rotation.z = deg_to_rad(60.0)
+	assert_true(_local(v, cyl).distance_to(c0) < 0.0001, "the cylinder turns about its own axis")
+	v.queue_free()
+
+
+## D-050 akimbo: the model is one gun plus an `Offhand` marker; WeaponVisual adds the second gun at
+## that pose and mirrors every mod (and stock-part hiding) onto it.
+func test_akimbo_offhand_mirrors_the_kit() -> void:
+	var single: WeaponVisual = _model_of(&"weapon.warden_45")
+	assert_false(single.is_akimbo(), "a single pistol has no offhand")
+	assert_true(single.get_offhand_marker(&"Muzzle") == null, "no offhand marker")
+	single.queue_free()
+	var mods: Array[StringName] = [&"mod.akimbo_w45_suppressor", &"mod.akimbo_w45_reflex_sight",
+		&"mod.akimbo_w45_extended_mag"]
+	var v: WeaponVisual = _visual_for(&"weapon.akimbo_warden_45", mods)
+	assert_true(v.is_akimbo() and v.offhand != null, "offhand gun")
+	if v.offhand == null:
+		v.queue_free()
+		return
+	assert_true(v.offhand.position.x < -0.1, "offhand gun sits to the left (%s)" % v.offhand.position)
+	assert_false(v.model.is_ancestor_of(v.offhand), "offhand is a sibling, so base markers stay unique")
+	assert_eq(v.attached.size(), 3, "three mods on the right gun")
+	assert_eq(v.attached_offhand.size(), 3, "three mods on the left gun")
+	for t: int in [Enums.ModType.SIGHT, Enums.ModType.MAGAZINE]:
+		assert_false(v.stock_part(t as Enums.ModType).visible, "right stock part %d hidden" % t)
+		assert_false(v.offhand_stock_part(t as Enums.ModType).visible, "left stock part %d hidden" % t)
+	var left_muzzle: Node3D = v.get_offhand_marker(&"Muzzle")
+	assert_true(v.attached_offhand[Enums.ModType.SUPPRESSOR].is_ancestor_of(left_muzzle), "left can owns its Muzzle")
+	assert_ne(left_muzzle, v.get_marker(&"Muzzle"), "two muzzles")
+	assert_true(left_muzzle.global_position.x < v.get_marker(&"Muzzle").global_position.x - 0.1, "left muzzle is left")
+	v.setup_ids(&"weapon.akimbo_warden_45", [] as Array[StringName])
+	assert_eq(v.attached_offhand.size(), 0, "rebuilt stock")
+	assert_true(v.offhand_stock_part(Enums.ModType.SIGHT).visible, "left stock sight back")
 	v.queue_free()

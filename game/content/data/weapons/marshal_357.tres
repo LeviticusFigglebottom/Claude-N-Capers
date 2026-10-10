@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://c4nflu8eyckii" path="res://assets/weapons/wpn_marshal_357/wpn_marshal_357.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 155.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 330.0
+spread_deg_hip = 3.4
+spread_deg_ads = 0.9
+recoil_kick_deg = 2.1
+recoil_horizontal_deg = 0.6
+falloff_start_m = 18.0
+falloff_end_m = 35.0
+falloff_min_mult = 0.5
+mag_size = 6
+total_ammo = 54
+reload_time_s = 2.4
+reload_empty_time_s = 2.4
+equip_time_s = 0.4
+ads_time_s = 0.22
+concealment = 26
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 12.0
+ammo_pickup_min = 1.0
+ammo_pickup_max = 3.0
+suppressed = false
+noise_radius_m = 75.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.marshal_357"
+display_name = "Marshal .357"
+manufacturer = "Marrow & Kell"
+weapon_class = 0
+slot = 1
+fire_modes = Array[StringName]([&"semi"])
+base = SubResource("base")
+price = 30000
+unlock_level = 10
+mod_slots = {
+0: [&"mod.marshal_long_barrel", &"mod.marshal_snub_barrel"],
+3: [&"mod.marshal_iron_sights", &"mod.marshal_reflex_sight"],
+4: [&"mod.marshal_rubber_grip"],
+7: [&"mod.marshal_cylinder"]
+}
+default_mods = {
+3: &"mod.marshal_iron_sights",
+7: &"mod.marshal_cylinder"
+}
+fire_cue = &"cue.weapon_revolver_fire"
+fire_cue_suppressed = &"cue.weapon_revolver_fire_suppressed"
+anim_set = &"revolver"
+model = ExtResource("3")
