@@ -2,8 +2,9 @@
 ## Binds ONLY to the local HUD model and EventBus. Model resolution, in order:
 ##   1. bind(model) called by the owner (MenuFlow, tests, hud_demo);
 ##   2. exported `model_path`;
-##   3. runtime lookup: the first node whose script class is LocalHudModel anywhere in the scene
-##      tree (ENV A adds it under HeistRuntime), retried every LOOKUP_INTERVAL_S until found.
+##   3. discovery through group G.LOCAL_HUD_MODEL (ui_hud.md v1.1, D-024: exactly one per peer,
+##      joined in the model's _ready; MockHudModel joins it too), polled every LOOKUP_INTERVAL_S
+##      while unbound, and again after the bound model is freed.
 ## No hard dependency on ENV A classes. Layout is anchored for 1280x720 .. 3840x2160 (canvas_items
 ## stretch at the 1920x1080 base).
 class_name Hud
@@ -11,12 +12,11 @@ extends Control
 
 signal model_bound(model: Node)
 
-const MODEL_CLASS: StringName = &"LocalHudModel"
-const LOOKUP_INTERVAL_S: float = 0.5
+const LOOKUP_INTERVAL_S: float = 0.25
 const TOAST_S: float = 3.0
 
 @export var model_path: NodePath
-## Search the tree for LocalHudModel when nothing is bound.
+## Discover the model through group G.LOCAL_HUD_MODEL when nothing is bound.
 @export var auto_find_model: bool = true
 
 var model: Node = null
@@ -110,15 +110,21 @@ func _process(delta: float) -> void:
 	if _toast_t > 0.0:
 		_toast_t -= delta
 		toast_label.visible = _toast_t > 0.0
+	if model != null and not is_instance_valid(model):
+		bind(null)
 	if model == null and auto_find_model:
 		_lookup_t -= delta
 		if _lookup_t <= 0.0:
 			_lookup_t = LOOKUP_INTERVAL_S
-			var found: Node = UiNav.find_node_of_class(get_tree().root, MODEL_CLASS)
-			if found != null:
-				bind(found)
-	elif model != null and not is_instance_valid(model):
-		bind(null)
+			discover_model()
+
+
+## Bind the local HUD model found through group G.LOCAL_HUD_MODEL. Returns it (or null).
+func discover_model() -> Node:
+	var found: Node = get_tree().get_first_node_in_group(G.LOCAL_HUD_MODEL)
+	if found != null and found != model:
+		bind(found)
+	return found
 
 
 func _on_alarm_raised(_reason: StringName, _source_net_id: int) -> void:

@@ -62,6 +62,23 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `clear_cache()` drops it.
 * `XpCurve.level_for_xp(xp)`, `xp_for_level(level)`. `VoiceLineTable` at `data/voice/lines.tres`.
 
+## App shell and UI (D-024)
+* `MenuFlow` (`ui/menus/menu_flow.tscn`) is the app shell; `core/boot.gd` routes to it. It owns
+  launch (`launch(heist_id, difficulty, loadout, seed)`: `Net.start_solo` + resolved loadout + HUD/payday
+  CanvasLayer + dynamic `HeistLauncher.launch`; stub screen when the launcher is absent), and
+  `HeistRuntime.teardown()` + `Net.leave()` after results. Direct launch:
+  `godot --path game -- --heist=<id> [--seed=<n>] [--difficulty=<0..5>]` (seed defaults to the
+  time, difficulty to Routine; unknown heist or bad value logs an error and stays on the main menu).
+  Parsing: `LaunchArgs.parse(args) -> {direct, heist_id, has_seed, seed, difficulty, errors}`,
+  `LaunchArgs.validate_heist(id, known_ids)`. `MenuFlow.direct_launch(parsed) -> bool`.
+* `HeistCatalog.entries()/ids()`: heists from `HeistRegistry` (core); `data/ui/heist_list.tres`
+  (`UiHeistList`) holds per-heist UI data keyed by id (`solo_ai_teammates`, and
+  `placeholder_base_payout/placeholder_mode` used only while `HeistRegistry.get_def(id)` is null),
+  plus build-wide `unlocked_difficulties` and the default `solo_ai_teammates`.
+  `entries_from(defs, list)` is the pure builder (tests).
+* `Hud` binds to the node in group `G.LOCAL_HUD_MODEL` (ui_hud.md v1.1), polled while unbound and
+  rediscovered if the model is freed; `bind(model)` still works. `MockHudModel` joins the same group.
+
 ## Rules
 Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, every string through
 `StringTable`, only grant keys from `ModifierKeys.KEYS`. Code that builds a mod delta starts from
