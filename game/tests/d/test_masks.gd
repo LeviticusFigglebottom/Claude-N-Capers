@@ -1,11 +1,21 @@
 ## D1-04: crew mask models (tools/blender/masks/). The mask glb has M_char_mask_* surfaces, a
 ## head-sized AABB and its pivot at the face centre with the front (beak) toward -Z.
+## QB-50b: the five customisable base masks (content/docs/masks.md): one colour-neutral surface
+## (the mask shader is applied as material_override), front-projected UV0 (x 0 = viewer's left
+## = +X, y 0 = top), pivot at the face centre, -Z forward.
 ## Run after `godot --import`.
 extends TestCase
 
 const MASK_PATH: String = "res://assets/masks/mask_gilded_heron/mask_gilded_heron.glb"
 const MATERIAL_PREFIX: String = "M_char_mask_"
 const LIBRARY_PREFIX: String = "res://world/materials/char_mask_"
+# QB-50b customisable base masks
+const BASE_NAMES: Array[String] = ["heron", "visage", "vulpine", "bruiser", "owl"]
+const BASE_MATERIAL: String = "M_char_mask_base"
+const BASE_LIBRARY: String = "res://world/materials/char_mask_base.tres"
+const BASE_TRI_BUDGET: int = 8000
+## Masks whose front-most point is a centred beak/snout/nose.
+const CENTRED_FRONT: Array[String] = ["heron", "visage", "vulpine", "owl"]
 
 
 func _load_mask() -> Node3D:
@@ -96,3 +106,109 @@ func test_pivot_is_face_centre_and_front_is_minus_z() -> void:
 	assert_near(tip.x, 0.0, 0.002, "beak tip on the centreline")
 	assert_true(tip.y < 0.0, "beak points forward and down (y = %.3f)" % tip.y)
 	root.queue_free()
+
+
+# --- QB-50b customisable base masks ------------------------------------------------------------
+
+
+func _base_path(base_name: String) -> String:
+	return "res://assets/masks/mask_base_%s/mask_base_%s.glb" % [base_name, base_name]
+
+
+func _load_base(base_name: String) -> Node3D:
+	var packed: PackedScene = load(_base_path(base_name)) as PackedScene
+	if packed == null:
+		fail("could not load %s (run godot --import first)" % _base_path(base_name))
+		return null
+	var root: Node3D = packed.instantiate() as Node3D
+	add_child(root)
+	return root
+
+
+func test_base_masks_have_one_neutral_surface() -> void:
+	for base_name: String in BASE_NAMES:
+		var root: Node3D = _load_base(base_name)
+		if root == null:
+			continue
+		var surfaces: int = 0
+		var tris: int = 0
+		for mi: MeshInstance3D in _meshes(root):
+			for s: int in range(mi.mesh.get_surface_count()):
+				surfaces += 1
+				var m: Material = mi.mesh.surface_get_material(s)
+				var mat_name: String = "" if m == null else m.resource_name
+				# placeholder M_char_mask_base, or the library world/materials/char_mask_base.tres once it exists
+				var ok: bool = mat_name == BASE_MATERIAL or (m != null and m.resource_path == BASE_LIBRARY)
+				assert_true(ok, "%s surface %d material %s (want %s)" % [base_name, s, mat_name, BASE_MATERIAL])
+				var idx: PackedInt32Array = mi.mesh.surface_get_arrays(s)[Mesh.ARRAY_INDEX]
+				tris += idx.size() / 3
+		assert_eq(surfaces, 1, "%s has exactly one surface (masks.md)" % base_name)
+		assert_true(tris > 1000 and tris <= BASE_TRI_BUDGET, "%s tris %d in 1000..%d" % [base_name, tris, BASE_TRI_BUDGET])
+		root.queue_free()
+
+
+func test_base_masks_are_head_sized_and_symmetric() -> void:
+	for base_name: String in BASE_NAMES:
+		var root: Node3D = _load_base(base_name)
+		if root == null:
+			continue
+		var box: AABB = _bounds(_meshes(root))
+		assert_true(box.size.x >= 0.14 and box.size.x <= 0.30, "%s width %.3f m in 0.14..0.30" % [base_name, box.size.x])
+		assert_true(box.size.y >= 0.18 and box.size.y <= 0.32, "%s height %.3f m in 0.18..0.32" % [base_name, box.size.y])
+		assert_true(box.size.z >= 0.04 and box.size.z <= 0.30, "%s depth %.3f m in 0.04..0.30" % [base_name, box.size.z])
+		assert_near(box.get_center().x, 0.0, 0.002, "%s is symmetric about x = 0" % base_name)
+		root.queue_free()
+
+
+func test_base_masks_pivot_is_face_centre_and_front_is_minus_z() -> void:
+	for base_name: String in BASE_NAMES:
+		var root: Node3D = _load_base(base_name)
+		if root == null:
+			continue
+		var meshes: Array[MeshInstance3D] = _meshes(root)
+		var box: AABB = _bounds(meshes)
+		assert_true(box.position.x < -0.05 and box.end.x > 0.05, "%s: origin inside the mask in X" % base_name)
+		assert_true(box.position.y < -0.07 and box.end.y > 0.07, "%s: origin on the eye line, between brow and chin" % base_name)
+		assert_true(box.position.z < 0.0 and box.end.z > 0.0, "%s: origin at eye depth, inside the depth range" % base_name)
+		assert_true(-box.position.z > box.end.z, "%s extends further to -Z (front) than to +Z" % base_name)
+		var tip: Vector3 = _front_point(meshes)
+		assert_true(tip.z < -0.025, "%s front point in front of the face (z = %.3f)" % [base_name, tip.z])
+		if base_name in CENTRED_FRONT:
+			assert_near(tip.x, 0.0, 0.003, "%s front point on the centreline" % base_name)
+			assert_true(tip.y < 0.0, "%s beak/snout/nose below the eye line (y = %.3f)" % [base_name, tip.y])
+		root.queue_free()
+
+
+## UV0 per masks.md: front planar, x 0 = viewer's left (+X) .. 1, y 0 = top .. 1 = bottom, 0..1.
+func test_base_masks_uv0_is_front_projected() -> void:
+	for base_name: String in BASE_NAMES:
+		var root: Node3D = _load_base(base_name)
+		if root == null:
+			continue
+		var box: AABB = _bounds(_meshes(root))
+		var uv_min: Vector2 = Vector2(INF, INF)
+		var uv_max: Vector2 = Vector2(-INF, -INF)
+		var worst: float = 0.0
+		for mi: MeshInstance3D in _meshes(root):
+			for s: int in range(mi.mesh.get_surface_count()):
+				var arrays: Array = mi.mesh.surface_get_arrays(s)
+				var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+				var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+				assert_eq(uvs.size(), verts.size(), "%s has UV0" % base_name)
+				if uvs.size() != verts.size():
+					continue
+				for i: int in range(verts.size()):
+					var w: Vector3 = mi.global_transform * verts[i]
+					var uv: Vector2 = uvs[i]
+					uv_min = Vector2(minf(uv_min.x, uv.x), minf(uv_min.y, uv.y))
+					uv_max = Vector2(maxf(uv_max.x, uv.x), maxf(uv_max.y, uv.y))
+					# expected planar projection along Z, normalised to the bounds
+					var ex: float = 0.5 - 0.5 * w.x / maxf(absf(box.position.x), absf(box.end.x))
+					var ey: float = (box.end.y - w.y) / box.size.y
+					worst = maxf(worst, maxf(absf(uv.x - ex), absf(uv.y - ey)))
+		assert_true(uv_min.x > -0.001 and uv_min.y > -0.001, "%s UV0 min %s >= 0" % [base_name, uv_min])
+		assert_true(uv_max.x < 1.001 and uv_max.y < 1.001, "%s UV0 max %s <= 1" % [base_name, uv_max])
+		assert_true(uv_min.x < 0.01 and uv_min.y < 0.01 and uv_max.x > 0.99 and uv_max.y > 0.99,
+			"%s UV0 spans 0..1 (%s..%s)" % [base_name, uv_min, uv_max])
+		assert_true(worst < 0.005, "%s UV0 = front projection (x 0 at +X, y 0 at top); max error %.4f" % [base_name, worst])
+		root.queue_free()
