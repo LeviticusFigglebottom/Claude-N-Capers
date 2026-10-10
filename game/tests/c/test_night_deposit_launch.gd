@@ -139,6 +139,68 @@ func _check_lift(map: HeistMap) -> void:
 	assert_near(lift.car_transform().origin.y, -3.95, 0.01, "car floor at B1")
 
 
+## Rare armored_car_early (Brutal+): the first Brutal seed that rolls it (pure resolver, same streams as
+## the launcher). The car is hidden until 12:00; the scheduled mark is then advanced (SceneTreeTimer
+## time_left) and 2 extra guards spawn at its rear on graph ArmoredCar.
+func test_armored_car_early_brutal() -> void:
+	if _launcher == null:
+		skip("HeistLauncher not available")
+		return
+	var seed_value: int = _armored_car_seed()
+	assert_true(seed_value >= 0, "a Brutal seed rolls armored_car_early")
+	if seed_value < 0:
+		return
+	var rt: Object = await _launch(seed_value, Enums.Difficulty.BRUTAL)
+	if rt == null:
+		fail("launch failed")
+		return
+	var v: Dictionary = rt.get(&"variants") as Dictionary
+	assert_has(v.get(&"rare", []), &"armored_car_early", "rare rolled at seed %d" % seed_value)
+	assert_eq(v.get(&"armored_car", []), [&"armored_car_bay"], "force_active pins the bay slot")
+	var map: HeistMap = rt.get(&"map") as HeistMap
+	var mission: HeistMission = rt.get(&"mission") as HeistMission
+	var car: Node3D = map.get_node_or_null("Variants/Group_armored_car/Slot_armored_car_bay/ArmoredCar") as Node3D
+	assert_true(car != null and not car.visible, "the armoured car is not there before 12:00")
+	var before: int = (rt.call(&"npcs", &"guard") as Array).size()
+	var timers: Dictionary = mission.get(&"_timers") as Dictionary
+	var t: SceneTreeTimer = timers.get(&"armored_car") as SceneTreeTimer
+	assert_true(t != null, "armored_car scheduled")
+	if t == null:
+		await _teardown(rt)
+		return
+	assert_near(t.time_left + mission.elapsed_s, 720.0, 1.0, "scheduled at 12:00 heist time")
+	t.time_left = 0.05
+	await wait_until(func() -> bool: return (rt.call(&"npcs", &"guard") as Array).size() >= before + 2, 3.0)
+	var guards: Array = rt.call(&"npcs", &"guard")
+	assert_eq(guards.size(), before + 2, "2 extra guards after 12:00")
+	assert_true(car != null and car.visible, "the armoured car is in the lot")
+	var tagged: int = 0
+	for g: Variant in guards:
+		var npc: NpcBase = g as NpcBase
+		if npc == null or not (npc.spawn_info.get("tags", []) as Array).has(&"guard_armored_car"):
+			continue
+		tagged += 1
+		var graph: Node = npc.spawn_info.get("patrol_graph") as Node
+		assert_true(graph != null and graph.name == &"ArmoredCar", "armoured-car guard walks graph ArmoredCar")
+	assert_eq(tagged, 2, "both carry the armoured-car spawn tag")
+	await _teardown(rt)
+
+
+func _armored_car_seed() -> int:
+	var ps: PackedScene = load("res://world/heists/night_deposit/night_deposit.tscn") as PackedScene
+	var map: HeistMap = ps.instantiate() as HeistMap
+	var slots: Dictionary = VariantResolver.collect_slots(map)
+	var found: int = -1
+	for s: int in range(1000, 1400):
+		GameRng.begin_run(s)
+		var v: Dictionary = VariantResolver.resolve(map.variant_table, slots, Enums.Difficulty.BRUTAL)
+		if (v.get(&"rare", []) as Array).has(&"armored_car_early"):
+			found = s
+			break
+	map.free()
+	return found
+
+
 static func _table(v: Dictionary) -> String:
 	var keys: Array = v.keys()
 	keys.sort_custom(func(a: Variant, b: Variant) -> bool: return String(a) < String(b))

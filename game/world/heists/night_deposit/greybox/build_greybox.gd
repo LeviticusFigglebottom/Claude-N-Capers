@@ -621,6 +621,7 @@ func _build_zones(zones: Node3D) -> void:
 func _build_patrols(patrols: Node3D) -> void:
 	_patrol_graph(patrols, "Bank", &"bank", L.PATROL_POINTS_BANK, L.PATROL_EDGES_BANK)
 	_patrol_graph(patrols, "Exterior", &"exterior", L.PATROL_POINTS_EXTERIOR, L.PATROL_EDGES_EXTERIOR)
+	_patrol_graph(patrols, "ArmoredCar", &"armored_car", L.PATROL_POINTS_ARMORED, L.PATROL_EDGES_ARMORED)
 
 
 func _patrol_graph(parent: Node3D, nm: String, graph_id: StringName, points: Dictionary, edges: Array) -> void:
@@ -644,6 +645,8 @@ func _patrol_graph(parent: Node3D, nm: String, graph_id: StringName, points: Dic
 		if row[4] != null:
 			p.basis = yaw_basis(float(row[4]))
 			p.face_marker_forward = true
+		if row.size() > 5:
+			p.weight = float(row[5])
 		add(g, p)
 	var links: Dictionary = {}
 	for e: Array in edges:
