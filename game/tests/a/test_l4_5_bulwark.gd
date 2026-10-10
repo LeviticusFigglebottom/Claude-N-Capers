@@ -121,3 +121,64 @@ func test_l4_5_specials_take_position_behind_bulwark() -> void:
 
 func _flat(v: Vector3) -> float:
 	return Vector2(v.x, v.z).length()
+
+
+func _shield_hit(s: BulwarkShield, amount: float) -> Dictionary:
+	var info: Dictionary = Damage.info(amount, Enums.DamageType.BULLET, Enums.HitZone.BODY, &"weapon.test",
+		s.global_position, Vector3(0, 0, -1), 0)
+	return s.take_hit(info, 0)
+
+
+## Stagger (shock-and-awe-like): a heavy shield hit or an explosion drops the guard briefly (no shield
+## collision, frontal hits reach the body), no fire / move; cooldown; Aegis shields never stagger.
+func test_l4_5_heavy_hit_and_explosion_stagger() -> void:
+	await _loud()
+	var bw: NpcBase = ACombatSpecials.spawn(_rt, "bulwark", Vector3(0, 0.05, -8), Vector3(0, 0, 1))
+	var b: BulwarkBrain = bw.get_node("Brain") as BulwarkBrain
+	var st: HeavySpecialTweak = b.special_tweak.duplicate() as HeavySpecialTweak
+	st.bulwark_stagger_s = 0.6
+	st.bulwark_stagger_cooldown_s = 0.5
+	b.special_tweak = st
+	await wait_physics_frames(3)
+	var s: BulwarkShield = b.shield
+	_shield_hit(s, st.bulwark_stagger_hit_damage * 0.5)
+	assert_false(b.is_staggered(), "light hits do not stagger")
+	var r: Dictionary = _shield_hit(s, st.bulwark_stagger_hit_damage)
+	assert_true(bool(r["blocked_by_shield"]), "the staggering hit itself is blocked")
+	assert_true(b.is_staggered() and s.guard_down, "heavy hit staggers")
+	assert_eq(s.collision_layer, 0, "guard down: the shield does not block")
+	assert_eq(b.anim_hint, &"hit_react")
+	await wait_physics_frames(2)
+	assert_false(b.wants_to_fire, "no fire while staggered")
+	var where: Vector3 = s.global_position
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
+		where + Vector3(0, 0, 3), where - Vector3(0, 0, 3), CombatTweak.data().hitscan_mask)
+	q.collide_with_areas = true
+	var hit: Dictionary = s.get_world_3d().direct_space_state.intersect_ray(q)
+	assert_true(hit.is_empty() or hit.get("collider") != s, "frontal shots get past the lowered shield")
+	assert_false(b.stagger(), "no stagger while staggered")
+	var up: bool = await wait_until(func() -> bool: return not b.is_staggered(), 2.0)
+	assert_true(up and not s.guard_down, "guard back up")
+	assert_eq(s.collision_layer, 1 << 1, "blocks again")
+	_shield_hit(s, st.bulwark_stagger_hit_damage * 2.0)
+	assert_eq(b.staggers, 1, "cooldown")
+	await wait_seconds(st.bulwark_stagger_cooldown_s + 0.1)
+	ACombatSpecials.hit(bw, 30.0, Enums.HitZone.BODY, Vector3.INF, Enums.DamageType.EXPLOSION)
+	assert_eq(b.staggers, 2, "an explosion staggers")
+	var up2: bool = await wait_until(func() -> bool: return not b.is_staggered(), 2.0)
+	assert_true(up2)
+	await wait_seconds(st.bulwark_stagger_cooldown_s + 0.1)
+	bw.set_meta(AegisCaptain.META_NO_FLINCH, true)
+	_shield_hit(s, st.bulwark_stagger_hit_damage * 2.0)
+	assert_eq(b.staggers, 2, "Aegis (no flinch) shields never stagger")
+
+
+func test_l4_5_dies_while_staggered_drops_a_blocking_shield() -> void:
+	var bw: NpcBase = ACombatSpecials.spawn(_rt, "bulwark", Vector3(0, 0.05, -8), Vector3(0, 0, 1))
+	await wait_physics_frames(3)
+	var b: BulwarkBrain = bw.get_node("Brain") as BulwarkBrain
+	assert_true(b.stagger(), "staggered")
+	bw.die({}, 0)
+	await wait_physics_frames(3)
+	assert_true(b.shield.dropped and not b.shield.guard_down, "dropped with the guard up")
+	assert_eq(b.shield.collision_layer, 1 << 1, "the dropped shield blocks")

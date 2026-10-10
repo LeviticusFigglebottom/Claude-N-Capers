@@ -63,8 +63,8 @@ Scene path = `res://systems/prefabs/<name>/<name>.tscn`. Placeholder = `<name>/<
 | `escape_zone` | `EscapeZone` | Node3D | `escape_type: StringName` (&"van"; one of van, boat, heli, lift, zipline, walk), `active` (false), `zone_size_m` (4, 3, 4), `arrival_delay_s` (0, A3-10), `bag_only` (false, A3-10) | not interactive | art only (not the placeholder): van `Body`, `DoorL`, `DoorR`; heli `Body`, `Rotor`; boat `Body` | `Zone` MapZone ESCAPE (stays in the group, `monitoring` follows `active`). `activate()` is called by `HeistMission.activate_escape()`. Visual hidden while inactive or approaching. C10, QC-19 |
 | `body_container` | `BodyContainer` | Node3D | `capacity: int` (2) | not interactive | `Lid` (pivot), `Inside` | `Zone` MapZone BODY_HIDE (1.8×1.6×1.0). `Collision` body (layer 1). S6.3 |
 | `ladder` | `Ladder` | Node3D | `height_m` (3.0) | not interactive | `Top`, `Bottom` | Climb side −Z. The placeholder resizes to `height_m`. A2-04 climbing (below) |
-| `bag_lift` | `BagLift` | Node3D | `targets: Array[NodePath]` ([]: the OTHER landings; landing 0 = the prefab), `travel_s` (8.0), `capacity: int` (2), `car_size_m: Vector3` (1.2, 1.2, 1.2, A3-09 addition) | `bag_lift_send_s` | `Car`, `DoorL`, `DoorR`, `Panel` | Pivot = car floor centre at landing 0, car front −Z. `CarBody` AnimatableBody3D floor slab (layer 2) follows the car. Runtime `LandingPanel<i>` InteractableComponents at landings 1..n. QC-11 |
-| `hack_terminal` | `HackTerminal` | Node3D | `duration_s` (-1 = `hack_duration_s`), `interruptions: Vector2i` ((-1, -1) = `hack_interruptions`), `targets: Array[NodePath]` ([]) | `hack_start_s` (restart `hack_restart_s`) | `Screen` (MeshInstance3D), `Panel` | Floor rack 0.6 × 2.0 × 1.0 m (placeholder) centred on the pivot, front −Z. `Collision` StaticBody3D (layer 1), fitted to the visual. QC-12 |
+| `bag_lift` | `BagLift` | Node3D | `targets: Array[NodePath]` ([]: the OTHER landings; landing 0 = the prefab), `travel_s` (8.0), `capacity: int` (2), `car_size_m: Vector3` (1.2, 1.2, 1.2, A3-09 addition), `door_open_m` (-1 = auto), `door_fold: bool` (false), `panel_path: NodePath` (empty), `copy_panel: bool` (true), `return_fallen_bags: bool` (true) | `bag_lift_send_s` | `Car`, `DoorL`, `DoorR`; optional `Panel` | Pivot = car floor centre at landing 0, car front −Z. `CarBody` AnimatableBody3D floor slab (layer 2) follows the car and is resized to `car_size_m` (x, z). Optional `Panel` Node3D child of the prefab root (outside the car visual) or `panel_path`. Runtime `LandingPanel<i>` InteractableComponents at landings 1..n. QC-11 |
+| `hack_terminal` | `HackTerminal` | Node3D | `duration_s` (-1 = `hack_duration_s`), `interruptions: Vector2i` ((-1, -1) = `hack_interruptions`), `targets: Array[NodePath]` ([]), `pause_on_alarm: bool` (false), `pause_on_event: StringName` (&""), `resume_on_event: StringName` (&"") | `hack_start_s` (restart `hack_restart_s`) | `Screen` (MeshInstance3D), `Panel` | Floor rack 0.6 × 2.0 × 1.0 m (placeholder) centred on the pivot, front −Z. `Collision` StaticBody3D (layer 1), fitted to the visual. QC-12 |
 | `zipline` | `Zipline` | Node3D | `end: NodePath` | `zipline_attach_s` | none | P2 |
 | `laser_grid` | `LaserGrid` | Node3D | `pattern: StringName` (&"static"; `sweeping`, `timed_off`), `size_m: Vector3` (2, 2, 0.1), `beam_count` (4), `period_s` (4), `off_s` (1.5), `phase_s` (0), `sweep_beams` (1) | not interactive | optional `Beam0..Beam<n-1>` (A drives `visible` + position) | `Trigger` Area3D (layer 10, mask players). S9.10, P2 |
 
@@ -209,8 +209,20 @@ A3-09 (D-040, Night Deposit) / A3-10 (D-042, Shadow Ledger):
   (BLOCK_STATE) or with more than `capacity` bags in the car (`BagLift.BLOCK_LIFT_FULL` =
   `ui.blocked.lift_full`). Loose bags whose origin is inside the `car_size_m` box (centred on the car
   floor) ride with the car: frozen, no collision, not pick-up-able, for `travel_s`, then released in
-  place. Doors `DoorL`/`DoorR` slide apart along local X by `bag_lift_door_open_m` while the car
-  stands. Cues `cue.bag_lift_start`, `cue.bag_lift_arrive`. API: `send(to, slot)`, `landing`,
+  place. Doors `DoorL`/`DoorR` slide apart along local X by `door_travel()` while the car stands:
+  `door_open_m` when ≥ 0, else `InteractionTweak.bag_lift_door_open_m` when > 0, else
+  `car_size_m.x / 2 − bag_lift_door_margin_m` (0.45 m for the 1.2 m car), so it scales with the car.
+  For car-sized shafts set `door_fold`: open leaves fold to `bag_lift_door_fold_scale` of their width
+  with the outer edge fixed, so they never leave the car's side walls. Panel: `Panel` is optional in
+  the visual. A separate panel (`panel_path`, else a `Panel` Node3D child of the prefab root) keeps the
+  panel out of the car visual (so the car's clipping box is the car alone): the visual's `Panel` is
+  hidden, landing 0's `Interactable` moves onto the panel, and with `copy_panel` the panel is duplicated
+  at landings 1..n as `LandingPanelVisual<i>` (same offset from the landing). Shaft
+  (`return_fallen_bags`): a loose bag inside the car's footprint column falling more than
+  `bag_lift_fall_m` below the car floor (thrown into the open shaft while the car is away, or lying
+  where the car comes down; column down to `bag_lift_pit_depth_m` below the lowest landing) is put
+  back `bag_lift_return_front_m` in front of the car at the landing where it entered the shaft
+  (`returned_bags` counts them; vertical shafts). Cues `cue.bag_lift_start`, `cue.bag_lift_arrive`. API: `send(to, slot)`, `landing`,
   `destination`, `is_moving()`, `travel_left()`, `bags_in_car()`, `landing_transform(i)`. P2
   limitation: the car is not replicated to clients yet.
 * `hack_terminal` (QC-12): kind `start_hack` (hack_start_s) runs `duration_s` silently (no noise, no
@@ -221,7 +233,13 @@ A3-09 (D-040, Night Deposit) / A3-10 (D-042, Shadow Ledger):
   device_restarted / device_finished [R]; cues `cue.hack_start` (also on restart),
   `cue.hack_interrupt`, `cue.hack_done`. Finish -> every `targets` node opens like a finished drill
   (`open_by_device()` -> a Safe arms its time lock; else `unlock()` + open). `Screen` gets a state
-  colour material_override (idle / running / interrupted / done). Shadow Ledger: `duration_s` 45,
+  colour material_override (idle / running / interrupted / done). Pause (lockdowns): mission scripts
+  call `pause(reason)` / `resume(reason)` (stacked by reason: paused while any is held); paused = the
+  run timer frozen, the interaction blocked (`HackTerminal.BLOCK_PAUSED` = `ui.blocked.disabled`), the
+  screen shows the interrupted colour; pausing a RUNNING hack emits `device_jammed` + `cue.hack_interrupt`,
+  the final resume `device_restarted(net_id, -1)` + `cue.hack_start`. HUD: `is_paused()`, `is_jammed()`,
+  `pause_reasons()`. Exports `pause_on_alarm` (reason `&"alarm"` on `alarm_raised`), `pause_on_event` /
+  `resume_on_event` (EventBus signal names; reason = the pause signal's name). Shadow Ledger: `duration_s` 45,
   `interruptions` (1, 2).
 * `escape_zone` (QC-19): `escape_type` from `EscapeZone.ESCAPE_TYPES` (warning otherwise).
   `arrival_delay_s`: `activate()` starts the approach; until arrival the visual is hidden and nobody

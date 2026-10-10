@@ -25,6 +25,18 @@ static var _cached: HeavySpecialTweak = null
 @export var bulwark_bang_interval_s: Vector2 = Vector2(6.0, 10.0)
 @export var bulwark_bang_hold_s: float = 0.8
 
+@export_group("Bulwark stagger (L4.5, shock-and-awe)")
+## ◇ A single hit on the shield of at least this much (display damage, before blocking) staggers the
+## Bulwark: heavy rounds (shotguns, snipers, launchers) and heavy melee.
+@export var bulwark_stagger_hit_damage: float = 120.0
+## An explosion that damages the Bulwark (they go around the shield) staggers it too.
+@export var bulwark_stagger_on_explosion: bool = true
+## ◇ Staggered: guard dropped (shield lowered to bulwark_stagger_shield_offset, no collision, so
+## frontal hits get through), no fire, no movement; then this cooldown before the next stagger (s).
+@export var bulwark_stagger_s: float = 1.2
+@export var bulwark_stagger_cooldown_s: float = 4.0
+@export var bulwark_stagger_shield_offset: Vector3 = Vector3(0.45, 0.5, -0.35)
+
 @export_group("Shield formation (L4.5 shield_anchor)")
 ## Other specials within this distance of an allied, alive Bulwark take the spot behind it.
 @export var formation_join_m: float = 12.0

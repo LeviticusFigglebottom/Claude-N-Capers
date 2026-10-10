@@ -11,6 +11,8 @@
 ##   one in CUSTODY, nor one police-cuffed while downed (L2.12);
 ## - every shot: EventBus.weapon_fired and (stealth) a 25 m gunshot noise (StealthTweak
 ##   gunshot_npc_radius_m, S4.1/S4.3).
+## - L4.6 Wrecker-M (minigun): EnemyDef.params.spin_up_s delays the first shot of a burst while the
+##   barrels spin up (max with the aim delay); they stay spun up until spin_down_s without engaging.
 ## Any brain (guard, police, specials) can drive it by exposing the two members; a brain-less NPC can
 ## also be driven directly through `fire_at`/`hold_fire`.
 class_name NpcGunner
@@ -28,6 +30,10 @@ var target: CrewController = null
 var engaging: bool = false
 ## Manual override (no brain): target set by fire_at().
 var manual_target: CrewController = null
+## L4.6 minigun: barrels at speed (the next burst skips the spin-up).
+var spun_up: bool = false
+
+var _spin_idle: float = 0.0
 
 var _npc: NpcBase = null
 var _brain: Node = null
@@ -64,6 +70,17 @@ func aim_delay() -> float:
 	return CombatTweak.data().npc_aim_delay_s
 
 
+## L4.6 Wrecker-M: spin-up before a burst (s, 0 = none) and idle time before the barrels stop (s).
+func spin_up_time() -> float:
+	var def: EnemyDef = _npc.enemy_def if _npc != null else null
+	return float(def.params.get("spin_up_s", 0.0)) if def != null else 0.0
+
+
+func spin_down_time() -> float:
+	var def: EnemyDef = _npc.enemy_def if _npc != null else null
+	return float(def.params.get("spin_down_s", 0.0)) if def != null else 0.0
+
+
 func shot_damage() -> float:
 	var def: EnemyDef = _npc.enemy_def if _npc != null else null
 	if def != null and def.damage.size() > 0:
@@ -80,13 +97,22 @@ func _physics_process(delta: float) -> void:
 	if t == null or not _can_engage(t):
 		target = null
 		engaging = false
+		if spun_up:
+			_spin_idle += delta
+			if _spin_idle >= spin_down_time():
+				spun_up = false
 		return
 	if t != target or not engaging:
 		target = t
 		engaging = true
-		cooldown = maxf(cooldown, aim_delay() * NpcSuppression.aim_delay_mult(_npc))  # A3-06 (L3.5)
+		var delay: float = aim_delay() * NpcSuppression.aim_delay_mult(_npc)  # A3-06 (L3.5)
+		if not spun_up:
+			delay = maxf(delay, spin_up_time())  # L4.6 minigun spin-up
+		cooldown = maxf(cooldown, delay)
 	if cooldown > 0.0:
 		return
+	_spin_idle = 0.0
+	spun_up = spin_up_time() > 0.0
 	cooldown = fire_interval() * NpcSuppression.shot_delay_mult(_npc)  # A3-06 (L3.5)
 	_fire(t)
 

@@ -40,14 +40,15 @@ func _weak_hit(w: NpcBase, hitbox: String, amount: float) -> Dictionary:
 
 
 func test_l4_6_defs_and_variants() -> void:
-	for id: String in ["wrecker", "wrecker_g", "wrecker_b", "wrecker_s"]:
+	for id: String in ["wrecker", "wrecker_g", "wrecker_b", "wrecker_s", "wrecker_m"]:
 		var d: EnemyDef = ACombatSpecials.def(id)
 		assert_true(d != null and d.is_special, "%s loads, special" % id)
 		assert_eq(d.id, StringName("enemy." + id))
 		assert_eq(PoliceSpecialKit.limit_key(d.id), &"enemy.wrecker", "%s counts toward enemy.wrecker" % id)
 		assert_eq(PoliceSpecialKit.special_type_of(d.id), &"wrecker")
-		assert_near(d.health[0], 2000.0, 0.1, "%s 2k HP on the lowest difficulty" % id)
-		assert_near(d.health[5], 24000.0, 0.1, "%s 24k HP on the top difficulty" % id)
+		var hp_mult: float = 2.0 if id == "wrecker_m" else 1.0  # minigun: 2x HP (L4.6)
+		assert_near(d.health[0], 2000.0 * hp_mult, 0.1, "%s HP on the lowest difficulty" % id)
+		assert_near(d.health[5], 24000.0 * hp_mult, 0.1, "%s HP on the top difficulty" % id)
 		assert_near(float(d.params["faceplate_hp"]), 150.0, 0.01)
 		assert_near(float(d.params["visor_hp"]), 160.0, 0.01)
 		assert_near(float(d.params["explosive_mult"]), 1.1, 0.0001)
@@ -133,3 +134,40 @@ func test_l4_6_roar_and_footsteps_when_loud() -> void:
 		return Vector2(w.global_position.x - c.global_position.x, w.global_position.z - c.global_position.z).length() < 6.0, 8.0)
 	assert_true(close, "keeps pushing in (no cover)")
 	assert_true(b.cover_point == null, "never takes cover")
+
+
+## Wrecker-M (minigun, Cataclysm only): spin-up before the first shot, then very high RPM; spins down
+## after spin_down_s without a target.
+func test_l4_6_wrecker_m_minigun_spin_up_and_rpm() -> void:
+	var d: EnemyDef = ACombatSpecials.def("wrecker_m")
+	assert_true(float(d.params["fire_interval_s"]) <= 0.06, "very high RPM")
+	var spin: float = float(d.params["spin_up_s"])
+	assert_true(spin > 0.5, "spin-up delay")
+	var g: SpawnGroupDef = load("res://systems/ai/data/groups/special_wrecker_m.tres") as SpawnGroupDef
+	for i: int in range(Enums.Difficulty.CATACLYSM):
+		assert_near(g.weights[i], 0.0, 0.0001, "no Wrecker-M below Cataclysm (difficulty %d)" % i)
+	assert_true(g.weights[Enums.Difficulty.CATACLYSM] > 0.0, "Wrecker-M on Cataclysm")
+	var c: CrewController = await ACombatSpecials.place_crew(_rt, 0, Vector3(0, 0.05, 0))
+	Modifiers.set_source(0, &"test.immune", {&"defense.damage_taken_mult": 0.0})
+	var w: NpcBase = ACombatSpecials.spawn(_rt, "wrecker_m", Vector3(0, 0.05, -6), Vector3(0, 0, 1))
+	for nm: String in ["Brain", "Motor"]:
+		w.get_node(nm).set_physics_process(false)
+	await wait_physics_frames(2)
+	var gun: NpcGunner = w.get_node("Gunner") as NpcGunner
+	var shots: Array[int] = [0]
+	var cb: Callable = func(_t: Node, _hit: bool) -> void: shots[0] += 1
+	gun.shot.connect(cb)
+	var t0: int = Time.get_ticks_msec()
+	gun.fire_at(c)
+	var first: bool = await wait_until(func() -> bool: return shots[0] > 0, spin + 2.0)
+	var waited: float = float(Time.get_ticks_msec() - t0) / 1000.0
+	assert_true(first, "fires after spinning up")
+	assert_true(waited >= spin - 0.1, "first shot after the spin-up (%.2f s)" % waited)
+	assert_true(gun.spun_up, "barrels at speed")
+	shots[0] = 0
+	await wait_seconds(0.5)
+	assert_true(shots[0] >= 6, "minigun rate (%d shots in 0.5 s)" % shots[0])
+	gun.hold_fire()
+	await wait_seconds(float(d.params["spin_down_s"]) + 0.3)
+	assert_false(gun.spun_up, "spins down without a target")
+	gun.shot.disconnect(cb)
