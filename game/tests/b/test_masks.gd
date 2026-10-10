@@ -130,7 +130,12 @@ func test_equip_and_save_round_trip() -> void:
 	MaskLocker.save_custom(p, 1, COMP)
 	assert_true(MaskLocker.equip(p, &"mask.custom.1"))
 	assert_eq(p.loadout.mask, &"mask.custom.1")
-	assert_eq(MaskLocker.available_ids(p), [&"mask.gilded_heron", &"mask.custom.1"] as Array[StringName])
+	var want: Array[StringName] = []
+	for md: MaskDef in MaskCatalog.presets():
+		if md.unlock == &"":
+			want.append(md.id)
+	want.append(&"mask.custom.1")
+	assert_eq(MaskLocker.available_ids(p), want, "unlocked presets + the filled slot")
 	assert_eq(SaveService.save_profile(p, SLOT), OK)
 	var q: PlayerProfile = SaveService.load_profile(SLOT)
 	assert_eq(q.loadout.mask, &"mask.custom.1")
@@ -217,9 +222,9 @@ func _default_owned(kind: String) -> int:
 func test_mask_colours_respect_albedo_floor() -> void:
 	# style guide albedo floor (D-035; lead note on ENV D's mask): no channel below ~0.12.
 	var colors: Array[Color] = []
-	var preset: MaskDef = ContentDB.mask(&"mask.gilded_heron")
-	colors.append(preset.color_a)
-	colors.append(preset.color_b)
+	for preset: MaskDef in MaskCatalog.presets():
+		colors.append(preset.color_a)
+		colors.append(preset.color_b)
 	var text: String = FileAccess.get_file_as_string("res://content/data/masks/parts/colors.tres")
 	var rx: RegEx = RegEx.create_from_string("Color\\(([^)]*)\\)")
 	for m: RegExMatch in rx.search_all(text):
@@ -239,13 +244,16 @@ func test_gilded_heron_uses_env_d_mesh() -> void:
 
 func test_base_mesh_paths_exist() -> void:
 	# ENV D's base meshes (QB-50b): pipeline layout assets/masks/mask_base_<name>/mask_base_<name>.glb.
-	var text: String = FileAccess.get_file_as_string("res://content/data/masks/parts/bases.tres")
-	var rx: RegEx = RegEx.create_from_string("model_path = \"([^\"]+)\"")
-	var found: int = 0
-	for m: RegExMatch in rx.search_all(text):
-		found += 1
-		assert_true(ResourceLoader.exists(m.get_string(1)), "missing base mesh %s" % m.get_string(1))
-	assert_eq(found, 5, "five base shapes")
+	# B4-15: `requires_model` bases are ENV D request slots and may be missing (hidden until then).
+	var shipped: int = 0
+	for p: MaskPartDef in MaskCatalog.all_parts(MaskCatalog.BASE):
+		var b: MaskBaseDef = p as MaskBaseDef
+		var short: String = String(b.id).trim_prefix("mask_base.")
+		assert_eq(b.model_path, "res://assets/masks/mask_base_%s/mask_base_%s.glb" % [short, short], "pipeline path")
+		if not b.requires_model:
+			shipped += 1
+			assert_true(ResourceLoader.exists(b.model_path), "missing base mesh %s" % b.model_path)
+	assert_eq(shipped, 5, "five shipped base shapes")
 
 
 func test_placeholder_uv_origin_is_viewer_left() -> void:

@@ -6,7 +6,8 @@ render_mode cull_disabled;
 
 uniform vec4 color_a : source_color = vec4(1.0);
 uniform vec4 color_b : source_color = vec4(0.0, 0.0, 0.0, 1.0);
-// MaskPatternDef.Procedural: 0 solid, 1 split, 2 brow band, 3 stripes, 4 chevron, 5 dots, 6 sash, 7 diamonds.
+// MaskPatternDef.Procedural: 0 solid, 1 split, 2 brow band, 3 stripes, 4 chevron, 5 dots, 6 sash,
+// 7 diamonds, 8 scales, 9 circuit, 10 prowl, 11 halftone, 12 crackle, 13 starburst (B4-15).
 uniform int pattern = 0;
 uniform float pattern_scale = 4.0;
 uniform bool use_pattern_tex = false;
@@ -26,8 +27,110 @@ float edge(float d) {
 	return smoothstep(-w, w, d);
 }
 
+// Edge with a given anti-alias half width (for patterns that branch per pixel: fwidth() is only
+// valid in uniform control flow, so the width is computed once up front in pattern_mask()).
+float edge_w(float d, float w) {
+	return smoothstep(-w, w, d);
+}
+
+// Cheap deterministic cell hash (no global RNG; same on every peer).
+float hash21(vec2 p) {
+	p = fract(p * vec2(127.13, 311.71));
+	p += dot(p, p + 37.19);
+	return fract(p.x * p.y);
+}
+
+// Overlapping scale rows: half-offset circles, each lower row drawn over the one above, so the
+// rounded rims point down toward the chin. color_b = the rims. `w` = AA width in cell units.
+float scales(vec2 uv, float s, float w) {
+	vec2 g = uv * s;
+	float r = 0.62;
+	float base_row = floor(g.y);
+	for (int k = 2; k >= -1; k--) {
+		float row = base_row + float(k);
+		float off = mod(row, 2.0) * 0.5;
+		float cx = floor(g.x - off) + off + 0.5;
+		float best = 8.0;
+		for (int n = -1; n <= 1; n++) {
+			best = min(best, length(g - vec2(cx + float(n), row)));
+		}
+		if (best < r) {
+			return edge_w(best - (r - 0.11), w);
+		}
+	}
+	return 0.0;
+}
+
+// Circuit board: traces between grid cell centres (each link decided once per cell pair by a hash,
+// so both cells agree) and ring pads.
+float circuit(vec2 uv, float s, float w) {
+	vec2 g = uv * s;
+	vec2 c = floor(g);
+	vec2 f = fract(g) - 0.5;
+	float t = 0.07;
+	float h_line = 1.0 - edge_w(abs(f.y) - t, w);
+	float v_line = 1.0 - edge_w(abs(f.x) - t, w);
+	float m = 0.0;
+	m = max(m, h_line * (1.0 - edge_w(-f.x - t, w)) * step(0.4, hash21(c + vec2(0.11, 0.0))));
+	m = max(m, h_line * (1.0 - edge_w(f.x - t, w)) * step(0.4, hash21(c - vec2(1.0, 0.0) + vec2(0.11, 0.0))));
+	m = max(m, v_line * (1.0 - edge_w(-f.y - t, w)) * step(0.5, hash21(c + vec2(0.0, 0.37))));
+	m = max(m, v_line * (1.0 - edge_w(f.y - t, w)) * step(0.5, hash21(c - vec2(0.0, 1.0) + vec2(0.0, 0.37))));
+	float pad = (1.0 - edge_w(abs(length(f) - 0.17) - 0.05, w)) * step(0.6, hash21(c + vec2(0.53, 0.71)));
+	return max(m, pad);
+}
+
+// Prowl: wavy stripes that grow in from the sides and fade out at the centre line.
+float prowl(vec2 uv, float s, float w) {
+	float side = abs(uv.x - 0.5);
+	float t = uv.y * s + 0.35 * sin(uv.x * 11.0) + side * 1.5;
+	float width = 0.3 * smoothstep(0.06, 0.42, side);
+	return 1.0 - edge_w(abs(fract(t) - 0.5) - width, w * 1.5);
+}
+
+// Halftone: a 45-degree dot screen whose dots grow from the forehead to the chin.
+float halftone(vec2 uv, float s, float w) {
+	vec2 r = vec2(uv.x + uv.y, uv.x - uv.y) * 0.7071 * s;
+	float radius = mix(0.06, 0.48, clamp(uv.y, 0.0, 1.0));
+	return 1.0 - edge_w(length(fract(r) - 0.5) - radius, w);
+}
+
+// Crackle: thin lines along the borders of jittered cells (second-nearest minus nearest point).
+float crackle(vec2 uv, float s, float w) {
+	vec2 g = uv * s;
+	vec2 c = floor(g);
+	float d1 = 8.0;
+	float d2 = 8.0;
+	for (int j = -1; j <= 1; j++) {
+		for (int i = -1; i <= 1; i++) {
+			vec2 n = c + vec2(float(i), float(j));
+			vec2 pt = n + vec2(hash21(n), hash21(n + 17.3)) * 0.8 + 0.1;
+			float d = length(g - pt);
+			if (d < d1) {
+				d2 = d1;
+				d1 = d;
+			} else if (d < d2) {
+				d2 = d;
+			}
+		}
+	}
+	return 1.0 - edge_w(d2 - d1 - 0.07, w);
+}
+
+// Starburst: rays from just above the nose, with a plain disc at the centre. `w` in uv units.
+float starburst(vec2 uv, float s, float w) {
+	vec2 d = uv - vec2(0.5, 0.42);
+	float rays = max(floor(s), 3.0) * 2.0;
+	float len = length(d);
+	float a = atan(d.y, d.x);
+	// signed distance (uv units) to the nearest ray side: no atan seam, no per-pixel fwidth
+	float ray = edge_w(sin(a * rays) * len / rays * 3.14159, w);
+	return ray * edge_w(len - 0.09, w);
+}
+
 float pattern_mask(vec2 uv) {
 	float s = pattern_scale;
+	// AA half width in uv units, taken here in uniform control flow (see edge_w).
+	float aa = max(fwidth(uv.x) + fwidth(uv.y), 0.0005) * 0.75;
 	if (pattern == 1) {
 		return edge(uv.x - 0.5);
 	} else if (pattern == 2) {
@@ -44,6 +147,18 @@ float pattern_mask(vec2 uv) {
 		vec2 r = vec2(uv.x + uv.y, uv.x - uv.y) * s * 0.5;
 		vec2 c = fract(r) - 0.5;
 		return edge(c.x * c.y);
+	} else if (pattern == 8) {
+		return scales(uv, s, aa * s);
+	} else if (pattern == 9) {
+		return circuit(uv, s, aa * s);
+	} else if (pattern == 10) {
+		return prowl(uv, s, aa * s);
+	} else if (pattern == 11) {
+		return halftone(uv, s, aa * s);
+	} else if (pattern == 12) {
+		return crackle(uv, s, aa * s);
+	} else if (pattern == 13) {
+		return starburst(uv, s, aa);
 	}
 	return 0.0;
 }

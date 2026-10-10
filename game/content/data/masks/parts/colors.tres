@@ -78,6 +78,50 @@ color_b = Color(0.75, 0.12, 0.12, 1)
 id = &"mask_colors.signal_white"
 display_name = "Signal White"
 
+[sub_resource type="Resource" id="Resource_b415_tide_coral"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.14, 0.38, 0.42, 1)
+color_b = Color(0.93, 0.48, 0.38, 1)
+id = &"mask_colors.tide_coral"
+display_name = "Tide Coral"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_b415_saffron_plum"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.9, 0.62, 0.14, 1)
+color_b = Color(0.36, 0.14, 0.32, 1)
+id = &"mask_colors.saffron_plum"
+display_name = "Saffron Plum"
+
+[sub_resource type="Resource" id="Resource_b415_frost_slate"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.78, 0.86, 0.9, 1)
+color_b = Color(0.24, 0.28, 0.34, 1)
+id = &"mask_colors.frost_slate"
+display_name = "Frost Slate"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_b415_oxblood_brass"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.42, 0.12, 0.14, 1)
+color_b = Color(0.76, 0.6, 0.3, 1)
+id = &"mask_colors.oxblood_brass"
+display_name = "Oxblood Brass"
+
+[sub_resource type="Resource" id="Resource_b415_mint_graphite"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.56, 0.82, 0.66, 1)
+color_b = Color(0.16, 0.17, 0.18, 1)
+id = &"mask_colors.mint_graphite"
+display_name = "Mint Graphite"
+
+[sub_resource type="Resource" id="Resource_b415_sulfur_ash"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.86, 0.82, 0.2, 1)
+color_b = Color(0.32, 0.32, 0.3, 1)
+id = &"mask_colors.sulfur_ash"
+display_name = "Sulfur Ash"
+
 [resource]
 script = ExtResource("3_g4u6w")
-entries = Array[ExtResource("1_ha374")]([SubResource("Resource_kgih8"), SubResource("Resource_b8leu"), SubResource("Resource_vf3hc"), SubResource("Resource_w37wc"), SubResource("Resource_nuwo3"), SubResource("Resource_ttqif"), SubResource("Resource_r2p5f"), SubResource("Resource_i4yrb"), SubResource("Resource_rvxx8"), SubResource("Resource_vk0q1")])
+entries = Array[ExtResource("1_ha374")]([SubResource("Resource_kgih8"), SubResource("Resource_b8leu"), SubResource("Resource_vf3hc"), SubResource("Resource_w37wc"), SubResource("Resource_nuwo3"), SubResource("Resource_ttqif"), SubResource("Resource_r2p5f"), SubResource("Resource_i4yrb"), SubResource("Resource_rvxx8"), SubResource("Resource_vk0q1"), SubResource("Resource_b415_tide_coral"), SubResource("Resource_b415_saffron_plum"), SubResource("Resource_b415_frost_slate"), SubResource("Resource_b415_oxblood_brass"), SubResource("Resource_b415_mint_graphite"), SubResource("Resource_b415_sulfur_ash")])

@@ -18,6 +18,38 @@ static func is_part_owned(profile: PlayerProfile, id: StringName) -> bool:
 	return profile != null and profile.owned_mask_parts.has(id)
 
 
+## Adds a locked preset (`MaskDef.unlock` set) to `owned_masks` (payday card drop, unlock). False for
+## unknown ids, presets without an unlock and presets already owned.
+static func grant_preset(profile: PlayerProfile, mask_id: StringName) -> bool:
+	if profile == null or profile.owned_masks.has(mask_id):
+		return false
+	for md: MaskDef in MaskCatalog.presets():
+		if md.id == mask_id:
+			if md.unlock == &"":
+				return false
+			profile.owned_masks.append(mask_id)
+			ContentDB.sort_ids(profile.owned_masks)
+			return true
+	return false
+
+
+## Ownership of a payday card mask item: a preset id (`mask.<name>`) or a part id.
+static func is_drop_owned(profile: PlayerProfile, id: StringName) -> bool:
+	return is_equippable(profile, id) if MaskCatalog.is_preset_id(id) else is_part_owned(profile, id)
+
+
+## Grants every preset whose `unlock` is `unlock_id` (e.g. an achievement, `unlock.achievement.<x>`;
+## the achievement system is a stub). Returns the newly owned preset ids.
+static func grant_unlock(profile: PlayerProfile, unlock_id: StringName) -> Array[StringName]:
+	var out: Array[StringName] = []
+	if unlock_id == &"":
+		return out
+	for md: MaskDef in MaskCatalog.presets():
+		if md.unlock == unlock_id and grant_preset(profile, md.id):
+			out.append(md.id)
+	return out
+
+
 ## Owned parts of one kind (MaskCatalog.BASE ...), data order.
 static func owned_parts(profile: PlayerProfile, kind: String) -> Array[MaskPartDef]:
 	var out: Array[MaskPartDef] = []

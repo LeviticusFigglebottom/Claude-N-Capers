@@ -9,7 +9,7 @@ PD2 builds a mask from **base shape × material × colour pair × pattern**. We 
 
 | Part | Id | Data | What it holds |
 |---|---|---|---|
-| Base shape | `mask_base.<name>` | `data/masks/parts/bases.tres` (`MaskBaseDef`) | `model_path` = ENV D glb `res://assets/masks/mask_base_<name>.glb`; placeholder shape numbers |
+| Base shape | `mask_base.<name>` | `data/masks/parts/bases.tres` (`MaskBaseDef`) | `model_path` = ENV D glb `res://assets/masks/mask_base_<name>/mask_base_<name>.glb`; `requires_model` (hidden until the glb exists, B4-15); placeholder shape numbers |
 | Material | `mask_material.<name>` | `data/masks/parts/materials.tres` (`MaskMaterialDef`) | `material_id` = shared library id (`world/materials/<id>.tres`), `library_material` ref, metallic/roughness/grain |
 | Colour pair | `mask_colors.<name>` | `data/masks/parts/colors.tres` (`MaskColorDef`) | `color_a` (base), `color_b` (pattern areas) |
 | Pattern | `mask_pattern.<name>` | `data/masks/parts/patterns.tres` (`MaskPatternDef`) | `texture_id`/`texture_path` (ENV D), `procedural` fallback, `scale` |
@@ -70,3 +70,61 @@ is saved via SaveService.
   chin (1), roughly front-projected. ENV D meshes must follow this so patterns line up, and use one
   surface (the mask material is applied as `material_override`).
 * Pattern textures: red channel = pattern mask (0 → `color_a`, 1 → `color_b`) over UV0.
+
+## B4-15 batch (masks content)
+* **Colour pairs** (+6, every channel ≥ 0.12, style guide albedo floor, tested): Tide and Coral
+  (default), Saffron and Plum, Frost and Slate (default), Oxblood and Brass, Mint Graphite, Sulfur and Ash.
+* **Patterns** (+6, procedural in `mask_surface.gdshader`, `MaskPatternDef.Procedural` ids 8–13; the
+  enum is append-only because saved data and the shader use the number): `scales` (8, offset
+  scale rows), `circuit` (9, traces between grid cells + pads, decided by a per-cell hash so every
+  peer draws the same board), `prowl` (10, wavy stripes growing in from the sides), `halftone`
+  (11, 45° dot screen growing toward the chin, default-owned), `crackle` (12, jittered cell
+  borders), `starburst` (13, rays from above the nose; `scale` = half the ray count). Each also has
+  a `texture_id`/`texture_path` (`tex_mask_pattern_<name>`) that ENV D may supply later; the texture
+  wins when present.
+* **Materials** (+3, library ids that exist): `porcelain` → `tile_ceramic_white`, `ink_lacquer` →
+  ENV D's `char_mask_lacquer_dark`, `stipple` → `polymer_stipple` (default-owned). `detail_mean`
+  is the measured mean linear luminance of the library albedo (clamped to 0.05).
+* **Presets** (+6, `data/masks/<name>.tres`, model = the base's ENV D glb, `metadata/mask_base`,
+  colours equal to a colour pair so `composition_of` round-trips): Porcelain Vigil (visage), Tide
+  Runner (vulpine), Night Circuit (owl, **locked: `unlock.payday_card`**), Sulfur Brute (bruiser),
+  Oxblood Herald (heron, **locked: `unlock.achievement.cataclysm_clear`**), Paper Saint (visage).
+
+### Preset unlocks
+`MaskDef.unlock` ids: `unlock.payday_card` (`MaskCatalog.UNLOCK_PAYDAY`): the preset joins the
+payday card `mask_part` pool (`PaydayCards.pool`, card detail "Complete mask") and the card grant
+calls `MaskLocker.grant_preset` (adds to `owned_masks`). `unlock.achievement.<name>`: granted by
+`MaskLocker.grant_unlock(profile, unlock_id)`; the achievement system is a stub, nothing calls it
+yet. `MaskLocker.is_drop_owned(profile, id)` answers ownership for both preset and part ids.
+
+### Payday card tiers
+New rarer parts carry tiers in `data/payday/card_table.tres` `item_tiers`: rare (2) porcelain,
+starburst, Night Circuit and the skull/gasmask/demon request slots; uncommon (1) the rest listed
+there. Request slots carry their tier ahead of the mesh, so they drop at the right rarity the day
+they light up.
+
+## Requested bases (ENV D request spec, B4-15)
+`bases.tres` holds five **request slots** with `requires_model = true`. Such a base is **hidden**
+(`MaskCatalog.is_available` false): not in `MaskCatalog.parts()` (pickers, the mask screen, the
+payday pool, any random choice), not grantable, not composable, never a placeholder. It lights up
+with no data change as soon as `model_path` exists. `MaskCatalog.all_parts()` / `is_known()` see
+them (data checks, docs). Strings exist already.
+
+| Id | Name | Brief (original designs; no real-world brand or film likeness) |
+|---|---|---|
+| `mask_base.skull` | Grin Skull | stylised skull face plate, deep round sockets, nasal notch, tooth row relief (no lower jaw gap) |
+| `mask_base.theatre` | Footlights | stage mask: smooth oval, high arched brows, carved smile, lightly asymmetric |
+| `mask_base.gasmask` | Filter Face | full-face respirator look: big round lenses, single front filter canister, strap stubs at the sides |
+| `mask_base.demon` | Horned Fury | snarling brow, two short swept horns, flared nostrils, fang relief (original, not a cultural replica) |
+| `mask_base.goalie` | Crease Guard | rigid sports-style face guard: domed, many small vent holes, raised ribs |
+
+Conventions every request must follow (same as the five shipped bases):
+* **Path**: `res://assets/masks/mask_base_<name>/mask_base_<name>.glb` (+ `SOURCE.txt`), generated by
+  `tools/blender/masks/base_<name>.py`.
+* **Pivot**: face centre, midway between the eye centres at eye (cornea) depth; −Z forward, +Y up;
+  seats on the crew `Head/Socket` (characters.md).
+* **UV0**: front planar along −Z, x 0..1 = viewer's left to right (+X..−X), y 0..1 = top to bottom,
+  so procedural patterns line up across every base; one UV island set, no overlaps on the front.
+* **One surface / one material slot `M_char_mask_base`**; the game replaces it with the mask shader as
+  `material_override` (colour pair × pattern × material grain), so no baked colour.
+* Size: face half width about 0.08–0.10 m; tri budget 8000 LOD0, like the shipped bases.

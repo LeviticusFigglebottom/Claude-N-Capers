@@ -33,6 +33,10 @@ const ID_PREFIX: Dictionary = {
 	"base": "mask_base.", "material": "mask_material.", "colors": "mask_colors.", "pattern": "mask_pattern.",
 }
 const LOG_CHANNEL: StringName = &"masks"
+## MaskDef.unlock ids (masks.md "Preset unlocks"): a locked preset with UNLOCK_PAYDAY joins the payday
+## card mask pool; `unlock.achievement.<name>` presets are granted by MaskLocker.grant_unlock (stub).
+const UNLOCK_PAYDAY: StringName = &"unlock.payday_card"
+const UNLOCK_ACHIEVEMENT_PREFIX: String = "unlock.achievement."
 
 ## kind -> Array[MaskPartDef] (file order)
 static var _lists: Dictionary = {}
@@ -50,15 +54,26 @@ static func tweak() -> MaskTweak:
 	return _tweak
 
 
-## Parts of one kind (BASE / MATERIAL / COLORS / PATTERN) in data order.
+## AVAILABLE parts of one kind (BASE / MATERIAL / COLORS / PATTERN) in data order: what pickers,
+## payday card pools and random choices may use. Hidden bases (is_available) are left out.
 static func parts(kind: String) -> Array[MaskPartDef]:
+	_ensure()
+	var out: Array[MaskPartDef] = []
+	for p: MaskPartDef in _lists.get(kind, []):
+		if part_available(p):
+			out.append(p)
+	return out
+
+
+## Every part of one kind in data order, hidden ones included (data checks, docs, tests).
+static func all_parts(kind: String) -> Array[MaskPartDef]:
 	_ensure()
 	var out: Array[MaskPartDef] = []
 	out.assign(_lists.get(kind, []))
 	return out
 
 
-## Part by id (any kind); null + Log.error when unknown.
+## Part by id (any kind, hidden ones too); null + Log.error when unknown.
 static func part(id: StringName) -> MaskPartDef:
 	_ensure()
 	if not _by_id.has(id):
@@ -67,9 +82,22 @@ static func part(id: StringName) -> MaskPartDef:
 	return _by_id[id]
 
 
+## A known AND available part: the only parts compositions, ownership and drops accept.
 static func has_part(id: StringName) -> bool:
 	_ensure()
+	return _by_id.has(id) and part_available(_by_id[id])
+
+
+## The id is in the part data (available or hidden).
+static func is_known(id: StringName) -> bool:
+	_ensure()
 	return _by_id.has(id)
+
+
+## False for a base with `requires_model` whose glb is not there yet (an ENV D request slot): it is
+## hidden everywhere until the file lands. Every other known part is available.
+static func is_available(id: StringName) -> bool:
+	return has_part(id)
 
 
 ## Kind of a part id from its prefix ("" when it is not a part id).
@@ -95,6 +123,20 @@ static func presets() -> Array[MaskDef]:
 		if r is MaskDef:
 			out.append(r as MaskDef)
 	return out
+
+
+## Locked presets that payday cards can drop (unlock == UNLOCK_PAYDAY), sorted by id.
+static func payday_presets() -> Array[MaskDef]:
+	var out: Array[MaskDef] = []
+	for md: MaskDef in presets():
+		if md.unlock == UNLOCK_PAYDAY:
+			out.append(md)
+	return out
+
+
+## `mask.<name>` (a preset id shape, not a custom slot and not a part id).
+static func is_preset_id(mask_id: StringName) -> bool:
+	return String(mask_id).begins_with("mask.") and not is_custom_id(mask_id)
 
 
 static func is_custom_id(mask_id: StringName) -> bool:
@@ -169,6 +211,12 @@ static func clear_cache() -> void:
 	_lists.clear()
 	_by_id.clear()
 	_tweak = null
+
+
+## Availability rule of one part (see is_available): bases with `requires_model` need their glb.
+static func part_available(p: MaskPartDef) -> bool:
+	var b: MaskBaseDef = p as MaskBaseDef
+	return b == null or not b.requires_model or (b.model_path != "" and ResourceLoader.exists(b.model_path))
 
 
 static func _ensure() -> void:
