@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only steel_blued --preset gsr
+module: tools/texgen/materials/steel_blued.py
+preset: tools/texgen/presets/gsr.py
+seed: 1589226229 (zlib.crc32('steel_blued'))
+size_px: 1024
+tile_m: 1.0 (1 UV unit = 1.0 m)
+texel_density_px_per_m: 1024
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.3411, "albedo_lum_mean_linear": 0.084, "albedo_lum_min_linear": 0.0807, "ao_mean": 1.0, "metallic_mean": 1.0, "roughness_mean": 0.348}

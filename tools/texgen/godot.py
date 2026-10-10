@@ -69,7 +69,7 @@ def ensure_import(png: Path, importer: str, rtype: str, params: dict) -> None:
     tio.write_text(imp, "\n".join(out) + "\n")
 
 
-def write_material(path: Path, lib_id: str, tex_res: str, kind: str) -> None:
+def write_material(path: Path, lib_id: str, tex_res: str, kind: str, tile_m: float) -> None:
     """ORMMaterial3D referencing tex_<id>_{albedo,orm,normal}.png under ``tex_res``."""
     alb = f"{tex_res}/tex_{lib_id}_albedo.png"
     orm = f"{tex_res}/tex_{lib_id}_orm.png"
@@ -96,6 +96,26 @@ def write_material(path: Path, lib_id: str, tex_res: str, kind: str) -> None:
         "normal_scale = 1.0",
         'normal_texture = ExtResource("3_normal")',
         "ao_enabled = true",
+        f"metadata/uv_tile_m = {float(tile_m)}",
+    ]
+    tio.write_text(path, "\n".join(lines) + "\n")
+
+
+def write_emissive_material(path: Path, lib_id: str, p: dict) -> None:
+    """Texture-less emissive StandardMaterial3D (reticles, indicator LEDs). Emission (not
+    unshaded) so the HDR value can exceed 1 and catch the glow pass."""
+    lines = [
+        '[gd_resource type="StandardMaterial3D" format=3]',
+        "",
+        "[resource]",
+        f'resource_name = "M_{lib_id}"',
+        f"albedo_color = {_hex_color(p['albedo'])}",
+        f"roughness = {p.get('roughness', 0.6)}",
+        "emission_enabled = true",
+        f"emission = {_hex_color(p['emission'])}",
+        f"emission_energy_multiplier = {p['emission_energy']}",
+        "disable_receive_shadows = true",
+        "metadata/uv_tile_m = 1.0",
     ]
     tio.write_text(path, "\n".join(lines) + "\n")
 

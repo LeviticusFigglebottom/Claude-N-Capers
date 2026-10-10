@@ -7,7 +7,8 @@ Pure Python (numpy, scipy, Pillow). No photos, no third-party textures, no `nois
 python3 tools/texgen/build.py                       # everything (~2 min on 4 cores)
 python3 tools/texgen/build.py --only brick_red       # one material (comma-separate or repeat --only)
 python3 tools/texgen/build.py --check-determinism    # build, rebuild into a temp dir in a fresh process, compare sha256
-python3 tools/texgen/build.py --list                 # library ids, sizes, texel density
+python3 tools/texgen/build.py --list                 # library ids, sizes, tile size, texel density
+python3 tools/texgen/build.py --jobs 2               # limit worker processes (default min(4, cpus))
 python3 tools/texgen/build.py --preset gsr           # art-direction preset (default gsr)
 /opt/godot/godot --headless --path game --import     # then let Godot import the PNGs
 ```
@@ -17,7 +18,7 @@ Preview / contact sheet (Godot, Vulkan via lavapipe under xvfb):
 ```bash
 xvfb-run -a -s "-screen 0 1920x1080x24" /opt/godot/godot --path game --resolution 1920x1080 \
   res://world/tools/material_preview.tscn -- --out=docs/levels/_materials/material_preview_v1.jpg
-# options: --only=marble_cream,brass (close-up, 3 per row)  --env=glasshouse  --cols=6  --quality=0.85
+# options: --only=marble_cream,brass (close-up, 3 per row)  --env=glasshouse  --cols=8  --quality=0.85
 ```
 
 ## Outputs
@@ -50,8 +51,17 @@ writes them.
   materials (wood grain, brushing, bricks, carpet rows) run **along U**.
 * Floors/ceilings: U = world X, V = world -Z (any consistent planar projection works; the
   materials are isotropic or grid-aligned).
+* **First-person weapon materials (D-026) are the exception: 1 UV unit = 1.0 m, 1024 px/m.**
+  `polymer_black`, `polymer_stipple`, `steel_blued`, `steel_bare`, `metal_matte`, `paint_white`,
+  `brass_cartridge` are 1024 px textures covering 1 m (`library.py` `tile_m: 1.0`), which is exactly
+  what `tools/blender/lib/uv.box_project(density=1024)` produces (uv = metres x 1024 / 1024).
+  `glass_lens_tint` is 512 px over 1 m (512 px/m; it is featureless, same UV scale).
+  `emissive_reticle_red` is an untextured emissive `StandardMaterial3D` (a reticle is a tiny
+  emissive mesh; emission, not unshaded, so its HDR value reaches the glow pass).
+* Every textured library material stores its tile size as `metadata/uv_tile_m` (2.0 or 1.0);
+  `material.get_meta(&"uv_tile_m")` tells tools which scale to use.
 * Godot materials use mesh `UV1` (triplanar OFF). The preview tool alone uses world triplanar at
-  `uv1_scale = 0.5` to emulate this convention.
+  `uv1_scale = 1 / uv_tile_m` to emulate this convention.
 
 ### Trim sheet `trim_interior`
 

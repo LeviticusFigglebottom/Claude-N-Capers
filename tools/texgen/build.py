@@ -50,7 +50,7 @@ def make_ctx(lib_id: str, preset: dict, size: int | None = None) -> Ctx:
     return Ctx(
         lib_id=lib_id,
         size=size or entry["size"],
-        tile_m=library.TILE_M,
+        tile_m=library.tile_m(lib_id),
         seed=asset_seed(lib_id),
         params=preset["materials"][lib_id],
         rules=preset["rules"],
@@ -62,6 +62,11 @@ def build_material(lib_id: str, preset_name: str, out_root: str, with_godot: boo
     preset = presets.load(preset_name)
     root = Path(out_root)
     entry = library.LIBRARY[lib_id]
+    if entry.get("kind") == "emissive":
+        if with_godot:
+            godot.write_emissive_material(root / library.MAT_ROOT / f"{lib_id}.tres", lib_id,
+                                          preset["materials"][lib_id])
+        return {"lib_id": lib_id, "stats": None}
     ctx = make_ctx(lib_id, preset)
     extra: dict = {}
     if entry.get("trim"):
@@ -101,7 +106,7 @@ def build_material(lib_id: str, preset_name: str, out_root: str, with_godot: boo
         for key, f in files.items():
             godot.ensure_import(f, "texture", "CompressedTexture2D", godot.IMPORT_PARAMS[key])
         godot.write_material(root / library.MAT_ROOT / f"{lib_id}.tres", lib_id,
-                             f"res://assets/textures/{lib_id}", entry.get("kind", "opaque"))
+                             f"res://assets/textures/{lib_id}", entry.get("kind", "opaque"), ctx.tile_m)
     return {"lib_id": lib_id, "stats": enc.stats}
 
 
@@ -133,6 +138,8 @@ def list_outputs(out_root: Path, ids: list[str], include_luts: bool) -> list[Pat
     paths: list[Path] = []
     for lib_id in ids:
         d = out_root / library.TEX_ROOT / lib_id
+        if not d.exists():
+            continue
         paths += sorted(d.glob("*.png")) + sorted(d.glob("*.json")) + sorted(d.glob("SOURCE.txt"))
     if include_luts:
         paths += sorted((out_root / "game/assets/luts").glob("*.png"))
@@ -153,7 +160,10 @@ def main() -> int:
 
     if args.list:
         for k, v in library.LIBRARY.items():
-            print(f"{k:22s} {v['size']}px  {library.texel_density(k):g} px/m")
+            if "size" not in v:
+                print(f"{k:22s} {v.get('kind')}, no textures")
+                continue
+            print(f"{k:22s} {v['size']}px  tile {library.tile_m(k):g} m  {library.texel_density(k):g} px/m")
         return 0
     only = [x for chunk in args.only for x in chunk.split(",") if x]
     unknown = [x for x in only if x not in library.LIBRARY]
@@ -172,6 +182,9 @@ def main() -> int:
         results = [build_material(i, args.preset, str(out_root), with_godot) for i in ids]
     for r in results:
         s = r["stats"]
+        if s is None:
+            print(f"  {r['lib_id']:22s} (emissive, no textures)")
+            continue
         print(f"  {r['lib_id']:22s} lum {s['albedo_lum_min_linear']:.3f}-{s['albedo_lum_max_linear']:.3f}"
               f" (mean {s['albedo_lum_mean_linear']:.3f})  rough {s['roughness_mean']:.2f}"
               f"  metal {s['metallic_mean']:.2f}  ao {s['ao_mean']:.2f}")
