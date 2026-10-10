@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
 [ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dljwo1uvm7fti" path="res://assets/weapons/wpn_kestrel_p9/wpn_kestrel_p9.glb" id="3"]
 
 [sub_resource type="Resource" id="base"]
 script = ExtResource("2")
@@ -54,3 +55,4 @@ default_mods = {
 fire_cue = &"cue.weapon_pistol_fire"
 fire_cue_suppressed = &"cue.weapon_pistol_fire_suppressed"
 anim_set = &"pistol"
+model = ExtResource("3")
