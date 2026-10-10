@@ -15,8 +15,9 @@ const DIFFICULTY: StringName = &"difficulty"
 const MASKS: StringName = &"masks"
 const SKILLS: StringName = &"skills"
 const PERKS: StringName = &"perks"
+const THROWABLES: StringName = &"throwables"
 ## Every kind folder ContentDB indexes by `id` (difficulty is indexed by its enum value).
-const KINDS: Array[StringName] = [WEAPONS, MODS, MELEE, ARMOR, DEPLOYABLES, LOOT, DIFFICULTY, MASKS, SKILLS, PERKS]
+const KINDS: Array[StringName] = [WEAPONS, MODS, MELEE, ARMOR, DEPLOYABLES, LOOT, DIFFICULTY, MASKS, SKILLS, PERKS, THROWABLES]
 const LOG_CHANNEL: StringName = &"content"
 
 ## kind -> { key -> Resource }
@@ -63,6 +64,10 @@ static func deployable(id: StringName) -> DeployableDef:
 
 static func loot(id: StringName) -> LootDef:
 	return by_id(LOOT, id) as LootDef
+
+
+static func throwable(id: StringName) -> ThrowableDef:
+	return by_id(THROWABLES, id) as ThrowableDef
 
 
 static func mask(id: StringName) -> Resource:
@@ -116,6 +121,10 @@ static func all_deployables() -> Array:
 
 static func all_loots() -> Array:
 	return all_of(LOOT)
+
+
+static func all_throwables() -> Array:
+	return all_of(THROWABLES)
 
 
 static func all_difficulties() -> Array:
