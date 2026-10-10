@@ -93,6 +93,7 @@ multiplier (recorded from the G0 docs): **Night Deposit $800–2,400**, **Shadow
 | enemy_cap | 16 | 20 | 24 | 28 | 32 | 36 | ◇ |
 | assault_intensity | 0.6 | 0.75 | 0.9 | 1.0 | 1.15 | 1.3 | ◇ |
 | bulwark/stinger/corpsman/phantom/wrecker caps | 2/1/1/0/1 ◇ | 3/1/2/0/1 ◇ | 4/2/2/1/2 ◇ | 4/2/3/2/2 V | 4/3/3/2/2 V(taser)/◇ | 4/3/3/2/3 V(dozer)/◇ | §2.6, L4.11 |
+| longshot cap | 1 | 2 | 2 | 3 | 3 | 4 | lead QA-31 (also bounded by free perches) |
 | detection_speed_mult | 1 | 1 | 1 | 1 | 1 | 1 | ◇ (no research says otherwise) |
 | civilian_kill_penalty | 2000 | 3000 | 5000 | 8000 | 12000 | 16000 | ◇ (PD2 range $2k–$51k incl. job tier) |
 | revive_health_frac | 0.4 | 0.4 | 0.4 | 0.4 | 0.1 | 0.1 | V (60% / 90% lost) |
