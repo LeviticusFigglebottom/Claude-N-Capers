@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "M_emissive_reticle_red"
+albedo_color = Color(0.1647, 0.0235, 0.0196, 1)
+roughness = 0.5
+emission_enabled = true
+emission = Color(1.0000, 0.1020, 0.0627, 1)
+emission_energy_multiplier = 1.0
+disable_receive_shadows = true
+metadata/uv_tile_m = 1.0

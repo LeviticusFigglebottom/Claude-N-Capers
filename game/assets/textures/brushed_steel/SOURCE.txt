@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only brushed_steel --preset gsr
+module: tools/texgen/materials/brushed_steel.py
+preset: tools/texgen/presets/gsr.py
+seed: 2391654383 (zlib.crc32('brushed_steel'))
+size_px: 1024
+tile_m: 2.0 (1 UV unit = 2.0 m)
+texel_density_px_per_m: 512
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.5786, "albedo_lum_mean_linear": 0.5565, "albedo_lum_min_linear": 0.5324, "ao_mean": 1.0, "metallic_mean": 1.0, "roughness_mean": 0.349}

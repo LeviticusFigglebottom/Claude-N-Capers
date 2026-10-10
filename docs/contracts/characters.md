@@ -1,4 +1,4 @@
-# Contract: characters (v1.0)
+# Contract: characters (v1.1)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -34,3 +34,12 @@ shield_walk*, shield_bang, heal_ally, dozer_walk*, climb_ladder*, carry_bag_walk
 interact_low*, interact_mid*, interact_high*, drill_place`
 First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per `WeaponDef.anim_set`
 (B requests new sets via the lead).
+
+## v1.1 clarifications (QD-2, D-029)
+* Producer: **ENV D** (D-027), no longer ENV C.
+* Exact node paths in `world/characters/<id>/<id>.tscn`: `<Root>/Skeleton3D` (node name literally
+  `Skeleton3D`), `<Root>/AnimationPlayer`, and BoneAttachment3D nodes `HandR`, `HandL`, `Head`, `Back`, `Hip` as
+  children of `Skeleton3D`. Clips are played as `"humanoid/<clip>"`. The library comes from a single shared
+  `char_anim_humanoid` glb, converted to an AnimationLibrary resource by ENV D's assembly tool.
+* Masks: `game/assets/masks/mask_<name>.glb`. The MaskDef.model scene has its pivot at the face centre and −Z forward, and
+  attaches to `Head`.

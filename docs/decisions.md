@@ -119,3 +119,16 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - ENV C was the bottleneck: C1-00 samples, C1-05 characters, G1, C1-07/08, materials and the mask mesh were all queued on it. **ENV D** is created with ownership carved from C: characters, animations, first-person arms, masks, `char_` materials, and the officer renders of the style samples (owners.json updated; C's excludes cover them). C1-05 moves to D (D1-01..D1-05). C keeps the pipeline lib, texgen, materials, levels, audio, validate_level, and the counter renders.
 - ENV B finished P1 (except the mask, now D1-04) and pulls P4 progression forward: B4-01 skills data, B4-02 perk decks data, B4-03 skill tree / perk deck UI, B4-04 armory expansion (one weapon per class).
 - B1-03/B1-05 merged (ecc0e41). QB-28: ENV A's branch already conforms to ui_hud v1.1 (commit be99316, not yet on trunk). B deletes its HudModelAdapter once A-M2 merges. QB-29: `info.crit = true` ⇒ the target additionally multiplies by its HEAD zone multiplier on any zone (on a head hit they stack), as in PD2. QB-30: WEAKPOINT counts ×1 on targets without plates; range dummies never emit `npc_killed`.
+
+## D-028 — 2026-10-10 — Style-sample handoff C → D; C1-00/01/04/06 merged
+- Merged env/c-worlds @ 222c28c: style-sample scripts, texgen + 22-material library, validate_level (16 checks, with mutation tests proving each check catches its defect), audio cue set + MusicDirector + Glasshouse stems, pistol reload cues. Trunk check_all PASS, 228 tests.
+- `tools/blender/style_samples/officer.py` and `head.py` now belong to ENV D. The shared modules (styles.py, sslib.py, sdf.py, post.py, contact_sheet.py, render_all.sh) stay with ENV C, and ENV D imports them read-only. ENV C owns the comparison sheet.
+- ENV C's unpushed C1-05 character WIP (rig with contract bone names, body, outfits, poses, anims) is handed to ENV D as a head start. C pushes it under `tools/blender/_handoff_d/` (C-owned); the lead moves it to `tools/blender/characters/` (D-owned) in a lead commit. D treats it as untested input, not as accepted work.
+
+## D-029 — 2026-10-10 — Character node paths confirmed (QD-2); mask prefix (QD-1)
+- characters.md v1.1 fixes the exact node paths (Skeleton3D, AnimationPlayer, BoneAttachments as Skeleton3D children) and the shared "humanoid" AnimationLibrary. ENV A must use them.
+- QD-1: ENV C adds `"mask": "masks"` to `tools/blender/lib/naming.py` PREFIX_CATEGORY. ENV D may build under the char_ prefix temporarily and rename once that lands. The final mask path is `game/assets/masks/mask_gilded_heron.glb`.
+
+## D-030 — 2026-10-10 — Weapon materials merged; CI guards against invalid .import files
+- Merged ENV C's 9 weapon materials (a6fa9eb). Every library material carries `metadata/uv_tile_m` (1.0 weapon, 2.0 environment).
+- Concurrent `godot --import` runs can commit `.import` files with `valid=false`. check_all now fails on any committed `.import` containing `valid=false`. Never run two imports on one checkout at the same time.

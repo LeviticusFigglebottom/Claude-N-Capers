@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[node name="SunGlasshouse" type="DirectionalLight3D"]
+transform = Transform3D(0.342020, 0.065550, -0.937404, -0.000000, 0.997564, 0.069756, 0.939693, -0.023858, 0.341187, 0, 10, 0)
+light_color = Color(1.0000, 0.6196, 0.4000, 1)
+light_energy = 0.35
+shadow_enabled = true
+directional_shadow_max_distance = 120.0
