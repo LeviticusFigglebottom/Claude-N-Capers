@@ -3,6 +3,39 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-10 16:30 UTC — B4-01 skills, B4-02 perk decks (P4 pulled forward, D-027)
+### Done
+- D-027 crit rule on range targets (crit ⇒ head mult on any zone; stacks on head), with a test.
+- B4-02 (358df11): 14 perk decks × 9 cards in `data/perks/`.
+  - Costs 200…4000, totalling 13,700.
+  - Shared cards 2/4/6/8 are identical in every deck: Headhunter `weapon.headshot_mult.all` 1.25, Low Profile `stealth.concealment_add.all` 1, Go Bag `weapon.ammo_pickup_mult.all` 1.35, Hustle `weapon.damage_mult.all` 1.05.
+  - Signature mechanics use their `perk.*` PARAMS key, with each upgrading card granting the FULL dict (last-wins).
+  - Health/armor/dodge cards grant cumulative ratios so the running product equals PD2's additive total (e.g. Bulk = 2.0 health).
+  - **Param schemas for review: `game/content/docs/perk_decks.md`.**
+- B4-01 (53d0cec): 90 SkillDefs in `data/skills/<tree>/<subtree>/`, plus `SkillTreeDef` (`data/skills/trees.tres`).
+  - Tiers 1/2/2/1; costs 1/3, 2/4, 3/6, 4/8 (46 per subtree, 138 per tree); gates 0/1/3/18 counted on lower tiers only; 120 points at level 100; free respec.
+  - `SkillPoints.validate/can_unlock/is_legal` handle host legality (architecture §11).
+  - Team skills: `team.*` grants are routed through `LoadoutResolver.team_modifier_sources()` as `team_skill.<id>` (non-stacking). `resolve_modifiers` excludes them.
+  - Expressibility: 32 skills fully expressible, 29 partial, 29 blocked on keys. Every tier 3–4 skill has a "decision it changes" note.
+  - **Full design, mapping conventions and requested keys: `game/content/docs/skills.md`.**
+- ContentDB now scans kind folders recursively (needed for the skills layout).
+- `check_all.sh --env b` @ ea708fa: PASS (266 tests, 0 failed, 7 skipped).
+### In progress
+- B4-03 skill tree + perk deck UI (subagent).
+- B4-04 armory expansion: 6 weapons + mods + models, the 2 deck throwables, and P9 re-render with ENV C's materials (subagent).
+### Blocked
+- —
+### Questions for lead
+- QB-31 (keys for skills): 71 requested keys, grouped with types, semantics and the skills that need them, in `content/docs/skills.md` "Requested keys". 29 skills stay inert until keys exist; a test fails as a reminder when a requested key gets registered. Two of them (`weapon.kill_reload_buff`, `weapon.hit_stack_buff`) are wanted by several skills, which a last-wins PARAMS key can't carry. They need a list-valued or per-source PARAMS design.
+- QB-32 (keys for perks): `progression.xp_mult` (MULT), `movement.armor_penalty_mult` (MULT), `deploy.armor_bag` (FLAG), `interaction.doctor_bag_speed_mult` (MULT), `progression.card_drop_quality_add` (ADD), `ability.shout_range_mult` (MULT), optionally `team.armor_regen_delay_mult` (MULT). See `content/docs/perk_decks.md`.
+- QB-33: perk param schemas (14 `perk.*` keys plus `team.damage_reduction_hostage`) are proposed in `content/docs/perk_decks.md` for review. ENV A implements them. The registry descriptions of `perk.rogue_dodge_stack` and `perk.crook` should be reworded to match the decks.
+- QB-34 (stacking): PD2 adds skill and perk percentage bonuses; our MULT multiplies across sources. Keep multiplicative (the deck cards then use cumulative ratios), or switch some keys to additive semantics?
+- QB-35: do `team.*` grants also apply to the granting player? Our TEAM source does apply to them, and we strip `team.*` from personal sources to avoid double counting. Perk-deck `team.*` grants (Foreman) currently stay on the personal source. Should they also go to a TEAM source, e.g. `team_perk.<deck>`?
+- QB-36: is `interaction.revive_speed_mult` a time multiplier (lower = faster), like the other interaction keys? Rally Cry assumes so.
+- QB-37: Hustler armor tiers: "mid vests only" (fidelity table) vs "all ballistic vests" (research). We used all vests except the suit.
+### Ready for integration
+- yes (B4-01, B4-02); `check_all.sh --env b` result: PASS
+
 ## 2026-10-10 15:40 UTC — D-026 review fixes (B1-03, B1-04, B1-05)
 ### Done
 - StringName sort bug: every id sort now goes through `ContentDB.sort_ids()/id_less()` (by text; ints numerically). This covers `ContentDB.all_of`, the HeistCatalog, and the resolver's skill order (PARAMS last-wins is deterministic). Regression tests create `zz_` ids before `aa_` ids at runtime. The catalog test is now order-proof.
