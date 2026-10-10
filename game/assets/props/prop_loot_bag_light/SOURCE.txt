@@ -1,0 +1,8 @@
+asset: prop_loot_bag_light
+script: tools/blender/props/prefab_visuals.py
+params: {"cat": {"kind": "loot_bag", "prefab": "loot_bag"}, "fn": "bag", "size": [0.5, 0.28, 0.26]}
+seed: 2110133241  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_loot_bag_light
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

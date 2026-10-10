@@ -1,0 +1,8 @@
+asset: prop_window_w100_h60_barred
+script: tools/blender/props/windows.py
+params: {"cat": {"kind": "window", "prefab": "window"}, "h": 0.6, "style": "barred", "w": 1.0}
+seed: 3686045626  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_window_w100_h60_barred
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 4000

@@ -1,0 +1,8 @@
+asset: prop_chair_consult
+script: tools/blender/props/sales.py
+params: {"cat": {"group": "sales", "hosts": ["table"], "kind": "chair", "place": "seat"}, "fn": "chair_consult"}
+seed: 2103549002  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_chair_consult
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

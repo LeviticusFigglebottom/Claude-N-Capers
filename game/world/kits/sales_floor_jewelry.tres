@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"sales_floor_jewelry"
+purpose = &"sales_floor"
+required_items = Array[StringName]([&"counter_service", &"register", &"card_terminal", &"table", &"chair", &"bench", &"podium", &"window_display", &"mirror", &"plant", &"sign", &"light_fixture"])
+optional_items = {
+&"bench": 0.4,
+&"mirror": 1,
+&"picture": 1.2,
+&"plant": 1,
+&"podium": 0.5,
+&"rug": 0.6,
+&"window_display": 0.3
+}
+clutter_groups = {
+&"counter": {
+"anchors": Array[StringName]([&"counter_service", &"table"]),
+"count": Vector2i(1, 2),
+"items": {&"bust": 1, &"mirror_table": 1.2, &"notebook": 0.5, &"ring_tray": 2},
+"radius": 0.5
+}
+}
+min_density = 0.25
+max_density = 0.8
+min_props = 20
+lone_ok_kinds = Array[StringName]([&"podium", &"window_display", &"display_case"])
+seed_salt = 17
+counts = {
+&"chair": Vector2i(2, 2),
+&"plant": Vector2i(2, 2),
+&"podium": Vector2i(2, 2),
+&"window_display": Vector2i(2, 2)
+}
+assets = {
+&"bench": PackedStringArray("prop_bench_upholstered"),
+&"chair": PackedStringArray("prop_chair_consult"),
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"mirror": PackedStringArray("prop_mirror_wall"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_c"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"rug": PackedStringArray("prop_rug_rect"),
+&"table": PackedStringArray("prop_consult_table")
+}
+ceiling = {"prop_downlight": 2.2}
+notes = "G5: display cases, the round chandelier display and the chandelier ring are gameplay/landmark pieces placed by the map (anchors / keep-outs). The kit adds the sales counter (+ register, terminal), consultation table + 2 chairs, bench, podiums, window display boxes, mirrors, plants, the brass sign and 2700 K downlights (track lights: prop_track_light as anchors over the wall cases)."

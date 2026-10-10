@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/veh_car_sedan_navy/veh_car_sedan_navy.glb" id="1_model"]
+
+[node name="VehCarSedanNavy" type="Node3D"]
+metadata/kind = &"car"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

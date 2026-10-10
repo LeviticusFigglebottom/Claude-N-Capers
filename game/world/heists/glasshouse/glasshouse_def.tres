@@ -15,7 +15,7 @@ objectives = Array[StringName]([&"casing", &"keycard", &"workshop_door", &"safe"
 preplanning = {
 "assets": {
 &"asset.alternate_entry": {
-"point_categories": [&"player_spawn"]
+"point_categories": [&"spawn"]
 },
 &"asset.body_bag_case_drop": {
 "point_categories": [&"drop_zone"]

@@ -1,0 +1,8 @@
+asset: prop_neon_vossberg
+script: tools/blender/props/exterior.py
+params: {"cat": {"fixture": true, "group": "exterior", "kind": "neon_sign", "light": {"color": "#FF3EA5", "energy": 2.5, "pos": [0.0, 0.0, -0.6], "range": 7.0, "type": "omni"}, "place": "wall_mount", "z": 3.6}, "fn": "neon"}
+seed: 242730752  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_neon_vossberg
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

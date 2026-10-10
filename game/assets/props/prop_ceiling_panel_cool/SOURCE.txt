@@ -1,0 +1,8 @@
+asset: prop_ceiling_panel_cool
+script: tools/blender/props/staff.py
+params: {"cat": {"fixture": true, "group": "lighting", "kind": "light_fixture", "light": {"angle": 70, "color": "#FFE4CE", "energy": 1.4, "pos": [0.0, -0.05, 0.0], "range": 4.5, "type": "spot"}, "place": "ceiling"}, "emit": "emit_cool", "fn": "panel_light"}
+seed: 3975637982  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_ceiling_panel_cool
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

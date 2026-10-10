@@ -93,9 +93,21 @@ chute, `lift` cash lift (bags only).
 
 | Level | FFL | Ceiling | Floor-to-floor / slab | Notes |
 |---|---|---|---|---|
-| Basement | −4.0 | 3.2 (vault 3.0) | 4.0 (0.8 slab: heavy vault slab) | storage/plant ✓ |
+| Basement | −4.0 | 3.2 (vault 3.0) | 4.0 (0.8 slab: heavy vault slab) | storage/plant ✓; per-room ceiling overrides below |
 | Ground | 0.0 | **5.5 banking hall** (coffered); 3.0 back wing, offices, teller workroom (the workroom opens to the hall over the counter, with a 3.0 m soffit at z 10) | hall roof +6.5, wing roof +3.6 | banking hall 3.5–6 ✓; office 2.6–3.0 ✓ |
 | Stair G2 | −4.0 → 0.0 | U-stair, 2 flights × 11 risers @ 0.1818 m, tread 0.28 m, width 1.2 m, half landing at −2.0 (z 0.2–1.4, full core width), flights side by side | 22 risers = 4.0 exactly ✓ | landing every 11 ≤ 16 ✓; headroom: the ground slab stops over flight 2 (railing `r`), so there is ≥ 2.1 m everywhere |
+
+**Per-room ceiling overrides (D-048):** the generic §2.6 table caps storage/corridor/locker/server
+rooms at 3.0 m. These basement rooms carry a `ceiling_range` override of 2.6–3.2 m, for this reason:
+- **B1, B6, B14** (storage), **B5, B7, B10** (corridors), **B2/B13** (locker room + WCs), **B4**
+  (server room), **B11** (count room), **B12** (depository): a 1931 bank basement built to vault
+  standard. It has a uniform 3.2 m clear height under the 0.8 m vault-grade slab, with exposed services
+  and no dropped ceiling.
+- **B3 (plant):** the validator's confirmed `plant` range of 2.6–6.0 m applies, so no override is needed.
+
+**Keycard (D-048):** one consumable vault keycard opens the B5→B8 vault gate. Every other staff door
+(sally personnel door, teller workroom, count room) is a LOCKPICK door that guards and staff open by
+badge (NPC-authorised). That is PD2-faithful.
 
 **Validator note:** `contract_nodes` currently requires `floor_heights[0] == 0.0`. That is my
 validator, and I will change it to "ascending and contains 0.0" (heist_map.md §7 only fixes the
@@ -268,14 +280,14 @@ Sizes are between wall centre lines.
 
 | id | purpose (`RoomVolume.purpose`) | size m | ceiling m | kit | notes |
 |---|---|---|---|---|---|
-| G1 | storage (loading / sally port) | 7 × 6 | 3.0 | `sally_port` | Armoured-car transfer room. Roller door (3 m) and steel personnel door (**keycard or lockpick**) to the lot. **Cash lift** (bags only) to B1 in the NE corner of the plan drawing. Cart, cash trolleys, CCTV-covered. |
+| G1 | storage (loading / sally port) | 7 × 6 | 3.0 | `sally_port` | Armoured-car transfer room. Roller door (3 m) and steel personnel door (**lockpick**; staff badge readers are NPC-authorised only, D-048) to the lot. **Cash lift** (bags only) to B1 in the NE corner of the plan drawing. Cart, cash trolleys, CCTV-covered. |
 | G2 | stair | 3 × 6 | open | — | U-stair to the basement (vertical data). Ground entry is from G7 at x 7–8; the shaft over flight 2 has a railing. |
 | G3 | security_room | 4 × 6 | 3.0 | `security_office` | **Camera station** against the solid west wall (G2 partition); the operator faces west. Monitor wall, key cabinet on the east wall (`kc_security`), guard lockers, coffee. No windows (internal). |
 | G4 | break_room | 4 × 6 | 3.0 | `break_room` | Fridge, counter with sink, microwave, coffee, table with 4 chairs, **staff lockers** (`kc_break_locker`), bulletin board (`code_break_board`). |
 | G5 | electrical | 3 × 6 | 3.0 | `electrical_closet` | Main switchboard, alarm control panel (dressing in P2), telecom. |
 | G6 | storage | 5 × 6 | 3.0 | `storage_supplies` | Bank supplies, coin bags, deposit slips, shredder, archive overflow. `srv_ground` variant puts a server rack here. |
 | G7 | corridor (staff) | 26 × 1.5 | 3.0 | `corridor_service` | The back-of-house spine. **Fire exit** east to Wharf Lane (push bar, swings out). The stair entry is at x 7–8. |
-| G8 | office (teller workroom) | 21 × 2.5 | 3.0 soffit, opens over the counter to the hall | `teller_line` | 6 teller stations behind the counter, cash drawers (`kc_teller_drawer`), note counters. Door to G7 (**keycard**); gate to the hall at x 1 (locked). |
+| G8 | office (teller workroom) | 21 × 2.5 | 3.0 soffit, opens over the counter to the hall | `teller_line` | 6 teller stations behind the counter, cash drawers (`kc_teller_drawer`), note counters. Door to G7 (**lockpick**, NPC-authorised); gate to the hall at x 1 (locked). |
 | G9 | banking_hall | 21 × 10 | 5.5 | `banking_hall` | Public by day, **RESTRICTED at night**. Mosaic compass rose (landmark), 4 check-writing tables, queue rails, waiting benches, the harbor clock inside over the doors, tall windows (sill 1.0, 3.5 tall) to Harbor St. Glass-fronted offices G11/G12 on the east side. |
 | G10 | corridor (entry vestibule) | 4 × 2 | 3.0 | — | Bronze outer doors and glass inner doors, both locked at night. |
 | G11 | office (loan officer) | 5 × 4.5 | 3.0 | `office_loan` | Desk, 2 visitor chairs, file cabinets. Glass front to the hall. Staff door to G7. Window to Wharf Lane. |
@@ -290,7 +302,7 @@ Sizes are between wall centre lines.
 | B7, B10 | corridor (vault inspection passages) | 2 × 12.5 each | 3.2 | `corridor_inspection` | Standard vault-perimeter inspection passages with convex mirrors. They flank the vault and connect B5 to nothing else (dead ends **with a reason**). Each holds a **laser grid** (`laser_inspection` variant) and is a guard pause point. |
 | B8 | vault (antechamber) | 10 × 2.5 | 3.2 | `vault_antechamber` | **Laser grid** across the room (pattern variant). **Time-lock panel `TL`** on the east wall by the round vault door. Viewing bench. |
 | B9 | vault | 10 × 10 | 3.0 | `vault_main` | Round door (2.2 m, VAULT lock). **Cash cage** in the centre (`loot_spawn` cash bags). **Safe-deposit box walls** east and west (`saw` targets: small loot, `deposit_boxes` count variant). Pallet of **Co-op cash bricks** (bags). |
-| B11 | office (cash counting room) | 5 × 6.5 | 3.2 | `count_room` | Counting machines, tables, sealing station. Door to B5 (**keycard**). |
+| B11 | office (cash counting room) | 5 × 6.5 | 3.2 | `count_room` | Counting machines, tables, sealing station. Door to B5 (**lockpick**, NPC-authorised). |
 | B12 | vault (night depository) | 5 × 6 | 3.2 | `depository` | The chute from G13 lands in the **depository safe** (`safe` MEDIUM, `S`). Night-drop bags inside (loot). The door is from B11 only (through-room by design: deposits go to counting). |
 | B14 | storage (janitor) | 1.5 × 2.5 | ≤ 3.2 (under flight 1) | `janitor_closet` | Mop sink, cart. **BODY_HIDE** (1 body). |
 | X1 | exterior (lot + alley) | — | — | `exterior_lot` | Parked staff cars, dumpster (`body_container`, BODY_HIDE), the armoured-car bay markings, areaway grate, light poles (sodium). |
@@ -389,7 +401,7 @@ the exterior rover is the natural candidate. That is the intended Brutal skill c
 is the **heist's tension beat**.
 
 **Lasers:** the antechamber grid blocks the panel and the vault door.
-- **static:** a crawl gap below 0.35 m on one side (crouch-walk through).
+- **static:** a discoverable **bypass gap** at the west end of the grid, ≥ 0.8 m clear width, passable upright or crouched (capsule radius 0.35 m, crouched height 1.2 m; validator-asserted, D-048).
 - **sweeping:** a timing window.
 - **timed-off:** the grid drops for 6 s every 20 s.
 

@@ -1,0 +1,8 @@
+asset: veh_van_secure
+script: tools/blender/props/prefab_visuals.py
+params: {"cat": {"kind": "van", "prefab": "secure_zone"}, "fn": "van"}
+seed: 847080229  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset veh_van_secure
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

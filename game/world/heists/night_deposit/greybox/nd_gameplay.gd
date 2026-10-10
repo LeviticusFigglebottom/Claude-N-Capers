@@ -1,0 +1,464 @@
+## Night Deposit generator: gameplay prefabs (Gameplay) and variant slots (Variants). Owner: ENV C (C2).
+## Chain: nd_builder_base.gd <- nd_gameplay.gd <- build_greybox.gd. Design: docs/design/heists/
+## night_deposit.md (§Objectives, §Loot path, §Variable table); contracts: gameplay_prefabs.md v1.1,
+## heist_map.md §5. Prefabs are found by contract class name (no path into ENV A's folder).
+extends "res://world/heists/night_deposit/greybox/nd_builder_base.gd"
+
+## Single time-lock code group: notes, the carried code, and the TL panel.
+const CODE_GROUP: StringName = &"nd_time_lock"
+const VAULT_DOOR_VISUAL: String = "res://world/heists/night_deposit/greybox/vault_door_visual.tscn"
+const BOAT_DROP_VISUAL: String = "res://world/heists/night_deposit/greybox/boat_drop_visual.tscn"
+const CAMERA_POSITIONS: Dictionary = {
+	# id: [pivot on the wall face, yaw (front -Z into the room)] (doc §Sightlines, 2.6-3.0 m).
+	"C1": [Vector3(20.3, 2.8, 10.1), 180.0], "C2": [Vector3(0.6, 2.8, 19.8), 0.0],
+	"C3": [Vector3(0.2, 2.6, 6.75), -90.0], "C4": [Vector3(3.5, 2.6, 5.9), 0.0],
+	"C5": [Vector3(25.8, -1.4, 6.75), 90.0], "C6": [Vector3(9.1, -1.4, 8.8), -90.0],
+	"C7": [Vector3(11.0, 3.0, -0.2), 0.0], "C8": [Vector3(25.0, -1.4, 7.6), 180.0],
+}
+const CAMERA_SETS: Array = [
+	["cam_a", ["C1", "C3", "C5", "C6"]], ["cam_b", ["C2", "C4", "C5", "C7"]], ["cam_c", ["C1", "C4", "C6", "C8"]],
+]
+
+
+# --- Prefab helpers ---------------------------------------------------------------------------
+
+## Instances a prefab under `parent` (all containers sit at the identity, so `pos` is world space
+## unless `parent` is a prop). props: export -> value ("enum:KEY" looks the key up in the prefab
+## script's enums). use_point: world floor point for the UsePoint (items on furniture) or null.
+func prefab(parent: Node3D, kind: String, nm: String, pos: Vector3, yaw: float, props: Dictionary = {},
+		use_point: Variant = null, metas: Dictionary = {}, obstruct_body: bool = true) -> Node3D:
+	var ps: PackedScene = prefab_scene(kind)
+	if ps == null:
+		return null
+	var inst: Node3D = ps.instantiate() as Node3D
+	inst.name = nm
+	inst.position = pos
+	inst.basis = yaw_basis(yaw)
+	for k: Variant in props:
+		_set_prop(inst, String(k), props[k])
+	for mk: Variant in metas:
+		inst.set_meta(StringName(String(mk)), metas[mk])
+	parent.add_child(inst)
+	inst.owner = map_root
+	if use_point != null:
+		place_use_point(inst, use_point as Vector3)
+	if obstruct_body and kind in ["safe", "body_container", "secure_zone", "camera_station"]:
+		_obstruct_prefab(inst)
+	return inst
+
+
+## Moves a prefab's UsePoint to a world floor point, -Z facing the object (Editable Children).
+func place_use_point(inst: Node3D, world: Vector3) -> void:
+	var up: Node3D = inst.get_node_or_null("UsePoint") as Node3D
+	if up == null:
+		errors.append("%s has no UsePoint" % inst.name)
+		return
+	var xf: Transform3D = global_xform(inst)
+	var to_obj: Vector3 = xf.origin - world
+	to_obj.y = 0.0
+	var g: Transform3D = Transform3D(Basis.looking_at(to_obj.normalized(), Vector3.UP), world)
+	up.transform = xf.affine_inverse() * g
+	map_root.set_editable_instance(inst, true)
+
+
+func global_xform(c: Node3D) -> Transform3D:
+	var xf: Transform3D = c.transform
+	var p: Node = c.get_parent()
+	while p != null and p != map_root:
+		if p is Node3D:
+			xf = (p as Node3D).transform * xf
+		p = p.get_parent()
+	return xf
+
+
+func _obstruct_prefab(inst: Node3D) -> void:
+	var base: Transform3D = global_xform(inst)
+	for c: Node in inst.find_children("*", "CollisionShape3D", true, false):
+		var cs: CollisionShape3D = c
+		var body: Node = cs.get_parent()
+		if not (body is StaticBody3D) or not (cs.shape is BoxShape3D):
+			continue
+		var rel: Transform3D = cs.transform
+		var p: Node = body
+		while p != null and p != inst:
+			rel = (p as Node3D).transform * rel
+			p = p.get_parent()
+		var sz: Vector3 = (cs.shape as BoxShape3D).size
+		obstruct(base * rel, AABB(-sz * 0.5, sz))
+
+
+func _set_prop(inst: Node, prop: String, value: Variant) -> void:
+	var found: bool = false
+	for p: Dictionary in inst.get_property_list():
+		if String(p["name"]) == prop:
+			found = true
+			break
+	if not found:
+		errors.append("%s has no property `%s`" % [inst.name, prop])
+		return
+	if value is String and String(value).begins_with("enum:"):
+		value = _enum_value(inst, String(value).substr(5))
+	inst.set(prop, value)
+
+
+func _enum_value(inst: Node, key: String) -> int:
+	var scr: Script = inst.get_script() as Script
+	if scr != null:
+		for c: Variant in scr.get_script_constant_map().values():
+			if c is Dictionary and (c as Dictionary).has(key):
+				return int((c as Dictionary)[key])
+	errors.append("enum key %s not found on %s" % [key, inst.name])
+	return 0
+
+
+static func _names(a: Array) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for v: Variant in a:
+		out.append(StringName(String(v)))
+	return out
+
+
+## Wall-mounted security camera. The prefab's hitbox reaches 0.025 m behind the back-centre pivot,
+## so the instance's `Collision` is moved 0.03 m forward (Editable Children; reported to ENV A).
+func security_camera(parent: Node3D, cid: String, fov: float = 60.0, rng: float = 20.0) -> Node3D:
+	var row: Array = CAMERA_POSITIONS[cid]
+	var cam: Node3D = prefab(parent, "security_camera", "Camera" + cid, row[0], float(row[1]),
+		{"fov_deg": fov, "range_m": rng, "pan_deg": 40.0}, null,
+		{"mount": "wall", "kind": "security_camera", "camera_id": cid})
+	if cam != null:
+		var col: Node3D = cam.get_node_or_null("Collision") as Node3D
+		if col != null:
+			col.position += Vector3(0.0, 0.0, -0.03)
+			map_root.set_editable_instance(cam, true)
+	return cam
+
+
+# --- Gameplay ---------------------------------------------------------------------------------
+
+func build_gameplay(gp: Node3D) -> void:
+	_build_doors(gp)
+	_build_windows(gp)
+	_build_vault(gp)
+	_build_depository(gp)
+	_build_misc(gp)
+
+
+func _build_doors(gp: Node3D) -> void:
+	var doors: Node3D = add(gp, node3d("Doors")) as Node3D
+	for d: Array in L.DOORS:
+		var vis: PackedScene = load(VAULT_DOOR_VISUAL) as PackedScene if String(d[1]) == "vault_door_visual" \
+			else kit_scene(String(d[1]))
+		var props: Dictionary = {"lock": "enum:" + String(d[4]), "swing": "enum:" + String(d[5]), "visual_scene": vis}
+		if String(d[6]) != "":
+			props["objective_tag"] = StringName(String(d[6]))
+		var metas: Dictionary = {"kind": "door", "swing_side": "back"}
+		var extra: Dictionary = d[7]
+		if bool(extra.get("service", false)):
+			metas["service"] = true
+		if bool(extra.get("fire_exit", false)):
+			metas["fire_exit"] = true
+		if bool(extra.get("suspicious_when_open", false)):
+			props["suspicious_when_open"] = true
+		if bool(extra.get("npc_auth", false)):
+			props["npc_authorized_tags"] = _names(L.STAFF_TAGS)
+		if String(d[1]).contains("service"):
+			props["width_m"] = 1.1
+		if extra.has("width_m"):
+			props["width_m"] = float(extra["width_m"])
+		prefab(doors, "door", String(d[0]), d[2], float(d[3]), props, null, metas)
+
+
+## Hall window bays (breakable; police ENTRY). The prefab's GlassBody is a fixed 1.0 x 1.2 panel, so
+## a full-size glass blocker sits in Geometry/Building/Glazing (Glasshouse G1 convention).
+func _build_windows(gp: Node3D) -> void:
+	var wins: Node3D = add(gp, node3d("Windows")) as Node3D
+	var gl: Node3D = n("Geometry/Building/Glazing")
+	for w: Array in L.WINDOWS:
+		var pos: Vector3 = w[2]
+		var yaw: float = float(w[3])
+		var front: Vector3 = yaw_basis(yaw) * Vector3.FORWARD
+		prefab(wins, "window", String(w[0]), pos, yaw,
+			{"breakable": true, "openable": false, "visual_scene": kit_scene(String(w[1])), "objective_tag": &"hall_window"},
+			Vector3(pos.x, 0.0, pos.z) + front * 0.7, {"kind": "window"})
+		box(gl, String(w[0]) + "Blocker", Vector3(pos.x - 1.5, pos.y, pos.z - 0.02), Vector3(pos.x + 1.5, pos.y + 2.4, pos.z + 0.02), "")
+
+
+## Vault: round door (VAULT lock, 2.2 m; greybox leaf in vault_door_visual.tscn), the thermal drill point
+## (loud), the time-lock panel (keypad, code group nd_time_lock) behind the laser plane, cage cash,
+## the Co-op pallet and the safe-deposit box walls (saw points with small loot).
+func _build_vault(gp: Node3D) -> void:
+	var v: Node3D = add(gp, node3d("Vault")) as Node3D
+	var door: Node3D = n("Gameplay/Doors/VaultDoor")
+	if door != null:
+		# Drill on the antechamber side: -Z into the lock (south), UsePoint on its +Z side (north).
+		prefab(door, "drill_point", "VaultDrill", Vector3(0.6, 1.0, -0.35), 180.0,
+			{"device": "enum:THERMAL", "target": NodePath(".."), "loud_only": true, "objective_tag": &"vault_drill"},
+			Vector3(14.6, L.BASE, 9.0))
+	prefab(v, "keypad", "TimeLockPanel", Vector3(18.9, L.BASE + 1.2, 9.1), 90.0,
+		{"code_group": CODE_GROUP, "stealth_only": true, "objective_tag": &"time_lock"}, null,
+		{"mount": "wall", "kind": "keypad"})
+	prefab(v, "loot_spawn", "CageCash", Vector3(14.0, L.BASE, 15.4), 0.0,
+		{"loot_id": &"loot.cash", "count": 4, "objective_tag": &"vault_loot"})
+	# Co-op pallet of cash bricks (the loot_spawn stack stands for the pallet; markers sit on the floor).
+	prefab(v, "loot_spawn", "CoopCashBricks", Vector3(14.0, L.BASE, 18.7), 0.0,
+		{"loot_id": &"loot.cash_bricks", "count": 3, "objective_tag": &"vault_loot"})
+	# Safe-deposit box walls (saw targets; 4 per wall, the mission keeps `deposit_boxes` of them).
+	var idx: int = 0
+	for side: Array in [["DepositBoxWallW", 9.6, 90.0, 1.0], ["DepositBoxWallE", 18.4, -90.0, -1.0]]:
+		var bw: StaticBody3D = prop_box(v, String(side[0]), Vector3(float(side[1]), L.BASE, 15.0),
+			Vector3(0.6, 2.4, 8.0), 0.0, "deposit_boxes", false, "trim")
+		var dirx: float = float(side[3])
+		for z: float in [12.0, 14.0, 16.0, 18.0]:
+			idx += 1
+			var face_x: float = 0.3 * dirx + 0.01 * dirx
+			var floor_pt: Vector3 = Vector3(float(side[1]) + dirx * 1.0, L.BASE, z)
+			var loot: Node3D = prefab(bw, "small_loot", "BoxLoot%d" % idx, Vector3(face_x, 1.3, z - 15.0 + 0.25),
+				float(side[2]), {"loot_id": &"loot.small_valuables", "value": 750, "objective_tag": &"deposit_box_loot"},
+				floor_pt + Vector3(0.0, 0.0, 0.25), {"mount": "wall"})
+			var drill: Node3D = prefab(bw, "drill_point", "Box%d" % idx, Vector3(face_x, 1.3, z - 15.0 - 0.2),
+				float(side[2]), {"device": "enum:SAW", "duration_s": 6.0, "objective_tag": &"deposit_box"},
+				floor_pt + Vector3(0.0, 0.0, -0.2))
+			if drill != null and loot != null:
+				drill.set(&"target", drill.get_path_to(loot))
+
+
+## B12 night depository safe (MEDIUM: saw 120 s or drill); the chute drops into it. The night-drop
+## bags (count = scalar `depository_bags`, set by the mission) are enabled when it opens.
+func _build_depository(gp: Node3D) -> void:
+	var dp: Node3D = add(gp, node3d("Depository")) as Node3D
+	var safe: Node3D = prefab(dp, "safe", "DepositorySafe", Vector3(21.47, L.BASE, 17.0), -90.0,
+		{"size": "enum:MEDIUM", "methods": [&"saw", &"drill"] as Array[StringName], "objective_tag": &"depository"},
+		null, {"kind": "safe"})
+	# Night-drop bags: loot markers sit on the floor, so the stack stands in front of the safe and the
+	# mission enables it when the safe opens (Safe only gates loot parented under it).
+	if safe != null:
+		prefab(dp, "loot_spawn", "NightDropBags", Vector3(22.6, L.BASE, 18.3), -90.0,
+			{"loot_id": &"loot.cash", "count": 4, "objective_tag": &"depository_loot"})
+	# Chute from the G13 night drop down to the safe (Geometry dressing, ceiling to the safe top).
+	box(n("Geometry/Building"), "DepositoryChute", Vector3(21.15, L.BASE + 1.25, 16.75), Vector3(21.55, L.BASE_CEIL, 17.25), "trim")
+
+
+func _build_misc(gp: Node3D) -> void:
+	var misc: Node3D = add(gp, node3d("Misc")) as Node3D
+	# Teller drawers (small loot on the counter, workroom side).
+	for i: int in range(3):
+		var x: float = 4.0 + 5.0 * float(i)
+		prefab(misc, "small_loot", "TellerDrawer%d" % (i + 1), Vector3(x, 1.05, 9.85), 0.0,
+			{"loot_id": &"loot.cash", "value": 500}, Vector3(x, 0.0, 9.1))
+	var station: Node3D = prefab(misc, "camera_station", "CameraStation", Vector3(10.51, 0.0, 2.5), -90.0,
+		{}, null, {"kind": "camera_station"})
+	if station != null:
+		station.set(&"operator_spawn", station.get_path_to(map_root.get_node("Spawns/CameraOperatorSeat")))
+	for a: Array in [["AlarmSecurity", Vector3(13.9, 1.2, 1.5), 90.0], ["AlarmManager", Vector3(22.0, 1.2, 12.1), 180.0],
+			["AlarmTellers", Vector3(15.0, 1.2, 7.6), 180.0]]:
+		prefab(misc, "alarm_button", String(a[0]), a[1], float(a[2]), {}, null, {"mount": "wall", "kind": "alarm_button"})
+	prefab(misc, "phone", "PhoneManager", Vector3(23.8, 0.75, 14.4), 0.0, {}, Vector3(23.8, 0.0, 13.4))
+	prefab(misc, "phone", "PhoneLoan", Vector3(24.2, 0.75, 10.2), 0.0, {}, Vector3(24.2, 0.0, 9.1))
+	prefab(misc, "body_container", "Dumpster", Vector3(9.5, 0.0, -0.75), 0.0, {"capacity": 2}, null, {"kind": "dumpster"})
+	var a2: Dictionary = L.AREAWAY
+	prefab(misc, "ladder", "AreawayLadder", a2["ladder_pos"], float(a2["ladder_yaw"]), {"height_m": 4.0}, null,
+		{"kind": "ladder"})
+	_cash_lift(misc)
+
+
+## Cash lift (bag_lift, QC-11 / A3-09). Until the prefab is on trunk: a placeholder node with the
+## intended name `CashLift` and its landing markers (bags go up the stair meanwhile, doc §Loot path).
+func _cash_lift(misc: Node3D) -> void:
+	var landing_g: Vector3 = Vector3(5.0, 0.0, 1.8)
+	var landing_b: Vector3 = Vector3(5.0, L.BASE, 1.8)
+	var lift: Node3D = prefab(misc, "bag_lift", "CashLift", Vector3(6.25, 0.0, 1.8), -90.0,
+		{"travel_s": 8.0, "capacity": 2, "objective_tag": &"cash_lift"}, null, {}, false) \
+		if prefab_scene("bag_lift", true) != null else null
+	if lift == null:
+		lift = node3d("CashLift", Vector3(6.25, 0.0, 1.8))
+		lift.set_meta(&"placeholder_for", "bag_lift")
+		lift.set_meta(&"objective_tag", &"cash_lift")
+		lift.set_meta(&"travel_s", 8.0)
+		lift.set_meta(&"capacity", 2)
+		add(misc, lift)
+	for lm: Array in [["LandingGround", landing_g], ["LandingBasement", landing_b]]:
+		var m: Marker3D = Marker3D.new()
+		m.name = String(lm[0])
+		m.position = (lm[1] as Vector3) - lift.position
+		add(lift, m)
+	if lift.get(&"targets") != null:
+		lift.set(&"targets", [lift.get_path_to(lift.get_node("LandingGround")),
+			lift.get_path_to(lift.get_node("LandingBasement"))] as Array[NodePath])
+
+
+# --- Variants ---------------------------------------------------------------------------------
+
+func _slot(parent: Node3D, group: String, slot_id: String, weight: float, params: Dictionary = {}) -> VariantSlot:
+	var vs: VariantSlot = VariantSlot.new()
+	vs.name = "Slot_" + slot_id
+	vs.slot_group = StringName(group)
+	vs.slot_id = StringName(slot_id)
+	vs.weight = weight
+	vs.params = params
+	add(parent, vs)
+	return vs
+
+
+func _group(parent: Node3D, group: String) -> Node3D:
+	return add(parent, node3d("Group_" + group)) as Node3D
+
+
+func build_variants(variants: Node3D) -> void:
+	_variants_guards(variants)
+	_variants_security(variants)
+	_variants_code(variants)
+	_variants_keycard(variants)
+	_variants_server(variants)
+	_variants_vent(variants)
+	_variants_lasers(variants)
+	_variants_loot_escape(variants)
+
+
+func _variants_guards(variants: Node3D) -> void:
+	var g: Node3D = _group(variants, "guard_post")
+	var rg: VariantSlot = _slot(g, "guard_post", "rover_ground", 1.0)
+	spawn(rg, "GuardRoverGround", "GUARD", Vector3(13.4, 0.0, 6.75), 90.0, ["guard_rover", "guard_rover_ground"], "", "Bank")
+	var rb: VariantSlot = _slot(g, "guard_post", "rover_basement", 1.0)
+	spawn(rb, "GuardRoverBasement", "GUARD", Vector3(5.0, L.BASE, 6.75), -90.0, ["guard_rover", "guard_rover_basement"], "",
+		"Bank")
+	var rx: VariantSlot = _slot(g, "guard_post", "rover_exterior", 1.0)
+	spawn(rx, "GuardRoverExterior", "GUARD", Vector3(7.5, 0.0, -2.2), 0.0, ["guard_rover", "guard_rover_exterior"], "",
+		"Exterior")
+
+
+## Cameras (doc C1-C8 in three sets), the staffed security room, and the two civilians.
+func _variants_security(variants: Node3D) -> void:
+	var cg: Node3D = _group(variants, "camera")
+	for s: Array in CAMERA_SETS:
+		var slot: VariantSlot = _slot(cg, "camera", String(s[0]), 1.0)
+		for cid: Variant in s[1]:
+			security_camera(slot, String(cid), 60.0, 25.0 if String(cid) in ["C1", "C2", "C7"] else 20.0)
+	var sr: Node3D = _group(variants, "security_room_staffed")
+	_slot(sr, "security_room_staffed", "sec_staffed", 0.6,
+		{"operator_spawn": "Spawns/CameraOperatorSeat", "station": "Gameplay/Misc/CameraStation"})
+	_slot(sr, "security_room_staffed", "sec_empty", 0.4)
+	var nm: Node3D = _group(variants, "night_manager")
+	var mi: VariantSlot = _slot(nm, "night_manager", "mgr_in", 0.5)
+	spawn(mi, "NightManager", "CIVILIAN", Vector3(22.6, 0.0, 13.2), 180.0, ["civ_manager", "civ_staff"], "desk_work", "")
+	_slot(nm, "night_manager", "mgr_out", 0.5)
+	var cl: Node3D = _group(variants, "cleaner")
+	var cgr: VariantSlot = _slot(cl, "cleaner", "cleaner_ground", 0.4)
+	spawn(cgr, "Cleaner", "CIVILIAN", Vector3(13.0, 0.0, 16.4), 90.0, ["civ_cleaner", "civ_staff"], "browse", "")
+	var cbs: VariantSlot = _slot(cl, "cleaner", "cleaner_basement", 0.3)
+	spawn(cbs, "Cleaner", "CIVILIAN", Vector3(20.6, L.BASE, 6.75), 90.0, ["civ_cleaner", "civ_staff"], "browse", "")
+	_slot(cl, "cleaner", "cleaner_none", 0.3)
+
+
+## Time-lock code: the carried code (manager) or one written note (doc `code_note` row).
+func _variants_code(variants: Node3D) -> void:
+	var cc: Node3D = _group(variants, "code_carrier")
+	var om: VariantSlot = _slot(cc, "code_carrier", "code_on_manager", 1.5, {"code_group": CODE_GROUP})
+	var m: Marker3D = Marker3D.new()
+	m.name = "ManagerCarriesCode"
+	m.position = Vector3(22.6, 0.0, 13.2)
+	m.set_meta(&"code_group", CODE_GROUP)
+	add(om, m)
+	_slot(cc, "code_carrier", "code_in_note", 3.0)
+	var cn: Node3D = _group(variants, "code_note")
+	var notes: Array = [
+		["code_manager_planner", Vector3(24.3, 0.75, 14.45), Vector3(24.3, 0.0, 13.4)],
+		["code_break_board", Vector3(14.8, 0.9, 0.55), Vector3(14.8, 0.0, 1.3)],
+		["code_records_ledger", Vector3(3.4, L.BASE + 0.75, 15.6), Vector3(3.4, L.BASE, 16.45)],
+	]
+	for row: Array in notes:
+		var slot: VariantSlot = _slot(cn, "code_note", String(row[0]), 1.0, {"code_group": CODE_GROUP})
+		prefab(slot, "code_note", "CodeNote", row[1], 0.0, {"code_group": CODE_GROUP, "objective_tag": &"code_note"}, row[2])
+
+
+func _variants_keycard(variants: Node3D) -> void:
+	var kc: Node3D = _group(variants, "keycard")
+	var rows: Array = [
+		["kc_manager_desk", 1.0, Vector3(23.3, 0.75, 14.2), Vector3(23.3, 0.0, 13.4)],
+		["kc_teller_drawer", 1.0, Vector3(6.0, 1.05, 9.85), Vector3(6.0, 0.0, 9.1)],
+		["kc_break_locker", 1.0, Vector3(17.65, 1.5, 3.0), Vector3(16.95, 0.0, 3.0)],
+		["kc_security", 0.75, Vector3(13.69, 1.0, 4.2), Vector3(13.0, 0.0, 4.2)],
+		["kc_records", 1.0, Vector3(2.6, L.BASE + 0.75, 15.6), Vector3(2.6, L.BASE, 16.45)],
+	]
+	for r: Array in rows:
+		var s: VariantSlot = _slot(kc, "keycard", String(r[0]), float(r[1]))
+		prefab(s, "keycard_pickup", "Keycard", r[2], 0.0, {"objective_tag": &"keycard"}, r[3])
+
+
+## Server room (code-free alternative). hack_terminal (QC-12, A3-09) is not on trunk: a keypad with
+## no code group and a 60 s hold stands in (node `HackTerminal`, objective_tag `server_hack`).
+func _variants_server(variants: Node3D) -> void:
+	var sg: Node3D = _group(variants, "server_room")
+	var rows: Array = [["srv_basement", 0.6, Vector3(24.0, L.BASE + 1.2, 0.2)], ["srv_ground", 0.4, Vector3(24.0, 1.2, 0.2)]]
+	for r: Array in rows:
+		var s: VariantSlot = _slot(sg, "server_room", String(r[0]), float(r[1]))
+		var pos: Vector3 = r[2]
+		if String(r[0]) == "srv_ground":
+			prop_box(s, "ServerRackG6", Vector3(25.45, 0.0, 1.5), Vector3(0.6, 2.0, 1.2), 0.0, "rack", false, "trim")
+		var hack: Node3D = null
+		if prefab_scene("hack_terminal", true) != null:
+			hack = prefab(s, "hack_terminal", "HackTerminal", pos, 180.0,
+				{"duration_s": 60.0, "interruptions": 2, "objective_tag": &"server_hack"}, null, {"mount": "wall"})
+		else:
+			hack = prefab(s, "keypad", "HackTerminal", pos, 180.0,
+				{"code_group": &"", "interaction_time_s": 60.0, "stealth_only": true, "objective_tag": &"server_hack"},
+				null, {"mount": "wall", "kind": "keypad", "placeholder_for": "hack_terminal"})
+		if hack != null:
+			hack.set_meta(&"hack_stages", 3)
+			hack.set_meta(&"hack_stage_s", 20.0)
+
+
+## Areaway grate gate: unlocked (3 s, silent) or padlocked (lockpick 8 s).
+func _variants_vent(variants: Node3D) -> void:
+	var vg: Node3D = _group(variants, "vent_open")
+	var a: Dictionary = L.AREAWAY
+	for r: Array in [["vent_open", "NONE", 3.0], ["vent_locked", "LOCKPICK", 8.0]]:
+		var s: VariantSlot = _slot(vg, "vent_open", String(r[0]), 0.5)
+		prefab(s, "door", "AreawayGrate", a["gate_pos"], float(a["gate_yaw"]),
+			{"lock": "enum:" + String(r[1]), "swing": "enum:INWARD", "interaction_time_s": float(r[2]),
+				"visual_scene": kit_scene("arch_door_single_t20"), "objective_tag": &"areaway_grate"},
+			null, {"kind": "door", "swing_side": "back"})
+
+
+## Antechamber laser grid across B8 (z 8.5) in front of the TL panel and the vault door.
+func _variants_lasers(variants: Node3D) -> void:
+	var lg: Node3D = _group(variants, "laser_pattern")
+	var rows: Array = [
+		# static: a bypass gap at the west end (x 9.1-10.05, 0.95 m clear; D-048 needs >= 0.8 m) beside the wall.
+		["laser_static", 0.5, Vector3(14.475, L.BASE, 8.5), {"pattern": &"static", "size_m": Vector3(8.85, 2.0, 0.1),
+			"beam_count": 4}],
+		["laser_sweep", 0.2, Vector3(14.0, L.BASE, 8.5), {"pattern": &"sweeping", "size_m": Vector3(9.8, 2.2, 0.1),
+			"sweep_beams": 2, "period_s": 6.0}],
+		["laser_timed", 0.3, Vector3(14.0, L.BASE, 8.5), {"pattern": &"timed_off", "size_m": Vector3(9.8, 2.0, 0.1),
+			"beam_count": 4, "period_s": 20.0, "off_s": 6.0}],
+	]
+	for r: Array in rows:
+		var s: VariantSlot = _slot(lg, "laser_pattern", String(r[0]), float(r[1]))
+		var props: Dictionary = (r[3] as Dictionary).duplicate()
+		props["objective_tag"] = &"antechamber_lasers"
+		prefab(s, "laser_grid", "AntechamberLasers", r[2], 0.0, props, null, {"kind": "laser_grid"})
+
+
+func _variants_loot_escape(variants: Node3D) -> void:
+	var xl: Node3D = _group(variants, "extra_loot")
+	for r: Array in [["mgr_safe_full", 4], ["mgr_safe_empty", 0]]:
+		var s: VariantSlot = _slot(xl, "extra_loot", String(r[0]), 0.5)
+		var safe: Node3D = prefab(s, "safe", "ManagerSafe", Vector3(25.44, 0.0, 15.3), 90.0,
+			{"size": "enum:SMALL", "methods": [&"lockpick", &"drill"] as Array[StringName], "objective_tag": &"manager_safe"},
+			null, {"kind": "safe"})
+		if safe == null:
+			continue
+		for i: int in range(int(r[1])):
+			prefab(safe, "small_loot", "SafeCash%d" % (i + 1), Vector3(-0.24 + 0.16 * float(i), 0.25, 0.0), 0.0,
+				{"loot_id": &"loot.cash", "value": 1000}, Vector3(24.4, 0.0, 15.3 - 0.24 + 0.16 * float(i)))
+	var esc: Node3D = _group(variants, "escape")
+	var e1: VariantSlot = _slot(esc, "escape", "esc_van_lot", 0.6, {"label": "E1"})
+	prefab(e1, "secure_zone", "VanSecureE1", Vector3(2.5, 0.0, -5.4), 180.0, {}, null, {"kind": "vehicle"})
+	prefab(e1, "escape_zone", "VanEscapeE1", Vector3(3.5, 0.0, -1.6), 0.0,
+		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(5.0, 3.0, 2.4)})
+	var e2: VariantSlot = _slot(esc, "escape", "esc_boat_quay", 0.4, {"label": "E2"})
+	# Boat: SECURE_LOOT on the deck (deck-hatch visual, no van body), ESCAPE on the landing beside it.
+	prefab(e2, "secure_zone", "BoatSecureE2", Vector3(7.0, -1.0, 36.9), 0.0,
+		{"vehicle_collision": false, "zone_size_m": Vector3(4.0, 2.5, 2.4), "visual_scene": load(BOAT_DROP_VISUAL)},
+		null, {"kind": "boat_hatch"}, false)
+	prefab(e2, "escape_zone", "BoatEscapeE2", Vector3(8.5, -1.2, 34.7), 0.0,
+		{"objective_tag": &"escape_boat", "escape_type": &"boat", "zone_size_m": Vector3(5.6, 3.0, 1.2)})

@@ -1,0 +1,8 @@
+asset: prop_key_cabinet
+script: tools/blender/props/staff.py
+params: {"cat": {"group": "office", "kind": "key_cabinet", "place": "wall_mount", "z": 1.5}, "fn": "key_cabinet"}
+seed: 4142498101  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_key_cabinet
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

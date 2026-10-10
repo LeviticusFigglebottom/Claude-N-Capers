@@ -1,0 +1,8 @@
+asset: prop_desk_lamp
+script: tools/blender/props/staff.py
+params: {"cat": {"fixture": true, "group": "office", "hosts": ["desk", "credenza"], "kind": "desk_lamp", "light": {"angle": 45, "color": "#FFC58F", "energy": 0.8, "pos": [0.0, 0.38, -0.12], "range": 1.8, "type": "spot"}, "place": "on"}, "fn": "desk_lamp"}
+seed: 692117818  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_desk_lamp
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

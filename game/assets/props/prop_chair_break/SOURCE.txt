@@ -1,0 +1,8 @@
+asset: prop_chair_break
+script: tools/blender/props/staff.py
+params: {"cat": {"group": "kitchen", "hosts": ["table"], "kind": "chair", "place": "seat"}, "fn": "chair_break"}
+seed: 1889425274  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_chair_break
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

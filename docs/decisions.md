@@ -229,9 +229,10 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Ruling: the PD2-style formula in data_schemas.md (derived after mods, with a new `WeaponStats.reload_end_empty_s` for the empty pump). ENV B updates the Plowman data, mod deltas, resolver derivation and test_armory. ENV D re-enables its shotgun length check afterwards (temporarily excluded by the lead).
 
 ## D-046 — 2026-10-10 — Pre-planning data shape (QC-20..23); integration hotfix
-- QC-20 (final): canonical shape is the contract's `HeistDef.preplanning = {favors, disable, "assets": {asset_id: overrides}}`;
-  `PreplanBoard.merge` also tolerates legacy top-level `"asset.<id>"` keys. New data uses `"assets"`.
-- QC-21 (final): crew-spawn PREPLAN_POINT category is **`player_spawn`** (B's library and C's points; contract updated).
+- QC-20 (final): the contract's shape `HeistDef.preplanning = {favors, disable, "assets": {asset_id: overrides}}`; no
+  top-level asset keys (B e9e5e5b, C f04cc90).
+- QC-21 (final): crew-spawn PREPLAN_POINT category is **`spawn`** (the original contract; B's library and C's points).
+  An intermediate `player_spawn` ruling was withdrawn; rulings crossed because trunk lagged (see D-048 process note).
 - QC-22: ENV B adds library/strings for Glasshouse's heist-only `asset.inside_keycard` and `asset.propped_door`
   (force_variant) plus `ui.preplan.point.<point_id>` strings for the 9 points.
 - QC-23: favors budget is design data (Glasshouse 4). ENV B makes `test_buying_deducts_budget` read the def's value
@@ -249,3 +250,16 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Merge fixes (lead, B-owned files): pre-planning screen tests count markers on the shown floor (Glasshouse has an
   upstairs insider point); mask placeholder test accepts ENV D's model; strings for A's `bag_lift`/`hack_terminal`
   prompts; `PreplanPlan.resolve_ids` returns `{}` only when ids were given and none was accepted.
+
+## D-048 — 2026-10-10 — Night Deposit G1 approved; rulings; data-shape announcement rule
+- Night Deposit G1 approved (C 7875192/d79c8eb; lead reviewed plans, contact sheet and full-size shots).
+- Validator: floors named by height, interactive-only walk targets, `vault_door` 1.8–2.4 m, `plant` ceiling 2.6–6.0 m.
+- Ceilings beyond the §2.6 table use per-room overrides justified in the design doc; the table stays generic.
+- One consumable keycard (vault gate); other staff doors LOCKPICK + NPC-authorised. Sally shutter = breach ENTRY.
+- QC-24: a static-laser bypass is a discoverable stealth route, clear width ≥ 0.8 m upright or crouched (capsule
+  radius 0.35, no prone); validator asserts the capsule fits.
+- QC-25 (ENV A): timed NPC spawn hook in HeistMission. Also ENV A: camera hitbox behind pivot, laser_grid `size_m`,
+  `oob_respawn` excluded from default crew spawns, dominated-civilian identity in the mission API, prefab collision
+  sized from the visual AABB (export override).
+- Per-heist UI accent: shadow_ledger `#CFE3EE` (style guide §3). `options["is_pro"]` documented in test_hooks.md.
+- Process: the lead announces data-shape rulings only once they are on origin trunk (D-046 churn).

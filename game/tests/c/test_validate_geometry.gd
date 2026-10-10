@@ -48,3 +48,27 @@ func test_frustum() -> void:
 	assert_true(LcGeom.aabb_in_frustum(AABB(Vector3(-0.5, -0.5, -10.5), Vector3.ONE), planes), "in front")
 	assert_false(LcGeom.aabb_in_frustum(AABB(Vector3(-0.5, -0.5, 9.5), Vector3.ONE), planes), "behind")
 	assert_false(LcGeom.aabb_in_frustum(AABB(Vector3(50, -0.5, -10.5), Vector3.ONE), planes), "far right")
+
+
+func test_floor_names_by_height() -> void:
+	var rs: GDScript = load("res://world/tools/review_shots.gd") as GDScript
+	var fh: PackedFloat32Array = PackedFloat32Array([-4.0, 0.0, 4.2])
+	assert_eq(rs.call(&"floor_name", fh, 0), "BASEMENT B1")
+	assert_eq(rs.call(&"floor_name", fh, 1), "GROUND FLOOR")
+	assert_eq(rs.call(&"floor_name", fh, 2), "FLOOR 1")
+	assert_eq(rs.call(&"fmt_height", -4.0), "−4.0 m")
+	assert_eq(rs.call(&"fmt_height", 4.2), "+4.2 m")
+
+
+func test_walk_objectives_skip_observers() -> void:
+	var obj: Node3D = Node3D.new()
+	obj.set_script(load("res://tests/c/fixtures/lc_fixture_objective.gd"))
+	obj.set(&"objective_tag", &"security_camera")
+	assert_false(LcTargets.is_walk_objective(obj), "tagged node without UsePoint/Interactable")
+	var up: Marker3D = Marker3D.new()
+	up.name = "UsePoint"
+	obj.add_child(up)
+	assert_true(LcTargets.is_walk_objective(obj), "tagged node with a UsePoint")
+	obj.set_meta(&"kind", "camera")
+	assert_false(LcTargets.is_walk_objective(obj), "cameras are never walk targets")
+	obj.free()

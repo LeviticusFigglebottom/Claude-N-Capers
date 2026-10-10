@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_grab_bar/prop_grab_bar.glb" id="1_model"]
+
+[node name="PropGrabBar" type="Node3D"]
+metadata/kind = &"grab_bar"
+metadata/mount = &"wall"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

@@ -1,0 +1,8 @@
+asset: prop_magnifier_lamp
+script: tools/blender/props/backofhouse.py
+params: {"cat": {"fixture": true, "group": "workshop", "hosts": ["jeweler_bench", "desk"], "kind": "magnifier", "light": {"angle": 45, "color": "#FFE4CE", "energy": 0.8, "pos": [0.0, 0.47, -0.17], "range": 1.5, "type": "spot"}, "place": "on"}, "fn": "magnifier"}
+seed: 956028163  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_magnifier_lamp
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

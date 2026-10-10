@@ -1,0 +1,8 @@
+asset: prop_rug_round
+script: tools/blender/props/sales.py
+params: {"cat": {"group": "sales", "kind": "rug", "place": "rug", "support": true}, "fn": "rug_round"}
+seed: 2271731397  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_rug_round
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

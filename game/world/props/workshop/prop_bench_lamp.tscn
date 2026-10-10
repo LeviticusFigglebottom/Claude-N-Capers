@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_bench_lamp/prop_bench_lamp.glb" id="1_model"]
+
+[node name="PropBenchLamp" type="Node3D" groups=["fixture"]]
+metadata/kind = &"task_lamp"
+metadata/fixture = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Light" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.44, -0.26)
+spot_range = 2
+spot_angle = 40
+spot_angle_attenuation = 0.6
+light_color = Color(1, 0.8941, 0.8078, 1)
+light_energy = 1.5
+light_size = 0.05
+shadow_enabled = false

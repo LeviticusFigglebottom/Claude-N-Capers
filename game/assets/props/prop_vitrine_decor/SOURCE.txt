@@ -1,0 +1,8 @@
+asset: prop_vitrine_decor
+script: tools/blender/props/sales.py
+params: {"cat": {"clear": 0.7, "group": "salon", "kind": "vitrine", "place": "wall"}, "fn": "vitrine_decor"}
+seed: 2860274548  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_vitrine_decor
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000
