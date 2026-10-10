@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only vinyl_floor --preset gsr
+module: tools/texgen/materials/vinyl_floor.py
+preset: tools/texgen/presets/gsr.py
+seed: 3203754987 (zlib.crc32('vinyl_floor'))
+size_px: 1024
+tile_m: 2.0 (1 UV unit = 2.0 m)
+texel_density_px_per_m: 512
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.5853, "albedo_lum_mean_linear": 0.4757, "albedo_lum_min_linear": 0.256, "ao_mean": 0.998, "metallic_mean": 0.0, "roughness_mean": 0.442}

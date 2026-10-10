@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only metal_painted --preset gsr
+module: tools/texgen/materials/metal_painted.py
+preset: tools/texgen/presets/gsr.py
+seed: 3512949160 (zlib.crc32('metal_painted'))
+size_px: 1024
+tile_m: 2.0 (1 UV unit = 2.0 m)
+texel_density_px_per_m: 512
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.4976, "albedo_lum_mean_linear": 0.0825, "albedo_lum_min_linear": 0.0776, "ao_mean": 0.999, "metallic_mean": 0.005, "roughness_mean": 0.452}

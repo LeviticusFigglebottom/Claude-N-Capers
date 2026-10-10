@@ -1,0 +1,3 @@
+generator: tools/texgen/build.py --preset gsr (tools/texgen/lut.py)
+grades: tools/texgen/presets/gsr.py ['luts']
+layout: 32 slices of 32x32, horizontal; slice = blue, x = red, y(top=0) = green; texel i holds grade((i+0.5)/N); imported as CompressedTexture3D

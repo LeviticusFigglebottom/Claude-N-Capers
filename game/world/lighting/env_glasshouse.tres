@@ -1,0 +1,45 @@
+[gd_resource type="Environment" load_steps=4 format=3]
+
+[ext_resource type="Texture3D" path="res://assets/luts/lut_glasshouse.png" id="1_lut"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+sky_top_color = Color(0.1176, 0.2078, 0.3412, 1)
+sky_horizon_color = Color(0.7255, 0.5412, 0.5255, 1)
+sky_curve = 0.12
+sky_energy_multiplier = 0.7
+ground_bottom_color = Color(0.0784, 0.0824, 0.0941, 1)
+ground_horizon_color = Color(0.2902, 0.2471, 0.2588, 1)
+ground_curve = 0.05
+sun_angle_max = 12.0
+sun_curve = 0.08
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("ProceduralSkyMaterial_sky")
+
+[resource]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+ambient_light_energy = 0.6
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.0
+tonemap_agx_white = 12.0
+tonemap_agx_contrast = 1.15
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.6
+ssil_enabled = true
+ssil_radius = 4.0
+ssil_intensity = 0.8
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.04
+glow_blend_mode = 1
+glow_hdr_threshold = 1.1
+fog_enabled = true
+fog_light_color = Color(0.4157, 0.4314, 0.5255, 1)
+fog_density = 0.0015
+fog_sky_affect = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("1_lut")
