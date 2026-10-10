@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="HeavySpecialTweak" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://systems/ai/specials/heavy_special_tweak.gd" id="1"]
+[ext_resource type="PackedScene" path="res://systems/ai/specials/bulwark_shield.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+bulwark_shield_scene = ExtResource("2")

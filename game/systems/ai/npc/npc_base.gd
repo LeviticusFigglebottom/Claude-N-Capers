@@ -64,10 +64,13 @@ func _ready() -> void:
 	collision_mask = MASK_WORLD
 	if enemy_def != null and enemy_def.detection_preset != &"":
 		detection_preset = enemy_def.detection_preset
+	if visual_scene == null and enemy_def != null:
+		visual_scene = enemy_def.visual  # characters.md: the EnemyDef's character visual
 	if visual_scene != null and visual_root != null:
 		for c: Node in visual_root.get_children():
 			c.queue_free()
 		visual_root.add_child(visual_scene.instantiate())
+	AnimDriver.ensure(self)  # D-041: animated visuals only (none for the capsule placeholder)
 	_ensure_hitboxes()
 
 
@@ -112,7 +115,7 @@ func can_observe() -> bool:
 
 ## A2-03 (S8.6): stun for `seconds` (keeps the longer of the current and new stun). Server.
 func stun(seconds: float) -> void:
-	if alive:
+	if alive and not (enemy_def != null and bool(enemy_def.params.get("stun_immune", false))):  # L4.6
 		stun_left = maxf(stun_left, seconds)
 
 
@@ -166,14 +169,20 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		out["killed"] = false
 		return out
 	var amount: float = float(info.get("amount", 0.0))
-	if int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD:
+	amount = NpcHitRules.pre_zone(self, info, amount, out)  # A3-06: L3.4 armor, L4.2 plate, L3.6, L4.6
+	if int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD and not bool(out.get("head_armored", false)):
 		var zone_mult: float = 1.0
 		if enemy_def != null and enemy_def.headshot_mult.size() > 0:
 			zone_mult = enemy_def.headshot_mult[clampi(difficulty, 0, enemy_def.headshot_mult.size() - 1)]
 		amount *= zone_mult * float(info.get("headshot_bonus", 1.0))  # L3.3
 	if one_shot_when_unalerted and (alert_state == Enums.AlertState.CALM or alert_state == Enums.AlertState.CURIOUS):
 		amount = maxf(amount, health)  # S3.6
+	var director: AssaultDirector = HeistRuntime.get_service(G.SVC_DIRECTOR) as AssaultDirector
+	if director != null:
+		amount = director.modify_npc_hit(self, amount, info)  # A3-02 L4.9: Aegis resistance, captain cap
 	health -= amount
+	if health <= 0.0 and NpcHitRules.lethal_intercept(self, out):  # A3-01b L4.8: Corpsman revive
+		health = maxf(health, 1.0)
 	out["amount"] = amount
 	out["killed"] = health <= 0.0
 	last_damage = out
@@ -202,7 +211,7 @@ func die(info: Dictionary = {}, killer_net_id: int = 0) -> void:
 	add_to_group(G.BODY)
 	collision_layer = 0
 	_set_hitboxes_enabled(false)
-	if visual_root != null:
+	if visual_root != null and not AnimDriver.drives(self):  # animated visuals play death_front/back
 		visual_root.rotation = Vector3(-PI * 0.5, 0.0, 0.0)
 		visual_root.position = Vector3(0.0, 0.25, 0.0)
 	var st: StealthDirector = HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector

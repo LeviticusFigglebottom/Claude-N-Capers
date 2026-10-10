@@ -1,6 +1,6 @@
 # LocalHudModel (A1-11). Owner: ENV A
 
-Contract: `docs/contracts/ui_hud.md` v1.1, section "exact binding shape (D-024)".
+Contract: `docs/contracts/ui_hud.md` v1.1, section "exact binding shape (D-024)", plus v1.2 (D-043: `custody`, `track()`).
 Code: `local_hud_model.gd` (`class_name LocalHudModel`).
 
 HeistRuntime creates one `LocalHudModel` child (named `LocalHudModel`, also `HeistRuntime.hud_model`)
@@ -13,7 +13,7 @@ below by name.
   fires **once** per batch. All contract signals take no arguments.
 - Tracks the **local** crew member (`Net.local_slot()`). Set `tracked_slot` (int, -1 = local) for
   spectating or tests.
-- **`tracked_crew` mode (QB-48)**: `track(crew: CrewController)` (or set `tracked_crew`) binds one crew
+- **`tracked_crew` mode (QB-48, ui_hud v1.2)**: `track(crew: Node)` (a CrewController) (or set `tracked_crew`) binds one crew
   member directly, with or without a HeistRuntime, e.g. the firing range: add a `LocalHudModel` node
   anywhere in the range scene and call `track(crew)` with the node `CrewController.spawn_for_range()`
   returned. It wins over `tracked_slot`; `track(null)` returns to slot mode (a freed crew member does
@@ -56,10 +56,11 @@ below by name.
 | `warnings_changed` | `warnings` | Array[StringName] (`&"phantom"`, `&"stinger"`) | living special from `special_spawned` within 25 m; stinger also while TASED (poll) |
 | `crew_changed` | `crew` | teammates only, by slot: `[{"slot", "name", "is_ai", "health_frac", "armor_frac", "state", "downs_left", "carried_loot_id"}]` | `HeistRuntime.crew_members()` + `crew.health` (stub fracs 1.0) (poll) |
 | `masked_changed` | `masked`, `casing` | bool (`casing` = not masked) | `CrewController.masked`, `crew_masked` (event + poll) |
+| `custody_changed` (v1.2) | `custody` | `{}` or `{"in_custody": true, "negotiation_left_s": float (0 = trade ready), "auto_release_left_s": float (< 0 = trade only), "highlighted_hostage_net_id": int (0 = none)}` | runtime service `&"custody"` (`CustodySystem.in_custody/negotiation_left/auto_release_left(slot)`, `highlighted_hostage().net_id`), server; clients without the service: `{in_custody: true, -1, -1, 0}` while `crew_state == CUSTODY` (poll) |
 
 Extras (no contract signal, only `changed`): `tracked_slot_resolved`, `mask_progress`, `heist_phase`.
 
-Timers (`bleedout_s`, `pagers[].time_left_s`, `ecm_time_left_s`, `camera_alarm_s`) change every poll
+Timers (`bleedout_s`, `custody.*_left_s`, `pagers[].time_left_s`, `ecm_time_left_s`, `camera_alarm_s`) change every poll
 while they run, so their signals fire at ~10 Hz. Interpolate locally for smooth bars.
 
 ## Duck-typed sources
@@ -70,6 +71,9 @@ The header of `local_hud_model.gd` is the authoritative list: `crew.health`, `cr
 `marked_targets(slot)`, `camera_countdown()`). Members may be properties or methods.
 
 ## Known gaps
+
+- Custody timers and the highlighted hostage are server state; remote clients see `-1` / `0` until
+  custody replication lands.
 
 - Interaction progress/blocked reason come from server-side `InteractionSystem` state; on a remote
   client they stay 0/empty until per-crew interaction replication lands.

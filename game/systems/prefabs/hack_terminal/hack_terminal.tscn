@@ -1,0 +1,29 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://systems/prefabs/hack_terminal/hack_terminal.gd" id="1_hack_terminal"]
+
+[ext_resource type="Script" path="res://systems/interaction/interactable_component.gd" id="2_interactable"]
+
+[sub_resource type="BoxShape3D" id="shape_shape_0"]
+size = Vector3(0.6, 2, 1)
+
+[node name="HackTerminal" type="Node3D"]
+script = ExtResource("1_hack_terminal")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="UsePoint" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -1.2)
+
+[node name="Interactable" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -0.55)
+script = ExtResource("2_interactable")
+kind = &"start_hack"
+
+[node name="Collision" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("shape_shape_0")

@@ -84,10 +84,10 @@ func _physics_process(delta: float) -> void:
 	if t != target or not engaging:
 		target = t
 		engaging = true
-		cooldown = maxf(cooldown, aim_delay())
+		cooldown = maxf(cooldown, aim_delay() * NpcSuppression.aim_delay_mult(_npc))  # A3-06 (L3.5)
 	if cooldown > 0.0:
 		return
-	cooldown = fire_interval()
+	cooldown = fire_interval() * NpcSuppression.shot_delay_mult(_npc)  # A3-06 (L3.5)
 	_fire(t)
 
 
@@ -120,7 +120,7 @@ func _can_engage(c: CrewController) -> bool:
 	var aim: Vector3 = _aim_point(c)
 	if _npc.eye_position().distance_to(aim) > tw.npc_max_range_m:
 		return false
-	return CombatSystem.has_los(_npc, _npc.eye_position(), aim, [_npc, c])
+	return CombatSystem.has_npc_los(_npc, _npc.eye_position(), aim, [_npc, c])  # A3-06: shields
 
 
 func _aim_point(c: CrewController) -> Vector3:
@@ -140,7 +140,8 @@ func _fire(c: CrewController) -> void:
 	var rt: HeistRuntime = HeistRuntime.of(_npc)
 	if rt != null:
 		rt.make_noise(from, Tweak.stealth().gunshot_npc_radius_m, &"gunshot", _npc.net_id)
-	var hit: bool = GameRng.stream(&"npc_fire").randf() < tw.npc_hit_chance(dist, _npc.difficulty)
+	var chance: float = tw.npc_hit_chance(dist, _npc.difficulty) * NpcSuppression.hit_chance_mult(_npc)  # A3-06 (L3.5)
+	var hit: bool = GameRng.stream(&"npc_fire").randf() < chance
 	if hit:
 		var info: Dictionary = Damage.info(shot_damage(), Enums.DamageType.BULLET,
 			Enums.HitZone.BODY, weapon_id, aim, (aim - from).normalized(), _npc.net_id)

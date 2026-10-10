@@ -164,3 +164,66 @@ instead of the zero-weight carrier slots.
 A `Dictionary` `{difficulty int: PackedFloat32Array}` (a plain Array of numbers is also
 accepted). At a listed difficulty it replaces `weights`. Unlisted difficulties use `weights`. As
 with `weights`, a size that does not match `values` falls back to a uniform pick.
+
+### `weights_by_difficulty` (rule): per-difficulty slot weights (A3-10, QC-18)
+
+```gdscript
+{"group": &"guard_extra", "pick": Vector2i(1, 1),
+ "weights_by_difficulty": {
+	Enums.Difficulty.BRUTAL: {&"stair_watch": 1.0, &"roof_watch": 1.0, &"extra_none": 0.0},
+	Enums.Difficulty.LETHAL: {&"stair_watch": 1.0, &"roof_watch": 1.0, &"extra_none": 0.0}}}
+```
+
+The slot-group counterpart of the scalar field above: `{difficulty int: {slot_id: weight}}`
+(slot ids as StringName or String). At a listed difficulty, each listed slot uses that weight in
+the rule's weighted pick instead of its `VariantSlot.weight`. Slots not listed in the entry, and
+difficulties not listed at all, keep `VariantSlot.weight`. Like the scalar field, keys are exact
+difficulties: write one entry per difficulty (no "and above"); per-difficulty pick counts stay in
+`pick` + `difficulty_add`.
+* Determinism: the field changes weights only, never the number or order of draws, so the same
+  seed gives the same result, other groups roll exactly as before, and a table without the field
+  (or a difficulty without an entry) rolls exactly as before.
+* Weight 0 makes a slot unpickable while any slot with a positive weight is left in the pool
+  (`RandomNumberGenerator.rand_weighted` semantics, as for `VariantSlot.weight`). Pinned slots
+  (`force_active`, `force_variants`, `force_if`) are unaffected.
+* A malformed value (`weights_by_difficulty` not a Dictionary, or an entry not a Dictionary) is
+  a `Log.error` and is ignored.
+
+## Timed mission events (A3-09)
+
+`HeistMission` helpers for timed events (e.g. Night Deposit's `armored_car_early` at 12:00):
+
+* `elapsed_s: float` (read-only property): heist time since `start()` (`HeistRuntime.heist_time_s`, the sum of
+  physics deltas, so it follows `Engine.time_scale`; it stops when the heist ends).
+* `schedule_at(time_mark_s, timer_id, callback, after_event = &"") -> bool`: a timer that fires
+  at that heist time (a mark already passed fires on the next physics frame). With `after_event`
+  (an EventBus signal name) the mark is relative to the FIRST emission of that signal instead
+  (one-shot; false and `Log.error` for an unknown signal). Same id rules as `start_timer`: it
+  replaces a pending timer with that id, and `cancel_timer` / `timer_left` work on it.
+* `spawn_guards(count, spawn_tag) -> Array[Node]`: spawns `count` ordinary guards (pagers,
+  patrol graph and tags of their point) at the GUARD SpawnPoints tagged `spawn_tag`, in tree order,
+  cycling (a reused point offsets 0.8 m along its X). GUARD SpawnPoints tagged
+  `HeistRuntime.SCRIPTED_SPAWN_TAG` (`&"scripted"`) are skipped at load, so tag the armoured-car
+  points `[&"scripted", &"armored_car"]`.
+
+```gdscript
+func _on_mission_start() -> void:
+	if (variant(&"rare") as Array).has(&"armored_car_early"):
+		schedule_at(720.0, &"armored_car", func() -> void: spawn_guards(2, &"armored_car"))
+```
+
+## Out of bounds (A3-09, QC-14)
+
+`OutOfBoundsSystem` (service `&"out_of_bounds"`, child of HeistRuntime) handles every
+`MapZone.Kind.OUT_OF_BOUNDS` zone of the map. It never raises an alarm or makes noise.
+* Crew (not in custody) whose body centre (origin + 0.5 m) is in a zone is teleported to the
+  nearest PLAYER SpawnPoint tagged `oob_respawn`, else to the nearest PLAYER SpawnPoint. A carried
+  bag is dropped first and goes back like a loose bag, so the respawn never moves loot.
+  Signal `crew_respawned(slot, spawn)`.
+* PLAYER SpawnPoints tagged `oob_respawn` are not used as start spawns (unless the map has no
+  other PLAYER spawn).
+* Loose bags (not carried, not secured, not frozen on a zipline / lift) remember their last valid
+  position: in bounds and at rest (`LootTweak.rest_speed_mps`). While a bag is carried, the
+  carrier's last in-bounds standing position (+0.3 m) is used. A bag whose probe point
+  (origin + `LootTweak.zone_probe_up_m`) is in a zone goes back there at rest (signal
+  `bag_returned(bag)`). A bag that never had a valid position stays put (warning).

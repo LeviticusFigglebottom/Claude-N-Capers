@@ -64,6 +64,54 @@ static var _cached: CombatTweak = null
 @export var npc_fallback_damage: float = 10.0
 
 
+@export_group("Piercing (A3-06, L3.4)")
+## Physics layer 9 `bullet_penetrable` (thin walls): stops bullets unless the weapon has wall_pierce.
+@export_flags_3d_physics var penetrable_mask: int = 1 << 8
+## Damage factor of a round that went through a thin wall (◇).
+@export var wall_pierce_damage_mult: float = 0.5
+## Thin walls one round may pass (◇).
+@export var wall_pierce_max: int = 1
+## Damage factor of a shield-piercing round passing a Bulwark shield (L3.4/L4.5: x0.25).
+@export var shield_pierce_damage_mult: float = 0.25
+## Fire (DamageType.FIRE) passes shields at this factor (L3.4 "fire ignores shields").
+@export var shield_fire_damage_mult: float = 1.0
+## How far behind a shield a piercing round keeps travelling.
+@export var shield_pierce_reach_m: float = 60.0
+
+@export_group("Suppression (A3-06, L3.5)")
+## Threat per unit of WeaponStats.suppression on a damaging hit / a near miss (◇: AR 12 -> 0.48 / 0.24).
+@export var threat_per_suppression_hit: float = 0.04
+@export var threat_per_suppression_near_miss: float = 0.02
+## A ray passing within this distance of an NPC's centre line is a near miss.
+@export var near_miss_radius_m: float = 1.0
+## Threat lost per second (◇).
+@export var threat_decay_per_s: float = 0.2
+@export var threat_hunch: float = 1.0
+@export var threat_dive: float = 2.0
+## Hunched: x shot delay, x aim time, x hit chance (PD2 +50% / +50% / -50%).
+@export var hunch_shot_delay_mult: float = 1.5
+@export var hunch_aim_delay_mult: float = 1.5
+@export var hunch_hit_chance_mult: float = 0.5
+## Dive for cover: seconds the dive lasts, COVER search radius, sidestep distance without cover (◇).
+@export var dive_s: float = 1.5
+@export var dive_cover_search_m: float = 6.0
+@export var dive_sidestep_m: float = 3.0
+@export var dive_speed_mult: float = 1.3
+## After a dive: threat gains x resist_mult for resist_s seconds (PD2: 50% for 30 s).
+@export var suppression_resist_mult: float = 0.5
+@export var suppression_resist_s: float = 30.0
+## Units on this difficulty or higher are immune ("top factions", ◇ CATACLYSM = Enums.Difficulty 5).
+@export var suppression_immune_min_difficulty: int = 5
+
+@export_group("Explosives (A3-06, L3.6)")
+## damage x (1 - d/r)^explosion_falloff_pow (PD2 0.1).
+@export var explosion_falloff_pow: float = 0.1
+## What can be hit: players(3) + npcs(4) + hitboxes(5) + world_dynamic(2, cameras/glass/prefabs).
+@export_flags_3d_physics var explosion_target_mask: int = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4)
+## LOS from the blast centre (world_static + world_dynamic; Bulwark shields are ignored: PD2
+## explosions go around shields).
+@export_flags_3d_physics var explosion_los_mask: int = (1 << 0) | (1 << 1)
+
 static func data() -> CombatTweak:
 	if _cached == null:
 		_cached = load(PATH) as CombatTweak

@@ -46,19 +46,21 @@ static func validate_and_apply(claim: Dictionary, shooter: CrewController) -> Di
 	var ws: int = int(claim.get("weapon_slot", w.equipped_slot))
 	var hits: Array = claim.get("hits", [])
 	var results: Array[Dictionary] = []
+	var hit_npcs: Array = []
 	for h: Variant in hits:
 		var hit: Dictionary = h as Dictionary
 		if hit == null:
 			continue
-		var res: Dictionary = _apply_hit(shooter, w, ws, origin, hit, StringName(claim.get("weapon_id", &"")), tw)
+		var res: Dictionary = _apply_hit(shooter, w, ws, origin, hit, StringName(claim.get("weapon_id", &"")), tw, hit_npcs)
 		if not res.is_empty():
 			results.append(res)
 	out["results"] = results
+	_near_misses(shooter, w, ws, claim, origin, hit_npcs)  # A3-06 (L3.5)
 	return out
 
 
 static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin: Vector3,
-		hit: Dictionary, weapon_id: StringName, tw: CombatTweak) -> Dictionary:
+		hit: Dictionary, weapon_id: StringName, tw: CombatTweak, hit_npcs: Array = []) -> Dictionary:
 	var pos: Vector3 = hit.get("position", origin)
 	var target: Object = _claimed_target(shooter, origin, hit)
 	if target == null:
@@ -73,10 +75,71 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 		return {}
 	if not has_los(shooter, origin, pos, [shooter, target]):
 		return {}
-	var info: Dictionary = Damage.info(w.damage_at(ws, dist), Enums.DamageType.BULLET,
+	var prof: Dictionary = pierce_profile(shooter, ws)
+	var amount: float = w.damage_at(ws, dist)
+	# A3-06 (L3.4): a thin wall (layer bullet_penetrable) on the line stops non-wall-pierce rounds.
+	var through_wall: bool = not has_los(shooter, origin, pos, [shooter, target], tw.penetrable_mask)
+	if through_wall and not bool(prof["wall_pierce"]):
+		return {}
+	if through_wall:
+		amount *= tw.wall_pierce_damage_mult
+	var info: Dictionary = Damage.info(amount, Enums.DamageType.BULLET,
 		int(hit.get("zone", Enums.HitZone.BODY)), weapon_id, pos, (pos - origin).normalized(), shooter.net_id)
 	info["headshot_bonus"] = w.headshot_bonus(ws)
-	return deliver_hit(target, info, shooter.net_id)
+	info["pierced_armor"] = roll_armor_pierce(float(prof["armor_pierce"]))
+	info["shield_pierce"] = bool(prof["shield_pierce"])
+	info["wall_pierced"] = through_wall
+	var res: Dictionary = deliver_hit(target, info, shooter.net_id)
+	var npc: NpcBase = target as NpcBase
+	if npc != null and float(prof["suppression"]) > 0.0:  # A3-06 (L3.5): damage builds threat
+		hit_npcs.append(npc)
+		if float(res.get("amount", 0.0)) > 0.0:
+			NpcSuppression.add_threat(npc, float(prof["suppression"]) * tw.threat_per_suppression_hit, origin)
+	return res
+
+
+## A3-06 (L3.4/L3.5): the piercing/threat profile of `shooter`'s weapon in slot `ws`:
+## { armor_pierce: chance 0..1 (WeaponStats.armor_pierce + weapon.armor_pierce_add), shield_pierce: bool
+## (WeaponStats.shield_pierce or weapon.shield_pierce), wall_pierce: bool, suppression: float (0 when
+## the weapon is suppressed, L3.5) }.
+static func pierce_profile(shooter: CrewController, ws: int) -> Dictionary:
+	var out: Dictionary = {"armor_pierce": 0.0, "shield_pierce": false, "wall_pierce": false, "suppression": 0.0}
+	var w: CrewWeapons = shooter.weapons if shooter != null else null
+	var st: WeaponStats = w.stats(ws) if w != null else null
+	if st == null:
+		return out
+	var def: WeaponDef = ContentDB.weapon(w.weapon_id(ws))
+	var q: StringName = Enums.weapon_class_qualifier(def.weapon_class) if def != null else &"pistol"
+	out["armor_pierce"] = clampf(st.armor_pierce + Modifiers.add(shooter.slot, &"weapon.armor_pierce_add", q), 0.0, 1.0)
+	out["shield_pierce"] = st.shield_pierce or Modifiers.flag(shooter.slot, &"weapon.shield_pierce", q)
+	out["wall_pierce"] = st.wall_pierce
+	out["suppression"] = 0.0 if st.suppressed else st.suppression
+	return out
+
+
+## L3.4: does a round with armor-pierce chance `chance` pierce (GameRng &"armor_pierce")?
+static func roll_armor_pierce(chance: float) -> bool:
+	if chance >= 1.0:
+		return true
+	return chance > 0.0 and GameRng.stream(&"armor_pierce").randf() < chance
+
+
+## A3-06 (L3.5): near-miss threat of one accepted shot along the claim's aim ray (up to the first world
+## surface), for every suppressible NPC that was not hit by it.
+static func _near_misses(shooter: CrewController, _w: CrewWeapons, ws: int, claim: Dictionary,
+		origin: Vector3, hit_npcs: Array) -> void:
+	var sup: float = float(pierce_profile(shooter, ws)["suppression"])
+	var dir: Variant = claim.get("direction")
+	if sup <= 0.0 or not dir is Vector3 or (dir as Vector3).length() < 0.001:
+		return
+	var tw: CombatTweak = CombatTweak.data()
+	var end: Vector3 = origin + (dir as Vector3).normalized() * tw.hitscan_max_range_m
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(origin, end, tw.los_mask | tw.penetrable_mask)
+	q.exclude = [shooter.get_rid()]
+	var hit: Dictionary = shooter.get_world_3d().direct_space_state.intersect_ray(q)
+	if not hit.is_empty():
+		end = hit.get("position", end)
+	NpcSuppression.near_misses(shooter, origin, end, sup, hit_npcs)
 
 
 ## Target of a claimed hit: the local object reference (server-made claims), the net id, or a
@@ -155,13 +218,14 @@ static func target_center(target: Node3D) -> Vector3:
 
 
 ## True when nothing on the world layers blocks `from` -> `to` (excluding the given bodies).
-static func has_los(ctx: Node3D, from: Vector3, to: Vector3, exclude_nodes: Array = []) -> bool:
+## `mask` -1 = CombatTweak.los_mask (A3-06: callers may pass e.g. penetrable_mask).
+static func has_los(ctx: Node3D, from: Vector3, to: Vector3, exclude_nodes: Array = [], mask: int = -1) -> bool:
 	var tw: CombatTweak = CombatTweak.data()
 	var seg: Vector3 = to - from
 	if seg.length() < 0.01:
 		return true
 	var end: Vector3 = to - seg.normalized() * minf(0.05, seg.length() * 0.5)
-	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, end, tw.los_mask)
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, end, tw.los_mask if mask < 0 else mask)
 	var ex: Array[RID] = []
 	for n: Variant in exclude_nodes:
 		var co: CollisionObject3D = n as CollisionObject3D
@@ -169,3 +233,12 @@ static func has_los(ctx: Node3D, from: Vector3, to: Vector3, exclude_nodes: Arra
 			ex.append(co.get_rid())
 	q.exclude = ex
 	return ctx.get_world_3d().direct_space_state.intersect_ray(q).is_empty()
+
+
+## A3-06 (L4.5): NPC line of sight: like has_los, but Bulwark shields (group BulwarkShield.GROUP) never
+## block NPCs (their own shield, or an ally's they stand behind).
+static func has_npc_los(ctx: Node3D, from: Vector3, to: Vector3, exclude_nodes: Array = []) -> bool:
+	var ex: Array = exclude_nodes.duplicate()
+	if ctx != null and ctx.is_inside_tree():
+		ex.append_array(ctx.get_tree().get_nodes_in_group(BulwarkShield.GROUP))
+	return has_los(ctx, from, to, ex)

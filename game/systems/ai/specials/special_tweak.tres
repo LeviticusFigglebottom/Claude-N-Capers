@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="SpecialTweak" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/ai/specials/special_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+retarget_s = Vector2(0.5, 1)
+arrive_m = 0.8
+fallback_run_speed = 4.0
+phantom_hum_interval_s = 2.0
+phantom_charge_range_m = 10.0
+phantom_windup_s = 0.5
+phantom_charge_speed = 7.5
+phantom_kick_range_m = 1.6
+phantom_dodge_lateral_m = 1.2
+phantom_charge_overshoot_m = 1.0
+phantom_charge_timeout_s = 3.0
+phantom_kick_cooldown_s = 10.0
+phantom_camp_chance = 0.5
+phantom_camp_s = 4.0
+phantom_goggle_energy_idle = 0.6
+phantom_goggle_energy_charge = 6.0
+phantom_play_dead_chance = 0.15
+phantom_play_dead_s = Vector2(4, 8)
+phantom_play_dead_max = 1
+phantom_flank_chance = 0.6
+phantom_flank_max_from_target_m = 25.0
+phantom_flank_timeout_s = 10.0
+phantom_standoff_m = 6.0
+phantom_counter_knockdown_s = 3.0
+stinger_tase_range_m = 15.0
+stinger_break_range_m = 18.0
+stinger_windup_s = 1.0
+stinger_arc_interval_s = 0.5
+stinger_helpless_after_s = 6.0
+stinger_tase_cooldown_s = 4.0
+stinger_spread_mult = 3.0
+stinger_pitch_up_deg = 15.0
+stinger_hold_frac = 0.7
+stinger_knockback_s = 2.0
+longshot_perch_snap_m = 1.5
+longshot_aim_lock_s = 1.2
+longshot_fire_interval_s = 2.5
+longshot_range_m = 150.0
+longshot_falloff_m = 30.0
+longshot_falloff_mult = 0.5
+longshot_los_grace_s = 0.25

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://contracts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"enemy.phantom"
+display_name = "Phantom"
+is_special = true
+health = PackedFloat32Array(160, 160, 240, 320, 480, 640)
+headshot_mult = PackedFloat32Array(3, 3, 3, 3, 2.5, 2)
+damage = PackedFloat32Array(0, 0, 0, 0, 0, 0)
+move_speed = 5.5
+weapon = &"weapon.npc_melee_kick"
+detection_preset = &"police"
+params = {
+"_note": "L4.3 Phantom (PD2 Cloaker). Kick = takedown (CLOAKER_DOWNED), no damage. health per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇). Behaviour numbers: systems/ai/specials/special_tweak.tres.",
+"ecm_feedback_immune": true,
+"scene": "res://systems/ai/npc/npc_phantom.tscn"
+}
+voice = &"phantom"

@@ -6,6 +6,10 @@
 ## `Led` (MeshInstance3D, A toggles emission). Not interactive (shot to destroy when `destructible`).
 ## `Collision` is a small hitbox (layer hitboxes) so it can be shot. A2-08: its box spans local
 ## z in [-0.45, 0], entirely in front of the wall-mount pivot (no part behind the wall plane).
+## QA-26 (D-043, visual_slots.md): mounted collision stays on the room side of the pivot (wall: -Z
+## only; ceiling: -Y only). `mount_mode` (AUTO = node meta `mount` "ceiling"/"wall", the level
+## convention, else WALL): a CEILING camera lowers `Collision` (and the placeholder) until its top is
+## at the pivot plane (y <= 0).
 ##
 ## Observer protocol (stealth/README.md): group G.OBSERVER, `observer_kind() == CAMERA`, the cone
 ## comes from `detection_overrides()` (fov_deg, range_m -> preset `far`) on top of the `camera`
@@ -28,6 +32,9 @@ signal crew_spotted(crew: Node)
 signal stimulus_spotted(stimulus_id: int, kind: StringName, position: Vector3)
 signal disabled(reason: StringName)
 
+## QA-26 mount of the camera (pivot back-centre on a wall, top-centre on a ceiling).
+enum MountMode { AUTO, WALL, CEILING }
+
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/security_camera/security_camera_placeholder.tscn")
 ## Runtime group of every security camera (station lookups; the director uses G.OBSERVER).
 const GROUP: StringName = &"security_camera"
@@ -36,6 +43,8 @@ const DEFAULT_TAG: StringName = &"security_camera"
 const REASON_DESTROYED: StringName = &"destroyed"
 const REASON_OPERATOR: StringName = &"operator"
 const STIMULUS_KIND: StringName = &"broken_camera"
+## Level-convention meta read by MountMode.AUTO (tools/levelcheck: &"wall" / &"ceiling").
+const MOUNT_META: StringName = &"mount"
 
 ## Horizontal field of view (degrees).
 @export var fov_deg: float = 60.0
@@ -47,6 +56,11 @@ const STIMULUS_KIND: StringName = &"broken_camera"
 @export var destructible: bool = true
 ## S8.1 Titan camera: indestructible regardless of difficulty (Lethal+ makes every camera Titan).
 @export var titan: bool = false
+## QA-26: wall (pivot back-centre) or ceiling (pivot top-centre). AUTO = meta `mount`, else WALL.
+@export var mount_mode: MountMode = MountMode.AUTO:
+	set(value):
+		mount_mode = value
+		apply_mount()
 
 ## False once permanently disabled (destroyed, operator neutralised).
 var active: bool = true
@@ -69,6 +83,10 @@ var _led: MeshInstance3D = null
 var _head_rest: Basis = Basis.IDENTITY
 var _pan_time: float = 0.0
 var _led_off: StandardMaterial3D = null
+var _collision_rest: Transform3D = Transform3D.IDENTITY
+var _collision_rest_set: bool = false
+var _placeholder_rest: Vector3 = Vector3.ZERO
+var _placeholder_rest_set: bool = false
 
 
 func _init() -> void:
@@ -91,6 +109,7 @@ func _prefab_ready() -> void:
 	_led = visual_node("Led") as MeshInstance3D
 	if _head != null:
 		_head_rest = _head.transform.basis
+	apply_mount()
 	_route_hits(get_node_or_null(^"Collision"))
 	EventBus.camera_disabled.connect(_on_camera_disabled_event)
 	_apply_visuals()
@@ -115,6 +134,80 @@ static func cameras_in(rt: Node) -> Array[SecurityCamera]:
 		if cam != null and rt.is_ancestor_of(cam):
 			out.append(cam)
 	return out
+
+
+# --- Mount (QA-26) ---------------------------------------------------------------------
+
+## WALL or CEILING after resolving AUTO (meta `mount` == "ceiling" -> CEILING, else WALL).
+func resolved_mount() -> MountMode:
+	if mount_mode != MountMode.AUTO:
+		return mount_mode
+	if has_meta(MOUNT_META) and String(get_meta(MOUNT_META)) == "ceiling":
+		return MountMode.CEILING
+	return MountMode.WALL
+
+
+## Re-apply the mount offsets (idempotent; works before entering the tree). CEILING: `Collision`
+## and the placeholder visual move down so nothing reaches above the pivot plane.
+func apply_mount() -> void:
+	var ceiling: bool = resolved_mount() == MountMode.CEILING
+	var body: Node3D = get_node_or_null(^"Collision") as Node3D
+	if body != null:
+		if not _collision_rest_set:
+			_collision_rest = body.transform
+			_collision_rest_set = true
+		body.transform = _collision_rest
+		if ceiling:
+			body.position.y -= maxf(collision_aabb().end.y, 0.0)
+	if using_placeholder and visual_instance != null and is_instance_valid(visual_instance):
+		if not _placeholder_rest_set:
+			_placeholder_rest = visual_instance.position
+			_placeholder_rest_set = true
+		visual_instance.position = _placeholder_rest
+		if ceiling:
+			visual_instance.position.y -= maxf(_mesh_top_y(visual_instance), 0.0)
+
+
+## Merged AABB of the `Collision` shapes in this node's local space (tests, levelcheck).
+func collision_aabb() -> AABB:
+	var body: Node3D = get_node_or_null(^"Collision") as Node3D
+	var out: AABB = AABB()
+	var first: bool = true
+	if body == null:
+		return out
+	for n: Node in body.find_children("*", "CollisionShape3D", true, false):
+		var cs: CollisionShape3D = n as CollisionShape3D
+		if cs.shape == null or cs.disabled:
+			continue
+		var local: AABB = cs.shape.get_debug_mesh().get_aabb()
+		var xf: Transform3D = body.transform * _relative_xform(body, cs)
+		var box: AABB = xf * local
+		out = box if first else out.merge(box)
+		first = false
+	return out
+
+
+## Highest y of the visual meshes under `root`, in this node's local space.
+func _mesh_top_y(root: Node3D) -> float:
+	var top: float = -INF
+	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = n as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		var box: AABB = _relative_xform(self, mi) * mi.mesh.get_aabb()
+		top = maxf(top, box.end.y)
+	return top if top > -INF else 0.0
+
+
+## Transform of `n` relative to its ancestor `ancestor` (no tree needed).
+static func _relative_xform(ancestor: Node, n: Node3D) -> Transform3D:
+	var xf: Transform3D = Transform3D.IDENTITY
+	var cur: Node = n
+	while cur != null and cur != ancestor:
+		if cur is Node3D:
+			xf = (cur as Node3D).transform * xf
+		cur = cur.get_parent()
+	return xf
 
 
 # --- Observer protocol (StealthDirector) ---------------------------------------------

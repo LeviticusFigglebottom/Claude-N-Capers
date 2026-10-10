@@ -28,6 +28,9 @@
 ##   HeistRuntime.get_service(G.SVC_PAGERS):
 ##       pager_entries() -> Array of {pager_id, guard_net_id, time_left, answering, world_pos[, progress]}
 ##       optional pagers_answered: int, pagers_max: int
+##   HeistRuntime service &"custody" (CustodySystem, server; ui_hud v1.2):
+##       in_custody(slot) -> bool, negotiation_left(slot) -> float, auto_release_left(slot) -> float,
+##       highlighted_hostage() -> Node with net_id
 ##   HeistRuntime.get_service(G.SVC_STEALTH):
 ##       detection_entries(crew_slot) -> Array of {observer_net_id, world_pos, value, kind} (server)
 ##       marked_targets(crew_slot) -> Array of net ids or {net_id, world_pos, kind}
@@ -69,12 +72,16 @@ signal warnings_changed()
 signal crew_changed()
 ## masked, casing
 signal masked_changed()
+## ui_hud v1.2 (D-043): `custody` changed.
+signal custody_changed()
 
 ## S1.1 "Suspicious actions not allowed" prompt (strings.csv key, ENV B).
 const SUSPICIOUS_PROMPT_KEY: StringName = &"ui.prompt.suspicious_not_allowed"
 const WARNING_PHANTOM: StringName = &"phantom"
 const WARNING_STINGER: StringName = &"stinger"
-## Contract property -> its change signal (ui_hud.md v1.1).
+## A3-02 (L4.9): Commander Brandt on the map (captain_arrived .. captain_retreated).
+const WARNING_CAPTAIN: StringName = &"captain"
+## Contract property -> its change signal (ui_hud.md v1.1 + v1.2 custody).
 const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"health": &"vitals_changed", &"max_health": &"vitals_changed", &"armor": &"vitals_changed",
 	&"max_armor": &"vitals_changed", &"downs_left": &"vitals_changed", &"crew_state": &"vitals_changed",
@@ -95,6 +102,7 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"warnings": &"warnings_changed",
 	&"crew": &"crew_changed",
 	&"masked": &"masked_changed", &"casing": &"masked_changed",
+	&"custody": &"custody_changed",
 }
 ## Extra (non-contract) properties included in snapshot().
 const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase"]
@@ -165,7 +173,8 @@ var assault_wave: int = 0
 # --- hostages_changed
 var hostages: int = 0
 # --- warnings_changed
-## Active special warnings: &"phantom", &"stinger".
+## Active special warnings: &"phantom", &"stinger", &"captain" (Brandt on the map; the % comes from
+## AssaultDirector.aegis_resistance() on the server).
 var warnings: Array[StringName] = []
 # --- crew_changed
 ## Teammates only, by slot: [{"slot": int, "name": String, "is_ai": bool, "health_frac": float,
@@ -175,6 +184,9 @@ var crew: Array[Dictionary] = []
 var masked: bool = false
 ## Casing mode (S1.1) = tracked crew member unmasked.
 var casing: bool = true
+## ui_hud v1.2: {} (not in custody) or {in_custody: bool, negotiation_left_s: float,
+## auto_release_left_s: float (< 0 = none), highlighted_hostage_net_id: int (0 = none)}.
+var custody: Dictionary = {}
 # --- extras (no contract signal; `changed` only)
 ## Slot actually tracked this poll (-1 = none).
 var tracked_slot_resolved: int = -1
@@ -195,6 +207,7 @@ var _pagers: Dictionary[int, Dictionary] = {}
 var _ecms: Dictionary[int, float] = {}
 ## npc_net_id -> special type (phantom / stinger)
 var _specials: Dictionary[int, StringName] = {}
+var _captain_present: bool = false
 ## Client objective cache from objective_updated [R]: id -> {id, text_key, args, state, order}
 var _event_objectives: Dictionary[StringName, Dictionary] = {}
 var _connections: Array[Array] = []
@@ -216,6 +229,8 @@ func _ready() -> void:
 	_listen(EventBus.objective_updated, _on_objective_updated)
 	_listen(EventBus.special_spawned, _on_special_spawned)
 	_listen(EventBus.npc_killed, _on_npc_killed)
+	_listen(EventBus.captain_arrived, _on_captain_arrived)
+	_listen(EventBus.captain_retreated, _on_captain_retreated)
 	_assign(&"pagers_max", Tweak.stealth().pager_max_answers)
 	_flush()
 
@@ -254,8 +269,8 @@ func snapshot() -> Dictionary:
 
 
 ## QB-48: track `crew` directly (null = back to tracked_slot / the local slot). Refreshes now.
-func track(crew_member: CrewController) -> void:
-	tracked_crew = crew_member
+func track(crew_member: Node) -> void:
+	tracked_crew = crew_member as CrewController
 	if is_inside_tree():
 		refresh()
 
@@ -280,6 +295,7 @@ func refresh() -> void:
 	_poll_objectives()
 	_poll_warnings(c)
 	_poll_crew(slot)
+	_poll_custody(c, slot)
 	_flush()
 
 
@@ -439,6 +455,8 @@ func _poll_warnings(c: CrewController) -> void:
 		out.append(WARNING_PHANTOM)
 	if stinger:
 		out.append(WARNING_STINGER)
+	if _captain_present:
+		out.append(WARNING_CAPTAIN)
 	_assign(&"warnings", out)
 
 
@@ -464,6 +482,31 @@ func _poll_crew(slot: int) -> void:
 				"carried_loot_id": bag,
 			})
 	_assign(&"crew", list)
+
+
+## ui_hud v1.2: custody of the tracked slot from the CustodySystem service (server). Without the
+## service (clients, no runtime) a crew member in CUSTODY state reports in_custody with unknown (-1)
+## timers until custody timers are replicated.
+func _poll_custody(c: CrewController, slot: int) -> void:
+	var out: Dictionary = {}
+	var svc: Object = _service(CustodySystem.SERVICE)
+	if svc != null and slot >= 0 and svc.has_method(&"in_custody") and bool(svc.call(&"in_custody", slot)):
+		var hostage_id: int = 0
+		var h: Object = svc.call(&"highlighted_hostage") as Object if svc.has_method(&"highlighted_hostage") else null
+		if h != null and is_instance_valid(h):
+			hostage_id = int(_read(h, &"net_id", 0))
+		out = {
+			"in_custody": true,
+			"negotiation_left_s": float(_read_slot(svc, &"negotiation_left", slot, -1.0)),
+			"auto_release_left_s": float(_read_slot(svc, &"auto_release_left", slot, -1.0)),
+			"highlighted_hostage_net_id": hostage_id,
+		}
+	elif c != null and c.crew_state == Enums.CrewState.CUSTODY:
+		out = {
+			"in_custody": true, "negotiation_left_s": -1.0, "auto_release_left_s": -1.0,
+			"highlighted_hostage_net_id": 0,
+		}
+	_assign(&"custody", out)
 
 
 # --- Pagers / ECM / client detection -----------------------------------------------
@@ -660,6 +703,14 @@ func _on_mission_objectives() -> void:
 func _on_special_spawned(npc_net_id: int, special_type: StringName) -> void:
 	if special_type == WARNING_PHANTOM or special_type == WARNING_STINGER:
 		_specials[npc_net_id] = special_type
+
+
+func _on_captain_arrived(_npc_net_id: int) -> void:
+	_captain_present = true
+
+
+func _on_captain_retreated(_npc_net_id: int) -> void:
+	_captain_present = false
 
 
 func _on_npc_killed(npc_net_id: int, _killer: int, _info: Dictionary) -> void:

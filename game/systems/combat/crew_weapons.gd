@@ -49,6 +49,17 @@ var reload_left: float = 0.0
 var last_shot_age: float = INF
 ## Accepted shots (server) / fired shots (client).
 var shots_fired: int = 0
+## A3-01a (L4.4): set by a Stinger while tasing (server). The equipped weapon fires on its own at max
+## RPM (any fire mode), spread x involuntary_spread_mult, pulled involuntary_pitch_up_deg up, and
+## auto-reloads; cleared when the crew state leaves TASED. Setting it false resets the two below.
+var involuntary_fire: bool = false:
+	set(v):
+		involuntary_fire = v
+		if not v:
+			involuntary_spread_mult = 1.0
+			involuntary_pitch_up_deg = 0.0
+var involuntary_spread_mult: float = 1.0
+var involuntary_pitch_up_deg: float = 0.0
 
 var _crew: CrewController = null
 var _states: Dictionary[int, WeaponState] = {}
@@ -164,7 +175,10 @@ func can_fire() -> bool:
 	if _crew == null or _crew.is_casing():
 		return false
 	var s: int = _crew.crew_state
+	if s == Enums.CrewState.TASED:
+		return involuntary_fire  # L4.4: only the involuntary trigger while tased
 	return s == Enums.CrewState.NORMAL or s == Enums.CrewState.DOWNED or s == Enums.CrewState.SWAN_SONG
+
 
 
 ## Body damage of one bullet/pellet from weapon slot `ws` at `distance` (falloff x weapon.damage_mult
@@ -225,7 +239,9 @@ func server_tick(intent: CrewIntent, delta: float) -> void:
 	_server_clock += delta
 	_tick_timers(delta)
 	_handle_controls(intent)
-	if not _remote_owned():
+	if involuntary_fire:
+		_involuntary_tick(intent)  # A3-01a: the server pulls the trigger for every slot (L4.4)
+	elif not _remote_owned():
 		_try_fire(intent)
 	_prev_fire = intent.fire
 	_prev_reload = intent.reload
@@ -281,7 +297,8 @@ func start_reload() -> bool:
 	if s == null or reloading or s.mag >= s.mag_size or s.reserve <= 0:
 		return false
 	var st: int = _crew.crew_state
-	if st != Enums.CrewState.NORMAL and st != Enums.CrewState.DOWNED and st != Enums.CrewState.SWAN_SONG:
+	if st != Enums.CrewState.NORMAL and st != Enums.CrewState.DOWNED and st != Enums.CrewState.SWAN_SONG \
+			and not (st == Enums.CrewState.TASED and involuntary_fire):
 		return false
 	var base: float = s.stats.reload_time_s if s.mag > 0 else s.stats.reload_empty_time_s
 	reload_left = maxf(base, 0.0) / maxf(Modifiers.mult(_crew.slot, &"weapon.reload_speed_mult", s.qualifier), 0.01)
@@ -337,6 +354,26 @@ func _try_fire(intent: CrewIntent) -> void:
 		_rpc_hit_claim.rpc_id(1, _strip_objects(claim))
 
 
+## A3-01a (L4.4): tased auto-fire (server): max RPM regardless of fire mode, auto-reload when empty.
+func _involuntary_tick(intent: CrewIntent) -> void:
+	var s: WeaponState = _states.get(equipped_slot)
+	if s == null or not can_fire() or _equip_left > 0.0 or reloading:
+		return
+	if s.mag <= 0:
+		start_reload()
+		return
+	if _cooldown > 0.0:
+		return
+	var keep_seq: int = _last_server_seq
+	_seq = maxi(_seq, _last_server_seq)
+	var claim: Dictionary = _build_claim(s, intent)
+	_cooldown = maxf(_cooldown, -get_physics_process_delta_time()) + 60.0 / maxf(s.stats.fire_rate_rpm, 1.0)
+	fired.emit(claim)
+	CombatSystem.validate_and_apply(claim, _crew)
+	if _remote_owned():
+		_last_server_seq = keep_seq  # the owning client's claim sequence continues untouched
+
+
 # --- Hitscan ---------------------------------------------------------------------------------
 
 func _build_claim(s: WeaponState, intent: CrewIntent) -> Dictionary:
@@ -344,10 +381,14 @@ func _build_claim(s: WeaponState, intent: CrewIntent) -> Dictionary:
 	var tw: CombatTweak = CombatTweak.data()
 	var origin: Vector3 = _crew.eye_position()
 	var fwd: Vector3 = _crew.aim_direction()
+	if involuntary_fire and involuntary_pitch_up_deg != 0.0:
+		var right: Vector3 = fwd.cross(Vector3.UP)
+		if right.length() > 0.001:
+			fwd = fwd.rotated(right.normalized(), deg_to_rad(involuntary_pitch_up_deg)).normalized()
 	var hits: Array[Dictionary] = []
 	for p: int in range(maxi(s.stats.pellets, 1)):
-		var dir: Vector3 = _spread_dir(fwd, _spread_deg(s, intent))
-		var h: Dictionary = _hitscan(origin, dir, tw)
+		var dir: Vector3 = _spread_dir(fwd, _spread_deg(s, intent) * (involuntary_spread_mult if involuntary_fire else 1.0))
+		var h: Dictionary = _hitscan(origin, dir, tw, s.stats.wall_pierce)
 		if not h.is_empty():
 			hits.append(h)
 	return {
@@ -408,13 +449,24 @@ func _spread_dir(fwd: Vector3, deg: float) -> Vector3:
 
 
 ## First thing the ray hits (world or hitbox). Returns a claim hit entry, or {} for a miss/world hit.
-func _hitscan(origin: Vector3, dir: Vector3, tw: CombatTweak) -> Dictionary:
+## A3-06 (L3.4): thin walls (CombatTweak.penetrable_mask) stop the ray unless `wall_pierce`, then up to
+## wall_pierce_max of them are passed (the server applies wall_pierce_damage_mult).
+func _hitscan(origin: Vector3, dir: Vector3, tw: CombatTweak, wall_pierce: bool = false) -> Dictionary:
 	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
-		origin, origin + dir * tw.hitscan_max_range_m, tw.hitscan_mask)
+		origin, origin + dir * tw.hitscan_max_range_m, tw.hitscan_mask | tw.penetrable_mask)
 	q.collide_with_areas = true
 	q.collide_with_bodies = true
-	q.exclude = [_crew.get_rid()]
+	var ex: Array[RID] = [_crew.get_rid()]
+	q.exclude = ex
 	var hit: Dictionary = _crew.get_world_3d().direct_space_state.intersect_ray(q)
+	var walls: int = 0
+	while not hit.is_empty() and _is_penetrable(hit.get("collider")):
+		walls += 1
+		if not wall_pierce or walls > tw.wall_pierce_max:
+			return {}
+		ex.append(hit.get("rid") as RID)
+		q.exclude = ex
+		hit = _crew.get_world_3d().direct_space_state.intersect_ray(q)
 	if hit.is_empty():
 		return {}
 	var col: Object = hit.get("collider")
@@ -426,6 +478,12 @@ func _hitscan(origin: Vector3, dir: Vector3, tw: CombatTweak) -> Dictionary:
 		"target_id": NetIds.of(target as Node), "target": target, "zone": Damage.zone_of(col),
 		"distance": origin.distance_to(pos), "position": pos,
 	}
+
+
+static func _is_penetrable(collider: Variant) -> bool:
+	var co: CollisionObject3D = collider as CollisionObject3D if collider is CollisionObject3D else null
+	return co != null and (co.collision_layer & CombatTweak.data().penetrable_mask) != 0 \
+		and (co.collision_layer & CombatTweak.data().hitscan_mask) == 0
 
 
 func _apply_recoil(s: WeaponState) -> void:
@@ -536,6 +594,8 @@ func _remote_owned() -> bool:
 
 
 func _on_crew_state_changed(_old: int, new_state: int) -> void:
+	if new_state != Enums.CrewState.TASED:
+		involuntary_fire = false
 	# PD2: a downed crew member fights with the secondary weapon (L2.5).
 	if new_state == Enums.CrewState.DOWNED and _states.has(Enums.WeaponSlot.SECONDARY):
 		equip(Enums.WeaponSlot.SECONDARY)

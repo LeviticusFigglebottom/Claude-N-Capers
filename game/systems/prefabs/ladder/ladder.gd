@@ -5,7 +5,8 @@
 ## ladder_grab_radius_m of `Bottom` (or `Top`) who holds interact, or moves forward while facing the
 ## ladder (ladder_forward_cone_deg), is moved at ladder_climb_speed_mps along
 ## Bottom -> (Bottom.x, Top.y, Bottom.z) -> Top (reversed going down), with no physics in between.
-## S1.1: casing (unmasked) crew cannot climb. Downed / tased mid-climb = let go where they are.
+## S1.1: casing (unmasked) crew cannot climb. S10.1b (A3-10): nor can crew carrying a bag.
+## Downed / tased mid-climb = let go where they are.
 ## After a climb the crew member must release interact / forward before grabbing again.
 ## Runs from a HeistRuntime crew tick handler (after the crew's own movement each tick), so it needs
 ## no CrewController state. P2 limitation: remote humans (client-predicted movement) are not moved.
@@ -91,6 +92,8 @@ func start_climb(crew: CrewController, up: bool) -> bool:
 
 func _can_climb(crew: CrewController) -> bool:
 	if crew.crew_state != Enums.CrewState.NORMAL or crew.is_casing():  # S1.1
+		return false
+	if crew.is_carrying_bag():  # S10.1b (QC-17): no ladders with a bag; throw it or use a lift/zipline
 		return false
 	if not crew.has_meta(META_CLIMBING):
 		return true

@@ -2,6 +2,8 @@
 ## one-way push-bar door, security_camera collision kept in front of its wall-mount pivot.
 extends TestCase
 
+const CAMERA_SCENE: PackedScene = preload("res://systems/prefabs/security_camera/security_camera.tscn")
+
 var _rt: HeistRuntime = null
 
 
@@ -223,7 +225,7 @@ func test_push_bar_door_npcs_and_nav_link() -> void:
 
 
 func test_security_camera_collision_in_front_of_pivot() -> void:
-	var cam: Node3D = (load("res://systems/prefabs/security_camera/security_camera.tscn") as PackedScene).instantiate() as Node3D
+	var cam: Node3D = CAMERA_SCENE.instantiate() as Node3D
 	var body: Node3D = cam.get_node(^"Collision") as Node3D
 	var cs: CollisionShape3D = body.get_node(^"Shape") as CollisionShape3D
 	var box: BoxShape3D = cs.shape as BoxShape3D
@@ -231,3 +233,30 @@ func test_security_camera_collision_in_front_of_pivot() -> void:
 	assert_true(aabb.end.z <= 0.0001, "no collision behind the wall-mount pivot (max z %.3f)" % aabb.end.z)
 	assert_true(aabb.position.z < -0.3, "still covers the head (min z %.3f)" % aabb.position.z)
 	cam.free()
+
+
+## QA-26 (D-043): ceiling mounts keep collision (and the placeholder) below the top-centre pivot.
+func test_security_camera_ceiling_mount_below_pivot() -> void:
+	var scene: PackedScene = CAMERA_SCENE
+	var wall: SecurityCamera = scene.instantiate() as SecurityCamera
+	assert_eq(wall.resolved_mount(), SecurityCamera.MountMode.WALL, "default wall")
+	assert_true(wall.collision_aabb().end.z <= 0.0001, "wall: max z <= 0")
+	wall.free()
+	var cam: SecurityCamera = scene.instantiate() as SecurityCamera
+	cam.mount_mode = SecurityCamera.MountMode.CEILING
+	var aabb: AABB = cam.collision_aabb()
+	assert_true(aabb.end.y <= 0.0001, "ceiling (export): max y %.3f <= 0" % aabb.end.y)
+	assert_true(aabb.end.z <= 0.0001, "still nothing behind -Z")
+	cam.mount_mode = SecurityCamera.MountMode.WALL
+	assert_near(cam.collision_aabb().end.y, 0.075, 0.001, "back to the wall pose")
+	cam.free()
+	var by_meta: SecurityCamera = scene.instantiate() as SecurityCamera
+	by_meta.set_meta(&"mount", "ceiling")
+	add_child(by_meta)
+	await wait_frames(1)
+	assert_eq(by_meta.resolved_mount(), SecurityCamera.MountMode.CEILING, "AUTO reads meta mount")
+	assert_true(by_meta.collision_aabb().end.y <= 0.0001, "ceiling (meta): max y %.3f" % by_meta.collision_aabb().end.y)
+	assert_true(by_meta.using_placeholder and by_meta._mesh_top_y(by_meta.visual_instance) <= 0.0001,
+		"placeholder below the pivot")
+	by_meta.queue_free()
+	await wait_frames(1)

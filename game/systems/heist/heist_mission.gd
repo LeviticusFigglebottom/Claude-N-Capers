@@ -29,6 +29,11 @@ var bags_secured: int:
 var secured_value: int:
 	get:
 		return _loot_value
+## A3-09: heist time (s) since the heist started (HeistRuntime.heist_time_s: the sum of physics
+## deltas, so it follows Engine.time_scale; it stops when the heist ends).
+var elapsed_s: float:
+	get:
+		return _runtime.heist_time_s if _runtime != null else 0.0
 
 var _runtime: HeistRuntime = null
 ## objective id -> { "id", "text_key", "state", "data", "order" }
@@ -146,6 +151,55 @@ func cancel_timer(timer_id: StringName) -> void:
 func timer_left(timer_id: StringName) -> float:
 	var t: SceneTreeTimer = _timers.get(timer_id)
 	return t.time_left if t != null else 0.0
+
+
+## A3-09: timed mission event at heist time `time_mark_s` (e.g. the armoured car at 12:00 = 720.0),
+## or, with `after_event` (an EventBus signal name), `time_mark_s` after the FIRST emission of that
+## signal. A mark already passed fires on the next physics frame. Same id rules as start_timer
+## (replaces a pending one; cancel_timer / timer_left work on it). Returns false for an unknown
+## `after_event` (logged). Event hooks are disconnected automatically at teardown.
+func schedule_at(time_mark_s: float, timer_id: StringName, callback: Callable, after_event: StringName = &"") -> bool:
+	if after_event == &"":
+		start_timer(timer_id, maxf(time_mark_s - elapsed_s, 0.0), callback)
+		return true
+	if not EventBus.has_signal(after_event):
+		Log.error(&"mission", "unknown EventBus signal %s" % after_event)
+		return false
+	var argc: int = 0
+	for sig: Dictionary in EventBus.get_signal_list():
+		if StringName(sig["name"]) == after_event:
+			argc = (sig["args"] as Array).size()
+	var c: Callable = (func() -> void: start_timer(timer_id, maxf(time_mark_s, 0.0), callback)).unbind(argc)
+	EventBus.connect(after_event, c, CONNECT_ONE_SHOT)
+	_connections.append([after_event, c])
+	return true
+
+
+## A3-09: spawn `count` guards at the GUARD SpawnPoints tagged `spawn_tag` (tree order, cycling,
+## 0.8 m apart when a point is reused). Points tagged HeistRuntime.SCRIPTED_SPAWN_TAG are skipped
+## at load, so they are only used here. Spawned guards are ordinary guards (pagers, patrol graph
+## and tags of their point). Returns the NPCs ([] with no matching point, logged).
+func spawn_guards(count: int, spawn_tag: StringName) -> Array[Node]:
+	var out: Array[Node] = []
+	if _runtime == null or _runtime.map == null or count <= 0:
+		return out
+	var points: Array[SpawnPoint] = []
+	for n: Node in _runtime.map.get_slots(G.GUARD_SPAWN):
+		var sp: SpawnPoint = n as SpawnPoint
+		if sp != null and sp.tags.has(spawn_tag):
+			points.append(sp)
+	if points.is_empty():
+		Log.error(&"mission", "spawn_guards: no GUARD SpawnPoint tagged '%s'" % spawn_tag)
+		return out
+	for i: int in range(count):
+		var sp2: SpawnPoint = points[i % points.size()]
+		var offset: Vector3 = sp2.global_transform.basis.x * (0.8 * float(i / points.size()))
+		var xf: Transform3D = sp2.global_transform
+		xf.origin += offset
+		var npc: NpcBase = _runtime.spawn_npc(&"guard", xf, HeistRuntime.spawn_info(sp2))
+		if npc != null:
+			out.append(npc)
+	return out
 
 
 ## Mercer (or another speaker) line: voice_line_requested [R] (C8).
