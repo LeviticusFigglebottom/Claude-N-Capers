@@ -489,6 +489,14 @@ func find_by_tag(objective_tag: StringName) -> Array[Node]:
 	return out
 
 
+## TEST ONLY (test_hooks.md v1.1, D-032 QA-9): despawn every NPC except `npc`.
+func isolate_npc(npc: Node) -> void:
+	for n: Node in npcs():
+		if n != npc:
+			n.get_parent().remove_child(n)
+			n.queue_free()
+
+
 func detection_value(observer: Node, slot: int) -> float:
 	var st: Node = service(G.SVC_STEALTH)
 	if st != null and st.has_method(&"detection_value"):
