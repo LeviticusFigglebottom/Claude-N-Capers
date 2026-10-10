@@ -1,0 +1,106 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://world/characters/contact_hollis/contact_hollis.tscn" id="1_char"]
+[ext_resource type="Script" path="res://world/characters/portraits/portrait_bust.gd" id="2_bust"]
+
+[sub_resource type="Environment" id="Environment_bust"]
+background_mode = 1
+background_color = Color(0.022, 0.016, 0.012, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.022, 0.016, 0.012, 1)
+ambient_light_energy = 4.0
+tonemap_mode = 4
+glow_enabled = true
+glow_intensity = 0.25
+ssao_enabled = true
+
+[sub_resource type="Gradient" id="Gradient_bg"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.150, 0.080, 0.030, 1, 0.022, 0.016, 0.012, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bg"]
+gradient = SubResource("Gradient_bg")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.30, 0.55)
+fill_to = Vector2(0.90, 0.55)
+
+[sub_resource type="StandardMaterial3D" id="Material_bg"]
+shading_mode = 0
+albedo_texture = SubResource("GradientTexture2D_bg")
+
+[sub_resource type="QuadMesh" id="QuadMesh_bg"]
+material = SubResource("Material_bg")
+size = Vector2(3.2, 3.2)
+
+[node name="HollisPortrait" type="Node3D"]
+script = ExtResource("2_bust")
+pose = [["upper_arm.L", Vector3(0, 0, -1), -36], ["upper_arm.R", Vector3(0, 0, -1), 36], ["upper_arm.L", Vector3(1, 0, 0), 6], ["upper_arm.R", Vector3(1, 0, 0), 6], ["chest", Vector3(0, 1, 0), 8], ["neck", Vector3(1, 0, 0), -4], ["head", Vector3(1, 0, 0), -3], ["head", Vector3(0, 1, 0), -12], ["head", Vector3(0, 0, -1), 3]]
+camera_target_dz = -0.13
+camera_distance = 1.4
+camera_yaw_deg = 26
+camera_dz = -0.02
+camera_lens_mm = 85
+blinds = false
+
+[node name="Character" parent="." instance=ExtResource("1_char")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_bust")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+current = true
+
+[node name="Backdrop" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+mesh = SubResource("QuadMesh_bg")
+
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="Bulb" type="OmniLight3D" parent="Lights"]
+position = Vector3(0.55, 2.25, -0.75)
+metadata/target = Vector3(0, 1.6, 0)
+light_color = Color(1, 0.68, 0.38, 1)
+light_energy = 2
+light_size = 0.05
+light_specular = 0.35
+shadow_enabled = true
+omni_range = 6.0
+
+[node name="Bounce" type="SpotLight3D" parent="Lights"]
+position = Vector3(-0.2, 0.9, -1.6)
+metadata/target = Vector3(0, 1.45, 0)
+light_color = Color(0.95, 0.62, 0.36, 1)
+light_energy = 0.35
+light_size = 0.5
+light_specular = 0.35
+shadow_enabled = true
+spot_range = 6.0
+spot_angle = 40.0
+spot_attenuation = 0.5
+
+[node name="Window" type="SpotLight3D" parent="Lights"]
+position = Vector3(-1.3, 1.8, -0.6)
+metadata/target = Vector3(0, 1.55, 0)
+light_color = Color(0.6, 0.72, 0.95, 1)
+light_energy = 0.6
+light_size = 0.5
+light_specular = 0.35
+shadow_enabled = true
+spot_range = 6.0
+spot_angle = 40.0
+spot_attenuation = 0.5
+
+[node name="Rim" type="SpotLight3D" parent="Lights"]
+position = Vector3(-0.6, 2, 1)
+metadata/target = Vector3(0, 1.55, 0)
+light_color = Color(1, 0.75, 0.45, 1)
+light_energy = 1.6
+light_size = 0.4
+light_specular = 0.35
+shadow_enabled = true
+spot_range = 6.0
+spot_angle = 40.0
+spot_attenuation = 0.5

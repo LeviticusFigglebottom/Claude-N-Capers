@@ -49,6 +49,10 @@ TEX_RES = "res://assets/characters/_textures"
 SIZE = 256
 TILE_M = 2.0
 FORBIDDEN = {"#4FD1E8"}
+#: ORM materials that also glow: id -> (emission sRGB hex, energy). Style guide §3: emissives may
+#: exceed the albedo saturation cap (the albedo itself stays in the palette rules). ENV A drives
+#: the energy at runtime (Phantom goggles: SpecialTweak.phantom_goggle_energy_idle/charge).
+EMISSION = {"char_goggle_glow": ("#3BFF6A", 1.0)}
 
 
 def srgb_bytes(h: str) -> tuple[int, int, int]:
@@ -200,6 +204,14 @@ def build_one(mid: str, spec: tuple, preset: dict) -> dict:
         text = tres.read_text(encoding="utf-8")
         text = text.replace("ao_enabled = true\n", "ao_enabled = true\nsubsurf_scatter_enabled = true\n"
                             "subsurf_scatter_strength = 0.25\nsubsurf_scatter_skin_mode = true\n")
+        tio.write_text(tres, text)
+    if mid in EMISSION:
+        eh, energy = EMISSION[mid]
+        r, g_, b = (c / 255.0 for c in srgb_bytes(eh))
+        text = tres.read_text(encoding="utf-8")
+        text = text.replace("ao_enabled = true\n", "ao_enabled = true\nemission_enabled = true\n"
+                            f"emission = Color({r:.4f}, {g_:.4f}, {b:.4f}, 1)\n"
+                            f"emission_energy_multiplier = {energy:.1f}\n")
         tio.write_text(tres, text)
     return enc.stats
 
