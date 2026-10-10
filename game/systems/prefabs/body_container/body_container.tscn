@@ -1,0 +1,32 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://systems/prefabs/body_container/body_container.gd" id="1_body_contain"]
+
+[ext_resource type="Script" path="res://contracts/map/map_zone.gd" id="2_map_zone"]
+
+[sub_resource type="BoxShape3D" id="shape_shape_0"]
+size = Vector3(1.8, 1.6, 1)
+
+[sub_resource type="BoxShape3D" id="shape_shape_1"]
+size = Vector3(1.8, 1.1, 1)
+
+[node name="BodyContainer" type="Node3D"]
+script = ExtResource("1_body_contain")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Zone" type="Area3D" parent="."]
+script = ExtResource("2_map_zone")
+kind = 4
+
+[node name="Shape" type="CollisionShape3D" parent="Zone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+shape = SubResource("shape_shape_0")
+
+[node name="Collision" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("shape_shape_1")

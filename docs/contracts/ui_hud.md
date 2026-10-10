@@ -16,6 +16,11 @@ ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI st
 
 ## v1.1: exact binding shape (D-024)
 
+Field types (QB-20): `detection[].kind` is Enums.ObserverKind (int). `marked_targets[].kind` is a StringName
+(&"guard", &"camera", &"special", &"civilian"...). `objectives[].state` is Enums.ObjectiveState.
+`carried_bag.weight` is Enums.LootWeight. `ammo` keys are int (Enums.WeaponSlot). `interaction.args` formats
+both `text_key` and `blocked_reason`. `world_pos` is Vector3 and timers are float seconds.
+
 `LocalHudModel` joins group `G.LOCAL_HUD_MODEL` in `_ready`. There is exactly one per peer, for the local crew member.
 The HUD reads properties with `get()` and connects signals by name, ignoring signal args. ENV A must
 **assign new Arrays/Dictionaries** (never mutate them in place) and then emit the signal.

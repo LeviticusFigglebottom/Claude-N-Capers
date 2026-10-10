@@ -1,4 +1,4 @@
-# Contract: heist map (v1.0)
+# Contract: heist map (v1.1)
 
 Producer: **ENV C** (maps). Consumer: **ENV A** (`HeistRuntime`, AI, stealth, director). ENV B reads
 `HeistDef` for job board / briefing / pre-planning UI.
@@ -7,7 +7,7 @@ Producer: **ENV C** (maps). Consumer: **ENV A** (`HeistRuntime`, AI, stealth, di
 
 ```
 game/world/heists/<id>/
-  <id>.tscn                 root node: HeistMap (contracts/map/heist_map.gd)
+  <id>.tscn                 root node: HeistMap; launcher finds it via core `HeistRegistry.map_scene_path(id)` (contracts/map/heist_map.gd)
   <id>_def.tres             HeistDef
   <id>_variants.tres        HeistVariantTable
   <id>_mission.gd           heist-specific mission script (objectives wiring), extends HeistMission (ENV A base)
@@ -41,8 +41,9 @@ Node names above are **exact** (consumers find them by name). Additional childre
 
 ## 3. Navigation
 
-* One `NavigationRegion3D` named `Navigation` (may have child regions per floor). Agent radius 0.35 m,
-  height 1.8 m, max climb 0.3 m, max slope 40°.
+* One `NavigationRegion3D` named `Navigation` (may have child regions per floor). **NPC agent radius 0.3 m**
+  (player capsule stays 0.35), height 1.8 m, max climb 0.3 m, max slope 40°, **cell size 0.1 / cell height 0.1**
+  (project defaults, D-025) so 0.9 m doors stay open.
 * Every PatrolPoint, SpawnPoint (non-sniper), interaction prefab's `UsePoint` marker, and loot spawn
   must be within 0.25 m of navmesh and mutually reachable (validated).
 * Doors: navmesh passes through door openings; prefab doors toggle `NavigationLink3D`/obstacles at
@@ -68,10 +69,17 @@ Node names above are **exact** (consumers find them by name). Additional childre
   `guard_post`, `guard_extra`, `camera`, `keycard`, `code_note`, `locked_door`, `code_door`,
   `open_window`, `vent_open`, `vault_location`, `safe_location`, `civilian_cluster`,
   `loot_spot`, `escape`, `security_room_staffed`, `cop_on_scene`, `server_room`, `extra_loot`.
+* Rule semantics (D-025): `requires: {group: [slot_ids]}`: the rule rolls only if any listed slot is active
+  (an empty list means any slot of that group). `excludes: {group: [slot_ids]}`: if any listed slot of that group is active,
+  this rule picks 0 (an empty list means any). Rules resolve in table order. A rule may only reference groups
+  resolved earlier in the table (validated). Per-slot exclusion: put the excluded slots in their own group.
 * Resolved variants Dictionary (replicated, logged): `{ group: [active slot_ids], scalar_id: value,
   "rare": [rare_event_ids] }`. ENV A's `VariantResolver` is the only code that rolls.
 * `validate_level` checks **every** combination class: for each group, each slot individually
   must leave the heist completable (reachability of objectives + escape).
+
+* `UsePoint` convention (D-025, QA-8): it sits on the object's −Z side (the side facing the room/user),
+  rotated so the UsePoint's own −Z faces the object. Exception: `drill_point`, whose −Z points into the lock.
 
 ## 6. Mission scripting
 

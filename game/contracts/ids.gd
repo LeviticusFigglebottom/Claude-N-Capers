@@ -33,6 +33,7 @@ const LOOT_BAG: StringName = &"loot_bag"
 const BODY: StringName = &"body"
 const DEPLOYABLE: StringName = &"deployable"
 const HOSTAGE: StringName = &"hostage"
+const RANGE_TARGET: StringName = &"range_target"  ## firing-range targets: never in ENEMY/NPC (QB-24)
 const LOCAL_HUD_MODEL: StringName = &"local_hud_model"  ## exactly one per peer during a heist (ui_hud.md)
 
 # --- HeistRuntime services ---

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://systems/prefabs/keypad/keypad.gd" id="1_keypad"]
+
+[ext_resource type="Script" path="res://systems/interaction/interactable_component.gd" id="2_interactable"]
+
+[node name="Keypad" type="Node3D"]
+script = ExtResource("1_keypad")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="UsePoint" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -1.2, -0.7)
+
+[node name="Interactable" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.04)
+script = ExtResource("2_interactable")
+kind = &"enter_code"

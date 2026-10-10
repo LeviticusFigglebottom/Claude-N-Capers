@@ -78,11 +78,11 @@ Routine and Brutal. Solo-first, with every system written authority-correct.
 1. Launch Glasshouse solo, seed 1001, Routine. Variants resolve; relaunching with the same seed gives an identical resolution. Seed 1002 differs in ≥ 1 group.
 2. Casing: a bot unmasked in a PUBLIC zone next to a guard for 5 s → no detection. In a RESTRICTED zone in view → detection > 0.
 3. Sprinting and jumping 1 m behind a guard (masked, outside his FOV) → detection stays 0 (no-noise rule).
-4. Mask up → kill a guard with the suppressed pistol (headshot) → `pager_started` within 2–4 s → bot answers (10 s hold) → `pager_answered(total = 1)`.
+4. Mask up → kill a guard with the suppressed pistol (launcher default loadout = kestrel_p9 + suppressor, D-025) (headshot) → `pager_started` within 2–4 s → bot answers (10 s hold) → `pager_answered(total = 1)`.
 5. Release a pager early with nobody else answering → alarm (separate seed run).
 6. Bag the body → carry → drop in BODY_HIDE → never discovered over 60 s of patrols.
 7. Break a display case → small loot taken. Secure 1 loot bag at the van.
-8. Fire an unsuppressed shot near a guard → `alarm_raised` → phase LOUD **without scene change** (the same `HeistMap` instance; bodies/bags/doors persist).
+8. Get spotted masked by a guard (or fire unsuppressed nearby) → `alarm_raised` → phase LOUD **without scene change** (the same `HeistMap` instance; bodies/bags/doors persist).
 9. Assault: the director goes CONTROL → ANTICIPATION → BUILD → SUSTAIN → FADE (Engine.time_scale ×4), enemies spawn out of crew LOS and path toward the crew.
 10. The bot goes down → an AI teammate revives within its revive time.
 11. Escape with ≥ 1 bag → `heist_ended(success)`; the payout calculator gives contract + loot × difficulty.

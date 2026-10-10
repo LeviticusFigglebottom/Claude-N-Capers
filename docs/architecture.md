@@ -155,6 +155,10 @@ a scene reload with no lingering state.
 | Heist ids | `snake_case` short | `glasshouse` |
 | Generated assets | `<category>_<name>[_<variant>]` + suffix per style guide | `prop_desk_office_a.glb` |
 
+**StringName ordering:** `<` on StringName compares interned pointers, not text. Never `sort()` an array
+of StringNames (or use them as ordered keys) when the order matters; use
+`sort_custom(func(a, b): return String(a) < String(b))`.
+
 Units: **meters, seconds, kilograms, degrees in data / radians in code**. +Y up, −Z forward
 (Godot default). Money in integer cents is unnecessary; use integer dollars.
 

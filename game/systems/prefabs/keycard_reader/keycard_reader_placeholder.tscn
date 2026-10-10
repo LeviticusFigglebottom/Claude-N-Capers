@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_panel"]
+albedo_color = Color(0.2, 0.2, 0.25, 1)
+
+[sub_resource type="BoxMesh" id="box_panel_1"]
+material = SubResource("mat_panel")
+size = Vector3(0.1, 0.15, 0.03)
+
+[sub_resource type="StandardMaterial3D" id="mat_led"]
+albedo_color = Color(0.1, 1, 0.2, 1)
+emission_enabled = true
+emission = Color(0.1, 1, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="box_led_3"]
+material = SubResource("mat_led")
+size = Vector3(0.02, 0.02, 0.01)
+
+[node name="KeycardReaderPlaceholder" type="Node3D"]
+
+[node name="Panel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.015)
+mesh = SubResource("box_panel_1")
+
+[node name="Led" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.055, -0.035)
+mesh = SubResource("box_led_3")
