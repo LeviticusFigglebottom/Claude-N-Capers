@@ -79,6 +79,10 @@ Node names above are **exact** (consumers find them by name). Additional childre
 * `validate_level` checks **every** combination class: for each group, each slot individually
   must leave the heist completable (reachability of objectives + escape).
 
+* Extended rule fields (A2-08, D-043; full semantics in `game/systems/heist/README.md` "Variant rule fields"):
+  `force_if: [{"if": {group: [slots]}, "then": [slots]}]` (conditional pinning), `slot_requires: {slot: {group: [slots]}}`
+  (per-slot eligibility), `min_difficulty` on rare events, and per-difficulty weights for slot groups and scalars.
+  Referenced groups must resolve earlier in the table.
 * `UsePoint` convention (D-025, QA-8): it sits on the object's −Z side (the side facing the room/user),
   rotated so the UsePoint's own −Z faces the object. Exception: `drill_point`, whose −Z points into the lock.
 

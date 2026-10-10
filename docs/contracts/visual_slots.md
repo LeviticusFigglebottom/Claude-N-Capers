@@ -8,6 +8,8 @@ How art scenes (ENV C props/characters, ENV B weapons) plug into ENV A gameplay 
   wall-mounted objects, **top-centre** for ceiling-mounted objects.
 * Forward = **−Z** (the side facing the room / the user). +Y up. Meters. Scale 1.0 at root.
 * No scripts that affect gameplay. Visual-only scripts (animated FX) allowed under `world/`.
+* Mounted items: collision and meshes stay on the room side of the pivot. Wall mounts extend only toward −Z;
+  ceiling mounts (top-centre pivot) extend only downward (−Y) (QA-26, D-043).
 * No collision in the visual scene **unless** a child named `Collision` (StaticBody3D) is provided for
   prefabs that declare "visual supplies collision" below; otherwise the prefab owns collision.
 * Materials: from the shared material library (`world/materials/`) or generated per asset;
