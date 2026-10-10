@@ -9,8 +9,20 @@
 ## prefabs (keypad, keycard_reader, drill_point) through `unlock()`. Once unlocked, the door
 ## toggles open/closed with `door_open_s`. Guards ignore open doors unless `suspicious_when_open`
 ## (S4.2).
+## A2-01 (D-032 QA-11) NPC doors: NpcMotor (guards, civilians, police) and CrewAiBrain look ahead
+## on their path (`first_closed_on_path`) and call `npc_open(agent)` on a closed door they may open
+## (unlocked; or locked except BARRED/VAULT for a guard whose SpawnPoint tags meet
+## `npc_authorized_tags`, the keycard post). It opens after InteractionTweak.npc_door_open_stealth_s
+## in stealth (instantly in loud) through `set_open`, so the S4.2 `open_door` stimulus applies to
+## NPC-opened doors too. Any other closed door blocks: the NPC stops at it (NpcMotor.door_blocked;
+## P3 police breach hooks there). Nav: the baked navmesh passes through doorways (heist_map.md §3);
+## a `NavLink` NavigationLink3D through the doorway is enabled while the door is passable (open, or
+## openable by NPCs) for maps whose bake closes the doorway.
 class_name Door
 extends GameplayPrefab
+
+## A2-01: open state changed (`by_net_id` = the NPC / AI that opened it, 0 otherwise).
+signal open_changed(open: bool, by_net_id: int)
 
 enum Lock { NONE, LOCKPICK, KEYCARD, CODE, ELECTRONIC, BARRED, VAULT }
 enum Swing { INWARD, OUTWARD, DOUBLE }
@@ -22,6 +34,10 @@ const SINGLE_WIDTH_M: float = 0.9
 const DOUBLE_WIDTH_M: float = 1.8
 const HEIGHT_M: float = 2.1
 const KEYCARD_ITEM: StringName = &"item.keycard"
+## Runtime group of every door (A2-01 path checks).
+const GROUP: StringName = &"door"
+## Doorway margin beyond the opening's half width that still counts as crossing it (m).
+const CROSS_MARGIN_M: float = 0.25
 
 @export var lock: Lock = Lock.NONE
 @export var swing: Swing = Swing.INWARD
@@ -32,6 +48,9 @@ const KEYCARD_ITEM: StringName = &"item.keycard"
 @export var code_group: StringName = &""
 ## S4.2: guards ignore open doors unless this is set.
 @export var suspicious_when_open: bool = false
+## A2-01 (QA-11): a guard whose SpawnPoint tags contain one of these may open this door while it is
+## locked (keycard post); never for BARRED / VAULT. Empty = no NPC opens it while locked.
+@export var npc_authorized_tags: Array[StringName] = []
 @export_group("Interaction")
 ## -1 = default by lock (InteractionTweak.door_open_s / lockpick_door_s / keycard_s).
 @export var interaction_time_s: float = -1.0
@@ -47,6 +66,10 @@ var locked: bool = false
 var _open_stim_id: int = 0
 var _leaf_bodies: Array[AnimatableBody3D] = []
 var _leaves: Array[Node3D] = []
+var _nav_link: NavigationLink3D = null
+## NPC open requested and not yet applied (stealth animation delay).
+var _npc_open_pending: bool = false
+var _opened_by_net_id: int = 0
 
 @onready var _leaf_body: AnimatableBody3D = $LeafBody as AnimatableBody3D
 
@@ -85,7 +108,8 @@ func _prefab_ready() -> void:
 		Log.warn(LOG_CHANNEL, "%s: placeholder door is %.2f m wide, width_m is %.2f" % [name, _nominal_width(), effective_width()])
 	_setup_interactable()
 	_setup_leaf_bodies()
-	# A1-03 behaviour (M2): NavigationLink3D / obstacle toggling (heist_map.md §3).
+	add_to_group(GROUP)
+	_setup_nav_link()
 	if starts_open:
 		locked = false
 		_apply_unlocked_interaction()
@@ -98,6 +122,7 @@ func unlock() -> void:
 		return
 	locked = false
 	_apply_unlocked_interaction()
+	_update_nav_link()
 
 
 ## Server: open (keycard readers, devices, missions).
@@ -118,7 +143,141 @@ func set_open(open: bool) -> void:
 		_leaves[i].rotation.y = angle * (-sign_inward if outward else sign_inward)
 	_sync_leaf_bodies()
 	_update_open_stimulus()
-	# A1-03 behaviour (M2): replicate open state to clients; nav link / obstacle toggling.
+	_update_nav_link()
+	var by: int = _opened_by_net_id if open else 0
+	_opened_by_net_id = 0
+	open_changed.emit(open, by)
+	# A1-03 behaviour (M2): replicate open state to clients.
+
+
+# --- NPC doors (A2-01, QA-11) -------------------------------------------------------------
+
+## True when `agent` (NpcBase / AI CrewController) may walk through: open, or it can open it.
+func passable_for(agent: Node) -> bool:
+	return is_open or can_npc_open(agent)
+
+
+## Whether `agent` may open this door now: unlocked, or locked (not BARRED / VAULT) for a guard
+## whose SpawnPoint tags meet `npc_authorized_tags`. Crew AI only opens unlocked doors.
+func can_npc_open(agent: Node) -> bool:
+	if is_open or not locked:
+		return true
+	if lock == Lock.BARRED or lock == Lock.VAULT or npc_authorized_tags.is_empty():
+		return false
+	var npc: NpcBase = agent as NpcBase
+	if npc == null or npc.role != &"guard":
+		return false
+	var tags: Variant = npc.spawn_info.get("tags", [])
+	if tags is Array:
+		for t: Variant in tags:
+			if (t is StringName or t is String) and npc_authorized_tags.has(StringName(t)):
+				return true
+	return false
+
+
+## Server: `agent` asks to pass. Opens after the stealth delay (instantly in loud) through
+## set_open (same stimulus/signals as any open). Returns false when it may not open this door.
+func npc_open(agent: Node) -> bool:
+	if not Net.is_authority() or not can_npc_open(agent):
+		return false
+	if is_open or _npc_open_pending:
+		return true
+	var tw: InteractionTweak = Tweak.interaction()
+	var st: StealthDirector = _stealth()
+	var stealth: bool = st != null and st.is_stealth()
+	var delay: float = tw.npc_door_open_stealth_s if stealth else tw.npc_door_open_loud_s
+	var by: int = NetIds.of(agent)
+	var was_locked: bool = locked
+	if delay <= 0.0:
+		_npc_apply_open(by, was_locked)
+	else:
+		_npc_open_pending = true
+		get_tree().create_timer(delay, false, true).timeout.connect(_npc_apply_open.bind(by, was_locked))
+	return true
+
+
+func _npc_apply_open(by_net_id: int, was_locked: bool) -> void:
+	_npc_open_pending = false
+	if not is_inside_tree() or is_open:
+		return
+	_opened_by_net_id = by_net_id
+	set_open(true)
+	var close_s: float = Tweak.interaction().npc_locked_door_close_s
+	if was_locked and locked and close_s > 0.0:
+		get_tree().create_timer(close_s, false, true).timeout.connect(_npc_auto_close)
+
+
+func _npc_auto_close() -> void:
+	if is_inside_tree() and is_open and locked:
+		set_open(false)
+
+
+## Crossing of the segment a->b through this closed doorway: the crossing point, or Vector3.INF.
+func doorway_crossing(a: Vector3, b: Vector3) -> Vector3:
+	var inv: Transform3D = global_transform.affine_inverse()
+	var la: Vector3 = inv * a
+	var lb: Vector3 = inv * b
+	if (la.z > 0.0) == (lb.z > 0.0) or is_equal_approx(la.z, lb.z):
+		return Vector3.INF
+	var t: float = la.z / (la.z - lb.z)
+	var lp: Vector3 = la.lerp(lb, t)
+	if absf(lp.x) > effective_width() * 0.5 + CROSS_MARGIN_M or lp.y > HEIGHT_M or lp.y < -1.0:
+		return Vector3.INF
+	return a.lerp(b, t)
+
+
+## A2-01: the first closed door crossed by the polyline `points` within `max_dist_m` along it
+## (doors of `tree`'s GROUP). Returns {} or {"door": Door, "point": Vector3, "distance": float}.
+static func first_closed_on_path(tree: SceneTree, points: PackedVector3Array, max_dist_m: float) -> Dictionary:
+	if tree == null or points.size() < 2:
+		return {}
+	var doors: Array[Door] = []
+	for n: Node in tree.get_nodes_in_group(GROUP):
+		var d: Door = n as Door
+		if d != null and not d.is_open and d.is_inside_tree():
+			doors.append(d)
+	if doors.is_empty():
+		return {}
+	var travelled: float = 0.0
+	for i: int in range(points.size() - 1):
+		var a: Vector3 = points[i]
+		var b: Vector3 = points[i + 1]
+		var best: Door = null
+		var best_p: Vector3 = Vector3.INF
+		var best_d: float = INF
+		for d: Door in doors:
+			var p: Vector3 = d.doorway_crossing(a, b)
+			if p != Vector3.INF and a.distance_to(p) < best_d:
+				best = d
+				best_p = p
+				best_d = a.distance_to(p)
+		if best != null:
+			if travelled + best_d > max_dist_m:
+				return {}
+			return {"door": best, "point": best_p, "distance": travelled + best_d}
+		travelled += a.distance_to(b)
+		if travelled > max_dist_m:
+			return {}
+	return {}
+
+
+func _setup_nav_link() -> void:
+	_nav_link = NavigationLink3D.new()
+	_nav_link.name = "NavLink"
+	var half: float = Tweak.interaction().door_nav_link_half_m
+	_nav_link.start_position = Vector3(0.0, 0.0, -half)
+	_nav_link.end_position = Vector3(0.0, 0.0, half)
+	_nav_link.bidirectional = true
+	add_child(_nav_link)
+	_update_nav_link()
+
+
+## The link is enabled while NPCs can pass: open, unlocked, or keycard-authorised for some post.
+func _update_nav_link() -> void:
+	if _nav_link == null:
+		return
+	_nav_link.enabled = is_open or not locked or (not npc_authorized_tags.is_empty() \
+		and lock != Lock.BARRED and lock != Lock.VAULT)
 
 
 ## S4.2: an open `suspicious_when_open` door is an `open_door` stimulus.

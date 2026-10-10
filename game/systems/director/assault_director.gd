@@ -104,6 +104,8 @@ func is_assault_active() -> bool:
 func begin() -> void:
 	if running or not Net.is_authority():
 		return
+	if _runtime != null and _runtime.heist_mode == Enums.HeistMode.STEALTH_ONLY:
+		return  # S11.3: a stealth-only alarm aborts the heist, no assault
 	running = true
 	wave_index = 1
 	_first_responder_groups_left = tweak.first_responder_groups

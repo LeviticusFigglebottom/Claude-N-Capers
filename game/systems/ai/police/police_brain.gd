@@ -75,6 +75,9 @@ func _start() -> void:
 func _physics_process(delta: float) -> void:
 	if not _started or _npc == null or not _npc.alive or not Net.is_authority():
 		return
+	if _npc.is_stunned():  # A2-03 (S8.6): ECM feedback stun
+		wants_to_fire = false
+		return
 	if not _active:
 		if _runtime == null or not _runtime.went_loud or not ACTIVE_STATES.has(_npc.alert_state):
 			return

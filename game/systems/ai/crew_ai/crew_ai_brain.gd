@@ -325,6 +325,8 @@ func _steer(goal: Vector3, delta: float) -> Vector3:
 	while _path_idx < _path.size() - 1 and _flat_dist(pos, _path[_path_idx]) < tweak.waypoint_reach_m:
 		_path_idx += 1
 	var next: Vector3 = _path[_path_idx] if _path_idx < _path.size() else goal
+	if _door_hold(pos):
+		return Vector3.ZERO
 	var dir: Vector3 = next - pos
 	dir.y = 0.0
 	return dir.normalized() if dir.length() > 0.05 else Vector3.ZERO
@@ -343,6 +345,21 @@ func _plan(goal: Vector3) -> void:
 		_path = PackedVector3Array([goal])
 	elif _flat_dist(_path[_path.size() - 1], goal) > 0.5:
 		_path.append(goal)
+
+
+## A2-01 (QA-11): a closed door within reach on the path: ask it to open (unlocked doors only) and
+## hold position until it is open; a locked door stops the AI in front of it.
+func _door_hold(pos: Vector3) -> bool:
+	var tw: InteractionTweak = Tweak.interaction()
+	var pts: PackedVector3Array = PackedVector3Array([pos])
+	for i: int in range(_path_idx, _path.size()):
+		pts.append(_path[i])
+	var hit: Dictionary = Door.first_closed_on_path(get_tree(), pts, tw.npc_door_lookahead_m)
+	var door: Door = hit.get("door") as Door
+	if door == null or float(hit["distance"]) > tw.npc_door_reach_m:
+		return false
+	door.npc_open(_crew)
+	return true
 
 
 static func _flat_dist(a: Vector3, b: Vector3) -> float:

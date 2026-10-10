@@ -166,9 +166,12 @@ func variant(group_or_scalar: StringName) -> Variant:
 
 
 ## C10: make escape zones tagged `tag` (all escape zones if empty) available.
+## C3: with an empty `tag`, a chosen escape asset's `escape_tag` (PreplanAssets) is used.
 func activate_escape(tag: StringName = &"") -> void:
 	if _runtime == null:
 		return
+	if tag == &"":
+		tag = _runtime.preplan.escape_tag()
 	for n: Node in get_tree().get_nodes_in_group(G.ESCAPE_ZONE):
 		if not _runtime.is_ancestor_of(n):
 			continue

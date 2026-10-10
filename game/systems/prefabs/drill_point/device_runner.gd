@@ -7,6 +7,8 @@
 ## roll restarts the next jam after rand(device_restart_delay_s). While running in stealth it makes
 ## a NoiseEvent every device_noise_interval_s (drill_radius_m) unless stealth.silent_devices, and
 ## it is a `drill` stimulus. Events: device_started / jammed / restarted / finished [R].
+## Saws (S9.4, kind &"saw") share every rule; their noise is kind &"saw" (StealthTweak.saw_radius_m)
+## and they are an extra `saw` stimulus (S4.1: a saw cutting within 10 m).
 class_name DeviceRunner
 extends RefCounted
 
@@ -33,6 +35,7 @@ var slot: int = -1
 var _owner: GameplayPrefab = null
 var _noise_left: float = 0.0
 var _stim_id: int = 0
+var _saw_stim_id: int = 0
 
 
 func _init(owner_prefab: GameplayPrefab, device_kind: StringName) -> void:
@@ -144,7 +147,10 @@ func _tick_noise(delta: float) -> void:
 	var rt: HeistRuntime = HeistRuntime.of(_owner)
 	var st: StealthDirector = _owner._stealth()
 	if rt != null and st != null and st.is_stealth():
-		rt.make_noise(_owner.global_position, Tweak.stealth().drill_radius_m, &"drill", _owner.net_id)
+		if kind == &"saw":
+			rt.make_noise(_owner.global_position, Tweak.stealth().saw_radius_m, &"saw", _owner.net_id)
+		else:
+			rt.make_noise(_owner.global_position, Tweak.stealth().drill_radius_m, &"drill", _owner.net_id)
 
 
 func _set_state(s: State) -> void:
@@ -160,7 +166,12 @@ func _set_stimulus(on: bool) -> void:
 	var st: StealthDirector = _owner._stealth() if is_instance_valid(_owner) else null
 	if on and _stim_id == 0 and st != null:
 		_stim_id = st.register_stimulus(null, &"drill", {"position": _owner.global_position})
+		if kind == &"saw":
+			_saw_stim_id = st.register_stimulus(null, &"saw", {"position": _owner.global_position})
 	elif not on and _stim_id != 0:
 		if st != null:
 			st.unregister_stimulus(_stim_id)
+			if _saw_stim_id != 0:
+				st.unregister_stimulus(_saw_stim_id)
 		_stim_id = 0
+		_saw_stim_id = 0

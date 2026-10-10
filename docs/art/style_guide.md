@@ -37,7 +37,7 @@ against them.
 
 ## 3. Colour
 
-* **Global rules:** albedo luminance is limited to 0.04–0.85 (linear sRGB 30–240). Metals are
+* **Global rules:** albedo luminance is limited to 0.04–0.85 (linear sRGB 30–240). Exception (D-038): black polymers, rubber and black paint may go down to 0.02 linear. Metals are
   albedo-coloured with roughness ≥ 0.15. No pure black or pure white. Saturation stays at ≤ 0.75
   except signage, emissives and the **interactable accent**.
 * **Interactable accent**: a cool cyan `#4FD1E8` reserved for UI highlights. World surfaces must

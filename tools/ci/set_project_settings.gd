@@ -52,6 +52,10 @@ func _initialize() -> void:
 		"order_menu": [_key(KEY_T), _joy(JOY_BUTTON_DPAD_LEFT)],
 		"scoreboard": [_key(KEY_TAB), _joy(JOY_BUTTON_BACK)],
 		"pause": [_key(KEY_ESCAPE), _joy(JOY_BUTTON_START)],
+		"look_left": [_axis(JOY_AXIS_RIGHT_X, -1.0)],
+		"look_right": [_axis(JOY_AXIS_RIGHT_X, 1.0)],
+		"look_up": [_axis(JOY_AXIS_RIGHT_Y, -1.0)],
+		"look_down": [_axis(JOY_AXIS_RIGHT_Y, 1.0)],
 	}
 	for action: String in m:
 		ProjectSettings.set_setting("input/" + action, {"deadzone": 0.2, "events": m[action]})

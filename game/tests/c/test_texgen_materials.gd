@@ -12,7 +12,8 @@ const EXPECTED: Array[String] = [
 ## First-person weapon materials (D-026): 1 UV unit = 1 m, 1024 px/m.
 const WEAPON: Array[String] = [
 	"polymer_black", "polymer_stipple", "steel_blued", "steel_bare", "metal_matte", "paint_white",
-	"brass_cartridge", "glass_lens_tint",
+	"brass_cartridge", "glass_lens_tint", "alu_anodized_black", "polymer_tan", "polymer_olive",
+	"glass_lens_coated",
 ]
 ## Untextured by design: a reticle is a tiny emissive mesh; textures would add nothing.
 const EMISSIVE: Array[String] = ["emissive_reticle_red"]
@@ -72,7 +73,7 @@ func test_emissive_materials() -> void:
 
 
 func test_glass_is_transparent() -> void:
-	for id: String in ["glass_clear", "glass_lens_tint"]:
+	for id: String in ["glass_clear", "glass_lens_tint", "glass_lens_coated"]:
 		var glass: ORMMaterial3D = load(MATERIAL_DIR + id + ".tres") as ORMMaterial3D
 		assert_true(glass != null, "%s missing" % id)
 		if glass != null:

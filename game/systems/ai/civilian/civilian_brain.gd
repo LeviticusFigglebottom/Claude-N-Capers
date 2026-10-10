@@ -299,6 +299,11 @@ func _tick_call(delta: float) -> void:
 	if call_progress < Tweak.stealth().civilian_call_s:
 		return
 	var reason: StringName = StringName(call_target.get("reason", CivilianTargets.REASON_PHONE))
+	# A2-03 (S8.4): an active ECM jams phones: the call cannot complete until the jam ends (the
+	# civilian keeps trying). Alarm buttons are not jammed.
+	if reason == CivilianTargets.REASON_PHONE and EcmSystem.phones_jammed():
+		call_progress = Tweak.stealth().civilian_call_s
+		return
 	var st: StealthDirector = _stealth()
 	if st != null and st.is_stealth():
 		st.raise_alarm(reason, _npc.net_id)

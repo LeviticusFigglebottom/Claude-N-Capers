@@ -69,7 +69,8 @@ PRESET = {
             "rough": (0.03, 0.08), "dirt_rough": 0.5, "wear": 0.0, "grime": 0.5,
         },
         "rubber_black": {
-            "base": "#3B3B3A", "rough": (0.84, 0.92), "wear": 0.25, "grime": 0.2, "relief_ref_mm": 0.2,
+            "base": "#393939", "rough": (0.84, 0.92), "wear": 0.25, "grime": 0.2, "relief_ref_mm": 0.2,
+            "specular": 0.35,
         },
         "fabric_upholstery": {
             "base": "#4A5262", "heather": "#5E6573", "weave_cells_per_m": 64, "rough": (0.88, 0.96),
@@ -105,19 +106,36 @@ PRESET = {
         },
         # ---- First-person weapon materials (D-026; 1 m tiles at 1024 px/m) ----
         "polymer_black": {
-            "base": "#3E3F41", "rough": (0.55, 0.66), "grain_cells_per_m": 300, "wear": 0.25,
-            "grime": 0.2, "relief_ref_mm": 0.1,
+            "base": "#3A3B3D", "rough": (0.55, 0.66), "grain_cells_per_m": 300, "wear": 0.25,
+            "grime": 0.2, "relief_ref_mm": 0.1, "specular": 0.4,
         },
         "polymer_stipple": {
-            "base": "#3D3E40", "rough": (0.62, 0.78), "stipple_cells_per_m": 220, "stipple_mm": 0.35,
-            "wear": 0.35, "grime": 0.3, "relief_ref_mm": 0.1,
+            "base": "#38393B", "rough": (0.62, 0.78), "stipple_cells_per_m": 220, "stipple_mm": 0.35,
+            "wear": 0.35, "grime": 0.3, "relief_ref_mm": 0.1, "specular": 0.4,
         },
         "steel_blued": {
             "base": "#4C525C", "worn": "#ACAFB3", "rough": (0.3, 0.4), "worn_rough": 0.28,
             "holster_wear": 0.35, "wear": 0.3, "grime": 0.1,
         },
         "steel_bare": {"base": "#B7B9BC", "rough": (0.22, 0.32), "streak": 0.05, "wear": 0.0, "grime": 0.05},
-        "metal_matte": {"base": "#8F9296", "rough": (0.5, 0.6), "wear": 0.2, "grime": 0.2},
+        "metal_matte": {"base": "#575A5E", "rough": (0.5, 0.6), "wear": 0.2, "grime": 0.2},
+        # D-034 additions.
+        "alu_anodized_black": {
+            "base": "#3C3E42", "worn": "#BEC1C5", "rough": (0.34, 0.44), "worn_rough": 0.3,
+            "edge_wear": 0.3, "wear": 0.3, "grime": 0.1,
+        },
+        "polymer_tan": {
+            "base": "#8A7A5C", "rough": (0.58, 0.7), "grain_cells_per_m": 300, "wear": 0.25,
+            "grime": 0.3, "relief_ref_mm": 0.1, "specular": 0.4, "grime_color": "#4A4034",
+        },
+        "polymer_olive": {
+            "base": "#5A5C45", "rough": (0.58, 0.7), "grain_cells_per_m": 300, "wear": 0.25,
+            "grime": 0.25, "relief_ref_mm": 0.1, "specular": 0.4,
+        },
+        "glass_lens_coated": {
+            "tint_a": "#8E89A2", "tint_b": "#89998D", "dirt": "#8A877E", "alpha": 0.25,
+            "dirt_alpha": 0.4, "rough": (0.02, 0.04), "dirt_rough": 0.35, "wear": 0.0, "grime": 0.1,
+        },
         "paint_white": {"base": "#DAD8D2", "rough": (0.4, 0.5), "wear": 0.1, "grime": 0.25},
         "brass_cartridge": {
             "base": "#E5C17C", "tarnish": "#8E6A3A", "rough": (0.17, 0.26), "tarnish_rough": 0.45,

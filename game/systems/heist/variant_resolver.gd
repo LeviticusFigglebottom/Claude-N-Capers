@@ -39,11 +39,16 @@ static func collect_slots(root: Node) -> Dictionary:
 
 
 ## Pure roll. `slots_by_group`: group -> Array[VariantSlot] (sorted by slot_id).
-static func resolve(table: HeistVariantTable, slots_by_group: Dictionary, difficulty: int) -> Dictionary:
+## `forced_extra`: group -> [slot_ids] pinned active like rare `force_active` (C3 pre-planning
+## assets, PreplanAssets.forced_variants()).
+static func resolve(table: HeistVariantTable, slots_by_group: Dictionary, difficulty: int,
+		forced_extra: Dictionary = {}) -> Dictionary:
 	var rng: RandomNumberGenerator = GameRng.stream(STREAM)
 	var result: Dictionary = {}
 	var rare: Array[StringName] = []
 	var forced: Dictionary = {}  # group -> Array[StringName]
+	for fg0: Variant in forced_extra:
+		forced[StringName(fg0)] = (forced_extra[fg0] as Array).duplicate()
 	if table != null:
 		for ev: Dictionary in table.rare_events:
 			var chance: float = float(ev.get("chance", 0.0))
