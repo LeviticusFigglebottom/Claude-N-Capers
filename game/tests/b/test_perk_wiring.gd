@@ -213,22 +213,30 @@ func _same(a: Variant, b: Variant) -> bool:
 	if (a is float or a is int) and (b is float or b is int) and not (a is bool or b is bool):
 		return absf(float(a) - float(b)) < 0.0001
 	if a is Dictionary and b is Dictionary:
-		if (a as Dictionary).size() != (b as Dictionary).size():
-			return false
-		for k: Variant in a:
-			if not (b as Dictionary).has(k) or not _same(a[k], b[k]):
-				return false
-		return true
+		return _same_dict(a as Dictionary, b as Dictionary)
 	if a is Array and b is Array:
-		if (a as Array).size() != (b as Array).size():
-			return false
-		for i: int in range((a as Array).size()):
-			if not _same(a[i], b[i]):
-				return false
-		return true
+		return _same_array(a as Array, b as Array)
 	if (a is StringName or a is String) and (b is StringName or b is String):
 		return String(a) == String(b)
 	return typeof(a) == typeof(b) and a == b
+
+
+func _same_dict(a: Dictionary, b: Dictionary) -> bool:
+	if a.size() != b.size():
+		return false
+	for k: Variant in a:
+		if not b.has(k) or not _same(a[k], b[k]):
+			return false
+	return true
+
+
+func _same_array(a: Array, b: Array) -> bool:
+	if a.size() != b.size():
+		return false
+	for i: int in range(a.size()):
+		if not _same(a[i], b[i]):
+			return false
+	return true
 
 
 # --- Full deck through the real path ---------------------------------------------------------------
