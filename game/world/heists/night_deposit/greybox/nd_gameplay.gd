@@ -120,8 +120,6 @@ static func _names(a: Array) -> Array[StringName]:
 
 ## Wall-mounted security camera. The prefab's hitbox reaches 0.025 m behind the back-centre pivot,
 ## so the instance's `Collision` is moved 0.03 m forward (Editable Children; reported to ENV A).
-## SecurityCamera._init tags every camera `security_camera`, so validate_level treats the
-## (non-interactive, wall-mounted) camera as a walk-to objective; it gets a floor `UsePoint`.
 func security_camera(parent: Node3D, cid: String, fov: float = 60.0, rng: float = 20.0) -> Node3D:
 	var row: Array = CAMERA_POSITIONS[cid]
 	var cam: Node3D = prefab(parent, "security_camera", "Camera" + cid, row[0], float(row[1]),
@@ -132,14 +130,6 @@ func security_camera(parent: Node3D, cid: String, fov: float = 60.0, rng: float 
 		if col != null:
 			col.position += Vector3(0.0, 0.0, -0.03)
 			map_root.set_editable_instance(cam, true)
-		# Floor spot in front of the camera (where the crew stands to shoot / ECM it); gives the
-		# validator's objective target a navmesh point (see the header note above).
-		var up: Marker3D = Marker3D.new()
-		up.name = "UsePoint"
-		add(cam, up)
-		var pivot: Vector3 = row[0]
-		var floor_y: float = L.BASE if pivot.y < 0.0 else 0.0
-		place_use_point(cam, Vector3(pivot.x, floor_y, pivot.z) + yaw_basis(float(row[1])) * Vector3.FORWARD * 1.0)
 	return cam
 
 

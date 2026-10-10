@@ -5,7 +5,7 @@ Rendered by `tools/levelcheck/render_shots.sh` at 1920x1080. Contact sheet: `con
 | # | camera | caption | file | KB |
 |---|---|---|---|---|
 | 1 | TopDownSite | Top-down site: bank, lot + alley, Wharf Lane, Harbor St, quay, closures | [top_down_site.jpg](top_down_site.jpg) | 55 |
-| 2 | TopDownBuilding | Top-down building: stepped massing (hall +6.5, wing +3.6), roof plant, skylight | [top_down_building.jpg](top_down_building.jpg) | 63 |
+| 2 | TopDownBuilding | Top-down building: stepped massing (hall +6.5, wing +3.6), roof plant, skylight | [top_down_building.jpg](top_down_building.jpg) | 62 |
 | 3 | ExtHarborFacade | Exterior: Harbor St facade from the quay: harbor clock, bronze doors, tall hall windows (landmark) | [ext_harbor_facade.jpg](ext_harbor_facade.jpg) | 79 |
 | 4 | ExtAtmCorner | Exterior: Harbor St / Wharf Ln corner: green-glass ATM vestibule (landmark), fire exit side | [ext_atm_corner.jpg](ext_atm_corner.jpg) | 79 |
 | 5 | ExtLotSallyPort | Exterior: staff lot from the alley mouth: sally roller + personnel door, van E1 slot, dumpster, areaway cage | [ext_lot_sally_port.jpg](ext_lot_sally_port.jpg) | 60 |
@@ -20,7 +20,7 @@ Rendered by `tools/levelcheck/render_shots.sh` at 1920x1080. Contact sheet: `con
 | 14 | SallyPort | G1 sally port: roller + personnel door, cash lift | [sally_port.jpg](sally_port.jpg) | 60 |
 | 15 | StairCore | G2 U-stair from the corridor (railing over flight 2) | [stair_core.jpg](stair_core.jpg) | 59 |
 | 16 | BasementCorridor | B5 basement spine and the vault gate | [basement_corridor.jpg](basement_corridor.jpg) | 59 |
-| 17 | Antechamber | B8 antechamber: laser plane, time-lock panel, vault door | [antechamber.jpg](antechamber.jpg) | 72 |
+| 17 | Antechamber | B8 antechamber: laser plane, time-lock panel, vault door | [antechamber.jpg](antechamber.jpg) | 73 |
 | 18 | VaultInterior | B9 vault: cash cage, Co-op pallet, deposit box walls | [vault_interior.jpg](vault_interior.jpg) | 61 |
 | 19 | CountDepository | B11 count room and B12 depository safe | [count_depository.jpg](count_depository.jpg) | 52 |
 | 20 | RecordsRoom | B6 records: compact shelving, microfiche desk | [records_room.jpg](records_room.jpg) | 48 |

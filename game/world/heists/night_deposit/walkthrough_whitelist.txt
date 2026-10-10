@@ -63,7 +63,3 @@
 # 3) West basement doors (B1/B6) seen from the quay spawns east of the steps.
 * Gameplay/Doors/RecordsDoor/UsePoint
 * Gameplay/Doors/XferDoor/UsePoint
-#
-# 4) Basement cameras (their floor UsePoints in B5/B8/B11) seen from the street/quay spawns.
-* Variants/Group_camera/Slot_cam_a/CameraC6
-* Variants/Group_camera/Slot_cam_a/CameraC6/UsePoint
