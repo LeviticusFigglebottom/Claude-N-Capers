@@ -9,6 +9,9 @@
 ##   fill_rate(observer, crew) -> float        -> instantaneous S2.2 fill rate per second (0 = no fill)
 ##   detection_risk_mult(dr) -> float          -> S2.3 DR time multiplier (interpolated table)
 ##   camera_countdown() -> float               -> S3.5 seconds until the camera alarm, -1 if none
+##   start_camera_alarm(camera_net_id)         -> S3.5/S4.4 camera alerted by a stimulus (A2-02)
+##   mark(target, by_slot) -> bool / is_marked(target) / marked_targets(slot) -> Array[Dictionary]
+##                                             -> S2.9 crew-wide marks {net_id, world_pos, kind} (A2-05)
 ##   register_stimulus(source, kind, data) -> int / unregister_stimulus(id) / stimulus(id)
 ##   zone_kinds_at(pos) -> Array[int] (MapZone.Kind) / in_zone(pos, kind) -> bool
 ##   has_los(from, to, exclude) -> bool        -> vision ray on world/vision-blocker layers
@@ -60,6 +63,10 @@ var _ray_q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.new()
 var _point_q: PhysicsPointQueryParameters3D = PhysicsPointQueryParameters3D.new()
 var _exclude: Array[RID] = []
 var _notice_buf: Array[int] = []
+## S2.9 marks (A2-05): target net_id -> {"node", "kind", "left", "by_slot"}; per-slot Sixth Sense
+## stand-still seconds.
+var _marks: Dictionary[int, Dictionary] = {}
+var _still_s: Dictionary[int, float] = {}
 
 
 func _ready() -> void:
@@ -71,6 +78,7 @@ func _ready() -> void:
 	_runtime = HeistRuntime.of(self)
 	if _runtime != null:
 		_runtime.noise_made.connect(_on_noise)
+		ShoutSystem.ensure.call_deferred(_runtime)  # A2-05 S2.9: marking works without civilians
 	EventBus.alarm_raised.connect(_on_alarm_event)
 
 
@@ -151,6 +159,13 @@ func camera_countdown() -> float:
 	return _camera_left
 
 
+## A2-02 S4.4: a camera confirmed a stimulus (corpse, bag, broken camera...): start the S3.5
+## countdown (no-op if one runs, loud, or not the server).
+func start_camera_alarm(camera_net_id: int) -> void:
+	if Net.is_authority() and is_stealth():
+		_start_camera_countdown(camera_net_id)
+
+
 # --- Stimuli ------------------------------------------------------------------------
 
 ## Register something suspicious (S4.1). `data` may carry "position" for sources without a node
@@ -213,6 +228,7 @@ func _physics_process(delta: float) -> void:
 	_time += delta
 	_frame += 1
 	_tick_camera_countdown(delta)
+	_tick_marks(delta)  # A2-05 S2.9 (runs loud too: specials stay markable)
 	if not Net.is_authority():
 		return
 	if not is_stealth():
@@ -257,8 +273,12 @@ func _make_state(n3: Node3D) -> StealthObserverState:
 	var p: Variant = n3.get(&"detection_preset")
 	if (p is StringName or p is String) and _tw.observer_presets.has(StringName(p)):
 		key = StringName(p)
+	var preset: Dictionary = _tw.observer_presets.get(key, {})
+	if n3.has_method(&"detection_overrides"):  # A2-02 S8.1: per-camera fov_deg / range (far)
+		preset = preset.duplicate()
+		preset.merge(n3.call(&"detection_overrides"), true)
 	var st: StealthObserverState = StealthObserverState.new()
-	st.setup(n3, kind, _tw.observer_presets.get(key, {}))
+	st.setup(n3, kind, preset)
 	return st
 
 
@@ -611,3 +631,111 @@ func _on_noise(position: Vector3, radius: float, kind: StringName, source_net_id
 		if d > radius * _tw.noise_no_los_mult and not _ray_clear(position, eye, n3, src):
 			continue
 		n3.call(&"notify_noise", position, kind, source_net_id)
+
+
+# --- Marking (S2.9, A2-05) --------------------------------------------------------------------
+# A guard, special or camera marked by a crew member (ShoutSystem: shout while aiming at it; or
+# Sixth Sense) is shown to the whole crew for StealthTweak.mark_duration_<kind>_s ×
+# Modifiers stealth.mark_duration_mult of the marker. Server-authoritative; clients get
+# _rpc_mark and tick their own copy for LocalHudModel.
+
+## Mark kind of `target` (&"guard", &"special", &"camera"), or &"" when it cannot be marked.
+static func mark_kind_of(target: Node) -> StringName:
+	var npc: NpcBase = target as NpcBase
+	if npc != null:
+		if not npc.alive:
+			return &""
+		if npc.role == &"guard" or npc.role == &"special":
+			return npc.role
+		return &""
+	if target != null and target.has_method(&"observer_kind") \
+			and int(target.call(&"observer_kind")) == Enums.ObserverKind.CAMERA:
+		var destroyed: Variant = target.get(&"destroyed")
+		return &"" if destroyed is bool and destroyed else &"camera"
+	return &""
+
+
+## Server: mark `target` for the crew (refreshes a running mark). Returns false if not markable.
+func mark(target: Node3D, by_slot: int) -> bool:
+	if not Net.is_authority() or target == null or not is_instance_valid(target):
+		return false
+	var kind: StringName = mark_kind_of(target)
+	var nid: int = NetIds.of(target)
+	if kind == &"" or nid == 0:
+		return false
+	var dur: float = _mark_base_s(kind) * Modifiers.mult(by_slot, &"stealth.mark_duration_mult")
+	_marks[nid] = {"node": target, "kind": kind, "left": dur, "by_slot": by_slot}
+	_rpc_mark.rpc(nid, kind, dur)
+	return true
+
+
+func is_marked(target: Node) -> bool:
+	return target != null and _marks.has(NetIds.of(target))
+
+
+## LocalHudModel (ui_hud.md v1.1): crew-wide marks [{net_id, world_pos, kind}] sorted by net_id.
+## Every crew slot sees every mark (`slot` is accepted for the duck-typed HUD interface).
+func marked_targets(_slot: int = -1) -> Array[Dictionary]:
+	var ids: Array[int] = []
+	ids.assign(_marks.keys())
+	ids.sort()
+	var out: Array[Dictionary] = []
+	for nid: int in ids:
+		var m: Dictionary = _marks[nid]
+		var n: Node3D = m.get("node") as Node3D
+		if n == null or not is_instance_valid(n):
+			n = Ids.lookup(nid) as Node3D
+		var pos: Vector3 = n.global_position if n != null and n.is_inside_tree() else Vector3.ZERO
+		out.append({"net_id": nid, "world_pos": pos, "kind": StringName(m["kind"])})
+	return out
+
+
+func _mark_base_s(kind: StringName) -> float:
+	match kind:
+		&"camera":
+			return _tw.mark_duration_camera_s
+		&"special":
+			return _tw.mark_duration_special_s
+	return _tw.mark_duration_guard_s
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_mark(net_id: int, kind: StringName, duration: float) -> void:
+	_marks[net_id] = {"node": Ids.lookup(net_id), "kind": kind, "left": duration, "by_slot": -1}
+
+
+func _tick_marks(delta: float) -> void:
+	for nid: int in _marks.keys():
+		var m: Dictionary = _marks[nid]
+		var left: float = float(m["left"]) - delta
+		var n: Node = m.get("node") as Node if is_instance_valid(m.get("node")) else null
+		var gone: bool = Net.is_authority() and (n == null or mark_kind_of(n) == &"")
+		if left <= 0.0 or gone:
+			_marks.erase(nid)
+		else:
+			m["left"] = left
+	if Net.is_authority() and is_stealth():
+		_tick_sixth_sense(delta)
+
+
+## S2.9 Sixth Sense (`stealth.sixth_sense`): standing still sixth_sense_still_s in stealth marks
+## every guard/special within sixth_sense_radius_m (no LOS needed), again every sixth_sense_still_s.
+func _tick_sixth_sense(delta: float) -> void:
+	if _runtime == null:
+		return
+	for crew: CrewController in _runtime.crew_members():
+		var slot: int = crew.slot
+		if not Modifiers.flag(slot, &"stealth.sixth_sense") or crew.crew_state != Enums.CrewState.NORMAL:
+			_still_s.erase(slot)
+			continue
+		if Vector2(crew.velocity.x, crew.velocity.z).length() > _tw.sixth_sense_still_speed:
+			_still_s[slot] = 0.0
+			continue
+		var t: float = _still_s.get(slot, 0.0) + delta
+		if t >= _tw.sixth_sense_still_s:
+			t = 0.0
+			for n: Node in _runtime.npcs():
+				var n3: Node3D = n as Node3D
+				if n3 != null and n3.global_position.distance_to(crew.global_position) <= _tw.sixth_sense_radius_m:
+					mark(n3, slot)
+		_still_s[slot] = t

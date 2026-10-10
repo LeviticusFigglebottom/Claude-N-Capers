@@ -1,17 +1,22 @@
 ## A1-05 / S3.2 (P1) + S3.3: a guard reaching "!" radios for guard_radio_call_s then raises the
-## alarm; death or domination during the call cancels it.
+## alarm; death or domination during the call cancels it. Runs with the P1 path
+## (StealthTweak.guard_cuffs_enabled = false); the P2 cuff flow is test_s3_2_guard_cuffs.gd.
 extends TestCase
 
 var _rt: HeistRuntime = null
+var _cuffs_was: bool = true
 
 
 func before_each() -> void:
+	_cuffs_was = Tweak.stealth().guard_cuffs_enabled
+	Tweak.stealth().guard_cuffs_enabled = false
 	_rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.basic(1, 0)})
 	await wait_physics_frames(1)
 
 
 func after_each() -> void:
+	Tweak.stealth().guard_cuffs_enabled = _cuffs_was
 	if _rt != null and is_instance_valid(_rt):
 		_rt.teardown()
 	_rt = null

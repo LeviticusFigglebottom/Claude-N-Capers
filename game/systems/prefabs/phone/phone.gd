@@ -17,9 +17,10 @@ func use_point_position() -> Vector3:
 	return use_point.global_position if use_point != null else global_position
 
 
-## Server: an NPC (`by_net_id`) completes a call -> alarm_raised(&"phone_call").
+## Server: an NPC (`by_net_id`) completes a call -> alarm_raised(&"phone_call"). No-op while an ECM
+## jams phones (S8.4).
 func call_police(by_net_id: int = 0) -> void:
-	if not Net.is_authority():
+	if not Net.is_authority() or EcmSystem.phones_jammed():  # A2-03 (S8.4): jammed phones
 		return
 	used = true
 	_raise_alarm(&"phone_call", by_net_id if by_net_id != 0 else net_id)

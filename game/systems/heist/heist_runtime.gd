@@ -38,6 +38,12 @@ var mission: HeistMission = null
 var hud_model: LocalHudModel = null
 ## Container for runtime-spawned entities (NPCs, crew, bags).
 var dynamic_root: Node3D = null
+## C3 pre-planning assets chosen for this run (A2-07, game/systems/heist/README.md).
+var preplan: PreplanAssets = PreplanAssets.new()
+## S11.3 STEALTH_ONLY: seconds until heist_ended(failed) after the alarm (-1 = not aborting).
+var stealth_abort_left: float = -1.0
+## S11.3 HeistDef.mode (STEALTH_OR_LOUD when the map has no HeistDef). Set by start().
+var heist_mode: Enums.HeistMode = Enums.HeistMode.STEALTH_OR_LOUD
 
 var _crew: Dictionary[int, CrewController] = {}
 var _bot_intents: Dictionary[int, CrewIntent] = {}
@@ -108,9 +114,12 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 		Log.error(&"heist", "contract violation: map root of '%s' is not a HeistMap" % heist_id)
 		inst.free()
 		return false
+	if map.heist_def != null:
+		heist_mode = map.heist_def.mode
 	# heist_map.md §5: resolve and strip inactive variant content BEFORE anything spawns.
 	var slots: Dictionary = VariantResolver.collect_slots(map)
-	variants = VariantResolver.resolve(map.variant_table, slots, difficulty)
+	preplan.setup(options, map.heist_def)  # C3 (A2-07): before the roll, assets may pin variants
+	variants = VariantResolver.resolve(map.variant_table, slots, difficulty, preplan.forced_variants())
 	var pending: Array = VariantResolver.apply(slots, variants)
 	Log.info(&"variants", "seed %d resolved %s" % [run_seed, variants])
 	_create_services()
@@ -121,19 +130,22 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	add_child(dynamic_root)
 	VariantResolver.configure_pending(pending)
 	_apply_rare_modifiers()
+	preplan.apply_modifiers()  # C3: TEAM sources `asset.<id>`, before the crew reads modifiers
 	_claim_map_ids(map)
 	_spawn_npcs()
 	_spawn_crew()
+	preplan.spawn_drops(map, dynamic_root)  # C3: drop assets at their PREPLAN_POINTs
 	_connect_events()
 	mission = map.get_node_or_null("Mission") as HeistMission
 	if mission == null and map.get_node_or_null("Mission") != null:
 		Log.error(&"heist", "contract violation: %s/Mission does not extend HeistMission" % heist_id)
 	if mission != null:
 		mission._bind(self)
-	var mode: int = map.heist_def.mode if map.heist_def != null else Enums.HeistMode.STEALTH_OR_LOUD
-	if mode == Enums.HeistMode.LOUD_ONLY:
-		_set_phase(Enums.HeistPhase.LOUD)
+	if heist_mode == Enums.HeistMode.LOUD_ONLY:
 		went_loud = true
+		for slot: int in _crew:  # S11.3: loud-only heists start masked (no casing)
+			_crew[slot].set_masked(true)
+		_set_phase(Enums.HeistPhase.LOUD)
 	elif bool(options.get("skip_casing", false)):
 		_set_phase(Enums.HeistPhase.STEALTH)
 	else:
@@ -158,9 +170,21 @@ func _create_services() -> void:
 	var loot: LootManager = LootManager.new()
 	loot.name = "LootManager"
 	register_service(G.SVC_LOOT, loot)
+	var codes: CodeRegistry = CodeRegistry.new()  # A2-04 (S9.7): per-run keypad codes
+	codes.name = "CodeRegistry"
+	register_service(CodeRegistry.SERVICE, codes)
 	var director: AssaultDirector = AssaultDirector.new()  # A1-09 (L1.1, L1.4)
 	director.name = "AssaultDirector"
 	register_service(G.SVC_DIRECTOR, director)
+	var ecm: EcmSystem = EcmSystem.new()  # A2-03 (S8.4-S8.6, S5.6)
+	ecm.name = "EcmSystem"
+	register_service(EcmSystem.SERVICE, ecm)
+	var deployables: DeployableSystem = DeployableSystem.new()  # A2-06 (L2.11, S6.2)
+	deployables.name = "DeployableSystem"
+	register_service(DeployableSystem.SERVICE, deployables)
+	var hostage_stimuli: HostageStimuli = HostageStimuli.new()  # A2-07 (S6.4)
+	hostage_stimuli.name = "HostageStimuli"
+	add_child(hostage_stimuli)
 	hud_model = LocalHudModel.new()
 	hud_model.name = "LocalHudModel"
 	add_child(hud_model)
@@ -254,14 +278,22 @@ func _spawn_npc_at(role: StringName, sp: SpawnPoint) -> void:
 
 func _spawn_crew() -> void:
 	var spawns: Array[Node] = []
+	var chosen_tag: StringName = preplan.spawn_tag()  # C3 spawn-location asset
+	var chosen: Array[Node] = []
 	for n: Node in map.get_slots(G.PLAYER_SPAWN):
 		var sp: SpawnPoint = n as SpawnPoint
 		var alt: bool = false
 		for t: StringName in sp.tags:
 			if String(t).begins_with("preplan"):
 				alt = true
+		if chosen_tag != &"" and sp.tags.has(chosen_tag):
+			chosen.append(sp)
 		if not alt:
 			spawns.append(sp)
+	if not chosen.is_empty():
+		spawns = chosen
+	elif chosen_tag != &"":
+		Log.error(&"heist", "pre-planning spawn tag '%s' matches no PLAYER SpawnPoint; using defaults" % chosen_tag)
 	if spawns.is_empty():
 		Log.error(&"heist", "contract violation: no PLAYER SpawnPoints in %s" % heist_id)
 	var loadouts: Dictionary = options.get("loadouts", {})
@@ -337,6 +369,12 @@ func _on_alarm_raised(reason: StringName, _source: int) -> void:
 		_crew[slot].set_masked(true)
 	if phase == Enums.HeistPhase.CASING or phase == Enums.HeistPhase.STEALTH:
 		_set_phase(Enums.HeistPhase.LOUD)
+	if heist_mode == Enums.HeistMode.STEALTH_ONLY:
+		# S11.3: alarm = fail. Mercer abort line, then heist_ended(failed) after the tweak delay.
+		stealth_abort_left = Tweak.stealth().stealth_only_abort_s
+		EventBus.voice_line_requested.emit(&"mercer", &"vo.mercer.abort", {})
+		Net.replicate_event(&"voice_line_requested", [&"mercer", &"vo.mercer.abort", {}])
+
 
 
 func _on_crew_masked(_slot: int) -> void:
@@ -518,7 +556,12 @@ func teardown() -> void:
 	Ids.reset()
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	if stealth_abort_left >= 0.0 and not _ended:
+		stealth_abort_left -= delta
+		if stealth_abort_left <= 0.0:
+			stealth_abort_left = -1.0
+			end_heist(false)
 	for slot: int in _bot_intents:
 		var c: CrewController = _crew.get(slot)
 		if c != null:
