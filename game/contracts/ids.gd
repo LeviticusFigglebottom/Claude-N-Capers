@@ -33,6 +33,7 @@ const LOOT_BAG: StringName = &"loot_bag"
 const BODY: StringName = &"body"
 const DEPLOYABLE: StringName = &"deployable"
 const HOSTAGE: StringName = &"hostage"
+const LOCAL_HUD_MODEL: StringName = &"local_hud_model"  ## exactly one per peer during a heist (ui_hud.md)
 
 # --- HeistRuntime services ---
 const SVC_STEALTH: StringName = &"stealth"
