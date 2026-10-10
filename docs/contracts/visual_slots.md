@@ -31,6 +31,7 @@ How art scenes (ENV C props/characters, ENV B weapons) plug into ENV A gameplay 
 | `body_container` | `Lid` (pivot), `Inside` marker |
 | loot bag | `Bag` mesh; pivot bottom; size by weight class (style guide) |
 | weapons (ENV B) | `Muzzle`, `Eject`, `SightRail`, `Magwell`, `Underbarrel`, `SideRail`, `StockMount`, `GripMount`, `BarrelMount`, `LeftHandIK` markers; mods attach at the marker named for their `ModType` (see data_schemas.md §Weapons) |
+| weapons, extra (QB-22) | origin = firing-hand pivot (grip centre plane, mid-grip, 20 mm below the grip top); `Slide` cycles along local +Z; optional `AimPoint` (ADS eye alignment, −Z down the bore). A mod may carry its own `Muzzle` (e.g. a suppressor tip): `WeaponVisual.get_marker(&"Muzzle")` returns the outermost one, and ENV A must use it for tracers, flash and the noise origin. On pistols `SideRail` and `Underbarrel` may share the dust-cover rail. |
 | characters | see characters.md |
 
 ENV A must ship placeholder visuals with the **same named nodes** so swapping art changes nothing.

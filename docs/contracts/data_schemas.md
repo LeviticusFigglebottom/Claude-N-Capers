@@ -22,6 +22,7 @@ listed. All data ids follow `groups.md`. The code headers are authoritative for 
   BARREL→`BarrelMount`, BARREL_EXT/SUPPRESSOR→`Muzzle`, SIGHT→`SightRail`, GADGET→`SideRail`,
   GRIP→`GripMount`, FOREGRIP→`Underbarrel`, STOCK→`StockMount`, MAGAZINE→`Magwell`,
   BODY/BOLT/AMMO/CHARM/SKIN→ model swap or material (B decides per weapon).
+* Stock (default) parts are named `Stock<ModType>` in model scenes (`StockSight`, `StockMagazine`, `StockBarrel`...) and are hidden when a mod of that type is equipped.
 * ENV B's `LoadoutResolver.resolve(loadout) -> Loadout` is the single implementation of stat
   resolution, concealment totals, and DR (lookup in the PD2-style curve). ENV A must not reimplement it.
 
