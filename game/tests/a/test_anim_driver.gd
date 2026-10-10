@@ -8,12 +8,15 @@ const LOOPED: Array[StringName] = [
 	&"walk_back", &"aim_rifle", &"aim_pistol", &"kneel_cuffed", &"hands_up", &"cower", &"lie_down", &"tied",
 	&"flee", &"phone_call", &"pager_answer", &"investigate_look", &"smoke", &"lean_wall", &"sit_chair",
 	&"desk_type", &"browse", &"downed", &"tased", &"carry_bag_walk", &"interact_low", &"interact_mid",
-	&"interact_high",
+	&"interact_high", &"shield_walk", &"dozer_walk",
 ]
 const ONCE: Array[StringName] = [
 	&"turn_l", &"turn_r", &"fire_rifle", &"fire_pistol", &"reload_rifle", &"reload_pistol", &"melee",
 	&"death_front", &"death_back", &"hit_react", &"surrender", &"radio_call", &"throw_bag",
+	&"kick_charge", &"kick_hit", &"shield_bang", &"heal_ally",
 ]
+## HandL/Socket local transform of the test rig (shield grip).
+const HANDL_SOCKET: Transform3D = Transform3D(Basis(Vector3.UP, 0.3), Vector3(-0.25, 1.1, -0.45))
 const HINT_SCRIPT: String = "extends Node\nvar anim_hint: StringName = &\"idle\"\n"
 
 var _nodes: Array[Node] = []
@@ -34,14 +37,19 @@ static func _test_rig() -> Node3D:
 	skel.name = "Skeleton3D"
 	skel.add_bone("root")
 	skel.add_bone("hand.R")
+	skel.add_bone("hand.L")
 	root.add_child(skel)
-	var hand: BoneAttachment3D = BoneAttachment3D.new()
-	hand.name = "HandR"
-	hand.bone_name = "hand.R"
-	skel.add_child(hand)
-	var socket: Marker3D = Marker3D.new()
-	socket.name = "Socket"
-	hand.add_child(socket)
+	for side: String in ["R", "L"]:
+		var hand: BoneAttachment3D = BoneAttachment3D.new()
+		hand.name = "Hand" + side
+		hand.bone_name = "hand." + side
+		hand.override_pose = false
+		skel.add_child(hand)
+		var socket: Marker3D = Marker3D.new()
+		socket.name = "Socket"
+		if side == "L":
+			socket.transform = HANDL_SOCKET
+		hand.add_child(socket)
 	var ap: AnimationPlayer = AnimationPlayer.new()
 	ap.name = "AnimationPlayer"
 	var lib: AnimationLibrary = AnimationLibrary.new()
@@ -285,3 +293,140 @@ func test_assembled_fixture_when_present() -> void:
 	npc.velocity = Vector3(0, 0, -1.6)
 	d.tick(0.016)
 	assert_eq(String(d.player.current_animation), "humanoid/walk", "real contract visual plays humanoid/walk")
+
+
+func _special(walk_clip: String) -> NpcBase:
+	var npc: NpcBase = _npc(&"special")
+	var def: EnemyDef = EnemyDef.new()
+	def.move_speed = 3.5
+	def.params = {"anim_walk_clip": walk_clip, "advance_speed": 1.8}
+	npc.enemy_def = def
+	return npc
+
+
+## Lead ruling (PD2): Bulwarks / Wreckers walk with their own clip; never a walk clip above speed_scale_max.
+func test_special_walk_clips() -> void:
+	var tw: AnimTweak = AnimTweak.data()
+	assert_near(float(tw.clip_speeds.get(&"shield_walk", 0.0)), 1.6, 0.001, "shield_walk clip speed")
+	assert_near(float(tw.clip_speeds.get(&"dozer_walk", 0.0)), 1.6, 0.001, "dozer_walk clip speed")
+	var bw: NpcBase = _special("shield_walk")
+	var d: AnimDriver = _drv(bw)
+	for v: float in [1.8, 1.2, 2.0]:
+		bw.velocity = Vector3(0, 0, -v)
+		d.tick(0.016)
+		assert_eq(d.clip, &"shield_walk", "Bulwark walking at %.1f plays shield_walk" % v)
+		assert_near(d.player.speed_scale, v / 1.6, 0.001, "speed_scale = v / 1.6")
+	bw.velocity = Vector3(0.9, 0, 0)
+	d.tick(0.016)
+	assert_eq(d.clip, &"shield_walk", "sideways shuffle keeps the shield walk")
+	bw.velocity = Vector3(0, 0, -3.2)
+	d.tick(0.016)
+	assert_eq(d.clip, &"run", "repositioning at run speed plays run, not a sped-up walk")
+	assert_true(d.player.speed_scale <= tw.speed_scale_max)
+	var wr: NpcBase = _special("dozer_walk")
+	var dw: AnimDriver = _drv(wr)
+	wr.velocity = Vector3(0, 0, -1.8)
+	dw.tick(0.016)
+	assert_eq(dw.clip, &"dozer_walk", "Wrecker plays dozer_walk")
+	assert_near(dw.player.speed_scale, 1.8 / 1.6, 0.001)
+	wr.velocity = Vector3(0, 0, -3.5)
+	dw.tick(0.016)
+	assert_eq(dw.clip, &"run", "Wrecker above the walk threshold runs")
+	var cop: NpcBase = _npc(&"police")
+	cop.velocity = Vector3(0, 0, -1.8)
+	_drv(cop).tick(0.016)
+	assert_eq(_drv(cop).clip, &"walk", "units without anim_walk_clip keep walk")
+
+
+func test_special_action_hints() -> void:
+	var ph: NpcBase = _npc(&"special")
+	var d: AnimDriver = _drv(ph)
+	var brain: Node = ph.get_node(^"Brain")
+	brain.set(&"anim_hint", &"kick_charge")
+	d.tick(0.016)
+	assert_eq(d.clip, &"kick_charge", "Phantom windup plays kick_charge")
+	brain.set(&"anim_hint", &"sprint")
+	ph.velocity = Vector3(0, 0, -6.0)
+	d.tick(0.016)
+	assert_eq(d.clip, &"sprint", "the charge sprints")
+	brain.set(&"anim_hint", &"kick_hit")
+	ph.velocity = Vector3.ZERO
+	d.tick(0.016)
+	assert_eq(d.clip, &"kick_hit", "the kick plays kick_hit")
+	d.tick(0.6)
+	assert_ne(d.clip, &"kick_hit", "kick_hit plays once")
+	var bw: NpcBase = _special("shield_walk")
+	var db: AnimDriver = _drv(bw)
+	var bb: Node = bw.get_node(^"Brain")
+	bb.set(&"anim_hint", &"aim")
+	db.tick(0.016)
+	assert_eq(db.clip, &"aim_rifle", "holding Bulwark aims")
+	bb.set(&"anim_hint", &"shield_bang")
+	db.tick(0.016)
+	assert_eq(db.clip, &"shield_bang", "Bulwark bang plays shield_bang (over the aim pose)")
+	var md: NpcBase = _npc(&"special")
+	md.get_node(^"Brain").set(&"anim_hint", &"heal_ally")
+	_drv(md).tick(0.016)
+	assert_eq(_drv(md).clip, &"heal_ally", "Corpsman heal plays heal_ally")
+
+
+## characters.md: the shield grip is HandL/Socket (socket -Z = shield face); with no skeleton the offset stays.
+func test_bulwark_shield_follows_handl_socket() -> void:
+	var tw: HeavySpecialTweak = HeavySpecialTweak.data()
+	var bw: NpcBase = _special("shield_walk")
+	var shield: BulwarkShield = tw.bulwark_shield_scene.instantiate() as BulwarkShield
+	shield.attach_to(bw, tw.bulwark_shield_offset)
+	var socket: Node3D = AnimDriver.socket_of(bw, "HandL")
+	assert_true(socket != null and shield.grip_socket == socket, "grip socket found on the visual")
+	assert_true(shield.global_transform.is_equal_approx(socket.global_transform), "aligned to HandL/Socket")
+	assert_true(shield.get_parent() == bw and shield.get_node_or_null("Collision") != null, "still a carried body")
+	bw.global_position = Vector3(3, 0, 1)
+	shield.follow_grip(0.016)
+	assert_true(shield.global_transform.origin.is_equal_approx(socket.global_transform.origin), "follows the carrier")
+	shield.set_guard(false, tw.bulwark_stagger_shield_offset)
+	assert_false(shield.follow_grip(0.016), "lowered guard keeps the stagger offset")
+	var cap: NpcBase = _npc(&"special", false)
+	var s2: BulwarkShield = tw.bulwark_shield_scene.instantiate() as BulwarkShield
+	s2.attach_to(cap, tw.bulwark_shield_offset)
+	assert_true(s2.grip_socket == null, "capsule placeholder: no socket")
+	assert_true(s2.position.is_equal_approx(tw.bulwark_shield_offset), "capsule placeholder: offset kept")
+
+
+## Lead ruling (PD2): heavy specials advance at a walk (<= 2.0 m/s), run speed only to reposition.
+func test_heavy_brains_advance_walking() -> void:
+	for id: String in ["bulwark", "wrecker", "wrecker_b", "wrecker_g", "wrecker_m", "wrecker_s"]:
+		var def: EnemyDef = ACombatSpecials.def(id)
+		var npc: NpcBase = NpcBase.new()
+		npc.enemy_def = def
+		for m: StringName in [&"approach", &"cover", &"back_off", &"shield_follow"]:
+			var sp: float = PoliceSpecialKit.heavy_move_speed(npc, m, def.move_speed)
+			assert_true(sp >= 1.6 and sp <= 2.0, "%s advances (%s) at a walk: %.2f" % [id, m, sp])
+		assert_near(PoliceSpecialKit.heavy_move_speed(npc, &"order", def.move_speed), def.move_speed, 0.001,
+			"%s repositions at run speed" % id)
+		npc.free()
+	var rt: HeistRuntime = await ACombatSpecials.launch(self)
+	var c: CrewController = await ACombatSpecials.place_crew(rt, 0, Vector3(0, 0.05, 0))
+	Modifiers.set_source(0, &"test.immune", {&"defense.damage_taken_mult": 0.0})
+	rt.stealth.raise_alarm(&"test", 0)
+	var units: Array[NpcBase] = [
+		ACombatSpecials.spawn(rt, "bulwark", Vector3(4, 0.05, -18), Vector3(0, 0, 1)),
+		ACombatSpecials.spawn(rt, "wrecker", Vector3(-4, 0.05, -18), Vector3(0, 0, 1)),
+	]
+	var max_v: Array[float] = [0.0, 0.0]
+	var moved: Array[bool] = [false, false]
+	for _i: int in 150:
+		await wait_physics_frames(1)
+		for k: int in units.size():
+			var u: NpcBase = units[k]
+			var b: PoliceBrain = u.get_node("Brain") as PoliceBrain
+			if not HeavySpecialTweak.data().heavy_run_modes.has(b.mode):
+				var hv: float = Vector2(u.velocity.x, u.velocity.z).length()
+				max_v[k] = maxf(max_v[k], hv)
+				moved[k] = moved[k] or hv > 1.0
+	for k: int in units.size():
+		assert_true(moved[k], "%s advanced" % units[k].enemy_def.id)
+		assert_true(max_v[k] <= 2.0 + 0.05, "%s advances at <= 2.0 m/s (max %.2f)" % [units[k].enemy_def.id, max_v[k]])
+	assert_true(c != null)
+	Modifiers.clear_all()
+	rt.teardown()
+	await wait_frames(2)

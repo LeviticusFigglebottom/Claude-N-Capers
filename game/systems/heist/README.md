@@ -19,11 +19,42 @@ host's `launch()` sends the bring-up to every connected client (below); clients 
 ## Co-op: client bring-up and replication (A3-07, net.md)
 
 ```gdscript
-# Client, once in the lobby (after Net.join): build the replica whenever the host launches.
+# Client (B's lobby): the counterpart of launch(). Await it before the host launches.
+var rt: HeistRuntime = await HeistLauncher.launch_client()   # replica, or null
+# ...or once in the lobby (after Net.join): build the replica whenever the host launches.
 HeistLauncher.auto_join(null, {}, func(rt: HeistRuntime) -> void: hud.bind(rt.hud_model))
 # ...or by hand from the Net.lobby_message(from_peer == 1, HeistLauncher.BRING_UP_KIND, data):
-var rt: HeistRuntime = HeistLauncher.join_running(data)   # synchronous; null on error
+var rt2: HeistRuntime = HeistLauncher.join_running(data)   # synchronous; null on error
 ```
+
+### Client heist launch: `HeistLauncher.launch_client` (D-049 item, for net.md / test_hooks.md)
+
+`static func launch_client(parent: Node = null, options: Dictionary = {}, timeout_s: float = 0.0) -> HeistRuntime` (await it)
+
+* **When to call:** on a client (`not Net.is_authority()`), after `Net.join()` connected and **before** the
+  host calls `HeistLauncher.launch()`: at the latest in the handler of the lobby's own "starting" message
+  (lobby messages are reliable and ordered, so the bring-up arrives after it). The host side is unchanged:
+  `await HeistLauncher.launch(heist_id, seed, difficulty)` sends the bring-up to every client.
+* **What it does:** waits for the next `Net.lobby_message(1, HeistLauncher.BRING_UP_KIND, data)`, builds the
+  replica with `join_running(data, parent, options)` inside that handler (synchronously, so the
+  replication RPCs right behind it find their nodes), then awaits two physics frames like `launch()`.
+  `parent` null = the host's runtime parent path (RPC paths must match; the tree root by default).
+  `options` as `join_running` (`map_packed`, `map_scene`, `extra_services`).
+* **Returns:** the replica `HeistRuntime` (`is_replica == true`, `heist_loaded` already emitted, crew,
+  NPCs and map state mirrored from the bring-up snapshot; `rt.hud_model` is the client's LocalHudModel).
+  End of heist: the replica receives the host's `heist_ended(result)` [R]; the app flow then calls
+  `rt.teardown()` and `Net.leave()` as on the host.
+* **Failure modes (returns null, never throws):** called on the authority (host / solo: `Log.error`);
+  bring-up rejected (version != `BRING_UP_VERSION`, unknown map: `Log.error`); `timeout_s > 0` elapsed
+  without a bring-up (`Log.warn`); connection to the host lost (`multiplayer.server_disconnected`) or the
+  session ended (`Net.leave()` -> `Net.session_ended`); `HeistLauncher.cancel_launch_client()` called
+  (e.g. the player left the lobby). `timeout_s <= 0` (default) waits indefinitely for one of those.
+* While a `launch_client()` is pending, `auto_join()` stands aside (no double replica); do not combine
+  them for the same heist.
+* **Host lost mid-heist:** the replica's `HeistNetSync` (`rt.net_sync`) emits `host_lost()` once
+  (`host_lost_at_s` = heist time). It tears nothing down: the app flow shows its "host left" screen and
+  calls `rt.teardown()` + `Net.leave()`. TODO (net round 4): switch to `Net.host_lost` /
+  `Net.connection_failed` once `game/core/net.gd` has them.
 
 **Bring-up** (`HeistNetSync.bring_up()`, sent by `launch()` right after `HeistRuntime.start()` and
 before any physics frame, through `Net.lobby_send(HeistLauncher.BRING_UP_KIND, data)` because the
@@ -50,7 +81,7 @@ binding, no AI brains, no director. `heist_loaded` is emitted by the replica its
 | Dynamic entities (NPCs, crew, loot bags, deployables, pre-plan drops: any child of `dynamic_root` with a `net_id`) | `_rpc_spawn([{scene, script, name, net_id, xform, params}])`, built by `NetEntityCodec.describe/instantiate`. NPC replicas drop `Brain`/`Motor`/`Gunner`/`NavAgent`; bags are frozen (host physics). | every physics frame (new children) |
 | Despawns (bag secured, small loot taken, NPC removed, any replicated id leaving the tree) | `_rpc_despawn(ids)` | every physics frame |
 | Discrete state (door open/locked, glass broken, camera off, device state/progress, pickups, deployable uses, NPC alert/alive/health, crew state/mask/vitals/inventory/carried bag, bag carrier/secured) | `_rpc_state(diffs, services)`: only changed keys. Prefabs may implement `_net_state()` / `_apply_net_state(state)` (Door, WindowPrefab, DisplayCase, SecurityCamera do); otherwise `NetEntityCodec.GENERIC_PROPS` are mirrored. | 15 Hz, reliable |
-| Service state: interaction session per crew slot (HUD progress / blocked reason), known codes (A2-04), custody timers + highlighted hostage, phase / went_loud | `InteractionSystem.net_sessions()`, `CodeRegistry.net_state()`, `CustodySystem.net_state()` and their `apply_*` mirrors | 15 Hz, reliable, on change |
+| Service state: interaction session per crew slot (HUD progress / blocked reason), known codes (A2-04), custody timers + highlighted hostage, phase / went_loud, Commander Brandt `{present, resistance}` (ui_hud v1.3) | `InteractionSystem.net_sessions()`, `CodeRegistry.net_state()`, `CustodySystem.net_state()`, `HeistNetSync.captain_state()` and their `apply_*` mirrors | 15 Hz, reliable, on change |
 | Transforms: NPCs, crew members the peer does not own (position, look yaw/pitch, crouch), loose bags | `_rpc_xforms` (only what moved) | 15 Hz, unreliable_ordered |
 | Own crew member | client-predicted; intent + position at 30 Hz (`CrewController`). Server `teleport()` of a remote human is sent to its owner (`_rpc_owner_teleport`, with a sequence number so stale positions are ignored); a rejected position (> `teleport_reject_m`) is reconciled the same way. | |
 

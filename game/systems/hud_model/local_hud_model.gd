@@ -74,6 +74,8 @@ signal crew_changed()
 signal masked_changed()
 ## ui_hud v1.2 (D-043): `custody` changed.
 signal custody_changed()
+## ui_hud v1.3 (D-049): captain_resistance, captain_present
+signal captain_changed()
 
 ## S1.1 "Suspicious actions not allowed" prompt (strings.csv key, ENV B).
 const SUSPICIOUS_PROMPT_KEY: StringName = &"ui.prompt.suspicious_not_allowed"
@@ -81,7 +83,7 @@ const WARNING_PHANTOM: StringName = &"phantom"
 const WARNING_STINGER: StringName = &"stinger"
 ## A3-02 (L4.9): Commander Brandt on the map (captain_arrived .. captain_retreated).
 const WARNING_CAPTAIN: StringName = &"captain"
-## Contract property -> its change signal (ui_hud.md v1.1 + v1.2 custody).
+## Contract property -> its change signal (ui_hud.md v1.1 + v1.2 custody + v1.3 captain).
 const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"health": &"vitals_changed", &"max_health": &"vitals_changed", &"armor": &"vitals_changed",
 	&"max_armor": &"vitals_changed", &"downs_left": &"vitals_changed", &"crew_state": &"vitals_changed",
@@ -103,6 +105,7 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"crew": &"crew_changed",
 	&"masked": &"masked_changed", &"casing": &"masked_changed",
 	&"custody": &"custody_changed",
+	&"captain_resistance": &"captain_changed", &"captain_present": &"captain_changed",
 }
 ## Extra (non-contract) properties included in snapshot().
 const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase"]
@@ -187,6 +190,12 @@ var casing: bool = true
 ## ui_hud v1.2: {} (not in custody) or {in_custody: bool, negotiation_left_s: float,
 ## auto_release_left_s: float (< 0 = none), highlighted_hostage_net_id: int (0 = none)}.
 var custody: Dictionary = {}
+# --- captain_changed (ui_hud v1.3)
+## Commander Brandt's damage resistance for every enemy, 0..1 (server value, replicated by
+## HeistNetSync to clients); 0 when he is absent or not in position yet.
+var captain_resistance: float = 0.0
+## Brandt is on the map (captain_arrived .. captain_retreated). ENV B shows the widget while true.
+var captain_present: bool = false
 # --- extras (no contract signal; `changed` only)
 ## Slot actually tracked this poll (-1 = none).
 var tracked_slot_resolved: int = -1
@@ -296,6 +305,7 @@ func refresh() -> void:
 	_poll_warnings(c)
 	_poll_crew(slot)
 	_poll_custody(c, slot)
+	_poll_captain()
 	_flush()
 
 
@@ -482,6 +492,18 @@ func _poll_crew(slot: int) -> void:
 				"carried_loot_id": bag,
 			})
 	_assign(&"crew", list)
+
+
+## ui_hud v1.3: Commander Brandt from HeistNetSync.captain_state() (server: the director's
+## AegisCaptain; client: the replicated value). captain_arrived/retreated [R] also set presence, so a
+## client is never behind the warning. No runtime: absent.
+func _poll_captain() -> void:
+	var st: Dictionary = {}
+	if _runtime != null and _runtime.net_sync != null:
+		st = _runtime.net_sync.captain_state()
+	var present: bool = _captain_present or bool(st.get("present", false))
+	_assign(&"captain_present", present)
+	_assign(&"captain_resistance", clampf(float(st.get("resistance", 0.0)), 0.0, 1.0) if present else 0.0)
 
 
 ## ui_hud v1.2: custody of the tracked slot from the CustodySystem service (server). Without the

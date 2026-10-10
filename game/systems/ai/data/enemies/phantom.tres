@@ -15,7 +15,14 @@ weapon = &"weapon.npc_melee_kick"
 detection_preset = &"police"
 params = {
 "_note": "L4.3 Phantom (PD2 Cloaker). Kick = takedown (CLOAKER_DOWNED), no damage. health per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇). Behaviour numbers: systems/ai/specials/special_tweak.tres.",
+"armor_body_mult": 1.0,
 "ecm_feedback_immune": true,
-"scene": "res://systems/ai/npc/npc_phantom.tscn"
+"explosive_mult": 1.0,
+"frontal_armor": 1.0,
+"frontal_armor_arc_deg": 0.0,
+"plate_health": [],
+"scene": "res://systems/ai/npc/npc_phantom.tscn",
+"shield": false,
+"shield_pierce_mult": 1.0
 }
 voice = &"phantom"

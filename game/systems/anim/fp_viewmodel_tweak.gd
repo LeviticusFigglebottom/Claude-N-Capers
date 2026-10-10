@@ -1,13 +1,17 @@
 ## First-person viewmodel tunables for FpViewmodel (characters.md v1.3/v1.4, D-041/D-044). Owner: ENV A.
 ## Data: fp_viewmodel_tweak.tres. Presentation only: nothing here changes gameplay timing.
-## `arms_scene`, `fps`, `clip_events` and the part travels are ENV D's facts (char_arms_fp/SOURCE.txt,
-## test-checked against it); the rest are ◇ presentation values.
+## `arms_scene`, `fps` and the part travels are ENV D's facts (char_arms_fp/SOURCE.txt); the clip event frames
+## are parsed from SOURCE.txt at first use (`events_source`, cached statically), so a new ENV D clip set needs no
+## edit here. `extra_events` are ENV A's own ◇ additions merged over them; the rest are ◇ presentation values.
 class_name FpViewmodelTweak
 extends Resource
 
 const PATH: String = "res://systems/anim/fp_viewmodel_tweak.tres"
 
 static var _cached: FpViewmodelTweak = null
+## SOURCE.txt path -> parsed {clip: {event: frame}} (parsed once per path).
+static var _parsed: Dictionary = {}
+static var _gen: int = 0
 
 @export_group("Arms rig (characters.md v1.3)")
 ## The `char_arms_fp` scene (root = camera origin, -Z forward). null = static viewmodel fallback.
@@ -17,9 +21,11 @@ static var _cached: FpViewmodelTweak = null
 @export var magazine_bone: StringName = &"magazine"
 ## Clip frame rate of the event frames below.
 @export var fps: float = 30.0
-## Event frames per glb clip name "<set>_<clip>" (SOURCE.txt `clip.*` lines): {event: frame}.
-@export var clip_events: Dictionary = {}
-## Extra ◇ part events not in SOURCE.txt (pistol slide cycle inside fire): same shape.
+## The arms rig's SOURCE.txt (data reference; its `clip.<set>_<clip>: ... events=a@N,b@M` lines are parsed).
+## Empty = "SOURCE.txt" next to `arms_scene`.
+@export_file("*.txt") var events_source: String = ""
+## Extra ◇ part events not in SOURCE.txt (pistol slide cycle inside fire), merged over the parsed ones:
+## {"<set>_<clip>": {event: frame}}.
 @export var extra_events: Dictionary = {}
 
 @export_group("Part travel (characters.md v1.4)")
@@ -61,6 +67,11 @@ static var _cached: FpViewmodelTweak = null
 ## Viewmodel meshes cast no world shadows.
 @export var cast_shadows: bool = false
 
+var _merged: Dictionary = {}
+var _merged_path: String = ""
+var _merged_extra: int = 0
+var _merged_gen: int = -1
+
 
 static func data() -> FpViewmodelTweak:
 	if _cached == null:
@@ -70,20 +81,93 @@ static func data() -> FpViewmodelTweak:
 	return _cached
 
 
+## Path of the SOURCE.txt the clip events come from ("" when none is known).
+func events_path() -> String:
+	if events_source != "":
+		return events_source
+	if arms_scene != null and arms_scene.resource_path != "":
+		return arms_scene.resource_path.get_base_dir().path_join("SOURCE.txt")
+	return ""
+
+
+## Event frames per glb clip "<set>_<clip>": SOURCE.txt (parsed once, cached) with `extra_events` merged over
+## it, {clip: {event: frame}}. Every `clip.*` line yields an entry (empty when it has no events).
+func clip_events() -> Dictionary:
+	var path: String = events_path()
+	if _merged_gen == _gen and _merged_path == path and _merged_extra == extra_events.hash():
+		return _merged
+	var out: Dictionary = {}
+	var src: Dictionary = source_events(path)
+	for c: Variant in src:
+		out[c] = (src[c] as Dictionary).duplicate()
+	for c: Variant in extra_events:
+		var ev: Dictionary = out.get(StringName(c), {})
+		ev.merge(extra_events[c] as Dictionary, true)
+		out[StringName(c)] = ev
+	_merged = out
+	_merged_path = path
+	_merged_extra = extra_events.hash()
+	_merged_gen = _gen
+	return out
+
+
 ## Seconds from the clip start to `event` of glb clip `full_name` ("<set>_<clip>"); -1 when unknown.
 func event_s(full_name: StringName, event: StringName) -> float:
-	for src: Dictionary in [clip_events, extra_events]:
-		var ev: Dictionary = src.get(full_name, {})
-		if ev.has(event):
-			return float(ev[event]) / maxf(fps, 1.0)
-	return -1.0
+	var ev: Dictionary = clip_events().get(full_name, {})
+	return float(ev[event]) / maxf(fps, 1.0) if ev.has(event) else -1.0
 
 
 ## Every event of a clip (SOURCE.txt + extras) as {event: seconds}.
 func events_s(full_name: StringName) -> Dictionary:
 	var out: Dictionary = {}
-	for src: Dictionary in [clip_events, extra_events]:
-		var ev: Dictionary = src.get(full_name, {})
-		for k: Variant in ev:
-			out[k] = float(ev[k]) / maxf(fps, 1.0)
+	var ev: Dictionary = clip_events().get(full_name, {})
+	for k: Variant in ev:
+		out[k] = float(ev[k]) / maxf(fps, 1.0)
 	return out
+
+
+## Parsed SOURCE.txt at `path` (cached per path; {} when the file is missing).
+static func source_events(path: String) -> Dictionary:
+	if path == "":
+		return {}
+	if not _parsed.has(path):
+		_parsed[path] = parse_events(FileAccess.get_file_as_string(path)) if FileAccess.file_exists(path) else {}
+	return _parsed[path]
+
+
+## Parse SOURCE.txt text: each `clip.<name>: <N>f loop=<bool> [events=a@F,b@G]` line gives
+## {&"<name>": {&"a": F, ...}} (frames as int, float when fractional). Unknown lines, unknown fields and
+## malformed event tokens are ignored, so new sets and new SOURCE.txt keys need no parser change.
+static func parse_events(text: String) -> Dictionary:
+	var out: Dictionary = {}
+	for raw: String in text.split("\n"):
+		var line: String = raw.strip_edges()
+		if not line.begins_with("clip."):
+			continue
+		var colon: int = line.find(":")
+		if colon <= 5:
+			continue
+		var clip_name: String = line.substr(5, colon - 5).strip_edges()
+		if clip_name == "" or clip_name.contains(" "):
+			continue
+		var ev: Dictionary = {}
+		for field: String in line.substr(colon + 1).split(" ", false):
+			if not field.begins_with("events="):
+				continue
+			for tok: String in field.substr(7).split(",", false):
+				var at: int = tok.rfind("@")
+				if at <= 0:
+					continue
+				var frame: String = tok.substr(at + 1)
+				if frame.is_valid_int():
+					ev[StringName(tok.substr(0, at))] = frame.to_int()
+				elif frame.is_valid_float():
+					ev[StringName(tok.substr(0, at))] = frame.to_float()
+		out[StringName(clip_name)] = ev
+	return out
+
+
+## Drop the parsed SOURCE.txt cache (tests; a rebuilt rig in the editor).
+static func clear_event_cache() -> void:
+	_parsed.clear()
+	_gen += 1

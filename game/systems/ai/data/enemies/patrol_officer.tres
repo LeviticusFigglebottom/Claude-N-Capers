@@ -16,6 +16,13 @@ detection_preset = &"police"
 params = {
 "_note": "L4.2 Patrol Officer (PD2 beat cop). health/damage per Difficulty (ROUTINE..CATACLYSM) are PD2-shaped design values (◇).",
 "aim_delay_s": 0.7,
-"fire_interval_s": 0.8
+"armor_body_mult": 1.0,
+"explosive_mult": 1.0,
+"fire_interval_s": 0.8,
+"frontal_armor": 1.0,
+"frontal_armor_arc_deg": 0.0,
+"plate_health": [],
+"shield": false,
+"shield_pierce_mult": 1.0
 }
 voice = &"police"
