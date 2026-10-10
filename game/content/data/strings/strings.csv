@@ -1184,7 +1184,7 @@ ui.preplan.north,N
 ui.preplan.floor.ground,Ground floor
 ui.preplan.floor.upper,Upper floor
 ui.preplan.category.drop_zone,Drop zone: supplies are left here before the job.
-ui.preplan.category.player_spawn,Entry point: the crew starts here instead.
+ui.preplan.category.spawn,Entry point: the crew starts here instead.
 ui.preplan.category.escape,Escape: where the van waits.
 ui.preplan.category.access,Access point.
 ui.preplan.reason.unknown_asset,This asset is not offered on this job.

@@ -111,8 +111,8 @@ func test_exclusive_group() -> void:
 	var b: PreplanBoard = _board()
 	var other: PreplanAssetDef = PreplanAssetDef.new()
 	other.id = &"asset.test_other_entry"
-	other.point_categories = [&"player_spawn"]
-	other.exclusive_group = &"player_spawn"
+	other.point_categories = [&"spawn"]
+	other.exclusive_group = &"spawn"
 	b.assets[other.id] = other
 	var p2: PreplanPlan = PreplanPlan.new(b)
 	assert_eq(p2.add(&"asset.alternate_entry", SPAWN_W, 0), PreplanPlan.OK)
@@ -356,21 +356,23 @@ func test_blueprint_from_nodes() -> void:
 ## adding it to the tree; the board falls back to the placeholder when the map has none.
 
 
-## D-046 QC-20/QC-23: top-level `asset.*` overrides merge like `assets{}`; favors come from the HeistDef.
-func test_top_level_asset_overrides_and_heist_favors() -> void:
+## D-046 QC-23: favors come from the HeistDef (contract shape {favors, disable, assets}).
+func test_heist_favors_and_effect_override() -> void:
 	var def: HeistDef = HeistDef.new()
 	def.id = &"test_heist"
 	def.preplanning = {
 		"favors": 4,
 		"disable": [&"asset.intel_cameras"],
-		&"asset.inside_keycard": {"cost": 1500, "favors": 1, "effect": "force_variant", "point_categories": [&"insider"]},
-		"assets": {&"asset.ammo_bag_drop": {"favors": 3}},
+		"assets": {
+			&"asset.ammo_bag_drop": {"favors": 3},
+			&"asset.inside_keycard": {"cost": 1500, "favors": 1, "effect": "force_variant", "point_categories": [&"insider"]},
+		},
 	}
 	var b: PreplanBoard = PreplanBoard.build(&"test_heist", Enums.Difficulty.ROUTINE, def)
 	assert_eq(b.errors, [] as Array[String])
 	assert_eq(b.favors_budget, 4)
 	assert_eq(b.favors_of(&"asset.ammo_bag_drop"), 3, "assets{} override")
-	assert_eq(b.asset(&"asset.inside_keycard").effect, &"force_variant", "top-level override")
+	assert_eq(b.asset(&"asset.inside_keycard").effect, &"force_variant", "effect override")
 	assert_false(b.assets.has(&"asset.intel_cameras"))
 	var a: PreplanAssetDef = PreplanAssetDef.new()
 	a.id = &"asset.x"
@@ -407,5 +409,5 @@ func test_glasshouse_point_and_asset_strings() -> void:
 	for a: String in ["inside_keycard", "propped_door"]:
 		assert_has(table, "item.asset.%s.name" % a)
 		assert_has(table, "item.asset.%s.desc" % a)
-	for c: String in ["drop_zone", "player_spawn", "escape", "access", "insider"]:
+	for c: String in ["drop_zone", "spawn", "escape", "access", "insider"]:
 		assert_has(table, "ui.preplan.category.%s" % c)

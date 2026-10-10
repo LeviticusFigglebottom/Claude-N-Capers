@@ -34,7 +34,7 @@ const EFFECTS: Array[StringName] = [&"", &"force_variant"]
 @export var point_categories: Array[StringName] = []
 ## Restrict to these exact point ids; overrides point_categories.
 @export var point_ids: Array[StringName] = []
-## At most one asset of an exclusive group per plan (e.g. &"player_spawn"; ours, not in the contract).
+## At most one asset of an exclusive group per plan (e.g. &"spawn"; ours, not in the contract).
 @export var exclusive_group: StringName = &""
 ## Plans (PD2 "plans": vault method, escape): the crew votes, the host breaks ties (PlanVote).
 ## A vote group is also exclusive. Its cost is split among the human crew.
