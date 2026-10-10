@@ -29,12 +29,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 153 props checked
+- 160 props checked
 
 
 ## clipping: Nothing clips
 
-- 153 props, 23 doors checked
+- 160 props, 23 doors checked
 
 
 ## scale: Human scale
@@ -65,7 +65,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 1356 polygons, cell 0.10/0.10 m
+- navmesh: 1225 polygons, cell 0.10/0.10 m
 - 144 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
