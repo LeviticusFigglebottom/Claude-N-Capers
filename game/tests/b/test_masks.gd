@@ -3,7 +3,6 @@
 ## placeholder visual, and the mask screen flow (edit -> save into a slot -> equip).
 extends TestCase
 
-const TEST_ROOT: String = "user://test_profiles"
 const SLOT: int = 7
 const COMP: Dictionary = {
 	"base": "mask_base.vulpine", "material": "mask_material.gilt",
@@ -14,7 +13,7 @@ var _screen: MaskScreen
 
 
 func before_all() -> void:
-	SaveService.root_dir = TEST_ROOT
+	SaveService.root_dir = BTestUtil.profile_root()
 
 
 func after_each() -> void:

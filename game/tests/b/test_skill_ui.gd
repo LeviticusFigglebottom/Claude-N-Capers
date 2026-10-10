@@ -3,7 +3,6 @@
 ## focus grid, and every state/reason string.
 extends TestCase
 
-const TEST_ROOT: String = "user://test_profiles"
 const SLOT: int = 5
 const T1: StringName = &"skill.field_medic.triage"
 const T2: StringName = &"skill.field_medic.bedside_manner"
@@ -15,7 +14,7 @@ var _screen: SkillTreeScreen
 
 
 func before_all() -> void:
-	SaveService.root_dir = TEST_ROOT
+	SaveService.root_dir = BTestUtil.profile_root()
 
 
 func after_each() -> void:

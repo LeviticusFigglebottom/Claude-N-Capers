@@ -14,11 +14,10 @@ const SCENES: Array[String] = [
 	"res://content/ui/progression/skill_tree_screen.tscn",
 	"res://content/ui/progression/perk_deck_screen.tscn",
 ]
-const TEST_ROOT: String = "user://test_profiles"
 
 
 func before_all() -> void:
-	SaveService.root_dir = TEST_ROOT
+	SaveService.root_dir = BTestUtil.profile_root()
 	SaveService.delete_profile(0)
 
 

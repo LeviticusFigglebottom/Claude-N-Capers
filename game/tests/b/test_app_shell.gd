@@ -2,11 +2,10 @@
 ## catalog built from HeistRegistry with the placeholder fallback.
 extends TestCase
 
-const TEST_ROOT: String = "user://test_profiles"
 
 
 func before_all() -> void:
-	SaveService.root_dir = TEST_ROOT
+	SaveService.root_dir = BTestUtil.profile_root()
 	SaveService.delete_profile(0)
 
 

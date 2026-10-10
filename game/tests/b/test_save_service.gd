@@ -1,12 +1,11 @@
 ## B1-06: SaveService / PlayerProfile round trip, atomic writes, backup fallback, migration.
 extends TestCase
 
-const TEST_ROOT: String = "user://test_profiles"
 const SLOT: int = 3
 
 
 func before_all() -> void:
-	SaveService.root_dir = TEST_ROOT
+	SaveService.root_dir = BTestUtil.profile_root()
 	_clean()
 
 
@@ -16,7 +15,7 @@ func after_each() -> void:
 
 func after_all() -> void:
 	_clean()
-	DirAccess.remove_absolute(TEST_ROOT)
+	DirAccess.remove_absolute(BTestUtil.profile_root())
 	SaveService.root_dir = SaveService.DEFAULT_ROOT_DIR
 
 
@@ -89,7 +88,7 @@ func test_corrupt_file_falls_back_to_bak() -> void:
 
 
 func test_corrupt_without_bak_gives_default() -> void:
-	DirAccess.make_dir_recursive_absolute(TEST_ROOT)
+	DirAccess.make_dir_recursive_absolute(BTestUtil.profile_root())
 	_write(SaveService.profile_path(SLOT), "garbage")
 	var q: PlayerProfile = SaveService.load_profile(SLOT)
 	assert_eq(q.owned_weapons, [&"weapon.kestrel_p9"] as Array[StringName])
@@ -108,7 +107,7 @@ func test_v0_migrates() -> void:
 	assert_eq(int(m["cash"]), 50)
 	assert_false(m.has("money"))
 	assert_false(v0.has("version"), "input not mutated")
-	DirAccess.make_dir_recursive_absolute(TEST_ROOT)
+	DirAccess.make_dir_recursive_absolute(BTestUtil.profile_root())
 	_write(SaveService.profile_path(SLOT), JSON.stringify(v0))
 	var q: PlayerProfile = SaveService.load_profile(SLOT)
 	assert_eq(q.profile_name, "Old")
@@ -129,7 +128,7 @@ func test_v1_migrates_to_v2_with_empty_stealth_bank() -> void:
 	assert_near(float(m["banked_stealth_mult"]), 1.0)
 	assert_eq(int(m["cash"]), 1234)
 	assert_false(v1.has("banked_stealth_mult"), "input not mutated")
-	DirAccess.make_dir_recursive_absolute(TEST_ROOT)
+	DirAccess.make_dir_recursive_absolute(BTestUtil.profile_root())
 	_write(SaveService.profile_path(SLOT), JSON.stringify(v1))
 	var q: PlayerProfile = SaveService.load_profile(SLOT)
 	assert_near(q.banked_stealth_mult, 1.0)
@@ -156,7 +155,7 @@ func test_v2_migrates_to_v3_skill_sets_and_perk_cards() -> void:
 	assert_eq((m["skill_sets"] as Array).size(), 1)
 	assert_eq(int(((m["skill_sets"] as Array)[0] as Dictionary)["skill.slipstream.light_step"]), 2)
 	assert_eq(int((m["perk_cards"] as Dictionary)["perk.test"]), 4)
-	DirAccess.make_dir_recursive_absolute(TEST_ROOT)
+	DirAccess.make_dir_recursive_absolute(BTestUtil.profile_root())
 	_write(SaveService.profile_path(SLOT), JSON.stringify(v2))
 	var q: PlayerProfile = SaveService.load_profile(SLOT)
 	assert_eq(int(q.loadout.skills[&"skill.slipstream.light_step"]), 2)
@@ -211,7 +210,7 @@ func test_skill_sets_round_trip_and_switch() -> void:
 
 
 func test_future_version_refused() -> void:
-	DirAccess.make_dir_recursive_absolute(TEST_ROOT)
+	DirAccess.make_dir_recursive_absolute(BTestUtil.profile_root())
 	var d: Dictionary = _sample().to_dict()
 	d["version"] = SaveService.CURRENT_VERSION + 1
 	d["cash"] = 999999

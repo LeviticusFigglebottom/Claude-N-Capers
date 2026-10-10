@@ -2,14 +2,13 @@
 ## applied to the profile (SaveService) exactly once, and D-022's banked stealth bonus is used.
 extends TestCase
 
-const TEST_ROOT: String = "user://test_profiles"
 const PAYDAY_SCENE: PackedScene = preload("res://content/ui/results/payday.tscn")
 
 var _screen: PaydayScreen
 
 
 func before_all() -> void:
-	SaveService.root_dir = TEST_ROOT
+	SaveService.root_dir = BTestUtil.profile_root()
 
 
 func after_all() -> void:

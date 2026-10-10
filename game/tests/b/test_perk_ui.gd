@@ -2,7 +2,6 @@
 ## equip writes Loadout.perk_deck + perk_deck_cards, dev unlock flag, save round trip.
 extends TestCase
 
-const TEST_ROOT: String = "user://test_profiles"
 const SLOT: int = 6
 const BULK: StringName = &"perk.bulk"
 const IRONCLAD: StringName = &"perk.ironclad"
@@ -12,7 +11,7 @@ var _tw: ProgressionUiTweak
 
 
 func before_all() -> void:
-	SaveService.root_dir = TEST_ROOT
+	SaveService.root_dir = BTestUtil.profile_root()
 	_tw = ProgressionUiTweak.load_default()
 
 
