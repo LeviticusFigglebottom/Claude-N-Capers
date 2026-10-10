@@ -194,7 +194,7 @@ Plowman's clip timings (D-044/D-045; the resolver derives the totals, no raw rel
 The Marshal uses a speedloader (PD2 Bronco): a magazine-style reload (per-round fields 0, tactical =
 empty) and no suppressor. The Warden .45 Pair is one WeaponDef (PISTOL class, primary slot like PD2
 akimbos, D-050) with `anim_set = akimbo`, the pistol cue family, twice the Warden's magazine and worse
-spread and concealment. TODO(D-050): set `akimbo = true` once `WeaponDef.akimbo` is on trunk.
+spread and concealment. `akimbo = true` (D-050); the `akimbo` modifier qualifier derives from it.
 
 Mods (stock defaults have a zero delta, except the Condor's stock 6x scope = magnification 6.0):
 | Weapon | Optional mods (type: main effect / downside) |

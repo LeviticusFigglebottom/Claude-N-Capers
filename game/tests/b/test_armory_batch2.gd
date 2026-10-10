@@ -119,13 +119,15 @@ func test_revolver_speedloader_reload() -> void:
 
 
 ## D-050 akimbo pair: one WeaponDef, PISTOL class, primary slot, anim_set `akimbo`, pistol cue family,
-## double the Warden's magazine. TODO(D-050): assert `w.akimbo` once WeaponDef.akimbo is on trunk.
+## double the Warden's magazine; `akimbo = true` (D-050), only on the pair.
 func test_akimbo_pair() -> void:
 	var w: WeaponDef = _w(&"weapon.akimbo_warden_45")
 	var one: WeaponDef = _w(&"weapon.warden_45")
 	assert_eq(w.weapon_class, Enums.WeaponClass.PISTOL, "pistol class")
 	assert_eq(w.slot, Enums.WeaponSlot.PRIMARY, "primary slot (PD2)")
 	assert_eq(w.anim_set, &"akimbo", "akimbo viewmodel set")
+	assert_true(w.akimbo, "WeaponDef.akimbo set (D-050)")
+	assert_false(one.akimbo, "the single Warden is not akimbo")
 	assert_eq(w.fire_cue, one.fire_cue, "pistol fire cue")
 	assert_eq(w.base.mag_size, 2 * one.base.mag_size, "two magazines")
 	assert_true(w.base.total_ammo > one.base.total_ammo, "more reserve")
