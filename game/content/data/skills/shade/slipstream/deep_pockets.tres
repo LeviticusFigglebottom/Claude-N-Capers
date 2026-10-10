@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.slipstream.deep_pockets"
+display_name = "Deep Pockets"
+tree = &"shade"
+subtree = &"slipstream"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "+2 concealment on your melee weapon."
+desc_aced = "+4 concealment on your armor."
+grants_basic = {
+&"stealth.concealment_add.melee": 2
+}
+grants_aced = {
+&"stealth.concealment_add.armor": 4
+}

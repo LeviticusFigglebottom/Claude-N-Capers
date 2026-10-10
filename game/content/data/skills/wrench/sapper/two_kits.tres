@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.sapper.two_kits"
+display_name = "Two Kits"
+tree = &"wrench"
+subtree = &"sapper"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Deploy and use all deployables 100% faster."
+desc_aced = "Carry a second deployable type (half the usual amount of it)."
+grants_basic = {}
+grants_aced = {
+&"deploy.second_deployable": true
+}

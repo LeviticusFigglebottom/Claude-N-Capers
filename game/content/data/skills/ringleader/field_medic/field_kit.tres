@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.field_medic.field_kit"
+display_name = "Field Kit"
+tree = &"ringleader"
+subtree = &"field_medic"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Carry 7 more First Aid Kits."
+desc_aced = "Carry 3 more First Aid Kits. A crew member who goes down within 5 m of one of your placed kits uses it automatically and stays up (at most once every 20 s)."
+grants_basic = {
+&"deploy.extra.fak": 7
+}
+grants_aced = {
+&"deploy.extra.fak": 3
+}

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.quiet_professional.bolt"
+display_name = "Bolt"
+tree = &"shade"
+subtree = &"quiet_professional"
+tier = 1
+cost_basic = 1
+cost_aced = 3
+desc_basic = "When your armor breaks, move 30% faster for 5 s."
+desc_aced = "Your crew gets the speed boost too."
+grants_basic = {}
+grants_aced = {}

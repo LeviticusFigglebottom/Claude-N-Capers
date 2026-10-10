@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.quiet_professional.ambusher"
+display_name = "Ambusher"
+tree = &"shade"
+subtree = &"quiet_professional"
+tier = 4
+cost_basic = 4
+cost_aced = 8
+desc_basic = "If you lose no armor or health for 4 s, gain +35% critical hit chance for 6 s."
+desc_aced = "The critical hit bonus lasts 18 s."
+grants_basic = {}
+grants_aced = {}

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.infiltrator.jammer_jockey"
+display_name = "Jammer Jockey"
+tree = &"shade"
+subtree = &"infiltrator"
+tier = 4
+cost_basic = 4
+cost_aced = 8
+desc_basic = "Carry 2 ECM jammers."
+desc_aced = "ECM jams and feedback last a further 25% longer. Pagers of guards killed during a jam stay silent until it ends."
+grants_basic = {
+&"stealth.ecm_extra": 1
+}
+grants_aced = {
+&"stealth.ecm_duration_mult": 1.25,
+&"stealth.ecm_feedback_duration_mult": 1.25,
+&"stealth.ecm_pager_delay": true
+}

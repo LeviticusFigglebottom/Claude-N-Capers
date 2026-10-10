@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.two_gun.steel_core"
+display_name = "Steel Core"
+tree = &"outlaw"
+subtree = &"two_gun"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Pistol rounds have a 50% chance to pierce body armor."
+desc_aced = "Pistol rounds always pierce body armor, and pistols deal 15% more damage."
+grants_basic = {
+&"weapon.armor_pierce_add.pistol": 0.5
+}
+grants_aced = {
+&"weapon.armor_pierce_add.pistol": 0.5,
+&"weapon.damage_mult.pistol": 1.15
+}

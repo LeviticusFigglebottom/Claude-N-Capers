@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.marksman.grazing_fire"
+display_name = "Grazing Fire"
+tree = &"ringleader"
+subtree = &"marksman"
+tier = 4
+cost_basic = 4
+cost_aced = 8
+desc_basic = "Sniper rifle hits also deal 20% of their damage to every enemy within 1 m of the bullet's path."
+desc_aced = "If the hit is a headshot kill, the graze deals 100% of the damage."
+grants_basic = {}
+grants_aced = {}

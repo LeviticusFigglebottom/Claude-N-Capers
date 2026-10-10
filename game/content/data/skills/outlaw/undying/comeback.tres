@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.undying.comeback"
+display_name = "Comeback"
+tree = &"outlaw"
+subtree = &"undying"
+tier = 4
+cost_basic = 4
+cost_aced = 8
+desc_basic = "While bleeding out, kill an enemy to get back up. 1 charge per heist."
+desc_aced = "Using a Doctor Bag restores your charge."
+grants_basic = {
+&"defense.self_revive_charges": 1
+}
+grants_aced = {}

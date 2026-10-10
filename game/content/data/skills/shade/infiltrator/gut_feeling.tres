@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.infiltrator.gut_feeling"
+display_name = "Gut Feeling"
+tree = &"shade"
+subtree = &"infiltrator"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "Stand still for 3.5 s in stealth to mark every enemy within 10 m automatically."
+desc_aced = "Answer pagers 50% faster."
+grants_basic = {
+&"stealth.sixth_sense": true
+}
+grants_aced = {
+&"stealth.pager_answer_speed_mult": 0.5
+}

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.marksman.deliberate_fire"
+display_name = "Deliberate Fire"
+tree = &"ringleader"
+subtree = &"marksman"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "+8 accuracy with SMGs, assault rifles and sniper rifles."
+desc_aced = "+12 more accuracy with SMGs, assault rifles and sniper rifles."
+grants_basic = {
+&"weapon.spread_mult.smg": 0.92,
+&"weapon.spread_mult.assault_rifle": 0.92,
+&"weapon.spread_mult.sniper": 0.92
+}
+grants_aced = {
+&"weapon.spread_mult.smg": 0.88,
+&"weapon.spread_mult.assault_rifle": 0.88,
+&"weapon.spread_mult.sniper": 0.88
+}
