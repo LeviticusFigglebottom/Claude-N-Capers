@@ -67,6 +67,7 @@ func set_contracts(contracts: Array[Dictionary]) -> void:
 			"heist": UiText.t(StringName("heist.%s.name" % c["heist_id"])),
 			"difficulty": UiText.t(UiText.difficulty_key(int(c["difficulty"]))),
 		})
+		pin.modulate = Color(1, 1, 1, 0.35) if bool(c.get("consumed", false)) else Color.WHITE
 		pin.queue_redraw()
 	_layout_pins()
 

@@ -120,6 +120,7 @@ func test_keys_requested_by_systems_exist() -> void:
 	for root: String in ["res://systems", "res://world", "res://core"]:
 		_collect_code(root, files)
 	var found: int = 0
+	var vo_ids: int = 0
 	for path: String in files:
 		for m: RegExMatch in rx.search_all(FileAccess.get_file_as_string(path)):
 			var k: String = m.get_string(1)
@@ -129,9 +130,12 @@ func test_keys_requested_by_systems_exist() -> void:
 				assert_true(_has_line_prefix(table, k), "voice lines %s* (used in %s)" % [k, path])
 			elif k.begins_with("vo."):
 				assert_false(table.line(StringName(k)).is_empty(), "voice line %s (used in %s)" % [k, path])
+				assert_has(_table, "voice.%s" % k, "voice text for %s (QA-27)" % k)
+				vo_ids += 1
 			else:
 				assert_has(_table, k, "used in %s" % path)
 	assert_true(found > 10, "scan found %d keys" % found)
+	assert_true(vo_ids >= 4, "scan found %d literal vo ids (abort, pager_last, cuff_warning, dev_start)" % vo_ids)
 
 
 ## D-039: objective ids are the heist design doc's `[tag]`s, never guesses.

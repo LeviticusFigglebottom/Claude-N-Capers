@@ -262,10 +262,10 @@ class HeadShape:
         ll = 1.0 + 0.16 * g - 0.26 * a
         op(ADD, _ell((0.0, -0.0996 - 0.001 * g + 0.0016 * a, -0.0684),
                      (0.0228 - 0.001 * g, 0.0114 * (1.0 + 0.06 * g), 0.0080 * lu), _rot_xyz(-0.30, 0.0, 0.0)), 0.0035)
-        op(ADD, _ell((0.0, -0.0978 - 0.0008 * g + 0.0016 * a, -0.0828 - 0.0005 * g),
-                     (0.0200 - 0.0008 * g, 0.0122 * (1.0 + 0.05 * g), 0.0100 * ll), _rot_xyz(0.35, 0.0, 0.0)), 0.0035)
+        op(ADD, _ell((0.0, -0.0986 - 0.0008 * g + 0.0016 * a, -0.0832 - 0.0005 * g),
+                     (0.0202 - 0.0008 * g, 0.0126 * (1.0 + 0.05 * g), 0.0108 * ll), _rot_xyz(0.35, 0.0, 0.0)), 0.0030)
         mcx = 0.0216 - 0.0010 * g + 0.0004 * b
-        op(SUB, _sphere((mcx, -0.0912, -0.0756 - 0.0012 * a), 0.0016), 0.006)        # mouth corners
+        op(SUB, _sphere((mcx, -0.0910, -0.0756 - 0.0012 * a), 0.0021), 0.0055)       # mouth corners
         op(ADD, _ell((mcx + 0.0040, -0.0870, -0.0760 - 0.0012 * a), (0.0040, 0.0035, 0.0055)), 0.006)   # modiolus
         op(ADD, _cone((0.0042, -0.1040, -0.0585), (0.0056, -0.1030, -0.0662), 0.0017, 0.0017), 0.003)
         op(SUB, _cone((0.0, -0.1060, -0.0595), (0.0, -0.1062, -0.065), 0.0016, 0.0016), 0.003)
@@ -587,8 +587,8 @@ class EyeShape:
 
     @staticmethod
     def of(build: float, gender: float, age: float) -> EyeShape:
-        return EyeShape(psi_med=-58.0, psi_lat=64.0, eps_med=-2.0, eps_lat=2.5 + 1.5 * gender - 2.0 * age,
-                        upper=25.5 + 3.0 * gender - 4.0 * age, lower=23.0 + 1.0 * gender - 1.0 * age,
+        return EyeShape(psi_med=-61.0, psi_lat=67.0, eps_med=-2.0, eps_lat=2.5 + 1.5 * gender - 2.0 * age,
+                        upper=27.0 + 3.0 * gender - 4.0 * age, lower=25.5 + 1.0 * gender - 1.0 * age,
                         peak_u=0.42 + 0.06 * age)
 
     def angles(self, chain: int, u: float, shrink: float = 1.0) -> tuple[float, float]:
@@ -624,7 +624,7 @@ def _eye_loops(md, hs: HeadShape, sx: float, per_ids: list[int], chains: list[tu
     for ch, u in chains:
         d0 = _eye_dir(f, up, lat, *es.angles(ch, u))
         m0.append(hs.cast(inner, d0, 0.05))
-        mb.append(add(e, mul(_eye_dir(f, up, lat, *es.angles(ch, u, 0.975)), EYE_RADIUS + 0.0019)))
+        mb.append(add(e, mul(_eye_dir(f, up, lat, *es.angles(ch, u, 0.975)), EYE_RADIUS + (0.0026 if ch > 0 else 0.0019))))
         m1.append(add(e, mul(_eye_dir(f, up, lat, *es.angles(ch, u, 0.94)), EYE_RADIUS + 0.0004)))
         tk.append(add(e, mul(_eye_dir(f, up, lat, *es.angles(ch, u, 0.80)), EYE_RADIUS - 0.0016)))
     loops = [list(per_ids)]
@@ -732,7 +732,7 @@ def _directed_edges(md, start: int) -> dict:
     return out
 
 
-def _emit(md, group: list[tuple], edges: dict, mat: str = "skin") -> None:
+def _emit(md, group: list[tuple], edges: dict, mat: str | list[str] = "skin") -> None:
     """Add a face group (internally consistent winding) oriented consistently with ``edges``."""
     flip = None
     for f in group:
@@ -747,9 +747,9 @@ def _emit(md, group: list[tuple], edges: dict, mat: str = "skin") -> None:
                 break
         if flip is not None:
             break
-    for f in group:
+    for i, f in enumerate(group):
         ff = tuple(reversed(f)) if flip else tuple(f)
-        md.face(ff, "head", None, mat, 0)
+        md.face(ff, "head", None, mat if isinstance(mat, str) else mat[i], 0)
         n = len(ff)
         for i in range(n):
             edges[(ff[i], ff[(i + 1) % n])] = True
@@ -816,6 +816,19 @@ def head(md, hs: HeadShape, ref: tuple | None = None) -> list[int]:
         p = hs.snap(p, flat.grad(p), 0.004)
         md.verts[vi] = lerp(v, p, w)
         own.add(vi)
+    free = [vi for vi in free if vi not in own]
+    n_grid = len(free)
+
+    def reseat(ids: list[int]) -> None:
+        if ref is None:
+            return
+        ref_verts, ref_hs, _ref_free = ref
+        for vi in ids:
+            p0 = ref_verts[vi]
+            md.verts[vi] = hs.snap(p0, ref_hs.grad(p0), 0.016)
+    if ref is not None and ref[2][:n_grid] != free:
+        raise AssertionError("head topology differs from the basis")
+    reseat(free)
     start = len(md.faces)
     # neck ring (n0) -> first head row (nc)
     group = []
@@ -854,7 +867,14 @@ def head(md, hs: HeadShape, ref: tuple | None = None) -> list[int]:
         chains = _chains(per, [md.verts[i] for i in per_ids], cols, EYE_CORNER_ROW if kind == "eye" else (r0 + r1) // 2)
         if kind == "eye":
             loops = _eye_loops(md, hs, sx, per_ids, chains, es)
-            _emit(md, _bands(loops), edges)
+            n = len(per_ids)
+            nb = len(EYE_LOOP_W) + 1          # band index of m0 -> mb
+            mats = []
+            for k in range(len(loops) - 1):
+                for j in range(n):
+                    upper = chains[j][0] >= 0 and chains[(j + 1) % n][0] >= 0 and (chains[j][0] + chains[(j + 1) % n][0]) > 0
+                    mats.append("lash" if upper and k in (nb, nb + 1) else "skin")
+            _emit(md, _bands(loops), edges, mats)
             free += [vi for ring in loops[1:1 + len(EYE_LOOP_W)] for vi in ring]
         elif kind == "nose":
             loops, pole_n = _nose_loops(md, hs, per_ids)
@@ -892,14 +912,7 @@ def head(md, hs: HeadShape, ref: tuple | None = None) -> list[int]:
             _emit(md, close, edges)
     s_rows = gr["s_rows"]
     md.rings["head_brow"] = rows[min(range(1, HEAD_ROWS), key=lambda r: abs(s_rows[r] - 0.62)) - 1]
-    free = [vi for vi in free if vi not in own]
-    if ref is not None:
-        ref_verts, ref_hs, ref_free = ref
-        if ref_free != free:
-            raise AssertionError("head topology differs from the basis")
-        for vi in free:
-            p0 = ref_verts[vi]
-            md.verts[vi] = hs.snap(p0, ref_hs.grad(p0), 0.016)
+    reseat(free[n_grid:])
     return free
 
 
@@ -961,9 +974,9 @@ def eyes(md) -> None:
         fwd = norm((sx * 0.06, 1.0, 0.0))
         up = (0.0, 0.0, 1.0)
         side_ax = norm(cross(fwd, up))
-        polar = [0.0, 14.0, 27.0, 40.0, 62.0, 95.0, 135.0, 180.0]
+        polar = [0.0, 11.0, 19.0, 29.0, 40.0, 62.0, 95.0, 135.0, 180.0]
         _lat_long(md, c, (EYE_RADIUS, EYE_RADIUS, EYE_RADIUS), (fwd, up, side_ax), 16, polar,
-                  lambda ri: "iris" if ri <= 1 else "eye", int(sx))
+                  lambda ri: "lash" if ri == 0 else "iris" if ri <= 2 else "eye", int(sx))
 
 
 # ear outline radius (fraction of the ear frame) by angle: 0 = towards the face, 90 = up, 180 = back
@@ -1054,10 +1067,10 @@ def brows(md, hs: HeadShape) -> None:
             u = i / n_seg
             x = sx * (0.0145 + 0.042 * u)
             arch = math.sin(math.pi * min(1.0, u / 0.68) * 0.5) if u < 0.68 else math.cos(math.pi * (u - 0.68) / 0.64 * 0.5)
-            z = (c[2] + 0.0372 + (0.0036 + 0.0016 * g) * arch - 0.0035 * u * u + 0.0018 * g
+            z = (c[2] + 0.0362 + (0.0036 + 0.0016 * g) * arch - 0.0035 * u * u + 0.0018 * g
                  - (0.0008 + 0.0024 * u * u) * a)
-            th = (0.0036 * (1.0 - u) ** 0.8 + 0.0005) * (0.72 + 0.28 * smoothstep(0.0, 0.2, u)) * (1.0 - 0.32 * g) * (1.0 + 0.12 * a)
-            lift = 0.0011 * (1.0 - 0.4 * u) * (1.0 - 0.25 * g) * (0.15 + 0.85 * smoothstep(0.0, 0.16, u)) * (1.0 - 0.8 * smoothstep(0.85, 1.0, u))
+            th = (0.0044 * (1.0 - u) ** 0.8 + 0.0008) * (0.75 + 0.25 * smoothstep(0.0, 0.2, u)) * (1.0 - 0.32 * g) * (1.0 + 0.12 * a)
+            lift = 0.0017 * (1.0 - 0.4 * u) * (1.0 - 0.25 * g) * (0.15 + 0.85 * smoothstep(0.0, 0.16, u)) * (1.0 - 0.8 * smoothstep(0.85, 1.0, u))
             for row, dz, lf in ((0, th, 0.00012), (1, th * 0.35, lift), (2, -th * 0.45, lift * 0.8),
                                 (3, -th, 0.00012)):
                 zz = z + dz
@@ -1077,13 +1090,15 @@ def brows(md, hs: HeadShape) -> None:
 #: |theta| (deg, 0 = front) -> polar angle phi (deg from the crown) of the hairline. The line rises
 #: over the ear (ear top ~66 deg) and drops behind it to the nape.
 _HAIRLINE = {
-    "buzz": [(0.0, 45.0), (40.0, 53.0), (70.0, 61.0), (95.0, 57.0), (115.0, 63.0), (138.0, 98.0), (180.0, 116.0)],
-    "short": [(0.0, 43.0), (40.0, 52.0), (70.0, 61.0), (95.0, 57.0), (115.0, 63.0), (138.0, 99.0), (180.0, 118.0)],
+    "buzz": [(0.0, 45.0), (40.0, 53.0), (60.0, 60.0), (72.0, 84.0), (84.0, 66.0), (97.0, 60.0), (112.0, 68.0),
+             (132.0, 100.0), (180.0, 117.0)],
+    "short": [(0.0, 43.0), (40.0, 52.0), (60.0, 60.0), (72.0, 86.0), (84.0, 67.0), (97.0, 60.0), (112.0, 68.0),
+              (132.0, 101.0), (180.0, 119.0)],
     "bob": [(0.0, 42.0), (35.0, 52.0), (75.0, 112.0), (130.0, 116.0), (180.0, 118.0)],
 }
 _HAIRLINE["side_part"] = _HAIRLINE["short"]
 _HAIRLINE["bald"] = [(0.0, 64.0), (80.0, 66.0), (95.0, 62.0), (112.0, 70.0), (138.0, 100.0), (180.0, 116.0)]
-HAIR_COLS = 40
+HAIR_COLS = 48
 HAIR_MAIN_ROWS = 9
 PART_THETA = 30.0      # side_part: parting line angle (deg, + = character's right)
 BALD_END = 82.0        # bald: the horseshoe fringe covers |theta| >= this

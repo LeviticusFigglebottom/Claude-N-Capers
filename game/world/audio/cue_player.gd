@@ -28,11 +28,13 @@ const SIREN_KEY: StringName = &"siren"
 	&"keycard": &"cue.keycard_beep", &"door_open": &"cue.door_open", &"door_close": &"cue.door_close",
 	&"lockpick": &"cue.door_open", &"keypad": &"cue.keypad_accept",
 }
-## Device kind (device_started) -> [loop, jam, done] cues.
+## Device kind (device_started) -> [loop, jam, done] or [loop, jam, done, start] cues; "" = none.
+## `start` is a one-shot on device_started / device_restarted (e.g. the hack's terminal chirps).
 @export var device_cues: Dictionary[StringName, PackedStringArray] = {
 	&"drill": PackedStringArray(["cue.drill_loop", "cue.drill_jam", "cue.drill_done"]),
 	&"saw": PackedStringArray(["cue.drill_loop", "cue.drill_jam", "cue.drill_done"]),
 	&"thermal": PackedStringArray(["cue.drill_loop", "cue.drill_jam", "cue.drill_done"]),
+	&"hack": PackedStringArray(["", "cue.hack_interrupt", "cue.hack_done", "cue.hack_start"]),
 }
 
 ## Heist variant used to resolve per-heist cues (cue.alarm_bell_<variant>); set from heist_loaded.
@@ -245,6 +247,8 @@ func _connect_event_bus() -> void:
 	EventBus.damage_applied.connect(_on_damage_applied)
 	EventBus.weapon_fired.connect(_on_weapon_fired)
 	EventBus.assault_phase_changed.connect(_on_assault_phase_changed)
+	EventBus.captain_arrived.connect(_on_captain_arrived)
+	EventBus.captain_retreated.connect(_on_captain_retreated)
 
 
 func _on_audio_cue_requested(cue_id: StringName, position: Vector3, source_net_id: int) -> void:
@@ -377,30 +381,40 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, kind: 
 
 func _on_device_started(device_net_id: int, kind: StringName, _duration: float) -> void:
 	_device_kind[device_net_id] = kind
-	var cues: PackedStringArray = device_cues.get(kind, PackedStringArray())
-	if cues.size() == 3:
-		start_loop(_device_key(device_net_id), StringName(cues[0]), NO_POSITION, device_net_id)
+	_device_begin(device_net_id)
 
 
 func _on_device_jammed(device_net_id: int) -> void:
 	stop_loop(_device_key(device_net_id))
-	var cues: PackedStringArray = device_cues.get(_device_kind.get(device_net_id, &"drill"), PackedStringArray())
-	if cues.size() == 3:
-		play_cue(StringName(cues[1]), NO_POSITION, device_net_id)
+	_device_one_shot(device_net_id, 1)
 
 
 func _on_device_restarted(device_net_id: int, _crew_slot: int) -> void:
-	var cues: PackedStringArray = device_cues.get(_device_kind.get(device_net_id, &"drill"), PackedStringArray())
-	if cues.size() == 3:
-		start_loop(_device_key(device_net_id), StringName(cues[0]), NO_POSITION, device_net_id)
+	_device_begin(device_net_id)
 
 
 func _on_device_finished(device_net_id: int) -> void:
 	stop_loop(_device_key(device_net_id))
-	var cues: PackedStringArray = device_cues.get(_device_kind.get(device_net_id, &"drill"), PackedStringArray())
-	if cues.size() == 3:
-		play_cue(StringName(cues[2]), NO_POSITION, device_net_id)
+	_device_one_shot(device_net_id, 2)
 	_device_kind.erase(device_net_id)
+
+
+func _device_cue(device_net_id: int, idx: int) -> StringName:
+	var cues: PackedStringArray = device_cues.get(_device_kind.get(device_net_id, &"drill"), PackedStringArray())
+	return StringName(cues[idx]) if idx < cues.size() else &""
+
+
+func _device_begin(device_net_id: int) -> void:
+	var loop_cue: StringName = _device_cue(device_net_id, 0)
+	if loop_cue != &"":
+		start_loop(_device_key(device_net_id), loop_cue, NO_POSITION, device_net_id)
+	_device_one_shot(device_net_id, 3)
+
+
+func _device_one_shot(device_net_id: int, idx: int) -> void:
+	var cue: StringName = _device_cue(device_net_id, idx)
+	if cue != &"":
+		play_cue(cue, NO_POSITION, device_net_id)
 
 
 func _device_key(device_net_id: int) -> StringName:
@@ -448,6 +462,19 @@ func _on_damage_applied(_victim_net_id: int, attacker_net_id: int, info: Diction
 func _on_weapon_fired(shooter_net_id: int, weapon_id: StringName, suppressed: bool, position: Vector3) -> void:
 	if play_weapon_fired:
 		play_cue(weapon_fire_cue(weapon_id, suppressed), position, shooter_net_id)
+
+
+func _on_captain_arrived(npc_net_id: int) -> void:
+	play_cue(&"cue.brandt_arrival")
+	start_loop(_captain_key(npc_net_id), &"cue.aegis_pulse", NO_POSITION, npc_net_id)
+
+
+func _on_captain_retreated(npc_net_id: int) -> void:
+	stop_loop(_captain_key(npc_net_id))
+
+
+func _captain_key(npc_net_id: int) -> StringName:
+	return StringName("captain_%d" % npc_net_id)
 
 
 func _on_assault_phase_changed(phase: int, _wave_index: int) -> void:

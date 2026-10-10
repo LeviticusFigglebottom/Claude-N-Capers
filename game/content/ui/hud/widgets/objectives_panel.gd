@@ -1,16 +1,39 @@
-## Objectives list (active first, completed dimmed, hidden ones omitted).
+## Objectives list (active first, completed dimmed, hidden ones omitted). B4-07: the panel carries
+## the heist's accent (UiAccent; set_accent) on its edge and header.
 class_name ObjectivesPanel
 extends HudWidget
 
 var list_box: VBoxContainer
+var header_label: Label
+var panel: PanelContainer
+## Heist accent (alpha 0 = none).
+var accent: Color = Color(0, 0, 0, 0)
 
 
 func build() -> void:
 	var v: VBoxContainer = UiBuild.vbox(4)
-	add_child(UiBuild.panel(v, UiBuild.HUD_PANEL))
-	v.add_child(UiBuild.label(&"ui.hud.objectives", UiBuild.HUD))
+	panel = UiBuild.panel(v, UiBuild.HUD_PANEL)
+	add_child(panel)
+	header_label = UiBuild.label(&"ui.hud.objectives", UiBuild.HUD)
+	v.add_child(header_label)
 	list_box = UiBuild.vbox(2)
 	v.add_child(list_box)
+	_apply_accent()
+
+
+## Accent the panel edge and header with `color` (readable against the HUD panel).
+func set_accent(color: Color) -> void:
+	accent = color
+	_apply_accent()
+
+
+func _apply_accent() -> void:
+	if panel == null or accent.a <= 0.0:
+		return
+	UiAccent.accent_panel(panel, accent, 4)
+	var sb: StyleBoxFlat = panel.get_theme_stylebox(&"panel") as StyleBoxFlat
+	var back: Color = UiAccent.over(sb.bg_color, UiAccent.app_bg()) if sb != null else UiAccent.app_bg()
+	header_label.add_theme_color_override(&"font_color", UiAccent.readable(accent, back, UiAccent.table().min_text_contrast))
 
 
 func watched_signals() -> Array[StringName]:

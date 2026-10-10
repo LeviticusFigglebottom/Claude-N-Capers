@@ -18,6 +18,7 @@ low_health_frac = 0.25
 low_health_color = Color(1, 0.3, 0.3, 1)
 pager_color = Color(1, 0.75, 0.2, 1)
 assault_color = Color(1, 0.25, 0.2, 1)
+captain_color = Color(0.95, 0.55, 0.95, 1)
 delta_better_color = Color(0.35, 0.9, 0.4, 1)
 delta_worse_color = Color(1, 0.35, 0.3, 1)
 mark_color = Color(1, 0.85, 0.25, 1)

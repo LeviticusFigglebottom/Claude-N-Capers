@@ -132,6 +132,32 @@ func test_card_auto_pick_after_timeout() -> void:
 	assert_false(_screen.continue_button.disabled)
 
 
+## QB-PC1 (D-049): leaving with an unpicked card auto-picks the timeout's card (same deterministic roll).
+func test_leaving_auto_picks_like_the_timeout() -> void:
+	var result: Dictionary = HeistCatalog.sample_result()
+	_screen.show_result(result)
+	var auto: int = int(_screen.card_roll["auto_pick"])
+	var card: Dictionary = (_screen.card_roll["cards"] as Array)[auto] as Dictionary
+	var before: PlayerProfile = SaveService.load_profile(0)
+	remove_child(_screen)  # leaving the screen (summary stage, cards never opened)
+	assert_eq(_screen.picked_index, auto, "tree exit picks auto_pick")
+	assert_true(_screen.auto_picked)
+	_assert_granted(before, SaveService.load_profile(0), card)
+	add_child(_screen)
+	await wait_frames(1)
+	assert_false(_screen.finish_card_pick(), "nothing left to pick")
+	# App quit (WM close request) on the card stage.
+	SaveService.delete_profile(0)
+	_screen.show_result(result)
+	_screen.show_cards()
+	auto = int(_screen.card_roll["auto_pick"])
+	card = (_screen.card_roll["cards"] as Array)[auto] as Dictionary
+	before = SaveService.load_profile(0)
+	_screen.propagate_notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
+	assert_eq(_screen.picked_index, auto, "app quit picks auto_pick")
+	_assert_granted(before, SaveService.load_profile(0), card)
+
+
 func test_no_card_pick_on_failure_or_preview() -> void:
 	var result: Dictionary = HeistCatalog.sample_result()
 	result["success"] = false

@@ -296,17 +296,29 @@ def _head_ring(fit: Fit, hh: Hull, z: float, n: int, c: Vector, clearance: float
     return [x + clearance for x in _smooth_circ(r, 2)]
 
 
-def peaked_cap(fit: Fit, crown_mat: str, band_mat: str, visor_mat: str, cord_mat: str = "brass",
-               badge: bool = True, n: int = 40) -> tuple[Mesh, dict]:
-    """Service (peaked) cap: band, flared crown with a forward-tilted top, glossy visor, gold chin
-    cord with side buttons and a cap badge. Returns (mesh, info with the hat seat)."""
+def peaked_cap(fit: Fit, crown_mat: str, band_mat: str | tuple[str, str], visor_mat: str, cord_mat: str = "brass",
+               badge: bool = True, n: int = 40, flare: float = 1.20, rise: tuple[float, float] = (0.034, 0.056),
+               band_h: float = 0.040, check_rows: int = 0, badge_mats: tuple[str, str] | None = None,
+               visor_reach: float = 0.058, crown_dome: float = 0.008, visor_tilt: float = 24.0) -> tuple[Mesh, dict]:
+    """Service (peaked) cap: band, flared crown with a forward-tilted top, glossy visor, chin cord
+    with side buttons and a cap badge. Returns (mesh, info with the hat seat).
+
+    Defaults are the Halden Security cap (saucer crown, gold cord). ``flare`` (crown top radius /
+    band radius), ``rise`` (crown height above the band at the back/front) and ``crown_dome`` shape
+    the crown; ``check_rows`` > 0 with a ``band_mat`` pair builds a chequered (Sillitoe) band of
+    that many rows of square-ish checks; ``badge_mats`` = (rim, fill); ``visor_tilt`` = visor droop
+    in degrees (kept shallow so the brows and eyes read under the peak)."""
     k = fit.k
     hh = HeadHull(fit)
     eye = fit.eye_centre()
     c = fit.head_centre()
     th = [2 * math.pi * i / n for i in range(n)]
-    zb0 = eye.z + 0.036 * k                       # band bottom at the front
-    band_h = 0.040 * k
+    zb0 = eye.z + 0.046 * k                       # band bottom at the front (clear of the brows)
+    band_h = band_h * k
+    if isinstance(band_mat, tuple):
+        band_a, band_b = band_mat
+    else:
+        band_a = band_b = band_mat
 
     def zb(a: float) -> float:
         return zb0 - 0.006 * k * (1 - math.cos(a)) * 0.5
@@ -324,21 +336,33 @@ def peaked_cap(fit: Fit, crown_mat: str, band_mat: str, visor_mat: str, cord_mat
         return m.ring(pts, w)
 
     r_band0 = ring(radii, lambda a: zb(a) - 0.001)
+    band_rings = [r_band0]
+    for row in range(1, max(check_rows, 1)):
+        band_rings.append(ring(radii, lambda a, f=row / check_rows: zb(a) + band_h * f))
     r_band1 = ring(radii, lambda a: zb(a) + band_h)
+    band_rings.append(r_band1)
     r_welt = ring(radii, lambda a: zb(a) + band_h + 0.004 * k, grow=0.0035 * k)
-    crown_top = [x * 1.20 + 0.012 * k for x in radii]
+    crown_top = [x * flare + 0.012 * k for x in radii]
 
     def z_top(a: float) -> float:
-        return zb(a) + band_h + lerp(0.034, 0.056, 0.5 * (1 + math.cos(a))) * k
+        return zb(a) + band_h + lerp(rise[0], rise[1], 0.5 * (1 + math.cos(a))) * k
 
     r_c1 = ring([lerp(r, t, 0.55) for r, t in zip(radii, crown_top)],
                 lambda a: lerp(zb(a) + band_h, z_top(a), 0.45), fwd=0.006 * k)
     r_c2 = ring(crown_top, lambda a: z_top(a) - 0.004 * k, fwd=0.014 * k)
     r_c3 = ring([t - 0.006 * k for t in crown_top], lambda a: z_top(a) + 0.002 * k, fwd=0.014 * k)
-    r_c4 = ring([t * 0.62 for t in crown_top], lambda a: z_top(a) + 0.008 * k - 0.004 * k * math.cos(a), fwd=0.012 * k)
+    r_c4 = ring([t * 0.62 for t in crown_top], lambda a: z_top(a) + crown_dome * k - 0.004 * k * math.cos(a),
+                fwd=0.012 * k)
     ctr = c + Vector((0.0, 0.012 * k, 0.0))
-    top_pole = m.add(Vector((ctr.x, ctr.y, max(z_top(0), z_top(math.pi)) + 0.009 * k)), w)
-    seq = [(r_band0, r_band1, band_mat), (r_band1, r_welt, crown_mat), (r_welt, r_c1, crown_mat),
+    top_pole = m.add(Vector((ctr.x, ctr.y, max(z_top(0), z_top(math.pi)) + (crown_dome + 0.001) * k)), w)
+    for row, (a_, b_) in enumerate(itertools.pairwise(band_rings)):
+        s0 = len(m.f)
+        m.band(a_, b_, band_a, inside=ctr + Vector((0, 0, 0.02)))
+        if check_rows:
+            for i in range(n):
+                if (i + row) % 2:
+                    m.m[s0 + i] = band_b
+    seq = [(r_band1, r_welt, crown_mat), (r_welt, r_c1, crown_mat),
            (r_c1, r_c2, crown_mat), (r_c2, r_c3, crown_mat), (r_c3, r_c4, crown_mat)]
     for a_, b_, mt in seq:
         m.band(a_, b_, mt, inside=ctr + Vector((0, 0, 0.02)))
@@ -348,7 +372,7 @@ def peaked_cap(fit: Fit, crown_mat: str, band_mat: str, visor_mat: str, cord_mat
     r_in = ring([r - 0.004 * k for r in radii], lambda a: zb(a) + 0.012 * k)
     for i in range(n):
         j = (i + 1) % n
-        m.face((r_band0[i], r_band0[j], r_in[j], r_in[i]), band_mat, inside=Vector((c.x, c.y, zb0 + 0.04 * k)))
+        m.face((r_band0[i], r_band0[j], r_in[j], r_in[i]), band_a, inside=Vector((c.x, c.y, zb0 + 0.04 * k)))
     # visor: front arc, tilted down
     arc = [a for a in th if math.cos(a) > -0.05] + []
     arc_idx = [i for i, a in enumerate(th) if math.cos(a) > 0.02]
@@ -357,11 +381,11 @@ def peaked_cap(fit: Fit, crown_mat: str, band_mat: str, visor_mat: str, cord_mat
     for i in arc_idx:
         a = th[i]
         cosf = max(0.0, math.cos(a))
-        reach = 0.058 * k * cosf ** 0.75
+        reach = visor_reach * k * cosf ** 0.75
         base_r = radii[i] + 0.001
         p_in = Vector((c.x + base_r * math.sin(a), c.y + base_r * math.cos(a), zb(a) + 0.002 * k))
         d = Vector((math.sin(a), math.cos(a), 0.0))
-        tilt = math.radians(32.0)
+        tilt = math.radians(visor_tilt)
         p_out = p_in + (d * math.cos(tilt) - UP * math.sin(tilt)) * reach
         p_out.z -= 0.004 * k * cosf
         vi_in_top.append(m.add(p_in + UP * 0.0025 * k, w))
@@ -405,10 +429,11 @@ def peaked_cap(fit: Fit, crown_mat: str, band_mat: str, visor_mat: str, cord_mat
         hn = hit[1] if hit[0] is not None else nrm
         if hn.dot(nrm) < 0:
             hn = -hn
+        rim_m, fill_m = badge_mats or (cord_mat, "char_sec_burgundy")
         g = Gear()
-        g.prism(o.shield_outline(0.024 * k, 0.026 * k), -0.0005, 0.003 * k, cord_mat)
+        g.prism(o.shield_outline(0.024 * k, 0.026 * k), -0.0005, 0.003 * k, rim_m)
         g.prism([(x, y - 0.001 * k) for x, y in o.shield_outline(0.016 * k, 0.017 * k)], 0.0015 * k, 0.0038 * k,
-                "char_sec_burgundy")
+                fill_m)
         g.bevel(0.0007 * k, 1, 30.0)
         m.extend(g.to_mesh(o.frame_from(loc, hn), weights=HEAD_W))
         del a
@@ -432,16 +457,18 @@ def _orient_out(m: Mesh, start: int, inside: Vector) -> None:
             m.f[fi] = tuple(reversed(f))
 
 
-def helmet(fit: Fit, shell_mat: str, rail_mat: str = "polymer_black", n: int = 36) -> tuple[Mesh, dict]:
+def helmet(fit: Fit, shell_mat: str, rail_mat: str = "polymer_black", n: int = 36, gap: float = 0.021,
+           cup_r: float = 0.036) -> tuple[Mesh, dict]:
     """High-cut ballistic helmet over head + hair: dome rings, a thick rim with high ear cuts,
-    side rails, a front shroud, ear-pro cups and a strap. 100 % head."""
+    side rails, a front shroud, ear-pro cups and a strap. ``gap`` = shell stand-off from the
+    head/hair (helmet size), ``cup_r`` = ear-pro cup radius. 100 % head."""
     k = fit.k
     hh = HeadHull(fit)
     eye = fit.eye_centre()
     c = fit.head_centre()
     top = fit.head_top()
     th = [2 * math.pi * i / n for i in range(n)]
-    gap = 0.021 * k
+    gap = gap * k
 
     def rim_z(a: float) -> float:
         ca = math.cos(a)
@@ -530,8 +557,8 @@ def helmet(fit: Fit, shell_mat: str, rail_mat: str = "polymer_black", n: int = 3
         ear = hit[0] if hit[0] is not None else Vector((sx * 0.075 * k, c.y, eye.z))
         cup_c = Vector((ear.x + sx * 0.014 * k, ear.y, ear.z))
         g = Gear()
-        g.cyl(0.036 * k, 0.034 * k, centre=(0, 0, 0.017 * k), axis="Z", segs=14, mat="char_tac_helmet")
-        g.cyl(0.031 * k, 0.010 * k, centre=(0, 0, 0.036 * k), axis="Z", segs=14, mat="rubber_black")
+        g.cyl(cup_r * k, 0.034 * k, centre=(0, 0, 0.017 * k), axis="Z", segs=14, mat="char_tac_helmet")
+        g.cyl((cup_r - 0.005) * k, 0.010 * k, centre=(0, 0, 0.036 * k), axis="Z", segs=14, mat="rubber_black")
         g.bevel(0.004 * k, 1, 30.0)
         m.extend(g.to_mesh(o.frame_from(cup_c, Vector((sx, 0, 0)), up=UP), weights=w))
         cup_pts.append(cup_c + Vector((sx * 0.018 * k, 0, 0)))

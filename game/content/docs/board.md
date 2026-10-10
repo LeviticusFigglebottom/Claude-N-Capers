@@ -27,7 +27,13 @@ difficulty, payout and a "pro job" flag. A broker sells any unlocked contract fo
 
 The flow after `contract_chosen` is unchanged: briefing, then pre-planning, then loadout. The flow
 also has to carry `is_pro` through to launch and payday: `PayoutCalculator.compute(..., is_pro)`
-applies `PayoutTweak.pro_job_xp_mult`. A pro job also hides "restart" (owned by MenuFlow/ENV A, see Questions).
+applies `PayoutTweak.pro_job_xp_mult`. A pro job has no restart (QB-BRD1, D-049, owned by MenuFlow): when a pro
+contract's heist ends with `success = false`, MenuFlow marks it consumed
+(`MenuFlow.consumed_contracts[BoardContracts.contract_key(c)]`, key = `"slot:bucket"`). The Board shares
+that dictionary: a consumed contract's pin is dimmed, the card shows `ui.board.consumed`, Take is
+disabled and `take_selected()` refuses it, so neither the Board nor the briefing can relaunch it. It
+stays locked for the rest of its rotation; the slot's next bucket is a new contract. The lock is
+session state (not saved): a contract lives one rotation only.
 
 ## Rotation and determinism
 * There are `slot_count` slots (8). Each slot holds one contract per **time bucket**:
@@ -45,8 +51,8 @@ applies `PayoutTweak.pro_job_xp_mult`. A pro job also hides "restart" (owned by 
   
   The same seed, slot, bucket, level and pool always give the same contract. So a crew whose clocks
   agree sees the same board, apart from level gating.
-* **Pool:** `HeistCatalog.entries()`, which lists the registry heists plus placeholder heists while
-  the registry has no def for them. The contact comes from `HeistDef.contact`, then the city map's
+* **Pool:** `HeistCatalog.entries()`: registry heists with a HeistDef and a map scene (QB-55; no
+  placeholders). The contact comes from `HeistDef.contact`, then the city map's
   `heists[id].contact`, then a deterministic pick from `fallback_contacts`.
 * **Payout preview** is `HeistCatalog.contract_preview(base, difficulty)`. It runs through
   PayoutCalculator, so it matches heist select and the payday screen.
@@ -100,7 +106,7 @@ No new save fields. The board is a pure function of time, and the broker only ch
 * QB-BRD1: MenuFlow wiring. Does the Board replace heist select, or sit next to it with heist
   select kept as a debug path? `is_pro` has to reach the launch and payday
   (`PayoutCalculator.compute(..., is_pro)`). It also needs a "no restart" rule on a pro job failure:
-  who owns restart, MenuFlow or ENV A?
+  who owns restart, MenuFlow or ENV A? **Answered (D-049):** MenuFlow consumes the contract (above).
 * QB-BRD2: In multiplayer, the host's Board is authoritative. Should clients see the host's board
   (seed and bucket sent over `Net.lobby_send`) or their own?
 * QB-BRD3: Broker prices and the level gates for Tense through Brutal (currently 0) are placeholders

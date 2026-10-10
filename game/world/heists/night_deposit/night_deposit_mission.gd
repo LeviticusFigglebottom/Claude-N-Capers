@@ -51,8 +51,8 @@ var _escape_timer_done: bool = false
 
 
 func _on_mission_start() -> void:
-	say(&"night_deposit.intro")
-	say(&"night_deposit.contact_intro", {}, &"accountant")
+	say(&"vo.mercer.night_deposit_intro")
+	say(&"vo.accountant.night_deposit_contact_intro", {}, &"accountant")
 	add_objective(&"casing", &"objective.night_deposit.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
 	add_objective(&"keycard", &"objective.night_deposit.keycard")
 	require_items(&"keycard", ITEM_KEYCARD)
@@ -75,8 +75,8 @@ func _on_mission_start() -> void:
 	on_event(&"item_picked_up", _on_item_picked_up)
 	on_event(&"loot_secured", _on_bag_secured)
 	on_event(&"assault_phase_changed", _on_assault_phase_changed)
-	on_event(&"civilian_tied", _on_civilian_dominated)
-	on_event(&"civilian_intimidated", _on_civilian_dominated)
+	on_event(&"civilian_tied", _on_nd_civilian_dominated)
+	on_event(&"civilian_intimidated", _on_nd_civilian_dominated)
 	_apply_scalars()
 	_schedule_rare_events()
 
@@ -94,7 +94,7 @@ func _on_alarm(_reason: StringName) -> void:
 
 func _on_pager_answered(total: int) -> void:
 	if total == LAST_PAGER:
-		say(&"night_deposit.last_pager", {"answered": total})
+		say(&"vo.mercer.night_deposit_last_pager", {"answered": total})
 
 
 # --- Setup ------------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ func _schedule_rare_events() -> void:
 
 
 func _on_fog_lifts() -> void:
-	say(&"night_deposit.fog_lifts")
+	say(&"vo.mercer.night_deposit_fog_lifts")
 	var we: WorldEnvironment = get_node_or_null(^"../Lighting/WorldEnvironment") as WorldEnvironment
 	if we != null and we.environment != null:
 		we.environment.fog_density *= 0.25
@@ -139,7 +139,7 @@ func _on_fog_lifts() -> void:
 func _on_armored_car() -> void:
 	if went_loud:
 		return
-	say(&"night_deposit.armored_car")
+	say(&"vo.mercer.night_deposit_armored_car")
 	update_objective_data(&"secure", {"armored_car": true})
 
 
@@ -149,24 +149,19 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 	if _is_tagged(interactable_net_id, TAG_VAULT_GATE):
 		if objective_state(&"vault_gate") == Enums.ObjectiveState.ACTIVE:
 			complete(&"vault_gate")
-			say(&"night_deposit.lasers")
+			say(&"vo.mercer.night_deposit_lasers")
 			if not _lockdown and not _vault_open:
 				activate(&"time_lock")
 	elif _is_tagged(interactable_net_id, TAG_TIME_LOCK):
 		if not _lockdown:
 			_start_time_lock(&"code")
-	elif _is_tagged(interactable_net_id, TAG_SERVER_HACK):
-		# hack_terminal placeholder (keypad hold); the real prefab reports device_finished.
-		if not _lockdown:
-			complete(&"server")
-			_start_time_lock(&"server")
 	elif _is_tagged(interactable_net_id, TAG_VAULT_LOOT):
 		_check_vault_loot()
 
 
 func _on_item_picked_up(item_id: StringName, _crew_slot: int) -> void:
 	if item_id == ITEM_KEYCARD:
-		say(&"night_deposit.keycard_found")
+		say(&"vo.mercer.night_deposit_keycard_found")
 	elif item_id == ITEM_CODE_NOTE:
 		_code_found()
 
@@ -174,8 +169,8 @@ func _on_item_picked_up(item_id: StringName, _crew_slot: int) -> void:
 ## code_on_manager: dominating the night manager makes him read out the code (cable tie + shout).
 ## The mission API cannot tell which civilian it was; any domination while he carries the code
 ## reveals it (the cleaner never carries one; tidy up when ENV A exposes spawn tags on the event).
-func _on_civilian_dominated(_npc_net_id: int, crew_slot: int) -> void:
-	if _code_known or not _slot_active(&"code_carrier", &"code_on_manager"):
+func _on_nd_civilian_dominated(_npc_net_id: int, crew_slot: int) -> void:
+	if _code_known or not _slot_active(&"code_note", &"code_on_manager"):
 		return
 	var codes: Object = Services.get_service(SVC_CODES)
 	if codes != null and codes.has_method(&"reveal"):
@@ -187,7 +182,7 @@ func _code_found() -> void:
 	if _code_known:
 		return
 	_code_known = true
-	say(&"night_deposit.code_found")
+	say(&"vo.mercer.night_deposit_code_found")
 	if objective_state(&"code") == Enums.ObjectiveState.ACTIVE:
 		complete(&"code")
 
@@ -206,12 +201,12 @@ func _start_time_lock(method: StringName) -> void:
 		complete(&"code")
 	update_objective_data(&"time_lock_wait", {"seconds": seconds, "method": method})
 	activate(&"time_lock_wait")
-	say(&"night_deposit.time_lock_started", {"seconds": seconds})
+	say(&"vo.mercer.night_deposit_time_lock_started", {"seconds": seconds})
 	start_timer(&"time_lock", seconds, _on_time_lock_done)
 	if seconds > 30.0:
 		start_timer(&"time_lock_30", seconds - 30.0, func() -> void:
 			if _time_lock_running:
-				say(&"night_deposit.time_lock_30"))
+				say(&"vo.mercer.night_deposit_time_lock_30"))
 
 
 func _on_time_lock_done() -> void:
@@ -219,7 +214,7 @@ func _on_time_lock_done() -> void:
 		return
 	_time_lock_running = false
 	complete(&"time_lock_wait")
-	say(&"night_deposit.time_lock_open")
+	say(&"vo.mercer.night_deposit_time_lock_open")
 	_open_vault()
 
 
@@ -246,6 +241,8 @@ func _on_device_finished(device_net_id: int) -> void:
 		complete(&"vault_drill")
 		_open_vault()
 	elif _is_tagged(device_net_id, TAG_SERVER_HACK):
+		# hack_terminal (QC-12): device_finished after the 60 s run and its reboots (device_jammed /
+		# device_restarted in between). Starting the hack is only an interaction, never the finish.
 		if not _lockdown:
 			complete(&"server")
 			_start_time_lock(&"server")
@@ -263,7 +260,7 @@ func _on_device_finished(device_net_id: int) -> void:
 
 func _on_device_jammed(device_net_id: int) -> void:
 	if _is_tagged(device_net_id, TAG_VAULT_DRILL):
-		say(&"night_deposit.drill_jam")
+		say(&"vo.mercer.night_deposit_drill_jam")
 
 
 func _on_bag_secured(_bag_net_id: int, _loot_id: StringName, _value: int) -> void:
@@ -276,7 +273,7 @@ func _go_loud() -> void:
 	if _lockdown:
 		return
 	_lockdown = true
-	say(&"night_deposit.lockdown")
+	say(&"vo.mercer.night_deposit_lockdown")
 	for tag: StringName in [TAG_TIME_LOCK, TAG_SERVER_HACK]:
 		for p: Node in find_tagged(tag):
 			_set_enabled(p, false)
@@ -297,7 +294,7 @@ func _go_loud() -> void:
 		var wait_s: float = ESCAPE_RETURN_S
 		if _escape_tag() == TAG_ESCAPE_BOAT and _rare(RARE_FOG):
 			wait_s += FOG_BOAT_DELAY_S
-		say(&"night_deposit.escape_eta", {"seconds": wait_s})
+		say(&"vo.mercer.night_deposit_escape_eta", {"seconds": wait_s})
 		start_timer(&"escape_return", wait_s, _on_escape_timer)
 
 
@@ -319,7 +316,7 @@ func _try_escape() -> void:
 		return
 	_escape_open = true
 	activate(&"escape")
-	say(&"night_deposit.escape")
+	say(&"vo.mercer.night_deposit_escape")
 	activate_escape(_escape_tag())
 
 

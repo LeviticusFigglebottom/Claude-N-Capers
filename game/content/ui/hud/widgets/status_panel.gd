@@ -43,7 +43,10 @@ func refresh() -> void:
 	hostages_label.visible = hostages > 0
 	hostages_label.text = UiText.t(&"ui.hud.hostages", {"count": hostages})
 	var lines: Array[String] = []
+	var captain_widget: bool = prop(&"captain_present") != null  # v1.3: CaptainPanel shows Brandt
 	for w: StringName in prop(&"warnings", []) as Array:
+		if w == &"captain" and captain_widget:
+			continue
 		lines.append(UiText.t(StringName("ui.hud.%s_warning" % w)))
 	warnings_label.text = "\n".join(lines)
 	warnings_label.visible = not lines.is_empty()

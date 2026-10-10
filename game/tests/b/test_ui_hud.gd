@@ -49,6 +49,43 @@ func test_custody_widget() -> void:
 	assert_false(c.visible)
 
 
+## ui_hud.md v1.3 (D-049): captain widget bound to captain_changed / captain_present, captain_resistance.
+func test_captain_widget() -> void:
+	var c: CaptainPanel = _hud.captain
+	assert_has(_hud.widgets(), c)
+	assert_false(c.visible, "no captain: hidden")
+	_model.captain_resistance = 0.25
+	_model.captain_present = true
+	assert_true(c.visible, "Brandt on the map")
+	assert_near(c.resistance_bar.value, 0.25, 0.001)
+	assert_eq(c.resistance_label.text, UiText.t(&"ui.hud.captain_resistance", {"pct": 25}))
+	assert_false(c.resistance_label.text.contains("{"), "formatted")
+	_model.captain_resistance = 0.5
+	assert_near(c.resistance_bar.value, 0.5, 0.001)
+	assert_eq(c.resistance_label.text, UiText.t(&"ui.hud.captain_resistance", {"pct": 50}))
+	_model.warnings = [&"captain"]
+	assert_false(_hud.status.warnings_label.visible, "the captain widget replaces the status warning line")
+	_model.captain_present = false
+	assert_false(c.visible, "retreated: hidden")
+	# A model without the v1.3 fields (older LocalHudModel): widget hidden, status keeps the warning.
+	var bare: Node = Node.new()
+	bare.set_script(_warnings_only_script())
+	add_child(bare)
+	bare.set(&"warnings", [&"captain"] as Array[StringName])
+	_hud.bind(bare)
+	assert_false(c.visible)
+	assert_eq(_hud.status.warnings_label.text, UiText.t(&"ui.hud.captain_warning"))
+	_hud.bind(_model)
+	bare.queue_free()
+
+
+static func _warnings_only_script() -> GDScript:
+	var gd: GDScript = GDScript.new()
+	gd.source_code = "extends Node\nsignal warnings_changed()\nvar warnings: Array[StringName] = []\n"
+	gd.reload()
+	return gd
+
+
 func test_vitals_and_downs() -> void:
 	_model.max_health = 200.0
 	_model.health = 50.0
@@ -154,10 +191,14 @@ func test_demo_driver_runs_every_stage() -> void:
 	add_child(demo)
 	await wait_frames(1)
 	var driver: MockHudDriver = demo.get_node("Driver") as MockHudDriver
+	var hud: Hud = demo.get_node("HudLayer/Hud") as Hud
+	var captain_seen: bool = false
 	for i: int in range(10):
 		driver.t = float(i) * 4.0 + 0.1
 		driver._process(0.0)
-	var hud: Hud = demo.get_node("HudLayer/Hud") as Hud
+		captain_seen = captain_seen or driver.model.captain_present
+	assert_true(captain_seen, "the timeline has a captain step")
+	assert_false(driver.model.captain_present, "Brandt gone by the fade")
 	assert_true(await wait_until(func() -> bool: return hud.model is MockHudModel, 2.0),
 			"demo HUD bound through the G.LOCAL_HUD_MODEL group")
 	demo.queue_free()

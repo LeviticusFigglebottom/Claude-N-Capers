@@ -248,8 +248,9 @@ func _build_glazing(bld: Node3D) -> void:
 		add(body, head)
 
 
-## Cash lift shaft (bags only) G1 <-> B1: closed shaft walls with a lift door panel on each floor.
-## The bag_lift prefab (QC-11, A3-09) replaces the placeholder in Gameplay/CashLift.
+## Cash lift shaft (bags only) G1 <-> B1: closed shaft walls, the west wall with the bag hatch on each
+## floor. The bag_lift prefab (Gameplay/Misc/CashLift, QC-11) runs the car; its visual carries the G1
+## call panel, the B1 panel (runtime LandingPanel1) is dressed here at the same offset.
 func _build_lift_shaft(bld: Node3D) -> void:
 	var lf: Node3D = add(bld, node3d("CashLiftShaft")) as Node3D
 	var b: Array = L.LIFT["box"]
@@ -257,19 +258,27 @@ func _build_lift_shaft(bld: Node3D) -> void:
 	var z0: float = float(b[1])
 	var x1: float = float(b[2])
 	var z1: float = float(b[3])
+	var hz: Array = L.LIFT["hatch_z"]
+	var hy: Array = L.LIFT["hatch_y"]
 	# One box per storey (the per-floor plan render cuts every wall).
 	for st: Array in [["B", L.BASE, L.BASE_CEIL], ["G", 0.0, L.WING_CEIL]]:
 		var y0: float = float(st[1])
 		var y1: float = float(st[2])
 		box(lf, "ShaftN" + String(st[0]), Vector3(x0, y0, z0 - 0.05), Vector3(x1, y1, z0 + 0.05), "trim")
 		box(lf, "ShaftS" + String(st[0]), Vector3(x0, y0, z1 - 0.05), Vector3(x1, y1, z1 + 0.05), "trim")
-		box(lf, "ShaftW" + String(st[0]), Vector3(x0 - 0.05, y0, z0 + 0.05), Vector3(x0 + 0.05, y1, z1 - 0.05), "trim")
-	var dz: Array = L.LIFT["door_z"]
-	for fy: float in [0.0, L.BASE]:
-		var tag: String = "Ground" if fy == 0.0 else "Basement"
-		var d: Node3D = node3d("LiftDoor" + tag)
-		add(lf, d)
-		mesh_box(d, "Panel", Vector3(x0 - 0.07, fy, float(dz[0])), Vector3(x0 - 0.05, fy + 1.4, float(dz[1])), "door")
+		wall(lf, "ShaftW" + String(st[0]), "z", x0, z0 + 0.05, z1 - 0.05, 0.1, Vector2(y0, y1),
+			[[float(hz[0]), float(hz[1]), y0 + float(hy[0]), y0 + float(hy[1])]], "trim")
+	# Call/send panels on the shaft wall above each hatch (the bag_lift `Panel` is an empty anchor: a
+	# panel mesh in the prefab visual would reach through the shaft wall).
+	var car: Vector3 = L.LIFT["car"]
+	var py: float = float(L.LIFT["panel_y"])
+	for pl: Array in [["CallPanelGround", car.y + py], ["CallPanelBasement", car.y + L.BASE + py]]:
+		var y: float = float(pl[1])
+		mesh_box(lf, String(pl[0]), Vector3(x0 - 0.08, y - 0.07, car.z - 0.11), Vector3(x0 - 0.05, y + 0.07, car.z + 0.11),
+			"frame")
+		# The closed shaft is no floor for NPCs (the car floor at G1, the pit at B1).
+		obstruct(Transform3D.IDENTITY, AABB(Vector3(x0 + 0.05, y - py - 0.05, z0 + 0.05),
+			Vector3(x1 - x0 - 0.05, 1.3, z1 - z0 - 0.1)))
 
 
 ## Areaway (vent route): pit walls, ledge, caged top with a grate roof. The gate (door prefab) and the

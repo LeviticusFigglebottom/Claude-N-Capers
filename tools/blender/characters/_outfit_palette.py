@@ -96,6 +96,7 @@ def all_char_materials() -> dict[str, tuple[str, float, float, str]]:
         out[f"char_hair_{name}"] = (hexc, 0.6, 0.0, "hair")
     out["char_eye"] = (body.EYE_COLOR, 0.25, 0.0, "eye")
     out["char_eye_iris"] = (body.IRIS_COLOR, 0.2, 0.0, "eye")
+    out["char_lash"] = (body.LASH_COLOR, 0.5, 0.0, "eye")
     out.update(OUTFIT)
     return dict(sorted(out.items()))
 

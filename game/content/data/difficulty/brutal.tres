@@ -15,7 +15,8 @@ special_limits = {
 &"enemy.stinger": 2,
 &"enemy.corpsman": 3,
 &"enemy.phantom": 2,
-&"enemy.wrecker": 2
+&"enemy.wrecker": 2,
+&"enemy.longshot": 3
 }
 detection_speed_mult = 1.0
 civilian_kill_penalty = 8000

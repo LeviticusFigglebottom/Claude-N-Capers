@@ -7,28 +7,49 @@ script = ExtResource("1_h8hqg")
 rules = Array[Dictionary]([{
 "difficulty_add": Array[int]([0, 0, 0, 1, 1, 1]),
 "group": &"guard_post",
-"pick": Vector2i(0, 1)
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+3: {
+&"rover_none": 1.0
+},
+4: {
+&"rover_none": 1.0
+},
+5: {
+&"rover_none": 1.0
+}
+}
 }, {
 "group": &"camera",
 "pick": Vector2i(1, 1)
 }, {
 "group": &"security_room_staffed",
-"pick": Vector2i(1, 1)
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+3: {
+&"sec_empty": 0.25,
+&"sec_staffed": 0.75
+},
+4: {
+&"sec_empty": 0.25,
+&"sec_staffed": 0.75
+},
+5: {
+&"sec_empty": 0.25,
+&"sec_staffed": 0.75
+}
+}
 }, {
 "group": &"night_manager",
 "pick": Vector2i(1, 1)
 }, {
-"group": &"code_carrier",
+"group": &"code_note",
 "pick": Vector2i(1, 1),
-"requires": {
+"slot_requires": {
+&"code_on_manager": {
 &"night_manager": [&"mgr_in"]
 }
-}, {
-"excludes": {
-&"code_carrier": [&"code_on_manager"]
-},
-"group": &"code_note",
-"pick": Vector2i(1, 1)
+}
 }, {
 "group": &"keycard",
 "pick": Vector2i(1, 1)
@@ -40,7 +61,24 @@ rules = Array[Dictionary]([{
 "pick": Vector2i(1, 1)
 }, {
 "group": &"laser_pattern",
-"pick": Vector2i(1, 1)
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+3: {
+&"laser_static": 0.2,
+&"laser_sweep": 0.4,
+&"laser_timed": 0.4
+},
+4: {
+&"laser_static": 0.2,
+&"laser_sweep": 0.4,
+&"laser_timed": 0.4
+},
+5: {
+&"laser_static": 0.2,
+&"laser_sweep": 0.4,
+&"laser_timed": 0.4
+}
+}
 }, {
 "group": &"cleaner",
 "pick": Vector2i(1, 1)
@@ -62,11 +100,11 @@ rare_events = Array[Dictionary]([{
 "chance": 0.08,
 "effects": {
 "at_s": 720.0,
-"extra_guards": 2,
-"min_difficulty": 3
+"extra_guards": 2
 },
 "good": false,
-"id": &"armored_car_early"
+"id": &"armored_car_early",
+"min_difficulty": 3
 }, {
 "chance": 0.1,
 "effects": {
@@ -86,7 +124,12 @@ rare_events = Array[Dictionary]([{
 scalars = Array[Dictionary]([{
 "id": &"time_lock_s",
 "values": [60.0, 90.0, 120.0],
-"weights": PackedFloat32Array(0.4, 0.4, 0.2)
+"weights": PackedFloat32Array(0.4, 0.4, 0.2),
+"weights_by_difficulty": {
+3: PackedFloat32Array(0.1, 0.4, 0.5),
+4: PackedFloat32Array(0.1, 0.4, 0.5),
+5: PackedFloat32Array(0.1, 0.4, 0.5)
+}
 }, {
 "id": &"depository_bags",
 "values": [3, 4, 5],

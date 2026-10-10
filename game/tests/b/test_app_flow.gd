@@ -34,9 +34,10 @@ func _focused() -> Control:
 	return get_viewport().gui_get_focus_owner()
 
 
-## main menu -> heist select -> briefing -> pre-planning.
+## main menu -> safehouse -> planning table (heist select) -> briefing -> pre-planning.
 func _to_preplanning(f: MenuFlow) -> void:
-	f.main_menu.play_button.pressed.emit()
+	f.main_menu.safehouse_button.pressed.emit()
+	f.hub.station_button(&"planning").pressed.emit()
 	f.heist_select.next_button.pressed.emit()
 	await wait_frames(1)
 	f.briefing_screen.continue_button.pressed.emit()
@@ -55,8 +56,12 @@ func _to_loadout(f: MenuFlow) -> void:
 func test_full_path_and_back_navigation() -> void:
 	var f: MenuFlow = _flow()
 	await wait_frames(2)
-	assert_eq(_focused(), f.main_menu.play_button as Control, "main menu: Play focused")
-	f.main_menu.play_button.pressed.emit()
+	assert_eq(_focused(), f.main_menu.safehouse_button as Control, "main menu: Safehouse focused")
+	f.main_menu.safehouse_button.pressed.emit()
+	await wait_frames(2)
+	assert_eq(f.current, f.hub as Control, "main menu -> safehouse hub")
+	assert_eq(_focused(), f.hub.station_button(&"board") as Control, "hub: first station focused")
+	f.hub.station_button(&"planning").pressed.emit()
 	await wait_frames(2)
 	assert_eq(_focused(), f.heist_select.heist_buttons[0] as Control, "heist select: first heist focused")
 	assert_eq(f.current, f.heist_select as Control)

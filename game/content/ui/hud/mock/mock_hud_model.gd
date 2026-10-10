@@ -1,4 +1,4 @@
-## Stand-in for ENV A's LocalHudModel (contracts/ui_hud.md v1.2) for the HUD demo and tests. Owner:
+## Stand-in for ENV A's LocalHudModel (contracts/ui_hud.md v1.3) for the HUD demo and tests. Owner:
 ## ENV B. Same property and signal names as the real model
 ## (duck-typed: the HUD reads properties with get() and connects signals by name). Like the real
 ## model it joins group G.LOCAL_HUD_MODEL in _ready, so HUD discovery works in the demo and tests.
@@ -23,6 +23,7 @@ signal warnings_changed()        ## warnings
 signal crew_changed()            ## crew
 signal masked_changed()          ## masked, casing
 signal custody_changed()         ## custody (v1.2)
+signal captain_changed()         ## captain_present, captain_resistance (v1.3)
 
 ## PD2 display units (health 0..max_health, armor 0..max_armor).
 var health: float = 100.0:
@@ -180,6 +181,15 @@ var custody: Dictionary = {}:
 	set(v):
 		custody = v
 		custody_changed.emit()
+## v1.3 (D-049): Commander Brandt on the map, and his Aegis damage resistance 0..1.
+var captain_present: bool = false:
+	set(v):
+		captain_present = v
+		captain_changed.emit()
+var captain_resistance: float = 0.0:
+	set(v):
+		captain_resistance = v
+		captain_changed.emit()
 ## v1.2: the crew member followed without a HeistRuntime (firing range); see track().
 var tracked_crew: Node = null
 

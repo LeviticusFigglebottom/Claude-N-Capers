@@ -81,6 +81,9 @@ ui.hud.teammate_downed,{name} is down
 ui.hud.teammate_custody,{name} is in custody
 ui.hud.phantom_warning,Phantom nearby
 ui.hud.stinger_warning,Stinger charging
+ui.hud.captain_warning,Commander Brandt on site
+ui.hud.captain,Commander Brandt
+ui.hud.captain_resistance,Aegis field: {pct}% damage resistance
 ui.hud.interaction_progress,{percent}%
 ui.prompt.interact,Hold {key} to interact
 ui.prompt.answer_pager,Hold {key} to answer the pager
@@ -1245,6 +1248,10 @@ item.asset.inside_keycard.name,Inside keycard
 item.asset.inside_keycard.desc,An insider leaves a keycard at this spot before the job.
 item.asset.propped_door.name,Propped door
 item.asset.propped_door.desc,Someone on staff leaves this door propped open tonight.
+item.asset.insider_code.name,Insider: time-lock code
+item.asset.insider_code.desc,"An insider writes down tonight's time-lock code. You know where the note is."
+item.asset.vent_access.name,Vent access
+item.asset.vent_access.desc,A maintenance contact leaves the vent grille unscrewed for you.
 item.asset.escape_position.name,Van position
 item.asset.escape_position.desc,"The getaway van waits here. A plan: the crew votes, the host breaks ties."
 ui.masks.title,Masks
@@ -1339,6 +1346,7 @@ ui.board.payout,Contract pay: {amount}
 ui.board.expires,Expires in {time}
 ui.board.pro,PRO JOB
 ui.board.pro_desc,"No restarts: fail it and the contract is gone. +{pct}% XP."
+ui.board.consumed,"Pro job failed: this contract is burned until the board rotates."
 ui.board.take,Take Contract
 ui.board.pin_tooltip,"{heist}, {difficulty}"
 ui.board.legend_pro,Red badge: pro job
@@ -1441,3 +1449,45 @@ ui.preplan.point.pp_gondola_west,"Gondola: west facade, level 41"
 ui.preplan.point.pp_gondola_north,"Gondola: north facade, level 42"
 ui.preplan.point.pp_riser_l41,Riser panel: level 41
 ui.preplan.point.pp_riser_l42,Riser panel: level 42
+ui.menu.safehouse,Safehouse
+ui.hub.title,The Safehouse
+ui.hub.subtitle,Every job starts at one of these stations.
+ui.hub.main_menu,Main Menu
+ui.hub.station.board,The Board
+ui.hub.station.board.desc,"Live contracts from your contacts, pro jobs and the broker."
+ui.hub.station.planning,Planning Table
+ui.hub.station.planning.desc,Pick any heist and difficulty yourself.
+ui.hub.station.armory,Armory
+ui.hub.station.armory.desc,"Weapons, mods, armor, skills and perk decks."
+ui.hub.station.masks,Mask Bench
+ui.hub.station.masks.desc,"Compose, save and equip masks."
+ui.hub.station.range,Firing Range
+ui.hub.station.range.desc,Try any weapon and mod on the lanes.
+ui.hub.profile.title,PROFILE
+ui.hub.profile.xp,{xp} / {next} XP to the next level
+ui.hub.profile.xp_max,Max level
+ui.hub.profile.skill_points,Skill points: {points} of {total} free
+ui.hub.profile.perk_points,Perk points: {points} free
+voice.vo.mercer.glasshouse_intro,"Vossberg's, dusk. The good stuff is in the workshop safe. Walk the floor first, masks in pockets."
+voice.vo.mercer.glasshouse_keycard_found,That's the manager's card. The safe reader will take it.
+voice.vo.mercer.glasshouse_workshop_open,Workshop's open. Safe's on the north wall.
+voice.vo.mercer.glasshouse_drill_jam,Drill's jammed. Somebody give it a kick.
+voice.vo.mercer.glasshouse_last_pager,That's the last one they'll buy. No more pagers.
+voice.vo.mercer.glasshouse_lockdown,"Alarm tripped the lockdown. Reader's dead, so the drill goes on the safe."
+voice.vo.mercer.glasshouse_van_eta,"Van's coming back around. {seconds} seconds, hold out."
+voice.vo.mercer.glasshouse_escape,"Van's here. Bags in, then you."
+voice.vo.mercer.night_deposit_intro,Bank's closed for the night. The Co-op's drop sits in the basement. Case it from the ATM lobby and the lot.
+voice.vo.accountant.night_deposit_contact_intro,The Co-op launders through Harbor Savings and Loan. Take the night drop and the cage. Leave the paperwork.
+voice.vo.mercer.night_deposit_keycard_found,"That card opens the vault gate downstairs. One swipe, so make it count."
+voice.vo.mercer.night_deposit_code_found,You've got the time-lock code.
+voice.vo.mercer.night_deposit_lasers,Laser grid in the antechamber. Find the gap or time it.
+voice.vo.mercer.night_deposit_time_lock_started,"Time lock's running, {seconds} seconds. Keep the basement quiet."
+voice.vo.mercer.night_deposit_time_lock_30,Thirty seconds on the time lock.
+voice.vo.mercer.night_deposit_time_lock_open,Vault's open. Bag the cage.
+voice.vo.mercer.night_deposit_drill_jam,Thermal drill's jammed.
+voice.vo.mercer.night_deposit_last_pager,That was the fourth pager. No more.
+voice.vo.mercer.night_deposit_lockdown,Vault sealed itself. Thermal drill on the door.
+voice.vo.mercer.night_deposit_armored_car,Armoured car's early. Two more guards at the sally port.
+voice.vo.mercer.night_deposit_fog_lifts,Fog's lifting. The quay's visible from the street now.
+voice.vo.mercer.night_deposit_escape_eta,Ride's {seconds} seconds out. Hold.
+voice.vo.mercer.night_deposit_escape,Ride's here. Bags in.
