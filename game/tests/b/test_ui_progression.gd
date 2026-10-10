@@ -25,6 +25,9 @@ func before_each() -> void:
 	await wait_frames(1)
 	_flow.main_menu.play_button.pressed.emit()
 	_flow.heist_select.next_button.pressed.emit()
+	_flow.briefing_screen.continue_button.pressed.emit()
+	await wait_frames(1)
+	_flow.preplanning_screen.confirm_button.pressed.emit()  # empty plan -> loadout (B2-01 order)
 	await wait_frames(1)
 
 

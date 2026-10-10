@@ -30,6 +30,7 @@ ui.heist_select.modes_stealth_loud,Stealth or loud
 ui.heist_select.modes_stealth_only,Stealth only
 ui.heist_select.modes_loud_only,Loud only
 ui.heist_select.start,Start Heist
+ui.heist_select.next,Briefing
 ui.heist_select.crew_ai,Fill empty slots with crew AI
 ui.loadout.title,Loadout
 ui.loadout.primary,Primary

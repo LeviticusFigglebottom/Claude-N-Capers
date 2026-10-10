@@ -111,7 +111,7 @@ Per group, `{slot: option}` with option = `"<asset id>@<point id>"`. The majorit
 host's option wins if it is tied, else the first tied option by id text (deterministic on every peer).
 Solo: the host's vote decides. AI teammates never vote. `to_dict/from_dict` is JSON-safe for relaying.
 
-## Screen API (for MenuFlow; menus are not edited by B2-01)
+## Screen API (MenuFlow wires it: briefing -> pre-planning -> loadout)
 ```gdscript
 var s: PreplanningScreen = load("res://content/ui/preplanning/preplanning_screen.tscn").instantiate()
 s.setup(heist_id, difficulty, profile)    # before or after add_child (re-builds)
@@ -155,7 +155,9 @@ Application at heist start, on the server (ENV A, A2-07):
   loading the map: ENV C as `world/heists/<id>/<id>_blueprint.tres` exposed through `HeistRegistry`, or
   ENV B under `content/data/preplanning/blueprints/`?
 * **QB-PP2** HeistLauncher input: `options["preplan"] = PreplanPlan.apply()` (shape above)? MenuFlow
-  would pass it next to `loadouts`.
+  already passes it next to `loadouts` when a plan was confirmed (`MenuFlow.build_launch_options`;
+  omitted for direct launch); pending the lead's answer, a launcher that does not read it ignores it.
+  Back from the loadout screen to pre-planning refunds the plan's local cash share before re-confirm.
 * **QB-PP3** Who pays for a voted plan: the host (current stub), split across the voters, or whoever
   placed the winning option?
 * **QB-PP4** Co-op lobby: votes and selections need a lobby relay. The Net API has no lobby messages

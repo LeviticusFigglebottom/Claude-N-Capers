@@ -1,5 +1,5 @@
 ## B1-04: every UI scene instantiates headless and builds its widgets; the menu flow reaches the
-## loadout screen and the launcher stub / sample payday.
+## loadout screen (via briefing and pre-planning) and the launcher stub / sample payday.
 extends TestCase
 
 const SCENES: Array[String] = [
@@ -13,6 +13,9 @@ const SCENES: Array[String] = [
 	"res://content/ui/hud/mock/hud_demo.tscn",
 	"res://content/ui/progression/skill_tree_screen.tscn",
 	"res://content/ui/progression/perk_deck_screen.tscn",
+	"res://content/ui/briefing/briefing_screen.tscn",
+	"res://content/ui/preplanning/preplanning_screen.tscn",
+	"res://content/ui/masks/mask_screen.tscn",
 ]
 
 
@@ -82,6 +85,11 @@ func test_flow_reaches_stub_and_sample_payday() -> void:
 	f.main_menu.play_button.pressed.emit()
 	assert_eq(f.current, f.heist_select as Control)
 	f.heist_select.next_button.pressed.emit()
+	assert_eq(f.current, f.briefing_screen as Control)
+	f.briefing_screen.continue_button.pressed.emit()
+	assert_eq(f.current, f.preplanning_screen as Control)
+	await wait_frames(1)
+	f.preplanning_screen.confirm_button.pressed.emit()
 	assert_eq(f.current, f.loadout_screen as Control)
 	await wait_frames(1)
 	f.loadout_screen.launch_button.pressed.emit()
