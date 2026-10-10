@@ -154,3 +154,13 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 ## D-033 — 2026-10-10 — A-M2/A-M3 merged: P1 systems complete on trunk
 - Merged env/b-content @ 8554760 (state-tolerant tests), then env/a-core @ b2586fc (detection, guard AI, civilians, pagers incl. juggling and the cap, bodies, bags, prefab behaviour incl. drill jams, combat on the D-026 single hit path, downs/bleedout/revive, assault director wave cycle, Patrol Officer/TAC Light AI, AI teammates, modifier hooks, sandbox gate test). Trunk check_all PASS: 432 tests, 0 failed.
 - The P1 gate now waits only on ENV C's Glasshouse G1 map (and art for G2). ENV A's sandbox already passes the gate scenarios.
+
+## D-034 — 2026-10-10 — Answers QB-38..45
+- QB-38: `Modifiers.list()` accepts a source value that is a Dictionary or an Array of Dictionaries. Each entry keeps its own `_source`, which defaults to the source name.
+- QB-39: `defense.post_revive_buff` becomes LIST.
+- QB-40: confirmed: `kill_reload_buff.mag_falloff_from`; Bulletstorm duration = lerp(base, max, fraction of the refill taken); `melee_bloodthirst.max_mult` = 17.0.
+- QB-41: ENV C adds `alu_anodized_black`, `polymer_tan`, `polymer_olive`, `glass_lens_coated` and re-checks albedo for `polymer_black`, `rubber_black` and `metal_matte` on weapons (style guide floor 0.04 linear; current renders read too light).
+- QB-42: viewmodel anim sets `pistol` (Warden .45 shares it), `smg`, `rifle`, `shotgun`, `lmg`, `sniper` → ENV D (rig_arms). `cue.weapon_<set>_fire(_suppressed)` + reload cues per set → ENV C. Animated parts `Pump`/`Bolt` are in visual_slots.md, and ENV A animates them.
+- QB-43: `WeaponStats.reload_per_round_s / reload_start_s / reload_end_s` added (0 = magazine reload). Shell-by-shell reload is interruptible by firing (PD2), and ENV A implements it. Display pellet exponent 1 (show pellet damage × pellets): accepted.
+- QB-44: recorded in visual_slots.md.
+- QB-45: perk points = floor(XP / 500) from all XP (◇). Move the setting to `content/data/tweak/`.
