@@ -332,6 +332,21 @@ func test_crew_spawns_with_camera_and_paused_input() -> void:
 	assert_false(RangeCrewBridge.input_enabled(r.crew), "back to the panels pauses it again")
 	assert_false(bool(r.crew.get(&"intent").get(&"fire")), "neutral intent while paused")
 	assert_true(r.overlay.interactive)
+	_check_tracking_hud_model(r)
+
+
+## ui_hud.md v1.2: the range follows the crew through LocalHudModel.track(crew) and reads ammo from it.
+func _check_tracking_hud_model(r: FiringRange) -> void:
+	if UiNav.global_class(&"LocalHudModel") == null:
+		return
+	assert_true(r.hud_model != null and r.hud_model.get_parent() == r, "tracking model lives in the range")
+	assert_eq(r.hud_model.get(&"tracked_crew"), r.crew, "track(crew)")
+	r.hud_model.call(&"refresh")
+	var direct: Dictionary = RangeCrewBridge.ammo(r.crew)
+	var via: Dictionary = RangeCrewBridge.ammo_from_model(r.hud_model)
+	assert_eq(int(via["mag"]), int(direct["mag"]), "mag via the model")
+	assert_eq(int(via["reserve"]), int(direct["reserve"]), "reserve via the model")
+	assert_eq(int(r._crew_ammo()["mag_size"]), r.weapon_stats.mag_size)
 
 
 func test_loadout_swap_reaches_crew() -> void:
