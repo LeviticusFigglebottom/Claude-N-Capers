@@ -1,6 +1,7 @@
 ## In-heist HUD root (contracts/ui_hud.md, D-009). Owner: ENV B.
 ## Binds ONLY to the local HUD model and EventBus. The widgets bind DIRECTLY to the model, which
-## speaks the ui_hud.md v1.3 binding shape (v1.2 adds `custody`, v1.3 `captain_present`/`captain_resistance`) (ENV A's LocalHudModel; MockHudModel for the demo/tests).
+## speaks the ui_hud.md v1.3 binding shape (v1.2 adds `custody`, v1.3 `captain_present`/`captain_resistance`)
+## (ENV A's LocalHudModel; MockHudModel for the demo/tests).
 ## Model resolution, in order:
 ##   1. bind(model) called by the owner (tests, hud_demo);
 ##   2. exported `model_path`;

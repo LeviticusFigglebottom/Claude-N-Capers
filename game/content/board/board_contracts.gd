@@ -23,7 +23,8 @@ class_name BoardContracts
 extends RefCounted
 
 
-## Heists offered on the board: HeistCatalog.entries() (registry def + map scene, QB-55), with the contact from HeistDef.contact, else the city map's entry.
+## Heists offered on the board: HeistCatalog.entries() (registry def + map scene, QB-55), with the
+## contact from HeistDef.contact, else the city map's entry.
 static func pool(city: BoardCityMap = null) -> Array[Dictionary]:
 	return pool_from(HeistCatalog.entries(), city if city != null else BoardCityMap.load_default())
 
