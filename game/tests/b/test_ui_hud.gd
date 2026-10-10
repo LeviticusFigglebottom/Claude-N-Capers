@@ -143,3 +143,42 @@ func test_demo_driver_runs_every_stage() -> void:
 			"demo HUD bound through the G.LOCAL_HUD_MODEL group")
 	demo.queue_free()
 	await wait_frames(1)
+
+
+## ENV A's real LocalHudModel (A1-11 shape) binds through HudModelAdapter (v1.1 binding shape).
+func test_real_local_hud_model_binds_through_adapter() -> void:
+	var cls: Script = UiNav.global_class(&"LocalHudModel")
+	if cls == null:
+		skip("LocalHudModel not in this tree")
+		return
+	_model.remove_from_group(G.LOCAL_HUD_MODEL)
+	var real: Node = cls.new() as Node
+	add_child(real)
+	real.set_process(false)
+	var h: Hud = HUD_SCENE.instantiate() as Hud
+	h.auto_find_model = false
+	add_child(h)
+	await wait_frames(1)
+	h.bind(real)
+	assert_eq(h.model, real)
+	assert_true(h.bound_model() is HudModelAdapter, "A1-11 shape is adapted")
+	real.call(&"refresh")  # no HeistRuntime: stub vitals from Tweak.crew()
+	var hp: float = float(real.get(&"health"))
+	assert_true(hp > 0.0, "stub health")
+	assert_eq(h.vitals.health_label.text, str(roundi(hp)), "vitals bound to the real model's health")
+	real.set(&"ammo_mag", {Enums.WeaponSlot.SECONDARY: 9} as Dictionary[int, int])
+	real.set(&"ammo_reserve", {Enums.WeaponSlot.SECONDARY: 77} as Dictionary[int, int])
+	real.set(&"equipped_slot", Enums.WeaponSlot.SECONDARY)
+	real.emit_signal(&"changed", &"ammo_mag")
+	assert_eq(h.ammo.ammo_label.text, UiText.t(&"ui.hud.ammo", {"mag": 9, "reserve": 77}))
+	real.set(&"phantom_warning", true)
+	real.emit_signal(&"changed", &"phantom_warning")
+	assert_eq(h.bound_model().get(&"warnings"), [&"phantom"] as Array[StringName])
+	real.set(&"pager_timers", [{"pager_id": 3, "guard_net_id": 9, "time_left": 5.0, "answering": true}] as Array[Dictionary])
+	real.emit_signal(&"changed", &"pager_timers")
+	var pagers: Array = h.bound_model().get(&"pagers") as Array
+	assert_eq(pagers.size(), 1)
+	assert_near(float((pagers[0] as Dictionary)["time_left_s"]), 5.0)
+	h.queue_free()
+	real.queue_free()
+	await wait_frames(1)

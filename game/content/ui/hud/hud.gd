@@ -3,8 +3,11 @@
 ##   1. bind(model) called by the owner (MenuFlow, tests, hud_demo);
 ##   2. exported `model_path`;
 ##   3. discovery through group G.LOCAL_HUD_MODEL (ui_hud.md v1.1, D-024: exactly one per peer,
-##      joined in the model's _ready; MockHudModel joins it too), polled every LOOKUP_INTERVAL_S
-##      while unbound, and again after the bound model is freed.
+##      joined in the model's _ready; MockHudModel joins it too), else a node named
+##      MODEL_NODE_NAME (HeistRuntime's child), polled every LOOKUP_INTERVAL_S while unbound, and
+##      again after the bound model is freed.
+## A model without the v1.1 signals (ENV A's A1-11 LocalHudModel) is wrapped in a HudModelAdapter;
+## `model` stays the source and the widgets bind to `bound_model()`.
 ## No hard dependency on ENV A classes. Layout is anchored for 1280x720 .. 3840x2160 (canvas_items
 ## stretch at the 1920x1080 base).
 class_name Hud
@@ -14,6 +17,8 @@ signal model_bound(model: Node)
 
 const LOOKUP_INTERVAL_S: float = 0.25
 const TOAST_S: float = 3.0
+## Name of ENV A's LocalHudModel under HeistRuntime (fallback discovery while it is not in the group).
+const MODEL_NODE_NAME: String = "LocalHudModel"
 
 @export var model_path: NodePath
 ## Discover the model through group G.LOCAL_HUD_MODEL when nothing is bound.
@@ -31,6 +36,7 @@ var teammates: TeammatePanels
 var status: StatusPanel
 var toast_label: Label
 var secured_bags: int = 0
+var adapter: HudModelAdapter = null
 var _lookup_t: float = 0.0
 var _toast_t: float = 0.0
 
@@ -48,10 +54,25 @@ func _ready() -> void:
 
 func bind(m: Node) -> void:
 	model = m
+	if adapter != null:
+		adapter.queue_free()
+		adapter = null
+	var target: Node = m
+	if HudModelAdapter.needs_adapter(m):
+		adapter = HudModelAdapter.new()
+		adapter.name = "HudModelAdapter"
+		add_child(adapter)
+		adapter.setup(m)
+		target = adapter
 	for w: HudWidget in widgets():
-		w.bind(m)
+		w.bind(target)
 	if m != null:
 		model_bound.emit(m)
+
+
+## The node the widgets read: the model itself, or its HudModelAdapter.
+func bound_model() -> Node:
+	return adapter if adapter != null else model
 
 
 func widgets() -> Array[HudWidget]:
@@ -122,6 +143,8 @@ func _process(delta: float) -> void:
 ## Bind the local HUD model found through group G.LOCAL_HUD_MODEL. Returns it (or null).
 func discover_model() -> Node:
 	var found: Node = get_tree().get_first_node_in_group(G.LOCAL_HUD_MODEL)
+	if found == null:
+		found = get_tree().root.find_child(MODEL_NODE_NAME, true, false)
 	if found != null and found != model:
 		bind(found)
 	return found

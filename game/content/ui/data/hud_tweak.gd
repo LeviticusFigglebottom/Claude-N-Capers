@@ -23,6 +23,9 @@ const DEFAULT_PATH: String = "res://content/data/ui/hud_tweak.tres"
 @export var assault_color: Color = Color(1.0, 0.25, 0.2)
 @export var delta_better_color: Color = Color(0.35, 0.9, 0.4)
 @export var delta_worse_color: Color = Color(1.0, 0.35, 0.3)
+## Pager answers per heist shown as "pagers left" when the bound model has no `pagers_max`
+## (HudModelAdapter; PD2 S5.2: 4).
+@export var pagers_max: int = 4
 
 
 static func load_default() -> HudTweak:
