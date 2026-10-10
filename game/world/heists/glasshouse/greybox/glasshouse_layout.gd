@@ -365,8 +365,8 @@ const WALL_LIGHTS: Array = [
 	["MonitorWall", Vector3(5.6, 5.85, 2.0), -90.0, Color(0.55, 0.75, 1.0), 0.6, 3.5, Vector3(1.4, 0.6, 0.05)],
 	["TaskLampBenchA", Vector3(8.5, 1.55, 0.2), 180.0, Color(0.92, 0.96, 1.0), 0.7, 2.5, Vector3(0.3, 0.1, 0.18)],
 	["TaskLampBenchB", Vector3(9.75, 1.55, 0.2), 180.0, Color(0.92, 0.96, 1.0), 0.7, 2.5, Vector3(0.3, 0.1, 0.18)],
-	["NeonVossbergSouth", Vector3(15.5, 3.4, 12.2), 180.0, Color(1.0, 0.24, 0.65), 1.2, 7.0, Vector3(2.6, 0.6, 0.1)],
-	["NeonVossbergEast", Vector3(18.2, 3.4, 9.0), -90.0, Color(1.0, 0.24, 0.65), 1.2, 7.0, Vector3(2.6, 0.6, 0.1)],
+	["NeonVossbergSouth", Vector3(15.5, 3.4, 12.2), 180.0, Color(1.0, 0.24, 0.65), 0.9, 4.5, Vector3(2.6, 0.6, 0.1)],
+	["NeonVossbergEast", Vector3(18.2, 3.4, 9.0), -90.0, Color(1.0, 0.24, 0.65), 0.9, 4.5, Vector3(2.6, 0.6, 0.1)],
 ]
 
 # --- Spawns, patrols, tactical -------------------------------------------------------------
