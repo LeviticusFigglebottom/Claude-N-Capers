@@ -1,0 +1,64 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dteq81o41gym3" path="res://assets/weapons/wpn_mule_12/wpn_mule_12.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 13.0
+pellets = 10
+headshot_mult = 1.0
+fire_rate_rpm = 72.0
+spread_deg_hip = 4.6
+spread_deg_ads = 2.6
+recoil_kick_deg = 3.0
+recoil_horizontal_deg = 1.0
+falloff_start_m = 6.0
+falloff_end_m = 18.0
+falloff_min_mult = 0.12
+mag_size = 5
+total_ammo = 35
+reload_time_s = 2.9665
+reload_empty_time_s = 3.7665
+reload_per_round_s = 0.4333
+reload_start_s = 0.4
+reload_end_s = 0.4
+reload_end_empty_s = 1.2
+equip_time_s = 0.45
+ads_time_s = 0.26
+concealment = 25
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 16.0
+ammo_pickup_min = 1.0
+ammo_pickup_max = 2.0
+suppressed = false
+noise_radius_m = 80.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.mule_12"
+display_name = "Mule 12"
+manufacturer = "Tillman Ironworks"
+weapon_class = 3
+slot = 1
+fire_modes = Array[StringName]([&"pump"])
+base = SubResource("base")
+price = 26000
+unlock_level = 13
+mod_slots = {
+3: [&"mod.mule_ghost_ring", &"mod.rail_reflex_sight"],
+6: [&"mod.mule_folding_stock"],
+7: [&"mod.mule_standard_tube", &"mod.mule_extended_tube"]
+}
+default_mods = {
+3: &"mod.mule_ghost_ring",
+7: &"mod.mule_standard_tube"
+}
+fire_cue = &"cue.weapon_shotgun_fire"
+fire_cue_suppressed = &"cue.weapon_shotgun_fire_suppressed"
+anim_set = &"shotgun"
+model = ExtResource("3")

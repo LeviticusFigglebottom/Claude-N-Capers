@@ -1,0 +1,11 @@
+asset: wpn_marshal_357
+script: tools/blender/weapons/marshal_357.py
+params: {}
+seed: 3406354531  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category weapons --asset wpn_marshal_357
+edit policy: generated file, never edit by hand; change the script and rebuild
+crane: Crane pivot on the hinge axis; +80 deg about local Z (Godot) swings the cylinder out left
+origin: firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top
+tri_budget: 25000
+tris_lod0: 5352

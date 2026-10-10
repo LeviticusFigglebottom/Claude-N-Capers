@@ -165,3 +165,57 @@ Models: `tools/blender/weapons/<weapon>.py` + `<weapon>_mods.py` (+ `rail_optics
 `_common.py` and `_<weapon>.py`; previews `game/assets/weapons/<weapon>_preview_*.png`. Tube
 magazines hang from `Magwell` at the loading port; the LMG's quick-change barrel is
 `BarrelMount/StockBarrel`; folding/removable stocks are `StockMount/StockStock`.
+
+## Armory batch 2 (B4-12): `weapons/` + `mods/`
+Ten weapons toward the P5 launch target (36). Makers are the existing original ones. Shapes are V
+(L3.2 falloff by class, L3.4 sniper piercing, L3.5/L3.7 suppressors, P6 trade-offs, PD2 slots incl. a
+secondary shotgun and primary akimbo pairs); every number is ◇. Headshot bonus 1.0 for all (D-026).
+
+| Weapon | Class / slot / modes / anim set | Dmg × pellets | RPM | Mag / total | Falloff start/end/min | Conc | Reload | Threat | Price / unlock |
+|---|---|---|---|---|---|---|---|---|---|
+| `drover_762` Drover 762 (Graff-Lindqvist) | AR / PRI / auto, semi / rifle | 80 | 600 | 30 / 120 | none | 16 | 2.6 / 3.4 | 14 | 42000 / 9 |
+| `mastiff_45` Mastiff .45 (Tillman) | SMG / SEC / auto, semi / smg | 52 | 620 | 25 / 150 | 15 / 32 / 0.5 | 22 | 2.4 / 3.2 | 12 | 30000 / 11 |
+| `anvil_lmg` Anvil (Tillman) | LMG / PRI / auto / lmg | 64 | 600 | 100 / 250 | 25 / 45 / 0.6 | 1 | 6.0 / 7.0 | 26 | 68000 / 26 |
+| `condor_50` Condor .50 (Marrow & Kell) | SNIPER / PRI / bolt / sniper | 520 | 35 | 5 / 25 | 30 / 70 / **1.5** | 0 | 3.6 / 4.6 | 40 | 80000 / 32 |
+| `mule_12` Mule 12 (Tillman) | SHOTGUN / **SEC** / pump / shotgun | 13 × 10 | 72 | 5 / 35 | 6 / 18 / 0.12 | 25 | shell: 0.4 + n × 0.4333 + 0.4 (1.2 empty) = 2.97 / 3.77 | 16 | 26000 / 13 |
+| `akimbo_warden_45` Warden .45 Pair (Marrow & Kell) | PISTOL / **PRI** / semi / akimbo | 62 | 400 | 16 / 128 | 15 / 30 / 0.5 | 23 | 3.0 / 3.6 | 11 | 36000 / 16 |
+| `marshal_357` Marshal .357 (Marrow & Kell) | PISTOL / SEC / semi / revolver | 155 | 330 | 6 / 54 | 18 / 35 / 0.5 | 26 | 2.4 / 2.4 (speedloader) | 12 | 30000 / 10 |
+| `falchion_dmr` Falchion DMR (Brannock) | AR / PRI / semi / rifle | 150 | 420 | 20 / 80 | none | 8 | 2.7 / 3.5 | 18 | 52000 / 20 |
+| `wasp_pdw` Wasp PDW (Brannock) | SMG / SEC / auto, semi / smg | 30 | 850 | 30 / 210 | 16 / 32 / 0.5 | 27 | 2.2 / 2.9 | 9 | 28000 / 7 |
+| `sparrow_mp` Sparrow MP (Halvard Arms) | PISTOL / SEC / auto, semi / pistol | 30 | 880 | 20 / 140 | 12 / 26 / 0.45 | 28 | 1.8 / 2.4 | 7 | 22000 / 5 |
+Condor: `armor_pierce` 1.0, `shield_pierce`, `wall_pierce` (L3.4); pickup 0.5–1.5 rounds. Spreads, recoil,
+equip/ADS times, noise and pickups are in the .tres files (all ◇).
+
+Rules the numbers respect (test-enforced in `test_armory_batch2.gd`): ENV D's shared viewmodel clips
+(characters.md v1.4) cap full-auto smg/rifle/lmg sets at ≤ 900 rpm (3 f fire clip ≤ 1.5 shot intervals),
+the shotgun set at ≤ 75 rpm (24 f pump clip) and the sniper set at ≤ 50 rpm (9 f fire + 27 f bolt), so the
+DMR uses the rifle set and there is no semi-auto shotgun yet. The Mule loads shells one by one with the
+Plowman's clip timings (D-044/D-045; the resolver derives the totals, no raw reload deltas on its mods).
+The Marshal uses a speedloader (PD2 Bronco): a magazine-style reload (per-round fields 0, tactical =
+empty) and no suppressor. The Warden .45 Pair is one WeaponDef (PISTOL class, primary slot like PD2
+akimbos, D-050) with `anim_set = akimbo`, the pistol cue family, twice the Warden's magazine and worse
+spread and concealment. TODO(D-050): set `akimbo = true` once `WeaponDef.akimbo` is on trunk.
+
+Mods (stock defaults have a zero delta, except the Condor's stock 6x scope = magnification 6.0):
+| Weapon | Optional mods (type: main effect / downside) |
+|---|---|
+| Drover | `drover_suppressor` (silent, threat 0 / dmg −6, conc −3), `rail_reflex_sight`, `rail_prism_scope`, `drover_folding_stock` (STOCK: conc +4 / kick +0.4, horiz +0.2, ADS spread +0.4), `drover_extended_mag` (+10 / conc −2, reload +0.3) |
+| Mastiff | `mastiff_suppressor` (silent / dmg −4, conc −3), `rail_reflex_sight`, `mastiff_vertical_grip` (kick −0.2 / conc −1, ADS +0.03), `mastiff_extended_mag` (+10 / conc −2, reload +0.3) |
+| Anvil | `anvil_short_barrel` (BARREL: conc +4 / ADS spread +0.4, kick +0.15), `rail_reflex_sight`, `rail_prism_scope`, `anvil_bipod` (kick −0.4 / conc −2, ADS +0.05), `anvil_box_150` (+50 / conc −3, reload +0.8, equip +0.1) |
+| Condor | `condor_suppressor` (silent / dmg −40, conc −4, ADS +0.08), `condor_scope_12x` (12× / conc −2, ADS +0.1), `condor_bipod` (kick −1.0 / conc −2, ADS +0.05), `condor_extended_mag` (+3 / conc −2, reload +0.4) |
+| Mule | `rail_reflex_sight`, `mule_folding_stock` (STOCK, the Mule ships stockless: kick −0.8, ADS spread −0.4 / conc −4, equip +0.05), `mule_extended_tube` (+2 shells / conc −2; reload through mag only) |
+| Warden Pair | `akimbo_w45_suppressor` (silent / dmg −4, conc −4), `akimbo_w45_compensator` (kick −0.5 / conc −3; **conflicts** with the suppressor), `akimbo_w45_reflex_sight` (ADS spread −0.15, 1.1× / conc −2), `akimbo_w45_extended_mag` (+8 / conc −3, reload +0.4); all reuse the Warden's mod glbs |
+| Marshal | `marshal_long_barrel` (BARREL: dmg +15, ADS spread −0.2 / conc −3, equip +0.05), `marshal_snub_barrel` (BARREL: conc +3 / dmg −15, ADS spread +0.3, kick +0.3), `marshal_rubber_grip` (GRIP: kick −0.35 / conc −1), `marshal_reflex_sight` (ADS spread −0.15, 1.1× / conc −1) |
+| Falchion | `falchion_suppressor` (silent / dmg −10, conc −3), `rail_reflex_sight`, `rail_prism_scope`, `falchion_bipod` (kick −0.5 / conc −2, ADS +0.05), `falchion_extended_mag` (+5 / conc −2, reload +0.25) |
+| Wasp | `wasp_suppressor` (silent / dmg −2, conc −2), `rail_reflex_sight`, `wasp_end_cap` (STOCK removed: conc +2 / kick +0.3, horiz +0.2, ADS spread +0.4), `wasp_extended_mag` (+10 / conc −2, reload +0.3) |
+| Sparrow | `sparrow_suppressor` (silent / dmg −2, conc −2), `sparrow_reflex_sight` (ADS spread −0.15, 1.1× / conc −1), `sparrow_wire_stock` (STOCK: kick −0.35, horiz −0.25 / conc −3, equip +0.05), `sparrow_extended_mag` (+12 / conc −3, reload +0.35) |
+Every suppressor's `suppression` delta equals minus its weapon's threat (L3.5). Mod prices are ◇.
+
+Models: `tools/blender/weapons/<weapon>.py` + `<weapon>_mods.py`, helpers `_<weapon>.py`; the pair is
+`akimbo_warden_45.py` (one Warden + an `Offhand` marker; `WeaponVisual` instances the gun twice and
+mirrors the mods). Animated parts: `Pump` (Mule), `Bolt` (Condor; origin on the bore axis, the Heron's
+bolt now too), `FeedCover` (Anvil, rear hinge, D-044), `Slide` (Sparrow), and the revolver's `Crane`
+(hinge pivot; +80° about local Z swings the cylinder out left) with `Crane/Cylinder` (60° per shot) and
+the speedloader `Magwell` on the cylinder. Stock parts beyond sight/magazine: `StockStock` (Drover walnut
+stock, Mastiff wire stock, Wasp collapsed stock), `StockBarrel` (Anvil, Marshal), `StockGrip` (Marshal).
+Previews: `game/assets/weapons/<weapon>_preview_*.png`.

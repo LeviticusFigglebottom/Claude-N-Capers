@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="WeaponModDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_mod_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://fxuwrdm02ffm" path="res://assets/weapons/mod_condor_scope_6x/mod_condor_scope_6x.glb" id="3"]
+
+[sub_resource type="Resource" id="delta"]
+script = ExtResource("2")
+pellets = 0
+falloff_start_m = 0.0
+falloff_end_m = 0.0
+falloff_min_mult = 0.0
+headshot_mult = 0.0
+magnification = 6.0
+equip_time_s = 0.0
+ads_time_s = 0.0
+noise_radius_m = 0.0
+
+[resource]
+script = ExtResource("1")
+id = &"mod.condor_scope_6x"
+display_name = "Fixed 6x Scope"
+mod_type = 3
+delta = SubResource("delta")
+price = 0
+unlock = &""
+model = ExtResource("3")

@@ -118,7 +118,12 @@ def _bolt(ctx, mats):
         mb.box((min(x0, x1) - 0.0025, root_y - 0.005 - 0.012 * t1, min(z0, z1) - 0.003),
                (max(x0, x1) + 0.0025, root_y + 0.004 - 0.012 * t0, max(z0, z1) + 0.003), mat=bare)
     mb.cylinder(0.0095, 0.020, segments=20, centre=(0.047, root_y - 0.014, k.BORE_Z - 0.034), axis="X", mat=st)
-    return c.finish(mb, "Bolt", bevel=0.0007, segments=1)
+    # B4-12: origin ON the bore axis at the bolt rear, so ENV A can lift it about local Z and slide it +Z
+    pivot = (0.0, k.REC_Y0 - 0.023, k.BORE_Z)
+    mb.translate(tuple(-v for v in pivot))
+    bolt = c.finish(mb, "Bolt", bevel=0.0007, segments=1)
+    bolt.location = pivot
+    return bolt
 
 
 def _barrel(ctx, mats):

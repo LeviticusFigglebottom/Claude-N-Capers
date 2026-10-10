@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="WeaponModDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_mod_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://bvlerutfkt08x" path="res://assets/weapons/mod_anvil_box_150/mod_anvil_box_150.glb" id="3"]
+
+[sub_resource type="Resource" id="delta"]
+script = ExtResource("2")
+pellets = 0
+falloff_start_m = 0.0
+falloff_end_m = 0.0
+falloff_min_mult = 0.0
+headshot_mult = 0.0
+magnification = 0.0
+equip_time_s = 0.1
+ads_time_s = 0.0
+noise_radius_m = 0.0
+mag_size = 50
+total_ammo = 50
+concealment = -3
+reload_time_s = 0.8
+reload_empty_time_s = 0.8
+
+[resource]
+script = ExtResource("1")
+id = &"mod.anvil_box_150"
+display_name = "Hundred-Fifty-Round Box"
+mod_type = 7
+delta = SubResource("delta")
+price = 8000
+unlock = &""
+model = ExtResource("3")

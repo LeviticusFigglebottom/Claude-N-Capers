@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://b3khovccvvcel" path="res://assets/weapons/wpn_mastiff_45/wpn_mastiff_45.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 52.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 620.0
+spread_deg_hip = 4.4
+spread_deg_ads = 1.7
+recoil_kick_deg = 0.95
+recoil_horizontal_deg = 0.55
+falloff_start_m = 15.0
+falloff_end_m = 32.0
+falloff_min_mult = 0.5
+mag_size = 25
+total_ammo = 150
+reload_time_s = 2.4
+reload_empty_time_s = 3.2
+equip_time_s = 0.5
+ads_time_s = 0.26
+concealment = 22
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 12.0
+ammo_pickup_min = 4.0
+ammo_pickup_max = 9.0
+suppressed = false
+noise_radius_m = 65.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.mastiff_45"
+display_name = "Mastiff .45"
+manufacturer = "Tillman Ironworks"
+weapon_class = 1
+slot = 1
+fire_modes = Array[StringName]([&"auto", &"semi"])
+base = SubResource("base")
+price = 30000
+unlock_level = 11
+mod_slots = {
+2: [&"mod.mastiff_suppressor"],
+3: [&"mod.mastiff_iron_sights", &"mod.rail_reflex_sight"],
+5: [&"mod.mastiff_vertical_grip"],
+7: [&"mod.mastiff_standard_mag", &"mod.mastiff_extended_mag"]
+}
+default_mods = {
+3: &"mod.mastiff_iron_sights",
+7: &"mod.mastiff_standard_mag"
+}
+fire_cue = &"cue.weapon_smg_fire"
+fire_cue_suppressed = &"cue.weapon_smg_fire_suppressed"
+anim_set = &"smg"
+model = ExtResource("3")
