@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="HeistVariantTable" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_variant_table.gd" id="1_4lly7"]
+
+[resource]
+script = ExtResource("1_4lly7")
+rules = Array[Dictionary]([{
+"group": &"keycard",
+"pick": Vector2i(1, 1)
+}, {
+"difficulty_add": [0, 0, 0, 1, 1, 1],
+"group": &"guard_extra",
+"pick": Vector2i(0, 1)
+}])
+rare_events = Array[Dictionary]([{
+"chance": 0.1,
+"effects": {},
+"good": true,
+"id": &"rare.extra_cash"
+}])
+scalars = Array[Dictionary]([{
+"id": &"escape_delay",
+"values": [0, 30]
+}])

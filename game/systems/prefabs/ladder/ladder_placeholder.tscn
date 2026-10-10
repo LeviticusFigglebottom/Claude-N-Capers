@@ -1,0 +1,70 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_metal"]
+albedo_color = Color(0.6, 0.6, 0.62, 1)
+
+[sub_resource type="BoxMesh" id="box_rail"]
+material = SubResource("mat_metal")
+size = Vector3(0.05, 3, 0.05)
+
+[sub_resource type="BoxMesh" id="box_rung"]
+material = SubResource("mat_metal")
+size = Vector3(0.5, 0.04, 0.04)
+
+[node name="LadderPlaceholder" type="Node3D"]
+
+[node name="Rails" type="Node3D" parent="."]
+
+[node name="RailL" type="MeshInstance3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 1.5, 0)
+mesh = SubResource("box_rail")
+
+[node name="RailR" type="MeshInstance3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 1.5, 0)
+mesh = SubResource("box_rail")
+
+[node name="Rung0" type="MeshInstance3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+mesh = SubResource("box_rung")
+
+[node name="Rung1" type="MeshInstance3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+mesh = SubResource("box_rung")
+
+[node name="Rung2" type="MeshInstance3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+mesh = SubResource("box_rung")
+
+[node name="Rung3" type="MeshInstance3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
+mesh = SubResource("box_rung")
+
+[node name="Rung4" type="MeshInstance3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 0)
+mesh = SubResource("box_rung")
+
+[node name="Rung5" type="MeshInstance3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
+mesh = SubResource("box_rung")
+
+[node name="Rung6" type="MeshInstance3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.95, 0)
+mesh = SubResource("box_rung")
+
+[node name="Rung7" type="MeshInstance3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 0)
+mesh = SubResource("box_rung")
+
+[node name="Rung8" type="MeshInstance3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.55, 0)
+mesh = SubResource("box_rung")
+
+[node name="Rung9" type="MeshInstance3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.85, 0)
+mesh = SubResource("box_rung")
+
+[node name="Top" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0.4)
+
+[node name="Bottom" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)

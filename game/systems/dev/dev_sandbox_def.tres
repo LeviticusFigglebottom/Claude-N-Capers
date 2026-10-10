@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="HeistDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_def.gd" id="1_t7v8j"]
+
+[resource]
+script = ExtResource("1_t7v8j")
+id = &"dev_sandbox"
+display_name = "Dev Sandbox"
+briefing = "ENV A test compound. Not a heist; never ships."
+map_scene = "res://systems/dev/dev_sandbox.tscn"
+base_payout = 10000
+loot = Array[StringName]([&"loot.jewelry"])
+objectives = Array[StringName]([&"get_loot", &"escape"])
+escape_options = Array[StringName]([&"van"])

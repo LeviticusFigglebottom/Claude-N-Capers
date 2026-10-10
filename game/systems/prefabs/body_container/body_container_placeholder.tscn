@@ -1,0 +1,31 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_body"]
+albedo_color = Color(0.2, 0.4, 0.25, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_lid"]
+albedo_color = Color(0.15, 0.3, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="box_body_2"]
+material = SubResource("mat_body")
+size = Vector3(1.8, 1.1, 1)
+
+[sub_resource type="BoxMesh" id="box_cover_3"]
+material = SubResource("mat_lid")
+size = Vector3(1.8, 0.05, 1)
+
+[node name="BodyContainerPlaceholder" type="Node3D"]
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+mesh = SubResource("box_body_2")
+
+[node name="Lid" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0.5)
+
+[node name="Cover" type="MeshInstance3D" parent="Lid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, -0.5)
+mesh = SubResource("box_cover_3")
+
+[node name="Inside" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)

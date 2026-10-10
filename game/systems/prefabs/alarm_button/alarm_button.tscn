@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://systems/prefabs/alarm_button/alarm_button.gd" id="1_alarm_button"]
+
+[node name="AlarmButton" type="Node3D"]
+script = ExtResource("1_alarm_button")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="UsePoint" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -1.2, -0.7)

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://systems/prefabs/keycard_pickup/keycard_pickup.gd" id="1_keycard_pick"]
+
+[ext_resource type="Script" path="res://systems/interaction/interactable_component.gd" id="2_interactable"]
+
+[node name="KeycardPickup" type="Node3D"]
+script = ExtResource("1_keycard_pick")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="UsePoint" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.7)
+
+[node name="Interactable" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+script = ExtResource("2_interactable")
+kind = &"pickup_item"

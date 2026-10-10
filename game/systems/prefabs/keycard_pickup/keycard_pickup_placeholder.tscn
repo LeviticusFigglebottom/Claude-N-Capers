@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_card"]
+albedo_color = Color(0.9, 0.9, 0.95, 1)
+
+[sub_resource type="BoxMesh" id="box_card_1"]
+material = SubResource("mat_card")
+size = Vector3(0.085, 0.006, 0.055)
+
+[node name="KeycardPickupPlaceholder" type="Node3D"]
+
+[node name="Card" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.003, 0)
+mesh = SubResource("box_card_1")

@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_cash"]
+albedo_color = Color(0.3, 0.6, 0.3, 1)
+
+[sub_resource type="BoxMesh" id="box_cash_1"]
+material = SubResource("mat_cash")
+size = Vector3(0.16, 0.06, 0.08)
+
+[node name="SmallLootPlaceholder" type="Node3D"]
+
+[node name="Cash" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+mesh = SubResource("box_cash_1")

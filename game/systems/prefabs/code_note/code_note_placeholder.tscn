@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_paper"]
+albedo_color = Color(0.95, 0.92, 0.6, 1)
+
+[sub_resource type="BoxMesh" id="box_paper_1"]
+material = SubResource("mat_paper")
+size = Vector3(0.21, 0.004, 0.15)
+
+[node name="CodeNotePlaceholder" type="Node3D"]
+
+[node name="Paper" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.002, 0)
+mesh = SubResource("box_paper_1")
