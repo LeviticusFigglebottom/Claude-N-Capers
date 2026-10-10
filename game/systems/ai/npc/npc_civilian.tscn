@@ -1,6 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://systems/ai/npc/npc_base.gd" id="1"]
+[ext_resource type="Script" path="res://systems/ai/civilian/civilian_brain.gd" id="2"]
+[ext_resource type="Script" path="res://systems/ai/npc/npc_motor.gd" id="3"]
+[ext_resource type="Script" path="res://systems/interaction/interactable_component.gd" id="4"]
 
 [sub_resource type="CapsuleShape3D" id="cap"]
 radius = 0.35
@@ -13,6 +16,7 @@ height = 1.78
 [node name="Npc_civilian" type="CharacterBody3D"]
 script = ExtResource("1")
 role = &"civilian"
+detection_preset = &"civilian"
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
@@ -23,3 +27,19 @@ shape = SubResource("cap")
 [node name="Placeholder" type="MeshInstance3D" parent="Visual"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
 mesh = SubResource("capmesh")
+
+[node name="Motor" type="Node" parent="."]
+script = ExtResource("3")
+
+[node name="Brain" type="Node" parent="."]
+script = ExtResource("2")
+
+[node name="TieInteractable" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+script = ExtResource("4")
+kind = &"cable_tie"
+enabled = false
+interaction_time_s = 2.0
+prompt_key = &"ui.prompt.tie_civilian"
+speed_modifier_key = &"stealth.cable_tie_speed_mult"
+priority = 10

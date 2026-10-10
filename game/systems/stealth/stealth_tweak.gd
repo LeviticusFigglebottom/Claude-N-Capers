@@ -29,6 +29,17 @@ extends Resource
 ## S1.1 ◇ casing: fill only in RESTRICTED or within this distance of a guard, at this rate.
 @export var casing_too_close_m: float = 3.0
 @export var casing_rate_mult: float = 0.35
+## S1.1 ◇ (open question for the lead): whether the "too close to a guard" rule also applies while
+## the unmasked crew member stands in a PUBLIC zone. false = PUBLIC is always safe while unmasked.
+@export var casing_too_close_applies_in_public: bool = false
+## Height above the crew member's feet used for zone lookups (m).
+@export var zone_probe_height_m: float = 0.9
+## Height above a stimulus source's origin used for its LOS ray (m).
+@export var stimulus_los_height_m: float = 0.3
+## Max seconds integrated in one staggered observer update (guards against hitches).
+@export var max_tick_dt_s: float = 0.4
+## Below this change a detection_progress update is not re-sent.
+@export var progress_send_epsilon: float = 0.005
 ## Detection tick rate (architecture.md §10: 10 Hz staggered).
 @export var tick_hz: float = 10.0
 ## Points on the crew body tested for LOS (heights above feet, m).
@@ -87,3 +98,16 @@ extends Resource
 @export var shout_all_within_m: float = 6.0
 @export var fleeing_shout_chance: float = 0.5
 @export var cable_tie_s: float = 2.0
+## A1-06 ◇: one shout per crew member per this many seconds.
+@export var shout_cooldown_s: float = 0.8
+## A1-06 ◇ civilian locomotion (m/s).
+@export var civilian_walk_speed: float = 1.3
+@export var civilian_run_speed: float = 4.0
+## A1-06 ◇ S7.5 wander: CALM civilians walk to a random civilian/staff PatrolPoint within
+## `civilian_wander_radius_m` every [min, max] s.
+@export var civilian_wander_interval_s: Vector2 = Vector2(15.0, 40.0)
+@export var civilian_wander_radius_m: float = 15.0
+## A1-06 ◇: distance at which a panicked civilian reaches a guard to alert them (m).
+@export var civilian_guard_reach_m: float = 1.5
+## A1-06 ◇ loud (S11.2): panicked civilians run this far from the nearest crew member, then cower.
+@export var civilian_flee_distance_m: float = 10.0

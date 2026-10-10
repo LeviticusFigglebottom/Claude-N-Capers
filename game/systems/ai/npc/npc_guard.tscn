@@ -1,6 +1,10 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://systems/ai/npc/npc_base.gd" id="1"]
+[ext_resource type="Resource" path="res://systems/ai/data/enemies/security_officer.tres" id="2"]
+[ext_resource type="Script" path="res://systems/ai/guard/guard_brain.gd" id="3"]
+[ext_resource type="Script" path="res://systems/ai/npc/npc_motor.gd" id="4"]
+[ext_resource type="Resource" path="res://systems/ai/data/guard_tweak.tres" id="5"]
 
 [sub_resource type="CapsuleShape3D" id="cap"]
 radius = 0.35
@@ -13,6 +17,9 @@ height = 1.78
 [node name="Npc_guard" type="CharacterBody3D"]
 script = ExtResource("1")
 role = &"guard"
+enemy_def = ExtResource("2")
+one_shot_when_unalerted = true
+detection_preset = &"guard"
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
@@ -23,3 +30,10 @@ shape = SubResource("cap")
 [node name="Placeholder" type="MeshInstance3D" parent="Visual"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
 mesh = SubResource("capmesh")
+
+[node name="Motor" type="Node" parent="."]
+script = ExtResource("4")
+
+[node name="Brain" type="Node" parent="."]
+script = ExtResource("3")
+tweak = ExtResource("5")
