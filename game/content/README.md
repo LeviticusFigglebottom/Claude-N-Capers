@@ -137,5 +137,11 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 
 ## Rules
 Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, every string through
-`StringTable`, only grant keys from `ModifierKeys.KEYS`. Code that builds a mod delta starts from
+`StringTable`, only grant keys from `ModifierKeys.KEYS`.
+**Objective ids (D-039)** come from the heist design doc's Objectives section `[tag]`s
+(`docs/design/heists/<id>.md`); strings are `objective.<heist>.<tag>`. Read them there, never guess
+(`test_strings.test_glasshouse_objectives_follow_the_design_doc`). **Blocked reasons** are `ui.blocked.*`
+(D-038 QA-14; no `ui.prompt.blocked.*`). Voice lines requested by id (`vo.<speaker>.<event>`, e.g.
+`vo.guard.cuff_warning`) get a `data/voice/lines.tres` entry and `voice.<id>` text;
+`test_strings.test_keys_requested_by_systems_exist` scans ENV A/C code for prompt/blocked/voice keys. Code that builds a mod delta starts from
 `WeaponStats.make_delta()`; `.tres` deltas spell its zeros out (D-022 QB-5). Tests: `game/tests/b/test_*.gd`.

@@ -107,15 +107,36 @@ ui.prompt.deploy,Hold {key} to deploy {item}
 ui.prompt.trade_hostage,Hold {key} to trade the hostage
 ui.prompt.open_window,Press {key} to open the window
 ui.prompt.climb,Press {key} to climb
-ui.prompt.blocked.casing,Suspicious actions not allowed
-ui.prompt.blocked.need_keycard,Requires a keycard
-ui.prompt.blocked.need_body_bag,No body bags left
-ui.prompt.blocked.need_cable_tie,No cable ties left
-ui.prompt.blocked.carrying_bag,Hands full
-ui.prompt.blocked.need_skill,Requires a skill
-ui.prompt.blocked.in_use,Someone is already on it
-ui.prompt.blocked.locked,Locked
-ui.prompt.blocked.need_item,Requires {item}
+ui.prompt.enter_code,Hold {key} to enter the code
+ui.prompt.read_note,Press {key} to read the note
+ui.prompt.place_saw,Hold {key} to place the saw
+ui.prompt.place_c4,Hold {key} to place the charge
+ui.prompt.start_time_lock,Hold {key} to start the time lock
+ui.prompt.zipline_bag,Hold {key} to send the bag down the line
+ui.prompt.use_first_aid_kit,Hold {key} to use the first aid kit
+ui.prompt.ecm_feedback,Hold {key} to trigger ECM feedback
+ui.prompt.uncuff,Hold {key} to cut the cuffs
+ui.prompt.suspicious_not_allowed,Suspicious actions not allowed
+ui.prompt.break_glass,Press {key} to smash the glass
+ui.prompt.pick_bag,Hold {key} to pick up the bag
+ui.blocked.casing,Suspicious actions not allowed
+ui.blocked.need_keycard,Requires a keycard
+ui.blocked.need_body_bag,No body bags left
+ui.blocked.need_cable_tie,No cable ties left
+ui.blocked.carrying_bag,Hands full
+ui.blocked.need_skill,Requires a skill
+ui.blocked.in_use,Someone is already on it
+ui.blocked.locked,Locked
+ui.blocked.need_item,Requires {item}
+ui.blocked.requires_item,You need the right item
+ui.blocked.phase,Not now
+ui.blocked.busy,Someone is already on it
+ui.blocked.disabled,Out of order
+ui.blocked.state,Can't do that right now
+ui.blocked.code_unknown,You don't know the code
+ui.blocked.requires_bag,You need to carry a bag
+ui.blocked.no_deployable,You have none left
+ui.blocked.no_space,No room to place it here
 ui.results.title,Payday
 ui.results.success,Heist complete
 ui.results.failure,Heist failed
@@ -213,13 +234,6 @@ item.loot.body_bag.desc,Heavy and awkward. Out of sight is out of mind.
 heist.glasshouse.name,Glasshouse
 heist.glasshouse.subtitle,Vossberg Jewelers
 heist.glasshouse.brief,Vossberg keeps the good stones in the back and the cameras in the front. Odile wants the back.
-objective.glasshouse.case_store,Case the store
-objective.glasshouse.find_keycard,Find a keycard
-objective.glasshouse.open_back_room,Get into the back room
-objective.glasshouse.drill_safe,Drill the safe
-objective.glasshouse.take_jewelry,Bag the jewelry
-objective.glasshouse.secure_loot,Secure the bags ({count}/{total})
-objective.glasshouse.wait_escape,Hold out until the van arrives
 objective.glasshouse.escape,Get to the van
 contact.odile_vance,Odile Vance
 contact.hollis_reyes,"Hollis ""Hammer"" Reyes"
@@ -293,6 +307,10 @@ voice.vo.mercer.heist_failed_1,That one's gone. We'll talk about it later.
 voice.vo.mercer.heist_failed_2,Pull out. There's nothing left worth getting caught for.
 voice.vo.mercer.stealth_success_1,In and out and nobody the wiser. That's how it's supposed to go.
 voice.vo.mercer.stealth_success_2,Not a single shot fired. I'm almost impressed.
+voice.vo.mercer.abort,"That's the alarm. This one was quiet or nothing, so we're done. Pull out."
+voice.vo.mercer.pager_last,That was the last pager they'll swallow. Keep the rest breathing.
+voice.vo.mercer.dev_start,Test run. Nothing here is real except the bullets.
+voice.vo.guard.cuff_warning,"Hands where I can see them! Don't you move!"
 voice.vo.rook.pager_started_1,Pager. On it.
 voice.vo.rook.pager_started_2,Pager going off. Covering it.
 voice.vo.rook.reloading_1,Reloading.

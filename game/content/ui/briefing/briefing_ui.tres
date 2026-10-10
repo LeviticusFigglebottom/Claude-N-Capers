@@ -10,7 +10,7 @@ placeholder_heists = {
 "contact": &"contact.vance",
 "escape_options": Array[StringName]([&"van"]),
 "loot": Array[StringName]([&"loot.jewelry", &"loot.cash"]),
-"objectives": Array[StringName]([&"case_store", &"find_keycard", &"open_back_room", &"drill_safe", &"take_jewelry", &"secure_loot", &"escape"])
+"objectives": Array[StringName]([&"casing", &"keycard", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"])
 }
 }
 fallback_contact = &"contact.mercer"
