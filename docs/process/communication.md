@@ -18,6 +18,17 @@ Each environment is a **separate session with its own container, tools, and suba
 domain an environment works subagentically (spawns its own Agent subtasks in parallel for
 independent pieces) but its session is the single accountable owner of its branch.
 
+### Live sessions
+
+| Role | Session id | Branch |
+|---|---|---|
+| LEAD | `session_01FCtEudjuevi6MHipm4R11R` | `claude/dreamy-hamilton-pc7vck` |
+| ENV A | `session_016DAFQRw44j8Tz7NA7mCGJw` | `env/a-core` |
+| ENV B | `session_01UY8DitCKjvthQK7cYwvcja` | `env/b-content` |
+| ENV C | `session_01V39kctNgrNn7iYUNoTEiNF` | `env/c-worlds` |
+
+Sessions talk with the `claude-code-remote` `send_message` tool. Environments message only the lead.
+
 ## 2. Branch flow
 
 ```

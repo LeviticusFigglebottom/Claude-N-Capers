@@ -50,3 +50,6 @@ PD2 restricts the captain to online lobbies. Our solo is first-class.
 
 ## D-016 — 2026-10-10 — Fleeing civilians can be shouted down with a 50% roll (◇)
 PD2's wiki calls panicked civilians unpacifiable, but common play shouts them down before they reach a phone. To be revisited in P2 playtest.
+
+## D-017 — 2026-10-10 — Environments launched; P1 dispatched
+ENV A `session_016DAFQRw44j8Tz7NA7mCGJw`, ENV B `session_01UY8DitCKjvthQK7cYwvcja`, ENV C `session_01V39kctNgrNn7iYUNoTEiNF`. Each received its P1 task list (roadmap.md) with milestones M1–M3. Lead loop: read status files and messages, answer questions in this log or in contracts, review, merge, dispatch.
