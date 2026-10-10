@@ -38,7 +38,28 @@
       ],
       "excludes": [
         "game/assets/weapons/**",
-        "tools/blender/weapons/**"
+        "tools/blender/weapons/**",
+        "game/world/characters/**",
+        "game/assets/characters/**",
+        "tools/blender/characters/**",
+        "game/assets/masks/**",
+        "tools/blender/masks/**",
+        "game/world/materials/char_*",
+        "docs/art/style_samples/*/officer*"
+      ]
+    },
+    "d": {
+      "branch": "env/d-art",
+      "owns": [
+        "game/world/characters/**",
+        "game/assets/characters/**",
+        "tools/blender/characters/**",
+        "game/assets/masks/**",
+        "tools/blender/masks/**",
+        "game/world/materials/char_*",
+        "docs/art/style_samples/*/officer*",
+        "game/tests/d/**",
+        "docs/status/env_d.md"
       ]
     }
   },

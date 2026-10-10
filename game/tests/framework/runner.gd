@@ -13,7 +13,7 @@ func _ready() -> void:
 		for d: String in String(args["dir"]).split(","):
 			dirs.append("%s/%s" % [ROOT, d])
 	else:
-		for d: String in ["a", "b", "c", "integration", "lead"]:
+		for d: String in ["a", "b", "c", "d", "integration", "lead"]:
 			dirs.append("%s/%s" % [ROOT, d])
 	var files: Array[String] = []
 	for d: String in dirs:

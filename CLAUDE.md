@@ -1,7 +1,7 @@
 # CAPERWORKS: shared rules for every Claude session in this repo
 
-This is an original co-op heist game in **Godot 4.7.2** with Payday 2-faithful mechanics. Four
-sessions work here: the **LEAD** (orchestrator) and three implementation environments.
+This is an original co-op heist game in **Godot 4.7.2** with Payday 2-faithful mechanics. Five
+sessions work here: the **LEAD** (orchestrator) and four implementation environments.
 
 ## Who am I?
 Look at your git branch:
@@ -9,6 +9,7 @@ Look at your git branch:
 - `env/a-core`: you are **ENV A**. Read and follow `envs/a_core/CLAUDE.md` now.
 - `env/b-content`: you are **ENV B**. Read and follow `envs/b_content/CLAUDE.md` now.
 - `env/c-worlds`: you are **ENV C**. Read and follow `envs/c_worlds/CLAUDE.md` now.
+- `env/d-art`: you are **ENV D**. Read and follow `envs/d_art/CLAUDE.md` now.
 
 ## Always
 - `docs/` is the knowledge base, and **nothing is agreed until it is written there on trunk**.
@@ -20,7 +21,7 @@ Look at your git branch:
 - Units: meters and seconds; PD2 display units for health, armor and damage.
 - No third-party art or audio assets of any kind. Third-party code/tools are fine; record them in
   `docs/third_party.md` via the lead.
-- Validate before you push: `tools/ci/check_all.sh --env <a|b|c>`. Godot is at `/opt/godot/godot`
+- Validate before you push: `tools/ci/check_all.sh --env <a|b|c|d>`. Godot is at `/opt/godot/godot`
   (the SessionStart hook installs it, or run `bash tools/setup/install_godot.sh`).
 - Never force-push. Never push to a branch other than your own.
 - Commit messages: `[A1-03] short summary` (task id from docs/roadmap.md).

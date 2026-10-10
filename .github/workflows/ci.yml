@@ -23,6 +23,7 @@ jobs:
             env/a-*) echo "env=a" >> "$GITHUB_OUTPUT";;
             env/b-*) echo "env=b" >> "$GITHUB_OUTPUT";;
             env/c-*) echo "env=c" >> "$GITHUB_OUTPUT";;
+            env/d-*) echo "env=d" >> "$GITHUB_OUTPUT";;
             *) echo "env=" >> "$GITHUB_OUTPUT";;
           esac
       - name: check_all

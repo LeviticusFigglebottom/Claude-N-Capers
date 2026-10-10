@@ -62,10 +62,20 @@ Routine and Brutal. Solo-first, with every system written authority-correct.
 | C1-02 | Greybox modular kit (walls/doors/windows/stairs/floors/ceilings on 0.5 m grid) + greybox materials | C1-01 |
 | C1-03 | **Glasshouse design doc (G0)** → lead approval → **greybox (G1)** with every contract node, variants table, mission script (on HeistMission when A1-01 lands) | C1-02 |
 | C1-04 | `validate_level` + walkthrough + `review_shots` renderer (level_standards §6–§8) + `tools/levelcheck/validate_all.sh` | C1-03 |
-| C1-05 | Characters v1: `rig_humanoid`, body generator, Security Officer, Civilian (×4 variants), Patrol Officer, TAC Light, crew body; animation set (P1 subset: idle, walk, run, crouch_*, aim/fire pistol+rifle, reload, death_*, hit_react, cower, hands_up, lie_down, tied, flee, phone_call, radio_call, pager_answer, downed, carry_bag_walk, throw_bag, interact_*) | C1-01 |
+| C1-05 | **→ moved to ENV D (D1-01..D1-03), D-027.** Characters v1: `rig_humanoid`, body generator, Security Officer, Civilian (×4 variants), Patrol Officer, TAC Light, crew body; animation set (P1 subset: idle, walk, run, crouch_*, aim/fire pistol+rifle, reload, death_*, hit_react, cower, hands_up, lie_down, tied, flee, phone_call, radio_call, pager_answer, downed, carry_bag_walk, throw_bag, interact_*) | C1-01 |
 | C1-06 | Audio P1 cue set (audio_cues.md P1 rows) + `MusicDirector` + Glasshouse track stems | C1-01 |
 | C1-07 | Material library v1 + Glasshouse dressing kits (sales floor, back office, break room, restroom, storage, security office, workshop/vault room, alley) | C1-01 |
 | C1-08 | **Glasshouse art pass (G2)** + lighting + review shots | C1-03, C1-07 |
+
+### ENV D: Characters & Art Production (added by D-027; takes over C1-05 and the officer half of C1-00)
+| Id | Task | Depends |
+|---|---|---|
+| D1-00 | Officer renders for the C1-00 style samples (3 styles), from ENV C's sample scripts, in parallel with C's counter renders | C pushes sample scripts |
+| D1-01 | `rig_humanoid` + parametric body generator (build/height/age variants, shared skeleton) per characters.md | C1-01 lib |
+| D1-02 | Outfits and heads: Security Officer, civilians ×4 variants (customers, sales associate, jeweler, clerk/manager), Patrol Officer, TAC Light, crew body | D1-01 |
+| D1-03 | Procedural animation set (the P1 subset listed in C1-05) + first-person arms rig `rig_arms` with the pistol anim set | D1-01 |
+| D1-04 | Masks: `mask.gilded_heron` mesh (B1-08) + a mask base-shape generator for later masks | C1-01 lib |
+| D1-05 | Character import checks (`game/tests/d/`) + silhouette lineup render | D1-02 |
 
 ### LEAD
 | Id | Task |
