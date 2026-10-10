@@ -33,5 +33,6 @@ static func info(amount: float, type: int, zone: int, weapon_id: StringName, pos
 	return {
 		"amount": amount, "type": type, "zone": zone, "weapon_id": weapon_id,
 		"position": position, "direction": direction, "crit": false, "pierced_armor": false,
+		"shield_pierce": false, "blocked": false,
 		"killed": false, "attacker_net_id": attacker_net_id, "headshot_bonus": 1.0,
 	}
