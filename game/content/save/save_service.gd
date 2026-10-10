@@ -6,11 +6,12 @@
 ## A file whose version is newer than CURRENT_VERSION is refused (default returned, file untouched).
 ## Migrations: add `_migrate_<n>_to_<n+1>(d: Dictionary) -> Dictionary` and register it in
 ## migrate(); a dict without "version" is v0.
-## Versions: 1 = first shipped shape; 2 = adds `banked_stealth_mult` (D-022 QB-13).
+## Versions: 1 = first shipped shape; 2 = adds `banked_stealth_mult` (D-022 QB-13);
+## 3 = adds `skill_sets` + `active_skill_set` (multiple skill sets) and `perk_cards` (per-deck progress).
 class_name SaveService
 extends RefCounted
 
-const CURRENT_VERSION: int = 2
+const CURRENT_VERSION: int = 3
 const DEFAULT_ROOT_DIR: String = "user://profiles"
 
 ## Tests point this at e.g. `user://test_profiles`.
@@ -98,6 +99,8 @@ static func migrate(data: Dictionary) -> Dictionary:
 				d = _migrate_0_to_1(d)
 			1:
 				d = _migrate_1_to_2(d)
+			2:
+				d = _migrate_2_to_3(d)
 			_:
 				Log.error(&"save", "no migration from version %d" % v)
 				return d
@@ -144,6 +147,23 @@ static func _migrate_0_to_1(d: Dictionary) -> Dictionary:
 static func _migrate_1_to_2(d: Dictionary) -> Dictionary:
 	if not (d.get("banked_stealth_mult") is float or d.get("banked_stealth_mult") is int):
 		d["banked_stealth_mult"] = 1.0
+	return d
+
+
+## v2 -> v3: the loadout's skills become skill set 0 (active); the equipped deck's card count becomes
+## that deck's progress, so nothing already unlocked is lost.
+static func _migrate_2_to_3(d: Dictionary) -> Dictionary:
+	var ld: Dictionary = d.get("loadout", {}) as Dictionary if d.get("loadout") is Dictionary else {}
+	if not d.get("skill_sets") is Array:
+		var sk: Variant = ld.get("skills", {})
+		d["skill_sets"] = [(sk as Dictionary).duplicate() if sk is Dictionary else {}]
+		d["active_skill_set"] = 0
+	if not d.get("perk_cards") is Dictionary:
+		var pc: Dictionary = {}
+		var deck: String = String(ld.get("perk_deck", ""))
+		if deck != "" and int(ld.get("perk_deck_cards", 0)) > 0:
+			pc[deck] = int(ld.get("perk_deck_cards", 0))
+		d["perk_cards"] = pc
 	return d
 
 

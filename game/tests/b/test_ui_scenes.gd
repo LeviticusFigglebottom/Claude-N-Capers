@@ -11,6 +11,8 @@ const SCENES: Array[String] = [
 	"res://content/ui/results/payday.tscn",
 	"res://content/ui/hud/hud.tscn",
 	"res://content/ui/hud/mock/hud_demo.tscn",
+	"res://content/ui/progression/skill_tree_screen.tscn",
+	"res://content/ui/progression/perk_deck_screen.tscn",
 ]
 const TEST_ROOT: String = "user://test_profiles"
 

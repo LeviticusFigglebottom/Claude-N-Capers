@@ -1,5 +1,5 @@
 {
-	"version": 2,
+	"version": 3,
 	"profile_name": "Crew",
 	"cash": 0,
 	"stash": 0,
@@ -24,6 +24,9 @@
 		"perk_deck_cards": 0,
 		"skills": {}
 	},
+	"skill_sets": [{}, {}, {}],
+	"active_skill_set": 0,
+	"perk_cards": {},
 	"stats": {
 		"heists_completed": 0,
 		"heists_failed": 0
