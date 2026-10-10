@@ -1,0 +1,10 @@
+asset: wpn_plowman_12
+script: tools/blender/weapons/plowman_12.py
+params: {}
+seed: 7986270  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category weapons --asset wpn_plowman_12
+edit policy: generated file, never edit by hand; change the script and rebuild
+origin: firing-hand pivot: middle of the stock wrist (grip centre plane)
+tri_budget: 25000
+tris_lod0: 7168

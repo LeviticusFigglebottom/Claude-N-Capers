@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://ca76sd0mhmjq4" path="res://assets/weapons/wpn_plowman_12/wpn_plowman_12.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 16.0
+pellets = 10
+headshot_mult = 1.0
+fire_rate_rpm = 70.0
+spread_deg_hip = 4.0
+spread_deg_ads = 2.0
+recoil_kick_deg = 2.6
+recoil_horizontal_deg = 0.9
+falloff_start_m = 8.0
+falloff_end_m = 22.0
+falloff_min_mult = 0.15
+mag_size = 6
+total_ammo = 48
+reload_time_s = 3.4
+reload_empty_time_s = 4.2
+equip_time_s = 0.55
+ads_time_s = 0.3
+concealment = 21
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 18.0
+ammo_pickup_min = 1.0
+ammo_pickup_max = 3.0
+suppressed = false
+noise_radius_m = 80.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.plowman_12"
+display_name = "Plowman 12"
+manufacturer = "Tillman Ironworks"
+weapon_class = 3
+slot = 0
+fire_modes = Array[StringName]([&"pump"])
+base = SubResource("base")
+price = 28000
+unlock_level = 8
+mod_slots = {
+1: [&"mod.plowman_choke"],
+3: [&"mod.plowman_ghost_ring", &"mod.rail_reflex_sight"],
+6: [&"mod.plowman_pistol_grip"],
+7: [&"mod.plowman_standard_tube", &"mod.plowman_extended_tube"]
+}
+default_mods = {
+3: &"mod.plowman_ghost_ring",
+7: &"mod.plowman_standard_tube"
+}
+fire_cue = &"cue.weapon_shotgun_fire"
+fire_cue_suppressed = &"cue.weapon_shotgun_fire_suppressed"
+anim_set = &"shotgun"
+model = ExtResource("3")

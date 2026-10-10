@@ -967,3 +967,120 @@ skill.scrapper.red_mist.aced,Ranged weapons gain up to 100% more damage the same
 skill.scrapper.nothing_to_lose.name,Nothing to Lose
 skill.scrapper.nothing_to_lose.basic,"Your max health drops to 30% and healing on you is 75% weaker, but you take 10% less damage."
 skill.scrapper.nothing_to_lose.aced,"Take 25% less damage instead, and healing is no longer weakened."
+item.throwable.steady_flask.name,Steady Flask
+item.throwable.steady_flask.desc,"A hip flask of something strong. One swallow and the damage you've taken stops counting, if you keep busy."
+item.throwable.boss_injector.name,Boss Injector
+item.throwable.boss_injector.desc,"A single-dose auto-injector. Use it, and every hit you take in the next few seconds patches you up instead."
+item.weapon.warden_45.name,Warden .45
+item.weapon.warden_45.desc,"An all-steel heavy pistol from Marrow & Kell. Eight big rounds, a hard push, and walnut that has seen a few owners."
+item.weapon.hornet_9.name,Hornet 9
+item.weapon.hornet_9.desc,"Brannock's boxy nine-millimetre buzzsaw. Fast, light and happiest across a room, not across a street."
+item.weapon.corsair_ar.name,Corsair
+item.weapon.corsair_ar.desc,"Brannock's workhorse carbine. Keeps its punch at any range, takes any optic, never complains."
+item.weapon.plowman_12.name,Plowman 12
+item.weapon.plowman_12.desc,"A Tillman Ironworks pump gun with a walnut stock. Ten pellets per shell, devastating up close, polite at a distance."
+item.weapon.rampart_lmg.name,Rampart
+item.weapon.rampart_lmg.desc,"A belt-fed Graff-Lindqvist machine gun. A hundred rounds of covering fire and nowhere to hide it."
+item.weapon.heron_308.name,Heron .308
+item.weapon.heron_308.desc,"Marrow & Kell's bolt-action rifle. Punches through armor, shields and thin walls, and hits harder the farther it reaches."
+item.mod.w45_suppressor.name,Quietus Suppressor
+item.mod.w45_suppressor.desc,A fat can for a fat round. Quiet enough for a vault and a little less punch.
+item.mod.w45_compensator.name,Ridgeline Compensator
+item.mod.w45_compensator.desc,"Vents gas upward to keep the muzzle down. Lengthens the slide, so no suppressor."
+item.mod.w45_iron_sights.name,Standard Iron Sights
+item.mod.w45_reflex_sight.name,Glint Slide Reflex
+item.mod.w45_reflex_sight.desc,A slide-cut red dot for quicker shots. Adds bulk under a jacket.
+item.mod.w45_standard_mag.name,Standard Magazine
+item.mod.w45_extended_mag.name,Twelve-Round Magazine
+item.mod.w45_extended_mag.desc,"Four more rounds behind a rubber sleeve. Longer grip, slower reload."
+item.mod.hornet_suppressor.name,Mothwing Suppressor
+item.mod.hornet_suppressor.desc,"Hushes the Hornet to a flutter. Heavier up front, slightly weaker rounds."
+item.mod.hornet_iron_sights.name,Standard Iron Sights
+item.mod.hornet_standard_mag.name,Standard Magazine
+item.mod.hornet_extended_mag.name,Forty-Five Magazine
+item.mod.hornet_extended_mag.desc,"Fifteen more rounds for longer bursts. Hard to hide, slower to swap."
+item.mod.hornet_stock_folded.name,Folded Stock
+item.mod.hornet_stock_folded.desc,"Swings the stock onto the side. Easier to conceal, much harder to control."
+item.mod.corsair_suppressor.name,Longhush Suppressor
+item.mod.corsair_suppressor.desc,"Slides over the flash hider and kills the noise. Long, heavy, a touch weaker."
+item.mod.corsair_iron_sights.name,Flip-Up Iron Sights
+item.mod.corsair_vertical_grip.name,Upright Foregrip
+item.mod.corsair_vertical_grip.desc,A vertical grip for the support hand. Steadier bursts at the cost of bulk.
+item.mod.corsair_standard_mag.name,Standard Magazine
+item.mod.corsair_extended_mag.name,Forty-Round Magazine
+item.mod.corsair_extended_mag.desc,"Ten more rounds per magazine. Longer, heavier, slower to change."
+item.mod.rail_reflex_sight.name,Beacon Reflex Sight
+item.mod.rail_reflex_sight.desc,An open red dot for any rail. Faster target pickup with a little extra bulk.
+item.mod.rail_prism_scope.name,Tri-Lens Prism Scope
+item.mod.rail_prism_scope.desc,"A compact 3x prism sight. Precise at range, slower to raise, hard to hide."
+item.mod.plowman_choke.name,Breacher Choke
+item.mod.plowman_choke.desc,Tightens the pellet spread. Toothed and ported for close work.
+item.mod.plowman_ghost_ring.name,Ghost Ring Sight
+item.mod.plowman_standard_tube.name,Standard Tube
+item.mod.plowman_extended_tube.name,Extended Tube
+item.mod.plowman_extended_tube.desc,"Two more shells under the barrel. Longer to fill, harder to hide."
+item.mod.plowman_pistol_grip.name,Hedge Grip
+item.mod.plowman_pistol_grip.desc,"Trades the stock for a bare pistol grip. Fits under a coat, kicks like a mule."
+item.mod.rampart_short_barrel.name,Assault Barrel
+item.mod.rampart_short_barrel.desc,"A shorter quick-change barrel. Easier to carry, less accurate."
+item.mod.rampart_iron_sights.name,Standard Iron Sights
+item.mod.rampart_bipod.name,Steadfast Bipod
+item.mod.rampart_bipod.desc,"Folding legs under the handguard. Calmer recoil, more weight to swing."
+item.mod.rampart_box_100.name,Hundred-Round Box
+item.mod.rampart_box_200.name,Two-Hundred-Round Box
+item.mod.rampart_box_200.desc,"Twice the belt. Twice the weight, and the reload shows it."
+item.mod.heron_suppressor.name,Stillwater Suppressor
+item.mod.heron_suppressor.desc,"A full-size can over the muzzle brake. Silent shots, noticeably less power."
+item.mod.heron_scope_4x.name,Fixed 4x Scope
+item.mod.heron_scope_10x.name,Farsight 10x Scope
+item.mod.heron_scope_10x.desc,"High magnification for long sightlines. Heavy, slow to bring up."
+item.mod.heron_bipod.name,Steadfast Bipod
+item.mod.heron_bipod.desc,"Folding legs under the forend. Tames the kick, adds weight."
+item.mod.heron_standard_mag.name,Five-Round Magazine
+item.mod.heron_extended_mag.name,Ten-Round Magazine
+item.mod.heron_extended_mag.desc,"Five more rounds in a longer box. Slower to swap, harder to hide."
+ui.loadout.skills,Skills
+ui.loadout.perk_deck,Perk Deck
+ui.loadout.skills_summary,Skill points spent: {spent} of {total}
+ui.loadout.perk_summary,Perk deck: {deck} ({cards}/9 cards)
+ui.loadout.perk_none,Perk deck: none
+ui.skills.level,Level {level}
+ui.skills.points_left,Skill points: {points} of {total}
+ui.skills.sets,Skill set
+ui.skills.set,Set {n}
+ui.skills.state.locked,Locked
+ui.skills.state.available,Available
+ui.skills.state.basic,Basic
+ui.skills.state.aced,Aced
+ui.skills.button_cost,{state} · {cost}
+ui.skills.tier_open,Always open
+ui.skills.tier_gate,Opens at {need}
+ui.skills.spent,Spent: {points}
+ui.skills.meta,{tree} · {subtree} · Tier {tier}
+ui.skills.part_header,{part} · {cost} pts
+ui.skills.buy_basic,Take Basic ({cost})
+ui.skills.buy_aced,Ace ({cost})
+ui.skills.refund,Refund
+ui.skills.refund_points,Refund (+{points})
+ui.skills.respec_confirm,Press again to reset
+ui.skills.blocked_partial,Part of this effect is not active yet.
+ui.skills.unlocks,Unlocks: {item}
+ui.skills.hint,"Click / A / Enter: invest. Right-click / X / Delete: refund. LB / RB or Page Up / Down: switch tree. Resetting skills is free."
+ui.skills.reason.not_owned,You have not taken this skill.
+ui.skills.reason.refund_breaks_tier,Can't refund: a higher-tier skill in this subtree needs these points. Refund it first.
+ui.perks.title,Perk Decks
+ui.perks.points,Perk points: {points}
+ui.perks.equip,Equip Deck
+ui.perks.equipped,Equipped
+ui.perks.not_equipped,Not equipped
+ui.perks.deck_entry,{name}   {cards}/{total}
+ui.perks.deck_entry_active,{name}   {cards}/{total}   (equipped)
+ui.perks.card_header,Card {n} · {cost} pts
+ui.perks.unlock_next,Unlock card {n} ({cost} pts)
+ui.perks.all_unlocked,All cards unlocked
+ui.perks.state.unlocked,Unlocked
+ui.perks.state.next,Next to unlock
+ui.perks.state.locked,Locked
+ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available). Perk points come from experience.
+ui.perks.dev_unlocked,Dev build: every perk card is unlocked.
+ui.perks.hint,"Select a deck to see its cards; press it to equip. Only the equipped deck is active, with every card unlocked in it."

@@ -7,7 +7,7 @@ current when an API changes.
 ```
 content/
   data/                     every balance number (.tres / .csv); no constants in scripts
-    weapons/ mods/ melee/ armor/ deployables/ loot/ difficulty/ masks/
+    weapons/ mods/ melee/ armor/ deployables/ loot/ throwables/ difficulty/ masks/
     tweak/                  concealment_curve.tres, display_stats.tres, payout.tres, xp_curve.tres
     strings/strings.csv     all player-facing text (columns: keys,en)
     voice/lines.tres        voice line table (VoiceLineTable); text lives in strings.csv
@@ -28,9 +28,9 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 ## Public APIs (static unless noted)
 * `ContentDB` (`defs/content_db.gd`): `weapon(id) -> WeaponDef`, `mod(id) -> WeaponModDef`,
   `melee(id) -> MeleeDef`, `armor(id) -> ArmorDef`, `deployable(id) -> DeployableDef`,
-  `loot(id) -> LootDef`, `difficulty(d: Enums.Difficulty) -> DifficultyDef`, `mask(id) -> MaskDef`,
+  `loot(id) -> LootDef`, `throwable(id) -> ThrowableDef`, `difficulty(d: Enums.Difficulty) -> DifficultyDef`, `mask(id) -> MaskDef`,
   `by_id(kind, id)`, `all_of(kind)`, `all_weapons/all_mods/all_melees/all_armors/all_deployables/
-  all_loots/all_difficulties()`, `tweak(name) -> Resource` (`&"concealment_curve"` ...). UI text comes
+  all_loots/all_throwables/all_difficulties()`, `tweak(name) -> Resource` (`&"concealment_curve"` ...). UI text comes
   from strings.csv `item.<id>.name` (display_name in .tres is a debug fallback). Unknown id →
   `Log.error` + null. Scans `res://content/data/<kind>/` with `ResourceLoader.list_directory`.
 * `LoadoutResolver.resolve(loadout: Loadout) -> Loadout` (returns a resolved copy): resolved
