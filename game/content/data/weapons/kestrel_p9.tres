@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 35.0
+pellets = 1
+headshot_mult = 2.0
+fire_rate_rpm = 480.0
+spread_deg_hip = 3.0
+spread_deg_ads = 1.0
+recoil_kick_deg = 1.0
+recoil_horizontal_deg = 0.4
+falloff_start_m = 15.0
+falloff_end_m = 30.0
+falloff_min_mult = 0.5
+mag_size = 17
+total_ammo = 153
+reload_time_s = 1.5
+reload_empty_time_s = 2.1
+equip_time_s = 0.35
+ads_time_s = 0.2
+concealment = 30
+armor_pierce = 0.0
+suppression = 8.0
+ammo_pickup_min = 4.0
+ammo_pickup_max = 8.0
+suppressed = false
+noise_radius_m = 60.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.kestrel_p9"
+display_name = "Kestrel P9"
+manufacturer = "Halvard Arms"
+weapon_class = 0
+slot = 1
+fire_modes = Array[StringName]([&"semi"])
+base = SubResource("base")
+price = 0
+unlock_level = 0
+mod_slots = {
+2: [&"mod.p9_suppressor"],
+3: [&"mod.p9_iron_sights", &"mod.p9_reflex_sight"],
+7: [&"mod.p9_standard_mag", &"mod.p9_extended_mag"]
+}
+default_mods = {
+3: &"mod.p9_iron_sights",
+7: &"mod.p9_standard_mag"
+}
+fire_cue = &"cue.weapon_pistol_fire"
+fire_cue_suppressed = &"cue.weapon_pistol_fire_suppressed"
+anim_set = &"pistol"
