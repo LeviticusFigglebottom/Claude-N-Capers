@@ -6,7 +6,8 @@ and tall front post, fixed polymer stock. The heaviest, bulkiest silhouette of t
 
 Origin = firing-hand pivot on the pistol grip (see _rampart.py). Forward = Godot -Z.
 
-Node tree: ``Receiver`` (+ ``FeedCover`` with ``TopRail``, ``ReceiverDetails``, ``Grip``,
+Node tree: ``Receiver`` (+ ``FeedCover`` with ``TopRail`` and the ``SightRail`` marker; its origin is the
+rear hinge axis and it opens 78 deg about local X, D-044, ``ReceiverDetails``, ``Grip``,
 ``Trigger``, ``ChargingHandle``), ``Handguard`` (+ rails), ``Stock``. Stock parts:
 ``SightRail/StockSight`` (rear leaf, ``AimPoint``), ``Magwell/StockMagazine`` (100-round box + belt),
 ``BarrelMount/StockBarrel`` (long barrel).
@@ -22,6 +23,7 @@ TRI_BUDGET = 25000
 
 
 def _receiver(ctx, mats):
+    """Receiver with its children; returns the FeedCover (the SightRail marker rides on it)."""
     mb = ctx.builder()
     st = mb.material(mats.steel())
     hw = r.REC_HW
@@ -38,18 +40,22 @@ def _receiver(ctx, mats):
     mb.prism(outer, holes=[list(reversed(hole))], axis="X", start=-0.0065, end=0.0065, mat=st)
     rec = c.finish(mb, "Receiver", bevel=0.0018, segments=2)
 
+    # Feed cover (D-044, visual_slots.md): hinged at the REAR; the object's origin is the hinge axis, so
+    # ENV A opens it by rotating about local X (open = 78 deg, front edge up; closed = rotation 0).
     cv = ctx.builder()
     cm = cv.material(mats.steel())
     cover = [(r.COVER_Y0, r.REC_TOP_Z - 0.002), (r.COVER_Y1, r.REC_TOP_Z - 0.002), (r.COVER_Y1 + 0.010, r.REC_TOP_Z + 0.004),
              (r.COVER_Y1, r.COVER_TOP_Z), (r.COVER_Y0 + 0.006, r.COVER_TOP_Z), (r.COVER_Y0, r.COVER_TOP_Z - 0.006)]
     cv.prism(cover, axis="X", start=-hw + 0.002, end=hw - 0.002, mat=cm)
-    cv.cylinder(0.0060, 2 * hw + 0.004, segments=16, centre=(0.0, r.COVER_Y1 + 0.004, r.REC_TOP_Z + 0.002),
-                axis="X", mat=cm)                                                     # hinge
-    cv.box((-0.012, r.COVER_Y0 - 0.010, r.COVER_TOP_Z - 0.012), (0.012, r.COVER_Y0 + 0.002, r.COVER_TOP_Z - 0.004),
-           mat=cm)                                                                    # latch
+    cv.cylinder(r.COVER_HINGE_R, 2 * hw + 0.004, segments=16, centre=r.COVER_HINGE, axis="X", mat=cm)   # hinge
+    cv.box((-0.012, r.COVER_Y1 - 0.002, r.COVER_TOP_Z - 0.012), (0.012, r.COVER_Y1 + 0.010, r.COVER_TOP_Z - 0.004),
+           mat=cm)                                                                    # front latch
+    cv.translate(tuple(-v for v in r.COVER_HINGE))
     cover_obj = c.finish(cv, "FeedCover", bevel=0.0012, segments=2, parent=rec)
+    cover_obj.location = r.COVER_HINGE
     rl = ctx.builder()
     c.picatinny(rl, rl.material(mats.alu()), r.COVER_Y0 + 0.006, r.COVER_Y1 - 0.004, r.COVER_TOP_Z)
+    rl.translate(tuple(-v for v in r.COVER_HINGE))
     c.finish(rl, "TopRail", bevel=0.0004, parent=cover_obj)
 
     dt = ctx.builder()
@@ -89,7 +95,7 @@ def _receiver(ctx, mats):
     ch.box((hw, 0.150, 0.088), (hw + 0.004, 0.220, 0.094), mat=cm2)                  # handle track
     ch.box((hw, 0.200, 0.084), (hw + 0.026, 0.212, 0.098), mat=cm2)                  # folding handle
     c.finish(ch, "ChargingHandle", bevel=0.0008, segments=1, parent=rec)
-    return rec
+    return cover_obj
 
 
 def _handguard(ctx, mats):
@@ -136,14 +142,16 @@ def _stock(ctx, mats):
 
 def build(ctx) -> None:
     mats = c.Mats(ctx)
-    _receiver(ctx, mats)
+    cover = _receiver(ctx, mats)
     _handguard(ctx, mats)
     _stock(ctx, mats)
 
     ctx.marker("Muzzle", (0.0, r.LONG_END_Y + r.HIDER_LEN + 0.001, r.BORE_Z))
     barrel_mount = ctx.marker("BarrelMount", (0.0, r.REC_FRONT_Y, r.BORE_Z))
     ctx.marker("Eject", (r.REC_HW, 0.065, r.BORE_Z - 0.012), rotation_euler=(0.0, 0.0, -math.pi / 2))
-    sight_rail = ctx.marker("SightRail", (0.0, r.SIGHT_RAIL_Y, r.RAIL_TOP_Z))
+    # the optics rail rides on the feed cover, so sights open with it
+    sight_rail = ctx.marker("SightRail", (0.0, r.SIGHT_RAIL_Y - r.COVER_HINGE[1], r.RAIL_TOP_Z - r.COVER_HINGE[2]),
+                            parent=cover)
     magwell = ctx.marker("Magwell", r.MAGWELL_POS)
     ctx.marker("Underbarrel", (0.0, r.UNDER_Y, r.HG_ZC - r.HG_HH - 0.0057))
     ctx.marker("SideRail", (r.HG_HW + 0.0065, r.UNDER_Y, r.HG_ZC))
