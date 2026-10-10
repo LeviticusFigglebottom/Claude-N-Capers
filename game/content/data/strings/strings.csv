@@ -1264,3 +1264,9 @@ item.mask_pattern.chevron.name,Chevrons
 item.mask_pattern.dots.name,Dots
 item.mask_pattern.sash.name,Sash
 item.mask_pattern.diamonds.name,Diamonds
+objective.glasshouse.casing,Case the store
+objective.glasshouse.keycard,Find the manager's keycard
+objective.glasshouse.workshop_door,Get into the workshop
+objective.glasshouse.safe,Open the safe
+objective.glasshouse.safe_loot,Bag the consignment
+objective.glasshouse.secure,Secure the bags ({count}/{total})
