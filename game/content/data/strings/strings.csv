@@ -1086,3 +1086,43 @@ ui.perks.state.locked,Locked
 ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available). Perk points come from experience.
 ui.perks.dev_unlocked,Dev build: every perk card is unlocked.
 ui.perks.hint,"Select a deck to see its cards; press it to equip. Only the equipped deck is active, with every card unlocked in it."
+heist.glasshouse.briefing,"Vossberg Jewelers sits on the corner of Harlow Avenue and Pell Street and stays open late for its private viewing week. Tonight the estate consignment waits in the workshop safe. Case the floor as customers, find the manager's keycard and take the back route. If it goes loud, the safe locks down: drill it and hold until the van arrives. Odile wants at least two bags before Friday."
+contact.role.fence,Fence
+contact.role.fixer,Fixer
+contact.role.insider,Insider
+contact.role.handler,Handler on comms
+ui.briefing.title,Briefing
+ui.briefing.difficulty,Difficulty: {name}
+ui.briefing.mode,Approach: {mode}
+ui.briefing.intel,The Job
+ui.briefing.objectives,Objectives
+ui.briefing.objective_line,{index}. {text}
+ui.briefing.objectives_none,Your contact will brief you on site.
+ui.briefing.loot,Loot
+ui.briefing.loot_line,{loot}: {value} per bag
+ui.briefing.loot_none,No bagged loot on this job.
+ui.briefing.escape,Escape
+ui.briefing.escape.van,Van
+ui.briefing.escape.boat,Boat
+ui.briefing.escape.heli,Helicopter
+ui.briefing.escape.walk,On foot
+ui.briefing.escape_unknown,Mercer will improvise.
+ui.briefing.contract_pay,Contract pay: {amount}
+ui.briefing.blueprint,Blueprint
+ui.briefing.blueprint_pending,Floor plans arrive with the casing photos.
+ui.briefing.play,Play Briefing
+ui.briefing.stop,Stop Briefing
+ui.briefing.continue,Continue
+ui.briefing.subtitle,{speaker}: {text}
+ui.briefing.subtitle_idle,Play the briefing to hear from your contact.
+ui.briefing.no_lines,No recorded briefing for this job.
+ui.briefing.placeholder,Provisional intel: details may change before the job.
+voice.vo.vance.briefing_glasshouse_1,"Vossberg Jewelers, darling. Harlow and Pell. On Thursday the estate consignment sleeps in the workshop safe; on Friday it goes to people with better manners than you."
+voice.vo.vance.briefing_glasshouse_2,The windows are for tourists. The good pieces are in the back. Find the manager's keycard and you won't need to make a racket.
+voice.vo.vance.briefing_glasshouse_3,Two bags is the least I'll accept. Bring me more and I may even remember your names. Don't keep me waiting.
+voice.vo.reyes.briefing_glasshouse_1,"A jewelry store? Not my usual. Odile's paying me to say hello, so: Vossberg, two floors, rent-a-cops from Halden Security."
+voice.vo.reyes.briefing_glasshouse_2,"If it goes loud, the safe locks itself down. Bring a drill, hold that back corridor and wait for the van like grown-ups."
+voice.vo.accountant.briefing_glasshouse_1,Vossberg's insurer filed the Thursday consignment as low risk. That is an error I would like you to correct.
+voice.vo.accountant.briefing_glasshouse_2,"Two bags of stones covers my margin. Anything beyond that is your bonus. Keep the receipts in your head, not on paper."
+voice.vo.mercer.briefing_glasshouse_1,"I'll be on comms the whole way. Walk in like customers, count the cameras and don't touch anything you can't carry."
+ui.briefing.heist,{name}: {subtitle}
