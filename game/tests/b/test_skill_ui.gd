@@ -185,9 +185,8 @@ func test_skill_sets_are_independent() -> void:
 
 func test_blocked_note_and_team_tag() -> void:
 	var s: SkillTreeScreen = await _make(100)
-	s.select_skill(T1)  # both parts wait on requested keys (trees.tres blocked_on_keys)
-	assert_true(s.detail_basic_note.visible)
-	assert_eq(s.detail_basic_note.text, UiText.t(&"ui.skills.blocked"))
+	s.select_skill(T1)  # D-031: every key granted, blocked_on_keys is empty -> no "not active" note
+	assert_false(s.detail_basic_note.visible, "no skill is blocked on keys any more")
 	s.show_tree(&"shade")
 	s.select_skill(&"skill.slipstream.deep_pockets")
 	assert_false(s.detail_basic_note.visible, "Deep Pockets is fully active")
