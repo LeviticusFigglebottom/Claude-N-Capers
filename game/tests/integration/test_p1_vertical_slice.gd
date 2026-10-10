@@ -111,6 +111,10 @@ func test_04_pager_answer() -> void:
 		return
 	var guard: Node3D = guards[0]
 	var crew: Node3D = rt.call(&"crew_controller", 0)
+	# QA-9: other NPCs would (correctly) spot the masked bot; this step tests pagers, so isolate.
+	if rt.has_method(&"isolate_npc"):
+		rt.call(&"isolate_npc", guard)
+		await wait_physics_frames(2)
 	# Stand 3 m in front of the guard's back, masked, aim at head, fire.
 	rt.call(&"teleport_crew", 0, guard.global_transform.translated_local(Vector3(0, 0, 3.0)))
 	var i: CrewIntent = CrewIntent.new()

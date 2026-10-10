@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.breacher.percussive_maintenance"
+display_name = "Percussive Maintenance"
+tree = &"wrench"
+subtree = &"breacher"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Your drills and saws have a further 20% chance to restart by themselves after jamming."
+desc_aced = "Hit a jammed drill or saw with your melee weapon for a 50% chance to restart it (one try per jam)."
+grants_basic = {
+&"interaction.device_auto_restart_chance": 0.2
+}
+grants_aced = {
+&"interaction.device_melee_restart": true
+}

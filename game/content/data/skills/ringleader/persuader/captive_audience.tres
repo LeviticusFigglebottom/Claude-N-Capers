@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.persuader.captive_audience"
+display_name = "Captive Audience"
+tree = &"ringleader"
+subtree = &"persuader"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Your gunfire intimidates nearby civilians, and intimidated civilians stay down 50% longer."
+desc_aced = "When you go down, a hostage near you can revive you. Once per heist."
+grants_basic = {
+&"stealth.civilian_stay_down_mult": 1.5
+}
+grants_aced = {
+&"ability.stockholm": true
+}

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.gunnery.firm_grip"
+display_name = "Firm Grip"
+tree = &"wrench"
+subtree = &"gunnery"
+tier = 1
+cost_basic = 1
+cost_aced = 3
+desc_basic = "+8 accuracy (8% tighter spread) with all weapons."
+desc_aced = "+16 stability (16% less recoil) with all weapons."
+grants_basic = {
+&"weapon.spread_mult.all": 0.92
+}
+grants_aced = {
+&"weapon.recoil_mult.all": 0.84
+}

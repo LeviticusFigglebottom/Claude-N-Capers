@@ -164,13 +164,26 @@ static func _scan(kind: StringName) -> void:
 	var dir: String = "%s/%s" % [DATA_ROOT, kind]
 	if not DirAccess.dir_exists_absolute(dir):
 		return
-	for entry: String in ResourceLoader.list_directory(dir):
-		if entry.ends_with("/") or not (entry.ends_with(".tres") or entry.ends_with(".res")):
+	_scan_dir(kind, dir, table, paths)
+
+
+## Recursive (skills live in skills/<tree>/<subtree>/). Resources without an `id` property (layout
+## files such as skills/trees.tres) are not items and are skipped; difficulty is keyed by its enum.
+static func _scan_dir(kind: StringName, dir: String, table: Dictionary, paths: Dictionary) -> void:
+	var entries: Array = Array(ResourceLoader.list_directory(dir))
+	entries.sort()
+	for entry: String in entries:
+		if entry.ends_with("/"):
+			_scan_dir(kind, dir.path_join(entry.trim_suffix("/")), table, paths)
+			continue
+		if not (entry.ends_with(".tres") or entry.ends_with(".res")):
 			continue
 		var path: String = dir.path_join(entry)
 		var res: Resource = ResourceLoader.load(path)
 		if res == null:
 			Log.error(LOG_CHANNEL, "failed to load %s" % path)
+			continue
+		if kind != DIFFICULTY and res.get(&"id") == null:
 			continue
 		var key: Variant = _key_of(kind, res)
 		if table.has(key):

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.gunnery.knockdown"
+display_name = "Knockdown"
+tree = &"wrench"
+subtree = &"gunnery"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "Your shots have a 5% chance to stagger enemies (Wreckers and Commander Brandt are immune)."
+desc_aced = "The stagger chance rises to 20%."
+grants_basic = {}
+grants_aced = {}

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.scrapper.heavy_hands"
+display_name = "Heavy Hands"
+tree = &"outlaw"
+subtree = &"scrapper"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "Deal 100% more melee damage."
+desc_aced = "Charge melee attacks 50% faster."
+grants_basic = {
+&"weapon.damage_mult.melee": 2.0
+}
+grants_aced = {
+&"weapon.melee_charge_speed_mult": 1.5
+}

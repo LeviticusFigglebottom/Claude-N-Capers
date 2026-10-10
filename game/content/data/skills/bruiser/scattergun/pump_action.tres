@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.scattergun.pump_action"
+display_name = "Pump Action"
+tree = &"bruiser"
+subtree = &"scattergun"
+tier = 2
+cost_basic = 2
+cost_aced = 4
+desc_basic = "Reload shotguns 15% faster."
+desc_aced = "Reload shotguns a further 17% faster (35% in total) and aim them down sights 125% faster."
+grants_basic = {
+&"weapon.reload_speed_mult.shotgun": 1.15
+}
+grants_aced = {
+&"weapon.reload_speed_mult.shotgun": 1.174,
+&"weapon.ads_speed_mult.shotgun": 2.25
+}

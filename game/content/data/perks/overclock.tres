@@ -1,0 +1,145 @@
+[gd_resource type="Resource" script_class="PerkDeckDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/perk_deck_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"perk.overclock"
+display_name = "Overclock"
+description = "perk.overclock.desc"
+cards = Array[Dictionary]([{
+"name": "perk.overclock.card1.name",
+"desc": "perk.overclock.card1.desc",
+"cost": 200,
+"grants": {
+&"perk.anarchist": {
+"tick_by_armor": {
+&"armor.tailored_suit": [1.0, 2.0],
+&"armor.light_vest": [1.5, 3.0],
+&"armor.patrol_vest": [2.0, 4.0],
+&"armor.heavy_vest": [3.5, 6.0],
+&"armor.flak_rig": [4.0, 7.0],
+&"armor.tactical_plate": [4.5, 8.0],
+&"armor.breacher_plate": [6.0, 10.0]
+},
+"break_immunity_s": 2.0,
+"break_immunity_cooldown_s": 15.0,
+"health_to_armor_fraction": 0.0,
+"health_to_armor_ratio": 0.0
+}
+}
+}, {
+"name": "perk.shared.card2.name",
+"desc": "perk.shared.card2.desc",
+"cost": 300,
+"grants": {
+&"weapon.headshot_mult.all": 1.25
+}
+}, {
+"name": "perk.overclock.card3.name",
+"desc": "perk.overclock.card3.desc",
+"cost": 400,
+"grants": {
+&"perk.anarchist": {
+"tick_by_armor": {
+&"armor.tailored_suit": [1.0, 2.0],
+&"armor.light_vest": [1.5, 3.0],
+&"armor.patrol_vest": [2.0, 4.0],
+&"armor.heavy_vest": [3.5, 6.0],
+&"armor.flak_rig": [4.0, 7.0],
+&"armor.tactical_plate": [4.5, 8.0],
+&"armor.breacher_plate": [6.0, 10.0]
+},
+"break_immunity_s": 2.0,
+"break_immunity_cooldown_s": 15.0,
+"health_to_armor_fraction": 0.5,
+"health_to_armor_ratio": 1.0
+}
+}
+}, {
+"name": "perk.shared.card4.name",
+"desc": "perk.shared.card4.desc",
+"cost": 600,
+"grants": {
+&"stealth.concealment_add.all": 1
+}
+}, {
+"name": "perk.overclock.card5.name",
+"desc": "perk.overclock.card5.desc",
+"cost": 1000,
+"grants": {
+&"perk.anarchist": {
+"tick_by_armor": {
+&"armor.tailored_suit": [1.0, 2.0],
+&"armor.light_vest": [1.5, 3.0],
+&"armor.patrol_vest": [2.0, 4.0],
+&"armor.heavy_vest": [3.5, 6.0],
+&"armor.flak_rig": [4.0, 7.0],
+&"armor.tactical_plate": [4.5, 8.0],
+&"armor.breacher_plate": [6.0, 10.0]
+},
+"break_immunity_s": 2.0,
+"break_immunity_cooldown_s": 15.0,
+"health_to_armor_fraction": 0.5,
+"health_to_armor_ratio": 1.1
+}
+}
+}, {
+"name": "perk.shared.card6.name",
+"desc": "perk.shared.card6.desc",
+"cost": 1600,
+"grants": {
+&"weapon.ammo_pickup_mult.all": 1.35
+}
+}, {
+"name": "perk.overclock.card7.name",
+"desc": "perk.overclock.card7.desc",
+"cost": 2400,
+"grants": {
+&"perk.anarchist": {
+"tick_by_armor": {
+&"armor.tailored_suit": [1.0, 2.0],
+&"armor.light_vest": [1.5, 3.0],
+&"armor.patrol_vest": [2.0, 4.0],
+&"armor.heavy_vest": [3.5, 6.0],
+&"armor.flak_rig": [4.0, 7.0],
+&"armor.tactical_plate": [4.5, 8.0],
+&"armor.breacher_plate": [6.0, 10.0]
+},
+"break_immunity_s": 2.0,
+"break_immunity_cooldown_s": 15.0,
+"health_to_armor_fraction": 0.5,
+"health_to_armor_ratio": 1.2
+}
+}
+}, {
+"name": "perk.shared.card8.name",
+"desc": "perk.shared.card8.desc",
+"cost": 3200,
+"grants": {
+&"weapon.damage_mult.all": 1.05
+}
+}, {
+"name": "perk.overclock.card9.name",
+"desc": "perk.overclock.card9.desc",
+"cost": 4000,
+"grants": {
+&"perk.anarchist": {
+"tick_by_armor": {
+&"armor.tailored_suit": [1.0, 2.0],
+&"armor.light_vest": [1.5, 3.0],
+&"armor.patrol_vest": [2.0, 4.0],
+&"armor.heavy_vest": [3.5, 6.0],
+&"armor.flak_rig": [4.0, 7.0],
+&"armor.tactical_plate": [4.5, 8.0],
+&"armor.breacher_plate": [6.0, 10.0]
+},
+"break_immunity_s": 2.0,
+"break_immunity_cooldown_s": 15.0,
+"health_to_armor_fraction": 0.5,
+"health_to_armor_ratio": 1.2,
+"damage_dealt_armor": 30.0,
+"damage_dealt_armor_cooldown_s": 1.5
+}
+}
+}])

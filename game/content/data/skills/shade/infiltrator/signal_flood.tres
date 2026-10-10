@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.infiltrator.signal_flood"
+display_name = "Signal Flood"
+tree = &"shade"
+subtree = &"infiltrator"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "ECM jams and ECM feedback last 25% longer."
+desc_aced = "Place an ECM on a keycard door (4 s) or an ATM (8 s) to open it. The ECM is used up."
+grants_basic = {
+&"stealth.ecm_duration_mult": 1.25,
+&"stealth.ecm_feedback_duration_mult": 1.25
+}
+grants_aced = {
+&"stealth.ecm_opens_doors": true
+}

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.breacher.extra_charges"
+display_name = "Extra Charges"
+tree = &"wrench"
+subtree = &"breacher"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Carry 4 more trip mines."
+desc_aced = "Carry 3 more trip mines (7 in total)."
+grants_basic = {
+&"deploy.extra.trip_mine": 4
+}
+grants_aced = {
+&"deploy.extra.trip_mine": 3
+}

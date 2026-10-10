@@ -132,3 +132,21 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 ## D-030 — 2026-10-10 — Weapon materials merged; CI guards against invalid .import files
 - Merged ENV C's 9 weapon materials (a6fa9eb). Every library material carries `metadata/uv_tile_m` (1.0 weapon, 2.0 environment).
 - Concurrent `godot --import` runs can commit `.import` files with `valid=false`. check_all now fails on any committed `.import` containing `valid=false`. Never run two imports on one checkout at the same time.
+
+## D-031 — 2026-10-10 — P4 skill/perk keys approved (QB-31..37); LIST modifier type; multi-qualifier queries
+- Merged B4-01 (90 skills) and B4-02 (14 perk decks). All **71 requested keys** were registered at phase 4 (64 skill keys + 7 perk keys). Full semantics live in ENV B's `game/content/docs/skills.md` / `perk_decks.md`, which are the authoritative param schemas for ENV A. Any change to them goes through the lead.
+- New `ModifierKeys.Type.LIST` with `Modifiers.list(slot, key) -> Array[Dictionary]` (one entry per source, tagged `_source`), for triggered effects that several skills grant independently: `weapon.kill_reload_buff`, `weapon.hit_stack_buff`, `weapon.kill_damage_buff`.
+- New weapon qualifiers `suppressed` and `akimbo`. `Modifiers.mult/add/flag` accept an Array of qualifiers (e.g. `[&"pistol", &"suppressed"]`), combining `.all` with each one. `movement.shoot_while_sprinting.<class>` is allowed.
+- QB-33: perk param schemas approved as proposed. ENV A implements them in P4 (or earlier when idle).
+- QB-34: **MULT stays multiplicative** across sources (no zero or negative edge cases). This deliberately departs from PD2's additive percentages; ENV B tunes card values as cumulative ratios.
+- QB-35: TEAM sources apply to the granter too. Perk-deck `team.*` grants go to a TEAM source `team_perk.<deck>`, so two players with the same deck don't stack (PD2 rule).
+- QB-36: `interaction.revive_speed_mult` is a time multiplier (lower = faster), like every `interaction.*` key.
+- QB-37: Hustler's vest bonus applies to **Light Vest, Patrol Vest and Heavy Vest only** (PD2 "ballistic vests" LBV/BV/HBV analogs). Overrules "all except suit".
+- Trunk hygiene: the lead set ENV B's reminder test `test_requested_keys_are_not_grantable_yet` to SKIP while `blocked_on_keys` is non-empty, so trunk stays green. ENV B grants the keys, clears the list and may restore the strict test.
+
+## D-032 — 2026-10-10 — Answers QA-9..12; ENV A P2 queue; no loud-AI split
+- QA-9: new TEST-ONLY hook `HeistRuntime.isolate_npc(npc)` (test_hooks.md v1.1). The P1 gate step 4 isolates the target guard before the pager test. Being spotted by others is correct gameplay, not a pager bug.
+- QA-10: `loot.body_bag` weight must be HEAVY (S6.3); ENV B fixes the data. The P9 headshot_mult is already 1.0 on trunk (A's branch was stale).
+- QA-11: approved. NPCs and AI teammates open unlocked doors on their path (instant in loud, a 0.6 s animation in stealth). Guards use keycard doors their post authorises. In loud, police breach locked doors (P3). Doors toggle nav links.
+- QA-12: the alarm reason list is in events.md. `pager_failed(&"cancelled")` on going loud is not an alarm.
+- No separate loud-AI environment: A1-09/A1-10 are already implemented. ENV A's queue was under 2 h, so P2 stealth-complete tasks A2-01..A2-07 are dispatched now (roadmap). P4 modifier hooks come after them.

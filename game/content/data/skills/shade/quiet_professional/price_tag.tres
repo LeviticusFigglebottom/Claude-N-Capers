@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/skill_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"skill.quiet_professional.price_tag"
+display_name = "Price Tag"
+tree = &"shade"
+subtree = &"quiet_professional"
+tier = 3
+cost_basic = 3
+cost_aced = 6
+desc_basic = "Enemies you mark take 15% more damage."
+desc_aced = "Marks last twice as long. Marked enemies more than 10 m away take a further 50% more damage. Mark specials by aiming at them."
+grants_basic = {
+&"stealth.mark_damage_bonus_mult": 1.15
+}
+grants_aced = {
+&"stealth.mark_duration_mult": 2.0
+}
