@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="PreplanTweak" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+cost_mult = Array[float]([1.0, 2.0, 4.0, 6.5, 9.5, 13.0])
+cost_round = 100
+default_favors = 10
+category_order = Array[StringName]([&"supply", &"intel", &"gear", &"entry", &"access", &"escape"])
+marker_size = 46.0

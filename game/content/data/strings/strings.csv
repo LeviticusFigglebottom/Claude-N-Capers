@@ -1126,3 +1126,84 @@ voice.vo.accountant.briefing_glasshouse_1,Vossberg's insurer filed the Thursday 
 voice.vo.accountant.briefing_glasshouse_2,"Two bags of stones covers my margin. Anything beyond that is your bonus. Keep the receipts in your head, not on paper."
 voice.vo.mercer.briefing_glasshouse_1,"I'll be on comms the whole way. Walk in like customers, count the cameras and don't touch anything you can't carry."
 ui.briefing.heist,{name}: {subtitle}
+ui.preplan.title,Pre-planning
+ui.preplan.placeholder,PLACEHOLDER BLUEPRINT
+ui.preplan.crew_assets,Crew assets
+ui.preplan.crew_assets_meta,No map location: the whole crew gets these.
+ui.preplan.crew_short,crew
+ui.preplan.map_hint,Pick a numbered point on the blueprint to place an asset.
+ui.preplan.favors,Favors: {used} / {budget}
+ui.preplan.cash,Spending cash {cash}  |  this plan {cost}  |  left {left}
+ui.preplan.your_plan,Your plan
+ui.preplan.plan_empty,"Nothing bought yet. Assets are one-use, and any crew member can buy them."
+ui.preplan.plan_line,{name} @ {where} ({cost})
+ui.preplan.vote_none,not chosen (left to chance)
+ui.preplan.plan_more,+{n} more
+ui.preplan.vote_line,{group}: {choice}  ({cast}/{voters} votes)
+ui.preplan.vote_solo,"Solo: your vote decides every plan."
+ui.preplan.vote_host_ties,"Plans need a majority vote; the host breaks ties."
+ui.preplan.confirm,Confirm plan
+ui.preplan.hint,"Spending cash is paid when you confirm. Esc / B returns from a list to the blueprint."
+ui.preplan.nothing_here,No assets for this point.
+ui.preplan.invalid,The plan is over budget or breaks a rule. Remove something first.
+ui.preplan.row,"{name}  -  {cost}, {favors} favors"
+ui.preplan.row_owned,Bought: {name}  (refund {cost})
+ui.preplan.row_vote,"Vote: {name}  -  {cost}, {favors} favors"
+ui.preplan.row_vote_cast,Your vote: {name}  (withdraw)
+ui.preplan.scale,{m} m
+ui.preplan.north,N
+ui.preplan.floor.ground,Ground floor
+ui.preplan.floor.upper,Upper floor
+ui.preplan.category.drop_zone,Drop zone: supplies are left here before the job.
+ui.preplan.category.player_spawn,Entry point: the crew starts here instead.
+ui.preplan.category.escape,Escape: where the van waits.
+ui.preplan.category.access,Access point.
+ui.preplan.reason.unknown_asset,This asset is not offered on this job.
+ui.preplan.reason.needs_point,Place this asset on a point of the blueprint.
+ui.preplan.reason.no_point_needed,This asset has no map location.
+ui.preplan.reason.wrong_point,This asset cannot be placed here.
+ui.preplan.reason.point_taken,Something is already placed on this point.
+ui.preplan.reason.max_count,No more of this asset can be bought.
+ui.preplan.reason.exclusive,Another asset of the same kind is already in the plan.
+ui.preplan.reason.favors,Needs {favors} favors ({left} left).
+ui.preplan.reason.cash,Costs {cost}; you have {cash} left.
+ui.preplan.reason.not_voter,Only crew members can vote.
+ui.preplan.tag.stealth,stealth
+ui.preplan.tag.loud,loud
+ui.preplan.vote_group.escape,Escape
+ui.preplan.bp.backs,Back yards
+ui.preplan.bp.alley,Service alley
+ui.preplan.bp.neighbour,Neighbour
+ui.preplan.bp.target,Target
+ui.preplan.bp.side_street,Side street
+ui.preplan.bp.garage,Garage
+ui.preplan.bp.sidewalk,Sidewalk
+ui.preplan.bp.avenue,Avenue
+ui.preplan.bp.facades,Facades
+ui.preplan.point.pp_alley_dumpsters,Alley dumpsters
+ui.preplan.point.pp_alley_hvac,Alley HVAC units
+ui.preplan.point.pp_side_kerb,Side street kerb
+ui.preplan.point.pp_spawn_alley_west,Alley west end
+ui.preplan.point.pp_spawn_alley_mouth,Alley mouth
+ui.preplan.point.pp_escape_alley_west,Van: alley west
+ui.preplan.point.pp_escape_side_street,Van: side street
+item.asset.body_bag_case_drop.name,Body bag case drop
+item.asset.body_bag_case_drop.desc,A case of body bags is stashed here before the job.
+item.asset.ammo_bag_drop.name,Ammo bag drop
+item.asset.ammo_bag_drop.desc,An ammo bag waits here for when things get loud.
+item.asset.doctor_bag_drop.name,Doctor bag drop
+item.asset.doctor_bag_drop.desc,A doctor bag waits here for when things get loud.
+item.asset.intel_keycards.name,Insider: keycards
+item.asset.intel_keycards.desc,An insider tells you where the keycards are tonight.
+item.asset.intel_cameras.name,Insider: camera layout
+item.asset.intel_cameras.desc,You know which cameras are live before you walk in.
+item.asset.intel_guard_posts.name,Insider: guard posts
+item.asset.intel_guard_posts.desc,You know where the guards are posted tonight.
+item.asset.extra_cable_ties.name,Extra cable ties
+item.asset.extra_cable_ties.desc,Every crew member carries 2 more cable ties.
+item.asset.spare_body_bags.name,Spare body bags
+item.asset.spare_body_bags.desc,Every crew member carries 1 more body bag.
+item.asset.alternate_entry.name,Alternate entry
+item.asset.alternate_entry.desc,The crew starts the job from this point.
+item.asset.escape_position.name,Van position
+item.asset.escape_position.desc,"The getaway van waits here. A plan: the crew votes, the host breaks ties."
