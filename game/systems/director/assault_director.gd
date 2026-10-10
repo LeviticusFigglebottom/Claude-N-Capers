@@ -76,13 +76,14 @@ func _exit_tree() -> void:
 # --- Public API ------------------------------------------------------------------------------
 
 ## Alive police units (roles &"police" / &"special") in this heist: AI teammates' target list.
+## A3-04 (L5.1/L5.2): surrendered, tied and converted cops (NpcBase.BLIND_STATES) are not units.
 func alive_units() -> Array[NpcBase]:
 	var out: Array[NpcBase] = []
 	if _runtime == null:
 		return out
 	for n: Node in _runtime.npcs():
 		var npc: NpcBase = n as NpcBase
-		if npc != null and POLICE_ROLES.has(npc.role):
+		if npc != null and POLICE_ROLES.has(npc.role) and not NpcBase.BLIND_STATES.has(npc.alert_state):
 			out.append(npc)
 	return out
 

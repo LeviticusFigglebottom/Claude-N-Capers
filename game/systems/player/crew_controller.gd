@@ -71,6 +71,10 @@ func _ready() -> void:
 		body_bags = tw.body_bags_base
 		cable_ties = tw.cable_ties_base
 	_apply_stance(false)
+	if CrewView.of(self) == null:  # QB-47: camera, weapon visual, mask (presentation only)
+		var view: CrewView = CrewView.new()
+		view.name = CrewView.NODE_NAME
+		add_child(view)
 
 
 ## Server (and the owning client for prediction): set the intent for this tick.
@@ -103,6 +107,23 @@ func set_loadout(p_loadout: Loadout) -> void:
 		weapons.set_loadout(loadout)
 	if health != null:
 		health.reset_full()
+	var view: CrewView = CrewView.of(self)
+	if view != null:
+		view.refresh()  # QB-47: weapon visual + mask of the new loadout
+
+
+## QB-46: pause (true) / resume the local human's PlayerInput (menus, range panels). While paused the
+## crew member holds an idle intent (same look direction, no buttons). Releasing the mouse is the UI's job.
+## Query: the PlayerInput child's `enabled`.
+func set_input_paused(paused: bool) -> void:
+	var pin: PlayerInput = get_node_or_null(^"PlayerInput") as PlayerInput
+	if pin != null:
+		pin.set_paused(paused)
+	if paused:
+		var idle: CrewIntent = CrewIntent.new()
+		idle.look_yaw = look_yaw
+		idle.look_pitch = look_pitch
+		apply_intent(idle)
 
 
 ## QB-25: a standalone, masked, locally controlled crew member (PlayerInput + Weapons + Health) for

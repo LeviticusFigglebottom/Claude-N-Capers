@@ -1,4 +1,4 @@
-# Contract: characters (v1.3)
+# Contract: characters (v1.4)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -77,3 +77,13 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
   `sprint*`, plus `reload_start` / `reload_loop` / `reload_end` (shell-by-shell sets) and `bolt` (sniper).
 * Reload event frames (mag_out, mag_swap, mag_in, slide_release, done) are in the clip set's SOURCE.txt.
   ENV A drives the weapon model's `Slide` / `Pump` / `Bolt` nodes from those events.
+
+## v1.4: per-set viewmodel details (D-044)
+* **Shotgun:** the pump action is part of `fire`/`fire_ads` (PD2). Shell-by-shell = `reload_start` + n × `reload_loop`
+  (looped, one shell, shell_in@8) + `reload_end`, or `reload_end_empty` (adds a pump). `reload`/`reload_empty` are pre-composed
+  for 6 rounds. Matching data: reload_start_s 0.4, reload_per_round_s 0.4333, reload_end_s 0.4 (1.2 empty).
+* **Sniper:** a separate `bolt` / `bolt_ads` clip (27 frames) plays after each shot (9 + 27 frames = 1.2 s ≈ 50 rpm).
+* **Full-auto** fire clips are 3 frames and restart every shot.
+* `rig_arms` `weapon` bone: identity under hand.R except during `sniper_bolt*` and `sniper_reload_empty` (the left hand holds the gun).
+* Part travel for ENV A: pump 0.075 m; bolt lift 62° + 0.075 m; LMG feed cover 78°. Weapon models with a hinged feed cover
+  expose `FeedCover` (pivot at the rear hinge, rotating about local X) (visual_slots.md).

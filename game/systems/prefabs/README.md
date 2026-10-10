@@ -43,8 +43,8 @@ Scene path = `res://systems/prefabs/<name>/<name>.tscn`. Placeholder = `<name>/<
 
 | Prefab | Class | Root | Key exports (default) | Time (tweak) | Required visual nodes | Collision / zone / notes |
 |---|---|---|---|---|---|---|
-| `door` | `Door` | Node3D | `lock: Door.Lock` {NONE, LOCKPICK, KEYCARD, CODE, ELECTRONIC, BARRED, VAULT} (NONE), `swing: Door.Swing` {INWARD, OUTWARD, DOUBLE} (INWARD), `width_m` (0.0 = 0.9 single / 1.8 DOUBLE), `starts_open` (false), `code_group` (&""), `suspicious_when_open` (false, S4.2), `npc_authorized_tags` ([], A2-01) | NONE `door_open_s`, LOCKPICK `lockpick_door_s`, KEYCARD `keycard_s` | `Frame` (+ `Frame/Collision` StaticBody3D), `Leaf` (hinge pivot, closed = rot 0, extends +X), `Handle`, plus `Leaf2` for DOUBLE (extends −X) | Origin = bottom-centre of the opening. `LeafBody` AnimatableBody3D (layer 2) follows `Leaf` (`LeafBody2` is added at runtime for DOUBLE). INWARD opens toward +Z (away from the UsePoint side). DOUBLE = two leaves opening inward. Placeholder `door_double_placeholder.tscn` is used for DOUBLE. Runtime `NavLink` NavigationLink3D (A2-01) |
-| `security_camera` | `SecurityCamera` | Node3D | `fov_deg` (60), `range_m` (20), `pan_deg` (0), `pan_period_s` (8), `destructible` (true) | not interactive | `Mount`, `Head`, `Lens` (Marker3D, −Z = view), `Led` (MeshInstance3D) | Wall: pivot back-centre. Ceiling: top-centre. `Collision` StaticBody3D on layer 5 (hitboxes) |
+| `door` | `Door` | Node3D | `lock: Door.Lock` {NONE, LOCKPICK, KEYCARD, CODE, ELECTRONIC, BARRED, VAULT} (NONE), `swing: Door.Swing` {INWARD, OUTWARD, DOUBLE} (INWARD), `width_m` (0.0 = 0.9 single / 1.8 DOUBLE), `starts_open` (false), `code_group` (&""), `suspicious_when_open` (false, S4.2), `npc_authorized_tags` ([], A2-01), `push_bar` (false, A2-08) | NONE `door_open_s`, LOCKPICK `lockpick_door_s`, KEYCARD `keycard_s` | `Frame` (+ `Frame/Collision` StaticBody3D), `Leaf` (hinge pivot, closed = rot 0, extends +X), `Handle`, plus `Leaf2` for DOUBLE (extends −X) | Origin = bottom-centre of the opening. `LeafBody` AnimatableBody3D (layer 2) follows `Leaf` (`LeafBody2` is added at runtime for DOUBLE). INWARD opens toward +Z (away from the UsePoint side). DOUBLE = two leaves opening inward. Placeholder `door_double_placeholder.tscn` is used for DOUBLE. Runtime `NavLink` NavigationLink3D (A2-01) |
+| `security_camera` | `SecurityCamera` | Node3D | `fov_deg` (60), `range_m` (20), `pan_deg` (0), `pan_period_s` (8), `destructible` (true) | not interactive | `Mount`, `Head`, `Lens` (Marker3D, −Z = view), `Led` (MeshInstance3D) | Wall: pivot back-centre. Ceiling: top-centre. `Collision` StaticBody3D on layer 5 (hitboxes), local z in [−0.45, 0] (never behind the pivot, A2-08) |
 | `camera_station` | `CameraStation` | Node3D | `operator_spawn: NodePath` | `camera_loop_s` | `Screens` (MeshInstance3D), `Seat` (marker) | `Collision` desk (layer 1). Interactable kind `loop_cameras` |
 | `display_case` | `DisplayCase` | Node3D | `loot_id` (&""), `glass_breaks_alarm` (false) | `display_case_open_s` | `Body`, `Glass`, `LootAnchor` | `Collision` (layer 1). Glass break (S9.9): M2 |
 | `small_loot` | `SmallLoot` | Node3D | `value: int` (500), `loot_id` (&"") | `small_loot_s` | none | No collision. S10.3 |
@@ -53,11 +53,11 @@ Scene path = `res://systems/prefabs/<name>/<name>.tscn`. Placeholder = `<name>/<
 | `keycard_reader` | `KeycardReader` | Node3D | `targets: Array[NodePath]` ([]) | `keycard_s` | `Panel`, `Led` | Wall-mounted (back-centre). Consumes the keycard |
 | `keypad` | `Keypad` | Node3D | `code_group` (&""), `targets: Array[NodePath]` ([]) | `keypad_s` | `Panel`, `Led` | Wall-mounted. S9.7 |
 | `code_note` | `CodeNote` | Node3D | `code_group` (&"") | `read_note_s` | none | S9.7 |
-| `safe` | `Safe` | Node3D | `size: Safe.Size` {SMALL, MEDIUM, LARGE} (MEDIUM), `methods: Array[StringName]` ([&"drill"]; ids `drill`, `saw`, `c4`, `lockpick`, `code`), `code_group` (&""), `time_lock_s` (0 = none) | `drill_place_s` | `Body`, `Door` (hinge pivot), `DrillPoint` (−Z into the lock), `LootAnchor` | `Collision` sized for MEDIUM (layer 1). S9.8 |
+| `safe` | `Safe` | Node3D | `size: Safe.Size` {SMALL, MEDIUM, LARGE} (MEDIUM), `methods: Array[StringName]` ([&"drill"]; ids `drill`, `saw`, `c4`, `lockpick`, `code`), `code_group` (&""), `time_lock_s` (0 = none), `reader: NodePath` (empty, A2-08; method id `keycard`) | `drill_place_s` | `Body`, `Door` (hinge pivot), `DrillPoint` (−Z into the lock), `LootAnchor` | `Collision` sized for MEDIUM (layer 1). S9.8 |
 | `drill_point` | `DrillPoint` | Node3D | `device: DrillPoint.Device` {DRILL, THERMAL, SAW} (DRILL), `duration_s` (-1 = `drill_duration_s` / `thermal_duration_s` / `saw_duration_s`), `target: NodePath` | `drill_place_s` | none (device art has `Bit`) | **−Z points into the lock**, so the UsePoint is on its **+Z** side. S9.3/S9.4 |
 | `alarm_button` | `AlarmButton` | Node3D | none | not interactive | none | Wall-mounted. `UsePoint` = where the NPC stands |
 | `phone` | `Phone` | Node3D | none | not interactive | none | `UsePoint` = where the NPC stands |
-| `window` | `WindowPrefab` | Node3D | `breakable` (true), `openable` (false) (`noise` is the common one) | `window_open_s` | `Frame`, `Glass`, optional `Sash` | Origin = bottom-centre of the opening (sill). `GlassBody` StaticBody3D (layer 1). Interactable enabled only if `openable`. S9.9/S9.11 |
+| `window` | `WindowPrefab` | Node3D | `breakable` (true), `openable` (false) (`noise` is the common one) | `window_open_s` | `Frame`, `Glass`, optional `Sash` | Origin = bottom-centre of the opening (sill). `GlassBody` StaticBody3D (layer 1), fitted at ready to the visual's `Glass` AABB (A2-08). Interactable enabled only if `openable`. S9.9/S9.11 |
 | `secure_zone` | `SecureZone` | Node3D | `zone_size_m: Vector3` (4, 3, 8), `vehicle_collision` (true) | not interactive | `Body`, `DoorL`, `DoorR`, `DropAnchor` | `Zone` MapZone SECURE_LOOT. `Collision` = 2×2.2×5 m van body (layer 1), removed when `vehicle_collision` is false. Van rear faces −Z. S10.2 |
 | `escape_zone` | `EscapeZone` | Node3D | `escape_type: StringName` (&"van"), `active` (false), `zone_size_m` (4, 3, 4) | not interactive | none | `Zone` MapZone ESCAPE (stays in the group, `monitoring` follows `active`). `activate()` is called by `HeistMission.activate_escape()`. Visual hidden while inactive. C10 |
 | `body_container` | `BodyContainer` | Node3D | `capacity: int` (2) | not interactive | `Lid` (pivot), `Inside` | `Zone` MapZone BODY_HIDE (1.8×1.6×1.0). `Collision` body (layer 1). S6.3 |
@@ -166,3 +166,31 @@ A2-04 (S9.4, S9.7, S9.8, S9.10, S9.11):
   (or moving forward facing the ladder) is moved at ladder_climb_speed_mps along Bottom ->
   (Bottom.xz, Top.y) -> Top (reverse going down) by a HeistRuntime crew tick handler; casing crew
   cannot climb (S1.1). `is_climbing(slot)`, `start_climb(crew, up)`. Remote-human climbing: later.
+
+A2-08 (D-037, Glasshouse feedback):
+
+* `window`: at ready the `GlassBody/Shape` box is replaced by one fitted to the visual's `Glass`:
+  the merged AABB of every MeshInstance3D at or under `Glass`, in the prefab's space (with the
+  sash closed). Depth is at least `WindowPrefab.GLASS_MIN_DEPTH_M` (0.05 m). The placeholder
+  still gives 1.0 × 1.2 m. With no Glass mesh, the saved box stays. `glass_aabb()` exposes it.
+* `safe` KEYCARD method: list `&"keycard"` in `methods`. The safe's own Interactable never offers
+  it, so a keycard-only safe has its Interactable disabled. Wire the reader either way (both work
+  together and the safe opens once):
+  1. the keycard_reader's `targets` lists the safe, or
+  2. the safe's new `reader: NodePath` points at the reader (`KeycardReader.bind_target(safe)` at ready).
+
+  A completed reader (a keycard, or an ECM on the reader) calls `Safe.open_by_keycard()`. This
+  beats the lock (`beaten_by = &"keycard"`), then the time lock applies as for any method. A safe
+  without `&"keycard"` in `methods` ignores the call and logs a warning.
+* `keycard_reader`: targets that have `open_by_keycard()` get that call instead of
+  `unlock()` + open. `bind_target(node)` adds a runtime target. Every target is opened once.
+* `door` `push_bar` (fire exits): while closed, the door opens only from the inside, the front
+  (−Z, UsePoint) side. That means the user's position in the door's local space has z < 0 (pair it
+  with `swing` INWARD, so it opens away from the pusher toward +Z, the outside). From outside, the
+  crew interaction is blocked with `Door.BLOCK_PUSH_BAR_OUTSIDE` (`ui.blocked.push_bar_outside`,
+  a string for ENV B). `can_npc_open` / `passable_for` / `npc_open` are false for outside NPCs, so
+  they treat it as locked from that side, and the `NavLink` is one-way (−Z → +Z) while it is
+  closed. Opening from inside still follows `lock`. Once open, it is a normal door and either
+  side may close it. `is_inside(node)` exposes the side test.
+* `security_camera`: the `Collision` box was moved 2.5 cm forward (centre z −0.225, size 0.45).
+  It now spans z [−0.45, 0], entirely in front of the wall-mount pivot.

@@ -57,3 +57,28 @@ extends Resource
 @export var repath_goal_move_m: float = 1.0
 ## Advance to the next path corner within this horizontal distance (m).
 @export var waypoint_reach_m: float = 0.45
+
+@export_group("Orders (L6.1, A3-05)")
+## D-014 "P4 option": a follow / carry_bag / revive order in STEALTH un-hides the AI so it follows and
+## is detectable like a player. false = stealth orders are ignored and the AI keeps waiting at the van.
+@export var stealth_follow_enabled: bool = true
+## An AI (or bag / downed crew) within this angle of the human's aim is "aimed at" (deg) ◇.
+@export var order_aim_cone_deg: float = 10.0
+## Orders reach this far along the aim (m) ◇.
+@export var order_range_m: float = 30.0
+## PlayerInput keeps a tapped order on its intent this long (s) so the 30 Hz unreliable send carries it.
+@export var order_latch_s: float = 0.25
+## Hold: walk back to the hold point beyond this distance (m).
+@export var hold_arrive_m: float = 0.6
+## Hold: still revive downed crew within this distance of the hold point (m) ◇.
+@export var hold_revive_radius_m: float = 6.0
+## carry_bag without a bag id: the free bag nearest the aim point within this distance (m).
+@export var bag_search_radius_m: float = 4.0
+## Pick a bag up within this horizontal distance (m).
+@export var bag_pickup_range_m: float = 1.2
+## Carrying: head for a known SECURE_LOOT zone whose centre is within this distance (m) ◇.
+@export var secure_seek_radius_m: float = 10.0
+## Carrying: drop the bag within this distance of the secure point (m), facing the zone centre.
+@export var secure_arrive_m: float = 0.8
+## Drop only when the view is within this angle of the zone centre (deg).
+@export var secure_face_deg: float = 20.0

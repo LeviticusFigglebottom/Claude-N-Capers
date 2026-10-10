@@ -1,4 +1,4 @@
-"""``rig_arms``: first-person viewmodel arms (rig, mesh, weapon animation sets), D1-03.
+"""``rig_arms``: first-person viewmodel arms (rig, mesh, weapon animation sets), D1-03 / D-034.
 
 Private helper for ``arms_fp.py``. Pure numpy except ``build_arms_rig`` / ``build_arms_mesh``.
 
@@ -8,7 +8,8 @@ the exact rest geometry of ``rig_humanoid`` translated by -eye (``clavicle.L/R, 
 forearm.L/R, hand.L/R`` and the 30 finger bones), with the clavicles parented to ``root``. Two helper
 bones are added (contract proposal, see the D1-03 report):
 
-* ``weapon`` (child of ``hand.R``, never animated relative to it): its head is the weapon origin and
+* ``weapon`` (child of ``hand.R``; identity relative to it except while the right hand works a bolt
+  (``sniper_bolt*``, ``sniper_reload_empty``), when it carries the gun held by the left hand): its head is the weapon origin and
   its axes are the weapon's Godot axes (bone Y = weapon up, bone Z = weapon back, X = right), at the
   HandR grip offset of ``_anim.grip_offset``. A BoneAttachment3D on ``weapon`` with the weapon scene
   as an identity child places the gun; the same offset applies to ``rig_humanoid``'s HandR.
@@ -17,23 +18,20 @@ bones are added (contract proposal, see the D1-03 report):
   weapon's ``Magwell`` magazine node under a BoneAttachment3D on ``magazine`` with the same
   weapon-space transform it has in the weapon scene.
 
-Animation sets are data (``FPSet``): marker positions of the weapon, the hip / ADS / sprint holds and
-the reload choreography; ``fp_clips(set)`` turns any set into clips named ``<set>_<clip>``
-(``pistol_idle`` ...). New sets for D-034 (smg, rifle, shotgun, lmg, sniper) are new ``FPSet``
-entries, plus at most a new reload beat kind (pump, bolt, shell loop).
+The clavicles are posed with a location too (bladed stance and the first-person shoulder placement,
+``_arms_choreo``), so every clip keys the same transforms. Animation sets are data
+(``_arms_sets.FPSet``: weapon markers, hip / ADS / sprint holds, stance); ``_arms_clips.fp_clips(sk,
+set)`` turns a set into clips named ``<set>_<clip>`` (``pistol_idle`` ...) with the key-pose
+choreography of ``_arms_choreo``.
 """
 
 from __future__ import annotations
-
-import math
-from dataclasses import dataclass, field
 
 import numpy as np
 
 import _anim as A
 import _rig as rig
-from _anim import (FPS, TAU, Clip, Keys, Pose, Skeleton, Solver, arm_fk, hand_on, hand_shape, hold_weapon, pulse, rxd,
-                   smooth, v3, weapon_frame, wf_point)
+from _anim import Skeleton
 
 ARMATURE_NAME = "rig_arms"
 ARM_PREFIXES = ("clavicle", "upper_arm", "forearm", "hand", "thumb", "index", "middle", "ring", "pinky")
@@ -78,347 +76,13 @@ def skeleton(height: float = rig.DEFAULT_HEIGHT) -> Skeleton:
 
 
 # =============================================================================================
-# weapon sets (data)
+# animation sets (data in ``_arms_sets``, clips in ``_arms_clips``, choreography in ``_arms_choreo``)
 # =============================================================================================
-@dataclass
-class FPSet:
-    """A first-person animation set for one ``WeaponDef.anim_set``. Positions are camera space
-    (m, Blender axes: +X right, +Y forward, +Z up); weapon-space markers are Blender weapon axes
-    relative to the weapon origin (the firing-hand pivot)."""
+from _arms_clips import fp_clips, state_fns  # noqa: E402
+from _arms_sets import PISTOL, SETS, FPSet, clip_table  # noqa: E402
 
-    name: str
-    markers: dict                       # left_ik, aim, magwell (+ magwell_axis), slide_rear ...
-    hip: tuple                          # (pivot, yaw, pitch, roll) at rest
-    ads_dist: float                     # AimPoint distance in front of the eye (m)
-    sprint: tuple                       # (pivot, yaw, pitch, roll)
-    lowered: tuple                      # (pivot, yaw, pitch, roll): drawn-from / holstered-to, off screen
-    support: str = "pistol"             # left-hand hold kind
-    recoil: dict = field(default_factory=lambda: {"back": 0.028, "up": 0.010, "pitch": 7.0, "roll": 1.5})
-    recoil_ads: dict = field(default_factory=lambda: {"back": 0.018, "up": 0.004, "pitch": 3.5, "roll": 0.8})
-    clips: dict = field(default_factory=dict)   # clip -> {"frames", "loop", "events"}
-    mag_len: float = 0.10               # magazine travel to leave the magwell (m)
-    belt: tuple = (-0.13, 0.18, -0.55)  # left hand at the mag pouch (off screen)
-    reload_tilt: tuple = ((0.075, 0.34, -0.15), 14.0, 20.0, 28.0)
-
-
-_P9_RAKE = 18.0
-PISTOL = FPSet(
-    name="pistol",
-    markers={"left_ik": v3(-0.025, 0.0115, -0.020), "aim": v3(0.0, -0.030, 0.0665),
-             "magwell": v3(0.0, -0.0227, -0.070), "magwell_axis": rxd(-_P9_RAKE) @ v3(0.0, 0.0, 1.0),
-             "slide_rear": v3(0.0, -0.030, 0.050)},
-    hip=((0.13, 0.33, -0.18), 4.0, 3.0, -5.0),
-    ads_dist=0.40,
-    sprint=((0.15, 0.30, -0.23), 26.0, -24.0, -34.0),
-    lowered=((0.17, 0.18, -0.55), 10.0, -60.0, -30.0),
-    clips={
-        "idle": {"frames": 90, "loop": True},
-        "ads_idle": {"frames": 90, "loop": True},
-        "draw": {"frames": 11, "loop": False, "events": {"ready": 11}},
-        "holster": {"frames": 11, "loop": False, "events": {"gone": 11}},
-        "fire": {"frames": 6, "loop": False, "events": {"shot": 0}},
-        "fire_ads": {"frames": 6, "loop": False, "events": {"shot": 0}},
-        "reload": {"frames": 45, "loop": False, "events": {"mag_out": 6, "mag_swap": 15, "mag_in": 29, "done": 38}},
-        "reload_empty": {"frames": 63, "loop": False,
-                         "events": {"mag_out": 6, "mag_swap": 15, "mag_in": 29, "slide_release": 45, "done": 56}},
-        "sprint": {"frames": 18, "loop": True},
-    },
-)
-
-SETS: dict[str, FPSet] = {"pistol": PISTOL}
-
-
-# =============================================================================================
-# holds
-# =============================================================================================
-def frame_of(spec: tuple, d_pivot=(0.0, 0.0, 0.0), d_yaw: float = 0.0, d_pitch: float = 0.0,
-             d_roll: float = 0.0) -> tuple[np.ndarray, np.ndarray]:
-    p, yaw, pitch, roll = spec
-    return weapon_frame(np.array(p, float) + np.array(d_pivot, float), yaw + d_yaw, pitch + d_pitch, roll + d_roll)
-
-
-def ads_frame(s: FPSet) -> tuple[np.ndarray, np.ndarray]:
-    aim = s.markers["aim"]
-    return weapon_frame(v3(0.0, s.ads_dist, 0.0) - aim)
-
-
-def support(sk: Skeleton, pose: Pose, s: FPSet, wf) -> None:
-    R = wf[0]
-    if s.support == "pistol":
-        hand_on(sk, pose, "L", wf_point(wf, s.markers["left_ik"]), R @ v3(0.55, 0.45, -0.70), R @ v3(0.85, 0.05, 0.25),
-                pole=v3(-0.6, -0.2, -0.8), along_share=0.45, palm_off=0.016, clav=0.6)
-        pose.hands["L"] = hand_shape("support")
-    else:  # handguard / fore-end
-        hand_on(sk, pose, "L", wf_point(wf, s.markers["left_ik"]), R @ v3(0.55, 0.65, 0.35), R @ v3(0.55, -0.1, 0.83),
-                pole=v3(-0.5, -0.3, -0.8), along_share=0.55, palm_off=0.016, clav=0.6)
-        pose.hands["L"] = hand_shape("grip", 0.85)
-
-
-def hold(sk: Skeleton, s: FPSet, wf, two_hands: bool = True) -> Pose:
-    pose = Pose()
-    hold_weapon(sk, pose, wf, pole=v3(0.7, -0.1, -0.7), twist=0.6, clav=0.6)
-    pose.hands["R"] = hand_shape("trigger")
-    if two_hands:
-        support(sk, pose, s, wf)
-    else:
-        left_down(sk, pose)
-    return pose
-
-
-def left_down(sk: Skeleton, pose: Pose, swing: float = 0.0) -> None:
-    """Left arm out of view (hanging, slight bend)."""
-    arm_fk(sk, pose, "L", add=30.0, swing=8.0 + swing, flex=25.0, twist=10.0)
-    pose.hands["L"] = hand_shape("relaxed")
-
-
-def mag_frame_seated(wf) -> tuple[np.ndarray, np.ndarray]:
-    """World (camera-space) frame of the ``magazine`` bone when seated: the weapon frame."""
-    return wf[0].copy(), wf[1].copy()
-
-
-def mag_world(sk: Skeleton, Rm: np.ndarray, pm: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """Weapon-axes frame (columns X right, Y muzzle, Z up) at ``pm`` -> (bone world delta, head)."""
-    B = sk.B["magazine"]
-    # bone axes in weapon terms: X = right, Y = up, Z = back  (see segments())
-    bone_axes = np.column_stack([Rm[:, 0], Rm[:, 2], -Rm[:, 1]])
-    return bone_axes @ B.T, pm.copy()
-
-
-# =============================================================================================
-# clips
-# =============================================================================================
-def fp_clips(sk: Skeleton, s: FPSet) -> dict[str, Clip]:
-    solver = Solver(sk)
-    out: dict[str, Clip] = {}
-    for clip, row in s.clips.items():
-        N, loop = int(row["frames"]), bool(row["loop"])
-        fn = {"idle": _idle, "ads_idle": _ads_idle, "draw": _draw, "holster": _holster, "fire": _fire,
-              "fire_ads": _fire_ads, "reload": _reload, "reload_empty": _reload_empty, "sprint": _sprint}[clip]
-        out[f"{s.name}_{clip}"] = Clip(f"{s.name}_{clip}", N, loop, fn(sk, solver, s, N), 0.0, None,
-                                       dict(row.get("events", {})), reach_fix=False)
-    return out
-
-
-def _with_mag(sk: Skeleton, pose: Pose, wf) -> Pose:
-    pose.world["magazine"] = mag_world(sk, *mag_frame_seated(wf))
-    return pose
-
-
-def _idle(sk, solver, s, N):
-    def fn(f: int) -> Pose:
-        t = f / FPS
-        T = N / FPS
-        b = math.sin(TAU * t / T * 2.0)
-        sway = math.sin(TAU * t / T + 0.6)
-        wf = frame_of(s.hip, (0.003 * sway, 0.0, 0.003 * b), d_yaw=0.5 * sway, d_pitch=0.4 * b, d_roll=0.4 * sway)
-        return _with_mag(sk, hold(sk, s, wf), wf)
-    return fn
-
-
-def _ads_idle(sk, solver, s, N):
-    def fn(f: int) -> Pose:
-        t = f / FPS
-        T = N / FPS
-        b = math.sin(TAU * t / T * 2.0)
-        sway = math.sin(TAU * t / T + 0.6)
-        R, o = ads_frame(s)
-        wf = (R @ rxd(0.15 * b) @ A.rzd(0.15 * sway), o + v3(0.0008 * sway, 0.0, 0.001 * b))
-        return _with_mag(sk, hold(sk, s, wf), wf)
-    return fn
-
-
-def _recoil(s: FPSet, base, rec: dict, k: float) -> tuple[np.ndarray, np.ndarray]:
-    R, o = base
-    o2 = o + R @ v3(0.0, -rec["back"] * k, rec["up"] * k)
-    return R @ rxd(rec["pitch"] * k) @ A.ryd(rec["roll"] * k), o2
-
-
-def _fire(sk, solver, s, N):
-    def fn(f: int) -> Pose:
-        k = pulse(f / FPS, 1.0 / FPS, (N - 1) / FPS)
-        wf = _recoil(s, frame_of(s.hip), s.recoil, k)
-        return _with_mag(sk, hold(sk, s, wf), wf)
-    return fn
-
-
-def _fire_ads(sk, solver, s, N):
-    def fn(f: int) -> Pose:
-        k = pulse(f / FPS, 1.0 / FPS, (N - 1) / FPS)
-        wf = _recoil(s, ads_frame(s), s.recoil_ads, k)
-        return _with_mag(sk, hold(sk, s, wf), wf)
-    return fn
-
-
-def _draw(sk, solver, s, N, reverse: bool = False):
-    lo, hi = frame_of(s.lowered), frame_of(s.hip)
-
-    def fn(f: int) -> Pose:
-        u = f / N
-        if reverse:
-            u = 1.0 - u
-        e = A.bezier1(u, 0.0, 1.08)            # fast in, small overshoot settle
-        R = A.mslerp(lo[0], hi[0], min(1.0, e))
-        o = lo[1] + (hi[1] - lo[1]) * e
-        wf = (R, o)
-        pose = hold(sk, s, wf, two_hands=True)
-        # the support hand joins late (comes up from below)
-        j = smooth(0.55, 1.0, u)
-        if j < 1.0:
-            sup = pose.arms["L"]
-            low = v3(-0.16, 0.22, -0.55)
-            sup.wrist = low + (sup.wrist - low) * j
-            pose.hands["L"] = hand_shape("relaxed").blend(hand_shape("support"), j)
-        return _with_mag(sk, pose, wf)
-    return fn
-
-
-def _holster(sk, solver, s, N):
-    return _draw(sk, solver, s, N, reverse=True)
-
-
-def _sprint(sk, solver, s, N):
-    def fn(f: int) -> Pose:
-        ph = f / N
-        bob = math.cos(TAU * 2 * ph)
-        side = math.sin(TAU * ph)
-        wf = frame_of(s.sprint, (0.012 * side, 0.004 * bob, 0.014 * bob), d_yaw=3.0 * side, d_pitch=2.5 * bob,
-                      d_roll=4.0 * side)
-        pose = hold(sk, s, wf, two_hands=False)
-        left_down(sk, pose, swing=25.0 * math.sin(TAU * ph + 0.3))
-        return _with_mag(sk, pose, wf)
-    return fn
-
-
-# -- reloads -----------------------------------------------------------------------------------
-def _left_at_mag(sk: Skeleton, pose: Pose, s: FPSet, wf, out: float, shape: str = "pinch") -> None:
-    """Left hand holding the magazine whose base is ``out`` m below the magwell, aligned with it."""
-    R = wf[0]
-    axis = R @ s.markers["magwell_axis"]
-    base = wf_point(wf, s.markers["magwell"]) - axis * out
-    palm_pt = base - axis * 0.012 + R @ v3(-0.004, -0.010, 0.0)
-    hand_on(sk, pose, "L", palm_pt, R @ v3(0.35, 0.90, -0.25), axis,
-            pole=v3(-0.7, -0.4, -0.6), along_share=0.35, palm_off=0.014, clav=0.6)
-    pose.hands["L"] = hand_shape(shape)
-
-
-def _reload_keys(sk, solver, s: FPSet, N: int, empty: bool):
-    ev = s.clips["reload_empty" if empty else "reload"]["events"]
-    hip = frame_of(s.hip)
-    tilt = frame_of(s.reload_tilt)
-    tilt_in = frame_of(s.reload_tilt, (0.0, 0.0, 0.006), d_pitch=2.0)
-    approach_out = 0.07
-
-    def k_hold(wf, two=True, left=None) -> Pose:
-        p = hold(sk, s, wf, two_hands=two)
-        if left is not None:
-            left(p)
-        return p
-
-    belt = v3(*s.belt)
-
-    def at_belt(shape):
-        def fn(p: Pose) -> None:
-            hand_on(sk, p, "L", belt, v3(0.2, 0.3, -0.9), v3(0.95, 0.0, 0.2), pole=v3(-0.7, -0.3, -0.6),
-                    along_share=0.5, clav=0.3)
-            p.hands["L"] = hand_shape(shape)
-        return fn
-    keys = [
-        (0, k_hold(hip), "inout"),
-        (5, k_hold(tilt, two=False, left=lambda p: left_down(sk, p, swing=10.0)), "inout"),
-        (13, k_hold(tilt, two=False, left=at_belt("relaxed")), "inout"),
-        (16, k_hold(tilt, two=False, left=at_belt("pinch")), "inout"),
-        (24, k_hold(tilt, two=False, left=lambda p: _left_at_mag(sk, p, s, tilt, approach_out)), "inout"),
-        (ev["mag_in"], k_hold(tilt_in, two=False, left=lambda p: _left_at_mag(sk, p, s, tilt_in, -0.004, "flat")), "snap"),
-    ]
-    if not empty:
-        keys += [(ev["mag_in"] + 4, k_hold(tilt_in, two=False, left=lambda p: _left_at_mag(sk, p, s, tilt_in, 0.03, "flat")), "out"),
-                 (ev["done"], k_hold(frame_of(s.reload_tilt, d_pitch=-6.0, d_roll=-14.0)), "inout"),
-                 (N, k_hold(hip), "settle")]
-    else:
-        rel = ev["slide_release"]
-        slide = s.markers["slide_rear"]
-
-        def grab(wf, pull):
-            def fn(p: Pose) -> None:
-                R = wf[0]
-                pt = wf_point(wf, slide + v3(-0.018, -pull, 0.012))
-                hand_on(sk, p, "L", pt, R @ v3(0.95, -0.05, -0.3), R @ v3(0.3, 0.0, -0.95),
-                        pole=v3(-0.7, -0.2, -0.7), along_share=0.62, palm_off=0.02, clav=0.6)
-                p.hands["L"] = hand_shape("grip", 0.9)
-            return fn
-        rack = frame_of(s.reload_tilt, (0.01, 0.03, 0.01), d_roll=-30.0, d_pitch=-4.0)
-        rack_push = frame_of(s.reload_tilt, (0.01, 0.06, 0.01), d_roll=-30.0, d_pitch=-4.0)
-        keys += [(rel - 7, k_hold(rack, two=False, left=grab(rack, 0.0)), "inout"),
-                 (rel, k_hold(rack_push, two=False, left=grab(rack_push, 0.03)), "inout"),
-                 (rel + 3, k_hold(rack_push, two=False, left=lambda p: left_down(sk, p, swing=30.0)), "out"),
-                 (ev["done"], k_hold(frame_of(s.reload_tilt, d_pitch=-6.0, d_roll=-14.0)), "inout"),
-                 (N, k_hold(hip), "settle")]
-    return keys, approach_out
-
-
-def _reload_common(sk, solver, s: FPSet, N: int, empty: bool):
-    keys, approach_out = _reload_keys(sk, solver, s, N, empty)
-    ev = s.clips["reload_empty" if empty else "reload"]["events"]
-    out_f, swap_f, in_f = ev["mag_out"], ev["mag_swap"], ev["mag_in"]
-    approach_f = 24
-    hold_solver = Solver(sk)
-    cache: dict = {}
-
-    def weapon_of(sol) -> tuple[np.ndarray, np.ndarray]:
-        Ah = sol.W["hand.R"] @ sk.B["hand.R"]
-        R_off, t_off = A.grip_offset(sk, "R")
-        return Ah @ R_off, sol.P["hand.R"] + Ah @ t_off
-
-    def hand_L(sol) -> tuple[np.ndarray, np.ndarray]:
-        return sol.W["hand.L"] @ sk.B["hand.L"], sol.P["hand.L"]
-
-    def post(f: int, pose: Pose) -> None:
-        sol = hold_solver.solve(pose)
-        Rw, pw = weapon_of(sol)
-        axis = Rw @ s.markers["magwell_axis"]
-        if f < out_f:
-            Rm, pm = Rw, pw
-        elif f < swap_f:
-            # mag drops out of the grip and falls away under gravity, tumbling a little
-            t = (f - out_f) / FPS
-            slide_t = min(1.0, (f - out_f) / 3.0)
-            d = s.mag_len * smooth(0.0, 1.0, slide_t) + 0.5 * 9.81 * max(0.0, t - 0.1) ** 2
-            if "drop" not in cache:
-                cache["drop"] = (Rw.copy(), pw.copy(), axis.copy())
-            R0, p0, ax0 = cache["drop"]
-            Rm = R0 @ rxd(-60.0 * max(0.0, t - 0.1))
-            pm = p0 - ax0 * s.mag_len * smooth(0.0, 1.0, slide_t) + v3(0.0, 0.0, -(d - s.mag_len * smooth(0.0, 1.0, slide_t)))
-        elif f < approach_f:
-            # new mag rides in the left hand with the offset it has at the approach key
-            if "grip" not in cache:
-                ap = hold_solver.solve(keys_obj(approach_f))
-                Rwa, pwa = weapon_of(ap)
-                axa = Rwa @ s.markers["magwell_axis"]
-                Rh, ph = hand_L(ap)
-                cache["grip"] = (Rh.T @ Rwa, Rh.T @ (pwa - axa * (approach_out + s.mag_len * 0.0)))
-            Rh, ph = hand_L(sol)
-            Rr, tr = cache["grip"]
-            Rm, pm = Rh @ Rr, ph + Rh @ tr
-        elif f <= in_f:
-            u = smooth(0.0, 1.0, (f - approach_f) / max(1, in_f - approach_f))
-            Rm, pm = Rw, pw - axis * approach_out * (1.0 - u)
-        else:
-            Rm, pm = Rw, pw
-        pose.world["magazine"] = mag_world(sk, Rm, pm)
-
-    ks = Keys(solver, keys)
-
-    def keys_obj(f: int) -> Pose:
-        return ks(f)
-    return Keys(solver, keys, post)
-
-
-def _reload(sk, solver, s, N):
-    return _reload_common(sk, solver, s, N, empty=False)
-
-
-def _reload_empty(sk, solver, s, N):
-    return _reload_common(sk, solver, s, N, empty=True)
+__all__ = ["ARMATURE_NAME", "BONES", "PARENT", "PISTOL", "SETS", "FPSet", "build_arms_mesh", "build_arms_rig",
+           "clip_table", "eye_point", "fp_clips", "segments", "skeleton", "state_fns"]
 
 
 # =============================================================================================

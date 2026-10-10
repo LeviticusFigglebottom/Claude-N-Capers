@@ -1,40 +1,45 @@
-## C3 pre-planning asset hooks: turns the chosen assets into gameplay at launch. Owner: ENV A (A2-07).
-## Shapes and examples: game/systems/heist/README.md. HeistRuntime owns one instance (`rt.preplan`).
+## C3 pre-planning: applies a PreplanResult at launch (docs/contracts/preplanning.md v1.0, D-038).
+## Owner: ENV A (A2-07, A3-08). ENV B resolves the plan (`PreplanPlan.apply()`); ENV A only applies
+## it and never re-resolves the asset catalog. HeistRuntime owns one instance (`rt.preplan`).
+## Shapes and examples: game/systems/heist/README.md.
 ##
-## Asset definition (HeistDef.preplanning[id], optionally overridden per launch):
-##   { "cost": int, "favors": int, "type": StringName (informational: &"modifier", &"drop", &"spawn",
-##     &"escape", &"variant", &"insider"),
-##     "grants": {modifier_key: value}          -> Modifiers.set_source(TEAM, &"asset.<id>", grants)
-##     "slot": StringName + "drop": StringName  -> spawn the drop at the PREPLAN_POINT named `slot`
-##       (optional "scene": String path, "params": Dictionary)
-##     "spawn_tag": StringName                  -> crew spawns at PLAYER SpawnPoints carrying that tag
-##     "escape_tag": StringName                 -> HeistMission.activate_escape() defaults to that tag
-##     "force_variants": {group: [slot_ids]}    -> pinned active by the VariantResolver
-##     "reveals": [groups]                      -> revealed_variants() exposes those resolved groups }
-## Effects are applied independently, so one asset may combine several keys.
-## Launch option `options["preplanning"]`: Array of asset ids (looked up in HeistDef.preplanning) or
-## a Dictionary { id: true | Dictionary } (a Dictionary value is merged over the catalog entry, or is
-## the whole definition when the heist has no entry for it).
+## Launch options:
+##   options["preplan"]      = PreplanResult (version 1), applied as given.
+##   options["preplanning"]  = dev/test shortcut: asset ids (Array, or Dictionary {id: point_id | true}).
+##     They are resolved by ENV B (`PreplanPlan.resolve_ids(heist_id, ids)`, or while that is not
+##     shipped, a PreplanBoard + PreplanPlan built from the ids and `apply()`), never by ENV A.
+##
+## Normalized result (`result`, contract keys; ENV B's pre-contract hand-off keys are accepted too:
+## spawns[{asset,item,point}] -> drops, player_spawn_tag -> spawn_tag, reveal_variant_groups -> reveals,
+## force_variants [{asset,group,slot}] -> {group: [slots]}):
+##   { "version": 1, "modifier_sources": {asset_id: {key: value}}, "drops": [{asset, kind, point, params}],
+##     "spawn_tag": StringName, "escape_tag": StringName, "force_variants": {group: [slot_ids]},
+##     "reveals": [group], "cash_spent": {slot: int}, "plan": Dictionary }
 class_name PreplanAssets
 extends RefCounted
 
-const OPTION_KEY: String = "preplanning"
+const OPTION_KEY: String = "preplan"
+const DEV_OPTION_KEY: String = "preplanning"
+const RESULT_VERSION: int = 1
 const SOURCE_PREFIX: String = "asset."
+const DEPLOYABLE_PREFIX: String = "deployable."
+## `<Map>/Preplan` (heist_map.md v1.2): PREPLAN_POINT Marker3Ds, node name = point id.
+const POINTS_NODE: String = "Preplan"
 ## Fallback drop nodes join this group.
 const DROP_GROUP: StringName = &"preplan_drop"
 
-## Drop kind -> scene path or Callable(asset_id, def) -> Node3D. Systems that own a drop prefab
-## (e.g. the deployables) register here; unregistered kinds probe res://systems/prefabs/<kind>/<kind>.tscn
-## and fall back to a PreplanDrop marker node.
+## Drop kind -> scene path or Callable(asset_id, drop: Dictionary) -> Node3D. Unregistered kinds:
+## `deployable.<x>` with a DeployableDef -> a DeployablePrefab (no owner); else
+## res://systems/prefabs/<kind>/<kind>.tscn; else a PreplanDrop marker node.
 static var _drop_factories: Dictionary = {}
 
-## Chosen assets: id (StringName) -> definition Dictionary. Ids in String order.
-var chosen: Dictionary = {}
-## Nodes spawned for drop assets: id -> Node3D.
+## Normalized PreplanResult (empty = no pre-planning).
+var result: Dictionary = {}
+## Nodes spawned for drops: point id -> Node3D (one asset per point, PD2).
 var drops: Dictionary = {}
 
 
-## Register how a drop kind is spawned (scene path String or Callable(asset_id, def) -> Node3D).
+## Register how a drop kind is spawned (scene path String or Callable(asset_id, drop) -> Node3D).
 static func register_drop(kind: StringName, scene_or_factory: Variant) -> void:
 	_drop_factories[kind] = scene_or_factory
 
@@ -43,56 +48,179 @@ static func unregister_drop(kind: StringName) -> void:
 	_drop_factories.erase(kind)
 
 
-## Resolve the launch option against the heist's catalog.
-func setup(options: Dictionary, def: HeistDef) -> void:
-	chosen.clear()
-	var catalog: Dictionary = def.preplanning if def != null else {}
-	var raw: Variant = options.get(OPTION_KEY, [])
-	var picks: Dictionary = {}
-	if raw is Array:
-		for id: Variant in raw:
-			picks[StringName(id)] = true
-	elif raw is Dictionary:
-		for id: Variant in raw:
-			picks[StringName(id)] = (raw as Dictionary)[id]
-	var ids: Array = picks.keys()
-	ids.sort_custom(func(a: StringName, b: StringName) -> bool: return String(a) < String(b))
-	for id: StringName in ids:
-		var entry: Dictionary = _catalog_entry(catalog, id)
-		var over: Variant = picks[id]
-		if over is Dictionary:
-			entry.merge(over as Dictionary, true)
-		elif entry.is_empty():
-			Log.warn(&"preplan", "asset '%s' is not in the heist's preplanning catalog; ignored" % id)
+## Read the launch options. `def` / `p_heist_id` / `p_difficulty` are only used for the dev ids path.
+func setup(options: Dictionary, def: HeistDef, p_heist_id: StringName = &"", p_difficulty: int = 0) -> void:
+	result = {}
+	drops.clear()
+	var raw: Variant = options.get(OPTION_KEY, null)
+	if raw is Dictionary and not (raw as Dictionary).is_empty():
+		result = normalize(raw as Dictionary)
+	elif options.has(DEV_OPTION_KEY):
+		var hid: StringName = p_heist_id if p_heist_id != &"" else (def.id if def != null else &"")
+		var resolved: Dictionary = resolve_ids(hid, p_difficulty, options[DEV_OPTION_KEY], def)
+		if not resolved.is_empty():
+			result = normalize(resolved)
+	if not result.is_empty():
+		Log.info(&"preplan", "assets %s" % [asset_ids()])
+
+
+## True when a PreplanResult is being applied.
+func is_active() -> bool:
+	return not result.is_empty()
+
+
+## Dev/test: resolve asset ids with ENV B's resolver. `ids`: Array of ids, or {id: point_id | true}.
+static func resolve_ids(heist_id: StringName, difficulty: int, ids: Variant, def: HeistDef = null) -> Dictionary:
+	var picks: Array[Dictionary] = []
+	if ids is Array:
+		for id: Variant in ids:
+			picks.append({"asset": StringName(id), "point": &""})
+	elif ids is Dictionary:
+		for id: Variant in ids:
+			var v: Variant = (ids as Dictionary)[id]
+			var pt: StringName = StringName(v) if (v is String or v is StringName) else &""
+			picks.append({"asset": StringName(id), "point": pt})
+	if picks.is_empty():
+		return {}
+	if _plan_has_static(&"resolve_ids"):
+		var id_list: Array[StringName] = []
+		for p: Dictionary in picks:
+			id_list.append(p["asset"])
+		var out: Variant = (PreplanPlan as Script).call(&"resolve_ids", heist_id, id_list)
+		return out as Dictionary if out is Dictionary else {}
+	return _resolve_with_plan(heist_id, difficulty, picks, def)
+
+
+## Bridge until ENV B ships PreplanPlan.resolve_ids (B4-08): ENV B's board + plan + apply().
+## Located assets without a point take the first allowed point of the board's blueprint.
+static func _resolve_with_plan(heist_id: StringName, difficulty: int, picks: Array[Dictionary], def: HeistDef) -> Dictionary:
+	var board: PreplanBoard = PreplanBoard.build(heist_id, difficulty, def)
+	var plan: PreplanPlan = PreplanPlan.new(board)
+	for p: Dictionary in picks:
+		var id: StringName = p["asset"]
+		var a: PreplanAssetDef = board.asset(id)
+		if a == null:
+			Log.warn(&"preplan", "asset '%s' is not on the %s board; ignored" % [id, heist_id])
 			continue
-		chosen[id] = entry
-	if not chosen.is_empty():
-		Log.info(&"preplan", "assets %s" % [chosen.keys()])
+		var pt: StringName = p["point"]
+		if pt == &"" and a.is_located():
+			pt = _first_point(board, a)
+		var r: StringName = plan.add(id, pt, 0)
+		if r != PreplanPlan.OK:
+			Log.warn(&"preplan", "asset '%s'@'%s' refused: %s" % [id, pt, r])
+	if plan.selections.is_empty():
+		return {}
+	return plan.apply()
+
+
+static func _first_point(board: PreplanBoard, a: PreplanAssetDef) -> StringName:
+	if not a.point_ids.is_empty():
+		return a.point_ids[0]
+	for pid: StringName in board.blueprint.point_ids():
+		if a.allows_point(pid, board.blueprint.category_of(pid)):
+			return pid
+	return &""
+
+
+static func _plan_has_static(method: StringName) -> bool:
+	for m: Dictionary in (PreplanPlan as Script).get_script_method_list():
+		if StringName(m.get("name", "")) == method:
+			return true
+	return false
+
+
+## Contract shape from a PreplanResult (also accepts ENV B's pre-contract hand-off keys).
+static func normalize(raw: Dictionary) -> Dictionary:
+	var version: int = int(raw.get("version", RESULT_VERSION))
+	if version != RESULT_VERSION:
+		Log.warn(&"preplan", "PreplanResult version %d (expected %d); applying known keys" % [version, RESULT_VERSION])
+	var mods: Dictionary = {}
+	var rm: Variant = raw.get("modifier_sources", {})
+	if rm is Dictionary:
+		for id: Variant in rm:
+			if (rm as Dictionary)[id] is Dictionary:
+				mods[StringName(id)] = ((rm as Dictionary)[id] as Dictionary).duplicate(true)
+	var out_drops: Array[Dictionary] = []
+	for d: Variant in raw.get("drops", raw.get("spawns", [])) as Array:
+		if not (d is Dictionary):
+			continue
+		var dd: Dictionary = d
+		out_drops.append({
+			"asset": StringName(dd.get("asset", &"")),
+			"kind": StringName(dd.get("kind", dd.get("item", &""))),
+			"point": StringName(dd.get("point", &"")),
+			"params": (dd.get("params", {}) as Dictionary).duplicate(true),
+		})
+	var reveals: Array[StringName] = []
+	for g: Variant in raw.get("reveals", raw.get("reveal_variant_groups", [])) as Array:
+		if not reveals.has(StringName(g)):
+			reveals.append(StringName(g))
+	return {
+		"version": RESULT_VERSION,
+		"modifier_sources": mods,
+		"drops": out_drops,
+		"spawn_tag": StringName(raw.get("spawn_tag", raw.get("player_spawn_tag", &""))),
+		"escape_tag": StringName(raw.get("escape_tag", &"")),
+		"force_variants": _normalize_forces(raw.get("force_variants", {})),
+		"reveals": reveals,
+		"cash_spent": (raw.get("cash_spent", {}) as Dictionary).duplicate(true),
+		"plan": (raw.get("plan", {}) as Dictionary).duplicate(true),
+	}
+
+
+static func _normalize_forces(raw: Variant) -> Dictionary:
+	var out: Dictionary = {}
+	if raw is Dictionary:
+		for g: Variant in raw:
+			var v: Variant = (raw as Dictionary)[g]
+			for sid: Variant in (v if v is Array else [v]):
+				_add_force(out, StringName(g), StringName(sid))
+	elif raw is Array:
+		for e: Variant in raw:
+			if e is Dictionary:
+				_add_force(out, StringName((e as Dictionary).get("group", &"")), StringName((e as Dictionary).get("slot", &"")))
+	return out
+
+
+static func _add_force(out: Dictionary, group: StringName, slot_id: StringName) -> void:
+	if group == &"" or slot_id == &"":
+		return
+	if not out.has(group):
+		out[group] = []
+	if not (out[group] as Array).has(slot_id):
+		(out[group] as Array).append(slot_id)
+
+
+## Asset ids in the result (modifier sources, drops, plan selections); first-seen order.
+func asset_ids() -> Array[StringName]:
+	var out: Array[StringName] = []
+	for id: Variant in result.get("modifier_sources", {}):
+		if not out.has(StringName(id)):
+			out.append(StringName(id))
+	for d: Dictionary in result.get("drops", []):
+		if not out.has(StringName(d["asset"])):
+			out.append(StringName(d["asset"]))
+	for s: Variant in (result.get("plan", {}) as Dictionary).get("selections", []):
+		if s is Dictionary and not out.has(StringName((s as Dictionary).get("asset", &""))):
+			out.append(StringName((s as Dictionary).get("asset", &"")))
+	return out
 
 
 func has_asset(id: StringName) -> bool:
-	return chosen.has(id)
+	return asset_ids().has(id)
 
 
 ## group -> [slot_ids] the VariantResolver must pin active.
 func forced_variants() -> Dictionary:
-	var out: Dictionary = {}
-	for id: StringName in chosen:
-		var fv: Dictionary = (chosen[id] as Dictionary).get("force_variants", {})
-		for g: Variant in fv:
-			var group: StringName = StringName(g)
-			if not out.has(group):
-				out[group] = []
-			var v: Variant = fv[g]
-			for sid: Variant in (v if v is Array else [v]):
-				(out[group] as Array).append(StringName(sid))
-	return out
+	return (result.get("force_variants", {}) as Dictionary).duplicate(true)
 
 
-## Modifier assets: one TEAM source per asset (`asset.<id>`). Cleared by Modifiers.clear_all() at teardown.
+## One TEAM source per asset (the source name is the asset id, `asset.<id>`). Cleared by
+## Modifiers.clear_all() at teardown.
 func apply_modifiers() -> void:
-	for id: StringName in chosen:
-		var grants: Dictionary = (chosen[id] as Dictionary).get("grants", {})
+	var mods: Dictionary = result.get("modifier_sources", {})
+	for id: StringName in mods:
+		var grants: Dictionary = mods[id]
 		if not grants.is_empty():
 			Modifiers.set_source(Modifiers.TEAM, source_name(id), grants)
 
@@ -103,89 +231,102 @@ static func source_name(id: StringName) -> StringName:
 	return StringName(s if s.begins_with(SOURCE_PREFIX) else SOURCE_PREFIX + s)
 
 
-## Spawn-location choice: the first chosen asset's `spawn_tag` (&"" = defaults).
+## Spawn choice (&"" = default spawns).
 func spawn_tag() -> StringName:
-	return _first_key("spawn_tag")
+	return StringName(result.get("spawn_tag", &""))
 
 
-## Escape choice: the first chosen asset's `escape_tag` (&"" = mission default).
+## Escape choice (&"" = mission default).
 func escape_tag() -> StringName:
-	return _first_key("escape_tag")
+	return StringName(result.get("escape_tag", &""))
 
 
-## Insider info: { group: resolved value } for every group named by a chosen asset's `reveals`.
-func revealed_variants(variants: Dictionary) -> Dictionary:
-	var out: Dictionary = {}
-	for id: StringName in chosen:
-		for g: Variant in (chosen[id] as Dictionary).get("reveals", []):
-			if variants.has(StringName(g)):
-				out[StringName(g)] = variants[StringName(g)]
+## Variant groups revealed to the crew (insider info).
+func reveals() -> Array[StringName]:
+	var out: Array[StringName] = []
+	for g: Variant in result.get("reveals", []):
+		out.append(StringName(g))
 	return out
 
 
-## Drop assets: spawn each at its PREPLAN_POINT under `parent`.
+## Insider info: { group: resolved value } for every revealed group.
+func revealed_variants(variants: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for g: StringName in reveals():
+		if variants.has(g):
+			out[g] = variants[g]
+	return out
+
+
+## Spending cash ENV B already charged: {slot: int} (results screen / replay; ENV A never charges).
+func cash_spent() -> Dictionary:
+	return result.get("cash_spent", {})
+
+
+## Drops: spawn each at its PREPLAN_POINT under `parent` (server).
 func spawn_drops(map: HeistMap, parent: Node3D) -> void:
-	for id: StringName in chosen:
-		var def: Dictionary = chosen[id]
-		var slot: StringName = StringName(def.get("slot", &""))
-		if slot == &"" or not (def.has("drop") or def.has("scene")):
-			continue
-		var point: Node3D = find_point(map, slot)
+	for d: Dictionary in result.get("drops", []):
+		var pid: StringName = d["point"]
+		var point: Node3D = find_point(map, pid)
 		if point == null:
-			Log.error(&"preplan", "asset '%s': no PREPLAN_POINT matches slot '%s'" % [id, slot])
+			Log.error(&"preplan", "drop '%s': no PREPLAN_POINT '%s' under <Map>/%s" % [d["asset"], pid, POINTS_NODE])
 			continue
-		var node: Node3D = _make_drop(id, def)
+		var node: Node3D = _make_drop(d)
 		if node == null:
 			continue
 		parent.add_child(node, true)
 		node.global_transform = point.global_transform
 		if node.has_method(&"configure_preplan"):
-			node.call(&"configure_preplan", id, def)
-		drops[id] = node
+			node.call(&"configure_preplan", d["asset"], d)
+		drops[pid] = node
 
 
-## PREPLAN_POINT in `map` whose `asset_slot` property, `asset_slot` metadata or node name equals `slot`.
-static func find_point(map: HeistMap, slot: StringName) -> Node3D:
-	if map == null:
+## PREPLAN_POINT `point_id`: the node `<Map>/Preplan/<point_id>` (contract), else any node in group
+## G.PREPLAN_POINT named `point_id` or with `asset_slot` metadata/property `point_id` (legacy).
+static func find_point(map: HeistMap, point_id: StringName) -> Node3D:
+	if map == null or point_id == &"":
 		return null
+	var holder: Node = map.get_node_or_null(POINTS_NODE)
+	if holder != null:
+		var direct: Node3D = holder.get_node_or_null(NodePath(String(point_id))) as Node3D
+		if direct != null:
+			return direct
 	for n: Node in map.get_slots(G.PREPLAN_POINT):
 		var n3: Node3D = n as Node3D
 		if n3 == null:
 			continue
+		if StringName(n3.name) == point_id:
+			return n3
 		var prop: Variant = n3.get(&"asset_slot")
-		if prop != null and StringName(prop) == slot:
+		if prop != null and StringName(prop) == point_id:
 			return n3
-		if n3.has_meta(&"asset_slot") and StringName(n3.get_meta(&"asset_slot")) == slot:
-			return n3
-		if StringName(n3.name) == slot:
+		if n3.has_meta(&"asset_slot") and StringName(n3.get_meta(&"asset_slot")) == point_id:
 			return n3
 	return null
 
 
-func _make_drop(id: StringName, def: Dictionary) -> Node3D:
-	var kind: StringName = StringName(def.get("drop", &""))
-	var src: Variant = def.get("scene", _drop_factories.get(kind, ""))
+func _make_drop(d: Dictionary) -> Node3D:
+	var id: StringName = d["asset"]
+	var kind: StringName = d["kind"]
+	var src: Variant = _drop_factories.get(kind, "")
 	var node: Node3D = null
 	if src is Callable:
-		node = (src as Callable).call(id, def) as Node3D
+		node = (src as Callable).call(id, d) as Node3D
+	elif String(src) != "":
+		node = _instantiate(String(src), id)
 	else:
-		var path: String = String(src)
-		if path == "" and kind != &"":
-			var probe: String = "res://systems/prefabs/%s/%s.tscn" % [kind, kind]
-			if ResourceLoader.exists(probe):
-				path = probe
-		if path != "":
-			var ps: PackedScene = load(path) as PackedScene
-			node = ps.instantiate() as Node3D if ps != null else null
-			if node == null:
-				Log.error(&"preplan", "asset '%s': '%s' is not a Node3D scene" % [id, path])
-				return null
+		node = _deployable_drop(kind)
+		if node == null:
+			var bare: String = String(kind).trim_prefix(DEPLOYABLE_PREFIX)
+			var probe: String = "res://systems/prefabs/%s/%s.tscn" % [bare, bare]
+			if bare != "" and ResourceLoader.exists(probe):
+				node = _instantiate(probe, id)
 	if node == null:
 		var marker: PreplanDrop = PreplanDrop.new()
 		marker.kind = kind
-		marker.params = def.get("params", {})
+		marker.params = d["params"]
 		node = marker
-	node.name = "Asset_%s" % id
+	node.name = "Asset_%s_%s" % [id, d["point"]]
 	if &"asset_id" in node:
 		node.set(&"asset_id", id)
 	if &"objective_tag" in node and StringName(node.get(&"objective_tag")) == &"":
@@ -193,16 +334,21 @@ func _make_drop(id: StringName, def: Dictionary) -> Node3D:
 	return node
 
 
-func _first_key(key: String) -> StringName:
-	for id: StringName in chosen:
-		var v: StringName = StringName((chosen[id] as Dictionary).get(key, &""))
-		if v != &"":
-			return v
-	return &""
+## `deployable.<x>` with a DeployableDef -> an unowned DeployablePrefab (PD2 pre-planned bags).
+static func _deployable_drop(kind: StringName) -> Node3D:
+	if not String(kind).begins_with(DEPLOYABLE_PREFIX):
+		return null
+	var def: DeployableDef = DeployableSystem.def_for(kind)
+	if def == null:
+		return null
+	var p: DeployablePrefab = (load(DeployableSystem.SCENE) as PackedScene).instantiate() as DeployablePrefab
+	p.setup(def, -1, maxi(def.uses, 1))
+	return p
 
 
-func _catalog_entry(catalog: Dictionary, id: StringName) -> Dictionary:
-	for k: Variant in [id, String(id)]:
-		if catalog.has(k) and catalog[k] is Dictionary:
-			return (catalog[k] as Dictionary).duplicate(true)
-	return {}
+static func _instantiate(path: String, id: StringName) -> Node3D:
+	var ps: PackedScene = load(path) as PackedScene
+	var node: Node3D = ps.instantiate() as Node3D if ps != null else null
+	if node == null:
+		Log.error(&"preplan", "asset '%s': '%s' is not a Node3D scene" % [id, path])
+	return node

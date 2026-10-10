@@ -188,9 +188,10 @@ func activate_escape(tag: StringName = &"") -> void:
 	_runtime.enter_escape_phase()
 
 
-func end_heist(success: bool) -> void:
+## `fail_reason`: HeistResult.fail_reason on failure (&"" = HeistRuntime.FAIL_ABORT).
+func end_heist(success: bool, fail_reason: StringName = &"") -> void:
 	if _runtime != null:
-		_runtime.end_heist(success)
+		_runtime.end_heist(success, [], fail_reason)
 
 
 # --- Internal (HeistRuntime) --------------------------------------------------------

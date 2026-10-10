@@ -261,3 +261,32 @@ static func with_doorway_wall(guards: int = 0, civilians: int = 0) -> PackedScen
 	ps.pack(root)
 	root.free()
 	return ps
+
+
+## A3-08: with_heist_def() plus PREPLAN_POINT Marker3Ds directly under `<Map>/Preplan` (heist_map.md
+## v1.2, preplanning.md: node name = point id), in group G.PREPLAN_POINT with `category` metadata.
+## `markers`: point id -> Vector3, or point id -> {"pos": Vector3, "category": StringName, "params": Dictionary}.
+static func with_preplan_markers(def: HeistDef, preplan_spawn_tags: Array[StringName] = [], markers: Dictionary = {},
+		variant_groups: Dictionary = {}, table: HeistVariantTable = null) -> PackedScene:
+	var root: HeistMap = with_heist_def(def, 0, 0, preplan_spawn_tags, {}, variant_groups, table).instantiate() as HeistMap
+	var holder: Node3D = Node3D.new()
+	holder.name = "Preplan"
+	root.add_child(holder)
+	for key: Variant in markers:
+		var spec: Variant = markers[key]
+		var m: Marker3D = Marker3D.new()
+		m.name = String(key)
+		if spec is Dictionary:
+			m.position = (spec as Dictionary).get("pos", Vector3.ZERO)
+			m.set_meta(&"category", StringName((spec as Dictionary).get("category", &"drop_zone")))
+			m.set_meta(&"params", (spec as Dictionary).get("params", {}))
+		else:
+			m.position = spec
+			m.set_meta(&"category", &"drop_zone")
+		m.add_to_group(G.PREPLAN_POINT, true)
+		holder.add_child(m)
+	_own_children(root)
+	var ps: PackedScene = PackedScene.new()
+	ps.pack(root)
+	root.free()
+	return ps
