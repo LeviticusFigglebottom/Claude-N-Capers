@@ -130,6 +130,7 @@ Phase column: the roadmap phase that must deliver the row (P1 = vertical slice).
 | # | (a) PD2 | (b) Ours | (c) | P |
 |---|---|---|---|---|
 | S10.1 | **Bags**: carry one at a time. Heavier bags slow you more and limit sprint/jump. You can throw them (thrown bags are visible to NPCs within 18 m). | Weight classes LIGHT/MEDIUM/HEAVY/VERY_HEAVY → speed ×0.95/0.85/0.75/0.6, sprint allowed only for LIGHT/MEDIUM, jump allowed only for LIGHT. Throw distance 4/3.5/3/2 m × `loot.throw_distance_mult` (◇). Thrown bags are physics bodies (server) and act as stimulus `bag` (18 m). | A | P1 |
+| S10.1b | Ladders can't be climbed while carrying a bag (PD2): bags are thrown up or down, or sent by lift or zipline. | Identical (QC-17, D-042). | A | P2 |
 | S10.2 | Bags are **secured** at an escape zone/van/zipline/heli. Throwing a bag into the zone secures it. | `SECURE_LOOT` MapZone: a bag resting inside for 0.5 s is secured → `loot_secured`. | A | P1 |
 | S10.3 | Small loot (cash bundles, jewelry on counters) is picked up instantly and adds to payout without bags. | `small_loot` prefab, 0.5–1 s pickup. | A | P1 |
 | S10.4 | Loot value × difficulty multiplier (×1 … ×9.2). Payout = (contract + secured loot) × crew-alive bonus (110%). Split 80% offshore / 20% spending. | Identical structure. Our difficulty loot multipliers: Routine 1, Tense 2, Hazardous 2.6, Brutal 4.2, Lethal 7.2, Cataclysm 9.2. The offshore currency is named **"the stash"**. | B (payout), A (counts) | P1 |

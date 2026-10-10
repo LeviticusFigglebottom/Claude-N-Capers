@@ -207,3 +207,8 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Merged D1-03: 47 humanoid clips (all 28 P1 clips plus 19 P2; the remaining 6 come with the P3 specials).
 - characters.md v1.3 records clip speeds, turn and death conventions, event frames, the third-person weapon grip, and the **first-person viewmodel contract** (`char_arms_fp` with `weapon`/`magazine` helper bones, one AnimationLibrary per anim_set, played as "<set>/<clip>").
 - Library material rule: every `game/world/materials/*.tres`, `char_*` included, must satisfy ENV C's ORM-PBR library test.
+
+## D-042 — 2026-10-10 — Shadow Ledger G0 APPROVED; QC-15..19
+- `docs/design/heists/shadow_ledger.md` approved: a stealth-only tower top (L40–L42 + roof, floor heights [0, 3.6, 8.0, 11.6], stairs verified), the ledger in three forms with laptop + 2 drive bags required, 5 entries, 3 escapes each with a different loot path, and keycards consumed so the optional safe can cost the main objective. Solo cuff = fail, as intended. ENV C may start G1 after the Night Deposit G1 (Glasshouse G2 stays first).
+- Accepted: 0.3 m curtain-wall sills in the executive rooms, the 1.4 m plenum, The Accountant as contact for both P2 heists, base payout $110,000, and a walkthrough whitelist for vertical tower paths.
+- QC-15/16 → ENV B (B4-10). QC-17: **no ladder climbing while carrying a bag** (PD2; fidelity S10.1b). QC-18/19 → ENV A (A3-10). escape_zone `escape_type` set, `arrival_delay_s` and `bag_only` are in gameplay_prefabs.md.

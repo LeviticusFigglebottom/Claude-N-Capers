@@ -28,12 +28,14 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | A3-06 | Suppression, armor/shield/wall piercing, explosives, heavy frontal plates | L3.4–L3.6, L4.2 |
 | A3-07 | Co-op hardening: replicate deployables, codes, pre-plan drops and interaction progress; host+client loopback parity | net.md |
 | A3-09 | Night Deposit prefabs/systems: `bag_lift`, `hack_terminal`, OUT_OF_BOUNDS zones (respawn at `oob_respawn`), timed mission events (armoured car arrival) via HeistMission timers | QC-11/12/14 |
+| A3-10 | Shadow Ledger needs: per-difficulty weights for slot-group rules (QC-18; Night Deposit too), escape_type heli/zipline/lift with `arrival_delay_s`, `bag_only` (QC-19), no ladder climbing with a bag (QC-17) | D-042 |
 | A3-08 | Pending follow-ups: A2-08, QB-46..49 (input pause, camera/weapon visual ownership, HUD tracked_crew, gamepad look), D-038 (ECM feedback ungated, cuffed events, fail_reason, PreplanResult apply) | — |
 
 | B4-05 | Payday card pick (1 of 3, 30 s auto-pick, card types) | P9 |
 | B4-06 | The Board + contract broker (contacts, rotating contracts, pro jobs) | C1 |
 | B4-07 | Safehouse hub UI layer (screens the 3D hub will host) + GSR accent UI theme pass | C9, D-035 |
 | B4-09 | Loot `loot.cash_bricks` (MEDIUM, PD2 money-bag value shape) + strings for Night Deposit objectives (from the G0 `[tag]`s) | QC-13 |
+| B4-10 | Shadow Ledger data: loot `loot.ledger_laptop` (LIGHT), `loot.ledger_drives` (MEDIUM), `loot.ledger_books` (MEDIUM), `loot.painting` (MEDIUM, PD2 painting shape); preplan library assets `asset.intel_laptop`, `asset.gondola_left_hung`, `asset.riser_panel`; objective strings from the G0 `[tag]`s | QC-15/16 |
 | B4-08 | D-038 follow-ups: strings for QA-14, `ui.blocked.*` rename, drop `stealth.ecm_feedback` grants, PreplanResult per preplanning.md (+ `resolve_ids`, points read from the map) | — |
 
 | C2-00 | G0 design docs: Night Deposit and Shadow Ledger (stealth-only) | level_standards §9 |
