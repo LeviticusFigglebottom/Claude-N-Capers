@@ -1,6 +1,6 @@
 ## A local player's persistent progression profile. Owner: ENV B. Persisted by SaveService.
 ##
-## JSON shape (version 1; see SaveService for migrations):
+## JSON shape (version 2; see SaveService for migrations):
 ##   version: int, profile_name: String,
 ##   cash: int (spending cash), stash: int (offshore, "the stash"; pd2_fidelity S10.4),
 ##   xp: int (total), level: int (0..100; pd2_fidelity P1),
@@ -9,6 +9,9 @@
 ##     WeaponModDef says which weapons accept a mod.
 ##   loadout: only Loadout *input* fields (see LOADOUT_FIELDS); resolved fields are never saved,
 ##     run LoadoutResolver.resolve() after loading.
+##   banked_stealth_mult: float (v2, D-022 QB-13): stealth XP bonus banked by the last successful
+##     stealth heist, applied to the NEXT payday (PayoutCalculator.compute(..., banked_stealth_mult)).
+##     1.0 = nothing banked.
 ##   stats: Dictionary String -> int counters (heists_completed, ...).
 ##   settings: Dictionary of JSON values, stored as-is (JSON numbers come back as float).
 ## StringNames are written as strings and converted back on load.
@@ -23,12 +26,13 @@ const LOADOUT_ID_FIELDS: Array[String] = [
 ]
 const LOADOUT_LIST_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 
-var version: int = 1
+var version: int = 2
 var profile_name: String = ""
 var cash: int = 0
 var stash: int = 0
 var xp: int = 0
 var level: int = 0
+var banked_stealth_mult: float = 1.0
 var owned_weapons: Array[StringName] = []
 var owned_mods: Array[StringName] = []
 var owned_masks: Array[StringName] = []
@@ -55,6 +59,7 @@ static func from_dict(d: Dictionary) -> PlayerProfile:
 	p.stash = int(d.get("stash", 0))
 	p.xp = int(d.get("xp", 0))
 	p.level = int(d.get("level", 0))
+	p.banked_stealth_mult = float(d.get("banked_stealth_mult", 1.0))
 	p.owned_weapons = _to_names(d.get("owned_weapons", []))
 	p.owned_mods = _to_names(d.get("owned_mods", []))
 	p.owned_masks = _to_names(d.get("owned_masks", []))
@@ -81,6 +86,7 @@ func to_dict() -> Dictionary:
 		"stash": stash,
 		"xp": xp,
 		"level": level,
+		"banked_stealth_mult": banked_stealth_mult,
 		"owned_weapons": _to_strings(owned_weapons),
 		"owned_mods": _to_strings(owned_mods),
 		"owned_masks": _to_strings(owned_masks),

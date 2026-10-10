@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://content/ui/hud/mock/mock_hud_model.gd" id="1_model"]
+[ext_resource type="Script" path="res://content/ui/hud/mock/mock_hud_driver.gd" id="2_driver"]
+[ext_resource type="PackedScene" path="res://content/ui/hud/hud.tscn" id="3_hud"]
+
+[sub_resource type="Environment" id="env"]
+background_mode = 1
+background_color = Color(0.16, 0.18, 0.2, 1)
+
+[node name="HudDemo" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
+current = true
+
+[node name="MockHudModel" type="Node" parent="."]
+script = ExtResource("1_model")
+
+[node name="Driver" type="Node" parent="."]
+script = ExtResource("2_driver")
+model_path = NodePath("../MockHudModel")
+
+[node name="HudLayer" type="CanvasLayer" parent="."]
+
+[node name="Hud" parent="HudLayer" instance=ExtResource("3_hud")]
+model_path = NodePath("../../MockHudModel")
+auto_find_model = false

@@ -1,0 +1,173 @@
+## Stand-in for ENV A's LocalHudModel (contracts/ui_hud.md) until it ships. Owner: ENV B.
+## The HUD binds to these exact property and signal names; the real model should match them
+## (duck-typed: the HUD reads properties with get() and connects signals by name).
+## Every property setter emits its group's change signal, so assign new Arrays/Dictionaries
+## instead of mutating them in place.
+class_name MockHudModel
+extends Node
+
+signal vitals_changed()          ## health, max_health, armor, max_armor, downs_left, crew_state, bleedout_s
+signal ammo_changed()            ## ammo, equipped_slot
+signal inventory_changed()       ## deployable_*, throwable_*, cable_ties, body_bags
+signal carried_bag_changed()     ## carried_bag
+signal interaction_changed()     ## interaction
+signal detection_changed()       ## detection
+signal marked_targets_changed()  ## marked_targets
+signal pagers_changed()          ## pagers, pagers_answered, pagers_max
+signal timers_changed()          ## ecm_time_left_s, camera_alarm_s
+signal objectives_changed()      ## objectives
+signal assault_changed()         ## assault_phase, assault_wave
+signal hostages_changed()        ## hostages
+signal warnings_changed()        ## warnings
+signal crew_changed()            ## crew
+signal masked_changed()          ## masked, casing
+
+## PD2 display units (health 0..max_health, armor 0..max_armor).
+var health: float = 100.0:
+	set(v):
+		health = v
+		vitals_changed.emit()
+var max_health: float = 100.0:
+	set(v):
+		max_health = v
+		vitals_changed.emit()
+var armor: float = 0.0:
+	set(v):
+		armor = v
+		vitals_changed.emit()
+var max_armor: float = 0.0:
+	set(v):
+		max_armor = v
+		vitals_changed.emit()
+var downs_left: int = 3:
+	set(v):
+		downs_left = v
+		vitals_changed.emit()
+## Enums.CrewState
+var crew_state: int = Enums.CrewState.NORMAL:
+	set(v):
+		crew_state = v
+		vitals_changed.emit()
+## Seconds until custody while DOWNED (< 0 = not bleeding out).
+var bleedout_s: float = -1.0:
+	set(v):
+		bleedout_s = v
+		vitals_changed.emit()
+## Enums.WeaponSlot (int) -> { "mag": int, "reserve": int }
+var ammo: Dictionary = {}:
+	set(v):
+		ammo = v
+		ammo_changed.emit()
+## Enums.WeaponSlot
+var equipped_slot: int = Enums.WeaponSlot.SECONDARY:
+	set(v):
+		equipped_slot = v
+		ammo_changed.emit()
+var deployable_id: StringName = &"":
+	set(v):
+		deployable_id = v
+		inventory_changed.emit()
+var deployable_count: int = 0:
+	set(v):
+		deployable_count = v
+		inventory_changed.emit()
+var throwable_id: StringName = &"":
+	set(v):
+		throwable_id = v
+		inventory_changed.emit()
+var throwable_count: int = 0:
+	set(v):
+		throwable_count = v
+		inventory_changed.emit()
+var cable_ties: int = 0:
+	set(v):
+		cable_ties = v
+		inventory_changed.emit()
+var body_bags: int = 0:
+	set(v):
+		body_bags = v
+		inventory_changed.emit()
+## {} = none, else { "loot_id": StringName, "weight": int (Enums.LootWeight) }
+var carried_bag: Dictionary = {}:
+	set(v):
+		carried_bag = v
+		carried_bag_changed.emit()
+## {} = no prompt, else { "text_key": StringName, "args": Dictionary (e.g. {"key": "F"}),
+##   "progress": float 0..1 (0 = not holding), "blocked_reason": StringName (strings key or &"") }
+var interaction: Dictionary = {}:
+	set(v):
+		interaction = v
+		interaction_changed.emit()
+## [{ "observer_net_id": int, "world_pos": Vector3, "value": float 0..1, "kind": int (Enums.ObserverKind) }]
+var detection: Array[Dictionary] = []:
+	set(v):
+		detection = v
+		detection_changed.emit()
+## [{ "net_id": int, "world_pos": Vector3, "kind": StringName }]
+var marked_targets: Array[Dictionary] = []:
+	set(v):
+		marked_targets = v
+		marked_targets_changed.emit()
+## Active pagers: [{ "pager_id": int, "time_left_s": float (window or answer time left),
+##   "answering": bool, "progress": float 0..1 }]
+var pagers: Array[Dictionary] = []:
+	set(v):
+		pagers = v
+		pagers_changed.emit()
+var pagers_answered: int = 0:
+	set(v):
+		pagers_answered = v
+		pagers_changed.emit()
+var pagers_max: int = 4:
+	set(v):
+		pagers_max = v
+		pagers_changed.emit()
+## < 0 = inactive.
+var ecm_time_left_s: float = -1.0:
+	set(v):
+		ecm_time_left_s = v
+		timers_changed.emit()
+## Unstoppable camera alarm countdown (S3.5); < 0 = inactive.
+var camera_alarm_s: float = -1.0:
+	set(v):
+		camera_alarm_s = v
+		timers_changed.emit()
+## [{ "id": StringName, "text_key": StringName, "args": Dictionary, "state": int (Enums.ObjectiveState) }]
+var objectives: Array[Dictionary] = []:
+	set(v):
+		objectives = v
+		objectives_changed.emit()
+## Enums.AssaultPhase
+var assault_phase: int = Enums.AssaultPhase.NONE:
+	set(v):
+		assault_phase = v
+		assault_changed.emit()
+var assault_wave: int = 0:
+	set(v):
+		assault_wave = v
+		assault_changed.emit()
+var hostages: int = 0:
+	set(v):
+		hostages = v
+		hostages_changed.emit()
+## Active special warnings: &"phantom", &"stinger".
+var warnings: Array[StringName] = []:
+	set(v):
+		warnings = v
+		warnings_changed.emit()
+## Teammates (not the local player): [{ "slot": int, "name": String, "is_ai": bool,
+##   "health_frac": float, "armor_frac": float, "state": int (Enums.CrewState), "downs_left": int,
+##   "carried_loot_id": StringName }]
+var crew: Array[Dictionary] = []:
+	set(v):
+		crew = v
+		crew_changed.emit()
+var masked: bool = false:
+	set(v):
+		masked = v
+		masked_changed.emit()
+## True while the heist is in the casing phase and the local player is unmasked.
+var casing: bool = true:
+	set(v):
+		casing = v
+		masked_changed.emit()

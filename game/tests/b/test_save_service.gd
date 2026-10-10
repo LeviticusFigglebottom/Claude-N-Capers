@@ -30,6 +30,7 @@ func test_round_trip_all_fields() -> void:
 	assert_eq(q.stash, 98765)
 	assert_eq(q.xp, 4200)
 	assert_eq(q.level, 7)
+	assert_near(q.banked_stealth_mult, 1.2)
 	assert_eq(q.owned_weapons, p.owned_weapons)
 	assert_eq(q.owned_weapons[0], &"weapon.kestrel_p9", "StringName type preserved")
 	assert_eq(q.owned_mods, p.owned_mods)
@@ -114,6 +115,29 @@ func test_v0_migrates() -> void:
 	assert_eq(q.cash, 50)
 	assert_eq(q.xp, 10)
 	assert_eq(q.owned_weapons.size(), 0)
+	assert_near(q.banked_stealth_mult, 1.0)
+
+
+## D-022 QB-13: v1 -> v2 adds banked_stealth_mult = 1.0 and keeps everything else.
+func test_v1_migrates_to_v2_with_empty_stealth_bank() -> void:
+	assert_eq(SaveService.CURRENT_VERSION, 2)
+	var v1: Dictionary = _sample().to_dict()
+	v1["version"] = 1
+	v1.erase("banked_stealth_mult")
+	var m: Dictionary = SaveService.migrate(v1)
+	assert_eq(int(m["version"]), 2)
+	assert_near(float(m["banked_stealth_mult"]), 1.0)
+	assert_eq(int(m["cash"]), 1234)
+	assert_false(v1.has("banked_stealth_mult"), "input not mutated")
+	DirAccess.make_dir_recursive_absolute(TEST_ROOT)
+	_write(SaveService.profile_path(SLOT), JSON.stringify(v1))
+	var q: PlayerProfile = SaveService.load_profile(SLOT)
+	assert_near(q.banked_stealth_mult, 1.0)
+	assert_eq(q.stash, 98765)
+	assert_eq(q.loadout.secondary, &"weapon.kestrel_p9")
+	# A v1 file that somehow already carries the field keeps its value.
+	v1["banked_stealth_mult"] = 1.15
+	assert_near(float(SaveService.migrate(v1)["banked_stealth_mult"]), 1.15)
 
 
 func test_future_version_refused() -> void:
@@ -133,6 +157,8 @@ func test_default_profile_from_data() -> void:
 	assert_eq(p.cash, 0)
 	assert_eq(p.stash, 0)
 	assert_eq(p.level, 0)
+	assert_eq(p.version, SaveService.CURRENT_VERSION, "default_profile.json is current")
+	assert_near(p.banked_stealth_mult, 1.0)
 	assert_eq(p.loadout.secondary, &"weapon.kestrel_p9")
 	assert_eq(p.loadout.melee, &"melee.folding_knife")
 	assert_eq(p.loadout.armor, &"armor.tailored_suit")
@@ -157,6 +183,37 @@ func test_apply_heist_payout() -> void:
 	assert_eq(p.cash, 4000)
 	assert_eq(p.xp, 3000)
 	assert_eq(p.level, 3)
+	assert_near(p.banked_stealth_mult, 1.0, 0.0001, "payout without stealth keys leaves the bank")
+
+
+## D-022 QB-13: bank on a stealth success, spend it on the next success, keep it on a failure.
+func test_apply_heist_payout_stealth_bank() -> void:
+	var p: PlayerProfile = PlayerProfile.new_default()
+	var tw: PayoutTweak = PayoutTweak.new()
+	var diff: DifficultyDef = DifficultyDef.new()
+	var stealth_win: Dictionary = {"success": true, "stealth": true, "contract_pay": 1000, "loot": [], "crew": []}
+	var loud_win: Dictionary = {"success": true, "stealth": false, "contract_pay": 1000, "loot": [], "crew": []}
+	var loss: Dictionary = {"success": false, "stealth": true, "crew": []}
+	# 1. Stealth win, nothing banked yet: no stealth XP, bank x1.2.
+	var out: Dictionary = PayoutCalculator.compute(stealth_win, diff, tw, false, -1, p.banked_stealth_mult)
+	assert_eq(int(out["xp_total"]), 2000)
+	SaveService.apply_heist_payout(p, out)
+	assert_near(p.banked_stealth_mult, 1.2)
+	# 2. Failure: bank kept.
+	out = PayoutCalculator.compute(loss, diff, tw, false, -1, p.banked_stealth_mult)
+	SaveService.apply_heist_payout(p, out)
+	assert_near(p.banked_stealth_mult, 1.2, 0.0001, "failure keeps the bank")
+	# 3. Loud win: bank spent (+20%), nothing new banked.
+	out = PayoutCalculator.compute(loud_win, diff, tw, false, -1, p.banked_stealth_mult)
+	assert_eq(int(out["xp_total"]), 2400)
+	SaveService.apply_heist_payout(p, out)
+	assert_near(p.banked_stealth_mult, 1.0)
+	# 4. Stealth win with a bank: spent and re-banked.
+	p.banked_stealth_mult = 1.2
+	out = PayoutCalculator.compute(stealth_win, diff, tw, false, -1, p.banked_stealth_mult)
+	assert_eq(int(out["xp_total"]), 2400)
+	SaveService.apply_heist_payout(p, out)
+	assert_near(p.banked_stealth_mult, 1.2)
 
 
 func _sample() -> PlayerProfile:
@@ -166,6 +223,7 @@ func _sample() -> PlayerProfile:
 	p.stash = 98765
 	p.xp = 4200
 	p.level = 7
+	p.banked_stealth_mult = 1.2
 	p.owned_weapons = [&"weapon.kestrel_p9", &"weapon.test_rifle"] as Array[StringName]
 	p.owned_mods = [&"mod.p9_suppressor", &"mod.p9_extended_mag"] as Array[StringName]
 	p.owned_masks = [&"mask.test"] as Array[StringName]

@@ -32,6 +32,7 @@ extends Resource
 @export var crew_alive_xp_bonus_cap: float = 0.3
 ## ◇ AI teammates count as surviving teammates for the XP bonus (solo with AI is first-class).
 @export var crew_alive_xp_counts_ai: bool = true
-## ◇ Multiplicative stealth XP bonus, applied last, on a successful stealth heist (PD2: 0-25%,
-## carried to the NEXT heist; ours applies to the same heist).
+## ◇ Stealth bonus banked by a successful stealth heist and applied (multiplicatively, last in C6
+## order) to the XP of the NEXT successful payday (pd2_fidelity S11.1, D-022 QB-13). S11.1: +5..25%
+## scaled by heist size. P1 keeps one value (1.2 = +20%); TODO(P4): scale it by heist size.
 @export var stealth_xp_bonus_mult: float = 1.2

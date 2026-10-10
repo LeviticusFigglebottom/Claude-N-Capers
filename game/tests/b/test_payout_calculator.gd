@@ -70,8 +70,12 @@ func test_golden_routine() -> void:
 	assert_eq(_xp(out, PayoutCalculator.XP_ADDITIVE), 825)
 	assert_eq(_xp(out, PayoutCalculator.XP_STEALTH), 0)
 	assert_eq(out["xp_total"], 3575)
+	assert_false(out["stealth_bonus_consumed"])
+	assert_near(float(out["stealth_bonus_banked"]), 1.0)
 
 
+## D-022 QB-13: a successful stealth heist BANKS the bonus; with nothing banked its own stealth XP
+## line is 0.
 func test_golden_brutal_pro_stealth() -> void:
 	var r: Dictionary = _result(true, true)
 	r["difficulty"] = Enums.Difficulty.BRUTAL
@@ -87,13 +91,50 @@ func test_golden_brutal_pro_stealth() -> void:
 	assert_eq(out["gross"], 70455)
 	assert_eq(out["stash"], 56364)
 	assert_eq(out["spending"], 14091)
-	# XP chain: 2750 -> pro +550 -> difficulty x10 +29700 -> additive +30% 9900 -> stealth x1.2 +8580.
+	# XP chain: 2750 -> pro +550 -> difficulty x10 +29700 -> additive +30% 9900 -> no bank, stealth 0.
 	assert_eq(_xp(out, PayoutCalculator.XP_BASE), 2750)
 	assert_eq(_xp(out, PayoutCalculator.XP_PRO), 550)
 	assert_eq(_xp(out, PayoutCalculator.XP_DIFFICULTY), 29700)
 	assert_eq(_xp(out, PayoutCalculator.XP_ADDITIVE), 9900)
+	assert_eq(_xp(out, PayoutCalculator.XP_STEALTH), 0)
+	assert_eq(out["xp_total"], 42900)
+	assert_near(float(out["stealth_bonus_banked"]), 1.2, 0.0001, "banked for the next payday")
+	assert_false(out["stealth_bonus_consumed"])
+
+
+## Same heist, but the previous heist banked x1.2: it is spent here (+20% of 42900) and this
+## stealth heist banks a fresh x1.2.
+func test_golden_brutal_pro_stealth_with_bank() -> void:
+	var r: Dictionary = _result(true, true)
+	r["difficulty"] = Enums.Difficulty.BRUTAL
+	var out: Dictionary = PayoutCalculator.compute(r, _diff(4.2, 10.0, 4000), _tweak(), true, 0, 1.2)
+	assert_eq(out["gross"], 70455, "the bank never touches cash")
 	assert_eq(_xp(out, PayoutCalculator.XP_STEALTH), 8580)
 	assert_eq(out["xp_total"], 51480)
+	assert_true(out["stealth_bonus_consumed"])
+	assert_near(float(out["stealth_bonus_banked"]), 1.2)
+
+
+func test_loud_success_consumes_bank_and_banks_nothing() -> void:
+	var out: Dictionary = PayoutCalculator.compute(_result(true, false), _diff(1.0, 1.0, 0), _tweak(), false, 0, 1.2)
+	assert_eq(_xp(out, PayoutCalculator.XP_STEALTH), 715, "3575 x 0.2")
+	assert_eq(out["xp_total"], 4290)
+	assert_true(out["stealth_bonus_consumed"])
+	assert_near(float(out["stealth_bonus_banked"]), 1.0)
+
+
+func test_failure_keeps_bank_and_banks_nothing() -> void:
+	var out: Dictionary = PayoutCalculator.compute(_result(false, true), _diff(1.0, 1.0, 0), _tweak(), false, 0, 1.2)
+	assert_eq(_xp(out, PayoutCalculator.XP_STEALTH), 0)
+	assert_false(out["stealth_bonus_consumed"], "failure does not consume the bank")
+	assert_near(float(out["stealth_bonus_banked"]), 1.0)
+
+
+func test_routine_golden_unchanged_without_bank() -> void:
+	var out: Dictionary = PayoutCalculator.compute(_result(), _diff(1.0, 1.0, 4000), _tweak(), false, 0, 1.0)
+	assert_eq(out["xp_total"], 3575)
+	assert_false(out["stealth_bonus_consumed"])
+	assert_near(float(out["stealth_bonus_banked"]), 1.0)
 
 
 func test_small_loot_unscaled_when_flag_off() -> void:
@@ -191,5 +232,6 @@ func test_xp_lines_follow_c6_order() -> void:
 func test_defaults_load_without_args() -> void:
 	var out: Dictionary = PayoutCalculator.compute(_result())
 	for k: String in ["success", "stealth", "contract", "loot_lines", "loot", "small_loot", "civilian_penalty",
-			"subtotal", "crew_alive_mult", "total", "stash", "spending", "xp_lines", "xp_total"]:
+			"subtotal", "crew_alive_mult", "gross", "total", "stash", "spending", "xp_lines", "xp_total",
+			"stealth_bonus_consumed", "stealth_bonus_banked"]:
 		assert_has(out, k)
