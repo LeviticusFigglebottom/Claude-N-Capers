@@ -15,6 +15,7 @@ content/
   docs/                     design authority: skills.md, perk_decks.md, masks.md, preplanning.md
   masks/                    MaskCatalog, MaskComposer, MaskLocker (+ part defs)
   preplanning/              PreplanBoard, PreplanPlan, PlanVote, PreplanBlueprint
+  lobby/                    LobbyState (co-op lobby model), LobbySession (Net glue), LobbyAddress, LobbyTweak
   progression/              LoadoutResolver, StatCalculator, PayoutCalculator, XpCurve
   save/                     SaveService, PlayerProfile
   strings/                  StringTable
@@ -93,7 +94,7 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 * **Safehouse hub (B4-07, C9).** `HubMenu` (`ui/hub/hub_menu.tscn`) is the 2D layer of the safehouse:
   station cards + a profile summary (level, XP bar, spending, stash, free skill/perk points). Stations are
   data: `data/ui/hub_stations.tres` (`HubStationList` of `HubStation {id, title_key, desc_key, icon_kind,
-  target}`). Ids: `board`, `planning`, `armory`, `masks`, `range`.
+  target}`). Ids: `board`, `planning`, `armory`, `masks`, `range`, `crew` (co-op lobby, B4-11).
   **`MenuFlow.open_station(id: StringName) -> bool`** opens one (false + `Log.error` for an unknown id);
   it is the API **ENV C's 3D safehouse interactables call** (find the MenuFlow node, call it with the
   station id), works from any menu state, refunds a confirmed-but-unlaunched plan, and Back on every
@@ -101,6 +102,28 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   usual). Briefing Back returns to where the contract came from (Board or heist select). After a heist
   (or the stub/sample payday) the flow returns "home": the hub once the safehouse was entered, else the
   main menu (`MenuFlow.show_home()`).
+* **Co-op lobby (B4-11).** Crew station `crew` (target `lobby`) -> `LobbyScreen` (`ui/lobby/lobby_screen.tscn`):
+  Host (port; default `data/lobby/lobby_tweak.tres` = Net.DEFAULT_PORT), Join (address + port, `LobbyAddress`
+  validation), loopback quick-join (`LobbyTweak.loopback_address`), Leave. 4 crew slots from `Net.crew` (host
+  calls `Net.fill_with_ai()` so empty seats show as Crew AI): name, HOST/YOU tags, level, ready, loadout summary
+  (primary/secondary/armor/deployable/perk deck names), mask name + colours (preset id or custom descriptor),
+  and an "illegal loadout" flag. `LobbySession` (`lobby/lobby_session.gd`) is the only Net user (host / join /
+  leave / crew registry / `lobby_send` / `lobby_message`; `net` is the Net autoload, tests pass a Net instance
+  in its own SceneMultiplayer branch). Messages (`LobbyState`, JSON-safe, sender slot validated, host-only
+  kinds from the host slot only): `lobby.ready {ready}`, `lobby.profile_summary {name, level, loadout}`
+  (sent at join and on every lobby show; every peer runs `LobbyState.validate_summary`: known ids, resolver
+  mod legality, `SkillPoints.validate` at the summary level, perk cards, mask), `lobby.contract {heist,
+  difficulty, is_pro}` (host's Board / planning table pick; a new heist/difficulty clears ready + votes),
+  `lobby.start {heist, difficulty, is_pro, seed}`, and the PlanVote kinds (`preplan.vote_cast/retract`, logged
+  in `vote_log` and replayed into a pre-planning screen opened later, `MenuFlow.replay_lobby_votes`). Start =
+  host only, every human slot has a legal summary and is ready (`LobbyState.start_block()`). While a session is
+  live the lobby is "home" (`MenuFlow.show_hub()` shows it). Path: lobby -> host contract (Board / planning) ->
+  briefing -> pre-planning -> loadout ("Ready Up": saves, re-sends the summary, sets ready, back to the lobby) ->
+  Start -> `LobbySession.started` on every peer: the host runs `MenuFlow.launch_coop(info)` = live session (no
+  `start_solo`), `build_coop_launch_options(loadouts, plan, pro)` with `loadouts` = `{slot: resolved Loadout}`
+  of every legal human slot (`LobbyState.launch_loadouts()`); clients call `HeistLauncher.launch_client` when ENV
+  A provides it, else a stub explains it. Tests: `test_lobby_state.gd`, `test_lobby_loopback.gd` (real ENet
+  loopback, two branches), `test_lobby_flow.gd`.
 * **Pro jobs.** A Board pin's `is_pro` is stored on `MenuFlow.is_pro` (heist select, broker and direct
   launch are never pro), goes into the launch options as `options["is_pro"] = true` (key omitted when
   false; `build_launch_options(ai, slot, resolved, plan, pro)`, `launch_options_for(loadout)`), and into

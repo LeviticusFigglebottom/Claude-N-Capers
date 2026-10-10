@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="LobbyTweak" format=3]
+
+[ext_resource type="Script" path="res://content/lobby/lobby_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+default_port = 27655
+min_port = 1024
+max_port = 65535
+loopback_address = "127.0.0.1"
+join_timeout_s = 8.0
+max_name_length = 24
+ready_color = Color(0.45, 0.85, 0.5, 1)
+not_ready_color = Color(0.85, 0.78, 0.62, 1)
+illegal_color = Color(1, 0.45, 0.4, 1)

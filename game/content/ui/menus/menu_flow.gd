@@ -4,6 +4,8 @@
 ## Safehouse (B4-07): HubMenu lists the stations of data/ui/hub_stations.tres; every station opens
 ## through open_station(id), which is also the API for ENV C's 3D safehouse interactables. A Board
 ## contract carries `is_pro` to the launch options (options["is_pro"]) and to the payday screen.
+## Co-op (B4-11): the crew station opens LobbyScreen; while a LobbySession is live the lobby is home
+## (show_hub shows it) and the host launches with every human slot's loadout (see the section at the end).
 ## Back is symmetrical at every step (loadout -> pre-planning refunds the confirmed plan's cash, so a
 ## re-confirm never charges twice). The confirmed plan goes to HeistLauncher as options["preplan"]
 ## (the PreplanResult v1 from PreplanPlan.apply(); contract docs/contracts/preplanning.md, D-038).
@@ -32,13 +34,15 @@ const SKILLS_SCENE: PackedScene = preload("res://content/ui/progression/skill_tr
 const PERKS_SCENE: PackedScene = preload("res://content/ui/progression/perk_deck_screen.tscn")
 const HUB_SCENE: PackedScene = preload("res://content/ui/hub/hub_menu.tscn")
 const BOARD_SCENE: PackedScene = preload("res://content/ui/board/board_screen.tscn")
+const LOBBY_SCENE: PackedScene = preload("res://content/ui/lobby/lobby_screen.tscn")
 ## HubStation.target values open_station() understands.
 const TARGET_BOARD: StringName = &"board"
 const TARGET_HEIST_SELECT: StringName = &"heist_select"
 const TARGET_LOADOUT: StringName = &"loadout"
 const TARGET_MASKS: StringName = &"masks"
 const TARGET_RANGE: StringName = &"firing_range"
-const TARGETS: Array[StringName] = [TARGET_BOARD, TARGET_HEIST_SELECT, TARGET_LOADOUT, TARGET_MASKS, TARGET_RANGE]
+const TARGET_LOBBY: StringName = &"lobby"
+const TARGETS: Array[StringName] = [TARGET_BOARD, TARGET_HEIST_SELECT, TARGET_LOADOUT, TARGET_MASKS, TARGET_RANGE, TARGET_LOBBY]
 
 var main_menu: MainMenu
 ## Safehouse hub (B4-07).
@@ -74,6 +78,10 @@ var is_pro: bool = false
 var consumed_contracts: Dictionary = {}
 ## Station list (data/ui/hub_stations.tres).
 var stations: HubStationList
+## Co-op lobby (B4-11), created the first time the crew station opens. While `lobby.is_active()` the
+## lobby is "home": show_hub() shows it instead, so every Back of the contract path lands there.
+var lobby_screen: LobbyScreen = null
+var lobby: LobbySession = null
 var _heist_id: StringName = &""
 var _difficulty: int = Enums.Difficulty.ROUTINE
 var _in_heist: CanvasLayer = null
@@ -129,8 +137,12 @@ func show_screen(screen: Control) -> void:
 
 
 ## The safehouse hub with a freshly loaded profile (stations save the profile themselves).
+## In a co-op session the lobby is shown instead (B4-11).
 func show_hub() -> void:
 	_in_safehouse = true
+	if is_coop():
+		show_lobby()
+		return
 	profile = SaveService.load_profile(profile_slot)
 	hub.refresh_profile(profile)
 	show_screen(hub)
@@ -150,7 +162,7 @@ func _on_hub_back() -> void:
 
 
 ## Opens safehouse station `station_id` (data/ui/hub_stations.tres; ids board, planning, armory,
-## masks, range). The API for the 2D hub cards AND ENV C's 3D safehouse interactables. Leaving a
+## masks, range, crew). The API for the 2D hub cards AND ENV C's 3D safehouse interactables. Leaving a
 ## contract path this way drops it (a confirmed plan's cash is refunded). Back on every station
 ## returns to the hub. Returns false (and logs an error) for an unknown id or target.
 func open_station(station_id: StringName) -> bool:
@@ -171,6 +183,8 @@ func open_station(station_id: StringName) -> bool:
 			_open_mask_screen(_menu_profile(), profile_slot, false)
 		TARGET_RANGE:
 			open_firing_range()
+		TARGET_LOBBY:
+			show_lobby()
 	return true
 
 
@@ -237,6 +251,8 @@ func _on_heist_chosen(heist_id: StringName, difficulty: int) -> void:
 
 ## A fresh contract path: drops any older pre-planning / loadout screens and shows the briefing.
 func _start_contract(heist_id: StringName, difficulty: int, pro: bool, back_to: Control) -> void:
+	if is_coop() and lobby.state.is_host:
+		lobby.set_contract(heist_id, difficulty, pro)  # B4-11: the lobby runs the host's contract
 	is_pro = pro
 	_board_contract = {}
 	_briefing_back = back_to
@@ -277,6 +293,8 @@ func _on_briefing_continue(heist_id: StringName, difficulty: int) -> void:
 	preplanning_screen.setup(heist_id, difficulty, _menu_profile())
 	preplanning_screen.visible = false
 	add_child(preplanning_screen)
+	if is_coop():
+		replay_lobby_votes(preplanning_screen)
 	preplanning_screen.back_requested.connect(show_screen.bind(briefing_screen))
 	preplanning_screen.confirmed.connect(_on_preplan_confirmed)
 	show_screen(preplanning_screen)
@@ -294,6 +312,8 @@ func _on_preplan_confirmed(plan: Dictionary) -> void:
 	loadout_screen.back_requested.connect(_on_loadout_back)
 	loadout_screen.launch_requested.connect(_on_launch_requested)
 	_connect_loadout_subscreens(loadout_screen)
+	if is_coop():
+		loadout_screen.launch_button.text = UiText.t(&"ui.lobby.ready_up")
 	show_screen(loadout_screen)
 
 
@@ -431,6 +451,9 @@ func close_firing_range() -> void:
 
 
 func _on_launch_requested(loadout: Loadout) -> void:
+	if is_coop():
+		_coop_ready_up(loadout)
+		return
 	launch(_heist_id, _difficulty, loadout, _time_seed(), preplan, is_pro)
 
 
@@ -583,3 +606,165 @@ func _show_sample_payday() -> void:
 		payday.continue_pressed.connect(show_home)
 	show_screen(payday)
 	payday.show_result(HeistCatalog.sample_result())
+
+
+# --- Co-op lobby (B4-11) ------------------------------------------------------------------------
+# Flow: crew station -> LobbyScreen (host / join) -> host picks the contract on the Board or the
+# planning table (sent as LobbyState.MSG_CONTRACT) -> briefing -> pre-planning (votes live over the
+# lobby; a screen opened later replays LobbyState.vote_log) -> loadout, whose Launch reads "Ready Up"
+# (saves, re-sends the profile summary, sets ready, back to the lobby) -> the host's Start sends
+# MSG_START -> every peer gets LobbySession.started: the host launches with every human slot's
+# validated loadout (launch_coop); a client needs ENV A's client-side launch (not available yet).
+
+
+## True while a co-op session (hosting or joined) is live.
+func is_coop() -> bool:
+	return lobby != null and lobby.is_active()
+
+
+## The co-op lobby screen (connect mode without a session). Re-advertises the profile's saved loadout.
+func show_lobby() -> void:
+	_in_safehouse = true
+	if lobby == null:
+		lobby = LobbySession.new()  # tests may set `lobby` first (a session on their own Net instance)
+		lobby.name = "LobbySession"
+	if lobby.get_parent() == null:
+		add_child(lobby)
+	if not lobby.started.is_connected(_on_lobby_started):
+		lobby.started.connect(_on_lobby_started)
+		lobby.contract_changed.connect(_on_lobby_contract_changed)
+		lobby.session_left.connect(_on_lobby_left)
+	if lobby_screen == null:
+		lobby_screen = LOBBY_SCENE.instantiate() as LobbyScreen
+		lobby_screen.setup(lobby, _menu_profile())
+		lobby_screen.visible = false
+		add_child(lobby_screen)
+		lobby_screen.back_requested.connect(_on_lobby_back)
+		lobby_screen.contract_requested.connect(_on_lobby_contract_requested)
+		lobby_screen.briefing_requested.connect(_on_lobby_briefing)
+		lobby_screen.loadout_requested.connect(_open_armory)  # not open_station: that refunds the plan
+	lobby.profile = _menu_profile()
+	lobby_screen.profile = lobby.profile
+	if is_coop():
+		lobby.send_profile(lobby.profile.loadout)
+	lobby_screen.refresh()
+	show_screen(lobby_screen)
+
+
+## Back on the lobby: leave the session (stay on the connect view), or from the connect view the hub.
+func _on_lobby_back() -> void:
+	if is_coop():
+		lobby.leave()
+		show_lobby()
+		return
+	show_hub()
+
+
+func _on_lobby_contract_requested(target: StringName) -> void:
+	if target == TARGET_BOARD:
+		_open_board()
+	else:
+		show_screen(heist_select)
+
+
+## Briefing -> pre-planning -> loadout for the lobby's contract (Back on the briefing returns here).
+func _on_lobby_briefing() -> void:
+	var c: Dictionary = lobby.state.contract
+	if c.is_empty():
+		return
+	refund_preplan()
+	_start_contract(c["heist"], int(c["difficulty"]), bool(c["is_pro"]), lobby_screen)
+
+
+## A client whose host picked another contract leaves the old contract path (plan cash refunded).
+func _on_lobby_contract_changed(_contract: Dictionary) -> void:
+	if lobby.state.is_host:
+		return
+	if current != null and current in [briefing_screen, preplanning_screen, loadout_screen]:
+		refund_preplan()
+		show_lobby()
+
+
+func _on_lobby_left() -> void:
+	if in_heist_ui_spawned():
+		return
+	refund_preplan()
+	if current != null and current in [briefing_screen, preplanning_screen, loadout_screen, lobby_screen]:
+		show_lobby()
+
+
+## Loadout "Ready Up" in co-op: the loadout screen saved the profile; advertise it and mark ready.
+func _coop_ready_up(_loadout: Loadout) -> void:
+	show_lobby()
+	lobby.set_ready(true)
+
+
+## Applies the lobby's plan votes so far to a freshly built pre-planning screen (order preserved).
+func replay_lobby_votes(screen: PreplanningScreen) -> void:
+	if lobby == null or screen.plan == null:
+		return
+	for e: Dictionary in lobby.state.vote_log:
+		screen.plan.receive_vote(int(e["slot"]), StringName(e["kind"]), e["data"] as Dictionary)
+	screen.refresh()
+
+
+## MSG_START accepted on this peer: the host launches; a client follows when ENV A provides a
+## client-side launch (`HeistLauncher.launch_client`, asked in QB-L2), else a stub explains it.
+func _on_lobby_started(info: Dictionary) -> void:
+	if lobby.state.is_host:
+		launch_coop(info)
+		return
+	var launcher: Script = UiNav.global_class(&"HeistLauncher")
+	if launcher != null and _script_has_method(launcher, &"launch_client"):
+		_heist_id = info["heist"]
+		_difficulty = int(info["difficulty"])
+		is_pro = bool(info["is_pro"])
+		visible = false
+		_spawn_in_heist_ui()
+		runtime = await launcher.call(&"launch_client", _heist_id, int(info["seed"]), _difficulty, null, {})
+		if runtime == null:
+			_leave_heist()
+		else:
+			heist_launched.emit(runtime)
+		return
+	_show_stub(&"ui.lobby.client_launch_missing", false)
+
+
+## Host launch of a co-op contract: the live session (no Net.start_solo; HeistLauncher fills empty
+## slots with AI), every human slot's validated loadout, the host's confirmed plan and is_pro.
+func launch_coop(info: Dictionary) -> void:
+	var launcher: Script = UiNav.global_class(&"HeistLauncher")
+	if launcher == null:
+		_show_stub(&"ui.stub.launcher_missing", true)
+		return
+	_heist_id = info["heist"]
+	_difficulty = int(info["difficulty"])
+	is_pro = bool(info["is_pro"])
+	var options: Dictionary = build_coop_launch_options(lobby.state.launch_loadouts(), preplan, is_pro)
+	visible = false
+	_spawn_in_heist_ui()
+	runtime = await launcher.call(&"launch", _heist_id, int(info["seed"]), _difficulty, null, options)
+	if runtime == null:
+		Log.error(&"ui", "HeistLauncher.launch(%s) returned null (co-op); leaving" % _heist_id)
+		_leave_heist()
+		return
+	heist_launched.emit(runtime)
+
+
+## Co-op HeistLauncher options: `loadouts` = {slot: resolved Loadout} of the human slots
+## (LobbyState.launch_loadouts()), `ai_teammates` = the seats left, plus `preplan` / `is_pro` as in
+## build_launch_options().
+static func build_coop_launch_options(loadouts: Dictionary, plan: Dictionary = {}, pro: bool = false) -> Dictionary:
+	var options: Dictionary = {"ai_teammates": maxi(LobbyState.MAX_CREW - loadouts.size(), 0), "loadouts": loadouts}
+	if not plan.is_empty():
+		options["preplan"] = plan
+	if pro:
+		options["is_pro"] = true
+	return options
+
+
+static func _script_has_method(script: Script, method: StringName) -> bool:
+	for m: Dictionary in script.get_script_method_list():
+		if StringName(m["name"]) == method:
+			return true
+	return false

@@ -1468,3 +1468,64 @@ ui.hub.profile.xp,{xp} / {next} XP to the next level
 ui.hub.profile.xp_max,Max level
 ui.hub.profile.skill_points,Skill points: {points} of {total} free
 ui.hub.profile.perk_points,Perk points: {points} free
+ui.hub.station.crew,Crew Net
+ui.hub.station.crew.desc,"Host a co-op crew, or join a friend's lobby."
+ui.lobby.title,Co-op Lobby
+ui.lobby.status.offline,Not connected. Host a crew or join one.
+ui.lobby.status.joining,Connecting to the host...
+ui.lobby.status.hosting,Hosting: {crew} of {max} players
+ui.lobby.status.joined,In the host's lobby: {crew} of {max} players
+ui.lobby.host.title,Host a crew
+ui.lobby.host.desc,Your friends join on your address and this port. Empty seats are filled by Crew AI.
+ui.lobby.port,Port
+ui.lobby.host,Host Co-op
+ui.lobby.join.title,Join a crew
+ui.lobby.join.desc,Enter the host's address and port.
+ui.lobby.address,Address
+ui.lobby.address_hint,192.168.0.10 or host name
+ui.lobby.join,Join Co-op
+ui.lobby.loopback,Quick-join this machine ({address})
+ui.lobby.error.port,The port must be a number from {min} to {max}.
+ui.lobby.error.address,That is not a valid address.
+ui.lobby.error.host,Could not host on port {port}. Is it already in use?
+ui.lobby.error.join,Could not connect to {address}:{port}.
+ui.lobby.error.timeout,The host did not answer. Check the address and port.
+ui.lobby.error.host_lost,The host closed the lobby.
+ui.lobby.contract.title,CONTRACT
+ui.lobby.contract.none,No contract yet
+ui.lobby.contract.none_host,Pick one from the Board or the planning table.
+ui.lobby.contract.none_client,Waiting for the host to pick a contract.
+ui.lobby.contract.board,The Board
+ui.lobby.contract.planning,Planning Table
+ui.lobby.briefing,Briefing & Planning
+ui.lobby.loadout,Loadout
+ui.lobby.leave,Leave Lobby
+ui.lobby.ready,Ready
+ui.lobby.unready,Not Ready
+ui.lobby.ready_up,Ready Up
+ui.lobby.start,Start Heist
+ui.lobby.wait_host,The host starts the heist when everyone is ready.
+ui.lobby.block.not_host,Only the host can start.
+ui.lobby.block.started,The heist is starting.
+ui.lobby.block.no_contract,Pick a contract first.
+ui.lobby.block.missing_summary,Waiting for a player's loadout.
+ui.lobby.block.illegal_loadout,A player's loadout is not legal.
+ui.lobby.block.not_ready,Waiting for everyone to be ready.
+ui.lobby.slot.open,Open seat
+ui.lobby.slot.ai,Crew AI
+ui.lobby.slot.ai_fill,AI fills this seat
+ui.lobby.slot.host,HOST
+ui.lobby.slot.you,YOU
+ui.lobby.slot.ready,Ready
+ui.lobby.slot.not_ready,Not ready
+ui.lobby.slot.waiting,Waiting for loadout...
+ui.lobby.slot.none,None
+ui.lobby.slot.primary,Primary: {name}
+ui.lobby.slot.secondary,Secondary: {name}
+ui.lobby.slot.armor,Armor: {name}
+ui.lobby.slot.deployable,Deployable: {name}
+ui.lobby.slot.perk_deck,Perk deck: {name}
+ui.lobby.slot.mask,Mask: {name}
+ui.lobby.slot.illegal,Illegal loadout: the host will not launch it.
+ui.lobby.custom_mask,Custom mask
+ui.lobby.client_launch_missing,"The host started the heist, but joining a running heist is not available in this build yet."
