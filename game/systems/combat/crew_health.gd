@@ -14,6 +14,9 @@
 ##   while DOWNED; any other crew member (human, AI teammate via interact_target_net_id = net_id)
 ##   holds it for revive_time_s x interaction.revive_speed_mult (reviver). Completion -> NORMAL with
 ##   max_health x revived_health_frac[difficulty] x defense.revived_health_mult.
+## - L2.4 dodge (A2-06): a BULLET hit is dodged with chance ArmorDef.dodge + defense.dodge_add (<= 0:
+##   never) on GameRng &"dodge": no damage, `dodged` = true, the armor regen delay restarts.
+## - L2.11 heal(amount, reset_downs) (A2-06): doctor bag / first aid kit.
 ## Events: crew_downed / crew_revived / crew_custody [R]; damage_applied [R].
 ## HUD duck-typed interface (local_hud_model.gd): health, max_health, armor, max_armor, downs_left,
 ## bleedout_left.
@@ -98,6 +101,27 @@ func reset_full() -> void:
 	regen_delay_left = 0.0
 
 
+## A2-06 (L2.4): dodge chance = ArmorDef.dodge + defense.dodge_add (a negative total = 0).
+func dodge_chance() -> float:
+	var base: float = 0.0
+	var l: Loadout = _crew.loadout if _crew != null else null
+	if l != null and l.armor != &"":
+		var def: ArmorDef = ContentDB.armor(l.armor)
+		if def != null:
+			base = def.dodge
+	return clampf(base + Modifiers.add(_slot(), &"defense.dodge_add"), 0.0, 1.0)
+
+
+## A2-06 (L2.11): heal `amount` (clamped to max health); `reset_downs` (doctor bag) also restores
+## every down. NORMAL crew only. Server.
+func heal(amount: float, reset_downs: bool = false) -> void:
+	if _crew == null or not Net.is_authority() or _crew.crew_state != Enums.CrewState.NORMAL:
+		return
+	health = minf(health + maxf(amount, 0.0), max_health)
+	if reset_downs:
+		downs_used = 0
+
+
 func is_downed() -> bool:
 	return _crew != null and _crew.crew_state == Enums.CrewState.DOWNED
 
@@ -134,6 +158,14 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	if invuln_left > 0.0:
 		out["amount"] = 0.0
 		return out
+	# --- A2-06 dodge (L2.4): a ranged hit may do nothing; a dodge restarts the armor regen delay.
+	if int(info.get("type", Enums.DamageType.BULLET)) == Enums.DamageType.BULLET and _roll_dodge():
+		regen_delay_left = tw.armor_regen_delay_s * Modifiers.mult(_slot(), &"defense.armor_regen_delay_mult")
+		out["amount"] = 0.0
+		out["dodged"] = true
+		_publish(out, attacker_net_id)
+		return out
+	# --- end A2-06
 	var armor_dmg: float = 0.0
 	var health_dmg: float = 0.0
 	if bool(info.get("pierced_armor", false)) or armor <= 0.0:
@@ -311,6 +343,12 @@ func _revive_check(reviver: Node) -> StringName:
 func _on_revive_completed(reviver: Node) -> void:
 	var by: int = int(reviver.get(&"slot")) if reviver != null else -1
 	revive(by)
+
+
+## Rolled on GameRng &"dodge" only when the chance is positive.
+func _roll_dodge() -> bool:
+	var chance: float = dodge_chance()
+	return chance > 0.0 and GameRng.stream(&"dodge").randf() < chance
 
 
 func _slot() -> int:

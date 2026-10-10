@@ -39,6 +39,12 @@ func _prefab_ready() -> void:
 	interactable.completed.connect(_on_completed)
 
 
+## A2-03 (S8.5, stealth.ecm_opens_doors): an ECM placed on this reader opens it like a keycard
+## (EcmSystem calls this after ecm_door_open_s). Server.
+func open_by_ecm() -> void:
+	_on_completed(null)
+
+
 func _on_completed(_crew: Node) -> void:
 	if not Net.is_authority() or used:
 		return

@@ -72,6 +72,7 @@ func start_pager(guard: NpcBase) -> int:
 		"id": pid, "guard": guard, "guard_net_id": guard.net_id, "state": State.PENDING,
 		"delay": rng.randf_range(_tw.pager_delay_min_s, _tw.pager_delay_max_s),
 		"time_left": _tw.pager_window_s, "comp": null, "holders": {},
+		"ecm_hold": _ecm_pager_delay(),  # A2-03 (S5.6)
 	}
 	return pid
 
@@ -143,7 +144,7 @@ func _physics_process(delta: float) -> void:
 					else:
 						_cancel(pid)
 			State.ACTIVE:
-				if (p["holders"] as Dictionary).is_empty():
+				if (p["holders"] as Dictionary).is_empty() and not _ecm_paused(p):
 					p["time_left"] = float(p["time_left"]) - delta
 					if float(p["time_left"]) <= 0.0:
 						_fail(pid, &"timeout")
@@ -289,6 +290,22 @@ func _raise_alarm(reason: StringName, source_net_id: int) -> void:
 	var st: StealthDirector = _stealth()
 	if st != null:
 		st.raise_alarm(reason, source_net_id)
+
+
+# --- A2-03 ECM hook (S5.6) ---------------------------------------------------------------------
+## stealth.ecm_pager_delay: a pager whose guard died during an active jam of an ECM owned by a crew
+## member with the skill pauses its window while any ECM jams. Base ECM never touches pagers.
+func _ecm_pager_delay() -> bool:
+	var ecm: Node = HeistRuntime.get_service(&"ecm")
+	return ecm != null and ecm.has_method(&"pager_delay_active") and bool(ecm.call(&"pager_delay_active"))
+
+
+func _ecm_paused(p: Dictionary) -> bool:
+	if not bool(p.get("ecm_hold", false)):
+		return false
+	var ecm: Node = HeistRuntime.get_service(&"ecm")
+	return ecm != null and ecm.has_method(&"is_jamming") and bool(ecm.call(&"is_jamming"))
+# --- end A2-03
 
 
 func _emit(sig: StringName, args: Array) -> void:

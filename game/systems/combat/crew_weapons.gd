@@ -38,6 +38,8 @@ class WeaponState:
 ## Equipped Enums.WeaponSlot (HUD).
 var equipped_slot: int = Enums.WeaponSlot.SECONDARY
 var deployable_count: int = 0
+## A2-06: current deployable id (DeployableSystem keeps it and deployable_count up to date).
+var deployable_id: StringName = &""
 var throwable_count: int = 0
 ## Effective (resolved) loadout these weapons came from.
 var loadout: Loadout = null
@@ -96,6 +98,7 @@ func set_loadout(l: Loadout) -> void:
 	loadout = l
 	_states.clear()
 	if l != null:
+		deployable_id = l.deployable  # A2-06: HUD fallback until DeployableSystem syncs
 		_add_state(Enums.WeaponSlot.PRIMARY, l.primary, l.resolved_primary)
 		_add_state(Enums.WeaponSlot.SECONDARY, l.secondary, l.resolved_secondary)
 	equipped_slot = Enums.WeaponSlot.PRIMARY if _states.has(Enums.WeaponSlot.PRIMARY) else Enums.WeaponSlot.SECONDARY
@@ -183,6 +186,20 @@ func headshot_bonus(ws: int) -> float:
 		return 1.0
 	var slot: int = _crew.slot if _crew != null else -1
 	return s.stats.headshot_mult * Modifiers.mult(slot, &"weapon.headshot_mult", s.qualifier)
+
+
+## A2-06 (DeployableSystem, server): the HUD's deployable id / count; synced to a remote owner.
+func set_deployable(id: StringName, count: int) -> void:
+	deployable_id = id
+	deployable_count = count
+	if Net.is_authority() and _crew != null and _remote_owned():
+		_rpc_deployable.rpc_id(_crew.peer_id, id, count)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_deployable(id: StringName, count: int) -> void:
+	deployable_id = id
+	deployable_count = count
 
 
 ## Server/test hook: set a slot's magazine and reserve directly (clamped to >= 0, mag <= mag size).
