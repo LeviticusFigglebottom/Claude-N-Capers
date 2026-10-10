@@ -82,5 +82,4 @@ and quality always give the same deal. Owning more items changes the pools, so t
 
 ## Questions (for the lead)
 * QB-PC1: should an unpicked card survive a quit (a `pending_card` save field + re-show on boot)? **Answered (D-049):** no; leaving auto-picks (Rules).
-  This needs save v5. Not done.
 * QB-PC2: boosts and skins have no systems yet. They are left out of the table until they exist.

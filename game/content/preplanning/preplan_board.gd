@@ -9,6 +9,10 @@
 ##   { "favors": int,                         # favors budget (default PreplanTweak.default_favors)
 ##     "disable": [asset ids],                # library assets this heist does not offer
 ##     "assets": { asset_id: {overrides} } }  # AssetDef field overrides; a new id adds a heist-only asset
+## Variant groups (QB-53, D-049): a LIBRARY asset whose payload (`reveals` / `force_variants`) names a
+## variant group this heist does not have is hidden automatically (e.g. `asset.intel_laptop` reveals
+## `laptop`); see heist_variant_groups(). A heist-listed asset (preplanning.assets) naming an unknown
+## group is a data error instead. Without a variant table (no groups known) nothing is hidden.
 ## Points: the map's `<Map>/Preplan` Marker3Ds (PreplanBlueprint.from_map_scene), else the drawn
 ## blueprint's points (blueprints/<id>.tres, else the placeholder).
 class_name PreplanBoard
@@ -17,6 +21,8 @@ extends RefCounted
 const ASSET_DIR: String = "res://content/data/preplanning/assets"
 const BLUEPRINT_DIR: String = "res://content/data/preplanning/blueprints"
 const PLACEHOLDER_BLUEPRINT_PATH: String = "res://content/data/preplanning/placeholder_blueprint.tres"
+## Contract heist_map.md §1: res://world/heists/<id>/<id>_variants.tres (HeistVariantTable).
+const VARIANTS_PATH: String = "res://world/heists/%s/%s_variants.tres"
 
 ## Top-level keys of HeistDef.preplanning (contract v1.0).
 const PREPLANNING_KEYS: Array[String] = ["favors", "disable", "assets"]
@@ -33,6 +39,10 @@ var favors_budget: int = 10
 var assets: Dictionary = {}
 var blueprint: PreplanBlueprint
 var tweak: PreplanTweak
+## The heist's variant groups (heist_variant_groups()); empty = unknown (nothing hidden).
+var variant_groups: Array[StringName] = []
+## Library assets hidden because they reference a variant group the heist does not have (QB-53).
+var hidden_assets: Array[StringName] = []
 ## Data problems found while merging (logged once by build()).
 var errors: Array[String] = []
 
@@ -53,11 +63,63 @@ static func build(p_heist_id: StringName, p_difficulty: int, def: HeistDef = nul
 	var merged: Dictionary = merge(generic_assets(), pre, b.errors)
 	b.assets = merged["assets"]
 	b.favors_budget = int(merged.get("favors", b.tweak.default_favors))
+	b.variant_groups = heist_variant_groups(p_heist_id, b.blueprint)
+	if not b.variant_groups.is_empty():
+		var listed: Dictionary = pre.get("assets", {}) as Dictionary if pre.get("assets") is Dictionary else {}
+		for id: StringName in b.asset_ids():
+			var missing: Array[StringName] = missing_groups(b.assets[id] as PreplanAssetDef, b.variant_groups)
+			if missing.is_empty():
+				continue
+			if listed.has(id) or listed.has(String(id)):
+				b.errors.append("%s: references variant group(s) %s that %s does not have" % [id, missing, p_heist_id])
+			else:
+				b.assets.erase(id)
+				b.hidden_assets.append(id)
 	for id: StringName in b.asset_ids():
 		b.errors.append_array((b.assets[id] as PreplanAssetDef).validate())
 	for e: String in b.errors:
 		Log.error(&"preplan", e)
 	return b
+
+
+## Variant groups of a heist: the rule groups and rare-event `force_active` groups of its
+## HeistVariantTable (VARIANTS_PATH) plus the `variant_group` params of the blueprint's points.
+## Empty when the heist has no variant table (groups unknown).
+static func heist_variant_groups(p_heist_id: StringName, bp: PreplanBlueprint = null) -> Array[StringName]:
+	var out: Array[StringName] = []
+	var path: String = VARIANTS_PATH % [p_heist_id, p_heist_id]
+	if p_heist_id == &"" or not ResourceLoader.exists(path):
+		return out
+	var table: HeistVariantTable = load(path) as HeistVariantTable
+	if table == null:
+		return out
+	var add: Callable = func(g: Variant) -> void:
+		var sg: StringName = StringName(String(g)) if g != null else &""
+		if sg != &"" and not out.has(sg):
+			out.append(sg)
+	for rule: Dictionary in table.rules:
+		add.call(rule.get("group"))
+	for ev: Dictionary in table.rare_events:
+		var fa: Variant = (ev.get("effects", {}) as Dictionary).get("force_active") if ev.get("effects") is Dictionary else null
+		if fa is Dictionary:
+			add.call((fa as Dictionary).get("group"))
+	if bp != null:
+		for pt: Dictionary in bp.points:
+			add.call((pt.get("params", {}) as Dictionary).get("variant_group"))
+	return out
+
+
+## Groups named by `a`'s reveals / force_variants that are not in `groups`.
+static func missing_groups(a: PreplanAssetDef, groups: Array[StringName]) -> Array[StringName]:
+	var out: Array[StringName] = []
+	var named: Array[StringName] = []
+	named.append_array(a.reveals)
+	for g: Variant in a.force_variants:
+		named.append(StringName(String(g)))
+	for g: StringName in named:
+		if not groups.has(g) and not out.has(g):
+			out.append(g)
+	return out
 
 
 ## Generic asset set: id -> PreplanAssetDef (cached; tests may clear_cache()).
