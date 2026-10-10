@@ -27,7 +27,7 @@ independent pieces) but its session is the single accountable owner of its branc
 | ENV A | `session_016DAFQRw44j8Tz7NA7mCGJw` | `env/a-core` |
 | ENV B | `session_01UY8DitCKjvthQK7cYwvcja` | `env/b-content` |
 | ENV C | `session_01V39kctNgrNn7iYUNoTEiNF` | `env/c-worlds` |
-| ENV D | (see decisions D-027) | `env/d-art` |
+| ENV D | `session_016Esc7YANZPKv4jDCqWdvQ8` | `env/d-art` |
 
 Sessions talk with the `claude-code-remote` `send_message` tool. Environments message only the lead.
 
