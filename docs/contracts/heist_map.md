@@ -24,7 +24,7 @@ docs/levels/<id>/           review screenshots + validate_level report
 ├── Props               (Node3D) dressing (validated: no float/clip)
 ├── Lighting            (Node3D) lights + WorldEnvironment + LightmapGI/VoxelGI as decided per heist
 ├── Navigation          (NavigationRegion3D) baked navmesh, layer `walkable`; vents use layer `vent`
-├── Zones               (Node3D) MapZone volumes: PUBLIC, RESTRICTED, SECURE_LOOT, ESCAPE, BODY_HIDE
+├── Zones               (Node3D) MapZone volumes: PUBLIC, RESTRICTED, SECURE_LOOT, ESCAPE, BODY_HIDE, OUT_OF_BOUNDS
 ├── Rooms               (Node3D) RoomVolume per room in the design doc room list
 ├── Spawns              (Node3D) SpawnPoint: PLAYER (≥4, + pre-planning alternates), GUARD, CIVILIAN,
 │                                 POLICE (≥3 directions), CAMERA_OPERATOR
@@ -88,6 +88,8 @@ Node names above are **exact** (consumers find them by name). Additional childre
   API (`add_objective`, `complete`, `on_event(signal, callable)`, `require_items`, timers, Mercer
   voice-line hooks). ENV C writes `<id>_mission.gd` against it. Mission scripts may use ONLY
   `HeistMission` API, `EventBus`, `Services`, and node paths **inside their own map**.
+
+* `floor_heights` must be ascending and contain 0.0 (the ground floor); basements are negative (D-040).
 
 ## 7. Scale & coordinate rules
 
