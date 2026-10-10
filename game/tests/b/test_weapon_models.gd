@@ -1,14 +1,27 @@
-## B1-03: Kestrel P9 + mod models: every def's model loads, the base carries every contract marker,
-## mods attach at the marker for their ModType, stock parts hide, triangle budgets hold.
+## B1-03 / B4-04: weapon + mod models: every def's model loads, every base carries every contract
+## marker, mods attach at the marker for their ModType, stock parts hide, triangle budgets hold
+## (per asset and for the heaviest full kit of each weapon).
 extends TestCase
 
 const WEAPON_ID: StringName = &"weapon.kestrel_p9"
 const FP_WEAPON_TRI_BUDGET: int = 25000
-## asset folder -> generated asset ids built by tools/blender/weapons/
-const ASSETS: Array[String] = [
-	"wpn_kestrel_p9", "mod_p9_suppressor", "mod_p9_reflex_sight", "mod_p9_iron_sights",
-	"mod_p9_standard_mag", "mod_p9_extended_mag",
-]
+## Stock parts each weapon must carry (Stock<ModType>, data_schemas.md §Weapons).
+const STOCK_PARTS: Dictionary = {
+	&"weapon.kestrel_p9": [&"StockSight", &"StockMagazine"],
+	&"weapon.warden_45": [&"StockSight", &"StockMagazine"],
+	&"weapon.hornet_9": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.corsair_ar": [&"StockSight", &"StockMagazine"],
+	&"weapon.plowman_12": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.rampart_lmg": [&"StockSight", &"StockMagazine", &"StockBarrel"],
+	&"weapon.heron_308": [&"StockSight", &"StockMagazine"],
+}
+## Overall length range (Muzzle to StockMount / rear-most marker), metres.
+const LENGTH_RANGE: Dictionary = {
+	&"weapon.warden_45": Vector2(0.18, 0.26), &"weapon.hornet_9": Vector2(0.28, 0.40),
+	&"weapon.corsair_ar": Vector2(0.62, 0.78), &"weapon.plowman_12": Vector2(0.65, 0.78),
+	&"weapon.rampart_lmg": Vector2(0.72, 0.86), &"weapon.heron_308": Vector2(0.80, 0.92),
+}
+const WEAPONS_DIR: String = "res://assets/weapons"
 
 
 func before_all() -> void:
@@ -110,7 +123,7 @@ func test_every_mod_type_maps_to_a_base_marker() -> void:
 
 
 func test_triangle_budgets_from_source_txt() -> void:
-	for id: String in ASSETS:
+	for id: String in _asset_ids():
 		var path: String = "res://assets/weapons/%s/SOURCE.txt" % id
 		var text: String = FileAccess.get_file_as_string(path)
 		assert_true(not text.is_empty(), "%s exists" % path)
@@ -135,3 +148,131 @@ func test_stock_part_names_follow_contract() -> void:
 	assert_eq(WeaponVisual.stock_part_name(Enums.ModType.BARREL), &"StockBarrel")
 	assert_eq(WeaponVisual.stock_part_name(Enums.ModType.BARREL_EXT), &"StockBarrelExt")
 	assert_eq(WeaponVisual.stock_part_name(Enums.ModType.FOREGRIP), &"StockForegrip")
+
+
+func _visual_for(weapon_id: StringName, mod_ids: Array[StringName]) -> WeaponVisual:
+	var v: WeaponVisual = WeaponVisual.new()
+	add_child(v)
+	v.setup_ids(weapon_id, mod_ids)
+	return v
+
+
+func _asset_ids() -> Array[String]:
+	var out: Array[String] = []
+	for d: String in DirAccess.get_directories_at(WEAPONS_DIR):
+		if FileAccess.file_exists("%s/%s/SOURCE.txt" % [WEAPONS_DIR, d]):
+			out.append(d)
+	out.sort()
+	return out
+
+
+func _tris_of(scene: PackedScene) -> int:
+	var path: String = scene.resource_path.get_base_dir().path_join("SOURCE.txt")
+	return _field_int(FileAccess.get_file_as_string(path), "tris_lod0")
+
+
+func test_every_weapon_has_markers_and_stock_parts() -> void:
+	assert_true(ContentDB.all_weapons().size() >= 7, "P9 + the B4-04 armory")
+	for w: WeaponDef in ContentDB.all_weapons():
+		assert_true(w.model != null, "%s model" % w.id)
+		if w.model == null:
+			continue
+		var inst: Node3D = w.model.instantiate() as Node3D
+		for m: StringName in WeaponVisual.MARKERS:
+			assert_true(inst.find_child(String(m), true, false) is Node3D, "%s marker %s" % [w.id, m])
+		assert_true(inst.find_child("AimPoint", true, false) is Node3D, "%s AimPoint" % w.id)
+		for part: StringName in STOCK_PARTS.get(w.id, []):
+			assert_true(inst.find_child(String(part), true, false) is Node3D, "%s stock part %s" % [w.id, part])
+		for t: int in w.mod_slots:
+			var marker: StringName = WeaponVisual.MARKER_FOR_MOD_TYPE.get(t, &"")
+			assert_true(inst.find_child(String(marker), true, false) != null, "%s has %s for type %d" % [w.id, marker, t])
+		inst.free()
+
+
+func test_every_weapon_marker_layout_is_sane() -> void:
+	for w: WeaponDef in ContentDB.all_weapons():
+		var v: WeaponVisual = _visual_for(w.id, [] as Array[StringName])
+		var muzzle: Node3D = v.get_marker(&"Muzzle")
+		var sight: Node3D = v.get_marker(&"SightRail")
+		var magwell: Node3D = v.get_marker(&"Magwell")
+		var stock: Node3D = v.get_marker(&"StockMount")
+		var aim: Node3D = v.get_marker(&"AimPoint")
+		assert_true(muzzle.global_position.z < -0.1, "%s muzzle in front of the hand" % w.id)
+		assert_near(muzzle.global_basis.z.normalized().dot(Vector3.BACK), 1.0, 0.001, "%s muzzle -Z forward" % w.id)
+		assert_true(sight.global_position.y > muzzle.global_position.y, "%s sight rail above the bore" % w.id)
+		assert_true(aim.global_position.y > sight.global_position.y - 0.001, "%s AimPoint on/above the rail" % w.id)
+		assert_true(magwell.global_position.y < sight.global_position.y, "%s magwell below the rail" % w.id)
+		assert_true(stock.global_position.z > muzzle.global_position.z, "%s stock mount behind the muzzle" % w.id)
+		assert_near(v.get_marker(&"GripMount").global_position.length(), 0.0, 0.0001, "%s origin = grip" % w.id)
+		if LENGTH_RANGE.has(w.id):
+			var r: Vector2 = LENGTH_RANGE[w.id]
+			var length: float = absf(muzzle.global_position.z - stock.global_position.z)
+			assert_true(length > r.x and length < r.y, "%s muzzle-to-stock-mount %f in %s" % [w.id, length, r])
+		var eject: Node3D = v.get_marker(&"Eject")
+		assert_true(eject.global_basis.z.normalized().dot(Vector3.LEFT) > 0.99, "%s Eject -Z points right" % w.id)
+		v.queue_free()
+
+
+## Every non-default mod snaps onto its marker, hides the matching stock part and owns the markers it
+## must (muzzle devices: Muzzle; sights: AimPoint).
+func test_every_mod_attaches_on_every_weapon() -> void:
+	for w: WeaponDef in ContentDB.all_weapons():
+		for slot: Variant in w.mod_slots:
+			for mid: Variant in w.mod_slots[slot]:
+				var mod: WeaponModDef = ContentDB.mod(StringName(mid))
+				var is_default: bool = StringName(w.default_mods.get(slot, &"")) == mod.id
+				var v: WeaponVisual = _visual_for(w.id, [mod.id] as Array[StringName])
+				if is_default:
+					assert_eq(v.attached.size(), 0, "%s default %s uses the stock part" % [w.id, mid])
+					v.queue_free()
+					continue
+				var inst: Node3D = v.attached.get(mod.mod_type)
+				assert_true(inst != null, "%s attaches %s" % [w.id, mid])
+				if inst == null:
+					v.queue_free()
+					continue
+				assert_eq(inst.get_parent().name, WeaponVisual.MARKER_FOR_MOD_TYPE[mod.mod_type], "%s parent" % mid)
+				assert_eq(inst.position, Vector3.ZERO, "%s snaps onto the marker" % mid)
+				var stock: Node3D = v.stock_part(mod.mod_type)
+				if stock != null:
+					assert_false(stock.visible, "%s hides %s" % [mid, stock.name])
+				match mod.mod_type:
+					Enums.ModType.SUPPRESSOR, Enums.ModType.BARREL_EXT, Enums.ModType.BARREL:
+						var own: Node3D = v.get_marker(&"Muzzle")
+						assert_true(inst.is_ancestor_of(own), "%s owns the effective Muzzle" % mid)
+						if mod.mod_type != Enums.ModType.BARREL:
+							assert_true(own.global_position.z < v.get_base_marker(&"Muzzle").global_position.z,
+								"%s muzzle further forward" % mid)
+					Enums.ModType.SIGHT:
+						assert_true(inst.is_ancestor_of(v.get_marker(&"AimPoint")), "%s owns the AimPoint" % mid)
+					Enums.ModType.MAGAZINE:
+						var shows: bool = false
+						for pat: String in ["*Round", "*Shell", "*Belt"]:
+							shows = shows or inst.find_child(pat, true, false) != null
+						assert_true(shows, "%s shows a round" % mid)
+				v.queue_free()
+
+
+func test_every_model_asset_is_within_budget() -> void:
+	var ids: Array[String] = _asset_ids()
+	assert_true(ids.size() >= 40, "B4-04 assets built (%d)" % ids.size())
+	for id: String in ids:
+		var text: String = FileAccess.get_file_as_string("%s/%s/SOURCE.txt" % [WEAPONS_DIR, id])
+		var tris: int = _field_int(text, "tris_lod0")
+		var budget: int = _field_int(text, "tri_budget")
+		assert_true(tris > 0 and budget > 0 and budget <= FP_WEAPON_TRI_BUDGET, "%s budget" % id)
+		assert_true(tris <= budget, "%s: %d tris <= %d" % [id, tris, budget])
+
+
+## The heaviest kit (largest mod per slot) still fits the 25k first-person budget.
+func test_heaviest_full_kit_fits_the_fp_budget() -> void:
+	for w: WeaponDef in ContentDB.all_weapons():
+		var total: int = _tris_of(w.model)
+		for slot: Variant in w.mod_slots:
+			var worst: int = 0
+			for mid: Variant in w.mod_slots[slot]:
+				var m: WeaponModDef = ContentDB.mod(StringName(mid))
+				if StringName(w.default_mods.get(slot, &"")) != m.id:
+					worst = maxi(worst, _tris_of(m.model))
+			total += worst
+		assert_true(total <= FP_WEAPON_TRI_BUDGET, "%s full kit %d tris" % [w.id, total])
