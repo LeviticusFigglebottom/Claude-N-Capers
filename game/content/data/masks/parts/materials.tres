@@ -12,6 +12,9 @@
 [ext_resource type="Material" path="res://world/materials/steel_blued.tres" id="10_5ibvv"]
 [ext_resource type="Material" path="res://world/materials/rubber_black.tres" id="11_btaij"]
 [ext_resource type="Script" path="res://content/masks/mask_part_list.gd" id="12_coas7"]
+[ext_resource type="Material" path="res://world/materials/tile_ceramic_white.tres" id="13_b415p"]
+[ext_resource type="Material" path="res://world/materials/char_mask_lacquer_dark.tres" id="14_b415l"]
+[ext_resource type="Material" path="res://world/materials/polymer_stipple.tres" id="15_b415s"]
 
 [sub_resource type="Resource" id="Resource_jkanb"]
 script = ExtResource("3_ktq15")
@@ -108,6 +111,37 @@ detail_mean = 0.05
 id = &"mask_material.rubber"
 display_name = "Rubber"
 
+[sub_resource type="Resource" id="Resource_b415_porcelain"]
+script = ExtResource("3_ktq15")
+material_id = &"tile_ceramic_white"
+library_material = ExtResource("13_b415p")
+roughness = 0.18
+detail_strength = 0.35
+detail_mean = 0.734
+id = &"mask_material.porcelain"
+display_name = "Porcelain"
+
+[sub_resource type="Resource" id="Resource_b415_ink_lacquer"]
+script = ExtResource("3_ktq15")
+material_id = &"char_mask_lacquer_dark"
+library_material = ExtResource("14_b415l")
+roughness = 0.15
+detail_strength = 0.3
+detail_mean = 0.05
+id = &"mask_material.ink_lacquer"
+display_name = "Ink Lacquer"
+
+[sub_resource type="Resource" id="Resource_b415_stipple"]
+script = ExtResource("3_ktq15")
+material_id = &"polymer_stipple"
+library_material = ExtResource("15_b415s")
+roughness = 0.8
+detail_strength = 0.6
+detail_mean = 0.05
+id = &"mask_material.stipple"
+display_name = "Stipple Grip"
+default_owned = true
+
 [resource]
 script = ExtResource("12_coas7")
-entries = Array[ExtResource("1_3q0c8")]([SubResource("Resource_jkanb"), SubResource("Resource_sv32n"), SubResource("Resource_llemd"), SubResource("Resource_7mia0"), SubResource("Resource_drm5c"), SubResource("Resource_ebhiw"), SubResource("Resource_eveee"), SubResource("Resource_ht48o"), SubResource("Resource_2vtjv")])
+entries = Array[ExtResource("1_3q0c8")]([SubResource("Resource_jkanb"), SubResource("Resource_sv32n"), SubResource("Resource_llemd"), SubResource("Resource_7mia0"), SubResource("Resource_drm5c"), SubResource("Resource_ebhiw"), SubResource("Resource_eveee"), SubResource("Resource_ht48o"), SubResource("Resource_2vtjv"), SubResource("Resource_b415_porcelain"), SubResource("Resource_b415_ink_lacquer"), SubResource("Resource_b415_stipple")])

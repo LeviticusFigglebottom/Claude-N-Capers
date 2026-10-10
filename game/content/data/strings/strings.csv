@@ -210,6 +210,18 @@ item.weapon.kestrel_p9.name,Kestrel P9
 item.weapon.kestrel_p9.desc,"A compact nine-millimetre service pistol. Light, quiet to carry, forgiving to learn."
 item.mask.gilded_heron.name,Gilded Heron
 item.mask.gilded_heron.desc,"Lacquered gold over a long, patient face. It has seen worse jobs than yours."
+item.mask.porcelain_vigil.name,Porcelain Vigil
+item.mask.porcelain_vigil.desc,"Cold white glaze, hairline cracks, no expression at all. It keeps watch so you don't have to."
+item.mask.tide_runner.name,Tide Runner
+item.mask.tide_runner.desc,"Sea-green scales on a sly fox face. Slippery in every sense."
+item.mask.night_circuit.name,Night Circuit
+item.mask.night_circuit.desc,"An owl wired for the night shift. Only turns up in a payday hand."
+item.mask.sulfur_brute.name,Sulfur Brute
+item.mask.sulfur_brute.desc,"Hazard yellow and soot stripes on a jaw built for doors."
+item.mask.oxblood_herald.name,Oxblood Herald
+item.mask.oxblood_herald.desc,"Dark lacquer and a brass sunrise. Earned by crews who finish what others only start."
+item.mask.paper_saint.name,Paper Saint
+item.mask.paper_saint.desc,"Printed like a cheap poster, smiling like it knows the vault code."
 item.mod.p9_suppressor.name,Hushwell Suppressor
 item.mod.p9_suppressor.desc,Turns gunfire into a polite cough. Heavier at the muzzle and a little less punch.
 item.mod.p9_reflex_sight.name,Pinpoint Reflex Sight
@@ -1283,6 +1295,11 @@ item.mask_base.visage.name,Plain Visage
 item.mask_base.vulpine.name,Vulpine
 item.mask_base.bruiser.name,Bruiser
 item.mask_base.owl.name,Night Owl
+item.mask_base.skull.name,Grin Skull
+item.mask_base.theatre.name,Footlights
+item.mask_base.gasmask.name,Filter Face
+item.mask_base.demon.name,Horned Fury
+item.mask_base.goalie.name,Crease Guard
 item.mask_material.lacquer.name,Lacquer
 item.mask_material.matte.name,Matte Shell
 item.mask_material.gilt.name,Gilt
@@ -1292,6 +1309,9 @@ item.mask_material.walnut.name,Walnut
 item.mask_material.marble.name,Marble
 item.mask_material.blued_steel.name,Blued Steel
 item.mask_material.rubber.name,Rubber
+item.mask_material.porcelain.name,Porcelain
+item.mask_material.ink_lacquer.name,Ink Lacquer
+item.mask_material.stipple.name,Stipple Grip
 item.mask_colors.bone_ink.name,Bone and Ink
 item.mask_colors.ember_soot.name,Ember and Soot
 item.mask_colors.gilt_night.name,Gilt and Night
@@ -1302,6 +1322,12 @@ item.mask_colors.cobalt_flare.name,Cobalt Flare
 item.mask_colors.moss_bark.name,Moss and Bark
 item.mask_colors.rose_cinder.name,Rose Cinder
 item.mask_colors.signal_white.name,Signal White
+item.mask_colors.tide_coral.name,Tide and Coral
+item.mask_colors.saffron_plum.name,Saffron and Plum
+item.mask_colors.frost_slate.name,Frost and Slate
+item.mask_colors.oxblood_brass.name,Oxblood and Brass
+item.mask_colors.mint_graphite.name,Mint Graphite
+item.mask_colors.sulfur_ash.name,Sulfur and Ash
 item.mask_pattern.solid.name,Solid
 item.mask_pattern.split.name,Split Face
 item.mask_pattern.brow_band.name,Brow Band
@@ -1310,6 +1336,12 @@ item.mask_pattern.chevron.name,Chevrons
 item.mask_pattern.dots.name,Dots
 item.mask_pattern.sash.name,Sash
 item.mask_pattern.diamonds.name,Diamonds
+item.mask_pattern.scales.name,Scales
+item.mask_pattern.circuit.name,Circuitry
+item.mask_pattern.prowl.name,Prowl
+item.mask_pattern.halftone.name,Halftone
+item.mask_pattern.crackle.name,Crackle
+item.mask_pattern.starburst.name,Starburst
 objective.glasshouse.casing,Case the store
 objective.glasshouse.keycard,Find the manager's keycard
 objective.glasshouse.workshop_door,Get into the workshop
@@ -1336,6 +1368,7 @@ ui.payday_cards.mask_kind.base,Mask shape
 ui.payday_cards.mask_kind.material,Mask material
 ui.payday_cards.mask_kind.colors,Mask colours
 ui.payday_cards.mask_kind.pattern,Mask pattern
+ui.payday_cards.mask_kind.preset,Complete mask
 ui.board.title,The Board
 ui.board.subtitle,Contracts from your contacts. Each stays up for {minutes} minutes; new ones land all the time.
 ui.board.level_stash,Level {level}  |  Stash: {amount}

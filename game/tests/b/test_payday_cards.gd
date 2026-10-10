@@ -40,8 +40,14 @@ func test_table_data_is_consistent() -> void:
 			assert_true(cash >= 20000 and cash <= 100000, "cash $20k-$100k (research §4): %d" % cash)
 	for id: Variant in t.item_tiers:
 		var sid: StringName = StringName(id)
-		assert_true(ContentDB.mod(sid) != null if String(sid).begins_with("mod.") else MaskCatalog.has_part(sid),
-				"item_tiers id exists: %s" % sid)
+		var known: bool = false
+		if String(sid).begins_with("mod."):
+			known = ContentDB.mod(sid) != null
+		elif MaskCatalog.is_preset_id(sid):
+			known = ContentDB.mask(sid) is MaskDef
+		else:
+			known = MaskCatalog.is_known(sid)  # hidden ENV D base slots count
+		assert_true(known, "item_tiers id exists: %s" % sid)
 		assert_true(int(t.item_tiers[id]) < t.tier_count())
 
 
@@ -140,7 +146,7 @@ func test_no_owned_or_duplicate_items() -> void:
 		assert_false(p.owned_mods.has(id), "owned mod not offered: %s" % id)
 		assert_false(stock.has(id) or stock.has(String(id)), "stock part not offered: %s" % id)
 	for id: StringName in PaydayCards.pool(PaydayCards.MASK_PART, p):
-		assert_false(MaskLocker.is_part_owned(p, id))
+		assert_false(MaskLocker.is_drop_owned(p, id))
 	for s: int in range(300):
 		var seen: Dictionary = {}
 		for card: Dictionary in PaydayCards.roll(s, 0, Enums.Difficulty.CATACLYSM, p, 0.0)["cards"] as Array:
@@ -149,13 +155,14 @@ func test_no_owned_or_duplicate_items() -> void:
 				continue
 			assert_false(seen.has(id), "seed %d: %s twice in one roll" % [s, id])
 			seen[id] = true
-			assert_false(p.owned_mods.has(id) or MaskLocker.is_part_owned(p, id), "owned item dropped: %s" % id)
+			assert_false(p.owned_mods.has(id) or MaskLocker.is_drop_owned(p, id), "owned item dropped: %s" % id)
 
 
 func test_everything_owned_falls_back_to_cash() -> void:
 	var p: PlayerProfile = _profile()
 	p.owned_mods.append_array(PaydayCards.pool(PaydayCards.WEAPON_MOD, p))
-	p.owned_mask_parts.append_array(PaydayCards.pool(PaydayCards.MASK_PART, p))
+	for id: StringName in PaydayCards.pool(PaydayCards.MASK_PART, p):
+		assert_true(PaydayCards.grant(p, {"type": PaydayCards.MASK_PART, "item_id": id}), "grant %s" % id)
 	assert_eq(PaydayCards.pool(PaydayCards.WEAPON_MOD, p).size(), 0)
 	assert_eq(PaydayCards.pool(PaydayCards.MASK_PART, p).size(), 0)
 	for s: int in range(100):
@@ -177,7 +184,11 @@ func test_grant_each_type_and_save() -> void:
 	assert_true(PaydayCards.grant(p, mod_card))
 	assert_has(p.owned_mods, mod_id)
 	assert_false(PaydayCards.grant(p, mod_card), "an owned mod is never granted twice")
-	var part_id: StringName = PaydayCards.pool(PaydayCards.MASK_PART, p)[0]
+	var part_id: StringName = &""
+	for id: StringName in PaydayCards.pool(PaydayCards.MASK_PART, p):
+		if not MaskCatalog.is_preset_id(id):
+			part_id = id
+			break
 	var part_card: Dictionary = {"type": PaydayCards.MASK_PART, "tier": 0, "item_id": part_id, "amount": 0}
 	assert_true(PaydayCards.grant(p, part_card))
 	assert_true(MaskLocker.is_part_owned(p, part_id))
