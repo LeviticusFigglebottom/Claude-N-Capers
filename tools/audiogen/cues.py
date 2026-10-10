@@ -929,6 +929,283 @@ def ui_click(rng: np.random.Generator, v: int) -> np.ndarray:
     return osc.sine(1200, dur) * env.exp_decay(dur, 0.025, 0.0004) + click(rng, (2600.0,), dur, 4, 0.003, 0.2)
 
 
+# ============================================================ QA-28 / D-049: P3 specials + new prefabs
+# Readability (PD2 rule): every special tell is short, rhythmic or tonal, and centred in the
+# 600 Hz - 4 kHz region where the assault stem and gunfire leave the most room (checked against
+# mus_glasshouse_assault and weapon_rifle_fire spectra; see the build report).
+
+
+def phantom_hum(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Phantom tell: eerie hum loop: 70 Hz drone whose 600-1300 Hz harmonics beat against a
+    detuned copy, with a 6 Hz tremolo and a thin 2.2 kHz whistle on a slow vibrato.
+    Niche: pulsing mid-band hum (6 Hz rhythm); nothing else in the game trembles at that rate."""
+    def render(d: float) -> np.ndarray:
+        t = tvec(d)
+        drone = osc.saw(70.0, d) + osc.saw(70.7, d, 0.3)
+        mid = filters.bp(drone, 900, 1.4) * 2.0 + filters.lp(drone, 200) * 0.3
+        whistle = osc.sine(2200 * (1 + 0.01 * np.sin(2 * np.pi * 0.5 * t)), d) * 0.12
+        trem = 0.55 + 0.45 * np.sin(2 * np.pi * 6.0 * t) ** 2
+        return (mid + whistle) * trem
+    return make_loop(render, 4.0, 0.3)
+
+
+def phantom_charge(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Phantom charge: rushing whoosh plus a distorted formant shriek gliding 520 -> 900 Hz
+    ("a" -> "i"). Niche: 1-3.5 kHz vocal scream with a rising glide, 1.2 s."""
+    dur = 1.2
+    t = tvec(dur)
+    f0 = 520 + 380 * np.clip(t / 0.5, 0, 1) ** 0.7 + 25 * np.sin(2 * np.pi * 9 * t)
+    src = osc.saw(f0, dur) + 0.25 * noise.white(dur, rng)
+    shriek = filters.formant(src, "a", "i", 6.0) * env.segments([(0, 0), (0.12, 0.3), (0.3, 1), (0.95, 0.8), (dur, 0)], dur)
+    shriek = fx.drive(shriek * 3.0, 3.0)
+    rush = whoosh(rng, 0.7, 200, 1800, 600, 1.0) * 1.2
+    y = shriek * 0.8
+    place(y, rush, 0)
+    return fx.reverb(fade(y, 0.005, 0.1), "store", 0.15, stereo_out=False, tail=False)
+
+
+def stinger_windup(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Taser windup: 1 s electric ramp: buzzing square rising 180 -> 1800 Hz with a 120 Hz AM
+    buzz and growing spark crackle. Niche: the only rising 1 s electric ramp."""
+    dur = 1.0
+    t = tvec(dur)
+    f = np.geomspace(180, 1800, nsamp(dur))
+    ramp = filters.bp(osc.square(f, dur, 0.3), 1500, 0.6) * (0.75 + 0.25 * osc.square(120, dur, 0.5))
+    sparks = filters.hp(noise.crackle(dur, rng, 40), 2500) * (t / dur) ** 2 * 6
+    y = (ramp * (0.2 + 0.8 * t / dur) + sparks)
+    return fade(y, 0.01, 0.02)
+
+
+def stinger_arc(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Taser arc loop: 120 Hz buzz (harmonics emphasised around 2.4 kHz, the "zzzt") with irregular
+    spark bursts (high-passed noise spikes) at ~14 per second. Niche: 2-3 kHz buzz + crackle. 2 s seamless loop."""
+    def render(d: float) -> np.ndarray:
+        sq = osc.square(120.0, d, 0.2)
+        buzz = filters.bp(sq, 2400, 1.2) * 1.6 + filters.bp(sq, 1100, 0.7) * 0.4
+        n = nsamp(d)
+        sparks = np.zeros(n)
+        for t0 in np.sort(rng.uniform(0, d, int(d * 14))):
+            bd = rng.uniform(0.005, 0.03)
+            burst = filters.hp(noise.white(bd, rng), 2500) * env.exp_decay(bd, bd, 0.0) * rng.uniform(0.5, 1.5)
+            place(sparks, burst, nsamp(t0))
+        return buzz * (0.8 + 0.2 * env.lfo(3.0, d)) + sparks * 1.5
+    return make_loop(render, 2.0, 0.1)
+
+
+def longshot_report(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Longshot (sniper special) from 200+ m: sharp supersonic crack arriving first, then a
+    darker, low-passed muzzle boom and long slap-back echoes. Niche: crack-then-boom double hit."""
+    dur = 3.5
+    y = np.zeros(nsamp(dur))
+    cn = noise.white(0.06, rng)
+    crack = (filters.hp(cn, 3000) * 4.0 + filters.bp(cn, 2200, 1.2) * 5.0) * env.exp_decay(0.06, 0.02, 0.0)
+    place(y, crack, 0)
+    boom = _shot(rng, body_hz=80, sub=1.0, crack=0.4, dur=3.2, room="alley", wet=0.5, bark_hz=500, body_t=0.3,
+                 sub_t=0.5, echo=1.4, mech=0.0)
+    place(y, filters.lp(boom, 2500), nsamp(0.09))
+    return fade(y, 0, 0.5)
+
+
+def bulwark_bang(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Bulwark shield struck/slammed: large steel plate: inharmonic partials 180-2000 Hz ringing
+    0.6 s, a flat thud and a bright clank. Niche: gong-like metallic ring."""
+    dur = 1.0
+    k = rng.uniform(0.95, 1.05)
+    ring = osc.partials([182 * k, 421 * k, 763 * k, 1238 * k, 1975 * k, 2890 * k], [0.8, 1.0, 0.8, 0.6, 0.4, 0.25],
+                        [0.5, 0.45, 0.35, 0.25, 0.15, 0.08], dur, rng)
+    y = ring * 0.7 + thud(rng, 95, dur, 0.8) * 0.8
+    place(y, click(rng, (2600.0, 4400.0), 0.08, 10, 0.01, 1.0), 0)
+    return fx.reverb(fx.drive(y, 1.5), "store", 0.12, stereo_out=False, tail=False)
+
+
+def wrecker_roar(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Wrecker (dozer) roar: heavily processed growl: jittered 75 Hz glottal saw through 'o'->'a'
+    formants, ring-modulated at 33 Hz, tanh-crushed, with a sub-octave layer. Niche: gritty
+    400-1500 Hz formant growl, 1.8 s."""
+    dur = 1.8
+    t = tvec(dur)
+    f0 = 75 * (1 + 0.15 * env.segments([(0, 0), (0.4, 1), (1.3, 0.8), (dur, -0.3)], dur)) * \
+        (1 + 0.03 * filters.lp(noise.white(dur, rng), 30) * 8)
+    src = osc.saw(f0, dur) + 0.4 * filters.lp(noise.white(dur, rng), 3000)
+    growl = filters.formant(src, "o", "a", 5.0) * (0.6 + 0.4 * osc.sine(33, dur))
+    growl = fx.drive(growl * 4.0, 4.0)
+    sub = osc.sine(f0 / 2, dur) * 0.4
+    e = env.segments([(0, 0), (0.15, 1), (1.4, 0.85), (dur, 0)], dur)
+    return fx.reverb((growl + sub) * e, "store", 0.15, stereo_out=False, tail=False)
+
+
+def wrecker_step(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Heavy armoured footfall: 50 Hz floor thud, armour-plate clank (310/720 Hz), gear rattle.
+    Niche: slow, heavy, metallic stomp (rhythm comes from the walk)."""
+    dur = 0.6
+    y = thud(rng, 50 * rng.uniform(0.95, 1.05), dur, 1.2) * 1.3
+    plate = osc.partials([310 * rng.uniform(0.97, 1.03), 720, 1340], [0.6, 0.45, 0.25], [0.18, 0.12, 0.06], dur, rng)
+    place(y, plate, nsamp(0.01))
+    rattle = granular.cloud(0.3, np.sort(rng.uniform(0, 0.15, 6)),
+                            lambda i, r: click(r, (r.uniform(1500, 3000),), 0.03, 6, 0.004, 0.3), rng)
+    place(y, rattle, nsamp(0.03))
+    return fade(y, 0, 0.1)
+
+
+def wrecker_plate_crack(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Faceplate shatter: sharp crack, composite shards (1.5-5 kHz grains, drier and lower than
+    glass) and a steel ping at 1.9 kHz. Niche: crunchy mid-high burst + ping, 1 s."""
+    dur = 1.0
+    crack = filters.hp(noise.white(0.04, rng), 1200) * env.exp_decay(0.04, 0.02, 0.0) * 2.0
+
+    def shard(i: int, r: np.random.Generator) -> np.ndarray:
+        d = r.uniform(0.015, 0.05)
+        return osc.partials([r.uniform(1500, 5000), r.uniform(5000, 7000)], [1.0, 0.3], [d * 0.4, d * 0.2], d, r) * \
+            r.uniform(0.3, 1.0)
+
+    shards = granular.cloud(dur, np.clip(rng.exponential(0.07, 120), 0, 0.8), shard, rng) * 0.35
+    ping = osc.partials([1910.0, 5150.0], [0.6, 0.3], [0.3, 0.1], dur, rng)
+    y = shards + ping * 0.5 + thud(rng, 120, dur, 0.5) * 0.4
+    place(y, crack, 0)
+    return fx.reverb(fade(y, 0, 0.15), "store", 0.12, stereo_out=False, tail=False)
+
+
+def corpsman_heal(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Corpsman heal: bright 2-note chime E6 -> B6 (pure bell). Niche: the only rising
+    perfect-fifth sparkle above 1.3 kHz."""
+    dur = 1.0
+    y = np.zeros(nsamp(dur))
+    for i, note in enumerate((88, 95)):
+        place(y, seq.bell(note, 0.8, rng, 0.35), nsamp(i * 0.13), 0.6)
+    return fx.reverb(y, "plate", 0.15, stereo_out=False, tail=False)
+
+
+def brandt_arrival(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Captain Brandt arrives: brass-like horn sting (stacked detuned saws, D2-A2-D3-F3) with a
+    filter swell and a sub hit. Niche: big minor brass chord, 2.6 s."""
+    dur = 2.6
+    t = tvec(dur)
+    y = np.zeros(nsamp(dur))
+    for note in (38, 45, 50, 53, 57):
+        y += osc.supersaw(midi_hz(note), dur, 3, 10, rng)
+    for note in (62, 65, 69):  # bright upper brass voicing
+        y += osc.supersaw(midi_hz(note), dur, 3, 12, rng) * 0.8
+    cut = 300 + 4800 * env.segments([(0, 0), (0.35, 1), (1.6, 0.6), (dur, 0.2)], dur)
+    y = filters.biquad_tv(y, "lp", cut, 2.2) * env.adsr(dur, 0.08, 0.6, 0.7, 0.8)
+    y = filters.peak(y, 2000, 6.0, 1.0)
+    y = fx.drive(y * 0.5, 1.8) + osc.sine(36 * (1 + np.exp(-t / 0.1)), dur) * env.exp_decay(dur, 0.8) * 0.6
+    return fx.reverb(y, "hall", 0.2, stereo_out=True, tail=False)
+
+
+def aegis_pulse(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Captain's Aegis aura loop: low 55 Hz pulse at 1.5 Hz with an 880 Hz harmonic and a
+    1.3/2 kHz glassy ring on each throb so it reads over music. Niche: slow throb (1.5 Hz), 2 s seamless loop (3 pulses)."""
+    loop = 2.0
+    y = np.zeros(nsamp(loop + 0.6))
+    for k in range(4):
+        p = osc.sine(55.0, 0.6) * env.exp_decay(0.6, 0.5, 0.02)
+        p += filters.bp(osc.saw(110.0, 0.6), 880, 3.0) * env.exp_decay(0.6, 0.35, 0.03) * 2.5
+        p += osc.partials([1320.0, 1980.0], [0.5, 0.3], [0.25, 0.15], 0.6, rng) * np.minimum(tvec(0.6) / 0.03, 1)
+        place(y, p, nsamp(k * loop / 3))
+    return wrap_loop_mono(y, nsamp(loop))
+
+
+def wrap_loop_mono(x: np.ndarray, loop_len: int) -> np.ndarray:
+    out = x[:loop_len].copy()
+    tail = x[loop_len:]
+    out[: tail.shape[0]] += tail
+    return out
+
+
+def bag_lift_start(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Bag lift starts: start clunk, a low geared motor (60 Hz) and a periodic chain rattle
+    (link clicks at ~11 Hz). Niche: low motor + metallic 11 Hz ratchet, 2.5 s."""
+    dur = 2.5
+    y = np.zeros(nsamp(dur))
+    place(y, thud(rng, 80, 0.4, 0.8), 0)
+    md = 2.3
+    m = _motor(rng, md, 60.0 * np.minimum(1.0, 0.5 + tvec(md) / 0.5)) * env.segments([(0, 0), (0.3, 1), (md, 0.9)], md) * 0.6
+    chain = granular.cloud(md, np.arange(0.2, md - 0.05, 1 / 11.0) + rng.uniform(0, 0.004, len(np.arange(0.2, md - 0.05, 1 / 11.0))),
+                           lambda i, r: click(r, (r.uniform(1800, 2600), r.uniform(3800, 5000)), 0.04, 8, 0.005, 0.5), rng)
+    place(y, m + chain, nsamp(0.15))
+    return fade(y, 0, 0.2)
+
+
+def bag_lift_arrive(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Bag lift arrives: heavy stop clunk + single bright bell ding (2.35 kHz)."""
+    dur = 1.6
+    y = np.zeros(nsamp(dur))
+    place(y, thud(rng, 75, 0.4, 0.9) * 1.2, 0)
+    place(y, click(rng, (1200.0, 2300.0), 0.1, 12, 0.012, 0.9), 0)
+    place(y, osc.partials([2350.0, 2350 * 2.76, 2350 * 5.4], [1.0, 0.25, 0.08], [0.45, 0.14, 0.05], 1.2, rng), nsamp(0.3))
+    return fx.reverb(y, "store", 0.15, stereo_out=False, tail=False)
+
+
+def hack_start(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Hack starts: terminal chirps (random square pips 1-3 kHz) then a data whirr (band-passed
+    noise AM at 23 Hz) with HDD seek ticks. Niche: busy digital chatter, 1.5 s."""
+    dur = 1.5
+    y = np.zeros(nsamp(dur))
+    for i in range(7):
+        f = float(rng.choice([1047.0, 1319.0, 1568.0, 2093.0, 2637.0]))
+        place(y, osc.square(f, 0.035, 0.5) * env.adsr(0.035, 0.001, 0.02, 0.7, 0.005) * 0.4, nsamp(i * 0.045))
+    wd = 1.1
+    whirr = filters.bp(noise.white(wd, rng), 1800, 1.0) * (0.6 + 0.4 * osc.sine(23, wd)) * 0.5
+    whirr *= env.segments([(0, 0), (0.2, 1), (wd - 0.2, 1), (wd, 0)], wd)
+    ticks = granular.cloud(wd, np.sort(rng.uniform(0, wd, 18)),
+                           lambda i, r: click(r, (r.uniform(3000, 4500),), 0.02, 6, 0.003, 0.4), rng)
+    place(y, whirr + ticks, nsamp(0.35))
+    return fade(y, 0, 0.1)
+
+
+def hack_interrupt(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Hack interrupted: two harsh 150 Hz error buzzes, then a reboot whine (sine 300 -> 80 ->
+    1200 Hz). Niche: buzzy low-mid error + swooping whine, 1.6 s."""
+    dur = 1.6
+    y = np.zeros(nsamp(dur))
+    for st in (0.0, 0.25):
+        b = filters.bp(osc.square(150, 0.18, 0.5), 900, 0.5) * env.adsr(0.18, 0.003, 0.05, 0.9, 0.02)
+        place(y, fx.drive(b * 2, 2.0), nsamp(st))
+    wd = 1.0
+    f = env.segments([(0, 300), (0.35, 80), (wd, 1200)], wd, "exp")
+    whine = osc.sine(f, wd) * env.segments([(0, 0), (0.1, 0.6), (0.35, 0.2), (wd - 0.1, 0.6), (wd, 0)], wd)
+    place(y, whine, nsamp(0.55))
+    return y
+
+
+def hack_done(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Hack complete: three ascending confirmation pips C6-E6-G6 (soft square). Niche: major
+    arpeggio, digital timbre (vs corpsman's bells)."""
+    dur = 0.6
+    y = np.zeros(nsamp(dur))
+    for i, f in enumerate((1047.0, 1319.0, 1568.0)):
+        pip = filters.lp(osc.square(f, 0.09, 0.5), 4000) * env.adsr(0.09, 0.002, 0.04, 0.7, 0.02)
+        place(y, pip * 0.5, nsamp(i * 0.1))
+    return fade(y, 0, 0.05)
+
+
+def escape_arrive(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Escape vehicle arrives. v0 van horn (two 350/440 Hz honks), v1 boat horn (long 110 Hz
+    blast), v2 helicopter rotor swell (18 Hz blade slap over turbine whine). Positional, far."""
+    if v == 0:
+        dur = 1.4
+        y = np.zeros(nsamp(dur))
+        for st, ln in ((0.0, 0.25), (0.4, 0.55)):
+            h = (osc.saw(350, ln) + osc.saw(440, ln)) * env.adsr(ln, 0.01, 0.05, 0.9, 0.03)
+            place(y, filters.bp(fx.drive(h, 2.0), 900, 0.6), nsamp(st))
+        return fx.reverb(y, "alley", 0.25, stereo_out=False, tail=False)
+    if v == 1:
+        dur = 3.0
+        ln = 2.0
+        h = osc.saw(110, ln) + osc.saw(110.6, ln, 0.4) + osc.square(55, ln, 0.5) * 0.4
+        h = filters.lp(h, 900) * env.adsr(ln, 0.12, 0.3, 0.9, 0.3)
+        y = np.zeros(nsamp(dur))
+        place(y, h, 0)
+        return fx.reverb(y, "alley", 0.35, stereo_out=False, tail=False)
+    dur = 4.0
+    t = tvec(dur)
+    slap = (0.5 + 0.5 * np.cos(2 * np.pi * 18.0 * t)) ** 6
+    body = filters.lp(noise.brown(dur, rng), 400) * slap * 2.0 + filters.bp(noise.white(dur, rng), 1200, 0.8) * slap * 0.4
+    turbine = osc.sine(2900 * (1 + 0.02 * t / dur), dur) * 0.05
+    swell = np.clip(t / 3.0, 0, 1) ** 1.5
+    return fade((body + turbine) * swell, 0, 0.3)
+
+
 # ============================================================ ambience beds
 
 
@@ -1066,6 +1343,29 @@ CUES: list[CueSpec] = [
     CueSpec("zipline_attach", zipline_attach, max_distance=20.0, pitch_jitter=0.04, note="QA-15"),
     CueSpec("lockpick", lockpick, loop=True, max_distance=8.0, volume_db=-8.0),
     CueSpec("ui_click", ui_click, bus="UI", positional=False, volume_db=-10.0, cooldown_s=0.02),
+    CueSpec("phantom_hum", phantom_hum, bus="Enemies", loop=True, max_distance=15.0, volume_db=-2.0, note="QA-28"),
+    CueSpec("phantom_charge", phantom_charge, bus="Enemies", max_distance=30.0, cooldown_s=1.0, note="QA-28"),
+    CueSpec("stinger_windup", stinger_windup, bus="Enemies", max_distance=30.0, cooldown_s=0.5, note="QA-28"),
+    CueSpec("stinger_arc", stinger_arc, bus="Enemies", loop=True, max_distance=25.0, note="QA-28"),
+    CueSpec("longshot_report", longshot_report, bus="Enemies", max_distance=300.0, pitch_jitter=0.03, volume_db=2.0,
+            note="QA-28"),
+    CueSpec("bulwark_bang", bulwark_bang, bus="Enemies", variations=3, max_distance=40.0, pitch_jitter=0.03,
+            cooldown_s=0.15, note="QA-28"),
+    CueSpec("wrecker_roar", wrecker_roar, bus="Enemies", variations=2, max_distance=60.0, cooldown_s=2.0, note="QA-28"),
+    CueSpec("wrecker_step", wrecker_step, bus="Enemies", variations=3, max_distance=30.0, pitch_jitter=0.04,
+            note="QA-28"),
+    CueSpec("wrecker_plate_crack", wrecker_plate_crack, bus="Enemies", variations=2, max_distance=40.0, note="QA-28"),
+    CueSpec("corpsman_heal", corpsman_heal, bus="Enemies", max_distance=30.0, cooldown_s=0.5, note="QA-28"),
+    CueSpec("brandt_arrival", brandt_arrival, bus="Enemies", positional=False, volume_db=-2.0, cooldown_s=5.0,
+            note="QA-28"),
+    CueSpec("aegis_pulse", aegis_pulse, bus="Enemies", loop=True, max_distance=30.0, volume_db=-3.0, note="QA-28"),
+    CueSpec("bag_lift_start", bag_lift_start, max_distance=40.0, note="QA-28"),
+    CueSpec("bag_lift_arrive", bag_lift_arrive, max_distance=40.0, note="QA-28"),
+    CueSpec("hack_start", hack_start, max_distance=15.0, volume_db=-3.0, note="QA-28"),
+    CueSpec("hack_interrupt", hack_interrupt, max_distance=20.0, volume_db=-2.0, note="QA-28"),
+    CueSpec("hack_done", hack_done, max_distance=15.0, volume_db=-3.0, note="QA-28"),
+    CueSpec("escape_arrive", escape_arrive, variations=3, max_distance=200.0,
+            note="QA-28: _1 van horn, _2 boat horn, _3 heli rotor swell (variant index chosen by caller or random)"),
     CueSpec("amb_glasshouse_interior", amb_glasshouse_interior, bus="Ambience", positional=False, loop=True,
             volume_db=-14.0, norm="bed"),
     CueSpec("amb_street_dusk", amb_street_dusk, bus="Ambience", positional=False, loop=True, volume_db=-12.0,
