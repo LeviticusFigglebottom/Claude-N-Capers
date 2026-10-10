@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_mask")
 id = &"mask.gilded_heron"
-display_name = "item.mask.gilded_heron.name"
+display_name = "Gilded Heron"
 color_a = Color(0.82, 0.66, 0.28, 1)
 color_b = Color(0.08, 0.08, 0.1, 1)
