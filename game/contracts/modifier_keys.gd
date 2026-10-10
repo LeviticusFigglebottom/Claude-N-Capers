@@ -145,7 +145,7 @@ const KEYS: Dictionary = {
 	&"deploy.medical_user_buff": [Type.PARAMS, 4, "Anyone using your First Aid Kit or Doctor Bag takes damage x damage_taken_mult for..."],
 	&"deploy.fak_auto_revive": [Type.PARAMS, 4, "A crew member downed within radius m of your placed First Aid Kit consumes it and is..."],
 	&"defense.bleedout_health_mult": [Type.MULT, 4, "Bleedout HP (100 base, L2.5)."],
-	&"defense.post_revive_buff": [Type.PARAMS, 4, "Buffs on yourself for duration s after being revived (1.0 = none). Basic/aced..."],
+	&"defense.post_revive_buff": [Type.LIST, 4, "Buffs on yourself for duration s after being revived (1.0 = none). Basic/aced..."],
 	&"defense.bleedout_pause_unseen": [Type.FLAG, 4, "Bleedout timer pauses while no enemy has line of sight to you (counts again as..."],
 	&"defense.self_revive_refill_on_doctor_bag": [Type.FLAG, 4, "Using a Doctor Bag restores your defense.self_revive_charges to..."],
 	&"defense.healing_received_mult": [Type.MULT, 4, "All healing you receive (bags, kits, regen, perks)."],
