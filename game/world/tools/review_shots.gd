@@ -204,13 +204,20 @@ func _contact_sheet(shots: Array[Dictionary], warm: int) -> Image:
 	return sheet
 
 
-func _render_plans(out_dir: String, warm: int, label: String) -> void:
+## Plan framing for floor `fi`: non-exterior RoomVolumes on that floor (any floor if none), else
+## the Geometry bounds. Exterior site dressing is deliberately left out of the framing.
+func _plan_box(fi: int) -> AABB:
 	var box: AABB = AABB()
 	var first: bool = true
-	for r: RoomVolume in _ctx.rooms:
-		var a: AABB = LcAreas.world_aabb(r)
-		box = a if first else box.merge(a)
-		first = false
+	for pass_i: int in range(2):
+		for r: RoomVolume in _ctx.rooms:
+			if r.purpose == &"exterior" or (pass_i == 0 and r.floor_index != fi):
+				continue
+			var a: AABB = LcAreas.world_aabb(r)
+			box = a if first else box.merge(a)
+			first = false
+		if not first:
+			return box
 	var geo: Node = _map.get_node_or_null("Geometry")
 	if geo != null:
 		for n: Node in geo.find_children("*", "GeometryInstance3D", true, false):
@@ -218,6 +225,35 @@ func _render_plans(out_dir: String, warm: int, label: String) -> void:
 			var a2: AABB = gi.global_transform * gi.get_aabb()
 			box = a2 if first else box.merge(a2)
 			first = false
+	return box
+
+
+## Flat, neutral look for plans: overrides the map's environment/exposure through the camera.
+func _apply_plan_environment() -> void:
+	var env: Environment = Environment.new()
+	env.background_mode = Environment.BG_COLOR
+	env.background_color = Color(0.1, 0.1, 0.11)
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = Color.WHITE
+	env.ambient_light_energy = 1.0
+	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
+	env.tonemap_exposure = 1.0
+	env.glow_enabled = false
+	env.fog_enabled = false
+	env.volumetric_fog_enabled = false
+	env.ssao_enabled = false
+	env.ssil_enabled = false
+	env.sdfgi_enabled = false
+	env.adjustment_enabled = false
+	_cam.environment = env
+	_cam.attributes = CameraAttributesPractical.new()
+	for n: Node in _map.find_children("*", "", true, false):
+		if n is Decal or n is FogVolume or n is GPUParticles3D or n is CPUParticles3D:
+			(n as Node3D).visible = false
+
+
+func _render_plans(out_dir: String, warm: int, label: String) -> void:
+	_apply_plan_environment()
 	_apply_plan_materials()
 	var overlay: Node3D = _build_overlay()
 	var md: PackedStringArray = PackedStringArray(["# Floor plans: %s" % label, "",
@@ -226,7 +262,8 @@ func _render_plans(out_dir: String, warm: int, label: String) -> void:
 	var fh: PackedFloat32Array = _map.floor_heights
 	for i: int in range(fh.size()):
 		_cam.projection = Camera3D.PROJECTION_ORTHOGONAL
-		var margin: float = 2.0
+		var box: AABB = _plan_box(i)
+		var margin: float = 1.5
 		_cam.size = maxf(box.size.z, box.size.x * float(H) / float(W)) + margin * 2.0
 		_cam.global_transform = Transform3D(Basis.from_euler(Vector3(-PI / 2.0, 0.0, 0.0)),
 			Vector3(box.get_center().x, fh[i] + PLAN_CUT, box.get_center().z))
@@ -261,18 +298,21 @@ void fragment() {
 	DEPTH = FRONT_FACING ? FRAGCOORD.z : min(FRAGCOORD.z + 0.02, 1.0);
 }
 """
-	var groups: Dictionary = {"Geometry": Color(0.82, 0.82, 0.8), "Props": Color(0.85, 0.62, 0.4),
-		"Gameplay": Color(0.55, 0.75, 0.9), "Variants": Color(0.75, 0.6, 0.9)}
+	var groups: Dictionary = {"Geometry": Color(0.86, 0.86, 0.84), "Props": Color(0.9, 0.68, 0.45),
+		"Gameplay": Color(0.55, 0.78, 0.95), "Variants": Color(0.78, 0.62, 0.95), "": Color(0.7, 0.7, 0.7)}
+	var mats: Dictionary = {}
 	for gname: String in groups.keys():
-		var g: Node = _map.get_node_or_null(gname)
-		if g == null:
-			continue
 		var m: ShaderMaterial = ShaderMaterial.new()
 		m.shader = sh
 		var c: Color = groups[gname]
 		m.set_shader_parameter(&"tint", Vector3(c.r, c.g, c.b))
-		for n: Node in g.find_children("*", "GeometryInstance3D", true, false):
-			(n as GeometryInstance3D).material_override = m
+		mats[gname] = m
+	for n: Node in _map.find_children("*", "GeometryInstance3D", true, false):
+		var top: Node = n
+		while top.get_parent() != _map:
+			top = top.get_parent()
+		var key: String = String(top.name) if mats.has(String(top.name)) else ""
+		(n as GeometryInstance3D).material_override = mats[key]
 
 
 func _unshaded(c: Color) -> StandardMaterial3D:
@@ -333,24 +373,27 @@ func _build_overlay() -> Node3D:
 			root.add_child(mi)
 			mi.global_position = Vector3(b.get_center().x, b.position.y + 0.3, b.get_center().z)
 			mi.set_meta(&"floor_y", _floor_of(b.position.y))
-	# Patrol links as thin lines.
-	var im: ImmediateMesh = ImmediateMesh.new()
-	var lines: MeshInstance3D = MeshInstance3D.new()
-	lines.mesh = im
-	var has_lines: bool = false
+	# Patrol links as thin lines, one mesh per floor (by the link's lower end).
+	var meshes: Dictionary = {}
 	for pn: Node in _map.find_children("*", "PatrolPoint", true, false):
 		var p: PatrolPoint = pn
 		for lp: NodePath in p.links:
 			var t: Node3D = p.get_node_or_null(lp) as Node3D
 			if t == null:
 				continue
-			if not has_lines:
+			var fy: float = _floor_of(minf(p.global_position.y, t.global_position.y))
+			if not meshes.has(fy):
+				var im: ImmediateMesh = ImmediateMesh.new()
 				im.surface_begin(Mesh.PRIMITIVE_LINES, _unshaded(OVERLAY["patrol"]))
-				has_lines = true
-			im.surface_add_vertex(p.global_position + Vector3.UP * 0.4)
-			im.surface_add_vertex(t.global_position + Vector3.UP * 0.4)
-	if has_lines:
-		im.surface_end()
-	lines.set_meta(&"floor_y", 0.0)
-	root.add_child(lines)
+				meshes[fy] = im
+			var imm: ImmediateMesh = meshes[fy]
+			imm.surface_add_vertex(p.global_position + Vector3.UP * 0.4)
+			imm.surface_add_vertex(t.global_position + Vector3.UP * 0.4)
+	for fy2: float in meshes.keys():
+		var im2: ImmediateMesh = meshes[fy2]
+		im2.surface_end()
+		var lines: MeshInstance3D = MeshInstance3D.new()
+		lines.mesh = im2
+		lines.set_meta(&"floor_y", fy2)
+		root.add_child(lines)
 	return root

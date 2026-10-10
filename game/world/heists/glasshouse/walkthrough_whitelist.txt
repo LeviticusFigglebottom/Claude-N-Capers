@@ -1,0 +1,25 @@
+# Walkthrough detour whitelist for Glasshouse (tools/levelcheck/README.md "walkthrough").
+# Format: <spawn name|path|*> <target name|path|*>. Owner: ENV C (C1-03).
+# Every entry is a > 3x path/straight ratio that follows from the APPROVED plan
+# (docs/design/heists/glasshouse.md), not from a navigation fault: the target is reachable and the
+# path is the shortest legal walk.
+#
+# 1) Upper-floor targets seen from the street / alley spawns. The straight line goes up through the
+#    slab; the walk is: entry door -> sales floor -> staff door (x 1.5, behind the counter) -> G4 ->
+#    the only stair core (G8, x 13-16) -> U4 -> back west. The upper floor sits right above the
+#    Harlow Ave sidewalk, so the ratio is 3.3-4x by design (one stair core, staff door at the west end).
+* Gameplay/Doors/AdminDoor/UsePoint
+* Gameplay/Doors/BreakRoomDoor/UsePoint
+* Gameplay/Doors/SecurityDoor/UsePoint
+* Gameplay/Misc/CameraStation/UsePoint
+* Gameplay/Misc/PhoneAdmin/UsePoint
+* Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint
+* Variants/Group_keycard/Slot_kc_breakroom/Keycard
+* Variants/Group_keycard/Slot_kc_breakroom/Keycard/UsePoint
+#
+# 2) Sales-floor display cases directly behind the shopfront glass (0.3 m sill) seen from the Harlow
+#    Ave casing spawns: 3.7-5 m through the glass, ~16-18 m via the double entry door at x 11.25.
+CasingHarlow1 Gameplay/DisplayCases/IslandCaseA/UsePoint
+CasingHarlow1 Gameplay/DisplayCases/WallCaseB/UsePoint
+CasingHarlow1 Gameplay/DisplayCases/WallCaseC/UsePoint
+CasingHarlow2 Gameplay/DisplayCases/WallCaseC/UsePoint

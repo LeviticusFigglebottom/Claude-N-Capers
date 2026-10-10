@@ -203,9 +203,11 @@ func weapon_fire_cue(weapon_id: StringName, suppressed: bool, def: WeaponDef = n
 		return StringName("cue.weapon_%s_fire%s" % [def.anim_set, "_suppressed" if suppressed else ""])
 	var w: String = String(weapon_id).to_lower()
 	var family: String = "pistol"
-	for token: String in ["rifle", "carbine", "_ar", "smg", "lmg"]:
-		if w.contains(token):
-			family = "rifle"
+	for pair: Array in [["smg", "smg"], ["lmg", "lmg"], ["shotgun", "shotgun"], ["sniper", "sniper"],
+			["rifle", "rifle"], ["carbine", "rifle"], ["_ar", "rifle"]]:
+		if w.contains(pair[0]):
+			family = pair[1]
+			break
 	return StringName("cue.weapon_%s_fire%s" % [family, "_suppressed" if suppressed else ""])
 
 

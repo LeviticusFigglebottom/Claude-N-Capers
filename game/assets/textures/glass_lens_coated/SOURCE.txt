@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only glass_lens_coated --preset gsr
+module: tools/texgen/materials/glass_lens_coated.py
+preset: tools/texgen/presets/gsr.py
+seed: 959918308 (zlib.crc32('glass_lens_coated'))
+size_px: 512
+tile_m: 1.0 (1 UV unit = 1.0 m)
+texel_density_px_per_m: 512
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.3002, "albedo_lum_mean_linear": 0.2813, "albedo_lum_min_linear": 0.255, "ao_mean": 1.0, "metallic_mean": 0.0, "roughness_mean": 0.03}
