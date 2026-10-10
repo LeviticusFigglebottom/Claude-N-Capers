@@ -75,16 +75,50 @@ func test_dummy_types_are_data() -> void:
 			&"range_dummy.wrecker", &"range_dummy.corpsman"]:
 		assert_has(ids, id)
 	var t: RangeDummyTable = _table()
-	assert_true(t.dummy(&"range_dummy.heavy").has_frontal_armor())
-	assert_true(t.dummy(&"range_dummy.bulwark").has_shield())
-	assert_near(t.dummy(&"range_dummy.bulwark").shield_pierce_mult_value(), 0.25, 0.0001, "L3.4 shield pass-through")
-	assert_eq(t.dummy(&"range_dummy.wrecker").plates(), PackedFloat32Array([150, 160]), "L4.6 faceplate 150, visor 160")
+	assert_true(float(_armor(&"range_dummy.heavy")["frontal_armor_arc_deg"]) > 0.0, "L4.2 frontal arc")
+	assert_true(float(_armor(&"range_dummy.heavy")["frontal_armor"]) < 1.0, "L4.2 frontal armour reduces")
+	assert_true(bool(_armor(&"range_dummy.bulwark")["shield"]), "L4.5 shield")
+	var spm: float = float(_armor(&"range_dummy.bulwark")["shield_pierce_mult"])
+	assert_true(spm > 0.0 and spm < 1.0, "L3.4 shield pass-through")
+	assert_eq((_armor(&"range_dummy.wrecker")["plate_health"] as Array).size(), 2, "L4.6 faceplate + visor")
+	assert_true(float(_armor(&"range_dummy.wrecker")["explosive_mult"]) > 1.0, "L4.6 explosive weakness")
 	var light: RangeDummyDef = t.dummy(&"range_dummy.light")
 	assert_true(light.uses_enemy_def(), "TAC Light reads ENV A's EnemyDef")
 	var e: EnemyDef = light.enemy_def()
 	for d: int in range(Enums.Difficulty.size()):
 		assert_near(light.health_for(d), e.health[d], 0.0001)
 		assert_near(light.headshot_mult_for(d), e.headshot_mult[d], 0.0001)
+
+
+func _armor(dummy_id: StringName) -> Dictionary:
+	return _table().dummy(dummy_id).armor()
+
+
+## Every dummy's armour IS its EnemyDef's (D-052): NpcHitRules.armor_of when A's tree has it, and every
+## canonical key the EnemyDef carries is read verbatim.
+func test_dummy_armour_comes_from_enemy_def() -> void:
+	var rules: Script = NpcHitRules
+	for d: RangeDummyDef in _table().dummies:
+		var e: EnemyDef = d.enemy_def()
+		assert_true(e != null, "%s: ENV A ships %s" % [d.id, d.enemy_id])
+		if e == null:
+			continue
+		var a: Dictionary = d.armor()
+		for k: String in ["armor_body_mult", "frontal_armor", "frontal_armor_arc_deg", "explosive_mult",
+				"shield", "shield_pierce_mult", "plate_health"]:
+			assert_true(a.has(k), "%s armour key %s" % [d.id, k])
+			if e.params.has(k) and k != "plate_health":
+				assert_eq(a[k], type_convert(e.params[k], typeof(a[k])), "%s.%s from the EnemyDef" % [d.id, k])
+		if rules.has_method(&"armor_of"):
+			var canon: Dictionary = rules.call(&"armor_of", e)
+			for k: String in canon:
+				if k != "shield" or e.params.has("shield"):
+					assert_eq(str(a[k]), str(canon[k]), "%s.%s == NpcHitRules.armor_of" % [d.id, k])
+		var m: RangeDamageModel = RangeDamageModel.from_def(d, Enums.Difficulty.ROUTINE)
+		assert_near(m.frontal_armor, float(a["frontal_armor"]), 0.0001)
+		assert_near(m.armor_body_mult, float(a["armor_body_mult"]), 0.0001)
+		assert_near(m.explosive_mult, float(a["explosive_mult"]), 0.0001)
+		assert_eq(m.plate_health.size(), (a["plate_health"] as Array).size())
 
 
 # --- Shield -----------------------------------------------------------------------------------------
@@ -108,29 +142,25 @@ func test_shield_blocks_without_pierce_and_passes_quarter_with_it() -> void:
 	assert_true(bool(res["blocked"]), "no shield_pierce -> blocked")
 	assert_near(float(res["amount"]), 0.0)
 	assert_near(t.health, hp, 0.0001, "blocked: no damage")
+	var through: float = 40.0 * t.model.shield_pierce_mult
 	res = t.shield_node.take_hit(_info(40.0, Enums.HitZone.BODY, true), 1)
 	assert_true(bool(res["pierced_shield"]))
-	assert_near(float(res["amount"]), 10.0, 0.0001, "shield_pierce -> x0.25")
-	assert_near(t.health, hp - 10.0, 0.0001)
+	assert_near(float(res["amount"]), through, 0.0001, "shield_pierce -> x shield_pierce_mult")
+	assert_near(t.health, hp - through, 0.0001)
 	var boom: Dictionary = _info(20.0)
 	boom["type"] = Enums.DamageType.EXPLOSION
 	res = t.shield_node.take_hit(boom, 1)
-	assert_near(float(res["amount"]), 20.0, 0.0001, "explosions ignore the shield")
+	assert_near(float(res["amount"]), 20.0 * t.model.explosive_mult, 0.0001, "explosions go around the shield")
+	var fire: Dictionary = _info(20.0)
+	fire["type"] = Enums.DamageType.FIRE
+	res = t.shield_node.take_hit(fire, 1)
+	assert_near(float(res["amount"]), 20.0 * CombatTweak.data().shield_fire_damage_mult, 0.0001, "fire through the shield")
+	var melee: Dictionary = _info(20.0, Enums.HitZone.BODY, true)
+	melee["type"] = Enums.DamageType.MELEE
+	assert_true(bool(t.shield_node.take_hit(melee, 1)["blocked"]), "melee is blocked by the shield")
 	t.reset_target()
 	res = t.take_hit(_info(30.0), 1)
 	assert_near(float(res["amount"]), 30.0, 0.0001, "a hit that reaches the body (flank) is not shielded")
-
-
-func test_shield_pierce_fallback_from_shooter_stats() -> void:
-	var t: RangeTarget = _target(&"range_dummy.bulwark")
-	var legacy: Dictionary = Damage.info(40.0, Enums.DamageType.BULLET, Enums.HitZone.BODY, HERON, Vector3.ZERO, Vector3.FORWARD, 1)
-	assert_false(legacy.has("shield_pierce"), "pre-A3-06 info shape")
-	t.pierce_fallback = LoadoutResolver.resolve_weapon(HERON, [])
-	var res: Dictionary = t.shield_node.take_hit(legacy, 1)
-	assert_near(float(res["amount"]), 10.0, 0.0001, "Heron (shield_pierce) through the shield")
-	t.pierce_fallback = LoadoutResolver.resolve_weapon(P9, [])
-	res = t.shield_node.take_hit(legacy, 1)
-	assert_true(bool(res["blocked"]), "P9 blocked")
 
 
 # --- Frontal armor ------------------------------------------------------------------------------------
@@ -138,9 +168,14 @@ func test_shield_pierce_fallback_from_shooter_stats() -> void:
 func test_frontal_armor_needs_armor_piercing() -> void:
 	var t: RangeTarget = _target(&"range_dummy.heavy")
 	var hp: float = t.max_health
+	var fa: float = t.model.frontal_armor
 	var res: Dictionary = t.take_hit(_info(50.0), 1)
-	assert_true(bool(res["blocked"]), "non-AP body hit from the front -> x0")
-	assert_near(t.health, hp, 0.0001)
+	assert_true(bool(res["frontal_plate"]), "frontal hit")
+	assert_near(float(res["amount"]), 50.0 * fa, 0.0001, "non-AP body hit from the front -> x frontal_armor")
+	assert_eq(bool(res["blocked"]), fa <= 0.0)
+	assert_near(t.health, hp - 50.0 * fa, 0.0001)
+	res = t.take_hit(_info(10.0, Enums.HitZone.LIMB), 1)
+	assert_near(float(res["amount"]), 10.0 * fa, 0.0001, "limbs are behind the frontal armour too")
 	res = t.take_hit(_info(50.0, Enums.HitZone.BODY, false, true), 1)
 	assert_true(bool(res["pierced_armor"]))
 	assert_near(float(res["amount"]), 50.0, 0.0001, "pierced_armor -> full body damage")
@@ -149,11 +184,22 @@ func test_frontal_armor_needs_armor_piercing() -> void:
 	var back: Dictionary = _info(20.0)
 	back["direction"] = Vector3.BACK
 	res = t.take_hit(back, 1)
-	assert_near(float(res["amount"]), 20.0, 0.0001, "the plate is frontal only")
+	assert_near(float(res["amount"]), 20.0 * t.model.armor_body_mult, 0.0001, "the plate is frontal only")
+	var half: float = deg_to_rad(t.model.frontal_armor_arc_deg * 0.5)
+	var side: Dictionary = _info(20.0)
+	side["direction"] = -Vector3(sin(half + 0.2), 0.0, cos(half + 0.2))
+	assert_false(t.is_frontal(side), "outside the arc")
+	var edge: Dictionary = _info(20.0)
+	edge["direction"] = -Vector3(sin(half - 0.2), 0.0, cos(half - 0.2))
+	assert_true(t.is_frontal(edge), "inside the arc")
 	var fire: Dictionary = _info(20.0)
 	fire["type"] = Enums.DamageType.FIRE
 	res = t.take_hit(fire, 1)
 	assert_near(float(res["amount"]), 20.0, 0.0001, "fire ignores armor")
+	var crit: Dictionary = _info(10.0, Enums.HitZone.BODY, false, true)
+	crit["crit"] = true
+	res = t.take_hit(crit, 1)
+	assert_near(float(res["amount"]), 10.0 * t.headshot_mult(), 0.0001, "D-027 crit x head mult on the body")
 
 
 # --- Staged plates ------------------------------------------------------------------------------------
@@ -163,6 +209,8 @@ func test_plates_then_weak_point_then_head() -> void:
 	var hs: float = t.headshot_mult()
 	assert_true(hs > 1.0)
 	var hp: float = t.max_health
+	var face: float = t.model.plate_health[0]
+	var visor: float = t.model.plate_health[1]
 	assert_eq(t.plates_left(), 2)
 	var plate_hb: RangeHitbox = null
 	for hb: RangeHitbox in t.hitboxes():
@@ -175,17 +223,28 @@ func test_plates_then_weak_point_then_head() -> void:
 	var res: Dictionary = t.take_hit(_info(10.0, Enums.HitZone.HEAD), 1)
 	assert_near(float(res["amount"]), 10.0, 0.0001, "headshot-immune while plated (x1)")
 	hp -= 10.0
-	# Faceplate 150: 100 + 100 (excess lost), health untouched.
-	res = t.take_hit(_info(100.0, Enums.HitZone.WEAKPOINT), 1)
+	var crit: Dictionary = _info(10.0, Enums.HitZone.HEAD)
+	crit["crit"] = true
+	res = t.take_hit(crit, 1)
+	assert_near(float(res["amount"]), 10.0, 0.0001, "crit cleared on the armoured head")
+	hp -= 10.0
+	var boom: Dictionary = _info(100.0)
+	boom["type"] = Enums.DamageType.EXPLOSION
+	res = t.take_hit(boom, 1)
+	assert_near(float(res["amount"]), 100.0 * t.model.explosive_mult, 0.0001, "L4.6 explosive_mult")
+	hp -= 100.0 * t.model.explosive_mult
+	# Faceplate: 60 % then the rest (excess lost), health untouched.
+	var first: float = face * 0.6
+	res = t.take_hit(_info(first, Enums.HitZone.WEAKPOINT), 1)
 	assert_eq(int(res["plate_stage"]), 0)
-	assert_near(float(res["plate_health_after"]), 50.0, 0.0001)
+	assert_near(float(res["plate_health_after"]), face - first, 0.0001)
 	assert_near(t.health, hp, 0.0001, "plate hits never touch health")
-	res = t.take_hit(_info(100.0, Enums.HitZone.WEAKPOINT), 1)
+	res = t.take_hit(_info(first, Enums.HitZone.WEAKPOINT), 1)
 	assert_true(bool(res["plate_broken"]), "faceplate broken")
-	assert_near(float(res["amount"]), 50.0, 0.0001, "excess lost")
+	assert_near(float(res["amount"]), face - first, 0.0001, "excess lost")
 	assert_eq(t.plates_left(), 1)
-	# Visor 160.
-	res = t.take_hit(_info(160.0, Enums.HitZone.WEAKPOINT), 1)
+	# Visor.
+	res = t.take_hit(_info(visor, Enums.HitZone.WEAKPOINT), 1)
 	assert_true(bool(res["plate_broken"]) and int(res["plate_stage"]) == 1, "visor broken")
 	assert_eq(t.plates_left(), 0)
 	assert_eq(plate_hb.collision_layer, 0, "weak point gone: the head is exposed")
@@ -241,7 +300,7 @@ func test_moving_lanes_in_range() -> void:
 	assert_true(absf(t0.global_position.x - x0) > 0.0, "target rides the carriage")
 	var armory: int = 0
 	for t: RangeTarget in r.targets:
-		if t.model.shield or t.model.frontal_armor or not t.model.plate_health.is_empty():
+		if t.model.shield or t.model.has_frontal_armor() or not t.model.plate_health.is_empty():
 			armory += 1
 	assert_true(armory >= 3, "armory lanes: shield, frontal plate, plates")
 	assert_eq(r.overlay.readout_option.item_count, r.targets.size(), "every target selectable for the readout")
@@ -306,14 +365,19 @@ func test_ttk_readout_equals_simulated_shots() -> void:
 	var heron: WeaponStats = LoadoutResolver.resolve_weapon(HERON, [])
 	var bul: RangeDamageModel = RangeDamageModel.from_def(_table().dummy(&"range_dummy.bulwark"), Enums.Difficulty.HAZARDOUS)
 	assert_true(bool(bul.readout(p9, 12.0)["body_blocked"]), "P9 cannot get through the shield")
-	assert_near(float(bul.readout(heron, 12.0)["body_damage"]), heron.damage * 0.25, 0.001, "Heron through the shield x0.25")
+	assert_near(float(bul.readout(heron, 12.0)["body_damage"]), heron.damage * bul.shield_pierce_mult, 0.001,
+			"Heron through the shield x shield_pierce_mult")
 	var heavy: RangeDamageModel = RangeDamageModel.from_def(_table().dummy(&"range_dummy.heavy"), Enums.Difficulty.HAZARDOUS)
 	assert_true(bool(heavy.readout(p9, 12.0)["body_blocked"]), "P9 body vs frontal plate")
 	assert_false(bool(heavy.readout(p9, 12.0)["head_blocked"]), "P9 head vs frontal plate")
 	var wr: RangeDamageModel = RangeDamageModel.from_def(_table().dummy(&"range_dummy.wrecker"), Enums.Difficulty.HAZARDOUS)
 	var w_head: int = int(wr.readout(heron, 12.0)["shots_head"])
-	# 230 dmg Heron: 1 shot faceplate, 1 shot visor, then head 230 x hs per shot.
-	assert_eq(w_head, 2 + ceili(wr.health / (230.0 * wr.headshot_mult) - RangeMath.EPS), "plates then head")
+	var hd: float = RangeMath.shot_damage(heron, 12.0)
+	var plate_shots: int = 0
+	for php: float in wr.plate_health:
+		plate_shots += ceili(php / hd - RangeMath.EPS)
+	assert_eq(w_head, plate_shots + ceili(wr.health / (hd * heron.headshot_mult * wr.headshot_mult) - RangeMath.EPS),
+			"plates then head")
 
 
 func test_range_readout_per_dummy_and_selected_lane() -> void:

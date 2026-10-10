@@ -82,3 +82,48 @@ func test_line_lookup() -> void:
 	var l: Dictionary = _table.line(&"vo.mercer.pager_last_answer_1")
 	assert_eq(l.get("speaker"), &"mercer")
 	assert_eq(_table.line(&"vo.nobody.nothing"), {})
+
+
+## Shadow Ledger mission lines (ENV C shadow_ledger_mission.gd say() ids): Mercer + the contact.
+func test_shadow_ledger_mission_lines() -> void:
+	if _table == null:
+		fail("no table")
+		return
+	var ids: Array[StringName] = [&"vo.accountant.shadow_ledger_contact_intro"]
+	for x: String in ["intro", "laptop_found", "keycard_found", "code_found", "cage_open", "hack_started",
+			"hack_interrupted", "hack_done", "lasers", "time_lock_started", "time_lock_open", "last_pager",
+			"required_secured", "escape", "abort"]:
+		ids.append(StringName("vo.mercer.shadow_ledger_" + x))
+	for id: StringName in ids:
+		var l: Dictionary = _table.line(id)
+		assert_eq(l.get("event"), &"mission", "%s is a mission line" % id)
+		assert_eq(int(l.get("priority", 0)), 90, "%s priority" % id)
+		assert_has(_strings, "voice." + String(id))
+	var ctx: Dictionary = {
+		"vo.mercer.shadow_ledger_hack_started": "{seconds}",
+		"vo.mercer.shadow_ledger_time_lock_started": "{seconds}",
+		"vo.mercer.shadow_ledger_escape": "{escape}",
+		"vo.mercer.shadow_ledger_last_pager": "{answered}",
+	}
+	for id: String in ctx:
+		assert_true(String(_strings.get("voice." + id, "")).contains(String(ctx[id])), "%s uses %s" % [id, ctx[id]])
+
+
+## Every say() id in the heist mission scripts of this tree has a line.
+func test_every_mission_say_has_a_line() -> void:
+	if _table == null:
+		fail("no table")
+		return
+	var re: RegEx = RegEx.create_from_string("say\\(&\"(vo\\.[a-z_]+\\.[a-z0-9_]+)\"")
+	var seen: int = 0
+	for heist: String in DirAccess.get_directories_at("res://world/heists"):
+		var dir: String = "res://world/heists/%s" % heist
+		for f: String in DirAccess.get_files_at(dir):
+			if not f.ends_with("_mission.gd"):
+				continue
+			var src: String = FileAccess.get_file_as_string("%s/%s" % [dir, f])
+			for m: RegExMatch in re.search_all(src):
+				seen += 1
+				var id: StringName = StringName(m.get_string(1))
+				assert_false(_table.line(id).is_empty(), "%s/%s says %s" % [heist, f, id])
+	assert_true(seen > 0, "mission scripts found")
