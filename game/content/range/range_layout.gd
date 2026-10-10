@@ -28,6 +28,14 @@ extends Resource
 ## Lane used for the readout before anything was hit.
 @export var default_readout_lane: int = 3
 
+@export_group("Extra lanes (B4-13)")
+## Moving-target tracks (left area) and armored dummies (right "armory" area), outside the static lanes.
+@export var extra_lanes: Array[RangeLaneDef] = []
+@export var track_rail_depth_m: float = 0.12        ## floor rail under a track (length = 2 * half + margin)
+@export var track_rail_margin_m: float = 0.6
+@export var area_sign_height_m: float = 3.2         ## "Moving targets" / "Armory" sign above each area
+@export var dummy_sign_height_m: float = 2.25       ## dummy name above each extra-lane target
+
 @export_group("Markers")
 ## Distance markers (floor line across all lanes plus a sign on each side wall).
 @export var marker_distances: PackedFloat32Array = PackedFloat32Array()
