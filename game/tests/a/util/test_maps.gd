@@ -290,3 +290,26 @@ static func with_preplan_markers(def: HeistDef, preplan_spawn_tags: Array[String
 	ps.pack(root)
 	root.free()
 	return ps
+
+
+## A3-09: basic() plus extra SpawnPoints. `specs`: [{"kind": SpawnPoint.Kind, "tags": [StringName],
+## "pos": Vector3, "name": String (optional)}].
+static func with_tagged_spawns(specs: Array[Dictionary], guards: int = 0, civilians: int = 0) -> PackedScene:
+	var root: HeistMap = basic(guards, civilians).instantiate() as HeistMap
+	var spawns: Node = root.get_node("Spawns")
+	for i: int in range(specs.size()):
+		var spec: Dictionary = specs[i]
+		var sp: SpawnPoint = SpawnPoint.new()
+		sp.name = String(spec.get("name", "Tagged%d" % i))
+		sp.kind = int(spec.get("kind", SpawnPoint.Kind.PLAYER)) as SpawnPoint.Kind
+		var tags: Array[StringName] = []
+		for t: Variant in spec.get("tags", []):
+			tags.append(StringName(t))
+		sp.tags = tags
+		sp.position = spec.get("pos", Vector3.ZERO)
+		spawns.add_child(sp)
+	_own_children(root)
+	var ps: PackedScene = PackedScene.new()
+	ps.pack(root)
+	root.free()
+	return ps

@@ -44,7 +44,7 @@ Scene path = `res://systems/prefabs/<name>/<name>.tscn`. Placeholder = `<name>/<
 | Prefab | Class | Root | Key exports (default) | Time (tweak) | Required visual nodes | Collision / zone / notes |
 |---|---|---|---|---|---|---|
 | `door` | `Door` | Node3D | `lock: Door.Lock` {NONE, LOCKPICK, KEYCARD, CODE, ELECTRONIC, BARRED, VAULT} (NONE), `swing: Door.Swing` {INWARD, OUTWARD, DOUBLE} (INWARD), `width_m` (0.0 = 0.9 single / 1.8 DOUBLE), `starts_open` (false), `code_group` (&""), `suspicious_when_open` (false, S4.2), `npc_authorized_tags` ([], A2-01), `push_bar` (false, A2-08) | NONE `door_open_s`, LOCKPICK `lockpick_door_s`, KEYCARD `keycard_s` | `Frame` (+ `Frame/Collision` StaticBody3D), `Leaf` (hinge pivot, closed = rot 0, extends +X), `Handle`, plus `Leaf2` for DOUBLE (extends −X) | Origin = bottom-centre of the opening. `LeafBody` AnimatableBody3D (layer 2) follows `Leaf` (`LeafBody2` is added at runtime for DOUBLE). INWARD opens toward +Z (away from the UsePoint side). DOUBLE = two leaves opening inward. Placeholder `door_double_placeholder.tscn` is used for DOUBLE. Runtime `NavLink` NavigationLink3D (A2-01) |
-| `security_camera` | `SecurityCamera` | Node3D | `fov_deg` (60), `range_m` (20), `pan_deg` (0), `pan_period_s` (8), `destructible` (true) | not interactive | `Mount`, `Head`, `Lens` (Marker3D, −Z = view), `Led` (MeshInstance3D) | Wall: pivot back-centre. Ceiling: top-centre. `Collision` StaticBody3D on layer 5 (hitboxes), local z in [−0.45, 0] (never behind the pivot, A2-08) |
+| `security_camera` | `SecurityCamera` | Node3D | `fov_deg` (60), `range_m` (20), `pan_deg` (0), `pan_period_s` (8), `destructible` (true), `mount_mode` (AUTO = meta `mount`, else WALL; QA-26) | not interactive | `Mount`, `Head`, `Lens` (Marker3D, −Z = view), `Led` (MeshInstance3D) | Wall: pivot back-centre. Ceiling: top-centre. `Collision` StaticBody3D on layer 5 (hitboxes), local z in [−0.45, 0] (never behind the pivot, A2-08); CEILING mount lowers it (and the placeholder) to y ≤ 0 (QA-26, D-043) |
 | `camera_station` | `CameraStation` | Node3D | `operator_spawn: NodePath` | `camera_loop_s` | `Screens` (MeshInstance3D), `Seat` (marker) | `Collision` desk (layer 1). Interactable kind `loop_cameras` |
 | `display_case` | `DisplayCase` | Node3D | `loot_id` (&""), `glass_breaks_alarm` (false) | `display_case_open_s` | `Body`, `Glass`, `LootAnchor` | `Collision` (layer 1). Glass break (S9.9): M2 |
 | `small_loot` | `SmallLoot` | Node3D | `value: int` (500), `loot_id` (&"") | `small_loot_s` | none | No collision. S10.3 |
@@ -59,9 +59,11 @@ Scene path = `res://systems/prefabs/<name>/<name>.tscn`. Placeholder = `<name>/<
 | `phone` | `Phone` | Node3D | none | not interactive | none | `UsePoint` = where the NPC stands |
 | `window` | `WindowPrefab` | Node3D | `breakable` (true), `openable` (false) (`noise` is the common one) | `window_open_s` | `Frame`, `Glass`, optional `Sash` | Origin = bottom-centre of the opening (sill). `GlassBody` StaticBody3D (layer 1), fitted at ready to the visual's `Glass` AABB (A2-08). Interactable enabled only if `openable`. S9.9/S9.11 |
 | `secure_zone` | `SecureZone` | Node3D | `zone_size_m: Vector3` (4, 3, 8), `vehicle_collision` (true) | not interactive | `Body`, `DoorL`, `DoorR`, `DropAnchor` | `Zone` MapZone SECURE_LOOT. `Collision` = 2×2.2×5 m van body (layer 1), removed when `vehicle_collision` is false. Van rear faces −Z. S10.2 |
-| `escape_zone` | `EscapeZone` | Node3D | `escape_type: StringName` (&"van"), `active` (false), `zone_size_m` (4, 3, 4) | not interactive | none | `Zone` MapZone ESCAPE (stays in the group, `monitoring` follows `active`). `activate()` is called by `HeistMission.activate_escape()`. Visual hidden while inactive. C10 |
+| `escape_zone` | `EscapeZone` | Node3D | `escape_type: StringName` (&"van"; one of van, boat, heli, lift, zipline, walk), `active` (false), `zone_size_m` (4, 3, 4), `arrival_delay_s` (0, A3-10), `bag_only` (false, A3-10) | not interactive | art only (not the placeholder): van `Body`, `DoorL`, `DoorR`; heli `Body`, `Rotor`; boat `Body` | `Zone` MapZone ESCAPE (stays in the group, `monitoring` follows `active`). `activate()` is called by `HeistMission.activate_escape()`. Visual hidden while inactive or approaching. C10, QC-19 |
 | `body_container` | `BodyContainer` | Node3D | `capacity: int` (2) | not interactive | `Lid` (pivot), `Inside` | `Zone` MapZone BODY_HIDE (1.8×1.6×1.0). `Collision` body (layer 1). S6.3 |
 | `ladder` | `Ladder` | Node3D | `height_m` (3.0) | not interactive | `Top`, `Bottom` | Climb side −Z. The placeholder resizes to `height_m`. A2-04 climbing (below) |
+| `bag_lift` | `BagLift` | Node3D | `targets: Array[NodePath]` ([]: the OTHER landings; landing 0 = the prefab), `travel_s` (8.0), `capacity: int` (2), `car_size_m: Vector3` (1.2, 1.2, 1.2, A3-09 addition) | `bag_lift_send_s` | `Car`, `DoorL`, `DoorR`, `Panel` | Pivot = car floor centre at landing 0, car front −Z. `CarBody` AnimatableBody3D floor slab (layer 2) follows the car. Runtime `LandingPanel<i>` InteractableComponents at landings 1..n. QC-11 |
+| `hack_terminal` | `HackTerminal` | Node3D | `duration_s` (-1 = `hack_duration_s`), `interruptions: Vector2i` ((-1, -1) = `hack_interruptions`), `targets: Array[NodePath]` ([]) | `hack_start_s` (restart `hack_restart_s`) | `Screen` (MeshInstance3D), `Panel` | Floor rack 0.6 × 2.0 × 1.0 m centred on the pivot, front −Z. `Collision` StaticBody3D (layer 1). QC-12 |
 | `zipline` | `Zipline` | Node3D | `end: NodePath` | `zipline_attach_s` | none | P2 |
 | `laser_grid` | `LaserGrid` | Node3D | `pattern: StringName` (&"static"; `sweeping`, `timed_off`), `size_m: Vector3` (2, 2, 0.1), `beam_count` (4), `period_s` (4), `off_s` (1.5), `phase_s` (0), `sweep_beams` (1) | not interactive | optional `Beam0..Beam<n-1>` (A drives `visible` + position) | `Trigger` Area3D (layer 10, mask players). S9.10, P2 |
 
@@ -194,3 +196,39 @@ A2-08 (D-037, Glasshouse feedback):
   side may close it. `is_inside(node)` exposes the side test.
 * `security_camera`: the `Collision` box was moved 2.5 cm forward (centre z −0.225, size 0.45).
   It now spans z [−0.45, 0], entirely in front of the wall-mount pivot.
+
+A3-09 (D-040, Night Deposit) / A3-10 (D-042, Shadow Ledger):
+
+* `bag_lift` (QC-11): landing 0 is the prefab itself (the car starts there), landings 1..n are the
+  `targets` markers (place each at the car-floor centre of its floor, −Z = car front; the car keeps
+  its `Car` rest offset at every landing). One panel per landing: `Interactable` at landing 0 and
+  runtime `LandingPanel<i>` children at the same offset from landing i (ENV C dresses those panels;
+  only landing 0's `Panel` is in the visual). Kind `send_lift` where the car stands (goes to the
+  next landing, (i + 1) % count), `call_lift` elsewhere (brings it there). Blocked while moving
+  (BLOCK_STATE) or with more than `capacity` bags in the car (`BagLift.BLOCK_LIFT_FULL` =
+  `ui.blocked.lift_full`). Loose bags whose origin is inside the `car_size_m` box (centred on the car
+  floor) ride with the car: frozen, no collision, not pick-up-able, for `travel_s`, then released in
+  place. Doors `DoorL`/`DoorR` slide apart along local X by `bag_lift_door_open_m` while the car
+  stands. Cues `cue.bag_lift_start`, `cue.bag_lift_arrive`. API: `send(to, slot)`, `landing`,
+  `destination`, `is_moving()`, `travel_left()`, `bags_in_car()`, `landing_transform(i)`. P2
+  limitation: the car is not replicated to clients yet.
+* `hack_terminal` (QC-12): kind `start_hack` (hack_start_s) runs `duration_s` silently (no noise, no
+  stimulus). The interruption count is rolled at the start on GameRng `&"devices"` in
+  `interruptions` [x, y]; interruption k of n sits at (k + 1) / (n + 1) ± `hack_interruption_jitter`
+  of a segment (defaults 60 s with 2 = 3 × 20 s, Night Deposit). Interrupted -> kind `restart_hack`
+  (hack_restart_s, no auto-restart). Events device_started(id, &"hack", duration) / device_jammed /
+  device_restarted / device_finished [R]; cues `cue.hack_start` (also on restart),
+  `cue.hack_interrupt`, `cue.hack_done`. Finish -> every `targets` node opens like a finished drill
+  (`open_by_device()` -> a Safe arms its time lock; else `unlock()` + open). `Screen` gets a state
+  colour material_override (idle / running / interrupted / done). Shadow Ledger: `duration_s` 45,
+  `interruptions` (1, 2).
+* `escape_zone` (QC-19): `escape_type` from `EscapeZone.ESCAPE_TYPES` (warning otherwise).
+  `arrival_delay_s`: `activate()` starts the approach; until arrival the visual is hidden and nobody
+  escapes; `arrival_time_left()` / `has_arrived()` for the HUD; arrival plays `cue.escape_arrive`.
+  `bag_only`: once arrived its `Zone` also joins the SECURE_LOOT group (bags resting in it are
+  secured as usual) and the zone never ends the heist.
+* `ladder` (S10.1b, QC-17): a crew member carrying a bag cannot start a climb (interact, walking
+  into it, or `start_climb`). Throw the bag up/down, or use a `bag_lift` / `zipline`.
+* Device cues without their own EventBus fact (keypad_accept, c4_armed / c4_explode,
+  time_lock_start / time_lock_done, zipline_attach, laser_trip, bag lift, hack) are all emitted as
+  `audio_cue_requested(cue_id, pos, prefab net_id)` [R] (test_a3_09_device_cues.gd).

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="DirectorTweak" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="DirectorTweak" load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://systems/director/director_tweak.gd" id="1"]
 [ext_resource type="Resource" path="res://systems/ai/data/groups/first_responders.tres" id="2"]
@@ -6,6 +6,23 @@
 [ext_resource type="Resource" path="res://systems/ai/data/groups/tac_light_squad.tres" id="4"]
 [ext_resource type="Resource" path="res://systems/ai/data/groups/tac_mixed.tres" id="5"]
 [ext_resource type="Script" path="res://systems/director/spawn_group_def.gd" id="6"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/frd_agents.tres" id="7"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/heavy_squad.tres" id="8"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/zero_heavy_squad.tres" id="9"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/special_bulwark.tres" id="10"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/special_stinger.tres" id="11"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/special_phantom.tres" id="12"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/special_corpsman.tres" id="13"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/special_longshot.tres" id="14"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/special_wrecker_g.tres" id="15"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/special_wrecker_b.tres" id="16"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/special_wrecker_s.tres" id="17"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/special_wrecker_m.tres" id="18"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/control_phantom.tres" id="19"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/control_stinger.tres" id="20"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/control_bulwark.tres" id="21"]
+[ext_resource type="Resource" path="res://systems/ai/data/enemies/brandt.tres" id="22"]
+[ext_resource type="Resource" path="res://systems/ai/data/enemies/aegis.tres" id="23"]
 
 [resource]
 script = ExtResource("1")
@@ -18,7 +35,7 @@ sustain_by_stage_s = PackedFloat32Array(40, 120, 160)
 sustain_crew_mult = PackedFloat32Array(1, 1.1, 1.2, 1.3)
 wave_stage = PackedInt32Array(0, 1, 2)
 fade_threshold = PackedInt32Array(8, 10, 12, 14, 16, 18)
-fade_wait_cap_s = 30.0
+fade_wait_cap_s = 60.0
 fade_s = 15.0
 min_crew_distance_m = 15.0
 los_check_height_m = 1.6
@@ -30,5 +47,39 @@ first_responder_interval_s = 6.0
 control_group_interval_s = 20.0
 control_alive_max = 4
 assault_group_interval_s = 5.0
-assault_groups = Array[ExtResource("6")]([ExtResource("3"), ExtResource("4"), ExtResource("5")])
+assault_groups = Array[ExtResource("6")]([ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("10"), ExtResource("11"), ExtResource("12"), ExtResource("13"), ExtResource("14"), ExtResource("15"), ExtResource("16"), ExtResource("17"), ExtResource("18")])
 no_point_retry_s = 1.0
+drama_decay_per_s = 0.05
+drama_per_damage = 0.003
+drama_per_down = 0.25
+drama_per_nearby_shot = 0.003
+drama_per_nearby_kill = 0.02
+drama_combat_radius_m = 15.0
+drama_spawn_scale = 0.5
+drama_fade_level = 0.2
+drama_fade_window_s = 30.0
+stage_spawn_rate_mult = PackedFloat32Array(1, 1.15, 1.3)
+control_special_groups = Array[ExtResource("6")]([ExtResource("19"), ExtResource("20"), ExtResource("21")])
+control_special_interval_s = 20.0
+control_special_chance = 0.5
+faction_by_difficulty = Array[StringName]([&"faction.tac", &"faction.tac", &"faction.frd", &"faction.frd", &"faction.sentinel", &"faction.zero"])
+shared_limit_prefixes = Array[StringName]([&"enemy.wrecker"])
+special_limit_default = -1
+captain_min_difficulty = 2
+captain_min_wave = 2
+captain_chance = 0.5
+captain_delay_s = 20.0
+captain_def = ExtResource("22")
+aegis_def = ExtResource("23")
+aegis_shields = 10
+aegis_spread_m = 1.4
+captain_settle_s = 2.0
+aegis_resist_base = 0.1
+aegis_resist_step = 0.05
+aegis_resist_step_s = 5.0
+aegis_resist_max = 0.5
+captain_hit_cap_frac = 0.1
+captain_explosive_cap_mult = 6.0
+captain_retreat_hp_frac = 0.2
+captain_retreat_shields = 3
+captain_despawn_s = 4.0

@@ -1,0 +1,30 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://systems/prefabs/bag_lift/bag_lift.gd" id="1_bag_lift"]
+
+[ext_resource type="Script" path="res://systems/interaction/interactable_component.gd" id="2_interactable"]
+
+[sub_resource type="BoxShape3D" id="shape_floor"]
+size = Vector3(1.2, 0.05, 1.2)
+
+[node name="BagLift" type="Node3D"]
+script = ExtResource("1_bag_lift")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="UsePoint" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0.95, 0, -1.35)
+
+[node name="Interactable" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 1.1, -0.66)
+script = ExtResource("2_interactable")
+kind = &"send_lift"
+
+[node name="CarBody" type="AnimatableBody3D" parent="."]
+collision_layer = 2
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Shape" type="CollisionShape3D" parent="CarBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.025, 0)
+shape = SubResource("shape_floor")

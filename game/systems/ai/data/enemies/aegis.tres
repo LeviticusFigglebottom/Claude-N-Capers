@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://contracts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"enemy.aegis"
+display_name = "Aegis Shield"
+is_special = true
+health = PackedFloat32Array(600, 600, 600, 600, 600, 600)
+headshot_mult = PackedFloat32Array(3, 3, 3, 3, 3, 3)
+damage = PackedFloat32Array(15, 15, 22.5, 30, 45, 60)
+move_speed = 2.8
+weapon = &"weapon.npc_pistol"
+detection_preset = &"police"
+params = {
+"_note": "L4.9 Aegis squad shield placeholder (PD2 Phalanx), used only when enemy.bulwark has no EnemyDef. At most 10% max HP per hit (x6 explosives), no flinch. Health ◇.",
+"aegis": true,
+"aim_delay_s": 0.7,
+"fire_interval_s": 0.8,
+"no_flinch": true,
+"shield": true,
+"surrender_immune": true
+}
+voice = &"police"

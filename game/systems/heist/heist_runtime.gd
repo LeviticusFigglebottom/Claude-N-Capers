@@ -25,6 +25,9 @@ const FAIL_NONE: StringName = &""
 const FAIL_STEALTH_ONLY_ALARM: StringName = &"stealth_only_alarm"
 const FAIL_ALL_CUSTODY: StringName = &"all_custody"
 const FAIL_ABORT: StringName = &"abort"
+## A3-09: GUARD SpawnPoints carrying this tag are not spawned at load; HeistMission.spawn_guards()
+## spawns them later (timed mission events, e.g. the armoured car's guards).
+const SCRIPTED_SPAWN_TAG: StringName = &"scripted"
 
 static var _current: HeistRuntime = null
 
@@ -50,6 +53,8 @@ var preplan: PreplanAssets = PreplanAssets.new()
 var stealth_abort_left: float = -1.0
 ## S11.3 HeistDef.mode (STEALTH_OR_LOUD when the map has no HeistDef). Set by start().
 var heist_mode: Enums.HeistMode = Enums.HeistMode.STEALTH_OR_LOUD
+## A3-09: seconds of heist time since start() (physics delta, so it follows Engine.time_scale).
+var heist_time_s: float = 0.0
 
 var _crew: Dictionary[int, CrewController] = {}
 var _bot_intents: Dictionary[int, CrewIntent] = {}
@@ -195,6 +200,9 @@ func _create_services() -> void:
 	custody.name = "CustodySystem"
 	register_service(CustodySystem.SERVICE, custody)
 	ShoutSystem.ensure(self)  # A3-04 (L5.1): shouts reach police on maps without civilians too
+	var oob: OutOfBoundsSystem = OutOfBoundsSystem.new()  # A3-09 (QC-14): OUT_OF_BOUNDS zones
+	oob.name = "OutOfBoundsSystem"
+	register_service(OutOfBoundsSystem.SERVICE, oob)
 	hud_model = LocalHudModel.new()
 	hud_model.name = "LocalHudModel"
 	add_child(hud_model)
@@ -253,7 +261,10 @@ func _claim_map_ids(root: Node) -> void:
 
 func _spawn_npcs() -> void:
 	for sp_node: Node in map.get_slots(G.GUARD_SPAWN):
-		_spawn_npc_at(&"guard", sp_node as SpawnPoint)
+		var gsp: SpawnPoint = sp_node as SpawnPoint
+		if gsp != null and gsp.tags.has(SCRIPTED_SPAWN_TAG):
+			continue  # A3-09: spawned later by the mission (spawn_guards)
+		_spawn_npc_at(&"guard", gsp)
 	for sp_node: Node in map.get_slots(G.CIVILIAN_SPAWN):
 		_spawn_npc_at(&"civilian", sp_node as SpawnPoint)
 
@@ -261,6 +272,9 @@ func _spawn_npcs() -> void:
 ## Server: spawn an NPC of `role` at a SpawnPoint (or a transform). Returns the NPC.
 func spawn_npc(role: StringName, xform: Transform3D, info: Dictionary = {}) -> NpcBase:
 	var path: String = NPC_SCENES.get(role, "")
+	var def_scene: Variant = (info["enemy_def"] as EnemyDef).params.get("scene", "") if info.get("enemy_def") is EnemyDef else ""
+	if def_scene is String and String(def_scene) != "":  # A3-01: specials pick their scene by EnemyDef
+		path = String(def_scene)
 	if path == "":
 		Log.error(&"heist", "no NPC scene for role %s" % role)
 		return null
@@ -278,18 +292,23 @@ func spawn_npc(role: StringName, xform: Transform3D, info: Dictionary = {}) -> N
 func _spawn_npc_at(role: StringName, sp: SpawnPoint) -> void:
 	if sp == null:
 		return
-	var info: Dictionary = {
+	spawn_npc(role, sp.global_transform, spawn_info(sp))
+
+
+## Spawn info dictionary for an NPC placed at SpawnPoint `sp` (tags, idle activity, patrol graph).
+static func spawn_info(sp: SpawnPoint) -> Dictionary:
+	return {
 		"tags": sp.tags, "idle_activity": sp.idle_activity,
 		"patrol_graph": sp.get_node_or_null(sp.patrol_graph) if not sp.patrol_graph.is_empty() else null,
 		"spawn_point": sp,
 	}
-	spawn_npc(role, sp.global_transform, info)
 
 
 func _spawn_crew() -> void:
 	var spawns: Array[Node] = []
 	var chosen_tag: StringName = preplan.spawn_tag()  # C3 spawn-location asset
 	var chosen: Array[Node] = []
+	var oob_spawns: Array[Node] = []  # A3-09: `oob_respawn` points are not start points
 	for n: Node in map.get_slots(G.PLAYER_SPAWN):
 		var sp: SpawnPoint = n as SpawnPoint
 		var alt: bool = false
@@ -298,8 +317,12 @@ func _spawn_crew() -> void:
 				alt = true
 		if chosen_tag != &"" and sp.tags.has(chosen_tag):
 			chosen.append(sp)
-		if not alt:
+		if not alt and sp.tags.has(OutOfBoundsSystem.RESPAWN_TAG):
+			oob_spawns.append(sp)
+		elif not alt:
 			spawns.append(sp)
+	if spawns.is_empty():
+		spawns = oob_spawns
 	if not chosen.is_empty():
 		spawns = chosen
 	elif chosen_tag != &"":
@@ -570,6 +593,8 @@ func teardown() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if not _ended:
+		heist_time_s += delta
 	if stealth_abort_left >= 0.0 and not _ended:
 		stealth_abort_left -= delta
 		if stealth_abort_left <= 0.0:

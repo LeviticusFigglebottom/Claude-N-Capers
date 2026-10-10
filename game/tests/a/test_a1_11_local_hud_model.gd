@@ -18,6 +18,7 @@ const BINDING: Dictionary = {
 	&"warnings_changed": [&"warnings"],
 	&"crew_changed": [&"crew"],
 	&"masked_changed": [&"masked", &"casing"],
+	&"custody_changed": [&"custody"],
 }
 
 
@@ -190,5 +191,42 @@ func test_detection_and_timers() -> void:
 	EventBus.ecm_ended.emit(55)
 	assert_true(hud.ecm_time_left_s < 0.0, "ECM inactive")
 	assert_eq(th[0], 2)
+	rt.teardown()
+	await wait_frames(1)
+
+
+## ui_hud v1.2 (D-043): custody of the tracked crew member from the CustodySystem service.
+func test_v1_2_custody_from_custody_system() -> void:
+	var rt: HeistRuntime = await HeistLauncher.launch(&"unit_map", 1111, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 1, "crew_ai": false, "skip_casing": true})
+	var hud: LocalHudModel = rt.hud_model
+	var ai: CrewController = rt.crew_controller(1) as CrewController
+	var by_node: Node = ai
+	hud.track(by_node)
+	assert_true(hud.tracked_crew == ai, "track(crew: Node) sets tracked_crew")
+	assert_eq(hud.custody, {}, "not in custody")
+	var hits: Array[int] = _counter(hud, &"custody_changed")
+	ai.health.go_to_custody()
+	hud.refresh()
+	assert_eq(hits[0], 1, "custody_changed once")
+	var c: Dictionary = hud.custody
+	assert_eq(c.get("in_custody"), true)
+	assert_near(float(c.get("auto_release_left_s", 0.0)), 119.0, 0.01, "auto release timer")
+	assert_near(float(c.get("negotiation_left_s", -1.0)), CustodySystem.of(rt).trade_time_for(1), 0.01, "negotiation")
+	assert_true(c.has("highlighted_hostage_net_id"), "highlight key")
+	assert_eq(c.keys().size(), 4, "exact v1.2 keys")
+	hud.refresh()
+	assert_eq(hits[0], 1, "no re-emit without change")
+	assert_true(is_same(c, hud.custody), "unchanged dict is not reassigned")
+	CustodySystem.of(rt).tick(5.0)
+	hud.refresh()
+	assert_eq(hits[0], 2, "timer change emits")
+	assert_false(is_same(c, hud.custody), "new dict assigned")
+	assert_near(float(hud.custody["auto_release_left_s"]), 114.0, 0.01)
+	CustodySystem.of(rt).tick(200.0)
+	hud.refresh()
+	assert_eq(hud.custody, {}, "released -> {}")
+	hud.track(null)
+	assert_true(hud.tracked_crew == null, "track(null) back to slot mode")
 	rt.teardown()
 	await wait_frames(1)
