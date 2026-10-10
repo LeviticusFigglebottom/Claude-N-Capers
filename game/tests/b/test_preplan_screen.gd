@@ -28,7 +28,7 @@ func test_scene_instantiates_with_markers_and_placeholder() -> void:
 	await wait_frames(2)
 	assert_true(s.get_child_count() > 0)
 	assert_eq(s.heist_id, &"glasshouse")
-	assert_eq(s.blueprint_view.markers.size(), s.board.active_point_ids().size())
+	assert_eq(s.blueprint_view.markers.size(), _points_on_floor(s, s.blueprint_view.floor_index))
 	assert_true(s.blueprint_view.markers.size() >= 5, "markers drawn")
 	assert_eq(s.placeholder_label.visible, s.board.blueprint.placeholder)
 	assert_eq(s.selected_point, &"", "starts on crew assets")
@@ -130,7 +130,16 @@ func test_setup_after_ready_rebuilds() -> void:
 	s.setup(&"glasshouse", Enums.Difficulty.LETHAL, p)
 	await wait_frames(1)
 	assert_eq(s.board.difficulty, Enums.Difficulty.LETHAL)
-	assert_eq(s.blueprint_view.markers.size(), s.board.active_point_ids().size())
+	assert_eq(s.blueprint_view.markers.size(), _points_on_floor(s, s.blueprint_view.floor_index))
 	assert_true(s.cash_label.text.contains("1,234"), s.cash_label.text)
 	s.queue_free()
 	await wait_frames(1)
+
+
+## LEAD: the blueprint draws one floor at a time (Glasshouse has an upstairs insider point).
+func _points_on_floor(s: PreplanningScreen, floor_index: int) -> int:
+	var n: int = 0
+	for pid: StringName in s.board.active_point_ids():
+		if int(s.board.blueprint.point(pid).get("floor", 0)) == floor_index:
+			n += 1
+	return n

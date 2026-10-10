@@ -1,0 +1,58 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://systems/ai/npc/npc_base.gd" id="1"]
+[ext_resource type="Resource" path="res://systems/ai/data/enemies/corpsman.tres" id="2"]
+[ext_resource type="Script" path="res://systems/ai/specials/corpsman_brain.gd" id="3"]
+[ext_resource type="Script" path="res://systems/ai/npc/npc_motor.gd" id="4"]
+[ext_resource type="Resource" path="res://systems/ai/police/police_tweak.tres" id="5"]
+[ext_resource type="Script" path="res://systems/combat/npc_gunner.gd" id="gunner"]
+[ext_resource type="Resource" path="res://systems/ai/specials/heavy_special_tweak.tres" id="6"]
+
+[sub_resource type="CapsuleShape3D" id="cap"]
+radius = 0.35
+height = 1.78
+
+[sub_resource type="CapsuleMesh" id="capmesh"]
+radius = 0.35
+height = 1.78
+
+[sub_resource type="StandardMaterial3D" id="bodymat"]
+albedo_color = Color(0.85, 0.85, 0.85, 1)
+
+[sub_resource type="BoxMesh" id="platemesh"]
+size = Vector3(0.3, 0.3, 0.04)
+
+[sub_resource type="BoxMesh" id="visormesh"]
+size = Vector3(0.28, 0.14, 0.04)
+
+[node name="Npc_corpsman" type="CharacterBody3D"]
+script = ExtResource("1")
+role = &"special"
+enemy_def = ExtResource("2")
+detection_preset = &"police"
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
+shape = SubResource("cap")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Placeholder" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
+mesh = SubResource("capmesh")
+surface_material_override/0 = SubResource("bodymat")
+
+[node name="Cross" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -0.34)
+mesh = SubResource("visormesh")
+
+[node name="Motor" type="Node" parent="."]
+script = ExtResource("4")
+
+[node name="Brain" type="Node" parent="."]
+script = ExtResource("3")
+tweak = ExtResource("5")
+special_tweak = ExtResource("6")
+
+[node name="Gunner" type="Node" parent="."]
+script = ExtResource("gunner")

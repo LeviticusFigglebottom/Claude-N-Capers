@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://contracts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"enemy.longshot"
+display_name = "Longshot"
+is_special = true
+health = PackedFloat32Array(40, 40, 60, 80, 120, 160)
+headshot_mult = PackedFloat32Array(3, 3, 3, 3, 2.5, 2)
+damage = PackedFloat32Array(100, 140, 160, 200, 220, 240)
+move_speed = 0.0
+weapon = &"weapon.npc_sniper"
+detection_preset = &"police"
+params = {
+"_note": "L4.7 Longshot (PD2 Sniper). damage per shot by Difficulty 100-240, halved beyond 30 m except CATACLYSM, bypasses armor gating. health PD2-shaped design values (◇). Perch-only spawn. Behaviour numbers: systems/ai/specials/special_tweak.tres.",
+"scene": "res://systems/ai/npc/npc_longshot.tscn"
+}
+voice = &"longshot"

@@ -107,3 +107,18 @@ extends Resource
 @export var npc_locked_door_close_s: float = 4.0
 ## Half length of the door's NavigationLink3D through the doorway (m, each side of the leaf).
 @export var door_nav_link_half_m: float = 0.6
+
+@export_group("Bag lift, hack terminal (A3-09: QC-11, QC-12)")
+## ◇ Hold at a bag_lift landing panel to send / call the car (s).
+@export var bag_lift_send_s: float = 1.0
+## ◇ Car door slide (m per leaf, along the car's X) when open.
+@export var bag_lift_door_open_m: float = 0.45
+## ◇ hack_terminal: hold to start the hack / to restart it after an interruption (s).
+@export var hack_start_s: float = 2.0
+@export var hack_restart_s: float = 2.0
+## Night Deposit server hack: 3 × 20 s = 60 s run time (s), interruptions rolled in [x, y] (D-040).
+@export var hack_duration_s: float = 60.0
+@export var hack_interruptions: Vector2i = Vector2i(2, 2)
+## Interruption k of n sits at progress (k + 1) / (n + 1) ± this fraction of one segment (GameRng
+## &"devices"), so the run splits into n + 1 roughly equal parts (3 × 20 s for n = 2).
+@export var hack_interruption_jitter: float = 0.25

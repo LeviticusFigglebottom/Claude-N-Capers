@@ -227,3 +227,25 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 ## D-045 — 2026-10-10 — Shell-by-shell reload formula; trunk hotfix
 - ENV D's viewmodel test and ENV B's armory test encoded different shotgun reload formulas, and the merge of D's FP sets turned trunk red (my mistake: the push ran despite a failed test, because a grep in the command chain masked the exit code. The lead now gates pushes on the runner's exit code).
 - Ruling: the PD2-style formula in data_schemas.md (derived after mods, with a new `WeaponStats.reload_end_empty_s` for the empty pump). ENV B updates the Plowman data, mod deltas, resolver derivation and test_armory. ENV D re-enables its shotgun length check afterwards (temporarily excluded by the lead).
+
+## D-046 — 2026-10-10 — Pre-planning data shape (QC-20..23); integration hotfix
+- QC-20 (final): canonical shape is the contract's `HeistDef.preplanning = {favors, disable, "assets": {asset_id: overrides}}`;
+  `PreplanBoard.merge` also tolerates legacy top-level `"asset.<id>"` keys. New data uses `"assets"`.
+- QC-21 (final): crew-spawn PREPLAN_POINT category is **`player_spawn`** (B's library and C's points; contract updated).
+- QC-22: ENV B adds library/strings for Glasshouse's heist-only `asset.inside_keycard` and `asset.propped_door`
+  (force_variant) plus `ui.preplan.point.<point_id>` strings for the 9 points.
+- QC-23: favors budget is design data (Glasshouse 4). ENV B makes `test_buying_deducts_budget` read the def's value
+  first (done, 26bdb2d); Glasshouse favors set to 4 in the lead merge.
+- `PreplanPlan.resolve_ids` returns `{}` when no id was accepted (nothing resolved = no pre-planning).
+- ENV B added the A3-04/05 prompt strings and `vo.crew.ack_<order>` lines (8079505); the strings scan checks that a
+  format-string prefix is completed by some line.
+- D-045 closed: B's resolver derives shotgun reload totals (35b3bcc); ENV D's shotgun clip check re-enabled.
+- Glasshouse VoxelGI (script-baked under xvfb) accepted for P1; LightmapGI revisited if Godot exposes a scriptable bake.
+
+## D-047 — 2026-10-10 — Runtime script errors fail the test run
+- A GDScript runtime error aborts the test function and the runner counted it as a pass (found in the 4-env merge:
+  `test_app_flow.gd:149`, `test_masks.gd:163`). `tools/ci/run_tests.sh` now fails on any `SCRIPT ERROR:` line and lists
+  them. Tests that exercise error paths use `push_error`/`Log.error` (which print `ERROR:`), never runtime faults.
+- Merge fixes (lead, B-owned files): pre-planning screen tests count markers on the shown floor (Glasshouse has an
+  upstairs insider point); mask placeholder test accepts ENV D's model; strings for A's `bag_lift`/`hack_terminal`
+  prompts; `PreplanPlan.resolve_ids` returns `{}` only when ids were given and none was accepted.

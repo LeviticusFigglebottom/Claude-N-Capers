@@ -1,0 +1,18 @@
+asset: char_civilian_manager
+script: tools/blender/characters/char_civilians.py
+params: {"age": 0.45, "build": 0.55, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "height": 1.81, "look": "blazer", "skin": 3}
+seed: 4021208896  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_civilian_manager
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0910, 0.1128] (model [0.0000, 1.3219, 0.1316], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0824, -0.0902] (model [0.0000, 1.6941, -0.0780], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1918, 0.0517, 0.0360] (model [0.1918, 1.0209, 0.0385], Godot axes, rest pose)
+body_faces_culled: 4816
+body_params: {"age": 0.45, "build": 0.55, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "height": 1.81, "skin": 3}
+bones: 52
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 31502
+tris_by_mesh: {"Body": 9048, "Gear": 880, "Hair": 1000, "Outfit": 20574}

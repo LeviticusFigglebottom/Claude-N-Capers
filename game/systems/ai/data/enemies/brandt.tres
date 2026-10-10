@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://contracts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"enemy.brandt"
+display_name = "Commander Brandt"
+is_special = true
+health = PackedFloat32Array(1500, 1500, 1500, 1500, 1500, 1500)
+headshot_mult = PackedFloat32Array(3, 3, 3, 3, 3, 3)
+damage = PackedFloat32Array(20, 20, 30, 40, 60, 80)
+move_speed = 2.5
+weapon = &"weapon.npc_rifle"
+detection_preset = &"police"
+params = {
+"_note": "L4.9 Commander Brandt (PD2 Captain Winters). Cannot be killed; takes at most 10% max HP per hit (x6 explosives), no flinch; retreats at 20% HP. Health ◇.",
+"aegis": true,
+"aim_delay_s": 0.6,
+"captain": true,
+"fire_interval_s": 0.5,
+"no_flinch": true,
+"surrender_immune": true
+}
+voice = &"brandt"

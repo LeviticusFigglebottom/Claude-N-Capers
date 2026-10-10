@@ -26,11 +26,11 @@ Axes: Blender +Z up, the character faces +Y (= Godot -Z); right side = +X (``.R`
 
 from __future__ import annotations
 
-import dataclasses
 import math
 from dataclasses import dataclass, field
 from functools import lru_cache
 
+import _head as _headmod
 import _rig as rig
 
 REF_HEIGHT = rig.DEFAULT_HEIGHT
@@ -46,7 +46,7 @@ SKIN_TONES = ("#E3BFA3", "#D2A283", "#B7835F", "#956446", "#704630", "#4C3022")
 HAIR_COLORS = {"dark": "#2B2420", "brown": "#5B3B26", "blond": "#B3925C", "grey": "#9A9690"}
 EYE_COLOR = "#D9D3C8"          # char_eye (sclera)
 IRIS_COLOR = "#3E2C20"         # char_eye_iris (iris + pupil, one flat colour until a texture exists)
-HAIR_STYLES = ("none", "buzz", "short", "bob")
+HAIR_STYLES = _headmod.HAIR_STYLES   # none, buzz, short, side_part, bob, bald
 
 #: Default parameters (``char_body_base``).
 DEFAULTS: dict = {"height": REF_HEIGHT, "build": 0.4, "gender": 0.0, "age": 0.25, "skin": 2,
@@ -488,410 +488,15 @@ def _cage(build: float, gender: float, age: float) -> MeshData:
 
 
 # =============================================================================================
-# head: SDF of simple forms, ray-cast grid
+# head: the production GSR head lives in _head.py (field, grid + eye/nose/mouth loops, eyes, ears,
+# brows, hair). Re-exported here for compatibility.
 # =============================================================================================
-HEAD_CENTRE: Vec = (0.0, -0.008, 1.648)
-EYE_RADIUS = 0.0122
-HEAD_TAPER = 0.20
-EYE_LOCAL: Vec = (0.0325, 0.0725, 0.018)      # eyeball centre, head-local (mirrored in x)
-
-
-def _ell(q: Vec, c: Vec, r: Vec) -> float:
-    px, py, pz = (q[0] - c[0]) / r[0], (q[1] - c[1]) / r[1], (q[2] - c[2]) / r[2]
-    k0 = math.sqrt(px * px + py * py + pz * pz)
-    if k0 < 1e-9:
-        return -min(r)
-    k1 = math.sqrt((px / r[0]) ** 2 + (py / r[1]) ** 2 + (pz / r[2]) ** 2)
-    return k0 * (k0 - 1.0) / k1
-
-
-def _cap(q: Vec, a: Vec, b: Vec, ra: float, rb: float) -> float:
-    ab = sub(b, a)
-    t = _clamp(dot(sub(q, a), ab) / dot(ab, ab), 0.0, 1.0)
-    return vlen(sub(q, add(a, mul(ab, t)))) - (ra + (rb - ra) * t)
-
-
-def _smin(a: float, b: float, k: float) -> float:
-    h = max(k - abs(a - b), 0.0) / k
-    return min(a, b) - h * h * k * 0.25
-
-
-def _smax(a: float, b: float, k: float) -> float:
-    return -_smin(-a, -b, k)
-
-
-@dataclass(frozen=True)
-class HeadShape:
-    """Head primitives in head-local metres (origin HEAD_CENTRE), built from build/gender/age."""
-
-    build: float
-    gender: float
-    age: float
-    neck_cy: float
-    neck_rx: float
-    neck_ry: float
-    detail: bool = True
-
-    def prims(self) -> dict:
-        b, g, a = self.build, self.gender, self.age
-        cfg = (b, g, a)
-
-        def m(base, db=0.0, dg=0.0, da=0.0):
-            return _mix(base, cfg, db, dg, da)
-
-        return {
-            "cranium": ((0.0, -0.006, 0.030), (m(0.0775, 0.002, -0.003), m(0.099, 0.0, -0.003), m(0.102, 0.0, -0.002))),
-            "midface": ((0.0, 0.036, -0.012), (m(0.0585, 0.009, -0.003, -0.002), m(0.066, 0.004, -0.002), m(0.072, 0.002, -0.002))),
-            "jaw": ((0.0, m(0.038, 0.002, -0.002), m(-0.062, -0.004, 0.004, -0.002)),
-                    (m(0.051, 0.011, -0.006, 0.002), m(0.058, 0.004, -0.004), m(0.042, 0.004, -0.003, 0.002))),
-            "jawline": (m(0.057, 0.008, -0.008, 0.002), m(-0.044, -0.004, 0.003, -0.006), m(0.011, 0.006, -0.004, 0.003)),
-            "chin": ((0.0, m(0.079, 0.002, -0.002), m(-0.087, -0.002, 0.003)), m(0.0185, 0.003, -0.004)),
-            "dchin": ((0.0, 0.036, m(-0.090, -0.008, 0.0, -0.004)), (m(0.030, 0.020, 0.0, 0.010), m(0.026, 0.014, 0.0, 0.006),
-                                                                  m(0.012, 0.010, 0.0, 0.003))),
-            "nose_a": ((0.0, m(0.088, 0.0, -0.002), 0.016), m(0.0075, 0.001, -0.0015, 0.0005)),
-            "nose_b": ((0.0, m(0.114, 0.002, -0.005, 0.003), m(-0.022, 0.0, 0.003, -0.002)), m(0.0082, 0.001, -0.0015, 0.001)),
-            "nose_tip": ((0.0, m(0.1125, 0.002, -0.005, 0.003), m(-0.026, 0.0, 0.003, -0.003)), m(0.0098, 0.001, -0.0015, 0.001)),
-            "alae": ((0.0, m(0.101, 0.002, -0.003), m(-0.032, 0.0, 0.002, -0.002)), (m(0.0175, 0.002, -0.003, 0.002), 0.010, 0.0090)),
-            "brow": (m(0.0100, 0.001, -0.005, 0.001), m(0.090, 0.0, -0.006), m(0.076, 0.0, -0.004)),
-            "cheek": ((0.048, m(0.062, 0.004), m(-0.004, -0.002, 0.004)), (m(0.020, 0.008, -0.002, -0.001),
-                                                                         m(0.018, 0.004), m(0.014, 0.004, 0.0, -0.002))),
-            "lip_u": ((0.0, m(0.1015, 0.001, 0.001, -0.002), -0.056), (m(0.024, 0.001, -0.002), 0.009, m(0.0068, 0.0, 0.0015, -0.002))),
-            "lip_l": ((0.0, m(0.0985, 0.001, 0.001, -0.002), -0.0675), (m(0.021, 0.001, -0.002), 0.009, m(0.0072, 0.0, 0.0015, -0.002))),
-            "mouth": ((0.0, m(0.1045, 0.001, 0.001, -0.002), -0.0617), (m(0.0205, 0.001, -0.002), 0.012, 0.0013)),
-            "socket": ((0.0345, 0.085, 0.0185), (0.0165, 0.012, m(0.0097, 0.0, 0.0006, -0.0006))),
-            "eye": (EYE_LOCAL[0], EYE_LOCAL[1], EYE_LOCAL[2]),
-            "lids": (m(0.0043, 0.0, -0.0004, -0.0012), m(0.0056, 0.0, -0.0006, -0.0004)),
-        }
-
-    def sdf(self, p: Vec) -> float:
-        P = self._p
-        q = (p[0] - HEAD_CENTRE[0], p[1] - HEAD_CENTRE[1], p[2] - HEAD_CENTRE[2])
-        qa = (abs(q[0]), q[1], q[2])                      # mirrored for paired forms
-        # egg-shaped plan view: the big forms narrow towards the face
-        tq = (q[0] * (1.0 + HEAD_TAPER * _clamp(q[1] / 0.1, 0.0, 1.2)), q[1], q[2])
-        d = _ell(tq, *P["cranium"])
-        d = _smin(d, _ell(tq, *P["midface"]), 0.03)
-        d = _smin(d, _ell(tq, *P["jaw"]), 0.025)
-        jx, jz, jr = P["jawline"]
-        cpos, cr = P["chin"]
-        d = _smin(d, _cap(qa, (jx, -0.014, jz), (0.014, cpos[1] - 0.004, cpos[2] - 0.004), jr, jr * 0.85), 0.012)
-        d = _smin(d, math.sqrt(sum((q[i] - cpos[i]) ** 2 for i in range(3))) - cr, 0.02)
-        d = _smin(d, _ell(q, *P["dchin"]), 0.03)
-        # neck: elliptic cylinder up to just under the skull
-        nq = (q[0] / self.neck_rx, (q[1] - self.neck_cy) / self.neck_ry)
-        k0 = math.sqrt(nq[0] ** 2 + nq[1] ** 2)
-        k1 = math.sqrt((nq[0] / self.neck_rx) ** 2 + (nq[1] / self.neck_ry) ** 2)
-        dn = k0 * (k0 - 1.0) / max(k1, 1e-9)
-        dn = _smax(dn, q[2] + 0.02, 0.02)
-        d = _smin(d, dn, 0.025)
-        if not self.detail:
-            return d
-        # cheekbones
-        tqa = (abs(tq[0]), tq[1], tq[2])
-        d = _smin(d, _ell(tqa, *P["cheek"]), 0.016)
-        # brow ridge (two capsules meeting at the glabella)
-        br, by, bys = P["brow"]
-        d = _smin(d, _cap(tqa, (0.0, by, 0.029), (0.047, bys, 0.032), br, br * 0.75), 0.012)
-        # eye sockets
-        sc, sr = P["socket"]
-        d = _smax(d, -_ell(qa, sc, sr), 0.008)
-        # eyelids: shells around the eyeball above / below the eye opening
-        e = P["eye"]
-        up_gap, lo_gap = P["lids"]
-        de = math.sqrt((qa[0] - e[0]) ** 2 + (qa[1] - e[1]) ** 2 + (qa[2] - e[2]) ** 2)
-        tilt = 0.10 * (qa[0] - e[0])
-        lid_u = max(de - EYE_RADIUS - 0.0026, (e[2] + up_gap + tilt) - qa[2])
-        lid_l = max(de - EYE_RADIUS - 0.0018, qa[2] - (e[2] - lo_gap + tilt))
-        d = _smin(d, min(lid_u, lid_l), 0.005)
-        # nose
-        na, nar = P["nose_a"]
-        nb, nbr = P["nose_b"]
-        dn = _cap(q, na, nb, nar, nbr)
-        nt, ntr = P["nose_tip"]
-        dn = _smin(dn, math.sqrt(sum((q[i] - nt[i]) ** 2 for i in range(3))) - ntr, 0.006)
-        dn = _smin(dn, _ell(q, *P["alae"]), 0.006)
-        d = _smin(d, dn, 0.009)
-        # lips
-        d = _smin(d, _smin(_ell(q, *P["lip_u"]), _ell(q, *P["lip_l"]), 0.003), 0.006)
-        d = _smax(d, -_ell(q, *P["mouth"]), 0.0015)
-        return d
-
-    @property
-    def _p(self) -> dict:
-        cache = self.__dict__.get("_cache")
-        if cache is None:
-            cache = self.prims()
-            object.__setattr__(self, "_cache", cache)
-        return cache
-
-    def grad(self, p: Vec, h: float = 0.0004) -> Vec:
-        gx = self.sdf((p[0] + h, p[1], p[2])) - self.sdf((p[0] - h, p[1], p[2]))
-        gy = self.sdf((p[0], p[1] + h, p[2])) - self.sdf((p[0], p[1] - h, p[2]))
-        gz = self.sdf((p[0], p[1], p[2] + h)) - self.sdf((p[0], p[1], p[2] - h))
-        return norm((gx, gy, gz))
-
-    def project(self, p: Vec, n: Vec | None = None, reach: float = 0.06) -> Vec:
-        """Move ``p`` onto the surface along the line through it with direction ``n`` (default: the
-        field gradient at ``p``): the first exit when ``p`` is inside, the nearest entry when outside."""
-        if n is None:
-            n = self.grad(p)
-        d = self.sdf(p)
-        if d <= 0.0:
-            return self.cast(p, n, reach)
-        t, prev = 0.0, 0.0
-        while d > 0.0 and t < reach:
-            prev = t
-            t += max(d * 0.8, 0.0004)
-            d = self.sdf(add(p, mul(n, -t)))
-        lo, hi = prev, t        # sdf(lo) > 0, sdf(hi) <= 0 along -n
-        for _ in range(24):
-            mid = 0.5 * (lo + hi)
-            if self.sdf(add(p, mul(n, -mid))) > 0.0:
-                lo = mid
-            else:
-                hi = mid
-        return add(p, mul(n, -0.5 * (lo + hi)))
-
-    def cast(self, origin: Vec, direction: Vec, t_max: float = 0.3) -> Vec:
-        """First exit point of the ray (origin inside the head)."""
-        t, prev = 0.0, 0.0
-        d = self.sdf(origin)
-        it = 0
-        while d <= 0.0 and t < t_max and it < 400:
-            prev = t
-            t += max(-d * 0.8, 0.0006)
-            d = self.sdf(add(origin, mul(direction, t)))
-            it += 1
-        lo, hi = prev, t
-        for _ in range(24):
-            mid = 0.5 * (lo + hi)
-            if self.sdf(add(origin, mul(direction, mid))) > 0.0:
-                hi = mid
-            else:
-                lo = mid
-        return add(origin, mul(direction, 0.5 * (lo + hi)))
-
-
-HEAD_ROWS = 28         # intervals from the neck ring to the crown pole
-COLUMN_WARP = 0.42     # >0: columns denser at the face
-
-
-def _row_params() -> list[float]:
-    """Non-uniform row parameters s in [0,1] (0 = neck ring, 1 = crown), denser over the face."""
-    n = 4000
-    dens = [1.0 + 1.8 * math.exp(-(((i + 0.5) / n - 0.43) / 0.15) ** 2)
-            + 1.6 * math.exp(-(((i + 0.5) / n - 0.215) / 0.045) ** 2) for i in range(n)]
-    cum = [0.0]
-    for x in dens:
-        cum.append(cum[-1] + x)
-    total = cum[-1]
-    out = [0.0]
-    j = 0
-    for r in range(1, HEAD_ROWS):
-        target = total * r / HEAD_ROWS
-        while cum[j + 1] < target:
-            j += 1
-        out.append((j + (target - cum[j]) / (cum[j + 1] - cum[j])) / n)
-    out.append(1.0)
-    return out
-
-
-def _head_dir(theta: float, phi: float) -> Vec:
-    return (math.sin(phi) * math.sin(theta), math.sin(phi) * math.cos(theta), math.cos(phi))
-
-
-FACE_SECTOR_DEG = 55.0   # neck-ring intervals within +-this angle get an extra head column
-
-
-def _head(md: MeshData, hs: HeadShape) -> None:
-    neck = md.rings["neck_top"]
-    n0 = len(neck)
-    c = HEAD_CENTRE
-    guide = dataclasses.replace(hs, detail=False)
-    ang = []
-    for vi in neck:
-        q = sub(md.verts[vi], c)
-        ang.append((math.atan2(q[0], q[1]), math.atan2(math.hypot(q[0], q[1]), q[2])))
-    # head columns: every neck vertex, plus a mid column in each face-sector interval
-    cols: list[tuple[float, float]] = []
-    base: list[Vec] = []                 # row-0 position under each column (mid: edge midpoint)
-    split: list[bool] = []
-    for i in range(n0):
-        j = (i + 1) % n0
-        cols.append(ang[i])
-        base.append(md.verts[neck[i]])
-        th_i, th_j = ang[i][0], ang[j][0]
-        dth = math.atan2(math.sin(th_j - th_i), math.cos(th_j - th_i))
-        mid_th = th_i + 0.5 * dth
-        sp = min(i + 0.5, n0 - i - 0.5) * 360.0 / n0 < FACE_SECTOR_DEG   # by index: same topology for all keys
-        split.append(sp)
-        if sp:
-            cols.append((mid_th, 0.5 * (ang[i][1] + ang[j][1])))
-            base.append(lerp(md.verts[neck[i]], md.verts[neck[j]], 0.5))
-    s_rows = _row_params()
-    rows: list[list[int]] = []
-    for r in range(1, HEAD_ROWS):
-        s = s_rows[r]
-        w = smoothstep(0.0, 0.32, s)
-        ring = []
-        for th0, phi0 in cols:
-            th = th0 - COLUMN_WARP * math.sin(th0) * w
-            phi = phi0 * (1.0 - s)
-            gp = guide.cast(c, _head_dir(th, phi))
-            ring.append(md.v(hs.project(gp, guide.grad(gp))))
-        rows.append(ring)
-    pole = md.v(hs.cast(c, (0.0, 0.0, 1.0)))
-    _relax_grid(md, hs, base, rows, pole, HEAD_RELAX)
-    # winding from one well-shaped face at the back of the skull, then consistent everywhere
-    nc = len(cols)
-    jb = nc // 2
-    rm = len(rows) // 2
-    probe = [rows[rm][jb], rows[rm][(jb + 1) % nc], rows[rm + 1][(jb + 1) % nc], rows[rm + 1][jb]]
-    flip = _newell_dot(md.verts, probe, c) < 0.0
-    # transition neck ring (n0) -> first head row (nc)
-    col = 0
-    first = rows[0]
-    for i in range(n0):
-        a, b = neck[i], neck[(i + 1) % n0]
-        if split[i]:
-            ua, um, ub = first[col], first[col + 1], first[(col + 2) % nc]
-            for q in ((a, b, um, ua), (b, ub, um)):
-                md.face(tuple(reversed(q)) if flip else q, "head", None)
-            col += 2
-        else:
-            ua, ub = first[col], first[(col + 1) % nc]
-            q = (a, b, ub, ua)
-            md.face(tuple(reversed(q)) if flip else q, "head", None)
-            col += 1
-    for ra, rb in zip(rows, rows[1:]):
-        md.band(ra, rb, "head", None, flip=flip)
-    md.fan(rows[-1], pole, "head", None, flip=flip)
-    md.rings["head_brow"] = rows[_closest_row(s_rows, 0.62) - 1]
-
-
-HEAD_RELAX = 6
-
-
-def _relax_grid(md: MeshData, hs: HeadShape, base: list[Vec], rows: list[list[int]], pole: int,
-                iters: int) -> None:
-    """Even out a ring grid on the SDF surface: Laplacian step, then re-project along the grid normal.
-    ``base`` are the fixed positions below the first row; the pole stays fixed. Jacobi update."""
-    c = HEAD_CENTRE
-    nr = len(rows)
-    for _ in range(iters):
-        new: dict[int, Vec] = {}
-        for r in range(nr):
-            ring = rows[r]
-            n = len(ring)
-            for j in range(n):
-                p = md.verts[ring[j]]
-                lft = md.verts[ring[j - 1]]
-                rgt = md.verts[ring[(j + 1) % n]]
-                dn = base[j] if r == 0 else md.verts[rows[r - 1][j]]
-                up = md.verts[rows[r + 1][j]] if r + 1 < nr else md.verts[pole]
-                avg = mul(add(add(lft, rgt), add(dn, up)), 0.25)
-                q = lerp(p, avg, 0.5)
-                nrm = cross(sub(rgt, lft), sub(up, dn))
-                if vlen(nrm) < 1e-12:
-                    continue
-                nrm = norm(nrm)
-                if dot(nrm, sub(q, c)) < 0.0:
-                    nrm = mul(nrm, -1.0)
-                new[ring[j]] = hs.project(q, nrm, 0.03)
-        for vi, q in new.items():
-            md.verts[vi] = q
-
-
-def _closest_row(s_rows: list[float], s: float) -> int:
-    return min(range(1, HEAD_ROWS), key=lambda r: abs(s_rows[r] - s))
-
-
-def _sphere(md: MeshData, centre: Vec, radii: Vec, axes: tuple[Vec, Vec, Vec], segs: int, polar: list[float],
-            region: str, mat_of_ring, rigid: str, side: int, dent: float = 0.0) -> None:
-    """Lat-long ellipsoid around ``axes[0]`` (pole) with polar angles ``polar`` (degrees, 0..180)."""
-    a0, a1, a2 = axes
-    rows: list[list[int]] = []
-    poles: list[int] = []
-    for pi_, ang in enumerate(polar):
-        th = math.radians(ang)
-        if pi_ in (0, len(polar) - 1):
-            r0 = radii[0] * math.cos(th)
-            if pi_ == 0:
-                r0 -= dent
-            vi = md.v(add(centre, mul(a0, r0)))
-            md.vert_rigid[vi] = rigid
-            poles.append(vi)
-            rows.append([vi])
-            continue
-        ring = []
-        for k in range(segs):
-            ph = TAU * k / segs
-            fr = math.cos(th)
-            if dent and ang < 70.0:
-                fr -= dent / radii[0] * (1.0 - ang / 70.0) ** 2
-            p = add(centre, add(mul(a0, radii[0] * fr), add(mul(a1, radii[1] * math.sin(th) * math.cos(ph)),
-                                                            mul(a2, radii[2] * math.sin(th) * math.sin(ph)))))
-            vi = md.v(p)
-            md.vert_rigid[vi] = rigid
-            ring.append(vi)
-        rows.append(ring)
-    for ri in range(len(rows) - 1):
-        a, b = rows[ri], rows[ri + 1]
-        mat = mat_of_ring(ri)
-        if len(a) == 1:
-            md.fan(b, a[0], region, centre, mat, side)
-        elif len(b) == 1:
-            md.fan(a, b[0], region, centre, mat, side)
-        else:
-            md.band(a, b, region, centre, mat=mat, side=side)
-
-
-def _eyes(md: MeshData) -> None:
-    for sfx, sx in rig.SIDES:
-        c = add(HEAD_CENTRE, (sx * EYE_LOCAL[0], EYE_LOCAL[1], EYE_LOCAL[2]))
-        fwd = norm((sx * 0.06, 1.0, 0.0))          # eyes look straight ahead, slight outward axis
-        up = (0.0, 0.0, 1.0)
-        side_ax = norm(cross(fwd, up))
-        polar = [0.0, 14.0, 27.0, 45.0, 80.0, 115.0, 150.0, 180.0]
-        _sphere(md, c, (EYE_RADIUS, EYE_RADIUS, EYE_RADIUS), (fwd, up, side_ax), 14, polar, "head",
-                lambda ri: "iris" if ri <= 1 else "eye", "head", int(sx))
-
-
-def _ears(md: MeshData, age: float, build: float) -> None:
-    s = 1.0 + 0.08 * age
-    for sfx, sx in rig.SIDES:
-        c = (sx * 0.0785, -0.016, 1.648)
-        n = norm((sx * 1.0, -0.30, 0.0))            # outward, the back rim stands off more
-        up = norm((0.0, -0.22, 1.0))                # tilted back
-        w_ax = norm(cross(up, n))
-        polar = [0.0, 30.0, 60.0, 90.0, 120.0, 150.0, 180.0]
-        _sphere(md, c, (0.0085 * (1 + 0.1 * build), 0.031 * s, 0.017 * s), (n, up, w_ax), 12, polar, "head",
-                lambda ri: "skin", "head", int(sx), dent=0.007)
-
-
-def _brows(md: MeshData, hs: HeadShape, gender: float, age: float) -> None:
-    """Eyebrows: thin raised ribbons following the brow ridge (three rows, surface-projected)."""
-    c = HEAD_CENTRE
-    for sfx, sx in rig.SIDES:
-        n_seg = 7
-        rows: list[list[int]] = [[], [], []]
-        for i in range(n_seg + 1):
-            u = i / n_seg
-            x = sx * (0.0165 + 0.039 * u)
-            z = c[2] + 0.0330 + 0.0045 * math.sin(math.pi * min(1.0, u * 1.2)) - 0.004 * u + 0.002 * gender
-            th = (0.0040 - 0.0016 * u) * (1.0 - 0.3 * gender) * (1.0 + 0.15 * age)
-            org = (0.0, c[1], z)                      # horizontal ray at the brow height
-            pm = hs.cast(org, norm(sub((x * 1.35, 0.12, z), org)))
-            nm = hs.grad(pm)
-            upv = _ortho((0.0, 0.0, 1.0), nm)
-            for row, dz, lift in ((0, th, 0.0010), (1, 0.0, 0.0024), (2, -th * 0.8, 0.0010)):
-                p = pm if dz == 0.0 else hs.project(add(pm, mul(upv, dz)), nm, 0.01)
-                vi = md.v(add(p, mul(nm, lift)))
-                md.vert_rigid[vi] = "head"
-                rows[row].append(vi)
-        inside = add(c, (sx * 0.02, 0.0, 0.03))
-        md.band(rows[0], rows[1], "head", inside, closed=False, mat="brow", side=int(sx))
-        md.band(rows[1], rows[2], "head", inside, closed=False, mat="brow", side=int(sx))
+HEAD_CENTRE: Vec = _headmod.HEAD_CENTRE
+EYE_RADIUS = _headmod.EYE_RADIUS
+EYE_LOCAL: Vec = _headmod.EYE_LOCAL
+HEAD_TAPER = 0.20               # legacy constant (the old head's plan-view taper), kept for importers
+HeadShape = _headmod.HeadShape
+HEAD_ROWS = _headmod.HEAD_ROWS
 
 
 # =============================================================================================
@@ -1000,86 +605,6 @@ def _chain_neighbours(bone: str) -> set[str]:
 
 
 # =============================================================================================
-# hair (separate mesh)
-# =============================================================================================
-_HAIRLINE = {  # |theta| deg -> polar angle phi (deg) of the hairline, per style
-    "buzz": [(0, 50), (40, 57), (80, 70), (105, 80), (130, 102), (180, 118)],
-    "short": [(0, 49), (40, 56), (80, 69), (105, 80), (130, 102), (180, 119)],
-    "bob": [(0, 47), (40, 62), (75, 112), (130, 116), (180, 118)],
-}
-
-
-def _interp(table: list[tuple[float, float]], x: float) -> float:
-    for (x0, y0), (x1, y1) in zip(table, table[1:]):
-        if x <= x1:
-            t = (x - x0) / (x1 - x0)
-            t = t * t * (3 - 2 * t)
-            return y0 + (y1 - y0) * t
-    return table[-1][1]
-
-
-def _hair(hs: HeadShape, style: str) -> MeshData:
-    md = MeshData()
-    if style == "none":
-        return md
-    c = HEAD_CENTRE
-    ncol, nrow = 36, 10
-    rows_out: list[list[int]] = []
-    rows_in: list[int] = []
-    for r in range(nrow):
-        rows_out.append([])
-    max_r: list[float] = [0.0] * ncol
-    for k in range(ncol):
-        th0 = math.pi - TAU * k / ncol                   # start at the back so the bob hangs symmetric
-        th = th0 - COLUMN_WARP * 0.6 * math.sin(th0)
-        phi_h = math.radians(_interp(_HAIRLINE[style], abs(math.degrees(math.atan2(math.sin(th), math.cos(th))))))
-        col_pts = []
-        for r in range(nrow):
-            s = r / (nrow - 0.4)
-            phi = phi_h * (1.0 - s) ** 1.15
-            p = hs.cast(c, _head_dir(th, phi))
-            g = hs.grad(p)
-            top = 1.0 - phi / math.pi
-            if style == "buzz":
-                off = 0.0028 + 0.0012 * top
-            elif style == "short":
-                off = 0.004 + 0.010 * smoothstep(0.35, 0.8, top) + 0.002 * smoothstep(0.0, 0.25, r / nrow)
-            else:
-                off = 0.010 + 0.008 * smoothstep(0.4, 0.8, top)
-            q = add(p, mul(g, off))
-            col_pts.append(q)
-        if style == "bob":     # hang straight below the widest point of each column
-            rad = [math.hypot(q[0] - c[0], q[1] - c[1]) for q in col_pts]
-            widest = max(range(nrow), key=lambda i: rad[i])
-            for r in range(widest):
-                q = col_pts[r]
-                dx, dy = q[0] - c[0], q[1] - c[1]
-                rr = math.hypot(dx, dy)
-                want = max(rr, rad[widest] * (1.0 - 0.02 * (widest - r) / max(widest, 1)))
-                if abs(math.cos(th)) > 0.75 and math.cos(th) > 0:
-                    want = rr
-                col_pts[r] = (c[0] + dx / rr * want, c[1] + dy / rr * want, q[2])
-            max_r[k] = rad[widest]
-        for r in range(nrow):
-            rows_out[r].append(md.v(col_pts[r]))
-        # inner rim point: on the skin, a little below the hairline
-        p_in = hs.cast(c, _head_dir(th, min(phi_h + math.radians(1.5), math.radians(170))))
-        g_in = hs.grad(p_in)
-        rows_in.append(md.v(add(p_in, mul(g_in, -0.0008))))
-    pole = md.v(add(hs.cast(c, (0.0, 0.0, 1.0)), (0.0, 0.0, {"buzz": 0.004, "short": 0.016, "bob": 0.019}[style])))
-    mid = nrow // 2
-    probe = [rows_out[mid][0], rows_out[mid][1], rows_out[mid + 1][1], rows_out[mid + 1][0]]
-    flip = _newell_dot(md.verts, probe, c) < 0.0
-    for a, b in zip(rows_out, rows_out[1:]):
-        md.band(a, b, "head", None, mat="hair", flip=flip)
-    md.fan(rows_out[-1], pole, "head", None, mat="hair", flip=flip)
-    md.band(rows_in, rows_out[0], "head", None, mat="hair", flip=flip)
-    for vi in range(len(md.verts)):
-        md.vert_rigid[vi] = "head"
-    return md
-
-
-# =============================================================================================
 # assembly
 # =============================================================================================
 @lru_cache(maxsize=8)
@@ -1097,10 +622,14 @@ def _generate_body(build: float, gender: float, age: float) -> tuple[MeshData, H
     rx = max(abs(p[0]) for p in neck)
     ry = 0.5 * (max(p[1] for p in neck) - min(p[1] for p in neck))
     hs = HeadShape(build, gender, age, cy - HEAD_CENTRE[1], rx, ry)
-    _head(md, hs)
-    _eyes(md)
-    _ears(md, age, build)
-    _brows(md, hs, gender, age)
+    ref = None
+    if (build, gender, age) != (0.0, 0.0, 0.0):      # shape keys follow the basis vertex layout
+        base_md, base_hs = _generate_body(0.0, 0.0, 0.0)
+        ref = (base_md.verts, base_hs, base_md.head_free)
+    md.head_free = _headmod.head(md, hs, ref)
+    _headmod.eyes(md)
+    _headmod.ears(md, hs)
+    _headmod.brows(md, hs)
     for sfx, sx in rig.SIDES:
         _hand(md, sfx, sx, build, gender)
     return md, hs
@@ -1110,7 +639,7 @@ def _generate_body(build: float, gender: float, age: float) -> tuple[MeshData, H
 def _generate(build: float, gender: float, age: float, hair: str) -> tuple[MeshData, MeshData]:
     """(body, hair) at the reference height 1.78 m, full (nothing hidden)."""
     md, hs = _generate_body(build, gender, age)
-    return md, _hair(hs, hair)
+    return md, _headmod.hair(hs, hair)
 
 
 def _configs() -> list[tuple[float, float, float]]:
@@ -1208,7 +737,7 @@ def body_rings(params: dict | None = None) -> dict[str, list[Vec]]:
     body, _hair = body_mesh_data(p)
     out = {}
     for name, loop in body.rings.items():
-        if name.startswith("wrist_open") or name.startswith("T4_"):
+        if name.startswith(("wrist_open", "T4_")):
             continue
         out[name] = [body.blend[i] for i in loop]
     return out

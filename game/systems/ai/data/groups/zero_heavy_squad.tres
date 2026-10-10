@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SpawnGroupDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/director/spawn_group_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"group.zero_heavy_squad"
+unit_ids = Array[StringName]([&"enemy.tac_heavy"])
+unit_counts = PackedInt32Array(3)
+weights = PackedFloat32Array(0, 0, 0, 0, 0, 2)
+phases = PackedInt32Array(2, 3)
+stage_weight_mult = PackedFloat32Array(0.5, 1, 2)
+factions = Array[StringName]([&"faction.zero"])

@@ -15,8 +15,21 @@
 ## Alive police (roles &"police" + &"special") never exceed DifficultyDef.enemy_cap. CONTROL spawns
 ## are low-rate; BUILD/SUSTAIN spawn a group every assault_group_interval_s / assault_intensity.
 ## FADE: the director stops reinforcing; units keep fighting (no retreat in P1).
-## Drama (L1.2, P3): hook `_drama_spawn_scale()` (always 1.0 for now).
-## Faction (L1.5, P3): P1 uses Patrol Officer + TAC Light on every difficulty via group weights.
+## A3-03 drama (L1.2): `drama` 0..1 rises with crew damage taken, crew downs and shots/kills within
+## drama_combat_radius_m of the crew; decays drama_decay_per_s. BUILD/SUSTAIN spawn rate x
+## (1 - drama_spawn_scale * drama). After the sustain timer FADE also comes once drama stayed below
+## drama_fade_level for drama_fade_window_s (fade_wait_cap_s stays as a hard cap).
+## A3-03 escalation (L1.3): stage() = wave_stage[wave - 1] (50/75/100%) drives sustain length,
+## group weights (SpawnGroupDef.stage_weight_mult) and the spawn rate (stage_spawn_rate_mult).
+## Specials also come between waves: CONTROL (wave >= 2) rolls control_special_groups.
+## A3-03 factions (L1.5): faction() by difficulty (TAC / FRD / Sentinel / Zero Division) remaps each
+## role id to enemies/<suffix>/<role>.tres when it exists and filters SpawnGroupDef.factions.
+## A3-03 special caps (L4.11): a special unit spawns only while alive units sharing its limit key
+## (D-022: every enemy.wrecker_* counts as enemy.wrecker) < DifficultyDef.special_limits[key].
+## Units without an EnemyDef (specials not implemented yet) are skipped. Longshots spawn only on a
+## free SNIPER_PERCH point (SpecialSpawner.spawn_special places and claims it).
+## A3-02 (L4.9): Commander Brandt + Aegis squad live in the child AegisCaptain; while he is on the
+## map FADE never comes. NpcBase.take_hit calls modify_npc_hit() (resistance + per-hit cap).
 class_name AssaultDirector
 extends Node
 
@@ -24,10 +37,10 @@ signal phase_changed(phase: int, wave_index: int)
 signal unit_spawned(npc: NpcBase, spawn_point: Node3D)
 
 const DEFAULT_TWEAK: String = "res://systems/director/director_tweak.tres"
-const ENEMY_DIR: String = "res://systems/ai/data/enemies/"
 const RNG_DIRECTOR: StringName = &"director"
 const RNG_SPAWNS: StringName = &"spawns"
 const POLICE_ROLES: Array[StringName] = [&"police", &"special"]
+const LONGSHOT_ID: StringName = &"enemy.longshot"
 
 @export var tweak: DirectorTweak
 
@@ -42,6 +55,12 @@ var hostage_bonus_applied: bool = false
 var running: bool = false
 ## Units spawned by the director (alive or not), in order.
 var spawned_total: int = 0
+## A3-03 (L1.2): pressure 0..1.
+var drama: float = 0.0
+## A3-02 (L4.9): Commander Brandt + Aegis squad.
+var captain: AegisCaptain = null
+## A3-03 (L1.5, L4.11): faction EnemyDefs and special caps.
+var roster: EnemyRoster = null
 
 var _runtime: HeistRuntime = null
 var _queue: Array[StringName] = []
@@ -50,14 +69,23 @@ var _unit_left: float = 0.0
 var _group_left: float = 0.0
 var _first_responder_groups_left: int = 0
 var _sustain_over_t: float = -1.0
-var _defs: Dictionary[StringName, EnemyDef] = {}
 var _spawn_counter: int = 0
+## Seconds of drama < drama_fade_level since the sustain timer ended.
+var _low_drama_t: float = 0.0
+## Seconds until Brandt's scheduled arrival in this assault (-1 = none).
+var _captain_due_t: float = -1.0
+var _control_special_left: float = 0.0
 
 
 func _ready() -> void:
 	if tweak == null:
 		tweak = load(DEFAULT_TWEAK) as DirectorTweak
 	_runtime = HeistRuntime.of(self)
+	roster = EnemyRoster.new(self)
+	captain = AegisCaptain.new()
+	captain.name = "AegisCaptain"
+	captain.setup(self)
+	add_child(captain)
 	if _runtime != null:
 		var override: DirectorTweak = _runtime.options.get("director_tweak") as DirectorTweak
 		if override != null:
@@ -66,11 +94,20 @@ func _ready() -> void:
 		if _runtime.went_loud or _runtime.phase == Enums.HeistPhase.LOUD:
 			begin.call_deferred()
 	EventBus.hostage_count_changed.connect(_on_hostage_count_changed)
+	EventBus.damage_applied.connect(_on_damage_applied)
+	EventBus.crew_downed.connect(_on_crew_downed)
+	EventBus.weapon_fired.connect(_on_weapon_fired)
+	EventBus.npc_killed.connect(_on_npc_killed)
 
 
 func _exit_tree() -> void:
 	if EventBus.hostage_count_changed.is_connected(_on_hostage_count_changed):
 		EventBus.hostage_count_changed.disconnect(_on_hostage_count_changed)
+	for pair: Array in [[EventBus.damage_applied, _on_damage_applied], [EventBus.crew_downed, _on_crew_downed],
+			[EventBus.weapon_fired, _on_weapon_fired], [EventBus.npc_killed, _on_npc_killed]]:
+		var sig: Signal = pair[0]
+		if sig.is_connected(pair[1]):
+			sig.disconnect(pair[1])
 
 
 # --- Public API ------------------------------------------------------------------------------
@@ -114,12 +151,79 @@ func begin() -> void:
 	_enter(Enums.AssaultPhase.CONTROL, tweak.first_control_s)
 
 
+func runtime() -> HeistRuntime:
+	return _runtime
+
+
+## L1.3: escalation stage index for `wave` (0 = 50%, 1 = 75%, 2 = 100%).
+func stage_for_wave(wave: int) -> int:
+	if tweak.wave_stage.is_empty():
+		return 0
+	return tweak.wave_stage[clampi(wave - 1, 0, tweak.wave_stage.size() - 1)]
+
+
+## L1.3: stage of the current assault.
+func stage() -> int:
+	return stage_for_wave(maxi(wave_index, 1))
+
+
+## L1.5: faction of this run (&"faction.tac", &"faction.frd", &"faction.sentinel", &"faction.zero").
+func faction() -> StringName:
+	return roster.faction()
+
+
+## L1.5: EnemyDef for a role id under the current faction (faction file if present, else the base
+## file), or null when neither exists (unimplemented specials).
+func enemy_def_for(enemy_id: StringName) -> EnemyDef:
+	return roster.enemy_def(enemy_id)
+
+
+## L1.2: add pressure (clamped 0..1). Server.
+func add_drama(amount: float) -> void:
+	drama = clampf(drama + amount, 0.0, 1.0)
+
+
+## A3-02 (L4.9): current Aegis damage resistance for every enemy (0 when Brandt is absent). HUD.
+func aegis_resistance() -> float:
+	return captain.resistance if captain != null else 0.0
+
+
+## A3-02: Brandt is on the map (assault locked).
+func captain_active() -> bool:
+	return captain != null and captain.locks_assault()
+
+
+## NpcBase.take_hit hook (server): final hit amount after Aegis resistance / captain per-hit cap.
+func modify_npc_hit(npc: NpcBase, amount: float, info: Dictionary) -> float:
+	if captain == null or npc == null:
+		return amount
+	return captain.modify_hit(npc, amount, info)
+
+
+## Server: spawn one enemy with `def` at `xf` (facing the crew centroid). Role: def.params.spawn_role,
+## else a HeistRuntime.NPC_SCENES entry named like the id (&"phantom"), else &"police".
+func spawn_enemy(def: EnemyDef, xf: Transform3D, point: Node3D = null, extra: Dictionary = {}) -> NpcBase:
+	if _runtime == null:
+		return null
+	var look: Vector3 = _flat(_centroid(_active_crew()) - xf.origin)
+	if look.length() > 0.1:
+		xf.basis = Basis.looking_at(look, Vector3.UP)
+	var info: Dictionary = {"spawn_point": point, "assault_wave": wave_index, "faction": faction(),
+		"tags": point.get(&"tags") if point != null else null}
+	info.merge(extra, true)
+	if def != null:
+		info["enemy_def"] = def
+	var npc: NpcBase = _runtime.spawn_npc(_spawn_role(def), xf, info)
+	if npc != null:
+		spawned_total += 1
+		unit_spawned.emit(npc, point)
+	return npc
+
+
 ## Sustain length for `wave` with `crew_count` crew (L1.1 table).
 func sustain_duration(wave: int, crew_count: int) -> float:
-	var stage: int = 0
-	if not tweak.wave_stage.is_empty():
-		stage = tweak.wave_stage[clampi(wave - 1, 0, tweak.wave_stage.size() - 1)]
-	var base: float = tweak.sustain_by_stage_s[clampi(stage, 0, tweak.sustain_by_stage_s.size() - 1)]
+	var stage_i: int = stage_for_wave(wave)
+	var base: float = tweak.sustain_by_stage_s[clampi(stage_i, 0, tweak.sustain_by_stage_s.size() - 1)]
 	var mult: float = 1.0
 	if not tweak.sustain_crew_mult.is_empty():
 		mult = tweak.sustain_crew_mult[clampi(crew_count - 1, 0, tweak.sustain_crew_mult.size() - 1)]
@@ -179,6 +283,8 @@ func _physics_process(delta: float) -> void:
 		return
 	phase_time += delta
 	phase_time_left -= delta
+	drama = maxf(drama - tweak.drama_decay_per_s * delta, 0.0)
+	_tick_captain(delta)
 	match assault_phase:
 		Enums.AssaultPhase.CONTROL:
 			_tick_control_spawns(delta)
@@ -188,10 +294,12 @@ func _physics_process(delta: float) -> void:
 		Enums.AssaultPhase.ANTICIPATION:
 			if phase_time_left <= 0.0:
 				_enter(Enums.AssaultPhase.BUILD, tweak.build_s)
+				_roll_captain()
 		Enums.AssaultPhase.BUILD:
 			_tick_assault_spawns(delta)
 			if phase_time_left <= 0.0:
 				_sustain_over_t = -1.0
+				_low_drama_t = 0.0
 				_enter(Enums.AssaultPhase.SUSTAIN, sustain_duration(wave_index, _runtime.crew_members().size()))
 		Enums.AssaultPhase.SUSTAIN:
 			_tick_sustain(delta)
@@ -206,12 +314,16 @@ func _tick_sustain(delta: float) -> void:
 	if phase_time_left > 0.0:
 		_tick_assault_spawns(delta)
 		return
+	if captain_active():
+		_tick_assault_spawns(delta)  # L4.9: assault locked while Brandt is on the map
+		return
 	if _sustain_over_t < 0.0:
 		_sustain_over_t = 0.0
 	_sustain_over_t += delta
+	_low_drama_t = _low_drama_t + delta if drama < tweak.drama_fade_level else 0.0
 	var thr: int = tweak.fade_threshold[clampi(_runtime.difficulty, 0, tweak.fade_threshold.size() - 1)] \
 		if not tweak.fade_threshold.is_empty() else 0
-	if alive_count() < thr or _sustain_over_t >= tweak.fade_wait_cap_s:
+	if alive_count() < thr or _low_drama_t >= tweak.drama_fade_window_s or _sustain_over_t >= tweak.fade_wait_cap_s:
 		_queue.clear()
 		_enter(Enums.AssaultPhase.FADE, tweak.fade_s)
 
@@ -234,9 +346,36 @@ func _maybe_hostage_bonus() -> void:
 	Log.info(&"director", "hostage held: anticipation +%.0f s" % tweak.anticipation_hostage_bonus_s)
 
 
+## A3-02: at BUILD, roll Brandt's arrival for this assault (eligible difficulty, wave, once a day).
+func _roll_captain() -> void:
+	_captain_due_t = -1.0
+	if captain == null or captain.spawned_today or wave_index < tweak.captain_min_wave or not captain.eligible():
+		return
+	if GameRng.stream(RNG_DIRECTOR).randf() < tweak.captain_chance:
+		_captain_due_t = tweak.captain_delay_s
+
+
+func _tick_captain(delta: float) -> void:
+	if _captain_due_t < 0.0:
+		return
+	if assault_phase != Enums.AssaultPhase.BUILD and assault_phase != Enums.AssaultPhase.SUSTAIN:
+		_captain_due_t = -1.0
+		return
+	_captain_due_t -= delta
+	if _captain_due_t > 0.0:
+		return
+	_captain_due_t = -1.0 if captain.summon() else tweak.no_point_retry_s
+
+
 # --- Spawning -------------------------------------------------------------------------------------
 
 func _tick_control_spawns(delta: float) -> void:
+	if wave_index > 1 and not tweak.control_special_groups.is_empty():
+		_control_special_left -= delta  # L1.3: specials between waves (low rate)
+		if _control_special_left <= 0.0:
+			_control_special_left = tweak.control_special_interval_s
+			if _queue_empty() and GameRng.stream(RNG_DIRECTOR).randf() < tweak.control_special_chance:
+				_enqueue(_pick_group(Enums.AssaultPhase.CONTROL, tweak.control_special_groups))
 	_group_left -= delta
 	if _group_left > 0.0 or not _queue_empty():
 		return
@@ -255,31 +394,58 @@ func _tick_assault_spawns(delta: float) -> void:
 	if _group_left > 0.0 or not _queue_empty():
 		return
 	var intensity: float = _runtime.difficulty_def.assault_intensity if _runtime.difficulty_def != null else 1.0
-	_group_left = tweak.assault_group_interval_s / maxf(intensity * _drama_spawn_scale(), 0.05)
+	var stage_mult: float = 1.0
+	if not tweak.stage_spawn_rate_mult.is_empty():
+		stage_mult = tweak.stage_spawn_rate_mult[clampi(stage(), 0, tweak.stage_spawn_rate_mult.size() - 1)]
+	_group_left = tweak.assault_group_interval_s / maxf(intensity * stage_mult * _drama_spawn_scale(), 0.05)
 	if alive_count() < enemy_cap():
 		_enqueue(_pick_group(assault_phase))
 
 
-## L1.2 hook (P3): spawn-rate scale from drama, (1 - 0.5 * drama). P1: no drama.
+## L1.2: spawn-rate scale from drama, (1 - drama_spawn_scale * drama).
 func _drama_spawn_scale() -> float:
-	return 1.0
+	return clampf(1.0 - tweak.drama_spawn_scale * drama, 0.0, 1.0)
 
 
-func _pick_group(phase: int) -> SpawnGroupDef:
+## Weighted pick among `groups` (default tweak.assault_groups) allowed in `phase`, weighted by
+## difficulty x stage (L1.3) for the current faction (L1.5); groups with no spawnable unit are skipped.
+func _pick_group(phase: int, groups: Array[SpawnGroupDef] = []) -> SpawnGroupDef:
+	if groups.is_empty():
+		groups = tweak.assault_groups
 	var total: float = 0.0
 	var cands: Array[SpawnGroupDef] = []
-	for g: SpawnGroupDef in tweak.assault_groups:
-		if g != null and g.allows_phase(phase) and g.weight(_runtime.difficulty) > 0.0:
+	var ws: Array[float] = []
+	var st: int = stage()
+	var fac: StringName = faction()
+	for g: SpawnGroupDef in groups:
+		if g == null or not g.allows_phase(phase):
+			continue
+		var w: float = g.weight_for(_runtime.difficulty, st, fac)
+		if w > 0.0 and _group_spawnable(g):
 			cands.append(g)
-			total += g.weight(_runtime.difficulty)
+			ws.append(w)
+			total += w
 	if cands.is_empty():
 		return null
 	var r: float = GameRng.stream(RNG_DIRECTOR).randf() * total
-	for g: SpawnGroupDef in cands:
-		r -= g.weight(_runtime.difficulty)
+	for i: int in range(cands.size()):
+		r -= ws[i]
 		if r <= 0.0:
-			return g
+			return cands[i]
 	return cands[cands.size() - 1]
+
+
+## A group can spawn when at least one of its units has an EnemyDef, is under its special cap and
+## (Longshot) has a free SNIPER_PERCH.
+func _group_spawnable(g: SpawnGroupDef) -> bool:
+	for id: StringName in g.unit_ids:
+		var def: EnemyDef = _enemy_def(id)
+		if def == null or not roster.can_spawn_special(def):
+			continue
+		if _perch_only(def) and SpecialSpawner.free_perch(_runtime, _centroid(_active_crew()), null) == null:
+			continue
+		return true
+	return false
 
 
 func _enqueue(g: SpawnGroupDef) -> bool:
@@ -307,14 +473,31 @@ func _tick_queue(delta: float) -> void:
 	if alive_count() >= enemy_cap():
 		_queue.clear()
 		return
-	var points: Array[Node3D] = valid_spawn_points()
-	if points.is_empty():
-		_unit_left = tweak.no_point_retry_s
-		return
-	_unit_left = tweak.unit_spawn_interval_s
+	_spawn_next()
+
+
+## Spawn the next queued unit. A3-03: an id without EnemyDef or over its L4.11 cap is skipped;
+## L4.7 Longshots go to a free SNIPER_PERCH (SpecialSpawner places and claims it) or nowhere.
+func _spawn_next() -> void:
 	var id: StringName = _queue[_queue_index]
-	_queue_index += 1
-	_spawn_unit(id, points[0])
+	var def: EnemyDef = _enemy_def(id)
+	if def == null or not roster.can_spawn_special(def):
+		_queue_index += 1
+	elif _perch_only(def):
+		_queue_index += 1
+		_unit_left = tweak.unit_spawn_interval_s
+		var info: Dictionary = {"assault_wave": wave_index, "faction": faction()}
+		for sniper: NpcBase in SpecialSpawner.spawn_special(_runtime, def.id, Transform3D(), info):
+			spawned_total += 1
+			unit_spawned.emit(sniper, null)
+	else:
+		var points: Array[Node3D] = valid_spawn_points()
+		if points.is_empty():
+			_unit_left = tweak.no_point_retry_s
+			return
+		_unit_left = tweak.unit_spawn_interval_s
+		_queue_index += 1
+		_spawn_unit(id, points[0])
 
 
 func _spawn_unit(enemy_id: StringName, point: Node3D) -> NpcBase:
@@ -328,29 +511,27 @@ func _spawn_unit(enemy_id: StringName, point: Node3D) -> NpcBase:
 	var offset: Vector3 = side * tweak.unit_spread_m * floorf(float(k + 1) * 0.5) * (1.0 if k % 2 == 1 else -1.0)
 	if k > 0 and is_spawn_valid(xf.origin + offset, crew):
 		xf.origin += offset
-	var centroid: Vector3 = _centroid(crew)
-	var look: Vector3 = _flat(centroid - xf.origin)
-	if look.length() > 0.1:
-		xf.basis = Basis.looking_at(look, Vector3.UP)
-	var info: Dictionary = {"spawn_point": point, "assault_wave": wave_index, "tags": point.get(&"tags")}
-	if def != null:
-		info["enemy_def"] = def
-	var npc: NpcBase = _runtime.spawn_npc(&"police", xf, info)
-	if npc != null:
-		spawned_total += 1
-		unit_spawned.emit(npc, point)
-	return npc
+	return spawn_enemy(def, xf, point)
 
 
 func _enemy_def(enemy_id: StringName) -> EnemyDef:
-	if _defs.has(enemy_id):
-		return _defs[enemy_id]
-	var path: String = ENEMY_DIR + String(enemy_id).trim_prefix("enemy.") + ".tres"
-	var def: EnemyDef = load(path) as EnemyDef if ResourceLoader.exists(path) else null
-	if def == null:
-		Log.error(&"director", "no EnemyDef for %s (%s)" % [enemy_id, path])
-	_defs[enemy_id] = def
-	return def
+	return roster.enemy_def(enemy_id)
+
+
+func _spawn_role(def: EnemyDef) -> StringName:
+	if def != null:
+		var r: StringName = StringName(str(def.params.get("spawn_role", "")))
+		if r != &"" and HeistRuntime.NPC_SCENES.has(r):
+			return r
+		var short: StringName = StringName(String(def.id).trim_prefix("enemy."))
+		if HeistRuntime.NPC_SCENES.has(short):
+			return short
+	return &"police"
+
+
+func _perch_only(def: EnemyDef) -> bool:
+	return def.id == LONGSHOT_ID or SpecialSpawner.PERCH_ONLY.has(def.id)
+
 
 
 # --- Helpers ----------------------------------------------------------------------------------
@@ -397,6 +578,41 @@ func _on_heist_phase_changed(_old_phase: int, new_phase: int) -> void:
 func _on_hostage_count_changed(count: int) -> void:
 	hostages = count
 	_maybe_hostage_bonus()
+
+
+# --- Drama (L1.2) -------------------------------------------------------------------------------
+
+func _on_damage_applied(victim_net_id: int, _attacker: int, info: Dictionary) -> void:
+	if not running or not Net.is_authority():
+		return
+	var amount: float = float(info.get("amount", 0.0))
+	if amount > 0.0 and Ids.lookup(victim_net_id) is CrewController:
+		add_drama(amount * tweak.drama_per_damage)
+
+
+func _on_crew_downed(_slot: int, _downs: int) -> void:
+	if running and Net.is_authority():
+		add_drama(tweak.drama_per_down)
+
+
+func _on_weapon_fired(_shooter: int, _weapon_id: StringName, _suppressed: bool, position: Vector3) -> void:
+	if running and Net.is_authority() and _near_crew(position):
+		add_drama(tweak.drama_per_nearby_shot)
+
+
+func _on_npc_killed(npc_net_id: int, _killer: int, _info: Dictionary) -> void:
+	if not running or not Net.is_authority():
+		return
+	var n: Node3D = Ids.lookup(npc_net_id) as Node3D
+	if n != null and n.is_inside_tree() and _near_crew(n.global_position):
+		add_drama(tweak.drama_per_nearby_kill)
+
+
+func _near_crew(pos: Vector3) -> bool:
+	for c: CrewController in _active_crew():
+		if c.global_position.distance_to(pos) <= tweak.drama_combat_radius_m:
+			return true
+	return false
 
 
 static func _flat(v: Vector3) -> Vector3:

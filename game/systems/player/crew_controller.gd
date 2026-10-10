@@ -110,6 +110,8 @@ func set_loadout(p_loadout: Loadout) -> void:
 	var view: CrewView = CrewView.of(self)
 	if view != null:
 		view.refresh()  # QB-47: weapon visual + mask of the new loadout
+		view.replicate_mask_descriptor()  # QA-25: server -> every peer
+
 
 
 ## QB-46: pause (true) / resume the local human's PlayerInput (menus, range panels). While paused the
@@ -228,6 +230,8 @@ func set_masked(forced: bool = false) -> void:
 	if Net.is_authority():
 		EventBus.crew_masked.emit(slot)
 		Net.replicate_event(&"crew_masked", [slot])
+		if CrewView.of(self) != null:
+			CrewView.of(self).replicate_mask_descriptor()  # QA-25: descriptor before the mask-up
 		_rpc_masked.rpc(forced)
 	Log.info(&"crew", "slot %d masked (forced=%s)" % [slot, forced])
 

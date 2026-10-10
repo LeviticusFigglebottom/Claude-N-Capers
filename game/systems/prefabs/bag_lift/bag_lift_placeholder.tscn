@@ -1,0 +1,62 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_car"]
+albedo_color = Color(0.55, 0.55, 0.58, 1)
+
+[sub_resource type="BoxMesh" id="box_floor"]
+material = SubResource("mat_car")
+size = Vector3(1.2, 0.05, 1.2)
+
+[sub_resource type="BoxMesh" id="box_back"]
+material = SubResource("mat_car")
+size = Vector3(1.2, 1.2, 0.04)
+
+[sub_resource type="BoxMesh" id="box_side"]
+material = SubResource("mat_car")
+size = Vector3(0.04, 1.2, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="mat_door"]
+albedo_color = Color(0.4, 0.42, 0.45, 1)
+
+[sub_resource type="BoxMesh" id="box_door"]
+material = SubResource("mat_door")
+size = Vector3(0.6, 1.2, 0.03)
+
+[sub_resource type="StandardMaterial3D" id="mat_panel"]
+albedo_color = Color(0.25, 0.25, 0.25, 1)
+
+[sub_resource type="BoxMesh" id="box_panel"]
+material = SubResource("mat_panel")
+size = Vector3(0.12, 0.2, 0.03)
+
+[node name="BagLiftPlaceholder" type="Node3D"]
+
+[node name="Car" type="Node3D" parent="."]
+
+[node name="Floor" type="MeshInstance3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.025, 0)
+mesh = SubResource("box_floor")
+
+[node name="Back" type="MeshInstance3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0.62)
+mesh = SubResource("box_back")
+
+[node name="SideL" type="MeshInstance3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.62, 0.6, 0)
+mesh = SubResource("box_side")
+
+[node name="SideR" type="MeshInstance3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.62, 0.6, 0)
+mesh = SubResource("box_side")
+
+[node name="DoorL" type="MeshInstance3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.6, -0.62)
+mesh = SubResource("box_door")
+
+[node name="DoorR" type="MeshInstance3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.6, -0.62)
+mesh = SubResource("box_door")
+
+[node name="Panel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 1.1, -0.64)
+mesh = SubResource("box_panel")

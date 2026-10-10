@@ -12,6 +12,10 @@ extends SceneTree
 
 const L: GDScript = preload("res://world/heists/glasshouse/greybox/glasshouse_layout.gd")
 const R: GDScript = preload("res://world/heists/glasshouse/greybox/glasshouse_resources.gd")
+const A: GDScript = preload("res://world/heists/glasshouse/greybox/gh_art.gd")
+## Lights that cast shadows (<= 8 per room / per review shot, level_standards §3.7, §5).
+const SHADOWED: Array[String] = ["LightG5West", "ChandelierRing", "LightG6", "LightG2",
+	"NeonVossbergSouth", "NeonVossbergEast"]
 const OUT_DIR: String = "res://world/heists/glasshouse/"
 const SCENE_PATH: String = OUT_DIR + "glasshouse.tscn"
 const DEF_PATH: String = OUT_DIR + "glasshouse_def.tres"
@@ -21,6 +25,7 @@ const MAT_DIR: String = "res://world/materials/"
 const KIT_DIR: String = "res://assets/arch/"
 const ENV_PATH: String = "res://world/lighting/env_glasshouse.tres"
 const SUN_PATH: String = "res://world/lighting/sun_glasshouse.tscn"
+const GI_PATH: String = OUT_DIR + "glasshouse_voxelgi.res"
 ## Stair step boxes overlap their higher neighbour by this much (no ray-through seams).
 const SEAM: float = 0.02
 ## Prefab id -> contract class_name (gameplay_prefabs.md). Scene = the class script's .tscn sibling.
@@ -32,26 +37,10 @@ const PREFAB_CLASSES: Dictionary = {
 	"ladder": "Ladder", "camera_station": "CameraStation", "security_camera": "SecurityCamera",
 	"code_note": "CodeNote",
 }
-## Building surface classes -> material library (greybox kit materials).
-const LIB_MATS: Dictionary = {
-	"wall": "grey_wall", "wall_ext": "grey_wall_ext", "floor": "grey_floor", "ceiling": "grey_ceiling",
-	"stair": "grey_stair", "counter": "grey_counter", "prop": "grey_prop", "trim": "grey_trim",
-	"glass": "grey_glass", "frame": "grey_frame", "door": "grey_door",
-}
-## Site surface classes (greybox flat colours, one per class; meta greybox = true).
-const SITE_MATS: Dictionary = {
-	"paving": Color(0.47, 0.46, 0.44), "sidewalk": Color(0.58, 0.57, 0.55), "asphalt": Color(0.22, 0.23, 0.25),
-	"facade_a": Color(0.5, 0.5, 0.47), "facade_b": Color(0.46, 0.5, 0.55), "facade_c": Color(0.62, 0.58, 0.5),
-	"brick": Color(0.48, 0.3, 0.25), "concrete": Color(0.5, 0.5, 0.5), "fence": Color(0.75, 0.55, 0.2),
-	"vehicle": Color(0.3, 0.35, 0.45),
-}
-const EMISSIVE_MATS: Dictionary = {
-	"neon": Color(1.0, 0.24, 0.65), "fixture": Color(1.0, 0.9, 0.75),
-}
-
 var _root: HeistMap = null
-var _lib_cache: Dictionary = {}
-var _site_cache: Dictionary = {}
+var _art: RefCounted = null
+## Visual group the next _box() faces go to (one merged MeshInstance3D per group).
+var _vis_group: String = "Building"
 var _box_mesh_cache: Dictionary = {}
 var _box_shape_cache: Dictionary = {}
 var _scene_cache: Dictionary = {}
@@ -65,6 +54,8 @@ func _initialize() -> void:
 
 
 func _build() -> void:
+	_art = A.new()
+	_art.setup()
 	var old_scene_uid: String = R.read_uid(SCENE_PATH)
 	var def: HeistDef = R.make_def()
 	var table: HeistVariantTable = R.make_variants()
@@ -102,9 +93,11 @@ func _build() -> void:
 	_build_spawns(_n("Spawns"))
 	_build_tactical(_n("Tactical"))
 	_build_review_cameras(_n("ReviewCameras"))
+	_build_preplan()
 	_build_gameplay(_n("Gameplay"))
 	_build_variants(_n("Variants"))
 	_build_nav_links(nav)
+	_build_art()
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -159,34 +152,12 @@ static func _v3(a: Array, i: int) -> Vector3:
 	return Vector3(float(a[i]), float(a[i + 1]), float(a[i + 2]))
 
 
+## Material for untextured meshes (emissive fixtures, glass) or a library id.
 func _lib_mat(id: String) -> Material:
-	var lib: String = String(LIB_MATS.get(id, ""))
-	if lib == "":
-		return _site_mat(id)
-	if not _lib_cache.has(lib):
-		_lib_cache[lib] = load(MAT_DIR + lib + ".tres") as Material
-	return _lib_cache[lib]
-
-
-func _site_mat(id: String) -> Material:
-	if _site_cache.has(id):
-		return _site_cache[id]
-	var m: StandardMaterial3D = StandardMaterial3D.new()
-	m.resource_name = "gh_grey_" + id
-	m.set_meta(&"greybox", true)
-	if EMISSIVE_MATS.has(id):
-		m.albedo_color = EMISSIVE_MATS[id]
-		m.emission_enabled = true
-		m.emission = EMISSIVE_MATS[id]
-		m.emission_energy_multiplier = 3.0
-		m.set_meta(&"untextured_ok", true)
-	elif SITE_MATS.has(id):
-		m.albedo_color = SITE_MATS[id]
-		m.roughness = 0.9
-	else:
-		_errors.append("unknown material class `%s`" % id)
-		m.albedo_color = Color(1.0, 0.0, 1.0)
-	_site_cache[id] = m
+	var key: String = String({"fixture": "emit_warm", "neon": "emit_neon", "glass": "glass_clear"}.get(id, id))
+	var m: Material = _art.mat(key)
+	if m == null:
+		_errors.append("unknown material `%s`" % id)
 	return m
 
 
@@ -209,7 +180,8 @@ func _box_shape(size: Vector3) -> BoxShape3D:
 	return _box_shape_cache[key]
 
 
-## Static box (world_static) from min/max corners: StaticBody3D + CollisionShape3D + MeshInstance3D.
+## Static box (world_static) from min/max corners: StaticBody3D + CollisionShape3D; its visible faces
+## (by greybox class `mat_id`, see gh_art.face_key) go to the merged visual of `_vis_group`.
 func _box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, collide: bool = true) -> Node3D:
 	var size: Vector3 = mx - mn
 	if size.x <= 0.001 or size.y <= 0.001 or size.z <= 0.001:
@@ -231,10 +203,7 @@ func _box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, 
 		col.shape = _box_shape(size)
 		_add(root, col)
 	if mat_id != "":
-		var mi: MeshInstance3D = MeshInstance3D.new()
-		mi.name = "Mesh"
-		mi.mesh = _box_mesh(size, mat_id)
-		_add(root, mi)
+		_art.vis_box(_vis_group, mn, mx, mat_id)
 	return root
 
 
@@ -348,6 +317,7 @@ func _obstruct_circle(center: Vector3, radius: float, height: float) -> void:
 
 func _build_shell(geo: Node3D) -> void:
 	var bld: Node3D = _add(geo, _node3d("Building")) as Node3D
+	_vis_group = "Shell"
 	var walls: Node3D = _add(bld, _node3d("ExteriorWalls")) as Node3D
 	for w: Array in L.EXT_WALLS:
 		# Two half-thickness skins: exterior face `wall_ext`, room face `wall` (kit convention).
@@ -367,6 +337,7 @@ func _build_shell(geo: Node3D) -> void:
 		var a1: float = float(w[4]) - (h if along_x else 0.0)
 		_wall(walls, String(w[0]) + "In", String(w[1]), fixed - out_sign * q, a0, a1,
 			h, Vector2(0.0, L.PARAPET_TOP), w[5], "wall")
+	_vis_group = "Interior"
 	var iw: Node3D = _add(bld, _node3d("InteriorWalls")) as Node3D
 	for w2: Array in L.INT_WALLS:
 		_wall(iw, String(w2[0]), String(w2[1]), float(w2[2]), float(w2[3]), float(w2[4]), L.INT_T,
@@ -376,11 +347,12 @@ func _build_shell(geo: Node3D) -> void:
 		_box_a(slabs, String(s[0]), s[1], String(s[2]))
 	var ceil: Node3D = _add(bld, _node3d("Ceilings")) as Node3D
 	for c: Array in L.CEILINGS:
-		_box_a(ceil, String(c[0]), c[1], "ceiling")
+		_box_a(ceil, String(c[0]), c[1], "none")
 	_build_stair(bld)
 	var rails: Node3D = _add(bld, _node3d("Railings")) as Node3D
 	for r: Array in L.RAILINGS:
 		_railing(rails, String(r[0]), _v3(r[1], 0), _v3(r[1], 3))
+	_vis_group = "Shell"
 	var fe: Node3D = _add(bld, _node3d("FireEscape")) as Node3D
 	_box_a(fe, "Landing", L.LANDING, "trim")
 	_box(fe, "BracketW", Vector3(1.05, 3.6, -0.6), Vector3(1.15, 4.1, -0.2), "trim")
@@ -396,20 +368,19 @@ func _railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3) -> void:
 	var along_x: bool = size.x >= size.z
 	var length: float = size.x if along_x else size.z
 	var t: float = minf(size.x, size.z)
-	for rail: Array in [["TopRail", size.y * 0.5 - 0.025], ["MidRail", 0.0]]:
-		var mi: MeshInstance3D = MeshInstance3D.new()
-		mi.name = String(rail[0])
-		mi.mesh = _box_mesh(Vector3(length, 0.05, t) if along_x else Vector3(t, 0.05, length), "trim")
-		mi.position = Vector3(0.0, float(rail[1]), 0.0)
-		_add(body, mi)
+	var key: String = "metal_painted" if nm.contains("Landing") else "brushed_steel"
+	var parts: Array = []
+	for ry: float in [size.y * 0.5 - 0.025, 0.0]:
+		parts.append([Vector3(length, 0.05, t) if along_x else Vector3(t, 0.05, length), Vector3(0.0, ry, 0.0), key])
 	var posts: int = maxi(2, int(ceil(length / 1.2)) + 1)
 	for i: int in range(posts):
 		var off: float = -length * 0.5 + 0.025 + (length - 0.05) * float(i) / float(posts - 1)
-		var post: MeshInstance3D = MeshInstance3D.new()
-		post.name = "Post%d" % i
-		post.mesh = _box_mesh(Vector3(0.05, size.y, t), "trim")
-		post.position = Vector3(off, 0.0, 0.0) if along_x else Vector3(0.0, 0.0, off)
-		_add(body, post)
+		parts.append([Vector3(0.05, size.y - 0.052, t - 0.004), (Vector3(off, -0.001, 0.0) if along_x else Vector3(0.0, -0.001, off)),
+			key])
+	var mi: MeshInstance3D = MeshInstance3D.new()
+	mi.name = "Rails"
+	mi.mesh = _art.local_box_mesh(parts)
+	_add(body, mi)
 
 
 ## U-stair: two straight flights (each its own `stairs` node, steps along local Z, solid stepped
@@ -431,6 +402,7 @@ func _build_stair(bld: Node3D) -> void:
 	# Up-flight: risers 1..12, climbing toward -Z (north). Tread k (k < 12) spans
 	# z [z_land + (11 - k) * tread, z_land + (12 - k) * tread] at height k * rise.
 	var up: Node3D = _add(core, _node3d("FlightUp")) as Node3D
+	_vis_group = "StairUp"
 	up.set_meta(&"kind", "stairs")
 	var ux: Array = st["up_x"]
 	for k: int in range(1, n):
@@ -439,7 +411,9 @@ func _build_stair(bld: Node3D) -> void:
 	# Return flight: risers 13..24 climbing toward +Z (south). Tread k spans
 	# z [z_land + (k - 13) * tread, z_land + (k - 12) * tread] at height k * rise; over the janitor
 	# closet (z >= g9_z) the steps stop at the closet ceiling.
+	_art.acc.flush(up, _root, {}, ["StairUp"])
 	var ret: Node3D = _add(core, _node3d("FlightReturn")) as Node3D
+	_vis_group = "StairReturn"
 	ret.set_meta(&"kind", "stairs")
 	var rx: Array = st["ret_x"]
 	var g9_z: float = float(st["g9_z"])
@@ -455,6 +429,8 @@ func _build_stair(bld: Node3D) -> void:
 		else:
 			_box(ret, "Step%02dA" % k2, Vector3(float(rx[0]), 0.0, za), Vector3(float(rx[1]), top, g9_z), "stair")
 			_box(ret, "Step%02dB" % k2, Vector3(float(rx[0]), g9_top, g9_z), Vector3(float(rx[1]), top, zb), "stair")
+	_art.acc.flush(ret, _root, {}, ["StairReturn"])
+	_vis_group = "Interior"
 
 
 ## Static (non-interactive) glazing: kit window visual + a glass blocker filling the opening.
@@ -469,16 +445,29 @@ func _build_static_windows(bld: Node3D) -> void:
 		_glass_blocker(gl, String(w[0]), piece, pos, yaw)
 		if bool(w[4]):
 			continue
-		var ps: PackedScene = _kit_scene(piece)
-		if ps == null:
-			continue
-		var inst: Node3D = ps.instantiate() as Node3D
-		inst.name = String(w[0])
-		inst.position = pos
-		inst.basis = _yaw_basis(yaw)
-		_add(gl, inst)
+		_window_frame(pos, yaw, 3.0 if piece.contains("w300") else 1.0, 2.4 if piece.contains("h240") else 1.2,
+			"brass" if piece.contains("shop") else "metal_painted")
 	var bw: Dictionary = L.BREAKROOM_WINDOW
 	_glass_blocker(gl, "BreakRoomWindow", String(bw["kit"]), bw["pos"], float(bw["yaw"]))
+
+
+## Static window visual (library materials, world UVs): frame 0.06 m, 0.1 m deep, glass pane.
+func _window_frame(pos: Vector3, yaw: float, w: float, h: float, frame_key: String) -> void:
+	var xf: Transform3D = Transform3D(_yaw_basis(yaw), pos)
+	var f: float = 0.06
+	var parts: Array = [[-w * 0.5, -w * 0.5 + f, 0.0, h, -0.05, 0.05, frame_key], [w * 0.5 - f, w * 0.5, 0.0, h, -0.05, 0.05, frame_key],
+		[-w * 0.5 + f, w * 0.5 - f, 0.0, f, -0.05, 0.05, frame_key], [-w * 0.5 + f, w * 0.5 - f, h - f, h, -0.05, 0.05, frame_key],
+		[-w * 0.5 + f, w * 0.5 - f, f, h - f, -0.005, 0.005, "glass_clear"]]
+	if w > 2.0:
+		parts.append([-0.03, 0.03, f, h - f, -0.04, 0.04, frame_key])
+		parts[4] = [-w * 0.5 + f, -0.03, f, h - f, -0.005, 0.005, "glass_clear"]
+		parts.append([0.03, w * 0.5 - f, f, h - f, -0.005, 0.005, "glass_clear"])
+	for p: Array in parts:
+		var a: Vector3 = xf * Vector3(float(p[0]), float(p[2]), float(p[4]))
+		var b: Vector3 = xf * Vector3(float(p[1]), float(p[3]), float(p[5]))
+		var key: String = String(p[6])
+		_art.acc.box("Glazing", Vector3(minf(a.x, b.x), minf(a.y, b.y), minf(a.z, b.z)),
+			Vector3(maxf(a.x, b.x), maxf(a.y, b.y), maxf(a.z, b.z)), key)
 
 
 func _glass_blocker(parent: Node3D, nm: String, piece: String, pos: Vector3, yaw: float) -> void:
@@ -502,16 +491,35 @@ func _glass_blocker(parent: Node3D, nm: String, piece: String, pos: Vector3, yaw
 
 func _build_site(geo: Node3D) -> void:
 	var site: Node3D = _add(geo, _node3d("Site")) as Node3D
+	_vis_group = "Street"
 	var ground: Node3D = _add(site, _node3d("Ground")) as Node3D
 	for g: Array in L.GROUND:
 		_box_a(ground, String(g[0]), g[1], String(g[2]))
+	_vis_group = "Neighbours"
 	var blocks: Node3D = _add(site, _node3d("Blocks")) as Node3D
 	for b: Array in L.BLOCKS:
 		_box_a(blocks, String(b[0]), b[1], String(b[2]))
+	_vis_group = "Street"
 	var fences: Node3D = _add(site, _node3d("Closures")) as Node3D
 	for f: Array in L.FENCES:
 		_wall(fences, String(f[0]), String(f[1]), float(f[2]), float(f[3]), float(f[4]), 0.1,
 			Vector2(float(f[5]), float(f[6])), f[7], String(f[8]))
+
+
+# --- Art pass (C1-08): finishes, trim, facade, neighbours, probes, occluders, audio -------------
+
+func _build_art() -> void:
+	_art.room_surfaces()
+	_art.facade()
+	_art.neighbours(L.BLOCKS.filter(func(b: Array) -> bool: return String(b[2]) != "vehicle" and String(b[2]) != "trim"))
+	var vis: Node3D = _add(_n("Geometry"), _node3d("Visual")) as Node3D
+	_art.acc.flush(vis, _root, {"Neighbours": {"distant": true}})
+	var probes: Node3D = _add(_n("Lighting"), _node3d("ReflectionProbes")) as Node3D
+	_art.reflection_probes(probes, _root)
+	var occ: Node3D = _add(_n("Geometry"), _node3d("Occluders")) as Node3D
+	_art.occluders(occ, _root, L.BLOCKS)
+	var audio: Node3D = _add(_root, _node3d("Audio")) as Node3D
+	_art.audio(audio, _root)
 
 
 # --- Props ------------------------------------------------------------------------------------
@@ -536,7 +544,7 @@ func _prop_box(parent: Node3D, nm: String, base: Vector3, size: Vector3, yaw: fl
 	_add(body, col)
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Mesh"
-	mi.mesh = _box_mesh(size, mat_id)
+	mi.mesh = _art.local_box_mesh([[size, Vector3.ZERO, String(A.CLASS_MAT.get(mat_id, mat_id))]])
 	mi.position = col.position
 	_add(body, mi)
 	_obstruct(body.transform, AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5), size))
@@ -580,12 +588,12 @@ func _chair(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
 	_add(body, col)
 	var seat: MeshInstance3D = MeshInstance3D.new()
 	seat.name = "SeatMesh"
-	seat.mesh = _box_mesh(Vector3(0.45, 0.45, 0.45), "prop")
+	seat.mesh = _art.local_box_mesh([[Vector3(0.45, 0.45, 0.45), Vector3.ZERO, "fabric_upholstery"]])
 	seat.position = Vector3(0.0, 0.225, 0.0)
 	_add(body, seat)
 	var back: MeshInstance3D = MeshInstance3D.new()
 	back.name = "BackMesh"
-	back.mesh = _box_mesh(Vector3(0.45, 0.4, 0.06), "prop")
+	back.mesh = _art.local_box_mesh([[Vector3(0.45, 0.4, 0.06), Vector3.ZERO, "wood_veneer_walnut"]])
 	back.position = Vector3(0.0, 0.65, 0.195)
 	_add(body, back)
 	var m: Marker3D = Marker3D.new()
@@ -619,25 +627,15 @@ func _chandelier_plinth(parent: Node3D) -> void:
 	_add(body, col)
 	var plinth: MeshInstance3D = MeshInstance3D.new()
 	plinth.name = "Plinth"
-	var pm: CylinderMesh = CylinderMesh.new()
-	pm.top_radius = r
-	pm.bottom_radius = r
-	pm.height = ph
-	pm.radial_segments = 32
-	pm.material = _lib_mat("counter")
-	plinth.mesh = pm
-	plinth.position = Vector3(0.0, ph * 0.5, 0.0)
+	plinth.mesh = _art.local_prism_mesh(r, 0.0, ph, 24, "marble_cream", "marble_cream")
 	_add(body, plinth)
+	var band: MeshInstance3D = MeshInstance3D.new()
+	band.name = "BrassBand"
+	band.mesh = _art.local_prism_mesh(r + 0.01, ph - 0.06, ph - 0.02, 24, "brass", "")
+	_add(body, band)
 	var glass: MeshInstance3D = MeshInstance3D.new()
 	glass.name = "Glass"
-	var gm: CylinderMesh = CylinderMesh.new()
-	gm.top_radius = r - 0.05
-	gm.bottom_radius = r - 0.05
-	gm.height = gh
-	gm.radial_segments = 32
-	gm.material = _lib_mat("glass")
-	glass.mesh = gm
-	glass.position = Vector3(0.0, ph + gh * 0.5 + 0.002, 0.0)
+	glass.mesh = _art.local_prism_mesh(r - 0.05, ph + 0.002, ph + gh, 24, "glass_clear", "glass_clear")
 	_add(body, glass)
 	_obstruct_circle(pos, r, ph + gh)
 
@@ -658,17 +656,17 @@ func _street_lamp(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void
 	_add(body, col)
 	var pole: MeshInstance3D = MeshInstance3D.new()
 	pole.name = "Pole"
-	pole.mesh = _box_mesh(Vector3(0.18, 6.0, 0.18), "trim")
+	pole.mesh = _art.local_box_mesh([[Vector3(0.18, 6.0, 0.18), Vector3.ZERO, "metal_painted"]])
 	pole.position = Vector3(0.0, 3.0, 0.0)
 	_add(body, pole)
 	var arm: MeshInstance3D = MeshInstance3D.new()
 	arm.name = "Arm"
-	arm.mesh = _box_mesh(Vector3(0.1, 0.1, 0.8), "trim")
+	arm.mesh = _art.local_box_mesh([[Vector3(0.1, 0.1, 0.8), Vector3.ZERO, "metal_painted"]])
 	arm.position = Vector3(0.0, 5.95, -0.4)
 	_add(body, arm)
 	var head: MeshInstance3D = MeshInstance3D.new()
 	head.name = "Head"
-	head.mesh = _box_mesh(Vector3(0.3, 0.12, 0.6), "fixture")
+	head.mesh = _box_mesh(Vector3(0.3, 0.12, 0.6), "emit_led")
 	head.position = Vector3(0.0, 5.84, -0.6)
 	head.set_meta(&"fixture", true)
 	_add(body, head)
@@ -696,6 +694,7 @@ func _build_lighting(lighting: Node3D) -> void:
 		_add(lighting, sun)
 	else:
 		_errors.append("missing %s" % SUN_PATH)
+	_voxel_gi(lighting)
 	var fx: Node3D = _add(lighting, _node3d("Fixtures")) as Node3D
 	for c: Array in L.CEILING_LIGHTS:
 		_ceiling_light(fx, String(c[0]), c[1], c[2], float(c[3]), float(c[4]), Vector3(0.6, 0.05, 0.6))
@@ -704,6 +703,21 @@ func _build_lighting(lighting: Node3D) -> void:
 	_chandelier_ring(fx, Vector3(cpos.x, float(ch["ceiling"]), cpos.z))
 	for w: Array in L.WALL_LIGHTS:
 		_wall_light(fx, String(w[0]), w[1], float(w[2]), w[3], float(w[4]), float(w[5]), w[6])
+
+
+## Interior VoxelGI over the building (data baked by bake_gi.gd under xvfb; see its header).
+func _voxel_gi(lighting: Node3D) -> void:
+	if not ResourceLoader.exists(GI_PATH):
+		var empty: VoxelGIData = VoxelGIData.new()
+		empty.interior = true
+		ResourceSaver.save(empty, GI_PATH)
+	var vg: VoxelGI = VoxelGI.new()
+	vg.name = "VoxelGI"
+	vg.position = Vector3(9.0, 3.9, 6.0)
+	vg.size = Vector3(19.0, 8.0, 13.0)
+	vg.subdiv = VoxelGI.SUBDIV_64
+	vg.data = load(GI_PATH) as VoxelGIData
+	_add(lighting, vg)
 
 
 ## Ceiling-mounted fixture: pivot at the ceiling surface (top-centre), mesh just below, light under it.
@@ -716,8 +730,9 @@ func _ceiling_light(parent: Node3D, nm: String, pivot: Vector3, color: Color, en
 	_add(parent, root)
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Panel"
-	mi.mesh = _box_mesh(size, "fixture")
+	mi.mesh = _box_mesh(size, "emit_cool" if color.b > color.r + 0.01 else "emit_warm")
 	mi.position = Vector3(0.0, -size.y * 0.5 - 0.002, 0.0)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_add(root, mi)
 	var light: OmniLight3D = OmniLight3D.new()
 	light.name = "Light"
@@ -725,6 +740,7 @@ func _ceiling_light(parent: Node3D, nm: String, pivot: Vector3, color: Color, en
 	light.light_color = color
 	light.light_energy = energy
 	light.omni_range = rng
+	light.shadow_enabled = nm in SHADOWED
 	_add(root, light)
 
 
@@ -737,8 +753,9 @@ func _chandelier_ring(parent: Node3D, pivot: Vector3) -> void:
 	_add(parent, root)
 	var rod: MeshInstance3D = MeshInstance3D.new()
 	rod.name = "Rod"
-	rod.mesh = _box_mesh(Vector3(0.05, 0.5, 0.05), "trim")
+	rod.mesh = _art.local_box_mesh([[Vector3(0.05, 0.5, 0.05), Vector3.ZERO, "brass"]])
 	rod.position = Vector3(0.0, -0.252, 0.0)
+	rod.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_add(root, rod)
 	var ring: MeshInstance3D = MeshInstance3D.new()
 	ring.name = "Ring"
@@ -750,6 +767,7 @@ func _chandelier_ring(parent: Node3D, pivot: Vector3) -> void:
 	tm.material = _lib_mat("fixture")
 	ring.mesh = tm
 	ring.position = Vector3(0.0, -0.6, 0.0)
+	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_add(root, ring)
 	var light: OmniLight3D = OmniLight3D.new()
 	light.name = "Light"
@@ -757,6 +775,7 @@ func _chandelier_ring(parent: Node3D, pivot: Vector3) -> void:
 	light.light_color = Color(1.0, 0.8, 0.55)
 	light.light_energy = 2.0
 	light.omni_range = 6.0
+	light.shadow_enabled = true
 	_add(root, light)
 
 
@@ -771,8 +790,10 @@ func _wall_light(parent: Node3D, nm: String, pivot: Vector3, yaw: float, color: 
 	_add(parent, root)
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Body"
-	mi.mesh = _box_mesh(size, "neon" if nm.begins_with("Neon") else "fixture")
+	var em_key: String = "neon" if nm.begins_with("Neon") else ("emit_monitor" if nm.begins_with("Monitor") else "fixture")
+	mi.mesh = _box_mesh(size, em_key)
 	mi.position = Vector3(0.0, 0.0, -size.z * 0.5 - 0.002)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_add(root, mi)
 	var light: OmniLight3D = OmniLight3D.new()
 	light.name = "Light"
@@ -780,6 +801,7 @@ func _wall_light(parent: Node3D, nm: String, pivot: Vector3, yaw: float, color: 
 	light.light_color = color
 	light.light_energy = energy
 	light.omni_range = rng
+	light.shadow_enabled = nm in SHADOWED
 	_add(root, light)
 
 
@@ -920,13 +942,22 @@ func _build_tactical(tac: Node3D) -> void:
 		tp.tags = tg
 		tp.breachable = bool(t[5])
 		_add(tac, tp)
-	# Pre-planning drop points (P4 board; doc §Pre-planning).
-	for pp: Array in [["PreplanBodyBagDrop", Vector3(10.5, 0.0, -2.2)], ["PreplanZipTiesDrop", Vector3(-2.0, 0.0, -1.0)]]:
+
+
+## Optional contract node `Preplan` (heist_map.md v1.2): one PREPLAN_POINT Marker3D per point,
+## node name = point id, metas category / label / floor / params (contracts/preplanning.md).
+func _build_preplan() -> void:
+	var pre: Node3D = _add(_root, _node3d("Preplan")) as Node3D
+	for p: Array in L.PREPLAN_POINTS:
 		var m: Marker3D = Marker3D.new()
-		m.name = String(pp[0])
-		m.position = pp[1]
+		m.name = String(p[0])
+		m.position = p[2]
+		m.set_meta(&"category", StringName(String(p[1])))
+		m.set_meta(&"label", StringName("ui.preplan.point." + String(p[0])))
+		m.set_meta(&"floor", int(p[3]))
+		m.set_meta(&"params", p[4])
 		m.add_to_group(G.PREPLAN_POINT, true)
-		_add(tac, m)
+		_add(pre, m)
 
 
 func _build_review_cameras(cams: Node3D) -> void:
@@ -1331,6 +1362,84 @@ func _build_nav_links(nav: NavigationRegion3D) -> void:
 
 # --- Navigation bake --------------------------------------------------------------------------
 
+## Keeps only navmesh components that hold a gameplay marker (spawns, patrol points, UsePoints,
+## nav-link ends): no islands on neighbour roofs, garage decks or the shop roof, which would let
+## NPC queries snap there and make the bounds check cast from unreachable places.
+func _prune_islands(nm: NavigationMesh) -> void:
+	var anchors: PackedVector3Array = PackedVector3Array()
+	for n: Node in _root.find_children("*", "", true, false):
+		if n is PatrolPoint or n is SpawnPoint or (n.name == &"UsePoint" and n is Node3D):
+			anchors.append(_global_xform(n as Node3D).origin)
+		elif n is NavigationLink3D:
+			anchors.append((n as NavigationLink3D).start_position)
+			anchors.append((n as NavigationLink3D).end_position)
+	var verts: PackedVector3Array = nm.get_vertices()
+	var polys: Array[PackedInt32Array] = []
+	for i: int in range(nm.get_polygon_count()):
+		polys.append(nm.get_polygon(i))
+	# Union-find over polygons sharing a vertex (by quantised position: tiles duplicate vertices).
+	var parent: PackedInt32Array = PackedInt32Array()
+	parent.resize(polys.size())
+	for i2: int in range(polys.size()):
+		parent[i2] = i2
+	var owner_of: Dictionary = {}
+	for pi: int in range(polys.size()):
+		for vi: int in polys[pi]:
+			var v: Vector3 = verts[vi]
+			var key: Vector3i = Vector3i(roundi(v.x * 20.0), roundi(v.y * 20.0), roundi(v.z * 20.0))
+			if owner_of.has(key):
+				_union(parent, pi, int(owner_of[key]))
+			else:
+				owner_of[key] = pi
+	var keep_roots: Dictionary = {}
+	for a: Vector3 in anchors:
+		var best: int = -1
+		var best_d: float = 1.5
+		for pi2: int in range(polys.size()):
+			var c: Vector3 = Vector3.ZERO
+			for vi2: int in polys[pi2]:
+				c += verts[vi2]
+			c /= float(polys[pi2].size())
+			var d: float = Vector2(c.x - a.x, c.z - a.z).length() + absf(c.y - a.y) * 2.0
+			if d < best_d:
+				best_d = d
+				best = pi2
+		if best >= 0:
+			keep_roots[_find(parent, best)] = true
+	var new_verts: PackedVector3Array = PackedVector3Array()
+	var remap: Dictionary = {}
+	var kept: Array[PackedInt32Array] = []
+	for pi3: int in range(polys.size()):
+		if not keep_roots.has(_find(parent, pi3)):
+			continue
+		var np: PackedInt32Array = PackedInt32Array()
+		for vi3: int in polys[pi3]:
+			if not remap.has(vi3):
+				remap[vi3] = new_verts.size()
+				new_verts.append(verts[vi3])
+			np.append(int(remap[vi3]))
+		kept.append(np)
+	nm.clear_polygons()
+	nm.set_vertices(new_verts)
+	for np2: PackedInt32Array in kept:
+		nm.add_polygon(np2)
+	print("glasshouse: navmesh %d -> %d polygons after island pruning" % [polys.size(), kept.size()])
+
+
+static func _find(parent: PackedInt32Array, i: int) -> int:
+	var r: int = i
+	while parent[r] != r:
+		r = parent[r]
+	return r
+
+
+static func _union(parent: PackedInt32Array, a: int, b: int) -> void:
+	var ra: int = _find(parent, a)
+	var rb: int = _find(parent, b)
+	if ra != rb:
+		parent[maxi(ra, rb)] = mini(ra, rb)
+
+
 ## Bakes the walkable navmesh (heist_map.md §3 v1.1: agent radius 0.3, height 1.8, climb 0.3,
 ## slope 40, cell 0.1 / 0.1) from the Geometry colliders. Props and prefab bodies are projected
 ## obstructions, so no navmesh is generated on top of furniture or vans. Doors stay open.
@@ -1355,6 +1464,7 @@ func _bake(nav: NavigationRegion3D) -> int:
 	for o: Array in _obstructions:
 		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), false)
 	NavigationServer3D.bake_from_source_geometry_data(nm, src)
+	_prune_islands(nm)
 	holder.queue_free()
 	await process_frame
 	nav.navigation_mesh = nm

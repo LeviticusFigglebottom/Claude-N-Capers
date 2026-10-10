@@ -24,6 +24,10 @@
 ##                   difficulty >= min_difficulty (so other events' results never depend on it).
 ##   scalar weights_by_difficulty  {difficulty int: PackedFloat32Array}: replaces `weights` at that
 ##                   difficulty (missing difficulty = `weights`).
+## A3-10 field (QC-18):
+##   rule weights_by_difficulty  {difficulty int: {slot_id: weight}}: at that difficulty the listed
+##                   slots use these weights in the weighted pick instead of VariantSlot.weight
+##                   (unlisted slots / difficulties keep VariantSlot.weight). Same draws, same order.
 ## Every group referenced by force_if / slot_requires must be resolved earlier (else Log.error, not active).
 class_name VariantResolver
 extends RefCounted
@@ -114,10 +118,11 @@ static func resolve(table: HeistVariantTable, slots_by_group: Dictionary, diffic
 				if slot_req.has(String(s.slot_id)) and not _all_hold(slot_req[String(s.slot_id)], result):
 					continue
 				pool.append(s)
+			var slot_w: Dictionary = _slot_weights(rule, difficulty, group)  # A3-10 (QC-18)
 			while chosen.size() < mini(n, slots.size()) and not pool.is_empty():
 				var w: PackedFloat32Array = PackedFloat32Array()
 				for s: VariantSlot in pool:
-					w.append(maxf(s.weight, 0.0))
+					w.append(maxf(float(slot_w.get(String(s.slot_id), s.weight)), 0.0))
 				var idx: int = rng.rand_weighted(w)
 				if idx < 0:
 					idx = 0
@@ -241,6 +246,25 @@ static func _all_hold(cond: Variant, so_far: Dictionary) -> bool:
 		if not _any_active(so_far, StringName(og), c[og]):
 			return false
 	return true
+
+
+## A3-10 (QC-18): a rule's `weights_by_difficulty` {difficulty int: {slot_id: weight}} entry for
+## `difficulty`, as {String(slot_id): float}. Unlisted slots / difficulties keep VariantSlot.weight.
+static func _slot_weights(rule: Dictionary, difficulty: int, group: StringName) -> Dictionary:
+	var out: Dictionary = {}
+	var by_diff: Variant = rule.get("weights_by_difficulty", {})
+	if not by_diff is Dictionary:
+		Log.error(&"variants", "rule '%s' weights_by_difficulty must be {difficulty: {slot_id: weight}}" % group)
+		return out
+	if not (by_diff as Dictionary).has(difficulty):
+		return out
+	var row: Variant = (by_diff as Dictionary)[difficulty]
+	if not row is Dictionary:
+		Log.error(&"variants", "rule '%s' weights_by_difficulty[%d] must be {slot_id: weight}" % [group, difficulty])
+		return out
+	for sid: Variant in row:
+		out[String(sid)] = float((row as Dictionary)[sid])
+	return out
 
 
 ## A2-08: per-difficulty override of a scalar's weights.

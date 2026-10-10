@@ -81,6 +81,9 @@ func _physics_process(delta: float) -> void:
 	if _npc.is_stunned():  # A2-03 (S8.6): ECM feedback stun
 		wants_to_fire = false
 		return
+	if NpcSuppression.is_diving(_npc):  # A3-06 (L3.5): diving for cover, the motor is driven there
+		wants_to_fire = false
+		return
 	if not _active:
 		if _runtime == null or not _runtime.went_loud or not ACTIVE_STATES.has(_npc.alert_state):
 			return
@@ -142,7 +145,7 @@ func _cuffable_near(c: CrewController, dist_sq: float) -> bool:
 
 
 func _can_see(c: CrewController) -> bool:
-	return CombatSystem.has_los(_npc, _npc.eye_position(), c.eye_position(), [_npc, c])
+	return CombatSystem.has_npc_los(_npc, _npc.eye_position(), c.eye_position(), [_npc, c])  # A3-06: shields
 
 
 # --- Positioning -------------------------------------------------------------------------

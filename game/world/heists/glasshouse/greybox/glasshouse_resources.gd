@@ -30,17 +30,21 @@ static func make_def() -> HeistDef:
 	d.loot = [&"loot.jewelry", &"loot.cash"] as Array[StringName]
 	d.objectives = [&"casing", &"keycard", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"] \
 		as Array[StringName]
-	# P4 board (doc §Pre-planning): ids and slots only; cost/favors are set by the lead / ENV B.
+	# Pre-planning (contracts/preplanning.md v1.0: "favors", "disable" and "assets" {asset_id: overrides}).
+	# Generic assets keep their library data; the two heist-only assets force a variant slot from the
+	# chosen point's params.
 	d.preplanning = {
-		&"asset.body_bag_drop": {"cost": 0, "favors": 0, "slot": &"Tactical/PreplanBodyBagDrop", "grants": {}},
-		&"asset.inside_keycard": {"cost": 0, "favors": 0, "slot": &"keycard",
-			"grants": {"force_active": {"group": &"keycard", "slot": &"kc_breakroom"}}},
-		&"asset.van_position": {"cost": 0, "favors": 0, "slot": &"escape", "grants": {"choose_group": &"escape"}},
-		&"asset.zip_ties_drop": {"cost": 0, "favors": 0, "slot": &"Tactical/PreplanZipTiesDrop", "grants": {}},
-		&"asset.propped_door": {"cost": 0, "favors": 0, "slot": &"back_door",
-			"grants": {"force_active": {"group": &"back_door", "slot": &"back_propped"}}},
-		&"preplan_spawn_alley_mouth": {"cost": 0, "favors": 0, "slot": &"preplan_spawn_alley_mouth", "grants": {}},
-		&"preplan_spawn_alley": {"cost": 0, "favors": 0, "slot": &"preplan_spawn_alley", "grants": {}},
+		"favors": 4,
+		"disable": [&"asset.intel_cameras"],
+		"assets": {
+			&"asset.body_bag_case_drop": {"point_categories": [&"drop_zone"]},
+			&"asset.alternate_entry": {"point_categories": [&"player_spawn"]},
+			&"asset.escape_position": {"point_categories": [&"escape"]},
+			&"asset.inside_keycard": {"effect": "force_variant", "category": &"access", "point_categories": [&"insider"],
+				"cost": 1500, "favors": 1, "tags": [&"stealth"]},
+			&"asset.propped_door": {"effect": "force_variant", "category": &"access", "point_categories": [&"access"],
+				"cost": 1000, "favors": 1, "tags": [&"stealth"]},
+		},
 	}
 	d.escape_options = [&"van"] as Array[StringName]
 	d.music_track = &"glasshouse"

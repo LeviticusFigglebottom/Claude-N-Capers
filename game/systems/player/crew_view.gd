@@ -5,10 +5,14 @@
 ##   sets `crew.weapon_visual` (CrewWeapons reads get_marker(&"Muzzle")). Rebuilt on weapon switch
 ##   (CrewWeapons.equipped_changed) and on CrewController.set_loadout(). When someone else puts a
 ##   WeaponVisual under the camera (e.g. ENV B's firing range bridge), ours is removed and that one is kept.
-## - Every crew member, once masked: the Loadout.mask (MaskCatalog.resolve / from_descriptor +
-##   MaskComposer.instantiate, ENV B, by class name; characters.md v1.2) at the model's `Head/Socket`.
+## - Every crew member, once masked: the mask at the model's `Head/Socket`, built on every peer from
+##   `Loadout.mask_descriptor` (QA-25, D-043: MaskCatalog.from_descriptor; the server replicates it with
+##   a reliable authority RPC on set_loadout, on mask-up and on set_mask_descriptor) or, when that is {}, the preset `Loadout.mask`
+##   (MaskCatalog.resolve), then MaskComposer.instantiate (ENV B, by class name; characters.md v1.2).
 ##   The capsule placeholder gets a `Visual/Head` Node3D with a `Socket` Marker3D so the path matches.
 ##   On the local human the mask meshes use FIRST_PERSON_HIDDEN_LAYER, which its camera does not render.
+## - Everyone but the local human, when the visual is an animated character (characters.md v1.3): an
+##   AnimDriver (systems/anim) plays the humanoid clips and holds the third-person weapon at HandR/Socket.
 class_name CrewView
 extends Node
 
@@ -18,8 +22,13 @@ const MASK_NAME: String = "Mask"
 ## Render layer 20: third-person-only parts of the local human (culled by its own camera).
 const FIRST_PERSON_HIDDEN_LAYER: int = 1 << 19
 
-## Optional MaskCatalog.descriptor() of the equipped mask (custom masks on peers without the profile).
-var mask_descriptor: Dictionary = {}
+## Compatibility alias of the crew member's `Loadout.mask_descriptor` (QA-25); setting it calls
+## set_mask_descriptor().
+var mask_descriptor: Dictionary:
+	get:
+		return _crew.loadout.mask_descriptor if _crew != null and _crew.loadout != null else {}
+	set(value):
+		set_mask_descriptor(value)
 ## True once an external WeaponVisual owns the camera (ours is no longer attached).
 var external_viewmodel: bool = false
 
@@ -27,6 +36,8 @@ var _crew: CrewController = null
 var _viewmodel: Node3D = null
 var _mask: Node3D = null
 var _mask_id: StringName = &""
+## Descriptor the current mask was built from (rebuild when it changes).
+var _mask_desc: Dictionary = {}
 
 
 ## The crew member's view component (null when missing).
@@ -54,6 +65,8 @@ func refresh() -> void:
 	refresh_camera()
 	refresh_weapon()
 	refresh_mask()
+	if not _is_local_human():
+		AnimDriver.ensure(_crew)  # D-041: third-person clips + HandR weapon (animated visuals only)
 
 
 func camera() -> Camera3D:
@@ -96,13 +109,17 @@ func refresh_weapon() -> void:
 
 ## Every crew member: the equipped mask at `Head/Socket` once masked.
 func refresh_mask() -> void:
-	var want: StringName = _crew.loadout.mask if _crew.masked and _crew.loadout != null else &""
-	if want == _mask_id and (want == &"" or (_mask != null and is_instance_valid(_mask))):
+	var l: Loadout = _crew.loadout if _crew.masked else null
+	var desc: Dictionary = l.mask_descriptor if l != null else {}
+	var want: StringName = l.mask if l != null else &""
+	if want == &"" and not desc.is_empty():
+		want = StringName(String(desc.get("id", desc.get("preset", ""))))
+	if want == _mask_id and desc == _mask_desc and (want == &"" or (_mask != null and is_instance_valid(_mask))):
 		return
 	_clear_mask()
 	if want == &"":
 		return
-	var def: MaskDef = _resolve_mask(want)
+	var def: MaskDef = _resolve_mask(want, desc)
 	if def == null:
 		return
 	var socket: Node3D = head_socket(true)
@@ -110,9 +127,38 @@ func refresh_mask() -> void:
 	_mask.name = MASK_NAME
 	socket.add_child(_mask)
 	_mask_id = want
+	_mask_desc = desc
 	if _is_local_human():
 		for n: Node in _mask.find_children("*", "VisualInstance3D", true, false):
 			(n as VisualInstance3D).layers = FIRST_PERSON_HIDDEN_LAYER
+
+
+## QA-25 (D-043): replace `Loadout.mask_descriptor` (a copy; never mutated in place) and rebuild the
+## mask. On the server it is replicated to every peer. Late joiners: P6.
+func set_mask_descriptor(d: Dictionary) -> void:
+	if _crew == null:
+		_crew = get_parent() as CrewController
+	if _crew == null:
+		return
+	if _crew.loadout == null:
+		_crew.loadout = CrewWeapons.build_loadout(null)
+	if _crew.loadout.mask_descriptor != d:
+		_crew.loadout.mask_descriptor = d.duplicate(true)
+		if _crew.is_inside_tree():
+			refresh_mask()
+	replicate_mask_descriptor()
+
+
+## Server: send this crew member's mask descriptor to every peer (reliable authority RPC).
+func replicate_mask_descriptor() -> void:
+	if _crew == null or not Net.is_authority() or not is_inside_tree() or not multiplayer.has_multiplayer_peer():
+		return
+	_rpc_mask_descriptor.rpc(_crew.loadout.mask_descriptor if _crew.loadout != null else {})
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_mask_descriptor(d: Dictionary) -> void:
+	set_mask_descriptor(d)
 
 
 ## The model's `Head/Socket` (an assembled character's BoneAttachment3D `Head` + `Socket`, else the
@@ -151,11 +197,11 @@ func _is_local_human() -> bool:
 	return _crew != null and not _crew.is_ai and _crew.is_local()
 
 
-func _resolve_mask(mask_id: StringName) -> MaskDef:
-	if not mask_descriptor.is_empty():
-		return MaskCatalog.from_descriptor(mask_descriptor)
+func _resolve_mask(mask_id: StringName, desc: Dictionary) -> MaskDef:
+	if not desc.is_empty():
+		return MaskCatalog.from_descriptor(desc)
 	if MaskCatalog.is_custom_id(mask_id):
-		return null  # needs the owner's profile: set mask_descriptor
+		return null  # needs the owner's profile: the server replicates Loadout.mask_descriptor
 	return MaskCatalog.resolve(mask_id, null)
 
 
@@ -174,6 +220,7 @@ func _clear_mask() -> void:
 		_mask.queue_free()
 	_mask = null
 	_mask_id = &""
+	_mask_desc = {}
 
 
 func _on_camera_child(n: Node) -> void:

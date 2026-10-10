@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://contracts/data/enemy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"enemy.bulwark"
+display_name = "Bulwark"
+is_special = true
+health = PackedFloat32Array(80, 80, 120, 160, 240, 320)
+headshot_mult = PackedFloat32Array(3, 3, 3, 3, 3, 3)
+damage = PackedFloat32Array(10, 10, 15, 20, 30, 40)
+move_speed = 3.2
+weapon = &"weapon.npc_smg"
+detection_preset = &"police"
+params = {
+"_note": "L4.5 Bulwark (PD2 Shield). Frontal ballistic shield (systems/ai/specials/bulwark_shield.tscn). health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇). Behaviour numbers: systems/ai/specials/heavy_special_tweak.tres.",
+"aim_delay_s": 0.7,
+"fire_interval_s": 0.4,
+"scene": "res://systems/ai/npc/npc_bulwark.tscn"
+}
+voice = &"police"

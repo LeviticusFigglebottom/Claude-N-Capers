@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SpawnGroupDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/director/spawn_group_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"group.special_wrecker_b"
+unit_ids = Array[StringName]([&"enemy.wrecker_b"])
+unit_counts = PackedInt32Array(1)
+weights = PackedFloat32Array(0, 0.1, 0.3, 0.5, 0.6, 0.8)
+phases = PackedInt32Array(3)
+stage_weight_mult = PackedFloat32Array(0, 0.3, 1)
+factions = Array[StringName]([])

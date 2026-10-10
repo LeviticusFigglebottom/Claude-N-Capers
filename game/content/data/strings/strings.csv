@@ -108,6 +108,10 @@ ui.prompt.take_body_bag,Hold {key} to take a body bag
 ui.prompt.deploy,Hold {key} to deploy {item}
 ui.prompt.trade_hostage,Hold {key} to trade the hostage
 ui.prompt.convert,Hold {key} to convert
+ui.prompt.send_lift,Hold {key} to send the lift
+ui.prompt.call_lift,Hold {key} to call the lift
+ui.prompt.start_hack,Hold {key} to start the hack
+ui.prompt.restart_hack,Hold {key} to restart the hack
 ui.prompt.cable_tie,Hold {key} to cuff
 ui.prompt.open_window,Press {key} to open the window
 ui.prompt.climb,Press {key} to climb
@@ -142,6 +146,7 @@ ui.blocked.requires_bag,You need to carry a bag
 ui.blocked.no_deployable,You have none left
 ui.blocked.no_space,No room to place it here
 ui.blocked.push_bar_outside,Opens from the other side
+ui.blocked.lift_full,The lift is full
 ui.results.title,Payday
 ui.results.success,Heist complete
 ui.results.failure,Heist failed

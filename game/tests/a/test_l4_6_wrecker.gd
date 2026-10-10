@@ -1,0 +1,135 @@
+## A3-01b L4.6 Wrecker: EnemyDefs (variants share the enemy.wrecker limit), huge HP, stun immunity,
+## staged weak points (Faceplate 150 -> Visor 160 -> head; plates break in order, head only vulnerable
+## after the visor, each break hides the mesh + cue), real shots hit the plates first, roar + footsteps.
+extends TestCase
+
+var _rt: HeistRuntime = null
+var _cues: Array[StringName] = []
+var _cue_cb: Callable = Callable()
+
+
+func before_each() -> void:
+	_rt = await ACombatSpecials.launch(self)
+	_cues = []
+	_cue_cb = ACombatSpecials.record_cues(_cues)
+
+
+func after_each() -> void:
+	if EventBus.audio_cue_requested.is_connected(_cue_cb):
+		EventBus.audio_cue_requested.disconnect(_cue_cb)
+	if _rt != null and is_instance_valid(_rt):
+		_rt.teardown()
+	_rt = null
+	Modifiers.clear_all()
+	await wait_frames(2)
+
+
+func _wrecker(pos: Vector3 = Vector3(0, 0.05, -6), frozen: bool = true) -> NpcBase:
+	var w: NpcBase = ACombatSpecials.spawn(_rt, "wrecker", pos, Vector3(0, 0, 1))
+	if frozen:
+		for nm: String in ["Brain", "Motor", "Gunner"]:
+			w.get_node(nm).set_physics_process(false)
+	return w
+
+
+func _weak_hit(w: NpcBase, hitbox: String, amount: float) -> Dictionary:
+	var hb: Hitbox = w.get_node("Hitboxes/" + hitbox) as Hitbox
+	var info: Dictionary = Damage.info(amount, Enums.DamageType.BULLET, hb.get_hit_zone(), &"weapon.test",
+		w.head_position(), Vector3(0, 0, -1), 0)
+	return CombatSystem.deliver_hit(Damage.find_target(hb), info, 0)
+
+
+func test_l4_6_defs_and_variants() -> void:
+	for id: String in ["wrecker", "wrecker_g", "wrecker_b", "wrecker_s"]:
+		var d: EnemyDef = ACombatSpecials.def(id)
+		assert_true(d != null and d.is_special, "%s loads, special" % id)
+		assert_eq(d.id, StringName("enemy." + id))
+		assert_eq(PoliceSpecialKit.limit_key(d.id), &"enemy.wrecker", "%s counts toward enemy.wrecker" % id)
+		assert_eq(PoliceSpecialKit.special_type_of(d.id), &"wrecker")
+		assert_near(d.health[0], 2000.0, 0.1, "%s 2k HP on the lowest difficulty" % id)
+		assert_near(d.health[5], 24000.0, 0.1, "%s 24k HP on the top difficulty" % id)
+		assert_near(float(d.params["faceplate_hp"]), 150.0, 0.01)
+		assert_near(float(d.params["visor_hp"]), 160.0, 0.01)
+		assert_near(float(d.params["explosive_mult"]), 1.1, 0.0001)
+		assert_eq(String(d.params["scene"]), "res://systems/ai/npc/npc_wrecker.tscn")
+	assert_ne(ACombatSpecials.def("wrecker_g").weapon, ACombatSpecials.def("wrecker_s").weapon, "pump vs LMG")
+
+
+func test_l4_6_stun_immune() -> void:
+	var w: NpcBase = _wrecker()
+	await wait_physics_frames(2)
+	w.stun(5.0)
+	assert_false(w.is_stunned(), "Wreckers ignore stuns")
+
+
+func test_l4_6_plates_break_in_order_head_after_visor() -> void:
+	var w: NpcBase = _wrecker()
+	await wait_physics_frames(3)
+	var armor: WreckerArmor = w.get_node("Weakpoints") as WreckerArmor
+	assert_eq(armor.current_plate(), &"Faceplate")
+	var hp0: float = w.health
+	# Headshots do x1 while the plates stand.
+	var r: Dictionary = ACombatSpecials.hit(w, 100.0, Enums.HitZone.HEAD)
+	assert_near(float(r["amount"]), 100.0, 0.001, "headshot-immune: x1 while armored")
+	assert_true(bool(r.get("head_armored", false)), "head_armored flag")
+	# A hit on the Visor hitbox while the faceplate stands still damages the faceplate.
+	r = _weak_hit(w, "Visor", 100.0)
+	assert_eq(StringName(r["plate"]), &"Faceplate", "stages break in order")
+	assert_near(armor.hp_left(), 50.0, 0.001, "faceplate 150 - 100")
+	assert_near(w.health, hp0 - 100.0, 0.001, "plate hits do not hurt the Wrecker")
+	r = _weak_hit(w, "Faceplate", 60.0)
+	assert_true(bool(r["plate_broken"]), "faceplate broken")
+	assert_eq(armor.current_plate(), &"Visor")
+	assert_false((w.get_node("Hitboxes/Faceplate") as Hitbox).collision_layer != 0, "faceplate hitbox disabled")
+	assert_false((w.get_node("Visual/Faceplate") as Node3D).visible, "Faceplate mesh hidden")
+	assert_true((w.get_node("Visual/Visor") as Node3D).visible, "Visor mesh still up")
+	assert_eq(_cues.count(&"cue.wrecker_plate_crack"), 1, "crack cue")
+	r = ACombatSpecials.hit(w, 100.0, Enums.HitZone.HEAD)
+	assert_near(float(r["amount"]), 100.0, 0.001, "still x1 with the visor up")
+	r = _weak_hit(w, "Visor", 160.0)
+	assert_true(bool(r["plate_broken"]) and StringName(r["plate"]) == &"Visor", "visor broken (160 HP)")
+	assert_false((w.get_node("Visual/Visor") as Node3D).visible, "Visor mesh hidden")
+	assert_eq(_cues.count(&"cue.wrecker_plate_crack"), 2, "second crack cue")
+	assert_false(armor.is_head_armored(), "head exposed")
+	r = ACombatSpecials.hit(w, 100.0, Enums.HitZone.HEAD)
+	assert_near(float(r["amount"]), 100.0 * w.enemy_def.headshot_mult[0], 0.001, "headshot multiplier applies now")
+
+
+func test_l4_6_real_shots_hit_faceplate_then_visor_then_head() -> void:
+	await ACombatSpecials.place_crew(_rt, 0, Vector3(0, 0.05, 0))
+	var w: NpcBase = _wrecker()
+	await wait_physics_frames(3)
+	var armor: WreckerArmor = w.get_node("Weakpoints") as WreckerArmor
+	Modifiers.set_source(0, &"test", {&"weapon.damage_mult.all": 10.0})
+	var zones: Array[int] = []
+	var cb: Callable = func(v: int, _a: int, info: Dictionary) -> void:
+		if v == w.net_id:
+			zones.append(int(info["zone"]))
+	EventBus.damage_applied.connect(cb)
+	for i: int in range(3):
+		await ACombatSpecials.shoot_at(_rt, 0, w.head_position())
+		await wait_seconds(0.2)
+	EventBus.damage_applied.disconnect(cb)
+	assert_eq(zones, [Enums.HitZone.WEAKPOINT, Enums.HitZone.WEAKPOINT, Enums.HitZone.HEAD] as Array[int],
+		"faceplate, visor, then the head")
+	assert_eq(armor.stage, 2, "both plates broken")
+
+
+func test_l4_6_roar_and_footsteps_when_loud() -> void:
+	var c: CrewController = await ACombatSpecials.place_crew(_rt, 0, Vector3(0, 0.05, 0))
+	Modifiers.set_source(0, &"test.immune", {&"defense.damage_taken_mult": 0.0})
+	var spawned: Array[StringName] = []
+	var cb: Callable = func(_id: int, t: StringName) -> void: spawned.append(t)
+	EventBus.special_spawned.connect(cb)
+	_rt.stealth.raise_alarm(&"test", 0)
+	var w: NpcBase = _wrecker(c.global_position + Vector3(0, 0, -16), false)
+	var b: WreckerBrain = w.get_node("Brain") as WreckerBrain
+	var stepped: bool = await wait_until(func() -> bool: return b.steps >= 2, 6.0)
+	EventBus.special_spawned.disconnect(cb)
+	assert_eq(spawned, [&"wrecker"] as Array[StringName], "special_spawned wrecker")
+	assert_true(b.roared and _cues.count(&"cue.wrecker_roar") == 1, "roar intro once")
+	assert_true(stepped and _cues.has(&"cue.wrecker_step"), "heavy footsteps while moving")
+	var close: bool = await wait_until(func() -> bool:
+		return Vector2(w.global_position.x - c.global_position.x, w.global_position.z - c.global_position.z).length() < 6.0, 8.0)
+	assert_true(close, "keeps pushing in (no cover)")
+	assert_true(b.cover_point == null, "never takes cover")
