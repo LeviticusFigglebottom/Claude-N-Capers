@@ -108,6 +108,20 @@ func test_navmesh_and_markers() -> void:
 		var end: Vector3 = path[path.size() - 1]
 		assert_true(Vector2(end.x, end.z).distance_to(Vector2(target.x, target.z)) < 0.5,
 			"path ends inside the building (%s)" % end)
+	# Through the 0.9 m keycard doorway (door opened first; doors may toggle nav obstacles).
+	var back_door: Node = rt.map.get_node("Gameplay/BackRoomDoor")
+	if back_door.has_method(&"unlock"):
+		back_door.call(&"unlock")
+	if back_door.has_method(&"set_open"):
+		back_door.call(&"set_open", true)
+	await _sync_nav(rt)
+	var vault_target: Vector3 = Vector3(6.0, 0.0, -10.0)
+	var path2: PackedVector3Array = NavigationServer3D.map_get_path(nav_map, start, vault_target, true)
+	assert_true(path2.size() > 0, "path from player spawn into the back room")
+	if path2.size() > 0:
+		var end2: Vector3 = path2[path2.size() - 1]
+		assert_true(Vector2(end2.x, end2.z).distance_to(Vector2(vault_target.x, vault_target.z)) < 0.5,
+			"path ends inside the back room (%s)" % end2)
 	for sp_node: Node in rt.map.find_children("*", "SpawnPoint", true, false):
 		var sp: SpawnPoint = sp_node as SpawnPoint
 		if sp.kind == SpawnPoint.Kind.SNIPER_PERCH:

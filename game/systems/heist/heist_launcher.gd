@@ -16,8 +16,8 @@ static func register_map(heist_id: StringName, scene_path: String) -> void:
 	_registry[heist_id] = scene_path
 
 
-## Path of a heist's map scene, or "" if unknown.
-## Order: options.map_scene, registry, ENV A built-ins, HeistCatalog (contracts, if present).
+## Path of a heist's map scene. Order: options.map_scene, registry, ENV A built-ins,
+## then core `HeistRegistry.map_scene_path` (D-025, QA-1).
 static func map_path(heist_id: StringName, options: Dictionary = {}) -> String:
 	if options.has("map_scene"):
 		return String(options["map_scene"])
@@ -25,12 +25,7 @@ static func map_path(heist_id: StringName, options: Dictionary = {}) -> String:
 		return String(_registry[heist_id])
 	if BUILTIN_MAPS.has(heist_id):
 		return String(BUILTIN_MAPS[heist_id])
-	for c: Dictionary in ProjectSettings.get_global_class_list():
-		if c["class"] == &"HeistCatalog":
-			var cat: Script = load(c["path"]) as Script
-			if cat != null:
-				return String(cat.call(&"map_scene_path", heist_id))
-	return ""
+	return HeistRegistry.map_scene_path(heist_id)
 
 
 ## Load a heist into `parent` (or the scene tree root), solo session unless a session is live.
