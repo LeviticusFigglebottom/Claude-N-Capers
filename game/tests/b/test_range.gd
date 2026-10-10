@@ -51,7 +51,12 @@ func test_scene_instantiates_headless() -> void:
 	var r: FiringRange = await _spawn_range()
 	assert_true(r.is_inside_tree())
 	assert_true(r.overlay != null, "overlay built")
-	assert_true(r.spectator != null, "no CrewController yet -> temporary range camera")
+	# State-tolerant (D-027 integration): ENV A's crew via RangeCrewBridge when CrewController
+	# provides spawn_for_range, otherwise the temporary range camera. Exactly one shooter.
+	if r.crew != null:
+		assert_true(r.spectator == null, "real crew spawned -> no temporary range camera")
+	else:
+		assert_true(r.spectator != null, "no range crew -> temporary range camera")
 	assert_eq(r.targets.size(), r.layout.lane_count())
 	assert_true(r.level.get_node("Floor").get_child_count() > 0, "greybox floor pieces instanced")
 	assert_true(r.level.get_node("Walls").get_child_count() > 0, "greybox wall pieces instanced")
