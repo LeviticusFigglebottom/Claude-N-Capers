@@ -174,3 +174,23 @@ func test_solo_ai_per_heist() -> void:
 	list.heists = {&"glasshouse": {"solo_ai_teammates": 1}}
 	assert_eq(list.solo_ai_for(&"glasshouse"), 1)
 	assert_eq(list.solo_ai_for(&"other"), 3)
+
+
+# --- firing range entry (B1-05) ---
+
+func test_main_menu_opens_and_closes_firing_range() -> void:
+	var f: MenuFlow = _flow()
+	await wait_frames(2)
+	f.main_menu.range_button.pressed.emit()
+	await wait_frames(3)
+	assert_true(f.firing_range != null and f.firing_range.is_inside_tree(), "range entered")
+	assert_false(f.visible, "menus hidden while in range")
+	var r: FiringRange = f.firing_range
+	r.exit_requested.emit()
+	await wait_frames(2)
+	assert_true(f.firing_range == null, "range closed")
+	assert_false(is_instance_valid(r), "range freed")
+	assert_true(f.visible, "menus visible again")
+	assert_eq(f.current, f.main_menu, "back on the main menu")
+	f.queue_free()
+	await wait_frames(1)

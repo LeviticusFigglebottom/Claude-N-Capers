@@ -305,7 +305,6 @@ func _build_bottom() -> void:
 ## A full-height scrolling HUD panel on the left or right edge; returns its content box.
 func _side_panel(left: bool, width: int) -> VBoxContainer:
 	var panel: PanelContainer = PanelContainer.new()
-	panel.theme_type_variation = UiBuild.HUD_PANEL
 	panel.anchor_left = 0.0 if left else 1.0
 	panel.anchor_right = panel.anchor_left
 	panel.anchor_top = 0.0

@@ -16,6 +16,7 @@ const LOADOUT_SCENE: PackedScene = preload("res://content/ui/menus/loadout.tscn"
 const STUB_SCENE: PackedScene = preload("res://content/ui/menus/stub_screen.tscn")
 const PAYDAY_SCENE: PackedScene = preload("res://content/ui/results/payday.tscn")
 const HUD_SCENE: PackedScene = preload("res://content/ui/hud/hud.tscn")
+const RANGE_SCENE: PackedScene = preload("res://content/range/firing_range.tscn")
 
 var main_menu: MainMenu
 var heist_select: HeistSelect
@@ -23,6 +24,7 @@ var loadout_screen: LoadoutScreen
 var stub_screen: StubScreen
 var payday: PaydayScreen
 var current: Control
+var firing_range: FiringRange = null
 var runtime: Object = null
 var _heist_id: StringName = &""
 var _difficulty: int = Enums.Difficulty.ROUTINE
@@ -42,6 +44,7 @@ func _ready() -> void:
 	heist_select = _add(SELECT_SCENE) as HeistSelect
 	stub_screen = _add(STUB_SCENE) as StubScreen
 	main_menu.play_solo_requested.connect(show_screen.bind(heist_select))
+	main_menu.firing_range_requested.connect(open_firing_range)
 	main_menu.settings_requested.connect(_show_stub.bind(&"ui.menu.settings_soon", false))
 	main_menu.quit_requested.connect(get_tree().quit)
 	heist_select.back_requested.connect(show_screen.bind(main_menu))
@@ -84,6 +87,28 @@ func _on_heist_chosen(heist_id: StringName, difficulty: int) -> void:
 	loadout_screen.back_requested.connect(show_screen.bind(heist_select))
 	loadout_screen.launch_requested.connect(_on_launch_requested)
 	show_screen(loadout_screen)
+
+
+## Firing range (B1-05): a 3D scene added next to the flow; the menu hides until it exits.
+## Starts with the profile's resolved loadout (any weapon/mod can be swapped in-range, P7).
+func open_firing_range() -> void:
+	if firing_range != null:
+		return
+	var range_scene: FiringRange = RANGE_SCENE.instantiate() as FiringRange
+	range_scene.setup(LoadoutResolver.resolve(SaveService.load_profile().loadout))
+	range_scene.exit_requested.connect(close_firing_range)
+	firing_range = range_scene
+	visible = false
+	get_parent().add_child.call_deferred(range_scene)
+
+
+func close_firing_range() -> void:
+	if firing_range == null:
+		return
+	firing_range.queue_free()
+	firing_range = null
+	visible = true
+	show_screen(main_menu)
 
 
 func _on_launch_requested(loadout: Loadout) -> void:

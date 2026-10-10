@@ -39,11 +39,11 @@ func test_every_scene_instantiates() -> void:
 		await wait_frames(1)
 
 
-func test_main_menu_focus_and_disabled_range() -> void:
+func test_main_menu_focus_and_range_enabled() -> void:
 	var m: MainMenu = (load("res://content/ui/menus/main_menu.tscn") as PackedScene).instantiate() as MainMenu
 	add_child(m)
 	await wait_frames(2)
-	assert_true(m.range_button.disabled, "firing range is coming soon")
+	assert_false(m.range_button.disabled, "firing range is available (B1-05)")
 	assert_true(m.play_button.has_focus(), "first button has focus for gamepad/keyboard")
 	assert_false(m.play_button.focus_neighbor_bottom.is_empty(), "focus chain set")
 	m.queue_free()
