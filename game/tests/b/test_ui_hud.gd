@@ -51,8 +51,8 @@ func test_interaction_prompt_and_blocked_reason() -> void:
 	assert_near(_hud.interaction.progress_bar.value, 0.4)
 	assert_false(_hud.interaction.blocked_label.visible)
 	_model.interaction = {"text_key": &"ui.prompt.pick_lock", "args": {"key": "F"}, "progress": 0.0,
-			"blocked_reason": &"ui.prompt.blocked.casing"}
-	assert_eq(_hud.interaction.blocked_label.text, UiText.t(&"ui.prompt.blocked.casing"))
+			"blocked_reason": &"ui.blocked.casing"}
+	assert_eq(_hud.interaction.blocked_label.text, UiText.t(&"ui.blocked.casing"))
 
 
 func test_detection_chevron_colors() -> void:
@@ -80,7 +80,7 @@ func test_detection_chevron_colors() -> void:
 func test_pager_objectives_assault_bag_crew_mask() -> void:
 	_model.pagers = [{"pager_id": 4, "time_left_s": 8.0, "answering": false, "progress": 0.0}]
 	assert_eq(_hud.pager.pager_labels[0].text, UiText.t(&"ui.hud.pager", {"seconds": UiText.clock(8.0)}))
-	_model.objectives = [{"id": &"a", "text_key": &"objective.glasshouse.find_keycard", "args": {},
+	_model.objectives = [{"id": &"a", "text_key": &"objective.glasshouse.keycard", "args": {},
 			"state": Enums.ObjectiveState.ACTIVE}]
 	assert_true(_hud.objectives.visible)
 	assert_eq(_hud.objectives.list_box.get_child_count(), 1)

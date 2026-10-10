@@ -130,11 +130,17 @@ func test_catalog_placeholder_while_def_missing() -> void:
 	var list: UiHeistList = HeistCatalog.heist_list()
 	assert_true(list.heists.has(&"glasshouse"))
 	var e: Array[Dictionary] = HeistCatalog.entries_from({}, list)
-	assert_eq(e.size(), 1)
-	assert_eq(e[0]["id"], &"glasshouse")
+	assert_eq(e.size(), list.heists.size(), "every listed heist is a placeholder without defs")
+	assert_eq(e[0]["id"], &"glasshouse", "sorted by id text")
 	assert_true(bool(e[0]["placeholder"]))
 	assert_eq(int(e[0]["base_payout"]), 40000)
 	assert_true(e[0]["def"] == null)
+	# B4-09/B4-10: ENV C's proposed base payouts until their HeistDefs land.
+	var pay: Dictionary = {}
+	for x: Dictionary in e:
+		pay[StringName(x["id"])] = int(x["base_payout"])
+	assert_eq(pay.get(&"night_deposit", 0), 90000)
+	assert_eq(pay.get(&"shadow_ledger", 0), 110000)
 
 
 func test_catalog_uses_registry_defs() -> void:
@@ -151,7 +157,9 @@ func test_catalog_uses_registry_defs() -> void:
 	late.id = StringName("zz_catalog_sort_%d" % Time.get_ticks_usec())
 	other.id = StringName("aa_catalog_sort_%d" % Time.get_ticks_usec())
 	var defs: Dictionary = {late.id: late, &"glasshouse": def, other.id: other}
-	var e: Array[Dictionary] = HeistCatalog.entries_from(defs, HeistCatalog.heist_list())
+	var list: UiHeistList = HeistCatalog.heist_list().duplicate() as UiHeistList
+	list.heists = {&"glasshouse": list.heists[&"glasshouse"]}
+	var e: Array[Dictionary] = HeistCatalog.entries_from(defs, list)
 	assert_eq(e.size(), 3, "placeholder dropped once the def exists")
 	assert_eq(e[0]["id"], other.id, "sorted by id text")
 	assert_eq(e[1]["id"], &"glasshouse")

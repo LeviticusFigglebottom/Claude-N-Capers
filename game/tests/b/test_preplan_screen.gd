@@ -66,13 +66,21 @@ func test_cash_limit_and_vote() -> void:
 	assert_eq(s.buy(&"asset.extra_cable_ties"), PreplanPlan.R_CASH, "no spending cash")
 	s.profile.cash = 100000
 	s.show_point(&"pp_escape_side_street")
+	var sent: Array[StringName] = []
+	var listen: Callable = func(_peer: int, kind: StringName, _data: Dictionary) -> void: sent.append(kind)
+	Net.lobby_message.connect(listen)
 	assert_eq(s.buy(&"asset.escape_position"), PreplanPlan.OK)
+	Net.lobby_message.disconnect(listen)
+	assert_eq(sent, [PlanVote.MSG_CAST] as Array[StringName], "the vote went through Net.lobby_send (solo: local)")
 	assert_true(s.is_selected(&"asset.escape_position"))
+	assert_eq(s.plan.cash_cost(s.local_slot), s.board.cost_of(&"asset.escape_position"), "solo: the one human pays the plan")
 	assert_true(s.vote_label.text.contains(UiText.t(&"ui.preplan.point.pp_escape_side_street")), s.vote_label.text)
 	s.show_point(&"pp_escape_alley_west")
 	assert_eq(s.buy(&"asset.escape_position"), PreplanPlan.OK, "re-vote moves the plan")
 	assert_eq(s.plan.count_of(&"asset.escape_position"), 1)
 	assert_eq(s.plan.index_at(&"pp_escape_side_street"), -1)
+	s.remove(&"asset.escape_position")
+	assert_eq(s.plan.count_of(&"asset.escape_position"), 0, "retract went through Net too")
 	s.queue_free()
 	await wait_frames(1)
 
@@ -88,7 +96,9 @@ func test_confirm_emits_handoff_and_charges() -> void:
 	s.confirm_button.pressed.emit()
 	assert_eq(got.size(), 1)
 	assert_has(got[0]["modifier_sources"], &"asset.spare_body_bags")
-	assert_eq(int(got[0]["difficulty"]), Enums.Difficulty.BRUTAL)
+	assert_eq(int((got[0]["plan"] as Dictionary)["difficulty"]), Enums.Difficulty.BRUTAL)
+	assert_eq((got[0].keys() as Array).size(), PreplanPlan.RESULT_KEYS.size(), "exactly the PreplanResult v1 keys")
+	assert_eq(int((got[0]["cash_spent"] as Dictionary)[s.local_slot]), cost)
 	assert_eq(s.profile.cash, 50000 - cost, "spending cash paid on confirm")
 	var backs: Array[int] = [0]
 	s.back_requested.connect(func() -> void: backs[0] += 1)

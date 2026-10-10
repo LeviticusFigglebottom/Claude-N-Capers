@@ -5,9 +5,8 @@
 [resource]
 script = ExtResource("1")
 id = &"asset.escape_position"
-effect = 3
 category = &"escape"
-base_cost = 1000
+cost = 1000
 favors = 1
 point_categories = Array[StringName]([&"escape"])
 vote_group = &"escape"

@@ -10,6 +10,8 @@ extends Resource
 ## Placeholder mesh grid resolution (quads per side).
 @export var placeholder_grid: int = 40
 @export_group("Preview")
+## Starting yaw: a 3/4 view, so heron and visage read apart (head-on they look alike).
+@export var preview_start_yaw_deg: float = 35.0
 @export var preview_spin_deg_s: float = 18.0
 @export var preview_drag_deg_per_px: float = 0.4
 @export var preview_stick_deg_s: float = 140.0

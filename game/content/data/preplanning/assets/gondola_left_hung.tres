@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.gondola_left_hung"
+category = &"entry"
+cost = 2000
+favors = 2
+point_ids = Array[StringName]([&"pp_gondola_west", &"pp_gondola_north"])
+exclusive_group = &"gondola"
+tags = Array[StringName]([&"stealth"])

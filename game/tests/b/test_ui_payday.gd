@@ -78,3 +78,84 @@ func test_shows_on_heist_ended_when_listening() -> void:
 	EventBus.heist_ended.emit(HeistCatalog.sample_result())
 	assert_true(_screen.visible)
 	assert_false(_screen.payout.is_empty())
+
+
+# --- B4-05: payday card pick (P9) ---
+
+
+func test_card_pick_flow_pick_reveal_continue() -> void:
+	var result: Dictionary = HeistCatalog.sample_result()
+	_screen.show_result(result)
+	assert_true(_screen.has_card_pick(), "successful heist offers a card pick")
+	var expected: Dictionary = PaydayCards.roll(int(result["seed"]), Net.local_slot(), int(result["difficulty"]),
+			_screen.profile, PaydayCards.quality_add_for(_screen.profile))
+	assert_eq(_screen.card_roll, expected, "cards rolled from the run seed + local slot")
+	var emitted: Array[bool] = [false]
+	_screen.continue_pressed.connect(func() -> void: emitted[0] = true)
+	_screen.continue_button.pressed.emit()
+	assert_false(emitted[0], "Continue on the summary opens the cards")
+	assert_true(_screen.cards_stage)
+	assert_eq(_screen.card_views.size(), 3)
+	assert_true(_screen.continue_button.disabled, "no Continue before a pick")
+	for v: PaydayCardView in _screen.card_views:
+		assert_false(v.face_up, "cards start face down")
+	_screen.continue_button.pressed.emit()
+	assert_false(emitted[0])
+	var before: PlayerProfile = SaveService.load_profile(0)
+	_screen.card_views[1].pressed.emit()  # mouse click / ui_accept on the second card
+	assert_eq(_screen.picked_index, 1)
+	assert_false(_screen.auto_picked)
+	for v: PaydayCardView in _screen.card_views:
+		assert_true(v.face_up, "all three revealed")
+	assert_true(_screen.card_views[1].picked)
+	assert_false(_screen.continue_button.disabled)
+	_assert_granted(before, SaveService.load_profile(0), expected["cards"][1] as Dictionary)
+	_screen.card_views[0].pressed.emit()
+	assert_eq(_screen.picked_index, 1, "only one pick")
+	_screen.continue_button.pressed.emit()
+	assert_true(emitted[0], "Continue after the reveal leaves the payday")
+
+
+func test_card_auto_pick_after_timeout() -> void:
+	_screen.show_result(HeistCatalog.sample_result())
+	_screen.show_cards()
+	var t: float = PaydayCards.table().pick_time_s
+	_screen.tick(t - 0.5)
+	assert_eq(_screen.picked_index, -1, "still waiting before the timer runs out")
+	assert_false(_screen.timer_label.text.is_empty())
+	var before: PlayerProfile = SaveService.load_profile(0)
+	_screen.tick(1.0)
+	var auto: int = int(_screen.card_roll["auto_pick"])
+	assert_eq(_screen.picked_index, auto, "timer picks the rolled auto_pick card")
+	assert_true(_screen.auto_picked)
+	_assert_granted(before, SaveService.load_profile(0), (_screen.card_roll["cards"] as Array)[auto] as Dictionary)
+	assert_false(_screen.continue_button.disabled)
+
+
+func test_no_card_pick_on_failure_or_preview() -> void:
+	var result: Dictionary = HeistCatalog.sample_result()
+	result["success"] = false
+	_screen.show_result(result)
+	assert_false(_screen.has_card_pick(), "failed heists get no card (PD2)")
+	var emitted: Array[bool] = [false]
+	_screen.continue_pressed.connect(func() -> void: emitted[0] = true)
+	_screen.continue_button.pressed.emit()
+	assert_true(emitted[0])
+	_screen.apply_to_profile = false
+	_screen.show_result(HeistCatalog.sample_result())
+	assert_false(_screen.has_card_pick(), "previews (apply_to_profile=false) never grant cards")
+
+
+func _assert_granted(before: PlayerProfile, after: PlayerProfile, card: Dictionary) -> void:
+	match StringName(card["type"]):
+		PaydayCards.CASH:
+			assert_eq(after.cash, before.cash + int(card["amount"]), "cash card saved")
+		PaydayCards.XP:
+			assert_eq(after.xp, before.xp + int(card["amount"]), "xp card saved")
+			assert_eq(after.level, XpCurve.level_for_xp(after.xp))
+		PaydayCards.WEAPON_MOD:
+			assert_false(before.owned_mods.has(card["item_id"]))
+			assert_has(after.owned_mods, card["item_id"], "mod card saved")
+		PaydayCards.MASK_PART:
+			assert_false(before.owned_mask_parts.has(card["item_id"]))
+			assert_has(after.owned_mask_parts, card["item_id"], "mask part card saved")

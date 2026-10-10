@@ -77,8 +77,8 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   CanvasLayer + dynamic `HeistLauncher.launch`; stub screen when the launcher is absent), and
   `HeistRuntime.teardown()` + `Net.leave()` after results. Launch options come from the pure
   `MenuFlow.build_launch_options(ai, local_slot, resolved, plan) -> {ai_teammates, loadouts, preplan?}`:
-  `options["preplan"]` = the confirmed `PreplanPlan.apply()` (only when a plan was confirmed;
-  **proposed, pending the lead's QB-PP2**; launchers that do not read it ignore it). Direct launch:
+  `options["preplan"]` = the confirmed PreplanResult v1 (`PreplanPlan.apply()`, contract
+  `docs/contracts/preplanning.md`, D-038; only when a plan was confirmed). Direct launch:
   `godot --path game -- --heist=<id> [--seed=<n>] [--difficulty=<0..5>]` skips every menu and has no
   pre-planning plan (seed defaults to the time, difficulty to Routine; unknown heist or bad value logs an error and stays on the main menu).
   Parsing: `LaunchArgs.parse(args) -> {direct, heist_id, has_seed, seed, difficulty, errors}`,
@@ -104,8 +104,14 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `continue_requested(heist_id, difficulty)`, `back_requested()`. Data: `BriefingModel.build()`;
   contacts are `ContactDef` (`defs/contact_def.gd`, `data/contacts/`, `ContactDef.find(id)/all()`).
 * `PreplanningScreen` (`ui/preplanning/preplanning_screen.tscn`, C3): `setup(heist_id, difficulty, profile)`,
-  `profile_slot`, `save_on_confirm`; signals `confirmed(plan: Dictionary)` (= `PreplanPlan.apply()`, cash
-  already charged), `back_requested()`. Design, hand-off shape and open questions: `content/docs/preplanning.md`.
+  `profile_slot`, `save_on_confirm`; signals `confirmed(plan: Dictionary)` (= the PreplanResult v1 from
+  `PreplanPlan.apply()`, cash already charged), `back_requested()`. Plan votes go through
+  `Net.lobby_send` / `Net.lobby_message` (`PlanVote.send_cast`, `PreplanPlan.receive_vote`).
+* **Pre-planning for ENV A** (contract `docs/contracts/preplanning.md` is authoritative; our notes:
+  `content/docs/preplanning.md`): apply `options["preplan"]` as given (keys `PreplanPlan.RESULT_KEYS`).
+  Dev path without UI: `PreplanPlan.resolve_ids(heist_id, ids: Array, difficulty = ROUTINE, def = null)
+  -> PreplanResult` (ids may be `"asset.<id>@<point id>"`; nothing charged). Points are read from the
+  map's `<Map>/Preplan` Marker3Ds (instanced off-tree), else the placeholder blueprint.
 * `MaskScreen` (`ui/masks/mask_screen.tscn`, P8): `setup(profile)`, `profile_slot`; signals
   `mask_changed(mask_id)` (after Equip), `back_requested()`; saves the profile itself. Opened from the
   loadout screen's "Masks" button (`LoadoutScreen.masks_requested`); the loadout's mask picker lists
@@ -137,5 +143,11 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 
 ## Rules
 Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, every string through
-`StringTable`, only grant keys from `ModifierKeys.KEYS`. Code that builds a mod delta starts from
+`StringTable`, only grant keys from `ModifierKeys.KEYS`.
+**Objective ids (D-039)** come from the heist design doc's Objectives section `[tag]`s
+(`docs/design/heists/<id>.md`); strings are `objective.<heist>.<tag>`. Read them there, never guess
+(`test_strings.test_glasshouse_objectives_follow_the_design_doc`). **Blocked reasons** are `ui.blocked.*`
+(D-038 QA-14; no `ui.prompt.blocked.*`). Voice lines requested by id (`vo.<speaker>.<event>`, e.g.
+`vo.guard.cuff_warning`) get a `data/voice/lines.tres` entry and `voice.<id>` text;
+`test_strings.test_keys_requested_by_systems_exist` scans ENV A/C code for prompt/blocked/voice keys. Code that builds a mod delta starts from
 `WeaponStats.make_delta()`; `.tres` deltas spell its zeros out (D-022 QB-5). Tests: `game/tests/b/test_*.gd`.

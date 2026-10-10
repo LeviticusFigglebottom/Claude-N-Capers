@@ -1,0 +1,102 @@
+[gd_resource type="Resource" script_class="BoardCityMap" format=3]
+
+[ext_resource type="Script" path="res://content/board/board_city_map.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+aspect = 1.6
+districts = {
+&"docks": {
+"color": Color(0.21, 0.16, 0.13, 1),
+"polygon": PackedVector2Array(0.77, 0.71, 0.81, 0.54, 0.97, 0.45, 0.97, 0.71, 0.87, 0.735)
+},
+&"financial": {
+"color": Color(0.15, 0.19, 0.18, 1),
+"polygon": PackedVector2Array(0.69, 0.04, 0.97, 0.04, 0.97, 0.4, 0.8, 0.49, 0.675, 0.42)
+},
+&"harbor": {
+"color": Color(0.14, 0.18, 0.17, 1),
+"polygon": PackedVector2Array(0.305, 0.585, 0.385, 0.665, 0.48, 0.785, 0.555, 0.96, 0.33, 0.96, 0.245, 0.8)
+},
+&"harlow": {
+"color": Color(0.21, 0.18, 0.16, 1),
+"label_pos": Vector2(0.11, 0.06),
+"polygon": PackedVector2Array(0.03, 0.04, 0.34, 0.04, 0.36, 0.3, 0.27, 0.39, 0.14, 0.33, 0.03, 0.31)
+},
+&"midtown": {
+"color": Color(0.19, 0.15, 0.19, 1),
+"polygon": PackedVector2Array(0.545, 0.57, 0.665, 0.45, 0.78, 0.53, 0.745, 0.69, 0.63, 0.73)
+},
+&"southfield": {
+"color": Color(0.17, 0.17, 0.16, 1),
+"polygon": PackedVector2Array(0.03, 0.765, 0.2, 0.785, 0.29, 0.96, 0.03, 0.96)
+},
+&"uptown": {
+"color": Color(0.16, 0.19, 0.21, 1),
+"polygon": PackedVector2Array(0.38, 0.04, 0.66, 0.04, 0.645, 0.4, 0.5, 0.52, 0.41, 0.43, 0.39, 0.3)
+},
+&"westside": {
+"color": Color(0.16, 0.17, 0.19, 1),
+"polygon": PackedVector2Array(0.03, 0.43, 0.14, 0.45, 0.255, 0.53, 0.29, 0.66, 0.18, 0.73, 0.03, 0.72)
+}
+}
+water = Array[PackedVector2Array]([PackedVector2Array(0.6, 1.0, 0.655, 0.88, 0.76, 0.8, 0.88, 0.765, 1.0, 0.75, 1.0, 1.0)])
+rivers = Array[PackedVector2Array]([PackedVector2Array(0.0, 0.37, 0.14, 0.385, 0.28, 0.465, 0.4, 0.585, 0.52, 0.705, 0.62, 0.81, 0.69, 0.89)])
+river_width = 0.035
+avenues = Array[PackedVector2Array]([PackedVector2Array(0.0, 0.215, 0.36, 0.195, 0.68, 0.225, 1.0, 0.205), PackedVector2Array(0.365, 0.0, 0.38, 0.33, 0.29, 0.57, 0.27, 1.0), PackedVector2Array(0.675, 0.0, 0.66, 0.43, 0.79, 0.72), PackedVector2Array(0.0, 0.745, 0.24, 0.79, 0.5, 0.8, 0.65, 0.73, 0.8, 0.735, 1.0, 0.725)])
+streets = Array[PackedVector2Array]([PackedVector2Array(0.03, 0.11, 0.34, 0.1), PackedVector2Array(0.12, 0.04, 0.13, 0.32), PackedVector2Array(0.24, 0.04, 0.25, 0.36), PackedVector2Array(0.03, 0.27, 0.34, 0.26), PackedVector2Array(0.39, 0.12, 0.66, 0.12), PackedVector2Array(0.52, 0.04, 0.52, 0.48), PackedVector2Array(0.4, 0.31, 0.645, 0.32), PackedVector2Array(0.69, 0.13, 0.97, 0.13), PackedVector2Array(0.79, 0.04, 0.8, 0.48), PackedVector2Array(0.88, 0.04, 0.89, 0.44), PackedVector2Array(0.68, 0.32, 0.97, 0.31), PackedVector2Array(0.57, 0.55, 0.77, 0.6), PackedVector2Array(0.66, 0.46, 0.69, 0.72), PackedVector2Array(0.82, 0.62, 0.97, 0.6), PackedVector2Array(0.89, 0.5, 0.9, 0.73), PackedVector2Array(0.03, 0.58, 0.27, 0.6), PackedVector2Array(0.1, 0.45, 0.11, 0.72), PackedVector2Array(0.2, 0.49, 0.21, 0.72), PackedVector2Array(0.31, 0.7, 0.45, 0.7), PackedVector2Array(0.38, 0.66, 0.42, 0.96), PackedVector2Array(0.29, 0.88, 0.53, 0.88), PackedVector2Array(0.03, 0.87, 0.24, 0.87), PackedVector2Array(0.12, 0.78, 0.13, 0.96)])
+heists = {
+&"afterhours": {
+"contact": &"contact.reyes",
+"district": &"midtown",
+"pos": Vector2(0.665, 0.61)
+},
+&"dockside_burn": {
+"contact": &"contact.reyes",
+"district": &"docks",
+"pos": Vector2(0.885, 0.62)
+},
+&"gallery_night": {
+"contact": &"contact.vance",
+"district": &"uptown",
+"pos": Vector2(0.47, 0.36)
+},
+&"glasshouse": {
+"contact": &"contact.vance",
+"district": &"harlow",
+"pos": Vector2(0.19, 0.19)
+},
+&"meridian_federal": {
+"contact": &"contact.accountant",
+"district": &"financial",
+"pos": Vector2(0.84, 0.24)
+},
+&"night_deposit": {
+"contact": &"contact.accountant",
+"district": &"harbor",
+"pos": Vector2(0.4, 0.8)
+},
+&"rolling_thunder": {
+"contact": &"contact.reyes",
+"district": &"southfield",
+"pos": Vector2(0.14, 0.86)
+},
+&"shadow_ledger": {
+"contact": &"contact.accountant",
+"district": &"uptown",
+"pos": Vector2(0.56, 0.2)
+}
+}
+fallback_area = Rect2(0.3, 0.3, 0.4, 0.3)
+land_color = Color(0.1, 0.11, 0.13, 1)
+water_color = Color(0.07, 0.12, 0.18, 1)
+avenue_color = Color(0.36, 0.38, 0.42, 1)
+street_color = Color(0.27, 0.29, 0.33, 0.7)
+district_border = Color(1, 1, 1, 0.07)
+label_color = Color(0.62, 0.65, 0.7, 0.5)
+highlight_color = Color(0.31, 0.82, 0.91, 1)
+pro_color = Color(0.62, 0.17, 0.15, 1)
+avenue_px = 7.0
+street_px = 2.5
+pin_px = 44.0
+label_font_px = 18

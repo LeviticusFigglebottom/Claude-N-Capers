@@ -178,7 +178,7 @@ static func placeholder_mesh(b: MaskBaseDef, grid: int = 40) -> ArrayMesh:
 				continue
 			for k: int in [0, 1, 2, 0, 2, 3]:
 				var p: Vector2 = _snap(b, quad[k])
-				st.set_uv(Vector2((1.0 + p.x) * 0.5, (1.0 - p.y) * 0.5))
+				st.set_uv(Vector2((1.0 - p.x) * 0.5, (1.0 - p.y) * 0.5))  # u=0 at +X (viewer's left), v=0 top (masks.md)
 				st.add_vertex(_point(b, p.x, p.y))
 	st.generate_normals()
 	st.generate_tangents()
