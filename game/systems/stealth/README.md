@@ -59,4 +59,16 @@ only delivered during stealth. **Movement never makes noise (S1.5).**
 ## Alarm
 `raise_alarm(reason, source_net_id)` emits `alarm_raised` [R] once; HeistRuntime goes LOUD (S11.2).
 Reasons used: `&"guard_radio"`, `&"civilian_call"`, `&"pager_failed"`, `&"pager_limit"`,
-`&"camera"`, `&"alarm_button"`, `&"gunshot"`, `&"laser"`.
+`&"camera"`, `&"alarm_button"`, `&"gunshot"`, `&"laser"`, `&"glass_alarm"` (alarmed display case),
+`&"phone_call"` (phone prefab).
+
+## Pagers (S5.2-S5.5)
+`PagerSystem` (service `G.SVC_PAGERS`, pager_system.gd): a guard killed or dominated while
+`is_stealth()` beeps after rand(2, 4) s (GameRng `&"pagers"`); `PagerInteractable` on the body
+(kind `answer_pager`, priority 10, `allow_multiple`). 12 s to start answering (`timeout`), letting
+go with nobody else holding (`released`) -> `pager_failed` + `alarm_raised(&"pager_failed")`. The
+first completion counts (`pager_answered(id, slot, total)`); total > `max_answers` (4, or the
+heist's `pager_max_answers` variant scalar) raises `&"pager_limit"` after completing; Mercer line
+`vo.mercer.pager_last` on the last allowed answer. Going loud cancels pending/beeping pagers with
+`pager_failed(&"cancelled")` (no extra alarm). `pager_entries()` feeds LocalHudModel;
+`blocks_body(guard)` stops body bagging while a pager is pending/beeping.

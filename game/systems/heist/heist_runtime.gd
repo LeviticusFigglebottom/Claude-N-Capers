@@ -152,6 +152,12 @@ func _create_services() -> void:
 	stealth = StealthDirector.new()
 	stealth.name = "StealthDirector"
 	register_service(G.SVC_STEALTH, stealth)
+	var pagers: PagerSystem = PagerSystem.new()
+	pagers.name = "PagerSystem"
+	register_service(G.SVC_PAGERS, pagers)
+	var loot: LootManager = LootManager.new()
+	loot.name = "LootManager"
+	register_service(G.SVC_LOOT, loot)
 	hud_model = LocalHudModel.new()
 	hud_model.name = "LocalHudModel"
 	add_child(hud_model)

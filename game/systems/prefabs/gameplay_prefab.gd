@@ -120,3 +120,40 @@ func _apply_common_interaction() -> void:
 func _emit_fact(sig: StringName, args: Array) -> void:
 	EventBus.emit_signal.callv([sig] + args)
 	Net.replicate_event(sig, args)
+
+
+## Ask the audio player for a cue (audio_cues.md) on the server and relay it.
+func _cue(cue_id: StringName, pos: Vector3) -> void:
+	_emit_fact(&"audio_cue_requested", [cue_id, pos, net_id])
+
+
+## The stealth director of the running heist, or null (standalone prefab).
+func _stealth() -> StealthDirector:
+	return HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector
+
+
+## Server: raise the alarm through the stealth director (no-op without a heist).
+func _raise_alarm(reason: StringName, source_net_id: int) -> void:
+	var st: StealthDirector = _stealth()
+	if st != null:
+		st.raise_alarm(reason, source_net_id)
+
+
+## Shared glass shatter (S9.9): glass_broken [R], cue, 15 m noise, `broken_glass` stimulus.
+## Returns the stimulus id (0 without a heist).
+func _shatter_glass(pos: Vector3) -> int:
+	_emit_fact(&"glass_broken", [net_id, pos])
+	_cue(&"cue.glass_break", pos)
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if rt != null:
+		rt.make_noise(pos, Tweak.stealth().glass_break_radius_m, &"glass", net_id)
+	var st: StealthDirector = _stealth()
+	if st == null:
+		return 0
+	return st.register_stimulus(null, &"broken_glass", {"position": pos})
+
+
+## Point a collision body's hits at this prefab (combat resolves `hit_owner` -> apply_damage).
+func _route_hits(body: Node) -> void:
+	if body != null:
+		body.set_meta(&"hit_owner", self)

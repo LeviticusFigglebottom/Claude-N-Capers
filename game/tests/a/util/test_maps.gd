@@ -151,3 +151,25 @@ static func add_npc_observer(rt: HeistRuntime, role: StringName, pos: Vector3, f
 	npc.global_transform = Transform3D(Basis.looking_at(facing, Vector3.UP), pos)
 	NetIds.claim(npc)
 	return npc
+
+
+## Runtime helper (A1-07): instance gameplay prefab `prefab` under the map's Gameplay node at `pos`.
+## `setup` (optional) is called with the prefab before it enters the tree.
+static func add_prefab(rt: HeistRuntime, prefab: String, pos: Vector3, setup: Callable = Callable()) -> GameplayPrefab:
+	var path: String = "res://systems/prefabs/%s/%s.tscn" % [prefab, prefab]
+	var p: GameplayPrefab = (load(path) as PackedScene).instantiate() as GameplayPrefab
+	p.position = pos
+	if setup.is_valid():
+		setup.call(p)
+	rt.map.get_node(^"Gameplay").add_child(p)
+	return p
+
+
+## Runtime helper (A1-07): hold interact on `target_net_id` with crew `slot` (explicit target).
+static func hold_interact(rt: HeistRuntime, slot: int, target_net_id: int) -> void:
+	var c: CrewController = rt.crew_controller(slot) as CrewController
+	var i: CrewIntent = CrewIntent.new()
+	i.look_yaw = c.look_yaw
+	i.interact = true
+	i.interact_target_net_id = target_net_id
+	rt.set_bot_intent(slot, i)

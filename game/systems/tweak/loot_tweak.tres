@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="LootTweak" format=3]
+
+[ext_resource type="Script" path="res://systems/tweak/loot_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
