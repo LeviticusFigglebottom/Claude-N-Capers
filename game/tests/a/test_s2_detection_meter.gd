@@ -10,6 +10,8 @@ func before_each() -> void:
 	_rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 0})
 	_st = _rt.stealth
+	# The resolved default loadout now sets a real DR (D-026 follow-up); these formula tests use DR 35.
+	(_rt.crew_controller(0) as CrewController).loadout.detection_risk = Tweak.stealth().default_detection_risk
 
 
 func after_each() -> void:

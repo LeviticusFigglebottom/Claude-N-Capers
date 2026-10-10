@@ -4,7 +4,7 @@
 ## blocks movement while the glass is intact. `openable`: the interaction (kind &"open_window")
 ## slides the `Sash` up / down (GlassBody off while open). Not openable but `breakable`: the
 ## interaction smashes the glass (kind &"break_window", InteractionTweak.glass_break_s unless
-## `interaction_time_s` is set). Shooting a breakable window (`apply_damage`) breaks it too:
+## `interaction_time_s` is set). Shooting a breakable window (`take_hit`, damage.md) breaks it too:
 ## `Glass` hidden, GlassBody off, glass_broken [R], 15 m noise, `broken_glass` stimulus (S9.9).
 ## `noise` is the interaction's noise profile.
 class_name WindowPrefab
@@ -78,11 +78,15 @@ func break_glass(_by_net_id: int = 0) -> void:
 
 
 ## Combat hook: hits break a breakable window.
+func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
+	if Net.is_authority():
+		break_glass(attacker_net_id)
+	return _publish_hit(info, attacker_net_id)
+
+
+## Deprecated alias of take_hit (pre-D-026 callers).
 func apply_damage(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
-	var out: Dictionary = info.duplicate()
-	out["killed"] = false
-	break_glass(attacker_net_id)
-	return out
+	return take_hit(info, attacker_net_id)
 
 
 func _exit_tree() -> void:

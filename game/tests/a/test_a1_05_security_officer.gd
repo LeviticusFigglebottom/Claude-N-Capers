@@ -39,7 +39,7 @@ func test_a1_05_guard_prefab_wiring() -> void:
 
 func test_s11_2_alarm_switches_guards_to_combat_and_approach() -> void:
 	_rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
-		{"map_packed": ATestMaps.basic(2, 0)})
+		{"map_packed": ATestMaps.basic(2, 0), "crew_ai": false})
 	await wait_physics_frames(1)
 	var brains: Array[GuardBrain] = []
 	for n: Node in _rt.npcs(&"guard"):

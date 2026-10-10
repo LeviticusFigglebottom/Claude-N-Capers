@@ -4,7 +4,7 @@
 ## marker(s). Floor object: pivot bottom-centre, front -Z.
 ## Behaviour: the Interactable smashes the glass (kind &"break_glass", InteractionTweak.glass_break_s
 ## unless `interaction_time_s` is set) or, with `requires_item`, opens it with that key (kind
-## &"open_case", no glass break). Shooting the case (`apply_damage`) also breaks the glass. Breaking:
+## &"open_case", no glass break). Shooting the case (`take_hit`, damage.md) also breaks the glass. Breaking:
 ## `Glass` hidden, glass_broken [R], 15 m noise, `broken_glass` stimulus; `glass_breaks_alarm` raises
 ## alarm_raised(&"glass_alarm"). Then the same Interactable takes the loot (kind &"take_loot",
 ## small_loot_s) -> small_loot_taken(value, slot) [R]; value = ContentDB.loot(loot_id).value, else
@@ -77,11 +77,15 @@ func break_glass(by_net_id: int = 0) -> void:
 
 
 ## Combat hook: any hit breaks the glass.
+func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
+	if Net.is_authority():
+		break_glass(attacker_net_id)
+	return _publish_hit(info, attacker_net_id)
+
+
+## Deprecated alias of take_hit (pre-D-026 callers).
 func apply_damage(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
-	var out: Dictionary = info.duplicate()
-	out["killed"] = false
-	break_glass(attacker_net_id)
-	return out
+	return take_hit(info, attacker_net_id)
 
 
 func _exit_tree() -> void:

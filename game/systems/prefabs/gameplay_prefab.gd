@@ -153,7 +153,20 @@ func _shatter_glass(pos: Vector3) -> int:
 	return st.register_stimulus(null, &"broken_glass", {"position": pos})
 
 
-## Point a collision body's hits at this prefab (combat resolves `hit_owner` -> apply_damage).
+## Hits on a child collision body reach this prefab through Damage.find_target (damage.md: the body's
+## ancestor implements `take_hit`). The legacy `hit_owner` meta is kept for older lookups only.
 func _route_hits(body: Node) -> void:
 	if body != null:
 		body.set_meta(&"hit_owner", self)
+
+
+## damage.md: the target publishes its own damage_applied [R] and returns the final DamageInfo.
+func _publish_hit(info: Dictionary, attacker_net_id: int) -> Dictionary:
+	var out: Dictionary = info.duplicate()
+	out["killed"] = false
+	if not Net.is_authority():
+		out["amount"] = 0.0
+		return out
+	EventBus.damage_applied.emit(net_id, attacker_net_id, out)
+	Net.replicate_event(&"damage_applied", [net_id, attacker_net_id, out])
+	return out

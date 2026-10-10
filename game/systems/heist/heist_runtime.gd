@@ -158,6 +158,9 @@ func _create_services() -> void:
 	var loot: LootManager = LootManager.new()
 	loot.name = "LootManager"
 	register_service(G.SVC_LOOT, loot)
+	var director: AssaultDirector = AssaultDirector.new()  # A1-09 (L1.1, L1.4)
+	director.name = "AssaultDirector"
+	register_service(G.SVC_DIRECTOR, director)
 	hud_model = LocalHudModel.new()
 	hud_model.name = "LocalHudModel"
 	add_child(hud_model)
@@ -228,6 +231,8 @@ func spawn_npc(role: StringName, xform: Transform3D, info: Dictionary = {}) -> N
 		Log.error(&"heist", "no NPC scene for role %s" % role)
 		return null
 	var npc: NpcBase = (load(path) as PackedScene).instantiate() as NpcBase
+	if info.get("enemy_def") is EnemyDef:  # A1-09: per-EnemyDef spawns (director)
+		npc.enemy_def = info["enemy_def"] as EnemyDef
 	npc.setup_npc(difficulty, info)
 	dynamic_root.add_child(npc, true)
 	npc.global_transform = xform
@@ -279,6 +284,8 @@ func _spawn_crew() -> void:
 			var pin: PlayerInput = PlayerInput.new()
 			pin.name = "PlayerInput"
 			crew.add_child(pin)
+		if crew.is_ai:
+			crew.add_child(CrewAiBrain.new())  # A1-10 AI teammate (L6.1)
 		EventBus.crew_member_joined.emit(slot, crew.peer_id, crew.is_ai)
 		Net.replicate_event(&"crew_member_joined", [slot, crew.peer_id, crew.is_ai])
 		crew_spawned.emit(slot, crew)

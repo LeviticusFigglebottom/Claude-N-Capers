@@ -137,18 +137,22 @@ func notify_noise(position: Vector3, kind: StringName, source_net_id: int) -> vo
 
 # --- Damage (events.md DamageInfo) ------------------------------------------------------
 
-## Server: apply a hit. `info` follows the DamageInfo shape; `amount` is pre-zone body damage.
-## Returns the resolved DamageInfo (amount after multipliers, killed flag).
-func apply_damage(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
+## Server: the single hit entry point (docs/contracts/damage.md). `info` = Damage.info(): `amount` is
+## BODY damage after the attacker's falloff/modifiers. This NPC applies its zone multiplier (HEAD:
+## EnemyDef.headshot_mult[difficulty] x info.headshot_bonus, L3.3), the S3.6 one-shot rule, then
+## emits damage_applied [R] (and npc_killed via die()) itself. Returns the final DamageInfo.
+func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	var out: Dictionary = info.duplicate()
 	if not Net.is_authority() or not alive:
 		out["amount"] = 0.0
 		out["killed"] = false
 		return out
 	var amount: float = float(info.get("amount", 0.0))
-	if int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD and enemy_def != null \
-			and enemy_def.headshot_mult.size() > 0:
-		amount *= enemy_def.headshot_mult[clampi(difficulty, 0, enemy_def.headshot_mult.size() - 1)]  # L3.3
+	if int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD:
+		var zone_mult: float = 1.0
+		if enemy_def != null and enemy_def.headshot_mult.size() > 0:
+			zone_mult = enemy_def.headshot_mult[clampi(difficulty, 0, enemy_def.headshot_mult.size() - 1)]
+		amount *= zone_mult * float(info.get("headshot_bonus", 1.0))  # L3.3
 	if one_shot_when_unalerted and (alert_state == Enums.AlertState.CALM or alert_state == Enums.AlertState.CURIOUS):
 		amount = maxf(amount, health)  # S3.6
 	health -= amount
@@ -161,6 +165,11 @@ func apply_damage(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	if health <= 0.0:
 		die(out, attacker_net_id)
 	return out
+
+
+## Deprecated alias of take_hit (pre-D-026 callers).
+func apply_damage(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
+	return take_hit(info, attacker_net_id)
 
 
 ## Server: death. The node becomes a corpse (G.BODY) and a `corpse` stimulus (S6.1).
@@ -201,7 +210,7 @@ func clear_corpse() -> void:
 	remove_from_group(G.BODY)
 
 
-# --- Hitboxes (layer 5 "hitboxes") ---------------------------------------------------------
+# --- Hitboxes (layer 5 "hitboxes": Hitbox areas, damage.md) ---------------------------------
 
 func _ensure_hitboxes() -> void:
 	if get_node_or_null("Hitboxes") != null:
@@ -216,18 +225,14 @@ func _ensure_hitboxes() -> void:
 	_add_hitbox(root, "Body", Enums.HitZone.BODY, cap, Vector3(0.0, 0.725, 0.0))
 
 
-func _add_hitbox(root: Node3D, nm: String, zone: int, shape: Shape3D, pos: Vector3) -> void:
+func _add_hitbox(root: Node3D, nm: String, zone: Enums.HitZone, shape: Shape3D, pos: Vector3) -> void:
 	var sph: SphereShape3D = shape as SphereShape3D
 	if sph != null:
 		sph.radius = 0.14
-	var a: Area3D = Area3D.new()
+	var a: Hitbox = Hitbox.new()
 	a.name = nm
-	a.collision_layer = LAYER_HITBOXES
-	a.collision_mask = 0
-	a.monitoring = false
-	a.monitorable = true
-	a.set_meta(&"hit_zone", zone)
-	a.set_meta(&"hit_owner", self)
+	a.hit_zone = zone
+	a.target = self
 	var cs: CollisionShape3D = CollisionShape3D.new()
 	cs.shape = shape
 	cs.position = pos

@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="DirectorTweak" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://systems/director/director_tweak.gd" id="1"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/first_responders.tres" id="2"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/patrol_pair.tres" id="3"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/tac_light_squad.tres" id="4"]
+[ext_resource type="Resource" path="res://systems/ai/data/groups/tac_mixed.tres" id="5"]
+[ext_resource type="Script" path="res://systems/director/spawn_group_def.gd" id="6"]
+
+[resource]
+script = ExtResource("1")
+first_control_s = 20.0
+control_between_waves_s = 40.0
+anticipation_s = 30.0
+anticipation_hostage_bonus_s = 30.0
+build_s = 35.0
+sustain_by_stage_s = PackedFloat32Array(40, 120, 160)
+sustain_crew_mult = PackedFloat32Array(1, 1.1, 1.2, 1.3)
+wave_stage = PackedInt32Array(0, 1, 2)
+fade_threshold = PackedInt32Array(8, 10, 12, 14, 16, 18)
+fade_wait_cap_s = 30.0
+fade_s = 15.0
+min_crew_distance_m = 15.0
+los_check_height_m = 1.6
+unit_spawn_interval_s = 0.5
+unit_spread_m = 0.9
+first_responder_group = ExtResource("2")
+first_responder_groups = 2
+first_responder_interval_s = 6.0
+control_group_interval_s = 20.0
+control_alive_max = 4
+assault_group_interval_s = 5.0
+assault_groups = Array[ExtResource("6")]([ExtResource("3"), ExtResource("4"), ExtResource("5")])
+no_point_retry_s = 1.0
