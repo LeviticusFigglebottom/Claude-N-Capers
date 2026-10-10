@@ -30,19 +30,21 @@ static func make_def() -> HeistDef:
 	d.loot = [&"loot.jewelry", &"loot.cash"] as Array[StringName]
 	d.objectives = [&"casing", &"keycard", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"] \
 		as Array[StringName]
-	# Pre-planning (contracts/preplanning.md; merge format of ENV B's PreplanBoard: top-level
-	# "favors", "disable" and "asset.<id>" override entries). Generic assets keep their library
-	# data; the two heist-only assets force a variant slot from the chosen point's params.
+	# Pre-planning (contracts/preplanning.md v1.0: "favors", "disable" and "assets" {asset_id: overrides}).
+	# Generic assets keep their library data; the two heist-only assets force a variant slot from the
+	# chosen point's params.
 	d.preplanning = {
 		"favors": 10,
 		"disable": [&"asset.intel_cameras"],
-		&"asset.body_bag_case_drop": {"point_categories": [&"drop_zone"]},
-		&"asset.alternate_entry": {"point_categories": [&"player_spawn"]},
-		&"asset.escape_position": {"point_categories": [&"escape"]},
-		&"asset.inside_keycard": {"effect": "force_variant", "category": &"access", "point_categories": [&"insider"],
-			"cost": 1500, "favors": 1, "tags": [&"stealth"]},
-		&"asset.propped_door": {"effect": "force_variant", "category": &"access", "point_categories": [&"access"],
-			"cost": 1000, "favors": 1, "tags": [&"stealth"]},
+		"assets": {
+			&"asset.body_bag_case_drop": {"point_categories": [&"drop_zone"]},
+			&"asset.alternate_entry": {"point_categories": [&"spawn"]},
+			&"asset.escape_position": {"point_categories": [&"escape"]},
+			&"asset.inside_keycard": {"effect": "force_variant", "category": &"access", "point_categories": [&"insider"],
+				"cost": 1500, "favors": 1, "tags": [&"stealth"]},
+			&"asset.propped_door": {"effect": "force_variant", "category": &"access", "point_categories": [&"access"],
+				"cost": 1000, "favors": 1, "tags": [&"stealth"]},
+		},
 	}
 	d.escape_options = [&"van"] as Array[StringName]
 	d.music_track = &"glasshouse"

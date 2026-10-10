@@ -260,6 +260,7 @@ static func resolve_ids(heist_id: StringName, ids: Array, difficulty: int = Enum
 		def: HeistDef = null) -> Dictionary:
 	var b: PreplanBoard = PreplanBoard.build(heist_id, difficulty, def)
 	var p: PreplanPlan = PreplanPlan.new(b, 0, [0] as Array[int])
+	var accepted: int = 0
 	for raw: Variant in ids:
 		var o: Dictionary = PlanVote.parse_option(StringName(String(raw)))
 		var id: StringName = StringName(o["asset"])
@@ -270,6 +271,10 @@ static func resolve_ids(heist_id: StringName, ids: Array, difficulty: int = Enum
 		var r: StringName = p.add(id, pid, 0)
 		if r != OK:
 			Log.warn(&"preplan", "resolve_ids(%s): %s@%s rejected (%s)" % [heist_id, id, pid, r])
+		else:
+			accepted += 1
+	if accepted == 0:
+		return {}  # LEAD: nothing resolved = no pre-planning (ENV A's PreplanAssets.is_active)
 	var res: Dictionary = p.apply()
 	res["cash_spent"] = {}
 	return res

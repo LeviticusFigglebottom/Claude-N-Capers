@@ -84,6 +84,8 @@ ui.prompt.interact,Hold {key} to interact
 ui.prompt.answer_pager,Hold {key} to answer the pager
 ui.prompt.bag_body,Hold {key} to bag the body
 ui.prompt.tie_civilian,Hold {key} to tie up
+ui.prompt.cable_tie,Hold {key} to cuff
+ui.prompt.convert,Hold {key} to convert
 ui.prompt.intimidate,Press {key} to shout
 ui.prompt.pick_lock,Hold {key} to pick the lock
 ui.prompt.use_keycard,Hold {key} to use the keycard
@@ -137,6 +139,7 @@ ui.blocked.code_unknown,You don't know the code
 ui.blocked.requires_bag,You need to carry a bag
 ui.blocked.no_deployable,You have none left
 ui.blocked.no_space,No room to place it here
+ui.blocked.push_bar_outside,It only opens from the other side
 ui.results.title,Payday
 ui.results.success,Heist complete
 ui.results.failure,Heist failed

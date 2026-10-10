@@ -123,6 +123,8 @@ func test_keys_requested_by_systems_exist() -> void:
 	for path: String in files:
 		for m: RegExMatch in rx.search_all(FileAccess.get_file_as_string(path)):
 			var k: String = m.get_string(1)
+			if k.ends_with("_"):
+				continue  # LEAD: a format-string prefix such as "vo.crew.ack_%s", not a literal key
 			found += 1
 			if k.begins_with("vo."):
 				assert_false(table.line(StringName(k)).is_empty(), "voice line %s (used in %s)" % [k, path])

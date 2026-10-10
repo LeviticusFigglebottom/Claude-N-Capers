@@ -25,15 +25,14 @@ PD2 rows: C3 (assets, favors, plans, votes), C1/C2 (board and briefing hand-off)
 | `force_variants` | `{group: [slot_ids]}` | or empty, to take `variant_group`/`variant_slot` from the chosen point's params |
 | `reveals` | Array[StringName] | variant groups shown on the HUD/blueprint (insider info) |
 
-`HeistDef.preplanning` (ENV C data, D-046): `{ "favors": int, "disable": [asset ids], "asset.<id>": {override fields}, ... }`.
-Overrides sit at the top level keyed by the asset id (as `PreplanBoard.merge` reads them); a heist-only asset
-is a new `asset.<id>` key carrying `effect`/payload. `favors` is the heist's design budget (typically 3–4); tests read it
-from the def, never hard-code it.
+`HeistDef.preplanning` (ENV C data): `{ "favors": int, "disable": [asset ids], "assets": { asset_id: {override fields} } }`.
+A new id under `"assets"` adds a heist-only asset (needs `effect`/payload). `favors` is the heist's design budget
+(typically 3–4); tests read it from the def, never hard-code it (D-046).
 
 ## PREPLAN_POINT (map)
 
 `Marker3D` nodes under `<Map>/Preplan` (new optional contract node, heist_map.md v1.2), in group
-`G.PREPLAN_POINT`. **The node name is the point id.** Metadata: `category` (`drop_zone`, `player_spawn`,
+`G.PREPLAN_POINT`. **The node name is the point id.** Metadata: `category` (`drop_zone`, `spawn`,
 `escape`, `insider`, ...), `label` (strings key), `floor` (int), `params` (Dictionary, e.g.
 `{spawn_tag, variant_group, variant_slot}`). ENV B reads points by instancing the map scene from
 `HeistRegistry.map_scene_path(id)` without adding it to the tree.
