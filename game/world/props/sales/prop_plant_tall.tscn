@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_plant_tall/prop_plant_tall.glb" id="1_model"]
+
+[node name="PropPlantTall" type="Node3D"]
+metadata/kind = &"plant"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

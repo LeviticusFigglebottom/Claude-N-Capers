@@ -1,0 +1,8 @@
+asset: prop_bench_corridor
+script: tools/blender/props/staff.py
+params: {"cat": {"clear": 0.6, "group": "corridor", "kind": "bench", "place": "wall"}, "fn": "bench_corridor"}
+seed: 1954019334  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_bench_corridor
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

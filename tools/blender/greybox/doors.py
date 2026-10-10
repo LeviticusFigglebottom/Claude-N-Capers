@@ -2,7 +2,7 @@
 
 Nodes: Frame (static mesh, depth = wall + 0.02), Leaf (Node3D at the hinge axis, rotate around Y),
 LeafMesh, HandleMesh, Handle marker; double doors add Leaf2/LeafMesh2/HandleMesh2/Handle2.
-Collision: Collision (StaticBody3D, trimesh) for the frame only. Origin: bottom-centre of the
+Collision: Frame/Collision (StaticBody3D, trimesh, child of the Frame mesh) for the frame only. Origin: bottom-centre of the
 opening on the wall centreline. Leaf closed = rotation 0.
 """
 

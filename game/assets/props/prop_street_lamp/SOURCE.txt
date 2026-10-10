@@ -1,0 +1,8 @@
+asset: prop_street_lamp
+script: tools/blender/props/exterior.py
+params: {"cat": {"fixture": true, "group": "exterior", "kind": "street_lamp", "light": {"angle": 60, "color": "#FFD9B0", "energy": 6.0, "pos": [0.0, 5.75, -1.3], "range": 14.0, "type": "spot"}, "place": "row", "standoff": 3.4}, "fn": "street_lamp"}
+seed: 648330302  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_street_lamp
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

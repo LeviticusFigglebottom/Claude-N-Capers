@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_step_ladder/prop_step_ladder.glb" id="1_model"]
+
+[node name="PropStepLadder" type="Node3D"]
+metadata/kind = &"step_ladder"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

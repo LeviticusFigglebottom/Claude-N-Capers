@@ -1,0 +1,8 @@
+asset: prop_ring_tray
+script: tools/blender/props/sales.py
+params: {"cat": {"group": "sales", "hosts": ["counter_service", "table", "coffee_table"], "kind": "ring_tray", "place": "on"}, "fn": "ring_tray"}
+seed: 2388289290  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_ring_tray
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

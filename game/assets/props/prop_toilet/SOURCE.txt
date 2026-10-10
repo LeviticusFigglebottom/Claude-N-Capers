@@ -1,0 +1,8 @@
+asset: prop_toilet
+script: tools/blender/props/backofhouse.py
+params: {"cat": {"clear": 0.6, "group": "restroom", "kind": "toilet", "place": "wall"}, "fn": "toilet"}
+seed: 1591672640  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_toilet
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

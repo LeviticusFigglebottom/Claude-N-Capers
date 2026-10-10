@@ -1,0 +1,8 @@
+asset: prop_coffee_table
+script: tools/blender/props/sales.py
+params: {"cat": {"clear": 0.5, "group": "salon", "kind": "coffee_table", "place": "center", "support": true}, "fn": "coffee_table"}
+seed: 3297255728  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_coffee_table
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

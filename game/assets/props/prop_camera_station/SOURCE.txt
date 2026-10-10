@@ -1,0 +1,8 @@
+asset: prop_camera_station
+script: tools/blender/props/prefab_visuals.py
+params: {"cat": {"kind": "camera_station", "prefab": "camera_station"}, "fn": "camera_station"}
+seed: 1564123053  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_camera_station
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

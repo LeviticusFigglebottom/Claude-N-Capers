@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_rug_round/prop_rug_round.glb" id="1_model"]
+
+[node name="PropRugRound" type="Node3D"]
+metadata/kind = &"rug"
+metadata/support = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

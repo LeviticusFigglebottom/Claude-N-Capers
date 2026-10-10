@@ -1,0 +1,8 @@
+asset: prop_binders
+script: tools/blender/props/staff.py
+params: {"cat": {"group": "clutter", "hosts": ["desk", "table", "credenza", "counter_service", "kitchen_counter", "jeweler_bench", "workbench", "packing_bench", "file_cabinet"], "kind": "binders", "place": "on"}, "fn": "binders"}
+seed: 2652195316  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_binders
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

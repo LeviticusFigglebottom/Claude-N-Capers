@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"corridor_office"
+purpose = &"corridor"
+required_items = Array[StringName]([&"fire_extinguisher", &"light_fixture", &"picture"])
+optional_items = {
+&"outlet": 0.8,
+&"picture": 1.5,
+&"switch": 1,
+&"thermostat": 0.5
+}
+clutter_groups = {}
+min_density = 0.05
+max_density = 1.2
+min_props = 3
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 21
+counts = {}
+assets = {
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_b", "prop_notice_frame")
+}
+ceiling = {"prop_ceiling_panel_neutral": 3}
+notes = "U4 upper spine: wall-mounted only (art, extinguisher, switches); railing and stair void are keep-outs."

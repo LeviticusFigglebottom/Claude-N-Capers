@@ -1,0 +1,8 @@
+asset: prop_awning
+script: tools/blender/props/exterior.py
+params: {"cat": {"group": "exterior", "kind": "awning", "place": "wall_mount", "z": 2.75}, "fn": "awning"}
+seed: 2701382252  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_awning
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

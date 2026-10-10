@@ -1,0 +1,8 @@
+asset: prop_polishing_machine
+script: tools/blender/props/backofhouse.py
+params: {"cat": {"group": "workshop", "hosts": ["workbench"], "kind": "polishing_machine", "place": "on"}, "fn": "polisher"}
+seed: 3253189528  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_polishing_machine
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

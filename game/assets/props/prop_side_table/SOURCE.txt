@@ -1,0 +1,8 @@
+asset: prop_side_table
+script: tools/blender/props/sales.py
+params: {"cat": {"group": "salon", "kind": "side_table", "place": "wall", "support": true}, "fn": "side_table"}
+seed: 2437091264  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_side_table
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

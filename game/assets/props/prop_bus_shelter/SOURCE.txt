@@ -1,0 +1,8 @@
+asset: prop_bus_shelter
+script: tools/blender/props/exterior.py
+params: {"cat": {"fixture": true, "group": "exterior", "kind": "bus_shelter", "light": {"color": "#FFD9B0", "energy": 1.0, "pos": [0.0, 2.3, 0.0], "range": 4.0, "type": "omni"}, "place": "row", "standoff": 2.2}, "fn": "bus_shelter"}
+seed: 47830641  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_bus_shelter
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

@@ -1,0 +1,8 @@
+asset: prop_phone_wall
+script: tools/blender/props/prefab_visuals.py
+params: {"cat": {"kind": "phone", "mount": "wall", "prefab": "phone"}, "fn": "phone_wall"}
+seed: 796580940  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_phone_wall
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

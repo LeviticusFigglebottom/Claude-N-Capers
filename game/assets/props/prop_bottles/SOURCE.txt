@@ -1,0 +1,8 @@
+asset: prop_bottles
+script: tools/blender/props/staff.py
+params: {"cat": {"group": "clutter", "hosts": ["kitchen_counter", "table", "workbench"], "kind": "bottles", "place": "on"}, "fn": "bottles"}
+seed: 945278284  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_bottles
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000
