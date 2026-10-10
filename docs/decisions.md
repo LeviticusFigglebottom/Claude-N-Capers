@@ -192,3 +192,8 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - QB-50 → ENV D: contact portrait busts (Odile Vance, Hollis Reyes, The Accountant silhouette) and mask base meshes (heron, visage, vulpine, bruiser, owl). QB-51: characters.md v1.2.
 - QC-9: black polymers, rubber and black paint may go to 0.02 linear albedo (style guide). QC-10: provisional perf budget 3M triangles per view, vault ceiling 2.6–6.0, review shots as JPEG.
 - QD-3: `Socket` Marker3D children on every BoneAttachment (characters.md v1.2). QD-4: per-character `.res` meshes (~1.2 MB) accepted.
+
+## D-039 — 2026-10-10 — P1 GATE GREEN on trunk
+- With Glasshouse G1 merged, `test_p1_vertical_slice.gd` passes 4/4 on trunk (variants deterministic, casing + no-noise, kill→pager→answer, alarm→loud with no scene change→assault reaches FADE). ENV A's sandbox gate passes 8/8 (adds early pager release, bag secure, AI revive, escape). validate_level glasshouse greybox: PASS.
+- Lead hotfix: ENV B's strings had guessed Glasshouse objective ids. Added strings for the mission's actual ids (casing, keycard, workshop_door, safe, safe_loot, secure). Rule from now on: objective ids come from the heist design doc's Objectives section `[tag]`s, and ENV B reads them from there, never guesses.
+- Remaining for P1 sign-off (roadmap): Glasshouse G2 art pass (C1-07/C1-08) + characters in the map (ENV D) + lead playthrough notes.
