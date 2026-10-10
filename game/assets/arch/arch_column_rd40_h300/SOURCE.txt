@@ -1,0 +1,8 @@
+asset: arch_column_rd40_h300
+script: tools/blender/greybox/columns.py
+params: {"height": 3.0, "shape": "round", "size": 0.4}
+seed: 3194211334  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category greybox --asset arch_column_rd40_h300
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 500

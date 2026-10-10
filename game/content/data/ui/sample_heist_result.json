@@ -1,0 +1,24 @@
+{
+	"_doc": "Sample HeistResult (contracts/events.md) for the payday screen while ENV A's launcher is missing, and for UI tests. Routine, stealth success.",
+	"heist_id": "glasshouse",
+	"success": true,
+	"stealth": true,
+	"time_s": 612.5,
+	"difficulty": 0,
+	"contract_pay": 40000,
+	"loot": [
+		{"loot_id": "loot.jewelry", "value": 6500},
+		{"loot_id": "loot.jewelry", "value": 6500},
+		{"loot_id": "loot.cash", "value": 4000}
+	],
+	"small_loot": 1800,
+	"crew": [
+		{"slot": 0, "is_ai": false, "kills": 2, "specials_killed": 0, "downs": 0, "civilians_killed": 1, "in_custody": false, "escaped": true},
+		{"slot": 1, "is_ai": true, "kills": 1, "specials_killed": 0, "downs": 1, "civilians_killed": 0, "in_custody": false, "escaped": true},
+		{"slot": 2, "is_ai": true, "kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0, "in_custody": false, "escaped": true},
+		{"slot": 3, "is_ai": true, "kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0, "in_custody": false, "escaped": true}
+	],
+	"pagers_answered": 2,
+	"seed": 1001,
+	"variants": {}
+}

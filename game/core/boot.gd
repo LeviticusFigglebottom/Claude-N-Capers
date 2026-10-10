@@ -1,22 +1,18 @@
-## Entry scene. Owner: LEAD. Routes to the hub (ENV B) once it exists; supports CLI flags:
-##   --heist=<id> --seed=<n> --solo   (direct heist launch, used by dev + tests)
+## Entry scene. Owner: LEAD. Hands control to ENV B's app shell (menu flow), which owns the whole
+## application flow incl. direct launch flags (D-024):
+##   --heist=<id> [--seed=<n>] [--difficulty=<0..5>]   skip menus, launch solo, HUD + payday as normal
 extends Node
 
-const HUB_SCENE: String = "res://content/ui/hub/hub.tscn"
+const APP_SHELL: String = "res://content/ui/menus/menu_flow.tscn"
 
 
 func _ready() -> void:
 	var args: Dictionary = parse_args(OS.get_cmdline_user_args())
 	Log.info(&"boot", "CAPERWORKS boot, args=%s" % [args])
-	if args.has("heist"):
-		Net.start_solo()
-		var heist_path: String = "res://world/heists/%s/%s.tscn" % [args["heist"], args["heist"]]
-		if ResourceLoader.exists(heist_path):
-			get_tree().change_scene_to_file.call_deferred(heist_path)
-			return
-		Log.error(&"boot", "heist scene missing: %s" % heist_path)
-	elif ResourceLoader.exists(HUB_SCENE):
-		get_tree().change_scene_to_file.call_deferred(HUB_SCENE)
+	if ResourceLoader.exists(APP_SHELL):
+		get_tree().change_scene_to_file.call_deferred(APP_SHELL)
+	else:
+		Log.error(&"boot", "app shell missing: %s" % APP_SHELL)
 
 
 static func parse_args(argv: PackedStringArray) -> Dictionary:

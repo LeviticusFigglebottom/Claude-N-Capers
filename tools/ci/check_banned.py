@@ -28,7 +28,7 @@ def main() -> int:
                 code = line.split("#", 1)[0]
                 for rx, msg in RULES[:3]:
                     if rx.search(code):
-                        if "Input." in rx.pattern and ("input" in f.name or "/ui/" in rel or rel.startswith("content/ui")):
+                        if "Input" in rx.pattern and ("input" in f.name or "/ui/" in rel or rel.startswith("content/ui")):
                             continue
                         errors.append(f"{rel}:{n}: {msg}")
                 # Cross-env hard paths: code may reference contracts/core/assets freely, and

@@ -35,18 +35,34 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `Log.error` + null. Scans `res://content/data/<kind>/` with `ResourceLoader.list_directory`.
 * `LoadoutResolver.resolve(loadout: Loadout) -> Loadout` (returns a resolved copy): resolved
   weapon stats (base + mods, clamps), `concealment_total`, `detection_risk`, `modifiers`.
-  `LoadoutResolver.concealment_breakdown(loadout) -> Dictionary` for UI.
+  `LoadoutResolver.concealment_breakdown(loadout) -> Dictionary` for UI
+  (`primary, secondary, melee, armor, bonus, total, detection_risk`).
+  `LoadoutResolver.concealment_bonus(loadout) -> int` / `concealment_bonus_from(loadout, modifiers)`:
+  sum of `stealth.concealment_add.<melee|armor|primary|secondary|all>` grants (D-022 QB-6); a slot
+  qualifier counts only while that slot is filled; added after the per-weapon 30 cap, so the total
+  can exceed 120. Empty slot = 30 is a P1-only rule (QB-11; P4 rejects empty weapon slots).
 * `StatCalculator.display(stats: WeaponStats) -> Dictionary` PD2-style UI numbers
   (`damage, accuracy, stability, concealment, threat, mag, total_ammo, rof, reload`).
 * `StringTable.text(key: StringName, args: Dictionary = {}) -> String` = `tr(key)` + `{name}`
   formatting. Strings: `data/strings/strings.csv` (standard Godot CSV import; the lead registers
   the translation in project.godot, D-021). No runtime registration.
-* `PayoutCalculator.compute(result: Dictionary) -> Dictionary` from a HeistResult
-  (contracts/events.md). Output shape documented in its header.
-* `SaveService` / `PlayerProfile`: versioned JSON at `user://profiles/profile_<n>.json`;
+* `PayoutCalculator.compute(result, difficulty_def = null, tweak = null, is_pro = false,
+  crew_slot = -1, banked_stealth_mult = 1.0) -> Dictionary` from a HeistResult
+  (contracts/events.md). Output shape documented in its header. Stealth bonus (D-022 QB-13, S11.1):
+  pass `PlayerProfile.banked_stealth_mult`; the "stealth" XP line spends that bank on a success.
+  Output adds `stealth_bonus_consumed: bool` and `stealth_bonus_banked: float` (the tweak's
+  `stealth_xp_bonus_mult` after a successful stealth heist, else 1.0). UI string:
+  `ui.results.stealth_bonus_banked` ("... +{pct}%").
+* `SaveService` / `PlayerProfile`: versioned JSON at `user://profiles/profile_<n>.json`
+  (`CURRENT_VERSION` 2; v2 adds `banked_stealth_mult`, default 1.0);
   `load_profile/save_profile/migrate/apply_heist_payout(p, payout, XpCurve.level_for_xp)`.
+  `apply_heist_payout` resets the bank when `stealth_bonus_consumed`, then stores
+  `stealth_bonus_banked` if > 1.0.
+* `ContentDB.inject(kind, key, res)`: tests/tooling only (test-only SkillDef/PerkDeckDef);
+  `clear_cache()` drops it.
 * `XpCurve.level_for_xp(xp)`, `xp_for_level(level)`. `VoiceLineTable` at `data/voice/lines.tres`.
 
 ## Rules
 Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, every string through
-`StringTable`, only grant keys from `ModifierKeys.KEYS`. Tests: `game/tests/b/test_*.gd`.
+`StringTable`, only grant keys from `ModifierKeys.KEYS`. Code that builds a mod delta starts from
+`WeaponStats.make_delta()`; `.tres` deltas spell its zeros out (D-022 QB-5). Tests: `game/tests/b/test_*.gd`.

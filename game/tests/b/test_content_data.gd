@@ -12,6 +12,15 @@ const DIFFICULTY_FILES: Dictionary = {
 	Enums.Difficulty.LETHAL: "lethal", Enums.Difficulty.CATACLYSM: "cataclysm",
 }
 
+## Canonical enemy ids, docs/contracts/groups.md (D-022 QB-9). Wrecker variants (`enemy.wrecker_g`
+## ...) share the `enemy.wrecker` limit, so a variant id must never be a special_limits key.
+const CANONICAL_ENEMY_IDS: Array[StringName] = [
+	&"enemy.security_officer", &"enemy.camera_operator", &"enemy.patrol_officer", &"enemy.tac_light",
+	&"enemy.tac_heavy", &"enemy.frd_agent", &"enemy.phantom", &"enemy.stinger", &"enemy.bulwark",
+	&"enemy.wrecker", &"enemy.longshot", &"enemy.corpsman", &"enemy.brandt", &"enemy.aegis",
+	&"enemy.cartel_gunman",
+]
+
 
 func before_all() -> void:
 	ContentDB.clear_cache()
@@ -87,6 +96,22 @@ func test_all_six_difficulties_exist_with_exact_multipliers() -> void:
 	assert_eq(brutal.special_limits[&"enemy.stinger"], 2, "Overkill taser cap")
 
 
+func test_special_limits_use_canonical_enemy_ids() -> void:
+	for def: DifficultyDef in ContentDB.all_difficulties():
+		assert_true(def.special_limits.size() > 0, "%s has special limits" % def.display_name)
+		for k: Variant in def.special_limits:
+			assert_true(k is StringName, "%s key %s is a StringName" % [def.display_name, k])
+			assert_has(CANONICAL_ENEMY_IDS, StringName(k), "%s special_limits key" % def.display_name)
+			assert_true(int(def.special_limits[k]) >= 0, "%s %s limit >= 0" % [def.display_name, k])
+
+
+func test_breacher_plate_is_skill_gated() -> void:
+	assert_eq(ContentDB.armor(&"armor.breacher_plate").unlock_skill, &"skill.juggernaut.plated")
+	for a: ArmorDef in ContentDB.all_armors():
+		if a.id != &"armor.breacher_plate":
+			assert_eq(a.unlock_skill, &"", "%s not skill-gated" % a.id)
+
+
 func test_armor_tiers_match_research_table() -> void:
 	var suit: ArmorDef = ContentDB.armor(&"armor.tailored_suit")
 	assert_eq(suit.armor, 20.0)
@@ -124,18 +149,50 @@ func test_weapon_mod_slots_reference_existing_mods_of_matching_type() -> void:
 			assert_true((w.mod_slots[slot] as Array).has(w.default_mods[slot]), "%s default allowed" % w.id)
 
 
-## WeaponStats.plus adds pellets/falloff/equip/ads; their non-zero schema defaults must be zeroed in
-## every delta resource or each mod would silently add a pellet and 20 m of falloff.
-func test_mod_deltas_zero_non_zero_defaults() -> void:
+## QB-5 (D-022): every mod delta must start from WeaponStats.make_delta(). `.tres` deltas can't call
+## it, so they spell its zeros out. For each field make_delta() zeroes (its value differs from the
+## schema default), the delta must hold make_delta()'s value or an intentional change; a value still
+## equal to the schema default means the zero was forgotten (plus() would add a pellet, 20 m of
+## falloff, 0.5 s equip ...). Pellets and falloff are never changed by P1 mods.
+func test_mod_deltas_start_from_make_delta() -> void:
+	var zero: WeaponStats = WeaponStats.make_delta()
+	var schema: WeaponStats = WeaponStats.new()
+	var zeroed: Array[StringName] = []
+	for p: Dictionary in zero.get_property_list():
+		if not (int(p["usage"]) & PROPERTY_USAGE_SCRIPT_VARIABLE):
+			continue
+		var n: StringName = p["name"]
+		if zero.get(n) != schema.get(n):
+			zeroed.append(n)
+	assert_true(zeroed.has(&"pellets") and zeroed.has(&"noise_radius_m"), "make_delta zeroes defaults: %s" % [zeroed])
 	for m: WeaponModDef in ContentDB.all_mods():
 		assert_true(m.delta != null, "%s has delta" % m.id)
 		if m.delta == null:
 			continue
-		assert_eq(m.delta.pellets, 0, "%s pellets" % m.id)
-		assert_eq(m.delta.falloff_start_m, 0.0, "%s falloff_start" % m.id)
-		assert_eq(m.delta.falloff_end_m, 0.0, "%s falloff_end" % m.id)
+		for n: StringName in zeroed:
+			var v: Variant = m.delta.get(n)
+			if v == zero.get(n):
+				continue
+			assert_ne(v, schema.get(n), "%s.%s left at schema default %s (start from make_delta)" % [m.id, n, v])
+		assert_eq(m.delta.pellets, zero.pellets, "%s pellets" % m.id)
+		assert_eq(m.delta.falloff_start_m, zero.falloff_start_m, "%s falloff_start" % m.id)
+		assert_eq(m.delta.falloff_end_m, zero.falloff_end_m, "%s falloff_end" % m.id)
+		assert_eq(m.delta.headshot_mult, zero.headshot_mult, "%s headshot_mult (plus() ignores it)" % m.id)
+		if not m.delta.suppressed:
+			assert_eq(m.delta.noise_radius_m, zero.noise_radius_m, "%s noise only on suppressors" % m.id)
 		assert_true(m.delta.equip_time_s >= 0.0 and m.delta.equip_time_s < 0.3, "%s equip" % m.id)
 		assert_true(m.delta.ads_time_s >= 0.0 and m.delta.ads_time_s < 0.3, "%s ads" % m.id)
+
+
+## make_delta() is a neutral element: base.plus(make_delta()) == base for every stored field.
+func test_make_delta_is_neutral() -> void:
+	var base: WeaponStats = ContentDB.weapon(&"weapon.kestrel_p9").base
+	var got: WeaponStats = base.plus(WeaponStats.make_delta())
+	for p: Dictionary in base.get_property_list():
+		if not (int(p["usage"]) & PROPERTY_USAGE_SCRIPT_VARIABLE):
+			continue
+		var n: StringName = p["name"]
+		assert_eq(got.get(n), base.get(n), String(n))
 
 
 ## P6: every non-stock mod has at least one downside (red stat or slower ADS/equip).

@@ -3,6 +3,54 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-10 14:20 UTC — B1-04 (B-M2 UI), D-022 follow-ups
+### Done
+- D-022 follow-ups (d940c9e):
+  - The strings test is un-skipped.
+  - The mod-delta test now checks against `make_delta()`. It caught 5 mod files that weren't zeroing `falloff_min_mult`, `headshot_mult`, `noise_radius_m` and `magnification`; all are fixed.
+  - `concealment_bonus()` is wired to `stealth.concealment_add`, added after the per-weapon 30 cap. A slot-qualified bonus counts only while that slot is filled.
+  - Breacher Plate now has `unlock_skill` = `skill.juggernaut.plated`.
+  - There is a test that special ids are canonical, and a TODO(P4) stub for empty weapon slots.
+  - The stealth bonus is banked to the next payday (S11.1): `banked_stealth_mult` is in the profile, the save format is v2 with a 1→2 migration, and the payout outputs `stealth_bonus_banked/consumed`.
+- B1-04 UI (470ee68 + 3d0fdc5):
+  - Flow: `ui/menus/menu_flow.tscn` (main menu → heist select + difficulty (Routine/Brutal unlocked) → loadout with live display stats and DR → launch). It calls `HeistLauncher.launch` dynamically when present; otherwise it shows a stub with a sample payday.
+  - HUD: `ui/hud/hud.tscn`, with 9 widgets (detection chevrons, interaction prompt and bar, vitals, ammo and inventory, pagers, objectives, assault banner, teammates, masked/casing). It binds to a `LocalHudModel` found at runtime, or to `ui/hud/mock/MockHudModel`. Demo: `ui/hud/mock/hud_demo.tscn`.
+  - Payday: `ui/results/payday.tscn` shows cash lines, the 80/20 split, the C6 XP lines, the level bar, "stealth bonus banked", and crew stats. It applies and saves to the profile.
+  - Shared theme in `ui/theme/`; gamepad/keyboard focus chains; every string comes from strings.csv (test-enforced).
+  - Visually checked at 1920×1080 under xvfb (menu, loadout, HUD demo, payday).
+- B1-08: the default profile owns and wears `mask.gilded_heron`.
+- `check_all.sh --env b` @ 3d0fdc5: PASS (116 tests, 0 failed, 5 skipped: 4 waiting on HeistLauncher, 1 is the P4 stub).
+### For ENV A (LocalHudModel shape the HUD reads; please pass this on or put it in ui_hud.md)
+- The HUD reads properties by `get()` and connects signals by name (signal args are ignored). Assign new Arrays/Dicts rather than editing them in place.
+- `vitals_changed`: health, max_health, armor, max_armor (float); downs_left; crew_state (Enums.CrewState); bleedout_s (<0 = none).
+- `ammo_changed`: ammo {WeaponSlot: {mag, reserve}}; equipped_slot.
+- `inventory_changed`: deployable_id, throwable_id; deployable_count, throwable_count, cable_ties, body_bags.
+- `carried_bag_changed`: carried_bag {} or {loot_id, weight}.
+- `interaction_changed`: interaction {} or {text_key, args, progress 0..1, blocked_reason (strings key or &"")}.
+- `detection_changed`: detection [{observer_net_id, world_pos, value, kind}].
+- `marked_targets_changed`: marked_targets [{net_id, world_pos, kind}].
+- `pagers_changed`: pagers [{pager_id, time_left_s, answering, progress}]; pagers_answered, pagers_max.
+- `timers_changed`: ecm_time_left_s, camera_alarm_s (<0 = inactive).
+- `objectives_changed`: objectives [{id, text_key, args, state}].
+- `assault_changed`: assault_phase, assault_wave.
+- `hostages_changed`: hostages.
+- `warnings_changed`: warnings Array[StringName] (&"phantom", &"stinger").
+- `crew_changed`: crew = teammates only [{slot, name, is_ai, health_frac, armor_frac, state, downs_left, carried_loot_id}].
+- `masked_changed`: masked, casing.
+### In progress
+- —
+### Blocked
+- B1-03 weapon models on ENV C C1-01; B1-05 firing range on C1-02; B1-08 mask mesh on ENV C.
+### Questions for lead
+- QB-14: Who spawns the in-heist HUD? Today MenuFlow adds a CanvasLayer with the HUD and the payday screen next to itself. Should HeistRuntime instance a UI scene instead? That would need a path contract.
+- QB-15: Could LocalHudModel join a group (e.g. `G.LOCAL_HUD_MODEL`)? Today the HUD searches the tree by class name every 0.5 s until it finds it.
+- QB-16: After `heist_ended`, the UI calls `HeistRuntime.teardown()` and `Net.leave()` when the player presses Continue. Does that belong to ENV A instead?
+- QB-17: The Firing Range and Settings buttons say "coming soon" for P1. OK?
+- QB-18: `docs/contracts/ui_hud.md` still says `en.csv`; the file is `strings.csv` (D-021).
+- QB-19: Heist list: `content/data/ui/heist_list.tres` points at `res://world/heists/glasshouse/glasshouse_def.tres` (data, not code). Until ENV C's def exists, it falls back to a placeholder with base payout 40000 ◇. Is that path convention right?
+### Ready for integration
+- yes (B1-04, D-022 follow-ups); `check_all.sh --env b` result: PASS
+
 ## 2026-10-10 14:30 UTC — B1-01, B1-02, B1-06, B1-07 (B-M1 done); B1-08 data; B1-04 in progress
 ### Done
 - B1-01 data (c47c8db): `weapon.kestrel_p9` (Halvard Arms) + mods suppressor / reflex sight / extended mag (+ stock iron sights, standard mag); `melee.folding_knife`; all 7 armor tiers (L2.3 values; Tailored Suit + Patrol Vest are the P1 ones); doctor bag, ammo bag, body bag case; loot jewelry / cash / body bag; all 6 difficulties (loot ×1/2/2.6/4.2/7.2/9.2, XP ×1/2/5/10/11.5/14); concealment curve with every anchor from research §1.2 exact; provenance and ◇ list in `game/content/data/README.md`.

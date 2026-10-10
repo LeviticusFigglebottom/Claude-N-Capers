@@ -2,12 +2,16 @@
 ## Single place that applies difficulty, crew-alive, stealth and other multipliers (D-020):
 ## HeistResult.contract_pay and every HeistResult.loot[i].value are UNSCALED base values.
 ##
-## compute(result, difficulty_def = null, tweak = null, is_pro = false, crew_slot = -1) -> Dictionary
+## compute(result, difficulty_def = null, tweak = null, is_pro = false, crew_slot = -1,
+##         banked_stealth_mult = 1.0) -> Dictionary
 ##   difficulty_def null -> res://content/data/difficulty/<name>.tres from result.difficulty
 ##   tweak null          -> res://content/data/tweak/payout.tres
 ##   crew_slot           -> the player this payout is for (custody XP penalty, civilian penalty,
 ##                          crew-alive teammates). -1 = crew-wide view: civilian penalty sums every
 ##                          crew member's kills, no custody XP penalty, teammates = survivors - 1.
+##   banked_stealth_mult -> PlayerProfile.banked_stealth_mult: the stealth bonus banked by the
+##                          PREVIOUS successful stealth heist (D-022 QB-13, pd2_fidelity S11.1).
+##                          Applied to this payday's XP on success only; a failure keeps the bank.
 ##
 ## Output (stable; consumed by the payday UI and SaveService.apply_heist_payout):
 ##   { "success": bool, "stealth": bool,
@@ -24,14 +28,21 @@
 ##     "spending": int,                           total - stash (the penalty comes out of spending)
 ##     "xp_lines": [{ "key": StringName, "amount": int }],  always 6 lines, C6 order (base, pro,
 ##                                                difficulty, custody, additive, stealth); 0 = n/a
-##     "xp_total": int }                          sum of xp_lines (>= 0)
+##     "xp_total": int,                           sum of xp_lines (>= 0)
+##     "stealth_bonus_consumed": bool,            success and banked_stealth_mult > 1 (bank spent)
+##     "stealth_bonus_banked": float }            tweak.stealth_xp_bonus_mult on a successful stealth
+##                                                heist (banked for the NEXT payday), else 1.0
 ##
 ## Rounding: every money/XP line is rounded on its own with roundi() (half away from zero), then
 ## lines are summed as integers. stash = roundi(gross x stash_fraction); spending absorbs the rest,
 ## so stash + spending == total always.
 ## Failed heist: no contract/loot/small-loot cash, crew-alive bonus off; civilian penalty per
 ## tweak.civilian_penalty_on_failure. XP base = base_xp_success x base_xp_failure_fraction (no loot
-## XP); pro, difficulty and custody still apply; no crew-alive or stealth bonus.
+## XP); pro, difficulty and custody still apply; no crew-alive or stealth bonus, the bank is NOT
+## consumed and nothing new is banked.
+## Stealth bonus (S11.1, D-022 QB-13): the "stealth" XP line = running total x (banked_stealth_mult
+## - 1), i.e. the bonus earned by the previous stealth heist. This heist's own stealth success only
+## sets "stealth_bonus_banked"; SaveService.apply_heist_payout stores it in the profile.
 ## Crew-alive cash bonus: success and no crew member (human or AI) has in_custody == true.
 class_name PayoutCalculator
 extends RefCounted
@@ -50,7 +61,7 @@ const XP_ORDER: Array[StringName] = [XP_BASE, XP_PRO, XP_DIFFICULTY, XP_CUSTODY,
 
 
 static func compute(result: Dictionary, difficulty_def: DifficultyDef = null, tweak: PayoutTweak = null,
-		is_pro: bool = false, crew_slot: int = -1) -> Dictionary:
+		is_pro: bool = false, crew_slot: int = -1, banked_stealth_mult: float = 1.0) -> Dictionary:
 	var diff: DifficultyDef = difficulty_def if difficulty_def != null else _load_difficulty(int(result.get("difficulty", 0)))
 	var tw: PayoutTweak = tweak if tweak != null else _load_tweak()
 	var success: bool = bool(result.get("success", false))
@@ -58,7 +69,8 @@ static func compute(result: Dictionary, difficulty_def: DifficultyDef = null, tw
 	var crew: Array = result.get("crew", []) as Array
 	var out: Dictionary = {"success": success, "stealth": stealth}
 	_compute_cash(out, result, diff, tw, success, crew, crew_slot)
-	_compute_xp(out, result, diff, tw, success, stealth, is_pro, crew, crew_slot)
+	_compute_xp(out, result, diff, tw, success, is_pro, crew, crew_slot, banked_stealth_mult)
+	out["stealth_bonus_banked"] = tw.stealth_xp_bonus_mult if success and stealth else 1.0
 	return out
 
 
@@ -104,7 +116,7 @@ static func _compute_cash(out: Dictionary, result: Dictionary, diff: DifficultyD
 
 
 static func _compute_xp(out: Dictionary, result: Dictionary, diff: DifficultyDef, tw: PayoutTweak,
-		success: bool, stealth: bool, is_pro: bool, crew: Array, crew_slot: int) -> void:
+		success: bool, is_pro: bool, crew: Array, crew_slot: int, banked_stealth_mult: float) -> void:
 	var base: int = 0
 	if success:
 		var bags: int = 0
@@ -130,8 +142,9 @@ static func _compute_xp(out: Dictionary, result: Dictionary, diff: DifficultyDef
 		additive = roundi(float(running) * frac)
 	running += additive
 	var stealth_bonus: int = 0
-	if success and stealth:
-		stealth_bonus = roundi(float(running) * (tw.stealth_xp_bonus_mult - 1.0))
+	var consumed: bool = success and banked_stealth_mult > 1.0
+	if consumed:
+		stealth_bonus = roundi(float(running) * (banked_stealth_mult - 1.0))
 	running += stealth_bonus
 	var amounts: Array[int] = [base, pro, difficulty, custody, additive, stealth_bonus]
 	var lines: Array[Dictionary] = []
@@ -139,6 +152,7 @@ static func _compute_xp(out: Dictionary, result: Dictionary, diff: DifficultyDef
 		lines.append({"key": XP_ORDER[i], "amount": amounts[i]})
 	out["xp_lines"] = lines
 	out["xp_total"] = maxi(running, 0)
+	out["stealth_bonus_consumed"] = consumed
 
 
 static func _anyone_in_custody(crew: Array) -> bool:

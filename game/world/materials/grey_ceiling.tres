@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "grey_ceiling"
+albedo_color = Color(0.827451, 0.815686, 0.784314, 1)
+metallic_specular = 0.5
+roughness = 0.85

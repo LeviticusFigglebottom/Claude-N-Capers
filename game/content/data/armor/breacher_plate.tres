@@ -12,3 +12,4 @@ move_speed_mult = 0.5462
 concealment = 1
 stamina_mult = 0.6823
 unlock_level = 0
+unlock_skill = &"skill.juggernaut.plated"

@@ -23,10 +23,12 @@ Modeled on PD2's starter pistol feel.
 Fire cues use the contract pattern `cue.weapon_pistol_fire(_suppressed)`.
 
 ## Mods: `mods/`
-Delta resources are `WeaponStats` with only changed fields, **but** every delta must set
-`pellets = 0`, `falloff_start_m = 0`, `falloff_end_m = 0`, `equip_time_s = 0`, `ads_time_s = 0`
-(those schema defaults are non-zero and `plus()` adds them). `test_mod_deltas_zero_non_zero_defaults`
-enforces it.
+Delta resources are `WeaponStats` that must equal `WeaponStats.make_delta()` (D-022 QB-5) except
+for the fields the mod intentionally changes. `.tres` files can't call it, so each delta spells out
+make_delta's zeros: `pellets = 0`, `headshot_mult = 0`, `falloff_start_m = 0`, `falloff_end_m = 0`, `falloff_min_mult = 0`,
+`equip_time_s = 0`, `ads_time_s = 0`, `noise_radius_m = 0` (suppressors set their radius),
+`magnification = 0` (sights set theirs). Code that builds deltas calls `make_delta()`.
+`test_mod_deltas_start_from_make_delta` enforces it.
 | Id | Slot | Delta | Src |
 |---|---|---|---|
 | `mod.p9_iron_sights` | SIGHT (default) | none (stock) | — |
@@ -50,7 +52,7 @@ divided by the suit's (36.8 speed, 51.3 stamina).
 | Heavy Vest | Heavy Ballistic Vest | 70 | 21 | −0.15 | 12 |
 | Flak Rig | Flak Jacket | 90 | 18 | −0.20 | 21 |
 | Tactical Plate | Combined Tactical Vest | 110 | 12 | −0.25 | 31 |
-| Breacher Plate | Improved CTV | 170 | 1 | −0.55 | skill-gated in PD2; `unlock_level 0` until the schema has a skill gate (lead question) |
+| Breacher Plate | Improved CTV | 170 | 1 | −0.55 | 0 + `unlock_skill = skill.juggernaut.plated` (D-022 QB-7; "Plated" = Iron Man analog, Bruiser tree / Juggernaut subtree; placeholder id until the skill data ships) |
 
 ## Deployables: `deployables/`
 Doctor bag 2 uses (V), ammo bag 4 uses = 400% (V), body bag case 3 bags (V, research §1.7).
@@ -76,6 +78,8 @@ difficulty multiplier.
 | custody_auto_release_s | 119 | 119 | −1 | −1 | −1 | −1 | V (−1 = trade only) |
 | hostage_assault_delay_s | 30 | 30 | 30 | 30 | 10 | 10 | V |
 Phantoms (cloakers) are capped at 0 below Hazardous (V: "Very Hard+").
+`special_limits` keys must be canonical enemy ids from `docs/contracts/groups.md` (D-022 QB-9);
+every Wrecker variant counts toward `enemy.wrecker`. `test_special_limits_use_canonical_enemy_ids`.
 
 ## Tweaks: `tweak/`
 * `concealment_curve.tres` (`ConcealmentCurve`): total 91..119 → DR. Anchors V: 119→3, 116→7,
@@ -87,3 +91,6 @@ Phantoms (cloakers) are capped at 0 below Hazardous (V: "Very Hard+").
 * `display_stats.tres` (`DisplayStatTweak`): UI mapping ◇. Accuracy = linear in ADS spread
   (0° → 100, 2.5° → 0); stability = linear in kick + 0.5 × horizontal (0° → 100, 3° → 0); threat =
   suppression capped at 43 (V cap).
+* `payout.tres` (`PayoutTweak`): `stealth_xp_bonus_mult = 1.2` ◇ is the stealth bonus BANKED by a
+  successful stealth heist and applied to the NEXT payday's XP (S11.1, D-022 QB-13). S11.1 scales it
+  +5..25% by heist size; P1 uses one value, P4 scales it by heist size.

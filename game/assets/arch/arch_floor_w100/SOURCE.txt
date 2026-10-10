@@ -1,0 +1,8 @@
+asset: arch_floor_w100
+script: tools/blender/greybox/floors.py
+params: {"kind": "floor", "size": 1.0}
+seed: 2514092561  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category greybox --asset arch_floor_w100
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 500

@@ -8,7 +8,7 @@ const REQUIRED_KEYS: Array[String] = [
 	"ui.prompt.open_door", "ui.prompt.interact", "ui.prompt.blocked.casing",
 	"ui.stat.damage", "ui.stat.accuracy", "ui.stat.stability", "ui.stat.concealment", "ui.stat.threat",
 	"ui.stat.magazine", "ui.stat.total_ammo", "ui.stat.rate_of_fire", "ui.stat.reload",
-	"ui.stat.detection_risk", "heist.glasshouse.name",
+	"ui.stat.detection_risk", "heist.glasshouse.name", "ui.results.stealth_bonus_banked",
 ]
 const ITEM_IDS: Array[String] = [
 	"weapon.kestrel_p9", "mod.p9_suppressor", "mod.p9_reflex_sight", "mod.p9_extended_mag",
@@ -69,12 +69,14 @@ func test_format_placeholders() -> void:
 	assert_eq(StringTable.format("{a} and {b}", {"a": 1}), "1 and {b}")
 
 
+## D-022 QB-4: strings.en.translation is registered in project.godot, so tr() must resolve.
 func test_text_translates_when_registered() -> void:
-	if not StringTable.has(&"ui.menu.play"):
-		skip("pending lead registration of strings.en.translation in project.godot (D-021)")
-		return
+	assert_true(StringTable.has(&"ui.menu.play"), "strings.en.translation registered (D-022 QB-4)")
 	assert_eq(StringTable.text(&"ui.menu.play"), "Play")
 	assert_eq(StringTable.text(&"ui.prompt.revive", {"key": "F", "name": "Dutch"}), "Hold F to revive Dutch")
+	assert_eq(StringTable.text(&"ui.results.stealth_bonus_banked", {"pct": 20}),
+		"Stealth bonus banked for your next job: +20%")
+	assert_eq(StringTable.text(&"ui.results.xp.stealth"), "Stealth bonus")
 
 
 func test_missing_key_warns_once_and_returns_key() -> void:

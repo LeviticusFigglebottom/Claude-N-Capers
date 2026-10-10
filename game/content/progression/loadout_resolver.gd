@@ -10,17 +10,26 @@
 ##   the same slot, or a declared conflict) are rejected with Log.error and ignored.
 ## * concealment_total = primary + secondary + melee + armor + bonus; detection_risk via the
 ##   ConcealmentCurve tweak.
+## * bonus = concealment_bonus(): sum of the `stealth.concealment_add.<qualifier>` grants in the
+##   loadout's resolved modifiers (D-022 QB-6). Qualifiers: melee, armor, primary, secondary, all
+##   (a bare key counts as all). A slot qualifier only counts while that slot is filled. The bonus
+##   is added AFTER the per-weapon 0..30 clamp, so it can push the total past 4 x 30 (PD2: each
+##   weapon caps at 30, skill/perk bonuses still raise the total).
 ## * modifiers = merged skill grants (basic, plus aced) and unlocked perk-deck card grants, merged by
 ##   ModifierKeys type (MULT multiply, ADD sum, FLAG or, PARAMS last wins). Unknown keys rejected.
 ##
-## P1 RULE (data-driven): an empty weapon/melee/armor slot contributes
+## P1 RULE (data-driven, D-022 QB-11): an empty weapon/melee/armor slot contributes
 ## `ConcealmentCurve.empty_slot_concealment` (30), so the P1 pistol-only loadout is not penalized
-## for having no primary. PD2 always has two weapons; revisit when primaries ship (P4).
+## for having no primary. P1 ONLY: from P4 a loadout needs a primary and a secondary (PD2) and the
+## resolver rejects empty weapon slots.
 class_name LoadoutResolver
 extends RefCounted
 
 const LOG_CHANNEL: StringName = &"loadout"
 const CURVE_TWEAK: StringName = &"concealment_curve"
+const CONCEALMENT_ADD_KEY: StringName = &"stealth.concealment_add"
+## Qualifiers of CONCEALMENT_ADD_KEY. &"all" always counts; the others only while the slot is filled.
+const CONCEALMENT_QUALIFIERS: Array[StringName] = [&"all", &"primary", &"secondary", &"melee", &"armor"]
 
 
 static func resolve(loadout: Loadout) -> Loadout:
@@ -96,10 +105,28 @@ static func concealment_breakdown(loadout: Loadout) -> Dictionary:
 	}
 
 
-## Skill/perk concealment bonuses (Inner Pockets, Blending In analogs). No registered modifier key
-## exists yet; P4 adds the key to ModifierKeys (via the lead) and sums it here. Returns 0 until then.
-static func concealment_bonus(_loadout: Loadout) -> int:
-	return 0
+## Skill/perk concealment bonus (Inner Pockets / Blending In analogs, D-022 QB-6): the sum of the
+## loadout's resolved `stealth.concealment_add[.qualifier]` grants. Not capped by the per-weapon 30.
+static func concealment_bonus(loadout: Loadout) -> int:
+	return concealment_bonus_from(loadout, resolve_modifiers(loadout))
+
+
+## Same, from an already merged modifier dictionary (resolve_modifiers() output).
+static func concealment_bonus_from(loadout: Loadout, modifiers: Dictionary) -> int:
+	var bonus: float = 0.0
+	for key: Variant in modifiers:
+		var k: StringName = StringName(key)
+		if ModifierKeys.base_key(k) != CONCEALMENT_ADD_KEY:
+			continue
+		var qualifier: StringName = &"all"
+		if k != CONCEALMENT_ADD_KEY:
+			qualifier = StringName(String(k).trim_prefix(String(CONCEALMENT_ADD_KEY) + "."))
+		if not CONCEALMENT_QUALIFIERS.has(qualifier):
+			Log.error(LOG_CHANNEL, "unknown concealment qualifier in %s" % k)
+			continue
+		if qualifier == &"all" or StringName(loadout.get(qualifier)) != &"":
+			bonus += float(modifiers[key])
+	return roundi(bonus)
 
 
 static func detection_risk_for_total(total: int) -> int:
@@ -171,6 +198,8 @@ static func _illegal_reason(def: WeaponDef, m: WeaponModDef, by_slot: Dictionary
 
 
 static func _weapon_concealment(weapon_id: StringName, mods: Array[StringName], curve: ConcealmentCurve) -> int:
+	# TODO(P4): D-022 QB-11 - the empty slot = 30 rule is P1 only. From P4 reject a loadout without
+	# a primary and a secondary instead of counting the empty slot as empty_slot_concealment.
 	if weapon_id == &"":
 		return curve.empty_slot_concealment
 	var s: WeaponStats = resolve_weapon(weapon_id, mods)
