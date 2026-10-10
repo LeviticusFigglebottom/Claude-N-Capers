@@ -1288,3 +1288,23 @@ objective.glasshouse.workshop_door,Get into the workshop
 objective.glasshouse.safe,Open the safe
 objective.glasshouse.safe_loot,Bag the consignment
 objective.glasshouse.secure,Secure the bags ({count}/{total})
+ui.payday_cards.title,Pick a card
+ui.payday_cards.hint,"One of three is yours. Mouse, Enter or the A button."
+ui.payday_cards.timer,Auto-pick in {seconds} s
+ui.payday_cards.auto_picked,Time ran out: a card was picked for you
+ui.payday_cards.you_got,You got: {reward}
+ui.payday_cards.type.cash,Cash
+ui.payday_cards.type.xp,Experience
+ui.payday_cards.type.weapon_mod,Weapon mod
+ui.payday_cards.type.mask_part,Mask part
+ui.payday_cards.tier.0,Common
+ui.payday_cards.tier.1,Uncommon
+ui.payday_cards.tier.2,Rare
+ui.payday_cards.xp_amount,{amount} XP
+ui.payday_cards.cash_detail,Spending cash
+ui.payday_cards.xp_detail,Toward your next level
+ui.payday_cards.mod_for,Fits the {weapon}
+ui.payday_cards.mask_kind.base,Mask shape
+ui.payday_cards.mask_kind.material,Mask material
+ui.payday_cards.mask_kind.colors,Mask colours
+ui.payday_cards.mask_kind.pattern,Mask pattern
