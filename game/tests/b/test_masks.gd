@@ -229,3 +229,28 @@ func test_gilded_heron_uses_env_d_mesh() -> void:
 	var n: Node = preset.model.instantiate()
 	assert_true(n is Node3D)
 	n.free()
+
+
+func test_base_mesh_paths_exist() -> void:
+	# ENV D's base meshes (QB-50b): pipeline layout assets/masks/mask_base_<name>/mask_base_<name>.glb.
+	var text: String = FileAccess.get_file_as_string("res://content/data/masks/parts/bases.tres")
+	var rx: RegEx = RegEx.create_from_string("model_path = \"([^\"]+)\"")
+	var found: int = 0
+	for m: RegExMatch in rx.search_all(text):
+		found += 1
+		assert_true(ResourceLoader.exists(m.get_string(1)), "missing base mesh %s" % m.get_string(1))
+	assert_eq(found, 5, "five base shapes")
+
+
+func test_placeholder_uv_origin_is_viewer_left() -> void:
+	# masks.md: u = 0 at +X (the viewer's left looking at the mask front), v = 0 at the top.
+	var mesh: Mesh = MaskComposer.placeholder_mesh(MaskCatalog.part(&"mask_base.visage") as MaskBaseDef)
+	assert_true(mesh != null)
+	var arrays: Array = mesh.surface_get_arrays(0)
+	var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+	var right_most: int = 0
+	for i: int in range(verts.size()):
+		if verts[i].x > verts[right_most].x:
+			right_most = i
+	assert_true(uvs[right_most].x < 0.1, "+X edge maps to u ~ 0")
