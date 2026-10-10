@@ -313,3 +313,11 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   amount 0 and `blocked: true`; plate damage ×1, no crit, excess lost; ENV A ships EnemyDefs with armour params
   for every special; range data may reference EnemyDef paths.
 - B4-11 is in the roadmap (P4 table, D-049).
+
+## D-053 — 2026-10-10 — Shell-by-shell clips; akimbo/revolver FP notes
+- Shell-fed weapons always play the shell-by-shell FP pieces (start + n × loop + end / end_empty) for any shell
+  count; the composed reload clips are previews/3P only and never time a reload (consistent with D-045).
+- visual_slots: akimbo offhand at the HandL/Socket grip (no helper bone; left mag hidden/shown at mag_out_l/mag_in_l);
+  revolver Crane/Cylinder/Speedloader details; revolver reload_empty = reload.
+- Damage v1.1 follow-up: ENV B's range keeps a shooter-stats shield-pierce fallback only for legacy info dicts
+  without the key; ENV A sets `shield_pierce` attacker-side (then the fallback is dead code to remove).
