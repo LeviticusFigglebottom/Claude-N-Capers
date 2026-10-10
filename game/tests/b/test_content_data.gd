@@ -227,7 +227,7 @@ func test_every_non_stock_mod_has_a_downside() -> void:
 
 
 func test_loot_weights_and_values() -> void:
-	assert_eq(ContentDB.loot(&"loot.body_bag").weight, Enums.LootWeight.MEDIUM)
+	assert_eq(ContentDB.loot(&"loot.body_bag").weight, Enums.LootWeight.HEAVY, "body bags are HEAVY (S6.3, D-032)")
 	assert_eq(ContentDB.loot(&"loot.body_bag").value, 0)
 	assert_true(ContentDB.loot(&"loot.jewelry").value > 0)
 	assert_true(ContentDB.loot(&"loot.cash").value > 0)

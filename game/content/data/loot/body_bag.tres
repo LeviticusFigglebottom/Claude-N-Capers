@@ -6,6 +6,6 @@
 script = ExtResource("1")
 id = &"loot.body_bag"
 display_name = "Body Bag"
-weight = 1
+weight = 2
 value = 0
 conceals = false

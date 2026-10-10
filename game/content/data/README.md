@@ -66,7 +66,7 @@ count 1, damage 0). Radius and fuse 0 (not thrown). Their effects live in the de
 grants. `test_perk_throwables_exist` checks every `perk.throwable` item id resolves.
 
 ## Loot: `loot/`
-Jewelry $1,000 LIGHT ◇, cash $1,200 LIGHT ◇, body bag $0 MEDIUM (S10.1). Base values before the
+Jewelry $1,000 LIGHT ◇, cash $1,200 LIGHT ◇, body bag $0 HEAVY (S6.3, D-032). Base values before the
 difficulty multiplier.
 
 ## Difficulty: `difficulty/` (Routine, Tense, Hazardous, Brutal, Lethal, Cataclysm = PD2 Normal, Hard, Very Hard, Overkill, Mayhem, Death Sentence)
