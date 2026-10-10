@@ -258,40 +258,48 @@ def _rug_rect(k: Kit, p: dict) -> None:
     k.collision([((-w / 2, -d / 2, 0.0), (w / 2, d / 2, 0.01))])
 
 
-def _foliage(p, x: float, y: float, z: float, r: float, n: int, rng, spread: float = 1.0) -> None:
-    for i in range(n):
-        a = rng.uniform(0, 2 * math.pi)
-        rr = rng.uniform(0.0, r) * spread
-        zz = z + rng.uniform(-r * 0.6, r * 0.6)
-        p.sphere(rng.uniform(r * 0.35, r * 0.6), (x + math.cos(a) * rr, y + math.sin(a) * rr, zz), "leaf", segs=8, rings=5,
-                 scale=(1.0, 1.0, 0.7))
-
-
 def _plant_tall(k: Kit, p: dict) -> None:
+    """Fiddle-leaf fig in a ceramic planter: curved trunk, three branches, broad two-sided leaves."""
+    rng = k.ctx.rng
     o = k.obj("Plant")
     pot = o.part(bevel=0.0)
-    pot.lathe([(0.15, 0.0), (0.2, 0.05), (0.23, 0.45), (0.215, 0.47), (0.0, 0.47)], "ceramic", segs=24)
-    pot.lathe([(0.2, 0.44), (0.2, 0.455), (0.0, 0.455)], "soil", segs=20)
-    pot.rod((0.0, 0.0, 0.45), (0.03, 0.02, 1.2), 0.018, "wood_dark", segs=8)
-    pot.rod((0.03, 0.02, 1.0), (-0.12, 0.05, 1.35), 0.01, "wood_dark", segs=6)
+    pot.lathe([(0.15, 0.0), (0.19, 0.04), (0.215, 0.4), (0.225, 0.44), (0.21, 0.46), (0.0, 0.46)], "ceramic", segs=28)
+    pot.lathe([(0.2, 0.43), (0.2, 0.445), (0.0, 0.445)], "soil", segs=20)
+    trunk = [(0.0, 0.0, 0.44), (0.02, 0.01, 0.75), (0.0, 0.03, 1.05), (-0.03, 0.02, 1.3)]
+    pot.tube(trunk, 0.018, "wood_dark", segs=8)
     leaves = o.part(bevel=0.0)
-    _foliage(leaves, 0.0, 0.0, 1.35, 0.32, 18, k.ctx.rng)
-    _foliage(leaves, -0.1, 0.05, 1.1, 0.22, 8, k.ctx.rng)
+    tips = [(-0.03, 0.02, 1.3), (0.14, 0.06, 1.18), (-0.16, -0.04, 1.1)]
+    pot.tube([(0.0, 0.03, 1.0), (0.14, 0.06, 1.18)], 0.01, "wood_dark", segs=6)
+    pot.tube([(0.02, 0.01, 0.85), (-0.16, -0.04, 1.1)], 0.01, "wood_dark", segs=6)
+    for t, (tx, ty, tz) in enumerate(tips):
+        n = 18 if t == 0 else 13
+        for i in range(n):
+            ang = 2.39996 * i + t
+            up = 0.5 + 0.5 * i / n
+            base = (tx + rng.uniform(-0.03, 0.03), ty + rng.uniform(-0.03, 0.03), tz - 0.28 * (1 - i / n) + 0.02)
+            ln = rng.uniform(0.15, 0.23)
+            d = (math.cos(ang) * ln * 0.9, math.sin(ang) * ln * 0.9, ln * (0.15 + 0.5 * up))
+            tip = (base[0] + d[0], base[1] + d[1], base[2] + d[2])
+            leaves.leaf(base, tip, ln * 0.62, "leaf" if i % 3 else "leaf_dark")
     o.build()
-    k.collision([], cylinders=[(0.23, 0.47, (0.0, 0.0, 0.235))])
+    k.collision([], cylinders=[(0.225, 0.46, (0.0, 0.0, 0.23))])
 
 
 def _plant_small(k: Kit, p: dict) -> None:
+    """Desk snake plant: upright blades in a small ceramic pot."""
+    rng = k.ctx.rng
     o = k.obj("Plant")
     pot = o.part(bevel=0.0)
-    pot.lathe([(0.055, 0.0), (0.07, 0.11), (0.0, 0.11)], "ceramic", segs=16)
+    pot.lathe([(0.05, 0.0), (0.065, 0.1), (0.068, 0.11), (0.0, 0.11)], "ceramic", segs=18)
+    pot.lathe([(0.06, 0.1), (0.0, 0.1)], "soil", segs=12)
     leaves = o.part(bevel=0.0)
-    rng = k.ctx.rng
     for i in range(9):
-        a = 2 * math.pi * i / 9 + rng.uniform(-0.2, 0.2)
-        tip = (math.cos(a) * 0.09, math.sin(a) * 0.09, 0.2 + rng.uniform(-0.03, 0.05))
-        leaves.rod((0.0, 0.0, 0.1), tip, 0.006, "leaf", segs=5)
-        leaves.sphere(0.022, tip, "leaf", segs=6, rings=4, scale=(1.0, 0.5, 1.4))
+        a = 2.39996 * i
+        r = 0.015 + 0.03 * (i % 3) / 2
+        base = (math.cos(a) * r, math.sin(a) * r, 0.1)
+        hh = rng.uniform(0.16, 0.27)
+        tip = (base[0] * 2.2 + rng.uniform(-0.02, 0.02), base[1] * 2.2 + rng.uniform(-0.02, 0.02), 0.1 + hh)
+        leaves.leaf(base, tip, 0.035, "leaf" if i % 2 else "leaf_dark", up=(math.cos(a), math.sin(a), 0.0), fold=0.1)
     o.build()
 
 

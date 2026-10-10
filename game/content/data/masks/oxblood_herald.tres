@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MaskDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://contracts/data/mask_def.gd" id="1_mask"]
+[ext_resource type="PackedScene" uid="uid://cgdhs5oxih2m0" path="res://assets/masks/mask_base_heron/mask_base_heron.glb" id="2_model"]
+
+[resource]
+script = ExtResource("1_mask")
+id = &"mask.oxblood_herald"
+display_name = "Oxblood Herald"
+model = ExtResource("2_model")
+color_a = Color(0.42, 0.12, 0.14, 1)
+color_b = Color(0.76, 0.6, 0.3, 1)
+material_id = &"char_mask_lacquer_dark"
+pattern_id = &"mask_pattern.starburst"
+unlock = &"unlock.achievement.cataclysm_clear"
+metadata/mask_base = &"mask_base.heron"

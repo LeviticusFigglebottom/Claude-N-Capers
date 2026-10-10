@@ -2,7 +2,9 @@
 
 API: `game/core/net.gd`. Architecture: architecture.md §3.
 
-* `Net.start_solo(name, ai)` / `Net.host(port)` / `Net.join(addr, port)` / `Net.leave()`.
+* `Net.start_solo(name, ai)` / `Net.host(port, name)` / `Net.join(addr, port, name)` / `Net.leave()`. A client sends
+  `name` to the host on connect (names its slot). Client signals `connected_to_host`, `connection_failed`, `host_lost`
+  (the latter two also leave the session). host/join/leave never double-connect handlers (D-052).
 * Crew registry `Net.crew[slot] = {peer_id, is_ai, display_name}`; AI peer_id = 0. Helpers:
   `all_slots()`, `human_slots()`, `local_slot()`, `slot_of_peer()`, `fill_with_ai()`.
 * `Net.is_authority()` guards every state mutation.

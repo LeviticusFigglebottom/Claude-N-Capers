@@ -115,8 +115,20 @@ extends Resource
 @export_group("Bag lift, hack terminal (A3-09: QC-11, QC-12)")
 ## ◇ Hold at a bag_lift landing panel to send / call the car (s).
 @export var bag_lift_send_s: float = 1.0
-## ◇ Car door slide (m per leaf, along the car's X) when open.
-@export var bag_lift_door_open_m: float = 0.45
+## ◇ Car door slide (m per leaf, along the car's X) when open, for every lift without its own
+## `door_open_m`. 0 = from the car: car_size_m.x / 2 - bag_lift_door_margin_m (0.45 m for 1.2 m).
+@export var bag_lift_door_open_m: float = 0.0
+## ◇ Door edge left covering the opening at full slide (m).
+@export var bag_lift_door_margin_m: float = 0.15
+## ◇ `door_fold` lifts: open leaves shrink to this fraction of their width (outer edge fixed).
+@export var bag_lift_door_fold_scale: float = 0.2
+## ◇ Shaft: a loose bag this far below the car floor inside the car's column has fallen in (m); it
+## goes back bag_lift_return_front_m in front of the car at its landing. Column depth below the
+## lowest landing (m) and check interval (s).
+@export var bag_lift_fall_m: float = 0.5
+@export var bag_lift_return_front_m: float = 0.6
+@export var bag_lift_pit_depth_m: float = 4.0
+@export var bag_lift_shaft_check_s: float = 0.2
 ## ◇ hack_terminal: hold to start the hack / to restart it after an interruption (s).
 @export var hack_start_s: float = 2.0
 @export var hack_restart_s: float = 2.0

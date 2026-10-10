@@ -14,11 +14,11 @@ from _pb import Kit, knob, panel_door
 
 TRI_BUDGET = 20000
 VARIANTS = {
-    "prop_display_case_island": {"kind": "island", "w": 1.2, "d": 0.6, "cat": {"prefab": "display_case", "kind": "display_case"}},
-    "prop_display_case_island_long": {"kind": "island", "w": 1.8, "d": 0.7, "cat": {"prefab": "display_case", "kind": "display_case"}},
-    "prop_display_case_wall": {"kind": "wall", "w": 1.2, "d": 0.5, "cat": {"prefab": "display_case", "kind": "display_case"}},
-    "prop_display_case_round": {"kind": "round", "w": 2.4, "d": 2.4, "cat": {"prefab": "display_case", "kind": "display_case"}},
-    "prop_display_case_vitrine": {"kind": "vitrine", "w": 0.6, "d": 0.6, "cat": {"prefab": "display_case", "kind": "display_case"}},
+    "prop_display_case_island": {"kind": "island", "w": 1.2, "d": 0.6, "cat": {"prefab": "display_case", "kind": "display_case", "light": {"type": "omni", "color": "#FFB46B", "specular": 0.05, "energy": 0.35, "range": 1.4, "pos": [0, 0.86, 0]}}},
+    "prop_display_case_island_long": {"kind": "island", "w": 1.8, "d": 0.7, "cat": {"prefab": "display_case", "kind": "display_case", "light": {"type": "omni", "color": "#FFB46B", "specular": 0.05, "energy": 0.4, "range": 1.8, "pos": [0, 0.86, 0]}}},
+    "prop_display_case_wall": {"kind": "wall", "w": 1.2, "d": 0.5, "cat": {"prefab": "display_case", "kind": "display_case", "light": {"type": "omni", "color": "#FFB46B", "specular": 0.05, "energy": 0.4, "range": 1.8, "pos": [0, 1.5, 0]}}},
+    "prop_display_case_round": {"kind": "round", "w": 2.4, "d": 2.4, "cat": {"prefab": "display_case", "kind": "display_case", "light": {"type": "omni", "color": "#FFB46B", "specular": 0.05, "energy": 0.6, "range": 2.2, "pos": [0, 0.98, 0]}}},
+    "prop_display_case_vitrine": {"kind": "vitrine", "w": 0.6, "d": 0.6, "cat": {"prefab": "display_case", "kind": "display_case", "light": {"type": "omni", "color": "#FFB46B", "specular": 0.05, "energy": 0.35, "range": 1.5, "pos": [0, 1.25, 0]}}},
 }
 
 PLINTH = 0.08
@@ -76,6 +76,10 @@ def _glass_box(k: Kit, body, glass, x0: float, x1: float, y0: float, y1: float, 
         tube.bx((ax0, ay0, z1 - t), (ax1, ay1, z1), "brass")
     for (cx, cy) in ((x0, y0), (x1 - t, y0), (x0, y1 - t), (x1 - t, y1 - t)):
         tube.bx((cx, cy, z0), (cx + t, cy + t, z1), "brass")
+    # warm LED strips tucked under the top rails (the case reads lit from inside, like the reference)
+    led = body.part(bevel=0.0)
+    for (ly0, ly1) in ((y0 + t, y0 + t + 0.008), (y1 - t - 0.008, y1 - t)):
+        led.bx((x0 + t, ly0, z1 - t - 0.005), (x1 - t, ly1, z1 - t), "emit_warm")
     g = glass.part(bevel=0.0)
     e = t * 0.5
     g.bx((x0 + e, y1 - t / 2 - PANE / 2, z0 + t), (x1 - e, y1 - t / 2 + PANE / 2, z1 - t), "glass")
@@ -192,8 +196,8 @@ def _round(k: Kit, w: float, seed: int) -> list:
     jp = disp.part(bevel=0.0)
     js = disp.part(bevel=0.003, segments=2)
     J.bust(jp, js, 0.0, 0.0, deck + 0.12, height=0.3, pearls=False)
-    for i in range(8):
-        a = 2 * math.pi * (i + 0.5) / 8
+    for i in range(6):
+        a = 2 * math.pi * (i + 0.5) / 6
         cx, cy = math.cos(a) * 0.78, math.sin(a) * 0.78
         if i % 2 == 0:
             J.bust(jp, js, cx, cy, deck, pearls=i % 4 == 0)

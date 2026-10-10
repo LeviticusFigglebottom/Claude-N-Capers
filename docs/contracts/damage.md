@@ -1,4 +1,4 @@
-# Contract: damage and hits (v1.0)
+# Contract: damage and hits (v1.1)
 
 Producer of hits: ENV A (weapons, melee, explosives, sentries, NPC fire). Damage targets: ENV A
 (crew, NPCs, cameras, glass, shields), ENV B (firing-range targets and armor dummies). Helper:
@@ -37,3 +37,15 @@ Producer of hits: ENV A (weapons, melee, explosives, sentries, NPC fire). Damage
 * `info.crit = true` ⇒ the target additionally multiplies by its own HEAD zone multiplier on any zone. On a
   head hit the two stack (PD2 behaviour).
 * Zone `WEAKPOINT` on a target without plates counts ×1. Firing-range dummies never emit `npc_killed`.
+
+## Armor, shields and plates (v1.1, D-052; answers ENV B QB-a..d)
+* Attacker side rolls and sets `pierced_armor` (the weapon's armor-piercing chance or AP ammo) and `shield_pierce`
+  (the weapon can shoot through shields: AP rounds, sniper class, skills). Targets only read them.
+* `pierced_armor` ⇒ the target ignores body armor / frontal armor reduction. `shield_pierce` ⇒ a shield hit passes
+  through at the target's `shield_pierce_mult` (e.g. ×0.25) instead of being blocked.
+* A blocked hit still goes through the single hit path: the target emits `damage_applied` with `amount` 0 and
+  `blocked: true` (hit markers, stats), and returns that info.
+* Plates (Wrecker faceplate/visor): plate damage uses ×1 zone, crits do not apply, excess damage beyond the
+  plate's remaining HP is lost (PD2).
+* Range dummies copy the EnemyDef they imitate (ENV A ships EnemyDefs for every special, incl. the armour
+  params); ENV B's range data may reference EnemyDef resource paths (data, not code).

@@ -37,27 +37,37 @@ def ring_tray(p: Part, soft: Part, x: float, y: float, z: float, w: float = 0.24
 
 
 def bust(p: Part, soft: Part, x: float, y: float, z: float, height: float = 0.26, pearls: bool = True) -> None:
-    """Suede necklace bust (neck form) with a pearl strand or a gold chain and pendant."""
-    hs = height
-    soft.lathe([(0.085, 0.0), (0.085, 0.01), (0.072, 0.022), (0.062, hs * 0.3), (0.046, hs * 0.62),
-                (0.034, hs * 0.85), (0.03, hs), (0.0, hs)], "suede",
-               centre=(x, y, z), segs=20, scale_xy=(1.15, 0.85))
-    zc = z + hs * 0.58
+    """Velvet neck-bust (jewelry form) on a brass foot: shoulder yoke wide in X and shallow in Y,
+    slender neck with a rounded top, and a pearl strand or a gold chain with a ruby pendant draped
+    over the front (+Y)."""
+    h = height
+    p.lathe([(0.0, 0.0), (0.05, 0.0), (0.052, 0.008), (0.03, 0.014), (0.0, 0.016)], "brass", centre=(x, y, z), segs=16)
+    p.cyl(0.007, h * 0.2, (x, y, z + 0.014 + h * 0.1), "brass", segs=10)
+    # torso form: narrow at the stem, widening to square shoulders, wide in X and shallow in Y
+    soft.lathe([(0.0, h * 0.2), (0.018, h * 0.21), (0.03, h * 0.3), (0.044, h * 0.45), (0.055, h * 0.58),
+                (0.06, h * 0.63), (0.055, h * 0.665), (0.038, h * 0.685), (0.02, h * 0.695)], "velvet_charcoal",
+               centre=(x, y, z), segs=20, scale_xy=(1.85, 0.6))
+    # neck column with a softly domed top
+    soft.lathe([(0.02, h * 0.68), (0.018, h * 0.8), (0.019, h * 0.9), (0.022, h * 0.95), (0.017, h * 0.985),
+                (0.0, h)], "velvet_charcoal", centre=(x, y, z), segs=14, scale_xy=(1.0, 0.85))
+    zc = z + h * 0.68
+    # draped over the shoulders and down the chest; the chest surface depth is ~0.6 x radius
+    def drape(t: float) -> tuple[float, float, float]:
+        zz = zc - math.sin(t) * h * 0.24
+        rad = 0.03 + 0.03 * math.sin(t)
+        return (x - math.cos(t) * 0.05, y + rad * 0.6 + 0.004, zz)
     if pearls:
-        n = 22
+        n = 30
         for i in range(n):
-            a = math.pi * 0.15 + math.pi * 0.7 * i / (n - 1)
-            px = x + math.cos(a) * 0.058
-            py = y + math.sin(a) * 0.05
-            pz = zc - math.sin(a) * 0.035
-            p.sphere(0.0072, (px, py, pz), "ceramic", segs=8, rings=5)
+            p.sphere(0.0068, drape(math.pi * i / (n - 1)), "ceramic", segs=6, rings=4)
     else:
-        pts = []
-        for i in range(9):
-            a = math.pi * 0.12 + math.pi * 0.76 * i / 8
-            pts.append((x + math.cos(a) * 0.072, y + math.sin(a) * 0.055, zc - math.sin(a) * 0.05))
-        p.tube(pts, 0.0016, "brass", segs=4, joints=False)
-        p.sphere(0.009, (x, y + 0.058, zc - 0.062), "car_wine", segs=8, rings=5)
+        pts = [drape(math.pi * i / 16) for i in range(17)]
+        p.tube(pts, 0.002, "brass", segs=5, joints=True)
+        px, py, pz = drape(math.pi / 2)
+        p.torus(0.005, 0.0015, (px, py + 0.002, pz - 0.006), "brass", segs=8, rsegs=4, axis="X")
+        p.sphere(0.012, (px, py + 0.004, pz - 0.022), "car_wine", segs=10, rings=6, scale=(1.0, 0.6, 1.25))
+        for sx in (-1, 1):
+            p.sphere(0.005, drape(math.pi / 2 + sx * 0.6), "chrome", segs=6, rings=4)
 
 
 def watch_pillow(p: Part, soft: Part, x: float, y: float, z: float, metal: str = "chrome",

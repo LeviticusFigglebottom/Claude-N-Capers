@@ -4,11 +4,16 @@
 class_name MaskPatternDef
 extends MaskPartDef
 
-enum Procedural { SOLID, SPLIT, BROW_BAND, STRIPES, CHEVRON, DOTS, SASH, DIAMONDS }
+## Shader ids (mask_surface.gdshader `pattern`); append only, saved data stores the number.
+enum Procedural {
+	SOLID, SPLIT, BROW_BAND, STRIPES, CHEVRON, DOTS, SASH, DIAMONDS,
+	SCALES, CIRCUIT, PROWL, HALFTONE, CRACKLE, STARBURST,
+}
 
 ## Texture id requested from ENV D (e.g. &"tex_mask_pattern_split"); a reference only.
 @export var texture_id: StringName = &""
 @export_file("*.png") var texture_path: String = ""
 @export var procedural: Procedural = Procedural.SOLID
-## Repeats across the face for STRIPES / CHEVRON / DOTS / DIAMONDS.
+## Repeats across the face (STRIPES / CHEVRON / DOTS / DIAMONDS / SCALES / CIRCUIT / PROWL /
+## HALFTONE / CRACKLE); STARBURST: half the ray count.
 @export var scale: float = 4.0

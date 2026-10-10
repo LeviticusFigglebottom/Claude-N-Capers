@@ -87,11 +87,15 @@ static func make_variants() -> HeistVariantTable:
 		{"group": &"cleaner", "pick": Vector2i(1, 1)},
 		{"group": &"escape", "pick": Vector2i(1, 1)},
 		{"group": &"extra_loot", "pick": Vector2i(1, 1)},
+		# Never rolled: only the armored_car_early force_active pins the bay (last, so the other groups
+		# keep their draws).
+		{"group": &"armored_car", "pick": Vector2i(0, 0)},
 	]
 	t.rare_events = [
 		{"id": &"time_lock_glitch", "chance": 0.04, "good": true, "effects": {"time_lock_s": 10.0}},
 		{"id": &"armored_car_early", "chance": 0.08, "good": false, "min_difficulty": Enums.Difficulty.BRUTAL,
-			"effects": {"at_s": 720.0, "extra_guards": 2}},
+			"effects": {"at_s": 720.0, "extra_guards": 2,
+				"force_active": {"group": &"armored_car", "slot": &"armored_car_bay"}}},
 		{"id": &"fog_lifts", "chance": 0.10, "good": false, "effects": {"at_s": 480.0, "boat_delay_s": 60.0}},
 		{"id": &"co_op_courier", "chance": 0.05, "good": true, "effects": {"depository_bags_add": 2}},
 	]

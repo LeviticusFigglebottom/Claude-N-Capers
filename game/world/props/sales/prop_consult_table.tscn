@@ -7,3 +7,10 @@ metadata/kind = &"table"
 metadata/support = true
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Table" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
+[editable path="Model"]

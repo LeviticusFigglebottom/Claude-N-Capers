@@ -304,3 +304,20 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - laser_grid placeholder posts are inset by half their width so the grid stays within `size_m`.
 - New HeistMission virtual hooks use the `_on_mission_` prefix (ENV A) to avoid clashes with map scripts.
 - Characters: ENV D head pass + 30 m silhouette approved for P1 (acfbd8f).
+
+## D-052 — 2026-10-10 — Net client lifecycle; damage v1.1 (B4-11/B4-13 QBs)
+- Net (lead): `join(addr, port, name)` sends the name to the host on connect; client signals `connected_to_host`,
+  `connection_failed`, `host_lost` (the last two leave the session); host/join/leave clear handlers (no
+  double-connect when hosting twice). Client-side heist launch (`HeistLauncher` on clients) is ENV A's (A3-07).
+- damage.md v1.1: attacker-side `pierced_armor` + new `shield_pierce`; blocked hits emit `damage_applied` with
+  amount 0 and `blocked: true`; plate damage ×1, no crit, excess lost; ENV A ships EnemyDefs with armour params
+  for every special; range data may reference EnemyDef paths.
+- B4-11 is in the roadmap (P4 table, D-049).
+
+## D-053 — 2026-10-10 — Shell-by-shell clips; akimbo/revolver FP notes
+- Shell-fed weapons always play the shell-by-shell FP pieces (start + n × loop + end / end_empty) for any shell
+  count; the composed reload clips are previews/3P only and never time a reload (consistent with D-045).
+- visual_slots: akimbo offhand at the HandL/Socket grip (no helper bone; left mag hidden/shown at mag_out_l/mag_in_l);
+  revolver Crane/Cylinder/Speedloader details; revolver reload_empty = reload.
+- Damage v1.1 follow-up: ENV B's range keeps a shooter-stats shield-pierce fallback only for legacy info dicts
+  without the key; ENV A sets `shield_pierce` attacker-side (then the fallback is dead code to remove).

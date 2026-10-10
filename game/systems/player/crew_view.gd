@@ -5,6 +5,7 @@
 ##   sets `crew.weapon_visual` (CrewWeapons reads get_marker(&"Muzzle")). Rebuilt on weapon switch
 ##   (CrewWeapons.equipped_changed) and on CrewController.set_loadout(). When someone else puts a
 ##   WeaponVisual under the camera (e.g. ENV B's firing range bridge), ours is removed and that one is kept.
+##   With the first-person arms (FpViewmodel, characters.md v1.3) the WeaponVisual hangs on their `weapon` bone.
 ## - Every crew member, once masked: the mask at the model's `Head/Socket`, built on every peer from
 ##   `Loadout.mask_descriptor` (QA-25, D-043: MaskCatalog.from_descriptor; the server replicates it with
 ##   a reliable authority RPC on set_loadout, on mask-up and on set_mask_descriptor) or, when that is {}, the preset `Loadout.mask`
@@ -34,6 +35,7 @@ var external_viewmodel: bool = false
 
 var _crew: CrewController = null
 var _viewmodel: Node3D = null
+var _fp: FpViewmodel = null
 var _mask: Node3D = null
 var _mask_id: StringName = &""
 ## Descriptor the current mask was built from (rebuild when it changes).
@@ -51,7 +53,7 @@ func _ready() -> void:
 		return
 	_crew.masked_changed.connect(func(_m: bool) -> void: refresh_mask())
 	if _crew.weapons != null:
-		_crew.weapons.equipped_changed.connect(func(_ws: int) -> void: refresh_weapon())
+		_crew.weapons.equipped_changed.connect(func(_ws: int) -> void: refresh_weapon(true))
 	var cam: Camera3D = camera()
 	if cam != null:
 		cam.child_entered_tree.connect(_on_camera_child)
@@ -82,29 +84,72 @@ func refresh_camera() -> void:
 	cam.make_current()
 
 
-## Local human only: WeaponVisual of the equipped weapon under the camera.
-func refresh_weapon() -> void:
+## Local human only: WeaponVisual of the equipped weapon under the camera. With the first-person arms
+## (FpViewmodel, characters.md v1.3) it hangs on the arms' `weapon` bone; without them (no arms scene, or no
+## library for the weapon's anim_set) it sits at CrewTweak.viewmodel_offset. `animated` (weapon switch):
+## the arms play holster + draw over the gameplay equip time.
+func refresh_weapon(animated: bool = false) -> void:
 	if external_viewmodel:
 		return
-	_clear_viewmodel()
 	var cam: Camera3D = camera()
-	if cam == null or not _is_local_human() or _crew.weapons == null:
-		return
-	var ws: int = _crew.weapons.equipped_slot
-	var def: WeaponDef = ContentDB.weapon(_crew.weapons.weapon_id(ws)) if _crew.weapons.has_weapon(ws) else null
+	var ws: int = _crew.weapons.equipped_slot if _crew.weapons != null else -1
+	var def: WeaponDef = null
+	if cam != null and _is_local_human() and _crew.weapons != null and _crew.weapons.has_weapon(ws):
+		def = ContentDB.weapon(_crew.weapons.weapon_id(ws))
 	if def == null or def.model == null:
+		_clear_viewmodel()
+		_clear_fp()
 		return
 	var l: Loadout = _crew.loadout
 	var mod_ids: Array[StringName] = []
 	if l != null:
 		mod_ids = l.primary_mods if ws == Enums.WeaponSlot.PRIMARY else l.secondary_mods
+	var old: Node3D = viewmodel()
+	if old != null and _crew.weapon_visual == old:
+		_crew.weapon_visual = null
+	var fp: FpViewmodel = _ensure_fp(cam, def)
 	var wv: WeaponVisual = WeaponVisual.new()
 	wv.name = VIEWMODEL_NAME
-	wv.position = Tweak.crew().viewmodel_offset
 	_viewmodel = wv
-	cam.add_child(wv)
-	wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
+	if fp != null:
+		wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
+		var keep: Node3D = old if old != null and fp.is_ancestor_of(old) else null
+		if old != null and keep == null:
+			_free_node(old)
+		fp.attach_weapon(wv, def, keep, _equip_time(ws, def) if animated else -1.0)
+	else:
+		if old != null:
+			_free_node(old)
+		wv.position = Tweak.crew().viewmodel_offset
+		cam.add_child(wv)
+		wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
 	_crew.weapon_visual = wv
+
+
+## Gameplay equip time of slot `ws` (CrewWeapons.equip: equip_time_s / weapon.swap_speed_mult).
+func _equip_time(ws: int, def: WeaponDef) -> float:
+	var st: WeaponStats = _crew.weapons.stats(ws)
+	if st == null:
+		return 0.0
+	var q: StringName = Enums.weapon_class_qualifier(def.weapon_class)
+	return st.equip_time_s / maxf(Modifiers.mult(_crew.slot, &"weapon.swap_speed_mult", q), 0.01)
+
+
+## The first-person arms under `cam` when they can show `def` (else none: static viewmodel).
+func _ensure_fp(cam: Camera3D, def: WeaponDef) -> FpViewmodel:
+	if _fp == null or not is_instance_valid(_fp):
+		_fp = FpViewmodel.create(_crew)
+		if _fp == null:
+			return null
+		cam.add_child(_fp)
+	if not _fp.supports(def.anim_set):
+		_clear_fp()
+	return _fp
+
+
+## The local human's first-person arms (null when the static viewmodel is used).
+func fp_viewmodel() -> FpViewmodel:
+	return _fp if _fp != null and is_instance_valid(_fp) else null
 
 
 ## Every crew member: the equipped mask at `Head/Socket` once masked.
@@ -211,9 +256,20 @@ func _clear_viewmodel() -> void:
 	if _viewmodel != null and is_instance_valid(_viewmodel):
 		if _crew.weapon_visual == _viewmodel:
 			_crew.weapon_visual = null
-		_viewmodel.get_parent().remove_child(_viewmodel)
-		_viewmodel.queue_free()
+		_free_node(_viewmodel)
 	_viewmodel = null
+
+
+func _clear_fp() -> void:
+	if _fp != null and is_instance_valid(_fp):
+		_free_node(_fp)
+	_fp = null
+
+
+static func _free_node(n: Node) -> void:
+	if n.get_parent() != null:
+		n.get_parent().remove_child(n)
+	n.queue_free()
 
 
 func _clear_mask() -> void:
@@ -230,3 +286,4 @@ func _on_camera_child(n: Node) -> void:
 		return
 	external_viewmodel = true
 	_clear_viewmodel.call_deferred()
+	_clear_fp.call_deferred()

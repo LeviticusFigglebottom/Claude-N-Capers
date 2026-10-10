@@ -97,6 +97,97 @@ ear_w = 0.18
 id = &"mask_base.owl"
 display_name = "Owl"
 
+[sub_resource type="Resource" id="Resource_req_skull"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_skull/mask_base_skull.glb"
+requires_model = true
+width_m = 0.18
+height_m = 0.23
+roundness = 2.6
+chin_taper = 0.55
+eye_x = 0.36
+eye_y = 0.2
+eye_w = 0.22
+eye_h = 0.16
+snout_m = 0.0
+brow_m = 0.015
+id = &"mask_base.skull"
+display_name = "Skull"
+
+[sub_resource type="Resource" id="Resource_req_theatre"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_theatre/mask_base_theatre.glb"
+requires_model = true
+width_m = 0.18
+height_m = 0.24
+roundness = 2.0
+chin_taper = 0.4
+eye_x = 0.36
+eye_y = 0.24
+eye_w = 0.2
+eye_h = 0.08
+snout_m = 0.015
+brow_m = 0.01
+id = &"mask_base.theatre"
+display_name = "Footlights"
+
+[sub_resource type="Resource" id="Resource_req_gasmask"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_gasmask/mask_base_gasmask.glb"
+requires_model = true
+width_m = 0.2
+height_m = 0.24
+roundness = 2.4
+chin_taper = 0.35
+eye_x = 0.4
+eye_y = 0.25
+eye_w = 0.22
+eye_h = 0.2
+snout_m = 0.06
+snout_y = -0.45
+snout_w = 0.3
+snout_h = 0.3
+brow_m = 0.0
+id = &"mask_base.gasmask"
+display_name = "Filter Face"
+
+[sub_resource type="Resource" id="Resource_req_demon"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_demon/mask_base_demon.glb"
+requires_model = true
+width_m = 0.2
+height_m = 0.24
+roundness = 2.2
+chin_taper = 0.5
+eye_x = 0.38
+eye_y = 0.22
+eye_w = 0.2
+eye_h = 0.08
+snout_m = 0.035
+brow_m = 0.03
+ear_h = 0.45
+ear_x = 0.7
+ear_w = 0.14
+id = &"mask_base.demon"
+display_name = "Horned Fury"
+
+[sub_resource type="Resource" id="Resource_req_goalie"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_goalie/mask_base_goalie.glb"
+requires_model = true
+width_m = 0.19
+height_m = 0.25
+roundness = 2.8
+chin_taper = 0.3
+eye_x = 0.36
+eye_y = 0.22
+eye_w = 0.2
+eye_h = 0.1
+snout_m = 0.02
+brow_m = 0.012
+id = &"mask_base.goalie"
+display_name = "Crease Guard"
+
 [resource]
 script = ExtResource("3_7i1nk")
-entries = Array[ExtResource("1_p6irn")]([SubResource("Resource_atdi0"), SubResource("Resource_g7e7x"), SubResource("Resource_kf764"), SubResource("Resource_nl776"), SubResource("Resource_w3ipx")])
+entries = Array[ExtResource("1_p6irn")]([SubResource("Resource_atdi0"), SubResource("Resource_g7e7x"), SubResource("Resource_kf764"), SubResource("Resource_nl776"), SubResource("Resource_w3ipx"), SubResource("Resource_req_skull"), SubResource("Resource_req_theatre"), SubResource("Resource_req_gasmask"), SubResource("Resource_req_demon"), SubResource("Resource_req_goalie")])

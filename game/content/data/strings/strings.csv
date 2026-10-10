@@ -210,6 +210,18 @@ item.weapon.kestrel_p9.name,Kestrel P9
 item.weapon.kestrel_p9.desc,"A compact nine-millimetre service pistol. Light, quiet to carry, forgiving to learn."
 item.mask.gilded_heron.name,Gilded Heron
 item.mask.gilded_heron.desc,"Lacquered gold over a long, patient face. It has seen worse jobs than yours."
+item.mask.porcelain_vigil.name,Porcelain Vigil
+item.mask.porcelain_vigil.desc,"Cold white glaze, hairline cracks, no expression at all. It keeps watch so you don't have to."
+item.mask.tide_runner.name,Tide Runner
+item.mask.tide_runner.desc,"Sea-green scales on a sly fox face. Slippery in every sense."
+item.mask.night_circuit.name,Night Circuit
+item.mask.night_circuit.desc,"An owl wired for the night shift. Only turns up in a payday hand."
+item.mask.sulfur_brute.name,Sulfur Brute
+item.mask.sulfur_brute.desc,"Hazard yellow and soot stripes on a jaw built for doors."
+item.mask.oxblood_herald.name,Oxblood Herald
+item.mask.oxblood_herald.desc,"Dark lacquer and a brass sunrise. Earned by crews who finish what others only start."
+item.mask.paper_saint.name,Paper Saint
+item.mask.paper_saint.desc,"Printed like a cheap poster, smiling like it knows the vault code."
 item.mod.p9_suppressor.name,Hushwell Suppressor
 item.mod.p9_suppressor.desc,Turns gunfire into a polite cough. Heavier at the muzzle and a little less punch.
 item.mod.p9_reflex_sight.name,Pinpoint Reflex Sight
@@ -323,7 +335,7 @@ voice.vo.mercer.stealth_success_2,Not a single shot fired. I'm almost impressed.
 voice.vo.mercer.abort,"That's the alarm. This one was quiet or nothing, so we're done. Pull out."
 voice.vo.mercer.pager_last,That was the last pager they'll swallow. Keep the rest breathing.
 voice.vo.mercer.dev_start,Test run. Nothing here is real except the bullets.
-voice.vo.guard.cuff_warning,"Hands where I can see them! Don't you move!"
+voice.vo.guard.cuff_warning,Hands where I can see them! Don't you move!
 voice.vo.crew.ack_follow,On you.
 voice.vo.crew.ack_hold,Holding here.
 voice.vo.crew.ack_carry_bag,Got the bag.
@@ -1019,7 +1031,7 @@ item.weapon.corsair_ar.desc,"Brannock's workhorse carbine. Keeps its punch at an
 item.weapon.plowman_12.name,Plowman 12
 item.weapon.plowman_12.desc,"A Tillman Ironworks pump gun with a walnut stock. Ten pellets per shell, devastating up close, polite at a distance."
 item.weapon.rampart_lmg.name,Rampart
-item.weapon.rampart_lmg.desc,"A belt-fed Graff-Lindqvist machine gun. A hundred rounds of covering fire and nowhere to hide it."
+item.weapon.rampart_lmg.desc,A belt-fed Graff-Lindqvist machine gun. A hundred rounds of covering fire and nowhere to hide it.
 item.weapon.heron_308.name,Heron .308
 item.weapon.heron_308.desc,"Marrow & Kell's bolt-action rifle. Punches through armor, shields and thin walls, and hits harder the farther it reaches."
 item.mod.w45_suppressor.name,Quietus Suppressor
@@ -1104,7 +1116,7 @@ ui.skills.refund_points,Refund (+{points})
 ui.skills.respec_confirm,Press again to reset
 ui.skills.blocked_partial,Part of this effect is not active yet.
 ui.skills.unlocks,Unlocks: {item}
-ui.skills.hint,"Click / A / Enter: invest. Right-click / X / Delete: refund. LB / RB or Page Up / Down: switch tree. Resetting skills is free."
+ui.skills.hint,Click / A / Enter: invest. Right-click / X / Delete: refund. LB / RB or Page Up / Down: switch tree. Resetting skills is free.
 ui.skills.reason.not_owned,You have not taken this skill.
 ui.skills.reason.refund_breaks_tier,Can't refund: a higher-tier skill in this subtree needs these points. Refund it first.
 ui.perks.title,Perk Decks
@@ -1177,10 +1189,10 @@ ui.preplan.plan_line,{name} @ {where} ({cost})
 ui.preplan.vote_none,not chosen (left to chance)
 ui.preplan.plan_more,+{n} more
 ui.preplan.vote_line,{group}: {choice}  ({cast}/{voters} votes)
-ui.preplan.vote_solo,"Solo: your vote decides every plan."
-ui.preplan.vote_host_ties,"Plans need a majority vote; the host breaks ties."
+ui.preplan.vote_solo,Solo: your vote decides every plan.
+ui.preplan.vote_host_ties,Plans need a majority vote; the host breaks ties.
 ui.preplan.confirm,Confirm plan
-ui.preplan.hint,"Spending cash is paid when you confirm. Esc / B returns from a list to the blueprint."
+ui.preplan.hint,Spending cash is paid when you confirm. Esc / B returns from a list to the blueprint.
 ui.preplan.nothing_here,No assets for this point.
 ui.preplan.invalid,The plan is over budget or breaks a rule. Remove something first.
 ui.preplan.row,"{name}  -  {cost}, {favors} favors"
@@ -1249,7 +1261,7 @@ item.asset.inside_keycard.desc,An insider leaves a keycard at this spot before t
 item.asset.propped_door.name,Propped door
 item.asset.propped_door.desc,Someone on staff leaves this door propped open tonight.
 item.asset.insider_code.name,Insider: time-lock code
-item.asset.insider_code.desc,"An insider writes down tonight's time-lock code. You know where the note is."
+item.asset.insider_code.desc,An insider writes down tonight's time-lock code. You know where the note is.
 item.asset.vent_access.name,Vent access
 item.asset.vent_access.desc,A maintenance contact leaves the vent grille unscrewed for you.
 item.asset.escape_position.name,Van position
@@ -1273,7 +1285,7 @@ ui.masks.locked,{name} (locked)
 ui.masks.status.unsaved,Unsaved changes: save the mask into a custom slot to wear it.
 ui.masks.status.saved,Saved as {name}.
 ui.masks.status.equipped,{name} is your mask for the next job.
-ui.masks.status.ready,"{name}: press Equip to wear it."
+ui.masks.status.ready,{name}: press Equip to wear it.
 ui.masks.status.locked_parts,Some of these parts are locked. New parts drop from paydays.
 ui.masks.status.empty_slot,This slot is empty. Build a mask and save it here.
 ui.masks.preview_hint,Drag with the mouse or use the right stick to turn the mask.
@@ -1283,6 +1295,11 @@ item.mask_base.visage.name,Plain Visage
 item.mask_base.vulpine.name,Vulpine
 item.mask_base.bruiser.name,Bruiser
 item.mask_base.owl.name,Night Owl
+item.mask_base.skull.name,Grin Skull
+item.mask_base.theatre.name,Footlights
+item.mask_base.gasmask.name,Filter Face
+item.mask_base.demon.name,Horned Fury
+item.mask_base.goalie.name,Crease Guard
 item.mask_material.lacquer.name,Lacquer
 item.mask_material.matte.name,Matte Shell
 item.mask_material.gilt.name,Gilt
@@ -1292,6 +1309,9 @@ item.mask_material.walnut.name,Walnut
 item.mask_material.marble.name,Marble
 item.mask_material.blued_steel.name,Blued Steel
 item.mask_material.rubber.name,Rubber
+item.mask_material.porcelain.name,Porcelain
+item.mask_material.ink_lacquer.name,Ink Lacquer
+item.mask_material.stipple.name,Stipple Grip
 item.mask_colors.bone_ink.name,Bone and Ink
 item.mask_colors.ember_soot.name,Ember and Soot
 item.mask_colors.gilt_night.name,Gilt and Night
@@ -1302,6 +1322,12 @@ item.mask_colors.cobalt_flare.name,Cobalt Flare
 item.mask_colors.moss_bark.name,Moss and Bark
 item.mask_colors.rose_cinder.name,Rose Cinder
 item.mask_colors.signal_white.name,Signal White
+item.mask_colors.tide_coral.name,Tide and Coral
+item.mask_colors.saffron_plum.name,Saffron and Plum
+item.mask_colors.frost_slate.name,Frost and Slate
+item.mask_colors.oxblood_brass.name,Oxblood and Brass
+item.mask_colors.mint_graphite.name,Mint Graphite
+item.mask_colors.sulfur_ash.name,Sulfur and Ash
 item.mask_pattern.solid.name,Solid
 item.mask_pattern.split.name,Split Face
 item.mask_pattern.brow_band.name,Brow Band
@@ -1310,6 +1336,12 @@ item.mask_pattern.chevron.name,Chevrons
 item.mask_pattern.dots.name,Dots
 item.mask_pattern.sash.name,Sash
 item.mask_pattern.diamonds.name,Diamonds
+item.mask_pattern.scales.name,Scales
+item.mask_pattern.circuit.name,Circuitry
+item.mask_pattern.prowl.name,Prowl
+item.mask_pattern.halftone.name,Halftone
+item.mask_pattern.crackle.name,Crackle
+item.mask_pattern.starburst.name,Starburst
 objective.glasshouse.casing,Case the store
 objective.glasshouse.keycard,Find the manager's keycard
 objective.glasshouse.workshop_door,Get into the workshop
@@ -1336,6 +1368,7 @@ ui.payday_cards.mask_kind.base,Mask shape
 ui.payday_cards.mask_kind.material,Mask material
 ui.payday_cards.mask_kind.colors,Mask colours
 ui.payday_cards.mask_kind.pattern,Mask pattern
+ui.payday_cards.mask_kind.preset,Complete mask
 ui.board.title,The Board
 ui.board.subtitle,Contracts from your contacts. Each stays up for {minutes} minutes; new ones land all the time.
 ui.board.level_stash,Level {level}  |  Stash: {amount}
@@ -1345,8 +1378,8 @@ ui.board.difficulty,Difficulty: {name}
 ui.board.payout,Contract pay: {amount}
 ui.board.expires,Expires in {time}
 ui.board.pro,PRO JOB
-ui.board.pro_desc,"No restarts: fail it and the contract is gone. +{pct}% XP."
-ui.board.consumed,"Pro job failed: this contract is burned until the board rotates."
+ui.board.pro_desc,No restarts: fail it and the contract is gone. +{pct}% XP.
+ui.board.consumed,Pro job failed: this contract is burned until the board rotates.
 ui.board.take,Take Contract
 ui.board.pin_tooltip,"{heist}, {difficulty}"
 ui.board.legend_pro,Red badge: pro job
@@ -1468,26 +1501,218 @@ ui.hub.profile.xp,{xp} / {next} XP to the next level
 ui.hub.profile.xp_max,Max level
 ui.hub.profile.skill_points,Skill points: {points} of {total} free
 ui.hub.profile.perk_points,Perk points: {points} free
-voice.vo.mercer.glasshouse_intro,"Vossberg's, dusk. The good stuff is in the workshop safe. Walk the floor first, masks in pockets."
-voice.vo.mercer.glasshouse_keycard_found,That's the manager's card. The safe reader will take it.
-voice.vo.mercer.glasshouse_workshop_open,Workshop's open. Safe's on the north wall.
-voice.vo.mercer.glasshouse_drill_jam,Drill's jammed. Somebody give it a kick.
-voice.vo.mercer.glasshouse_last_pager,That's the last one they'll buy. No more pagers.
-voice.vo.mercer.glasshouse_lockdown,"Alarm tripped the lockdown. Reader's dead, so the drill goes on the safe."
-voice.vo.mercer.glasshouse_van_eta,"Van's coming back around. {seconds} seconds, hold out."
-voice.vo.mercer.glasshouse_escape,"Van's here. Bags in, then you."
-voice.vo.mercer.night_deposit_intro,Bank's closed for the night. The Co-op's drop sits in the basement. Case it from the ATM lobby and the lot.
-voice.vo.accountant.night_deposit_contact_intro,The Co-op launders through Harbor Savings and Loan. Take the night drop and the cage. Leave the paperwork.
-voice.vo.mercer.night_deposit_keycard_found,"That card opens the vault gate downstairs. One swipe, so make it count."
+ui.hub.station.crew,Crew Net
+ui.hub.station.crew.desc,"Host a co-op crew, or join a friend's lobby."
+ui.lobby.title,Co-op Lobby
+ui.lobby.status.offline,Not connected. Host a crew or join one.
+ui.lobby.status.joining,Connecting to the host...
+ui.lobby.status.hosting,Hosting: {crew} of {max} players
+ui.lobby.status.joined,In the host's lobby: {crew} of {max} players
+ui.lobby.host.title,Host a crew
+ui.lobby.host.desc,Your friends join on your address and this port. Empty seats are filled by Crew AI.
+ui.lobby.port,Port
+ui.lobby.host,Host Co-op
+ui.lobby.join.title,Join a crew
+ui.lobby.join.desc,Enter the host's address and port.
+ui.lobby.address,Address
+ui.lobby.address_hint,192.168.0.10 or host name
+ui.lobby.join,Join Co-op
+ui.lobby.loopback,Quick-join this machine ({address})
+ui.lobby.error.port,The port must be a number from {min} to {max}.
+ui.lobby.error.address,That is not a valid address.
+ui.lobby.error.host,Could not host on port {port}. Is it already in use?
+ui.lobby.error.join,Could not connect to {address}:{port}.
+ui.lobby.error.timeout,The host did not answer. Check the address and port.
+ui.lobby.error.host_lost,The host closed the lobby.
+ui.lobby.contract.title,CONTRACT
+ui.lobby.contract.none,No contract yet
+ui.lobby.contract.none_host,Pick one from the Board or the planning table.
+ui.lobby.contract.none_client,Waiting for the host to pick a contract.
+ui.lobby.contract.board,The Board
+ui.lobby.contract.planning,Planning Table
+ui.lobby.briefing,Briefing & Planning
+ui.lobby.loadout,Loadout
+ui.lobby.leave,Leave Lobby
+ui.lobby.ready,Ready
+ui.lobby.unready,Not Ready
+ui.lobby.ready_up,Ready Up
+ui.lobby.start,Start Heist
+ui.lobby.wait_host,The host starts the heist when everyone is ready.
+ui.lobby.block.not_host,Only the host can start.
+ui.lobby.block.started,The heist is starting.
+ui.lobby.block.no_contract,Pick a contract first.
+ui.lobby.block.missing_summary,Waiting for a player's loadout.
+ui.lobby.block.illegal_loadout,A player's loadout is not legal.
+ui.lobby.block.not_ready,Waiting for everyone to be ready.
+ui.lobby.slot.open,Open seat
+ui.lobby.slot.ai,Crew AI
+ui.lobby.slot.ai_fill,AI fills this seat
+ui.lobby.slot.host,HOST
+ui.lobby.slot.you,YOU
+ui.lobby.slot.ready,Ready
+ui.lobby.slot.not_ready,Not ready
+ui.lobby.slot.waiting,Waiting for loadout...
+ui.lobby.slot.none,None
+ui.lobby.slot.primary,Primary: {name}
+ui.lobby.slot.secondary,Secondary: {name}
+ui.lobby.slot.armor,Armor: {name}
+ui.lobby.slot.deployable,Deployable: {name}
+ui.lobby.slot.perk_deck,Perk deck: {name}
+ui.lobby.slot.mask,Mask: {name}
+ui.lobby.slot.illegal,Illegal loadout: the host will not launch it.
+ui.lobby.custom_mask,Custom mask
+ui.lobby.client_launch_missing,"The host started the heist, but joining a running heist is not available in this build yet."
+ui.range.target_hp_plate,{hp} / {max}  ·  plate {plate}
+ui.range.dummy.heavy,Heavy Tactical Dummy
+ui.range.dummy.bulwark,Bulwark Shield Dummy
+ui.range.dummy.wrecker,Wrecker Plate Dummy
+ui.range.dummy.corpsman,Corpsman Dummy
+ui.range.moving_sign,{name}  ·  {speed} m/s
+ui.range.area.moving,Moving Targets
+ui.range.area.armory,Armory
+ui.range.lane_moving,{m}  ·  {name} (moving {speed} m/s)
+ui.range.lane_named,{m}  ·  {name}
+ui.range.ro.armor,Armor
+ui.range.armor.none,None
+ui.range.armor.frontal,Front plate (non-AP body x{mult})
+ui.range.armor.shield,"Shield (AP x{mult}, else blocked)"
+ui.range.armor.plates,Face plates {hp} HP
+ui.range.blocked,Blocked
+ui.range.falloff_graph,Damage Falloff
+ui.range.graph_marker,{m} m: {dmg}
+ui.range.per_dummy,Time to Kill by Dummy
+ui.range.per_dummy_hint,At the readout distance and difficulty: body  ·  head
+ui.range.fmt.ttk_pair,{body}  ·  {head}
+ui.range.fmt.ttk_short,{shots} / {time} s
+ui.range.ls.via_shield,{zone} (through shield)
+ui.range.ls.plate,Plate {n}: {hp} HP left
+ui.range.ls.plate_broken,Plate {n} broken
+voice.vo.mercer.glasshouse_intro,"Vossberg's at closing time. The good pieces sit in the workshop safe, not the window. Walk the floor first, masks in your pockets."
+voice.vo.mercer.glasshouse_keycard_found,That's the manager's card. The safe reader in the workshop will take it.
+voice.vo.mercer.glasshouse_workshop_open,Workshop door's open. Safe's on the north wall.
+voice.vo.mercer.glasshouse_drill_jam,Drill's jammed. Somebody give it a hand.
+voice.vo.mercer.glasshouse_last_pager,That's {answered}. That's the last one they'll buy.
+voice.vo.mercer.glasshouse_lockdown,Alarm's up and the safe went into lockdown. Reader's dead. Put the drill on it.
+voice.vo.mercer.glasshouse_van_eta,Van's {seconds} seconds out. Hold what you've got.
+voice.vo.mercer.glasshouse_escape,"Van's at the curb. Bags in, then you."
+voice.vo.mercer.night_deposit_intro,Harbor Savings closed hours ago. The Co-op's drop is in the basement. Case it from the ATM lobby and the lot.
+voice.vo.accountant.night_deposit_contact_intro,The Co-op washes its money through Harbor S&L. Take the night drop and the cage. They can't report what they never declared.
+voice.vo.mercer.night_deposit_keycard_found,"That card opens the vault gate downstairs. One swipe, so don't waste it."
 voice.vo.mercer.night_deposit_code_found,You've got the time-lock code.
 voice.vo.mercer.night_deposit_lasers,Laser grid in the antechamber. Find the gap or time it.
-voice.vo.mercer.night_deposit_time_lock_started,"Time lock's running, {seconds} seconds. Keep the basement quiet."
-voice.vo.mercer.night_deposit_time_lock_30,Thirty seconds on the time lock.
+voice.vo.mercer.night_deposit_time_lock_started,Time lock's counting: {seconds} seconds. Keep the basement quiet.
+voice.vo.mercer.night_deposit_time_lock_30,Thirty seconds on the lock.
 voice.vo.mercer.night_deposit_time_lock_open,Vault's open. Bag the cage.
-voice.vo.mercer.night_deposit_drill_jam,Thermal drill's jammed.
-voice.vo.mercer.night_deposit_last_pager,That was the fourth pager. No more.
-voice.vo.mercer.night_deposit_lockdown,Vault sealed itself. Thermal drill on the door.
-voice.vo.mercer.night_deposit_armored_car,Armoured car's early. Two more guards at the sally port.
-voice.vo.mercer.night_deposit_fog_lifts,Fog's lifting. The quay's visible from the street now.
-voice.vo.mercer.night_deposit_escape_eta,Ride's {seconds} seconds out. Hold.
+voice.vo.mercer.night_deposit_drill_jam,Thermal drill's stalled. Get it going again.
+voice.vo.mercer.night_deposit_last_pager,That was the fourth pager. No more of those.
+voice.vo.mercer.night_deposit_lockdown,Alarm. The vault sealed itself. Thermal drill on the door.
+voice.vo.mercer.night_deposit_armored_car,Armored car's early. Two more guards at the sally port.
+voice.vo.mercer.night_deposit_fog_lifts,Fog's lifting. Anyone on the street can see the quay now.
+voice.vo.mercer.night_deposit_escape_eta,Your ride's {seconds} seconds out. Hold.
 voice.vo.mercer.night_deposit_escape,Ride's here. Bags in.
+item.weapon.drover_762.name,Drover 762
+item.weapon.drover_762.desc,"Graff-Lindqvist's long-stroke battle rifle. Heavy 7.62 rounds, walnut furniture and a kick to match."
+item.mod.drover_suppressor.name,Bulkhead Suppressor
+item.mod.drover_suppressor.desc,"A heavy can over the slant brake. Quiet enough for stealth, but the round loses a little punch."
+item.mod.drover_iron_sights.name,Standard Iron Sights
+item.mod.drover_folding_stock.name,Side-Folding Stock
+item.mod.drover_folding_stock.desc,Folds the stock along the side for a smaller profile. Harder to hold steady.
+item.mod.drover_standard_mag.name,Standard Magazine
+item.mod.drover_extended_mag.name,Forty-Round Magazine
+item.mod.drover_extended_mag.desc,Ten more rounds in a deeper curve. Longer to swap and harder to hide.
+item.weapon.mastiff_45.name,Mastiff .45
+item.weapon.mastiff_45.desc,"A Tillman Ironworks .45 submachine gun. Slow, blunt and heavy-hitting, with a wire stock and a stick magazine."
+item.mod.mastiff_suppressor.name,Hush Barrel Can
+item.mod.mastiff_suppressor.desc,"A fat can for the .45. Silent, with a little less punch."
+item.mod.mastiff_iron_sights.name,Standard Iron Sights
+item.mod.mastiff_vertical_grip.name,Shroud Foregrip
+item.mod.mastiff_vertical_grip.desc,A foregrip on the shroud rail. Tames the climb and adds bulk.
+item.mod.mastiff_standard_mag.name,Standard Magazine
+item.mod.mastiff_extended_mag.name,Thirty-Five-Round Stick
+item.mod.mastiff_extended_mag.desc,A longer stick with a witness window. Ten more rounds and a slower reload.
+item.weapon.anvil_lmg.name,Anvil
+item.weapon.anvil_lmg.desc,"Tillman's belt-fed 7.62 workhorse. A hundred heavy rounds, a walnut stock, and nothing about it is discreet."
+item.mod.anvil_short_barrel.name,Assault Barrel
+item.mod.anvil_short_barrel.desc,"A short quick-change barrel. Easier to carry and hide, but it spreads more."
+item.mod.anvil_iron_sights.name,Tangent Leaf Sight
+item.mod.anvil_bipod.name,Trestle Bipod
+item.mod.anvil_bipod.desc,"A folding bipod on the gas rail. Steadier bursts, slower to aim."
+item.mod.anvil_box_100.name,Hundred-Round Box
+item.mod.anvil_box_150.name,Hundred-Fifty-Round Box
+item.mod.anvil_box_150.desc,"A bigger belt box. Fifty more rounds, heavier to carry and slower to reload."
+item.weapon.condor_50.name,Condor .50
+item.weapon.condor_50.desc,"Marrow & Kell's .50 anti-materiel rifle. Five rounds that go through armor, shields and walls, and a very loud report."
+item.mod.condor_suppressor.name,Thunderhead Suppressor
+item.mod.condor_suppressor.desc,"The biggest can in the armory. It silences a .50, but costs damage and bulk."
+item.mod.condor_scope_6x.name,Fixed 6x Scope
+item.mod.condor_scope_12x.name,Longwatch 12x Scope
+item.mod.condor_scope_12x.desc,A 12x scope with parallax adjustment. Reaches the far roof and slows the shouldering.
+item.mod.condor_bipod.name,Heavy Bipod
+item.mod.condor_bipod.desc,"A heavy bipod that soaks up recoil. Slower to aim, harder to hide."
+item.mod.condor_standard_mag.name,Five-Round Magazine
+item.mod.condor_extended_mag.name,Eight-Round Magazine
+item.mod.condor_extended_mag.desc,"Three more rounds. Bulkier, with a slower reload."
+item.weapon.mule_12.name,Mule 12
+item.weapon.mule_12.desc,"A stockless Tillman pump gun short enough for the secondary slot. Five shells, loaded one at a time."
+item.mod.mule_ghost_ring.name,Ghost Ring Sights
+item.mod.mule_folding_stock.name,Skeleton Stock
+item.mod.mule_folding_stock.desc,A skeleton stock for steadier follow-ups. The Mule no longer fits under a jacket.
+item.mod.mule_standard_tube.name,Five-Shell Tube
+item.mod.mule_extended_tube.name,Extended Tube
+item.mod.mule_extended_tube.desc,Two more shells under the barrel. Each shell still loads one at a time.
+item.weapon.akimbo_warden_45.name,Warden .45 Pair
+item.weapon.akimbo_warden_45.desc,"Two Warden .45s, one in each hand. Twice the rounds and twice the noise, at the cost of accuracy."
+item.mod.akimbo_w45_compensator.name,Ridgeline Compensator Pair
+item.mod.akimbo_w45_compensator.desc,"Matched compensators keep both muzzles down. They lengthen the slides, so no suppressors."
+item.mod.akimbo_w45_suppressor.name,Quietus Suppressor Pair
+item.mod.akimbo_w45_suppressor.desc,"A matched pair of .45 cans. Quiet, a little weaker, and bulky twice over."
+item.mod.akimbo_w45_iron_sights.name,Standard Iron Sights
+item.mod.akimbo_w45_reflex_sight.name,Glint Slide Reflex Pair
+item.mod.akimbo_w45_reflex_sight.desc,Red dots on both slides for faster shots. More to hide.
+item.mod.akimbo_w45_standard_mag.name,Standard Magazines
+item.mod.akimbo_w45_extended_mag.name,Twelve-Round Magazines
+item.mod.akimbo_w45_extended_mag.desc,Twelve-round magazines in both guns. Longer grips and a slower reload.
+item.weapon.marshal_357.name,Marshal .357
+item.weapon.marshal_357.desc,"Marrow & Kell's stainless six-shooter. Each .357 round hits hard, and a speedloader refills all six at once."
+item.mod.marshal_long_barrel.name,Six-Inch Barrel
+item.mod.marshal_long_barrel.desc,"A six-inch barrel. More damage and accuracy, harder to draw and hide."
+item.mod.marshal_snub_barrel.name,Snub Barrel
+item.mod.marshal_snub_barrel.desc,"A snub barrel that vanishes in a pocket. It costs damage, accuracy and control."
+item.mod.marshal_iron_sights.name,Adjustable Rear Sight
+item.mod.marshal_reflex_sight.name,Topstrap Reflex
+item.mod.marshal_reflex_sight.desc,"A small red dot on the top strap. Faster to aim, slightly harder to hide."
+item.mod.marshal_rubber_grip.name,Cushion Grip
+item.mod.marshal_rubber_grip.desc,A finger-grooved rubber grip that soaks up the recoil. A little bulkier.
+item.mod.marshal_cylinder.name,Six-Shot Cylinder
+item.weapon.falchion_dmr.name,Falchion DMR
+item.weapon.falchion_dmr.desc,Brannock's semi-automatic 7.62 marksman rifle. Twenty heavy rounds that hit as hard at a hundred meters as at ten.
+item.mod.falchion_suppressor.name,Longcoat Suppressor
+item.mod.falchion_suppressor.desc,"A long 7.62 can over the brake. Silent, with less damage per round."
+item.mod.falchion_iron_sights.name,Standard Iron Sights
+item.mod.falchion_bipod.name,Marksman Bipod
+item.mod.falchion_bipod.desc,"A marksman's bipod. Flatter follow-up shots, slower to aim."
+item.mod.falchion_standard_mag.name,Twenty-Round Magazine
+item.mod.falchion_extended_mag.name,Twenty-Five-Round Magazine
+item.mod.falchion_extended_mag.desc,Five more rounds. Bulkier and a little slower to reload.
+item.weapon.wasp_pdw.name,Wasp PDW
+item.weapon.wasp_pdw.desc,"A compact Brannock PDW. The magazine goes in the grip, it fires fast, and it hides under a jacket."
+item.mod.wasp_suppressor.name,Stinger Suppressor
+item.mod.wasp_suppressor.desc,"A slim can over the flash hider. Near silent, with a slight damage cost."
+item.mod.wasp_iron_sights.name,Standard Iron Sights
+item.mod.wasp_end_cap.name,Stock Removed
+item.mod.wasp_end_cap.desc,"The stock comes off and an end cap goes on. Smaller, but much harder to control."
+item.mod.wasp_standard_mag.name,Thirty-Round Magazine
+item.mod.wasp_extended_mag.name,Forty-Round Magazine
+item.mod.wasp_extended_mag.desc,"Forty rounds through the grip. Longer, and slower to swap."
+item.weapon.sparrow_mp.name,Sparrow MP
+item.weapon.sparrow_mp.desc,"Halvard's select-fire machine pistol. Full auto from a pistol frame, if you can hold it on target."
+item.mod.sparrow_suppressor.name,Whisperline Suppressor
+item.mod.sparrow_suppressor.desc,"A slim 9 mm can. Silent full auto, a little weaker."
+item.mod.sparrow_iron_sights.name,Standard Iron Sights
+item.mod.sparrow_reflex_sight.name,Pinpoint Slide Reflex
+item.mod.sparrow_reflex_sight.desc,A slide-cut red dot for quicker aim. Adds a little bulk.
+item.mod.sparrow_wire_stock.name,Clip-On Wire Stock
+item.mod.sparrow_wire_stock.desc,A clip-on wire stock that makes full auto controllable. Ruins the pocket-pistol profile.
+item.mod.sparrow_standard_mag.name,Twenty-Round Magazine
+item.mod.sparrow_extended_mag.name,Thirty-Two-Round Magazine
+item.mod.sparrow_extended_mag.desc,"Thirty-two rounds sticking well out of the grip. Slower to swap, harder to hide."
