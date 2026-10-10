@@ -3,6 +3,38 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-10 17:00 UTC: C1-00, C1-01, C1-02, C1-03 (G1), C1-04, C1-06, C1-07 (part), D-026, D-034
+### Done
+- C1-00 counter style samples + comparison sheet (6b289a6). The product owner chose GSR (D-035).
+- C1-01 / C1-02: Blender lib + build.py with determinism, glb post-import, greybox kit (5bb86b1),
+  texgen + material library v1 (4f18b5d), audiogen (1ad4bfe). Mask naming (af59831).
+- C1-04 `validate_level` (8ca1b48), plus fixes for the D-025 nav values, chained U-stairs/ramp collision
+  and readable plan renders (f7bb9ba).
+- C1-06 P1 cues, MusicDirector, Glasshouse stems (1ad4bfe). Test de-flake (4f72fc2).
+- D-026: 9 weapon materials (a6fa9eb), pistol reload cues (f38e00f). D-034: weapon-family cues
+  (14fe2ce), 4 materials + darker blacks (5ea9652).
+- C1-03 G1 Glasshouse greybox (0152852 + f7bb9ba). Generated map, full contract tree, variants,
+  mission, def. validate_level greybox (all variants) PASS in 13.7 s; walkthrough PASS; 23 shots +
+  floor plans in docs/levels/glasshouse/g1/.
+- C1-05 WIP handed to ENV D (31950a7).
+### In progress
+- —
+### Blocked
+- P1 gate steps 4/8 on Glasshouse: blocked on gate-test bot placement (QC-6, lead).
+### Questions for lead
+- QC-6: gate steps 4/8 teleport the bot behind the shopfront glass or inside the corridor. Make the
+  teleports LOS-checked, or move the floor post?
+- QC-7: approve the G1 deviations from G0 (sent by message: merged patrol graph, customers as a slot
+  group, carrier slots for rare events, workshop ceiling override, small door shifts).
+- QC-8: keep or drop `test_glasshouse_gate.gd` (ENV A's sandbox gate on Glasshouse)? Not pushed.
+- QC-9: relax the 0.04 albedo floor for black polymer/rubber?
+- QC-10: validator tolerances: provisional 3M-triangle perf budget, vault ceiling 2.6–6.0, review
+  shots as JPEG (§8 says PNG).
+### Ready for integration
+- yes, all of the above. `check_all.sh --env c`: everything passes (import, lint, .import validity,
+  banned patterns, ownership, 508/512 tests, validate_level glasshouse) except the gate steps 4/8
+  (QC-6, gate-side), which fail in both test_p1_vertical_slice and the unpushed local copy.
+
 ## 2026-10-10 (session 1, interim): C1-03 G0, C1-01..06 in progress
 ### Done
 - **G0 draft: `docs/design/heists/glasshouse.md`.** Written from the §9 template; review requested.
