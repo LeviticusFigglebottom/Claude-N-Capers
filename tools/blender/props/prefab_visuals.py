@@ -416,22 +416,32 @@ def _bag(k: Kit, p: dict) -> None:
 # ------------------------------------------------------------------------------------ drill
 
 def _drill(k: Kit, p: dict) -> None:
+    """Magnetic-base safe drill rig: the bit tip is the origin and points +Y (Godot -Z) into the
+    lock; behind it the chuck, an orange gearbox, a long motor with cooling rings, a carry handle,
+    a status panel and two clamp legs with rubber pads resting on the door face (y = 0)."""
     body = k.obj("Body")
     hard = body.part(bevel=0.006, segments=2)
     trim = body.part(bevel=0.0)
-    # the bit tip is at the origin, pointing +Y (Godot -Z) into the lock; the drill sits behind it
-    hard.bx((-0.09, -0.62, -0.1), (0.09, -0.3, 0.1), "metal_orange")
-    hard.cyl(0.085, 0.22, (0.0, -0.22, 0.0), "metal_dark", axis="Y", segs=20)
-    hard.bx((-0.06, -0.58, 0.1), (0.06, -0.34, 0.16), "metal_dark")
-    trim.rod((0.0, -0.55, 0.16), (0.0, -0.37, 0.16), 0.018, "rubber", segs=10)
+    hard.bx((-0.1, -0.36, -0.12), (0.1, -0.16, 0.13), "metal_orange")
+    hard.bx((-0.085, -0.36, 0.13), (0.085, -0.2, 0.17), "metal_dark")
+    trim.cyl(0.08, 0.3, (0.0, -0.51, 0.0), "metal_dark", axis="Y", segs=24)
+    for i in range(6):
+        trim.torus(0.08, 0.006, (0.0, -0.4 - i * 0.045, 0.0), "steel", segs=24, rsegs=4, axis="Y")
+    trim.cyl(0.06, 0.03, (0.0, -0.675, 0.0), "metal_orange", axis="Y", segs=20)
+    trim.tube([(0.0, -0.33, 0.17), (0.0, -0.33, 0.26), (0.0, -0.55, 0.26), (0.0, -0.6, 0.09)], 0.014, "rubber", segs=8)
+    trim.bx((0.1, -0.33, -0.05), (0.104, -0.2, 0.08), "plastic_black")
+    trim.bx((0.104, -0.31, 0.03), (0.106, -0.22, 0.06), "emit_led_green")
+    trim.cyl(0.035, 0.05, (0.0, -0.135, 0.0), "steel", axis="Y", segs=18)
     for sx in (-1, 1):
-        trim.rod((sx * 0.08, -0.5, -0.1), (sx * 0.25, -0.35, -0.42), 0.012, "steel", segs=8)
-        trim.rod((sx * 0.08, -0.5, 0.1), (sx * 0.22, -0.4, 0.38), 0.012, "steel", segs=8)
-    trim.bx((-0.05, -0.65, -0.03), (0.05, -0.62, 0.05), "emit_led_green")
+        trim.rod((sx * 0.1, -0.26, -0.08), (sx * 0.24, -0.06, -0.24), 0.014, "steel", segs=8)
+        trim.rod((sx * 0.1, -0.26, 0.08), (sx * 0.24, -0.06, 0.24), 0.014, "steel", segs=8)
+        for sz in (-1, 1):
+            trim.cyl(0.045, 0.03, (sx * 0.24, -0.035, sz * 0.24), "rubber", axis="Y", segs=16)
+    trim.tube([(0.0, -0.66, -0.05), (0.05, -0.7, -0.2), (0.15, -0.68, -0.32)], 0.008, "rubber", segs=6)
     body.build()
     bit = k.obj("Bit", location=(0.0, -0.1, 0.0))
     bp = bit.part(bevel=0.0)
-    bp.cyl(0.03, 0.04, (0.0, -0.01, 0.0), "steel", axis="Y", segs=14)
+    bp.cyl(0.022, 0.03, (0.0, -0.005, 0.0), "steel", axis="Y", segs=14)
     bp.cyl(0.009, 0.09, (0.0, 0.055, 0.0), "chrome", axis="Y", segs=10)
     bit.build()
 

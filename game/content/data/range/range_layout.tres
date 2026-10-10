@@ -3,6 +3,77 @@
 [ext_resource type="PackedScene" path="res://assets/arch/arch_floor_w400/arch_floor_w400.glb" id="1_mbvtu"]
 [ext_resource type="Script" path="res://content/range/range_layout.gd" id="2_lce66"]
 [ext_resource type="PackedScene" path="res://assets/arch/arch_wall_int_w400_h400/arch_wall_int_w400_h400.glb" id="3_we7me"]
+[ext_resource type="Script" path="res://content/range/range_lane_def.gd" id="4_lane"]
+
+[sub_resource type="Resource" id="Lane_0"]
+script = ExtResource("4_lane")
+area = &"moving"
+dummy = &"range_dummy.light"
+distance_m = 10.0
+x_m = -17.5
+speed_mps = 2.0
+track_half_m = 4.0
+phase_s = 0.0
+
+[sub_resource type="Resource" id="Lane_1"]
+script = ExtResource("4_lane")
+area = &"moving"
+dummy = &"range_dummy.light"
+distance_m = 20.0
+x_m = -17.5
+speed_mps = 3.5
+track_half_m = 4.0
+phase_s = 0.6
+
+[sub_resource type="Resource" id="Lane_2"]
+script = ExtResource("4_lane")
+area = &"moving"
+dummy = &"range_dummy.light"
+distance_m = 35.0
+x_m = -17.5
+speed_mps = 5.0
+track_half_m = 4.0
+phase_s = 1.2
+
+[sub_resource type="Resource" id="Lane_3"]
+script = ExtResource("4_lane")
+area = &"armory"
+dummy = &"range_dummy.heavy"
+distance_m = 15.0
+x_m = 13.5
+speed_mps = 0
+track_half_m = 0
+phase_s = 0
+
+[sub_resource type="Resource" id="Lane_4"]
+script = ExtResource("4_lane")
+area = &"armory"
+dummy = &"range_dummy.bulwark"
+distance_m = 15.0
+x_m = 16.0
+speed_mps = 0
+track_half_m = 0
+phase_s = 0
+
+[sub_resource type="Resource" id="Lane_5"]
+script = ExtResource("4_lane")
+area = &"armory"
+dummy = &"range_dummy.wrecker"
+distance_m = 15.0
+x_m = 18.5
+speed_mps = 0
+track_half_m = 0
+phase_s = 0
+
+[sub_resource type="Resource" id="Lane_6"]
+script = ExtResource("4_lane")
+area = &"armory"
+dummy = &"range_dummy.corpsman"
+distance_m = 15.0
+x_m = 21.0
+speed_mps = 0
+track_half_m = 0
+phase_s = 0
 
 [resource]
 script = ExtResource("2_lce66")
@@ -14,9 +85,14 @@ floor_piece_size_m = 4.0
 wall_piece_length_m = 4.0
 back_z_m = 6.0
 far_z_m = -106.0
-width_m = 24.0
+width_m = 48.0
 lane_width_m = 2.5
 lane_dummy = &"range_dummy.light"
+extra_lanes = Array[ExtResource("4_lane")]([SubResource("Lane_0"), SubResource("Lane_1"), SubResource("Lane_2"), SubResource("Lane_3"), SubResource("Lane_4"), SubResource("Lane_5"), SubResource("Lane_6")])
+track_rail_depth_m = 0.12
+track_rail_margin_m = 0.6
+area_sign_height_m = 3.2
+dummy_sign_height_m = 2.25
 default_readout_lane = 3
 marker_sign_height_m = 0.9
 marker_sign_inset_m = 1.0

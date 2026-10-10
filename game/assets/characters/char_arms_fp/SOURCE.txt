@@ -5,6 +5,17 @@ seed: 3577342232  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category characters --asset char_arms_fp
 edit policy: generated file, never edit by hand; change the script and rebuild
+check.akimbo_ads_idle: reach_err=0.0mm step=0.0deg
+check.akimbo_draw: reach_err=0.0mm step=5.4deg
+check.akimbo_fire: reach_err=0.0mm step=8.7deg
+check.akimbo_fire_ads: reach_err=0.0mm step=6.3deg
+check.akimbo_fire_ads_l: reach_err=0.0mm step=6.3deg
+check.akimbo_fire_l: reach_err=0.0mm step=8.7deg
+check.akimbo_holster: reach_err=0.0mm step=5.4deg
+check.akimbo_idle: reach_err=0.0mm step=0.1deg
+check.akimbo_reload: reach_err=0.0mm step=13.5deg
+check.akimbo_reload_empty: reach_err=0.0mm step=13.5deg
+check.akimbo_sprint: reach_err=0.0mm step=2.7deg
 check.lmg_ads_idle: reach_err=0.0mm step=0.0deg
 check.lmg_draw: reach_err=0.0mm step=9.0deg
 check.lmg_fire: reach_err=0.0mm step=13.5deg
@@ -18,11 +29,22 @@ check.pistol_ads_idle: reach_err=0.0mm step=0.0deg
 check.pistol_draw: reach_err=0.0mm step=20.1deg
 check.pistol_fire: reach_err=0.0mm step=9.1deg
 check.pistol_fire_ads: reach_err=0.0mm step=5.8deg
+check.pistol_fire_auto: reach_err=0.0mm step=4.2deg
+check.pistol_fire_auto_ads: reach_err=0.0mm step=2.7deg
 check.pistol_holster: reach_err=0.0mm step=20.1deg
 check.pistol_idle: reach_err=0.0mm step=0.1deg
 check.pistol_reload: reach_err=0.0mm step=31.6deg
 check.pistol_reload_empty: reach_err=0.0mm step=33.4deg
 check.pistol_sprint: reach_err=0.0mm step=8.8deg
+check.revolver_ads_idle: reach_err=0.0mm step=0.0deg
+check.revolver_draw: reach_err=0.0mm step=16.1deg
+check.revolver_fire: reach_err=0.0mm step=13.2deg
+check.revolver_fire_ads: reach_err=0.0mm step=7.9deg
+check.revolver_holster: reach_err=0.0mm step=16.1deg
+check.revolver_idle: reach_err=0.0mm step=0.1deg
+check.revolver_reload: reach_err=1.0mm step=85.3deg
+check.revolver_reload_empty: reach_err=1.0mm step=85.3deg
+check.revolver_sprint: reach_err=0.0mm step=8.8deg
 check.rifle_ads_idle: reach_err=0.0mm step=0.0deg
 check.rifle_draw: reach_err=0.0mm step=13.4deg
 check.rifle_fire: reach_err=0.0mm step=6.7deg
@@ -65,6 +87,17 @@ check.sniper_idle: reach_err=0.0mm step=0.2deg
 check.sniper_reload: reach_err=0.0mm step=27.1deg
 check.sniper_reload_empty: reach_err=0.0mm step=29.0deg
 check.sniper_sprint: reach_err=0.0mm step=6.1deg
+clip.akimbo_ads_idle: 90f loop=True
+clip.akimbo_draw: 15f loop=False events=ready@15
+clip.akimbo_fire: 3f loop=False events=shot@0
+clip.akimbo_fire_ads: 3f loop=False events=shot@0
+clip.akimbo_fire_ads_l: 3f loop=False events=shot@0
+clip.akimbo_fire_l: 3f loop=False events=shot@0
+clip.akimbo_holster: 15f loop=False events=gone@15
+clip.akimbo_idle: 90f loop=True
+clip.akimbo_reload: 60f loop=False events=mag_out_r@8,mag_out_l@10,mag_in_r@30,mag_in_l@33,done@52
+clip.akimbo_reload_empty: 78f loop=False events=mag_out_r@8,mag_out_l@10,mag_in_r@30,mag_in_l@33,slide_release_r@51,slide_release_l@55,done@69
+clip.akimbo_sprint: 18f loop=True
 clip.lmg_ads_idle: 90f loop=True
 clip.lmg_draw: 27f loop=False events=ready@27
 clip.lmg_fire: 3f loop=False events=shot@0
@@ -78,11 +111,22 @@ clip.pistol_ads_idle: 90f loop=True
 clip.pistol_draw: 11f loop=False events=ready@11
 clip.pistol_fire: 6f loop=False events=shot@0
 clip.pistol_fire_ads: 6f loop=False events=shot@0
+clip.pistol_fire_auto: 3f loop=False events=shot@0
+clip.pistol_fire_auto_ads: 3f loop=False events=shot@0
 clip.pistol_holster: 11f loop=False events=gone@11
 clip.pistol_idle: 90f loop=True
 clip.pistol_reload: 45f loop=False events=mag_out@6,mag_swap@15,mag_in@29,done@38
 clip.pistol_reload_empty: 63f loop=False events=mag_out@6,mag_swap@15,mag_in@29,slide_release@45,done@56
 clip.pistol_sprint: 18f loop=True
+clip.revolver_ads_idle: 90f loop=True
+clip.revolver_draw: 14f loop=False events=ready@14
+clip.revolver_fire: 9f loop=False events=shot@0
+clip.revolver_fire_ads: 9f loop=False events=shot@0
+clip.revolver_holster: 14f loop=False events=gone@14
+clip.revolver_idle: 90f loop=True
+clip.revolver_reload: 72f loop=False events=crane_open@10,eject@22,loader_show@32,speedloader_in@44,loader_drop@48,crane_close@58,done@64
+clip.revolver_reload_empty: 72f loop=False events=crane_open@10,eject@22,loader_show@32,speedloader_in@44,loader_drop@48,crane_close@58,done@64
+clip.revolver_sprint: 18f loop=True
 clip.rifle_ads_idle: 90f loop=True
 clip.rifle_draw: 17f loop=False events=ready@17
 clip.rifle_fire: 3f loop=False events=shot@0
@@ -125,16 +169,20 @@ clip.sniper_idle: 90f loop=True
 clip.sniper_reload: 90f loop=False events=mag_out@15,mag_swap@28,mag_in@50,done@76
 clip.sniper_reload_empty: 114f loop=False events=mag_out@15,mag_swap@28,mag_in@50,bolt_open@72,bolt_back@76,bolt_forward@79,bolt_close@83,done@102
 clip.sniper_sprint: 18f loop=True
+fp.akimbo: one gun on the weapon bone (right) + the offhand gun on hand.L; fire / fire_ads kick the right gun, fire_l / fire_ads_l the left one (3 f, under one shot interval up to 600 rpm: alternate them per shot); ads_idle raises both guns closer together (no sight alignment, the crosshair stays between them); reload: both guns tilt inward, mag_out_r / mag_out_l drop the magazines, the guns dip below the view, mag_in_r / mag_in_l happen off screen, done; reload_empty adds slide_release_r / slide_release_l (thumb on the slide stop); the right magazine falls on the magazine bone and is re-seated off screen; the left magazine has no bone: hide it (or drop a physics copy) at mag_out_l, show it at mag_in_l; lengths from the akimbo weapon data (anim_set akimbo) when present, else 2.0 s / 2.6 s / equip 0.5 s
 fp.camera: review camera = crew camera: 75 deg vertical FOV (crew_member.tscn), root = eye
-fp.clips: <set>_<clip>; all sets: idle*, ads_idle*, sprint* (loops), draw, holster, fire, fire_ads, reload, reload_empty; shotgun: reload_start, reload_loop, reload_end, reload_end_empty; sniper: bolt, bolt_ads
+fp.clips: <set>_<clip>; all sets: idle*, ads_idle*, sprint* (loops), draw, holster, fire, fire_ads, reload, reload_empty; shotgun: reload_start, reload_loop, reload_end, reload_end_empty; sniper: bolt, bolt_ads; pistol: fire_auto, fire_auto_ads; akimbo: fire_l, fire_ads_l
 fp.fire: fire/fire_ads start at rest, kick peaks on frame 1; full-auto sets (smg, rifle, lmg) are 3 f (<= 1.5 shot intervals) so the game restarts them every shot
 fp.lmg: reload: cover_open, mag_out (box off), mag_in (box on), belt_seat, cover_close; reload_empty adds charge (charging handle pulled back by the left hand)
+fp.offhand_grip: akimbo left gun: attach the second WeaponVisual to hand.L (BoneAttachment3D + Socket) at basis x=(-0.0000,-0.0000,-1.0000) y=(0.9511,-0.3090,0.0000) z=(-0.3090,-0.9511,-0.0000) origin=(0.0120,0.0720,-0.0300) (hand.L bone space; = _anim.grip_offset L = the X-mirror of the weapon bone's hand.R offset: the same gun model, not mirrored; no helper bone)
 fp.parts: Pump: slides 0.075 m along local +Z (back) between the pump_back ramp and pump_forward; Bolt: handle lifts 62 deg about the bore axis (bolt_open), slides 0.075 m along +Z (bolt_back), returns (bolt_forward), locks down (bolt_close); Rampart feed cover: opens 78 deg about its front hinge (cover_open .. cover_close; the weapon scene needs a hinged FeedCover pivot); Slide (pistol): slide_release; smg/rifle bolt_release (cocking-handle slap / bolt catch)
+fp.pistol_auto: pistol fire_auto / fire_auto_ads: 3 f machine-pistol kick (<= 1.5 shot intervals up to 900 rpm), restarted every shot; the semi-auto pistol clips are unchanged
+fp.revolver: Crane: pivot on the hinge line parallel to the bore, opens 80 deg (+ about its local Z; the cylinder swings to -X) over crane_open-2..crane_open+1, closes over crane_close-3..crane_close; Cylinder (child of Crane) turns 60 deg per shot; eject: palm on the ejector rod, muzzle up (rod stroke eject-3..eject, spawn 6 casings at eject); Speedloader rides the magazine bone: its weapon-scene pose = loaded against the closed cylinder (bone identity), visible loader_show..crane_close, seated on the open cylinder at speedloader_in (its rounds move to the cylinder), twisted and released at loader_drop (falls away empty), bone back to identity at crane_close; reload_empty = reload (same motion and events); fire/fire_ads 9 f, heavier kick than the pistol
 fp.shotgun: pump folded into fire/fire_ads (events pump_back, pump_forward); shell-by-shell = reload_start + n x reload_loop (frame 0 == last frame; imports LOOP_LINEAR via Godot's _loop suffix: loop it n x its length) + reload_end (reload_end_empty when the tube was empty: adds a pump); reload/reload_empty = the same pieces for 6 rounds (3.4 s / 4.2 s); suggested data: reload_start_s 0.4, reload_per_round_s 0.4333, reload_end_s 0.4 (empty 1.2)
 fp.sniper: fire/fire_ads = recoil only (9 f); play bolt (hip) / bolt_ads after each shot (27 f; 9 + 27 = 36 f = 1.2 s = 50 rpm); during the bolt the right hand leaves the grip and the weapon bone moves relative to hand.R (the left hand holds the gun); reload_empty ends with the bolt cycle
-loops: lmg_ads_idle,lmg_idle,lmg_sprint,pistol_ads_idle,pistol_idle,pistol_sprint,rifle_ads_idle,rifle_idle,rifle_sprint,shotgun_ads_idle,shotgun_idle,shotgun_sprint,smg_ads_idle,smg_idle,smg_sprint,sniper_ads_idle,sniper_idle,sniper_sprint
+loops: akimbo_ads_idle,akimbo_idle,akimbo_sprint,lmg_ads_idle,lmg_idle,lmg_sprint,pistol_ads_idle,pistol_idle,pistol_sprint,revolver_ads_idle,revolver_idle,revolver_sprint,rifle_ads_idle,rifle_idle,rifle_sprint,shotgun_ads_idle,shotgun_idle,shotgun_sprint,smg_ads_idle,smg_idle,smg_sprint,sniper_ads_idle,sniper_idle,sniper_sprint
 root: camera origin = rig_humanoid eye midpoint (0.0000,0.0645,1.6660) m Blender
-sets: pistol,smg,rifle,shotgun,lmg,sniper
+sets: pistol,smg,rifle,shotgun,lmg,sniper,akimbo,revolver
 tri_budget: 12000
 tris: 9048
 weapon_bone: child of hand.R at the HandR grip offset: basis x=(0.0000,0.0000,1.0000) y=(-0.9511,-0.3090,0.0000) z=(0.3090,-0.9511,-0.0000) origin=(-0.0120,0.0720,-0.0300); identity relative to hand.R except in sniper_bolt, sniper_bolt_ads and sniper_reload_empty

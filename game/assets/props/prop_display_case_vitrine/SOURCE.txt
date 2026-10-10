@@ -1,6 +1,6 @@
 asset: prop_display_case_vitrine
 script: tools/blender/props/display_cases.py
-params: {"cat": {"kind": "display_case", "prefab": "display_case"}, "d": 0.6, "kind": "vitrine", "w": 0.6}
+params: {"cat": {"kind": "display_case", "light": {"color": "#FFB46B", "energy": 0.35, "pos": [0, 1.25, 0], "range": 1.5, "specular": 0.05, "type": "omni"}, "prefab": "display_case"}, "d": 0.6, "kind": "vitrine", "w": 0.6}
 seed: 2484863302  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category props --asset prop_display_case_vitrine

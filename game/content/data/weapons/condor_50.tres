@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dbv7tpgxqtc4h" path="res://assets/weapons/wpn_condor_50/wpn_condor_50.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 520.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 35.0
+spread_deg_hip = 6.0
+spread_deg_ads = 0.08
+recoil_kick_deg = 3.4
+recoil_horizontal_deg = 0.9
+falloff_start_m = 30.0
+falloff_end_m = 70.0
+falloff_min_mult = 1.5
+mag_size = 5
+total_ammo = 25
+reload_time_s = 3.6
+reload_empty_time_s = 4.6
+equip_time_s = 1.0
+ads_time_s = 0.5
+concealment = 0
+armor_pierce = 1.0
+shield_pierce = true
+wall_pierce = true
+suppression = 40.0
+ammo_pickup_min = 0.5
+ammo_pickup_max = 1.5
+suppressed = false
+noise_radius_m = 120.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.condor_50"
+display_name = "Condor .50"
+manufacturer = "Marrow & Kell"
+weapon_class = 5
+slot = 0
+fire_modes = Array[StringName]([&"bolt"])
+base = SubResource("base")
+price = 80000
+unlock_level = 32
+mod_slots = {
+2: [&"mod.condor_suppressor"],
+3: [&"mod.condor_scope_6x", &"mod.condor_scope_12x"],
+5: [&"mod.condor_bipod"],
+7: [&"mod.condor_standard_mag", &"mod.condor_extended_mag"]
+}
+default_mods = {
+3: &"mod.condor_scope_6x",
+7: &"mod.condor_standard_mag"
+}
+fire_cue = &"cue.weapon_sniper_fire"
+fire_cue_suppressed = &"cue.weapon_sniper_fire_suppressed"
+anim_set = &"sniper"
+model = ExtResource("3")

@@ -85,6 +85,57 @@ static func build_targets(layout: RangeLayout, dummy: RangeDummyDef, difficulty:
 	return out
 
 
+## B4-13: the extra lanes (layout.extra_lanes), lane index continuing after the static lanes.
+## Moving lanes put the target on a RangeTrack carriage over a floor rail; armory lanes stand still.
+## Each gets a distance sign and its dummy name; every area gets one title sign.
+static func build_extra_lanes(layout: RangeLayout, table: RangeDummyTable, difficulty: int, tweak: RangeTweak,
+		parent: Node3D) -> Array[RangeTarget]:
+	var out: Array[RangeTarget] = []
+	var root: Node3D = _group_node(parent, "ExtraLanes")
+	var rail_mat: StandardMaterial3D = _flat_mat(tweak.rail_color)
+	var areas: Dictionary = {}   # area -> [min x, max x, min distance]
+	var lane: int = layout.lane_count()
+	for def: RangeLaneDef in layout.extra_lanes:
+		var dummy: RangeDummyDef = table.dummy(def.dummy)
+		var t: RangeTarget = RangeTarget.new()
+		t.name = "Target_L%d_%s_%dm" % [lane, String(def.area), roundi(def.distance_m)]
+		t.setup(dummy, difficulty, tweak, lane, def.distance_m)
+		var base: Vector3 = Vector3(def.x_m, 0.0, -def.distance_m)
+		if def.is_moving():
+			var track: RangeTrack = RangeTrack.new()
+			track.name = "Track_L%d" % lane
+			track.position = base
+			track.setup(def.speed_mps, def.track_half_m, def.phase_s)
+			root.add_child(track)
+			var rail_len: float = def.track_half_m * 2.0 + layout.track_rail_margin_m
+			track.add_child(_strip(Vector3(rail_len, 0.02, layout.track_rail_depth_m), Vector3(0.0, 0.01, 0.0), rail_mat))
+			track.carriage.add_child(t)
+		else:
+			t.position = base
+			root.add_child(t)
+		var s: Label3D = sign_label(UiText.t(&"ui.range.marker", {"m": roundi(def.distance_m)}), tweak)
+		s.font_size = tweak.hp_font_size
+		s.position = base + Vector3(0.0, layout.target_sign_height_m, 0.0)
+		root.add_child(s)
+		if dummy != null:
+			var n: Label3D = sign_label(UiText.t(dummy.name_key), tweak)
+			n.font_size = tweak.dummy_sign_font_size
+			n.position = base + Vector3(0.0, layout.dummy_sign_height_m, 0.0)
+			if def.is_moving():
+				n.text = UiText.t(&"ui.range.moving_sign", {"name": n.text, "speed": snappedf(def.speed_mps, 0.1)})
+			root.add_child(n)
+		var a: Array = areas.get(def.area, [def.x_m, def.x_m, def.distance_m])
+		areas[def.area] = [minf(a[0], def.x_m - def.track_half_m), maxf(a[1], def.x_m + def.track_half_m), minf(a[2], def.distance_m)]
+		out.append(t)
+		lane += 1
+	for area: StringName in areas:
+		var a: Array = areas[area]
+		var title: Label3D = sign_label(UiText.t(StringName("ui.range.area.%s" % String(area))), tweak)
+		title.position = Vector3((float(a[0]) + float(a[1])) * 0.5, layout.area_sign_height_m, -float(a[2]) + 2.0)
+		root.add_child(title)
+	return out
+
+
 static func sign_label(text: String, tweak: RangeTweak) -> Label3D:
 	var s: Label3D = Label3D.new()
 	s.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED

@@ -97,7 +97,8 @@ static func detail_text(c: Dictionary) -> String:
 		var w: StringName = PaydayCards.weapon_for_mod(item)
 		return UiText.t(&"ui.payday_cards.mod_for", {"weapon": UiText.t(UiText.item_key(w))}) if w != &"" else ""
 	if type == PaydayCards.MASK_PART:
-		return UiText.t(StringName("ui.payday_cards.mask_kind.%s" % MaskCatalog.kind_of(item)))
+		var kind: String = "preset" if MaskCatalog.is_preset_id(item) else MaskCatalog.kind_of(item)
+		return UiText.t(StringName("ui.payday_cards.mask_kind.%s" % kind))
 	if type == PaydayCards.CASH:
 		return UiText.t(&"ui.payday_cards.cash_detail")
 	return UiText.t(&"ui.payday_cards.xp_detail")

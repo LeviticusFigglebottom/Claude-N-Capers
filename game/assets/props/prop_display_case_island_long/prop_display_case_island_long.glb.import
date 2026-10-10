@@ -56,6 +56,11 @@ _subresources={
 "use_external/fallback_path": "res://world/props/materials/pr_ceramic.tres",
 "use_external/path": "res://world/props/materials/pr_ceramic.tres"
 },
+"M_pr_emit_warm": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_emit_warm.tres",
+"use_external/path": "res://world/props/materials/pr_emit_warm.tres"
+},
 "M_pr_fabric_ivory": {
 "use_external/enabled": true,
 "use_external/fallback_path": "res://world/props/materials/pr_fabric_ivory.tres",
@@ -85,6 +90,11 @@ _subresources={
 "use_external/enabled": true,
 "use_external/fallback_path": "res://world/props/materials/pr_suede.tres",
 "use_external/path": "res://world/props/materials/pr_suede.tres"
+},
+"M_pr_velvet_charcoal": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_velvet_charcoal.tres",
+"use_external/path": "res://world/props/materials/pr_velvet_charcoal.tres"
 },
 "M_pr_wood_dark": {
 "use_external/enabled": true,

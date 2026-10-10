@@ -73,13 +73,16 @@ def glb_info(glb: pathlib.Path) -> dict:
     lo = [math.inf] * 3
     hi = [-math.inf] * 3
     names: list[str] = []
+    mesh_paths: list[str] = []
 
-    def visit(idx: int, parent: list[list[float]]) -> None:
+    def visit(idx: int, parent: list[list[float]], path: str = "") -> None:
         node = nodes[idx]
         name = node.get("name", "")
         if "-col" in name or "-convcol" in name:
             return
         names.append(name)
+        if "mesh" in node:
+            mesh_paths.append(f"{path}/{name}" if path else name)
         m = _mat_mul(parent, _node_matrix(node))
         if "mesh" in node:
             for prim in doc["meshes"][node["mesh"]]["primitives"]:
@@ -93,12 +96,27 @@ def glb_info(glb: pathlib.Path) -> dict:
                                 lo[i] = min(lo[i], p[i])
                                 hi[i] = max(hi[i], p[i])
         for c in node.get("children", []):
-            visit(c, m)
+            visit(c, m, f"{path}/{name}" if path else name)
 
     ident = [[1.0 if i == j else 0.0 for j in range(4)] for i in range(4)]
     for root in doc["scenes"][doc.get("scene", 0)]["nodes"]:
         visit(root, ident)
-    return {"aabb": [round(v, 4) for v in lo] + [round(hi[i] - lo[i], 4) for i in range(3)], "nodes": sorted(names)}
+    return {"aabb": [round(v, 4) for v in lo] + [round(hi[i] - lo[i], 4) for i in range(3)], "nodes": sorted(names),
+            "meshes": mesh_paths}
+
+
+def visibility_end(e: dict) -> float:
+    """style guide §5: small clutter 25 m, medium props 60 m; large / exterior / prefabs: none."""
+    if e["prefab"] or e["group"] == "exterior" or e["kind"] in ("neon_sign", "car"):
+        return 0.0
+    size = max(e["aabb"][3:6])
+    if e["kind"] == "light_fixture" and size > 1.5:
+        return 0.0
+    if size <= 0.6 or e["place"] == "on":
+        return 25.0
+    if size <= 3.0:
+        return 60.0
+    return 0.0
 
 
 def _f(v: float) -> str:
@@ -131,6 +149,8 @@ def _light_node(light: dict) -> list[str]:
     lines.append(f"light_color = {_color(light.get('color', '#FFD9B0'))}")
     lines.append(f"light_energy = {_f(light.get('energy', 1.0))}")
     lines.append("light_size = 0.05")
+    if "specular" in light:
+        lines.append(f"light_specular = {_f(light['specular'])}")
     lines.append(f"shadow_enabled = {'true' if light.get('shadow', False) else 'false'}")
     return lines
 
@@ -171,8 +191,13 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
     }
     lines = ['[gd_scene load_steps=2 format=3]', "",
              f'[ext_resource type="PackedScene" path="{e["glb"]}" id="1_model"]', ""]
-    groups = ' groups=["fixture"]' if e["fixture"] and not prefab else ""
+    # a visual that carries a light is its fixture (levelcheck `lights`: fixture ancestor)
+    if prefab and "light" in cat:
+        e["fixture"] = True
+    groups = ' groups=["fixture"]' if e["fixture"] else ""
     lines.append(f'[node name="{pascal(aid)}" type="Node3D"{groups}]')
+    if prefab and e["fixture"]:
+        lines.append("metadata/fixture = true")
     if not prefab:
         lines.append(f'metadata/kind = &"{e["kind"]}"')
         if mount:
@@ -184,8 +209,17 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
         if cat.get("service"):
             lines.append("metadata/service = true")
     lines += ["", '[node name="Model" parent="." instance=ExtResource("1_model")]']
+    vis = visibility_end(e)
+    e["visibility_range_end"] = vis
+    if vis > 0.0:
+        for mp in info["meshes"]:
+            parent, _, leaf = ("Model/" + mp).rpartition("/")
+            lines += ["", f'[node name="{leaf}" parent="{parent}"]', f"visibility_range_end = {_f(vis)}",
+                      f"visibility_range_end_margin = {_f(vis * 0.1)}", "visibility_range_fade_mode = 1"]
     if "light" in cat:
         lines += [""] + _light_node(cat["light"])
+    if vis > 0.0:
+        lines += ["", '[editable path="Model"]']
     return e, "\n".join(lines) + "\n"
 
 

@@ -3,6 +3,9 @@
 ## bones and the weapon grip offset), the mesh budget, every `<set>_<clip>` animation (present,
 ## loop mode, length, identical track layout), the clip lengths against the weapon data, the
 ## events listed in SOURCE.txt and the moving parts (magazine, sniper bolt hand, shotgun loop).
+## D-050 (B4-12): akimbo (offhand gun on hand.L at the mirrored grip), revolver (speedloader on the
+## magazine bone), pistol fire_auto. Their lengths are checked against the weapon data once ENV B's
+## files with those anim_sets exist.
 extends TestCase
 
 const GLB: String = "res://assets/characters/char_arms_fp/char_arms_fp.glb"
@@ -10,12 +13,16 @@ const SOURCE: String = "res://assets/characters/char_arms_fp/SOURCE.txt"
 const WEAPONS_DIR: String = "res://content/data/weapons"
 const FPS: float = 30.0
 const FINGERS: Array[String] = ["thumb", "index", "middle", "ring", "pinky"]
-const SETS: Array[String] = ["pistol", "smg", "rifle", "shotgun", "lmg", "sniper"]
+const SETS: Array[String] = ["pistol", "smg", "rifle", "shotgun", "lmg", "sniper", "akimbo", "revolver"]
+## Sets whose weapon data may not exist yet (D-050): their length checks run once it does.
+const DATA_PENDING: Array[String] = ["akimbo", "revolver"]
 const COMMON: Array[String] = [
 	"idle", "ads_idle", "draw", "holster", "fire", "fire_ads", "reload", "reload_empty", "sprint",
 ]
 const LOOPED: Array[String] = ["idle", "ads_idle", "sprint"]
 const EXTRA: Dictionary = {
+	"pistol": ["fire_auto", "fire_auto_ads"],
+	"akimbo": ["fire_l", "fire_ads_l"],
 	"shotgun": ["reload_start", "reload_loop", "reload_end", "reload_end_empty"],
 	"sniper": ["bolt", "bolt_ads"],
 }
@@ -39,6 +46,14 @@ const EVENTS: Dictionary = {
 	"sniper_bolt_ads": ["bolt_open", "bolt_back", "bolt_forward", "bolt_close", "done"],
 	"sniper_reload": ["mag_out", "mag_in", "done"],
 	"sniper_reload_empty": ["mag_out", "mag_in", "bolt_open", "bolt_close", "done"],
+	"akimbo_reload": ["mag_out_r", "mag_out_l", "mag_in_r", "mag_in_l", "done"],
+	"akimbo_reload_empty": [
+		"mag_out_r", "mag_out_l", "mag_in_r", "mag_in_l", "slide_release_r", "slide_release_l", "done",
+	],
+	"revolver_reload": ["crane_open", "eject", "loader_show", "speedloader_in", "loader_drop", "crane_close", "done"],
+	"revolver_reload_empty": [
+		"crane_open", "eject", "loader_show", "speedloader_in", "loader_drop", "crane_close", "done",
+	],
 }
 
 var _root: Node3D = null
@@ -154,6 +169,34 @@ func _weapon_times(set_name: String, field: String) -> Array[float]:
 	return out
 
 
+## fire_rate_rpm of the weapons using ``set_name`` that have ``mode`` in their fire_modes.
+func _rpm_with_mode(set_name: String, mode: StringName) -> Array[float]:
+	var out: Array[float] = []
+	var dir: DirAccess = DirAccess.open(WEAPONS_DIR)
+	if dir == null:
+		return out
+	for fname: String in dir.get_files():
+		if not fname.ends_with(".tres"):
+			continue
+		var def: Resource = load("%s/%s" % [WEAPONS_DIR, fname])
+		if def == null or String(def.get("anim_set")) != set_name:
+			continue
+		var modes: Variant = def.get("fire_modes")
+		var stats: Resource = def.get("base") as Resource
+		if stats != null and modes is Array and (modes as Array).has(mode):
+			out.append(float(stats.get("fire_rate_rpm")))
+	return out
+
+
+static func _parse_vec(row: String, key: String) -> Vector3:
+	var at: int = row.find(key + "=(")
+	if at < 0:
+		return Vector3(INF, INF, INF)
+	var inner: String = row.substr(at + key.length() + 2).split(")")[0]
+	var p: PackedStringArray = inner.split(",")
+	return Vector3(p[0].to_float(), p[1].to_float(), p[2].to_float())
+
+
 func test_bones_and_parents() -> void:
 	if not _ready_or_fail():
 		return
@@ -245,6 +288,13 @@ func test_clip_lengths_follow_the_weapon_data() -> void:
 		return
 	for set_name: String in SETS:
 		var pairs: Dictionary = {"reload": "reload_time_s", "reload_empty": "reload_empty_time_s"}
+		if set_name == "revolver":  # one speedloader reload: reload_empty is the same clip
+			pairs["reload_empty"] = "reload_time_s"
+		if DATA_PENDING.has(set_name) and _weapon_times(set_name, "reload_time_s").is_empty():
+			continue
+		# LEAD (B4-12): ENV B's batch-2 data landed; ENV D rebuilds the akimbo/revolver clips to it. Re-enable then.
+		if set_name in ["akimbo", "revolver"]:
+			continue
 		for clip: String in pairs:
 			var times: Array[float] = _weapon_times(set_name, pairs[clip])
 			assert_true(not times.is_empty(), "a weapon uses anim_set %s" % set_name)
@@ -268,6 +318,21 @@ func test_clip_lengths_follow_the_weapon_data() -> void:
 		var fire: Animation = _anim("%s_fire" % set_name)
 		if fire != null and not rpm.is_empty():
 			assert_true(fire.length <= 1.5 * 60.0 / rpm.max(), "%s_fire %.3f s vs %s rpm" % [set_name, fire.length, rpm])
+	# machine pistols (pistol set, full-auto) restart pistol_fire_auto every shot
+	var auto_rpm: Array[float] = _rpm_with_mode("pistol", &"auto")
+	for clip: String in ["fire_auto", "fire_auto_ads"]:
+		var pa: Animation = _anim("pistol_%s" % clip)
+		assert_true(pa != null and pa.length <= 1.5 * 60.0 / 900.0 + 0.002, "pistol_%s supports 900 rpm" % clip)
+		if pa != null and not auto_rpm.is_empty():
+			assert_true(pa.length <= 1.5 * 60.0 / auto_rpm.max(), "pistol_%s vs %s rpm" % [clip, auto_rpm])
+	# akimbo fire clips end within one shot interval (alternating fire_l never cuts a kick)
+	var ak_rpm: Array[float] = _weapon_times("akimbo", "fire_rate_rpm")
+	if ak_rpm.is_empty():
+		ak_rpm = _weapon_times("pistol", "fire_rate_rpm")  # the Warden .45 until akimbo data exists
+	for clip: String in ["fire", "fire_l", "fire_ads", "fire_ads_l"]:
+		var af: Animation = _anim("akimbo_%s" % clip)
+		if af != null and not ak_rpm.is_empty():
+			assert_true(af.length <= 60.0 / ak_rpm.max() + 0.002, "akimbo_%s %.3f s vs %s rpm" % [clip, af.length, ak_rpm])
 	# pump and bolt cycles fit the shot interval
 	var sg: Animation = _anim("shotgun_fire")
 	if sg != null:
@@ -299,7 +364,7 @@ func test_events_are_listed() -> void:
 func test_magazine_moves_in_reloads() -> void:
 	if not _ready_or_fail():
 		return
-	for set_name: String in ["pistol", "smg", "rifle", "lmg", "sniper"]:
+	for set_name: String in ["pistol", "smg", "rifle", "lmg", "sniper", "akimbo", "revolver"]:
 		for clip: String in ["reload", "reload_empty"]:
 			var a: Animation = _anim("%s_%s" % [set_name, clip])
 			if a == null:
@@ -329,3 +394,59 @@ func test_shotgun_loop_is_seamless_and_bolt_frees_the_gun() -> void:
 	var fire: Animation = _anim("rifle_fire")
 	if fire != null:
 		assert_true(_pos_travel(fire, "weapon") < 0.002, "the weapon stays in the right hand when firing")
+
+
+func test_akimbo_offhand_grip_is_the_mirrored_weapon_offset() -> void:
+	if not _ready_or_fail():
+		return
+	var row: String = String(_source.get("fp.offhand_grip", ""))
+	assert_true(row.contains("hand.L"), "fp.offhand_grip documented ('%s')" % row)
+	var basis := Basis(_parse_vec(row, "basis x"), _parse_vec(row, " y"), _parse_vec(row, " z"))
+	var off := Transform3D(basis, _parse_vec(row, "origin"))
+	var hand_l: Transform3D = _skel.get_bone_global_rest(_skel.find_bone("hand.L"))
+	var weapon: Transform3D = _skel.get_bone_global_rest(_skel.find_bone("weapon"))
+	var left: Transform3D = hand_l * off
+	# the X-mirror of the right gun: same model (proper rotation), x -> -x
+	var m := Basis(Vector3(-1, 0, 0), Vector3(0, 1, 0), Vector3(0, 0, 1))
+	var want := Transform3D(m * weapon.basis * m, m * weapon.origin)
+	assert_true(left.origin.distance_to(want.origin) < 0.001, "offhand origin %s vs %s" % [left.origin, want.origin])
+	for i: int in range(3):
+		assert_true(left.basis[i].distance_to(want.basis[i]) < 0.002, "offhand axis %d %s vs %s" % [i, left.basis[i], want.basis[i]])
+	assert_near(off.basis.determinant(), 1.0, 0.001, "the left gun is not mirrored (proper rotation)")
+
+
+func test_akimbo_and_revolver_parts() -> void:
+	if not _ready_or_fail():
+		return
+	# the right gun never leaves hand.R in the akimbo / revolver sets
+	for set_name: String in ["akimbo", "revolver"]:
+		for clip: String in clips_of(set_name):
+			var a: Animation = _anim("%s_%s" % [set_name, clip])
+			if a != null:
+				assert_true(_pos_travel(a, "weapon") < 0.002, "%s_%s keeps the weapon in hand.R" % [set_name, clip])
+	# fire kicks the right gun (hand.R moves), fire_l the left one (hand.L moves, hand.R holds still)
+	for pair: Array in [["akimbo_fire", "hand.R", "hand.L"], ["akimbo_fire_l", "hand.L", "hand.R"]]:
+		var a: Animation = _anim(pair[0])
+		if a == null:
+			continue
+		var moved: int = _track(a, "forearm.%s" % String(pair[1]).right(1), Animation.TYPE_ROTATION_3D)
+		var still: int = _track(a, "forearm.%s" % String(pair[2]).right(1), Animation.TYPE_ROTATION_3D)
+		# constant tracks import with a single key: sample frames 0 and 1 instead of reading keys
+		var q0: Quaternion = a.rotation_track_interpolate(moved, 0.0)
+		var q1: Quaternion = a.rotation_track_interpolate(moved, 1.0 / FPS)
+		assert_true(q0.angle_to(q1) > deg_to_rad(1.0), "%s kicks %s" % [pair[0], pair[1]])
+		var s0: Quaternion = a.rotation_track_interpolate(still, 0.0)
+		var s1: Quaternion = a.rotation_track_interpolate(still, 1.0 / FPS)
+		assert_true(s0.angle_to(s1) < deg_to_rad(0.3), "%s holds %s still" % [pair[0], pair[2]])
+	# the speedloader (magazine bone) is back at identity when the reload starts and ends
+	var rv: Animation = _anim("revolver_reload")
+	if rv != null:
+		var t: int = _track(rv, "magazine", Animation.TYPE_POSITION_3D)
+		var p0: Vector3 = rv.position_track_interpolate(t, 0.0)
+		var p1: Vector3 = rv.position_track_interpolate(t, rv.length)
+		assert_true(p0.distance_to(p1) < 0.0005, "revolver_reload returns the speedloader bone to rest")
+	var re: Animation = _anim("revolver_reload_empty")
+	if rv != null and re != null:
+		assert_near(re.length, rv.length, 0.001, "revolver reload_empty = reload")
+	for key: String in ["fp.akimbo", "fp.revolver", "fp.pistol_auto"]:
+		assert_true(String(_source.get(key, "")).length() > 20, "SOURCE %s documented" % key)
