@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only marble_cream --preset gsr
+module: tools/texgen/materials/marble_cream.py
+preset: tools/texgen/presets/gsr.py
+seed: 1628723488 (zlib.crc32('marble_cream'))
+size_px: 1024
+tile_m: 2.0 (1 UV unit = 2.0 m)
+texel_density_px_per_m: 512
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.6624, "albedo_lum_mean_linear": 0.6238, "albedo_lum_min_linear": 0.2388, "ao_mean": 0.999, "metallic_mean": 0.0, "roughness_mean": 0.139}

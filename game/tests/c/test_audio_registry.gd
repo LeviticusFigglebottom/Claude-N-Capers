@@ -1,0 +1,199 @@
+## ENV C audio: P1 cue registry completeness, stream loading, buses, CuePlayer fact mapping and
+## MusicDirector stem selection (simulated EventBus facts, headless; checks state, not output).
+extends TestCase
+
+const P1_CUES: Array[StringName] = [
+	&"cue.detect_tick", &"cue.detect_full", &"cue.npc_suspicious", &"cue.pager_beep", &"cue.pager_radio",
+	&"cue.alarm_bell", &"cue.mask_on", &"cue.glass_break", &"cue.drill_loop", &"cue.drill_jam",
+	&"cue.drill_done", &"cue.bag_pickup", &"cue.bag_throw", &"cue.bag_secure", &"cue.weapon_pistol_fire",
+	&"cue.weapon_pistol_fire_suppressed", &"cue.weapon_rifle_fire", &"cue.reload_pistol", &"cue.reload_rifle",
+	&"cue.dry_fire", &"cue.hitmarker", &"cue.headshot", &"cue.police_siren_far", &"cue.assault_start",
+	&"cue.crew_downed", &"cue.revive",
+	# D-026 pistol foley (ENV B viewmodel)
+	&"cue.weapon_pistol_mag_out", &"cue.weapon_pistol_mag_in", &"cue.weapon_pistol_slide_release",
+]
+const LOOPS: Array[StringName] = [
+	&"cue.pager_beep", &"cue.pager_radio", &"cue.alarm_bell", &"cue.drill_loop", &"cue.police_siren_far",
+]
+const BUSES: Array[StringName] = [&"Music", &"SFX", &"Weapons", &"Enemies", &"World", &"UI", &"Voice", &"Ambience"]
+
+var _reg: AudioCueRegistry = null
+
+
+func before_all() -> void:
+	_reg = load("res://world/audio/cues.tres") as AudioCueRegistry
+
+
+func after_all() -> void:
+	_reg = null
+	AudioCueLib.clear_cache()
+	await wait_frames(3)  # let the audio server drop stopped playbacks before exit
+
+
+func test_registry_has_every_p1_cue() -> void:
+	assert_true(_reg != null, "cues.tres loads as AudioCueRegistry")
+	if _reg == null:
+		return
+	for id: StringName in P1_CUES:
+		assert_true(_reg.has_cue(id), "registry has %s" % id)
+	assert_true(_reg.has_cue(&"cue.alarm_bell_glasshouse"), "glasshouse alarm variant")
+
+
+func test_every_stream_loads_with_length() -> void:
+	if _reg == null:
+		skip("no registry")
+		return
+	var ids: Dictionary[StringName, bool] = {}
+	for cue: AudioCueDef in _reg.cues:
+		assert_false(ids.has(cue.id), "duplicate cue id %s" % cue.id)
+		ids[cue.id] = true
+		assert_true(String(cue.id).begins_with("cue."), "id format %s" % cue.id)
+		assert_false(cue.streams.is_empty(), "%s has streams" % cue.id)
+		for s: AudioStream in cue.streams:
+			assert_true(s is AudioStreamOggVorbis, "%s stream is ogg" % cue.id)
+			assert_true(s != null and s.get_length() > 0.02, "%s stream has audio" % cue.id)
+		assert_true(BUSES.has(cue.bus), "%s bus %s is a contract bus" % [cue.id, cue.bus])
+	for id: StringName in LOOPS:
+		assert_true(_reg.get_cue(id).loop, "%s is a loop" % id)
+	assert_true(_reg.get_cue(&"cue.glass_break").streams.size() >= 3, "glass_break variations")
+	assert_true(_reg.get_cue(&"cue.weapon_pistol_fire").streams.size() >= 3, "pistol variations")
+	for id: StringName in [&"cue.weapon_pistol_mag_out", &"cue.weapon_pistol_mag_in", &"cue.weapon_pistol_slide_release"]:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c.streams.size() >= 3, "%s variations" % id)
+		assert_eq(c.bus, &"Weapons", "%s bus" % id)
+		assert_false(c.loop, "%s one-shot" % id)
+
+
+func test_buses_resolve() -> void:
+	AudioCueLib.ensure_buses()
+	assert_true(AudioCueLib.has_contract_buses(), "contract buses exist")
+	for pair: Array in AudioCueLib.CONTRACT_BUSES:
+		var idx: int = AudioServer.get_bus_index(pair[0])
+		assert_true(idx > 0, "bus %s" % pair[0])
+		assert_eq(AudioServer.get_bus_send(idx), pair[1] as StringName, "bus %s sends to %s" % [pair[0], pair[1]])
+	var layout: AudioBusLayout = load(AudioCueLib.BUS_LAYOUT_PATH) as AudioBusLayout
+	assert_true(layout != null, "default_bus_layout.tres loads")
+
+
+func test_missing_cue_plays_placeholder_and_warns() -> void:
+	var player: CuePlayer = _make_player()
+	Log.capture = true
+	Log.captured.clear()
+	var node: Node = player.play_cue(&"cue.does_not_exist_xyz")
+	Log.capture = false
+	assert_true(node is AudioStreamPlayer, "placeholder player returned")
+	assert_true((node as AudioStreamPlayer).stream is AudioStreamWAV, "placeholder stream generated")
+	var warned: bool = false
+	for line: String in Log.captured:
+		warned = warned or line.contains("cue.does_not_exist_xyz")
+	assert_true(warned, "warned about missing cue")
+	player.queue_free()
+
+
+func test_cue_player_maps_facts() -> void:
+	var player: CuePlayer = _make_player()
+	player.local_slot_override = 0
+	EventBus.heist_loaded.emit(&"heist.glasshouse", 1, {})
+	assert_eq(player.variant_cue(&"cue.alarm_bell"), &"cue.alarm_bell_glasshouse", "heist alarm variant")
+	EventBus.pager_started.emit(7, 0)
+	assert_true(player.is_loop_active(&"pager_beep_7"), "pager beep loop")
+	EventBus.pager_answer_started.emit(7, 0)
+	assert_false(player.is_loop_active(&"pager_beep_7"), "beep stops when answering")
+	assert_true(player.is_loop_active(&"pager_radio_7"), "radio loop while answering")
+	EventBus.pager_answered.emit(7, 0, 1)
+	assert_false(player.is_loop_active(&"pager_radio_7"), "radio stops when answered")
+	EventBus.device_started.emit(42, &"drill", 60.0)
+	assert_true(player.is_loop_active(&"device_42"), "drill loop")
+	EventBus.device_jammed.emit(42)
+	assert_false(player.is_loop_active(&"device_42"), "drill loop stops on jam")
+	assert_eq(player.last_cue, &"cue.drill_jam")
+	EventBus.device_restarted.emit(42, 0)
+	EventBus.device_finished.emit(42)
+	assert_eq(player.last_cue, &"cue.drill_done")
+	EventBus.glass_broken.emit(5, Vector3(1, 0, 2))
+	assert_eq(player.last_cue, &"cue.glass_break")
+	EventBus.crew_masked.emit(0)
+	assert_eq(player.last_cue, &"cue.mask_on")
+	EventBus.loot_secured.emit(9, &"loot.jewelry", 1000)
+	assert_eq(player.last_cue, &"cue.bag_secure")
+	EventBus.detection_progress.emit(3, 0, 0.4, Enums.ObserverKind.GUARD)
+	assert_eq(player.last_cue, &"cue.detect_tick")
+	EventBus.detection_progress.emit(3, 0, 1.0, Enums.ObserverKind.GUARD)
+	assert_eq(player.last_cue, &"cue.detect_full")
+	EventBus.alarm_raised.emit(&"test", 0)
+	assert_true(player.alarm_active, "alarm active")
+	assert_true(player.is_loop_active(CuePlayer.ALARM_KEY), "alarm bell loop")
+	EventBus.assault_phase_changed.emit(Enums.AssaultPhase.BUILD, 1)
+	assert_eq(player.last_cue, &"cue.assault_start")
+	EventBus.heist_ended.emit({"success": true})
+	assert_true(player.active_loop_keys().is_empty(), "all loops stop at heist end")
+	player.queue_free()
+
+
+func test_weapon_fire_cue_resolution() -> void:
+	var player: CuePlayer = _make_player()
+	assert_eq(player.weapon_fire_cue(&"weapon.kestrel_p9", false), &"cue.weapon_pistol_fire")
+	assert_eq(player.weapon_fire_cue(&"weapon.kestrel_p9", true), &"cue.weapon_pistol_fire_suppressed")
+	assert_eq(player.weapon_fire_cue(&"enemy.tac_rifle", false), &"cue.weapon_rifle_fire")
+	var def: WeaponDef = WeaponDef.new()
+	def.anim_set = &"pistol"
+	def.fire_cue = &"cue.weapon_pistol_fire"
+	assert_eq(player.weapon_fire_cue(&"x", false, def), &"cue.weapon_pistol_fire")
+	assert_eq(player.weapon_fire_cue(&"x", true, def), &"cue.weapon_pistol_fire_suppressed")
+	player.queue_free()
+
+
+func test_music_stem_mapping() -> void:
+	assert_eq(MusicDirector.stem_for(Enums.HeistPhase.STEALTH, Enums.AssaultPhase.NONE), &"stealth")
+	assert_eq(MusicDirector.stem_for(Enums.HeistPhase.CASING, Enums.AssaultPhase.NONE), &"stealth")
+	assert_eq(MusicDirector.stem_for(Enums.HeistPhase.LOUD, Enums.AssaultPhase.NONE), &"control")
+	assert_eq(MusicDirector.stem_for(Enums.HeistPhase.LOUD, Enums.AssaultPhase.ANTICIPATION), &"anticipation")
+	assert_eq(MusicDirector.stem_for(Enums.HeistPhase.LOUD, Enums.AssaultPhase.BUILD), &"assault")
+	assert_eq(MusicDirector.stem_for(Enums.HeistPhase.LOUD, Enums.AssaultPhase.SUSTAIN), &"assault")
+	assert_eq(MusicDirector.stem_for(Enums.HeistPhase.LOUD, Enums.AssaultPhase.FADE), &"fade")
+	assert_eq(MusicDirector.stem_for(Enums.HeistPhase.LOUD, Enums.AssaultPhase.CONTROL), &"control")
+	assert_eq(MusicDirector.stem_for(Enums.HeistPhase.ESCAPE, Enums.AssaultPhase.NONE), &"assault")
+	assert_eq(MusicDirector.stem_for(Enums.HeistPhase.ENDED, Enums.AssaultPhase.NONE), &"")
+
+
+func test_music_director_follows_phase_signals() -> void:
+	var md: MusicDirector = MusicDirector.new()
+	md.track_id = &"glasshouse"
+	add_child(md)
+	assert_true(md.track != null, "glasshouse track loads")
+	if md.track == null:
+		md.queue_free()
+		return
+	assert_eq(md.track.bpm, 140.0)
+	for stem: StringName in [&"stealth", &"control", &"anticipation", &"assault", &"fade"]:
+		assert_true(md.track.stem(stem) != null, "stem %s" % stem)
+		assert_true(md.track.stem(stem).get_length() > md.track.bar_seconds() * 8.0, "stem %s length" % stem)
+	EventBus.heist_phase_changed.emit(Enums.HeistPhase.LOADING, Enums.HeistPhase.STEALTH)
+	assert_eq(md.target_stem, &"stealth")
+	assert_true(await wait_until(func() -> bool: return md.current_stem == &"stealth", 3.0), "stealth starts")
+	EventBus.heist_phase_changed.emit(Enums.HeistPhase.STEALTH, Enums.HeistPhase.LOUD)
+	assert_eq(md.target_stem, &"control")
+	EventBus.assault_phase_changed.emit(Enums.AssaultPhase.ANTICIPATION, 1)
+	assert_eq(md.target_stem, &"anticipation")
+	EventBus.assault_phase_changed.emit(Enums.AssaultPhase.BUILD, 1)
+	assert_eq(md.target_stem, &"assault")
+	# switches on a bar line (<= one bar of 140 BPM 4/4 = 1.71 s). Wall-clock wait is generous
+	# (2 bars + 1 s) so a loaded CI machine doesn't flake; the bar-sync itself is unit-timed in MusicDirector.
+	var bar: float = md.track.bar_seconds()
+	assert_true(await wait_until(func() -> bool: return md.current_stem == &"assault", bar * 2.0 + 1.0),
+			"assault reached by the next bar line")
+	EventBus.assault_phase_changed.emit(Enums.AssaultPhase.FADE, 1)
+	assert_eq(md.target_stem, &"fade")
+	EventBus.heist_ended.emit({"success": false})
+	assert_eq(md.target_stem, &"")
+	assert_eq(md.last_stinger, &"lose")
+	md.stop_all()
+	await wait_frames(2)
+	md.queue_free()
+
+
+func _make_player() -> CuePlayer:
+	var p: CuePlayer = CuePlayer.new()
+	p.siren_delay_s = 0.05
+	add_child(p)
+	return p

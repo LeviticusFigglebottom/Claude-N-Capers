@@ -1,0 +1,117 @@
+[gd_resource type="Resource" script_class="PerkDeckDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/perk_deck_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"perk.clean_sweep"
+display_name = "Clean Sweep"
+description = "perk.clean_sweep.desc"
+cards = Array[Dictionary]([{
+"name": "perk.clean_sweep.card1.name",
+"desc": "perk.clean_sweep.card1.desc",
+"cost": 200,
+"grants": {
+&"defense.armor_mult": 1.1,
+&"perk.sociopath": {
+"kill_armor": 30.0,
+"kill_armor_cooldown_s": 1.0
+}
+}
+}, {
+"name": "perk.shared.card2.name",
+"desc": "perk.shared.card2.desc",
+"cost": 300,
+"grants": {
+&"weapon.headshot_mult.all": 1.25
+}
+}, {
+"name": "perk.clean_sweep.card3.name",
+"desc": "perk.clean_sweep.card3.desc",
+"cost": 400,
+"grants": {
+&"perk.sociopath": {
+"kill_armor": 30.0,
+"kill_armor_cooldown_s": 1.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.08,
+"melee_kill_health_fraction": 0.1,
+"melee_kill_cooldown_s": 1.0
+}
+}
+}, {
+"name": "perk.shared.card4.name",
+"desc": "perk.shared.card4.desc",
+"cost": 600,
+"grants": {
+&"stealth.concealment_add.all": 1
+}
+}, {
+"name": "perk.clean_sweep.card5.name",
+"desc": "perk.clean_sweep.card5.desc",
+"cost": 1000,
+"grants": {
+&"defense.armor_mult": 1.0909091,
+&"perk.sociopath": {
+"kill_armor": 30.0,
+"kill_armor_cooldown_s": 1.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.08,
+"melee_kill_health_fraction": 0.1,
+"melee_kill_cooldown_s": 1.0,
+"close_kill_armor": 30.0
+}
+}
+}, {
+"name": "perk.shared.card6.name",
+"desc": "perk.shared.card6.desc",
+"cost": 1600,
+"grants": {
+&"weapon.ammo_pickup_mult.all": 1.35
+}
+}, {
+"name": "perk.clean_sweep.card7.name",
+"desc": "perk.clean_sweep.card7.desc",
+"cost": 2400,
+"grants": {
+&"perk.sociopath": {
+"kill_armor": 30.0,
+"kill_armor_cooldown_s": 1.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.08,
+"melee_kill_health_fraction": 0.1,
+"melee_kill_cooldown_s": 1.0,
+"close_kill_armor": 30.0,
+"close_kill_panic_chance": 0.75,
+"close_kill_panic_cooldown_s": 1.0,
+"panic_radius_m": 6.0
+}
+}
+}, {
+"name": "perk.shared.card8.name",
+"desc": "perk.shared.card8.desc",
+"cost": 3200,
+"grants": {
+&"weapon.damage_mult.all": 1.05
+}
+}, {
+"name": "perk.clean_sweep.card9.name",
+"desc": "perk.clean_sweep.card9.desc",
+"cost": 4000,
+"grants": {
+&"defense.armor_regen_delay_mult": 0.9,
+&"perk.sociopath": {
+"kill_armor": 30.0,
+"kill_armor_cooldown_s": 1.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.08,
+"melee_kill_health_fraction": 0.1,
+"melee_kill_cooldown_s": 1.0,
+"close_kill_armor": 30.0,
+"close_kill_panic_chance": 0.75,
+"close_kill_panic_cooldown_s": 1.0,
+"panic_radius_m": 6.0,
+"forced_regen_after_break_s": 1.5
+}
+}
+}])

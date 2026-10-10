@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lc_office"
+purpose = &"office"
+required_items = Array[StringName]([&"desk", &"chair"])
+optional_items = {
+&"box": 1.0,
+&"monitor": 2.0
+}
+min_density = 0.05
+max_density = 1.0
+min_props = 3
+notes = "levelcheck test fixture kit"
