@@ -10,7 +10,9 @@
 ##   drill/saw kind &"place_drill" / &"place_saw": DeviceRunner (time by `size` from
 ##             safe_drill_duration_s / safe_saw_duration_s; jams -> kind &"fix_drill", drill_fix_s)
 ##   c4        kind &"place_c4"     c4_place_s, consumes `item.c4`; after c4_fuse_s it blows the lock:
-##             noise &"explosion" (c4_noise_radius_m), cue.c4_explode, device_started/finished(&"c4")
+##             noise &"explosion" (c4_noise_radius_m), cue.c4_explode, device_started/finished(&"c4"),
+##             and an L3.6 blast (`Explosion.apply`, c4_blast_radius_m / c4_blast_damage) at the lock
+##             attributed to the crew member who placed it (so it never hurts the crew)
 ## A drill_point whose `target` is this safe also works (`open_by_device()`).
 ## A2-08 KEYCARD: with &"keycard" in `methods` the safe is opened by a keycard_reader (the safe's
 ## own Interactable never offers it). Wire it either way (both may be set, it opens once):
@@ -57,6 +59,9 @@ const METHOD_UI: Dictionary = {
 ## A2-08: keycard_reader that opens this safe (`methods` must contain &"keycard"). Optional: the
 ## reader's own `targets` listing this safe works the same.
 @export var reader: NodePath = NodePath("")
+## Collision box size (m), placed on the pivot; ZERO = fit to the visual (or use the visual's own
+## `Collision`), see GameplayPrefab "Collision fitting".
+@export var collision_size_override: Vector3 = Vector3.ZERO
 @export_group("Interaction")
 ## -1 = InteractionTweak.drill_place_s (placing the drill on `DrillPoint`).
 @export var interaction_time_s: float = -1.0
@@ -75,6 +80,8 @@ var timer_left: float = -1.0
 var beaten_by: StringName = &""
 
 var _place_time: float = 0.0
+## net_id of the crew member who armed the C4 (blast attacker), 0 = none.
+var _c4_by_net_id: int = 0
 ## Method chosen when the current hold started.
 var _session_method: StringName = &""
 
@@ -89,6 +96,11 @@ func required_visual_nodes() -> PackedStringArray:
 
 func _default_interaction_time() -> float:
 	return Tweak.interaction().drill_place_s
+
+
+## The fitted collision follows `Body` (the swinging `Door` is not part of the box).
+func _collision_source_node() -> String:
+	return "Body"
 
 
 func _prefab_ready() -> void:
@@ -113,7 +125,7 @@ func _prefab_ready() -> void:
 	for p: GameplayPrefab in _inner_loot():
 		p.interactable.enabled = false
 	_bind_reader()
-	# A1-03 behaviour (P3): size-dependent collision; hackable time-lock panel.
+	# A1-03 behaviour (P3): hackable time-lock panel.
 
 
 ## Server: a device finished, the C4 blew, or the mission forces it: the lock is beaten. Opens the
@@ -300,6 +312,7 @@ func _on_completed(crew: Node) -> void:
 		&"c4":
 			if c != null and c.remove_item(C4_ITEM, 1):
 				stage = Stage.C4_ARMED
+				_c4_by_net_id = NetIds.of(c)
 				timer_left = Tweak.interaction().c4_fuse_s
 				_emit_fact(&"device_started", [net_id, &"c4", timer_left])
 				_cue(&"cue.c4_armed", global_position)
@@ -313,9 +326,14 @@ func _on_completed(crew: Node) -> void:
 func _explode() -> void:
 	var pos: Vector3 = global_position + Vector3.UP * 0.6
 	_cue(&"cue.c4_explode", pos)
+	var tw: InteractionTweak = Tweak.interaction()
 	var rt: HeistRuntime = HeistRuntime.of(self)
 	if rt != null:
-		rt.make_noise(pos, Tweak.interaction().c4_noise_radius_m, &"explosion", net_id)
+		rt.make_noise(pos, tw.c4_noise_radius_m, &"explosion", net_id)
+	var drill: Node3D = visual_node("DrillPoint") as Node3D
+	var blast: Vector3 = drill.global_position if drill != null else pos
+	Explosion.apply(self, blast, tw.c4_blast_radius_m, tw.c4_blast_damage, _c4_by_net_id, C4_ITEM)
+	_c4_by_net_id = 0
 	_lock_beaten(&"c4")
 
 

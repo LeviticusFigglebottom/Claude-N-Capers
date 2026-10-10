@@ -1,12 +1,12 @@
 ## Heists offered by the menus. Owner: ENV B. Heists come from HeistRegistry (core, D-024: no hard
-## paths into world/); per-heist UI data and placeholders from res://content/data/ui/heist_list.tres.
-## A heist listed there with placeholder fields shows as a placeholder only while the registry has
-## no def for it (HeistRegistry.get_def returns null quietly, so no error spam).
+## paths into world/); per-heist UI data from res://content/data/ui/heist_list.tres.
+## QB-55 (D-049): a heist is offered (menus, Board, broker, direct launch) only when its HeistDef AND
+## its map scene exist (HeistRegistry.get_def + HeistRegistry.map_scene_path). No placeholders.
 ##
 ## entries() -> Array[Dictionary] sorted by id, of
 ##   { "id": StringName, "name_key": StringName, "subtitle_key": StringName, "brief_key": StringName,
 ##     "base_payout": int (UNSCALED, like HeistResult.contract_pay), "mode": int (Enums.HeistMode),
-##     "def": HeistDef or null, "placeholder": bool }
+##     "def": HeistDef }
 class_name HeistCatalog
 extends RefCounted
 
@@ -30,37 +30,38 @@ static func entries() -> Array[Dictionary]:
 		var def: HeistDef = HeistRegistry.get_def(id)
 		if def != null:
 			defs[id] = def
-	return entries_from(defs, heist_list())
+	return entries_from(defs, has_map)
 
 
-## Pure builder behind entries(): `defs` is { heist id: HeistDef } (the registry's view).
-static func entries_from(defs: Dictionary, list: UiHeistList) -> Array[Dictionary]:
+## True when the heist's map scene exists (HeistRegistry.map_scene_path).
+static func has_map(heist_id: StringName) -> bool:
+	return ResourceLoader.exists(HeistRegistry.map_scene_path(heist_id))
+
+
+## Pure builder behind entries(): `defs` is { heist id: HeistDef } (the registry's view); `map_exists`
+## is Callable(StringName) -> bool (default: every def counts as having a map).
+static func entries_from(defs: Dictionary, map_exists: Callable = Callable()) -> Array[Dictionary]:
 	var ids_found: Array[StringName] = []
 	for id: Variant in defs:
-		ids_found.append(StringName(id))
-	for id: Variant in list.heists:
-		var data: Dictionary = list.heists[id] as Dictionary
-		if not defs.has(StringName(id)) and data.has("placeholder_base_payout"):
+		if defs[id] != null and (not map_exists.is_valid() or bool(map_exists.call(StringName(id)))):
 			ids_found.append(StringName(id))
 	ContentDB.sort_ids(ids_found)
 	var out: Array[Dictionary] = []
 	for id: StringName in ids_found:
-		var def: HeistDef = defs.get(id) as HeistDef
-		var data: Dictionary = list.heists.get(id, {}) as Dictionary
+		var def: HeistDef = defs[id] as HeistDef
 		out.append({
 			"id": id,
 			"name_key": StringName("heist.%s.name" % id),
 			"subtitle_key": StringName("heist.%s.subtitle" % id),
 			"brief_key": StringName("heist.%s.brief" % id),
-			"base_payout": def.base_payout if def != null else int(data.get("placeholder_base_payout", 0)),
-			"mode": int(def.mode) if def != null else int(data.get("placeholder_mode", 0)),
+			"base_payout": def.base_payout,
+			"mode": int(def.mode),
 			"def": def,
-			"placeholder": def == null,
 		})
 	return out
 
 
-## Ids of every heist the menus offer (registry + placeholders); direct launch validates against it.
+## Ids of every heist the menus offer (registry def + map); direct launch validates against it.
 static func ids() -> Array[StringName]:
 	var out: Array[StringName] = []
 	for e: Dictionary in entries():

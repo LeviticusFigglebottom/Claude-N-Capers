@@ -4,7 +4,8 @@
 ## Wall/ceiling mounted: pivot back-centre (wall) or top-centre (ceiling), view along -Z.
 ## Visual: `Mount` (static), `Head` (A yaws/pitches it), `Lens` (Marker3D, -Z = view direction),
 ## `Led` (MeshInstance3D, A toggles emission). Not interactive (shot to destroy when `destructible`).
-## `Collision` is a small hitbox (layer hitboxes) so it can be shot. A2-08: its box spans local
+## `Collision` is a small hitbox (layer hitboxes) so it can be shot, fitted at ready to the visual
+## (GameplayPrefab collision fitting; `collision_size_override`, or the visual's own `Collision`). A2-08: its box spans local
 ## z in [-0.45, 0], entirely in front of the wall-mount pivot (no part behind the wall plane).
 ## QA-26 (D-043, visual_slots.md): mounted collision stays on the room side of the pivot (wall: -Z
 ## only; ceiling: -Y only). `mount_mode` (AUTO = node meta `mount` "ceiling"/"wall", the level
@@ -61,6 +62,9 @@ const MOUNT_META: StringName = &"mount"
 	set(value):
 		mount_mode = value
 		apply_mount()
+## Collision box size (m), placed on the pivot; ZERO = fit to the visual (or use the visual's own
+## `Collision`), see GameplayPrefab "Collision fitting".
+@export var collision_size_override: Vector3 = Vector3.ZERO
 
 ## False once permanently disabled (destroyed, operator neutralised).
 var active: bool = true
@@ -99,6 +103,14 @@ func _placeholder_scene() -> PackedScene:
 
 func required_visual_nodes() -> PackedStringArray:
 	return PackedStringArray(["Mount", "Head", "Lens", "Led"])
+
+
+## Fitted hitbox: wall art (and the wall-authored placeholder, which `apply_mount` lowers together
+## with `Collision`) stays at z <= 0; ceiling art at y <= 0.
+func _collision_pivot() -> CollisionPivot:
+	if resolved_mount() == MountMode.CEILING and not using_placeholder:
+		return CollisionPivot.CEILING
+	return CollisionPivot.WALL
 
 
 func _prefab_ready() -> void:
@@ -170,7 +182,7 @@ func apply_mount() -> void:
 
 ## Merged AABB of the `Collision` shapes in this node's local space (tests, levelcheck).
 func collision_aabb() -> AABB:
-	var body: Node3D = get_node_or_null(^"Collision") as Node3D
+	var body: Node3D = collision_body() as Node3D
 	var out: AABB = AABB()
 	var first: bool = true
 	if body == null:
@@ -180,7 +192,7 @@ func collision_aabb() -> AABB:
 		if cs.shape == null or cs.disabled:
 			continue
 		var local: AABB = cs.shape.get_debug_mesh().get_aabb()
-		var xf: Transform3D = body.transform * _relative_xform(body, cs)
+		var xf: Transform3D = _relative_xform(self, cs)
 		var box: AABB = xf * local
 		out = box if first else out.merge(box)
 		first = false
@@ -370,9 +382,20 @@ func _apply_visuals() -> void:
 	if destroyed:
 		if _head != null:
 			_head.transform.basis = Basis(Vector3.RIGHT, -deg_to_rad(Tweak.stealth().camera_broken_droop_deg)) * _head.transform.basis
-		var body: CollisionObject3D = get_node_or_null(^"Collision") as CollisionObject3D
+		var body: CollisionObject3D = collision_body()
 		if body != null:
 			body.collision_layer = 0
+
+
+## Client (A3-07, HeistNetSync): mirror `active` / `destroyed` when the camera_disabled event was missed.
+func _apply_net_state(state: Dictionary) -> void:
+	if state.has("pan_offset_deg"):
+		pan_offset_deg = float(state["pan_offset_deg"])
+	var off: bool = state.has("active") and not bool(state["active"])
+	if bool(state.get("destroyed", false)) and not destroyed:
+		_on_camera_disabled_event(net_id, REASON_DESTROYED)
+	elif off and active:
+		_on_camera_disabled_event(net_id, StringName(state.get("disabled_reason", disabled_reason)))
 
 
 func _on_camera_disabled_event(camera_net_id: int, reason: StringName) -> void:

@@ -10,6 +10,9 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/body_container/b
 
 ## Body bags it holds.
 @export var capacity: int = 2
+## Collision box size (m), placed on the pivot; ZERO = fit to the visual (or use the visual's own
+## `Collision`), see GameplayPrefab "Collision fitting".
+@export var collision_size_override: Vector3 = Vector3.ZERO
 
 var stored: int = 0
 

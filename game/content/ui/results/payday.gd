@@ -10,6 +10,9 @@
 ## PaydayCards.roll(result.seed, local slot, ...). Pick one (mouse / ui_accept), or the timer
 ## (PaydayCardsTable.pick_time_s, 30 s) picks `auto_pick`; all three are revealed, the picked reward
 ## is granted (PaydayCards.grant) and saved, and Continue is enabled again.
+## Leaving with an unpicked card (QB-PC1, D-049): the screen leaving the tree, the app quitting
+## (WM close request), a new result replacing this one, or MenuFlow leaving the heist auto-pick it
+## with the same deterministic `auto_pick` as the timeout (finish_card_pick()); no save change.
 ## Continue emits continue_pressed; if nobody listens it returns to the main menu scene.
 class_name PaydayScreen
 extends UiScreen
@@ -23,6 +26,9 @@ const MENU_SCENE: String = "res://content/ui/menus/menu_flow.tscn"
 @export var profile_slot: int = 0
 ## Offer the payday card pick after a successful heist (only when apply_to_profile is on).
 @export var cards_enabled: bool = true
+## Pro job (a Board contract flagged pro, B4-07): PayoutCalculator's is_pro (pro_job_xp_mult XP
+## line). MenuFlow sets it from the contract before the heist ends; HeistResult does not carry it.
+@export var is_pro: bool = false
 
 var profile: PlayerProfile
 ## PayoutCalculator.compute output for the shown result.
@@ -61,7 +67,7 @@ func setup(p: PlayerProfile) -> void:
 
 func build_ui() -> void:
 	var backdrop: ColorRect = ColorRect.new()  # opaque over the map when shown in-heist
-	backdrop.color = Color(0.04, 0.045, 0.055, 0.97)
+	backdrop.color = Color(UiAccent.app_bg(), 0.97)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
 	var root: VBoxContainer = UiBuild.vbox(16)
@@ -76,7 +82,7 @@ func build_ui() -> void:
 	_content = UiBuild.vbox(20)
 	_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(_content)
-	continue_button = UiBuild.button(&"ui.results.continue")
+	continue_button = UiBuild.primary(UiBuild.button(&"ui.results.continue"))
 	continue_button.size_flags_horizontal = Control.SIZE_SHRINK_END
 	continue_button.pressed.connect(_on_continue)
 	root.add_child(continue_button)
@@ -90,10 +96,11 @@ func build_ui() -> void:
 
 ## Show a HeistResult. Computes the payout and (unless apply_to_profile is false) banks it.
 func show_result(heist_result: Dictionary) -> void:
+	finish_card_pick()
 	result = heist_result
 	if profile == null:
 		profile = SaveService.load_profile(profile_slot)
-	payout = compute_payout(result, profile, Net.local_slot())
+	payout = compute_payout(result, profile, Net.local_slot(), is_pro)
 	xp_before = profile.xp
 	xp_after = xp_before + int(payout.get("xp_total", 0))
 	_applied = false
@@ -163,14 +170,33 @@ func pick(index: int) -> void:
 			continue_button.grab_focus.call_deferred()
 
 
+## Auto-pick an offered, unpicked card exactly like the timeout does (auto_pick of the roll), for
+## every way of leaving the screen (QB-PC1). No-op when there is no pending pick. Returns whether it picked.
+func finish_card_pick() -> bool:
+	if not has_card_pick():
+		return false
+	auto_picked = true
+	pick(int(card_roll.get("auto_pick", 0)))
+	_update_timer_label()
+	return true
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		finish_card_pick()
+
+
+func _exit_tree() -> void:
+	finish_card_pick()
+
+
 ## Advance the pick timer (called from _process; tests call it directly).
 func tick(delta: float) -> void:
 	if not cards_stage or picked_index >= 0:
 		return
 	time_left = maxf(time_left - delta, 0.0)
 	if time_left <= 0.0:
-		auto_picked = true
-		pick(int(card_roll.get("auto_pick", 0)))
+		finish_card_pick()
 	_update_timer_label()
 
 
@@ -233,14 +259,15 @@ func _update_timer_label() -> void:
 	timer_label.visible = timer_label.text != ""
 
 
-## PayoutCalculator.compute for `crew_slot` with the profile's banked stealth multiplier (D-022).
-static func compute_payout(heist_result: Dictionary, p: PlayerProfile, crew_slot: int) -> Dictionary:
+## PayoutCalculator.compute for `crew_slot` with the profile's banked stealth multiplier (D-022);
+## `pro` = a pro job contract.
+static func compute_payout(heist_result: Dictionary, p: PlayerProfile, crew_slot: int, pro: bool = false) -> Dictionary:
 	var banked: float = p.banked_stealth_mult if p != null else 1.0
 	var xp_mult: float = 1.0
 	if p != null:
 		var mods: Dictionary = LoadoutResolver.resolve(p.loadout).modifiers
 		xp_mult = float(mods.get(&"progression.xp_mult", 1.0))
-	return PayoutCalculator.compute(heist_result, null, null, false, crew_slot, banked, xp_mult)
+	return PayoutCalculator.compute(heist_result, null, null, pro, crew_slot, banked, xp_mult)
 
 
 func _apply() -> void:
@@ -314,7 +341,7 @@ func _build_xp() -> VBoxContainer:
 	var lvl: Label = UiBuild.label(&"ui.menu.level", &"", {"level": level_after})
 	value_labels[&"level"] = lvl
 	v.add_child(lvl)
-	level_bar = UiBuild.bar(Color(1.0, 0.8, 0.35), Vector2(480, 16))
+	level_bar = UiBuild.bar(UiAccent.table().fallback.lightened(0.15), Vector2(480, 16))
 	level_bar.value = _level_progress(xp_after)
 	v.add_child(level_bar)
 	if level_after > level_before:

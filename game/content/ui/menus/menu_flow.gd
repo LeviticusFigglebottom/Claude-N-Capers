@@ -1,5 +1,9 @@
-## Front-end flow controller (pd2_fidelity C2/C3 order): main menu -> heist select -> briefing ->
-## pre-planning -> loadout (-> masks / skills / perk deck) -> launch -> HUD -> payday. Owner: ENV B.
+## Front-end flow controller (pd2_fidelity C2/C3 order): main menu -> safehouse hub (C9) -> the
+## Board (C1) or the planning table (heist select) -> briefing -> pre-planning -> loadout (-> masks /
+## skills / perk deck) -> launch -> HUD -> payday. Owner: ENV B.
+## Safehouse (B4-07): HubMenu lists the stations of data/ui/hub_stations.tres; every station opens
+## through open_station(id), which is also the API for ENV C's 3D safehouse interactables. A Board
+## contract carries `is_pro` to the launch options (options["is_pro"]) and to the payday screen.
 ## Back is symmetrical at every step (loadout -> pre-planning refunds the confirmed plan's cash, so a
 ## re-confirm never charges twice). The confirmed plan goes to HeistLauncher as options["preplan"]
 ## (the PreplanResult v1 from PreplanPlan.apply(); contract docs/contracts/preplanning.md, D-038).
@@ -26,8 +30,21 @@ const PREPLAN_SCENE: PackedScene = preload("res://content/ui/preplanning/preplan
 const MASKS_SCENE: PackedScene = preload("res://content/ui/masks/mask_screen.tscn")
 const SKILLS_SCENE: PackedScene = preload("res://content/ui/progression/skill_tree_screen.tscn")
 const PERKS_SCENE: PackedScene = preload("res://content/ui/progression/perk_deck_screen.tscn")
+const HUB_SCENE: PackedScene = preload("res://content/ui/hub/hub_menu.tscn")
+const BOARD_SCENE: PackedScene = preload("res://content/ui/board/board_screen.tscn")
+## HubStation.target values open_station() understands.
+const TARGET_BOARD: StringName = &"board"
+const TARGET_HEIST_SELECT: StringName = &"heist_select"
+const TARGET_LOADOUT: StringName = &"loadout"
+const TARGET_MASKS: StringName = &"masks"
+const TARGET_RANGE: StringName = &"firing_range"
+const TARGETS: Array[StringName] = [TARGET_BOARD, TARGET_HEIST_SELECT, TARGET_LOADOUT, TARGET_MASKS, TARGET_RANGE]
 
 var main_menu: MainMenu
+## Safehouse hub (B4-07).
+var hub: HubMenu
+## The Board (B4-06), created the first time its station opens.
+var board_screen: BoardScreen = null
 var heist_select: HeistSelect
 var briefing_screen: BriefingScreen
 var preplanning_screen: PreplanningScreen
@@ -47,30 +64,54 @@ var profile_slot: int = 0
 var profile: PlayerProfile = null
 ## Confirmed pre-planning plan (PreplanPlan.apply()); {} = none (direct launch, or not confirmed yet).
 var preplan: Dictionary = {}
+## The chosen contract is a pro job (Board pin flagged pro). Heist select, the broker and direct
+## launch are never pro. Goes to options["is_pro"] and PaydayScreen.is_pro.
+var is_pro: bool = false
+## Pro jobs have no restart (QB-BRD1, D-049): BoardContracts.contract_key() -> true for every pro
+## Board contract whose heist failed this session. Shared with the Board, which locks those pins for
+## the rest of their rotation (they can't be taken again, so the briefing can't relaunch them).
+## Session-scoped (not saved): a contract only lives for one rotation anyway.
+var consumed_contracts: Dictionary = {}
+## Station list (data/ui/hub_stations.tres).
+var stations: HubStationList
 var _heist_id: StringName = &""
 var _difficulty: int = Enums.Difficulty.ROUTINE
 var _in_heist: CanvasLayer = null
 var _hud: Control = null
+var _heist_payday: PaydayScreen = null
+## The Board contract of the current contract path ({} = heist select, broker or direct launch).
+var _board_contract: Dictionary = {}
+## Where briefing Back returns (heist select or the Board).
+var _briefing_back: Control = null
+## Where the firing range returns (main menu or hub).
+var _range_return: Control = null
+## True once the safehouse was entered: "home" after a heist / stub is the hub, else the main menu.
+var _in_safehouse: bool = false
 
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	theme = UiBuild.theme()
 	var bg: ColorRect = ColorRect.new()
-	bg.color = Color(0.04, 0.045, 0.055)
+	bg.color = UiAccent.app_bg()
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
+	stations = HubStationList.load_default()
 	main_menu = _add(MAIN_SCENE) as MainMenu
+	hub = _add(HUB_SCENE) as HubMenu
+	hub.profile_slot = profile_slot
 	heist_select = _add(SELECT_SCENE) as HeistSelect
 	stub_screen = _add(STUB_SCENE) as StubScreen
-	main_menu.play_solo_requested.connect(show_screen.bind(heist_select))
+	main_menu.safehouse_requested.connect(show_hub)
+	hub.station_requested.connect(open_station)
+	hub.back_requested.connect(_on_hub_back)
 	main_menu.firing_range_requested.connect(open_firing_range)
 	main_menu.settings_requested.connect(_show_stub.bind(&"ui.menu.settings_soon", false))
 	main_menu.quit_requested.connect(get_tree().quit)
-	heist_select.back_requested.connect(show_screen.bind(main_menu))
+	heist_select.back_requested.connect(show_hub)
 	heist_select.heist_chosen.connect(_on_heist_chosen)
-	stub_screen.back_requested.connect(show_screen.bind(main_menu))
+	stub_screen.back_requested.connect(show_home)
 	stub_screen.sample_payday_requested.connect(_show_sample_payday)
 	show_screen(main_menu)
 	var args: Dictionary = LaunchArgs.parse(OS.get_cmdline_user_args())
@@ -87,6 +128,96 @@ func show_screen(screen: Control) -> void:
 		(screen as MainMenu).refresh_profile()
 
 
+## The safehouse hub with a freshly loaded profile (stations save the profile themselves).
+func show_hub() -> void:
+	_in_safehouse = true
+	profile = SaveService.load_profile(profile_slot)
+	hub.refresh_profile(profile)
+	show_screen(hub)
+
+
+## Hub when the safehouse was entered this session, else the main menu.
+func show_home() -> void:
+	if _in_safehouse:
+		show_hub()
+	else:
+		show_screen(main_menu)
+
+
+func _on_hub_back() -> void:
+	_in_safehouse = false
+	show_screen(main_menu)
+
+
+## Opens safehouse station `station_id` (data/ui/hub_stations.tres; ids board, planning, armory,
+## masks, range). The API for the 2D hub cards AND ENV C's 3D safehouse interactables. Leaving a
+## contract path this way drops it (a confirmed plan's cash is refunded). Back on every station
+## returns to the hub. Returns false (and logs an error) for an unknown id or target.
+func open_station(station_id: StringName) -> bool:
+	var st: HubStation = stations.find(station_id) if stations != null else null
+	if st == null or not TARGETS.has(st.target):
+		Log.error(&"ui", "open_station: unknown station '%s'" % station_id)
+		return false
+	_in_safehouse = true
+	refund_preplan()
+	match st.target:
+		TARGET_BOARD:
+			_open_board()
+		TARGET_HEIST_SELECT:
+			show_screen(heist_select)
+		TARGET_LOADOUT:
+			_open_armory()
+		TARGET_MASKS:
+			_open_mask_screen(_menu_profile(), profile_slot, false)
+		TARGET_RANGE:
+			open_firing_range()
+	return true
+
+
+func _open_board() -> void:
+	if board_screen == null:
+		board_screen = BOARD_SCENE.instantiate() as BoardScreen
+		board_screen.profile_slot = profile_slot
+		board_screen.consumed = consumed_contracts
+		board_screen.setup(_menu_profile())
+		board_screen.visible = false
+		add_child(board_screen)
+		board_screen.back_requested.connect(show_hub)
+		board_screen.contract_chosen.connect(_on_contract_chosen)
+	else:
+		board_screen.setup(_menu_profile())
+	show_screen(board_screen)
+
+
+## Armory station: the loadout screen without Launch (hub_mode); Masks / Skills / Perk Deck work
+## as on the heist path. Back saves and returns to the hub.
+func _open_armory() -> void:
+	close_masks(false)
+	close_progression(false)
+	_free_screen(loadout_screen)
+	loadout_screen = LOADOUT_SCENE.instantiate() as LoadoutScreen
+	loadout_screen.hub_mode = true
+	loadout_screen.profile_slot = profile_slot
+	loadout_screen.setup(_menu_profile())
+	loadout_screen.visible = false
+	add_child(loadout_screen)
+	loadout_screen.back_requested.connect(show_hub)
+	_connect_loadout_subscreens(loadout_screen)
+	show_screen(loadout_screen)
+
+
+func _connect_loadout_subscreens(ls: LoadoutScreen) -> void:
+	ls.skills_requested.connect(open_progression.bind(SKILLS_SCENE))
+	ls.perk_deck_requested.connect(open_progression.bind(PERKS_SCENE))
+	ls.masks_requested.connect(open_masks)
+
+
+## Board contract taken (or bought from the broker) -> briefing; Back from the briefing returns to the Board.
+func _on_contract_chosen(heist_id: StringName, difficulty: int, pro: bool) -> void:
+	_start_contract(heist_id, difficulty, pro, board_screen)
+	_board_contract = board_screen.selected_contract() if pro else {}
+
+
 func _add(scene: PackedScene) -> Control:
 	var c: Control = scene.instantiate() as Control
 	c.visible = false
@@ -99,7 +230,16 @@ func _show_stub(message_key: StringName, sample_payday: bool) -> void:
 	show_screen(stub_screen)
 
 
+## Planning table (heist select) -> briefing; never a pro job.
 func _on_heist_chosen(heist_id: StringName, difficulty: int) -> void:
+	_start_contract(heist_id, difficulty, false, heist_select)
+
+
+## A fresh contract path: drops any older pre-planning / loadout screens and shows the briefing.
+func _start_contract(heist_id: StringName, difficulty: int, pro: bool, back_to: Control) -> void:
+	is_pro = pro
+	_board_contract = {}
+	_briefing_back = back_to
 	_heist_id = heist_id
 	_difficulty = difficulty
 	preplan = {}
@@ -113,11 +253,17 @@ func _on_heist_chosen(heist_id: StringName, difficulty: int) -> void:
 		briefing_screen.setup(heist_id, difficulty)
 		briefing_screen.visible = false
 		add_child(briefing_screen)
-		briefing_screen.back_requested.connect(show_screen.bind(heist_select))
+		briefing_screen.back_requested.connect(_on_briefing_back)
 		briefing_screen.continue_requested.connect(_on_briefing_continue)
 	else:
 		briefing_screen.setup(heist_id, difficulty)
 	show_screen(briefing_screen)
+
+
+func _on_briefing_back() -> void:
+	if _briefing_back != null and _briefing_back == board_screen:
+		board_screen.setup(_menu_profile())
+	show_screen(_briefing_back if _briefing_back != null else heist_select)
 
 
 ## Briefing -> pre-planning (a fresh board for this heist + difficulty on the shared profile).
@@ -147,9 +293,7 @@ func _on_preplan_confirmed(plan: Dictionary) -> void:
 	add_child(loadout_screen)
 	loadout_screen.back_requested.connect(_on_loadout_back)
 	loadout_screen.launch_requested.connect(_on_launch_requested)
-	loadout_screen.skills_requested.connect(open_progression.bind(SKILLS_SCENE))
-	loadout_screen.perk_deck_requested.connect(open_progression.bind(PERKS_SCENE))
-	loadout_screen.masks_requested.connect(open_masks)
+	_connect_loadout_subscreens(loadout_screen)
 	show_screen(loadout_screen)
 
 
@@ -183,15 +327,28 @@ func refund_preplan() -> int:
 func open_masks() -> void:
 	if loadout_screen == null:
 		return
+	_open_mask_screen(loadout_screen.profile, loadout_screen.profile_slot, true)
+
+
+## Mask screen on `p`; Back returns to the loadout screen (`from_loadout`) or to the hub (mask bench).
+func _open_mask_screen(p: PlayerProfile, slot: int, from_loadout: bool) -> void:
 	close_masks(false)
 	mask_screen = MASKS_SCENE.instantiate() as MaskScreen
-	mask_screen.setup(loadout_screen.profile)
-	mask_screen.profile_slot = loadout_screen.profile_slot
+	mask_screen.setup(p)
+	mask_screen.profile_slot = slot
 	mask_screen.visible = false
 	add_child(mask_screen)
-	mask_screen.back_requested.connect(close_masks.bind(true))
+	if from_loadout:
+		mask_screen.back_requested.connect(close_masks.bind(true))
+	else:
+		mask_screen.back_requested.connect(_close_hub_masks)
 	mask_screen.mask_changed.connect(_on_mask_changed)
 	show_screen(mask_screen)
+
+
+func _close_hub_masks() -> void:
+	close_masks(false)
+	show_hub()
 
 
 func close_masks(show_loadout: bool = true) -> void:
@@ -252,8 +409,9 @@ func close_progression(show_loadout: bool = true) -> void:
 func open_firing_range() -> void:
 	if firing_range != null:
 		return
+	_range_return = current
 	var range_scene: FiringRange = RANGE_SCENE.instantiate() as FiringRange
-	range_scene.setup(LoadoutResolver.resolve(SaveService.load_profile().loadout))
+	range_scene.setup(LoadoutResolver.resolve(SaveService.load_profile(profile_slot).loadout))
 	range_scene.exit_requested.connect(close_firing_range)
 	firing_range = range_scene
 	visible = false
@@ -266,11 +424,21 @@ func close_firing_range() -> void:
 	firing_range.queue_free()
 	firing_range = null
 	visible = true
-	show_screen(main_menu)
+	if _range_return == hub:
+		show_hub()
+	else:
+		show_screen(_range_return if _range_return != null else main_menu)
 
 
 func _on_launch_requested(loadout: Loadout) -> void:
-	launch(_heist_id, _difficulty, loadout, _time_seed(), preplan)
+	launch(_heist_id, _difficulty, loadout, _time_seed(), preplan, is_pro)
+
+
+## The HeistLauncher options the Launch button would use right now for `loadout` (local slot,
+## confirmed plan, is_pro of the chosen contract). Pure apart from reading Net.local_slot().
+func launch_options_for(loadout: Loadout) -> Dictionary:
+	var ai: int = HeistCatalog.heist_list().solo_ai_for(_heist_id)
+	return build_launch_options(ai, Net.local_slot(), LoadoutResolver.resolve(loadout), preplan, is_pro)
 
 
 ## Direct launch (D-024): `args` from LaunchArgs.parse(). Skips the menus and launches `heist_id`
@@ -290,6 +458,8 @@ func direct_launch(args: Dictionary) -> bool:
 		show_screen(main_menu)
 		return false
 	_heist_id = heist_id
+	is_pro = false
+	_board_contract = {}
 	_difficulty = int(args.get("difficulty", Enums.Difficulty.ROUTINE))
 	var run_seed: int = int(args["seed"]) if bool(args.get("has_seed", false)) else _time_seed()
 	Log.info(&"ui", "direct launch: %s seed=%d difficulty=%d" % [_heist_id, run_seed, _difficulty])
@@ -300,20 +470,21 @@ func direct_launch(args: Dictionary) -> bool:
 ## The single launch path (Launch button and direct launch): solo session, resolved loadout,
 ## HUD + payday layer, then HeistLauncher.launch (ENV A, looked up dynamically). Without the
 ## launcher the stub screen is shown and no in-heist UI is spawned. `plan` = the confirmed
-## pre-planning plan ({} for direct launch); see build_launch_options().
+## pre-planning plan ({} for direct launch); `pro` = a pro job contract; see build_launch_options().
 func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: int,
-		plan: Dictionary = {}) -> void:
+		plan: Dictionary = {}, pro: bool = false) -> void:
 	var launcher: Script = UiNav.global_class(&"HeistLauncher")
 	if launcher == null:
 		_show_stub(&"ui.stub.launcher_missing", true)
 		return
 	_heist_id = heist_id
 	_difficulty = difficulty
+	is_pro = pro
 	var resolved: Loadout = LoadoutResolver.resolve(loadout)
 	var ai: int = HeistCatalog.heist_list().solo_ai_for(heist_id)
 	var profile: PlayerProfile = SaveService.load_profile()
 	Net.start_solo(profile.profile_name, ai)
-	var options: Dictionary = build_launch_options(ai, Net.local_slot(), resolved, plan)
+	var options: Dictionary = build_launch_options(ai, Net.local_slot(), resolved, plan, pro)
 	visible = false
 	_spawn_in_heist_ui()
 	runtime = await launcher.call(&"launch", heist_id, run_seed, difficulty, null, options)
@@ -326,13 +497,16 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 
 
 ## HeistLauncher.launch options (contracts/test_hooks.md): `ai_teammates`, `loadouts` = {slot: resolved
-## Loadout}, and `preplan` = the PreplanResult v1 (PreplanPlan.apply(), contract preplanning.md) when a
-## plan was confirmed (omitted when `plan` is empty, e.g. direct launch).
+## Loadout}, `preplan` = the PreplanResult v1 (PreplanPlan.apply(), contract preplanning.md) when a
+## plan was confirmed (omitted when `plan` is empty, e.g. direct launch), and `is_pro` = true for a
+## pro job Board contract (omitted otherwise; informational for ENV A, the payout side is ours).
 static func build_launch_options(ai_teammates: int, local_slot: int, resolved: Loadout,
-		plan: Dictionary = {}) -> Dictionary:
+		plan: Dictionary = {}, pro: bool = false) -> Dictionary:
 	var options: Dictionary = {"ai_teammates": ai_teammates, "loadouts": {local_slot: resolved}}
 	if not plan.is_empty():
 		options["preplan"] = plan
+	if pro:
+		options["is_pro"] = true
 	return options
 
 
@@ -352,22 +526,40 @@ func _spawn_in_heist_ui() -> void:
 	_in_heist.layer = 10
 	add_sibling.call_deferred(_in_heist)
 	_hud = HUD_SCENE.instantiate() as Control
+	if _hud is Hud:
+		(_hud as Hud).heist_id = _heist_id
 	_in_heist.add_child(_hud)
 	var pd: PaydayScreen = PAYDAY_SCENE.instantiate() as PaydayScreen
 	pd.listen_heist_ended = true
+	pd.is_pro = is_pro
+	pd.profile_slot = profile_slot
 	pd.visible = false
 	pd.continue_pressed.connect(_leave_heist)
 	_in_heist.add_child(pd)
+	_heist_payday = pd
 	EventBus.heist_ended.connect(_on_heist_ended, CONNECT_ONE_SHOT)
 
 
-func _on_heist_ended(_result: Dictionary) -> void:
+func _on_heist_ended(result: Dictionary) -> void:
+	if is_pro and not bool(result.get("success", false)):
+		consume_pro_contract()
 	if _hud != null and is_instance_valid(_hud):
 		_hud.visible = false
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
+## A failed pro job: its Board contract is gone for the rest of its rotation (QB-BRD1, no restart).
+func consume_pro_contract() -> void:
+	if not _board_contract.is_empty():
+		consumed_contracts[BoardContracts.contract_key(_board_contract)] = true
+		Log.info(&"ui", "pro job failed: contract %s consumed" % BoardContracts.contract_key(_board_contract))
+	_board_contract = {}
+
+
 func _leave_heist() -> void:
+	if _heist_payday != null and is_instance_valid(_heist_payday):
+		_heist_payday.finish_card_pick()  # QB-PC1: leaving with an unpicked card auto-picks it
+	_heist_payday = null
 	if runtime != null and is_instance_valid(runtime) and runtime.has_method(&"teardown"):
 		runtime.call(&"teardown")
 	runtime = null
@@ -379,7 +571,7 @@ func _leave_heist() -> void:
 		_hud = null
 	Net.leave()
 	visible = true
-	show_screen(main_menu)
+	show_home()
 
 
 func _show_sample_payday() -> void:
@@ -388,6 +580,6 @@ func _show_sample_payday() -> void:
 		payday.apply_to_profile = false  # sample data must not pay out into the real profile
 		payday.visible = false
 		add_child(payday)
-		payday.continue_pressed.connect(show_screen.bind(main_menu))
+		payday.continue_pressed.connect(show_home)
 	show_screen(payday)
 	payday.show_result(HeistCatalog.sample_result())

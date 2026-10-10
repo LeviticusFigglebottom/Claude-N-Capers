@@ -572,8 +572,11 @@ func _tick_camera_countdown(delta: float) -> void:
 		raise_alarm(&"camera", _camera_source_id)  # cannot be stopped (S3.5)
 
 
-func _on_alarm_event(_reason: StringName, _source_net_id: int) -> void:
+func _on_alarm_event(reason: StringName, _source_net_id: int) -> void:
 	_camera_left = -1.0
+	if not Net.is_authority():  # A3-07: clients mirror the relayed alarm (is_stealth() turns false)
+		alarm_raised = true
+		alarm_reason = reason
 
 
 # --- Helpers ----------------------------------------------------------------------------------

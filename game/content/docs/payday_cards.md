@@ -12,8 +12,9 @@ is no gambling with offshore money (PD2 had it; we leave it out).
   saved. Continue is disabled until the pick.
 * Each player rolls and picks their own cards locally (their crew slot); nothing is networked.
 * The preview payday (`apply_to_profile = false`, e.g. the launcher stub's sample) has no card pick.
-* A player who quits the game during the card stage gets no card (no pending-card save field;
-  see Questions).
+* Leaving with an unpicked card (QB-PC1, D-049) auto-picks it with the same deterministic `auto_pick`
+  as the timeout: the screen leaving the tree, an app quit (`NOTIFICATION_WM_CLOSE_REQUEST`), a new
+  result replacing it, or MenuFlow leaving the heist (`PaydayScreen.finish_card_pick()`). No save change.
 
 ## Card types
 | Type | Reward | Grant |
@@ -80,6 +81,5 @@ and quality always give the same deal. Owning more items changes the pools, so t
 * Strings: `ui.payday_cards.*` in strings.csv.
 
 ## Questions (for the lead)
-* QB-PC1: should an unpicked card survive a quit (a `pending_card` save field + re-show on boot)?
-  This needs save v5. Not done.
+* QB-PC1: should an unpicked card survive a quit (a `pending_card` save field + re-show on boot)? **Answered (D-049):** no; leaving auto-picks (Rules).
 * QB-PC2: boosts and skins have no systems yet. They are left out of the table until they exist.

@@ -4,19 +4,6 @@
 
 [resource]
 script = ExtResource("1")
-heists = {
-&"glasshouse": {
-"placeholder_base_payout": 40000,
-"placeholder_mode": 0
-},
-&"night_deposit": {
-"placeholder_base_payout": 90000,
-"placeholder_mode": 0
-},
-&"shadow_ledger": {
-"placeholder_base_payout": 110000,
-"placeholder_mode": 1
-}
-}
+heists = {}
 unlocked_difficulties = Array[int]([0, 3])
 solo_ai_teammates = 3

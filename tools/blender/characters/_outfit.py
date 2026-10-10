@@ -556,12 +556,16 @@ def loft_down(m: Mesh, top: list[int], z_hem: Callable[[float], float], hull: Hu
     return rings
 
 
-def skirt_weights(fit: Fit, z_top: float, z_hem: float) -> Callable[[Vector, float], dict]:
-    """Hips at the waist, blending to the thigh of the vertex's side towards the hem."""
+def skirt_weights(fit: Fit, z_top: float, z_hem: float, thigh_max: float = 0.85,
+                  centre_w: float = 0.05) -> Callable[[Vector, float], dict]:
+    """Hips at the waist, blending to the thigh of the vertex's side towards the hem (at most
+    ``thigh_max`` at the hem). Within ``centre_w`` of the centre line the two thighs are mixed, so
+    the cloth either side of a front split (coat and jacket tails: a wider ``centre_w``, a lower
+    ``thigh_max``) moves together and the split does not gape on long strides."""
     def w(p: Vector, _t: float) -> dict:
         t = clamp((z_top - p.z) / max(z_top - z_hem, 1e-3), 0.0, 1.0)
-        t = 0.85 * smoothstep(0.0, 1.0, t)
-        s_r = smoothstep(-0.05 * fit.k, 0.05 * fit.k, p.x)
+        t = thigh_max * smoothstep(0.0, 1.0, t)
+        s_r = smoothstep(-centre_w * fit.k, centre_w * fit.k, p.x)
         out = {"hips": 1.0 - t}
         if t * s_r > 0.01:
             out["thigh.R"] = t * s_r
@@ -677,10 +681,12 @@ def patch(m: Mesh, hull: Hull, origin: Vector, u: Vector, v: Vector, outline: li
 def strip(m: Mesh, hull: Hull, path: list[Vector], half_width: float | Callable[[float], float], height: float,
           mat: str, side_hint: Vector | None = None, cast_back: float = 0.15, segs_across: int = 2,
           weights: dict | None = None, anchor: Vector | None = None, chamfer: float = 0.002,
-          closed: bool = False, end_caps: bool = True, edge_mat: str | None = None) -> list[list[int]]:
+          closed: bool = False, end_caps: bool = True, edge_mat: str | None = None,
+          profile: Callable[[float], float] | None = None) -> list[list[int]]:
     """A raised band along ``path`` (points near the surface): straps, plackets, hi-vis stripes,
     lapels, the tie blade. Each cross-section is cast onto ``hull`` along its own surface normal.
-    Returns the rows of vertex ids (across the band, edge to edge)."""
+    ``profile(o)`` scales the lift across the band (o = -1 .. 1 from edge to edge; e.g. a lapel
+    rolled up at its front edge). Returns the rows of vertex ids (across the band, edge to edge)."""
     n = len(path)
     rows: list[list[int]] = []
     sns: list[Vector] = []
@@ -701,6 +707,8 @@ def strip(m: Mesh, hull: Hull, path: list[Vector], half_width: float | Callable[
         offs += [-1.0 + 2.0 * (j + 1) / (segs_across + 1) for j in range(segs_across)]
         offs += [1.0 - ch / max(hw, 1e-5), 1.0]
         lifts = [-0.0012, height] + [height] * segs_across + [height, -0.0012]
+        if profile is not None:
+            lifts = [lf * profile(o) if lf > 0 else lf for o, lf in zip(offs, lifts)]
         row = []
         for o, lift in zip(offs, lifts):
             q = p + side * (o * hw) + sn * cast_back

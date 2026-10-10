@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UiHeistAccents" format=3]
+
+[ext_resource type="Script" path="res://content/ui/data/heist_accents.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+accents = {
+&"dockside_burn": Color(1, 0.4196, 0.102, 1),
+&"glasshouse": Color(0.7882, 0.6353, 0.1529, 1),
+&"night_deposit": Color(0.6196, 0.1686, 0.1451, 1),
+&"shadow_ledger": Color(0.8118, 0.8902, 0.9333, 1)
+}
+fallback = Color(0.7882, 0.6353, 0.1529, 1)
+min_text_contrast = 4.5

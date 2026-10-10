@@ -119,18 +119,13 @@ static func _names(a: Array) -> Array[StringName]:
 	return out
 
 
-## Wall-mounted security camera. The prefab's hitbox reaches 0.025 m behind the back-centre pivot,
-## so the instance's `Collision` is moved 0.03 m forward (Editable Children; reported to ENV A).
+## Wall-mounted security camera. ENV A's prefab keeps its fitted hitbox on the room side of the pivot
+## (A3-07); the earlier 0.03 m Editable Children workaround was removed by the lead.
 func security_camera(parent: Node3D, cid: String, fov: float = 60.0, rng: float = 20.0) -> Node3D:
 	var row: Array = CAMERA_POSITIONS[cid]
 	var cam: Node3D = prefab(parent, "security_camera", "Camera" + cid, row[0], float(row[1]),
 		{"fov_deg": fov, "range_m": rng, "pan_deg": 40.0}, null,
 		{"mount": "wall", "kind": "security_camera", "camera_id": cid})
-	if cam != null:
-		var col: Node3D = cam.get_node_or_null("Collision") as Node3D
-		if col != null:
-			col.position += Vector3(0.0, 0.0, -0.03)
-			map_root.set_editable_instance(cam, true)
 	return cam
 
 

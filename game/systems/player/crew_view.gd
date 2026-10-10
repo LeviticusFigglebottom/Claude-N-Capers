@@ -153,6 +153,8 @@ func set_mask_descriptor(d: Dictionary) -> void:
 func replicate_mask_descriptor() -> void:
 	if _crew == null or not Net.is_authority() or not is_inside_tree() or not multiplayer.has_multiplayer_peer():
 		return
+	if not HeistNetSync.can_rpc(_crew):
+		return  # A3-07: before the bring-up; clients get the descriptor with the crew's loadout
 	_rpc_mask_descriptor.rpc(_crew.loadout.mask_descriptor if _crew.loadout != null else {})
 
 

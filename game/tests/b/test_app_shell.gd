@@ -1,5 +1,5 @@
 ## B1-04 / D-024: app shell. LaunchArgs parsing, direct launch through MenuFlow, and the heist
-## catalog built from HeistRegistry with the placeholder fallback.
+## catalog built from HeistRegistry (def + map, QB-55).
 extends TestCase
 
 
@@ -126,21 +126,30 @@ func test_direct_launch_rejects_bad_input() -> void:
 
 # --- heist catalog ---
 
-func test_catalog_placeholder_while_def_missing() -> void:
+## QB-55 (D-049): no placeholders; a heist needs its HeistDef AND its map scene.
+func test_catalog_needs_def_and_map() -> void:
 	var list: UiHeistList = HeistCatalog.heist_list()
-	assert_true(list.heists.has(&"glasshouse"))
-	var e: Array[Dictionary] = HeistCatalog.entries_from({}, list)
-	assert_eq(e.size(), list.heists.size(), "every listed heist is a placeholder without defs")
-	assert_eq(e[0]["id"], &"glasshouse", "sorted by id text")
-	assert_true(bool(e[0]["placeholder"]))
-	assert_eq(int(e[0]["base_payout"]), 40000)
-	assert_true(e[0]["def"] == null)
-	# B4-09/B4-10: ENV C's proposed base payouts until their HeistDefs land.
-	var pay: Dictionary = {}
-	for x: Dictionary in e:
-		pay[StringName(x["id"])] = int(x["base_payout"])
-	assert_eq(pay.get(&"night_deposit", 0), 90000)
-	assert_eq(pay.get(&"shadow_ledger", 0), 110000)
+	for id: Variant in list.heists:
+		assert_false((list.heists[id] as Dictionary).has("placeholder_base_payout"), "no placeholder data: %s" % id)
+	assert_eq(HeistCatalog.entries_from({}), [] as Array[Dictionary], "nothing without defs")
+	var a: HeistDef = HeistDef.new()
+	a.id = &"glasshouse"
+	var b: HeistDef = HeistDef.new()
+	b.id = &"no_map_heist"
+	var only_glasshouse: Callable = func(id: StringName) -> bool: return id == &"glasshouse"
+	var e: Array[Dictionary] = HeistCatalog.entries_from({&"glasshouse": a, &"no_map_heist": b}, only_glasshouse)
+	assert_eq(e.size(), 1, "a def without a map scene is not offered")
+	assert_eq(e[0]["id"], &"glasshouse")
+	for x: Dictionary in HeistCatalog.entries():
+		var id: StringName = StringName(x["id"])
+		assert_true(HeistRegistry.get_def(id) != null, "%s has a def" % id)
+		assert_true(ResourceLoader.exists(HeistRegistry.map_scene_path(id)), "%s has a map" % id)
+	for id: StringName in HeistRegistry.ids():
+		assert_eq(HeistCatalog.ids().has(id), HeistCatalog.has_map(id), "registry heist offered iff its map exists: %s" % id)
+	if not ResourceLoader.exists(HeistRegistry.def_path(&"shadow_ledger")):
+		assert_false(HeistCatalog.ids().has(&"shadow_ledger"), "Shadow Ledger hidden until its G1 def + map land")
+	assert_false(BoardContracts.pool().any(func(h: Dictionary) -> bool: return not HeistCatalog.ids().has(StringName(h["id"]))),
+			"the Board pool is the catalog")
 
 
 func test_catalog_uses_registry_defs() -> void:
@@ -157,14 +166,11 @@ func test_catalog_uses_registry_defs() -> void:
 	late.id = StringName("zz_catalog_sort_%d" % Time.get_ticks_usec())
 	other.id = StringName("aa_catalog_sort_%d" % Time.get_ticks_usec())
 	var defs: Dictionary = {late.id: late, &"glasshouse": def, other.id: other}
-	var list: UiHeistList = HeistCatalog.heist_list().duplicate() as UiHeistList
-	list.heists = {&"glasshouse": list.heists[&"glasshouse"]}
-	var e: Array[Dictionary] = HeistCatalog.entries_from(defs, list)
-	assert_eq(e.size(), 3, "placeholder dropped once the def exists")
+	var e: Array[Dictionary] = HeistCatalog.entries_from(defs)
+	assert_eq(e.size(), 3)
 	assert_eq(e[0]["id"], other.id, "sorted by id text")
 	assert_eq(e[1]["id"], &"glasshouse")
 	assert_eq(e[2]["id"], late.id)
-	assert_false(bool(e[1]["placeholder"]))
 	assert_eq(int(e[1]["base_payout"]), 55000)
 	assert_eq(int(e[1]["mode"]), Enums.HeistMode.STEALTH_ONLY)
 	assert_eq(e[1]["def"], def)
@@ -174,11 +180,9 @@ func test_catalog_matches_registry() -> void:
 	var reg: Array[StringName] = HeistRegistry.ids()
 	var ids: Array[StringName] = HeistCatalog.ids()
 	for id: StringName in reg:
-		assert_has(ids, id)
-	for e: Dictionary in HeistCatalog.entries():
-		var id: StringName = StringName(e["id"])
-		assert_eq(bool(e["placeholder"]), HeistRegistry.get_def(id) == null, "placeholder iff no def: %s" % id)
-	assert_true(ids.has(&"glasshouse"), "Glasshouse listed (def or placeholder)")
+		if HeistCatalog.has_map(id):
+			assert_has(ids, id)
+	assert_true(ids.has(&"glasshouse"), "Glasshouse listed (def + map)")
 
 
 func test_solo_ai_per_heist() -> void:

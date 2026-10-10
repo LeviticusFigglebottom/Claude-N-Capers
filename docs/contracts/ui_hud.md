@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.2)
+# Contract: HUD data (v1.3)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -55,3 +55,8 @@ instantiates UI.
 | `custody_changed` | `custody` {} or {in_custody: bool, negotiation_left_s: float, auto_release_left_s: float (< 0 = none), highlighted_hostage_net_id: int} |
 * `LocalHudModel.track(crew: Node)` / `tracked_crew` lets the HUD follow a crew member without a HeistRuntime
   (firing range, spectating).
+
+## v1.3 (QA-30, D-049)
+| Signal | Properties |
+|---|---|
+| `captain_changed` | `captain_resistance: float` (0..1, server value replicated via Net; 0 when no captain) and `captain_present: bool`. ENV A writes; ENV B shows a widget while the captain is present. |
