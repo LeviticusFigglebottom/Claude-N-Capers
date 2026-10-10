@@ -26,6 +26,7 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | A2-04 | Keypads + code notes, safes with methods and time locks, saws, laser grids, zipline | S9.4, S9.7, S9.8, S9.10, S9.11 |
 | A2-05 | Guard cuff flow (yell, pause, cuff, 4 min cooldown, 60 s self-free), body-shot misfire, marking + Sixth Sense | S3.2, S3.7, S2.9 |
 | A2-06 | Deployables runtime: doctor bag, FAK, ammo bag, body bag case, ECM; dodge rolls | L2.11, L2.4, S6.2 |
+| A2-08 | Glasshouse feedback from ENV C (D-037): VariantResolver conditional forcing (`force_if`), per-slot `requires`, `min_difficulty` on rare events, per-difficulty scalar weights; window prefab glass sized from the visual's `Glass` AABB; safe KEYCARD method (reader-bound); one-way push-bar door (fire exits); security_camera collision kept in front of its wall-mount pivot | (QC-7) |
 | A2-07 | Restrained/hostage stimuli, stealth-only heist mode (alarm = fail), pre-planning asset hooks (spawn choice, asset drops, modifier assets) | S6.4, S11.3, C3 |
 
 | B2-01 | Pre-planning + assets UI: HeistDef.preplanning, favors budget, location choice on the map blueprint, asset purchase, plan vote stub | C3 |
