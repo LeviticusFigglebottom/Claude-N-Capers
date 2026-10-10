@@ -662,3 +662,7 @@ perk.overlord.card7.name,Bring It
 perk.overlord.card7.desc,Health bonus rises to 40%. Below half health the injector heals 25% more.
 perk.overlord.card9.name,Top of the Heap
 perk.overlord.card9.desc,Health bonus rises to 80%. Every 50 health the injector heals while you are at full health cuts 1 s from its cooldown.
+item.throwable.steady_flask.name,Steady Flask
+item.throwable.steady_flask.desc,"A hip flask of something strong. One swallow and the damage you've taken stops counting, if you keep busy."
+item.throwable.boss_injector.name,Boss Injector
+item.throwable.boss_injector.desc,"A single-dose auto-injector. Use it, and every hit you take in the next few seconds patches you up instead."

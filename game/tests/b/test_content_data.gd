@@ -4,7 +4,7 @@ extends TestCase
 ## data folder -> id prefix
 const ID_PREFIX: Dictionary = {
 	&"weapons": "weapon", &"mods": "mod", &"melee": "melee", &"armor": "armor",
-	&"deployables": "deployable", &"loot": "loot",
+	&"deployables": "deployable", &"loot": "loot", &"throwables": "throwable",
 }
 const DIFFICULTY_FILES: Dictionary = {
 	Enums.Difficulty.ROUTINE: "routine", Enums.Difficulty.TENSE: "tense",
@@ -66,6 +66,19 @@ func test_p1_ids_resolve() -> void:
 		assert_true(ContentDB.loot(l) != null, String(l))
 	assert_true(ContentDB.tweak(&"concealment_curve") is ConcealmentCurve)
 	assert_true(ContentDB.tweak(&"display_stats") is DisplayStatTweak)
+
+
+## Perk decks grant throwables by id (`perk.throwable` {item_id}); every one must resolve.
+func test_perk_throwables_exist() -> void:
+	assert_eq(ContentDB.throwable(&"throwable.steady_flask").kind, &"flask")
+	assert_eq(ContentDB.throwable(&"throwable.boss_injector").kind, &"injector")
+	for deck: Resource in ContentDB.all_of(ContentDB.PERKS):
+		for card: Dictionary in deck.get(&"cards"):
+			var grants: Dictionary = card.get("grants", {})
+			if grants.has(&"perk.throwable"):
+				var tid: StringName = StringName(grants[&"perk.throwable"]["item_id"])
+				assert_true(ContentDB.throwable(tid) != null, "%s grants %s" % [deck.get(&"id"), tid])
+				assert_eq(ContentDB.throwable(tid).count, 1, "%s count" % tid)
 
 
 func test_unknown_id_logs_error_and_returns_null() -> void:

@@ -59,6 +59,12 @@ Doctor bag 2 uses (V), ammo bag 4 uses = 400% (V), body bag case 3 bags (V, rese
 Deploy time 2.0 s for all three ◇. Params: doctor `{heal_frac 1.0, resets_downs}`, ammo
 `{refill_frac_per_use 1.0}` ◇, case `{bags 3}`.
 
+## Throwables: `throwables/`
+Perk-deck items (data only, no models yet): `throwable.steady_flask` (Composure's flask, kind
+`flask`, count 1, damage 0) and `throwable.boss_injector` (Overlord's injector, kind `injector`,
+count 1, damage 0). Radius and fuse 0 (not thrown). Their effects live in the deck's `perk.*`
+grants. `test_perk_throwables_exist` checks every `perk.throwable` item id resolves.
+
 ## Loot: `loot/`
 Jewelry $1,000 LIGHT ◇, cash $1,200 LIGHT ◇, body bag $0 MEDIUM (S10.1). Base values before the
 difficulty multiplier.
