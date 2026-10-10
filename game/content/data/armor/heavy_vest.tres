@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArmorDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/armor_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"armor.heavy_vest"
+display_name = "Heavy Vest"
+armor = 70.0
+dodge = -0.15
+move_speed_mult = 0.9049
+concealment = 21
+stamina_mult = 0.8772
+unlock_level = 12

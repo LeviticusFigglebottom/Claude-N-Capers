@@ -19,6 +19,7 @@ const KEYS: Dictionary = {
 	&"stealth.detection_rate_mult": [Type.MULT, 1, "Speed at which observers fill detection on you (masked)."],
 	&"stealth.casing_detection_rate_mult": [Type.MULT, 2, "Same, while in casing mode (Chameleon basic analog)."],
 	&"stealth.casing_can_pickup_items": [Type.FLAG, 2, "Pick up small loot/items while casing (Chameleon aced analog)."],
+	&"stealth.concealment_add": [Type.ADD, 4, "Concealment points added (qualifier: melee/armor/primary/secondary/all)."],
 	&"stealth.mark_duration_mult": [Type.MULT, 2, "Duration of marks on enemies/cameras."],
 	&"stealth.mark_damage_bonus_mult": [Type.MULT, 3, "Marked enemies take more damage (High Value Target analog)."],
 	&"stealth.body_bags_extra": [Type.ADD, 1, "Extra body bags carried."],

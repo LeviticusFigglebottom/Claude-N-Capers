@@ -39,7 +39,7 @@ Unmarked events are server-only facts (clients learn the outcome through synced 
 ## HeistResult dictionary (heist_ended)
 ```
 { "heist_id": StringName, "success": bool, "stealth": bool, "time_s": float, "difficulty": int,
-  "contract_pay": int, "loot": [{ "loot_id": StringName, "value": int }], "small_loot": int,
+  "contract_pay": int (HeistDef.base_payout, UNSCALED; ENV B applies all difficulty/bonus multipliers), "loot": [{ "loot_id": StringName, "value": int }], "small_loot": int,
   "crew": [{ "slot": int, "is_ai": bool, "kills": int, "specials_killed": int, "downs": int,
              "civilians_killed": int, "in_custody": bool, "escaped": bool }],
   "pagers_answered": int, "seed": int, "variants": Dictionary }

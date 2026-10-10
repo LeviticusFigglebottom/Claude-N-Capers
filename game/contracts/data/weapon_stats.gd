@@ -27,12 +27,28 @@ extends Resource
 @export var shield_pierce: bool = false
 @export var wall_pierce: bool = false
 @export var suppression: float = 0.0          ## threat/suppression vs enemies
-@export var ammo_pickup_min: float = 0.0
+@export var ammo_pickup_min: float = 0.0      ## rounds per ammo pickup (before modifiers)
 @export var ammo_pickup_max: float = 0.0
 @export var suppressed: bool = false          ## silenced: stealth noise radius uses suppressed profile
 @export var noise_radius_m: float = 60.0      ## alert radius of a shot (suppressed ~ 0-5 m)
 @export var magnification: float = 1.0        ## ADS zoom
 @export var gadgets: Array[StringName] = []   ## &"laser", &"flashlight", &"angled_sight"
+
+
+## A zeroed stat block for mod deltas (all fields 0/false), so plus() never adds base defaults.
+## ENV B must build every WeaponModDef.delta from this (answers QB-5).
+static func make_delta() -> WeaponStats:
+	var d: WeaponStats = WeaponStats.new()
+	d.pellets = 0
+	d.headshot_mult = 0.0
+	d.falloff_start_m = 0.0
+	d.falloff_end_m = 0.0
+	d.falloff_min_mult = 0.0
+	d.equip_time_s = 0.0
+	d.ads_time_s = 0.0
+	d.noise_radius_m = 0.0
+	d.magnification = 0.0
+	return d
 
 
 ## Additive combination used for mods. Multiplicative fields documented in data_schemas.md.

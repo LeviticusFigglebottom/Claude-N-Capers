@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArmorDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/armor_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"armor.flak_rig"
+display_name = "Flak Rig"
+armor = 90.0
+dodge = -0.2
+move_speed_mult = 0.7147
+concealment = 18
+stamina_mult = 0.8285
+unlock_level = 21

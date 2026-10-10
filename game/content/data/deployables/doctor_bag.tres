@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="DeployableDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/deployable_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"deployable.doctor_bag"
+display_name = "Doctor Bag"
+kind = &"doctor_bag"
+count = 1
+uses = 2
+deploy_time_s = 2.0
+params = {
+"heal_frac": 1.0,
+"resets_downs": true
+}
