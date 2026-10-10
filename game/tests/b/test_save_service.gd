@@ -143,7 +143,7 @@ func test_v1_migrates_to_v2_with_empty_stealth_bank() -> void:
 ## B4-03: v2 -> v3 turns the loadout's skills into skill set 0 and the equipped deck's card count into
 ## that deck's progress; a round trip keeps every set and the per-deck progress.
 func test_v2_migrates_to_v3_skill_sets_and_perk_cards() -> void:
-	assert_eq(SaveService.CURRENT_VERSION, 3)
+	assert_true(SaveService.CURRENT_VERSION >= 3)
 	var v2: Dictionary = _sample().to_dict()
 	v2["version"] = 2
 	v2.erase("skill_sets")
@@ -151,7 +151,7 @@ func test_v2_migrates_to_v3_skill_sets_and_perk_cards() -> void:
 	v2.erase("perk_cards")
 	(v2["loadout"] as Dictionary)["skills"] = {"skill.slipstream.light_step": 2}
 	var m: Dictionary = SaveService.migrate(v2)
-	assert_eq(int(m["version"]), 3)
+	assert_eq(int(m["version"]), SaveService.CURRENT_VERSION)
 	assert_eq(int(m["active_skill_set"]), 0)
 	assert_eq((m["skill_sets"] as Array).size(), 1)
 	assert_eq(int(((m["skill_sets"] as Array)[0] as Dictionary)["skill.slipstream.light_step"]), 2)
@@ -161,6 +161,33 @@ func test_v2_migrates_to_v3_skill_sets_and_perk_cards() -> void:
 	var q: PlayerProfile = SaveService.load_profile(SLOT)
 	assert_eq(int(q.loadout.skills[&"skill.slipstream.light_step"]), 2)
 	assert_eq(int(q.perk_cards[&"perk.test"]), 4)
+
+
+## B2-03: v3 -> v4 adds the mask customisation fields (no extra parts, empty custom slots); the
+## equipped preset mask survives; custom slots and owned parts round-trip.
+func test_v3_migrates_to_v4_mask_fields() -> void:
+	assert_eq(SaveService.CURRENT_VERSION, 4)
+	var v3: Dictionary = _sample().to_dict()
+	v3["version"] = 3
+	v3.erase("owned_mask_parts")
+	v3.erase("custom_masks")
+	var m: Dictionary = SaveService.migrate(v3)
+	assert_eq(int(m["version"]), 4)
+	assert_eq(m["owned_mask_parts"], [])
+	assert_eq(m["custom_masks"], [])
+	assert_eq(String((m["loadout"] as Dictionary)["mask"]), "mask.test")
+	var p: PlayerProfile = _sample()
+	p.owned_mask_parts = [&"mask_pattern.dots"] as Array[StringName]
+	p.custom_masks = [{}, {"base": "mask_base.owl", "material": "mask_material.gilt",
+		"colors": "mask_colors.bone_ink", "pattern": "mask_pattern.dots"}] as Array[Dictionary]
+	p.loadout.mask = &"mask.custom.1"
+	assert_eq(SaveService.save_profile(p, SLOT), OK)
+	var q: PlayerProfile = SaveService.load_profile(SLOT)
+	assert_eq(q.owned_mask_parts, p.owned_mask_parts)
+	assert_eq(q.custom_masks.size(), 2)
+	assert_true(q.custom_masks[0].is_empty())
+	assert_eq(String(q.custom_masks[1]["pattern"]), "mask_pattern.dots")
+	assert_eq(q.loadout.mask, &"mask.custom.1")
 
 
 func test_skill_sets_round_trip_and_switch() -> void:
