@@ -323,6 +323,39 @@ func test_failed_pro_job_consumes_the_contract() -> void:
 	await wait_frames(1)
 
 
+## B4-16: the pro-job lock is saved (profile.pro_job_locks, key -> expires_at), so a restarted flow
+## still locks the pin; an expired lock is pruned.
+func test_pro_job_lock_survives_restart() -> void:
+	var f: MenuFlow = _flow()
+	await wait_frames(1)
+	f.open_station(&"board")
+	await wait_frames(2)
+	var b: BoardScreen = f.board_screen
+	b.select_slot(0)
+	b.contracts[0]["is_pro"] = true
+	var c: Dictionary = b.contracts[0]
+	var key: String = BoardContracts.contract_key(c)
+	assert_true(b.take_selected())
+	f._on_heist_ended({"success": false})
+	var disk: PlayerProfile = SaveService.load_profile(0)
+	assert_near(float(disk.pro_job_locks[key]), float(c["expires_at"]), 0.001, "lock saved with its expiry")
+	f.queue_free()
+	await wait_frames(1)
+	var g: MenuFlow = _flow()
+	await wait_frames(1)
+	assert_false(g.consumed_contracts.has(key))
+	g.open_station(&"board")
+	await wait_frames(2)
+	assert_true(g.consumed_contracts.has(key), "restored from the profile")
+	g.board_screen.select_slot(0)
+	assert_true(bool(g.board_screen.selected_contract()["consumed"]))
+	g.queue_free()
+	await wait_frames(1)
+	assert_eq(ProJobLocks.prune(disk, float(c["expires_at"]) + 1.0), 1, "expired lock pruned")
+	assert_true(disk.pro_job_locks.is_empty())
+	assert_false(ProJobLocks.is_locked(disk, c, 0.0))
+
+
 func test_build_launch_options_is_pro_key() -> void:
 	var l: Loadout = Loadout.new()
 	assert_false(MenuFlow.build_launch_options(3, 0, l).has("is_pro"))

@@ -1,0 +1,14 @@
+{
+	"_doc": "Pre-versioned dev save (v0): no version, 'money' instead of cash, most fields missing.",
+	"profile_name": "Old Timer",
+	"money": 5000,
+	"xp": 1200,
+	"level": 2,
+	"owned_weapons": ["weapon.kestrel_p9"],
+	"loadout": {
+		"secondary": "weapon.kestrel_p9",
+		"melee": "melee.folding_knife",
+		"armor": "armor.tailored_suit",
+		"skills": {"skill.juggernaut.thick_skin": 1}
+	}
+}

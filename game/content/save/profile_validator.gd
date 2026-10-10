@@ -1,0 +1,194 @@
+## Content validation of a loaded profile (B4-16). Owner: ENV B. Static.
+##
+## validate(p) runs on every SaveService load (after migrate + ProfileSchema.sanitize + from_dict) and
+## repairs the profile in place, one Log.warn per repair, never an error:
+##   * owned_weapons / owned_mods / owned_masks (presets) / owned_mask_parts: unknown ids pruned.
+##   * custom_masks: a slot naming an unknown part (or a part of the wrong kind) is emptied.
+##   * unlocks: ids not shaped `unlock.*` pruned; every preset whose unlock is recorded is owned
+##     (MaskLocker.apply_unlocks), so a preset added later behind an earned unlock is owned too.
+##   * loadout: an unknown weapon / melee / throwable / deployable / armor id falls back to the default
+##     profile's value (data/save/default_profile.json); unknown mods are pruned; a mask that is not
+##     equippable falls back to the default mask; an unknown perk deck is cleared (cards 0).
+##   * perk_cards: unknown decks pruned, counts clamped to 0..deck size.
+##   * skill sets (every set incl. the active one = loadout.skills): unknown skill ids pruned, then a set
+##     that is still illegal for the profile's level (SkillPoints.validate) is reset to empty.
+##   * achievements: unknown achievement ids pruned. pro_job_locks: keys not shaped `<slot>:<bucket>` pruned.
+## Returns the repair messages (empty = the profile was already valid).
+class_name ProfileValidator
+extends RefCounted
+
+const LOG_CHANNEL: StringName = &"save"
+## Loadout id field -> ContentDB kind.
+const LOADOUT_KINDS: Dictionary = {
+	"primary": ContentDB.WEAPONS, "secondary": ContentDB.WEAPONS, "melee": ContentDB.MELEE,
+	"throwable": ContentDB.THROWABLES, "deployable": ContentDB.DEPLOYABLES,
+	"deployable_secondary": ContentDB.DEPLOYABLES, "armor": ContentDB.ARMOR,
+}
+
+static var _default_loadout: Loadout = null
+
+
+static func validate(p: PlayerProfile) -> Array[String]:
+	var notes: Array[String] = []
+	if p == null:
+		return notes
+	p.owned_weapons = _known(p.owned_weapons, ContentDB.WEAPONS, "owned_weapons", notes)
+	p.owned_mods = _known(p.owned_mods, ContentDB.MODS, "owned_mods", notes)
+	p.owned_masks = _owned_presets(p.owned_masks, notes)
+	p.owned_mask_parts = _known_parts(p.owned_mask_parts, notes)
+	_custom_masks(p, notes)
+	_unlocks(p, notes)
+	_loadout(p, notes)
+	_perk_cards(p, notes)
+	_skill_sets(p, notes)
+	_achievements(p, notes)
+	_locks(p, notes)
+	for m: String in notes:
+		Log.warn(LOG_CHANNEL, "profile: " + m)
+	return notes
+
+
+static func _known(ids: Array[StringName], kind: StringName, field: String, notes: Array[String]) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for id: StringName in ids:
+		if ContentDB.has(kind, id):
+			if not out.has(id):
+				out.append(id)
+		else:
+			notes.append("%s: unknown id '%s' dropped" % [field, id])
+	return out
+
+
+static func _owned_presets(ids: Array[StringName], notes: Array[String]) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for id: StringName in ids:
+		if MaskCatalog.is_preset_id(id) and ContentDB.has(ContentDB.MASKS, id):
+			if not out.has(id):
+				out.append(id)
+		else:
+			notes.append("owned_masks: unknown preset '%s' dropped" % id)
+	return out
+
+
+static func _known_parts(ids: Array[StringName], notes: Array[String]) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for id: StringName in ids:
+		if MaskCatalog.is_known(id):
+			if not out.has(id):
+				out.append(id)
+		else:
+			notes.append("owned_mask_parts: unknown part '%s' dropped" % id)
+	return out
+
+
+## Custom slots: every kind present, known and of the right kind (hidden ENV D bases stay: they are
+## known and come back when their model lands). Anything else empties the slot.
+static func _custom_masks(p: PlayerProfile, notes: Array[String]) -> void:
+	for i: int in range(p.custom_masks.size()):
+		var comp: Dictionary = p.custom_masks[i]
+		if comp.is_empty():
+			continue
+		for k: String in MaskCatalog.KINDS:
+			var id: StringName = StringName(String(comp.get(k, "")))
+			if MaskCatalog.kind_of(id) != k or not MaskCatalog.is_known(id):
+				notes.append("custom_masks[%d]: unknown %s '%s'; slot emptied" % [i, k, id])
+				p.custom_masks[i] = {}
+				break
+		if not p.custom_masks[i].is_empty():
+			p.custom_masks[i] = MaskComposer.normalized(comp)
+
+
+static func _unlocks(p: PlayerProfile, notes: Array[String]) -> void:
+	var out: Array[StringName] = []
+	for id: StringName in p.unlocks:
+		if String(id).begins_with("unlock.") and String(id).length() > 7:
+			if not out.has(id):
+				out.append(id)
+		else:
+			notes.append("unlocks: malformed unlock id '%s' dropped" % id)
+	ContentDB.sort_ids(out)
+	p.unlocks = out
+	MaskLocker.apply_unlocks(p)
+
+
+static func _loadout(p: PlayerProfile, notes: Array[String]) -> void:
+	var l: Loadout = p.loadout
+	var def: Loadout = _defaults()
+	for f: String in LOADOUT_KINDS:
+		var id: StringName = l.get(f) as StringName
+		if id != &"" and not ContentDB.has(LOADOUT_KINDS[f], id):
+			notes.append("loadout.%s: unknown id '%s'; reset to '%s'" % [f, id, def.get(f)])
+			l.set(f, def.get(f))
+	for f: String in ["primary_mods", "secondary_mods"]:
+		l.set(f, _known(l.get(f) as Array[StringName], ContentDB.MODS, "loadout." + f, notes))
+	if not MaskLocker.is_equippable(p, l.mask):
+		notes.append("loadout.mask: '%s' not equippable; reset to '%s'" % [l.mask, def.mask])
+		l.mask = def.mask if MaskLocker.is_equippable(p, def.mask) else &""
+	if l.perk_deck != &"" and not ContentDB.has(ContentDB.PERKS, l.perk_deck):
+		notes.append("loadout.perk_deck: unknown deck '%s' cleared" % l.perk_deck)
+		l.perk_deck = &""
+		l.perk_deck_cards = 0
+	MaskLocker.sync_descriptor(p)
+
+
+static func _perk_cards(p: PlayerProfile, notes: Array[String]) -> void:
+	var out: Dictionary = {}
+	for id: Variant in p.perk_cards:
+		var sid: StringName = StringName(id)
+		if not ContentDB.has(ContentDB.PERKS, sid):
+			notes.append("perk_cards: unknown deck '%s' dropped" % sid)
+			continue
+		var size: int = ((ContentDB.by_id(ContentDB.PERKS, sid) as PerkDeckDef).cards as Array).size()
+		var n: int = int(p.perk_cards[id])
+		if n < 0 or n > size:
+			notes.append("perk_cards.%s: %d clamped to 0..%d" % [sid, n, size])
+		out[sid] = clampi(n, 0, size)
+	p.perk_cards = out
+	var deck: PerkDeckDef = PerkProgress.deck(p.loadout.perk_deck)
+	if deck != null:
+		p.loadout.perk_deck_cards = clampi(p.loadout.perk_deck_cards, 0, deck.cards.size())
+
+
+static func _skill_sets(p: PlayerProfile, notes: Array[String]) -> void:
+	var budget: int = SkillPoints.points_for_level(p.level)
+	p.loadout.skills = _skill_set(p.loadout.skills, budget, "loadout.skills", notes)
+	for i: int in range(p.skill_sets.size()):
+		if i == p.active_skill_set:
+			p.skill_sets[i] = p.loadout.skills.duplicate()
+		else:
+			p.skill_sets[i] = _skill_set(p.skill_sets[i], budget, "skill_sets[%d]" % i, notes)
+
+
+static func _skill_set(skills: Dictionary, budget: int, field: String, notes: Array[String]) -> Dictionary:
+	var out: Dictionary = {}
+	for id: Variant in skills:
+		if ContentDB.has(ContentDB.SKILLS, StringName(id)):
+			out[StringName(id)] = int(skills[id])
+		else:
+			notes.append("%s: unknown skill '%s' dropped" % [field, id])
+	var errors: Array[String] = SkillPoints.validate(out, budget)
+	if not errors.is_empty():
+		notes.append("%s: illegal set (%s); reset to empty" % [field, "; ".join(errors)])
+		return {}
+	return out
+
+
+static func _achievements(p: PlayerProfile, notes: Array[String]) -> void:
+	for id: Variant in p.achievements.keys():
+		if not ContentDB.has(ContentDB.ACHIEVEMENTS, StringName(id)):
+			notes.append("achievements: unknown id '%s' dropped" % id)
+			p.achievements.erase(id)
+
+
+static func _locks(p: PlayerProfile, notes: Array[String]) -> void:
+	for key: Variant in p.pro_job_locks.keys():
+		var parts: PackedStringArray = String(key).split(":")
+		if parts.size() != 2 or not parts[0].is_valid_int() or not parts[1].is_valid_int():
+			notes.append("pro_job_locks: malformed contract key '%s' dropped" % key)
+			p.pro_job_locks.erase(key)
+
+
+static func _defaults() -> Loadout:
+	if _default_loadout == null:
+		_default_loadout = PlayerProfile.new_default().loadout
+	return _default_loadout

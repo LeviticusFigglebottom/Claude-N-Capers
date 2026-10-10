@@ -64,11 +64,19 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `stealth_xp_bonus_mult` after a successful stealth heist, else 1.0). UI string:
   `ui.results.stealth_bonus_banked` ("... +{pct}%").
 * `SaveService` / `PlayerProfile`: versioned JSON at `user://profiles/profile_<n>.json`
-  (`CURRENT_VERSION` 4; v2 adds `banked_stealth_mult`, default 1.0; v3 `skill_sets`/`perk_cards`;
-  v4 `owned_mask_parts`/`custom_masks`; field list in `save/player_profile.gd`);
-  `load_profile/save_profile/migrate/apply_heist_payout(p, payout, XpCurve.level_for_xp)`.
+  (`CURRENT_VERSION` 5 = the roadmap's "save v2"; **every field, type, default and since-version:
+  `content/docs/save_format.md`**; v2 `banked_stealth_mult`, v3 `skill_sets`/`perk_cards`, v4
+  `owned_mask_parts`/`custom_masks`, v5 `unlocks`/`achievements`/`pro_job_locks`);
+  `load_profile/save_profile/migrate/profile_from_save/apply_heist_payout(p, payout, XpCurve.level_for_xp)`.
+  Loading runs migrate -> `ProfileSchema.sanitize` (wrong types -> default + Log.warn) -> from_dict ->
+  `ProfileValidator.validate` (unknown ids pruned, illegal skill sets reset, Log.warn each); golden
+  migration fixtures in `tests/b/fixtures/save/`.
   `apply_heist_payout` resets the bank when `stealth_bonus_consumed`, then stores
   `stealth_bonus_banked` if > 1.0.
+* `ProJobLocks` (`board/pro_job_locks.gd`): failed pro Board contracts persisted in
+  `PlayerProfile.pro_job_locks` (`lock/prune/is_locked`); MenuFlow mirrors them into `consumed_contracts`.
+* `MaskLocker.grant_unlock(profile, unlock_id)` records the unlock in `PlayerProfile.unlocks` and owns its
+  presets; `apply_unlocks(profile)` re-owns them on load. `ContentDB.has(kind, id)` = lookup without an error.
 * `ContentDB.inject(kind, key, res)`: tests/tooling only (test-only SkillDef/PerkDeckDef);
   `clear_cache()` drops it.
 * `XpCurve.level_for_xp(xp)`, `xp_for_level(level)`. `VoiceLineTable` at `data/voice/lines.tres`.

@@ -1,5 +1,5 @@
 {
-	"version": 4,
+	"version": 5,
 	"profile_name": "Crew",
 	"cash": 0,
 	"stash": 0,
@@ -29,6 +29,9 @@
 	"skill_sets": [{}, {}, {}],
 	"active_skill_set": 0,
 	"perk_cards": {},
+	"unlocks": [],
+	"achievements": {},
+	"pro_job_locks": {},
 	"stats": {
 		"heists_completed": 0,
 		"heists_failed": 0

@@ -8,11 +8,16 @@
 ## migrate(); a dict without "version" is v0.
 ## Versions: 1 = first shipped shape; 2 = adds `banked_stealth_mult` (D-022 QB-13);
 ## 3 = adds `skill_sets` + `active_skill_set` (multiple skill sets) and `perk_cards` (per-deck progress);
-## 4 = adds `owned_mask_parts` and `custom_masks` (mask customisation, B2-03; content/docs/masks.md).
+## 4 = adds `owned_mask_parts` and `custom_masks` (mask customisation, B2-03; content/docs/masks.md);
+## 5 = adds `unlocks`, `achievements` (B4-20) and `pro_job_locks` (persisted pro-job locks, QB-BRD1).
+## Field reference: content/docs/save_format.md. Golden migration fixtures: tests/b/fixtures/save/.
+## Load pipeline (profile_from_save): migrate -> ProfileSchema.sanitize (types; wrong type -> default +
+## Log.warn) -> PlayerProfile.from_dict -> ProfileValidator.validate (unknown ids pruned, illegal skill
+## sets reset, each with a Log.warn). A damaged field never crashes a load.
 class_name SaveService
 extends RefCounted
 
-const CURRENT_VERSION: int = 4
+const CURRENT_VERSION: int = 5
 const DEFAULT_ROOT_DIR: String = "user://profiles"
 
 ## Tests point this at e.g. `user://test_profiles`.
@@ -76,7 +81,15 @@ static func load_profile(slot: int = 0) -> PlayerProfile:
 	if _version_of(d) > CURRENT_VERSION:
 		Log.error(&"save", "profile %s has version %d > %d; refusing to load" % [path, _version_of(d), CURRENT_VERSION])
 		return PlayerProfile.new_default()
-	return PlayerProfile.from_dict(migrate(d))
+	return profile_from_save(d)
+
+
+## A save dict (any version <= CURRENT_VERSION) -> a valid current profile (see the header's load
+## pipeline). Future versions are the caller's to refuse (load_profile does).
+static func profile_from_save(d: Dictionary) -> PlayerProfile:
+	var p: PlayerProfile = PlayerProfile.from_dict(ProfileSchema.sanitize(migrate(d)))
+	ProfileValidator.validate(p)
+	return p
 
 
 static func delete_profile(slot: int = 0) -> void:
@@ -104,6 +117,8 @@ static func migrate(data: Dictionary) -> Dictionary:
 				d = _migrate_2_to_3(d)
 			3:
 				d = _migrate_3_to_4(d)
+			4:
+				d = _migrate_4_to_5(d)
 			_:
 				Log.error(&"save", "no migration from version %d" % v)
 				return d
@@ -180,8 +195,22 @@ static func _migrate_3_to_4(d: Dictionary) -> Dictionary:
 	return d
 
 
+## v4 -> v5: nothing unlocked by achievements yet, no achievement progress, no pro-job locks (they
+## were session-only before). Everything else is unchanged.
+static func _migrate_4_to_5(d: Dictionary) -> Dictionary:
+	if not d.get("unlocks") is Array:
+		d["unlocks"] = []
+	if not d.get("achievements") is Dictionary:
+		d["achievements"] = {}
+	if not d.get("pro_job_locks") is Dictionary:
+		d["pro_job_locks"] = {}
+	return d
+
+
+## A non-numeric version reads as 0 (the oldest shape; every migration is additive).
 static func _version_of(d: Dictionary) -> int:
-	return int(d.get("version", 0))
+	var v: Variant = d.get("version", 0)
+	return int(v) if (v is int or v is float) else 0
 
 
 static func _read_dict(path: String) -> Variant:

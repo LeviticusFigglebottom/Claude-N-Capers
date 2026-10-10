@@ -37,19 +37,19 @@ func test_round_trip_all_fields() -> void:
 	assert_eq(q.stats, {"heists_completed": 3})
 	assert_eq(q.settings, {"fov": 90.0, "name_tag": "x"})
 	var l: Loadout = q.loadout
-	assert_eq(l.primary, &"weapon.test_rifle")
+	assert_eq(l.primary, &"weapon.corsair_ar")
 	assert_eq(l.primary_mods, p.loadout.primary_mods)
 	assert_eq(l.secondary, &"weapon.kestrel_p9")
 	assert_eq(l.secondary_mods, p.loadout.secondary_mods)
 	assert_eq(l.melee, &"melee.folding_knife")
-	assert_eq(l.throwable, &"throwable.test_frag")
+	assert_eq(l.throwable, &"throwable.boss_injector")
 	assert_eq(l.deployable, &"deployable.doctor_bag")
 	assert_eq(l.deployable_secondary, &"deployable.ammo_bag")
 	assert_eq(l.armor, &"armor.tailored_suit")
-	assert_eq(l.mask, &"mask.test")
-	assert_eq(l.perk_deck, &"perk.test")
+	assert_eq(l.mask, &"mask.night_circuit")
+	assert_eq(l.perk_deck, &"perk.bulk")
 	assert_eq(l.perk_deck_cards, 4)
-	assert_eq(l.skills, {&"skill.a": 1, &"skill.b": 2})
+	assert_eq(l.skills, {&"skill.juggernaut.thick_skin": 1, &"skill.slipstream.light_step": 2})
 
 
 func test_resolved_fields_not_saved() -> void:
@@ -154,27 +154,27 @@ func test_v2_migrates_to_v3_skill_sets_and_perk_cards() -> void:
 	assert_eq(int(m["active_skill_set"]), 0)
 	assert_eq((m["skill_sets"] as Array).size(), 1)
 	assert_eq(int(((m["skill_sets"] as Array)[0] as Dictionary)["skill.slipstream.light_step"]), 2)
-	assert_eq(int((m["perk_cards"] as Dictionary)["perk.test"]), 4)
+	assert_eq(int((m["perk_cards"] as Dictionary)["perk.bulk"]), 4)
 	DirAccess.make_dir_recursive_absolute(BTestUtil.profile_root())
 	_write(SaveService.profile_path(SLOT), JSON.stringify(v2))
 	var q: PlayerProfile = SaveService.load_profile(SLOT)
 	assert_eq(int(q.loadout.skills[&"skill.slipstream.light_step"]), 2)
-	assert_eq(int(q.perk_cards[&"perk.test"]), 4)
+	assert_eq(int(q.perk_cards[&"perk.bulk"]), 4)
 
 
 ## B2-03: v3 -> v4 adds the mask customisation fields (no extra parts, empty custom slots); the
 ## equipped preset mask survives; custom slots and owned parts round-trip.
 func test_v3_migrates_to_v4_mask_fields() -> void:
-	assert_eq(SaveService.CURRENT_VERSION, 4)
+	assert_true(SaveService.CURRENT_VERSION >= 4)
 	var v3: Dictionary = _sample().to_dict()
 	v3["version"] = 3
 	v3.erase("owned_mask_parts")
 	v3.erase("custom_masks")
 	var m: Dictionary = SaveService.migrate(v3)
-	assert_eq(int(m["version"]), 4)
+	assert_eq(int(m["version"]), SaveService.CURRENT_VERSION)
 	assert_eq(m["owned_mask_parts"], [])
 	assert_eq(m["custom_masks"], [])
-	assert_eq(String((m["loadout"] as Dictionary)["mask"]), "mask.test")
+	assert_eq(String((m["loadout"] as Dictionary)["mask"]), "mask.night_circuit")
 	var p: PlayerProfile = _sample()
 	p.owned_mask_parts = [&"mask_pattern.dots"] as Array[StringName]
 	p.custom_masks = [{}, {"base": "mask_base.owl", "material": "mask_material.gilt",
@@ -293,25 +293,25 @@ func _sample() -> PlayerProfile:
 	p.xp = 4200
 	p.level = 7
 	p.banked_stealth_mult = 1.2
-	p.owned_weapons = [&"weapon.kestrel_p9", &"weapon.test_rifle"] as Array[StringName]
+	p.owned_weapons = [&"weapon.kestrel_p9", &"weapon.corsair_ar"] as Array[StringName]
 	p.owned_mods = [&"mod.p9_suppressor", &"mod.p9_extended_mag"] as Array[StringName]
-	p.owned_masks = [&"mask.test"] as Array[StringName]
+	p.owned_masks = [&"mask.night_circuit"] as Array[StringName]
 	p.stats = {"heists_completed": 3}
 	p.settings = {"fov": 90.0, "name_tag": "x"}
 	var l: Loadout = Loadout.new()
-	l.primary = &"weapon.test_rifle"
-	l.primary_mods = [&"mod.rifle_a"] as Array[StringName]
+	l.primary = &"weapon.corsair_ar"
+	l.primary_mods = [&"mod.corsair_suppressor"] as Array[StringName]
 	l.secondary = &"weapon.kestrel_p9"
 	l.secondary_mods = [&"mod.p9_suppressor", &"mod.p9_extended_mag"] as Array[StringName]
 	l.melee = &"melee.folding_knife"
-	l.throwable = &"throwable.test_frag"
+	l.throwable = &"throwable.boss_injector"
 	l.deployable = &"deployable.doctor_bag"
 	l.deployable_secondary = &"deployable.ammo_bag"
 	l.armor = &"armor.tailored_suit"
-	l.mask = &"mask.test"
-	l.perk_deck = &"perk.test"
+	l.mask = &"mask.night_circuit"
+	l.perk_deck = &"perk.bulk"
 	l.perk_deck_cards = 4
-	l.skills = {&"skill.a": 1, &"skill.b": 2}
+	l.skills = {&"skill.juggernaut.thick_skin": 1, &"skill.slipstream.light_step": 2}
 	p.loadout = l
 	return p
 

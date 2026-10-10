@@ -1,0 +1,29 @@
+{
+	"version": 5,
+	"profile_name": "Old Timer",
+	"cash": 5000,
+	"stash": 0,
+	"xp": 1200,
+	"level": 2,
+	"banked_stealth_mult": 1.0,
+	"owned_weapons": ["weapon.kestrel_p9"],
+	"owned_mods": [],
+	"owned_masks": [],
+	"owned_mask_parts": [],
+	"custom_masks": [],
+	"loadout": {
+		"primary": "", "primary_mods": [],
+		"secondary": "weapon.kestrel_p9", "secondary_mods": [],
+		"melee": "melee.folding_knife", "throwable": "", "deployable": "", "deployable_secondary": "",
+		"armor": "armor.tailored_suit", "mask": "", "perk_deck": "", "perk_deck_cards": 0,
+		"skills": {"skill.juggernaut.thick_skin": 1}
+	},
+	"skill_sets": [{"skill.juggernaut.thick_skin": 1}],
+	"active_skill_set": 0,
+	"perk_cards": {},
+	"unlocks": [],
+	"achievements": {},
+	"pro_job_locks": {},
+	"stats": {},
+	"settings": {}
+}
