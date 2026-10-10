@@ -6,7 +6,7 @@
 
 [sub_resource type="Resource" id="Resource_atdi0"]
 script = ExtResource("2_1lydb")
-model_path = "res://assets/masks/mask_base_heron.glb"
+model_path = "res://assets/masks/mask_base_heron/mask_base_heron.glb"
 width_m = 0.17
 height_m = 0.25
 roundness = 2.0
@@ -26,7 +26,7 @@ default_owned = true
 
 [sub_resource type="Resource" id="Resource_g7e7x"]
 script = ExtResource("2_1lydb")
-model_path = "res://assets/masks/mask_base_visage.glb"
+model_path = "res://assets/masks/mask_base_visage/mask_base_visage.glb"
 depth_m = 0.045
 eye_h = 0.1
 id = &"mask_base.visage"
@@ -35,7 +35,7 @@ default_owned = true
 
 [sub_resource type="Resource" id="Resource_kf764"]
 script = ExtResource("2_1lydb")
-model_path = "res://assets/masks/mask_base_vulpine.glb"
+model_path = "res://assets/masks/mask_base_vulpine/mask_base_vulpine.glb"
 width_m = 0.19
 height_m = 0.22
 roundness = 2.0
@@ -56,7 +56,7 @@ default_owned = true
 
 [sub_resource type="Resource" id="Resource_nl776"]
 script = ExtResource("2_1lydb")
-model_path = "res://assets/masks/mask_base_bruiser.glb"
+model_path = "res://assets/masks/mask_base_bruiser/mask_base_bruiser.glb"
 width_m = 0.2
 height_m = 0.22
 depth_m = 0.04
@@ -76,7 +76,7 @@ display_name = "Bruiser"
 
 [sub_resource type="Resource" id="Resource_w3ipx"]
 script = ExtResource("2_1lydb")
-model_path = "res://assets/masks/mask_base_owl.glb"
+model_path = "res://assets/masks/mask_base_owl/mask_base_owl.glb"
 width_m = 0.2
 height_m = 0.21
 depth_m = 0.045

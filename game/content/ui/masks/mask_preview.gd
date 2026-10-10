@@ -21,6 +21,7 @@ var _dragging: bool = false
 
 func _init() -> void:
 	_tweak = MaskCatalog.tweak()
+	yaw_deg = _tweak.preview_start_yaw_deg
 	stretch = true
 	focus_mode = Control.FOCUS_ALL
 	mouse_filter = Control.MOUSE_FILTER_STOP

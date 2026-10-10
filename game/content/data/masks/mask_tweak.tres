@@ -12,6 +12,7 @@ default_composition = {
 "pattern": "mask_pattern.solid"
 }
 placeholder_grid = 40
+preview_start_yaw_deg = 35.0
 preview_spin_deg_s = 18.0
 preview_drag_deg_per_px = 0.4
 preview_stick_deg_s = 140.0
