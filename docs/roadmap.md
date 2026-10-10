@@ -73,7 +73,7 @@ Routine and Brutal. Solo-first, with every system written authority-correct.
 ### ENV C: Worlds & Art
 | Id | Task | Depends |
 |---|---|---|
-| C1-00 | **Art direction samples** (PO request, D-018): 2 assets × 3 styles, parametric, rendered to docs/art/style_samples/ | C1-01 core |
+| C1-00 | ✅ DONE (D-035: GSR chosen). **Art direction samples** (PO request, D-018): 2 assets × 3 styles, parametric, rendered to docs/art/style_samples/ | C1-01 core |
 | C1-01 | Pipeline: `tools/blender/lib` (scene reset, materials M_ naming, bevel/weighted normals, UV, LOD, glTF export, determinism), `build.py`, `tools/texgen` (tileables, trim sheet, ORM packing, LUT), `tools/audiogen` (synth core), Godot glb post-import script, `docs/art/pipeline.md` how-to | — |
 | C1-02 | Greybox modular kit (walls/doors/windows/stairs/floors/ceilings on 0.5 m grid) + greybox materials | C1-01 |
 | C1-03 | **Glasshouse design doc (G0)** → lead approval → **greybox (G1)** with every contract node, variants table, mission script (on HeistMission when A1-01 lands) | C1-02 |

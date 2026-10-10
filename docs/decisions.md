@@ -164,3 +164,9 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - QB-43: `WeaponStats.reload_per_round_s / reload_start_s / reload_end_s` added (0 = magazine reload). Shell-by-shell reload is interruptible by firing (PD2), and ENV A implements it. Display pellet exponent 1 (show pellet damage × pellets): accepted.
 - QB-44: recorded in visual_slots.md.
 - QB-45: perk points = floor(XP / 500) from all XP (◇). Move the setting to `content/data/tweak/`.
+
+## D-035 — 2026-10-10 — ART DIRECTION LOCKED: Grounded Stylized Realism (product owner)
+- The product owner chose option A (GSR) after reviewing the counter samples. This supersedes the provisional D-012/D-018.
+- style_guide.md §1 is updated. The `a_gsr` renders are the reference bar.
+- ENV D: drop the noir/photo officer variants. The head/officer fix becomes the GSR character baseline for D1-02.
+- ENV C/B/D: remove "parametric across directions" as a requirement. Keep code clean, but stop spending effort on non-GSR presets.
