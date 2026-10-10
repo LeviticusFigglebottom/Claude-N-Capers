@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only steel_bare --preset gsr
+module: tools/texgen/materials/steel_bare.py
+preset: tools/texgen/presets/gsr.py
+seed: 799051438 (zlib.crc32('steel_bare'))
+size_px: 1024
+tile_m: 1.0 (1 UV unit = 1.0 m)
+texel_density_px_per_m: 1024
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.5037, "albedo_lum_mean_linear": 0.4844, "albedo_lum_min_linear": 0.4637, "ao_mean": 1.0, "metallic_mean": 1.0, "roughness_mean": 0.277}

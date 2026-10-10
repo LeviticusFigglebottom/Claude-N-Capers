@@ -3,23 +3,24 @@
 ## light and saves a screenshot. Run:
 ##   xvfb-run -a -s "-screen 0 1920x1080x24" /opt/godot/godot --path game --resolution 1920x1080 \
 ##     res://world/tools/material_preview.tscn -- --out=<path.png|path.jpg>
-## Options: --only=<lib_id>[,<lib_id>] (close-up), --env=<neutral|glasshouse>, --cols=<n>,
+## Options: --only=<lib_id>[,<lib_id>] (close-up), --env=<neutral|glasshouse>, --cols=<n> (default 8),
 ## --quality=<0..1> (JPEG), --frames=<n>.
-## Materials are previewed with world-space triplanar UVs at the library convention
-## (1 UV unit = 2 m), so texel density reads exactly as it will on Blender-UV'd geometry.
+## Materials are previewed with world-space triplanar UVs at each material's library tile size
+## (metadata/uv_tile_m: 2 m for environment, 1 m for weapon materials), so texel density reads
+## as it will on Blender-UV'd geometry.
 class_name MaterialPreviewTool
 extends Node3D
 
 const MATERIAL_DIR: String = "res://world/materials/"
 const GLASSHOUSE_ENV: String = "res://world/lighting/env_glasshouse.tres"
-const UV_PER_M: float = 0.5
+const DEFAULT_TILE_M: float = 2.0
 const CELL_W: float = 2.6
 const CELL_H: float = 2.05
 
 var _out_path: String = ""
 var _only: PackedStringArray = PackedStringArray()
 var _env_name: String = "neutral"
-var _cols: int = 6
+var _cols: int = 8
 var _quality: float = 0.82
 var _frames: int = 16
 
@@ -88,9 +89,12 @@ func _preview_material(id: String) -> Material:
 	var mat: Material = src.duplicate() as Material
 	if mat is BaseMaterial3D:
 		var bm: BaseMaterial3D = mat as BaseMaterial3D
+		if bm.albedo_texture == null:
+			return mat
 		bm.uv1_triplanar = true
 		bm.uv1_world_triplanar = true
-		bm.uv1_scale = Vector3.ONE * UV_PER_M
+		var tile_m: float = float(src.get_meta(&"uv_tile_m", DEFAULT_TILE_M))
+		bm.uv1_scale = Vector3.ONE / maxf(tile_m, 0.001)
 		bm.uv1_triplanar_sharpness = 4.0
 	return mat
 
