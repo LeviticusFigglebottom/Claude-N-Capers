@@ -7,11 +7,14 @@ current when an API changes.
 ```
 content/
   data/                     every balance number (.tres / .csv); no constants in scripts
-    weapons/ mods/ melee/ armor/ deployables/ loot/ throwables/ difficulty/ masks/
-    tweak/                  concealment_curve.tres, display_stats.tres, payout.tres, xp_curve.tres
+    weapons/ mods/ melee/ armor/ deployables/ loot/ throwables/ difficulty/ masks/ contacts/ preplanning/
+    tweak/                  concealment_curve.tres, display_stats.tres, payout.tres, perk_points.tres, xp_curve.tres
     strings/strings.csv     all player-facing text (columns: keys,en)
     voice/lines.tres        voice line table (VoiceLineTable); text lives in strings.csv
-  defs/                     content-side Resource schemas + ContentDB lookup
+  defs/                     content-side Resource schemas + ContentDB lookup (ContactDef)
+  docs/                     design authority: skills.md, perk_decks.md, masks.md, preplanning.md
+  masks/                    MaskCatalog, MaskComposer, MaskLocker (+ part defs)
+  preplanning/              PreplanBoard, PreplanPlan, PlanVote, PreplanBlueprint
   progression/              LoadoutResolver, StatCalculator, PayoutCalculator, XpCurve
   save/                     SaveService, PlayerProfile
   strings/                  StringTable
@@ -54,7 +57,8 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `stealth_xp_bonus_mult` after a successful stealth heist, else 1.0). UI string:
   `ui.results.stealth_bonus_banked` ("... +{pct}%").
 * `SaveService` / `PlayerProfile`: versioned JSON at `user://profiles/profile_<n>.json`
-  (`CURRENT_VERSION` 2; v2 adds `banked_stealth_mult`, default 1.0);
+  (`CURRENT_VERSION` 4; v2 adds `banked_stealth_mult`, default 1.0; v3 `skill_sets`/`perk_cards`;
+  v4 `owned_mask_parts`/`custom_masks`; field list in `save/player_profile.gd`);
   `load_profile/save_profile/migrate/apply_heist_payout(p, payout, XpCurve.level_for_xp)`.
   `apply_heist_payout` resets the bank when `stealth_bonus_consumed`, then stores
   `stealth_bonus_banked` if > 1.0.
@@ -63,12 +67,20 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 * `XpCurve.level_for_xp(xp)`, `xp_for_level(level)`. `VoiceLineTable` at `data/voice/lines.tres`.
 
 ## App shell and UI (D-024)
-* `MenuFlow` (`ui/menus/menu_flow.tscn`) is the app shell; `core/boot.gd` routes to it. It owns
-  launch (`launch(heist_id, difficulty, loadout, seed)`: `Net.start_solo` + resolved loadout + HUD/payday
+* `MenuFlow` (`ui/menus/menu_flow.tscn`) is the app shell; `core/boot.gd` routes to it. Flow (B2-01,
+  pd2_fidelity C2/C3 order): main menu -> heist select -> **briefing** -> **pre-planning** -> loadout
+  (-> Masks / Skills / Perk Deck and back) -> launch -> HUD -> payday. Back is symmetrical at every
+  step; Back from the loadout refunds the confirmed plan's local cash share (re-confirm charges once).
+  Every screen focuses its first control when shown (keyboard/gamepad). The menu path shares one
+  `PlayerProfile` (`MenuFlow.profile`, slot `profile_slot`). It owns
+  launch (`launch(heist_id, difficulty, loadout, seed, plan = {})`: `Net.start_solo` + resolved loadout + HUD/payday
   CanvasLayer + dynamic `HeistLauncher.launch`; stub screen when the launcher is absent), and
-  `HeistRuntime.teardown()` + `Net.leave()` after results. Direct launch:
-  `godot --path game -- --heist=<id> [--seed=<n>] [--difficulty=<0..5>]` (seed defaults to the
-  time, difficulty to Routine; unknown heist or bad value logs an error and stays on the main menu).
+  `HeistRuntime.teardown()` + `Net.leave()` after results. Launch options come from the pure
+  `MenuFlow.build_launch_options(ai, local_slot, resolved, plan) -> {ai_teammates, loadouts, preplan?}`:
+  `options["preplan"]` = the confirmed `PreplanPlan.apply()` (only when a plan was confirmed;
+  **proposed, pending the lead's QB-PP2**; launchers that do not read it ignore it). Direct launch:
+  `godot --path game -- --heist=<id> [--seed=<n>] [--difficulty=<0..5>]` skips every menu and has no
+  pre-planning plan (seed defaults to the time, difficulty to Routine; unknown heist or bad value logs an error and stays on the main menu).
   Parsing: `LaunchArgs.parse(args) -> {direct, heist_id, has_seed, seed, difficulty, errors}`,
   `LaunchArgs.validate_heist(id, known_ids)`. `MenuFlow.direct_launch(parsed) -> bool`.
 * `HeistCatalog.entries()/ids()`: heists from `HeistRegistry` (core); `data/ui/heist_list.tres`
@@ -76,9 +88,32 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `placeholder_base_payout/placeholder_mode` used only while `HeistRegistry.get_def(id)` is null),
   plus build-wide `unlocked_difficulties` and the default `solo_ai_teammates`.
   `entries_from(defs, list)` is the pure builder (tests).
-* `Hud` binds to the node in group `G.LOCAL_HUD_MODEL` (ui_hud.md v1.1), polled while unbound and
-  rediscovered if the model is freed; `bind(model)` still works. `MockHudModel` joins the same group.
+* `Hud` binds its widgets DIRECTLY to the node in group `G.LOCAL_HUD_MODEL` (ENV A's LocalHudModel,
+  ui_hud.md v1.1; no adapter), polled while unbound and rediscovered if the model is freed; MenuFlow
+  relies on that discovery in heists. `bind(model)` still works. `MockHudModel` (demo/tests) joins the
+  same group. `MarkedTargets` draws a diamond per `marked_targets` entry; `InteractionPanel` fills a
+  missing `{key}` prompt arg from the `interact` InputMap binding.
+* Firing range (`range/firing_range.tscn`, B1-05): the shooter is ENV A's crew member from
+  `CrewController.spawn_for_range` (`RangeCrewBridge`, the range's only door into A's runtime), with
+  `set_loadout(resolved)` on every swap; panel mode pauses the crew's PlayerInput (`RangeModeInput`).
+  Last shot / damage numbers follow `EventBus.damage_applied` from the range's targets with
+  attacker = the crew's net id. `RangeSpectator` + `RangeDebugGun` are a FALLBACK only (hook missing,
+  or `use_fallback_shooter` for tests).
 
+* `BriefingScreen` (`ui/briefing/briefing_screen.tscn`, C2): `setup(heist_id, difficulty)`; signals
+  `continue_requested(heist_id, difficulty)`, `back_requested()`. Data: `BriefingModel.build()`;
+  contacts are `ContactDef` (`defs/contact_def.gd`, `data/contacts/`, `ContactDef.find(id)/all()`).
+* `PreplanningScreen` (`ui/preplanning/preplanning_screen.tscn`, C3): `setup(heist_id, difficulty, profile)`,
+  `profile_slot`, `save_on_confirm`; signals `confirmed(plan: Dictionary)` (= `PreplanPlan.apply()`, cash
+  already charged), `back_requested()`. Design, hand-off shape and open questions: `content/docs/preplanning.md`.
+* `MaskScreen` (`ui/masks/mask_screen.tscn`, P8): `setup(profile)`, `profile_slot`; signals
+  `mask_changed(mask_id)` (after Equip), `back_requested()`; saves the profile itself. Opened from the
+  loadout screen's "Masks" button (`LoadoutScreen.masks_requested`); the loadout's mask picker lists
+  `MaskLocker.available_ids(profile)` (owned presets + filled `mask.custom.<n>` slots) and
+  `refresh_masks()` re-reads it. Design: `content/docs/masks.md`.
+* **Masks for ENV A**: `MaskCatalog.resolve(loadout.mask, profile) -> MaskDef` on the owning peer, or
+  `MaskCatalog.descriptor(mask_id, profile)` (ids only, JSON-safe) sent to other peers +
+  `MaskCatalog.from_descriptor(d)`; then `MaskComposer.instantiate(def) -> Node3D` for the `Head` attachment.
 * `SkillPoints` (`progression/skill_points.gd`): `points_for_level`, `cost_of`, `spent_total`,
   `spent_in_subtree`, `can_unlock`, `validate`, `is_legal`. Tree structure: `SkillTreeDef` at
   `data/skills/trees.tres`. Design + param schemas (authoritative, D-031): `content/docs/skills.md`.
@@ -86,15 +121,15 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   &"team_perk.<deck>": grants}` (e.g. `team_perk.foreman`) for `Modifiers.set_source(TEAM, ...)`;
   `resolve_modifiers` excludes every `team.*` grant (skills and perk cards). TEAM sources apply to the
   granter too (D-031 QB-35), so there is no personal copy; equal source names from two players count once.
-* **LIST keys** (D-031: `weapon.kill_reload_buff`, `weapon.hit_stack_buff`, `weapon.kill_damage_buff`):
+* **LIST keys** (D-031: `weapon.kill_reload_buff`, `weapon.hit_stack_buff`, `weapon.kill_damage_buff`;
+  D-034: `defense.post_revive_buff`):
   `resolve_modifiers(loadout)[key]` is an `Array[Dictionary]`, one entry per granting skill or perk card
   (never merged): the granted Dictionary plus `"_source": StringName` = the skill id
   (`&"skill.gunnery.run_and_gun"`) or `&"<deck id>.card<n>"`, sorted by `_source` (ContentDB.sort_ids
   order). Inside one skill the aced Dictionary replaces the basic one. Example:
   `[{"trigger": "auto_kills", ..., "_source": &"skill.gunnery.run_and_gun"}, {"trigger": "headshot_kill",
-  ..., "_source": &"skill.marksman.reload_rhythm"}]`. NOTE: `Modifiers.list()` currently expects ONE
-  Dictionary per (slot, source); handing this Array to `set_source(slot, &"skills", ...)` needs
-  `list()` to also accept an Array value (append each entry, keeping its own `_source`).
+  ..., "_source": &"skill.marksman.reload_rhythm"}]`. `Modifiers.list()` accepts this Array as one
+  source's value; each entry keeps its own `_source` (D-034 QB-38).
 * `stealth.concealment_add.suppressed` counts once per suppressed primary/secondary
   (`LoadoutResolver.suppressed_weapon_count`).
 * Perk decks: `data/perks/<deck>.tres` (`perk.<deck>`); param schemas: `content/docs/perk_decks.md`.

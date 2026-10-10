@@ -1,4 +1,4 @@
-# Contract: gameplay prefabs (v1.0)
+# Contract: gameplay prefabs (v1.1)
 
 Producer: **ENV A** (`game/systems/prefabs/<name>/<name>.tscn`). Consumer: **ENV C** places them in
 maps and assigns `visual_scene`. All prefabs are networked (server-authoritative), have a `net_id`,
@@ -55,3 +55,16 @@ Characters (guards, civilians, police, specials, crew) are prefabs too (`npc_*`,
 take `visual_scene` from `characters.md` art.
 
 New prefab requests from ENV C go to the lead as a status-file question.
+
+## v1.1 additions (QA-13, D-038)
+| Prefab | New exports / nodes |
+|---|---|
+| `door` | `npc_authorized_tags: Array[StringName]` (guard posts allowed through keycard doors); `one_way` (push-bar: opens only from its +Z side; A2-08) |
+| `security_camera` | `titan: bool` (indestructible) |
+| `keypad` | `targets: Array[NodePath]` |
+| `safe` | `code_group`, `time_lock_s`, KEYCARD method bound to a reader (A2-08) |
+| `laser_grid` | `beam_count`, `period_s`, `off_s`, `phase_s`, `sweep_beams`; optional visual nodes `Beam0..n` (horizontal for static/timed_off, vertical for sweeping) |
+| `deployable` (runtime only) | `res://systems/prefabs/deployable/deployable.tscn` (`DeployablePrefab`): `kind`, `deployable_id`; visual = `DeployableDef.model`, else a `Body` placeholder |
+| `bag_lift` (P2, Night Deposit) | Cash/bag lift between floors: `targets: Array[NodePath]` (landing markers), `travel_s`, `capacity` (bags). Bags placed in the car + interact to send. Visual: `Car`, `DoorL/DoorR`, `Panel`. (QC-11, D-040) |
+| `hack_terminal` (P2) | Timed silent hack (server rack, time-lock override): `duration_s`, `interruptions` (like drill jams: rolled count; fix = re-interact), `targets`. Visual: `Screen` (A swaps materials for progress), `Panel`. (QC-12, D-040) |
+| `escape_zone` (v1.2, QC-19) | `escape_type`: one of `&"van"`, `&"boat"`, `&"heli"`, `&"lift"`, `&"zipline"`, `&"walk"`. `arrival_delay_s` (heli/boat approach after activation; 0 = present). `bag_only` (zipline: bags secured by line, crew leave by another escape). Visual nodes per type: van `Body/DoorL/DoorR`, heli `Body/Rotor`, boat `Body`. (D-042) |

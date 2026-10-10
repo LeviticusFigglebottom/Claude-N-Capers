@@ -143,7 +143,7 @@ Validation must be **deterministic** and run in < 5 min per heist in CI.
 * `HeistMap.review_cameras` lists ≥ 12 fixed shots per heist (≥ 1 per major room, 2 exterior, 1
   top-down plan, 1 per landmark, 1 per security room/vault). Rendered by
   `res://world/tools/review_shots.tscn` (ENV C) at 1920×1080 with final lighting to
-  `docs/levels/<id>/<stage>/<camera>.png` plus a contact sheet `contact_sheet.png` and a
+  `docs/levels/<id>/<stage>/<camera>.jpg` (JPEG q85, D-038) plus a contact sheet `contact_sheet.png` and a
   `shots.md` with captions. CI headless can't render; ENV C renders with `--rendering-driver opengl3`
   / xvfb as available and commits the images (≤ 400 KB each, JPEG quality 85 allowed).
 * **Lead review checklist per shot:** plausible architecture; nothing floating/clipping; density and

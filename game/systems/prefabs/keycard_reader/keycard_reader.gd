@@ -2,6 +2,8 @@
 ## Wall-mounted: pivot back-centre, front -Z. Visual: `Panel`, `Led`.
 ## Requires and consumes `item.keycard`; on completion calls `unlock()` and then opens each target
 ## (`set_open(true)` / `open()`); `Led` turns green. Single use.
+## A2-08: a target with `open_by_keycard()` (Safe with the &"keycard" method) gets that call instead.
+## Targets may also bind themselves at runtime (`bind_target`, e.g. Safe.reader); each opens once.
 class_name KeycardReader
 extends GameplayPrefab
 
@@ -19,6 +21,9 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/keycard_reader/k
 @export var noise: StringName = &"silent"
 
 var used: bool = false
+
+## Runtime-bound targets (A2-08, `bind_target`).
+var _bound: Array[Node] = []
 
 
 func _placeholder_scene() -> PackedScene:
@@ -39,15 +44,36 @@ func _prefab_ready() -> void:
 	interactable.completed.connect(_on_completed)
 
 
+## A2-08: add `target` to the nodes opened on completion (no duplicates).
+func bind_target(target: Node) -> void:
+	if target != null and not _bound.has(target):
+		_bound.append(target)
+
+
+## A2-03 (S8.5, stealth.ecm_opens_doors): an ECM placed on this reader opens it like a keycard
+## (EcmSystem calls this after ecm_door_open_s). Server.
+func open_by_ecm() -> void:
+	_on_completed(null)
+
+
 func _on_completed(_crew: Node) -> void:
 	if not Net.is_authority() or used:
 		return
 	used = true
 	interactable.enabled = false
+	var all: Array[Node] = []
 	for path: NodePath in targets:
-		var t: Node = get_node_or_null(path)
-		if t == null:
+		var t0: Node = get_node_or_null(path)
+		if t0 == null:
 			Log.warn(LOG_CHANNEL, "%s: keycard target %s not found" % [name, path])
+		elif not all.has(t0):
+			all.append(t0)
+	for b: Node in _bound:
+		if is_instance_valid(b) and not all.has(b):
+			all.append(b)
+	for t: Node in all:
+		if t.has_method(&"open_by_keycard"):
+			t.call(&"open_by_keycard")
 			continue
 		if t.has_method(&"unlock"):
 			t.call(&"unlock")

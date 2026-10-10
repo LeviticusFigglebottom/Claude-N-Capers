@@ -467,6 +467,201 @@ def weapon_rifle_fire_suppressed(rng: np.random.Generator, v: int) -> np.ndarray
     return _suppressed(rng, v, puff_hz=1000, dur=0.4, action=1.2)
 
 
+# ------------------------------------------------------------ D-034 weapon families (smg/rifle/shotgun/lmg/sniper)
+
+
+def _shot(rng: np.random.Generator, *, body_hz: float, sub: float, crack: float, dur: float, room: str, wet: float,
+          bark_hz: float, sub_hz: float = 55.0, crack_hp: float = 2500.0, crack_t: float = 0.012, bark_q: float = 1.2,
+          bark_t: float = 0.09, body_t: float = 0.18, sub_t: float = 0.25, boom: float = 0.0, echo: float = 0.0,
+          drive_amt: float = 3.0, mech: float = 0.25) -> np.ndarray:
+    """Family gunshot: crack (supersonic/muzzle) + body punch + sub + mid bark + mechanism, optional
+    low-end boom (shotgun) and distant slap-back echoes (sniper), room IR tail."""
+    t = tvec(dur)
+    vr = 1 + rng.uniform(-0.05, 0.05)
+    cr = filters.hp(noise.white(dur, rng), crack_hp) * env.exp_decay(dur, crack_t, 0.0) * crack
+    body = osc.sine(body_hz * vr * (1 + 1.5 * np.exp(-t / 0.006)), dur) * env.exp_decay(dur, body_t, 0.0003)
+    subw = osc.sine(sub_hz * vr * (1 + 0.5 * np.exp(-t / 0.02)), dur) * env.exp_decay(dur, sub_t, 0.001) * sub
+    bark = filters.bp(noise.white(dur, rng), bark_hz * vr, bark_q) * env.exp_decay(dur, bark_t, 0.0002) * 1.8
+    y = fx.drive((cr + body + subw + bark) * 1.6, drive_amt)
+    if boom > 0:
+        y += (filters.lp(noise.brown(dur, rng), 180) * env.exp_decay(dur, 0.6, 0.002)
+              + osc.sine(38 * vr * (1 + np.exp(-t / 0.05)), dur) * env.exp_decay(dur, 0.7, 0.002)) * boom
+    place(y, click(rng, (3300.0, 5100.0), 0.05, 10, 0.006, mech), nsamp(0.035 + rng.uniform(0, 0.01)))
+    y = fx.reverb(y, room, wet, stereo_out=False, tail=False, lowcut=200)
+    if echo > 0:
+        head = filters.lp(y[: nsamp(0.35)], 2200)
+        for dt, g in ((0.23 + rng.uniform(0, 0.03), 0.32), (0.52 + rng.uniform(0, 0.05), 0.18), (0.95, 0.09)):
+            place(y, head * g * echo, nsamp(dt))
+    return fade(y, 0, min(0.4, dur * 0.25))
+
+
+def _sup(rng: np.random.Generator, *, puff_hz: float, dur: float, action: float, thump_hz: float, puff_t: float,
+         crack: float = 0.0) -> np.ndarray:
+    """Family suppressed shot: low-passed gas puff + thump + action clacks (+ residual supersonic crack)."""
+    t = tvec(dur)
+    puff = filters.lp(noise.white(dur, rng), puff_hz) * env.exp_decay(dur, puff_t, 0.0005) * 2.5
+    thmp = osc.sine(thump_hz * (1 + np.exp(-t / 0.01)), dur) * env.exp_decay(dur, puff_t * 1.2) * 0.8
+    y = puff + thmp
+    if crack > 0:
+        y += filters.hp(noise.white(dur, rng), 3500) * env.exp_decay(dur, 0.006, 0.0) * crack
+    place(y, click(rng, (2600.0, 4100.0, 6200.0), 0.07, 9, 0.01, action * 0.3), nsamp(0.018))
+    place(y, click(rng, (1900.0, 3500.0), 0.06, 8, 0.012, action * 0.2), nsamp(0.06 + rng.uniform(0, 0.01)))
+    room = "alley" if crack > 0 else "small_office"
+    return fade(fx.reverb(y, room, 0.12, stereo_out=False, tail=False), 0, 0.05)
+
+
+def weapon_smg_fire(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Niche: fast & light: 200 Hz punch, 1.4 kHz bark, very short tail (built for 900 rpm)."""
+    return _shot(rng, body_hz=200, sub=0.25, crack=1.2, dur=0.7, room="alley", wet=0.15, bark_hz=1400,
+                 bark_t=0.06, body_t=0.1, sub_t=0.12, mech=0.35)
+
+
+def weapon_smg_fire_suppressed(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Niche: tight 1.6 kHz puff + busy bolt clatter."""
+    return _sup(rng, puff_hz=1600, dur=0.3, action=1.0, thump_hz=220, puff_t=0.045)
+
+
+def weapon_shotgun_fire(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Niche: big boom: 38-48 Hz low end, wide 450 Hz bark, long body."""
+    return _shot(rng, body_hz=85, sub=1.4, sub_hz=48, crack=1.5, crack_t=0.02, dur=1.6, room="alley", wet=0.3,
+                 bark_hz=450, bark_q=0.8, bark_t=0.15, body_t=0.3, sub_t=0.45, boom=1.2, mech=0.2)
+
+
+def weapon_shotgun_fire_suppressed(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Niche: deep 700 Hz whump."""
+    return _sup(rng, puff_hz=700, dur=0.55, action=0.6, thump_hz=110, puff_t=0.1)
+
+
+def weapon_lmg_fire(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Niche: heavier than the rifle: 50 Hz sub, 620 Hz bark, more drive and mechanism."""
+    return _shot(rng, body_hz=95, sub=1.3, sub_hz=50, crack=2.0, dur=1.5, room="alley", wet=0.32, bark_hz=620,
+                 bark_t=0.11, body_t=0.22, sub_t=0.3, drive_amt=3.5, mech=0.4)
+
+
+def weapon_lmg_fire_suppressed(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Niche: 900 Hz puff with a heavy action."""
+    return _sup(rng, puff_hz=900, dur=0.45, action=1.3, thump_hz=140, puff_t=0.08)
+
+
+def weapon_sniper_fire(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Niche: heavy supersonic crack (3.5 kHz+) and a long tail with distant slap-back echoes."""
+    return _shot(rng, body_hz=90, sub=1.2, crack=2.6, crack_hp=3500, crack_t=0.008, dur=3.0, room="alley",
+                 wet=0.4, bark_hz=800, body_t=0.25, sub_t=0.4, echo=1.0, mech=0.15)
+
+
+def weapon_sniper_fire_suppressed(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Niche: suppressed but still supersonic: 800 Hz puff + residual crack."""
+    return _sup(rng, puff_hz=800, dur=0.7, action=0.5, thump_hz=120, puff_t=0.09, crack=0.6)
+
+
+def _mag_out(rng: np.random.Generator, k: float, mass: float) -> np.ndarray:
+    """Generic mag release: catch click, rasp slide-out, palm catch. k = pitch scale, mass = weight."""
+    dur = 0.3 + 0.1 * mass
+    y = np.zeros(nsamp(dur))
+    place(y, click(rng, (2600.0 * k, 4300.0 * k), 0.05, 10, 0.008, 0.9), 0)
+    rd = 0.08 * mass + 0.02 * rng.random()
+    rasp = filters.bp(noise.white(rd, rng), 1900 * k, 1.3) * env.segments([(0, 0), (rd * 0.3, 1), (rd, 0)], rd) * 0.5
+    place(y, rasp, nsamp(0.025))
+    place(y, thud(rng, 220 * k, 0.1, 0.5) * 0.3 * mass, nsamp(0.11 * mass + 0.02 * rng.random()))
+    return fade(y, 0, 0.03)
+
+
+def _mag_in(rng: np.random.Generator, k: float, mass: float) -> np.ndarray:
+    """Generic mag insert: scrape, seating clack with body, latch catch."""
+    dur = 0.28 + 0.08 * mass
+    y = np.zeros(nsamp(dur))
+    sd = 0.04 + 0.03 * mass
+    place(y, filters.bp(noise.white(sd, rng), 2800 * k, 1.5) * env.segments([(0, 0), (sd, 1)], sd) * 0.35, 0)
+    t0 = nsamp(sd)
+    place(y, click(rng, (1400.0 * k, 2300.0 * k, 3200.0 * k), 0.12, 14, 0.014, 1.3), t0)
+    place(y, thud(rng, 160 * k, 0.14, 0.6) * 0.6 * mass, t0)
+    place(y, click(rng, (4000.0 * k, 5600.0 * k), 0.03, 8, 0.004, 0.35), t0 + nsamp(0.012))
+    return fade(y, 0, 0.03)
+
+
+def _charging_handle(rng: np.random.Generator, k: float, mass: float) -> np.ndarray:
+    """Charging handle: pull back (scrape + stop click), release: spring slam with ring + thump."""
+    dur = 0.5 + 0.1 * mass
+    y = np.zeros(nsamp(dur))
+    pd = 0.07 * mass
+    place(y, filters.bp(noise.white(pd, rng), 3800 * k, 2.0) * env.segments([(0, 0), (pd * 0.5, 1), (pd, 0.3)], pd) * 0.5, 0)
+    place(y, click(rng, (2400.0 * k, 4400.0 * k), 0.05, 10, 0.008, 0.7), nsamp(pd))
+    t1 = nsamp(pd + 0.12 + 0.03 * rng.random())
+    place(y, click(rng, (1800.0 * k, 3300.0 * k, 5600.0 * k), 0.2, 18, 0.02, 1.6), t1)
+    place(y, thud(rng, 130 * k, 0.12, 0.4) * 0.5 * mass, t1)
+    return fade(y, 0, 0.04)
+
+
+def _bolt_action(rng: np.random.Generator, k: float) -> np.ndarray:
+    """Bolt-action cycle: lift (click), pull back (scrape + stop), push forward (scrape), lock down."""
+    dur = 0.95
+    y = np.zeros(nsamp(dur))
+    place(y, click(rng, (2100.0 * k, 3700.0 * k), 0.06, 10, 0.01, 0.8), 0)
+    for start, f0, f1 in ((0.08, 2600.0, 3600.0), (0.42, 3400.0, 2400.0)):
+        sd = 0.11
+        n = nsamp(sd)
+        sc = filters.biquad_tv(noise.white(sd, rng), "bp", np.geomspace(f0 * k, f1 * k, n), 2.5)
+        place(y, sc * np.sin(np.linspace(0, np.pi, n)) * 0.6, nsamp(start))
+    place(y, click(rng, (1700.0 * k, 3000.0 * k, 4900.0 * k), 0.12, 14, 0.014, 1.2), nsamp(0.2))  # rear stop
+    place(y, click(rng, (1500.0 * k, 2800.0 * k), 0.1, 12, 0.012, 1.0), nsamp(0.54))  # chambered
+    place(y, click(rng, (2000.0 * k, 3500.0 * k, 5200.0 * k), 0.15, 16, 0.016, 1.4), nsamp(0.68))  # lock down
+    place(y, thud(rng, 150 * k, 0.12, 0.4) * 0.4, nsamp(0.68))
+    return fade(y, 0, 0.05)
+
+
+def weapon_shotgun_pump(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Pump "ka-chunk": back stroke (scrape + clack + wood thud) then a heavier forward lock. Niche:
+    low 1.1-2.4 kHz clacks with 90-120 Hz body, two hits 0.17 s apart."""
+    dur = 0.5
+    y = np.zeros(nsamp(dur))
+    k = rng.uniform(0.96, 1.04)
+    for start, lvl, f in ((0.0, 1.0, 120.0), (0.17 + 0.02 * rng.random(), 1.4, 95.0)):
+        sd = 0.05
+        place(y, filters.bp(noise.white(sd, rng), 2200 * k, 1.2) * np.linspace(0.2, 1, nsamp(sd)) * 0.4, nsamp(start))
+        t0 = nsamp(start + sd)
+        place(y, click(rng, (1100.0 * k, 2400.0 * k, 3600.0 * k), 0.1, 12, 0.012, lvl), t0)
+        place(y, thud(rng, f, 0.15, 0.6) * 0.7 * lvl, t0)
+    return fade(y, 0, 0.04)
+
+
+def weapon_shotgun_shell_in(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Shell thumbed into the tube: brass/plastic click (3.5 kHz ring), short slide, follower click."""
+    dur = 0.22
+    y = np.zeros(nsamp(dur))
+    k = rng.uniform(0.95, 1.05)
+    place(y, click(rng, (3500.0 * k, 5200.0 * k), 0.06, 10, 0.01, 0.8), 0)
+    sd = 0.05
+    place(y, filters.bp(noise.white(sd, rng), 2600 * k, 1.2) * np.sin(np.linspace(0, np.pi, nsamp(sd))) * 0.4, nsamp(0.02))
+    place(y, click(rng, (1900.0 * k, 3100.0 * k), 0.05, 8, 0.008, 0.6), nsamp(0.08 + 0.02 * rng.random()))
+    return fade(y, 0, 0.03)
+
+
+def _family(k: float, mass: float) -> tuple[Callable, Callable, Callable]:
+    def mag_out(rng: np.random.Generator, v: int) -> np.ndarray:
+        return _mag_out(rng, k * rng.uniform(0.97, 1.03), mass)
+
+    def mag_in(rng: np.random.Generator, v: int) -> np.ndarray:
+        return _mag_in(rng, k * rng.uniform(0.97, 1.03), mass)
+
+    def bolt(rng: np.random.Generator, v: int) -> np.ndarray:
+        return _charging_handle(rng, k * rng.uniform(0.97, 1.03), mass)
+
+    for fn, base in ((mag_out, "_mag_out"), (mag_in, "_mag_in"), (bolt, "_charging_handle")):
+        fn.__name__ = fn.__qualname__ = f"{base}(k={k}, mass={mass})"  # shown in SOURCE.txt
+    return mag_out, mag_in, bolt
+
+
+weapon_smg_mag_out, weapon_smg_mag_in, weapon_smg_bolt = _family(1.1, 0.8)
+weapon_rifle_mag_out, weapon_rifle_mag_in, weapon_rifle_bolt = _family(0.85, 1.0)
+weapon_lmg_mag_out, weapon_lmg_mag_in, weapon_lmg_bolt = _family(0.7, 1.4)
+weapon_sniper_mag_out, weapon_sniper_mag_in = _family(0.9, 1.1)[:2]
+
+
+def weapon_sniper_bolt(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Bolt-action cycle (lift, back, forward, lock), 0.95 s."""
+    return _bolt_action(rng, 0.95 * rng.uniform(0.97, 1.03))
+
+
 def weapon_pistol_mag_out(rng: np.random.Generator, v: int) -> np.ndarray:
     """Mag release: thumb-button click (2.8-4.6 kHz), short polymer slide-out rasp (2.2 kHz band),
     soft palm catch. Niche: single 0.3 s event, brighter/lighter than mag_in."""
@@ -603,6 +798,119 @@ def keycard_beep(rng: np.random.Generator, v: int) -> np.ndarray:
     return y
 
 
+# ------------------------------------------------------------ QA-15 devices
+
+
+def keypad_accept(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Code accepted: soft triangle two-tone D6 -> G6 (1175/1568 Hz), quick 60 ms pips, no relay.
+    Niche: rounder and lower than keycard_beep (pure sines 1.6/2.4 kHz + relay click)."""
+    dur = 0.25
+    y = np.zeros(nsamp(dur))
+    for st, f in ((0.0, 1175.0), (0.075, 1568.0)):
+        place(y, osc.triangle(f, 0.06) * env.adsr(0.06, 0.002, 0.03, 0.7, 0.015), nsamp(st))
+    return fade(y, 0, 0.02)
+
+
+def c4_armed(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Arming chirp: three rising FM blips 2.5 -> 3.5 kHz then an LED 'pip'. One-shot (a ticking
+    loop can be added as cue.c4_tick if design wants a countdown)."""
+    dur = 0.45
+    y = np.zeros(nsamp(dur))
+    for i, f in enumerate((2500.0, 3000.0, 3500.0)):
+        b = osc.fm(f, 1.5, 1.2 * env.exp_decay(0.04, 0.03), 0.04) * env.adsr(0.04, 0.001, 0.02, 0.6, 0.01)
+        place(y, b, nsamp(i * 0.055))
+    place(y, osc.sine(4200.0, 0.08) * env.adsr(0.08, 0.002, 0.05, 0.8, 0.02) * 0.8, nsamp(0.22))
+    return fade(y, 0, 0.03)
+
+
+def c4_explode(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Large explosion: broadband crack, 30-60 Hz sub boom, 300-800 Hz roar, granular debris rain
+    (0.3-2.6 s) and a long alley tail. Niche: the only cue with sustained sub + debris texture."""
+    dur = 4.0
+    t = tvec(dur)
+    vr = 1 + 0.06 * (v - 1) + rng.uniform(-0.03, 0.03)
+    crack = filters.hp(noise.white(dur, rng), 1200) * env.exp_decay(dur, 0.05, 0.0) * 2.0
+    sub = osc.sine(30 * vr * (1 + 1.2 * np.exp(-t / 0.12)), dur) * env.exp_decay(dur, 1.8, 0.002) * 1.6
+    roar = filters.bp(noise.brown(dur, rng), 450 * vr, 0.6) * env.exp_decay(dur, 1.4, 0.004) * 2.2
+    rumble = filters.lp(noise.brown(dur, rng), 120) * env.exp_decay(dur, 2.8, 0.01) * 1.5
+    y = fx.drive(crack + sub + roar + rumble, 2.5)
+
+    def debris(i: int, r: np.random.Generator) -> np.ndarray:
+        if r.random() < 0.6:
+            return click(r, (r.uniform(900, 2500), r.uniform(2800, 6000)), 0.06, 8, 0.008, r.uniform(0.2, 0.8))
+        return thud(r, r.uniform(90, 260), 0.15, 0.7) * r.uniform(0.2, 0.6)
+
+    times = 0.3 + rng.uniform(0, 1, 90 + 10 * v) ** 1.7 * 2.3
+    y += granular.cloud(dur, np.sort(times), debris, rng) * 0.5
+    y = fx.reverb(y, "alley", 0.35, stereo_out=False, tail=False, lowcut=60)
+    return fade(y, 0, 0.6)
+
+
+def time_lock_start(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Vault time-lock engages: heavy bolt clunk (70 Hz + 0.9/1.8 kHz) then a 2 s geared motor
+    whir (90 Hz harmonics + gear ticks) that spins up and stops with a click."""
+    dur = 2.8
+    y = np.zeros(nsamp(dur))
+    place(y, thud(rng, 70, 0.5, 0.9) * 1.3, 0)
+    place(y, click(rng, (900.0, 1800.0, 2700.0), 0.3, 20, 0.03, 1.0), 0)
+    md = 2.0
+    mt = tvec(md)
+    f = 90 * np.minimum(1.0, 0.4 + mt / 0.4)
+    motor = filters.bp(osc.saw(f, md), 700, 0.6) + osc.sine(f * 6, md) * 0.15
+    motor *= env.segments([(0, 0), (0.3, 1), (md - 0.15, 1), (md, 0)], md) * 0.5
+    ph = np.cumsum(f / 6 / 48000) % 1.0
+    ticks = (np.diff(np.concatenate([[0.0], ph])) < 0).astype(float)
+    motor += filters.bp(ticks, 3200, 6) * 3.0 * env.segments([(0, 0), (0.3, 1), (md, 1)], md)
+    place(y, motor, nsamp(0.45))
+    place(y, click(rng, (1500.0, 2600.0), 0.08, 10, 0.01, 0.8), nsamp(0.45 + md))
+    return fx.reverb(y, "store", 0.15, stereo_out=False, tail=False)
+
+
+def time_lock_done(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Time-lock releases: retracting bolt clunk with a low metal ring, then a two-note chime
+    (A5, E6 bell). Niche: low clunk + bright consonant chime."""
+    dur = 2.2
+    y = np.zeros(nsamp(dur))
+    place(y, thud(rng, 85, 0.4, 0.8), 0)
+    place(y, osc.partials([310.0, 742.0, 1290.0], [0.6, 0.35, 0.2], [0.35, 0.2, 0.1], 0.6, rng), 0)
+    place(y, click(rng, (1100.0, 2200.0), 0.1, 12, 0.012, 0.9), nsamp(0.01))
+    for i, note in enumerate((81, 88)):
+        place(y, seq.bell(note, 1.4, rng, 0.4), nsamp(0.45 + i * 0.18), 0.45)
+    return fx.reverb(y, "store", 0.2, stereo_out=False, tail=False)
+
+
+def laser_trip(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Laser grid tripped: two fast down-swept square blips 4.5 -> 2 kHz with a buzzy 120 Hz edge.
+    Niche: sweeping (unlike the steady pager/alarm tones), 0.3 s."""
+    dur = 0.32
+    y = np.zeros(nsamp(dur))
+    bd = 0.11
+    sweep = np.geomspace(4500, 2000, nsamp(bd))
+    blip = osc.square(sweep, bd, 0.5) * env.adsr(bd, 0.002, 0.05, 0.8, 0.02)
+    blip *= 0.8 + 0.2 * osc.square(120, bd, 0.5)
+    for st in (0.0, 0.14):
+        place(y, filters.bp(blip, 3000, 0.7) + blip * 0.2, nsamp(st))
+    return fade(y, 0, 0.02)
+
+
+def zipline_attach(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Carabiner snaps onto the cable: bright clack (2.4/4.1/6.8 kHz) plus a taut-cable 'zing':
+    a stretched-harmonic string at 160 Hz with a falling pitch bend and friction hiss."""
+    dur = 1.1
+    y = np.zeros(nsamp(dur))
+    place(y, click(rng, (2400.0, 4100.0, 6800.0), 0.15, 16, 0.016, 1.3), 0)
+    zd = 0.9
+    t = tvec(zd)
+    f0 = 160 * (1 + 0.04 * np.exp(-t / 0.15))
+    zing = np.zeros(nsamp(zd))
+    for h in range(1, 14):
+        stretch = h * (1 + 0.0009 * h * h)
+        zing += osc.sine(f0 * stretch, zd) * np.exp(-t / (0.5 / (1 + 0.15 * h))) / h ** 0.6
+    hiss = filters.bp(noise.white(zd, rng), 5000, 1.5) * env.exp_decay(zd, 0.2) * 0.4
+    place(y, (zing * 0.4 + hiss), nsamp(0.015))
+    return fade(y, 0, 0.1)
+
+
 def lockpick(rng: np.random.Generator, v: int) -> np.ndarray:
     """Pin picking loop: irregular tiny ticks 5-8 kHz over a faint tension-wrench scrape.
     Niche: very high, sparse, quiet. Seamless 3 s loop."""
@@ -694,6 +1002,50 @@ CUES: list[CueSpec] = [
             pitch_jitter=0.03, volume_db=-5.0, note="D-026 viewmodel foley"),
     CueSpec("weapon_pistol_slide_release", weapon_pistol_slide_release, bus="Weapons", variations=3,
             max_distance=12.0, pitch_jitter=0.03, volume_db=-5.0, note="D-026 viewmodel foley"),
+    CueSpec("weapon_smg_fire", weapon_smg_fire, bus="Weapons", variations=4, max_distance=80.0, pitch_jitter=0.03,
+            note="D-034"),
+    CueSpec("weapon_smg_fire_suppressed", weapon_smg_fire_suppressed, bus="Weapons", variations=3,
+            max_distance=30.0, pitch_jitter=0.04, volume_db=-4.0, note="D-034"),
+    CueSpec("weapon_shotgun_fire", weapon_shotgun_fire, bus="Weapons", variations=4, max_distance=100.0, pitch_jitter=0.03,
+            note="D-034"),
+    CueSpec("weapon_shotgun_fire_suppressed", weapon_shotgun_fire_suppressed, bus="Weapons", variations=3,
+            max_distance=30.0, pitch_jitter=0.04, volume_db=-4.0, note="D-034"),
+    CueSpec("weapon_lmg_fire", weapon_lmg_fire, bus="Weapons", variations=4, max_distance=120.0, pitch_jitter=0.03,
+            note="D-034"),
+    CueSpec("weapon_lmg_fire_suppressed", weapon_lmg_fire_suppressed, bus="Weapons", variations=3,
+            max_distance=30.0, pitch_jitter=0.04, volume_db=-4.0, note="D-034"),
+    CueSpec("weapon_sniper_fire", weapon_sniper_fire, bus="Weapons", variations=4, max_distance=160.0, pitch_jitter=0.03,
+            note="D-034"),
+    CueSpec("weapon_sniper_fire_suppressed", weapon_sniper_fire_suppressed, bus="Weapons", variations=3,
+            max_distance=30.0, pitch_jitter=0.04, volume_db=-4.0, note="D-034"),
+    CueSpec("weapon_smg_mag_out", weapon_smg_mag_out, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_smg_mag_in", weapon_smg_mag_in, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_smg_bolt", weapon_smg_bolt, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_rifle_mag_out", weapon_rifle_mag_out, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_rifle_mag_in", weapon_rifle_mag_in, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_rifle_bolt", weapon_rifle_bolt, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_shotgun_pump", weapon_shotgun_pump, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_shotgun_shell_in", weapon_shotgun_shell_in, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_lmg_mag_out", weapon_lmg_mag_out, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_lmg_mag_in", weapon_lmg_mag_in, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_lmg_bolt", weapon_lmg_bolt, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_sniper_mag_out", weapon_sniper_mag_out, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_sniper_mag_in", weapon_sniper_mag_in, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
+    CueSpec("weapon_sniper_bolt", weapon_sniper_bolt, bus="Weapons", variations=2, max_distance=12.0,
+            pitch_jitter=0.03, volume_db=-5.0, note="D-034 viewmodel foley"),
     CueSpec("reload_pistol", reload_pistol, bus="Weapons", max_distance=12.0, volume_db=-4.0),
     CueSpec("reload_rifle", reload_rifle, bus="Weapons", max_distance=12.0, volume_db=-4.0),
     CueSpec("dry_fire", dry_fire, bus="Weapons", max_distance=8.0, pitch_jitter=0.03, volume_db=-6.0),
@@ -705,6 +1057,13 @@ CUES: list[CueSpec] = [
     CueSpec("door_open", door_open, max_distance=20.0, pitch_jitter=0.05),
     CueSpec("door_close", door_close, max_distance=20.0, pitch_jitter=0.05),
     CueSpec("keycard_beep", keycard_beep, max_distance=12.0, volume_db=-4.0),
+    CueSpec("keypad_accept", keypad_accept, max_distance=12.0, volume_db=-4.0, note="QA-15"),
+    CueSpec("c4_armed", c4_armed, max_distance=15.0, volume_db=-4.0, note="QA-15 one-shot chirp"),
+    CueSpec("c4_explode", c4_explode, variations=3, max_distance=250.0, pitch_jitter=0.03, note="QA-15"),
+    CueSpec("time_lock_start", time_lock_start, max_distance=30.0, note="QA-15"),
+    CueSpec("time_lock_done", time_lock_done, max_distance=30.0, note="QA-15"),
+    CueSpec("laser_trip", laser_trip, max_distance=30.0, volume_db=-2.0, cooldown_s=0.5, note="QA-15"),
+    CueSpec("zipline_attach", zipline_attach, max_distance=20.0, pitch_jitter=0.04, note="QA-15"),
     CueSpec("lockpick", lockpick, loop=True, max_distance=8.0, volume_db=-8.0),
     CueSpec("ui_click", ui_click, bus="UI", positional=False, volume_db=-10.0, cooldown_s=0.02),
     CueSpec("amb_glasshouse_interior", amb_glasshouse_interior, bus="Ambience", positional=False, loop=True,

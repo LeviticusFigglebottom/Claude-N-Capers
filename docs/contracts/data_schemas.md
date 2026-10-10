@@ -30,3 +30,11 @@ listed. All data ids follow `groups.md`. The code headers are authoritative for 
 `game/content/data/strings/strings.csv` (ENV B), header `keys,en`, Godot's default CSV translation importer.
 The lead registers the generated `strings.en.translation` in `project.godot` (internationalization/locale/translations)
 when it first merges. No runtime Translation registration.
+
+## Shell-by-shell reload timing (D-045)
+For weapons with `reload_per_round_s > 0`:
+`reload_time_s = reload_start_s + mag_size × reload_per_round_s + reload_end_s` (full top-up, PD2-style), and
+`reload_empty_time_s = reload_start_s + mag_size × reload_per_round_s + reload_end_empty_s` (adds the pump).
+ENV B's resolver **derives** both after mods (a mod changing `mag_size` changes the totals; mods don't add raw reload time
+to shell weapons). ENV A's runtime loads shells one by one and may be interrupted by firing; the derived totals exist
+for UI and animation length checks. Plowman: start 0.4, per 0.4333, end 0.4, end_empty 1.2 → 3.4 s / 4.2 s at 6 shells.

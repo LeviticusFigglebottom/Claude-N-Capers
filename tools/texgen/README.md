@@ -53,9 +53,10 @@ writes them.
   materials are isotropic or grid-aligned).
 * **First-person weapon materials (D-026) are the exception: 1 UV unit = 1.0 m, 1024 px/m.**
   `polymer_black`, `polymer_stipple`, `steel_blued`, `steel_bare`, `metal_matte`, `paint_white`,
-  `brass_cartridge` are 1024 px textures covering 1 m (`library.py` `tile_m: 1.0`), which is exactly
+  `brass_cartridge`, `alu_anodized_black`, `polymer_tan`, `polymer_olive` (D-034) are 1024 px textures covering 1 m (`library.py` `tile_m: 1.0`), which is exactly
   what `tools/blender/lib/uv.box_project(density=1024)` produces (uv = metres x 1024 / 1024).
-  `glass_lens_tint` is 512 px over 1 m (512 px/m; it is featureless, same UV scale).
+  `glass_lens_tint` and `glass_lens_coated` (faint purple-to-green thin-film drift) are 512 px over
+  1 m (512 px/m; featureless, same UV scale).
   `emissive_reticle_red` is an untextured emissive `StandardMaterial3D` (a reticle is a tiny
   emissive mesh; emission, not unshaded, so its HDR value reaches the glow pass).
 * Every textured library material stores its tile size as `metadata/uv_tile_m` (2.0 or 1.0);
@@ -78,6 +79,8 @@ are flat trim paint.
 
 ## Map conventions
 
+* PNGs are only rewritten when their bytes change (unchanged files keep their mtime, so Godot
+  does not re-import them).
 * **Albedo** sRGB PNG (RGBA for `glass_clear`, alpha = opacity). Import: VRAM, BPTC
   (`compress/high_quality=true`) because S3TC/BC1 tints dark neutrals green.
 * **ORM** linear PNG: R = AO, G = roughness, B = metallic. Materials set `metallic = 1`,
@@ -91,6 +94,11 @@ are flat trim paint.
 ## Colour rules (style_guide.md §3), enforced in `materials/base.py:finalize`
 
 * Albedo per-texel **linear luminance clamped to 0.04–0.85** (inside the sRGB 30–240 band too).
+  **D-038 exception:** black polymers, rubber and black paint/anodize set a per-material
+  `lum_min` in the preset, never below `rules.lum_min_black` (0.02; the build fails if lower).
+  Currently `polymer_black` (mean 0.027), `polymer_stipple` (0.025), `rubber_black` (0.025),
+  `alu_anodized_black` (0.029). Everything else, including `trim_interior` (so its rubber strips
+  stay at 0.04), keeps 0.04.
 * HSV **saturation ≤ 0.75** (of the sRGB-encoded value).
 * **Metals** (metallic > 0.5): roughness ≥ 0.15.
 * The build **fails** if any albedo texel is within RGB distance 40 of the interactable accent `#4FD1E8`.
@@ -103,7 +111,10 @@ roughness range, pattern size, wear/grime amount, the LUT grades and the environ
 Generators never hard-code colours. To change direction: copy `gsr.py` to `presets/<name>.py`,
 edit, `build.py --preset <name>`. Global `scales.wear` / `scales.grime` scale all weathering (bank
 pristine ~0.3, docks heavy ~1.8). Per-material `wear`, `grime`, `grime_color`, `grime_darken`,
-`grime_low`, `relief_ref_mm` tune `materials/base.py:weather`.
+`grime_low`, `relief_ref_mm` tune `materials/base.py:weather`. Optional per-material `specular`
+is written as `metallic_specular` (dielectric F0 scale, Godot default 0.5); the dark polymers (0.4)
+and rubber (0.35) use it so their sheen doesn't wash them out grey. `metal_matte` is dark gunmetal
+(mean 0.10).
 
 ## Modules
 

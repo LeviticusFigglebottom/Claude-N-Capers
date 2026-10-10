@@ -54,8 +54,13 @@ func run(ctx: LcContext) -> void:
 
 func _check_floors(ctx: LcContext) -> void:
 	var fh: PackedFloat32Array = ctx.map.floor_heights
-	if fh.is_empty() or not is_zero_approx(fh[0]):
-		fail(ctx, ctx.map, null, "floor_heights must start with 0.0 (ground floor), got %s" % [fh])
+	# heist_map.md §7: the ground floor is at 0.0; basements (negative heights) may come first.
+	var has_ground: bool = false
+	for h: float in fh:
+		if is_zero_approx(h):
+			has_ground = true
+	if not has_ground:
+		fail(ctx, ctx.map, null, "floor_heights must contain 0.0 (ground floor), got %s" % [fh])
 	for i: int in range(1, fh.size()):
 		if fh[i] <= fh[i - 1]:
 			fail(ctx, ctx.map, null, "floor_heights must be strictly ascending: %s" % [fh])

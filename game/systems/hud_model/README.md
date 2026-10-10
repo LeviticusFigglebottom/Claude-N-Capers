@@ -13,6 +13,13 @@ below by name.
   fires **once** per batch. All contract signals take no arguments.
 - Tracks the **local** crew member (`Net.local_slot()`). Set `tracked_slot` (int, -1 = local) for
   spectating or tests.
+- **`tracked_crew` mode (QB-48)**: `track(crew: CrewController)` (or set `tracked_crew`) binds one crew
+  member directly, with or without a HeistRuntime, e.g. the firing range: add a `LocalHudModel` node
+  anywhere in the range scene and call `track(crew)` with the node `CrewController.spawn_for_range()`
+  returned. It wins over `tracked_slot`; `track(null)` returns to slot mode (a freed crew member does
+  too). The binding shape (properties, signals, group `G.LOCAL_HUD_MODEL`) is unchanged. Without a
+  runtime, vitals/ammo/inventory/mask/warnings update from the crew member; runtime-backed properties
+  (objectives, crew, pagers, interaction, detection, assault) keep their defaults.
 - Never reads Input and never mutates game state, so host and clients behave the same.
 - `snapshot() -> Dictionary` returns every property (copies). `refresh()` polls now and emits.
 - Extra debug signal `changed(property: StringName)` fires per changed property.

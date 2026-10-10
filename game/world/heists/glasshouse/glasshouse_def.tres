@@ -1,0 +1,72 @@
+[gd_resource type="Resource" script_class="HeistDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_def.gd" id="1_v7tny"]
+
+[resource]
+script = ExtResource("1_v7tny")
+id = &"glasshouse"
+display_name = "Glasshouse"
+contact = &"contact.vance"
+briefing = "Vossberg Jewelers, corner of Harlow Avenue and Pell Street. Thursday's consignment of loose stones and estate pieces sits in the workshop safe overnight. Odile Vance has buyers. Keycard or drill, two bags minimum, out by the van."
+map_scene = "res://world/heists/glasshouse/glasshouse.tscn"
+base_payout = 40000
+loot = Array[StringName]([&"loot.jewelry", &"loot.cash"])
+objectives = Array[StringName]([&"casing", &"keycard", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"])
+preplanning = {
+&"asset.body_bag_drop": {
+"cost": 0,
+"favors": 0,
+"grants": {},
+"slot": &"Tactical/PreplanBodyBagDrop"
+},
+&"asset.inside_keycard": {
+"cost": 0,
+"favors": 0,
+"grants": {
+"force_active": {
+"group": &"keycard",
+"slot": &"kc_breakroom"
+}
+},
+"slot": &"keycard"
+},
+&"asset.propped_door": {
+"cost": 0,
+"favors": 0,
+"grants": {
+"force_active": {
+"group": &"back_door",
+"slot": &"back_propped"
+}
+},
+"slot": &"back_door"
+},
+&"asset.van_position": {
+"cost": 0,
+"favors": 0,
+"grants": {
+"choose_group": &"escape"
+},
+"slot": &"escape"
+},
+&"asset.zip_ties_drop": {
+"cost": 0,
+"favors": 0,
+"grants": {},
+"slot": &"Tactical/PreplanZipTiesDrop"
+},
+&"preplan_spawn_alley": {
+"cost": 0,
+"favors": 0,
+"grants": {},
+"slot": &"preplan_spawn_alley"
+},
+&"preplan_spawn_alley_mouth": {
+"cost": 0,
+"favors": 0,
+"grants": {},
+"slot": &"preplan_spawn_alley_mouth"
+}
+}
+escape_options = Array[StringName]([&"van"])
+music_track = &"glasshouse"

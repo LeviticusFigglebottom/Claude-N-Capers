@@ -10,6 +10,10 @@
 ## `changed(property)` additionally fires per changed property (debug / tests).
 ##
 ## Tracked crew member: `tracked_slot` (-1 = Net.local_slot()). Set it for spectating or tests.
+## `tracked_crew` mode (QB-48): `track(crew)` (or set `tracked_crew`) binds a CrewController directly,
+## with or without a HeistRuntime (e.g. ENV B's firing range: add a LocalHudModel anywhere, then
+## track(crew)). It wins over `tracked_slot`; the binding shape (properties, signals, group) is the same.
+## Without a runtime the runtime-backed properties keep their defaults (objectives, crew, pagers...).
 ##
 ## Duck-typed interfaces read when present (combat / weapons / stealth implementers MUST match):
 ##   crew.health   (Object, property on CrewController):
@@ -104,6 +108,8 @@ const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_pr
 
 ## Crew slot to track; -1 = Net.local_slot(). Not a HUD property.
 var tracked_slot: int = -1
+## QB-48: crew member tracked directly (wins over tracked_slot; null = slot mode). Not a HUD property.
+var tracked_crew: CrewController = null
 
 # --- vitals_changed
 var health: float = 0.0
@@ -247,13 +253,20 @@ func snapshot() -> Dictionary:
 	return out
 
 
+## QB-48: track `crew` directly (null = back to tracked_slot / the local slot). Refreshes now.
+func track(crew_member: CrewController) -> void:
+	tracked_crew = crew_member
+	if is_inside_tree():
+		refresh()
+
+
 ## Poll every source now (normally done at poll_hz) and emit the group signals that changed.
 func refresh() -> void:
-	_runtime = HeistRuntime.of(self)
+	var c: CrewController = _tracked()
+	_runtime = _runtime_of(c) if c != null else HeistRuntime.of(self)
 	var slot: int = _slot()
 	_assign(&"tracked_slot_resolved", slot)
-	var c: CrewController = null
-	if _runtime != null and slot >= 0:
+	if c == null and _runtime != null and slot >= 0:
 		c = _runtime.crew_controller(slot) as CrewController
 	if _runtime != null:
 		_assign(&"heist_phase", int(_runtime.phase))
@@ -656,11 +669,33 @@ func _on_npc_killed(npc_net_id: int, _killer: int, _info: Dictionary) -> void:
 # --- Helpers -----------------------------------------------------------------------
 
 func _slot() -> int:
+	var c: CrewController = _tracked()
+	if c != null:
+		return c.slot
 	return tracked_slot if tracked_slot >= 0 else Net.local_slot()
 
 
+## The directly tracked crew member when still valid (a freed one drops back to slot mode).
+func _tracked() -> CrewController:
+	if not is_instance_valid(tracked_crew):
+		tracked_crew = null
+		return null
+	return tracked_crew
+
+
+## The HeistRuntime `crew` belongs to (an ancestor), else null: tracked_crew mode never falls back to
+## HeistRuntime.current() for a crew member outside a heist.
+static func _runtime_of(crew_member: Node) -> HeistRuntime:
+	var n: Node = crew_member.get_parent() if crew_member != null else null
+	while n != null:
+		if n is HeistRuntime:
+			return n as HeistRuntime
+		n = n.get_parent()
+	return null
+
+
 func _service(service_name: StringName) -> Object:
-	if _runtime == null:
+	if _runtime == null and _tracked() == null:
 		_runtime = HeistRuntime.of(self)
 	if _runtime == null:
 		return null

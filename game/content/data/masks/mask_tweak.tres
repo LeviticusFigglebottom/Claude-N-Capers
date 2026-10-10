@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="MaskTweak" format=3]
+
+[ext_resource type="Script" path="res://content/masks/mask_tweak.gd" id="1_2klve"]
+
+[resource]
+script = ExtResource("1_2klve")
+custom_slot_count = 6
+default_composition = {
+"base": "mask_base.visage",
+"colors": "mask_colors.bone_ink",
+"material": "mask_material.lacquer",
+"pattern": "mask_pattern.solid"
+}
+placeholder_grid = 40
+preview_spin_deg_s = 18.0
+preview_drag_deg_per_px = 0.4
+preview_stick_deg_s = 140.0
+preview_key_step_deg = 15.0
+preview_pitch_limit_deg = 35.0
+preview_idle_s = 2.5
+preview_camera_distance_m = 0.55
+preview_background = Color(0.06, 0.07, 0.09, 1)

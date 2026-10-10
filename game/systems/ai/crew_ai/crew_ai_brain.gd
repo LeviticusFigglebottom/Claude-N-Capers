@@ -5,7 +5,9 @@
 ## Fidelity rows:
 ## - L6.1 / D-014 stealth: the AI waits at its spawn ("in the van"): it never moves and
 ##   `crew.stealth_hidden = true`, so the StealthDirector never observes it. P4: a "follow" order
-##   will make it detectable like a player (hook: `receive_order`).
+##   makes it detectable like a player (A3-05, tweak `stealth_follow_enabled`): it is then unhidden,
+##   follows its leader, mirrors the leader's mask and crouch, and stays detectable for the rest of
+##   the stealth phase (even when later ordered to hold).
 ## - L6.1 loud: unhidden and masked (the alarm masks everyone). Priorities each tick:
 ##   1. revive a DOWNED crew member (humans first, then AI; each downed member is assigned the nearest
 ##      free AI) — walk to revive_range_m, hold interact with interact_target_net_id for the full
@@ -15,13 +17,19 @@
 ##      (or tactically when no enemy is visible);
 ##   3. follow the nearest alive human (slot 0 fallback) within follow_min_m..follow_max_m, taking a
 ##      free COVER TacticalPoint near the leader while enemies are visible.
-##   No objectives, no bags (L6.1 bag carrying on order is P3).
+##   No objectives. Bags only on order.
+## - L6.1 orders (A3-05, CrewOrders resolves the receiver): `stance` follow (default) / hold (stay at
+##   the hold point, still fight, revive only within hold_revive_radius_m); `task` carry_bag (walk to
+##   the bag, pick it up via LootManager.carry, follow the leader, drop it facing a known SECURE_LOOT
+##   zone within secure_seek_radius_m) / revive (this AI takes that downed crew member before the
+##   automatic assignment); drop_bag (one-shot). The ordering human becomes the leader. Each
+##   accepted order requests `vo.crew.ack_<order>` (voice_line_requested [R]).
 ## Movement: NavigationServer3D path on the crew's world navigation map, straight-line fallback.
 ## All numbers: CrewAiTweak (crew_ai_tweak.tres).
 class_name CrewAiBrain
 extends Node
 
-enum Mode { INACTIVE, STEALTH_WAIT, IDLE, REVIVE, COVER, FOLLOW }
+enum Mode { INACTIVE, STEALTH_WAIT, IDLE, REVIVE, COVER, FOLLOW, HOLD, FETCH_BAG, SECURE_BAG }
 
 const NODE_NAME: String = "CrewAiBrain"
 const RNG_STREAM: StringName = &"crew_ai"
@@ -38,10 +46,21 @@ var target_enemy: NpcBase = null
 var revive_target: CrewController = null
 ## Cover point currently used (null when none).
 var cover_point: Node3D = null
-## Last order received from a human (P3/P4 hook; stored only, no behaviour yet).
+## Last order received from a human (crew_intent.md orders).
 var order: StringName = &""
 var order_target_net_id: int = 0
 var order_position: Vector3 = Vector3.ZERO
+## Standing order: &"follow" (default) or &"hold".
+var stance: StringName = &"follow"
+## Current task: &"" / &"carry_bag" / &"revive" (target: task_target_net_id).
+var task: StringName = &""
+var task_target_net_id: int = 0
+## Hold point while stance == &"hold".
+var hold_point: Vector3 = Vector3.ZERO
+## D-014 P4 option: ordered out of the van in stealth (detectable like a player).
+var stealth_engaged: bool = false
+## Slot of the human who gave the last order (the leader), -1 = nearest human.
+var leader_slot: int = -1
 
 var _crew: CrewController = null
 var _rt: HeistRuntime = null
@@ -60,6 +79,13 @@ var _reload_latch: bool = false
 var _aim_offset: Vector3 = Vector3.ZERO
 var _aim_head: bool = false
 var _interact_ticks: int = 0
+var _drop_pending: bool = false
+var _secure_look: Vector3 = Vector3.INF
+## Orders routed by the crew tick handler, applied at the start of the next brain tick so every
+## brain resolves the receiver on the same state.
+var _pending: Array[Dictionary] = []
+## Per human slot: the last routed order key (rising-edge, idempotent across repeated ticks).
+var _order_keys: Dictionary[int, String] = {}
 
 
 func _ready() -> void:
@@ -74,6 +100,8 @@ func _ready() -> void:
 	# Before CrewController (0) simulates, after HeistRuntime (-100) applies bot intents.
 	process_physics_priority = -50
 	_rt = HeistRuntime.of(self)
+	if _rt != null:
+		_rt.add_crew_tick_handler(_on_crew_tick)
 
 
 ## The brain of an AI crew member (null for humans / scenes without one).
@@ -92,11 +120,102 @@ func is_active() -> bool:
 	return bool(_rt.options.get("crew_ai", true))
 
 
-## P3/P4 hook: a human ordered this AI (crew_intent.md orders). Stored only for now.
-func receive_order(p_order: StringName, target_net_id: int = 0, position: Vector3 = Vector3.ZERO) -> void:
+## A human ordered this AI (crew_intent.md orders; normally routed by `_on_crew_tick`). Returns true
+## when the order was accepted (and acknowledged with a voice line request).
+## `position` Vector3.ZERO = "here". `issuer_slot` becomes the leader (-1 = keep the current one).
+func receive_order(p_order: StringName, target_net_id: int = 0, position: Vector3 = Vector3.ZERO,
+		issuer_slot: int = -1) -> bool:
 	order = p_order
 	order_target_net_id = target_net_id
 	order_position = position
+	var stealth: bool = _rt != null and not _rt.went_loud
+	if not _order_allowed(p_order, stealth) or not _apply_order(p_order, target_net_id, position):
+		return false
+	if stealth:
+		stealth_engaged = true
+	if issuer_slot >= 0:
+		leader_slot = issuer_slot
+	var line: StringName = StringName("vo.crew.ack_%s" % p_order)
+	EventBus.voice_line_requested.emit(&"crew_ai", line, {})
+	Net.replicate_event(&"voice_line_requested", [&"crew_ai", line, {}])
+	return true
+
+
+## In stealth only the D-014 P4 option (stealth_follow_enabled) lets an order take the AI out of the
+## van; hold / drop_bag never do.
+func _order_allowed(p_order: StringName, stealth: bool) -> bool:
+	if _crew == null or not CrewOrders.is_order(p_order):
+		return false
+	if stealth and not stealth_engaged:
+		return tweak.stealth_follow_enabled and p_order != &"hold" and p_order != &"drop_bag"
+	return true
+
+
+func _apply_order(p_order: StringName, target_net_id: int, position: Vector3) -> bool:
+	match p_order:
+		&"follow":
+			stance = &"follow"
+		&"hold":
+			stance = &"hold"
+			hold_point = position if position != Vector3.ZERO else _crew.global_position
+		&"carry_bag":
+			if _crew.is_carrying_bag():
+				return false
+			var bag: LootBag = Ids.lookup(target_net_id) as LootBag if target_net_id != 0 else null
+			if bag == null and _rt != null:
+				bag = CrewOrders.nearest_free_bag(_rt, position, tweak.bag_search_radius_m)
+			if bag == null or bag.secured or bag.is_carried():
+				return false
+			task = &"carry_bag"
+			task_target_net_id = bag.net_id
+			stance = &"follow"
+		&"drop_bag":
+			if not _crew.is_carrying_bag():
+				return false
+			_drop_pending = true
+		&"revive":
+			var t: CrewController = Ids.lookup(target_net_id) as CrewController
+			if t == null or t == _crew or t.crew_state != Enums.CrewState.DOWNED:
+				return false
+			task = &"revive"
+			task_target_net_id = target_net_id
+	return true
+
+
+## Crew tick handler (server): a human's intent carrying an order is routed to the AI CrewOrders
+## resolves; only the receiver queues it. Repeated identical orders (held intents) route once.
+func _on_crew_tick(crew: CrewController, intent: CrewIntent, _delta: float) -> void:
+	if crew == null or crew.is_ai or intent == null or _crew == null:
+		return
+	if intent.order == &"":
+		_order_keys.erase(crew.slot)
+		return
+	var key: String = "%s|%d|%s" % [intent.order, intent.order_target_net_id, intent.order_position]
+	if _order_keys.get(crew.slot, "") == key:
+		return
+	_order_keys[crew.slot] = key
+	if not is_active():
+		return
+	var rx: CrewController = CrewOrders.resolve_receiver(_rt, crew, intent.order, intent.order_target_net_id,
+		intent.order_position, tweak)
+	if rx == _crew:
+		_pending.append({"order": intent.order, "target": intent.order_target_net_id,
+			"position": intent.order_position, "issuer": crew.slot})
+
+
+## The downed crew member this AI was ordered to revive (null when none / no longer downed).
+func ordered_revive_target() -> CrewController:
+	if task != &"revive":
+		return null
+	var t: CrewController = Ids.lookup(task_target_net_id) as CrewController
+	return t if t != null and t.crew_state == Enums.CrewState.DOWNED else null
+
+
+## Automatic revive assignment may send this AI to `t` (hold: only within hold_revive_radius_m).
+func may_auto_revive(t: CrewController) -> bool:
+	if stance != &"hold":
+		return true
+	return _flat_dist(hold_point, t.global_position) <= tweak.hold_revive_radius_m
 
 
 func _physics_process(delta: float) -> void:
@@ -109,11 +228,24 @@ func _physics_process(delta: float) -> void:
 		_yaw = _crew.look_yaw
 		_pitch = _crew.look_pitch
 		_path = PackedVector3Array()
+	while not _pending.is_empty():
+		var o: Dictionary = _pending.pop_front()
+		receive_order(o["order"], o["target"], o["position"], o["issuer"])
 	if not _rt.went_loud:
-		# D-014: wait at the van, undetectable.
-		mode = Mode.STEALTH_WAIT
-		_crew.stealth_hidden = true
-		_crew.apply_intent(_idle_intent())
+		if not stealth_engaged:
+			# D-014: wait at the van, undetectable.
+			mode = Mode.STEALTH_WAIT
+			_crew.stealth_hidden = true
+			_crew.apply_intent(_idle_intent())
+			return
+		# D-014 P4 option: ordered out of the van; detectable like a player, mirrors the leader.
+		_crew.stealth_hidden = false
+		var leader: CrewController = _pick_leader()
+		if leader != null and leader.masked and not _crew.masked:
+			_crew.set_masked()
+		var si: CrewIntent = _think(delta)
+		si.crouch = leader != null and leader.crouched
+		_crew.apply_intent(si)
 		return
 	_crew.stealth_hidden = false
 	if not _crew.masked:
@@ -141,6 +273,8 @@ func _think(delta: float) -> CrewIntent:
 		_interact_ticks = 0
 		return _idle_intent()
 	var i: CrewIntent = CrewIntent.new()
+	if task == &"revive" and ordered_revive_target() == null:
+		task = &""
 	_tick_scan(delta)
 	var eye: Vector3 = _crew.eye_position()
 	var look_point: Vector3 = Vector3.INF
@@ -160,11 +294,21 @@ func _think(delta: float) -> CrewIntent:
 			look_point = revive_target.global_position + Vector3(0.0, 0.4, 0.0)
 			interacting = _hold_revive(i)
 	elif mobile:
-		var goal: Vector3 = _follow_goal()
+		mode = Mode.FOLLOW
+		var goal: Vector3 = _bag_goal()
+		if mode != Mode.FETCH_BAG and mode != Mode.SECURE_BAG:
+			goal = _hold_goal() if stance == &"hold" else _follow_goal()
+		elif _secure_look != Vector3.INF:
+			look_point = _secure_look
 		if goal != Vector3.INF:
 			goal_dist = _flat_dist(_crew.global_position, goal)
 			wish = _steer(goal, delta)
 		_interact_ticks = 0
+	if _drop_pending:
+		_drop_pending = false
+		if _crew.is_carrying_bag():
+			i.drop_bag = true
+			task = &"" if task == &"carry_bag" else task
 	if not mobile:
 		wish = Vector3.ZERO
 	if look_point == Vector3.INF and target_enemy != null and not interacting:
@@ -201,6 +345,7 @@ func _hold_revive(i: CrewIntent) -> bool:
 
 ## Downed crew members in priority order (humans first, then by slot), each assigned the nearest
 ## free AI; returns the one assigned to this AI (deterministic: every brain computes the same).
+## A3-05: ordered revives are assigned first; a holding AI only takes downed crew near its hold point.
 func _pick_revive_target() -> CrewController:
 	var downed: Array[CrewController] = []
 	var free_ai: Array[CrewController] = []
@@ -213,6 +358,13 @@ func _pick_revive_target() -> CrewController:
 				free_ai.append(c)
 	if downed.is_empty() or not free_ai.has(_crew):
 		return null
+	for c: CrewController in free_ai.duplicate():
+		var ot: CrewController = CrewAiBrain.of(c).ordered_revive_target()
+		if ot != null and downed.has(ot):
+			if c == _crew:
+				return ot
+			free_ai.erase(c)
+			downed.erase(ot)
 	downed.sort_custom(func(a: CrewController, b: CrewController) -> bool:
 		if a.is_ai != b.is_ai:
 			return not a.is_ai
@@ -222,11 +374,11 @@ func _pick_revive_target() -> CrewController:
 		var best_d: float = INF
 		for c: CrewController in free_ai:
 			var d: float = c.global_position.distance_to(t.global_position)
-			if d < best_d - 0.001:
+			if d < best_d - 0.001 and CrewAiBrain.of(c).may_auto_revive(t):
 				best = c
 				best_d = d
 		if best == null:
-			return null
+			continue
 		if best == _crew:
 			return t
 		free_ai.erase(best)
@@ -234,6 +386,14 @@ func _pick_revive_target() -> CrewController:
 
 
 ## Movement goal while following (cover near the leader when enemies are visible), or INF.
+## L6.1 hold position: stay at the hold point (still fights; revives nearby only).
+func _hold_goal() -> Vector3:
+	mode = Mode.HOLD
+	cover_point = null
+	_following = false
+	return Vector3.INF if _flat_dist(_crew.global_position, hold_point) <= tweak.hold_arrive_m else hold_point
+
+
 func _follow_goal() -> Vector3:
 	var leader: CrewController = _pick_leader()
 	if leader == null:
@@ -266,8 +426,12 @@ func _follow_goal() -> Vector3:
 	return leader.global_position + to_me.normalized() * tweak.follow_min_m
 
 
-## Nearest alive human (not this crew member), else slot 0.
+## The human who gave the last order (when not in custody), else the nearest alive human, else slot 0.
 func _pick_leader() -> CrewController:
+	if leader_slot >= 0:
+		var ld: CrewController = _rt.crew_controller(leader_slot) as CrewController
+		if ld != null and ld != _crew and ld.crew_state != Enums.CrewState.CUSTODY:
+			return ld
 	var best: CrewController = null
 	var best_d: float = INF
 	for c: CrewController in _rt.crew_members():
@@ -282,6 +446,84 @@ func _pick_leader() -> CrewController:
 		if s0 != null and s0 != _crew and s0.crew_state != Enums.CrewState.CUSTODY:
 			best = s0
 	return best
+
+
+## Bags (A3-05 carry_bag): fetch the ordered bag, or carry it to a known SECURE_LOOT zone within
+## secure_seek_radius_m and drop it facing the zone centre. Sets mode FETCH_BAG / SECURE_BAG when
+## handling a bag (else leaves it); returns the movement goal or INF.
+func _bag_goal() -> Vector3:
+	_secure_look = Vector3.INF
+	if _crew.is_carrying_bag():
+		return _secure_goal() if stance != &"hold" else Vector3.INF
+	return _fetch_goal()
+
+
+func _secure_goal() -> Vector3:
+	var zone: Area3D = _nearest_secure_zone()
+	if zone == null:
+		return Vector3.INF
+	mode = Mode.SECURE_BAG
+	var center: Vector3 = _zone_center(zone)
+	var goal: Vector3 = _secure_point(center)
+	var inside: bool = ZoneUtil.contains(zone, _crew.global_position + Vector3.UP * 0.5)
+	if not inside and _flat_dist(_crew.global_position, goal) > tweak.secure_arrive_m:
+		return goal
+	_secure_look = Vector3(center.x, _crew.global_position.y + 0.5, center.z)
+	var to: Vector3 = center - _crew.global_position
+	to.y = 0.0
+	var view: Vector3 = _view_dir()
+	view.y = 0.0
+	if to.length() < 0.3 or view.angle_to(to) <= deg_to_rad(tweak.secure_face_deg):
+		_drop_pending = true
+	return Vector3.INF
+
+
+func _fetch_goal() -> Vector3:
+	if task != &"carry_bag":
+		return Vector3.INF
+	var bag: LootBag = Ids.lookup(task_target_net_id) as LootBag
+	if bag == null or bag.secured or bag.is_carried() or bag.is_queued_for_deletion():
+		task = &""
+		return Vector3.INF
+	mode = Mode.FETCH_BAG
+	if _flat_dist(_crew.global_position, bag.global_position) <= tweak.bag_pickup_range_m:
+		var lm: LootManager = _rt.service(G.SVC_LOOT) as LootManager
+		if lm != null:
+			lm.carry(bag, _crew)
+		return Vector3.INF
+	return bag.global_position
+
+
+## Nearest SECURE_LOOT zone of this heist whose centre is within secure_seek_radius_m, or null.
+func _nearest_secure_zone() -> Area3D:
+	var best: Area3D = null
+	var best_d: float = tweak.secure_seek_radius_m
+	for n: Node in get_tree().get_nodes_in_group(G.LOOT_SECURE_ZONE):
+		var a: Area3D = n as Area3D
+		if a == null or not a.is_inside_tree() or not _rt.is_ancestor_of(a):
+			continue
+		var d: float = _flat_dist(_zone_center(a), _crew.global_position)
+		if d <= best_d:
+			best = a
+			best_d = d
+	return best
+
+
+static func _zone_center(zone: Area3D) -> Vector3:
+	for c: Node in zone.get_children():
+		var cs: CollisionShape3D = c as CollisionShape3D
+		if cs != null:
+			return Vector3(cs.global_position.x, zone.global_position.y, cs.global_position.z)
+	return zone.global_position
+
+
+## Closest navmesh point to the zone centre (the van body may sit on the centre), else the centre.
+func _secure_point(center: Vector3) -> Vector3:
+	var nav_map: RID = _crew.get_world_3d().navigation_map
+	if nav_map.is_valid() and NavigationServer3D.map_get_iteration_id(nav_map) > 0 \
+			and not NavigationServer3D.map_get_regions(nav_map).is_empty():
+		return NavigationServer3D.map_get_closest_point(nav_map, center)
+	return center
 
 
 func _pick_cover(leader: CrewController) -> Node3D:
@@ -325,6 +567,8 @@ func _steer(goal: Vector3, delta: float) -> Vector3:
 	while _path_idx < _path.size() - 1 and _flat_dist(pos, _path[_path_idx]) < tweak.waypoint_reach_m:
 		_path_idx += 1
 	var next: Vector3 = _path[_path_idx] if _path_idx < _path.size() else goal
+	if _door_hold(pos):
+		return Vector3.ZERO
 	var dir: Vector3 = next - pos
 	dir.y = 0.0
 	return dir.normalized() if dir.length() > 0.05 else Vector3.ZERO
@@ -343,6 +587,21 @@ func _plan(goal: Vector3) -> void:
 		_path = PackedVector3Array([goal])
 	elif _flat_dist(_path[_path.size() - 1], goal) > 0.5:
 		_path.append(goal)
+
+
+## A2-01 (QA-11): a closed door within reach on the path: ask it to open (unlocked doors only) and
+## hold position until it is open; a locked door stops the AI in front of it.
+func _door_hold(pos: Vector3) -> bool:
+	var tw: InteractionTweak = Tweak.interaction()
+	var pts: PackedVector3Array = PackedVector3Array([pos])
+	for i: int in range(_path_idx, _path.size()):
+		pts.append(_path[i])
+	var hit: Dictionary = Door.first_closed_on_path(get_tree(), pts, tw.npc_door_lookahead_m)
+	var door: Door = hit.get("door") as Door
+	if door == null or float(hit["distance"]) > tw.npc_door_reach_m:
+		return false
+	door.npc_open(_crew)
+	return true
 
 
 static func _flat_dist(a: Vector3, b: Vector3) -> float:

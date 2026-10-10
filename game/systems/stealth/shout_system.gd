@@ -7,12 +7,20 @@
 ## receives `CivilianBrain.on_shouted(crew)` (the brain applies the D-016 roll for panicked ones
 ## and emits civilian_intimidated [R]). Shouting is allowed while casing (S1.1) and is not a
 ## NoiseEvent (no make_noise).
+## S2.9 (A2-05): a shout that affects no civilian marks the markable target (guard, special, camera:
+## StealthDirector.mark_kind_of) nearest the aim line within mark_cone_half_deg / mark_range_m with
+## line of sight, for the whole crew. Unmasked (casing) crew mark only with `stealth.casing_can_mark`.
+## L5.1 (A3-04): the shout also addresses the police NPC nearest the aim line
+## (PoliceSurrender.shout_target), which may surrender (PoliceSurrender.on_shouted); a cop that
+## reacts counts as affected (no marking).
 ## Installation: until HeistRuntime creates it, the first CivilianBrain self-installs it with
 ## `ShoutSystem.ensure(runtime)` (service SERVICE + crew tick handler).
 class_name ShoutSystem
 extends Node
 
 signal shouted(slot: int, affected: Array[Node])
+## S2.9: a shout marked `target` (A2-05).
+signal marked(slot: int, target: Node)
 
 const SERVICE: StringName = &"shout"
 
@@ -59,8 +67,68 @@ func shout(crew: CrewController) -> Array[Node]:
 		var brain: Node = npc.get_node_or_null(^"Brain")
 		if brain != null and brain.has_method(&"on_shouted") and bool(brain.call(&"on_shouted", crew)):
 			affected.append(npc)
+	var rt0: HeistRuntime = _runtime if _runtime != null else HeistRuntime.of(crew)
+	var cop: NpcBase = PoliceSurrender.shout_target(crew, rt0)  # L5.1 (A3-04)
+	if cop != null and PoliceSurrender.on_shouted(cop, crew):
+		affected.append(cop)
 	shouted.emit(crew.slot, affected)
+	if affected.is_empty():
+		var t: Node3D = mark_target_for(crew)
+		var rt: HeistRuntime = _runtime if _runtime != null else HeistRuntime.of(crew)
+		if t != null and rt != null and rt.stealth != null and rt.stealth.mark(t, crew.slot):
+			marked.emit(crew.slot, t)
 	return affected
+
+
+## S2.9: the markable target a shout from `crew` would mark now (null when none).
+func mark_target_for(crew: CrewController) -> Node3D:
+	var rt: HeistRuntime = _runtime if _runtime != null else HeistRuntime.of(crew)
+	if rt == null or rt.stealth == null:
+		return null
+	if not crew.masked and not Modifiers.flag(crew.slot, &"stealth.casing_can_mark"):
+		return null
+	var tw: StealthTweak = Tweak.stealth()
+	var eye: Vector3 = crew.eye_position()
+	var aim: Vector3 = crew.aim_direction()
+	var half: float = deg_to_rad(tw.mark_cone_half_deg)
+	var cands: Array[Node3D] = []
+	for n: Node in rt.npcs():
+		cands.append(n as Node3D)
+	for cam: SecurityCamera in SecurityCamera.cameras_in(rt):
+		cands.append(cam)
+	var best: Node3D = null
+	var best_ang: float = INF
+	for c: Node3D in cands:
+		if c == null or StealthDirector.mark_kind_of(c) == &"":
+			continue
+		var point: Vector3 = _mark_point(c)
+		var to: Vector3 = point - eye
+		var ang: float = aim.angle_to(to)
+		if to.length() > tw.mark_range_m or ang > half or ang >= best_ang:
+			continue
+		if not _clear_to(crew, eye, point, c):
+			continue
+		best = c
+		best_ang = ang
+	return best
+
+
+## Vision ray from `eye` to `point` hits nothing, or only `target` (its own bodies).
+static func _clear_to(crew: CrewController, eye: Vector3, point: Vector3, target: Node3D) -> bool:
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(eye, point, StealthDirector.VISION_MASK)
+	q.exclude = [crew.get_rid()]
+	var hit: Dictionary = crew.get_world_3d().direct_space_state.intersect_ray(q)
+	if hit.is_empty():
+		return true
+	var col: Node = hit.get("collider") as Node
+	return col != null and (col == target or target.is_ancestor_of(col))
+
+
+static func _mark_point(n: Node3D) -> Vector3:
+	if n.has_method(&"eye_position"):
+		var npc: NpcBase = n as NpcBase
+		return npc.global_position + Vector3(0.0, 1.2, 0.0) if npc != null else n.call(&"eye_position")
+	return n.global_position
 
 
 ## Civilians a shout from `crew` reaches right now (before the D-016 roll).

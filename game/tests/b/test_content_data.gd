@@ -66,6 +66,8 @@ func test_p1_ids_resolve() -> void:
 		assert_true(ContentDB.loot(l) != null, String(l))
 	assert_true(ContentDB.tweak(&"concealment_curve") is ConcealmentCurve)
 	assert_true(ContentDB.tweak(&"display_stats") is DisplayStatTweak)
+	assert_true(ContentDB.tweak(&"perk_points") is PerkPointTweak, "perk point rate is a tweak (D-034 QB-45)")
+	assert_eq((ContentDB.tweak(&"perk_points") as PerkPointTweak).xp_per_perk_point, 500)
 
 
 ## Perk decks grant throwables by id (`perk.throwable` {item_id}); every one must resolve.
@@ -199,13 +201,17 @@ func test_mod_deltas_start_from_make_delta() -> void:
 
 ## make_delta() is a neutral element: base.plus(make_delta()) == base for every stored field.
 func test_make_delta_is_neutral() -> void:
-	var base: WeaponStats = ContentDB.weapon(&"weapon.kestrel_p9").base
-	var got: WeaponStats = base.plus(WeaponStats.make_delta())
-	for p: Dictionary in base.get_property_list():
-		if not (int(p["usage"]) & PROPERTY_USAGE_SCRIPT_VARIABLE):
-			continue
-		var n: StringName = p["name"]
-		assert_eq(got.get(n), base.get(n), String(n))
+	var zero: WeaponStats = WeaponStats.make_delta()
+	for f: StringName in [&"reload_per_round_s", &"reload_start_s", &"reload_end_s"]:
+		assert_eq(zero.get(f), 0.0, "make_delta zeroes %s (QB-43)" % f)
+	for wid: StringName in [&"weapon.kestrel_p9", &"weapon.plowman_12"]:
+		var base: WeaponStats = ContentDB.weapon(wid).base
+		var got: WeaponStats = base.plus(zero)
+		for p: Dictionary in base.get_property_list():
+			if not (int(p["usage"]) & PROPERTY_USAGE_SCRIPT_VARIABLE):
+				continue
+			var n: StringName = p["name"]
+			assert_eq(got.get(n), base.get(n), "%s %s" % [wid, n])
 
 
 ## P6: every non-stock mod has at least one downside (red stat or slower ADS/equip).

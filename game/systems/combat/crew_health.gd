@@ -14,6 +14,14 @@
 ##   while DOWNED; any other crew member (human, AI teammate via interact_target_net_id = net_id)
 ##   holds it for revive_time_s x interaction.revive_speed_mult (reviver). Completion -> NORMAL with
 ##   max_health x revived_health_frac[difficulty] x defense.revived_health_mult.
+## - L2.4 dodge (A2-06): a BULLET hit is dodged with chance ArmorDef.dodge + defense.dodge_add (<= 0:
+##   never) on GameRng &"dodge": no damage, `dodged` = true, the armor regen delay restarts.
+## - L2.11 heal(amount, reset_downs) (A2-06): doctor bag / first aid kit.
+## - L2.8 incapacitate(state, by_net_id) (A3-04): TASED / CLOAKER_DOWNED: helpless (no move, shoot or
+##   interact), no bleedout, NOT a down; the ReviveInteractable frees them (health kept). Damage still
+##   lands normally (zero health -> go_down). Emits crew_tased / crew_cloaker_downed [R].
+## - L2.12 (A3-04): a downed crew member cuffed by police (CrewCuffs.cuff_downed) is CUFFED with the
+##   bleedout paused; hits still drain the bleedout pool; freed -> DOWNED again.
 ## Events: crew_downed / crew_revived / crew_custody [R]; damage_applied [R].
 ## HUD duck-typed interface (local_hud_model.gd): health, max_health, armor, max_armor, downs_left,
 ## bleedout_left.
@@ -98,6 +106,27 @@ func reset_full() -> void:
 	regen_delay_left = 0.0
 
 
+## A2-06 (L2.4): dodge chance = ArmorDef.dodge + defense.dodge_add (a negative total = 0).
+func dodge_chance() -> float:
+	var base: float = 0.0
+	var l: Loadout = _crew.loadout if _crew != null else null
+	if l != null and l.armor != &"":
+		var def: ArmorDef = ContentDB.armor(l.armor)
+		if def != null:
+			base = def.dodge
+	return clampf(base + Modifiers.add(_slot(), &"defense.dodge_add"), 0.0, 1.0)
+
+
+## A2-06 (L2.11): heal `amount` (clamped to max health); `reset_downs` (doctor bag) also restores
+## every down. NORMAL crew only. Server.
+func heal(amount: float, reset_downs: bool = false) -> void:
+	if _crew == null or not Net.is_authority() or _crew.crew_state != Enums.CrewState.NORMAL:
+		return
+	health = minf(health + maxf(amount, 0.0), max_health)
+	if reset_downs:
+		downs_used = 0
+
+
 func is_downed() -> bool:
 	return _crew != null and _crew.crew_state == Enums.CrewState.DOWNED
 
@@ -122,7 +151,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		return out
 	var tw: CrewTweak = Tweak.crew()
 	var dmg: float = maxf(float(info.get("amount", 0.0)), 0.0) * Modifiers.mult(_slot(), &"defense.damage_taken_mult")
-	if st == Enums.CrewState.DOWNED:
+	if st == Enums.CrewState.DOWNED or _is_cuffed_while_down():
 		bleedout_health -= dmg
 		out["amount"] = dmg
 		out["health_damage"] = dmg
@@ -134,6 +163,14 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	if invuln_left > 0.0:
 		out["amount"] = 0.0
 		return out
+	# --- A2-06 dodge (L2.4): a ranged hit may do nothing; a dodge restarts the armor regen delay.
+	if int(info.get("type", Enums.DamageType.BULLET)) == Enums.DamageType.BULLET and _roll_dodge():
+		regen_delay_left = tw.armor_regen_delay_s * Modifiers.mult(_slot(), &"defense.armor_regen_delay_mult")
+		out["amount"] = 0.0
+		out["dodged"] = true
+		_publish(out, attacker_net_id)
+		return out
+	# --- end A2-06
 	var armor_dmg: float = 0.0
 	var health_dmg: float = 0.0
 	if bool(info.get("pierced_armor", false)) or armor <= 0.0:
@@ -221,9 +258,19 @@ func go_to_custody() -> void:
 	Log.info(&"combat", "slot %d in custody" % _crew.slot)
 
 
-## Server: revive a DOWNED crew member (ReviveInteractable completion, inspire P2...).
+## Server: revive a DOWNED crew member (ReviveInteractable completion, inspire P2...). A TASED /
+## CLOAKER_DOWNED one (L2.8) gets up with the health and armor they had.
 func revive(by_slot: int) -> void:
-	if _crew == null or not Net.is_authority() or _crew.crew_state != Enums.CrewState.DOWNED:
+	if _crew == null or not Net.is_authority():
+		return
+	if is_incapacitated():
+		_disable_revive()
+		_crew.set_crew_state(Enums.CrewState.NORMAL)
+		revived.emit(by_slot)
+		EventBus.crew_revived.emit(_crew.slot, by_slot)
+		Net.replicate_event(&"crew_revived", [_crew.slot, by_slot])
+		return
+	if _crew.crew_state != Enums.CrewState.DOWNED:
 		return
 	var tw: CrewTweak = Tweak.crew()
 	var arr: PackedFloat32Array = tw.revived_health_frac
@@ -242,6 +289,39 @@ func revive(by_slot: int) -> void:
 	revived.emit(by_slot)
 	EventBus.crew_revived.emit(_crew.slot, by_slot)
 	Net.replicate_event(&"crew_revived", [_crew.slot, by_slot])
+
+
+## A3-04 (L2.8): Taser / Phantom takedown. `state` is CrewState.TASED or CLOAKER_DOWNED; only a
+## NORMAL (or SWAN_SONG) crew member can be taken down. Not a down, no bleedout; helpless until a
+## teammate revives them (ReviveInteractable). Emits crew_tased / crew_cloaker_downed [R]. Server.
+func incapacitate(state: Enums.CrewState, by_net_id: int = 0) -> bool:
+	if _crew == null or not Net.is_authority():
+		return false
+	if state != Enums.CrewState.TASED and state != Enums.CrewState.CLOAKER_DOWNED:
+		Log.warn(&"combat", "incapacitate: %s is not TASED / CLOAKER_DOWNED" % Enums.CrewState.keys()[state])
+		return false
+	var cur: int = _crew.crew_state
+	if cur != Enums.CrewState.NORMAL and cur != Enums.CrewState.SWAN_SONG:
+		return false
+	_crew.set_crew_state(state)
+	if _revive != null:
+		_revive.enabled = true
+	var sig: StringName = &"crew_tased" if state == Enums.CrewState.TASED else &"crew_cloaker_downed"
+	EventBus.emit_signal(sig, _crew.slot, by_net_id)
+	Net.replicate_event(sig, [_crew.slot, by_net_id])
+	Log.info(&"combat", "slot %d %s by %d" % [_crew.slot, sig, by_net_id])
+	return true
+
+
+## L2.8: TASED or CLOAKER_DOWNED (helpless, revivable, not a down).
+func is_incapacitated() -> bool:
+	return _crew != null and (_crew.crew_state == Enums.CrewState.TASED
+		or _crew.crew_state == Enums.CrewState.CLOAKER_DOWNED)
+
+
+## L2.12: cuffed by police while downed (bleedout paused, pool still takes hits).
+func _is_cuffed_while_down() -> bool:
+	return _crew != null and _crew.crew_state == Enums.CrewState.CUFFED and bleedout_left > 0.0
 
 
 ## Server: custody release (P3 hostage trade): back to NORMAL at full health, downs reset.
@@ -275,8 +355,11 @@ func server_tick(delta: float) -> void:
 				bleedout_left = 0.0
 				go_to_custody()
 			return
-		Enums.CrewState.CUSTODY:
+		Enums.CrewState.CUSTODY, Enums.CrewState.TASED, Enums.CrewState.CLOAKER_DOWNED:
 			return
+		Enums.CrewState.CUFFED:
+			if bleedout_left > 0.0:
+				return  # L2.12: police-cuffed while downed, bleedout paused
 	if invuln_left > 0.0:
 		invuln_left = maxf(invuln_left - delta, 0.0)
 	if regen_delay_left > 0.0:
@@ -301,7 +384,7 @@ func _refresh_max() -> void:
 
 
 func _revive_check(reviver: Node) -> StringName:
-	if _crew == null or _crew.crew_state != Enums.CrewState.DOWNED:
+	if _crew == null or (_crew.crew_state != Enums.CrewState.DOWNED and not is_incapacitated()):
 		return InteractableComponent.BLOCK_DISABLED
 	if reviver == _crew:
 		return InteractableComponent.BLOCK_STATE
@@ -311,6 +394,12 @@ func _revive_check(reviver: Node) -> StringName:
 func _on_revive_completed(reviver: Node) -> void:
 	var by: int = int(reviver.get(&"slot")) if reviver != null else -1
 	revive(by)
+
+
+## Rolled on GameRng &"dodge" only when the chance is positive.
+func _roll_dodge() -> bool:
+	var chance: float = dodge_chance()
+	return chance > 0.0 and GameRng.stream(&"dodge").randf() < chance
 
 
 func _slot() -> int:

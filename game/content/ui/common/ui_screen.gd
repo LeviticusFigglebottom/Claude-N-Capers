@@ -39,5 +39,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		back_requested.emit()
 
 
+## Deferred: visibility_changed fires on the screen before its children's visible-in-tree state is
+## updated, so focusing right away would find no visible control (menu transitions lost focus).
 func _on_visibility_changed() -> void:
-	focus_default()
+	focus_default.call_deferred()

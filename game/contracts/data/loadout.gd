@@ -13,6 +13,8 @@ extends Resource
 @export var deployable_secondary: StringName = &""
 @export var armor: StringName = &""
 @export var mask: StringName = &""
+## Custom mask descriptor (ENV B MaskCatalog format) so every peer renders the same mask; {} = preset `mask` (QA-25).
+@export var mask_descriptor: Dictionary = {}
 @export var perk_deck: StringName = &""
 @export var perk_deck_cards: int = 0       ## unlocked card count 0..9
 @export var skills: Dictionary = {}        ## skill_id -> 1 (basic) / 2 (aced)

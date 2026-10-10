@@ -16,3 +16,8 @@
   server resolves the target with a 2 m ray plus a 10° assist cone).
 * Orders (`order`, `order_target_net_id`, `order_position`) are issued by humans to AI teammates.
   Valid orders: `&"follow"`, `&"hold"`, `&"carry_bag"`, `&"drop_bag"`, `&"revive"`.
+
+## Order routing (QA-21, D-043)
+`order_target_net_id`: for follow/hold/drop_bag it is the AI teammate; for carry_bag it is the bag; for revive it is the downed
+crew member. If it is 0: use the AI in the issuer's aim cone, else the nearest suitable AI. `order_position == Vector3.ZERO`
+means "at the issuer's position" (hold here).

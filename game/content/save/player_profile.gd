@@ -1,6 +1,6 @@
 ## A local player's persistent progression profile. Owner: ENV B. Persisted by SaveService.
 ##
-## JSON shape (version 3; see SaveService for migrations):
+## JSON shape (version 4; see SaveService for migrations):
 ##   version: int, profile_name: String,
 ##   cash: int (spending cash), stash: int (offshore, "the stash"; pd2_fidelity S10.4),
 ##   xp: int (total), level: int (0..100; pd2_fidelity P1),
@@ -19,6 +19,11 @@
 ##     configured count (ProgressionUiTweak.skill_set_count).
 ##   perk_cards: Dictionary deck id -> unlocked card count 0..9 (v3, PD2 P4: each deck has its own
 ##     progress). loadout.perk_deck_cards mirrors the active deck's entry (PerkProgress.sync()).
+##   owned_mask_parts: Array[String] (v4, P8/P9): mask part ids owned on top of the parts flagged
+##     `default_owned` in data (MaskLocker.grant_part; payday card drops later).
+##   custom_masks: Array of composition dicts (v4, P8): index n = custom slot `mask.custom.<n>`,
+##     {"base", "material", "colors", "pattern"} part ids, {} = empty slot (MaskLocker / MaskCatalog;
+##     content/docs/masks.md). loadout.mask may hold a preset id or a custom slot id.
 ##   stats: Dictionary String -> int counters (heists_completed, ...).
 ##   settings: Dictionary of JSON values, stored as-is (JSON numbers come back as float).
 ## StringNames are written as strings and converted back on load.
@@ -33,7 +38,7 @@ const LOADOUT_ID_FIELDS: Array[String] = [
 ]
 const LOADOUT_LIST_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 
-var version: int = 3
+var version: int = 4
 var profile_name: String = ""
 var cash: int = 0
 var stash: int = 0
@@ -43,6 +48,8 @@ var banked_stealth_mult: float = 1.0
 var owned_weapons: Array[StringName] = []
 var owned_mods: Array[StringName] = []
 var owned_masks: Array[StringName] = []
+var owned_mask_parts: Array[StringName] = []
+var custom_masks: Array[Dictionary] = []
 var loadout: Loadout = Loadout.new()
 var skill_sets: Array[Dictionary] = []
 var active_skill_set: int = 0
@@ -73,6 +80,12 @@ static func from_dict(d: Dictionary) -> PlayerProfile:
 	p.owned_weapons = _to_names(d.get("owned_weapons", []))
 	p.owned_mods = _to_names(d.get("owned_mods", []))
 	p.owned_masks = _to_names(d.get("owned_masks", []))
+	p.owned_mask_parts = _to_names(d.get("owned_mask_parts", []))
+	p.custom_masks = []
+	var cm: Variant = d.get("custom_masks", [])
+	if cm is Array:
+		for e: Variant in (cm as Array):
+			p.custom_masks.append(_strings_dict(e))
 	var ld: Variant = d.get("loadout", {})
 	p.loadout = loadout_from_dict(ld as Dictionary if ld is Dictionary else {})
 	p.skill_sets = []
@@ -117,6 +130,8 @@ func to_dict() -> Dictionary:
 		"owned_weapons": _to_strings(owned_weapons),
 		"owned_mods": _to_strings(owned_mods),
 		"owned_masks": _to_strings(owned_masks),
+		"owned_mask_parts": _to_strings(owned_mask_parts),
+		"custom_masks": _custom_masks_to_list(),
 		"loadout": loadout_to_dict(loadout),
 		"skill_sets": _skill_sets_to_list(),
 		"active_skill_set": active_skill_set,
@@ -180,6 +195,22 @@ func _skill_sets_to_list() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for i: int in range(maxi(skill_sets.size(), active_skill_set + 1)):
 		out.append(_skills_to(skill_set(i)))
+	return out
+
+
+func _custom_masks_to_list() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for c: Dictionary in custom_masks:
+		out.append(_strings_dict(c))
+	return out
+
+
+## String -> String copy of a JSON object (custom mask compositions); non-dicts become {}.
+static func _strings_dict(v: Variant) -> Dictionary:
+	var out: Dictionary = {}
+	if v is Dictionary:
+		for k: Variant in (v as Dictionary):
+			out[String(k)] = String((v as Dictionary)[k])
 	return out
 
 

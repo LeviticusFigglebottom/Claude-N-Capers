@@ -76,13 +76,14 @@ func _exit_tree() -> void:
 # --- Public API ------------------------------------------------------------------------------
 
 ## Alive police units (roles &"police" / &"special") in this heist: AI teammates' target list.
+## A3-04 (L5.1/L5.2): surrendered, tied and converted cops (NpcBase.BLIND_STATES) are not units.
 func alive_units() -> Array[NpcBase]:
 	var out: Array[NpcBase] = []
 	if _runtime == null:
 		return out
 	for n: Node in _runtime.npcs():
 		var npc: NpcBase = n as NpcBase
-		if npc != null and POLICE_ROLES.has(npc.role):
+		if npc != null and POLICE_ROLES.has(npc.role) and not NpcBase.BLIND_STATES.has(npc.alert_state):
 			out.append(npc)
 	return out
 
@@ -104,6 +105,8 @@ func is_assault_active() -> bool:
 func begin() -> void:
 	if running or not Net.is_authority():
 		return
+	if _runtime != null and _runtime.heist_mode == Enums.HeistMode.STEALTH_ONLY:
+		return  # S11.3: a stealth-only alarm aborts the heist, no assault
 	running = true
 	wave_index = 1
 	_first_responder_groups_left = tweak.first_responder_groups

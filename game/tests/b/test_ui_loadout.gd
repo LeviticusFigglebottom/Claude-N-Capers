@@ -2,13 +2,12 @@
 ## when a mod changes; it saves to the profile.
 extends TestCase
 
-const TEST_ROOT: String = "user://test_profiles"
 
 var _screen: LoadoutScreen
 
 
 func before_all() -> void:
-	SaveService.root_dir = TEST_ROOT
+	SaveService.root_dir = BTestUtil.profile_root()
 
 
 func after_all() -> void:

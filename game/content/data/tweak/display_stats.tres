@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1")
 damage_scale = 1.0
-damage_pellet_exponent = 0.0
+damage_pellet_exponent = 1.0
 accuracy_max = 100.0
 accuracy_spread_best_deg = 0.0
 accuracy_spread_worst_deg = 2.5

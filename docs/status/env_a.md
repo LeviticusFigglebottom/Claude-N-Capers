@@ -3,6 +3,54 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-10 19:10 UTC: A2-08, A3-04, A3-05, A3-08 (trunk 0748a0e merged)
+### Done (8a9bb6b)
+- A2-08: resolver `force_if`, `slot_requires`, rare `min_difficulty`, scalar `weights_by_difficulty` (documented in game/systems/heist/README.md "Variant rule fields (A2-08)" for heist_map.md); window glass collision from the visual's `Glass` AABB; safe `keycard` method (`Safe.reader` or reader `targets`); door `push_bar` (inside = −Z side); camera collision kept in front of the wall pivot.
+- A3-04: custody (auto-release 119 s Routine/Tense, trade-only above; release full health/50% ammo), trade (5 s + 30 s/civ kill, locked ANTICIPATION..SUSTAIN, highlighted hostage + `trade_hostage` interaction, auto-trade for solo/AI), police cuffing downed non-shooting players, `incapacitate()` for TASED/CLOAKER_DOWNED, shout-surrender of cops (L5.1 formula), tie, Turncoat converts (`ability.converts_max`), fail `all_custody` only when no release path.
+- A3-05: AI orders (follow/hold/carry_bag/drop_bag/revive), contextual `order_menu` (T), stealth follow (`stealth_follow_enabled`), ack voice lines.
+- A3-08: ECM feedback built into every ECM; crew_cuffed/uncuffed [R]; `HeistResult.fail_reason`; PreplanResult apply (preplanning.md) + ids via `PreplanPlan.resolve_ids`; `set_input_paused`; local camera current + WeaponVisual viewmodel + mask at Head/Socket (`CrewView`); LocalHudModel `tracked_crew`/`track()`; gamepad look.
+- `check_all.sh --env a` PASS (752 tests, 0 failed; validate_level glasshouse PASS).
+### In progress
+- Next wave: A3-01 + A3-06 specials/piercing/plates/suppression/explosives; A3-02 + A3-03 Brandt/Aegis + director escalation; A3-09 + A3-10 (bag_lift, hack_terminal, OUT_OF_BOUNDS, mission timers, group difficulty weights, escape types, no ladder with bag); animation driver for ENV D's humanoid set (characters.md v1.3). A3-07 co-op after.
+### Blocked
+- —
+### Questions for lead
+- QA-21 (crew_intent.md): order routing as implemented: `order_target_net_id` = the AI for follow/hold/drop_bag, the bag for carry_bag, the downed crew for revive; else the AI in the aim cone, else the nearest suitable AI. `order_position == Vector3.ZERO` = "here". Please confirm or add an explicit flag.
+- QA-22 (ui_hud.md): add `tracked_crew`/`track(crew)`; custody/trade HUD fields (negotiation_left, auto_release_left, highlighted hostage) are on CustodySystem; add them to LocalHudModel's binding table?
+- QA-23 (ENV B for B4-08): `PreplanPlan.resolve_ids(heist_id, ids) -> Dictionary` is called by name; `apply()` should emit the contract keys (old keys still accepted).
+- QA-24 (strings for ENV B): ui.blocked.push_bar_outside, ui.prompt.trade_hostage, ui.prompt.convert, ui.prompt.cable_tie, vo.crew.ack_follow/hold/carry_bag/drop_bag/revive.
+- QA-25: who sends a remote player's mask descriptor (`CrewView.mask_descriptor`) for custom masks on other peers?
+- QA-26: camera collision for ceiling mounts still reaches 7.5 cm above a top-centre pivot; confirm the ceiling convention before I change it.
+### Ready for integration
+- yes; `check_all.sh --env a` result: PASS
+
+## 2026-10-10 17:30 UTC: P2 stealth complete (A2-01..A2-07), D-032/D-033 merged
+### Done (46ac69e)
+- A2-01 doors on the nav graph: NPC/AI path look-ahead for closed doors; unlocked doors opened by NPCs (0.6 s stealth / instant loud), guards open keycard doors via `Door.npc_authorized_tags` vs SpawnPoint tags; `NavLink` per door; `door_blocked` signal = P3 breach hook.
+- A2-02 cameras: real observers (cone, pan, Led, LOS from Lens), one-shot destroy (Titan on Lethal+ / `titan`), `broken_camera` stimulus, camera_station operator (kill/dominate → all cameras off; running S3.5 countdown still fires), 30% dispatch of a guard to broken cameras.
+- A2-03 ECM: 20 s jam (×mult), chaining, cameras + phones jammed, S3.5 countdown untouched, feedback stun 15 m/6 s (gated by `stealth.ecm_feedback`), `stealth.ecm_pager_delay`, `stealth.ecm_opens_doors` on keycard readers.
+- A2-04 codes per code_group (`CodeRegistry`, seeded), code notes + keypads, safes (code/lockpick/drill/saw/c4, size durations, time locks), saws, laser grids (static/sweeping/timed_off), bag zipline, ladders.
+- A2-05 S3.2 guard cuff flow (pause 5 s, approach, cuff; >1.7 m move or shooting → alarm; 4 min cooldown; 60 s self-free / teammate uncuff), S3.7 misfire 10%, S2.9 marking (4.5 s / 8 s × mult) + Sixth Sense.
+- A2-06 deployables runtime (doctor bag, FAK, ammo bag, body bag case, ECM) as `prefabs/deployable`, L2.4 dodge.
+- A2-07 `hostage` stimuli (dominated/surrendered/tied guards), STEALTH_ONLY abort (Mercer line + fail after 5 s, no assault), LOUD_ONLY masks crew, pre-planning hooks (`options.preplanning`, see game/systems/heist/README.md).
+- `check_all.sh --env a`: PASS (530 tests incl. other envs, 0 failed).
+### In progress
+- Nothing running. Next (unless redirected): P4 modifier hooks (D-031) and Glasshouse gate bring-up when G1 lands.
+### Blocked
+- —
+### Questions for lead
+- QA-13 (gameplay_prefabs.md additions): door `npc_authorized_tags`; security_camera `titan`; keypad `targets`; safe `code_group`, `time_lock_s`; laser_grid `beam_count`, `period_s`, `off_s`, `phase_s`, `sweep_beams` + optional visual nodes `Beam0..n` (horizontal for static/timed_off, vertical for sweeping); new runtime-only prefab `res://systems/prefabs/deployable/deployable.tscn` (`DeployablePrefab`, exports `kind`, `deployable_id`; visual = DeployableDef.model or a `Body` placeholder).
+- QA-14 (strings for ENV B): ui.blocked.code_unknown, ui.blocked.requires_bag, ui.blocked.no_deployable, ui.blocked.no_space; ui.prompt.enter_code, read_note, place_saw, place_c4, start_time_lock, zipline_bag, use_first_aid_kit, ecm_feedback, uncuff, suspicious_not_allowed; vo.guard.cuff_warning, vo.mercer.abort. Note the existing `ui.blocked.*` vs csv `ui.prompt.blocked.*` naming mismatch: which is canonical?
+- QA-15 (audio cues for ENV C): cue.keypad_accept, cue.c4_armed, cue.c4_explode, cue.time_lock_start, cue.time_lock_done, cue.laser_trip, cue.zipline_attach.
+- QA-16: S8.6 says feedback is built into every ECM, but key `stealth.ecm_feedback` (FLAG) gates it. Implemented gated; flip if every ECM should have feedback.
+- QA-17: no `crew_cuffed` EventBus event exists; HUD/audio can only see CrewState.CUFFED via LocalHudModel. Add `crew_cuffed(slot, by_net_id)` / `crew_uncuffed`?
+- QA-18 (pre-planning, C3): ENV B has no asset data yet; the proposed AssetDef shape `{id: {cost, favors, slot, grants, drop, spawn_tag, escape_tag, force_variants, reveals}}` and PREPLAN_POINT matching (`asset_slot` property, then metadata, then node name) are in game/systems/heist/README.md. Please confirm in data_schemas.md / heist_map.md.
+- QA-19: STEALTH_ONLY alarm goes LOUD then ends (result `stealth: false`); HeistResult has no failure-reason field. Add `"fail_reason": StringName`?
+- QA-20: `stealth.casing_can_mark` (B's key) gates marking while unmasked; PD2 allows marking while casing by default. Confirm.
+- Not replicated yet (P3/P6 net hardening): placed deployables, known codes, pre-plan drops, interaction progress on remote clients.
+### Ready for integration
+- yes; `check_all.sh --env a` result: PASS
+
 ## 2026-10-10 16:00 UTC: A-M2 + A-M3 (A1-03 behaviour, A1-04..A1-10, A1-12), trunk merged (D-026..D-029)
 ### Done
 - A1-04 detection: per-(observer, slot) meters, S2.2 formula, DR table, casing (PUBLIC always safe, D-025), crouch ×0.75, stimuli (corpse/bags/glass/drill/alerted NPC/restrained/open door), noise propagation (halved without LOS, cameras deaf), cameras with 7 s countdown, detection_progress to the observed peer only. (9a7328f)

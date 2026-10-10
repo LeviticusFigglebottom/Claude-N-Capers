@@ -52,8 +52,19 @@ extends Resource
 ## S3.5 camera alarm countdown (P2 row; numbers here so P1 cameras use them).
 @export var camera_alarm_delay_s: float = 7.0
 
+@export_group("Cameras (S8.1, S8.2)")
+## S8.1: cameras are Titan (indestructible) from this difficulty (Enums.Difficulty.LETHAL ~ Mayhem).
+@export var camera_titan_min_difficulty: int = Enums.Difficulty.LETHAL
+## S8.1 ◇: after a camera is destroyed in a staffed room the operator dispatches the nearest guard
+## to investigate it with this chance (rolled on GameRng &"cameras"), after this delay.
+@export var camera_dispatch_chance: float = 0.3
+@export var camera_dispatch_delay_s: float = 10.0
+## Visual: pitch (degrees) a destroyed camera head droops by.
+@export var camera_broken_droop_deg: float = 35.0
+
 @export_group("Stimuli (S4.1, S4.4, S6.3)")
 ## kind -> {range (m), los (bool), fill_time (s), guard (reaction), civilian (reaction), camera (bool)}
+## (+ optional camera_alarm (bool, default true): a camera confirming it starts the S3.5 countdown.)
 ## Reactions: &"alarm" (guard -> ALARMED), &"investigate", &"panic", &"ignore".
 @export var stimuli: Dictionary = {
 	&"corpse": {"range": 25.0, "los": true, "fill_time": 0.8, "guard": &"alarm", "civilian": &"panic", "camera": true},
@@ -63,7 +74,12 @@ extends Resource
 	&"drill": {"range": 25.0, "los": false, "fill_time": 1.0, "guard": &"investigate", "civilian": &"ignore", "camera": true},
 	&"alerted_npc": {"range": 20.0, "los": true, "fill_time": 1.0, "guard": &"investigate", "civilian": &"panic", "camera": true},
 	&"restrained": {"range": 15.0, "los": true, "fill_time": 1.0, "guard": &"alarm", "civilian": &"panic", "camera": true},
+	&"hostage": {"range": 15.0, "los": true, "fill_time": 1.0, "guard": &"alarm", "civilian": &"panic", "camera": true},
 	&"open_door": {"range": 10.0, "los": true, "fill_time": 2.0, "guard": &"investigate", "civilian": &"ignore", "camera": false},
+	# A2-04 S4.1: a saw cutting within 10 m (on top of the 25 m `drill` stimulus of any running device).
+	&"saw": {"range": 10.0, "los": false, "fill_time": 0.8, "guard": &"investigate", "civilian": &"ignore", "camera": true},
+	# A2-02 S8.1/S4.4: a destroyed camera (guards investigate it, other cameras see it).
+	&"broken_camera": {"range": 15.0, "los": true, "fill_time": 1.5, "guard": &"investigate", "civilian": &"ignore", "camera": true},
 }
 
 @export_group("Noise (S4.3)")
@@ -73,6 +89,8 @@ extends Resource
 @export var gunshot_npc_radius_m: float = 25.0
 @export var glass_break_radius_m: float = 15.0
 @export var drill_radius_m: float = 25.0
+## A2-04 S4.3/S9.4 ◇: saws are as loud as drills.
+@export var saw_radius_m: float = 25.0
 ## Noise kinds and the reaction they cause. Guards: &"alarm" or &"investigate"; civilians: &"panic"/&"ignore".
 @export var noise_reactions: Dictionary = {
 	&"gunshot": {"guard": &"alarm", "civilian": &"panic"},
@@ -82,6 +100,7 @@ extends Resource
 	&"alarm": {"guard": &"alarm", "civilian": &"panic"},
 	&"loud": {"guard": &"investigate", "civilian": &"ignore"},
 	&"quiet": {"guard": &"investigate", "civilian": &"ignore"},
+	&"saw": {"guard": &"investigate", "civilian": &"ignore"},
 }
 
 @export_group("Pagers (S5.2-S5.5)")
@@ -111,3 +130,45 @@ extends Resource
 @export var civilian_guard_reach_m: float = 1.5
 ## A1-06 ◇ loud (S11.2): panicked civilians run this far from the nearest crew member, then cower.
 @export var civilian_flee_distance_m: float = 10.0
+
+@export_group("Heist mode (S11.3)")
+## STEALTH_ONLY heists: seconds between the alarm (Mercer abort line) and heist_ended(failed).
+@export var stealth_only_abort_s: float = 5.0
+
+@export_group("P2 guards (S3.2 cuffs, S3.7 misfire, S2.9 marking)")
+## S3.2 (P2): a guard reaching "!" on a crew member yells, pauses, walks over and cuffs them.
+## false = the P1 simplification (radio call straight away).
+@export var guard_cuffs_enabled: bool = true
+## S3.2: yell + pause before walking over (s).
+@export var cuff_pause_s: float = 5.0
+## S3.2: moving farther than this (horizontal, m) from where the crew member was spotted makes the
+## guard open fire (alarm).
+@export var cuff_move_tolerance_m: float = 1.7
+## S3.2 ◇: the guard cuffs from this distance (m) after holding still next to the target (s).
+@export var cuff_reach_m: float = 1.2
+@export var cuff_action_s: float = 1.0
+## S3.2 ◇: the walk over gives up after this long (s) and the guard radios the alarm instead.
+@export var cuff_approach_timeout_s: float = 20.0
+## S3.2: a crew member cannot be cuffed again for this long after being cuffed (s, 4 min).
+@export var cuff_cooldown_s: float = 240.0
+## S3.2: a cuffed crew member breaks free by themselves after this (s); a teammate frees them by
+## holding interact for `uncuff_s` ◇.
+@export var cuff_self_free_s: float = 60.0
+@export var uncuff_s: float = 2.0
+## S3.2: voice line requested when the guard yells (speaker = EnemyDef.voice, else &"guard").
+@export var cuff_yell_line: StringName = &"vo.guard.cuff_warning"
+## S3.7: chance that a non-head, non-shotgun bullet kill makes the guard's gun go off (NPC gunshot
+## noise, gunshot_npc_radius_m), rolled on GameRng &"misfire".
+@export var misfire_chance: float = 0.1
+## S2.9 ◇: mark durations (s, × stealth.mark_duration_mult of the marker).
+@export var mark_duration_guard_s: float = 4.5
+@export var mark_duration_camera_s: float = 8.0
+@export var mark_duration_special_s: float = 4.5
+## S2.9 ◇: a shout marks the markable target nearest the aim line within this half-angle (deg) and range (m).
+@export var mark_cone_half_deg: float = 8.0
+@export var mark_range_m: float = 40.0
+## S2.9 Sixth Sense (stealth.sixth_sense): standing still this long (s, horizontal speed below
+## sixth_sense_still_speed m/s) in stealth marks every enemy within sixth_sense_radius_m, repeating.
+@export var sixth_sense_still_s: float = 3.5
+@export var sixth_sense_radius_m: float = 10.0
+@export var sixth_sense_still_speed: float = 0.1

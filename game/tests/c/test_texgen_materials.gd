@@ -12,10 +12,13 @@ const EXPECTED: Array[String] = [
 ## First-person weapon materials (D-026): 1 UV unit = 1 m, 1024 px/m.
 const WEAPON: Array[String] = [
 	"polymer_black", "polymer_stipple", "steel_blued", "steel_bare", "metal_matte", "paint_white",
-	"brass_cartridge", "glass_lens_tint",
+	"brass_cartridge", "glass_lens_tint", "alu_anodized_black", "polymer_tan", "polymer_olive",
+	"glass_lens_coated",
 ]
 ## Untextured by design: a reticle is a tiny emissive mesh; textures would add nothing.
 const EMISSIVE: Array[String] = ["emissive_reticle_red"]
+## D-038: black polymers, rubber and black paint/anodize may sit at 0.02-0.04 linear albedo.
+const BLACKS: Array[String] = ["polymer_black", "polymer_stipple", "rubber_black", "alu_anodized_black"]
 const TRIM_TABLE: String = "res://assets/textures/trim_interior/trim_table.json"
 
 
@@ -72,7 +75,7 @@ func test_emissive_materials() -> void:
 
 
 func test_glass_is_transparent() -> void:
-	for id: String in ["glass_clear", "glass_lens_tint"]:
+	for id: String in ["glass_clear", "glass_lens_tint", "glass_lens_coated"]:
 		var glass: ORMMaterial3D = load(MATERIAL_DIR + id + ".tres") as ORMMaterial3D
 		assert_true(glass != null, "%s missing" % id)
 		if glass != null:
@@ -131,3 +134,30 @@ func test_trim_table() -> void:
 		assert_true(top >= last_bottom and bottom > top and bottom <= 1.0, "strip %s range" % strip["name"])
 		assert_near(float(strip["v_min_blender"]), 1.0 - bottom, 0.00001, "blender v flip")
 		last_bottom = bottom
+
+
+func _mean_linear_luminance(tex: Texture2D) -> float:
+	var img: Image = tex.get_image()
+	if img.is_compressed():
+		img.decompress()
+	img.convert(Image.FORMAT_RGB8)
+	img.resize(32, 32, Image.INTERPOLATE_BILINEAR)
+	var total: float = 0.0
+	for y: int in range(img.get_height()):
+		for x: int in range(img.get_width()):
+			var c: Color = img.get_pixel(x, y).srgb_to_linear()
+			total += c.r * 0.2126 + c.g * 0.7152 + c.b * 0.0722
+	return total / float(img.get_width() * img.get_height())
+
+
+func test_black_materials_read_black() -> void:
+	for id: String in BLACKS:
+		var mat: ORMMaterial3D = load(MATERIAL_DIR + id + ".tres") as ORMMaterial3D
+		assert_true(mat != null, "%s missing" % id)
+		if mat == null:
+			continue
+		var lum: float = _mean_linear_luminance(mat.albedo_texture)
+		assert_true(lum >= 0.018 and lum <= 0.035, "%s mean albedo luminance %.4f not in black band" % [id, lum])
+	var other: ORMMaterial3D = load(MATERIAL_DIR + "plastic_matte.tres") as ORMMaterial3D
+	if other != null:
+		assert_true(_mean_linear_luminance(other.albedo_texture) >= 0.038, "non-black materials keep the 0.04 floor")

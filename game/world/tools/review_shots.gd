@@ -6,6 +6,10 @@
 ## meta size) to <out>/<camera>.jpg (JPEG, <= 400 KB), contact_sheet.jpg and shots.md.
 ## --plan instead renders one top-down floor plan per floor (cut at floor + 1.5 m) with
 ## spawn/patrol/loot/zone overlays: <out>/plan_floor<i>.jpg (+ plan.md).
+## --blueprint renders the clean pre-planning blueprint (preplanning.md, D-038): no debug markers,
+## walls/doors/windows/stairs/major furniture + room labels, floors side by side:
+## docs/levels/<id>/blueprint.png (+ blueprint_floor<i>.png) and
+## game/world/heists/<id>/<id>_blueprint.png (PNG, <= 1 MB). With --scene, --out=<dir> only.
 extends Node
 
 const W: int = 1920
@@ -13,6 +17,18 @@ const H: int = 1080
 const MAX_BYTES: int = 400000
 const PLAN_CUT: float = 1.5
 const PLAN_DEPTH: float = 2.5
+const BP_MAX_BYTES: int = 1000000
+const BP_GROUND: Color = Color(0.09, 0.22, 0.42)
+const BP_FLOOR: Color = Color(0.13, 0.29, 0.52)
+const BP_LINE: Color = Color(0.93, 0.96, 1.0)
+const BP_FURN: Color = Color(0.36, 0.55, 0.78)
+const BP_DOOR: Color = Color(0.72, 0.86, 1.0)
+## Props smaller than this footprint (m²) are clutter, not furniture: hidden on the blueprint.
+const BP_MIN_FOOTPRINT: float = 0.2
+## Wall cut: collision sampled on this grid (m) at floor + BP_CUT_SAMPLE_Y (kit wall meshes are open
+## at top/bottom, so the rendered cut cannot be trusted; colliders can).
+const BP_CELL: float = 0.04
+const BP_CUT_SAMPLE_Y: float = 1.2
 const OVERLAY: Dictionary = {
 	"player": Color(0.1, 0.9, 0.2), "guard": Color(0.95, 0.15, 0.1), "police": Color(0.2, 0.4, 1.0),
 	"civilian": Color(1.0, 0.85, 0.1), "patrol": Color(1.0, 0.55, 0.0), "loot": Color(0.9, 0.2, 0.9),
@@ -22,6 +38,7 @@ const OVERLAY: Dictionary = {
 var _cam: Camera3D
 var _map: HeistMap
 var _ctx: LcContext
+var _bp_shell: ShaderMaterial = null
 
 
 func _ready() -> void:
@@ -36,6 +53,10 @@ func _main() -> void:
 	if scene_path == "":
 		scene_path = "res://world/heists/%s/%s.tscn" % [heist, heist]
 	var out_dir: String = String(args.get("out", ""))
+	var blueprint: bool = args.has("blueprint")
+	var root_dir: String = ProjectSettings.globalize_path("res://").trim_suffix("/").get_base_dir()
+	if blueprint and out_dir == "" and heist != "":
+		out_dir = root_dir.path_join("docs/levels/%s" % heist)
 	if out_dir == "":
 		if heist == "":
 			_quit(2, "usage: --heist=<id> or --scene=<path> --out=<dir>")
@@ -50,14 +71,20 @@ func _main() -> void:
 		return
 	get_window().size = Vector2i(W, H)
 	_ctx = await LcRunner.prepare(_map, self)
-	_ensure_lighting(args.has("plan"))
+	_ensure_lighting(args.has("plan") or blueprint)
 	_cam = Camera3D.new()
 	_cam.near = 0.05
 	_cam.far = 1000.0
 	add_child(_cam)
 	_cam.make_current()
 	var warm: int = int(args.get("warmup", "12"))
-	if args.has("plan"):
+	if blueprint:
+		var label: String = heist if heist != "" else String(_map.name)
+		var extra: String = ""
+		if heist != "" and not args.has("scene"):
+			extra = root_dir.path_join("game/world/heists/%s/%s_blueprint.png" % [heist, heist])
+		await _render_blueprint(out_dir, extra, warm, label)
+	elif args.has("plan"):
 		await _render_plans(out_dir, warm, heist if heist != "" else String(_map.name))
 	else:
 		var filt: PackedStringArray = String(args.get("cameras", "")).split(",", false)
@@ -204,13 +231,20 @@ func _contact_sheet(shots: Array[Dictionary], warm: int) -> Image:
 	return sheet
 
 
-func _render_plans(out_dir: String, warm: int, label: String) -> void:
+## Plan framing for floor `fi`: non-exterior RoomVolumes on that floor (any floor if none), else
+## the Geometry bounds. Exterior site dressing is deliberately left out of the framing.
+func _plan_box(fi: int) -> AABB:
 	var box: AABB = AABB()
 	var first: bool = true
-	for r: RoomVolume in _ctx.rooms:
-		var a: AABB = LcAreas.world_aabb(r)
-		box = a if first else box.merge(a)
-		first = false
+	for pass_i: int in range(2):
+		for r: RoomVolume in _ctx.rooms:
+			if r.purpose == &"exterior" or (pass_i == 0 and r.floor_index != fi):
+				continue
+			var a: AABB = LcAreas.world_aabb(r)
+			box = a if first else box.merge(a)
+			first = false
+		if not first:
+			return box
 	var geo: Node = _map.get_node_or_null("Geometry")
 	if geo != null:
 		for n: Node in geo.find_children("*", "GeometryInstance3D", true, false):
@@ -218,6 +252,35 @@ func _render_plans(out_dir: String, warm: int, label: String) -> void:
 			var a2: AABB = gi.global_transform * gi.get_aabb()
 			box = a2 if first else box.merge(a2)
 			first = false
+	return box
+
+
+## Flat, neutral look for plans: overrides the map's environment/exposure through the camera.
+func _apply_plan_environment() -> void:
+	var env: Environment = Environment.new()
+	env.background_mode = Environment.BG_COLOR
+	env.background_color = Color(0.1, 0.1, 0.11)
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = Color.WHITE
+	env.ambient_light_energy = 1.0
+	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
+	env.tonemap_exposure = 1.0
+	env.glow_enabled = false
+	env.fog_enabled = false
+	env.volumetric_fog_enabled = false
+	env.ssao_enabled = false
+	env.ssil_enabled = false
+	env.sdfgi_enabled = false
+	env.adjustment_enabled = false
+	_cam.environment = env
+	_cam.attributes = CameraAttributesPractical.new()
+	for n: Node in _map.find_children("*", "", true, false):
+		if n is Decal or n is FogVolume or n is GPUParticles3D or n is CPUParticles3D:
+			(n as Node3D).visible = false
+
+
+func _render_plans(out_dir: String, warm: int, label: String) -> void:
+	_apply_plan_environment()
 	_apply_plan_materials()
 	var overlay: Node3D = _build_overlay()
 	var md: PackedStringArray = PackedStringArray(["# Floor plans: %s" % label, "",
@@ -226,7 +289,8 @@ func _render_plans(out_dir: String, warm: int, label: String) -> void:
 	var fh: PackedFloat32Array = _map.floor_heights
 	for i: int in range(fh.size()):
 		_cam.projection = Camera3D.PROJECTION_ORTHOGONAL
-		var margin: float = 2.0
+		var box: AABB = _plan_box(i)
+		var margin: float = 1.5
 		_cam.size = maxf(box.size.z, box.size.x * float(H) / float(W)) + margin * 2.0
 		_cam.global_transform = Transform3D(Basis.from_euler(Vector3(-PI / 2.0, 0.0, 0.0)),
 			Vector3(box.get_center().x, fh[i] + PLAN_CUT, box.get_center().z))
@@ -261,18 +325,21 @@ void fragment() {
 	DEPTH = FRONT_FACING ? FRAGCOORD.z : min(FRAGCOORD.z + 0.02, 1.0);
 }
 """
-	var groups: Dictionary = {"Geometry": Color(0.82, 0.82, 0.8), "Props": Color(0.85, 0.62, 0.4),
-		"Gameplay": Color(0.55, 0.75, 0.9), "Variants": Color(0.75, 0.6, 0.9)}
+	var groups: Dictionary = {"Geometry": Color(0.86, 0.86, 0.84), "Props": Color(0.9, 0.68, 0.45),
+		"Gameplay": Color(0.55, 0.78, 0.95), "Variants": Color(0.78, 0.62, 0.95), "": Color(0.7, 0.7, 0.7)}
+	var mats: Dictionary = {}
 	for gname: String in groups.keys():
-		var g: Node = _map.get_node_or_null(gname)
-		if g == null:
-			continue
 		var m: ShaderMaterial = ShaderMaterial.new()
 		m.shader = sh
 		var c: Color = groups[gname]
 		m.set_shader_parameter(&"tint", Vector3(c.r, c.g, c.b))
-		for n: Node in g.find_children("*", "GeometryInstance3D", true, false):
-			(n as GeometryInstance3D).material_override = m
+		mats[gname] = m
+	for n: Node in _map.find_children("*", "GeometryInstance3D", true, false):
+		var top: Node = n
+		while top.get_parent() != _map:
+			top = top.get_parent()
+		var key: String = String(top.name) if mats.has(String(top.name)) else ""
+		(n as GeometryInstance3D).material_override = mats[key]
 
 
 func _unshaded(c: Color) -> StandardMaterial3D:
@@ -333,24 +400,275 @@ func _build_overlay() -> Node3D:
 			root.add_child(mi)
 			mi.global_position = Vector3(b.get_center().x, b.position.y + 0.3, b.get_center().z)
 			mi.set_meta(&"floor_y", _floor_of(b.position.y))
-	# Patrol links as thin lines.
-	var im: ImmediateMesh = ImmediateMesh.new()
-	var lines: MeshInstance3D = MeshInstance3D.new()
-	lines.mesh = im
-	var has_lines: bool = false
+	# Patrol links as thin lines, one mesh per floor (by the link's lower end).
+	var meshes: Dictionary = {}
 	for pn: Node in _map.find_children("*", "PatrolPoint", true, false):
 		var p: PatrolPoint = pn
 		for lp: NodePath in p.links:
 			var t: Node3D = p.get_node_or_null(lp) as Node3D
 			if t == null:
 				continue
-			if not has_lines:
+			var fy: float = _floor_of(minf(p.global_position.y, t.global_position.y))
+			if not meshes.has(fy):
+				var im: ImmediateMesh = ImmediateMesh.new()
 				im.surface_begin(Mesh.PRIMITIVE_LINES, _unshaded(OVERLAY["patrol"]))
-				has_lines = true
-			im.surface_add_vertex(p.global_position + Vector3.UP * 0.4)
-			im.surface_add_vertex(t.global_position + Vector3.UP * 0.4)
-	if has_lines:
-		im.surface_end()
-	lines.set_meta(&"floor_y", 0.0)
-	root.add_child(lines)
+				meshes[fy] = im
+			var imm: ImmediateMesh = meshes[fy]
+			imm.surface_add_vertex(p.global_position + Vector3.UP * 0.4)
+			imm.surface_add_vertex(t.global_position + Vector3.UP * 0.4)
+	for fy2: float in meshes.keys():
+		var im2: ImmediateMesh = meshes[fy2]
+		im2.surface_end()
+		var lines: MeshInstance3D = MeshInstance3D.new()
+		lines.mesh = im2
+		lines.set_meta(&"floor_y", fy2)
+		root.add_child(lines)
 	return root
+
+
+# --- blueprint (pre-planning board) -----------------------------------------------------------
+
+func _render_blueprint(out_dir: String, extra_path: String, warm: int, label: String) -> void:
+	_apply_plan_environment()
+	_cam.environment.background_color = BP_GROUND
+	_apply_blueprint_materials()
+	var fh: PackedFloat32Array = _map.floor_heights
+	# One framing for every floor so the side-by-side composite shares a scale.
+	var box: AABB = _plan_box(0)
+	for fi: int in range(1, fh.size()):
+		box = box.merge(_plan_box(fi))
+	var margin: float = 2.0
+	_cam.projection = Camera3D.PROJECTION_ORTHOGONAL
+	_cam.size = maxf(box.size.z + margin * 2.0, (box.size.x + margin * 2.0) * float(H) / float(W))
+	var floors: Array[Image] = []
+	for i: int in range(fh.size()):
+		_cam.global_transform = Transform3D(Basis.from_euler(Vector3(-PI / 2.0, 0.0, 0.0)),
+			Vector3(box.get_center().x, fh[i] + PLAN_CUT, box.get_center().z))
+		_cam.near = 0.01
+		_cam.far = PLAN_DEPTH
+		await get_tree().process_frame
+		var layer: CanvasLayer = _blueprint_labels(i, label)
+		var img: Image = await _grab(warm)
+		layer.queue_free()
+		floors.append(img)
+		var fsize: int = save_png_limited(img, out_dir.path_join("blueprint_floor%d.png" % i))
+		print("  blueprint floor %d -> blueprint_floor%d.png (%d KB)" % [i, i, fsize / 1024])
+	var comp: Image = _compose(floors)
+	var size: int = save_png_limited(comp, out_dir.path_join("blueprint.png"))
+	print("  blueprint -> %s (%dx%d, %d KB)" % [out_dir.path_join("blueprint.png"), comp.get_width(), comp.get_height(), size / 1024])
+	if extra_path != "":
+		DirAccess.make_dir_recursive_absolute(extra_path.get_base_dir())
+		save_png_limited(comp, extra_path)
+		print("  blueprint -> %s" % extra_path)
+
+
+## Floors side by side (2 per row), separated by a thin gap in the ground colour.
+static func _compose(floors: Array[Image]) -> Image:
+	if floors.size() == 1:
+		return floors[0]
+	var cols: int = mini(2, floors.size())
+	var rows: int = ceili(float(floors.size()) / float(cols))
+	var gap: int = 24
+	var out: Image = Image.create_empty(W * cols + gap * (cols - 1), H * rows + gap * (rows - 1), false, Image.FORMAT_RGB8)
+	out.fill(BP_GROUND.darkened(0.3))
+	for i: int in range(floors.size()):
+		out.blit_rect(floors[i], Rect2i(0, 0, W, H), Vector2i((i % cols) * (W + gap), (i / cols) * (H + gap)))
+	return out
+
+
+## PNG, downscaled in 10% steps until the file is <= BP_MAX_BYTES.
+static func save_png_limited(img: Image, path: String) -> int:
+	var work: Image = img
+	var buf: PackedByteArray = work.save_png_to_buffer()
+	while buf.size() > BP_MAX_BYTES and work.get_width() > 640:
+		work = img.duplicate() as Image
+		var f: float = sqrt(float(BP_MAX_BYTES) / float(buf.size())) * 0.95
+		work.resize(maxi(640, int(work.get_width() * f)), maxi(360, int(work.get_height() * f)), Image.INTERPOLATE_LANCZOS)
+		buf = work.save_png_to_buffer()
+	var fa: FileAccess = FileAccess.open(path, FileAccess.WRITE)
+	if fa == null:
+		return 0
+	fa.store_buffer(buf)
+	fa.close()
+	return buf.size()
+
+
+## Blueprint look: unshaded; cut solids (seen from behind) are drawn in the line colour for the
+## shell and doors, in the furniture colour for props; surfaces below the cut are floor tone,
+## lightened with height so stair treads read as bands. Variant content, clutter, lighting
+## fixtures and site dressing outside the framing are hidden.
+func _apply_blueprint_materials() -> void:
+	var sh: Shader = Shader.new()
+	sh.code = """shader_type spatial;
+render_mode unshaded, cull_disabled;
+uniform vec3 face_color : source_color = vec3(0.13, 0.29, 0.52);
+uniform vec3 cut_color : source_color = vec3(0.93, 0.96, 1.0);
+uniform float floor_y = 0.0;
+uniform float height_tint = 0.0;
+void fragment() {
+	vec3 wp = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	float h = clamp((wp.y - floor_y) / 1.5, 0.0, 1.0);
+	ALBEDO = FRONT_FACING ? mix(face_color, cut_color, h * height_tint) : cut_color;
+	DEPTH = FRONT_FACING ? FRAGCOORD.z : min(FRAGCOORD.z + 0.02, 1.0);
+}
+"""
+	var shell: ShaderMaterial = _bp_mat(sh, BP_FLOOR, BP_LINE, 0.55)
+	var furn: ShaderMaterial = _bp_mat(sh, BP_FURN, BP_FURN.lightened(0.25), 0.0)
+	var door: ShaderMaterial = _bp_mat(sh, BP_DOOR, BP_DOOR, 0.0)
+	var small: Dictionary = {}
+	for p: LcProp in _ctx.props:
+		var fp: float = p.global_aabb.size.x * p.global_aabb.size.z
+		if fp < BP_MIN_FOOTPRINT and not p.is_door and not p.is_window and p.kind != &"stairs":
+			small[p.node] = true
+	for n: Node in _map.find_children("*", "GeometryInstance3D", true, false):
+		var gi: GeometryInstance3D = n
+		var top: Node = gi
+		while top.get_parent() != _map:
+			top = top.get_parent()
+		var p2: LcProp = _ctx.prop_of(gi)
+		if top.name == &"Variants" or top.name == &"Lighting" or (p2 != null and small.has(p2.node)):
+			gi.visible = false
+			continue
+		if p2 != null and (p2.is_door or p2.is_window):
+			gi.material_override = door
+		elif top.name == &"Geometry" or (p2 != null and p2.kind == &"stairs"):
+			gi.material_override = shell
+		elif top.name == &"Gameplay" and p2 == null:
+			gi.material_override = door
+		else:
+			gi.material_override = furn
+	_bp_shell = shell
+
+
+
+static func _bp_mat(sh: Shader, face: Color, cut: Color, height_tint: float) -> ShaderMaterial:
+	var m: ShaderMaterial = ShaderMaterial.new()
+	m.shader = sh
+	m.set_shader_parameter(&"face_color", Vector3(face.r, face.g, face.b))
+	m.set_shader_parameter(&"cut_color", Vector3(cut.r, cut.g, cut.b))
+	m.set_shader_parameter(&"height_tint", height_tint)
+	return m
+
+
+static func _room_title(r: RoomVolume) -> String:
+	var t: String = String(r.purpose).replace("_", " ").to_upper()
+	return "%s\n%s" % [t, r.room_id] if r.room_id != &"" else t
+
+
+## Room labels (projected room centres), title, north arrow and a 5 m scale bar.
+func _blueprint_labels(fi: int, label: String) -> CanvasLayer:
+	if _bp_shell != null:
+		_bp_shell.set_shader_parameter(&"floor_y", _map.floor_heights[fi])
+	var layer: CanvasLayer = CanvasLayer.new()
+	layer.layer = 100
+	add_child(layer)
+	var px_per_m: float = float(H) / _cam.size
+	layer.add_child(_cut_overlay(fi, px_per_m))
+	for r: RoomVolume in _ctx.rooms:
+		if r.floor_index != fi or r.purpose == &"exterior":
+			continue
+		var b: AABB = LcAreas.world_aabb(r)
+		var c: Vector3 = Vector3(b.get_center().x, _map.floor_heights[fi], b.get_center().z)
+		var sp: Vector2 = _cam.unproject_position(c)
+		var lb: Label = Label.new()
+		lb.text = _room_title(r)
+		lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		var fs: int = clampi(int(minf(b.size.x, b.size.z) * px_per_m / 9.0), 11, 26)
+		lb.add_theme_font_size_override(&"font_size", fs)
+		lb.add_theme_color_override(&"font_color", BP_LINE)
+		lb.add_theme_color_override(&"font_outline_color", BP_GROUND)
+		lb.add_theme_constant_override(&"outline_size", 6)
+		layer.add_child(lb)
+		lb.reset_size()
+		lb.position = sp - lb.size * 0.5
+	var title: Label = Label.new()
+	var fname: String = "GROUND FLOOR" if fi == 0 else "FLOOR %d" % fi
+	title.text = "%s  -  %s  (+%.1f m)" % [label.to_upper(), fname, _map.floor_heights[fi]]
+	title.position = Vector2(28, 18)
+	title.add_theme_font_size_override(&"font_size", 34)
+	title.add_theme_color_override(&"font_color", BP_LINE)
+	var plate: ColorRect = ColorRect.new()
+	plate.color = Color(BP_GROUND.r, BP_GROUND.g, BP_GROUND.b, 0.85)
+	layer.add_child(plate)
+	layer.add_child(title)
+	title.reset_size()
+	plate.position = title.position - Vector2(14, 8)
+	plate.size = title.size + Vector2(28, 16)
+	var bar: ColorRect = ColorRect.new()
+	bar.color = BP_LINE
+	bar.size = Vector2(5.0 * px_per_m, 6)
+	bar.position = Vector2(32, H - 44)
+	layer.add_child(bar)
+	var bl: Label = Label.new()
+	bl.text = "5 m"
+	bl.position = Vector2(40 + 5.0 * px_per_m, H - 58)
+	bl.add_theme_font_size_override(&"font_size", 22)
+	bl.add_theme_color_override(&"font_color", BP_LINE)
+	layer.add_child(bl)
+	var north: Label = Label.new()
+	north.text = "N\n^"
+	north.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	north.position = Vector2(W - 70, 20)
+	north.add_theme_font_size_override(&"font_size", 28)
+	north.add_theme_color_override(&"font_color", BP_LINE)
+	layer.add_child(north)
+	return layer
+
+
+## Poché of the wall cut from collision: point queries on a BP_CELL grid at floor + 1.2 m inside
+## the floor's rooms (+0.8 m), shell in the line colour, cut furniture in a light furniture tone.
+## Solids with a walkable top within 1 m above the sample (landings, stair ramps) are left to the
+## render so stair treads stay readable.
+func _cut_overlay(fi: int, px_per_m: float) -> TextureRect:
+	var y: float = _map.floor_heights[fi] + BP_CUT_SAMPLE_Y
+	var rooms: Array[AABB] = []
+	for r: RoomVolume in _ctx.rooms:
+		if r.floor_index == fi and r.purpose != &"exterior":
+			rooms.append(LcAreas.world_aabb(r).grow(0.8))
+	var box: AABB = _plan_box(fi).grow(0.8)
+	var gw: int = ceili(box.size.x / BP_CELL)
+	var gh: int = ceili(box.size.z / BP_CELL)
+	var img: Image = Image.create_empty(gw, gh, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0, 0, 0, 0))
+	var q: PhysicsPointQueryParameters3D = PhysicsPointQueryParameters3D.new()
+	q.collision_mask = LcContext.QUERY_MASK
+	var space: PhysicsDirectSpaceState3D = _ctx.space()
+	var furn: Color = BP_FURN.lightened(0.35)
+	for j: int in range(gh):
+		var z: float = box.position.z + (float(j) + 0.5) * BP_CELL
+		for i: int in range(gw):
+			var x: float = box.position.x + (float(i) + 0.5) * BP_CELL
+			var pt: Vector3 = Vector3(x, y, z)
+			var inside: bool = false
+			for rb: AABB in rooms:
+				if x >= rb.position.x and x <= rb.end.x and z >= rb.position.z and z <= rb.end.z:
+					inside = true
+					break
+			if not inside:
+				continue
+			q.position = pt
+			var hits: Array[Dictionary] = space.intersect_point(q, 4)
+			for h: Dictionary in hits:
+				var col: Node = h.get("collider") as Node
+				if col == null or not _ctx.is_active(col) or LcUtil.slot_of(col) != null:
+					continue
+				var p: LcProp = _ctx.prop_of(col)
+				if p == null or p.kind == &"stairs":
+					# Landings / stair ramps / counters top out just above the cut: the render shows
+					# them; only wall-like solids (no walkable top within 1 m) become poché.
+					var top: Dictionary = _ctx.ray(pt + Vector3.UP * 1.0, pt, func(hh: Dictionary) -> bool:
+						return (hh["normal"] as Vector3).y > 0.7)
+					if top.is_empty():
+						img.set_pixel(i, j, BP_LINE)
+					break
+				if not (p.is_door or p.is_window):
+					img.set_pixel(i, j, furn)
+	var tr: TextureRect = TextureRect.new()
+	tr.texture = ImageTexture.create_from_image(img)
+	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tr.stretch_mode = TextureRect.STRETCH_SCALE
+	tr.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var c: Vector3 = _cam.global_position
+	tr.position = Vector2(float(W) * 0.5 + (box.position.x - c.x) * px_per_m, float(H) * 0.5 + (box.position.z - c.z) * px_per_m)
+	tr.size = Vector2(gw * BP_CELL * px_per_m, gh * BP_CELL * px_per_m)
+	return tr

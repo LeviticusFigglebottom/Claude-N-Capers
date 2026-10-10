@@ -67,12 +67,16 @@ static func render_pieces(ctx: LcContext) -> Array[Dictionary]:
 
 ## Builds trimesh colliders (layer LcContext.PROXY_LAYER) mirroring every render piece. Faces are
 ## single-sided unless the surface material disables culling, so rays see what the camera sees.
-static func build_proxies(ctx: LcContext) -> void:
+## `roots` (optional) limits the proxies to render pieces inside those subtrees.
+static func build_proxies(ctx: LcContext, roots: Array[Node] = []) -> void:
 	free_proxies(ctx)
 	ctx.proxy_root = Node3D.new()
 	ctx.proxy_root.name = "_LcProxies"
 	ctx.map.add_child(ctx.proxy_root)
 	for piece: Dictionary in render_pieces(ctx):
+		if not roots.is_empty() and not roots.any(func(r: Node) -> bool:
+				return r == piece["node"] or r.is_ancestor_of(piece["node"])):
+			continue
 		var mesh: Mesh = piece["mesh"]
 		var mats: Array = piece["materials"]
 		for s: int in range(mesh.get_surface_count()):

@@ -25,6 +25,7 @@ bench_color = Color(0.32, 0.3, 0.28, 1)
 sign_font_size = 96
 sign_pixel_size = 0.006
 sign_color = Color(1.0, 0.86, 0.3, 1)
+viewmodel_offset = Vector3(0.18, -0.2, -0.4)
 move_speed_mps = 6.0
 sprint_mult = 3.0
 mouse_look_deg_per_px = 0.12

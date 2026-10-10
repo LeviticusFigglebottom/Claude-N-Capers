@@ -46,6 +46,9 @@ var difficulty: int = Enums.Difficulty.ROUTINE
 var last_damage: Dictionary = {}
 ## Stimulus id of this corpse (registered with StealthDirector on death), 0 if none.
 var corpse_stimulus_id: int = 0
+## A2-03 (S8.6): seconds of ECM-feedback stun left. While stunned the NPC is blind (can_observe),
+## its motor holds still and its brain pauses (no radio call progress, no firing).
+var stun_left: float = 0.0
 
 @onready var visual_root: Node3D = get_node_or_null("Visual") as Node3D
 
@@ -104,7 +107,22 @@ func observer_kind() -> int:
 
 
 func can_observe() -> bool:
-	return alive and not BLIND_STATES.has(alert_state)
+	return alive and not BLIND_STATES.has(alert_state) and stun_left <= 0.0
+
+
+## A2-03 (S8.6): stun for `seconds` (keeps the longer of the current and new stun). Server.
+func stun(seconds: float) -> void:
+	if alive:
+		stun_left = maxf(stun_left, seconds)
+
+
+func is_stunned() -> bool:
+	return stun_left > 0.0
+
+
+## Advance the stun timer (EcmSystem ticks the NPCs it stunned).
+func tick_stun(delta: float) -> void:
+	stun_left = maxf(stun_left - delta, 0.0)
 
 
 func eye_position() -> Vector3:

@@ -1,6 +1,6 @@
 ## Heist select: heist list (HeistCatalog) + difficulty picker + contract pay preview. Owner: ENV B.
 ## Difficulties not in heist_list.tres `unlocked_difficulties` are visible but locked (C4, P1 = 2).
-## The preview uses PayoutCalculator (same multipliers as the payday screen).
+## The preview uses PayoutCalculator (same multipliers as the payday screen). Next -> briefing (MenuFlow).
 class_name HeistSelect
 extends UiScreen
 
@@ -51,7 +51,7 @@ func build_ui() -> void:
 	var nav: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(nav)
 	back_button = UiBuild.button(&"ui.menu.back")
-	next_button = UiBuild.button(&"ui.menu.loadout")
+	next_button = UiBuild.button(&"ui.heist_select.next")
 	back_button.pressed.connect(back_requested.emit)
 	next_button.pressed.connect(_on_next)
 	nav.add_child(back_button)

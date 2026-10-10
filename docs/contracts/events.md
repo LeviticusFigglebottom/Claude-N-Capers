@@ -15,7 +15,7 @@ Unmarked events are server-only facts (clients learn the outcome through synced 
 | heist_ended | A: HeistRuntime | [R] | B results |
 | crew_member_joined/left | A: CrewManager | [R] | B HUD |
 | crew_masked | A: CrewController | [R] | C audio, B HUD |
-| crew_downed / revived / custody / traded / tased / cloaker_downed | A | [R] | B HUD, C audio/post-FX, voice |
+| crew_downed / revived / custody / traded / tased / cloaker_downed / cuffed / uncuffed | A | [R] | B HUD, C audio/post-FX, voice |
 | detection_progress | A: StealthDirector | sent only to the observed crew member's peer (targeted RPC, not EventBus relay) | B HUD |
 | npc_alert_state_changed | A | [R] (for "?"/"!" icons) | B HUD, C audio |
 | camera_disabled, cameras_loop_disabled | A | [R] | B HUD |
@@ -42,7 +42,8 @@ Unmarked events are server-only facts (clients learn the outcome through synced 
   "contract_pay": int (HeistDef.base_payout, UNSCALED; ENV B applies all difficulty/bonus multipliers), "loot": [{ "loot_id": StringName, "value": int }], "small_loot": int,
   "crew": [{ "slot": int, "is_ai": bool, "kills": int, "specials_killed": int, "downs": int,
              "civilians_killed": int, "in_custody": bool, "escaped": bool }],
-  "pagers_answered": int, "seed": int, "variants": Dictionary }
+  "pagers_answered": int, "seed": int, "variants": Dictionary,
+  "fail_reason": StringName }   # &"" on success; e.g. &"stealth_only_alarm", &"all_custody", &"abort" (D-038)
 ```
 
 ## DamageInfo dictionary

@@ -69,7 +69,8 @@ def ensure_import(png: Path, importer: str, rtype: str, params: dict) -> None:
     tio.write_text(imp, "\n".join(out) + "\n")
 
 
-def write_material(path: Path, lib_id: str, tex_res: str, kind: str, tile_m: float) -> None:
+def write_material(path: Path, lib_id: str, tex_res: str, kind: str, tile_m: float,
+                   specular: float | None = None) -> None:
     """ORMMaterial3D referencing tex_<id>_{albedo,orm,normal}.png under ``tex_res``."""
     alb = f"{tex_res}/tex_{lib_id}_albedo.png"
     orm = f"{tex_res}/tex_{lib_id}_orm.png"
@@ -90,6 +91,7 @@ def write_material(path: Path, lib_id: str, tex_res: str, kind: str, tile_m: flo
         "texture_filter = 5",
         'albedo_texture = ExtResource("1_albedo")',
         "metallic = 1.0",
+        *([f"metallic_specular = {float(specular)}"] if specular is not None else []),
         "roughness = 1.0",
         'orm_texture = ExtResource("2_orm")',
         "normal_enabled = true",

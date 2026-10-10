@@ -6,4 +6,4 @@ size_px: 1024
 tile_m: 2.0 (1 UV unit = 2.0 m)
 texel_density_px_per_m: 512
 albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
-stats: {"albedo_lum_max_linear": 0.7513, "albedo_lum_mean_linear": 0.4636, "albedo_lum_min_linear": 0.04, "ao_mean": 0.97, "metallic_mean": 0.094, "roughness_mean": 0.452}
+stats: {"albedo_lum_max_linear": 0.7513, "albedo_lum_mean_linear": 0.4633, "albedo_lum_min_linear": 0.04, "ao_mean": 0.97, "lum_floor_linear": 0.04, "metallic_mean": 0.094, "roughness_mean": 0.452}

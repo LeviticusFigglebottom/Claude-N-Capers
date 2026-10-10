@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only polymer_tan --preset gsr
+module: tools/texgen/materials/polymer_tan.py
+preset: tools/texgen/presets/gsr.py
+seed: 2603715915 (zlib.crc32('polymer_tan'))
+size_px: 1024
+tile_m: 1.0 (1 UV unit = 1.0 m)
+texel_density_px_per_m: 1024
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.2092, "albedo_lum_mean_linear": 0.2004, "albedo_lum_min_linear": 0.1925, "ao_mean": 1.0, "metallic_mean": 0.0, "roughness_mean": 0.639}

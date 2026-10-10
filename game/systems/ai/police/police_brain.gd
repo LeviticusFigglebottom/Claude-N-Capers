@@ -12,6 +12,9 @@
 ##   standoff_min_m..standoff_max_m (closing in while the target is out of LOS).
 ## - fire: `wants_to_fire` / `combat_target` for NpcGunner (fires while moving too).
 ## - FADE (L1.1): no retreat in P1. Units keep fighting; the director just stops reinforcing.
+## - L2.12 (A3-04): a DOWNED target that is not shooting within CustodyTweak.police_cuff_approach_m
+##   is walked up to and cuffed at police_cuff_range_m (CrewCuffs.cuff_downed).
+## - L5.1 (A3-04): SURRENDERED / TIED / CONVERTED are owned by PoliceSurrender (not ACTIVE_STATES).
 class_name PoliceBrain
 extends Node
 
@@ -75,6 +78,9 @@ func _start() -> void:
 func _physics_process(delta: float) -> void:
 	if not _started or _npc == null or not _npc.alive or not Net.is_authority():
 		return
+	if _npc.is_stunned():  # A2-03 (S8.6): ECM feedback stun
+		wants_to_fire = false
+		return
 	if not _active:
 		if _runtime == null or not _runtime.went_loud or not ACTIVE_STATES.has(_npc.alert_state):
 			return
@@ -116,8 +122,8 @@ func _pick_target() -> void:
 		if c.crew_state == Enums.CrewState.CUSTODY:
 			continue
 		var d: float = c.global_position.distance_squared_to(_npc.global_position)
-		if c.crew_state != Enums.CrewState.NORMAL:
-			d += 1.0e6  # prefer standing targets
+		if c.crew_state != Enums.CrewState.NORMAL and not _cuffable_near(c, d):
+			d += 1.0e6  # prefer standing targets (L2.12: a cuffable downed one nearby counts as standing)
 		if d < best_any:
 			best_any = d
 			any = c
@@ -128,6 +134,11 @@ func _pick_target() -> void:
 		_target_visible = true
 	else:
 		combat_target = any
+
+
+func _cuffable_near(c: CrewController, dist_sq: float) -> bool:
+	var r: float = CustodyTweak.data().police_cuff_approach_m
+	return dist_sq <= r * r and CrewCuffs.can_police_cuff(c)
 
 
 func _can_see(c: CrewController) -> bool:
@@ -160,6 +171,8 @@ func _tick_move(delta: float) -> void:
 		anim_hint = &"idle_alert"
 		return
 	var tpos: Vector3 = t.global_position
+	if _tick_cuff(t):
+		return
 	if _flank_point != null:
 		_flank_left -= delta
 		if not is_instance_valid(_flank_point) or _flank_left <= 0.0 \
@@ -183,6 +196,30 @@ func _tick_move(delta: float) -> void:
 		_move_to(_npc.global_position + away * (tweak.standoff_pref_m - d), &"back_off")
 	else:
 		_hold(tpos)
+
+
+## L2.12: go for / apply the cuffs on a downed, non-shooting target. True while doing so.
+func _tick_cuff(t: Node3D) -> bool:
+	var tc: CrewController = t as CrewController
+	if tc == null or not CrewCuffs.can_police_cuff(tc):
+		return false
+	var ct: CustodyTweak = CustodyTweak.data()
+	var d: float = _flat(tc.global_position - _npc.global_position).length()
+	if d > ct.police_cuff_approach_m:
+		return false
+	_flank_point = null
+	_release_cover()
+	if d <= ct.police_cuff_range_m:
+		_motor.stop()
+		_motor.face_point(tc.global_position)
+		var cuffs: CrewCuffs = CrewCuffs.of(tc, true)
+		if cuffs != null and cuffs.cuff_downed(_npc.net_id):
+			mode = &"cuff"
+			anim_hint = &"melee"
+			_retarget_left = 0.0
+		return true
+	_move_to(tc.global_position, &"cuff")
+	return true
 
 
 func _move_to(pos: Vector3, new_mode: StringName) -> void:

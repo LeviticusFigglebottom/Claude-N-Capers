@@ -173,3 +173,120 @@ static func hold_interact(rt: HeistRuntime, slot: int, target_net_id: int) -> vo
 	i.interact = true
 	i.interact_target_net_id = target_net_id
 	rt.set_bot_intent(slot, i)
+
+
+## A2-07: basic() with `def` as the map's HeistDef, plus two PLAYER SpawnPoints per tag in
+## `preplan_spawn_tags` (at x = 10 + 3 * tag index, z = 10 / 11) and PREPLAN_POINT Node3Ds under
+## Gameplay/Preplan: `preplan_points` maps a node name to its position. A name starting with "meta:"
+## makes a node named "PointN" whose `asset_slot` metadata is the rest of the name.
+static func with_heist_def(def: HeistDef, guards: int = 0, civilians: int = 0,
+		preplan_spawn_tags: Array[StringName] = [], preplan_points: Dictionary = {},
+		variant_groups: Dictionary = {}, table: HeistVariantTable = null) -> PackedScene:
+	var root: HeistMap = basic(guards, civilians, variant_groups, table).instantiate() as HeistMap
+	root.heist_def = def
+	var spawns: Node = root.get_node("Spawns")
+	for ti: int in range(preplan_spawn_tags.size()):
+		for k: int in range(2):
+			var sp: SpawnPoint = SpawnPoint.new()
+			sp.name = "Preplan_%s_%d" % [preplan_spawn_tags[ti], k]
+			sp.kind = SpawnPoint.Kind.PLAYER
+			sp.tags = [preplan_spawn_tags[ti]] as Array[StringName]
+			sp.position = Vector3(10 + 3 * ti, 0.05, 10 + k)
+			spawns.add_child(sp)
+	var holder: Node3D = Node3D.new()
+	holder.name = "Preplan"
+	root.get_node("Gameplay").add_child(holder)
+	var idx: int = 0
+	for key: Variant in preplan_points:
+		var p: Node3D = Node3D.new()
+		var nm: String = String(key)
+		if nm.begins_with("meta:"):
+			p.name = "Point%d" % idx
+			p.set_meta(&"asset_slot", StringName(nm.substr(5)))
+		else:
+			p.name = nm
+		p.position = preplan_points[key]
+		p.add_to_group(G.PREPLAN_POINT, true)
+		holder.add_child(p)
+		idx += 1
+	_own_children(root)
+	var ps: PackedScene = PackedScene.new()
+	ps.pack(root)
+	root.free()
+	return ps
+
+
+## A2-01: basic() plus a wall along z = 0 (x in [-14, 14], 3 m high) with a 0.9 m doorway centred on
+## x = 0 and a baked navmesh (`Navigation`, project nav defaults D-025) through the doorway. Add a
+## Door prefab at the origin at runtime (add_prefab(rt, "door", Vector3.ZERO, ...)).
+static func with_doorway_wall(guards: int = 0, civilians: int = 0) -> PackedScene:
+	var root: HeistMap = basic(guards, civilians).instantiate() as HeistMap
+	var geo: Node3D = root.get_node("Geometry")
+	for side: float in [-1.0, 1.0]:
+		var b: StaticBody3D = StaticBody3D.new()
+		b.name = "Wall%s" % ("W" if side < 0.0 else "E")
+		var cs: CollisionShape3D = CollisionShape3D.new()
+		var box: BoxShape3D = BoxShape3D.new()
+		box.size = Vector3(14.0 - 0.45, 3.0, 0.2)
+		cs.shape = box
+		b.add_child(cs)
+		b.position = Vector3(side * (0.45 + box.size.x * 0.5), 1.5, 0.0)
+		geo.add_child(b)
+	var nav: NavigationRegion3D = NavigationRegion3D.new()
+	nav.name = "Navigation"
+	root.add_child(nav)
+	var nm: NavigationMesh = NavigationMesh.new()
+	nm.agent_radius = 0.3
+	nm.agent_height = 1.8
+	nm.agent_max_climb = 0.3
+	nm.agent_max_slope = 40.0
+	nm.cell_size = 0.1
+	nm.cell_height = 0.1
+	nm.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
+	nm.geometry_collision_mask = 1
+	nm.geometry_source_geometry_mode = NavigationMesh.SOURCE_GEOMETRY_ROOT_NODE_CHILDREN
+	nm.filter_baking_aabb = AABB(Vector3(-15.0, -1.0, -15.0), Vector3(30.0, 4.0, 30.0))
+	var holder: Node3D = Node3D.new()  # parse needs the geometry in a tree for global transforms
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	tree.root.add_child(holder)
+	holder.add_child(root)
+	var src: NavigationMeshSourceGeometryData3D = NavigationMeshSourceGeometryData3D.new()
+	NavigationServer3D.parse_source_geometry_data(nm, src, geo)
+	NavigationServer3D.bake_from_source_geometry_data(nm, src)
+	holder.remove_child(root)
+	holder.free()
+	nav.navigation_mesh = nm
+	_own_children(root)
+	var ps: PackedScene = PackedScene.new()
+	ps.pack(root)
+	root.free()
+	return ps
+
+
+## A3-08: with_heist_def() plus PREPLAN_POINT Marker3Ds directly under `<Map>/Preplan` (heist_map.md
+## v1.2, preplanning.md: node name = point id), in group G.PREPLAN_POINT with `category` metadata.
+## `markers`: point id -> Vector3, or point id -> {"pos": Vector3, "category": StringName, "params": Dictionary}.
+static func with_preplan_markers(def: HeistDef, preplan_spawn_tags: Array[StringName] = [], markers: Dictionary = {},
+		variant_groups: Dictionary = {}, table: HeistVariantTable = null) -> PackedScene:
+	var root: HeistMap = with_heist_def(def, 0, 0, preplan_spawn_tags, {}, variant_groups, table).instantiate() as HeistMap
+	var holder: Node3D = Node3D.new()
+	holder.name = "Preplan"
+	root.add_child(holder)
+	for key: Variant in markers:
+		var spec: Variant = markers[key]
+		var m: Marker3D = Marker3D.new()
+		m.name = String(key)
+		if spec is Dictionary:
+			m.position = (spec as Dictionary).get("pos", Vector3.ZERO)
+			m.set_meta(&"category", StringName((spec as Dictionary).get("category", &"drop_zone")))
+			m.set_meta(&"params", (spec as Dictionary).get("params", {}))
+		else:
+			m.position = spec
+			m.set_meta(&"category", &"drop_zone")
+		m.add_to_group(G.PREPLAN_POINT, true)
+		holder.add_child(m)
+	_own_children(root)
+	var ps: PackedScene = PackedScene.new()
+	ps.pack(root)
+	root.free()
+	return ps

@@ -1,4 +1,4 @@
-# Contract: heist map (v1.1)
+# Contract: heist map (v1.2)
 
 Producer: **ENV C** (maps). Consumer: **ENV A** (`HeistRuntime`, AI, stealth, director). ENV B reads
 `HeistDef` for job board / briefing / pre-planning UI.
@@ -24,7 +24,7 @@ docs/levels/<id>/           review screenshots + validate_level report
 ├── Props               (Node3D) dressing (validated: no float/clip)
 ├── Lighting            (Node3D) lights + WorldEnvironment + LightmapGI/VoxelGI as decided per heist
 ├── Navigation          (NavigationRegion3D) baked navmesh, layer `walkable`; vents use layer `vent`
-├── Zones               (Node3D) MapZone volumes: PUBLIC, RESTRICTED, SECURE_LOOT, ESCAPE, BODY_HIDE
+├── Zones               (Node3D) MapZone volumes: PUBLIC, RESTRICTED, SECURE_LOOT, ESCAPE, BODY_HIDE, OUT_OF_BOUNDS
 ├── Rooms               (Node3D) RoomVolume per room in the design doc room list
 ├── Spawns              (Node3D) SpawnPoint: PLAYER (≥4, + pre-planning alternates), GUARD, CIVILIAN,
 │                                 POLICE (≥3 directions), CAMERA_OPERATOR
@@ -34,6 +34,7 @@ docs/levels/<id>/           review screenshots + validate_level report
 │                                 keypads, vault, escape vehicle...) with visual_scene set
 ├── Variants            (Node3D) VariantSlot nodes (each holds the content for that option)
 ├── Mission             (Node) script <id>_mission.gd
+├── Preplan             (Node3D, optional) PREPLAN_POINT Marker3Ds; node name = point id (contracts/preplanning.md)
 └── ReviewCameras       (Node3D) Marker3D × N fixed review shots (referenced by HeistMap.review_cameras)
 ```
 
@@ -78,6 +79,10 @@ Node names above are **exact** (consumers find them by name). Additional childre
 * `validate_level` checks **every** combination class: for each group, each slot individually
   must leave the heist completable (reachability of objectives + escape).
 
+* Extended rule fields (A2-08, D-043; full semantics in `game/systems/heist/README.md` "Variant rule fields"):
+  `force_if: [{"if": {group: [slots]}, "then": [slots]}]` (conditional pinning), `slot_requires: {slot: {group: [slots]}}`
+  (per-slot eligibility), `min_difficulty` on rare events, and per-difficulty weights for slot groups and scalars.
+  Referenced groups must resolve earlier in the table.
 * `UsePoint` convention (D-025, QA-8): it sits on the object's −Z side (the side facing the room/user),
   rotated so the UsePoint's own −Z faces the object. Exception: `drill_point`, whose −Z points into the lock.
 
@@ -87,6 +92,8 @@ Node names above are **exact** (consumers find them by name). Additional childre
   API (`add_objective`, `complete`, `on_event(signal, callable)`, `require_items`, timers, Mercer
   voice-line hooks). ENV C writes `<id>_mission.gd` against it. Mission scripts may use ONLY
   `HeistMission` API, `EventBus`, `Services`, and node paths **inside their own map**.
+
+* `floor_heights` must be ascending and contain 0.0 (the ground floor); basements are negative (D-040).
 
 ## 7. Scale & coordinate rules
 
