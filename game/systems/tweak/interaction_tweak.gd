@@ -25,6 +25,23 @@ extends Resource
 @export var item_pickup_s: float = 0.5
 @export var door_open_s: float = 0.0
 @export var revive_s: float = 6.0
+## A1-03 prefab defaults (◇ unless cited).
+@export var keypad_s: float = 2.0
+@export var read_note_s: float = 1.0
+@export var camera_loop_s: float = 5.0
+@export var display_case_open_s: float = 2.0
+@export var window_open_s: float = 1.0
+@export var zipline_attach_s: float = 1.0
+@export var safe_open_s: float = 1.0
+
+@export_group("Devices (S9.3, S9.4)")
+@export var drill_duration_s: float = 180.0
+@export var thermal_duration_s: float = 360.0
+@export var saw_duration_s: float = 180.0
+
+@export_group("Doors")
+## Leaf rotation when open (degrees).
+@export var door_open_angle_deg: float = 90.0
 
 @export_group("Noise radii (S4.3)")
 ## noise profile id -> radius in m. "silent" = 0.

@@ -33,6 +33,7 @@ var options: Dictionary = {}
 ## True once the alarm has sounded (stays true through ESCAPE/ENDED).
 var went_loud: bool = false
 var interaction: InteractionSystem = null
+var stealth: StealthDirector = null
 var mission: HeistMission = null
 var hud_model: LocalHudModel = null
 ## Container for runtime-spawned entities (NPCs, crew, bags).
@@ -146,6 +147,9 @@ func _create_services() -> void:
 	interaction = InteractionSystem.new()
 	interaction.name = "InteractionSystem"
 	register_service(&"interaction", interaction)
+	stealth = StealthDirector.new()
+	stealth.name = "StealthDirector"
+	register_service(G.SVC_STEALTH, stealth)
 	hud_model = LocalHudModel.new()
 	hud_model.name = "LocalHudModel"
 	add_child(hud_model)

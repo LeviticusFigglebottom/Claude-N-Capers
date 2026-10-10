@@ -53,9 +53,10 @@ func _ready() -> void:
 	collision_layer = COLLISION_LAYER_PLAYERS
 	collision_mask = COLLISION_MASK_WORLD
 	_runtime = HeistRuntime.of(self)
-	var tw: CrewTweak = Tweak.crew()
-	body_bags = tw.body_bags_base
-	cable_ties = tw.cable_ties_base
+	if slot < 0:
+		var tw: CrewTweak = Tweak.crew()
+		body_bags = tw.body_bags_base
+		cable_ties = tw.cable_ties_base
 	_apply_stance(false)
 
 

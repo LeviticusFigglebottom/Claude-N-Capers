@@ -5,6 +5,7 @@ extends RefCounted
 
 static var _crew: CrewTweak = null
 static var _interaction: InteractionTweak = null
+static var _stealth: StealthTweak = null
 
 
 static func crew() -> CrewTweak:
@@ -17,3 +18,9 @@ static func interaction() -> InteractionTweak:
 	if _interaction == null:
 		_interaction = load("res://systems/tweak/interaction_tweak.tres") as InteractionTweak
 	return _interaction
+
+
+static func stealth() -> StealthTweak:
+	if _stealth == null:
+		_stealth = load("res://systems/stealth/stealth_tweak.tres") as StealthTweak
+	return _stealth
