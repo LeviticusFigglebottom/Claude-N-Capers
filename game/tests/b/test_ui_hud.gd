@@ -30,6 +30,25 @@ func test_ammo_updates_on_signal() -> void:
 	assert_eq(_hud.ammo.ammo_label.text, UiText.t(&"ui.hud.ammo", {"mag": 3, "reserve": 70}))
 
 
+## ui_hud.md v1.2 (D-043 QA-22): custody widget bound to custody_changed / custody.
+func test_custody_widget() -> void:
+	var c: CustodyPanel = _hud.custody
+	assert_false(c.visible, "no custody: hidden")
+	_model.custody = {"in_custody": true, "negotiation_left_s": 25.0, "auto_release_left_s": 90.0, "highlighted_hostage_net_id": 0}
+	assert_true(c.visible and c.title_label.visible)
+	assert_eq(c.negotiation_label.text, UiText.t(&"ui.hud.custody_negotiation", {"seconds": UiText.clock(25.0)}))
+	assert_true(c.release_label.visible)
+	assert_eq(c.release_label.text, UiText.t(&"ui.hud.custody_release", {"seconds": UiText.clock(90.0)}))
+	_model.custody = {"in_custody": true, "negotiation_left_s": 0.0, "auto_release_left_s": -1.0, "highlighted_hostage_net_id": 0}
+	assert_eq(c.negotiation_label.text, UiText.t(&"ui.hud.custody_trade"), "trade possible now")
+	assert_false(c.release_label.visible, "no auto release")
+	_model.custody = {"in_custody": false, "negotiation_left_s": 0.0, "auto_release_left_s": -1.0, "highlighted_hostage_net_id": 42}
+	assert_true(c.visible and c.hostage_label.visible, "free player: trade hint for the highlighted hostage")
+	assert_false(c.title_label.visible)
+	_model.custody = {}
+	assert_false(c.visible)
+
+
 func test_vitals_and_downs() -> void:
 	_model.max_health = 200.0
 	_model.health = 50.0

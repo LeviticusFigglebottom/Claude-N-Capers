@@ -159,7 +159,9 @@ func test_glasshouse_objectives_follow_the_design_doc() -> void:
 			assert_has(tags, k.trim_prefix("objective.glasshouse."), "no guessed objective key: %s" % k)
 
 
-## D-043 QA-24: every AI teammate order is acknowledged with `vo.crew.ack_<order>` (crew_ai_brain).
+## D-043 QA-24: every AI teammate order is acknowledged with `vo.crew.ack_<order>`: crew_ai_brain.gd builds
+## the id as "vo.crew.ack_%s" % order for any order accepted by CrewOrders.is_order(), i.e. CrewOrders.ORDERS
+## (read from A's class here, so a new order without a line fails).
 func test_crew_order_acks_exist() -> void:
 	var table: VoiceLineTable = _voice_table()
 	for o: StringName in CrewOrders.ORDERS:

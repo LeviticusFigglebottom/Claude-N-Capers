@@ -256,11 +256,12 @@ func apply() -> Dictionary:
 ## ids without UI, through the same rules. An id may name its point as "asset.<id>@<point id>";
 ## otherwise a located asset takes the first free allowed point in blueprint order. Slot 0 buys
 ## everything and votes alone; nothing is charged (cash_spent is empty). Rejected ids are logged.
+## When no id is accepted (none given, all unknown or refused) the result is {} = no plan, so ENV A's
+## preplan stays inactive (test_c3_unknown_dev_id_ignored). Only (heist_id, ids) are required.
 static func resolve_ids(heist_id: StringName, ids: Array, difficulty: int = Enums.Difficulty.ROUTINE,
 		def: HeistDef = null) -> Dictionary:
 	var b: PreplanBoard = PreplanBoard.build(heist_id, difficulty, def)
 	var p: PreplanPlan = PreplanPlan.new(b, 0, [0] as Array[int])
-	var accepted: int = 0
 	for raw: Variant in ids:
 		var o: Dictionary = PlanVote.parse_option(StringName(String(raw)))
 		var id: StringName = StringName(o["asset"])
@@ -271,10 +272,8 @@ static func resolve_ids(heist_id: StringName, ids: Array, difficulty: int = Enum
 		var r: StringName = p.add(id, pid, 0)
 		if r != OK:
 			Log.warn(&"preplan", "resolve_ids(%s): %s@%s rejected (%s)" % [heist_id, id, pid, r])
-		else:
-			accepted += 1
-	if accepted == 0 and not ids.is_empty():
-		return {}  # LEAD: nothing resolved = no pre-planning (ENV A's PreplanAssets.is_active)
+	if p.selections.is_empty():
+		return {}
 	var res: Dictionary = p.apply()
 	res["cash_spent"] = {}
 	return res

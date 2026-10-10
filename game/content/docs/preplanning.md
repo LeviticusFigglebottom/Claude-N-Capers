@@ -31,16 +31,15 @@ The contract's AssetDef fields: `id`, `cost`, `favors`, `max_count`, `point_cate
 `vote_group`, `grants`, `drop` (+ `drop_params`, the contract's optional `params`), `spawn_tag`,
 `escape_tag`, `force_variants` (`{group: [slot ids]}`), `reveals`. An asset may combine effects.
 Ours on top (UI and rules only, never in the PreplanResult): `category` (UI grouping, order in
-`PreplanTweak.category_order`), `exclusive_group` (at most one asset of the group per plan, e.g. `player_spawn`)
+`PreplanTweak.category_order`), `exclusive_group` (at most one asset of the group per plan, e.g. `spawn`)
 and `tags` (`stealth` / `loud` hint). `effect` (D-046 QC-22): `force_variant` declares that the asset forces
 the chosen point's variant (needs a location); empty = the effect follows from the other fields.
 Strings: `item.asset.<name>.name` / `.desc`.
 
-**HeistDef.preplanning shape (D-046 QC-20).** `{favors, disable, assets: {id: overrides}}`, and override
-entries may also sit at the top level as `"asset.<id>": {overrides}` (both merge the same way). Favors
-come from `preplanning.favors`, else `PreplanTweak.default_favors` (QC-23: never hard-code 10). Only an
-entry with a pre-D-038 field (`slot`) marks the whole Dictionary as legacy (ignored with a warning).
-Point category for crew spawns: `player_spawn` (QC-21).
+**HeistDef.preplanning shape (contract v1.0, kept by revised D-046).** `{favors, disable, assets: {id:
+overrides}}`; a Dictionary with none of those keys is the pre-D-038 shape (ignored with a warning). Favors
+come from `preplanning.favors`, else `PreplanTweak.default_favors` (QC-23: never hard-code 10). Point
+category for crew spawns: `spawn`.
 
 **Point params ◇.** A located asset takes the chosen point's `params.spawn_tag`, `params.escape_tag` and
 `params.variant_group` + `params.variant_slot` (a forced variant) for each of those fields it leaves
@@ -65,7 +64,7 @@ multiplier; DifficultyDef has none yet, so the tweak holds it.) Default favors: 
 | `asset.intel_guard_posts` | `reveals` `guard_post` | crew | 1,200 | 1 |
 | `asset.extra_cable_ties` | `grants` `stealth.cable_ties_extra` +2 | crew | 800 | 1 |
 | `asset.spare_body_bags` | `grants` `stealth.body_bags_extra` +1 | crew | 1,000 | 1 |
-| `asset.alternate_entry` | spawn tag from the point's `params.spawn_tag` | `player_spawn`, exclusive | 500 | 1 |
+| `asset.alternate_entry` | spawn tag from the point's `params.spawn_tag` | `spawn`, exclusive | 500 | 1 |
 | `asset.escape_position` | forced variant from the point's `params.variant_group/variant_slot` | `escape`, vote group `escape` (cost split) | 1,000 | 1 |
 | `asset.intel_laptop` (B4-10) | `reveals` `laptop` | crew | 1,500 ◇ | 1 ◇ |
 | `asset.gondola_left_hung` (B4-10) | forced variant from the point's params (`gondola` / `gon_west_l41` or `gon_north_l42`) | `point_ids` `pp_gondola_west`, `pp_gondola_north`; exclusive `gondola` | 2,000 ◇ | 2 ◇ |
@@ -108,7 +107,7 @@ bounds. Points come from the map when it has any: `PreplanBlueprint.from_map_sce
 `params`), takes their x/z relative to the map root, grows the bounds to show every point and frees the
 instance. The result is cached per heist (`PreplanBoard.clear_cache()`). Without map points the
 schematic's own points are used (the placeholder's ids, tags and slots are ours). Categories in use:
-`drop_zone`, `player_spawn` (`params.spawn_tag`) and `escape` (`params.variant_group/variant_slot`).
+`drop_zone`, `spawn` (`params.spawn_tag`) and `escape` (`params.variant_group/variant_slot`).
 ENV C's blueprint image (`<id>_blueprint.png`) is not drawn yet; the screen draws the schematic.
 
 ## Plan rules (`PreplanPlan`)

@@ -36,8 +36,14 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   all_loots/all_throwables/all_difficulties()`, `tweak(name) -> Resource` (`&"concealment_curve"` ...). UI text comes
   from strings.csv `item.<id>.name` (display_name in .tres is a debug fallback). Unknown id →
   `Log.error` + null. Scans `res://content/data/<kind>/` with `ResourceLoader.list_directory`.
-* `LoadoutResolver.resolve(loadout: Loadout) -> Loadout` (returns a resolved copy): resolved
-  weapon stats (base + mods, clamps), `concealment_total`, `detection_risk`, `modifiers`.
+* `LoadoutResolver.resolve(loadout: Loadout, profile: PlayerProfile = null) -> Loadout` (returns a resolved
+  copy): resolved weapon stats (base + mods, clamps; shell-fed reload totals derived per D-045),
+  `concealment_total`, `detection_risk`, `modifiers`, and `mask_descriptor` (D-043 QA-25:
+  `mask_descriptor_for(loadout, profile)` = the worn custom mask's `MaskCatalog.descriptor`, {} for presets /
+  none; without a profile the loadout's own descriptor is kept while it names the same mask. It is filled on
+  the profile loadout by `PlayerProfile.from_dict` and `MaskLocker.equip/save_custom/clear_custom`, and on
+  the launch loadout by `LoadoutScreen.current_loadout()`; never saved). `LoadoutResolver.reload_times(stats)
+  -> Vector2(tactical, empty)`.
   `LoadoutResolver.concealment_breakdown(loadout) -> Dictionary` for UI
   (`primary, secondary, melee, armor, bonus, total, detection_risk`).
   `LoadoutResolver.concealment_bonus(loadout) -> int` / `concealment_bonus_from(loadout, modifiers)`:
@@ -89,7 +95,8 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   plus build-wide `unlocked_difficulties` and the default `solo_ai_teammates`.
   `entries_from(defs, list)` is the pure builder (tests).
 * `Hud` binds its widgets DIRECTLY to the node in group `G.LOCAL_HUD_MODEL` (ENV A's LocalHudModel,
-  ui_hud.md v1.1; no adapter), polled while unbound and rediscovered if the model is freed; MenuFlow
+  ui_hud.md v1.2; no adapter; v1.2 `custody` drives `CustodyPanel`: negotiation / auto-release timers while in
+  custody, a trade hint for the highlighted hostage while free), polled while unbound and rediscovered if the model is freed; MenuFlow
   relies on that discovery in heists. `bind(model)` still works. `MockHudModel` (demo/tests) joins the
   same group. `MarkedTargets` draws a diamond per `marked_targets` entry; `InteractionPanel` fills a
   missing `{key}` prompt arg from the `interact` InputMap binding.
@@ -97,7 +104,8 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `CrewController.spawn_for_range` (`RangeCrewBridge`, the range's only door into A's runtime), with
   `set_loadout(resolved)` on every swap; panel mode pauses the crew's PlayerInput (`RangeModeInput`).
   Last shot / damage numbers follow `EventBus.damage_applied` from the range's targets with
-  attacker = the crew's net id. `RangeSpectator` + `RangeDebugGun` are a FALLBACK only (hook missing,
+  attacker = the crew's net id. Ammo is read through a `LocalHudModel` that `track(crew)`s the range's crew
+  (`FiringRange.hud_model`, ui_hud.md v1.2), falling back to the crew's weapons. `RangeSpectator` + `RangeDebugGun` are a FALLBACK only (hook missing,
   or `use_fallback_shooter` for tests).
 
 * `BriefingScreen` (`ui/briefing/briefing_screen.tscn`, C2): `setup(heist_id, difficulty)`; signals

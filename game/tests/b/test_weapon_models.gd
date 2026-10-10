@@ -276,3 +276,34 @@ func test_heaviest_full_kit_fits_the_fp_budget() -> void:
 					worst = maxi(worst, _tris_of(m.model))
 			total += worst
 		assert_true(total <= FP_WEAPON_TRI_BUDGET, "%s full kit %d tris" % [w.id, total])
+
+
+## D-044 (visual_slots.md): the Rampart LMG carries a hinged `FeedCover`: its origin is the REAR hinge
+## (closed = rotation 0; ENV A opens it 78 deg about local X), so the whole cover lies in front of the
+## pivot, and the optics rail (SightRail) rides on it.
+func test_rampart_feed_cover_hinge() -> void:
+	var v: WeaponVisual = WeaponVisual.new()
+	add_child(v)
+	v.setup_ids(&"weapon.rampart_lmg", [] as Array[StringName])
+	var cover: Node3D = v.model.find_child("FeedCover", true, false) as Node3D
+	assert_true(cover != null, "FeedCover node")
+	if cover == null:
+		v.queue_free()
+		return
+	assert_true(cover.rotation.is_zero_approx(), "closed = rotation 0")
+	# hinge axis: Blender (0, COVER_Y0 - 0.004, REC_TOP_Z + 0.002) = Godot (0, 0.120, 0.024)
+	var hinge: Vector3 = v.model.global_transform.affine_inverse() * cover.global_position
+	assert_near(hinge.x, 0.0, 0.0005, "hinge on the centre plane")
+	assert_near(hinge.y, 0.120, 0.0005, "hinge at the receiver top")
+	assert_near(hinge.z, 0.024, 0.0005, "hinge at the cover's rear")
+	var mesh: MeshInstance3D = cover as MeshInstance3D
+	if mesh != null:
+		var box: AABB = mesh.get_aabb()
+		assert_true(box.end.z < 0.012, "cover body is in front of (or on) the rear hinge: %s" % box)
+		assert_true(box.position.z < -0.15, "cover reaches forward: %s" % box)
+	var sight: Node3D = v.get_marker(&"SightRail")
+	assert_true(cover.is_ancestor_of(sight), "SightRail rides on the feed cover")
+	var before: Vector3 = sight.global_position
+	cover.rotation.x = deg_to_rad(78.0)
+	assert_true(sight.global_position.y > before.y + 0.03, "opening lifts the rail (front edge up)")
+	v.queue_free()
