@@ -798,6 +798,119 @@ def keycard_beep(rng: np.random.Generator, v: int) -> np.ndarray:
     return y
 
 
+# ------------------------------------------------------------ QA-15 devices
+
+
+def keypad_accept(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Code accepted: soft triangle two-tone D6 -> G6 (1175/1568 Hz), quick 60 ms pips, no relay.
+    Niche: rounder and lower than keycard_beep (pure sines 1.6/2.4 kHz + relay click)."""
+    dur = 0.25
+    y = np.zeros(nsamp(dur))
+    for st, f in ((0.0, 1175.0), (0.075, 1568.0)):
+        place(y, osc.triangle(f, 0.06) * env.adsr(0.06, 0.002, 0.03, 0.7, 0.015), nsamp(st))
+    return fade(y, 0, 0.02)
+
+
+def c4_armed(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Arming chirp: three rising FM blips 2.5 -> 3.5 kHz then an LED 'pip'. One-shot (a ticking
+    loop can be added as cue.c4_tick if design wants a countdown)."""
+    dur = 0.45
+    y = np.zeros(nsamp(dur))
+    for i, f in enumerate((2500.0, 3000.0, 3500.0)):
+        b = osc.fm(f, 1.5, 1.2 * env.exp_decay(0.04, 0.03), 0.04) * env.adsr(0.04, 0.001, 0.02, 0.6, 0.01)
+        place(y, b, nsamp(i * 0.055))
+    place(y, osc.sine(4200.0, 0.08) * env.adsr(0.08, 0.002, 0.05, 0.8, 0.02) * 0.8, nsamp(0.22))
+    return fade(y, 0, 0.03)
+
+
+def c4_explode(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Large explosion: broadband crack, 30-60 Hz sub boom, 300-800 Hz roar, granular debris rain
+    (0.3-2.6 s) and a long alley tail. Niche: the only cue with sustained sub + debris texture."""
+    dur = 4.0
+    t = tvec(dur)
+    vr = 1 + 0.06 * (v - 1) + rng.uniform(-0.03, 0.03)
+    crack = filters.hp(noise.white(dur, rng), 1200) * env.exp_decay(dur, 0.05, 0.0) * 2.0
+    sub = osc.sine(30 * vr * (1 + 1.2 * np.exp(-t / 0.12)), dur) * env.exp_decay(dur, 1.8, 0.002) * 1.6
+    roar = filters.bp(noise.brown(dur, rng), 450 * vr, 0.6) * env.exp_decay(dur, 1.4, 0.004) * 2.2
+    rumble = filters.lp(noise.brown(dur, rng), 120) * env.exp_decay(dur, 2.8, 0.01) * 1.5
+    y = fx.drive(crack + sub + roar + rumble, 2.5)
+
+    def debris(i: int, r: np.random.Generator) -> np.ndarray:
+        if r.random() < 0.6:
+            return click(r, (r.uniform(900, 2500), r.uniform(2800, 6000)), 0.06, 8, 0.008, r.uniform(0.2, 0.8))
+        return thud(r, r.uniform(90, 260), 0.15, 0.7) * r.uniform(0.2, 0.6)
+
+    times = 0.3 + rng.uniform(0, 1, 90 + 10 * v) ** 1.7 * 2.3
+    y += granular.cloud(dur, np.sort(times), debris, rng) * 0.5
+    y = fx.reverb(y, "alley", 0.35, stereo_out=False, tail=False, lowcut=60)
+    return fade(y, 0, 0.6)
+
+
+def time_lock_start(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Vault time-lock engages: heavy bolt clunk (70 Hz + 0.9/1.8 kHz) then a 2 s geared motor
+    whir (90 Hz harmonics + gear ticks) that spins up and stops with a click."""
+    dur = 2.8
+    y = np.zeros(nsamp(dur))
+    place(y, thud(rng, 70, 0.5, 0.9) * 1.3, 0)
+    place(y, click(rng, (900.0, 1800.0, 2700.0), 0.3, 20, 0.03, 1.0), 0)
+    md = 2.0
+    mt = tvec(md)
+    f = 90 * np.minimum(1.0, 0.4 + mt / 0.4)
+    motor = filters.bp(osc.saw(f, md), 700, 0.6) + osc.sine(f * 6, md) * 0.15
+    motor *= env.segments([(0, 0), (0.3, 1), (md - 0.15, 1), (md, 0)], md) * 0.5
+    ph = np.cumsum(f / 6 / 48000) % 1.0
+    ticks = (np.diff(np.concatenate([[0.0], ph])) < 0).astype(float)
+    motor += filters.bp(ticks, 3200, 6) * 3.0 * env.segments([(0, 0), (0.3, 1), (md, 1)], md)
+    place(y, motor, nsamp(0.45))
+    place(y, click(rng, (1500.0, 2600.0), 0.08, 10, 0.01, 0.8), nsamp(0.45 + md))
+    return fx.reverb(y, "store", 0.15, stereo_out=False, tail=False)
+
+
+def time_lock_done(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Time-lock releases: retracting bolt clunk with a low metal ring, then a two-note chime
+    (A5, E6 bell). Niche: low clunk + bright consonant chime."""
+    dur = 2.2
+    y = np.zeros(nsamp(dur))
+    place(y, thud(rng, 85, 0.4, 0.8), 0)
+    place(y, osc.partials([310.0, 742.0, 1290.0], [0.6, 0.35, 0.2], [0.35, 0.2, 0.1], 0.6, rng), 0)
+    place(y, click(rng, (1100.0, 2200.0), 0.1, 12, 0.012, 0.9), nsamp(0.01))
+    for i, note in enumerate((81, 88)):
+        place(y, seq.bell(note, 1.4, rng, 0.4), nsamp(0.45 + i * 0.18), 0.45)
+    return fx.reverb(y, "store", 0.2, stereo_out=False, tail=False)
+
+
+def laser_trip(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Laser grid tripped: two fast down-swept square blips 4.5 -> 2 kHz with a buzzy 120 Hz edge.
+    Niche: sweeping (unlike the steady pager/alarm tones), 0.3 s."""
+    dur = 0.32
+    y = np.zeros(nsamp(dur))
+    bd = 0.11
+    sweep = np.geomspace(4500, 2000, nsamp(bd))
+    blip = osc.square(sweep, bd, 0.5) * env.adsr(bd, 0.002, 0.05, 0.8, 0.02)
+    blip *= 0.8 + 0.2 * osc.square(120, bd, 0.5)
+    for st in (0.0, 0.14):
+        place(y, filters.bp(blip, 3000, 0.7) + blip * 0.2, nsamp(st))
+    return fade(y, 0, 0.02)
+
+
+def zipline_attach(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Carabiner snaps onto the cable: bright clack (2.4/4.1/6.8 kHz) plus a taut-cable 'zing':
+    a stretched-harmonic string at 160 Hz with a falling pitch bend and friction hiss."""
+    dur = 1.1
+    y = np.zeros(nsamp(dur))
+    place(y, click(rng, (2400.0, 4100.0, 6800.0), 0.15, 16, 0.016, 1.3), 0)
+    zd = 0.9
+    t = tvec(zd)
+    f0 = 160 * (1 + 0.04 * np.exp(-t / 0.15))
+    zing = np.zeros(nsamp(zd))
+    for h in range(1, 14):
+        stretch = h * (1 + 0.0009 * h * h)
+        zing += osc.sine(f0 * stretch, zd) * np.exp(-t / (0.5 / (1 + 0.15 * h))) / h ** 0.6
+    hiss = filters.bp(noise.white(zd, rng), 5000, 1.5) * env.exp_decay(zd, 0.2) * 0.4
+    place(y, (zing * 0.4 + hiss), nsamp(0.015))
+    return fade(y, 0, 0.1)
+
+
 def lockpick(rng: np.random.Generator, v: int) -> np.ndarray:
     """Pin picking loop: irregular tiny ticks 5-8 kHz over a faint tension-wrench scrape.
     Niche: very high, sparse, quiet. Seamless 3 s loop."""
@@ -944,6 +1057,13 @@ CUES: list[CueSpec] = [
     CueSpec("door_open", door_open, max_distance=20.0, pitch_jitter=0.05),
     CueSpec("door_close", door_close, max_distance=20.0, pitch_jitter=0.05),
     CueSpec("keycard_beep", keycard_beep, max_distance=12.0, volume_db=-4.0),
+    CueSpec("keypad_accept", keypad_accept, max_distance=12.0, volume_db=-4.0, note="QA-15"),
+    CueSpec("c4_armed", c4_armed, max_distance=15.0, volume_db=-4.0, note="QA-15 one-shot chirp"),
+    CueSpec("c4_explode", c4_explode, variations=3, max_distance=250.0, pitch_jitter=0.03, note="QA-15"),
+    CueSpec("time_lock_start", time_lock_start, max_distance=30.0, note="QA-15"),
+    CueSpec("time_lock_done", time_lock_done, max_distance=30.0, note="QA-15"),
+    CueSpec("laser_trip", laser_trip, max_distance=30.0, volume_db=-2.0, cooldown_s=0.5, note="QA-15"),
+    CueSpec("zipline_attach", zipline_attach, max_distance=20.0, pitch_jitter=0.04, note="QA-15"),
     CueSpec("lockpick", lockpick, loop=True, max_distance=8.0, volume_db=-8.0),
     CueSpec("ui_click", ui_click, bus="UI", positional=False, volume_db=-10.0, cooldown_s=0.02),
     CueSpec("amb_glasshouse_interior", amb_glasshouse_interior, bus="Ambience", positional=False, loop=True,

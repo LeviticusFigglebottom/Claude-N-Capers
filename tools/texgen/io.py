@@ -7,6 +7,7 @@ as ``from texgen import io as tio`` (build.py puts ``tools/`` on sys.path, not `
 from __future__ import annotations
 
 import hashlib
+from io import BytesIO
 from pathlib import Path
 
 import numpy as np
@@ -21,11 +22,18 @@ def write_png(path: Path, img: np.ndarray) -> None:
         raise TypeError(f"{path}: expected uint8, got {img.dtype}")
     if img.ndim == 3 and img.shape[2] not in (3, 4):
         raise ValueError(f"{path}: unsupported channel count {img.shape[2]}")
-    path.parent.mkdir(parents=True, exist_ok=True)
     im = Image.fromarray(np.ascontiguousarray(img))
     # No pnginfo, no ICC profile, no gamma chunk, no optimize pass (its search is not
     # guaranteed stable across Pillow versions).
-    im.save(path, format="PNG", optimize=False, compress_level=PNG_COMPRESS_LEVEL)
+    buf = BytesIO()
+    im.save(buf, format="PNG", optimize=False, compress_level=PNG_COMPRESS_LEVEL)
+    data = buf.getvalue()
+    # Leave byte-identical files untouched: a new mtime makes Godot re-import them, and
+    # concurrent imports by other sessions can then leave .import files valid=false.
+    if path.exists() and path.read_bytes() == data:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(data)
 
 
 def write_text(path: Path, text: str) -> None:

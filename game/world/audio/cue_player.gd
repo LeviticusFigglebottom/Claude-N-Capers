@@ -26,7 +26,7 @@ const SIREN_KEY: StringName = &"siren"
 ## Interaction kind -> one-shot cue on completion.
 @export var interaction_done_cues: Dictionary[StringName, StringName] = {
 	&"keycard": &"cue.keycard_beep", &"door_open": &"cue.door_open", &"door_close": &"cue.door_close",
-	&"lockpick": &"cue.door_open",
+	&"lockpick": &"cue.door_open", &"keypad": &"cue.keypad_accept",
 }
 ## Device kind (device_started) -> [loop, jam, done] cues.
 @export var device_cues: Dictionary[StringName, PackedStringArray] = {
@@ -237,6 +237,7 @@ func _connect_event_bus() -> void:
 	EventBus.device_restarted.connect(_on_device_restarted)
 	EventBus.device_finished.connect(_on_device_finished)
 	EventBus.glass_broken.connect(_on_glass_broken)
+	EventBus.laser_tripped.connect(_on_laser_tripped)
 	EventBus.loot_picked.connect(_on_loot_picked)
 	EventBus.loot_dropped.connect(_on_loot_dropped)
 	EventBus.loot_secured.connect(_on_loot_secured)
@@ -408,6 +409,10 @@ func _device_key(device_net_id: int) -> StringName:
 
 func _on_glass_broken(net_id: int, position: Vector3) -> void:
 	play_cue(&"cue.glass_break", position, net_id)
+
+
+func _on_laser_tripped(net_id: int) -> void:
+	play_cue(&"cue.laser_trip", NO_POSITION, net_id)
 
 
 func _on_loot_picked(bag_net_id: int, crew_slot: int) -> void:

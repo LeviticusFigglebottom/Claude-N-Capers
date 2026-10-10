@@ -127,7 +127,10 @@ class Encoded:
 
 def finalize(ctx: Ctx, m: Maps) -> Encoded:
     rules = ctx.rules
-    albedo = ops.enforce_albedo_rules(m.albedo, rules["lum_min"], rules["lum_max"], rules["sat_max"])
+    lum_min = float(ctx.params.get("lum_min", rules["lum_min"]))
+    if lum_min < float(rules["lum_min_black"]):
+        raise ValueError(f"{ctx.lib_id}: lum_min {lum_min} below the black-material floor {rules['lum_min_black']}")
+    albedo = ops.enforce_albedo_rules(m.albedo, lum_min, rules["lum_max"], rules["sat_max"])
     rough = ops.clamp01(m.roughness)
     metal = ops.clamp01(m.metallic)
     rough = np.where(metal > 0.5, np.maximum(rough, rules["metal_rough_min"]), rough)
@@ -145,6 +148,7 @@ def finalize(ctx: Ctx, m: Maps) -> Encoded:
     nrm8 = orm.to_u8(n * 0.5 + 0.5)
     lum = ops.luminance(albedo)
     stats = {
+        "lum_floor_linear": lum_min,
         "albedo_lum_mean_linear": round(float(lum.mean()), 4),
         "albedo_lum_min_linear": round(float(lum.min()), 4),
         "albedo_lum_max_linear": round(float(lum.max()), 4),
