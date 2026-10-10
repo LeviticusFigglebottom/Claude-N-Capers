@@ -35,6 +35,24 @@ GOLD = "#C9A227"         # glasshouse brass accent doubles as the company braid 
 BURGUNDY = "#6E1E2A"
 SKIN = "#B98466"
 HEAD_BASE = 1.04         # shared base scale of the head generator (all styles), style factor on top
+NECK_R = 0.0585          # world neck radius, identical in every style (the body is not scaled with the head)
+NECK_AXIS = ((0, 0.020, -0.06), (0, 0.022, -0.30))   # shared by the torso neck hole, collar and proxies
+COLLAR_R = 0.0640        # collar stand mid-radius: ~3 mm of air around the neck inside the 2.2 mm cloth
+COLLAR_T = 0.0021
+
+
+def neck_r_for(st: dict) -> float:
+    """Head-local neck radius that gives NECK_R in the world after the head's per-style scale."""
+    return NECK_R / (HEAD_BASE * st["head_scale"])
+
+
+def collar_top(y):
+    """Collar stand top edge height (root frame) as a function of depth: low at the throat, high at the nape."""
+    return -0.168 + 0.036 * np.clip((y + 0.06) / 0.12, 0, 1)
+
+
+def collar_bottom(y):
+    return -0.206 + 0.028 * np.clip((y + 0.06) / 0.12, 0, 1)
 
 
 # --------------------------------------------------------------------------- skin & eyes
@@ -70,13 +88,23 @@ def skin_material(st: dict, eyes):
     surf = st["surface"]
     # low-frequency mottling
     mott = nb.noise(co, 45.0, 3.0, 0.55)
-    col = nb.mix(L._scale_rgb(base, 0.9), L._scale_rgb(base, 1.08), mott)
+    if surf == "clean":       # GSR: deliberately simplified, near-flat albedo
+        col = nb.mix(L._scale_rgb(base, 0.97), L._scale_rgb(base, 1.03), mott)
+    else:
+        col = nb.mix(L._scale_rgb(base, 0.9), L._scale_rgb(base, 1.08), mott)
+    if surf == "micro":       # photoreal: blotchy capillaries, freckles / sun damage at two more scales
+        col = nb.mix(L._scale_rgb(base, 0.80), L._scale_rgb(base, 1.12), nb.ramp(nb.noise(co, 30.0, 4.0, 0.6, w=1.3), 0.3, 0.7))
+        blot = nb.ramp(nb.noise(co, 70.0, 4.0, 0.6, w=3.1), 0.46, 0.7)
+        col = nb.mix(col, (base[0] * 0.95, base[1] * 0.58, base[2] * 0.56), nb.math("MULTIPLY", blot, 0.55))
+        frk = nb.ramp(nb.noise(co, 260.0, 2.0, 0.5, w=7.7), 0.64, 0.72)
+        col = nb.mix(col, (base[0] * 0.66, base[1] * 0.5, base[2] * 0.42), nb.math("MULTIPLY", frk, 0.45))
     # redness: cheeks, nose, ears, lips
     red = (base[0] * 1.05, base[1] * 0.62, base[2] * 0.62)
     rmask = nb.math("MAXIMUM", _ell_mask(nb, mco, (0.045, -0.07, -0.03), (0.025, 0.03, 0.025)),
                     _ell_mask(nb, mco, (0.0, -0.112, -0.042), (0.016, 0.02, 0.016)))
     rmask = nb.math("MAXIMUM", rmask, _ell_mask(nb, mco, (0.075, 0.012, -0.012), (0.02, 0.03, 0.038)))
-    col = nb.mix(col, red, nb.math("MULTIPLY", rmask, 0.45))
+    red_amt = {"clean": 0.30, "painterly": 0.45, "micro": 0.62}[surf]
+    col = nb.mix(col, red, nb.math("MULTIPLY", rmask, red_amt))
     lips = _ell_mask(nb, mco, (0.0, -0.098, -0.075), (0.0235, 0.012, 0.0115), 0.5)
     col = nb.mix(col, (base[0] * 0.78, base[1] * 0.42, base[2] * 0.42), nb.math("MULTIPLY", lips, 0.75))
     # under-eye shadow
@@ -91,10 +119,10 @@ def skin_material(st: dict, eyes):
     stub_col = (0.11, 0.09, 0.085)
     if surf == "micro":
         dots = nb.node("ShaderNodeTexVoronoi", feature="F1")
-        dots.inputs["Scale"].default_value = 2600.0
+        dots.inputs["Scale"].default_value = 1500.0
         nb.link(co, dots.inputs["Vector"])
         dmask = nb.ramp(dots.outputs["Distance"], 0.35, 0.15)
-        beard_amt = nb.math("ADD", nb.math("MULTIPLY", beard, 0.22), nb.math("MULTIPLY", nb.math("MULTIPLY", beard, dmask), 0.5))
+        beard_amt = nb.math("ADD", nb.math("MULTIPLY", beard, 0.55), nb.math("MULTIPLY", nb.math("MULTIPLY", beard, dmask), 0.45))
     else:
         beard_amt = nb.math("MULTIPLY", beard, 0.3)
     col = nb.mix(col, stub_col, beard_amt)
@@ -132,9 +160,15 @@ def skin_material(st: dict, eyes):
                  _ell_mask(nb, mco, (0.0, -0.11, -0.03), (0.012, 0.02, 0.03)))
     rough = nb.math("SUBTRACT", st["skin_rough"], nb.math("MULTIPLY", tz, 0.14))
     rough = nb.math("ADD", rough, nb.math("MULTIPLY", brow_amt, 0.25))
+    if surf == "micro":   # roughness breakup + a thin sebum sheen on the T-zone (second specular lobe)
+        rough = nb.math("ADD", rough, nb.math("MULTIPLY", nb.math("SUBTRACT", nb.noise(co, 160.0, 3.0, 0.6), 0.5), 0.16))
+        rough = nb.math("ADD", rough, nb.math("MULTIPLY", beard, 0.08))
+        nb.link(nb.math("MULTIPLY", tz, 0.22), p.inputs["Coat Weight"])
+        p.inputs["Coat Roughness"].default_value = 0.28
+        p.inputs["Coat IOR"].default_value = 1.4
     nb.link(rough, p.inputs["Roughness"])
     p.inputs["Subsurface Weight"].default_value = st["skin_sss"]
-    p.inputs["Subsurface Radius"].default_value = (1.0, 0.38, 0.2)
+    p.inputs["Subsurface Radius"].default_value = (1.0, 0.38, 0.2) if surf != "micro" else (1.0, 0.36, 0.17)
     p.inputs["Subsurface Scale"].default_value = st["skin_sss_scale"]
     p.inputs["Specular IOR Level"].default_value = 0.45
     if surf == "micro":
@@ -143,17 +177,29 @@ def skin_material(st: dict, eyes):
         nb.link(co, pores.inputs["Vector"])
         fine = nb.noise(co, 700.0, 4.0, 0.6)
         h = nb.math("ADD", nb.math("MULTIPLY", pores.outputs["Distance"], 0.6), nb.math("MULTIPLY", fine, 0.4))
+        # mid-frequency unevenness (2-4 mm) that survives at bust framing
+        h = nb.math("ADD", h, nb.math("MULTIPLY", nb.noise(co, 280.0, 3.0, 0.55, w=5.0), 0.9))
+        # forehead lines (horizontal, wavy) and crow's feet: fine wrinkles masked to where they live
+        wv = nb.node("ShaderNodeTexWave", wave_type="BANDS", bands_direction="Z")
+        wv.inputs["Scale"].default_value = 95.0
+        wv.inputs["Distortion"].default_value = 3.0
+        wv.inputs["Detail Scale"].default_value = 1.5
+        nb.link(co, wv.inputs["Vector"])
+        fh = _ell_mask(nb, mco, (0.0, -0.09, 0.05), (0.05, 0.04, 0.02), 0.3)
+        lines = nb.math("MULTIPLY", nb.ramp(wv.outputs["Fac"], 0.75, 1.0), fh)
+        cw = nb.node("ShaderNodeTexWave", wave_type="RINGS")
+        cw.inputs["Scale"].default_value = 160.0
+        cw.inputs["Distortion"].default_value = 2.0
+        nb.link(co, cw.inputs["Vector"])
+        crow = nb.math("MULTIPLY", nb.ramp(cw.outputs["Fac"], 0.8, 1.0),
+                       _ell_mask(nb, mco, (0.052, -0.062, -0.002), (0.010, 0.016, 0.012), 0.2))
+        h = nb.math("SUBTRACT", h, nb.math("MULTIPLY", nb.math("ADD", lines, crow), 0.6))
         bn = nb.node("ShaderNodeBump")
-        bn.inputs["Strength"].default_value = 0.22
+        bn.inputs["Strength"].default_value = 0.33 * st.get("micro_normal", 1.5)   # styles.py knob (c_photo 1.5)
         bn.inputs["Distance"].default_value = 0.00025
         nb.link(h, bn.inputs["Height"])
         nb.link(bn.outputs["Normal"], p.inputs["Normal"])
-    elif surf == "clean":
-        bn = nb.node("ShaderNodeBump")
-        bn.inputs["Strength"].default_value = 0.06
-        bn.inputs["Distance"].default_value = 0.0003
-        nb.link(nb.noise(co, 500.0, 2.0, 0.5), bn.inputs["Height"])
-        nb.link(bn.outputs["Normal"], p.inputs["Normal"])
+    # GSR ("clean"): no micro bump at all, smooth controlled surfaces
     return m
 
 
@@ -172,15 +218,23 @@ def eye_material(st: dict, iris_hex: str = "#5B4632"):
     pupil = nb.math("MULTIPLY", nb.ramp(r, 0.22, 0.19), front)
     limbal = nb.math("MULTIPLY", nb.ramp(r, 0.42, 0.53), iris)
     ic = L.hex_lin(iris_hex)
-    fib = nb.noise(tc.outputs["Object"], 1800.0, 3.0, 0.6, distortion=0.4)
-    icol = nb.mix(L._scale_rgb(ic, 0.6), L._scale_rgb(ic, 1.6), fib)
+    surf = st["surface"]
+    if surf == "clean":      # GSR: graphic, clean iris (radial gradient, no fibres)
+        icol = nb.mix(L._scale_rgb(ic, 1.7), L._scale_rgb(ic, 0.75), nb.ramp(r, 0.2, 0.5))
+    else:
+        fib = nb.noise(tc.outputs["Object"], 1800.0, 3.0, 0.6, distortion=0.4)
+        icol = nb.mix(L._scale_rgb(ic, 0.6), L._scale_rgb(ic, 1.6), fib)
     sclera = nb.mix((0.42, 0.36, 0.33), (0.58, 0.54, 0.50), front)
+    if surf == "micro":      # photoreal: pinkish, veined periphery
+        veins = nb.ramp(nb.noise(tc.outputs["Object"], 900.0, 6.0, 0.7, distortion=2.0), 0.62, 0.7)
+        edge = nb.ramp(sep.outputs[1], -0.002, 0.004)
+        sclera = nb.mix(sclera, (0.5, 0.22, 0.2), nb.math("MULTIPLY", nb.math("ADD", nb.math("MULTIPLY", edge, 0.5), veins), 0.35))
     col = nb.mix(sclera, icol, iris)
     col = nb.mix(col, (0.03, 0.025, 0.02), nb.math("MULTIPLY", limbal, 0.7))
     col = nb.mix(col, (0.008, 0.008, 0.008), pupil)
     nb.link(col, p.inputs["Base Color"])
     p.inputs["Roughness"].default_value = 0.3
-    p.inputs["Coat Weight"].default_value = 1.0
+    p.inputs["Coat Weight"].default_value = 1.0 if surf != "micro" else 0.0   # photoreal: a real cornea does it
     p.inputs["Coat Roughness"].default_value = 0.02
     p.inputs["Coat IOR"].default_value = 1.38
     p.inputs["Subsurface Weight"].default_value = 0.2 * st["skin_sss"]
@@ -188,10 +242,69 @@ def eye_material(st: dict, iris_hex: str = "#5B4632"):
     return m
 
 
+def cornea_material():
+    m = bpy.data.materials.new("M_cornea")
+    m.use_nodes = True
+    p = m.node_tree.nodes["Principled BSDF"]
+    p.inputs["Base Color"].default_value = (1, 1, 1, 1)
+    p.inputs["Roughness"].default_value = 0.0
+    p.inputs["Transmission Weight"].default_value = 1.0
+    p.inputs["IOR"].default_value = 1.376
+    return m
+
+
+def add_cornea(eye_ob, mat):
+    """Photoreal eye: a clear corneal dome bulging ~2.5 mm in front of the eyeball, refracting the iris."""
+    r = 0.0078
+    c = L.uvsphere(eye_ob.name + "Cornea", r, (0, -(EYE_R - r + 0.0025), 0), mat, 48, 24)
+    c.parent = eye_ob
+    return c
+
+
+def add_weave(mat, period: float, strength: float):
+    """Chain a plain-weave thread bump (object space) after the material's existing normal."""
+    nb = L.NB(mat)
+    p = nb.n["Principled BSDF"]
+    tc = nb.node("ShaderNodeTexCoord")
+    sep = nb.node("ShaderNodeSeparateXYZ")
+    nb.link(tc.outputs["Object"], sep.inputs[0])
+    k = 2 * math.pi / period
+    u = nb.math("SINE", nb.math("MULTIPLY", nb.math("ADD", sep.outputs[0], sep.outputs[1]), k))
+    v = nb.math("SINE", nb.math("MULTIPLY", sep.outputs[2], k))
+    h = nb.math("ADD", nb.math("MULTIPLY", u, v), nb.math("MULTIPLY", nb.noise(tc.outputs["Object"], 260.0, 2.0), 0.6))
+    bn = nb.node("ShaderNodeBump")
+    bn.inputs["Strength"].default_value = strength
+    bn.inputs["Distance"].default_value = 0.00025
+    nb.link(h, bn.inputs["Height"])
+    old = p.inputs["Normal"].links[0].from_socket if p.inputs["Normal"].is_linked else None
+    if old is not None:
+        nb.link(old, bn.inputs["Normal"])
+    nb.link(bn.outputs["Normal"], p.inputs["Normal"])
+
+
+def noir_eye_light(eyes, cam_loc):
+    """Noir only: a tiny catch-light linked to the eyeballs alone (receivers and shadow blockers), so the
+    eyes read under the cap's shadow without lifting anything else in the noir key/rim rig."""
+    colx = bpy.data.collections.new("EyeLink")
+    for e in eyes:
+        colx.objects.link(e)
+    li = bpy.data.lights.new("EyeCatch", "POINT")
+    li.energy = 40.0
+    li.shadow_soft_size = 0.03
+    li.color = (1.0, 0.93, 0.88)
+    ob = bpy.data.objects.new("EyeCatch", li)
+    L.link(ob)
+    ob.location = Vector(cam_loc) + Vector((-0.25, 0.35, 0.22))
+    ob.light_linking.receiver_collection = colx
+    ob.light_linking.blocker_collection = colx
+    return ob
+
+
 # --------------------------------------------------------------------------- body (SDF)
 
-def torso_field() -> S.SDF:
+def torso_field(st: dict | None = None) -> S.SDF:
     f = S.SDF()
+    micro = st is not None and st["surface"] == "micro"
     f.add(S.ellipsoid((0, 0.028, -0.41), (0.165, 0.112, 0.255)))
     for s in (-1, 1):
         f.add(S.capsule((s * 0.035, 0.032, -0.182), (s * 0.162, 0.036, -0.228), 0.040), k=0.03)
@@ -202,32 +315,53 @@ def torso_field() -> S.SDF:
         f.sub(S.capsule((s * 0.155, -0.072, -0.335), (s * 0.085, -0.088, -0.43), 0.004), k=0.012)
         f.sub(S.capsule((s * 0.193, -0.03, -0.36), (s * 0.203, -0.02, -0.50), 0.004), k=0.012)
     f.add(S.ellipsoid((0, -0.025, -0.52), (0.148, 0.088, 0.16)), k=0.05)
-    f.sub(S.capsule((0, 0.02, -0.06), (0, 0.022, -0.30), 0.0615), k=0.006)        # neck hole
+    if micro:   # photoreal: the extra creases a real worn shirt has (shoulder seam drag, sleeve cap, armpit)
+        for s in (-1, 1):
+            for i in range(3):
+                f.sub(S.capsule((s * (0.150 + 0.012 * i), -0.06 + 0.012 * i, -0.30 - 0.03 * i),
+                                (s * (0.112 + 0.010 * i), -0.083, -0.36 - 0.035 * i), 0.0022), k=0.008)
+            f.sub(S.capsule((s * 0.215, -0.02, -0.40), (s * 0.222, 0.01, -0.47), 0.0025), k=0.009)
+            f.sub(S.capsule((s * 0.208, -0.035, -0.47), (s * 0.214, 0.0, -0.55), 0.0025), k=0.009)
+            f.sub(S.capsule((s * 0.17, -0.02, -0.215), (s * 0.20, 0.0, -0.26), 0.0018), k=0.007)
+    f.add(S.ellipsoid((0, -0.047, -0.214), (0.046, 0.020, 0.024)), k=0.02)      # shirt front up to the collar band
+    f.sub(S.capsule(*NECK_AXIS, COLLAR_R - 0.001), k=0.006)                    # neck hole (collar tucks in)
     f.sub(S.box((0, 0, -0.95), (0.6, 0.6, 0.23)))                                # bottom cut
     return f
 
 
 def collar_field() -> S.SDF:
+    """Shirt collar stand: a cloth ring around the neck that sits down on the shirt's neckline, lower at the
+    throat than at the nape, open at the front where the tie knot fills it."""
     f = S.SDF()
-    axis_a, axis_b = np.array((0, 0.02, -0.06), np.float32), np.array((0, 0.022, -0.30), np.float32)
+    axis_a, axis_b = (np.array(v, np.float32) for v in NECK_AXIS)
 
     def stand(p):
         ba = axis_b - axis_a
         h = np.clip(((p - axis_a) @ ba) / (ba @ ba), 0, 1)
         dist = np.linalg.norm(p - axis_a - h[..., None] * ba, axis=-1)
-        ring = np.abs(dist - 0.0655) - 0.0022
         y = p[..., 1]
-        top = p[..., 2] - (-0.137 + 0.03 * np.clip((y + 0.06) / 0.12, 0, 1))      # higher at the back
-        bot = -(p[..., 2] - (-0.172 + 0.02 * np.clip((y + 0.06) / 0.12, 0, 1)))
-        frontgap = 0.008 - np.abs(p[..., 0]) + np.clip(-y - 0.03, 0, 1) * 0 - (y > -0.03) * 1.0
+        # slight flare towards the bottom so the band meets the shoulders instead of floating on the neck
+        rr = COLLAR_R + 0.004 * np.clip((collar_top(y) - p[..., 2]) / 0.04, 0, 1)
+        ring = np.abs(dist - rr) - COLLAR_T
+        top = p[..., 2] - collar_top(y)
+        bot = collar_bottom(y) - p[..., 2]
+        frontgap = 0.007 - np.abs(p[..., 0]) - (y > -0.03) * 1.0
         return np.maximum(np.maximum(ring, np.maximum(top, bot)), frontgap).astype(np.float32)
-    f.add(S.custom(stand, (-0.08, -0.08, -0.18), (0.08, 0.1, -0.1)))
+    f.add(S.custom(stand, (-0.08, -0.08, -0.22), (0.08, 0.1, -0.1)))
     return f
+
+
+def neck_proxy(torso: S.SDF, r: float) -> S.SDF:
+    """Torso plus a cylinder standing in for the collar, for projecting collar points and the tie."""
+    proxy = S.SDF()
+    proxy.ops = list(torso.ops)
+    proxy.add(S.capsule(*NECK_AXIS, r), k=0.012)
+    return proxy
 
 
 def build_body(st, mats):
     t = time.time()
-    torso = torso_field()
+    torso = torso_field(st)
     v, q = torso.mesh((-0.30, -0.16, -0.73), (0.30, 0.20, -0.10), 0.0022, 3)
     me = S.to_blender_mesh("Torso", v, q)
     ob = bpy.data.objects.new("Torso", me)
@@ -235,7 +369,7 @@ def build_body(st, mats):
     me.materials.append(mats["shirt"])
     _decimate(ob, 0.3)
     col = collar_field()
-    v, q = col.mesh((-0.09, -0.11, -0.22), (0.09, 0.11, -0.09), 0.0009, 2)
+    v, q = col.mesh((-0.09, -0.11, -0.23), (0.09, 0.11, -0.09), 0.0009, 2)
     cme = S.to_blender_mesh("Collar", v, q)
     cob = bpy.data.objects.new("Collar", cme)
     L.link(cob)
@@ -328,13 +462,12 @@ def tri_warp(p_in, p_out, p_tip):
 def build_details(st, torso, mats):
     bw = st["bevel"] * 0.25
     # collar points lying on the chest, projected onto torso + neck proxy
-    proxy = S.SDF()
-    proxy.ops = list(torso.ops)
-    proxy.add(S.capsule((0, 0.02, -0.06), (0, 0.022, -0.30), 0.0672), k=0.012)
+    proxy = neck_proxy(torso, COLLAR_R + COLLAR_T + 0.0012)
     for s in (-1, 1):
-        surface_patch(f"CollarPoint{s}", proxy, (0, 0, -0.17), (1, 0, 0), (0, 0, 1), (0, 1, 0), lambda a, b: True,
-                      1.0, 1.0, 0.0012, 0.0022, mats["shirt"], (10, 10), bw,
-                      tri_warp((s * 0.010, -0.150 + 0.17), (s * 0.068, -0.150 + 0.17), (s * 0.050, -0.222 + 0.17)))
+        # the fall of the collar: from the stand's top edge at the throat, spreading down onto the chest
+        surface_patch(f"CollarPoint{s}", proxy, (0, 0, -0.19), (1, 0, 0), (0, 0, 1), (0, 1, 0), lambda a, b: True,
+                      1.0, 1.0, 0.0056, 0.0026, mats["shirt"], (12, 12), bw,
+                      tri_warp((s * 0.0065, -0.169 + 0.19), (s * 0.064, -0.152 + 0.19), (s * 0.038, -0.246 + 0.19)))
     for s in (-1, 1):
         # chest pockets with flap and button
         org = (s * 0.078, 0.0, -0.335)
@@ -382,28 +515,54 @@ def build_details(st, torso, mats):
 
 
 def build_tie(st, torso, mats):
-    # knot
-    knot = L.uvsphere("TieKnot", 0.012, (0, -0.069, -0.172), mats["dark"], 24, 12, (0.95, 0.65, 1.15))
-    zs = np.linspace(-0.183, -0.56, 40)
-    wid = np.interp(zs, [-0.56, -0.53, -0.4, -0.183], [0.0, 0.040, 0.036, 0.020]) / 2
-    ys = []
+    """Four-in-hand knot wedged in the collar opening, blade lying on the shirt front under the collar points."""
+    proxy = neck_proxy(torso, COLLAR_R + COLLAR_T)
+    # knot: a tapered, front-rounded wedge (wide at the top under the collar band, narrow where the blade exits)
+    nu, nv = 17, 11
+    kz0, kz1 = -0.1675, -0.1995
+    zs_k = np.linspace(kz0, kz1, nv)
+    back = S.project(proxy, np.stack([np.zeros(nv), np.full(nv, -0.2), zs_k], 1).astype(np.float32), (0, 1, 0))[:, 1]
+    kverts, kfaces = [], []
+    for j, z in enumerate(zs_k):
+        v = j / (nv - 1)
+        w = 0.0128 - 0.0062 * v
+        d = (0.0078 - 0.0016 * v) * (1.0 - 0.35 * (1 - v) ** 6)       # top rolls back under the collar band
+        for i in range(nu):
+            u = -1 + 2 * i / (nu - 1)
+            dimple = 1.0 - 0.12 * math.exp(-(u / 0.18) ** 2) * v      # small dimple below the knot centre
+            kverts.append((u * w, float(back[j]) - 0.0004 - d * (1 - u * u) ** 0.6 * dimple, float(z)))
+    for j in range(nv - 1):
+        for i in range(nu - 1):
+            a = j * nu + i
+            kfaces.append((a, a + 1, a + nu + 1, a + nu))
+    knot = L.mesh_obj("TieKnot", kverts, kfaces, mats["dark"])
+    me = knot.data
+    if me.polygons[len(me.polygons) // 2].normal.y > 0:
+        me.flip_normals()
+    sol = knot.modifiers.new("Solidify", "SOLIDIFY")
+    sol.thickness = 0.002
+    sol.offset = -1.0
+    # blade: starts under the knot, follows the collar/shirt front, tucked beneath the collar points
+    zs = np.linspace(-0.196, -0.56, 44)
+    wid = np.interp(zs, [-0.56, -0.53, -0.4, -0.196], [0.0, 0.040, 0.036, 0.0135]) / 2
     starts = np.stack([np.zeros_like(zs), np.full_like(zs, -0.2), zs], 1).astype(np.float32)
-    hit = S.project(torso, starts, (0, 1, 0))
+    hit = S.project(proxy, starts, (0, 1, 0))
     verts, faces = [], []
     for i, z in enumerate(zs):
-        y = min(hit[i, 1] - 0.0035, -0.064 - (i == 0) * 0.002)
+        y = hit[i, 1] - 0.0026
         w = max(wid[i], 0.0005)
-        verts += [(-w, y, z), (0, y - 0.0018, z), (w, y, z)]
+        verts += [(-w, y, z), (0, y - 0.0014, z), (w, y, z)]
     for i in range(len(zs) - 1):
         for j in range(2):
             a = i * 3 + j
             faces.append((a, a + 1, a + 4, a + 3))
     ob = L.mesh_obj("TieBlade", verts, faces, mats["dark"])
     sol = ob.modifiers.new("Solidify", "SOLIDIFY")
-    sol.thickness = 0.003
+    sol.thickness = 0.0022
     sol.offset = 1.0
     # tie bar (brass)
-    L.box("TieBar", (0.045, 0.004, 0.004), (0, float(hit[18, 1]) - 0.0075, float(zs[18])), mats["brass"], 0.001, 2)
+    L.box("TieBar", (0.045, 0.004, 0.004), (0, float(hit[20, 1]) - 0.0068, float(zs[20])), mats["brass"],
+          max(0.0006, st["bevel"] * 0.25), 2)
 
 
 def build_radio(st, torso, mats):
@@ -509,6 +668,11 @@ def build_cap(st, mats, parent):
     sol = crown.modifiers.new("Solidify", "SOLIDIFY")
     sol.thickness = 0.0025
     sol.offset = 1.0
+    cb = crown.modifiers.new("Chamfer", "BEVEL")       # crisp style-dependent chamfer on the rolled edges
+    cb.width = st["bevel"] * 0.18
+    cb.segments = st["bevel_segments"]
+    cb.limit_method = "ANGLE"
+    cb.angle_limit = math.radians(35)
     sub = crown.modifiers.new("Sub", "SUBSURF")
     sub.levels = 1
     sub.render_levels = 1
@@ -534,8 +698,8 @@ def build_cap(st, mats, parent):
     sol.thickness = 0.0035
     sol.offset = 0.0
     bv = visor.modifiers.new("Bevel", "BEVEL")
-    bv.width = 0.0012
-    bv.segments = 2
+    bv.width = max(0.0008, st["bevel"] * 0.3)
+    bv.segments = st["bevel_segments"]
     visor.parent = parent
     # gold chin cord across the band front with two side buttons
     cord = []
@@ -567,7 +731,7 @@ def build_cap(st, mats, parent):
     badge = L.obj_from_bm("CapBadge", bm, mats["brass"])
     badge.location = (0, -0.110, 0.093)
     badge.rotation_euler = (math.radians(-14), 0, 0)
-    L.bevel(badge, 0.0008, 2)
+    L.bevel(badge, max(0.0005, st["bevel"] * 0.2), st["bevel_segments"])
     badge.parent = parent
     return crown
 
@@ -630,16 +794,20 @@ def main() -> None:
         "neon": L.emission_material("neon_magenta", "#FF3EA5", {"a_gsr": 10.0, "b_noir": 30.0, "c_photo": 12.0}[args.style]),
         "bulb": L.emission_material("bulb_warm", L.kelvin(2400), {"a_gsr": 14.0, "b_noir": 6.0, "c_photo": 12.0}[args.style]),
     }
+    if st["surface"] == "micro":       # photoreal: visible oxford weave on the shirt and the cap wool
+        ws, wk = st.get("fabric_weave_scale", 1.6), st.get("fabric_weave_strength", 1.5)
+        add_weave(mats["shirt"], 0.0026 / ws, 0.19 * wk)
+        add_weave(mats["cap"], 0.0019 / ws, 0.13 * wk)
     root = bpy.data.objects.new("OfficerRoot", None)
     L.link(root)
     # ---- head
-    head = Head(st["exaggeration"], st["asymmetry"], seed)
+    head = Head(st["exaggeration"], st["asymmetry"], seed, neck_r=neck_r_for(st))
     v, q = head.mesh(0.00105, st["smooth_iters"])
     hme = S.to_blender_mesh("Head", v, q)
     hob = bpy.data.objects.new("Head", hme)
     L.link(hob)
     hme.materials.append(skin_material(st, head.eyes))
-    _decimate(hob, 0.22)
+    _decimate(hob, 0.45)
     print(f"[officer] head sdf {time.time() - t0:.1f}s, {len(q)} quads before decimate")
     pivot = bpy.data.objects.new("HeadPivot", None)
     L.link(pivot)
@@ -647,9 +815,12 @@ def main() -> None:
     hob.parent = pivot
     hob.location = (0, -0.015, 0.115)
     emat = eye_material(st)
+    cmat = cornea_material() if st["surface"] == "micro" else None
     for i, e in enumerate(head.eyes):
         eo = L.uvsphere(f"Eye{i}", EYE_R, e, emat, 48, 24)
         eo.parent = hob
+        if cmat is not None:
+            add_cornea(eo, cmat)
     hf = head.hair_field()
     v, q = hf.mesh((-0.1, -0.08, -0.07), (0.1, 0.13, 0.12), 0.0011, 2)
     if len(q):
@@ -686,6 +857,8 @@ def main() -> None:
         d = hob.matrix_world.inverted() @ Vector(cam_loc) - Vector(e)
         eo.rotation_euler = d.to_track_quat("-Y", "Z").to_euler()
     L.camera(cam_loc, target, 75.0, st)
+    if args.style == "b_noir":
+        noir_eye_light([bpy.data.objects[f"Eye{i}"] for i in range(len(head.eyes))], cam_loc)
     bpy.context.scene.camera.data.dof.focus_distance = (Vector(cam_loc) - Vector((0.0, -0.09, ROOT_Z))).length
     L.light_rig(st, (0, -0.02, ROOT_Z - 0.08), cam_loc, 0.55, gain=0.6)
     L.world(st)
