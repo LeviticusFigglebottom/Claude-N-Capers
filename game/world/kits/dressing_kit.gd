@@ -27,4 +27,13 @@ extends Resource
 @export var lone_ok_kinds: Array[StringName] = []
 ## Seed salt for the placer (layouts must differ between rooms; validated by `variety`).
 @export var seed_salt: int = 0
+## KitPlacer (C1-07): kind -> Vector2i(min, max) instances when the kind is picked (required kinds
+## default to (1, 1), optional picks to (1, 1)).
+@export var counts: Dictionary = {}
+## KitPlacer: kind -> PackedStringArray of prop asset ids (world/props/prop_catalog.json) allowed for
+## this kit (its style). Kinds not listed may use any catalog asset of that kind.
+@export var assets: Dictionary = {}
+## KitPlacer: ceiling fixtures laid out on a grid: asset id -> spacing (m). Placed unless the caller
+## turns ceiling fixtures off.
+@export var ceiling: Dictionary = {}
 @export_multiline var notes: String = ""

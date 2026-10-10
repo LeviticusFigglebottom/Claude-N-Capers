@@ -1,0 +1,8 @@
+asset: prop_table_lamp
+script: tools/blender/props/sales.py
+params: {"cat": {"fixture": true, "group": "salon", "hosts": ["side_table", "credenza"], "kind": "table_lamp", "light": {"color": "#FFB46B", "energy": 0.5, "pos": [0.0, 0.42, 0.0], "range": 2.5, "type": "omni"}, "place": "on"}, "fn": "table_lamp"}
+seed: 212497157  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_table_lamp
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

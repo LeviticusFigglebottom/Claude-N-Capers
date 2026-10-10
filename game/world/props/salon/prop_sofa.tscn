@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_sofa/prop_sofa.glb" id="1_model"]
+
+[node name="PropSofa" type="Node3D"]
+metadata/kind = &"sofa"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

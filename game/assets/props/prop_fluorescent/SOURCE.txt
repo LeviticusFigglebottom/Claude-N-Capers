@@ -1,0 +1,8 @@
+asset: prop_fluorescent
+script: tools/blender/props/staff.py
+params: {"cat": {"fixture": true, "group": "lighting", "kind": "light_fixture", "light": {"angle": 75, "color": "#FFE4CE", "energy": 1.2, "pos": [0.0, -0.08, 0.0], "range": 4.0, "type": "spot"}, "place": "ceiling"}, "fn": "fluorescent"}
+seed: 624294529  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_fluorescent
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

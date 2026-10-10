@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"salon_private"
+purpose = &"sales_floor"
+required_items = Array[StringName]([&"sofa", &"coffee_table", &"armchair", &"vitrine", &"mirror", &"floor_lamp", &"rug", &"light_fixture"])
+optional_items = {
+&"picture": 1.5,
+&"plant": 1,
+&"side_table": 1.5,
+&"table_lamp": 1
+}
+clutter_groups = {
+&"table": {
+"anchors": Array[StringName]([&"coffee_table", &"side_table"]),
+"count": Vector2i(1, 2),
+"items": {&"bust": 0.6, &"notebook": 0.5, &"plant_small": 0.6, &"ring_tray": 1, &"table_lamp": 1},
+"radius": 0.4
+}
+}
+min_density = 0.3
+max_density = 1.5
+min_props = 10
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 18
+counts = {
+&"armchair": Vector2i(2, 2)
+}
+assets = {
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"mirror": PackedStringArray("prop_mirror_wall"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_b", "prop_wall_art_c"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"rug": PackedStringArray("prop_rug_rect")
+}
+ceiling = {"prop_downlight": 2.4}
+notes = "G6 private salon: two high-value cases are prefabs (keep-outs). Sofa, coffee table on a rug, two armchairs, vitrine, mirror, lamps, wall art. 2700 K, dimmer."

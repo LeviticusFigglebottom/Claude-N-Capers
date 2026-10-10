@@ -1,0 +1,383 @@
+"""Prop builder helpers (C1-07): parts with their own chamfer, merged into one mesh object, then
+world-scaled box UVs (bevel first, UV after: docs/art/pipeline.md §4). Blender only.
+
+Coordinates are Blender (Z up, +Y = Godot -Z = the front / the side facing the room). Floor props
+are modelled around their pivot (x/y centred, bottom at z = 0), wall props with the back at y = 0
+and ceiling props with the top at z = 0, so no pivot pass is needed.
+
+    k = Kit(ctx)
+    body = k.obj("Body")
+    p = body.part(bevel=0.004)
+    p.box((-0.5, -0.3, 0), (0.5, 0.3, 0.9), "walnut")
+    body.build()
+    k.collision([((-0.5, -0.3, 0), (0.5, 0.3, 0.9))])
+"""
+
+from __future__ import annotations
+
+import math
+from collections.abc import Sequence
+
+import bmesh
+import bpy
+from mathutils import Matrix, Vector
+
+from lib import geo, materials, uv
+
+import _matlib
+
+Vec3 = Sequence[float]
+
+
+class Kit:
+    """Per-asset helper: material slots by key, objects, collision, markers."""
+
+    def __init__(self, ctx) -> None:
+        self.ctx = ctx
+
+    def mat(self, key: str) -> bpy.types.Material:
+        lib_id, hex_color, rough, metal, alpha = _matlib.slot(key)
+        m = self.ctx.material(lib_id, hex_color, roughness=rough, metallic=metal, alpha=alpha)
+        if key in _matlib.EMISSIVE:
+            e = _matlib.EMISSIVE[key]
+            bsdf = next(n for n in m.node_tree.nodes if n.type == "BSDF_PRINCIPLED")
+            lin = tuple(materials.srgb_to_linear(c) for c in materials.hex_to_srgb(e["emission"]))
+            bsdf.inputs["Emission Color"].default_value = (*lin, 1.0)
+            bsdf.inputs["Emission Strength"].default_value = 1.0
+        return m
+
+    def obj(self, name: str, parent: bpy.types.Object | None = None, location: Vec3 = (0, 0, 0)) -> Obj:
+        return Obj(self, name, parent, location)
+
+    def empty(self, name: str, location: Vec3 = (0, 0, 0), rotation: Vec3 = (0, 0, 0),
+              parent: bpy.types.Object | None = None) -> bpy.types.Object:
+        return geo.empty(name, location, rotation, parent)
+
+    def collision(self, boxes: Sequence[tuple[Vec3, Vec3]], kind: str = "convex",
+                  parent: bpy.types.Object | None = None, cylinders: Sequence[tuple] = ()) -> bpy.types.Object:
+        """Collision from unbevelled boxes ``(lo, hi)`` (and ``(r, depth, centre)`` Z cylinders)."""
+        mb = geo.MeshBuilder()
+        for lo, hi in boxes:
+            mb.box(lo, hi)
+        for r, depth, centre in cylinders:
+            mb.cylinder(r, depth, segments=12, centre=centre)
+        return geo.collision_from_builder(mb, kind, parent=parent)
+
+
+class Part(geo.MeshBuilder):
+    """A MeshBuilder with material keys and one chamfer setting."""
+
+    def __init__(self, kit: Kit, bevel: float, segments: int, angle: float) -> None:
+        super().__init__()
+        self.kit = kit
+        self.bevel_w = bevel
+        self.bevel_segments = segments
+        self.bevel_angle = angle
+
+    def m(self, key: str) -> int:
+        return self.material(self.kit.mat(key))
+
+    # -- primitives (material by key) ------------------------------------------------------
+    def bx(self, lo: Vec3, hi: Vec3, key: str):
+        return self.box(lo, hi, mat=self.m(key))
+
+    def cbox(self, centre: Vec3, size: Vec3, key: str):
+        c, s = Vector(centre), Vector(size) * 0.5
+        return self.box(c - s, c + s, mat=self.m(key))
+
+    def cyl(self, r: float, depth: float, centre: Vec3, key: str, axis: str = "Z", segs: int = 16):
+        return self.cylinder(r, depth, segments=segs, centre=centre, axis=axis, mat=self.m(key))
+
+    def rod(self, p0: Vec3, p1: Vec3, r: float, key: str, segs: int = 8, square: bool = False):
+        """Cylinder (or square bar) from p0 to p1."""
+        a, b = Vector(p0), Vector(p1)
+        d = b - a
+        length = d.length
+        if length < 1e-6:
+            return []
+        rot = d.normalized().to_track_quat("Z", "Y").to_matrix().to_4x4()
+        mtx = Matrix.Translation((a + b) * 0.5) @ rot
+        if square:
+            mtx = mtx @ Matrix.Diagonal((2 * r, 2 * r, length, 1.0))
+            res = bmesh.ops.create_cube(self.bm, size=1.0, matrix=mtx)
+        else:
+            res = bmesh.ops.create_cone(self.bm, cap_ends=True, cap_tris=False, segments=segs,
+                                        radius1=r, radius2=r, depth=length, matrix=mtx)
+        faces = sorted({f for v in res["verts"] for f in v.link_faces}, key=lambda f: f.index)
+        self._set_mat(faces, self.m(key))
+        return faces
+
+    def tube(self, pts: Sequence[Vec3], r: float, key: str, segs: int = 8, closed: bool = False,
+             joints: bool = True):
+        """Polyline of rods; spheres at the joints hide the seams."""
+        n = len(pts)
+        last = n if closed else n - 1
+        for i in range(last):
+            self.rod(pts[i], pts[(i + 1) % n], r, key, segs)
+        if joints:
+            inner = range(n) if closed else range(1, n - 1)
+            for i in inner:
+                self.sphere(r, pts[i], key, segs=segs, rings=max(3, segs // 2))
+
+    def sphere(self, r: float, centre: Vec3, key: str, segs: int = 16, rings: int = 8, scale: Vec3 = (1, 1, 1)):
+        """UV sphere built with pure math (bmesh create_uvsphere output is not byte-stable)."""
+        prof = [(0.0, -r * scale[2])]
+        for i in range(1, rings):
+            phi = math.pi * i / rings
+            prof.append((r * math.sin(phi), -r * math.cos(phi) * scale[2]))
+        prof.append((0.0, r * scale[2]))
+        return self.lathe(prof, key, centre=centre, segs=segs, scale_xy=(scale[0], scale[1]))
+
+    def lathe(self, profile: Sequence[tuple[float, float]], key: str, centre: Vec3 = (0, 0, 0),
+              segs: int = 24, scale_xy: tuple[float, float] = (1.0, 1.0)):
+        """Surface of revolution around Z through ``centre``. ``profile`` = [(radius, z), ...]
+        bottom to top; a radius of 0 closes the end (pole), otherwise ends are capped flat."""
+        bm = self.bm
+        cx, cy, cz = centre
+        rings: list[list | bmesh.types.BMVert] = []
+        for r, z in profile:
+            if r <= 1e-6:
+                rings.append(bm.verts.new((cx, cy, cz + z)))
+            else:
+                ring = []
+                for i in range(segs):
+                    a = 2 * math.pi * i / segs
+                    ring.append(bm.verts.new((cx + r * math.cos(a) * scale_xy[0], cy + r * math.sin(a) * scale_xy[1], cz + z)))
+                rings.append(ring)
+        faces = []
+        for i in range(len(rings) - 1):
+            a, b = rings[i], rings[i + 1]
+            if isinstance(a, list) and isinstance(b, list):
+                for j in range(segs):
+                    k = (j + 1) % segs
+                    faces.append(bm.faces.new((a[j], a[k], b[k], b[j])))
+            elif isinstance(a, list):
+                for j in range(segs):
+                    faces.append(bm.faces.new((a[j], a[(j + 1) % segs], b)))
+            elif isinstance(b, list):
+                for j in range(segs):
+                    faces.append(bm.faces.new((a, b[(j + 1) % segs], b[j])))
+        if isinstance(rings[0], list):
+            faces.append(bm.faces.new(list(reversed(rings[0]))))
+        if isinstance(rings[-1], list):
+            faces.append(bm.faces.new(rings[-1]))
+        bmesh.ops.recalc_face_normals(bm, faces=faces)
+        self._set_mat(faces, self.m(key))
+        return faces
+
+    def torus(self, big_r: float, small_r: float, centre: Vec3, key: str, segs: int = 32, rsegs: int = 8,
+              axis: str = "Z", arc: float = 2 * math.pi):
+        """Torus (or a torus arc) around ``axis`` through ``centre``."""
+        bm = self.bm
+        rot = {"Z": Matrix.Identity(3), "X": Matrix.Rotation(math.pi / 2, 3, "Y"),
+               "Y": Matrix.Rotation(math.pi / 2, 3, "X")}[axis]
+        full = arc >= 2 * math.pi - 1e-6
+        n = segs if full else segs + 1
+        loops = []
+        for i in range(n):
+            a = arc * i / segs
+            ring = []
+            for j in range(rsegs):
+                b = 2 * math.pi * j / rsegs
+                rr = big_r + small_r * math.cos(b)
+                p = Vector((rr * math.cos(a), rr * math.sin(a), small_r * math.sin(b)))
+                ring.append(bm.verts.new(rot @ p + Vector(centre)))
+            loops.append(ring)
+        faces = []
+        for i in range(segs if full else n - 1):
+            a, b = loops[i], loops[(i + 1) % n]
+            for j in range(rsegs):
+                k = (j + 1) % rsegs
+                faces.append(bm.faces.new((a[j], b[j], b[k], a[k])))
+        if not full:
+            faces.append(bm.faces.new(loops[0]))
+            faces.append(bm.faces.new(list(reversed(loops[-1]))))
+        bmesh.ops.recalc_face_normals(bm, faces=faces)
+        self._set_mat(faces, self.m(key))
+        return faces
+
+    def slab(self, outline: Sequence[tuple[float, float]], z0: float, z1: float, key: str):
+        """Extruded floor-plan outline (x, y) from z0 to z1."""
+        return self.prism(outline, axis="Z", start=z0, end=z1, mat=self.m(key))
+
+    def profile_x(self, outline: Sequence[tuple[float, float]], x0: float, x1: float, key: str):
+        """Side profile (y, z) extruded along X from x0 to x1."""
+        return self.prism(outline, axis="X", start=x0, end=x1, mat=self.m(key))
+
+    def profile_y(self, outline: Sequence[tuple[float, float]], y0: float, y1: float, key: str):
+        """Front elevation (x, z) extruded along Y from y0 to y1."""
+        return self.prism(outline, axis="Y", start=y0, end=y1, mat=self.m(key))
+
+
+class Obj:
+    """One exported mesh object assembled from Parts with different chamfers."""
+
+    def __init__(self, kit: Kit, name: str, parent: bpy.types.Object | None, location: Vec3) -> None:
+        self.kit = kit
+        self.name = name
+        self.parent = parent
+        self.location = location
+        self.parts: list[Part] = []
+
+    def part(self, bevel: float = 0.004, segments: int = 1, angle: float = 30.0) -> Part:
+        p = Part(self.kit, bevel, segments, angle)
+        self.parts.append(p)
+        return p
+
+    def build(self, density: float = uv.DENSITY_NEAR, smooth_angle: float = 30.0) -> bpy.types.Object | None:
+        mats: list[bpy.types.Material] = []
+        out = bmesh.new()
+        for p in self.parts:
+            if not p.bm.faces:
+                p.bm.free()
+                continue
+            if p.bevel_w > 0:
+                p.bevel(p.bevel_w, p.bevel_segments, p.bevel_angle)
+            remap = []
+            for m in p.materials:
+                if m not in mats:
+                    mats.append(m)
+                remap.append(mats.index(m))
+            for f in p.bm.faces:
+                f.material_index = remap[f.material_index] if remap else 0
+            me = bpy.data.meshes.new("_tmp")
+            p.bm.to_mesh(me)
+            p.bm.free()
+            out.from_mesh(me)
+            bpy.data.meshes.remove(me)
+        if not out.faces:
+            out.free()
+            return None
+        uv.box_project(out, density=density)
+        mb = geo.MeshBuilder()
+        mb.bm.free()
+        mb.bm = out
+        mb.materials = mats
+        obj = mb.to_object(self.name, parent=self.parent, location=self.location)
+        geo.mark_sharp(obj, smooth_angle)
+        geo.add_weighted_normals(obj)
+        return obj
+
+
+# ----------------------------------------------------------------------------- furniture bits
+
+def panel_door(p: Part, x0: float, x1: float, z0: float, z1: float, y: float, face_key: str,
+               inlay_key: str | None = "brass", frame_w: float = 0.055, depth: float = 0.018,
+               inlay: float = 0.006) -> None:
+    """Raised-panel cabinet door on the front plane ``y`` (front = +Y): stile/rail frame, a raised
+    field and an optional thin metal inlay line around the field (the counter-sample look)."""
+    p.bx((x0, y, z0), (x1, y + depth, z1), face_key)
+    f = frame_w
+    p.bx((x0 + f, y + depth, z0 + f), (x1 - f, y + depth + 0.012, z1 - f), face_key)
+    if inlay_key:
+        g = f * 0.55
+        t = inlay
+        for (a0, a1, b0, b1) in ((x0 + g, x1 - g, z0 + g, z0 + g + t), (x0 + g, x1 - g, z1 - g - t, z1 - g),
+                                 (x0 + g, x0 + g + t, z0 + g, z1 - g), (x1 - g - t, x1 - g, z0 + g, z1 - g)):
+            p.bx((a0, y + depth, b0), (a1, y + depth + 0.002, b1), inlay_key)
+
+
+def knob(p: Part, x: float, y: float, z: float, key: str = "brass", r: float = 0.012) -> None:
+    p.cyl(r * 0.5, 0.02, (x, y + 0.01, z), key, axis="Y", segs=10)
+    p.cyl(r, 0.01, (x, y + 0.022, z), key, axis="Y", segs=14)
+
+
+def bar_handle(p: Part, x0: float, x1: float, y: float, z: float, key: str = "steel", r: float = 0.006,
+               standoff: float = 0.03, vertical: bool = False) -> None:
+    if vertical:
+        p.rod((x0, y + standoff, z), (x0, y + standoff, x1), r, key)
+        p.rod((x0, y, z + 0.01), (x0, y + standoff, z + 0.01), r * 0.8, key)
+        p.rod((x0, y, x1 - 0.01), (x0, y + standoff, x1 - 0.01), r * 0.8, key)
+    else:
+        p.rod((x0, y + standoff, z), (x1, y + standoff, z), r, key)
+        p.rod((x0 + 0.01, y, z), (x0 + 0.01, y + standoff, z), r * 0.8, key)
+        p.rod((x1 - 0.01, y, z), (x1 - 0.01, y + standoff, z), r * 0.8, key)
+
+
+def legs4(p: Part, w: float, d: float, h: float, inset: float, size: float, key: str,
+          taper: float = 1.0, round_: bool = False) -> None:
+    """Four legs under a top of w x d at height h (top underside)."""
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x = sx * (w / 2 - inset - size / 2)
+            y = sy * (d / 2 - inset - size / 2)
+            if round_:
+                p.lathe([(size / 2 * taper, 0.0), (size / 2, h)], key, centre=(x, y, 0), segs=10)
+            else:
+                p.bx((x - size / 2, y - size / 2, 0), (x + size / 2, y + size / 2, h), key)
+
+
+def chair_seat_marker(kit: Kit, seat_z: float = 0.45, y: float = 0.0) -> None:
+    """`Seat` marker (levelcheck scale check: chair seat at 0.45 m)."""
+    kit.empty("Seat", (0.0, y, seat_z))
+
+
+# ---------------------------------------------------------------------------------- lettering
+# Stroke glyphs on a unit cell (x 0..w, y 0..1), used for brass letters, exit signs and neon.
+
+def _arc(cx: float, cy: float, rx: float, ry: float, a0: float, a1: float, n: int = 8) -> list[tuple[float, float]]:
+    return [(cx + rx * math.cos(math.radians(a0 + (a1 - a0) * i / n)),
+             cy + ry * math.sin(math.radians(a0 + (a1 - a0) * i / n))) for i in range(n + 1)]
+
+
+GLYPHS: dict[str, tuple[float, list[list[tuple[float, float]]]]] = {
+    "V": (0.7, [[(0.0, 1.0), (0.35, 0.0), (0.7, 1.0)]]),
+    "O": (0.75, [_arc(0.375, 0.5, 0.375, 0.5, 0, 360, 16)]),
+    "S": (0.6, [_arc(0.3, 0.75, 0.28, 0.25, 15, 270, 8) + _arc(0.3, 0.25, 0.28, 0.25, 90, -165, 8)]),
+    "B": (0.6, [[(0.0, 0.0), (0.0, 1.0), (0.3, 1.0)] + _arc(0.3, 0.76, 0.24, 0.24, 90, -90, 6)
+                + [(0.0, 0.52), (0.33, 0.52)] + _arc(0.33, 0.26, 0.26, 0.26, 90, -90, 6) + [(0.0, 0.0)]]),
+    "E": (0.55, [[(0.55, 1.0), (0.0, 1.0), (0.0, 0.0), (0.55, 0.0)], [(0.0, 0.52), (0.45, 0.52)]]),
+    "R": (0.62, [[(0.0, 0.0), (0.0, 1.0), (0.32, 1.0)] + _arc(0.32, 0.75, 0.25, 0.25, 90, -90, 6)
+                 + [(0.0, 0.5)], [(0.25, 0.5), (0.62, 0.0)]]),
+    "G": (0.72, [_arc(0.38, 0.5, 0.36, 0.5, 40, 340, 12) + [(0.72, 0.4), (0.72, 0.45), (0.42, 0.45)]]),
+    "X": (0.62, [[(0.0, 0.0), (0.62, 1.0)], [(0.0, 1.0), (0.62, 0.0)]]),
+    "I": (0.1, [[(0.05, 0.0), (0.05, 1.0)]]),
+    "T": (0.6, [[(0.0, 1.0), (0.6, 1.0)], [(0.3, 1.0), (0.3, 0.0)]]),
+    "J": (0.5, [[(0.5, 1.0), (0.5, 0.3)] + _arc(0.25, 0.3, 0.25, 0.3, 0, -180, 6)]),
+    "W": (0.95, [[(0.0, 1.0), (0.22, 0.0), (0.475, 0.7), (0.73, 0.0), (0.95, 1.0)]]),
+    "L": (0.5, [[(0.0, 1.0), (0.0, 0.0), (0.5, 0.0)]]),
+    "Y": (0.62, [[(0.0, 1.0), (0.31, 0.5), (0.62, 1.0)], [(0.31, 0.5), (0.31, 0.0)]]),
+    "N": (0.65, [[(0.0, 0.0), (0.0, 1.0), (0.65, 0.0), (0.65, 1.0)]]),
+    "A": (0.68, [[(0.0, 0.0), (0.34, 1.0), (0.68, 0.0)], [(0.13, 0.38), (0.55, 0.38)]]),
+    "C": (0.65, [_arc(0.38, 0.5, 0.36, 0.5, 45, 315, 12)]),
+    "P": (0.58, [[(0.0, 0.0), (0.0, 1.0), (0.3, 1.0)] + _arc(0.3, 0.74, 0.26, 0.26, 90, -90, 6) + [(0.0, 0.48)]]),
+    "H": (0.62, [[(0.0, 0.0), (0.0, 1.0)], [(0.62, 0.0), (0.62, 1.0)], [(0.0, 0.5), (0.62, 0.5)]]),
+}
+
+
+def text_strokes(text: str, height: float, spacing: float = 0.22, slant: float = 0.0
+                 ) -> tuple[float, list[list[tuple[float, float]]]]:
+    """Strokes (x, z) for ``text`` with letters ``height`` tall, starting at x = 0. Returns
+    (total width, strokes). ``slant`` shears x by z (script look)."""
+    x = 0.0
+    strokes: list[list[tuple[float, float]]] = []
+    for ch in text:
+        if ch == " ":
+            x += 0.45 * height
+            continue
+        w, gl = GLYPHS[ch]
+        for s in gl:
+            strokes.append([(x + (gx + slant * gy) * height, gy * height) for gx, gy in s])
+        x += (w + spacing) * height
+    return x - spacing * height, strokes
+
+
+def lettering(p: Part, text: str, height: float, centre_x: float, y: float, z0: float, key: str,
+              stroke: float = 0.02, depth: float = 0.015, round_tube: bool = False, slant: float = 0.0,
+              spacing: float = 0.22) -> float:
+    """Stroke lettering centred on ``centre_x`` standing on the plane y (front +Y), baseline z0.
+    Square bars (``round_tube`` False) or neon tubes. Returns the text width."""
+    width, strokes = text_strokes(text, height, spacing, slant)
+    # read from the front (+Y, Godot -Z): the viewer's right is Blender -X, so text runs along -X
+    ox = centre_x + width / 2
+    yc = y + depth / 2
+    for s in strokes:
+        pts = [(ox - sx, yc, z0 + sz) for sx, sz in s]
+        if round_tube:
+            p.tube(pts, stroke / 2, key, segs=6)
+        else:
+            for a, b in zip(pts, pts[1:]):
+                p.rod(a, b, stroke / 2, key, square=True)
+            for q in pts[1:-1]:
+                p.cbox(q, (stroke, stroke, stroke), key)
+    return width

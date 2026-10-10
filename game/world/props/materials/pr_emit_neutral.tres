@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "M_pr_emit_neutral"
+albedo_color = Color(0.5412, 0.4863, 0.4157, 1)
+roughness = 0.45
+emission_enabled = true
+emission = Color(1.0000, 0.8510, 0.6902, 1)
+emission_energy_multiplier = 2.50
+metadata/uv_tile_m = 2.0
+metadata/untextured_ok = true

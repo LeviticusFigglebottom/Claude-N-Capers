@@ -1,0 +1,8 @@
+asset: prop_jeweler_bench
+script: tools/blender/props/backofhouse.py
+params: {"cat": {"clear": 0.9, "group": "workshop", "keepout": [[-0.22, -0.4, 0.22, -0.12]], "kind": "jeweler_bench", "place": "wall", "support": true, "top": 0.92}, "fn": "jeweler_bench"}
+seed: 3197163160  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_jeweler_bench
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

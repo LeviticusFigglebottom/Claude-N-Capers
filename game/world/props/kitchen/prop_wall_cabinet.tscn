@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_wall_cabinet/prop_wall_cabinet.glb" id="1_model"]
+
+[node name="PropWallCabinet" type="Node3D"]
+metadata/kind = &"wall_cabinet"
+metadata/mount = &"wall"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

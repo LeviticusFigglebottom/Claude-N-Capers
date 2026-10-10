@@ -1,0 +1,8 @@
+asset: prop_plant_small
+script: tools/blender/props/sales.py
+params: {"cat": {"group": "sales", "hosts": ["desk", "credenza", "side_table", "table", "file_cabinet", "counter_service"], "kind": "plant_small", "place": "on"}, "fn": "plant_small"}
+seed: 1582158624  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_plant_small
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

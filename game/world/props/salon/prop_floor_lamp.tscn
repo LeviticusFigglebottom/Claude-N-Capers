@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_floor_lamp/prop_floor_lamp.glb" id="1_model"]
+
+[node name="PropFloorLamp" type="Node3D" groups=["fixture"]]
+metadata/kind = &"floor_lamp"
+metadata/fixture = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Light" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
+omni_range = 3.5
+omni_attenuation = 1.2
+light_color = Color(1, 0.7059, 0.4196, 1)
+light_energy = 0.8
+light_size = 0.05
+shadow_enabled = false

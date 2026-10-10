@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_shelving_cleaning/prop_shelving_cleaning.glb" id="1_model"]
+
+[node name="PropShelvingCleaning" type="Node3D"]
+metadata/kind = &"shelving"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

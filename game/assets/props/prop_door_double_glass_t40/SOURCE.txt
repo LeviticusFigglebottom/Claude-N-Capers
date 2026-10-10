@@ -1,0 +1,8 @@
+asset: prop_door_double_glass_t40
+script: tools/blender/props/doors.py
+params: {"cat": {"kind": "door", "prefab": "door", "service": false}, "finish": "glass", "kind": "double", "wall_t": 0.4}
+seed: 110366671  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_door_double_glass_t40
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

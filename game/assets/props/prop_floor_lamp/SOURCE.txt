@@ -1,0 +1,8 @@
+asset: prop_floor_lamp
+script: tools/blender/props/sales.py
+params: {"cat": {"fixture": true, "group": "salon", "kind": "floor_lamp", "light": {"color": "#FFB46B", "energy": 0.8, "pos": [0.0, 1.45, 0.0], "range": 3.5, "type": "omni"}, "place": "corner"}, "fn": "floor_lamp"}
+seed: 1786837224  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_floor_lamp
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

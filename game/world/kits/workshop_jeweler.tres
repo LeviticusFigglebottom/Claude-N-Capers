@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"workshop_jeweler"
+purpose = &"workshop"
+required_items = Array[StringName]([&"jeweler_bench", &"task_lamp", &"magnifier", &"stool", &"workbench", &"polishing_machine", &"ultrasonic_cleaner", &"tool_wall", &"light_fixture"])
+optional_items = {
+&"bin": 0.7,
+&"file_cabinet": 0.6,
+&"picture": 0.4,
+&"shelving": 1.5
+}
+clutter_groups = {
+&"bench": {
+"anchors": Array[StringName]([&"jeweler_bench", &"workbench"]),
+"count": Vector2i(1, 2),
+"items": {&"mug": 1, &"notebook": 1, &"papers": 1, &"tool_tray": 3},
+"radius": 0.5
+}
+}
+min_density = 0.5
+max_density = 2
+min_props = 12
+lone_ok_kinds = Array[StringName]([&"safe"])
+seed_salt = 13
+counts = {
+&"jeweler_bench": Vector2i(2, 2),
+&"stool": Vector2i(2, 3),
+&"task_lamp": Vector2i(2, 2)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_cool"),
+&"picture": PackedStringArray("prop_notice_frame"),
+&"shelving": PackedStringArray("prop_shelving_parts")
+}
+ceiling = {"prop_ceiling_panel_cool": 2.4}
+notes = "G2: the safe is a gameplay prefab on the north wall (pass it as a keep-out). Two jeweler benches with task lamps + magnifiers, polishing machine and ultrasonic cleaner on the workbench, tool wall. 5000 K."

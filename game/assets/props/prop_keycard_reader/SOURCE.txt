@@ -1,0 +1,8 @@
+asset: prop_keycard_reader
+script: tools/blender/props/prefab_visuals.py
+params: {"cat": {"kind": "keycard_reader", "mount": "wall", "prefab": "keycard_reader"}, "fn": "keycard_reader"}
+seed: 1647798967  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_keycard_reader
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

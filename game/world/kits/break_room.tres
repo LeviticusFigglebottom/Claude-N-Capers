@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"break_room"
+purpose = &"break_room"
+required_items = Array[StringName]([&"fridge", &"kitchen_counter", &"microwave", &"coffee_machine", &"table", &"chair", &"lockers", &"bulletin_board", &"light_fixture"])
+optional_items = {
+&"bin": 1.2,
+&"kettle": 1,
+&"picture": 0.5,
+&"plant": 0.4,
+&"wall_cabinet": 2,
+&"water_cooler": 1
+}
+clutter_groups = {
+&"counter": {
+"anchors": Array[StringName]([&"kitchen_counter", &"table"]),
+"count": Vector2i(1, 3),
+"items": {&"bottles": 1.5, &"kettle": 0.6, &"mug": 3, &"papers": 1},
+"radius": 0.5
+}
+}
+min_density = 0.5
+max_density = 1.8
+min_props = 14
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 19
+counts = {
+&"chair": Vector2i(4, 4)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_kitchen"),
+&"chair": PackedStringArray("prop_chair_break"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"picture": PackedStringArray("prop_notice_frame"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"table": PackedStringArray("prop_table_break")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.3}
+notes = "U1: fridge, counter with sink, microwave + coffee, table with 4 chairs, lockers, bulletin board. 3500 K."

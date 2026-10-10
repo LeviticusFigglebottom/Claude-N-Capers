@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_mirror_wall/prop_mirror_wall.glb" id="1_model"]
+
+[node name="PropMirrorWall" type="Node3D"]
+metadata/kind = &"mirror"
+metadata/mount = &"wall"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
