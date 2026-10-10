@@ -7,11 +7,12 @@
 ## Migrations: add `_migrate_<n>_to_<n+1>(d: Dictionary) -> Dictionary` and register it in
 ## migrate(); a dict without "version" is v0.
 ## Versions: 1 = first shipped shape; 2 = adds `banked_stealth_mult` (D-022 QB-13);
-## 3 = adds `skill_sets` + `active_skill_set` (multiple skill sets) and `perk_cards` (per-deck progress).
+## 3 = adds `skill_sets` + `active_skill_set` (multiple skill sets) and `perk_cards` (per-deck progress);
+## 4 = adds `owned_mask_parts` and `custom_masks` (mask customisation, B2-03; content/docs/masks.md).
 class_name SaveService
 extends RefCounted
 
-const CURRENT_VERSION: int = 3
+const CURRENT_VERSION: int = 4
 const DEFAULT_ROOT_DIR: String = "user://profiles"
 
 ## Tests point this at e.g. `user://test_profiles`.
@@ -101,6 +102,8 @@ static func migrate(data: Dictionary) -> Dictionary:
 				d = _migrate_1_to_2(d)
 			2:
 				d = _migrate_2_to_3(d)
+			3:
+				d = _migrate_3_to_4(d)
 			_:
 				Log.error(&"save", "no migration from version %d" % v)
 				return d
@@ -164,6 +167,16 @@ static func _migrate_2_to_3(d: Dictionary) -> Dictionary:
 		if deck != "" and int(ld.get("perk_deck_cards", 0)) > 0:
 			pc[deck] = int(ld.get("perk_deck_cards", 0))
 		d["perk_cards"] = pc
+	return d
+
+
+## v3 -> v4: mask customisation; no extra parts owned, every custom slot empty. A preset
+## loadout.mask stays valid.
+static func _migrate_3_to_4(d: Dictionary) -> Dictionary:
+	if not d.get("owned_mask_parts") is Array:
+		d["owned_mask_parts"] = []
+	if not d.get("custom_masks") is Array:
+		d["custom_masks"] = []
 	return d
 
 

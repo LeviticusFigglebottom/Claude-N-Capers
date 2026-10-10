@@ -1,0 +1,102 @@
+[gd_resource type="Resource" script_class="MaskPartList" format=3]
+
+[ext_resource type="Script" path="res://content/masks/mask_part_def.gd" id="1_p6irn"]
+[ext_resource type="Script" path="res://content/masks/mask_base_def.gd" id="2_1lydb"]
+[ext_resource type="Script" path="res://content/masks/mask_part_list.gd" id="3_7i1nk"]
+
+[sub_resource type="Resource" id="Resource_atdi0"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_heron.glb"
+width_m = 0.17
+height_m = 0.25
+roundness = 2.0
+chin_taper = 0.5
+eye_x = 0.36
+eye_y = 0.25
+eye_w = 0.17
+eye_h = 0.09
+snout_m = 0.07
+snout_y = -0.25
+snout_w = 0.14
+snout_h = 0.55
+brow_m = 0.01
+id = &"mask_base.heron"
+display_name = "Heron"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_g7e7x"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_visage.glb"
+depth_m = 0.045
+eye_h = 0.1
+id = &"mask_base.visage"
+display_name = "Visage"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_kf764"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_vulpine.glb"
+width_m = 0.19
+height_m = 0.22
+roundness = 2.0
+chin_taper = 0.75
+eye_y = 0.2
+eye_h = 0.08
+snout_m = 0.05
+snout_y = -0.2
+snout_w = 0.2
+snout_h = 0.5
+brow_m = 0.006
+ear_h = 0.55
+ear_x = 0.62
+ear_w = 0.25
+id = &"mask_base.vulpine"
+display_name = "Vulpine"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_nl776"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_bruiser.glb"
+width_m = 0.2
+height_m = 0.22
+depth_m = 0.04
+roundness = 3.5
+chin_taper = 0.1
+eye_x = 0.4
+eye_y = 0.2
+eye_w = 0.18
+eye_h = 0.08
+snout_m = 0.03
+snout_y = -0.15
+snout_w = 0.3
+snout_h = 0.3
+brow_m = 0.025
+id = &"mask_base.bruiser"
+display_name = "Bruiser"
+
+[sub_resource type="Resource" id="Resource_w3ipx"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_owl.glb"
+width_m = 0.2
+height_m = 0.21
+depth_m = 0.045
+roundness = 2.4
+chin_taper = 0.45
+eye_x = 0.4
+eye_y = 0.15
+eye_w = 0.26
+eye_h = 0.22
+snout_m = 0.03
+snout_y = -0.05
+snout_w = 0.1
+snout_h = 0.3
+brow_m = 0.012
+ear_h = 0.3
+ear_x = 0.7
+ear_w = 0.18
+id = &"mask_base.owl"
+display_name = "Owl"
+
+[resource]
+script = ExtResource("3_7i1nk")
+entries = Array[ExtResource("1_p6irn")]([SubResource("Resource_atdi0"), SubResource("Resource_g7e7x"), SubResource("Resource_kf764"), SubResource("Resource_nl776"), SubResource("Resource_w3ipx")])

@@ -8,3 +8,6 @@ id = &"mask.gilded_heron"
 display_name = "Gilded Heron"
 color_a = Color(0.82, 0.66, 0.28, 1)
 color_b = Color(0.08, 0.08, 0.1, 1)
+material_id = &"brass"
+pattern_id = &"mask_pattern.brow_band"
+metadata/mask_base = &"mask_base.heron"

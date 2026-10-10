@@ -1084,3 +1084,59 @@ ui.perks.state.locked,Locked
 ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available). Perk points come from experience.
 ui.perks.dev_unlocked,Dev build: every perk card is unlocked.
 ui.perks.hint,"Select a deck to see its cards; press it to equip. Only the equipped deck is active, with every card unlocked in it."
+ui.masks.title,Masks
+ui.masks.open,Masks
+ui.masks.equipped,Equipped: {name}
+ui.masks.none,No mask
+ui.masks.your_masks,Your masks
+ui.masks.custom_slot,Custom mask {n}
+ui.masks.empty_slot,Empty slot {n}
+ui.masks.base,Base
+ui.masks.material,Material
+ui.masks.colors,Colours
+ui.masks.pattern,Pattern
+ui.masks.save_slot,Save into
+ui.masks.save,Save mask
+ui.masks.equip,Equip
+ui.masks.equipped_tag,{name} (worn)
+ui.masks.locked,{name} (locked)
+ui.masks.status.unsaved,Unsaved changes: save the mask into a custom slot to wear it.
+ui.masks.status.saved,Saved as {name}.
+ui.masks.status.equipped,{name} is your mask for the next job.
+ui.masks.status.ready,"{name}: press Equip to wear it."
+ui.masks.status.locked_parts,Some of these parts are locked. New parts drop from paydays.
+ui.masks.status.empty_slot,This slot is empty. Build a mask and save it here.
+ui.masks.preview_hint,Drag with the mouse or use the right stick to turn the mask.
+ui.masks.hint,"Pick a mask on the left, change its parts on the right, save it into a custom slot, then equip it."
+item.mask_base.heron.name,Heron
+item.mask_base.visage.name,Plain Visage
+item.mask_base.vulpine.name,Vulpine
+item.mask_base.bruiser.name,Bruiser
+item.mask_base.owl.name,Night Owl
+item.mask_material.lacquer.name,Lacquer
+item.mask_material.matte.name,Matte Shell
+item.mask_material.gilt.name,Gilt
+item.mask_material.leather.name,Saddle Leather
+item.mask_material.chrome.name,Mirror Chrome
+item.mask_material.walnut.name,Walnut
+item.mask_material.marble.name,Marble
+item.mask_material.blued_steel.name,Blued Steel
+item.mask_material.rubber.name,Rubber
+item.mask_colors.bone_ink.name,Bone and Ink
+item.mask_colors.ember_soot.name,Ember and Soot
+item.mask_colors.gilt_night.name,Gilt and Night
+item.mask_colors.harbor_fog.name,Harbor Fog
+item.mask_colors.jade_rust.name,Jade and Rust
+item.mask_colors.violet_static.name,Violet Static
+item.mask_colors.cobalt_flare.name,Cobalt Flare
+item.mask_colors.moss_bark.name,Moss and Bark
+item.mask_colors.rose_cinder.name,Rose Cinder
+item.mask_colors.signal_white.name,Signal White
+item.mask_pattern.solid.name,Solid
+item.mask_pattern.split.name,Split Face
+item.mask_pattern.brow_band.name,Brow Band
+item.mask_pattern.stripes.name,Stripes
+item.mask_pattern.chevron.name,Chevrons
+item.mask_pattern.dots.name,Dots
+item.mask_pattern.sash.name,Sash
+item.mask_pattern.diamonds.name,Diamonds
