@@ -1,0 +1,90 @@
+# Contract: heist map (v1.0)
+
+Producer: **ENV C** (maps). Consumer: **ENV A** (`HeistRuntime`, AI, stealth, director). ENV B reads
+`HeistDef` for job board / briefing / pre-planning UI.
+
+## 1. Files per heist
+
+```
+game/world/heists/<id>/
+  <id>.tscn                 root node: HeistMap (contracts/map/heist_map.gd)
+  <id>_def.tres             HeistDef
+  <id>_variants.tres        HeistVariantTable
+  <id>_mission.gd           heist-specific mission script (objectives wiring), extends HeistMission (ENV A base)
+  greybox/                  greybox scene(s) kept until detail pass is approved
+docs/design/heists/<id>.md  design doc (approved by lead before geometry)
+docs/levels/<id>/           review screenshots + validate_level report
+```
+
+## 2. Required scene structure
+
+```
+<Id> (HeistMap)
+├── Geometry            (Node3D) static meshes + StaticBody3D colliders, layer world_static
+├── Props               (Node3D) dressing (validated: no float/clip)
+├── Lighting            (Node3D) lights + WorldEnvironment + LightmapGI/VoxelGI as decided per heist
+├── Navigation          (NavigationRegion3D) baked navmesh, layer `walkable`; vents use layer `vent`
+├── Zones               (Node3D) MapZone volumes: PUBLIC, RESTRICTED, SECURE_LOOT, ESCAPE, BODY_HIDE
+├── Rooms               (Node3D) RoomVolume per room in the design doc room list
+├── Spawns              (Node3D) SpawnPoint: PLAYER (≥4, + pre-planning alternates), GUARD, CIVILIAN,
+│                                 POLICE (≥3 directions), CAMERA_OPERATOR
+├── Patrols             (Node3D) PatrolGraph(s) with PatrolPoints
+├── Tactical            (Node3D) TacticalPoint: COVER, ENTRY (police breach), FLANK, SNIPER_PERCH, RAPPEL
+├── Gameplay            (Node3D) instances of ENV A gameplay prefabs (doors, cameras, loot spots,
+│                                 keypads, vault, escape vehicle...) with visual_scene set
+├── Variants            (Node3D) VariantSlot nodes (each holds the content for that option)
+├── Mission             (Node) script <id>_mission.gd
+└── ReviewCameras       (Node3D) Marker3D × N fixed review shots (referenced by HeistMap.review_cameras)
+```
+
+Node names above are **exact** (consumers find them by name). Additional children are allowed.
+
+## 3. Navigation
+
+* One `NavigationRegion3D` named `Navigation` (may have child regions per floor). Agent radius 0.35 m,
+  height 1.8 m, max climb 0.3 m, max slope 40°.
+* Every PatrolPoint, SpawnPoint (non-sniper), interaction prefab's `UsePoint` marker, and loot spawn
+  must be within 0.25 m of navmesh and mutually reachable (validated).
+* Doors: navmesh passes through door openings; prefab doors toggle `NavigationLink3D`/obstacles at
+  runtime (ENV A).
+
+## 4. Patrols
+
+* Guard routes are generated at runtime from `PatrolGraph` by ENV A: each guard gets a route of
+  N points (loop or ping-pong) chosen via `GameRng.stream(&"patrols")`, respecting `tags`.
+* ENV C must provide **enough graph branching that routes actually vary**: ≥ 3 distinct loop
+  options per guard post on graphs serving ≥ 2 guards.
+* Civilians use PatrolPoints tagged `civilian` / `staff` for ambient wandering.
+
+## 5. Variants (dynamic per-run variables)
+
+* Every variable in the heist design doc's **variable table** maps to: a `slot_group` with ≥ 2
+  `VariantSlot`s and a rule in `<id>_variants.tres`, or a `scalars` entry, or a `rare_events` entry.
+* VariantSlot content is placed by ENV C as **children of the slot**. The resolver deletes inactive
+  slots' children before NPC spawning, so inactive options leave nothing behind.
+* Slots with a `prefab` get it instantiated by the resolver; the prefab's `configure_variant(params)`
+  receives `params`.
+* Standard slot groups (use these names when they apply; add heist-specific ones freely):
+  `guard_post`, `guard_extra`, `camera`, `keycard`, `code_note`, `locked_door`, `code_door`,
+  `open_window`, `vent_open`, `vault_location`, `safe_location`, `civilian_cluster`,
+  `loot_spot`, `escape`, `security_room_staffed`, `cop_on_scene`, `server_room`, `extra_loot`.
+* Resolved variants Dictionary (replicated, logged): `{ group: [active slot_ids], scalar_id: value,
+  "rare": [rare_event_ids] }`. ENV A's `VariantResolver` is the only code that rolls.
+* `validate_level` checks **every** combination class: for each group, each slot individually
+  must leave the heist completable (reachability of objectives + escape).
+
+## 6. Mission scripting
+
+* ENV A provides `HeistMission` (base class, `game/systems/heist/heist_mission.gd`) with an objective
+  API (`add_objective`, `complete`, `on_event(signal, callable)`, `require_items`, timers, Mercer
+  voice-line hooks). ENV C writes `<id>_mission.gd` against it. Mission scripts may use ONLY
+  `HeistMission` API, `EventBus`, `Services`, and node paths **inside their own map**.
+
+## 7. Scale & coordinate rules
+
+Meters; +Y up; ground floor finished level = 0.0; floor heights listed in `HeistMap.floor_heights`.
+Player capsule 1.8 m tall, crouched 1.2 m, radius 0.35 m. Eye height 1.65 m standing.
+
+## 8. Validation (blocking)
+
+`tools/levelcheck/validate_all.sh` (ENV C) must pass for every heist; see `docs/design/level_standards.md` §7.

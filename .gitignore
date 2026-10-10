@@ -1,0 +1,15 @@
+# Godot
+game/.godot/
+*.translation
+export_presets.cfg.local
+# Python
+__pycache__/
+*.pyc
+.venv/
+# Blender
+*.blend1
+*.blend@
+# Local scratch / build outputs
+/build/
+/tmp/
+*.log

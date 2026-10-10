@@ -1,0 +1,35 @@
+# Owner: LEAD. Runs the full gate on every push to trunk and env branches.
+name: ci
+on:
+  push:
+    branches: ["claude/**", "env/**", "main"]
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Install tools
+        run: |
+          sudo bash tools/setup/install_godot.sh
+          pip install -r tools/requirements.txt
+      - name: Determine env
+        id: env
+        run: |
+          case "${GITHUB_REF_NAME}" in
+            env/a-*) echo "env=a" >> "$GITHUB_OUTPUT";;
+            env/b-*) echo "env=b" >> "$GITHUB_OUTPUT";;
+            env/c-*) echo "env=c" >> "$GITHUB_OUTPUT";;
+            *) echo "env=" >> "$GITHUB_OUTPUT";;
+          esac
+      - name: check_all
+        run: |
+          if [ -n "${{ steps.env.outputs.env }}" ]; then
+            git fetch origin claude/dreamy-hamilton-pc7vck
+            GODOT=/opt/godot/godot tools/ci/check_all.sh --env "${{ steps.env.outputs.env }}"
+          else
+            GODOT=/opt/godot/godot tools/ci/check_all.sh
+          fi

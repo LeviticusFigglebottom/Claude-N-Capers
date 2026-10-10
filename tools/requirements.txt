@@ -1,0 +1,6 @@
+# Python tooling (all envs). Owner: LEAD. ENV C may request additions via status file.
+gdtoolkit==4.5.0
+numpy>=2.0
+Pillow>=11.0
+noise>=1.2.2
+scipy>=1.14
