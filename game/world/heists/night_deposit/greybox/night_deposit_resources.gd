@@ -43,7 +43,7 @@ static func make_def() -> HeistDef:
 		"assets": {
 			&"asset.body_bag_case_drop": {"point_categories": [&"drop_zone"]},
 			&"asset.ammo_bag_drop": {"point_categories": [&"drop_zone"]},
-			&"asset.alternate_entry": {"point_categories": [&"player_spawn"]},
+			&"asset.alternate_entry": {"point_categories": [&"spawn"]},
 			&"asset.escape_position": {"point_categories": [&"escape"]},
 			&"asset.intel_keycards": {"point_categories": [&"insider"]},
 			&"asset.intel_cameras": {"point_categories": [&"insider"]},

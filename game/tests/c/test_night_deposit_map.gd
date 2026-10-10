@@ -35,8 +35,8 @@ const ROOMS: Dictionary = {
 	"X1": "exterior", "X2": "exterior",
 }
 const PREPLAN: Dictionary = {
-	"pp_drop_lot": "drop_zone", "pp_drop_quay": "drop_zone", "pp_spawn_lot": "player_spawn",
-	"pp_spawn_quay": "player_spawn", "pp_escape_van": "escape", "pp_escape_boat": "escape",
+	"pp_drop_lot": "drop_zone", "pp_drop_quay": "drop_zone", "pp_spawn_lot": "spawn",
+	"pp_spawn_quay": "spawn", "pp_escape_van": "escape", "pp_escape_boat": "escape",
 	"pp_insider_code": "insider", "pp_insider_keycard": "insider", "pp_vent": "insider", "pp_blueprint_cams": "insider",
 }
 

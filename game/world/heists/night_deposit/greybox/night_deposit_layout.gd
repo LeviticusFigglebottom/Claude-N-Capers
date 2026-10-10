@@ -662,12 +662,12 @@ const TACTICAL: Array = [
 ]
 
 ## Pre-planning points (contracts/preplanning.md, heist_map.md v1.2): [id, category, pos, floor, params].
-## Labels are strings keys `ui.preplan.point.<id>`. Crew-spawn points use `player_spawn` (D-046 final).
+## Labels are strings keys `ui.preplan.point.<id>`. Crew-spawn points use `spawn` (D-046 final, contract wording).
 const PREPLAN_POINTS: Array = [
 	["pp_drop_lot", "drop_zone", Vector3(10.6, 0.0, -2.4), 1, {}],
 	["pp_drop_quay", "drop_zone", Vector3(14.0, 0.0, 32.0), 1, {}],
-	["pp_spawn_lot", "player_spawn", Vector3(2.25, 0.0, -9.75), 1, {"spawn_tag": &"preplan_spawn_lot"}],
-	["pp_spawn_quay", "player_spawn", Vector3(26.25, 0.0, 31.4), 1, {"spawn_tag": &"preplan_spawn_quay"}],
+	["pp_spawn_lot", "spawn", Vector3(2.25, 0.0, -9.75), 1, {"spawn_tag": &"preplan_spawn_lot"}],
+	["pp_spawn_quay", "spawn", Vector3(26.25, 0.0, 31.4), 1, {"spawn_tag": &"preplan_spawn_quay"}],
 	["pp_escape_van", "escape", Vector3(2.5, 0.0, -5.4), 1, {"variant_group": &"escape", "variant_slot": &"esc_van_lot"}],
 	["pp_escape_boat", "escape", Vector3(7.5, -1.0, 36.9), 1, {"variant_group": &"escape", "variant_slot": &"esc_boat_quay"}],
 	["pp_insider_code", "insider", Vector3(23.0, 0.0, 13.0), 1, {"variant_group": &"code_note"}],
