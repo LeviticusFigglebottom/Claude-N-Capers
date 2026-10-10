@@ -1,4 +1,4 @@
-# Contract: characters (v1.1)
+# Contract: characters (v1.2)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -43,3 +43,14 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
   `char_anim_humanoid` glb, converted to an AnimationLibrary resource by ENV D's assembly tool.
 * Masks: `game/assets/masks/mask_<name>.glb`. The MaskDef.model scene has its pivot at the face centre and −Z forward, and
   attaches to `Head`.
+
+## v1.2 (QD-3, QB-51, D-038)
+* Each BoneAttachment3D (`HandR`, `HandL`, `Head`, `Back`, `Hip`) has a child `Marker3D` named **`Socket`**
+  carrying the attach offset, because a BoneAttachment3D's own transform is overwritten by the bone. Attach to
+  `<Marker>/Socket`: the weapon at `HandR/Socket` (weapon X right, Y up, −Z muzzle), the mask at `Head/Socket` (face
+  centre; MaskDef pivot seats there), loot bags at `Back/Socket`, and the pager/radio at `Hip/Socket`.
+* Masks: ENV A attaches masks with ENV B's `MaskCatalog.resolve()/from_descriptor()` + `MaskComposer.instantiate()`
+  (by class name). ENV A never builds mask visuals itself.
+* Assembled character scenes keep their skinned meshes as binary `.res` beside the scene (~1.2 MB each,
+  accepted; repo size watched per D-011).
+* `world/characters/characters.json` is the index of assembled characters (id → scene path).

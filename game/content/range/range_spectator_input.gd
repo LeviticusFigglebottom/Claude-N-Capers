@@ -1,8 +1,8 @@
-## TEMPORARY range-only tool (B1-05 STOPGAP), NOT the player controller: a free-flying range camera
-## that fires RangeDebugGun. Used only while ENV A's CrewController (A1-0x) and weapon runtime
-## (A1-08) do not exist; DELETE this file and RangeDebugGun when they land (FiringRange then spawns
-## the crew through RangeCrewBridge). Raw Input is read here, hence the `_input` file name
-## (check_banned.py rule). Owner: ENV B.
+## FALLBACK ONLY range tool (B1-05), NOT the player controller: a free-flying range camera that
+## fires RangeDebugGun. The range normally uses ENV A's crew member (RangeCrewBridge +
+## RangeModeInput); FiringRange spawns this only when CrewController or its spawn_for_range hook is
+## missing (or `use_fallback_shooter` is set for tests). Raw Input is read here, hence the `_input`
+## file name (check_banned.py rule). Owner: ENV B.
 ##
 ## Aim mode (mouse captured): WASD move, Q/E down/up, Shift faster, mouse look, LMB fire, RMB aim
 ## down sights, R reload, Tab/Esc back to the panels. Gamepad: left stick move, right stick look,

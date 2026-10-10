@@ -1,7 +1,7 @@
 ## Perk deck progress for the perk deck screen (B4-03, pd2_fidelity P4). Owner: ENV B.
 ##
-## Rule (proposal, question for the lead): perk points are earned from total XP,
-## earned = floor(PlayerProfile.xp / ProgressionUiTweak.xp_per_perk_point); a deck's cards unlock in
+## Rule (D-034 QB-45): perk points are earned from total XP,
+## earned = floor(PlayerProfile.xp / PerkPointTweak.xp_per_perk_point) (data/tweak/perk_points.tres); a deck's cards unlock in
 ## order (1..9) at their PerkDeckDef cost; every deck keeps its own progress (PlayerProfile.perk_cards)
 ## and available = earned - cost of every unlocked card. One deck is active (Loadout.perk_deck) and
 ## Loadout.perk_deck_cards mirrors its progress (sync()). `dev_unlock_all_perks` in the tweak makes
@@ -40,10 +40,12 @@ static func deck(deck_id: StringName) -> PerkDeckDef:
 	return ContentDB.by_id(ContentDB.PERKS, deck_id) as PerkDeckDef
 
 
-static func earned(p: PlayerProfile, tw: ProgressionUiTweak) -> int:
-	if tw.xp_per_perk_point <= 0:
+## `_tw` is unused (the rate is balance data in PerkPointTweak); kept for the existing call sites.
+static func earned(p: PlayerProfile, _tw: ProgressionUiTweak) -> int:
+	var rate: int = PerkPointTweak.current().xp_per_perk_point
+	if rate <= 0:
 		return 0
-	return maxi(floori(float(p.xp) / float(tw.xp_per_perk_point)), 0)
+	return maxi(floori(float(p.xp) / float(rate)), 0)
 
 
 ## Points spent on unlocked cards across every deck.

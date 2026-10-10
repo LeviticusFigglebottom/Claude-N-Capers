@@ -26,6 +26,8 @@ signal crew_custody(crew_slot: int)
 signal crew_traded(crew_slot: int, hostage_net_id: int)
 signal crew_tased(crew_slot: int, by_net_id: int)
 signal crew_cloaker_downed(crew_slot: int, by_net_id: int)
+signal crew_cuffed(crew_slot: int, by_net_id: int)
+signal crew_uncuffed(crew_slot: int, by_crew_slot: int)  # -1 = freed themselves
 
 # --- Detection / stealth -----------------------------------------------------
 signal detection_progress(observer_net_id: int, crew_slot: int, value: float, kind: int)  # Enums.ObserverKind

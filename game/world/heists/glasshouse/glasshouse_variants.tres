@@ -1,0 +1,110 @@
+[gd_resource type="Resource" script_class="HeistVariantTable" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_variant_table.gd" id="1_babmt"]
+
+[resource]
+script = ExtResource("1_babmt")
+rules = Array[Dictionary]([{
+"difficulty_add": Array[int]([0, 0, 0, 1, 1, 1]),
+"group": &"guard_post",
+"pick": Vector2i(1, 1)
+}, {
+"excludes": {
+&"guard_post": [&"alley_smoker"]
+},
+"group": &"back_door",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"open_window",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"keycard",
+"pick": Vector2i(1, 1)
+}, {
+"excludes": {
+&"keycard": [&"kc_jeweler"]
+},
+"group": &"jeweler",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"admin_clerk",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"salon",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"extra_loot",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"escape",
+"pick": Vector2i(1, 1)
+}, {
+"difficulty_add": Array[int]([0, 0, 0, 1, 1, 1]),
+"group": &"customers",
+"pick": Vector2i(2, 4)
+}, {
+"group": &"manager_present",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"safe_state",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"estate",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"camera",
+"phase": 2,
+"pick": Vector2i(0, 0),
+"pick_p2": Vector2i(1, 1)
+}, {
+"group": &"security_room_staffed",
+"phase": 2,
+"pick": Vector2i(0, 0),
+"pick_p2": Vector2i(1, 1)
+}, {
+"group": &"code_note",
+"phase": 2,
+"pick": Vector2i(0, 0),
+"pick_p2": Vector2i(1, 1)
+}])
+rare_events = Array[Dictionary]([{
+"chance": 0.03,
+"effects": {
+"force_active": {
+"group": &"safe_state",
+"slot": &"safe_open"
+}
+},
+"good": true,
+"id": &"safe_left_open"
+}, {
+"chance": 0.06,
+"effects": {
+"force_active": {
+"group": &"estate",
+"slot": &"estate_bag"
+}
+},
+"good": true,
+"id": &"estate_consignment"
+}, {
+"chance": 0.1,
+"effects": {
+"extra_device_jams": 1,
+"max_device_jams": 4,
+"min_difficulty": 3
+},
+"good": false,
+"id": &"drill_relock"
+}, {
+"chance": 0.05,
+"effects": {
+"force_active": {
+"group": &"manager_present",
+"slot": &"mgr_in"
+},
+"manager_alarm_direct": true
+},
+"good": false,
+"id": &"nervous_manager"
+}])

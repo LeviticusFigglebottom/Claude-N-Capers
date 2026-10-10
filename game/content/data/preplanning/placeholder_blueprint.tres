@@ -1,0 +1,112 @@
+[gd_resource type="Resource" script_class="PreplanBlueprint" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_blueprint.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+heist_id = &""
+placeholder = true
+bounds = Rect2(-14, -8, 46, 42)
+grid_step_m = 2.0
+floor_names = Array[StringName]([&"ui.preplan.floor.ground"])
+shapes = Array[Dictionary]([{
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.backs",
+"rect": Rect2(-14, -8, 35, 2)
+}, {
+"kind": &"alley",
+"label": &"ui.preplan.bp.alley",
+"rect": Rect2(-14, -6, 35, 6)
+}, {
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.neighbour",
+"rect": Rect2(-14, 0, 14, 12.5)
+}, {
+"kind": &"building",
+"label": &"ui.preplan.bp.target",
+"rect": Rect2(0, 0, 18, 12)
+}, {
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(18, 0, 3, 12.5)
+}, {
+"kind": &"street",
+"label": &"ui.preplan.bp.side_street",
+"rect": Rect2(21, -8, 8, 38)
+}, {
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.garage",
+"rect": Rect2(29, -8, 3, 38)
+}, {
+"kind": &"sidewalk",
+"label": &"ui.preplan.bp.sidewalk",
+"rect": Rect2(-14, 12.5, 35, 4)
+}, {
+"kind": &"street",
+"label": &"ui.preplan.bp.avenue",
+"rect": Rect2(-14, 16.5, 35, 13.5)
+}, {
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.facades",
+"rect": Rect2(-14, 30, 46, 4)
+}])
+points = Array[Dictionary]([{
+"category": &"drop_zone",
+"floor": 0,
+"id": &"pp_alley_dumpsters",
+"label": &"ui.preplan.point.pp_alley_dumpsters",
+"params": {},
+"pos": Vector2(9, -1.5)
+}, {
+"category": &"drop_zone",
+"floor": 0,
+"id": &"pp_alley_hvac",
+"label": &"ui.preplan.point.pp_alley_hvac",
+"params": {},
+"pos": Vector2(2, -3)
+}, {
+"category": &"drop_zone",
+"floor": 0,
+"id": &"pp_side_kerb",
+"label": &"ui.preplan.point.pp_side_kerb",
+"params": {},
+"pos": Vector2(23, 2)
+}, {
+"category": &"player_spawn",
+"floor": 0,
+"id": &"pp_spawn_alley_west",
+"label": &"ui.preplan.point.pp_spawn_alley_west",
+"params": {
+"spawn_tag": &"preplan_spawn_alley"
+},
+"pos": Vector2(-11, -3)
+}, {
+"category": &"player_spawn",
+"floor": 0,
+"id": &"pp_spawn_alley_mouth",
+"label": &"ui.preplan.point.pp_spawn_alley_mouth",
+"params": {
+"spawn_tag": &"preplan_spawn_alley_mouth"
+},
+"pos": Vector2(18, -4)
+}, {
+"category": &"escape",
+"floor": 0,
+"id": &"pp_escape_alley_west",
+"label": &"ui.preplan.point.pp_escape_alley_west",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_alley_west"
+},
+"pos": Vector2(-5, -4)
+}, {
+"category": &"escape",
+"floor": 0,
+"id": &"pp_escape_side_street",
+"label": &"ui.preplan.point.pp_escape_side_street",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_pell"
+},
+"pos": Vector2(25, 9)
+}])

@@ -1,4 +1,4 @@
-# Contract: heist map (v1.1)
+# Contract: heist map (v1.2)
 
 Producer: **ENV C** (maps). Consumer: **ENV A** (`HeistRuntime`, AI, stealth, director). ENV B reads
 `HeistDef` for job board / briefing / pre-planning UI.
@@ -34,6 +34,7 @@ docs/levels/<id>/           review screenshots + validate_level report
 │                                 keypads, vault, escape vehicle...) with visual_scene set
 ├── Variants            (Node3D) VariantSlot nodes (each holds the content for that option)
 ├── Mission             (Node) script <id>_mission.gd
+├── Preplan             (Node3D, optional) PREPLAN_POINT Marker3Ds; node name = point id (contracts/preplanning.md)
 └── ReviewCameras       (Node3D) Marker3D × N fixed review shots (referenced by HeistMap.review_cameras)
 ```
 

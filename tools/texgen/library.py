@@ -46,6 +46,10 @@ LIBRARY: dict[str, dict] = {
     "paint_white": {"size": 1024, "tile_m": 1.0},
     "brass_cartridge": {"size": 1024, "tile_m": 1.0},
     "glass_lens_tint": {"size": 512, "tile_m": 1.0, "kind": "glass"},
+    "alu_anodized_black": {"size": 1024, "tile_m": 1.0},
+    "polymer_tan": {"size": 1024, "tile_m": 1.0},
+    "polymer_olive": {"size": 1024, "tile_m": 1.0},
+    "glass_lens_coated": {"size": 512, "tile_m": 1.0, "kind": "glass"},
     # No textures: a flat emissive StandardMaterial3D (a reticle is a tiny emissive mesh/decal).
     "emissive_reticle_red": {"kind": "emissive"},
     # Trim sheet (trim.py). Strip UV ranges: game/assets/textures/trim_interior/trim_table.json

@@ -1,5 +1,7 @@
-## B1-05 firing range v1: scene, data-built layout, target hit API, falloff/headshot/TTK math,
-## loadout swap -> panel, EventBus listener scoping, debug hitscan, strings.
+## B1-05 firing range: scene, data-built layout, target hit API, falloff/headshot/TTK math,
+## loadout swap -> panel + crew, ENV A's real crew member and weapon runtime (spawn, panel/aim input
+## pause, a real CrewIntent shot through the single hit path), the fallback camera + debug hitscan,
+## strings.
 extends TestCase
 
 const SCENE: String = "res://content/range/firing_range.tscn"
@@ -16,8 +18,9 @@ func after_each() -> void:
 	await wait_frames(2)
 
 
-func _spawn_range() -> FiringRange:
+func _spawn_range(fallback: bool = false) -> FiringRange:
 	_range = (load(SCENE) as PackedScene).instantiate() as FiringRange
+	_range.use_fallback_shooter = fallback
 	add_child(_range)
 	await wait_frames(2)
 	return _range
@@ -51,12 +54,13 @@ func test_scene_instantiates_headless() -> void:
 	var r: FiringRange = await _spawn_range()
 	assert_true(r.is_inside_tree())
 	assert_true(r.overlay != null, "overlay built")
-	# State-tolerant (D-027 integration): ENV A's crew via RangeCrewBridge when CrewController
-	# provides spawn_for_range, otherwise the temporary range camera. Exactly one shooter.
+	# ENV A's crew via RangeCrewBridge when CrewController provides spawn_for_range, otherwise the
+	# fallback range camera. Exactly one shooter.
+	assert_eq(r.crew != null, RangeCrewBridge.available(), "real crew iff the hook exists")
 	if r.crew != null:
-		assert_true(r.spectator == null, "real crew spawned -> no temporary range camera")
+		assert_true(r.spectator == null, "real crew spawned -> no fallback range camera")
 	else:
-		assert_true(r.spectator != null, "no range crew -> temporary range camera")
+		assert_true(r.spectator != null, "no range crew -> fallback range camera")
 	assert_eq(r.targets.size(), r.layout.lane_count())
 	assert_true(r.level.get_node("Floor").get_child_count() > 0, "greybox floor pieces instanced")
 	assert_true(r.level.get_node("Walls").get_child_count() > 0, "greybox wall pieces instanced")
@@ -192,7 +196,10 @@ func test_loadout_swap_changes_panel_stats() -> void:
 	assert_eq(r.weapon_stats.mag_size, expected.mag_size, "resolved through LoadoutResolver")
 	assert_ne(r.overlay.value_text("mag"), before, "panel updates instantly")
 	assert_eq(r.overlay.value_text("mag"), str(expected.mag_size))
-	assert_eq(r.spectator.gun.ammo, expected.mag_size, "range gun re-equipped")
+	if r.crew != null:
+		assert_eq(int(RangeCrewBridge.ammo(r.crew)["mag_size"]), expected.mag_size, "crew re-armed")
+	else:
+		assert_eq(r.spectator.gun.ammo, expected.mag_size, "range gun re-equipped")
 
 
 func test_take_hit_is_the_single_hit_path() -> void:
@@ -226,8 +233,9 @@ func test_hitboxes_resolve_through_damage_helper() -> void:
 	t.queue_free()
 
 
-func test_debug_hitscan_hits_target() -> void:
-	var r: FiringRange = await _spawn_range()
+func test_fallback_debug_hitscan_hits_target() -> void:
+	var r: FiringRange = await _spawn_range(true)
+	assert_true(r.crew == null and r.spectator != null, "fallback shooter forced")
 	var lane: int = _lane_at(r, 10.0)
 	var t: RangeTarget = r.targets[lane]
 	var steady: WeaponStats = r.weapon_stats.duplicate() as WeaponStats
@@ -277,3 +285,141 @@ func test_crit_applies_head_mult_on_any_zone() -> void:
 	var head: Dictionary = t.take_hit(hi, 0)
 	assert_near(float(head["amount"]), 10.0 * hm * hm, 0.001, "head crit stacks")
 	t.queue_free()
+
+
+# --- ENV A's real crew member + weapon runtime (QB-25, D-026) ------------------------------------
+
+func _crew_range() -> FiringRange:
+	if not RangeCrewBridge.available():
+		skip("CrewController.spawn_for_range not in this tree (fallback covered above)")
+		return null
+	var r: FiringRange = await _spawn_range()
+	await wait_physics_frames(10)  # settle on the floor
+	return r
+
+
+## Intent looking from the crew's eye at `p` (crew_intent.md: absolute yaw/pitch, -Z forward).
+func _intent_at(crew: Node, p: Vector3, fire: bool) -> CrewIntent:
+	var d: Vector3 = (p - RangeCrewBridge.eye_position(crew)).normalized()
+	var i: CrewIntent = CrewIntent.new()
+	i.look_yaw = atan2(-d.x, -d.z)
+	i.look_pitch = asin(clampf(d.y, -1.0, 1.0))
+	i.aim = true
+	i.fire = fire
+	return i
+
+
+func test_crew_spawns_with_camera_and_paused_input() -> void:
+	var r: FiringRange = await _crew_range()
+	if r == null:
+		return
+	assert_true(r.crew.get_parent() == r, "crew member lives in the range")
+	assert_true(RangeCrewBridge.net_id(r.crew) > 0, "crew has a net id")
+	assert_eq(r.shooter_net_id(), RangeCrewBridge.net_id(r.crew))
+	var cam: Camera3D = RangeCrewBridge.camera(r.crew)
+	assert_true(cam != null and cam.current, "crew first-person camera is active")
+	assert_eq(get_viewport().get_camera_3d(), cam)
+	assert_true(r.viewmodel != null and r.viewmodel.get_parent() == cam, "weapon viewmodel on the camera")
+	assert_eq(r.crew.get(&"weapon_visual"), r.viewmodel, "crew muzzle comes from the viewmodel")
+	assert_true(r.mode_input != null, "panel/aim mode input")
+	assert_false(r.aim_mode)
+	assert_false(RangeCrewBridge.input_enabled(r.crew), "panel mode pauses the crew input")
+	r.set_aim_mode(true)
+	await wait_physics_frames(1)
+	assert_true(RangeCrewBridge.input_enabled(r.crew), "aim mode resumes it (fire not held)")
+	assert_false(r.overlay.interactive, "panels read-only while aiming")
+	r.set_aim_mode(false)
+	assert_false(RangeCrewBridge.input_enabled(r.crew), "back to the panels pauses it again")
+	assert_false(bool(r.crew.get(&"intent").get(&"fire")), "neutral intent while paused")
+	assert_true(r.overlay.interactive)
+
+
+func test_loadout_swap_reaches_crew() -> void:
+	var r: FiringRange = await _crew_range()
+	if r == null:
+		return
+	r.set_mod(int(Enums.ModType.MAGAZINE), EXT_MAG)
+	var expected: WeaponStats = LoadoutResolver.resolve_weapon(P9, [EXT_MAG])
+	var lo: Loadout = r.crew.get(&"loadout") as Loadout
+	assert_true(lo != null and lo.resolved_secondary != null, "crew got a resolved loadout")
+	assert_eq(lo.resolved_secondary.mag_size, expected.mag_size, "set_loadout(resolved) reached the crew")
+	var a: Dictionary = RangeCrewBridge.ammo(r.crew)
+	assert_eq(int(a["mag_size"]), expected.mag_size)
+	assert_eq(int(a["mag"]), expected.mag_size, "re-armed with a full magazine")
+	var other: StringName = &""
+	for w: WeaponDef in ContentDB.all_weapons():
+		if w.id != P9 and w.slot == Enums.WeaponSlot.PRIMARY:
+			other = w.id
+			break
+	if other != &"":
+		r.select_weapon(other)
+		lo = r.crew.get(&"loadout") as Loadout
+		assert_eq(lo.primary, other, "weapon swap reaches the crew")
+		var w_obj: Object = r.crew.get(&"weapons") as Object
+		assert_eq(int(w_obj.get(&"equipped_slot")), int(Enums.WeaponSlot.PRIMARY), "crew equips the new weapon")
+
+
+func test_real_crew_shot_damages_target_once() -> void:
+	var r: FiringRange = await _crew_range()
+	if r == null:
+		return
+	var lane: int = _lane_at(r, 10.0)
+	var t: RangeTarget = r.targets[lane]
+	r.set_readout_lane(0 if lane != 0 else 1)
+	var crew: Node = r.crew
+	var crew_id: int = RangeCrewBridge.net_id(crew)
+	var aim_at: Vector3 = t.zone_position(Enums.HitZone.BODY)
+	var mag_before: int = int(RangeCrewBridge.ammo(crew)["mag"])
+	var seen: Array[Dictionary] = []
+	var on_applied: Callable = func(victim: int, attacker: int, info: Dictionary) -> void:
+		if victim == t.net_id:
+			seen.append({"attacker": attacker, "info": info})
+	EventBus.damage_applied.connect(on_applied)
+	crew.call(&"apply_intent", _intent_at(crew, aim_at, false))
+	await wait_physics_frames(2)
+	crew.call(&"apply_intent", _intent_at(crew, aim_at, true))  # trigger press (semi-auto: one shot)
+	await wait_physics_frames(6)
+	crew.call(&"apply_intent", _intent_at(crew, aim_at, false))
+	await wait_physics_frames(2)
+	EventBus.damage_applied.disconnect(on_applied)
+	assert_eq(seen.size(), 1, "one trigger press -> exactly one damage_applied (single hit path)")
+	if seen.is_empty():
+		return
+	assert_eq(int(seen[0]["attacker"]), crew_id, "attacker is the crew's net id")
+	var dmg: float = float((seen[0]["info"] as Dictionary)["amount"])
+	assert_near(dmg, 35.0, 0.001, "P9 body hit at ~10 m: 35, no falloff")
+	assert_near(t.health, t.max_health - 35.0, 0.001, "damage applied once, not twice")
+	assert_eq(int(RangeCrewBridge.ammo(crew)["mag"]), mag_before - 1, "one round from the real weapon runtime")
+	assert_eq(int(r.last_shot.get("attacker_net_id", -1)), crew_id, "last shot from damage_applied")
+	assert_eq(int(r.last_shot.get("zone", -1)), int(Enums.HitZone.BODY))
+	assert_near(float(r.last_shot.get("distance_m", 0.0)), RangeCrewBridge.eye_position(crew).distance_to(aim_at), 0.3)
+	assert_eq(r.readout_lane, lane, "readout follows the hit lane")
+	assert_eq(r.overlay.value_text("ls_damage"), "35")
+	await wait_frames(1)
+	var a: Dictionary = RangeCrewBridge.ammo(crew)
+	assert_eq(r.overlay.ammo_text(), UiText.t(&"ui.range.ammo_reserve",
+			{"ammo": int(a["mag"]), "mag": int(a["mag_size"]), "reserve": int(a["reserve"])}), "overlay ammo from the crew")
+
+
+func test_range_ignores_other_attackers() -> void:
+	var r: FiringRange = await _crew_range()
+	if r == null:
+		return
+	var t: RangeTarget = r.targets[0]
+	t.take_hit(_info(10.0), RangeCrewBridge.net_id(r.crew) + 1000)
+	assert_true(r.last_shot.is_empty(), "hits by someone else are not the range's last shot")
+	t.take_hit(_info(10.0), r.shooter_net_id())
+	assert_false(r.last_shot.is_empty(), "hits by the range shooter are")
+
+
+func test_reset_rearms_crew() -> void:
+	var r: FiringRange = await _crew_range()
+	if r == null:
+		return
+	var w: Object = r.crew.get(&"weapons") as Object
+	var ws: int = int(w.get(&"equipped_slot"))
+	w.call(&"set_ammo", ws, 2, 5)
+	r.reset_targets()
+	var a: Dictionary = RangeCrewBridge.ammo(r.crew)
+	assert_eq(int(a["mag"]), int(a["mag_size"]), "full magazine after reset")
+	assert_true(int(a["reserve"]) > 5, "reserve refilled")

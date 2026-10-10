@@ -181,3 +181,19 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Accepted deviations: one merged `building` patrol graph; customers as a slot group; the smoker⇒propped rule as excludes + mission logic (P(kc_jeweler) 15.8% is fine); the floor guard as a fixed spawn with guard_post holding only rovers; P2 rows at pick 0 with cameras as markers until A fixes the prefab collision; the workshop ceiling override; door shifts of 0.2–0.5 m; the 1.1 m fire-exit leaf; kit window sizes. Rare events on zero-weight carrier slots are a temporary hack, to be replaced when A ships `min_difficulty`/`force_if` (A2-08).
 - ENV A gets A2-08 (resolver features, window glass sizing, safe KEYCARD method, push-bar door, camera collision).
 - Visual contract: the kit door `Collision` is a sibling of `Frame`. visual_slots.md stays as written (`Frame` supplies collision) and ENV C aligns the kit.
+
+## D-038 — 2026-10-10 — Batch merge (Glasshouse G1, P2 stealth, app flow, character assembly); answers QA-13..20, QB-46..51, QB-PP1..5, QC-9/10, QD-3/4
+- Merged env/c-worlds (Glasshouse G1 + validator fixes + D-034 cues/materials), env/a-core (A2-01..A2-07: P2 stealth complete), env/b-content (range on the real crew, HUD direct bind, B2-01..03, full app flow), env/d-art (character assembly tooling).
+- **New contract `preplanning.md` v1.0** reconciles A's and B's designs. ENV B resolves (`PreplanPlan.apply()` → PreplanResult) and ENV A only applies. PREPLAN_POINTs are Marker3Ds under `<Map>/Preplan`, with the node name as point id (heist_map v1.2). Each buyer pays for their own assets; a voted plan's cost is split among the humans. Votes go through the new `Net.lobby_send` / `Net.lobby_message`.
+- QA-13: prefab additions in gameplay_prefabs.md v1.1. QA-14: ENV B adds the strings, and **`ui.blocked.*` is canonical** (B renames `ui.prompt.blocked.*`). QA-15: cues → ENV C.
+- QA-16: **ECM feedback is built into every ECM** (S8.6, PD2 U100+). Remove the `stealth.ecm_feedback` gate. The key is deprecated: ENV B stops granting it, and ENV A ignores it.
+- QA-17: `crew_cuffed` / `crew_uncuffed` added to EventBus [R]. QA-19: `HeistResult.fail_reason` added. QA-20: marking while casing requires `stealth.casing_can_mark` (PD2: Chameleon basic). Confirmed gated.
+- QB-46/47/48/49 → ENV A: `CrewController.set_input_paused(bool)`; the local human's CrewController makes its camera current and attaches the WeaponVisual (ENV B class, by name); LocalHudModel gets a `tracked_crew` mode without a HeistRuntime; gamepad look via the new `look_*` actions (now in project.godot).
+- QB-50 → ENV D: contact portrait busts (Odile Vance, Hollis Reyes, The Accountant silhouette) and mask base meshes (heron, visage, vulpine, bruiser, owl). QB-51: characters.md v1.2.
+- QC-9: black polymers, rubber and black paint may go to 0.02 linear albedo (style guide). QC-10: provisional perf budget 3M triangles per view, vault ceiling 2.6–6.0, review shots as JPEG.
+- QD-3: `Socket` Marker3D children on every BoneAttachment (characters.md v1.2). QD-4: per-character `.res` meshes (~1.2 MB) accepted.
+
+## D-039 — 2026-10-10 — P1 GATE GREEN on trunk
+- With Glasshouse G1 merged, `test_p1_vertical_slice.gd` passes 4/4 on trunk (variants deterministic, casing + no-noise, kill→pager→answer, alarm→loud with no scene change→assault reaches FADE). ENV A's sandbox gate passes 8/8 (adds early pager release, bag secure, AI revive, escape). validate_level glasshouse greybox: PASS.
+- Lead hotfix: ENV B's strings had guessed Glasshouse objective ids. Added strings for the mission's actual ids (casing, keycard, workshop_door, safe, safe_loot, secure). Rule from now on: objective ids come from the heist design doc's Objectives section `[tag]`s, and ENV B reads them from there, never guesses.
+- Remaining for P1 sign-off (roadmap): Glasshouse G2 art pass (C1-07/C1-08) + characters in the map (ENV D) + lead playthrough notes.

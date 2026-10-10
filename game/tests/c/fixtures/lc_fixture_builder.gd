@@ -246,11 +246,13 @@ static func build(bad: bool) -> HeistMap:
 	# --- navigation agent settings (baked by make_lc_fixtures.gd)
 	var nm: NavigationMesh = NavigationMesh.new()
 	nm.cell_size = 0.1
-	nm.cell_height = 0.05
-	nm.agent_radius = 0.35
+	nm.cell_height = 0.1
+	nm.agent_radius = 0.3
 	nm.agent_height = 1.8
 	nm.agent_max_climb = 0.3
 	nm.agent_max_slope = 40.0
+	# Drop isolated islands < 0.64 m² (e.g. strips on desk tops).
+	nm.region_min_size = 8.0
 	nm.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
 	nm.geometry_collision_mask = 1
 	nm.filter_baking_aabb = AABB(Vector3(-5, -1, -5), Vector3(40, 3.7, 20))
@@ -416,6 +418,59 @@ static func _lamp(parent: Node, name: String, pos: Vector3, mat: Material, shado
 	l.shadow_enabled = shadow
 	lamp.add_child(l)
 	return lamp
+
+
+## U-stair for stair tests at `o`: two 10-riser flights (riser 0.16, tread 0.28, width 1.2) joined
+## by a half landing at +1.6 m, ground at 0, upper slab at 3.2. `ramp`: flight 1 keeps its visual
+## steps but collides through one ramp box laid on the nosings.
+static func u_stair(parent: Node3D, o: Vector3, ramp: bool) -> void:
+	var m: StandardMaterial3D = tri_mat("fx_stair", Color(0.6, 0.6, 0.6), 512.0)
+	var r: float = 0.16
+	var t: float = 0.28
+	var root: Node3D = Node3D.new()
+	root.name = "UStair"
+	root.position = o
+	parent.add_child(root)
+	solid(root, "Ground", Vector3(-0.5, -0.2, -1.0), Vector3(1.2, 0.0, 9 * t), m)
+	solid(root, "Landing", Vector3(0.0, 0.0, 9 * t), Vector3(2.6, 10 * r, 9 * t + 1.2), m)
+	solid(root, "UpperSlab", Vector3(1.4, 10 * r * 2 - 0.2, -1.0), Vector3(2.6, 10 * r * 2, 0.0), m)
+	var f1: Node3D = Node3D.new()
+	f1.name = "Flight1"
+	f1.set_meta(&"kind", "stairs")
+	root.add_child(f1)
+	for k: int in range(1, 10):
+		var lo: Vector3 = Vector3(0.0, 0.0, (k - 1) * t)
+		var hi: Vector3 = Vector3(1.2, k * r, k * t)
+		if ramp:
+			var mi: MeshInstance3D = MeshInstance3D.new()
+			mi.name = "Step%d" % k
+			mi.position = (lo + hi) * 0.5
+			mi.mesh = _box_mesh(hi - lo, m)
+			f1.add_child(mi)
+		else:
+			solid(f1, "Step%d" % k, lo, hi, m)
+	if ramp:
+		var a: float = atan2(10 * r, 10 * t)
+		var length: float = Vector2(10 * t, 10 * r).length()
+		var body: StaticBody3D = StaticBody3D.new()
+		body.name = "Ramp"
+		var cs: CollisionShape3D = CollisionShape3D.new()
+		var shape: BoxShape3D = BoxShape3D.new()
+		shape.size = Vector3(1.2, 0.1, length)
+		cs.shape = shape
+		body.add_child(cs)
+		var basis: Basis = Basis(Vector3.RIGHT, -a)
+		var mid: Vector3 = Vector3(0.6, 5 * r, -t + 5 * t)
+		body.transform = Transform3D(basis, mid - basis.y * 0.05)
+		f1.add_child(body)
+	var f2: Node3D = Node3D.new()
+	f2.name = "Flight2"
+	f2.set_meta(&"kind", "stairs")
+	root.add_child(f2)
+	for k2: int in range(11, 20):
+		solid(f2, "Step%d" % k2, Vector3(1.4, 0.0, (19 - k2) * t), Vector3(2.6, k2 * r, (20 - k2) * t), m)
+	_own(root, parent.owner if parent.owner != null else parent)
+	root.owner = parent.owner if parent.owner != null else parent
 
 
 ## Bakes the map's navmesh from its static colliders. Map must be inside the tree.

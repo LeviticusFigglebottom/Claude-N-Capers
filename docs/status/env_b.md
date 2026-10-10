@@ -3,6 +3,55 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-10 18:40 UTC — range on A's runtime, HUD adapter removed, D-034 follow-ups, B2-01/02/03
+### Done
+- Range on ENV A's crew and weapon runtime (6b7c1af).
+  - `CrewController.spawn_for_range` + `set_loadout` on every swap. The WeaponVisual viewmodel is on the crew camera.
+  - Last-shot readouts come from our targets' `damage_applied`, filtered to the crew's net id. Ammo is read from the crew's weapons.
+  - Panel/aim mode pauses `PlayerInput.enabled`. The test camera and debug gun are FALLBACK ONLY.
+  - A headless test drives a real CrewIntent shot and checks exactly one `damage_applied` for 35 damage.
+- HUD binds LocalHudModel directly; HudModelAdapter deleted (dd1f97e). A new MarkedTargets widget was added. Tested against a real HeistRuntime on a test map (vitals, ammo, Stinger warning, masked).
+- D-034 follow-ups (d1dae61).
+  - `defense.post_revive_buff` LIST entries are granted per skill.
+  - Plowman shell-by-shell reload: start 0.4, per round 0.5, end 0.4 ◇. Its full reload times are now derived from those.
+  - Pellet display exponent 1 (Plowman shows 160).
+  - `data/tweak/perk_points.tres` (500 XP per point).
+- B2-02 briefing screen (38fd559).
+  - ContactDef for vance, reyes, accountant and mercer, with drawn placeholder portrait silhouettes.
+  - Shows objectives, loot at difficulty, contract pay and escape options.
+  - "Play Briefing" emits local `voice_line_requested` with subtitles; 8 original Glasshouse briefing lines.
+- B2-01 pre-planning (b149a9a).
+  - 10 generic assets (drops, insider info, cable ties, body bags, alternate entry, voted van position). Cost ×1…×13 by difficulty, 10 favors.
+  - PreplanPlan validation and `apply()` hand-off dict; PlanVote with host tie-break.
+  - A blueprint drawn in code on a placeholder Glasshouse plan (shown with a banner until real map data exists). Doc: `content/docs/preplanning.md`.
+- B2-03 mask customization (c110a03).
+  - 5 bases, 9 materials (library refs), 10 colour pairs, 8 patterns. Custom masks go in 6 slots; owned parts are tracked.
+  - `MaskComposer`/`MaskCatalog.resolve/descriptor/from_descriptor` for ENV A. Save format v4.
+  - Mask screen with an orbit preview and an original pattern shader. Doc: `content/docs/masks.md`.
+- Tests use a per-process SaveService root (8eeb53c). Parallel runs in several checkouts shared `user://test_profiles` and flaked.
+- `check_all.sh --env b` @ 8eeb53c: PASS (551 tests, 0 failed, 8 skipped).
+### In progress
+- Wiring the flow heist select → briefing → pre-planning → loadout → launch, the Masks button, and the loadout mask-picker fix for custom masks.
+### Blocked
+- —
+### Questions for lead
+- For ENV A:
+  - QB-46: Please document a way to pause and resume a crew member's input (the range sets `PlayerInput.enabled`), e.g. `CrewController.set_input_paused(bool)`.
+  - QB-47: Who makes the crew camera current, and who attaches `CrewController.weapon_visual`? The range does both itself; heists need an owner.
+  - QB-48: Could LocalHudModel track a crew member without a HeistRuntime (a `tracked_crew` node)?
+  - QB-49: There is no gamepad look on `PlayerInput`.
+- QB-PP1: PREPLAN_POINT node contract.
+  - Proposal: a Marker3D in `G.PREPLAN_POINT`, named by point id, with metadata category/label/floor/params (spawn_tag, variant_group, variant_slot).
+  - Who bakes the menu blueprint resource: ENV C via HeistRegistry, or B under `data/preplanning/blueprints/`?
+- QB-PP2: should HeistLauncher take `options["preplan"] = PreplanPlan.apply()`? The shape is in `content/docs/preplanning.md`; applying it is A2-07.
+- QB-PP3: who pays for a voted plan? The stub charges the host.
+- QB-PP4: co-op plan votes need a lobby message relay in the Net API, e.g. `Net.lobby_send(kind, data)` plus a `lobby_message` signal. Until then: solo/host only.
+- QB-PP5: should the `HeistDef.preplanning` merge format (favors, disable, `asset.<id>` overrides) be recorded in heist_def.gd and data_schemas.md? A Glasshouse sketch for ENV C is in the doc.
+- QB-50 (art): contact portraits for ENV D/C go in `content/data/contacts/<name>.tres` `portrait_scene`/`portrait_texture`. The mask base meshes are `assets/masks/mask_base_<heron|visage|vulpine|bruiser|owl>.glb` (face-centre pivot, −Z, front-projected UV0), plus optional pattern textures. See `content/docs/masks.md`.
+- QB-51: ENV A should rely on content classes `MaskCatalog.resolve/from_descriptor` + `MaskComposer.instantiate` to attach masks. Record this in characters.md?
+### Ready for integration
+- yes (everything up to 8eeb53c); `check_all.sh --env b` result: PASS
+
 ## 2026-10-10 17:30 UTC — B4-03, B4-04, D-031 key grants; state-tolerant tests for A-M2/M3
 ### Done
 - State-tolerant tests (8554760). The range accepts either the real crew or the temporary camera; the HUD binds a v1.1 model directly or an A1-11 model through the adapter. Verified on a trial merge with origin/env/a-core.

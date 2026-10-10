@@ -3,7 +3,6 @@
 ## aced and the Low Profile card.
 extends TestCase
 
-const TEST_ROOT: String = "user://test_profiles"
 const LIGHT_STEP: StringName = &"skill.slipstream.light_step"
 const DEEP_POCKETS: StringName = &"skill.slipstream.deep_pockets"
 const BULK: StringName = &"perk.bulk"
@@ -12,7 +11,7 @@ var _flow: MenuFlow
 
 
 func before_all() -> void:
-	SaveService.root_dir = TEST_ROOT
+	SaveService.root_dir = BTestUtil.profile_root()
 
 
 func before_each() -> void:
@@ -26,6 +25,9 @@ func before_each() -> void:
 	await wait_frames(1)
 	_flow.main_menu.play_button.pressed.emit()
 	_flow.heist_select.next_button.pressed.emit()
+	_flow.briefing_screen.continue_button.pressed.emit()
+	await wait_frames(1)
+	_flow.preplanning_screen.confirm_button.pressed.emit()  # empty plan -> loadout (B2-01 order)
 	await wait_frames(1)
 
 

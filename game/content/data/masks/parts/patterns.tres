@@ -1,0 +1,82 @@
+[gd_resource type="Resource" script_class="MaskPartList" format=3]
+
+[ext_resource type="Script" path="res://content/masks/mask_part_def.gd" id="1_0tqkf"]
+[ext_resource type="Script" path="res://content/masks/mask_pattern_def.gd" id="2_835kq"]
+[ext_resource type="Script" path="res://content/masks/mask_part_list.gd" id="3_j0gmk"]
+
+[sub_resource type="Resource" id="Resource_o1gxy"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_solid"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_solid.png"
+scale = 1.0
+id = &"mask_pattern.solid"
+display_name = "Solid"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_67ef6"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_split"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_split.png"
+procedural = 1
+scale = 1.0
+id = &"mask_pattern.split"
+display_name = "Split"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_4f7mj"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_brow_band"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_brow_band.png"
+procedural = 2
+scale = 1.0
+id = &"mask_pattern.brow_band"
+display_name = "Brow Band"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_phs65"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_stripes"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_stripes.png"
+procedural = 3
+scale = 5.0
+id = &"mask_pattern.stripes"
+display_name = "Stripes"
+
+[sub_resource type="Resource" id="Resource_ca77l"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_chevron"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_chevron.png"
+procedural = 4
+scale = 3.0
+id = &"mask_pattern.chevron"
+display_name = "Chevron"
+
+[sub_resource type="Resource" id="Resource_8wpff"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_dots"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_dots.png"
+procedural = 5
+scale = 6.0
+id = &"mask_pattern.dots"
+display_name = "Dots"
+
+[sub_resource type="Resource" id="Resource_xk0rb"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_sash"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_sash.png"
+procedural = 6
+scale = 1.0
+id = &"mask_pattern.sash"
+display_name = "Sash"
+
+[sub_resource type="Resource" id="Resource_sawdh"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_diamonds"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_diamonds.png"
+procedural = 7
+id = &"mask_pattern.diamonds"
+display_name = "Diamonds"
+
+[resource]
+script = ExtResource("3_j0gmk")
+entries = Array[ExtResource("1_0tqkf")]([SubResource("Resource_o1gxy"), SubResource("Resource_67ef6"), SubResource("Resource_4f7mj"), SubResource("Resource_phs65"), SubResource("Resource_ca77l"), SubResource("Resource_8wpff"), SubResource("Resource_xk0rb"), SubResource("Resource_sawdh")])

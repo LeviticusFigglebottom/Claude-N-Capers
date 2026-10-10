@@ -1,14 +1,13 @@
 ## In-heist HUD root (contracts/ui_hud.md, D-009). Owner: ENV B.
-## Binds ONLY to the local HUD model and EventBus. Model resolution, in order:
-##   1. bind(model) called by the owner (MenuFlow, tests, hud_demo);
+## Binds ONLY to the local HUD model and EventBus. The widgets bind DIRECTLY to the model, which
+## speaks the ui_hud.md v1.1 binding shape (ENV A's LocalHudModel; MockHudModel for the demo/tests).
+## Model resolution, in order:
+##   1. bind(model) called by the owner (tests, hud_demo);
 ##   2. exported `model_path`;
 ##   3. discovery through group G.LOCAL_HUD_MODEL (ui_hud.md v1.1, D-024: exactly one per peer,
-##      joined in the model's _ready; MockHudModel joins it too), else a node named
-##      MODEL_NODE_NAME (HeistRuntime's child), polled every LOOKUP_INTERVAL_S while unbound, and
-##      again after the bound model is freed.
-## A model without the v1.1 signals (ENV A's A1-11 LocalHudModel) is wrapped in a HudModelAdapter;
-## `model` stays the source and the widgets bind to `bound_model()`.
-## No hard dependency on ENV A classes. Layout is anchored for 1280x720 .. 3840x2160 (canvas_items
+##      joined in the model's _ready), polled every LOOKUP_INTERVAL_S while unbound, and again after
+##      the bound model is freed. This is how the in-heist HUD finds HeistRuntime's model.
+## No hard dependency on ENV A classes (duck-typed get() + signals by name). Layout is anchored for 1280x720 .. 3840x2160 (canvas_items
 ## stretch at the 1920x1080 base).
 class_name Hud
 extends Control
@@ -17,8 +16,6 @@ signal model_bound(model: Node)
 
 const LOOKUP_INTERVAL_S: float = 0.25
 const TOAST_S: float = 3.0
-## Name of ENV A's LocalHudModel under HeistRuntime (fallback discovery while it is not in the group).
-const MODEL_NODE_NAME: String = "LocalHudModel"
 
 @export var model_path: NodePath
 ## Discover the model through group G.LOCAL_HUD_MODEL when nothing is bound.
@@ -26,6 +23,7 @@ const MODEL_NODE_NAME: String = "LocalHudModel"
 
 var model: Node = null
 var chevrons: DetectionChevrons
+var marks: MarkedTargets
 var interaction: InteractionPanel
 var vitals: VitalsPanel
 var ammo: AmmoPanel
@@ -36,7 +34,6 @@ var teammates: TeammatePanels
 var status: StatusPanel
 var toast_label: Label
 var secured_bags: int = 0
-var adapter: HudModelAdapter = null
 var _lookup_t: float = 0.0
 var _toast_t: float = 0.0
 
@@ -54,32 +51,18 @@ func _ready() -> void:
 
 func bind(m: Node) -> void:
 	model = m
-	if adapter != null:
-		adapter.queue_free()
-		adapter = null
-	var target: Node = m
-	if HudModelAdapter.needs_adapter(m):
-		adapter = HudModelAdapter.new()
-		adapter.name = "HudModelAdapter"
-		add_child(adapter)
-		adapter.setup(m)
-		target = adapter
 	for w: HudWidget in widgets():
-		w.bind(target)
+		w.bind(m)
 	if m != null:
 		model_bound.emit(m)
 
 
-## The node the widgets read: the model itself, or its HudModelAdapter.
-func bound_model() -> Node:
-	return adapter if adapter != null else model
-
-
 func widgets() -> Array[HudWidget]:
-	return [chevrons, interaction, vitals, ammo, pager, objectives, assault, teammates, status]
+	return [chevrons, marks, interaction, vitals, ammo, pager, objectives, assault, teammates, status]
 
 
 func _build() -> void:
+	marks = _place(MarkedTargets.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as MarkedTargets
 	chevrons = _place(DetectionChevrons.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DetectionChevrons
 	var crosshair: Label = UiBuild.label(&"ui.hud.crosshair", UiBuild.HUD)
 	crosshair.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -143,8 +126,6 @@ func _process(delta: float) -> void:
 ## Bind the local HUD model found through group G.LOCAL_HUD_MODEL. Returns it (or null).
 func discover_model() -> Node:
 	var found: Node = get_tree().get_first_node_in_group(G.LOCAL_HUD_MODEL)
-	if found == null:
-		found = get_tree().root.find_child(MODEL_NODE_NAME, true, false)
 	if found != null and found != model:
 		bind(found)
 	return found

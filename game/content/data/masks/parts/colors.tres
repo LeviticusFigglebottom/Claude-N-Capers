@@ -1,0 +1,83 @@
+[gd_resource type="Resource" script_class="MaskPartList" format=3]
+
+[ext_resource type="Script" path="res://content/masks/mask_part_def.gd" id="1_ha374"]
+[ext_resource type="Script" path="res://content/masks/mask_color_def.gd" id="2_ahcon"]
+[ext_resource type="Script" path="res://content/masks/mask_part_list.gd" id="3_g4u6w"]
+
+[sub_resource type="Resource" id="Resource_kgih8"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.9, 0.87, 0.8, 1)
+color_b = Color(0.08, 0.08, 0.09, 1)
+id = &"mask_colors.bone_ink"
+display_name = "Bone Ink"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_b8leu"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.75, 0.22, 0.12, 1)
+color_b = Color(0.1, 0.08, 0.07, 1)
+id = &"mask_colors.ember_soot"
+display_name = "Ember Soot"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_vf3hc"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.82, 0.66, 0.28, 1)
+color_b = Color(0.08, 0.08, 0.1, 1)
+id = &"mask_colors.gilt_night"
+display_name = "Gilt Night"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_w37wc"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.3, 0.42, 0.52, 1)
+color_b = Color(0.85, 0.86, 0.84, 1)
+id = &"mask_colors.harbor_fog"
+display_name = "Harbor Fog"
+default_owned = true
+
+[sub_resource type="Resource" id="Resource_nuwo3"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.18, 0.5, 0.4, 1)
+color_b = Color(0.55, 0.27, 0.12, 1)
+id = &"mask_colors.jade_rust"
+display_name = "Jade Rust"
+
+[sub_resource type="Resource" id="Resource_ttqif"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.4, 0.22, 0.55, 1)
+color_b = Color(0.92, 0.85, 0.3, 1)
+id = &"mask_colors.violet_static"
+display_name = "Violet Static"
+
+[sub_resource type="Resource" id="Resource_r2p5f"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.12, 0.25, 0.65, 1)
+color_b = Color(0.95, 0.5, 0.1, 1)
+id = &"mask_colors.cobalt_flare"
+display_name = "Cobalt Flare"
+
+[sub_resource type="Resource" id="Resource_i4yrb"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.33, 0.4, 0.2, 1)
+color_b = Color(0.3, 0.2, 0.12, 1)
+id = &"mask_colors.moss_bark"
+display_name = "Moss Bark"
+
+[sub_resource type="Resource" id="Resource_rvxx8"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.85, 0.45, 0.5, 1)
+color_b = Color(0.2, 0.2, 0.22, 1)
+id = &"mask_colors.rose_cinder"
+display_name = "Rose Cinder"
+
+[sub_resource type="Resource" id="Resource_vk0q1"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.95, 0.95, 0.93, 1)
+color_b = Color(0.75, 0.1, 0.1, 1)
+id = &"mask_colors.signal_white"
+display_name = "Signal White"
+
+[resource]
+script = ExtResource("3_g4u6w")
+entries = Array[ExtResource("1_ha374")]([SubResource("Resource_kgih8"), SubResource("Resource_b8leu"), SubResource("Resource_vf3hc"), SubResource("Resource_w37wc"), SubResource("Resource_nuwo3"), SubResource("Resource_ttqif"), SubResource("Resource_r2p5f"), SubResource("Resource_i4yrb"), SubResource("Resource_rvxx8"), SubResource("Resource_vk0q1")])

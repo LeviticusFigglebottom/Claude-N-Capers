@@ -39,6 +39,12 @@ const STAIR_MIN_WIDTH: float = 1.1
 const STAIR_MAX_RUN_RISERS: int = 16
 const LANDING_MIN: float = 0.8
 const STAIR_SAMPLE: float = 0.01
+## Collision equal to the visual steps within this = stepped collision.
+const STAIR_STEP_MATCH: float = 0.02
+## Ramp collision must stay within [visual - this, visual + max riser + this] everywhere.
+const STAIR_RAMP_TOL: float = 0.02
+## Max horizontal gap between one flight's top and the next flight's bottom (shared landing).
+const STAIR_CHAIN_GAP: float = 4.0
 ## kind -> [measure, range]. measure: "height" (top above floor), "centre" (centre above floor),
 ## "bottom" (base above floor).
 const PROP_RULES: Dictionary = {
@@ -72,9 +78,20 @@ func run(ctx: LcContext) -> void:
 	for p: LcProp in ctx.props:
 		if ctx.is_active(p.node) and p.has_geometry:
 			_check_prop(ctx, p)
+	var stairs: Array[Node] = []
 	for n: Node in ctx.map.find_children("*", "Node3D", true, false):
 		if LcUtil.meta_s(n, &"kind") == &"stairs" and ctx.is_active(n):
-			_check_stairs(ctx, n as Node3D)
+			stairs.append(n)
+	if stairs.is_empty():
+		return
+	await LcVisual.build_proxies(ctx, stairs)
+	var flights: Array[Dictionary] = []
+	for st: Node in stairs:
+		var f: Dictionary = _check_flight(ctx, st as Node3D)
+		if not f.is_empty():
+			flights.append(f)
+	LcVisual.free_proxies(ctx)
+	_check_chains(ctx, flights)
 
 
 static func _in(v: float, r: Vector2, tol: float = TOL) -> bool:
@@ -201,8 +218,14 @@ func _check_prop(ctx: LcContext, p: LcProp) -> void:
 		fail(ctx, p.node, null, "%s %s %.3f m, need %.2f-%.2f m" % [p.kind, rule[0], v, rng.x, rng.y])
 
 
-## Stairs: height profile along the stair's local Z axis (rays down, 1 cm steps) -> risers/treads.
-func _check_stairs(ctx: LcContext, st: Node3D) -> void:
+## One flight (`kind = "stairs"` node). Height profile along its local Z axis (rays down every
+## 1 cm through the centre line, 0.3 m beyond both ends). The *visual* profile (proxies of the
+## flight's meshes; beyond them, other collision) gives risers/treads; the *collision*
+## profile must either follow the steps (stepped collision) or envelope them as a ramp:
+## visual - 0.02 <= collision <= visual + max riser + 0.02 everywhere (so feet never sink into a
+## tread and the ramp passes through the nosings). Returns { node, bottom, top, bottom_pt, top_pt }
+## for chaining, or {} when the profile is unusable.
+func _check_flight(ctx: LcContext, st: Node3D) -> Dictionary:
 	var p: LcProp = ctx.prop_of(st)
 	var local: AABB
 	if p != null and p.node == st:
@@ -211,45 +234,114 @@ func _check_stairs(ctx: LcContext, st: Node3D) -> void:
 		var tmp_box: Variant = LcCheckClipping._leaf_box(st)
 		if tmp_box == null:
 			fail(ctx, st, null, "stairs have no geometry")
-			return
+			return {}
 		local = tmp_box
 	var xf: Transform3D = st.global_transform
 	var width: float = local.size.x * xf.basis.x.length()
 	if width < STAIR_MIN_WIDTH - 0.01:
 		fail(ctx, st, null, "stair width %.2f m < %.1f m" % [width, STAIR_MIN_WIDTH])
 	var top_y: float = (xf * local.end).y + 0.5
-	var heights: Array[float] = []
+	var bot_y: float = (xf * local.position).y - 1.0
 	var cx: float = local.get_center().x
-	var z: float = local.position.z - 0.3
 	var zs: Array[float] = []
+	var col: Array[float] = []
+	var vis: Array[float] = []
+	var up_ok: Callable = func(h: Dictionary) -> bool: return (h["normal"] as Vector3).y > 0.7
+	# Beyond the flight's meshes the "visual" profile is whatever it lands on, minus its own colliders.
+	var up_other: Callable = func(h: Dictionary) -> bool:
+		var cn: Node = h.get("collider") as Node
+		return (h["normal"] as Vector3).y > 0.7 and not (cn != null and (cn == st or st.is_ancestor_of(cn)))
+	# Half-sample offset keeps rays off exact step edges; a miss is retried 2 mm either side.
+	var z: float = local.position.z - 0.3 + STAIR_SAMPLE * 0.5
 	while z <= local.end.z + 0.3:
-		var w: Vector3 = xf * Vector3(cx, 0.0, z)
-		var hit: Dictionary = ctx.ray(Vector3(w.x, top_y, w.z), Vector3(w.x, (xf * local.position).y - 1.0, w.z),
-			func(h: Dictionary) -> bool: return (h["normal"] as Vector3).y > 0.7)
-		heights.append(INF if hit.is_empty() else (hit["position"] as Vector3).y)
+		var cy: float = INF
+		var vy: float = INF
+		for dz: float in [0.0, 0.002, -0.002]:
+			var w: Vector3 = xf * Vector3(cx, 0.0, z + dz)
+			var a: Vector3 = Vector3(w.x, top_y, w.z)
+			var b: Vector3 = Vector3(w.x, bot_y, w.z)
+			if cy == INF:
+				var hc: Dictionary = ctx.ray(a, b, up_ok)
+				cy = INF if hc.is_empty() else (hc["position"] as Vector3).y
+			if vy == INF:
+				var hv: Dictionary = ctx.ray(a, b, up_ok, LcContext.PROXY_LAYER)
+				vy = INF if hv.is_empty() else (hv["position"] as Vector3).y
+		if vy == INF:
+			var w2: Vector3 = xf * Vector3(cx, 0.0, z)
+			var ho: Dictionary = ctx.ray(Vector3(w2.x, top_y, w2.z), Vector3(w2.x, bot_y, w2.z), up_other)
+			vy = cy if ho.is_empty() else (ho["position"] as Vector3).y
+		col.append(cy)
+		vis.append(vy)
 		zs.append(z)
 		z += STAIR_SAMPLE
-	# Segment into flats separated by jumps > 2 cm.
+	for i: int in range(col.size()):
+		if col[i] == INF:
+			fail(ctx, st, xf * Vector3(cx, 0.0, zs[i]), "stairs have a hole in their collision profile")
+			return {}
+	var flats: Array[Dictionary] = _flats(vis)
+	if flats.size() < 3:
+		fail(ctx, st, null, "stairs profile has no visible steps")
+		return {}
+	_check_collision_profile(ctx, st, col, vis)
+	_check_steps(ctx, st, flats)
+	var first: Dictionary = flats[0]
+	var last: Dictionary = flats[flats.size() - 1]
+	var lo_end: Dictionary = first if float(first["y"]) < float(last["y"]) else last
+	var hi_end: Dictionary = last if lo_end == first else first
+	# Riser positions: where the low/high end flats meet the stair.
+	var lo_i: int = int(lo_end["start"]) + int(lo_end["n"]) - 1 if lo_end == first else int(lo_end["start"])
+	var hi_i: int = int(hi_end["start"]) if hi_end == last else int(hi_end["start"]) + int(hi_end["n"]) - 1
+	var bottom: float = float(lo_end["y"])
+	var top: float = float(hi_end["y"])
+	note("`%s`: %d risers, %.3f -> %.3f m" % [ctx.node_path(st), flats.size() - 1, bottom, top])
+	# Headroom above the profile.
+	for i4: int in range(0, vis.size(), 10):
+		var w2: Vector3 = xf * Vector3(cx, 0.0, zs[i4])
+		var base: Vector3 = Vector3(w2.x, vis[i4], w2.z)
+		var upr: Dictionary = ctx.ray(base + Vector3.UP * 0.05, base + Vector3.UP * HEADROOM, ctx.accept_shell)
+		if not upr.is_empty():
+			fail(ctx, st, base, "stair headroom %.2f m < %.1f m" % [(upr["position"] as Vector3).y - base.y, HEADROOM])
+			break
+	var bw: Vector3 = xf * Vector3(cx, 0.0, zs[lo_i])
+	var tw: Vector3 = xf * Vector3(cx, 0.0, zs[hi_i])
+	return {"node": st, "bottom": bottom, "top": top, "bottom_pt": Vector3(bw.x, bottom, bw.z),
+		"top_pt": Vector3(tw.x, top, tw.z)}
+
+
+## Flats of a height profile separated by jumps > 2 cm: [{ y, len, start, n }].
+static func _flats(h: Array[float]) -> Array[Dictionary]:
 	var flats: Array[Dictionary] = []
 	var cur: Dictionary = {}
-	for i: int in range(heights.size()):
-		var hgt: float = heights[i]
-		if hgt == INF:
-			fail(ctx, st, xf * Vector3(cx, 0.0, zs[i]), "stairs have a hole in their collision profile")
-			return
-		if cur.is_empty() or absf(hgt - float(cur["y"])) > 0.02:
+	for i: int in range(h.size()):
+		if cur.is_empty() or absf(h[i] - float(cur["y"])) > 0.02:
 			if not cur.is_empty():
 				flats.append(cur)
-			cur = {"y": hgt, "len": 0.0}
+			cur = {"y": h[i], "len": 0.0, "start": i, "n": 0}
 		cur["len"] = float(cur["len"]) + STAIR_SAMPLE
+		cur["n"] = int(cur["n"]) + 1
 	if not cur.is_empty():
 		flats.append(cur)
-	if flats.size() < 3:
-		fail(ctx, st, null, "stairs profile has no steps (collision must follow the steps)")
+	return flats
+
+
+func _check_collision_profile(ctx: LcContext, st: Node3D, col: Array[float], vis: Array[float]) -> void:
+	var max_dev: float = 0.0
+	var below: float = 0.0
+	var above: float = 0.0
+	for i: int in range(col.size()):
+		max_dev = maxf(max_dev, absf(col[i] - vis[i]))
+		below = maxf(below, vis[i] - col[i])
+		above = maxf(above, col[i] - vis[i])
+	if max_dev <= STAIR_STEP_MATCH:
 		return
-	var dir_up: bool = float(flats[flats.size() - 1]["y"]) > float(flats[0]["y"])
-	var bottom: float = minf(float(flats[0]["y"]), float(flats[flats.size() - 1]["y"]))
-	var top: float = maxf(float(flats[0]["y"]), float(flats[flats.size() - 1]["y"]))
+	if below <= STAIR_RAMP_TOL and above <= STAIR_RISER.y + STAIR_RAMP_TOL:
+		note("`%s`: ramp collision enveloping the steps (max %.3f m above the treads)" % [ctx.node_path(st), above])
+		return
+	fail(ctx, st, null, "stair collision neither follows the steps nor envelopes them as a ramp "
+		+ "(%.3f m below / %.3f m above the visual steps)" % [below, above])
+
+
+func _check_steps(ctx: LcContext, st: Node3D, flats: Array[Dictionary]) -> void:
 	var run_risers: int = 0
 	var risers: int = 0
 	for i2: int in range(1, flats.size()):
@@ -267,20 +359,46 @@ func _check_stairs(ctx: LcContext, st: Node3D) -> void:
 		if run_risers > STAIR_MAX_RUN_RISERS:
 			fail(ctx, st, null, "more than %d risers without a landing" % STAIR_MAX_RUN_RISERS)
 			run_risers = 0
-	note("`%s`: %d risers, %.3f -> %.3f m (%s)" % [ctx.node_path(st), risers, bottom, top, "up +Z" if dir_up else "up -Z"])
+
+
+## Flights chain when one's top equals the next one's bottom (+-0.01 m) within STAIR_CHAIN_GAP
+## horizontally (a shared landing). Every flight must lie on a chain that starts at one
+## floor height and ends at a higher one (level_standards §2.7).
+func _check_chains(ctx: LcContext, flights: Array[Dictionary]) -> void:
 	var fh: PackedFloat32Array = ctx.map.floor_heights
-	var matched: bool = false
-	for i3: int in range(fh.size() - 1):
-		for j3: int in range(i3 + 1, fh.size()):
-			if absf(bottom - fh[i3]) <= 0.01 and absf(top - fh[j3]) <= 0.01:
-				matched = true
-	if not matched:
-		fail(ctx, st, null, "stairs span %.3f -> %.3f m which does not match floor_heights %s" % [bottom, top, fh])
-	# Headroom above each tread.
-	for i4: int in range(0, heights.size(), 10):
-		var w2: Vector3 = xf * Vector3(cx, 0.0, zs[i4])
-		var base: Vector3 = Vector3(w2.x, heights[i4], w2.z)
-		var up: Dictionary = ctx.ray(base + Vector3.UP * 0.05, base + Vector3.UP * HEADROOM, ctx.accept_shell)
-		if not up.is_empty():
-			fail(ctx, st, base, "stair headroom %.2f m < %.1f m" % [(up["position"] as Vector3).y - base.y, HEADROOM])
-			break
+	var ok: Dictionary = {}
+	for i: int in range(flights.size()):
+		if _floor_index(fh, float(flights[i]["bottom"])) >= 0:
+			_chain_dfs(flights, [i], fh, ok)
+	for j: int in range(flights.size()):
+		var f: Dictionary = flights[j]
+		if not ok.has(j):
+			fail(ctx, f["node"], null, "stairs span %.3f -> %.3f m and no chain of flights through it joins two floor_heights %s"
+				% [f["bottom"], f["top"], fh])
+
+
+static func _floor_index(fh: PackedFloat32Array, y: float) -> int:
+	for i: int in range(fh.size()):
+		if absf(fh[i] - y) <= 0.01:
+			return i
+	return -1
+
+
+static func _chain_dfs(flights: Array[Dictionary], path: Array, fh: PackedFloat32Array, ok: Dictionary) -> void:
+	var last: Dictionary = flights[int(path[path.size() - 1])]
+	var start_floor: int = _floor_index(fh, float(flights[int(path[0])]["bottom"]))
+	var end_floor: int = _floor_index(fh, float(last["top"]))
+	if end_floor > start_floor:
+		for k: int in path:
+			ok[k] = true
+	if path.size() >= 8:
+		return
+	for j: int in range(flights.size()):
+		if j in path:
+			continue
+		var nx: Dictionary = flights[j]
+		var gap: Vector3 = (nx["bottom_pt"] as Vector3) - (last["top_pt"] as Vector3)
+		if absf(float(nx["bottom"]) - float(last["top"])) <= 0.01 and Vector2(gap.x, gap.z).length() <= STAIR_CHAIN_GAP:
+			var p2: Array = path.duplicate()
+			p2.append(j)
+			_chain_dfs(flights, p2, fh, ok)

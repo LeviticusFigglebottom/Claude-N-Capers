@@ -71,10 +71,9 @@ listed in `trees.tres unlocks`; it has no modifier grant.
   `.all`), because `Modifiers.flag(slot, key, class)` reads `.all` + `.<class>` and not the bare key.
 * `stealth.concealment_add.suppressed` (Low Profile aced) = 3 per suppressed weapon: +1 concealment and
   the suppressor's -2 penalty refunded (simplified: always 2, even if a suppressor costs less).
-* ◇ `defense.post_revive_buff` is PARAMS (last wins) but two different skills grant it: Back on Your Feet
-  basic (damage_taken_mult 0.7) and Second Lease (reload/swap/move). With both, the later id
-  (Second Lease) wins and Back on Your Feet's damage reduction is lost. Needs either a LIST key or one
-  merged grant; flagged to the lead.
+* `defense.post_revive_buff` is LIST (D-034 QB-39): Back on Your Feet (basic: damage_taken_mult 0.7)
+  and Second Lease (reload/swap, aced also move) each add their own `_source`-tagged entry, so both
+  apply after a revive. Inside Second Lease the aced Dictionary replaces the basic one.
 * Simplified mappings (condition dropped because no key carries it): Deliberate Fire (PD2 single-fire
   only), Long Barrel basic (ADS only), Hauler aced (PD2 scales with armor), Deep Pockets aced (PD2:
   ballistic vests only), Heavy Hands basic (PD2: non-specials only), Light Step basic (stamina pool
@@ -344,8 +343,8 @@ verbs in place of PD2 filler.
 ## Requested keys
 
 Registered at phase 4 by D-031 and granted in the skill tables above. This section is the param schema
-reference for ENV A (authoritative, D-031); changes go through the lead. ◇ marks a field ENV B added or
-interpreted at D-031 that the lead should confirm.
+reference for ENV A (authoritative, D-031); changes go through the lead. The fields ENV B added or
+interpreted at D-031 were confirmed by D-034 (QB-40); no ◇ marks remain here.
 
 ### Revive and medical
 
@@ -357,7 +356,7 @@ interpreted at D-031 that the lead should confirm.
 | `deploy.medical_user_buff` | PARAMS {damage_taken_mult: float, duration: float} | Anyone using your First Aid Kit or Doctor Bag takes damage x `damage_taken_mult` for `duration` s. | Bedside Manner (aced) |
 | `deploy.fak_auto_revive` | PARAMS {radius: float, cooldown: float} | A crew member downed within `radius` m of your placed First Aid Kit consumes it and is not downed; at most once per `cooldown` s (per owner). | Field Kit (aced) |
 | `defense.bleedout_health_mult` | MULT | Bleedout HP (100 base, L2.5). | Cat's Luck (basic) |
-| `defense.post_revive_buff` | PARAMS {duration: float, reload_mult: float, swap_mult: float, move_mult: float, damage_taken_mult: float} | Buffs on yourself for `duration` s after being revived (1.0 = none). Basic/aced grant the full dict; last wins, so the aced dict repeats the basic values. | Back on Your Feet (basic), Second Lease (aced), Second Lease (basic) |
+| `defense.post_revive_buff` | LIST entry {duration: float, reload_mult: float, swap_mult: float, move_mult: float, damage_taken_mult: float} | Buffs on yourself for `duration` s after being revived (1.0 = none). One entry per granting skill (D-034 QB-39), each with `_source`; entries apply together (multipliers multiply). Inside one skill the aced dict replaces the basic one, so it repeats the basic values. | Back on Your Feet (basic), Second Lease (aced), Second Lease (basic) |
 | `defense.bleedout_pause_unseen` | FLAG | Bleedout timer pauses while no enemy has line of sight to you (counts again as soon as one does or you fire). | Playing Possum (basic) |
 | `defense.self_revive_refill_on_doctor_bag` | FLAG | Using a Doctor Bag restores your `defense.self_revive_charges` to their granted value. | Comeback (aced) |
 | `defense.healing_received_mult` | MULT | All healing you receive (bags, kits, regen, perks). | Nothing to Lose (aced), Nothing to Lose (basic) |
@@ -400,7 +399,7 @@ interpreted at D-031 that the lead should confirm.
 | Proposed key | Type / params | Semantics | Needed by |
 |---|---|---|---|
 | `weapon.kill_damage_buff` | LIST entry {trigger_class: String, damage_mult: float, duration: float, all_weapons: bool} | A kill with `trigger_class` gives damage x `damage_mult` for `duration` s, to that class or to all weapons. | Momentum (aced), Momentum (basic) |
-| `weapon.kill_reload_buff` | LIST entry {trigger: String (headshot_kill|auto_kills|melee_kill), kills: int, classes: Array (empty = every weapon), reload_mult: float, duration: float, min_mult: float, mag_falloff: float, mag_falloff_from: int ◇} | Reload speed bonus after the trigger: timed (`duration` > 0) or next reload only (`duration` 0). Run and Gun: `reload_mult` minus `mag_falloff` per magazine round above `mag_falloff_from` (◇ added at D-031: PD2 counts rounds above 20), never below `min_mult`. | Reload Rhythm (aced), Run and Gun (aced), Wind Up (aced) |
+| `weapon.kill_reload_buff` | LIST entry {trigger: String (headshot_kill|auto_kills|melee_kill), kills: int, classes: Array (empty = every weapon), reload_mult: float, duration: float, min_mult: float, mag_falloff: float, mag_falloff_from: int} | Reload speed bonus after the trigger: timed (`duration` > 0) or next reload only (`duration` 0). Run and Gun: `reload_mult` minus `mag_falloff` per magazine round above `mag_falloff_from` (added at D-031, confirmed D-034: PD2 counts rounds above 20), never below `min_mult`. | Reload Rhythm (aced), Run and Gun (aced), Wind Up (aced) |
 | `weapon.hit_stack_buff` | LIST entry {class: String, stat: String (accuracy|damage), per_hit: float, max_stacks: int, duration: float} | Each hit with `class` adds a stack; stacks refresh on hit and expire after `duration`. | Hot Streak (aced), Hot Streak (basic), Rhythm (basic) |
 | `weapon.headshot_refund` | PARAMS {classes: Array, headshots: int, window: float, refund: int} | `headshots` headshots within `window` s refund `refund` rounds to the magazine. | Economy (aced), Economy (basic) |
 | `weapon.graze` | PARAMS {class: String, radius: float, frac: float, headshot_kill_frac: float} | Hits deal `frac` of the damage to enemies within `radius` m of the trajectory; `headshot_kill_frac` if the hit was a headshot kill. | Grazing Fire (aced), Grazing Fire (basic) |
@@ -408,7 +407,7 @@ interpreted at D-031 that the lead should confirm.
 | `weapon.stagger_chance_add` | ADD (qualified) | Chance per hit to stagger a non-immune enemy. | Knockdown (aced), Knockdown (basic) |
 | `weapon.unseen_strike` | PARAMS {idle_s: float, crit_add: float, duration: float} | After `idle_s` without losing armor/health, +`crit_add` crit chance for `duration` s (taking damage ends it). | Ambusher (aced), Ambusher (basic) |
 | `weapon.crit_per_concealment` | PARAMS {per_step: float, points_per_step: int, threshold_dr: int, max: float} | Crit chance from detection risk below `threshold_dr` (35): +`per_step` per `points_per_step` points, capped at `max`. | Cheap Shot (aced), Cheap Shot (basic) |
-| `weapon.melee_bloodthirst` | PARAMS {per_kill: float, max_mult: float} | Each non-melee kill adds `per_kill` to the next melee hit's multiplier (starts at 1.0, cap `max_mult`: +1600% = 17.0); a melee kill spends it. | Wind Up (basic) |
+| `weapon.melee_bloodthirst` | PARAMS {per_kill: float, max_mult: float} | Each non-melee kill adds `per_kill` to the next melee hit's multiplier (starts at 1.0, cap `max_mult`: +1600% = 17.0, confirmed D-034); a melee kill spends it. | Wind Up (basic) |
 | `weapon.melee_knockdown_mult` | MULT | Knockdown chance of your melee hits. | Iron Jaw (aced) |
 | `weapon.shield_knockback` | FLAG | Hits can knock Bulwarks back (melee 100%, ranged by damage). | Shoulder Check (aced) |
 | `defense.outnumbered` | PARAMS {enemies: int, radius: float, damage_mult: float, damage_taken_mult: float, duration: float} | With `enemies`+ enemies within `radius` m: damage and damage-taken multipliers for `duration` s. | Outnumbered (aced), Outnumbered (basic) |
@@ -452,7 +451,7 @@ interpreted at D-031 that the lead should confirm.
 | `deploy.sentry_modes` | PARAMS {quiet: bool, ap: bool, quiet_threat_mult: float, ap_fire_rate_mult: float, ap_damage_mult: float} | Unlocks switchable sentry modes (interact to cycle). | Silent Partner (aced), Silent Partner (basic) |
 | `deploy.trip_mine_radius_mult` | MULT | Trip mine blast radius. | Charge Shaping (basic) |
 | `deploy.trip_mine_fire` | PARAMS {duration: float, radius: float} | Detonations leave a fire area. | Hot Floor (aced), Hot Floor (basic) |
-| `deploy.ammo_bag_bulletstorm` | PARAMS {base_duration: float, max_duration: float} | Users of your ammo bags fire without using ammo for a duration scaled by the ammo taken: ◇ `lerp(base_duration, max_duration, fraction of a full refill taken)` (Lead Rain: 0..5 s basic, 0..20 s aced). | Lead Rain (aced), Lead Rain (basic) |
+| `deploy.ammo_bag_bulletstorm` | PARAMS {base_duration: float, max_duration: float} | Users of your ammo bags fire without using ammo for a duration scaled by the ammo taken: `lerp(base_duration, max_duration, fraction of a full refill taken)` (confirmed D-034) (Lead Rain: 0..5 s basic, 0..20 s aced). | Lead Rain (aced), Lead Rain (basic) |
 | `weapon.ammo_pickup_range_mult` | MULT | Ammo box pickup radius. | Scrounger (basic) |
 | `weapon.kill_ammo_drop` | PARAMS {every_n_kills: int} | Every n-th kill drops an extra ammo box. | Scrounger (aced) |
 | `weapon.ammo_pickup_throwable` | PARAMS {base_chance: float, step: float} | Ammo boxes may contain a throwable; chance grows by `step` per box without one, resets on success. | Pack Mule (aced) |

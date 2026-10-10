@@ -1,5 +1,5 @@
 {
-	"version": 3,
+	"version": 4,
 	"profile_name": "Crew",
 	"cash": 0,
 	"stash": 0,
@@ -9,6 +9,8 @@
 	"owned_weapons": ["weapon.kestrel_p9"],
 	"owned_mods": ["mod.p9_suppressor", "mod.p9_reflex_sight", "mod.p9_extended_mag"],
 	"owned_masks": ["mask.gilded_heron"],
+	"owned_mask_parts": [],
+	"custom_masks": [],
 	"loadout": {
 		"primary": "",
 		"primary_mods": [],

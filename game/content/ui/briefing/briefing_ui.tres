@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="BriefingUiData" format=3]
+
+[ext_resource type="Script" path="res://content/ui/briefing/briefing_ui_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+placeholder_heists = {
+&"glasshouse": {
+"briefing": "heist.glasshouse.briefing",
+"contact": &"contact.vance",
+"escape_options": Array[StringName]([&"van"]),
+"loot": Array[StringName]([&"loot.jewelry", &"loot.cash"]),
+"objectives": Array[StringName]([&"case_store", &"find_keycard", &"open_back_room", &"drill_safe", &"take_jewelry", &"secure_loot", &"escape"])
+}
+}
+fallback_contact = &"contact.mercer"
+subtitle_min_s = 2.5
+subtitle_s_per_char = 0.055
+line_gap_s = 0.4
+portrait_size = Vector2(360, 360)
+left_column_width = 380.0
+right_column_width = 520.0
+blueprint_min_height = 300.0
+portrait_bg = Color(0.06, 0.07, 0.09, 1)
+silhouette_color = Color(0.12, 0.13, 0.16, 1)
+blueprint_bg = Color(0.05, 0.12, 0.22, 1)
+blueprint_grid = Color(0.25, 0.45, 0.7, 0.35)
+blueprint_line = Color(0.6, 0.8, 1, 0.85)
+placeholder_color = Color(1, 0.75, 0.25, 1)
