@@ -9,6 +9,24 @@
 			"test": true
 		},
 		{
+			"asset": "char_brandt",
+			"id": "brandt",
+			"scene": "res://world/characters/brandt/brandt.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bulwark",
+			"id": "bulwark",
+			"scene": "res://world/characters/bulwark/bulwark.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bulwark_aegis",
+			"id": "bulwark_aegis",
+			"scene": "res://world/characters/bulwark_aegis/bulwark_aegis.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_civilian_customer_a",
 			"id": "civilian_customer_a",
 			"scene": "res://world/characters/civilian_customer_a/civilian_customer_a.tscn",
@@ -39,6 +57,30 @@
 			"test": false
 		},
 		{
+			"asset": "char_contact_accountant",
+			"id": "contact_accountant",
+			"scene": "res://world/characters/contact_accountant/contact_accountant.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_contact_hollis",
+			"id": "contact_hollis",
+			"scene": "res://world/characters/contact_hollis/contact_hollis.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_contact_odile",
+			"id": "contact_odile",
+			"scene": "res://world/characters/contact_odile/contact_odile.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_corpsman",
+			"id": "corpsman",
+			"scene": "res://world/characters/corpsman/corpsman.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_crew_body",
 			"id": "crew_body",
 			"scene": "res://world/characters/crew_body/crew_body.tscn",
@@ -51,9 +93,21 @@
 			"test": false
 		},
 		{
+			"asset": "char_longshot",
+			"id": "longshot",
+			"scene": "res://world/characters/longshot/longshot.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_patrol_officer",
 			"id": "patrol_officer",
 			"scene": "res://world/characters/patrol_officer/patrol_officer.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_phantom",
+			"id": "phantom",
+			"scene": "res://world/characters/phantom/phantom.tscn",
 			"test": false
 		},
 		{
@@ -69,10 +123,40 @@
 			"test": false
 		},
 		{
+			"asset": "char_stinger",
+			"id": "stinger",
+			"scene": "res://world/characters/stinger/stinger.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_tac_heavy",
+			"id": "tac_heavy",
+			"scene": "res://world/characters/tac_heavy/tac_heavy.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_tac_light",
 			"id": "tac_light",
 			"scene": "res://world/characters/tac_light/tac_light.tscn",
 			"test": false
+		},
+		{
+			"asset": "char_wrecker",
+			"id": "wrecker",
+			"scene": "res://world/characters/wrecker/wrecker.tscn",
+			"test": false
+		}
+	],
+	"props": [
+		{
+			"asset": "char_bulwark_shield",
+			"id": "bulwark_shield",
+			"scene": "res://world/characters/bulwark/bulwark_shield.tscn"
+		},
+		{
+			"asset": "char_bulwark_aegis_shield",
+			"id": "bulwark_aegis_shield",
+			"scene": "res://world/characters/bulwark_aegis/bulwark_aegis_shield.tscn"
 		}
 	],
 	"version": 1

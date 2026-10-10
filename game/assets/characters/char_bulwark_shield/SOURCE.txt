@@ -1,0 +1,11 @@
+asset: char_bulwark_shield
+script: tools/blender/characters/char_specials.py
+params: {"edge": "rubber_black", "face": "char_tac_helmet", "glass": "char_lens", "letters": "char_medic_white", "metal": "polymer_black", "unit": "shield"}
+seed: 3016273457  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_bulwark_shield
+edit policy: generated file, never edit by hand; change the script and rebuild
+shield: 0.658 m wide x 1.10 m; pivot = grip centre, -Z (Godot) = face outward; face 0.078 m in front of the grip, shield centre 0.05 m below it
+tri_budget: 35000
+tris: 1436
+word: TACTICAL
