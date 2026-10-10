@@ -1,4 +1,4 @@
-# Contract: characters (v1.2)
+# Contract: characters (v1.3)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -54,3 +54,26 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
 * Assembled character scenes keep their skinned meshes as binary `.res` beside the scene (~1.2 MB each,
   accepted; repo size watched per D-011).
 * `world/characters/characters.json` is the index of assembled characters (id → scene path).
+
+## v1.3: animation facts and first-person viewmodel (QD-5, D-041)
+
+### Third-person animation facts (ENV D → ENV A)
+* Clip speeds at 1.78 m (m/s): walk 1.6, run 3.5, sprint 5.75, crouch_walk 1.5, strafe 1.2, walk_back 1.3,
+  flee 4.0, carry_bag_walk 2.4. Playback `speed_scale = v / clip_speed` (× `Skeleton3D.motion_scale` for other heights).
+* `turn_l`/`turn_r`: ENV A yaws the root ±90° linearly over 0.8 s. `death_front` = face-down, `death_back` =
+  onto the back (pick from the hit direction).
+* Animation event frames (30 fps) are listed in `game/assets/characters/char_anim_humanoid/SOURCE.txt`
+  (reload mag_out/mag_in/done, radio key_on/key_off, throw_bag release, melee hit, drill_place attach,
+  death impact). ENV A syncs gameplay to them.
+* Third-person weapon: the weapon origin (visual_slots firing-hand pivot) goes at `HandR/Socket` (18° grip rake);
+  the support hand IKs to the weapon's `LeftHandIK`.
+
+### First-person viewmodel (`rig_arms` = `char_arms_fp`)
+* `root` = camera origin, −Z forward; arm/finger bones use the humanoid contract names. Helper bones: `weapon`
+  (child of `hand.R` at the grip offset, weapon axes; ENV A attaches the WeaponVisual via a BoneAttachment3D
+  on it) and `magazine` (child of `weapon`, identity when seated, animated during reloads).
+* One AnimationLibrary per `WeaponDef.anim_set` (`pistol`, `smg`, `rifle`, `shotgun`, `lmg`, `sniper`), played as
+  `"<anim_set>/<clip>"`. Clips: `idle*`, `ads_idle*`, `draw`, `holster`, `fire`, `fire_ads`, `reload`, `reload_empty`,
+  `sprint*`, plus `reload_start` / `reload_loop` / `reload_end` (shell-by-shell sets) and `bolt` (sniper).
+* Reload event frames (mag_out, mag_swap, mag_in, slide_release, done) are in the clip set's SOURCE.txt.
+  ENV A drives the weapon model's `Slide` / `Pump` / `Bolt` nodes from those events.
