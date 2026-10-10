@@ -1182,7 +1182,7 @@ ui.preplan.north,N
 ui.preplan.floor.ground,Ground floor
 ui.preplan.floor.upper,Upper floor
 ui.preplan.category.drop_zone,Drop zone: supplies are left here before the job.
-ui.preplan.category.spawn,Entry point: the crew starts here instead.
+ui.preplan.category.player_spawn,Entry point: the crew starts here instead.
 ui.preplan.category.escape,Escape: where the van waits.
 ui.preplan.category.access,Access point.
 ui.preplan.reason.unknown_asset,This asset is not offered on this job.
@@ -1214,6 +1214,8 @@ ui.preplan.point.pp_spawn_alley_west,Alley west end
 ui.preplan.point.pp_spawn_alley_mouth,Alley mouth
 ui.preplan.point.pp_escape_alley_west,Van: alley west
 ui.preplan.point.pp_escape_side_street,Van: side street
+ui.preplan.point.pp_insider_breakroom,Break room (insider)
+ui.preplan.point.pp_back_door,Back door
 item.asset.body_bag_case_drop.name,Body bag case drop
 item.asset.body_bag_case_drop.desc,A case of body bags is stashed here before the job.
 item.asset.ammo_bag_drop.name,Ammo bag drop
@@ -1232,6 +1234,10 @@ item.asset.spare_body_bags.name,Spare body bags
 item.asset.spare_body_bags.desc,Every crew member carries 1 more body bag.
 item.asset.alternate_entry.name,Alternate entry
 item.asset.alternate_entry.desc,The crew starts the job from this point.
+item.asset.inside_keycard.name,Inside keycard
+item.asset.inside_keycard.desc,An insider leaves a keycard at this spot before the job.
+item.asset.propped_door.name,Propped door
+item.asset.propped_door.desc,Someone on staff leaves this door propped open tonight.
 item.asset.escape_position.name,Van position
 item.asset.escape_position.desc,"The getaway van waits here. A plan: the crew votes, the host breaks ties."
 ui.masks.title,Masks

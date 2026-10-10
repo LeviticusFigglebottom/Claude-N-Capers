@@ -8,7 +8,8 @@
 ## Merge (PreplanBoard.merge): the generic library (data/preplanning/assets/) + HeistDef.preplanning:
 ##   { "favors": int,                         # favors budget (default PreplanTweak.default_favors)
 ##     "disable": [asset ids],                # library assets this heist does not offer
-##     "assets": { asset_id: {overrides} } }  # AssetDef field overrides; a new id adds a heist-only asset
+##     "assets": { asset_id: {overrides} },   # AssetDef field overrides; a new id adds a heist-only asset
+##     asset_id: {overrides} }                # same, as a top-level `asset.*` key (D-046 QC-20)
 ## Points: the map's `<Map>/Preplan` Marker3Ds (PreplanBlueprint.from_map_scene), else the drawn
 ## blueprint's points (blueprints/<id>.tres, else the placeholder).
 class_name PreplanBoard
@@ -18,8 +19,12 @@ const ASSET_DIR: String = "res://content/data/preplanning/assets"
 const BLUEPRINT_DIR: String = "res://content/data/preplanning/blueprints"
 const PLACEHOLDER_BLUEPRINT_PATH: String = "res://content/data/preplanning/placeholder_blueprint.tres"
 
-## Top-level keys of HeistDef.preplanning (contract v1.0).
+## Top-level keys of HeistDef.preplanning (contract v1.0); `asset.*` override keys are also allowed
+## at the top level (D-046 QC-20).
 const PREPLANNING_KEYS: Array[String] = ["favors", "disable", "assets"]
+const ASSET_PREFIX: String = "asset."
+## Entry fields of the pre-D-038 shape ({asset_id: {slot, grants: {force_active...}}}).
+const LEGACY_ENTRY_FIELDS: Array[String] = ["slot"]
 
 static var _generic_cache: Dictionary = {}
 ## heist id -> PreplanBlueprint read from the map (or null = no points); maps are big, read once.
@@ -47,7 +52,7 @@ static func build(p_heist_id: StringName, p_difficulty: int, def: HeistDef = nul
 	b.blueprint = p_blueprint if p_blueprint != null else blueprint_for(p_heist_id, def)
 	var pre: Dictionary = def.preplanning if def != null else {}
 	if is_legacy_format(pre):
-		Log.warn(&"preplan", "%s: HeistDef.preplanning is not in the contract v1.0 format {favors, disable, assets}; ignored" % p_heist_id)
+		Log.warn(&"preplan", "%s: HeistDef.preplanning uses the pre-D-038 shape (legacy fields such as `slot`); ignored" % p_heist_id)
 		pre = {}
 	var merged: Dictionary = merge(generic_assets(), pre, b.errors)
 	b.assets = merged["assets"]
@@ -106,15 +111,21 @@ static func map_blueprint(p_heist_id: StringName, base: PreplanBlueprint, def: H
 	return _map_cache[p_heist_id] as PreplanBlueprint
 
 
-## True for a non-empty HeistDef.preplanning that has none of the contract's top-level keys
-## (the pre-D-038 `{asset_id: {...}}` shape).
+## True for the pre-D-038 shape: a top-level `asset.*` entry that uses a legacy field (`slot`), or a
+## key that is neither a contract key nor an asset id.
 static func is_legacy_format(preplanning: Dictionary) -> bool:
-	if preplanning.is_empty():
-		return false
 	for k: Variant in preplanning:
-		if PREPLANNING_KEYS.has(String(k)):
-			return false
-	return true
+		var key: String = String(k)
+		if PREPLANNING_KEYS.has(key):
+			continue
+		if not key.begins_with(ASSET_PREFIX):
+			return true
+		var entry: Variant = preplanning[k]
+		if entry is Dictionary:
+			for f: String in LEGACY_ENTRY_FIELDS:
+				if (entry as Dictionary).has(f):
+					return true
+	return false
 
 
 ## Pure merge: returns {"assets": {id: PreplanAssetDef}, "favors": int (only when the heist sets it)}.
@@ -136,21 +147,25 @@ static func merge(generic: Dictionary, preplanning: Dictionary, errors: Array[St
 				errors.append("preplanning.assets must be a Dictionary")
 				continue
 			for ak: Variant in v as Dictionary:
-				var id: StringName = StringName(String(ak))
-				var entry: Variant = (v as Dictionary)[ak]
-				if not String(id).begins_with("asset."):
-					errors.append("preplanning.assets: id '%s' must start with 'asset.'" % id)
-				elif not entry is Dictionary:
-					errors.append("%s: preplanning entry must be a Dictionary" % id)
-				else:
-					var base: PreplanAssetDef = out.get(id) as PreplanAssetDef
-					if base == null:
-						base = PreplanAssetDef.new()
-						base.id = id
-					out[id] = base.with_overrides(entry as Dictionary, errors)
+				_merge_entry(out, StringName(String(ak)), (v as Dictionary)[ak], errors)
+		elif key.begins_with(ASSET_PREFIX):
+			_merge_entry(out, StringName(key), v, errors)
 		else:
-			errors.append("preplanning: unknown key '%s' (contract: favors, disable, assets)" % key)
+			errors.append("preplanning: unknown key '%s' (contract: favors, disable, assets, asset.*)" % key)
 	return res
+
+
+static func _merge_entry(out: Dictionary, id: StringName, entry: Variant, errors: Array[String]) -> void:
+	if not String(id).begins_with(ASSET_PREFIX):
+		errors.append("preplanning.assets: id '%s' must start with 'asset.'" % id)
+	elif not entry is Dictionary:
+		errors.append("%s: preplanning entry must be a Dictionary" % id)
+	else:
+		var base: PreplanAssetDef = out.get(id) as PreplanAssetDef
+		if base == null:
+			base = PreplanAssetDef.new()
+			base.id = id
+		out[id] = base.with_overrides(entry as Dictionary, errors)
 
 
 ## Asset ids sorted by category (PreplanTweak.category_order), then id text.

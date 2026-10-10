@@ -17,6 +17,8 @@ extends Resource
 
 ## Keys an asset must never grant (D-038 QA-16: ECM feedback is built into every ECM).
 const DEPRECATED_KEYS: Array[StringName] = [&"stealth.ecm_feedback"]
+## Known `effect` values (D-046 QC-22).
+const EFFECTS: Array[StringName] = [&"", &"force_variant"]
 
 @export var id: StringName = &""
 ## UI grouping only: &"supply", &"intel", &"gear", &"entry", &"escape", &"access" (ours, not in the contract).
@@ -32,7 +34,7 @@ const DEPRECATED_KEYS: Array[StringName] = [&"stealth.ecm_feedback"]
 @export var point_categories: Array[StringName] = []
 ## Restrict to these exact point ids; overrides point_categories.
 @export var point_ids: Array[StringName] = []
-## At most one asset of an exclusive group per plan (e.g. &"spawn"; ours, not in the contract).
+## At most one asset of an exclusive group per plan (e.g. &"player_spawn"; ours, not in the contract).
 @export var exclusive_group: StringName = &""
 ## Plans (PD2 "plans": vault method, escape): the crew votes, the host breaks ties (PlanVote).
 ## A vote group is also exclusive. Its cost is split among the human crew.
@@ -51,6 +53,10 @@ const DEPRECATED_KEYS: Array[StringName] = [&"stealth.ecm_feedback"]
 @export var reveals: Array[StringName] = []
 ## &"stealth" / &"loud": which play style the asset helps (UI hint only).
 @export var tags: Array[StringName] = []
+## Declared effect kind (HeistDef override key `effect`, D-046 QC-22). &"force_variant" = the asset forces
+## the chosen point's `variant_group`/`variant_slot` (needs a point, force_variants left empty or set).
+## &"" = the effect follows from the fields above.
+@export var effect: StringName = &""
 
 
 func is_located() -> bool:
@@ -72,7 +78,7 @@ func has_own_effect() -> bool:
 ## Copy with the fields of a `HeistDef.preplanning.assets[id]` entry applied. Keys are the AssetDef
 ## field names of the contract: cost, favors, max_count, point_categories, point_ids, vote_group,
 ## grants, drop (a spawn kind, or a bare deployable name), params (drop params), spawn_tag,
-## escape_tag, force_variants ({group: [slots]} or {group: slot}), reveals; plus our UI fields
+## escape_tag, force_variants ({group: [slots]} or {group: slot}), reveals, effect; plus our UI fields
 ## category, tags, exclusive_group. Unknown keys go to `errors`.
 func with_overrides(entry: Dictionary, errors: Array[String]) -> PreplanAssetDef:
 	var a: PreplanAssetDef = duplicate(true) as PreplanAssetDef
@@ -112,6 +118,8 @@ func with_overrides(entry: Dictionary, errors: Array[String]) -> PreplanAssetDef
 				a.category = StringName(String(v))
 			"tags":
 				a.tags = _names(v)
+			"effect":
+				a.effect = StringName(String(v))
 			_:
 				errors.append("%s: unknown preplanning field '%s'" % [id, k])
 	return a
@@ -132,6 +140,10 @@ func validate() -> Array[String]:
 			out.append("%s: unknown modifier key %s" % [id, k])
 		elif DEPRECATED_KEYS.has(key):
 			out.append("%s: grants deprecated key %s" % [id, k])
+	if not EFFECTS.has(effect):
+		out.append("%s: unknown effect '%s' (known: %s)" % [id, effect, EFFECTS])
+	elif effect == &"force_variant" and not is_located():
+		out.append("%s: effect force_variant needs a point (point_categories / point_ids)" % id)
 	if drop != &"" and not is_located():
 		out.append("%s: a drop needs a point" % id)
 	for g: Variant in force_variants:

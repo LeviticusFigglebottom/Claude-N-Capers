@@ -15,6 +15,14 @@ func _screen(cash: int, difficulty: int = Enums.Difficulty.BRUTAL) -> Preplannin
 	return s
 
 
+func _expected_favors(heist_id: StringName) -> int:
+	var def: HeistDef = HeistRegistry.get_def(heist_id)
+	var pre: Dictionary = def.preplanning if def != null else {}
+	if pre.has("favors") and not PreplanBoard.is_legacy_format(pre):
+		return int(pre["favors"])
+	return PreplanTweak.load_default().default_favors
+
+
 func test_scene_instantiates_with_markers_and_placeholder() -> void:
 	var s: PreplanningScreen = _screen(50000)
 	await wait_frames(2)
@@ -46,7 +54,10 @@ func test_buying_deducts_budget() -> void:
 	assert_eq(s.buy(&"asset.ammo_bag_drop"), PreplanPlan.OK)
 	assert_eq(s.cash_left(), 50000 - cost)
 	assert_eq(s.plan.favors_used(), 2)
-	assert_true(s.favors_label.text.contains("2 / 10"), s.favors_label.text)
+	# D-046 QC-23: the budget is the HeistDef's preplanning.favors (else the tweak default), never 10.
+	var budget: int = _expected_favors(&"glasshouse")
+	assert_eq(s.board.favors_budget, budget)
+	assert_true(s.favors_label.text.contains("2 / %d" % budget), s.favors_label.text)
 	assert_true(s.cash_label.text.contains(UiText.group_digits(50000 - cost)), s.cash_label.text)
 	assert_true(s.is_selected(&"asset.ammo_bag_drop"))
 	assert_eq(s.buy(&"asset.doctor_bag_drop"), PreplanPlan.R_POINT_TAKEN)
