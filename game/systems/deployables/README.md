@@ -28,7 +28,7 @@ plus the common interaction exports. Visual = `DeployableDef.model`, else a box 
 | fak | `use_fak` | +150 health (params.heal), 1 use, no down reset |
 | ammo_bag | `use_ammo_bag` | shared 400 % pool, takes only what is missing |
 | body_bag_case | `take_body_bag` | +1 body bag up to the cap, holds 3 |
-| ecm | `ecm_feedback` | S8.6 feedback (needs `stealth.ecm_feedback`) |
+| ecm | `ecm_feedback` | S8.6 feedback (built into every ECM, D-038; `stealth.ecm_feedback` is deprecated and ignored) |
 
 ## ECM
 `is_jamming()`, `time_left()`, `is_flashing()` (last 8 s), `queued_count()`, `pager_delay_active()`,

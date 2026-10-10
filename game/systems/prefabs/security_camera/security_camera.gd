@@ -4,7 +4,8 @@
 ## Wall/ceiling mounted: pivot back-centre (wall) or top-centre (ceiling), view along -Z.
 ## Visual: `Mount` (static), `Head` (A yaws/pitches it), `Lens` (Marker3D, -Z = view direction),
 ## `Led` (MeshInstance3D, A toggles emission). Not interactive (shot to destroy when `destructible`).
-## `Collision` is a small hitbox (layer hitboxes) so it can be shot.
+## `Collision` is a small hitbox (layer hitboxes) so it can be shot. A2-08: its box spans local
+## z in [-0.45, 0], entirely in front of the wall-mount pivot (no part behind the wall plane).
 ##
 ## Observer protocol (stealth/README.md): group G.OBSERVER, `observer_kind() == CAMERA`, the cone
 ## comes from `detection_overrides()` (fov_deg, range_m -> preset `far`) on top of the `camera`

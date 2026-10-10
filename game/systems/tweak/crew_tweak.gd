@@ -56,3 +56,10 @@ extends Resource
 @export var intent_send_hz: float = 30.0
 @export var max_client_speed_slack: float = 1.35
 @export var teleport_reject_m: float = 4.0
+
+@export_group("Presentation (QB-47)")
+## First-person weapon visual offset under the local human's camera (m, camera space).
+@export var viewmodel_offset: Vector3 = Vector3(0.18, -0.2, -0.4)
+## Capsule placeholder only: `Visual/Head/Socket` offset from the crew origin (assembled characters
+## carry their own `Head/Socket`, characters.md v1.2).
+@export var placeholder_head_socket: Vector3 = Vector3(0.0, 1.62, -0.3)

@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="CustodyTweak" format=3]
+
+[ext_resource type="Script" path="res://systems/combat/custody_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+auto_release_s = PackedFloat32Array(119, 119, -1, -1, -1, -1)
+release_ammo_frac = 0.5
+release_near_crew_offset_m = 1.5
+all_custody_fail_delay_s = 1.0
+trade_base_s = 5.0
+trade_per_civilian_kill_s = 30.0
+trade_locked_phases = Array[int]([1, 2, 3])
+trade_interaction_s = 1.0
+police_cuff_range_m = 1.0
+police_cuff_approach_m = 15.0
+police_cuff_self_free_s = 60.0
+surrender_requires_skill = false
+surrender_base_chance = 0.2
+surrender_hurt_chance = 0.5
+surrender_per_crew_chance = 0.1
+surrender_crew_radius_m = 10.0
+surrender_max_chance = 0.95
+surrender_shout_range_m = 12.0
+surrender_cone_half_deg = 20.0
+surrender_duration_s = 30.0
+convert_s = 2.0
+convert_follow_min_m = 2.0
+convert_follow_max_m = 6.0
+convert_engage_range_m = 35.0
+convert_retarget_s = 0.5
+convert_run_speed = 4.0
+convert_hit_chance = 0.6

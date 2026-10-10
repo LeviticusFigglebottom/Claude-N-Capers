@@ -20,6 +20,12 @@ const NPC_SCENES: Dictionary = {
 	&"police": "res://systems/ai/npc/npc_police.tscn",
 }
 
+## HeistResult.fail_reason values (events.md, D-038 QA-19). &"" on success.
+const FAIL_NONE: StringName = &""
+const FAIL_STEALTH_ONLY_ALARM: StringName = &"stealth_only_alarm"
+const FAIL_ALL_CUSTODY: StringName = &"all_custody"
+const FAIL_ABORT: StringName = &"abort"
+
 static var _current: HeistRuntime = null
 
 var map: HeistMap = null
@@ -118,7 +124,7 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 		heist_mode = map.heist_def.mode
 	# heist_map.md §5: resolve and strip inactive variant content BEFORE anything spawns.
 	var slots: Dictionary = VariantResolver.collect_slots(map)
-	preplan.setup(options, map.heist_def)  # C3 (A2-07): before the roll, assets may pin variants
+	preplan.setup(options, map.heist_def, heist_id, difficulty)  # C3 (A3-08): PreplanResult, before the roll
 	variants = VariantResolver.resolve(map.variant_table, slots, difficulty, preplan.forced_variants())
 	var pending: Array = VariantResolver.apply(slots, variants)
 	Log.info(&"variants", "seed %d resolved %s" % [run_seed, variants])
@@ -185,6 +191,10 @@ func _create_services() -> void:
 	var hostage_stimuli: HostageStimuli = HostageStimuli.new()  # A2-07 (S6.4)
 	hostage_stimuli.name = "HostageStimuli"
 	add_child(hostage_stimuli)
+	var custody: CustodySystem = CustodySystem.new()  # A3-04 (L2.9, L2.10)
+	custody.name = "CustodySystem"
+	register_service(CustodySystem.SERVICE, custody)
+	ShoutSystem.ensure(self)  # A3-04 (L5.1): shouts reach police on maps without civilians too
 	hud_model = LocalHudModel.new()
 	hud_model.name = "LocalHudModel"
 	add_child(hud_model)
@@ -389,10 +399,12 @@ func enter_escape_phase() -> void:
 
 
 ## Server: finish the heist and emit heist_ended(result) [R] (events.md HeistResult).
-func end_heist(success: bool, escaped_slots: Array[int] = []) -> Dictionary:
+## `fail_reason` (QA-19): ignored on success (&""); a failure without one reports FAIL_ABORT.
+func end_heist(success: bool, escaped_slots: Array[int] = [], fail_reason: StringName = FAIL_NONE) -> Dictionary:
 	if _ended:
 		return {}
 	_ended = true
+	var reason: StringName = FAIL_NONE if success else (fail_reason if fail_reason != FAIL_NONE else FAIL_ABORT)
 	var crew_rows: Array[Dictionary] = []
 	for slot: int in Net.all_slots():
 		var st: Dictionary = _stats.get(slot, {})
@@ -410,6 +422,7 @@ func end_heist(success: bool, escaped_slots: Array[int] = []) -> Dictionary:
 		"contract_pay": map.heist_def.base_payout if map != null and map.heist_def != null else 0,
 		"loot": _loot_secured.duplicate(true), "small_loot": _small_loot, "crew": crew_rows,
 		"pagers_answered": _pagers_answered, "seed": run_seed, "variants": variants.duplicate(true),
+		"fail_reason": reason,
 	}
 	_set_phase(Enums.HeistPhase.ENDED)
 	EventBus.heist_ended.emit(result)
@@ -561,7 +574,7 @@ func _physics_process(delta: float) -> void:
 		stealth_abort_left -= delta
 		if stealth_abort_left <= 0.0:
 			stealth_abort_left = -1.0
-			end_heist(false)
+			end_heist(false, [], FAIL_STEALTH_ONLY_ALARM)
 	for slot: int in _bot_intents:
 		var c: CrewController = _crew.get(slot)
 		if c != null:

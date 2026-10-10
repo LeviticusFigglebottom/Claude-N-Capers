@@ -8,7 +8,7 @@
 ## - damage EnemyDef.damage[difficulty] (CombatTweak.npc_fallback_damage without a table), applied
 ##   with ONE `crew.take_hit(info, npc.net_id)` (damage.md) (armor first, gating, L2.2);
 ## - L2.5: never shoots a DOWNED crew member who is not shooting (CrewWeapons.is_shooting()), nor
-##   one in CUSTODY;
+##   one in CUSTODY, nor one police-cuffed while downed (L2.12);
 ## - every shot: EventBus.weapon_fired and (stealth) a 25 m gunshot noise (StealthTweak
 ##   gunshot_npc_radius_m, S4.1/S4.3).
 ## Any brain (guard, police, specials) can drive it by exposing the two members; a brain-less NPC can
@@ -114,6 +114,8 @@ func _can_engage(c: CrewController) -> bool:
 		var w: CrewWeapons = c.weapons
 		if w == null or not w.is_shooting():
 			return false  # L2.5
+	if c.crew_state == Enums.CrewState.CUFFED and c.health != null and c.health.bleedout_left > 0.0:
+		return false  # L2.12 (A3-04): police-cuffed while downed = a downed player who cannot shoot
 	var tw: CombatTweak = CombatTweak.data()
 	var aim: Vector3 = _aim_point(c)
 	if _npc.eye_position().distance_to(aim) > tw.npc_max_range_m:
