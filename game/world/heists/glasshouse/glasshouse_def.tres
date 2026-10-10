@@ -15,7 +15,7 @@ objectives = Array[StringName]([&"casing", &"keycard", &"workshop_door", &"safe"
 preplanning = {
 "assets": {
 &"asset.alternate_entry": {
-"point_categories": [&"spawn"]
+"point_categories": [&"player_spawn"]
 },
 &"asset.body_bag_case_drop": {
 "point_categories": [&"drop_zone"]
@@ -41,7 +41,7 @@ preplanning = {
 }
 },
 "disable": [&"asset.intel_cameras"],
-"favors": 10
+"favors": 4
 }
 escape_options = Array[StringName]([&"van"])
 music_track = &"glasshouse"

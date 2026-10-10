@@ -34,11 +34,11 @@ static func make_def() -> HeistDef:
 	# Generic assets keep their library data; the two heist-only assets force a variant slot from the
 	# chosen point's params.
 	d.preplanning = {
-		"favors": 10,
+		"favors": 4,
 		"disable": [&"asset.intel_cameras"],
 		"assets": {
 			&"asset.body_bag_case_drop": {"point_categories": [&"drop_zone"]},
-			&"asset.alternate_entry": {"point_categories": [&"spawn"]},
+			&"asset.alternate_entry": {"point_categories": [&"player_spawn"]},
 			&"asset.escape_position": {"point_categories": [&"escape"]},
 			&"asset.inside_keycard": {"effect": "force_variant", "category": &"access", "point_categories": [&"insider"],
 				"cost": 1500, "favors": 1, "tags": [&"stealth"]},

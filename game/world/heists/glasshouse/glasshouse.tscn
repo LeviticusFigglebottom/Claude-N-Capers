@@ -9706,7 +9706,7 @@ metadata/params = {}
 
 [node name="pp_spawn_alley_west" type="Marker3D" parent="Preplan" unique_id=101548 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, 0, -3.3)
-metadata/category = &"spawn"
+metadata/category = &"player_spawn"
 metadata/label = &"ui.preplan.point.pp_spawn_alley_west"
 metadata/floor = 0
 metadata/params = {
@@ -9715,7 +9715,7 @@ metadata/params = {
 
 [node name="pp_spawn_alley_mouth" type="Marker3D" parent="Preplan" unique_id=101549 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.6, 0, -2.4)
-metadata/category = &"spawn"
+metadata/category = &"player_spawn"
 metadata/label = &"ui.preplan.point.pp_spawn_alley_mouth"
 metadata/floor = 0
 metadata/params = {

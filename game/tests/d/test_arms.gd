@@ -245,10 +245,6 @@ func test_clip_lengths_follow_the_weapon_data() -> void:
 		return
 	for set_name: String in SETS:
 		var pairs: Dictionary = {"reload": "reload_time_s", "reload_empty": "reload_empty_time_s"}
-		# LEAD (D-045): shotgun reload timing formula is being aligned (ENV B data + reload_end_empty_s);
-		# re-enable once trunk's Plowman data follows the D-045 formula.
-		if set_name == "shotgun":
-			pairs = {}
 		for clip: String in pairs:
 			var times: Array[float] = _weapon_times(set_name, pairs[clip])
 			assert_true(not times.is_empty(), "a weapon uses anim_set %s" % set_name)

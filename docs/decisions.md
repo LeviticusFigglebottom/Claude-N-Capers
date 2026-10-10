@@ -229,15 +229,15 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Ruling: the PD2-style formula in data_schemas.md (derived after mods, with a new `WeaponStats.reload_end_empty_s` for the empty pump). ENV B updates the Plowman data, mod deltas, resolver derivation and test_armory. ENV D re-enables its shotgun length check afterwards (temporarily excluded by the lead).
 
 ## D-046 — 2026-10-10 — Pre-planning data shape (QC-20..23); integration hotfix
-- QC-20: the **contract stands**: `HeistDef.preplanning = {favors, disable, "assets": {asset_id: overrides}}`. ENV B's
-  B4-08 `PreplanBoard.merge` already follows it; ENV C's data had followed B's older code. Lead hotfix moved
-  Glasshouse's overrides under `"assets"` (def + generator).
-- QC-21: crew-spawn PREPLAN_POINT category is **`spawn`** (contract and B's library). Glasshouse points renamed.
+- QC-20 (final): canonical shape is the contract's `HeistDef.preplanning = {favors, disable, "assets": {asset_id: overrides}}`;
+  `PreplanBoard.merge` also tolerates legacy top-level `"asset.<id>"` keys. New data uses `"assets"`.
+- QC-21 (final): crew-spawn PREPLAN_POINT category is **`player_spawn`** (B's library and C's points; contract updated).
 - QC-22: ENV B adds library/strings for Glasshouse's heist-only `asset.inside_keycard` and `asset.propped_door`
   (force_variant) plus `ui.preplan.point.<point_id>` strings for the 9 points.
 - QC-23: favors budget is design data (Glasshouse 4). ENV B makes `test_buying_deducts_budget` read the def's value
-  first; ENV C then sets Glasshouse favors to 4 (order matters so trunk stays green).
+  first (done, 26bdb2d); Glasshouse favors set to 4 in the lead merge.
 - `PreplanPlan.resolve_ids` returns `{}` when no id was accepted (nothing resolved = no pre-planning).
-- Strings scan skips format-string prefixes (`vo.crew.ack_%s`); lead added `ui.prompt.cable_tie`, `ui.prompt.convert`,
-  `ui.blocked.push_bar_outside`. ENV B adds `vo.crew.ack_<order>` voice lines for every crew order.
+- ENV B added the A3-04/05 prompt strings and `vo.crew.ack_<order>` lines (8079505); the strings scan checks that a
+  format-string prefix is completed by some line.
+- D-045 closed: B's resolver derives shotgun reload totals (35b3bcc); ENV D's shotgun clip check re-enabled.
 - Glasshouse VoxelGI (script-baked under xvfb) accepted for P1; LightmapGI revisited if Godot exposes a scriptable bake.

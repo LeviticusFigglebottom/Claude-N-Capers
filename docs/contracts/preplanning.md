@@ -32,7 +32,7 @@ A new id under `"assets"` adds a heist-only asset (needs `effect`/payload). `fav
 ## PREPLAN_POINT (map)
 
 `Marker3D` nodes under `<Map>/Preplan` (new optional contract node, heist_map.md v1.2), in group
-`G.PREPLAN_POINT`. **The node name is the point id.** Metadata: `category` (`drop_zone`, `spawn`,
+`G.PREPLAN_POINT`. **The node name is the point id.** Metadata: `category` (`drop_zone`, `player_spawn`,
 `escape`, `insider`, ...), `label` (strings key), `floor` (int), `params` (Dictionary, e.g.
 `{spawn_tag, variant_group, variant_slot}`). ENV B reads points by instancing the map scene from
 `HeistRegistry.map_scene_path(id)` without adding it to the tree.
