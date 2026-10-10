@@ -88,6 +88,9 @@ rules = Array[Dictionary]([{
 }, {
 "group": &"extra_loot",
 "pick": Vector2i(1, 1)
+}, {
+"group": &"armored_car",
+"pick": Vector2i(0, 0)
 }])
 rare_events = Array[Dictionary]([{
 "chance": 0.04,
@@ -100,7 +103,11 @@ rare_events = Array[Dictionary]([{
 "chance": 0.08,
 "effects": {
 "at_s": 720.0,
-"extra_guards": 2
+"extra_guards": 2,
+"force_active": {
+"group": &"armored_car",
+"slot": &"armored_car_bay"
+}
 },
 "good": false,
 "id": &"armored_car_early",

@@ -639,6 +639,34 @@ const PATROL_EDGES_EXTERIOR: Array = [
 	["LotAlleyMouth", "LotWest"], ["LotWest", "LotSallyDoor"], ["LotCars", "LotDumpster"],
 ]
 
+## Rare `armored_car_early` (Brutal+, doc §Rare events): the armoured car parks in the lot west of the
+## E1 van bay, rear doors to the building (behind the building: out of the casing sidewalk's view).
+## Its 2 extra guards spawn at the rear (GUARD SpawnPoints tagged `scripted` + `guard_armored_car`,
+## HeistMission.spawn_guards) and walk graph `ArmoredCar`. The rear-doors start links to the personnel
+## door, the G1 sally point and (directly, the nav path runs through G1 and the stair) the B1 transfer
+## room, so the start has the 3 loop options the patrols rule wants; the B1 point's weight (6, vs 0.3 for
+## the personnel door) makes the usual route the cash run lot -> B1 -> B5 -> stair -> G1 -> lot.
+## Optional 6th row element of a patrol point: PatrolPoint.weight.
+const ARMORED_CAR: Dictionary = {
+	"body": [Vector3(-1.2, 0.0, -5.0), Vector3(2.2, 2.4, 5.0)],
+	"spawns": [["ArmoredCarGuardA", Vector3(-1.8, 0.0, -1.6), 180.0], ["ArmoredCarGuardB", Vector3(-0.6, 0.0, -1.6), 180.0]],
+}
+const PATROL_POINTS_ARMORED: Dictionary = {
+	"AcRearDoors": [Vector3(-1.2, 0.0, -1.5), Vector2(4.0, 8.0), "idle", ["guard"], 0.0],
+	"AcPersonnelDoor": [Vector3(6.0, 0.0, -1.0), Vector2.ZERO, "idle", ["guard"], null, 0.3],
+	"AcSallyPort": [Vector3(4.6, 0.0, 3.2), Vector2(2.0, 4.0), "idle", ["guard"], null],
+	"AcStairTop": [Vector3(7.7, 0.0, 5.0), Vector2.ZERO, "idle", ["guard"], null],
+	"AcStairLanding": [Vector3(8.5, -2.0, 0.8), Vector2.ZERO, "idle", ["guard"], null],
+	"AcStairFoot": [Vector3(9.3, BASE, 5.1), Vector2.ZERO, "idle", ["guard"], null],
+	"AcB5West": [Vector3(3.5, BASE, 6.75), Vector2.ZERO, "idle", ["guard"], null],
+	"AcB1Xfer": [Vector3(3.2, BASE, 2.6), Vector2(6.0, 12.0), "idle", ["guard"], null, 6.0],
+}
+const PATROL_EDGES_ARMORED: Array = [
+	["AcRearDoors", "AcPersonnelDoor"], ["AcRearDoors", "AcSallyPort"], ["AcRearDoors", "AcB1Xfer"],
+	["AcPersonnelDoor", "AcSallyPort"], ["AcSallyPort", "AcStairTop"], ["AcStairTop", "AcStairLanding"],
+	["AcStairLanding", "AcStairFoot"], ["AcStairFoot", "AcB5West"], ["AcB5West", "AcB1Xfer"],
+]
+
 ## Tactical points: [name, kind, pos, yaw, tags, breachable].
 const TACTICAL: Array = [
 	["EntryMainDoor", "ENTRY", Vector3(10.5, 0.0, 21.4), 0.0, ["main_door"], false],
