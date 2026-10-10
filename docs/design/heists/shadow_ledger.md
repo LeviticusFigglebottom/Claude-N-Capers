@@ -1,5 +1,5 @@
 # Shadow Ledger: Kessler & Moor penthouse (shadow_ledger)
-Status: DRAFT (ENV C, 2026-10-10)
+Status: APPROVED (lead, 2026-10-10) (D-042)
 
 ## Fiction
 - **Who:** **Kessler & Moor**, a boutique private-wealth and law practice (two partners, 14 staff)
