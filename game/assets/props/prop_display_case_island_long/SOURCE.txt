@@ -1,6 +1,6 @@
 asset: prop_display_case_island_long
 script: tools/blender/props/display_cases.py
-params: {"cat": {"kind": "display_case", "prefab": "display_case"}, "d": 0.7, "kind": "island", "w": 1.8}
+params: {"cat": {"kind": "display_case", "light": {"color": "#FFB46B", "energy": 0.4, "pos": [0, 0.86, 0], "range": 1.8, "specular": 0.05, "type": "omni"}, "prefab": "display_case"}, "d": 0.7, "kind": "island", "w": 1.8}
 seed: 4064052476  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category props --asset prop_display_case_island_long

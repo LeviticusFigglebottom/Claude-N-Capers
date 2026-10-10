@@ -15,6 +15,8 @@
 extends EditorScenePostImport
 
 const LIBRARY_DIR: String = "res://world/materials/"
+## Prop materials (tinted library surfaces, emissives; tools/blender/props/_make_materials.py).
+const PROP_LIBRARY_DIR: String = "res://world/props/materials/"
 const MATERIAL_PREFIX: String = "M_"
 const FALLBACK_MATERIAL: String = "res://world/materials/grey_prop.tres"
 
@@ -63,8 +65,15 @@ static func resolve(current: Material, where: String) -> Material:
 	return lib
 
 
+## Library material path for `lib_id`: world/materials first, then world/props/materials.
 static func library_path(lib_id: String) -> String:
-	return LIBRARY_DIR + lib_id + ".tres"
+	var main: String = LIBRARY_DIR + lib_id + ".tres"
+	if ResourceLoader.exists(main):
+		return main
+	var prop: String = PROP_LIBRARY_DIR + lib_id + ".tres"
+	if ResourceLoader.exists(prop):
+		return prop
+	return main
 
 
 static func _fallback() -> Material:

@@ -50,6 +50,16 @@ _subresources={
 "use_external/enabled": true,
 "use_external/fallback_path": "res://world/props/materials/pr_leaf.tres",
 "use_external/path": "res://world/props/materials/pr_leaf.tres"
+},
+"M_pr_leaf_dark": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_leaf_dark.tres",
+"use_external/path": "res://world/props/materials/pr_leaf_dark.tres"
+},
+"M_pr_soil": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_soil.tres",
+"use_external/path": "res://world/props/materials/pr_soil.tres"
 }
 }
 }

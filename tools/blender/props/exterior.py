@@ -28,7 +28,7 @@ VARIANTS = {
                                                  "light": {"type": "omni", "color": "#FF3EA5", "energy": 2.5, "range": 7.0, "pos": [0.0, 0.0, -0.6]}}},
     "prop_awning": {"fn": "awning", "cat": {"kind": "awning", "place": "wall_mount", "z": 2.75, "group": "exterior"}},
     "prop_wall_lamp": {"fn": "wall_lamp", "cat": {"kind": "wall_lamp", "place": "wall_mount", "z": 2.4, "fixture": True, "group": "exterior",
-                                                  "light": {"type": "omni", "color": "#FFC58F", "energy": 1.2, "range": 6.0, "pos": [0.0, -0.1, -0.2]}}},
+                                                  "light": {"type": "spot", "color": "#FFC58F", "energy": 2.0, "range": 7.0, "angle": 60, "pos": [0.0, 0.03, -0.31]}}},
     "prop_planter_street": {"fn": "planter", "cat": {"kind": "planter", "place": "row", "standoff": 0.9, "group": "exterior"}},
 }
 
@@ -106,47 +106,61 @@ def _bollard(k: Kit, p: dict) -> None:
 
 
 def _car(k: Kit, p: dict) -> None:
+    """Parked mid-size sedan: shaped side profile (bonnet, A/C pillars, boot), glasshouse with
+    dark pillars, wheel arches, chrome beltline and grille, tail lights. Front = +Y."""
     w, ln = 1.8, 4.6
     paint = p["paint"]
+    hl = ln / 2
     o = k.obj("Car")
-    body = o.part(bevel=0.05, segments=3)
-    trim = o.part(bevel=0.006)
+    body = o.part(bevel=0.04, segments=3)
+    trim = o.part(bevel=0.004)
     glass = o.part(bevel=0.0)
     run = o.part(bevel=0.0)
-    hl = ln / 2
-    # lower body (side profile y, z), front = +Y
-    prof = [(-hl, 0.32), (-hl + 0.05, 0.85), (-hl + 0.9, 0.95), (hl - 1.1, 0.95), (hl - 0.05, 0.75), (hl, 0.42), (hl - 0.1, 0.3)]
+    prof = [(-hl + 0.02, 0.36), (-hl, 0.55), (-hl + 0.04, 0.8), (-hl + 0.25, 0.92), (-hl + 0.95, 0.96),
+            (hl - 1.25, 0.96), (hl - 0.55, 0.88), (hl - 0.08, 0.78), (hl, 0.6), (hl - 0.03, 0.36), (hl - 0.2, 0.3),
+            (-hl + 0.2, 0.3)]
     body.profile_x(prof, -w / 2, w / 2, paint)
-    # greenhouse: pillars as a tapered cabin with glass faces
-    cab = [(-hl + 0.95, 0.94), (-hl + 1.45, 1.42), (hl - 1.9, 1.44), (hl - 1.25, 0.94)]
-    body.profile_x(cab, -w / 2 + 0.12, w / 2 - 0.12, paint)
+    cab = [(-hl + 0.9, 0.95), (-hl + 1.4, 1.38), (-hl + 1.55, 1.43), (hl - 2.0, 1.44), (hl - 1.8, 1.4), (hl - 1.2, 0.95)]
+    body.profile_x(cab, -w / 2 + 0.1, w / 2 - 0.1, paint)
+    # side glass + dark B pillar, beltline chrome, door seams and handles
     for sx in (-1, 1):
-        x0, x1 = sorted((sx * (w / 2 - 0.115), sx * (w / 2 - 0.105)))
-        glass.profile_x([(-hl + 1.05, 0.98), (-hl + 1.48, 1.38), (hl - 1.95, 1.39), (hl - 1.35, 0.98)], x0, x1, "glass_tinted")
-        trim.bx((x0 - 0.002 * sx, -0.12, 0.97), (x1 + 0.004 * sx, -0.06, 1.4), paint)
-        trim.bx((sx * (w / 2 + 0.06) - 0.05, hl - 1.3, 1.0), (sx * (w / 2 + 0.06) + 0.05, hl - 1.2, 1.1), paint)
-        trim.bx((sx * w / 2 - 0.01, -0.5, 0.82), (sx * w / 2 + 0.01, -0.36, 0.84), "chrome")
-        trim.bx((sx * w / 2 - 0.01, 0.4, 0.82), (sx * w / 2 + 0.01, 0.54, 0.84), "chrome")
-    a = (hl - 1.25, 0.95)
-    b = (hl - 1.88, 1.42)
-    glass.profile_x([(a[0] + 0.006, a[1]), (b[0] + 0.006, b[1]), (b[0] - 0.006, b[1]), (a[0] - 0.006, a[1])], -w / 2 + 0.15, w / 2 - 0.15, "glass_tinted")
-    c = (-hl + 0.97, 0.95)
-    d = (-hl + 1.44, 1.41)
-    glass.profile_x([(c[0] - 0.006, c[1]), (d[0] - 0.006, d[1]), (d[0] + 0.006, d[1]), (c[0] + 0.006, c[1])], -w / 2 + 0.15, w / 2 - 0.15, "glass_tinted")
-    # lights, grille, bumpers, plates
+        x0, x1 = sorted((sx * (w / 2 - 0.1), sx * (w / 2 - 0.092)))
+        glass.profile_x([(-hl + 1.0, 0.99), (-hl + 1.42, 1.36), (hl - 1.98, 1.37), (hl - 1.32, 0.99)], x0, x1, "glass_tinted")
+        trim.bx((min(x0, x1) - 0.004, -0.12, 0.98), (max(x0, x1) + 0.004, -0.04, 1.39), "plastic_black")
+        xs0, xs1 = sorted((sx * (w / 2 - 0.004), sx * (w / 2 + 0.004)))
+        trim.bx((xs0, -hl + 1.0, 0.955), (xs1, hl - 1.3, 0.97), "chrome")
+        trim.bx((xs0, -0.08, 0.38), (xs1, -0.075, 0.95), "plastic_black")
+        trim.bx((xs0, hl - 1.3, 0.38), (xs1, hl - 1.295, 0.95), "plastic_black")
+        trim.bx((xs0, -hl + 1.05, 0.38), (xs1, -hl + 1.055, 0.95), "plastic_black")
+        for yy in (-0.45, 0.55):
+            trim.bx((sx * (w / 2 + 0.006) - 0.008, yy, 0.82), (sx * (w / 2 + 0.006) + 0.008, yy + 0.13, 0.845), "chrome")
+        trim.bx((sx * (w / 2 + 0.07) - 0.05, hl - 1.28, 1.0), (sx * (w / 2 + 0.07) + 0.05, hl - 1.18, 1.09), paint)
+        # wheel arches (dark liners)
+        for wy in (-hl + 0.85, hl - 0.95):
+            trim.tube([(sx * (w / 2 - 0.01), wy - 0.37 * math.cos(math.pi * i / 10), 0.34 + 0.37 * math.sin(math.pi * i / 10))
+                       for i in range(11)], 0.03, "plastic_black", segs=6)
+    a = (hl - 1.2, 0.96)
+    b = (hl - 1.82, 1.41)
+    glass.profile_x([(a[0] + 0.006, a[1]), (b[0] + 0.006, b[1]), (b[0] - 0.006, b[1]), (a[0] - 0.006, a[1])], -w / 2 + 0.13, w / 2 - 0.13, "glass_tinted")
+    c = (-hl + 0.92, 0.96)
+    d = (-hl + 1.42, 1.4)
+    glass.profile_x([(c[0] - 0.006, c[1]), (d[0] - 0.006, d[1]), (d[0] + 0.006, d[1]), (c[0] + 0.006, c[1])], -w / 2 + 0.13, w / 2 - 0.13, "glass_tinted")
     for sx in (-1, 1):
-        trim.bx((sx * 0.62 - 0.17, hl - 0.04, 0.62), (sx * 0.62 + 0.17, hl + 0.005, 0.72), "chrome")
-        trim.bx((sx * 0.65 - 0.15, -hl - 0.005, 0.7), (sx * 0.65 + 0.15, -hl + 0.06, 0.8), "metal_red")
-    trim.bx((-0.4, hl - 0.03, 0.45), (0.4, hl + 0.01, 0.6), "plastic_black")
-    trim.bx((-w / 2 + 0.05, hl - 0.12, 0.28), (w / 2 - 0.05, hl + 0.03, 0.42), "plastic_black")
-    trim.bx((-w / 2 + 0.05, -hl - 0.03, 0.28), (w / 2 - 0.05, -hl + 0.12, 0.42), "plastic_black")
-    trim.bx((-0.25, -hl - 0.035, 0.45), (0.25, -hl - 0.03, 0.56), "plastic_white")
-    for sy in (-hl + 0.85, hl - 0.95):
+        trim.bx((sx * 0.62 - 0.18, hl - 0.06, 0.64), (sx * 0.62 + 0.18, hl + 0.004, 0.73), "glass_tinted")
+        trim.bx((sx * 0.62 - 0.17, hl - 0.07, 0.65), (sx * 0.62 + 0.17, hl - 0.02, 0.72), "chrome")
+        trim.bx((sx * 0.62 - 0.17, -hl - 0.004, 0.68), (sx * 0.62 + 0.17, -hl + 0.06, 0.78), "metal_red")
+    trim.bx((-0.42, hl - 0.04, 0.46), (0.42, hl + 0.006, 0.6), "plastic_black")
+    trim.bx((-0.42, hl + 0.004, 0.52), (0.42, hl + 0.01, 0.53), "chrome")
+    trim.bx((-w / 2 + 0.06, hl - 0.14, 0.3), (w / 2 - 0.06, hl + 0.02, 0.43), "plastic_black")
+    trim.bx((-w / 2 + 0.06, -hl - 0.02, 0.3), (w / 2 - 0.06, -hl + 0.14, 0.43), "plastic_black")
+    trim.bx((-0.25, -hl - 0.026, 0.46), (-0.25 + 0.5, -hl - 0.02, 0.57), "plastic_white")
+    for wy in (-hl + 0.85, hl - 0.95):
         for sx in (-1, 1):
-            run.cyl(0.33, 0.22, (sx * (w / 2 - 0.12), sy, 0.33), "rubber", axis="X", segs=24)
-            run.cyl(0.21, 0.225, (sx * (w / 2 - 0.12), sy, 0.33), "steel", axis="X", segs=16)
+            run.cyl(0.33, 0.22, (sx * (w / 2 - 0.12), wy, 0.33), "rubber", axis="X", segs=28)
+            run.cyl(0.2, 0.225, (sx * (w / 2 - 0.12), wy, 0.33), "steel", axis="X", segs=20)
+            run.cyl(0.07, 0.23, (sx * (w / 2 - 0.12), wy, 0.33), "chrome", axis="X", segs=12)
     o.build()
-    k.collision([((-w / 2, -hl, 0.0), (w / 2, hl, 0.95)), ((-w / 2 + 0.12, -hl + 0.95, 0.95), (w / 2 - 0.12, hl - 1.25, 1.44))])
+    k.collision([((-w / 2, -hl, 0.0), (w / 2, hl, 0.96)), ((-w / 2 + 0.1, -hl + 0.9, 0.96), (w / 2 - 0.1, hl - 1.2, 1.44))])
 
 
 def _hvac(k: Kit, p: dict) -> None:
@@ -208,29 +222,46 @@ def _neon(k: Kit, p: dict) -> None:
 
 
 def _awning(k: Kit, p: dict) -> None:
-    w, proj = 3.0, 1.0
+    """Striped walnut / ivory canvas awning on brass arms: sloped canopy, straight valance with a
+    brass bead, triangular side cheeks. Back at y = 0, centred on the origin vertically."""
+    w, proj, drop = 3.0, 1.0, 0.42
+    n = 12
     o = k.obj("Awning")
     c = o.part(bevel=0.0)
     trim = o.part(bevel=0.003)
-    c.profile_x([(0.0, 0.25), (proj, -0.15), (proj, -0.4), (proj - 0.02, -0.4), (proj - 0.02, -0.17), (0.0, 0.23)],
-                -w / 2, w / 2, "canvas_ivory")
+    top, low = 0.25, -0.15
+    for i in range(n):
+        x0 = -w / 2 + i * w / n
+        key = "canvas_walnut" if i % 2 == 0 else "canvas_ivory"
+        c.profile_x([(0.0, top), (proj, low), (proj, low - 0.012), (0.0, top - 0.012)], x0, x0 + w / n, key)
+        c.profile_x([(proj - 0.012, low), (proj, low), (proj, low - drop + 0.25), (proj - 0.012, low - drop + 0.25)],
+                    x0, x0 + w / n, key)
     for sx in (-1, 1):
-        x0, x1 = sorted((sx * w / 2, sx * (w / 2 - 0.02)))
-        c.profile_x([(0.0, 0.25), (proj, -0.15), (proj, -0.17), (0.0, 0.23)], x0, x1, "canvas_ivory")
-    trim.bx((-w / 2 - 0.02, 0.0, 0.22), (w / 2 + 0.02, 0.05, 0.3), "brass")
+        x0, x1 = sorted((sx * w / 2, sx * (w / 2 - 0.012)))
+        c.profile_x([(0.0, top), (proj, low), (proj, low - 0.17), (0.0, top - 0.06)], x0, x1, "canvas_walnut")
+    trim.bx((-w / 2 - 0.02, 0.0, top - 0.04), (w / 2 + 0.02, 0.05, top + 0.03), "brass")
+    trim.rod((-w / 2, proj + 0.004, low - 0.17), (w / 2, proj + 0.004, low - 0.17), 0.008, "brass", segs=8)
     for sx in (-1, 1):
-        trim.rod((sx * (w / 2 - 0.1), 0.02, 0.1), (sx * (w / 2 - 0.1), proj - 0.05, -0.12), 0.012, "brass", segs=8)
+        trim.rod((sx * (w / 2 - 0.15), 0.02, -0.25), (sx * (w / 2 - 0.15), proj - 0.04, low - 0.02), 0.012, "brass", segs=8)
+        trim.cyl(0.03, 0.02, (sx * (w / 2 - 0.15), 0.01, -0.25), "brass", axis="Y", segs=14)
     o.build()
 
 
 def _wall_lamp(k: Kit, p: dict) -> None:
+    """Back-door gooseneck barn light: round wall plate, curved arm, enamel dish shade, lit bulb."""
     o = k.obj("Lamp")
-    a = o.part(bevel=0.004, segments=2)
-    a.bx((-0.08, 0.0, -0.12), (0.08, 0.02, 0.12), "metal_dark")
-    a.bx((-0.07, 0.02, 0.05), (0.07, 0.22, 0.09), "metal_dark")
+    a = o.part(bevel=0.0)
+    a.cyl(0.07, 0.016, (0.0, 0.008, 0.0), "metal_dark", axis="Y", segs=24)
+    a.cyl(0.04, 0.02, (0.0, 0.025, 0.0), "metal_dark", axis="Y", segs=18)
+    arm = [(0.0, 0.03 + 0.26 * math.sin(math.pi / 2 * i / 8), 0.0 + 0.16 * (1 - math.cos(math.pi / 2 * i / 8))) for i in range(9)]
+    a.tube(arm, 0.011, "metal_dark", segs=10)
+    tip = arm[-1]
+    a.rod(tip, (0.0, tip[1] + 0.02, tip[2] - 0.03), 0.011, "metal_dark", segs=10)
+    c = (0.0, tip[1] + 0.02, tip[2] - 0.03)
+    a.lathe([(0.0, 0.0), (0.025, 0.0), (0.04, -0.03), (0.13, -0.09), (0.14, -0.1), (0.13, -0.095), (0.035, -0.035),
+             (0.0, -0.035)], "metal_green", centre=c, segs=28)
     e = o.part(bevel=0.0)
-    e.bx((-0.06, 0.04, 0.045), (0.06, 0.2, 0.05), "emit_warm")
-    a.rod((0.0, 0.02, -0.08), (0.0, 0.18, 0.05), 0.01, "metal_dark", segs=8)
+    e.sphere(0.035, (c[0], c[1], c[2] - 0.06), "emit_warm", segs=12, rings=6)
     o.build()
 
 

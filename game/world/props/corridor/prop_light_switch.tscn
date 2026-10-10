@@ -7,3 +7,10 @@ metadata/kind = &"switch"
 metadata/mount = &"wall"
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Switch" parent="Model"]
+visibility_range_end = 25
+visibility_range_end_margin = 2.5
+visibility_range_fade_mode = 1
+
+[editable path="Model"]
