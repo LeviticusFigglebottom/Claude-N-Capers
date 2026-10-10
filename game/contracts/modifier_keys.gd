@@ -131,7 +131,8 @@ const KEYS: Dictionary = {
 	&"perk.sociopath": [Type.PARAMS, 4, "Clean Sweep: kills near enemies restore armor/health on cooldowns."],
 	&"perk.rogue_dodge_stack": [Type.PARAMS, 4, "Slipper: reduced aggro near crew (dodge/swap/AP via generic keys)."],
 	&"perk.crook": [Type.PARAMS, 4, "Hustler: dodge + armor bonus in Light/Patrol/Heavy vests only."],
-	&"perk.burglar": [Type.PARAMS, 4, "Prowler: standing still or crouching lowers enemy targeting weight and armor regen delay {still_aggro_mult, still_regen_delay_mult}; its stealth speed/dodge cards use generic keys."],
+	&"perk.burglar": [Type.PARAMS, 4, "Prowler: still/crouching lowers enemy targeting weight and armor regen delay "
+		+ "{still_aggro_mult, still_regen_delay_mult}; its stealth speed/dodge cards use generic keys."],
 	&"perk.infiltrator": [Type.PARAMS, 4, "Knuckles: close-range damage reduction, melee buffs."],
 	&"perk.muscle": [Type.PARAMS, 4, "Bulk: health regen, threat increase."],
 	&"perk.armorer": [Type.PARAMS, 4, "Ironclad: armor bonus, brief invulnerability on armor break."],

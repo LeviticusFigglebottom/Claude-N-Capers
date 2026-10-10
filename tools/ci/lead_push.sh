@@ -14,6 +14,11 @@ if git grep -nE '^(<<<<<<< |>>>>>>> )' -- . >/dev/null; then
   git grep -nE '^(<<<<<<< |>>>>>>> )' -- . | head
   echo "lead_push: merge-conflict markers in tracked files. NOT pushing."; exit 1
 fi
+# Fast pre-checks (seconds) before the long run: lint and script parse errors.
+if ! (cd "$ROOT" && gdlint game/core game/contracts game/systems game/content game/world game/tests >/dev/null 2>&1); then
+  (cd "$ROOT" && gdlint game/core game/contracts game/systems game/content game/world game/tests 2>&1 | tail -10)
+  echo "lead_push: gdlint failed. NOT pushing."; exit 1
+fi
 SHA="$(git rev-parse HEAD)"
 if [[ $# -ge 1 ]]; then
   "$ROOT/tools/ci/run_tests.sh" "$1"; RC=$?

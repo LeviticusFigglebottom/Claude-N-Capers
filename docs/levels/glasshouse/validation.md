@@ -60,10 +60,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Rooms/RoomU7` (storage): ceiling median 3.00 m (rule 2.6-3.0)
 - `Geometry/Building/Stair/FlightUp`: ramp collision enveloping the steps (max 0.175 m above the treads)
 - `Geometry/Building/Stair/FlightUp`: 12 risers, 0.000 -> 2.100 m
-- `Geometry/Building/Stair/FlightUp` rails: -X wall, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 0.00 m; +X partly walled, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 2.04 m
 - `Geometry/Building/Stair/FlightReturn`: ramp collision enveloping the steps (max 0.175 m above the treads)
 - `Geometry/Building/Stair/FlightReturn`: 12 risers, 2.100 -> 4.200 m
-- `Geometry/Building/Stair/FlightReturn` rails: -X open, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 3.12 m; +X wall, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 0.00 m
 
 
 ## navmesh: Navmesh
