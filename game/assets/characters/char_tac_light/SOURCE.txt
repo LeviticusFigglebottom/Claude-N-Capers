@@ -1,0 +1,19 @@
+asset: char_tac_light
+script: tools/blender/characters/char_police.py
+params: {"age": 0.3, "build": 0.7, "gender": 0.0, "hair": "buzz", "hair_color": "brown", "height": 1.81, "skin": 2, "unit": "tac"}
+seed: 1944173018  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_tac_light
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0925, 0.1490] (model [0.0000, 1.3219, 0.1679], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0824, -0.0902] (model [0.0000, 1.6941, -0.0780], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1294, 0.0722, 0.1556] (model [0.1294, 1.0354, 0.1590], Godot axes, rest pose)
+body_faces_culled: 5718
+body_params: {"age": 0.3, "build": 0.7, "gender": 0.0, "hair": "buzz", "hair_color": "brown", "height": 1.81, "skin": 2}
+bones: 52
+hat: helmet + ear protection (Headwear), top z 1.835 m
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 29228
+tris_by_mesh: {"Body": 7328, "Gear": 2400, "Hair": 1000, "Headwear": 1644, "Outfit": 16856}

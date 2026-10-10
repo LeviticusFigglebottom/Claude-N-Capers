@@ -1,0 +1,18 @@
+asset: char_civilian_customer_b
+script: tools/blender/characters/char_civilians.py
+params: {"age": 0.85, "build": 0.85, "gender": 0.0, "hair": "short", "hair_color": "grey", "height": 1.76, "look": "gilet", "skin": 4}
+seed: 3753145437  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_civilian_customer_b
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0893, 0.1287] (model [0.0000, 1.2854, 0.1470], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0801, -0.0877] (model [0.0000, 1.6473, -0.0758], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2076, 0.0503, 0.0355] (model [0.2076, 0.9927, 0.0379], Godot axes, rest pose)
+body_faces_culled: 4806
+body_params: {"age": 0.85, "build": 0.85, "gender": 0.0, "hair": "short", "hair_color": "grey", "height": 1.76, "skin": 4}
+bones: 52
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 27494
+tris_by_mesh: {"Body": 9068, "Gear": 230, "Hair": 1000, "Outfit": 17196}
