@@ -5,8 +5,9 @@ ENV B's weapons, follows this guide.
 
 ## 1. Art direction
 
-**Working direction: "Grounded Stylized Realism" (GSR).** This is a pending product-owner choice
-(see `docs/decisions.md` D-012). It is the default until the product owner decides.
+**Direction: "Grounded Stylized Realism" (GSR). LOCKED by the product owner (D-035)**, after the
+side-by-side samples in `docs/art/style_samples/`. The `a_gsr` renders are the reference look;
+`b_noir`/`c_photo` stay only as history.
 
 * **Real-world proportions and PBR shading.** Forms are *simplified and confident*: chamfered
   edges (2–8 mm bevels that catch light), clean silhouettes, no noisy micro-detail.
@@ -19,9 +20,13 @@ ENV B's weapons, follows this guide.
 * **Reference feel:** a clean modern heist thriller. Readable like a competitive shooter,
   atmospheric like a crime film.
 
-Other options presented to the product owner: **(B) Neo-noir graphic** (high-contrast, neon on
-deep shadow, painterly procedural surfaces, slightly exaggerated shapes); **(C) Gritty photoreal**
-(closest to the reference game, the hardest to do procedurally, with uncanny-valley risk).
+Rejected options (D-035): (B) Neo-noir graphic, (C) Gritty photoreal. GSR may still borrow
+heist-specific accent lighting (e.g. Glasshouse neon) and per-heist LUT grading, as already planned
+in §3 and §7, while keeping readability first.
+
+**Reference renders:** `docs/art/style_samples/a_gsr/counter.png` (props and materials bar) and
+`a_gsr/officer.png` (character bar, once the D1-00 head fix lands). Every new asset is judged
+against them.
 
 ## 2. Units, scale and grid
 
