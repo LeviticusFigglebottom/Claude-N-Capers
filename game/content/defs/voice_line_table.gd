@@ -1,0 +1,56 @@
+## Voice line table (pd2_fidelity C8). Data: res://content/data/voice/lines.tres. Text lives in
+## strings.csv under `text_key`; this table only says who says what, when.
+##
+## Line dictionary:
+##   { "id": StringName           vo.<speaker>.<event>[_n]
+##     "speaker": StringName      one of SPEAKERS (&"crew" = any heister)
+##     "event": StringName        trigger: an EventBus signal name (pager_started, device_jammed,
+##                                crew_downed, ...) or a semantic tag from EVENTS (heist_start_casing,
+##                                assault_build, reloading, ...). Triggering code (ENV A/C) maps facts
+##                                to these and emits EventBus.voice_line_requested(speaker, id, ctx).
+##     "text_key": StringName     voice.<id> in strings.csv
+##     "cooldown_s": float        min seconds before the same line (id) may play again
+##     "priority": int            higher interrupts lower on the same speaker channel }
+## Crew barks are written per heister; pick the lines whose speaker matches the crew member's
+## character and choose among variants with GameRng.stream(&"voice").
+class_name VoiceLineTable
+extends Resource
+
+const SPEAKERS: Array[StringName] = [&"mercer", &"rook", &"sable", &"dutch", &"wren", &"crew"]
+## Known trigger vocabulary: EventBus signal names first, then semantic tags.
+const EVENTS: Array[StringName] = [
+	# EventBus signals
+	&"crew_masked", &"pager_started", &"pager_answered", &"pager_failed", &"body_discovered",
+	&"alarm_raised", &"device_started", &"device_jammed", &"device_finished", &"loot_secured",
+	&"crew_downed", &"crew_custody", &"crew_revived", &"civilian_killed",
+	# Semantic tags (mapped by the trigger from state or event args)
+	&"heist_start_casing", &"pager_last_answer", &"pager_limit", &"camera_spotted",
+	&"assault_anticipation", &"assault_build", &"assault_fade", &"assault_control",
+	&"escape_available", &"heist_success", &"heist_failed", &"stealth_success",
+	&"reloading", &"bagging_body", &"going_loud", &"reviving", &"cops_incoming", &"guard_down",
+]
+
+@export var lines: Array[Dictionary] = []
+
+var _by_id: Dictionary = {}
+
+
+## Lines for `event`, optionally only those `speaker` may say (&"crew" lines match any heister).
+func lines_for(event: StringName, speaker: StringName = &"") -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for l: Dictionary in lines:
+		if StringName(l.get("event", &"")) != event:
+			continue
+		var sp: StringName = StringName(l.get("speaker", &""))
+		if speaker == &"" or sp == speaker or (sp == &"crew" and speaker != &"mercer"):
+			out.append(l)
+	return out
+
+
+## The line with `id`, or an empty Dictionary.
+func line(id: StringName) -> Dictionary:
+	if _by_id.size() != lines.size():
+		_by_id.clear()
+		for l: Dictionary in lines:
+			_by_id[StringName(l.get("id", &""))] = l
+	return _by_id.get(id, {})

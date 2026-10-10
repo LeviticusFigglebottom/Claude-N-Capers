@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="DifficultyDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/difficulty_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+difficulty = 2
+display_name = "Hazardous"
+payout_mult = 2.6
+xp_mult = 5.0
+enemy_cap = 24
+assault_intensity = 0.9
+special_limits = {
+&"enemy.bulwark": 4,
+&"enemy.stinger": 2,
+&"enemy.corpsman": 2,
+&"enemy.phantom": 1,
+&"enemy.wrecker": 2
+}
+detection_speed_mult = 1.0
+civilian_kill_penalty = 5000
+params = {
+"revive_health_frac": 0.4,
+"armor_invuln_s": 0.45,
+"custody_auto_release_s": -1.0,
+"hostage_assault_delay_s": 30.0
+}

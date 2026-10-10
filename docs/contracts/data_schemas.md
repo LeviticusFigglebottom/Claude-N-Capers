@@ -6,7 +6,7 @@ listed. All data ids follow `groups.md`. The code headers are authoritative for 
 | Schema | Data owner | Location | Consumers |
 |---|---|---|---|
 | WeaponStats / WeaponDef / WeaponModDef | B | `content/data/weapons/`, `content/data/mods/` | A (firing), B (UI) |
-| MeleeDef, ThrowableDef, DeployableDef, ArmorDef | B | `content/data/<kind>/` | A |
+| MeleeDef, ThrowableDef, DeployableDef, ArmorDef, MaskDef | B (MaskDef mesh: C) | `content/data/<kind>/` | A |
 | Loadout | B (resolver) | runtime + save | A |
 | SkillDef, PerkDeckDef | B | `content/data/skills/`, `content/data/perks/` | B (UI + resolver) |
 | LootDef | B (values), C (bag models) | `content/data/loot/` | A, B |
@@ -24,3 +24,8 @@ listed. All data ids follow `groups.md`. The code headers are authoritative for 
   BODY/BOLT/AMMO/CHARM/SKIN→ model swap or material (B decides per weapon).
 * ENV B's `LoadoutResolver.resolve(loadout) -> Loadout` is the single implementation of stat
   resolution, concealment totals, and DR (lookup in the PD2-style curve). ENV A must not reimplement it.
+
+## Strings
+`game/content/data/strings/strings.csv` (ENV B), header `keys,en`, Godot's default CSV translation importer.
+The lead registers the generated `strings.en.translation` in `project.godot` (internationalization/locale/translations)
+when it first merges. No runtime Translation registration.
