@@ -13,7 +13,9 @@ cost_basic = 3
 cost_aced = 6
 desc_basic = "While charging a melee attack, counter enemies that strike you and knock them down."
 desc_aced = "You also counter Phantom kicks."
-grants_basic = {}
+grants_basic = {
+&"defense.melee_counter": true
+}
 grants_aced = {
 &"defense.cloaker_counter": true
 }

@@ -81,7 +81,11 @@ func show_result(heist_result: Dictionary) -> void:
 ## PayoutCalculator.compute for `crew_slot` with the profile's banked stealth multiplier (D-022).
 static func compute_payout(heist_result: Dictionary, p: PlayerProfile, crew_slot: int) -> Dictionary:
 	var banked: float = p.banked_stealth_mult if p != null else 1.0
-	return PayoutCalculator.compute(heist_result, null, null, false, crew_slot, banked)
+	var xp_mult: float = 1.0
+	if p != null:
+		var mods: Dictionary = LoadoutResolver.resolve(p.loadout).modifiers
+		xp_mult = float(mods.get(&"progression.xp_mult", 1.0))
+	return PayoutCalculator.compute(heist_result, null, null, false, crew_slot, banked, xp_mult)
 
 
 func _apply() -> void:

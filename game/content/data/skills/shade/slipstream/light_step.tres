@@ -14,6 +14,9 @@ cost_aced = 3
 desc_basic = "25% more stamina. Sprint 25% faster."
 desc_aced = "+10% dodge while sprinting."
 grants_basic = {
-&"movement.stamina_mult": 1.25
+&"movement.stamina_mult": 1.25,
+&"movement.sprint_speed_mult": 1.25
 }
-grants_aced = {}
+grants_aced = {
+&"defense.sprint_dodge_add": 0.1
+}

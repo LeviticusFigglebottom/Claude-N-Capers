@@ -13,5 +13,17 @@ cost_basic = 4
 cost_aced = 8
 desc_basic = "If you lose no armor or health for 4 s, gain +35% critical hit chance for 6 s."
 desc_aced = "The critical hit bonus lasts 18 s."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"weapon.unseen_strike": {
+"idle_s": 4.0,
+"crit_add": 0.35,
+"duration": 6.0
+}
+}
+grants_aced = {
+&"weapon.unseen_strike": {
+"idle_s": 4.0,
+"crit_add": 0.35,
+"duration": 18.0
+}
+}

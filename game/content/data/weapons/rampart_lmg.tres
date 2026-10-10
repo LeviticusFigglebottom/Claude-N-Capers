@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://b1a6hmm3r64wx" path="res://assets/weapons/wpn_rampart_lmg/wpn_rampart_lmg.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 48.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 750.0
+spread_deg_hip = 6.0
+spread_deg_ads = 1.6
+recoil_kick_deg = 1.1
+recoil_horizontal_deg = 0.7
+falloff_start_m = 25.0
+falloff_end_m = 45.0
+falloff_min_mult = 0.6
+mag_size = 100
+total_ammo = 300
+reload_time_s = 5.6
+reload_empty_time_s = 6.6
+equip_time_s = 0.9
+ads_time_s = 0.45
+concealment = 2
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 22.0
+ammo_pickup_min = 8.0
+ammo_pickup_max = 16.0
+suppressed = false
+noise_radius_m = 90.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.rampart_lmg"
+display_name = "Rampart"
+manufacturer = "Graff-Lindqvist"
+weapon_class = 4
+slot = 0
+fire_modes = Array[StringName]([&"auto"])
+base = SubResource("base")
+price = 54000
+unlock_level = 18
+mod_slots = {
+0: [&"mod.rampart_short_barrel"],
+3: [&"mod.rampart_iron_sights", &"mod.rail_reflex_sight", &"mod.rail_prism_scope"],
+5: [&"mod.rampart_bipod"],
+7: [&"mod.rampart_box_100", &"mod.rampart_box_200"]
+}
+default_mods = {
+3: &"mod.rampart_iron_sights",
+7: &"mod.rampart_box_100"
+}
+fire_cue = &"cue.weapon_lmg_fire"
+fire_cue_suppressed = &"cue.weapon_lmg_fire_suppressed"
+anim_set = &"lmg"
+model = ExtResource("3")

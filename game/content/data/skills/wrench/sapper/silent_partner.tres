@@ -13,5 +13,21 @@ cost_basic = 3
 cost_aced = 6
 desc_basic = "Switch your sentry guns to quiet mode: enemies are much less likely to target them."
 desc_aced = "Switch your sentry guns to armor-piercing rounds: 75% lower fire rate, 250% more damage, pierces enemies and shields."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"deploy.sentry_modes": {
+"quiet": true,
+"ap": false,
+"quiet_threat_mult": 0.2,
+"ap_fire_rate_mult": 0.25,
+"ap_damage_mult": 3.5
+}
+}
+grants_aced = {
+&"deploy.sentry_modes": {
+"quiet": true,
+"ap": true,
+"quiet_threat_mult": 0.2,
+"ap_fire_rate_mult": 0.25,
+"ap_damage_mult": 3.5
+}
+}

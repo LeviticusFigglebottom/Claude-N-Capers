@@ -13,5 +13,17 @@ cost_basic = 4
 cost_aced = 8
 desc_basic = "Automatic fire with SMGs, LMGs, assault rifles and special weapons applies 30% of the headshot bonus to body hits."
 desc_aced = "90% of the headshot bonus applies."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"weapon.body_expertise": {
+"frac": 0.3,
+"auto_only": true,
+"classes": ["smg", "lmg", "assault_rifle", "special"]
+}
+}
+grants_aced = {
+&"weapon.body_expertise": {
+"frac": 0.9,
+"auto_only": true,
+"classes": ["smg", "lmg", "assault_rifle", "special"]
+}
+}

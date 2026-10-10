@@ -26,7 +26,12 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | A2-04 | Keypads + code notes, safes with methods and time locks, saws, laser grids, zipline | S9.4, S9.7, S9.8, S9.10, S9.11 |
 | A2-05 | Guard cuff flow (yell, pause, cuff, 4 min cooldown, 60 s self-free), body-shot misfire, marking + Sixth Sense | S3.2, S3.7, S2.9 |
 | A2-06 | Deployables runtime: doctor bag, FAK, ammo bag, body bag case, ECM; dodge rolls | L2.11, L2.4, S6.2 |
+| A2-08 | Glasshouse feedback from ENV C (D-037): VariantResolver conditional forcing (`force_if`), per-slot `requires`, `min_difficulty` on rare events, per-difficulty scalar weights; window prefab glass sized from the visual's `Glass` AABB; safe KEYCARD method (reader-bound); one-way push-bar door (fire exits); security_camera collision kept in front of its wall-mount pivot | (QC-7) |
 | A2-07 | Restrained/hostage stimuli, stealth-only heist mode (alarm = fail), pre-planning asset hooks (spawn choice, asset drops, modifier assets) | S6.4, S11.3, C3 |
+
+| B2-01 | Pre-planning + assets UI: HeistDef.preplanning, favors budget, location choice on the map blueprint, asset purchase, plan vote stub | C3 |
+| B2-02 | Briefing screen: contact portrait slot, objectives, loot, escape options | C2 |
+| B2-03 | Mask customization data/UI (base shapes from ENV D, colours/patterns/materials) | P8 |
 
 ## P1: Vertical slice (detailed)
 
@@ -69,7 +74,7 @@ Routine and Brutal. Solo-first, with every system written authority-correct.
 ### ENV C: Worlds & Art
 | Id | Task | Depends |
 |---|---|---|
-| C1-00 | **Art direction samples** (PO request, D-018): 2 assets × 3 styles, parametric, rendered to docs/art/style_samples/ | C1-01 core |
+| C1-00 | ✅ DONE (D-035: GSR chosen). **Art direction samples** (PO request, D-018): 2 assets × 3 styles, parametric, rendered to docs/art/style_samples/ | C1-01 core |
 | C1-01 | Pipeline: `tools/blender/lib` (scene reset, materials M_ naming, bevel/weighted normals, UV, LOD, glTF export, determinism), `build.py`, `tools/texgen` (tileables, trim sheet, ORM packing, LUT), `tools/audiogen` (synth core), Godot glb post-import script, `docs/art/pipeline.md` how-to | — |
 | C1-02 | Greybox modular kit (walls/doors/windows/stairs/floors/ceilings on 0.5 m grid) + greybox materials | C1-01 |
 | C1-03 | **Glasshouse design doc (G0)** → lead approval → **greybox (G1)** with every contract node, variants table, mission script (on HeistMission when A1-01 lands) | C1-02 |

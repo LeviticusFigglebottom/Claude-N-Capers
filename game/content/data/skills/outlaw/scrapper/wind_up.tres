@@ -13,5 +13,21 @@ cost_basic = 2
 cost_aced = 4
 desc_basic = "Each kill adds +100% damage to your next melee hit, up to +1600%. A melee kill spends it."
 desc_aced = "A melee kill gives 50% faster reloads for 10 s."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"weapon.melee_bloodthirst": {
+"per_kill": 1.0,
+"max_mult": 17.0
+}
+}
+grants_aced = {
+&"weapon.kill_reload_buff": {
+"trigger": "melee_kill",
+"kills": 1,
+"classes": [],
+"reload_mult": 1.5,
+"duration": 10.0,
+"min_mult": 1.5,
+"mag_falloff": 0.0,
+"mag_falloff_from": 0
+}
+}

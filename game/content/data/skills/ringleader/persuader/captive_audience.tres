@@ -14,7 +14,8 @@ cost_aced = 6
 desc_basic = "Your gunfire intimidates nearby civilians, and intimidated civilians stay down 50% longer."
 desc_aced = "When you go down, a hostage near you can revive you. Once per heist."
 grants_basic = {
-&"stealth.civilian_stay_down_mult": 1.5
+&"stealth.civilian_stay_down_mult": 1.5,
+&"stealth.noise_intimidates_civilians": true
 }
 grants_aced = {
 &"ability.stockholm": true

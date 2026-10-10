@@ -1,8 +1,7 @@
-# Perk decks (B4-02): data layout, proposed PARAMS schemas, requested keys
+# Perk decks (B4-02): data layout, PARAMS schemas, granted keys
 
-Owner: ENV B. Status: **proposal for lead review.** ENV A implements the mechanics and writes the
-final schema in `game/systems/modifiers_params.md` (contracts/modifiers.md). Until then, this file
-records what our data grants.
+Owner: ENV B. Status: **approved (D-031, QB-33..37).** This file is the authoritative param schema for
+ENV A (D-031); changes go through the lead. ENV A implements the mechanics.
 
 Spec: pd2_fidelity.md P4 and the P-decks table. Reference: pd2_research.md §3.2 and Appendix B.
 Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). Tests:
@@ -15,13 +14,13 @@ Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). T
 * Cards 1, 3, 5, 7 and 9 are unique to the deck. Cards 2, 4, 6 and 8 are the shared cards, and they
   are identical in every deck, including the string keys:
 
-| # | Ours | PD2 | Grants | Not covered (requested key) |
-|---|---|---|---|---|
-| 2 | Headhunter | Helmet Popping | `weapon.headshot_mult.all` 1.25 | none |
-| 4 | Low Profile | Blending In | `stealth.concealment_add.all` 1 | +45% XP, −15% armor move penalty |
-| 6 | Go Bag | Walk-in Closet | `weapon.ammo_pickup_mult.all` 1.35 | armor bag |
-| 8 | Hustle | Fast and Furious | `weapon.damage_mult.all` 1.05 | +20% doctor bag interaction speed |
-| 9 | (completion bonus) | Deck Completion Bonus | none | +10% better PAYDAY card quality |
+| # | Ours | PD2 | Grants |
+|---|---|---|---|
+| 2 | Headhunter | Helmet Popping | `weapon.headshot_mult.all` 1.25 |
+| 4 | Low Profile | Blending In | `stealth.concealment_add.all` 1, `progression.xp_mult` 1.45, `movement.armor_penalty_mult` 0.85 |
+| 6 | Go Bag | Walk-in Closet | `weapon.ammo_pickup_mult.all` 1.35, `deploy.armor_bag` true |
+| 8 | Hustle | Fast and Furious | `weapon.damage_mult.all` 1.05, `interaction.doctor_bag_speed_mult` 0.8333 (20% faster) |
+| 9 | (completion bonus) | Deck Completion Bonus | `progression.card_drop_quality_add` 0.1, added to every deck's own card 9 |
 
 * Strings: `perk.<deck>.name` and `perk.<deck>.desc` for the deck, and
   `perk.<deck>.card<n>.name/.desc` for unique cards. Shared cards use
@@ -29,7 +28,11 @@ Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). T
   (the UI shows it under card 9). `PerkDeckDef.display_name` is an English debug fallback, and
   `description` holds the strings key.
 * `LoadoutResolver.resolve_modifiers` merges cards `1..min(perk_deck_cards, 9)` of the active deck,
-  in order: MULT multiplies, ADD sums, FLAG ors, PARAMS last wins.
+  in order: MULT multiplies, ADD sums, FLAG ors, PARAMS last wins. A LIST grant on a card becomes its own
+  entry tagged `"_source": &"<deck id>.card<n>"` (no deck grants one today; skills.md "LIST keys").
+* `team.*` grants of the unlocked cards are left out of the personal modifiers and returned by
+  `LoadoutResolver.team_modifier_sources(loadout)` as one TEAM source `&"team_perk.<deck>"` (e.g.
+  `team_perk.foreman`), so two players with the same deck do not stack (D-031 QB-35).
 
 ### Authoring rules
 
@@ -43,13 +46,14 @@ Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). T
    +100%), but our MULT type is a product. Each card therefore grants `cum(n) / cum(n−1)`, so after
    any number of unlocked cards the product equals PD2's cumulative value. Example: Bulk
    `defense.health_mult` is 1.1, 1.0909091, 1.1666667, 1.4285714, giving 1.1, 1.2, 1.4, 2.0. A
-   skill's MULT on the same key still multiplies on top (◇ PD2 adds skill and perk multipliers;
-   the lead should decide whether ENV A sums `(m−1)` across sources instead).
+   skill's MULT on the same key still multiplies on top (D-031 QB-34: MULT stays multiplicative
+   across sources, a deliberate departure from PD2's additive percentages).
 3. **"Armor recovery rate +X%"** in PD2 shortens the armor regen *delay*. We grant
    `defense.armor_regen_delay_mult` 0.9 per +10%.
 4. **Team keys** (`team.*`) are assumed to apply to every crew member, the granter included. Where
    the PD2 text gives a personal total ("crew +10%, you +20%"), the personal key carries the ratio
-   (Foreman `defense.health_mult` 1.0909091 × `team.health_mult` 1.1 = 1.2).
+   (Foreman `defense.health_mult` 1.0909091 × `team.health_mult` 1.1 = 1.2). Confirmed by D-031 QB-35:
+   TEAM sources apply to the granter; the deck's team grants go to TEAM source `team_perk.<deck>`.
 5. "Medium range" or "close range" in PD2 text = 18 m (◇ PD2 `close_combat_distance` 1800 cm).
 6. Deck throwables use `perk.throwable {item_id}`. The item ids `throwable.steady_flask` (Composure)
    and `throwable.boss_injector` (Overlord) must be authored by the armory task (B4-04).
@@ -59,9 +63,9 @@ Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). T
 
 | Deck | PD2 | Signature key | Generic keys used |
 |---|---|---|---|
-| Foreman | Crew Chief | `team.damage_reduction_hostage`, `team.*`, `perk.crew_chief` | `team.stamina_mult` 1.5, `team.health_mult` 1.1, `team.armor_mult` 1.05, `defense.health_mult`, `defense.armor_mult` |
+| Foreman | Crew Chief | `team.damage_reduction_hostage`, `team.*`, `perk.crew_chief` | `team.stamina_mult` 1.5, `team.health_mult` 1.1, `team.armor_mult` 1.05, `defense.health_mult`, `defense.armor_mult`, `ability.shout_range_mult` 1.25 |
 | Bulk | Muscle | `perk.muscle` | `defense.health_mult` → 2.0 |
-| Ironclad | Armorer | `perk.armorer` | `defense.armor_mult` → 1.35, `defense.armor_regen_delay_mult` 0.9 |
+| Ironclad | Armorer | `perk.armorer` | `defense.armor_mult` → 1.35, `defense.armor_regen_delay_mult` 0.9, `team.armor_regen_delay_mult` 0.9 |
 | Slipper | Rogue | `perk.rogue_dodge_stack` | `defense.dodge_add` 0.45, `weapon.armor_pierce_add.all` 0.25, `weapon.swap_speed_mult.all` 1.8 |
 | Hustler | Crook | `perk.crook` | `defense.dodge_add` 0.15, `defense.armor_regen_delay_mult` 0.9 |
 | Clean Sweep | Hitman / Sociopath | `perk.sociopath` | `defense.armor_mult` → 1.2, `defense.armor_regen_delay_mult` 0.9 |
@@ -80,8 +84,8 @@ Notes on PD2 deviations:
   Claw (card 9). Sociopath's OVERDOG card is left out because Knuckles already has it.
 * **Slipper**: Rogue's "80% faster swap" is a swap speed of 1.8 (◇ PD2 swap speed multiplier), not
   a swap time of ×0.2.
-* **Hustler**: the vest bonus applies to every armor except the Tailored Suit (research: "ballistic
-  vests"). The fidelity table says "mid vests only". ◇ The lead decides whether heavy plates count.
+* **Hustler**: the vest bonus applies to the Light Vest, Patrol Vest and Heavy Vest only (D-031 QB-37:
+  PD2 "ballistic vests" LBV/BV/HBV analogs). Suit, Flak Rig, Tactical Plate and Breacher Plate get nothing.
 * **Bloodletter**: the PD2 Euphoria armor-pierce "20%" is read as the total (card 5 +0.1, card 9
   +0.1).
 * **Incumbent**: card 5 gives +15 dodge (the PD2 note says Life of Ice gives 15, not 10).
@@ -105,7 +109,8 @@ All lengths are in meters, times in seconds, health and armor in PD2 display uni
 | hostage_max_count | int | count | 4 | 9 | Hostages counted for the two fields above. |
 
 Card 9 also grants `team.damage_reduction_hostage {per: 0.08, max: 0.08}`: 8% crew damage
-reduction while there is at least one hostage. Card 3's +25% shout distance needs a requested key.
+reduction while there is at least one hostage. Card 3 grants `ability.shout_range_mult` 1.25 (personal).
+Cards 3/5/7/9 `team.*` grants route to TEAM source `team_perk.foreman`.
 
 ### `perk.muscle` (Bulk)
 | Field | Type | Unit | Value | Card | Semantics |
@@ -122,7 +127,10 @@ reduction while there is at least one hostage. Card 3's +25% shout distance need
 |---|---|---|---|---|---|
 | break_immunity_s | float | s | 2.0 | 7 | Health-damage immunity when armor reaches 0. |
 | break_immunity_cooldown_s | float | s | 15.0 | 7 | Minimum time between immunities. |
-| team_regen_delay_mult | float | × | 0.9 | 9 | Armor regen delay multiplier for the whole crew, holder included (PD2 Liquid Armor). Could become a `team.armor_regen_delay_mult` key instead. |
+
+Card 9's crew-wide armor regen delay (PD2 Liquid Armor) is the team key `team.armor_regen_delay_mult` 0.9
+(TEAM source `team_perk.ironclad`, holder included). It replaced the former
+`perk.armorer.team_regen_delay_mult` field at D-031, so card 9 no longer re-grants `perk.armorer`.
 
 ### `perk.rogue_dodge_stack` (Slipper)
 | Field | Type | Unit | Value | Card | Semantics |
@@ -136,7 +144,7 @@ miss") does not match PD2 Rogue; we suggest rewording it to "Slipper: reduced ag
 ### `perk.crook` (Hustler)
 | Field | Type | Unit | Value | Card | Semantics |
 |---|---|---|---|---|---|
-| vest_armor_ids | Array[StringName] | ids | all armors except armor.tailored_suit | 3 | Armors that get the bonus. |
+| vest_armor_ids | Array[StringName] | ids | armor.light_vest, armor.patrol_vest, armor.heavy_vest | 3 | Armors that get the bonus (D-031 QB-37). |
 | vest_dodge_add | float | 0..1 | 0.05 → 0.15 → 0.25 | 3/5/7 | Dodge added while wearing one of those armors (cumulative). |
 | vest_armor_mult | float | × | 1.2 → 1.4 → 1.65 | 3/5/7 | Max armor multiplier while wearing one of them (cumulative). |
 
@@ -254,7 +262,9 @@ Card 1 also grants `perk.throwable {item_id: &"throwable.boss_injector"}`.
 `per` = damage reduction per hostage, `max` = cap. We grant `{per: 0.08, max: 0.08}`, which means
 8% as soon as there is one hostage.
 
-## Requested keys (no registry key yet, not granted in data)
+## Requested keys (granted, D-031)
+
+Registered at phase 4 by D-031 and granted in the data as listed.
 
 | Proposed key | Type | Used by | Semantics |
 |---|---|---|---|
@@ -264,8 +274,8 @@ Card 1 also grants `perk.throwable {item_id: &"throwable.boss_injector"}`.
 | `interaction.doctor_bag_speed_mult` | MULT | shared card 8 (0.8333 = 20% faster) | Doctor bag use time multiplier (lower = faster). |
 | `progression.card_drop_quality_add` | ADD | card 9 completion bonus (0.1) | Chance that a PAYDAY card rolls the next quality tier. |
 | `ability.shout_range_mult` | MULT | Foreman card 3 (1.25) | Shout distance (all shout targets). The existing `stealth.civilian_intimidate_range_mult` only covers civilians. |
-| `team.armor_regen_delay_mult` | MULT | Ironclad card 9 (0.9), optional | Crew-wide armor regen delay. It would replace `perk.armorer.team_regen_delay_mult`. |
+| `team.armor_regen_delay_mult` | MULT (team) | Ironclad card 9 (0.9) | Crew-wide armor regen delay (TEAM source `team_perk.ironclad`). Replaced `perk.armorer.team_regen_delay_mult`. |
 
-Questions for the lead (◇): sum versus product for MULTs from skills and perk cards (rule 2);
-whether `team.*` includes the granter (rule 4); whether heavy plates count as "vests" for Hustler;
-rewording the registry descriptions of `perk.rogue_dodge_stack` and `perk.crook` to match PD2.
+Answered by D-031: MULTs stay multiplicative (QB-34); `team.*` includes the granter and perk-deck team
+grants go to `team_perk.<deck>` (QB-35); Hustler vests are Light/Patrol/Heavy only (QB-37); the registry
+descriptions of `perk.rogue_dodge_stack` and `perk.crook` were reworded.

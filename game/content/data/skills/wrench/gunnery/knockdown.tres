@@ -13,5 +13,9 @@ cost_basic = 2
 cost_aced = 4
 desc_basic = "Your shots have a 5% chance to stagger enemies (Wreckers and Commander Brandt are immune)."
 desc_aced = "The stagger chance rises to 20%."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"weapon.stagger_chance_add.all": 0.05
+}
+grants_aced = {
+&"weapon.stagger_chance_add.all": 0.15
+}

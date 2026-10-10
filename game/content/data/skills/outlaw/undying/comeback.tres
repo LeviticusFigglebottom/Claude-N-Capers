@@ -16,4 +16,6 @@ desc_aced = "Using a Doctor Bag restores your charge."
 grants_basic = {
 &"defense.self_revive_charges": 1
 }
-grants_aced = {}
+grants_aced = {
+&"defense.self_revive_refill_on_doctor_bag": true
+}

@@ -13,5 +13,15 @@ cost_basic = 2
 cost_aced = 4
 desc_basic = "Crew members you revive take 30% less damage for 5 s."
 desc_aced = "That damage reduction rises to 80%."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"ability.revive_target_buff": {
+"damage_taken_mult": 0.7,
+"duration": 5.0
+}
+}
+grants_aced = {
+&"ability.revive_target_buff": {
+"damage_taken_mult": 0.2,
+"duration": 5.0
+}
+}

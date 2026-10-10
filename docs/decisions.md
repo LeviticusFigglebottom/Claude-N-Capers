@@ -154,3 +154,30 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 ## D-033 — 2026-10-10 — A-M2/A-M3 merged: P1 systems complete on trunk
 - Merged env/b-content @ 8554760 (state-tolerant tests), then env/a-core @ b2586fc (detection, guard AI, civilians, pagers incl. juggling and the cap, bodies, bags, prefab behaviour incl. drill jams, combat on the D-026 single hit path, downs/bleedout/revive, assault director wave cycle, Patrol Officer/TAC Light AI, AI teammates, modifier hooks, sandbox gate test). Trunk check_all PASS: 432 tests, 0 failed.
 - The P1 gate now waits only on ENV C's Glasshouse G1 map (and art for G2). ENV A's sandbox already passes the gate scenarios.
+
+## D-034 — 2026-10-10 — Answers QB-38..45
+- QB-38: `Modifiers.list()` accepts a source value that is a Dictionary or an Array of Dictionaries. Each entry keeps its own `_source`, which defaults to the source name.
+- QB-39: `defense.post_revive_buff` becomes LIST.
+- QB-40: confirmed: `kill_reload_buff.mag_falloff_from`; Bulletstorm duration = lerp(base, max, fraction of the refill taken); `melee_bloodthirst.max_mult` = 17.0.
+- QB-41: ENV C adds `alu_anodized_black`, `polymer_tan`, `polymer_olive`, `glass_lens_coated` and re-checks albedo for `polymer_black`, `rubber_black` and `metal_matte` on weapons (style guide floor 0.04 linear; current renders read too light).
+- QB-42: viewmodel anim sets `pistol` (Warden .45 shares it), `smg`, `rifle`, `shotgun`, `lmg`, `sniper` → ENV D (rig_arms). `cue.weapon_<set>_fire(_suppressed)` + reload cues per set → ENV C. Animated parts `Pump`/`Bolt` are in visual_slots.md, and ENV A animates them.
+- QB-43: `WeaponStats.reload_per_round_s / reload_start_s / reload_end_s` added (0 = magazine reload). Shell-by-shell reload is interruptible by firing (PD2), and ENV A implements it. Display pellet exponent 1 (show pellet damage × pellets): accepted.
+- QB-44: recorded in visual_slots.md.
+- QB-45: perk points = floor(XP / 500) from all XP (◇). Move the setting to `content/data/tweak/`.
+
+## D-035 — 2026-10-10 — ART DIRECTION LOCKED: Grounded Stylized Realism (product owner)
+- The product owner chose option A (GSR) after reviewing the counter samples. This supersedes the provisional D-012/D-018.
+- style_guide.md §1 is updated. The `a_gsr` renders are the reference bar.
+- ENV D: drop the noir/photo officer variants. The head/officer fix becomes the GSR character baseline for D1-02.
+- ENV C/B/D: remove "parametric across directions" as a requirement. Keep code clean, but stop spending effort on non-GSR presets.
+
+## D-036 — 2026-10-10 — P1 gate placement made map-agnostic (QC-6); officer v2 + rig merged
+- QC-6: the gate no longer teleports bots to fixed offsets. `BotUtil.find_clear_point(target, dist, behind)` searches navmesh points with architectural line of sight: behind sweeps ±110° (outside the 120° FOV), in front ±45° with props blocking. `_launch` waits for `BotUtil.nav_ready`. Verified against ENV C's Glasshouse G1 snapshot (0152852): **gate steps 1, 2, 4 and 8 PASS**. The floor guard post stays as approved.
+- QC-8: ENV C drops its duplicate `test_glasshouse_gate.gd`. The lead's gate is the only P1 gate.
+- Merged env/d-art: GSR officer v2 reference render, rig_humanoid (52 contract bones) + parametric body generator, mask_gilded_heron. ENV B points `mask.gilded_heron` MaskDef.model at `res://assets/masks/mask_gilded_heron/mask_gilded_heron.glb`.
+
+## D-037 — 2026-10-10 — Glasshouse G1 deviations accepted (QC-7); ENV A follow-ups
+- G1 screenshots reviewed (23 shots + plans): the layout matches the approved G0 plans and is plausible for greybox stage. Merge waits on validate_all PASS (ENV C is fixing two validator bugs).
+- Accepted deviations: one merged `building` patrol graph; customers as a slot group; the smoker⇒propped rule as excludes + mission logic (P(kc_jeweler) 15.8% is fine); the floor guard as a fixed spawn with guard_post holding only rovers; P2 rows at pick 0 with cameras as markers until A fixes the prefab collision; the workshop ceiling override; door shifts of 0.2–0.5 m; the 1.1 m fire-exit leaf; kit window sizes. Rare events on zero-weight carrier slots are a temporary hack, to be replaced when A ships `min_difficulty`/`force_if` (A2-08).
+- ENV A gets A2-08 (resolver features, window glass sizing, safe KEYCARD method, push-bar door, camera collision).
+- Visual contract: the kit door `Collision` is a sibling of `Frame`. visual_slots.md stays as written (`Frame` supplies collision) and ENV C aligns the kit.

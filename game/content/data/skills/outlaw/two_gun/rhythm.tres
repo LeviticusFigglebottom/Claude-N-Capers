@@ -13,7 +13,15 @@ cost_basic = 3
 cost_aced = 6
 desc_basic = "Each pistol hit gives +10% accuracy for 10 s, stacking 4 times."
 desc_aced = "Reload pistols 50% faster."
-grants_basic = {}
+grants_basic = {
+&"weapon.hit_stack_buff": {
+"class": "pistol",
+"stat": "accuracy",
+"per_hit": 0.1,
+"max_stacks": 4,
+"duration": 10.0
+}
+}
 grants_aced = {
 &"weapon.reload_speed_mult.pistol": 1.5
 }

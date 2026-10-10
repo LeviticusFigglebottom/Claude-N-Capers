@@ -16,4 +16,6 @@ desc_aced = "Take 50% less damage while interacting."
 grants_basic = {
 &"interaction.no_interrupt_on_damage": true
 }
-grants_aced = {}
+grants_aced = {
+&"defense.interact_damage_taken_mult": 0.5
+}

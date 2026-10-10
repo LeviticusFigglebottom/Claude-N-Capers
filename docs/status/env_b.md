@@ -3,6 +3,51 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-10 17:30 UTC — B4-03, B4-04, D-031 key grants; state-tolerant tests for A-M2/M3
+### Done
+- State-tolerant tests (8554760). The range accepts either the real crew or the temporary camera; the HUD binds a v1.1 model directly or an A1-11 model through the adapter. Verified on a trial merge with origin/env/a-core.
+- D-031 (1a48390). Every requested key is granted and `blocked_on_keys` is empty; the strict test is restored as `test_no_blocked_parts_and_every_requested_key_is_granted`.
+  - LIST merge: see QB-38.
+  - Routing: `team_perk.<deck>` for perk `team.*`; `team_skill.<id>` for skills; neither duplicated in personal modifiers.
+  - Hustler vests are Light, Patrol and Heavy only.
+  - The suppressed concealment qualifier counts once per suppressed weapon.
+- B4-03 (d3796a1). Skill tree screen and perk deck screen, opened from the loadout screen.
+  - Tiers, basic/aced, and a refund that is blocked if it would break a tier gate (PD2 style).
+  - Free respec with confirmation; 3 skill sets.
+  - Save format v3 (`skill_sets`, `active_skill_set`, `perk_cards`) with a 2→3 migration.
+  - Perk points = floor(total XP / 500) ◇. Each deck keeps its own card progress, unlocked in order.
+- B4-04 (59a7bdc..ac7447d). Six weapons with models and previews:
+  - Warden .45 (pistol), Hornet 9 (SMG, secondary), Corsair (AR), Plowman 12 (pump shotgun, 10 pellets), Rampart (LMG), Heron .308 (bolt sniper: AP, shield and wall pierce, falloff min 1.35).
+  - 30 mods (shared rail reflex and prism optics) and stock parts. Deterministic: 92/92 identical files.
+  - Throwables `throwable.steady_flask` and `throwable.boss_injector` exist for the perk decks.
+  - P9 previews re-rendered with the library materials.
+- `check_all.sh --env b` on a fresh merge with trunk 5d1cc0f: PASS (326 tests, 0 failed, 7 skipped).
+### In progress
+- —
+### Next (queued, ≥2 h)
+- After A-M2/M3 land on trunk: switch the range to the real crew and weapon runtime (debug camera only as a fallback), delete HudModelAdapter, bind the HUD directly.
+- Apply `progression.xp_mult` in PayoutCalculator.
+- Pending lead answers below: shotgun per-shell reload, shotgun display damage.
+### Blocked
+- —
+### Questions for lead
+- QB-38 (LIST emit shape; core change needed). `Loadout.modifiers[key]` holds `Array[Dictionary]` for the LIST keys:
+  - One deep-copied entry per granting skill or card, each tagged `"_source": StringName` (a skill id, or `perk.<deck>.card<n>`).
+  - Entries are sorted by `ContentDB.id_less`; within one skill the aced dict replaces the basic one.
+  - `Modifiers.list()` currently casts `values[key] as Dictionary`. Please make it accept an Array: append each entry and keep its own `_source`, setting `_source` to the source name only when the entry has none.
+- QB-39. `defense.post_revive_buff` (PARAMS, last-wins) is granted by two skills, Back on Your Feet and Second Lease, so one overrides the other. Should it become LIST, or should we merge the grant?
+- QB-40 (schema additions marked ◇ in skills.md; please confirm):
+  - `weapon.kill_reload_buff.mag_falloff_from` (Run and Gun: "per round above 20").
+  - Bulletstorm duration = lerp(base, max, fraction of the refill taken).
+  - `weapon.melee_bloodthirst.max_mult` = 17.0 (+1600%).
+- QB-41 (materials, ENV C). The new weapons also need `alu_anodized_black`, `polymer_tan`, `polymer_olive` and `glass_lens_coated`. Library `polymer_black`, `rubber_black` and `metal_matte` also render quite light on weapons.
+- QB-42 (ENV D anim sets, ENV C cues). Viewmodel sets `smg`, `rifle`, `shotgun`, `lmg` and `sniper`, plus `cue.weapon_<set>_fire(_suppressed)` for each. Should the Warden .45 share the pistol set? Animated parts for ENV A: the shotgun `Pump` (slides +Z) and the sniper `Bolt`.
+- QB-43. Shotgun reload is whole-tube today; PD2 loads shell by shell. Add `WeaponStats.reload_per_round_s` (or similar)? Separately, the display damage for pellets shows 16 instead of a PD2-style 160. B will set `damage_pellet_exponent = 1` in our display tweak unless you object.
+- QB-44. Record in visual_slots.md: `Magwell` sits at the loading port on tube-fed weapons; bipods are a flat recoil bonus until a deploy mechanic exists.
+- QB-45. Perk points: floor(XP / 500) from all XP (◇, about 23k points by level 100). Is that OK? The setting lives in `data/ui/progression_ui.tres`; move it to `data/tweak/`?
+### Ready for integration
+- yes (B4-03, B4-04, D-031 grants); `check_all.sh --env b` result: PASS
+
 ## 2026-10-10 16:30 UTC — B4-01 skills, B4-02 perk decks (P4 pulled forward, D-027)
 ### Done
 - D-027 crit rule on range targets (crit ⇒ head mult on any zone; stacks on head), with a test.

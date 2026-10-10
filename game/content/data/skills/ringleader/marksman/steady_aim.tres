@@ -16,4 +16,6 @@ desc_aced = "+16 accuracy (16% tighter spread) while standing still."
 grants_basic = {
 &"weapon.recoil_mult.all": 0.92
 }
-grants_aced = {}
+grants_aced = {
+&"weapon.still_spread_mult.all": 0.84
+}

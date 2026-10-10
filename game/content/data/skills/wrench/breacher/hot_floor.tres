@@ -13,5 +13,15 @@ cost_basic = 4
 cost_aced = 8
 desc_basic = "Your trip mines leave a 4 m wide fire for 10 s when they go off."
 desc_aced = "The fire lasts 10 s longer and covers a 50% larger area."
-grants_basic = {}
-grants_aced = {}
+grants_basic = {
+&"deploy.trip_mine_fire": {
+"duration": 10.0,
+"radius": 2.0
+}
+}
+grants_aced = {
+&"deploy.trip_mine_fire": {
+"duration": 20.0,
+"radius": 2.45
+}
+}

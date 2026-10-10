@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import math
 
-import bmesh
 from mathutils import Vector
 
 from lib import geo, uv
@@ -64,7 +63,7 @@ MAG_HALF_DEPTH = 0.0160
 MAG_BODY_LEN = 0.090             # standard 17-round body (hidden in the grip, visible on reloads)
 EXT_MAG_EXTRA = 0.034            # +8 rounds of double stack below the grip
 
-FP_DENSITY = uv.DENSITY_FIRST_PERSON
+FP_DENSITY = uv.DENSITY_FIRST_PERSON  # same value as _common.FP_DENSITY
 
 
 def grip_front_y(z: float) -> float:
@@ -93,92 +92,8 @@ MAGWELL_POS = (0.0, grip_mid_y(GRIP_BOTTOM_Z), GRIP_BOTTOM_Z)
 MAGWELL_ROT = (-math.radians(GRIP_ANGLE_DEG), 0.0, 0.0)
 
 
-# --- materials ---------------------------------------------------------------------------------
-class Mats:
-    """Material slots M_<library_id>. Flat colours are the sRGB placeholders shown in Godot until the
-    shared library (game/world/materials/<id>.tres, ENV C) provides the real PBR material."""
-
-    def __init__(self, ctx) -> None:
-        self.ctx = ctx
-
-    def polymer(self):
-        return self.ctx.material("polymer_black", "#2B2C2E", roughness=0.62)
-
-    def stipple(self):
-        return self.ctx.material("polymer_stipple", "#252628", roughness=0.92)
-
-    def steel(self):
-        return self.ctx.material("steel_blued", "#3A3D42", roughness=0.36, metallic=1.0)
-
-    def bare(self):
-        return self.ctx.material("steel_bare", "#8C8E91", roughness=0.28, metallic=1.0)
-
-    def matte(self):
-        return self.ctx.material("metal_matte", "#4A4C50", roughness=0.58, metallic=0.85)
-
-    def dot(self):
-        return self.ctx.material("paint_white", "#D8D8D2", roughness=0.5)
-
-    def brass(self):
-        return self.ctx.material("brass_cartridge", "#B48F3E", roughness=0.3, metallic=1.0)
-
-    def lens(self):
-        return self.ctx.material("glass_lens_tint", "#6E9A8E", roughness=0.05, metallic=0.0, alpha=0.3)
-
-    def reticle(self):
-        mat = self.ctx.material("emissive_reticle_red", "#FF2A1E", roughness=0.4)
-        bsdf = next(n for n in mat.node_tree.nodes if n.type == "BSDF_PRINCIPLED")
-        bsdf.inputs["Emission Color"].default_value = (1.0, 0.03, 0.015, 1.0)
-        bsdf.inputs["Emission Strength"].default_value = 4.0
-        return mat
-
-
-# --- builder helpers ---------------------------------------------------------------------------
-def finish(mb: geo.MeshBuilder, name: str, bevel: float = 0.0, segments: int = 1, parent=None,
-           angle_deg: float = 30.0):
-    """Recipe: chamfer first, then UVs (determinism), then sharp edges + weighted normals."""
-    if bevel > 0:
-        mb.bevel(bevel, segments=segments, angle_deg=angle_deg)
-    uv.box_project(mb.bm, density=FP_DENSITY)
-    obj = mb.to_object(name, parent)
-    geo.finish_hard_surface(obj)
-    return obj
-
-
-def finish_object_uv(obj):
-    """UV + shading for an object whose mesh was edited after to_object (booleans)."""
-    uv.box_project_object(obj, density=FP_DENSITY)
-    geo.finish_hard_surface(obj)
-    return obj
-
-
-def circle(r: float, n: int, cx: float = 0.0, cy: float = 0.0) -> list[tuple[float, float]]:
-    return [(cx + r * math.cos(2 * math.pi * i / n), cy + r * math.sin(2 * math.pi * i / n)) for i in range(n)]
-
-
-def ring_y(mb: geo.MeshBuilder, r_out: float, r_in: float, y0: float, y1: float, z: float, mat: int,
-           segments: int = 32) -> None:
-    """Tube along Y (bore axis at x=0, height z) with an open bore."""
-    outer = circle(r_out, segments, 0.0, z)
-    hole = list(reversed(circle(r_in, segments, 0.0, z)))
-    mb.prism(outer, holes=[hole], axis="Y", start=y0, end=y1, mat=mat)
-
-
-def pyramid(bm, base_centre: Vector, u: Vector, v: Vector, n: Vector, half: float, height: float,
-            mat: int) -> None:
-    """Four-sided stipple bump: square base (``u``/``v`` half-extents) pushed out along ``n``."""
-    c = base_centre
-    corners = [c + (u * a + v * b) * half for a, b in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
-    vs = [bm.verts.new(p) for p in corners]
-    tip = bm.verts.new(c + n * height)
-    for i in range(4):
-        f = bm.faces.new((vs[i], vs[(i + 1) % 4], tip))
-        f.material_index = mat
-    # make sure normals face out of the grip (along n)
-    for f in tip.link_faces:
-        f.normal_update()
-        if f.normal.dot(n) < 0:
-            f.normal_flip()
+# --- materials and builder recipes: shared with every weapon (_common.py, B4-04) ----------------
+from _common import Mats, circle, finish, finish_object_uv, pyramid, ring_y, tris_of_scene  # noqa: E402,F401
 
 
 def stipple_patch(mb: geo.MeshBuilder, rng, mat: int, side: float, x: float, z0: float, z1: float,
@@ -347,11 +262,3 @@ def build_suppressor(ctx, mats: Mats, parent=None, name: str = "SuppressorBody")
     finish(cap, name + "Cap", bevel=0.0006, segments=1, parent=body)
     ctx.marker("Muzzle", (0.0, length + 0.004, 0.0), parent=body)
     return body
-
-
-def tris_of_scene() -> int:
-    """LOD0 triangles of every visible mesh (same rule as lib.export.validate)."""
-    from lib import naming, scene
-
-    return sum(geo.tri_count(o) for o in scene.all_objects()
-               if o.type == "MESH" and not naming.is_collision_name(o.name))

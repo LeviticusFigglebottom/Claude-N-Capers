@@ -15,8 +15,10 @@ desc_basic = "Your max health drops to 30% and healing on you is 75% weaker, but
 desc_aced = "Take 25% less damage instead, and healing is no longer weakened."
 grants_basic = {
 &"defense.health_mult": 0.3,
-&"defense.damage_taken_mult": 0.9
+&"defense.damage_taken_mult": 0.9,
+&"defense.healing_received_mult": 0.25
 }
 grants_aced = {
-&"defense.damage_taken_mult": 0.8333
+&"defense.damage_taken_mult": 0.8333,
+&"defense.healing_received_mult": 4.0
 }

@@ -2,10 +2,15 @@
 ## melee, armor, deployable, mask. Live StatCalculator numbers with green/red deltas against the
 ## stock weapon, concealment total and detection risk from LoadoutResolver (single source of truth).
 ## Owner: ENV B. Saves the loadout to the profile via SaveService on Back and Launch.
+## B4-03: "Skills" / "Perk Deck" buttons ask MenuFlow to open the skill tree / perk deck screens on
+## the same PlayerProfile (commit_to_profile() first); refresh() afterwards picks up their changes
+## (skills and perk cards feed LoadoutResolver's concealment bonus, so DR updates).
 class_name LoadoutScreen
 extends UiScreen
 
 signal launch_requested(loadout: Loadout)
+signal skills_requested()
+signal perk_deck_requested()
 
 ## [display key, strings key] in panel order (StatCalculator.display keys).
 const STAT_ROWS: Array[Array] = [
@@ -31,6 +36,10 @@ var detection_risk: int = 0
 var concealment_total: int = 0
 var launch_button: Button
 var back_button: Button
+var skills_button: Button
+var perks_button: Button
+var skills_summary_label: Label
+var perk_summary_label: Label
 var _stat_value_labels: Dictionary = {}
 var _stat_delta_labels: Dictionary = {}
 var _mods_box: VBoxContainer
@@ -73,9 +82,17 @@ func build_ui() -> void:
 	root.add_child(nav)
 	back_button = UiBuild.button(&"ui.menu.back")
 	launch_button = UiBuild.button(&"ui.heist_select.start")
+	skills_button = UiBuild.button(&"ui.loadout.skills")
+	perks_button = UiBuild.button(&"ui.loadout.perk_deck")
+	for b: Button in [skills_button, perks_button]:
+		b.custom_minimum_size = Vector2(240, 0)
 	back_button.pressed.connect(_on_back)
 	launch_button.pressed.connect(_on_launch)
+	skills_button.pressed.connect(_on_progression.bind(skills_requested))
+	perks_button.pressed.connect(_on_progression.bind(perk_deck_requested))
 	nav.add_child(back_button)
+	nav.add_child(skills_button)
+	nav.add_child(perks_button)
 	nav.add_child(launch_button)
 	_fill_options()
 	_rebuild_mod_rows()
@@ -107,6 +124,10 @@ func _build_stats_panel() -> PanelContainer:
 	detection_risk_label = UiBuild.label(&"", UiBuild.SUBHEADER)
 	dr_row.add_child(detection_risk_label)
 	v.add_child(dr_row)
+	skills_summary_label = UiBuild.label(&"", UiBuild.DIM)
+	perk_summary_label = UiBuild.label(&"", UiBuild.DIM)
+	v.add_child(skills_summary_label)
+	v.add_child(perk_summary_label)
 	return UiBuild.panel(v)
 
 
@@ -166,6 +187,7 @@ func refresh() -> void:
 	detection_risk = resolved.detection_risk
 	concealment_label.text = UiText.t(&"ui.loadout.concealment_total", {"value": concealment_total})
 	detection_risk_label.text = UiText.t(&"ui.common.percent", {"value": detection_risk})
+	_refresh_progression_summary(l)
 	var stock: WeaponStats = LoadoutResolver.resolve_weapon(l.secondary, [] as Array[StringName])
 	var modded: WeaponStats = resolved.resolved_secondary
 	if stock == null or modded == null:
@@ -190,8 +212,29 @@ func refresh() -> void:
 
 ## Persist the current loadout (input fields only) to the profile.
 func save() -> Error:
-	profile.loadout = current_loadout()
+	commit_to_profile()
 	return SaveService.save_profile(profile, profile_slot)
+
+
+## Copy the widgets' choices into profile.loadout (before another screen edits the same profile).
+func commit_to_profile() -> void:
+	profile.loadout = current_loadout()
+
+
+func _refresh_progression_summary(l: Loadout) -> void:
+	var total: int = SkillPoints.points_for_level(profile.level)
+	skills_summary_label.text = UiText.t(&"ui.loadout.skills_summary",
+			{"spent": SkillPoints.spent_total(l.skills), "total": total})
+	if l.perk_deck == &"":
+		perk_summary_label.text = UiText.t(&"ui.loadout.perk_none")
+	else:
+		perk_summary_label.text = UiText.t(&"ui.loadout.perk_summary",
+				{"deck": UiText.t(StringName("%s.name" % l.perk_deck)), "cards": l.perk_deck_cards})
+
+
+func _on_progression(request: Signal) -> void:
+	save()
+	request.emit()
 
 
 func _fill_options() -> void:
@@ -259,11 +302,12 @@ func _rebuild_focus() -> void:
 	types.sort()
 	for t: Variant in types:
 		focus_chain.append(mod_options[t] as Control)
-	for c: Control in [melee_option, armor_option, deployable_option, mask_option, launch_button, back_button]:
+	for c: Control in [melee_option, armor_option, deployable_option, mask_option, launch_button, skills_button,
+			perks_button, back_button]:
 		focus_chain.append(c)
 	if is_inside_tree():
 		UiNav.chain_vertical(focus_chain)
-		UiNav.chain_horizontal([back_button, launch_button] as Array[Control], false)
+		UiNav.chain_horizontal([back_button, skills_button, perks_button, launch_button] as Array[Control], false)
 
 
 func _on_weapon_changed(_index: int) -> void:

@@ -7,7 +7,7 @@ current when an API changes.
 ```
 content/
   data/                     every balance number (.tres / .csv); no constants in scripts
-    weapons/ mods/ melee/ armor/ deployables/ loot/ difficulty/ masks/
+    weapons/ mods/ melee/ armor/ deployables/ loot/ throwables/ difficulty/ masks/
     tweak/                  concealment_curve.tres, display_stats.tres, payout.tres, xp_curve.tres
     strings/strings.csv     all player-facing text (columns: keys,en)
     voice/lines.tres        voice line table (VoiceLineTable); text lives in strings.csv
@@ -28,9 +28,9 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 ## Public APIs (static unless noted)
 * `ContentDB` (`defs/content_db.gd`): `weapon(id) -> WeaponDef`, `mod(id) -> WeaponModDef`,
   `melee(id) -> MeleeDef`, `armor(id) -> ArmorDef`, `deployable(id) -> DeployableDef`,
-  `loot(id) -> LootDef`, `difficulty(d: Enums.Difficulty) -> DifficultyDef`, `mask(id) -> MaskDef`,
+  `loot(id) -> LootDef`, `throwable(id) -> ThrowableDef`, `difficulty(d: Enums.Difficulty) -> DifficultyDef`, `mask(id) -> MaskDef`,
   `by_id(kind, id)`, `all_of(kind)`, `all_weapons/all_mods/all_melees/all_armors/all_deployables/
-  all_loots/all_difficulties()`, `tweak(name) -> Resource` (`&"concealment_curve"` ...). UI text comes
+  all_loots/all_throwables/all_difficulties()`, `tweak(name) -> Resource` (`&"concealment_curve"` ...). UI text comes
   from strings.csv `item.<id>.name` (display_name in .tres is a debug fallback). Unknown id →
   `Log.error` + null. Scans `res://content/data/<kind>/` with `ResourceLoader.list_directory`.
 * `LoadoutResolver.resolve(loadout: Loadout) -> Loadout` (returns a resolved copy): resolved
@@ -38,7 +38,7 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `LoadoutResolver.concealment_breakdown(loadout) -> Dictionary` for UI
   (`primary, secondary, melee, armor, bonus, total, detection_risk`).
   `LoadoutResolver.concealment_bonus(loadout) -> int` / `concealment_bonus_from(loadout, modifiers)`:
-  sum of `stealth.concealment_add.<melee|armor|primary|secondary|all>` grants (D-022 QB-6); a slot
+  sum of `stealth.concealment_add.<melee|armor|primary|secondary|all|suppressed>` grants (D-022 QB-6); a slot
   qualifier counts only while that slot is filled; added after the per-weapon 30 cap, so the total
   can exceed 120. Empty slot = 30 is a P1-only rule (QB-11; P4 rejects empty weapon slots).
 * `StatCalculator.display(stats: WeaponStats) -> Dictionary` PD2-style UI numbers
@@ -81,9 +81,22 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 
 * `SkillPoints` (`progression/skill_points.gd`): `points_for_level`, `cost_of`, `spent_total`,
   `spent_in_subtree`, `can_unlock`, `validate`, `is_legal`. Tree structure: `SkillTreeDef` at
-  `data/skills/trees.tres`. Design + requested keys: `content/docs/skills.md`.
-* `LoadoutResolver.team_modifier_sources(loadout)` -> `{&"team_skill.<id>": grants}` for
-  `Modifiers.set_source(TEAM, ...)`; `resolve_modifiers` excludes `team.*` skill grants.
+  `data/skills/trees.tres`. Design + param schemas (authoritative, D-031): `content/docs/skills.md`.
+* `LoadoutResolver.team_modifier_sources(loadout)` -> `{&"team_skill.<skill id>": grants,
+  &"team_perk.<deck>": grants}` (e.g. `team_perk.foreman`) for `Modifiers.set_source(TEAM, ...)`;
+  `resolve_modifiers` excludes every `team.*` grant (skills and perk cards). TEAM sources apply to the
+  granter too (D-031 QB-35), so there is no personal copy; equal source names from two players count once.
+* **LIST keys** (D-031: `weapon.kill_reload_buff`, `weapon.hit_stack_buff`, `weapon.kill_damage_buff`):
+  `resolve_modifiers(loadout)[key]` is an `Array[Dictionary]`, one entry per granting skill or perk card
+  (never merged): the granted Dictionary plus `"_source": StringName` = the skill id
+  (`&"skill.gunnery.run_and_gun"`) or `&"<deck id>.card<n>"`, sorted by `_source` (ContentDB.sort_ids
+  order). Inside one skill the aced Dictionary replaces the basic one. Example:
+  `[{"trigger": "auto_kills", ..., "_source": &"skill.gunnery.run_and_gun"}, {"trigger": "headshot_kill",
+  ..., "_source": &"skill.marksman.reload_rhythm"}]`. NOTE: `Modifiers.list()` currently expects ONE
+  Dictionary per (slot, source); handing this Array to `set_source(slot, &"skills", ...)` needs
+  `list()` to also accept an Array value (append each entry, keeping its own `_source`).
+* `stealth.concealment_add.suppressed` counts once per suppressed primary/secondary
+  (`LoadoutResolver.suppressed_weapon_count`).
 * Perk decks: `data/perks/<deck>.tres` (`perk.<deck>`); param schemas: `content/docs/perk_decks.md`.
 * `ContentDB` scans each kind folder recursively; resources without an `id` are skipped.
 

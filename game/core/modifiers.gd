@@ -78,9 +78,14 @@ func list(slot: int, key: StringName) -> Array[Dictionary]:
 		var by_source: Dictionary = _sources[s]
 		for source: Variant in by_source:
 			var values: Dictionary = by_source[source]
-			if values.has(key):
-				var d: Dictionary = (values[key] as Dictionary).duplicate()
-				d["_source"] = source
+			if not values.has(key):
+				continue
+			# A source may grant one Dictionary or an Array of them (one per skill/card, QB-38).
+			var entries: Array = values[key] if values[key] is Array else [values[key]]
+			for e: Variant in entries:
+				var d: Dictionary = (e as Dictionary).duplicate()
+				if not d.has("_source"):
+					d["_source"] = source
 				out.append(d)
 	return out
 
