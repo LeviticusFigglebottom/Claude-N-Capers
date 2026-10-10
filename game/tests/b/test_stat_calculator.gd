@@ -26,6 +26,13 @@ func test_display_stock_pistol() -> void:
 	assert_near(d["reload_empty"], 2.1)
 
 
+## D-034 QB-43: pellet exponent 1, so a shotgun shows pellet damage x pellets (PD2 style).
+func test_display_shotgun_damage_is_pellets_times_damage() -> void:
+	var s: WeaponStats = ContentDB.weapon(&"weapon.plowman_12").base
+	assert_eq([s.damage, s.pellets], [16.0, 10])
+	assert_near(StatCalculator.display(s)["damage"], 160.0, 0.01, "16 x 10")
+
+
 func test_display_clamps() -> void:
 	var s: WeaponStats = _base().duplicate() as WeaponStats
 	s.spread_deg_ads = 10.0

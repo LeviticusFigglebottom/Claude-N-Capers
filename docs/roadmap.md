@@ -28,6 +28,10 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | A2-06 | Deployables runtime: doctor bag, FAK, ammo bag, body bag case, ECM; dodge rolls | L2.11, L2.4, S6.2 |
 | A2-07 | Restrained/hostage stimuli, stealth-only heist mode (alarm = fail), pre-planning asset hooks (spawn choice, asset drops, modifier assets) | S6.4, S11.3, C3 |
 
+| B2-01 | Pre-planning + assets UI: HeistDef.preplanning, favors budget, location choice on the map blueprint, asset purchase, plan vote stub | C3 |
+| B2-02 | Briefing screen: contact portrait slot, objectives, loot, escape options | C2 |
+| B2-03 | Mask customization data/UI (base shapes from ENV D, colours/patterns/materials) | P8 |
+
 ## P1: Vertical slice (detailed)
 
 **Slice definition.** One small heist (**Glasshouse**: jewelry store). One guard type (Security

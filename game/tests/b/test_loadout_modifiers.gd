@@ -1,5 +1,5 @@
 ## D-031: LoadoutResolver modifier output for the newly granted keys. LIST keys (weapon.kill_reload_buff,
-## weapon.hit_stack_buff, weapon.kill_damage_buff) accumulate as Array[Dictionary], one `_source`-tagged
+## weapon.hit_stack_buff, weapon.kill_damage_buff, defense.post_revive_buff (D-034)) accumulate as Array[Dictionary], one `_source`-tagged
 ## entry per skill / perk card, ordered by `_source`; the `suppressed` concealment qualifier; and every
 ## skill aced plus every deck resolves cleanly with only registry keys of the right type.
 extends TestCase
@@ -11,7 +11,11 @@ const RHYTHM: StringName = &"skill.two_gun.rhythm"
 const HOT_STREAK: StringName = &"skill.two_gun.hot_streak"
 const MOMENTUM: StringName = &"skill.scattergun.momentum"
 const LOW_PROFILE: StringName = &"skill.quiet_professional.low_profile"
-const LIST_KEYS: Array[StringName] = [&"weapon.kill_reload_buff", &"weapon.hit_stack_buff", &"weapon.kill_damage_buff"]
+const BACK_ON_YOUR_FEET: StringName = &"skill.undying.back_on_your_feet"
+const SECOND_LEASE: StringName = &"skill.undying.second_lease"
+const LIST_KEYS: Array[StringName] = [
+	&"weapon.kill_reload_buff", &"weapon.hit_stack_buff", &"weapon.kill_damage_buff", &"defense.post_revive_buff",
+]
 
 
 func before_all() -> void:
@@ -50,6 +54,25 @@ func test_two_skills_granting_kill_reload_buff_give_two_tagged_entries() -> void
 	assert_eq(entries[0]["kills"], 2)
 	assert_eq(entries[1]["trigger"], "headshot_kill")
 	assert_near(float(entries[1]["reload_mult"]), 2.0)
+
+
+## D-034 QB-39: Back on Your Feet and Second Lease both keep their post-revive buff (no last-wins loss).
+func test_post_revive_buff_keeps_one_entry_per_skill() -> void:
+	var m: Dictionary = LoadoutResolver.resolve_modifiers(_skills({BACK_ON_YOUR_FEET: 1, SECOND_LEASE: 2}))
+	var list: Variant = m[&"defense.post_revive_buff"]
+	assert_true(list is Array, "LIST value is an Array")
+	var entries: Array = list
+	assert_eq(entries.size(), 2, "one entry per skill")
+	var sources: Array = entries.map(func(e: Dictionary) -> StringName: return e["_source"])
+	assert_eq(sources, [BACK_ON_YOUR_FEET, SECOND_LEASE], "ordered by _source")
+	assert_near(float(entries[0]["damage_taken_mult"]), 0.7)
+	assert_near(float(entries[0]["reload_mult"]), 1.0)
+	assert_near(float(entries[1]["reload_mult"]), 2.0)
+	assert_near(float(entries[1]["move_mult"]), 1.3, 0.0001, "Second Lease aced replaces its basic entry")
+	assert_near(float(entries[1]["damage_taken_mult"]), 1.0)
+	var single: Array = LoadoutResolver.resolve_modifiers(_skills({SECOND_LEASE: 1}))[&"defense.post_revive_buff"]
+	assert_eq(single.size(), 1)
+	assert_near(float(single[0]["move_mult"]), 1.0, 0.0001, "basic only")
 
 
 func test_basic_only_grants_no_aced_list_entry() -> void:
@@ -145,6 +168,7 @@ func test_every_skill_aced_and_deck_resolves_with_typed_known_keys() -> void:
 	assert_eq((m90[&"weapon.kill_reload_buff"] as Array).size(), 3, "Reload Rhythm, Run and Gun, Wind Up")
 	assert_eq((m90[&"weapon.hit_stack_buff"] as Array).size(), 2, "Rhythm, Hot Streak")
 	assert_eq((m90[&"weapon.kill_damage_buff"] as Array).size(), 1, "Momentum")
+	assert_eq((m90[&"defense.post_revive_buff"] as Array).size(), 2, "Back on Your Feet, Second Lease")
 	var errors: Array = Log.captured.filter(func(line: String) -> bool: return line.begins_with("[ERROR]"))
 	assert_eq(errors.size(), 0, "no errors: %s" % [errors])
 

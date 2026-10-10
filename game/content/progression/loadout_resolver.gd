@@ -21,7 +21,8 @@
 ##   `team_skill.<skill_id>` per skill and `team_perk.<deck>` per perk deck (modifiers.md
 ##   non-stacking rule; D-031 QB-35: TEAM sources apply to the granter too, so there is no personal copy).
 ## * LIST keys (D-031, ModifierKeys.Type.LIST: weapon.kill_reload_buff, weapon.hit_stack_buff,
-##   weapon.kill_damage_buff) are NOT merged. modifiers[key] is an Array[Dictionary] with one entry per
+##   weapon.kill_damage_buff, defense.post_revive_buff (D-034 QB-39)) are NOT merged. The type is read
+##   from ModifierKeys, so a key the registry makes LIST needs no change here. modifiers[key] is an Array[Dictionary] with one entry per
 ##   granting skill or perk card: a copy of the granted Dictionary plus
 ##   `"_source": StringName(<skill id>)` (e.g. &"skill.gunnery.run_and_gun") or
 ##   `"_source": StringName(<deck id>.card<n>)` (e.g. &"perk.foreman.card3"). Inside one skill the aced

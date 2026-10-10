@@ -96,7 +96,11 @@ every Wrecker variant counts toward `enemy.wrecker`. `test_special_limits_use_ca
   missing primary ◇. DR → detection multiplier points (S2.3) are V; interpolation between them ◇.
 * `display_stats.tres` (`DisplayStatTweak`): UI mapping ◇. Accuracy = linear in ADS spread
   (0° → 100, 2.5° → 0); stability = linear in kick + 0.5 × horizontal (0° → 100, 3° → 0); threat =
-  suppression capped at 43 (V cap).
+  suppression capped at 43 (V cap). `damage_pellet_exponent = 1` (D-034 QB-43): shown damage = pellet
+  damage x pellets, so the Plowman 12 (16 x 10) shows 160 like a PD2 shotgun.
+* `perk_points.tres` (`PerkPointTweak`, D-034 QB-45): `xp_per_perk_point = 500` ◇ (ours, accepted
+  by the lead). Perk points = floor(all XP / 500), derived, never stored (PerkProgress.earned). The
+  dev switch `dev_unlock_all_perks` is UI data and stays in `data/ui/progression_ui.tres`.
 * `payout.tres` (`PayoutTweak`): `stealth_xp_bonus_mult = 1.2` ◇ is the stealth bonus BANKED by a
   successful stealth heist and applied to the NEXT payday's XP (S11.1, D-022 QB-13). S11.1 scales it
   +5..25% by heist size; P1 uses one value, P4 scales it by heist size.
@@ -115,13 +119,18 @@ all (D-026). Fire cues `cue.weapon_<anim_set>_fire(_suppressed)`; anim sets `pis
 | `warden_45` Warden .45 | PISTOL / SEC / semi | 62 | 400 | 8 / 72 | 15 / 30 / 0.5 | 27 | 1.7 / 2.3 | 18000 / 6 |
 | `hornet_9` Hornet 9 | SMG / SEC / auto, semi | 36 | 800 | 30 / 180 | 18 / 36 / 0.55 | 24 | 2.2 / 3.0 | 24000 / 4 |
 | `corsair_ar` Corsair | AR / PRI / auto, semi | 55 | 700 | 30 / 150 | 9999 / 9999 / 1.0 (none) | 20 | 2.4 / 3.1 | 32000 / 3 |
-| `plowman_12` Plowman 12 | SHOTGUN / PRI / pump | 16 × 10 | 70 | 6 / 48 | 8 / 22 / 0.15 | 21 | 3.4 / 4.2 | 28000 / 8 |
+| `plowman_12` Plowman 12 | SHOTGUN / PRI / pump | 16 × 10 | 70 | 6 / 48 | 8 / 22 / 0.15 | 21 | 3.3 / 3.8 | 28000 / 8 |
 | `rampart_lmg` Rampart | LMG / PRI / auto | 48 | 750 | 100 / 300 | 25 / 45 / 0.6 | 2 | 5.6 / 6.6 | 54000 / 18 |
 | `heron_308` Heron .308 | SNIPER / PRI / bolt | 230 | 50 | 5 / 40 | 25 / 60 / **1.35** (gains) | 6 | 3.0 / 3.8 | 48000 / 14 |
 Heron: `armor_pierce` 1.0, `shield_pierce`, `wall_pierce` (L3.4). Threat (suppression) 11 / 10 /
 12 / 18 / 22 / 30; noise 70 / 60 / 70 / 80 / 90 / 100 m; spreads, recoil, equip/ADS times and ammo
-pickups are in the .tres files (all ◇). Shotgun reloads are whole-tube times (PD2 loads shell by
-shell; see the lead question in the B4-04 report).
+pickups are in the .tres files (all ◇). Shell-by-shell reload (D-034 QB-43): the Plowman 12 sets
+`reload_start_s` 0.4, `reload_per_round_s` 0.5, `reload_end_s` 0.4 ◇; ENV A loads one shell per
+`reload_per_round_s` and firing interrupts it. The whole-reload fields stay consistent for the UI and
+for any code that reads them: `reload_empty_time_s` = start + mag x per_round + end (6 shells: 3.8 s),
+`reload_time_s` = start + (mag - 1) x per_round + end (one shell left: 3.3 s); the Extended Tube adds
+2 x 0.5 = 1.0 s to both. The Heron .308 has a detachable 5-round box magazine, so it keeps a magazine
+reload (the three fields 0). `test_shell_by_shell_reload_fields` checks this.
 
 Mods (stock defaults have a zero delta, except the Heron's stock 4x scope = magnification 4.0):
 | Weapon | Optional mods (type: main effect / downside) |
@@ -129,7 +138,7 @@ Mods (stock defaults have a zero delta, except the Heron's stock 4x scope = magn
 | Warden | `w45_suppressor` (SUPP: silent, threat 0 / dmg −4, conc −3, ADS +0.05), `w45_compensator` (BARREL_EXT: kick −0.5 / conc −2; **conflicts** with the suppressor), `w45_reflex_sight` (SIGHT: ADS spread −0.15, 1.1× / conc −1), `w45_extended_mag` (MAG: +4 / conc −2, reload +0.25) |
 | Hornet | `hornet_suppressor` (silent, threat 0 / dmg −3, conc −2), `rail_reflex_sight`, `hornet_extended_mag` (+15 / conc −3, reload +0.4), `hornet_stock_folded` (STOCK: conc +3 / kick +0.35, horiz +0.2, ADS spread +0.3) |
 | Corsair | `corsair_suppressor` (silent, threat 0 / dmg −4, conc −3), `rail_reflex_sight`, `rail_prism_scope` (3×, ADS spread −0.25 / conc −3, ADS +0.08), `corsair_vertical_grip` (FOREGRIP: kick −0.2 / conc −1, ADS +0.03), `corsair_extended_mag` (+10 / conc −2) |
-| Plowman | `plowman_choke` (BARREL_EXT: spreads −0.5 / conc −1), `rail_reflex_sight`, `plowman_extended_tube` (+2 / conc −2, reload +0.6), `plowman_pistol_grip` (STOCK: conc +5, hip −0.3 / kick +0.8, ADS spread +0.5) |
+| Plowman | `plowman_choke` (BARREL_EXT: spreads −0.5 / conc −1), `rail_reflex_sight`, `plowman_extended_tube` (+2 / conc −2, reload +1.0 = 2 shells), `plowman_pistol_grip` (STOCK: conc +5, hip −0.3 / kick +0.8, ADS spread +0.5) |
 | Rampart | `rampart_short_barrel` (BARREL: conc +4 / ADS spread +0.4, kick +0.15), `rail_reflex_sight`, `rail_prism_scope`, `rampart_bipod` (FOREGRIP: kick −0.35 / conc −2, ADS +0.05), `rampart_box_200` (+100 / conc −3, reload +1.2, equip +0.1) |
 | Heron | `heron_suppressor` (silent, threat 0 / dmg −20, conc −3), `heron_scope_10x` (8× / conc −2, ADS +0.08), `heron_bipod` (kick −0.6 / conc −2), `heron_extended_mag` (+5 / conc −2) |
 Shared rail optics: `rail_reflex_sight` (ADS spread −0.1, 1.15× / conc −1, ADS +0.02, $3000) and
