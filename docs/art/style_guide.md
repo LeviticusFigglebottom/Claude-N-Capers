@@ -52,7 +52,7 @@ against them.
 |---|---|---|---|---|
 | glasshouse | warm ivory `#E8DCC8` | walnut `#5A3B28` | brass `#C9A227` + neon magenta sign `#FF3EA5` | dusk, blue-hour exterior, warm interior |
 | night_deposit | slate green `#3F5A52` | marble cream `#D9D2C2` | bank red `#9E2B25` | night, sodium streetlights |
-| shadow_ledger | graphite `#2E3136` | glass teal `#5D8C8F` | cold white LED | late night, rain |
+| shadow_ledger | graphite `#2E3136` | glass teal `#5D8C8F` | cold white LED `#CFE3EE` | late night, rain |
 | dockside_burn | rust `#7A4A2E` | concrete `#7D7F7C` | flare orange `#FF6B1A` | pre-dawn fog |
 
 ## 4. Materials and textures

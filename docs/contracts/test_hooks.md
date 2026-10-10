@@ -10,7 +10,8 @@ class_name HeistLauncher  # game/systems/heist/heist_launcher.gd
 ## Returns the HeistRuntime once the map is ready (variants resolved, NPCs spawned, crew spawned).
 static func launch(heist_id: StringName, seed: int, difficulty: Enums.Difficulty,
 		parent: Node = null, options: Dictionary = {}) -> HeistRuntime   # await-able (coroutine)
-## options: { "ai_teammates": int (default 3), "loadouts": {slot: Loadout}, "skip_casing": bool }
+## options: { "ai_teammates": int (default 3), "loadouts": {slot: Loadout}, "skip_casing": bool,
+##            "preplan": PreplanResult (preplanning.md), "is_pro": bool (pro job: no restarts; informational, ENV B) }
 
 class_name HeistRuntime   # game/systems/heist/heist_runtime.gd (Node)
 var map: HeistMap
