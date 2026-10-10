@@ -14,7 +14,8 @@ const L: GDScript = preload("res://world/heists/glasshouse/greybox/glasshouse_la
 const R: GDScript = preload("res://world/heists/glasshouse/greybox/glasshouse_resources.gd")
 const A: GDScript = preload("res://world/heists/glasshouse/greybox/gh_art.gd")
 ## Lights that cast shadows (<= 8 per room / per review shot, level_standards §3.7, §5).
-const SHADOWED: Array[String] = ["LightG5West", "LightG5East", "ChandelierRing", "LightG6", "LightG2", "LightU5"]
+const SHADOWED: Array[String] = ["LightG5West", "ChandelierRing", "LightG6", "LightG2",
+	"NeonVossbergSouth", "NeonVossbergEast"]
 const OUT_DIR: String = "res://world/heists/glasshouse/"
 const SCENE_PATH: String = OUT_DIR + "glasshouse.tscn"
 const DEF_PATH: String = OUT_DIR + "glasshouse_def.tres"
@@ -800,6 +801,7 @@ func _wall_light(parent: Node3D, nm: String, pivot: Vector3, yaw: float, color: 
 	light.light_color = color
 	light.light_energy = energy
 	light.omni_range = rng
+	light.shadow_enabled = nm in SHADOWED
 	_add(root, light)
 
 

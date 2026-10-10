@@ -426,7 +426,26 @@ func _face_windows(rng: RandomNumberGenerator, nm: String, n: Vector3, fx: float
 		# Closed shop: steel shutters over the Harlow Ave shopfront.
 		_window_panel(n, fx, axis, a0 + 1.0, a1 - 1.0, 0.3, 2.9, "metal_painted")
 	elif ground_shop and not first:
-		_window_panel(n, fx, axis, a0 + 1.0, a1 - 1.0, 0.4, 2.8, "window_lit" if rng.randf() < 0.5 else "window_dark")
+		_shopfront_bays(rng, n, fx, axis, start, count, bay)
+
+
+## Ground-floor shopfronts: one framed window per bay over a stall riser, a fascia band above.
+func _shopfront_bays(rng: RandomNumberGenerator, n: Vector3, fx: float, axis: String, start: float, count: int,
+		bay: float) -> void:
+	for i: int in range(count):
+		var c: float = start + bay * (float(i) + 0.5)
+		var key: String = "window_lit" if rng.randf() < 0.35 else "window_dark"
+		_window_panel(n, fx, axis, c - 1.2, c - 0.03, 0.7, 2.6, key)
+		_window_panel(n, fx, axis, c + 0.03, c + 1.2, 0.7, 2.6, key)
+	var s: float = 1.0 if n.x + n.z > 0.0 else -1.0
+	var f0: float = fx
+	var f1: float = fx + s * 0.08
+	var lo_a: float = start + 0.2
+	var hi_a: float = start + bay * float(count) - 0.2
+	var lo: Vector3 = Vector3(minf(f0, f1), 2.85, lo_a) if axis == "z" else Vector3(lo_a, 2.85, minf(f0, f1))
+	var hi: Vector3 = Vector3(maxf(f0, f1), 3.3, hi_a) if axis == "z" else Vector3(hi_a, 3.3, maxf(f0, f1))
+	acc.box("Neighbours", lo, hi, func(_f: int, nn: Vector3, _c: Vector3) -> String:
+		return "" if nn == -n else "metal_painted")
 
 
 ## Framed window: metal frame proud 0.04 m, glass 0.045 m (never coplanar with the facade).
