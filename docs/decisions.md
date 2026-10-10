@@ -263,3 +263,24 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   sized from the visual AABB (export override).
 - Per-heist UI accent: shadow_ledger `#CFE3EE` (style guide §3). `options["is_pro"]` documented in test_hooks.md.
 - Process: the lead announces data-shape rulings only once they are on origin trunk (D-046 churn).
+
+## D-049 — 2026-10-10 — Answers QA-27..31, QB-PC1/2, QB-BRD1..3, QB-52..55
+- QA-27: strings/voice lines are ENV B's (most landed in 8079505/e9e5e5b); B adds the rest from A's list.
+- QA-28: cue ids accepted; ENV C synthesizes them (audio_cues.md list extended by C).
+- QA-29: accepted for groups.md: factions `faction.tac|frd|sentinel|zero`; enemy ids as listed (already canonical);
+  `params.visual_variant` per faction; GUARD SpawnPoint tag `scripted` = not spawned at load, mission spawns it.
+- QA-30: `special_spawned` emitted by the special's brain on start. A broken tase must NOT reuse `crew_revived`:
+  EventBus gains `crew_tase_ended(slot: int)` (lead). Captain resistance: ui_hud.md gains `captain_resistance: float`
+  (0..1; server value replicated via Net; ENV A writes, ENV B shows a widget while Brandt is on the field).
+- QA-31: DifficultyDef.special_limits gains `enemy.longshot` (Routine..Cataclysm: 1,2,2,3,3,4), still capped by free perches.
+- QB-PC1: no save change; quitting with an unpicked card auto-picks it (same deterministic roll as the 30 s auto-pick).
+- QB-PC2: boosts and skins stay out of the card table until those systems exist.
+- QB-BRD1: MenuFlow (ENV B) enforces pro-job no-restart; ENV A only reports the failure.
+- QB-BRD2: each player has their own Board; a lobby runs the host's contract (shared via lobby message).
+- QB-BRD3: prices and level gates stay placeholders; balance pass in P6.
+- QB-52: no new loot def. Small loot = `small_loot` prefab `value` → HeistResult cash. Night Deposit 800–2,400,
+  Shadow Ledger 1,200–3,000 per item (before difficulty multiplier).
+- QB-53: ENV B hides a generic asset whose payload references a variant group the heist does not have (no C work).
+- QB-54: heist-only assets for Night Deposit's points are defined by ENV C under `HeistDef.preplanning.assets`; B adds strings.
+- QB-55: a heist shows in menus only when its def and map exist (HeistRegistry); Night Deposit shows, Shadow Ledger after G1.
+- Pull-forward for ENV B: B4-11..B4-15 (roadmap).
