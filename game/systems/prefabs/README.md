@@ -34,6 +34,7 @@ stubs listed at the end lands in M2.
   0.25 m of the navmesh (heist_map.md §3).
 * Collision layers: 1 world_static, 2 world_dynamic, 5 hitboxes, 10 triggers. The prefab owns
   collision, except the door `Frame` (the visual supplies `Frame/Collision`, a StaticBody3D).
+  Prefab `Collision` boxes are fitted to the visual at ready (see "Collision fitting" below).
 * Volume prefabs host a child `Zone` (MapZone, `Shape` = BoxShape3D). Its bottom sits at the
   prefab origin (floor) and it is centred on the footprint.
 
@@ -53,17 +54,17 @@ Scene path = `res://systems/prefabs/<name>/<name>.tscn`. Placeholder = `<name>/<
 | `keycard_reader` | `KeycardReader` | Node3D | `targets: Array[NodePath]` ([]) | `keycard_s` | `Panel`, `Led` | Wall-mounted (back-centre). Consumes the keycard |
 | `keypad` | `Keypad` | Node3D | `code_group` (&""), `targets: Array[NodePath]` ([]) | `keypad_s` | `Panel`, `Led` | Wall-mounted. S9.7 |
 | `code_note` | `CodeNote` | Node3D | `code_group` (&"") | `read_note_s` | none | S9.7 |
-| `safe` | `Safe` | Node3D | `size: Safe.Size` {SMALL, MEDIUM, LARGE} (MEDIUM), `methods: Array[StringName]` ([&"drill"]; ids `drill`, `saw`, `c4`, `lockpick`, `code`), `code_group` (&""), `time_lock_s` (0 = none), `reader: NodePath` (empty, A2-08; method id `keycard`) | `drill_place_s` | `Body`, `Door` (hinge pivot), `DrillPoint` (−Z into the lock), `LootAnchor` | `Collision` sized for MEDIUM (layer 1). S9.8 |
+| `safe` | `Safe` | Node3D | `size: Safe.Size` {SMALL, MEDIUM, LARGE} (MEDIUM), `methods: Array[StringName]` ([&"drill"]; ids `drill`, `saw`, `c4`, `lockpick`, `code`), `code_group` (&""), `time_lock_s` (0 = none), `reader: NodePath` (empty, A2-08; method id `keycard`) | `drill_place_s` | `Body`, `Door` (hinge pivot), `DrillPoint` (−Z into the lock), `LootAnchor` | `Collision` (layer 1) fitted to `Body`. S9.8 |
 | `drill_point` | `DrillPoint` | Node3D | `device: DrillPoint.Device` {DRILL, THERMAL, SAW} (DRILL), `duration_s` (-1 = `drill_duration_s` / `thermal_duration_s` / `saw_duration_s`), `target: NodePath` | `drill_place_s` | none (device art has `Bit`) | **−Z points into the lock**, so the UsePoint is on its **+Z** side. S9.3/S9.4 |
 | `alarm_button` | `AlarmButton` | Node3D | none | not interactive | none | Wall-mounted. `UsePoint` = where the NPC stands |
 | `phone` | `Phone` | Node3D | none | not interactive | none | `UsePoint` = where the NPC stands |
 | `window` | `WindowPrefab` | Node3D | `breakable` (true), `openable` (false) (`noise` is the common one) | `window_open_s` | `Frame`, `Glass`, optional `Sash` | Origin = bottom-centre of the opening (sill). `GlassBody` StaticBody3D (layer 1), fitted at ready to the visual's `Glass` AABB (A2-08). Interactable enabled only if `openable`. S9.9/S9.11 |
-| `secure_zone` | `SecureZone` | Node3D | `zone_size_m: Vector3` (4, 3, 8), `vehicle_collision` (true) | not interactive | `Body`, `DoorL`, `DoorR`, `DropAnchor` | `Zone` MapZone SECURE_LOOT. `Collision` = 2×2.2×5 m van body (layer 1), removed when `vehicle_collision` is false. Van rear faces −Z. S10.2 |
+| `secure_zone` | `SecureZone` | Node3D | `zone_size_m: Vector3` (4, 3, 8), `vehicle_collision` (true) | not interactive | `Body`, `DoorL`, `DoorR`, `DropAnchor` | `Zone` MapZone SECURE_LOOT. `Collision` = van body fitted to the visual (placeholder 2×2.2×5 m, layer 1), removed when `vehicle_collision` is false. Van rear faces −Z. S10.2 |
 | `escape_zone` | `EscapeZone` | Node3D | `escape_type: StringName` (&"van"; one of van, boat, heli, lift, zipline, walk), `active` (false), `zone_size_m` (4, 3, 4), `arrival_delay_s` (0, A3-10), `bag_only` (false, A3-10) | not interactive | art only (not the placeholder): van `Body`, `DoorL`, `DoorR`; heli `Body`, `Rotor`; boat `Body` | `Zone` MapZone ESCAPE (stays in the group, `monitoring` follows `active`). `activate()` is called by `HeistMission.activate_escape()`. Visual hidden while inactive or approaching. C10, QC-19 |
 | `body_container` | `BodyContainer` | Node3D | `capacity: int` (2) | not interactive | `Lid` (pivot), `Inside` | `Zone` MapZone BODY_HIDE (1.8×1.6×1.0). `Collision` body (layer 1). S6.3 |
 | `ladder` | `Ladder` | Node3D | `height_m` (3.0) | not interactive | `Top`, `Bottom` | Climb side −Z. The placeholder resizes to `height_m`. A2-04 climbing (below) |
 | `bag_lift` | `BagLift` | Node3D | `targets: Array[NodePath]` ([]: the OTHER landings; landing 0 = the prefab), `travel_s` (8.0), `capacity: int` (2), `car_size_m: Vector3` (1.2, 1.2, 1.2, A3-09 addition) | `bag_lift_send_s` | `Car`, `DoorL`, `DoorR`, `Panel` | Pivot = car floor centre at landing 0, car front −Z. `CarBody` AnimatableBody3D floor slab (layer 2) follows the car. Runtime `LandingPanel<i>` InteractableComponents at landings 1..n. QC-11 |
-| `hack_terminal` | `HackTerminal` | Node3D | `duration_s` (-1 = `hack_duration_s`), `interruptions: Vector2i` ((-1, -1) = `hack_interruptions`), `targets: Array[NodePath]` ([]) | `hack_start_s` (restart `hack_restart_s`) | `Screen` (MeshInstance3D), `Panel` | Floor rack 0.6 × 2.0 × 1.0 m centred on the pivot, front −Z. `Collision` StaticBody3D (layer 1). QC-12 |
+| `hack_terminal` | `HackTerminal` | Node3D | `duration_s` (-1 = `hack_duration_s`), `interruptions: Vector2i` ((-1, -1) = `hack_interruptions`), `targets: Array[NodePath]` ([]) | `hack_start_s` (restart `hack_restart_s`) | `Screen` (MeshInstance3D), `Panel` | Floor rack 0.6 × 2.0 × 1.0 m (placeholder) centred on the pivot, front −Z. `Collision` StaticBody3D (layer 1), fitted to the visual. QC-12 |
 | `zipline` | `Zipline` | Node3D | `end: NodePath` | `zipline_attach_s` | none | P2 |
 | `laser_grid` | `LaserGrid` | Node3D | `pattern: StringName` (&"static"; `sweeping`, `timed_off`), `size_m: Vector3` (2, 2, 0.1), `beam_count` (4), `period_s` (4), `off_s` (1.5), `phase_s` (0), `sweep_beams` (1) | not interactive | optional `Beam0..Beam<n-1>` (A drives `visible` + position) | `Trigger` Area3D (layer 10, mask players). S9.10, P2 |
 
@@ -232,3 +233,40 @@ A3-09 (D-040, Night Deposit) / A3-10 (D-042, Shadow Ledger):
 * Device cues without their own EventBus fact (keypad_accept, c4_armed / c4_explode,
   time_lock_start / time_lock_done, zipline_attach, laser_trip, bag lift, hack) are all emitted as
   `audio_cue_requested(cue_id, pos, prefab net_id)` [R] (test_a3_09_device_cues.gd).
+
+Collision fitting (lead item 6, ENV C props pass):
+
+* Prefabs with a prefab-owned `Collision` box declare the export
+  `collision_size_override: Vector3` (default `Vector3.ZERO` = auto): `display_case`, `safe`,
+  `camera_station`, `hack_terminal`, `body_container`, `secure_zone` (van) and `security_camera`
+  (hitbox). At ready (`GameplayPrefab._fit_collision`, before `_prefab_ready`) the box is chosen in
+  this order:
+  1. `collision_size_override` with all components > 0: a box of that size placed on the pivot
+     (floor: bottom-centre, wall: back-centre, extending toward −Z; ceiling: top-centre, extending
+     toward −Y). A visual-supplied `Collision` is turned off.
+  2. The visual scene has a `Collision` StaticBody3D (anywhere under the visual root): it is used
+     instead. It gets the prefab body's layer and mask and the `hit_owner` meta. The prefab's own body
+     is disabled (layer/mask 0, shapes disabled). `collision_body()` returns the active body.
+  3. Otherwise, the merged AABB of every MeshInstance3D in the visual (the safe uses only `Body`, so
+     the swinging `Door` is not boxed), in prefab space, measured with the art at rest. It is clipped
+     to the room side of the pivot (visual_slots.md): floor objects y ≥ 0, wall mounts z ≤ 0, ceiling
+     mounts y ≤ 0. Each axis is at least `GameplayPrefab.COLLISION_MIN_EXTENT_M` (0.05 m).
+     `fitted_collision_aabb()` exposes it. A visual without meshes keeps the saved box.
+* The placeholders give the old sizes: display case 1 × 1.3 × 0.6, safe 0.8 × 1.2 × 0.7,
+  body container 1.8 × 1.15 × 1 (lid included), van 2 × 2.2 × 5.04 (rear doors included), hack rack
+  0.6 × 2 × 1.04. The camera station is now 1.6 × 1.3 × 0.8 (desk and screens) and the camera hitbox
+  is 0.12 × 0.22 × 0.45 (z in [−0.45, 0]).
+  A wall camera clips at z ≤ 0. A ceiling camera with real art clips at y ≤ 0. The wall-authored
+  placeholder is fitted as a wall mount, and `apply_mount` then lowers both it and `Collision` (QA-26).
+* Not fitted: `window` (`GlassBody` already follows `Glass`, A2-08; it now shares
+  `merged_mesh_aabb` / `xform_to_self` with this code), `door` (the leaf follows `width_m`, the
+  frame collision comes from the visual), `bag_lift` (the `CarBody` floor slab is gameplay-sized), and the
+  `Zone` / laser `Trigger` volumes (sized by their exports). `phone`, `alarm_button`,
+  `keycard_reader`, `keypad`, `code_note`, `deployable`, `small_loot`, `keycard_pickup` and
+  `loot_spawn` have no collision of their own.
+* `safe` C4: when the fuse ends, the safe also calls `Explosion.apply` at the visual's `DrillPoint`
+  (the lock, else 0.6 m up). It uses radius `interaction.c4_blast_radius_m` (3 m), damage
+  `interaction.c4_blast_damage` (300), weapon id `item.c4`, and the attacker is the crew member who
+  placed it. Under Explosion's rules, a crew-attributed blast never hurts crew members. NPCs and
+  `take_hit` targets in the radius and in LOS take L3.6 falloff damage
+  (test_prefab_collision_fit.gd).

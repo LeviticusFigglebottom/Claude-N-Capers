@@ -55,6 +55,12 @@ var stealth_abort_left: float = -1.0
 var heist_mode: Enums.HeistMode = Enums.HeistMode.STEALTH_OR_LOUD
 ## A3-09: seconds of heist time since start() (physics delta, so it follows Engine.time_scale).
 var heist_time_s: float = 0.0
+## A3-07: host/client replication (child `NetSync`, service HeistNetSync.SERVICE, every peer).
+var net_sync: HeistNetSync = null
+## A3-07: true on a client: this runtime mirrors the host's heist (start() with options["bring_up"]); it never simulates.
+var is_replica: bool = false
+## A3-07 (client): map paths of the bring-up id table that did not resolve in the local map.
+var replica_missing_ids: Array[String] = []
 
 var _crew: Dictionary[int, CrewController] = {}
 var _bot_intents: Dictionary[int, CrewIntent] = {}
@@ -106,17 +112,16 @@ func _exit_tree() -> void:
 # --- Startup (HeistLauncher) ---------------------------------------------------
 
 ## Server: build the heist. Returns false on a contract violation (logged).
+## A3-07: with `p_options["bring_up"]` (a client, HeistLauncher.join_running) it builds the replica of
+## the host's running heist instead (_start_replica); the other arguments then come from the bring-up.
 func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_difficulty: int, p_options: Dictionary) -> bool:
+	if p_options.has("bring_up"):
+		return _start_replica(p_options["bring_up"] as Dictionary, map_scene, p_options)
 	heist_id = p_heist_id
 	run_seed = p_seed
 	difficulty = p_difficulty
 	options = p_options
-	difficulty_def = p_options.get("difficulty_def") as DifficultyDef
-	if difficulty_def == null:
-		difficulty_def = ContentDB.difficulty(p_difficulty as Enums.Difficulty)
-	if difficulty_def == null:
-		difficulty_def = DifficultyDef.new()
-		difficulty_def.difficulty = p_difficulty as Enums.Difficulty
+	_resolve_difficulty_def()
 	GameRng.begin_run(run_seed)
 	_start_msec = Time.get_ticks_msec()
 	var inst: Node = map_scene.instantiate()
@@ -162,10 +167,112 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	else:
 		_set_phase(Enums.HeistPhase.CASING)
 	EventBus.heist_loaded.emit(heist_id, run_seed, variants)
-	Net.replicate_event(&"heist_loaded", [heist_id, run_seed, variants])
+	# A3-07: clients emit heist_loaded themselves once their replica is built (_start_replica), so the
+	# fact is not relayed here (it would reach them before the bring-up).
 	if mission != null:
 		mission._on_mission_start()
 	return true
+
+
+# --- Co-op replica (A3-07, docs/contracts/net.md, heist/README.md "Co-op") -----------------------
+
+## Client: build the replica of the host's heist from its bring-up (HeistNetSync.bring_up(), via
+## HeistLauncher.join_running -> start() with options["bring_up"]). Same map, the server's resolved
+## variants applied (never rolled), map ids adopted from the table, dynamic entities from the
+## snapshot. No mission, AI or director logic runs here.
+func _start_replica(data: Dictionary, map_scene: PackedScene, p_options: Dictionary) -> bool:
+	is_replica = true
+	heist_id = StringName(data.get("heist_id", &""))
+	run_seed = int(data.get("seed", 0))
+	difficulty = int(data.get("difficulty", Enums.Difficulty.ROUTINE))
+	options = p_options
+	_resolve_difficulty_def()
+	GameRng.begin_run(run_seed)
+	_start_msec = Time.get_ticks_msec()
+	var inst: Node = map_scene.instantiate()
+	map = inst as HeistMap
+	if map == null:
+		Log.error(&"heist", "contract violation: map root of '%s' is not a HeistMap" % heist_id)
+		inst.free()
+		return false
+	if map.heist_def != null:
+		heist_mode = map.heist_def.mode
+	variants = (data.get("variants", {}) as Dictionary).duplicate(true)
+	var pp: Dictionary = data.get("preplan", {}) as Dictionary
+	preplan.setup({"preplan": pp} if not pp.is_empty() else {}, map.heist_def, heist_id, difficulty)
+	var pending: Array = VariantResolver.apply(VariantResolver.collect_slots(map), variants)
+	_create_services()
+	net_sync.replica_spawned.connect(_on_replica_spawned)
+	net_sync.phase_replicated.connect(_on_phase_replicated)
+	add_child(map)
+	move_child(map, 0)
+	dynamic_root = Node3D.new()
+	dynamic_root.name = "Dynamic"
+	add_child(dynamic_root)
+	VariantResolver.configure_pending(pending)
+	_apply_rare_modifiers()
+	preplan.apply_modifiers()
+	_adopt_map_ids(data.get("map_ids", {}) as Dictionary)
+	mission = map.get_node_or_null("Mission") as HeistMission  # not bound: the host runs the mission
+	heist_time_s = float(data.get("heist_time_s", 0.0))
+	went_loud = bool(data.get("went_loud", false))
+	phase = int(data.get("phase", Enums.HeistPhase.CASING)) as Enums.HeistPhase
+	net_sync.apply_snapshot(data.get("snapshot", {}) as Dictionary)
+	Log.info(&"heist", "replica of %s (seed %d) built: %d map ids, %d missing" % [
+		heist_id, run_seed, (data.get("map_ids", {}) as Dictionary).size(), replica_missing_ids.size()])
+	EventBus.heist_loaded.emit(heist_id, run_seed, variants)
+	return true
+
+
+## Client (HeistNetSync.replica_spawned): bookkeeping for a replicated dynamic entity.
+func _on_replica_spawned(node: Node) -> void:
+	var crew: CrewController = node as CrewController
+	if crew != null:
+		_crew[crew.slot] = crew
+		_stats[crew.slot] = {"kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0}
+		if crew.is_local() and crew.get_node_or_null(^"PlayerInput") == null:
+			var pin: PlayerInput = PlayerInput.new()
+			pin.name = "PlayerInput"
+			crew.add_child(pin)
+		crew_spawned.emit(crew.slot, crew)
+	var npc: NpcBase = node as NpcBase
+	if npc != null:
+		npc_spawned.emit(npc)
+
+
+## Client (HeistNetSync.phase_replicated): the host's phase / alarm state (the EventBus facts
+## arrive relayed).
+func _on_phase_replicated(new_phase: int, loud: bool) -> void:
+	went_loud = went_loud or loud
+	if new_phase != phase:
+		var old: int = phase
+		phase = new_phase as Enums.HeistPhase
+		phase_changed.emit(old, new_phase)
+
+
+func _adopt_map_ids(table: Dictionary) -> void:
+	replica_missing_ids.clear()
+	for k: Variant in table:
+		var n: Node = map.get_node_or_null(NodePath(String(k)))
+		if n == null:
+			replica_missing_ids.append(String(k))
+			continue
+		NetIds.adopt(n, int(table[k]))
+		var bag: LootBag = n as LootBag
+		if bag != null:
+			bag.freeze = true  # the host simulates bag physics
+	if not replica_missing_ids.is_empty():
+		Log.error(&"net", "replica of %s: %d map ids do not resolve (map or variants differ): %s" % [
+			heist_id, replica_missing_ids.size(), replica_missing_ids.slice(0, 5)])
+
+
+func _resolve_difficulty_def() -> void:
+	difficulty_def = options.get("difficulty_def") as DifficultyDef
+	if difficulty_def == null:
+		difficulty_def = ContentDB.difficulty(difficulty as Enums.Difficulty)
+	if difficulty_def == null:
+		difficulty_def = DifficultyDef.new()
+		difficulty_def.difficulty = difficulty as Enums.Difficulty
 
 
 func _create_services() -> void:
@@ -206,6 +313,9 @@ func _create_services() -> void:
 	hud_model = LocalHudModel.new()
 	hud_model.name = "LocalHudModel"
 	add_child(hud_model)
+	net_sync = HeistNetSync.new()  # A3-07: idle in solo
+	net_sync.name = HeistNetSync.NODE_NAME
+	register_service(HeistNetSync.SERVICE, net_sync)
 	var factories: Array = options.get("extra_services", [])
 	for f: Variant in factories:
 		if f is Callable:

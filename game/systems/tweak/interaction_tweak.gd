@@ -78,6 +78,10 @@ extends Resource
 @export var c4_place_s: float = 2.0
 @export var c4_fuse_s: float = 5.0
 @export var c4_noise_radius_m: float = 45.0
+## ◇ C4 blast on a safe (L3.6, `Explosion.apply` at the lock): radius (m) and centre damage (PD2
+## display units, falloff (1 - d/r)^0.1). Crew-placed, so it never hurts the crew (no friendly fire).
+@export var c4_blast_radius_m: float = 3.0
+@export var c4_blast_damage: float = 300.0
 ## S9.8 ◇ vault time lock: hold to start the timer at the panel once the lock is beaten.
 @export var time_lock_start_s: float = 2.0
 

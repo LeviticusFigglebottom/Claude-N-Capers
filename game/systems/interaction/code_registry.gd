@@ -5,7 +5,8 @@
 ## group's code the same for a seed no matter which group is asked first.
 ## Known codes are crew-wide (PD2: a read note shows the code to the whole crew): `reveal(group)`
 ## by a code_note, `is_known(group)` gates keypads and code safes, `known_codes()` feeds the HUD.
-## Server state; clients learn of a read through item_picked_up(&"item.code_note", slot) [R].
+## Server state; clients learn of a read through item_picked_up(&"item.code_note", slot) [R] and get
+## the known codes mirrored by HeistNetSync (A3-07: `net_state()` / `apply_net_state()`).
 class_name CodeRegistry
 extends Node
 
@@ -69,3 +70,22 @@ func known_codes() -> Dictionary:
 	for g: StringName in _known:
 		out[g] = code_for(g)
 	return out
+
+
+## Server (A3-07): {code_group: [code value, revealed_by_slot]} for every known code.
+func net_state() -> Dictionary:
+	var out: Dictionary = {}
+	for g: StringName in _known:
+		out[g] = [code_value(g), _known[g]]
+	return out
+
+
+## Client (A3-07): adopt the server's known codes (values included, the client never rolls them).
+func apply_net_state(d: Dictionary) -> void:
+	for k: Variant in d:
+		var g: StringName = StringName(k)
+		var a: Array = d[k] as Array
+		_codes[g] = int(a[0])
+		if not _known.has(g):
+			_known[g] = int(a[1])
+			code_revealed.emit(g, int(a[1]))

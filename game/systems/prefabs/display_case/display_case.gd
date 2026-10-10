@@ -18,6 +18,9 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/display_case/dis
 @export var loot_id: StringName = &""
 ## Breaking the glass raises the alarm (alarmed case) in addition to the S9.9 stimulus.
 @export var glass_breaks_alarm: bool = false
+## Collision box size (m), placed on the pivot; ZERO = fit to the visual (or use the visual's own
+## `Collision`), see GameplayPrefab "Collision fitting".
+@export var collision_size_override: Vector3 = Vector3.ZERO
 @export_group("Interaction")
 ## -1 = InteractionTweak.display_case_open_s.
 @export var interaction_time_s: float = -1.0
@@ -59,6 +62,24 @@ func loot_value() -> int:
 		if bool(info.get("known", false)):
 			return int(info["value"])
 	return LootTweak.get_default().display_case_default_value
+
+
+## Client (A3-07, HeistNetSync): mirror `glass_broken` / `opened` / `taken` (glass, prompt).
+func _apply_net_state(state: Dictionary) -> void:
+	if bool(state.get("glass_broken", glass_broken)) and not glass_broken:
+		glass_broken = true
+		var glass: Node3D = visual_node("Glass") as Node3D
+		if glass != null:
+			glass.visible = false
+	opened = bool(state.get("opened", opened))
+	if bool(state.get("taken", taken)) and not taken:
+		taken = true
+		var anchor: Node3D = visual_node("LootAnchor") as Node3D
+		if anchor != null:
+			for c: Node in anchor.get_children():
+				if c is Node3D:
+					(c as Node3D).visible = false
+	_apply_state()
 
 
 ## Server: smash the glass (interaction, gunfire, melee). S9.9.
