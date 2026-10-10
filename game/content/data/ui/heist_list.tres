@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UiHeistList" format=3]
+
+[ext_resource type="Script" path="res://content/ui/data/ui_heist_list.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+entries = Array[Dictionary]([{
+"def_path": "res://world/heists/glasshouse/glasshouse_def.tres",
+"id": &"glasshouse",
+"placeholder_base_payout": 40000,
+"placeholder_mode": 0
+}])
+unlocked_difficulties = Array[int]([0, 3])
+solo_ai_teammates = 3
