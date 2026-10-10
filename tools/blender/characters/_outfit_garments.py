@@ -142,6 +142,34 @@ def upper_shell(fit: Fit, mat: str | Callable[[Vector, str], str], bottom_z: flo
     return sh
 
 
+def box_out(m: Mesh, z_full: float, z_zero: float, side_add: float, front_add: float, back_add: float,
+            power: float = 4.0, z_min: float = -1.0) -> dict:
+    """Make a torso shell boxy (stab vests, plate carriers): below ``z_full`` every vertex is pushed
+    out to a superellipse cross-section (exponent ``power``) that encloses the shell's own widest
+    extents plus ``side_add`` / ``front_add`` / ``back_add``; the effect fades out up to ``z_zero``
+    (shoulders and armholes stay fitted). Vertices are only ever moved outwards. Returns the box."""
+    rows = [p for p in m.v if z_min < p.z < z_zero]
+    if not rows:
+        return {}
+    hw = max(abs(p.x) for p in rows) + side_add
+    yf = max(p.y for p in rows) + front_add
+    yb = min(p.y for p in rows) - back_add
+    cy, hd = 0.5 * (yf + yb), 0.5 * (yf - yb)
+    for i, p in enumerate(m.v):
+        if p.z >= z_zero or p.z <= z_min:
+            continue
+        f = smoothstep(z_zero, z_full, p.z)
+        dx, dy = p.x, p.y - cy
+        r = math.hypot(dx, dy)
+        if r < 1e-6:
+            continue
+        sa, ca = abs(dx) / r, abs(dy) / r
+        r_box = ((sa / hw) ** power + (ca / hd) ** power) ** (-1.0 / power)
+        r_new = max(r, lerp(r, r_box, f))
+        m.v[i] = Vector((dx * r_new / r, cy + dy * r_new / r, p.z))
+    return {"half_w": hw, "front_y": yf, "back_y": yb, "cy": cy}
+
+
 def bottom_tuck(m: Mesh, loop: list[int], z: float) -> None:
     o.straighten_loop(m, loop, iters=3)
     for v in loop:
@@ -353,11 +381,21 @@ def trouser_hems(sh: Shell, fit: Fit, shoes_hull: Hull, mat: str, z_back: float 
 # feet and hands
 # =============================================================================================
 def shoes(fit: Fit, mat: str, sole_mat: str, top_z: float = 0.095, base: float = 0.0065, toe: float = 0.014,
-          sole_h: float = 0.016, welt: float = 0.0035, heel: float = 0.0, boot: bool = False) -> Mesh:
+          sole_h: float = 0.016, welt: float = 0.0045, heel: float = 0.0, boot: bool = False,
+          arch: float | None = None, toe_h: float | None = None, cap_line: bool | None = None,
+          edge_mat: str | None = None) -> Mesh:
     """Shoes (or boots with ``boot`` and a higher ``top_z``): an offset shell of the foot with a
-    longer toe box, a flat rubber sole + welt; the opening gets a rolled collar."""
+    longer, flatter toe box, a sole with a protruding welt edge (chamfered top and bottom), a
+    separate heel block (the sole edge steps up by ``arch`` under the instep, so the heel and the
+    forefoot sole read from the side) and a rolled collar on the opening. Dress shoes get a toe-cap
+    seam (``cap_line``) and a toe box flattened to ``toe_h`` at the tip; ``edge_mat`` colours the
+    sole edge (dress shoes: a dark leather edge; boots: ``sole_mat``)."""
     k = fit.k
     sole_top = sole_h * k
+    arch = (0.009 if boot else 0.007) if arch is None else arch
+    toe_h = (0.046 if boot else 0.036) if toe_h is None else toe_h
+    cap_line = (not boot) if cap_line is None else cap_line
+    edge_mat = edge_mat or (sole_mat if boot else "leather_dark")
 
     def keep(r: str, c: Vector, _i: int) -> bool:
         if r == "feet":
@@ -385,8 +423,11 @@ def shoes(fit: Fit, mat: str, sole_mat: str, top_z: float = 0.095, base: float =
         for i, p in enumerate(m.v):
             f = smoothstep(ball.y - 0.04 * k, tip.y + 0.01 * k, p.y)
             q = Vector((p.x, p.y + toe * k * f, p.z))
-            # flatten the toe box top a little and widen the forefoot
-            q.z -= 0.004 * k * f * smoothstep(0.03 * k, 0.07 * k, p.z)
+            # toe box: flat-topped, sloping down to ``toe_h`` at the tip, forefoot a little wider
+            ft = smoothstep(ball.y - 0.02 * k, tip.y + 0.02 * k, p.y)
+            cap = lerp(0.075 * k, toe_h * k, ft)
+            if q.z > sole_top + 0.004 * k and ft > 0.0:
+                q.z = lerp(q.z, min(q.z, cap), smoothstep(0.0, 0.4, ft))
             q.x += (p.x - ball.x) * 0.10 * f
             if heel:
                 q.z += heel * smoothstep(ball.y, ball.y - 0.12 * k, p.y)
@@ -395,27 +436,37 @@ def shoes(fit: Fit, mat: str, sole_mat: str, top_z: float = 0.095, base: float =
         loops = o.boundary_loops(m.f)
         loops.sort(key=lambda lp: o.loop_centre(m, lp).z)
         bottom, top = loops[0], loops[-1]
-        # sole: flatten the bottom loop to the sole top, build welt + sole slab
+        # sole: flatten the bottom loop to the sole top, then welt, chamfered edge and bottom
         o.straighten_loop(m, bottom, iters=2)
         for v in bottom:
             m.v[v] = Vector((m.v[v].x, m.v[v].y, sole_top))
         c = o.loop_centre(m, bottom)
-        heel_z = heel * 1.0
-        ring_w, ring_b = [], []
+        y_back = min(m.v[v].y for v in bottom)
+        heel_front = y_back + 0.058 * k
+        ball_back = ball.y - 0.035 * k
+        ring_w, ring_t, ring_s, ring_b = [], [], [], []
+        ch = min(0.0025 * k, sole_top * 0.2)
         for v in bottom:
             p = m.v[v]
             r = Vector((p.x - c.x, p.y - c.y, 0.0))
             r.normalize()
-            z_b = heel_z if p.y < c.y - 0.03 * k else 0.0
-            ring_w.append(m.add(Vector((p.x + r.x * welt * k, p.y + r.y * welt * k, sole_top))))
-            ring_b.append(m.add(Vector((p.x + r.x * welt * k, p.y + r.y * welt * k, z_b))))
+            # the instep: sole edge steps up between the heel block and the forefoot sole
+            lift = arch * k * smoothstep(heel_front - 0.002 * k, heel_front + 0.004 * k, p.y) * \
+                smoothstep(ball_back + 0.01 * k, ball_back - 0.006 * k, p.y)
+            z_b = heel * 1.0 if (heel and p.y < c.y - 0.03 * k) else lift
+            wo = welt * k
+            ring_w.append(m.add(Vector((p.x + r.x * (wo - ch), p.y + r.y * (wo - ch), sole_top))))
+            ring_t.append(m.add(Vector((p.x + r.x * wo, p.y + r.y * wo, sole_top - ch))))
+            ring_s.append(m.add(Vector((p.x + r.x * wo, p.y + r.y * wo, z_b + ch))))
+            ring_b.append(m.add(Vector((p.x + r.x * (wo - ch), p.y + r.y * (wo - ch), z_b))))
         nb = len(bottom)
         for i in range(nb):
             j = (i + 1) % nb
             m.f.append((bottom[j], bottom[i], ring_w[i], ring_w[j]))
             m.m.append(sole_mat)
-            m.f.append((ring_w[j], ring_w[i], ring_b[i], ring_b[j]))
-            m.m.append(sole_mat)
+            for ra, rb in ((ring_w, ring_t), (ring_t, ring_s), (ring_s, ring_b)):
+                m.f.append((ra[j], ra[i], rb[i], rb[j]))
+                m.m.append(edge_mat)
         pole = m.add(Vector((c.x, c.y, 0.0)))
         for i in range(nb):
             j = (i + 1) % nb
@@ -423,6 +474,21 @@ def shoes(fit: Fit, mat: str, sole_mat: str, top_z: float = 0.095, base: float =
             m.m.append(sole_mat)
         o.straighten_loop(m, top, iters=2)
         o.hem(m, top, thick=0.004 * k, depth=0.012 * k)
+        if cap_line:
+            # toe-cap seam across the toe box (a cap-toe dress shoe)
+            sh_hull = Hull(fit, [m], body_regions=set())
+            y_cap = tip.y + toe * k - 0.04 * k
+            hw = 0.05 * k
+            path = []
+            for t in range(9):
+                x = ball.x + sx * 0.004 * k + lerp(-hw, hw, t / 8)
+                hit = sh_hull.cast(Vector((x, y_cap - 0.006 * k * math.cos(math.pi * (t / 8 - 0.5)), 0.2)),
+                                   Vector((0, 0, -1)), 0.4)
+                if hit[0] is not None and hit[0].z > sole_top + 0.006 * k:
+                    path.append(hit[0])
+            if len(path) >= 3:
+                o.strip(m, sh_hull, path, 0.0022 * k, 0.0012 * k, mat, segs_across=1, chamfer=0.0008 * k,
+                        cast_back=0.03)
         out.extend(m)
     return out
 
@@ -533,12 +599,17 @@ def snap_opening(m: Mesh, half_w: Callable[[float], float], cy: float, z0: float
 
 
 def jacket(fit: Fit, hull: Hull, mat: str, hem_z: float, button_z: float, neck_w: float = 0.075, base: float = 0.011,
-           sleeve: float = 1.95, flare: float = 0.08, open_below: float = 0.03, lapel_w: float = 0.045,
+           sleeve: float = 1.95, flare: float = 0.08, open_below: float = 0.03, lapel_w: float = 0.055,
            collar_mat: str | None = None, lapel_mat: str | None = None, min_off: float = 0.004,
-           shoulder_pad: float = 0.006, keep_shape: float = 0.6) -> tuple[Mesh, dict]:
+           shoulder_pad: float = 0.006, keep_shape: float = 0.6, tail_thigh: float = 0.55,
+           tail_centre: float = 0.11) -> tuple[Mesh, dict]:
     """Tailored jacket / coat: torso + sleeves shell over ``hull`` (shirt etc.), lofted tails down to
     ``hem_z``, a V opening from ``button_z`` to the neck, a front split below the button, lapels and
-    a collar band round the back of the neck. Returns (mesh, info)."""
+    a collar band round the back of the neck. Returns (mesh, info).
+
+    Tail weights (``tail_thigh``, ``tail_centre``): the tails stay mostly on ``hips`` (at most
+    ``tail_thigh`` thigh at the hem) and mix both thighs within ``tail_centre`` of the centre line,
+    so the front split stays nearly closed on run/walk strides."""
     k = fit.k
     hips = fit.ring_centre("hips")
     nk = Neck(fit)
@@ -568,7 +639,8 @@ def jacket(fit: Fit, hull: Hull, mat: str, hem_z: float, button_z: float, neck_w
             o.straighten_loop(m, loops[key], iters=2)
     rows = max(2, int((hips.z - hem_z) / (0.035 * k)))
     o.loft_down(m, bottom, lambda th: hem_z - 0.01 * k * math.cos(th), hull, rows, clearance=0.012 * k,
-                flare=flare, centre=hips, weights=o.skirt_weights(fit, hips.z, hem_z), keep_shape=keep_shape)
+                flare=flare, centre=hips, weights=o.skirt_weights(fit, hips.z, hem_z, tail_thigh, tail_centre),
+                keep_shape=keep_shape)
 
     def v_half(z: float) -> float:
         t = clamp((z - button_z) / max(neck_z - button_z, 1e-3), 0.0, 1.0)
@@ -590,30 +662,49 @@ def jacket(fit: Fit, hull: Hull, mat: str, hem_z: float, button_z: float, neck_w
     snap_opening(m, split_half, cy, hem_z - 0.05, button_z, hull, min_off)
     o.drape(m, hull, min_off, max_off=0.08, iters=2)
     jh = Hull(fit, [m])
-    # lapels: raised bands just outside the V edges, widening towards the top
+    # lapels: raised bands just outside the V edges, widening towards a squared top that stops
+    # short of the collar (the notch); the front (roll) edge stands proud of the outer edge
     lap = Mesh()
+    lap_top = neck_z - 0.045 * k
+    n = 10
+
+    def lap_w(t: float) -> float:
+        return lapel_w * k * (0.22 + 0.78 * smoothstep(0.0, 0.8, t))
+
+    def roll(o_: float) -> float:
+        return lerp(1.0, 0.5, (o_ + 1.0) * 0.5)
+
     for sx in (-1.0, 1.0):
         path = []
-        n = 9
+        widths = []
         for i in range(n):
             t = i / (n - 1)
-            z = lerp(button_z + 0.004, neck_z - 0.012 * k, t)
-            w = lapel_w * k * (0.25 + 0.75 * smoothstep(0.0, 0.75, t)) * (1.0 - 0.35 * smoothstep(0.85, 1.0, t))
+            z = lerp(button_z + 0.004, lap_top, t)
+            w = lap_w(t)
             x = sx * (v_half(z) + w * 0.5 + 0.002)
             hit = jh.cast(Vector((x, 0.6, z)), Vector((0, -1, 0)), 1.2)
             path.append(hit[0] if hit[0] is not None else Vector((x, 0.1, z)))
-        widths = [lapel_w * k * (0.25 + 0.75 * smoothstep(0.0, 0.75, i / (n - 1))) * 0.5 *
-                  (1.0 - 0.35 * smoothstep(0.85, 1.0, i / (n - 1))) for i in range(n)]
+            widths.append(w * 0.5)
         o.strip(lap, jh, path, lambda t, ws=widths: ws[min(round(t * (len(ws) - 1)), len(ws) - 1)],
-                0.0035 * k, lapel_mat or mat, side_hint=Vector((sx, 0, 0)), segs_across=2, chamfer=0.003 * k)
-    # collar band round the back of the neck, joining the lapel tops
+                0.0055 * k, lapel_mat or mat, side_hint=Vector((sx, 0, 0)), segs_across=2, chamfer=0.003 * k,
+                profile=roll)
+    # collar: front ends running up the V edge from just above the lapel tops (the gap between
+    # them is the notch), then a band round the back of the neck
+    cmat = collar_mat or lapel_mat or mat
+    for sx in (-1.0, 1.0):
+        path = []
+        for i in range(4):
+            z = lerp(lap_top + 0.016 * k, neck_z - 0.006 * k, i / 3)
+            x = sx * (v_half(z) + 0.011 * k + 0.002)
+            hit = jh.cast(Vector((x, 0.6, z)), Vector((0, -1, 0)), 1.2)
+            path.append(hit[0] if hit[0] is not None else Vector((x, 0.1, z)))
+        o.strip(lap, jh, path, 0.011 * k, 0.005 * k, cmat, side_hint=Vector((sx, 0, 0)), segs_across=1,
+                chamfer=0.0025 * k, profile=roll)
     cpath = []
     for i in range(21):
         th = lerp(0.42, 2 * math.pi - 0.42, i / 20)
         cpath.append(nk.point(th, 0.12, 0.012 * k))
-    full = Hull(fit, [m, lap]) if hull is None else None
-    del full
-    o.strip(lap, Hull(fit, [m]), cpath, 0.022 * k, 0.004 * k, collar_mat or lapel_mat or mat, side_hint=UP,
+    o.strip(lap, Hull(fit, [m]), cpath, 0.022 * k, 0.005 * k, cmat, side_hint=UP,
             segs_across=2, chamfer=0.003 * k, cast_back=0.06)
     o.hem_all(m, thick=0.004 * k, depth=0.016 * k)
     m.extend(lap)
@@ -643,15 +734,28 @@ def knit_top(fit: Fit, hull: Hull, mat: str, bottom_z: float, sleeve: float = 2.
     return m
 
 
-def gilet(fit: Fit, hull: Hull, mat: str, bottom_z: float, base: float = 0.016, quilt: float = 0.007,
-          pitch: float = 0.075, zip_mat: str = "chrome") -> tuple[Mesh, Mesh]:
-    """Quilted sleeveless puffer vest with a stand collar and a front zip. Returns (soft, zip)."""
+def gilet(fit: Fit, hull: Hull, mat: str, bottom_z: float, base: float = 0.012, quilt: float = 0.010,
+          pitch: float = 0.065, zip_mat: str = "chrome") -> tuple[Mesh, Mesh]:
+    """Quilted sleeveless puffer vest with a stand collar and a front zip. Returns (soft, zip).
+
+    Quilting: horizontal stitch lines snapped to the body's own vertex rows (about every ``pitch``)
+    are pinched in to the base offset while the channels between them puff out by ``quilt``, so the
+    grooves land exactly on edge loops and read as crisp channels instead of aliasing."""
     k = fit.k
+    rows = sorted({round(fit.P[v].z, 4) for f, r in zip(fit.F, fit.FR) if r == "torso" for v in f
+                   if abs(fit.P[v].x) < 0.02 * k and fit.P[v].y > 0.0})
+    seams: list[float] = []
+    for z in rows:
+        if z <= bottom_z + 0.03 * k:
+            continue
+        if not seams or z - seams[-1] >= pitch * k * 0.85:
+            seams.append(z)
 
     def extra(p: Vector, r: str) -> float:
-        return quilt * k * abs(math.sin(math.pi * (p.z - bottom_z) / (pitch * k)))
+        d = min((abs(p.z - z) for z in seams), default=1.0)
+        return quilt * k * (1.0 - smoothstep(0.008 * k, 0.003 * k, d))
 
-    sh = upper_shell(fit, mat, bottom_z=bottom_z, base=base, sleeveless=True, hull=hull, iters=3, extra=extra,
+    sh = upper_shell(fit, mat, bottom_z=bottom_z, base=base, sleeveless=True, hull=hull, iters=1, extra=extra,
                      min_off=0.006 * k, waist_blouse=0.006)
     m = sh.mesh
     loops = classify_loops(m)
