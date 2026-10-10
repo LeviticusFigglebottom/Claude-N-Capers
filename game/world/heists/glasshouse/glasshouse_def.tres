@@ -13,8 +13,9 @@ base_payout = 40000
 loot = Array[StringName]([&"loot.jewelry", &"loot.cash"])
 objectives = Array[StringName]([&"casing", &"keycard", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"])
 preplanning = {
+"assets": {
 &"asset.alternate_entry": {
-"point_categories": [&"player_spawn"]
+"point_categories": [&"spawn"]
 },
 &"asset.body_bag_case_drop": {
 "point_categories": [&"drop_zone"]
@@ -37,6 +38,7 @@ preplanning = {
 "favors": 1,
 "point_categories": [&"access"],
 "tags": [&"stealth"]
+}
 },
 "disable": [&"asset.intel_cameras"],
 "favors": 10
