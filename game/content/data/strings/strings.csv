@@ -421,3 +421,67 @@ ui.hud.assault_phase.control,Police regrouping
 ui.results.crew,Crew
 ui.results.crew_ai,Crew AI {slot}
 ui.results.crew_slot,Heister {slot}
+ui.range.title,Firing Range
+ui.range.weapon,Weapon (every weapon and mod is free here)
+ui.range.difficulty,Dummy difficulty
+ui.range.mod_none,None
+ui.range.stats,Weapon Stats
+ui.range.physical,Physical Values
+ui.range.readout_lane,Readout target
+ui.range.readout,Readout
+ui.range.last_shot,Last Shot
+ui.range.reset_targets,Reset Targets
+ui.range.exit,Leave Range
+ui.range.none,-
+ui.range.marker,{m} m
+ui.range.target_hp,{hp} / {max}
+ui.range.damage_body,{value}
+ui.range.damage_head,{value}!
+ui.range.ammo,{ammo} / {mag}
+ui.range.reloading,Reloading...
+ui.range.crosshair,+
+ui.range.hint_panels,Click the range or press Tab / Start to aim. Esc / B leaves the range.
+ui.range.hint_aim,WASD move · Q/E down/up · Mouse look · LMB fire · RMB aim · R reload · Tab / Esc menu
+ui.range.temp_camera,Temporary range camera (until the crew controller ships)
+ui.range.dummy.light,Light Tactical Dummy
+ui.range.zone.body,Body
+ui.range.zone.head,Head
+ui.range.zone.limb,Limb
+ui.range.zone.weakpoint,Weak Point
+ui.range.phys.damage,Damage per bullet
+ui.range.phys.pellets,Pellets
+ui.range.phys.headshot_mult,Headshot multiplier (dummy)
+ui.range.phys.fire_rate,Fire rate
+ui.range.phys.falloff_start,Falloff starts
+ui.range.phys.falloff_end,Falloff ends
+ui.range.phys.falloff_min,Damage at falloff end
+ui.range.phys.spread_ads,Spread (aimed)
+ui.range.phys.spread_hip,Spread (hip)
+ui.range.phys.reload,Reload
+ui.range.phys.reload_empty,Reload (empty)
+ui.range.ro.target,Target
+ui.range.ro.distance,Distance
+ui.range.ro.health,Health
+ui.range.ro.falloff,Falloff at range
+ui.range.ro.body_damage,Body shot damage
+ui.range.ro.head_damage,Headshot damage
+ui.range.ro.dps,DPS (magazine)
+ui.range.ro.sustained_dps,DPS (with reloads)
+ui.range.ro.ttk_body,Time to kill (body)
+ui.range.ro.ttk_head,Time to kill (head)
+ui.range.ls.distance,Distance
+ui.range.ls.damage,Damage
+ui.range.ls.zone,Zone
+ui.range.ls.result,Result
+ui.range.ls.killed,Killed
+ui.range.fmt.m,{value} m
+ui.range.fmt.s,{value} s
+ui.range.fmt.rpm,{value} rpm
+ui.range.fmt.mult,x{value}
+ui.range.fmt.deg,{value} deg
+ui.range.fmt.dps,{value}/s
+ui.range.fmt.hp,{value} HP
+ui.range.fmt.head,{value} (x{mult})
+ui.range.fmt.ttk,"{shots} shots, {time} s"
+item.mod.p9_iron_sights.name,Standard Iron Sights
+item.mod.p9_standard_mag.name,Standard Magazine
