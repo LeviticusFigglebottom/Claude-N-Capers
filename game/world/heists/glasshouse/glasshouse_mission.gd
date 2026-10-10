@@ -30,7 +30,7 @@ var _escape_open: bool = false
 
 
 func _on_mission_start() -> void:
-	say(&"glasshouse.intro")
+	say(&"vo.mercer.glasshouse_intro")
 	add_objective(&"casing", &"objective.glasshouse.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
 	if _slot_active(&"safe_state", &"safe_open"):
 		add_objective(&"keycard", &"objective.glasshouse.keycard", Enums.ObjectiveState.COMPLETED, {"skipped": true})
@@ -67,7 +67,7 @@ func _on_alarm(_reason: StringName) -> void:
 
 func _on_pager_answered(total: int) -> void:
 	if total >= LAST_PAGER:
-		say(&"glasshouse.last_pager", {"answered": total})
+		say(&"vo.mercer.glasshouse_last_pager", {"answered": total})
 
 
 # --- Stealth flow ---------------------------------------------------------------------------
@@ -89,7 +89,7 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 	if _is_tagged(interactable_net_id, TAG_WORKSHOP_DOOR):
 		if objective_state(&"workshop_door") == Enums.ObjectiveState.ACTIVE:
 			complete(&"workshop_door")
-			say(&"glasshouse.workshop_open")
+			say(&"vo.mercer.glasshouse_workshop_open")
 	elif _is_tagged(interactable_net_id, TAG_SAFE_READER):
 		if not _lockdown:
 			_open_safe()
@@ -100,7 +100,7 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 
 func _on_item_picked_up(item_id: StringName, _crew_slot: int) -> void:
 	if item_id == ITEM_KEYCARD:
-		say(&"glasshouse.keycard_found")
+		say(&"vo.mercer.glasshouse_keycard_found")
 
 
 func _on_device_finished(device_net_id: int) -> void:
@@ -110,7 +110,7 @@ func _on_device_finished(device_net_id: int) -> void:
 
 func _on_device_jammed(device_net_id: int) -> void:
 	if _is_tagged(device_net_id, TAG_SAFE_DRILL):
-		say(&"glasshouse.drill_jam")
+		say(&"vo.mercer.glasshouse_drill_jam")
 
 
 func _open_safe() -> void:
@@ -136,7 +136,7 @@ func _go_loud() -> void:
 	if _lockdown:
 		return
 	_lockdown = true
-	say(&"glasshouse.lockdown")
+	say(&"vo.mercer.glasshouse_lockdown")
 	for r: Node in find_tagged(TAG_SAFE_READER):
 		var it: Node = r.get_node_or_null(^"Interactable")
 		if it != null:
@@ -149,7 +149,7 @@ func _go_loud() -> void:
 		g.call(&"unlock")
 		g.call(&"set_open", true)
 	if not _escape_open:
-		say(&"glasshouse.van_eta", {"seconds": VAN_RETURN_S})
+		say(&"vo.mercer.glasshouse_van_eta", {"seconds": VAN_RETURN_S})
 		start_timer(&"van_return", VAN_RETURN_S, _on_van_timer)
 
 
@@ -171,7 +171,7 @@ func _try_escape() -> void:
 		return
 	_escape_open = true
 	activate(&"escape")
-	say(&"glasshouse.escape")
+	say(&"vo.mercer.glasshouse_escape")
 	activate_escape(TAG_ESCAPE)
 
 

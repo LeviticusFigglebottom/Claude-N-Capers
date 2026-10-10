@@ -47,9 +47,9 @@ static func make_def() -> HeistDef:
 			&"asset.escape_position": {"point_categories": [&"escape"]},
 			&"asset.intel_keycards": {"point_categories": [&"insider"]},
 			&"asset.intel_cameras": {"point_categories": [&"insider"]},
-			&"asset.insider_code": {"effect": "reveal", "reveal_variant_group": &"code_note", "category": &"intel",
+			&"asset.insider_code": {"reveals": [&"code_note"], "category": &"intel",
 				"point_categories": [&"insider"], "cost": 1500, "favors": 1, "tags": [&"stealth"]},
-			&"asset.vent_access": {"force_variant": {"group": &"vent_open", "slot": &"vent_open"},
+			&"asset.vent_access": {"force_variants": {&"vent_open": [&"vent_open"]},
 				"category": &"access", "point_categories": [&"insider"], "cost": 1000, "favors": 1, "tags": [&"stealth"]},
 		},
 	}
