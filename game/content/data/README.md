@@ -78,6 +78,13 @@ P2 heists (PD2 bag shape: a heavier bag is worth more per bag, but less per seco
 | `loot.painting` | MEDIUM | $1,500 | Shadow Ledger art hall ×2, reusable by `gallery_night` | weight V (doc); value ◇ |
 Shadow Ledger's archive safe uses the existing `loot.cash`.
 
+**Small loot (QB-52, D-049): no loot def.** Small loot (cash stacks, jewellery, deposit-box contents
+picked up by hand, not bagged) gets its value from the map prefab that spawns it (ENV A/C), which
+reports the sum in `HeistResult.small_loot`; `PayoutCalculator` scales it by difficulty
+(`PayoutTweak.small_loot_scaled_by_difficulty`). `loot.small_loot_value_mult` (Plain Sight aced) belongs
+to the pickup side (ENV A). Per-item ranges before the difficulty
+multiplier (recorded from the G0 docs): **Night Deposit $800–2,400**, **Shadow Ledger $1,200–3,000**.
+
 ## Difficulty: `difficulty/` (Routine, Tense, Hazardous, Brutal, Lethal, Cataclysm = PD2 Normal, Hard, Very Hard, Overkill, Mayhem, Death Sentence)
 | | Rou | Ten | Haz | Bru | Let | Cat | Src |
 |---|---|---|---|---|---|---|---|
