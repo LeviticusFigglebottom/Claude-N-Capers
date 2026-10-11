@@ -188,3 +188,19 @@ source counts (sum of absorptions), applied after `defense.damage_taken_mult`.
 |---|---|---|
 | absorb_per_hostage | float (HP) | Damage absorbed from each hit per hostage held by the crew. |
 | max_hostages | int | Hostages counted at most (0 = no cap). |
+
+## `weapon.kill_ammo_drop` (PARAMS), AmmoPickupSystem
+| Field | Type | Meaning |
+|---|---|---|
+| every_n_kills | int | Every n-th kill by the holder drops one extra ammo box, on top of the normal drop roll. |
+
+## `weapon.ammo_pickup_throwable` (PARAMS), AmmoPickupSystem
+Applies when a taken ammo box gave rounds and `CrewWeapons.throwable_count` is below the equipped
+`ThrowableDef.count`. The roll uses GameRng `&"ammo"`.
+
+| Field | Type | Meaning |
+|---|---|---|
+| base_chance | float 0..1 | Chance that a box holds a throwable (+1 throwable_count). |
+| step | float | Added to the chance for each box taken without a throwable. The count resets on success. |
+
+`movement.sprint_speed_mult` (MULT) scales `CrewTweak.sprint_speed`. The server's speed check allows for it.

@@ -119,6 +119,8 @@ func set_loadout(l: Loadout) -> void:
 	_states.clear()
 	if l != null:
 		deployable_id = l.deployable  # A2-06: HUD fallback until DeployableSystem syncs
+		var th: ThrowableDef = ContentDB.throwable(l.throwable) if l.throwable != &"" else null
+		throwable_count = th.count if th != null else 0
 		_add_state(Enums.WeaponSlot.PRIMARY, l.primary, l.resolved_primary, l.primary_mods)
 		_add_state(Enums.WeaponSlot.SECONDARY, l.secondary, l.resolved_secondary, l.secondary_mods)
 	equipped_slot = Enums.WeaponSlot.PRIMARY if _states.has(Enums.WeaponSlot.PRIMARY) else Enums.WeaponSlot.SECONDARY
