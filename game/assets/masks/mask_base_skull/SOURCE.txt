@@ -1,0 +1,12 @@
+asset: mask_base_skull
+script: tools/blender/masks/base_skull.py
+params: {"bottom": -0.122, "brow": 1.5, "cheek": 0.0, "coverage": "full", "edge_res": 0.0045, "eye_height": 0.025, "eye_shape": "round", "eye_spacing": 0.07, "eye_tilt_deg": 0.0, "eye_width": 0.027, "face_half_width": 0.092, "jaw": 0.9, "jaw_taper": 0.4, "mouth": "none", "nose": 0.0, "res": 0.0085, "res_back": 0.015, "side_arc": 0.11, "top": 0.108, "wrap_radius": 0.098}
+seed: 3626626110  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category masks --asset mask_base_skull
+edit policy: generated file, never edit by hand; change the script and rebuild
+coverage: full
+pivot: face centre: midway between the eye centres at eye (cornea) depth; Blender +Y = Godot -Z = forward, +Z = up
+tri_budget: 8000
+tris_lod0: 5818
+uv0: front planar along -Z (Godot), x 0..1 = +X..-X (viewer's left to right), y 0..1 = top..bottom; bounds x +-0.0831 m, z -0.1214..0.1072 m
