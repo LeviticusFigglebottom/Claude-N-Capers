@@ -1,0 +1,21 @@
+asset: char_bank_customer_b
+script: tools/blender/characters/char_p5_bank.py
+params: {"age": 0.35, "build": 0.45, "gender": 1.0, "hair": "side_part", "hair_color": "brown", "height": 1.68, "look": "parent", "skin": 5}
+seed: 1224748206  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_bank_customer_b
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0847, 0.1090] (model [0.0000, 1.2270, 0.1265], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0764, -0.0837] (model [0.0000, 1.5724, -0.0724], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1906, 0.0485, 0.0444] (model [0.1906, 0.9476, 0.0468], Godot axes, rest pose)
+backpack_note: daypack is rigid Gear on the chest bone; strap padding is Outfit
+body_faces_culled: 4764
+body_params: {"age": 0.35, "beard_shadow": 0.0, "build": 0.45, "gender": 1.0, "hair": "side_part", "hair_color": "brown", "hair_peak": 0.0, "height": 1.68, "lip": "auto", "skin": 5}
+bones: 52
+faces_hidden_by_bomber: 2519
+look: Parent customer: olive nylon bomber over a cream crew knit, jeans, white trainers, navy daypack on both shoulders
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 28028
+tris_by_mesh: {"Body": 9216, "Gear": 630, "Hair": 1856, "Outfit": 16326}
