@@ -73,8 +73,8 @@ static func make_variants() -> HeistVariantTable:
 		{"group": &"safe_state", "pick": Vector2i(1, 1)},
 		{"group": &"estate", "pick": Vector2i(1, 1)},
 		{"group": &"camera", "pick": Vector2i(1, 3), "difficulty_add": [0, 0, 0, 1, 1, 2] as Array[int]},
-		{"group": &"security_room_staffed", "pick": Vector2i(0, 0), "phase": 2, "pick_p2": Vector2i(1, 1)},
-		{"group": &"code_note", "pick": Vector2i(0, 0), "phase": 2, "pick_p2": Vector2i(1, 1)},
+		{"group": &"security_room_staffed", "pick": Vector2i(1, 1)},
+		{"group": &"code_note", "pick": Vector2i(1, 1)},
 	]
 	t.rare_events = [
 		{"id": &"safe_left_open", "chance": 0.03, "good": true,

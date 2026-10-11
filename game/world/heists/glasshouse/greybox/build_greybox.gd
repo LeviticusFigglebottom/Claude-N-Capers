@@ -1132,7 +1132,8 @@ func _build_gameplay(gp: Node3D) -> void:
 func _build_workshop(gp: Node3D) -> void:
 	var ws: Node3D = _add(gp, _node3d("Workshop")) as Node3D
 	var safe: Node3D = _prefab(ws, "safe", "WorkshopSafe", Vector3(6.5, 0.0, 0.56), 180.0,
-		{"size": "enum:LARGE", "methods": [&"drill"] as Array[StringName], "objective_tag": &"safe"})
+		{"size": "enum:LARGE", "methods": [&"keycard", &"code", &"drill"] as Array[StringName],
+			"code_group": &"glasshouse_safe", "objective_tag": &"safe"})
 	if safe != null:
 		_prefab(safe, "drill_point", "SafeDrill", Vector3(0.2, 1.0, -0.36), 180.0,
 			{"device": "enum:DRILL", "target": NodePath(".."), "objective_tag": &"safe_drill"})
@@ -1298,6 +1299,7 @@ func _variants_loot_escape(variants: Node3D) -> void:
 	_slot(xl, "extra_loot", "xl_none", 0.4)
 	var esc: Node3D = _group(variants, "escape")
 	var e1: VariantSlot = _slot(esc, "escape", "esc_alley_west", 0.65, {"label": "E1"})
+	# On the alley ground (ROAD_Y): a zone floor above it misses resting bags (D-066).
 	_prefab(e1, "secure_zone", "VanSecureE1", Vector3(-8.62, 0.0, -3.2), -90.0, {},
 		null, {"kind": "vehicle"})
 	# Escape area: the alley behind the van, rear bumper to the fire-escape ladder (5.8 x 7 m).
@@ -1339,8 +1341,8 @@ func _variants_rare(variants: Node3D) -> void:
 			"visual_scene": _dress.scene("prop_loot_bag_heavy")})
 
 
-## Camera rows: one slot per camera (D-059: 1-3 live per run, more on higher difficulties); the
-## other P2 rows stay at pick 0.
+## Former P2 rows, live since D-059/D-061: one slot per camera (1-3 live, more on higher
+## difficulties), the camera operator (staffed 0.6) and one code note for the safe.
 func _variants_p2(variants: Node3D) -> void:
 	var cams: Dictionary = {
 		"C1": [Vector3(12.5, 3.0, 6.1), 180.0], "C2": [Vector3(0.6, 3.0, 11.8), 0.0],
@@ -1356,8 +1358,8 @@ func _variants_p2(variants: Node3D) -> void:
 			{"mount": "wall", "kind": "security_camera", "camera_id": cid})
 	var sr: Node3D = _group(variants, "security_room_staffed")
 	_slot(sr, "security_room_staffed", "sec_staffed", 0.6,
-		{"phase": 2, "operator_spawn": "Spawns/CameraOperatorSeat", "station": "Gameplay/Misc/CameraStation"})
-	_slot(sr, "security_room_staffed", "sec_empty", 0.4, {"phase": 2})
+		{"operator_spawn": "Spawns/CameraOperatorSeat", "station": "Gameplay/Misc/CameraStation"})
+	_slot(sr, "security_room_staffed", "sec_empty", 0.4)
 	var cn: Node3D = _group(variants, "code_note")
 	var notes: Array = [
 		["code_admin", Vector3(3.7, L.UPPER + 0.74, 8.85), Vector3(3.7, L.UPPER, 8.15)],
@@ -1365,7 +1367,7 @@ func _variants_p2(variants: Node3D) -> void:
 		["code_jeweler_notebook", Vector3(8.2, 0.92, 0.75), Vector3(8.2, 0.0, 1.45)],
 	]
 	for n: Array in notes:
-		var slot2: VariantSlot = _slot(cn, "code_note", String(n[0]), 1.0, {"phase": 2})
+		var slot2: VariantSlot = _slot(cn, "code_note", String(n[0]), 1.0)
 		_prefab(slot2, "code_note", "CodeNote", n[1], 0.0, {"code_group": &"glasshouse_safe"}, n[2])
 
 
