@@ -1,0 +1,142 @@
+[gd_resource type="Resource" script_class="HeistVariantTable" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_variant_table.gd" id="1_wvheu"]
+
+[resource]
+script = ExtResource("1_wvheu")
+rules = Array[Dictionary]([{
+"difficulty_add": Array[int]([0, 0, 1, 1, 2, 3]),
+"group": &"guard_post",
+"pick": Vector2i(3, 3)
+}, {
+"group": &"cash_location",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"weapons_containers",
+"pick": Vector2i(2, 2)
+}, {
+"group": &"product_location",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"warehouse_entry",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"east_gangway",
+"pick": Vector2i(1, 1)
+}, {
+"force_if": [{
+"if": {
+&"cash_location": [&"cash_strongroom"]
+},
+"then": [&"lift_powered"]
+}],
+"group": &"goods_lift",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"player_perch",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"escape",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"night_shift",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"perch_viaduct",
+"pick": Vector2i(0, 0)
+}, {
+"group": &"perch_trawler",
+"pick": Vector2i(0, 0)
+}])
+rare_events = Array[Dictionary]([{
+"chance": 0.06,
+"effects": {
+"reveal_groups": [&"weapons_containers"]
+},
+"good": true,
+"id": &"informant_tip"
+}, {
+"chance": 0.05,
+"effects": {
+"weapons_containers_add": 1
+},
+"good": true,
+"id": &"extra_container"
+}, {
+"chance": 0.06,
+"effects": {
+"police_delay_s": 0.0
+},
+"good": false,
+"id": &"police_tipped"
+}, {
+"chance": 0.08,
+"effects": {
+"at_s": 180.0,
+"gunmen": 4
+},
+"good": false,
+"id": &"cartel_reinforcements",
+"min_difficulty": 2
+}, {
+"chance": 0.1,
+"effects": {
+"at_s": 360.0,
+"boat_delay_s": 30.0,
+"force_active": {
+"group": &"perch_viaduct",
+"slot": &"viaduct_on"
+}
+},
+"good": false,
+"id": &"fog_lifts"
+}, {
+"chance": 0.06,
+"effects": {
+"force_active": {
+"group": &"perch_trawler",
+"slot": &"trawler_on"
+}
+},
+"good": false,
+"id": &"harbor_unit",
+"min_difficulty": 3
+}])
+scalars = Array[Dictionary]([{
+"id": &"police_delay_s",
+"values": [60.0, 90.0, 120.0],
+"weights": PackedFloat32Array(0.1, 0.3, 0.6),
+"weights_by_difficulty": {
+1: PackedFloat32Array(0.2, 0.4, 0.4),
+2: PackedFloat32Array(0.3, 0.5, 0.2),
+3: PackedFloat32Array(0.5, 0.4, 0.1),
+4: PackedFloat32Array(0.7, 0.3, 0),
+5: PackedFloat32Array(1, 0, 0)
+}
+}, {
+"id": &"cash_bags",
+"values": [4, 6, 8],
+"weights": PackedFloat32Array(0.3, 0.5, 0.2),
+"weights_by_difficulty": {
+3: PackedFloat32Array(0.2, 0.4, 0.4),
+4: PackedFloat32Array(0.2, 0.4, 0.4),
+5: PackedFloat32Array(0.2, 0.4, 0.4)
+}
+}, {
+"id": &"product_bags",
+"values": [4, 6, 8],
+"weights": PackedFloat32Array(1, 1, 1)
+}, {
+"id": &"escape_eta_s",
+"values": [90.0, 120.0, 150.0],
+"weights": PackedFloat32Array(0.4, 0.4, 0.2),
+"weights_by_difficulty": {
+3: PackedFloat32Array(0.2, 0.4, 0.4),
+4: PackedFloat32Array(0.2, 0.4, 0.4),
+5: PackedFloat32Array(0.2, 0.4, 0.4)
+}
+}, {
+"id": &"extra_container_pick",
+"values": [0, 1, 2, 3],
+"weights": PackedFloat32Array(1, 1, 1, 1)
+}])

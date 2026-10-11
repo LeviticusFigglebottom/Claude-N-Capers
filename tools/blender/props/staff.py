@@ -267,8 +267,8 @@ def _desk_office(k: Kit, p: dict) -> None:
     a.bx((-w / 2, -d / 2, h - 0.025), (w / 2, d / 2, h), "wood_oak")
     for sx in (-1, 1):
         x0, x1 = sorted((sx * (w / 2 - 0.02), sx * (w / 2 - 0.06)))
-        a.bx((x0, -d / 2 + 0.03, 0.0), (x1, d / 2 - 0.03, h - 0.025), "metal_dark")
-    a.bx((-w / 2 + 0.06, -d / 2 + 0.03, 0.3), (w / 2 - 0.06, -d / 2 + 0.05, h - 0.025), "metal_dark")
+        a.bx((x0, -d / 2 + 0.03, 0.0), (x1, d / 2 - 0.03, h - 0.025), "powder_charcoal")
+    a.bx((-w / 2 + 0.06, -d / 2 + 0.03, 0.3), (w / 2 - 0.06, -d / 2 + 0.05, h - 0.025), "powder_charcoal")
     # drawer pedestal on the right
     a.bx((0.22, -d / 2 + 0.06, 0.04), (w / 2 - 0.07, d / 2 - 0.05, h - 0.03), "metal_grey")
     for i in range(3):

@@ -453,61 +453,202 @@ def _arc(cx: float, cy: float, rx: float, ry: float, a0: float, a1: float, n: in
              cy + ry * math.sin(math.radians(a0 + (a1 - a0) * i / n))) for i in range(n + 1)]
 
 
-GLYPHS: dict[str, tuple[float, list[list[tuple[float, float]]]]] = {
-    "V": (0.7, [[(0.0, 1.0), (0.35, 0.0), (0.7, 1.0)]]),
-    "O": (0.75, [_arc(0.375, 0.5, 0.375, 0.5, 0, 360, 16)]),
-    "S": (0.6, [_arc(0.3, 0.75, 0.28, 0.25, 15, 270, 8) + _arc(0.3, 0.25, 0.28, 0.25, 90, -165, 8)]),
-    "B": (0.6, [[(0.0, 0.0), (0.0, 1.0), (0.3, 1.0)] + _arc(0.3, 0.76, 0.24, 0.24, 90, -90, 6)
-                + [(0.0, 0.52), (0.33, 0.52)] + _arc(0.33, 0.26, 0.26, 0.26, 90, -90, 6) + [(0.0, 0.0)]]),
-    "E": (0.55, [[(0.55, 1.0), (0.0, 1.0), (0.0, 0.0), (0.55, 0.0)], [(0.0, 0.52), (0.45, 0.52)]]),
-    "R": (0.62, [[(0.0, 0.0), (0.0, 1.0), (0.32, 1.0)] + _arc(0.32, 0.75, 0.25, 0.25, 90, -90, 6)
-                 + [(0.0, 0.5)], [(0.25, 0.5), (0.62, 0.0)]]),
-    "G": (0.72, [_arc(0.38, 0.5, 0.36, 0.5, 40, 340, 12) + [(0.72, 0.4), (0.72, 0.45), (0.42, 0.45)]]),
-    "X": (0.62, [[(0.0, 0.0), (0.62, 1.0)], [(0.0, 1.0), (0.62, 0.0)]]),
-    "I": (0.1, [[(0.05, 0.0), (0.05, 1.0)]]),
-    "T": (0.6, [[(0.0, 1.0), (0.6, 1.0)], [(0.3, 1.0), (0.3, 0.0)]]),
-    "J": (0.5, [[(0.5, 1.0), (0.5, 0.3)] + _arc(0.25, 0.3, 0.25, 0.3, 0, -180, 6)]),
-    "W": (0.95, [[(0.0, 1.0), (0.22, 0.0), (0.475, 0.7), (0.73, 0.0), (0.95, 1.0)]]),
-    "L": (0.5, [[(0.0, 1.0), (0.0, 0.0), (0.5, 0.0)]]),
-    "Y": (0.62, [[(0.0, 1.0), (0.31, 0.5), (0.62, 1.0)], [(0.31, 0.5), (0.31, 0.0)]]),
-    "N": (0.65, [[(0.0, 0.0), (0.0, 1.0), (0.65, 0.0), (0.65, 1.0)]]),
-    "A": (0.68, [[(0.0, 0.0), (0.34, 1.0), (0.68, 0.0)], [(0.13, 0.38), (0.55, 0.38)]]),
-    "C": (0.65, [_arc(0.38, 0.5, 0.36, 0.5, 45, 315, 12)]),
-    "P": (0.58, [[(0.0, 0.0), (0.0, 1.0), (0.3, 1.0)] + _arc(0.3, 0.74, 0.26, 0.26, 90, -90, 6) + [(0.0, 0.48)]]),
-    "H": (0.62, [[(0.0, 0.0), (0.0, 1.0)], [(0.62, 0.0), (0.62, 1.0)], [(0.0, 0.5), (0.62, 0.5)]]),
-}
+def _glyph_table(k: int = 1) -> dict[str, tuple[float, list[list[tuple[float, float]]]]]:
+    """Glyph table; ``k`` multiplies every arc's segment count (1 = the original polylines)."""
+    return {
+        "V": (0.7, [[(0.0, 1.0), (0.35, 0.0), (0.7, 1.0)]]),
+        "O": (0.75, [_arc(0.375, 0.5, 0.375, 0.5, 0, 360, 16 * k)]),
+        "S": (0.6, [_arc(0.3, 0.75, 0.28, 0.25, 15, 270, 8 * k) + _arc(0.3, 0.25, 0.28, 0.25, 90, -165, 8 * k)]),
+        "B": (0.6, [[(0.0, 0.0), (0.0, 1.0), (0.3, 1.0)] + _arc(0.3, 0.76, 0.24, 0.24, 90, -90, 6 * k)
+                    + [(0.0, 0.52), (0.33, 0.52)] + _arc(0.33, 0.26, 0.26, 0.26, 90, -90, 6 * k) + [(0.0, 0.0)]]),
+        "E": (0.55, [[(0.55, 1.0), (0.0, 1.0), (0.0, 0.0), (0.55, 0.0)], [(0.0, 0.52), (0.45, 0.52)]]),
+        "R": (0.62, [[(0.0, 0.0), (0.0, 1.0), (0.32, 1.0)] + _arc(0.32, 0.75, 0.25, 0.25, 90, -90, 6 * k)
+                     + [(0.0, 0.5)], [(0.25, 0.5), (0.62, 0.0)]]),
+        "G": (0.72, [_arc(0.38, 0.5, 0.36, 0.5, 40, 340, 12 * k) + [(0.72, 0.4), (0.72, 0.45), (0.42, 0.45)]]),
+        "X": (0.62, [[(0.0, 0.0), (0.62, 1.0)], [(0.0, 1.0), (0.62, 0.0)]]),
+        "I": (0.1, [[(0.05, 0.0), (0.05, 1.0)]]),
+        "T": (0.6, [[(0.0, 1.0), (0.6, 1.0)], [(0.3, 1.0), (0.3, 0.0)]]),
+        "J": (0.5, [[(0.5, 1.0), (0.5, 0.3)] + _arc(0.25, 0.3, 0.25, 0.3, 0, -180, 6 * k)]),
+        "W": (0.95, [[(0.0, 1.0), (0.22, 0.0), (0.475, 0.7), (0.73, 0.0), (0.95, 1.0)]]),
+        "L": (0.5, [[(0.0, 1.0), (0.0, 0.0), (0.5, 0.0)]]),
+        "Y": (0.62, [[(0.0, 1.0), (0.31, 0.5), (0.62, 1.0)], [(0.31, 0.5), (0.31, 0.0)]]),
+        "N": (0.65, [[(0.0, 0.0), (0.0, 1.0), (0.65, 0.0), (0.65, 1.0)]]),
+        "A": (0.68, [[(0.0, 0.0), (0.34, 1.0), (0.68, 0.0)], [(0.13, 0.38), (0.55, 0.38)]]),
+        "C": (0.65, [_arc(0.38, 0.5, 0.36, 0.5, 45, 315, 12 * k)]),
+        "P": (0.58, [[(0.0, 0.0), (0.0, 1.0), (0.3, 1.0)] + _arc(0.3, 0.74, 0.26, 0.26, 90, -90, 6 * k) + [(0.0, 0.48)]]),
+        "H": (0.62, [[(0.0, 0.0), (0.0, 1.0)], [(0.62, 0.0), (0.62, 1.0)], [(0.0, 0.5), (0.62, 0.5)]]),
+    }
 
 
-def text_strokes(text: str, height: float, spacing: float = 0.22, slant: float = 0.0
+GLYPHS: dict[str, tuple[float, list[list[tuple[float, float]]]]] = _glyph_table(1)
+
+
+def text_strokes(text: str, height: float, spacing: float = 0.22, slant: float = 0.0, res: int = 1
                  ) -> tuple[float, list[list[tuple[float, float]]]]:
     """Strokes (x, z) for ``text`` with letters ``height`` tall, starting at x = 0. Returns
-    (total width, strokes). ``slant`` shears x by z (script look)."""
+    (total width, strokes). ``slant`` shears x by z (script look). ``res`` multiplies the arc
+    segment counts (smoother curves for large or close-up lettering)."""
+    glyphs = GLYPHS if res == 1 else _glyph_table(res)
     x = 0.0
     strokes: list[list[tuple[float, float]]] = []
     for ch in text:
         if ch == " ":
             x += 0.45 * height
             continue
-        w, gl = GLYPHS[ch]
+        w, gl = glyphs[ch]
         for s in gl:
             strokes.append([(x + (gx + slant * gy) * height, gy * height) for gx, gy in s])
         x += (w + spacing) * height
     return x - spacing * height, strokes
 
 
+def _ribbon(p: Part, pts: list[tuple[float, float]], hw: float, y0: float, y1: float, key: str) -> None:
+    """Flat stroke of half-width ``hw`` along the (x, z) polyline ``pts``, extruded from y0 to y1.
+    One quad prism per segment; neighbours share mitred edges at gentle joints (seamless curves),
+    sharp joints (> 60 degrees) get butt ends plus a round disc, so no box corners poke out."""
+    q: list[tuple[float, float]] = []
+    for pt in pts:
+        if not q or math.dist(q[-1], pt) > 1e-6:
+            q.append(pt)
+    closed = len(q) > 2 and math.dist(q[0], q[-1]) < 1e-4
+    if closed:
+        q[-1] = q[0]
+    n = len(q)
+    if n < 2:
+        return
+
+    def unit(a: tuple[float, float], b: tuple[float, float]) -> tuple[float, float]:
+        d = math.dist(a, b)
+        return ((b[0] - a[0]) / d, (b[1] - a[1]) / d)
+
+    dirs = [unit(q[i], q[i + 1]) for i in range(n - 1)]
+    # per-vertex offset: (dx, dz) to the left side, or None for a butt end
+    offs: list[tuple[float, float] | None] = []
+    for i in range(n):
+        din = dirs[i - 1] if i > 0 else (dirs[-1] if closed else None)
+        dout = dirs[i] if i < n - 1 else (dirs[0] if closed else None)
+        if din is None or dout is None:
+            offs.append(None)
+            continue
+        cos_t = din[0] * dout[0] + din[1] * dout[1]
+        if cos_t < 0.5:
+            offs.append(None)
+            p.cyl(hw, y1 - y0, (q[i][0], (y0 + y1) / 2, q[i][1]), key, axis="Y", segs=16)
+            continue
+        n0, n1 = (-din[1], din[0]), (-dout[1], dout[0])
+        mx, mz = n0[0] + n1[0], n0[1] + n1[1]
+        ml = math.hypot(mx, mz)
+        mx, mz = mx / ml, mz / ml
+        scale = hw / (mx * n0[0] + mz * n0[1])
+        offs.append((mx * scale, mz * scale))
+    for i in range(n - 1):
+        a, b = q[i], q[i + 1]
+        nrm = (-dirs[i][1] * hw, dirs[i][0] * hw)
+        oa = offs[i] or nrm
+        ob = offs[i + 1] or nrm
+        outline = [(a[0] + oa[0], a[1] + oa[1]), (b[0] + ob[0], b[1] + ob[1]),
+                   (b[0] - ob[0], b[1] - ob[1]), (a[0] - oa[0], a[1] - oa[1])]
+        p.profile_y(outline, y0, y1, key)
+
+
+def _sweep(p: Part, pts: list[tuple[float, float, float]], r: float, key: str, segs: int) -> None:
+    """Neon tube along a polyline in a plane y = const: one connected swept mesh per smooth run
+    (mitred rings, capped ends), split at sharp joints (> 25 degrees) where a sphere closes the
+    seam. Connected runs survive Godot's auto-LOD, unlike a chain of tiny separate rods."""
+    q: list[Vector] = []
+    for pt in pts:
+        v = Vector(pt)
+        if not q or (v - q[-1]).length > 1e-6:
+            q.append(v)
+    if len(q) < 2:
+        return
+    closed = len(q) > 2 and (q[0] - q[-1]).length < 1e-4
+    if closed:
+        q.pop()
+    n = len(q)
+    nseg = n if closed else n - 1
+    dirs = [(q[(i + 1) % n] - q[i]).normalized() for i in range(nseg)]
+    up = Vector((0.0, 1.0, 0.0))
+    sharp = [False] * n
+    for i in range(n):
+        if not closed and (i == 0 or i == n - 1):
+            continue
+        sharp[i] = dirs[i - 1].dot(dirs[i % nseg]) < 0.906
+    # runs of segment indices split at sharp vertices
+    runs: list[list[int]] = []
+    cur: list[int] = []
+    start = 0
+    if closed and any(sharp):
+        start = sharp.index(True)
+    for k in range(nseg):
+        i = (start + k) % nseg
+        if cur and sharp[i]:
+            runs.append(cur)
+            cur = []
+        cur.append(i)
+    runs.append(cur)
+    if closed and not any(sharp):
+        runs = [list(range(nseg))]
+    mat = p.m(key)
+    bm = p.bm
+    for run in runs:
+        loop = closed and not any(sharp) and len(run) == nseg
+        idx = [run[0]] + [(i + 1) % n for i in run]
+        if loop:
+            idx = idx[:-1]
+        rings = []
+        for j, vi in enumerate(idx):
+            if loop or 0 < j < len(idx) - 1:
+                si = run[j - 1] if j > 0 else run[-1]
+                so = run[j] if j < len(run) else run[-1]
+                t_in, t_out = dirs[si], dirs[so]
+                nin, nout = t_in.cross(up), t_out.cross(up)
+                nm = (nin + nout).normalized()
+                scale = 1.0 / max(0.5, nm.dot(nin))
+            else:
+                t = dirs[run[0]] if j == 0 else dirs[run[-1]]
+                nm, scale = t.cross(up), 1.0
+            ring = []
+            for a in range(segs):
+                ang = 2.0 * math.pi * a / segs
+                ring.append(bm.verts.new(q[vi] + nm * (r * math.cos(ang) * scale) + up * (r * math.sin(ang))))
+            rings.append(ring)
+        faces = []
+        pairs = len(rings) if loop else len(rings) - 1
+        for j in range(pairs):
+            ra, rb = rings[j], rings[(j + 1) % len(rings)]
+            for a in range(segs):
+                b = (a + 1) % segs
+                faces.append(bm.faces.new((ra[a], ra[b], rb[b], rb[a])))
+        if not loop:
+            faces.append(bm.faces.new(list(reversed(rings[0]))))
+            faces.append(bm.faces.new(rings[-1]))
+        bmesh.ops.recalc_face_normals(bm, faces=faces)
+        p._set_mat(faces, mat)
+    for i in range(n):
+        if sharp[i]:
+            p.sphere(r, tuple(q[i]), key, segs=segs, rings=max(3, segs // 2))
+
+
 def lettering(p: Part, text: str, height: float, centre_x: float, y: float, z0: float, key: str,
               stroke: float = 0.02, depth: float = 0.015, round_tube: bool = False, slant: float = 0.0,
-              spacing: float = 0.22) -> float:
+              spacing: float = 0.22, res: int = 1, inlay: bool = False, tube_segs: int = 6) -> float:
     """Stroke lettering centred on ``centre_x`` standing on the plane y (front +Y), baseline z0.
-    Square bars (``round_tube`` False) or neon tubes. Returns the text width."""
-    width, strokes = text_strokes(text, height, spacing, slant)
+    Square bars (default), neon tubes (``round_tube``) or flat mitred letters ``depth`` proud of
+    the plane (``inlay``: clean cut-metal letters, no overlapping blocks). Returns the text width."""
+    width, strokes = text_strokes(text, height, spacing, slant, res)
     # read from the front (+Y, Godot -Z): the viewer's right is Blender -X, so text runs along -X
     ox = centre_x + width / 2
     yc = y + depth / 2
     for s in strokes:
+        if inlay:
+            _ribbon(p, [(ox - sx, z0 + sz) for sx, sz in s], stroke / 2, y, y + depth, key)
+            continue
         pts = [(ox - sx, yc, z0 + sz) for sx, sz in s]
-        if round_tube:
-            p.tube(pts, stroke / 2, key, segs=6)
+        if round_tube and res == 1:
+            p.tube(pts, stroke / 2, key, segs=tube_segs)
+        elif round_tube:
+            _sweep(p, pts, stroke / 2, key, tube_segs)
         else:
             for a, b in zip(pts, pts[1:]):
                 p.rod(a, b, stroke / 2, key, square=True)

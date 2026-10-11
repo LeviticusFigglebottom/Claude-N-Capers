@@ -5,7 +5,7 @@ extends LcTestBase
 
 func test_good_fixture_passes_final_all_variants() -> void:
 	var res: Dictionary = await _validate(GOOD, "final", Callable(), true)
-	assert_eq(res.size(), 18, "all 18 checks ran at final")
+	assert_eq(res.size(), 19, "all 19 checks ran at final")
 	_expect_only(res, [])
 
 
@@ -129,3 +129,44 @@ func test_mutation_coplanar_rug_fails_zfight() -> void:
 		m.get_node("Props").add_child(rug)
 		rug.owner = m, false, ["zfight"])
 	_expect_fail(res, "zfight", "FlatRug")
+
+
+## D-064 / QC-41: a POLICE spawn with meta `police_only` on an island joined to the map only by a
+## one-way link (a roof rappel spawn) is checked from the spawn to the crew, not the other way round.
+func _police_island(link: bool, police_only: bool) -> Dictionary:
+	return await _validate(BAD, "greybox", func(m: HeistMap) -> void:
+		var p5: Node = m.find_child("PlayerSpawn5", true, false)
+		p5.get_parent().remove_child(p5)
+		p5.free()
+		var sp: SpawnPoint = SpawnPoint.new()
+		sp.name = "IslandPolice"
+		sp.kind = SpawnPoint.Kind.POLICE
+		sp.position = Vector3(19.5, 0.0, 1.5)
+		if police_only:
+			sp.set_meta(&"police_only", true)
+		m.get_node("Spawns").add_child(sp)
+		sp.owner = m
+		if link:
+			var l: NavigationLink3D = NavigationLink3D.new()
+			l.name = "OneWayDrop"
+			l.bidirectional = false
+			l.start_position = Vector3(19.5, 0.0, 1.5)
+			l.end_position = Vector3(4.0, 0.0, 4.0)
+			m.get_node("Navigation").add_child(l)
+			l.owner = m, false, ["reachability"])
+
+
+func test_police_only_island_through_one_way_link_passes() -> void:
+	var res: Dictionary = await _police_island(true, true)
+	for l: String in res.get("reachability", PackedStringArray()):
+		assert_false(l.contains("IslandPolice"), "police-only island reaches the crew: %s" % l)
+
+
+func test_police_only_island_without_link_fails() -> void:
+	var res: Dictionary = await _police_island(false, true)
+	_expect_fail(res, "reachability", "IslandPolice")
+
+
+func test_one_way_island_without_police_only_meta_fails() -> void:
+	var res: Dictionary = await _police_island(true, false)
+	_expect_fail(res, "reachability", "IslandPolice")

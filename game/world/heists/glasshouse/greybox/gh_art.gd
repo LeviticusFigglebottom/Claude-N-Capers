@@ -53,6 +53,7 @@ const FINISH: Dictionary = {
 const CLASS_MAT: Dictionary = {
 	"paving": "concrete", "sidewalk": "concrete", "facade_a": "plaster_painted", "facade_b": "concrete",
 	"facade_c": "brick_red", "brick": "brick_red", "concrete": "concrete", "fence": "metal_painted",
+	"fence_post": "paint_white",
 	"vehicle": "metal_painted", "trim": "metal_painted", "counter": "wood_veneer_walnut",
 	"prop": "fabric_upholstery", "stair": "terrazzo", "glass": "glass_clear", "frame": "metal_painted",
 	"door": "wood_veneer_walnut",

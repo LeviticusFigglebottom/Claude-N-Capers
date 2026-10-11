@@ -97,11 +97,23 @@ func _run_config(ctx: LcContext, label: String, failures: Dictionary) -> int:
 			n += 1
 			var goal: Vector3 = t3["pos"]
 			var path: PackedVector3Array = ctx.nav_path(from, goal)
-			if not reached(path, goal):
+			var ok: bool = reached(path, goal)
+			if is_police_only(t3["node"]):
+				# A police-only island (D-064 / QC-41: a roof spawn joined to the map by one-way rappel
+				# links) must reach the crew, not the other way round.
+				path = ctx.nav_path(goal, from)
+				ok = reached(path, start)
+			if not ok:
 				var end_s: String = "no path" if path.is_empty() else "path ends %.2f m away" % path[path.size() - 1].distance_to(goal)
 				_record(failures, ctx, t3["node"], goal, "%s `%s` unreachable from player spawn `%s` (%s)"
 					% [t3["kind"], t3["name"], ctx.node_path(sp), end_s], label)
 	return n
+
+
+## NPC markers with meta `police_only = true` (police spawns on an island reached only through
+## one-way links, e.g. a roof rappel spawn) are checked from the marker to each player spawn.
+static func is_police_only(n: Node) -> bool:
+	return n is SpawnPoint and (n as SpawnPoint).kind == SpawnPoint.Kind.POLICE and LcUtil.meta_b(n, &"police_only")
 
 
 static func reached(path: PackedVector3Array, goal: Vector3) -> bool:

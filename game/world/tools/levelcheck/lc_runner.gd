@@ -6,7 +6,8 @@ extends RefCounted
 ## All checks in report order (level_standards §7 table order + walkthrough).
 static func all_checks() -> Array[LcCheck]:
 	var out: Array[LcCheck] = [
-		LcCheckContractNodes.new(), LcCheckCameras.new(), LcCheckFloating.new(), LcCheckClipping.new(), LcCheckOrientation.new(),
+		LcCheckContractNodes.new(), LcCheckCameras.new(), LcCheckSecureZones.new(), LcCheckFloating.new(),
+		LcCheckClipping.new(), LcCheckOrientation.new(),
 		LcCheckScale.new(), LcCheckNavmesh.new(), LcCheckReachability.new(), LcCheckWalkthrough.new(),
 		LcCheckPatrols.new(), LcCheckLasers.new(), LcCheckMaterials.new(), LcCheckZfight.new(), LcCheckLights.new(),
 		LcCheckDensity.new(), LcCheckVariety.new(), LcCheckBounds.new(), LcCheckPerf.new(),
