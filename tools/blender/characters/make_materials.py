@@ -46,7 +46,7 @@ from texgen import io as tio
 from texgen import noise as nz
 from texgen.materials.base import Ctx, Maps, finalize
 
-from _outfit_palette import all_char_materials
+from _outfit_palette import SKIN_SPECULAR, all_char_materials
 
 MAT_DIR = REPO / "game" / "world" / "materials"
 TEX_DIR = REPO / "game" / "assets" / "characters" / "_textures"
@@ -302,7 +302,8 @@ def build_one(mid: str, spec: tuple, preset: dict) -> dict:
     tio.write_text(d / "SOURCE.txt", "\n".join([
         f"generator: python3 tools/blender/characters/make_materials.py --only {mid}",
         "palette: tools/blender/characters/_outfit_palette.py (all_char_materials)",
-        f"kind: {k}; colour {hexc}; roughness {rough}; metallic {metal}",
+        f"kind: {k}; colour {hexc}; roughness {rough}; metallic {metal}"
+        + (f"; metallic_specular {SKIN_SPECULAR}" if sk else ""),
         f"seed: {ctx.seed} (zlib.crc32('{seed_id}'))",
         f"size_px: {size}; tile_m: {TILE_M} (1 UV unit = {TILE_M} m); texel_density_px_per_m: {size / TILE_M:g}",
         *extra,
@@ -312,7 +313,8 @@ def build_one(mid: str, spec: tuple, preset: dict) -> dict:
         "",
     ]))
     tres = MAT_DIR / f"{mid}.tres"
-    godot.write_material(tres, mid, f"{TEX_RES}/{mid}", "opaque", TILE_M)
+    godot.write_material(tres, mid, f"{TEX_RES}/{mid}", "opaque", TILE_M,
+                         specular=SKIN_SPECULAR if sk else None)
     if k == "skin":
         text = tres.read_text(encoding="utf-8")
         text = text.replace("ao_enabled = true\n", "ao_enabled = true\nsubsurf_scatter_enabled = true\n"

@@ -148,6 +148,7 @@ def _render(name: str, out: str) -> None:
     # strokes; then the art-directed tweaks: matte hair, glossy lenses, silk sheen
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     import _review_mats  # noqa: PLC0415
+    from _outfit_palette import SKIN_SPECULAR  # noqa: PLC0415
 
     _review_mats.prepare(skip_orm=("char_hair", "char_lens", "char_silk"))
     for m in bpy.data.materials:
@@ -156,6 +157,8 @@ def _render(name: str, out: str) -> None:
         bsdf = m.node_tree.nodes.get("Principled BSDF")
         if bsdf is None:
             continue
+        if "char_skin" in m.name:              # the game material's metallic_specular (skin F0 ~2.8 %)
+            bsdf.inputs["Specular IOR Level"].default_value = SKIN_SPECULAR
         if "char_hair" in m.name:              # low spec, so dark hair stays dark under rims
             bsdf.inputs["Specular IOR Level"].default_value = 0.3
             bsdf.inputs["Roughness"].default_value = 0.5

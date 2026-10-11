@@ -5,8 +5,9 @@
 Reads the crew heister glbs (``CREW``), puts each head in mask space (origin = the character's
 ``attach_Head`` socket from its SOURCE.txt, Blender axes: +Y forward, +Z up) and records the outer
 envelope of all faces as a cylindrical height map: ``r[z][theta]`` = the largest distance from the
-vertical axis ``x = 0, y = AXIS_Y`` at which any crew head's skin or hair (Body and Hair meshes, rest pose) lies, per
-height z and azimuth theta (0 = straight ahead, + = towards Blender +X). Written to
+vertical axis ``x = 0, y = AXIS_Y`` at which any crew head's skin or hair (Body and Hair meshes,
+plus the hair-material faces of any other mesh, e.g. Dutch's beard on ``Headwear``; rest pose)
+lies, per height z and azimuth theta (0 = straight ahead, + = towards Blender +X). Written to
 ``_crew_face_envelope.json`` next to this script; ``_mask_base.FaceSurface`` pushes every mask's
 shell out of it by ``fit_clearance`` (the mask fit). The map stores each crew glb's sha256
 (``crew_sha256``); ``game/tests/d/test_masks.gd`` fails when a crew glb changes without a rerun.
@@ -30,6 +31,7 @@ OUT = HERE / "_crew_face_envelope.json"
 CREW = ["char_crew_rook", "char_crew_sable", "char_crew_dutch", "char_crew_wren", "char_crew_body",
         "char_crew_body_b"]
 MESHES = ("Body", "Hair")   # skin and hair: the mask goes over the hairline, not under it
+HAIR_MAT = "M_char_hair_"   # + hair-material faces of any other mesh (Dutch's beard on Headwear)
 AXIS_Y = -0.075
 TH0, TH1, DTH = -110.0, 110.0, 2.0       # degrees
 Z0, Z1, DZ = -0.170, 0.170, 0.004         # metres
@@ -53,12 +55,16 @@ def _head_bvh(cid: str) -> BVHTree:
     verts: list = []
     polys: list = []
     for o in bpy.data.objects:
-        if o.type != "MESH" or o.name.split(".")[0] not in MESHES:
+        if o.type != "MESH":
             continue
+        whole = o.name.split(".")[0] in MESHES
         me = o.evaluated_get(dg).to_mesh()
+        hair = {i for i, m in enumerate(me.materials) if m is not None and m.name.startswith(HAIR_MAT)}
+        if not whole and not hair:
+            continue
         base = len(verts)
         verts += [o.matrix_world @ v.co - sock for v in me.vertices]
-        polys += [tuple(base + i for i in p.vertices) for p in me.polygons]
+        polys += [tuple(base + i for i in p.vertices) for p in me.polygons if whole or p.material_index in hair]
     return BVHTree.FromPolygons(verts, polys)
 
 

@@ -47,8 +47,8 @@ def odile(kit: Kit) -> None:
     kit.add_gear(cg.lapel_pin(kit.hull(), Vector((-0.085 * k, 0.2, 1.335 * k)), "brass", k=k))
     kit.add_head(cg.chignon(kit.fit, "char_hair_dark", size=1.2, lift=0.008))
     crown = (0.004, 0.016)
-    kit.add_head(cg.crown_volume(kit.fit, "char_hair_dark", *crown))
-    kit.add_head(cg.side_fringe(kit.fit, "char_hair_dark", crown=crown))
+    cg.head_piece(kit, cg.crown_volume(kit.fit, "char_hair_dark", *crown))
+    cg.head_piece(kit, cg.side_fringe(kit.fit, "char_hair_dark", crown=crown))
     kit.add_head(cg.earrings(kit.fit, "brass"))
     bp = kit.fit.params
     kit.add_head(cg.heavy_lids(kit.fit, "char_lash", bp["build"], bp["gender"], bp["age"]))
@@ -83,5 +83,12 @@ def recipe(kit: Kit) -> None:
 
 
 def build(ctx) -> None:
-    build_character(ctx, recipe)
+    kits: list[Kit] = []
+
+    def rec(kit: Kit) -> None:
+        kits.append(kit)
+        recipe(kit)
+
+    build_character(ctx, rec)
+    cg.apply_strand_uvs(kits[0])       # crown/fringe: strand UVs instead of the box projection
 

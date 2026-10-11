@@ -183,14 +183,27 @@ LIBRARY: dict[str, tuple[str, float, float]] = {
 }
 
 
+#: Skin base roughness (D2-03 touch-up: 0.55 read glossy under a close key on every tone; skin
+#: breaks up +-0.1 around this in make_materials ``_skin``) and the skin specular (Godot
+#: ``metallic_specular``; 0.35 ~ F0 2.8 %, skin's IOR ~1.4, instead of the 0.5 / 4 % default).
+SKIN_ROUGHNESS = 0.66
+SKIN_SPECULAR = 0.35
+#: Library-material tone corrections over ``_body.SKIN_TONES`` (index from 1). Tone 5 ``#704630``
+#: was the most saturated and reddest step of the ramp (face albedo sat 0.57 / hue 20 deg between
+#: tone 4's 0.53 / 22 and tone 6's 0.51 / 19.5), which read orange under a warm key: pulled back
+#: onto the ramp. TODO(lead): fold into ``_body.SKIN_TONES`` (only the glb placeholder differs).
+SKIN_TONE_FIX: dict[int, str] = {5: "#704D3A"}
+
+
 def all_char_materials() -> dict[str, tuple[str, float, float, str]]:
     """Every ``char_*`` id of ENV D (body + masks + outfits) -> (hex, roughness, metallic, kind)."""
     import _body as body
 
     out: dict[str, tuple[str, float, float, str]] = {}
     for i, hexc in enumerate(body.SKIN_TONES, 1):
+        hexc = SKIN_TONE_FIX.get(i, hexc)
         for sfx, _strength, _hi in body.BEARD_LEVELS:
-            out[f"char_skin_{i}{sfx}"] = (hexc, 0.55, 0.0, "skin")
+            out[f"char_skin_{i}{sfx}"] = (hexc, SKIN_ROUGHNESS, 0.0, "skin")
     for name, hexc in body.HAIR_COLORS.items():
         out[f"char_hair_{name}"] = (hexc, 0.6, 0.0, "hair")
     out["char_eye"] = (body.EYE_COLOR, 0.25, 0.0, "eye")

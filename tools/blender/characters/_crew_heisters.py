@@ -28,8 +28,10 @@ above the collar at the front, so every mask fits.
 
 from __future__ import annotations
 
+import itertools
 import math
 
+import _body as body
 import _contact_gear as cg
 import _gear_kit as gk
 import _npc as n
@@ -77,14 +79,31 @@ def _gloves(kit: Kit, mat: str, cuff_len: float = 0.045, cuff_off: float = 0.004
     kit.add_soft(g.gloves(kit.fit, mat, cuff_len=cuff_len, cuff_off=cuff_off))
 
 
-def _pocket_square(kit: Kit, mat: str, x: float = -0.095) -> None:
+def _pocket_square(kit: Kit, mat: str, jacket: Hull, x: float = -0.112, z: float = 1.311,
+                  half_w: float = 0.026) -> None:
+    """A crisp two-peak ("crown") folded pocket square in the breast pocket, at (``x``, ``z``) on the
+    jacket's outer chest (``jacket``: its hull; straight-on ray, clear of the lapel): two layered,
+    bevelled cloth points, the taller one behind, their bases sunk into the cloth, leaning a little
+    off the chest."""
     k = kit.k
-    pk = Mesh()
-    o.patch(pk, kit.hull(), Vector((x * k, 0.0, 1.318 * k)), Vector((1, 0, 0)), UP,
-            [(-0.034 * k, -0.006 * k), (0.034 * k, -0.006 * k), (0.030 * k, 0.014 * k), (0.014 * k, 0.024 * k),
-             (-0.006 * k, 0.014 * k), (-0.028 * k, 0.022 * k)], 0.004 * k, mat,
-            cast_dir=Vector((-0.2, -1, 0)), rings=1, chamfer=0.002 * k)
-    kit.add_soft(pk)
+    d = Vector((0.0, -1.0, 0.0))
+    hit = jacket.cast(Vector((x * k, 0.5, z * k)), d, 1.0)
+    if hit[0] is None:
+        return
+    nrm = hit[1] if hit[1].dot(d) < 0 else -hit[1]
+    p = hit[0]
+    mtx = o.frame_from(p, (nrm - UP * 0.22).normalized())
+    w = half_w * k / 0.031
+    back = [(-0.031 * w, -0.014 * k), (0.007 * w, -0.014 * k), (0.005 * w, 0.004 * k), (-0.012 * w, 0.028 * k),
+            (-0.029 * w, 0.006 * k)]
+    front = [(-0.006 * w, -0.014 * k), (0.031 * w, -0.014 * k), (0.029 * w, 0.004 * k), (0.014 * w, 0.021 * k),
+             (-0.004 * w, 0.006 * k)]
+    sq = o.Gear()
+    sq.prism(back, -0.0030 * k, 0.0004 * k, mat)
+    sq.bevel(0.0007 * k, 1, 30.0)
+    sq.prism(front, -0.0012 * k, 0.0016 * k, mat)
+    sq.bevel(0.0007 * k, 1, 30.0)
+    kit.add_gear(sq.to_mesh(mtx, anchor=p))
 
 
 def _cull_under(kit: Kit, upto: int, cover: Mesh, key: str) -> None:
@@ -147,7 +166,7 @@ def rook(kit: Kit) -> None:
         btn.extend(gk.button(jh, Vector((0.012 * k, 0.3, 0.98 * k - 0.012 * k - dz * k)), "char_button_dark",
                              r=0.010, k=k, thick=0.004))
     kit.add_gear(btn)
-    _pocket_square(kit, ROOK_SCARF, x=-0.10)
+    _pocket_square(kit, ROOK_SCARF, jh)
     _cull_under(kit, n0, coat, "faces_hidden_by_coat")
     kit.notes["look"] = ("Rook: long charcoal overcoat (mid-calf) over white shirt + black tie, open oxblood "
                          "scarf, black gloves")
@@ -267,6 +286,128 @@ def bomber(kit: Kit, mat: str, rib_mat: str, collar_mat: str, bottom_z: float, v
     return m
 
 
+#: Upper edge of Dutch's full beard, head-local (|x|, z) (``_body.HEAD_CENTRE`` frame, before height
+#: scaling): just under the lower lip at the front, round the mouth corners into the moustache, then
+#: the cheek line of ``_body._beard_top`` up the sideburn to the ear.
+BEARD_TOP = ((0.0, -0.0700), (0.012, -0.0690), (0.019, -0.0665), (0.025, -0.0600), (0.030, -0.0520),
+             (0.036, -0.0440), (0.042, -0.0370), (0.050, -0.0290), (0.058, -0.0150), (0.064, 0.0000),
+             (0.080, 0.0060))
+
+
+def _beard_line(ax: float) -> float:
+    for (x0, z0), (x1, z1) in itertools.pairwise(BEARD_TOP):
+        if ax <= x1:
+            return lerp(z0, z1, smoothstep(x0, x1, ax))
+    return BEARD_TOP[-1][1]
+
+
+def full_beard(fit, mat: str, az_max: float = 94.0, n_az: int = 84, n_el: int = 16, full: float = 0.011,
+               side: float = 0.0045, clumps: int = 15) -> Mesh:
+    """A sculpted full beard (cheeks, jaw, chin and under the chin; the moustache is separate) as a
+    shell over the face, on rays from a point inside the lower head (``C``): ``n_az`` columns from
+    sideburn to sideburn (+-``az_max`` deg from the front) and ``n_el`` rows from the upper edge
+    (``BEARD_TOP``) down under the jaw to the throat. The radii are smoothed over the grid (the head
+    is low poly, the beard should not copy its facets); the thickness runs from ~1 mm at the edges
+    to ``full`` at the chin and ``side`` on the cheeks; strand clumps are cut as grooves between the
+    columns (``cg._sweep_clump``), so the beard reads as combed-down hair. 100 % ``head``."""
+    from mathutils.bvhtree import BVHTree
+
+    k = fit.k
+    hc = Vector(body.HEAD_CENTRE)
+    c = Vector((0.0, hc.y + 0.000, hc.z - 0.045)) * k
+    # rays hit the face skin (no ears, eyes, brows), the neck and the hair cap
+    verts = [tuple(v) for v in fit.P]
+    faces = [f for f, r, sd in zip(fit.F, fit.FR, fit.FS) if (r == "head" and sd == 0) or r == "neck"]
+    off = len(verts)
+    verts += [tuple(v) for v in fit.hair_verts]
+    faces += [tuple(i + off for i in f) for f in fit.hair_faces]
+    bvh = BVHTree.FromPolygons(verts, faces)
+
+    def dirv(az: float, el: float) -> Vector:
+        return Vector((math.sin(az) * math.cos(el), math.cos(az) * math.cos(el), math.sin(el)))
+
+    def radius(d: Vector) -> float:
+        hit = bvh.ray_cast(c + d * 0.3 * k, -d, 0.3 * k)
+        return (hit[0] - c).length if hit[0] is not None else 0.08 * k
+
+    def above_line(az: float, el: float) -> bool:
+        d = dirv(az, el)
+        p = c + d * radius(d)
+        q = p / k - hc
+        return q.z > _beard_line(abs(q.x))
+
+    amax = math.radians(az_max)
+    azs = [lerp(-amax, amax, j / (n_az - 1)) for j in range(n_az)]
+    tops, bots = [], []
+    for az in azs:
+        lo, hi = math.radians(-50.0), math.radians(60.0)       # lo below the line, hi above it
+        for _ in range(26):
+            mid = 0.5 * (lo + hi)
+            lo, hi = (lo, mid) if above_line(az, mid) else (mid, hi)
+        tops.append(lo)
+        f = smoothstep(0.0, math.radians(90.0), abs(az))
+        bots.append(math.radians(lerp(-62.0, -26.0, f)))
+    tops = _smooth_line(tops, 2)
+    for j in range(n_az):                                       # clumps break the cheek line up a little
+        _g, bulge = cg._sweep_clump(clumps, j / (n_az - 1), salt=7)
+        tops[j] += math.radians(1.6) * (bulge - 0.4) * smoothstep(0.1, 0.4, abs(azs[j]) / amax)
+    rad = []
+    for j, az in enumerate(azs):
+        col = []
+        for i in range(n_el):
+            el = lerp(tops[j], bots[j], i / (n_el - 1))
+            col.append(radius(dirv(az, el)))
+        rad.append(col)
+    for _ in range(4):                                          # relax the radii over the grid
+        new = [col[:] for col in rad]
+        for j in range(n_az):
+            for i in range(n_el):
+                nb = [rad[jj][ii] for jj, ii in ((j - 1, i), (j + 1, i), (j, i - 1), (j, i + 1))
+                      if 0 <= jj < n_az and 0 <= ii < n_el]
+                new[j][i] = max(rad[j][i], 0.5 * rad[j][i] + 0.5 * sum(nb) / len(nb))
+        rad = new
+    m = Mesh()
+    ids = []
+    for j, az in enumerate(azs):
+        u = abs(az) / amax
+        groove, bulge = cg._sweep_clump(clumps, j / (n_az - 1), salt=7)
+        thick_c = lerp(full, side, smoothstep(0.15, 0.75, u)) * k
+        back = smoothstep(1.0, 0.86, u)                        # thin back edge in front of the ear
+        col_ids = []
+        for i in range(n_el):
+            s = i / (n_el - 1)
+            el = lerp(tops[j], bots[j], s)
+            d = dirv(az, el)
+            edge = smoothstep(0.0, 0.45, s) * smoothstep(1.0, 0.80, s) * lerp(0.12, 1.0, back)
+            th = 0.0008 * k + thick_c * edge * (1.0 + 0.10 * bulge)
+            th *= 1.0 - lerp(0.38, 0.22, smoothstep(0.2, 0.7, u)) * groove * smoothstep(0.08, 0.35, s)
+            col_ids.append(m.add(c + d * (rad[j][i] + th), dict(cg.HEAD_W)))
+        ids.append(col_ids)
+    for j in range(n_az - 1):
+        for i in range(n_el - 1):
+            m.face((ids[j][i], ids[j + 1][i], ids[j + 1][i + 1], ids[j][i + 1]), mat, inside=c)
+    # strand UVs (``cg.apply_strand_uvs``): u across the strands along the middle row, v down them
+    mid = n_el // 2
+    across = [0.0]
+    for j in range(1, n_az):
+        across.append(across[-1] + (m.v[ids[j][mid]] - m.v[ids[j - 1][mid]]).length)
+    uvs = []
+    for j in range(n_az):
+        down = 0.0
+        for i in range(n_el):
+            down += (m.v[ids[j][i]] - m.v[ids[j][i - 1]]).length if i else 0.0
+            uvs.append((across[j] * cg.STRAND_U_PER_M, down * cg.STRAND_V_PER_M))
+    m.strand_uv = (uvs, None)
+    return m
+
+
+def _smooth_line(vals: list[float], iters: int) -> list[float]:
+    for _ in range(iters):
+        vals = [vals[0]] + [0.25 * vals[i - 1] + 0.5 * vals[i] + 0.25 * vals[i + 1]
+                            for i in range(1, len(vals) - 1)] + [vals[-1]]
+    return vals
+
+
 def dutch(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
     hips_z, belt_z, tuck = _z(kit)
@@ -279,6 +420,9 @@ def dutch(kit: Kit) -> None:
     n0 = len(kit.soft.f)
     jk = bomber(kit, BOMBER, "char_knit_graphite", SHEARLING, hips_z - 0.02 * k, 1.27 * k)
     _cull_under(kit, n0, jk, "faces_hidden_by_bomber")
+    hair = f"char_hair_{fit.params['hair_color']}"
+    cg.head_piece(kit, full_beard(fit, hair))
+    kit.add_head(cg.moustache(fit, hair, z_off=-0.065, half_w=0.037, thick=0.0068, sides=12))
     kit.notes["look"] = ("Dutch: brown leather bomber, cream shearling collar, ribbed waist/cuffs, zipped to "
                          "mid-chest over shirt + black tie, suit trousers, brown boots, tan gloves, full beard")
 
