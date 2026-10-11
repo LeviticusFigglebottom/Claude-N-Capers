@@ -6,6 +6,8 @@
 ##   loadout summary: primary / secondary / armor / deployable / perk deck, mask name + colours, AI, and an
 ##   "illegal loadout" flag), Ready toggle, host-only Start (LobbyState.start_block() says why not), Leave.
 ##   Contract / Briefing / Loadout buttons ask MenuFlow to open those screens (signals below).
+##   Music (B5-03): the host picks the heist music (MusicPicker: profile.music_choice, saved, re-sent in
+##   the host's profile summary); clients see the host's pick read-only (LobbyState.host_music()).
 ## All networking goes through `session` (LobbySession -> Net API). MenuFlow passes its session in with
 ## setup(); standalone the screen makes its own.
 class_name LobbyScreen
@@ -20,6 +22,8 @@ signal loadout_requested()
 
 const SLOT_CARD_MIN: Vector2 = Vector2(360, 380)
 
+## Profile slot the music pick saves to (MenuFlow.profile_slot).
+var profile_slot: int = 0
 var session: LobbySession = null
 var profile: PlayerProfile = null
 var tweak: LobbyTweak
@@ -42,6 +46,8 @@ var board_button: Button
 var planning_button: Button
 var briefing_button: Button
 var loadout_button: Button
+## Host: heist music pick; clients: the host's pick, read-only (B5-03).
+var music_picker: MusicPicker
 var ready_button: Button
 var start_button: Button
 var leave_button: Button
@@ -184,6 +190,10 @@ func _build_lobby() -> VBoxContainer:
 	briefing_button.pressed.connect(briefing_requested.emit)
 	loadout_button.pressed.connect(loadout_requested.emit)
 	cv.add_child(crow)
+	music_picker = MusicPicker.new()
+	music_picker.name = "MusicPicker"
+	music_picker.music_changed.connect(_on_music_changed)
+	cv.add_child(music_picker)
 	box.add_child(UiBuild.panel(cv))
 	var slots: HBoxContainer = UiBuild.hbox(16)
 	slots.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -341,6 +351,7 @@ func refresh() -> void:
 		error_label.text = ""
 	status_label.text = _status_text()
 	_refresh_contract(st)
+	_refresh_music(st)
 	for i: int in range(slot_widgets.size()):
 		_refresh_slot(slot_widgets[i], st.slot_view(i))
 	var in_slot: bool = st.local_slot >= 0
@@ -384,6 +395,22 @@ func _refresh_contract(st: LobbyState) -> void:
 		detail += "   " + UiText.t(&"ui.board.pro")
 	contract_detail_label.text = detail
 	contract_label.add_theme_color_override(&"font_color", UiAccent.text_color(heist, UiAccent.panel_bg()))
+
+
+func _refresh_music(st: LobbyState) -> void:
+	var heist: StringName = st.contract.get("heist", &"")
+	music_picker.profile_slot = profile_slot
+	if st.is_host:
+		music_picker.editable = true
+		music_picker.setup(profile if profile != null else session.profile, heist)
+	else:
+		music_picker.heist_id = heist
+		music_picker.set_read_only(st.host_music())
+
+
+## Host picked a track: re-send the summary so every client shows it.
+func _on_music_changed(_track_id: StringName) -> void:
+	session.send_profile()
 
 
 func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
@@ -454,7 +481,8 @@ func _rebuild_focus() -> void:
 	if connect_box.visible:
 		cands = [host_port_edit, host_button, join_address_edit, join_port_edit, join_button, loopback_button, back_button]
 	else:
-		cands = [board_button, planning_button, briefing_button, loadout_button, ready_button, start_button, leave_button]
+		cands = [board_button, planning_button, briefing_button, loadout_button, music_picker.option, ready_button, start_button,
+				leave_button]
 	for c: Control in cands:
 		if c.visible:
 			focus_chain.append(c)

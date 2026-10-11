@@ -4,7 +4,7 @@
 extends TestCase
 
 const START_CASH: int = 150000
-const STATION_IDS: Array[StringName] = [&"board", &"planning", &"armory", &"masks", &"range", &"crew"]
+const STATION_IDS: Array[StringName] = [&"board", &"planning", &"armory", &"masks", &"range", &"crew", &"jukebox"]
 
 
 func before_all() -> void:

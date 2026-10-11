@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="MusicCatalogTweak" format=3]
+
+; B5-03 STUB track list: MusicCatalog reads it only while ENV C's MusicTrackTable (table_path, D-062)
+; does not exist. The stub is replaced by C's table; keep ids in step with HeistDef.music_track.
+
+[ext_resource type="Script" path="res://content/audio/music_catalog_tweak.gd" id="1_cat"]
+[ext_resource type="Script" path="res://content/audio/music_stub_track.gd" id="2_trk"]
+
+[sub_resource type="Resource" id="trk_glasshouse"]
+script = ExtResource("2_trk")
+id = &"glasshouse"
+stems = "res://world/audio/music/glasshouse/glasshouse.tres"
+default_for_heists = Array[StringName]([&"glasshouse"])
+unlock = &""
+
+[sub_resource type="Resource" id="trk_night_deposit"]
+script = ExtResource("2_trk")
+id = &"night_deposit"
+stems = "res://world/audio/music/night_deposit/night_deposit.tres"
+default_for_heists = Array[StringName]([&"night_deposit"])
+unlock = &""
+
+[sub_resource type="Resource" id="trk_shadow_ledger"]
+script = ExtResource("2_trk")
+id = &"shadow_ledger"
+stems = "res://world/audio/music/shadow_ledger/shadow_ledger.tres"
+default_for_heists = Array[StringName]([&"shadow_ledger"])
+unlock = &""
+
+[sub_resource type="Resource" id="trk_vault_hymn"]
+script = ExtResource("2_trk")
+id = &"vault_hymn"
+stems = "res://world/audio/music/vault_hymn/vault_hymn.tres"
+default_for_heists = Array[StringName]([])
+unlock = &"unlock.music.vault_hymn"
+
+[sub_resource type="Resource" id="trk_long_con"]
+script = ExtResource("2_trk")
+id = &"long_con"
+stems = "res://world/audio/music/long_con/long_con.tres"
+default_for_heists = Array[StringName]([])
+unlock = &"unlock.music.long_con"
+
+[sub_resource type="Resource" id="trk_last_call"]
+script = ExtResource("2_trk")
+id = &"last_call"
+stems = "res://world/audio/music/last_call/last_call.tres"
+default_for_heists = Array[StringName]([])
+unlock = &"unlock.music.last_call"
+
+[resource]
+script = ExtResource("1_cat")
+table_path = "res://world/audio/music/tracks.tres"
+tracks = Array[ExtResource("2_trk")]([SubResource("trk_glasshouse"), SubResource("trk_night_deposit"), SubResource("trk_shadow_ledger"), SubResource("trk_vault_hymn"), SubResource("trk_long_con"), SubResource("trk_last_call")])

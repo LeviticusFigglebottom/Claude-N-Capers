@@ -58,7 +58,15 @@ func build_ui() -> void:
 	root.add_child(body)
 	var list: VBoxContainer = UiBuild.vbox(14)
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	body.add_child(list)
+	# Seven stations (B5-03 jukebox) outgrow 1080 px with the header: the cards scroll, focus follows.
+	var list_scroll: ScrollContainer = ScrollContainer.new()
+	list_scroll.name = "StationScroll"
+	list_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	list_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	list_scroll.follow_focus = true
+	list_scroll.add_child(list)
+	body.add_child(list_scroll)
 	for s: HubStation in stations.stations:
 		var b: Button = _station_card(s)
 		list.add_child(b)

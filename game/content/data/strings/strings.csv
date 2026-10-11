@@ -2271,3 +2271,26 @@ voice.vo.mercer.dockside_burn_van_eta,Van's {seconds} seconds out. Hold.
 voice.vo.mercer.dockside_burn_boat_eta,Launch is {seconds} seconds out. Hold the quay.
 voice.vo.mercer.dockside_burn_escape,"Ride's here. Bags in, and don't stop to watch the smoke."
 voice.vo.reyes.dockside_burn_payday,"Smoke over Pier 9 and the Co-op's rifles in my lockup. That's a good morning. You've earned it."
+music.glasshouse.name,Glass Ceiling
+music.night_deposit.name,Night Shift
+music.shadow_ledger.name,Off the Books
+music.vault_hymn.name,Vault Hymn
+music.long_con.name,The Long Con
+music.last_call.name,Last Call
+ui.music.title,Music
+ui.music.heist_default,Heist default
+ui.music.heist_default_named,Heist default ({name})
+ui.music.locked,{name} (locked)
+ui.music.locked_rank,{name} (Notoriety {rank})
+ui.hub.station.jukebox,Jukebox
+ui.hub.station.jukebox.desc,"Listen through the crew's heist tracks. New ones come with Notoriety."
+ui.jukebox.title,Jukebox
+ui.jukebox.subtitle,"Every heist track the crew can play. Pick one for a job in pre-planning or the lobby."
+ui.jukebox.preview_missing,Track previews arrive with the music update.
+ui.jukebox.play,Play
+ui.jukebox.stop,Stop
+ui.jukebox.unlocked,Unlocked
+ui.jukebox.locked,Locked
+ui.jukebox.locked_rank,Locked: Notoriety {rank}
+ui.jukebox.idle,Nothing playing.
+ui.jukebox.now_playing,Now playing: {name}
