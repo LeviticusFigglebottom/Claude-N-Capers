@@ -62,7 +62,16 @@ func test_point_blank_strike_shove_and_cooldown() -> void:
 	g.shot.connect(func(_t: Node, _h: bool) -> void: shots[0] += 1)
 	c.weapons.set_ammo(c.weapons.equipped_slot, 1, 50)
 	c.weapons.start_reload()
+	var cues: Array = []
+	var on_cue: Callable = func(id: StringName, _p: Vector3, src: int) -> void: cues.append([id, src])
+	EventBus.audio_cue_requested.connect(on_cue)
 	g.fire_at(c)
+	await wait_physics_frames(2)
+	EventBus.audio_cue_requested.disconnect(on_cue)
+	assert_has(cues, [NpcGunner.CUE_MELEE_SWING, cop.net_id], "windup cue [R] from the cop (clients play `melee` on it)")
+	var ad: AnimDriver = AnimDriver.of(cop)
+	if ad != null:
+		assert_eq(ad.choose_clip(), &"melee", "the melee clip plays at the windup")
 	await wait_seconds(CombatTweak.data().npc_melee_windup_s + 0.2)
 	assert_eq(res, [&"hit"] as Array[StringName], "struck at point blank")
 	var hits: Array[Dictionary] = _melee_on(c)

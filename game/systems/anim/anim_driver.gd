@@ -166,6 +166,7 @@ func _ready() -> void:
 	bind()
 	EventBus.damage_applied.connect(_on_damage_applied)
 	EventBus.weapon_fired.connect(_on_weapon_fired)
+	EventBus.audio_cue_requested.connect(_on_audio_cue)
 	EventBus.loot_dropped.connect(_on_loot_dropped)
 	EventBus.interaction_started.connect(_on_interaction_started)
 	EventBus.interaction_cancelled.connect(_on_interaction_ended)
@@ -175,6 +176,7 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	for pair: Array in [
 		[EventBus.damage_applied, _on_damage_applied], [EventBus.weapon_fired, _on_weapon_fired],
+		[EventBus.audio_cue_requested, _on_audio_cue],
 		[EventBus.loot_dropped, _on_loot_dropped], [EventBus.interaction_started, _on_interaction_started],
 		[EventBus.interaction_cancelled, _on_interaction_ended],
 		[EventBus.interaction_completed, _on_interaction_completed],
@@ -597,6 +599,14 @@ func _on_weapon_fired(shooter_net_id: int, _weapon_id: StringName, _suppressed: 
 		return
 	_aim_hold_left = AnimTweak.data().aim_hold_s
 	play_oneshot(&"fire_rifle" if weapon_kind == &"rifle" else &"fire_pistol")
+
+
+## A3-13: an NPC melee windup (`cue.npc_melee_swing` [R], source = this NPC) plays `melee` on every peer, so
+## a client sees the windup in time to counter (defense.melee_counter).
+func _on_audio_cue(cue_id: StringName, _pos: Vector3, source_net_id: int) -> void:
+	if cue_id != NpcGunner.CUE_MELEE_SWING or player == null or source_net_id == 0 or source_net_id != _net_id():
+		return
+	play_oneshot(&"melee", CombatTweak.data().npc_melee_windup_s + 0.3)
 
 
 func _on_reload_started(_ws: int, duration: float) -> void:
