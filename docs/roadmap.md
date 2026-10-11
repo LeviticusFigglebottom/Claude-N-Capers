@@ -60,6 +60,10 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | B6-06 | 3D hub mode (QC-45..49): MenuFlow loads the safehouse from data, connects `station_requested`, pauses while a screen is open, returns to the station marker, 2D hub fallback + walk/menu toggle; `notoriety` and `crew` station ids; `ui.prompt.station.<id>`; minimal hub HUD + pause menu with a quick-stations list; jukebox previews through the safehouse jukebox | C4-01 |
 | B6-07 | Heister choice (D-073): `Loadout.heister` picker, unique per lobby (first come keeps it, conflicts fall back to the next free heister), every launch slot gets a distinct heister | D-073 |
 | B6-08 | Throwable data (D-073): `throwable.frag` / `concussion` / `incendiary` / `throwing_knife` ThrowableDefs for A3-12 + picker | A3-12 |
+| B7-01 | Career stats + profile screen: lifetime counters from HeistResult (heists by difficulty, stealth/loud, kills, specials, accuracy, downs, cash), per-heist best times, favourite weapon; save v7 + migration | P6 |
+| B7-02 | Achievements expansion: 8 → ~40 PD2-style data-driven achievements (heist/difficulty/stealth/weapon/special/crew feats) with mask/material/colour unlocks | P8 |
+| B7-03 | Contact radio (PD2 "Bain" analog): data-driven contact lines keyed by mission facts (objective_updated, alarm, assault phases, escape, loot secured), subtitle overlay (accessibility subtitle size), `vo.<contact>.<line>` keys; lines for the 4 existing heists | P5 charm |
+| B7-04 | Weapon finishes: earned cosmetic finishes (colour/material/pattern) from payday cards and achievements, applied through WeaponVisual material overrides; workshop preview | P8 |
 
 | C2-00 | G0 design docs: Night Deposit and Shadow Ledger (stealth-only) | level_standards §9 |
 | C4-01 | 3D safehouse hub (fidelity C9): explorable safehouse whose stations are interactables calling `MenuFlow.open_station` (Board, planning table, armory/workshop bench, mask bench, jukebox, Notoriety, firing-range door); B's 2D hub stays as the menu fallback | P4 hub |

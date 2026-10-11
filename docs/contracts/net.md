@@ -39,5 +39,5 @@ API: `game/core/net.gd`. Architecture: architecture.md §3.
 * Drop-in (P6): host policy `ask` (default) / `auto` / `off`, as in PD2. ENV A implements ENV B's `DropInService`
   interface (group `G.DROP_IN_SERVICE`); joiners are validated with `LobbyState.validate_summary`.
   `answer_join(peer_id, accept, reason := &"denied")`; `join_failed` reasons: denied, timeout, full, cancelled,
-  host_lost, kicked, off. The policy is a host preference (persisted in GameSettings) copied into each new session.
+  host_lost, kicked, off (plus ENV B's client-side `unreachable`: no reply from the host before any request). The policy is a host preference (persisted in GameSettings) copied into each new session.
 * Lobby codes (ENV B): Crockford base32 + Luhn mod-32 over IPv4:port; IPv6 out of scope. No LAN discovery yet.
