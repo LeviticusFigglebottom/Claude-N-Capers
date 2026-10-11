@@ -47,8 +47,14 @@ static func validate_and_apply(claim: Dictionary, shooter: CrewController) -> Di
 	var origin: Vector3 = claim.get("origin", shooter.eye_position())
 	var ws: int = int(claim.get("weapon_slot", w.equipped_slot))
 	var special: Dictionary = SpecialWeapons.params_for(shooter, ws)
+	var tally: Dictionary = {"hit": false, "head": false}  # D-071: at most once per shot
 	if SpecialWeapons.kind_of(special) != SpecialWeapons.KIND_HITSCAN:  # B4-18: flame / saw / projectile
 		out["results"] = SpecialWeapons.server_apply(shooter, ws, claim, special)
+		for r: Variant in out["results"]:
+			var victim: Object = (r as Dictionary).get("victim") as Object if r is Dictionary else null
+			if victim != null and is_instance_valid(victim) and CrewStats.enemy_of(victim) != null:
+				tally["hit"] = true
+		CrewStats.record_shot(shooter, bool(tally["hit"]), false)
 		return out
 	var hits: Array = claim.get("hits", [])
 	var results: Array[Dictionary] = []
@@ -57,16 +63,18 @@ static func validate_and_apply(claim: Dictionary, shooter: CrewController) -> Di
 		var hit: Dictionary = h as Dictionary
 		if hit == null:
 			continue
-		var res: Dictionary = _apply_hit(shooter, w, ws, origin, hit, StringName(claim.get("weapon_id", &"")), tw, hit_npcs)
+		var res: Dictionary = _apply_hit(shooter, w, ws, origin, hit, StringName(claim.get("weapon_id", &"")), tw,
+			hit_npcs, tally)
 		if not res.is_empty():
 			results.append(res)
 	out["results"] = results
+	CrewStats.record_shot(shooter, bool(tally["hit"]), bool(tally["head"]))
 	_near_misses(shooter, w, ws, claim, origin, hit_npcs)  # A3-06 (L3.5)
 	return out
 
 
 static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin: Vector3,
-		hit: Dictionary, weapon_id: StringName, tw: CombatTweak, hit_npcs: Array = []) -> Dictionary:
+		hit: Dictionary, weapon_id: StringName, tw: CombatTweak, hit_npcs: Array = [], tally: Dictionary = {}) -> Dictionary:
 	var pos: Vector3 = hit.get("position", origin)
 	var target: Object = _claimed_target(shooter, origin, hit)
 	if target == null:
@@ -97,6 +105,10 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 	info["blocked"] = false
 	info["wall_pierced"] = through_wall
 	var res: Dictionary = deliver_hit(target, info, shooter.net_id)
+	if CrewStats.enemy_of(target) != null:  # D-071: body, shield or plate, even for 0 damage
+		tally["hit"] = true
+		if int(info["zone"]) == Enums.HitZone.HEAD and target is NpcBase:
+			tally["head"] = true
 	var npc: NpcBase = target as NpcBase
 	if npc != null and float(prof["suppression"]) > 0.0:  # A3-06 (L3.5): damage builds threat
 		hit_npcs.append(npc)
