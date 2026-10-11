@@ -17,7 +17,7 @@ func before_all() -> void:
 		return
 	_root = packed.instantiate() as Node3D
 	add_child(_root)
-	_skel = _root.get_node_or_null("rig_humanoid/Skeleton3D") as Skeleton3D
+	_skel = _root.get_node_or_null("Skeleton3D") as Skeleton3D
 
 
 func after_all() -> void:
@@ -45,7 +45,7 @@ func _ready_or_fail() -> bool:
 		fail("could not load %s (run godot --import first)" % GLB)
 		return false
 	if _skel == null:
-		fail("no Skeleton3D at rig_humanoid/Skeleton3D")
+		fail("no top-level Skeleton3D (export with remove_armature, D-067b)")
 		return false
 	return true
 

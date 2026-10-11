@@ -20,7 +20,7 @@ from _outfit import Hull, Mesh, Vector
 from _outfit_build import Kit, build_character
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
 VARIANTS = {
     "char_crew_body": {"height": 1.78, "build": 0.5, "gender": 0.0, "age": 0.3, "skin": 2, "hair": "short",

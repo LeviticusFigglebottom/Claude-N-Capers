@@ -4,6 +4,7 @@
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- arms OUT.png
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- specials OUT.png [clip:frame[:yaw] ...]
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- npc OUT.png [clip:frame[:yaw] ...]
+    blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- rappel OUT.png [clip:frame[:yaw] ...]
 
 ``humanoid``: one posed ``char_body_base`` body per cell (Cycles CPU, low samples; EEVEE needs EGL),
 3/4 front view with a side-view row for locomotion, the weapon models attached through the HandR
@@ -53,6 +54,9 @@ NPC_CELLS = ["desk_work:0", "desk_work:165", "desk_work:280", "desk_work:280:70"
              "phone_seated:30:110", "mug_idle:0", "mug_idle:120", "mug_idle:120:80", "mug_carry_walk:0", "mug_carry_walk:9",
              "mop:0", "mop:15", "mop:45", "sit_bed_read:0", "sit_bed_read:0:-80", "sit_bed_read:208", "sit_bed_read:221",
              "idle_thug:0", "idle_thug:0:80", "idle_thug:30", "idle_thug:70"]
+#: Police rappel (QC-41): a rope proxy on the documented rope line and a wall slab at RAPPEL_WALL (review only).
+RAPPEL_CELLS = ["rappel:0:-90", "rappel:2:-90", "rappel:4:-90", "rappel:10:-90", "rappel:18:-90", "rappel:26:-90",
+                "rappel:0:180", "rappel:4:180", "rappel:10:200", "rappel:18:160", "rappel:0:-130", "rappel:10:-60"]
 #: Clips that show hand-prop proxies (review only), and their furniture.
 PROP_CLIPS = {"phone_call": "phone", "phone_seated": "phone", "mug_idle": "mug", "mug_carry_walk": "mug", "mop": "mop",
               "sit_bed_read": "book"}
@@ -279,6 +283,8 @@ def humanoid(out: pathlib.Path, cells: list[str]) -> None:
                     c.matrix_world = W_gun @ inv_src @ o.matrix_world
         if name in SHIELD_CLIPS:
             _shield_proxy(arm.matrix_world @ _weapon_matrix(sk, s, "L"), shield_mat)
+        if name == "rappel":
+            _rappel_props(arm.matrix_world.copy(), npc_mats)
         if name in PROP_CLIPS or name in CHAIR_CLIPS:
             _npc_props(name, sk, s, arm.matrix_world.copy(), i, npc_mats)
         dg = bpy.context.evaluated_depsgraph_get()
@@ -306,6 +312,14 @@ def humanoid(out: pathlib.Path, cells: list[str]) -> None:
     bpy.ops.render.render(write_still=True)
     for cell, z in lows:
         print(f"[review] {cell}: lowest body vertex z = {z * 1000:.1f} mm")
+
+
+def _rappel_props(M: Matrix, mats: dict) -> None:
+    """The rope (vertical line x 0 at RAPPEL_ROPE_D) and the wall face at RAPPEL_WALL, in the cell's frame."""
+    import _anim_humanoid as lib  # noqa: PLC0415
+
+    _cyl("rope", M @ Matrix.Translation((0.0, lib.RAPPEL_ROPE_D, 0.0)), 0.006, -0.3, 2.6, mats["prop"], 10)
+    _box("wall", M, (0.9, 0.05, 2.6), mats["paper"], (0.0, lib.RAPPEL_WALL + 0.025, 1.0))
 
 
 def _camera(view_from):
@@ -361,6 +375,8 @@ def main() -> None:
         humanoid(out, argv[2:] or SPECIAL_CELLS)
     elif kind == "npc":
         humanoid(out, argv[2:] or NPC_CELLS)
+    elif kind == "rappel":
+        humanoid(out, argv[2:] or RAPPEL_CELLS)
     elif kind == "arms":
         import _arms_review  # noqa: PLC0415
 

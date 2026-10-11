@@ -33,7 +33,7 @@ from _outfit import Vector
 from _outfit_build import Kit, build_character
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
 VARIANTS = {
     "char_npc_bank_teller": {"height": 1.68, "build": 0.3, "gender": 1.0, "age": 0.2, "skin": 5, "hair": "bob",

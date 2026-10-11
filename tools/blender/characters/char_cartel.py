@@ -41,7 +41,7 @@ from _outfit import Hull, Mesh, Vector, patch, rounded_rect, straighten_loop
 from _outfit_build import Kit, build_character
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
 VARIANTS = {
     "char_cartel_gunman": {"height": 1.80, "build": 0.85, "gender": 0.0, "age": 0.55, "skin": 4, "beard_shadow": 0.9,

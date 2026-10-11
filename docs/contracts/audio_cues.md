@@ -52,8 +52,10 @@ Buses: `Master > Music, SFX (> Weapons, Enemies, World, UI), Voice, Ambience`.
 | cue.throwable_pin | grenade pin pulled (A3-12, local + 3D quiet) | pin pull + spoon ping | 3 |
 | cue.throwable_frag | frag detonation | grenade blast, World bus, ~150 m | 3 |
 | cue.throwable_concussion | concussion detonation | sharp bang + high ringing tail | 3 |
-| cue.throwable_incendiary | incendiary impact | glass smash + fuel whoosh, then a fire crackle loop on the pool | 3 |
-| cue.throwable_knife_hit | throwing knife hits a body / surface | thunk / metallic ting | 3 |
+| cue.throwable_incendiary | incendiary impact | glass smash + fuel whoosh + short tail | 3 |
+| cue.throwable_incendiary_fire (loop) | the incendiary fire pool burns (stop when it ends) | fire crackle loop, 3D at the pool | 3 |
+| cue.throwable_knife_hit | throwing knife hits a body (ENV A picks by target) | flesh thunk | 3 |
+| cue.throwable_knife_hit_hard | throwing knife hits world geometry | metallic ting / wood thunk | 3 |
 
 Special-action cues have no dedicated EventBus signals: ENV A triggers them with `audio_cue_requested` or a
 `CueEmitter`. Looping tells stop on the matching end fact (`crew_tase_ended` for `stinger_arc`, D-049) or locally.

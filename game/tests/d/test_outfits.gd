@@ -1,5 +1,5 @@
 ## D1-02: outfit characters (tools/blender/characters/char_*.py). Run after `godot --import`.
-## Each character glb has the shared 52-bone rig_humanoid Skeleton3D, only skinned meshes
+## Each character glb has the shared 52-bone rig_humanoid Skeleton3D (top-level, D-067b), only skinned meshes
 ## (Body, Hair, Outfit, Gear, Headwear) with no blend shapes (bodies are baked), every surface
 ## mapped to a library material res://world/materials/*.tres, and a plausible standing height.
 extends TestCase
@@ -59,8 +59,8 @@ func test_skeleton_is_rig_humanoid() -> void:
 		var root: Node3D = _load(id)
 		if root == null:
 			continue
-		var skel: Skeleton3D = root.get_node_or_null("rig_humanoid/Skeleton3D") as Skeleton3D
-		assert_true(skel != null, "%s: Skeleton3D at rig_humanoid/Skeleton3D" % id)
+		var skel: Skeleton3D = root.get_node_or_null("Skeleton3D") as Skeleton3D
+		assert_true(skel != null, "%s: Skeleton3D directly under the glb root (remove_armature)" % id)
 		if skel != null:
 			assert_eq(skel.get_bone_count(), BONES, "%s: bone count" % id)
 			for b: String in ["hips", "chest", "head", "hand.R", "hand.L", "foot.L", "toe.R"]:
@@ -127,7 +127,7 @@ func test_height_and_facing_are_plausible() -> void:
 		assert_true(h >= MIN_HEIGHT and h <= MAX_HEIGHT, "%s: height %.3f m in %.1f..%.1f" % [id, h, MIN_HEIGHT, MAX_HEIGHT])
 		assert_true(box.position.y > -0.02 and box.position.y < 0.02, "%s: feet at y = 0 (%.3f)" % [id, box.position.y])
 		assert_near(box.get_center().x, 0.0, 0.08, "%s: roughly centred in x" % id)
-		var skel: Skeleton3D = root.get_node_or_null("rig_humanoid/Skeleton3D") as Skeleton3D
+		var skel: Skeleton3D = root.get_node_or_null("Skeleton3D") as Skeleton3D
 		if skel != null:
 			var toe: Vector3 = skel.get_bone_global_rest(skel.find_bone("toe.R")).origin
 			var heel: Vector3 = skel.get_bone_global_rest(skel.find_bone("foot.R")).origin

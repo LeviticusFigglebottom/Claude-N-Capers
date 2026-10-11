@@ -42,7 +42,7 @@ from _outfit import Hull, Mesh, Vector, smoothstep
 from _outfit_build import Kit, build_character
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
 BASE_VARIANTS = {
     "char_patrol_officer": {"height": 1.79, "build": 0.6, "gender": 0.0, "age": 0.4, "skin": 3, "beard_shadow": 0.6, "hair": "short",
