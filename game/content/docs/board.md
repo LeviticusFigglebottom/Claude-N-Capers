@@ -54,7 +54,7 @@ session state (not saved): a contract lives one rotation only.
 * **Pool:** `HeistCatalog.entries()`: registry heists with a HeistDef and a map scene (QB-55; no
   placeholders). The contact comes from `HeistDef.contact`, then the city map's
   `heists[id].contact`, then a deterministic pick from `fallback_contacts`.
-* **P5 stubs (B6-01):** `gallery_night`, `meridian_federal`, `rolling_thunder` and `afterhours` already
+* **P5 stubs (B6-01):** `gallery_night`, `ostrander_federal`, `rolling_thunder` and `afterhours` already
   have a map spot, an accent, a heist list entry and name/subtitle/brief strings, but no HeistDef, so
   they never enter the pool (`test_p5_catalogue.gd`). Placeholder payouts live in
   `docs/heists/<id>.md` until ENV C's def carries them.
