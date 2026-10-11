@@ -9,7 +9,7 @@ attach_Back: bone chest, local [0.0000, 0.0944, 0.1616] (model [0.0000, 1.3438, 
 attach_Head: bone head, local [0.0000, 0.0837, -0.0917] (model [0.0000, 1.7222, -0.0793], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1361, 0.0736, 0.1619] (model [0.1361, 1.0526, 0.1653], Godot axes, rest pose)
 body_faces_culled: 5719
-body_params: {"age": 0.4, "beard_shadow": 0.0, "build": 0.95, "gender": 0.0, "hair": "buzz", "hair_color": "brown", "height": 1.84, "lip": "auto", "skin": 3}
+body_params: {"age": 0.4, "beard_shadow": 0.0, "build": 0.95, "gender": 0.0, "hair": "buzz", "hair_color": "brown", "hair_peak": 0.0, "height": 1.84, "lip": "auto", "skin": 3}
 bones: 52
 hat: riot helmet, visor down, neck guard (Headwear)
 meshes: Body,Gear,Hair,Headwear,Outfit

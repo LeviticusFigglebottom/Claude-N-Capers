@@ -9,7 +9,7 @@ attach_Back: bone chest, local [0.0000, 0.0889, 0.1088] (model [0.0000, 1.2927, 
 attach_Head: bone head, local [0.0000, 0.0805, -0.0882] (model [0.0000, 1.6566, -0.0763], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1778, 0.0506, 0.0360] (model [0.1778, 0.9983, 0.0385], Godot axes, rest pose)
 body_faces_culled: 5388
-body_params: {"age": 0.15, "beard_shadow": 0.3, "build": 0.3, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "height": 1.77, "lip": "auto", "skin": 6}
+body_params: {"age": 0.15, "beard_shadow": 0.3, "build": 0.3, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "hair_peak": 0.0, "height": 1.77, "lip": "auto", "skin": 6}
 bones: 52
 hat: hood up + gaiter pulled over the nose (Headwear)
 insignia: none (plain work wear; no police/faction material ids)
