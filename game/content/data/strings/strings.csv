@@ -2675,3 +2675,4 @@ voice.vo.reyes.dockside_burn_radio_loot_weapons,Co-op rifles in my lockup. Beaut
 voice.vo.reyes.dockside_burn_radio_loot_cash,"Co-op cash. Smells like fish, spends fine."
 voice.vo.reyes.dockside_burn_radio_loot_product,Product's out. My buyer says thanks. I say burn the rest.
 ui.subtitle.speaker,{name}:
+ui.options.accessibility.subtitles_all_speakers,Subtitles for Guards and Crew

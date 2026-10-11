@@ -398,3 +398,14 @@ func _objective_tags(heist: StringName) -> Array[String]:
 		if String(k).begins_with(prefix) and not tags.has(String(k).trim_prefix(prefix)):
 			tags.append(String(k).trim_prefix(prefix))
 	return tags
+
+
+## Lead ruling: guard barks / crew acks get subtitles only with Options › Accessibility › subtitles_all_speakers.
+func test_guard_and_crew_subtitles_behind_the_toggle() -> void:
+	var s: GameSettings = GameSettings.current()
+	var o: SubtitleOverlay = _overlay()
+	assert_false(bool(s.get_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers")), "default off")
+	assert_false(o.show_line(&"guard", &"vo.guard.cuff_warning", {}), "guard bark hidden by default")
+	s.set_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers", true)
+	assert_true(o.show_line(&"guard", &"vo.guard.cuff_warning", {}), "shown once the toggle is on")
+	s.set_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers", false)

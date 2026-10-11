@@ -71,7 +71,7 @@ func _process(delta: float) -> void:
 ## speaker for subtitles, briefing playback, or no text).
 func show_line(speaker: StringName, line_id: StringName, ctx: Dictionary = {}) -> bool:
 	var src: StringName = StringName(ctx.get("source", &""))
-	if src == SOURCE_BRIEFING or (src != ContactRadio.SOURCE and not tweak.subtitle_speakers.has(speaker)):
+	if src == SOURCE_BRIEFING or (src != ContactRadio.SOURCE and not _shows_speaker(speaker)):
 		return false
 	var key: StringName = StringName(table.line(line_id).get("text_key", StringName("voice.%s" % line_id)))
 	if not StringTable.has(key):
@@ -99,6 +99,13 @@ func advance(dt: float) -> void:
 func clear() -> void:
 	while not rows.is_empty():
 		_drop(0)
+
+
+## Contact / handler lines always; guard barks and crew acks only with accessibility/subtitles_all_speakers
+## (Options, default off; lead ruling on B7-03).
+func _shows_speaker(speaker: StringName) -> bool:
+	return tweak.subtitle_speakers.has(speaker) \
+			or bool(settings.get_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers"))
 
 
 ## Font size for the current accessibility/subtitle_size.
