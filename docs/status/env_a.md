@@ -3,6 +3,33 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11 06:30 UTC: P3 gate bugs, Dockside Burn QC-35..42, saw targets
+### Done
+- QC-37 hand saw targets (G.SAW_TARGET `saw_cut`):
+  - saw-capable `safe` (hand_saw_safe_s by size, beaten_by saw) and SAW `drill_point` (effective_duration × hand_saw_drill_point_mult);
+  - new `deposit_box` (SmallLoot locked until cut, 6 s) and `padlock` (lockpick or saw, opens its `targets`);
+  - saw LOS accepts the target's own collider; `saw_point()`.
+- P3 gate 1, police breach: loud police (roles police/special) breach locked doors except BARRED/VAULT (`npc_door_breach_s` 2.5 s, cue.door_breach [R]); breachable doors are nav-linked once loud. Open door leaves no longer collide; units were snagging on the breached SalonBackDoor. Glasshouse seed 3001: no more pile-up, police reach and fight the crew. test_p3_loud test_01 at 3001 then wipes the crew (all 4 in custody in wave 3; at 3007 three of four), which is a balance/gate call.
+- P3 gate 2, AI rescue: AI teammates free CLOAKER_DOWNED and TASED crew like a revive (auto and orders; `CrewAiBrain.needs_help`) and shoot a tasing Stinger first (`tasing_stinger_score_mult`).
+- Replica phase follows the relayed heist_phase_changed (ENDED before heist_ended).
+- QC-35: `AssaultDirector.start_delay_s` / `HeistMission.police_delay_s` (0 = start now). Load-time loud begins after `_on_mission_start`.
+- QC-36: `enemy.cartel_gunman`, role `cartel`, `npc_cartel.tscn`, CartelBrain, CartelTweak:
+  - spawns on GUARD spawns tagged `cartel`;
+  - asleep until a noise, sighting, damage or shout wakes it, and wakes its neighbours;
+  - holds its post with cover; never dominated, no pager, no cuffs, no surrender;
+  - not in alive_units; `police_budget()` = enemy_cap − cartel alive.
+- QC-38: `burn_point` prefab (thermite bag consumed, timed burn, cue.burn_warning + burn_warning_s, device_finished, then a fire volume DoT ignoring armour + nav obstacle).
+- QC-41: RappelLinks, one-way NavigationLink3D from each RAPPEL point to the floor below; NpcMotor rappel descent (`rappelling`).
+- QC-42: POLICE_SPAWN / ENTRY points tagged `breach_only` are never spawns. A sky test was rejected because Shadow Ledger's stair/lift spawns are indoors by design.
+- Test fixes: HUD asserts call `refresh()` (poll race under load).
+### Questions for lead
+- QA-36: cues for ENV C: `cue.door_breach`, `cue.burn_warning`; anim clip `rappel` for ENV D (NpcMotor.rappelling).
+- QA-37: ENV C: tag the Dockside interior ENTRY points `breach_only`; tag cartel GUARD spawns `cartel`.
+- QA-38: test_p3_loud test_01 at seed 3001 now fails on crew survival, not on stalls.
+- Known: test_a3_07 loopback fails when run after the other `test_a3_0*` files (`--filter=test_a3_0`) at e02b81c too, so it predates this round; it passes alone and in the full suite. Investigating.
+### Ready for integration
+- yes after the clean-worktree check_all (result in the lead message)
+
 ## 2026-10-11 04:00 UTC: D-062 launch_options, D-063 reload range, S1.3 civilian mode, fixes
 ### Done
 - D-062: `HeistRuntime.launch_options` (read-only; the network-safe part travels in the bring-up, and the host's values win on replicas). The loopback test checks `music_track`.
