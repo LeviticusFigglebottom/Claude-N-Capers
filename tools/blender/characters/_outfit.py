@@ -37,6 +37,7 @@ from mathutils.bvhtree import BVHTree
 import _body as body
 import _outfit_palette as palette
 import _rig as rig
+import _tri
 
 TAU = 2.0 * math.pi
 UP = Vector((0.0, 0.0, 1.0))
@@ -238,6 +239,8 @@ class Fit:
         self.P = [Vector(v) for v in bd.blend]
         self.F = [tuple(f) for f in bd.faces]
         self.FR = list(bd.face_region)
+        self.FS = list(bd.face_side)
+        self.FM = list(bd.face_mat)
         self.N = vertex_normals(self.P, self.F)
         self.W = body.body_weights(bd)
         vr: list[str | None] = [None] * len(self.P)
@@ -260,6 +263,9 @@ class Fit:
         hv += [tuple(v) for v in hd.blend]
         hf += [tuple(i + off for i in f) for f in hd.faces]
         self.head_bvh = BVHTree.FromPolygons(hv, hf)
+        # the scalp/face skin alone (no ears, eyes, brows, hair): glasses temples run on it
+        scalp = [f for f, r, sd, mt in zip(self.F, self.FR, self.FS, self.FM) if r == "head" and sd == 0]
+        self.scalp_bvh = BVHTree.FromPolygons([tuple(v) for v in self.P], scalp)
         self.J = rig.joints(float(p["height"]))
         self.height = float(p["height"])
 
@@ -1001,6 +1007,7 @@ def make_object(ctx, fit: Fit, armature, name: str, m: Mesh, sharp_deg: float = 
     obj = bpy.data.objects.new(name, me)
     scene.link(obj, armature)
     apply_weights(obj, armature, resolve_weights(fit, m))
+    _tri.triangulate(obj)
     return obj
 
 

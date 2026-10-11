@@ -22,7 +22,7 @@ from __future__ import annotations
 #: kind -> (subsurface for skin, rim etc. used by make_materials.py)
 KINDS = ("skin", "eye", "hair", "cloth", "leather", "metal", "plastic", "gloss")
 
-#: id -> (sRGB hex, roughness, metallic, kind). ``char_skin_*``, ``char_hair_*``, ``char_eye*`` are
+#: id -> (sRGB hex, roughness, metallic, kind). ``char_skin_*``, ``char_lip_<family>``, ``char_hair_*``, ``char_eye*`` are
 #: filled in from ``_body`` constants by ``all_char_materials()`` so they always match the body.
 OUTFIT: dict[str, tuple[str, float, float, str]] = {
     # masks (D1-04)
@@ -107,12 +107,15 @@ def all_char_materials() -> dict[str, tuple[str, float, float, str]]:
 
     out: dict[str, tuple[str, float, float, str]] = {}
     for i, hexc in enumerate(body.SKIN_TONES, 1):
-        out[f"char_skin_{i}"] = (hexc, 0.55, 0.0, "skin")
+        for sfx, _strength, _hi in body.BEARD_LEVELS:
+            out[f"char_skin_{i}{sfx}"] = (hexc, 0.55, 0.0, "skin")
     for name, hexc in body.HAIR_COLORS.items():
         out[f"char_hair_{name}"] = (hexc, 0.6, 0.0, "hair")
     out["char_eye"] = (body.EYE_COLOR, 0.25, 0.0, "eye")
     out["char_eye_iris"] = (body.IRIS_COLOR, 0.2, 0.0, "eye")
     out["char_lash"] = (body.LASH_COLOR, 0.5, 0.0, "eye")
+    for fam, hexc in body.LIP_COLORS.items():
+        out[f"char_lip_{fam}"] = (hexc, 0.45, 0.0, "skin")
     out.update(OUTFIT)
     return dict(sorted(out.items()))
 

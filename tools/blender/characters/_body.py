@@ -17,6 +17,14 @@ How the body is made
   follow the finger bones of ``_rig``.
 * Shape keys ``build``, ``gender``, ``age``: the same generator run at (1,0,0), (0,1,0), (0,0,1);
   the Basis is (0,0,0) = slim, masculine, young. Topology never depends on the parameters.
+* Skin colour: one skin material on every skin face plus a ``lip`` region (the vermilion loops of
+  the mouth, ``char_lip_<family>`` or the ``lip`` param, e.g. ``char_lip_rose``). The face colour
+  (``skin_tint``: warm cheeks, nose and ears, a soft shade round the eyes, and the beard shadow) is
+  baked by ``make_materials.py`` into the skin textures in body-UV space (the UVs come from the
+  basis, so one atlas fits every body). ``beard_shadow`` (0..1) picks the material
+  (``skin_material``): ``char_skin_<tone>`` (< 0.25), ``char_skin_<tone>_stubble`` (< 0.6) or
+  ``char_skin_<tone>_beard``. (Vertex colours were tried first: the shared exporter settings,
+  ``export_image_format="NONE"`` + ``export_vertex_color="MATERIAL"``, never export them.)
 * Weights: distance from each vertex to the bone segments, divided by the bone's typical radius
   (``_rig.BONE_RADIUS``), turned into weights with an inverse power falloff, restricted to bones
   that make sense for the vertex's body region, max 4 influences, normalised. Deterministic.
@@ -47,11 +55,15 @@ HAIR_COLORS = {"dark": "#2B2420", "brown": "#5B3B26", "blond": "#B3925C", "grey"
 EYE_COLOR = "#D9D3C8"          # char_eye (sclera)
 IRIS_COLOR = "#6B4C34"         # char_eye_iris (iris ring; the pupil is char_lash)
 LASH_COLOR = "#3B2E28"         # char_lash (upper lid margin / lash line, pupil)
+#: Lip colours per skin-tone family (sRGB), library ids ``char_lip_<family>``; tones 1-2 light,
+#: 3-4 mid, 5-6 deep. ``lip`` in the body params may name another ``char_lip_*`` id (lipstick).
+LIP_COLORS = {"light": "#B47670", "mid": "#8C5248", "deep": "#58302B"}
+LIP_FAMILY = ("light", "light", "mid", "mid", "deep", "deep")
 HAIR_STYLES = _headmod.HAIR_STYLES   # none, buzz, short, side_part, bob, bald
 
 #: Default parameters (``char_body_base``).
 DEFAULTS: dict = {"height": REF_HEIGHT, "build": 0.4, "gender": 0.0, "age": 0.25, "skin": 2,
-                  "hide": frozenset(), "hair": "short", "hair_color": "dark"}
+                  "hide": frozenset(), "hair": "short", "hair_color": "dark", "beard_shadow": 0.0, "lip": "auto"}
 #: Shape keys in export order and the generator configs that define them.
 SHAPE_KEYS = ("build", "gender", "age")
 
@@ -79,7 +91,29 @@ def body_params(params: dict | None = None, **overrides) -> dict:
         raise ValueError(f"hair must be one of {HAIR_STYLES}")
     if p["hair_color"] not in HAIR_COLORS:
         raise ValueError(f"hair_color must be one of {sorted(HAIR_COLORS)}")
+    if not 0.0 <= float(p["beard_shadow"]) <= 1.0:
+        raise ValueError("beard_shadow must be in 0..1")
+    if p["lip"] != "auto" and not str(p["lip"]).startswith("char_lip_"):
+        raise ValueError("lip must be 'auto' or a char_lip_* material id")
     return p
+
+
+#: beard_shadow thresholds and the strength each skin variant bakes (make_materials.py)
+BEARD_LEVELS = (("", 0.0, 0.25), ("_stubble", 0.5, 0.6), ("_beard", 0.9, 1.01))
+
+
+def skin_material(p: dict) -> str:
+    """Library id of the skin for body params ``p`` (tone + beard level)."""
+    b = float(p.get("beard_shadow", 0.0))
+    sfx = next(s for s, _strength, hi in BEARD_LEVELS if b < hi)
+    return f"char_skin_{int(p['skin'])}{sfx}"
+
+
+def lip_material(p: dict) -> str:
+    """Library id of the lip region for body params ``p``."""
+    if p.get("lip", "auto") != "auto":
+        return str(p["lip"])
+    return "char_lip_" + LIP_FAMILY[int(p["skin"]) - 1]
 
 
 # =============================================================================================
@@ -133,6 +167,7 @@ class MeshData:
     vert_rigid: dict = field(default_factory=dict)
     vert_bones: dict = field(default_factory=dict)     # vertex -> allowed bone set override
     rings: dict = field(default_factory=dict)          # name -> ordered closed loop of vertex ids
+    lash_extra: list = field(default_factory=list)     # upper-lid faces that become "lash" when gender > 0.5
 
     def v(self, p: Vec) -> int:
         self.verts.append((float(p[0]), float(p[1]), float(p[2])))
@@ -624,7 +659,10 @@ def _generate_body(build: float, gender: float, age: float) -> tuple[MeshData, H
     ry = 0.5 * (max(p[1] for p in neck) - min(p[1] for p in neck))
     hs = HeadShape(build, gender, age, cy - HEAD_CENTRE[1], rx, ry)
     ref = None
-    if (build, gender, age) != (0.0, 0.0, 0.0):      # shape keys follow the basis vertex layout
+    # the build and age keys re-seat the basis vertices on their surface (no sliding between keys);
+    # the gender key changes the face too much for that (the re-seated grid bunches round the mouth
+    # and chin), so it is generated natively: same grid, same indices, its own cast + relax
+    if (build, gender, age) != (0.0, 0.0, 0.0) and gender == 0.0:
         base_md, base_hs = _generate_body(0.0, 0.0, 0.0)
         ref = (base_md.verts, base_hs, base_md.head_free)
     md.head_free = _headmod.head(md, hs, ref)
@@ -689,11 +727,15 @@ def _assemble(parts: list[MeshData], p: dict, hide: frozenset) -> BodyData:
     for name, loop in base.rings.items():
         if all(v in remap for v in loop):
             rings[name] = [remap[v] for v in loop]
+    mats = list(base.face_mat)
+    if float(p["gender"]) > 0.5:          # thicker upper lash line
+        for i in base.lash_extra:
+            mats[i] = "lash"
     return BodyData(
         params=p,
         faces=[tuple(remap[v] for v in base.faces[i]) for i in keep_f],
         face_region=[base.face_region[i] for i in keep_f],
-        face_mat=[base.face_mat[i] for i in keep_f],
+        face_mat=[mats[i] for i in keep_f],
         face_side=[base.face_side[i] for i in keep_f],
         basis=basis, keys=keys, blend=[tuple(b) for b in blend],
         rigid={remap[v]: b for v, b in base.vert_rigid.items() if v in remap},
@@ -930,6 +972,80 @@ def face_uvs(faces: list, regions: list, mats: list, sides: list, verts: list, h
 
 
 # =============================================================================================
+# skin tint (vertex colours, pure math)
+# =============================================================================================
+#: Linear-RGB albedo multipliers per head vertex; ``make_materials.py`` rasterises them into the skin
+#: textures' body-UV atlas (``skin_tint`` on the default body); everything else stays white.
+TINT_CHEEK = (1.0, 0.875, 0.855)     # malar flush
+TINT_NOSE = (1.0, 0.895, 0.875)      # nose tip and wings
+TINT_EAR = (1.0, 0.915, 0.895)       # ears
+TINT_LID = (0.955, 0.925, 0.935)     # under-eye / upper-lid shade
+TINT_BEARD = (0.60, 0.645, 0.72)     # beard shadow at full strength (cool, darker)
+
+
+def _gauss(q: Vec, c: Vec, sigma: Vec) -> float:
+    return math.exp(-(((q[0] - c[0]) / sigma[0]) ** 2 + ((q[1] - c[1]) / sigma[1]) ** 2 + ((q[2] - c[2]) / sigma[2]) ** 2))
+
+
+def _beard_top(ax: float) -> float:
+    """Upper edge of the beard (head-local z) at |x| = ax: under the nose, across the cheek, up the
+    sideburn to the ear."""
+    pts = ((0.0, -0.0405), (0.012, -0.0415), (0.022, -0.0470), (0.030, -0.0440), (0.040, -0.0340),
+           (0.050, -0.0230), (0.058, -0.0080), (0.064, 0.0080), (0.080, 0.0120))
+    for (x0, z0), (x1, z1) in zip(pts, pts[1:]):
+        if ax <= x1:
+            t = smoothstep(x0, x1, ax)
+            return z0 + (z1 - z0) * t
+    return pts[-1][1]
+
+
+def skin_tint(body: BodyData) -> list[tuple[float, float, float]]:
+    """Per-vertex linear multipliers for the skin of ``body`` (variant shape, see ``TINT_*``):
+    warmth on the cheeks, nose and ears, a soft shade round the eyes and, with ``beard_shadow``,
+    a cool darker jaw, chin and upper lip. Head skin only; everything else stays white."""
+    p = body.params
+    k = float(p["height"]) / REF_HEIGHT
+    g = float(p["gender"])
+    beard = float(p["beard_shadow"])
+    n = len(body.blend)
+    out = [(1.0, 1.0, 1.0)] * n
+    head_v: set[int] = set()
+    ear_v: set[int] = set()
+    for f, r, mt, sd in zip(body.faces, body.face_region, body.face_mat, body.face_side):
+        if r != "head" or mt not in ("skin", "lip", "lash"):
+            continue
+        if sd != 0 and mt != "skin":           # pupils (lash) are side parts too, not ears
+            continue
+        (ear_v if sd != 0 else head_v).update(f)
+    cheek_w = 0.80 + 0.25 * g
+    for vi in sorted(head_v | ear_v):
+        q = sub(mul(body.blend[vi], 1.0 / k), HEAD_CENTRE)
+        ax = abs(q[0])
+        qa = (ax, q[1], q[2])
+        mult = [1.0, 1.0, 1.0]
+
+        def mix(tint: tuple[float, float, float], w: float) -> None:
+            w = _clamp(w, 0.0, 1.0)
+            for i in range(3):
+                mult[i] *= 1.0 + (tint[i] - 1.0) * w
+        if vi in ear_v:
+            mix(TINT_EAR, 1.0)
+        else:
+            mix(TINT_CHEEK, cheek_w * _gauss(qa, (0.044, 0.068, -0.014), (0.020, 0.030, 0.017)))
+            mix(TINT_NOSE, 0.85 * _gauss(qa, (0.0, 0.118, -0.027), (0.017, 0.016, 0.013)))
+            mix(TINT_LID, _gauss(qa, (0.031, 0.078, 0.004), (0.012, 0.012, 0.0055))
+                + 0.7 * _gauss(qa, (0.031, 0.080, 0.030), (0.013, 0.012, 0.0045)))
+            if beard > 0.0:
+                top = _beard_top(ax)
+                wb = smoothstep(top + 0.005, top - 0.006, q[2])                 # below the beard line
+                wb *= smoothstep(-0.036, -0.012, q[1])                           # in front of the ear
+                wb *= smoothstep(-0.128, -0.100, q[2])                           # fades down the throat
+                mix(TINT_BEARD, beard * wb)
+        out[vi] = (mult[0], mult[1], mult[2])
+    return out
+
+
+# =============================================================================================
 # Blender side
 # =============================================================================================
 def _material(ctx, lib_id: str, color: str, roughness: float = 0.6):
@@ -948,7 +1064,7 @@ def _make_object(name: str, data: BodyData, mats: dict, armature, weights: list[
     me = bpy.data.meshes.new(name)
     me.from_pydata([tuple(v) for v in data.basis], [], [tuple(f) for f in data.faces])
     order = []
-    for mname in ("skin", "eye", "iris", "lash", "brow", "hair"):
+    for mname in ("skin", "lip", "eye", "iris", "lash", "brow", "hair"):
         if mname in data.face_mat:
             order.append(mname)
             me.materials.append(mats[mname])
@@ -999,9 +1115,14 @@ def build_body(ctx, armature, params: dict | None = None) -> dict:
     Returns ``{"Body": obj, "Hair": obj | None, "data": BodyData, "tris": int}``."""
     p = body_params(params)
     body, hair = body_mesh_data(p)
-    skin = _material(ctx, f"char_skin_{int(p['skin'])}", SKIN_TONES[int(p["skin"]) - 1], 0.55)
+    skin = _material(ctx, skin_material(p), SKIN_TONES[int(p["skin"]) - 1], 0.55)
     hair_mat = _material(ctx, f"char_hair_{p['hair_color']}", HAIR_COLORS[p["hair_color"]], 0.6)
-    mats = {"skin": skin, "eye": _material(ctx, "char_eye", EYE_COLOR, 0.25),
+    lip_id = lip_material(p)
+    lip_hex = LIP_COLORS.get(lip_id.removeprefix("char_lip_"))
+    if lip_hex is None:
+        from _outfit_palette import OUTFIT  # noqa: PLC0415
+        lip_hex = OUTFIT[lip_id][0]
+    mats = {"skin": skin, "lip": _material(ctx, lip_id, lip_hex, 0.45), "eye": _material(ctx, "char_eye", EYE_COLOR, 0.25),
             "iris": _material(ctx, "char_eye_iris", IRIS_COLOR, 0.2), "lash": _material(ctx, "char_lash", LASH_COLOR, 0.5),
             "brow": hair_mat, "hair": hair_mat}
     out = {"Body": _make_object("Body", body, mats, armature, body_weights(body)), "Hair": None, "data": body}
