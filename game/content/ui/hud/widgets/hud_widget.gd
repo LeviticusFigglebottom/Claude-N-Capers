@@ -25,6 +25,20 @@ func build() -> void:
 	pass
 
 
+## B5-01: switch to `t` (an accessibility palette applied to HudTweak, HudPaletteSet) and rebuild the
+## child controls so every colour taken at build time follows.
+func set_tweak(t: HudTweak) -> void:
+	tweak = t if t != null else HudTweak.load_default()
+	if not is_node_ready():
+		return
+	for c: Node in get_children():
+		remove_child(c)
+		c.queue_free()
+	build()
+	refresh()
+	queue_redraw()
+
+
 ## Override: model signal names that should trigger refresh().
 func watched_signals() -> Array[StringName]:
 	return []
@@ -64,6 +78,17 @@ func prop(name_id: StringName, fallback: Variant = null) -> Variant:
 		return fallback
 	var v: Variant = model.get(name_id)
 	return fallback if v == null else v
+
+
+## v1.6 (D-065) local player mode: &"civilian" / &"casing" / &"masked". Models without
+## `player_mode` (pre-v1.6) derive it from `masked` / `casing` (&"" = neither, e.g. while loading).
+func player_mode() -> StringName:
+	var m: Variant = prop(&"player_mode")
+	if m != null and StringName(m) != &"":
+		return StringName(m)
+	if bool(prop(&"masked", false)):
+		return &"masked"
+	return &"casing" if bool(prop(&"casing", false)) else &""
 
 
 static func _arg_count(obj: Object, signal_name: StringName) -> int:

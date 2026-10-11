@@ -1,0 +1,134 @@
+[gd_resource type="Resource" script_class="NotorietyTable" format=3]
+
+[ext_resource type="Script" path="res://content/defs/notoriety_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://content/defs/notoriety_table.gd" id="2_table"]
+
+[sub_resource type="Resource" id="Resource_rank_1"]
+script = ExtResource("1_def")
+rank = 1
+rewards = Array[StringName]([&"mask_colors.crown_ember"])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_2"]
+script = ExtResource("1_def")
+rank = 2
+rewards = Array[StringName]([&"mask_colors.ash_regalia"])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_3"]
+script = ExtResource("1_def")
+rank = 3
+rewards = Array[StringName]([&"mask_material.weave"])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_4"]
+script = ExtResource("1_def")
+rank = 4
+rewards = Array[StringName]([&"mask_colors.velvet_vault"])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_5"]
+script = ExtResource("1_def")
+rank = 5
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([&"mask_colors.midnight_ledger", &"mask_colors.lantern_smoke", &"mask_colors.verdigris_crown"])
+
+[sub_resource type="Resource" id="Resource_rank_6"]
+script = ExtResource("1_def")
+rank = 6
+rewards = Array[StringName]([&"mask_material.anodized"])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_7"]
+script = ExtResource("1_def")
+rank = 7
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([&"unlock.music.vault_hymn"])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_8"]
+script = ExtResource("1_def")
+rank = 8
+rewards = Array[StringName]([&"mask_colors.bloodline"])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_10"]
+script = ExtResource("1_def")
+rank = 10
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_12"]
+script = ExtResource("1_def")
+rank = 12
+rewards = Array[StringName]([&"mask_colors.ghost_ledger"])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_13"]
+script = ExtResource("1_def")
+rank = 13
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([&"unlock.music.long_con"])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_14"]
+script = ExtResource("1_def")
+rank = 14
+rewards = Array[StringName]([&"mask_material.crown_gold"])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_15"]
+script = ExtResource("1_def")
+rank = 15
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([&"mask_colors.midnight_ledger", &"mask_colors.lantern_smoke", &"mask_colors.verdigris_crown"])
+
+[sub_resource type="Resource" id="Resource_rank_18"]
+script = ExtResource("1_def")
+rank = 18
+rewards = Array[StringName]([&"mask_colors.black_crown"])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_20"]
+script = ExtResource("1_def")
+rank = 20
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([&"mask_colors.midnight_ledger", &"mask_colors.lantern_smoke", &"mask_colors.verdigris_crown"])
+
+[sub_resource type="Resource" id="Resource_rank_21"]
+script = ExtResource("1_def")
+rank = 21
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([&"unlock.music.last_call"])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_22"]
+script = ExtResource("1_def")
+rank = 22
+rewards = Array[StringName]([&"mask_colors.heat_shimmer"])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_rank_25"]
+script = ExtResource("1_def")
+rank = 25
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
+choices = Array[StringName]([])
+
+[resource]
+script = ExtResource("2_table")
+ranks = Array[ExtResource("1_def")]([SubResource("Resource_rank_1"), SubResource("Resource_rank_2"), SubResource("Resource_rank_3"), SubResource("Resource_rank_4"), SubResource("Resource_rank_5"), SubResource("Resource_rank_6"), SubResource("Resource_rank_7"), SubResource("Resource_rank_8"), SubResource("Resource_rank_10"), SubResource("Resource_rank_12"), SubResource("Resource_rank_13"), SubResource("Resource_rank_14"), SubResource("Resource_rank_15"), SubResource("Resource_rank_18"), SubResource("Resource_rank_20"), SubResource("Resource_rank_21"), SubResource("Resource_rank_22"), SubResource("Resource_rank_25")])

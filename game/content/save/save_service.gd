@@ -9,7 +9,9 @@
 ## Versions: 1 = first shipped shape; 2 = adds `banked_stealth_mult` (D-022 QB-13);
 ## 3 = adds `skill_sets` + `active_skill_set` (multiple skill sets) and `perk_cards` (per-deck progress);
 ## 4 = adds `owned_mask_parts` and `custom_masks` (mask customisation, B2-03; content/docs/masks.md);
-## 5 = adds `unlocks`, `achievements` (B4-20) and `pro_job_locks` (persisted pro-job locks, QB-BRD1).
+## 5 = adds `unlocks`, `achievements` (B4-20) and `pro_job_locks` (persisted pro-job locks, QB-BRD1);
+## 6 = adds `notoriety`, `notoriety_xp`, `notoriety_choices`, `held_skill_sets` (Notoriety ranks, B5-02)
+## and `music_choice` (B5-03).
 ## Field reference: content/docs/save_format.md. Golden migration fixtures: tests/b/fixtures/save/.
 ## Load pipeline (profile_from_save): migrate -> ProfileSchema.sanitize (types; wrong type -> default +
 ## Log.warn) -> PlayerProfile.from_dict -> ProfileValidator.validate (unknown ids pruned, illegal skill
@@ -17,7 +19,7 @@
 class_name SaveService
 extends RefCounted
 
-const CURRENT_VERSION: int = 5
+const CURRENT_VERSION: int = 6
 const DEFAULT_ROOT_DIR: String = "user://profiles"
 
 ## Tests point this at e.g. `user://test_profiles`.
@@ -119,6 +121,8 @@ static func migrate(data: Dictionary) -> Dictionary:
 				d = _migrate_3_to_4(d)
 			4:
 				d = _migrate_4_to_5(d)
+			5:
+				d = _migrate_5_to_6(d)
 			_:
 				Log.error(&"save", "no migration from version %d" % v)
 				return d
@@ -131,7 +135,8 @@ static func migrate(data: Dictionary) -> Dictionary:
 ## "stealth_bonus_consumed", "stealth_bonus_banked"). Stealth bank (D-022 QB-13): a consumed bank
 ## resets to 1.0, then a newly banked bonus (> 1.0) replaces it. Pass the profile's
 ## banked_stealth_mult to PayoutCalculator.compute() for the same payday.
-## `level_for_xp` (e.g. XpCurve.level_for_xp) recomputes level; without it only xp is stored.
+## `level_for_xp` (e.g. XpCurve.level_for_xp) recomputes level; without it only xp is stored. A level
+## gain re-buys skills held by a Notoriety rank-up (NotorietySkills.restore).
 static func apply_heist_payout(p: PlayerProfile, payout: Dictionary, level_for_xp: Callable = Callable()) -> void:
 	if p == null:
 		return
@@ -144,7 +149,10 @@ static func apply_heist_payout(p: PlayerProfile, payout: Dictionary, level_for_x
 	if banked > 1.0:
 		p.banked_stealth_mult = banked
 	if level_for_xp.is_valid():
+		var before: int = p.level
 		p.level = int(level_for_xp.call(p.xp))
+		if p.level > before:
+			NotorietySkills.restore(p)
 
 
 ## v0 = pre-versioned profile. Fills fields missing in early dev saves; old "money" -> cash.
@@ -204,6 +212,21 @@ static func _migrate_4_to_5(d: Dictionary) -> Dictionary:
 		d["achievements"] = {}
 	if not d.get("pro_job_locks") is Dictionary:
 		d["pro_job_locks"] = {}
+	return d
+
+
+## v5 -> v6: Notoriety rank 0 (nothing retired, no choices, no held skill builds) and the heist's default
+## music. Everything else is unchanged.
+static func _migrate_5_to_6(d: Dictionary) -> Dictionary:
+	for k: String in ["notoriety", "notoriety_xp"]:
+		if not (d.get(k) is int or d.get(k) is float):
+			d[k] = 0
+	if not d.get("notoriety_choices") is Dictionary:
+		d["notoriety_choices"] = {}
+	if not d.get("held_skill_sets") is Array:
+		d["held_skill_sets"] = []
+	if not d.get("music_choice") is String:
+		d["music_choice"] = ""
 	return d
 
 

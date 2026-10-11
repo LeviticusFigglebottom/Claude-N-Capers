@@ -96,6 +96,10 @@ payday card `mask_part` pool (`PaydayCards.pool`, card detail "Complete mask") a
 calls `MaskLocker.grant_preset` (adds to `owned_masks`). `unlock.achievement.<name>`: granted by
 `MaskLocker.grant_unlock(profile, unlock_id)`; the achievement system is a stub, nothing calls it
 yet. `MaskLocker.is_drop_owned(profile, id)` answers ownership for both preset and part ids.
+`unlock.notoriety.rank_<n>` (B5-02): granted by a Notoriety rank-up. Presets: Ledger Regent (rank X) and
+The Last Word (rank XXV). Notoriety also grants 10 colour pairs and 3 materials (Carbon Weave, Night
+Anodized, Crown Gold) that never drop from payday cards (`Notoriety.exclusive_ids`); see
+`content/docs/notoriety.md`.
 
 ### Payday card tiers
 New rarer parts carry tiers in `data/payday/card_table.tres` `item_tiers`: rare (2) porcelain,

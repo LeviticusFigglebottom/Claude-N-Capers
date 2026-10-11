@@ -26,7 +26,7 @@ func test_default_start_is_casing() -> void:
 	assert_eq(_rt.start_mode, HeistRuntime.START_CASING)
 	assert_false(c.civilian, "no civilian mode by default")
 	assert_eq(c.player_mode, &"casing")
-	_rt.hud_model.refresh()
+	_rt.hud_model.refresh()  # LEAD: deterministic poll
 	assert_eq(_rt.hud_model.player_mode, &"casing", "ui_hud v1.6 player_mode")
 
 
@@ -36,7 +36,8 @@ func test_civilian_start_no_mask_up_and_no_fire() -> void:
 	for m: CrewController in _rt.crew_members():
 		assert_true(m.civilian, "every crew member starts civilian (slot %d)" % m.slot)
 	assert_eq(c.player_mode, &"civilian")
-	_rt.hud_model.refresh()  # the HUD polls at poll_hz; poll now instead of racing it
+	await wait_physics_frames(2)
+	_rt.hud_model.refresh()  # LEAD: the HUD polls on render frames at poll_hz; 2 physics frames may not poll
 	assert_eq(_rt.hud_model.player_mode, &"civilian", "HUD player_mode")
 	var mates: Array[Dictionary] = _rt.hud_model.crew
 	assert_true(not mates.is_empty() and StringName(mates[0].get("mode", &"")) == &"civilian", "crew[].mode")

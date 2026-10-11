@@ -1,7 +1,8 @@
 ## Perk deck progress for the perk deck screen (B4-03, pd2_fidelity P4). Owner: ENV B.
 ##
 ## Rule (D-034 QB-45): perk points are earned from total XP,
-## earned = floor(PlayerProfile.xp / PerkPointTweak.xp_per_perk_point) (data/tweak/perk_points.tres); a deck's cards unlock in
+## earned = floor((PlayerProfile.xp + notoriety_xp) / PerkPointTweak.xp_per_perk_point) (data/tweak/perk_points.tres;
+## notoriety_xp = XP a Notoriety rank-up moved out of `xp`, so ranking up never costs perk points); a deck's cards unlock in
 ## order (1..9) at their PerkDeckDef cost; every deck keeps its own progress (PlayerProfile.perk_cards)
 ## and available = earned - cost of every unlocked card. One deck is active (Loadout.perk_deck) and
 ## Loadout.perk_deck_cards mirrors its progress (sync()). `dev_unlock_all_perks` in the tweak makes
@@ -45,7 +46,7 @@ static func earned(p: PlayerProfile, _tw: ProgressionUiTweak) -> int:
 	var rate: int = PerkPointTweak.current().xp_per_perk_point
 	if rate <= 0:
 		return 0
-	return maxi(floori(float(p.xp) / float(rate)), 0)
+	return maxi(floori(float(p.xp + p.notoriety_xp) / float(rate)), 0)
 
 
 ## Points spent on unlocked cards across every deck.

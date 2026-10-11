@@ -25,6 +25,7 @@ signal masked_changed()          ## masked, casing
 signal custody_changed()         ## custody (v1.2)
 signal captain_changed()         ## captain_present, captain_resistance (v1.3)
 signal stamina_changed()         ## stamina, exhausted (v1.4)
+signal player_mode_changed()     ## player_mode (v1.6)
 
 ## PD2 display units (health 0..max_health, armor 0..max_armor).
 var health: float = 100.0:
@@ -161,7 +162,7 @@ var warnings: Array[StringName] = []:
 		warnings_changed.emit()
 ## Teammates (not the local player): [{ "slot": int, "name": String, "is_ai": bool,
 ##   "health_frac": float, "armor_frac": float, "state": int (Enums.CrewState), "downs_left": int,
-##   "carried_loot_id": StringName }]
+##   "carried_loot_id": StringName, "mode": StringName (v1.6) }]
 var crew: Array[Dictionary] = []:
 	set(v):
 		crew = v
@@ -175,6 +176,13 @@ var casing: bool = true:
 	set(v):
 		casing = v
 		masked_changed.emit()
+
+## v1.6 (D-065): &"civilian" / &"casing" / &"masked" for the local player; &"" = unset (widgets then
+## derive it from masked / casing, like a pre-v1.6 model).
+var player_mode: StringName = &"":
+	set(v):
+		player_mode = v
+		player_mode_changed.emit()
 
 ## v1.2 (D-043): {} or { "in_custody": bool, "negotiation_left_s": float, "auto_release_left_s": float
 ##   (< 0 = none), "highlighted_hostage_net_id": int }

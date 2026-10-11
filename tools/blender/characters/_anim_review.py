@@ -3,11 +3,13 @@
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- humanoid OUT.png [clip:frame ...]
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- arms OUT.png
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- specials OUT.png [clip:frame[:yaw] ...]
+    blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- npc OUT.png [clip:frame[:yaw] ...]
 
 ``humanoid``: one posed ``char_body_base`` body per cell (Cycles CPU, low samples; EEVEE needs EGL),
 3/4 front view with a side-view row for locomotion, the weapon models attached through the HandR
 grip convention (``specials``: the Bulwark shield as a plate proxy on the HandL socket frame), a floor at
-z = 0, labels. Also prints the lowest skinned-mesh vertex per cell
+z = 0, labels (``npc``: review-only proxies of the hand props from ``_anim_humanoid.GRIPS`` (phone, mug, mop,
+book) read off the solved hand, plus the chair/desk of the seated clips and the bed of sit_bed_read). Also prints the lowest skinned-mesh vertex per cell
 (floor penetration check). ``arms``: the first-person arms with the Kestrel P9 from the camera at
 the rig root (idle and reload mid), 75 deg vertical FOV like the crew camera.
 """
@@ -37,7 +39,7 @@ WEAPONS = {"pistol": REPO / "game/assets/weapons/wpn_kestrel_p9/wpn_kestrel_p9.g
 GUN_CLIPS = {"aim_pistol": "pistol", "fire_pistol": "pistol", "reload_pistol": "pistol", "downed": "pistol",
              "aim_rifle": "rifle", "fire_rifle": "rifle", "reload_rifle": "rifle", "melee": "rifle",
              "shield_idle": "pistol", "shield_walk": "pistol", "shield_bang": "pistol", "heal_ally": "rifle",
-             "dozer_walk": "rifle"}
+             "dozer_walk": "rifle", "idle_thug": "rifle"}
 #: Clips that also show the Bulwark shield proxy (a plate on the HandL/Socket frame, _anim_humanoid.SHIELD).
 SHIELD_CLIPS = ("shield_idle", "shield_walk", "shield_bang")
 SPECIAL_CELLS = ["kick_charge:0", "kick_charge:4", "kick_charge:10", "kick_charge:15", "kick_hit:3", "kick_hit:6",
@@ -45,6 +47,17 @@ SPECIAL_CELLS = ["kick_charge:0", "kick_charge:4", "kick_charge:10", "kick_charg
                  "shield_walk:0:-58", "shield_walk:14:-58", "shield_walk:0:-90", "shield_walk:0:150",
                  "shield_bang:3:-50", "shield_bang:6:-50", "shield_bang:6:150", "heal_ally:22:90",
                  "dozer_walk:0", "dozer_walk:8", "dozer_walk:16", "dozer_walk:8:0"]
+
+NPC_CELLS = ["desk_work:0", "desk_work:165", "desk_work:280", "desk_work:280:70", "phone_seated:30", "phone_seated:170",
+             "sit_chair_watch:30", "sit_chair_watch:100", "sit_chair_watch:220", "phone_call:0", "phone_call:0:110",
+             "phone_seated:30:110", "mug_idle:0", "mug_idle:120", "mug_idle:120:80", "mug_carry_walk:0", "mug_carry_walk:9",
+             "mop:0", "mop:15", "mop:45", "sit_bed_read:0", "sit_bed_read:0:-80", "sit_bed_read:208", "sit_bed_read:221",
+             "idle_thug:0", "idle_thug:0:80", "idle_thug:30", "idle_thug:70"]
+#: Clips that show hand-prop proxies (review only), and their furniture.
+PROP_CLIPS = {"phone_call": "phone", "phone_seated": "phone", "mug_idle": "mug", "mug_carry_walk": "mug", "mop": "mop",
+              "sit_bed_read": "book"}
+DESK_CLIPS = ("desk_work", "phone_seated", "sit_chair_watch", "desk_type")
+CHAIR_CLIPS = DESK_CLIPS + ("sit_chair",)
 
 DEFAULT_CELLS = ["walk:0", "walk:7", "walk:15", "walk:22", "run:0", "run:6", "crouch_walk:0", "crouch_walk:9",
                  "aim_pistol:0", "aim_rifle:0", "cower:0", "hands_up:0", "death_front:-1", "death_back:-1", "downed:0",
@@ -111,6 +124,66 @@ def _shield_proxy(m_socket: Matrix, mat) -> None:
         scene.link(ob)
 
 
+def _box(name: str, M: Matrix, size, mat, centre=(0.0, 0.0, 0.0)) -> None:
+    sx_, sy_, sz_ = size
+    cx, cy, cz = centre
+    me = bpy.data.meshes.new(name)
+    vs = [(cx + (i - 0.5) * sx_, cy + (j - 0.5) * sy_, cz + (kk - 0.5) * sz_) for i in (0, 1) for j in (0, 1) for kk in (0, 1)]
+    me.from_pydata(vs, [], [(0, 1, 3, 2), (4, 6, 7, 5), (0, 4, 5, 1), (2, 3, 7, 6), (0, 2, 6, 4), (1, 5, 7, 3)])
+    me.materials.append(mat)
+    ob = bpy.data.objects.new(name, me)
+    ob.matrix_world = M
+    scene.link(ob)
+
+
+def _cyl(name: str, M: Matrix, r: float, z0: float, z1: float, mat, seg: int = 16) -> None:
+    me = bpy.data.meshes.new(name)
+    vs = [(r * math.cos(2 * math.pi * i / seg), r * math.sin(2 * math.pi * i / seg), z) for z in (z0, z1) for i in range(seg)]
+    faces = [(i, (i + 1) % seg, seg + (i + 1) % seg, seg + i) for i in range(seg)]
+    faces += [tuple(range(seg))[::-1], tuple(range(seg, 2 * seg))]
+    me.from_pydata(vs, [], faces)
+    me.materials.append(mat)
+    ob = bpy.data.objects.new(name, me)
+    ob.matrix_world = M
+    scene.link(ob)
+
+
+def _npc_props(name: str, sk, s, base_m: Matrix, i: int, mats: dict) -> None:
+    """Review-only proxies: the clip's hand prop at its GRIPS frame and its furniture."""
+    import _anim_humanoid as lib  # noqa: PLC0415
+
+    prop = PROP_CLIPS.get(name)
+    if prop is not None:
+        R, o = lib.prop_frame(sk, s, prop)
+        m = Matrix.Identity(4)
+        for a in range(3):
+            for b in range(3):
+                m[a][b] = float(R[a, b])
+            m[a][3] = float(o[a])
+        M = base_m @ m
+        if prop == "phone":
+            _box(f"phone_{i}", M, lib.PROPS["phone"], mats["prop"])
+        elif prop == "book":
+            w, t, h = lib.PROPS["book"]
+            _box(f"book_{i}", M, (w, t * 0.6, h), mats["book"], (0.0, t * 0.2, 0.0))
+            _box(f"pages_{i}", M, (w * 0.96, t * 0.4, h * 0.96), mats["paper"], (0.0, -t * 0.25, 0.0))
+        elif prop == "mug":
+            _cyl(f"mug_{i}", M, 0.041, 0.0, 0.095, mats["mug"])
+            _box(f"mughandle_{i}", M, (0.03, 0.012, 0.06), mats["mug"], (-0.055, 0.0, 0.05))
+        elif prop == "mop":
+            _cyl(f"shaft_{i}", M, 0.013, 0.05, lib.MOP_LENGTH, mats["prop"], 10)
+            _cyl(f"mophead_{i}", M, 0.13, 0.0, 0.07, mats["paper"], 14)
+    if name in CHAIR_CLIPS:
+        _box(f"seat_{i}", base_m, (0.46, 0.46, 0.05), mats["furn"], (0.0, -0.06, lib.SEAT_H - 0.025))
+        _box(f"back_{i}", base_m, (0.44, 0.05, 0.45), mats["furn"], (0.0, -0.33, lib.SEAT_H + 0.30))
+    if name in DESK_CLIPS:
+        _box(f"desk_{i}", base_m, (1.2, 0.55, 0.03), mats["furn"], (0.0, 0.50, lib.DESK_Z - 0.015))
+    if name == "sit_bed_read":
+        _box(f"mattress_{i}", base_m, (1.0, 2.0, 0.22), mats["paper"], (0.0, 0.45, -0.112))
+        wedge = base_m @ Matrix.Translation((0.0, -0.36, 0.0)) @ Matrix.Rotation(math.radians(lib.BED_RECLINE), 4, "X")
+        _box(f"pillow_{i}", wedge, (0.7, 0.16, 0.62), mats["furn"], (0.0, -0.08, 0.31))
+
+
 def _label(text: str, loc, size: float = 0.09):
     cu = bpy.data.curves.new(f"lbl_{text}", "FONT")
     cu.body = text
@@ -167,6 +240,9 @@ def humanoid(out: pathlib.Path, cells: list[str]) -> None:
     dx, dy = 2.0, 2.35
     floor_mat = _mat("floor", (0.30, 0.30, 0.32), 0.9)
     shield_mat = _mat("shield", (0.10, 0.12, 0.16), 0.4)
+    npc_mats = {"prop": _mat("prop", (0.08, 0.08, 0.09), 0.4), "book": _mat("book", (0.35, 0.08, 0.06), 0.6),
+                "paper": _mat("paper", (0.85, 0.83, 0.78), 0.8), "mug": _mat("mug", (0.15, 0.35, 0.60), 0.3),
+                "furn": _mat("furn", (0.42, 0.30, 0.20), 0.7)}
     weapons_src = {k: _import_weapon(k) for k in WEAPONS}
     for w in weapons_src.values():
         w.location = (0.0, 0.0, -50.0)
@@ -184,7 +260,7 @@ def humanoid(out: pathlib.Path, cells: list[str]) -> None:
         out_b = body.build_body(None, arm, body.body_params())
         A.apply_frame(arm, s)
         side = name in ("walk", "run", "crouch_walk", "sprint", "carry_bag_walk", "flee", "strafe_l", "strafe_r", "walk_back",
-                        "dozer_walk", "kick_charge", "kick_hit", "heal_ally")
+                        "dozer_walk", "kick_charge", "kick_hit", "heal_ally", "mug_carry_walk")
         yaw = -math.radians(58.0) if side else 0.0
         if len(parts) > 2:
             yaw = math.radians(float(parts[2]))
@@ -203,6 +279,8 @@ def humanoid(out: pathlib.Path, cells: list[str]) -> None:
                     c.matrix_world = W_gun @ inv_src @ o.matrix_world
         if name in SHIELD_CLIPS:
             _shield_proxy(arm.matrix_world @ _weapon_matrix(sk, s, "L"), shield_mat)
+        if name in PROP_CLIPS or name in CHAIR_CLIPS:
+            _npc_props(name, sk, s, arm.matrix_world.copy(), i, npc_mats)
         dg = bpy.context.evaluated_depsgraph_get()
         ev = out_b["Body"].evaluated_get(dg)
         me = ev.to_mesh()
@@ -281,6 +359,8 @@ def main() -> None:
         humanoid(out, argv[2:] or DEFAULT_CELLS)
     elif kind == "specials":
         humanoid(out, argv[2:] or SPECIAL_CELLS)
+    elif kind == "npc":
+        humanoid(out, argv[2:] or NPC_CELLS)
     elif kind == "arms":
         import _arms_review  # noqa: PLC0415
 
