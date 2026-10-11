@@ -5,6 +5,7 @@
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- specials OUT.png [clip:frame[:yaw] ...]
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- npc OUT.png [clip:frame[:yaw] ...]
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- rappel OUT.png [clip:frame[:yaw] ...]
+    blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- p5 OUT.png [clip:frame[:yaw] ...]
 
 ``humanoid``: one posed ``char_body_base`` body per cell (Cycles CPU, low samples; EEVEE needs EGL),
 3/4 front view with a side-view row for locomotion, the weapon models attached through the HandR
@@ -57,11 +58,21 @@ NPC_CELLS = ["desk_work:0", "desk_work:165", "desk_work:280", "desk_work:280:70"
 #: Police rappel (QC-41): a rope proxy on the documented rope line and a wall slab at RAPPEL_WALL (review only).
 RAPPEL_CELLS = ["rappel:0:-90", "rappel:2:-90", "rappel:4:-90", "rappel:10:-90", "rappel:18:-90", "rappel:26:-90",
                 "rappel:0:180", "rappel:4:180", "rappel:10:200", "rappel:18:160", "rappel:0:-130", "rappel:10:-60"]
+#: P5 NPC set (D3-02): bar / counter / painting wall / chair / wall proxies at the documented placement (review only).
+P5_CELLS = ["dance_a:0", "dance_a:15", "dance_a:26", "dance_a:45", "dance_b:7", "dance_b:15", "dance_b:97",
+            "dance_b:105", "dance_c:0", "dance_c:8", "dance_c:30:60", "bartender_wipe:0", "bartender_wipe:20:70",
+            "bartender_wipe:115", "bartender_pour:0:40", "bartender_pour:24:40", "bartender_pour:55:40",
+            "bartender_pour:55:-60", "bouncer_idle:0", "bouncer_idle:60:40", "bouncer_idle:222", "teller_count:30:40",
+            "teller_count:144:40", "teller_count:177:70", "curator_inspect:30:70", "curator_inspect:85:70",
+            "curator_inspect:150:70", "curator_inspect:180:20", "walk_text:0", "walk_text:12:30", "cower_seated:0",
+            "cower_seated:0:70", "cower_stand:0", "cower_stand:42:60", "cower_stand:42"]
 #: Clips that show hand-prop proxies (review only), and their furniture.
 PROP_CLIPS = {"phone_call": "phone", "phone_seated": "phone", "mug_idle": "mug", "mug_carry_walk": "mug", "mop": "mop",
-              "sit_bed_read": "book"}
+              "sit_bed_read": "book", "walk_text": "phone", "bartender_wipe": "rag", "bartender_pour": ("bottle", "glass"),
+              "teller_count": "cash"}
 DESK_CLIPS = ("desk_work", "phone_seated", "sit_chair_watch", "desk_type")
-CHAIR_CLIPS = DESK_CLIPS + ("sit_chair",)
+CHAIR_CLIPS = DESK_CLIPS + ("sit_chair", "cower_seated")
+P5_FURNITURE = ("bartender_wipe", "bartender_pour", "teller_count", "curator_inspect", "cower_stand")
 
 DEFAULT_CELLS = ["walk:0", "walk:7", "walk:15", "walk:22", "run:0", "run:6", "crouch_walk:0", "crouch_walk:9",
                  "aim_pistol:0", "aim_rifle:0", "cower:0", "hands_up:0", "death_front:-1", "death_back:-1", "downed:0",
@@ -156,8 +167,8 @@ def _npc_props(name: str, sk, s, base_m: Matrix, i: int, mats: dict) -> None:
     """Review-only proxies: the clip's hand prop at its GRIPS frame and its furniture."""
     import _anim_humanoid as lib  # noqa: PLC0415
 
-    prop = PROP_CLIPS.get(name)
-    if prop is not None:
+    props = PROP_CLIPS.get(name, ())
+    for prop in (props,) if isinstance(props, str) else props:
         R, o = lib.prop_frame(sk, s, prop)
         m = Matrix.Identity(4)
         for a in range(3):
@@ -177,6 +188,17 @@ def _npc_props(name: str, sk, s, base_m: Matrix, i: int, mats: dict) -> None:
         elif prop == "mop":
             _cyl(f"shaft_{i}", M, 0.013, 0.05, lib.MOP_LENGTH, mats["prop"], 10)
             _cyl(f"mophead_{i}", M, 0.13, 0.0, 0.07, mats["paper"], 14)
+        elif prop == "rag":
+            _box(f"rag_{i}", M, lib.PROPS["rag"], mats["paper"], (0.0, 0.0, lib.PROPS["rag"][2] / 2))
+        elif prop == "bottle":
+            _cyl(f"bottle_{i}", M, 0.04, 0.0, 0.20, mats["mug"])
+            _cyl(f"neck_{i}", M, 0.014, 0.20, 0.30, mats["mug"], 10)
+        elif prop == "glass":
+            _cyl(f"glass_{i}", M, 0.04, 0.0, 0.10, mats["paper"])
+        elif prop == "cash":
+            _box(f"cash_{i}", M, lib.PROPS["cash"], mats["cash"])
+    if name in P5_FURNITURE:
+        _p5_furniture(name, base_m, i, mats)
     if name in CHAIR_CLIPS:
         _box(f"seat_{i}", base_m, (0.46, 0.46, 0.05), mats["furn"], (0.0, -0.06, lib.SEAT_H - 0.025))
         _box(f"back_{i}", base_m, (0.44, 0.05, 0.45), mats["furn"], (0.0, -0.33, lib.SEAT_H + 0.30))
@@ -186,6 +208,29 @@ def _npc_props(name: str, sk, s, base_m: Matrix, i: int, mats: dict) -> None:
         _box(f"mattress_{i}", base_m, (1.0, 2.0, 0.22), mats["paper"], (0.0, 0.45, -0.112))
         wedge = base_m @ Matrix.Translation((0.0, -0.36, 0.0)) @ Matrix.Rotation(math.radians(lib.BED_RECLINE), 4, "X")
         _box(f"pillow_{i}", wedge, (0.7, 0.16, 0.62), mats["furn"], (0.0, -0.08, 0.31))
+
+
+def _p5_furniture(name: str, base_m: Matrix, i: int, mats: dict) -> None:
+    """Review-only P5 furniture at the placement documented in SOURCE.txt (_anim_p5 constants)."""
+    import _anim_p5 as p5  # noqa: PLC0415
+
+    if name.startswith("bartender_"):
+        d = 0.55
+        _box(f"bar_{i}", base_m, (1.4, d, 0.05), mats["furn"], (0.0, p5.BAR_EDGE + d / 2, p5.BAR_Z - 0.025))
+        _box(f"barfront_{i}", base_m, (1.4, 0.05, p5.BAR_Z - 0.05), mats["furn"],
+             (0.0, p5.BAR_EDGE + 0.12, (p5.BAR_Z - 0.05) / 2))
+    elif name == "teller_count":
+        d = 0.5
+        _box(f"counter_{i}", base_m, (1.4, d, 0.04), mats["furn"], (0.0, p5.COUNTER_EDGE + d / 2, p5.COUNTER_Z - 0.02))
+        _box(f"counterfront_{i}", base_m, (1.4, 0.05, p5.COUNTER_Z - 0.04), mats["furn"],
+             (0.0, p5.COUNTER_EDGE + 0.12, (p5.COUNTER_Z - 0.04) / 2))
+        _box(f"pile_{i}", base_m, (0.156, 0.066, 0.006), mats["cash"], (p5.TELLER_PILE[0], p5.TELLER_PILE[1], p5.COUNTER_Z + 0.003))
+    elif name == "curator_inspect":
+        _box(f"wall_{i}", base_m, (1.4, 0.05, 2.4), mats["paper"], (0.0, p5.PAINT_WALL + 0.025, 1.2))
+        _box(f"frame_{i}", base_m, (0.80, 0.04, 0.62), mats["furn"], (0.0, p5.PAINT_WALL - 0.02, p5.PAINT_Z))
+        _box(f"canvas_{i}", base_m, (0.68, 0.01, 0.50), mats["mug"], (0.0, p5.PAINT_WALL - 0.045, p5.PAINT_Z))
+    elif name == "cower_stand":
+        _box(f"wall_{i}", base_m, (1.4, 0.05, 2.2), mats["paper"], (0.0, -p5.COWER_WALL - 0.025, 1.1))
 
 
 def _label(text: str, loc, size: float = 0.09):
@@ -246,7 +291,7 @@ def humanoid(out: pathlib.Path, cells: list[str]) -> None:
     shield_mat = _mat("shield", (0.10, 0.12, 0.16), 0.4)
     npc_mats = {"prop": _mat("prop", (0.08, 0.08, 0.09), 0.4), "book": _mat("book", (0.35, 0.08, 0.06), 0.6),
                 "paper": _mat("paper", (0.85, 0.83, 0.78), 0.8), "mug": _mat("mug", (0.15, 0.35, 0.60), 0.3),
-                "furn": _mat("furn", (0.42, 0.30, 0.20), 0.7)}
+                "furn": _mat("furn", (0.42, 0.30, 0.20), 0.7), "cash": _mat("cash", (0.32, 0.45, 0.30), 0.7)}
     weapons_src = {k: _import_weapon(k) for k in WEAPONS}
     for w in weapons_src.values():
         w.location = (0.0, 0.0, -50.0)
@@ -264,7 +309,7 @@ def humanoid(out: pathlib.Path, cells: list[str]) -> None:
         out_b = body.build_body(None, arm, body.body_params())
         A.apply_frame(arm, s)
         side = name in ("walk", "run", "crouch_walk", "sprint", "carry_bag_walk", "flee", "strafe_l", "strafe_r", "walk_back",
-                        "dozer_walk", "kick_charge", "kick_hit", "heal_ally", "mug_carry_walk")
+                        "dozer_walk", "kick_charge", "kick_hit", "heal_ally", "mug_carry_walk", "walk_text")
         yaw = -math.radians(58.0) if side else 0.0
         if len(parts) > 2:
             yaw = math.radians(float(parts[2]))
@@ -285,7 +330,7 @@ def humanoid(out: pathlib.Path, cells: list[str]) -> None:
             _shield_proxy(arm.matrix_world @ _weapon_matrix(sk, s, "L"), shield_mat)
         if name == "rappel":
             _rappel_props(arm.matrix_world.copy(), npc_mats)
-        if name in PROP_CLIPS or name in CHAIR_CLIPS:
+        if name in PROP_CLIPS or name in CHAIR_CLIPS or name in P5_FURNITURE:
             _npc_props(name, sk, s, arm.matrix_world.copy(), i, npc_mats)
         dg = bpy.context.evaluated_depsgraph_get()
         ev = out_b["Body"].evaluated_get(dg)
@@ -306,7 +351,8 @@ def humanoid(out: pathlib.Path, cells: list[str]) -> None:
     for w in weapons_src.values():
         for o in [w, *w.children_recursive]:
             bpy.data.objects.remove(o)
-    _setup_render(1800, 1200)
+    env = __import__("os").environ
+    _setup_render(int(env.get("REVIEW_RES", "1800")), 1200, int(env.get("REVIEW_SAMPLES", "24")))
     _frame_all(cam_obj)
     bpy.context.scene.render.filepath = str(out)
     bpy.ops.render.render(write_still=True)
@@ -377,6 +423,8 @@ def main() -> None:
         humanoid(out, argv[2:] or NPC_CELLS)
     elif kind == "rappel":
         humanoid(out, argv[2:] or RAPPEL_CELLS)
+    elif kind == "p5":
+        humanoid(out, argv[2:] or P5_CELLS)
     elif kind == "arms":
         import _arms_review  # noqa: PLC0415
 
