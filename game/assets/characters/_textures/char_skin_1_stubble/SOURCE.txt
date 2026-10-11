@@ -1,0 +1,9 @@
+generator: python3 tools/blender/characters/make_materials.py --only char_skin_1_stubble
+palette: tools/blender/characters/_outfit_palette.py (all_char_materials)
+kind: skin; colour #E3BFA3; roughness 0.55; metallic 0.0
+seed: 465549620 (zlib.crc32('char_skin_1'))
+size_px: 512; tile_m: 2.0 (1 UV unit = 2.0 m); texel_density_px_per_m: 256
+face colour: _body.skin_tint rasterised in body-UV space (beard strength 0.5)
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+texgen (ENV C, read-only): noise, ops, materials.base.finalize, io, godot
+edit policy: generated, never edit by hand
