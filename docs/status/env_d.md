@@ -3,6 +3,34 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11: HANDOFF (session moving to a new account)
+### Done since last entry (all on env/d-art, check_all --env d PASS at e528d192, round-31 trunk merged)
+- D-067b dedupe (inherited scenes of the glb, `remove_armature`), D-073 mask fit to the crew face envelope
+  (`tools/blender/masks/_crew_face_envelope.json`, 0 poke-through), hair + female-face passes, heister portraits.
+- D3-01..04 (anims: 100 clips incl. 8-way walk/run, starts/stops, hit reacts, deaths, crawl), B4-12/15/18,
+  D-075 (ostrander_federal, bank_officer, club_bouncer pager role), QC-70 bouncer belt radio.
+- 31dfc99b: assembler reads outfit-measured `attach_Head/Back/Hip` (model point) from SOURCE.txt; 98 scenes re-seated.
+- 3c2a46a6: heister touch-up (matte skin roughness 0.66 / specular 0.35, tone-5 fix, Dutch beard in Hair, Rook
+  pocket square, Odile crown with strand UVs; envelope + 23 masks regen; portraits re-rendered).
+### In progress / half-done local work
+- None. The tree was clean at handoff; nothing unpushed.
+### Queue (lead build order)
+1. D4-01 LODs: 3 levels (~100/45/15 % tris), visibility ranges, crowd-friendly lowest LOD, contract node paths identical.
+2. D4-03 heisters Juno (emerald #2F5D4A moto jacket, knee boots), Ash (burnt orange #B4532A racing jacket, hood),
+   Hale (steel blue #3E5872 puffer gilet, 1.88 m), Vesper (cobalt #2B3F8C cape-coat, silver pixie): FP sleeves,
+   portraits, envelope + mask regen; keep clear of interactable cyan / loot highlight; ids + accents + portraits to ENV B.
+3. D4-02 crowd variety: +8 outfit variants and a GameRng mix table.
+4. Mask polish: serpent (sharper hood crest), moth (thicker antennae, bolder wings).
+5. Touch-ups: put SKIN_TONE_FIX {5: "#704D3A"} into `_body.SKIN_TONES[4]` (glb placeholder colour); Rook's coat chest
+   welt lands under the long-coat lapel (`_npc.jacket`); Odile is at 34838/35000 tris (little headroom);
+   remove leftover "Meridian" comments (`_outfit_palette.py` ~160, `_anim_p5.py` docstring, `anim_humanoid.py` ~112).
+### Notes for the next session
+- Build with the single-thread Blender wrapper (`blender --threads 1`; multithreaded tangents are nondeterministic).
+- check_all --env d takes >10 min; run it in the background with a long timeout; restore docs/levels/*/validation.md after.
+- Merge trunk with `-c merge.autostash=false --no-autostash`; always check `git diff --cached --name-only` before committing.
+### Ready for integration
+- yes (e528d192)
+
 ## 2026-10-11: session 1, continued (P3 + D2 batch landed)
 ### Done (all on env/d-art, check_all --env d green at 4616b1b)
 - P3: special models (TAC Heavy, Phantom, Stinger, Bulwark + shield, Aegis, Wrecker 3 head states, Longshot,
