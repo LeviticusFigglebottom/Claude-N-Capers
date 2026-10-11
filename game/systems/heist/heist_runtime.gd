@@ -528,7 +528,8 @@ func _on_alarm_raised(reason: StringName, _source: int) -> void:
 
 
 func _on_crew_masked(_slot: int) -> void:
-	if phase == Enums.HeistPhase.CASING:
+	# An alarm while casing masks everyone and goes CASING -> LOUD directly (no STEALTH hop, PD2 S1.2).
+	if phase == Enums.HeistPhase.CASING and not went_loud:
 		_set_phase(Enums.HeistPhase.STEALTH)
 
 
