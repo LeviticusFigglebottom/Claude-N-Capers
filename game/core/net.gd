@@ -213,6 +213,11 @@ func _drop_peer(peer_id: int) -> void:
 		mp.disconnect_peer(peer_id)
 
 
+## Host: true when `display_name` was kicked this session (case-insensitive; drop-in and lobby joins consult it).
+func was_kicked(display_name: String) -> bool:
+	return _kicked_names.has(display_name.strip_edges().to_lower())
+
+
 ## Client: the host is about to drop this peer.
 @rpc("authority", "call_remote", "reliable")
 func _rpc_kicked() -> void:

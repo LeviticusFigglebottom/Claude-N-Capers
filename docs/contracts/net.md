@@ -31,7 +31,7 @@ API: `game/core/net.gd`. Architecture: architecture.md §3.
 * `Net.kick(peer_id) -> bool` (host only): disconnects the peer, frees its crew slot (an AI may fill it per lobby
   rules) and emits `peer_kicked(peer_id, slot)`. The kicked client receives `host_lost`-style teardown with
   `Net.last_disconnect_reason == &"kicked"`. Kicked peers are auto-denied for the rest of that lobby session
-  (the host's kick list, keyed by peer id and lower-cased profile name).
+  (the host's kick list, keyed by peer id and lower-cased profile name); `Net.was_kicked(display_name) -> bool` queries it.
 * Reserved `Net.lobby_send` kinds (ENV B): `lobby.chat` (text chat, lobby and in-heist; the sender slot comes from the
   network sender id, never the payload), `lobby.kick` (UI notice only; the kick itself is `Net.kick`), `lobby.settings`
   (host-only session settings, e.g. `{dropin}`). `lobby_message` delivery keeps working during and after a launch

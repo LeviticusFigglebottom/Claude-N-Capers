@@ -523,3 +523,13 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - D-067(b) implemented (ENV D fb65fdd): all 76 character scenes are inherited scenes of their glb (remove_armature),
   367 per-scene .res removed, game/world/characters 114.9 MB → 3.3 MB; node-tree dump of 84 scenes identical
   before/after; builds byte-deterministic. characters.md v1.6's variant text applies as written; ENV A unchanged.
+
+## D-074 — 2026-10-11 — Weapon finishes, kick-list query, P5 prep
+- `Loadout.weapon_finishes: Dictionary` (weapon_id → finish_id, ENV B B7-04; save v7 reserves `weapon_finishes`).
+- `Net.was_kicked(display_name)`: public query of the session kick list (HeistDropIn and lobby agree).
+- Drop-in: host sends `full` when no human-replaceable seat; a host's policy change applies live; B's client-side
+  `unreachable` reason. characters v1.9 adds D3-02's P5 ambient clips with placement numbers for ENV C.
+- P5 preparation: ENV D's P5 cast (fda27f0) precedes the P5 G0 docs; ENV C drafts gallery_night, meridian_federal,
+  afterhours, rolling_thunder G0s (QC ranges 51–89) and confirms/renames D's invented companies.
+- Roadmap: A4-01..03 (fidelity audit, perf budgets, 4-client soak), B7-01..04 (career stats, achievements, contact
+  radio, weapon finishes), D3-01..04 (P5 cast, P5 anims, mask batch 3, animation polish).
