@@ -9,6 +9,29 @@ static func _own(n: Node, root: Node) -> void:
 		_own(c, root)
 
 
+## Wait until the World3D navigation map holds exactly `rt`'s NavigationRegion3Ds (no region left over
+## from an earlier test), then force a synchronous map update. Godot syncs navigation maps
+## asynchronously (navigation/world/map_use_async_iterations), so under load a path queried right
+## after launch can still run on a stale map iteration. Returns false on timeout.
+static func await_nav_synced(rt: HeistRuntime, timeout_s: float = 5.0) -> bool:
+	var tree: SceneTree = rt.get_tree()
+	var map: RID = rt.get_viewport().world_3d.navigation_map
+	var want: Array[RID] = []
+	for n: Node in rt.find_children("*", "NavigationRegion3D", true, false):
+		want.append((n as NavigationRegion3D).get_rid())
+	var deadline: int = Time.get_ticks_msec() + int(timeout_s * 1000.0)
+	while Time.get_ticks_msec() < deadline:
+		var have: Array[RID] = NavigationServer3D.map_get_regions(map)
+		var exact: bool = have.size() == want.size()
+		for r: RID in want:
+			exact = exact and have.has(r)
+		if exact:
+			NavigationServer3D.map_force_update(map)
+			return true
+		await tree.physics_frame
+	return false
+
+
 ## A 30x30 m floor, PLAYER spawns, optional guard/civilian spawns and variant slots.
 static func basic(guards: int = 1, civilians: int = 0, variant_groups: Dictionary = {}, table: HeistVariantTable = null) -> PackedScene:
 	var root: HeistMap = HeistMap.new()

@@ -46,6 +46,10 @@ static func validate_and_apply(claim: Dictionary, shooter: CrewController) -> Di
 	var tw: CombatTweak = CombatTweak.data()
 	var origin: Vector3 = claim.get("origin", shooter.eye_position())
 	var ws: int = int(claim.get("weapon_slot", w.equipped_slot))
+	var special: Dictionary = SpecialWeapons.params_for(shooter, ws)
+	if SpecialWeapons.kind_of(special) != SpecialWeapons.KIND_HITSCAN:  # B4-18: flame / saw / projectile
+		out["results"] = SpecialWeapons.server_apply(shooter, ws, claim, special)
+		return out
 	var hits: Array = claim.get("hits", [])
 	var results: Array[Dictionary] = []
 	var hit_npcs: Array = []
