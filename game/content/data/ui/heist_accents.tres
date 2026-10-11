@@ -5,9 +5,13 @@
 [resource]
 script = ExtResource("1")
 accents = {
+&"afterhours": Color(0.9686, 0.4196, 0.8275, 1),
 &"dockside_burn": Color(1, 0.4196, 0.102, 1),
+&"gallery_night": Color(0.7176, 0.6118, 0.949, 1),
 &"glasshouse": Color(0.7882, 0.6353, 0.1529, 1),
+&"meridian_federal": Color(0.4353, 0.8118, 0.5922, 1),
 &"night_deposit": Color(0.6196, 0.1686, 0.1451, 1),
+&"rolling_thunder": Color(0.7216, 0.8392, 0.2824, 1),
 &"shadow_ledger": Color(0.8118, 0.8902, 0.9333, 1)
 }
 fallback = Color(0.7882, 0.6353, 0.1529, 1)

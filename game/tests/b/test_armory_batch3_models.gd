@@ -84,8 +84,11 @@ func test_shrike_lever() -> void:
 	v.queue_free()
 
 
-## B4-18 bow and crossbow strings: StringUpper/StringLower start on the cam axles above and below the nock;
-## the crossbow `String` starts at the latch, at the bolt's nock (Magwell). The nocked projectile points -Z.
+## B4-18 bow and crossbow strings. Bow: StringUpper/StringLower start on the cam axles above and below the nock.
+## Crossbow: the same pair rolled flat (Upper = left, Lower = right; local X = up), origins on the limb-tip axles,
+## RELAXED at rest (the halves meet ahead of the latch). On both, a NEGATIVE turn of StringUpper and a POSITIVE turn
+## of StringLower about local X pull the meeting point back; the crossbow's halves reach the latch (the bolt's
+## nock, Magwell) with that swing plus a stretch along local Y. The nocked projectile points -Z.
 func test_bow_and_crossbow_strings() -> void:
 	var b: WeaponVisual = _model_of(&"weapon.thorn_bow")
 	var up: Node3D = b.model.find_child("StringUpper", true, false) as Node3D
@@ -95,16 +98,70 @@ func test_bow_and_crossbow_strings() -> void:
 	if up != null and low != null:
 		assert_true(_local(b, up).y > nock.y + 0.3 and _local(b, low).y < nock.y - 0.3, "cams above and below")
 		assert_near(_local(b, up).z, nock.z, 0.04, "cam axle near the string line")
+		_assert_draw_pulls_back(b, up, low, "bow")
 	assert_true(b.get_base_marker(&"Magwell").global_basis.y.normalized().dot(Vector3.FORWARD) > 0.99, "arrow forward")
 	assert_true(_local(b, b.get_base_marker(&"LeftHandIK")).distance_to(Vector3(0.0, nock.y, nock.z)) < 0.02,
 		"draw hand on the nock")
 	b.queue_free()
 	var x: WeaponVisual = _model_of(&"weapon.vise_crossbow")
-	var s: Node3D = x.model.find_child("String", true, false) as Node3D
-	assert_true(s != null, "crossbow String")
-	if s != null:
-		assert_true(_local(x, s).distance_to(_local(x, x.get_base_marker(&"Magwell"))) < 0.01, "latch at the nock")
+	assert_true(x.model.find_child("String", true, false) == null, "crossbow: no single sliding String")
+	var xu: Node3D = x.model.find_child("StringUpper", true, false) as Node3D
+	var xl: Node3D = x.model.find_child("StringLower", true, false) as Node3D
+	assert_true(xu != null and xl != null, "crossbow string halves")
+	if xu != null and xl != null:
+		_assert_crossbow_halves(x, xu, xl)
 	x.queue_free()
+
+
+## The end of a string half away from its pivot, in model space (Upper runs along local -Y, Lower along +Y). The
+## half is the cord mesh itself (bow) or a Node3D carrying it (crossbow, `<half>Cord`).
+func _half_end(v: WeaponVisual, half: Node3D, upper: bool) -> Vector3:
+	var cord: MeshInstance3D = half as MeshInstance3D
+	if cord == null:
+		cord = half.get_node_or_null(NodePath(String(half.name) + "Cord")) as MeshInstance3D
+	if cord == null:
+		return half.global_position
+	var box: AABB = cord.get_aabb()
+	var tip: Vector3 = cord.global_transform * Vector3(0.0, box.position.y if upper else box.end.y, 0.0)
+	return v.model.global_transform.affine_inverse() * tip
+
+
+func _assert_draw_pulls_back(v: WeaponVisual, up: Node3D, low: Node3D, what: String) -> void:
+	for pair: Array in [[up, true, -1.0], [low, false, 1.0]]:
+		var half: Node3D = pair[0]
+		var rest: Transform3D = half.transform
+		var e0: Vector3 = _half_end(v, half, pair[1])
+		half.transform = Transform3D(rest.basis * Basis(Vector3.RIGHT, float(pair[2]) * deg_to_rad(10.0)), rest.origin)
+		assert_true(_half_end(v, half, pair[1]).z > e0.z + 0.01, "%s %s: the draw turn pulls the string back" % [what, half.name])
+		half.transform = rest
+
+
+func _assert_crossbow_halves(x: WeaponVisual, xu: Node3D, xl: Node3D) -> void:
+	var latch: Vector3 = _local(x, x.get_base_marker(&"Magwell"))
+	var pu: Vector3 = _local(x, xu)
+	var pl: Vector3 = _local(x, xl)
+	assert_true(pu.x < -0.25 and pl.x > 0.25, "pivots on the left / right limb tips (%s, %s)" % [pu, pl])
+	assert_true(pu.z < latch.z - 0.25 and absf(pu.z - pl.z) < 0.001, "tips level, well ahead of the latch")
+	for h: Node3D in [xu, xl]:
+		assert_near(_local(x, h).y, latch.y, 0.002, "%s level with the nock" % h.name)
+		assert_true(h.global_basis.x.normalized().dot(Vector3.UP) > 0.999, "%s local X = up" % h.name)
+	var eu: Vector3 = _half_end(x, xu, true)
+	assert_true(eu.distance_to(_half_end(x, xl, false)) < 0.002, "the halves meet")
+	assert_near(eu.x, 0.0, 0.002, "relaxed meeting point on the centre plane")
+	assert_near(latch.z - eu.z, 0.16, 0.002, "relaxed: the string sits 0.16 m ahead of the nock")
+	_assert_draw_pulls_back(x, xu, xl, "crossbow")
+	# latched: swing about local X and stretch along local Y until each half ends on the nock
+	var flat: Vector3 = Vector3(1.0, 0.0, 1.0)
+	var a: float = ((eu - pu) * flat).angle_to((latch - pu) * flat)
+	var s: float = (latch - pu).length() / (eu - pu).length()
+	assert_true(a > deg_to_rad(10.0) and a < deg_to_rad(30.0) and s > 1.1 and s < 1.5, "latch swing %f rad, stretch %f" % [a, s])
+	for pair: Array in [[xu, true, -a], [xl, false, a]]:
+		var half: Node3D = pair[0]
+		var rest: Transform3D = half.transform
+		half.transform = Transform3D(rest.basis * Basis(Vector3.RIGHT, pair[2]) * Basis.from_scale(Vector3(1.0, s, 1.0)),
+			rest.origin)
+		assert_true(_half_end(x, half, pair[1]).distance_to(latch) < 0.002, "%s latched on the nock" % half.name)
+		half.transform = rest
 
 
 ## B4-18 saw, rotary gun and flamethrower parts.
