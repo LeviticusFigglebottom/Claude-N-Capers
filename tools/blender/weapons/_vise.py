@@ -6,8 +6,14 @@ Private helper: imported by ``vise_crossbow.py`` and ``vise_crossbow_mods.py``. 
 Polymer stock with a flight deck, a recurve prod across the front, a foot stirrup, a short optics bridge
 over the latch (``SightRail``), a skeleton stock (``StockMount/StockStock``). The bolt lies in the flight
 groove (``Magwell`` at the latch, insertion axis = forward along the bolt; ``StockMagazine`` = the bolt).
-Animated part (B4-18): ``String``, origin = the latch point at full draw; on release ENV A moves it forward
-(local -Z in Godot) to the brace position and back when re-cocked (the prod limbs stay fixed).
+Animated parts (B4-18): the string is two halves, ``StringUpper`` (left) and ``StringLower`` (right), modelled
+like the bow's (the bow's pair rolled 90 deg to the left about the bore): each half's origin is on its
+limb-tip axle (``STRING_TIPS``) and the half runs to the centre along its local -Y (Upper) / +Y (Lower), local
+X = up (Godot), so a rotation about local X swings it in the horizontal deck plane. Rest pose (rotation 0) =
+RELAXED (brace): the halves meet on the centre plane at ``BRACE``, ``STRING_TRAVEL`` ahead of the nock.
+Latched (on the bolt's nock = ``Magwell``, in the latch jaws): StringUpper turns by -``latch_angle()`` and StringLower by
++``latch_angle()`` about local X, each stretched by ``latch_stretch()`` along local Y (the prod limbs stay
+fixed).
 """
 
 from __future__ import annotations
@@ -33,8 +39,14 @@ BOLT_LEN = 0.430
 MAGWELL_POS = (0.0, LATCH[1] + 0.004, DECK_Z + 0.004)
 MAGWELL_ROT = (-math.pi / 2, 0.0, 0.0)
 MUZZLE_Y = MAGWELL_POS[1] + BOLT_LEN + 0.010
+STRING_TRAVEL = 0.160                             # latched -> brace (ENV D's crossbow STRING_TRAVEL)
+STRING_NOCK = MAGWELL_POS                         # latched: the halves meet on the bolt's nock (in the latch jaws)
+STRING_Z = STRING_NOCK[2]                         # the string runs level at the nock height
+BRACE = (0.0, STRING_NOCK[1] + STRING_TRAVEL, STRING_Z)
+STRING_TIPS = ((-TIP_X, TIP_Y + 0.004, STRING_Z), (TIP_X, TIP_Y + 0.004, STRING_Z))   # Upper (left), Lower (right)
 
 BRIDGE_Y0, BRIDGE_Y1 = -0.050, 0.110
+BRIDGE_POST_Y1 = 0.002                            # the single post stops short of the latched string
 BRIDGE_Z = 0.092
 RAIL_TOP_Z = BRIDGE_Z + 0.0062
 SIGHT_RAIL_Y = 0.030
@@ -44,6 +56,28 @@ IRON_AIM_DZ = 0.0140
 STOCK_MOUNT = (0.0, BODY_REAR_Y, 0.050)
 UNDER_Y = 0.250
 SIDE_Y = 0.200
+
+
+def _plan_len(a, b) -> float:
+    return math.hypot(b[0] - a[0], b[1] - a[1])
+
+
+def brace_len() -> float:
+    """Length of one string half at rest (tip axle -> brace point)."""
+    return _plan_len(STRING_TIPS[0], BRACE)
+
+
+def latch_stretch() -> float:
+    """Length factor of a half from brace to latched (tip axle -> latch / brace length)."""
+    return _plan_len(STRING_TIPS[0], STRING_NOCK) / brace_len()
+
+
+def latch_angle() -> float:
+    """Swing (radians, > 0) of each half about its tip axle from brace to latched."""
+    tx, ty = STRING_TIPS[1][0], STRING_TIPS[1][1]
+    a0 = math.atan2(BRACE[1] - ty, BRACE[0] - tx)
+    a1 = math.atan2(STRING_NOCK[1] - ty, STRING_NOCK[0] - tx)
+    return abs(a1 - a0)
 
 
 def build_irons(ctx, mats, parent=None, name="IronSights"):

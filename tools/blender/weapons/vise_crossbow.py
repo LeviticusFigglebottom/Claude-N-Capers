@@ -7,7 +7,8 @@ over the latch, skeleton stock, 43 cm bolt in the groove.
 Origin = firing-hand pivot on the grip (see _vise.py). Forward = Godot -Z.
 
 Node tree: ``Body`` (+ ``Deck``, ``Prod``, ``Stirrup``, ``Bridge``, ``TriggerGroup``, ``Grip``,
-``Foregrip``), ``String`` (origin = the latch; ENV A moves it forward on release). Stock parts:
+``Foregrip``), ``StringUpper`` / ``StringLower`` (the left / right string halves, origins on the limb-tip
+axles, relaxed at rest; see _vise.py for the latch swing). Stock parts:
 ``SightRail/StockSight`` (flip-up irons, ``AimPoint``), ``Magwell/StockMagazine`` (the bolt),
 ``StockMount/StockStock`` (skeleton stock).
 """
@@ -67,8 +68,9 @@ def _body(ctx, mats):
 
     br = ctx.builder()
     ba = br.material(mats.alu())
-    for y in (v.BRIDGE_Y0 + 0.010, v.BRIDGE_Y1 - 0.010):
-        br.box((-0.0120, y - 0.008, v.DECK_Z), (0.0120, y + 0.008, v.BRIDGE_Z), mat=ba)
+    # one deep post behind the latch carries the bridge (a front post would stand in the string's path)
+    br.box((-0.0120, v.BRIDGE_Y0, v.DECK_Z), (0.0120, v.BRIDGE_POST_Y1, v.BRIDGE_Z), mat=ba)
+    br.box((-0.0120, v.BRIDGE_POST_Y1, v.BRIDGE_Z - 0.010), (0.0120, v.BRIDGE_POST_Y1 + 0.030, v.BRIDGE_Z), mat=ba)
     br.box((-0.0095, v.BRIDGE_Y0, v.BRIDGE_Z - 0.004), (0.0095, v.BRIDGE_Y1, v.BRIDGE_Z), mat=ba)
     c.picatinny(br, ba, v.BRIDGE_Y0, v.BRIDGE_Y1, v.BRIDGE_Z)
     c.finish(br, "Bridge", bevel=0.0004, parent=body)
@@ -84,22 +86,32 @@ def _body(ctx, mats):
     return body
 
 
-def _string(ctx, mats):
-    mb = ctx.builder()
-    sm = mb.material(mats.polymer())
-    lx, ly, lz = v.LATCH
-    for sx in (-1.0, 1.0):
-        c.rod(mb, (0.0, 0.0, 0.0), (sx * (v.TIP_X - 0.002) - lx, v.TIP_Y + 0.004 - ly, (v.DECK_Z - 0.003) - lz), 0.0016,
-              sm)
-    obj = c.finish(mb, "String")
-    obj.location = v.LATCH
-    return obj
+def _strings(ctx, mats):
+    """Two string halves, relaxed (brace): Node3D ``StringUpper`` / ``StringLower`` on the limb-tip axles with the
+    cord mesh (``...Cord``) as a child. Each half runs to ``BRACE`` along local -Y (Upper, left) / +Y (Lower, right)
+    in Godot axes, local X = up: Blender local x = up, local z = -/+ the string direction (Godot Y = Blender z)."""
+    ln = v.brace_len()
+    for (tx, ty, tz), sz, name in ((v.STRING_TIPS[0], 1.0, "StringUpper"), (v.STRING_TIPS[1], -1.0, "StringLower")):
+        mb = ctx.builder()
+        sm = mb.material(mats.polymer())
+        mb.cylinder(0.0016, ln, segments=8, centre=(0.0, 0.0, -sz * ln / 2), axis="Z", mat=sm)
+        if sz > 0:                                                                    # centre serving
+            mb.cylinder(0.0024, 0.024, segments=8, centre=(0.0, 0.0, -ln + 0.012), axis="Z", mat=mb.material(mats.matte()))
+        else:
+            mb.cylinder(0.0024, 0.024, segments=8, centre=(0.0, 0.0, ln - 0.012), axis="Z", mat=mb.material(mats.matte()))
+        d = c.Vector((v.BRACE[0] - tx, v.BRACE[1] - ty, 0.0)).normalized()
+        z = d * -sz
+        x = c.Vector((0.0, 0.0, 1.0))
+        rot = c.Matrix((x, z.cross(x), z)).transposed()
+        # the export applies mesh rotations, so the turned frame is an empty with the cord mesh under it
+        half = ctx.marker(name, (tx, ty, tz), rotation_euler=tuple(rot.to_euler("XYZ")))
+        c.finish(mb, name + "Cord", parent=half)
 
 
 def build(ctx) -> None:
     mats = c.Mats(ctx)
     _body(ctx, mats)
-    _string(ctx, mats)
+    _strings(ctx, mats)
 
     ctx.marker("Muzzle", (0.0, v.MUZZLE_Y, v.MAGWELL_POS[2]))
     ctx.marker("BarrelMount", (0.0, v.PROD_Y, v.DECK_Z))
@@ -121,4 +133,9 @@ def build(ctx) -> None:
     v.build_stock(ctx, mats, folded=False, parent=stock_stock)
 
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()
+    ctx.source_extra["string"] = ("StringUpper (left) / StringLower (right): origins on the limb-tip axles at Godot "
+                                  f"x = -/+{v.TIP_X:.3f}; rest = relaxed, halves meet {v.STRING_TRAVEL:.3f} m ahead of the "
+                                  f"nock (Magwell); latched = StringUpper -{math.degrees(v.latch_angle()):.2f} deg / StringLower "
+                                  f"+{math.degrees(v.latch_angle()):.2f} deg about local X, local Y scaled "
+                                  f"x{v.latch_stretch():.4f}")
     ctx.source_extra["origin"] = "firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top"
