@@ -1,5 +1,6 @@
 # Afterhours: the Velvet nightclub (afterhours)
-Status: G0 DRAFT: review requested (ENV C, 2026-10-11). Open questions and QC-70..76 at the end.
+Status: APPROVED (lead, 2026-10-11) (D-075). The lead's answers to the G0 open questions are folded in below (see Lead rulings).
+Cross-env requests QC-70..76 are at the end.
 
 ## Fiction
 - **Who:** **The Velvet**, the busiest late club in midtown, in the shell of the **Ardmore Picture
@@ -12,10 +13,14 @@ Status: G0 DRAFT: review requested (ENV C, 2026-10-11). Open questions and QC-70
 - **What:** after Pier 9 burned, the Co-op moved its **cash float** to Crale's **office safe** (upper
   floor, keycard door, combination lock). Its last **product** is somewhere in the building (sealed
   parcels; where varies). The night's **count** may still be on the tables upstairs.
-- **Why / contact:** **Hollis "Hammer" Reyes** (`contact.reyes`, Board district `midtown`, as ENV B's
-  stub proposes): *"The Co-op's counting money under a disco ball. Walk in like you came to dance.
-  Walk out with the safe. Anything they were going to sell, I'll take off your hands."* Reyes has a
-  bartender on the payroll who stashed the crew's gear inside before the doors opened.
+- **Why / contact (D-075):** **The Accountant** (`contact.accountant`, Board district `midtown`; bank
+  and corporate jobs, never seen). Laundering is his trade, and the Velvet is a laundry: *"The Co-op
+  washes its money through a dance floor. Door take, bar receipts, bottle service: I've read their
+  books, and the numbers dance better than the customers. Since Pier 9 the float sits in Crale's
+  safe. Walk in like you came to dance, and bring me the safe."* The Accountant pays for the safe's
+  cash; the product and the count are the crew's own greed. He has a bartender on the payroll who
+  stashed the crew's gear in the front of house before the doors opened. (Reyes runs Rolling
+  Thunder; the Co-op arc's loud jobs stay his.)
 - **Time / weather:** Saturday, 00:40, late autumn. The rain stopped an hour ago: wet asphalt and
   sidewalks reflecting the marquee neon, puddles in the alley, no rain falling (atmosphere only, no
   scalar). The club is at peak: a queue on the sidewalk, a full dance floor.
@@ -33,15 +38,21 @@ Status: G0 DRAFT: review requested (ENV C, 2026-10-11). Open questions and QC-70
      cameras fill at ×0.35 inside RESTRICTED zones or within 3 m of a guard outside PUBLIC. Only
      `casing_allowed` interactions (keycard pickup, code notes, mask up).
   3. **masked**: everything allowed; everyone, including the dance-floor crowd, detects you.
-- **What civilian mode is for here:** a free, risk-free scouting walk. The crew can open any unlocked
-  door, read guard loops, find the camera layout, see where the keycard and the product are, and walk
-  out the front to the alley. They cannot touch anything. **The heist starts where the gear is**
-  (`gear_drop`, 4 places): picking it up switches that player to casing on the spot, so the gear's
-  location decides where each player becomes detectable.
-- **Civilian-allowed set** (ENV C sets `civilian_allowed` per instance):
+- **What civilian mode is for here:** a risk-free scouting walk of the **front of house** (D-075:
+  civilians stay front-of-house). The crew can walk the guest side (foyer, hall, under-circle, WCs,
+  the VIP side through the rope gate, the smokers' passage), watch the floor and VIP guards, spot the
+  hall cameras, and walk out the front to the alley. They cannot open staff doors or touch anything.
+  **The heist starts where the gear is** (`gear_drop`, 4 places, all reachable without a staff
+  door): picking it up switches that player to casing on the spot, so the gear's location decides
+  where each player becomes detectable.
+- **Civilian-allowed set** (ENV C sets `civilian_allowed` per instance; D-075):
   - the `gear_pickup` (true by contract);
-  - every `door` with lock NONE: public doors, staff doors that are not locked, the VIP rope gate,
-    push-bar fire exits (opening a door is not a suspicious act).
+  - guest doors with lock NONE: the entrance doors, the hall doors, the patrons' and VIP WC doors,
+    the VIP rope gate (a guest door: the VIP side is guest space, RESTRICTED only for casing and
+    masked players), and the hall's push-bar fire exits to the smokers' passage.
+  - **Not staff doors**, locked or not: the east bar service door, the backstage door, the box-office
+    staff flap, the VIP staff door, the G13 push-bar doors and the staff entrance. Behind them is
+    casing or masked work.
   - Nothing else: no keycards, notes, small loot, lockpicks, windows, ladders.
 - **Stealth:** the front of house (sidewalk, foyer, hall, under-circle, WCs, smokers' passage) is
   **PUBLIC** and packed with civilians. The back of house, the stage, the VIP side (balcony, VIP
@@ -197,7 +208,7 @@ D-054; ascending and containing 0.0, D-040):
 
 | Level | FFL | Ceiling | Floor-to-floor / slab | Notes |
 |---|---|---|---|---|
-| Ground | 0.0 | **8.0 hall G6** (override, below); 3.6 under-circle G7, foyer G1, box office G2, loading G21; 3.0 BOH, WCs, offices | 4.2 (0.6 slab under the upper floor; BOH ceilings 3.0 + 1.2 plenum to the BOH roof slab at +4.2) | lobby/bar 3.0–4.5 ✓; office/BOH 2.6–3.0 ✓; loading 3.5–6.0 ✓ |
+| Ground | 0.0 | **8.0 hall G6** (`hall`, D-075, below); 3.6 under-circle G7, foyer G1, box office G2, loading G21; 3.0 BOH, WCs, offices | 4.2 (0.6 slab under the upper floor; BOH ceilings 3.0 + 1.2 plenum to the BOH roof slab at +4.2) | hall 6–9 ✓ (D-075); lobby/bar 3.0–4.5 ✓; office/BOH 2.6–3.0 ✓; loading 3.5–6.0 ✓ |
 | Balcony (upper) | 4.2 | balcony U1 open to the hall ceiling (3.8 clear); VIP lounge U2 3.2; staff wing, U4, U5 3.0 | roof slab top +8.0 (0.6–0.8 plenum + slab) | bar 3.0–4.5 ✓; office 2.6–3.0 ✓ |
 | BOH roof | 4.2 | open (exterior) | — | parapet 1.1 m; same level as the upper floor (no stair) |
 | DJ stage | +0.3 | — | one 0.3 m step (walkable max climb, heist_map §3), not a stair | no railing needed (≤ 0.3 m drop) |
@@ -219,8 +230,9 @@ x 0–26: 1.05 m, glass infill under the original curved brass rail, which is th
 grand-stair well (1.05 m), and the BOH roof parapet (1.1 m, which is the guard; no extra rail, as
 QC-34). The stage riser (0.3 m) needs none.
 
-**Per-room ceiling override (D-048).** The §2.6 table caps `bar` (and `lobby`) at 4.5 m. **G6, the
-main hall, carries a `ceiling_range` override of 6.0–9.0 m** (design value 8.0 m). Reason: it is the
+**Ceiling band (D-075: no override).** The §2.6 table caps `bar` (and `lobby`) at 4.5 m. **G6, the
+main hall, uses the new purpose `hall` (6.0–9.0 m)** that the lead added to the validator's scale
+table (design value 8.0 m). Reason: it is the
 1928 picture-house auditorium. The original volume was sized for sightlines from the dress circle
 (+4.2) over the stalls to the screen; the circle needs ≥ 3.4 m over its rear rows, and the club's
 lighting truss hangs at 6.5 m under the plaster coffers. The hall's double height is also what makes
@@ -335,16 +347,16 @@ club kits (ENV C builds them with the G1/G2 work).
 | id | purpose (`RoomVolume.purpose`) | size m | ceiling m | kit | notes |
 |---|---|---|---|---|---|
 | G1 | lobby (foyer) | 12 × 7 | 3.6 | `club_foyer` ◇ | Two double entrance doors (1.8 m) to Marlin Ave, two curtained double doors into the hall (z 21). Terrazzo floor with the old ARDMORE mosaic, poster cases (`W` at x 11, 21), velvet ropes, a bench. **Default player spawn** (`P`). PUBLIC. |
-| G2 | reception (box office + cloakroom) | 4 × 7 | 3.6 | `club_box_office` ◇ | Counter (1.05 m) on the foyer side with cash window; coat rails; ticket stubs. Door (22, 27) from the foyer (staff flap) and (26, 24) to G26. `gear_cloak` slot. RESTRICTED behind the counter. |
-| G3a, G3b | restroom (patrons) | 3 × 7 each | 3.0 | `restroom_multi` ◇ | 3 cubicles + basin row each. Doors from G7. PUBLIC. |
-| G6 | bar (main hall: stage + dance floor) | 26 × 8 | **8.0** (override 6.0–9.0) | `club_hall` ◇ | Stage riser, DJ booth, speaker stacks, LED dance floor (12 × 6 under the mirror ball), lighting truss at 6.5 m, east bar. Fire exit (0, 8). PUBLIC (stage RESTRICTED). |
-| G7 | bar (under-circle lounge) | 26 × 6 | 3.6 | `club_lounge` ◇ | Booths with banquettes, high tables, the south end of the main bar, cigarette-machine alcove. Fire exit (0, 19). PUBLIC. |
+| G2 | reception (box office + cloakroom) | 4 × 7 | 3.6 | `club_box_office` ◇ | Counter (1.05 m) on the foyer side with cash window; coat rails; ticket stubs. Door (22, 27) from the foyer (staff flap, not `civilian_allowed`) and (26, 24) to G26. `gear_cloak` slot: a checked holdall on the counter's cloakroom hatch, taken **across the counter from the foyer** (no door). RESTRICTED behind the counter. |
+| G3a, G3b | restroom (patrons) | 3 × 7 each | 3.0 | `restroom_multi` ◇ | 3 cubicles + basin row each. Doors from G7. PUBLIC. `gear_wc`: a holdall in the end cubicle's duct panel in G3b. |
+| G6 | hall (main hall: stage + dance floor; D-075) | 26 × 8 | **8.0** (`hall` 6.0–9.0) | `club_hall` ◇ | Stage riser, DJ booth, speaker stacks, LED dance floor (12 × 6 under the mirror ball), lighting truss at 6.5 m, east bar. Fire exit (0, 8). PUBLIC (stage RESTRICTED). |
+| G7 | bar (under-circle lounge) | 26 × 6 | 3.6 | `club_lounge` ◇ | Booths with banquettes, high tables, the south end of the main bar, cigarette-machine alcove. Fire exit (0, 19). PUBLIC. `gear_booth`: a holdall under the banquette of the reserved corner booth (east end). |
 | G8 | stair (grand stair) | 4 × 7 | open | — | Public U-stair to the VIP side (vertical data). |
 | G10 | storage (bar stock) | 8 × 5 | 3.0 | `storage_bar_stock` ◇ | Spirits and mixer shelving, crates, the **steel stock cage** (`prod_stock`). Door to G13. |
-| G11 | staff_room (green room) | 6 × 5 | 3.0 | `green_room` ◇ | DJs' room: sofa, mirror with bulbs, rider table, flight cases (`gear_green`, `prod_green`). High window N. |
+| G11 | staff_room (green room) | 6 × 5 | 3.0 | `green_room` ◇ | DJs' room: sofa, mirror with bulbs, rider table, flight cases (`prod_green`). High window N. |
 | G12 | break_room (staff room) | 6 × 5 | 3.0 | `break_room` | Fridge, counter + sink, coffee, microwave, table + 4 chairs, rota board (`code_staff_board`), key hooks (`kc_staff_room`). High window N. |
 | G13 | corridor (back corridor) | 36 × 2 | 3.0 | `corridor_service` | BOH spine: keg trolleys, stacked crates (cover). Push-bar doors at both ends (passage, Tolley St). Backstage door to the stage. |
-| G14 | locker_room (with staff WCs) | 5 × 5 | 3.0 | `locker_room` | Staff lockers (`gear_lockers`: the insider's locker), bench, 2 WC cubicles, sink. |
+| G14 | locker_room (with staff WCs) | 5 × 5 | 3.0 | `locker_room` | Staff lockers, bench, 2 WC cubicles, sink. |
 | G15 | janitor | 2 × 3 | 3.0 | `janitor_closet` | Mop sink, cart, chemicals. **BODY_HIDE** (1). |
 | G16 | electrical | 2 × 2 | 3.0 | `electrical_closet` | Main board, the club's sound/light dimmer racks, telecom. Door from G21. |
 | G20 | corridor (east corridor) | 2 × 14 | 3.0 | `corridor_service` | Behind the east bar; links G13, G23, G25, G26. |
@@ -513,11 +525,11 @@ door is LOCKPICK and NPC-authorised):
 
 ## Stealth routes
 Every route starts in civilian mode at the foyer (or a pre-planning spawn). **Phase 1, scout
-(civilian):** walk anything unlocked, read the layout, the rovers, the cameras, the keycard, the code
-and the product. **Phase 2, gear:** go to the gear (`gear_drop`) and pick it up → casing. **Phase 3,
+(civilian, front of house only, D-075):** walk the guest side, read the hall, the floor and rope
+bouncers, the hall cameras and the VIP bar; the back of house is scouted as casing. **Phase 2, gear:** go to the gear (`gear_drop`) and pick it up → casing. **Phase 3,
 work:** casing for keycards and notes, masked for doors, the safe and the bags.
 
-1. **East bar service door (FOH → BOH).** Gear at `gear_cloak` or `gear_lockers`. As casing, slip
+1. **East bar service door (FOH → BOH).** Gear at `gear_cloak`, `gear_wc` or `gear_booth` (all FOH). As casing, slip
    behind the east bar when the floor bouncer is at the stage end (his loop b), through the service
    door into G20 (RESTRICTED: ×0.35 fill from the BOH rover and C3). Keycard in G12/G24, mask in G23
    (no camera), staff stair → U6 → U6b → office. Risk: the BOH rover's G20 pause, C3 in `cam_b`.
@@ -532,8 +544,8 @@ work:** casing for keycards and notes, masked for doors, the safe and the bags.
    window (`ow_count_open`; latched = break glass, 15 m noise next to the counter) → U10 →
    `kc_count_room` / `code_count_board` → U6 → office. The roof route skips both floors' corridors
    and is the best throw path (below).
-4. **VIP side.** Grand stair → rope gate (civilian-allowed: the rope bouncer cannot stop an
-   undetectable civilian; a casing player is in RESTRICTED VIP under ×0.35). `kc_vip_bar` from behind
+4. **VIP side.** Grand stair → rope gate (a guest door, civilian-allowed: the rope bouncer cannot
+   stop an undetectable civilian; a casing player is in RESTRICTED VIP under ×0.35). `kc_vip_bar` from behind
    the bar, then the **VIP staff door** (lockpick 8 s, masked) at the balcony's east end when the
    rope bouncer faces the stair and C10 is off or jammed → U6b → office (3 m). The shortest line to
    the office; the most eyes on it (VIP patrons see a masked player).
@@ -694,7 +706,7 @@ the Co-op's product, sealed parcels in vacuum wrap; the game never names a real 
 
 ## Objectives
 **Stealth** (objective_tag in brackets; ENV B builds `objective.afterhours.<tag>` from these, D-039):
-1. *(optional)* Look around the club. Mercer intro and a Reyes line. `[casing]`
+1. *(optional)* Look around the club. Mercer intro and an Accountant line. `[casing]`
 2. Get the gear the insider left (`gear_drop`). Completes on the first pickup; Mercer names the place
    (or the `asset.gear_drop` choice). `[gear]`
 3. Find the office keycard. `[keycard]`
@@ -743,8 +755,8 @@ weights use A2-08 (QC-18).
 
 | variable | options (slot ids) | weights | gameplay effect (the decision it changes) |
 |---|---|---|---|
-| `gear_drop` (heist group) | `gear_lockers` (G14, the insider's locker), `gear_cloak` (G2, behind the counter), `gear_green` (G11, a flight case), `gear_van` (the van at the active `escape` slot) | 1, 1, 0.8, 1 | **Where each player becomes detectable and which route starts there.** Lockers/green room: you go casing inside the BOH (RESTRICTED). Cloak: behind a public counter, next to C1. Van: outside, so the alley/roof routes are natural and the front needs a walk back in. Forced by `asset.gear_drop`. |
-| `dj_set` (`civilian_cluster`) | `dj_on` (on stage), `dj_break` (in G11; a set plays from the booth) | 0.65, 0.35 | **Whether the backstage door has a witness and whether `kc_dj_booth` exists.** With `dj_break` the green room holds a civilian (G11 gear and product get harder). |
+| `gear_drop` (heist group) | `gear_wc` (G3b, a duct panel in the patrons' WC), `gear_cloak` (G2, across the cloakroom counter from the foyer), `gear_booth` (G7, under the reserved booth's banquette), `gear_van` (the van at the active `escape` slot) | 1, 1, 1, 1 | **Where each player becomes detectable and which route starts there.** Every slot is reachable in civilian mode without a staff door (D-075). WC/booth: casing starts in the public lounge next to the east bar service door. Cloak: at a public counter, next to C1. Van: outside, so the alley/roof routes are natural and the front needs a walk back in. Forced by `asset.gear_drop`. |
+| `dj_set` (`civilian_cluster`) | `dj_on` (on stage), `dj_break` (in G11; a set plays from the booth) | 0.65, 0.35 | **Whether the backstage door has a witness and whether `kc_dj_booth` exists.** With `dj_break` the green room holds a civilian (`prod_green` gets harder). |
 | `keycard` | `kc_staff_room`, `kc_bouncer_board`, `kc_vip_bar`, `kc_count_room`, `kc_dj_booth` (`slot_requires` `dj_break`) | 1, 1, 1, 0.75, 0.75; pick 1 | **Which side you work first**: BOH ground, the VIP bar, the upper wing or the stage. |
 | `code_note` | `code_staff_board`, `code_bouncer_log`, `code_count_board`, `code_office_blotter` | 1, 1, 1, 0.5; pick 1 | **Code or drill**, and whether a second room must be visited (the blotter is free once in the office). |
 | `count_room` (`extra_loot`) | `count_running` (the counter in U10, 2 `loot.cash`, small loot), `count_done` (U10 empty, +1 safe bag) | 0.6, 0.4 | **A civilian next to `kc_count_room` and the window route**, against a quiet room and a bigger safe. |
@@ -780,9 +792,8 @@ weights use A2-08 (QC-18).
   is later. Last holdout H3.
 - **Van on Tolley St (E2):** at the kerb by the staff door (x 39–41, z 14–20). Same rules. Last
   holdout H4.
-- **Walk-out** (stealth, optional): a crew member who never masked can leave through the front doors
-  (the `escape_zone` `walk` type on the Marlin Ave sidewalk) once `[secure]` is done; a masked one
-  cannot.
+- **No walk-out** (D-075): every crew member leaves through the active escape zone (the van), as in
+  PD2. Walking out the front door in civilian mode is part of scouting, not an escape.
 
 ## Pre-planning (preplanning.md contract, D-046 shape)
 `Preplan` points (category; `floor` is the index into `floor_heights`: 0 Ground, 1 Balcony; labels
@@ -793,9 +804,9 @@ are heist-qualified, `ui.preplan.point.afterhours.<point_id>`, preplanning.md v1
 | `pp_spawn_foyer` | spawn | default (spawn_tag `""`), G1 (floor 0) |
 | `pp_spawn_vip` | spawn | spawn_tag `preplan_spawn_vip` ("on the list": U2, floor 1) — `asset.alternate_entry` |
 | `pp_spawn_alley` | spawn | spawn_tag `preplan_spawn_alley` (the alley by E1, as "deliverymen") — `asset.alternate_entry` |
-| `pp_gear_lockers` | insider | variant_group `gear_drop`, slot `gear_lockers` — new `asset.gear_drop` |
+| `pp_gear_wc` | insider | variant_group `gear_drop`, slot `gear_wc` — new `asset.gear_drop` |
 | `pp_gear_cloak` | insider | slot `gear_cloak` — `asset.gear_drop` |
-| `pp_gear_green` | insider | slot `gear_green` — `asset.gear_drop` |
+| `pp_gear_booth` | insider | slot `gear_booth` — `asset.gear_drop` |
 | `pp_gear_van` | insider | slot `gear_van` — `asset.gear_drop` |
 | `pp_insider_keycard` | insider | variant_group `keycard`, slot `kc_staff_room` — `asset.inside_keycard` (library, point override) |
 | `pp_back_door` | insider | variant_group `rear_door`, slot `rear_propped` — `asset.propped_door` (library, point override) |
@@ -823,7 +834,7 @@ preplanning = {
         &"asset.propped_door": {"point_ids": ["pp_back_door"]},             # force rear_propped
         # new heist assets (QC-72)
         &"asset.gear_drop": {"effect": &"force_variant",
-                             "point_ids": ["pp_gear_lockers", "pp_gear_cloak", "pp_gear_green", "pp_gear_van"],
+                             "point_ids": ["pp_gear_wc", "pp_gear_cloak", "pp_gear_booth", "pp_gear_van"],
                              "exclusive_group": &"gear_drop", "max_count": 1,
                              "cost": 1000, "favors": 1, "category": &"access", "tags": [&"stealth"]},  # ◇
         &"asset.count_window": {"effect": &"force_variant", "point_ids": ["pp_count_window"],
@@ -875,8 +886,8 @@ Blueprint: `docs/levels/afterhours/blueprint.png` from the plan renderer.
 - **Music:** `afterhours` (proposed name for ENV B's `music.afterhours.name`: "Velvet Rope").
   - **Diegetic stem `club`** (new, ENV C): a 124 BPM four-on-the-floor house loop played **by the
     club's speakers**, not by the MusicDirector: 6 `AudioStreamPlayer3D`s in the hall (stacks, balcony,
-    VIP, foyer) under a map node `ClubSound`, on the **Music** bus (the music volume slider governs
-    it), with wall occlusion low-pass for the BOH.
+    VIP, foyer) under a map node `ClubSound`, on the **Ambience** bus (D-075: it is world audio, so the
+    ambience slider governs it, not the music slider), with wall occlusion low-pass for the BOH.
   - **MusicDirector interaction** (ENV C; D-062/D-069 hooks): in civilian/casing/stealth the
     MusicDirector plays the selected track's `stealth` stem **ducked** (`set_ducked(true)`, −14 dB)
     while the local listener is inside the `club_sound` area (hall, G7, foyer, balcony, VIP) and at
@@ -894,8 +905,8 @@ Blueprint: `docs/levels/afterhours/blueprint.png` from the plan renderer.
   footfalls at the hall doors, stops when the last fleeing civilian despawns), `cue.dj_mic_feedback`
   (the mic squeal under the DJ's line).
 - **VO line ids** (`vo.<speaker>.<heist>_<line>`, D-051; ENV B writes the text):
-  - **Reyes:** `vo.reyes.briefing_afterhours_1..3`, `vo.reyes.afterhours_contact_intro`,
-    `vo.reyes.afterhours_payday`.
+  - **The Accountant:** `vo.accountant.briefing_afterhours_1..3`,
+    `vo.accountant.afterhours_contact_intro`, `vo.accountant.afterhours_payday`.
   - **Mercer:** `vo.mercer.briefing_afterhours_1..2`, `vo.mercer.afterhours_intro`,
     `vo.mercer.afterhours_gear_location`, `vo.mercer.afterhours_gear_picked`,
     `vo.mercer.afterhours_keycard_found`, `vo.mercer.afterhours_office_open`,
@@ -969,7 +980,7 @@ Targets from architecture §10 and D-038 QC-10, checked by the `perf` validator 
 straight-line distance (the roof is reached only by the drop ladder from the alley). By design.
 
 ## HeistDef (proposed data, `afterhours_def.tres`)
-`id afterhours`, display "Afterhours", contact `contact.reyes`, mode STEALTH_OR_LOUD,
+`id afterhours`, display "Afterhours", contact `contact.accountant` (D-075), mode STEALTH_OR_LOUD,
 **`start_mode &"civilian"`** (D-065), base_payout **$75,000** (ENV B's placeholder; P6 balance),
 loot `[loot.cash_bricks, loot.parcels, loot.cash]`, escape_options `[van, walk]`, music_track
 `afterhours`, objectives `[casing, gear, keycard, office, safe_code, safe, safe_loot, secure,
@@ -988,43 +999,20 @@ black paint and could go to 0.02); plum saturation 0.50 (≤ 0.75); the magenta 
 only (exempt). It differs from Glasshouse's magenta sign by context: Glasshouse is ivory-and-walnut
 with one neon script; Afterhours is a dark violet interior where the magenta is the light.
 
-## Open questions (for the lead)
-1. **Main hall ceiling:** approve the `bar` override **6.0–9.0 m** for G6 (8.0 m), or add a purpose
-   (`club_hall` / `auditorium`) to the §2.6 table.
-2. **Civilian-mode doors:** I set `civilian_allowed` on **every unlocked door** (including staff
-   doors and the VIP rope gate), so civilian mode is a free scouting walk through the whole building
-   (PD2-like). The alternative is public doors only, which makes civilian mode front-of-house
-   scouting and the gear the only way into the back. Which?
-3. **Required loot:** 3 safe bags (product and count cash are bonus), or 4 bags of any payout loot
-   with the safe as a required step?
-4. **Crowd:** cluster perception for the dancers (QC-71). If ENV A cannot, the fallback is ≤ 24
-   dancers as ordinary civilians and the budget's 50 total; is that acceptable for the P5 gate's
-   bots (5 seeds)?
-5. **Civilian mode at the alarm:** the contract says the alarm masks everyone and ends civilian mode.
-   Does a player who never picked up gear get the loadout at that moment (my assumption, PD2), or
-   stay unarmed until a `gear_pickup`? (QC-75)
-6. **Contact and arc:** Reyes and the Co-op a third time (ENV B's stub), or the Accountant if the lead
-   wants the Co-op arc to end at Dockside Burn?
-7. **floor_names** `["Ground", "Balcony"]` (the upper floor is mostly the VIP side) or `["Ground",
-   "Upper"]`?
-8. **Diegetic music bus:** the club speakers on the **Music** bus (my proposal: players who mute music
-   mute the club) or on **Ambience**?
-9. **Walk-out escape** in stealth for crew members who never masked (Glasshouse has it as optional
-   P2): keep it here?
-
 ## Requests (to the lead)
 - **QC-70 (ENV D):** add `club_bouncer` to `p5_cast.json`'s `pager_roles` (the Velvet's bouncers are
   its guards: GUARD spawns with pagers on `Hip/Socket`). `club_bouncer_b` is also the camera
   operator. Please confirm the hip seat on `club_bouncer` works for the pager prop.
 - **QC-71 (ENV A):** the crowd. (a) **`crowd_cluster`** CIVILIAN spawns: 5 dancers that share one
-  perception observer at the cluster centroid (civilian preset), dance in place (no avoidance while
+  perception observer at the cluster centroid (civilian preset) with **reduced perception** (D-075: a
+  crowd-noise multiplier on its detection rate, `crowd_perception_mult` ◇ 0.5; not zero), dance in place (no avoidance while
   idle), and panic together; (b) **loud flee-to-exit**: in LOUD, PANICKED civilians path to the
   nearest PatrolPoint tagged `civ_exit` and **despawn** there (no alarm effect, no kill penalty);
   intimidated ones stay as hostages; (c) a hard cap on civilians alive (the budget's 50).
 - **QC-72 (ENV B):** assets `asset.gear_drop`, `asset.count_window`, `asset.intel_safe_code`,
   `asset.intel_product` (shapes above); point overrides for `asset.inside_keycard` /
   `asset.propped_door`; strings `objective.afterhours.<tag>` for the tags above,
-  `ui.preplan.point.afterhours.*`, `music.afterhours.name` ("Velvet Rope" ◇), the VO text (Reyes,
+  `ui.preplan.point.afterhours.*`, `music.afterhours.name` ("Velvet Rope" ◇), the VO text (the Accountant,
   Mercer, the new speaker `dj`), and the `small_loot` values. No new LootDef.
 - **QC-73 (ENV A):** idle activities for the ambient clips (characters.md v1.9): `dance_a/b/c`,
   `bartender_wipe`, `bartender_pour`, `bouncer_idle`, `walk_text`, `cower_stand` (wall 0.21 m
@@ -1032,8 +1020,8 @@ with one neon script; Afterhours is a dark violet interior where the magenta is 
 - **QC-74 (ENV D):** a `dj_mix` loop for `club_dj` at a 1.0 m deck (hands on the decks, head nod,
   one hand to the headphones), with its placement numbers (deck height and near-edge offset) in
   characters.md like the bartender clips. Until then the DJ uses `bartender_wipe` at the deck.
-- **QC-75 (ENV A):** civilian mode details: (a) at the alarm a civilian-mode player gets the loadout
-  (open question 5); (b) `door` honours the per-instance `civilian_allowed` export for lock NONE
+- **QC-75 (ENV A):** civilian mode details: (a) at the alarm every crew member auto-masks with
+  their full loadout (D-075; ENV A already does this); (b) `door` honours the per-instance `civilian_allowed` export for lock NONE
   doors; (c) `code_note` reading is `casing_allowed` (taking a picture of a whiteboard), as keycard
   pickups are; (d) civilian players cannot carry bags (as casing).
 - **QC-76 (ENV A):** `off_duty_cop`: a stealth **police-preset observer** among the civilians (no pager,
@@ -1041,3 +1029,24 @@ with one neon script; Afterhours is a dark violet interior where the magenta is 
   first; fights in loud), using ENV D's `frd_agent` visual. Also confirm that `enemy.cartel_gunman`
   (QC-36) works in a STEALTH phase as an observer for `co_op_pickup` (spawned by the QC-25 timed
   hook).
+
+## Lead rulings (D-075; the G0 open questions, closed)
+1. **Main hall ceiling:** the validator's scale table gains **`hall`** (6–9 m); G6 is a `hall` with no
+   override.
+2. **Civilian-mode doors:** staff doors are **not** `civilian_allowed`; civilians stay front-of-house.
+   Only guest doors are civilian-allowed (the VIP rope gate is a guest door). The `gear_drop` slots
+   moved to the front of house (`gear_wc`, `gear_cloak` across the counter, `gear_booth`,
+   `gear_van`) so every one is reachable without a staff door.
+3. **Required loot:** **3 safe cash bags** (`loot.cash_bricks` from the office safe); product and count
+   cash are bonus.
+4. **Crowd:** dancer clusters get **reduced perception** (a crowd-noise multiplier on the cluster
+   observer), not none (QC-71a).
+5. **Civilian mode at the alarm:** every crew member auto-masks with their full loadout (ENV A
+   already does this; QC-75a closed).
+6. **Contact:** **The Accountant** (`contact.accountant`), not Reyes: laundering fits him, and Reyes
+   runs Rolling Thunder. Fiction, briefing, the casing line and the VO speaker ids
+   (`vo.accountant.*`) are updated. ENV B's stub and catalogue test still say `contact.reyes`
+   (listed in ENV C's report to the lead).
+7. **floor_names:** `["Ground", "Balcony"]`.
+8. **Club speakers:** on the **Ambience** bus.
+9. **No stealth walk-out:** escape only through the escape zone, as in PD2.
