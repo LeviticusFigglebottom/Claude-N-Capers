@@ -481,3 +481,18 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   stray bracket by the VOSSBERG neon, security-office bins.
 - ENV B dispatched B6-01..05 (P5 loot/contracts, Tab scoreboard + awards, chat, drop-in/kick UI, lobby codes).
 - Gate hygiene: HUD-model asserts after a physics wait call `hud_model.refresh()` first (it polls on render frames).
+
+## D-070 — 2026-10-11 — P3 gate on Dockside Burn; safehouse; contract updates
+- **P3 gate map = dockside_burn** (test_p3_loud, seed 3007): wave hold on Ferro Street (the open street; the holdouts
+  were hollow while police spawned at `breach_only` doors), cartel gunmen despawned where they are not the subject,
+  Bulwark standoff point clear of every SHIELD_ANCHOR, a second hostage spawned (night_shift rolls 1–3). New assert:
+  no unit spawns at a `breach_only` ENTRY point (QC-42, ENV A 878d35f). 10/10 on 3+2 runs. test_coop_loopback stays on
+  Glasshouse (it needs a STEALTH phase), now seed 3071 with bags dropped at the van `DropAnchor`.
+- Routed from the port: ENV A — navmesh through barred Ferro gates (or ENV C bake), Bulwark anchors behind the target,
+  CrewAiBrain out-of-tree targets; ENV C — holdouts need ≥ 2 non-breach-only approaches, keep the yard arena open.
+- Safehouse "The Press" G0 approved (docs/design/heists/safehouse.md): SafehouseMap root (contract hub_map.md v1.0 to be
+  written with C4-02), 8 stations incl. `crew` phone and `notoriety`, solo v1, 2D hub fallback. Roadmap C4-01..03,
+  A3-11 hub support, B6-06 3D hub mode, C5-01 stems (unlockables alias heist stems until P5 music ×3).
+- Contracts: characters v1.8 (heister FP sleeves, `rappel` clip), visual_slots crossbow `StringUpper`/`StringLower`
+  + revolver `Speedloader`, audio_cues v1.2 (`cue.door_breach`, `cue.burn_warning`). Shadow Ledger painting = LIGHT.
+- A3-12: player melee (L3.9) was never implemented — ENV A builds CrewMelee then CrewThrowables (high priority).
