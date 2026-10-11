@@ -3,6 +3,33 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11 UTC (5): B6 follow-ups, D-074/D-075, B7-01..B7-04
+### Done
+- B7-03 contact radio: `ContactRadio`, `RadioLinePicker` (GameRng `radio` stream), `RadioTweak`, `SubtitleOverlay`.
+  - The heist contact speaks objective / alarm / assault / escape / loot facts (one voice per heist, lead).
+  - Guard and crew subtitles sit behind `accessibility/subtitles_all_speakers` (default off).
+  - Mercer's old generic alarm / assault / loot / escape lines are retired.
+- B7-01 career + save v7: `PlayerProfile.career` and `weapon_finishes`; `Career.record` on the payday path; career screen; v7 golden fixtures.
+- B7-02 achievements: 41 achievements; reward masks via `MaskPartDef.unlock`.
+  - clean_lines, headhunter and trigger_discipline stay locked until shots/hits/headshots reach HeistResult.
+- B7-04 weapon finishes: 12 finishes (`finish.<name>` ↔ `unlock.finish.<name>`), `FinishApplier`, workshop picker, `Loadout.weapon_finishes` (D-074).
+  - The persistence test now saves and loads the real v7 field.
+- D-075: Ostrander Federal rename, Afterhours contact = Accountant, `loot.painting_study`.
+- Drop-in: `DropInFlow.apply_live_policy` applies a host's Options change mid-heist.
+- `check_all.sh --env b` @ 541a21dc (trunk 2eb3b2e merged): PASS (1673 tests, 0 failed, 5 skipped).
+### In progress
+- —
+### Blocked
+- P5 contract data waits for ENV C's G0 docs to be marked APPROVED.
+### Notes
+- A test runner whose script fails to parse hangs instead of failing. Run suites under `timeout` and watch the log's age, not the CPU load.
+### Questions for lead
+- Placement of a `profile` hub station (C/A).
+- Should ProfileValidator drop unknown finish ids?
+- Should achievement reward parts be excluded from payday cards?
+### Ready for integration
+- yes
+
 ## 2026-10-11 UTC (4): B5-01..B5-05 pull-forwards
 ### Done
 - B5-01 options (merge f3340b8).
@@ -294,28 +321,3 @@ Newest entry first, keep the last 10.
 - QB-37: Hustler armor tiers: "mid vests only" (fidelity table) vs "all ballistic vests" (research). We used all vests except the suit.
 ### Ready for integration
 - yes (B4-01, B4-02); `check_all.sh --env b` result: PASS
-
-## 2026-10-10 15:40 UTC — D-026 review fixes (B1-03, B1-04, B1-05)
-### Done
-- StringName sort bug: every id sort now goes through `ContentDB.sort_ids()/id_less()` (by text; ints numerically). This covers `ContentDB.all_of`, the HeistCatalog, and the resolver's skill order (PARAMS last-wins is deterministic). Regression tests create `zz_` ids before `aa_` ids at runtime. The catalog test is now order-proof.
-- damage.md: `RangeTarget.take_hit(info, attacker)` is the only hit path. HEAD = dummy zone mult × `info.headshot_bonus`. The target emits `damage_applied` itself and returns final_info. `apply_damage` and the `damage_applied` listener are removed. Targets join `G.RANGE_TARGET`. The debug gun uses `Damage.find_target/zone_of/info`.
-- `weapon.kestrel_p9` headshot_mult = 1.0 (weapon bonus). Range golden unchanged: 35 × 2 × 1.0 = 70 at Routine.
-- WeaponVisual stock parts follow the `Stock<ModType>` rule. The glbs already matched, so no rebuild.
-- The HUD binds to ENV A's shipped `LocalHudModel` through `content/ui/hud/hud_model_adapter.gd` (stopgap; see QB-28). MenuFlow binds `runtime.hud_model` after launch.
-- `check_all.sh --env b` on a fresh trunk merge, run twice: PASS both times (194 tests, 0 failed, 7 skipped). The 4 P1 gate tests skip waiting for ENV C's Glasshouse map; the direct-launch stub test skips now that HeistLauncher exists; 1 is the P4 stub; 1 other skip.
-### In progress
-- —
-### Blocked
-- B1-08 mask mesh (ENV C).
-### Questions for lead
-- QB-28: ENV A's `LocalHudModel` does not follow ui_hud.md v1.1.
-  - It uses a single `changed(property)` signal.
-  - It uses `ammo_mag/ammo_reserve`, `detection_indicators`, `pager_timers`, `teammates`, `ecm_time_left`, `camera_countdown`, `phantom_warning/stinger_warning` and `bleedout_time_left`.
-  - It has no `deployable_id/throwable_id/pagers_max`, and `marked_targets` are bare net ids.
-  - It never joins `G.LOCAL_HUD_MODEL`.
-  - Our adapter bridges the gap for now. Our guesses: `pagers_max` = 4 from HudTweak; `pagers_answered` counted from EventBus; pager progress = 1 − time_left/answer_s; marked kind is empty.
-  - Please have ENV A conform to v1.1 and join the group, so the adapter can be deleted, or amend the contract.
-- QB-29 (damage.md): a crit off the head can't be expressed, because the target applies `headshot_bonus` only on HEAD. In PD2 a crit deals headshot damage on any zone. Should `crit` make the target apply its head multiplier regardless of zone?
-- QB-30 (damage.md): WEAKPOINT on targets without plates. Range dummies now take ×1 for WEAKPOINT. Range dummies don't emit `npc_killed`, since they aren't NPCs. Please confirm both.
-### Ready for integration
-- yes; `check_all.sh --env b` result: PASS
