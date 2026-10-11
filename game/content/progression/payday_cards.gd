@@ -84,7 +84,8 @@ static func pool(type: StringName, profile: PlayerProfile) -> Array[StringName]:
 			var exclusive: Array[StringName] = Notoriety.exclusive_ids()
 			for kind: String in MaskCatalog.KINDS:
 				for p: MaskPartDef in MaskCatalog.parts(kind):
-					if not p.default_owned and not exclusive.has(p.id) and not MaskLocker.is_part_owned(profile, p.id):
+					var locked: bool = p.unlock != &""  # B7-02: unlock-only parts (achievements, Notoriety) never drop
+					if not p.default_owned and not locked and not exclusive.has(p.id) and not MaskLocker.is_part_owned(profile, p.id):
 						out.append(p.id)
 			for md: MaskDef in MaskCatalog.payday_presets():
 				if not MaskLocker.is_drop_owned(profile, md.id):

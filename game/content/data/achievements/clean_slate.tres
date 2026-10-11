@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.clean_slate"
+name_key = &"achievement.clean_slate.name"
+desc_key = &"achievement.clean_slate.desc"
+condition = {"event": &"notoriety_reached", "count": 1}
+unlock = &""
+order = 610
+category = &"notoriety"
+rewards = Array[StringName]([&"mask_colors.signal_white"])
+unlocks = Array[StringName]([])

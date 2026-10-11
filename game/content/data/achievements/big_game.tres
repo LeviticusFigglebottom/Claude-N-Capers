@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.big_game"
+name_key = &"achievement.big_game.name"
+desc_key = &"achievement.big_game.desc"
+condition = {"event": &"career_stat", "stat": "specials_killed", "count": 500}
+unlock = &""
+order = 440
+category = &"combat"
+rewards = Array[StringName]([&"mask_material.blued_steel"])
+unlocks = Array[StringName]([])

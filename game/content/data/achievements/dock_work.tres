@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.dock_work"
+name_key = &"achievement.dock_work.name"
+desc_key = &"achievement.dock_work.desc"
+condition = {"event": &"heist_completed", "heist": &"dockside_burn", "count": 5}
+unlock = &"unlock.finish.urban_camo"
+order = 120
+category = &"heists"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])

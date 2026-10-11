@@ -188,6 +188,102 @@ brow_m = 0.012
 id = &"mask_base.goalie"
 display_name = "Crease Guard"
 
+[sub_resource type="Resource" id="Resource_d3_ram"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_ram/mask_base_ram.glb"
+requires_model = true
+id = &"mask_base.ram"
+display_name = "Ram"
+unlock = &"unlock.achievement.riot_season"
+
+[sub_resource type="Resource" id="Resource_d3_stag"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_stag/mask_base_stag.glb"
+requires_model = true
+id = &"mask_base.stag"
+display_name = "Stag"
+unlock = &"unlock.achievement.lethal_itinerary"
+
+[sub_resource type="Resource" id="Resource_d3_cat"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_cat/mask_base_cat.glb"
+requires_model = true
+id = &"mask_base.cat"
+display_name = "Cat"
+unlock = &""
+
+[sub_resource type="Resource" id="Resource_d3_boar"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_boar/mask_base_boar.glb"
+requires_model = true
+id = &"mask_base.boar"
+display_name = "Boar"
+unlock = &""
+
+[sub_resource type="Resource" id="Resource_d3_serpent"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_serpent/mask_base_serpent.glb"
+requires_model = true
+id = &"mask_base.serpent"
+display_name = "Serpent"
+unlock = &"unlock.achievement.ghost_story"
+
+[sub_resource type="Resource" id="Resource_d3_moth"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_moth/mask_base_moth.glb"
+requires_model = true
+id = &"mask_base.moth"
+display_name = "Moth"
+unlock = &"unlock.achievement.old_hand"
+
+[sub_resource type="Resource" id="Resource_d3_knight"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_knight/mask_base_knight.glb"
+requires_model = true
+id = &"mask_base.knight"
+display_name = "Knight"
+unlock = &"unlock.achievement.career_criminal"
+
+[sub_resource type="Resource" id="Resource_d3_doll"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_doll/mask_base_doll.glb"
+requires_model = true
+id = &"mask_base.doll"
+display_name = "Doll"
+unlock = &"unlock.notoriety.rank_7"
+
+[sub_resource type="Resource" id="Resource_d3_sunburst"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_sunburst/mask_base_sunburst.glb"
+requires_model = true
+id = &"mask_base.sunburst"
+display_name = "Sunburst"
+unlock = &"unlock.achievement.offshore_ten_million"
+
+[sub_resource type="Resource" id="Resource_d3_geo"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_geo/mask_base_geo.glb"
+requires_model = true
+id = &"mask_base.geo"
+display_name = "Geo"
+unlock = &"unlock.notoriety.rank_20"
+
+[sub_resource type="Resource" id="Resource_d3_robot"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_robot/mask_base_robot.glb"
+requires_model = true
+id = &"mask_base.robot"
+display_name = "Robot"
+unlock = &"unlock.achievement.headhunter"
+
+[sub_resource type="Resource" id="Resource_d3_jester"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_jester/mask_base_jester.glb"
+requires_model = true
+id = &"mask_base.jester"
+display_name = "Jester"
+unlock = &"unlock.notoriety.rank_15"
+
 [resource]
 script = ExtResource("3_7i1nk")
-entries = Array[ExtResource("1_p6irn")]([SubResource("Resource_atdi0"), SubResource("Resource_g7e7x"), SubResource("Resource_kf764"), SubResource("Resource_nl776"), SubResource("Resource_w3ipx"), SubResource("Resource_req_skull"), SubResource("Resource_req_theatre"), SubResource("Resource_req_gasmask"), SubResource("Resource_req_demon"), SubResource("Resource_req_goalie")])
+entries = Array[ExtResource("1_p6irn")]([SubResource("Resource_atdi0"), SubResource("Resource_g7e7x"), SubResource("Resource_kf764"), SubResource("Resource_nl776"), SubResource("Resource_w3ipx"), SubResource("Resource_req_skull"), SubResource("Resource_req_theatre"), SubResource("Resource_req_gasmask"), SubResource("Resource_req_demon"), SubResource("Resource_req_goalie"), SubResource("Resource_d3_ram"), SubResource("Resource_d3_stag"), SubResource("Resource_d3_cat"), SubResource("Resource_d3_boar"), SubResource("Resource_d3_serpent"), SubResource("Resource_d3_moth"), SubResource("Resource_d3_knight"), SubResource("Resource_d3_doll"), SubResource("Resource_d3_sunburst"), SubResource("Resource_d3_geo"), SubResource("Resource_d3_robot"), SubResource("Resource_d3_jester")])

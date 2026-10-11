@@ -122,7 +122,11 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `PlayerProfile.pro_job_locks` (`lock/prune/is_locked`); MenuFlow mirrors them into `consumed_contracts`.
 * `MaskLocker.grant_unlock(profile, unlock_id)` records the unlock in `PlayerProfile.unlocks` and owns its
   presets; `apply_unlocks(profile)` re-owns them on load. `ContentDB.has(kind, id)` = lookup without an error.
-* **Achievements (B4-20 stub).** `AchievementDef` (`defs/achievement_def.gd`; data `data/achievements/*.tres`,
+* **Achievements (B4-20; B7-02: 41 achievements, `content/docs/achievements.md`).** B7-02 adds state conditions
+  `career_stat` / `notoriety_reached` / `heists_all` (`Achievements.sync`, also run by `Notoriety.rank_up`),
+  `category`, `rewards` (parts), `unlocks` (extra unlock ids; six achievements grant B7-04 finishes via `unlock`),
+  `target_of`/`display_progress`, and `MaskPartDef.unlock` (parts owned through `MaskLocker.grant_unlock` /
+  `apply_unlocks`; never payday drops). `AchievementDef` (`defs/achievement_def.gd`; data `data/achievements/*.tres`,
   ContentDB kind `achievements`): `id`, `name_key`/`desc_key`, `condition` {`event`: heist_completed |
   heist_failed | stash_earned | level_reached, filters `heist`, `difficulty_min`, `stealth`, `loud`, `pro`,
   `count`}, `unlock` (granted via `MaskLocker.grant_unlock`), `order`. `Achievements` (`progression/achievements.gd`):
