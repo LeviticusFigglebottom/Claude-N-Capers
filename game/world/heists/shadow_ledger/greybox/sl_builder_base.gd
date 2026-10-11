@@ -34,6 +34,7 @@ const SITE_MATS: Dictionary = {
 	"fence": Color(0.62, 0.62, 0.58), "teal_glass": Color(0.36, 0.55, 0.56), "tower": Color(0.33, 0.36, 0.4),
 	"tower_dark": Color(0.16, 0.17, 0.2), "street": Color(0.08, 0.08, 0.09), "river": Color(0.04, 0.07, 0.09),
 	"steel": Color(0.45, 0.46, 0.48), "planter": Color(0.32, 0.27, 0.2), "helipad": Color(0.22, 0.24, 0.24),
+	"cage_mesh": Color(0.62, 0.64, 0.68, 0.3),
 }
 const EMISSIVE_MATS: Dictionary = {
 	"fixture": Color(1.0, 0.95, 0.88), "led_white": Color(0.85, 0.92, 1.0), "heli_green": Color(0.2, 1.0, 0.35),
@@ -94,11 +95,18 @@ func _site_mat(id: String) -> Material:
 		m.albedo_color = EMISSIVE_MATS[id]
 		m.emission_enabled = true
 		m.emission = EMISSIVE_MATS[id]
-		m.emission_energy_multiplier = 3.0
+		# Distant lit windows stay dim (bright bands read as floating bars through the fog).
+		m.emission_energy_multiplier = 0.35 if id == "city_lights" else 3.0
 		m.set_meta(&"untextured_ok", true)
 	elif SITE_MATS.has(id):
 		m.albedo_color = SITE_MATS[id]
 		m.roughness = 0.9
+		if id == "cage_mesh":
+			# Wire-mesh panels: see-through (alpha), both faces drawn.
+			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			m.cull_mode = BaseMaterial3D.CULL_DISABLED
+			m.metallic = 0.6
+			m.set_meta(&"untextured_ok", true)
 		if id == "water":
 			m.roughness = 0.15
 			m.metallic_specular = 0.8

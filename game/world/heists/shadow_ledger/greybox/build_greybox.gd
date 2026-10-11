@@ -41,6 +41,7 @@ func _build() -> void:
 	map_root.heist_def = load(DEF_PATH) as HeistDef
 	map_root.variant_table = load(VARIANTS_PATH) as HeistVariantTable
 	map_root.floor_heights = PackedFloat32Array(L.FLOOR_HEIGHTS)
+	map_root.floor_names = PackedStringArray(L.FLOOR_NAMES)
 	for nm: String in ["Geometry", "Props", "Lighting"]:
 		add(map_root, node3d(nm))
 	var nav: NavigationRegion3D = NavigationRegion3D.new()
@@ -540,6 +541,12 @@ func _build_core(parent: Node3D, cid: String, core: Dictionary) -> void:
 		if i >= 0:
 			_flight(c, "Flight%sW" % tag, Vector3(xw, y0, L.STAIR_Z_START), 180.0, w, m, r, t, null, true)
 		_flight(c, "Flight%sE" % tag, Vector3(xe, yh, zh), 0.0, w, m, r, t, null, i >= 0)
+		if i >= 0:
+			var off: float = L.HANDRAIL_OFF
+			_flight_rails(c, "Flight%sW" % tag, [x0 + L.STAIR_CLEAR.x + off, x0 + L.STAIR_WELL.x - off],
+				L.STAIR_Z_START, y0, zh, y0 + float(m) * r)
+			_flight_rails(c, "Flight%sE" % tag, [x0 + L.STAIR_WELL.y + off, x0 + L.STAIR_CLEAR.y - off],
+				zh, yh, L.STAIR_Z_START, yh + float(m) * r)
 		box(c, "HalfLanding%s" % tag, Vector3(x0 + L.STAIR_CLEAR.x, yh - 0.3, L.STAIR_Z_N), Vector3(x0 + L.STAIR_CLEAR.y, yh, zh), "stair")
 		var top_storey: bool = i == levels.size() - 2
 		box(c, "Divider%s" % tag, Vector3(x0 + L.STAIR_WELL.x, y0, zh), Vector3(x0 + L.STAIR_WELL.y, y1 + (1.1 if top_storey else 0.0),
@@ -557,9 +564,9 @@ func _build_core(parent: Node3D, cid: String, core: Dictionary) -> void:
 	box(c, "BelowWallS", Vector3(x0 + 0.15, yb, 16.35), Vector3(x0 + 2.85, L.F40, 16.65), "wall")
 	# Steel-mesh security gate on the L40 landing (the gate leaf is Gameplay/Doors/Stair?Gate).
 	var gx: float = x0 + 2.15
-	box(c, "GateMeshW", Vector3(x0 + L.STAIR_WELL.x, L.F40, 15.07), Vector3(gx - 0.5, L.TOP40, 15.13), "fence")
-	box(c, "GateMeshE", Vector3(gx + 0.5, L.F40, 15.07), Vector3(x0 + L.STAIR_CLEAR.y, L.TOP40, 15.13), "fence")
-	box(c, "GateMeshTop", Vector3(gx - 0.5, L.F40 + L.DOOR_H, 15.07), Vector3(gx + 0.5, L.TOP40, 15.13), "fence")
+	box(c, "GateMeshW", Vector3(x0 + L.STAIR_WELL.x, L.F40, 15.07), Vector3(gx - 0.5, L.TOP40, 15.13), "cage_mesh")
+	box(c, "GateMeshE", Vector3(gx + 0.5, L.F40, 15.07), Vector3(x0 + L.STAIR_CLEAR.y, L.TOP40, 15.13), "cage_mesh")
+	box(c, "GateMeshTop", Vector3(gx - 0.5, L.F40 + L.DOOR_H, 15.07), Vector3(gx + 0.5, L.TOP40, 15.13), "cage_mesh")
 
 
 ## Feature stair (landmark 2) L41 -> L42 in the reception void: two straight flights east with a
@@ -588,6 +595,13 @@ func _build_feature_stair(parent: Node3D) -> void:
 		box(fst, "Balustrade%s1" % side[0], Vector3(xa - t, y0, float(side[1])), Vector3(xl, ym + 1.1, float(side[2])), "teal_glass")
 		box(fst, "Balustrade%sL" % side[0], Vector3(xl, y0, float(side[1])), Vector3(xb, ym + 1.1, float(side[2])), "teal_glass")
 		box(fst, "Balustrade%s2" % side[0], Vector3(xb, y0, float(side[1])), Vector3(xe, y1 + 1.1, float(side[2])), "teal_glass")
+	# Handrails on both balustrades (flights and landing).
+	for k: int in range(2):
+		var zr: float = float(zs[0]) + L.HANDRAIL_OFF if k == 0 else float(zs[1]) - L.HANDRAIL_OFF
+		var hr: float = L.HANDRAIL_H
+		_handrail(fst, "Rail%d1" % k, Vector3(xa, y0 + hr, zr), Vector3(xl, ym + hr, zr))
+		_handrail(fst, "Rail%dL" % k, Vector3(xl, ym + hr, zr), Vector3(xb, ym + hr, zr))
+		_handrail(fst, "Rail%d2" % k, Vector3(xb, ym + hr, zr), Vector3(xe, y1 + hr, zr))
 	box(fst, "BaseClosureE", Vector3(xe - 0.05, y0, float(zs[0]) + 0.03), Vector3(xe, L.TOP41, float(zs[1]) - 0.03), "wall")
 	# The enclosed base is not walkable (no navmesh island under the flights).
 	obstruct(Transform3D.IDENTITY, AABB(Vector3(xa + 1.7, y0, float(zs[0])), Vector3(xe - xa - 1.7, 0.3, w)))
@@ -663,11 +677,50 @@ func _build_cage(bld: Node3D) -> void:
 	var y0: float = L.F41
 	var y1: float = L.F41 + float(L.CAGE["h"])
 	var g: Array = L.CAGE["gate"]
-	box(cg, "CageN", Vector3(float(b[0]), y0, float(b[1]) - 0.03), Vector3(float(b[2]), y1, float(b[1]) + 0.03), "fence")
+	# See-through wire-mesh panels (collision kept) on a frame of posts and a top rail.
+	box(cg, "CageN", Vector3(float(b[0]), y0, float(b[1]) - 0.03), Vector3(float(b[2]), y1, float(b[1]) + 0.03), "cage_mesh")
 	wall(cg, "CageS", "x", float(b[3]), float(b[0]), float(b[2]), 0.06, Vector2(y0, y1),
-		[[float(g[0]), float(g[1]), y0, y0 + L.DOOR_H]], "fence")
-	box(cg, "CageW", Vector3(float(b[0]) - 0.03, y0, float(b[1]) + 0.03), Vector3(float(b[0]) + 0.03, y1, float(b[3]) - 0.03), "fence")
-	box(cg, "CageE", Vector3(float(b[2]) - 0.03, y0, float(b[1]) + 0.03), Vector3(float(b[2]) + 0.03, y1, float(b[3]) - 0.03), "fence")
+		[[float(g[0]), float(g[1]), y0, y0 + L.DOOR_H]], "cage_mesh")
+	box(cg, "CageW", Vector3(float(b[0]) - 0.03, y0, float(b[1]) + 0.03), Vector3(float(b[0]) + 0.03, y1, float(b[3]) - 0.03), "cage_mesh")
+	box(cg, "CageE", Vector3(float(b[2]) - 0.03, y0, float(b[1]) + 0.03), Vector3(float(b[2]) + 0.03, y1, float(b[3]) - 0.03), "cage_mesh")
+	var posts: Array = [[b[0], b[1]], [b[2], b[1]], [b[0], b[3]], [b[2], b[3]], [g[0], b[3]], [g[1], b[3]]]
+	for i: int in range(posts.size()):
+		var px: float = float(posts[i][0])
+		var pz: float = float(posts[i][1])
+		mesh_box(cg, "Post%d" % i, Vector3(px - 0.035, y0, pz - 0.035), Vector3(px + 0.035, y1, pz + 0.035), "trim")
+	for e: Array in [["RailN", b[0], b[1], b[2], b[1]], ["RailS", b[0], b[3], b[2], b[3]], ["RailW", b[0], b[1], b[0], b[3]],
+			["RailE", b[2], b[1], b[2], b[3]]]:
+		mesh_box(cg, String(e[0]), Vector3(minf(float(e[1]), float(e[3])) - 0.035, y1 - 0.06, minf(float(e[2]), float(e[4])) - 0.035),
+			Vector3(maxf(float(e[1]), float(e[3])) + 0.035, y1, maxf(float(e[2]), float(e[4])) + 0.035), "trim")
+
+
+## Handrail (MUST 1.0-1.1 m): a 5 cm bar from a to b (world), small collision, beside the walk line.
+func _handrail(parent: Node3D, nm: String, a: Vector3, b: Vector3) -> void:
+	var body: StaticBody3D = StaticBody3D.new()
+	body.name = nm
+	body.collision_layer = 1
+	body.collision_mask = 0
+	body.position = (a + b) * 0.5
+	body.basis = Basis.looking_at(b - a, Vector3.UP)
+	body.set_meta(&"kind", "handrail")
+	add(parent, body)
+	var size: Vector3 = Vector3(0.05, 0.05, a.distance_to(b))
+	var col: CollisionShape3D = CollisionShape3D.new()
+	col.name = "Collision"
+	col.shape = box_shape(size)
+	add(body, col)
+	var mi: MeshInstance3D = MeshInstance3D.new()
+	mi.name = "Mesh"
+	mi.mesh = box_mesh(size, "trim")
+	add(body, mi)
+
+
+## Rails on both sides of a straight flight along world z: x positions, from the bottom riser line
+## (z0, floor y0) to the top riser line (z1, top y1) (the validator's nosing line); the bar centre
+## runs HANDRAIL_H above it (top 1.05 m).
+func _flight_rails(parent: Node3D, nm: String, xs: Array, z0: float, y0: float, z1: float, y1: float) -> void:
+	for i: int in range(xs.size()):
+		_handrail(parent, "%sRail%d" % [nm, i], Vector3(float(xs[i]), y0 + L.HANDRAIL_H, z0), Vector3(float(xs[i]), y1 + L.HANDRAIL_H, z1))
 
 
 # --- Site -------------------------------------------------------------------------------------
@@ -681,8 +734,21 @@ func _build_site(geo: Node3D) -> void:
 		var mi: Node3D = box_a(blocks, String(b[0]), b[1], String(b[2]), false)
 		mi.set_meta(&"distant", true)
 	var lit: Node3D = add(site, node3d("CityLights")) as Node3D
+	# Lit window rows: each band is split into 2 m windows with 1 m piers, flush on its facade.
 	for c: Array in L.CITY_LIGHTS:
-		box_a(lit, String(c[0]), c[1], "city_lights", false)
+		var mn: Vector3 = v3(c[1], 0)
+		var mx: Vector3 = v3(c[1], 3)
+		var along_x: bool = (mx.x - mn.x) > (mx.z - mn.z)
+		var a0: float = mn.x if along_x else mn.z
+		var a1: float = mx.x if along_x else mx.z
+		var k: int = 0
+		var a: float = a0
+		while a + 2.0 <= a1 + 0.001:
+			var wmn: Vector3 = Vector3(a, mn.y, mn.z) if along_x else Vector3(mn.x, mn.y, a)
+			var wmx: Vector3 = Vector3(a + 2.0, mx.y, mx.z) if along_x else Vector3(mx.x, mx.y, a + 2.0)
+			mesh_box(lit, "%s_%02d" % [c[0], k], wmn, wmx, "city_lights")
+			k += 1
+			a += 3.0
 	var cables: Node3D = add(site, node3d("Cables")) as Node3D
 	for cb: Array in L.CABLES:
 		var a: Vector3 = cb[1]

@@ -423,14 +423,14 @@ reception, lounge, gallery, study, dining and the terrace corridor have feature 
 | K20–K23 | office (associates) | 3 × 6 each | 3.0 | `office_small` | Desk, 2 chairs, shelf; one is a paralegal file room. |
 | K24 | office (interview room) | 6 × 6 | 3.0 | `meeting_small` | Round table, 4 chairs, screen. Windows S and E. |
 | J (L42) | storage (linen and janitor + riser) | 3 × 3 | 2.7 | `janitor_closet` | Linen shelves, the L42 cleaner's cart (`kc_cleaner`), **riser panel `R`** (`vent_l42`). BODY_HIDE (1). |
-| M1 | lounge (partners' lounge) | 12 × 7.5 | 3.0 | `lounge_exec` | Bar with backlit teal glass (`kc_lounge`), 2 sofa groups, piano, glass wall over the reception void. Windows N and W (from 0.3 m). |
+| M1 | lounge (partners' lounge) | 12 × 7.5 | 3.0 | `lounge_exec` | Bar with backlit teal glass (`kc_lounge`), 2 sofa groups, piano, glass wall over the reception void. Windows N and W (from 0.3 m). Ceiling override 2.6–3.0 (QC-31): a residential lounge, same band as living_room; no `lounge` row in the table. |
 | M2 | lobby (gallery / mezzanine) | 56 m² (walkway 8.5 × 3.5 + landing 3.5 × 7.5) | 3.0 | `gallery_mezzanine` | Walkway along the void (1.1 m glass balustrade), feature-stair arrival, lift doors (locked out), sculpture plinths. C6. |
 | M3 | gallery (art hall) | 5 × 7.5 | 3.0 | `art_hall` | **Laser grid** across the room at x 26.5 (full 7.5 m width; 0–2.6 m high, 0.9–2.5 m for `lz_static`). West part: sculpture and art dressing. East part: **2 paintings** (`loot_spawn` `loot.painting`, cut from the frame 4 s) and the study door (lockpick 8 s). Double doors from M2 (1.8 m, open), staff door from M10. C7 (NE corner). Picture lights. |
 | M4 | office (Kessler's private study) | 7 × 7.5 | 3.0 | `study_exec` | Desk (`lap_study`), bookshelves, armchairs, the **study safe** (`safe` MEDIUM, KEYCARD method bound to its reader, `time_lock_s` scalar) on the south wall: 1 bag `loot.ledger_books` + 3 `small_loot` (bearer bonds, watches). **Facade access door `A`** on the north wall (gondola north stop). |
 | M5 | bedroom (guest suite) | 6.5 × 5.5 | 3.0 | `bedroom_exec` | Bed, nightstands (`kc_guest`), wardrobe, armchair, bedside phone. `alarm_button` by the bed (used by `kessler_sleepover`). Windows W. |
 | M6 | restroom (en-suite) | 4 × 3.5 | 2.7 | `bathroom_ensuite` | Shower, WC, double vanity. Internal (no window). |
-| M7 | corridor (suite vestibule / dressing) | 4 × 2 | 2.7 | `dressing_room` | Wardrobes, mirror; the suite's door from M9. |
-| M8 | dining_room (private dining) | 10.5 × 5 | 3.0 | `dining_exec` | Table for 10, sideboard, wine fridge; **terrace slider** (S, lockpick 8 s from outside). Windows W and S. |
+| M7 | dressing (suite vestibule / dressing room; QC-30) | 4 × 2 | 2.7 | `dressing_room` | Wardrobes, mirror; the suite's door from M9. Ceiling override 2.6–3.0: a dressing room is residential space (bedroom/bathroom row), no row of its own in the table. |
+| M8 | dining_room (private dining) | 10.5 × 5 | 3.0 | `dining_exec` | Table for 10, sideboard, wine fridge; **terrace slider** (S, lockpick 8 s from outside). Windows W and S. Ceiling override 2.6–3.0 (QC-31): private dining is residential space at the 3.0 m partners' floor ceiling; no `dining_room` row in the table. |
 | M9 | corridor (W42) | 1.5 × 9 | 2.7 | `corridor_office` | Stair A door, linen door, suite and dining doors. |
 | M10 | corridor (E42) | 1.5 × 9 | 2.7 | `corridor_service` | Dead end **with a reason**: it ends at the service lift door and the art-hall staff door. Stair B door, pantry and electrical doors. |
 | M11 | break_room (pantry) | 5.5 × 4.5 | 2.7 | `break_room` | Catering pantry and staff kitchen: fridge, counter with sink, microwave, coffee, table for 4, bulletin board, phone. |
@@ -783,6 +783,10 @@ escape_options `[heli, zipline, service_lift]`, music_track `shadow_ledger`.
 **Walkthrough whitelist** (level_standards §6): the vertical pairs L40 spawn ↔ roof targets and
 K11 ↔ roof exceed 3× the straight-line distance because Stair A is the only way to the roof. That is
 by design (a tower).
+
+## Deviations (G1, approved by the lead with QC-28)
+- M7 purpose `dressing` instead of `corridor` (QC-30): the suite vestibule is a dressing room, so its door may swing into it.
+- Other G1 deviations (stair doors lockpick both sides, head-house door on the landing, cage contents as siblings of the cage lock, E2 SECURE at the anchor, cleaners slot group, static grid beams 1.27 / 1.8 / 2.33 m with `crouch_under`, two riser ladders, axis-aligned camera mounts) are listed in the G1 report (QC-28).
 
 ## Requests (to the lead)
 - **QC-15 (ENV B loot):** `loot.ledger_laptop` (LIGHT), `loot.ledger_drives` (MEDIUM),
