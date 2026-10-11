@@ -11,6 +11,8 @@
 ## On confirm the local player's share (own assets + their part of voted plans) is deducted from
 ## profile.cash and, with save_on_confirm, saved to profile_slot. Plan votes go through
 ## Net.lobby_send / Net.lobby_message (PlanVote.send_cast); solo, Net delivers them locally at once.
+## Music (B5-03): solo and on the host the bottom bar carries a MusicPicker (writes profile.music_choice and
+## saves; MenuFlow puts it into options["music_track"]); co-op clients get none (the lobby shows the host's pick).
 ## Keyboard / gamepad: arrows move between markers (by position) and lists; Enter / A picks; Esc / B
 ## leaves the asset list (back to its marker), or leaves the screen.
 class_name PreplanningScreen
@@ -23,6 +25,9 @@ const PLAN_LINES_MAX: int = 6
 
 @export var profile_slot: int = 0
 @export var save_on_confirm: bool = true
+## Show the music pick (B5-03). MenuFlow clears it on co-op clients (the host's pick wins); standalone the
+## screen also hides it when this peer is not the Net authority.
+@export var music_enabled: bool = true
 
 var heist_id: StringName = &""
 var difficulty: int = Enums.Difficulty.ROUTINE
@@ -54,6 +59,8 @@ var placeholder_label: Label
 var accent_strip: ColorRect
 var back_button: Button
 var confirm_button: Button
+## Heist music pick (B5-03); null on a co-op client.
+var music_picker: MusicPicker = null
 var _list: VBoxContainer
 var _built: bool = false
 
@@ -347,6 +354,14 @@ func _build_bottom() -> HBoxContainer:
 	confirm_button.pressed.connect(confirm)
 	bottom.add_child(back_button)
 	bottom.add_child(confirm_button)
+	music_picker = null
+	if music_enabled and Net.is_authority():
+		music_picker = MusicPicker.new()
+		music_picker.name = "MusicPicker"
+		music_picker.profile_slot = profile_slot
+		music_picker.save_on_change = save_on_confirm
+		music_picker.setup(profile, heist_id)
+		bottom.add_child(music_picker)
 	var hint: Label = UiBuild.label(&"ui.preplan.hint", UiBuild.DIM)
 	hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -480,7 +495,10 @@ func _vote_text() -> String:
 
 
 func _wire_static_focus() -> void:
-	UiNav.chain_horizontal([back_button, confirm_button] as Array[Control], false)
+	var bottom_row: Array[Control] = [back_button, confirm_button]
+	if music_picker != null:
+		bottom_row.append(music_picker.option)
+	UiNav.chain_horizontal(bottom_row, false)
 	var row: Array[Control] = [crew_button]
 	row.append_array(floor_buttons)
 	UiNav.chain_horizontal(row, false)

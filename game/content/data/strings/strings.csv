@@ -2193,3 +2193,26 @@ item.mask.last_word.name,The Last Word
 item.mask.last_word.desc,"Carbon and ember for the crew that has nothing left to prove. Notoriety XXV only."
 ui.hud.civilian,Civilian: no gear
 ui.loadout.civilian_start,"This job starts in civilian clothes: no weapons or equipment until you pick up your gear on site. Your loadout waits there."
+music.glasshouse.name,Glass Ceiling
+music.night_deposit.name,Night Shift
+music.shadow_ledger.name,Off the Books
+music.vault_hymn.name,Vault Hymn
+music.long_con.name,The Long Con
+music.last_call.name,Last Call
+ui.music.title,Music
+ui.music.heist_default,Heist default
+ui.music.heist_default_named,Heist default ({name})
+ui.music.locked,{name} (locked)
+ui.music.locked_rank,{name} (Notoriety {rank})
+ui.hub.station.jukebox,Jukebox
+ui.hub.station.jukebox.desc,"Listen through the crew's heist tracks. New ones come with Notoriety."
+ui.jukebox.title,Jukebox
+ui.jukebox.subtitle,"Every heist track the crew can play. Pick one for a job in pre-planning or the lobby."
+ui.jukebox.preview_missing,Track previews arrive with the music update.
+ui.jukebox.play,Play
+ui.jukebox.stop,Stop
+ui.jukebox.unlocked,Unlocked
+ui.jukebox.locked,Locked
+ui.jukebox.locked_rank,Locked: Notoriety {rank}
+ui.jukebox.idle,Nothing playing.
+ui.jukebox.now_playing,Now playing: {name}
