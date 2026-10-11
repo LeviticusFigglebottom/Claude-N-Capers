@@ -11,10 +11,10 @@ attach_Hip: bone hips, local [0.1366, 0.0743, 0.1612] (model [0.1366, 1.0640, 0.
 body_faces_culled: 5718
 body_params: {"age": 0.75, "beard_shadow": 0.45, "build": 0.85, "gender": 0.0, "hair": "short", "hair_color": "grey", "height": 1.86, "lip": "auto", "skin": 1}
 bones: 52
-faces_hidden_by_coat: 2884
+faces_hidden_by_coat: 2890
 hat: crested command helmet, visor up (Headwear); long command coat (Outfit)
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 33134
-tris_by_mesh: {"Body": 7392, "Gear": 4072, "Hair": 1200, "Headwear": 2230, "Outfit": 18240}
+tris: 33122
+tris_by_mesh: {"Body": 7392, "Gear": 4072, "Hair": 1200, "Headwear": 2230, "Outfit": 18228}
