@@ -37,6 +37,7 @@ magnification = 1.0
 [resource]
 script = ExtResource("1")
 id = &"weapon.furnace_ft"
+params = {"flame": {"range_m": 10.0, "cone_deg": 20.0, "dot_damage_per_s": 15.0, "dot_duration_s": 3.0, "panic_chance": 0.3, "panic_s": 2.5}}
 display_name = "Furnace"
 manufacturer = "Tillman Ironworks"
 weapon_class = 6

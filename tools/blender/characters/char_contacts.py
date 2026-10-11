@@ -3,7 +3,8 @@
 ``game/world/characters/portraits/`` holds the live bust scenes).
 
 * ``char_contact_odile``: Odile Vance, the fence. Middle-aged, slim and sharp; a black tailored
-  blazer over a plum silk blouse (open collar, no tie), black trousers, a severe low chignon,
+  blazer over a plum silk blouse (open collar, no tie), black trousers, dark hair swept up into a
+  full chignon with a side-swept fringe, rose lipstick (the body's lip region, ``lip`` param),
   small gold drop earrings and a gold lapel bar.
 * ``char_contact_hollis``: Hollis "Hammer" Reyes, the fixer. Heavy, broad, older, a thick neck;
   a cheap brown suit with an open-collar pale shirt, a tweed flat cap over a grey buzz cut and a
@@ -26,10 +27,10 @@ TRI_BUDGET = 35000
 EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
 
 VARIANTS = {
-    "char_contact_odile": {"height": 1.73, "build": 0.15, "gender": 1.0, "age": 0.45, "skin": 2, "hair": "short",
-                           "hair_color": "dark", "look": "odile"},
+    "char_contact_odile": {"height": 1.73, "build": 0.15, "gender": 1.0, "age": 0.45, "skin": 2, "hair": "side_part",
+                           "hair_color": "dark", "lip": "char_lip_rose", "look": "odile"},
     "char_contact_hollis": {"height": 1.77, "build": 0.85, "gender": 0.0, "age": 0.85, "skin": 2, "hair": "buzz",
-                            "hair_color": "grey", "look": "hollis"},
+                            "hair_color": "grey", "beard_shadow": 0.7, "look": "hollis"},
     "char_contact_accountant": {"height": 1.80, "build": 0.3, "gender": 0.0, "age": 0.5, "skin": 2, "hair": "short",
                                 "hair_color": "dark", "look": "accountant"},
 }
@@ -41,8 +42,8 @@ def odile(kit: Kit) -> None:
          hem_z=0.82, button_z=1.04)
     kit.add_gear(cg.lapel_pin(kit.hull(), Vector((-0.085 * k, 0.2, 1.335 * k)), "brass", k=k))
     kit.add_head(cg.chignon(kit.fit, "char_hair_dark"))
+    kit.add_head(cg.side_fringe(kit.fit, "char_hair_dark"))
     kit.add_head(cg.earrings(kit.fit, "brass"))
-    kit.add_head(cg.lips(kit.fit, "char_lip_rose"))
     kit.notes["portrait"] = "QB-50a contact bust: Odile Vance (fence)"
 
 

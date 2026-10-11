@@ -58,6 +58,9 @@ divided by the suit's (36.8 speed, 51.3 stamina).
 Doctor bag 2 uses (V), ammo bag 4 uses = 400% (V), body bag case 3 bags (V, research §1.7).
 Deploy time 2.0 s for all three ◇. Params: doctor `{heal_frac 1.0, resets_downs}`, ammo
 `{refill_frac_per_use 1.0}` ◇, case `{bags 3}`.
+Armor bag (QB-58, ENV A kind `armor_bag`): count 1, one use, 2.0 s ◇, no params; it holds the loadout's
+armor and the wearer starts in A's `armor_bag_start_armor`. Gated: needs `deploy.armor_bag` (shared
+perk card 6, Go Bag) through `DeployableGate`; the loadout picker shows it locked until then.
 
 ## Throwables: `throwables/`
 Perk-deck items (data only, no models yet): `throwable.steady_flask` (Composure's flask, kind
@@ -236,8 +239,8 @@ PD2's OVE9000). Every number is ◇. Headshot bonus 1.0 for all (D-026).
 | `tern_556` Tern Bullpup (Graff-Lindqvist) | AR / PRI / auto, semi / rifle | 52 | 680 | 30 / 150 | none | 21 | 2.8 / 3.6 | 12 | 38000 / 12 |
 | `bastion_br` Bastion BR (Tillman Ironworks) | AR / PRI / auto, semi / rifle | 100 | 550 | 20 / 100 | none | 11 | 2.7 / 3.5 | 16 | 56000 / 24 |
 | `lark_carbine` Lark Carbine (Halvard Arms) | AR / PRI / burst3, auto, semi / rifle | 44 | 750 | 30 / 180 | none | 23 | 2.2 / 2.9 | 11 | 26000 / 5 |
-| `harrow_12` Harrow 12 (Graff-Lindqvist) | SHOTGUN / PRI / semi / rifle | 13 × 10 | 300 | 8 / 56 | 6 / 18 / 0.12 | 16 | 2.9 / 3.6 | 16 | 48000 / 21 |
-| `brute_12` Brute 12 (Tillman Ironworks) | SHOTGUN / PRI / auto / rifle | 11 × 10 | 300 | 20 / 80 | 6 / 16 / 0.1 | 8 | 3.6 / 4.4 | 18 | 64000 / 30 |
+| `harrow_12` Harrow 12 (Graff-Lindqvist) | SHOTGUN / PRI / semi / shotgun_box | 13 × 10 | 300 | 8 / 56 | 6 / 18 / 0.12 | 16 | 2.9 / 3.6 | 16 | 48000 / 21 |
+| `brute_12` Brute 12 (Tillman Ironworks) | SHOTGUN / PRI / auto / shotgun_box | 11 × 10 | 300 | 20 / 80 | 6 / 16 / 0.1 | 8 | 3.6 / 4.4 | 18 | 64000 / 30 |
 | `reaper_db` Reaper Double (Marrow & Kell) | SHOTGUN / PRI / semi / break_action | 19 × 10 | 300 | 2 / 40 | 8 / 22 / 0.15 | 18 | 2.4 / 2.4 | 20 | 40000 / 17 |
 | `gale_mg` Gale MG (Graff-Lindqvist) | LMG / PRI / auto / lmg | 50 | 880 | 100 / 300 | 25 / 45 / 0.6 | 2 | 5.8 / 6.8 | 24 | 72000 / 34 |
 | `osprey_762` Osprey Marksman (Brannock Defense) | SNIPER / PRI / semi / rifle | 160 | 140 | 10 / 50 | 25 / 60 / 1.25 | 5 | 2.9 / 3.7 | 30 | 70000 / 28 |
@@ -276,8 +279,8 @@ defaults have a zero delta, except the Osprey's stock 4x scope (magnification 4.
 
 Rules the numbers respect (test-enforced in `test_armory.gd`, `test_armory_batch2.gd`, `test_armory_batch3.gd`):
 * Weapons on ENV D's existing sets keep the clip limits (full-auto smg/rifle/lmg below 900 rpm: ENV D's test_arms compares the 3-frame clip to 1.5 shot intervals without a tolerance, so 900 exactly fails on float rounding; the Lancet and the Gale use 880). The box-fed
-  Harrow 12 and the drum-fed Brute 12 use the `rifle` set (magazine reload, no pump in the fire clip) and the
-  shotgun cue family; the semi-auto Osprey uses the `rifle` set and the sniper cue family
+  Harrow 12 and the drum-fed Brute 12 use their own `shotgun_box` set (D-058: magazine reload, no pump in
+  the fire clip) and the shotgun cue family; the semi-auto Osprey uses the `rifle` set and the sniper cue family
   (`CUE_FAMILY_BY_WEAPON` in `test_armory.gd`). Snipers are bolt action or semi-auto (PD2 has both).
 * New viewmodel sets for ENV D (one weapon each): `break_action` (Reaper), `lever` (Shrike), `bow` (Thorn),
   `crossbow` (Vise), `launcher` (Thumper), `flamethrower` (Furnace), `saw` (Rotor Saw), `minigun` (Cyclone).
@@ -319,3 +322,20 @@ Magwell rides on it), `Rotor` (Cyclone; empty on the bore axis carrying BarrelMo
 Lark, Harrow, Reaper, Vise, Thumper), `StockBarrel` (Reaper, Shrike, Cyclone), `StockForegrip` (Rotor Saw).
 Materials are library ids only: the weapon set plus `leather_dark` (Thorn grip) and `brushed_steel`
 (Furnace tank, saw blades). Previews: `game/assets/weapons/<weapon>_preview_*.png`.
+
+### Special-weapon `params` (D-057, numbers from ENV A, all ◇)
+Mechanics that WeaponStats cannot express live in `WeaponDef.params`; ENV A reads them (schemas: ENV A's
+message of 2026-10-11, to be written into `game/systems/modifiers_params.md`). Mod `params` are shallow-merged
+over the weapon's in mod order, so a mod replaces a whole block.
+* Thorn bow: fire mode `charge`; `charge {draw_time_s 0.8, min_damage_mult 0.1, min_speed_mult 0.3}`,
+  `projectile {speed_mps 60, gravity_mult 1, lifetime_s 10, retrievable, pickup_radius_m 1, despawn_s 60}`;
+  armor_pierce 1.0, no shield pierce. Vise crossbow: `semi`, the same `projectile`, armor_pierce 1.0.
+* Thumper 40: `projectile {speed_mps 45, gravity_mult 1, lifetime_s 8}`, `explosion {radius_m 3.5,
+  arm_distance_m 0}`; `damage` is the blast centre damage (L3.6 falloff).
+* Furnace: `flame {range_m 10, cone_deg 20, dot_damage_per_s 15, dot_duration_s 3, panic_chance 0.3,
+  panic_s 2.5}`. Wide Nozzle: range 8 / cone 28; Long Nozzle: range 13 / cone 14 (full blocks).
+* Rotor saw: `saw {range_m 1.6, wear_per_tick_npc 1, wear_per_tick_object 1, cut_rate_mult 1}`; the
+  magazine is the blade.
+* Cyclone: `spin {spin_up_s 0.6, spin_down_s 0.8, move_speed_mult 0.5, keep_spinning_on_ads}`.
+* Shrike 44: fire mode `lever` (semi timing; the lever cycles per shot, shells load one by one).
+* Harrow 12 / Brute 12: anim set `shotgun_box` (D-058).

@@ -56,5 +56,5 @@ default_mods = {
 }
 fire_cue = &"cue.weapon_shotgun_fire"
 fire_cue_suppressed = &""
-anim_set = &"rifle"
+anim_set = &"shotgun_box"
 model = ExtResource("3")

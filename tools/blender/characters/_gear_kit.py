@@ -598,20 +598,24 @@ def glasses(fit: Fit, frame_mat: str, loupe: bool = False, loupe_mat: str = "pol
           Vector((0.0, y_f + 0.004 * k, eyes["L"].z + 0.010 * k)),
           Vector((eyes["R"].x - 0.025 * k, y_f + 0.001, eyes["R"].z + 0.006 * k))]
     o.tube(m, br, 0.0016 * k, frame_mat, sides=5, weights=lambda p, t: w)
-    # temples to the ears
+    # temples to the ears: on the scalp skin (no hair, no ears), so they slip under the hair at the
+    # temple and run to the ear root, then hook down behind the ear
     c = fit.head_centre()
     for s, sx in (("L", -1.0), ("R", 1.0)):
         e = eyes[s]
         start = Vector((e.x + sx * 0.026 * k, y_f - 0.004 * k, e.z + 0.006 * k))
         pts = [start]
-        for f in (0.2, 0.45, 0.7, 0.92):
-            y = lerp(start.y, c.y - 0.01 * k, f)
-            q = Vector((sx * 0.3, y, start.z - 0.004 * k * f))
-            hit = hh.cast(q, Vector((-sx, 0, 0)), 0.4)
-            x = hit[0].x + sx * 0.0035 * k if hit[0] is not None else start.x
+        for f in (0.15, 0.35, 0.55, 0.75, 0.92):
+            y = lerp(start.y, c.y - 0.012 * k, f)
+            q = Vector((sx * 0.3, y, start.z - 0.006 * k * f))
+            hit = fit.scalp_bvh.ray_cast(q, Vector((-sx, 0, 0)), 0.4)
+            x = hit[0].x + sx * 0.0022 * k if hit[0] is not None else start.x
+            # the first stretch stands off the temple a little (the hinge), then lies on the skin
+            x += sx * 0.003 * k * (1.0 - smoothstep(0.1, 0.5, f))
             pts.append(Vector((x, y, q.z)))
         last = pts[-1]
-        pts.append(Vector((last.x - sx * 0.004 * k, last.y - 0.012 * k, last.z - 0.022 * k)))
+        pts.append(Vector((last.x - sx * 0.0005 * k, last.y - 0.010 * k, last.z - 0.012 * k)))
+        pts.append(Vector((last.x - sx * 0.0010 * k, last.y - 0.014 * k, last.z - 0.026 * k)))
         o.tube(m, pts, 0.0015 * k, frame_mat, sides=5, weights=lambda p, t: w)
     if loupe:
         e = eyes["R"]

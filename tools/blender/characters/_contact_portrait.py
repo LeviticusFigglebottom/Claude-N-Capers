@@ -143,17 +143,18 @@ def _render(name: str, out: str) -> None:
     ev = body.evaluated_get(dg)
     top = max((ev.matrix_world @ v.co).z for v in ev.data.vertices)
     eye_z = top - 0.115
-    # placeholder materials from the glb: soften the lens to a gloss and the skin to a light SSS
+    # the game's library textures (skin tint included), light SSS on skin/lips, no terminator
+    # strokes; then the art-directed tweaks: matte hair, glossy lenses, silk sheen
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import _review_mats  # noqa: PLC0415
+
+    _review_mats.prepare(skip_orm=("char_hair", "char_lens", "char_silk"))
     for m in bpy.data.materials:
         if not m.use_nodes:
             continue
         bsdf = m.node_tree.nodes.get("Principled BSDF")
         if bsdf is None:
             continue
-        if "char_skin" in m.name:
-            bsdf.inputs["Subsurface Weight"].default_value = 0.12
-            bsdf.inputs["Subsurface Radius"].default_value = (0.9, 0.35, 0.2)
-            bsdf.inputs["Subsurface Scale"].default_value = 0.01
         if "char_hair" in m.name:              # matte, so dark hair stays dark under rims
             bsdf.inputs["Specular IOR Level"].default_value = 0.25
             bsdf.inputs["Roughness"].default_value = 0.7

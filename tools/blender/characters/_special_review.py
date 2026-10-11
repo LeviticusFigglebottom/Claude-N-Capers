@@ -56,6 +56,8 @@ def imp(cid, loc, rot=0.0, shield=True):
 
 
 def glow_goggles():
+    if _PREP is not None:          # colour renders: the game's library textures + skin tint
+        _PREP()
     for m in bpy.data.materials:
         if "goggle_glow" in m.name and m.use_nodes:
             bsdf = m.node_tree.nodes.get("Principled BSDF")
@@ -132,6 +134,14 @@ def save(pixels, w, h, path):
     img.file_format = "PNG"
     img.save()
 
+
+if mode in ("lineup", "closeups", "views"):
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import _review_mats  # noqa: E402
+
+    _PREP = _review_mats.prepare
+else:
+    _PREP = None
 
 if mode == "lineup":
     setup_render()

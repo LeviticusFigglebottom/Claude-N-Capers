@@ -52,10 +52,9 @@ rules = Array[Dictionary]([{
 "group": &"estate",
 "pick": Vector2i(1, 1)
 }, {
+"difficulty_add": Array[int]([0, 0, 0, 1, 1, 2]),
 "group": &"camera",
-"phase": 2,
-"pick": Vector2i(0, 0),
-"pick_p2": Vector2i(1, 1)
+"pick": Vector2i(1, 3)
 }, {
 "group": &"security_room_staffed",
 "phase": 2,

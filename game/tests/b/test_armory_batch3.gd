@@ -27,6 +27,13 @@ const NEW_SETS: Dictionary = {
 	&"crossbow": &"weapon.vise_crossbow", &"launcher": &"weapon.thumper_40", &"flamethrower": &"weapon.furnace_ft",
 	&"saw": &"weapon.rotor_saw", &"minigun": &"weapon.cyclone_rotary",
 }
+## D-057: special-weapon mechanics live in WeaponDef.params (schemas from ENV A, game/systems/modifiers_params.md);
+## mod params replace whole top-level blocks (shallow merge), so a nozzle carries a full `flame` block.
+const PARAM_BLOCKS: Dictionary = {
+	&"weapon.thorn_bow": ["charge", "projectile"], &"weapon.vise_crossbow": ["projectile"],
+	&"weapon.thumper_40": ["projectile", "explosion"], &"weapon.furnace_ft": ["flame"],
+	&"weapon.rotor_saw": ["saw"], &"weapon.cyclone_rotary": ["spin"],
+}
 
 
 func before_all() -> void:
@@ -85,12 +92,12 @@ func test_pistol_smg_and_rifle_shapes() -> void:
 	assert_true(tern.reload_time_s > _w(&"weapon.corsair_ar").base.reload_time_s, "bullpup reloads slower")
 
 
-## Shotguns: the box-fed and drum-fed guns use the rifle set (no pump in their fire clip) with shotgun sound;
+## Shotguns: the box-fed and drum-fed guns use the `shotgun_box` set (D-058; no pump) with shotgun sound;
 ## the double barrel reloads both shells at once (magazine-style, tactical = empty).
 func test_shotgun_shapes() -> void:
 	for id: StringName in [&"weapon.harrow_12", &"weapon.brute_12"]:
 		var w: WeaponDef = _w(id)
-		assert_eq(w.anim_set, &"rifle", "%s reloads like a rifle" % id)
+		assert_eq(w.anim_set, &"shotgun_box", "%s: box/drum shotgun set (D-058)" % id)
 		assert_eq(w.fire_cue, &"cue.weapon_shotgun_fire", "%s sounds like a shotgun" % id)
 		assert_true(w.base.fire_rate_rpm > _w(&"weapon.plowman_12").base.fire_rate_rpm * 3.0, "%s fast follow-ups" % id)
 		assert_eq(w.base.reload_per_round_s, 0.0, "%s detachable magazine" % id)
@@ -144,3 +151,28 @@ func test_special_shapes() -> void:
 	for id: StringName in NEW_SETS.values():
 		if _w(id).weapon_class == Enums.WeaponClass.SPECIAL:
 			assert_false(_w(id).base.shield_pierce or _w(id).base.wall_pierce, "%s pierces nothing yet (L3.4)" % id)
+
+
+
+func test_special_weapon_params() -> void:
+	for id: StringName in PARAM_BLOCKS:
+		var keys: Array = _w(id).params.keys()
+		keys.sort()
+		var want: Array = (PARAM_BLOCKS[id] as Array).duplicate()
+		want.sort()
+		assert_eq(keys, want, "%s params blocks" % id)
+	var bow: WeaponDef = _w(&"weapon.thorn_bow")
+	assert_eq(bow.fire_modes, [&"charge"] as Array[StringName], "hold to draw")
+	assert_near(bow.base.armor_pierce, 1.0, 0.0001, "arrows pierce body armor")
+	assert_near(_w(&"weapon.vise_crossbow").base.armor_pierce, 1.0, 0.0001, "bolts pierce body armor")
+	assert_true(bool(bow.params["projectile"]["retrievable"]), "arrows can be picked up")
+	assert_eq(_w(&"weapon.shrike_44").fire_modes, [&"lever"] as Array[StringName], "lever action")
+	var flame_keys: Array = (_w(&"weapon.furnace_ft").params["flame"] as Dictionary).keys()
+	flame_keys.sort()
+	for m: StringName in [&"mod.furnace_wide_nozzle", &"mod.furnace_long_nozzle"]:
+		var f: Dictionary = ContentDB.mod(m).params.get("flame", {})
+		var k: Array = f.keys()
+		k.sort()
+		assert_eq(k, flame_keys, "%s carries a full flame block" % m)
+	assert_true(float(ContentDB.mod(&"mod.furnace_long_nozzle").params["flame"]["range_m"]) > 10.0, "long reaches further")
+	assert_true(float(ContentDB.mod(&"mod.furnace_wide_nozzle").params["flame"]["cone_deg"]) > 20.0, "wide cone")
