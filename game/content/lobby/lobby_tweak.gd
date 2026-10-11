@@ -19,6 +19,22 @@ const DEFAULT_PATH: String = "res://content/data/lobby/lobby_tweak.tres"
 @export var ready_color: Color = Color(0.45, 0.85, 0.5)
 @export var not_ready_color: Color = Color(0.85, 0.78, 0.62)
 @export var illegal_color: Color = Color(1.0, 0.45, 0.4)
+## Chat (B6-03, ChatLog / ChatPanel): longest message (characters, after cleaning).
+@export var chat_max_length: int = 160
+## Rate limit per sender slot: at most chat_rate_count messages in any chat_rate_window_s seconds.
+@export var chat_rate_count: int = 5
+@export var chat_rate_window_s: float = 5.0
+## Messages kept in the log and drawn by a chat panel.
+@export var chat_history_cap: int = 50
+## In-heist overlay: the closed panel starts fading this long after the last message, over chat_fade_time_s.
+@export var chat_fade_after_s: float = 8.0
+@export var chat_fade_time_s: float = 1.5
+## InputMap action that opens the chat (needs the lead to add it to project.godot); while it does not
+## exist the panel opens on chat_fallback_key.
+@export var chat_action: StringName = &"chat"
+@export var chat_fallback_key: Key = KEY_T
+## Drop-in (B6-04): the host's join request dialog auto-denies after this many seconds.
+@export var dropin_request_timeout_s: float = 30.0
 
 
 static func load_default() -> LobbyTweak:

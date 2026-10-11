@@ -59,7 +59,7 @@ import char_police as police
 from _outfit import Hull, Mesh, Vector, lerp, smoothstep
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
 BASE_VARIANTS = {
     "char_tac_heavy": {"height": 1.83, "build": 1.0, "gender": 0.0, "age": 0.4, "skin": 1, "beard_shadow": 0.7, "hair": "buzz",

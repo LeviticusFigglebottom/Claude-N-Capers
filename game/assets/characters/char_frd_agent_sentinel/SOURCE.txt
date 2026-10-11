@@ -11,13 +11,13 @@ attach_Hip: bone hips, local [0.2357, 0.0651, 0.0426] (model [0.2357, 1.0393, 0.
 body_faces_culled: 4804
 body_params: {"age": 0.55, "beard_shadow": 0.55, "build": 0.55, "gender": 0.0, "hair": "side_part", "hair_color": "brown", "height": 1.82, "lip": "auto", "skin": 2}
 bones: 52
-faces_hidden_by_windbreaker: 2183
+faces_hidden_by_windbreaker: 2184
 faction: sentinel
 look: FRD field agent: char_sen_grey windbreaker with sentinel marks (back + left chest), white shirt, tie, suit trousers, earpiece (right), gold belt badge, holster; bare head
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28698
-tris_by_mesh: {"Body": 9136, "Gear": 1412, "Hair": 1200, "Outfit": 16950}
+tris: 28696
+tris_by_mesh: {"Body": 9136, "Gear": 1412, "Hair": 1200, "Outfit": 16948}
 variant_of: frd_agent
 visual_variant: sentinel

@@ -2138,6 +2138,7 @@ ui.action.deploy,Deployable
 ui.action.drop_bag,Throw Bag
 ui.action.order_menu,Crew Order
 ui.action.scoreboard,Scoreboard
+ui.action.chat,Chat
 ui.action.pause,Options / Pause
 ui.results.xp.notoriety,Notoriety bonus
 ui.notoriety.open,Notoriety
@@ -2324,3 +2325,88 @@ heist.afterhours.name,Afterhours
 heist.afterhours.subtitle,The Velvet
 heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rope. Hollis wants the back office emptied before the doors close."
 ui.jukebox.no_stems,{name} has no recording yet.
+ui.options.controls.scoreboard_mode,Scoreboard
+ui.scoreboard.title,Crew Tally
+ui.scoreboard.name,Crew
+ui.scoreboard.kills,Kills
+ui.scoreboard.specials,Specials
+ui.scoreboard.civilians,Civilians
+ui.scoreboard.downs,Downs
+ui.scoreboard.accuracy,Accuracy
+ui.scoreboard.headshots,Headshots
+ui.scoreboard.missing,—
+ui.scoreboard.pct,{value}%
+ui.scoreboard.you,{name} (you)
+ui.scoreboard.ai,{name} [AI]
+ui.awards.title,Crew Honours
+ui.awards.none,No honours handed out this time.
+ui.awards.most_kills.name,Body Count
+ui.awards.most_kills.desc,Most kills: {value}
+ui.awards.most_specials.name,Giant Slayer
+ui.awards.most_specials.desc,Most specials dropped: {value}
+ui.awards.most_accurate.name,Steady Hand
+ui.awards.most_accurate.desc,Best accuracy: {value}%
+ui.awards.most_headshots.name,Between the Eyes
+ui.awards.most_headshots.desc,Most headshots: {value}
+ui.awards.iron.name,Iron Spine
+ui.awards.iron.desc,Fewest times downed: {value}
+ui.awards.civilian_friendly.name,Clean Hands
+ui.awards.civilian_friendly.desc,No civilians harmed
+ui.chat.title,Crew Chat
+ui.chat.line,{name}:
+ui.chat.placeholder,"Type a message, Enter to send"
+ui.chat.rate_limited,Slow down: too many messages.
+ui.dropin.request.title,Drop-in request
+ui.dropin.request.body,{name} ({level}) wants to join.
+ui.dropin.request.auto_deny,Auto-deny in {seconds}s
+ui.dropin.request.more,{count} more waiting
+ui.dropin.accept,Accept
+ui.dropin.deny,Deny
+ui.dropin.unknown_player,Unknown player
+ui.dropin.join_button,Drop In
+ui.dropin.joining,Joining the heist
+ui.dropin.waiting_host,Waiting for the host to accept...
+ui.dropin.progress,Loading the heist: {pct}%
+ui.dropin.joined,You are in. Dropping in...
+ui.dropin.cancel,Cancel
+ui.dropin.failed.denied,The host denied your request.
+ui.dropin.failed.timeout,The host did not answer in time.
+ui.dropin.failed.full,The crew is full.
+ui.dropin.failed.cancelled,You cancelled the join.
+ui.dropin.failed.host_lost,Lost the connection to the host.
+ui.dropin.failed.unknown,Could not join the heist.
+ui.kick.button,Kick
+ui.kick.title,Kick player
+ui.kick.confirm,Kick {name} from the crew?
+ui.kick.yes,Kick
+ui.kick.no,Cancel
+ui.lobby.error.kicked,The host removed you from the lobby.
+ui.lobby.code.title,Lobby code
+ui.lobby.code.value,Lobby code: {code}
+ui.lobby.code.copy,Copy
+ui.lobby.code.copied,Copied to the clipboard.
+ui.lobby.code.wan_hint,"Works on your local network. For internet play, forward the UDP port on your router and share your public address."
+ui.lobby.code.unavailable,No local IPv4 address found: share your address and port instead.
+ui.lobby.code.hint,ABCD-EFGH
+ui.lobby.code.join,Join by Code
+ui.lobby.code.error.empty,Enter a lobby code.
+ui.lobby.code.error.char,"That code has a character lobby codes never use (only 0-9 and A-Z, without U)."
+ui.lobby.code.error.length,A lobby code has 8 or 11 characters.
+ui.lobby.code.error.checksum,That code has a typo: check it with the host.
+ui.lobby.code.error.format,That is not a valid lobby code.
+ui.hub.station.notoriety,The Old Press
+ui.hub.station.notoriety.desc,"Notoriety: rank up, pick rewards and see what each rank unlocks."
+ui.prompt.station.board,[{key}] Check the Board
+ui.prompt.station.planning,[{key}] Plan a job
+ui.prompt.station.armory,[{key}] Open the armory
+ui.prompt.station.masks,[{key}] Pick a mask
+ui.prompt.station.jukebox,[{key}] Choose music
+ui.prompt.station.notoriety,[{key}] Notoriety
+ui.prompt.station.range,[{key}] Enter the firing range
+ui.prompt.station.crew,[{key}] Call the crew
+ui.hub.pause.title,Paused
+ui.hub.pause.resume,Resume
+ui.hub.pause.quick_stations,Quick Stations
+ui.options.controls.safehouse_hub,Safehouse
+ui.options.controls.safehouse_hub.walk,Walk Around (3D)
+ui.options.controls.safehouse_hub.menu,Station Menu (2D)

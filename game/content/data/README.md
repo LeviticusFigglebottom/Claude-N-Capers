@@ -78,7 +78,7 @@ P2 heists (PD2 bag shape: a heavier bag is worth more per bag, but less per seco
 | `loot.ledger_laptop` | LIGHT | $2,000 | Shadow Ledger (required) | weight V (doc QC-15); value ◇ (one bag, the key to the data) |
 | `loot.ledger_drives` | MEDIUM | $1,800 | Shadow Ledger (required ×2, 3 spawn) | weight V (doc); value ◇ |
 | `loot.ledger_books` | MEDIUM | $2,400 | Shadow Ledger (optional, time-locked safe) | weight: lead (B4-10; the doc asked LIGHT); value ◇ (greed bag: costs a keycard + a time-lock hold) |
-| `loot.painting` | MEDIUM | $1,500 | Shadow Ledger art hall ×2, reusable by `gallery_night` | weight V (doc); value ◇ |
+| `loot.painting` | LIGHT | $1,500 | Shadow Ledger art hall ×2, reusable by `gallery_night` | weight: lead ruling (cut and rolled, PD2); value ◇ |
 | `loot.weapon_crate` | HEAVY | $2,000 | Dockside Burn (2 crates in each of 2 yard containers; PD2 Firestarter weapons analog) | weight V (G0 doc, QC-39); value ◇ (doc) |
 | `loot.contraband` | MEDIUM | $1,400 | Dockside Burn (product; a bonus that does **not** count toward the 4 required bags) | weight V (doc); value ◇ (doc: Reyes' buyer takes it at a discount) |
 | `loot.thermite` | HEAVY | $0 | Dockside Burn tool bag, consumed by the burn point | **tool bag**: value 0, in `PayoutTweak.xp_loot_excluded_ids` (no bag XP), excluded from `[secure]` by the mission (ENV A/C) |
@@ -111,7 +111,7 @@ heavier bag is worth more per bag. `pd2_research.md` lists no per-bag values, so
 | `loot.painting_salt_orchard` | LIGHT | $1,700 | Gallery Night | as above |
 | `loot.painting_lantern_bearer` | LIGHT | $2,000 | Gallery Night (centrepiece) | as above; the top of the LIGHT band |
 The four canvases are original works by invented painters (Maske, Sallow, Wilk, Calloway). Shadow
-Ledger's framed `loot.painting` stays MEDIUM (its G0 doc); Gallery Night uses the rolled variants.
+Ledger's `loot.painting` is LIGHT too (lead ruling: cut and rolled); Gallery Night uses the rolled variants.
 **Deposit-box valuables: no loot def** (S10.3, QB-52): Meridian Federal's deposit boxes spawn small loot
 reported as `loot.small_valuables`, valued by ENV C's prefab like Night Deposit's boxes. Per-item range
 ◇ **$800–2,400** (Night Deposit's, the same kind of box) until the G0 doc sets one. Per-heist pay tables

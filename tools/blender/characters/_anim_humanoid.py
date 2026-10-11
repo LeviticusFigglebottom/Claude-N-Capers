@@ -1799,6 +1799,81 @@ def idle_thug(sk: Skeleton, f: int, N: int) -> Pose:
 
 
 # =============================================================================================
+# rappel (QC-41: police descending a rope, facing the wall)
+# =============================================================================================
+RAPPEL_ROPE_D = 0.24           # the rope: vertical line x = 0, RAPPEL_ROPE_D m in front of the root (Blender +Y)
+RAPPEL_WALL = 0.80             # wall face (where the balls of the feet brace), m in front of the root
+RAPPEL_CONTACT = 4             # frames per hop with the feet on the wall (the body braked, world-still)
+RAPPEL_GUIDE_Z = 1.72          # guide (left) fist on the rope at landing, m above the root
+RAPPEL_BRAKE = (0.12, 0.07, 1.00)   # brake (right) fist at landing: (x right of, y behind the rope line, height): at the right hip
+RAPPEL_HIPS_Z = 0.86           # hips joint at landing, m above the root (seated in the harness, legs to the wall)
+RAPPEL_ANKLE = (0.17, 0.48)    # ankle at landing: (x out from the centre line, height above the root)
+
+
+def rappel_offset(u: float, speed: float, N: int) -> float:
+    """Vertical offset (m, at 1.78 m) of the whole body relative to the root at loop phase ``u``. The root
+    descends linearly at ``speed``; while the feet are on the wall (the first RAPPEL_CONTACT frames) the body
+    is braked (world-still), so it rises against the root at ``speed``; in flight it drops back (cos ease)."""
+    tc = RAPPEL_CONTACT / N
+    rise = speed * RAPPEL_CONTACT / FPS
+    if u < tc:
+        return speed * u * N / FPS
+    return rise * (1.0 - A.cos_ease((u - tc) / (1.0 - tc)))
+
+
+def rappel_factory(speed: float):
+    def rappel(sk: Skeleton, f: int, N: int) -> Pose:
+        """One hop per loop down a vertical rope, facing the wall. In place: ENV A moves the root down at
+        ``speed`` (CLIPS) along the rope line. Frame 0 = the feet land on the wall (``land``); they stay
+        world-still for RAPPEL_CONTACT frames while the legs absorb and push off, then the feet leave the wall,
+        the body drops and the legs reach for the next landing. The left (guide) hand rides the rope high, the
+        right (brake) hand holds it at the right hip and squeezes at the landing; slightly seated in the
+        harness (pelvis tipped back, trunk leaning away from the wall), looking down over the right shoulder."""
+        k = sk.scale
+        t = f / FPS
+        u = (f % N) / N
+        tc = RAPPEL_CONTACT / N
+        off = rappel_offset(u, speed, N) * k
+        if u < tc:
+            w = u / tc
+            push = smooth(0.0, 1.0, w)                     # legs: absorb at landing -> extend for the push-off
+            hy = 0.03 - 0.07 * push
+            hz = -0.025 * math.sin(math.pi * w)
+            away, tuck, brake = 0.0, 0.0, math.sin(math.pi * min(1.0, w * 1.4))
+        else:
+            w = (u - tc) / (1.0 - tc)
+            hy = -0.04 - 0.015 * math.sin(math.pi * w) + 0.07 * A.cos_ease(w)
+            hz = 0.0
+            away = math.sin(math.pi * min(1.0, w * 1.15))  # feet off the wall, back by the landing
+            tuck = math.sin(math.pi * w)
+            brake = 0.0
+        pose = Pose()
+        hips_rest = sk.head["hips"]
+        pose.hip = v3(0.0, hy * k, (RAPPEL_HIPS_Z + hz) * k - hips_rest[2] + off)
+        spine(pose, lean=18.0 - 3.0 * tuck, chest_lean=5.0, side=1.5, hips=(-30.0 + 4.0 * tuck, 0.0, 0.0),
+              neck=(6.0, 0.0, 0.0))
+        look(pose, yaw=-32.0 + 6.0 * math.sin(TAU * u), pitch=28.0, tilt=4.0)
+        breathe(pose, t, N / FPS / 2.0, 1.4)
+        ax, az = RAPPEL_ANKLE
+        for sfx, sx in A.SIDES:
+            ank = v3(sx * ax * k, (RAPPEL_WALL - 0.12 - 0.16 * away) * k, (az + 0.06 * tuck) * k + off)
+            pose.legs[sfx] = A.LegIK(ankle=ank, foot=A.foot_rot(yaw=-sx * 8.0, pitch=62.0 - 18.0 * away),
+                                     toe=A.rad(-10.0 * (1.0 - away)), pole=unit(v3(sx * 0.35, 0.25, 1.0)))
+        d = RAPPEL_ROPE_D * k
+        # guide hand: fist on the rope (the rope through the fist like a pistol grip: weapon up = rope up)
+        gz = RAPPEL_GUIDE_Z * k + off - 0.02 * k * tuck
+        hold_weapon(sk, pose, weapon_frame(v3(0.0, d, gz), yaw=-28.0), pole=v3(-0.7, -0.2, -0.7), sfx="L",
+                    twist=0.5, clav=0.8)
+        pose.hands["L"] = hand_shape("grip", 0.9)
+        bx, by, bz = RAPPEL_BRAKE
+        o = v3(bx * k, d - (by + 0.015 * brake) * k, bz * k + off - 0.03 * k * brake)
+        hold_weapon(sk, pose, weapon_frame(o, yaw=22.0), pole=v3(0.8, -0.5, -0.4), sfx="R", twist=0.6, clav=0.8)
+        pose.hands["R"] = hand_shape("grip", 0.85 + 0.15 * brake)
+        return pose
+    return rappel
+
+
+# =============================================================================================
 # registry
 # =============================================================================================
 def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
@@ -1816,6 +1891,8 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
         "sit_chair_watch": sit_chair_watch, "mug_idle": mug_idle, "mop": mop, "sit_bed_read": sit_bed_read,
         "idle_thug": idle_thug,
     }
+    if "rappel" in table:
+        stationary["rappel"] = rappel_factory(float(table["rappel"]["speed"]))
     floor = {"lie_down": 0, "tied": 0, "kneel_cuffed": 0, "downed": 0, "surrender": -14, "sit_bed_read": 0}
     out: dict[str, Clip] = {}
     for name, row in table.items():

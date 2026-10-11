@@ -85,8 +85,6 @@ func _close_menu(s: OptionsScreen, back_to: Control) -> void:
 		flow.show_home()
 
 
+## Through CrewInput (holder &"options"): another overlay's pause (chat, drop-in) is kept.
 func _set_local_input_paused(paused: bool) -> void:
-	for n: Node in get_tree().get_nodes_in_group(G.CREW):
-		var slot: Variant = n.get(&"slot")
-		if slot is int and int(slot) == Net.local_slot() and n.has_method(&"set_input_paused"):
-			n.call(&"set_input_paused", paused)
+	CrewInput.set_paused(get_tree(), &"options", paused, Net.local_slot())

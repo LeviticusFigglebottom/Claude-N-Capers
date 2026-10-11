@@ -48,27 +48,28 @@ check.37: pager_answer: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.6deg
 check.38: phone_call: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=4.3deg
 check.39: phone_seated: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=8.9deg
 check.40: radio_call: 60f 2.00s speed=0.0 reach_err=0.0mm step=16.7deg
-check.41: reload_pistol: 45f 1.50s speed=0.0 reach_err=0.0mm step=40.0deg
-check.42: reload_rifle: 72f 2.40s speed=0.0 reach_err=0.0mm step=42.0deg
-check.43: run: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=21.5deg slide=0.040mm/f
-check.44: shield_bang: 24f 0.80s speed=0.0 reach_err=0.0mm step=35.3deg
-check.45: shield_idle: 108f 3.60s loop speed=0.0 reach_err=0.0mm step=0.2deg
-check.46: shield_walk: 28f 0.93s loop speed=1.6 reach_err=0.0mm step=19.7deg slide=0.000mm/f
-check.47: sit_bed_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
-check.48: sit_chair: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
-check.49: sit_chair_watch: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=10.5deg
-check.50: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.5deg
-check.51: sprint: 18f 0.60s loop speed=5.75 reach_err=0.0mm step=28.7deg slide=0.053mm/f
-check.52: strafe_l: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.8deg slide=0.006mm/f
-check.53: strafe_r: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.9deg slide=0.006mm/f
-check.54: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=54.8deg
-check.55: tased: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=13.9deg
-check.56: throw_bag: 30f 1.00s speed=0.0 reach_err=0.0mm step=57.5deg
-check.57: tied: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
-check.58: turn_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
-check.59: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
-check.60: walk: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.5deg slide=0.038mm/f
-check.61: walk_back: 30f 1.00s loop speed=1.3 reach_err=0.0mm step=13.8deg slide=0.018mm/f
+check.41: rappel: 30f 1.00s loop speed=2.5 reach_err=0.0mm step=12.6deg
+check.42: reload_pistol: 45f 1.50s speed=0.0 reach_err=0.0mm step=40.0deg
+check.43: reload_rifle: 72f 2.40s speed=0.0 reach_err=0.0mm step=42.0deg
+check.44: run: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=21.5deg slide=0.040mm/f
+check.45: shield_bang: 24f 0.80s speed=0.0 reach_err=0.0mm step=35.3deg
+check.46: shield_idle: 108f 3.60s loop speed=0.0 reach_err=0.0mm step=0.2deg
+check.47: shield_walk: 28f 0.93s loop speed=1.6 reach_err=0.0mm step=19.7deg slide=0.000mm/f
+check.48: sit_bed_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
+check.49: sit_chair: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
+check.50: sit_chair_watch: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=10.5deg
+check.51: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.5deg
+check.52: sprint: 18f 0.60s loop speed=5.75 reach_err=0.0mm step=28.7deg slide=0.053mm/f
+check.53: strafe_l: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.8deg slide=0.006mm/f
+check.54: strafe_r: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.9deg slide=0.006mm/f
+check.55: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=54.8deg
+check.56: tased: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=13.9deg
+check.57: throw_bag: 30f 1.00s speed=0.0 reach_err=0.0mm step=57.5deg
+check.58: tied: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
+check.59: turn_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
+check.60: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
+check.61: walk: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.5deg slide=0.038mm/f
+check.62: walk_back: 30f 1.00s loop speed=1.3 reach_err=0.0mm step=13.8deg slide=0.018mm/f
 clip.aim_pistol: 90f loop=True speed_mps=0.0
 clip.aim_rifle: 90f loop=True speed_mps=0.0
 clip.browse: 120f loop=True speed_mps=0.0
@@ -110,6 +111,7 @@ clip.pager_answer: 90f loop=True speed_mps=0.0
 clip.phone_call: 120f loop=True speed_mps=0.0
 clip.phone_seated: 240f loop=True speed_mps=0.0
 clip.radio_call: 60f loop=False speed_mps=0.0 events=key_off@44,key_on@11
+clip.rappel: 30f loop=True speed_mps=2.5 events=land@0 travel_axis=down
 clip.reload_pistol: 45f loop=False speed_mps=0.0 events=done@34,mag_in@30,mag_out@6
 clip.reload_rifle: 72f loop=False speed_mps=0.0 events=done@58,mag_in@50,mag_out@14
 clip.run: 21f loop=True speed_mps=3.5
@@ -131,12 +133,12 @@ clip.turn_l: 24f loop=False speed_mps=0.0 root_turn_deg=90.0
 clip.turn_r: 24f loop=False speed_mps=0.0 root_turn_deg=-90.0
 clip.walk: 30f loop=True speed_mps=1.6
 clip.walk_back: 30f loop=True speed_mps=1.3
-clips: 62
+clips: 63
 fps: 30
 handl_shield_offset_godot: basis x=(-0.0000,-0.0000,-1.0000) y=(0.9511,-0.3090,0.0000) z=(-0.3090,-0.9511,-0.0000) origin=(0.0120,0.0720,-0.0300) relative to bone hand.L
 handr_weapon_offset_godot: basis x=(0.0000,0.0000,1.0000) y=(-0.9511,-0.3090,0.0000) z=(0.3090,-0.9511,-0.0000) origin=(-0.0120,0.0720,-0.0300) relative to bone hand.R
 idle_thug_weapon: idle_thug: the long gun at HandR/Socket (the weapon grip convention), held low across the body: muzzle 30 deg below the horizontal, turned 38 deg to the left; the left hand loosely under the front of the receiver (0.19 m behind LeftHandIK), not on LeftHandIK
-loops: aim_pistol,aim_rifle,browse,carry_bag_walk,climb_ladder,cower,crouch_idle,crouch_walk,desk_type,desk_work,downed,dozer_walk,flee,hands_up,idle,idle_alert,idle_thug,interact_high,interact_low,interact_mid,investigate_look,kneel_cuffed,lean_wall,lie_down,mop,mug_carry_walk,mug_idle,pager_answer,phone_call,phone_seated,run,shield_idle,shield_walk,sit_bed_read,sit_chair,sit_chair_watch,smoke,sprint,strafe_l,strafe_r,tased,tied,walk,walk_back
+loops: aim_pistol,aim_rifle,browse,carry_bag_walk,climb_ladder,cower,crouch_idle,crouch_walk,desk_type,desk_work,downed,dozer_walk,flee,hands_up,idle,idle_alert,idle_thug,interact_high,interact_low,interact_mid,investigate_look,kneel_cuffed,lean_wall,lie_down,mop,mug_carry_walk,mug_idle,pager_answer,phone_call,phone_seated,rappel,run,shield_idle,shield_walk,sit_bed_read,sit_chair,sit_chair_watch,smoke,sprint,strafe_l,strafe_r,tased,tied,walk,walk_back
 loops_marked_by: -loop name suffix (Godot strips it and sets LOOP_LINEAR)
 mop_grip: basis x=(1.0000,0.0000,0.0000) y=(0.0000,1.0000,0.0000) z=(0.0000,0.0000,1.0000) origin=(0.0000,-0.9500,-0.0000) relative to HandR/Socket; string mop: origin at the floor end of the shaft (the head's centre on the floor), +Y = up the shaft (length 1.4 m), the right fist 0.95 m up the shaft (the socket, thumb toward the top), the left fist at 1.25 m (the HandL weapon-grip convention on the same shaft axes)
 mop_sweep: mop: in place, the head sweeps x -0.22..0.42 m, 0.56..0.68 m ahead of the root (two sweeps per loop); keep ~1 m clear ahead
@@ -144,5 +146,6 @@ mug_carry_walk_speed: mug_carry_walk is a careful carry at 1.3 m/s native (walk 
 mug_grip: basis x=(1.0000,-0.0000,0.0000) y=(0.0000,0.9511,-0.3090) z=(0.0000,0.3090,0.9511) origin=(-0.0280,-0.0547,0.0387) relative to HandR/Socket; mug r 0.041 m, h 0.095 m: origin at the base centre, +Y = up the mug axis, handle toward -X; held around the body in the right hand (thumb on top); level in mug_carry_walk / mug_idle, tipped to the lips at `sip`
 npc_seat: sit_chair, desk_type, desk_work, phone_seated, sit_chair_watch: root on the floor under the seat centre, facing the desk; seat top 0.47 m (pelvis on it, thighs level, feet flat 0.40 m ahead), desk top 0.74 m with its front edge 0.20-0.25 m ahead of the root (keyboard 0.36 m ahead, mouse 0.27 m right; phone_seated's note pad 0.10 m left; sit_chair_watch's joystick/mouse 0.21 m right, monitors ahead from -25 to +25 deg)
 phone_grip: basis x=(0.0000,0.9978,0.0663) y=(-0.0000,0.0663,-0.9978) z=(-1.0000,0.0000,-0.0000) origin=(0.0115,-0.0083,0.0048) relative to HandR/Socket; phone 0.072 x 0.147 x 0.009 m slab: origin at its centre, +Y = the speaker end, the screen faces +Z, held to the right ear in phone_call / phone_seated (palm on the back, fingers up the phone)
+rappel_rope: rappel: the rope is a vertical line at Godot x=0.000 z=-0.240 (root space, 0.24 m in front of the root; the character faces the wall, -Z). Fists (grip centres = HandL/HandR Socket origins, rope along socket +Y) at frame 0: guide HandL (0.000,1.720,-0.240) on the line, brake HandR (0.120,1.000,-0.170) at the right hip (0.12 m right of the line: the tail runs from the descender at the harness through the brake fist, then hangs). Both fists ride the body: 0..+0.33 m above their frame-0 height during the loop (the body is braked for the 4 wall-contact frames, rising 0.333 m against the root, then drops back). Wall: the balls of the feet brace at Godot z=-0.80 (frames 0..4, world-still at speed_mps=2.5); a free-hanging drop (skylight) just plays it without a wall. Root at the bottom of the link: the feet are 0.48 m+ above it
 shield_grip: shield_idle/shield_walk/shield_bang hold the Bulwark shield at HandL/Socket (the weapon grip convention, left fist): the shield pivot = its vertical handle in the fist, socket -Z = the shield face normal (forward), socket +Y = up the handle (matches char_bulwark_shield); handle at Godot (-0.100, 1.080, -0.340) m in the braced stance, the shield tilted 8 deg top-back and turned -4 deg; pistol one-handed at HandR/Socket just outside the shield's right edge
 tri_budget: 35000

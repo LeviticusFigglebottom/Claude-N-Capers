@@ -6,6 +6,9 @@
 ## and a notice says previews arrive with the music update. B never plays stems itself.
 ## Hiding or leaving the screen (Back, Esc / gamepad B, freed by MenuFlow) stops the preview.
 ## API: setup(profile) before or after entering the tree; play(id) -> bool; stop(); preview_available().
+## 3D safehouse (B6-06, QC-48): MenuFlow sets `preview_target` (the safehouse's jukebox cabinet, same
+## preview(id[, stem]) / stop_preview() duck API) before the screen enters the tree; previews then play
+## positionally at the cabinet and no director is instanced. Without it (2D hub) the bare director is used.
 class_name JukeboxScreen
 extends UiScreen
 
@@ -16,7 +19,10 @@ const STOP_METHOD: StringName = &"stop_preview"
 @export var profile_slot: int = 0
 
 var profile: PlayerProfile = null
-## ENV C's MusicDirector child (null while its preview API is missing).
+## Preview target set by MenuFlow in the 3D safehouse (the cabinet, not owned by the screen), else null.
+var preview_target: Node = null
+## The node previews go through: preview_target, or ENV C's MusicDirector child (null while its preview
+## API is missing).
 var director: Node = null
 ## Track being previewed (&"" = none).
 var now_playing: StringName = &""
@@ -51,7 +57,9 @@ static func preview_available() -> bool:
 func build_ui() -> void:
 	if profile == null:
 		profile = SaveService.load_profile(profile_slot)
-	if preview_available():
+	if preview_target != null and is_instance_valid(preview_target) and preview_target.has_method(PREVIEW_METHOD):
+		director = preview_target
+	elif preview_available():
 		director = (UiNav.global_class(DIRECTOR_CLASS).new()) as Node
 		if director != null:
 			if &"listen_to_event_bus" in director:

@@ -33,7 +33,7 @@ from _outfit import Hull, Mesh, Vector
 from _outfit_build import Kit, build_character
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
 VARIANTS = {
     "char_npc_penthouse_guest_a": {"height": 1.73, "build": 0.25, "gender": 1.0, "age": 0.35, "skin": 3,
