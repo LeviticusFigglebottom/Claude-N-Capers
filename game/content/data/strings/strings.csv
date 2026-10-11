@@ -2440,3 +2440,47 @@ ui.lobby.dropin_join.hint,"Join a crew whose heist has already started (the host
 ui.dropin.failed.unreachable,Could not reach the host. Check the address and port.
 item.loot.painting_study.name,Calloway's Study
 item.loot.painting_study.desc,"A charcoal-and-wash study for The Lantern Bearer, smaller and quicker to roll. Collectors pay for the hand, not the size."
+item.finish.gunmetal_blue.name,Gunmetal Blue
+item.finish.gunmetal_blue.desc,Brushed blue-grey on every metal part. The armourer's standard issue.
+item.finish.desert_tan.name,Desert Tan
+item.finish.desert_tan.desc,Sand-coloured coating over the furniture and matte metal; the bluing stays.
+item.finish.olive_drab.name,Olive Drab
+item.finish.olive_drab.desc,Flat field green over the polymer and matte metal; the bluing stays.
+item.finish.arctic.name,Arctic
+item.finish.arctic.desc,Snow-white furniture broken up with grey blotches. Wasted in a bank vault and nobody cares.
+item.finish.cherry_polymer.name,Cherry Polymer
+item.finish.cherry_polymer.desc,Lacquered deep red on the polymer only. The steel keeps its bluing.
+item.finish.carbon.name,Carbon Weave
+item.finish.carbon.desc,Woven carbon over the frame and matte parts under a hard clear coat.
+item.finish.urban_camo.name,Urban Camo
+item.finish.urban_camo.desc,Concrete greys in hard-edged blotches across the furniture and matte metal.
+item.finish.midnight_chrome.name,Midnight Chrome
+item.finish.midnight_chrome.desc,Mirror-polished black chrome on every metal part.
+item.finish.copper_patina.name,Copper Patina
+item.finish.copper_patina.desc,Copper-plated metal gone green at the edges like an old roof.
+item.finish.case_hardened.name,Case Hardened
+item.finish.case_hardened.desc,Straw and blue fire colours mottled into the steel. Furniture and fitted parts stay stock.
+item.finish.brass_engraved.name,Brass Engraved
+item.finish.brass_engraved.desc,Brass-plated metal cut with scrollwork. Furniture and fitted parts stay stock.
+item.finish.gilded_ledger.name,Gilded Ledger
+item.finish.gilded_ledger.desc,Gold on every metal part and gloss black on the rest. For crews who never cash out.
+ui.notoriety.unlock.unlock.finish.case_hardened,Weapon finish: Case Hardened
+ui.notoriety.unlock.unlock.finish.brass_engraved,Weapon finish: Brass Engraved
+ui.notoriety.unlock.unlock.finish.gilded_ledger,Weapon finish: Gilded Ledger
+ui.workshop.finish.title,Finish
+ui.workshop.finish.stock,Stock finish
+ui.workshop.finish.entry,{name}  ·  {status}
+ui.workshop.finish.equip,Apply Finish
+ui.workshop.finish.equipped,Finish Applied
+ui.workshop.finish.tag.owned,owned
+ui.workshop.finish.tag.equipped,applied
+ui.workshop.finish.tag.locked,locked
+ui.workshop.finish.status.owned,Owned. Apply it to wear it on this weapon.
+ui.workshop.finish.status.equipped,Applied to this weapon.
+ui.workshop.finish.status.stock,The weapon's own materials.
+ui.workshop.finish.source.achievement,Locked. Earn the achievement {name} to unlock it.
+ui.workshop.finish.source.notoriety,Locked. Reach Notoriety {rank} to unlock it.
+ui.workshop.finish.source.unknown,Locked. Earned through achievements.
+ui.workshop.finish.weapon_locked,Own this weapon to apply a finish.
+ui.workshop.finish.saved,Finish applied. Profile saved.
+ui.workshop.finish.not_saved,Finish applied for this session (this profile cannot store finishes yet).

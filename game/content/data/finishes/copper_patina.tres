@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="FinishDef" format=3]
+
+[ext_resource type="Script" path="res://content/defs/finish_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://content/defs/finish_layer.gd" id="2_layer"]
+
+[sub_resource type="Resource" id="Resource_layer_0"]
+script = ExtResource("2_layer")
+slots = Array[StringName]([&"steel", &"bare", &"matte", &"alu"])
+albedo = Color(0.72, 0.42, 0.26, 1)
+metallic = 0.95
+roughness = 0.35
+pattern = &"patina"
+pattern_color = Color(0.25, 0.55, 0.48, 1)
+pattern_scale = 1.2
+pattern_seed = 91
+
+[resource]
+script = ExtResource("1_def")
+id = &"finish.copper_patina"
+display_name = "Copper Patina"
+unlock = &"unlock.finish.copper_patina"
+default_owned = false
+covers_mods = true
+order = 90
+layers = Array[ExtResource("2_layer")]([SubResource("Resource_layer_0")])

@@ -6,6 +6,9 @@
 ## the same slot, and the concealment total + detection risk the loadout would have (LoadoutResolver).
 ## Footer: Back, Buy (the selected weapon or part, spending cash, disabled when short) and Equip (writes
 ## the loadout's primary / secondary + mods and saves the profile).
+## Finish picker (B7-04, WorkshopFinishPanel) under the parts: previews a finish live on the turntable model
+## (WeaponVisual.apply_finish), shows locked finishes with how to earn them, and "Apply Finish" saves it to the
+## profile (WeaponFinishes; PlayerProfile.weapon_finishes from save v7).
 ## Rules live in WorkshopModel; this script only shows them. Opened from the loadout screen's Workshop
 ## button (armory station in the safehouse, and the heist path); Back = back_requested.
 class_name WorkshopScreen
@@ -49,6 +52,8 @@ var selected_slot: int = -1
 ## Stat key -> value / delta Label.
 var stat_value_labels: Dictionary = {}
 var stat_delta_labels: Dictionary = {}
+## Finish picker (B7-04).
+var finish_panel: WorkshopFinishPanel
 
 var _hud_tweak: HudTweak
 var _slot_flow: HFlowContainer
@@ -84,7 +89,8 @@ func build_ui() -> void:
 	_fill_weapon_list()
 	var start: StringName = profile.loadout.primary if profile.loadout.primary != &"" else profile.loadout.secondary
 	select_weapon(start if start != &"" else WorkshopModel.weapon_ids()[0])
-	focus_chain.append_array([weapon_list, parts_list, equip_button, buy_button, back_button] as Array[Control])
+	focus_chain.append_array([weapon_list, parts_list, finish_panel.list, finish_panel.equip_button, equip_button, buy_button,
+			back_button] as Array[Control])
 	_wire_focus.call_deferred()
 
 
@@ -99,6 +105,7 @@ func select_weapon(id: StringName) -> void:
 	var first: int = model.slots()[0] if not model.slots().is_empty() else -1
 	selected_slot = -1
 	_rebuild_visual()
+	finish_panel.set_weapon(id, model.weapon_state(id) == WorkshopModel.ItemState.OWNED)
 	stage.reset_view()
 	if first >= 0:
 		_show_slot(first, false)
@@ -154,6 +161,16 @@ func equip_selected() -> bool:
 	return true
 
 
+## Preview finish `id` (&"" = stock) on the turntable model without equipping it.
+func select_finish(id: StringName) -> bool:
+	return finish_panel.preview(id)
+
+
+## Apply the previewed finish to the previewed weapon and save. False when locked / the weapon is not owned.
+func equip_finish() -> bool:
+	return finish_panel.equip_preview()
+
+
 ## Recompute stats, detection risk, item statuses and the buttons from the model.
 func refresh() -> void:
 	cash_label.text = UiText.t(&"ui.workshop.cash", {"amount": UiText.money(profile.cash)})
@@ -163,6 +180,10 @@ func refresh() -> void:
 	_refresh_stats()
 	_refresh_part_status()
 	_refresh_buttons()
+	var owned: bool = w != null and model.weapon_state(w.id) == WorkshopModel.ItemState.OWNED
+	if finish_panel.weapon_owned != owned:
+		finish_panel.weapon_owned = owned
+		finish_panel.refresh()
 
 
 func _build_header() -> HBoxContainer:
@@ -256,6 +277,12 @@ func _build_mod_column() -> Control:
 	part_desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	part_desc_label.custom_minimum_size = Vector2(0, 52)
 	v.add_child(part_desc_label)
+	finish_panel = WorkshopFinishPanel.new()
+	finish_panel.name = "FinishPanel"
+	finish_panel.build(profile, _item_list())
+	finish_panel.preview_changed.connect(_on_finish_preview)
+	finish_panel.finish_equipped.connect(_on_finish_equipped)
+	v.add_child(finish_panel)
 	var dr: VBoxContainer = UiBuild.vbox(6)
 	concealment_label = UiBuild.label(&"", UiBuild.SUBHEADER)
 	detection_risk_label = UiBuild.label(&"", UiBuild.SUBHEADER)
@@ -625,10 +652,18 @@ func _wire_focus() -> void:
 	weapon_list.focus_neighbor_top = weapon_list.get_path_to(weapon_list)
 	parts_list.focus_neighbor_top = parts_list.get_path_to(first_slot)
 	parts_list.focus_neighbor_left = parts_list.get_path_to(weapon_list)
-	parts_list.focus_neighbor_bottom = parts_list.get_path_to(equip_button)
+	parts_list.focus_neighbor_bottom = parts_list.get_path_to(finish_panel.list)
+	var fl: ItemList = finish_panel.list
+	var fb: Button = finish_panel.equip_button
+	fl.focus_neighbor_top = fl.get_path_to(parts_list)
+	fl.focus_neighbor_left = fl.get_path_to(weapon_list)
+	fl.focus_neighbor_bottom = fl.get_path_to(fb)
+	fb.focus_neighbor_top = fb.get_path_to(fl)
+	fb.focus_neighbor_left = fb.get_path_to(weapon_list)
+	fb.focus_neighbor_bottom = fb.get_path_to(equip_button)
 	UiNav.chain_horizontal([back_button, buy_button, equip_button] as Array[Control], false)
 	for b: Control in [back_button, buy_button, equip_button]:
-		b.focus_neighbor_top = b.get_path_to(parts_list)
+		b.focus_neighbor_top = b.get_path_to(fb)
 		b.focus_neighbor_bottom = b.get_path_to(b)
 	back_button.focus_neighbor_left = back_button.get_path_to(back_button)
 
@@ -654,3 +689,15 @@ func _on_slot_focus(t: int) -> void:
 
 func _on_overview() -> void:
 	stage.reset_view()
+
+
+func _on_finish_preview(id: StringName) -> void:
+	stage.visual.apply_finish(id)
+
+
+func _on_finish_equipped(_id: StringName) -> void:
+	if WeaponFinishes.persists(profile):
+		_save(&"ui.workshop.finish.saved")
+	else:
+		message_label.text = UiText.t(&"ui.workshop.finish.not_saved")
+		profile_changed.emit()
