@@ -7,9 +7,14 @@
 ## In the heist (`pause_gameplay`): while a request shows, the local crew member's input is paused
 ## (CrewInput holder &"dropin") and the mouse released, so the host can answer; both come back after.
 ## Player text (name) is shown as plain Label text.
+## Policy (B6-04, D-072): before a request is shown, decision() asks `gate` (LobbySession.join_decision: the
+## session kick list, then LobbyState.dropin_policy; without a gate the local `policy`): a kicked player is
+## denied with DropInService.REASON_KICKED, policy `off` denies with REASON_OFF, `auto` accepts, all without a
+## dialog; only `ask` shows the request. A timeout denies with REASON_TIMEOUT, Deny with REASON_DENIED.
 class_name JoinRequestDialog
 extends PanelContainer
 
+## `auto` = answered without the host pressing a button (policy, kick list or timeout); last_reason says why.
 signal answered(peer_id: int, accepted: bool, auto: bool)
 
 const PAUSE_HOLDER: StringName = &"dropin"
@@ -25,6 +30,12 @@ var pause_gameplay: bool = false
 var auto_find: bool = false
 ## Local crew slot for the input pause (MenuFlow passes Net.local_slot()).
 var local_slot: int = -1
+## Anything with join_decision(peer_id, summary) -> StringName (MenuFlow passes its LobbySession), or null.
+var gate: Object = null
+## Drop-in policy used without a gate (LobbyState.POLICY_*).
+var policy: StringName = LobbyState.POLICY_ASK
+## Reason of the last deny (&"" after an accept).
+var last_reason: StringName = &""
 var title_label: Label
 var body_label: Label
 var badge_label: Label
@@ -79,8 +90,13 @@ func bind(p_service: Object) -> void:
 		service.connect(&"join_requested", show_request)
 
 
-## Queue a request (a peer already queued is ignored).
+## A request from the service: answered at once unless decision() is JOIN_ASK, then queued (a peer already
+## queued is ignored).
 func show_request(peer_id: int, summary: Dictionary) -> void:
+	var d: StringName = decision(peer_id, summary)
+	if d != LobbyState.JOIN_ASK:
+		_reply(peer_id, d == LobbyState.JOIN_ACCEPT, d, true)
+		return
 	for r: Dictionary in queue:
 		if int(r["peer_id"]) == peer_id:
 			return
@@ -97,11 +113,23 @@ func current_peer() -> int:
 
 
 func accept() -> void:
-	_answer(true, false)
+	_answer(true, DropInService.REASON_DENIED, false)
 
 
 func deny() -> void:
-	_answer(false, false)
+	_answer(false, DropInService.REASON_DENIED, false)
+
+
+## LobbyState.JOIN_ASK / JOIN_ACCEPT or a deny reason for a request: the gate's join_decision, else `policy`.
+func decision(peer_id: int, summary: Dictionary) -> StringName:
+	if gate != null and gate.has_method(&"join_decision"):
+		return StringName(gate.call(&"join_decision", peer_id, summary))
+	match policy:
+		LobbyState.POLICY_OFF:
+			return DropInService.REASON_OFF
+		LobbyState.POLICY_AUTO:
+			return LobbyState.JOIN_ACCEPT
+	return LobbyState.JOIN_ASK
 
 
 ## "<name> (<level text>) wants to join." for a request summary (plain text; name cleaned and cut).
@@ -125,15 +153,23 @@ static func _int(summary: Dictionary, key: String, lo: int, hi: int) -> int:
 	return clampi(int(v), lo, hi) if v is int or v is float else 0
 
 
-func _answer(accepted: bool, auto: bool) -> void:
+func _answer(accepted: bool, reason: StringName, auto: bool) -> void:
 	if queue.is_empty():
 		return
 	var r: Dictionary = queue.pop_front()
-	var peer: int = int(r["peer_id"])
-	if service != null and service.has_method(&"answer_join"):
-		service.call(&"answer_join", peer, accepted)
-	answered.emit(peer, accepted, auto)
+	_reply(int(r["peer_id"]), accepted, reason, auto)
 	_show_current()
+
+
+## Tell the service (a deny carries `reason` when its answer_join takes a third argument).
+func _reply(peer: int, accepted: bool, reason: StringName, auto: bool) -> void:
+	last_reason = &"" if accepted else reason
+	if service != null and service.has_method(&"answer_join"):
+		if not accepted and service.get_method_argument_count(&"answer_join") >= 3:
+			service.call(&"answer_join", peer, false, reason)
+		else:
+			service.call(&"answer_join", peer, accepted)
+	answered.emit(peer, accepted, auto)
 
 
 func _show_current() -> void:
@@ -186,7 +222,7 @@ func _process(delta: float) -> void:
 	time_left -= delta
 	_refresh_timer()
 	if time_left <= 0.0:
-		_answer(false, true)
+		_answer(false, DropInService.REASON_TIMEOUT, true)
 
 
 func _exit_tree() -> void:

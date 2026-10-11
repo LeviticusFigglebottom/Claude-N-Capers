@@ -10,13 +10,16 @@
 ## any walker is missing. The hub is local per player: only our own walker is paused or moved.
 ##
 ## Stations: the root's and every station node's `station_requested(id)` (or A's `station_used(id, crew)`)
-## -> the walker's input is paused, the mouse released and the 3D view dimmed; with a `StationCam` child
-## the camera blends there (station_cam_blend_s) first; then MenuFlow.open_station(id). Every station's Back
-## lands in MenuFlow.show_hub() -> show_home(): the walker returns to that station's UsePoint, input and
-## mouse come back, and the jukebox plays the saved pick (`set_jukebox_track`). Esc / `pause` on the HUD
-## opens SafehousePauseMenu (Resume, quick stations, Options, Achievements, Main Menu).
+## -> the walker's input is paused, the mouse released and the 3D view dimmed; with a `StationCam` child (a
+## Marker3D: -Z = view direction, meta `fov` in degrees, default 60) the walker's OWN camera blends to its
+## transform and FOV over station_cam_blend_s first; then MenuFlow.open_station(id). Every station's Back
+## lands in MenuFlow.show_hub() -> show_home(): the walker returns to that station's UsePoint, its camera
+## transform / FOV are restored, input and mouse come back, and the jukebox plays the saved pick
+## (`set_jukebox_track`). While a station screen other than the jukebox is open the cabinet is ducked
+## (MusicDirector.set_ducked, when it exists). Esc / `pause` on the HUD opens SafehousePauseMenu (Resume,
+## quick stations, Options, Achievements, Main Menu).
 ## The range and a heist launch free the scene (leave(marker)); coming home re-instances it at
-## ReturnRange / ReturnHeist.
+## ReturnRange / ReturnHeist; an unknown return id falls back to the `Spawn` marker (hub_map.md v1.0).
 class_name SafehouseHost
 extends Node
 
@@ -39,8 +42,12 @@ var input_paused: bool = false
 var mouse_released: bool = true
 ## Marker the next enter() spawns at (set by leave(marker)); &"" = tweak.entry_marker.
 var return_marker: StringName = &""
-var _blend_cam: Camera3D = null
+## True while the cabinet is ducked under a station screen.
+var ducked: bool = false
 var _walker_cam: Camera3D = null
+## The walker camera's local transform and FOV before a StationCam blend ({} = not blended).
+var _cam_home: Dictionary = {}
+var _blend_tween: Tween = null
 
 
 ## Creates the hub HUD and pause menu screens under `p_flow` (hidden).
@@ -133,12 +140,13 @@ func leave(marker: StringName = &"") -> void:
 	if marker != &"":
 		return_marker = marker
 	hud.bind_model(null)
+	_set_ducked(false)
+	_restore_camera()
 	remove_child(map)
 	map.queue_free()
 	map = null
 	walker = null
 	hud_model = null
-	_blend_cam = null
 	_walker_cam = null
 	station_id = &""
 	input_paused = false
@@ -146,22 +154,31 @@ func leave(marker: StringName = &"") -> void:
 	_release_mouse(true)
 
 
-## The root's `spawn_transform(id)`, else a Marker3D named `marker` in the scene, else identity.
+## The root's `spawn_transform(id)` (which falls back to `Spawn` itself, hub_map.md), else marker_transform().
 func spawn_transform(marker: StringName) -> Transform3D:
 	if not is_active():
 		return Transform3D.IDENTITY
 	if map.has_method(&"spawn_transform"):
 		return map.call(&"spawn_transform", marker) as Transform3D
-	var n: Node3D = map.find_child(String(marker), true, false) as Node3D
-	return n.global_transform if n != null else Transform3D.IDENTITY
+	return marker_transform(map, marker, tweak.spawn_marker)
 
 
-## Station nodes: members of `station_group` inside the scene plus the children of `Stations/`.
+## A Node3D named `marker` under `root`, else the one named `fallback` (the `Spawn` loading bay marker, so a
+## missing return point never strands the player), else identity.
+static func marker_transform(root: Node, marker: StringName, fallback: StringName) -> Transform3D:
+	for id: StringName in [marker, fallback]:
+		var n: Node3D = root.find_child(String(id), true, false) as Node3D if id != &"" else null
+		if n != null:
+			return n.global_transform
+	return Transform3D.IDENTITY
+
+
+## Station nodes: members of G.HUB_STATION inside the scene plus the children of `Stations/`.
 func stations() -> Array[Node]:
 	var out: Array[Node] = []
 	if not is_active():
 		return out
-	for n: Node in get_tree().get_nodes_in_group(tweak.station_group):
+	for n: Node in get_tree().get_nodes_in_group(G.HUB_STATION):
 		if map.is_ancestor_of(n):
 			out.append(n)
 	var holder: Node = map.get_node_or_null(NodePath(tweak.stations_node))
@@ -190,6 +207,11 @@ func jukebox() -> Node:
 		return j as Node
 	var n: Node = map.find_child(tweak.jukebox_node, true, false)
 	return n if n != null and n.has_method(JukeboxScreen.PREVIEW_METHOD) else null
+
+
+## MenuFlow.open_station(id): duck the cabinet under every station screen but the jukebox's own (hub_map.md).
+func station_opened(id: StringName) -> void:
+	_set_ducked(is_active() and id != tweak.jukebox_station)
 
 
 ## QC-49: the pause menu over the dimmed safehouse (walker paused, mouse free).
@@ -257,27 +279,53 @@ func _on_station_requested(id: StringName) -> void:
 		flow.show_hub()
 
 
+## Blends the walker's own camera to the StationCam marker's transform and FOV (meta, default station_cam_fov).
+## No walker camera: nothing to blend.
 func _blend_to(target: Node3D) -> void:
-	_blend_cam = Camera3D.new()
-	_blend_cam.name = "StationBlendCam"
-	map.add_child(_blend_cam)
-	_blend_cam.global_transform = _walker_cam.global_transform if _walker_cam != null else target.global_transform
-	_blend_cam.current = true
-	var tw: Tween = _blend_cam.create_tween()
-	tw.tween_property(_blend_cam, ^"global_transform", target.global_transform, tweak.station_cam_blend_s)
-	await tw.finished
+	var cam: Camera3D = _walker_cam
+	if cam == null or not is_instance_valid(cam):
+		return
+	if _cam_home.is_empty():
+		_cam_home = {"transform": cam.transform, "fov": cam.fov}
+	var fov: float = float(target.get_meta(tweak.station_cam_fov_meta, tweak.station_cam_fov))
+	var s: float = tweak.station_cam_blend_s
+	_blend_tween = cam.create_tween().set_parallel(true)
+	_blend_tween.tween_property(cam, ^"global_transform", target.global_transform, s)
+	_blend_tween.tween_property(cam, ^"fov", fov, s)
+	await _blend_tween.finished
+
+
+## Puts the walker camera back (local transform + FOV from before the blend) and makes it current. A blend
+## still running is fast-forwarded first, so its awaiting caller wakes up and sees the station was left.
+func _restore_camera() -> void:
+	if _blend_tween != null and _blend_tween.is_valid():
+		_blend_tween.custom_step(tweak.station_cam_blend_s + 1.0)
+		_blend_tween.kill()
+	_blend_tween = null
+	if _walker_cam != null and is_instance_valid(_walker_cam):
+		if not _cam_home.is_empty():
+			_walker_cam.transform = _cam_home["transform"] as Transform3D
+			_walker_cam.fov = float(_cam_home["fov"])
+		_walker_cam.current = true
+	_cam_home = {}
+
+
+func _set_ducked(on: bool) -> void:
+	if on == ducked:
+		return
+	ducked = on
+	var j: Node = jukebox()
+	if j != null and j.has_method(tweak.duck_method):
+		j.call(tweak.duck_method, on)
 
 
 func _resume(p: PlayerProfile) -> void:
-	if _blend_cam != null and is_instance_valid(_blend_cam):
-		_blend_cam.queue_free()
-	_blend_cam = null
-	if _walker_cam != null and is_instance_valid(_walker_cam):
-		_walker_cam.current = true
 	var st: Node = station_node(station_id) if station_id != &"" else null
 	var use_point: Node3D = st.get_node_or_null(NodePath(tweak.use_point_name)) as Node3D if st != null else null
 	if use_point != null:
 		_teleport(walker, use_point.global_transform)
+	_restore_camera()
+	_set_ducked(false)
 	station_id = &""
 	_pause_walker(false)
 	_set_backdrop(false, true)

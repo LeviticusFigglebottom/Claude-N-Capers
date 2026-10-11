@@ -220,6 +220,7 @@ func open_station(station_id: StringName) -> bool:
 		return false
 	_in_safehouse = true
 	refund_preplan()
+	safehouse.station_opened(station_id)  # ducks the 3D cabinet under every screen but the jukebox
 	match st.target:
 		TARGET_BOARD:
 			_open_board()
@@ -696,6 +697,7 @@ func _spawn_in_heist_ui() -> void:
 		heist_join_dialog.pause_gameplay = true
 		heist_join_dialog.auto_find = true
 		heist_join_dialog.local_slot = Net.local_slot()
+		heist_join_dialog.gate = lobby  # kick list + drop-in policy (LobbySession.join_decision, B6-04)
 		_in_heist.add_child(heist_join_dialog)
 		heist_join_dialog.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP, Control.PRESET_MODE_MINSIZE, 96)
 	EventBus.heist_ended.connect(_on_heist_ended, CONNECT_ONE_SHOT)
