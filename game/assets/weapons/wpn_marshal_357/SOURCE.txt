@@ -7,5 +7,6 @@ rebuild: python3 tools/blender/build.py --category weapons --asset wpn_marshal_3
 edit policy: generated file, never edit by hand; change the script and rebuild
 crane: Crane pivot on the hinge axis; +80 deg about local Z (Godot) swings the cylinder out left
 origin: firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top
+speedloader: Speedloader at the root, frame = the closed cylinder's Magwell (rear face on the axis, Godot local +Y forward into the chambers); 6 rounds on the chamber pattern; NOT hidden by the pipeline (glTF has no visibility flag): hide it in game
 tri_budget: 25000
-tris_lod0: 5352
+tris_lod0: 7152

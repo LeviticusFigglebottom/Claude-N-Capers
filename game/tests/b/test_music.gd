@@ -9,8 +9,8 @@ const JUKEBOX_SCENE: PackedScene = preload("res://content/ui/jukebox/jukebox_scr
 const FLOW_SCENE: PackedScene = preload("res://content/ui/menus/menu_flow.tscn")
 const PREPLAN_SCENE: PackedScene = preload("res://content/ui/preplanning/preplanning_screen.tscn")
 const SLOT: int = 0
-const STUB_IDS: Array[StringName] = [&"glasshouse", &"last_call", &"long_con", &"night_deposit", &"shadow_ledger", &"vault_hymn"]
-# LEAD: C's MusicTrackTable (65c299a) adds dockside_burn (always owned, its heist default).
+const STUB_IDS: Array[StringName] = [
+	&"dockside_burn", &"glasshouse", &"last_call", &"long_con", &"night_deposit", &"shadow_ledger", &"vault_hymn"]
 const BASE_IDS: Array[StringName] = [&"dockside_burn", &"glasshouse", &"night_deposit", &"shadow_ledger"]
 const NET_SCRIPT: Script = preload("res://core/net.gd")
 
@@ -29,8 +29,9 @@ class FakeDirector:
 	extends Node
 	var calls: Array[String] = []
 
-	func preview(track_id: StringName, stem: StringName = &"assault") -> void:
+	func preview(track_id: StringName, stem: StringName = &"assault") -> bool:
 		calls.append("preview:%s:%s" % [track_id, stem])
+		return true
 
 	func stop_preview() -> void:
 		calls.append("stop")
@@ -298,25 +299,31 @@ func _jukebox(p: PlayerProfile) -> JukeboxScreen:
 	return s
 
 
-func test_jukebox_disables_play_without_the_preview_api() -> void:
-	if JukeboxScreen.preview_available():  # LEAD: C's MusicDirector.preview is on trunk (65c299a)
-		skip("MusicDirector.preview exists on this tree; ENV B: replace with a preview-present jukebox test")
-		return
+## D-062 on trunk: C's MusicDirector.preview(track_id, stem) -> bool / stop_preview(). The jukebox instances a
+## bare director (listen_to_event_bus = false); Play is enabled for unlocked tracks. preview() returns false for
+## tracks without stems (only glasshouse has stems until C5-01), and then nothing is "playing".
+func test_jukebox_with_the_real_preview_api() -> void:
+	assert_true(JukeboxScreen.preview_available(), "C's MusicDirector.preview is on this tree")
 	var s: JukeboxScreen = _jukebox(_unlocked([&"long_con"]))
 	await wait_frames(2)
-	assert_true(s.director == null, "no director instanced")
-	assert_true(s.notice_label.visible)
-	assert_eq(s.notice_label.text, UiText.t(&"ui.jukebox.preview_missing"))
+	assert_true(s.director != null, "a preview director is instanced")
+	assert_false(bool(s.director.get(&"listen_to_event_bus")), "bare director: no heist phase listening")
+	assert_false(s.notice_label.visible, "no 'previews arrive later' notice")
 	assert_eq(s.play_buttons.size(), MusicCatalog.ids().size(), "one row per track")
-	for id: Variant in s.play_buttons:
-		assert_true((s.play_buttons[id] as Button).disabled, "Play disabled for %s" % id)
-	assert_eq((s.status_labels[&"vault_hymn"] as Label).text, UiText.t(&"ui.jukebox.locked_rank", {"rank": "VII"}))
-	assert_eq((s.status_labels[&"long_con"] as Label).text, UiText.t(&"ui.jukebox.unlocked"))
-	assert_false(s.play(&"glasshouse"))
+	assert_false((s.play_buttons[&"glasshouse"] as Button).disabled, "Play enabled for an owned track")
+	assert_true((s.play_buttons[&"vault_hymn"] as Button).disabled, "locked track stays disabled")
+	assert_true(s.play(&"glasshouse"), "glasshouse has stems")
+	assert_eq(s.now_playing, &"glasshouse")
+	assert_false(s.stop_button.disabled)
+	s.stop()
 	assert_eq(s.now_playing, &"")
-	assert_true(s.stop_button.disabled)
-	assert_eq(s.focus_chain, [s.back_button, s.stop_button] as Array[Control])
-	assert_eq(get_viewport().gui_get_focus_owner(), s.back_button as Control, "Back focused")
+	for id: StringName in MusicCatalog.ids():
+		if id == &"glasshouse" or not MusicCatalog.is_unlocked(s.profile, id):
+			continue
+		var ok: bool = s.play(id)
+		if not ok:
+			assert_eq(s.now_playing, &"", "%s without stems: nothing playing" % id)
+		s.stop()
 	s.queue_free()
 	await wait_frames(1)
 

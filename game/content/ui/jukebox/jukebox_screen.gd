@@ -114,7 +114,10 @@ func refresh() -> void:
 func play(track_id: StringName) -> bool:
 	if director == null or not MusicCatalog.is_unlocked(profile, track_id):
 		return false
-	director.call(PREVIEW_METHOD, track_id)
+	# C's preview() -> bool (D-062): false when the track has no stems yet; then nothing plays.
+	if director.call(PREVIEW_METHOD, track_id) == false:
+		now_label.text = UiText.t(&"ui.jukebox.no_stems", {"name": UiText.t(MusicCatalog.display_key(track_id))})
+		return false
 	now_playing = track_id
 	_refresh_state()
 	return true
