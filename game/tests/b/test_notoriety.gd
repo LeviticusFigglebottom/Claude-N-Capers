@@ -121,15 +121,20 @@ func test_rank_up_grants_rewards_and_unlocks() -> void:
 
 func test_music_unlock_ids_are_granted() -> void:
 	var ranks: Array[int] = []
+	var music: Array[int] = []
 	for d: NotorietyDef in Notoriety.table().ranks:
 		if not d.unlocks.is_empty():
 			ranks.append(d.rank)
-	assert_true(ranks.size() >= 2 and ranks.size() <= 3, "2-3 ranks carry a music unlock")
+		for id: StringName in d.unlocks:
+			if String(id).begins_with("unlock.music.") and not music.has(d.rank):
+				music.append(d.rank)
+	assert_true(music.size() >= 2 and music.size() <= 3, "2-3 ranks carry a music unlock")
 	for rank: int in ranks:
 		var p: PlayerProfile = _veteran(rank - 1)
 		var r: Dictionary = Notoriety.rank_up(p)
 		for id: StringName in Notoriety.def_for(rank).unlocks:
-			assert_true(String(id).begins_with("unlock.music."), "%s is a music unlock" % id)
+			assert_true(String(id).begins_with("unlock.music.") or String(id).begins_with("unlock.finish."),
+					"%s is a music or weapon finish unlock (B7-04)" % id)
 			assert_has(p.unlocks, id, "rank %d grants %s" % [rank, id])
 			assert_has(r["granted"] as Array, id)
 

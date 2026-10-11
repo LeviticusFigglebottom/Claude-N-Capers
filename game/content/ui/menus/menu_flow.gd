@@ -553,7 +553,10 @@ func open_firing_range() -> void:
 		_range_return = hub
 		safehouse.leave(safehouse.tweak.range_marker)
 	var range_scene: FiringRange = RANGE_SCENE.instantiate() as FiringRange
-	range_scene.setup(LoadoutResolver.resolve(SaveService.load_profile(profile_slot).loadout))
+	var range_profile: PlayerProfile = SaveService.load_profile(profile_slot)
+	var range_loadout: Loadout = LoadoutResolver.resolve(range_profile.loadout)
+	WeaponFinishes.stamp(range_loadout, range_profile)  # B7-04: the range viewmodel wears the finish
+	range_scene.setup(range_loadout)
 	range_scene.exit_requested.connect(close_firing_range)
 	firing_range = range_scene
 	visible = false
@@ -583,7 +586,9 @@ func _on_launch_requested(loadout: Loadout) -> void:
 ## confirmed plan, is_pro of the chosen contract). Pure apart from reading Net.local_slot().
 func launch_options_for(loadout: Loadout) -> Dictionary:
 	var ai: int = HeistCatalog.heist_list().solo_ai_for(_heist_id)
-	return build_launch_options(ai, Net.local_slot(), LoadoutResolver.resolve(loadout), preplan, is_pro,
+	var resolved: Loadout = LoadoutResolver.resolve(loadout)
+	WeaponFinishes.stamp(resolved, _menu_profile())  # B7-04: Loadout.weapon_finishes
+	return build_launch_options(ai, Net.local_slot(), resolved, preplan, is_pro,
 			MusicCatalog.resolve_choice(_menu_profile()))
 
 
@@ -629,6 +634,7 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 	var resolved: Loadout = LoadoutResolver.resolve(loadout)
 	var ai: int = HeistCatalog.heist_list().solo_ai_for(heist_id)
 	var profile: PlayerProfile = SaveService.load_profile()
+	WeaponFinishes.stamp(resolved, _menu_profile())  # B7-04: Loadout.weapon_finishes (teammates / A's WeaponVisuals)
 	Net.start_solo(profile.profile_name, ai)
 	var options: Dictionary = build_launch_options(ai, Net.local_slot(), resolved, plan, pro,
 			MusicCatalog.resolve_choice(profile))

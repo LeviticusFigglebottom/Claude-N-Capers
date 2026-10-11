@@ -153,6 +153,24 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   slot, shared `zero` awards, skipped when the stat is missing; `PaydayScreen.awards` / "Crew Honours" section.
   `Hud.scoreboard` (`ScoreboardOverlay`) reads the model's `crew_stats` + `crew_stats_changed` (QB to ENV A;
   `MockHudModel` has them) and shows while `scoreboard` is held (`controls/scoreboard_mode` toggle).
+* **Weapon finishes (B7-04).** `FinishDef` (`defs/finish_def.gd`; data `data/finishes/<name>.tres`, ContentDB
+  kind `finishes`, id `finish.<name>`, unlock `unlock.finish.<name>`, `default_owned`, `covers_mods`, `order`,
+  `layers: Array[FinishLayer]`). `FinishLayer` (`defs/finish_layer.gd`): `slots` (the weapon build scripts'
+  `Mats.*` names: polymer, stipple, steel, bare, matte, alu, wood, rubber, tan, olive), `albedo`, `metallic`,
+  `roughness`, optional `base_material` (a library Material reference; duplicated), `pattern` (`mottle`, `camo`,
+  `patina`, `engrave`, `brushed`; generated NoiseTexture2D), `pattern_color/scale/seed`, `clearcoat`.
+  `FinishApplier` (`weapons/`): matches surfaces by their stock material `M_<library_id>` (`SLOT_MATERIALS`) and
+  sets `surface_override_material`; never changes meshes or library materials; removes only its own overrides.
+  `FinishMaterials`: cached runtime materials (meta `finish_id`). `WeaponVisual.apply_finish(id)` (main gun,
+  offhand, mods when covered; kept across `setup()`; &"" = stock) and `apply_loadout_finish(loadout)`.
+  `WeaponFinishes` (`progression/`): `all/def/is_known/is_owned/owned`, `equipped/equip(profile, weapon, finish)`
+  (locked -> false), `store/persists` (`PlayerProfile.weapon_finishes`, save v7 by B7-01; read with `get()`,
+  metadata fallback while absent), `for_loadout`, `stamp(loadout, profile)` / `from_loadout(loadout, weapon)`
+  (`Loadout.weapon_finishes`, weapon id -> finish id, lead-approved for contracts round 28; MenuFlow stamps the
+  solo launch, `launch_options_for` and the range loadout; co-op goes through the lobby summary's
+  `loadout.weapon_finishes` -> `LobbyState.loadout_from_dict`), `sanitize_map`, `source_of(id)` (default /
+  achievement / notoriety rank). Workshop: `WorkshopFinishPanel` under the parts (`WorkshopScreen.select_finish`,
+  `equip_finish`). Strings `item.finish.<name>.name/.desc`, `ui.workshop.finish.*`.
 * `ContentDB.inject(kind, key, res)`: tests/tooling only (test-only SkillDef/PerkDeckDef);
   `clear_cache()` drops it.
 * `XpCurve.level_for_xp(xp)`, `xp_for_level(level)`. `VoiceLineTable` at `data/voice/lines.tres`.

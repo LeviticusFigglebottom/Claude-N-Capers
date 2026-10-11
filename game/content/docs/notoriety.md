@@ -75,7 +75,8 @@ Every rank records the unlock id `unlock.notoriety.rank_<n>` in `PlayerProfile.u
 preset whose `MaskDef.unlock` is that id. A `NotorietyDef` can also add:
 * `rewards`: mask part or preset ids that the rank grants.
 * `unlocks`: plain unlock ids written into `PlayerProfile.unlocks` (D-062: music tracks,
-  `unlock.music.<track_id>`. ENV C's music table reads them, and we do not check them against it).
+  `unlock.music.<track_id>`. ENV C's music table reads them, and we do not check them against it), and
+  weapon finishes (B7-04, `unlock.finish.<name>`, read by `WeaponFinishes`).
 * `choices`: a reward choice like PD2's infamy tree. The player picks **one** option they do not own yet.
   The pick is stored in `notoriety_choices`. Ranks V, XV and XX share one pool of three colours, so each
   pick shrinks the next choice (3 → 2 → 1).
@@ -94,16 +95,16 @@ All Notoriety parts are exclusive. They never drop from payday cards (`Notoriety
 | VI | Material: Night Anodized |
 | VII | Music: `unlock.music.vault_hymn` ◇ (placeholder id, D-062) |
 | VIII | Colours: Bloodline |
-| X | Preset mask: Ledger Regent (theatre base, Crown Gold, Black Crown, starburst) |
+| X | Preset mask: Ledger Regent (theatre base, Crown Gold, Black Crown, starburst); weapon finish: Case Hardened |
 | XII | Colours: Ghost Ledger |
 | XIII | Music: `unlock.music.long_con` ◇ (placeholder id, D-062) |
 | XIV | Material: Crown Gold |
 | XV | **Choice**: the remaining two from rank V's pool |
-| XVIII | Colours: Black Crown |
+| XVIII | Colours: Black Crown; weapon finish: Brass Engraved |
 | XX | **Choice**: the last one from the pool |
 | XXI | Music: `unlock.music.last_call` ◇ (placeholder id, D-062) |
 | XXII | Colours: Heat Shimmer |
-| XXV | Preset mask: The Last Word (demon base, Carbon Weave, Crown Ember, brow band) |
+| XXV | Preset mask: The Last Word (demon base, Carbon Weave, Crown Ember, brow band); weapon finish: Gilded Ledger |
 
 Other ranks give the badge and the XP bonus only (PD2's later infamy ranks did the same).
 

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="FinishDef" format=3]
+
+[ext_resource type="Script" path="res://content/defs/finish_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://content/defs/finish_layer.gd" id="2_layer"]
+
+[sub_resource type="Resource" id="Resource_layer_0"]
+script = ExtResource("2_layer")
+slots = Array[StringName]([&"steel", &"bare", &"matte", &"alu"])
+albedo = Color(0.78, 0.6, 0.28, 1)
+metallic = 1
+roughness = 0.28
+pattern = &"engrave"
+pattern_color = Color(0.2, 0.14, 0.06, 1)
+pattern_scale = 1.5
+pattern_seed = 111
+
+[resource]
+script = ExtResource("1_def")
+id = &"finish.brass_engraved"
+display_name = "Brass Engraved"
+unlock = &"unlock.finish.brass_engraved"
+default_owned = false
+covers_mods = false
+order = 110
+layers = Array[ExtResource("2_layer")]([SubResource("Resource_layer_0")])
