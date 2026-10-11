@@ -53,6 +53,14 @@ var phase_time: float = 0.0
 var hostages: int = 0
 var hostage_bonus_applied: bool = false
 var running: bool = false
+## QC-35 (D-064, Dockside Burn cartel phase): seconds the police start is held once begin() is called
+## (> 0 = waiting; HeistMission.police_delay_s sets it). Setting 0 while waiting starts the police now.
+var start_delay_s: float = 0.0:
+	set(v):
+		start_delay_s = maxf(v, 0.0)
+		if _start_held and start_delay_s <= 0.0:
+			_start_held = false
+			begin()
 ## Units spawned by the director (alive or not), in order.
 var spawned_total: int = 0
 ## A3-03 (L1.2): pressure 0..1.
@@ -62,6 +70,7 @@ var captain: AegisCaptain = null
 ## A3-03 (L1.5, L4.11): faction EnemyDefs and special caps.
 var roster: EnemyRoster = null
 
+var _start_held: bool = false
 var _runtime: HeistRuntime = null
 var _queue: Array[StringName] = []
 var _queue_index: int = 0
@@ -144,6 +153,9 @@ func begin() -> void:
 		return
 	if _runtime != null and _runtime.heist_mode == Enums.HeistMode.STEALTH_ONLY:
 		return  # S11.3: a stealth-only alarm aborts the heist, no assault
+	if start_delay_s > 0.0:
+		_start_held = true  # QC-35: _physics_process counts start_delay_s down, then begins
+		return
 	running = true
 	wave_index = 1
 	_first_responder_groups_left = tweak.first_responder_groups
@@ -275,6 +287,9 @@ func is_spawn_valid(pos: Vector3, crew: Array[CrewController] = []) -> bool:
 # --- Phase machine ----------------------------------------------------------------------------
 
 func _physics_process(delta: float) -> void:
+	if _start_held and Net.is_authority():
+		start_delay_s -= delta  # the setter begins at 0
+		return
 	if not running or not Net.is_authority() or _runtime == null:
 		return
 	if _runtime.phase == Enums.HeistPhase.ENDED:
@@ -570,8 +585,12 @@ func _path_cost(from: Vector3, to: Vector3) -> float:
 	return total
 
 
-func _on_heist_phase_changed(_old_phase: int, new_phase: int) -> void:
-	if new_phase == Enums.HeistPhase.LOUD:
+func _on_heist_phase_changed(old_phase: int, new_phase: int) -> void:
+	if new_phase != Enums.HeistPhase.LOUD:
+		return
+	if old_phase == Enums.HeistPhase.LOADING:
+		begin.call_deferred()  # QC-35: loud at load (LOUD_ONLY): after the mission's start hook may hold it
+	else:
 		begin()
 
 
