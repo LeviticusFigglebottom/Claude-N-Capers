@@ -18,6 +18,7 @@ Locomotion clips plant the stance foot exactly: at ``speed`` m/s (for 1.78 m; mu
 
 import _anim as anim
 import _anim_humanoid as lib
+import _anim_p5 as p5
 import _rig as rig
 
 TRI_BUDGET = 35000
@@ -107,9 +108,31 @@ CLIPS = {
     # in place; ENV A moves the root straight down at `speed` (2.5 m/s native: an 8 m skylight drop in ~3 hops).
     # `land` = the feet hit the wall (thud). Rope / hand / wall placement: SOURCE.txt `rappel_rope`.
     "rappel": {"frames": 30, "loop": True, "speed": 2.5, "priority": 3, "axis": "down", "events": {"land": 0}},
+    # P5 NPC ambient set (priority 5, D3-02: Afterhours, Gallery Night, Meridian Federal, Rolling Thunder casting), all
+    # loops. Dances: 8 beats at 120 BPM (beat every 15 f from frame 0; speed_scale = track_bpm / 120). Bar, counter,
+    # painting, seat and wall placement and the new prop grips: SOURCE.txt (`p5_placement`, `<prop>_grip`).
+    "dance_a": {"frames": 120, "loop": True, "speed": 0.0, "priority": 5, "bpm": 120, "beats": 8},
+    "dance_b": {"frames": 120, "loop": True, "speed": 0.0, "priority": 5, "bpm": 120, "beats": 8},
+    "dance_c": {"frames": 120, "loop": True, "speed": 0.0, "priority": 5, "bpm": 120, "beats": 8},
+    "bartender_wipe": {"frames": 180, "loop": True, "speed": 0.0, "priority": 5},
+    "bartender_pour": {"frames": 150, "loop": True, "speed": 0.0, "priority": 5,
+                       "events": {"lift": 2, "pour_start": 39, "pour_end": 77, "set_down": 110}},
+    "bouncer_idle": {"frames": 300, "loop": True, "speed": 0.0, "priority": 5, "events": {"watch": 222}},
+    "teller_count": {"frames": 240, "loop": True, "speed": 0.0, "priority": 5,
+                     "events": {"count_start": 6, "count_end": 120, "stack_down": 144, "tap_1": 177, "tap_2": 189}},
+    "curator_inspect": {"frames": 360, "loop": True, "speed": 0.0, "priority": 5,
+                        "events": {"step_back_r": 93, "step_back_l": 110, "step_fwd_l": 256, "step_fwd_r": 272}},
+    "walk_text": {"frames": 36, "loop": True, "speed": 1.2, "priority": 5},
+    "cower_seated": {"frames": 90, "loop": True, "speed": 0.0, "priority": 5},
+    "cower_stand": {"frames": 150, "loop": True, "speed": 0.0, "priority": 5, "events": {"flinch_1": 39, "flinch_2": 108}},
 }
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)
+#: Clips whose solved frames build() keeps for SOURCE.txt measurements.
+KEEP = ("sit_bed_read", "mop", "rappel", "bartender_pour", "bartender_wipe", "teller_count", "curator_inspect",
+        "cower_seated", "cower_stand", "walk_text", "dance_a", "dance_b", "dance_c", "bouncer_idle")
+#: The P5 set (D3-02): the SOURCE check row also reports contact_slide (planted heel / ball / toe tip, mm per frame).
+P5 = sorted(name for name, row in CLIPS.items() if row["priority"] == 5)
 #: Contract names not delivered by this asset yet (none since the P3 specials).
 NOT_YET = []
 
@@ -134,7 +157,7 @@ def build(ctx) -> None:
     keep = {}
     for name in sorted(CLIPS):
         baked = anim.bake(solver, clips[name])
-        if name in ("sit_bed_read", "mop", "rappel"):
+        if name in KEEP:
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -143,6 +166,9 @@ def build(ctx) -> None:
                f" reach_err={c['max_reach_err_m'] * 1000:.1f}mm step={c['max_joint_step_deg']:.1f}deg")
         if "max_foot_slide_mm" in c:
             row += f" slide={c['max_foot_slide_mm']:.3f}mm/f"
+        elif name in P5:
+            cs, _low = p5.contact_slide(sk, baked.frames)
+            row += f" contact_slide={cs:.3f}mm/f"
         report.append(row)
         print(f"[anim] {row}")
     for pb in arm.pose.bones:
@@ -179,6 +205,8 @@ def build(ctx) -> None:
             extra += f" root_turn_deg={row['turn_deg']}"
         if "axis" in row:
             extra += f" travel_axis={row['axis']}"
+        if "bpm" in row:
+            extra += f" bpm={row['bpm']} beats={row['beats']} beat_frames={row['frames'] // row['beats']}"
         ctx.source_extra[f"clip.{name}"] = extra
     for i, row in enumerate(report):
         ctx.source_extra[f"check.{i:02d}"] = row
@@ -203,6 +231,15 @@ PROP_DOCS = {
     "book": "open book 0.30 x 0.23 x 0.022 m: origin at its centre, +Y = the top edge, the pages face +Z (toward the "
             "reader); right hand behind the right cover (thumb side over the edge), the left hand behind the left cover "
             "except during the page turn",
+    "rag": "bar rag (a folded towel) 0.20 x 0.022 x 0.13 m: origin at the centre of its underside, +Y = up; flat under "
+           "the right palm (fingers toward -Z), lying on the bar top in bartender_wipe",
+    "bottle": "liquor bottle r 0.04 m, 0.30 m tall (mouth at +Y 0.30): origin at the base centre, +Y = up the axis; the "
+              "right hand round the body 0.15 m up from its +X side (thumb up); bartender_pour stands it on the bar at frame 0 "
+              "and from `set_down` on",
+    "glass": "tumbler r 0.04 m, h 0.10 m: origin at the base centre, +Y = up; the LEFT hand round it from its -X side, "
+             "standing on the bar for the whole of bartender_pour",
+    "cash": "banknote stack 0.156 x 0.015 x 0.066 m (+X = the long edge, +Y = the face normal, Z = the short edge): origin "
+            "at its centre; lying in the LEFT palm (palm on the -Y face, fingers along +X) in teller_count",
 }
 
 
@@ -213,7 +250,8 @@ def _npc_source(ctx, sk, keep: dict) -> None:
     for prop, doc in PROP_DOCS.items():
         basis, origin = lib.prop_in_socket_godot(sk, prop)
         doc = doc.format(length=lib.MOP_LENGTH, r=lib.MOP_GRIP_R, l=lib.MOP_GRIP_L)
-        ctx.source_extra[f"{prop}_grip"] = f"{_xform(basis, origin)} relative to HandR/Socket; {doc}"
+        hand = "HandL" if lib.GRIPS[prop]["sfx"] == "L" else "HandR"
+        ctx.source_extra[f"{prop}_grip"] = f"{_xform(basis, origin)} relative to {hand}/Socket; {doc}"
     ctx.source_extra["npc_seat"] = (
         f"sit_chair, desk_type, desk_work, phone_seated, sit_chair_watch: root on the floor under the seat centre, "
         f"facing the desk; seat top {lib.SEAT_H:.2f} m (pelvis on it, thighs level, feet flat 0.40 m ahead), desk top "
@@ -251,6 +289,13 @@ def _npc_source(ctx, sk, keep: dict) -> None:
     _rappel_source(ctx, sk, keep.get("rappel"))
     ctx.source_extra["mug_carry_walk_speed"] = (
         "mug_carry_walk is a careful carry at 1.3 m/s native (walk is 1.6); speed_scale = v / 1.3")
+    _p5_source(ctx, sk, keep)
+
+
+def _p5_source(ctx, sk, keep: dict) -> None:
+    """SOURCE.txt facts for the P5 NPC set (D3-02): dance tempo, bar / counter / painting / seat / wall placement."""
+    for key, text in p5.source_notes(sk, CLIPS, keep).items():
+        ctx.source_extra[key] = text
 
 
 def _rappel_source(ctx, sk, baked) -> None:

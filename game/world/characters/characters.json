@@ -9,6 +9,36 @@
 			"test": true
 		},
 		{
+			"asset": "char_armored_car_crew",
+			"id": "armored_car_crew",
+			"scene": "res://world/characters/armored_car_crew/armored_car_crew.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_armored_car_crew_b",
+			"id": "armored_car_crew_b",
+			"scene": "res://world/characters/armored_car_crew_b/armored_car_crew_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_customer",
+			"id": "bank_customer",
+			"scene": "res://world/characters/bank_customer/bank_customer.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_customer_b",
+			"id": "bank_customer_b",
+			"scene": "res://world/characters/bank_customer_b/bank_customer_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_manager",
+			"id": "bank_manager",
+			"scene": "res://world/characters/bank_manager/bank_manager.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_brandt",
 			"id": "brandt",
 			"scene": "res://world/characters/brandt/brandt.tscn",
@@ -96,6 +126,60 @@
 			"asset": "char_civilian_sales",
 			"id": "civilian_sales",
 			"scene": "res://world/characters/civilian_sales/civilian_sales.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bartender",
+			"id": "club_bartender",
+			"scene": "res://world/characters/club_bartender/club_bartender.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bartender_b",
+			"id": "club_bartender_b",
+			"scene": "res://world/characters/club_bartender_b/club_bartender_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bouncer",
+			"id": "club_bouncer",
+			"scene": "res://world/characters/club_bouncer/club_bouncer.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bouncer_b",
+			"id": "club_bouncer_b",
+			"scene": "res://world/characters/club_bouncer_b/club_bouncer_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dj",
+			"id": "club_dj",
+			"scene": "res://world/characters/club_dj/club_dj.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_patron",
+			"id": "club_patron",
+			"scene": "res://world/characters/club_patron/club_patron.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_patron_b",
+			"id": "club_patron_b",
+			"scene": "res://world/characters/club_patron_b/club_patron_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_patron_c",
+			"id": "club_patron_c",
+			"scene": "res://world/characters/club_patron_c/club_patron_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_patron_d",
+			"id": "club_patron_d",
+			"scene": "res://world/characters/club_patron_d/club_patron_d.tscn",
 			"test": false
 		},
 		{
@@ -201,6 +285,48 @@
 			"test": false,
 			"variant": "sentinel",
 			"variant_of": "frd_agent"
+		},
+		{
+			"asset": "char_gallery_attendant",
+			"id": "gallery_attendant",
+			"scene": "res://world/characters/gallery_attendant/gallery_attendant.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_attendant_b",
+			"id": "gallery_attendant_b",
+			"scene": "res://world/characters/gallery_attendant_b/gallery_attendant_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_curator",
+			"id": "gallery_curator",
+			"scene": "res://world/characters/gallery_curator/gallery_curator.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_guard",
+			"id": "gallery_guard",
+			"scene": "res://world/characters/gallery_guard/gallery_guard.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_guard_b",
+			"id": "gallery_guard_b",
+			"scene": "res://world/characters/gallery_guard_b/gallery_guard_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_patron",
+			"id": "gallery_patron",
+			"scene": "res://world/characters/gallery_patron/gallery_patron.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_patron_b",
+			"id": "gallery_patron_b",
+			"scene": "res://world/characters/gallery_patron_b/gallery_patron_b.tscn",
+			"test": false
 		},
 		{
 			"asset": "char_longshot",
