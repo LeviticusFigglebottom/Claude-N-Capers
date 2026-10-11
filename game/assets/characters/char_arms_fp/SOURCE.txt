@@ -30,40 +30,40 @@ check.bow_reload: reach_err=0.0mm step=41.4deg
 check.bow_reload_empty: reach_err=0.0mm step=41.4deg
 check.bow_sprint: reach_err=0.0mm step=7.5deg
 check.break_action_ads_idle: reach_err=0.0mm step=0.0deg
-check.break_action_draw: reach_err=0.0mm step=12.2deg
+check.break_action_draw: reach_err=0.0mm step=14.6deg
 check.break_action_fire: reach_err=0.0mm step=13.2deg
 check.break_action_fire_ads: reach_err=0.0mm step=9.0deg
-check.break_action_holster: reach_err=0.0mm step=12.2deg
+check.break_action_holster: reach_err=0.0mm step=14.6deg
 check.break_action_idle: reach_err=0.0mm step=0.1deg
-check.break_action_reload: reach_err=0.0mm step=34.2deg
-check.break_action_reload_empty: reach_err=0.0mm step=34.2deg
+check.break_action_reload: reach_err=0.0mm step=45.8deg
+check.break_action_reload_empty: reach_err=0.0mm step=45.8deg
 check.break_action_sprint: reach_err=0.0mm step=4.3deg
 check.crossbow_ads_idle: reach_err=0.0mm step=0.0deg
-check.crossbow_draw: reach_err=0.0mm step=12.8deg
+check.crossbow_draw: reach_err=0.0mm step=12.1deg
 check.crossbow_fire: reach_err=0.0mm step=6.9deg
 check.crossbow_fire_ads: reach_err=0.0mm step=4.4deg
-check.crossbow_holster: reach_err=0.0mm step=12.8deg
+check.crossbow_holster: reach_err=0.0mm step=12.1deg
 check.crossbow_idle: reach_err=0.0mm step=0.1deg
 check.crossbow_reload: reach_err=0.0mm step=79.6deg
 check.crossbow_reload_empty: reach_err=0.0mm step=79.6deg
 check.crossbow_sprint: reach_err=0.0mm step=3.0deg
 check.flamethrower_ads_idle: reach_err=0.0mm step=0.0deg
-check.flamethrower_draw: reach_err=0.0mm step=7.9deg
+check.flamethrower_draw: reach_err=0.0mm step=7.1deg
 check.flamethrower_fire: reach_err=0.0mm step=1.2deg
 check.flamethrower_fire_ads: reach_err=0.0mm step=0.7deg
 check.flamethrower_fire_end: reach_err=0.0mm step=3.4deg
 check.flamethrower_fire_hold: reach_err=0.0mm step=0.7deg
 check.flamethrower_fire_start: reach_err=0.0mm step=7.9deg
-check.flamethrower_holster: reach_err=0.0mm step=7.9deg
+check.flamethrower_holster: reach_err=0.0mm step=7.1deg
 check.flamethrower_idle: reach_err=0.0mm step=0.1deg
-check.flamethrower_reload: reach_err=0.0mm step=10.6deg
+check.flamethrower_reload: reach_err=0.0mm step=8.3deg
 check.flamethrower_reload_empty: reach_err=0.0mm step=11.4deg
 check.flamethrower_sprint: reach_err=0.0mm step=2.9deg
 check.launcher_ads_idle: reach_err=0.0mm step=0.0deg
-check.launcher_draw: reach_err=0.0mm step=10.6deg
+check.launcher_draw: reach_err=0.0mm step=12.3deg
 check.launcher_fire: reach_err=0.0mm step=15.6deg
 check.launcher_fire_ads: reach_err=0.0mm step=10.7deg
-check.launcher_holster: reach_err=0.0mm step=10.6deg
+check.launcher_holster: reach_err=0.0mm step=12.3deg
 check.launcher_idle: reach_err=0.0mm step=0.1deg
 check.launcher_reload: reach_err=0.0mm step=33.5deg
 check.launcher_reload_empty: reach_err=0.0mm step=33.5deg
@@ -75,11 +75,11 @@ check.lever_fire_ads: reach_err=0.0mm step=19.0deg
 check.lever_holster: reach_err=0.0mm step=12.1deg
 check.lever_idle: reach_err=0.0mm step=0.1deg
 check.lever_reload: reach_err=0.0mm step=18.6deg
-check.lever_reload_empty: reach_err=0.0mm step=19.0deg
+check.lever_reload_empty: reach_err=0.0mm step=19.3deg
 check.lever_reload_end: reach_err=0.0mm step=18.6deg
-check.lever_reload_end_empty: reach_err=0.0mm step=19.0deg
+check.lever_reload_end_empty: reach_err=0.0mm step=19.3deg
 check.lever_reload_loop: reach_err=0.0mm step=9.6deg
-check.lever_reload_start: reach_err=0.0mm step=12.6deg
+check.lever_reload_start: reach_err=0.0mm step=15.8deg
 check.lever_sprint: reach_err=0.0mm step=3.7deg
 check.lmg_ads_idle: reach_err=0.0mm step=0.0deg
 check.lmg_draw: reach_err=0.0mm step=9.0deg
@@ -91,14 +91,14 @@ check.lmg_reload: reach_err=0.0mm step=30.3deg
 check.lmg_reload_empty: reach_err=0.0mm step=30.3deg
 check.lmg_sprint: reach_err=0.0mm step=4.9deg
 check.minigun_ads_idle: reach_err=0.0mm step=0.0deg
-check.minigun_draw: reach_err=0.0mm step=3.9deg
+check.minigun_draw: reach_err=0.0mm step=3.4deg
 check.minigun_fire: reach_err=0.0mm step=2.3deg
 check.minigun_fire_ads: reach_err=0.0mm step=1.8deg
 check.minigun_fire_hold: reach_err=0.0mm step=1.3deg
-check.minigun_holster: reach_err=0.0mm step=3.9deg
+check.minigun_holster: reach_err=0.0mm step=3.4deg
 check.minigun_idle: reach_err=0.0mm step=0.1deg
-check.minigun_reload: reach_err=0.0mm step=23.0deg
-check.minigun_reload_empty: reach_err=0.0mm step=16.7deg
+check.minigun_reload: reach_err=0.0mm step=13.0deg
+check.minigun_reload_empty: reach_err=0.0mm step=13.0deg
 check.minigun_spin_down: reach_err=0.0mm step=1.8deg
 check.minigun_spin_up: reach_err=0.0mm step=5.5deg
 check.minigun_sprint: reach_err=0.0mm step=3.2deg
@@ -134,13 +134,13 @@ check.rifle_sprint: reach_err=0.0mm step=4.5deg
 check.saw_ads_idle: reach_err=0.0mm step=0.0deg
 check.saw_cut_end: reach_err=0.0mm step=4.8deg
 check.saw_cut_hold: reach_err=0.0mm step=1.2deg
-check.saw_draw: reach_err=0.0mm step=8.1deg
+check.saw_draw: reach_err=0.0mm step=6.1deg
 check.saw_fire: reach_err=0.0mm step=1.6deg
 check.saw_fire_ads: reach_err=0.0mm step=1.1deg
-check.saw_holster: reach_err=0.0mm step=8.1deg
+check.saw_holster: reach_err=0.0mm step=6.1deg
 check.saw_idle: reach_err=0.0mm step=0.1deg
-check.saw_reload: reach_err=0.0mm step=45.9deg
-check.saw_reload_empty: reach_err=0.0mm step=45.9deg
+check.saw_reload: reach_err=0.0mm step=40.5deg
+check.saw_reload_empty: reach_err=0.0mm step=40.5deg
 check.saw_rev: reach_err=0.0mm step=6.5deg
 check.saw_sprint: reach_err=0.0mm step=3.0deg
 check.shotgun_ads_idle: reach_err=0.0mm step=0.0deg
@@ -204,62 +204,62 @@ clip.bow_fire_ads: 15f loop=False events=release@0,shot@0,done@12
 clip.bow_hold: 90f loop=True
 clip.bow_holster: 18f loop=False events=gone@18
 clip.bow_idle: 90f loop=True
-clip.bow_nock: 30f loop=False events=arrow_show@11,nocked@23,done@27
+clip.bow_nock: 24f loop=False events=arrow_show@9,nocked@19,done@21
 clip.bow_release: 15f loop=False events=release@0,shot@0,done@12
-clip.bow_reload: 30f loop=False events=arrow_show@11,nocked@23,done@27
-clip.bow_reload_empty: 30f loop=False events=arrow_show@11,nocked@23,done@27
+clip.bow_reload: 24f loop=False events=arrow_show@9,nocked@19,done@21
+clip.bow_reload_empty: 24f loop=False events=arrow_show@9,nocked@19,done@21
 clip.bow_sprint: 18f loop=True
 clip.break_action_ads_idle: 90f loop=True
-clip.break_action_draw: 18f loop=False events=ready@18
+clip.break_action_draw: 15f loop=False events=ready@15
 clip.break_action_fire: 10f loop=False events=shot@0
 clip.break_action_fire_ads: 10f loop=False events=shot@0
-clip.break_action_holster: 18f loop=False events=gone@18
+clip.break_action_holster: 15f loop=False events=gone@15
 clip.break_action_idle: 90f loop=True
-clip.break_action_reload: 78f loop=False events=breech_open@12,eject@20,shell_in_1@41,shell_in_2@50,breech_close@62,done@70
-clip.break_action_reload_empty: 78f loop=False events=breech_open@12,eject@20,shell_in_1@41,shell_in_2@50,breech_close@62,done@70
+clip.break_action_reload: 72f loop=False events=breech_open@11,eject@18,shell_in_1@37,shell_in_2@46,breech_close@58,done@64
+clip.break_action_reload_empty: 72f loop=False events=breech_open@11,eject@18,shell_in_1@37,shell_in_2@46,breech_close@58,done@64
 clip.break_action_sprint: 18f loop=True
 clip.crossbow_ads_idle: 90f loop=True
-clip.crossbow_draw: 17f loop=False events=ready@17
+clip.crossbow_draw: 18f loop=False events=ready@18
 clip.crossbow_fire: 10f loop=False events=shot@0,string_release@0
 clip.crossbow_fire_ads: 10f loop=False events=shot@0,string_release@0
-clip.crossbow_holster: 17f loop=False events=gone@17
+clip.crossbow_holster: 18f loop=False events=gone@18
 clip.crossbow_idle: 90f loop=True
-clip.crossbow_reload: 60f loop=False events=cock@12,string_back@22,bolt_show@30,bolt_in@43,done@53
-clip.crossbow_reload_empty: 60f loop=False events=cock@12,string_back@22,bolt_show@30,bolt_in@43,done@53
+clip.crossbow_reload: 48f loop=False events=cock@10,string_back@17,bolt_show@24,bolt_in@35,done@41
+clip.crossbow_reload_empty: 48f loop=False events=cock@10,string_back@17,bolt_show@24,bolt_in@35,done@41
 clip.crossbow_sprint: 18f loop=True
 clip.flamethrower_ads_idle: 90f loop=True
-clip.flamethrower_draw: 24f loop=False events=ready@24
+clip.flamethrower_draw: 27f loop=False events=ready@27
 clip.flamethrower_fire: 3f loop=False events=shot@0
 clip.flamethrower_fire_ads: 3f loop=False events=shot@0
 clip.flamethrower_fire_end: 12f loop=False events=extinguish@0,done@10
 clip.flamethrower_fire_hold: 30f loop=True
 clip.flamethrower_fire_start: 9f loop=False events=ignite@2,ready@9
-clip.flamethrower_holster: 24f loop=False events=gone@24
+clip.flamethrower_holster: 27f loop=False events=gone@27
 clip.flamethrower_idle: 90f loop=True
-clip.flamethrower_reload: 90f loop=False events=mag_out@16,mag_swap@32,mag_in@56,done@80
-clip.flamethrower_reload_empty: 108f loop=False events=mag_out@15,mag_swap@35,mag_in@67,done@98
+clip.flamethrower_reload: 180f loop=False events=mag_out@32,mag_swap@65,mag_in@112,done@170
+clip.flamethrower_reload_empty: 210f loop=False events=mag_out@29,mag_swap@67,mag_in@130,done@200
 clip.flamethrower_sprint: 18f loop=True
 clip.launcher_ads_idle: 90f loop=True
-clip.launcher_draw: 21f loop=False events=ready@21
+clip.launcher_draw: 18f loop=False events=ready@18
 clip.launcher_fire: 14f loop=False events=shot@0
 clip.launcher_fire_ads: 14f loop=False events=shot@0
-clip.launcher_holster: 21f loop=False events=gone@21
+clip.launcher_holster: 18f loop=False events=gone@18
 clip.launcher_idle: 90f loop=True
 clip.launcher_reload: 90f loop=False events=breech_open@14,eject@22,round_in@52,breech_close@72,done@82
 clip.launcher_reload_empty: 90f loop=False events=breech_open@14,eject@22,round_in@52,breech_close@72,done@82
 clip.launcher_sprint: 18f loop=True
 clip.lever_ads_idle: 90f loop=True
 clip.lever_draw: 18f loop=False events=ready@18
-clip.lever_fire: 20f loop=False events=shot@0,lever_open@7,lever_close@12,done@17
-clip.lever_fire_ads: 20f loop=False events=shot@0,lever_open@7,lever_close@12,done@17
+clip.lever_fire: 24f loop=False events=shot@0,lever_open@9,lever_close@14,done@21
+clip.lever_fire_ads: 24f loop=False events=shot@0,lever_open@9,lever_close@14,done@21
 clip.lever_holster: 18f loop=False events=gone@18
 clip.lever_idle: 90f loop=True
-clip.lever_reload: 147f loop=False events=round_in_1@25,round_in_2@40,round_in_3@55,round_in_4@70,round_in_5@85,round_in_6@100,round_in_7@115,round_in_8@130,done@145
-clip.lever_reload_empty: 165f loop=False events=round_in_1@25,round_in_2@40,round_in_3@55,round_in_4@70,round_in_5@85,round_in_6@100,round_in_7@115,round_in_8@130,lever_open@151,lever_close@156,done@162
+clip.lever_reload: 136f loop=False events=round_in_1@21,round_in_2@35,round_in_3@49,round_in_4@63,round_in_5@77,round_in_6@91,round_in_7@105,round_in_8@119,done@134
+clip.lever_reload_empty: 151f loop=False events=round_in_1@21,round_in_2@35,round_in_3@49,round_in_4@63,round_in_5@77,round_in_6@91,round_in_7@105,round_in_8@119,lever_open@138,lever_close@143,done@148
 clip.lever_reload_end: 12f loop=False events=done@10
-clip.lever_reload_end_empty: 30f loop=False events=lever_open@16,lever_close@21,done@27
-clip.lever_reload_loop: 15f loop=False events=round_in@10,done@15
-clip.lever_reload_start: 15f loop=False events=ready@15
+clip.lever_reload_end_empty: 27f loop=False events=lever_open@14,lever_close@19,done@24
+clip.lever_reload_loop: 14f loop=False events=round_in@9,done@14
+clip.lever_reload_start: 12f loop=False events=ready@12
 clip.lever_sprint: 18f loop=True
 clip.lmg_ads_idle: 90f loop=True
 clip.lmg_draw: 27f loop=False events=ready@27
@@ -271,14 +271,14 @@ clip.lmg_reload: 168f loop=False events=cover_open@24,mag_out@54,mag_in@100,belt
 clip.lmg_reload_empty: 198f loop=False events=cover_open@24,mag_out@54,mag_in@100,belt_seat@116,cover_close@132,charge@160,done@186
 clip.lmg_sprint: 18f loop=True
 clip.minigun_ads_idle: 90f loop=True
-clip.minigun_draw: 36f loop=False events=ready@36
+clip.minigun_draw: 42f loop=False events=ready@42
 clip.minigun_fire: 3f loop=False events=shot@0
 clip.minigun_fire_ads: 3f loop=False events=shot@0
 clip.minigun_fire_hold: 30f loop=True
-clip.minigun_holster: 36f loop=False events=gone@36
+clip.minigun_holster: 42f loop=False events=gone@42
 clip.minigun_idle: 90f loop=True
-clip.minigun_reload: 180f loop=False events=mag_out@32,mag_swap@65,mag_in@112,belt_seat@133,done@170
-clip.minigun_reload_empty: 198f loop=False events=mag_out@28,mag_swap@63,mag_in@123,belt_seat@147,done@188
+clip.minigun_reload: 240f loop=False events=mag_out@43,mag_swap@86,mag_in@149,belt_seat@178,done@230
+clip.minigun_reload_empty: 270f loop=False events=mag_out@38,mag_swap@86,mag_in@167,belt_seat@200,done@260
 clip.minigun_spin_down: 24f loop=False events=stopped@24
 clip.minigun_spin_up: 15f loop=False events=spin@0,spun@15
 clip.minigun_sprint: 24f loop=True
@@ -314,13 +314,13 @@ clip.rifle_sprint: 18f loop=True
 clip.saw_ads_idle: 90f loop=True
 clip.saw_cut_end: 12f loop=False events=done@10
 clip.saw_cut_hold: 30f loop=True
-clip.saw_draw: 18f loop=False events=ready@18
+clip.saw_draw: 24f loop=False events=ready@24
 clip.saw_fire: 3f loop=False events=shot@0
 clip.saw_fire_ads: 3f loop=False events=shot@0
-clip.saw_holster: 18f loop=False events=gone@18
+clip.saw_holster: 24f loop=False events=gone@24
 clip.saw_idle: 90f loop=True
-clip.saw_reload: 90f loop=False events=nut_off@14,blade_out@23,blade_in@56,nut_on@65,done@82
-clip.saw_reload_empty: 90f loop=False events=nut_off@14,blade_out@23,blade_in@56,nut_on@65,done@82
+clip.saw_reload: 114f loop=False events=nut_off@18,blade_out@30,blade_in@71,nut_on@82,done@106
+clip.saw_reload_empty: 114f loop=False events=nut_off@18,blade_out@30,blade_in@71,nut_on@82,done@106
 clip.saw_rev: 12f loop=False events=rev@0,ready@12
 clip.saw_sprint: 18f loop=True
 clip.shotgun_ads_idle: 90f loop=True
@@ -373,10 +373,10 @@ curve.bow_fire_ads: draw=1.000,-0.060,0.021,0.007,-0.013,0.007,-0.000,-0.002,0.0
 curve.bow_hold: draw=1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000,1.000
 curve.bow_holster: draw=0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000
 curve.bow_idle: draw=0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000
-curve.bow_nock: draw=0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000
+curve.bow_nock: draw=0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000
 curve.bow_release: draw=1.000,-0.060,0.021,0.007,-0.013,0.007,-0.000,-0.002,0.002,-0.000,-0.000,0.000,-0.000,-0.000,0.000,-0.000
-curve.bow_reload: draw=0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000
-curve.bow_reload_empty: draw=0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000
+curve.bow_reload: draw=0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000
+curve.bow_reload_empty: draw=0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000
 curve.bow_sprint: draw=0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000
 fp.akimbo: one gun on the weapon bone (right) + the offhand gun on hand.L; fire / fire_ads kick the right gun, fire_l / fire_ads_l the left one (3 f, under one shot interval up to 600 rpm: alternate them per shot); ads_idle raises both guns closer together (no sight alignment, the crosshair stays between them); reload: both guns tilt inward, mag_out_r / mag_out_l drop the magazines, the guns dip below the view, mag_in_r / mag_in_l happen off screen, done; reload_empty adds slide_release_r / slide_release_l (thumb on the slide stop); the right magazine falls on the magazine bone and is re-seated off screen; the left magazine has no bone: hide it (or drop a physics copy) at mag_out_l, show it at mag_in_l; lengths from the akimbo weapon data (anim_set akimbo) when present, else 2.0 s / 2.6 s / equip 0.5 s
 fp.bow: held in the LEFT hand: the weapon bone carries the bow frame (origin = the riser grip, Y = arrow direction, Z = up the riser) at hand.L x the fp.offhand_grip offset in every bow clip (it moves relative to hand.R); the right hand holds the nocked arrow on the string; Arrow (Magwell) rides the magazine bone: identity = nocked at brace, drawn back 0.400 m x draw along local +Z, carried by the right hand in nock from arrow_show, on the string at nocked; hide it at release (spawn the projectile); StringUpper / StringLower turn about their cam axles so the string's nock point sits 0.175 + 0.400 x draw m behind the grip (draw per frame: curve.bow_<clip>, 0 = brace, 1 = full draw, negative = the string's forward overshoot after release); clips: draw_string (charge, last frame = hold frame 0, event drawn), hold* (full draw, tremble), release (release@0), nock (= reload = reload_empty), fire / fire_ads = release; no sights: ads_idle raises the undrawn bow to the centre

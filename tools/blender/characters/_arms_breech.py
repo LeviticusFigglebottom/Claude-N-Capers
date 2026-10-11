@@ -33,8 +33,7 @@ import numpy as np
 import _anim as A
 from _anim import FPS, Skeleton, hand_shape, rxd, smooth, unit, v3
 from _arms_choreo import I3, Choreo, Hand, Key, State, as_cam, hand_cam, mag_cam
-from _arms_sets import (BREAK_OPEN_DEG, LAUNCHER_OPEN_DEG, LEVER_HAND_FOLLOW, LEVER_OPEN_DEG, STRING_TRAVEL, FPSet,
-                        lever_pieces)
+from _arms_sets import BREAK_OPEN_DEG, LAUNCHER_OPEN_DEG, LEVER_HAND_FOLLOW, LEVER_OPEN_DEG, STRING_TRAVEL, FPSet
 
 SHELL_LEN = {"break_action": 0.068, "launcher": 0.100}
 
@@ -120,7 +119,7 @@ def clip_break_reload(kit, s: FPSet, N: int):
             K(ej, jolt, on_breech(s, sup, 1.0).moved(v3(-0.05, -0.04, -0.03)).with_shape(hand_shape("relaxed")), g,
               blade=bl, ease="snap"),
             K(ej + 5, opn, pouch.moved(v3(0.06, 0.12, 0.16)), g, blade=bl, arc_l=(-0.05, 0.0, -0.02))]
-    pick = ins[0] - (16 if heavy else 13)
+    pick = max(ins[0] - (16 if heavy else 13), ej + 8)      # >= 3 f from the flick to the pouch (short data reloads)
     keys.append(K(pick, load, pouch, g, blade=bl, ease="inout"))
     for k, f_in in enumerate(ins):
         keys.append(K(f_in - 5, load, _shell_hand(kit, s, load, k, 1.0, 0.0), g, blade=bl,
@@ -195,14 +194,14 @@ def clip_crossbow_reload(kit, s: FPSet, N: int):
             K(c - 5, tilt, hook(0.0, "flat").moved(v3(0.0, 0.03, 0.04)), g, blade=bl, arc_l=(-0.04, 0.0, 0.04)),
             K(c, tilt, hook(0.0), g, blade=bl, ease="out"),
             K(sb, pull, hook(1.0), g, blade=bl, ease="heavy"),
-            K(sb + 3, tilt, hook(1.0, "relaxed").moved(v3(-0.02, 0.0, 0.03)), g, blade=bl, ease="out"),
+            K(sb + min(3, max(1, (bs - sb) // 3)), tilt, hook(1.0, "relaxed").moved(v3(-0.02, 0.0, 0.03)), g, blade=bl, ease="out"),
             K(bs, tilt, bolt_grip, g, mag=mag_for(pouch), blade=bl, arc_l=(-0.06, 0.0, 0.0)),
             K(bi - 7, tilt, bolt_grip, g, mag=("w", I3.copy(), v3(-0.004, -0.075, 0.030)), blade=bl,
               arc_m=(-0.07, 0.0, 0.02)),
             K(bi - 3, tilt, bolt_grip, g, mag=("w", I3.copy(), v3(0.0, -0.035, 0.004)), blade=bl),
             K(bi, hold_frame(s.reload_tilt, (0.0, 0.004, 0.003), pitch=0.8), bolt_grip, g, mag=None, blade=bl,
               ease="out"),
-            K(bi + 4, tilt, as_cam_stub(bolt_grip), g, blade=bl),
+            K(bi + min(4, max(2, (done - bi) // 3)), tilt, as_cam_stub(bolt_grip), g, blade=bl),
             K(done, hip, sup, g, blade=bl, arc_l=(-0.03, 0.0, -0.04)),
             K(N, hip, sup, g, blade=bl, ease="settle")]
     ch = Choreo(keys)
@@ -413,7 +412,9 @@ def breech_fns(sk: Skeleton, s: FPSet) -> dict:
             fn = lever_end(kit, s, N, clip == "reload_end_empty")
         elif clip in ("reload", "reload_empty"):
             empty = clip == "reload_empty"
-            st_n, lp, en, ee, n = lever_pieces(_lever_row(s))
+            # the set's own pieces (their lengths and events agree with the composed clip's)
+            st_n, lp, en, ee = (s.frames(c) for c in ("reload_start", "reload_loop", "reload_end", "reload_end_empty"))
+            n = sum(1 for e in s.ev(clip) if e.startswith("round_in_"))
             parts = [(st_n, lever_start(kit, s, st_n))] + [(lp, lever_loop(kit, s, lp))] * n
             parts.append((ee if empty else en, lever_end(kit, s, ee if empty else en, empty)))
             fn = CL.concat(parts)
@@ -421,11 +422,6 @@ def breech_fns(sk: Skeleton, s: FPSet) -> dict:
             raise ValueError(f"{s.name}: no builder for clip {clip}")
         out[clip] = fn
     return out
-
-
-def _lever_row(s: FPSet) -> dict:
-    from _arms_sets import LEVER_DATA  # noqa: PLC0415
-    return LEVER_DATA
 
 
 def _fire_with_parts(kit, s: FPSet, N: int, ads: bool):
