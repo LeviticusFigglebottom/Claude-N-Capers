@@ -16,7 +16,7 @@
 		"secondary": "weapon.sparrow_mp", "secondary_mods": ["mod.sparrow_extended_mag"],
 		"melee": "melee.folding_knife", "throwable": "throwable.steady_flask", "deployable": "deployable.doctor_bag",
 		"deployable_secondary": "", "armor": "armor.tailored_suit", "mask": "mask.custom.1",
-		"perk_deck": "perk.bulk", "perk_deck_cards": 5,
+		"perk_deck": "perk.bulk", "heister": "", "perk_deck_cards": 5,
 		"skills": {"skill.slipstream.light_step": 2, "skill.juggernaut.thick_skin": 2}
 	},
 	"skill_sets": [{"skill.slipstream.light_step": 2, "skill.juggernaut.thick_skin": 2}, {}],

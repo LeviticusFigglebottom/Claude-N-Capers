@@ -8,7 +8,7 @@ current when an API changes.
 content/
   audio/                    MusicCatalog (+ MusicCatalogTweak / MusicStubTrack): view over C's music table (B5-03)
   data/                     every balance number (.tres / .csv); no constants in scripts
-    weapons/ mods/ melee/ armor/ deployables/ loot/ throwables/ difficulty/ masks/ contacts/ preplanning/
+    weapons/ mods/ melee/ armor/ deployables/ loot/ throwables/ difficulty/ masks/ contacts/ preplanning/ heisters/
     tweak/                  concealment_curve.tres, display_stats.tres, payout.tres, perk_points.tres, xp_curve.tres, notoriety.tres
     notoriety/ranks.tres    NotorietyTable: rewards per Notoriety rank (B5-02)
     strings/strings.csv     all player-facing text (columns: keys,en)
@@ -341,6 +341,30 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
   exists). Lobby kick works today: `LobbySession.kick(slot)` -> host-only `LobbyState.MSG_KICK`; the kicked client's
   session leaves (`connection_failed(FAIL_KICKED)`), honour-based until Net can drop a peer. Strings `ui.dropin.*`,
   `ui.kick.*`.
+* **Heister choice (D-073, B6-07).** `Loadout.heister` (&"rook" | &"sable" | &"dutch" | &"wren"; &"" = no preference).
+  Data `data/heisters/roster.tres` (`HeisterRoster`: roster order, accents, `portrait_dir`); `Heisters`
+  (`progression/heisters.gd`, static): `ids()`, `is_known`, `name_key` (`crew.<id>`, &"" = `ui.heister.any`),
+  `display_name`, `accent`, `portrait` (null until ENV D ships `<portrait_dir>/<id>.png`), `next_free`,
+  `assign(order, picks, fill)`, `solo(pick, local_slot, ai)`, `solo_ai_slots`, `ai_loadouts(slot -> id)` (ENV A's
+  default AI loadout, `CrewWeapons.build_loadout(null)`, + heister). **Rule** (PD2 unique heisters): humans are
+  served first-come (the slot whose current pick reached this peer first keeps it; re-sending the same pick keeps
+  the place, a changed pick takes a new place); a later conflicting pick is not refused and never blocks Start: it
+  falls back to the next free heister after its pick in roster order (wrapping), after every uncontested pick; no
+  preference takes the first free one; AI and empty seats take the rest in roster order, lowest slot first.
+  Save: `loadout.heister` (save_format.md; additive in v6). Picker: `LoadoutScreen.heister_option` (accent swatch
+  icons, accent strip + portrait), `select_heister`, `set_taken_heisters` (co-op: MenuFlow passes
+  `LobbyState.heisters_taken_by_others(local_slot)`; taken entries are disabled). Lobby: the summary's
+  `loadout.heister` (sanitized as a String, unknown id illegal), `LobbyState.heister_claims`,
+  `heister_assignment()`, `heister_of(slot)`, `ai_heisters()`, slot_view `heister` / `heister_pick`; the slot card
+  shows "Heister: X" (or "X (Y was taken)"). Launch: `launch_loadouts()` sets each human's assigned heister;
+  `MenuFlow.build_launch_options` sets the solo player's and adds AI loadouts for the seats Net.start_solo fills;
+  `build_coop_launch_options(..., ai_loadouts)` merges the AI seats' loadouts (ai_teammates still counts the seats
+  humans leave). Every launched slot has a distinct heister. Tests `test_heisters.gd`.
+* **Throwables (D-073, B6-08).** `data/throwables/` frag / concussion / incendiary / throwing_knife (count 3,
+  `anim_set` throwable; values in data/README.md). `ThrowableGate` (`progression/throwable_gate.gd`):
+  `perk_item_ids()` (every perk card's `perk.throwable` item_id), `is_pickable(id)`, `pickable()`.
+  `LoadoutScreen.throwable_option` (after the deployable; "None" first) lists `pickable()`, so the flask and the
+  injector are never offered; `option_ids(o)` lists a picker's ids. Tests `test_throwables.gd`.
 * **Lobby codes (B6-05, game_overview §9).** `LobbyCode` (`lobby/lobby_code.gd`, static, pure): `encode(ipv4, port,
   default_port = tweak) -> String` (Crockford base32 + Luhn mod 32 check symbol; 8 symbols for the default port,
   11 otherwise; "" for IPv6 / host names / bad ports), `decode(code) -> {address, port} | {error: E_*}` (case,

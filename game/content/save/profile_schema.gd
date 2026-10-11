@@ -64,6 +64,7 @@ const LOADOUT_FIELDS: Dictionary = {
 	"melee": [STRING, ""], "throwable": [STRING, ""], "deployable": [STRING, ""],
 	"deployable_secondary": [STRING, ""], "armor": [STRING, ""], "mask": [STRING, ""],
 	"perk_deck": [STRING, ""], "perk_deck_cards": [INT, 0], "skills": [INT_MAP, {}],
+	"heister": [SHORT_ID, ""],  # D-073, additive in v6: a missing key reads as "" (no preference)
 }
 
 

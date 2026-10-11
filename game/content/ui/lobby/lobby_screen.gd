@@ -74,7 +74,8 @@ var ready_button: Button
 var start_button: Button
 var leave_button: Button
 var block_label: Label
-## Per slot: {"panel", "name", "tags", "level", "ready", "items": {field: Label}, "mask", "swatch_a",
+## Per slot: {"panel", "name", "tags", "level", "heister" (D-073: assigned heister in its accent), "ready",
+## "items": {field: Label}, "mask", "swatch_a",
 ## "swatch_b", "flag", "kick"}.
 var slot_widgets: Array[Dictionary] = []
 
@@ -288,8 +289,9 @@ func _slot_card() -> PanelContainer:
 	w["name"] = UiBuild.label(&"", UiBuild.SUBHEADER)
 	w["tags"] = UiBuild.label(&"", UiBuild.DIM)
 	w["level"] = UiBuild.label(&"")
+	w["heister"] = UiBuild.label(&"")
 	w["ready"] = UiBuild.label(&"")
-	for k: String in ["name", "tags", "level", "ready"]:
+	for k: String in ["name", "tags", "level", "heister", "ready"]:
 		var l: Label = w[k] as Label
 		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		v.add_child(l)
@@ -599,6 +601,7 @@ func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
 	if mdef != null:
 		sa.color = mdef.color_a
 		sb.color = mdef.color_b
+	_refresh_heister(w["heister"] as Label, view, occupied and (is_ai or has_sum))
 	flag.visible = has_sum and not bool(view["legal"])
 	if human and not has_sum:
 		level.text = UiText.t(&"ui.lobby.slot.waiting")
@@ -609,6 +612,19 @@ func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
 		panel.remove_theme_stylebox_override(&"panel")
 	panel.modulate.a = 1.0 if human else 0.7
 	(w["kick"] as Button).visible = session.state.is_host and human and not bool(view["is_local"])
+
+
+## D-073: the slot's heister in its accent; a pick lost to an earlier claim shows what was wanted.
+func _refresh_heister(l: Label, view: Dictionary, shown: bool) -> void:
+	var id: StringName = StringName(view.get("heister", &""))
+	l.visible = shown and id != &""
+	if not l.visible:
+		return
+	var pick: StringName = StringName(view.get("heister_pick", &""))
+	var args: Dictionary = {"name": Heisters.display_name(id), "pick": Heisters.display_name(pick)}
+	var lost: bool = not bool(view["is_ai"]) and pick != &"" and pick != id
+	l.text = UiText.t(&"ui.lobby.slot.heister_fallback" if lost else &"ui.lobby.slot.heister", args)
+	l.add_theme_color_override(&"font_color", Heisters.accent(id).lerp(Color.WHITE, 0.35))
 
 
 func _rebuild_focus() -> void:
