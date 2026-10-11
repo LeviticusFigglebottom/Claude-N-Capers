@@ -28,7 +28,7 @@ Status: APPROVED (lead, 2026-10-10) (D-023). Required changes 1–4 folded in by
   **drill** (120 s, 1–3 jams). The crew holds the workshop and corridor through one assault wave
   until the van arrives.
 - **Difficulty notes:** Routine runs 2 guards and 2–4 customers; Brutal runs 3 guards and 3–5
-  customers, plus the `drill_relock` rare event. P2 adds cameras, the camera operator, and the code note.
+  customers, plus the `drill_relock` rare event. P2 adds the camera operator and the code note; cameras are live since D-059.
 
 ## Site
 - **Lot:** 18 × 12 m (wall centre lines; outer face 18.4 × 12.4 m), corner lot on the NE corner
@@ -359,7 +359,7 @@ Each variable changes a decision.
 | `extra_loot` | `xl_delivery` (2 `loot.jewelry` bags in G1 by the back door), `xl_manager_cash` (3 `small_loot` cash in U6), `xl_none` | 0.25, 0.35, 0.40 | **Time versus reward**, placed on different routes (alley vs upstairs), so it biases which route is worth it. |
 | `escape` | `esc_alley_west` (E1), `esc_pell` (E2) | 0.65, 0.35 | **The loot path and the throw spots:** back door/window → alley, or fire exit → street (visible). In loud it also decides which side you defend while waiting. |
 | `customers` (scalar) | 2, 3, 4, 5 | Routine 0.3/0.4/0.3/0; Brutal 0/0.3/0.4/0.3 | **Casing cover versus the crowd to control.** More eyes on the floor; more hostages in loud. |
-| `camera` **(P2)** | `cam_a` (C1, C3, C4), `cam_b` (C2, C3, C5), `cam_c` (C1, C2, C6) | 1, 1, 1 | Changes which corridor or angle needs a loop or the operator. |
+| `camera` (live, D-059) | `cam_c1` … `cam_c6`, one camera each; 1–3 live (+1 Brutal/Lethal, +2 Cataclysm) | 1 each | Changes which corridor or angle needs a loop or the operator. `asset.intel_cameras` reveals the live set. |
 | `security_room_staffed` **(P2)** | `sec_staffed`, `sec_empty` | 0.6, 0.4 | Kill/dominate the operator (pager) or the cameras stay live. |
 | `code_note` **(P2)** | `code_admin` (U5), `code_breakroom` (U1 board), `code_jeweler_notebook` (G2) | 1, 1, 1 | Second stealth way into the safe (code instead of keycard). |
 

@@ -163,12 +163,12 @@
 [ext_resource type="PackedScene" path="res://systems/prefabs/drill_point/drill_point.tscn" id="161_gh"]
 [ext_resource type="Script" path="res://systems/prefabs/drill_point/drill_point.gd" id="162_gh"]
 [ext_resource type="PackedScene" path="res://world/heists/glasshouse/art/gh_empty.tscn" id="163_gh"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/keycard_reader/keycard_reader.tscn" id="164_gh"]
-[ext_resource type="Script" path="res://systems/prefabs/keycard_reader/keycard_reader.gd" id="165_gh"]
-[ext_resource type="PackedScene" path="res://world/props/keycard_reader/prop_keycard_reader.tscn" id="166_gh"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/loot_spawn/loot_spawn.tscn" id="167_gh"]
-[ext_resource type="Script" path="res://systems/prefabs/loot_spawn/loot_spawn.gd" id="168_gh"]
-[ext_resource type="PackedScene" path="res://world/heists/glasshouse/art/gh_jewelry_stack.tscn" id="169_gh"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/loot_spawn/loot_spawn.tscn" id="164_gh"]
+[ext_resource type="Script" path="res://systems/prefabs/loot_spawn/loot_spawn.gd" id="165_gh"]
+[ext_resource type="PackedScene" path="res://world/heists/glasshouse/art/gh_jewelry_stack.tscn" id="166_gh"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/keycard_reader/keycard_reader.tscn" id="167_gh"]
+[ext_resource type="Script" path="res://systems/prefabs/keycard_reader/keycard_reader.gd" id="168_gh"]
+[ext_resource type="PackedScene" path="res://world/props/keycard_reader/prop_keycard_reader.tscn" id="169_gh"]
 [ext_resource type="PackedScene" path="res://systems/prefabs/display_case/display_case.tscn" id="170_gh"]
 [ext_resource type="Script" path="res://systems/prefabs/display_case/display_case.gd" id="171_gh"]
 [ext_resource type="PackedScene" path="res://world/props/display_case/prop_display_case_wall.tscn" id="172_gh"]
@@ -205,12 +205,15 @@
 [ext_resource type="PackedScene" path="res://systems/prefabs/escape_zone/escape_zone.tscn" id="203_gh"]
 [ext_resource type="Script" path="res://systems/prefabs/escape_zone/escape_zone.gd" id="204_gh"]
 [ext_resource type="PackedScene" path="res://world/props/loot_bag/prop_loot_bag_heavy.tscn" id="205_gh"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/code_note/code_note.tscn" id="206_gh"]
-[ext_resource type="Script" path="res://systems/prefabs/code_note/code_note.gd" id="207_gh"]
-[ext_resource type="Script" path="res://world/heists/glasshouse/glasshouse_mission.gd" id="208_gh"]
-[ext_resource type="Script" path="res://world/audio/cue_player.gd" id="209_gh"]
-[ext_resource type="Script" path="res://world/audio/music_director.gd" id="210_gh"]
-[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="211_gh"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/security_camera/security_camera.tscn" id="206_gh"]
+[ext_resource type="Script" path="res://systems/prefabs/security_camera/security_camera.gd" id="207_gh"]
+[ext_resource type="PackedScene" path="res://world/props/security_camera/prop_security_camera_wall.tscn" id="208_gh"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/code_note/code_note.tscn" id="209_gh"]
+[ext_resource type="Script" path="res://systems/prefabs/code_note/code_note.gd" id="210_gh"]
+[ext_resource type="Script" path="res://world/heists/glasshouse/glasshouse_mission.gd" id="211_gh"]
+[ext_resource type="Script" path="res://world/audio/cue_player.gd" id="212_gh"]
+[ext_resource type="Script" path="res://world/audio/music_director.gd" id="213_gh"]
+[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="214_gh"]
 
 [sub_resource type="BoxShape3D" id="gh_1"]
 size = Vector3(1.95, 4.2, 0.2)
@@ -10667,23 +10670,23 @@ visual_scene = ExtResource("163_gh")
 objective_tag = &"safe_drill"
 metadata/kind = "drill_point"
 
-[node name="SafeKeycardReader" type="Node3D" parent="Gameplay/Workshop" unique_id=101940 instance=ExtResource("164_gh")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 7.3, 1.2, 0.2)
+[node name="SafeLoot" type="Node3D" parent="Gameplay/Workshop/WorkshopSafe" unique_id=101940 instance=ExtResource("164_gh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.64)
 script = ExtResource("165_gh")
-targets = Array[NodePath]([NodePath("../WorkshopSafe")])
+loot_id = &"loot.jewelry"
+count = 4
 visual_scene = ExtResource("166_gh")
+objective_tag = &"safe_loot"
+metadata/kind = "loot_spawn"
+
+[node name="SafeKeycardReader" type="Node3D" parent="Gameplay/Workshop" unique_id=101941 instance=ExtResource("167_gh")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 7.3, 1.2, 0.2)
+script = ExtResource("168_gh")
+targets = Array[NodePath]([NodePath("../WorkshopSafe")])
+visual_scene = ExtResource("169_gh")
 objective_tag = &"safe_reader"
 metadata/mount = "wall"
 metadata/kind = "keycard_reader"
-
-[node name="SafeLoot" type="Node3D" parent="Gameplay/Workshop" unique_id=101941 instance=ExtResource("167_gh")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6.5, 0, 1.2)
-script = ExtResource("168_gh")
-loot_id = &"loot.jewelry"
-count = 4
-visual_scene = ExtResource("169_gh")
-objective_tag = &"safe_loot"
-metadata/kind = "loot_spawn"
 
 [node name="DisplayCases" type="Node3D" parent="Gameplay" unique_id=101942]
 
@@ -11114,9 +11117,9 @@ slot_group = &"extra_loot"
 slot_id = &"xl_delivery"
 weight = 0.25
 
-[node name="DeliveryBags" type="Node3D" parent="Variants/Group_extra_loot/Slot_xl_delivery" unique_id=102007 instance=ExtResource("167_gh")]
+[node name="DeliveryBags" type="Node3D" parent="Variants/Group_extra_loot/Slot_xl_delivery" unique_id=102007 instance=ExtResource("164_gh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.4, 0, 1)
-script = ExtResource("168_gh")
+script = ExtResource("165_gh")
 loot_id = &"loot.jewelry"
 count = 2
 visual_scene = ExtResource("199_gh")
@@ -11344,9 +11347,9 @@ slot_group = &"estate"
 slot_id = &"estate_bag"
 weight = 0.0
 
-[node name="EstateBag" type="Node3D" parent="Variants/Group_estate/Slot_estate_bag" unique_id=102041 instance=ExtResource("167_gh")]
+[node name="EstateBag" type="Node3D" parent="Variants/Group_estate/Slot_estate_bag" unique_id=102041 instance=ExtResource("164_gh")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 14.1, 0, 7.4)
-script = ExtResource("168_gh")
+script = ExtResource("165_gh")
 loot_id = &"loot.jewelry"
 visual_scene = ExtResource("205_gh")
 objective_tag = &"estate_loot"
@@ -11354,92 +11357,95 @@ metadata/kind = "loot_spawn"
 
 [node name="Group_camera" type="Node3D" parent="Variants" unique_id=102042]
 
-[node name="Slot_cam_a" type="Node3D" parent="Variants/Group_camera" unique_id=102043]
+[node name="Slot_cam_c1" type="Node3D" parent="Variants/Group_camera" unique_id=102043]
 script = ExtResource("194_gh")
 slot_group = &"camera"
-slot_id = &"cam_a"
-params = {
-"phase": 2
-}
+slot_id = &"cam_c1"
 
-[node name="CameraMountC1" type="Marker3D" parent="Variants/Group_camera/Slot_cam_a" unique_id=102044 groups=["camera_slot"]]
+[node name="CameraC1" type="Node3D" parent="Variants/Group_camera/Slot_cam_c1" unique_id=102044 instance=ExtResource("206_gh")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 12.5, 3, 6.1)
+script = ExtResource("207_gh")
+pan_deg = 40.0
+visual_scene = ExtResource("208_gh")
+objective_tag = &"security_camera"
+metadata/mount = "wall"
+metadata/kind = "security_camera"
 metadata/camera_id = "C1"
-metadata/mount = "wall"
-metadata/fov_deg = 60.0
-metadata/range_m = 20.0
 
-[node name="CameraMountC3" type="Marker3D" parent="Variants/Group_camera/Slot_cam_a" unique_id=102045 groups=["camera_slot"]]
+[node name="Slot_cam_c2" type="Node3D" parent="Variants/Group_camera" unique_id=102045]
+script = ExtResource("194_gh")
+slot_group = &"camera"
+slot_id = &"cam_c2"
+
+[node name="CameraC2" type="Node3D" parent="Variants/Group_camera/Slot_cam_c2" unique_id=102046 instance=ExtResource("206_gh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 3, 11.8)
+script = ExtResource("207_gh")
+pan_deg = 40.0
+visual_scene = ExtResource("208_gh")
+objective_tag = &"security_camera"
+metadata/mount = "wall"
+metadata/kind = "security_camera"
+metadata/camera_id = "C2"
+
+[node name="Slot_cam_c3" type="Node3D" parent="Variants/Group_camera" unique_id=102047]
+script = ExtResource("194_gh")
+slot_group = &"camera"
+slot_id = &"cam_c3"
+
+[node name="CameraC3" type="Node3D" parent="Variants/Group_camera/Slot_cam_c3" unique_id=102048 instance=ExtResource("206_gh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 17.8, 2.6, 5.25)
-metadata/camera_id = "C3"
+script = ExtResource("207_gh")
+pan_deg = 40.0
+visual_scene = ExtResource("208_gh")
+objective_tag = &"security_camera"
 metadata/mount = "wall"
-metadata/fov_deg = 60.0
-metadata/range_m = 20.0
+metadata/kind = "security_camera"
+metadata/camera_id = "C3"
 
-[node name="CameraMountC4" type="Marker3D" parent="Variants/Group_camera/Slot_cam_a" unique_id=102046 groups=["camera_slot"]]
+[node name="Slot_cam_c4" type="Node3D" parent="Variants/Group_camera" unique_id=102049]
+script = ExtResource("194_gh")
+slot_group = &"camera"
+slot_id = &"cam_c4"
+
+[node name="CameraC4" type="Node3D" parent="Variants/Group_camera/Slot_cam_c4" unique_id=102050 instance=ExtResource("206_gh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 3, -0.2)
+script = ExtResource("207_gh")
+pan_deg = 40.0
+visual_scene = ExtResource("208_gh")
+objective_tag = &"security_camera"
+metadata/mount = "wall"
+metadata/kind = "security_camera"
 metadata/camera_id = "C4"
-metadata/mount = "wall"
-metadata/fov_deg = 60.0
-metadata/range_m = 20.0
 
-[node name="Slot_cam_b" type="Node3D" parent="Variants/Group_camera" unique_id=102047]
+[node name="Slot_cam_c5" type="Node3D" parent="Variants/Group_camera" unique_id=102051]
 script = ExtResource("194_gh")
 slot_group = &"camera"
-slot_id = &"cam_b"
-params = {
-"phase": 2
-}
+slot_id = &"cam_c5"
 
-[node name="CameraMountC2" type="Marker3D" parent="Variants/Group_camera/Slot_cam_b" unique_id=102048 groups=["camera_slot"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 3, 11.8)
-metadata/camera_id = "C2"
-metadata/mount = "wall"
-metadata/fov_deg = 60.0
-metadata/range_m = 20.0
-
-[node name="CameraMountC3" type="Marker3D" parent="Variants/Group_camera/Slot_cam_b" unique_id=102049 groups=["camera_slot"]]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 17.8, 2.6, 5.25)
-metadata/camera_id = "C3"
-metadata/mount = "wall"
-metadata/fov_deg = 60.0
-metadata/range_m = 20.0
-
-[node name="CameraMountC5" type="Marker3D" parent="Variants/Group_camera/Slot_cam_b" unique_id=102050 groups=["camera_slot"]]
+[node name="CameraC5" type="Node3D" parent="Variants/Group_camera/Slot_cam_c5" unique_id=102052 instance=ExtResource("206_gh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 2.6, 4.4)
-metadata/camera_id = "C5"
+script = ExtResource("207_gh")
+pan_deg = 40.0
+visual_scene = ExtResource("208_gh")
+objective_tag = &"security_camera"
 metadata/mount = "wall"
-metadata/fov_deg = 60.0
-metadata/range_m = 20.0
+metadata/kind = "security_camera"
+metadata/camera_id = "C5"
 
-[node name="Slot_cam_c" type="Node3D" parent="Variants/Group_camera" unique_id=102051]
+[node name="Slot_cam_c6" type="Node3D" parent="Variants/Group_camera" unique_id=102053]
 script = ExtResource("194_gh")
 slot_group = &"camera"
-slot_id = &"cam_c"
-params = {
-"phase": 2
-}
+slot_id = &"cam_c6"
 
-[node name="CameraMountC1" type="Marker3D" parent="Variants/Group_camera/Slot_cam_c" unique_id=102052 groups=["camera_slot"]]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 12.5, 3, 6.1)
-metadata/camera_id = "C1"
-metadata/mount = "wall"
-metadata/fov_deg = 60.0
-metadata/range_m = 20.0
-
-[node name="CameraMountC2" type="Marker3D" parent="Variants/Group_camera/Slot_cam_c" unique_id=102053 groups=["camera_slot"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 3, 11.8)
-metadata/camera_id = "C2"
-metadata/mount = "wall"
-metadata/fov_deg = 60.0
-metadata/range_m = 20.0
-
-[node name="CameraMountC6" type="Marker3D" parent="Variants/Group_camera/Slot_cam_c" unique_id=102054 groups=["camera_slot"]]
+[node name="CameraC6" type="Node3D" parent="Variants/Group_camera/Slot_cam_c6" unique_id=102054 instance=ExtResource("206_gh")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.2, 6.8, 5.25)
-metadata/camera_id = "C6"
+script = ExtResource("207_gh")
+pan_deg = 40.0
+visual_scene = ExtResource("208_gh")
+objective_tag = &"security_camera"
 metadata/mount = "wall"
-metadata/fov_deg = 60.0
-metadata/range_m = 20.0
+metadata/kind = "security_camera"
+metadata/camera_id = "C6"
 
 [node name="Group_security_room_staffed" type="Node3D" parent="Variants" unique_id=102055]
 
@@ -11473,9 +11479,9 @@ params = {
 "phase": 2
 }
 
-[node name="CodeNote" parent="Variants/Group_code_note/Slot_code_admin" unique_id=102060 instance=ExtResource("206_gh")]
+[node name="CodeNote" parent="Variants/Group_code_note/Slot_code_admin" unique_id=102060 instance=ExtResource("209_gh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7, 4.94, 8.85)
-script = ExtResource("207_gh")
+script = ExtResource("210_gh")
 code_group = &"glasshouse_safe"
 visual_scene = ExtResource("117_gh")
 metadata/kind = "code_note"
@@ -11496,9 +11502,9 @@ params = {
 "phase": 2
 }
 
-[node name="CodeNote" parent="Variants/Group_code_note/Slot_code_breakroom" unique_id=102062 instance=ExtResource("206_gh")]
+[node name="CodeNote" parent="Variants/Group_code_note/Slot_code_breakroom" unique_id=102062 instance=ExtResource("209_gh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 4.94, 2.5)
-script = ExtResource("207_gh")
+script = ExtResource("210_gh")
 code_group = &"glasshouse_safe"
 visual_scene = ExtResource("117_gh")
 metadata/kind = "code_note"
@@ -11519,9 +11525,9 @@ params = {
 "phase": 2
 }
 
-[node name="CodeNote" parent="Variants/Group_code_note/Slot_code_jeweler_notebook" unique_id=102064 instance=ExtResource("206_gh")]
+[node name="CodeNote" parent="Variants/Group_code_note/Slot_code_jeweler_notebook" unique_id=102064 instance=ExtResource("209_gh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.2, 0.92, 0.75)
-script = ExtResource("207_gh")
+script = ExtResource("210_gh")
 code_group = &"glasshouse_safe"
 visual_scene = ExtResource("117_gh")
 metadata/kind = "code_note"
@@ -11535,7 +11541,7 @@ script = ExtResource("157_gh")
 kind = &"read_note"
 
 [node name="Mission" type="Node" parent="." unique_id=102065]
-script = ExtResource("208_gh")
+script = ExtResource("211_gh")
 
 [node name="ReviewCameras" type="Node3D" parent="." unique_id=102066]
 
@@ -11738,7 +11744,7 @@ metadata/params = {
 [node name="Audio" type="Node3D" parent="." unique_id=102100]
 
 [node name="CuePlayer" type="Node" parent="Audio" unique_id=102101]
-script = ExtResource("209_gh")
+script = ExtResource("212_gh")
 device_cues = Dictionary[StringName, PackedStringArray]({
 &"drill": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
 &"hack": PackedStringArray("", "cue.hack_interrupt", "cue.hack_done", "cue.hack_start"),
@@ -11747,44 +11753,44 @@ device_cues = Dictionary[StringName, PackedStringArray]({
 })
 
 [node name="MusicDirector" type="Node" parent="Audio" unique_id=102102]
-script = ExtResource("210_gh")
+script = ExtResource("213_gh")
 
 [node name="BedSalesFloor" type="Node3D" parent="Audio" unique_id=102103]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.5, 9)
-script = ExtResource("211_gh")
+script = ExtResource("214_gh")
 cue_id = &"cue.amb_glasshouse_interior"
 autoplay = true
 
 [node name="BedBackOfHouse" type="Node3D" parent="Audio" unique_id=102104]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 2.2, 3)
-script = ExtResource("211_gh")
+script = ExtResource("214_gh")
 cue_id = &"cue.amb_glasshouse_interior"
 autoplay = true
 volume_offset_db = -4.0
 
 [node name="BedUpstairs" type="Node3D" parent="Audio" unique_id=102105]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 6.4, 7)
-script = ExtResource("211_gh")
+script = ExtResource("214_gh")
 cue_id = &"cue.amb_glasshouse_interior"
 autoplay = true
 volume_offset_db = -4.0
 
 [node name="BedHarlowAve" type="Node3D" parent="Audio" unique_id=102106]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 3, 22)
-script = ExtResource("211_gh")
+script = ExtResource("214_gh")
 cue_id = &"cue.amb_street_dusk"
 autoplay = true
 
 [node name="BedPellSt" type="Node3D" parent="Audio" unique_id=102107]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 3, 4)
-script = ExtResource("211_gh")
+script = ExtResource("214_gh")
 cue_id = &"cue.amb_street_dusk"
 autoplay = true
 volume_offset_db = -2.0
 
 [node name="BedAlley" type="Node3D" parent="Audio" unique_id=102108]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 3, -3.2)
-script = ExtResource("211_gh")
+script = ExtResource("214_gh")
 cue_id = &"cue.amb_street_dusk"
 autoplay = true
 volume_offset_db = -6.0
