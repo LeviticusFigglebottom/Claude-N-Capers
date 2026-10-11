@@ -14,7 +14,7 @@ content/
     strings/strings.csv     all player-facing text (columns: keys,en)
     voice/lines.tres        voice line table (VoiceLineTable); text lives in strings.csv
   defs/                     content-side Resource schemas + ContentDB lookup (ContactDef)
-  docs/                     design authority: skills.md, perk_decks.md, masks.md, preplanning.md
+  docs/                     design authority: skills.md, perk_decks.md, masks.md, preplanning.md, scoreboard.md
   masks/                    MaskCatalog, MaskComposer, MaskLocker (+ part defs)
   preplanning/              PreplanBoard, PreplanPlan, PlanVote, PreplanBlueprint
   lobby/                    LobbyState (co-op lobby model), LobbySession (Net glue), LobbyAddress, LobbyTweak
@@ -146,6 +146,13 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   via `MenuFlow.options_menu` (`MenuOptions`): main menu Options, hub `HubMenu.options_requested`, and the
   `pause` action in a heist (overlay over the HUD; local crew input paused). Strings `ui.options.*`,
   action names `ui.action.<action>`.
+* **Scoreboard + awards (B6-02; brief: `content/docs/scoreboard.md`).** `CrewStats` (`progression/crew_stats.gd`):
+  per-crew rows (HeistResult.crew keys + `name`, `is_local`, `shots`, `hits`, `headshots`), `has_stat(row, stat)`
+  per row (missing = "—" / no award), derived `accuracy`. `HeistAwards.compute(crew_rows, table = null)` (pure;
+  data `data/ui/heist_awards.tres`, `HeistAwardTable`): max/min awards with tie-break humans before AI then lowest
+  slot, shared `zero` awards, skipped when the stat is missing; `PaydayScreen.awards` / "Crew Honours" section.
+  `Hud.scoreboard` (`ScoreboardOverlay`) reads the model's `crew_stats` + `crew_stats_changed` (QB to ENV A;
+  `MockHudModel` has them) and shows while `scoreboard` is held (`controls/scoreboard_mode` toggle).
 * `ContentDB.inject(kind, key, res)`: tests/tooling only (test-only SkillDef/PerkDeckDef);
   `clear_cache()` drops it.
 * `XpCurve.level_for_xp(xp)`, `xp_for_level(level)`. `VoiceLineTable` at `data/voice/lines.tres`.

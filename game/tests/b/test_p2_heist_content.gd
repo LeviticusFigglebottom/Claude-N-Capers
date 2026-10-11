@@ -173,7 +173,7 @@ func test_shadow_ledger_loot() -> void:
 	_check_loot(&"loot.ledger_drives", Enums.LootWeight.MEDIUM)
 	# MEDIUM is the lead's decision (B4-10); the C doc's QC-15 asked for LIGHT.
 	_check_loot(&"loot.ledger_books", Enums.LootWeight.MEDIUM)
-	_check_loot(&"loot.painting", Enums.LootWeight.MEDIUM)
+	_check_loot(&"loot.painting", Enums.LootWeight.LIGHT)  # lead ruling: cut and rolled = LIGHT (PD2)
 
 
 func test_shadow_ledger_objectives_follow_the_design_doc() -> void:
