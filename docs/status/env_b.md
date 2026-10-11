@@ -3,6 +3,30 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11 UTC (6): HANDOFF (session shut down, project moving accounts)
+### Done
+- B7 accepted by the lead at e443d998, the last validated push. This entry is docs only.
+### In progress (not started in code, no local work lost)
+- The lead's answers to the B7 questions, all still to implement:
+  1. **`profile` station:** add `st_profile` to data/ui/hub_stations.tres (`target = &"career"`, `icon_kind = &"profile"`).
+     - MenuFlow: `TARGET_CAREER` in TARGETS, mapped to `_open_career()`.
+     - HubStationIcon: a `_profile` glyph.
+     - strings: `ui.hub.station.profile`, `.desc`, `ui.prompt.station.profile`.
+     - test_hub: add `&"profile"` to STATION_IDS.
+     - Spec: hub_map.md v1.1 (trunk 930e6013). C places it with A's `hub_station` prefab.
+  2. **ProfileValidator:** drop unknown finish ids in `weapon_finishes`, the same pruning as for unknown masks.
+     - Replaces the TODO(B7-04) in profile_validator.gd `_career`; use `WeaponFinishes.is_known`.
+  3. **Payday card drops:** exclude achievement-reward mask parts. They stay achievement-only, as in PD2.
+- Trunk 930e6013 is not merged into env/b-content yet. Merge it first.
+### Next
+- **P5 contract data** (gallery_night, ostrander_federal, rolling_thunder, afterhours) from ENV C's G0 docs, which are APPROVED on trunk (e8df4b7, round 30).
+  - Start from test_p5_catalogue.gd; objective strings are still deliberately absent.
+### Notes
+- Run suites under `timeout`. A script parse error hangs the runner; detect it by the log's age, not the CPU load.
+- After check_all, run `git checkout -- docs/levels`.
+### Ready for integration
+- yes (e443d998)
+
 ## 2026-10-11 UTC (5): B6 follow-ups, D-074/D-075, B7-01..B7-04
 ### Done
 - B7-03 contact radio: `ContactRadio`, `RadioLinePicker` (GameRng `radio` stream), `RadioTweak`, `SubtitleOverlay`.
@@ -243,81 +267,3 @@ Newest entry first, keep the last 10.
 - QB-51: ENV A should rely on content classes `MaskCatalog.resolve/from_descriptor` + `MaskComposer.instantiate` to attach masks. Record this in characters.md?
 ### Ready for integration
 - yes (everything up to 8eeb53c); `check_all.sh --env b` result: PASS
-
-## 2026-10-10 17:30 UTC — B4-03, B4-04, D-031 key grants; state-tolerant tests for A-M2/M3
-### Done
-- State-tolerant tests (8554760). The range accepts either the real crew or the temporary camera; the HUD binds a v1.1 model directly or an A1-11 model through the adapter. Verified on a trial merge with origin/env/a-core.
-- D-031 (1a48390). Every requested key is granted and `blocked_on_keys` is empty; the strict test is restored as `test_no_blocked_parts_and_every_requested_key_is_granted`.
-  - LIST merge: see QB-38.
-  - Routing: `team_perk.<deck>` for perk `team.*`; `team_skill.<id>` for skills; neither duplicated in personal modifiers.
-  - Hustler vests are Light, Patrol and Heavy only.
-  - The suppressed concealment qualifier counts once per suppressed weapon.
-- B4-03 (d3796a1). Skill tree screen and perk deck screen, opened from the loadout screen.
-  - Tiers, basic/aced, and a refund that is blocked if it would break a tier gate (PD2 style).
-  - Free respec with confirmation; 3 skill sets.
-  - Save format v3 (`skill_sets`, `active_skill_set`, `perk_cards`) with a 2→3 migration.
-  - Perk points = floor(total XP / 500) ◇. Each deck keeps its own card progress, unlocked in order.
-- B4-04 (59a7bdc..ac7447d). Six weapons with models and previews:
-  - Warden .45 (pistol), Hornet 9 (SMG, secondary), Corsair (AR), Plowman 12 (pump shotgun, 10 pellets), Rampart (LMG), Heron .308 (bolt sniper: AP, shield and wall pierce, falloff min 1.35).
-  - 30 mods (shared rail reflex and prism optics) and stock parts. Deterministic: 92/92 identical files.
-  - Throwables `throwable.steady_flask` and `throwable.boss_injector` exist for the perk decks.
-  - P9 previews re-rendered with the library materials.
-- `check_all.sh --env b` on a fresh merge with trunk 5d1cc0f: PASS (326 tests, 0 failed, 7 skipped).
-### In progress
-- —
-### Next (queued, ≥2 h)
-- After A-M2/M3 land on trunk: switch the range to the real crew and weapon runtime (debug camera only as a fallback), delete HudModelAdapter, bind the HUD directly.
-- Apply `progression.xp_mult` in PayoutCalculator.
-- Pending lead answers below: shotgun per-shell reload, shotgun display damage.
-### Blocked
-- —
-### Questions for lead
-- QB-38 (LIST emit shape; core change needed). `Loadout.modifiers[key]` holds `Array[Dictionary]` for the LIST keys:
-  - One deep-copied entry per granting skill or card, each tagged `"_source": StringName` (a skill id, or `perk.<deck>.card<n>`).
-  - Entries are sorted by `ContentDB.id_less`; within one skill the aced dict replaces the basic one.
-  - `Modifiers.list()` currently casts `values[key] as Dictionary`. Please make it accept an Array: append each entry and keep its own `_source`, setting `_source` to the source name only when the entry has none.
-- QB-39. `defense.post_revive_buff` (PARAMS, last-wins) is granted by two skills, Back on Your Feet and Second Lease, so one overrides the other. Should it become LIST, or should we merge the grant?
-- QB-40 (schema additions marked ◇ in skills.md; please confirm):
-  - `weapon.kill_reload_buff.mag_falloff_from` (Run and Gun: "per round above 20").
-  - Bulletstorm duration = lerp(base, max, fraction of the refill taken).
-  - `weapon.melee_bloodthirst.max_mult` = 17.0 (+1600%).
-- QB-41 (materials, ENV C). The new weapons also need `alu_anodized_black`, `polymer_tan`, `polymer_olive` and `glass_lens_coated`. Library `polymer_black`, `rubber_black` and `metal_matte` also render quite light on weapons.
-- QB-42 (ENV D anim sets, ENV C cues). Viewmodel sets `smg`, `rifle`, `shotgun`, `lmg` and `sniper`, plus `cue.weapon_<set>_fire(_suppressed)` for each. Should the Warden .45 share the pistol set? Animated parts for ENV A: the shotgun `Pump` (slides +Z) and the sniper `Bolt`.
-- QB-43. Shotgun reload is whole-tube today; PD2 loads shell by shell. Add `WeaponStats.reload_per_round_s` (or similar)? Separately, the display damage for pellets shows 16 instead of a PD2-style 160. B will set `damage_pellet_exponent = 1` in our display tweak unless you object.
-- QB-44. Record in visual_slots.md: `Magwell` sits at the loading port on tube-fed weapons; bipods are a flat recoil bonus until a deploy mechanic exists.
-- QB-45. Perk points: floor(XP / 500) from all XP (◇, about 23k points by level 100). Is that OK? The setting lives in `data/ui/progression_ui.tres`; move it to `data/tweak/`?
-### Ready for integration
-- yes (B4-03, B4-04, D-031 grants); `check_all.sh --env b` result: PASS
-
-## 2026-10-10 16:30 UTC — B4-01 skills, B4-02 perk decks (P4 pulled forward, D-027)
-### Done
-- D-027 crit rule on range targets (crit ⇒ head mult on any zone; stacks on head), with a test.
-- B4-02 (358df11): 14 perk decks × 9 cards in `data/perks/`.
-  - Costs 200…4000, totalling 13,700.
-  - Shared cards 2/4/6/8 are identical in every deck: Headhunter `weapon.headshot_mult.all` 1.25, Low Profile `stealth.concealment_add.all` 1, Go Bag `weapon.ammo_pickup_mult.all` 1.35, Hustle `weapon.damage_mult.all` 1.05.
-  - Signature mechanics use their `perk.*` PARAMS key, with each upgrading card granting the FULL dict (last-wins).
-  - Health/armor/dodge cards grant cumulative ratios so the running product equals PD2's additive total (e.g. Bulk = 2.0 health).
-  - **Param schemas for review: `game/content/docs/perk_decks.md`.**
-- B4-01 (53d0cec): 90 SkillDefs in `data/skills/<tree>/<subtree>/`, plus `SkillTreeDef` (`data/skills/trees.tres`).
-  - Tiers 1/2/2/1; costs 1/3, 2/4, 3/6, 4/8 (46 per subtree, 138 per tree); gates 0/1/3/18 counted on lower tiers only; 120 points at level 100; free respec.
-  - `SkillPoints.validate/can_unlock/is_legal` handle host legality (architecture §11).
-  - Team skills: `team.*` grants are routed through `LoadoutResolver.team_modifier_sources()` as `team_skill.<id>` (non-stacking). `resolve_modifiers` excludes them.
-  - Expressibility: 32 skills fully expressible, 29 partial, 29 blocked on keys. Every tier 3–4 skill has a "decision it changes" note.
-  - **Full design, mapping conventions and requested keys: `game/content/docs/skills.md`.**
-- ContentDB now scans kind folders recursively (needed for the skills layout).
-- `check_all.sh --env b` @ ea708fa: PASS (266 tests, 0 failed, 7 skipped).
-### In progress
-- B4-03 skill tree + perk deck UI (subagent).
-- B4-04 armory expansion: 6 weapons + mods + models, the 2 deck throwables, and P9 re-render with ENV C's materials (subagent).
-### Blocked
-- —
-### Questions for lead
-- QB-31 (keys for skills): 71 requested keys, grouped with types, semantics and the skills that need them, in `content/docs/skills.md` "Requested keys". 29 skills stay inert until keys exist; a test fails as a reminder when a requested key gets registered. Two of them (`weapon.kill_reload_buff`, `weapon.hit_stack_buff`) are wanted by several skills, which a last-wins PARAMS key can't carry. They need a list-valued or per-source PARAMS design.
-- QB-32 (keys for perks): `progression.xp_mult` (MULT), `movement.armor_penalty_mult` (MULT), `deploy.armor_bag` (FLAG), `interaction.doctor_bag_speed_mult` (MULT), `progression.card_drop_quality_add` (ADD), `ability.shout_range_mult` (MULT), optionally `team.armor_regen_delay_mult` (MULT). See `content/docs/perk_decks.md`.
-- QB-33: perk param schemas (14 `perk.*` keys plus `team.damage_reduction_hostage`) are proposed in `content/docs/perk_decks.md` for review. ENV A implements them. The registry descriptions of `perk.rogue_dodge_stack` and `perk.crook` should be reworded to match the decks.
-- QB-34 (stacking): PD2 adds skill and perk percentage bonuses; our MULT multiplies across sources. Keep multiplicative (the deck cards then use cumulative ratios), or switch some keys to additive semantics?
-- QB-35: do `team.*` grants also apply to the granting player? Our TEAM source does apply to them, and we strip `team.*` from personal sources to avoid double counting. Perk-deck `team.*` grants (Foreman) currently stay on the personal source. Should they also go to a TEAM source, e.g. `team_perk.<deck>`?
-- QB-36: is `interaction.revive_speed_mult` a time multiplier (lower = faster), like the other interaction keys? Rally Cry assumes so.
-- QB-37: Hustler armor tiers: "mid vests only" (fidelity table) vs "all ballistic vests" (research). We used all vests except the suit.
-### Ready for integration
-- yes (B4-01, B4-02); `check_all.sh --env b` result: PASS
