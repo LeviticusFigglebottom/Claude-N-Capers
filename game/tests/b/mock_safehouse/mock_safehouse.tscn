@@ -10,6 +10,9 @@ script = ExtResource("1_map")
 
 [node name="Spawns" type="Node3D" parent="."]
 
+[node name="Spawn" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 5.3)
+
 [node name="ReturnHeist" type="Marker3D" parent="Spawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 4)
 
@@ -28,6 +31,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.17)
 
 [node name="StationCam" type="Marker3D" parent="Stations/board"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 2.5)
+metadata/fov = 50.0
 
 [node name="armory" type="Node3D" parent="Stations" groups=["hub_station"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.4, 0, 3.5)

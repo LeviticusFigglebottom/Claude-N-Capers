@@ -14,8 +14,8 @@
 ## - "play dead": phantom_play_dead_chance per non-lethal hit to drop, getting up after a while.
 ## - ECM feedback immune: EnemyDef.params.ecm_feedback_immune (EcmSystem._immune).
 ## - defense.cloaker_counter (Counterstrike aced): the victim holding melee (intent.melee) when the
-##   kick lands knocks the Phantom down (stun phantom_counter_knockdown_s) instead. Melee itself is
-##   not implemented yet (L3.9); this hook only reads the held melee intent.
+##   kick lands knocks the Phantom down (stun phantom_counter_knockdown_s) instead. Holding melee is
+##   CrewMelee's charge (L3.9), so the held intent is the charging check.
 ## Not yet: the post-kick beating and smoke drop (PD2 flavour; no gameplay effect beyond the takedown).
 class_name PhantomBrain
 extends SpecialBrain

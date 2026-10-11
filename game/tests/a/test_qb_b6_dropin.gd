@@ -59,7 +59,7 @@ func test_ask_then_accept_takes_the_ai_slot() -> void:
 	_request(_summary())
 	assert_eq(asked.size(), 1, "ask: join_requested(peer, summary)")
 	assert_true(_svc.pending.has(PEER), "pending")
-	_svc.answer_join(PEER, true)
+	_svc.answer_join(PEER, true, &"")
 	Net.lobby_message.disconnect(on_msg)
 	EventBus.crew_member_joined.disconnect(cb)
 	var c: CrewController = _rt.crew_controller(1) as CrewController
@@ -91,11 +91,11 @@ func test_policies_validation_and_kicked() -> void:
 	assert_eq(failed.back(), [PEER, DropInService.REASON_DENIED], "invalid summary: denied")
 	_svc.policy = HeistDropIn.POLICY_OFF
 	_request(_summary())
-	assert_eq(failed.back(), [PEER, DropInService.REASON_DENIED], "policy off")
+	assert_eq(failed.back(), [PEER, HeistDropIn.R_OFF], "policy off")
 	_svc.policy = HeistDropIn.POLICY_ASK
 	_svc._kicked["Joiner"] = true
 	_request(_summary())
-	assert_eq(failed.back(), [PEER, HeistDropIn.REASON_KICKED], "kicked this session: auto-denied")
+	assert_eq(failed.back(), [PEER, HeistDropIn.R_KICKED], "kicked this session: auto-denied")
 	_svc._kicked.clear()
 	Net.crew[1] = {"peer_id": Net.AI_PEER, "is_ai": true, "display_name": "AI 1"}
 	_request(_summary())

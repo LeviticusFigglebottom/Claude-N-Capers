@@ -75,6 +75,7 @@ func test_builds_every_tab() -> void:
 		var expected: int = o.draft.defaults.keys(StringName(t)).size()
 		if t == OptionsScreen.TAB_CONTROLS:
 			expected += InputBindings.actions().size() + 1
+			expected += o.draft.defaults.keys(GameSettings.GAMEPLAY).size()  # gameplay rows sit on Controls
 		assert_eq((o.page_focus[t] as Array).size(), expected, "%s rows are focusable" % t)
 	assert_eq(o.palette_preview.get_child_count(), HudPalette.FIELDS.size(), "palette swatches")
 	assert_true(o.apply_button.disabled, "nothing to apply yet")

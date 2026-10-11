@@ -2396,14 +2396,14 @@ ui.lobby.code.error.checksum,That code has a typo: check it with the host.
 ui.lobby.code.error.format,That is not a valid lobby code.
 ui.hub.station.notoriety,The Old Press
 ui.hub.station.notoriety.desc,"Notoriety: rank up, pick rewards and see what each rank unlocks."
-ui.prompt.station.board,[{key}] Check the Board
-ui.prompt.station.planning,[{key}] Plan a job
-ui.prompt.station.armory,[{key}] Open the armory
-ui.prompt.station.masks,[{key}] Pick a mask
-ui.prompt.station.jukebox,[{key}] Choose music
-ui.prompt.station.notoriety,[{key}] Notoriety
-ui.prompt.station.range,[{key}] Enter the firing range
-ui.prompt.station.crew,[{key}] Call the crew
+ui.prompt.station.board,Press {key} to check the Board
+ui.prompt.station.planning,Press {key} to plan a job
+ui.prompt.station.armory,Press {key} to open the armory
+ui.prompt.station.masks,Press {key} to pick a mask
+ui.prompt.station.jukebox,Press {key} to choose the music
+ui.prompt.station.notoriety,Press {key} to check your Notoriety
+ui.prompt.station.range,Press {key} to enter the firing range
+ui.prompt.station.crew,Press {key} to call the crew
 ui.hub.pause.title,Paused
 ui.hub.pause.resume,Resume
 ui.hub.pause.quick_stations,Quick Stations
@@ -2423,3 +2423,15 @@ ui.heister.any,Any Free Heister
 ui.loadout.heister_taken,{name} (taken)
 ui.lobby.slot.heister,Heister: {name}
 ui.lobby.slot.heister_fallback,"Heister: {name} ({pick} was taken)"
+ui.lobby.dropin.title,Drop-in
+ui.lobby.dropin.ask,Ask me first
+ui.lobby.dropin.auto,Allowed
+ui.lobby.dropin.off,Not allowed
+ui.dropin.failed.kicked,The host removed you from this crew earlier.
+ui.dropin.failed.off,The host does not allow drop-in.
+ui.chat.kick_notice,{name} was removed from the crew.
+ui.options.gameplay.dropin_policy,Drop-in (when hosting)
+ui.options.gameplay.dropin_policy.ask,Ask Me
+ui.options.gameplay.dropin_policy.auto,Let Players In
+ui.options.gameplay.dropin_policy.off,Off
+ui.options.tab.gameplay,Gameplay

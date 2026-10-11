@@ -42,6 +42,8 @@ var _mask_id: StringName = &""
 var _ads_weight: float = 0.0
 ## Descriptor the current mask was built from (rebuild when it changes).
 var _mask_desc: Dictionary = {}
+## Heister whose body is under `Visual` (&"" = the placeholder).
+var _body_id: StringName = &""
 
 
 ## The crew member's view component (null when missing).
@@ -86,10 +88,31 @@ func refresh() -> void:
 	if _crew == null or not is_instance_valid(_crew) or not _crew.is_inside_tree():
 		return
 	refresh_camera()
+	refresh_body()
 	refresh_weapon()
 	refresh_mask()
 	if not _is_local_human():
 		AnimDriver.ensure(_crew)  # D-041: third-person clips + HandR weapon (animated visuals only)
+
+
+## D-073: the third-person body of `crew.heister` (CrewTweak.body_scenes) under `Visual`, replacing the capsule
+## placeholder (none for generic crew). The local human's own body renders on FIRST_PERSON_HIDDEN_LAYER only
+## (its camera culls it; it still casts shadows). The mask moves to the new body's Head/Socket.
+func refresh_body() -> void:
+	var ps: PackedScene = Tweak.crew().body_scenes.get(_crew.heister) if _crew.heister != &"" else null
+	var visual: Node3D = _crew.get_node_or_null(^"Visual") as Node3D
+	if ps == null or visual == null or _crew.heister == _body_id:
+		return
+	_clear_mask()
+	for c: Node in visual.get_children():
+		visual.remove_child(c)
+		c.queue_free()
+	var body: Node = ps.instantiate()
+	visual.add_child(body)
+	_body_id = _crew.heister
+	if _is_local_human():
+		for g: Node in body.find_children("*", "VisualInstance3D", true, false):
+			(g as VisualInstance3D).layers = FIRST_PERSON_HIDDEN_LAYER
 
 
 func camera() -> Camera3D:

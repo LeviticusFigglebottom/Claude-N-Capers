@@ -5,7 +5,8 @@
 ##   charged swing: damage lerps to charged_damage over charge_time_s / weapon.melee_charge_speed_mult.
 ## - the swing lasts swing_time_s (MeleeDef or melee_swing_s); at hit_delay_s the authority strikes the nearest
 ##   target in a melee_cone_deg cone out to range_m with line of sight: one DamageType.MELEE hit (x
-##   weapon.damage_mult[melee], x weapon.melee_bloodthirst). A charged hit's knockdown chance (MeleeDef.knockdown,
+##   weapon.damage_mult[melee], x weapon.melee_bloodthirst, x PerkHooks.melee_damage_mult; a miss calls
+##   PerkHooks.on_melee_miss). A charged hit's knockdown chance (MeleeDef.knockdown,
 ##   or bash_knockdown, x weapon.melee_knockdown_mult) stuns a non-special NPC melee_knockdown_s; specials
 ##   (Bulwark, Wrecker...) resist it, except weapon.shield_knockback, which staggers a Bulwark on any melee hit.
 ## - silent: no noise, no weapon_fired (S4.3), so a stealth melee kill alarms nobody (no S3.7 misfire either).
@@ -121,11 +122,13 @@ func _strike() -> void:
 			best = t
 			best_d = d
 	if best == null:
+		PerkHooks.on_melee_miss(_crew)  # perk.infiltrator: a miss resets the melee chain
 		return
 	var base: float = def.damage if def != null else tw.bash_damage
 	if def != null and charge > 0.0:
 		base = lerpf(def.damage, maxf(def.charged_damage, def.damage), charge)
-	var amount: float = base * Modifiers.mult(_crew.slot, &"weapon.damage_mult", DAMAGE_QUALIFIER) * _bloodthirst_mult()
+	var amount: float = base * Modifiers.mult(_crew.slot, &"weapon.damage_mult", DAMAGE_QUALIFIER) * _bloodthirst_mult() \
+		* PerkHooks.melee_damage_mult(_crew)  # perk.infiltrator chain
 	var center: Vector3 = (best as Node3D).global_position + Vector3(0.0, 1.0, 0.0) if best is Node3D else eye
 	var info: Dictionary = Damage.info(amount, Enums.DamageType.MELEE, Enums.HitZone.BODY,
 		def.id if def != null else &"melee.bash", center, fwd, _crew.net_id)

@@ -12,8 +12,11 @@
 ## port) in the header with Copy (DisplayServer.clipboard_set) and a hint that internet play needs the public
 ## address and a forwarded port; the Join panel has a code field (join_by_code() decodes it into the address /
 ## port fields and runs the normal join()). No LAN host list: Net has no discovery API.
-## Kick (B6-04): the host sees Kick on every other human's slot card; KickConfirmDialog asks first, then
-## LobbySession.kick(slot) (LobbyState.MSG_KICK).
+## Kick (B6-04, D-072): the host sees Kick on every other human's slot card; KickConfirmDialog asks first, then
+## LobbySession.kick(slot) -> Net.kick. A kicked client lands back on the connect view with
+## `ui.lobby.error.kicked` (LobbySession FAIL_KICKED, from Net.last_disconnect_reason); the crew's chat shows the
+## notice. Drop-in policy (B6-04, PD2): the host picks Ask / Allowed / Not allowed (LobbySession.set_drop_in_policy,
+## LobbyState.dropin_policy); clients see it read-only.
 ## Chat (B6-03): a ChatPanel (Mode.LOBBY) next to the contract panel; the chat key focuses its input.
 ## All networking goes through `session` (LobbySession -> Net API). MenuFlow passes its session in with
 ## setup(); standalone the screen makes its own.
@@ -58,6 +61,9 @@ var briefing_button: Button
 var loadout_button: Button
 ## Host: heist music pick; clients: the host's pick, read-only (B5-03).
 var music_picker: MusicPicker
+## Drop-in policy (B6-04): host option (LobbyState.POLICIES order); clients: the value as text.
+var dropin_option: OptionButton
+var dropin_value_label: Label
 ## Host's lobby code (B6-05): box (hosting only), "Lobby code: XXXX-XXXX", Copy, hint line.
 var code_box: VBoxContainer
 var code_label: Label
@@ -250,6 +256,7 @@ func _build_lobby() -> VBoxContainer:
 	music_picker.name = "MusicPicker"
 	music_picker.music_changed.connect(_on_music_changed)
 	cv.add_child(music_picker)
+	cv.add_child(_build_dropin_row())
 	var top: HBoxContainer = UiBuild.hbox(16)
 	var contract_panel: PanelContainer = UiBuild.panel(cv)
 	contract_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -281,6 +288,21 @@ func _build_lobby() -> VBoxContainer:
 	start_button.pressed.connect(start)
 	box.add_child(footer)
 	return box
+
+
+func _build_dropin_row() -> HBoxContainer:
+	var row: HBoxContainer = UiBuild.hbox(12)
+	row.add_child(UiBuild.label(&"ui.lobby.dropin.title"))
+	dropin_option = UiBuild.option_button()
+	dropin_option.name = "DropInPolicy"
+	for policy: StringName in LobbyState.POLICIES:
+		dropin_option.add_item(UiText.t(policy_key(policy)))
+	dropin_option.custom_minimum_size = Vector2(260, 0)
+	dropin_option.item_selected.connect(_on_dropin_selected)
+	row.add_child(dropin_option)
+	dropin_value_label = UiBuild.label(&"", UiBuild.DIM)
+	row.add_child(dropin_value_label)
+	return row
 
 
 func _slot_card() -> PanelContainer:
@@ -437,6 +459,28 @@ func ask_kick(slot: int) -> bool:
 	return true
 
 
+## Host: change the lobby's drop-in policy (LobbyState.POLICY_*). False for a client or a bad value.
+func set_drop_in_policy(policy: StringName) -> bool:
+	return session.set_drop_in_policy(policy)
+
+
+## UI text key of a drop-in policy.
+static func policy_key(policy: StringName) -> StringName:
+	return StringName("ui.lobby.dropin.%s" % policy)
+
+
+func _on_dropin_selected(index: int) -> void:
+	if index >= 0 and index < LobbyState.POLICIES.size():
+		set_drop_in_policy(LobbyState.POLICIES[index])
+
+
+func _refresh_dropin(st: LobbyState) -> void:
+	dropin_option.visible = st.is_host
+	dropin_value_label.visible = not st.is_host
+	dropin_option.select(maxi(LobbyState.POLICIES.find(st.dropin_policy), 0))
+	dropin_value_label.text = UiText.t(policy_key(st.dropin_policy))
+
+
 func _on_kick_closed() -> void:
 	refresh()
 	focus_default()
@@ -476,6 +520,7 @@ func refresh() -> void:
 	_refresh_contract(st)
 	_refresh_code(active and st.is_host)
 	_refresh_music(st)
+	_refresh_dropin(st)
 	for i: int in range(slot_widgets.size()):
 		_refresh_slot(slot_widgets[i], st.slot_view(i))
 	var in_slot: bool = st.local_slot >= 0
@@ -634,8 +679,8 @@ func _rebuild_focus() -> void:
 		cands = [host_port_edit, host_button, join_address_edit, join_port_edit, join_button, loopback_button, code_edit,
 				code_join_button, back_button]
 	else:
-		cands = [board_button, planning_button, briefing_button, loadout_button, music_picker.option, ready_button, start_button,
-				leave_button]
+		cands = [board_button, planning_button, briefing_button, loadout_button, music_picker.option, dropin_option, ready_button,
+				start_button, leave_button]
 		for w: Dictionary in slot_widgets:
 			cands.append(w["kick"] as Control)
 		if code_box.visible:
