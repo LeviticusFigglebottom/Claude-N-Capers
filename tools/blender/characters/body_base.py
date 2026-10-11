@@ -6,7 +6,7 @@ skinned ``Body`` mesh (head, eyes, ears, brows and hands included) with shape ke
 skinned ``Hair`` mesh with the same shape keys. Outfits and characters import ``_rig``/``_body``
 and build on top of this; these assets are the reference bodies and the rig test fixture.
 
-Godot (after import): ``<root>/rig_humanoid/Skeleton3D/{Body,Hair}``; facing -Z, feet at y = 0.
+Godot (after import, ``remove_armature``): ``<root>/Skeleton3D/{Body,Hair}``; facing -Z, feet at y = 0.
 """
 
 import _body as body
@@ -14,7 +14,7 @@ import _rig as rig
 import _tri
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": True}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": True, "remove_armature": True}
 
 VARIANTS = {
     "char_body_base": {"height": 1.78, "build": 0.4, "gender": 0.0, "age": 0.25, "skin": 2,

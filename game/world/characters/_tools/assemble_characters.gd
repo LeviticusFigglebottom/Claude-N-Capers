@@ -8,11 +8,13 @@
 ##    `Skeleton3D:<bone>` relative to the character Root, non-skeleton tracks dropped, loop modes
 ##    set). Missing glb -> an empty library and a warning.
 ## 2. For every character glb assets/characters/char_<id>/char_<id>.glb (rule:
-##    CharacterSpec.is_excluded) with a Skeleton3D, writes world/characters/<id>/<id>.tscn in the
-##    contract shape (characters.md v1.1): Root Node3D > Skeleton3D (meshes as children, blend
-##    shapes from SOURCE.txt params) + AnimationPlayer (library "humanoid"), and BoneAttachment3D
-##    markers HandR/HandL/Head/Back/Hip under Skeleton3D, each with a `Socket` Marker3D child at
-##    the attach point. Meshes are saved next to the scene as binary <scene>_<node>.res.
+##    CharacterSpec.is_excluded), writes world/characters/<id>/<id>.tscn in the contract shape
+##    (characters.md v1.1): Root Node3D > Skeleton3D (meshes as children, blend shapes from
+##    SOURCE.txt params) + AnimationPlayer (library "humanoid"), and BoneAttachment3D markers
+##    HandR/HandL/Head/Back/Hip under Skeleton3D, each with a `Socket` Marker3D child at the attach
+##    point. D-067(b): the scene inherits the glb (exported with `remove_armature`, so it imports as
+##    Root > Skeleton3D > meshes); meshes and skins stay in the glb, the .tscn only holds overrides
+##    and added nodes. A glb without a top-level Skeleton3D is an error.
 ## 3. Special characters (P3): SOURCE.txt `extra_markers` add Marker3D nodes (Longshot `LaserOrigin`)
 ##    and `material_override` sets MeshInstance3D.material_override (Phantom `Goggles`); extra named
 ##    meshes (Wrecker `Faceplate` / `Visor` / `HeadArmored`) come through as they are.
@@ -220,48 +222,42 @@ static func _glb(asset_id: String) -> String:
 	return "%s%s/%s.glb" % [Spec.ASSETS_DIR, asset_id, asset_id]
 
 
+## D-067(b): the scene INHERITS the glb (`[node name="<Root>" instance=ExtResource("1_glb")]`), so the
+## meshes and skins stay in the imported glb and the .tscn only holds the differences: the root name,
+## blend shape values, material overrides and the added nodes (markers, extra markers,
+## AnimationPlayer). The glb must be exported with `remove_armature` (EXPORT in the Blender script)
+## so it imports as `<root> > Skeleton3D > meshes`, which is already the contract shape.
 func _assemble(asset_id: String, scene_path: String, lib: AnimationLibrary) -> bool:
 	var packed: PackedScene = load(_glb(asset_id)) as PackedScene
 	if packed == null:
 		_error("could not load %s (run godot --import first)" % _glb(asset_id))
 		return false
-	var src: Node = packed.instantiate()
-	var skel: Skeleton3D = _find_skeleton(src)
-	if skel == null:
-		print("assemble_characters: %s has no Skeleton3D; skipped" % asset_id)
-		src.free()
+	var root: Node3D = _inherited_root(asset_id, scene_path)
+	if root == null:
 		return false
-	var source: Dictionary = Spec.read_source("%s%s/SOURCE.txt" % [Spec.ASSETS_DIR, asset_id])
-	var root: Node3D = Node3D.new()
-	root.name = Spec.root_name(Spec.character_id(asset_id))
-	# Skeleton3D directly under Root; the wrappers' (rig_humanoid...) transforms are folded in.
-	var xf: Transform3D = skel.transform
-	var p: Node = skel.get_parent()
-	while p != src and p != null:
-		if p is Node3D:
-			xf = (p as Node3D).transform * xf
-		p = p.get_parent()
-	_adopt_loose_meshes(src, skel)
-	_disown(skel)
-	skel.get_parent().remove_child(skel)
-	skel.name = "Skeleton3D"
-	skel.transform = xf
-	root.add_child(skel)
-	src.free()
-	_apply_blend_shapes(skel, source, asset_id)
-	if not _externalise_meshes(skel, scene_path):
+	var skel: Skeleton3D = root.get_node_or_null(^"Skeleton3D") as Skeleton3D
+	if skel == null:
+		_error("%s has no top-level Skeleton3D: rebuild it with EXPORT remove_armature (D-067b)" % asset_id)
 		root.free()
 		return false
+	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
+		if not skel.is_ancestor_of(n):
+			_error("%s: mesh %s is not under Skeleton3D (parent every mesh to the armature)" % [
+				asset_id, root.get_path_to(n)])
+	var source: Dictionary = Spec.read_source("%s%s/SOURCE.txt" % [Spec.ASSETS_DIR, asset_id])
+	root.name = Spec.root_name(Spec.character_id(asset_id))
+	_apply_blend_shapes(skel, source, asset_id)
 	_add_markers(skel, source, asset_id)
 	_add_extra_markers(skel, source, asset_id)
-	_apply_overrides(skel, source, asset_id)
+	_apply_overrides(skel, source, asset_id, scene_path)
 	var player: AnimationPlayer = AnimationPlayer.new()
 	player.name = "AnimationPlayer"
 	root.add_child(player)
 	player.root_node = NodePath("..")
 	player.add_animation_library(Spec.ANIM_LIBRARY_NAME, lib)
 	lib.set_id_for_path(scene_path, "1_anim")
-	_own(root, root)
+	packed.set_id_for_path(scene_path, "1_glb")
+	_own_new(root, root)
 	var scene: PackedScene = PackedScene.new()
 	var err: Error = scene.pack(root)
 	root.free()
@@ -269,7 +265,44 @@ func _assemble(asset_id: String, scene_path: String, lib: AnimationLibrary) -> b
 		_error("could not pack %s (%s)" % [scene_path, error_string(err)])
 		return false
 	_fix_node_ids(scene, scene_path)
+	# The glb's imported node ids are random per import: never save references to them.
+	var bundle: Dictionary = scene._get_bundled_scene()
+	bundle.erase("id_paths")
+	scene._set_bundled_scene(bundle)
 	return _save(scene, scene_path)
+
+
+## There is no scripted setter for a node's inherited state: write a one-line inherited stub to
+## `scene_path`, load it uncached and instantiate it with GEN_EDIT_STATE_MAIN (the editor's own
+## path), so pack() writes an inherited scene. The stub is overwritten by the real scene.
+func _inherited_root(asset_id: String, scene_path: String) -> Node3D:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(scene_path.get_base_dir()))
+	var f: FileAccess = FileAccess.open(scene_path, FileAccess.WRITE)
+	if f == null:
+		_error("could not write %s" % scene_path)
+		return null
+	f.store_string("[gd_scene format=3]\n\n[ext_resource type=\"PackedScene\" path=\"%s\" id=\"1_glb\"]\n\n" % _glb(asset_id))
+	f.store_string("[node name=\"Root\" instance=ExtResource(\"1_glb\")]\n")
+	f.close()
+	var stub: PackedScene = ResourceLoader.load(scene_path, "", ResourceLoader.CACHE_MODE_IGNORE) as PackedScene
+	if stub == null:
+		_error("could not load the inherited stub %s" % scene_path)
+		return null
+	var node: Node = stub.instantiate(PackedScene.GEN_EDIT_STATE_MAIN)
+	if not node is Node3D:
+		_error("%s: the glb root is not a Node3D" % asset_id)
+		if node != null:
+			node.free()
+		return null
+	return node as Node3D
+
+
+## Owner = root for the nodes added on top of the inherited glb (the inherited ones are owned already).
+static func _own_new(n: Node, owner_node: Node) -> void:
+	for c: Node in n.get_children():
+		if c.owner == null:
+			c.owner = owner_node
+		_own_new(c, owner_node)
 
 
 ## Node unique ids (`unique_id=` in the .tscn) are random per pack; derive them from the node path.
@@ -283,31 +316,6 @@ static func _fix_node_ids(scene: PackedScene, scene_path: String) -> void:
 		ids.append((hash(scene_path + "|" + String(state.get_node_path(i))) & 0x3fffffff) + 1)
 	bundle["node_ids"] = ids
 	scene._set_bundled_scene(bundle)
-
-
-func _find_skeleton(src: Node) -> Skeleton3D:
-	var found: Array[Node] = src.find_children("*", "Skeleton3D", true, false)
-	if found.is_empty():
-		return null
-	if found.size() > 1:
-		push_warning("assemble_characters: %s has %d skeletons; using the first" % [src.name, found.size()])
-	return found[0] as Skeleton3D
-
-
-## Meshes outside the skeleton (rigid gear exported as separate objects) move under it, keeping
-## their place relative to the skeleton.
-func _adopt_loose_meshes(src: Node, skel: Skeleton3D) -> void:
-	var loose: Array[Node] = []
-	for n: Node in src.find_children("*", "MeshInstance3D", true, false):
-		if not skel.is_ancestor_of(n):
-			loose.append(n)
-	for n: Node in loose:
-		var mi: MeshInstance3D = n as MeshInstance3D
-		var rel: Transform3D = _rel_xform(src, skel).affine_inverse() * _rel_xform(src, mi)
-		_disown(mi)
-		mi.get_parent().remove_child(mi)
-		mi.transform = rel
-		skel.add_child(mi)
 
 
 ## Transform of `n` relative to `src` (the instanced glb root), without needing the tree.
@@ -346,41 +354,6 @@ static func _meshes(skel: Node) -> Array[MeshInstance3D]:
 	for n: Node in skel.find_children("*", "MeshInstance3D", true, false):
 		out.append(n as MeshInstance3D)
 	return out
-
-
-## Saves every mesh as `<scene>_<node>.res` next to the scene so the .tscn references it instead
-## of embedding the vertex data (imported glb sub-resources cannot be referenced from a .tscn).
-## Skins stay embedded (small) with fixed ids.
-func _externalise_meshes(skel: Skeleton3D, scene_path: String) -> bool:
-	var base: String = scene_path.get_basename()
-	var done: Dictionary = {}
-	var skins: Dictionary = {}
-	for mi: MeshInstance3D in _meshes(skel):
-		if mi.mesh == null:
-			continue
-		if mi.skin != null and not skins.has(mi.skin):
-			mi.skin.set_scene_unique_id("skin_%d" % skins.size())
-			mi.skin.resource_path = ""
-			skins[mi.skin] = true
-		if done.has(mi.mesh):
-			mi.mesh = done[mi.mesh]
-			continue
-		var path: String = "%s_%s.res" % [base, String(mi.name).to_snake_case()]
-		var mesh: Mesh = mi.mesh
-		for s: int in range(mesh.get_surface_count()):
-			var mat: Material = mesh.surface_get_material(s)
-			if mat != null and (mat.resource_path.is_empty() or mat.resource_path.contains("::")):
-				mat.set_scene_unique_id("mat_%d" % s)
-		var am: ArrayMesh = mesh as ArrayMesh
-		if am != null and am.shadow_mesh != null:
-			am.shadow_mesh.set_scene_unique_id("shadow")
-		if not _save(mesh, path):
-			return false
-		var saved: Mesh = load(path) as Mesh
-		saved.set_id_for_path(scene_path, "mesh_" + String(mi.name).to_snake_case())
-		done[mesh] = saved
-		mi.mesh = saved
-	return true
 
 
 func _add_markers(skel: Skeleton3D, source: Dictionary, asset_id: String) -> void:
@@ -450,7 +423,8 @@ func _add_extra_markers(skel: Skeleton3D, source: Dictionary, asset_id: String) 
 
 ## SOURCE.txt `material_override`: {mesh node name: material path} -> material_override (the Phantom's
 ## `Goggles` get the emissive library material, which ENV A duplicates per instance and ramps).
-func _apply_overrides(skel: Skeleton3D, source: Dictionary, asset_id: String) -> void:
+## The ext-resource id is fixed (`2_<material file>`): the saver would otherwise pick a random one.
+func _apply_overrides(skel: Skeleton3D, source: Dictionary, asset_id: String, scene_path: String) -> void:
 	if not source.has(Spec.OVERRIDE_KEY):
 		return
 	var data: Variant = JSON.parse_string(String(source[Spec.OVERRIDE_KEY]))
@@ -465,6 +439,7 @@ func _apply_overrides(skel: Skeleton3D, source: Dictionary, asset_id: String) ->
 		if mi == null or mat == null:
 			_error("%s: material_override %s -> %s unresolved" % [asset_id, nm, data[nm]])
 			continue
+		mat.set_id_for_path(scene_path, "2_" + mat.resource_path.get_file().get_basename())
 		mi.material_override = mat
 
 
@@ -544,12 +519,6 @@ static func _rounded(t: Transform3D) -> Transform3D:
 	return Transform3D(
 		Basis(b.x.snappedf(0.00001), b.y.snappedf(0.00001), b.z.snappedf(0.00001)),
 		t.origin.snappedf(0.0001))
-
-
-static func _disown(n: Node) -> void:
-	n.owner = null
-	for c: Node in n.get_children():
-		_disown(c)
 
 
 static func _own(n: Node, owner_node: Node) -> void:
