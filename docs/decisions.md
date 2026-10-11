@@ -512,3 +512,11 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   hub return to the station UsePoint; jukebox duck is MusicDirector `set_ducked`; hub prompts use the in-heist
   prompt format; IPv6 lobby codes out of scope.
 - hub_map.md v1.0 (safehouse scene, stations, StationCam as Marker3D) with ENV C's wording.
+
+## D-073 — 2026-10-11 — Heister choice, throwables, mask fit
+- `Loadout.heister: StringName` (&"" = generic crew): the player's heister rides the loadout; ENV B sets it from the
+  profile (unique per lobby, PD2); ENV A's FpViewmodel reads it for the sleeve variant (characters v1.8).
+- A3-12 throwables: ENV B adds `throwable.frag` / `concussion` / `incendiary` / `throwing_knife` data (◇);
+  audio_cues v1.3 `cue.throwable_*` (ENV C).
+- Masks clear the crew face envelope by ≥ 3 mm (ENV D fix for skin/hair poking through; characters v1.8).
+- Nav bake: BARRED/locked closure gates are baked closed (ENV C), A's door NavLink bridges them while passable.
