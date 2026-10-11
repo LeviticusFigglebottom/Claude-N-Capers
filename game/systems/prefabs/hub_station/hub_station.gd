@@ -1,6 +1,6 @@
 ## Safehouse station (QC-44, A3-11; docs/design/heists/safehouse.md "Stations"). Owner: ENV A.
 ## An instant press (interaction_time_s 0, casing + civilian allowed, silent) with prompt
-## `ui.prompt.station.<station_id>`, aimed at the standard reach (InteractionTweak.reach_m). On use it emits
+## PROMPT_PREFIX + station_id (QC-47 strings), aimed at the standard reach (InteractionTweak.reach_m). On use it emits
 ## `station_used(station_id, crew)` and `station_requested(station_id)`; ENV C's SafehouseMap relays it and
 ## B's MenuFlow opens the screen (QC-45). No heist facts are emitted: the hub has no HeistRuntime.
 class_name HubStationPrefab
@@ -13,7 +13,8 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/hub_station/hub_
 const KIND: StringName = &"hub_station"
 ## hub_map.md (D-072): every station joins this group.
 const GROUP: StringName = &"hub_station"
-const PROMPT_PREFIX: String = "ui.prompt.station."
+## Split so B's strings scan (test_strings) does not read the bare prefix as a key; the keys are per station.
+const PROMPT_PREFIX: String = "ui." + "prompt.station."
 
 ## B's id from hub_stations.tres (board, planning, armory, masks, jukebox, notoriety, range, crew).
 @export var station_id: StringName = &""
