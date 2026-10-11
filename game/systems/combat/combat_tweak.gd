@@ -81,6 +81,20 @@ static var _cached: CombatTweak = null
 @export var bash_swing_s: float = 0.55
 @export var bash_hit_delay_s: float = 0.2
 
+@export_group("NPC melee (A3-13)")
+## PD2 point-blank shove / strike by non-special enemies (police, guards, cartel) on a crew member within reach.
+@export var npc_melee_range_m: float = 1.6
+## Windup (the `melee` clip) before the strike lands; a crew member countering in it (defense.melee_counter
+## while charging / swinging a melee) knocks the NPC down instead ◇.
+@export var npc_melee_windup_s: float = 0.4
+@export var npc_melee_cooldown_s: float = 3.0
+## Strike damage by Enums.Difficulty (ROUTINE..CATACLYSM) ◇; DamageType.MELEE (defense.melee_damage_taken_mult).
+@export var npc_melee_damage: Array[float] = [8.0, 12.0, 16.0, 24.0, 32.0, 40.0]
+## Shove: horizontal speed given to the struck crew member (m/s) ◇; the strike also cancels a reload.
+@export var npc_melee_knockback_mps: float = 4.0
+## Counterstrike: the countered NPC is stunned this long ◇.
+@export var npc_melee_counter_stun_s: float = 2.0
+
 @export_group("Throwables (A3-12)")
 ## Throw press -> release (the FP `throwable` throw clip's release@ is re-timed onto it) ◇.
 @export var throw_windup_s: float = 0.4
