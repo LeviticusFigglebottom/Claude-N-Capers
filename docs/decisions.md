@@ -461,3 +461,9 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   so the lead raises it with the product owner if .git approaches 2 GB (411 MB now).
 - B5-01 options hooks routed (A: FOV/sensitivity/invert/toggles; C: brightness + palettes); B5-02 Notoriety costs
   spending cash (no offshore account); music unlocks `unlock.music.vault_hymn`/`long_con`/`last_call` (ranks VII/XIII/XXI).
+
+## D-068 — 2026-10-11 — Dockside Burn content answers (B5-04)
+- `LootDef.is_tool` (contracts/data): no value, no XP, never counts toward [secure] (thermite). preplanning.md v1.1:
+  `loot.<id>` drop kinds spawn that bag; point labels heist-qualified for new heists.
+- $95k base is a placeholder (P6 balance); per-heist Board gating is P6; no armor-bag drop on loud-only jobs; small
+  loot $600–1,500 until ENV C sets prefab values.
