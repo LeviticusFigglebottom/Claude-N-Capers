@@ -3,6 +3,25 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11 14:30 UTC: HANDOFF (session shut down by the lead; account move)
+### State
+- Pushed: env/a-core = 112c7f3 (round 28 content). Nothing newer is on origin.
+- NOT pushed (local only in the archived session, 76 commits, HEAD 8784a092, trunk round 30 79f7a67 merged):
+  - A4-01 gap fixes with tests: S5.8 guard domination, S2.7 DR target range, L3.3 pellet headshot, S1.2 mask slow-mo,
+    S1.1 casing pickup, L2.4 melee dodge, L2.1 regen, S8.3 camera loop, S3.5 alert tone, S9.3 fix-speed mult,
+    phase-2 keys, S9.1/S9.2 tests; env_a_fidelity.md updated (100 ✅ / 15 partial / 3 missing).
+  - A4-02 perf instrumentation (PerfStats/PerfProbe/PerfTail) + test_a4_02_perf; CrewHealth/CrewPerks max refresh throttled.
+  - A4-03 soak harness game/tests/a/soak/ (host + 3 loopback clients with bots, windowed state-capture desync,
+    memory/orphan/error gates; CLI soak_host.tscn) + test_a4_03_soak (45 s: 0 desyncs, 0 errors).
+  - HeistDropIn full/was_kicked/live policy, AnimDriver v1.9 hints, B7-03 weapon finish hook, untextured_ok on prefab
+    runtime materials, CrewController ignores intent RPCs out of the tree.
+- Last check_all on 8784a092: 1648 tests 0 failed, gdlint/banned/ownership/validate_level all PASS, but CHECK_ALL printed
+  FAIL (step not identified before shutdown), so it was not pushed per the lead's rule.
+### For the next ENV A session
+- That local work is not recoverable from origin; redo from the A4 dispatch using this list (designs in the fidelity audit).
+- Open questions: S4.1 hack stimulus vs D-040; S9.5/A5-03 shaped charges + C4; camera loop = all feeds from the station.
+- Clients already seed GameRng with the run seed (HeistRuntime._start_replica). escape_arrived [R] still to propose.
+
 ## 2026-10-11 13:00 UTC: A3-13 enemy melee, heister bodies, round 23
 ### Done
 - Pushed fd51e2d and a2bd853: heister third-person bodies (CrewTweak.body_scenes by Loadout.heister), answer_join reason (B f46b038), infiltrator chain in CrewMelee.
