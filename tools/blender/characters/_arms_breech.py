@@ -12,7 +12,8 @@ The idle / ads_idle / sprint / draw / holster clips are the generic long-gun bui
   (``shell_in_1`` / ``shell_in_2``, or ``round_in``), then lifts the fore-end and the gun snaps shut
   (``breech_close``).
 * ``crossbow``: fire = recoil + ``string_release``. ``reload`` (= ``reload_empty``): muzzle raised, the
-  left hand hooks the ``String`` (``cock``) and pulls it back to the latch (``string_back``), takes a
+  left hand hooks the string centre (where ``StringUpper`` meets ``StringLower``; ``cock``) and pulls it
+  back to the latch on the Magwell (``string_back``; ``string_centre``), takes a
   bolt from the quiver (``bolt_show``, off screen; the bolt rides the ``magazine`` bone in the hand) and
   lays it on the rail (``bolt_in``).
 * ``lever``: the lever cycle is part of fire / fire_ads (``lever_open`` / ``lever_close``, like the pump):
@@ -164,6 +165,14 @@ def string_pos(f: int, ev: dict | None, fire: bool = False) -> float:
     return smooth(c, sb, f)
 
 
+def string_centre(s: FPSet, t: float) -> np.ndarray:
+    """The string centre (where ``StringUpper`` meets ``StringLower``) in Blender weapon space for
+    ``string_pos`` ``t`` (0 = released, 1 = latched on the Magwell). ENV A bends each half from its prod-tip
+    anchor to this point."""
+    m = s.markers
+    return m["string_rest"] + (m["string_latched"] - m["string_rest"]) * t
+
+
 def clip_crossbow_reload(kit, s: FPSet, N: int):
     from _arms_clips import K, hold_frame  # noqa: PLC0415
 
@@ -179,7 +188,7 @@ def clip_crossbow_reload(kit, s: FPSet, N: int):
 
     def hook(t: float, shape="grip") -> Hand:
         """Fingers hooked over the string centre, ``t`` = 0 (released) .. 1 (latched)."""
-        p = m["string_rest"] + (m["string_latched"] - m["string_rest"]) * t + v3(-0.004, 0.012, 0.006)
+        p = string_centre(s, t) + v3(-0.004, 0.012, 0.006)
         return kit.left_w(p, (0.25, 0.55, -0.80), (0.0, 0.85, 0.50), pole=(-0.6, -0.5, -0.6),
                           shape=hand_shape(shape, 0.75) if shape == "grip" else shape, share=0.80, off=0.010)
     bolt_grip = kit.left_w(m["magwell"] + v3(-0.004, 0.030, 0.012), (0.35, 0.80, -0.45), (0.25, 0.05, -0.97),

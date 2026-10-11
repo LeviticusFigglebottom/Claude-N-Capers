@@ -5,7 +5,8 @@
 ## (remove_immutable_tracks=false) and finite values. NPC ambient set (priority 4, heist casting): present, looped,
 ## events/speeds/prop grips in SOURCE.txt, planted feet, and the props (posed through HandR/Socket + the documented
 ## `<prop>_grip`) where they belong: the mug level, the mop head on the floor, the phone at the ear, the book in front
-## of the reader in bed.
+## of the reader in bed. Police rappel (QC-41): present, looped, 1 s per hop, speed / axis / `land` in SOURCE.txt, the
+## fists on the documented rope line (`rappel_rope`) and the feet world-still on the wall while the root descends.
 extends TestCase
 
 const GLB: String = "res://assets/characters/char_anim_humanoid/char_anim_humanoid.glb"
@@ -35,6 +36,11 @@ const NPC_FRAMES: Dictionary = {
 	"desk_work": 360, "phone_seated": 240, "sit_chair_watch": 300, "mug_idle": 240, "mug_carry_walk": 34, "mop": 120,
 	"sit_bed_read": 300, "idle_thug": 105,
 }
+## Police clips (QC-41): the rappel descent loop.
+const POLICE: Array[String] = ["rappel"]
+## Native descent speed (m/s, SOURCE.txt clip.rappel speed_mps) and the wall-contact frames (feet world-still).
+const RAPPEL_SPEED: float = 2.5
+const RAPPEL_CONTACT: int = 4
 ## Held props (SOURCE.txt `<prop>_grip`, relative to HandR/Socket).
 const GRIPS: Array[String] = ["phone_grip", "mug_grip", "mop_grip", "book_grip"]
 const LOOPED: Array[String] = [
@@ -43,13 +49,13 @@ const LOOPED: Array[String] = [
 	"flee", "phone_call", "pager_answer", "investigate_look", "smoke", "lean_wall", "sit_chair",
 	"desk_type", "browse", "downed", "tased", "climb_ladder", "carry_bag_walk", "interact_low",
 	"interact_mid", "interact_high", "shield_idle", "shield_walk", "dozer_walk", "desk_work", "phone_seated",
-	"sit_chair_watch", "mug_idle", "mug_carry_walk", "mop", "sit_bed_read", "idle_thug",
+	"sit_chair_watch", "mug_idle", "mug_carry_walk", "mop", "sit_bed_read", "idle_thug", "rappel",
 ]
 ## Clip -> frames at 30 fps (anim_humanoid.CLIPS).
 const FRAMES: Dictionary = {"idle": 120, "walk": 30, "run": 21, "sprint": 18, "crouch_walk": 27,
 	"fire_pistol": 9, "fire_rifle": 6, "reload_pistol": 45, "reload_rifle": 72, "death_front": 54,
 	"radio_call": 60, "carry_bag_walk": 22, "flee": 20, "kick_charge": 15, "kick_hit": 21, "shield_walk": 28,
-	"shield_idle": 108, "shield_bang": 24, "heal_ally": 30, "dozer_walk": 33}
+	"shield_idle": 108, "shield_bang": 24, "heal_ally": 30, "dozer_walk": 33, "rappel": 30}
 ## Contract-listed event frames of the specials (SOURCE.txt `clip.<name>: ... events=`): ENV A syncs to them.
 const SPECIAL_EVENTS: Dictionary = {
 	"kick_hit": {"impact": 6}, "shield_bang": {"bang_1": 6, "bang_2": 12, "bang_3": 18},
@@ -108,7 +114,7 @@ func test_delivered_p2_clips_are_present() -> void:
 	for clip: String in P2:
 		assert_true(_player.has_animation(StringName(clip)), "P2 clip %s" % clip)
 	var names: PackedStringArray = _player.get_animation_list()
-	assert_eq(names.size(), P1.size() + P2.size() + SPECIALS.size() + NPC.size(),
+	assert_eq(names.size(), P1.size() + P2.size() + SPECIALS.size() + NPC.size() + POLICE.size(),
 		"no extra or misnamed clips: %s" % [names])
 	for n: String in names:
 		assert_false(n.ends_with("-loop") or n.ends_with("_loop"), "%s: loop suffix stripped" % n)
@@ -117,7 +123,7 @@ func test_delivered_p2_clips_are_present() -> void:
 func test_loop_modes() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS + NPC:
+	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE:
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -128,7 +134,7 @@ func test_loop_modes() -> void:
 func test_lengths() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS:
+	for clip: String in P1 + P2 + SPECIALS + POLICE:
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -148,7 +154,7 @@ func test_lengths() -> void:
 func test_tracks_target_skeleton_bones() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS + NPC:
+	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE:
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -183,7 +189,7 @@ func test_loops_end_on_their_first_pose() -> void:
 func test_values_are_finite_without_flips() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS + NPC:
+	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE:
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -580,3 +586,52 @@ func _check_thug() -> void:
 		assert_true(muzzle.x < -0.2 and muzzle.z < 0.0, "idle_thug f%d: muzzle across to the left/front (%s)" % [i, muzzle])
 		assert_true(w.origin.y > 0.75 and w.origin.y < 1.1, "idle_thug f%d: gun held low (%f m)" % [i, w.origin.y])
 	_player.stop()
+
+
+## QC-41: the police rappel loop. The fists ride the rope line documented in `rappel_rope` (the guide hand on it, the
+## brake hand at the right hip just off it) and the feet stay world-still on the wall for the contact frames while
+## ENV A moves the root down at speed_mps.
+func test_rappel() -> void:
+	if not _ready_or_fail():
+		return
+	var lines: Dictionary = _source_lines()
+	var a: Animation = _anim("rappel")
+	if a == null:
+		fail("rappel clip missing")
+		return
+	assert_eq(a.loop_mode, Animation.LOOP_LINEAR, "rappel loops")
+	var row: String = String(lines.get("clip.rappel", ""))
+	assert_true(row.contains("speed_mps=%s" % RAPPEL_SPEED), "clip.rappel speed_mps=%s (%s)" % [RAPPEL_SPEED, row])
+	assert_true(row.contains("travel_axis=down") and row.contains("land@0"), "clip.rappel: travel_axis=down, land@0")
+	var rope_doc: String = String(lines.get("rappel_rope", ""))
+	var m: RegExMatch = RegEx.create_from_string("line at Godot x=(-?[0-9.]+) z=(-?[0-9.]+)").search(rope_doc)
+	if m == null:
+		fail("SOURCE.txt rappel_rope gives the rope line (%s)" % rope_doc)
+		return
+	var rope: Vector2 = Vector2(m.get_string(1).to_float(), m.get_string(2).to_float())
+	assert_true(rope.y < -0.1, "the rope is in front of the character (z %f)" % rope.y)
+	var sock_r: Transform3D = _parse_xform(String(lines.get("handr_weapon_offset_godot", "")))
+	var sock_l: Transform3D = _parse_xform(String(lines.get("handl_shield_offset_godot", "")))
+	_player.play(&"rappel")
+	var worst_l: float = 0.0
+	var worst_r: float = 0.0
+	var feet0: Dictionary = {}
+	var slide: float = 0.0
+	for f: int in range(0, 31):
+		_player.seek(float(f) / 30.0, true)
+		var gl: Vector3 = (_bone_xform("hand.L") * sock_l).origin
+		var gr: Vector3 = (_bone_xform("hand.R") * sock_r).origin
+		worst_l = maxf(worst_l, Vector2(gl.x, gl.z).distance_to(rope))
+		worst_r = maxf(worst_r, Vector2(gr.x, gr.z).distance_to(rope))
+		assert_true(gl.y > gr.y + 0.5, "rappel f%d: guide hand high, brake hand low" % f)
+		if f <= RAPPEL_CONTACT:
+			for b: String in ["toe.L", "toe.R"]:
+				# world = root space - the root's descent: constant while the feet are on the wall
+				var w: Vector3 = _bone_pos(b) - Vector3(0.0, RAPPEL_SPEED * float(f) / 30.0, 0.0)
+				if not feet0.has(b):
+					feet0[b] = w
+				slide = maxf(slide, w.distance_to(feet0[b]))
+	_player.stop()
+	assert_true(worst_l < 0.02, "rappel: the guide fist on the rope line (%f m)" % worst_l)
+	assert_true(worst_r < 0.16, "rappel: the brake fist by the rope line at the hip (%f m)" % worst_r)
+	assert_true(slide < 0.005, "rappel: the feet world-still on the wall during contact (%f m)" % slide)

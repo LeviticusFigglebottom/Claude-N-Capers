@@ -35,7 +35,8 @@ sections = {
 "aim_mode": {"type": "choice", "default": "hold", "options": ["hold", "toggle"]},
 "crouch_mode": {"type": "choice", "default": "hold", "options": ["hold", "toggle"]},
 "sprint_mode": {"type": "choice", "default": "hold", "options": ["hold", "toggle"]},
-"scoreboard_mode": {"type": "choice", "default": "hold", "options": ["hold", "toggle"]}
+"scoreboard_mode": {"type": "choice", "default": "hold", "options": ["hold", "toggle"]},
+"safehouse_hub": {"type": "choice", "default": "walk", "options": ["walk", "menu"]}
 },
 "accessibility": {
 "palette": {"type": "choice", "default": "default", "options": ["default", "deuteranopia", "protanopia", "tritanopia", "high_contrast"]},

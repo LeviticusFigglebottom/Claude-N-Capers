@@ -25,7 +25,7 @@ from _outfit_build import Kit, build_character
 from char_crew import suit
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
 VARIANTS = {
     "char_civilian_customer_a": {"height": 1.70, "build": 0.3, "gender": 1.0, "age": 0.3, "skin": 1, "hair": "bob",

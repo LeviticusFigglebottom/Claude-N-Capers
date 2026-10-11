@@ -178,7 +178,9 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 * **Safehouse hub (B4-07, C9).** `HubMenu` (`ui/hub/hub_menu.tscn`) is the 2D layer of the safehouse:
   station cards + a profile summary (level, XP bar, spending, stash, free skill/perk points). Stations are
   data: `data/ui/hub_stations.tres` (`HubStationList` of `HubStation {id, title_key, desc_key, icon_kind,
-  target}`). Ids: `board`, `planning`, `armory`, `masks`, `range`, `crew` (co-op lobby, B4-11), `jukebox` (B5-03).
+  target}`). Ids: `board`, `planning`, `armory`, `masks`, `range`, `crew` (co-op lobby, B4-11), `jukebox` (B5-03),
+  `notoriety` (B6-06 / QC-46: the Old Press -> `NotorietyScreen`; the profile panel button stays). Prompts
+  `ui.prompt.station.<id>` (QC-47).
   **`MenuFlow.open_station(id: StringName) -> bool`** opens one (false + `Log.error` for an unknown id);
   it is the API **ENV C's 3D safehouse interactables call** (find the MenuFlow node, call it with the
   station id), works from any menu state, refunds a confirmed-but-unlaunched plan, and Back on every
@@ -186,6 +188,22 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   usual). Briefing Back returns to where the contract came from (Board or heist select). After a heist
   (or the stub/sample payday) the flow returns "home": the hub once the safehouse was entered, else the
   main menu (`MenuFlow.show_home()`).
+* **3D safehouse hub (B6-06, QC-45..49; ENV C's `docs/design/heists/safehouse.md`).** `MenuFlow.safehouse`
+  (`SafehouseHost`, `ui/hub/`) is `show_hub()`'s 3D branch. Data `data/ui/safehouse_hub.tres` (`SafehouseHubTweak`):
+  `scene_path` (C's scene; no `res://world/` path in code), `map_class` (`SafehouseMap`, looked up by name),
+  `station_group` (`hub_station`), `stations_node` (`Stations`), `station_signals` (`station_requested(id)`,
+  A's `station_used(id, crew)`), `use_point_name` (`UsePoint`), `station_cam_name` (`StationCam`, blend
+  `station_cam_blend_s` 0.35), A's `crew_class.spawn_method` (`CrewController.spawn_for_hub(parent, xform, loadout)`,
+  QC-43; else a stand-in in `walker_group` `hub_walker`), markers `ReturnHeist` / `ReturnRange`
+  (root `spawn_transform(id)`, else a Marker3D of that name), the root's `jukebox` preview target and
+  `set_jukebox_track(id)`. Station used -> walker `set_input_paused(true)`, mouse released, view dimmed, optional
+  StationCam blend, `open_station(id)`; every Back -> `show_hub()` -> walker back at that station's UsePoint.
+  `SafehouseHud` (centre dot + `InteractionPanel` on the walker's LocalHudModel); Esc / `pause` ->
+  `SafehousePauseMenu` (Resume, quick stations, Options, Achievements, Main Menu). Range / heist launch free
+  the scene and re-enter at ReturnRange / ReturnHeist. The 2D `HubMenu` stays the fallback (scene, class or
+  walker missing; Options `controls/safehouse_hub` = `menu`, `GameSettings.hub_walk()`; co-op lobby). Jukebox
+  (QC-48): `JukeboxScreen.preview_target` = the cabinet in 3D, else its own bare MusicDirector. Mock scene:
+  `tests/b/mock_safehouse/`, tests `test_hub_3d.gd`.
 * **Co-op lobby (B4-11).** Crew station `crew` (target `lobby`) -> `LobbyScreen` (`ui/lobby/lobby_screen.tscn`):
   Host (port; default `data/lobby/lobby_tweak.tres` = Net.DEFAULT_PORT), Join (address + port, `LobbyAddress`
   validation), loopback quick-join (`LobbyTweak.loopback_address`), Leave. 4 crew slots from `Net.crew` (host
@@ -301,3 +319,33 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
 `vo.guard.cuff_warning`) get a `data/voice/lines.tres` entry and `voice.<id>` text;
 `test_strings.test_keys_requested_by_systems_exist` scans ENV A/C code for prompt/blocked/voice keys. Code that builds a mod delta starts from
 `WeaponStats.make_delta()`; `.tres` deltas spell its zeros out (D-022 QB-5). Tests: `game/tests/b/test_*.gd`.
+* **Chat (B6-03).** `LobbyState.MSG_CHAT` `{"text"}` over `Net.lobby_send`, validated by `ChatLog`
+  (`lobby/chat_log.gd`, `LobbyState.chat`): attribution by the sender's crew slot, `clean_text` (control / bidi /
+  zero-width characters stripped, spaces collapsed, cut to `LobbyTweak.chat_max_length`), rate limit per slot
+  (`chat_rate_count` per `chat_rate_window_s`, clock `LobbyState.now_s`), history cap. `LobbySession.send_chat(text)
+  -> OK | R_*`, `chat_history()`, signal `chat_received(entry)`. `Net.lobby_send` keeps working during a heist on the
+  same session, so the in-heist chat uses it too (no separate transport). UI: `ChatPanel` (`ui/chat/`), Mode.LOBBY
+  (lobby screen) / Mode.OVERLAY (MenuFlow.heist_chat over the HUD in co-op; fades after `chat_fade_after_s`; typing
+  pauses the local crew member's input). Lines are plain Labels (no BBCode). Open key: InputMap action `chat`
+  (lead: project.godot) else `LobbyTweak.chat_fallback_key` (T). `CrewInput` (`ui/common/`) = the shared
+  local-input pause with per-overlay holders (options, chat, drop-in). Strings `ui.chat.*`.
+* **Drop-in + kick (B6-04, on mocks until ENV A's drop-in lands).** `DropInService` (`lobby/drop_in_service.gd`):
+  the interface B's UI binds to by duck typing (group `drop_in_service`, `DropInService.find(tree)`): signals
+  `join_requested(peer_id, summary)`, `join_progress(peer_id, frac)`, `joined(slot)`, `join_failed(peer_id, reason)`,
+  `kicked(slot)`; methods `answer_join(peer_id, accept)`, `kick(slot) -> bool`, `request_join(summary)`,
+  `cancel_join()`; reasons `denied|timeout|full|cancelled|host_lost`. `MockDropInService` (`lobby/mock/`).
+  UI (`ui/dropin/`): `JoinRequestDialog` (host: name, level + Notoriety badge, Accept / Deny, auto-deny after
+  `LobbyTweak.dropin_request_timeout_s`, queue; MenuFlow.heist_join_dialog over the HUD for a co-op host, pauses
+  local input while shown), `KickConfirmDialog` (calls `target.kick(slot)`), `DropInJoinScreen` (joining player:
+  `LoadoutScreen.compact_mode` pick -> "Joining" progress with Cancel; not wired into MenuFlow until A's client path
+  exists). Lobby kick works today: `LobbySession.kick(slot)` -> host-only `LobbyState.MSG_KICK`; the kicked client's
+  session leaves (`connection_failed(FAIL_KICKED)`), honour-based until Net can drop a peer. Strings `ui.dropin.*`,
+  `ui.kick.*`.
+* **Lobby codes (B6-05, game_overview §9).** `LobbyCode` (`lobby/lobby_code.gd`, static, pure): `encode(ipv4, port,
+  default_port = tweak) -> String` (Crockford base32 + Luhn mod 32 check symbol; 8 symbols for the default port,
+  11 otherwise; "" for IPv6 / host names / bad ports), `decode(code) -> {address, port} | {error: E_*}` (case,
+  dashes and spaces ignored, O/I/L read as 0/1, pad bits checked), `display(code)` ("ABCD-EFGH"), `normalize`,
+  `pick_lan_ipv4(IP.get_local_addresses())` (private LAN IPv4 first). Lobby screen: host header shows the code +
+  Copy (`DisplayServer.clipboard_set`) + WAN hint (public address + forwarded UDP port); Join panel has a code
+  field (`LobbyScreen.join_by_code()` -> fills address / port -> `join()`). No LAN host list: Net has no
+  discovery. Strings `ui.lobby.code.*`.
