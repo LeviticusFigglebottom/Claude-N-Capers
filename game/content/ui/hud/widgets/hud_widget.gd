@@ -80,6 +80,17 @@ func prop(name_id: StringName, fallback: Variant = null) -> Variant:
 	return fallback if v == null else v
 
 
+## v1.6 (D-065) local player mode: &"civilian" / &"casing" / &"masked". Models without
+## `player_mode` (pre-v1.6) derive it from `masked` / `casing` (&"" = neither, e.g. while loading).
+func player_mode() -> StringName:
+	var m: Variant = prop(&"player_mode")
+	if m != null and StringName(m) != &"":
+		return StringName(m)
+	if bool(prop(&"masked", false)):
+		return &"masked"
+	return &"casing" if bool(prop(&"casing", false)) else &""
+
+
 static func _arg_count(obj: Object, signal_name: StringName) -> int:
 	for sig: Dictionary in obj.get_signal_list():
 		if StringName(sig["name"]) == signal_name:

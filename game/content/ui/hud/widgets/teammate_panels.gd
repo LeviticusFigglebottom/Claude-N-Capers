@@ -44,6 +44,8 @@ func _panel(m: Dictionary) -> PanelContainer:
 		info.append(UiText.t(&"ui.hud.custody"))
 	elif st != Enums.CrewState.NORMAL:
 		info.append(UiText.t(&"ui.hud.downed"))
+	if StringName(m.get("mode", &"")) == &"civilian":
+		info.append(UiText.t(&"ui.hud.civilian"))  # v1.6 (D-065)
 	var loot: StringName = StringName(m.get("carried_loot_id", &""))
 	if loot != &"":
 		info.append(UiText.t(&"ui.hud.carrying", {"loot": UiText.t(UiText.item_key(loot))}))

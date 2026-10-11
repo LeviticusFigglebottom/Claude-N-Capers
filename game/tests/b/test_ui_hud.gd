@@ -404,3 +404,19 @@ func test_interaction_key_filled_when_model_has_none() -> void:
 	var key: String = InteractionPanel.action_key_text(&"interact")
 	assert_ne(key, "", "interact is bound in the InputMap")
 	assert_eq(_hud.interaction.prompt_label.text, UiText.t(&"ui.prompt.interact", {"key": key}))
+
+
+## v1.6 civilian mode (S1.3, D-065): no gear widgets, a Civilian badge, teammates show their mode.
+func test_civilian_mode_hides_gear_and_shows_the_badge() -> void:
+	_model.player_mode = &"civilian"
+	assert_false(_hud.ammo.visible, "no weapon / equipment widget without gear")
+	assert_eq(_hud.status.mask_label.text, UiText.t(&"ui.hud.civilian"))
+	_model.crew = [{"slot": 1, "name": "Sable", "is_ai": false, "health_frac": 1.0, "armor_frac": 1.0,
+			"state": Enums.CrewState.NORMAL, "downs_left": 3, "carried_loot_id": &"", "mode": &"civilian"}]
+	var info: Label = (_hud.teammates.list_box.get_child(0) as Control).find_children("*", "Label", true, false)[-1]
+	assert_true(info.text.contains(UiText.t(&"ui.hud.civilian")), "teammate panel shows civilian")
+	_model.player_mode = &"casing"  # gear picked up
+	assert_true(_hud.ammo.visible, "gear widgets back")
+	assert_eq(_hud.status.mask_label.text, UiText.t(&"ui.hud.unmasked"))
+	_model.player_mode = &"masked"
+	assert_eq(_hud.status.mask_label.text, UiText.t(&"ui.hud.masked"))

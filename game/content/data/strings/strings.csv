@@ -2191,3 +2191,5 @@ item.mask.ledger_regent.name,Ledger Regent
 item.mask.ledger_regent.desc,"A gilded theatre face over a black crown. Worn by crews who have retired the top of the ladder ten times."
 item.mask.last_word.name,The Last Word
 item.mask.last_word.desc,"Carbon and ember for the crew that has nothing left to prove. Notoriety XXV only."
+ui.hud.civilian,Civilian: no gear
+ui.loadout.civilian_start,"This job starts in civilian clothes: no weapons or equipment until you pick up your gear on site. Your loadout waits there."

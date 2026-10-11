@@ -359,6 +359,8 @@ func _on_preplan_confirmed(plan: Dictionary) -> void:
 	_free_screen(loadout_screen)
 	loadout_screen = LOADOUT_SCENE.instantiate() as LoadoutScreen
 	loadout_screen.profile_slot = profile_slot
+	var def: HeistDef = HeistRegistry.get_def(_heist_id)
+	loadout_screen.start_mode = def.start_mode if def != null else &"casing"  # D-065 civilian notice
 	loadout_screen.setup(_menu_profile())
 	loadout_screen.visible = false
 	add_child(loadout_screen)

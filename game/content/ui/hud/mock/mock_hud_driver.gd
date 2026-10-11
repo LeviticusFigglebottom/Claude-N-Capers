@@ -36,6 +36,7 @@ func setup_initial() -> void:
 	model.body_bags = 1
 	model.casing = true
 	model.masked = false
+	model.player_mode = &"casing"
 	model.objectives = [
 		{"id": &"casing", "text_key": &"objective.glasshouse.casing", "args": {}, "state": Enums.ObjectiveState.ACTIVE},
 	]
@@ -95,6 +96,7 @@ func _enter_stage(stage: int) -> void:
 		1:
 			model.casing = false
 			model.masked = true
+			model.player_mode = &"masked"
 			model.interaction = {"text_key": &"ui.prompt.pick_lock", "args": {"key": "F"}, "progress": 0.0,
 					"blocked_reason": &"ui.blocked.need_keycard"}
 		2:
