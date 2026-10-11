@@ -15,6 +15,8 @@ signal masked_changed(masked: bool)
 signal crew_state_changed(old_state: int, new_state: int)
 signal inventory_changed()
 signal carried_bag_changed(bag: Node)
+## S1.3: civilian mode started / ended (gear picked up, or masked by an alarm).
+signal civilian_changed(civilian: bool)
 
 const COLLISION_LAYER_PLAYERS: int = 1 << 2
 const COLLISION_MASK_WORLD: int = (1 << 0) | (1 << 1) | (1 << 3)
@@ -27,6 +29,20 @@ var peer_id: int = 0
 var is_ai: bool = false
 var display_name: String = ""
 var masked: bool = false
+## S1.3 civilian mode (HeistDef.start_mode = civilian): no gear, undetectable, no mask-up or firing, only
+## `civilian_allowed` interactions. Picking up gear (GearPickup) or any mask-up (alarm) ends it.
+var civilian: bool = false:
+	set(v):
+		if v == civilian:
+			return
+		civilian = v
+		civilian_changed.emit(v)
+## &"civilian" | &"casing" | &"masked" (ui_hud v1.6 player_mode).
+var player_mode: StringName:
+	get:
+		if masked:
+			return &"masked"
+		return &"civilian" if civilian else &"casing"
 var crew_state: Enums.CrewState = Enums.CrewState.NORMAL
 var crouched: bool = false
 var sprinting: bool = false
@@ -230,6 +246,7 @@ func set_masked(forced: bool = false) -> void:
 	if masked:
 		return
 	masked = true
+	civilian = false  # S1.3: masking (alarm) ends civilian mode with the gear on
 	mask_progress = 1.0
 	masked_changed.emit(true)
 	if Net.is_authority():
@@ -345,7 +362,7 @@ func _tick_server_actions(delta: float) -> void:
 	var tw: CrewTweak = Tweak.crew()
 	# S1.2 mask-up hold.
 	if not masked:
-		if intent.mask_up and crew_state == Enums.CrewState.NORMAL:
+		if intent.mask_up and crew_state == Enums.CrewState.NORMAL and not civilian:  # S1.3: no mask without gear
 			mask_progress = minf(mask_progress + delta / maxf(tw.mask_up_time_s, 0.001), 1.0)
 			if mask_progress >= 1.0:
 				set_masked(false)

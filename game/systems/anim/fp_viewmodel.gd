@@ -47,6 +47,9 @@ const PART_PUMP: StringName = &"Pump"
 const PART_BOLT: StringName = &"Bolt"
 const PART_COVER: StringName = &"FeedCover"
 
+## D-063: weapon|clip pairs already reported outside the shared-clip speed range.
+static var _reload_scale_logged: Dictionary = {}
+
 ## The arms rig's AnimationPlayer / Skeleton3D / instanced scene root.
 var player: AnimationPlayer = null
 var skeleton: Skeleton3D = null
@@ -271,6 +274,7 @@ func _on_reload_started(ws: int, duration: float) -> void:
 		native = _event(anim_set, c, &"done")
 		if native < 0.0:
 			native = _length(anim_set, c)
+		_check_shared_reload(w.weapon_id(ws), c, _length(anim_set, c), st.reload_empty_time_s if empty else st.reload_time_s)
 	var speed: float = native / maxf(duration, 0.05)
 	var at: float = 0.0
 	for s: Dictionary in segs:
@@ -280,6 +284,26 @@ func _on_reload_started(ws: int, duration: float) -> void:
 		at += float(s["dur"])
 	_reload_done = false
 	_start(Action.RELOAD, segs)
+
+
+## D-063: a shared single reload clip plays at about clip length / the weapon's reload time (the retiming
+## above, before skill multipliers). True when that ratio is inside FpViewmodelTweak's allowed range.
+static func shared_reload_ratio_ok(clip_s: float, reload_s: float) -> bool:
+	if reload_s <= 0.0 or clip_s <= 0.0:
+		return true
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	var ratio: float = clip_s / reload_s
+	return ratio >= tw.reload_scale_min and ratio <= tw.reload_scale_max
+
+
+func _check_shared_reload(weapon_id: StringName, clip: StringName, clip_s: float, reload_s: float) -> void:
+	var key: String = "%s|%s" % [weapon_id, clip]
+	if not shared_reload_ratio_ok(clip_s, reload_s) and not _reload_scale_logged.has(key):
+		var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+		var ratio: float = clip_s / reload_s
+		_reload_scale_logged[key] = true
+		Log.error(&"anim", "D-063: %s plays %s at x%.2f (allowed %.2f-%.2f): needs its own reload clip"
+			% [weapon_id, clip, ratio, tw.reload_scale_min, tw.reload_scale_max])
 
 
 func _on_reload_finished(_ws: int) -> void:

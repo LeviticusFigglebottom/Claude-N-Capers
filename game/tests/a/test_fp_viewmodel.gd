@@ -362,3 +362,16 @@ func test_real_arms_smoke() -> void:
 	if aim != null:
 		var p: Vector3 = _cam(c).global_transform.affine_inverse() * aim.global_position
 		assert_near(Vector2(p.x, p.y).length(), 0.0, 0.002, "AimPoint on the camera axis while aimed (%s)" % p)
+
+
+## D-063: a set's single reload clip may serve weapons whose reload time puts its speed within 0.75-1.35x
+## (clip length / reload time); outside that FpViewmodel logs an error (the weapon needs its own clip).
+func test_d063_shared_reload_ratio_range() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	assert_near(tw.reload_scale_min, 0.75, 0.0001)
+	assert_near(tw.reload_scale_max, 1.35, 0.0001)
+	assert_true(FpViewmodel.shared_reload_ratio_ok(3.6, 3.6), "the authored weapon (Brute, x1.0)")
+	assert_true(FpViewmodel.shared_reload_ratio_ok(3.6, 2.9), "Harrow on the Brute clip, x1.24")
+	assert_false(FpViewmodel.shared_reload_ratio_ok(3.6, 2.5), "x1.44: too fast")
+	assert_false(FpViewmodel.shared_reload_ratio_ok(2.0, 4.0), "x0.5: too slow")
+	assert_true(FpViewmodel.shared_reload_ratio_ok(0.0, 2.0), "no clip: nothing to check")

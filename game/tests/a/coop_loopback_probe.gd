@@ -86,6 +86,7 @@ func snapshot(args: Dictionary = {}) -> Dictionary:
 	var codes: CodeRegistry = rt.service(CodeRegistry.SERVICE) as CodeRegistry
 	return {
 		"has_rt": true, "replica": rt.is_replica, "seed": rt.run_seed, "variants": rt.variants,
+		"music_track": StringName(rt.launch_options.get("music_track", &"")),
 		"phase": int(rt.phase), "went_loud": rt.went_loud, "local_slot": Net.local_slot(),
 		"npc_ids": npc_ids, "crew_ids": crew_ids, "crew_pos": crew_pos, "doors": doors,
 		"map_ids": rt.net_sync.map_id_table(), "missing": rt.replica_missing_ids.size(),

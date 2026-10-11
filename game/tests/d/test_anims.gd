@@ -2,7 +2,10 @@
 ## Checks every P1 clip name (and the P2 clips and P3 specials delivered) is present exactly, loop modes for the
 ## looped clips (the glb marks them with a `-loop` suffix that Godot strips), lengths at 30 fps,
 ## tracks that target Skeleton3D bones, held poses keeping their constant tracks
-## (remove_immutable_tracks=false) and finite values.
+## (remove_immutable_tracks=false) and finite values. NPC ambient set (priority 4, heist casting): present, looped,
+## events/speeds/prop grips in SOURCE.txt, planted feet, and the props (posed through HandR/Socket + the documented
+## `<prop>_grip`) where they belong: the mug level, the mop head on the floor, the phone at the ear, the book in front
+## of the reader in bed.
 extends TestCase
 
 const GLB: String = "res://assets/characters/char_anim_humanoid/char_anim_humanoid.glb"
@@ -23,12 +26,24 @@ const P2: Array[String] = [
 const SPECIALS: Array[String] = [
 	"kick_charge", "kick_hit", "shield_idle", "shield_walk", "shield_bang", "heal_ally", "dozer_walk",
 ]
+## NPC ambient clips (priority 4): civilians and staff of the heists (all looped).
+const NPC: Array[String] = [
+	"desk_work", "phone_seated", "sit_chair_watch", "mug_idle", "mug_carry_walk", "mop", "sit_bed_read", "idle_thug",
+]
+const NPC_EVENTS: Dictionary = {"mug_idle": {"sip": 105}, "sit_bed_read": {"page_turn": 221}}
+const NPC_FRAMES: Dictionary = {
+	"desk_work": 360, "phone_seated": 240, "sit_chair_watch": 300, "mug_idle": 240, "mug_carry_walk": 34, "mop": 120,
+	"sit_bed_read": 300, "idle_thug": 105,
+}
+## Held props (SOURCE.txt `<prop>_grip`, relative to HandR/Socket).
+const GRIPS: Array[String] = ["phone_grip", "mug_grip", "mop_grip", "book_grip"]
 const LOOPED: Array[String] = [
 	"idle", "idle_alert", "walk", "run", "sprint", "crouch_idle", "crouch_walk", "strafe_l", "strafe_r",
 	"walk_back", "aim_rifle", "aim_pistol", "kneel_cuffed", "hands_up", "cower", "lie_down", "tied",
 	"flee", "phone_call", "pager_answer", "investigate_look", "smoke", "lean_wall", "sit_chair",
 	"desk_type", "browse", "downed", "tased", "climb_ladder", "carry_bag_walk", "interact_low",
-	"interact_mid", "interact_high", "shield_idle", "shield_walk", "dozer_walk",
+	"interact_mid", "interact_high", "shield_idle", "shield_walk", "dozer_walk", "desk_work", "phone_seated",
+	"sit_chair_watch", "mug_idle", "mug_carry_walk", "mop", "sit_bed_read", "idle_thug",
 ]
 ## Clip -> frames at 30 fps (anim_humanoid.CLIPS).
 const FRAMES: Dictionary = {"idle": 120, "walk": 30, "run": 21, "sprint": 18, "crouch_walk": 27,
@@ -93,7 +108,8 @@ func test_delivered_p2_clips_are_present() -> void:
 	for clip: String in P2:
 		assert_true(_player.has_animation(StringName(clip)), "P2 clip %s" % clip)
 	var names: PackedStringArray = _player.get_animation_list()
-	assert_eq(names.size(), P1.size() + P2.size() + SPECIALS.size(), "no extra or misnamed clips: %s" % [names])
+	assert_eq(names.size(), P1.size() + P2.size() + SPECIALS.size() + NPC.size(),
+		"no extra or misnamed clips: %s" % [names])
 	for n: String in names:
 		assert_false(n.ends_with("-loop") or n.ends_with("_loop"), "%s: loop suffix stripped" % n)
 
@@ -101,7 +117,7 @@ func test_delivered_p2_clips_are_present() -> void:
 func test_loop_modes() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS:
+	for clip: String in P1 + P2 + SPECIALS + NPC:
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -118,6 +134,11 @@ func test_lengths() -> void:
 			continue
 		assert_true(a.length > 0.0, "%s has a length" % clip)
 		assert_true(a.length <= 4.01, "%s at most 4 s" % clip)
+	for clip: String in NPC:
+		var a: Animation = _anim(clip)
+		if a != null:
+			assert_near(a.length, float(NPC_FRAMES[clip]) / 30.0, 0.002, "%s length" % clip)
+			assert_true(a.length <= 12.01, "%s: ambient loop at most 12 s" % clip)
 	for clip: String in FRAMES:
 		var a: Animation = _anim(clip)
 		if a != null:
@@ -127,7 +148,7 @@ func test_lengths() -> void:
 func test_tracks_target_skeleton_bones() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS:
+	for clip: String in P1 + P2 + SPECIALS + NPC:
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -162,7 +183,7 @@ func test_loops_end_on_their_first_pose() -> void:
 func test_values_are_finite_without_flips() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS:
+	for clip: String in P1 + P2 + SPECIALS + NPC:
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -323,4 +344,239 @@ func test_shield_idle_is_planted_and_matches_shield_walk() -> void:
 	for b: String in ["hand.L", "hand.R"]:
 		var p: Vector3 = (_skel.global_transform * _skel.get_bone_global_pose(_skel.find_bone(b))).origin
 		assert_true(p.distance_to(first[b]) < 0.03, "shield_idle: %s at shield_walk's grip (%f m)" % [b, p.distance_to(first[b])])
+	_player.stop()
+
+
+# ---------------------------------------------------------------------------------------------
+# NPC ambient set (priority 4)
+# ---------------------------------------------------------------------------------------------
+func _source_lines() -> Dictionary:
+	var lines: Dictionary = {}
+	for line: String in FileAccess.get_file_as_string(SOURCE).split("\n"):
+		var i: int = line.find(":")
+		if i > 0:
+			lines[line.substr(0, i)] = line.substr(i + 1)
+	return lines
+
+
+## "basis x=(..) y=(..) z=(..) origin=(..)" (SOURCE.txt transform notation) -> Transform3D.
+static func _parse_xform(text: String) -> Transform3D:
+	var re: RegEx = RegEx.create_from_string("(x|y|z|origin)=\\(([^)]*)\\)")
+	var v: Dictionary = {}
+	for m: RegExMatch in re.search_all(text):
+		var p: PackedStringArray = m.get_string(2).split(",")
+		v[m.get_string(1)] = Vector3(float(p[0]), float(p[1]), float(p[2]))
+	if v.size() < 4:
+		return Transform3D(Basis(), Vector3.INF)
+	return Transform3D(Basis(v["x"], v["y"], v["z"]), v["origin"])
+
+
+func _bone_xform(bone: String) -> Transform3D:
+	return _skel.global_transform * _skel.get_bone_global_pose(_skel.find_bone(bone))
+
+
+func _bone_pos(bone: String) -> Vector3:
+	return _bone_xform(bone).origin
+
+
+## World transform of a held prop: hand.R * HandR/Socket offset * `<prop>_grip`.
+func _prop_xform(socket: Transform3D, grip: Transform3D) -> Transform3D:
+	return _bone_xform("hand.R") * socket * grip
+
+
+func test_npc_clips_present_looped_with_events_and_grips() -> void:
+	if not _ready_or_fail():
+		return
+	var lines: Dictionary = _source_lines()
+	for clip: String in NPC:
+		assert_true(_player.has_animation(StringName(clip)), "NPC clip %s" % clip)
+		assert_true(lines.has("clip." + clip), "SOURCE.txt lists clip.%s" % clip)
+		assert_true(String(lines.get("loops", "")).contains(clip), "SOURCE.txt loops: lists %s" % clip)
+	for clip: String in NPC_EVENTS:
+		var want: Dictionary = NPC_EVENTS[clip]
+		for ev: String in want:
+			assert_true(String(lines.get("clip." + clip, "")).contains("%s@%d" % [ev, int(want[ev])]),
+				"%s event %s@%d" % [clip, ev, int(want[ev])])
+	assert_true(String(lines.get("clip.mug_carry_walk", "")).contains("speed_mps=1.3"), "mug_carry_walk native 1.3 m/s")
+	for g: String in GRIPS:
+		assert_true(lines.has(g), "SOURCE.txt documents %s" % g)
+		assert_true(_parse_xform(String(lines.get(g, ""))).origin.is_finite(), "%s parses as a transform" % g)
+
+
+## Seated and in-place standing clips keep both feet planted (no slide) and above the floor.
+func test_npc_feet_planted() -> void:
+	if not _ready_or_fail():
+		return
+	for clip: String in ["desk_work", "phone_seated", "sit_chair_watch", "mug_idle", "mop", "sit_bed_read", "idle_thug"]:
+		var a: Animation = _anim(clip)
+		if a == null:
+			continue
+		_player.play(StringName(clip))
+		var first: Dictionary = {}
+		var drift: float = 0.0
+		var lowest: float = 1.0
+		for i: int in range(0, int(round(a.length * 30.0)) + 1, 3):
+			_player.seek(float(i) / 30.0, true)
+			for b: String in ["foot.L", "foot.R", "toe.L", "toe.R"]:
+				var p: Vector3 = _bone_pos(b)
+				if not first.has(b):
+					first[b] = p
+				drift = maxf(drift, p.distance_to(first[b]))
+				lowest = minf(lowest, p.y)
+		_player.stop()
+		assert_true(drift < 0.004, "%s: feet planted (%f m)" % [clip, drift])
+		assert_true(lowest > 0.0, "%s: ankles and balls above the floor / mattress (lowest %f)" % [clip, lowest])
+
+
+## The held props sit where they belong (posed through HandR/Socket + `<prop>_grip`), and Kessler's bed pose.
+func test_npc_props_and_bed_pose() -> void:
+	if not _ready_or_fail():
+		return
+	_check_mug()
+	_check_mop()
+	_check_phone()
+	_check_bed()
+	_check_thug()
+
+
+func _check_mug() -> void:
+	if not _ready_or_fail():
+		return
+	var lines: Dictionary = _source_lines()
+	var socket: Transform3D = _parse_xform(String(lines.get("handr_weapon_offset_godot", "")))
+	var grip: Transform3D = _parse_xform(String(lines.get("mug_grip", "")))
+	var a: Animation = _anim("mug_carry_walk")
+	if a == null or not grip.origin.is_finite():
+		fail("mug_carry_walk / mug_grip missing")
+		return
+	_player.play(&"mug_carry_walk")
+	var worst: float = 0.0
+	var low: float = 10.0
+	var high: float = 0.0
+	var feet: float = 1.0
+	for i: int in range(35):
+		_player.seek(float(i) / 30.0, true)
+		var m: Transform3D = _prop_xform(socket, grip)
+		worst = maxf(worst, rad_to_deg(m.basis.y.normalized().angle_to(Vector3.UP)))
+		low = minf(low, m.origin.y)
+		high = maxf(high, m.origin.y)
+		for b: String in ["foot.L", "foot.R", "toe.L", "toe.R"]:
+			feet = minf(feet, _bone_pos(b).y)
+	_player.stop()
+	assert_true(worst < 4.0, "mug_carry_walk: the mug stays level (worst tilt %f deg)" % worst)
+	assert_true(low > 0.95 and high < 1.25, "mug_carry_walk: mug base at chest height (%f..%f m)" % [low, high])
+	assert_true(high - low < 0.03, "mug_carry_walk: carried steadily (%f m bob)" % [high - low])
+	assert_true(feet > 0.0, "mug_carry_walk: ankles and balls above the floor (%f)" % feet)
+	# mug_idle: at the sip the mug is at the mouth and tipped toward the face
+	_player.play(&"mug_idle")
+	_player.seek(105.0 / 30.0, true)
+	var sip: Transform3D = _prop_xform(socket, grip)
+	var head: Vector3 = _bone_pos("head")
+	_player.stop()
+	assert_true(sip.origin.distance_to(head) < 0.25, "mug_idle: mug at the mouth at sip (%f m)" % sip.origin.distance_to(head))
+	var tilt: float = rad_to_deg(sip.basis.y.normalized().angle_to(Vector3.UP))
+	assert_true(tilt > 20.0 and tilt < 60.0, "mug_idle: mug tipped to drink (%f deg)" % tilt)
+
+
+func _check_mop() -> void:
+	if not _ready_or_fail():
+		return
+	var lines: Dictionary = _source_lines()
+	var socket: Transform3D = _parse_xform(String(lines.get("handr_weapon_offset_godot", "")))
+	var grip: Transform3D = _parse_xform(String(lines.get("mop_grip", "")))
+	var a: Animation = _anim("mop")
+	if a == null or not grip.origin.is_finite():
+		fail("mop / mop_grip missing")
+		return
+	_player.play(&"mop")
+	var low: float = 10.0
+	var high: float = -10.0
+	var xs: Array[float] = []
+	for i: int in range(0, 121, 2):
+		_player.seek(float(i) / 30.0, true)
+		var m: Transform3D = _prop_xform(socket, grip)
+		low = minf(low, m.origin.y)
+		high = maxf(high, m.origin.y)
+		xs.append(m.origin.x)
+	_player.stop()
+	assert_true(low > -0.01 and high < 0.02, "mop: the head stays on the floor (%f..%f m)" % [low, high])
+	assert_true(xs.max() - xs.min() > 0.4, "mop: side-to-side sweep (%f m)" % [xs.max() - xs.min()])
+
+
+func _check_phone() -> void:
+	if not _ready_or_fail():
+		return
+	var lines: Dictionary = _source_lines()
+	var socket: Transform3D = _parse_xform(String(lines.get("handr_weapon_offset_godot", "")))
+	var grip: Transform3D = _parse_xform(String(lines.get("phone_grip", "")))
+	for clip: String in ["phone_call", "phone_seated"]:
+		var a: Animation = _anim(clip)
+		if a == null:
+			continue
+		_player.play(StringName(clip))
+		var worst: float = 0.0
+		for i: int in range(0, int(round(a.length * 30.0)) + 1, 10):
+			_player.seek(float(i) / 30.0, true)
+			var head: Vector3 = _bone_pos("head")
+			var phone: Vector3 = _prop_xform(socket, grip).origin
+			worst = maxf(worst, phone.distance_to(head))
+			assert_true(phone.x > head.x + 0.05, "%s: phone at the right ear (%s vs head %s)" % [clip, phone, head])
+		_player.stop()
+		assert_true(worst < 0.13, "%s: phone held at the ear (%f m from the head joint)" % [clip, worst])
+
+
+## Kessler in bed: the body rests on the root plane (the mattress top), legs out in front, the trunk
+## reclined against the pillows and the book in front of his face.
+func _check_bed() -> void:
+	if not _ready_or_fail():
+		return
+	var lines: Dictionary = _source_lines()
+	var socket: Transform3D = _parse_xform(String(lines.get("handr_weapon_offset_godot", "")))
+	var grip: Transform3D = _parse_xform(String(lines.get("book_grip", "")))
+	var a: Animation = _anim("sit_bed_read")
+	if a == null:
+		fail("sit_bed_read missing")
+		return
+	_player.play(&"sit_bed_read")
+	_player.seek(0.0, true)
+	var hips: Vector3 = _bone_pos("hips")
+	var neck: Vector3 = _bone_pos("neck")
+	var head: Vector3 = _bone_pos("head")
+	var book: Vector3 = _prop_xform(socket, grip).origin
+	var lowest: float = 10.0
+	for i: int in range(0, 301, 10):
+		_player.seek(float(i) / 30.0, true)
+		for b: int in range(_skel.get_bone_count()):
+			lowest = minf(lowest, (_skel.global_transform * _skel.get_bone_global_pose(b)).origin.y)
+	_player.seek(0.0, true)
+	var ankles: Array[Vector3] = [_bone_pos("foot.L"), _bone_pos("foot.R")]
+	_player.stop()
+	assert_true(lowest > -0.005, "sit_bed_read: nothing below the mattress (lowest joint %f)" % lowest)
+	assert_true(hips.y > 0.05 and hips.y < 0.2, "sit_bed_read: pelvis on the mattress (hips %f m)" % hips.y)
+	for p: Vector3 in ankles:
+		assert_true(p.z < -0.6 and p.y < 0.15, "sit_bed_read: legs out on the bed (%s)" % p)
+	var recline: float = rad_to_deg(atan2(neck.z - hips.z, neck.y - hips.y))
+	assert_true(recline > 20.0 and recline < 50.0, "sit_bed_read: trunk reclined (%f deg)" % recline)
+	var d: float = book.distance_to(head)
+	assert_true(d > 0.2 and d < 0.6 and book.z < head.z, "sit_bed_read: book in front of the face (%f m)" % d)
+
+
+## idle_thug: the long gun (at HandR/Socket, muzzle = socket -Z) stays low, muzzle down ~30 deg and across the body.
+func _check_thug() -> void:
+	var lines: Dictionary = _source_lines()
+	var socket: Transform3D = _parse_xform(String(lines.get("handr_weapon_offset_godot", "")))
+	var a: Animation = _anim("idle_thug")
+	if a == null:
+		fail("idle_thug missing")
+		return
+	assert_true(a.length >= 3.0 and a.length <= 4.01, "idle_thug: 3-4 s loop (%f)" % a.length)
+	_player.play(&"idle_thug")
+	for i: int in range(0, 106, 15):
+		_player.seek(float(i) / 30.0, true)
+		var w: Transform3D = _bone_xform("hand.R") * socket
+		var muzzle: Vector3 = -w.basis.z.normalized()
+		var down: float = rad_to_deg(asin(-muzzle.y))
+		assert_true(down > 20.0 and down < 42.0, "idle_thug f%d: muzzle down %f deg" % [i, down])
+		assert_true(muzzle.x < -0.2 and muzzle.z < 0.0, "idle_thug f%d: muzzle across to the left/front (%s)" % [i, muzzle])
+		assert_true(w.origin.y > 0.75 and w.origin.y < 1.1, "idle_thug f%d: gun held low (%f m)" % [i, w.origin.y])
 	_player.stop()

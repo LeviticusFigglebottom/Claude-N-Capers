@@ -23,6 +23,7 @@ const BINDING: Dictionary = {
 	&"stamina_changed": [&"stamina", &"exhausted"],
 	&"weapon_charge_changed": [&"weapon_charge"],
 	&"weapon_spin_changed": [&"weapon_spin"],
+	&"player_mode_changed": [&"player_mode"],
 }
 
 
