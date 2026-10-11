@@ -1,0 +1,20 @@
+asset: char_club_bartender_b
+script: tools/blender/characters/char_p5_club.py
+params: {"age": 0.25, "build": 0.35, "gender": 1.0, "hair": "side_part", "hair_color": "blond", "height": 1.69, "look": "bartender_b", "skin": 3}
+seed: 3429340068  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_club_bartender_b
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0845, 0.0941] (model [0.0000, 1.2343, 0.1116], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0769, -0.0842] (model [0.0000, 1.5818, -0.0728], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1712, 0.0486, 0.0419] (model [0.1712, 0.9532, 0.0443], Godot axes, rest pose)
+body_faces_culled: 4526
+body_params: {"age": 0.25, "beard_shadow": 0.0, "build": 0.35, "gender": 1.0, "hair": "side_part", "hair_color": "blond", "hair_peak": 0.0, "height": 1.69, "lip": "auto", "skin": 3}
+bones: 52
+faces_hidden_by_waistcoat: 1138
+look: Velvet bartender: white shirt with rolled sleeves, violet waistcoat, long black bistro apron, blond chignon
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 28380
+tris_by_mesh: {"Body": 9692, "Gear": 464, "Hair": 1856, "Headwear": 1144, "Outfit": 15224}

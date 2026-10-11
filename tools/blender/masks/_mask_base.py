@@ -50,6 +50,12 @@ UV0 x across the face (0 = the viewer's left looking at the front = Blender/Godo
 (:func:`base_materials`) to get the single surface the mask shader expects. ``surface_extra``,
 ``outline_fn`` and ``holes_fn`` let a script reshape the skin, the outline (ears, ruffs: see
 :func:`radial_union`) and cut extra holes (vents).
+
+D3-03 helpers for parts that leave the face: :class:`RimSurface` (a flat flange continuing out of
+the shell edge: hoods, ray crowns, wings, cap points) and :class:`DishSurface` (a free shallow dish)
+take the place of the face skin in :func:`slab`; :func:`tube`/:func:`bezier3` (tines, tusks),
+:func:`sphere` (bells, ball tips), :func:`ray_radius` (robust outline radius per angle) and
+``build_mask(surface_wrap=...)`` (replace the skin, e.g. planar facets).
 """
 
 from __future__ import annotations
@@ -682,6 +688,17 @@ def _ray_far(c: Point2, d: Point2, loop: Sequence[Point2]) -> float:
     return best
 
 
+def ray_radius(centre: Point2, phi: float, loop: Sequence[Point2]) -> float:
+    """Distance from ``centre`` to the far crossing of ``loop`` along angle ``phi`` (D3-03).
+
+    Like :func:`_ray_far` but robust when the ray passes exactly through a loop vertex (both
+    neighbouring edges can then miss by rounding): it also tries two tiny angular offsets."""
+    best = 0.0
+    for e in (0.0, 1e-7, -1e-7):
+        best = max(best, _ray_far(centre, (math.cos(phi + e), math.sin(phi + e)), loop))
+    return best
+
+
 def radial_union(loops: Sequence[Sequence[Point2]], centre: Point2 = (0.0, 0.0), n: int = 360,
                  keep: Sequence[Point2] = ()) -> Loop2:
     """Outline of the union of star-shaped ``loops`` as seen from ``centre`` (CCW, ``n`` rays).
@@ -754,6 +771,145 @@ def lathe(mb: geo.MeshBuilder, centre: Vector, axis: Vector, profile: Sequence[P
             _orient(f, mid * da - ax * dr)
             made.append(f)
     return made
+
+
+def sphere(mb: geo.MeshBuilder, centre: Vector, r: float, mat: int, n: int = 12, rings: int = 6,
+           axis: Vector = Vector((0.0, 0.0, 1.0))) -> list[bmesh.types.BMFace]:
+    """UV sphere (poles on ``axis``) via :func:`lathe`: bells, studs, ball tips (D3-03)."""
+    prof = [(r * math.sin(math.pi * k / rings), -r * math.cos(math.pi * k / rings)) for k in range(rings + 1)]
+    return lathe(mb, centre, axis, prof, mat, n=n)
+
+
+def tube(mb: geo.MeshBuilder, path: Sequence[Vector], radius: Callable[[float], float], mat: int,
+         n: int = 10, tip: bool = True, cap_start: bool = True,
+         up: Vector = Vector((0.0, 0.0, 1.0))) -> list[bmesh.types.BMFace]:
+    """Round tube along a 3D polyline ``path`` (tines, tusks, antennae, stalks) (D3-03).
+
+    ``radius(s)`` with s = 0 at the first point and 1 at the last; frames are parallel-transported
+    from ``up``. With ``tip`` the last point is a single pointed vertex, else a flat end cap."""
+    pts = [Vector(q) for q in path]
+    m = len(pts) - (1 if tip else 0)
+    tans = []
+    for i in range(len(pts)):
+        a, b = pts[max(0, i - 1)], pts[min(len(pts) - 1, i + 1)]
+        tans.append((b - a).normalized())
+    nrm = Vector(up) - tans[0] * Vector(up).dot(tans[0])
+    if nrm.length < 1e-6:
+        nrm = Vector((1.0, 0.0, 0.0)) - tans[0] * tans[0].x
+    nrm.normalize()
+    sections = []
+    for i in range(m):
+        t = tans[i]
+        nrm = (nrm - t * nrm.dot(t)).normalized()
+        bi = t.cross(nrm).normalized()
+        r = radius(i / (len(pts) - 1))
+        sections.append([pts[i] + nrm * (r * math.cos(2 * math.pi * j / n)) + bi * (r * math.sin(2 * math.pi * j / n))
+                         for j in range(n)])
+    return loft(mb, sections, mat, tip=pts[-1] if tip else None, cap_start=cap_start)
+
+
+def bezier3(p0: Vector, p1: Vector, p2: Vector, p3: Vector, k: int) -> list[Vector]:
+    """``k + 1`` points on the cubic Bezier p0..p3 (paths for :func:`tube`) (D3-03)."""
+    out = []
+    for i in range(k + 1):
+        t = i / k
+        a, b, c, d = (1 - t) ** 3, 3 * (1 - t) ** 2 * t, 3 * (1 - t) * t * t, t ** 3
+        out.append(Vector(p0) * a + Vector(p1) * b + Vector(p2) * c + Vector(p3) * d)
+    return out
+
+
+class DishSurface:
+    """A shallow dish facing +Y, for flat parts that leave the face (halos, hoods, fans) (D3-03).
+
+    Same interface as :class:`FaceSurface` (``point(u, v, offset)``, ``normal(u, v)``) so
+    :func:`slab` can build on it: x = u, z = v, y = y0 - slope * r - curve * r^2 with r the distance
+    from ``centre`` in (u, v). Plates on it use the same (u, v) design space as the face."""
+
+    H = 1e-5
+
+    def __init__(self, y0: float, centre: Point2 = (0.0, 0.0), slope: float = 0.0, curve: float = 0.0,
+                 extra: Callable[[float, float], float] | None = None) -> None:
+        self.y0, self.centre, self.slope, self.curve, self.extra = y0, centre, slope, curve, extra
+
+    def base(self, u: float, v: float) -> Vector:
+        r = math.hypot(u - self.centre[0], v - self.centre[1])
+        y = self.y0 - self.slope * r - self.curve * r * r
+        if self.extra is not None:
+            y += self.extra(u, v)
+        return Vector((u, y, v))
+
+    def normal(self, u: float, v: float) -> Vector:
+        h = self.H
+        du = self.base(u + h, v) - self.base(u - h, v)
+        dv = self.base(u, v + h) - self.base(u, v - h)
+        n = dv.cross(du)
+        n.normalize()
+        return n
+
+    def point(self, u: float, v: float, offset: float = 0.0) -> Vector:
+        p = self.base(u, v)
+        if offset != 0.0:
+            p += self.normal(u, v) * offset
+        return p
+
+
+class RimSurface:
+    """A flange continuing outward from the shell's edge (hoods, ray crowns, wings, cap points) (D3-03).
+
+    Same interface as :class:`FaceSurface`. Design points (u, v) are read in polar form about
+    ``centre``: angle phi and distance r. The shell ``outline`` gives r_o(phi); the flange point is
+    the anchor A(phi) (the outline point pulled ``inset`` toward the centre, on the shell at skin
+    offset ``depth``, e.g. -thickness to start on the inner skin) moved by (r - r_o) along the
+    outward direction (cos phi, -tilt, sin phi). So a slab whose inner edge lies a few mm inside the
+    outline tucks under the shell rim and its outer part spreads flat, not wrapping round the head.
+    ``tilt`` > 0 sweeps the flange back, < 0 cups it forward; ``extra(u, v)`` adds +Y relief."""
+
+    H = 1e-5
+
+    def __init__(self, surf: FaceSurface, outline: Sequence[Point2], centre: Point2 = (0.0, 0.0),
+                 inset: float = 0.004, depth: float = -0.005, tilt: float = 0.0,
+                 extra: Callable[[float, float], float] | None = None, n: int = 720) -> None:
+        self.c, self.tilt, self.extra, self.n = centre, tilt, extra, n
+        loop = [(float(p[0]), float(p[1])) for p in outline]
+        self.table: list[tuple[float, Vector]] = []
+        for i in range(n):
+            a = 2 * math.pi * i / n
+            d = (math.cos(a), math.sin(a))
+            r = ray_radius(centre, a, loop)
+            q = (centre[0] + d[0] * (r - inset), centre[1] + d[1] * (r - inset))
+            self.table.append((r, surf.point(q[0], q[1], depth)))
+
+    def _at(self, phi: float) -> tuple[float, Vector]:
+        x = (phi % (2 * math.pi)) / (2 * math.pi) * self.n
+        i = int(math.floor(x)) % self.n
+        t = x - math.floor(x)
+        (r0, a0), (r1, a1) = self.table[i], self.table[(i + 1) % self.n]
+        return r0 + (r1 - r0) * t, a0.lerp(a1, t)
+
+    def base(self, u: float, v: float) -> Vector:
+        du, dv = u - self.c[0], v - self.c[1]
+        phi = math.atan2(dv, du)
+        r_o, anchor = self._at(phi)
+        rho = math.hypot(du, dv) - r_o
+        d = Vector((math.cos(phi), -self.tilt, math.sin(phi))).normalized()
+        p = anchor + d * rho
+        if self.extra is not None:
+            p.y += self.extra(u, v)
+        return p
+
+    def normal(self, u: float, v: float) -> Vector:
+        h = self.H
+        du = self.base(u + h, v) - self.base(u - h, v)
+        dv = self.base(u, v + h) - self.base(u, v - h)
+        n = dv.cross(du)
+        n.normalize()
+        return n
+
+    def point(self, u: float, v: float, offset: float = 0.0) -> Vector:
+        p = self.base(u, v)
+        if offset != 0.0:
+            p += self.normal(u, v) * offset
+        return p
 
 
 def front_project(bm: bmesh.types.BMesh, layer_name: str = "UVMap") -> tuple[float, float, float]:
@@ -1033,7 +1189,8 @@ def build_mask(ctx, params: dict[str, Any] | None, mats: dict[str, bpy.types.Mat
                surface_extra: Callable[[float, float], float] | None = None,
                outline_fn: Callable[[MaskShape], Loop2] | None = None,
                holes_fn: Callable[[MaskShape], list[Loop2]] | None = None,
-               uv_mode: str = "box", refine: Sequence[Refine] = ()) -> bpy.types.Object:
+               uv_mode: str = "box", refine: Sequence[Refine] = (),
+               surface_wrap: Callable[[FaceSurface], Any] | None = None) -> bpy.types.Object:
     """Build the shell plus ornaments as one mesh object ``name`` at the face-centre pivot.
 
     Shell: outer skin + rim chamfers + wall in ``primary``, inner skin in ``inner``. Ornament
@@ -1043,9 +1200,13 @@ def build_mask(ctx, params: dict[str, Any] | None, mats: dict[str, bpy.types.Mat
 
     ``surface_extra(u, v)`` adds forward displacement to the skin, ``outline_fn(shape)`` replaces the
     outline, ``holes_fn(shape)`` adds shell holes; ``uv_mode="front"`` uses :func:`front_project`;
-    ``refine`` lists finer-mesh ellipses on the shell's outer skin (see :func:`triangulate`)."""
+    ``refine`` lists finer-mesh ellipses on the shell's outer skin (see :func:`triangulate`).
+    ``surface_wrap(surf)`` (D3-03) may return a replacement skin with the same ``point``/``normal``
+    interface (e.g. planar facets sampled from the fitted face); shell and plates then use it."""
     p = params_with_defaults(params)
     surf = FaceSurface(p, surface_extra)
+    if surface_wrap is not None:
+        surf = surface_wrap(surf)
     shape = MaskShape(p, surf)
     mb = geo.MeshBuilder()
     slots = {role: mb.material(m) for role, m in mats.items()}

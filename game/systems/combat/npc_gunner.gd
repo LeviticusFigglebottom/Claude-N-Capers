@@ -13,12 +13,24 @@
 ##   gunshot_npc_radius_m, S4.1/S4.3).
 ## - L4.6 Wrecker-M (minigun): EnemyDef.params.spin_up_s delays the first shot of a burst while the
 ##   barrels spin up (max with the aim delay); they stay spun up until spin_down_s without engaging.
+## - A3-13 point-blank melee (PD2 shove / strike): a non-special NPC whose target stands within
+##   CombatTweak.npc_melee_range_m strikes instead of shooting: npc_melee_windup_s windup (the `melee` clip),
+##   then one DamageType.MELEE hit of npc_melee_damage[difficulty] with a shove (npc_melee_knockback_mps)
+##   that cancels a reload; npc_melee_cooldown_s between strikes. defense.melee_counter (Counterstrike):
+##   a victim charging or swinging a melee when it lands takes nothing and knocks the NPC down
+##   (npc_melee_counter_stun_s). Specials keep their own attacks.
 ## Any brain (guard, police, specials) can drive it by exposing the two members; a brain-less NPC can
 ## also be driven directly through `fire_at`/`hold_fire`.
 class_name NpcGunner
 extends Node
 
 signal shot(target: Node, hit: bool)
+## A3-13: a melee windup started / the strike resolved (&"hit", &"countered", &"missed").
+signal melee_started(target: Node)
+signal melee_resolved(target: Node, result: StringName)
+
+## A3-13 windup cue [R]: the whoosh, and the replicated trigger for the `melee` clip (AnimDriver).
+const CUE_MELEE_SWING: StringName = &"cue.npc_melee_swing"
 
 ## Path of the brain node exposing wants_to_fire / combat_target.
 @export var brain_path: NodePath = NodePath("../Brain")
@@ -32,6 +44,9 @@ var engaging: bool = false
 var manual_target: CrewController = null
 ## L4.6 minigun: barrels at speed (the next burst skips the spin-up).
 var spun_up: bool = false
+## A3-13: seconds left in the melee windup (< 0 = none) and until the next strike may start.
+var melee_windup_left: float = -1.0
+var melee_cooldown: float = 0.0
 
 var _spin_idle: float = 0.0
 
@@ -93,6 +108,10 @@ func _physics_process(delta: float) -> void:
 		return
 	if cooldown > 0.0:
 		cooldown -= delta
+	melee_cooldown = maxf(melee_cooldown - delta, 0.0)
+	if melee_windup_left >= 0.0:
+		_tick_melee(delta)
+		return
 	var t: CrewController = _wanted_target()
 	if t == null or not _can_engage(t):
 		target = null
@@ -109,12 +128,61 @@ func _physics_process(delta: float) -> void:
 		if not spun_up:
 			delay = maxf(delay, spin_up_time())  # L4.6 minigun spin-up
 		cooldown = maxf(cooldown, delay)
+	if _melee_ok(t):
+		_start_melee(t)
+		return
 	if cooldown > 0.0:
 		return
 	_spin_idle = 0.0
 	spun_up = spin_up_time() > 0.0
 	cooldown = fire_interval() * NpcSuppression.shot_delay_mult(_npc)  # A3-06 (L3.5)
 	_fire(t)
+
+
+func _melee_ok(c: CrewController) -> bool:
+	if melee_cooldown > 0.0 or _npc.is_stunned() or (_npc.enemy_def != null and _npc.enemy_def.is_special):
+		return false
+	if c.crew_state != Enums.CrewState.NORMAL:
+		return false
+	var d: Vector3 = c.global_position - _npc.global_position
+	return Vector2(d.x, d.z).length() <= CombatTweak.data().npc_melee_range_m and absf(d.y) < 1.2
+
+
+func _start_melee(c: CrewController) -> void:
+	target = c
+	melee_windup_left = CombatTweak.data().npc_melee_windup_s
+	EventBus.audio_cue_requested.emit(CUE_MELEE_SWING, _npc.global_position, _npc.net_id)  # AnimDriver: `melee`
+	Net.replicate_event(&"audio_cue_requested", [CUE_MELEE_SWING, _npc.global_position, _npc.net_id])
+	melee_started.emit(c)
+
+
+func _tick_melee(delta: float) -> void:
+	melee_windup_left -= delta
+	if melee_windup_left >= 0.0:
+		return
+	var tw: CombatTweak = CombatTweak.data()
+	melee_cooldown = tw.npc_melee_cooldown_s
+	var c: CrewController = target
+	if c == null or not is_instance_valid(c) or not _npc.alive or _npc.is_stunned():
+		return
+	var d: Vector3 = c.global_position - _npc.global_position
+	if Vector2(d.x, d.z).length() > tw.npc_melee_range_m * 1.25 or c.crew_state != Enums.CrewState.NORMAL:
+		melee_resolved.emit(c, &"missed")
+		return
+	if Modifiers.flag(c.slot, &"defense.melee_counter") and c.melee != null and c.melee.state != &"":
+		_npc.stun(tw.npc_melee_counter_stun_s)  # Counterstrike: knocked down, no damage
+		melee_resolved.emit(c, &"countered")
+		return
+	var dir: Vector3 = Vector3(d.x, 0.0, d.z).normalized() if Vector2(d.x, d.z).length() > 0.01 else -_npc.basis.z
+	var dmg: float = tw.npc_melee_damage[clampi(_npc.difficulty, 0, tw.npc_melee_damage.size() - 1)] \
+		if not tw.npc_melee_damage.is_empty() else tw.npc_fallback_damage
+	c.take_hit(Damage.info(dmg, Enums.DamageType.MELEE, Enums.HitZone.BODY, &"npc_melee",
+		c.global_position + Vector3(0.0, 1.2, 0.0), dir, _npc.net_id), _npc.net_id)
+	c.velocity += dir * tw.npc_melee_knockback_mps  # the shove
+	if c.weapons != null and c.weapons.reloading:
+		c.weapons.reloading = false
+		c.weapons.reload_left = 0.0
+	melee_resolved.emit(c, &"hit")
 
 
 func _wanted_target() -> CrewController:

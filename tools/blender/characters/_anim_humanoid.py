@@ -1368,7 +1368,14 @@ def _dozer_upper(sk: Skeleton, pose: Pose, ph: float, f: int) -> None:
 #   mop: string mop; origin at the floor end of the shaft (the head's centre on the floor), Z = up the
 #        shaft, X = the hand-back side; the right fist at MOP_GRIP_R, the left at MOP_GRIP_L up the shaft.
 #   book: an open book 0.30 x 0.022 x 0.23, origin at its centre, Z = up (top edge), the pages face -Y.
-PROPS = {"phone": (0.072, 0.009, 0.147), "mug": (0.082, 0.082, 0.095), "book": (0.30, 0.022, 0.23)}
+#   P5 (D3-02, _anim_p5): rag: a folded bar towel 0.20 x 0.13 x 0.022, origin at the centre of its underside, Z = up.
+#   bottle: origin at the base centre, Z = up the axis (mouth at 0.30), r 0.04; held from its +X side.
+#   glass: a tumbler, origin at the base centre, Z = up, r 0.04, h 0.10; held in the LEFT hand from its -X side.
+#   cash: a banknote stack 0.156 x 0.066 x 0.015 (X = the long edge), origin at its centre, Z = the face normal;
+#        held in the LEFT palm (palm on the -Z face, fingers along +X).
+PROPS = {"phone": (0.072, 0.009, 0.147), "mug": (0.082, 0.082, 0.095), "book": (0.30, 0.022, 0.23),
+         "rag": (0.20, 0.13, 0.022), "bottle": (0.08, 0.08, 0.30), "glass": (0.08, 0.08, 0.10),
+         "cash": (0.156, 0.066, 0.015)}
 MOP_GRIP_R = 0.95
 MOP_GRIP_L = 1.25
 MOP_LENGTH = 1.40
@@ -1383,6 +1390,15 @@ GRIPS = {
     "book": {"sfx": "R", "point": v3(0.105, 0.011, -0.045), "along": v3(-0.30, 0.0, 1.0), "palm": v3(0.0, -1.0, 0.0),
              "share": 0.5, "palm_off": 0.013, "shape": ("support", 0.55)},
     "mop": {"sfx": "R", "socket": MOP_GRIP_R, "shape": ("grip", 1.0)},
+    # P5 (D3-02)
+    "rag": {"sfx": "R", "point": v3(0.0, 0.0, 0.022), "along": v3(0.0, 1.0, 0.0), "palm": v3(0.0, 0.0, -1.0),
+            "share": 0.45, "palm_off": 0.012, "shape": ("rest_flat", 1.0)},
+    "bottle": {"sfx": "R", "point": v3(0.043, 0.0, 0.15), "along": v3(0.0, 1.0, 0.0), "palm": v3(-1.0, 0.0, 0.0),
+               "share": 0.55, "palm_off": 0.014, "shape": ("grip", 0.6)},
+    "glass": {"sfx": "L", "point": v3(-0.043, 0.0, 0.048), "along": v3(0.0, 1.0, 0.0), "palm": v3(1.0, 0.0, 0.0),
+              "share": 0.55, "palm_off": 0.014, "shape": ("grip", 0.55)},
+    "cash": {"sfx": "L", "point": v3(0.0, 0.0, -0.0075), "along": v3(1.0, 0.0, 0.0), "palm": v3(0.0, 0.0, 1.0),
+             "share": 0.5, "palm_off": 0.012, "shape": ("support", 0.6)},
 }
 #: The left hand on the book's left half (book space, like GRIPS).
 BOOK_LEFT = {"point": v3(-0.105, 0.011, -0.045), "along": v3(0.30, 0.0, 1.0), "palm": v3(0.0, -1.0, 0.0)}
@@ -1878,8 +1894,11 @@ def rappel_factory(speed: float):
 # =============================================================================================
 def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     """Every clip of ``table`` (``anim_humanoid.CLIPS``) as a ``Clip``."""
+    import _anim_p5 as p5  # noqa: PLC0415 - P5 NPC set (D3-02); imports this module
+
     solver = Solver(sk)
     G = gaits(table)
+    G.update(p5.gaits(table))
     stationary = {
         "idle": idle, "idle_alert": idle_alert, "crouch_idle": crouch_idle, "aim_pistol": aim_pistol,
         "aim_rifle": aim_rifle, "cower": cower, "hands_up": hands_up, "lie_down": lie_down, "tied": tied,
@@ -1891,6 +1910,7 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
         "sit_chair_watch": sit_chair_watch, "mug_idle": mug_idle, "mop": mop, "sit_bed_read": sit_bed_read,
         "idle_thug": idle_thug,
     }
+    stationary.update(p5.STATIONARY)
     if "rappel" in table:
         stationary["rappel"] = rappel_factory(float(table["rappel"]["speed"]))
     floor = {"lie_down": 0, "tied": 0, "kneel_cuffed": 0, "downed": 0, "surrender": -14, "sit_bed_read": 0}
@@ -1906,7 +1926,7 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
             out[name] = Clip(name, N, loop, (lambda f, fn=fn, N=N: fn(sk, f, N)), speed, None, ev,
                              reach_fix=name in ("idle", "idle_alert", "crouch_idle", "aim_pistol", "aim_rifle",
                                                 "investigate_look", "phone_call", "pager_answer", "smoke", "browse",
-                                                "mug_idle", "mop", "idle_thug"))
+                                                "mug_idle", "mop", "idle_thug") + p5.REACH_FIX)
         elif name in ("fire_pistol", "fire_rifle"):
             out[name] = Clip(name, N, loop, _fire(sk, name == "fire_rifle", N), speed, None, ev)
         elif name == "shield_bang":

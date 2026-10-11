@@ -8,9 +8,12 @@ so the topology is fixed and deterministic.
   over a short stiff peak.
 * ``fedora``: a felt fedora with a pinched, centre-dented crown, a ribbon band and a brim that
   snaps down at the front and curls up at the sides.
-* ``chignon``: a full two-lobe updo high on the back of the head, with a coiled wrap.
-* ``crown_volume``: a soft shell of volume over the crown and upper sides of the hair.
-* ``side_fringe``: a side-swept fringe from the parting across the forehead to behind the ear.
+* ``chignon``: a full two-lobe updo high on the back of the head, with a coiled wrap (spiral strand
+  grooves on the lobes).
+* ``crown_volume``: a soft shell of volume over the crown and upper sides of the hair, gridded along
+  the swept-back strands with clump grooves and a broken front hairline.
+* ``side_fringe``: a side-swept fringe from the parting across the forehead to behind the ear (two
+  strand grooves along the sweep).
 * ``moustache``: a thick tapered moustache over the upper lip.
 * ``earrings``: small gold studs with a short drop.
 * ``heavy_lids``: a lowered upper lid line (liner band over the top of the eyeball).
@@ -216,7 +219,9 @@ def fedora(fit: Fit, mat: str, band_mat: str, n: int = 48) -> tuple[Mesh, dict]:
 # hair pieces
 # ---------------------------------------------------------------------------------------------
 def _ellipsoid(m: Mesh, c: Vector, r: Vector, mat: str, segs: int = 16, rows: int = 8,
-               w: dict = HEAD_W, axes: tuple[Vector, Vector, Vector] | None = None) -> None:
+               w: dict = HEAD_W, axes: tuple[Vector, Vector, Vector] | None = None, swirl: float = 0.0) -> None:
+    """Ellipsoid on ``axes``; ``swirl`` > 0 cuts spiralling strand grooves (fraction of the radius,
+    one groove per four segments, fading at the poles) so a bun reads as wound hair."""
     ax = axes or (Vector((1, 0, 0)), Vector((0, 1, 0)), Vector((0, 0, 1)))
     rings = []
     for i in range(1, rows):
@@ -224,7 +229,8 @@ def _ellipsoid(m: Mesh, c: Vector, r: Vector, mat: str, segs: int = 16, rows: in
         ring = []
         for j in range(segs):
             t = math.tau * j / segs
-            q = (ax[0] * (r.x * math.sin(phi) * math.cos(t)) + ax[1] * (r.y * math.sin(phi) * math.sin(t))
+            g = 1.0 - swirl * math.sin(phi) * (0.5 + 0.5 * math.cos((segs // 4) * t + 2.2 * phi)) ** 2
+            q = (ax[0] * (r.x * g * math.sin(phi) * math.cos(t)) + ax[1] * (r.y * g * math.sin(phi) * math.sin(t))
                  + ax[2] * (r.z * math.cos(phi)))
             ring.append(m.add(c + q, w))
         rings.append(ring)
@@ -256,9 +262,11 @@ def chignon(fit: Fit, mat: str, size: float = 1.0, lift: float = 0.0) -> Mesh:
     ax_y = Vector((0.0, -math.cos(tilt), math.sin(tilt)))
     ax_z = Vector((0.0, math.sin(tilt), math.cos(tilt)))
     ax_x = Vector((1, 0, 0))
-    _ellipsoid(m, ctr, Vector((0.052 * ks, 0.034 * ks, 0.044 * ks)), mat, segs=20, rows=9, axes=(ax_x, ax_z, ax_y))
+    _ellipsoid(m, ctr, Vector((0.052 * ks, 0.034 * ks, 0.044 * ks)), mat, segs=20, rows=9, axes=(ax_x, ax_z, ax_y),
+               swirl=0.07)
     top = ctr + ax_z * (0.026 * ks) + ax_y * (0.004 * ks)
-    _ellipsoid(m, top, Vector((0.040 * ks, 0.026 * ks, 0.026 * ks)), mat, segs=16, rows=7, axes=(ax_x, ax_z, ax_y))
+    _ellipsoid(m, top, Vector((0.040 * ks, 0.026 * ks, 0.026 * ks)), mat, segs=16, rows=7, axes=(ax_x, ax_z, ax_y),
+               swirl=0.08)
     # coiled wrap: a helix of hair round the bun base (reads as the twisted coil of a chignon)
     pts = []
     turns, steps = 1.5, 36
@@ -301,32 +309,97 @@ def _crown_offset(a: float, ph: float, top: float, sides: float, line: tuple = C
     return 0.0006 + (1.0 - u ** 4) * (top + sides * math.sin(a) ** 2 * math.sin(math.pi * min(1.0, 0.25 + u)) ** 0.8)
 
 
+#: Swept-back strand flow of ``crown_volume``: the strands run on great circles through the chignon
+#: (``_SWEEP_POLE``, back, just above eye height) and its antipode under the brow; ``_SWEEP_CLUMPS``
+#: irregular strand clumps separated by grooves ``_SWEEP_GROOVE`` (fraction of the volume) deep.
+_SWEEP_POLE = (0.0, -1.0, 0.12)
+_SWEEP_CLUMPS = 12
+_SWEEP_GROOVE = 0.6
+
+
+def _sweep_clump(i_max: int, s: float, salt: int = 0) -> tuple[float, float]:
+    """(groove, bulge) at azimuth ``s`` (0..1) over ``i_max`` irregular clumps (``_head._h01`` hash)."""
+    w = [0.65 + 0.7 * _head._h01(i, 11 + salt) for i in range(i_max)]
+    tot = sum(w)
+    acc = 0.0
+    for i, x in enumerate(w):
+        lo, acc = acc, acc + x / tot
+        if s < acc or i == i_max - 1:
+            f = min(1.0, max(0.0, (s - lo) / (acc - lo)))
+            return ((0.6 + 0.4 * _head._h01(i, 12 + salt)) * math.cos(math.pi * f) ** 2,
+                    (0.35 + 0.65 * _head._h01(i, 13 + salt)) * math.sin(math.pi * f) ** 1.5)
+    return 0.0, 0.0
+
+
 def crown_volume(fit: Fit, mat: str, top: float = 0.004, sides: float = 0.010, line: tuple = CROWN_HAIRLINE,
-                 n_th: int = 36, n_ph: int = 10) -> Mesh:
-    """Smooth swept-back hair (an updo's backcombed crown) as a shell on rays from the head centre:
+                 n_al: int = 48, n_be: int = 11) -> Mesh:
+    """Swept-back hair (an updo's backcombed crown) as a shell on rays from the head centre:
     fullest at the upper sides (width rather than height, so the head reads less long) and tucked
     to ~0.6 mm at the hairline ``line`` (see ``CROWN_HAIRLINE``). Over a bald head (``hair: none``)
     it is the whole hair; over a hair cap, ``line`` should end above the cap's edge. ``top``/``sides``
-    are the extra volume in metres (before height scaling)."""
+    are the extra volume in metres (before height scaling).
+
+    The grid follows the strands: ``n_al`` columns on great circles from the chignon pole
+    (``_SWEEP_POLE``, hidden under the bun) forward to the hairline, ``n_be`` rows along them. Strand
+    clumps are cut in as grooves between the columns (subtractive: the envelope is kept) and reach a
+    little over the hairline at the front, so the edge breaks up."""
     k = fit.k
     c = fit.head_centre()
     hh = HeadHull(fit)
+    pole = Vector(_SWEEP_POLE).normalized()
+    e1 = Vector((1.0, 0.0, 0.0))
+    e2 = pole.cross(e1).normalized()               # up
 
-    def point(a: float, ph: float) -> Vector:
-        d = Vector((math.sin(ph) * math.sin(a), math.sin(ph) * math.cos(a), math.cos(ph)))
+    def crown_ang(d: Vector) -> tuple[float, float]:
+        return math.atan2(d.x, d.y), math.acos(max(-1.0, min(1.0, d.z)))
+
+    def inside(d: Vector) -> bool:
+        a, ph = crown_ang(d)
+        return ph < _crown_edge(a, line)
+
+    def dirv(al: float, be: float) -> Vector:
+        return (pole * math.cos(be) + (e1 * math.cos(al) + e2 * math.sin(al)) * math.sin(be)).normalized()
+
+    def point(d: Vector, mod: float) -> Vector:
+        a, ph = crown_ang(d)
         hit = hh.cast(c + d * 0.4, -d, 0.6)
         base = hit[0] if hit[0] is not None else c + d * 0.1 * k
-        return base + d * _crown_offset(a, ph, top, sides, line) * k
+        return base + d * _crown_offset(a, ph, top, sides, line) * k * mod
 
-    th = [math.tau * i / n_th for i in range(n_th)]
     m = Mesh()
-    rings = [m.ring([point(a, _crown_edge(a, line) * i / n_ph) for a in th], HEAD_W) for i in range(1, n_ph + 1)]
-    inside = Vector((c.x, c.y, c.z))
-    for a_, b_ in itertools.pairwise(rings):
-        m.band(a_, b_, mat, inside=inside)
-    pole = m.add(point(0.0, 0.0), HEAD_W)
-    for j in range(n_th):
-        m.face((rings[0][j], rings[0][(j + 1) % n_th], pole), mat, inside=inside)
+    edges = []
+    for j in range(n_al):
+        al = math.tau * j / n_al
+        be = 0.0
+        while be < math.pi and inside(dirv(al, be)):
+            be += math.radians(2.0)
+        lo, hi = be - math.radians(2.0), be
+        for _ in range(24):
+            mid = 0.5 * (lo + hi)
+            lo, hi = (mid, hi) if inside(dirv(al, mid)) else (lo, mid)
+        edges.append(lo)
+    cols = []
+    for j in range(n_al):
+        al = math.tau * j / n_al
+        edge = edges[j]
+        groove, bulge = _sweep_clump(_SWEEP_CLUMPS, j / n_al)
+        a_e, _ph = crown_ang(dirv(al, edge))
+        front = smoothstep(math.radians(70.0), math.radians(25.0), abs(a_e))
+        edge += math.radians(2.5) * front * (bulge - 0.2)            # clumps reach over the hairline
+        col = []
+        for r in range(1, n_be + 1):
+            t = r / n_be
+            be = edge * (1.0 - (1.0 - t) ** 1.3)
+            fade = smoothstep(math.radians(12.0), math.radians(40.0), be)
+            col.append(point(dirv(al, be), 1.0 - _SWEEP_GROOVE * groove * fade))
+        cols.append(col)
+    ids = [m.ring([cols[j][r] for j in range(n_al)], HEAD_W) for r in range(n_be)]
+    inside_c = Vector((c.x, c.y, c.z))
+    for a_, b_ in itertools.pairwise(ids):
+        m.band(a_, b_, mat, inside=inside_c)
+    pc = m.add(point(pole, 1.0), HEAD_W)
+    for j in range(n_al):
+        m.face((ids[0][j], ids[0][(j + 1) % n_al], pc), mat, inside=inside_c)
     return m
 
 
@@ -388,8 +461,10 @@ def side_fringe(fit: Fit, mat: str, part_deg: float = 30.0, crown: tuple[float, 
             hq = hh.cast(q + n * 0.05, -n, 0.1)
             base = hq[0] + n * off if hq[0] is not None else q
             prof = max(0.0, 1.0 - s_ * s_) ** 0.5
+            # strand clumps: two grooves along the sweep (a = 2 and 5), shallow at the root
+            groove = (0.30 if a in (2, 5) else 0.0) * smoothstep(0.05, 0.3, t)
             # the leading (lower) edge curls slightly under, the trailing edge blends into the hair
-            tops.append(base + n * (0.0008 * k + lift * (0.35 + 0.65 * prof)))
+            tops.append(base + n * (0.0008 * k + lift * (0.35 + 0.65 * prof) * (1.0 - groove)))
             bots.append(base + n * (0.0008 * k))
         rows.append(tops + list(reversed(bots[1:-1])))
     m = Mesh()

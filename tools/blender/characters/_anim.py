@@ -349,6 +349,9 @@ def hand_shape(kind: str, amount: float = 1.0) -> HandShape:
     elif kind == "pinch":     # small object between thumb and index (cigarette, pager, card)
         c = {"index": (30, 34, 14), "middle": (38, 44, 18), "ring": (52, 60, 30), "pinky": (60, 66, 34)}
         th, opp, sp = (10, 16, 14), 30, -2
+    elif kind == "rest_flat":  # palm resting flat on a surface: fingers straightened against the rest curl
+        c = {f: (-10, -12, -6) for f in ("index", "middle", "ring", "pinky")}
+        th, opp, sp = (-6, -10, -8), -18, 4
     elif kind == "claw":      # pain / struggling
         c = {f: (30, 55, 45) for f in ("index", "middle", "ring", "pinky")}
         th, opp, sp = (8, 20, 20), 18, 6
