@@ -3,6 +3,26 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11 08:30 UTC: round-16 follow-ups, options hooks, D-069 FP left-hand IK, D-063 clean
+### Done
+- Civilian strings (`ui.prompt.pick_up_gear`, `ui.blocked.civilian`). AI teammates gear up with the first human (P5 ruling, heist README). The lead's `hud_model.refresh()` hotfix is merged (it was the same fix).
+- D-068:
+  - `loot.<id>` pre-plan drop kinds spawn a LootBag;
+  - burn_point also uses a thermite bag lying within burn_bag_radius_m;
+  - tool loot (`LootDef.is_tool`) is never secured (`LootManager.is_tool_loot`).
+- B5-01 options:
+  - CrewView FOV = GameSettings.fov() every frame, with ADS zoom fov / magnification (ads_zoom_rate);
+  - PlayerInput: mouse sensitivity x/y, invert_y (mouse + pad), pad sensitivity / deadzone;
+  - hold/toggle for aim/crouch/sprint with its own edge detection: intents are built on physics ticks, so just_pressed missed presses; a toggled sprint ends when not running forward.
+- D-069:
+  - crew camera near 0.02 m;
+  - FP left-hand IK (FpLeftHandIk, TwoBoneIK3D upper_arm.L → hand.L) to a `LeftHandGrip` child of the weapon's `LeftHandIK` at left_hand_grip_offset (wrist vs palm, measured from D's baked rifle pose on four guns);
+  - off during reload/swap and for bow/akimbo; test: hand within 1.5 cm.
+- D-063 re-measured after D's rebuild (bfde340): no weapon is outside 0.75–1.35×.
+### In progress / waiting on trunk
+- D-069 item FP sets (melee swing/charge hit@, throwable pin_pull/release + Pin hide, deployable place@) and `<set>_bash` hit@: the clips and the `anim_set` fields on Melee/Throwable/DeployableDef are not on trunk yet.
+- AnimDriver HINT_CLIPS for D's NPC ambient anims (4355913) once on trunk. A3-11 hub (QC-43/44) after that.
+
 ## 2026-10-11 06:30 UTC: P3 gate bugs, Dockside Burn QC-35..42, saw targets
 ### Done
 - QC-37 hand saw targets (G.SAW_TARGET `saw_cut`):
