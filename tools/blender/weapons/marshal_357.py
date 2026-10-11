@@ -7,7 +7,9 @@ Origin = firing-hand pivot (see _marshal.py). Forward = Godot -Z.
 
 Node tree: ``Frame`` (+ ``FrameDetails``, ``Hammer``, ``Trigger``, ``TriggerGuard``), ``Crane`` (pivot on the
 crane hinge; swings the cylinder out left: positive rotation about local Z, 80 deg) with ``Cylinder``
-(pivot on the cylinder axis at its rear face; 60 deg about local Z per shot) carrying ``Magwell``.
+(pivot on the cylinder axis at its rear face; 60 deg about local Z per shot) carrying ``Magwell``;
+``Speedloader`` (D-053: at the root, seated on the closed cylinder in the closed ``Magwell`` frame, six rounds
+in the chambers; meant to be hidden until a reload, which the pipeline cannot express: see _marshal.py).
 Stock parts: ``SightRail/StockSight`` (rear sight, ``AimPoint``), ``Magwell/StockMagazine`` (six
 cartridges), ``BarrelMount/StockBarrel`` (4 in barrel), ``GripMount/StockGrip`` (walnut grip).
 """
@@ -140,6 +142,10 @@ def build(ctx) -> None:
     grip_mount = ctx.marker("GripMount", (0.0, 0.0, 0.0))
     ctx.marker("LeftHandIK", (-(m.GRIP_HALF_WIDTH + 0.012), m.GRIP_HALF_DEPTH + m.GRIP_TAN * -0.020 - 0.004, -0.020))
 
+    # speedloader (D-053): root node, rest pose = seated on the CLOSED cylinder (the closed Magwell frame)
+    loader = ctx.marker("Speedloader", (0.0, m.CYL_Y0, m.CYL_Z), rotation_euler=(-math.pi / 2, 0.0, 0.0))
+    m.build_speedloader(ctx, mats, parent=loader)
+
     stock_sight = ctx.marker("StockSight", (0.0, 0.0, 0.0), parent=sight_rail)
     m.build_rear_sight(ctx, mats, parent=stock_sight)
     ctx.marker("AimPoint", (0.0, 0.0, m.SIGHT_DZ), parent=stock_sight)
@@ -152,4 +158,7 @@ def build(ctx) -> None:
 
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()
     ctx.source_extra["origin"] = "firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top"
+    ctx.source_extra["speedloader"] = ("Speedloader at the root, frame = the closed cylinder's Magwell (rear face on the "
+                                       "axis, Godot local +Y forward into the chambers); 6 rounds on the chamber pattern; "
+                                       "NOT hidden by the pipeline (glTF has no visibility flag): hide it in game")
     ctx.source_extra["crane"] = "Crane pivot on the hinge axis; +80 deg about local Z (Godot) swings the cylinder out left"
