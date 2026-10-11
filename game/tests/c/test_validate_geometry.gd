@@ -1,6 +1,8 @@
 ## Unit tests for levelcheck geometry helpers (LcGeom, whitelist parsing).
 extends TestCase
 
+const REVIEW_SHOTS: GDScript = preload("res://world/tools/review_shots.gd")
+
 
 func test_obb_overlap() -> void:
 	var a: Dictionary = LcGeom.obb(Transform3D.IDENTITY, AABB(Vector3(-0.5, -0.5, -0.5), Vector3.ONE))
@@ -51,7 +53,7 @@ func test_frustum() -> void:
 
 
 func test_floor_names_by_height() -> void:
-	var rs: GDScript = load("res://world/tools/review_shots.gd") as GDScript
+	var rs: GDScript = REVIEW_SHOTS
 	var fh: PackedFloat32Array = PackedFloat32Array([-4.0, 0.0, 4.2])
 	assert_eq(rs.call(&"floor_name", fh, 0), "BASEMENT B1")
 	assert_eq(rs.call(&"floor_name", fh, 1), "GROUND FLOOR")
@@ -72,3 +74,15 @@ func test_walk_objectives_skip_observers() -> void:
 	obj.set_meta(&"kind", "camera")
 	assert_false(LcTargets.is_walk_objective(obj), "cameras are never walk targets")
 	obj.free()
+
+
+func test_map_floor_names_override_height_names() -> void:
+	var rs: GDScript = REVIEW_SHOTS
+	var m: HeistMap = HeistMap.new()
+	m.floor_heights = PackedFloat32Array([-4.0, 0.0, 4.2])
+	assert_eq(rs.call(&"display_floor_name", m, 0), "BASEMENT B1", "no floor_names: height naming")
+	m.floor_names = PackedStringArray(["Vault Level", "", "Mezzanine"])
+	assert_eq(rs.call(&"display_floor_name", m, 0), "Vault Level")
+	assert_eq(rs.call(&"display_floor_name", m, 1), "GROUND FLOOR", "empty entry falls back")
+	assert_eq(rs.call(&"display_floor_name", m, 2), "Mezzanine")
+	m.free()
