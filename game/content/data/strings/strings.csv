@@ -2323,3 +2323,16 @@ ui.kick.confirm,Kick {name} from the crew?
 ui.kick.yes,Kick
 ui.kick.no,Cancel
 ui.lobby.error.kicked,The host removed you from the lobby.
+ui.lobby.code.title,Lobby code
+ui.lobby.code.value,Lobby code: {code}
+ui.lobby.code.copy,Copy
+ui.lobby.code.copied,Copied to the clipboard.
+ui.lobby.code.wan_hint,"Works on your local network. For internet play, forward the UDP port on your router and share your public address."
+ui.lobby.code.unavailable,No local IPv4 address found: share your address and port instead.
+ui.lobby.code.hint,ABCD-EFGH
+ui.lobby.code.join,Join by Code
+ui.lobby.code.error.empty,Enter a lobby code.
+ui.lobby.code.error.char,"That code has a character lobby codes never use (only 0-9 and A-Z, without U)."
+ui.lobby.code.error.length,A lobby code has 8 or 11 characters.
+ui.lobby.code.error.checksum,That code has a typo: check it with the host.
+ui.lobby.code.error.format,That is not a valid lobby code.

@@ -316,3 +316,11 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
   exists). Lobby kick works today: `LobbySession.kick(slot)` -> host-only `LobbyState.MSG_KICK`; the kicked client's
   session leaves (`connection_failed(FAIL_KICKED)`), honour-based until Net can drop a peer. Strings `ui.dropin.*`,
   `ui.kick.*`.
+* **Lobby codes (B6-05, game_overview §9).** `LobbyCode` (`lobby/lobby_code.gd`, static, pure): `encode(ipv4, port,
+  default_port = tweak) -> String` (Crockford base32 + Luhn mod 32 check symbol; 8 symbols for the default port,
+  11 otherwise; "" for IPv6 / host names / bad ports), `decode(code) -> {address, port} | {error: E_*}` (case,
+  dashes and spaces ignored, O/I/L read as 0/1, pad bits checked), `display(code)` ("ABCD-EFGH"), `normalize`,
+  `pick_lan_ipv4(IP.get_local_addresses())` (private LAN IPv4 first). Lobby screen: host header shows the code +
+  Copy (`DisplayServer.clipboard_set`) + WAN hint (public address + forwarded UDP port); Join panel has a code
+  field (`LobbyScreen.join_by_code()` -> fills address / port -> `join()`). No LAN host list: Net has no
+  discovery. Strings `ui.lobby.code.*`.
