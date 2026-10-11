@@ -2324,3 +2324,30 @@ heist.afterhours.name,Afterhours
 heist.afterhours.subtitle,The Velvet
 heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rope. Hollis wants the back office emptied before the doors close."
 ui.jukebox.no_stems,{name} has no recording yet.
+ui.options.controls.scoreboard_mode,Scoreboard
+ui.scoreboard.title,Crew Tally
+ui.scoreboard.name,Crew
+ui.scoreboard.kills,Kills
+ui.scoreboard.specials,Specials
+ui.scoreboard.civilians,Civilians
+ui.scoreboard.downs,Downs
+ui.scoreboard.accuracy,Accuracy
+ui.scoreboard.headshots,Headshots
+ui.scoreboard.missing,—
+ui.scoreboard.pct,{value}%
+ui.scoreboard.you,{name} (you)
+ui.scoreboard.ai,{name} [AI]
+ui.awards.title,Crew Honours
+ui.awards.none,No honours handed out this time.
+ui.awards.most_kills.name,Body Count
+ui.awards.most_kills.desc,Most kills: {value}
+ui.awards.most_specials.name,Giant Slayer
+ui.awards.most_specials.desc,Most specials dropped: {value}
+ui.awards.most_accurate.name,Steady Hand
+ui.awards.most_accurate.desc,Best accuracy: {value}%
+ui.awards.most_headshots.name,Between the Eyes
+ui.awards.most_headshots.desc,Most headshots: {value}
+ui.awards.iron.name,Iron Spine
+ui.awards.iron.desc,Fewest times downed: {value}
+ui.awards.civilian_friendly.name,Clean Hands
+ui.awards.civilian_friendly.desc,No civilians harmed

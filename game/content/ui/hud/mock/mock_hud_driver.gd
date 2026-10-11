@@ -1,6 +1,6 @@
 ## Scripted demo driver for MockHudModel: loops a ~40 s timeline through casing, detection, a
 ## pager, going loud, assault phases, Commander Brandt (captain), sprint stamina (drain, exhausted,
-## recovery; ui_hud v1.4), damage and downs, so every HUD widget is exercised.
+## recovery; ui_hud v1.4), damage and downs, and the B6-02 scoreboard tally, so every HUD widget is exercised.
 ## Deterministic (time-based, no RNG). Owner: ENV B. Used by hud_demo.tscn.
 class_name MockHudDriver
 extends Node
@@ -45,6 +45,20 @@ func setup_initial() -> void:
 		_mate(2, "crew.dutch", 0.8, 0.0, Enums.CrewState.NORMAL),
 		_mate(3, "crew.wren", 1.0, 0.5, Enums.CrewState.NORMAL),
 	]
+	model.crew_stats = stats_rows(0)
+
+
+## B6-02 scoreboard rows after `fights` loud stages: the local player (slot 0) has the full counter set;
+## the Crew AI rows lack shots / hits / headshots, like ENV A's tree today (scoreboard shows "—").
+static func stats_rows(fights: int) -> Array[Dictionary]:
+	var rows: Array[Dictionary] = [{"slot": 0, "name": UiText.t(&"ui.results.crew_slot", {"slot": 1}), "is_ai": false,
+			"is_local": true, "kills": 3 * fights, "specials_killed": floori(fights / 2.0), "civilians_killed": 0, "downs": mini(fights, 1),
+			"shots": 14 * fights, "hits": 9 * fights, "headshots": 2 * fights}]
+	for slot: int in [1, 2, 3]:
+		rows.append({"slot": slot, "name": UiText.t(StringName(["", "crew.sable", "crew.dutch", "crew.wren"][slot])),
+				"is_ai": true, "is_local": false, "kills": fights * (4 - slot), "specials_killed": floori(fights / (slot + 1.0)),
+				"civilians_killed": 1 if slot == 2 and fights > 1 else 0, "downs": 1 if slot == 2 and fights > 2 else 0})
+	return rows
 
 
 func _process(delta: float) -> void:
@@ -118,6 +132,7 @@ func _enter_stage(stage: int) -> void:
 						"state": Enums.ObjectiveState.ACTIVE},
 			]
 		6:
+			model.crew_stats = stats_rows(1)
 			model.assault_phase = Enums.AssaultPhase.BUILD
 			model.assault_wave = 1
 			model.warnings = [&"phantom"]
@@ -131,6 +146,7 @@ func _enter_stage(stage: int) -> void:
 			model.armor = 0.0
 			model.ammo = {Enums.WeaponSlot.SECONDARY: {"mag": 4, "reserve": 60}}
 		8:
+			model.crew_stats = stats_rows(3)
 			model.crew_state = Enums.CrewState.DOWNED
 			model.downs_left = 2
 			model.bleedout_s = 30.0

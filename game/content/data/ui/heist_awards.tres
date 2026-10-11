@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="HeistAwardTable" format=3]
+
+[ext_resource type="Script" path="res://content/progression/heist_award_table.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+awards = Array[Dictionary]([{
+"id": "most_kills",
+"rule": "max",
+"stat": "kills",
+"threshold": 1
+}, {
+"id": "most_specials",
+"rule": "max",
+"stat": "specials_killed",
+"threshold": 1
+}, {
+"id": "most_accurate",
+"min_shots": 20,
+"rule": "max",
+"stat": "accuracy"
+}, {
+"id": "most_headshots",
+"rule": "max",
+"stat": "headshots",
+"threshold": 1
+}, {
+"id": "iron",
+"rule": "min",
+"stat": "downs",
+"threshold": 1
+}, {
+"id": "civilian_friendly",
+"rule": "zero",
+"stat": "civilians_killed"
+}])
