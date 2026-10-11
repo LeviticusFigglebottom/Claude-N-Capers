@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only paint_safety_orange --preset gsr
+module: tools/texgen/materials/paint_safety_orange.py
+preset: tools/texgen/presets/gsr.py
+seed: 14437430 (zlib.crc32('paint_safety_orange'))
+size_px: 1024
+tile_m: 1.0 (1 UV unit = 1.0 m)
+texel_density_px_per_m: 1024
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.4913, "albedo_lum_mean_linear": 0.226, "albedo_lum_min_linear": 0.2194, "ao_mean": 0.999, "lum_floor_linear": 0.04, "metallic_mean": 0.003, "roughness_mean": 0.413}

@@ -2777,6 +2777,7 @@ script = ExtResource("1_nd")
 heist_def = ExtResource("2_nd")
 variant_table = ExtResource("3_nd")
 floor_heights = PackedFloat32Array(-4, 0)
+floor_names = PackedStringArray()
 review_cameras = Array[NodePath]([NodePath("ReviewCameras/TopDownSite"), NodePath("ReviewCameras/TopDownBuilding"), NodePath("ReviewCameras/ExtHarborFacade"), NodePath("ReviewCameras/ExtAtmCorner"), NodePath("ReviewCameras/ExtLotSallyPort"), NodePath("ReviewCameras/ExtQuaySteps"), NodePath("ReviewCameras/ExtWharfLane"), NodePath("ReviewCameras/HallFromVestibule"), NodePath("ReviewCameras/CompassLandmark"), NodePath("ReviewCameras/HallGuardPost"), NodePath("ReviewCameras/TellerWorkroom"), NodePath("ReviewCameras/StaffCorridor"), NodePath("ReviewCameras/SecurityRoom"), NodePath("ReviewCameras/SallyPort"), NodePath("ReviewCameras/StairCore"), NodePath("ReviewCameras/BasementCorridor"), NodePath("ReviewCameras/Antechamber"), NodePath("ReviewCameras/VaultInterior"), NodePath("ReviewCameras/CountDepository"), NodePath("ReviewCameras/RecordsRoom"), NodePath("ReviewCameras/PlantAreaway"), NodePath("ReviewCameras/ManagerOffice"), NodePath("ReviewCameras/AtmVestibule"), NodePath("ReviewCameras/CranePerch")])
 
 [node name="Geometry" type="Node3D" parent="." unique_id=100002]
@@ -12059,7 +12060,7 @@ metadata/fov = 60.0
 metadata/caption = "B5 basement spine and the vault gate"
 
 [node name="Antechamber" type="Marker3D" parent="ReviewCameras" unique_id=102154]
-transform = Transform3D(-0.18761927, 0.091740966, -0.9779482, 0, 0.9956288, 0.09339957, 0.98224187, 0.017523559, -0.18679914, 9.6, -2.35, 7.9)
+transform = Transform3D(-0.1689638, 0.09393996, -0.9811353, 0, 0.9954476, 0.09531031, 0.9856222, 0.016103992, -0.16819462, 9.75, -2.35, 8.1)
 metadata/fov = 75.0
 metadata/caption = "B8 antechamber: laser plane, time-lock panel, vault door"
 
@@ -12069,7 +12070,7 @@ metadata/fov = 80.0
 metadata/caption = "B9 vault: cash cage, Co-op pallet, deposit box walls"
 
 [node name="CountDepository" type="Marker3D" parent="ReviewCameras" unique_id=102156]
-transform = Transform3D(-0.9578263, -0.028754037, 0.2859056, 0, 0.9949807, 0.100066975, -0.2873479, 0.09584678, -0.9530186, 25.5, -2.35, 8)
+transform = Transform3D(-0.9640795, -0.027291175, 0.26420805, 0, 0.99470747, 0.10274757, -0.26561382, 0.099056825, -0.9589771, 25.2, -2.35, 8.2)
 metadata/fov = 75.0
 metadata/caption = "B11 count room and B12 depository safe"
 
@@ -12079,17 +12080,17 @@ metadata/fov = 75.0
 metadata/caption = "B6 records: compact shelving, microfiche desk"
 
 [node name="PlantAreaway" type="Marker3D" parent="ReviewCameras" unique_id=102158]
-transform = Transform3D(0.9985157, -0.01066616, 0.05341008, 0, 0.9806366, 0.1958362, -0.0544647, -0.19554552, 0.97918105, 18.2, -2.2, 5.7)
+transform = Transform3D(0.99830765, 0.0089118285, -0.05746716, 0, 0.98818827, 0.15324517, 0.05815406, -0.15298583, 0.9865158, 17.9, -2.2, 5.35)
 metadata/fov = 80.0
 metadata/caption = "B3 plant room and the areaway door"
 
 [node name="ManagerOffice" type="Marker3D" parent="ReviewCameras" unique_id=102159]
-transform = Transform3D(0.62224424, 0.1833148, -0.761057, 0, 0.97219527, 0.2341714, 0.78282315, -0.14571181, 0.6049429, 21.6, 1.8, 15.6)
+transform = Transform3D(0.59319913, 0.19835809, -0.7802365, 0, 0.96917075, 0.24639049, 0.8050558, -0.14615862, 0.57491124, 21.7, 1.8, 15.3)
 metadata/fov = 75.0
 metadata/caption = "G12 manager office: desk, manager safe slot"
 
 [node name="AtmVestibule" type="Marker3D" parent="ReviewCameras" unique_id=102160]
-transform = Transform3D(0.5588535, -0.11837227, 0.8207745, 0, 0.9897597, 0.14274336, -0.82926637, -0.07977263, 0.5531307, 25.6, 1.8, 19.6)
+transform = Transform3D(0.5407576, -0.13307995, 0.8305847, 0, 0.987406, 0.15820657, -0.8411784, -0.0855514, 0.53394735, 25.2, 1.8, 19.2)
 metadata/fov = 75.0
 metadata/caption = "G13 ATM vestibule (24 h, PUBLIC): ATMs, night drop, hall door"
 
