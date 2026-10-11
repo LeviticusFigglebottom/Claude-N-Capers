@@ -4,7 +4,7 @@
 ##   xvfb-run -a -s "-screen 0 1920x1080x24" /opt/godot/godot --path game --resolution 1920x1080 \
 ##     res://world/tools/material_preview.tscn -- --out=<path.png|path.jpg>
 ## Options: --only=<lib_id>[,<lib_id>] (close-up), --env=<neutral|glasshouse>, --cols=<n> (default 8),
-## --quality=<0..1> (JPEG), --frames=<n>.
+## --quality=<0..1> (JPEG), --frames=<n>, --exclude=<prefix>[,<prefix>] (e.g. char_).
 ## Materials are previewed with world-space triplanar UVs at each material's library tile size
 ## (metadata/uv_tile_m: 2 m for environment, 1 m for weapon materials), so texel density reads
 ## as it will on Blender-UV'd geometry.
@@ -19,6 +19,7 @@ const CELL_H: float = 2.05
 
 var _out_path: String = ""
 var _only: PackedStringArray = PackedStringArray()
+var _exclude: PackedStringArray = PackedStringArray()
 var _env_name: String = "neutral"
 var _cols: int = 8
 var _quality: float = 0.82
@@ -58,6 +59,8 @@ func _parse_args() -> void:
 			_out_path = arg.substr(6)
 		elif arg.begins_with("--only="):
 			_only = arg.substr(7).split(",", false)
+		elif arg.begins_with("--exclude="):
+			_exclude = arg.substr(10).split(",", false)
 		elif arg.begins_with("--env="):
 			_env_name = arg.substr(6)
 		elif arg.begins_with("--cols="):
@@ -75,10 +78,19 @@ func _material_ids() -> PackedStringArray:
 		if not name.ends_with(".tres") or name.begins_with("grey_"):
 			continue
 		var id: String = name.get_basename()
+		if _is_excluded(id):
+			continue
 		if _only.is_empty() or id in _only:
 			ids.append(id)
 	ids.sort()
 	return ids
+
+
+func _is_excluded(id: String) -> bool:
+	for prefix: String in _exclude:
+		if id.begins_with(prefix):
+			return true
+	return false
 
 
 func _preview_material(id: String) -> Material:

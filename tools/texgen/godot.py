@@ -70,7 +70,7 @@ def ensure_import(png: Path, importer: str, rtype: str, params: dict) -> None:
 
 
 def write_material(path: Path, lib_id: str, tex_res: str, kind: str, tile_m: float,
-                   specular: float | None = None) -> None:
+                   specular: float | None = None, clearcoat: dict | None = None) -> None:
     """ORMMaterial3D referencing tex_<id>_{albedo,orm,normal}.png under ``tex_res``."""
     alb = f"{tex_res}/tex_{lib_id}_albedo.png"
     orm = f"{tex_res}/tex_{lib_id}_orm.png"
@@ -98,17 +98,45 @@ def write_material(path: Path, lib_id: str, tex_res: str, kind: str, tile_m: flo
         "normal_scale = 1.0",
         'normal_texture = ExtResource("3_normal")',
         "ao_enabled = true",
+        *([
+            "clearcoat_enabled = true",
+            f"clearcoat = {float(clearcoat.get('amount', 1.0))}",
+            f"clearcoat_roughness = {float(clearcoat.get('roughness', 0.1))}",
+        ] if clearcoat else []),
         f"metadata/uv_tile_m = {float(tile_m)}",
     ]
     tio.write_text(path, "\n".join(lines) + "\n")
 
 
 def write_emissive_material(path: Path, lib_id: str, p: dict) -> None:
-    """Texture-less emissive StandardMaterial3D (reticles, indicator LEDs). Emission (not
-    unshaded) so the HDR value can exceed 1 and catch the glow pass."""
-    lines = [
-        '[gd_resource type="StandardMaterial3D" format=3]',
-        "",
+    """Emissive StandardMaterial3D (reticles, indicator LEDs, pilot flames). Emission (not
+    unshaded) so the HDR value can exceed 1 and catch the glow pass.
+
+    Optional ``gradient`` (list of (offset, sRGB hex)) adds an embedded ``GradientTexture2D`` as
+    the emission texture, running along mesh V from ``gradient_from`` to ``gradient_to`` (UV
+    points; default bottom -> top). No PNG is involved, so it stays deterministic text.
+    """
+    grad = p.get("gradient")
+    lines = ['[gd_resource type="StandardMaterial3D" format=3]', ""]
+    if grad:
+        offs = ", ".join(f"{float(o):g}" for o, _c in grad)
+        cols = ", ".join(_hex_color(c)[6:-1] for _o, c in grad)
+        fx, fy = p.get("gradient_from", (0.5, 1.0))
+        tx, ty = p.get("gradient_to", (0.5, 0.0))
+        lines += [
+            '[sub_resource type="Gradient" id="Gradient_emit"]',
+            f"offsets = PackedFloat32Array({offs})",
+            f"colors = PackedColorArray({cols})",
+            "",
+            '[sub_resource type="GradientTexture2D" id="GradientTexture2D_emit"]',
+            'gradient = SubResource("Gradient_emit")',
+            "width = 16",
+            "height = 64",
+            f"fill_from = Vector2({fx:g}, {fy:g})",
+            f"fill_to = Vector2({tx:g}, {ty:g})",
+            "",
+        ]
+    lines += [
         "[resource]",
         f'resource_name = "M_{lib_id}"',
         f"albedo_color = {_hex_color(p['albedo'])}",
@@ -117,6 +145,9 @@ def write_emissive_material(path: Path, lib_id: str, p: dict) -> None:
         f"emission = {_hex_color(p['emission'])}",
         f"emission_energy_multiplier = {p['emission_energy']}",
         "disable_receive_shadows = true",
+        # Multiply (operator 1): emission colour x gradient. The default (add) would sum the
+        # gradient with the emission colour and wash it out to white.
+        *(['emission_operator = 1', 'emission_texture = SubResource("GradientTexture2D_emit")'] if grad else []),
         "metadata/uv_tile_m = 1.0",
     ]
     tio.write_text(path, "\n".join(lines) + "\n")
