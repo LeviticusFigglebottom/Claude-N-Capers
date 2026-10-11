@@ -1,5 +1,5 @@
-## B6-02: payday award math (HeistAwards over CrewStats rows): winners, the documented tie-break
-## (humans before Crew AI, then the lowest slot), thresholds, shared "zero" awards, and awards skipped
+## B6-02: payday award math (HeistAwards over CrewStats rows): winners (humans only, D-071), the tie-break
+## (lowest slot, D-071), thresholds, shared "zero" awards, and awards skipped
 ## when their counter is missing (shots / hits / headshots are not in HeistResult yet).
 extends TestCase
 
@@ -39,17 +39,19 @@ func test_table_is_valid_and_has_strings() -> void:
 func test_most_kills_and_specials() -> void:
 	var rows: Array = [_row(0, false, 5, 1, 0, 0), _row(1, true, 9, 0, 0, 0), _row(2, false, 2, 3, 1, 0)]
 	var awards: Array[Dictionary] = HeistAwards.compute(rows)
-	assert_eq(_slots(_find(awards, &"most_kills")), "[1]", "AI can win outright")
-	assert_near(float(_find(awards, &"most_kills")["value"]), 9.0)
+	assert_eq(_slots(_find(awards, &"most_kills")), "[0]", "the AI's 9 kills never win (D-071): best human")
+	assert_near(float(_find(awards, &"most_kills")["value"]), 5.0)
 	assert_eq(_slots(_find(awards, &"most_specials")), "[2]")
 	assert_eq(_find(awards, &"most_kills")["name_key"], &"ui.awards.most_kills.name")
 
 
-func test_tie_break_prefers_humans_then_lowest_slot() -> void:
+func test_tie_break_lowest_human_slot() -> void:
 	var rows: Array = [_row(3, false, 4, 0, 0, 0), _row(0, true, 4, 0, 0, 0), _row(1, false, 4, 0, 0, 0)]
-	assert_eq(_slots(_find(HeistAwards.compute(rows), &"most_kills")), "[1]", "human slot 1 beats AI slot 0 and human slot 3")
+	assert_eq(_slots(_find(HeistAwards.compute(rows), &"most_kills")), "[1]", "human slot 1 (AI slot 0 is no candidate)")
 	var ai_only: Array = [_row(2, true, 4, 0, 0, 0), _row(1, true, 4, 0, 0, 0)]
-	assert_eq(_slots(_find(HeistAwards.compute(ai_only), &"most_kills")), "[1]", "lowest slot among equals")
+	assert_eq(HeistAwards.compute(ai_only).size(), 0, "Crew AI never earns honours")
+	var solo: Array = [_row(0, false, 1, 0, 0, 0), _row(1, true, 7, 0, 0, 0), _row(2, true, 9, 0, 0, 0)]
+	assert_eq(_slots(_find(HeistAwards.compute(solo), &"most_kills")), "[0]", "a solo player still earns awards")
 	# Input order never matters (deterministic).
 	rows.reverse()
 	assert_eq(_slots(_find(HeistAwards.compute(rows), &"most_kills")), "[1]")
@@ -68,8 +70,8 @@ func test_iron_and_civilian_friendly() -> void:
 	var rows: Array = [_row(0, false, 1, 0, 1, 0), _row(1, true, 1, 0, 0, 0), _row(2, false, 1, 0, 0, 1),
 			_row(3, false, 1, 0, 2, 0)]
 	var awards: Array[Dictionary] = HeistAwards.compute(rows)
-	assert_eq(_slots(_find(awards, &"iron")), "[2]", "0 downs: human slot 2 beats AI slot 1")
-	assert_eq(_slots(_find(awards, &"civilian_friendly")), "[0, 1, 3]", "shared by everyone at 0, by slot")
+	assert_eq(_slots(_find(awards, &"iron")), "[2]", "0 downs: human slot 2 (the AI's 0 does not count)")
+	assert_eq(_slots(_find(awards, &"civilian_friendly")), "[0, 3]", "shared by every human at 0, by slot")
 
 
 func test_missing_counters_skip_awards() -> void:

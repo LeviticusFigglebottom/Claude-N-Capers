@@ -4,10 +4,11 @@
 ##    "slots": Array[int] (winners), "name_key": StringName, "desc_key": StringName}
 ## `crew_rows` are HeistResult.crew rows (or LocalHudModel.crew_stats rows); see CrewStats for the keys.
 ## Rules:
-##   * Candidates are the rows that carry the award's stat (CrewStats.has_stat); no candidate = no award,
+##   * Crew AI never wins (D-071: honours go to human players; solo players still earn them). Candidates are
+##     the human rows that carry the award's stat (CrewStats.has_stat); no candidate = no award,
 ##     so an award over a counter ENV A does not send yet (shots / hits / headshots) is skipped.
 ##   * "max" / "min": the best value wins; `threshold` must be met (max: >=, min: <=) or there is no award.
-##     TIE-BREAK (one winner): human players before Crew AI, then the lowest crew slot.
+##     TIE-BREAK (one winner, D-071): the lowest crew slot.
 ##   * "zero": shared; every candidate whose value is 0 wins (listed by slot); nobody at 0 = no award.
 class_name HeistAwards
 extends RefCounted
@@ -60,10 +61,8 @@ static func evaluate(def: Dictionary, rows: Array[Dictionary]) -> Dictionary:
 			"slots": slots, "name_key": StringName("ui.awards.%s.name" % id), "desc_key": StringName("ui.awards.%s.desc" % id)}
 
 
-## Tie-break order: human players before Crew AI, then the lowest crew slot.
+## Tie-break order (D-071): the lowest crew slot (candidates are humans only).
 static func tie_break_less(a: Dictionary, b: Dictionary) -> bool:
-	if CrewStats.is_ai(a) != CrewStats.is_ai(b):
-		return not CrewStats.is_ai(a)
 	return CrewStats.slot_of(a) < CrewStats.slot_of(b)
 
 
@@ -71,7 +70,7 @@ static func _candidates(def: Dictionary, rows: Array[Dictionary], stat: StringNa
 	var min_shots: float = float(def.get("min_shots", 0))
 	var out: Array[Dictionary] = []
 	for r: Dictionary in rows:
-		if not CrewStats.has_stat(r, stat):
+		if CrewStats.is_ai(r) or not CrewStats.has_stat(r, stat):
 			continue
 		if min_shots > 0.0 and CrewStats.value(r, CrewStats.SHOTS) < min_shots:
 			continue
