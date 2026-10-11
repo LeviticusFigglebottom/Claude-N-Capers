@@ -11,6 +11,8 @@ signal station_requested(station_id: StringName)
 
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/hub_station/hub_station_placeholder.tscn")
 const KIND: StringName = &"hub_station"
+## hub_map.md (D-072): every station joins this group.
+const GROUP: StringName = &"hub_station"
 const PROMPT_PREFIX: String = "ui.prompt.station."
 
 ## B's id from hub_stations.tres (board, planning, armory, masks, jukebox, notoriety, range, crew).
@@ -37,6 +39,7 @@ func _default_interaction_time() -> float:
 
 
 func _prefab_ready() -> void:
+	add_to_group(GROUP)
 	interactable.kind = KIND
 	interactable.prompt_key = prompt_key()
 	interactable.completed.connect(_on_completed)

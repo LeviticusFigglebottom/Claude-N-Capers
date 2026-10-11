@@ -66,6 +66,7 @@ func test_station_press_and_hud_prompt() -> void:
 	var hud: LocalHudModel = LocalHudModel.new()
 	hud.name = "LocalHudModel"
 	_root.add_child(hud)
+	assert_true(st.is_in_group(HubStationPrefab.GROUP), "in group hub_station (D-072)")
 	var used: Array = []
 	st.station_used.connect(func(id: StringName, who: Node) -> void: used.append([id, who]))
 	var req: Array[StringName] = []
