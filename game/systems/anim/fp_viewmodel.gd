@@ -20,13 +20,20 @@
 ##   (FpViewmodelTweak.clip_events(): parsed from SOURCE.txt + extra_events) with the contract travels. Pistol slides lock
 ##   back on the last round until `slide_release`.
 ## - ADS: while aimed the arms shift so the weapon's `AimPoint` sits on the camera axis (when present).
+## - Melee (D-069, CrewMelee signals): with a MeleeDef the gun is hidden and the item (`MeleeDef.model`) rides the
+##   weapon bone in its `anim_set`: `charge_start` (its `charged` frame on the full charge) + `charge` loop while
+##   held, then `swing` / `charge_swing` re-timed so `hit@` lands on the gameplay strike; without one the gun
+##   set's `bash` (hit@ on the bash strike). The gun comes back when the swing clip ends.
 class_name FpViewmodel
 extends Node3D
 
-enum Action { NONE, FIRE, RELOAD, SWAP }
+enum Action { NONE, FIRE, RELOAD, SWAP, MELEE }
 
 const NODE_NAME: String = "FpViewmodel"
 const ATTACH_NAME: String = "WeaponBone"
+const MELEE_ITEM_NAME: String = "MeleeItem"
+## `charge` loop repetitions queued behind charge_start (the release replaces the sequence).
+const CHARGE_LOOPS: int = 600
 ## Clip -> substitute when the set lacks it (then nothing).
 const FALLBACK_CLIPS: Dictionary = {
 	&"ads_idle": &"idle", &"sprint": &"idle", &"fire_ads": &"fire", &"bolt_ads": &"bolt",
@@ -90,6 +97,8 @@ var _weapon_bone: int = -1
 var _mag_bone: int = -1
 var _bob_phase: float = 0.0
 var _bob_weight: float = 0.0
+## The melee item model on the weapon bone during a melee one-shot (null = none / gun bash).
+var _melee_item: Node3D = null
 
 
 ## The camera's viewmodel arms (null when none).
@@ -144,15 +153,21 @@ func _ready() -> void:
 		_crew.weapons.fired.connect(_on_fired)
 		_crew.weapons.reload_started.connect(_on_reload_started)
 		_crew.weapons.reload_finished.connect(_on_reload_finished)
+	if _crew != null and _crew.melee != null:
+		_crew.melee.charge_started.connect(_on_melee_charge)
+		_crew.melee.swung.connect(_on_melee_swung)
 
 
 func _exit_tree() -> void:
 	if _crew == null or not is_instance_valid(_crew) or _crew.weapons == null:
 		return
-	for pair: Array in [
+	var pairs: Array = [
 		[_crew.weapons.fired, _on_fired], [_crew.weapons.reload_started, _on_reload_started],
 		[_crew.weapons.reload_finished, _on_reload_finished],
-	]:
+	]
+	if _crew.melee != null:
+		pairs.append_array([[_crew.melee.charge_started, _on_melee_charge], [_crew.melee.swung, _on_melee_swung]])
+	for pair: Array in pairs:
 		var sig: Signal = pair[0]
 		if sig.is_connected(pair[1]):
 			sig.disconnect(pair[1])
@@ -315,6 +330,70 @@ func _on_reload_finished(_ws: int) -> void:
 	_reload_done = true
 
 
+## The melee item's set when the rig has it (&"" = gun bash / no item clips).
+func _melee_set() -> StringName:
+	var def: MeleeDef = _crew.melee.melee_def() if _crew != null and _crew.melee != null else null
+	return def.anim_set if def != null and supports(def.anim_set) else &""
+
+
+func _on_melee_charge() -> void:
+	var set_id: StringName = _melee_set()
+	if set_id == &"" or action == Action.SWAP:
+		return  # gun bash: the clip plays on the swing
+	var def: MeleeDef = _crew.melee.melee_def()
+	var full_s: float = def.charge_time_s / maxf(Modifiers.mult(_crew.slot, &"weapon.melee_charge_speed_mult"), 0.01)
+	var segs: Array[Dictionary] = []
+	_add_timed(segs, set_id, &"charge_start", &"charged", full_s)
+	var loop: StringName = _resolve(set_id, &"charge")
+	if loop != &"":
+		_add_seg(segs, set_id, loop, _length(set_id, loop) * CHARGE_LOOPS, 1.0, CHARGE_LOOPS)
+	_start_melee(segs, def)
+
+
+func _on_melee_swung(charged: bool) -> void:
+	if action == Action.SWAP:
+		return
+	var set_id: StringName = _melee_set()
+	var hit_s: float = maxf(_crew.melee.hit_left, 0.01)
+	var segs: Array[Dictionary] = []
+	if set_id != &"":
+		var c: StringName = _resolve(set_id, &"charge_swing" if charged else &"swing")
+		if c == &"":
+			c = _resolve(set_id, &"swing")
+		if c == &"":
+			return
+		_add_timed(segs, set_id, c, &"hit", hit_s)
+		_start_melee(segs, _crew.melee.melee_def())
+		return
+	if _resolve(anim_set, &"bash") == &"":
+		return
+	_add_timed(segs, anim_set, &"bash", &"hit", hit_s)
+	_end_action()
+	_start(Action.MELEE, segs)
+
+
+## Melee one-shot with the item in the hands (the gun hidden until _end_action).
+func _start_melee(segs: Array[Dictionary], def: MeleeDef) -> void:
+	_end_action()
+	if weapon_visual != null and is_instance_valid(weapon_visual):
+		weapon_visual.visible = false
+	if def != null and def.model != null:
+		_melee_item = def.model.instantiate() as Node3D
+		if _melee_item != null:
+			_melee_item.name = MELEE_ITEM_NAME
+			weapon_attach.add_child(_melee_item)
+			_no_shadows(_melee_item)
+	_start(Action.MELEE, segs)
+
+
+func _clear_melee_item() -> void:
+	if _melee_item != null and is_instance_valid(_melee_item):
+		_free_node(_melee_item)
+	_melee_item = null
+	if weapon_visual != null and is_instance_valid(weapon_visual) and _incoming == null:
+		weapon_visual.visible = true
+
+
 # --- Sequences --------------------------------------------------------------------------------
 
 ## Append clip `c` of `set_id` for `dur` real seconds at `speed`; `loops` = repetitions (looped clips).
@@ -340,6 +419,8 @@ func _add_timed(segs: Array[Dictionary], set_id: StringName, c: StringName, even
 
 
 func _start(kind: int, segs: Array[Dictionary]) -> void:
+	if action == Action.MELEE and kind != Action.MELEE:
+		_clear_melee_item()  # e.g. a reload started mid-charge
 	action = kind
 	_segs = segs
 	_seq_t = 0.0
@@ -390,6 +471,8 @@ func _play_segment(i: int) -> void:
 func _end_action() -> void:
 	for k: Dictionary in _keys:  # settle the parts on the one-shot's final positions
 		parts[k["ch"]] = float(k["v"])
+	if action == Action.MELEE:
+		_clear_melee_item()
 	_finish_swap()
 	action = Action.NONE
 	action_speed = 1.0

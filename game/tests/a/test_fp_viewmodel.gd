@@ -414,3 +414,45 @@ func test_d069_left_hand_ik_to_weapon_marker() -> void:
 	await wait_frames(20)
 	assert_true(fp.left_hand_ik.ik.influence < 0.05, "the reload clip owns the left hand")
 
+
+
+## D-069: CrewMelee drives the item sets (charge_start -> charge, swing / charge_swing with hit@ on the strike)
+## and, without a melee item, the gun set's `bash`.
+func test_d069_melee_and_bash_clips() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.arms_scene == null:
+		skip("char_arms_fp not delivered")
+		return
+	var c: CrewController = await _spawn(&"weapon.corsair_ar", &"weapon.kestrel_p9")
+	var fp: FpViewmodel = _fp(c)
+	if fp == null or not fp.supports(&"melee_knife"):
+		skip("no melee_knife set")
+		return
+	c.set_physics_process(false)  # drive CrewMelee by hand
+	c.set_masked()
+	c.loadout.melee = &"melee.folding_knife"
+	var knife: MeleeDef = ContentDB.melee(c.loadout.melee)
+	var hold: CrewIntent = CrewIntent.new()
+	hold.melee = true
+	var none: CrewIntent = CrewIntent.new()
+	fp.tick(0.016)
+	c.melee.tick(hold, 0.016)
+	assert_eq(String(fp.player.current_animation), "%s/charge_start" % knife.anim_set, "charging")
+	assert_false(c.weapon_visual.visible, "the gun is put away for the knife")
+	assert_near(fp.action_speed, 1.0 / knife.charge_time_s, 0.01, "charged@ frame on the full charge")
+	fp.tick(knife.charge_time_s + 0.01)
+	assert_eq(String(fp.player.current_animation), "%s/charge" % knife.anim_set, "held: charge loop")
+	c.melee.tick(hold, knife.charge_time_s)
+	c.melee.tick(none, 0.016)
+	assert_eq(String(fp.player.current_animation), "%s/charge_swing" % knife.anim_set, "charged swing")
+	assert_near(fp.action_speed, (5.0 / FPS) / c.melee.hit_left, 0.01, "hit@5 lands on the strike")
+	fp.tick(2.0)
+	assert_eq(fp.action, FpViewmodel.Action.NONE, "swing over")
+	assert_true(c.weapon_visual.visible, "gun back")
+	c.melee.tick(none, 2.0)
+	c.loadout.melee = &""
+	c.melee.tick(hold, 0.016)
+	c.melee.tick(none, 0.016)
+	assert_eq(String(fp.player.current_animation), "rifle/bash", "no melee item: gun bash")
+	assert_near(fp.action_speed, (7.0 / FPS) / c.melee.hit_left, 0.01, "bash hit@7 on the strike")
+	assert_true(c.weapon_visual.visible, "bash keeps the gun")
