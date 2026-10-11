@@ -3,8 +3,12 @@
 One glb: armature ``rig_arms`` (``_arms``: ``root`` = camera origin, the contract arm/finger bones,
 helper bones ``weapon`` and ``magazine``), the skinned ``Arms`` mesh (hands at first-person
 density, dark crew-suit sleeves ``char_suit_dark`` with a turned-in cuff, skin ``char_skin_2``) and
-the clips of every set in ``_arms_sets.SETS`` (pistol, smg, rifle, shotgun, lmg, sniper, akimbo, revolver) named
-``<set>_<clip>``; loops carry the ``-loop`` suffix (Godot strips it and sets LOOP_LINEAR). Godot also
+the clips of every set in ``_arms_sets.SETS`` (pistol, smg, rifle, shotgun, lmg, sniper, akimbo, revolver; D-055:
+break_action, lever, bow, crossbow, launcher, flamethrower, saw, minigun) named ``<set>_<clip>``; loops carry the
+``-loop`` suffix (Godot strips it and sets LOOP_LINEAR), except ``*_reload_loop``: Godot loops a name ending in
+``_loop`` and strips that suffix too unless the stripped name already exists (``<set>_reload`` does, so the
+name survives). New hold-to-fire loops are therefore named ``fire_hold`` / ``cut_hold`` (D-055): ``saw_cut_loop``
+would import as ``saw_cut``. Godot also
 replaces '/' in animation names, so the set is a prefix: the assembly tool puts ``<set>_<clip>`` into
 an AnimationLibrary "<set>" as ``<clip>`` (played as "rifle/reload").
 
@@ -17,6 +21,7 @@ numbers at 30 fps) and the moving-part conventions are listed in SOURCE.txt.
 
 import _anim as anim
 import _arms as arms
+import _arms_bow as bow_mod
 import _arms_clips as clips_mod
 import _arms_sets as sets
 
@@ -30,8 +35,10 @@ def notes() -> dict:
     (lx, ly, lz), lo = anim.grip_offset_godot(arms.skeleton(), "L")
     return {
         "fp.clips": "<set>_<clip>; all sets: idle*, ads_idle*, sprint* (loops), draw, holster, fire, fire_ads, reload, "
-                    "reload_empty; shotgun: reload_start, reload_loop, reload_end, reload_end_empty; sniper: bolt, bolt_ads; "
-                    "pistol: fire_auto, fire_auto_ads; akimbo: fire_l, fire_ads_l",
+                    "reload_empty; shotgun, lever: reload_start, reload_loop, reload_end, reload_end_empty; sniper: bolt, bolt_ads; "
+                    "pistol: fire_auto, fire_auto_ads; akimbo: fire_l, fire_ads_l; bow: draw_string, hold*, release, nock; "
+                    "flamethrower: fire_start, fire_hold*, fire_end; saw: rev, cut_hold*, cut_end; minigun: spin_up, "
+                    "fire_hold*, spin_down",
         "fp.camera": "review camera = crew camera: 75 deg vertical FOV (crew_member.tscn), root = eye",
         "fp.fire": "fire/fire_ads start at rest, kick peaks on frame 1; full-auto sets (smg, rifle, lmg) are 3 f "
                    "(<= 1.5 shot intervals) so the game restarts them every shot",
@@ -69,6 +76,59 @@ def notes() -> dict:
                         "fire/fire_ads 9 f, heavier kick than the pistol"),
         "fp.pistol_auto": ("pistol fire_auto / fire_auto_ads: 3 f machine-pistol kick (<= 1.5 shot intervals up to "
                            "900 rpm), restarted every shot; the semi-auto pistol clips are unchanged"),
+        "fp.break_action": (f"Breech (barrels + fore-end) pivots at the hinge pin, opens {sets.BREAK_OPEN_DEG:.0f} deg muzzle-down "
+                            "(- about its local X) over breech_open-2..breech_open+1 (a small bounce on the stop until "
+                            "breech_open+5), closes over breech_close-3..breech_close; the left hand rides the fore-end while "
+                            "it moves; eject: spawn the empties, hide the chamber rounds; shell_in_1 / shell_in_2: show round "
+                            "1 / 2 in its chamber (the round travels in the left hand from about shell_in_1-13); one barrel per "
+                            "fire (alternate barrels per shot); reload_empty = reload (always both chambers); lengths from "
+                            "the break_action weapon data when present, else 2.6 s / equip 0.6 s"),
+        "fp.launcher": (f"Breech (barrel) pivots at the hinge pin, opens {sets.LAUNCHER_OPEN_DEG:.0f} deg muzzle-down (- about "
+                        "local X), same timing rules as fp.break_action; eject: spawn the 40 mm casing; round_in: the round "
+                        f"(in the left hand from round_in-16) is seated; fire/fire_ads {sets.LAUNCHER_FIRE} f heavy recoil; "
+                        "reload_empty = reload; defaults 3.0 s / equip 0.7 s"),
+        "fp.crossbow": (f"String slides {sets.STRING_TRAVEL:.3f} m along local +Z from its released (scene) pose to the latch: "
+                        "fire/fire_ads string_release@0 (latched -> released over frames 0..1); reload: muzzle down, the "
+                        "left fingers hook the string at cock and pull it back to the latch by string_back (smoothstep "
+                        "cock..string_back); the bolt (Magwell) rides the magazine bone: hidden after the shot, shown at "
+                        "bolt_show (carried in the left hand), laid on the rail by bolt_in (bone identity from bolt_in); "
+                        "reload_empty = reload; defaults 2.0 s / equip 0.55 s"),
+        "fp.lever": (f"Lever swings {sets.LEVER_OPEN_DEG:.0f} deg down (+ about its local X: the loop's rear end goes down) "
+                     "about its pivot: thrown over lever_open-4..lever_open, back by lever_close (smoothstep); the cycle "
+                     "is inside fire/fire_ads (like the pump) and reload_end_empty; the right hand turns "
+                     f"{sets.LEVER_HAND_FOLLOW:.2f} x the lever angle with it (the weapon bone moves relative to hand.R "
+                     "during the cycle); shell-by-shell through the right-side loading gate (Magwell): reload_start + "
+                     "n x reload_loop (round_in, frame 0 == last frame, imports LOOP_LINEAR via the _loop suffix) + "
+                     "reload_end / reload_end_empty; reload/reload_empty = the pieces composed for the tube (preview, "
+                     "D-053); pieces from reload_start_s / reload_per_round_s / reload_end_s / reload_end_empty_s, else "
+                     "0.5 / 0.5 / 0.4 / 1.0 s, tube mag_size else 8"),
+        "fp.bow": ("held in the LEFT hand: the weapon bone carries the bow frame (origin = the riser grip, Y = arrow "
+                   "direction, Z = up the riser) at hand.L x the fp.offhand_grip offset in every bow clip (it moves relative "
+                   "to hand.R); the right hand holds the nocked arrow on the string; Arrow (Magwell) rides the magazine "
+                   f"bone: identity = nocked at brace, drawn back {sets.BOW_DRAW:.3f} m x draw along local +Z, carried by "
+                   "the right hand in nock from arrow_show, on the string at nocked; hide it at release (spawn the "
+                   "projectile); StringUpper / StringLower turn about their cam axles so the string's nock point sits "
+                   f"{sets.BOW_BRACE:.3f} + {sets.BOW_DRAW:.3f} x draw m behind the grip (draw per frame: curve.bow_<clip>, "
+                   "0 = brace, 1 = full draw, negative = the string's forward overshoot after release); clips: "
+                   "draw_string (charge, last frame = hold frame 0, event drawn), hold* (full draw, tremble), release "
+                   "(release@0), nock (= reload = reload_empty), fire / fire_ads = release; no sights: ads_idle raises the "
+                   "undrawn bow to the centre"),
+        "fp.flamethrower": ("hold to fire: fire_start (ignite@2: light the flame; ready at its end) -> fire_hold* (loop it "
+                            "while the trigger is held) -> fire_end (extinguish@0); fire / fire_ads are 3 f one-shot "
+                            "shudders kept for the generic per-shot path (restart per damage tick); PilotLight: a marker "
+                            "only (no motion); the fuel canister rides the magazine bone (mag_out / mag_swap / mag_in, "
+                            "dropped on reload_empty); left hand on a raked front grip (vgrip)"),
+        "fp.saw": ("hold to cut: rev (rev@0: spin the Blade up; ready at its end) -> cut_hold* (pushed into the cut, "
+                   "vibrating) -> cut_end; fire / fire_ads = 3 f shudders (generic per-shot path); Blade spins about "
+                   "its local X (ENV A, from rev until cut_end ends) and rides the magazine bone in the blade change: "
+                   "nut_off, blade_out (bone slides 0.03 m along -X off the arbor, then the left hand carries it away), "
+                   "blade_in (seated: bone identity), nut_on, done; reload_empty = reload; left hand on the side "
+                   "handle (vgrip); no sights: ads_idle is a raised hold"),
+        "fp.minigun": ("spin_up (spin@0 -> spun@15: Rotor at speed, fire may start) -> fire_hold* -> spin_down "
+                       "(stopped@end); Rotor spins about its local Z (ENV A); fire / fire_ads = 3 f shudders; reload / "
+                       "reload_empty: the ammo box rides the magazine bone (mag_out, mag_swap, mag_in; dropped when "
+                       "empty), belt_seat (the left hand feeds the belt into the chute); sprint* = a 24 f heavy jog; "
+                       "left hand on the left side grip (vgrip); no sights: ads_idle is a raised hip hold"),
         "fp.parts": (f"Pump: slides {sets.PUMP_TRAVEL:.3f} m along local +Z (back) between the pump_back ramp and "
                      f"pump_forward; Bolt: handle lifts {sets.BOLT_LIFT_DEG:.0f} deg about the bore axis "
                      f"(bolt_open), slides {sets.BOLT_TRAVEL:.3f} m along +Z (bolt_back), returns (bolt_forward), "
@@ -79,7 +139,16 @@ def notes() -> dict:
 
 
 def export_name(name: str, table: dict) -> str:
-    return f"{name}-loop" if table[name]["loop"] else name
+    """Loops get Godot's ``-loop`` suffix (stripped on import), except names already ending in ``_loop``,
+    which Godot loops by that suffix while keeping the name (``shotgun_reload_loop`` precedent)."""
+    return f"{name}-loop" if table[name]["loop"] and not name.endswith("_loop") else name
+
+
+def bow_curves(sk) -> dict:
+    """``{clip: [draw per frame]}`` for the bow clips (string draw 0 = brace, 1 = full draw)."""
+    s = sets.SETS["bow"]
+    fns = bow_mod.bow_fns(sk, s)
+    return {c: [float(fns[c](f).extra.get("draw", 0.0)) for f in range(s.frames(c) + 1)] for c in sorted(s.clips)}
 
 
 def build(ctx) -> None:
@@ -116,7 +185,10 @@ def build(ctx) -> None:
         f"child of hand.R at the HandR grip offset: basis x=({rx[0]:.4f},{rx[1]:.4f},{rx[2]:.4f}) "
         f"y=({ry[0]:.4f},{ry[1]:.4f},{ry[2]:.4f}) z=({rz[0]:.4f},{rz[1]:.4f},{rz[2]:.4f}) "
         f"origin=({ox:.4f},{oy:.4f},{oz:.4f}); "
-        f"identity relative to hand.R except in sniper_bolt, sniper_bolt_ads and sniper_reload_empty")
+        f"identity relative to hand.R except in sniper_bolt, sniper_bolt_ads and sniper_reload_empty, the lever cycle "
+        f"(lever_fire*, lever_reload_end_empty and the composed lever_reload_empty) and every bow clip (the bow is in hand.L)")
+    for clip, vals in bow_curves(sk).items():
+        ctx.source_extra[f"curve.bow_{clip}"] = "draw=" + ",".join(f"{v:.3f}" for v in vals)
     ctx.source_extra["loops"] = ",".join(sorted(n for n, r in table.items() if r["loop"]))
     ctx.source_extra["sets"] = ",".join(arms.SETS)
     for k, v in notes().items():

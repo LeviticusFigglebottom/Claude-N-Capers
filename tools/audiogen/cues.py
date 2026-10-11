@@ -948,6 +948,26 @@ def weapon_crossbow_fire(rng: np.random.Generator, v: int) -> np.ndarray:
     return fade(y, 0, 0.05)
 
 
+def _same_as(base_id: str, fn: Callable[[np.random.Generator, int], np.ndarray], label: str
+             ) -> Callable[[np.random.Generator, int], np.ndarray]:
+    """Render exactly `base_id`'s variation v (same seed); the registry row sets it a touch softer."""
+    def alias(rng: np.random.Generator, v: int) -> np.ndarray:
+        return fn(rng_for(base_id, str(v)), v)
+    alias.__name__ = alias.__qualname__ = f"{fn.__name__} (same render as {base_id}#v; {label})"
+    return alias
+
+
+weapon_bow_fire_suppressed = _same_as("cue.weapon_bow_fire", weapon_bow_fire, "silent-weapon suppressed fallback")
+weapon_crossbow_fire_suppressed = _same_as("cue.weapon_crossbow_fire", weapon_crossbow_fire,
+                                           "silent-weapon suppressed fallback")
+
+
+def weapon_lever_fire_suppressed(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Suppressed lever gun: 1.2 kHz puff + 160 Hz thump, almost no action noise (the lever is
+    cycled separately)."""
+    return _sup(rng, puff_hz=1200, dur=0.4, action=0.4, thump_hz=160, puff_t=0.07)
+
+
 def weapon_crossbow_load(rng: np.random.Generator, v: int) -> np.ndarray:
     """Cocking: 15 Hz ratchet crank (rising clicks) + bolt slid onto the rail + latch click."""
     dur = 0.9
@@ -1722,6 +1742,12 @@ CUES: list[CueSpec] = [
     CueSpec("weapon_bow_fire", weapon_bow_fire, bus="Weapons", variations=3, max_distance=10.0, pitch_jitter=0.04, volume_db=-8.0, note="B4-18"),
     CueSpec("weapon_bow_impact", weapon_bow_impact, bus="Weapons", variations=3, max_distance=12.0, pitch_jitter=0.05, volume_db=-6.0, note="B4-18"),
     CueSpec("weapon_crossbow_fire", weapon_crossbow_fire, bus="Weapons", variations=3, max_distance=15.0, pitch_jitter=0.03, volume_db=-6.0, note="B4-18"),
+    CueSpec("weapon_bow_fire_suppressed", weapon_bow_fire_suppressed, bus="Weapons", variations=3, max_distance=8.0,
+            pitch_jitter=0.04, volume_db=-10.0, note="B4-18 follow-up"),
+    CueSpec("weapon_crossbow_fire_suppressed", weapon_crossbow_fire_suppressed, bus="Weapons", variations=3,
+            max_distance=12.0, pitch_jitter=0.03, volume_db=-8.0, note="B4-18 follow-up"),
+    CueSpec("weapon_lever_fire_suppressed", weapon_lever_fire_suppressed, bus="Weapons", variations=3,
+            max_distance=30.0, pitch_jitter=0.04, volume_db=-4.0, note="B4-18 follow-up (hedge: no lever WeaponDef yet)"),
     CueSpec("weapon_crossbow_load", weapon_crossbow_load, bus="Weapons", variations=2, max_distance=8.0, pitch_jitter=0.03, volume_db=-8.0, note="B4-18"),
     CueSpec("weapon_launcher_fire", weapon_launcher_fire, bus="Weapons", variations=3, max_distance=80.0, pitch_jitter=0.03, note="B4-18"),
     CueSpec("weapon_launcher_reload", weapon_launcher_reload, bus="Weapons", variations=2, max_distance=12.0, pitch_jitter=0.03, volume_db=-5.0, note="B4-18"),

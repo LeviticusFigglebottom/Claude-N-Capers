@@ -771,6 +771,7 @@ const ZONES: Array = [
 # --- Review cameras ---------------------------------------------------------------------------
 
 ## [name, position, look-at target, fov (TopDown*: ortho size), caption].
+## Interior cameras sit >= 0.5 m inside their room (levelcheck `cameras`: >= 0.3 m from any collision).
 const REVIEW_CAMERAS: Array = [
 	["TopDownSite", Vector3(13.0, 80.0, 10.0), Vector3(13.0, 0.0, 10.0), 70.0,
 		"Top-down site: bank, lot + alley, Wharf Lane, Harbor St, quay, closures"],
@@ -799,13 +800,13 @@ const REVIEW_CAMERAS: Array = [
 	["SallyPort", Vector3(6.6, 1.8, 5.5), Vector3(3.0, 1.0, 0.3), 75.0, "G1 sally port: roller + personnel door, cash lift"],
 	["StairCore", Vector3(7.7, 1.65, 6.9), Vector3(8.6, -2.0, 1.0), 75.0, "G2 U-stair from the corridor (railing over flight 2)"],
 	["BasementCorridor", Vector3(0.6, -2.35, 6.75), Vector3(26.0, -2.6, 6.75), 60.0, "B5 basement spine and the vault gate"],
-	["Antechamber", Vector3(9.6, -2.35, 7.9), Vector3(18.5, -3.2, 9.6), 75.0, "B8 antechamber: laser plane, time-lock panel, vault door"],
+	["Antechamber", Vector3(9.75, -2.35, 8.1), Vector3(18.5, -3.2, 9.6), 75.0, "B8 antechamber: laser plane, time-lock panel, vault door"],
 	["VaultInterior", Vector3(14.0, -2.2, 10.6), Vector3(14.0, -3.4, 18.0), 80.0, "B9 vault: cash cage, Co-op pallet, deposit box walls"],
-	["CountDepository", Vector3(25.5, -2.35, 8.0), Vector3(22.5, -3.4, 18.0), 75.0, "B11 count room and B12 depository safe"],
+	["CountDepository", Vector3(25.2, -2.35, 8.2), Vector3(22.5, -3.4, 18.0), 75.0, "B11 count room and B12 depository safe"],
 	["RecordsRoom", Vector3(6.5, -2.35, 8.0), Vector3(1.0, -3.4, 18.0), 75.0, "B6 records: compact shelving, microfiche desk"],
-	["PlantAreaway", Vector3(18.2, -2.2, 5.7), Vector3(17.9, -3.3, 0.2), 80.0, "B3 plant room and the areaway door"],
-	["ManagerOffice", Vector3(21.6, 1.8, 15.6), Vector3(25.5, 0.6, 12.5), 75.0, "G12 manager office: desk, manager safe slot"],
-	["AtmVestibule", Vector3(25.6, 1.8, 19.6), Vector3(21.0, 1.0, 16.5), 75.0,
+	["PlantAreaway", Vector3(17.9, -2.2, 5.35), Vector3(18.2, -3.0, 0.2), 80.0, "B3 plant room and the areaway door"],
+	["ManagerOffice", Vector3(21.7, 1.8, 15.3), Vector3(25.5, 0.6, 12.5), 75.0, "G12 manager office: desk, manager safe slot"],
+	["AtmVestibule", Vector3(25.2, 1.8, 19.2), Vector3(21.0, 1.0, 16.5), 75.0,
 		"G13 ATM vestibule (24 h, PUBLIC): ATMs, night drop, hall door"],
 	["CranePerch", Vector3(42.0, 8.2, 4.0), Vector3(10.0, 0.0, -3.0), 70.0, "Crane office roof (P3 sniper perch) over the lot and sally door"],
 ]

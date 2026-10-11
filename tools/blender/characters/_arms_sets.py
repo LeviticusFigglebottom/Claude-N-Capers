@@ -394,7 +394,359 @@ REVOLVER = FPSet(
     clips=_revolver_clips(REVOLVER_DATA),
 )
 
-SETS: dict[str, FPSet] = {s.name: s for s in (PISTOL, SMG, RIFLE, SHOTGUN, LMG, SNIPER, AKIMBO, REVOLVER)}
+# =============================================================================================
+# D-055 (B4-18): armory batch 3. Eight new mechanisms. Weapon models may not exist yet: markers are
+# the review proxies' (``_arms_review_b3``), which follow the visual_slots part names; lengths come
+# from ENV B's data when a weapon with that anim_set exists, else from the ``*_DEFAULTS`` below
+# (event frames are laid out as fractions of the clip length, so a rebuild follows the data).
+# =============================================================================================
+def _b3_row(anim_set: str, defaults: dict) -> dict:
+    """``defaults`` overridden by the first weapon .tres with ``anim_set`` (non-zero fields only)."""
+    row = weapon_data(anim_set)
+    out = dict(defaults)
+    for k in defaults:
+        v = row.get(k)
+        if isinstance(v, float) and v > 0.0:
+            out[k] = v
+    return out
+
+
+def _f(t: float) -> int:
+    return int(round(t * 30.0))
+
+
+def _equip(row: dict) -> int:
+    return data_frames(row, "equip_time_s", 0.5, up=True)
+
+
+def _one(n: int, ev: dict | None = None) -> dict:
+    return {"frames": int(n), "loop": False, "events": dict(ev or {})}
+
+
+# -- break_action (Reaper double barrel) ----------------------------------------------------------
+#: ``Breech`` (barrels + fore-end) pivots at the hinge pin and opens BREAK_OPEN_DEG muzzle-down
+#: (Godot: - about its local X). One barrel per click (PD2): fire is one shot.
+BREAK_OPEN_DEG = 38.0
+BREAK_DEFAULTS = {"reload_time_s": 2.6, "equip_time_s": 0.6, "fire_rate_rpm": 300.0}
+BREAK_FIRE = 10
+
+
+def _break_clips(row: dict, rounds: int, fire: int) -> dict:
+    n = _f(row["reload_time_s"])
+    ev = {"breech_open": round(0.15 * n), "eject": round(0.25 * n)}
+    if rounds == 2:
+        ev.update({"shell_in_1": round(0.52 * n), "shell_in_2": round(0.64 * n)})
+    else:
+        ev["round_in"] = round(0.58 * n)
+    ev.update({"breech_close": round(0.80 * n), "done": n - 8})
+    out = _std(_equip(row), fire)
+    # a break action always reloads every chamber: reload_empty is the same motion (an alias)
+    out["reload"] = _one(n, ev)
+    out["reload_empty"] = _one(n, ev)
+    return out
+
+
+BREAK_DATA = _b3_row("break_action", BREAK_DEFAULTS)
+BREAK_ACTION = FPSet(
+    name="break_action", weapon="wpn_reaper_db",
+    markers={"left_ik": v3(-0.024, 0.320, 0.018), "aim": v3(0.0, 0.020, 0.0705),
+             "hinge": v3(0.0, 0.136, 0.012), "chambers": (v3(-0.0105, 0.120, 0.046), v3(0.0105, 0.120, 0.046)),
+             "lever": v3(0.0, 0.020, 0.064), "butt": v3(0.0, -0.340, -0.020),
+             "magwell": v3(0.0, 0.120, 0.046), "magwell_axis": v3(0.0, -1.0, 0.0)},
+    hip=((0.13, 0.20, -0.18), 7.0, 1.5, -6.0),
+    ads_dist=0.19,
+    sprint=((0.15, 0.21, -0.22), 28.0, -8.0, -40.0),
+    lowered=((0.16, 0.06, -0.56), 20.0, -55.0, -35.0),
+    reload_tilt=((0.07, 0.24, -0.15), 14.0, 16.0, 20.0),
+    support="handguard", blade=44.0, blade_ads=48.0, reload="break",
+    recoil={"back": 0.050, "up": 0.018, "pitch": 11.0, "roll": 2.2, "yaw": 1.0},
+    recoil_ads={"back": 0.036, "up": 0.011, "pitch": 7.0, "roll": 1.3, "yaw": 0.6},
+    clips=_break_clips(BREAK_DATA, 2, BREAK_FIRE),
+)
+
+# -- launcher (Thumper 40 single-shot break-open grenade launcher) -----------------------------
+LAUNCHER_OPEN_DEG = 42.0
+LAUNCHER_DEFAULTS = {"reload_time_s": 3.0, "equip_time_s": 0.7, "fire_rate_rpm": 60.0}
+LAUNCHER_FIRE = 14
+LAUNCHER_DATA = _b3_row("launcher", LAUNCHER_DEFAULTS)
+LAUNCHER = FPSet(
+    name="launcher", weapon="wpn_thumper_40",
+    markers={"left_ik": v3(-0.030, 0.270, 0.012), "aim": v3(0.0, 0.060, 0.0985),
+             "hinge": v3(0.0, 0.140, 0.006), "chambers": (v3(0.0, 0.118, 0.052),),
+             "lever": v3(0.0, 0.020, 0.074), "butt": v3(0.0, -0.320, -0.020),
+             "magwell": v3(0.0, 0.118, 0.052), "magwell_axis": v3(0.0, -1.0, 0.0)},
+    hip=((0.13, 0.21, -0.19), 7.0, 2.5, -6.0),
+    ads_dist=0.22,
+    sprint=((0.15, 0.21, -0.23), 28.0, -8.0, -40.0),
+    lowered=((0.16, 0.06, -0.57), 20.0, -55.0, -35.0),
+    reload_tilt=((0.07, 0.24, -0.16), 14.0, 18.0, 20.0),
+    support="handguard", blade=44.0, blade_ads=48.0, reload="break",
+    recoil={"back": 0.060, "up": 0.022, "pitch": 14.0, "roll": 2.5, "yaw": 1.2},
+    recoil_ads={"back": 0.045, "up": 0.014, "pitch": 9.0, "roll": 1.6, "yaw": 0.7},
+    clips=_break_clips(LAUNCHER_DATA, 1, LAUNCHER_FIRE),
+)
+
+# -- crossbow (Vise crossbow: lever-cocked, one bolt) -------------------------------------------
+#: ``String`` slides STRING_TRAVEL m along its local +Z (back) from the released (scene) pose to the
+#: latch; the bolt rides the ``magazine`` bone (``Magwell``).
+STRING_TRAVEL = 0.160
+CROSSBOW_DEFAULTS = {"reload_time_s": 2.0, "equip_time_s": 0.55, "fire_rate_rpm": 30.0}
+CROSSBOW_FIRE = 10
+
+
+def _crossbow_clips(row: dict) -> dict:
+    n = _f(row["reload_time_s"])
+    ev = {"cock": round(0.20 * n), "string_back": round(0.36 * n), "bolt_show": round(0.50 * n),
+          "bolt_in": round(0.72 * n), "done": n - 7}
+    out = _std(_equip(row), CROSSBOW_FIRE, {"shot": 0, "string_release": 0})
+    out["reload"] = _one(n, ev)            # one bolt: always empty, reload_empty is the same motion
+    out["reload_empty"] = _one(n, ev)
+    return out
+
+
+CROSSBOW_DATA = _b3_row("crossbow", CROSSBOW_DEFAULTS)
+CROSSBOW = FPSet(
+    name="crossbow", weapon="wpn_vise_crossbow",
+    markers={"left_ik": v3(-0.024, 0.200, 0.008), "aim": v3(0.0, 0.010, 0.0905),
+             "string_latched": v3(0.0, 0.060, 0.052), "string_rest": v3(0.0, 0.220, 0.052),
+             "magwell": v3(0.0, 0.070, 0.052), "magwell_axis": v3(0.0, 1.0, 0.0), "bolt_len": 0.36,
+             "prod": v3(0.0, 0.330, 0.040), "butt": v3(0.0, -0.320, -0.010)},
+    hip=((0.13, 0.20, -0.18), 7.0, 1.5, -6.0),
+    ads_dist=0.17,
+    sprint=((0.15, 0.21, -0.22), 28.0, -8.0, -40.0),
+    lowered=((0.16, 0.06, -0.56), 20.0, -55.0, -35.0),
+    reload_tilt=((0.050, 0.30, -0.215), 12.0, -24.0, 6.0),
+    support="handguard", blade=44.0, blade_ads=48.0, reload="crossbow",
+    recoil={"back": 0.026, "up": 0.010, "pitch": 4.5, "roll": 1.0, "yaw": 0.6},
+    recoil_ads={"back": 0.018, "up": 0.006, "pitch": 2.6, "roll": 0.6, "yaw": 0.3},
+    clips=_crossbow_clips(CROSSBOW_DATA),
+)
+
+# -- lever (Shrike .44 tube-fed lever rifle) ----------------------------------------------------
+#: ``Lever`` swings LEVER_OPEN_DEG down (Godot: + about its local X, the loop's rear end goes down)
+#: about its pivot; the cycle is part of fire / fire_ads (like the pump). Rounds go in through the
+#: right-side loading gate (``Magwell``) one by one: reload_start + n x reload_loop + reload_end(_empty).
+LEVER_OPEN_DEG = 52.0
+LEVER_HAND_FOLLOW = 0.55            # the right hand turns with the lever this much (fingers in the loop)
+LEVER_DEFAULTS = {"fire_rate_rpm": 90.0, "equip_time_s": 0.6, "mag_size": 8.0, "reload_start_s": 0.5,
+                  "reload_per_round_s": 0.5, "reload_end_s": 0.4, "reload_end_empty_s": 1.0}
+
+
+def lever_fire_events(n: int) -> dict:
+    return {"shot": 0, "lever_open": round(0.36 * n), "lever_close": round(0.60 * n), "done": n - 3}
+
+
+def lever_pieces(row: dict) -> tuple[int, int, int, int, int]:
+    """(start, loop, end, end_empty, rounds) frames / count from the data."""
+    return (_f(row["reload_start_s"]), _f(row["reload_per_round_s"]), _f(row["reload_end_s"]),
+            _f(row["reload_end_empty_s"]), int(row["mag_size"]))
+
+
+def _lever_clips(row: dict) -> dict:
+    nf = max(16, min(26, int(1800.0 / row["fire_rate_rpm"])))
+    st, lp, en, ee, n = lever_pieces(row)
+    out = _std(_equip(row), nf, lever_fire_events(nf))
+    rin = max(4, lp - 5)
+    out["reload_start"] = _one(st, {"ready": st})
+    out["reload_loop"] = _one(lp, {"round_in": rin, "done": lp})
+    out["reload_end"] = _one(en, {"done": en - 2})
+    eev = {"lever_open": round(0.48 * ee), "lever_close": round(0.66 * ee), "done": ee - 3}
+    out["reload_end_empty"] = _one(ee, eev)
+    for empty in (False, True):
+        ev = {f"round_in_{i + 1}": st + i * lp + rin for i in range(n)}
+        e0 = st + n * lp
+        if empty:
+            ev.update({k: e0 + v for k, v in eev.items()})
+        else:
+            ev["done"] = e0 + en - 2
+        out["reload_empty" if empty else "reload"] = _one(e0 + (ee if empty else en), ev)
+    return out
+
+
+LEVER_DATA = _b3_row("lever", LEVER_DEFAULTS)
+LEVER = FPSet(
+    name="lever", weapon="wpn_shrike_44",
+    markers={"left_ik": v3(-0.023, 0.290, 0.020), "aim": v3(0.0, 0.170, 0.0655),
+             "lever_pivot": v3(0.0, 0.072, -0.004), "magwell": v3(0.017, 0.060, 0.020),
+             "magwell_axis": v3(-0.10, 0.99, 0.0), "butt": v3(0.0, -0.350, -0.015)},
+    hip=((0.13, 0.20, -0.18), 7.0, 1.5, -6.0),
+    ads_dist=0.34,
+    sprint=((0.15, 0.21, -0.22), 28.0, -8.0, -40.0),
+    lowered=((0.16, 0.06, -0.56), 20.0, -55.0, -35.0),
+    reload_tilt=((-0.030, 0.31, -0.185), 14.0, 6.0, -60.0),
+    support="handguard", blade=44.0, blade_ads=48.0, reload="lever",
+    recoil={"back": 0.034, "up": 0.012, "pitch": 6.0, "roll": 1.4, "yaw": 0.7},
+    recoil_ads={"back": 0.024, "up": 0.007, "pitch": 3.6, "roll": 0.8, "yaw": 0.4},
+    clips=_lever_clips(LEVER_DATA),
+)
+
+# -- bow (Thorn compound bow, silent) -----------------------------------------------------------
+#: The bow is held in the LEFT hand: the ``weapon`` bone is animated every frame so the bow's origin
+#: (its riser grip) sits in hand.L at the mirrored grip offset (``fp.offhand_grip``); the right hand
+#: holds the nocked arrow on the string. Weapon axes: Y = arrow direction, Z = up along the riser.
+BOW_BRACE = 0.175                   # string (nock) behind the grip at rest (m)
+BOW_DRAW = 0.400                    # extra string travel at full draw (m)
+BOW_NOCK_Z = 0.058                  # nocking point / arrow height above the grip pivot
+BOW_DEFAULTS = {"reload_time_s": 1.0, "equip_time_s": 0.6}
+BOW_DRAW_FRAMES = 21                # 0.7 s: last frame = full draw (= hold frame 0)
+BOW_RELEASE = 15
+
+
+def _bow_clips(row: dict) -> dict:
+    n = _f(row["reload_time_s"])
+    nock = {"arrow_show": round(0.38 * n), "nocked": round(0.78 * n), "done": n - 3}
+    rel = {"shot": 0, "release": 0, "done": BOW_RELEASE - 3}
+    out = _std(_equip(row), BOW_RELEASE, rel)
+    out["draw_string"] = _one(BOW_DRAW_FRAMES, {"drawn": BOW_DRAW_FRAMES})
+    out["hold"] = {"frames": 90, "loop": True, "events": {}}
+    out["release"] = _one(BOW_RELEASE, rel)
+    out["nock"] = _one(n, nock)
+    out["reload"] = _one(n, nock)          # = nock (aliases for the generic reload path)
+    out["reload_empty"] = _one(n, nock)
+    return out
+
+
+BOW_DATA = _b3_row("bow", BOW_DEFAULTS)
+BOW = FPSet(
+    name="bow", weapon="wpn_thorn_bow",
+    markers={"left_ik": v3(0.0, 0.0, 0.0), "aim": v3(0.0, 0.40, BOW_NOCK_Z),
+             "nock": v3(0.0, -BOW_BRACE, BOW_NOCK_Z), "rest": v3(-0.006, 0.010, BOW_NOCK_Z),
+             "cam_upper": v3(0.0, -0.045, 0.385), "cam_lower": v3(0.0, -0.045, -0.330),
+             "magwell": v3(0.0, -BOW_BRACE, BOW_NOCK_Z), "magwell_axis": v3(0.0, 1.0, 0.0), "arrow_len": 0.72},
+    # the bow (left hand) at rest: low left, canted, an arrow nocked
+    hip=((-0.165, 0.42, -0.225), -8.0, 4.0, 24.0),
+    ads_dist=0.0, ads_hold=((-0.115, 0.45, -0.185), -5.0, 3.0, 18.0),
+    sprint=((-0.12, 0.30, -0.27), -18.0, -24.0, 38.0),
+    lowered=((-0.14, 0.18, -0.52), -15.0, -50.0, 40.0),
+    reload_tilt=((-0.150, 0.40, -0.21), -12.0, 2.0, 36.0),
+    support="bow", blade=30.0, blade_ads=36.0, reload="nock",
+    pole_l=(-0.75, -0.15, -0.65), pole_l_ads=(-0.85, 0.0, -0.55), pole_r=(0.8, -0.35, -0.5),
+    recoil={"back": -0.012, "up": 0.010, "pitch": 3.0, "roll": 4.0, "yaw": -1.0},
+    recoil_ads={"back": -0.012, "up": 0.010, "pitch": 3.0, "roll": 4.0, "yaw": -1.0},
+    clips=_bow_clips(BOW_DATA),
+)
+
+# -- flamethrower (Furnace): hold-fire start / loop / end; canister swap -------------------------
+FLAME_DEFAULTS = {"reload_time_s": 3.0, "reload_empty_time_s": 3.6, "equip_time_s": 0.8}
+FLAME_START, FLAME_LOOP, FLAME_END = 9, 30, 12
+CONT_FIRE = 3                       # fire / fire_ads one-shots (restart per tick, <= 1.5 x 1/900 rpm)
+
+
+def _mag_events(n: int, empty: bool) -> dict:
+    if empty:
+        return {"mag_out": round(0.14 * n), "mag_swap": round(0.32 * n), "mag_in": round(0.62 * n), "done": n - 10}
+    return {"mag_out": round(0.18 * n), "mag_swap": round(0.36 * n), "mag_in": round(0.62 * n), "done": n - 10}
+
+
+def _flame_clips(row: dict) -> dict:
+    out = _std(_equip(row), CONT_FIRE)
+    out["fire_start"] = _one(FLAME_START, {"ignite": 2, "ready": FLAME_START})
+    out["fire_hold"] = {"frames": FLAME_LOOP, "loop": True, "events": {}}
+    out["fire_end"] = _one(FLAME_END, {"extinguish": 0, "done": FLAME_END - 2})
+    for clip, key, empty in (("reload", "reload_time_s", False), ("reload_empty", "reload_empty_time_s", True)):
+        n = _f(row[key])
+        out[clip] = _one(n, _mag_events(n, empty))
+    return out
+
+
+FLAME_DATA = _b3_row("flamethrower", FLAME_DEFAULTS)
+FLAMETHROWER = FPSet(
+    name="flamethrower", weapon="wpn_furnace_ft",
+    markers={"left_ik": v3(0.0, 0.300, -0.050), "vgrip": v3(0.0, 0.300, -0.008), "aim": v3(0.0, 0.040, 0.1235),
+             "magwell": v3(0.0, 0.130, -0.018), "magwell_axis": v3(0.0, 0.0, 1.0),
+             "pilot": v3(0.0, 0.640, 0.022), "butt": v3(0.0, -0.300, 0.030)},
+    hip=((0.13, 0.20, -0.20), 6.0, 1.5, -5.0),
+    ads_dist=0.20,
+    sprint=((0.15, 0.20, -0.25), 26.0, -8.0, -36.0),
+    lowered=((0.16, 0.05, -0.58), 20.0, -55.0, -35.0),
+    reload_tilt=((0.07, 0.21, -0.17), 16.0, 16.0, 26.0),
+    support="vgrip", blade=36.0, blade_ads=40.0, reload="mag",
+    pole_l=(-0.7, -0.25, -0.65),
+    recoil={"back": 0.004, "up": 0.002, "pitch": 0.5, "roll": 0.3, "yaw": 0.2},
+    recoil_ads={"back": 0.003, "up": 0.001, "pitch": 0.3, "roll": 0.2, "yaw": 0.1},
+    mag={"top": 0.0, "bottom": -0.165, "hw": 0.045, "depth": 0.090, "grip": "box"},
+    clips=_flame_clips(FLAME_DATA),
+)
+
+# -- saw (Rotor power saw, secondary): rev / cut loop / cut end; blade change -------------------
+SAW_DEFAULTS = {"reload_time_s": 3.0, "equip_time_s": 0.6}
+SAW_REV, SAW_CUT, SAW_CUT_END = 12, 30, 12
+
+
+def _saw_clips(row: dict) -> dict:
+    n = _f(row["reload_time_s"])
+    ev = {"nut_off": round(0.16 * n), "blade_out": round(0.26 * n), "blade_in": round(0.62 * n),
+          "nut_on": round(0.72 * n), "done": n - 8}
+    out = _std(_equip(row), CONT_FIRE)
+    out["rev"] = _one(SAW_REV, {"rev": 0, "ready": SAW_REV})
+    out["cut_hold"] = {"frames": SAW_CUT, "loop": True, "events": {}}
+    out["cut_end"] = _one(SAW_CUT_END, {"done": SAW_CUT_END - 2})
+    out["reload"] = _one(n, ev)            # a blade change is the same whether worn out or not (alias)
+    out["reload_empty"] = _one(n, ev)
+    return out
+
+
+SAW_DATA = _b3_row("saw", SAW_DEFAULTS)
+SAW = FPSet(
+    name="saw", weapon="wpn_rotor_saw",
+    markers={"left_ik": v3(-0.072, 0.135, 0.080), "vgrip": v3(-0.072, 0.135, 0.080), "arbor": v3(-0.042, 0.300, 0.030),
+             "blade_r": 0.150,
+             "magwell": v3(-0.042, 0.300, 0.030), "magwell_axis": v3(1.0, 0.0, 0.0), "aim": v3(0.0, 0.0, 0.15)},
+    hip=((0.14, 0.30, -0.315), 10.0, 6.0, -4.0),
+    ads_dist=0.0, ads_hold=((0.11, 0.32, -0.285), 6.0, 7.0, -2.0),
+    sprint=((0.15, 0.21, -0.26), 22.0, -14.0, -26.0),
+    lowered=((0.15, 0.08, -0.57), 18.0, -50.0, -30.0),
+    reload_tilt=((0.10, 0.17, -0.28), 36.0, 20.0, 46.0),
+    support="vgrip", blade=26.0, blade_ads=28.0, reload="blade",
+    pole_l=(-0.6, -0.2, -0.75), pole_l_ads=(-0.6, -0.2, -0.75),
+    recoil={"back": 0.004, "up": 0.003, "pitch": 0.6, "roll": 0.5, "yaw": 0.3},
+    recoil_ads={"back": 0.003, "up": 0.002, "pitch": 0.4, "roll": 0.3, "yaw": 0.2},
+    clips=_saw_clips(SAW_DATA),
+)
+
+# -- minigun (Cyclone rotary): spin up / fire loop / spin down; box swap -----------------------
+MINIGUN_DEFAULTS = {"reload_time_s": 6.0, "reload_empty_time_s": 6.6, "equip_time_s": 1.2}
+MINI_SPIN_UP, MINI_LOOP, MINI_SPIN_DOWN = 15, 30, 24
+
+
+def _minigun_clips(row: dict) -> dict:
+    out = _std(_equip(row), CONT_FIRE)
+    out["sprint"] = {"frames": 24, "loop": True}                    # a heavy jog
+    out["spin_up"] = _one(MINI_SPIN_UP, {"spin": 0, "spun": MINI_SPIN_UP})
+    out["fire_hold"] = {"frames": MINI_LOOP, "loop": True, "events": {}}
+    out["spin_down"] = _one(MINI_SPIN_DOWN, {"stopped": MINI_SPIN_DOWN})
+    for clip, key, empty in (("reload", "reload_time_s", False), ("reload_empty", "reload_empty_time_s", True)):
+        n = _f(row[key])
+        ev = _mag_events(n, empty)
+        ev["belt_seat"] = round(0.74 * n)
+        out[clip] = _one(n, ev)
+    return out
+
+
+MINIGUN_DATA = _b3_row("minigun", MINIGUN_DEFAULTS)
+MINIGUN = FPSet(
+    name="minigun", weapon="wpn_cyclone_rotary",
+    markers={"left_ik": v3(-0.090, 0.200, 0.020), "vgrip": v3(-0.090, 0.200, 0.020), "aim": v3(0.0, 0.0, 0.20),
+             "magwell": v3(-0.110, 0.040, -0.030), "magwell_axis": v3(0.0, 0.0, 1.0),
+             "feed": v3(-0.058, 0.060, 0.030), "rotor": v3(0.0, 0.300, 0.010)},
+    hip=((0.11, 0.22, -0.30), 9.0, 7.0, -3.0),
+    ads_dist=0.0, ads_hold=((0.085, 0.25, -0.255), 6.0, 5.0, -2.0),
+    sprint=((0.13, 0.18, -0.33), 20.0, -6.0, -18.0),
+    lowered=((0.14, 0.06, -0.62), 16.0, -45.0, -25.0),
+    reload_tilt=((0.06, 0.24, -0.21), 22.0, 14.0, 26.0),
+    support="vgrip", blade=22.0, blade_ads=24.0, reload="mag",
+    pole_l=(-0.6, -0.2, -0.75), pole_l_ads=(-0.6, -0.2, -0.75),
+    recoil={"back": 0.006, "up": 0.003, "pitch": 0.8, "roll": 0.5, "yaw": 0.4},
+    recoil_ads={"back": 0.005, "up": 0.002, "pitch": 0.6, "roll": 0.4, "yaw": 0.3},
+    mag={"top": 0.0, "bottom": -0.170, "hw": 0.050, "depth": 0.200, "grip": "box"},
+    clips=_minigun_clips(MINIGUN_DATA),
+)
+
+#: the D-055 sets (clips in ``_arms_breech`` / ``_arms_bow`` / ``_arms_heavy``)
+B3_SETS = ("break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun")
+
+B3: dict[str, FPSet] = {s.name: s for s in (BREAK_ACTION, LEVER, BOW, CROSSBOW, LAUNCHER, FLAMETHROWER, SAW, MINIGUN)}
+SETS: dict[str, FPSet] = {s.name: s for s in (PISTOL, SMG, RIFLE, SHOTGUN, LMG, SNIPER, AKIMBO, REVOLVER, *B3.values())}
 
 
 def clip_table() -> dict[str, dict]:

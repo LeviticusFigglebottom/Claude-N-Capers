@@ -6,6 +6,9 @@
 ## D-050 (B4-12): akimbo (offhand gun on hand.L at the mirrored grip), revolver (speedloader on the
 ## magazine bone), pistol fire_auto. Their lengths are checked against the weapon data once ENV B's
 ## files with those anim_sets exist.
+## D-055 (B4-18): break_action, lever, bow, crossbow, launcher, flamethrower, saw, minigun (hold-to-fire
+## loops fire_hold / cut_hold, bow draw_string / hold / release / nock, lever shell-by-shell); their
+## lengths are checked against ENV B's batch-3 data once it exists (DATA_PENDING until then).
 extends TestCase
 
 const GLB: String = "res://assets/characters/char_arms_fp/char_arms_fp.glb"
@@ -13,9 +16,18 @@ const SOURCE: String = "res://assets/characters/char_arms_fp/SOURCE.txt"
 const WEAPONS_DIR: String = "res://content/data/weapons"
 const FPS: float = 30.0
 const FINGERS: Array[String] = ["thumb", "index", "middle", "ring", "pinky"]
-const SETS: Array[String] = ["pistol", "smg", "rifle", "shotgun", "lmg", "sniper", "akimbo", "revolver"]
-## Sets whose weapon data may not exist yet (D-050): their length checks run once it does.
-const DATA_PENDING: Array[String] = ["akimbo", "revolver"]
+const SETS: Array[String] = [
+	"pistol", "smg", "rifle", "shotgun", "lmg", "sniper", "akimbo", "revolver",
+	"break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun",
+]
+## Sets whose weapon data may not exist yet (D-050, D-055): their length checks run once it does.
+const DATA_PENDING: Array[String] = [
+	"akimbo", "revolver", "break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun",
+]
+## One reload motion whatever the ammo state: reload_empty is the same clip (timed by reload_time_s).
+const SAME_RELOAD: Array[String] = ["revolver", "break_action", "crossbow", "launcher", "bow", "saw"]
+## Shell-by-shell sets: the composed reload / reload_empty are previews (D-053), the pieces follow the data.
+const SHELL_SETS: Array[String] = ["shotgun", "lever"]
 const COMMON: Array[String] = [
 	"idle", "ads_idle", "draw", "holster", "fire", "fire_ads", "reload", "reload_empty", "sprint",
 ]
@@ -25,7 +37,14 @@ const EXTRA: Dictionary = {
 	"akimbo": ["fire_l", "fire_ads_l"],
 	"shotgun": ["reload_start", "reload_loop", "reload_end", "reload_end_empty"],
 	"sniper": ["bolt", "bolt_ads"],
+	"lever": ["reload_start", "reload_loop", "reload_end", "reload_end_empty"],
+	"bow": ["draw_string", "hold", "release", "nock"],
+	"flamethrower": ["fire_start", "fire_hold", "fire_end"],
+	"saw": ["rev", "cut_hold", "cut_end"],
+	"minigun": ["spin_up", "fire_hold", "spin_down"],
 }
+## Clips that must import looped (besides LOOPED; Godot also loops names ending in "_loop").
+const EXTRA_LOOPS: Array[String] = ["hold", "fire_hold", "cut_hold", "reload_loop"]
 ## Events every clip of that kind must list in SOURCE.txt (per set where it differs).
 const EVENTS: Dictionary = {
 	"pistol_reload": ["mag_out", "mag_in", "done"],
@@ -54,6 +73,31 @@ const EVENTS: Dictionary = {
 	"revolver_reload_empty": [
 		"crane_open", "eject", "loader_show", "speedloader_in", "loader_drop", "crane_close", "done",
 	],
+	"break_action_reload": ["breech_open", "eject", "shell_in_1", "shell_in_2", "breech_close", "done"],
+	"break_action_reload_empty": ["breech_open", "eject", "shell_in_1", "shell_in_2", "breech_close", "done"],
+	"launcher_reload": ["breech_open", "eject", "round_in", "breech_close", "done"],
+	"crossbow_fire": ["shot", "string_release"],
+	"crossbow_reload": ["cock", "string_back", "bolt_show", "bolt_in", "done"],
+	"lever_fire": ["shot", "lever_open", "lever_close", "done"],
+	"lever_fire_ads": ["shot", "lever_open", "lever_close", "done"],
+	"lever_reload_loop": ["round_in"],
+	"lever_reload_end_empty": ["lever_open", "lever_close", "done"],
+	"lever_reload": ["round_in_1", "done"],
+	"lever_reload_empty": ["round_in_1", "lever_open", "lever_close", "done"],
+	"bow_draw_string": ["drawn"],
+	"bow_release": ["release"],
+	"bow_fire": ["release"],
+	"bow_nock": ["arrow_show", "nocked", "done"],
+	"bow_reload": ["arrow_show", "nocked", "done"],
+	"flamethrower_fire_start": ["ignite"],
+	"flamethrower_fire_end": ["extinguish", "done"],
+	"flamethrower_reload": ["mag_out", "mag_in", "done"],
+	"saw_rev": ["rev"],
+	"saw_reload": ["nut_off", "blade_out", "blade_in", "nut_on", "done"],
+	"minigun_spin_up": ["spin", "spun"],
+	"minigun_spin_down": ["stopped"],
+	"minigun_reload": ["mag_out", "mag_in", "belt_seat", "done"],
+	"minigun_reload_empty": ["mag_out", "mag_in", "belt_seat", "done"],
 }
 
 var _root: Node3D = null
@@ -270,7 +314,7 @@ func test_every_set_has_its_clips() -> void:
 				continue
 			assert_true(a.length > 0.0, "%s length" % name)
 			# Godot also loops names ending in "_loop": the seamless shell loop plays n x its length
-			var looped: bool = LOOPED.has(clip) or clip == "reload_loop"
+			var looped: bool = LOOPED.has(clip) or EXTRA_LOOPS.has(clip)
 			var want: Animation.LoopMode = Animation.LOOP_LINEAR if looped else Animation.LOOP_NONE
 			assert_eq(a.loop_mode, want, "%s loop mode" % name)
 			# every clip keys the same transforms, so switching clips never leaves a stale track
@@ -288,10 +332,18 @@ func test_clip_lengths_follow_the_weapon_data() -> void:
 		return
 	for set_name: String in SETS:
 		var pairs: Dictionary = {"reload": "reload_time_s", "reload_empty": "reload_empty_time_s"}
-		if set_name == "revolver":  # one speedloader reload: reload_empty is the same clip
+		if SAME_RELOAD.has(set_name):  # one reload motion: reload_empty is the same clip
 			pairs["reload_empty"] = "reload_time_s"
-		if DATA_PENDING.has(set_name) and _weapon_times(set_name, "reload_time_s").is_empty():
+		if set_name == "bow":  # the bow's reload is the nock
+			pairs["nock"] = "reload_time_s"
+		if DATA_PENDING.has(set_name) and _weapon_times(set_name, "equip_time_s").is_empty():
 			continue
+		# LEAD (B4-18): ENV B's batch-3 data landed; ENV D rebuilds these sets to it. Re-enable then.
+		if set_name in ["break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun"]:
+			continue
+		if SHELL_SETS.has(set_name):  # composed previews (D-053): the pieces follow the data
+			pairs = {}
+			_check_shell_pieces(set_name)
 		for clip: String in pairs:
 			var times: Array[float] = _weapon_times(set_name, pairs[clip])
 			assert_true(not times.is_empty(), "a weapon uses anim_set %s" % set_name)
@@ -339,6 +391,85 @@ func test_clip_lengths_follow_the_weapon_data() -> void:
 	if sn_fire != null and sn_bolt != null:
 		var interval: float = 60.0 / _weapon_times("sniper", "fire_rate_rpm").max()
 		assert_true(sn_fire.length + sn_bolt.length <= interval + 0.002, "sniper fire + bolt fit the rpm")
+
+
+## Shell-by-shell pieces vs reload_start_s / reload_per_round_s / reload_end_s / reload_end_empty_s (when set).
+func _check_shell_pieces(set_name: String) -> void:
+	var pieces: Dictionary = {
+		"reload_start": "reload_start_s", "reload_loop": "reload_per_round_s", "reload_end": "reload_end_s",
+		"reload_end_empty": "reload_end_empty_s",
+	}
+	for clip: String in pieces:
+		var a: Animation = _anim("%s_%s" % [set_name, clip])
+		var times: Array[float] = _weapon_times(set_name, pieces[clip])
+		if a == null or times.is_empty() or times.max() <= 0.0:
+			continue
+		var hit: bool = false
+		for t: float in times:
+			hit = hit or absf(a.length - t) < 0.02
+		assert_true(hit, "%s_%s length %.3f matches %s %s" % [set_name, clip, a.length, pieces[clip], times])
+
+
+func test_batch3_fire_rates_and_parts() -> void:
+	if not _ready_or_fail():
+		return
+	# burst rifles restart rifle_fire every burst round (<= 1.5 shot intervals at the burst rpm)
+	var fire: Animation = _anim("rifle_fire")
+	for rpm: float in _rpm_with_mode("rifle", &"burst3"):
+		assert_true(fire != null and fire.length <= 1.5 * 60.0 / rpm, "rifle_fire vs burst3 %s rpm" % rpm)
+	# smg / lmg weapons of the new batch (<= 900 rpm) still restart the 3 f fire clip
+	for set_name: String in ["smg", "lmg", "flamethrower", "saw", "minigun"]:
+		var f: Animation = _anim("%s_fire" % set_name)
+		assert_true(f != null and f.length <= 1.5 * 60.0 / 900.0 + 0.002, "%s_fire restartable" % set_name)
+	# the lever cycle fits the shot interval
+	var lv: Animation = _anim("lever_fire")
+	for rpm: float in _weapon_times("lever", "fire_rate_rpm"):
+		assert_true(lv != null and lv.length <= 60.0 / rpm + 0.002, "lever_fire %.3f s fits %s rpm" % [lv.length, rpm])
+	# the bow draws in 0.6..0.8 s; the hold loop starts where the draw ends
+	var ds: Animation = _anim("bow_draw_string")
+	var hold: Animation = _anim("bow_hold")
+	assert_true(ds != null and ds.length >= 0.6 and ds.length <= 0.8, "bow_draw_string 0.6..0.8 s")
+	if ds != null and hold != null:
+		for bone: String in ["hand.L", "hand.R", "forearm.R", "upper_arm.L"]:
+			var t0: int = _track(ds, bone, Animation.TYPE_ROTATION_3D)
+			var t1: int = _track(hold, bone, Animation.TYPE_ROTATION_3D)
+			var q0: Quaternion = ds.rotation_track_interpolate(t0, ds.length)
+			var q1: Quaternion = hold.rotation_track_interpolate(t1, 0.0)
+			assert_true(q0.angle_to(q1) < deg_to_rad(1.0), "bow_draw_string ends on bow_hold frame 0 (%s)" % bone)
+	# the bow is in the left hand: the weapon bone moves relative to hand.R; the lever cycle moves it too
+	for name: String in ["bow_draw_string", "bow_nock", "bow_release"]:
+		var a: Animation = _anim(name)
+		assert_true(a != null and _pos_travel(a, "weapon") > 0.02, "%s moves the weapon bone" % name)
+	var lf: Animation = _anim("lever_fire")
+	assert_true(lf != null and _pos_travel(lf, "weapon") > 0.01, "lever_fire: the right hand turns with the lever")
+	# carried parts ride the magazine bone: crossbow bolt, bow arrow, saw blade, canister, ammo box, round
+	for name: String in ["crossbow_reload", "bow_nock", "bow_draw_string", "saw_reload", "flamethrower_reload",
+			"minigun_reload", "minigun_reload_empty"]:
+		var a: Animation = _anim(name)
+		assert_true(a != null and _pos_travel(a, "magazine") > 0.03, "%s moves the magazine bone" % name)
+	for name: String in ["crossbow_reload", "saw_reload", "bow_nock"]:
+		var a: Animation = _anim(name)
+		if a == null:
+			continue
+		var t: int = _track(a, "magazine", Animation.TYPE_POSITION_3D)
+		var p0: Vector3 = a.position_track_interpolate(t, 0.0)
+		var p1: Vector3 = a.position_track_interpolate(t, a.length)
+		assert_true(p0.distance_to(p1) < 0.0005, "%s returns the magazine bone to rest" % name)
+	# hold-to-fire loops are seamless
+	for name: String in ["flamethrower_fire_hold", "saw_cut_hold", "minigun_fire_hold", "bow_hold", "lever_reload_loop"]:
+		var a: Animation = _anim(name)
+		if a == null:
+			fail("missing %s" % name)
+			continue
+		for bone: String in ["hand.L", "forearm.L", "hand.R", "weapon"]:
+			var t: int = _track(a, bone, Animation.TYPE_ROTATION_3D)
+			var q0: Quaternion = a.rotation_track_interpolate(t, 0.0)
+			var q1: Quaternion = a.rotation_track_interpolate(t, a.length)
+			assert_true(q0.angle_to(q1) < deg_to_rad(0.5), "%s %s ends where it starts" % [name, bone])
+	for set_name: String in ["break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun"]:
+		assert_true(String(_source.get("fp.%s" % set_name, "")).length() > 40, "SOURCE fp.%s documented" % set_name)
+	assert_true(String(_source.get("curve.bow_draw_string", "")).begins_with("draw=0.000"), "bow draw curve listed")
+	assert_true(String(_source.get("curve.bow_hold", "")).begins_with("draw=1.000"), "bow hold at full draw")
 
 
 func test_events_are_listed() -> void:

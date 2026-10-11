@@ -59,6 +59,13 @@ writes them.
   1 m (512 px/m; featureless, same UV scale).
   `emissive_reticle_red` is an untextured emissive `StandardMaterial3D` (a reticle is a tiny
   emissive mesh; emission, not unshaded, so its HDR value reaches the glow pass).
+* Armory batch 3 (same 1 m / 1024 px/m convention): `paint_safety_orange` (enamel `#CC6633`, safety
+  orange pulled to the 0.75 saturation cap, chips to bare steel; `metal_painted` model),
+  `carbon_fibre` (2x2 twill, 256 tows/m, warp along V / weft along U, D-038 0.02 floor, plus a
+  Godot clear coat via the preset's `clearcoat`), and `emissive_pilot_flame` (emissive
+  `StandardMaterial3D` with an embedded `GradientTexture2D`, blue at mesh V = 1 (burner) to orange at
+  V = 0 (tip); `emission_operator = multiply` so the gradient is not washed to white). Map the
+  flame mesh's V from tip (0) to base (1).
 * Every textured library material stores its tile size as `metadata/uv_tile_m` (2.0 or 1.0);
   `material.get_meta(&"uv_tile_m")` tells tools which scale to use.
 * Godot materials use mesh `UV1` (triplanar OFF). The preview tool alone uses world triplanar at

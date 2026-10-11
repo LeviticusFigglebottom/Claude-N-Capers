@@ -10,6 +10,8 @@
 extends RefCounted
 
 const FLOOR_HEIGHTS: Array[float] = [0.0, 3.6, 8.0, 11.6]
+## HeistMap.floor_names (D-054), parallel to FLOOR_HEIGHTS.
+const FLOOR_NAMES: Array[String] = ["L40", "L41", "L42", "Roof"]
 const F40: float = 0.0
 const F41: float = 3.6
 const F42: float = 8.0
@@ -88,7 +90,8 @@ const LIFT_CAR_OPENING: Array = ["z", 24.0, 8.65, 9.85, 2.4]
 
 ## Room metadata by unique id: [purpose, dressing kit, ceiling (rel; 0 = none), facade sill (rel),
 ## ceiling_range override or null]. Core rooms on L41/L42 get a level suffix (J41, WCW42 ...).
-## lounge / dining_room have no row in the ceiling table: 2.6-3.0 (residential) overrides.
+## lounge / dining_room / dressing have no row in the ceiling table: 2.6-3.0 (residential)
+## overrides, justified in the design doc's room list (D-048). M7 is `dressing` (QC-30).
 const ROOM_META: Dictionary = {
 	"S1": ["lobby", "service_lobby", 3.0, 0.9, null], "S2": ["storage", "refuse_room", 3.0, 0.9, null],
 	"S3": ["corridor", "corridor_service", 3.0, 0.9, null],
@@ -112,7 +115,7 @@ const ROOM_META: Dictionary = {
 	"M1": ["lounge", "lounge_exec", 3.0, 0.3, Vector2(2.6, 3.0)], "M2": ["lobby", "gallery_mezzanine", 3.0, 0.3, null],
 	"M3": ["gallery", "art_hall", 3.0, 0.9, null], "M4": ["office", "study_exec", 3.0, 0.3, null],
 	"M5": ["bedroom", "bedroom_exec", 3.0, 0.9, null], "M6": ["restroom", "bathroom_ensuite", 2.7, 0.9, null],
-	"M7": ["corridor", "dressing_room", 2.7, 0.9, null], "M8": ["dining_room", "dining_exec", 3.0, 0.3, Vector2(2.6, 3.0)],
+	"M7": ["dressing", "dressing_room", 2.7, 0.9, Vector2(2.6, 3.0)], "M8": ["dining_room", "dining_exec", 3.0, 0.3, Vector2(2.6, 3.0)],
 	"M9": ["corridor", "corridor_office", 2.7, 0.9, null], "M10": ["corridor", "corridor_service", 2.7, 0.9, null],
 	"M11": ["break_room", "break_room", 2.7, 0.9, null], "M12": ["electrical", "electrical_closet", 2.7, 0.9, null],
 	"M13": ["storage", "wine_room", 2.7, 0.9, null], "M14": ["office", "boardroom", 3.0, 0.9, null],
@@ -250,6 +253,10 @@ const STAIR_WEST: Vector2 = Vector2(0.2, 1.4)
 const STAIR_WELL: Vector2 = Vector2(1.4, 1.6)
 const STAIR_EAST: Vector2 = Vector2(1.6, 2.8)
 const STAIR_CLEAR: Vector2 = Vector2(0.15, 2.85)
+## Handrails (level_standards §2 MUST 1.0-1.1 m): bar centre above the riser-to-riser nosing line
+## (top 1.05 m), offset from the wall / divider / balustrade face.
+const HANDRAIL_H: float = 1.025
+const HANDRAIL_OFF: float = 0.07
 ## Feature stair L41 -> L42 (doc): x 12.84-20.50, z 0.6-2.0, 2 x 12 risers, landing 1.5 m, solid base.
 const FEATURE_STAIR: Dictionary = {"x0": 12.84, "z": [0.6, 2.0], "risers": 12, "landing": 1.5, "y0": F41, "y1": F42}
 
@@ -337,19 +344,18 @@ const SITE_BLOCKS: Array = [
 	["Riverside", [-300.0, -161.0, -60.0, 300.0, -160.0, -20.0], "street"],
 	["KestrelRiver", [-300.0, -162.0, -300.0, 300.0, -161.0, -60.0], "river"],
 	# Horizon ring (300 m): the far-bank skyline (N) and distant towers all round, above eye height.
-	["FarBank", [-330.0, -162.0, -330.0, 330.0, 40.0, -300.0], "tower_dark"],
-	["HorizonS", [-330.0, -162.0, 300.0, 330.0, 60.0, 330.0], "tower_dark"],
-	["HorizonW", [-330.0, -162.0, -300.0, -300.0, 50.0, 300.0], "tower_dark"],
-	["HorizonE", [300.0, -162.0, -300.0, 330.0, 55.0, 300.0], "tower_dark"],
-	["CloudDeck", [-330.0, 71.0, -330.0, 330.0, 72.0, 330.0], "tower_dark"],
+	["FarBank", [-330.0, -162.0, -330.0, 330.0, 22.0, -300.0], "tower_dark"],
+	["HorizonS", [-330.0, -162.0, 300.0, 330.0, 26.0, 330.0], "tower_dark"],
+	["HorizonW", [-330.0, -162.0, -300.0, -300.0, 24.0, 300.0], "tower_dark"],
+	["HorizonE", [300.0, -162.0, -300.0, 330.0, 23.0, 300.0], "tower_dark"],
 ]
-## Lit floor bands on the neighbours (emissive): [name, box].
+## Lit floor bands on the near neighbours (dim emissive, flush on their facades): [name, box]. The
+## 300 m horizon ring carries none: in the fog its faces vanish and a lit band would float.
 const CITY_LIGHTS: Array = [
 	["ArdenLit1", [-20.25, 2.0, -24.0, -20.15, 3.0, -4.0]], ["ArdenLit2", [-20.25, 9.2, 6.0, -20.15, 10.2, 30.0]],
 	["ArdenLit3", [-20.25, 16.4, -20.0, -20.15, 17.4, 12.0]], ["ArdenLit4", [-20.25, -12.4, 0.0, -20.15, -11.4, 36.0]],
 	["ArdenLit5", [-20.25, 23.6, 14.0, -20.15, 24.6, 34.0]], ["ArdenLit6", [-20.25, -26.8, -26.0, -20.15, -25.8, 10.0]],
 	["SkylineSLit", [-6.0, -20.0, 69.9, 18.0, -19.0, 70.0]], ["SkylineSELit", [32.0, -48.0, 65.9, 56.0, -47.0, 66.0]],
-	["FarBankLit", [-280.0, 10.0, -300.1, 280.0, 12.0, -300.0]], ["HorizonSLit", [-280.0, 20.0, 299.9, 280.0, 22.0, 300.0]],
 ]
 ## Cables (dressing): [name, from, to]. Insertion line from Arden; the E2 line down to Vantage.
 const CABLES: Array = [
@@ -742,9 +748,9 @@ const REVIEW_CAMERAS: Array = [
 		"M3 art hall: laser plane at x 26.5, paintings, study door"],
 	["StudySafe", Vector3(30.0, F42 + 1.8, 1.0), Vector3(33.0, F42 + 0.6, 7.0), 80.0,
 		"M4 study: desk, time-lock safe and its reader, gondola facade door"],
-	["ServerCage", Vector3(25.8, F41 + 1.9, 12.2), Vector3(29.0, F41 + 0.8, 9.0), 80.0,
+	["ServerCage", Vector3(26.2, F41 + 1.9, 11.8), Vector3(29.0, F41 + 0.8, 9.0), 80.0,
 		"K11 server room: the cage, ledger rack, hack terminal, drive sleds"],
-	["SecurityRoom", Vector3(25.9, F41 + 1.8, 15.9), Vector3(29.5, F41 + 0.8, 14.0), 80.0,
+	["SecurityRoom", Vector3(26.2, F41 + 1.8, 15.8), Vector3(29.5, F41 + 0.8, 14.0), 80.0,
 		"K13 security room: the operator faces the monitor wall, the door behind him"],
 	["SouthSpine", Vector3(0.5, F41 + 1.6, 17.25), Vector3(36.0, F41 + 1.2, 17.25), 60.0, "K16 south spine: the 36 m sightline"],
 	["TerraceWest", Vector3(1.5, F42 + 1.7, 21.0), Vector3(34.0, F42 + 1.0, 20.0), 70.0,
@@ -752,7 +758,7 @@ const REVIEW_CAMERAS: Array = [
 	["RoofPlantBlock", Vector3(4.0, FRF + 1.8, 16.8), Vector3(22.0, FRF + 1.0, 10.0), 75.0,
 		"Roof spawn (SW): the plant block, head-house and riser-bay doors"],
 	["Helipad", Vector3(18.0, FRF + 3.4, 2.0), Vector3(30.0, FRF, 9.0), 75.0, "Roof: helipad (E1) and the E2 anchor"],
-	["StairACore", Vector3(13.2, F41 + 1.7, 16.2), Vector3(13.5, F41 + 1.4, 11.0), 80.0, "Stair A at L41 (U-stair, 0.3 m core walls)"],
-	["ServiceLobby", Vector3(29.6, F40 + 1.7, 12.2), Vector3(22.5, F40 + 1.0, 9.0), 75.0,
+	["StairACore", Vector3(13.8, F41 + 1.7, 15.8), Vector3(13.0, F41 + 1.4, 11.0), 80.0, "Stair A at L41 (U-stair, 0.3 m core walls)"],
+	["ServiceLobby", Vector3(29.3, F40 + 1.7, 11.8), Vector3(22.5, F40 + 1.0, 9.0), 75.0,
 		"L40 service lobby (PUBLIC): service lift car (E3), service spawn"],
 ]

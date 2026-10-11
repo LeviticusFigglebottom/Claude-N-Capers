@@ -44,20 +44,21 @@ check.35: reload_pistol: 45f 1.50s speed=0.0 reach_err=0.0mm step=40.0deg
 check.36: reload_rifle: 72f 2.40s speed=0.0 reach_err=0.0mm step=42.0deg
 check.37: run: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=21.5deg slide=0.040mm/f
 check.38: shield_bang: 24f 0.80s speed=0.0 reach_err=0.0mm step=35.3deg
-check.39: shield_walk: 28f 0.93s loop speed=1.6 reach_err=0.0mm step=19.7deg slide=0.000mm/f
-check.40: sit_chair: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
-check.41: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.5deg
-check.42: sprint: 18f 0.60s loop speed=5.75 reach_err=0.0mm step=28.7deg slide=0.053mm/f
-check.43: strafe_l: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.8deg slide=0.006mm/f
-check.44: strafe_r: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.9deg slide=0.006mm/f
-check.45: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=54.8deg
-check.46: tased: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=13.9deg
-check.47: throw_bag: 30f 1.00s speed=0.0 reach_err=0.0mm step=57.5deg
-check.48: tied: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
-check.49: turn_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
-check.50: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
-check.51: walk: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.5deg slide=0.038mm/f
-check.52: walk_back: 30f 1.00s loop speed=1.3 reach_err=0.0mm step=13.8deg slide=0.018mm/f
+check.39: shield_idle: 108f 3.60s loop speed=0.0 reach_err=0.0mm step=0.2deg
+check.40: shield_walk: 28f 0.93s loop speed=1.6 reach_err=0.0mm step=19.7deg slide=0.000mm/f
+check.41: sit_chair: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
+check.42: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.5deg
+check.43: sprint: 18f 0.60s loop speed=5.75 reach_err=0.0mm step=28.7deg slide=0.053mm/f
+check.44: strafe_l: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.8deg slide=0.006mm/f
+check.45: strafe_r: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.9deg slide=0.006mm/f
+check.46: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=54.8deg
+check.47: tased: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=13.9deg
+check.48: throw_bag: 30f 1.00s speed=0.0 reach_err=0.0mm step=57.5deg
+check.49: tied: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
+check.50: turn_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
+check.51: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
+check.52: walk: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.5deg slide=0.038mm/f
+check.53: walk_back: 30f 1.00s loop speed=1.3 reach_err=0.0mm step=13.8deg slide=0.018mm/f
 clip.aim_pistol: 90f loop=True speed_mps=0.0
 clip.aim_rifle: 90f loop=True speed_mps=0.0
 clip.browse: 120f loop=True speed_mps=0.0
@@ -97,6 +98,7 @@ clip.reload_pistol: 45f loop=False speed_mps=0.0 events=done@34,mag_in@30,mag_ou
 clip.reload_rifle: 72f loop=False speed_mps=0.0 events=done@58,mag_in@50,mag_out@14
 clip.run: 21f loop=True speed_mps=3.5
 clip.shield_bang: 24f loop=False speed_mps=0.0 events=bang_1@6,bang_2@12,bang_3@18
+clip.shield_idle: 108f loop=True speed_mps=0.0
 clip.shield_walk: 28f loop=True speed_mps=1.6
 clip.sit_chair: 120f loop=True speed_mps=0.0
 clip.smoke: 120f loop=True speed_mps=0.0
@@ -111,11 +113,11 @@ clip.turn_l: 24f loop=False speed_mps=0.0 root_turn_deg=90.0
 clip.turn_r: 24f loop=False speed_mps=0.0 root_turn_deg=-90.0
 clip.walk: 30f loop=True speed_mps=1.6
 clip.walk_back: 30f loop=True speed_mps=1.3
-clips: 53
+clips: 54
 fps: 30
 handl_shield_offset_godot: basis x=(-0.0000,-0.0000,-1.0000) y=(0.9511,-0.3090,0.0000) z=(-0.3090,-0.9511,-0.0000) origin=(0.0120,0.0720,-0.0300) relative to bone hand.L
 handr_weapon_offset_godot: basis x=(0.0000,0.0000,1.0000) y=(-0.9511,-0.3090,0.0000) z=(0.3090,-0.9511,-0.0000) origin=(-0.0120,0.0720,-0.0300) relative to bone hand.R
-loops: aim_pistol,aim_rifle,browse,carry_bag_walk,climb_ladder,cower,crouch_idle,crouch_walk,desk_type,downed,dozer_walk,flee,hands_up,idle,idle_alert,interact_high,interact_low,interact_mid,investigate_look,kneel_cuffed,lean_wall,lie_down,pager_answer,phone_call,run,shield_walk,sit_chair,smoke,sprint,strafe_l,strafe_r,tased,tied,walk,walk_back
+loops: aim_pistol,aim_rifle,browse,carry_bag_walk,climb_ladder,cower,crouch_idle,crouch_walk,desk_type,downed,dozer_walk,flee,hands_up,idle,idle_alert,interact_high,interact_low,interact_mid,investigate_look,kneel_cuffed,lean_wall,lie_down,pager_answer,phone_call,run,shield_idle,shield_walk,sit_chair,smoke,sprint,strafe_l,strafe_r,tased,tied,walk,walk_back
 loops_marked_by: -loop name suffix (Godot strips it and sets LOOP_LINEAR)
-shield_grip: shield_walk/shield_bang hold the Bulwark shield at HandL/Socket (the weapon grip convention, left fist): the shield pivot = its vertical handle in the fist, socket -Z = the shield face normal (forward), socket +Y = up the handle (matches char_bulwark_shield); handle at Godot (-0.100, 1.080, -0.340) m in the braced stance, the shield tilted 8 deg top-back and turned -4 deg; pistol one-handed at HandR/Socket just outside the shield's right edge
+shield_grip: shield_idle/shield_walk/shield_bang hold the Bulwark shield at HandL/Socket (the weapon grip convention, left fist): the shield pivot = its vertical handle in the fist, socket -Z = the shield face normal (forward), socket +Y = up the handle (matches char_bulwark_shield); handle at Godot (-0.100, 1.080, -0.340) m in the braced stance, the shield tilted 8 deg top-back and turned -4 deg; pistol one-handed at HandR/Socket just outside the shield's right edge
 tri_budget: 35000

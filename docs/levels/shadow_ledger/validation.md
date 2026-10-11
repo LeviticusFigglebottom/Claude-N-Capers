@@ -77,7 +77,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Rooms/RoomM4` (office): ceiling median 3.00 m (rule 2.6-3.0)
 - `Rooms/RoomM5` (bedroom): ceiling median 3.00 m (rule 2.6-3.0)
 - `Rooms/RoomM6` (restroom): ceiling median 2.70 m (rule 2.6-3.0)
-- `Rooms/RoomM7` (corridor): ceiling median 2.70 m (rule 2.6-3.0)
+- `Rooms/RoomM7`: ceiling_range override (2.6, 3.0) (lead review)
+- `Rooms/RoomM7` (dressing): ceiling median 2.70 m (rule 2.6-3.0)
 - `Rooms/RoomM8`: ceiling_range override (2.6, 3.0) (lead review)
 - `Rooms/RoomM8` (dining_room): ceiling median 3.00 m (rule 2.6-3.0)
 - `Rooms/RoomM9` (corridor): ceiling median 2.70 m (rule 2.6-3.0)
@@ -120,15 +121,15 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 1486 polygons, cell 0.10/0.10 m
+- navmesh: 1484 polygons, cell 0.10/0.10 m
 - 247 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomS1` | 83 | 83 | 100% |
 | `Rooms/RoomS3` | 8 | 8 | 100% |
 | `Rooms/RoomS2` | 26 | 26 | 100% |
-| `Rooms/RoomSA` | 10 | 10 | 100% |
-| `Rooms/RoomSB` | 8 | 8 | 100% |
+| `Rooms/RoomSA` | 7 | 7 | 100% |
+| `Rooms/RoomSB` | 5 | 5 | 100% |
 | `Rooms/RoomSL` | 25 | 25 | 100% |
 | `Rooms/RoomK1` | 81 | 81 | 100% |
 | `Rooms/RoomK2` | 41 | 41 | 100% |
@@ -178,7 +179,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomWCW42` | 50 | 50 | 100% |
 | `Rooms/RoomWCM42` | 50 | 50 | 100% |
 | `Rooms/RoomR1` | 6 | 6 | 100% |
-| `Rooms/RoomR2` | 7 | 7 | 100% |
+| `Rooms/RoomR2` | 5 | 5 | 100% |
 | `Rooms/RoomR3` | 175 | 175 | 100% |
 | `Rooms/RoomX1` | 638 | 638 | 100% |
 | `Rooms/RoomX2` | 746 | 746 | 100% |

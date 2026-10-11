@@ -90,6 +90,9 @@ const KEYS: Dictionary = {
 
 	# --- Weapons (qualified by weapon class or .all) ---------------------------
 	&"weapon.damage_mult": [Type.MULT, 1, "Weapon damage."],
+	&"weapon.saw_wear_mult": [Type.MULT, 4, "Saw blade wear per second (lower = blades last longer)."],
+	&"weapon.saw_damage_mult": [Type.MULT, 4, "Saw damage to enemies."],
+	&"weapon.saw_shield_pierce": [Type.FLAG, 4, "Saw cuts through shields."],
 	&"weapon.reload_speed_mult": [Type.MULT, 2, "Reload speed (higher = faster)."],
 	&"weapon.spread_mult": [Type.MULT, 2, "Spread/accuracy cone multiplier (lower = tighter)."],
 	&"weapon.recoil_mult": [Type.MULT, 2, "Recoil multiplier (lower = steadier)."],

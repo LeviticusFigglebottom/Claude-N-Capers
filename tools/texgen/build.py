@@ -107,7 +107,7 @@ def build_material(lib_id: str, preset_name: str, out_root: str, with_godot: boo
             godot.ensure_import(f, "texture", "CompressedTexture2D", godot.IMPORT_PARAMS[key])
         godot.write_material(root / library.MAT_ROOT / f"{lib_id}.tres", lib_id,
                              f"res://assets/textures/{lib_id}", entry.get("kind", "opaque"), ctx.tile_m,
-                             ctx.params.get("specular"))
+                             ctx.params.get("specular"), ctx.params.get("clearcoat"))
     return {"lib_id": lib_id, "stats": enc.stats}
 
 

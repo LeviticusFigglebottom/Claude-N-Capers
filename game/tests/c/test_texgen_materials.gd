@@ -13,10 +13,10 @@ const EXPECTED: Array[String] = [
 const WEAPON: Array[String] = [
 	"polymer_black", "polymer_stipple", "steel_blued", "steel_bare", "metal_matte", "paint_white",
 	"brass_cartridge", "glass_lens_tint", "alu_anodized_black", "polymer_tan", "polymer_olive",
-	"glass_lens_coated",
+	"glass_lens_coated", "paint_safety_orange", "carbon_fibre",
 ]
 ## Untextured by design: a reticle is a tiny emissive mesh; textures would add nothing.
-const EMISSIVE: Array[String] = ["emissive_reticle_red"]
+const EMISSIVE: Array[String] = ["emissive_reticle_red", "emissive_pilot_flame"]
 ## D-038: black polymers, rubber and black paint/anodize may sit at 0.02-0.04 linear albedo.
 const BLACKS: Array[String] = ["polymer_black", "polymer_stipple", "rubber_black", "alu_anodized_black"]
 const TRIM_TABLE: String = "res://assets/textures/trim_interior/trim_table.json"
@@ -72,6 +72,17 @@ func test_emissive_materials() -> void:
 		assert_true(mat.emission_enabled, "%s emission" % id)
 		assert_true(mat.emission_energy_multiplier >= 1.0, "%s must be bright enough to glow" % id)
 		assert_eq(String(mat.resource_name), "M_" + id, "resource_name")
+	var flame: StandardMaterial3D = load(MATERIAL_DIR + "emissive_pilot_flame.tres") as StandardMaterial3D
+	if flame != null:
+		assert_true(flame.emission_texture is GradientTexture2D, "pilot flame has its blue-orange gradient")
+
+
+func test_carbon_fibre_clearcoat() -> void:
+	var cf: ORMMaterial3D = load(MATERIAL_DIR + "carbon_fibre.tres") as ORMMaterial3D
+	assert_true(cf != null, "carbon_fibre missing")
+	if cf != null:
+		assert_true(cf.clearcoat_enabled, "carbon fibre needs its clear coat")
+		assert_true(cf.clearcoat_roughness <= 0.15, "clear coat is glossy")
 
 
 func test_glass_is_transparent() -> void:

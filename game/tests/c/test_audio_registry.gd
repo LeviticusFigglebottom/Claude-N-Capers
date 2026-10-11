@@ -173,10 +173,19 @@ func test_armory_batch_cues() -> void:
 			continue
 		assert_true(c.positional, "%s positional" % id)
 		assert_eq(c.loop, ARMORY_LOOPS.has(id), "%s loop flag" % id)
-	for id: StringName in [&"cue.weapon_bow_fire", &"cue.weapon_bow_draw", &"cue.weapon_crossbow_fire"]:
+	for id: StringName in [&"cue.weapon_bow_fire", &"cue.weapon_bow_draw", &"cue.weapon_crossbow_fire",
+			&"cue.weapon_bow_fire_suppressed", &"cue.weapon_crossbow_fire_suppressed"]:
 		var c: AudioCueDef = _reg.get_cue(id)
 		assert_true(c.max_distance <= 15.0 and c.volume_db <= -6.0, "%s is quiet / short range" % id)
 	assert_true(_reg.get_cue(&"cue.weapon_revolver_fire").streams.size() >= 3, "revolver variations")
+	for base: StringName in [&"cue.weapon_bow_fire", &"cue.weapon_crossbow_fire"]:
+		var sup: AudioCueDef = _reg.get_cue(StringName(String(base) + "_suppressed"))
+		assert_true(sup != null, "%s_suppressed exists (silent-weapon fallback)" % base)
+		if sup != null:
+			assert_true(sup.volume_db < _reg.get_cue(base).volume_db, "%s_suppressed is softer" % base)
+	# every suppressed fallback the armory can reach (anim_sets with suppressor slots) must exist
+	for fam: String in ["pistol", "smg", "rifle", "shotgun", "lmg", "sniper", "lever", "bow", "crossbow"]:
+		assert_true(_reg.has_cue(StringName("cue.weapon_%s_fire_suppressed" % fam)), "%s suppressed cue" % fam)
 	var player: CuePlayer = _make_player()
 	var akimbo: WeaponDef = WeaponDef.new()
 	akimbo.anim_set = &"akimbo"

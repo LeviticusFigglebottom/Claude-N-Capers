@@ -20,13 +20,13 @@ Rendered by `tools/levelcheck/render_shots.sh` at 1920x1080. Contact sheet: `con
 | 14 | SallyPort | G1 sally port: roller + personnel door, cash lift | [sally_port.jpg](sally_port.jpg) | 60 |
 | 15 | StairCore | G2 U-stair from the corridor (railing over flight 2) | [stair_core.jpg](stair_core.jpg) | 61 |
 | 16 | BasementCorridor | B5 basement spine and the vault gate | [basement_corridor.jpg](basement_corridor.jpg) | 59 |
-| 17 | Antechamber | B8 antechamber: laser plane, time-lock panel, vault door | [antechamber.jpg](antechamber.jpg) | 73 |
+| 17 | Antechamber | B8 antechamber: laser plane, time-lock panel, vault door | [antechamber.jpg](antechamber.jpg) | 72 |
 | 18 | VaultInterior | B9 vault: cash cage, Co-op pallet, deposit box walls | [vault_interior.jpg](vault_interior.jpg) | 61 |
 | 19 | CountDepository | B11 count room and B12 depository safe | [count_depository.jpg](count_depository.jpg) | 52 |
 | 20 | RecordsRoom | B6 records: compact shelving, microfiche desk | [records_room.jpg](records_room.jpg) | 48 |
-| 21 | PlantAreaway | B3 plant room and the areaway door | [plant_areaway.jpg](plant_areaway.jpg) | 50 |
-| 22 | ManagerOffice | G12 manager office: desk, manager safe slot | [manager_office.jpg](manager_office.jpg) | 63 |
-| 23 | AtmVestibule | G13 ATM vestibule (24 h, PUBLIC): ATMs, night drop, hall door | [atm_vestibule.jpg](atm_vestibule.jpg) | 85 |
+| 21 | PlantAreaway | B3 plant room and the areaway door | [plant_areaway.jpg](plant_areaway.jpg) | 49 |
+| 22 | ManagerOffice | G12 manager office: desk, manager safe slot | [manager_office.jpg](manager_office.jpg) | 64 |
+| 23 | AtmVestibule | G13 ATM vestibule (24 h, PUBLIC): ATMs, night drop, hall door | [atm_vestibule.jpg](atm_vestibule.jpg) | 80 |
 | 24 | CranePerch | Crane office roof (P3 sniper perch) over the lot and sally door | [crane_perch.jpg](crane_perch.jpg) | 71 |
 
 ![contact sheet](contact_sheet.jpg)
