@@ -1,0 +1,146 @@
+## Ammo box drops and walk-over pickups (QB-57, PD2). Owner: ENV A. Service SERVICE, child of
+## HeistRuntime, server only. Numbers: AmmoPickupTweak (ammo_pickup_tweak.tres).
+## * Drops: every killed NPC (EventBus.npc_killed) whose role is not in no_drop_roles drops one
+##   AmmoPickup at its feet (chance drop_chance, rolled on GameRng &"ammo" only when below 1).
+## * Pickup: a NORMAL / SWAN_SONG crew member within pickup_radius_m x weapon.ammo_pickup_range_mult
+##   (horizontal) and pickup_height_m takes the box when at least one weapon is missing ammo. Each of
+##   their weapons gets round(rand(WeaponStats.ammo_pickup_min, ammo_pickup_max) x
+##   weapon.ammo_pickup_mult[weapon class]) rounds (GameRng &"ammo"; at least 1 when max > 0), capped
+##   at what it is missing (DeployablePrefab.max_ammo), per crew member's own weapons and modifiers.
+##   A box nobody can use stays on the floor.
+## * `ammo_picked(crew, amount)` (amount = rounds added over both weapons) is the hook for perk
+##   mechanics such as perk.gambler.
+##
+## PUBLIC API: drop(position) -> AmmoPickup (server/test hook), boxes() -> Array[Node],
+##   try_pickup(crew, box) -> int (rounds added, 0 = not taken), static rounds_for(crew, ws, rng).
+class_name AmmoPickupSystem
+extends Node
+
+signal ammo_picked(crew: CrewController, amount: int)
+
+const SERVICE: StringName = &"ammo_pickups"
+const RNG_STREAM: StringName = &"ammo"
+const RANGE_KEY: StringName = &"weapon.ammo_pickup_range_mult"
+const AMOUNT_KEY: StringName = &"weapon.ammo_pickup_mult"
+
+var _runtime: HeistRuntime = null
+var _boxes: Array[AmmoPickup] = []
+
+
+func _ready() -> void:
+	if _runtime == null:
+		_runtime = HeistRuntime.of(self)
+	EventBus.npc_killed.connect(_on_npc_killed)
+
+
+func _exit_tree() -> void:
+	if EventBus.npc_killed.is_connected(_on_npc_killed):
+		EventBus.npc_killed.disconnect(_on_npc_killed)
+
+
+func _on_npc_killed(npc_net_id: int, _killer_net_id: int, _info: Dictionary) -> void:
+	if not Net.is_authority() or _runtime == null or _runtime.is_replica:
+		return
+	var npc: NpcBase = Ids.lookup(npc_net_id) as NpcBase
+	if npc == null or not _runtime.is_ancestor_of(npc):
+		return
+	var tw: AmmoPickupTweak = AmmoPickupTweak.data()
+	if tw.no_drop_roles.has(npc.role):
+		return
+	if tw.drop_chance < 1.0 and GameRng.stream(RNG_STREAM).randf() >= tw.drop_chance:
+		return
+	drop(npc.global_position + Vector3(0.0, tw.drop_height_m, 0.0))
+
+
+## Server/test hook: drop an ammo box at `pos`. Returns it (null without a runtime).
+func drop(pos: Vector3) -> AmmoPickup:
+	if _runtime == null or _runtime.dynamic_root == null:
+		return null
+	_prune()
+	var tw: AmmoPickupTweak = AmmoPickupTweak.data()
+	while tw.max_boxes > 0 and _boxes.size() >= tw.max_boxes:
+		_remove(_boxes[0])
+	var box: AmmoPickup = AmmoPickup.new()
+	box.name = "AmmoPickup_%d" % _runtime.dynamic_root.get_child_count()
+	_runtime.dynamic_root.add_child(box, true)
+	box.global_position = pos
+	NetIds.claim(box)
+	_boxes.append(box)
+	return box
+
+
+## Ammo boxes lying in this heist.
+func boxes() -> Array[Node]:
+	_prune()
+	var out: Array[Node] = []
+	out.assign(_boxes)
+	return out
+
+
+func _physics_process(_delta: float) -> void:
+	if not Net.is_authority() or _runtime == null or _boxes.is_empty():
+		return
+	_prune()
+	var tw: AmmoPickupTweak = AmmoPickupTweak.data()
+	for crew: CrewController in _runtime.crew_members():
+		if crew.crew_state != Enums.CrewState.NORMAL and crew.crew_state != Enums.CrewState.SWAN_SONG:
+			continue
+		var r: float = tw.pickup_radius_m * Modifiers.mult(crew.slot, RANGE_KEY)
+		for box: AmmoPickup in _boxes.duplicate():
+			var d: Vector3 = box.global_position - crew.global_position
+			if Vector2(d.x, d.z).length() <= r and absf(d.y) <= tw.pickup_height_m:
+				try_pickup(crew, box)
+
+
+## Server: `crew` takes `box` if any weapon is missing ammo. Returns the rounds added (0 = not taken).
+func try_pickup(crew: CrewController, box: AmmoPickup) -> int:
+	if not Net.is_authority() or crew == null or crew.weapons == null or box == null or not _boxes.has(box):
+		return 0
+	var w: CrewWeapons = crew.weapons
+	var rng: RandomNumberGenerator = GameRng.stream(RNG_STREAM)
+	var total: int = 0
+	for ws: int in [Enums.WeaponSlot.PRIMARY, Enums.WeaponSlot.SECONDARY]:
+		if not w.has_weapon(ws):
+			continue
+		var missing: int = DeployablePrefab.max_ammo(crew, ws) - w.mag(ws) - w.reserve(ws)
+		if missing <= 0:
+			continue
+		var add: int = mini(rounds_for(crew, ws, rng), missing)
+		if add <= 0:
+			continue
+		w.set_ammo(ws, w.mag(ws), w.reserve(ws) + add)
+		total += add
+	if total <= 0:
+		return 0
+	_remove(box)
+	ammo_picked.emit(crew, total)
+	return total
+
+
+## Rounds one box gives weapon slot `ws` of `crew` (before the missing-ammo cap).
+static func rounds_for(crew: CrewController, ws: int, rng: RandomNumberGenerator) -> int:
+	var w: CrewWeapons = crew.weapons
+	var st: WeaponStats = w.stats(ws) if w != null else null
+	if st == null or st.ammo_pickup_max <= 0.0:
+		return 0
+	var def: WeaponDef = ContentDB.weapon(w.weapon_id(ws))
+	var q: StringName = Enums.weapon_class_qualifier(def.weapon_class) if def != null else &"pistol"
+	var lo: float = minf(st.ammo_pickup_min, st.ammo_pickup_max)
+	var n: float = rng.randf_range(lo, st.ammo_pickup_max) * Modifiers.mult(crew.slot, AMOUNT_KEY, q)
+	return maxi(int(round(n)), 1)
+
+
+func _remove(box: AmmoPickup) -> void:
+	_boxes.erase(box)
+	if is_instance_valid(box) and not box.is_queued_for_deletion():
+		if box.get_parent() != null:
+			box.get_parent().remove_child(box)
+		box.queue_free()
+
+
+func _prune() -> void:
+	var keep: Array[AmmoPickup] = []
+	for b: AmmoPickup in _boxes:
+		if is_instance_valid(b) and b.is_inside_tree() and not b.is_queued_for_deletion():
+			keep.append(b)
+	_boxes = keep

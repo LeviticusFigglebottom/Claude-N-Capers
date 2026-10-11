@@ -76,6 +76,8 @@ signal masked_changed()
 signal custody_changed()
 ## ui_hud v1.3 (D-049): captain_resistance, captain_present
 signal captain_changed()
+## ui_hud v1.4 (QB-60): stamina, exhausted
+signal stamina_changed()
 
 ## S1.1 "Suspicious actions not allowed" prompt (strings.csv key, ENV B).
 const SUSPICIOUS_PROMPT_KEY: StringName = &"ui.prompt.suspicious_not_allowed"
@@ -106,6 +108,7 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"masked": &"masked_changed", &"casing": &"masked_changed",
 	&"custody": &"custody_changed",
 	&"captain_resistance": &"captain_changed", &"captain_present": &"captain_changed",
+	&"stamina": &"stamina_changed", &"exhausted": &"stamina_changed",
 }
 ## Extra (non-contract) properties included in snapshot().
 const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase"]
@@ -131,6 +134,11 @@ var downs_left: int = 0
 var crew_state: Enums.CrewState = Enums.CrewState.NORMAL
 ## Seconds until custody while bleeding out (L2.5); < 0 = not bleeding out.
 var bleedout_s: float = -1.0
+# --- stamina_changed (ui_hud v1.4, QB-60)
+## Stamina current / max, 0..1 (CrewStamina).
+var stamina: float = 1.0
+## True while sprint is blocked after running dry (until back above the threshold).
+var exhausted: bool = false
 # --- ammo_changed
 ## Enums.WeaponSlot (int) -> {"mag": int, "reserve": int} for PRIMARY and SECONDARY.
 var ammo: Dictionary = {}
@@ -327,6 +335,8 @@ func _poll_vitals(c: CrewController, slot: int) -> void:
 		_assign(&"masked", c.masked)
 		_assign(&"casing", not c.masked)
 		_assign(&"mask_progress", c.mask_progress)
+		_assign(&"stamina", snappedf(c.stamina.fraction(), 0.01))
+		_assign(&"exhausted", c.stamina.exhausted)
 
 
 func _poll_weapons(c: CrewController) -> void:

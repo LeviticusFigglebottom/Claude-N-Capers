@@ -48,6 +48,8 @@ var mask_progress: float = 0.0
 var stealth_hidden: bool = false
 ## Last intent applied (held by the server for this tick).
 var intent: CrewIntent = CrewIntent.new()
+## QB-60: sprint / jump stamina (CrewStamina), ticked by the movement simulation.
+var stamina: CrewStamina = CrewStamina.new()
 
 var _runtime: HeistRuntime = null
 var _jump_latch: bool = false
@@ -303,13 +305,17 @@ func _simulate(delta: float) -> void:
 	var can_sprint: bool = not casing and not crouched and mobile and i.move.y > 0.1
 	if bag_w >= 0:
 		can_sprint = can_sprint and (tw.bag_can_sprint[bag_w] or Modifiers.flag(slot, &"loot.can_sprint_with_heavy"))
-	sprinting = i.sprint and can_sprint
+	var armor_def: ArmorDef = _armor_def()
+	stamina.refresh_max(self, armor_def)
+	sprinting = i.sprint and can_sprint and stamina.can_sprint()  # QB-60: no sprint at 0 stamina
 	var speed: float = tw.walk_speed
 	if crouched:
 		speed = tw.crouch_speed * Modifiers.mult(slot, &"movement.crouch_speed_mult")
 	elif sprinting:
 		speed = tw.sprint_speed
 	speed *= Modifiers.mult(slot, &"movement.speed_mult")
+	if armor_def != null:  # QB-56: armor move-speed penalty x movement.armor_penalty_mult
+		speed *= clampf(1.0 - (1.0 - armor_def.move_speed_mult) * Modifiers.mult(slot, &"movement.armor_penalty_mult"), 0.1, 1.0)
 	if bag_w >= 0 and not Modifiers.flag(slot, &"stealth.body_bag_concealed_carry"):
 		var pen: float = (1.0 - tw.bag_speed_mult[bag_w]) * Modifiers.mult(slot, &"loot.carry_speed_penalty_mult")
 		speed *= clampf(1.0 - pen, 0.1, 1.0)
@@ -325,8 +331,10 @@ func _simulate(delta: float) -> void:
 	var can_jump: bool = not casing and mobile and not crouched
 	if bag_w >= 0:
 		can_jump = can_jump and tw.bag_can_jump[bag_w]
-	if i.jump and not _jump_latch and is_on_floor() and can_jump:
+	if i.jump and not _jump_latch and is_on_floor() and can_jump and stamina.can_jump():
 		velocity.y = tw.jump_velocity
+		stamina.on_jump()
+	stamina.tick(sprinting, delta)
 	_jump_latch = i.jump and not is_on_floor()
 	move_and_slide()
 
@@ -349,6 +357,13 @@ func _tick_server_actions(delta: float) -> void:
 		_runtime.interaction.tick(self, intent, delta)
 	if _runtime != null:
 		_runtime.crew_actions_tick(self, intent, delta)
+
+
+## QB-56/60: the worn ArmorDef (loadout armor; null when none / unknown).
+func _armor_def() -> ArmorDef:
+	if loadout == null or loadout.armor == &"":
+		return null
+	return ContentDB.armor(loadout.armor)
 
 
 func _bag_weight() -> int:
