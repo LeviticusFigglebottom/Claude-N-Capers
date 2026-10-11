@@ -428,3 +428,11 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   - ENV B: QC-39 loot, QC-40 preplan assets.
   - ENV D: the cartel gunman model.
 - Priority: Dockside Burn G1 (the P3 gate) before the ND/SL G2 art passes.
+
+## D-065 — 2026-10-11 — Civilian mode contracts (S1.3, B5-05)
+- `HeistDef.start_mode` (&"casing" default | &"civilian"); ui_hud v1.6 `player_mode_changed` + crew `mode`;
+  gameplay_prefabs v1.4 `gear_pickup` and the common `civilian_allowed` export (block reason `ui.blocked.civilian`).
+  ENV A implements, ENV B adds strings (`ui.prompt.pick_up_gear`, `ui.blocked.civilian`) + HUD, ENV C uses it on
+  Afterhours (P5).
+- D-063 range check landed (ENV A 34b5537). Outliers (furnace ×0.5, cyclone empty ×0.73) are re-measured after
+  ENV D's batch-3 rebuild (bfde340) reaches trunk; any that remain get their own clip (D) or adjusted data (B).

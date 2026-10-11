@@ -73,3 +73,10 @@ New prefab requests from ENV C go to the lead as a status-file question.
 | Item | Contract |
 |---|---|
 | group `saw_target` | Prefabs a saw can cut (deposit boxes, ATMs, padlocks, chained doors). Implement `saw_cut(seconds: float, attacker_net_id: int) -> void` (server); the prefab accumulates cut time and opens itself. Group name constant in `G`. |
+
+## v1.4 (S1.3 civilian mode, D-065)
+| Item | Contract |
+|---|---|
+| `gear_pickup` prefab | kind `&"pick_up_gear"`, prompt `ui.prompt.pick_up_gear`; emits `item_picked_up(&"item.gear", slot)`; not consumed (every crew member uses it). Switches that player civilian → casing. |
+| common export `civilian_allowed: bool` | Default false; true on `gear_pickup`. While a player is in civilian mode, interactions without it are blocked with `ui.blocked.civilian`. |
+| civilian rules | Undetectable (detection ×0); cannot mask up or fire until gear is picked up; laser grids still trip; an alarm masks everyone and ends civilian mode. |
