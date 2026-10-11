@@ -436,3 +436,18 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   Afterhours (P5).
 - D-063 range check landed (ENV A 34b5537). Outliers (furnace ×0.5, cyclone empty ×0.73) are re-measured after
   ENV D's batch-3 rebuild (bfde340) reaches trunk; any that remain get their own clip (D) or adjusted data (B).
+
+## D-066 — 2026-10-11 — P3 gate tests drafted (Glasshouse until Dockside Burn)
+- game/tests/integration/test_p3_loud.gd: escalation and caps over 3 waves; counterplay for each special (Phantom,
+  Stinger, Bulwark, Wrecker, Longshot, Corpsman, Brandt/Aegis); custody + hostage trades; AI orders during an assault.
+  test_coop_loopback.gd: host/client parity (variants, crew, NPCs, a door, the alarm, a bag, heist_ended) with
+  D-051 process rules. 21 integration tests green on two runs (~85 s added).
+- Temporary workarounds accepted, each with a routed fix and a revisit:
+  - seed 3007 (salon open) until ENV A ships police door breaching / locked-door-aware pathing; then add seed 3001.
+  - loopback seed 3074 until ENV C fixes the esc_alley_west secure-zone floor offset.
+  - loopback ends through all-custody; revisit with Dockside Burn's loud escape.
+- Bugs routed:
+  - ENV A: police path through locked doors with no breach (`NpcMotor.door_blocked`).
+  - ENV A: AI teammates never free kicked or tased crew (only DOWNED), which breaks L2.8/L6.1.
+  - ENV C: VanSecureE1 zone floor at 0.0 vs alley ground −0.15.
+- The P3 gate switches its map constant to dockside_burn once that map reaches G1.
