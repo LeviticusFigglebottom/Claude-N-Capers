@@ -11,8 +11,8 @@
 ## markers, one static RangeTarget per lane) plus B4-13's extra lanes: a moving-target area (targets
 ## on lateral RangeTracks, 2-5 m/s) and an armory area (frontal-plate, shield, staged-plate and
 ## plain special dummies). `targets` = static lanes first, then the extra lanes. Dummy HP/headshot
-## multipliers per difficulty come from ENV A's EnemyDef via range_dummies.tres (B stopgap rows only
-## for enemies A has not shipped, D-010). Weapon numbers are LoadoutResolver output; the loadout
+## multipliers per difficulty come from ENV A's EnemyDef via range_dummies.tres (D-010).
+## Weapon numbers are LoadoutResolver output; the loadout
 ## panel lets the player pick any weapon and mod from ContentDB without owning it (P7).
 ## Readout: the selected target's RangeDamageModel (the function its take_hit uses) gives
 ## shots/TTK/DPS with armor, shield and plate math; a per-dummy-type table does the same for every

@@ -1979,3 +1979,4 @@ item.mod.cyclone_box_750.name,Seven-Hundred-Fifty-Round Box
 item.mod.cyclone_box_750.desc,"A bigger ammunition box. More belt, slower to swap, even heavier."
 item.mod.cyclone_short_barrels.name,Short Barrel Cluster
 item.mod.cyclone_short_barrels.desc,"Six cut-down barrels. A little easier to carry, a lot less accurate."
+ui.lobby.error.unreachable,Could not reach the host. Check the address and port.
