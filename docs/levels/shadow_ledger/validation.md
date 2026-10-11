@@ -153,7 +153,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomS3` | 8 | 8 | 100% |
 | `Rooms/RoomS2` | 26 | 26 | 100% |
 | `Rooms/RoomSA` | 7 | 7 | 100% |
-| `Rooms/RoomSB` | 5 | 5 | 100% |
+| `Rooms/RoomSB` | 7 | 7 | 100% |
 | `Rooms/RoomSL` | 25 | 25 | 100% |
 | `Rooms/RoomK1` | 81 | 81 | 100% |
 | `Rooms/RoomK2` | 41 | 41 | 100% |
@@ -186,7 +186,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomWCM41` | 50 | 50 | 100% |
 | `Rooms/RoomM1` | 208 | 208 | 100% |
 | `Rooms/RoomM2` | 160 | 160 | 100% |
-| `Rooms/RoomM3` | 102 | 102 | 100% |
+| `Rooms/RoomM3` | 111 | 111 | 100% |
 | `Rooms/RoomM4` | 123 | 123 | 100% |
 | `Rooms/RoomM5` | 78 | 78 | 100% |
 | `Rooms/RoomM6` | 30 | 30 | 100% |

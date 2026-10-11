@@ -160,6 +160,7 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_chino_navy": ("#343D52", 0.86, 0.0, "cloth"),  # D3-01 meridian_federal: customer's navy chinos
     "char_blazer_grey": ("#6A6C70", 0.84, 0.0, "cloth"),  # D3-01 meridian: customer's unstructured grey blazer
     "char_nylon_olive": ("#4E5640", 0.55, 0.0, "cloth"),  # D3-01 meridian: parent's olive nylon bomber
+    "char_suit_grey": ("#4D5056", 0.80, 0.0, "cloth"),  # D-075 ostrander_federal: bank officers' grey worsted suit
     "char_sneaker_white": ("#CBC8C0", 0.70, 0.0, "cloth"),  # D3-01: white trainers
     "char_vl_shirt": ("#A0946E", 0.86, 0.0, "cloth"),  # D3-01 rolling_thunder: Vaultline Armored sand shirt
     "char_vl_trousers": ("#433A2F", 0.84, 0.0, "cloth"),  # D3-01 rolling_thunder: Vaultline brown trousers / cap

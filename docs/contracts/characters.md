@@ -1,4 +1,4 @@
-# Contract: characters (v1.9)
+# Contract: characters (v1.10)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -153,3 +153,17 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
 * Placement for ENV C (root space, −Z ahead): bar top 1.05 m, near edge 0.28 m ahead; teller counter top 1.00 m, near edge
   0.28 m; painting centre 1.55 m high on a wall 0.80 m ahead with 0.73 m clear behind the NPC; `cower_stand` wants a wall
   at z +0.21 behind.
+
+## v1.10: locomotion blend set, reactions, deaths (D3-04, D-076)
+* 8-way: `walk_fl/fr/l/r/bl/br/b` (30 f, 1.6 m/s), `run_fl/fr/l/r/bl/br/b` (21 f, 3.5 m/s), phase-locked to `walk`/`run`
+  (right foot down at t=0, left at 0.5); SOURCE `dir_deg` clockwise from forward. `strafe_l/r`, `walk_back` stay.
+* Starts/stops: `walk_start`, `walk_stop`, `run_start`, `run_stop`. A start begins on idle frame 0 and ends exactly on walk
+  frame 3 / run frame 4 (no crossfade); a stop begins on cycle frame 0 and ends on idle frame 0. Root motion in SOURCE
+  `curve.<clip>` (0.52 / 0.44 / 1.32 / 0.90 m).
+* Hit reacts: `hit_react` (front), `hit_react_back` / `_left` / `_right`: pick by bullet travel direction d in the body
+  frame (d.z > 0.5 front, < −0.5 back, d.x > 0.5 left, else right).
+* Deaths: `death_front_b` (knees@16, impact@38), `death_back_b` (ends 1.0–1.9 m behind the root), `death_side` (impact@36).
+* `downed_crawl` (60 f loop, 0.3 m/s; NPC / bleed-out drag; PD2 players do not crawl). `dozer_walk_heavy` (1.7 m/s,
+  step_r@0 step_l@16; Wrecker via `params.anim_walk_clip`, clip_speeds 1.7).
+* Recommended blend (ENV A): two BlendSpace2D (walk, run) with the 8 directions, sync on,
+  speed_scale = v / (1.6 or 3.5 × motion_scale), crossfade walk↔run at the existing split (SOURCE `locomotion_blend`).

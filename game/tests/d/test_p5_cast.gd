@@ -5,8 +5,9 @@
 ## Socket), that every surface resolves to a library material, the triangle budget and plausible
 ## heights; that the cast index covers the four P5 heists and every role, points only at existing
 ## scenes and lists every new character; that every pager-carrying guard's Hip socket sits on a belt
-## radio; and the liveries: the gallery and armoured-car companies are neither Halden, Northgate nor
-## police, and the curator is the only pale suit at the gala. Regenerate with
+## radio (and the pager roles, incl. club_bouncer); and the liveries: the gallery and armoured-car
+## companies are neither Halden, Northgate nor police, the curator is the only pale suit at the gala
+## and the Ostrander bank officers (D-075) wear the bank lanyard over grey. Regenerate with
 ## tools/blender/characters/assemble.sh.
 extends TestCase
 
@@ -23,6 +24,8 @@ const NEW: Array[String] = [
 	"char_gallery_patron",
 	"char_gallery_patron_b",
 	"char_bank_manager",
+	"char_bank_officer",
+	"char_bank_officer_b",
 	"char_bank_customer",
 	"char_bank_customer_b",
 	"char_armored_car_crew",
@@ -37,16 +40,17 @@ const NEW: Array[String] = [
 	"char_club_patron_c",
 	"char_club_patron_d",
 ]
-## heist -> roles the index must carry (D3-01 brief).
+## heist -> roles the index must carry (D3-01 brief; D-075 renamed meridian_federal and added
+## bank_officer).
 const ROLES: Dictionary = {
 	"gallery_night": ["gallery_curator", "gallery_attendant", "gallery_guard", "gallery_patron"],
-	"meridian_federal": ["bank_teller", "bank_manager", "bank_guard", "bank_customer"],
+	"ostrander_federal": ["bank_teller", "bank_manager", "bank_officer", "bank_guard", "bank_customer"],
 	"rolling_thunder": ["armored_car_crew", "convoy_escort"],
 	"afterhours": ["club_bouncer", "club_bartender", "club_dj", "club_patron"],
 }
 ## Minimum ids per role where the brief asks for several.
 const MIN_COUNT: Dictionary = {
-	"gallery_attendant": 2, "gallery_patron": 4, "bank_teller": 2, "bank_customer": 4, "armored_car_crew": 2,
+	"gallery_attendant": 2, "gallery_patron": 4, "bank_teller": 2, "bank_officer": 2, "bank_customer": 4, "armored_car_crew": 2,
 	"club_bouncer": 2, "club_bartender": 2, "club_patron": 4,
 }
 ## New characters whose pager is answered at Hip/Socket (a belt radio).
@@ -54,6 +58,11 @@ const RADIO: Array[String] = [
 	"char_gallery_guard", "char_gallery_guard_b", "char_armored_car_crew", "char_armored_car_crew_b",
 	"char_club_bouncer_b",
 ]
+## Roles whose bodies carry a pager (p5_cast.json pager_roles; club_bouncer per QC-70).
+const PAGER_ROLES: Array[String] = ["gallery_guard", "bank_guard", "armored_car_crew", "club_bouncer"]
+## New pager-role characters without a modelled radio: the pager is answered at the default hip
+## seat (club_bouncer's radio is under the bomber, not modelled; see the cast notes).
+const NO_RADIO: Array[String] = ["char_club_bouncer"]
 const TRI_BUDGET: int = 35000
 const MIN_HEIGHT: float = 1.6
 const MAX_HEIGHT: float = 2.0
@@ -227,6 +236,31 @@ func test_cast_index_points_at_existing_scenes() -> void:
 		assert_has(listed, Spec.character_id(asset), "%s cast in p5_cast.json" % asset)
 
 
+## The pager roles are exactly PAGER_ROLES, each is cast in some heist, and every new character in a
+## pager role answers it on a belt radio (RADIO) or is a documented exception (NO_RADIO).
+func test_pager_roles() -> void:
+	var listed: Array[String] = []
+	for r: Variant in _cast.get("pager_roles", []) as Array:
+		listed.append(String(r))
+	listed.sort()
+	var want: Array[String] = PAGER_ROLES.duplicate()
+	want.sort()
+	assert_eq(listed, want, "pager_roles")
+	var heists: Dictionary = _cast.get("heists", {}) as Dictionary
+	for role: String in PAGER_ROLES:
+		var found: bool = false
+		for heist: String in heists:
+			var roles: Dictionary = heists[heist] as Dictionary
+			if not roles.has(role):
+				continue
+			found = true
+			for cid: Variant in roles[role]:
+				var asset: String = "char_" + String(cid)
+				if NEW.has(asset):
+					assert_true(RADIO.has(asset) or NO_RADIO.has(asset), "%s (%s): pager on a radio" % [asset, role])
+		assert_true(found, "pager role %s is cast" % role)
+
+
 ## Every pager role's new characters answer the pager at Hip/Socket, on the belt radio (right hip).
 func test_radio_hip_sockets() -> void:
 	for id: String in RADIO:
@@ -283,3 +317,14 @@ func test_curator_stands_out() -> void:
 			if _materials(asset).has(CURATOR_SUIT) and not users.has(asset):
 				users.append(asset)
 	assert_eq(users, ["char_gallery_curator"] as Array[String], "only the curator wears the bone suit: %s" % [users])
+
+
+## D-075: the gallery-level bank officers wear the bank's lanyard (bank red + slate) over the grey
+## suit, never the manager's navy three-piece or the customer's grey blazer.
+func test_bank_officers() -> void:
+	for id: String in ["char_bank_officer", "char_bank_officer_b"]:
+		var mats: Array[String] = _materials(id)
+		for need: String in ["char_suit_grey", "char_bank_red", "char_bank_slate"]:
+			assert_has(mats, need, "%s: wears %s" % [id, need])
+		for bad: String in ["char_suit_navy", "char_blazer_grey"]:
+			assert_false(mats.has(bad), "%s: not %s" % [id, bad])

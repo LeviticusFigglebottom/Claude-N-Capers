@@ -17,6 +17,7 @@ Locomotion clips plant the stance foot exactly: at ``speed`` m/s (for 1.78 m; mu
 """
 
 import _anim as anim
+import _anim_d304 as d304
 import _anim_humanoid as lib
 import _anim_p5 as p5
 import _rig as rig
@@ -125,6 +126,44 @@ CLIPS = {
     "walk_text": {"frames": 36, "loop": True, "speed": 1.2, "priority": 5},
     "cower_seated": {"frames": 90, "loop": True, "speed": 0.0, "priority": 5},
     "cower_stand": {"frames": 150, "loop": True, "speed": 0.0, "priority": 5, "events": {"flinch_1": 39, "flinch_2": 108}},
+    # D3-04 polish (priority 6, _anim_d304). Crew locomotion blend set: 8-way cycles phase-locked to walk / run (same
+    # frames, speed and stance share; right foot down at normalised time 0, left at 0.5 in every direction), `dir_deg`
+    # = travel direction clockwise from forward (Godot root space (sin a, 0, -cos a)); `walk` / `run` are the forward
+    # members. Start / stop one-shots: `handoff` = the walk / run frame the clip hands over to (starts: the clip's
+    # last frame == that cycle frame; stops: the clip's frame 0 == that cycle frame), from / to idle frame 0; root
+    # travel per frame in SOURCE.txt `curve.<clip>` (A drives the root). Events: foot plants.
+    "walk_fl": {"frames": 30, "loop": True, "speed": 1.6, "priority": 6, "dir_deg": -45},
+    "walk_fr": {"frames": 30, "loop": True, "speed": 1.6, "priority": 6, "dir_deg": 45},
+    "walk_l": {"frames": 30, "loop": True, "speed": 1.6, "priority": 6, "dir_deg": -90},
+    "walk_r": {"frames": 30, "loop": True, "speed": 1.6, "priority": 6, "dir_deg": 90},
+    "walk_bl": {"frames": 30, "loop": True, "speed": 1.6, "priority": 6, "dir_deg": -135},
+    "walk_br": {"frames": 30, "loop": True, "speed": 1.6, "priority": 6, "dir_deg": 135},
+    "walk_b": {"frames": 30, "loop": True, "speed": 1.6, "priority": 6, "dir_deg": 180},
+    "run_fl": {"frames": 21, "loop": True, "speed": 3.5, "priority": 6, "dir_deg": -45},
+    "run_fr": {"frames": 21, "loop": True, "speed": 3.5, "priority": 6, "dir_deg": 45},
+    "run_l": {"frames": 21, "loop": True, "speed": 3.5, "priority": 6, "dir_deg": -90},
+    "run_r": {"frames": 21, "loop": True, "speed": 3.5, "priority": 6, "dir_deg": 90},
+    "run_bl": {"frames": 21, "loop": True, "speed": 3.5, "priority": 6, "dir_deg": -135},
+    "run_br": {"frames": 21, "loop": True, "speed": 3.5, "priority": 6, "dir_deg": 135},
+    "run_b": {"frames": 21, "loop": True, "speed": 3.5, "priority": 6, "dir_deg": 180},
+    "walk_start": {"frames": 18, "loop": False, "speed": 1.6, "priority": 6, "handoff": 3, "events": {"step_r": 15}},
+    "walk_stop": {"frames": 18, "loop": False, "speed": 1.6, "priority": 6, "handoff": 0, "events": {"step_l": 14}},
+    "run_start": {"frames": 18, "loop": False, "speed": 3.5, "priority": 6, "handoff": 4, "events": {"step_r": 14}},
+    "run_stop": {"frames": 20, "loop": False, "speed": 3.5, "priority": 6, "handoff": 0, "stop_m": 0.9,
+                 "events": {"step_l": 6, "step_r": 17}},
+    # directional hit reacts (with the existing hit_react = shot from the front) and death variety; deaths end lying
+    # on the floor (`impact` = the body hits the floor)
+    "hit_react_back": {"frames": 15, "loop": False, "speed": 0.0, "priority": 6},
+    "hit_react_left": {"frames": 15, "loop": False, "speed": 0.0, "priority": 6},
+    "hit_react_right": {"frames": 15, "loop": False, "speed": 0.0, "priority": 6},
+    "death_front_b": {"frames": 60, "loop": False, "speed": 0.0, "priority": 6, "events": {"knees": 16, "impact": 38}},
+    "death_back_b": {"frames": 60, "loop": False, "speed": 0.0, "priority": 6,
+                     "events": {"step_r": 12, "step_l": 21, "impact": 44}},
+    "death_side": {"frames": 60, "loop": False, "speed": 0.0, "priority": 6, "events": {"impact": 36}},
+    # prone bleed-out drag crawl, the root moving forward (-Z) at `speed`; Wrecker heavy stomp at the Wrecker's
+    # advance speed (1.8 m/s on its 1.88 m body = 1.7 m/s native), a step every wrecker_step_interval_s (0.55 s)
+    "downed_crawl": {"frames": 60, "loop": True, "speed": 0.3, "priority": 6},
+    "dozer_walk_heavy": {"frames": 33, "loop": True, "speed": 1.7, "priority": 6, "events": {"step_r": 0, "step_l": 16}},
 }
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)
@@ -157,7 +196,7 @@ def build(ctx) -> None:
     keep = {}
     for name in sorted(CLIPS):
         baked = anim.bake(solver, clips[name])
-        if name in KEEP:
+        if name in KEEP or name in d304.KEEP:
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -169,6 +208,8 @@ def build(ctx) -> None:
         elif name in P5:
             cs, _low = p5.contact_slide(sk, baked.frames)
             row += f" contact_slide={cs:.3f}mm/f"
+        if name in d304.NAMES:
+            row += d304.check_row(sk, CLIPS, name, clips[name], baked, keep)
         report.append(row)
         print(f"[anim] {row}")
     for pb in arm.pose.bones:
@@ -196,6 +237,8 @@ def build(ctx) -> None:
         f"stance, the shield tilted {lib.SHIELD_PITCH:g} deg top-back and turned {lib.SHIELD_YAW:g} deg; pistol "
         "one-handed at HandR/Socket just outside the shield's right edge")
     _npc_source(ctx, sk, keep)
+    for key, text in d304.source_notes(sk, CLIPS, clips, keep).items():
+        ctx.source_extra[key] = text
     for name in sorted(CLIPS):
         row = CLIPS[name]
         extra = f"{row['frames']}f loop={row['loop']} speed_mps={row['speed']}"
@@ -207,6 +250,7 @@ def build(ctx) -> None:
             extra += f" travel_axis={row['axis']}"
         if "bpm" in row:
             extra += f" bpm={row['bpm']} beats={row['beats']} beat_frames={row['frames'] // row['beats']}"
+        extra += d304.row_extra(row)
         ctx.source_extra[f"clip.{name}"] = extra
     for i, row in enumerate(report):
         ctx.source_extra[f"check.{i:02d}"] = row

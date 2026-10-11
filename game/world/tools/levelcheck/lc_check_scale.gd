@@ -30,7 +30,7 @@ const CEILING: Dictionary = {
 	&"living_room": Vector2(2.6, 3.0), &"bathroom": Vector2(2.6, 3.0), &"cash_office": Vector2(2.6, 3.0),
 	# retail / lobby 3.0-4.5
 	&"sales_floor": Vector2(3.0, 4.5), &"retail": Vector2(3.0, 4.5), &"lobby": Vector2(3.0, 4.5),
-	&"showroom": Vector2(3.0, 4.5), &"reception": Vector2(3.0, 4.5), &"gallery": Vector2(3.0, 4.5),
+	&"showroom": Vector2(3.0, 4.5), &"reception": Vector2(3.0, 4.5),
 	&"restaurant": Vector2(3.0, 4.5), &"bar": Vector2(3.0, 4.5),
 	# warehouse / banking hall 3.5-6
 	&"warehouse": Vector2(3.5, 6.0), &"banking_hall": Vector2(3.5, 6.0), &"loading": Vector2(3.5, 6.0),
@@ -39,6 +39,13 @@ const CEILING: Dictionary = {
 	&"vault": Vector2(2.6, 6.0),
 	# plant / mechanical rooms are not in §2.6 either: like warehouse/industrial (lead to confirm).
 	&"plant": Vector2(2.6, 6.0),
+	# D-075 (lead): purposes the P5 heists need instead of per-room overrides.
+	# gallery: a top-lit exhibition room (clerestory or lantern roof over the hang).
+	&"gallery": Vector2(4.5, 6.5),
+	# hall: a double-height public hall (dance hall, banking hall of the grand type).
+	&"hall": Vector2(6.0, 9.0),
+	# car_park: a parking deck (QC-87).
+	&"car_park": Vector2(2.2, 3.0),
 	# atrium <= 10
 	&"atrium": Vector2(3.0, 10.0),
 }
