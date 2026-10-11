@@ -162,6 +162,8 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		return out
 	var tw: CrewTweak = Tweak.crew()
 	var dmg: float = maxf(float(info.get("amount", 0.0)), 0.0) * Modifiers.mult(_slot(), &"defense.damage_taken_mult")
+	if int(info.get("type", Enums.DamageType.BULLET)) == Enums.DamageType.MELEE:
+		dmg *= Modifiers.mult(_slot(), &"defense.melee_damage_taken_mult")  # A3-13: enemy melee
 	dmg = TeamModifiers.hostage_reduced(_slot(), dmg, TeamModifiers.hostage_count(_crew))  # QB-60
 	if st == Enums.CrewState.DOWNED or _is_cuffed_while_down():
 		bleedout_health -= dmg
