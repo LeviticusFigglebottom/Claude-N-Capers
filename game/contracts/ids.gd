@@ -34,6 +34,7 @@ const BODY: StringName = &"body"
 const DEPLOYABLE: StringName = &"deployable"
 const HOSTAGE: StringName = &"hostage"
 const RANGE_TARGET: StringName = &"range_target"  ## firing-range targets: never in ENEMY/NPC (QB-24)
+const SAW_TARGET: StringName = &"saw_target"  ## prefabs with saw_cut(seconds, attacker_net_id) (D-057)
 const LOCAL_HUD_MODEL: StringName = &"local_hud_model"  ## exactly one per peer during a heist (ui_hud.md)
 
 # --- HeistRuntime services ---

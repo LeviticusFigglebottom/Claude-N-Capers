@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.4)
+# Contract: HUD data (v1.5)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -65,3 +65,9 @@ instantiates UI.
 | Signal | Properties |
 |---|---|
 | `stamina_changed` | `stamina: float` (0..1 of max), `exhausted: bool` (sprint/jump locked until recovery). ENV A writes; ENV B shows a widget. |
+
+## v1.5 (D-057, B4-18)
+| Signal | Properties |
+|---|---|
+| `weapon_charge_changed` | `weapon_charge: float` (0..1; bow draw / charge weapons; 0 when not charging) |
+| `weapon_spin_changed` | `weapon_spin: float` (0..1; minigun spin-up; 0 when idle) |
