@@ -83,6 +83,8 @@ var _send_accum: float = 0.0
 @onready var weapons: CrewWeapons = get_node_or_null("Weapons") as CrewWeapons
 ## L3.9 melee (CrewMelee), ticked with the weapons.
 @onready var melee: CrewMelee = get_node_or_null("Melee") as CrewMelee
+## A3-12 grenades / throwing knives (CrewThrowables), ticked with the weapons.
+@onready var throwables: CrewThrowables = get_node_or_null(CrewThrowables.NODE_NAME) as CrewThrowables
 @onready var _collision: CollisionShape3D = $Collision
 @onready var _head: Node3D = $Head
 
@@ -305,6 +307,8 @@ func _physics_process(delta: float) -> void:
 			weapons.client_tick(intent, delta)
 		if melee != null:
 			melee.tick(intent, delta)  # presentation on the owning client (hits are server-side)
+		if throwables != null:
+			throwables.tick(intent, delta)
 		_client_send(delta)
 
 
@@ -382,6 +386,8 @@ func _tick_server_actions(delta: float) -> void:
 		weapons.server_tick(intent, delta)
 	if melee != null:
 		melee.tick(intent, delta)
+	if throwables != null:
+		throwables.tick(intent, delta)
 	if _runtime != null and _runtime.interaction != null:
 		_runtime.interaction.tick(self, intent, delta)
 	if _runtime != null:

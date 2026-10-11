@@ -515,3 +515,57 @@ func test_v18_heister_sleeves() -> void:
 			assert_eq(vs.get_bone_count(), fp.skeleton.get_bone_count(), "%s: same rig_arms bones" % h)
 		v.free()
 	assert_true(arms.mesh != suit, "sleeves changed")
+
+
+## A3-12 / D-069: a throw plays the `throwable` draw then throw, release@ on the gameplay release; Pin hidden at
+## pin_pull@, the item at the release.
+func test_d069_throw_clips() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.arms_scene == null:
+		skip("char_arms_fp not delivered")
+		return
+	var d: ThrowableDef = ThrowableDef.new()
+	d.id = &"throwable.test_fp_frag"
+	d.kind = ThrownItem.KIND_FRAG
+	var model: Node3D = Node3D.new()
+	var pin: Node3D = Node3D.new()
+	pin.name = "Pin"
+	model.add_child(pin)
+	pin.owner = model
+	var ps: PackedScene = PackedScene.new()
+	ps.pack(model)
+	model.free()
+	d.model = ps
+	ContentDB.inject(ContentDB.THROWABLES, d.id, d)
+	var c: CrewController = await _spawn(&"weapon.corsair_ar", &"weapon.kestrel_p9")
+	var fp: FpViewmodel = _fp(c)
+	if fp == null or not fp.supports(d.anim_set):
+		ContentDB.clear_cache()
+		skip("no throwable set")
+		return
+	c.set_physics_process(false)
+	c.set_masked()
+	c.loadout.throwable = d.id
+	c.weapons.throwable_count = 1
+	var press: CrewIntent = CrewIntent.new()
+	press.throw_item = true
+	var none: CrewIntent = CrewIntent.new()
+	fp.tick(0.016)
+	c.throwables.tick(press, 0.016)
+	assert_eq(String(fp.player.current_animation), "throwable/draw", "pin pull: draw")
+	assert_false(c.weapon_visual.visible, "gun away")
+	var windup: float = CombatTweak.data().throw_windup_s
+	var rel: float = float(fp._segs[1]["start"]) + tw.event_s(&"throwable_throw", &"release") / float(fp._segs[1]["speed"])
+	assert_near(rel, windup, 0.01, "release@ lands on the gameplay release")
+	fp.tick(windup * 0.8)
+	var held: Node3D = fp.weapon_attach.get_node_or_null(FpViewmodel.ITEM_NAME) as Node3D
+	assert_true(held != null, "grenade in the hand")
+	if held != null:
+		assert_false((held.get_node(^"Pin") as Node3D).visible, "pin pulled")
+	assert_eq(String(fp.player.current_animation), "throwable/throw", "throw")
+	c.throwables.tick(none, windup)
+	assert_true(held == null or not held.visible, "released: the item leaves the hand")
+	fp.tick(2.0)
+	assert_eq(fp.action, FpViewmodel.Action.NONE, "throw over")
+	assert_true(c.weapon_visual.visible, "gun back")
+	ContentDB.clear_cache()

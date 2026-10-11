@@ -81,6 +81,29 @@ static var _cached: CombatTweak = null
 @export var bash_swing_s: float = 0.55
 @export var bash_hit_delay_s: float = 0.2
 
+@export_group("Throwables (A3-12)")
+## Throw press -> release (the FP `throwable` throw clip's release@ is re-timed onto it) ◇.
+@export var throw_windup_s: float = 0.4
+## Recovery after the release before the next throw / shot ◇.
+@export var throw_recover_s: float = 0.4
+## Launch speed along the aim, lofted up by throw_loft_deg ◇.
+@export var throw_speed_mps: float = 16.0
+@export var throw_loft_deg: float = 8.0
+## Bounce: velocity kept on a world contact (frag / concussion roll on) ◇.
+@export var throw_bounce_keep: float = 0.35
+## A thrown item that has not gone off by now is removed.
+@export var throw_lifetime_s: float = 12.0
+## Concussion: NPCs in the radius with LOS are stunned this long (stun-immune enemies ignore it) ◇.
+@export var concussion_stun_s: float = 4.0
+## Incendiary: the fire pool burns this long; NPCs in it are set burning (BurnStatus) ◇.
+@export var incendiary_pool_s: float = 10.0
+@export var incendiary_burn_dps: float = 40.0
+@export var incendiary_burn_s: float = 3.0
+@export var incendiary_panic_chance: float = 0.6
+@export var incendiary_panic_s: float = 1.5
+## Explosion (frag / concussion) noise radius for the stealth system ◇.
+@export var throwable_noise_radius_m: float = 60.0
+
 @export_group("Piercing (A3-06, L3.4)")
 ## Physics layer 9 `bullet_penetrable` (thin walls): stops bullets unless the weapon has wall_pierce.
 @export_flags_3d_physics var penetrable_mask: int = 1 << 8

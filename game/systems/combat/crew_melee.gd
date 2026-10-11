@@ -53,7 +53,8 @@ func melee_def() -> MeleeDef:
 
 
 func can_melee() -> bool:
-	return _crew != null and _crew.masked and _crew.crew_state == Enums.CrewState.NORMAL
+	return _crew != null and _crew.masked and _crew.crew_state == Enums.CrewState.NORMAL \
+		and (_crew.throwables == null or not _crew.throwables.busy())
 
 
 ## Server and the owning client: one tick of intent.melee.
