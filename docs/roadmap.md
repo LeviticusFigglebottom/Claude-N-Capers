@@ -47,6 +47,11 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | B4-18 | Armory batch 3: last 16 weapons to 36 (incl. special weapons), mods, models; list to lead early for ENV D FP sets | P4 armory |
 | B4-19 | Stamina HUD widget (ui_hud v1.4) | QB-60 |
 | B4-20 | Achievements stub: data-driven conditions, MaskLocker.grant_unlock, small screen | P8 |
+| B5-01 | Options menu: key/pad rebinding (all InputMap actions incl. look_*), audio buses (Master/Music/SFX/Voice/Ambience), video (resolution, vsync, FOV 60–110, quality presets), gameplay (hold vs toggle for ADS/crouch/interact), accessibility (colour-blind-safe detection/HUD palettes, subtitle size); persisted in the profile | P6 polish (pulled forward) |
+| B5-02 | Notoriety ranks (PD2 infamy analog): at level 100 reset to 0 for a rank (I–XXV), rank XP bonus, rank-gated cosmetic unlocks (masks/patterns/materials), skill-point refund on rank-up; save v6 + migration; rank UI in the hub | P6 |
+| B5-03 | Music selection: per-heist track choice in pre-planning/lobby (host decides), hub jukebox; data-driven track list (ENV C supplies the stems) | P5 music |
+| B5-04 | Dockside Burn content data (P3 loud-only heist): HeistDef skeleton, contract/briefing/strings, loot defs; objective ids from ENV C's G0 `[tag]`s once its design doc lands | P3 gate |
+| B5-05 | Civilian-mode UI (S1.3): HUD civilian state, gear-pickup prompt, briefing flag display (ENV A owns `start_mode = civilian` + the gear prefab) | P5 |
 
 | C2-00 | G0 design docs: Night Deposit and Shadow Ledger (stealth-only) | level_standards §9 |
 
