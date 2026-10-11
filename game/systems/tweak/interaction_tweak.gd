@@ -99,6 +99,8 @@ extends Resource
 ## Hold to place the carried thermite bag (consumed), burn time, then the telegraph (warning cue) and the
 ## countdown before device_finished (the mission drops the fire shutters) and the fire volume lights.
 @export var burn_place_s: float = 3.0
+## D-068: a thermite bag lying this close to the burn point (m) is used as well as a carried one.
+@export var burn_bag_radius_m: float = 2.5
 @export var burn_duration_s: float = 30.0
 @export var burn_warning_s: float = 5.0
 ## Fire volume damage to crew inside (DamageType.FIRE, ignores armour, L3.4), per second, ticked.

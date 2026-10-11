@@ -166,3 +166,16 @@ func test_c3_unknown_dev_id_ignored() -> void:
 	await _launch({"preplanning": [&"asset.not_in_catalog"]})
 	assert_true(_rt != null, "launch still succeeds")
 	assert_false(_rt.preplan.is_active(), "unknown id ignored")
+
+
+## D-068: a `loot.<id>` drop kind spawns a loot bag of that id at the point (asset.thermite_drop -> loot.thermite).
+func test_d068_loot_drop_kind_spawns_a_bag() -> void:
+	await _launch({"preplan": _result({"drops": [
+		{"asset": &"asset.thermite_drop", "kind": &"loot.jewelry", "point": &"pp_alley", "params": {}},
+	]})})
+	var bag: LootBag = _rt.preplan.drops.get(&"pp_alley") as LootBag
+	assert_true(bag != null, "a LootBag at pp_alley")
+	if bag != null:
+		assert_eq(bag.loot_id, &"loot.jewelry", "of the drop's loot id")
+		assert_true(bag.global_position.distance_to(Vector3(4, 0, 4)) < 0.6, "at the marker")
+		assert_true(NetIds.of(bag) != 0, "replicated (net id)")

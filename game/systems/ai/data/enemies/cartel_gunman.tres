@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="EnemyDef" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://contracts/data/enemy_def.gd" id="1"]
+[ext_resource type="PackedScene" path="res://world/characters/cartel_gunman/cartel_gunman.tscn" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -13,8 +14,9 @@ damage = PackedFloat32Array(12, 12, 18, 25, 35, 45)
 move_speed = 3.6
 weapon = &"weapon.npc_rifle"
 detection_preset = &"guard"
+visual = ExtResource("2")
 params = {
-"_note": "QC-36 / L4.10 cartel gunman (Dockside Burn, D-064): PD2 gangster shape (◇ design values per Difficulty ROUTINE..CATACLYSM). No pager, not dominatable, no cuffs, no surrender (CartelBrain). Visual: ENV D cartel_gunman{,_b,_c} when delivered.",
+"_note": "QC-36 / L4.10 cartel gunman (Dockside Burn, D-064): PD2 gangster shape (◇ design values per Difficulty ROUTINE..CATACLYSM). No pager, not dominatable, no cuffs, no surrender (CartelBrain). Visual: ENV D cartel_gunman (+ _b/_c via visual_alternates).",
 "armor_body_mult": 1.0,
 "explosive_mult": 1.0,
 "frontal_armor": 1.0,
@@ -23,6 +25,7 @@ params = {
 "plate_health": [],
 "scene": "res://systems/ai/npc/npc_cartel.tscn",
 "shield": false,
-"shield_pierce_mult": 1.0
+"shield_pierce_mult": 1.0,
+"visual_alternates": ["res://world/characters/cartel_gunman_b/cartel_gunman_b.tscn", "res://world/characters/cartel_gunman_c/cartel_gunman_c.tscn"]
 }
 voice = &"guard"

@@ -39,6 +39,8 @@ const SVC_INTERACTION: String = "isys"
 const SVC_CODES: String = "codes"
 const SVC_CUSTODY: String = "custody"
 const SVC_RUNTIME: String = "rt"
+## D-071 per-crew counters (CrewStats).
+const SVC_STATS: String = "stats"
 ## ui_hud v1.3: {"present": bool, "resistance": float 0..1} of the director's AegisCaptain.
 const SVC_CAPTAIN: String = "captain"
 
@@ -227,6 +229,8 @@ func services_state() -> Dictionary:
 	if custody != null:
 		out[SVC_CUSTODY] = custody.net_state()
 	out[SVC_RUNTIME] = {"phase": int(_runtime.phase), "loud": _runtime.went_loud}
+	if _runtime.stats != null:
+		out[SVC_STATS] = _runtime.stats.net_state()
 	out[SVC_CAPTAIN] = captain_state()
 	return out
 
@@ -371,6 +375,8 @@ func apply_services(svc: Dictionary) -> void:
 	var custody: CustodySystem = _runtime.service(CustodySystem.SERVICE) as CustodySystem
 	if svc.has(SVC_CUSTODY) and custody != null:
 		custody.apply_net_state(svc[SVC_CUSTODY] as Dictionary)
+	if svc.has(SVC_STATS) and _runtime.stats != null:
+		_runtime.stats.apply_net_state(svc[SVC_STATS] as Dictionary)
 	if svc.has(SVC_RUNTIME):
 		var r: Dictionary = svc[SVC_RUNTIME] as Dictionary
 		phase_replicated.emit(int(r.get("phase", _runtime.phase)), bool(r.get("loud", _runtime.went_loud)))

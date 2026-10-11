@@ -20,8 +20,8 @@ signal door_blocked(door: Node)
 @export var arrive_distance: float = 0.4
 @export var turn_speed_deg: float = 360.0
 @export var gravity: float = 9.8
-## QC-41: descent speed on a rappel link (m/s) ◇.
-@export var rappel_speed: float = 4.0
+## QC-41: descent speed on a rappel link (m/s) ◇; 2.5 matches ENV D's `rappel` clip (characters.md v1.8).
+@export var rappel_speed: float = 2.5
 
 var target: Vector3 = Vector3.INF
 var speed: float = 0.0

@@ -35,6 +35,9 @@ func test_spawned_as_cartel_not_police() -> void:
 	assert_eq(g.size(), 1, "one cartel gunman on the tagged GUARD spawn")
 	assert_eq(g[0].enemy_def.id, &"enemy.cartel_gunman")
 	assert_eq(g[0].alert_state, Enums.AlertState.CALM, "starts asleep")
+	assert_true(g[0].visual_scene != null and g[0].visual_scene.resource_path.contains("cartel_gunman"),
+		"ENV D's cartel_gunman look (or its _b/_c alternate)")
+	assert_true(AnimDriver.of(g[0]) != null, "animated (idle_thug while asleep)")
 	assert_false(g[0].is_in_group(G.OBSERVER), "no stealth meter")
 	assert_true(_rt.npcs(&"guard").is_empty(), "no guard on that spawn")
 	var d: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector

@@ -69,7 +69,12 @@ func test_host_client_parity() -> void:
 	assert_true(_rt != null, "host launched the dev_sandbox")
 	if _rt == null:
 		return
+	# The replica exists before `await launch_client()` returns on the client (bring-up waits): poll until it has.
 	var snap: Dictionary = await _snapshot()
+	var t0: int = Time.get_ticks_msec()
+	while not bool(snap.get("launch_client", false)) and Time.get_ticks_msec() - t0 < int(_budget(20.0) * 1000.0):
+		await wait_seconds(0.25)
+		snap = await _snapshot()
 	var ok: bool = bool(snap.get("has_rt", false))
 	assert_true(ok, "client built a replica (%s)" % snap)
 	if ok:

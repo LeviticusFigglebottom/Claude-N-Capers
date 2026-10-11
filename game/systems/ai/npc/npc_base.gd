@@ -67,6 +67,12 @@ func _ready() -> void:
 		detection_preset = enemy_def.detection_preset
 	if visual_scene == null and enemy_def != null:
 		visual_scene = enemy_def.visual  # characters.md: the EnemyDef's character visual
+		var alts: Variant = enemy_def.params.get("visual_alternates", [])
+		if visual_scene != null and alts is Array and not (alts as Array).is_empty():
+			# Alternate looks (cartel_gunman_b/_c): the same pick on every peer (the node name is replicated).
+			var pick: int = absi(hash(String(name))) % ((alts as Array).size() + 1)
+			if pick > 0 and ResourceLoader.exists(String((alts as Array)[pick - 1])):
+				visual_scene = load(String((alts as Array)[pick - 1])) as PackedScene
 	if visual_scene != null and visual_root != null:
 		for c: Node in visual_root.get_children():
 			c.queue_free()

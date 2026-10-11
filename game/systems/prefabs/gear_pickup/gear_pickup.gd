@@ -1,7 +1,8 @@
 ## Gear bag in a civilian-start heist (S1.3, HeistDef.start_mode = civilian). Owner: ENV A.
 ## A civilian crew member holds the interaction to take their gear: civilian mode ends (casing, can mask
 ## up), `item_picked_up(&"item.gear", slot)` [R]. The bag stays for the rest of the crew; it is only
-## usable by civilians (civilian_allowed; anyone else already has their gear).
+## usable by civilians (civilian_allowed; anyone else already has their gear). AI teammates gear up when the
+## first human crew member does (D-065 P5 ruling; they never walk to the bag).
 class_name GearPickup
 extends GameplayPrefab
 
@@ -33,6 +34,7 @@ func _default_interaction_time() -> float:
 
 func _prefab_ready() -> void:
 	interactable.kind = KIND
+	interactable.prompt_key = &"ui.prompt.pick_up_gear"
 	interactable.extra_check = func(crew: Node) -> StringName:
 		return InteractableComponent.BLOCK_NONE if crew != null and crew.get(&"civilian") == true \
 			else InteractableComponent.BLOCK_STATE  # only crew still without their gear
@@ -46,3 +48,8 @@ func _on_completed(crew: Node) -> void:
 	c.civilian = false
 	taken_by.append(c.slot)
 	_emit_fact(&"item_picked_up", [ITEM, c.slot])
+	if not c.is_ai:  # D-065 P5 ruling: AI teammates gear up with the first human (they never walk here)
+		var rt: HeistRuntime = HeistRuntime.of(self)
+		for m: CrewController in (rt.crew_members() if rt != null else []):
+			if m.is_ai and m.civilian:
+				m.civilian = false

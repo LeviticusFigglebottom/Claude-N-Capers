@@ -18,9 +18,8 @@ const BLOCK_PHASE: StringName = &"ui.blocked.phase"
 const BLOCK_BUSY: StringName = &"ui.blocked.busy"
 const BLOCK_DISABLED: StringName = &"ui.blocked.disabled"
 const BLOCK_STATE: StringName = &"ui.blocked.state"
-## S1.3: a civilian (no gear) uses only `civilian_allowed` interactables. TODO(ENV B): its own blocked string
-## (".blocked.civilian") once it is in strings.csv; until then the generic state string.
-const BLOCK_CIVILIAN: StringName = BLOCK_STATE
+## S1.3 (D-065): a civilian (no gear) uses only `civilian_allowed` interactables.
+const BLOCK_CIVILIAN: StringName = &"ui.blocked.civilian"
 
 ## Interaction kind for events/HUD (&"lockpick", &"answer_pager", &"bag_body", &"take_loot"...).
 @export var kind: StringName = &"use"
