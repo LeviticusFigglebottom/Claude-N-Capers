@@ -456,3 +456,32 @@ func test_d069_melee_and_bash_clips() -> void:
 	assert_eq(String(fp.player.current_animation), "rifle/bash", "no melee item: gun bash")
 	assert_near(fp.action_speed, (7.0 / FPS) / c.melee.hit_left, 0.01, "bash hit@7 on the strike")
 	assert_true(c.weapon_visual.visible, "bash keeps the gun")
+
+
+## D-069: holding deploy plays the DeployableDef set's `place` with place@ on the deploy hold time.
+func test_d069_deploy_place_clip() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.arms_scene == null:
+		skip("char_arms_fp not delivered")
+		return
+	var c: CrewController = await _spawn(&"weapon.corsair_ar", &"weapon.kestrel_p9")
+	var fp: FpViewmodel = _fp(c)
+	var def: DeployableDef = DeployableSystem.def_for(&"deployable.ammo_bag")
+	if fp == null or def == null or not fp.supports(def.anim_set):
+		skip("no deploy set")
+		return
+	c.set_physics_process(false)
+	c.set_masked()
+	c.weapons.deployable_id = def.id
+	c.weapons.deployable_count = 1
+	c.intent.deploy = true
+	fp.tick(0.016)
+	assert_eq(String(fp.player.current_animation), "%s/place" % def.anim_set, "placing")
+	var place_s: float = tw.event_s(StringName("%s_place" % def.anim_set), &"place")
+	assert_near(fp.action_speed, place_s / DeployableSystem.deploy_time_for(c.slot, def), 0.01,
+		"place@ on the deploy hold time")
+	assert_false(c.weapon_visual.visible, "gun away while placing")
+	c.intent.deploy = false
+	fp.tick(0.016)
+	assert_eq(fp.action, FpViewmodel.Action.NONE, "released: cancelled")
+	assert_true(c.weapon_visual.visible, "gun back")

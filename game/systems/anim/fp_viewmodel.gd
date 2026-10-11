@@ -24,14 +24,17 @@
 ##   weapon bone in its `anim_set`: `charge_start` (its `charged` frame on the full charge) + `charge` loop while
 ##   held, then `swing` / `charge_swing` re-timed so `hit@` lands on the gameplay strike; without one the gun
 ##   set's `bash` (hit@ on the bash strike). The gun comes back when the swing clip ends.
+## - Deploy (D-069): holding intent.deploy with a deployable left (masked, NORMAL) plays the DeployableDef
+##   `anim_set` `place` with its `place@` frame on the deploy hold time (DeployableSystem.deploy_time_for); the
+##   held form (`DeployableDef.model`) replaces the gun; releasing early cancels it.
 class_name FpViewmodel
 extends Node3D
 
-enum Action { NONE, FIRE, RELOAD, SWAP, MELEE }
+enum Action { NONE, FIRE, RELOAD, SWAP, MELEE, DEPLOY }
 
 const NODE_NAME: String = "FpViewmodel"
 const ATTACH_NAME: String = "WeaponBone"
-const MELEE_ITEM_NAME: String = "MeleeItem"
+const ITEM_NAME: String = "HeldItem"
 ## `charge` loop repetitions queued behind charge_start (the release replaces the sequence).
 const CHARGE_LOOPS: int = 600
 ## Clip -> substitute when the set lacks it (then nothing).
@@ -97,8 +100,9 @@ var _weapon_bone: int = -1
 var _mag_bone: int = -1
 var _bob_phase: float = 0.0
 var _bob_weight: float = 0.0
-## The melee item model on the weapon bone during a melee one-shot (null = none / gun bash).
-var _melee_item: Node3D = null
+## The item model on the weapon bone during a melee / deploy one-shot (null = none / gun bash).
+var _item: Node3D = null
+var _deploy_prev: bool = false
 
 
 ## The camera's viewmodel arms (null when none).
@@ -230,6 +234,7 @@ func tick(delta: float) -> void:
 		while action != Action.NONE and _seg_i >= 0 and _seg_i < _segs.size() \
 				and _seq_t >= float(_segs[_seg_i]["start"]) + float(_segs[_seg_i]["dur"]):
 			_play_segment(_seg_i + 1)
+	_update_deploy()
 	_update_parts()
 	_update_ads(delta, tw)
 	if action == Action.NONE:
@@ -347,7 +352,7 @@ func _on_melee_charge() -> void:
 	var loop: StringName = _resolve(set_id, &"charge")
 	if loop != &"":
 		_add_seg(segs, set_id, loop, _length(set_id, loop) * CHARGE_LOOPS, 1.0, CHARGE_LOOPS)
-	_start_melee(segs, def)
+	_start_item(Action.MELEE, segs, def.model)
 
 
 func _on_melee_swung(charged: bool) -> void:
@@ -363,7 +368,7 @@ func _on_melee_swung(charged: bool) -> void:
 		if c == &"":
 			return
 		_add_timed(segs, set_id, c, &"hit", hit_s)
-		_start_melee(segs, _crew.melee.melee_def())
+		_start_item(Action.MELEE, segs, _crew.melee.melee_def().model)
 		return
 	if _resolve(anim_set, &"bash") == &"":
 		return
@@ -372,24 +377,24 @@ func _on_melee_swung(charged: bool) -> void:
 	_start(Action.MELEE, segs)
 
 
-## Melee one-shot with the item in the hands (the gun hidden until _end_action).
-func _start_melee(segs: Array[Dictionary], def: MeleeDef) -> void:
+## Item one-shot (MELEE / DEPLOY) with `model` in the hands (the gun hidden until _end_action).
+func _start_item(kind: int, segs: Array[Dictionary], model: PackedScene) -> void:
 	_end_action()
 	if weapon_visual != null and is_instance_valid(weapon_visual):
 		weapon_visual.visible = false
-	if def != null and def.model != null:
-		_melee_item = def.model.instantiate() as Node3D
-		if _melee_item != null:
-			_melee_item.name = MELEE_ITEM_NAME
-			weapon_attach.add_child(_melee_item)
-			_no_shadows(_melee_item)
-	_start(Action.MELEE, segs)
+	if model != null:
+		_item = model.instantiate() as Node3D
+		if _item != null:
+			_item.name = ITEM_NAME
+			weapon_attach.add_child(_item)
+			_no_shadows(_item)
+	_start(kind, segs)
 
 
-func _clear_melee_item() -> void:
-	if _melee_item != null and is_instance_valid(_melee_item):
-		_free_node(_melee_item)
-	_melee_item = null
+func _clear_item() -> void:
+	if _item != null and is_instance_valid(_item):
+		_free_node(_item)
+	_item = null
 	if weapon_visual != null and is_instance_valid(weapon_visual) and _incoming == null:
 		weapon_visual.visible = true
 
@@ -419,8 +424,8 @@ func _add_timed(segs: Array[Dictionary], set_id: StringName, c: StringName, even
 
 
 func _start(kind: int, segs: Array[Dictionary]) -> void:
-	if action == Action.MELEE and kind != Action.MELEE:
-		_clear_melee_item()  # e.g. a reload started mid-charge
+	if _item_action() and kind != action:
+		_clear_item()  # e.g. a reload started mid-charge
 	action = kind
 	_segs = segs
 	_seq_t = 0.0
@@ -471,8 +476,8 @@ func _play_segment(i: int) -> void:
 func _end_action() -> void:
 	for k: Dictionary in _keys:  # settle the parts on the one-shot's final positions
 		parts[k["ch"]] = float(k["v"])
-	if action == Action.MELEE:
-		_clear_melee_item()
+	if _item_action():
+		_clear_item()
 	_finish_swap()
 	action = Action.NONE
 	action_speed = 1.0
@@ -515,6 +520,35 @@ func _set_weapon(wv: WeaponVisual, set_id: StringName) -> void:
 
 
 # --- Per-frame helpers ------------------------------------------------------------------------
+
+func _item_action() -> bool:
+	return action == Action.MELEE or action == Action.DEPLOY
+
+
+## D-069 deploy `place` while intent.deploy is held (presentation of DeployableSystem's server hold).
+func _update_deploy() -> void:
+	var held: bool = _crew != null and _crew.intent != null and _crew.intent.deploy
+	var pressed: bool = held and not _deploy_prev
+	_deploy_prev = held
+	if action == Action.DEPLOY:
+		if not held:
+			_end_action()  # released early (or the clip outlived the hold)
+		return
+	if not pressed or action == Action.SWAP or action == Action.MELEE or not _can_deploy():
+		return
+	var def: DeployableDef = DeployableSystem.def_for(_crew.weapons.deployable_id)
+	if def == null or not supports(def.anim_set):
+		return
+	var segs: Array[Dictionary] = []
+	_add_timed(segs, def.anim_set, &"place", &"place", DeployableSystem.deploy_time_for(_crew.slot, def))
+	if segs.is_empty() or StringName(segs[0]["clip"]) == &"":
+		return
+	_start_item(Action.DEPLOY, segs, def.model)
+
+
+func _can_deploy() -> bool:
+	return _crew.weapons != null and _crew.weapons.deployable_count > 0 and _crew.masked \
+		and _crew.crew_state == Enums.CrewState.NORMAL
 
 func _play_base(tw: FpViewmodelTweak) -> void:
 	if anim_set == &"":
