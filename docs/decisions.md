@@ -411,7 +411,7 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   - Night Deposit: night manager, cleaner, Halden Security guard (ENV D re-badges its bank guard).
   - Shadow Ledger: cleaners (cleaner variant), an IT contractor (to build), Helena Moor (brief from ENV C), and Kessler
     in a robe by default (`npc_kessler_coat` kept).
-  - Tellers are reserved for Meridian Federal; guests and the waitress for Gallery Night (P5).
+  - Tellers are reserved for Meridian Federal (now Ostrander Federal, D-075); guests and the waitress for Gallery Night (P5).
 
 ## D-064 — 2026-10-11 — Dockside Burn G0 approved
 - Loud-only (P3) heist; Ortega Cold Storage, Pier 9. Opens with a cartel phase, then police after a rolled 60/90/120 s
