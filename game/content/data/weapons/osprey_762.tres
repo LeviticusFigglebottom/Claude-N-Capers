@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://c8uy55tiier8t" path="res://assets/weapons/wpn_osprey_762/wpn_osprey_762.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 160.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 140.0
+spread_deg_hip = 5.0
+spread_deg_ads = 0.25
+recoil_kick_deg = 2.0
+recoil_horizontal_deg = 0.5
+falloff_start_m = 25.0
+falloff_end_m = 60.0
+falloff_min_mult = 1.25
+mag_size = 10
+total_ammo = 50
+reload_time_s = 2.9
+reload_empty_time_s = 3.7
+equip_time_s = 0.8
+ads_time_s = 0.4
+concealment = 5
+armor_pierce = 1.0
+shield_pierce = true
+wall_pierce = true
+suppression = 30.0
+ammo_pickup_min = 1.0
+ammo_pickup_max = 2.5
+suppressed = false
+noise_radius_m = 100.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.osprey_762"
+display_name = "Osprey Marksman"
+manufacturer = "Brannock Defense"
+weapon_class = 5
+slot = 0
+fire_modes = Array[StringName]([&"semi"])
+base = SubResource("base")
+price = 70000
+unlock_level = 28
+mod_slots = {
+2: [&"mod.osprey_suppressor"],
+3: [&"mod.osprey_scope_4x", &"mod.osprey_scope_8x"],
+5: [&"mod.osprey_bipod"],
+7: [&"mod.osprey_standard_mag", &"mod.osprey_extended_mag"]
+}
+default_mods = {
+3: &"mod.osprey_scope_4x",
+7: &"mod.osprey_standard_mag"
+}
+fire_cue = &"cue.weapon_sniper_fire"
+fire_cue_suppressed = &"cue.weapon_sniper_fire_suppressed"
+anim_set = &"rifle"
+model = ExtResource("3")
