@@ -2,7 +2,7 @@
 ## Fidelity: L3.4 (fire ignores armor and shields), L3.6 (explosive falloff), L4.5 (Bulwark), P5 (armory).
 ##
 ## Per-weapon data lives in `WeaponDef.params` (shallow-merged with each applied mod's
-## `WeaponModDef.params`, in mod order; read defensively until the contract field lands):
+## `WeaponModDef.params`, in mod order; D-057, schema in game/systems/modifiers_params.md):
 ##   charge     = {draw_time_s, min_damage_mult, min_speed_mult}            fire mode &"charge" (bow)
 ##   projectile = {speed_mps, gravity_mult, lifetime_s, retrievable, pickup_radius_m, despawn_s}
 ##   explosion  = {radius_m, arm_distance_m}                                 impact -> Explosion.apply
@@ -23,8 +23,8 @@ const KIND_HITSCAN: StringName = &""
 const KIND_PROJECTILE: StringName = &"projectile"
 const KIND_FLAME: StringName = &"flame"
 const KIND_SAW: StringName = &"saw"
-## Prefabs a saw can open (gameplay_prefabs proposal): `saw_cut(seconds: float, attacker_net_id: int)`.
-const SAW_GROUP: StringName = &"saw_target"
+## Prefabs a saw can open (gameplay_prefabs v1.3, D-057): `saw_cut(seconds: float, attacker_net_id: int)`.
+const SAW_GROUP: StringName = G.SAW_TARGET
 const SAW_DAMAGE_KEY: StringName = &"weapon.saw_damage_mult"
 const SAW_WEAR_KEY: StringName = &"weapon.saw_wear_mult"
 const SAW_SHIELD_KEY: StringName = &"weapon.saw_shield_pierce"
@@ -53,14 +53,9 @@ static func params_of(def: WeaponDef, mod_ids: Array[StringName] = []) -> Dictio
 	var key: String = "%s|%s" % [def.id, ",".join(PackedStringArray(mod_ids))]
 	if _cache.has(key) and _cache[key][0] == def:
 		return _cache[key][1] as Dictionary
-	var out: Dictionary = {}
-	var p: Variant = def.get(&"params")
-	if p is Dictionary:
-		out = (p as Dictionary).duplicate(true)
+	var out: Dictionary = def.params.duplicate(true)
 	for m: WeaponModDef in LoadoutResolver.applied_mods(def, mod_ids):
-		var mp: Variant = m.get(&"params")
-		if mp is Dictionary:
-			out.merge((mp as Dictionary).duplicate(true), true)
+		out.merge(m.params.duplicate(true), true)
 	_cache[key] = [def, out]
 	return out
 

@@ -2,15 +2,6 @@
 ## saw contact + blade wear, bow draw + projectile + arrow retrieval, launcher blast (L3.6), minigun spin.
 extends TestCase
 
-## Test-only stand-ins until the contract carries WeaponDef.params / WeaponModDef.params.
-class SpecialDef extends WeaponDef:
-	var params: Dictionary = {}
-
-
-class SpecialModDef extends WeaponModDef:
-	var params: Dictionary = {}
-
-
 class FakeVisual extends Node3D:
 	func get_marker(marker: StringName) -> Node3D:
 		return find_child(String(marker), true, false) as Node3D
@@ -38,8 +29,8 @@ func after_each() -> void:
 	await wait_frames(2)
 
 
-func _def(id: StringName, fire_modes: Array[StringName], params: Dictionary, mag: int = 30) -> SpecialDef:
-	var d: SpecialDef = SpecialDef.new()
+func _def(id: StringName, fire_modes: Array[StringName], params: Dictionary, mag: int = 30) -> WeaponDef:
+	var d: WeaponDef = WeaponDef.new()
 	d.id = id
 	d.weapon_class = Enums.WeaponClass.SPECIAL
 	d.slot = Enums.WeaponSlot.PRIMARY
@@ -99,13 +90,13 @@ func _arm(id: StringName) -> CrewWeapons:
 
 
 func test_params_merge_and_kind() -> void:
-	var m: SpecialModDef = SpecialModDef.new()
+	var m: WeaponModDef = WeaponModDef.new()
 	m.id = &"mod.test_explosive_arrow"
 	m.mod_type = Enums.ModType.AMMO
 	m.delta = WeaponStats.make_delta()
 	m.params = {"explosion": {"radius_m": 2.0}}
 	ContentDB.inject(ContentDB.MODS, m.id, m)
-	var d: SpecialDef = _def(&"weapon.test_bow", [&"charge"], {"charge": {"draw_time_s": 0.5}, "projectile": {"speed_mps": 50.0}})
+	var d: WeaponDef = _def(&"weapon.test_bow", [&"charge"], {"charge": {"draw_time_s": 0.5}, "projectile": {"speed_mps": 50.0}})
 	d.mod_slots = {Enums.ModType.AMMO: [m.id]}
 	var plain: Dictionary = SpecialWeapons.params_of(d)
 	assert_eq(SpecialWeapons.kind_of(plain), SpecialWeapons.KIND_PROJECTILE, "projectile kind")
@@ -171,6 +162,7 @@ func test_bow_draw_projectile_hit_and_retrieve() -> void:
 	_rt.set_bot_intent(0, aim)
 	await wait_physics_frames(20)
 	assert_near(w.charge, 1.0, 0.001, "full draw after draw_time_s")
+	assert_near(_rt.hud_model.weapon_charge, 1.0, 0.001, "ui_hud v1.5 weapon_charge")
 	assert_eq(w.mag(Enums.WeaponSlot.PRIMARY), 1, "holding the draw does not shoot")
 	_rt.set_bot_intent(0, BotUtil.look_at_intent(c.eye_position(), CombatSystem.target_center(npc)))
 	await wait_physics_frames(3)
@@ -193,7 +185,7 @@ func test_bow_draw_projectile_hit_and_retrieve() -> void:
 
 
 func test_launcher_blast_on_impact() -> void:
-	var gl: SpecialDef = _def(&"weapon.test_gl", [&"semi"], {"projectile": {"speed_mps": 40.0, "gravity_mult": 0.0},
+	var gl: WeaponDef = _def(&"weapon.test_gl", [&"semi"], {"projectile": {"speed_mps": 40.0, "gravity_mult": 0.0},
 		"explosion": {"radius_m": 3.0}}, 6)
 	gl.anim_set = &"launcher"
 	var cues: Array[StringName] = []
@@ -223,6 +215,7 @@ func test_minigun_spins_up_before_firing_and_slows_the_crew() -> void:
 	await wait_physics_frames(15)
 	assert_eq(w.mag(Enums.WeaponSlot.PRIMARY), 200, "no shots while spinning up")
 	assert_near(w.move_speed_mult, 0.4, 0.001, "slowed while spinning")
+	assert_true(_rt.hud_model.weapon_spin > 0.0, "ui_hud v1.5 weapon_spin")
 	await wait_physics_frames(30)
 	assert_true(w.mag(Enums.WeaponSlot.PRIMARY) < 200, "fires once spun up")
 	_rt.set_bot_intent(0, BotUtil.look_at_intent(c.eye_position(), Vector3(0, 1.4, -10)))
