@@ -56,7 +56,7 @@ Scene path = `res://systems/prefabs/<name>/<name>.tscn`. Placeholder = `<name>/<
 | `padlock` | `Padlock` | Node3D | `targets: Array[NodePath]` ([]) | `lockpick_door_s` | `Body`, `Shackle` | Lockpick or saw (hand_saw_padlock_s) opens the targets. QC-37 |
 | `burn_point` | `BurnPoint` | Node3D | `requires_loot` (loot.thermite), `duration_s` (-1), `fire_volume_size` (6x3x6) | `burn_place_s` | `Fire` (optional); child `FireVolume` | Bag consumed, burn (no jams, device kind thermite), cue.burn_warning + burn_warning_s, device_finished, fire DoT ignoring armour + nav obstacle. QC-38 |
 | `gear_pickup` | `GearPickup` | Node3D | none (kind `pick_up_gear`) | `item_pickup_s` | none | civilian_allowed = true; only civilians may use it. S1.3 |
-| `hub_station` | `HubStation` | Node3D | `station_id` (&"") | 0 (instant) | none | Safehouse station (QC-44): kind `hub_station`, prompt `ui.prompt.station.<id>`, casing + civilian allowed, silent; `station_used(id, crew)` / `station_requested(id)` |
+| `hub_station` | `HubStationPrefab` | Node3D | `station_id` (&"") | 0 (instant) | none | Safehouse station (QC-44): kind `hub_station`, prompt `ui.prompt.station.<id>`, casing + civilian allowed, silent; `station_used(id, crew)` / `station_requested(id)` |
 | `keycard_reader` | `KeycardReader` | Node3D | `targets: Array[NodePath]` ([]) | `keycard_s` | `Panel`, `Led` | Wall-mounted (back-centre). Consumes the keycard |
 | `keypad` | `Keypad` | Node3D | `code_group` (&""), `targets: Array[NodePath]` ([]) | `keypad_s` | `Panel`, `Led` | Wall-mounted. S9.7 |
 | `code_note` | `CodeNote` | Node3D | `code_group` (&"") | `read_note_s` | none | S9.7 |

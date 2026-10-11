@@ -28,8 +28,8 @@ func _hub() -> CrewController:
 	return c
 
 
-func _station(id: StringName, pos: Vector3) -> HubStation:
-	var st: HubStation = (load(STATION_SCENE) as PackedScene).instantiate() as HubStation
+func _station(id: StringName, pos: Vector3) -> HubStationPrefab:
+	var st: HubStationPrefab = (load(STATION_SCENE) as PackedScene).instantiate() as HubStationPrefab
 	st.station_id = id
 	_root.add_child(st)
 	st.global_position = pos
@@ -61,7 +61,7 @@ func test_hub_crew_is_civilian_without_runtime() -> void:
 
 func test_station_press_and_hud_prompt() -> void:
 	var c: CrewController = await _hub()
-	var st: HubStation = _station(&"board", Vector3(0, 0, -1.6))
+	var st: HubStationPrefab = _station(&"board", Vector3(0, 0, -1.6))
 	await wait_physics_frames(2)
 	var hud: LocalHudModel = LocalHudModel.new()
 	hud.name = "LocalHudModel"
@@ -94,7 +94,7 @@ func test_station_press_and_hud_prompt() -> void:
 
 func test_station_out_of_reach() -> void:
 	var c: CrewController = await _hub()
-	var st: HubStation = _station(&"armory", Vector3(0, 0, -4.0))
+	var st: HubStationPrefab = _station(&"armory", Vector3(0, 0, -4.0))
 	await wait_physics_frames(2)
 	var used: Array[int] = [0]
 	st.station_used.connect(func(_id: StringName, _w: Node) -> void: used[0] += 1)

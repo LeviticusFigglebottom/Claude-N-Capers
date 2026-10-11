@@ -112,4 +112,7 @@ func test_no_melee_while_casing_and_knockdown() -> void:
 	Modifiers.set_source(0, &"skills", {&"weapon.melee_knockdown_mult": 100.0})
 	await _swing(c, CombatSystem.target_center(n), 0.05)
 	assert_eq(_melee_hits(n).size(), 1, "masked: hit")
-	assert_true(n.is_stunned(), "knockdown (MeleeDef.knockdown x weapon.melee_knockdown_mult)")
+	assert_false(n.is_stunned(), "a quick swing never knocks down")
+	await _swing(c, CombatSystem.target_center(n), ContentDB.melee(&"melee.folding_knife").charge_time_s + 0.2)
+	assert_eq(_melee_hits(n).size(), 2, "charged hit")
+	assert_true(n.is_stunned(), "charged knockdown (MeleeDef.knockdown x weapon.melee_knockdown_mult)")

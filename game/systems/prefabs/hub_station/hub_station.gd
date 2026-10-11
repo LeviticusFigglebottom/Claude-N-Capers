@@ -3,7 +3,7 @@
 ## `ui.prompt.station.<station_id>`, aimed at the standard reach (InteractionTweak.reach_m). On use it emits
 ## `station_used(station_id, crew)` and `station_requested(station_id)`; ENV C's SafehouseMap relays it and
 ## B's MenuFlow opens the screen (QC-45). No heist facts are emitted: the hub has no HeistRuntime.
-class_name HubStation
+class_name HubStationPrefab
 extends GameplayPrefab
 
 signal station_used(station_id: StringName, crew: Node)

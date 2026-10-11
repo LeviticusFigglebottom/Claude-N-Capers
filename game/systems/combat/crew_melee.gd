@@ -5,8 +5,9 @@
 ##   charged swing: damage lerps to charged_damage over charge_time_s / weapon.melee_charge_speed_mult.
 ## - the swing lasts swing_time_s (MeleeDef or melee_swing_s); at hit_delay_s the authority strikes the nearest
 ##   target in a melee_cone_deg cone out to range_m with line of sight: one DamageType.MELEE hit (x
-##   weapon.damage_mult[melee], x weapon.melee_bloodthirst), knockdown chance (MeleeDef.knockdown x
-##   weapon.melee_knockdown_mult) stuns the NPC melee_knockdown_s, weapon.shield_knockback staggers a Bulwark.
+##   weapon.damage_mult[melee], x weapon.melee_bloodthirst). A charged hit's knockdown chance (MeleeDef.knockdown,
+##   or bash_knockdown, x weapon.melee_knockdown_mult) stuns a non-special NPC melee_knockdown_s; specials
+##   (Bulwark, Wrecker...) resist it, except weapon.shield_knockback, which staggers a Bulwark on any melee hit.
 ## - silent: no noise, no weapon_fired (S4.3), so a stealth melee kill alarms nobody (no S3.7 misfire either).
 ## - only NORMAL / masked crew melee (no melee while casing, downed or incapacitated); swinging cancels a reload.
 ## Signals (presentation; FpViewmodel plays melee_* / <set>_bash clips): charge_started, swung(charged),
@@ -142,6 +143,8 @@ func _knock(target: Object, def: MeleeDef, tw: CombatTweak) -> void:
 	if bw != null and Modifiers.flag(_crew.slot, &"weapon.shield_knockback"):
 		bw.stagger()  # weapon.shield_knockback: melee knocks Bulwarks back 100%
 		return
+	if charge <= 0.0 or (npc.enemy_def != null and npc.enemy_def.is_special):
+		return  # PD2: only a charged hit knocks down, and specials resist it
 	var chance: float = (def.knockdown if def != null else tw.bash_knockdown) * Modifiers.mult(_crew.slot, &"weapon.melee_knockdown_mult")
 	if chance > 0.0 and GameRng.stream(&"melee").randf() < chance:
 		npc.stun(tw.melee_knockdown_s)  # stun-immune enemies (Wrecker) ignore it (NpcBase.stun)

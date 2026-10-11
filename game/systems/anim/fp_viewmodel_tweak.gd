@@ -73,6 +73,11 @@ static var _gen: int = 0
 ## Bow `StringUpper`/`StringLower` limb flex about local X at full draw; `String` travel along +Z at full draw.
 @export var bow_limb_deg: float = 10.0
 @export var string_draw_m: float = 0.12
+## D-070 crossbow: latched string halves (visual_slots.md): Upper -deg / Lower +deg about local X, both
+## stretched along local Y; ramp time of the latch during the reload.
+@export var crossbow_latch_deg: float = 18.74
+@export var crossbow_latch_stretch: float = 1.3049
+@export var crossbow_latch_s: float = 0.4
 ## `Arrow` / bolt on the Magwell hidden this long after a shot (until the next one is nocked).
 @export var arrow_hidden_s: float = 0.3
 ## `Blade` spin (rev/s) while firing / idle; `Rotor` spin at full minigun spin.
