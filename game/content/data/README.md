@@ -76,7 +76,7 @@ The ThrowableDef contract has no `params`, so stun time, fire-pool time and burn
 |---|---|---|---|---|---|
 | `throwable.frag` | `frag` | 1,600 | 5.0 | 2.5 | PD2 frag shape: ~1,600 within 5 m after a 2.5 s fuse (lead brief) ◇ |
 | `throwable.concussion` | `concussion` | 0 | 10.0 | 1.5 | stun only; wider than the frag, shorter fuse ◇ |
-| `throwable.incendiary` | `incendiary` | 100 | 4.0 | 2.5 | `damage` = the burst; `radius_m` = the fire pool ◇ |
+| `throwable.incendiary` | `incendiary` | 40 | 4.0 | 2.5 | A3-12 reads `damage` as the pool's burn DPS (= A's `incendiary_burn_dps` 40); `radius_m` = the fire pool; ignites on first contact, so `fuse_s` is unused ◇ |
 | `throwable.throwing_knife` | `throwing_knife` | 1,000 | 0 | 0 | single target, hits on impact (radius and fuse 0) ◇ |
 
 The loadout picker offers these four (ThrowableGate: any throwable a perk card's `perk.throwable` names is
