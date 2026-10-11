@@ -31,7 +31,6 @@ const KIND_REQUEST: StringName = &"dropin.request"
 const KIND_ANSWER: StringName = &"dropin.answer"
 const KIND_PROGRESS: StringName = &"dropin.progress"
 const KIND_CANCEL: StringName = &"dropin.cancel"
-const REASON_KICKED: StringName = &"kicked"
 const POLICY_ASK: StringName = &"ask"
 const POLICY_AUTO: StringName = &"auto"
 const POLICY_OFF: StringName = &"off"
@@ -78,7 +77,8 @@ func _exit_tree() -> void:
 
 # --- Host -----------------------------------------------------------------------------------------
 
-func answer_join(peer_id: int, accept: bool) -> void:
+# LEAD: matches B's DropInService v2 signature (f46b038: reason argument; REASON_KICKED now inherited).
+func answer_join(peer_id: int, accept: bool, reason: StringName = REASON_DENIED) -> void:
 	if not Net.is_authority() or not pending.has(peer_id):
 		return
 	var summary: Dictionary = pending[peer_id]
@@ -86,7 +86,7 @@ func answer_join(peer_id: int, accept: bool) -> void:
 	if accept:
 		_accept(peer_id, summary)
 	else:
-		_deny(peer_id, REASON_DENIED)
+		_deny(peer_id, reason)
 
 
 func kick(slot: int) -> bool:
