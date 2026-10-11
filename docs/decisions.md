@@ -401,3 +401,14 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   every peer plays the host's pick.
 - ENV B: `options["music_track"]` from the pre-planning/lobby pick (host wins in co-op), hub jukebox UI, `music.<id>.name`
   strings, track unlocks (Notoriety ranks) in the profile.
+
+## D-063 — 2026-10-11 — Shared-set reload scaling; heist NPC casting
+- An FP set whose one reload clip serves weapons with different reload times plays it at
+  `speed_scale = clip_len / reload_time_s` (and reload_empty likewise), allowed range 0.75–1.35×; outside that
+  a weapon needs its own clip. First use: `shotgun_box` authored to Brute (3.6/4.4), Harrow plays ≈1.24×.
+  Shell-by-shell pieces keep data timings (D-053). ENV A implements; test_arms accepts any weapon within range.
+- NPC casting follows the heist design docs:
+  - Night Deposit: night manager, cleaner, Halden Security guard (ENV D re-badges its bank guard).
+  - Shadow Ledger: cleaners (cleaner variant), an IT contractor (to build), Helena Moor (brief from ENV C), and Kessler
+    in a robe by default (`npc_kessler_coat` kept).
+  - Tellers are reserved for Meridian Federal; guests and the waitress for Gallery Night (P5).
