@@ -106,7 +106,7 @@ func _drop_in(f: MenuFlow, port: int) -> DropInJoinScreen:
 	ls.dropin_button.pressed.emit()
 	await wait_frames(2)
 	var j: DropInJoinScreen = f.drop_in_screen
-	assert_true(j != null and f.current == j as Control, "the drop-in screen opened")
+	assert_true(j != null and f.current == (j as Control), "the drop-in screen opened")
 	if j != null:
 		j.loadout_screen.launch_button.pressed.emit()
 	return j
@@ -154,6 +154,12 @@ func test_dialog_on_a_service_only_shows_a_asks_and_answers_once() -> void:
 	assert_true(d.visible and d.current_peer() == PEER_A, "ask: A asks, the dialog shows")
 	Net.lobby_message.emit(PEER_A, HeistDropIn.KIND_CANCEL, {})
 	assert_false(d.visible, "the joiner cancelled: A's join_failed drops the request")
+	var failed: Array[StringName] = []
+	svc.join_failed.connect(func(_p: int, r: StringName) -> void: failed.append(r))
+	Net.lobby_message.emit(PEER_A, HeistDropIn.KIND_REQUEST, {"summary": _summary("Ana")})
+	d._process(d.tweak.dropin_request_timeout_s + 0.1)
+	assert_eq(failed, [DropInService.REASON_TIMEOUT] as Array[StringName], "3-argument answer_join: A denies with timeout")
+	assert_false(d.visible)
 	Net.lobby_message.emit(PEER_A, HeistDropIn.KIND_REQUEST, {"summary": _summary("Ana")})
 	assert_true(d.visible)
 	d.accept()
@@ -163,7 +169,8 @@ func test_dialog_on_a_service_only_shows_a_asks_and_answers_once() -> void:
 	Net.lobby_message.emit(PEER_B, HeistDropIn.KIND_REQUEST, {"summary": _summary("Bo")})
 	assert_false(d.visible, "auto: A accepts by itself, no dialog")
 	assert_false((_rt.crew_controller(2) as CrewController).is_ai, "auto accepted by A")
-	assert_eq(answered, [[PEER_A, true, false]] as Array[Array], "the dialog answered exactly once")
+	assert_eq(answered, [[PEER_A, false, true], [PEER_A, true, false]] as Array[Array],
+		"one answer per shown request (timeout, then Accept); none for the cancelled one or auto")
 
 
 func test_dialog_falls_back_to_a_two_argument_answer_join() -> void:
