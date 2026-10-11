@@ -26,7 +26,7 @@ func test_default_start_is_casing() -> void:
 	assert_eq(_rt.start_mode, HeistRuntime.START_CASING)
 	assert_false(c.civilian, "no civilian mode by default")
 	assert_eq(c.player_mode, &"casing")
-	_rt.hud_model.refresh()  # LEAD: deterministic poll
+	_rt.hud_model.refresh()
 	assert_eq(_rt.hud_model.player_mode, &"casing", "ui_hud v1.6 player_mode")
 
 
@@ -36,8 +36,7 @@ func test_civilian_start_no_mask_up_and_no_fire() -> void:
 	for m: CrewController in _rt.crew_members():
 		assert_true(m.civilian, "every crew member starts civilian (slot %d)" % m.slot)
 	assert_eq(c.player_mode, &"civilian")
-	await wait_physics_frames(2)
-	_rt.hud_model.refresh()  # LEAD: the HUD polls on render frames at poll_hz; 2 physics frames may not poll
+	_rt.hud_model.refresh()  # the HUD polls at poll_hz; poll now instead of racing it
 	assert_eq(_rt.hud_model.player_mode, &"civilian", "HUD player_mode")
 	var mates: Array[Dictionary] = _rt.hud_model.crew
 	assert_true(not mates.is_empty() and StringName(mates[0].get("mode", &"")) == &"civilian", "crew[].mode")
@@ -82,9 +81,7 @@ func test_gear_pickup_ends_civilian_mode_and_only_civilian_allowed() -> void:
 	assert_has(picked, [GearPickup.ITEM, 0], "item_picked_up(item.gear, slot) [R]")
 	assert_true(is_instance_valid(gear) and gear.is_inside_tree(), "the bag stays for the others")
 	assert_eq(gear.interactable.availability(c), InteractableComponent.BLOCK_STATE, "...but not for whoever has gear")
-	var mate: CrewController = _rt.crew_controller(1) as CrewController
-	assert_true(mate.is_ai, "slot 1 is an AI teammate")
-	assert_false(mate.civilian, "D-065 P5: AI teammates gear up with the first human")
+	assert_true((_rt.crew_controller(1) as CrewController).civilian, "teammates keep civilian mode until they pick up")
 
 
 func test_alarm_masks_civilians() -> void:

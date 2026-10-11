@@ -21,6 +21,8 @@ extends TestCase
 
 const GLB: String = "res://assets/characters/char_arms_fp/char_arms_fp.glb"
 const SOURCE: String = "res://assets/characters/char_arms_fp/SOURCE.txt"
+## D2-03 follow-up: crew heisters with a first-person sleeve variant char_arms_fp_<heister>.
+const HEISTERS: Array[String] = ["rook", "sable", "dutch", "wren"]
 const WEAPONS_DIR: String = "res://content/data/weapons"
 const FPS: float = 30.0
 const FINGERS: Array[String] = ["thumb", "index", "middle", "ring", "pinky"]
@@ -928,3 +930,95 @@ func test_hands_and_sights_on_the_real_models() -> void:
 						set_name, top, NEAR_HALF_H])
 		root.queue_free()
 	_player.stop()
+
+
+## D2-03 follow-up: the per-heister sleeve variants `char_arms_fp_<heister>` (mesh only, the clips stay in
+## char_arms_fp): the same rig_arms bones / order / rests, one skinned `Arms` whose binds resolve to the same
+## bones with the same bind poses as char_arms_fp's (so ENV A can put its mesh + skin on char_arms_fp's Arms),
+## library materials incl. the heister's `fp_sleeve` ids (char_crew_<heister>/SOURCE.txt), <= 12k triangles.
+func test_heister_sleeve_variants() -> void:
+	if not _ready_or_fail():
+		return
+	var base_arms: MeshInstance3D = _skel.get_node_or_null("Arms") as MeshInstance3D
+	assert_true(base_arms != null and base_arms.skin != null, "char_arms_fp Arms is skinned")
+	if base_arms == null or base_arms.skin == null:
+		return
+	var base_binds: Dictionary = _binds(base_arms.skin, _skel)
+	for h: String in HEISTERS:
+		var id: String = "char_arms_fp_%s" % h
+		var packed: PackedScene = load("res://assets/characters/%s/%s.glb" % [id, id]) as PackedScene
+		assert_true(packed != null, "%s imported" % id)
+		if packed == null:
+			continue
+		var root: Node3D = packed.instantiate() as Node3D
+		var sk: Skeleton3D = root.get_node_or_null("rig_arms/Skeleton3D") as Skeleton3D
+		var arms: MeshInstance3D = sk.get_node_or_null("Arms") as MeshInstance3D if sk != null else null
+		assert_true(arms != null and arms.skin != null, "%s: rig_arms/Skeleton3D/Arms, skinned" % id)
+		if arms == null or arms.skin == null:
+			root.free()
+			continue
+		var players: Array[Node] = root.find_children("*", "AnimationPlayer", true, false)
+		assert_true(players.is_empty() or (players[0] as AnimationPlayer).get_animation_list().is_empty(),
+				"%s: mesh only, no clips" % id)
+		assert_eq(sk.get_bone_count(), _skel.get_bone_count(), "%s: bone count" % id)
+		for b: int in range(mini(sk.get_bone_count(), _skel.get_bone_count())):
+			assert_eq(sk.get_bone_name(b), _skel.get_bone_name(b), "%s: bone %d" % [id, b])
+			assert_eq(sk.get_bone_parent(b), _skel.get_bone_parent(b), "%s: parent of %s" % [id, sk.get_bone_name(b)])
+			assert_true(sk.get_bone_rest(b).is_equal_approx(_skel.get_bone_rest(b)),
+					"%s: rest of %s" % [id, sk.get_bone_name(b)])
+		var binds: Dictionary = _binds(arms.skin, sk)
+		for bone: String in binds:
+			assert_true(base_binds.has(bone), "%s: bind %s exists in char_arms_fp" % [id, bone])
+			if base_binds.has(bone):
+				var d: Transform3D = binds[bone]
+				assert_true(d.is_equal_approx(base_binds[bone]), "%s: bind pose of %s" % [id, bone])
+		for b: String in ["forearm.L", "forearm.R", "hand.L", "hand.R", "index_01.R", "thumb_03.L"]:
+			assert_true(binds.has(b), "%s: skinned to %s" % [id, b])
+		var tris: int = 0
+		var mats: Array[String] = []
+		for si: int in range(arms.mesh.get_surface_count()):
+			var idx: PackedInt32Array = arms.mesh.surface_get_arrays(si)[Mesh.ARRAY_INDEX]
+			tris += idx.size() / 3
+			var m: Material = arms.mesh.surface_get_material(si)
+			assert_true(m != null and m.resource_path.begins_with("res://world/materials/"),
+					"%s: surface %d has a library material (%s)" % [id, si, m.resource_path if m != null else "none"])
+			if m != null:
+				mats.append(m.resource_name.trim_prefix("M_"))
+		assert_true(tris <= 12000, "%s: triangles %d <= 12000" % [id, tris])
+		for want: String in _fp_sleeve_ids(h):
+			assert_has(mats, want, "%s: fp_sleeve material %s" % [id, want])
+		if h == "wren":
+			assert_has(mats, "char_skin_2", "wren: bare forearm skin")
+		else:
+			assert_false(mats.any(func(s: String) -> bool: return s.begins_with("char_skin_")),
+					"%s: gloved hands, no skin surface" % id)
+		root.free()
+
+
+
+## {bone name: bind pose} of `skin` (named binds, else bind bone indices of `sk`).
+static func _binds(skin: Skin, sk: Skeleton3D) -> Dictionary:
+	var out: Dictionary = {}
+	for i: int in range(skin.get_bind_count()):
+		var n: String = String(skin.get_bind_name(i))
+		if n == "":
+			n = sk.get_bone_name(skin.get_bind_bone(i))
+		out[n] = skin.get_bind_pose(i)
+	return out
+
+
+## The library ids of `fp_sleeve` in char_crew_<h>/SOURCE.txt (descriptions such as Wren's bare cuff skipped).
+static func _fp_sleeve_ids(h: String) -> Array[String]:
+	var out: Array[String] = []
+	var f: FileAccess = FileAccess.open("res://assets/characters/char_crew_%s/SOURCE.txt" % h, FileAccess.READ)
+	if f == null:
+		return out
+	for line: String in f.get_as_text().split("\n"):
+		if line.begins_with("fp_sleeve: "):
+			var d: Variant = JSON.parse_string(line.trim_prefix("fp_sleeve: "))
+			if d is Dictionary:
+				for k: String in ["sleeve", "cuff", "glove"]:
+					var v: String = String((d as Dictionary).get(k, ""))
+					if v.begins_with("char_") and not v.contains(" "):
+						out.append(v)
+	return out

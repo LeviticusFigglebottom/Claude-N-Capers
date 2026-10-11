@@ -59,8 +59,8 @@ func test_launch_routine_seed_1001() -> void:
 	for s: StringName in [&"police_delay_s", &"cash_bags", &"product_bags", &"escape_eta_s"]:
 		assert_true(v.has(s), "scalar %s rolled" % s)
 	assert_true(bool(rt.get(&"went_loud")), "loud-only heist starts LOUD (S11.3)")
-	var guards: Array = rt.call(&"npcs", &"guard")
-	assert_eq(guards.size(), 6, "3 posts x 2 gunmen spawned (TODO(QC-36): cartel role)")
+	var guards: Array = rt.call(&"npcs", &"cartel")  # LEAD: QC-36 landed (A 878d35f): gunmen have role cartel
+	assert_eq(guards.size(), 6, "3 posts x 2 gunmen spawned (QC-36 cartel role)")
 	var map: HeistMap = rt.get(&"map") as HeistMap
 	var mission: HeistMission = rt.get(&"mission") as HeistMission
 	assert_true(mission != null, "mission bound")

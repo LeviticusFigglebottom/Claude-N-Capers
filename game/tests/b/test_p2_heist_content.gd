@@ -273,6 +273,7 @@ func test_dockside_burn_loot() -> void:
 		return
 	assert_eq(thermite.weight, Enums.LootWeight.HEAVY)
 	assert_eq(thermite.value, 0, "tool bag: no value")
+	assert_true(thermite.is_tool, "D-068: a tool, not profit")
 	assert_has(_table, "item.loot.thermite.name")
 	var with_tool: Dictionary = {
 		"success": true, "stealth": false, "difficulty": Enums.Difficulty.BRUTAL, "contract_pay": DB_BASE_PAYOUT,
@@ -285,6 +286,9 @@ func test_dockside_burn_loot() -> void:
 	var b: Dictionary = PayoutCalculator.compute(without)
 	assert_eq(int(a["loot"]), int(b["loot"]), "thermite adds no cash")
 	assert_eq(int(a["xp_total"]), int(b["xp_total"]), "thermite adds no bag XP")
+	assert_eq((a["loot_lines"] as Array).size(), (b["loot_lines"] as Array).size(), "no payday line for a tool")
+	var tw: PayoutTweak = load("res://content/data/tweak/payout.tres") as PayoutTweak
+	assert_false(tw.xp_loot_excluded_ids.has(&"loot.thermite"), "is_tool replaces the exclusion list entry")
 	var def: HeistDef = HeistRegistry.get_def(DB_HEIST)
 	if def == null:
 		return

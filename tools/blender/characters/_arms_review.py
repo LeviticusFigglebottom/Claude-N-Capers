@@ -73,9 +73,9 @@ def _rot_about(R: np.ndarray, c) -> Matrix:
 
 
 class _Ctx:
-    def material(self, lib_id, color, roughness=0.6):
+    def material(self, lib_id, color, roughness=0.6, metallic=0.0):
         from lib import materials
-        return materials.material(lib_id, color, roughness)
+        return materials.material(lib_id, color, roughness, metallic)
 
 
 def _weapon_glb(asset: str) -> pathlib.Path | None:
@@ -258,7 +258,9 @@ def _pose_real_parts(s, st, parts: dict, rest: dict, Mg: Matrix) -> None:
 magazine_frame_cache: dict = {}
 
 
-def render(out: pathlib.Path, args: list[str]) -> None:
+def render(out: pathlib.Path, args: list[str], mesh_params: dict | None = None, cols: int = 3) -> None:
+    """Contact sheet of ``args`` cells; ``mesh_params`` = the ``build_arms_mesh`` params (default: the generic
+    ``char_arms_fp`` arms, skin 2; ``{"heister": ...}`` for a sleeve variant, ``_arms_sleeves``)."""
     from _anim_review import _setup_render
 
     set_name = args[0] if args and ":" not in args[0] else "pistol"
@@ -267,7 +269,7 @@ def render(out: pathlib.Path, args: list[str]) -> None:
     sk = F.skeleton()
     solver = A.Solver(sk)
     arm = F.build_arms_rig()
-    F.build_arms_mesh(_Ctx(), arm, {"skin": 2})
+    F.build_arms_mesh(_Ctx(), arm, mesh_params or {"skin": 2})
     props: dict = {}
     fns_of: dict = {}
     from lib import materials
@@ -363,7 +365,6 @@ def render(out: pathlib.Path, args: list[str]) -> None:
         bpy.context.scene.render.filepath = path
         bpy.ops.render.render(write_still=True)
         panels.append((cell, path))
-    cols = 3
     rows = math.ceil(len(panels) / cols)
     sheet = np.zeros((rows * H, cols * W, 4), dtype=np.float32)
     for i, (_cell, path) in enumerate(panels):
