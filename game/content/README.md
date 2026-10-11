@@ -342,8 +342,7 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
   UI (`ui/dropin/`): `JoinRequestDialog` (host: name, level + Notoriety badge, Accept / Deny, auto-deny after
   `LobbyTweak.dropin_request_timeout_s`, queue; MenuFlow.heist_join_dialog over the HUD for a co-op host, pauses
   local input while shown), `KickConfirmDialog` (calls `target.kick(slot)`), `DropInJoinScreen` (joining player:
-  `LoadoutScreen.compact_mode` pick -> "Joining" progress with Cancel; not wired into MenuFlow until A's client path
-  exists). **Kick (D-072):** `LobbySession.kick(slot)` -> `Net.kick(peer_id)` (host only). `Net.peer_kicked` puts the
+  `LoadoutScreen.compact_mode` pick -> "Joining" progress with Cancel; opened by DropInFlow, below). **Kick (D-072):** `LobbySession.kick(slot)` -> `Net.kick(peer_id)` (host only). `Net.peer_kicked` puts the
   player on the session kick list (`KickList`, `lobby/kick_list.gd`, `LobbyState.kicked`: peer id + normalized profile
   name; cleared with the session) and sends `LobbyState.MSG_KICK` only as a crew notice (every peer remembers the kick;
   `LobbySession.kick_notice` -> a dim `ui.chat.kick_notice` line in `ChatPanel`). The kicked client gets
@@ -355,10 +354,34 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
   `auto` / `off`, set by the host (`LobbySession.set_drop_in_policy`, lobby screen option "Drop-in"; clients see it
   read-only) and replicated as host-only `LobbyState.MSG_SETTINGS {dropin}` (re-sent on crew changes). It lives in the
   lobby session, not GameSettings: it is a property of the hosted lobby that every member sees and the host's
-  drop-in path reads, not a per-machine preference. `JoinRequestDialog.gate` (MenuFlow: the session) decides first:
+  drop-in path reads, not a per-machine preference. `JoinRequestDialog.gate` (mock / lobby path only; the heist dialog on A's service has none, below) decides first:
   kicked -> deny `kicked`, `off` -> deny `off`, `auto` -> accept, all without a dialog; `ask` shows it (timeout ->
   deny `timeout`). `DropInService.answer_join(peer_id, accept, reason = REASON_DENIED)`; reasons add `kicked`, `off`.
   Strings `ui.dropin.*`, `ui.kick.*`, `ui.lobby.dropin.*`.
+* **Drop-in wired to ENV A's HeistDropIn (B6-04).** `DropInFlow` (`ui/dropin/drop_in_flow.gd`, `MenuFlow.drop_in`).
+  **Who decides: ENV A** (lead ruling). `MenuFlow.launch_coop` calls `DropInFlow.apply_host_policy(tree,
+  lobby.state.dropin_policy)` = `HeistDropIn.ensure(tree).policy = ...` before the launch; from then on A's service
+  checks every request (no running heist -> denied, no slot -> full, kicked -> kicked, `validate_summary`, then the
+  policy: off denies, auto accepts, ask emits `join_requested`). The heist's `JoinRequestDialog` has **no gate** and
+  its `policy` stays ask, so it only shows A's asks and answers each once (auto / off never reach it). The B gate
+  (`LobbySession.join_decision`) stays for services that leave the decision to the UI (the mock, tests). The dialog
+  calls `answer_join(peer, accept, reason)` when the service takes 3 arguments, else `(peer, accept)`; a
+  `join_failed` for a queued peer (cancelled, left) drops that request. The lobby's policy is copied once, at
+  launch (it cannot change in the heist: the lobby screen is hidden).
+  **Joining client:** the lobby Join panel's "Drop In to a Running Heist" (`LobbyScreen.dropin_button`, `drop_in()`:
+  address / port fields, or the code when the address is empty) -> `dropin_requested(address, port)` -> MenuFlow
+  opens `DropInJoinScreen` with `DropInFlow` as its service (a duck-typed proxy, not in `G.DROP_IN_SERVICE`). Drop In
+  on the compact loadout -> `DropInFlow.request_join(summary)`: `lobby.join(address, port)` (Net.join; the lobby
+  advertises the picked loadout), then on the lobby Net's `connected_to_host`: `HeistDropIn.ensure(tree)`
+  (`service_provider` in tests) `.request_join(summary)`. A's `join_progress` / `joined(slot)` / `join_failed` are
+  passed on. On `joined` MenuFlow hides the menus and spawns the in-heist UI (HUD, payday, chat) like a co-op client
+  launch (`_begin_client_heist`, heist / difficulty from `HeistRuntime.current()`, else the lobby contract; `is_pro`
+  from the contract) and never calls `launch_client` again. On `join_failed` (or a lobby failure before the request:
+  unreachable -> `unreachable`, no slot in time -> `timeout`, host lost, kicked) the screen shows
+  `ui.dropin.failed.<reason>`, the session is left (`Net.leave`, A's client does not), and Back returns to the
+  lobby's connect view with the reason in its error line (none for `cancelled`). Cancel while connecting just
+  leaves; once asked it is A's `cancel_join`. Reason `unreachable` is B-only (`DropInService.REASON_UNREACHABLE`).
+  Tests `test_dropin_wiring.gd`.
 * **Heister choice (D-073, B6-07).** `Loadout.heister` (&"rook" | &"sable" | &"dutch" | &"wren"; &"" = no preference).
   Data `data/heisters/roster.tres` (`HeisterRoster`: roster order, accents, `portrait_dir`); `Heisters`
   (`progression/heisters.gd`, static): `ids()`, `is_known`, `name_key` (`crew.<id>`, &"" = `ui.heister.any`),

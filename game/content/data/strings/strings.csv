@@ -2435,3 +2435,6 @@ ui.options.gameplay.dropin_policy.ask,Ask Me
 ui.options.gameplay.dropin_policy.auto,Let Players In
 ui.options.gameplay.dropin_policy.off,Off
 ui.options.tab.gameplay,Gameplay
+ui.lobby.dropin_join,Drop In to a Running Heist
+ui.lobby.dropin_join.hint,"Join a crew whose heist has already started (the host may have to accept you)."
+ui.dropin.failed.unreachable,Could not reach the host. Check the address and port.

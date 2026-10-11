@@ -12,6 +12,9 @@
 ## port) in the header with Copy (DisplayServer.clipboard_set) and a hint that internet play needs the public
 ## address and a forwarded port; the Join panel has a code field (join_by_code() decodes it into the address /
 ## port fields and runs the normal join()). No LAN host list: Net has no discovery API.
+## Drop-in (B6-04): "Drop in to a running heist" next to Join (drop_in(): the address / port fields, or the code
+## field when the address is empty) emits dropin_requested(address, port); MenuFlow opens DropInJoinScreen
+## through DropInFlow (compact loadout pick -> connect -> HeistDropIn.request_join -> progress / cancel).
 ## Kick (B6-04, D-072): the host sees Kick on every other human's slot card; KickConfirmDialog asks first, then
 ## LobbySession.kick(slot) -> Net.kick. A kicked client lands back on the connect view with
 ## `ui.lobby.error.kicked` (LobbySession FAIL_KICKED, from Net.last_disconnect_reason); the crew's chat shows the
@@ -29,6 +32,8 @@ signal contract_requested(target: StringName)
 signal briefing_requested()
 ## Open the loadout (armory) screen; its Back returns here and re-sends the profile summary.
 signal loadout_requested()
+## Drop in to the heist running at `address`:`port` (B6-04; MenuFlow opens DropInJoinScreen).
+signal dropin_requested(address: String, port: int)
 
 const SLOT_CARD_MIN: Vector2 = Vector2(360, 380)
 
@@ -44,6 +49,8 @@ var host_button: Button
 var join_address_edit: LineEdit
 var join_port_edit: LineEdit
 var join_button: Button
+## "Drop in to a running heist" (B6-04).
+var dropin_button: Button
 var loopback_button: Button
 ## Join by lobby code (B6-05).
 var code_edit: LineEdit
@@ -189,6 +196,10 @@ func _build_connect() -> VBoxContainer:
 	join_button = UiBuild.button(&"ui.lobby.join")
 	join_button.pressed.connect(_on_join)
 	join_row.add_child(join_button)
+	dropin_button = UiBuild.button(&"ui.lobby.dropin_join")
+	dropin_button.tooltip_text = UiText.t(&"ui.lobby.dropin_join.hint")
+	dropin_button.pressed.connect(_on_drop_in)
+	join_row.add_child(dropin_button)
 	join_v.add_child(join_row)
 	loopback_button = UiBuild.button(&"ui.lobby.loopback", {"address": tweak.loopback_address})
 	loopback_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
@@ -381,14 +392,11 @@ func host() -> Error:
 
 ## Join the address / port fields. Returns OK or the error (shown on the screen).
 func join() -> Error:
-	var address: String = LobbyAddress.parse_address(join_address_edit.text)
-	if address == "":
-		_show_error(&"ui.lobby.error.address")
+	var target: Dictionary = _join_target()
+	if target.is_empty():
 		return ERR_INVALID_PARAMETER
-	var port: int = LobbyAddress.parse_port(join_port_edit.text, tweak)
-	if port < 0:
-		_show_error(&"ui.lobby.error.port", {"min": tweak.min_port, "max": tweak.max_port})
-		return ERR_INVALID_PARAMETER
+	var address: String = target["address"]
+	var port: int = target["port"]
 	var err: Error = session.join(address, port)
 	if err != OK:
 		_show_error(&"ui.lobby.error.join", {"address": address, "port": port})
@@ -426,6 +434,38 @@ func copy_code() -> void:
 
 func _on_code_submitted(_text: String) -> void:
 	join_by_code()
+
+
+## Drop in to a running heist (B6-04): the address / port fields (an empty address with a code typed in uses
+## the code) -> dropin_requested(address, port). Returns OK or the error (shown on the screen); nothing connects
+## here (DropInFlow does after the loadout pick).
+func drop_in() -> Error:
+	if LobbyAddress.parse_address(join_address_edit.text) == "" and code_edit.text.strip_edges() != "":
+		var d: Dictionary = LobbyCode.decode(code_edit.text, tweak.default_port)
+		if d.has("error"):
+			_show_error(StringName("ui.lobby.code.error.%s" % d["error"]))
+			return ERR_INVALID_DATA
+		join_address_edit.text = String(d["address"])
+		join_port_edit.text = str(int(d["port"]))
+	var target: Dictionary = _join_target()
+	if target.is_empty():
+		return ERR_INVALID_PARAMETER
+	error_label.text = ""
+	dropin_requested.emit(String(target["address"]), int(target["port"]))
+	return OK
+
+
+## {"address", "port"} from the join fields, or {} after showing why not.
+func _join_target() -> Dictionary:
+	var address: String = LobbyAddress.parse_address(join_address_edit.text)
+	if address == "":
+		_show_error(&"ui.lobby.error.address")
+		return {}
+	var port: int = LobbyAddress.parse_port(join_port_edit.text, tweak)
+	if port < 0:
+		_show_error(&"ui.lobby.error.port", {"min": tweak.min_port, "max": tweak.max_port})
+		return {}
+	return {"address": address, "port": port}
 
 
 ## Quick-join the loopback address on the join port field's value (dev / tests).
@@ -492,6 +532,10 @@ func _on_host() -> void:
 
 func _on_join() -> void:
 	join()
+
+
+func _on_drop_in() -> void:
+	drop_in()
 
 
 func _on_ready_toggled(on: bool) -> void:
@@ -676,8 +720,8 @@ func _rebuild_focus() -> void:
 	focus_chain.clear()
 	var cands: Array[Control] = []
 	if connect_box.visible:
-		cands = [host_port_edit, host_button, join_address_edit, join_port_edit, join_button, loopback_button, code_edit,
-				code_join_button, back_button]
+		cands = [host_port_edit, host_button, join_address_edit, join_port_edit, join_button, dropin_button, loopback_button,
+				code_edit, code_join_button, back_button]
 	else:
 		cands = [board_button, planning_button, briefing_button, loadout_button, music_picker.option, dropin_option, ready_button,
 				start_button, leave_button]
@@ -693,4 +737,4 @@ func _rebuild_focus() -> void:
 	UiNav.chain_vertical(focus_chain)
 	if connect_box.visible:
 		# The join row reads left to right: left/right walk it too (up/down follow the chain).
-		UiNav.chain_horizontal([join_address_edit, join_port_edit, join_button] as Array[Control], false)
+		UiNav.chain_horizontal([join_address_edit, join_port_edit, join_button, dropin_button] as Array[Control], false)

@@ -11,6 +11,8 @@
 ## session kick list, then LobbyState.dropin_policy; without a gate the local `policy`): a kicked player is
 ## denied with DropInService.REASON_KICKED, policy `off` denies with REASON_OFF, `auto` accepts, all without a
 ## dialog; only `ask` shows the request. A timeout denies with REASON_TIMEOUT, Deny with REASON_DENIED.
+## With ENV A's HeistDropIn (MenuFlow's heist dialog) there is no gate and `policy` stays ask: A already applied
+## its own checks and the policy and emits join_requested only for `ask`, so A alone decides (DropInFlow).
 class_name JoinRequestDialog
 extends PanelContainer
 
@@ -80,14 +82,14 @@ func _ready() -> void:
 		bind(service)
 
 
-## Bind to a drop-in service (its join_requested queues requests here).
+## Bind to a drop-in service (its join_requested queues requests here; its join_failed for a queued peer, e.g.
+## the joiner cancelled or left, drops that request without an answer).
 func bind(p_service: Object) -> void:
-	if service != null and service != p_service and service.has_signal(&"join_requested") \
-			and service.is_connected(&"join_requested", show_request):
-		service.disconnect(&"join_requested", show_request)
+	if service != null and service != p_service:
+		_connect_service(false)
 	service = p_service
-	if service != null and service.has_signal(&"join_requested") and not service.is_connected(&"join_requested", show_request):
-		service.connect(&"join_requested", show_request)
+	if service != null:
+		_connect_service(true)
 
 
 ## A request from the service: answered at once unless decision() is JOIN_ASK, then queued (a peer already
@@ -151,6 +153,29 @@ static func _rank(summary: Dictionary) -> int:
 static func _int(summary: Dictionary, key: String, lo: int, hi: int) -> int:
 	var v: Variant = summary.get(key, 0)
 	return clampi(int(v), lo, hi) if v is int or v is float else 0
+
+
+func _connect_service(on: bool) -> void:
+	for pair: Array in [[&"join_requested", show_request], [&"join_failed", _on_service_failed]]:
+		if not service.has_signal(pair[0]):
+			continue
+		if on and not service.is_connected(pair[0], pair[1]):
+			service.connect(pair[0], pair[1])
+		elif not on and service.is_connected(pair[0], pair[1]):
+			service.disconnect(pair[0], pair[1])
+
+
+## The service ended a request on its own (cancelled, peer gone): forget it; the next one shows.
+func _on_service_failed(peer_id: int, _reason: StringName) -> void:
+	for i: int in range(queue.size()):
+		if int(queue[i]["peer_id"]) != peer_id:
+			continue
+		queue.remove_at(i)
+		if i == 0:
+			_show_current()
+		else:
+			_refresh_more()
+		return
 
 
 func _answer(accepted: bool, reason: StringName, auto: bool) -> void:
