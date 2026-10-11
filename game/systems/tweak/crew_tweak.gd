@@ -71,6 +71,10 @@ extends Resource
 @export_group("Presentation (QB-47)")
 ## First-person weapon visual offset under the local human's camera (m, camera space).
 @export var viewmodel_offset: Vector3 = Vector3(0.18, -0.2, -0.4)
+## D-069: first-person camera near plane (m); 0.05 cut shouldered stocks in ADS.
+@export var camera_near_m: float = 0.02
+## B5-01: ADS zoom blend rate (1/s); the zoomed FOV = GameSettings.fov() / WeaponStats.magnification.
+@export var ads_zoom_rate: float = 8.0
 ## Capsule placeholder only: `Visual/Head/Socket` offset from the crew origin (assembled characters
 ## carry their own `Head/Socket`, characters.md v1.2).
 @export var placeholder_head_socket: Vector3 = Vector3(0.0, 1.62, -0.3)

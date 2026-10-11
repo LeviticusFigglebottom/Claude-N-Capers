@@ -38,6 +38,7 @@ var _viewmodel: Node3D = null
 var _fp: FpViewmodel = null
 var _mask: Node3D = null
 var _mask_id: StringName = &""
+var _ads_weight: float = 0.0
 ## Descriptor the current mask was built from (rebuild when it changes).
 var _mask_desc: Dictionary = {}
 
@@ -81,7 +82,26 @@ func refresh_camera() -> void:
 	if cam == null or not cam.is_inside_tree() or not _is_local_human():
 		return
 	cam.cull_mask &= ~FIRST_PERSON_HIDDEN_LAYER
+	cam.near = Tweak.crew().camera_near_m  # D-069
 	cam.make_current()
+
+
+## B5-01 options: the local camera FOV is GameSettings.fov() (re-read every frame, so a changed setting
+## applies at once); aiming zooms to fov / WeaponStats.magnification at CrewTweak.ads_zoom_rate.
+func _process(delta: float) -> void:
+	if _crew == null or not _is_local_human():
+		return
+	var cam: Camera3D = camera()
+	var gs: GameSettings = GameSettings.current()
+	if cam == null or gs == null:
+		return
+	var mag: float = 1.0
+	var w: CrewWeapons = _crew.weapons
+	if w != null and w.stats(w.equipped_slot) != null:
+		mag = maxf(w.stats(w.equipped_slot).magnification, 1.0)
+	var aiming: bool = _crew.intent != null and _crew.intent.aim
+	_ads_weight = move_toward(_ads_weight, 1.0 if aiming else 0.0, delta * Tweak.crew().ads_zoom_rate)
+	cam.fov = gs.fov() / lerpf(1.0, mag, _ads_weight)
 
 
 ## Local human only: WeaponVisual of the equipped weapon under the camera. With the first-person arms
