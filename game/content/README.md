@@ -304,3 +304,15 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
   pauses the local crew member's input). Lines are plain Labels (no BBCode). Open key: InputMap action `chat`
   (lead: project.godot) else `LobbyTweak.chat_fallback_key` (T). `CrewInput` (`ui/common/`) = the shared
   local-input pause with per-overlay holders (options, chat, drop-in). Strings `ui.chat.*`.
+* **Drop-in + kick (B6-04, on mocks until ENV A's drop-in lands).** `DropInService` (`lobby/drop_in_service.gd`):
+  the interface B's UI binds to by duck typing (group `drop_in_service`, `DropInService.find(tree)`): signals
+  `join_requested(peer_id, summary)`, `join_progress(peer_id, frac)`, `joined(slot)`, `join_failed(peer_id, reason)`,
+  `kicked(slot)`; methods `answer_join(peer_id, accept)`, `kick(slot) -> bool`, `request_join(summary)`,
+  `cancel_join()`; reasons `denied|timeout|full|cancelled|host_lost`. `MockDropInService` (`lobby/mock/`).
+  UI (`ui/dropin/`): `JoinRequestDialog` (host: name, level + Notoriety badge, Accept / Deny, auto-deny after
+  `LobbyTweak.dropin_request_timeout_s`, queue; MenuFlow.heist_join_dialog over the HUD for a co-op host, pauses
+  local input while shown), `KickConfirmDialog` (calls `target.kick(slot)`), `DropInJoinScreen` (joining player:
+  `LoadoutScreen.compact_mode` pick -> "Joining" progress with Cancel; not wired into MenuFlow until A's client path
+  exists). Lobby kick works today: `LobbySession.kick(slot)` -> host-only `LobbyState.MSG_KICK`; the kicked client's
+  session leaves (`connection_failed(FAIL_KICKED)`), honour-based until Net can drop a peer. Strings `ui.dropin.*`,
+  `ui.kick.*`.

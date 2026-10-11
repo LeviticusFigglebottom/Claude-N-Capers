@@ -98,6 +98,8 @@ var lobby: LobbySession = null
 var options_menu: MenuOptions
 ## In-heist chat overlay over the HUD (B6-03; co-op sessions only), else null.
 var heist_chat: ChatPanel = null
+## Host's drop-in request dialog over the HUD (B6-04; co-op host only; binds to the DropInService group), else null.
+var heist_join_dialog: JoinRequestDialog = null
 var _heist_id: StringName = &""
 var _difficulty: int = Enums.Difficulty.ROUTINE
 var _in_heist: CanvasLayer = null
@@ -648,6 +650,14 @@ func _spawn_in_heist_ui() -> void:
 		heist_chat.name = "HeistChat"
 		heist_chat.setup(lobby, ChatPanel.Mode.OVERLAY)
 		_in_heist.add_child(heist_chat)
+	if is_coop() and lobby.state.is_host:
+		heist_join_dialog = JoinRequestDialog.new()
+		heist_join_dialog.name = "JoinRequests"
+		heist_join_dialog.pause_gameplay = true
+		heist_join_dialog.auto_find = true
+		heist_join_dialog.local_slot = Net.local_slot()
+		_in_heist.add_child(heist_join_dialog)
+		heist_join_dialog.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP, Control.PRESET_MODE_MINSIZE, 96)
 	EventBus.heist_ended.connect(_on_heist_ended, CONNECT_ONE_SHOT)
 
 
@@ -685,6 +695,7 @@ func _leave_heist() -> void:
 	if heist_chat != null and is_instance_valid(heist_chat):
 		heist_chat.close()
 	heist_chat = null
+	heist_join_dialog = null
 	options_menu.heist_layer = null
 	options_menu.heist_payday = null
 	if _in_heist != null:

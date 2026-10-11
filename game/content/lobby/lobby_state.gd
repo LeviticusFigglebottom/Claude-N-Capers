@@ -22,6 +22,9 @@
 ## * MSG_CHAT     {"text": String}                               any human slot (B6-03). Validated by ChatLog
 ##                (`chat`): attribution by the sender's slot, control characters stripped, length cap, rate
 ##                limit per sender against `now_s` (R_RATE_LIMITED / R_EMPTY). Plain text only (no BBCode).
+## * MSG_KICK     {"slot": int}                                  host only (B6-04): the human in `slot` (not the
+##                host) must leave. Net has no way to drop a peer yet (QB to A), so the kicked client's own
+##                LobbySession leaves; a modified client could ignore it.
 ## receive() rejects unknown kinds, senders that are not a human crew slot, host-only kinds from
 ## anyone but the host slot, and malformed / non-JSON-safe payloads (R_* codes).
 class_name LobbyState
@@ -32,9 +35,10 @@ const MSG_PROFILE: StringName = &"lobby.profile_summary"
 const MSG_CONTRACT: StringName = &"lobby.contract"
 const MSG_START: StringName = &"lobby.start"
 const MSG_CHAT: StringName = &"lobby.chat"
+const MSG_KICK: StringName = &"lobby.kick"
 const KINDS: Array[StringName] = [MSG_READY, MSG_PROFILE, MSG_CONTRACT, MSG_START, PlanVote.MSG_CAST, PlanVote.MSG_RETRACT,
-	MSG_CHAT]
-const HOST_ONLY: Array[StringName] = [MSG_CONTRACT, MSG_START]
+	MSG_CHAT, MSG_KICK]
+const HOST_ONLY: Array[StringName] = [MSG_CONTRACT, MSG_START, MSG_KICK]
 
 ## receive() results.
 const OK: StringName = &""
@@ -189,6 +193,9 @@ func _apply(from_slot: int, kind: StringName, data: Dictionary) -> bool:
 			if ok:
 				st["seed"] = int(data["seed"])
 				started = st
+		MSG_KICK:
+			var target: Variant = data.get("slot")
+			ok = _is_int(target) and is_human(int(target)) and int(target) != host_slot
 		PlanVote.MSG_CAST, PlanVote.MSG_RETRACT:
 			var key: String = "option" if kind == PlanVote.MSG_CAST else "group"
 			ok = data.get(key) is String and String(data[key]) != ""

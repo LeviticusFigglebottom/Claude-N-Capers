@@ -29,6 +29,8 @@ signal chat_received(entry: Dictionary)
 const FAIL_TIMEOUT: StringName = &"timeout"
 const FAIL_HOST_LOST: StringName = &"host_lost"
 const FAIL_UNREACHABLE: StringName = &"unreachable"
+## The host kicked this peer (LobbyState.MSG_KICK, B6-04).
+const FAIL_KICKED: StringName = &"kicked"
 const LOG_CHANNEL: StringName = &"lobby"
 
 ## The Net API node (autoload `Net` when left null before _ready).
@@ -135,6 +137,16 @@ func chat_history() -> Array[Dictionary]:
 	return out
 
 
+## Host: kick the human in `slot` (LobbyState.MSG_KICK; that peer's session leaves with FAIL_KICKED).
+## The lobby half of the DropInService kick(slot) interface (KickConfirmDialog calls it). False when not
+## allowed (not the host, the host's own slot, an AI / empty seat).
+func kick(slot: int) -> bool:
+	if not _active or not state.is_host or slot == state.host_slot or not state.is_human(slot):
+		return false
+	net.call(&"lobby_send", LobbyState.MSG_KICK, {"slot": slot})
+	return true
+
+
 ## Session clock for the chat rate limit (seconds since start-up).
 static func now() -> float:
 	return Time.get_ticks_msec() / 1000.0
@@ -212,6 +224,10 @@ func _on_lobby_message(from_peer: int, kind: StringName, data: Dictionary) -> vo
 		return
 	if kind == LobbyState.MSG_CHAT:
 		chat_received.emit(state.chat.last())
+		return
+	if kind == LobbyState.MSG_KICK:
+		if int(data["slot"]) == state.local_slot and not state.is_host:
+			_fail(FAIL_KICKED)
 		return
 	if kind == LobbyState.MSG_PROFILE and not state.is_legal(slot):
 		Log.warn(LOG_CHANNEL, "slot %d loadout flagged illegal: %s" % [slot, ", ".join(state.errors.get(slot, []) as Array)])

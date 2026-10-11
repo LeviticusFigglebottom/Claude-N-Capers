@@ -36,6 +36,9 @@ const STAT_ROWS: Array[Array] = [
 ## The heist's HeistDef.start_mode (D-065). &"civilian" shows a notice: you start without gear and pick
 ## it up on site (S1.3). Set by MenuFlow before the screen enters the tree.
 @export var start_mode: StringName = &"casing"
+## Compact mode (B6-04 drop-in loadout pick): no Skills / Perk Deck / Workshop / Masks buttons; the owner
+## relabels Launch.
+@export var compact_mode: bool = false
 
 var profile: PlayerProfile
 ## S1.3 civilian-start notice (visible only for a civilian-start heist).
@@ -128,6 +131,8 @@ func build_ui() -> void:
 	nav.add_child(workshop_button)
 	nav.add_child(launch_button)
 	launch_button.visible = not hub_mode
+	for b: Button in [skills_button, perks_button, workshop_button, masks_button]:
+		b.visible = not compact_mode
 	_fill_options()
 	_rebuild_mod_rows()
 	_rebuild_focus()
@@ -353,12 +358,14 @@ func _rebuild_focus() -> void:
 		focus_chain.append(mod_options[t] as Control)
 	for c: Control in [melee_option, armor_option, deployable_option, mask_option, masks_button, launch_button,
 			skills_button, perks_button, workshop_button, back_button]:
-		if c != launch_button or not hub_mode:
+		if (c != launch_button or not hub_mode) and (c.visible or not compact_mode):
 			focus_chain.append(c)
 	if is_inside_tree():
 		UiNav.chain_vertical(focus_chain)
 		UiNav.chain_horizontal([mask_option, masks_button] as Array[Control], false)
-		var nav: Array[Control] = [back_button, skills_button, perks_button, workshop_button]
+		var nav: Array[Control] = [back_button]
+		if not compact_mode:
+			nav.append_array([skills_button, perks_button, workshop_button] as Array[Control])
 		if not hub_mode:
 			nav.append(launch_button)
 		UiNav.chain_horizontal(nav, false)

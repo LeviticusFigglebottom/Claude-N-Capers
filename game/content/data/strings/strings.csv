@@ -2298,3 +2298,28 @@ ui.chat.title,Crew Chat
 ui.chat.line,{name}:
 ui.chat.placeholder,"Type a message, Enter to send"
 ui.chat.rate_limited,Slow down: too many messages.
+ui.dropin.request.title,Drop-in request
+ui.dropin.request.body,{name} ({level}) wants to join.
+ui.dropin.request.auto_deny,Auto-deny in {seconds}s
+ui.dropin.request.more,{count} more waiting
+ui.dropin.accept,Accept
+ui.dropin.deny,Deny
+ui.dropin.unknown_player,Unknown player
+ui.dropin.join_button,Drop In
+ui.dropin.joining,Joining the heist
+ui.dropin.waiting_host,Waiting for the host to accept...
+ui.dropin.progress,Loading the heist: {pct}%
+ui.dropin.joined,You are in. Dropping in...
+ui.dropin.cancel,Cancel
+ui.dropin.failed.denied,The host denied your request.
+ui.dropin.failed.timeout,The host did not answer in time.
+ui.dropin.failed.full,The crew is full.
+ui.dropin.failed.cancelled,You cancelled the join.
+ui.dropin.failed.host_lost,Lost the connection to the host.
+ui.dropin.failed.unknown,Could not join the heist.
+ui.kick.button,Kick
+ui.kick.title,Kick player
+ui.kick.confirm,Kick {name} from the crew?
+ui.kick.yes,Kick
+ui.kick.no,Cancel
+ui.lobby.error.kicked,The host removed you from the lobby.

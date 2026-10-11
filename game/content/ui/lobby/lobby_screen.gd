@@ -8,6 +8,8 @@
 ##   Contract / Briefing / Loadout buttons ask MenuFlow to open those screens (signals below).
 ##   Music (B5-03): the host picks the heist music (MusicPicker: profile.music_choice, saved, re-sent in
 ##   the host's profile summary); clients see the host's pick read-only (LobbyState.host_music()).
+## Kick (B6-04): the host sees Kick on every other human's slot card; KickConfirmDialog asks first, then
+## LobbySession.kick(slot) (LobbyState.MSG_KICK).
 ## Chat (B6-03): a ChatPanel (Mode.LOBBY) next to the contract panel; the chat key focuses its input.
 ## All networking goes through `session` (LobbySession -> Net API). MenuFlow passes its session in with
 ## setup(); standalone the screen makes its own.
@@ -51,12 +53,14 @@ var loadout_button: Button
 var music_picker: MusicPicker
 ## Lobby text chat (B6-03).
 var chat_panel: ChatPanel
+## Host kick confirmation over the screen (B6-04).
+var kick_dialog: KickConfirmDialog
 var ready_button: Button
 var start_button: Button
 var leave_button: Button
 var block_label: Label
 ## Per slot: {"panel", "name", "tags", "level", "ready", "items": {field: Label}, "mask", "swatch_a",
-## "swatch_b", "flag"}.
+## "swatch_b", "flag", "kick"}.
 var slot_widgets: Array[Dictionary] = []
 
 
@@ -89,6 +93,11 @@ func build_ui() -> void:
 	root.add_child(connect_box)
 	lobby_box = _build_lobby()
 	root.add_child(lobby_box)
+	kick_dialog = KickConfirmDialog.new()
+	kick_dialog.name = "KickDialog"
+	add_child(kick_dialog)
+	kick_dialog.confirmed.connect(_on_kick_closed.unbind(2))
+	kick_dialog.cancelled.connect(_on_kick_closed)
 	_bind_session()
 	refresh()
 
@@ -267,6 +276,15 @@ func _slot_card() -> PanelContainer:
 	flag.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(flag)
 	w["flag"] = flag
+	var spacer: Control = Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(spacer)
+	var kick: Button = UiBuild.button(&"ui.kick.button")
+	kick.custom_minimum_size = Vector2(160, 0)
+	kick.size_flags_horizontal = Control.SIZE_SHRINK_END
+	kick.pressed.connect(ask_kick.bind(slot_widgets.size()))
+	v.add_child(kick)
+	w["kick"] = kick
 	var p: PanelContainer = UiBuild.panel(v)
 	p.custom_minimum_size = SLOT_CARD_MIN
 	p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -330,6 +348,21 @@ func start() -> StringName:
 	var r: StringName = session.start(int(Time.get_unix_time_from_system()))
 	refresh()
 	return r
+
+
+## Host: ask to kick the human in `slot` (confirm dialog). False when that slot cannot be kicked.
+func ask_kick(slot: int) -> bool:
+	var st: LobbyState = session.state
+	if not st.is_host or slot == st.local_slot or not st.is_human(slot):
+		return false
+	kick_dialog.target = session
+	kick_dialog.ask(slot, String(st.slot_view(slot)["name"]))
+	return true
+
+
+func _on_kick_closed() -> void:
+	refresh()
+	focus_default()
 
 
 func _on_host() -> void:
@@ -486,6 +519,7 @@ func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
 	else:
 		panel.remove_theme_stylebox_override(&"panel")
 	panel.modulate.a = 1.0 if human else 0.7
+	(w["kick"] as Button).visible = session.state.is_host and human and not bool(view["is_local"])
 
 
 func _rebuild_focus() -> void:
@@ -496,6 +530,8 @@ func _rebuild_focus() -> void:
 	else:
 		cands = [board_button, planning_button, briefing_button, loadout_button, music_picker.option, ready_button, start_button,
 				leave_button]
+		for w: Dictionary in slot_widgets:
+			cands.append(w["kick"] as Control)
 		if chat_panel.input != null:
 			cands.append(chat_panel.input)
 	for c: Control in cands:

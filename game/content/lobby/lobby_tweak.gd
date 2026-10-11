@@ -33,6 +33,8 @@ const DEFAULT_PATH: String = "res://content/data/lobby/lobby_tweak.tres"
 ## exist the panel opens on chat_fallback_key.
 @export var chat_action: StringName = &"chat"
 @export var chat_fallback_key: Key = KEY_T
+## Drop-in (B6-04): the host's join request dialog auto-denies after this many seconds.
+@export var dropin_request_timeout_s: float = 30.0
 
 
 static func load_default() -> LobbyTweak:
