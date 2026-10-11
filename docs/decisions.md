@@ -362,3 +362,9 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Save format v5 (ENV B B4-16 = roadmap "save v2"): unlocks/achievements/pro_job_locks, sanitizing + validator
   pruning, golden v0..v4→v5 migrations, damaged-file fallback (content/docs/save_format.md).
 - Armory reaches 36 weapons (B4-18); stinger_45 renamed lancet_45 (name clash with a mod).
+
+## D-058 — 2026-10-11 — Batch-3 viewmodel notes; shotgun_box set
+- Harrow 12 / Brute 12 (box/drum-fed shotguns) get their own FP set `shotgun_box` (ENV D) instead of reusing `rifle`,
+  so their reload lengths follow their own data. ENV B sets `anim_set = &"shotgun_box"`.
+- characters.md v1.5: batch-2/3 sets, loop naming (`fire_hold`/`cut_hold`), bow draw curve + offhand hold, weapon-bone
+  exceptions, model-layout assumptions, Bulwark `shield_idle`.
