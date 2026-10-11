@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_lot"
+purpose = &"exterior"
+required_items = Array[StringName]([&"street_lamp", &"hvac", &"pallet", &"bin_street"])
+optional_items = {
+&"box": 0.6,
+&"crate": 0.6,
+&"hvac": 1,
+&"pallet": 1
+}
+clutter_groups = {}
+min_density = 0.005
+max_density = 0.3
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"street_lamp", &"bin_street", &"car", &"bollard", &"hvac", &"pallet", &"crate", &"box", &"wall_lamp"])
+seed_salt = 59
+counts = {
+&"hvac": Vector2i(2, 2)
+}
+assets = {
+&"pallet": PackedStringArray("prop_pallet", "prop_pallet_loaded"),
+&"street_lamp": PackedStringArray("prop_street_lamp_sodium")
+}
+ceiling = {}
+notes = "X1 staff lot + alley: parked staff cars, sodium poles and the dumpster (prefab) are anchored; the van slot E1, the escape zone and the areaway cage are keep-outs. Condensers and pallets on the facade."

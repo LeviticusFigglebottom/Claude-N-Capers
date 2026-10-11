@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"office_loan"
+purpose = &"office"
+required_items = Array[StringName]([&"desk", &"chair", &"file_cabinet", &"bookshelf", &"picture", &"desk_lamp", &"plant", &"monitor", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"credenza": 0.5,
+&"picture": 1
+}
+clutter_groups = {
+&"desk": {
+"anchors": Array[StringName]([&"desk"]),
+"count": Vector2i(2, 3),
+"items": {&"binders": 1, &"mug": 1.5, &"notebook": 1.5, &"papers": 3, &"pen_cup": 1.5},
+"radius": 0.6
+}
+}
+min_density = 0.4
+max_density = 1.8
+min_props = 12
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 46
+counts = {
+&"chair": Vector2i(3, 3)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"chair": PackedStringArray("prop_chair_task", "prop_chair_visitor", "prop_chair_visitor"),
+&"desk": PackedStringArray("prop_desk_bank"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_b"),
+&"plant": PackedStringArray("prop_plant_tall")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.4}
+notes = "G11 loan officer: free-standing desk (0.74 m) with the officer's task chair (0.47 m seat, D-063) and two visitor chairs, files, bookshelf, art. Glass front to the hall, window to Wharf Lane."

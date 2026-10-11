@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"server_room"
+purpose = &"server_room"
+required_items = Array[StringName]([&"server_rack", &"ups", &"desk", &"chair", &"monitor", &"light_fixture"])
+optional_items = {
+&"bin": 0.5,
+&"box": 0.6,
+&"fire_extinguisher": 0.8,
+&"it_rack": 1
+}
+clutter_groups = {
+&"desk": {
+"anchors": Array[StringName]([&"desk"]),
+"count": Vector2i(1, 2),
+"items": {&"keyboard": 1, &"mug": 1, &"papers": 1},
+"radius": 0.5
+}
+}
+min_density = 0.3
+max_density = 1.8
+min_props = 9
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 53
+counts = {
+&"server_rack": Vector2i(3, 4)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"chair": PackedStringArray("prop_chair_office"),
+&"desk": PackedStringArray("prop_desk_office"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_cool")
+}
+ceiling = {"prop_ceiling_panel_cool": 2.4}
+notes = "B4: rack rows, UPS, a console desk. The srv_basement hack terminal (north wall) is a keep-out."

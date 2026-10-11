@@ -1,15 +1,18 @@
-## Night Deposit G1 greybox generator. Owner: ENV C (C2).
+## Night Deposit generator (G1 greybox C2, G2 art + dressing). Owner: ENV C.
 ## Regenerate (deterministic; never hand-edit the outputs):
 ##   /opt/godot/godot --headless --path game --script res://world/heists/night_deposit/greybox/build_greybox.gd
-## Reads night_deposit_layout.gd and writes, under res://world/heists/night_deposit/:
+## then re-bake the interior GI under xvfb (bake_gi.gd header). Reads night_deposit_layout.gd and
+## night_deposit_dressing.gd and writes, under res://world/heists/night_deposit/:
 ##   night_deposit.tscn (HeistMap, navmesh baked and embedded), night_deposit_def.tres,
-##   night_deposit_variants.tres. Contracts: docs/contracts/heist_map.md v1.2, gameplay_prefabs.md v1.1,
-##   preplanning.md. Design: docs/design/heists/night_deposit.md (APPROVED, D-040).
+##   night_deposit_variants.tres, art/*.tscn (generated prefab visuals). Contracts: docs/contracts/
+##   heist_map.md v1.2, gameplay_prefabs.md v1.3, preplanning.md. Design: docs/design/heists/
+##   night_deposit.md (APPROVED, D-040).
 ## Gameplay prefabs are instanced (never edited) and located through their contract class names,
 ## so this file holds no path into another environment's folder. They are added while the map is
-## out of the tree, so their runtime _ready() never runs here. Prefabs not on trunk yet
-## (bag_lift, hack_terminal; QC-11/QC-12) get placeholders with the intended node names.
+## out of the tree, so their runtime _ready() never runs here.
 extends "res://world/heists/night_deposit/greybox/nd_gameplay.gd"
+
+const GI_PATH: String = OUT_DIR + "night_deposit_voxelgi.res"
 
 
 func _initialize() -> void:
@@ -17,6 +20,12 @@ func _initialize() -> void:
 
 
 func _build() -> void:
+	art = A.new()
+	art.setup()
+	var vis_err: String = DR.make_visuals(art, R, _visual_specs())
+	if vis_err != "":
+		_fail(vis_err)
+		return
 	var old_scene_uid: String = R.read_uid(SCENE_PATH)
 	var def: HeistDef = R.make_def()
 	var table: HeistVariantTable = R.make_variants()
@@ -30,6 +39,8 @@ func _build() -> void:
 	map_root.heist_def = load(DEF_PATH) as HeistDef
 	map_root.variant_table = load(VARIANTS_PATH) as HeistVariantTable
 	map_root.floor_heights = PackedFloat32Array(L.FLOOR_HEIGHTS)
+	dress = DR.new()
+	dress.setup(self, map_root)
 	for nm: String in ["Geometry", "Props", "Lighting"]:
 		add(map_root, node3d(nm))
 	var nav: NavigationRegion3D = NavigationRegion3D.new()
@@ -59,6 +70,14 @@ func _build() -> void:
 	build_gameplay(n("Gameplay"))
 	build_variants(n("Variants"))
 	_build_nav_links(nav)
+	dress.dress(n("Props"))
+	dress.site_dressing(add(n("Geometry"), node3d("SiteDressing")) as Node3D)
+	dress.fill_lights(add(n("Lighting"), node3d("Fill")) as Node3D)
+	for line: String in dress.report:
+		printerr("dress: " + line)
+		if line.begins_with("ERROR"):
+			errors.append(line)
+	_build_art()
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -74,6 +93,7 @@ func _build() -> void:
 	if err != OK:
 		_fail("cannot save %s (%d)" % [SCENE_PATH, err])
 		return
+	R.strip_nested_overrides(SCENE_PATH)
 	R.normalize_scene(SCENE_PATH, old_scene_uid)
 	print("night_deposit: saved %s (navmesh polygons: %d)" % [SCENE_PATH, polys])
 	quit(0)
@@ -86,6 +106,59 @@ func _fail(msg: String) -> void:
 	quit(1)
 
 
+## Generated prefab visuals (nd_dress.make_visuals): the cash lift car, the boat's deck hatch, the
+## antechamber laser grids per pattern (posts + `Beam<i>`), an empty scene.
+func _visual_specs() -> Dictionary:
+	var lift_parts: Array = [[Vector3(1.2, 0.05, 1.14), Vector3(0.0, -0.025, 0.0), "brushed_steel"],
+		[Vector3(1.2, 1.2, 0.04), Vector3(0.0, 0.6, 0.55), "brushed_steel"],
+		[Vector3(0.04, 1.2, 1.1), Vector3(-0.58, 0.6, 0.0), "brushed_steel"],
+		[Vector3(0.04, 1.2, 1.1), Vector3(0.58, 0.6, 0.0), "brushed_steel"],
+		[Vector3(1.2, 0.04, 0.04), Vector3(0.0, 1.18, -0.55), "brushed_steel"],
+		[Vector3(1.0, 0.012, 0.9), Vector3(0.0, 0.006, 0.0), "rubber_black"]]
+	var specs: Dictionary = {
+		VIS_EMPTY: {"name": "NdEmpty", "nodes": []},
+		VIS_CASH_LIFT: {"name": "NdCashLift", "nodes": [
+			["Car", "", Vector3.ZERO, []], ["CarMesh", "Car", Vector3.ZERO, lift_parts],
+			["DoorL", "Car", Vector3(-0.3, 0.6, -0.55), []], ["DoorR", "Car", Vector3(0.3, 0.6, -0.55), []],
+			["Panel", "", Vector3(0.0, 1.45, -0.715), []]]},
+		VIS_BOAT_HATCH: {"name": "NdBoatHatch", "nodes": [
+			["Body", "", Vector3.ZERO, [[Vector3(1.4, 0.1, 1.0), Vector3(0.0, 0.05, 0.0), "wood_veneer_walnut"],
+				[Vector3(1.5, 0.02, 1.1), Vector3(0.0, 0.11, 0.0), "brushed_steel"]]],
+			["DoorL", "", Vector3(-0.35, 0.12, 0.0), []], ["DoorR", "", Vector3(0.35, 0.12, 0.0), []],
+			["DropAnchor", "", Vector3(0.0, 0.12, 0.0), []]]},
+	}
+	# [pattern, width, height, beams, sweeping, z offset, base plate h, base plate w, post w]: the three
+	# variant grids share a spot, so each sits 90 mm apart in z.
+	# Offsets go south (+z, into B8) so nothing enters the vault gate's swing; post and plate sizes
+	# differ by 1 cm so faces of overlapping variants never coincide.
+	for r: Array in [["laser_static", 8.85, 2.0, 4, false, 0.0, 0.03, 0.14, 0.08],
+			["laser_timed", 9.8, 2.0, 4, false, 0.09, 0.036, 0.13, 0.07],
+			["laser_sweep", 9.8, 2.2, 2, true, 0.18, 0.042, 0.12, 0.06]]:
+		var w: float = float(r[1])
+		var h: float = float(r[2])
+		var dz: float = float(r[5])
+		var ph: float = float(r[6])
+		var pw: float = float(r[7])
+		var sw: float = float(r[8])
+		var nodes: Array = [["Emitters", "", Vector3(0.0, 0.0, dz), [
+			[Vector3(sw, h, sw), Vector3(-w * 0.5 + 0.04, h * 0.5, 0.0), "metal_dark"],
+			[Vector3(sw, h, sw), Vector3(w * 0.5 - 0.04, h * 0.5, 0.0), "metal_dark"],
+			[Vector3(pw, ph, pw), Vector3(-w * 0.5 + 0.07, ph * 0.5, 0.0), "metal_dark"],
+			[Vector3(pw, ph, pw), Vector3(w * 0.5 - 0.07, ph * 0.5, 0.0), "metal_dark"]]]]
+		if bool(r[4]):
+			nodes[0][3].append([Vector3(w - 0.16, 0.04, 0.06), Vector3(0.0, h - 0.02, 0.0), "metal_dark"])
+		for i: int in range(int(r[3])):
+			var parts: Array = [[Vector3(0.012, h - 0.1, 0.012), Vector3.ZERO, "laser_red"]] if bool(r[4]) \
+				else [[Vector3(w - 0.16, 0.012, 0.012), Vector3.ZERO, "laser_red"]]
+			var pos: Vector3 = Vector3(-w * 0.25 + w * 0.5 * float(i), h * 0.5, 0.0) if bool(r[4]) \
+				else Vector3(0.0, h * (float(i) + 0.5) / float(r[3]), 0.0)
+			# the grid moves `Beam<i>` on the beam line (z 0) at runtime: the bar is a child offset by dz
+			nodes.append(["Beam%d" % i, "", pos, []])
+			nodes.append(["Bar", "Beam%d" % i, Vector3(0.0, 0.0, dz), parts])
+		specs[VIS_LASER[String(r[0])]] = {"name": "NdLaser" + String(r[0]).capitalize().replace(" ", ""), "nodes": nodes}
+	return specs
+
+
 # --- Building shell ---------------------------------------------------------------------------
 
 func _build_shell(geo: Node3D) -> void:
@@ -93,6 +166,7 @@ func _build_shell(geo: Node3D) -> void:
 	var walls: Node3D = add(bld, node3d("ExteriorWalls")) as Node3D
 	var q: float = L.EXT_T * 0.25
 	var h: float = L.EXT_T * 0.5
+	vis_group = "Shell"
 	for w: Array in L.EXT_WALLS:
 		var fixed: float = float(w[2])
 		var out_sign: float = float(w[9])
@@ -100,32 +174,72 @@ func _build_shell(geo: Node3D) -> void:
 		wall(walls, String(w[0]) + "Out", String(w[1]), fixed + out_sign * q, float(w[3]), float(w[4]), h, yr,
 			w[10], "wall_ext")
 		wall(walls, String(w[0]) + "In", String(w[1]), fixed - out_sign * q, float(w[5]), float(w[6]), h, yr,
-			w[10], "wall")
-	# The closed sally roller shutter (3.0 m) inside its opening.
-	box(walls, "SallyRollerShutter", Vector3(2.0, 0.0, -0.06), Vector3(5.0, 2.8, 0.06), "door")
+			(w[10] as Array) + _junction_cuts(String(w[1]), fixed, yr), "wall")
+	# The closed sally roller shutter (3.0 m) inside its opening: slats + guide rails + the hood box.
+	box(walls, "SallyRollerShutter", Vector3(2.0, 0.0, -0.06), Vector3(5.0, 2.8, 0.06), "")
+	_roller_shutter()
+	vis_group = "Interior"
 	var iw: Node3D = add(bld, node3d("InteriorWalls")) as Node3D
 	for w2: Array in L.INT_WALLS:
 		var t: float = float(w2[8]) if w2.size() > 8 else L.INT_T
-		wall(iw, String(w2[0]), String(w2[1]), float(w2[2]), float(w2[3]), float(w2[4]), t,
-			Vector2(float(w2[5]), float(w2[6])), w2[7], "wall")
+		var yr2: Vector2 = Vector2(float(w2[5]), float(w2[6]))
+		wall(iw, String(w2[0]), String(w2[1]), float(w2[2]), float(w2[3]), float(w2[4]), t, yr2,
+			(w2[7] as Array) + _junction_cuts(String(w2[1]), float(w2[2]), yr2), "wall")
 	var slabs: Node3D = add(bld, node3d("Slabs")) as Node3D
 	for s: Array in L.SLABS:
 		box_a(slabs, String(s[0]), s[1], String(s[2]))
 	var ceil_n: Node3D = add(bld, node3d("Ceilings")) as Node3D
 	for c: Array in L.CEILINGS:
-		box_a(ceil_n, String(c[0]), c[1], "ceiling")
+		box_a(ceil_n, String(c[0]), c[1], "none")
 	_build_stair(bld)
 	var rails: Node3D = add(bld, node3d("Railings")) as Node3D
 	for r: Array in L.RAILINGS:
 		railing(rails, String(r[0]), v3(r[1], 0), v3(r[1], 3))
+	vis_group = "Shell"
 	_build_glazing(bld)
+	vis_group = "Interior"
 	_build_lift_shaft(bld)
+	vis_group = "Shell"
 	_build_areaway(bld)
+	vis_group = "Interior"
 	_build_vault_cage(bld)
-	_build_compass(bld)
 
 
-## Railing: full-panel collision (blocks players and the navmesh) + top rail, mid rail and posts.
+## Sally roller shutter (visual): horizontal steel slats on the opening, guide rails, the coil hood.
+## Zero-width "openings" (no hole) that split a wall line where a perpendicular wall meets it, so each
+## wall box faces a single room and takes that room's finish (a face's material follows its centre).
+func _junction_cuts(axis: String, fixed: float, yr: Vector2) -> Array:
+	var out: Array = []
+	var rows: Array = []
+	for w: Array in L.EXT_WALLS:
+		rows.append([String(w[1]), float(w[2]), minf(float(w[3]), float(w[5])), maxf(float(w[4]), float(w[6])), float(w[7]),
+			float(w[8])])
+	for w2: Array in L.INT_WALLS:
+		rows.append([String(w2[1]), float(w2[2]), float(w2[3]), float(w2[4]), float(w2[5]), float(w2[6])])
+	for r: Array in rows:
+		if String(r[0]) == axis or minf(float(r[5]), yr.y) - maxf(float(r[4]), yr.x) < 0.1:
+			continue
+		var touches: bool = absf(float(r[2]) - fixed) < 0.35 or absf(float(r[3]) - fixed) < 0.35 \
+			or (float(r[2]) < fixed and float(r[3]) > fixed)
+		if touches:
+			out.append([float(r[1]), float(r[1]), -100.0, -100.0])
+	return out
+
+
+func _roller_shutter() -> void:
+	var y: float = 0.0
+	while y < 2.79:
+		art.acc.box("Shell", Vector3(2.0, y, -0.05), Vector3(5.0, minf(y + 0.095, 2.8), 0.05), func(f: int, _n: Vector3, _c: Vector3) -> String:
+			return "" if f == 2 or f == 3 else "metal_painted")
+		art.acc.box("Shell", Vector3(2.02, y + 0.093, -0.055), Vector3(4.98, minf(y + 0.1, 2.8), 0.055), "metal_dark")
+		y += 0.1
+	for x: Vector2 in [Vector2(1.9, 2.0), Vector2(5.0, 5.1)]:
+		art.acc.box("Shell", Vector3(x.x, 0.0, -0.32), Vector3(x.y, 2.8, -0.2), "metal_dark")
+	art.acc.box("Shell", Vector3(1.85, 2.8, -0.55), Vector3(5.15, 3.2, -0.2), "metal_dark")
+
+
+## Railing: full-panel collision (blocks players and the navmesh) + top rail, mid rail and posts
+## (brushed steel indoors; the quay chain railing: dark posts and two chains).
 func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3) -> void:
 	var body: Node3D = box(parent, nm, mn, mx, "")
 	body.set_meta(&"kind", "railing")
@@ -133,25 +247,27 @@ func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3) -> void:
 	var along_x: bool = size.x >= size.z
 	var length: float = size.x if along_x else size.z
 	var t: float = minf(size.x, size.z)
-	for rail: Array in [["TopRail", size.y * 0.5 - 0.025], ["MidRail", 0.0]]:
-		var mi: MeshInstance3D = MeshInstance3D.new()
-		mi.name = String(rail[0])
-		mi.mesh = box_mesh(Vector3(length, 0.05, t) if along_x else Vector3(t, 0.05, length), "trim")
-		mi.position = Vector3(0.0, float(rail[1]), 0.0)
-		add(body, mi)
-	var posts: int = mini(maxi(2, int(ceil(length / 1.2)) + 1), 40)
+	var quay: bool = nm.begins_with("RailQuay")
+	var key: String = "metal_dark" if quay else "brushed_steel"
+	var parts: Array = []
+	for ry: float in ([size.y * 0.5 - 0.03, size.y * 0.5 - 0.45] if quay else [size.y * 0.5 - 0.025, 0.0]):
+		var thick: float = 0.03 if quay else 0.05
+		parts.append([Vector3(length, thick, t) if along_x else Vector3(t, thick, length), Vector3(0.0, ry, 0.0), key])
+	var spacing: float = 2.0 if quay else 1.2
+	var posts: int = mini(maxi(2, int(ceil(length / spacing)) + 1), 40)
 	for i: int in range(posts):
-		var off: float = -length * 0.5 + 0.025 + (length - 0.05) * float(i) / float(posts - 1)
-		var post: MeshInstance3D = MeshInstance3D.new()
-		post.name = "Post%d" % i
-		post.mesh = box_mesh(Vector3(0.05, size.y, t), "trim")
-		post.position = Vector3(off, 0.0, 0.0) if along_x else Vector3(0.0, 0.0, off)
-		add(body, post)
+		var off: float = -length * 0.5 + 0.03 + (length - 0.06) * float(i) / float(posts - 1)
+		var ps: Vector3 = Vector3(0.06, size.y - 0.002, t) if quay else Vector3(0.05, size.y - 0.052, t - 0.004)
+		parts.append([ps, (Vector3(off, -0.001, 0.0) if along_x else Vector3(0.0, -0.001, off)), key])
+	var mi: MeshInstance3D = MeshInstance3D.new()
+	mi.name = "Rails"
+	mi.mesh = art.local_box_mesh(parts)
+	add(body, mi)
 
 
 ## U-stair G2 (layout STAIR): two straight flights (`stairs` nodes, steps along local Z) and the half
-## landing. Each flight's steps are visual meshes; its collision is a smooth ramp through the nosings
-## (convex prisms), which the validator accepts as an enveloping ramp (tools/levelcheck/README.md).
+## landing. Each flight's steps are a visual mesh under the flight node; its collision is a smooth ramp
+## through the nosings (convex prisms), which the validator accepts as an enveloping ramp.
 func _build_stair(bld: Node3D) -> void:
 	var st: Dictionary = L.STAIR
 	var r: float = float(st["riser"])
@@ -165,6 +281,7 @@ func _build_stair(bld: Node3D) -> void:
 	var ramp_t: float = float(st["ramp_t"])
 	var core: Node3D = add(bld, node3d("Stair")) as Node3D
 	var lx: Array = st["landing_x"]
+	vis_group = "Interior"
 	box(core, "HalfLanding", Vector3(float(lx[0]), L.BASE, float(lz[0])), Vector3(float(lx[1]), y_land, z_land), "stair")
 	var dx: Array = st["divider_x"]
 	box(core, "DividerB", Vector3(float(dx[0]), L.BASE, z_land), Vector3(float(dx[1]), 0.0, z_top), "wall")
@@ -175,17 +292,19 @@ func _build_stair(bld: Node3D) -> void:
 	var x1: Array = st["f1_x"]
 	var xa: float = float(x1[0])
 	var xb: float = float(x1[1])
+	vis_group = "Flight1"
 	for k: int in range(1, nr):
 		var top: float = -float(k) * r
 		var zl: float = z_top - float(k) * tr
 		var zh: float = z_top - float(k - 1) * tr + SEAM
 		if zh <= b14_z:
-			mesh_box(f1, "Step%02d" % k, Vector3(xa, L.BASE, zl), Vector3(xb, top, zh), "stair")
+			_step_box(Vector3(xa, L.BASE, zl), Vector3(xb, top, zh))
 		elif zl >= b14_z:
-			mesh_box(f1, "Step%02d" % k, Vector3(xa, L.BASE_CEIL, zl), Vector3(xb, top, zh), "stair")
+			_step_box(Vector3(xa, L.BASE_CEIL, zl), Vector3(xb, top, zh))
 		else:
-			mesh_box(f1, "Step%02dA" % k, Vector3(xa, L.BASE, zl), Vector3(xb, top, b14_z), "stair")
-			mesh_box(f1, "Step%02dB" % k, Vector3(xa, L.BASE_CEIL, b14_z), Vector3(xb, top, zh), "stair")
+			_step_box(Vector3(xa, L.BASE, zl), Vector3(xb, top, b14_z))
+			_step_box(Vector3(xa, L.BASE_CEIL, b14_z), Vector3(xb, top, zh))
+	art.acc.flush(f1, map_root, {}, ["Flight1"])
 	var ramp1: Callable = func(z: float) -> float: return -(z_top - z) / tr * r
 	_ramp(f1, xa, xb, [
 		[Vector2(z_land - tr, L.BASE), Vector2(b14_z, L.BASE), Vector2(b14_z, ramp1.call(b14_z)), Vector2(z_land - tr, y_land)],
@@ -196,11 +315,14 @@ func _build_stair(bld: Node3D) -> void:
 	var f2: Node3D = add(core, node3d("Flight2")) as Node3D
 	f2.set_meta(&"kind", "stairs")
 	var x2: Array = st["f2_x"]
+	vis_group = "Flight2"
 	for j: int in range(1, nr):
 		var top2: float = y_land - float(j) * r
 		var za: float = z_land + float(j - 1) * tr - SEAM
 		var zb: float = z_land + float(j) * tr
-		mesh_box(f2, "Step%02d" % (nr + j), Vector3(float(x2[0]), L.BASE, za), Vector3(float(x2[1]), top2, zb), "stair")
+		_step_box(Vector3(float(x2[0]), L.BASE, za), Vector3(float(x2[1]), top2, zb))
+	art.acc.flush(f2, map_root, {}, ["Flight2"])
+	vis_group = "Interior"
 	_ramp(f2, float(x2[0]), float(x2[1]), [
 		[Vector2(z_land, y_land), Vector2(z_top + tr, L.BASE), Vector2(z_land, L.BASE)],
 	])
@@ -218,6 +340,15 @@ func _build_stair(bld: Node3D) -> void:
 	_handrail(hr, "Flight2East", float(x2[1]), -1.0, n2, n2b)
 
 
+## One stair step block (visual): its sides lie on the core walls / divider and its base on the
+## basement floor or on B14's ceiling (which draws the soffit), so only treads and risers are drawn.
+func _step_box(mn: Vector3, mx: Vector3) -> void:
+	art.acc.box(vis_group, mn, mx, func(f: int, n: Vector3, c: Vector3) -> String:
+		if f == 0 or f == 1 or f == 2:
+			return ""
+		return art.face_key("stair", f, n, c))
+
+
 ## Wall handrail: a round bar `rail_h` above the nosing line between nosings a and b ((z, y) pairs),
 ## `rail_off` out from the wall face at x `x_wall` (`inward` = +1 / -1 towards the flight), three
 ## brackets and a return to the wall at each end. Only the bar carries meta kind = handrail (its own
@@ -233,37 +364,25 @@ func _handrail(parent: Node3D, nm: String, x_wall: float, inward: float, a: Vect
 	var rail: Node3D = add(parent, node3d(nm)) as Node3D
 	var bar: MeshInstance3D = MeshInstance3D.new()
 	bar.name = "Bar"
-	bar.mesh = _rod_mesh(rad, pa.distance_to(pb))
+	var ln: float = pa.distance_to(pb)
+	bar.mesh = art.local_rod_mesh(rad, ln, "brushed_steel")
 	var up: Vector3 = (pb - pa).normalized()
-	bar.transform = Transform3D(Basis(Vector3.RIGHT, up, Vector3.RIGHT.cross(up)), (pa + pb) * 0.5)
+	bar.transform = Transform3D(Basis(Vector3.RIGHT, up, Vector3.RIGHT.cross(up)), (pa + pb) * 0.5 - up * ln * 0.5)
 	bar.set_meta(&"kind", "handrail")
 	add(rail, bar)
 	for e: Array in [["ReturnA", pa], ["ReturnB", pb]]:
 		var ret: MeshInstance3D = MeshInstance3D.new()
 		ret.name = String(e[0])
-		ret.mesh = _rod_mesh(rad, off)
+		ret.mesh = art.local_rod_mesh(rad, off, "brushed_steel")
 		var p: Vector3 = e[1]
-		ret.transform = Transform3D(Basis(Vector3.BACK, deg_to_rad(90.0)), Vector3(x_wall + inward * off * 0.5, p.y, p.z))
+		# rod along local +Y turned to run along -inward X from the bar back to the wall
+		ret.transform = Transform3D(Basis(Vector3.BACK, deg_to_rad(90.0 * inward)), Vector3(x, p.y, p.z))
 		add(rail, ret)
 	for i: int in range(3):
 		var f: float = 0.2 + 0.3 * float(i)
 		var q: Vector3 = pa.lerp(pb, f)
-		mesh_box(rail, "Bracket%d" % i, Vector3(minf(x_wall, x), q.y - rad - 0.05, q.z - 0.015),
-			Vector3(maxf(x_wall, x), q.y - rad + 0.005, q.z + 0.015), "handrail")
-
-
-func _rod_mesh(radius: float, length: float) -> CylinderMesh:
-	var key: String = "rod|%.3f|%.3f" % [radius, length]
-	if not _box_mesh_cache.has(key):
-		var cm: CylinderMesh = CylinderMesh.new()
-		cm.top_radius = radius
-		cm.bottom_radius = radius
-		cm.height = length
-		cm.radial_segments = 12
-		cm.rings = 1
-		cm.material = lib_mat("handrail")
-		_box_mesh_cache[key] = cm
-	return _box_mesh_cache[key]
+		mesh_box(Vector3(minf(x_wall, x), q.y - rad - 0.05, q.z - 0.015), Vector3(maxf(x_wall, x), q.y - rad + 0.005, q.z + 0.015),
+			"handrail")
 
 
 ## Ramp collision: one StaticBody3D with convex prisms, each a (z, y) polygon extruded over x0..x1.
@@ -286,7 +405,9 @@ func _ramp(flight: Node3D, x0: float, x1: float, polys: Array) -> void:
 		add(body, col)
 
 
-## Static glazing: glass blocker (collision) + pane + head/sill frame bars.
+## Static glazing: glass blocker (collision) + pane + a frame round the opening (head, sill, jambs).
+## The ATM vestibule's street glass is green (landmark 3); the bandit glass gets brass mullions over
+## the counter joints.
 func _build_glazing(bld: Node3D) -> void:
 	var gl: Node3D = add(bld, node3d("Glazing")) as Node3D
 	for g: Array in L.GLAZING:
@@ -296,21 +417,34 @@ func _build_glazing(bld: Node3D) -> void:
 		var a1: float = float(g[4])
 		var y0: float = float(g[5])
 		var y1: float = float(g[6])
-		var mn: Vector3 = Vector3(a0, y0, f - 0.02) if along_x else Vector3(f - 0.02, y0, a0)
-		var mx: Vector3 = Vector3(a1, y1, f + 0.02) if along_x else Vector3(f + 0.02, y1, a1)
-		var body: Node3D = box(gl, String(g[0]), mn, mx, "glass")
-		var span: float = a1 - a0
-		var fs: Vector3 = Vector3(span, 0.05, 0.08) if along_x else Vector3(0.08, 0.05, span)
-		var head: MeshInstance3D = MeshInstance3D.new()
-		head.name = "FrameHead"
-		head.mesh = box_mesh(fs, "frame")
-		head.position = Vector3(0.0, (y1 - y0) * 0.5 - 0.025, 0.0)
-		add(body, head)
+		var mn: Vector3 = Vector3(a0, y0, f - 0.01) if along_x else Vector3(f - 0.01, y0, a0)
+		var mx: Vector3 = Vector3(a1, y1, f + 0.01) if along_x else Vector3(f + 0.01, y1, a1)
+		var nm: String = String(g[0])
+		var glass_key: String = "glass_green" if nm.begins_with("Atm") else "glass"
+		# collision is the full opening; the pane is inset 4 mm so its edges sit inside the frame bars
+		box(gl, nm, mn, mx, "")
+		var ins: Vector3 = Vector3(0.004, 0.004, 0.0) if along_x else Vector3(0.0, 0.004, 0.004)
+		art.vis_box(vis_group, mn + ins, mx - ins, glass_key)
+		var frame_key: String = "brass" if nm == "BanditGlass" else ("ironwork" if nm.begins_with("Atm") else "frame")
+		var fw: float = 0.05
+		var fd: float = 0.08
+		# head and sill run full width; jambs and mullions fit between them (no overlapping faces)
+		var bars: Array = [[a0, a1, y1 - fw, y1], [a0, a1, y0, y0 + fw], [a0, a0 + fw, y0 + fw, y1 - fw],
+			[a1 - fw, a1, y0 + fw, y1 - fw]]
+		if nm == "BanditGlass":
+			bars = [[a0, a1, y1 - fw, y1], [a0, a0 + fw, y0, y1 - fw], [a1 - fw, a1, y0, y1 - fw]]
+			for k: int in range(1, 6):
+				var xm: float = a0 + (a1 - a0) * float(k) / 6.0
+				bars.append([xm - 0.025, xm + 0.025, y0, y1 - fw])
+		for bb: Array in bars:
+			var lo: Vector3 = Vector3(float(bb[0]), float(bb[2]), f - fd * 0.5) if along_x else Vector3(f - fd * 0.5, float(bb[2]), float(bb[0]))
+			var hi: Vector3 = Vector3(float(bb[1]), float(bb[3]), f + fd * 0.5) if along_x else Vector3(f + fd * 0.5, float(bb[3]), float(bb[1]))
+			art.vis_box(vis_group, lo, hi, frame_key)
 
 
 ## Cash lift shaft (bags only) G1 <-> B1: closed shaft walls, the west wall with the bag hatch on each
 ## floor. The bag_lift prefab (Gameplay/Misc/CashLift, QC-11) runs the car; its visual carries the G1
-## call panel, the B1 panel (runtime LandingPanel1) is dressed here at the same offset.
+## call panel anchor, the call panels themselves are dressed here on the shaft wall above each hatch.
 func _build_lift_shaft(bld: Node3D) -> void:
 	var lf: Node3D = add(bld, node3d("CashLiftShaft")) as Node3D
 	var b: Array = L.LIFT["box"]
@@ -324,25 +458,30 @@ func _build_lift_shaft(bld: Node3D) -> void:
 	for st: Array in [["B", L.BASE, L.BASE_CEIL], ["G", 0.0, L.WING_CEIL]]:
 		var y0: float = float(st[1])
 		var y1: float = float(st[2])
-		box(lf, "ShaftN" + String(st[0]), Vector3(x0, y0, z0 - 0.05), Vector3(x1, y1, z0 + 0.05), "trim")
-		box(lf, "ShaftS" + String(st[0]), Vector3(x0, y0, z1 - 0.05), Vector3(x1, y1, z1 + 0.05), "trim")
+		box(lf, "ShaftN" + String(st[0]), Vector3(x0, y0, z0 - 0.05), Vector3(x1, y1, z0 + 0.05), "shaft")
+		box(lf, "ShaftS" + String(st[0]), Vector3(x0, y0, z1 - 0.05), Vector3(x1, y1, z1 + 0.05), "shaft")
 		wall(lf, "ShaftW" + String(st[0]), "z", x0, z0 + 0.05, z1 - 0.05, 0.1, Vector2(y0, y1),
-			[[float(hz[0]), float(hz[1]), y0 + float(hy[0]), y0 + float(hy[1])]], "trim")
-	# Call/send panels on the shaft wall above each hatch (the bag_lift `Panel` is an empty anchor: a
-	# panel mesh in the prefab visual would reach through the shaft wall).
+			[[float(hz[0]), float(hz[1]), y0 + float(hy[0]), y0 + float(hy[1])]], "shaft")
+		# steel hatch frame round each bag hatch (room side)
+		var hy0: float = y0 + float(hy[0])
+		var hy1: float = y0 + float(hy[1])
+		for fr: Array in [[float(hz[0]) - 0.05, float(hz[0]), hy0 - 0.05, hy1 + 0.05],
+				[float(hz[1]), float(hz[1]) + 0.05, hy0 - 0.05, hy1 + 0.05],
+				[float(hz[0]), float(hz[1]), hy1, hy1 + 0.05], [float(hz[0]), float(hz[1]), hy0 - 0.05, hy0]]:
+			mesh_box(Vector3(x0 - 0.08, float(fr[2]), float(fr[0])), Vector3(x0 - 0.05, float(fr[3]), float(fr[1])), "steel")
 	var car: Vector3 = L.LIFT["car"]
 	var py: float = float(L.LIFT["panel_y"])
 	for pl: Array in [["CallPanelGround", car.y + py], ["CallPanelBasement", car.y + L.BASE + py]]:
 		var y: float = float(pl[1])
-		mesh_box(lf, String(pl[0]), Vector3(x0 - 0.08, y - 0.07, car.z - 0.11), Vector3(x0 - 0.05, y + 0.07, car.z + 0.11),
-			"frame")
+		mesh_box(Vector3(x0 - 0.08, y - 0.07, car.z - 0.11), Vector3(x0 - 0.05, y + 0.07, car.z + 0.11), "steel")
 		# The closed shaft is no floor for NPCs (the car floor at G1, the pit at B1).
 		obstruct(Transform3D.IDENTITY, AABB(Vector3(x0 + 0.05, y - py - 0.05, z0 + 0.05),
 			Vector3(x1 - x0 - 0.05, 1.3, z1 - z0 - 0.1)))
 
 
-## Areaway (vent route): pit walls, ledge, caged top with a grate roof. The gate (door prefab) and the
-## ladder are gameplay prefabs (variant `vent_open`; Gameplay/Misc/AreawayLadder).
+## Areaway (vent route): pit walls, ledge, a steel bar cage with the grate on top. The gate (door
+## prefab) and the ladder are gameplay prefabs (variant `vent_open`; Gameplay/Misc/AreawayLadder).
+## The cage collision stays solid panels; its visual is bars.
 func _build_areaway(bld: Node3D) -> void:
 	var aw: Node3D = add(bld, node3d("Areaway")) as Node3D
 	var a: Dictionary = L.AREAWAY
@@ -352,55 +491,62 @@ func _build_areaway(bld: Node3D) -> void:
 	box(aw, "PitEast", Vector3(float(pit[3]), -4.3, float(pit[2])), Vector3(19.0, 0.0, -0.2), "concrete")
 	var ch: float = float(a["cage_h"])
 	var gz: float = (a["gate_pos"] as Vector3).z
-	wall(aw, "CageWest", "z", 16.95, -2.6, -0.2, 0.1, Vector2(0.0, ch), [[gz - 0.5, gz + 0.5, 0.0, 2.2]], "fence")
-	box(aw, "CageNorth", Vector3(17.0, 0.0, -2.6), Vector3(19.0, ch, -2.5), "fence")
-	box(aw, "CageEast", Vector3(18.9, 0.0, -2.5), Vector3(19.0, ch, -0.2), "fence")
-	box(aw, "CageGrate", Vector3(16.9, ch, -2.6), Vector3(19.0, ch + 0.05, -0.2), "ironwork")
+	wall(aw, "CageWest", "z", 16.95, -2.6, -0.2, 0.1, Vector2(0.0, ch), [[gz - 0.5, gz + 0.5, 0.0, 2.2]], "")
+	box(aw, "CageNorth", Vector3(17.0, 0.0, -2.6), Vector3(19.0, ch, -2.5), "")
+	box(aw, "CageEast", Vector3(18.9, 0.0, -2.5), Vector3(19.0, ch, -0.2), "")
+	box(aw, "CageGrate", Vector3(16.9, ch, -2.6), Vector3(19.0, ch + 0.05, -0.2), "")
+	_bars("z", 16.95, -2.6, gz - 0.55, 0.0, ch, "ironwork")
+	# bar panels stop 1 cm short of the plinth band (front at z -0.25) on the north wall
+	_bars("z", 16.95, gz + 0.55, -0.26, 0.0, ch, "ironwork")
+	_bars("x", -2.55, 17.0, 19.0, 0.0, ch, "ironwork")
+	_bars("z", 18.95, -2.5, -0.26, 0.0, ch, "ironwork")
+	# grate on top: flat bars both ways
+	var x: float = 16.95
+	while x < 19.0:
+		art.vis_box(vis_group, Vector3(x, ch, -2.6), Vector3(x + 0.03, ch + 0.05, -0.2), "ironwork")
+		x += 0.15
+	for zz: float in [-2.6, -1.4, -0.23]:
+		art.vis_box(vis_group, Vector3(16.9, ch + 0.004, zz), Vector3(19.0, ch + 0.046, zz + 0.03), "ironwork")
 
 
-## Vault B9 cash cage: chain-link enclosure x 12-16, z 13.5-16.5 (2.4 m), open gate on the north side.
+## A bar panel (visual) on a line: posts at the ends, top + bottom rails and round-ish bars every 0.12 m.
+func _bars(axis: String, fixed: float, a0: float, a1: float, y0: float, y1: float, key: String) -> void:
+	var t: float = 0.03
+	var lo_a: float = minf(a0, a1)
+	var hi_a: float = maxf(a0, a1)
+	for e: Array in [[lo_a, lo_a + 0.05], [hi_a - 0.05, hi_a]]:
+		art.vis_box(vis_group, _bar_lo(axis, fixed, float(e[0]), y0, 0.05), _bar_hi(axis, fixed, float(e[1]), y1, 0.05), key)
+	for ry: Vector2 in [Vector2(y0 + 0.08, y0 + 0.12), Vector2(y1 - 0.06, y1 - 0.02)]:
+		art.vis_box(vis_group, _bar_lo(axis, fixed, lo_a + 0.05, ry.x, 0.04), _bar_hi(axis, fixed, hi_a - 0.05, ry.y, 0.04), key)
+	var a: float = lo_a + 0.12
+	while a < hi_a - 0.08:
+		art.vis_box(vis_group, _bar_lo(axis, fixed, a - t * 0.5, y0, t), _bar_hi(axis, fixed, a + t * 0.5, y1 - 0.02, t), key)
+		a += 0.12
+
+
+func _bar_lo(axis: String, fixed: float, a: float, y: float, d: float) -> Vector3:
+	return Vector3(a, y, fixed - d * 0.5) if axis == "x" else Vector3(fixed - d * 0.5, y, a)
+
+
+func _bar_hi(axis: String, fixed: float, a: float, y: float, d: float) -> Vector3:
+	return Vector3(a, y, fixed + d * 0.5) if axis == "x" else Vector3(fixed + d * 0.5, y, a)
+
+
+## Vault B9 cash cage: steel bar enclosure x 12-16, z 13.5-16.5 (2.4 m), open gate on the north side.
+## Collision panels as before; the visual is bars.
 func _build_vault_cage(bld: Node3D) -> void:
 	var vc: Node3D = add(bld, node3d("VaultCage")) as Node3D
 	var y0: float = L.BASE
 	var y1: float = L.BASE + 2.4
-	wall(vc, "CageN", "x", 13.5, 12.0, 16.0, 0.06, Vector2(y0, y1), [[13.5, 14.5, y0, y1]], "fence")
-	box(vc, "CageS", Vector3(12.0, y0, 16.47), Vector3(16.0, y1, 16.53), "fence")
-	box(vc, "CageW", Vector3(11.97, y0, 13.53), Vector3(12.03, y1, 16.47), "fence")
-	box(vc, "CageE", Vector3(15.97, y0, 13.53), Vector3(16.03, y1, 16.47), "fence")
-
-
-## Landmark 2: mosaic compass rose inlaid in the hall floor (visual only: an up-facing disc and four
-## arms 3-4 mm above the floor, single-sided so nothing reads as a cut solid in the plan render).
-func _build_compass(bld: Node3D) -> void:
-	var c: Dictionary = L.COMPASS
-	var pos: Vector3 = c["pos"]
-	var r: float = float(c["radius"])
-	var st: SurfaceTool = SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	st.set_normal(Vector3.UP)
-	var segs: int = 32
-	for i: int in range(segs):
-		var a0: float = TAU * float(i) / float(segs)
-		var a1: float = TAU * float(i + 1) / float(segs)
-		for v: Vector3 in [Vector3.ZERO, Vector3(cos(a0), 0.0, sin(a0)) * r, Vector3(cos(a1), 0.0, sin(a1)) * r]:
-			st.set_uv(Vector2(v.x, v.z) / (2.0 * r) + Vector2(0.5, 0.5))
-			st.add_vertex(v)
-	st.set_material(lib_mat("compass"))
-	var mi: MeshInstance3D = MeshInstance3D.new()
-	mi.name = "CompassRose"
-	mi.mesh = st.commit()
-	mi.position = pos + Vector3(0.0, 0.003, 0.0)
-	add(bld, mi)
-	for i2: int in range(4):
-		var arm: MeshInstance3D = MeshInstance3D.new()
-		arm.name = "CompassArm%d" % i2
-		var pm: PlaneMesh = PlaneMesh.new()
-		pm.size = Vector2(0.18, r * 1.9)
-		pm.material = lib_mat("ironwork")
-		arm.mesh = pm
-		arm.position = pos + Vector3(0.0, 0.004, 0.0)
-		arm.basis = yaw_basis(45.0 * float(i2))
-		add(bld, arm)
+	wall(vc, "CageN", "x", 13.5, 12.0, 16.0, 0.06, Vector2(y0, y1), [[13.5, 14.5, y0, y1]], "")
+	box(vc, "CageS", Vector3(12.0, y0, 16.47), Vector3(16.0, y1, 16.53), "")
+	box(vc, "CageW", Vector3(11.97, y0, 13.53), Vector3(12.03, y1, 16.47), "")
+	box(vc, "CageE", Vector3(15.97, y0, 13.53), Vector3(16.03, y1, 16.47), "")
+	_bars("x", 13.5, 12.0, 13.5, y0, y1, "steel")
+	_bars("x", 13.5, 14.5, 16.0, y0, y1, "steel")
+	_bars("x", 16.5, 12.0, 16.0, y0, y1, "steel")
+	_bars("z", 12.0, 13.53, 16.47, y0, y1, "steel")
+	_bars("z", 16.0, 13.53, 16.47, y0, y1, "steel")
 
 
 # --- Site -------------------------------------------------------------------------------------
@@ -408,20 +554,27 @@ func _build_compass(bld: Node3D) -> void:
 func _build_site(geo: Node3D) -> void:
 	var site: Node3D = add(geo, node3d("Site")) as Node3D
 	var ground: Node3D = add(site, node3d("Ground")) as Node3D
+	vis_group = "Street"
 	for g: Array in L.GROUND:
 		box_a(ground, String(g[0]), g[1], String(g[2]))
 	_quay_steps(ground)
 	var water: Array = L.WATER
-	box_a(site, "HarborWater", water, "water", false)
+	box_a(site, "HarborWater", water, "", false)
+	art.acc.quad("Water", "water", Vector3(float(water[0]), float(water[4]), float(water[2])),
+		Vector3(float(water[3]), float(water[4]), float(water[2])), Vector3(float(water[3]), float(water[4]), float(water[5])),
+		Vector3(float(water[0]), float(water[4]), float(water[5])), Vector3.UP)
 	var blocks: Node3D = add(site, node3d("Blocks")) as Node3D
+	vis_group = "Neighbours"
 	for b: Array in L.BLOCKS:
 		var mat: String = String(b[2])
 		box_a(blocks, String(b[0]), b[1], mat)
-	_far_shore_lights(blocks)
+	_far_shore_lights()
+	vis_group = "Street"
 	var fences: Node3D = add(site, node3d("Closures")) as Node3D
 	for f: Array in L.FENCES:
 		wall(fences, String(f[0]), String(f[1]), float(f[2]), float(f[3]), float(f[4]), 0.1,
-			Vector2(float(f[5]), float(f[6])), f[7], String(f[8]))
+			Vector2(float(f[5]), float(f[6])), f[7], "")
+		_palisade(String(f[1]), float(f[2]), float(f[3]), float(f[4]), float(f[5]), float(f[6]), f[7])
 	# Seabed (collision only) must not grow a navmesh island under the water.
 	var sb: Array = []
 	for g2: Array in L.GROUND:
@@ -429,6 +582,30 @@ func _build_site(geo: Node3D) -> void:
 			sb = g2[1]
 	if not sb.is_empty():
 		obstruct(Transform3D.IDENTITY, AABB(v3(sb, 0) + Vector3(0.0, -0.5, 0.0), v3(sb, 3) - v3(sb, 0) + Vector3(0.0, 2.0, 0.0)))
+
+
+## Steel palisade (visual) along a closure fence: posts every 2.4 m, two rails, pales every 0.15 m
+## with the gate openings left to the gate prefabs.
+func _palisade(axis: String, fixed: float, a0: float, a1: float, y0: float, y1: float, openings: Array) -> void:
+	var cuts: Array[Vector2] = [Vector2(a0, a1)]
+	for o: Array in openings:
+		cuts = A._subtract(cuts, Vector2(float(o[0]) - 0.05, float(o[1]) + 0.05))
+	for run: Vector2 in cuts:
+		if run.y - run.x < 0.2:
+			continue
+		var a: float = run.x
+		while a <= run.y + 0.001:
+			var pa: float = clampf(a, run.x, run.y - 0.08)
+			art.vis_box("Street", _bar_lo(axis, fixed, pa, y0, 0.08), _bar_hi(axis, fixed, pa + 0.08, y1, 0.08), "fence_post")
+			a += 2.4
+		for ry: Vector2 in [Vector2(y0 + 0.25, y0 + 0.31), Vector2(y1 - 0.35, y1 - 0.29)]:
+			art.vis_box("Street", _bar_lo(axis, fixed - 0.03, run.x + 0.01, ry.x, 0.03), _bar_hi(axis, fixed - 0.03, run.y - 0.01, ry.y, 0.03),
+				"fence")
+		var p: float = run.x + 0.1
+		while p < run.y - 0.06:
+			art.vis_box("Street", _bar_lo(axis, fixed + 0.01, p - 0.02, y0, 0.02), _bar_hi(axis, fixed + 0.01, p + 0.02, y1 - 0.04, 0.02),
+				"fence")
+			p += 0.15
 
 
 ## Quay steps: visual treads + one smooth walkable ramp (slope 33.7 deg) for the collision.
@@ -446,7 +623,7 @@ func _quay_steps(parent: Node3D) -> void:
 	for k: int in range(1, n_r):
 		var top: float = yt - float(k) * rise
 		var z0: float = zt + float(k - 1) * run - SEAM
-		mesh_box(steps, "Tread%d" % k, Vector3(float(xs[0]), -2.4, z0), Vector3(float(xs[1]), top, z0 + run + SEAM), "quay")
+		mesh_box(Vector3(float(xs[0]), -2.4, z0), Vector3(float(xs[1]), top, z0 + run + SEAM), "quay")
 	var body: StaticBody3D = StaticBody3D.new()
 	body.name = "Ramp"
 	body.collision_layer = 1
@@ -465,95 +642,85 @@ func _quay_steps(parent: Node3D) -> void:
 
 
 ## Far-shore lights in the fog (emissive dressing, 300 m out).
-func _far_shore_lights(parent: Node3D) -> void:
-	var fl: Node3D = add(parent, node3d("FarShoreLights")) as Node3D
+func _far_shore_lights() -> void:
 	for i: int in range(12):
 		var x: float = -150.0 + 32.0 * float(i)
 		var y: float = 2.0 + float((i * 7) % 5)
-		mesh_box(fl, "Light%02d" % i, Vector3(x, y, 299.0), Vector3(x + 1.5, y + 0.6, 299.5), "far_lights")
+		art.vis_box("Neighbours", Vector3(x, y, 299.0), Vector3(x + 1.5, y + 0.6, 299.5), "far_lights")
 
 
 # --- Props ------------------------------------------------------------------------------------
 
+## Map-built props (the WC partition); everything else is catalog dressing (nd_dress.gd).
 func _build_props(props: Node3D) -> void:
-	var g: Node3D = add(props, node3d("Ground")) as Node3D
-	var b: Node3D = add(props, node3d("Basement")) as Node3D
-	var x: Node3D = add(props, node3d("Exterior")) as Node3D
+	var b: Node3D = add(props, node3d("MapBuilt")) as Node3D
 	for p: Array in L.PROPS:
-		var base: Vector3 = p[1]
-		var parent: Node3D = g
-		if base.y < -2.0:
-			parent = b
-		elif base.y < -0.01 or base.z < -0.1 or base.z > 20.1 or base.x > 26.1:
-			parent = x
-		prop_box(parent, String(p[0]), base, p[2], float(p[3]), String(p[4]), bool(p[5]), String(p[6]))
-	for c: Array in L.CHAIRS:
-		var cp: Vector3 = c[1]
-		chair(b if cp.y < -2.0 else g, String(c[0]), cp, float(c[2]))
-	for sl: Array in L.STREET_LAMPS:
-		_street_lamp(x, String(sl[0]), sl[1], float(sl[2]))
+		prop_box(b, String(p[0]), p[1], p[2], float(p[3]), String(p[4]), bool(p[5]), String(p[6]))
 
 
-## Sodium street lamp (fixture head + OmniLight).
-func _street_lamp(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
-	var body: StaticBody3D = StaticBody3D.new()
-	body.name = nm
-	body.collision_layer = 1
-	body.collision_mask = 0
-	body.position = base
-	body.basis = yaw_basis(yaw)
-	body.set_meta(&"kind", "street_lamp")
-	add(parent, body)
-	var col: CollisionShape3D = CollisionShape3D.new()
-	col.name = "Collision"
-	col.shape = box_shape(Vector3(0.18, 6.0, 0.18))
-	col.position = Vector3(0.0, 3.0, 0.0)
-	add(body, col)
-	mesh_box(body, "Pole", Vector3(-0.09, 0.0, -0.09), Vector3(0.09, 6.0, 0.09), "trim")
-	mesh_box(body, "Arm", Vector3(-0.05, 5.9, -0.8), Vector3(0.05, 6.0, 0.0), "trim")
-	var head: MeshInstance3D = mesh_box(body, "Head", Vector3(-0.15, 5.78, -0.9), Vector3(0.15, 5.9, -0.3), "sodium")
-	head.set_meta(&"fixture", true)
-	var light: OmniLight3D = OmniLight3D.new()
-	light.name = "Light"
-	light.position = Vector3(0.0, 5.6, -0.6)
-	light.light_color = EMISSIVE_MATS["sodium"]
-	light.light_energy = 1.8
-	light.omni_range = 13.0
-	add(body, light)
-	obstruct(body.transform, AABB(Vector3(-0.09, 0.0, -0.09), Vector3(0.18, 6.0, 0.18)))
+# --- Art pass (G2): finishes, trim, facade, neighbours, markings, landmarks, probes ---------------
+
+func _build_art() -> void:
+	art.room_surfaces()
+	art.hall_coffers()
+	art.facade()
+	art.site_markings()
+	var cp: Dictionary = L.COMPASS
+	art.compass(cp["pos"], float(cp["radius"]))
+	art.neighbours(L.BLOCKS.filter(func(b: Array) -> bool:
+		return not (String(b[2]) in ["boat_hidden", "container_hidden", "van_hidden", "trim", "glass", "crane", "container"])))
+	var vis: Node3D = add(n("Geometry"), node3d("Visual")) as Node3D
+	art.acc.flush(vis, map_root, {"Neighbours": {"distant": true}})
+	var probes: Node3D = add(n("Lighting"), node3d("ReflectionProbes")) as Node3D
+	art.reflection_probes(probes, map_root)
+	var occ: Node3D = add(n("Geometry"), node3d("Occluders")) as Node3D
+	art.occluders(occ, map_root, L.BLOCKS)
+	var audio: Node3D = add(map_root, node3d("Audio")) as Node3D
+	art.audio(audio, map_root)
 
 
 # --- Lighting ---------------------------------------------------------------------------------
 
-## Night, no sun: weak fog-diffused moon, sodium street light, fog bank (~120 m visibility).
+## Night, no sun: weak fog-diffused moon, sodium street light, fog bank (~120 m visibility). The
+## interior VoxelGI is baked by bake_gi.gd.
 func _build_lighting(lighting: Node3D) -> void:
 	var we: WorldEnvironment = WorldEnvironment.new()
 	we.name = "WorldEnvironment"
 	var env: Environment = Environment.new()
-	env.resource_name = "env_night_deposit_greybox"
+	env.resource_name = "env_night_deposit"
 	var sky_mat: ProceduralSkyMaterial = ProceduralSkyMaterial.new()
 	sky_mat.sky_top_color = Color(0.02, 0.03, 0.05)
-	sky_mat.sky_horizon_color = Color(0.12, 0.13, 0.14)
+	sky_mat.sky_horizon_color = Color(0.14, 0.13, 0.13)
 	sky_mat.ground_bottom_color = Color(0.01, 0.015, 0.02)
-	sky_mat.ground_horizon_color = Color(0.1, 0.11, 0.12)
+	sky_mat.ground_horizon_color = Color(0.1, 0.1, 0.11)
 	sky_mat.sky_energy_multiplier = 0.6
 	var sky: Sky = Sky.new()
 	sky.sky_material = sky_mat
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 0.8
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.tonemap_exposure = 1.3
+	env.ambient_light_energy = 0.7
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
+	env.tonemap_mode = Environment.TONE_MAPPER_AGX
+	env.tonemap_exposure = 1.15
+	env.ssao_enabled = true
+	env.ssao_radius = 1.2
+	env.ssao_intensity = 1.4
+	env.ssil_enabled = true
+	env.ssil_radius = 4.0
+	env.ssil_intensity = 0.8
 	env.fog_enabled = true
-	env.fog_light_color = Color(0.32, 0.34, 0.35)
+	env.fog_light_color = Color(0.3, 0.31, 0.32)
 	# Fog bank over the harbor (doc: view limited at ~120 m): thin overall, denser near the water.
 	env.fog_density = 0.005
-	env.fog_height = 2.0
-	env.fog_height_density = 0.08
+	env.fog_height = 1.0
+	env.fog_height_density = 0.06
 	env.fog_sky_affect = 0.6
 	env.glow_enabled = true
 	env.glow_intensity = 0.4
+	env.glow_bloom = 0.04
+	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT
+	env.glow_hdr_threshold = 1.1
 	we.environment = env
 	add(lighting, we)
 	var moon: DirectionalLight3D = DirectionalLight3D.new()
@@ -564,13 +731,27 @@ func _build_lighting(lighting: Node3D) -> void:
 	moon.light_energy = 0.12
 	moon.shadow_enabled = false
 	add(lighting, moon)
+	_voxel_gi(lighting)
 	var fx: Node3D = add(lighting, node3d("Fixtures")) as Node3D
 	for c: Array in L.CEILING_LIGHTS:
 		_ceiling_light(fx, String(c[0]), c[1], c[2], float(c[3]), float(c[4]))
 	for w: Array in L.WALL_LIGHTS:
 		_wall_light(fx, String(w[0]), w[1], float(w[2]), w[3], float(w[4]), float(w[5]), w[6])
-	for cl: Array in L.CLOCKS:
-		_clock(fx, String(cl[0]), cl[1], float(cl[2]), float(cl[3]))
+
+
+## Interior VoxelGI over the building (data baked by bake_gi.gd under xvfb; see its header).
+func _voxel_gi(lighting: Node3D) -> void:
+	if not ResourceLoader.exists(GI_PATH):
+		var empty: VoxelGIData = VoxelGIData.new()
+		empty.interior = true
+		ResourceSaver.save(empty, GI_PATH)
+	var vg: VoxelGI = VoxelGI.new()
+	vg.name = "VoxelGI"
+	vg.position = Vector3(13.0, 1.5, 10.0)
+	vg.size = Vector3(27.0, 11.8, 21.0)
+	vg.subdiv = VoxelGI.SUBDIV_64
+	vg.data = load(GI_PATH) as VoxelGIData
+	add(lighting, vg)
 
 
 ## Ceiling-mounted fixture: pivot at the ceiling surface (top-centre), panel just below, light under it.
@@ -580,11 +761,12 @@ func _ceiling_light(parent: Node3D, nm: String, pivot: Vector3, color: Color, en
 	r.set_meta(&"fixture", true)
 	r.set_meta(&"kind", "light_fixture")
 	add(parent, r)
-	var size: Vector3 = Vector3(0.6, 0.05, 0.6) if not nm.begins_with("LightHall") else Vector3(0.5, 0.4, 0.5)
+	var size: Vector3 = Vector3(0.6, 0.05, 0.6)
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Panel"
-	mi.mesh = box_mesh(size, "fixture")
+	mi.mesh = art.local_box_mesh([[size, Vector3.ZERO, "emit_cool" if color.b > color.r + 0.01 else "emit_warm"]])
 	mi.position = Vector3(0.0, -size.y * 0.5 - 0.002, 0.0)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add(r, mi)
 	var light: OmniLight3D = OmniLight3D.new()
 	light.name = "Light"
@@ -606,8 +788,14 @@ func _wall_light(parent: Node3D, nm: String, pivot: Vector3, yaw: float, color: 
 	add(parent, r)
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Body"
-	mi.mesh = box_mesh(size, "atm_led" if nm.contains("Fascia") else "sodium")
+	if nm.contains("Fascia"):
+		mi.mesh = art.local_box_mesh([[size, Vector3.ZERO, "metal_slate"],
+			[Vector3(size.x - 0.12, size.y - 0.12, 0.01), Vector3(0.0, 0.0, -size.z * 0.5 - 0.005), "emit_mint"]])
+	else:
+		mi.mesh = art.local_box_mesh([[size, Vector3.ZERO, "metal_dark"],
+			[Vector3(size.x - 0.06, size.y - 0.08, 0.01), Vector3(0.0, -0.01, -size.z * 0.5 - 0.005), "emit_cool"]])
 	mi.position = Vector3(0.0, 0.0, -size.z * 0.5 - 0.002)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add(r, mi)
 	var light: OmniLight3D = OmniLight3D.new()
 	light.name = "Light"
@@ -615,35 +803,6 @@ func _wall_light(parent: Node3D, nm: String, pivot: Vector3, yaw: float, color: 
 	light.light_color = color
 	light.light_energy = energy
 	light.omni_range = rng
-	add(r, light)
-
-
-## Landmark 1: brass harbor clock (lit face, wall-mounted).
-func _clock(parent: Node3D, nm: String, pivot: Vector3, yaw: float, radius: float) -> void:
-	var r: Node3D = node3d(nm, pivot)
-	r.basis = yaw_basis(yaw)
-	r.set_meta(&"mount", "wall")
-	r.set_meta(&"fixture", true)
-	r.set_meta(&"kind", "clock")
-	add(parent, r)
-	var face: MeshInstance3D = MeshInstance3D.new()
-	face.name = "Face"
-	var cm: CylinderMesh = CylinderMesh.new()
-	cm.top_radius = radius
-	cm.bottom_radius = radius
-	cm.height = 0.12
-	cm.radial_segments = 32
-	cm.material = lib_mat("clock")
-	face.mesh = cm
-	face.basis = Basis(Vector3.RIGHT, PI * 0.5)
-	face.position = Vector3(0.0, 0.0, -0.062)
-	add(r, face)
-	var light: OmniLight3D = OmniLight3D.new()
-	light.name = "Light"
-	light.position = Vector3(0.0, 0.0, -0.5)
-	light.light_color = EMISSIVE_MATS["clock"]
-	light.light_energy = 0.6
-	light.omni_range = 5.0
 	add(r, light)
 
 
@@ -793,11 +952,89 @@ func _build_nav_links(nav: NavigationRegion3D) -> void:
 	link.bidirectional = true
 	link.navigation_layers = 1
 	link.start_position = Vector3(16.3, 0.0, -1.4)
-	link.end_position = Vector3(18.2, L.BASE, -1.1)
+	link.end_position = Vector3(18.2, L.BASE, -0.9)
 	add(nav, link)
 
 
 # --- Navigation bake --------------------------------------------------------------------------
+
+## Keeps only navmesh components that hold a gameplay marker (spawns, patrol points, UsePoints,
+## nav-link ends): no islands on neighbour roofs, garage decks or the shop roof, which would let
+## NPC queries snap there and make the bounds check cast from unreachable places.
+func _prune_islands(nm: NavigationMesh) -> void:
+	var anchors: PackedVector3Array = PackedVector3Array()
+	for n: Node in map_root.find_children("*", "", true, false):
+		if n is PatrolPoint or n is SpawnPoint or (n.name == &"UsePoint" and n is Node3D):
+			anchors.append(global_xform(n as Node3D).origin)
+		elif n is NavigationLink3D:
+			anchors.append((n as NavigationLink3D).start_position)
+			anchors.append((n as NavigationLink3D).end_position)
+	var verts: PackedVector3Array = nm.get_vertices()
+	var polys: Array[PackedInt32Array] = []
+	for i: int in range(nm.get_polygon_count()):
+		polys.append(nm.get_polygon(i))
+	# Union-find over polygons sharing a vertex (by quantised position: tiles duplicate vertices).
+	var parent: PackedInt32Array = PackedInt32Array()
+	parent.resize(polys.size())
+	for i2: int in range(polys.size()):
+		parent[i2] = i2
+	var owner_of: Dictionary = {}
+	for pi: int in range(polys.size()):
+		for vi: int in polys[pi]:
+			var v: Vector3 = verts[vi]
+			var key: Vector3i = Vector3i(roundi(v.x * 20.0), roundi(v.y * 20.0), roundi(v.z * 20.0))
+			if owner_of.has(key):
+				_union(parent, pi, int(owner_of[key]))
+			else:
+				owner_of[key] = pi
+	var keep_roots: Dictionary = {}
+	for a: Vector3 in anchors:
+		var best: int = -1
+		var best_d: float = 1.5
+		for pi2: int in range(polys.size()):
+			var c: Vector3 = Vector3.ZERO
+			for vi2: int in polys[pi2]:
+				c += verts[vi2]
+			c /= float(polys[pi2].size())
+			var d: float = Vector2(c.x - a.x, c.z - a.z).length() + absf(c.y - a.y) * 2.0
+			if d < best_d:
+				best_d = d
+				best = pi2
+		if best >= 0:
+			keep_roots[_find(parent, best)] = true
+	var new_verts: PackedVector3Array = PackedVector3Array()
+	var remap: Dictionary = {}
+	var kept: Array[PackedInt32Array] = []
+	for pi3: int in range(polys.size()):
+		if not keep_roots.has(_find(parent, pi3)):
+			continue
+		var np: PackedInt32Array = PackedInt32Array()
+		for vi3: int in polys[pi3]:
+			if not remap.has(vi3):
+				remap[vi3] = new_verts.size()
+				new_verts.append(verts[vi3])
+			np.append(int(remap[vi3]))
+		kept.append(np)
+	nm.clear_polygons()
+	nm.set_vertices(new_verts)
+	for np2: PackedInt32Array in kept:
+		nm.add_polygon(np2)
+	print("night_deposit: navmesh %d -> %d polygons after island pruning" % [polys.size(), kept.size()])
+
+
+static func _find(parent: PackedInt32Array, i: int) -> int:
+	var r: int = i
+	while parent[r] != r:
+		r = parent[r]
+	return r
+
+
+static func _union(parent: PackedInt32Array, a: int, b: int) -> void:
+	var ra: int = _find(parent, a)
+	var rb: int = _find(parent, b)
+	if ra != rb:
+		parent[maxi(ra, rb)] = mini(ra, rb)
+
 
 ## Bakes the walkable navmesh (heist_map.md §3: agent radius 0.3, height 1.8, climb 0.3, slope 40,
 ## cell 0.1 / 0.1) from the Geometry colliders. Props and prefab bodies are projected obstructions,
@@ -813,6 +1050,8 @@ func _bake(nav: NavigationRegion3D) -> int:
 	nm.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
 	nm.geometry_collision_mask = 1
 	nm.geometry_source_geometry_mode = NavigationMesh.SOURCE_GEOMETRY_ROOT_NODE_CHILDREN
+	# only the play space (site + quay + moored boats); the far shore and vista blocks stay out
+	nm.filter_baking_aabb = AABB(Vector3(-60.0, -8.0, -45.0), Vector3(130.0, 40.0, 90.0))
 	var holder: Node3D = Node3D.new()
 	holder.name = "BakeSource"
 	holder.add_child(map_root.get_node("Geometry").duplicate())
@@ -823,6 +1062,7 @@ func _bake(nav: NavigationRegion3D) -> int:
 	for o: Array in obstructions:
 		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), false)
 	NavigationServer3D.bake_from_source_geometry_data(nm, src)
+	_prune_islands(nm)
 	holder.queue_free()
 	await process_frame
 	nav.navigation_mesh = nm

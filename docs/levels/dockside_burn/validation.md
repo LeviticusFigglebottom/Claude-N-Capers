@@ -9,6 +9,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 |---|---|---|---|
 | contract_nodes | PASS | 0 | 0 |
 | cameras | PASS | 0 | 0 |
+| secure_zones | PASS | 0 | 0 |
 | floating | PASS | 0 | 0 |
 | clipping | PASS | 0 | 0 |
 | orientation | skipped | 0 | 0 |
@@ -32,6 +33,11 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## cameras: Review camera placement
 
 - 25 perspective review camera(s) checked
+
+
+## secure_zones: Secure zones reach the ground
+
+- 3 SECURE_LOOT box(es) checked
 
 
 ## floating: Nothing floats

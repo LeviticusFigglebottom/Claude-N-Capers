@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_harbor"
+purpose = &"exterior"
+required_items = Array[StringName]([&"street_lamp", &"bin_street", &"bollard", &"planter"])
+optional_items = {
+&"bollard": 1.5,
+&"planter": 0.8
+}
+clutter_groups = {}
+min_density = 0.005
+max_density = 0.3
+min_props = 8
+lone_ok_kinds = Array[StringName]([&"street_lamp", &"bin_street", &"bollard", &"planter", &"car", &"barrier", &"bench"])
+seed_salt = 60
+counts = {
+&"bollard": Vector2i(2, 4)
+}
+assets = {
+&"bollard": PackedStringArray("prop_bollard_steel"),
+&"street_lamp": PackedStringArray("prop_street_lamp_sodium")
+}
+ceiling = {}
+notes = "X2 Harbor Street, the quay and Wharf Lane: sodium lamps, parked cars, quay mooring bollards and benches are anchored; the placer fills bins, bollards and planters along the facades."

@@ -139,7 +139,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## zfight: Z-fighting
 
-- 268913 triangles in 76038 plane bins
+- 268913 triangles in 76037 plane bins
 
 
 ## lights: Lighting is deliberate

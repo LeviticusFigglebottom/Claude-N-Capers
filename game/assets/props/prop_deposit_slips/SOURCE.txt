@@ -1,0 +1,8 @@
+asset: prop_deposit_slips
+script: tools/blender/props/bank.py
+params: {"cat": {"group": "bank", "hosts": ["check_table", "counter_transaction"], "kind": "slip_tray", "place": "on"}, "fn": "deposit_slips"}
+seed: 4079263220  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_deposit_slips
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 24000

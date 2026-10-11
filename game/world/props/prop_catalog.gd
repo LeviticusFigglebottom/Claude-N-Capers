@@ -28,12 +28,15 @@ static func entry(asset_id: StringName) -> Dictionary:
 	return c.get(String(asset_id), {})
 
 
-## Dressing asset ids (no prefab visuals) whose `kind` is `kind`, sorted.
+## Dressing asset ids (no prefab visuals) whose `kind` is `kind`, sorted. Entries marked `pin_only`
+## (a heist's own variant of a shared kind) are left out: kits use them only through `assets`.
 static func ids_of_kind(kind: StringName) -> PackedStringArray:
 	var out: PackedStringArray = PackedStringArray()
 	var c: Dictionary = load_catalog()
 	for k: Variant in c.keys():
 		var e: Dictionary = c[k]
+		if bool(e.get("pin_only", false)):
+			continue
 		if StringName(String(e.get("kind", ""))) == kind and String(e.get("prefab", "")) == "":
 			out.append(String(k))
 	out.sort()

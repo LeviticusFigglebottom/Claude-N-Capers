@@ -96,6 +96,16 @@ TINTED: dict[str, dict] = {
     "art_ochre": {"source": "plaster_painted", "color": "#B98B4A", "roughness": 1.0},
     "art_blue": {"source": "plaster_painted", "color": "#3F5873", "roughness": 1.0},
     "art_rust": {"source": "plaster_painted", "color": "#94513A", "roughness": 1.0},
+    # Night Deposit (Harbor Savings & Loan, docs/design/heists/night_deposit.md palette)
+    "paint_slate": {"source": "drywall_painted", "color": "#3F5A52", "roughness": 0.8},
+    "canvas_bank": {"source": "fabric_upholstery", "color": "#B9A98A", "roughness": 1.0},
+    "velvet_red": {"source": "fabric_upholstery", "color": "#7E2924", "roughness": 1.0},
+    "cash_green": {"source": "plaster_painted", "color": "#7F9373", "roughness": 1.0},
+    "hull_navy": {"source": "metal_painted", "color": "#2C3A4A", "roughness": 0.9},
+    "hull_white": {"source": "metal_painted", "color": "#C9C6BC", "roughness": 0.9},
+    "container_rust": {"source": "metal_painted", "color": "#8A4630", "roughness": 1.0},
+    "container_blue": {"source": "metal_painted", "color": "#3A5470", "roughness": 1.0},
+    "container_green": {"source": "metal_painted", "color": "#4E6B4A", "roughness": 1.0},
 }
 
 # Untextured materials (validator meta untextured_ok): emissives and LEDs. color/emission sRGB.
@@ -109,6 +119,9 @@ EMISSIVE: dict[str, dict] = {
     "emit_led_green": {"color": "#0C2A12", "emission": "#3AD15A", "energy": 3.0},
     "emit_exit_green": {"color": "#123A20", "emission": "#36B25A", "energy": 2.0},
     "emit_amber": {"color": "#3A2A0A", "emission": "#FFA020", "energy": 3.0},
+    "emit_sodium": {"color": "#5A3414", "emission": "#FF9A3C", "energy": 4.0},
+    "emit_mint": {"color": "#40564A", "emission": "#D8FFE8", "energy": 3.0},
+    "emit_clock": {"color": "#8A8068", "emission": "#FFF1D2", "energy": 1.6},
 }
 
 # Transparent variants of glass_clear (library albedo with alpha x colour).

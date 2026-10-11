@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"depository"
+purpose = &"vault"
+required_items = Array[StringName]([&"cash_cage", &"shelving", &"light_fixture"])
+optional_items = {
+&"box": 1.5,
+&"shelving": 0.6
+}
+clutter_groups = {}
+min_density = 0.15
+max_density = 1.5
+min_props = 5
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 58
+counts = {}
+assets = {
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"shelving": PackedStringArray("prop_shelving_boxes")
+}
+ceiling = {"prop_fluorescent": 2.4}
+notes = "B12 night depository: the safe under the chute (prefab) and the night-drop bags (loot) are keep-outs. No pallets: low pallets read as walkable floor but are navmesh obstructions."

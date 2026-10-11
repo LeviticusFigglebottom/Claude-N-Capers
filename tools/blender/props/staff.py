@@ -34,6 +34,11 @@ VARIANTS = {
     "prop_desk_office": {"fn": "desk_office", "cat": {"kind": "desk", "place": "wall", "support": True, "clear": 1.0, "group": "office"}},
     "prop_desk_exec": {"fn": "desk_exec", "cat": {"kind": "desk", "place": "floor", "support": True, "clear": 1.0, "group": "office"}},
     "prop_chair_office": {"fn": "chair_office", "cat": {"kind": "chair", "place": "seat", "hosts": ["desk"], "group": "office"}},
+    # NPC seat (D-063: office NPC anims sit at 0.47 m, desk 0.74 m): no collision, the seated NPC owns the space
+    "prop_chair_task": {"fn": "chair_office", "seat": 0.47, "nocol": True, "cat": {"kind": "chair", "place": "seat", "hosts": ["desk"], "pin_only": True,
+                                                                                  "group": "office"}},
+    "prop_desk_bank": {"fn": "desk_exec", "h": 0.74, "cat": {"kind": "desk", "place": "floor", "support": True, "clear": 1.0, "group": "office",
+                                                             "pin_only": True}},
     "prop_chair_visitor": {"fn": "chair_visitor", "cat": {"kind": "chair", "place": "seat", "hosts": ["desk", "table"], "seat_side": "back", "group": "office"}},
     "prop_monitor": {"fn": "monitor", "cat": {"kind": "monitor", "place": "on", "hosts": ["desk"], "group": "office"}},
     "prop_keyboard_mouse": {"fn": "keyboard", "cat": {"kind": "keyboard", "place": "on", "hosts": ["desk"], "group": "office"}},
@@ -281,7 +286,7 @@ def _desk_office(k: Kit, p: dict) -> None:
 
 
 def _desk_exec(k: Kit, p: dict) -> None:
-    w, d, h = 1.8, 0.85, 0.75
+    w, d, h = 1.8, 0.85, p.get("h", 0.75)
     o = k.obj("Desk")
     a = o.part(bevel=0.005, segments=2)
     t = o.part(bevel=0.0015)
@@ -311,7 +316,7 @@ def _desk_exec(k: Kit, p: dict) -> None:
 def _chair_office(k: Kit, p: dict) -> None:
     o = k.obj("Chair")
     a = o.part(bevel=0.0)
-    seat = 0.45
+    seat = p.get("seat", 0.45)
     for i in range(5):
         ang = 2 * math.pi * i / 5 + math.pi / 2
         tip = (math.cos(ang) * 0.3, math.sin(ang) * 0.3, 0.06)
@@ -327,7 +332,8 @@ def _chair_office(k: Kit, p: dict) -> None:
         a.bx((sx * 0.26 - 0.03, -0.18, seat + 0.2), (sx * 0.26 + 0.03, 0.08, seat + 0.23), "plastic_black")
     o.build()
     chair_seat_marker(k, seat)
-    k.collision([((-0.3, -0.3, 0.0), (0.3, 0.3, seat)), ((-0.23, -0.3, seat), (0.23, -0.24, 1.0))])
+    if not p.get("nocol"):
+        k.collision([((-0.3, -0.3, 0.0), (0.3, 0.3, seat)), ((-0.23, -0.3, seat), (0.23, -0.24, 1.0))])
 
 
 def _chair_visitor(k: Kit, p: dict) -> None:

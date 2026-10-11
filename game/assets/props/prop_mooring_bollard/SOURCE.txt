@@ -1,0 +1,8 @@
+asset: prop_mooring_bollard
+script: tools/blender/props/harbor.py
+params: {"cat": {"group": "exterior", "kind": "bollard", "place": "row", "standoff": 0.4}, "fn": "mooring_bollard"}
+seed: 4238133944  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_mooring_bollard
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"storage_supplies"
+purpose = &"storage"
+required_items = Array[StringName]([&"shelving", &"archive_box", &"box", &"step_ladder", &"light_fixture"])
+optional_items = {
+&"bin": 0.4,
+&"box": 1.5,
+&"file_cabinet": 0.8,
+&"pallet": 0.8
+}
+clutter_groups = {
+&"floor": {
+"anchors": Array[StringName]([&"wall", &"corner"]),
+"count": Vector2i(1, 2),
+"items": {&"archive_box": 1, &"bin": 1, &"box": 3},
+"radius": 1
+}
+}
+min_density = 0.3
+max_density = 1.6
+min_props = 8
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 43
+counts = {
+&"shelving": Vector2i(3, 4)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"pallet": PackedStringArray("prop_pallet_loaded"),
+&"shelving": PackedStringArray("prop_shelving_boxes", "prop_shelving_archive")
+}
+ceiling = {"prop_fluorescent": 2.4}
+notes = "G6 bank supplies + archive overflow. The srv_ground variant rack + hack terminal (NE) is a keep-out."

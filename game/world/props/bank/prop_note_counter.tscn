@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_note_counter/prop_note_counter.glb" id="1_model"]
+
+[node name="PropNoteCounter" type="Node3D"]
+metadata/kind = &"note_counter"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Counter" parent="Model"]
+visibility_range_end = 25
+visibility_range_end_margin = 2.5
+visibility_range_fade_mode = 1
+
+[editable path="Model"]
