@@ -221,6 +221,11 @@ func pad_deadzone() -> float:
 	return float(get_value(CONTROLS, &"pad_deadzone"))
 
 
+## B6-06 (QC-45): the safehouse hub is walked in 3D ("walk", default) or the 2D station menu ("menu").
+func hub_walk() -> bool:
+	return String(get_value(CONTROLS, &"safehouse_hub")) != "menu"
+
+
 ## True when `action` (aim, crouch, sprint) is set to toggle instead of hold.
 func is_toggle(action: StringName) -> bool:
 	return MODE_KEYS.has(action) and String(get_value(CONTROLS, MODE_KEYS[action])) == "toggle"

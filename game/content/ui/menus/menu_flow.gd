@@ -21,6 +21,9 @@
 ## mouse released; Back closes it and restores both). There is no other pause menu.
 ## Music (B5-03, D-062): options["music_track"] = MusicCatalog.resolve_choice(profile) (the host's profile in
 ## co-op; &"" = heist default). The `jukebox` station opens JukeboxScreen (hub previews via C's MusicDirector).
+## 3D hub (B6-06, QC-45..49): `safehouse` (SafehouseHost) is show_hub()'s 3D branch: ENV C's safehouse scene
+## from data/ui/safehouse_hub.tres, the local walker, station signals -> open_station, the hub HUD and the
+## pause menu. The 2D HubMenu stays the fallback (scene / class / walker missing, Options "menu" mode, co-op).
 class_name MenuFlow
 extends Control
 
@@ -53,8 +56,9 @@ const TARGET_MASKS: StringName = &"masks"
 const TARGET_RANGE: StringName = &"firing_range"
 const TARGET_LOBBY: StringName = &"lobby"
 const TARGET_JUKEBOX: StringName = &"jukebox"
+const TARGET_NOTORIETY: StringName = &"notoriety"
 const TARGETS: Array[StringName] = [TARGET_BOARD, TARGET_HEIST_SELECT, TARGET_LOADOUT, TARGET_MASKS, TARGET_RANGE, TARGET_LOBBY,
-		TARGET_JUKEBOX]
+		TARGET_JUKEBOX, TARGET_NOTORIETY]
 
 var main_menu: MainMenu
 ## Safehouse hub (B4-07).
@@ -96,6 +100,10 @@ var lobby_screen: LobbyScreen = null
 var lobby: LobbySession = null
 ## Options screen opener (B5-01): options_menu.open() from the menus, `pause` in a heist (MenuOptions).
 var options_menu: MenuOptions
+## 3D safehouse hub mode (B6-06): see SafehouseHost.
+var safehouse: SafehouseHost
+## Full-screen backdrop behind every screen (dimmed / hidden over the 3D safehouse).
+var background: ColorRect
 var _heist_id: StringName = &""
 var _difficulty: int = Enums.Difficulty.ROUTINE
 var _in_heist: CanvasLayer = null
@@ -119,15 +127,25 @@ func _ready() -> void:
 	options_menu.name = "Options"
 	options_menu.flow = self
 	add_child(options_menu)
-	var bg: ColorRect = ColorRect.new()
-	bg.color = UiAccent.app_bg()
-	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(bg)
+	background = ColorRect.new()
+	background.name = "Background"
+	background.color = UiAccent.app_bg()
+	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(background)
 	stations = HubStationList.load_default()
 	main_menu = _add(MAIN_SCENE) as MainMenu
 	hub = _add(HUB_SCENE) as HubMenu
 	hub.profile_slot = profile_slot
+	safehouse = SafehouseHost.new()
+	safehouse.name = "Safehouse"
+	add_child(safehouse)
+	safehouse.setup(self)
+	safehouse.pause_menu.back_requested.connect(show_hub)
+	safehouse.pause_menu.station_requested.connect(open_station)
+	safehouse.pause_menu.options_requested.connect(options_menu.open)
+	safehouse.pause_menu.achievements_requested.connect(_open_achievements)
+	safehouse.pause_menu.main_menu_requested.connect(_on_hub_back)
 	heist_select = _add(SELECT_SCENE) as HeistSelect
 	stub_screen = _add(STUB_SCENE) as StubScreen
 	main_menu.safehouse_requested.connect(show_hub)
@@ -158,7 +176,8 @@ func show_screen(screen: Control) -> void:
 		(screen as MainMenu).refresh_profile()
 
 
-## The safehouse hub with a freshly loaded profile (stations save the profile themselves).
+## The safehouse hub with a freshly loaded profile (stations save the profile themselves): the 3D
+## safehouse when available and picked in Options (B6-06, SafehouseHost), else the 2D HubMenu.
 ## In a co-op session the lobby is shown instead (B4-11).
 func show_hub() -> void:
 	_in_safehouse = true
@@ -166,6 +185,8 @@ func show_hub() -> void:
 		show_lobby()
 		return
 	profile = SaveService.load_profile(profile_slot)
+	if safehouse.show_home(profile):
+		return
 	hub.refresh_profile(profile)
 	show_screen(hub)
 
@@ -180,11 +201,12 @@ func show_home() -> void:
 
 func _on_hub_back() -> void:
 	_in_safehouse = false
+	safehouse.leave()
 	show_screen(main_menu)
 
 
 ## Opens safehouse station `station_id` (data/ui/hub_stations.tres; ids board, planning, armory,
-## masks, range, crew, jukebox). The API for the 2D hub cards AND ENV C's 3D safehouse interactables. Leaving a
+## masks, range, crew, jukebox, notoriety). The API for the 2D hub cards AND ENV C's 3D safehouse interactables. Leaving a
 ## contract path this way drops it (a confirmed plan's cash is refunded). Back on every station
 ## returns to the hub. Returns false (and logs an error) for an unknown id or target.
 func open_station(station_id: StringName) -> bool:
@@ -209,6 +231,8 @@ func open_station(station_id: StringName) -> bool:
 			show_lobby()
 		TARGET_JUKEBOX:
 			_open_jukebox()
+		TARGET_NOTORIETY:
+			_open_notoriety()
 	return true
 
 
@@ -256,8 +280,10 @@ func _open_notoriety() -> void:
 
 
 ## Jukebox station (B5-03): track list with hub previews; leaving it stops the preview (the screen does).
+## In the 3D safehouse it previews through the cabinet (QC-48); show_hub then replays the saved pick there.
 func _open_jukebox() -> void:
 	var screen: JukeboxScreen = JUKEBOX_SCENE.instantiate() as JukeboxScreen
+	screen.preview_target = safehouse.jukebox()
 	screen.setup(SaveService.load_profile(profile_slot))
 	screen.visible = false
 	add_child(screen)
@@ -505,6 +531,9 @@ func open_firing_range() -> void:
 	if firing_range != null:
 		return
 	_range_return = current
+	if safehouse.is_active():  # B6-06: the range frees the safehouse; coming back re-enters at ReturnRange
+		_range_return = hub
+		safehouse.leave(safehouse.tweak.range_marker)
 	var range_scene: FiringRange = RANGE_SCENE.instantiate() as FiringRange
 	range_scene.setup(LoadoutResolver.resolve(SaveService.load_profile(profile_slot).loadout))
 	range_scene.exit_requested.connect(close_firing_range)
@@ -624,6 +653,7 @@ func in_heist_ui_spawned() -> bool:
 
 ## HUD + payday (listening for heist_ended) on their own layer above the map.
 func _spawn_in_heist_ui() -> void:
+	safehouse.leave(safehouse.tweak.heist_marker)  # B6-06: home after payday re-enters at ReturnHeist
 	_in_heist = CanvasLayer.new()
 	_in_heist.layer = 10
 	add_sibling.call_deferred(_in_heist)
