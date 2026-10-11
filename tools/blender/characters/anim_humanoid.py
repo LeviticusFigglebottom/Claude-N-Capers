@@ -26,7 +26,13 @@ ASSET_ID = "char_anim_humanoid"
 PARAMS = {"height": 1.78}
 
 # name: frames (at 30 fps), loop, speed (m/s along the travel direction, 0 = stationary), events
-# (name -> frame), priority (1 = P1 subset of roadmap C1-05, 2 = the rest delivered here).
+# (name -> frame), priority (1 = P1 subset of roadmap C1-05, 2 = the rest delivered by D1-03, 3 = the special
+# enemies, P3). Specials, timed from ENV A's data: kick_charge = SpecialTweak.phantom_windup_s (0.5 s, standing,
+# then `sprint` plays during the charge); kick_hit lands its kick at `impact`; shield_bang =
+# HeavySpecialTweak.bulwark_bang_hold_s (0.8 s), one event per bang; heal_ally = corpsman_heal_lock_s (1.0 s),
+# `heal` at the injector jab; dozer_walk cadence = wrecker_step_interval_s (0.55 s per step, step_l/step_r =
+# heel strikes). shield_walk / dozer_walk are walks (1.6 m/s native): EnemyDef.move_speed (Bulwark 3.2, Wrecker
+# 3.5 m/s) is a run speed, i.e. speed_scale 2.0 / 2.2.
 CLIPS = {
     "idle": {"frames": 120, "loop": True, "speed": 0.0, "priority": 1},
     "idle_alert": {"frames": 90, "loop": True, "speed": 0.0, "priority": 2},
@@ -77,11 +83,18 @@ CLIPS = {
     "interact_mid": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
     "interact_high": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
     "drill_place": {"frames": 45, "loop": False, "speed": 0.0, "priority": 2, "events": {"attach": 27}},
+    "kick_charge": {"frames": 15, "loop": False, "speed": 0.0, "priority": 3},
+    "kick_hit": {"frames": 21, "loop": False, "speed": 0.0, "priority": 3, "events": {"impact": 6}},
+    "shield_walk": {"frames": 28, "loop": True, "speed": 1.6, "priority": 3},
+    "shield_bang": {"frames": 24, "loop": False, "speed": 0.0, "priority": 3,
+                    "events": {"bang_1": 6, "bang_2": 12, "bang_3": 18}},
+    "heal_ally": {"frames": 30, "loop": False, "speed": 0.0, "priority": 3, "events": {"heal": 12}},
+    "dozer_walk": {"frames": 33, "loop": True, "speed": 1.6, "priority": 3, "events": {"step_r": 0, "step_l": 16}},
 }
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)
-#: Contract names not delivered by this asset yet (specials, D1-03 scope excludes them).
-NOT_YET = ["kick_charge", "kick_hit", "shield_walk", "shield_bang", "heal_ally", "dozer_walk"]
+#: Contract names not delivered by this asset yet (none since the P3 specials).
+NOT_YET = []
 
 
 def export_name(name: str) -> str:
@@ -124,6 +137,17 @@ def build(ctx) -> None:
     ctx.source_extra["handr_weapon_offset_godot"] = (
         f"basis x=({rx[0]:.4f},{rx[1]:.4f},{rx[2]:.4f}) y=({ry[0]:.4f},{ry[1]:.4f},{ry[2]:.4f}) "
         f"z=({rz[0]:.4f},{rz[1]:.4f},{rz[2]:.4f}) origin=({ox:.4f},{oy:.4f},{oz:.4f}) relative to bone hand.R")
+    (lx, ly, lz), (px, py, pz) = anim.grip_offset_godot(sk, "L")
+    ctx.source_extra["handl_shield_offset_godot"] = (
+        f"basis x=({lx[0]:.4f},{lx[1]:.4f},{lx[2]:.4f}) y=({ly[0]:.4f},{ly[1]:.4f},{ly[2]:.4f}) "
+        f"z=({lz[0]:.4f},{lz[1]:.4f},{lz[2]:.4f}) origin=({px:.4f},{py:.4f},{pz:.4f}) relative to bone hand.L")
+    hx, hy, hz = (float(c) for c in lib.SHIELD_HANDLE * sk.scale)
+    ctx.source_extra["shield_grip"] = (
+        "shield_walk/shield_bang hold the Bulwark shield at HandL/Socket (the weapon grip convention, left fist): "
+        "the shield pivot = its vertical handle in the fist, socket -Z = the shield face normal (forward), socket +Y = "
+        f"up the handle (matches char_bulwark_shield); handle at Godot ({hx:.3f}, {hz:.3f}, {-hy:.3f}) m in the braced "
+        f"stance, the shield tilted {lib.SHIELD_PITCH:g} deg top-back and turned {lib.SHIELD_YAW:g} deg; pistol "
+        "one-handed at HandR/Socket just outside the shield's right edge")
     for name in sorted(CLIPS):
         row = CLIPS[name]
         extra = f"{row['frames']}f loop={row['loop']} speed_mps={row['speed']}"

@@ -140,3 +140,19 @@ def slot(key: str) -> tuple[str, str, float, float, float]:
 
 def all_keys() -> list[str]:
     return sorted(set(LIBRARY) | set(TINTED) | set(EMISSIVE) | set(GLASS))
+
+
+# Texture width (px) of every library id whose tile is 512 px over 2 m (style: low-detail surfaces).
+LIB_512 = {"chrome", "rubber_black", "plastic_matte", "glass_clear", "ceiling_tile"}
+
+
+def texture_px(mat_id: str) -> float:
+    """Albedo texture size behind a material id (library or prop) -> UV density choice."""
+    if mat_id in LIB_512:
+        return 512.0
+    if mat_id.startswith(PROP_PREFIX):
+        key = mat_id[len(PROP_PREFIX):]
+        src = (TINTED.get(key) or GLASS.get(key) or {}).get("source")
+        if src in LIB_512:
+            return 512.0
+    return 1024.0

@@ -1,0 +1,37 @@
+[gd_scene format=4]
+
+[ext_resource type="Material" path="res://world/materials/leather_dark.tres" id="1_gh"]
+[ext_resource type="Material" path="res://world/materials/wood_veneer_walnut.tres" id="2_gh"]
+
+[sub_resource type="ArrayMesh" id="gh_1"]
+resource_name = "gh_p"
+_surfaces = [{
+"aabb": AABB(-0.18, 0, -0.12, 0.36, 0.15, 0.24),
+"attribute_data": PackedByteArray("j8J1vQAAAICPwnU9zczMvI/CdT0AAACAj8J1vc3MzLyPwnU9AAAAgI/Cdb3NzMy8j8J1Pc3MzLyPwnW9AAAAgOxRuL2PwnW97FG4PY/CdT3sUbi9j8J1PexRuD2PwnW97FG4PQAAAIDsUbi9zczMvOxRuD3NzMy87FG4vQAAAIDsUbi9AAAAgOxRuD3NzMy87FG4PQAAAIDsUbi9zczMvK5HYb3OzMy8rkdhPc7MTL2uR2E9zszMvK5HYb3OzEy9rkdhPc7MzLyuR2G9zsxMva5HYT3OzEy9rkdhvc7MzLx7FK69rkdhvXsUrj2uR2E9exSuPa5HYb17FK69rkdhPXsUrr2uR2G9exSuPa5HYT17FK69rkdhPXsUrj2uR2G9exSuPc7MzLx7FK69zsxMvXsUrj3OzEy9exSuvc7MzLx7FK69zszMvHsUrj3OzEy9exSuPc7MzLx7FK69zsxMvc3MTL3NzEy9zcxMPZqZmb3NzEw9zcxMvc3MTL2amZm9zcxMPc3MTL3NzEy9mpmZvc3MTD2amZm9zcxMvc3MTL0K16O9zcxMvQrXoz3NzEw9CtejPc3MTL0K16O9zcxMPQrXo73NzEy9CtejPc3MTD0K16O9zcxMPQrXoz3NzEy9CtejPc3MTL0K16O9mpmZvQrXoz2amZm9Ctejvc3MTL0K16O9zcxMvQrXoz2amZm9CtejPc3MTL0K16O9mpmZvQ=="),
+"format": 34359742487,
+"index_count": 102,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUAGAAZABoAGAAbABkAHAAdAB4AHAAfAB0AIAAhACIAIAAjACEAJAAlACYAJAAnACUAKAApACoAKAArACkALAAtAC4ALAAvAC0AMAAxADIAMAAzADEANAA1ADYANAA3ADUAOAA5ADoAOAA7ADkAPAA9AD4APAA/AD0AQABBAEIAQABDAEEA"),
+"material": ExtResource("1_gh"),
+"name": "leather_dark",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 68,
+"vertex_data": PackedByteArray("7FE4vgAAAACPwvW97FE4vs3MTD2PwvU97FE4vgAAAACPwvU97FE4vs3MTD2PwvW97FE4PgAAAACPwvW97FE4Ps3MTD2PwvU97FE4Ps3MTD2PwvW97FE4PgAAAACPwvU97FE4vs3MTD2PwvW97FE4Ps3MTD2PwvU97FE4vs3MTD2PwvU97FE4Ps3MTD2PwvW97FE4vgAAAACPwvW97FE4Ps3MTD2PwvW97FE4vs3MTD2PwvW97FE4PgAAAACPwvW97FE4vgAAAACPwvU97FE4Ps3MTD2PwvU97FE4PgAAAACPwvU97FE4vs3MTD2PwvU9exQuvs7MTD2uR+G9exQuvs7MzD2uR+E9exQuvs7MTD2uR+E9exQuvs7MzD2uR+G9exQuPs7MTD2uR+G9exQuPs7MzD2uR+E9exQuPs7MzD2uR+G9exQuPs7MTD2uR+E9exQuvs7MTD2uR+G9exQuPs7MTD2uR+E9exQuPs7MTD2uR+G9exQuvs7MTD2uR+E9exQuvs7MzD2uR+G9exQuPs7MzD2uR+E9exQuvs7MzD2uR+E9exQuPs7MzD2uR+G9exQuvs7MTD2uR+G9exQuPs7MzD2uR+G9exQuvs7MzD2uR+G9exQuPs7MTD2uR+G9exQuvs7MTD2uR+E9exQuPs7MzD2uR+E9exQuPs7MTD2uR+E9exQuvs7MzD2uR+E9Ctcjvs3MzD3NzMy9CtcjvpqZGT7NzMw9Ctcjvs3MzD3NzMw9CtcjvpqZGT7NzMy9CtcjPs3MzD3NzMy9CtcjPpqZGT7NzMw9CtcjPpqZGT7NzMy9CtcjPs3MzD3NzMw9Ctcjvs3MzD3NzMy9CtcjPs3MzD3NzMw9CtcjPs3MzD3NzMy9Ctcjvs3MzD3NzMw9CtcjvpqZGT7NzMy9CtcjPpqZGT7NzMw9CtcjvpqZGT7NzMw9CtcjPpqZGT7NzMy9Ctcjvs3MzD3NzMy9CtcjPpqZGT7NzMy9CtcjvpqZGT7NzMy9CtcjPs3MzD3NzMy9Ctcjvs3MzD3NzMw9CtcjPpqZGT7NzMw9CtcjPs3MzD3NzMw9CtcjvpqZGT7NzMw9AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//7////9//////////3//////////f/////////9///////9///////+//3///////7//f///////v/9///////+//////wAA/7//////AAD/v/////8AAP+//////wAA/7//f/9/////v/9//3////+//3//f////7//f/9/////vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+/////f/////////9//////////3//////////f///////fwAA////P/9/AAD///8//38AAP///z//fwAA////P/9///////+//3///////7//f///////v/9///////+//////wAA/7//////AAD/v/////8AAP+//////wAA/7//f/9/////v/9//3////+//3//f////7//f/9/////vwAA/3//f/+/AAD/f/9//78AAP9//3//vwAA/3//f/+/////f/////////9//////////3//////////f///////fwAA////P/9/AAD///8//38AAP///z//fwAA////P/9///////+//3///////7//f///////v/9///////+//////wAA/7//////AAD/v/////8AAP+//////wAA/7//f/9/////v/9//3////+//3//f////7//f/9/////vw==")
+}, {
+"aabb": AABB(0, 0.15, -0.06, 0.12, 0.08, 0.12),
+"attribute_data": PackedByteArray("j8L1vJqZmb2PwvU8H4XrvY/C9TyamZm9j8L1vB+F672PwvU8mpmZvY/C9bwfheu9j8L1PB+F672PwvW8mpmZvQAAAACPwvW8j8J1PY/C9TyPwnU9j8L1vAAAAACPwvU8AAAAAI/C9byPwnU9j8L1PAAAAACPwvU8j8J1PY/C9bwAAACAmpmZvY/Cdb0fheu9AAAAgB+F672PwnW9mpmZvQAAAACamZm9j8J1PR+F672PwnU9mpmZvQAAAAAfheu9"),
+"format": 34359742487,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": ExtResource("2_gh"),
+"name": "wood_veneer_walnut",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AAAAAJqZGT6PwnW9AAAAAB+Faz6PwnU9AAAAAJqZGT6PwnU9AAAAAB+Faz6PwnW9j8L1PZqZGT6PwnW9j8L1PR+Faz6PwnU9j8L1PR+Faz6PwnW9j8L1PZqZGT6PwnU9AAAAAJqZGT6PwnW9j8L1PZqZGT6PwnU9j8L1PZqZGT6PwnW9AAAAAJqZGT6PwnU9AAAAAB+Faz6PwnW9j8L1PR+Faz6PwnU9AAAAAB+Faz6PwnU9j8L1PR+Faz6PwnW9AAAAAJqZGT6PwnW9j8L1PR+Faz6PwnW9AAAAAB+Faz6PwnW9j8L1PZqZGT6PwnW9AAAAAJqZGT6PwnU9j8L1PR+Faz6PwnU9j8L1PZqZGT6PwnU9AAAAAB+Faz6PwnU9AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//7////9//////////3//////////f/////////9///////9/AAD///8//38AAP///z//fwAA////P/9/AAD///8//3///////7//f///////v/9///////+//3///////7//////AAD/v/////8AAP+//////wAA/7//////AAD/v/9//3////+//3//f////7//f/9/////v/9//3////+/")
+}]
+
+[node name="GhJewelryStack" type="Node3D" unique_id=100001]
+
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=100002]
+mesh = SubResource("gh_1")

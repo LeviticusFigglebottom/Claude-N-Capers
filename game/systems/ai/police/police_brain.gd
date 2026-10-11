@@ -146,7 +146,6 @@ func _pick_target() -> void:
 		var d: float = c.global_position.distance_squared_to(_npc.global_position)
 		if c.crew_state != Enums.CrewState.NORMAL and not _cuffable_near(c, d):
 			d += 1.0e6  # prefer standing targets (L2.12: a cuffable downed one nearby counts as standing)
-		d /= PerkHooks.aggro_weight(c, _npc)  # perk hook (QB-62: perk target-selection weight)
 		if d < best_any:
 			best_any = d
 			any = c

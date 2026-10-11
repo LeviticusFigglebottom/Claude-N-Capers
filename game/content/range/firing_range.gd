@@ -250,8 +250,13 @@ func dummy_readouts() -> Array[Dictionary]:
 ## One-line armor description of a dummy model (readout "Armor" row).
 static func armor_text(m: RangeDamageModel) -> String:
 	var parts: PackedStringArray = PackedStringArray()
-	if m.frontal_armor:
-		parts.append(UiText.t(&"ui.range.armor.frontal", {"mult": RangeOverlay._num(m.armor_body_mult, 2)}))
+	if m.has_frontal_armor():
+		parts.append(UiText.t(&"ui.range.armor.frontal", {"mult": RangeOverlay._num(m.frontal_armor, 2),
+				"arc": RangeOverlay._num(m.frontal_armor_arc_deg, 0)}))
+	if not is_equal_approx(m.armor_body_mult, 1.0):
+		parts.append(UiText.t(&"ui.range.armor.body", {"mult": RangeOverlay._num(m.armor_body_mult, 2)}))
+	if not is_equal_approx(m.explosive_mult, 1.0):
+		parts.append(UiText.t(&"ui.range.armor.explosive", {"mult": RangeOverlay._num(m.explosive_mult, 2)}))
 	if m.shield:
 		parts.append(UiText.t(&"ui.range.armor.shield", {"mult": RangeOverlay._num(m.shield_pierce_mult, 2)}))
 	if not m.plate_health.is_empty():
@@ -323,8 +328,6 @@ func _apply_loadout() -> void:
 		return
 	if spectator != null:
 		spectator.gun.equip(weapon_def.id, weapon_stats, weapon_def.fire_modes.has(&"auto"))
-	for t: RangeTarget in targets:
-		t.pierce_fallback = weapon_stats  # pierce flags for infos from runtimes without them (RangeTarget)
 	if crew != null:
 		RangeCrewBridge.push_loadout(crew, resolved)
 		var mods: Array[StringName] = loadout.primary_mods if loadout.primary != &"" else loadout.secondary_mods

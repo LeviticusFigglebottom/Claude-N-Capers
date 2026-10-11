@@ -1,0 +1,50 @@
+[gd_scene format=4]
+
+[ext_resource type="Texture2D" path="res://assets/textures/plastic_matte/tex_plastic_matte_albedo.png" id="1_gh"]
+[ext_resource type="Texture2D" path="res://assets/textures/plastic_matte/tex_plastic_matte_normal.png" id="2_gh"]
+[ext_resource type="Texture2D" path="res://assets/textures/plastic_matte/tex_plastic_matte_orm.png" id="3_gh"]
+[ext_resource type="Material" path="res://world/materials/plaster_painted.tres" id="4_gh"]
+
+[sub_resource type="ORMMaterial3D" id="gh_1"]
+resource_name = "gh_cash_green"
+albedo_color = Color(0.55, 0.68, 0.5, 1)
+albedo_texture = ExtResource("1_gh")
+orm_texture = ExtResource("3_gh")
+normal_enabled = true
+normal_texture = ExtResource("2_gh")
+ao_enabled = true
+texture_filter = 5
+metadata/uv_tile_m = 2.0
+
+[sub_resource type="ArrayMesh" id="gh_2"]
+resource_name = "gh_p"
+_surfaces = [{
+"aabb": AABB(-0.08, 0, -0.0375, 0.16, 0.05, 0.075),
+"attribute_data": PackedByteArray("mpmZvAAAAICamZk8zczMvJqZmTwAAACAmpmZvM3MzLyamZk8AAAAgJqZmbzNzMy8mpmZPM3MzLyamZm8AAAAgArXI72amZm8CtcjPZqZmTwK1yO9mpmZPArXIz2amZm8CtcjPQAAAIAK1yO9zczMvArXIz3NzMy8CtcjvQAAAIAK1yO9AAAAgArXIz3NzMy8CtcjPQAAAIAK1yO9zczMvA=="),
+"format": 34359742487,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"material": SubResource("gh_1"),
+"name": "gh_cash_green",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 20,
+"vertex_data": PackedByteArray("CtejvQAAAACamRm9Ctejvc3MTD2amRk9CtejvQAAAACamRk9Ctejvc3MTD2amRm9CtejPQAAAACamRm9CtejPc3MTD2amRk9CtejPc3MTD2amRm9CtejPQAAAACamRk9Ctejvc3MTD2amRm9CtejPc3MTD2amRk9Ctejvc3MTD2amRk9CtejPc3MTD2amRm9CtejvQAAAACamRm9CtejPc3MTD2amRm9Ctejvc3MTD2amRm9CtejPQAAAACamRm9CtejvQAAAACamRk9CtejPc3MTD2amRk9CtejPQAAAACamRk9Ctejvc3MTD2amRk9AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//7////9//////////3//////////f/////////9///////9///////+//3///////7//f///////v/9///////+//////wAA/7//////AAD/v/////8AAP+//////wAA/7//f/9/////v/9//3////+//3//f////7//f/9/////vw==")
+}, {
+"aabb": AABB(-0.015, 0, -0.0405, 0.03, 0.056, 0.081),
+"attribute_data": PackedByteArray("VOOlvAAAAIBU46U8QmDlvFTjpTwAAACAVOOlvEJg5bxU46U8AAAAgFTjpbxCYOW8VOOlPEJg5bxU46W8AAAAgI/C9btU46W8j8L1O1TjpTyPwvW7VOOlPI/C9TtU46W8j8L1OwAAAICPwvW7QmDlvI/C9TtCYOW8j8L1uwAAAICPwvW7AAAAgI/C9TtCYOW8j8L1OwAAAICPwvW7QmDlvA=="),
+"format": 34359742487,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"material": ExtResource("4_gh"),
+"name": "plaster_painted",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 20,
+"vertex_data": PackedByteArray("j8J1vAAAAABU4yW9j8J1vEJgZT1U4yU9j8J1vAAAAABU4yU9j8J1vEJgZT1U4yW9j8J1PAAAAABU4yW9j8J1PEJgZT1U4yU9j8J1PEJgZT1U4yW9j8J1PAAAAABU4yU9j8J1vEJgZT1U4yW9j8J1PEJgZT1U4yU9j8J1vEJgZT1U4yU9j8J1PEJgZT1U4yW9j8J1vAAAAABU4yW9j8J1PEJgZT1U4yW9j8J1vEJgZT1U4yW9j8J1PAAAAABU4yW9j8J1vAAAAABU4yU9j8J1PEJgZT1U4yU9j8J1PAAAAABU4yU9j8J1vEJgZT1U4yU9AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//7////9//////////3//////////f/////////9///////9///////+//3///////7//f///////v/9///////+//////wAA/7//////AAD/v/////8AAP+//////wAA/7//f/9/////v/9//3////+//3//f////7//f/9/////vw==")
+}]
+
+[node name="GhCashStack" type="Node3D" unique_id=100001]
+
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=100002]
+mesh = SubResource("gh_2")

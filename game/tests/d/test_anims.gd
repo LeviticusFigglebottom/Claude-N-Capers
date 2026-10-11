@@ -1,5 +1,5 @@
 ## D1-03: the procedural "humanoid" animation library (char_anim_humanoid). Run after `godot --import`.
-## Checks every P1 clip name (and the P2 clips delivered) is present exactly, loop modes for the
+## Checks every P1 clip name (and the P2 clips and P3 specials delivered) is present exactly, loop modes for the
 ## looped clips (the glb marks them with a `-loop` suffix that Godot strips), lengths at 30 fps,
 ## tracks that target Skeleton3D bones, held poses keeping their constant tracks
 ## (remove_immutable_tracks=false) and finite values.
@@ -19,17 +19,30 @@ const P2: Array[String] = [
 	"kneel_cuffed", "melee", "investigate_look", "smoke", "lean_wall", "sit_chair", "desk_type",
 	"browse", "drill_place", "climb_ladder", "tased",
 ]
+## P3 special-enemy clips (Phantom kick, Bulwark shield, Corpsman heal, Wrecker walk).
+const SPECIALS: Array[String] = [
+	"kick_charge", "kick_hit", "shield_walk", "shield_bang", "heal_ally", "dozer_walk",
+]
 const LOOPED: Array[String] = [
 	"idle", "idle_alert", "walk", "run", "sprint", "crouch_idle", "crouch_walk", "strafe_l", "strafe_r",
 	"walk_back", "aim_rifle", "aim_pistol", "kneel_cuffed", "hands_up", "cower", "lie_down", "tied",
 	"flee", "phone_call", "pager_answer", "investigate_look", "smoke", "lean_wall", "sit_chair",
 	"desk_type", "browse", "downed", "tased", "climb_ladder", "carry_bag_walk", "interact_low",
-	"interact_mid", "interact_high",
+	"interact_mid", "interact_high", "shield_walk", "dozer_walk",
 ]
 ## Clip -> frames at 30 fps (anim_humanoid.CLIPS).
 const FRAMES: Dictionary = {"idle": 120, "walk": 30, "run": 21, "sprint": 18, "crouch_walk": 27,
 	"fire_pistol": 9, "fire_rifle": 6, "reload_pistol": 45, "reload_rifle": 72, "death_front": 54,
-	"radio_call": 60, "carry_bag_walk": 22, "flee": 20}
+	"radio_call": 60, "carry_bag_walk": 22, "flee": 20, "kick_charge": 15, "kick_hit": 21, "shield_walk": 28,
+	"shield_bang": 24, "heal_ally": 30, "dozer_walk": 33}
+## Contract-listed event frames of the specials (SOURCE.txt `clip.<name>: ... events=`): ENV A syncs to them.
+const SPECIAL_EVENTS: Dictionary = {
+	"kick_hit": {"impact": 6}, "shield_bang": {"bang_1": 6, "bang_2": 12, "bang_3": 18},
+	"heal_ally": {"heal": 12}, "dozer_walk": {"step_r": 0, "step_l": 16},
+}
+const SOURCE: String = "res://assets/characters/char_anim_humanoid/SOURCE.txt"
+## Native speeds (m/s at 1.78 m) of the special locomotion loops.
+const SPECIAL_SPEEDS: Dictionary = {"shield_walk": 1.6, "dozer_walk": 1.6}
 
 var _root: Node3D = null
 var _player: AnimationPlayer = null
@@ -80,7 +93,7 @@ func test_delivered_p2_clips_are_present() -> void:
 	for clip: String in P2:
 		assert_true(_player.has_animation(StringName(clip)), "P2 clip %s" % clip)
 	var names: PackedStringArray = _player.get_animation_list()
-	assert_eq(names.size(), P1.size() + P2.size(), "no extra or misnamed clips: %s" % [names])
+	assert_eq(names.size(), P1.size() + P2.size() + SPECIALS.size(), "no extra or misnamed clips: %s" % [names])
 	for n: String in names:
 		assert_false(n.ends_with("-loop") or n.ends_with("_loop"), "%s: loop suffix stripped" % n)
 
@@ -88,7 +101,7 @@ func test_delivered_p2_clips_are_present() -> void:
 func test_loop_modes() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2:
+	for clip: String in P1 + P2 + SPECIALS:
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -99,7 +112,7 @@ func test_loop_modes() -> void:
 func test_lengths() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2:
+	for clip: String in P1 + P2 + SPECIALS:
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -114,7 +127,7 @@ func test_lengths() -> void:
 func test_tracks_target_skeleton_bones() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2:
+	for clip: String in P1 + P2 + SPECIALS:
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -149,7 +162,7 @@ func test_loops_end_on_their_first_pose() -> void:
 func test_values_are_finite_without_flips() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2:
+	for clip: String in P1 + P2 + SPECIALS:
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -185,3 +198,78 @@ func test_walk_feet_stay_above_floor() -> void:
 			lowest = minf(lowest, y)
 	_player.stop()
 	assert_true(lowest > 0.0, "walk: ankles and balls stay above the floor (lowest %f)" % lowest)
+
+
+func test_special_clips_are_present() -> void:
+	if not _ready_or_fail():
+		return
+	for clip: String in SPECIALS:
+		assert_true(_player.has_animation(StringName(clip)), "P3 special clip %s" % clip)
+
+
+func test_special_events_and_speeds_in_source() -> void:
+	var text: String = FileAccess.get_file_as_string(SOURCE)
+	assert_true(not text.is_empty(), "read %s" % SOURCE)
+	var lines: Dictionary = {}
+	for line: String in text.split("\n"):
+		if line.begins_with("clip."):
+			lines[line.get_slice(":", 0).trim_prefix("clip.")] = line
+	for clip: String in SPECIALS:
+		assert_true(lines.has(clip), "SOURCE.txt lists clip.%s" % clip)
+	for clip: String in SPECIAL_EVENTS:
+		var want: Dictionary = SPECIAL_EVENTS[clip]
+		for ev: String in want:
+			var frame: int = int(want[ev])
+			assert_true(String(lines.get(clip, "")).contains("%s@%d" % [ev, frame]), "%s event %s@%d" % [clip, ev, frame])
+			var a: Animation = _anim(clip) if _player != null else null
+			if a != null:
+				assert_true(float(frame) / 30.0 <= a.length + 0.001, "%s: %s inside the clip" % [clip, ev])
+	for clip: String in SPECIAL_SPEEDS:
+		assert_true(String(lines.get(clip, "")).contains("speed_mps=%s" % str(SPECIAL_SPEEDS[clip])),
+			"%s native speed %s m/s" % [clip, SPECIAL_SPEEDS[clip]])
+	var loops: String = ""
+	for line: String in text.split("\n"):
+		if line.begins_with("loops:"):
+			loops = line
+	for clip: String in ["shield_walk", "dozer_walk"]:
+		assert_true(loops.contains(clip), "SOURCE.txt loops: lists %s" % clip)
+
+
+func test_kick_hit_is_airborne_at_impact() -> void:
+	if not _ready_or_fail():
+		return
+	var a: Animation = _anim("kick_hit")
+	if a == null:
+		return
+	_player.play(&"kick_hit")
+	var low: float = 10.0
+	for i: int in range(22):
+		_player.seek(float(i) / 30.0, true)
+		if i == 6:
+			for b: String in ["foot.L", "foot.R"]:
+				var y: float = (_skel.global_transform * _skel.get_bone_global_pose(_skel.find_bone(b))).origin.y
+				assert_true(y > 0.2, "kick_hit: %s off the floor at the impact (%f)" % [b, y])
+			var kick: Vector3 = (_skel.global_transform * _skel.get_bone_global_pose(_skel.find_bone("foot.R"))).origin
+			assert_true(kick.z < -0.7 and kick.y > 0.8, "kick_hit: right foot out in front at hip height (%s)" % kick)
+		for b: String in ["toe.L", "toe.R"]:
+			low = minf(low, (_skel.global_transform * _skel.get_bone_global_pose(_skel.find_bone(b))).origin.y)
+	_player.stop()
+	assert_true(low > 0.0, "kick_hit: toes stay above the floor (lowest %f)" % low)
+
+
+func test_special_walks_keep_feet_above_floor() -> void:
+	if not _ready_or_fail():
+		return
+	for clip: String in ["shield_walk", "dozer_walk"]:
+		var a: Animation = _anim(clip)
+		if a == null:
+			continue
+		_player.play(StringName(clip))
+		var lowest: float = 1.0
+		var n: int = int(round(a.length * 30.0))
+		for i: int in range(n + 1):
+			_player.seek(float(i) / 30.0, true)
+			for b: String in ["foot.L", "foot.R", "toe.L", "toe.R"]:
+				lowest = minf(lowest, (_skel.global_transform * _skel.get_bone_global_pose(_skel.find_bone(b))).origin.y)
+		_player.stop()
+		assert_true(lowest > 0.0, "%s: ankles and balls stay above the floor (lowest %f)" % [clip, lowest])

@@ -1,0 +1,69 @@
+[gd_resource type="Resource" script_class="HeistDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_def.gd" id="1_efg7s"]
+
+[resource]
+script = ExtResource("1_efg7s")
+id = &"shadow_ledger"
+display_name = "Shadow Ledger"
+contact = &"contact.accountant"
+briefing = "Kessler & Moor, the top two floors of Calder Tower. Their off-book client ledger lives in three places: the encrypted drive array in the server cage, the partners' laptop with the key, and the printed books in Kessler's time-locked study safe. The Accountant wants all of it, and nobody may ever know it left the building. One alarm and the array is wiped: stealth only."
+mode = 1
+map_scene = "res://world/heists/shadow_ledger/shadow_ledger.tscn"
+base_payout = 110000
+loot = Array[StringName]([&"loot.ledger_laptop", &"loot.ledger_drives", &"loot.ledger_books", &"loot.painting", &"loot.cash"])
+objectives = Array[StringName]([&"casing", &"laptop", &"keycard", &"server_door", &"cage_code", &"cage", &"hack", &"drives", &"secure", &"study_safe", &"paintings", &"archive_safe", &"escape"])
+preplanning = {
+"assets": {
+&"asset.alternate_entry": {
+"point_categories": [&"spawn"],
+"point_ids": [&"pp_spawn_service"],
+"spawn_tag": &"preplan_spawn_service"
+},
+&"asset.body_bag_case_drop": {
+"point_categories": [&"drop_zone"]
+},
+&"asset.escape_position": {
+"force_variants": {},
+"point_categories": [&"escape"]
+},
+&"asset.extra_cable_ties": {},
+&"asset.gondola_left_hung": {
+"cost": 2500,
+"favors": 1,
+"force_variants": {},
+"max_count": 1,
+"point_ids": [&"pp_gondola_west", &"pp_gondola_north"],
+"tags": [&"stealth"]
+},
+&"asset.intel_cameras": {
+"reveals": [&"camera"]
+},
+&"asset.intel_guard_posts": {
+"reveals": [&"guard_post", &"guard_extra"]
+},
+&"asset.intel_keycards": {
+"reveals": [&"keycard"]
+},
+&"asset.intel_laptop": {
+"cost": 1500,
+"favors": 1,
+"max_count": 1,
+"reveals": [&"laptop"],
+"tags": [&"stealth"]
+},
+&"asset.riser_panel": {
+"cost": 2000,
+"favors": 1,
+"force_variants": {},
+"max_count": 1,
+"point_ids": [&"pp_riser_l41", &"pp_riser_l42"],
+"tags": [&"stealth"]
+},
+&"asset.spare_body_bags": {}
+},
+"disable": [&"asset.ammo_bag_drop", &"asset.doctor_bag_drop"],
+"favors": 6
+}
+escape_options = Array[StringName]([&"heli", &"zipline", &"lift"])
+music_track = &"shadow_ledger"
