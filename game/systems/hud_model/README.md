@@ -1,6 +1,6 @@
 # LocalHudModel (A1-11). Owner: ENV A
 
-Contract: `docs/contracts/ui_hud.md` v1.1, section "exact binding shape (D-024)", plus v1.2 (D-043: `custody`, `track()`) and v1.3 (D-049: `captain_changed`).
+Contract: `docs/contracts/ui_hud.md` v1.1, section "exact binding shape (D-024)", plus v1.2 (D-043: `custody`, `track()`) v1.3 (D-049: `captain_changed`) and v1.4 (QB-60: `stamina_changed`).
 Code: `local_hud_model.gd` (`class_name LocalHudModel`).
 
 HeistRuntime creates one `LocalHudModel` child (named `LocalHudModel`, also `HeistRuntime.hud_model`)
@@ -58,6 +58,7 @@ below by name.
 | `masked_changed` | `masked`, `casing` | bool (`casing` = not masked) | `CrewController.masked`, `crew_masked` (event + poll) |
 | `custody_changed` (v1.2) | `custody` | `{}` or `{"in_custody": true, "negotiation_left_s": float (0 = trade ready), "auto_release_left_s": float (< 0 = trade only), "highlighted_hostage_net_id": int (0 = none)}` | runtime service `&"custody"` (`CustodySystem.in_custody/negotiation_left/auto_release_left(slot)`, `highlighted_hostage().net_id`), server; clients without the service: `{in_custody: true, -1, -1, 0}` while `crew_state == CUSTODY` (poll) |
 | `captain_changed` (v1.3, D-049) | `captain_resistance` / `captain_present` | float 0..1 (damage reduction of every enemy; 0 when absent or not yet in position) / bool (Commander Brandt on the map) | `HeistNetSync.captain_state()`: server = director `AegisCaptain.active` / `.resistance`; client = the host value replicated in the services diff (`"captain"`, 15 Hz); `captain_arrived` / `captain_retreated` [R] also set presence (poll; assigned and emitted only on change) |
+| `stamina_changed` (v1.4, QB-60) | `stamina` / `exhausted` | float 0..1 (current / max, 0.01 steps) / bool (sprint blocked after running dry, until back above `CrewTweak.stamina_min_threshold`) | `crew.stamina` (CrewStamina): server and the owning client simulate it with movement; other clients get it in the crew state diff (`st` / `sx`, 15 Hz) (poll; assigned and emitted only on change) |
 
 Extras (no contract signal, only `changed`): `tracked_slot_resolved`, `mask_progress`, `heist_phase`.
 

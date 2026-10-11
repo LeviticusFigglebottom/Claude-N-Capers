@@ -340,3 +340,13 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   (style guide §6 byte-reproducibility).
 - Round 5 hotfixes: a removed call to the uncommitted `PerkHooks` (ENV A re-adds it with the class); lead_push lints
   first; envs validate pushes from a clean checkout of the exact commit.
+
+## D-056 — 2026-10-11 — Perk hooks landed (QB-56..62); hostage absorption shape
+- ENV A wired team.* and all 15 perk.* PARAMS mechanics (game/systems/modifiers_params.md), stamina (ui_hud v1.4),
+  ModifierPush at launch (server; B drops the MenuFlow push). TEAM grants apply to the granter (QB-35), so personal ×
+  team stacking is correct; lead updated 4 expectations in ENV B's test_perk_behaviour (Foreman 1.2/1.1, Hustler
+  Light Vest dodge +0.40, Ironclad delay ×0.81). ENV B moves the hooked keys in test_perk_wiring + perk_decks.md.
+- `team.damage_reduction_hostage` is **flat damage absorption per hostage, capped by hostage count** (PD2 Crew Chief
+  shape): PARAMS `{absorb_per_hostage: float (PD2 display units), max_hostages: int}`. skills.md and perk_decks.md
+  follow this; no value-based shape detection.
+- `ensure_info_v11` stays as target-side defaulting for hand-built info dicts.

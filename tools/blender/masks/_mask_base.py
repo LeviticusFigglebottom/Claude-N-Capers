@@ -89,7 +89,7 @@ DEFAULTS: dict[str, Any] = {
     "jaw": 1.0,
     "nose": 1.0,
     # eyes
-    "eye_shape": "almond",   # almond | round | slit | deco (hexagonal, pointed)
+    "eye_shape": "almond",   # almond | round | slit | crescent (smiling) | deco (hexagonal, pointed)
     "eye_width": 0.034,
     "eye_height": 0.016,
     "eye_spacing": 0.066,    # centre to centre (arc length)
@@ -497,6 +497,17 @@ class MaskShape:
             loop = almond(cu, cv, hw, hh, point=1.0, tilt_deg=tilt)
         elif shape == "slit":
             loop = almond(cu, cv, hw, hh * 0.45, point=2.0, tilt_deg=tilt)
+        elif shape == "crescent":  # upturned "smiling" crescent: pointed tips, arched band
+            ct, st = math.cos(math.radians(tilt)), math.sin(math.radians(tilt))
+            pts: Loop2 = []
+            m = 16
+            for k in range(m + 1):  # upper arc, +u to -u
+                s = 1 - 2 * k / m
+                pts.append((hw * s, hh * (1 - s * s) ** 0.5 - 0.62 * hh))
+            for k in range(1, m):  # lower arc, -u to +u
+                s = -1 + 2 * k / m
+                pts.append((hw * s * 0.92, 0.38 * hh * (1 - s * s) ** 0.6 - 0.62 * hh))
+            loop = [(cu + x * ct - y * st, cv + x * st + y * ct) for x, y in pts]
         elif shape == "deco":
             ct, st = math.cos(math.radians(tilt)), math.sin(math.radians(tilt))
             pts = [(-hw, 0.0), (-hw * 0.45, hh), (hw * 0.55, hh), (hw, 0.15 * hh),
@@ -578,6 +589,47 @@ def radial_union(loops: Sequence[Sequence[Point2]], centre: Point2 = (0.0, 0.0),
 def disc(cu: float, cv: float, r: float, n: int = 12) -> Loop2:
     """Circle loop (CCW) - rivets, studs, round holes."""
     return [(cu + r * math.cos(2 * math.pi * i / n), cv + r * math.sin(2 * math.pi * i / n)) for i in range(n)]
+
+
+def lathe(mb: geo.MeshBuilder, centre: Vector, axis: Vector, profile: Sequence[Point2], mat: int,
+          n: int = 24, phase: float = 0.0) -> list[bmesh.types.BMFace]:
+    """Solid of revolution about ``axis`` through ``centre``: canisters, lens rings, valves.
+
+    ``profile`` lists (r, a) points: radius and distance along ``axis``, walked like a silhouette
+    with the solid toward the axis: outer wall front-ward (+a), front lip inward (-r), bore
+    back-ward (-a); r = 0 makes a pole (closed cap). The outward normal of each segment is
+    (radial * da - axis * dr), so bores face the axis."""
+    bm = mb.bm
+    ax = Vector(axis).normalized()
+    ref = Vector((0.0, 0.0, 1.0)) if abs(ax.z) < 0.9 else Vector((1.0, 0.0, 0.0))
+    e1 = ax.cross(ref).normalized()
+    e2 = ax.cross(e1).normalized()
+    dirs = [e1 * math.cos(phase + 2 * math.pi * i / n) + e2 * math.sin(phase + 2 * math.pi * i / n)
+            for i in range(n)]
+    c = Vector(centre)
+    rings: list[list[bmesh.types.BMVert]] = []
+    for r, a in profile:
+        if r <= 1e-9:
+            pole = bm.verts.new(c + ax * a)
+            rings.append([pole] * n)
+        else:
+            rings.append([bm.verts.new(c + ax * a + d * r) for d in dirs])
+    made: list[bmesh.types.BMFace] = []
+    for k in range(len(profile) - 1):
+        (r0, a0), (r1, a1) = profile[k], profile[k + 1]
+        dr, da = r1 - r0, a1 - a0
+        for i in range(n):
+            j = (i + 1) % n
+            quad = [rings[k][i], rings[k][j], rings[k + 1][j], rings[k + 1][i]]
+            vs = [v for idx, v in enumerate(quad) if v not in quad[:idx]]
+            if len(vs) < 3:
+                continue
+            f = bm.faces.new(vs)
+            f.material_index = mat
+            mid = (dirs[i] + dirs[j]).normalized()
+            _orient(f, mid * da - ax * dr)
+            made.append(f)
+    return made
 
 
 def front_project(bm: bmesh.types.BMesh, layer_name: str = "UVMap") -> tuple[float, float, float]:

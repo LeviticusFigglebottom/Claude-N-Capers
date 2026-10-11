@@ -7,6 +7,10 @@
 ##                  "full loadouts": 4 uses = 400 %); each crew member takes only what is missing.
 ##   body_bag_case  kind &"take_body_bag": +1 body bag up to the crew member's cap; `uses_left` (3).
 ##   ecm            kind &"ecm_feedback" (S8.6, every ECM, D-038): EcmSystem stuns.
+##   armor_bag      kind &"use_armor_bag" (QB-58, Walk-in Closet): its owner puts on `bag_armor` (the
+##                  loadout's armor; DeployableSystem starts them in DeployableTweak.armor_bag_start_armor)
+##                  with full armor; 1 use.
+## Doctor bag use time x interaction.doctor_bag_speed_mult of the user (QB-59).
 ## Floor object: origin at the floor, front -Z faces the crew member who placed it. Group
 ## G.DEPLOYABLE. Visual: DeployableDef.model when set, else a box placeholder (`Body`).
 class_name DeployablePrefab
@@ -22,6 +26,7 @@ const KIND_INTERACTION: Dictionary = {
 	&"ammo_bag": [&"use_ammo_bag", &"ui.prompt.use_ammo_bag"],
 	&"body_bag_case": [&"take_body_bag", &"ui.prompt.take_body_bag"],
 	&"ecm": [&"ecm_feedback", &"ui.prompt.ecm_feedback"],
+	&"armor_bag": [&"use_armor_bag", &"ui.prompt.interact"],  # TODO(ENV B): a dedicated "use armor bag" prompt string (strings.csv)
 }
 const AMMO_EPSILON: float = 0.0005
 
@@ -48,6 +53,8 @@ var ammo_left: float = 0.0
 var heal_amount: float = 0.0
 var heal_frac: float = 1.0
 var resets_downs: bool = false
+## QB-58 armor bag: ArmorDef id the owner changes into.
+var bag_armor: StringName = &""
 ## ECM state (EcmSystem): jam timer, flashing (S8.4 last 8 s), feedback (S8.6).
 var ecm_state: EcmState = EcmState.NONE
 var jam_duration: float = 0.0
@@ -94,6 +101,14 @@ func _prefab_ready() -> void:
 	interactable.extra_check = _use_check
 	interactable.speed_modifier_key = &"deploy.deploy_speed_mult" if kind != &"ecm" else &""
 	interactable.completed.connect(_on_completed)
+	if kind == &"doctor_bag":
+		interactable.duration_override = _doctor_bag_duration
+
+
+## QB-59: the user's interaction.doctor_bag_speed_mult (lower = faster).
+func _doctor_bag_duration(crew: Node, base: float) -> float:
+	var slot: int = int(crew.get(&"slot")) if crew != null else -1
+	return base * Modifiers.mult(slot, &"interaction.doctor_bag_speed_mult") if slot >= 0 else base
 
 
 ## Charges left for the HUD / visuals (ammo bag: percent of one loadout, rounded).
@@ -121,6 +136,8 @@ func _use_check(crew: Node) -> StringName:
 			usable = ammo_left > AMMO_EPSILON and _ammo_missing_frac(c) > 0.0
 		&"body_bag_case":
 			usable = uses_left > 0 and c.body_bags < body_bag_cap(c.slot)
+		&"armor_bag":
+			usable = c.slot == owner_slot and bag_armor != &"" and c.loadout != null and c.loadout.armor != bag_armor
 	return InteractableComponent.BLOCK_NONE if usable else InteractableComponent.BLOCK_STATE
 
 
@@ -150,6 +167,9 @@ func _on_completed(crew: Node) -> void:
 			var ecm: EcmSystem = HeistRuntime.get_service(EcmSystem.SERVICE) as EcmSystem
 			if ecm != null:
 				ecm.trigger_feedback(self, c.slot)
+		&"armor_bag":
+			DeployableSystem.wear_armor(c, bag_armor)  # QB-58
+			_consume_use()
 
 
 func _consume_use() -> void:

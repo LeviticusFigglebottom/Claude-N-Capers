@@ -11,6 +11,8 @@ const POOL_2D: int = 16
 const NO_POSITION: Vector3 = AudioCueLib.NO_POSITION
 const ALARM_KEY: StringName = &"alarm"
 const SIREN_KEY: StringName = &"siren"
+## anim_sets that reuse another family's fire cue when WeaponDef.fire_cue is empty.
+const ANIM_SET_FIRE_FAMILY: Dictionary[StringName, StringName] = {&"akimbo": &"pistol"}
 
 @export var registry: AudioCueRegistry
 @export var listen_to_event_bus: bool = true
@@ -202,7 +204,8 @@ func weapon_fire_cue(weapon_id: StringName, suppressed: bool, def: WeaponDef = n
 		var c: StringName = def.fire_cue_suppressed if suppressed else def.fire_cue
 		if c != &"":
 			return c
-		return StringName("cue.weapon_%s_fire%s" % [def.anim_set, "_suppressed" if suppressed else ""])
+		var fam: StringName = ANIM_SET_FIRE_FAMILY.get(def.anim_set, def.anim_set)
+		return StringName("cue.weapon_%s_fire%s" % [fam, "_suppressed" if suppressed else ""])
 	var w: String = String(weapon_id).to_lower()
 	var family: String = "pistol"
 	for pair: Array in [["smg", "smg"], ["lmg", "lmg"], ["shotgun", "shotgun"], ["sniper", "sniper"],

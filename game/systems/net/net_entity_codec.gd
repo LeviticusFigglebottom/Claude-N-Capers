@@ -219,6 +219,9 @@ static func _crew_state(crew: CrewController) -> Dictionary:
 		"cs": int(crew.crew_state), "masked": crew.masked, "mp": crew.mask_progress, "bb": crew.body_bags,
 		"ct": crew.cable_ties, "items": crew.items.duplicate(), "bag": NetIds.of(crew.carried_bag) if crew.is_carrying_bag() else 0,
 		"hidden": crew.stealth_hidden,
+		# QB-60 stamina for the HUD (ui_hud v1.4); 0.01 steps keep the diff small. A remote human's own
+		# peer simulates its stamina and ignores this (the server does not simulate it).
+		"st": snappedf(crew.stamina.fraction(), 0.01), "sx": crew.stamina.exhausted,
 	}
 	if crew.health != null:
 		for k: StringName in CREW_HEALTH_PROPS:
@@ -285,6 +288,8 @@ static func _apply_crew_state(crew: CrewController, d: Dictionary) -> void:
 		crew.cable_ties = int(d["ct"])
 	if d.has("hidden"):
 		crew.stealth_hidden = bool(d["hidden"])
+	if (d.has("st") or d.has("sx")) and not crew.is_local():
+		crew.stamina.apply_replicated(float(d.get("st", crew.stamina.fraction())), bool(d.get("sx", crew.stamina.exhausted)))
 	if d.has("items"):
 		crew.items.assign(d["items"] as Dictionary)
 		crew.inventory_changed.emit()
