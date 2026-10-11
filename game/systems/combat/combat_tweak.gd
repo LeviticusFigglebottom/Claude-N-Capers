@@ -64,6 +64,46 @@ static var _cached: CombatTweak = null
 @export var npc_fallback_damage: float = 10.0
 
 
+@export_group("Melee (L3.9, D-069)")
+## A melee press released before this is a quick swing; held longer it charges (MeleeDef.charge_time_s).
+@export var melee_tap_s: float = 0.2
+## Swing length / hit moment when the MeleeDef leaves swing_time_s / hit_delay_s at 0 (◇ PD2 knife shape).
+@export var melee_swing_s: float = 0.6
+@export var melee_hit_delay_s: float = 0.25
+## Hit volume: cone (full angle) out to MeleeDef.range_m from the eye.
+@export var melee_cone_deg: float = 50.0
+## A knockdown (MeleeDef.knockdown chance x weapon.melee_knockdown_mult) stuns the NPC this long ◇.
+@export var melee_knockdown_s: float = 1.2
+## Gun bash (no melee item equipped): PD2 weapon butt ◇.
+@export var bash_damage: float = 30.0
+@export var bash_range_m: float = 1.5
+@export var bash_knockdown: float = 0.5
+@export var bash_swing_s: float = 0.55
+@export var bash_hit_delay_s: float = 0.2
+
+@export_group("Throwables (A3-12)")
+## Throw press -> release (the FP `throwable` throw clip's release@ is re-timed onto it) ◇.
+@export var throw_windup_s: float = 0.4
+## Recovery after the release before the next throw / shot ◇.
+@export var throw_recover_s: float = 0.4
+## Launch speed along the aim, lofted up by throw_loft_deg ◇.
+@export var throw_speed_mps: float = 16.0
+@export var throw_loft_deg: float = 8.0
+## Bounce: velocity kept on a world contact (frag / concussion roll on) ◇.
+@export var throw_bounce_keep: float = 0.35
+## A thrown item that has not gone off by now is removed.
+@export var throw_lifetime_s: float = 12.0
+## Concussion: NPCs in the radius with LOS are stunned this long (stun-immune enemies ignore it) ◇.
+@export var concussion_stun_s: float = 4.0
+## Incendiary: the fire pool burns this long; NPCs in it are set burning (BurnStatus) ◇.
+@export var incendiary_pool_s: float = 10.0
+@export var incendiary_burn_dps: float = 40.0
+@export var incendiary_burn_s: float = 3.0
+@export var incendiary_panic_chance: float = 0.6
+@export var incendiary_panic_s: float = 1.5
+## Explosion (frag / concussion) noise radius for the stealth system ◇.
+@export var throwable_noise_radius_m: float = 60.0
+
 @export_group("Piercing (A3-06, L3.4)")
 ## Physics layer 9 `bullet_penetrable` (thin walls): stops bullets unless the weapon has wall_pierce.
 @export_flags_3d_physics var penetrable_mask: int = 1 << 8

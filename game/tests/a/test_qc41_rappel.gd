@@ -55,6 +55,9 @@ func test_motor_rappels_down() -> void:
 	m.start_rappel(Vector3(0.5, 0.0, -2.5))
 	await wait_physics_frames(2)
 	assert_true(m.rappelling, "rappelling through the roof slab")
+	var ad: AnimDriver = AnimDriver.of(npc)
+	if ad != null:
+		assert_eq(ad.choose_clip(), &"rappel", "characters.md v1.8: the rappel loop while descending")
 	await wait_seconds(8.0 / m.rappel_speed + 0.6)
 	assert_false(m.rappelling, "landed")
 	assert_near(npc.global_position.y, 0.0, 0.15, "on the floor below")

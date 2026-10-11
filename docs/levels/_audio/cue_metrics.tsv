@@ -233,9 +233,14 @@ cue.throwable_concussion[1]	World	False	2.6	1	-20.64	-21.32	-1.64	2641
 cue.throwable_concussion[2]	World	False	2.6	1	-21.16	-21.85	-1.33	2688
 cue.throwable_incendiary[1]	World	False	2.4	1	-18.08	-18.07	-1.31	4767
 cue.throwable_incendiary[2]	World	False	2.4	1	-18.3	-18.45	-1.16	4934
-cue.throwable_knife_hit[1]	Weapons	False	0.447	1	-19.61	-19.12	-1.24	966
-cue.throwable_knife_hit[2]	Weapons	False	0.447	1	-18.94	-18.45	-1.13	998
-cue.throwable_knife_hit[3]	Weapons	False	0.447	1	-17.93	-17.44	-3.18	3253
+cue.throwable_knife_hit[1]	Weapons	False	0.447	1	-19.49	-19.0	-1.25	315
+cue.throwable_knife_hit[2]	Weapons	False	0.447	1	-18.63	-18.14	-1.19	329
+cue.throwable_knife_hit[3]	Weapons	False	0.447	1	-18.75	-18.26	-1.29	389
+cue.throwable_knife_hit_hard[1]	Weapons	False	0.497	1	-17.97	-17.03	-1.76	3141
+cue.throwable_knife_hit_hard[2]	Weapons	False	0.497	1	-19.16	-18.21	-1.17	927
+cue.throwable_knife_hit_hard[3]	Weapons	False	0.497	1	-17.93	-17.0	-2.86	3346
+cue.throwable_knife_hit_hard[4]	Weapons	False	0.497	1	-18.81	-17.86	-1.1	984
+cue.throwable_incendiary_fire	World	True	4.0	1	-18.12	-18.18	-1.05	5614
 mus_glasshouse_stealth	Music	True	54.857	2	-15.44	-16.04	-3.9	2609
 mus_glasshouse_control	Music	True	27.429	2	-15.07	-16.13	-1.26	5040
 mus_glasshouse_anticipation	Music	True	27.429	2	-15.54	-16.2	-1.51	3194

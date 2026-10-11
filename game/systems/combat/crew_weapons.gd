@@ -190,6 +190,8 @@ func is_shooting() -> bool:
 func can_fire() -> bool:
 	if _crew == null or _crew.is_casing():
 		return false
+	if (_crew.melee != null and _crew.melee.state != &"") or (_crew.throwables != null and _crew.throwables.busy()):
+		return false  # L3.9 / A3-12: no shooting mid-swing, while charging a melee or throwing
 	var s: int = _crew.crew_state
 	if s == Enums.CrewState.TASED:
 		return involuntary_fire  # L4.4: only the involuntary trigger while tased

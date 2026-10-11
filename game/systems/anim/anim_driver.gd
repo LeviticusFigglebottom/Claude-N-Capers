@@ -37,8 +37,12 @@ const HINT_CLIPS: Dictionary = {
 	# Specials (characters.md v1.4): Phantom windup / kick, Bulwark bang, Corpsman heal.
 	&"kick_charge": &"kick_charge", &"kick_hit": &"kick_hit", &"shield_bang": &"shield_bang",
 	&"heal_ally": &"heal_ally",
+	# characters.md v1.7 NPC ambient clips (D-069, ENV D 4355913).
+	&"desk_work": &"desk_work", &"phone_seated": &"phone_seated", &"sit_chair_watch": &"sit_chair_watch",
+	&"mop": &"mop", &"sit_bed_read": &"sit_bed_read", &"mug": &"mug_idle", &"idle_thug": &"idle_thug",
+	&"mug_walk": &"mug_idle",
 	# Brain / patrol-point aliases.
-	&"phone": &"phone_call", &"call": &"phone_call", &"desk_work": &"desk_type", &"sit": &"sit_chair",
+	&"phone": &"phone_call", &"call": &"phone_call", &"sit": &"sit_chair",
 	&"queue": &"idle", &"lean": &"lean_wall", &"check_door": &"investigate_look", &"down": &"lie_down",
 	&"cuff": &"interact_low",
 }
@@ -61,6 +65,9 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"sprint": &"run", &"pager_answer": &"phone_call", &"idle_alert": &"idle",
 	&"shield_walk": &"walk", &"dozer_walk": &"walk", &"kick_charge": &"idle_alert", &"kick_hit": &"melee",
 	&"shield_bang": &"idle_alert", &"heal_ally": &"interact_mid",
+	&"desk_work": &"desk_type", &"phone_seated": &"phone_call", &"sit_chair_watch": &"sit_chair", &"mop": &"browse",
+	&"sit_bed_read": &"sit_chair", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
+	&"rappel": &"climb_ladder", &"climb_ladder": &"idle",
 }
 ## EnemyDef.params key: the unit's own walk clip (Bulwark shield_walk, Wrecker dozer_walk), played instead
 ## of walk while moving at walking speed (above it: run / sprint).
@@ -317,6 +324,9 @@ func _state_clip() -> StringName:
 		return &""
 	if _npc.is_stunned():
 		return &"tased"
+	var motor: NpcMotor = _body.get_node_or_null(^"Motor") as NpcMotor
+	if motor != null and motor.rappelling:
+		return &"rappel"  # QC-41 descent (characters.md v1.8 `rappel` loop)
 	if Net.is_authority() and _hint() != &"":
 		return &""  # the host's brain hint is authoritative; the fallbacks below are for clients
 	var out: StringName = &""
@@ -363,6 +373,8 @@ func _special_locomotion(speed: float, tw: AnimTweak) -> StringName:
 			out = &"carry_bag_walk"
 		elif _crew.sprinting:
 			out = &"sprint"
+	elif _npc != null and _hint() == &"mug_walk":
+		out = &"mug_carry_walk"  # D-069: walking with a mug, speed_scale = v / 1.3
 	elif _npc != null and _npc.role == &"civilian" and (
 			_npc.alert_state == Enums.AlertState.PANICKED or _hint() == &"run" or _hint() == &"flee"):
 		out = &"flee"
@@ -424,7 +436,25 @@ func _hint() -> StringName:
 	if b == null:
 		return &""
 	var h: Variant = b.get(&"anim_hint")
-	return h if h is StringName else &""
+	return _ambient_hint(h if h is StringName else &"")
+
+
+## D-069 per-NPC ambient substitutions: cleaners mop instead of browsing, Kessler reads in bed instead of
+## sitting, the camera operator watches the monitors, a seated phone call, cartel gunmen idle as thugs.
+func _ambient_hint(h: StringName) -> StringName:
+	var tags: Array = _npc.spawn_info.get("tags", []) as Array
+	if h == &"browse" and tags.any(func(t: Variant) -> bool: return String(t).begins_with("civ_cleaner")):
+		return &"mop"
+	if h == &"sit" and tags.has(&"civ_kessler"):
+		return &"sit_bed_read"
+	if h == &"phone" and String(_npc.spawn_info.get("idle_activity", "")) == "sit":
+		return &"phone_seated"
+	if (h == &"" or h == &"idle") and _npc.role == CartelBrain.ROLE and _npc.alert_state == Enums.AlertState.CALM:
+		return &"idle_thug"
+	if (h == &"" or h == &"idle") and bool(_npc.spawn_info.get("no_patrol", false)) and _npc.role == &"guard" \
+			and _npc.alert_state == Enums.AlertState.CALM:
+		return &"sit_chair_watch"  # S8.2 camera operator at his station
+	return h
 
 
 func _pick_death_clip(tw: AnimTweak) -> StringName:

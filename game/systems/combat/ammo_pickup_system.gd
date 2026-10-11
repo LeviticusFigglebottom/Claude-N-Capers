@@ -159,7 +159,7 @@ func _roll_throwable(crew: CrewController, rng: RandomNumberGenerator) -> void:
 	var dry: int = int(_dry_boxes.get(crew.slot, 0))
 	var chance: float = float(p.get("base_chance", 0.0)) + float(p.get("step", 0.0)) * float(dry)
 	if rng.randf() < chance:
-		w.throwable_count += 1
+		CrewThrowables.set_count(crew, w.throwable_count + 1)
 		_dry_boxes[crew.slot] = 0
 	else:
 		_dry_boxes[crew.slot] = dry + 1

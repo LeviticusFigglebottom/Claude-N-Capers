@@ -58,8 +58,9 @@ const ARMORY_LOOPS: Array[StringName] = [
 const HAZARD_CUES: Array[StringName] = [&"cue.door_breach", &"cue.burn_warning"]
 const THROWABLE_CUES: Array[StringName] = [
 	&"cue.throwable_pin", &"cue.throwable_frag", &"cue.throwable_concussion", &"cue.throwable_incendiary",
-	&"cue.throwable_knife_hit",
+	&"cue.throwable_knife_hit", &"cue.throwable_knife_hit_hard", &"cue.throwable_incendiary_fire",
 ]
+const THROWABLE_LOOPS: Array[StringName] = [&"cue.throwable_incendiary_fire"]
 const LOOPS: Array[StringName] = [
 	&"cue.pager_beep", &"cue.pager_radio", &"cue.alarm_bell", &"cue.drill_loop", &"cue.police_siren_far",
 ]
@@ -209,20 +210,21 @@ func test_breach_burn_and_throwable_cues() -> void:
 		if c == null:
 			continue
 		assert_true(c.positional, "%s positional (3D)" % id)
-		assert_false(c.loop, "%s one-shot" % id)
+		assert_eq(c.loop, THROWABLE_LOOPS.has(id), "%s loop flag" % id)
 	for id: StringName in [&"cue.door_breach", &"cue.burn_warning", &"cue.throwable_frag",
-			&"cue.throwable_concussion", &"cue.throwable_incendiary"]:
+			&"cue.throwable_concussion", &"cue.throwable_incendiary", &"cue.throwable_incendiary_fire"]:
 		var c: AudioCueDef = _reg.get_cue(id)
 		if c != null:
 			assert_eq(c.bus, &"World", "%s bus" % id)
-	for id: StringName in [&"cue.door_breach", &"cue.throwable_frag", &"cue.throwable_knife_hit"]:
+	for id: StringName in [&"cue.door_breach", &"cue.throwable_frag", &"cue.throwable_knife_hit",
+			&"cue.throwable_knife_hit_hard"]:
 		var c: AudioCueDef = _reg.get_cue(id)
 		if c != null:
 			assert_true(c.streams.size() >= 2, "%s variations" % id)
 	var frag: AudioCueDef = _reg.get_cue(&"cue.throwable_frag")
 	if frag != null:
 		assert_true(frag.max_distance >= 120.0, "frag carries far")
-	for id: StringName in [&"cue.throwable_pin", &"cue.throwable_knife_hit"]:
+	for id: StringName in [&"cue.throwable_pin", &"cue.throwable_knife_hit", &"cue.throwable_knife_hit_hard"]:
 		var c: AudioCueDef = _reg.get_cue(id)
 		if c != null:
 			assert_true(c.max_distance <= 15.0, "%s is short range" % id)

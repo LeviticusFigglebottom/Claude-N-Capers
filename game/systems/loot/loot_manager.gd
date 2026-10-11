@@ -68,6 +68,12 @@ static func loot_info(loot_id: StringName) -> Dictionary:
 	return out
 
 
+## D-068: a tool bag (LootDef.is_tool, e.g. loot.thermite) is never secured: no value, no XP, not [secure].
+static func is_tool_loot(loot_id: StringName) -> bool:
+	var d: LootDef = loot_info(loot_id).get("def") as LootDef
+	return d != null and d.is_tool
+
+
 # --- Bags ---------------------------------------------------------------------------------------
 
 ## Server: spawn a bag. `moved` false = pre-placed style (ignored by NPCs until picked up).
@@ -190,7 +196,7 @@ func _physics_process(delta: float) -> void:
 		if bag.is_body_bag():
 			_update_hidden(bag, probe)
 		var resting: bool = bag.linear_velocity.length() <= _tw.rest_speed_mps
-		if resting and _zone_at(probe, G.LOOT_SECURE_ZONE) != null:
+		if resting and not is_tool_loot(bag.loot_id) and _zone_at(probe, G.LOOT_SECURE_ZONE) != null:
 			bag.rest_time += delta
 			if bag.rest_time >= _tw.secure_rest_s:
 				_secure(bag)

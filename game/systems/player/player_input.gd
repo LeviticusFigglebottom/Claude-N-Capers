@@ -29,6 +29,8 @@ var enabled: bool = true
 var _yaw: float = 0.0
 var _pitch: float = 0.0
 var _crew: CrewController = null
+var _toggled: Dictionary[StringName, bool] = {}
+var _held_prev: Dictionary[StringName, bool] = {}
 ## Slot to restore when `swap_weapon` toggles.
 var _last_slot: int = Enums.WeaponSlot.SECONDARY
 ## A3-05: the order being sent (latched for a few ticks) and the last follow/hold given per AI net id.
@@ -48,7 +50,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	var mm: InputEventMouseMotion = event as InputEventMouseMotion
 	if mm != null and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		add_look(-mm.relative.x * mouse_sensitivity, -mm.relative.y * mouse_sensitivity)
+		var gs: GameSettings = GameSettings.current()  # B5-01 options
+		var ms: Vector2 = gs.mouse_sensitivity() if gs != null else Vector2.ONE
+		var inv: float = -1.0 if gs != null and gs.invert_y() else 1.0
+		add_look(-mm.relative.x * mouse_sensitivity * ms.x, -mm.relative.y * mouse_sensitivity * ms.y * inv)
 
 
 ## QB-46: paused input stops building intents; resuming re-reads the crew's look direction.
@@ -67,13 +72,18 @@ func add_look(d_yaw: float, d_pitch: float) -> void:
 
 ## QB-49: right-stick look delta (radians) for `delta` seconds from a stick vector (x right, y down,
 ## as Input.get_vector(look_left, look_right, look_up, look_down) returns it).
+## B5-01: GameSettings pad_sensitivity (x look speed), pad_deadzone and invert_y override the exports.
 func gamepad_look_delta(stick: Vector2, delta: float) -> Vector2:
+	var gs: GameSettings = GameSettings.current()
+	var dz: float = gs.pad_deadzone() if gs != null else gamepad_deadzone
+	var speed: float = gamepad_look_speed * (gs.pad_sensitivity() if gs != null else 1.0)
+	var invert: bool = gamepad_invert_y or (gs != null and gs.invert_y())
 	var mag: float = stick.length()
-	if mag <= gamepad_deadzone or mag <= 0.0:
+	if mag <= dz or mag <= 0.0:
 		return Vector2.ZERO
-	var scaled: float = pow(clampf((mag - gamepad_deadzone) / maxf(1.0 - gamepad_deadzone, 0.001), 0.0, 1.0), gamepad_curve)
-	var v: Vector2 = stick / mag * scaled * gamepad_look_speed * delta
-	return Vector2(-v.x, v.y if gamepad_invert_y else -v.y)
+	var scaled: float = pow(clampf((mag - dz) / maxf(1.0 - dz, 0.001), 0.0, 1.0), gamepad_curve)
+	var v: Vector2 = stick / mag * scaled * speed * delta
+	return Vector2(-v.x, v.y if invert else -v.y)
 
 
 func _physics_process(delta: float) -> void:
@@ -95,11 +105,13 @@ func build_intent(rt: HeistRuntime) -> CrewIntent:
 	i.move = Input.get_vector(&"move_left", &"move_right", &"move_back", &"move_forward")
 	i.look_yaw = _yaw
 	i.look_pitch = _pitch
-	i.sprint = Input.is_action_pressed(&"sprint")
-	i.crouch = Input.is_action_pressed(&"crouch")
+	i.sprint = _held_or_toggled(&"sprint")
+	i.crouch = _held_or_toggled(&"crouch")
 	i.jump = Input.is_action_pressed(&"jump")
 	i.fire = Input.is_action_pressed(&"fire")
-	i.aim = Input.is_action_pressed(&"aim")
+	i.aim = _held_or_toggled(&"aim")
+	if i.move.y <= 0.1:
+		_toggled.erase(&"sprint")  # a toggled sprint ends when the player stops running forward
 	i.reload = Input.is_action_pressed(&"reload")
 	i.melee = Input.is_action_pressed(&"melee")
 	i.deploy = Input.is_action_pressed(&"deploy")
@@ -145,3 +157,18 @@ func _order_input(rt: HeistRuntime, i: CrewIntent) -> void:
 	i.order = _order["order"]
 	i.order_target_net_id = int(_order["target"])
 	i.order_position = _order["position"]
+
+
+## B5-01: hold (default) or toggle (GameSettings.is_toggle) for aim / crouch / sprint.
+func _held_or_toggled(action: StringName) -> bool:
+	var gs: GameSettings = GameSettings.current()
+	var held: bool = Input.is_action_pressed(action)
+	var pressed: bool = held and not bool(_held_prev.get(action, false))  # own edge: intents build on physics ticks
+	_held_prev[action] = held
+	if gs == null or not gs.is_toggle(action):
+		_toggled.erase(action)
+		return held
+	if pressed:
+		_toggled[action] = not bool(_toggled.get(action, false))
+	return bool(_toggled.get(action, false))
+

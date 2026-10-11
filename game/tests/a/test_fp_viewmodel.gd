@@ -375,3 +375,213 @@ func test_d063_shared_reload_ratio_range() -> void:
 	assert_false(FpViewmodel.shared_reload_ratio_ok(3.6, 2.5), "x1.44: too fast")
 	assert_false(FpViewmodel.shared_reload_ratio_ok(2.0, 4.0), "x0.5: too slow")
 	assert_true(FpViewmodel.shared_reload_ratio_ok(0.0, 2.0), "no clip: nothing to check")
+
+
+## D-069: the FP left hand IKs to the weapon model's LeftHandIK (hand.L ends on the marker) and lets go while
+## the reload clip owns the hand.
+func test_d069_left_hand_ik_to_weapon_marker() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.arms_scene == null:
+		skip("char_arms_fp not delivered")
+		return
+	var c: CrewController = await _spawn(&"weapon.corsair_ar", &"weapon.kestrel_p9")
+	var fp: FpViewmodel = _fp(c)
+	assert_true(fp != null and fp.left_hand_ik != null, "left-hand IK built on the arms rig")
+	if fp == null or fp.left_hand_ik == null:
+		return
+	var marker: Node3D = (c.weapon_visual as WeaponVisual).get_marker(&"LeftHandIK")
+	assert_true(marker != null, "the Corsair has a LeftHandIK marker")
+	if marker == null:
+		return
+	fp.set_process(true)
+	await wait_frames(30)
+	assert_near(fp.left_hand_ik.ik.influence, 1.0, 0.001, "full influence while idle")
+	var hand: int = fp.skeleton.find_bone("hand.L")
+	# Modifier results are only in the pose during skeleton_updated (then the animated pose is restored).
+	var grip: Node3D = marker.get_node_or_null(FpLeftHandIk.GRIP_NAME) as Node3D
+	assert_true(grip != null, "IK target at the grip offset from LeftHandIK")
+	# Hand and grip sampled together (the test crew falls, so the rig moves between frames).
+	var got: Array[float] = [INF]
+	var cb: Callable = func() -> void:
+		if grip != null:
+			got[0] = (fp.skeleton.global_transform * fp.skeleton.get_bone_global_pose(hand).origin).distance_to(grip.global_position)
+	fp.skeleton.skeleton_updated.connect(cb)
+	await wait_frames(3)
+	fp.skeleton.skeleton_updated.disconnect(cb)
+	if grip != null:
+		assert_true(got[0] < 0.015, "hand.L on the LeftHandIK grip (%.3f m)" % got[0])
+	var ws: int = c.weapons.equipped_slot
+	c.weapons.set_ammo(ws, 1, 60)
+	assert_true(c.weapons.start_reload(), "reload")
+	await wait_frames(20)
+	assert_true(fp.left_hand_ik.ik.influence < 0.05, "the reload clip owns the left hand")
+
+
+
+## D-069: CrewMelee drives the item sets (charge_start -> charge, swing / charge_swing with hit@ on the strike)
+## and, without a melee item, the gun set's `bash`.
+func test_d069_melee_and_bash_clips() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.arms_scene == null:
+		skip("char_arms_fp not delivered")
+		return
+	var c: CrewController = await _spawn(&"weapon.corsair_ar", &"weapon.kestrel_p9")
+	var fp: FpViewmodel = _fp(c)
+	if fp == null or not fp.supports(&"melee_knife"):
+		skip("no melee_knife set")
+		return
+	c.set_physics_process(false)  # drive CrewMelee by hand
+	c.set_masked()
+	c.loadout.melee = &"melee.folding_knife"
+	var knife: MeleeDef = ContentDB.melee(c.loadout.melee)
+	var hold: CrewIntent = CrewIntent.new()
+	hold.melee = true
+	var none: CrewIntent = CrewIntent.new()
+	fp.tick(0.016)
+	c.melee.tick(hold, 0.016)
+	assert_eq(String(fp.player.current_animation), "%s/charge_start" % knife.anim_set, "charging")
+	assert_false(c.weapon_visual.visible, "the gun is put away for the knife")
+	assert_near(fp.action_speed, 1.0 / knife.charge_time_s, 0.01, "charged@ frame on the full charge")
+	fp.tick(knife.charge_time_s + 0.01)
+	assert_eq(String(fp.player.current_animation), "%s/charge" % knife.anim_set, "held: charge loop")
+	c.melee.tick(hold, knife.charge_time_s)
+	c.melee.tick(none, 0.016)
+	assert_eq(String(fp.player.current_animation), "%s/charge_swing" % knife.anim_set, "charged swing")
+	assert_near(fp.action_speed, (5.0 / FPS) / c.melee.hit_left, 0.01, "hit@5 lands on the strike")
+	fp.tick(2.0)
+	assert_eq(fp.action, FpViewmodel.Action.NONE, "swing over")
+	assert_true(c.weapon_visual.visible, "gun back")
+	c.melee.tick(none, 2.0)
+	c.loadout.melee = &""
+	c.melee.tick(hold, 0.016)
+	c.melee.tick(none, 0.016)
+	assert_eq(String(fp.player.current_animation), "rifle/bash", "no melee item: gun bash")
+	assert_near(fp.action_speed, (7.0 / FPS) / c.melee.hit_left, 0.01, "bash hit@7 on the strike")
+	assert_true(c.weapon_visual.visible, "bash keeps the gun")
+
+
+## D-069: holding deploy plays the DeployableDef set's `place` with place@ on the deploy hold time.
+func test_d069_deploy_place_clip() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.arms_scene == null:
+		skip("char_arms_fp not delivered")
+		return
+	var c: CrewController = await _spawn(&"weapon.corsair_ar", &"weapon.kestrel_p9")
+	var fp: FpViewmodel = _fp(c)
+	var def: DeployableDef = DeployableSystem.def_for(&"deployable.ammo_bag")
+	if fp == null or def == null or not fp.supports(def.anim_set):
+		skip("no deploy set")
+		return
+	c.set_physics_process(false)
+	c.set_masked()
+	c.weapons.deployable_id = def.id
+	c.weapons.deployable_count = 1
+	c.intent.deploy = true
+	fp.tick(0.016)
+	assert_eq(String(fp.player.current_animation), "%s/place" % def.anim_set, "placing")
+	var place_s: float = tw.event_s(StringName("%s_place" % def.anim_set), &"place")
+	assert_near(fp.action_speed, place_s / DeployableSystem.deploy_time_for(c.slot, def), 0.01,
+		"place@ on the deploy hold time")
+	assert_false(c.weapon_visual.visible, "gun away while placing")
+	c.intent.deploy = false
+	fp.tick(0.016)
+	assert_eq(fp.action, FpViewmodel.Action.NONE, "released: cancelled")
+	assert_true(c.weapon_visual.visible, "gun back")
+
+
+## characters.md v1.8: the heister's sleeve variant replaces the rig's `Arms` mesh + skin; unknown = own sleeves.
+func test_v18_heister_sleeves() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.arms_scene == null or not tw.sleeve_scenes.has(&"rook"):
+		skip("no sleeve variants")
+		return
+	var c: CrewController = await _spawn(&"weapon.corsair_ar", &"weapon.kestrel_p9")
+	var fp: FpViewmodel = _fp(c)
+	var arms: MeshInstance3D = fp.skeleton.get_node_or_null(^"Arms") as MeshInstance3D if fp != null else null
+	assert_true(arms != null, "char_arms_fp has rig_arms/Skeleton3D/Arms")
+	if arms == null:
+		return
+	var suit: Mesh = arms.mesh
+	assert_false(fp.apply_sleeves(&""), "generic crew: own sleeves")
+	assert_false(fp.apply_sleeves(&"nobody"), "unknown heister: own sleeves")
+	assert_eq(arms.mesh, suit)
+	for h: StringName in tw.sleeve_scenes:
+		var v: Node = tw.sleeve_scenes[h].instantiate()
+		var src: MeshInstance3D = v.find_child("Arms", true, false) as MeshInstance3D
+		assert_true(fp.apply_sleeves(h), "%s sleeves" % h)
+		assert_true(src != null and arms.mesh == src.mesh and arms.skin == src.skin, "%s mesh + skin copied" % h)
+		var vs: Skeleton3D = src.get_parent() as Skeleton3D if src != null else null
+		if vs != null:
+			assert_eq(vs.get_bone_count(), fp.skeleton.get_bone_count(), "%s: same rig_arms bones" % h)
+		v.free()
+	assert_true(arms.mesh != suit, "sleeves changed")
+
+
+## A3-12 / D-069: a throw plays the `throwable` draw then throw, release@ on the gameplay release; Pin hidden at
+## pin_pull@, the item at the release.
+func test_d069_throw_clips() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.arms_scene == null:
+		skip("char_arms_fp not delivered")
+		return
+	var d: ThrowableDef = ThrowableDef.new()
+	d.id = &"throwable.test_fp_frag"
+	d.kind = ThrownItem.KIND_FRAG
+	var model: Node3D = Node3D.new()
+	var pin: Node3D = Node3D.new()
+	pin.name = "Pin"
+	model.add_child(pin)
+	pin.owner = model
+	var ps: PackedScene = PackedScene.new()
+	ps.pack(model)
+	model.free()
+	d.model = ps
+	ContentDB.inject(ContentDB.THROWABLES, d.id, d)
+	var c: CrewController = await _spawn(&"weapon.corsair_ar", &"weapon.kestrel_p9")
+	var fp: FpViewmodel = _fp(c)
+	if fp == null or not fp.supports(d.anim_set):
+		ContentDB.clear_cache()
+		skip("no throwable set")
+		return
+	c.set_physics_process(false)
+	c.set_masked()
+	c.loadout.throwable = d.id
+	c.weapons.throwable_count = 1
+	var press: CrewIntent = CrewIntent.new()
+	press.throw_item = true
+	var none: CrewIntent = CrewIntent.new()
+	fp.tick(0.016)
+	c.throwables.tick(press, 0.016)
+	assert_eq(String(fp.player.current_animation), "throwable/draw", "pin pull: draw")
+	assert_false(c.weapon_visual.visible, "gun away")
+	var windup: float = CombatTweak.data().throw_windup_s
+	var rel: float = float(fp._segs[1]["start"]) + tw.event_s(&"throwable_throw", &"release") / float(fp._segs[1]["speed"])
+	assert_near(rel, windup, 0.01, "release@ lands on the gameplay release")
+	fp.tick(windup * 0.8)
+	var held: Node3D = fp.weapon_attach.get_node_or_null(FpViewmodel.ITEM_NAME) as Node3D
+	assert_true(held != null, "grenade in the hand")
+	if held != null:
+		assert_false((held.get_node(^"Pin") as Node3D).visible, "pin pulled")
+	assert_eq(String(fp.player.current_animation), "throwable/throw", "throw")
+	c.throwables.tick(none, windup)
+	assert_true(held == null or not held.visible, "released: the item leaves the hand")
+	fp.tick(2.0)
+	assert_eq(fp.action, FpViewmodel.Action.NONE, "throw over")
+	assert_true(c.weapon_visual.visible, "gun back")
+	ContentDB.clear_cache()
+
+
+## Lead / ENV D: nothing under the local camera casts shadows (FP weapon rails on the sleeves), including
+## meshes added after the weapon is attached.
+func test_fp_weapon_casts_no_shadows() -> void:
+	var c: CrewController = await _spawn(&"weapon.corsair_ar", &"weapon.kestrel_p9")
+	var cam: Camera3D = _cam(c)
+	var late: MeshInstance3D = MeshInstance3D.new()
+	late.mesh = BoxMesh.new()
+	(c.weapon_visual if c.weapon_visual != null else cam).add_child(late)
+	await wait_frames(1)
+	var geoms: Array[Node] = cam.find_children("*", "GeometryInstance3D", true, false)
+	assert_true(geoms.size() > 1, "viewmodel meshes under the camera (%d)" % geoms.size())
+	for g: Node in geoms:
+		assert_eq((g as GeometryInstance3D).cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF,
+			"no shadow: %s" % cam.get_path_to(g))

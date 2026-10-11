@@ -27,6 +27,8 @@ const DEPLOYABLE_PREFIX: String = "deployable."
 const POINTS_NODE: String = "Preplan"
 ## Fallback drop nodes join this group.
 const DROP_GROUP: StringName = &"preplan_drop"
+## D-068: drop kinds `loot.<id>` spawn a loot bag of that id at the point (LootManager.spawn_bag).
+const LOOT_PREFIX: String = "loot."
 
 ## Drop kind -> scene path or Callable(asset_id, drop: Dictionary) -> Node3D. Unregistered kinds:
 ## `deployable.<x>` with a DeployableDef -> a DeployablePrefab (no owner); else
@@ -270,6 +272,13 @@ func spawn_drops(map: HeistMap, parent: Node3D) -> void:
 		var point: Node3D = find_point(map, pid)
 		if point == null:
 			Log.error(&"preplan", "drop '%s': no PREPLAN_POINT '%s' under <Map>/%s" % [d["asset"], pid, POINTS_NODE])
+			continue
+		if String(d["kind"]).begins_with(LOOT_PREFIX):  # D-068: a loot bag drop (asset.thermite_drop -> loot.thermite)
+			var rt: HeistRuntime = HeistRuntime.of(parent)
+			var mgr: LootManager = rt.service(G.SVC_LOOT) as LootManager if rt != null else null
+			var bag: LootBag = mgr.spawn_bag(StringName(d["kind"]), point.global_transform) if mgr != null else null
+			if bag != null:
+				drops[pid] = bag
 			continue
 		var node: Node3D = _make_drop(d)
 		if node == null:
