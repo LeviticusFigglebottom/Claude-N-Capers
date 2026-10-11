@@ -27,6 +27,13 @@ const NEW_SETS: Dictionary = {
 	&"crossbow": &"weapon.vise_crossbow", &"launcher": &"weapon.thumper_40", &"flamethrower": &"weapon.furnace_ft",
 	&"saw": &"weapon.rotor_saw", &"minigun": &"weapon.cyclone_rotary",
 }
+## D-057: special-weapon mechanics live in WeaponDef.params (schemas from ENV A, game/systems/modifiers_params.md);
+## mod params replace whole top-level blocks (shallow merge), so a nozzle carries a full `flame` block.
+const PARAM_BLOCKS: Dictionary = {
+	&"weapon.thorn_bow": ["charge", "projectile"], &"weapon.vise_crossbow": ["projectile"],
+	&"weapon.thumper_40": ["projectile", "explosion"], &"weapon.furnace_ft": ["flame"],
+	&"weapon.rotor_saw": ["saw"], &"weapon.cyclone_rotary": ["spin"],
+}
 
 
 func before_all() -> void:
@@ -145,14 +152,6 @@ func test_special_shapes() -> void:
 		if _w(id).weapon_class == Enums.WeaponClass.SPECIAL:
 			assert_false(_w(id).base.shield_pierce or _w(id).base.wall_pierce, "%s pierces nothing yet (L3.4)" % id)
 
-
-## D-057: special-weapon mechanics live in WeaponDef.params (schemas from ENV A, game/systems/modifiers_params.md);
-## mod params replace whole top-level blocks (shallow merge), so a nozzle carries a full `flame` block.
-const PARAM_BLOCKS: Dictionary = {
-	&"weapon.thorn_bow": ["charge", "projectile"], &"weapon.vise_crossbow": ["projectile"],
-	&"weapon.thumper_40": ["projectile", "explosion"], &"weapon.furnace_ft": ["flame"],
-	&"weapon.rotor_saw": ["saw"], &"weapon.cyclone_rotary": ["spin"],
-}
 
 
 func test_special_weapon_params() -> void:

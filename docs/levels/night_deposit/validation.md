@@ -8,7 +8,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | check | result | fails | warnings |
 |---|---|---|---|
 | contract_nodes | PASS | 0 | 0 |
-| cameras | PASS | 0 | 0 |
 | floating | PASS | 0 | 0 |
 | clipping | PASS | 0 | 0 |
 | orientation | skipped | 0 | 0 |
@@ -27,11 +26,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | perf | skipped | 0 | 0 |
 
 ## contract_nodes: Contract nodes
-
-
-## cameras: Review camera placement
-
-- 22 perspective review camera(s) checked
 
 
 ## floating: Nothing floats
@@ -85,10 +79,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Rooms/RoomB14` (storage): ceiling median 3.20 m (rule 2.6-3.2)
 - `Geometry/Building/Stair/Flight1`: ramp collision enveloping the steps (max 0.182 m above the treads)
 - `Geometry/Building/Stair/Flight1`: 11 risers, -2.000 -> 0.000 m
-- `Geometry/Building/Stair/Flight1` rails: -X wall, rail tops [0.89, 0.89, 0.89, 0.90, 0.90] m above nosing, max drop 0.00 m; +X wall, rail tops [0.89, 0.89, 0.89, 0.90, 1.25] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stair/Flight2`: ramp collision enveloping the steps (max 0.182 m above the treads)
 - `Geometry/Building/Stair/Flight2`: 11 risers, -4.000 -> -2.000 m
-- `Geometry/Building/Stair/Flight2` rails: -X wall, rail tops [0.89, 0.89, 0.89, 0.90, 0.90] m above nosing, max drop 0.00 m; +X wall, rail tops [0.89, 0.89, 0.89, 0.90, 0.90] m above nosing, max drop 0.00 m
 
 
 ## navmesh: Navmesh
