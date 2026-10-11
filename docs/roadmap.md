@@ -57,9 +57,13 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | B6-03 | Chat: lobby + in-heist text chat UI (open/close key, history, fade), over `Net.lobby_send` in the lobby; in-heist transport → QB to ENV A if absent | P6 |
 | B6-04 | Drop-in + kick UI: host join-request dialog (accept/deny, PD2 drop-in), joining player's loadout pick + "joining" progress, host kick menu; on mocks until ENV A's drop-in lands | P6 |
 | B6-05 | Lobby codes (game_overview §9): short shareable code ⇄ address:port (no service), join-by-code field in the lobby; LAN host list if A exposes discovery | P6 |
+| B6-06 | 3D hub mode (QC-45..49): MenuFlow loads the safehouse from data, connects `station_requested`, pauses while a screen is open, returns to the station marker, 2D hub fallback + walk/menu toggle; `notoriety` and `crew` station ids; `ui.prompt.station.<id>`; minimal hub HUD + pause menu with a quick-stations list; jukebox previews through the safehouse jukebox | C4-01 |
 
 | C2-00 | G0 design docs: Night Deposit and Shadow Ledger (stealth-only) | level_standards §9 |
 | C4-01 | 3D safehouse hub (fidelity C9): explorable safehouse whose stations are interactables calling `MenuFlow.open_station` (Board, planning table, armory/workshop bench, mask bench, jukebox, Notoriety, firing-range door); B's 2D hub stays as the menu fallback | P4 hub |
+| C4-02 | Safehouse greybox (G1) per docs/design/heists/safehouse.md: SafehouseMap root, 8 stations, validate_level `--profile=hub` | C4-01 |
+| C4-03 | Safehouse art pass (G2/G3) + review shots; dedicated safehouse music track (C5 backlog) | C4-02 |
+| A3-11 | Hub support (QC-43/44): crew spawn + interaction without a HeistRuntime (civilian mode, HUD prompt), `hub_station` prefab emitting `station_requested(id)` | C4-01 |
 | C5-01 | Music stems: night_deposit, shadow_ledger, dockside_burn heist tracks now (unlockables vault_hymn / long_con / last_call point at those stems meanwhile); the 3 unlockables get their own stems as P5 "music ×3" | P5 music |
 
 ## P2: Stealth complete (ENV A tasks dispatched early under the utilization policy, D-032)
