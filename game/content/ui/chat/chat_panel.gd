@@ -7,8 +7,8 @@
 ##   message (over chat_fade_time_s). The chat key opens the input; while it is open the local crew member's
 ##   gameplay input is paused (CrewInput holder &"chat", the B5-01 options mechanism). Enter sends and
 ##   closes; Esc closes.
-## Open key: the InputMap action LobbyTweak.chat_action (`chat`) once the lead adds it to project.godot,
-## until then LobbyTweak.chat_fallback_key (T).
+## Open key: the InputMap action LobbyTweak.chat_action (`chat` = Enter / keypad Enter, D-072). No fallback key:
+## T is `order_menu`.
 class_name ChatPanel
 extends PanelContainer
 
@@ -194,13 +194,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	open()
 
 
-## True for the chat key press (the `chat` action, else the fallback key).
+## True for the chat key press (the `chat` action; false while the action is missing).
 func is_open_event(event: InputEvent) -> bool:
-	if InputMap.has_action(tweak.chat_action):
-		return event.is_action_pressed(tweak.chat_action)
-	var k: InputEventKey = event as InputEventKey
-	return k != null and k.pressed and not k.echo and (k.keycode == tweak.chat_fallback_key
-			or k.physical_keycode == tweak.chat_fallback_key)
+	return InputMap.has_action(tweak.chat_action) and event.is_action_pressed(tweak.chat_action)
 
 
 func _on_submitted(text: String) -> void:

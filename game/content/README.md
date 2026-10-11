@@ -188,16 +188,21 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   usual). Briefing Back returns to where the contract came from (Board or heist select). After a heist
   (or the stub/sample payday) the flow returns "home": the hub once the safehouse was entered, else the
   main menu (`MenuFlow.show_home()`).
-* **3D safehouse hub (B6-06, QC-45..49; ENV C's `docs/design/heists/safehouse.md`).** `MenuFlow.safehouse`
+* **3D safehouse hub (B6-06, QC-45..49; contract `docs/contracts/hub_map.md` v1.0, D-072).** `MenuFlow.safehouse`
   (`SafehouseHost`, `ui/hub/`) is `show_hub()`'s 3D branch. Data `data/ui/safehouse_hub.tres` (`SafehouseHubTweak`):
   `scene_path` (C's scene; no `res://world/` path in code), `map_class` (`SafehouseMap`, looked up by name),
-  `station_group` (`hub_station`), `stations_node` (`Stations`), `station_signals` (`station_requested(id)`,
-  A's `station_used(id, crew)`), `use_point_name` (`UsePoint`), `station_cam_name` (`StationCam`, blend
-  `station_cam_blend_s` 0.35), A's `crew_class.spawn_method` (`CrewController.spawn_for_hub(parent, xform, loadout)`,
-  QC-43; else a stand-in in `walker_group` `hub_walker`), markers `ReturnHeist` / `ReturnRange`
-  (root `spawn_transform(id)`, else a Marker3D of that name), the root's `jukebox` preview target and
-  `set_jukebox_track(id)`. Station used -> walker `set_input_paused(true)`, mouse released, view dimmed, optional
-  StationCam blend, `open_station(id)`; every Back -> `show_hub()` -> walker back at that station's UsePoint.
+  stations in group `G.HUB_STATION` and/or under `stations_node` (`Stations`), `station_signals` (`station_requested(id)`,
+  A's `station_used(id, crew)`), `use_point_name` (`UsePoint`), `station_cam_name` (`StationCam`: a Marker3D,
+  -Z = view direction, meta `station_cam_fov_meta` `fov` in degrees, default `station_cam_fov` 60; the walker's
+  OWN camera blends to its transform and FOV over `station_cam_blend_s` 0.35 and is restored on return), A's
+  `crew_class.spawn_method` (`CrewController.spawn_for_hub(parent, xform, loadout)`, QC-43; else a stand-in in
+  `walker_group` `hub_walker`), markers `ReturnHeist` / `ReturnRange` (root `spawn_transform(id)`, else
+  `SafehouseHost.marker_transform`: a Marker3D of that name, else `spawn_marker` `Spawn`), the root's `jukebox`
+  (C's MusicDirector: preview target, and `set_ducked(true)` while any station screen but the jukebox's is open,
+  `false` on return; called only when the method exists) and `set_jukebox_track(id)`. Station used -> walker
+  `set_input_paused(true)`, mouse released, view dimmed, optional StationCam blend, `open_station(id)`; every Back
+  -> `show_hub()` -> walker back at that station's UsePoint. Station prompts `ui.prompt.station.<id>` use the
+  in-heist prompt format ("Press {key} to ...").
   `SafehouseHud` (centre dot + `InteractionPanel` on the walker's LocalHudModel); Esc / `pause` ->
   `SafehousePauseMenu` (Resume, quick stations, Options, Achievements, Main Menu). Range / heist launch free
   the scene and re-enter at ReturnRange / ReturnHeist. The 2D `HubMenu` stays the fallback (scene, class or
@@ -327,7 +332,7 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
   same session, so the in-heist chat uses it too (no separate transport). UI: `ChatPanel` (`ui/chat/`), Mode.LOBBY
   (lobby screen) / Mode.OVERLAY (MenuFlow.heist_chat over the HUD in co-op; fades after `chat_fade_after_s`; typing
   pauses the local crew member's input). Lines are plain Labels (no BBCode). Open key: InputMap action `chat`
-  (lead: project.godot) else `LobbyTweak.chat_fallback_key` (T). `CrewInput` (`ui/common/`) = the shared
+  (`LobbyTweak.chat_action`; Enter / keypad Enter, D-072; no fallback, T is `order_menu`). `CrewInput` (`ui/common/`) = the shared
   local-input pause with per-overlay holders (options, chat, drop-in). Strings `ui.chat.*`.
 * **Drop-in + kick (B6-04, on mocks until ENV A's drop-in lands).** `DropInService` (`lobby/drop_in_service.gd`):
   the interface B's UI binds to by duck typing (group `drop_in_service`, `DropInService.find(tree)`): signals
