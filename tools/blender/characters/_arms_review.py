@@ -46,6 +46,7 @@ REVIEW_CELLS = {
     "sniper": ["sniper_idle:0", "sniper_ads_idle:0", "sniper_sprint:4", "sniper_fire:1", "sniper_bolt:9",
                "sniper_bolt:12", "sniper_bolt_ads:12", "sniper_reload:22", "sniper_reload:47"],
 }
+REVIEW_CELLS.update(__import__("_arms_review_b3").REVIEW_CELLS)       # D-055 sets (proxies)
 W, H = 640, 360
 SHELL_IN_HAND = (0.012, 0.100, -0.018)      # shell centre in hand.L bone space (review proxy)
 
@@ -190,7 +191,7 @@ def render(out: pathlib.Path, args: list[str]) -> None:
 
     set_name = args[0] if args and ":" not in args[0] else "pistol"
     cells = [a for a in args if ":" in a] or REVIEW_CELLS[set_name]
-    s = F.SETS[set_name]
+    s = F.SETS.get(set_name) or F.B3[set_name]
     scene.reset()
     sk = F.skeleton()
     solver = A.Solver(sk)
@@ -198,8 +199,13 @@ def render(out: pathlib.Path, args: list[str]) -> None:
     arm = F.build_arms_rig()
     F.build_arms_mesh(_Ctx(), arm, {"skin": 2})
     rev = None
+    b3 = None
     if (REPO / f"game/assets/weapons/{s.weapon}/{s.weapon}.glb").exists():
         gun, parts, rest = _import_weapon(s.weapon)
+    elif s.name in F.B3:                          # D-055: ENV B's model not on trunk yet: scratch proxy
+        import _arms_review_b3 as RB
+        b3 = RB.build(s)
+        gun, parts, rest = None, {}, {}
     else:                                         # no marshal model yet: scratch proxy (never exported)
         rev = _revolver_proxy(s)
         gun, parts, rest = None, {}, {}
@@ -240,6 +246,10 @@ def render(out: pathlib.Path, args: list[str]) -> None:
             bpy.context.view_layer.update()
             if mag_l is not None:
                 mag_l.matrix_world = _m(*st.extra["mag_l"]) @ rest_l[mag_l.name]
+        if b3 is not None:
+            Rm, pm = magazine_of(sk, sv)
+            Rh = sv.W["hand.L"] @ sk.B["hand.L"]
+            RB.pose(b3, s, st, Mg, _m(Rm, pm), int(fs), clip, (Rh, sv.P["hand.L"]))
         if rev is not None:
             import _arms_revolver as RV
             static, crane, loader = rev
