@@ -63,8 +63,8 @@ listed in `trees.tres unlocks`; it has no modifier grant.
   `+16 stability` = `recoil_mult` 0.84). ◇ to be tuned against StatCalculator display numbers.
 * Sequential PD2 bonuses are split so basic x aced = PD2 total (Overclocked Bits 0.85 x 0.8235 = 0.70).
 * `deploy.capacity_mult.sentry` scales sentry ammo; `deploy.extra.<kind>` adds units.
-* `team.damage_reduction_hostage.per` = flat damage absorbed per hit per hostage, in display units
-  (PD2 0.5 internal = 5).
+* `team.damage_reduction_hostage.absorb_per_hostage` = flat damage absorbed per hit per hostage, in
+  display units (PD2 0.5 internal = 5); `max_hostages` caps the hostages counted (D-056).
 * `deploy.deploy_speed_mult.<kind|all>` is a time multiplier: "50% faster" = 0.6667, "100% faster" =
   0.5, "20% faster" = 0.8333 (Bedside Manner, Tinker, Two Kits).
 * `movement.shoot_while_sprinting` is granted with a weapon qualifier (Hip Fire `.shotgun`, Run and Gun
@@ -87,7 +87,7 @@ ENV A documents the final schemas in `game/systems/modifiers_params.md`; the dat
 |---|---|---|
 | `ability.inspire` | `range` (m, 0 = no shout-revive), `cooldown` s, `buff_move_mult`, `buff_reload_mult`, `buff_duration` s | Rally Cry |
 | `ability.hostage_regen` | `per_hostage` (fraction of max health per tick), `max_hostages`, `interval` s | Leverage |
-| `team.damage_reduction_hostage` | `per` (flat absorption, display units), `max` hostages | Zip & Tie |
+| `team.damage_reduction_hostage` | `absorb_per_hostage` (flat absorption, display units), `max_hostages` | Zip & Tie, Foreman card 9 |
 | `defense.bullseye` | `armor` (display units per headshot), `cooldown` s | Clean Shot |
 | `defense.shockproof` | `backfire_chance`, `tase_shorten`, `can_interact_counter`, `counter_window` s | Grounded |
 | `defense.swan_song` | `duration` s, `speed_penalty` (0.6 = 60% slower), `infinite_ammo` | Last Stand |
@@ -123,7 +123,7 @@ requested key before D-031.
 
 | T | Skill | Basic | Aced | Grants basic | Grants aced | Status |
 |---|---|---|---|---|---|---|
-| 1 | **Zip & Tie** [Forced Friendship]<br>`skill.persuader.zip_and_tie` | Carry 4 more cable ties. Tie hostages 75% faster. | You and your crew absorb 5 damage from every hit for each hostage you hold, up to 8 hostages. Crew-wide; does not stack with another Zip & Tie. | `stealth.cable_ties_extra`=4<br>`stealth.cable_tie_speed_mult`=0.25 | `team.damage_reduction_hostage`={"per": 5.0, "max": 8} |  |
+| 1 | **Zip & Tie** [Forced Friendship]<br>`skill.persuader.zip_and_tie` | Carry 4 more cable ties. Tie hostages 75% faster. | You and your crew absorb 5 damage from every hit for each hostage you hold, up to 8 hostages. Crew-wide; does not stack with another Zip & Tie. | `stealth.cable_ties_extra`=4<br>`stealth.cable_tie_speed_mult`=0.25 | `team.damage_reduction_hostage`={"absorb_per_hostage": 5.0, "max_hostages": 8} |  |
 | 2 | **Silver Tongue** [Confident]<br>`skill.persuader.silver_tongue` | Your shouts reach civilians 50% further. | You can keep 2 converted enemies at once. | `stealth.civilian_intimidate_range_mult`=1.5 | `ability.converts_max`=1 |  |
 | 2 | **Turncoat** [Joker]<br>`skill.persuader.turncoat` | Your shouts can make low-tier police surrender. Hold the shout on a surrendered non-special enemy to convert them into an ally (loud only, 1 at a time). | Converted allies deal 35% more damage, and converting takes 65% less time. | `ability.intimidate_cops`=true<br>`ability.converts_max`=1 | `ability.convert_damage_mult`=1.35<br>`ability.convert_speed_mult`=0.35 | granted (D-031) |
 | 3 | **Captive Audience** [Stockholm Syndrome]<br>`skill.persuader.captive_audience` | Your gunfire intimidates nearby civilians, and intimidated civilians stay down 50% longer. | When you go down, a hostage near you can revive you. Once per heist. | `stealth.civilian_stay_down_mult`=1.5<br>`stealth.noise_intimidates_civilians`=true | `ability.stockholm`=true | granted (D-031) |

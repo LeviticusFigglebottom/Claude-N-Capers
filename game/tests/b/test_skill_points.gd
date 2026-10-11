@@ -157,6 +157,6 @@ func test_team_skill_grants_route_to_team_sources() -> void:
 	assert_eq(personal[&"stealth.cable_ties_extra"], 4)
 	var src: StringName = &"team_skill.skill.persuader.zip_and_tie"
 	var ta: Dictionary = LoadoutResolver.team_modifier_sources(a)
-	assert_eq(ta, {src: {&"team.damage_reduction_hostage": {"per": 5.0, "max": 8}}})
+	assert_eq(ta, {src: {&"team.damage_reduction_hostage": {"absorb_per_hostage": 5.0, "max_hostages": 8}}})
 	assert_eq(LoadoutResolver.team_modifier_sources(b).keys(), ta.keys(), "same source name for both players")
 	assert_eq(LoadoutResolver.team_modifier_sources(basic_only), {}, "basic has no crew-wide grant")
