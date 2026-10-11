@@ -502,3 +502,13 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   `hits`, `headshots`; counting rules in ui_hud v1.7 (a shield/plate strike is a hit: accuracy measures aim). ENV A owns.
 - Payday "Crew Honours": AI teammates appear on the scoreboard but **never win awards** (PD2's end screen honours
   players); among humans, ties break by lowest slot. A solo player still gets awards they earn.
+
+## D-072 — 2026-10-11 — Net.kick, chat, drop-in policy, safehouse hub contract (B6-03..06)
+- `Net.kick(peer_id)` (lead, core/net.gd): host-only; notice RPC then disconnect after 0.25 s (ENet drops queued
+  packets on an immediate disconnect); `peer_kicked(peer_id, slot)`; client `last_disconnect_reason = &"kicked"`;
+  kicked display names are re-kicked for the rest of the session. net.md v1.1 also reserves `lobby.chat`/`lobby.kick`.
+- Input action `chat` = Enter / keypad Enter (T is `order_menu`). `G.HUB_STATION`, `G.DROP_IN_SERVICE`.
+- Rulings for ENV B: kicked peers cannot rejoin that session; drop-in policy ask (default) / auto / off (PD2);
+  hub return to the station UsePoint; jukebox duck is MusicDirector `set_ducked`; hub prompts use the in-heist
+  prompt format; IPv6 lobby codes out of scope.
+- hub_map.md v1.0 (safehouse scene, stations, StationCam as Marker3D) with ENV C's wording.
