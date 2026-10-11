@@ -70,10 +70,10 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `stealth_xp_bonus_mult` after a successful stealth heist, else 1.0). UI string:
   `ui.results.stealth_bonus_banked` ("... +{pct}%").
 * `SaveService` / `PlayerProfile`: versioned JSON at `user://profiles/profile_<n>.json`
-  (`CURRENT_VERSION` 6; the roadmap calls the format "save v2". **Every field, type, default and since-version:
+  (`CURRENT_VERSION` 7; the roadmap calls the format "save v2". **Every field, type, default and since-version:
   `content/docs/save_format.md`**; v2 `banked_stealth_mult`, v3 `skill_sets`/`perk_cards`, v4
   `owned_mask_parts`/`custom_masks`, v5 `unlocks`/`achievements`/`pro_job_locks`, v6 `notoriety`/
-  `notoriety_xp`/`notoriety_choices`/`held_skill_sets`/`music_choice`);
+  `notoriety_xp`/`notoriety_choices`/`held_skill_sets`/`music_choice`, v7 `career`/`weapon_finishes`);
   `load_profile/save_profile/migrate/profile_from_save/apply_heist_payout(p, payout, XpCurve.level_for_xp)`.
   Loading runs migrate -> `ProfileSchema.sanitize` (wrong types -> default + Log.warn) -> from_dict ->
   `ProfileValidator.validate` (unknown ids pruned, illegal skill sets reset, Log.warn each); golden
@@ -130,6 +130,15 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   save), `record(profile, event, ctx)`, `progress/is_unlocked`. State: `PlayerProfile.achievements` (save v5).
   Screen: `AchievementsScreen` (`ui/achievements/`), from the hub profile panel (`HubMenu.achievements_requested`
   -> `MenuFlow._open_achievements()`); payday lists unlocks (`ui.results.achievement_unlocked`).
+* **Career stats (B7-01).** `Career` (`progression/career.gd`, static): `record(profile, result, payout, crew_slot)`
+  (PaydayScreen._apply, local slot, before `Achievements.on_payday`), `add_spent(profile, amount, offshore)`
+  (workshop, pre-planning incl. refunds, Notoriety cost, Board broker), readers `total(p, key)` (-1 = never
+  counted), `section`, `heist`, `best_difficulty`, `fastest_win_s`, `accuracy` (-1 without shots),
+  `favourite_weapon`, `heists_won(p, ids, difficulty_min, stealth, loud)`. State: `PlayerProfile.career`
+  (save v7; shape and sources in `content/docs/save_format.md`). `PlayerProfile.weapon_finishes` (v7) is
+  reserved for B7-04. Screen: `CareerScreen` (`ui/career/`, strings `ui.career.*`) from the hub profile panel
+  (`HubMenu.career_requested` -> `MenuFlow._open_career()`). No hub station yet: a `profile` station needs a
+  3D placement in ENV C's safehouse.
 * **Options (B5-01; brief: `content/docs/options.md`).** `GameSettings.current()` (`settings/game_settings.gd`):
   audio (0..1 per bus), video (window mode, vsync, max FPS, render scale, MSAA, FXAA, brightness, **FOV**),
   controls (**mouse sensitivity x/y, invert Y, pad sensitivity, deadzone, hold/toggle aim/crouch/sprint**),

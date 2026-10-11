@@ -124,6 +124,7 @@ static func rank_up(p: PlayerProfile) -> Dictionary:
 	var rank: int = p.notoriety + 1
 	var cost: int = cost_for(rank)
 	p.cash -= cost
+	Career.add_spent(p, cost)
 	p.notoriety_xp += maxi(p.xp, 0)
 	p.xp = 0
 	p.level = 0

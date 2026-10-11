@@ -2438,3 +2438,47 @@ ui.options.tab.gameplay,Gameplay
 ui.lobby.dropin_join,Drop In to a Running Heist
 ui.lobby.dropin_join.hint,"Join a crew whose heist has already started (the host may have to accept you)."
 ui.dropin.failed.unreachable,Could not reach the host. Check the address and port.
+ui.career.open,Career
+ui.career.title,CAREER
+ui.career.subtitle,"Every job on the record. Counting started with this version of the save, so older heists are not here."
+ui.career.summary,Record
+ui.career.money,Money
+ui.career.combat,Combat
+ui.career.heists,Heists
+ui.career.not_tracked,—
+ui.career.none,None yet
+ui.career.empty,No heists on the record yet.
+ui.career.percent,{value}%
+ui.career.time_format,{hours}h {minutes}m
+ui.career.played,Heists played
+ui.career.won,Heists won
+ui.career.failed,Heists failed
+ui.career.stealth_wins,Stealth wins
+ui.career.loud_wins,Loud wins
+ui.career.win_rate,Success rate
+ui.career.time_played,Time on the job
+ui.career.spending_earned,Spending cash earned
+ui.career.stash_earned,Offshore earned
+ui.career.cash_spent,Spending cash spent
+ui.career.offshore_spent,Offshore spent
+ui.career.xp_earned,XP earned
+ui.career.bags,Bags secured
+ui.career.small_loot,Small loot
+ui.career.favourite_weapon,Favourite weapon
+ui.career.kills,Kills
+ui.career.specials_killed,Specials killed
+ui.career.civilians_killed,Civilians killed
+ui.career.downs,Times downed
+ui.career.custody,Heists ended in custody
+ui.career.shots,Shots fired
+ui.career.hits,Hits
+ui.career.headshots,Headshots
+ui.career.accuracy,Accuracy
+ui.career.col.heist,Heist
+ui.career.col.played,Played
+ui.career.col.won,Won
+ui.career.col.failed,Failed
+ui.career.col.stealth,Stealth
+ui.career.col.loud,Loud
+ui.career.col.best,Best difficulty
+ui.career.col.fastest,Fastest win

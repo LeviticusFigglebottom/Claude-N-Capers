@@ -19,6 +19,10 @@
 ##     profile's or naming an id that rank does not offer are pruned; held_skill_sets lose unknown skills /
 ##     bad levels and entries past the last skill set. Then Notoriety.apply_rewards re-grants every reached
 ##     rank's rewards (data added later reaches old profiles). music_choice is type-checked only (B5-03).
+##   * career (v7): career.weapons entries for unknown weapon ids pruned (heist / loot ids are kept: a heist
+##     removed from the registry still belongs to the player's history).
+##   * weapon_finishes (v7): entries for unknown weapon ids pruned. TODO(B7-04): validate the finish ids
+##     against the finish data (and ownership) once B7-04 defines them; until then any short id is kept.
 ## Returns the repair messages (empty = the profile was already valid).
 class_name ProfileValidator
 extends RefCounted
@@ -51,6 +55,7 @@ static func validate(p: PlayerProfile) -> Array[String]:
 	_achievements(p, notes)
 	_locks(p, notes)
 	_notoriety_state(p, notes)
+	_career(p, notes)
 	for m: String in notes:
 		Log.warn(LOG_CHANNEL, "profile: " + m)
 	return notes
@@ -238,6 +243,18 @@ static func _notoriety_state(p: PlayerProfile, notes: Array[String]) -> void:
 				notes.append("held_skill_sets[%d]: '%s' (%d) dropped" % [i, sid, lv])
 		p.held_skill_sets[i] = out
 	Notoriety.apply_rewards(p)
+
+
+static func _career(p: PlayerProfile, notes: Array[String]) -> void:
+	var w: Dictionary = Career.section(p, "weapons")
+	for id: Variant in w.keys():
+		if not ContentDB.has(ContentDB.WEAPONS, StringName(String(id))):
+			notes.append("career.weapons: unknown weapon '%s' dropped" % id)
+			w.erase(id)
+	for id: Variant in p.weapon_finishes.keys():
+		if not ContentDB.has(ContentDB.WEAPONS, StringName(String(id))):
+			notes.append("weapon_finishes: unknown weapon '%s' dropped" % id)
+			p.weapon_finishes.erase(id)
 
 
 static func _defaults() -> Loadout:
