@@ -85,6 +85,10 @@ func _impact(hit: Dictionary) -> void:
 	var wid: StringName = StringName(params.get("weapon_id", &""))
 	var dmg: float = float(params.get("damage", 0.0))
 	var radius: float = float(params.get("radius_m", 0.0))
+	var cue_id: StringName = StringName(params.get("impact_cue", ""))
+	if cue_id != &"":  # [R] audio_cues.md v1.1: bow/crossbow impact, launcher explode
+		EventBus.audio_cue_requested.emit(cue_id, pos, attacker)
+		Net.replicate_event(&"audio_cue_requested", [cue_id, pos, attacker])
 	var armed: bool = _travelled + global_position.distance_to(pos) >= float(params.get("arm_distance_m", 0.0))
 	global_position = pos
 	if radius > 0.0 and armed:

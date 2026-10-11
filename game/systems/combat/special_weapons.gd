@@ -11,6 +11,9 @@
 ##   spin       = {spin_up_s, spin_down_s, move_speed_mult}                  minigun
 ## Kinds: a weapon with `flame` is a cone volume (DamageType.FIRE + BurnStatus), `saw` a short volume
 ## that only fires while touching something, `projectile` a WeaponProjectile, anything else hitscan.
+## Cues (audio_cues.md v1.1, per anim_set): `cue(..)` emits one-shot foley (draw, ignite/stop, rev, spin
+## up/down) where the shooter is simulated and replicates it from the authority; impacts/explosions
+## of projectiles come from the server (`impact_cue` in the projectile params).
 ## The server re-derives flame/saw targets from the validated claim origin + direction (it ignores
 ## claimed hits for them) and spawns projectiles itself; clients only predict ammo and presentation.
 class_name SpecialWeapons
@@ -27,7 +30,20 @@ const SAW_WEAR_KEY: StringName = &"weapon.saw_wear_mult"
 const SAW_SHIELD_KEY: StringName = &"weapon.saw_shield_pierce"
 const DEFAULT_SAW_CONE_DEG: float = 40.0
 
+## anim_sets whose impacts reuse another set's cue (crossbow bolts thunk like arrows, audio_cues.md).
+const IMPACT_CUE_SET: Dictionary = {&"crossbow": &"bow"}
+
 static var _cache: Dictionary = {}
+
+
+## [R] Weapon foley `cue.weapon_<anim_set>_<suffix>` at `pos` (local, replicated from the authority).
+static func cue(def: WeaponDef, suffix: String, pos: Vector3, source_net_id: int) -> void:
+	if def == null:
+		return
+	var id: StringName = StringName("cue.weapon_%s_%s" % [def.anim_set, suffix])
+	EventBus.audio_cue_requested.emit(id, pos, source_net_id)
+	if Net.is_authority():
+		Net.replicate_event(&"audio_cue_requested", [id, pos, source_net_id])
 
 
 ## Merged special params of weapon `def` with mods `mod_ids` (cached per weapon + mod list).
@@ -215,6 +231,11 @@ static func spawn_projectile(shooter: CrewController, ws: int, claim: Dictionary
 	var dir: Vector3 = (claim.get("direction", shooter.aim_direction()) as Vector3).normalized()
 	var origin: Vector3 = claim.get("origin", shooter.eye_position())
 	var prof: Dictionary = CombatSystem.pierce_profile(shooter, ws)
+	var def: WeaponDef = ContentDB.weapon(StringName(claim.get("weapon_id", &"")))
+	var cue_set: StringName = def.anim_set if def != null else &""
+	var impact_cue: String = ""
+	if cue_set != &"":
+		impact_cue = "cue.weapon_%s_%s" % [IMPACT_CUE_SET.get(cue_set, cue_set), "explode" if not ex.is_empty() else "impact"]
 	var proj: WeaponProjectile = WeaponProjectile.new()
 	proj.name = "Projectile_%d_%d" % [shooter.slot, int(claim.get("seq", 0))]
 	proj.params = {
@@ -226,7 +247,7 @@ static func spawn_projectile(shooter: CrewController, ws: int, claim: Dictionary
 		"armor_pierce": float(prof["armor_pierce"]), "shield_pierce": bool(prof["shield_pierce"]),
 		"radius_m": float(ex.get("radius_m", 0.0)), "arm_distance_m": float(ex.get("arm_distance_m", 0.0)),
 		"retrievable": bool(pr.get("retrievable", false)), "pickup_radius_m": float(pr.get("pickup_radius_m", 1.0)),
-		"despawn_s": float(pr.get("despawn_s", 60.0)),
+		"despawn_s": float(pr.get("despawn_s", 60.0)), "impact_cue": impact_cue,
 	}
 	parent.add_child(proj, true)
 	proj.global_position = origin

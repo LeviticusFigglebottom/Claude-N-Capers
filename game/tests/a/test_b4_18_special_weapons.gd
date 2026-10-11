@@ -193,8 +193,11 @@ func test_bow_draw_projectile_hit_and_retrieve() -> void:
 
 
 func test_launcher_blast_on_impact() -> void:
-	_def(&"weapon.test_gl", [&"semi"], {"projectile": {"speed_mps": 40.0, "gravity_mult": 0.0},
+	var gl: SpecialDef = _def(&"weapon.test_gl", [&"semi"], {"projectile": {"speed_mps": 40.0, "gravity_mult": 0.0},
 		"explosion": {"radius_m": 3.0}}, 6)
+	gl.anim_set = &"launcher"
+	var cues: Array[StringName] = []
+	var cue_cb: Callable = ACombatSpecials.record_cues(cues)
 	await ACombatSpecials.place_crew(_rt, 0, Vector3(0, 0.05, 0))
 	await _arm(&"weapon.test_gl")
 	var npc: NpcBase = _npc(Vector3(0, 0.05, -10))
@@ -205,6 +208,8 @@ func test_launcher_blast_on_impact() -> void:
 	assert_eq(_events_for(npc, Enums.DamageType.EXPLOSION).size(), 1, "L3.6: impact explodes")
 	assert_eq(_events_for(side, Enums.DamageType.EXPLOSION).size(), 1, "splash hits a neighbour")
 	assert_eq(get_tree().get_nodes_in_group(WeaponProjectile.GROUP).size(), 0, "grenade gone")
+	EventBus.audio_cue_requested.disconnect(cue_cb)
+	assert_has(cues, &"cue.weapon_launcher_explode", "audio_cues v1.1 launcher explode cue")
 
 
 func test_minigun_spins_up_before_firing_and_slows_the_crew() -> void:

@@ -80,6 +80,8 @@ var _server_clock: float = 0.0
 var _last_server_shot_clock: float = -INF
 var _last_server_seq: int = 0
 var _drawing: bool = false
+## Minigun spinning up / flamethrower burning (cue edges).
+var _spinning_up: bool = false
 
 
 func _ready() -> void:
@@ -384,15 +386,29 @@ func _special_gate(s: WeaponState, intent: CrewIntent) -> bool:
 	if not sp.is_empty():
 		var up: bool = intent.fire and ready and s.mag > 0
 		var rate: float = 1.0 / maxf(float(sp.get("spin_up_s" if up else "spin_down_s", 0.5)), 0.01)
+		if up != _spinning_up and (up or spin > 0.0):
+			_cue(s, "spin_up" if up else "spin_down")
+		_spinning_up = up
 		spin = clampf(spin + (rate if up else -rate) * dt, 0.0, 1.0)
 		move_speed_mult = float(sp.get("move_speed_mult", 1.0)) if spin > 0.0 else 1.0
 		if spin < 1.0 and s.mag > 0:
 			return false
 	if s.def != null and s.def.fire_modes.has(&"charge"):
 		return _charge_gate(s, intent, ready, dt)
+	if s.kind == SpecialWeapons.KIND_SAW and intent.fire and not _prev_fire:
+		_cue(s, "rev")
+	if s.kind == SpecialWeapons.KIND_FLAME:
+		var on: bool = intent.fire and ready and s.mag > 0
+		if on != _spinning_up:
+			_cue(s, "ignite" if on else "stop")
+		_spinning_up = on  # flamethrowers have no spin: the flag tracks the flame instead
 	if s.kind == SpecialWeapons.KIND_SAW and intent.fire and s.mag > 0:
 		return SpecialWeapons.saw_has_contact(_crew, _crew.eye_position(), _crew.aim_direction(), s.special)
 	return true
+
+
+func _cue(s: WeaponState, suffix: String) -> void:
+	SpecialWeapons.cue(s.def, suffix, _crew.global_position + Vector3(0.0, 1.4, 0.0), _crew.net_id)
 
 
 ## Bow: hold to draw (charge 0..1 over draw_time_s), release to loose at the reached draw.
@@ -401,6 +417,8 @@ func _charge_gate(s: WeaponState, intent: CrewIntent, ready: bool, dt: float) ->
 		charge = 0.0
 		return true  # dry trigger -> reload via the normal path
 	if intent.fire and ready:
+		if not _drawing:
+			_cue(s, "draw")
 		var draw: float = SpecialWeapons.draw_time(s.special)
 		charge = 1.0 if draw <= 0.0 else minf(charge + dt / draw, 1.0)
 		_drawing = true
@@ -418,6 +436,7 @@ func _reset_special() -> void:
 	spin = 0.0
 	move_speed_mult = 1.0
 	_drawing = false
+	_spinning_up = false
 
 
 ## A3-01a (L4.4): tased auto-fire (server): max RPM regardless of fire mode, auto-reload when empty.
