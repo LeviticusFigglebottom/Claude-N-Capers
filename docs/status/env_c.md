@@ -3,6 +3,51 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11 13:45 UTC: HANDOFF (session shut down by the PO; account move)
+Branch env/c-worlds is the source of truth. Everything listed under Done is pushed and passed a clean push_gate.
+### Done (on origin)
+- Glasshouse G3 signed off (D-059 punch list, D-061 operator and code note, keycard/code/drill safe, D-066 secure_zones check).
+- Night Deposit G2 FINAL (adff154, 19/19, trunk round 31): ENV A deposit_box/padlock prefabs, brightness hook.
+- Dockside Burn G1 (P3 gate map, D-070); music table and preview (65c299a); brightness hook; cues v1.2/v1.3 (213795a, b4ca0ef).
+- Safehouse G0 approved (docs/design/heists/safehouse.md; hub_map.md v1.0, D-072).
+- P5 G0 docs approved (D-075): gallery_night, ostrander_federal (was meridian), afterhours, rolling_thunder.
+- push_gate.sh: per-run mktemp logs, plus a conflict-marker step (6622218). zfight report shows the triangle count only.
+### In progress: NOT pushed, lost with this container (not validated)
+- **Shadow Ledger G2:** the agent had dressing, props and VoxelGI done, stage final, 26/~30 g2 shots rendered, and was at lint/ownership. Redo from the brief:
+  - KitPlacer dressing, upscale palette, rain/night exterior;
+  - saw_target via A's prefabs on the server cage (safe methods [code, saw]);
+  - ENV D notes: M5 bed duvet, ≥ 1.08 m of mattress ahead of the pelvis root, pillows 0.45 m behind it; office seat 0.47 / desk 0.74;
+  - Northgate guards; the IT contractor's laptop holds the code;
+  - loot.painting is LIGHT in the doc;
+  - HeistWorldEnvironment.
+- **Dockside Burn G2:** just started (layout fixes). Lead requirements:
+  - fog-free top-down shots; blueprint room names (Packing Hall, Cold Chamber A/B, Spine, Anteroom, Loading Hall); crop floor0;
+  - hall open floor ≥ 12 m with crate cover;
+  - every holdout gets ≥ 2 non-breach_only police routes;
+  - barred/vault gates baked closed in the navmesh, plus a new validate check: no nav path through a BARRED doorway;
+  - keep the yard arena at (35, 0, −18) open;
+  - A's burn_point/padlock/deposit_box replace the placeholders; remove the QC-35/38 fallbacks;
+  - wire cue.burn_warning;
+  - keep test_p3_loud green.
+### Queue (lead order)
+1. Shadow Ledger G2 and Dockside G2 (the P3 sign-off item).
+2. **C5-01 stems:** night_deposit, shadow_ledger, dockside_burn. vault_hymn/long_con/last_call alias those stems via a source-track field on MusicTrackEntry. MusicDirector nodes in those maps.
+3. **C4-02 safehouse greybox** to hub_map.md v1.0:
+   - res://world/hub/safehouse/safehouse.tscn, a SafehouseMap root;
+   - 8 stations, using A's HubStationPrefab;
+   - add MusicDirector.set_ducked(bool) (−6 dB).
+4. **P5 G1s** in order gallery_night, ostrander_federal, afterhours, rolling_thunder. The gallery camera_spine and camera_screen validate checks are built at G1.
+5. **Backlog:**
+   - Night Deposit G3: a lit "Harbor Savings & Loan" sign; cash-brick pallet in the vault cage; teller personal touches.
+   - Glasshouse polish: car props in the garage, the stray bracket by the neon V, the security-office bins.
+   - Cues: npc_melee_swing, radio_squelch.
+   - say() lines use HeistDef.contact as the speaker.
+   - Fix the nav-timing test flakes (test_bad_fixture_fails_exactly_expected, test_one_way_island_*): condition waits instead of frame budgets.
+### Notes for the next session
+- With 4 cores, run at most 2 render-heavy jobs at once. Use worktrees for parallel work; seed each with a copied `game/.godot`, then run --import once.
+- Never let agents hand-resolve generated docs in a merge. Grep for conflict markers before every push (push_gate does this now).
+- Verify any agent's "PUSH_GATE: PASS" claim yourself; one agent fabricated a pass this session.
+
 ## 2026-10-11: C1-08 Glasshouse G2 final, C2 Night Deposit / Shadow Ledger G1 follow-ups, C1-04 validator checks
 ### Done
 - C1-08 **Glasshouse G2 final** (stage=final). validate_level final passes all 18 checks, including the new
