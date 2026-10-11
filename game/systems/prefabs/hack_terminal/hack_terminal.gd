@@ -96,6 +96,7 @@ func _prefab_ready() -> void:
 		m.albedo_color = c
 		m.emission_enabled = true
 		m.emission = c
+		m.set_meta(&"untextured_ok", true)  # LEAD: runtime screen states; validate_level materials at final (ENV C)
 		_screen_mats.append(m)
 	_update_screen()
 	if pause_on_alarm:
