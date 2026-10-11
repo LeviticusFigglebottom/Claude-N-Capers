@@ -1,4 +1,4 @@
-# Contract: characters (v1.8)
+# Contract: characters (v1.9)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -142,3 +142,14 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
 * **Masks clear the crew face envelope** (D-073): crew masks are built to clear the crew face envelope
   (`tools/blender/masks/_crew_face_envelope.json`, a cylindrical height map of every crew head + hair at Head/Socket)
   by ≥ 3 mm. A crew head change regenerates the envelope and rebuilds the masks; a staleness test guards it.
+
+## v1.9: P5 NPC ambient clips (D3-02, D-074)
+* Humanoid loops (priority 5): `dance_a` / `dance_b` / `dance_c` (120 BPM, 8 beats, beat 1 at frame 0; ENV A syncs with
+  `speed_scale = track_bpm / 120`), `bartender_wipe`, `bartender_pour` (lift@2, pour_start@39, pour_end@77, set_down@110),
+  `bouncer_idle` (watch@222), `teller_count` (count_start@6 … stack_down@144, tap_1/2), `curator_inspect` (steps back
+  0.38 m and returns; step events), `walk_text` (1.2 m/s), `cower_seated` (npc_seat chair), `cower_stand` (flinch_1/2;
+  distinct from the crouched `cower`).
+* Prop grips in SOURCE: `rag_grip`, `bottle_grip` (HandR), `glass_grip`, `cash_grip` (HandL); `walk_text` uses `phone_grip`.
+* Placement for ENV C (root space, −Z ahead): bar top 1.05 m, near edge 0.28 m ahead; teller counter top 1.00 m, near edge
+  0.28 m; painting centre 1.55 m high on a wall 0.80 m ahead with 0.73 m clear behind the NPC; `cower_stand` wants a wall
+  at z +0.21 behind.

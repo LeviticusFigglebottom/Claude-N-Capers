@@ -24,6 +24,11 @@
 ## 3D hub (B6-06, QC-45..49): `safehouse` (SafehouseHost) is show_hub()'s 3D branch: ENV C's safehouse scene
 ## from data/ui/safehouse_hub.tres, the local walker, station signals -> open_station, the hub HUD and the
 ## pause menu. The 2D HubMenu stays the fallback (scene / class / walker missing, Options "menu" mode, co-op).
+## Drop-in (B6-04, ENV A's HeistDropIn): the co-op host's launch copies LobbyState.dropin_policy into A's service
+## (DropInFlow.apply_host_policy; A decides every request, the heist JoinRequestDialog only shows A's `ask`s). The
+## lobby's "Drop in to a running heist" opens DropInJoinScreen through `drop_in` (DropInFlow: pick -> Net.join ->
+## HeistDropIn.request_join); on joined the in-heist UI comes up like a co-op client launch (A's service already
+## ran HeistLauncher.launch_client); a failure shows its reason, Back returns to the lobby with it.
 class_name MenuFlow
 extends Control
 
@@ -104,6 +109,10 @@ var options_menu: MenuOptions
 var heist_chat: ChatPanel = null
 ## Host's drop-in request dialog over the HUD (B6-04; co-op host only; binds to the DropInService group), else null.
 var heist_join_dialog: JoinRequestDialog = null
+## Drop-in wiring (B6-04): host policy + the joining client's flow (DropInFlow).
+var drop_in: DropInFlow
+## Joining client's drop-in screen while open, else null.
+var drop_in_screen: DropInJoinScreen = null
 ## 3D safehouse hub mode (B6-06): see SafehouseHost.
 var safehouse: SafehouseHost
 ## Full-screen backdrop behind every screen (dimmed / hidden over the 3D safehouse).
@@ -131,6 +140,9 @@ func _ready() -> void:
 	options_menu.name = "Options"
 	options_menu.flow = self
 	add_child(options_menu)
+	drop_in = DropInFlow.new()
+	drop_in.name = "DropIn"
+	add_child(drop_in)
 	background = ColorRect.new()
 	background.name = "Background"
 	background.color = UiAccent.app_bg()
@@ -697,7 +709,8 @@ func _spawn_in_heist_ui() -> void:
 		heist_join_dialog.pause_gameplay = true
 		heist_join_dialog.auto_find = true
 		heist_join_dialog.local_slot = Net.local_slot()
-		heist_join_dialog.gate = lobby  # kick list + drop-in policy (LobbySession.join_decision, B6-04)
+		# No gate: A's HeistDropIn already applied the kick list, validation and the policy (copied from the lobby
+		# at launch) and asks only for `ask`; a B gate on top would decide twice (B6-04, DropInFlow).
 		_in_heist.add_child(heist_join_dialog)
 		heist_join_dialog.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP, Control.PRESET_MODE_MINSIZE, 96)
 	EventBus.heist_ended.connect(_on_heist_ended, CONNECT_ONE_SHOT)
@@ -796,6 +809,8 @@ func show_lobby() -> void:
 		lobby_screen.contract_requested.connect(_on_lobby_contract_requested)
 		lobby_screen.briefing_requested.connect(_on_lobby_briefing)
 		lobby_screen.loadout_requested.connect(_open_armory)  # not open_station: that refunds the plan
+		lobby_screen.dropin_requested.connect(_open_drop_in)
+	drop_in.lobby = lobby
 	lobby.profile = _menu_profile()
 	lobby_screen.profile = lobby.profile
 	if is_coop():
@@ -869,18 +884,61 @@ func _on_lobby_started(info: Dictionary) -> void:
 		return
 	var launcher: Script = UiNav.global_class(&"HeistLauncher")
 	if launcher != null and _script_has_method(launcher, &"launch_client"):
-		_heist_id = info["heist"]
-		_difficulty = int(info["difficulty"])
-		is_pro = bool(info["is_pro"])
-		visible = false
-		_spawn_in_heist_ui()
-		runtime = await launcher.call(&"launch_client", _heist_id, int(info["seed"]), _difficulty, null, {})
+		_begin_client_heist(info)
+		runtime = await launcher.call(&"launch_client")  # (parent = null, options = {}, timeout_s = 0): net.md A3-07
 		if runtime == null:
 			_leave_heist()
 		else:
 			heist_launched.emit(runtime)
 		return
 	_show_stub(&"ui.lobby.client_launch_missing", false)
+
+
+## A co-op client enters a heist (lobby start or drop-in): `info` {"heist", "difficulty", "is_pro"}; the menus
+## hide and the in-heist UI (HUD, payday, chat overlay) comes up.
+func _begin_client_heist(info: Dictionary) -> void:
+	_heist_id = StringName(info["heist"])
+	_difficulty = int(info["difficulty"])
+	is_pro = bool(info["is_pro"])
+	visible = false
+	_spawn_in_heist_ui()
+
+
+## Lobby "Drop in to a running heist" (B6-04): the compact loadout pick + progress screen bound to DropInFlow.
+func _open_drop_in(address: String, port: int) -> void:
+	_free_screen(drop_in_screen)
+	drop_in.lobby = lobby
+	drop_in_screen = drop_in.open(address, port, _menu_profile(), profile_slot)
+	drop_in_screen.visible = false
+	add_child(drop_in_screen)
+	drop_in_screen.back_requested.connect(_close_drop_in)
+	drop_in_screen.joined.connect(_on_drop_in_joined)
+	show_screen(drop_in_screen)
+
+
+## Back / Cancel on the drop-in screen: back to the lobby's connect view, with the failure reason if any.
+func _close_drop_in() -> void:
+	_free_screen(drop_in_screen)
+	drop_in_screen = null
+	if drop_in.is_joining():
+		drop_in.cancel_join()
+	show_lobby()
+	var reason: StringName = drop_in.last_failure
+	if reason != &"" and reason != DropInService.REASON_CANCELLED:
+		var key: StringName = StringName("ui.dropin.failed.%s" % reason)
+		lobby_screen.error_label.text = UiText.t(key if DropInService.REASONS.has(reason) else &"ui.dropin.failed.unknown")
+
+
+## A's service reports the local player in (its HeistLauncher.launch_client already built the replica): switch
+## to the in-heist UI like a co-op client launch, without launching again.
+func _on_drop_in_joined(_slot: int) -> void:
+	_free_screen(drop_in_screen)
+	drop_in_screen = null
+	var info: Dictionary = drop_in.heist_info()
+	_begin_client_heist(info)
+	runtime = info["runtime"] as Object
+	if runtime != null:
+		heist_launched.emit(runtime)
 
 
 ## Host launch of a co-op contract: the live session (no Net.start_solo; HeistLauncher fills empty
@@ -895,6 +953,7 @@ func launch_coop(info: Dictionary) -> void:
 	is_pro = bool(info["is_pro"])
 	var options: Dictionary = build_coop_launch_options(lobby.state.launch_loadouts(), preplan, is_pro,
 			MusicCatalog.resolve_choice(_menu_profile()), Heisters.ai_loadouts(lobby.state.ai_heisters()))
+	DropInFlow.apply_host_policy(get_tree(), lobby.state.dropin_policy)  # B6-04: A's service decides drop-ins
 	visible = false
 	_spawn_in_heist_ui()
 	runtime = await launcher.call(&"launch", _heist_id, int(info["seed"]), _difficulty, null, options)

@@ -15,6 +15,8 @@ extends Resource
 @export var mask: StringName = &""
 ## D-073: chosen heister (&"rook" | &"sable" | &"dutch" | &"wren"); &"" = generic crew (no FP sleeve variant).
 @export var heister: StringName = &""
+## D-074: equipped weapon finishes (weapon_id -> finish_id, ENV B B7-04); teammates see them via the replicated loadout.
+@export var weapon_finishes: Dictionary = {}
 ## Custom mask descriptor (ENV B MaskCatalog format) so every peer renders the same mask; {} = preset `mask` (QA-25).
 @export var mask_descriptor: Dictionary = {}
 @export var perk_deck: StringName = &""

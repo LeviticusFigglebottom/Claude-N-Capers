@@ -88,6 +88,8 @@ func test_net_kick_guards() -> void:
 	var port: int = 30000 + GameRng.stream(&"test_net_kick").randi_range(0, 9999)
 	assert_eq(Net.host(port, "Host"), OK, "host")
 	Net._kicked_names["griefer"] = true
+	assert_true(Net.was_kicked("  Griefer "), "was_kicked is case- and space-insensitive")
+	assert_false(Net.was_kicked("Friend"), "others are not kicked")
 	assert_false(Net.kick(Net.local_peer_id()), "never kicks the host itself")
 	assert_false(Net.kick(Net.AI_PEER), "AI slots are not peers")
 	assert_false(Net.kick(4242), "unknown peer")
