@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ThrowableDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/throwable_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"throwable.frag"
+display_name = "Frag Grenade"
+kind = &"frag"
+count = 3
+damage = 1600.0
+radius_m = 5.0
+fuse_s = 2.5
+anim_set = &"throwable"

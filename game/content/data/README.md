@@ -68,6 +68,26 @@ Perk-deck items (data only, no models yet): `throwable.steady_flask` (Composure'
 count 1, damage 0). Radius and fuse 0 (not thrown). Their effects live in the deck's `perk.*`
 grants. `test_perk_throwables_exist` checks every `perk.throwable` item id resolves.
 
+Player throwables (D-073, for ENV A's A3-12 runtime, which switches on `kind`). Every one has count 3 (lead brief,
+PD2-shaped ◇) and `anim_set = &"throwable"` (D-069). Display units. No models yet.
+The ThrowableDef contract has no `params`, so stun time, fire-pool time and burn damage are not data yet
+(asked of the lead / ENV A).
+| id | kind | damage | radius_m | fuse_s | src / meaning |
+|---|---|---|---|---|---|
+| `throwable.frag` | `frag` | 1,600 | 5.0 | 2.5 | PD2 frag shape: ~1,600 within 5 m after a 2.5 s fuse (lead brief) ◇ |
+| `throwable.concussion` | `concussion` | 0 | 10.0 | 1.5 | stun only; wider than the frag, shorter fuse ◇ |
+| `throwable.incendiary` | `incendiary` | 100 | 4.0 | 2.5 | `damage` = the burst; `radius_m` = the fire pool ◇ |
+| `throwable.throwing_knife` | `throwing_knife` | 1,000 | 0 | 0 | single target, hits on impact (radius and fuse 0) ◇ |
+
+The loadout picker offers these four (ThrowableGate: any throwable a perk card's `perk.throwable` names is
+perk-only and never listed).
+
+## Heisters: `heisters/roster.tres` (D-073)
+`HeisterRoster`: `ids` in roster order (`rook`, `sable`, `dutch`, `wren`; the order fallbacks and AI fill take),
+`accents` (picker swatch + lobby slot colour, original, never the focus cyan), `generic_accent` for "Any Free
+Heister", `portrait_dir` (ENV D's 2D portraits `<dir>/<id>.png`; none exist yet, so the picker shows the name and
+accent only). Names: strings `crew.<id>`.
+
 ## Loot: `loot/`
 Jewelry $1,000 LIGHT ◇, cash $1,200 LIGHT ◇, body bag $0 HEAVY (S6.3, D-032). Base values before the
 difficulty multiplier.
