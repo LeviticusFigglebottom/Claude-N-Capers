@@ -1,0 +1,14 @@
+asset: char_arms_fp_rook
+script: tools/blender/characters/arms_fp_heisters.py
+params: {"heister": "rook", "skin": 3}
+seed: 3939219713  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_arms_fp_rook
+edit policy: generated file, never edit by hand; change the script and rebuild
+fp.variant: mesh-only sleeve variant of char_arms_fp (no AnimationPlayer): <root>/rig_arms/Skeleton3D/Arms, same rig_arms bones / rest / bind poses; ENV A puts this Arms' mesh + skin on char_arms_fp's Arms (the clips stay in char_arms_fp); the hands are glove-material hands (no skin under the glove)
+heister: rook
+layers: char_leather_black u=-0.035..0.000 m; char_shirt_white u=-0.062..-0.013 m; char_crew_rook_coat u=-0.389..-0.030 m
+look: charcoal overcoat sleeve with a turned-back cuff band, white shirt cuff showing 17 mm, black leather gloves with a short gauntlet
+materials: char_crew_rook_coat,char_leather_black,char_shirt_white
+tri_budget: 12000
+tris: 9944

@@ -138,10 +138,9 @@ def _align_ring(ref: list, ring: list) -> list:
     return [ring[(i + best) % n] for i in range(n)]
 
 
-def hands_data(params: dict) -> dict:
-    """Pure-math arm mesh in humanoid space: hands (one Catmull-Clark level above the body's) with
-    weights, plus lofted suit sleeves with a turned-in cuff. Returns verts, faces, face material
-    ("skin"/"suit"), face uvs (skin only; None for suit), weights."""
+def hand_part(params: dict) -> dict:
+    """Pure-math hands in humanoid space (one Catmull-Clark level above the body's) with body UVs and
+    weights. Returns verts, faces, mats ("skin"), uvs, weights, height (the ``hands_data`` layout)."""
     import _body as body  # noqa: PLC0415
 
     p = body.body_params(params, hide=frozenset(r for r in body.REGIONS if r != "hands"))
@@ -176,13 +175,38 @@ def hands_data(params: dict) -> dict:
     faces = [tuple(f) for f in sub.faces]
     mats = ["skin"] * len(faces)
     face_uv: list = list(uvs)
-    # sleeves
+    return {"verts": verts, "faces": faces, "mats": mats, "uvs": face_uv, "weights": weights,
+            "height": float(p["height"])}
+
+
+def arm_loops(params: dict) -> dict:
+    """{side: [upper_arm, elbow, forearm, wrist] body rings, each rotated to match the previous one}."""
+    import _body as body  # noqa: PLC0415
+
     rings = body.body_rings(body.body_params(params, hide=frozenset()))
-    for sfx, sx in rig.SIDES:
+    out = {}
+    for sfx, _sx in rig.SIDES:
         loops = [rings[f"{r}.{sfx}"] for r in SLEEVE_RINGS]
         for i in range(1, len(loops)):
             loops[i] = _align_ring(loops[i - 1], loops[i])
-        cen = [np.mean(np.array(lp), axis=0) for lp in loops]
+        out[sfx] = loops
+    return out
+
+
+def hands_data(params: dict) -> dict:
+    """Pure-math arm mesh in humanoid space: hands (``hand_part``) plus lofted suit sleeves with a
+    turned-in cuff. Returns verts, faces, face material ("skin"/"suit"), face uvs (skin only; None
+    for suit), weights."""
+    import _body as body  # noqa: PLC0415
+
+    hp = hand_part(params)
+    verts, faces, mats, face_uv, weights = hp["verts"], hp["faces"], hp["mats"], hp["uvs"], hp["weights"]
+    p = {"height": hp["height"]}
+    # sleeves
+    all_loops = arm_loops(params)
+    for sfx, _sx in rig.SIDES:
+        loops = all_loops[sfx]
+        cen =[np.mean(np.array(lp), axis=0) for lp in loops]
         offs = [SLEEVE_EASE[r] for r in SLEEVE_RINGS]
         out_loops = []
         for li in range(len(loops) - 1):
@@ -257,36 +281,42 @@ SUIT_COLOR = "#23262B"
 
 
 def build_arms_mesh(ctx, arm_obj, params: dict) -> dict:
-    """Create the skinned ``Arms`` mesh (skin + suit sleeves) in camera space under ``arm_obj``."""
+    """Create the skinned ``Arms`` mesh in camera space under ``arm_obj``: skin hands + suit sleeves, or
+    with ``params["heister"]`` that crew heister's sleeve variant (``_arms_sleeves``)."""
     import bmesh  # noqa: PLC0415
     import bpy  # noqa: PLC0415
 
     import _body as body  # noqa: PLC0415
     from lib import scene  # noqa: PLC0415
 
-    d = hands_data(params)
+    skin_id = int(body.body_params({k: x for k, x in params.items() if k != "heister"})["skin"])
+    if params.get("heister"):
+        import _arms_sleeves as sleeves  # noqa: PLC0415
+
+        d = sleeves.variant_data(params)
+    else:
+        d = hands_data(params)
+        d["slots"] = {"skin": f"char_skin_{skin_id}", "suit": "char_suit_dark"}
     eye = eye_point(d["height"])
-    skin_id = int(body.body_params(params)["skin"])
-    m_skin = ctx.material(f"char_skin_{skin_id}", body.SKIN_TONES[skin_id - 1], roughness=0.55)
-    m_suit = ctx.material("char_suit_dark", SUIT_COLOR, roughness=0.75)
     me = bpy.data.meshes.new("Arms")
     me.from_pydata([tuple(np.array(v) - eye) for v in d["verts"]], [], d["faces"])
-    me.materials.append(m_skin)
-    me.materials.append(m_suit)
-    me.polygons.foreach_set("material_index", [0 if m == "skin" else 1 for m in d["mats"]])
+    keys = list(d["slots"])
+    for key in keys:
+        me.materials.append(_slot_material(ctx, d["slots"][key]))
+    me.polygons.foreach_set("material_index", [keys.index(m) for m in d["mats"]])
     me.validate(clean_customdata=False)
     me.update()
-    # UVs: skin from the body's tiles; sleeves box-projected at the first-person density
+    # UVs: skin from the body's tiles; sleeves / gloves box-projected at the first-person density
     bm = bmesh.new()
     bm.from_mesh(me)
     layer = bm.loops.layers.uv.new("UVMap")
-    suit_faces = [f for f in bm.faces if f.material_index == 1]
+    box_faces = [f for f in bm.faces if d["uvs"][f.index] is None]
     bm.faces.ensure_lookup_table()
     for f in bm.faces:
-        if f.material_index == 0:
+        if d["uvs"][f.index] is not None:
             for loop, uvc in zip(f.loops, d["uvs"][f.index]):
                 loop[layer].uv = uvc
-    _box_suit(bm, layer, suit_faces)
+    _box_suit(bm, layer, box_faces)
     bm.to_mesh(me)
     bm.free()
     me.shade_smooth()
@@ -309,6 +339,20 @@ def build_arms_mesh(ctx, arm_obj, params: dict) -> dict:
     mod.use_vertex_groups = True
     mod.use_bone_envelopes = False
     return {"Arms": obj, "tris": sum(len(f) - 2 for f in d["faces"])}
+
+
+def _slot_material(ctx, lib_id: str):
+    """Library material ``lib_id`` with its placeholder colour (skin tones from ``_body``, the rest from
+    ``_outfit_palette``)."""
+    import _body as body  # noqa: PLC0415
+    import _outfit_palette as pal  # noqa: PLC0415
+
+    if lib_id.startswith("char_skin_"):
+        return ctx.material(lib_id, body.SKIN_TONES[int(lib_id[len("char_skin_"):]) - 1], roughness=0.55)
+    if lib_id == "char_suit_dark":
+        return ctx.material(lib_id, SUIT_COLOR, roughness=0.75)
+    hexc, rough, metal = pal.spec(lib_id)
+    return ctx.material(lib_id, hexc, roughness=rough, metallic=metal)
 
 
 def _box_suit(bm, layer, faces) -> None:
