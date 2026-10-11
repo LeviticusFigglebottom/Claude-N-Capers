@@ -1,6 +1,7 @@
 ## In-heist HUD root (contracts/ui_hud.md, D-009). Owner: ENV B.
 ## Binds ONLY to the local HUD model and EventBus. The widgets bind DIRECTLY to the model, which
-## speaks the ui_hud.md v1.3 binding shape (v1.2 adds `custody`, v1.3 `captain_present`/`captain_resistance`)
+## speaks the ui_hud.md v1.3 binding shape (v1.2 adds `custody`, v1.3 `captain_present`/`captain_resistance`;
+## v1.4 `stamina`/`exhausted` drive StaminaBar, bound by signal name ahead of ENV A)
 ## (ENV A's LocalHudModel; MockHudModel for the demo/tests).
 ## Model resolution, in order:
 ##   1. bind(model) called by the owner (tests, hud_demo);
@@ -38,6 +39,7 @@ var teammates: TeammatePanels
 var status: StatusPanel
 var custody: CustodyPanel
 var captain: CaptainPanel
+var stamina: StaminaBar
 var toast_label: Label
 var secured_bags: int = 0
 var _lookup_t: float = 0.0
@@ -64,7 +66,7 @@ func bind(m: Node) -> void:
 
 
 func widgets() -> Array[HudWidget]:
-	return [chevrons, marks, interaction, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain]
+	return [chevrons, marks, interaction, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina]
 
 
 func _build() -> void:
@@ -75,6 +77,7 @@ func _build() -> void:
 	crosshair.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_place(crosshair, Control.PRESET_CENTER, Vector2(-20, -20), Vector2(40, 40))
 	interaction = _place(InteractionPanel.new(), Control.PRESET_CENTER, Vector2(-300, 60), Vector2(600, 110)) as InteractionPanel
+	stamina = _place(StaminaBar.new(), Control.PRESET_BOTTOM_LEFT, Vector2(48, -248), Vector2(340, 40)) as StaminaBar
 	vitals = _place(VitalsPanel.new(), Control.PRESET_BOTTOM_LEFT, Vector2(48, -200), Vector2(340, 160)) as VitalsPanel
 	ammo = _place(AmmoPanel.new(), Control.PRESET_BOTTOM_RIGHT, Vector2(-388, -200), Vector2(340, 160)) as AmmoPanel
 	teammates = _place(TeammatePanels.new(), Control.PRESET_CENTER_LEFT, Vector2(48, -120), Vector2(260, 400)) as TeammatePanels

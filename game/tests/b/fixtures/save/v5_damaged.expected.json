@@ -1,0 +1,30 @@
+{
+	"version": 5,
+	"profile_name": "",
+	"cash": 0,
+	"stash": 5000,
+	"xp": 0,
+	"level": 3,
+	"banked_stealth_mult": 1.0,
+	"owned_weapons": ["weapon.kestrel_p9"],
+	"owned_mods": ["mod.p9_suppressor"],
+	"owned_masks": ["mask.night_circuit", "mask.oxblood_herald"],
+	"owned_mask_parts": ["mask_pattern.dots"],
+	"custom_masks": [{}, {}, {}],
+	"loadout": {
+		"primary": "", "primary_mods": [],
+		"secondary": "weapon.kestrel_p9", "secondary_mods": ["mod.p9_suppressor"],
+		"melee": "melee.folding_knife", "throwable": "", "deployable": "deployable.doctor_bag",
+		"deployable_secondary": "", "armor": "armor.tailored_suit", "mask": "mask.gilded_heron",
+		"perk_deck": "", "perk_deck_cards": 0,
+		"skills": {}
+	},
+	"skill_sets": [{}, {"skill.juggernaut.thick_skin": 1}, {}],
+	"active_skill_set": 0,
+	"perk_cards": {"perk.bulk": 9},
+	"unlocks": ["unlock.achievement.cataclysm_clear"],
+	"achievements": {"achievement.first_score": {"progress": 1, "unlocked": true}},
+	"pro_job_locks": {"0:123": 1000.0},
+	"stats": {"heists_completed": 2},
+	"settings": {}
+}

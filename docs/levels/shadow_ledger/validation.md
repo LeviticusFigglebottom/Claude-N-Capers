@@ -8,6 +8,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | check | result | fails | warnings |
 |---|---|---|---|
 | contract_nodes | PASS | 0 | 0 |
+| cameras | PASS | 0 | 0 |
 | floating | PASS | 0 | 0 |
 | clipping | PASS | 0 | 0 |
 | orientation | skipped | 0 | 0 |
@@ -26,6 +27,11 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | perf | skipped | 0 | 0 |
 
 ## contract_nodes: Contract nodes
+
+
+## cameras: Review camera placement
+
+- 15 perspective review camera(s) checked
 
 
 ## floating: Nothing floats
@@ -77,7 +83,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Rooms/RoomM4` (office): ceiling median 3.00 m (rule 2.6-3.0)
 - `Rooms/RoomM5` (bedroom): ceiling median 3.00 m (rule 2.6-3.0)
 - `Rooms/RoomM6` (restroom): ceiling median 2.70 m (rule 2.6-3.0)
-- `Rooms/RoomM7` (corridor): ceiling median 2.70 m (rule 2.6-3.0)
+- `Rooms/RoomM7`: ceiling_range override (2.6, 3.0) (lead review)
+- `Rooms/RoomM7` (dressing): ceiling median 2.70 m (rule 2.6-3.0)
 - `Rooms/RoomM8`: ceiling_range override (2.6, 3.0) (lead review)
 - `Rooms/RoomM8` (dining_room): ceiling median 3.00 m (rule 2.6-3.0)
 - `Rooms/RoomM9` (corridor): ceiling median 2.70 m (rule 2.6-3.0)
@@ -94,41 +101,53 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Rooms/RoomR3` (plant): ceiling median 3.50 m (rule 2.6-6.0)
 - `Geometry/Building/Stairs/StairA/Flight1W`: ramp collision enveloping the steps (max 0.180 m above the treads)
 - `Geometry/Building/Stairs/StairA/Flight1W`: 10 risers, 0.000 -> 1.800 m
+- `Geometry/Building/Stairs/StairA/Flight1W` rails: -X wall, rail tops [0.91, 0.95, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.91, 0.94, 0.97, 1.00, 1.03] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stairs/StairA/Flight1E`: ramp collision enveloping the steps (max 0.180 m above the treads)
 - `Geometry/Building/Stairs/StairA/Flight1E`: 10 risers, 1.800 -> 3.600 m
+- `Geometry/Building/Stairs/StairA/Flight1E` rails: -X wall, rail tops [0.91, 0.95, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.91, 0.94, 0.97, 1.00, 1.03] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stairs/StairA/Flight2W`: ramp collision enveloping the steps (max 0.183 m above the treads)
 - `Geometry/Building/Stairs/StairA/Flight2W`: 12 risers, 3.600 -> 5.800 m
+- `Geometry/Building/Stairs/StairA/Flight2W` rails: -X wall, rail tops [0.91, 0.94, 0.97, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.90, 0.94, 0.97, 1.00, 1.04] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stairs/StairA/Flight2E`: ramp collision enveloping the steps (max 0.183 m above the treads)
 - `Geometry/Building/Stairs/StairA/Flight2E`: 12 risers, 5.800 -> 8.000 m
+- `Geometry/Building/Stairs/StairA/Flight2E` rails: -X wall, rail tops [0.91, 0.94, 0.97, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.90, 0.94, 0.97, 1.00, 1.04] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stairs/StairA/Flight3W`: ramp collision enveloping the steps (max 0.180 m above the treads)
 - `Geometry/Building/Stairs/StairA/Flight3W`: 10 risers, 8.000 -> 9.800 m
+- `Geometry/Building/Stairs/StairA/Flight3W` rails: -X wall, rail tops [0.91, 0.95, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.91, 0.94, 0.97, 1.00, 1.03] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stairs/StairA/Flight3E`: ramp collision enveloping the steps (max 0.180 m above the treads)
 - `Geometry/Building/Stairs/StairA/Flight3E`: 10 risers, 9.800 -> 11.600 m
+- `Geometry/Building/Stairs/StairA/Flight3E` rails: -X wall, rail tops [0.91, 0.95, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.91, 0.94, 0.97, 1.00, 1.03] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stairs/StairB/Flight1W`: ramp collision enveloping the steps (max 0.180 m above the treads)
 - `Geometry/Building/Stairs/StairB/Flight1W`: 10 risers, 0.000 -> 1.800 m
+- `Geometry/Building/Stairs/StairB/Flight1W` rails: -X wall, rail tops [0.91, 0.95, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.91, 0.94, 0.97, 1.00, 1.03] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stairs/StairB/Flight1E`: ramp collision enveloping the steps (max 0.180 m above the treads)
 - `Geometry/Building/Stairs/StairB/Flight1E`: 10 risers, 1.800 -> 3.600 m
+- `Geometry/Building/Stairs/StairB/Flight1E` rails: -X wall, rail tops [0.91, 0.95, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.91, 0.94, 0.97, 1.00, 1.03] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stairs/StairB/Flight2W`: ramp collision enveloping the steps (max 0.183 m above the treads)
 - `Geometry/Building/Stairs/StairB/Flight2W`: 12 risers, 3.600 -> 5.800 m
+- `Geometry/Building/Stairs/StairB/Flight2W` rails: -X wall, rail tops [0.91, 0.94, 0.97, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.90, 0.94, 0.97, 1.00, 1.04] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stairs/StairB/Flight2E`: ramp collision enveloping the steps (max 0.183 m above the treads)
 - `Geometry/Building/Stairs/StairB/Flight2E`: 12 risers, 5.800 -> 8.000 m
+- `Geometry/Building/Stairs/StairB/Flight2E` rails: -X wall, rail tops [0.91, 0.94, 0.97, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.90, 0.94, 0.97, 1.00, 1.04] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stairs/FeatureStair/Flight1`: ramp collision enveloping the steps (max 0.183 m above the treads)
 - `Geometry/Building/Stairs/FeatureStair/Flight1`: 12 risers, 3.600 -> 5.800 m
+- `Geometry/Building/Stairs/FeatureStair/Flight1` rails: -X wall, rail tops [0.90, 0.94, 0.97, 1.00, 1.25] m above nosing, max drop 2.14 m; +X wall, rail tops [0.90, 0.94, 0.97, 1.00, 1.25] m above nosing, max drop 2.14 m
 - `Geometry/Building/Stairs/FeatureStair/Flight2`: ramp collision enveloping the steps (max 0.183 m above the treads)
 - `Geometry/Building/Stairs/FeatureStair/Flight2`: 12 risers, 5.800 -> 8.000 m
+- `Geometry/Building/Stairs/FeatureStair/Flight2` rails: -X wall, rail tops [0.90, 0.94, 0.97, 1.00, 1.25] m above nosing, max drop 4.34 m; +X wall, rail tops [0.90, 0.94, 0.97, 1.00, 1.25] m above nosing, max drop 4.34 m
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1486 polygons, cell 0.10/0.10 m
+- navmesh: 1484 polygons, cell 0.10/0.10 m
 - 247 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomS1` | 83 | 83 | 100% |
 | `Rooms/RoomS3` | 8 | 8 | 100% |
 | `Rooms/RoomS2` | 26 | 26 | 100% |
-| `Rooms/RoomSA` | 10 | 10 | 100% |
-| `Rooms/RoomSB` | 8 | 8 | 100% |
+| `Rooms/RoomSA` | 7 | 7 | 100% |
+| `Rooms/RoomSB` | 5 | 5 | 100% |
 | `Rooms/RoomSL` | 25 | 25 | 100% |
 | `Rooms/RoomK1` | 81 | 81 | 100% |
 | `Rooms/RoomK2` | 41 | 41 | 100% |
@@ -178,7 +197,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomWCW42` | 50 | 50 | 100% |
 | `Rooms/RoomWCM42` | 50 | 50 | 100% |
 | `Rooms/RoomR1` | 6 | 6 | 100% |
-| `Rooms/RoomR2` | 7 | 7 | 100% |
+| `Rooms/RoomR2` | 5 | 5 | 100% |
 | `Rooms/RoomR3` | 175 | 175 | 100% |
 | `Rooms/RoomX1` | 638 | 638 | 100% |
 | `Rooms/RoomX2` | 746 | 746 | 100% |
@@ -203,8 +222,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## lasers: Laser grid bypass gaps
 
-- `Variants/Group_laser_pattern/Slot_lz_static/LaserEmitters/ArtHallLasers`: pattern `static`, bypass gap not required
+- `Variants/Group_laser_pattern/Slot_lz_static/LaserEmitters/ArtHallLasers`: beams x -3.40..3.40 m; lowest beam 1.25 m, crouched clear stretch 6.80 m
 - `Variants/Group_laser_pattern/Slot_lz_sweep/LaserEmitters/ArtHallLasers`: pattern `sweeping`, bypass gap not required
 - `Variants/Group_laser_pattern/Slot_lz_timed/LaserEmitters/ArtHallLasers`: pattern `timed_off`, bypass gap not required
-- 3 laser grid(s), 0 with an asserted bypass gap
+- 3 laser grid(s), 1 with an asserted bypass gap
 

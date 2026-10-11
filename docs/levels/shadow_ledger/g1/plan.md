@@ -3,18 +3,18 @@
 Top-down orthographic, cut at floor + 1.5 m. Overlay: player spawns green, guards red, police blue,
 civilians yellow, patrol points/links orange, loot magenta, UsePoints cyan, escape zones green, secure zones magenta.
 
-## Ground Floor (0.0 m)
+## L40 (0.0 m)
 
 ![floor 0](plan_floor0.jpg)
 
-## Floor 1 (+3.6 m)
+## L41 (+3.6 m)
 
 ![floor 1](plan_floor1.jpg)
 
-## Floor 2 (+8.0 m)
+## L42 (+8.0 m)
 
 ![floor 2](plan_floor2.jpg)
 
-## Floor 3 (+11.6 m)
+## Roof (+11.6 m)
 
 ![floor 3](plan_floor3.jpg)

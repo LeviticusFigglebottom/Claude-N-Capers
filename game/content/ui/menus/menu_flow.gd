@@ -35,6 +35,7 @@ const PERKS_SCENE: PackedScene = preload("res://content/ui/progression/perk_deck
 const HUB_SCENE: PackedScene = preload("res://content/ui/hub/hub_menu.tscn")
 const BOARD_SCENE: PackedScene = preload("res://content/ui/board/board_screen.tscn")
 const LOBBY_SCENE: PackedScene = preload("res://content/ui/lobby/lobby_screen.tscn")
+const ACHIEVEMENTS_SCENE: PackedScene = preload("res://content/ui/achievements/achievements_screen.tscn")
 ## HubStation.target values open_station() understands.
 const TARGET_BOARD: StringName = &"board"
 const TARGET_HEIST_SELECT: StringName = &"heist_select"
@@ -71,10 +72,10 @@ var preplan: Dictionary = {}
 ## The chosen contract is a pro job (Board pin flagged pro). Heist select, the broker and direct
 ## launch are never pro. Goes to options["is_pro"] and PaydayScreen.is_pro.
 var is_pro: bool = false
-## Pro jobs have no restart (QB-BRD1, D-049): BoardContracts.contract_key() -> true for every pro
-## Board contract whose heist failed this session. Shared with the Board, which locks those pins for
-## the rest of their rotation (they can't be taken again, so the briefing can't relaunch them).
-## Session-scoped (not saved): a contract only lives for one rotation anyway.
+## Pro jobs have no restart (QB-BRD1, D-049): BoardContracts.contract_key() -> expires_at for every
+## failed pro Board contract. Shared with the Board, which locks those pins for the rest of their
+## rotation (they can't be taken again, so the briefing can't relaunch them). Persisted in the profile
+## (`pro_job_locks`, save v5, ProJobLocks) so a restart keeps the lock; the Board reloads them.
 var consumed_contracts: Dictionary = {}
 ## Station list (data/ui/hub_stations.tres).
 var stations: HubStationList
@@ -113,6 +114,7 @@ func _ready() -> void:
 	stub_screen = _add(STUB_SCENE) as StubScreen
 	main_menu.safehouse_requested.connect(show_hub)
 	hub.station_requested.connect(open_station)
+	hub.achievements_requested.connect(_open_achievements)
 	hub.back_requested.connect(_on_hub_back)
 	main_menu.firing_range_requested.connect(open_firing_range)
 	main_menu.settings_requested.connect(_show_stub.bind(&"ui.menu.settings_soon", false))
@@ -193,14 +195,36 @@ func _open_board() -> void:
 		board_screen = BOARD_SCENE.instantiate() as BoardScreen
 		board_screen.profile_slot = profile_slot
 		board_screen.consumed = consumed_contracts
+		_sync_pro_locks()
 		board_screen.setup(_menu_profile())
 		board_screen.visible = false
 		add_child(board_screen)
 		board_screen.back_requested.connect(show_hub)
 		board_screen.contract_chosen.connect(_on_contract_chosen)
 	else:
+		_sync_pro_locks()
 		board_screen.setup(_menu_profile())
 	show_screen(board_screen)
+
+
+## Achievements screen (B4-20) from the hub's profile panel; Back frees it and returns to the hub.
+func _open_achievements() -> void:
+	var screen: AchievementsScreen = ACHIEVEMENTS_SCENE.instantiate() as AchievementsScreen
+	screen.setup(SaveService.load_profile(profile_slot))
+	screen.visible = false
+	add_child(screen)
+	screen.back_requested.connect(func() -> void:
+		_free_screen(screen)
+		show_hub())
+	show_screen(screen)
+
+
+## Live persisted pro-job locks of the menu profile -> consumed_contracts (expired ones skipped).
+func _sync_pro_locks() -> void:
+	var p: PlayerProfile = _menu_profile()
+	ProJobLocks.prune(p, Time.get_unix_time_from_system())
+	for key: Variant in p.pro_job_locks:
+		consumed_contracts[key] = p.pro_job_locks[key]
 
 
 ## Armory station: the loadout screen without Launch (hub_mode); Masks / Skills / Perk Deck work
@@ -575,7 +599,12 @@ func _on_heist_ended(result: Dictionary) -> void:
 ## A failed pro job: its Board contract is gone for the rest of its rotation (QB-BRD1, no restart).
 func consume_pro_contract() -> void:
 	if not _board_contract.is_empty():
-		consumed_contracts[BoardContracts.contract_key(_board_contract)] = true
+		consumed_contracts[BoardContracts.contract_key(_board_contract)] = float(_board_contract.get("expires_at", 0.0))
+		var disk: PlayerProfile = SaveService.load_profile(profile_slot)  # fresh: never clobber the payday
+		ProJobLocks.prune(disk, Time.get_unix_time_from_system())
+		ProJobLocks.lock(disk, _board_contract)
+		SaveService.save_profile(disk, profile_slot)
+		ProJobLocks.lock(profile, _board_contract)
 		Log.info(&"ui", "pro job failed: contract %s consumed" % BoardContracts.contract_key(_board_contract))
 	_board_contract = {}
 

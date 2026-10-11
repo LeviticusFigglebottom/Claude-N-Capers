@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.cataclysm_clear"
+name_key = &"achievement.cataclysm_clear.name"
+desc_key = &"achievement.cataclysm_clear.desc"
+condition = {"event": &"heist_completed", "difficulty_min": 5, "count": 1}
+unlock = &"unlock.achievement.cataclysm_clear"
+order = 60

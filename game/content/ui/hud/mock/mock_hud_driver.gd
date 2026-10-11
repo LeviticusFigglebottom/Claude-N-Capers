@@ -1,5 +1,6 @@
 ## Scripted demo driver for MockHudModel: loops a ~40 s timeline through casing, detection, a
-## pager, going loud, assault phases, Commander Brandt (captain), damage and downs, so every HUD widget is exercised.
+## pager, going loud, assault phases, Commander Brandt (captain), sprint stamina (drain, exhausted,
+## recovery; ui_hud v1.4), damage and downs, so every HUD widget is exercised.
 ## Deterministic (time-based, no RNG). Owner: ENV B. Used by hud_demo.tscn.
 class_name MockHudDriver
 extends Node
@@ -69,6 +70,10 @@ func _continuous() -> void:
 		model.interaction = {"text_key": &"ui.prompt.answer_pager", "args": {"key": "F"}, "progress": p, "blocked_reason": &""}
 	if _stage == 7 or _stage == 8:
 		model.captain_resistance = minf(0.1 + 0.05 * floorf((t - 28.0) / 1.0), 0.5)  # 10% +5%/step, cap 50%
+	if _stage == 6:
+		model.stamina = 1.0 - fmod(t, 4.0) / 4.0  # sprinting
+	if _stage == 8:
+		model.stamina = 0.6 * fmod(t, 4.0) / 4.0  # recovering
 	if _stage >= 6 and _stage <= 8:
 		model.health = maxf(model.max_health * (1.0 - fmod(t, 4.0) / 4.0), 1.0)
 
@@ -82,6 +87,8 @@ func _enter_stage(stage: int) -> void:
 			model.assault_phase = Enums.AssaultPhase.NONE
 			model.captain_present = false
 			model.captain_resistance = 0.0
+			model.stamina = 1.0
+			model.exhausted = false
 			model.crew_state = Enums.CrewState.NORMAL
 			model.bleedout_s = -1.0
 			model.interaction = {"text_key": &"ui.prompt.mask_up", "args": {"key": "G"}, "progress": 0.0, "blocked_reason": &""}
@@ -117,12 +124,15 @@ func _enter_stage(stage: int) -> void:
 			model.captain_resistance = 0.1
 			model.captain_present = true
 			model.warnings = [&"phantom", &"captain"]
+			model.stamina = 0.0
+			model.exhausted = true
 			model.armor = 0.0
 			model.ammo = {Enums.WeaponSlot.SECONDARY: {"mag": 4, "reserve": 60}}
 		8:
 			model.crew_state = Enums.CrewState.DOWNED
 			model.downs_left = 2
 			model.bleedout_s = 30.0
+			model.exhausted = false
 			model.warnings = []
 			model.crew = [
 				_mate(1, "crew.sable", 0.3, 0.0, Enums.CrewState.DOWNED),
@@ -135,6 +145,7 @@ func _enter_stage(stage: int) -> void:
 			model.crew_state = Enums.CrewState.NORMAL
 			model.bleedout_s = -1.0
 			model.carried_bag = {}
+			model.stamina = 1.0
 
 
 static func _mate(slot: int, name_key: String, hp: float, ar: float, state: int) -> Dictionary:

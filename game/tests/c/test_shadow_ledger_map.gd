@@ -35,7 +35,7 @@ const ROOMS: Dictionary = {
 	"K8": "office", "K9": "corridor", "K10": "corridor", "K11": "server_room", "K12": "office", "K13": "security_room",
 	"K14": "electrical", "K15": "storage", "K16": "corridor", "K17": "storage", "K18": "break_room", "K19": "office",
 	"K20": "office", "K24": "office", "M1": "lounge", "M2": "lobby", "M3": "gallery", "M4": "office", "M5": "bedroom",
-	"M6": "restroom", "M7": "corridor", "M8": "dining_room", "M9": "corridor", "M10": "corridor", "M11": "break_room",
+	"M6": "restroom", "M7": "dressing", "M8": "dining_room", "M9": "corridor", "M10": "corridor", "M11": "break_room",
 	"M12": "electrical", "M13": "storage", "M14": "office", "M15": "corridor", "R1": "plant", "R2": "stair",
 	"R3": "plant", "X1": "exterior", "X2": "exterior",
 }

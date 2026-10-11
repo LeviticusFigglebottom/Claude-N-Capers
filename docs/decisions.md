@@ -350,3 +350,15 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   shape): PARAMS `{absorb_per_hostage: float (PD2 display units), max_hostages: int}`. skills.md and perk_decks.md
   follow this; no value-based shape detection.
 - `ensure_info_v11` stays as target-side defaulting for hand-built info dicts.
+
+## D-057 — 2026-10-11 — Armory batch 3 contracts; save v5
+- `WeaponDef.params` / `WeaponModDef.params` (Dictionary; mod params shallow-merged over the def's in mod order).
+  Schemas per mechanic in game/systems/modifiers_params.md (ENV A).
+- fire_modes gain `charge` (bow/crossbow draw) and `lever`.
+- gameplay_prefabs v1.3: group `saw_target` + `saw_cut(seconds, attacker_net_id)`.
+- Modifier keys `weapon.saw_wear_mult`, `weapon.saw_damage_mult`, `weapon.saw_shield_pierce` (FLAG).
+- ui_hud v1.5 `weapon_charge_changed` / `weapon_spin_changed`.
+- Mechanics follow pd2_fidelity L3.4 (fire ignores armor and shields) and L3.6 (explosion falloff).
+- Save format v5 (ENV B B4-16 = roadmap "save v2"): unlocks/achievements/pro_job_locks, sanitizing + validator
+  pruning, golden v0..v4→v5 migrations, damaged-file fallback (content/docs/save_format.md).
+- Armory reaches 36 weapons (B4-18); stinger_45 renamed lancet_45 (name clash with a mod).

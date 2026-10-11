@@ -1,0 +1,30 @@
+{
+	"version": 5,
+	"profile_name": "Ghost",
+	"cash": 1500,
+	"stash": 64000,
+	"xp": 30000,
+	"level": 8,
+	"banked_stealth_mult": 1.2,
+	"owned_weapons": ["weapon.kestrel_p9"],
+	"owned_mods": ["mod.p9_suppressor", "mod.p9_reflex_sight", "mod.p9_extended_mag"],
+	"owned_masks": [],
+	"owned_mask_parts": [],
+	"custom_masks": [],
+	"loadout": {
+		"primary": "", "primary_mods": [],
+		"secondary": "weapon.kestrel_p9", "secondary_mods": ["mod.p9_suppressor"],
+		"melee": "melee.folding_knife", "throwable": "", "deployable": "deployable.body_bag_case",
+		"deployable_secondary": "", "armor": "armor.tailored_suit", "mask": "mask.gilded_heron",
+		"perk_deck": "perk.hustler", "perk_deck_cards": 0,
+		"skills": {"skill.slipstream.light_step": 2}
+	},
+	"skill_sets": [{"skill.slipstream.light_step": 2}],
+	"active_skill_set": 0,
+	"perk_cards": {},
+	"unlocks": [],
+	"achievements": {},
+	"pro_job_locks": {},
+	"stats": {"heists_completed": 3},
+	"settings": {}
+}
