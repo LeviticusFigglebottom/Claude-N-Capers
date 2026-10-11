@@ -1,6 +1,7 @@
 ## A local player's persistent progression profile. Owner: ENV B. Persisted by SaveService.
 ##
-## JSON shape (version 4; see SaveService for migrations):
+## JSON shape (version 5; see SaveService for migrations). Every field, type, default and since-version:
+## content/docs/save_format.md (ProfileSchema sanitizes types, ProfileValidator prunes unknown ids on load).
 ##   version: int, profile_name: String,
 ##   cash: int (spending cash), stash: int (offshore, "the stash"; pd2_fidelity S10.4),
 ##   xp: int (total), level: int (0..100; pd2_fidelity P1),
@@ -24,6 +25,11 @@
 ##   custom_masks: Array of composition dicts (v4, P8): index n = custom slot `mask.custom.<n>`,
 ##     {"base", "material", "colors", "pattern"} part ids, {} = empty slot (MaskLocker / MaskCatalog;
 ##     content/docs/masks.md). loadout.mask may hold a preset id or a custom slot id.
+##   unlocks: Array[String] (v5): granted unlock ids (`unlock.*`, e.g. `unlock.achievement.cataclysm_clear`);
+##     MaskLocker.grant_unlock records them, and every preset with a recorded unlock is owned.
+##   achievements: Dictionary achievement id -> {"progress": int, "unlocked": bool} (v5, Achievements).
+##   pro_job_locks: Dictionary BoardContracts.contract_key() -> float expires_at (Unix s) (v5,
+##     QB-BRD1): failed pro Board contracts, locked until their rotation ends (ProJobLocks prunes them).
 ##   stats: Dictionary String -> int counters (heists_completed, ...).
 ##   settings: Dictionary of JSON values, stored as-is (JSON numbers come back as float).
 ## StringNames are written as strings and converted back on load.
@@ -38,7 +44,7 @@ const LOADOUT_ID_FIELDS: Array[String] = [
 ]
 const LOADOUT_LIST_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 
-var version: int = 4
+var version: int = 5
 var profile_name: String = ""
 var cash: int = 0
 var stash: int = 0
@@ -54,6 +60,12 @@ var loadout: Loadout = Loadout.new()
 var skill_sets: Array[Dictionary] = []
 var active_skill_set: int = 0
 var perk_cards: Dictionary = {}
+## Granted unlock ids (v5), sorted.
+var unlocks: Array[StringName] = []
+## Achievement id (StringName) -> {"progress": int, "unlocked": bool} (v5).
+var achievements: Dictionary = {}
+## Contract key (String) -> expires_at (float, Unix seconds) (v5).
+var pro_job_locks: Dictionary = {}
 var stats: Dictionary = {}
 var settings: Dictionary = {}
 
@@ -103,6 +115,13 @@ static func from_dict(d: Dictionary) -> PlayerProfile:
 	if pc is Dictionary:
 		for k: Variant in (pc as Dictionary):
 			p.perk_cards[StringName(String(k))] = int((pc as Dictionary)[k])
+	p.unlocks = _to_names(d.get("unlocks", []))
+	p.achievements = _achievements_from(d.get("achievements", {}))
+	p.pro_job_locks = {}
+	var locks: Variant = d.get("pro_job_locks", {})
+	if locks is Dictionary:
+		for k: Variant in (locks as Dictionary):
+			p.pro_job_locks[String(k)] = float((locks as Dictionary)[k])
 	p.stats = {}
 	var st: Variant = d.get("stats", {})
 	if st is Dictionary:
@@ -137,6 +156,9 @@ func to_dict() -> Dictionary:
 		"skill_sets": _skill_sets_to_list(),
 		"active_skill_set": active_skill_set,
 		"perk_cards": pc,
+		"unlocks": _to_strings(unlocks),
+		"achievements": _achievements_to(achievements),
+		"pro_job_locks": _locks_to(pro_job_locks),
 		"stats": st,
 		"settings": settings.duplicate(true),
 	}
@@ -212,6 +234,34 @@ static func _strings_dict(v: Variant) -> Dictionary:
 	if v is Dictionary:
 		for k: Variant in (v as Dictionary):
 			out[String(k)] = String((v as Dictionary)[k])
+	return out
+
+
+static func _achievements_from(v: Variant) -> Dictionary:
+	var out: Dictionary = {}
+	if v is Dictionary:
+		for k: Variant in (v as Dictionary):
+			var e: Variant = (v as Dictionary)[k]
+			if e is Dictionary:
+				out[StringName(String(k))] = {
+					"progress": int((e as Dictionary).get("progress", 0)),
+					"unlocked": bool((e as Dictionary).get("unlocked", false)),
+				}
+	return out
+
+
+static func _achievements_to(a: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for k: Variant in a:
+		var e: Dictionary = a[k] as Dictionary
+		out[String(k)] = {"progress": int(e.get("progress", 0)), "unlocked": bool(e.get("unlocked", false))}
+	return out
+
+
+static func _locks_to(locks: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for k: Variant in locks:
+		out[String(k)] = float(locks[k])
 	return out
 
 

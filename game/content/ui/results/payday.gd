@@ -13,6 +13,8 @@
 ## Leaving with an unpicked card (QB-PC1, D-049): the screen leaving the tree, the app quitting
 ## (WM close request), a new result replacing this one, or MenuFlow leaving the heist auto-pick it
 ## with the same deterministic `auto_pick` as the timeout (finish_card_pick()); no save change.
+## Achievements (B4-20): _apply runs Achievements.on_payday on the profile before saving; ids unlocked by
+## this payday are in `achievements_unlocked` and listed under the summary.
 ## Continue emits continue_pressed; if nobody listens it returns to the main menu scene.
 class_name PaydayScreen
 extends UiScreen
@@ -43,6 +45,8 @@ var xp_before: int = 0
 var xp_after: int = 0
 ## PaydayCards.roll output for the shown result ({} = no card pick).
 var card_roll: Dictionary = {}
+## Achievement ids this payday unlocked (B4-20).
+var achievements_unlocked: Array[StringName] = []
 ## Index of the picked card (-1 = not picked yet).
 var picked_index: int = -1
 ## True when the timer picked the card.
@@ -104,6 +108,7 @@ func show_result(heist_result: Dictionary) -> void:
 	xp_before = profile.xp
 	xp_after = xp_before + int(payout.get("xp_total", 0))
 	_applied = false
+	achievements_unlocked = []
 	if apply_to_profile:
 		_apply()
 	card_roll = {}
@@ -276,6 +281,7 @@ func _apply() -> void:
 	_applied = true
 	SaveService.apply_heist_payout(profile, payout, XpCurve.level_for_xp)
 	profile.add_stat("heists_completed" if bool(payout.get("success", false)) else "heists_failed")
+	achievements_unlocked = Achievements.on_payday(profile, result, payout, is_pro)
 	SaveService.save_profile(profile, profile_slot)
 
 
@@ -298,6 +304,10 @@ func _render() -> void:
 	cols.add_child(UiBuild.panel(_build_cash()))
 	cols.add_child(UiBuild.panel(_build_xp()))
 	_content.add_child(UiBuild.panel(_build_stats()))
+	for id: StringName in achievements_unlocked:
+		var a: AchievementDef = ContentDB.by_id(ContentDB.ACHIEVEMENTS, id) as AchievementDef
+		if a != null:
+			_content.add_child(UiBuild.label(&"ui.results.achievement_unlocked", UiBuild.SUBHEADER, {"name": UiText.t(a.name_key)}))
 	focus_default()
 
 

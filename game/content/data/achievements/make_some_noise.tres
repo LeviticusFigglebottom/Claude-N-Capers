@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.make_some_noise"
+name_key = &"achievement.make_some_noise.name"
+desc_key = &"achievement.make_some_noise.desc"
+condition = {"event": &"heist_completed", "loud": true, "difficulty_min": 2, "count": 1}
+unlock = &""
+order = 40

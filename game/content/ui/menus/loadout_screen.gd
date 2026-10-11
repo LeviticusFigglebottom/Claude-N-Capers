@@ -8,6 +8,9 @@
 ## B2-01: the mask picker lists MaskLocker.available_ids() (owned presets + filled custom slots,
 ## names from MaskCatalog.display_name) so an equipped `mask.custom.<n>` survives a save; "Masks"
 ## (masks_requested) opens the mask screen; refresh_masks() re-reads the picker from the profile.
+## B4-17: "Workshop" opens the 3D WorkshopScreen over this screen on the same profile (open_workshop();
+## its Back calls close_workshop(), which re-reads the weapon and mods it may have equipped). Self-contained,
+## so MenuFlow needs no change: the armory station and the heist path both reach it from here.
 class_name LoadoutScreen
 extends UiScreen
 
@@ -15,6 +18,8 @@ signal launch_requested(loadout: Loadout)
 signal skills_requested()
 signal perk_deck_requested()
 signal masks_requested()
+
+const WORKSHOP_SCENE_PATH: String = "res://content/ui/workshop/workshop_screen.tscn"
 
 ## [display key, strings key] in panel order (StatCalculator.display keys).
 const STAT_ROWS: Array[Array] = [
@@ -46,12 +51,16 @@ var back_button: Button
 var skills_button: Button
 var perks_button: Button
 var masks_button: Button
+var workshop_button: Button
+## The workshop while it is open over this screen (B4-17), else null.
+var workshop: WorkshopScreen = null
 var skills_summary_label: Label
 var perk_summary_label: Label
 var _stat_value_labels: Dictionary = {}
 var _stat_delta_labels: Dictionary = {}
 var _mods_box: VBoxContainer
 var _tweak: HudTweak
+var _content: Control
 
 
 ## Optional: inject a profile before the screen enters the tree (tests, MenuFlow).
@@ -64,7 +73,7 @@ func build_ui() -> void:
 	if profile == null:
 		profile = SaveService.load_profile(profile_slot)
 	var root: VBoxContainer = UiBuild.vbox(16)
-	UiBuild.screen_margin(self, root)
+	_content = UiBuild.screen_margin(self, root)
 	root.add_child(UiBuild.label(&"ui.loadout.title", UiBuild.HEADER))
 	var cols: HBoxContainer = UiBuild.hbox(48)
 	cols.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -96,7 +105,9 @@ func build_ui() -> void:
 	launch_button = UiBuild.primary(UiBuild.button(&"ui.heist_select.start"))
 	skills_button = UiBuild.button(&"ui.loadout.skills")
 	perks_button = UiBuild.button(&"ui.loadout.perk_deck")
-	for b: Button in [skills_button, perks_button]:
+	workshop_button = UiBuild.button(&"ui.workshop.open")
+	workshop_button.pressed.connect(open_workshop)
+	for b: Button in [skills_button, perks_button, workshop_button]:
 		b.custom_minimum_size = Vector2(240, 0)
 	back_button.pressed.connect(_on_back)
 	launch_button.pressed.connect(_on_launch)
@@ -105,6 +116,7 @@ func build_ui() -> void:
 	nav.add_child(back_button)
 	nav.add_child(skills_button)
 	nav.add_child(perks_button)
+	nav.add_child(workshop_button)
 	nav.add_child(launch_button)
 	launch_button.visible = not hub_mode
 	_fill_options()
@@ -252,12 +264,7 @@ func _on_progression(request: Signal) -> void:
 
 
 func _fill_options() -> void:
-	weapon_option.clear()
-	for wid: StringName in profile.owned_weapons:
-		var w: WeaponDef = ContentDB.weapon(wid)
-		if w != null and w.slot == Enums.WeaponSlot.SECONDARY:
-			_add_item(weapon_option, UiText.t(UiText.item_key(wid)), wid)
-	_select_id(weapon_option, profile.loadout.secondary)
+	_fill_weapons()
 	weapon_option.item_selected.connect(_on_weapon_changed)
 	_fill_from(melee_option, ContentDB.all_melees(), profile.loadout.melee, false)
 	_fill_from(armor_option, ContentDB.all_armors(), profile.loadout.armor, false)
@@ -334,16 +341,52 @@ func _rebuild_focus() -> void:
 	for t: Variant in types:
 		focus_chain.append(mod_options[t] as Control)
 	for c: Control in [melee_option, armor_option, deployable_option, mask_option, masks_button, launch_button,
-			skills_button, perks_button, back_button]:
+			skills_button, perks_button, workshop_button, back_button]:
 		if c != launch_button or not hub_mode:
 			focus_chain.append(c)
 	if is_inside_tree():
 		UiNav.chain_vertical(focus_chain)
 		UiNav.chain_horizontal([mask_option, masks_button] as Array[Control], false)
-		var nav: Array[Control] = [back_button, skills_button, perks_button]
+		var nav: Array[Control] = [back_button, skills_button, perks_button, workshop_button]
 		if not hub_mode:
 			nav.append(launch_button)
 		UiNav.chain_horizontal(nav, false)
+
+
+## Open the workshop over this screen (saves first; the workshop edits the same profile).
+func open_workshop() -> WorkshopScreen:
+	save()
+	close_workshop(false)
+	workshop = (load(WORKSHOP_SCENE_PATH) as PackedScene).instantiate() as WorkshopScreen
+	workshop.profile_slot = profile_slot
+	workshop.setup(profile)
+	workshop.back_requested.connect(close_workshop, CONNECT_DEFERRED)
+	_content.visible = false
+	add_child(workshop)
+	return workshop
+
+
+## Close the workshop and re-read the weapon and mods from the profile.
+func close_workshop(refocus: bool = true) -> void:
+	if workshop == null:
+		return
+	remove_child(workshop)
+	workshop.queue_free()
+	workshop = null
+	_content.visible = true
+	_fill_weapons()
+	_on_weapon_changed(weapon_option.selected)
+	if refocus:
+		workshop_button.grab_focus.call_deferred()
+
+
+func _fill_weapons() -> void:
+	weapon_option.clear()
+	for wid: StringName in profile.owned_weapons:
+		var w: WeaponDef = ContentDB.weapon(wid)
+		if w != null and w.slot == Enums.WeaponSlot.SECONDARY:
+			_add_item(weapon_option, UiText.t(UiText.item_key(wid)), wid)
+	_select_id(weapon_option, profile.loadout.secondary)
 
 
 func _on_weapon_changed(_index: int) -> void:

@@ -16,8 +16,12 @@ const MASKS: StringName = &"masks"
 const SKILLS: StringName = &"skills"
 const PERKS: StringName = &"perks"
 const THROWABLES: StringName = &"throwables"
+## Achievement defs (B4-20, data/achievements/).
+const ACHIEVEMENTS: StringName = &"achievements"
 ## Every kind folder ContentDB indexes by `id` (difficulty is indexed by its enum value).
-const KINDS: Array[StringName] = [WEAPONS, MODS, MELEE, ARMOR, DEPLOYABLES, LOOT, DIFFICULTY, MASKS, SKILLS, PERKS, THROWABLES]
+const KINDS: Array[StringName] = [
+	WEAPONS, MODS, MELEE, ARMOR, DEPLOYABLES, LOOT, DIFFICULTY, MASKS, SKILLS, PERKS, THROWABLES, ACHIEVEMENTS,
+]
 const LOG_CHANNEL: StringName = &"content"
 
 ## kind -> { key -> Resource }
@@ -86,6 +90,11 @@ static func by_id(kind: StringName, key: Variant) -> Resource:
 		Log.error(LOG_CHANNEL, "unknown %s id '%s'" % [kind, key])
 		return null
 	return table[key]
+
+
+## True when `key` is a known id of `kind` (no error for unknown ids; save validation, B4-16).
+static func has(kind: StringName, key: Variant) -> bool:
+	return _table(kind).has(key)
 
 
 ## All resources of a kind, sorted by key for deterministic UI and tests.

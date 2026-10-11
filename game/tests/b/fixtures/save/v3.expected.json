@@ -1,0 +1,30 @@
+{
+	"version": 5,
+	"profile_name": "Planner",
+	"cash": 8800,
+	"stash": 125000,
+	"xp": 52000,
+	"level": 10,
+	"banked_stealth_mult": 1.0,
+	"owned_weapons": ["weapon.kestrel_p9", "weapon.mule_12"],
+	"owned_mods": ["mod.p9_extended_mag"],
+	"owned_masks": ["mask.night_circuit"],
+	"owned_mask_parts": [],
+	"custom_masks": [],
+	"loadout": {
+		"primary": "weapon.mule_12", "primary_mods": [],
+		"secondary": "weapon.kestrel_p9", "secondary_mods": ["mod.p9_extended_mag"],
+		"melee": "melee.folding_knife", "throwable": "", "deployable": "deployable.doctor_bag",
+		"deployable_secondary": "", "armor": "armor.light_vest", "mask": "mask.night_circuit",
+		"perk_deck": "perk.prowler", "perk_deck_cards": 2,
+		"skills": {"skill.slipstream.light_step": 1}
+	},
+	"skill_sets": [{"skill.juggernaut.thick_skin": 1}, {"skill.slipstream.light_step": 1}, {}],
+	"active_skill_set": 1,
+	"perk_cards": {"perk.bulk": 9, "perk.prowler": 2},
+	"unlocks": [],
+	"achievements": {},
+	"pro_job_locks": {},
+	"stats": {"heists_completed": 9, "heists_failed": 2},
+	"settings": {"name_tag": "planner"}
+}

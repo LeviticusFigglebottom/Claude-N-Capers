@@ -56,6 +56,5 @@ default_mods = {
 7: &"mod.marshal_cylinder"
 }
 fire_cue = &"cue.weapon_revolver_fire"
-fire_cue_suppressed = &"cue.weapon_revolver_fire_suppressed"
 anim_set = &"revolver"
 model = ExtResource("3")

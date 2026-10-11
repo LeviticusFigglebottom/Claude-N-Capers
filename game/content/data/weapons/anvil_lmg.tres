@@ -56,6 +56,5 @@ default_mods = {
 7: &"mod.anvil_box_100"
 }
 fire_cue = &"cue.weapon_lmg_fire"
-fire_cue_suppressed = &"cue.weapon_lmg_fire_suppressed"
 anim_set = &"lmg"
 model = ExtResource("3")
