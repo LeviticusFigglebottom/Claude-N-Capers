@@ -9,6 +9,10 @@ const FLOW_SCENE: PackedScene = preload("res://content/ui/menus/menu_flow.tscn")
 const MOCK_SCENE: String = "res://tests/b/mock_safehouse/mock_safehouse.tscn"
 const MOCK_CLASS: StringName = &"MockSafehouseMap"
 const HUB_KEY: StringName = &"safehouse_hub"
+## Not a class: SafehouseHost then uses the mock scene's walker stand-in (group hub_walker).
+const NO_CREW_CLASS: StringName = &"NoSuchCrewClass"
+## A physics body settles after a teleport (gravity, collision): horizontal tolerance in m.
+const CREW_TOL_M: float = 0.05
 
 
 func before_all() -> void:
@@ -33,8 +37,11 @@ static func _set_hub_mode(mode: String) -> void:
 	GameSettings.current().set_value(GameSettings.CONTROLS, HUB_KEY, mode)
 
 
-## A MenuFlow whose safehouse tweak points at the mock scene (`scene_path` "" = the shipped data).
-func _flow(scene_path: String = MOCK_SCENE, blend_s: float = 0.0, map_class: StringName = MOCK_CLASS) -> MenuFlow:
+## A MenuFlow whose safehouse tweak points at the mock scene (`scene_path` "" = the shipped data). The mock
+## walker stand-in is forced (crew_class -> NO_CREW_CLASS) unless `real_crew`: ENV A's hub crew (A3-11) is a
+## CharacterBody3D with its own API, covered by test_real_hub_crew.
+func _flow(scene_path: String = MOCK_SCENE, blend_s: float = 0.0, map_class: StringName = MOCK_CLASS,
+		real_crew: bool = false) -> MenuFlow:
 	var f: MenuFlow = FLOW_SCENE.instantiate() as MenuFlow
 	add_child(f)
 	if scene_path != "":
@@ -42,6 +49,8 @@ func _flow(scene_path: String = MOCK_SCENE, blend_s: float = 0.0, map_class: Str
 		t.scene_path = scene_path
 		t.map_class = map_class
 		t.station_cam_blend_s = blend_s
+		if not real_crew:
+			t.crew_class = NO_CREW_CLASS
 		f.safehouse.tweak = t
 	return f
 
@@ -400,4 +409,42 @@ func test_range_frees_the_safehouse_and_returns_at_return_range() -> void:
 	f.show_home()
 	await wait_frames(1)
 	assert_true(_walker(f).global_position.is_equal_approx(_marker(f, "Spawns/ReturnHeist")), "home after a heist")
+	await _done(f)
+
+
+static func _flat(v: Vector3) -> Vector2:
+	return Vector2(v.x, v.z)
+
+
+## ENV A's real hub crew (A3-11, CrewController.spawn_for_hub): spawned at ReturnHeist, PlayerInput paused
+## behind a station screen and resumed on Back, back at the station's UsePoint (horizontal, CREW_TOL_M).
+func test_real_hub_crew() -> void:
+	var cls: Script = UiNav.global_class(&"CrewController")
+	var has_hook: bool = false
+	if cls != null:
+		for m: Dictionary in cls.get_script_method_list():
+			has_hook = has_hook or StringName(m["name"]) == &"spawn_for_hub"
+	if not has_hook:
+		skip("ENV A's CrewController.spawn_for_hub (A3-11) is not on this tree")
+		return
+	var f: MenuFlow = _flow(MOCK_SCENE, 0.0, MOCK_CLASS, true)
+	await _enter(f)
+	var sh: SafehouseHost = f.safehouse
+	assert_true(sh.is_active(), "3D safehouse with the real crew")
+	var crew: Node3D = _walker(f)
+	assert_true(crew is CharacterBody3D and crew.get_script() == cls, "A's CrewController, not the stand-in")
+	assert_true(_flat(crew.global_position).distance_to(_flat(_marker(f, "Spawns/ReturnHeist"))) < CREW_TOL_M,
+			"spawned at ReturnHeist")
+	var pin: Node = crew.get_node_or_null(^"PlayerInput")
+	assert_true(pin != null and bool(pin.get(&"enabled")), "PlayerInput live while walking")
+	assert_true(crew.find_children("*", "Camera3D", true, false).size() >= 1, "the crew's own camera")
+	_station(f, &"armory").call(&"use")
+	await wait_frames(2)
+	assert_eq(f.current, f.loadout_screen as Control, "armory screen opened")
+	assert_false(bool(pin.get(&"enabled")), "set_input_paused(true) behind the screen")
+	f.loadout_screen.back_button.pressed.emit()
+	await wait_physics_frames(3)
+	assert_true(bool(pin.get(&"enabled")), "input resumed")
+	assert_true(_flat(crew.global_position).distance_to(_flat(_marker(f, "Stations/armory/UsePoint"))) < CREW_TOL_M,
+			"back at the armory UsePoint")
 	await _done(f)
