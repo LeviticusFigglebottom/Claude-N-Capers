@@ -82,7 +82,9 @@ func test_gear_pickup_ends_civilian_mode_and_only_civilian_allowed() -> void:
 	assert_has(picked, [GearPickup.ITEM, 0], "item_picked_up(item.gear, slot) [R]")
 	assert_true(is_instance_valid(gear) and gear.is_inside_tree(), "the bag stays for the others")
 	assert_eq(gear.interactable.availability(c), InteractableComponent.BLOCK_STATE, "...but not for whoever has gear")
-	assert_true((_rt.crew_controller(1) as CrewController).civilian, "teammates keep civilian mode until they pick up")
+	var mate: CrewController = _rt.crew_controller(1) as CrewController
+	assert_true(mate.is_ai, "slot 1 is an AI teammate")
+	assert_false(mate.civilian, "D-065 P5: AI teammates gear up with the first human")
 
 
 func test_alarm_masks_civilians() -> void:

@@ -69,3 +69,29 @@ func test_burn_flow_and_fire_volume() -> void:
 func _check_obstacle(bp: BurnPoint) -> void:
 	assert_true(bp.find_child("FireObstacle", true, false) != null, "nav obstacle for AI avoidance")
 	assert_true(bp.is_in_group(BurnPoint.GROUP), "in the fire_volume group")
+
+
+func test_nearby_thermite_bag_is_used() -> void:
+	_rt = await HeistLauncher.launch(&"unit_map", 3802, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 0, "crew_ai": false, "skip_casing": true})
+	await wait_physics_frames(2)
+	var tool: LootDef = LootDef.new()
+	tool.id = &"loot.test_thermite"
+	tool.is_tool = true
+	ContentDB.inject(ContentDB.LOOT, tool.id, tool)
+	LootManager._loot_cache.clear()  # loot_info caches ContentDB on first use; pick up the injected def
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	var bp: BurnPoint = ATestMaps.add_prefab(_rt, "burn_point", Vector3(0, 0, -4), func(p: GameplayPrefab) -> void:
+		(p as BurnPoint).requires_loot = tool.id) as BurnPoint
+	await wait_physics_frames(2)
+	var loot: LootManager = _rt.service(G.SVC_LOOT) as LootManager
+	var bag: LootBag = loot.spawn_bag(tool.id, Transform3D(Basis.IDENTITY, Vector3(1.0, 0.3, -4)))
+	await wait_physics_frames(3)
+	assert_true(LootManager.is_tool_loot(tool.id), "LootDef.is_tool")
+	assert_eq(bp.thermite_for(c), bag, "D-068: a thermite bag lying next to the burn point is used")
+	bp.interactable.completed.emit(c)
+	assert_eq(bp.stage, BurnPoint.Stage.BURNING, "burning from the loose bag")
+	assert_false(is_instance_valid(bag) and bag.is_inside_tree(), "consumed")
+	ContentDB.clear_cache()
+	LootManager._loot_cache.clear()
+

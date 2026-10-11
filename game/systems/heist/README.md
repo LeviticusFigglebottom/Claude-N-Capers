@@ -107,6 +107,17 @@ process; see its header for why one process with two SceneMultiplayer branches c
 | `STEALTH_ONLY` | On the alarm: the phase goes to LOUD (guards fight, civilians flee), then `voice_line_requested(&"mercer", &"vo.mercer.abort", {})` [R]. After `StealthTweak.stealth_only_abort_s` (5 s) comes `heist_ended` with `success = false`, `fail_reason = &"stealth_only_alarm"`. The assault director never starts. |
 | `LOUD_ONLY` | Starts in LOUD with `went_loud = true` and every crew member masked, so there is no casing. The director starts right away. |
 
+**Start modes (S1.3, D-065, `HeistDef.start_mode` / `options["start_mode"]`, `HeistRuntime.start_mode`).**
+- `&"casing"` (default): the crew starts unmasked (casing).
+- `&"civilian"`: every crew member starts civilian (`CrewController.civilian`, `player_mode` &"civilian"). Civilians:
+  - can't be detected (laser grids still trip), mask up or fire;
+  - use only `civilian_allowed` interactables (block reason `ui.blocked.civilian`).
+- A human takes their gear at a `gear_pickup` (`ui.prompt.pick_up_gear`): civilian ends (casing) and `item_picked_up(&"item.gear", slot)` [R] fires.
+- **AI teammates** gear up when the first human crew member picks up gear (P5 ruling); they never walk to the bag.
+- An alarm masks everyone, which ends civilian mode for all.
+
+**Police start delay (QC-35, D-064).** `HeistMission.police_delay_s` holds the assault director after the heist goes loud. For example, Dockside Burn's cartel phase rolls 60/90/120 s in `_on_mission_start()`. Setting 0 starts the police at once.
+
 `HeistResult.fail_reason` (events.md, D-038 QA-19): `&""` on success; `HeistRuntime.FAIL_STEALTH_ONLY_ALARM`,
 `FAIL_ALL_CUSTODY` (for the custody rule) or the caller's reason via `end_heist(false, [], reason)` /
 `HeistMission.end_heist(false, reason)`; a failure without a reason reports `FAIL_ABORT` (`&"abort"`).

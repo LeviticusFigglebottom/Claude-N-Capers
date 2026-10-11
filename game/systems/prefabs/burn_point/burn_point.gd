@@ -1,6 +1,7 @@
 ## Thermite burn point (QC-38, D-064 Dockside Burn; L3.4 fire). Owner: ENV A.
-## A crew member carrying a `requires_loot` bag (loot.thermite) holds the interaction (InteractionTweak
-## burn_place_s): the bag is consumed and the burn runs `duration_s` (burn_duration_s; no jams):
+## A crew member carrying a `requires_loot` bag (loot.thermite), or with one lying within burn_bag_radius_m
+## (D-068), holds the interaction (InteractionTweak burn_place_s): the bag is consumed and the burn runs
+## `duration_s` (burn_duration_s; no jams):
 ## device_started(net_id, &"thermite", duration). Then the telegraph: cue.burn_warning [R] and a
 ## burn_warning_s countdown (`stage` WARNING), then device_finished(net_id) (the mission drops the fire
 ## shutters on it) and the fire volume lights: crew inside take DamageType.FIRE (pierced_armor: ignores
@@ -55,9 +56,7 @@ func _prefab_ready() -> void:
 	interactable.extra_check = func(crew: Node) -> StringName:
 		if stage != Stage.IDLE:
 			return InteractableComponent.BLOCK_STATE
-		var bag: LootBag = crew.get(&"carried_bag") as LootBag if crew != null else null
-		return InteractableComponent.BLOCK_NONE if bag != null and bag.loot_id == requires_loot \
-			else InteractableComponent.BLOCK_ITEM
+		return InteractableComponent.BLOCK_NONE if thermite_for(crew) != null else InteractableComponent.BLOCK_ITEM
 	interactable.completed.connect(_on_completed)
 	_show_fire(false)
 
@@ -66,14 +65,33 @@ func _on_completed(crew: Node) -> void:
 	var c: CrewController = crew as CrewController
 	if not Net.is_authority() or c == null or stage != Stage.IDLE:
 		return
-	var bag: LootBag = c.carried_bag as LootBag
-	if bag == null or bag.loot_id != requires_loot:
+	var bag: LootBag = thermite_for(c)
+	if bag == null:
 		return
-	c.set_carried_bag(null)
+	if c.carried_bag == bag:
+		c.set_carried_bag(null)
 	if bag.get_parent() != null:
 		bag.get_parent().remove_child(bag)
 	bag.queue_free()
 	start_burn()
+
+
+## The thermite bag `crew` would use: the one it carries, else the nearest loose one within burn_bag_radius_m.
+func thermite_for(crew: Node) -> LootBag:
+	var carried: LootBag = crew.get(&"carried_bag") as LootBag if crew != null else null
+	if carried != null and is_instance_valid(carried) and carried.loot_id == requires_loot:
+		return carried
+	var best: LootBag = null
+	var best_d: float = Tweak.interaction().burn_bag_radius_m
+	for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
+		var b: LootBag = n as LootBag
+		if b == null or b.loot_id != requires_loot or b.is_carried() or b.secured:
+			continue
+		var d: float = b.global_position.distance_to(global_position)
+		if d <= best_d:
+			best = b
+			best_d = d
+	return best
 
 
 ## Server: start the burn now (also the mission's fallback without a bag).
