@@ -1,0 +1,5 @@
+# Walkthrough detour whitelist for Dockside Burn (tools/levelcheck/README.md "walkthrough").
+# Format: <spawn name|path|*> <target name|path|*>. Owner: ENV C (C3).
+# None needed: the design doc (docs/design/heists/dockside_burn.md, D-064, Budgets) expects no pair
+# above 3x (the longest crew path, pontoon -> K1, is ~1.4x its straight line), and the G1 walkthrough
+# bot confirms it (docs/levels/dockside_burn/walkthrough.md).

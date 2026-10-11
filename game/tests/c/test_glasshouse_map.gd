@@ -172,6 +172,8 @@ func test_rule_constraints_hold() -> void:
 		var cams: int = (v.get(&"camera", []) as Array).size()
 		assert_true(cams >= 1 and cams <= 3, "Routine: 1-3 live cameras (D-059, got %d)" % cams)
 		assert_eq((v.get(&"keycard", []) as Array).size(), 1, "exactly one keycard")
+		assert_eq((v.get(&"security_room_staffed", []) as Array).size(), 1, "operator row rolled (D-061)")
+		assert_eq((v.get(&"code_note", []) as Array).size(), 1, "exactly one code note (D-061)")
 		assert_eq((v.get(&"escape", []) as Array).size(), 1, "exactly one van slot")
 	GameRng.begin_run(9001)
 	var vb: Dictionary = VariantResolver.resolve(_map.variant_table, slots, Enums.Difficulty.BRUTAL)
@@ -187,6 +189,12 @@ func test_safe_loot_locked_in_safe() -> void:
 		return
 	var safe: Node = _map.get_node_or_null("Gameplay/Workshop/WorkshopSafe")
 	assert_true(safe is Safe, "WorkshopSafe is a Safe")
+	if safe is Safe:
+		# Design: keycard (bound reader), code (code note) or drill. A reader only opens a Safe
+		# whose methods include &"keycard".
+		for m: StringName in [&"keycard", &"code", &"drill"]:
+			assert_has((safe as Safe).methods, m, "safe method %s" % m)
+		assert_eq((safe as Safe).code_group, &"glasshouse_safe", "safe code_group matches the code notes")
 	var loot: Node = _map.get_node_or_null("Gameplay/Workshop/WorkshopSafe/SafeLoot")
 	assert_true(loot is GameplayPrefab, "SafeLoot is parented under WorkshopSafe")
 	assert_true(_map.get_node_or_null("Gameplay/Workshop/SafeLoot") == null, "no SafeLoot sibling outside the safe")

@@ -78,8 +78,11 @@ def _triangulate_ngons() -> None:
 
 
 def export_glb(path: pathlib.Path | str, embed: bool = False, animations: bool = False,
-               skins: bool = False, morph: bool = False) -> pathlib.Path:
-    """Export the whole scene to ``path`` (.glb) and normalise it. Returns the path."""
+               skins: bool = False, morph: bool = False, remove_armature: bool = False) -> pathlib.Path:
+    """Export the whole scene to ``path`` (.glb) and normalise it. Returns the path.
+
+    ``remove_armature`` (opt-in, D-067b): drop the armature object node when it is the skeleton
+    root (glTF ``export_armature_object_remove``); off keeps every other export byte-identical."""
     out = pathlib.Path(path)
     out.parent.mkdir(parents=True, exist_ok=True)
     for obj in list(bpy.context.scene.objects):
@@ -124,6 +127,7 @@ def export_glb(path: pathlib.Path | str, embed: bool = False, animations: bool =
         export_animations=animations,
         export_skins=skins,
         export_morph=morph,
+        export_armature_object_remove=remove_armature,
         export_original_specular=False,
         will_save_settings=False,
     )

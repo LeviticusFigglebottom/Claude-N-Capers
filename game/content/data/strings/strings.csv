@@ -2274,6 +2274,7 @@ voice.vo.reyes.dockside_burn_payday,"Smoke over Pier 9 and the Co-op's rifles in
 music.glasshouse.name,Glass Ceiling
 music.night_deposit.name,Night Shift
 music.shadow_ledger.name,Off the Books
+music.dockside_burn.name,Cold Storage
 music.vault_hymn.name,Vault Hymn
 music.long_con.name,The Long Con
 music.last_call.name,Last Call
@@ -2294,4 +2295,3 @@ ui.jukebox.locked,Locked
 ui.jukebox.locked_rank,Locked: Notoriety {rank}
 ui.jukebox.idle,Nothing playing.
 ui.jukebox.now_playing,Now playing: {name}
-music.dockside_burn.name,Cold Storage

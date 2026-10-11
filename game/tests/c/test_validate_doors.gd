@@ -94,3 +94,45 @@ func test_prefab_default_single_door_passes() -> void:
 		return
 	var res: Dictionary = await _door_case(0, 0.0, null)
 	_expect_only(res, [])
+
+
+## D-064: meta kind = "industrial_door" (cold-store sliding / roller doors): 2.4-4.0 m x 2.1-4.5 m.
+func test_prefab_industrial_door_3m6_passes() -> void:
+	if not _prefab_ok():
+		return
+	var res: Dictionary = await _industrial_case(3.6, leaf_visual(3.6, 4.5))
+	_expect_only(res, [])
+
+
+func test_prefab_industrial_door_too_wide_fails() -> void:
+	if not _prefab_ok():
+		return
+	var res: Dictionary = await _industrial_case(4.4, leaf_visual(4.4, 3.6))
+	_expect_fail(res, "scale", "industrial 2.4-4.0")
+
+
+func test_prefab_industrial_door_too_tall_fails() -> void:
+	if not _prefab_ok():
+		return
+	var res: Dictionary = await _industrial_case(2.4, leaf_visual(2.4, 4.8))
+	_expect_fail(res, "scale", "industrial door height 4.800")
+
+
+func test_wide_door_without_industrial_kind_fails() -> void:
+	if not _prefab_ok():
+		return
+	var res: Dictionary = await _door_case(0, 2.4, leaf_visual(2.4, 3.6))
+	_expect_fail(res, "scale", "door leaf height 3.600")
+	_expect_fail(res, "scale", "door width 2.400")
+
+
+func _industrial_case(width_m: float, visual: PackedScene) -> Dictionary:
+	return await _validate(GOOD, "greybox", func(m: HeistMap) -> void:
+		var door: Node3D = (load(DOOR_PREFAB) as PackedScene).instantiate() as Node3D
+		door.name = "TestDoor"
+		door.set(&"width_m", width_m)
+		door.set(&"visual_scene", visual)
+		door.set_meta(&"kind", "industrial_door")
+		door.position = Vector3(40.0, 0.0, 0.0)
+		m.get_node("Gameplay").add_child(door)
+		door.owner = m, false, ["scale"])

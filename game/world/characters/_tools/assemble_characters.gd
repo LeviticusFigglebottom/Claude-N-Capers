@@ -18,7 +18,8 @@
 ##    meshes (Wrecker `Faceplate` / `Visor` / `HeadArmored`) come through as they are.
 ##    Prop assets (CharacterSpec.PROP_SCENES: the Bulwark shields) become `Shield` AnimatableBody3D
 ##    scenes with `Collision` + `Visual` (see _assemble_prop).
-## 4. Writes world/characters/characters.json (the index ENV A and the tests read).
+## 4. Writes world/characters/characters.json (the index ENV A and the tests read); D2-01 faction
+##    variants get `variant_of` + `variant` fields (from SOURCE.txt).
 ##
 ## Deterministic: sorted iteration, fixed sub-resource / ext-resource ids and path-derived uids, so
 ## re-runs produce identical bytes. Exit code 1 on any error.
@@ -48,18 +49,28 @@ func _initialize() -> void:
 	for asset_id: String in prop_ids:
 		var prop_scene: String = Spec.PROP_SCENES[asset_id]
 		if ResourceLoader.exists(_glb(asset_id)) and _assemble_prop(asset_id, prop_scene):
-			props.append({"id": Spec.character_id(asset_id), "asset": asset_id, "scene": prop_scene})
+			props.append(_with_variant({"id": Spec.character_id(asset_id), "asset": asset_id, "scene": prop_scene},
+				asset_id))
 	for asset_id: String in _asset_ids():
 		var scene: String = Spec.scene_path(asset_id)
 		if _assemble(asset_id, scene, lib):
-			entries.append({
+			entries.append(_with_variant({
 				"id": Spec.character_id(asset_id), "asset": asset_id, "scene": scene,
 				"test": Spec.TEST_SCENES.has(asset_id),
-			})
+			}, asset_id))
 	_write_index(entries, props)
 	print("assemble_characters: %d scene(s), %d prop(s), %d clip(s), %d error(s)" % [
 		entries.size(), props.size(), lib.get_animation_list().size(), _errors])
 	quit(1 if _errors > 0 else 0)
+
+
+## D2-01: faction variants carry `variant_of` / `variant` (SOURCE.txt `variant_of` / `visual_variant`).
+static func _with_variant(entry: Dictionary, asset_id: String) -> Dictionary:
+	var source: Dictionary = Spec.read_source("%s%s/SOURCE.txt" % [Spec.ASSETS_DIR, asset_id])
+	if source.has(Spec.VARIANT_OF_KEY) and source.has(Spec.VARIANT_KEY):
+		entry["variant_of"] = String(source[Spec.VARIANT_OF_KEY])
+		entry["variant"] = String(source[Spec.VARIANT_KEY])
+	return entry
 
 
 func _error(msg: String) -> void:

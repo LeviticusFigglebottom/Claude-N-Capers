@@ -4,7 +4,8 @@ One glb: armature ``rig_arms`` (``_arms``: ``root`` = camera origin, the contrac
 helper bones ``weapon`` and ``magazine``), the skinned ``Arms`` mesh (hands at first-person
 density, dark crew-suit sleeves ``char_suit_dark`` with a turned-in cuff, skin ``char_skin_2``) and
 the clips of every set in ``_arms_sets.SETS`` (pistol, smg, rifle, shotgun, lmg, sniper, akimbo, revolver; D-055:
-break_action, lever, bow, crossbow, launcher, flamethrower, saw, minigun; D-058: shotgun_box) named
+break_action, lever, bow, crossbow, launcher, flamethrower, saw, minigun; D-058: shotgun_box; D2-04: a ``bash`` per
+gun set and the non-gun sets melee_knife, melee_blunt, melee_blade, throwable, deploy_bag, deploy_small, deploy_sentry) named
 ``<set>_<clip>``; loops carry the
 ``-loop`` suffix (Godot strips it and sets LOOP_LINEAR), except ``*_reload_loop``: Godot loops a name ending in
 ``_loop`` and strips that suffix too unless the stripped name already exists (``<set>_reload`` does, so the
@@ -22,7 +23,6 @@ numbers at 30 fps) and the moving-part conventions are listed in SOURCE.txt.
 
 import _anim as anim
 import _arms as arms
-import _arms_bow as bow_mod
 import _arms_clips as clips_mod
 import _arms_sets as sets
 
@@ -39,7 +39,10 @@ def notes() -> dict:
                     "reload_empty; shotgun, lever: reload_start, reload_loop, reload_end, reload_end_empty; sniper: bolt, bolt_ads; "
                     "pistol: fire_auto, fire_auto_ads; akimbo: fire_l, fire_ads_l; bow: draw_string, hold*, release, nock; "
                     "flamethrower: fire_start, fire_hold*, fire_end; saw: rev, cut_hold*, cut_end; minigun: spin_up, "
-                    "fire_hold*, spin_down; shotgun_box: the common clips only (mag swap reloads)",
+                    "fire_hold*, spin_down; shotgun_box: the common clips only (mag swap reloads); every gun set: bash "
+                    "(D2-04 quick melee); non-gun sets (D2-04): melee_knife / melee_blunt / melee_blade: idle*, sprint*, "
+                    "draw, holster, swing, charge_start, charge*, charge_swing; throwable: idle*, sprint*, draw, holster, "
+                    "throw, throw_low; deploy_bag / deploy_small / deploy_sentry: idle*, draw, holster, place",
         "fp.camera": "review camera = crew camera: 75 deg vertical FOV (crew_member.tscn), root = eye",
         "fp.fire": "fire/fire_ads start at rest, kick peaks on frame 1; full-auto sets (smg, rifle, lmg) are 3 f "
                    "(<= 1.5 shot intervals) so the game restarts them every shot",
@@ -88,7 +91,8 @@ def notes() -> dict:
                         "local X), same timing rules as fp.break_action; eject: spawn the 40 mm casing; round_in: the round "
                         f"(in the left hand from round_in-16) is seated; fire/fire_ads {sets.LAUNCHER_FIRE} f heavy recoil; "
                         "reload_empty = reload; defaults 3.0 s / equip 0.7 s"),
-        "fp.crossbow": (f"String slides {sets.STRING_TRAVEL:.3f} m along local +Z from its released (scene) pose to the latch: "
+        "fp.crossbow": (f"String slides {sets.STRING_TRAVEL:.3f} m along local +Z from its released pose to the latch (ENV B's "
+                        "Vise models it latched: released = the scene pose moved that far along local -Z): "
                         "fire/fire_ads string_release@0 (latched -> released over frames 0..1); reload: muzzle down, the "
                         "left fingers hook the string at cock and pull it back to the latch by string_back (smoothstep "
                         "cock..string_back); the bolt (Magwell) rides the magazine bone: hidden after the shot, shown at "
@@ -148,6 +152,34 @@ def notes() -> dict:
                      f"front hinge (cover_open .. cover_close; the weapon scene needs a hinged FeedCover pivot); "
                      f"Slide (pistol): slide_release; smg/rifle bolt_release (cocking-handle slap / bolt catch); shotgun_box "
                      f"bolt_release (charging handle released after a {sets.SHOTGUN_BOX_CHARGE:.3f} m pull)"),
+        "fp.bash": ("D2-04 quick melee with the gun out (PD2 weapon bash): <set>/bash in every gun set; the set's idle "
+                    "frame 0 moved as one block (wind-up, strike, recover); hit@ = the contact (ENV A deals the melee hit "
+                    "there), done@ = the last frame = idle frame 0 (blend back to idle); "
+                    + ", ".join(f"{k} {n} f hit@{h}" for k, (n, h) in sets.BASH.items())
+                    + " (families: " + ", ".join(f"{k}={v}" for k, v in sorted(sets.BASH_FAMILY.items()))
+                    + ", other sets long); akimbo bashes with the right gun only; hands stay on their grips"),
+        "fp.melee": ("melee_knife / melee_blunt / melee_blade (MeleeDef; proposal: MeleeDef.anim_set): the melee weapon "
+                     "hangs identity on the weapon bone, which carries the ITEM frame: Godot origin on the handle axis at "
+                     "the grip pivot (20 mm below the top of the fist), handle along +Y (blade / head toward +Y), edge / "
+                     "striking face toward -Z; it is the gun grip offset turned 18 deg (the grip rake) about X, so the "
+                     "weapon bone is not identity under hand.R in these sets. Tap: swing (hit@ contact, done@ back at "
+                     "idle). Hold: charge_start (idle -> the wind-up; length = MeleeDef.charge_time_s, charged@ its end) -> "
+                     "charge* (held wind-up, trembling; frame 0 = charge_start's last frame) -> charge_swing on release "
+                     "(hit@, done@). draw ready@, holster gone@ (defaults: no equip time in MeleeDef)"),
+        "fp.throwable": ("throwable (ThrowableDef kinds frag / concussion / incendiary; proposal: ThrowableDef.anim_set): "
+                         "the grenade hangs identity on the weapon bone = its centre (Godot +Y up the fuse, -Z forward) in "
+                         "the right fist; draw: pin_pull@ (the left hand pulls the ring on the grenade's left: hide the "
+                         "model's Pin), ready@; throw (overhand) / throw_low (underhand): release@ = hide the held model "
+                         "and spawn the projectile at the weapon bone with the hand's velocity, done@ = both hands off "
+                         "screen (then draw the gun); holster gone@ (no throw)"),
+        "fp.deploy": ("deploy_bag (ammo / doctor bag, body bag case, armor bag), deploy_small (ECM, trip mine, FAK), "
+                      "deploy_sentry (two side handles 0.36 m apart) (DeployableDef.kind; proposal: DeployableDef.anim_set): "
+                      "the weapon bone carries the item's carry handle (proposal: a Handle Marker3D in the deployable "
+                      "model; attach the model so Handle sits on the bone; Godot axes X along a top handle bar, +Y up, "
+                      "-Z forward); draw ready@, idle*, holster gone@; place = the deploy hold: place@ = "
+                      "deploy_time_s x 30 (retime so place@ lands on the hold's end: spawn the prefab and hide the held "
+                      "model), done@ = empty hands off screen; lengths from the first DeployableDef of the kind group "
+                      "(deploy_time_s), else 2.0 s"),
     }
 
 
@@ -160,7 +192,7 @@ def export_name(name: str, table: dict) -> str:
 def bow_curves(sk) -> dict:
     """``{clip: [draw per frame]}`` for the bow clips (string draw 0 = brace, 1 = full draw)."""
     s = sets.SETS["bow"]
-    fns = bow_mod.bow_fns(sk, s)
+    fns = clips_mod.state_fns(sk, s)
     return {c: [float(fns[c](f).extra.get("draw", 0.0)) for f in range(s.frames(c) + 1)] for c in sorted(s.clips)}
 
 
@@ -199,7 +231,9 @@ def build(ctx) -> None:
         f"y=({ry[0]:.4f},{ry[1]:.4f},{ry[2]:.4f}) z=({rz[0]:.4f},{rz[1]:.4f},{rz[2]:.4f}) "
         f"origin=({ox:.4f},{oy:.4f},{oz:.4f}); "
         f"identity relative to hand.R except in sniper_bolt, sniper_bolt_ads and sniper_reload_empty, the lever cycle "
-        f"(lever_fire*, lever_reload_end_empty and the composed lever_reload_empty) and every bow clip (the bow is in hand.L)")
+        f"(lever_fire*, lever_reload_end_empty and the composed lever_reload_empty), every bow clip (the bow is in hand.L) "
+        f"and every clip of the non-gun sets (melee_*, throwable, deploy_*: the bone carries the item frame, fp.melee / "
+        f"fp.throwable / fp.deploy)")
     for clip, vals in bow_curves(sk).items():
         ctx.source_extra[f"curve.bow_{clip}"] = "draw=" + ",".join(f"{v:.3f}" for v in vals)
     ctx.source_extra["loops"] = ",".join(sorted(n for n, r in table.items() if r["loop"]))

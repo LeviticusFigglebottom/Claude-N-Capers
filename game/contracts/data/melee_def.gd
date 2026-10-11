@@ -12,3 +12,9 @@ extends Resource
 @export var silent: bool = true
 @export var price: int = 0
 @export var model: PackedScene
+## D-069: first-person AnimationLibrary (characters.md v1.7): &"melee_knife" | &"melee_blunt" | &"melee_blade".
+@export var anim_set: StringName = &"melee_knife"
+## D-069 optional timings; 0 = use the clip's own length / hit@ event.
+@export var swing_time_s: float = 0.0
+@export var hit_delay_s: float = 0.0
+@export var equip_time_s: float = 0.0

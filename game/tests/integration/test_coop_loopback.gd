@@ -17,12 +17,12 @@
 ## The child's stdout is inherited, so its SCRIPT ERROR lines fail CI like ours (D-047).
 extends TestCase
 
-## P3 map. Glasshouse until Dockside Burn (B5-04 + ENV C) lands; switch this constant then.
+## Loopback map: Glasshouse (stealth + loud). The parity checks need a STEALTH phase, so this stays on
+## Glasshouse; Dockside Burn is loud-only and carries test_p3_loud.
 const HEIST: StringName = &"glasshouse"
-## Seed 3074 resolves escape = esc_pell (secure zone at the Pell van). esc_alley_west (seeds 3071-3073)
-## cannot secure bags: its
-## VanSecureE1 zone floor sits 0.15 m above the alley ground (reported to ENV C).
-const SEED: int = 3074
+## Seed 3071 resolves escape = esc_alley_west (VanSecureE1). Bags drop at the van's DropAnchor
+## (BotUtil.drop_point): the zone centre is inside the van body (D-066 root cause, ENV C).
+const SEED: int = 3071
 const PROBE: GDScript = preload("res://tests/integration/bots/coop_probe.gd")
 const CLIENT_SCENE: String = "res://tests/integration/bots/coop_client.tscn"
 const PORT_MIN: int = 49152
@@ -164,7 +164,7 @@ func _check_bag_secured() -> void:
 	var present: Callable = func(s: Dictionary) -> bool: return bool((s.get("present", {}) as Dictionary).get(id, false))
 	var spawned: bool = await _until_client(present, 5.0, {"probe_ids": [id]})
 	assert_true(spawned, "spawned bag exists on the client")
-	bag.release(BotUtil.zone_center(zone) + Vector3(0.0, 0.4, 0.0), Vector3.ZERO, false)
+	bag.release(BotUtil.drop_point(zone) + Vector3(0.0, 0.4, 0.0), Vector3.ZERO, false)
 	var secured: bool = await wait_until(func() -> bool: return _host_count(&"loot_secured") >= 1, _budget(5.0))
 	assert_true(secured, "bag secured on the host")
 	var gone: Callable = func(s: Dictionary) -> bool:

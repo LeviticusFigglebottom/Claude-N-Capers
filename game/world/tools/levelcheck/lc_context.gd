@@ -12,7 +12,7 @@ const CONTAINERS: Array[StringName] = [&"Geometry", &"Props", &"Lighting", &"Gam
 const CONTENT_FOLDERS: Array[StringName] = [&"Lighting", &"Gameplay", &"Variants"]
 const PROP_METAS: Array[StringName] = [&"kind", &"mount", &"support", &"prop", &"fixture"]
 ## Kinds whose subtree is part of the building shell for ray classification.
-const SHELL_KINDS: Array[StringName] = [&"door", &"vault_door", &"window", &"stairs"]
+const SHELL_KINDS: Array[StringName] = [&"door", &"vault_door", &"industrial_door", &"window", &"stairs"]
 
 var map: HeistMap
 var heist_id: String = ""
@@ -134,7 +134,7 @@ func _add_prop(n: Node3D) -> void:
 	p.mount = LcUtil.meta_s(n, &"mount")
 	p.is_support = LcUtil.meta_b(n, &"support")
 	p.is_window = p.kind == &"window"
-	p.is_door = p.kind == &"door" or p.kind == &"vault_door" or n.find_child("Leaf", true, false) != null
+	p.is_door = p.kind in [&"door", &"vault_door", &"industrial_door"] or n.find_child("Leaf", true, false) != null
 	p.slot = LcUtil.slot_of(n)
 	var inv: Transform3D = p.xform.affine_inverse()
 	var first: bool = true

@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_hatch"]
+resource_name = "db_grey_boat_hatch"
+albedo_color = Color(0.45, 0.32, 0.2, 1)
+roughness = 0.9
+metadata/greybox = true
+
+[sub_resource type="BoxMesh" id="mesh_hatch"]
+material = SubResource("mat_hatch")
+size = Vector3(1.4, 0.12, 1.0)
+
+[node name="BoatDropVisual" type="Node3D"]
+metadata/greybox = true
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+mesh = SubResource("mesh_hatch")
+
+[node name="DoorL" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.12, 0)
+
+[node name="DoorR" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 0.12, 0)
+
+[node name="DropAnchor" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0)

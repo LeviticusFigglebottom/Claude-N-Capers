@@ -63,7 +63,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow1` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 14.3 | 14.7 | 1.03 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Misc/RegisterCash/UsePoint` | use_point | 7.7 | 19.3 | 2.52 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Misc/PhoneCounter/UsePoint` | use_point | 7.8 | 17.3 | 2.22 | ok |
-| `Spawns/CasingHarlow1` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 7.7 | 42.6 | 5.54 | detour (whitelisted) |
+| `Spawns/CasingHarlow1` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 7.7 | 42.7 | 5.54 | detour (whitelisted) |
 | `Spawns/CasingHarlow1` | `Gameplay/Misc/AlarmBackDoor/UsePoint` | use_point | 13.5 | 26.5 | 1.96 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 15.1 | 39.9 | 2.63 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 13.3 | 38.8 | 2.92 | ok |
@@ -77,7 +77,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow1` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1/Zone` | escape_zone | 20.2 | 33.6 | 1.66 | ok |
 | `Spawns/CasingHarlow1` | `Variants/Group_estate/Slot_estate_bag/EstateBag` | loot_spawn | 13.1 | 14.2 | 1.08 | ok |
 | `Spawns/CasingHarlow1` | `Variants/Group_estate/Slot_estate_bag/EstateBag/UsePoint` | use_point | 13.9 | 14.8 | 1.06 | ok |
-| `Spawns/CasingHarlow1` | `Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint` | use_point | 7.6 | 42.6 | 5.64 | detour (whitelisted) |
+| `Spawns/CasingHarlow1` | `Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint` | use_point | 7.6 | 42.7 | 5.64 | detour (whitelisted) |
 | `Spawns/CasingHarlow2` | `Gameplay/Doors/BackDoor` | objective | 15.1 | 26.6 | 1.76 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Doors/BackDoor/UsePoint` | use_point | 15.1 | 26.6 | 1.76 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 13.5 | 24.9 | 1.85 | ok |
@@ -205,7 +205,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow3` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 11.5 | 11.8 | 1.02 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Misc/RegisterCash/UsePoint` | use_point | 8.4 | 16.4 | 1.96 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Misc/PhoneCounter/UsePoint` | use_point | 7.8 | 14.4 | 1.85 | ok |
-| `Spawns/CasingHarlow3` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 7.7 | 39.8 | 5.19 | detour (whitelisted) |
+| `Spawns/CasingHarlow3` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 7.7 | 39.8 | 5.20 | detour (whitelisted) |
 | `Spawns/CasingHarlow3` | `Gameplay/Misc/AlarmBackDoor/UsePoint` | use_point | 13.9 | 23.7 | 1.70 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 14.1 | 37.0 | 2.63 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 12.7 | 35.9 | 2.83 | ok |
@@ -219,7 +219,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow3` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1/Zone` | escape_zone | 20.8 | 30.7 | 1.48 | ok |
 | `Spawns/CasingHarlow3` | `Variants/Group_estate/Slot_estate_bag/EstateBag` | loot_spawn | 10.7 | 11.3 | 1.06 | ok |
 | `Spawns/CasingHarlow3` | `Variants/Group_estate/Slot_estate_bag/EstateBag/UsePoint` | use_point | 11.4 | 11.9 | 1.05 | ok |
-| `Spawns/CasingHarlow3` | `Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint` | use_point | 7.9 | 39.8 | 5.05 | detour (whitelisted) |
+| `Spawns/CasingHarlow3` | `Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint` | use_point | 7.9 | 39.8 | 5.06 | detour (whitelisted) |
 | `Spawns/CasingHarlow4` | `Gameplay/Doors/BackDoor` | objective | 15.6 | 23.8 | 1.52 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Doors/BackDoor/UsePoint` | use_point | 15.6 | 23.8 | 1.52 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 14.2 | 22.2 | 1.56 | ok |
@@ -276,7 +276,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow4` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 10.2 | 10.5 | 1.03 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Misc/RegisterCash/UsePoint` | use_point | 9.1 | 15.1 | 1.66 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Misc/PhoneCounter/UsePoint` | use_point | 8.3 | 13.1 | 1.59 | ok |
-| `Spawns/CasingHarlow4` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 8.1 | 38.4 | 4.76 | detour (whitelisted) |
+| `Spawns/CasingHarlow4` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 8.1 | 38.5 | 4.77 | detour (whitelisted) |
 | `Spawns/CasingHarlow4` | `Gameplay/Misc/AlarmBackDoor/UsePoint` | use_point | 14.4 | 22.3 | 1.55 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 13.7 | 35.7 | 2.59 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 12.6 | 34.6 | 2.74 | ok |
@@ -290,7 +290,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow4` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1/Zone` | escape_zone | 21.2 | 29.4 | 1.39 | ok |
 | `Spawns/CasingHarlow4` | `Variants/Group_estate/Slot_estate_bag/EstateBag` | loot_spawn | 9.6 | 10.0 | 1.04 | ok |
 | `Spawns/CasingHarlow4` | `Variants/Group_estate/Slot_estate_bag/EstateBag/UsePoint` | use_point | 10.3 | 10.6 | 1.03 | ok |
-| `Spawns/CasingHarlow4` | `Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint` | use_point | 8.4 | 38.4 | 4.56 | detour (whitelisted) |
+| `Spawns/CasingHarlow4` | `Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint` | use_point | 8.4 | 38.5 | 4.56 | detour (whitelisted) |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Doors/BackDoor` | objective | 15.5 | 15.7 | 1.01 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Doors/BackDoor/UsePoint` | use_point | 15.5 | 15.7 | 1.01 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 16.5 | 17.3 | 1.04 | ok |
@@ -347,7 +347,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 11.5 | 12.3 | 1.07 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Misc/RegisterCash/UsePoint` | use_point | 18.5 | 24.0 | 1.30 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Misc/PhoneCounter/UsePoint` | use_point | 16.9 | 25.8 | 1.52 | ok |
-| `Spawns/PreplanAlleyMouth1` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 18.0 | 33.1 | 1.84 | ok |
+| `Spawns/PreplanAlleyMouth1` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 18.0 | 33.2 | 1.84 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Misc/AlarmBackDoor/UsePoint` | use_point | 16.7 | 17.4 | 1.04 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 10.7 | 30.3 | 2.83 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 13.3 | 29.3 | 2.20 | ok |
@@ -418,7 +418,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyMouth2` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 12.7 | 13.5 | 1.07 | ok |
 | `Spawns/PreplanAlleyMouth2` | `Gameplay/Misc/RegisterCash/UsePoint` | use_point | 19.1 | 25.2 | 1.32 | ok |
 | `Spawns/PreplanAlleyMouth2` | `Gameplay/Misc/PhoneCounter/UsePoint` | use_point | 17.6 | 27.0 | 1.54 | ok |
-| `Spawns/PreplanAlleyMouth2` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 18.7 | 34.3 | 1.83 | ok |
+| `Spawns/PreplanAlleyMouth2` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 18.7 | 34.3 | 1.84 | ok |
 | `Spawns/PreplanAlleyMouth2` | `Gameplay/Misc/AlarmBackDoor/UsePoint` | use_point | 17.0 | 17.4 | 1.03 | ok |
 | `Spawns/PreplanAlleyMouth2` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 11.2 | 31.5 | 2.83 | ok |
 | `Spawns/PreplanAlleyMouth2` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 13.8 | 30.4 | 2.21 | ok |
@@ -489,7 +489,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyMouth3` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 11.8 | 12.7 | 1.07 | ok |
 | `Spawns/PreplanAlleyMouth3` | `Gameplay/Misc/RegisterCash/UsePoint` | use_point | 19.6 | 24.4 | 1.25 | ok |
 | `Spawns/PreplanAlleyMouth3` | `Gameplay/Misc/PhoneCounter/UsePoint` | use_point | 18.0 | 26.2 | 1.46 | ok |
-| `Spawns/PreplanAlleyMouth3` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 19.0 | 33.5 | 1.76 | ok |
+| `Spawns/PreplanAlleyMouth3` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 19.0 | 33.5 | 1.77 | ok |
 | `Spawns/PreplanAlleyMouth3` | `Gameplay/Misc/AlarmBackDoor/UsePoint` | use_point | 17.9 | 18.6 | 1.04 | ok |
 | `Spawns/PreplanAlleyMouth3` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 11.8 | 30.7 | 2.61 | ok |
 | `Spawns/PreplanAlleyMouth3` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 14.4 | 29.6 | 2.06 | ok |
@@ -625,13 +625,13 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest1` | `Gameplay/DisplayCases/WallCaseB/UsePoint` | use_point | 17.6 | 26.9 | 1.53 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/DisplayCases/WallCaseC/UsePoint` | use_point | 18.6 | 28.4 | 1.53 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/DisplayCases/IslandCaseA/UsePoint` | use_point | 19.2 | 27.3 | 1.43 | ok |
-| `Spawns/PreplanAlleyWest1` | `Gameplay/DisplayCases/IslandCaseB/UsePoint` | use_point | 24.0 | 35.3 | 1.47 | ok |
+| `Spawns/PreplanAlleyWest1` | `Gameplay/DisplayCases/IslandCaseB/UsePoint` | use_point | 24.0 | 35.2 | 1.47 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/DisplayCases/RearIslandCase/UsePoint` | use_point | 23.3 | 34.6 | 1.48 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/DisplayCases/SalonCaseA/UsePoint` | use_point | 29.3 | 39.9 | 1.36 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 30.8 | 38.4 | 1.25 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Misc/RegisterCash/UsePoint` | use_point | 17.1 | 24.8 | 1.45 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Misc/PhoneCounter/UsePoint` | use_point | 18.7 | 26.5 | 1.42 | ok |
-| `Spawns/PreplanAlleyWest1` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 19.9 | 54.3 | 2.72 | ok |
+| `Spawns/PreplanAlleyWest1` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 19.9 | 54.4 | 2.73 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Misc/AlarmBackDoor/UsePoint` | use_point | 15.1 | 17.5 | 1.15 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 22.8 | 51.5 | 2.27 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 20.4 | 50.5 | 2.47 | ok |
@@ -641,13 +641,13 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest1` | `Variants/Group_keycard/Slot_kc_breakroom/Keycard/UsePoint` | use_point | 14.8 | 55.9 | 3.77 | detour (whitelisted) |
 | `Spawns/PreplanAlleyWest1` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags` | loot_spawn | 17.0 | 17.6 | 1.03 | ok |
 | `Spawns/PreplanAlleyWest1` | `Variants/Group_extra_loot/Slot_xl_delivery/DeliveryBags/UsePoint` | use_point | 16.2 | 17.2 | 1.06 | ok |
-| `Spawns/PreplanAlleyWest1` | `Variants/Group_escape/Slot_esc_alley_west/VanSecureE1/Zone` | secure_zone | 8.3 | 9.7 | 1.17 | ok |
+| `Spawns/PreplanAlleyWest1` | `Variants/Group_escape/Slot_esc_alley_west/VanSecureE1/Zone` | secure_zone | 8.3 | 9.6 | 1.16 | ok |
 | `Spawns/PreplanAlleyWest1` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1/Zone` | escape_zone | 13.9 | 14.2 | 1.02 | ok |
 | `Spawns/PreplanAlleyWest1` | `Variants/Group_estate/Slot_estate_bag/EstateBag` | loot_spawn | 28.0 | 37.4 | 1.34 | ok |
 | `Spawns/PreplanAlleyWest1` | `Variants/Group_estate/Slot_estate_bag/EstateBag/UsePoint` | use_point | 28.8 | 36.5 | 1.27 | ok |
-| `Spawns/PreplanAlleyWest1` | `Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint` | use_point | 19.2 | 54.3 | 2.83 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/BackDoor` | objective | 16.1 | 16.1 | 1.00 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/BackDoor/UsePoint` | use_point | 16.1 | 16.1 | 1.00 | ok |
+| `Spawns/PreplanAlleyWest1` | `Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint` | use_point | 19.2 | 54.4 | 2.84 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/BackDoor` | objective | 16.1 | 17.9 | 1.11 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/BackDoor/UsePoint` | use_point | 16.1 | 17.9 | 1.11 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 15.6 | 19.3 | 1.24 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/ReceivingDoor/UsePoint` | use_point | 17.7 | 23.4 | 1.32 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Doors/WorkshopDoor` | objective | 21.4 | 27.3 | 1.27 | ok |
@@ -773,7 +773,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest3` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 32.0 | 39.2 | 1.22 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Misc/RegisterCash/UsePoint` | use_point | 18.8 | 25.6 | 1.36 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Misc/PhoneCounter/UsePoint` | use_point | 20.2 | 27.3 | 1.35 | ok |
-| `Spawns/PreplanAlleyWest3` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 21.6 | 55.1 | 2.55 | ok |
+| `Spawns/PreplanAlleyWest3` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 21.6 | 55.2 | 2.55 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Misc/AlarmBackDoor/UsePoint` | use_point | 15.9 | 18.3 | 1.15 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 23.4 | 52.4 | 2.24 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 21.2 | 51.3 | 2.42 | ok |
@@ -787,7 +787,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest3` | `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1/Zone` | escape_zone | 13.2 | 13.2 | 1.00 | ok |
 | `Spawns/PreplanAlleyWest3` | `Variants/Group_estate/Slot_estate_bag/EstateBag` | loot_spawn | 29.1 | 38.2 | 1.31 | ok |
 | `Spawns/PreplanAlleyWest3` | `Variants/Group_estate/Slot_estate_bag/EstateBag/UsePoint` | use_point | 29.9 | 37.3 | 1.25 | ok |
-| `Spawns/PreplanAlleyWest3` | `Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint` | use_point | 20.9 | 55.1 | 2.64 | ok |
+| `Spawns/PreplanAlleyWest3` | `Variants/Group_code_note/Slot_code_admin/CodeNote/UsePoint` | use_point | 20.9 | 55.2 | 2.64 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/BackDoor` | objective | 16.7 | 16.8 | 1.01 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/BackDoor/UsePoint` | use_point | 16.7 | 16.8 | 1.01 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 16.5 | 18.2 | 1.11 | ok |
@@ -844,7 +844,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest4` | `Gameplay/DisplayCases/SalonCaseB/UsePoint` | use_point | 32.5 | 39.3 | 1.21 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Misc/RegisterCash/UsePoint` | use_point | 19.4 | 25.6 | 1.32 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Misc/PhoneCounter/UsePoint` | use_point | 20.8 | 27.4 | 1.32 | ok |
-| `Spawns/PreplanAlleyWest4` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 22.2 | 55.2 | 2.48 | ok |
+| `Spawns/PreplanAlleyWest4` | `Gameplay/Misc/PhoneAdmin/UsePoint` | use_point | 22.2 | 55.2 | 2.49 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Misc/AlarmBackDoor/UsePoint` | use_point | 16.3 | 18.3 | 1.13 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 23.6 | 52.4 | 2.22 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 21.6 | 51.3 | 2.38 | ok |
