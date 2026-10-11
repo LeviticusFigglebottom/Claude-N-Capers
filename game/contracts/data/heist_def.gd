@@ -17,3 +17,5 @@ extends Resource
 @export var preplanning: Dictionary = {}
 @export var escape_options: Array[StringName] = []    ## &"van", &"boat", &"heli", &"walk"
 @export var music_track: StringName = &""
+## How the crew starts (S1.3, D-065): &"casing" (default) or &"civilian" (undetectable, no gear until a gear_pickup).
+@export var start_mode: StringName = &"casing"

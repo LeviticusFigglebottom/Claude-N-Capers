@@ -19,6 +19,7 @@ from __future__ import annotations
 import math
 
 import _outfit as o
+import _tri
 from _outfit import Gear, Matrix, Mesh, Vector
 
 W_CENTRE = 0.42
@@ -172,6 +173,7 @@ def build_shield(ctx, colors: dict) -> None:
     me.update()
     obj = bpy.data.objects.new(me_name, me)
     scene.link(obj, None)
+    _tri.triangulate(obj)
     mb = geo.MeshBuilder()
     verts = [mb.bm.verts.new(p) for p in collision_points()]
     bmesh.ops.convex_hull(mb.bm, input=verts)

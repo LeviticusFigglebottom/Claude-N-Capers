@@ -387,3 +387,52 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Findings routed: ENV C, SafeLoot not parented under WorkshopSafe (the loot could be taken from a locked safe; P1
   sign-off waits on this fix); camera variant group resolving to none (enable now that P2 is done); ENV A, a spurious
   CASING→STEALTH hop on alarm-while-casing.
+
+## D-061 — 2026-10-11 — P1 signed off
+- All P1 gate items pass (docs/process/p1_signoff.md): the 11-step end-to-end gate, Glasshouse G2 (final art,
+  18/18 checks), characters, full CI. Known gaps are carried forward there; a product-owner playtest is recommended.
+- Glasshouse: security_room_staffed (operator 0.6 / empty 0.4) and code_note (one of three) are enabled (ENV C).
+
+## D-062 — 2026-10-11 — Music selection (B5-03)
+- ENV C: `MusicTrackTable` (`res://world/audio/music/tracks.tres`; id, stems, default_for_heists, unlock;
+  `load_default()`, `all()`); MusicDirector plays `rt.launch_options.music_track` when set, else `HeistDef.music_track`;
+  hub preview `MusicDirector.preview(track_id, stem = &"assault")` / `stop_preview()`. 3 more tracks for P5.
+- ENV A: `HeistRuntime.launch_options` (read-only dict from launch()/launch_client()), replicated in the bring-up so
+  every peer plays the host's pick.
+- ENV B: `options["music_track"]` from the pre-planning/lobby pick (host wins in co-op), hub jukebox UI, `music.<id>.name`
+  strings, track unlocks (Notoriety ranks) in the profile.
+
+## D-063 — 2026-10-11 — Shared-set reload scaling; heist NPC casting
+- An FP set whose one reload clip serves weapons with different reload times plays it at
+  `speed_scale = clip_len / reload_time_s` (and reload_empty likewise), allowed range 0.75–1.35×; outside that
+  a weapon needs its own clip. First use: `shotgun_box` authored to Brute (3.6/4.4), Harrow plays ≈1.24×.
+  Shell-by-shell pieces keep data timings (D-053). ENV A implements; test_arms accepts any weapon within range.
+- NPC casting follows the heist design docs:
+  - Night Deposit: night manager, cleaner, Halden Security guard (ENV D re-badges its bank guard).
+  - Shadow Ledger: cleaners (cleaner variant), an IT contractor (to build), Helena Moor (brief from ENV C), and Kessler
+    in a robe by default (`npc_kessler_coat` kept).
+  - Tellers are reserved for Meridian Federal; guests and the waitress for Gallery Night (P5).
+
+## D-064 — 2026-10-11 — Dockside Burn G0 approved
+- Loud-only (P3) heist; Ortega Cold Storage, Pier 9. Opens with a cartel phase, then police after a rolled 60/90/120 s
+  delay. Required: the burn + 4 bags (extra bags and product are a bonus). Base payout $95k (placeholder; P6 balance).
+- Approved: high-bay ceiling override 6.0–9.0 m; scale rule `industrial_door` 2.4–4.0 m wide × 2.1–4.5 m high;
+  the −1.8 Landing in floor_heights.
+- Cartel gunmen share `DifficultyDef.max_active_enemies` with police; the police quota is reduced by the cartel alive
+  count. Fire damages players (DoT, ignores armour, L3.4), telegraphed (warning cue + 5 s shutter countdown).
+- Police never spawn inside the building; they enter only via ENTRY TacticalPoints.
+- Two always-on sniper perches suffice for the P3 gate.
+- Requests:
+  - ENV A: QC-35 police start delay, QC-36 cartel EnemyDef, QC-37 saw_cut implementers, QC-38 burn_point, QC-41 one-way
+    rappel links.
+  - ENV B: QC-39 loot, QC-40 preplan assets.
+  - ENV D: the cartel gunman model.
+- Priority: Dockside Burn G1 (the P3 gate) before the ND/SL G2 art passes.
+
+## D-065 — 2026-10-11 — Civilian mode contracts (S1.3, B5-05)
+- `HeistDef.start_mode` (&"casing" default | &"civilian"); ui_hud v1.6 `player_mode_changed` + crew `mode`;
+  gameplay_prefabs v1.4 `gear_pickup` and the common `civilian_allowed` export (block reason `ui.blocked.civilian`).
+  ENV A implements, ENV B adds strings (`ui.prompt.pick_up_gear`, `ui.blocked.civilian`) + HUD, ENV C uses it on
+  Afterhours (P5).
+- D-063 range check landed (ENV A 34b5537). Outliers (furnace ×0.5, cyclone empty ×0.73) are re-measured after
+  ENV D's batch-3 rebuild (bfde340) reaches trunk; any that remain get their own clip (D) or adjusted data (B).

@@ -36,12 +36,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 384 props checked
+- 389 props checked
 
 
 ## clipping: Nothing clips
 
-- 384 props, 23 doors checked
+- 389 props, 23 doors checked
 
 
 ## orientation: Flush and oriented
@@ -107,7 +107,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 43 variant configuration(s), 66012 spawn->target path queries
+- 46 variant configuration(s), 70620 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -129,12 +129,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 1440 surfaces checked
+- 1470 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 264328 triangles in 73469 plane bins
+- 266224 triangles in 74200 plane bins
 
 
 ## lights: Lighting is deliberate
@@ -150,20 +150,20 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomG7` | electrical_closet | 3 | 4.0 | 0.75 |
 | `Rooms/RoomG2` | workshop_jeweler | 28 | 24.8 | 1.13 |
 | `Rooms/RoomG3` | restroom_single | 13 | 11.2 | 1.16 |
-| `Rooms/RoomG4` | corridor_service | 13 | 27.0 | 0.48 |
+| `Rooms/RoomG4` | corridor_service | 14 | 27.0 | 0.52 |
 | `Rooms/RoomG9` | janitor_closet | 4 | 2.2 | 1.78 |
 | `Rooms/RoomG10` | corridor_service | 4 | 9.0 | 0.44 |
-| `Rooms/RoomG5` | sales_floor_jewelry | 50 | 78.0 | 0.64 |
+| `Rooms/RoomG5` | sales_floor_jewelry | 52 | 78.0 | 0.67 |
 | `Rooms/RoomG6` | salon_private | 24 | 30.0 | 0.80 |
 | `Rooms/RoomU1` | break_room | 26 | 24.8 | 1.05 |
 | `Rooms/RoomU2` | security_office | 25 | 22.5 | 1.11 |
 | `Rooms/RoomU3` | restroom_single | 10 | 11.2 | 0.89 |
-| `Rooms/RoomU4` | corridor_office | 10 | 27.0 | 0.37 |
+| `Rooms/RoomU4` | corridor_office | 11 | 27.0 | 0.41 |
 | `Rooms/RoomU8` | corridor_service | 4 | 9.0 | 0.44 |
 | `Rooms/RoomU5` | office_open | 36 | 42.0 | 0.86 |
 | `Rooms/RoomU6` | office_manager | 26 | 30.0 | 0.87 |
 | `Rooms/RoomU7` | storage_archive | 19 | 36.0 | 0.53 |
-| `Rooms/RoomX1` | exterior_alley | 18 | 193.2 | 0.09 |
+| `Rooms/RoomX1` | exterior_alley | 19 | 193.2 | 0.10 |
 | `Rooms/RoomX2` | exterior_street | 29 | 1380.4 | 0.02 |
 
 
@@ -196,27 +196,27 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 953 | 531238 | 6 |
-| `TopDownBuilding` | 1005 | 529242 | 6 |
-| `ExtHarlowCorner` | 1056 | 558372 | 6 |
-| `ExtShopfront` | 1386 | 567660 | 6 |
-| `ExtAlleyWest` | 1267 | 564122 | 6 |
-| `ExtAlleyMouth` | 1274 | 530796 | 6 |
-| `ExtFireEscape` | 793 | 346238 | 3 |
-| `ExtPellFireExit` | 1299 | 534012 | 6 |
-| `SalesFloorEntrance` | 844 | 379220 | 4 |
-| `ChandelierLandmark` | 1008 | 411304 | 6 |
-| `CounterStaffDoor` | 418 | 243126 | 3 |
-| `SalonPrivate` | 1202 | 465994 | 6 |
-| `CorridorG4` | 1085 | 444888 | 6 |
-| `WorkshopSafe` | 175 | 69364 | 2 |
-| `ReceivingBackDoor` | 159 | 76570 | 2 |
+| `TopDownSite` | 983 | 536974 | 6 |
+| `TopDownBuilding` | 1035 | 534978 | 6 |
+| `ExtHarlowCorner` | 1086 | 564108 | 6 |
+| `ExtShopfront` | 1416 | 573396 | 6 |
+| `ExtAlleyWest` | 1297 | 569858 | 6 |
+| `ExtAlleyMouth` | 1304 | 536532 | 6 |
+| `ExtFireEscape` | 808 | 349106 | 3 |
+| `ExtPellFireExit` | 1329 | 539748 | 6 |
+| `SalesFloorEntrance` | 864 | 383044 | 4 |
+| `ChandelierLandmark` | 1023 | 414172 | 6 |
+| `CounterStaffDoor` | 423 | 244082 | 3 |
+| `SalonPrivate` | 1232 | 471730 | 6 |
+| `CorridorG4` | 1110 | 449668 | 6 |
+| `WorkshopSafe` | 180 | 70320 | 2 |
+| `ReceivingBackDoor` | 164 | 77526 | 2 |
 | `StairCore` | 266 | 90194 | 2 |
-| `UpperCorridor` | 894 | 350036 | 6 |
-| `SecurityOffice` | 423 | 162784 | 3 |
-| `BreakRoom` | 144 | 69730 | 2 |
-| `ManagerOffice` | 498 | 261280 | 5 |
-| `AdminOffice` | 327 | 180264 | 2 |
-| `StockRoom` | 793 | 391232 | 6 |
-| `GaragePerch` | 1202 | 567290 | 6 |
+| `UpperCorridor` | 909 | 352904 | 6 |
+| `SecurityOffice` | 433 | 164696 | 3 |
+| `BreakRoom` | 149 | 70686 | 2 |
+| `ManagerOffice` | 503 | 262236 | 5 |
+| `AdminOffice` | 337 | 182176 | 2 |
+| `StockRoom` | 808 | 394100 | 6 |
+| `GaragePerch` | 1232 | 573026 | 6 |
 

@@ -25,6 +25,7 @@ from collections.abc import Callable
 import _body as body
 import _outfit as o
 import _rig as rig
+import _tri
 from _outfit import Fit, Hull, Mesh, Vector
 
 COVER_RAY = 0.06
@@ -161,6 +162,9 @@ def build_character(ctx, recipe: Callable[[Kit], None]) -> None:
     objs = body.build_body(ctx, arm, bparams)
     o.bake_body(objs, objs["data"])
     removed = cull_covered(fit, objs["Body"], Hull(fit, kit.layers, body_regions=set()))
+    for name in ("Body", "Hair"):
+        if objs[name] is not None:
+            _tri.triangulate(objs[name])
     tris = {"Body": sum(len(p.vertices) - 2 for p in objs["Body"].data.polygons)}
     if objs["Hair"] is not None:
         tris["Hair"] = sum(len(p.vertices) - 2 for p in objs["Hair"].data.polygons)

@@ -1,6 +1,6 @@
 asset: char_patrol_officer
 script: tools/blender/characters/char_police.py
-params: {"age": 0.4, "build": 0.6, "gender": 0.0, "hair": "short", "hair_color": "dark", "height": 1.79, "skin": 3, "unit": "patrol"}
+params: {"age": 0.4, "beard_shadow": 0.6, "build": 0.6, "gender": 0.0, "hair": "short", "hair_color": "dark", "height": 1.79, "skin": 3, "unit": "patrol"}
 seed: 628532122  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category characters --asset char_patrol_officer
@@ -9,7 +9,7 @@ attach_Back: bone chest, local [0.0000, 0.0910, 0.1359] (model [0.0000, 1.3073, 
 attach_Head: bone head, local [0.0000, 0.0815, -0.0892] (model [0.0000, 1.6754, -0.0771], Godot axes, rest pose)
 attach_Hip: bone hips, local [-0.2208, 0.0652, 0.0606] (model [-0.2208, 1.0225, 0.0638], Godot axes, rest pose)
 body_faces_culled: 4808
-body_params: {"age": 0.4, "build": 0.6, "gender": 0.0, "hair": "short", "hair_color": "dark", "height": 1.79, "skin": 3}
+body_params: {"age": 0.4, "beard_shadow": 0.6, "build": 0.6, "gender": 0.0, "hair": "short", "hair_color": "dark", "height": 1.79, "lip": "auto", "skin": 3}
 bones: 52
 hat: police patrol cap, chequered band (Headwear), crown top z 1.847 m
 meshes: Body,Gear,Hair,Headwear,Outfit

@@ -10,7 +10,8 @@ the special gear of ``_special_gear``. Silhouette at 30 m is the design driver
   smoked visor flipped UP (head stays vulnerable, PD2). Wider shoulders and a taller, front-heavy
   head than TAC Light.
 * ``char_phantom`` (Cloaker): tall and slim, near-black suit, tight balaclava, no helmet; quad-tube
-  night-vision goggles whose outer tubes splay out (the iconic snout/"ears" at eye level). The
+  night-vision goggles whose long outer tubes splay out (the iconic snout/"ears" at eye level) on a
+  mount arm that stands up over the forehead (both read in the 30 m silhouette). The
   four lenses are the separate mesh ``Goggles`` (material ``char_goggle_glow``: ORM + emission
   #3BFF6A; the assembly sets it as ``material_override`` so ENV A's PhantomBrain ramps it).
 * ``char_stinger`` (Taser): TAC Light kit + a battery backpack with twin capacitor cylinders that
@@ -55,11 +56,11 @@ TRI_BUDGET = 35000
 EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
 
 VARIANTS = {
-    "char_tac_heavy": {"height": 1.83, "build": 1.0, "gender": 0.0, "age": 0.4, "skin": 1, "hair": "buzz",
+    "char_tac_heavy": {"height": 1.83, "build": 1.0, "gender": 0.0, "age": 0.4, "skin": 1, "beard_shadow": 0.7, "hair": "buzz",
                        "hair_color": "dark", "unit": "tac_heavy"},
     "char_phantom": {"height": 1.86, "build": 0.15, "gender": 0.0, "age": 0.3, "skin": 2, "hair": "none",
                      "hair_color": "dark", "unit": "phantom"},
-    "char_stinger": {"height": 1.80, "build": 0.6, "gender": 0.0, "age": 0.35, "skin": 4, "hair": "buzz",
+    "char_stinger": {"height": 1.80, "build": 0.6, "gender": 0.0, "age": 0.35, "skin": 4, "beard_shadow": 0.5, "hair": "buzz",
                      "hair_color": "dark", "unit": "stinger"},
     "char_bulwark": {"height": 1.84, "build": 0.95, "gender": 0.0, "age": 0.4, "skin": 3, "hair": "buzz",
                      "hair_color": "brown", "unit": "bulwark"},
@@ -68,11 +69,11 @@ VARIANTS = {
                            "accent": "char_aegis_blue", "carrier": "char_aegis_steel"},
     "char_wrecker": {"height": 1.88, "build": 1.0, "gender": 0.0, "age": 0.45, "skin": 2, "hair": "buzz",
                      "hair_color": "dark", "unit": "wrecker"},
-    "char_longshot": {"height": 1.80, "build": 0.45, "gender": 0.0, "age": 0.45, "skin": 5, "hair": "short",
+    "char_longshot": {"height": 1.80, "build": 0.45, "gender": 0.0, "age": 0.45, "skin": 5, "beard_shadow": 0.65, "hair": "short",
                       "hair_color": "dark", "unit": "longshot"},
     "char_corpsman": {"height": 1.79, "build": 0.55, "gender": 0.0, "age": 0.3, "skin": 2, "hair": "short",
                       "hair_color": "brown", "unit": "corpsman"},
-    "char_brandt": {"height": 1.86, "build": 0.85, "gender": 0.0, "age": 0.75, "skin": 1, "hair": "short",
+    "char_brandt": {"height": 1.86, "build": 0.85, "gender": 0.0, "age": 0.75, "skin": 1, "beard_shadow": 0.45, "hair": "short",
                     "hair_color": "grey", "unit": "brandt", "armor": "char_aegis_steel", "accent": "char_aegis_blue",
                     "carrier": "char_tac_gear"},
     "char_bulwark_shield": {"unit": "shield", "face": "char_tac_helmet", "edge": "rubber_black",
@@ -107,9 +108,11 @@ def pauldrons(kit, mat: str, trim: str, size: float = 1.0, lift: float = 1.0) ->
     m = Mesh()
     for sx in (-1.0, 1.0):
         sh = _shoulder(kit, sx)
-        anchor = sh + Vector((sx * 0.02 * k, 0.0, 0.0))
-        tgt = sh + Vector((sx * 0.02 * k, 0.0, 0.035 * k))
-        m.extend(sg.plate(kit, tgt, Vector((sx * 0.75, 0.0, 0.66)), 0.16 * size, 0.15 * size,
+        # centred out on the shoulder cap (the deltoid), facing up-and-out: the plate's inner edge
+        # stops short of the neck instead of riding up the trapezius
+        anchor = sh + Vector((sx * 0.04 * k, 0.0, 0.0))
+        tgt = sh + Vector((sx * 0.055 * k, 0.0, 0.0))
+        m.extend(sg.plate(kit, tgt, Vector((sx * 0.86, 0.0, 0.51)), 0.16 * size, 0.15 * size,
                           [(1.0, 0.022 * lift, mat), (0.78, 0.018 * lift, trim)], up=Vector((0, 1, 0)), r=0.035,
                           anchor=anchor))
         el = Vector(kit.fit.J["elbow.R" if sx > 0 else "elbow.L"])
@@ -312,10 +315,11 @@ def phantom(kit) -> None:
     # quad-tube night vision: inner pair straight, outer pair splayed 14 deg; housing bridge; straps
     head = Mesh()
     lens = Mesh()
-    tube_len = 0.075 * k
-    rad = 0.0165 * k
+    # long tubes and a wide splay so the snout reads in the 30 m silhouette
+    tube_len = 0.130 * k
+    rad = 0.0180 * k
     zt = eye.z + 0.004 * k
-    tubes = [(-0.025, 0.0), (0.025, 0.0), (-0.07, -22.0), (0.07, 22.0)]
+    tubes = [(-0.025, 0.0), (0.025, 0.0), (-0.072, -34.0), (0.072, 34.0)]
     for x, ang in tubes:
         a = math.radians(ang)
         d = Vector((math.sin(a), math.cos(a), 0.0))
@@ -334,6 +338,19 @@ def phantom(kit) -> None:
     gp.box((-0.016 * k, 0.02 * k, 0.004 * k), (0.016 * k, 0.07 * k, 0.026 * k), "polymer_black")   # mount
     gp.bevel(0.004 * k, 1, 30.0)
     head.extend(gp.to_mesh(o.frame_from(Vector((0.0, yf - 0.002 * k, zt)), Vector((0, 1, 0))), weights=sg.HEAD_W))
+    # mount arm: rises from the housing over the forehead to a shroud block on the crown strap, standing
+    # proud of the head (the raised NVG arm is the second silhouette cue)
+    bh_top = bh.cast(Vector((0.0, yf - 0.035 * k, eye.z + 0.5)), Vector((0, 0, -1)), 1.0)
+    z_fore = bh_top[0].z if bh_top[0] is not None else eye.z + 0.06 * k
+    arm_pts = [Vector((0.0, yf + 0.010 * k, zt + 0.026 * k)), Vector((0.0, yf + 0.016 * k, zt + 0.060 * k)),
+               Vector((0.0, yf + 0.006 * k, max(zt + 0.105 * k, z_fore + 0.042 * k))),
+               Vector((0.0, yf - 0.030 * k, max(zt + 0.116 * k, z_fore + 0.050 * k)))]
+    o.tube(head, arm_pts, 0.0085 * k, "polymer_black", sides=6, weights=lambda p, t: sg.HEAD_W)
+    gp = o.Gear()
+    gp.box((-0.022 * k, -0.018 * k, 0.0), (0.022 * k, 0.018 * k, 0.026 * k), "polymer_black")
+    gp.bevel(0.004 * k, 1, 30.0)
+    top_blk = arm_pts[-1] - Vector((0.0, 0.0, 0.020 * k))
+    head.extend(gp.to_mesh(o.frame_from(top_blk, Vector((0, 0.35, 1.0)).normalized()), weights=sg.HEAD_W))
     # head strap ring round the balaclava and a crown strap
     c = fit.head_centre()
     ring = []

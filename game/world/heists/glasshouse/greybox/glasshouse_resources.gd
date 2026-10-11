@@ -35,7 +35,7 @@ static func make_def() -> HeistDef:
 	# heist-only assets force a variant slot from the chosen point's params.
 	d.preplanning = {
 		"favors": 4,
-		"disable": [&"asset.intel_cameras"],
+		"disable": [] as Array[StringName],
 		"assets": {
 			&"asset.body_bag_case_drop": {"point_categories": [&"drop_zone"]},
 			&"asset.alternate_entry": {"point_categories": [&"spawn"]},
@@ -72,7 +72,7 @@ static func make_variants() -> HeistVariantTable:
 		{"group": &"manager_present", "pick": Vector2i(1, 1)},
 		{"group": &"safe_state", "pick": Vector2i(1, 1)},
 		{"group": &"estate", "pick": Vector2i(1, 1)},
-		{"group": &"camera", "pick": Vector2i(0, 0), "phase": 2, "pick_p2": Vector2i(1, 1)},
+		{"group": &"camera", "pick": Vector2i(1, 3), "difficulty_add": [0, 0, 0, 1, 1, 2] as Array[int]},
 		{"group": &"security_room_staffed", "pick": Vector2i(0, 0), "phase": 2, "pick_p2": Vector2i(1, 1)},
 		{"group": &"code_note", "pick": Vector2i(0, 0), "phase": 2, "pick_p2": Vector2i(1, 1)},
 	]
