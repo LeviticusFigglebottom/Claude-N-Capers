@@ -2393,3 +2393,19 @@ ui.lobby.code.error.char,"That code has a character lobby codes never use (only 
 ui.lobby.code.error.length,A lobby code has 8 or 11 characters.
 ui.lobby.code.error.checksum,That code has a typo: check it with the host.
 ui.lobby.code.error.format,That is not a valid lobby code.
+ui.hub.station.notoriety,The Old Press
+ui.hub.station.notoriety.desc,"Notoriety: rank up, pick rewards and see what each rank unlocks."
+ui.prompt.station.board,[{key}] Check the Board
+ui.prompt.station.planning,[{key}] Plan a job
+ui.prompt.station.armory,[{key}] Open the armory
+ui.prompt.station.masks,[{key}] Pick a mask
+ui.prompt.station.jukebox,[{key}] Choose music
+ui.prompt.station.notoriety,[{key}] Notoriety
+ui.prompt.station.range,[{key}] Enter the firing range
+ui.prompt.station.crew,[{key}] Call the crew
+ui.hub.pause.title,Paused
+ui.hub.pause.resume,Resume
+ui.hub.pause.quick_stations,Quick Stations
+ui.options.controls.safehouse_hub,Safehouse
+ui.options.controls.safehouse_hub.walk,Walk Around (3D)
+ui.options.controls.safehouse_hub.menu,Station Menu (2D)

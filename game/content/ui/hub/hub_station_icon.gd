@@ -38,6 +38,8 @@ func _draw() -> void:
 			_crew(c, u, w)
 		&"jukebox":
 			_jukebox(c, u, w)
+		&"notoriety":
+			_notoriety(c, u, w)
 		_:
 			draw_circle(c, u * 0.2, color)
 
@@ -118,3 +120,14 @@ func _jukebox(c: Vector2, u: float, w: float) -> void:
 	var b: Vector2 = heads[1] + Vector2(u * 0.14, -u * 0.82)
 	draw_colored_polygon(PackedVector2Array([a, b, b + Vector2(0, u * 0.16), a + Vector2(0, u * 0.16)]), color)
 	draw_arc(c, u * 0.78, PI * 1.05, PI * 1.35, 10, Color(color, 0.45), w, true)
+
+
+## Five-point star in a ring (Notoriety, the Old Press station, B6-06 / QC-46).
+func _notoriety(c: Vector2, u: float, w: float) -> void:
+	draw_arc(c, u * 0.78, 0.0, TAU, 40, Color(color, 0.55), w, true)
+	var pts: PackedVector2Array = PackedVector2Array()
+	for i: int in range(10):
+		var a: float = -PI * 0.5 + PI * float(i) / 5.0
+		var r: float = 0.56 if i % 2 == 0 else 0.23
+		pts.append(c + Vector2(cos(a), sin(a)) * u * r)
+	draw_colored_polygon(pts, color)
