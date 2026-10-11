@@ -14,6 +14,7 @@ signal pin_pulled()
 signal released()
 
 const NODE_NAME: String = "Throwables"
+const CUE_PIN: StringName = &"cue.throwable_pin"
 
 ## &"" idle, &"winding" (pin pulled), &"recovering".
 var state: StringName = &""
@@ -69,6 +70,9 @@ func tick(intent: CrewIntent, delta: float) -> void:
 			state = &"winding"
 			state_left = CombatTweak.data().throw_windup_s
 			pin_pulled.emit()
+			if Net.is_authority():  # audio_cues v1.3
+				EventBus.audio_cue_requested.emit(CUE_PIN, _crew.eye_position(), _crew.net_id)
+				Net.replicate_event(&"audio_cue_requested", [CUE_PIN, _crew.eye_position(), _crew.net_id])
 		return
 	state_left -= delta
 	if state_left > 0.0:

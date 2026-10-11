@@ -212,7 +212,7 @@ var crew: Array[Dictionary] = []
 # --- crew_stats_changed (ui_hud v1.7, D-071)
 ## Every crew member (humans and Crew AI, local included), by slot: {"slot", "name", "is_ai", "is_local",
 ## "kills", "specials_killed", "civilians_killed", "downs", "shots", "hits", "headshots"} (server counts,
-## CrewStats, replicated).
+## CrewStatsService, replicated).
 var crew_stats: Array[Dictionary] = []
 # --- masked_changed
 var masked: bool = false
@@ -535,11 +535,11 @@ func _poll_crew(slot: int) -> void:
 
 func _poll_crew_stats() -> void:
 	var list: Array[Dictionary] = []
-	var st: CrewStats = _runtime.stats if _runtime != null else null
+	var st: CrewStatsService = _runtime.stats if _runtime != null else null
 	if st != null:
 		for c: CrewController in _runtime.crew_members():
 			var row: Dictionary = {"slot": c.slot, "name": c.display_name, "is_ai": c.is_ai, "is_local": c.is_local()}
-			for k: StringName in CrewStats.COUNTERS:
+			for k: StringName in CrewStatsService.COUNTERS:
 				row[String(k)] = st.value(c.slot, k)
 			list.append(row)
 		list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["slot"]) < int(b["slot"]))

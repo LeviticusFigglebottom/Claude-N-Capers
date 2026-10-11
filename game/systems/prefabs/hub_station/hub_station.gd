@@ -12,7 +12,7 @@ signal station_requested(station_id: StringName)
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/hub_station/hub_station_placeholder.tscn")
 const KIND: StringName = &"hub_station"
 ## hub_map.md (D-072): every station joins this group.
-const GROUP: StringName = &"hub_station"
+const GROUP: StringName = G.HUB_STATION
 ## Split so B's strings scan (test_strings) does not read the bare prefix as a key; the keys are per station.
 const PROMPT_PREFIX: String = "ui." + "prompt.station."
 

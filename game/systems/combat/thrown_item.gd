@@ -19,9 +19,13 @@ const KIND_INCENDIARY: StringName = &"incendiary"
 const KIND_KNIFE: StringName = &"throwing_knife"
 const KINDS: Array[StringName] = [KIND_FRAG, KIND_CONCUSSION, KIND_INCENDIARY, KIND_KNIFE]
 const POOL_TICK_S: float = 0.25
-## ◇ audio: launcher explosion / flamethrower ignition until throwable cues exist.
-const CUE_EXPLODE: StringName = &"cue.weapon_launcher_explode"
-const CUE_IGNITE: StringName = &"cue.weapon_flamethrower_ignite"
+## audio_cues v1.3 (D-073).
+const CUE_FRAG: StringName = &"cue.throwable_frag"
+const CUE_CONCUSSION: StringName = &"cue.throwable_concussion"
+const CUE_INCENDIARY: StringName = &"cue.throwable_incendiary"
+const CUE_FIRE_LOOP: StringName = &"cue.throwable_incendiary_fire"
+const CUE_KNIFE_HIT: StringName = &"cue.throwable_knife_hit"
+const CUE_KNIFE_HIT_HARD: StringName = &"cue.throwable_knife_hit_hard"
 
 var net_id: int = 0
 ## Spawn data (replicated): velocity, kind, damage, radius_m, fuse_s, attacker, owner_slot, throwable_id.
@@ -115,7 +119,9 @@ func _contact(hit: Dictionary, tw: CombatTweak) -> void:
 			_ignite_pool(tw)
 		KIND_KNIFE:
 			var t: Object = hit.get("target") as Object
-			if t != null and is_instance_valid(t) and t.has_method(&"take_hit"):
+			var body: bool = t != null and is_instance_valid(t) and t.has_method(&"take_hit")
+			_cue(CUE_KNIFE_HIT if body else CUE_KNIFE_HIT_HARD, pos, int(params.get("attacker", 0)))
+			if body:
 				var info: Dictionary = Damage.info(float(params.get("damage", 0.0)), Enums.DamageType.MELEE,
 					Damage.zone_of(hit.get("collider") as Object), StringName(params.get("throwable_id", &"")), pos,
 					_vel.normalized(), int(params.get("attacker", 0)))
@@ -138,7 +144,7 @@ func _detonate(pos: Vector3) -> void:
 	var radius: float = float(params.get("radius_m", 5.0))
 	var dmg: float = float(params.get("damage", 0.0))
 	var wid: StringName = StringName(params.get("throwable_id", &""))
-	_cue(CUE_EXPLODE, pos, attacker)
+	_cue(CUE_CONCUSSION if kind() == KIND_CONCUSSION else CUE_FRAG, pos, attacker)
 	if kind() == KIND_CONCUSSION:
 		for t: Object in Explosion.targets_in_sphere(self, pos, radius, tw):
 			var npc: NpcBase = t as NpcBase
@@ -160,7 +166,7 @@ func _ignite_pool(tw: CombatTweak) -> void:
 	landed = true
 	pool_left = tw.incendiary_pool_s
 	_pool_tick = 0.0
-	_cue(CUE_IGNITE, global_position, int(params.get("attacker", 0)))
+	_cue(CUE_INCENDIARY, global_position, int(params.get("attacker", 0)))
 	_show_pool()
 
 
@@ -217,9 +223,15 @@ func _apply_net_state(d: Dictionary) -> void:
 		_show_pool()
 
 
+## Every peer: the pool visual and its fire loop (a CueEmitter, stopped when the pool is freed).
 func _show_pool() -> void:
 	if get_node_or_null(^"Pool") != null:
 		return
+	var fire: CueEmitter = CueEmitter.new()
+	fire.name = "FireLoop"
+	fire.cue_id = CUE_FIRE_LOOP
+	fire.autoplay = true
+	add_child(fire)
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Pool"
 	var cyl: CylinderMesh = CylinderMesh.new()

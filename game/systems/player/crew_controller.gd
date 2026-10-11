@@ -28,8 +28,8 @@ var net_id: int = 0
 var peer_id: int = 0
 var is_ai: bool = false
 var display_name: String = ""
-## Playable heister (&"rook", &"sable", &"dutch", &"wren"; &"" = generic crew): Net.crew info `heister` or the
-## launch option `heisters` {slot: id}. Presentation only (FP sleeves, characters.md v1.8).
+## Playable heister (&"rook", &"sable", &"dutch", &"wren"; &"" = generic crew): the slot's Loadout.heister
+## (D-073). Presentation only (FP sleeves, characters.md v1.8).
 var heister: StringName = &""
 var masked: bool = false
 ## S1.3 civilian mode (HeistDef.start_mode = civilian): no gear, undetectable, no mask-up or firing, only
@@ -118,8 +118,8 @@ func setup(p_slot: int, info: Dictionary, p_loadout: Loadout) -> void:
 	peer_id = int(info.get("peer_id", 0))
 	is_ai = bool(info.get("is_ai", false))
 	display_name = String(info.get("display_name", "Crew %d" % p_slot))
-	heister = StringName(str(info.get("heister", "")))
 	loadout = CrewWeapons.build_loadout(p_loadout)  # resolved; default kestrel + suppressor if null
+	heister = loadout.heister if loadout.heister != &"" or p_loadout == null else p_loadout.heister  # D-073
 	name = "Crew%d" % p_slot
 	var tw: CrewTweak = Tweak.crew()
 	body_bags = mini(tw.body_bags_base + int(Modifiers.add(slot, &"stealth.body_bags_extra")),
@@ -134,6 +134,7 @@ func is_local() -> bool:
 ## Instant loadout swap (firing range, QB-25): re-resolve, re-arm weapons, refill health/armor.
 func set_loadout(p_loadout: Loadout) -> void:
 	loadout = CrewWeapons.build_loadout(p_loadout)
+	heister = loadout.heister if loadout.heister != &"" or p_loadout == null else p_loadout.heister  # D-073
 	if weapons != null:
 		weapons.set_loadout(loadout)
 	if health != null:
@@ -141,6 +142,8 @@ func set_loadout(p_loadout: Loadout) -> void:
 	var view: CrewView = CrewView.of(self)
 	if view != null:
 		view.refresh()  # QB-47: weapon visual + mask of the new loadout
+		if view.fp_viewmodel() != null:
+			view.fp_viewmodel().apply_sleeves(heister)  # characters.md v1.8
 		view.replicate_mask_descriptor()  # QA-25: server -> every peer
 
 

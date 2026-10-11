@@ -60,7 +60,25 @@ func _ready() -> void:
 	var cam: Camera3D = camera()
 	if cam != null:
 		cam.child_entered_tree.connect(_on_camera_child)
+	get_tree().node_added.connect(_on_node_added)
 	refresh.call_deferred()
+
+
+func _exit_tree() -> void:
+	if get_tree().node_added.is_connected(_on_node_added):
+		get_tree().node_added.disconnect(_on_node_added)
+
+
+## The usual FPS treatment (lead, ENV D): nothing under the local camera (FP weapon, item, arms) casts shadows;
+## rails and scope rings otherwise cast saw-toothed shadows on the FP sleeves. Third-person weapons keep theirs.
+## Also catches meshes a WeaponVisual / mod builds after attach.
+func _on_node_added(n: Node) -> void:
+	var g: GeometryInstance3D = n as GeometryInstance3D
+	if g == null or not _is_local_human():
+		return
+	var cam: Camera3D = camera()
+	if cam != null and cam.is_ancestor_of(g):
+		g.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 
 ## Re-apply everything (camera, weapon visual, mask).

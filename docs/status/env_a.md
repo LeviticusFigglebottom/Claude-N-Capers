@@ -42,13 +42,23 @@ Newest entry first, keep the last 10.
   - rappel speed 2.5 m/s (D's clip).
 - Melee per lead: knockdown only on charged hits; specials resist it.
 - Fixes: the round-18 merge took the old test_s1_3 (restored the D-065 assert); a3_07 polls until `launch_client()` has returned.
-- Trunk round 18 + D-071 merged.
-### Waiting
-- QB-B6-DROPIN: B's `DropInService` interface and `Net.kick` (round 20) are not on any branch yet.
-- `Loadout.heister` (D-073, round 21): switch the sleeves to it when it lands.
+- Trunk round 21 (f94d2b6) merged.
+- Round 21 follow-ups:
+  - FP sleeves read `Loadout.heister` (D-073; carried in the net loadout dict); the launch-option / Net.crew fallback is gone;
+  - nothing under the local camera casts shadows (FP weapon rails on the sleeves);
+  - audio_cues v1.3 throwable cues: pin, frag, concussion, incendiary + `_incendiary_fire` loop (a CueEmitter on the pool, every peer), knife hit / hit_hard by target;
+  - my stats service is `CrewStatsService` (B's `CrewStats` owns the name).
+- QB-B6-DROPIN: `HeistDropIn` (extends B's DropInService, node `/root/DropIn`, group G.DROP_IN_SERVICE, `HeistDropIn.ensure(tree)`):
+  - host: policy ask / auto / off; checks running heist, slot (full), kicked names, `LobbyState.validate_summary`;
+  - accept: the slot's AI crew member becomes the peer's (loadout + modifiers re-pushed, name, CrewAiBrain removed), then a bring-up addressed to the peer (`HeistNetSync.late_bring_up`, `for_peer`; others ignore it);
+  - `kick(slot)` uses `Net.kick`; any human leaving mid-heist turns back into an AI teammate (crew_member_left [R]);
+  - crew codec replicates owner / AI / name;
+  - client entry: `Net.join(...)`, then on `Net.connected_to_host` call `HeistDropIn.ensure(get_tree()).request_join(LobbyState.summary_from(...))`;
+  - tests: in-process host logic, plus a two-process loopback drop-in (the client connects after launch).
+### Ready for integration
+- yes; `check_all.sh --env a` on 578e238 (clean worktree): PASS, 1508 tests, 0 failed, 5 skipped. This entry's later commits are checked before their push.
 ### Questions for lead
-- QA (heister source): nothing in the lobby or Loadout carries the chosen heister yet; the sleeves read Net.crew[slot].heister or the launch option `heisters`. Should it be a Loadout field (lead contract)?
-- QA (content): no frag/concussion/incendiary ThrowableDefs exist in content yet (P5 "6 throwables"); tests inject defs. Audio: proposed `cue.throwable_pin` / `cue.throwable_<kind>` (now: launcher explode / flamethrower ignite).
+- (answered: Loadout.heister in D-073; throwable cues in audio_cues v1.3; ThrowableDefs coming from B.)
 
 ## 2026-10-11 08:30 UTC: round-16 follow-ups, options hooks, D-069 FP left-hand IK, D-063 clean
 ### Done

@@ -6,7 +6,7 @@
 ## shotgun blast is 1; melee, throwables, deployables and sentries never come through there). A hit = the shot
 ## struck an enemy NPC (body, Bulwark shield or plate, even for 0 damage), at most once per shot. A headshot =
 ## it struck an enemy's HitZone.HEAD, at most once per shot. AI crew are counted the same way.
-class_name CrewStats
+class_name CrewStatsService
 extends Node
 
 signal changed()
@@ -20,14 +20,14 @@ const COUNTERS: Array[StringName] = [
 var rows: Dictionary[int, Dictionary] = {}
 
 
-static func of(node: Node) -> CrewStats:
+static func of(node: Node) -> CrewStatsService:
 	var rt: HeistRuntime = HeistRuntime.of(node) if node != null else null
-	return rt.service(SERVICE) as CrewStats if rt != null else null
+	return rt.service(SERVICE) as CrewStatsService if rt != null else null
 
 
 ## Server: one accepted firearm shot by `crew` (hit / headshot on an enemy, each at most once per shot).
 static func record_shot(crew: CrewController, hit: bool, headshot: bool) -> void:
-	var s: CrewStats = of(crew)
+	var s: CrewStatsService = of(crew)
 	if s == null or not Net.is_authority():
 		return
 	s._add(crew.slot, &"shots")
