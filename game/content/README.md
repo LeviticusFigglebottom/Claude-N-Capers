@@ -8,7 +8,8 @@ current when an API changes.
 content/
   data/                     every balance number (.tres / .csv); no constants in scripts
     weapons/ mods/ melee/ armor/ deployables/ loot/ throwables/ difficulty/ masks/ contacts/ preplanning/
-    tweak/                  concealment_curve.tres, display_stats.tres, payout.tres, perk_points.tres, xp_curve.tres
+    tweak/                  concealment_curve.tres, display_stats.tres, payout.tres, perk_points.tres, xp_curve.tres, notoriety.tres
+    notoriety/ranks.tres    NotorietyTable: rewards per Notoriety rank (B5-02)
     strings/strings.csv     all player-facing text (columns: keys,en)
     voice/lines.tres        voice line table (VoiceLineTable); text lives in strings.csv
   defs/                     content-side Resource schemas + ContentDB lookup (ContactDef)
@@ -18,6 +19,7 @@ content/
   lobby/                    LobbyState (co-op lobby model), LobbySession (Net glue), LobbyAddress, LobbyTweak
   progression/              LoadoutResolver, StatCalculator, PayoutCalculator, XpCurve
   save/                     SaveService, PlayerProfile
+  settings/                 GameSettings (options + settings.cfg), InputBindings, InputEventCodec, SettingsApplier
   strings/                  StringTable
   ui/                       every UI scene (menus, HUD, results); hud/mock/ = LocalHudModel mock
 ```
@@ -67,15 +69,40 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `stealth_xp_bonus_mult` after a successful stealth heist, else 1.0). UI string:
   `ui.results.stealth_bonus_banked` ("... +{pct}%").
 * `SaveService` / `PlayerProfile`: versioned JSON at `user://profiles/profile_<n>.json`
-  (`CURRENT_VERSION` 5 = the roadmap's "save v2"; **every field, type, default and since-version:
+  (`CURRENT_VERSION` 6; the roadmap calls the format "save v2". **Every field, type, default and since-version:
   `content/docs/save_format.md`**; v2 `banked_stealth_mult`, v3 `skill_sets`/`perk_cards`, v4
-  `owned_mask_parts`/`custom_masks`, v5 `unlocks`/`achievements`/`pro_job_locks`);
+  `owned_mask_parts`/`custom_masks`, v5 `unlocks`/`achievements`/`pro_job_locks`, v6 `notoriety`/
+  `notoriety_xp`/`notoriety_choices`/`held_skill_sets`/`music_choice`);
   `load_profile/save_profile/migrate/profile_from_save/apply_heist_payout(p, payout, XpCurve.level_for_xp)`.
   Loading runs migrate -> `ProfileSchema.sanitize` (wrong types -> default + Log.warn) -> from_dict ->
   `ProfileValidator.validate` (unknown ids pruned, illegal skill sets reset, Log.warn each); golden
   migration fixtures in `tests/b/fixtures/save/`.
   `apply_heist_payout` resets the bank when `stealth_bonus_consumed`, then stores
-  `stealth_bonus_banked` if > 1.0.
+  `stealth_bonus_banked` if > 1.0. A level gain re-buys skills a Notoriety rank-up held
+  (`NotorietySkills.restore`).
+* **Notoriety (B5-02, P10; design + numbers `content/docs/notoriety.md`).** `Notoriety` (`progression/notoriety.gd`,
+  static):
+  * Data: `tweak()` -> `NotorietyTweak` (`data/tweak/notoriety.tres`: `max_rank` 25, `required_level` 100,
+    `costs`, `xp_bonus_per_rank`, `xp_bonus_cap`); `table()` / `def_for(rank)` -> `NotorietyDef {rank, rewards,
+    unlocks, choices}` (`data/notoriety/ranks.tres`).
+  * `cost_for(rank)`, `xp_bonus(rank)`, `roman(n)`, `unlock_id(rank)` (`unlock.notoriety.rank_<n>`).
+  * Rank-up: `requirements(p)` (checklist rows `{code: REQ_LEVEL|REQ_CASH|REQ_CAP, met, have, need}`),
+    `can_rank_up(p)`, `rank_up(p) -> {ok, reason, rank, cost, granted, choices}`. The rank-up takes the cost
+    from spending cash and resets level and XP to 0 (XP moves to `notoriety_xp`, so perk points stay). It holds
+    every skill set (`NotorietySkills`) and grants the rank unlock, rewards and plain unlock ids such as
+    `unlock.music.*` (D-062).
+  * Rewards: `rewards_for(rank)`, `choice_options(p, rank)`, `choose(p, rank, id)`, `pending_choices(p)`,
+    `exclusive_ids()` (left out of payday card pools), `apply_rewards(p)` (load-time repair),
+    `reward_name(id)`.
+  * `NotorietySkills`: `hold(p)`, `restore(p)` (after level gains; always legal), `release(p, set_index)`
+    (skill screen refund/respec), `held_points(p, i)`.
+  * Payout: `PayoutCalculator.compute(..., notoriety_bonus)` adds the `ui.results.xp.notoriety` XP line (now
+    7 lines). `PaydayScreen.compute_payout` passes `Notoriety.xp_bonus(profile.notoriety)`.
+  * Co-op: `LobbyState.summary_from` carries `"notoriety": int`. It is validated as 0..25 (missing = 0) and
+    shown in `slot_view`.
+  * UI: `NotorietyScreen` (`ui/notoriety/`) from the hub profile panel (`HubMenu.notoriety_requested` ->
+    `MenuFlow._open_notoriety()`). `NotorietyScreen.level_text(level, rank)` / `badge_text(rank)` give the
+    badge text used by the hub and lobby.
 * `ProJobLocks` (`board/pro_job_locks.gd`): failed pro Board contracts persisted in
   `PlayerProfile.pro_job_locks` (`lock/prune/is_locked`); MenuFlow mirrors them into `consumed_contracts`.
 * `MaskLocker.grant_unlock(profile, unlock_id)` records the unlock in `PlayerProfile.unlocks` and owns its
@@ -88,6 +115,22 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   save), `record(profile, event, ctx)`, `progress/is_unlocked`. State: `PlayerProfile.achievements` (save v5).
   Screen: `AchievementsScreen` (`ui/achievements/`), from the hub profile panel (`HubMenu.achievements_requested`
   -> `MenuFlow._open_achievements()`); payday lists unlocks (`ui.results.achievement_unlocked`).
+* **Options (B5-01; brief: `content/docs/options.md`).** `GameSettings.current()` (`settings/game_settings.gd`):
+  audio (0..1 per bus), video (window mode, vsync, max FPS, render scale, MSAA, FXAA, brightness, **FOV**),
+  controls (**mouse sensitivity x/y, invert Y, pad sensitivity, deadzone, hold/toggle aim/crouch/sprint**),
+  accessibility (HUD palette, HUD scale, subtitle size) and input bindings; `get_value/set_value`, signal
+  `changed(section, key)`; ENV A reads `fov()`, `mouse_sensitivity()`, `invert_y()`, `pad_sensitivity()`,
+  `pad_deadzone()`, `is_toggle(action)`. Defaults/ranges: `data/settings/settings_defaults.tres`
+  (`SettingsDefaults`). File `user://settings.cfg` (ConfigFile v1; `GameSettings.root_dir` for tests).
+  `apply()` = `SettingsApplier` (AudioServer buses on top of the layout's mix level, window/viewport,
+  InputMap) and runs in `MenuFlow._ready`. Rebinding: `InputBindings` (KBM / PAD columns, conflicts that
+  ignore project-designed shared keys, swap / keep both, reset per action / all) over `InputEventCodec`
+  plain dicts. HUD palettes: `data/ui/hud_palettes.tres` (`HudPaletteSet` / `HudPalette`, ids default,
+  deuteranopia, protanopia, tritanopia, high_contrast); `Hud` follows the palette and `hud_scale` live;
+  `ColorVision` (Machado 2009 + CIE76) for checks. Screen: `OptionsScreen` (`ui/menus/options_screen.tscn`)
+  via `MenuFlow.options_menu` (`MenuOptions`): main menu Options, hub `HubMenu.options_requested`, and the
+  `pause` action in a heist (overlay over the HUD; local crew input paused). Strings `ui.options.*`,
+  action names `ui.action.<action>`.
 * `ContentDB.inject(kind, key, res)`: tests/tooling only (test-only SkillDef/PerkDeckDef);
   `clear_cache()` drops it.
 * `XpCurve.level_for_xp(xp)`, `xp_for_level(level)`. `VoiceLineTable` at `data/voice/lines.tres`.

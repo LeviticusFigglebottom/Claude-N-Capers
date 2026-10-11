@@ -15,6 +15,10 @@
 ## App shell (D-024): core/boot.gd routes here. It owns launch, the HUD/payday layer, and
 ## HeistRuntime.teardown() + Net.leave() after results. Direct launch skips the menus:
 ##   godot --path game -- --heist=<id> [--seed=<n>] [--difficulty=<0..5>]   (LaunchArgs)
+## Options (B5-01): GameSettings.current() is applied in _ready (audio buses, window, InputMap);
+## `options_menu.open()` (MenuOptions) shows OptionsScreen from the main menu (Options) and the hub's profile
+## panel; in a heist the `pause` action opens it over the HUD (the local crew's input is paused, the
+## mouse released; Back closes it and restores both). There is no other pause menu.
 class_name MenuFlow
 extends Control
 
@@ -36,6 +40,8 @@ const HUB_SCENE: PackedScene = preload("res://content/ui/hub/hub_menu.tscn")
 const BOARD_SCENE: PackedScene = preload("res://content/ui/board/board_screen.tscn")
 const LOBBY_SCENE: PackedScene = preload("res://content/ui/lobby/lobby_screen.tscn")
 const ACHIEVEMENTS_SCENE: PackedScene = preload("res://content/ui/achievements/achievements_screen.tscn")
+const OPTIONS_SCENE: PackedScene = preload("res://content/ui/menus/options_screen.tscn")
+const NOTORIETY_SCENE: PackedScene = preload("res://content/ui/notoriety/notoriety_screen.tscn")
 ## HubStation.target values open_station() understands.
 const TARGET_BOARD: StringName = &"board"
 const TARGET_HEIST_SELECT: StringName = &"heist_select"
@@ -83,6 +89,8 @@ var stations: HubStationList
 ## lobby is "home": show_hub() shows it instead, so every Back of the contract path lands there.
 var lobby_screen: LobbyScreen = null
 var lobby: LobbySession = null
+## Options screen opener (B5-01): options_menu.open() from the menus, `pause` in a heist (MenuOptions).
+var options_menu: MenuOptions
 var _heist_id: StringName = &""
 var _difficulty: int = Enums.Difficulty.ROUTINE
 var _in_heist: CanvasLayer = null
@@ -101,6 +109,11 @@ var _in_safehouse: bool = false
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	theme = UiBuild.theme()
+	GameSettings.current().apply(get_viewport())
+	options_menu = MenuOptions.new()
+	options_menu.name = "Options"
+	options_menu.flow = self
+	add_child(options_menu)
 	var bg: ColorRect = ColorRect.new()
 	bg.color = UiAccent.app_bg()
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -115,9 +128,11 @@ func _ready() -> void:
 	main_menu.safehouse_requested.connect(show_hub)
 	hub.station_requested.connect(open_station)
 	hub.achievements_requested.connect(_open_achievements)
+	hub.options_requested.connect(options_menu.open)
+	hub.notoriety_requested.connect(_open_notoriety)
 	hub.back_requested.connect(_on_hub_back)
 	main_menu.firing_range_requested.connect(open_firing_range)
-	main_menu.settings_requested.connect(_show_stub.bind(&"ui.menu.settings_soon", false))
+	main_menu.settings_requested.connect(options_menu.open)
 	main_menu.quit_requested.connect(get_tree().quit)
 	heist_select.back_requested.connect(show_hub)
 	heist_select.heist_chosen.connect(_on_heist_chosen)
@@ -210,6 +225,20 @@ func _open_board() -> void:
 ## Achievements screen (B4-20) from the hub's profile panel; Back frees it and returns to the hub.
 func _open_achievements() -> void:
 	var screen: AchievementsScreen = ACHIEVEMENTS_SCENE.instantiate() as AchievementsScreen
+	screen.setup(SaveService.load_profile(profile_slot))
+	screen.visible = false
+	add_child(screen)
+	screen.back_requested.connect(func() -> void:
+		_free_screen(screen)
+		show_hub())
+	show_screen(screen)
+
+
+## Notoriety screen (B5-02) from the hub's profile panel; it saves the profile itself on a rank-up or
+## a reward choice. Back frees it and returns to the hub (show_hub re-reads the saved profile).
+func _open_notoriety() -> void:
+	var screen: NotorietyScreen = NOTORIETY_SCENE.instantiate() as NotorietyScreen
+	screen.profile_slot = profile_slot
 	screen.setup(SaveService.load_profile(profile_slot))
 	screen.visible = false
 	add_child(screen)
@@ -330,6 +359,8 @@ func _on_preplan_confirmed(plan: Dictionary) -> void:
 	_free_screen(loadout_screen)
 	loadout_screen = LOADOUT_SCENE.instantiate() as LoadoutScreen
 	loadout_screen.profile_slot = profile_slot
+	var def: HeistDef = HeistRegistry.get_def(_heist_id)
+	loadout_screen.start_mode = def.start_mode if def != null else &"casing"  # D-065 civilian notice
 	loadout_screen.setup(_menu_profile())
 	loadout_screen.visible = false
 	add_child(loadout_screen)
@@ -584,6 +615,8 @@ func _spawn_in_heist_ui() -> void:
 	pd.continue_pressed.connect(_leave_heist)
 	_in_heist.add_child(pd)
 	_heist_payday = pd
+	options_menu.heist_layer = _in_heist
+	options_menu.heist_payday = pd
 	EventBus.heist_ended.connect(_on_heist_ended, CONNECT_ONE_SHOT)
 
 
@@ -617,6 +650,9 @@ func _leave_heist() -> void:
 	runtime = null
 	if EventBus.heist_ended.is_connected(_on_heist_ended):
 		EventBus.heist_ended.disconnect(_on_heist_ended)
+	options_menu.close_in_heist()
+	options_menu.heist_layer = null
+	options_menu.heist_payday = null
 	if _in_heist != null:
 		_in_heist.queue_free()
 		_in_heist = null

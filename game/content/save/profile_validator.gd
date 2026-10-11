@@ -13,6 +13,11 @@
 ##   * skill sets (every set incl. the active one = loadout.skills): unknown skill ids pruned, then a set
 ##     that is still illegal for the profile's level (SkillPoints.validate) is reset to empty.
 ##   * achievements: unknown achievement ids pruned. pro_job_locks: keys not shaped `<slot>:<bucket>` pruned.
+##   * notoriety (v6): clamped to 0..NotorietyTweak.max_rank, notoriety_xp to >= 0; a rank unlock id
+##     `unlock.notoriety.rank_<n>` above the rank is pruned; notoriety_choices entries for a rank above the
+##     profile's or naming an id that rank does not offer are pruned; held_skill_sets lose unknown skills /
+##     bad levels and entries past the last skill set. Then Notoriety.apply_rewards re-grants every reached
+##     rank's rewards (data added later reaches old profiles). music_choice is type-checked only (B5-03).
 ## Returns the repair messages (empty = the profile was already valid).
 class_name ProfileValidator
 extends RefCounted
@@ -37,12 +42,14 @@ static func validate(p: PlayerProfile) -> Array[String]:
 	p.owned_masks = _owned_presets(p.owned_masks, notes)
 	p.owned_mask_parts = _known_parts(p.owned_mask_parts, notes)
 	_custom_masks(p, notes)
+	_notoriety_rank(p, notes)
 	_unlocks(p, notes)
 	_loadout(p, notes)
 	_perk_cards(p, notes)
 	_skill_sets(p, notes)
 	_achievements(p, notes)
 	_locks(p, notes)
+	_notoriety_state(p, notes)
 	for m: String in notes:
 		Log.warn(LOG_CHANNEL, "profile: " + m)
 	return notes
@@ -186,6 +193,47 @@ static func _locks(p: PlayerProfile, notes: Array[String]) -> void:
 		if parts.size() != 2 or not parts[0].is_valid_int() or not parts[1].is_valid_int():
 			notes.append("pro_job_locks: malformed contract key '%s' dropped" % key)
 			p.pro_job_locks.erase(key)
+
+
+static func _notoriety_rank(p: PlayerProfile, notes: Array[String]) -> void:
+	var cap: int = Notoriety.max_rank()
+	if p.notoriety < 0 or p.notoriety > cap:
+		notes.append("notoriety: %d clamped to 0..%d" % [p.notoriety, cap])
+		p.notoriety = clampi(p.notoriety, 0, cap)
+	if p.notoriety_xp < 0:
+		notes.append("notoriety_xp: %d clamped to 0" % p.notoriety_xp)
+		p.notoriety_xp = 0
+	for id: StringName in p.unlocks.duplicate():
+		var s: String = String(id)
+		if not s.begins_with(Notoriety.UNLOCK_PREFIX):
+			continue
+		var n: String = s.substr(Notoriety.UNLOCK_PREFIX.length())
+		if not n.is_valid_int() or int(n) < 1 or int(n) > p.notoriety:
+			notes.append("unlocks: '%s' is not a rank reached (notoriety %d); dropped" % [id, p.notoriety])
+			p.unlocks.erase(id)
+
+
+static func _notoriety_state(p: PlayerProfile, notes: Array[String]) -> void:
+	for rank: Variant in p.notoriety_choices.keys():
+		var d: NotorietyDef = Notoriety.def_for(int(rank))
+		var id: StringName = p.notoriety_choices[rank] as StringName
+		if int(rank) < 1 or int(rank) > p.notoriety or d == null or not d.choices.has(id):
+			notes.append("notoriety_choices.%s: '%s' not offered at that rank; dropped" % [rank, id])
+			p.notoriety_choices.erase(rank)
+	var sets: int = NotorietySkills.set_count(p)
+	if p.held_skill_sets.size() > sets:
+		notes.append("held_skill_sets: %d entries for %d skill sets; extras dropped" % [p.held_skill_sets.size(), sets])
+		p.held_skill_sets.resize(sets)
+	for i: int in range(p.held_skill_sets.size()):
+		var out: Dictionary = {}
+		for sid: Variant in p.held_skill_sets[i]:
+			var lv: int = int(p.held_skill_sets[i][sid])
+			if ContentDB.has(ContentDB.SKILLS, StringName(sid)) and (lv == SkillPoints.BASIC or lv == SkillPoints.ACED):
+				out[StringName(sid)] = lv
+			else:
+				notes.append("held_skill_sets[%d]: '%s' (%d) dropped" % [i, sid, lv])
+		p.held_skill_sets[i] = out
+	Notoriety.apply_rewards(p)
 
 
 static func _defaults() -> Loadout:

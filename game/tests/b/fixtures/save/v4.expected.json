@@ -1,5 +1,5 @@
 {
-	"version": 5,
+	"version": 6,
 	"profile_name": "Maskmaker",
 	"cash": 230000,
 	"stash": 1900000,
@@ -25,6 +25,11 @@
 	"unlocks": [],
 	"achievements": {},
 	"pro_job_locks": {},
+	"notoriety": 0,
+	"notoriety_xp": 0,
+	"notoriety_choices": {},
+	"held_skill_sets": [],
+	"music_choice": "",
 	"stats": {"heists_completed": 40, "heists_failed": 4},
 	"settings": {}
 }

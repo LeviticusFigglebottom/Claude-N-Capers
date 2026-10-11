@@ -43,3 +43,9 @@ How art scenes (ENV C props/characters, ENV B weapons) plug into ENV A gameplay 
 | characters | see characters.md |
 
 ENV A must ship placeholder visuals with the **same named nodes** so swapping art changes nothing.
+
+## Items: melee, throwables, deployables (D-069)
+* **Melee:** origin on the handle axis 20 mm below the top of the fist; handle along +Y, edge/striking face toward −Z.
+* **Throwables:** origin at the body centre, +Y up the fuse; a `Pin` node (hidden by ENV A at the `pin_pull` event).
+* **Deployables (held form):** a `Handle` Marker3D where the right hand grips.
+* In first person every item rides the `rig_arms` `weapon` bone (characters.md v1.7).
