@@ -1,6 +1,6 @@
-"""Meridian Federal cast (D3-01): a big bank by day (``meridian_federal``, P5; Big Bank analogue).
+"""Ostrander Federal cast (D3-01, D-075): a big bank by day (``ostrander_federal``, P5; Big Bank analogue).
 
-No meridian_federal design doc yet: roles follow the D3-01 brief. D-063 reserved the Night Deposit
+Roles follow the D3-01 brief and the D-075 G0 additions (the gallery-level bank officers). D-063 reserved the Night Deposit
 tellers for this heist, so the bank staff keep that bank livery (slate green / marble cream / bank
 red, the keyhole badge); the new manager wears it too so the staff read as one bank. Daytime
 customers are ordinary civilians in daylight colours.
@@ -9,6 +9,12 @@ customers are ordinary civilians in daylight colours.
   (an older woman in a red skirt suit): a man in his 40s in a navy three-piece suit (navy waistcoat),
   cream shirt, bank-red tie, a bank-red lanyard with a white keycard, silver glasses, a watch, a
   brass name tag and the keyhole bank badge on the lapel.
+* ``char_bank_officer`` (D-075): a loan/accounts officer on the gallery level: a woman in her 50s in a
+  grey worsted skirt suit over a cream band-collar blouse, the bank's red lanyard with the ID badge,
+  a keyhole lapel badge, a brass name tag, black low heels.
+* ``char_bank_officer_b`` (D-075): a younger accounts officer in shirt sleeves: a pale blue shirt open
+  at the collar (no tie, sleeves rolled), the grey suit trousers and a black belt, the bank lanyard
+  and ID badge, a watch, black glasses.
 * ``char_bank_customer``: business-casual customer: an unstructured grey blazer over an open-collar
   white shirt, navy chinos, brown shoes, a watch.
 * ``char_bank_customer_b``: a parent on an errand: an olive nylon bomber zipped over a cream crew
@@ -36,6 +42,10 @@ EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "r
 VARIANTS = {
     "char_bank_manager": {"height": 1.83, "build": 0.55, "gender": 0.0, "age": 0.5, "skin": 6, "beard_shadow": 0.4,
                           "hair": "short", "hair_color": "dark", "look": "manager"},
+    "char_bank_officer": {"height": 1.68, "build": 0.5, "gender": 1.0, "age": 0.6, "skin": 2,
+                          "hair": "bob", "hair_color": "dark", "look": "officer"},
+    "char_bank_officer_b": {"height": 1.79, "build": 0.42, "gender": 0.0, "age": 0.25, "skin": 4,
+                            "beard_shadow": 0.5, "hair": "side_part", "hair_color": "dark", "look": "officer_b"},
     "char_bank_customer": {"height": 1.77, "build": 0.45, "gender": 0.0, "age": 0.35, "skin": 3,
                            "beard_shadow": 0.6, "hair": "short", "hair_color": "brown", "look": "business"},
     "char_bank_customer_b": {"height": 1.68, "build": 0.45, "gender": 1.0, "age": 0.35, "skin": 5,
@@ -46,6 +56,7 @@ NAVY = "char_suit_navy"
 SLATE = "char_bank_slate"
 CREAM = "char_bank_cream"
 RED = "char_bank_red"
+GREY = "char_suit_grey"
 
 
 def _z(kit: Kit) -> tuple[float, float, float]:
@@ -81,6 +92,41 @@ def manager(kit: Kit) -> None:
     kit.notes["prop_note"] = "keycard on the lanyard is skinned (Gear); a hand-held keycard prop goes at HandR/Socket"
 
 
+def officer(kit: Kit) -> None:
+    k = kit.k
+    hips_z, _belt_z, tuck = _z(kit)
+    waist_z = kit.fit.ring_centre("waist").z
+    n.shoes(kit, heel=True)
+    n.shirt(kit, CREAM, tuck, collar="band")
+    n.skirt(kit, GREY, waist_z + 0.01 * k, 0.47 * k, flare=0.05)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, GREY, 0.82 * k, 1.07 * k, button_mat="char_button_dark", lapel_w=0.05, neck_w=0.085,
+                         flare=0.06)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    hull = kit.hull()
+    kit.add_gear(gk.name_tag(hull, Vector((0.10 * k, 0.2, 1.33 * k)), k=k))
+    kit.add_gear(n.bank_badge(hull, Vector((-0.10 * k, 0.2, 1.34 * k)), Vector((0, 1, 0.1)), 0.022, 0.026, k,
+                              rim="brass", fill=SLATE, glyph="brass", depth=0.003))
+    n.lanyard(kit, RED, "char_medic_white", card_z=1.17, band_mat=SLATE)
+    kit.notes["look"] = ("Bank officer (gallery level): grey worsted skirt suit, cream band-collar blouse, the bank's "
+                         "red lanyard + ID badge, keyhole lapel badge, brass name tag, black low heels")
+
+
+def officer_b(kit: Kit) -> None:
+    k = kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit)
+    n.shirt(kit, "char_shirt_blue", tuck, point_len=0.056, spread=0.34, sleeve=1.3, roll=0.006)
+    tr = n.trousers(kit, GREY, sh, belt_z + 0.022 * k)
+    n.belt(kit, tr, belt_z, mat="char_leather_black", buckle="chrome")
+    n.lanyard(kit, RED, "char_medic_white", card_z=1.19, band_mat=SLATE)
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    kit.add_head(gk.glasses(kit.fit, "char_button_dark"))
+    kit.notes["look"] = ("Bank officer (gallery level), shirt sleeves: pale blue shirt open at the collar (no tie, "
+                         "sleeves rolled), grey suit trousers, black belt, the bank's red lanyard + ID badge, watch, "
+                         "black glasses")
+
+
 def business(kit: Kit) -> None:
     k = kit.k
     _hips_z, belt_z, tuck = _z(kit)
@@ -114,7 +160,7 @@ def parent(kit: Kit) -> None:
                          "daypack on both shoulders")
 
 
-_looks = {"manager": manager, "business": business, "parent": parent}
+_looks = {"manager": manager, "officer": officer, "officer_b": officer_b, "business": business, "parent": parent}
 
 
 def recipe(kit: Kit) -> None:

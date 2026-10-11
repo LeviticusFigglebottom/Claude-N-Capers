@@ -39,6 +39,18 @@
 			"test": false
 		},
 		{
+			"asset": "char_bank_officer",
+			"id": "bank_officer",
+			"scene": "res://world/characters/bank_officer/bank_officer.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_officer_b",
+			"id": "bank_officer_b",
+			"scene": "res://world/characters/bank_officer_b/bank_officer_b.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_brandt",
 			"id": "brandt",
 			"scene": "res://world/characters/brandt/brandt.tscn",
