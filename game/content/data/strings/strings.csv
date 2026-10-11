@@ -2295,3 +2295,31 @@ ui.jukebox.locked,Locked
 ui.jukebox.locked_rank,Locked: Notoriety {rank}
 ui.jukebox.idle,Nothing playing.
 ui.jukebox.now_playing,Now playing: {name}
+item.loot.gold.name,Gold Bars
+item.loot.gold.desc,"Twelve-kilo bars in a reinforced bag. The heaviest thing you will ever be glad to carry: no sprinting, no jumping, and worth it."
+item.loot.bearer_bonds.name,Bearer Bonds
+item.loot.bearer_bonds.desc,"Unregistered certificates, payable to whoever holds them. Light, flat, and nobody's name on them but yours."
+item.loot.server_drives.name,Server Drives
+item.loot.server_drives.desc,A rack's worth of drives in a padded case. Somebody pays well for what is on them.
+item.loot.parcels.name,Sealed Parcels
+item.loot.parcels.desc,"Tightly taped parcels from a back room nobody admits to. Light, and the buyer pays for the weight, not the questions."
+item.loot.painting_tidewater_saint.name,The Tidewater Saint
+item.loot.painting_tidewater_saint.desc,"A fisherman's saint in grey-green oils by Aurel Maske, cut from the stretcher and rolled. Light, and fragile in the wrong hands."
+item.loot.painting_widow_in_blue.name,Widow in Blue
+item.loot.painting_widow_in_blue.desc,"Henrike Sallow's portrait of a woman who never smiled for anyone. Rolled canvas, carried like a newborn."
+item.loot.painting_salt_orchard.name,The Salt Orchard
+item.loot.painting_salt_orchard.desc,"Teodor Wilk's orchard under a white sky, the gallery's poster piece. Rolled tight, worth more than the frame it left."
+item.loot.painting_lantern_bearer.name,The Lantern Bearer
+item.loot.painting_lantern_bearer.desc,"The centrepiece: a night procession by Ines Calloway, lit by one lantern. Rolled canvas, and the one the buyer asked for by name."
+heist.gallery_night.name,Gallery Night
+heist.gallery_night.subtitle,Halberd Gallery
+heist.gallery_night.brief,"The Halberd hangs four canvases a collector wants quietly gone. Odile wants them rolled, not framed."
+heist.meridian_federal.name,Meridian Federal
+heist.meridian_federal.subtitle,Meridian Federal Bank
+heist.meridian_federal.brief,"The biggest vault in the Financial District, and the Accountant has its floor plans. Cash, gold and bonds, if you can reach them."
+heist.rolling_thunder.name,Rolling Thunder
+heist.rolling_thunder.subtitle,Armored Convoy
+heist.rolling_thunder.brief,"Three armored trucks on the Southfield bypass, one bad turn from a standstill. Hollis brings the roadblock; you bring the saws."
+heist.afterhours.name,Afterhours
+heist.afterhours.subtitle,The Velvet
+heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rope. Hollis wants the back office emptied before the doors close."
