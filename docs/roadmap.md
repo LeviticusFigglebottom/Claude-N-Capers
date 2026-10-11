@@ -9,7 +9,7 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | Phase | Theme | Gate |
 |---|---|---|
 | **P0** | Foundations (lead) | Repo, docs, contracts, CI, environments live. ✅ when this commit lands |
-| **P1** | **Vertical slice**: Glasshouse, 1 guard type, 1 weapon, pagers, bodies, loud transition, 1 assault wave, escape, payday | `test_p1_vertical_slice.gd` + Glasshouse at level gate G2 + lead playthrough notes |
+| **P1** ✅ | **Vertical slice**: Glasshouse, 1 guard type, 1 weapon, pagers, bodies, loud transition, 1 assault wave, escape, payday | `test_p1_vertical_slice.gd` + Glasshouse at level gate G2 + lead playthrough notes |
 | **P2** | Stealth complete: cameras + operator, ECM, keycards/codes, saws, lasers, cuffs, civilians full, assets; heists Night Deposit + Shadow Ledger (stealth-only) | `test_p2_stealth.gd`: scripted ghost run on 3 seeds per heist; all S-rows of phase ≤ 2 tested |
 | **P3** | Loud complete: all specials + captain, director escalation, custody/trade, crowd control, AI teammate orders, factions; co-op loopback; Dockside Burn (loud-only) | `test_p3_loud.gd` (bot crew survives scripted waves; specials' counterplay verified) + `test_coop_loopback.gd` |
 | **P4** | Progression: 90 skills, 14 perk decks, armory 36 weapons + workshop, firing range full, hub/safehouse, board, pre-planning board, masks, payday cards, save v2 | `test_p4_progression.gd`: every modifier key ≤ P4 has a behaviour test; resolver golden tests |

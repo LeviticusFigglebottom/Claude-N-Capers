@@ -387,3 +387,8 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Findings routed: ENV C, SafeLoot not parented under WorkshopSafe (the loot could be taken from a locked safe; P1
   sign-off waits on this fix); camera variant group resolving to none (enable now that P2 is done); ENV A, a spurious
   CASING→STEALTH hop on alarm-while-casing.
+
+## D-061 — 2026-10-11 — P1 signed off
+- All P1 gate items pass (docs/process/p1_signoff.md): the 11-step end-to-end gate, Glasshouse G2 (final art,
+  18/18 checks), characters, full CI. Known gaps are carried forward there; a product-owner playtest is recommended.
+- Glasshouse: security_room_staffed (operator 0.6 / empty 0.4) and code_note (one of three) are enabled (ENV C).
