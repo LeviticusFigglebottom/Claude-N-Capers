@@ -4,7 +4,8 @@ One glb: armature ``rig_arms`` (``_arms``: ``root`` = camera origin, the contrac
 helper bones ``weapon`` and ``magazine``), the skinned ``Arms`` mesh (hands at first-person
 density, dark crew-suit sleeves ``char_suit_dark`` with a turned-in cuff, skin ``char_skin_2``) and
 the clips of every set in ``_arms_sets.SETS`` (pistol, smg, rifle, shotgun, lmg, sniper, akimbo, revolver; D-055:
-break_action, lever, bow, crossbow, launcher, flamethrower, saw, minigun) named ``<set>_<clip>``; loops carry the
+break_action, lever, bow, crossbow, launcher, flamethrower, saw, minigun; D-058: shotgun_box) named
+``<set>_<clip>``; loops carry the
 ``-loop`` suffix (Godot strips it and sets LOOP_LINEAR), except ``*_reload_loop``: Godot loops a name ending in
 ``_loop`` and strips that suffix too unless the stripped name already exists (``<set>_reload`` does, so the
 name survives). New hold-to-fire loops are therefore named ``fire_hold`` / ``cut_hold`` (D-055): ``saw_cut_loop``
@@ -38,7 +39,7 @@ def notes() -> dict:
                     "reload_empty; shotgun, lever: reload_start, reload_loop, reload_end, reload_end_empty; sniper: bolt, bolt_ads; "
                     "pistol: fire_auto, fire_auto_ads; akimbo: fire_l, fire_ads_l; bow: draw_string, hold*, release, nock; "
                     "flamethrower: fire_start, fire_hold*, fire_end; saw: rev, cut_hold*, cut_end; minigun: spin_up, "
-                    "fire_hold*, spin_down",
+                    "fire_hold*, spin_down; shotgun_box: the common clips only (mag swap reloads)",
         "fp.camera": "review camera = crew camera: 75 deg vertical FOV (crew_member.tscn), root = eye",
         "fp.fire": "fire/fire_ads start at rest, kick peaks on frame 1; full-auto sets (smg, rifle, lmg) are 3 f "
                    "(<= 1.5 shot intervals) so the game restarts them every shot",
@@ -129,12 +130,24 @@ def notes() -> dict:
                        "reload_empty: the ammo box rides the magazine bone (mag_out, mag_swap, mag_in; dropped when "
                        "empty), belt_seat (the left hand feeds the belt into the chute); sprint* = a 24 f heavy jog; "
                        "left hand on the left side grip (vgrip); no sights: ads_idle is a raised hip hold"),
+        "fp.shotgun_box": (f"box / drum-fed self-loading shotguns (anim_set shotgun_box): the rifle hold (left hand on "
+                           f"LeftHandIK under the fore-end / shroud) with a shotgun kick; fire / fire_ads "
+                           f"{sets.SHOTGUN_BOX.frames('fire')} f (<= 1.5 shot intervals at the data's rpm, restarted every "
+                           "shot, semi or auto); reload: mag_out (the drum / box rocks forward off its front lip, "
+                           "magazine bone), mag_swap (old one stowed off screen, fresh one in the left hand), mag_in "
+                           "(rocked in front lip first: canted forward, hooked, rocked back until it latches; bone identity "
+                           "from mag_in), done; reload_empty: the empty drops at mag_out (falls on the magazine bone), then "
+                           "the same rock-in and the left hand racks the charging handle on the receiver's left side "
+                           f"({sets.SHOTGUN_BOX_CHARGE:.3f} m back) and lets it fly home at bolt_release; lengths from the "
+                           "first shotgun_box weapon data (sorted by file name) when present, else 3.6 s / 4.4 s / equip "
+                           "0.7 s / 300 rpm"),
         "fp.parts": (f"Pump: slides {sets.PUMP_TRAVEL:.3f} m along local +Z (back) between the pump_back ramp and "
                      f"pump_forward; Bolt: handle lifts {sets.BOLT_LIFT_DEG:.0f} deg about the bore axis "
                      f"(bolt_open), slides {sets.BOLT_TRAVEL:.3f} m along +Z (bolt_back), returns (bolt_forward), "
                      f"locks down (bolt_close); Rampart feed cover: opens {clips_mod.COVER_OPEN_DEG:.0f} deg about its "
                      f"front hinge (cover_open .. cover_close; the weapon scene needs a hinged FeedCover pivot); "
-                     f"Slide (pistol): slide_release; smg/rifle bolt_release (cocking-handle slap / bolt catch)"),
+                     f"Slide (pistol): slide_release; smg/rifle bolt_release (cocking-handle slap / bolt catch); shotgun_box "
+                     f"bolt_release (charging handle released after a {sets.SHOTGUN_BOX_CHARGE:.3f} m pull)"),
     }
 
 
