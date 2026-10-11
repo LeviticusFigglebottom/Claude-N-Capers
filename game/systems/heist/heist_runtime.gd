@@ -18,6 +18,7 @@ const NPC_SCENES: Dictionary = {
 	&"guard": "res://systems/ai/npc/npc_guard.tscn",
 	&"civilian": "res://systems/ai/npc/npc_civilian.tscn",
 	&"police": "res://systems/ai/npc/npc_police.tscn",
+	&"cartel": "res://systems/ai/npc/npc_cartel.tscn",
 }
 
 ## HeistResult.fail_reason values (events.md, D-038 QA-19). &"" on success.
@@ -412,6 +413,11 @@ func _spawn_npcs() -> void:
 		var gsp: SpawnPoint = sp_node as SpawnPoint
 		if gsp != null and gsp.tags.has(SCRIPTED_SPAWN_TAG):
 			continue  # A3-09: spawned later by the mission (spawn_guards)
+		if gsp != null and gsp.tags.has(CartelBrain.SPAWN_TAG):  # QC-36: a cartel post on a GUARD spawn
+			var info: Dictionary = spawn_info(gsp)
+			info["enemy_def"] = load(CartelBrain.ENEMY_DEF) as EnemyDef
+			spawn_npc(CartelBrain.ROLE, gsp.global_transform, info)
+			continue
 		_spawn_npc_at(&"guard", gsp)
 	for sp_node: Node in map.get_slots(G.CIVILIAN_SPAWN):
 		_spawn_npc_at(&"civilian", sp_node as SpawnPoint)

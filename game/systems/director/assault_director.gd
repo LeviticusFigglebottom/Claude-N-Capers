@@ -142,6 +142,11 @@ func enemy_cap() -> int:
 	return _runtime.difficulty_def.enemy_cap if _runtime != null and _runtime.difficulty_def != null else 20
 
 
+## D-064 (QC-36): police may fill enemy_cap() minus the alive cartel gunmen (they share the cap).
+func police_budget() -> int:
+	return enemy_cap() - (_runtime.npcs(CartelBrain.ROLE).size() if _runtime != null else 0)
+
+
 func is_assault_active() -> bool:
 	return assault_phase == Enums.AssaultPhase.BUILD or assault_phase == Enums.AssaultPhase.SUSTAIN \
 		or assault_phase == Enums.AssaultPhase.FADE
@@ -413,7 +418,7 @@ func _tick_assault_spawns(delta: float) -> void:
 	if not tweak.stage_spawn_rate_mult.is_empty():
 		stage_mult = tweak.stage_spawn_rate_mult[clampi(stage(), 0, tweak.stage_spawn_rate_mult.size() - 1)]
 	_group_left = tweak.assault_group_interval_s / maxf(intensity * stage_mult * _drama_spawn_scale(), 0.05)
-	if alive_count() < enemy_cap():
+	if alive_count() < police_budget():
 		_enqueue(_pick_group(assault_phase))
 
 
@@ -485,7 +490,7 @@ func _tick_queue(delta: float) -> void:
 	_unit_left -= delta
 	if _unit_left > 0.0:
 		return
-	if alive_count() >= enemy_cap():
+	if alive_count() >= police_budget():
 		_queue.clear()
 		return
 	_spawn_next()

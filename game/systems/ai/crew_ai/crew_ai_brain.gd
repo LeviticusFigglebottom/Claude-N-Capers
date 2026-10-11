@@ -36,7 +36,7 @@ const NODE_NAME: String = "CrewAiBrain"
 const RNG_STREAM: StringName = &"crew_ai"
 const TWEAK_PATH: String = "res://systems/ai/crew_ai/crew_ai_tweak.tres"
 const WORLD_MASK: int = (1 << 0) | (1 << 1)
-const HOSTILE_ROLES: Array[StringName] = [&"police", &"special", &"guard"]
+const HOSTILE_ROLES: Array[StringName] = [&"police", &"special", &"guard", &"cartel"]
 
 @export var tweak: CrewAiTweak
 
@@ -657,7 +657,7 @@ static func _is_tasing_crew(npc: NpcBase) -> bool:
 func _is_hostile(npc: NpcBase) -> bool:
 	if not npc.alive or NpcBase.BLIND_STATES.has(npc.alert_state):
 		return false
-	if npc.role == &"guard":
+	if npc.role == &"guard" or npc.role == CartelBrain.ROLE:  # QC-36: sleeping cartel posts are left alone
 		return npc.alert_state == Enums.AlertState.COMBAT or npc.alert_state == Enums.AlertState.ALARMED
 	return HOSTILE_ROLES.has(npc.role)
 

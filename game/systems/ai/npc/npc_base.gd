@@ -25,7 +25,7 @@ const BLIND_STATES: Array[int] = [
 	Enums.AlertState.DOMINATED, Enums.AlertState.CONVERTED, Enums.AlertState.DEAD,
 ]
 
-## &"guard", &"civilian", &"police", &"special" (test_hooks.md npcs(role)).
+## &"guard", &"civilian", &"police", &"special", &"cartel" (QC-36) (test_hooks.md npcs(role)).
 @export var role: StringName = &"guard"
 @export var enemy_def: EnemyDef
 @export var visual_scene: PackedScene
@@ -55,7 +55,8 @@ var stun_left: float = 0.0
 
 func _ready() -> void:
 	add_to_group(G.NPC)
-	add_to_group(G.OBSERVER)
+	if role != CartelBrain.ROLE:  # QC-36: cartel gunmen sight crew themselves (CartelBrain), no stealth meter
+		add_to_group(G.OBSERVER)
 	if role == &"civilian":
 		add_to_group(G.CIVILIAN)
 	else:
