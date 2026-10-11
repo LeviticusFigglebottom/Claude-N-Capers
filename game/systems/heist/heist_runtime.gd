@@ -74,6 +74,9 @@ var net_sync: HeistNetSync = null
 var is_replica: bool = false
 ## A3-07 (client): map paths of the bring-up id table that did not resolve in the local map.
 var replica_missing_ids: Array[String] = []
+## QB-L2: slot -> effective Loadout (LoadoutModifiers.effective_loadouts), pushed before the crew spawns;
+## HeistDropIn replaces a drop-in's slot and pushes again.
+var crew_loadouts: Dictionary = {}
 
 var _crew: Dictionary[int, CrewController] = {}
 var _bot_intents: Dictionary[int, CrewIntent] = {}
@@ -84,8 +87,6 @@ var _loot_secured: Array[Dictionary] = []
 var _small_loot: int = 0
 var _pagers_answered: int = 0
 var _ended: bool = false
-## QB-L2: slot -> effective Loadout (LoadoutModifiers.effective_loadouts), pushed before the crew spawns.
-var _crew_loadouts: Dictionary = {}
 var _launch_options: Dictionary = {}
 
 
@@ -163,8 +164,8 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	VariantResolver.configure_pending(pending)
 	_apply_rare_modifiers()
 	preplan.apply_modifiers()  # C3: TEAM sources `asset.<id>`, before the crew reads modifiers
-	_crew_loadouts = LoadoutModifiers.effective_loadouts(options.get("loadouts", {}), Net.all_slots())
-	LoadoutModifiers.push(_crew_loadouts)  # QB-L2: skills + perk deck, before the crew spawns
+	crew_loadouts = LoadoutModifiers.effective_loadouts(options.get("loadouts", {}), Net.all_slots())
+	LoadoutModifiers.push(crew_loadouts)  # QB-L2: skills + perk deck, before the crew spawns
 	_claim_map_ids(map)
 	RappelLinks.build(map)  # QC-41: one-way rappel links from RAPPEL points
 	_spawn_npcs()
@@ -360,6 +361,8 @@ func _create_services() -> void:
 	net_sync = HeistNetSync.new()  # A3-07: idle in solo
 	net_sync.name = HeistNetSync.NODE_NAME
 	register_service(HeistNetSync.SERVICE, net_sync)
+	if Net.is_authority():
+		HeistDropIn.ensure(get_tree())  # QB-B6-DROPIN: the host answers drop-in requests while the heist runs
 	var factories: Array = options.get("extra_services", [])
 	for f: Variant in factories:
 		if f is Callable:
@@ -492,7 +495,7 @@ func _spawn_crew() -> void:
 	var scene: PackedScene = load(CREW_SCENE) as PackedScene
 	for slot: int in Net.all_slots():
 		var crew: CrewController = scene.instantiate() as CrewController
-		crew.setup(slot, Net.crew[slot], _crew_loadouts.get(slot, loadouts.get(slot)) as Loadout)
+		crew.setup(slot, Net.crew[slot], crew_loadouts.get(slot, loadouts.get(slot)) as Loadout)
 		dynamic_root.add_child(crew)
 		var xf: Transform3D = Transform3D.IDENTITY
 		if not spawns.is_empty():

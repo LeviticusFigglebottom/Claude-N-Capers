@@ -1,7 +1,8 @@
 ## A3-07 loopback client process (launched by test_a3_07_coop_loopback.gd, never shipped):
 ## godot --headless --path game res://tests/a/coop_loopback_client.tscn -- --port=N [--timeout=S]
 ## Joins the host on localhost, builds the heist replica through `await HeistLauncher.launch_client()`
-## (`--join=auto`: HeistLauncher.auto_join instead), and
+## (`--join=auto`: HeistLauncher.auto_join instead; `--join=dropin`: drops into the host's running heist through
+## HeistDropIn.request_join, QB-B6-DROPIN), and
 ## answers the host's LoopbackProbe commands. Quits on "quit", on disconnect or after the timeout.
 extends Node
 
@@ -26,15 +27,18 @@ func _ready() -> void:
 	multiplayer.server_disconnected.connect(_quit)
 	multiplayer.connection_failed.connect(_quit)
 	var auto: bool = String(args.get("join", "")) == "auto"
+	var dropin: bool = String(args.get("join", "")) == "dropin"
 	if auto:
 		HeistLauncher.auto_join()
+	if dropin:
+		Net.connected_to_host.connect(_drop_in, CONNECT_ONE_SHOT)
 	var err: Error = Net.join("127.0.0.1", port)
 	if err != OK:
 		Log.error(&"loopback", "client: join failed (%d)" % err)
 		_quit()
 		return
 	Log.info(&"loopback", "client: joining 127.0.0.1:%d" % port)
-	if not auto:
+	if not auto and not dropin:
 		_launch_client()
 
 
@@ -46,6 +50,17 @@ func _launch_client() -> void:
 	if is_instance_valid(_probe):
 		_probe.set(&"launched_rt", rt)
 	Log.info(&"loopback", "client: launch_client() returned the replica")
+
+
+func _drop_in() -> void:
+	var svc: HeistDropIn = HeistDropIn.ensure(get_tree())
+	svc.joined.connect(func(_slot: int) -> void:
+		if is_instance_valid(_probe):
+			_probe.set(&"launched_rt", HeistRuntime.current())
+		Log.info(&"loopback", "client: dropped in"))
+	svc.join_failed.connect(func(_p: int, r: StringName) -> void: Log.warn(&"loopback", "client: drop-in failed (%s)" % r))
+	var l: Loadout = CrewWeapons.build_loadout(null)
+	svc.request_join({"name": "Dropper", "level": 10, "notoriety": 0, "loadout": LobbyState.loadout_to_dict(l)})
 
 
 func _process(_delta: float) -> void:
