@@ -293,13 +293,52 @@ def _gate_hands(kit, s: FPSet):
     return away, at, pushed
 
 
+#: Velocity ramp share (each end) of the gate <-> fore-end hand moves (``cam_path``): a trapezoid
+#: velocity peaks at 1 / (1 - r) x the mean, below the 1.5-1.6 x of smoothstep / cosine eases.
+PATH_RAMP = 0.25
+
+
+def ramp_profile(u: float, r: float = PATH_RAMP) -> float:
+    """0..1 progress with a trapezoidal velocity (linear ramps of ``r`` at both ends, zero end speeds)."""
+    u = min(1.0, max(0.0, u))
+    vmax = 1.0 / (1.0 - r)
+    if u < r:
+        return vmax * u * u / (2.0 * r)
+    if u > 1.0 - r:
+        return 1.0 - vmax * (1.0 - u) ** 2 / (2.0 * r)
+    return vmax * (r / 2.0 + u - r)
+
+
+def cam_path(kit, s: FPSet, f0: int, f1: int, wf0: tuple, h0: Hand, wf1: tuple, h1: Hand, arc=(0.0, 0.0, 0.0),
+             pre: list | None = None) -> list[Key]:
+    """One key per frame from (``wf0``, ``h0``) at ``f0`` to (``wf1``, ``h1``) at ``f1`` with the left hand
+    interpolated in CAMERA space (shortest rotation, sideways ``arc`` bulge) on ``ramp_profile``. The gate
+    hand is palm-down over the rolled gun and the fore-end hand palm-up: blending them in weapon space
+    while the gun rolls back adds the roll to a ~165 deg turn (50-60 deg / frame wrist steps, B4-18);
+    in camera space with a flat velocity the wrist turns <= ~20 deg / frame. The end keys keep their own
+    spaces so the clip continues on the weapon."""
+    a = as_cam(h0, wf0, wf0)
+    b = as_cam(h1, wf1, wf1)
+    keys = [Key(f0, wf0, h0, kit.grip, blade=s.blade)] if pre is None else list(pre)
+    n = max(1, f1 - f0)
+    for f in range(f0 + 1, f1):
+        t = ramp_profile((f - f0) / n)
+        wf = (A.mslerp(wf0[0], wf1[0], t), wf0[1] + (wf1[1] - wf0[1]) * t)
+        bump = math.sin(math.pi * t)
+        pole = unit(a.pole + (b.pole - a.pole) * t + v3(0.0, 0.0, 1e-9))
+        h = Hand("c", a.wrist + (b.wrist - a.wrist) * t + v3(*arc) * bump, A.mslerp(a.axes, b.axes, t), pole,
+                 a.shape.blend(b.shape, t), a.twist + (b.twist - a.twist) * t)
+        keys.append(Key(f, wf, h, kit.grip, ease="linear", blade=s.blade))
+    keys.append(Key(f1, wf1, h1, kit.grip, ease="linear", blade=s.blade))
+    return keys
+
+
 def lever_start(kit, s: FPSet, N: int):
-    from _arms_clips import K, hold_frame  # noqa: PLC0415
+    from _arms_clips import hold_frame  # noqa: PLC0415
 
     away, _at, _p = _gate_hands(kit, s)
     tilt = hold_frame(s.reload_tilt)
-    return Choreo([K(0, hold_frame(s.hip), kit.support, kit.grip, blade=s.blade),
-                   K(N, tilt, away, kit.grip, blade=s.blade, arc_l=(-0.05, 0.0, -0.03))],
+    return Choreo(cam_path(kit, s, 0, N, hold_frame(s.hip), kit.support, tilt, away, arc=(-0.05, 0.0, -0.03)),
                   post=lambda f, st: st.extra.__setitem__("shell", f >= N - 4))
 
 
@@ -325,15 +364,14 @@ def lever_end(kit, s: FPSet, N: int, empty: bool):
     hip = hold_frame(s.hip)
     ev = s.ev("reload_end_empty" if empty else "reload_end")
     if not empty:
-        keys = [K(0, tilt, away, kit.grip, blade=s.blade),
-                K(ev["done"], hip, kit.support, kit.grip, blade=s.blade, arc_l=(-0.04, 0.0, -0.04)),
-                K(N, hip, kit.support, kit.grip, blade=s.blade, ease="settle")]
+        keys = cam_path(kit, s, 0, ev["done"], tilt, away, hip, kit.support, arc=(-0.04, 0.0, -0.04))
+        keys.append(K(N, hip, kit.support, kit.grip, blade=s.blade, ease="settle"))
         return Choreo(keys, post=lambda f, st: st.extra.__setitem__("shell", f < 2))
+    # back on the fore-end and settled into the cycle hold just before the lever is thrown (lo-4)
     pre = hold_frame(s.hip, (-0.015, 0.0, 0.015), yaw=3.0, pitch=4.0, roll=-6.0)
-    keys = [K(0, tilt, away, kit.grip, blade=s.blade),
-            K(ev["lever_open"] - 6, pre, kit.support, kit.grip, blade=s.blade, arc_l=(-0.04, 0.0, -0.04)),
-            K(ev["done"], hip, kit.support, kit.grip, blade=s.blade),
-            K(N, hip, kit.support, kit.grip, blade=s.blade, ease="settle")]
+    keys = cam_path(kit, s, 0, ev["lever_open"] - 4, tilt, away, pre, kit.support, arc=(-0.04, 0.0, -0.04))
+    keys += [K(ev["done"], hip, kit.support, kit.grip, blade=s.blade),
+             K(N, hip, kit.support, kit.grip, blade=s.blade, ease="settle")]
 
     def post(f: int, st: State) -> None:
         st.extra["shell"] = f < 2

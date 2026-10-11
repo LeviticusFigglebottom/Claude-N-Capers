@@ -368,3 +368,22 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   so their reload lengths follow their own data. ENV B sets `anim_set = &"shotgun_box"`.
 - characters.md v1.5: batch-2/3 sets, loop naming (`fire_hold`/`cut_hold`), bow draw curve + offhand hold, weapon-bone
   exceptions, model-layout assumptions, Bulwark `shield_idle`.
+
+## D-059 — 2026-10-11 — Glasshouse passes G2 (final art); punch list for G3
+- Reviewed: contact sheet (all 23 shots) and 13 full-size shots (exteriors, workshop, salon, stair core, garage perch,
+  offices, G4 corridor, counter, site plan). validate_level glasshouse [final] PASS (18 checks), P1 gate 4/4.
+- **G2 approved.** Scale, lighting, dressing and the stealth reads (shopfront glazing, G4 sightline, safe + reader)
+  meet level_standards. QC-34: the 1.0 m parapet is the perch guard (no extra rail).
+- Punch list (non-blocking, fix before G3): wood plaque "VOSSBERG" lettering garbles (counter shot) and blocks at a
+  grazing angle; black splotch decals on desk fronts (security, admin); faint alley fence posts; add a garage-ramp
+  review shot; reframe admin_office (cabinet in front); U5 monitor orientation warning.
+- P1 sign-off is held until the P1 integration gate automates all 11 roadmap steps end-to-end (today: 1, 2/3, 4, 8/9).
+
+## D-060 — 2026-10-11 — P1 gate complete (all 11 steps end-to-end)
+- game/tests/integration/test_p1_vertical_slice_b.gd adds steps 3, 5, 6, 7, 10, 11 on the real Glasshouse map
+  (10/10 integration tests, two identical runs). Stated shortcuts: isolate_npc for NPCs outside the step, teleports
+  instead of walking, alarm/down injected in step 10. No missing APIs.
+- Roadmap step 11: "escape with the mission's required bags" (Glasshouse mission: 2).
+- Findings routed: ENV C, SafeLoot not parented under WorkshopSafe (the loot could be taken from a locked safe; P1
+  sign-off waits on this fix); camera variant group resolving to none (enable now that P2 is done); ENV A, a spurious
+  CASING→STEALTH hop on alarm-while-casing.

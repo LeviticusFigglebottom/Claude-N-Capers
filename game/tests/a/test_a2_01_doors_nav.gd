@@ -17,6 +17,7 @@ func _launch(crew_ai: bool = false) -> void:
 	_rt = await HeistLauncher.launch(&"unit_map", 11, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.with_doorway_wall(0, 0), "crew_ai": crew_ai})
 	await wait_physics_frames(2)
+	assert_true(await ATestMaps.await_nav_synced(_rt), "navigation map synced to this map's navmesh")
 
 
 func _door(lock: Door.Lock, tags: Array[StringName] = [], suspicious: bool = false) -> Door:

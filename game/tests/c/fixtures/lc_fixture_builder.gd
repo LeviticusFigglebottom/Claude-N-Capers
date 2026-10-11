@@ -422,8 +422,10 @@ static func _lamp(parent: Node, name: String, pos: Vector3, mat: Material, shado
 
 ## U-stair for stair tests at `o`: two 10-riser flights (riser 0.16, tread 0.28, width 1.2) joined
 ## by a half landing at +1.6 m, ground at 0, upper slab at 3.2. `ramp`: flight 1 keeps its visual
-## steps but collides through one ramp box laid on the nosings.
-static func u_stair(parent: Node3D, o: Vector3, ramp: bool) -> void:
+## steps but collides through one ramp box laid on the nosings. `rail_h` > 0 adds a sloped
+## `handrail` prop on both sides of each flight with its top `rail_h` above the nosing line;
+## `rail_gap` > 0 leaves a gap that wide in the middle of flight 2's outer (+X, open) rail.
+static func u_stair(parent: Node3D, o: Vector3, ramp: bool, rail_h: float = 1.05, rail_gap: float = 0.0) -> void:
 	var m: StandardMaterial3D = tri_mat("fx_stair", Color(0.6, 0.6, 0.6), 512.0)
 	var r: float = 0.16
 	var t: float = 0.28
@@ -469,8 +471,39 @@ static func u_stair(parent: Node3D, o: Vector3, ramp: bool) -> void:
 	root.add_child(f2)
 	for k2: int in range(11, 20):
 		solid(f2, "Step%d" % k2, Vector3(1.4, 0.0, (19 - k2) * t), Vector3(2.6, k2 * r, (20 - k2) * t), m)
+	if rail_h > 0.0:
+		# Flights share the root's frame; rails are siblings so they do not widen the flights' bounds.
+		# [x0, x1, nosing y at first riser, at last riser, z of first riser, z of last riser]
+		for fl: Array in [[0.0, 1.2, r, 10 * r, 0.0, 9 * t], [1.4, 2.6, 11 * r, 20 * r, 9 * t, 0.0]]:
+			for xs: float in [float(fl[0]) - 0.05, float(fl[1]) + 0.05]:
+				var a: Vector3 = Vector3(xs, float(fl[2]), float(fl[4]))
+				var b: Vector3 = Vector3(xs, float(fl[3]), float(fl[5]))
+				if rail_gap > 0.0 and xs > 2.6:
+					var gf: float = rail_gap * 0.5 / a.distance_to(b)
+					_rail(root, a, a.lerp(b, 0.5 - gf), rail_h, m)
+					_rail(root, a.lerp(b, 0.5 + gf), b, rail_h, m)
+				else:
+					_rail(root, a, b, rail_h, m)
 	_own(root, parent.owner if parent.owner != null else parent)
 	root.owner = parent.owner if parent.owner != null else parent
+
+
+## Sloped handrail prop (0.05 x 0.05 box) whose top runs `h` above the line a -> b (nosing line,
+## flight-local coordinates of `parent`).
+static func _rail(parent: Node3D, a: Vector3, b: Vector3, h: float, m: Material) -> void:
+	var dir: Vector3 = b - a
+	var length: float = dir.length()
+	var rail: Node3D = Node3D.new()
+	rail.name = "Rail%d" % parent.get_child_count()
+	rail.set_meta(&"kind", "handrail")
+	var fwd: Vector3 = dir / length
+	var basis: Basis = Basis.looking_at(-fwd, Vector3.UP)
+	rail.transform = Transform3D(basis, (a + b) * 0.5 + Vector3.UP * (h - 0.025))
+	var mi: MeshInstance3D = MeshInstance3D.new()
+	mi.name = "Mesh"
+	mi.mesh = _box_mesh(Vector3(0.05, 0.05, length), m)
+	rail.add_child(mi)
+	parent.add_child(rail)
 
 
 ## Bakes the map's navmesh from its static colliders. Map must be inside the tree.

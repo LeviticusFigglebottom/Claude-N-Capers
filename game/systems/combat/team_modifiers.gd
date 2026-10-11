@@ -56,17 +56,15 @@ static func hostage_count(node: Node) -> int:
 
 ## `dmg` after team.damage_reduction_hostage for `hostages` held hostages (see the header).
 static func hostage_reduced(slot: int, dmg: float, hostages: int) -> float:
+	# D-056: PD2 Crew Chief shape: flat absorption per hostage, capped by hostage count.
+	# PARAMS {absorb_per_hostage: float, max_hostages: int}; every granting source counts.
 	if hostages <= 0 or dmg <= 0.0:
 		return dmg
-	var mult: float = 1.0
 	var flat: float = 0.0
 	for d: Dictionary in Modifiers.list(slot, HOSTAGE_DR_KEY):
-		var per: float = float(d.get("per", 0.0))
-		var mx: float = float(d.get("max", 0.0))
+		var per: float = float(d.get("absorb_per_hostage", 0.0))
+		var mx: int = int(d.get("max_hostages", 0))
 		if per <= 0.0:
 			continue
-		if per < 1.0:
-			mult *= 1.0 - clampf(per * hostages, 0.0, mx if mx > 0.0 else 1.0)
-		else:
-			flat += per * float(mini(hostages, int(mx)) if mx > 0.0 else hostages)
-	return maxf(dmg * mult - flat, 0.0)
+		flat += per * float(mini(hostages, mx) if mx > 0 else hostages)
+	return maxf(dmg - flat, 0.0)

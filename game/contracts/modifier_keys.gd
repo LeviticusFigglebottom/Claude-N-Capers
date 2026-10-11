@@ -117,7 +117,7 @@ const KEYS: Dictionary = {
 	&"team.health_mult": [Type.MULT, 3, "Crew-wide health (Foreman-style)."],
 	&"team.armor_mult": [Type.MULT, 3, "Crew-wide armor."],
 	&"team.stamina_mult": [Type.MULT, 3, "Crew-wide stamina."],
-	&"team.damage_reduction_hostage": [Type.PARAMS, 3, "Crew damage reduction per hostage {per, max}."],
+	&"team.damage_reduction_hostage": [Type.PARAMS, 3, "Crew flat damage absorption per hostage {absorb_per_hostage, max_hostages} (D-056)."],
 
 	# --- Deployables (qualified by deployable kind) ------------------------------
 	&"deploy.extra": [Type.ADD, 2, "Extra deployable units (qualifier: kind)."],

@@ -256,9 +256,10 @@ const FENCES: Array = [
 ]
 
 ## Garage L2 -> L3 ramp: top surface from `low` up to `high` (centre line), width, slab thickness;
-## a 1.0 m concrete upstand on its open (west) side.
-const GARAGE_RAMP: Dictionary = {"low": Vector3(37.2, 3.0, 11.5), "high": Vector3(37.2, 6.0, -6.5), "width": 1.6,
-	"thick": 0.25, "upstand_x": 36.33}
+## a 1.0 m concrete upstand on its open (west) side from `upstand_from` (fraction of the length, where
+## the drop beside it reaches ~0.5 m) to the top; the foot is open from the south and the west.
+const GARAGE_RAMP: Dictionary = {"low": Vector3(37.2, 3.0, 10.5), "high": Vector3(37.2, 6.0, -6.5), "width": 1.6,
+	"thick": 0.25, "upstand_x": 36.33, "upstand_from": 0.15}
 ## Garage stall lines (paint) on the deck tops: [deck top y, x0, x1, z0, z1, pitch].
 const GARAGE_STALLS: Array = [[3.0, 33.0, 35.8, -15.0, 11.0, 2.6], [6.0, 33.0, 35.8, -15.0, 11.0, 2.6]]
 
@@ -298,6 +299,7 @@ const ANCHORS: Array = [
 	# G1 receiving + G7 electrical
 	["G1", "ReceivingShelving", "prop_shelving_boxes", Vector3(0.437, 0.0, 3.0), -90.0, {}],
 	["G1", "MopSink", "prop_mop_sink", Vector3(0.512, 0.0, 4.088), -90.0, {}],
+	["G1", "Dolly", "prop_hand_truck", Vector3(4.67, 0.0, 3.75), 90.0, {}],
 	["G1", "PackingBench", "prop_packing_bench", Vector3(4.508, 0.0, 2.4), 90.0, {}],
 	["G1", "DeliveryCrates", "prop_crate_wood", Vector3(2.3, 0.0, 3.3), 0.0, {}],
 	# G9 janitor closet under the stair: the inward door swing (hinge at x 15.75) keeps the BODY_HIDE
@@ -318,7 +320,7 @@ const ANCHORS: Array = [
 	# U5 admin + appraisal
 	["U5", "DeskBookkeeping", "prop_desk_office", Vector3(1.6, UPPER, 9.0), 0.0, {}],
 	["U5", "DeskSalesAdmin", "prop_desk_office", Vector3(4.2, UPPER, 9.0), 0.0, {}],
-	["U5", "AppraisalBench", "prop_workbench", Vector3(5.8, UPPER, 11.438), 0.0, {}],
+	["U5", "AppraisalBench", "prop_workbench", Vector3(5.8, UPPER, 11.39), 0.0, {}],
 	["U5", "FileCabinets", "prop_file_cabinet", Vector3(6.563, UPPER, 7.8), 90.0, {}],
 	# U6 manager
 	["U6", "ManagerDesk", "prop_desk_exec", Vector3(9.5, UPPER, 9.0), 0.0, {}],
@@ -326,6 +328,8 @@ const ANCHORS: Array = [
 	["U6", "VisitorChair", "prop_chair_visitor", Vector3(10.15, UPPER, 8.0), 147.0, {"faces_anchor": "ManagerDesk"}],
 	["U6", "Bookshelf", "prop_bookshelf", Vector3(11.713, UPPER, 9.0), 90.0, {}],
 	# U7 stock / archive: two free-standing shelf rows (aisle between them)
+	["U7", "PackingBench", "prop_packing_bench", Vector3(15.4, UPPER, 6.492), 180.0, {}],
+	["U7", "StepLadder", "prop_step_ladder", Vector3(14.05, UPPER, 6.44), 180.0, {}],
 	["U7", "StockShelfA1", "prop_shelving_archive", Vector3(13.69, UPPER, 8.0), 180.0, {}],
 	["U7", "StockShelfA2", "prop_shelving_archive", Vector3(14.9, UPPER, 8.0), 180.0, {}],
 	["U7", "StockShelfA3", "prop_shelving_archive", Vector3(16.11, UPPER, 8.0), 180.0, {}],
@@ -376,15 +380,19 @@ const KIT_ROOMS_EXT: Array = [
 	["X2P", "X2", [18.2, 0.0, -8.0, 21.2, 4.0, 12.2], 90.0, 0.0],
 ]
 
-## Extra keep-outs per kit room (world boxes): the alley mouth, the G7 corner of G1.
+## Extra keep-outs per kit room (world boxes): the alley mouth, the G7 corner of G1, the Kessel fence
+## strip, the U7 aisle ends.
 const KEEP_OUT: Dictionary = {
 	"G1": [[0.0, 0.0, 0.0, 2.1, 3.0, 2.1]],
 	"X2P": [[18.2, -0.5, -6.4, 21.2, 4.0, 0.0]],
+	"X1": [[-14.0, -0.5, -6.2, 18.2, 4.0, -6.0]],
+	# U7: the west aisle from the door and both ends of the aisle behind shelf row B stay open.
+	"U7": [[12.1, 4.2, 7.0, 13.05, 6.2, 11.8], [16.75, 4.2, 9.5, 17.8, 6.2, 11.8]],
 }
 
 ## Kit seeds (variety: every room differs).
 const KIT_SEEDS: Dictionary = {
-	"G1": 4101, "G7": 4107, "G2": 4102, "G3": 4103, "G4": 4104, "G9": 4109, "G10": 4110, "G5": 4105, "G6": 4106,
+	"G1": 4111, "G7": 4107, "G2": 4102, "G3": 4103, "G4": 4104, "G9": 4109, "G10": 4110, "G5": 4105, "G6": 4106,
 	"U1": 4201, "U2": 4202, "U3": 4203, "U4": 4204, "U8": 4208, "U5": 4205, "U6": 4206, "U7": 4207,
 	"X1": 4301, "X2H": 4302, "X2P": 4303,
 }
@@ -551,7 +559,9 @@ const TACTICAL: Array = [
 	["CoverCarHarlow3", "COVER", Vector3(16.0, 0.0, 18.8), 0.0, ["vehicle"], false],
 	["FlankAlleyMouth", "FLANK", Vector3(19.6, 0.0, -4.5), 90.0, ["alley_mouth"], false],
 	["SniperHotelRoof", "SNIPER_PERCH", Vector3(0.0, 17.0, 36.0), 0.0, ["hotel_roof", "p3"], false],
-	["SniperGarageL2", "SNIPER_PERCH", Vector3(33.2, 3.0, 0.0), 90.0, ["garage_l2", "p3"], false],
+	# Garage L2 perch bay (columns C-D): 1.0 m parapet guard, no rail above it in this bay, so a
+	# crouched sniper (eye ~1.2 m) 0.45 m behind it sees down onto the shopfront.
+	["SniperGarageL2", "SNIPER_PERCH", Vector3(32.95, 3.0, 0.0), 90.0, ["garage_l2", "p3"], false],
 ]
 
 ## Pre-planning points (contracts/preplanning.md, heist_map.md v1.2): [id, category, pos, floor,
@@ -592,6 +602,8 @@ const ROOMS: Array = [
 	["U6", "office", "office_manager", 1, [[7.0, UPPER, 6.0, 12.0, 7.2, 12.0]], null],
 	["U7", "storage", "storage_archive", 1, [[12.0, UPPER, 6.0, 18.0, 7.2, 12.0]], null],
 	["X1", "exterior", "exterior_alley", 0, [[-14.0, 0.0, -6.2, 18.2, 4.0, -0.2]], null],
+	# Garage level 2 (P3 sniper perch deck; neighbour structure, undressed).
+	["X3", "exterior", "", 0, [[32.5, 3.0, -16.0, 38.2, 5.8, 11.9]], null],
 	["X2", "exterior", "exterior_street", 0, [[-14.0, ROAD_Y, 12.2, 32.2, 4.0, 34.2],
 		[18.2, ROAD_Y, -8.0, 32.2, 4.0, 12.2], [18.2, ROAD_Y, 34.2, 32.2, 4.0, 40.0]], null],
 ]
@@ -625,24 +637,24 @@ const REVIEW_CAMERAS: Array = [
 	["ExtAlleyMouth", Vector3(24.5, 1.7, -4.5), Vector3(5.0, 2.0, -2.0), 70.0, "Exterior: alley mouth from Pell St"],
 	["ExtFireEscape", Vector3(5.5, 1.7, -5.2), Vector3(2.2, 3.8, -0.6), 70.0,
 		"Exterior: fire-escape ladder + landing under the break-room window"],
-	["ExtPellFireExit", Vector3(26.0, 1.7, 12.0), Vector3(18.0, 1.5, 2.0), 70.0, "Exterior: Pell St side, fire exit + van E2 slot"],
+	["ExtPellFireExit", Vector3(26.0, 1.7, 11.5), Vector3(18.0, 1.5, 2.0), 70.0, "Exterior: Pell St side, fire exit + van E2 slot"],
 	["SalesFloorEntrance", Vector3(11.8, 1.65, 11.2), Vector3(3.0, 1.2, 7.0), 75.0,
 		"G5 sales floor from the entrance (floor guard post view)"],
 	["ChandelierLandmark", Vector3(2.0, 2.0, 11.2), Vector3(7.0, 1.6, 9.0), 70.0, "G5 chandelier display (landmark) and island cases"],
 	["CounterStaffDoor", Vector3(8.1, 2.0, 6.45), Vector3(1.5, 0.9, 7.2), 70.0, "G5 sales counter, register, staff door behind it"],
 	["SalonPrivate", Vector3(17.4, 1.65, 11.4), Vector3(13.6, 1.0, 7.0), 75.0, "G6 private salon (variable lock), cases, vitrine"],
 	["CorridorG4", Vector3(17.4, 1.65, 5.25), Vector3(0.0, 1.4, 5.25), 60.0, "G4 staff corridor: the 18 m sightline (stealth crux)"],
-	["WorkshopSafe", Vector3(10.0, 1.65, 4.0), Vector3(6.5, 0.8, 0.5), 75.0, "G2 workshop: the safe, keycard reader, jeweler benches"],
+	["WorkshopSafe", Vector3(7.6, 1.6, 3.75), Vector3(7.2, 0.9, 0.5), 75.0, "G2 workshop: the safe, keycard reader, jeweler benches"],
 	["ReceivingBackDoor", Vector3(4.6, 1.65, 4.1), Vector3(2.5, 1.0, 0.3), 75.0,
 		"G1 receiving, back door to the alley, G7 electrical door"],
-	["StairCore", Vector3(13.8, 1.65, 5.7), Vector3(14.0, 2.6, 0.8), 75.0, "G8 U-stair from the corridor foot"],
+	["StairCore", Vector3(13.7, 1.65, 5.45), Vector3(13.8, 2.6, 0.8), 75.0, "G8 U-stair from the corridor foot"],
 	["UpperCorridor", Vector3(0.6, 5.85, 5.25), Vector3(18.0, 5.6, 5.25), 60.0, "U4 upper corridor and void railing"],
 	["SecurityOffice", Vector3(10.0, 5.85, 4.1), Vector3(6.0, 5.0, 1.5), 75.0,
 		"U2 security office: camera station (P2), key cabinet, alley window"],
-	["BreakRoom", Vector3(3.4, 5.85, 4.15), Vector3(1.6, 4.9, 0.6), 75.0, "U1 break room, fire-escape window, lockers"],
+	["BreakRoom", Vector3(3.7, 5.8, 3.7), Vector3(1.6, 4.9, 0.6), 75.0, "U1 break room, fire-escape window, lockers"],
 	["ManagerOffice", Vector3(11.5, 5.85, 6.6), Vector3(8.0, 4.8, 10.5), 75.0, "U6 manager office (keycard / cash slots)"],
 	["AdminOffice", Vector3(6.5, 5.85, 6.6), Vector3(1.0, 4.8, 10.5), 75.0, "U5 admin and appraisal office"],
 	["StockRoom", Vector3(17.4, 5.85, 6.6), Vector3(13.0, 4.8, 10.5), 75.0, "U7 stock and archive"],
-	["GaragePerch", Vector3(33.4, 4.6, 0.0), Vector3(17.0, 2.0, 3.0), 70.0,
-		"Garage level 2 (P3 sniper perch) toward the alley mouth and salon"],
+	["GaragePerch", Vector3(33.0, 4.2, 0.0), Vector3(17.0, 1.6, 6.0), 70.0,
+		"Garage level 2 (P3 sniper perch), crouched eye over the 1.0 m parapet: alley mouth and salon"],
 ]

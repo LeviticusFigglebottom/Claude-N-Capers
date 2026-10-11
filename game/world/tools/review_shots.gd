@@ -301,8 +301,9 @@ func _render_plans(out_dir: String, warm: int, label: String) -> void:
 		var img: Image = await _grab(warm)
 		var file: String = "plan_floor%d.jpg" % i
 		var size: int = save_jpg(img, out_dir.path_join(file))
-		print("  floor %d (%s) -> %s (%d KB)" % [i, fmt_height(fh[i]), file, size / 1024])
-		md.append("## %s (%s)" % [floor_name(fh, i).capitalize(), fmt_height(fh[i])])
+		print("  floor %d %s (%s) -> %s (%d KB)" % [i, display_floor_name(_map, i), fmt_height(fh[i]), file, size / 1024])
+		var fname: String = _map.floor_name(i)
+		md.append("## %s (%s)" % [fname if fname != "" else floor_name(fh, i).capitalize(), fmt_height(fh[i])])
 		md.append("")
 		md.append("![floor %d](%s)" % [i, file])
 		md.append("")
@@ -452,7 +453,7 @@ func _render_blueprint(out_dir: String, extra_path: String, warm: int, label: St
 		layer.queue_free()
 		floors.append(img)
 		var fsize: int = save_png_limited(img, out_dir.path_join("blueprint_floor%d.png" % i))
-		print("  blueprint floor %d -> blueprint_floor%d.png (%d KB)" % [i, i, fsize / 1024])
+		print("  blueprint floor %d %s -> blueprint_floor%d.png (%d KB)" % [i, display_floor_name(_map, i), i, fsize / 1024])
 	var comp: Image = _compose(floors)
 	var size: int = save_png_limited(comp, out_dir.path_join("blueprint.png"))
 	print("  blueprint -> %s (%dx%d, %d KB)" % [out_dir.path_join("blueprint.png"), comp.get_width(), comp.get_height(), size / 1024])
@@ -476,6 +477,13 @@ static func floor_name(fh: PackedFloat32Array, i: int) -> String:
 	if i < ground:
 		return "BASEMENT B%d" % (ground - i)
 	return "FLOOR %d" % (i - ground)
+
+
+## Display name of floor i (D-054): the map's HeistMap.floor_name(i) when non-empty, else the
+## height-based name above.
+static func display_floor_name(map: HeistMap, i: int) -> String:
+	var n: String = map.floor_name(i)
+	return n if n != "" else floor_name(map.floor_heights, i)
 
 
 ## Signed height with a real minus sign: "+4.2 m", "−4.0 m", "0.0 m".
@@ -609,7 +617,7 @@ func _blueprint_labels(fi: int, label: String) -> CanvasLayer:
 		lb.reset_size()
 		lb.position = sp - lb.size * 0.5
 	var title: Label = Label.new()
-	title.text = "%s  -  %s  (%s)" % [label.to_upper(), floor_name(_map.floor_heights, fi),
+	title.text = "%s  -  %s  (%s)" % [label.to_upper(), display_floor_name(_map, fi).to_upper(),
 		fmt_height(_map.floor_heights[fi])]
 	title.position = Vector2(28, 18)
 	title.add_theme_font_size_override(&"font_size", 34)
