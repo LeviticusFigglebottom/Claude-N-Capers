@@ -58,6 +58,9 @@ divided by the suit's (36.8 speed, 51.3 stamina).
 Doctor bag 2 uses (V), ammo bag 4 uses = 400% (V), body bag case 3 bags (V, research §1.7).
 Deploy time 2.0 s for all three ◇. Params: doctor `{heal_frac 1.0, resets_downs}`, ammo
 `{refill_frac_per_use 1.0}` ◇, case `{bags 3}`.
+Armor bag (QB-58, ENV A kind `armor_bag`): count 1, one use, 2.0 s ◇, no params; it holds the loadout's
+armor and the wearer starts in A's `armor_bag_start_armor`. Gated: needs `deploy.armor_bag` (shared
+perk card 6, Go Bag) through `DeployableGate`; the loadout picker shows it locked until then.
 
 ## Throwables: `throwables/`
 Perk-deck items (data only, no models yet): `throwable.steady_flask` (Composure's flask, kind
