@@ -13,3 +13,4 @@ __pycache__/
 /build/
 /tmp/
 *.log
+.claude/worktrees/
