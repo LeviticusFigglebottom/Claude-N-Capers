@@ -9,6 +9,11 @@
 ##  * the player capsule (r 0.35) must fit standing (1.8 m) or crouched (1.2 m) centred 0.4 m past
 ##    the edge (physics intersect_shape against everything solid).
 ## The grid passes when one side has clear width >= 0.8 m and a fitting capsule.
+## QC-29: a grid with meta crouch_under = true may instead (or additionally) be passed underneath:
+## the lowest beam's underside (grid-local BeamArea shapes) must be >= floor + 1.2 m + 0.02 m and a
+## crouched capsule (r 0.35, h 1.2, 2 cm off the floor) must fit, colliding with nothing, along a
+## contiguous stretch of the grid width at least 0.8 m wide (capsule centres sampled every 0.05 m;
+## stretch = centre run + 2 r). Such grids are checked even when their pattern is not static.
 class_name LcCheckLasers
 extends LcCheck
 
@@ -19,6 +24,8 @@ const CROUCH_H: float = 1.2
 const PROBE_HEIGHTS: Array[float] = [0.15, 0.6, 1.0, 1.4, 1.75]
 const PROBE_DEPTHS: Array[float] = [-0.35, 0.0, 0.35]
 const SEARCH: float = 4.0
+const CROUCH_LIFT: float = 0.02
+const CROUCH_STEP: float = 0.05
 
 
 func _init() -> void:
@@ -37,6 +44,8 @@ static func is_laser_grid(n: Node) -> bool:
 
 ## Grids whose bypass gap is asserted.
 static func needs_gap(n: Node) -> bool:
+	if LcUtil.meta_b(n, &"crouch_under"):
+		return true
 	if n.has_meta(&"bypass"):
 		return bool(n.get_meta(&"bypass"))
 	return "pattern" in n and StringName(str(n.get("pattern"))) == &"static"
@@ -98,7 +107,16 @@ func _check_grid(ctx: LcContext, g: Node3D) -> void:
 	var floor_y: float = (fl["position"] as Vector3).y if not fl.is_empty() else g.global_position.y
 	var results: PackedStringArray = PackedStringArray()
 	var ok: bool = false
-	for side: float in [-1.0, 1.0]:
+	var crouch: bool = LcUtil.meta_b(g, &"crouch_under")
+	if crouch:
+		var cu: Dictionary = _crouch_under(ctx, g, xf, ext, floor_y)
+		results.append(String(cu["text"]))
+		if bool(cu["ok"]):
+			ok = true
+		else:
+			fail(ctx, g, null, "crouch_under: %s" % cu["text"])
+	var side_gap: bool = not g.has_meta(&"bypass") or LcUtil.meta_b(g, &"bypass") or not crouch
+	for side: float in ([-1.0, 1.0] if side_gap else []):
 		var edge: float = ext.x if side < 0.0 else ext.y
 		var clear: float = _clear_width(ctx, g, xf, edge, side, floor_y)
 		var fit: String = "none"
@@ -112,7 +130,7 @@ func _check_grid(ctx: LcContext, g: Node3D) -> void:
 		if clear >= MIN_CLEAR - 0.005 and fit != "none":
 			ok = true
 	note("`%s`: beams x %.2f..%.2f m; %s" % [ctx.node_path(g), ext.x, ext.y, "; ".join(results)])
-	if not ok:
+	if not ok and (not crouch or side_gap):
 		fail(ctx, g, null, "no passable bypass gap (need clear width >= %.1f m and a r %.2f capsule %.1f m standing or %.1f m crouched): %s"
 			% [MIN_CLEAR, CAPSULE_R, STAND_H, CROUCH_H, "; ".join(results)])
 
@@ -158,3 +176,44 @@ func _capsule_free(ctx: LcContext, g: Node3D, centre: Vector3, floor_y: float, h
 		if accept.call(hit):
 			return false
 	return true
+
+
+## Lowest beam underside, grid-local y (INF when the grid has no horizontal beam areas).
+static func lowest_beam(g: Node3D) -> float:
+	var inv: Transform3D = g.global_transform.affine_inverse()
+	var lo: float = INF
+	for a: Node in g.get_children():
+		if not (a is Area3D) or not String(a.name).begins_with("BeamArea"):
+			continue
+		for cs: Node in a.find_children("*", "CollisionShape3D", true, false):
+			var shape: Shape3D = (cs as CollisionShape3D).shape
+			if shape != null:
+				var b: AABB = (inv * (cs as Node3D).global_transform) * shape.get_debug_mesh().get_aabb()
+				lo = minf(lo, b.position.y)
+	return lo
+
+
+func _crouch_under(ctx: LcContext, g: Node3D, xf: Transform3D, ext: Vector2, floor_y: float) -> Dictionary:
+	var low: float = lowest_beam(g)
+	if low == INF:
+		return {"ok": false, "text": "no horizontal beams found (BeamArea shapes)"}
+	var beam_h: float = g.global_position.y + low - floor_y
+	var need: float = CROUCH_H + CROUCH_LIFT
+	if beam_h < need - 0.001:
+		return {"ok": false, "text": "lowest beam %.2f m above the floor, a crouched player needs %.2f m" % [beam_h, need]}
+	var run: float = 0.0
+	var best: float = 0.0
+	var any_free: bool = false
+	var x: float = ext.x + CAPSULE_R
+	while x <= ext.y - CAPSULE_R + 0.0001:
+		var c: Vector3 = xf * Vector3(x, 0.0, 0.0)
+		if _capsule_free(ctx, g, c, floor_y + CROUCH_LIFT - 0.05, CROUCH_H):
+			any_free = true
+			run += CROUCH_STEP
+			best = maxf(best, run - CROUCH_STEP)
+		else:
+			run = 0.0
+		x += CROUCH_STEP
+	var width: float = best + 2.0 * CAPSULE_R if any_free else 0.0
+	var text: String = "lowest beam %.2f m, crouched clear stretch %.2f m" % [beam_h, width]
+	return {"ok": width >= MIN_CLEAR - 0.005, "text": text}

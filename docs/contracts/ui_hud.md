@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.5)
+# Contract: HUD data (v1.6)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -71,3 +71,8 @@ instantiates UI.
 |---|---|
 | `weapon_charge_changed` | `weapon_charge: float` (0..1; bow draw / charge weapons; 0 when not charging) |
 | `weapon_spin_changed` | `weapon_spin: float` (0..1; minigun spin-up; 0 when idle) |
+
+## v1.6 (S1.3 civilian mode, D-065)
+| Signal | Properties |
+|---|---|
+| `player_mode_changed` | `player_mode: StringName` (&"civilian" / &"casing" / &"masked") for the local player; each `crew[]` entry gains `mode`. |

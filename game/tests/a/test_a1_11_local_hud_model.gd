@@ -1,7 +1,7 @@
 ## A1-11: LocalHudModel (ui_hud.md v1.1 exact binding shape, D-024).
 extends TestCase
 
-## ui_hud.md v1.1: signal -> properties.
+## ui_hud.md v1.1..v1.5: signal -> properties.
 const BINDING: Dictionary = {
 	&"vitals_changed": [&"health", &"max_health", &"armor", &"max_armor", &"downs_left", &"crew_state", &"bleedout_s"],
 	&"ammo_changed": [&"ammo", &"equipped_slot"],
@@ -19,6 +19,10 @@ const BINDING: Dictionary = {
 	&"crew_changed": [&"crew"],
 	&"masked_changed": [&"masked", &"casing"],
 	&"custody_changed": [&"custody"],
+	&"captain_changed": [&"captain_resistance", &"captain_present"],
+	&"stamina_changed": [&"stamina", &"exhausted"],
+	&"weapon_charge_changed": [&"weapon_charge"],
+	&"weapon_spin_changed": [&"weapon_spin"],
 }
 
 

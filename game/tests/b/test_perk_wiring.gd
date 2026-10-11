@@ -84,7 +84,7 @@ const PARAMS: Dictionary = {
 		&"perk.crew_chief": {"team_dr": 0.08, "self_low_health_threshold": 0.5, "self_low_health_dr_mult": 2.0,
 			"close_range_m": 18.0, "close_range_dr": 0.08, "hostage_health_per": 0.06,
 			"hostage_stamina_per": 0.12, "hostage_max_count": 4},
-		&"team.damage_reduction_hostage": {"per": 0.08, "max": 0.08},
+		&"team.damage_reduction_hostage": {"absorb_per_hostage": 5.0, "max_hostages": 4},
 	},
 	&"perk.bulk": {&"perk.muscle": {"aggro_near_crew_mult": 1.15, "near_crew_m": 8.0, "panic_chance": 0.1,
 		"panic_radius_m": 6.0, "regen_fraction": 0.03, "regen_interval_s": 5.0}},
@@ -147,16 +147,34 @@ const HOOKED: Dictionary = {
 	&"stealth.concealment_add": "res://content/progression/loadout_resolver.gd",
 	&"progression.xp_mult": "res://content/ui/results/payday.gd",
 	&"progression.card_drop_quality_add": "res://content/progression/payday_cards.gd",
+	# QB-56..62 (A3-08, D-056)
+	&"movement.armor_penalty_mult": "res://systems/player/crew_controller.gd",
+	&"weapon.ammo_pickup_mult": "res://systems/combat/ammo_pickup_system.gd",
+	&"deploy.armor_bag": "res://systems/deployables/deployable_system.gd",
+	&"interaction.doctor_bag_speed_mult": "res://systems/prefabs/deployable/deployable.gd",
+	&"team.health_mult": "res://systems/combat/crew_health.gd",
+	&"team.armor_mult": "res://systems/combat/crew_health.gd",
+	&"team.stamina_mult": "res://systems/combat/team_modifiers.gd",
+	&"team.damage_reduction_hostage": "res://systems/combat/team_modifiers.gd",
+	&"team.armor_regen_delay_mult": "res://systems/combat/crew_health.gd",
+	&"perk.crew_chief": "res://systems/combat/perks/perk_crew_chief.gd",
+	&"perk.muscle": "res://systems/combat/perks/perk_muscle.gd",
+	&"perk.armorer": "res://systems/combat/perks/perk_armorer.gd",
+	&"perk.crook": "res://systems/combat/perks/perk_crook.gd",
+	&"perk.sociopath": "res://systems/combat/perks/perk_sociopath.gd",
+	&"perk.burglar": "res://systems/combat/perks/perk_burglar.gd",
+	&"perk.infiltrator": "res://systems/combat/perks/perk_infiltrator.gd",
+	&"perk.grinder": "res://systems/combat/perks/perk_grinder.gd",
+	&"perk.stoic": "res://systems/combat/perks/perk_stoic.gd",
+	&"perk.anarchist": "res://systems/combat/perks/perk_anarchist.gd",
+	&"perk.ex_president": "res://systems/combat/perks/perk_ex_president.gd",
+	&"perk.gambler": "res://systems/combat/perks/perk_gambler.gd",
+	&"perk.kingpin": "res://systems/combat/perks/perk_kingpin.gd",
+	&"perk.throwable": "res://systems/combat/perks/perk_throwable.gd",
+	&"perk.rogue_dodge_stack": "res://systems/combat/perks/perk_rogue.gd",
 }
-## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage").
-const MISSING: Array = [
-	&"movement.armor_penalty_mult", &"weapon.ammo_pickup_mult", &"deploy.armor_bag",
-	&"interaction.doctor_bag_speed_mult", &"team.health_mult", &"team.armor_mult", &"team.stamina_mult",
-	&"team.damage_reduction_hostage", &"team.armor_regen_delay_mult",
-	&"perk.crew_chief", &"perk.muscle", &"perk.armorer", &"perk.rogue_dodge_stack", &"perk.crook",
-	&"perk.sociopath", &"perk.burglar", &"perk.infiltrator", &"perk.grinder", &"perk.stoic",
-	&"perk.anarchist", &"perk.ex_president", &"perk.gambler", &"perk.kingpin", &"perk.throwable",
-]
+## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). Empty since D-056.
+const MISSING: Array = []
 
 
 func before_all() -> void:
@@ -279,7 +297,7 @@ func test_team_keys_only_reach_modifiers_through_team() -> void:
 	for slot: int in range(4):
 		assert_near(Modifiers.mult(slot, &"team.health_mult"), 1.1, 0.0001, "slot %d team health" % slot)
 		assert_near(Modifiers.mult(slot, &"team.stamina_mult"), 1.5, 0.0001, "slot %d team stamina" % slot)
-		assert_eq(Modifiers.params(slot, &"team.damage_reduction_hostage"), {"per": 0.08, "max": 0.08})
+		assert_eq(Modifiers.params(slot, &"team.damage_reduction_hostage"), {"absorb_per_hostage": 5.0, "max_hostages": 4})
 	# Personal part stays on the holder: health 1.0909091 x team 1.1 = PD2's +20%.
 	assert_near(Modifiers.mult(SLOT, &"defense.health_mult") * Modifiers.mult(SLOT, &"team.health_mult"), 1.2, 0.0001)
 	assert_near(Modifiers.mult(0, &"defense.health_mult") * Modifiers.mult(0, &"team.health_mult"), 1.1, 0.0001)
@@ -400,7 +418,7 @@ func test_crew_team_sources_keep_the_strongest_copy() -> void:
 		for slot: int in range(4):
 			assert_near(Modifiers.mult(slot, &"team.health_mult"), 1.1, 0.0001, "strongest copy kept")
 			assert_near(Modifiers.mult(slot, &"team.stamina_mult"), 1.5, 0.0001, "counted once")
-		assert_eq(Modifiers.params(0, &"team.damage_reduction_hostage"), {"per": 0.08, "max": 0.08})
+		assert_eq(Modifiers.params(0, &"team.damage_reduction_hostage"), {"absorb_per_hostage": 5.0, "max_hostages": 4})
 	# Weak copy alone: only card 3's aura.
 	var only_weak: Dictionary = LoadoutResolver.crew_team_modifier_sources([weak])
 	assert_eq(only_weak, {&"team_perk.foreman": {&"team.stamina_mult": 1.5}})

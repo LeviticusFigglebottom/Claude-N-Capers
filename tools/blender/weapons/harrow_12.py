@@ -6,7 +6,7 @@ magazine, fixed polymer stock.
 
 Origin = firing-hand pivot on the grip (see _harrow.py). Forward = Godot -Z.
 
-Node tree: ``Receiver`` (+ ``DustCover``, ``TopRail``, ``ReceiverDetails``, ``TriggerGroup``, ``Grip``,
+Node tree: ``Receiver`` (+ ``DustCover``, ``TopRail``, ``ReceiverDetails``, ``ChargingHandle``, ``TriggerGroup``, ``Grip``,
 ``Handguard``, ``GasTube``), ``Barrel``. Stock parts: ``SightRail/StockSight`` (rear aperture + front
 post, ``AimPoint``), ``Magwell/StockMagazine`` (8 shells), ``StockMount/StockStock``.
 """
@@ -40,12 +40,15 @@ def _receiver(ctx, mats):
     dark = dt.material(mats.polymer())
     s2 = dt.material(mats.bare())
     dt.box((r.REC_HW - 0.0005, -0.010, r.BORE_Z - 0.012), (r.REC_HW + 0.0005, 0.090, r.BORE_Z + 0.014), mat=dark)
-    dt.box((r.REC_HW + 0.0003, 0.070, r.BORE_Z + 0.004), (r.REC_HW + 0.014, 0.082, r.BORE_Z + 0.012), mat=s2)
     dt.box((r.REC_HW - 0.0002, -0.080, 0.030), (r.REC_HW + 0.0040, 0.010, 0.042), mat=s2)         # safety lever
     for side in (-1.0, 1.0):
         for y in (-0.080, -0.030, 0.120):
             dt.cylinder(0.0030, 0.0012, segments=10, centre=(side * (r.REC_HW + 0.0003), y, 0.036), axis="X", mat=s2)
     c.finish(dt, "ReceiverDetails", parent=rec)
+    ch = ctx.builder()  # D-058: own node so ENV A can pull it back on bolt_release
+    ch.box((r.REC_HW + 0.0003, 0.070, r.BORE_Z + 0.004), (r.REC_HW + 0.014, 0.082, r.BORE_Z + 0.012),
+           mat=ch.material(mats.bare()))
+    c.finish(ch, "ChargingHandle", bevel=0.0006, parent=rec)
     c.build_trigger_group(ctx, mats, 0.006 + r.GRIP_TAN * 0.010, 0.040, r.REC_BOTTOM_Z, -0.010, 0.030, parent=rec)
     c.build_grip(ctx, mats, "polymer", r.GRIP_TOP_Z, r.GRIP_BOTTOM_Z, 0.0195, 0.0150, r.GRIP_ANGLE_DEG, parent=rec,
                  finger_bumps=0)

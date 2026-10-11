@@ -44,6 +44,21 @@ Results / Payday ◄── escape ◄── secure loot ◄───────
 | Contact: insider | **The Accountant** | Bank/corporate/stealth-only data jobs; never seen |
 | Crew (playable) | **Rook, Sable, Dutch, Wren** | Four voiced heisters (text/synth voice lines) |
 
+### Crew looks (ENV D, D2-03; assets `char_crew_<name>`, scenes `world/characters/crew_<name>/`)
+- **Rook**, the calm lead (1.84 m, 40s). The only coat below the knee: a long charcoal overcoat (#2E3138) over a white
+  shirt and black tie, with an oxblood scarf and pocket square; the open scarf is his signature. Dark side-part and
+  stubble. FP: charcoal sleeve, white cuff, black leather glove.
+- **Sable**, dry and elegant (1.75 m, 30s). Slim, with sharp padded shoulders and a peplum hem: an aubergine (#40273A)
+  blazer with black satin lapels over a black roll-neck and trousers, chrome earrings, dark bob. Her signature is ivory
+  gloves against the dark suit. FP: aubergine sleeve, graphite knit cuff, ivory glove.
+- **Dutch**, the loud bruiser (1.86 m, the tallest; older). The widest of the crew: a brown leather bomber (#4E3726)
+  with a cream shearling collar over a white shirt, black tie and suit trousers, with brown boots, a full beard and a
+  grey buzz. FP: brown leather sleeve, graphite rib cuff, tan glove.
+- **Wren**, young and nervy (1.68 m, the shortest; 20s). Jacketless and asymmetric: a mustard waistcoat, a pale-blue
+  shirt with rolled sleeves and a loose teal tie, grey slacks, short brown hair. Headphones round the neck and a
+  messenger satchel worn cross-body on the left hip. FP: rolled blue shirt, bare forearm, short tactical glove.
+- All four are hat-free. Masks seat on Head/Socket, and nothing rises above the collar at the front.
+
 ## 5. Enemy roster (original names, PD2-faithful behavior; see `pd2_fidelity.md` §L)
 
 | Our name | PD2 analog | Faction tier |

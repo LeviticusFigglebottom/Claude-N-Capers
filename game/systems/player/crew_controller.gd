@@ -312,8 +312,10 @@ func _simulate(delta: float) -> void:
 	if crouched:
 		speed = tw.crouch_speed * Modifiers.mult(slot, &"movement.crouch_speed_mult")
 	elif sprinting:
-		speed = tw.sprint_speed
+		speed = tw.sprint_speed * Modifiers.mult(slot, &"movement.sprint_speed_mult")
 	speed *= Modifiers.mult(slot, &"movement.speed_mult")
+	if weapons != null:  # B4-18: minigun spinning (SpecialWeapons params.spin.move_speed_mult)
+		speed *= weapons.move_speed_mult
 	if armor_def != null:  # QB-56: armor move-speed penalty x movement.armor_penalty_mult
 		speed *= clampf(1.0 - (1.0 - armor_def.move_speed_mult) * Modifiers.mult(slot, &"movement.armor_penalty_mult"), 0.1, 1.0)
 	if bag_w >= 0 and not Modifiers.flag(slot, &"stealth.body_bag_concealed_carry"):
@@ -431,7 +433,8 @@ func _rpc_client_intent(d: Dictionary, pos: Vector3, seq: int) -> void:
 
 func _accept_remote_position() -> void:
 	var tw: CrewTweak = Tweak.crew()
-	var max_step: float = tw.sprint_speed * tw.max_client_speed_slack / maxf(tw.intent_send_hz, 1.0) * 2.0
+	var fast: float = maxf(Modifiers.mult(slot, &"movement.sprint_speed_mult") * Modifiers.mult(slot, &"movement.speed_mult"), 1.0)
+	var max_step: float = tw.sprint_speed * fast * tw.max_client_speed_slack / maxf(tw.intent_send_hz, 1.0) * 2.0
 	var d: float = global_position.distance_to(_remote_pos)
 	if d > tw.teleport_reject_m:
 		Log.warn(&"net", "slot %d position rejected (%.1f m jump)" % [slot, d])

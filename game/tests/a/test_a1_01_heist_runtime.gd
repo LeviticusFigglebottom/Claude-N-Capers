@@ -102,14 +102,15 @@ func test_alarm_goes_loud_without_scene_change() -> void:
 	var map_before: HeistMap = rt.map
 	var phases: Array[int] = []
 	var cb: Callable = func(_o: int, n: int) -> void: phases.append(n)
+	assert_eq(rt.phase, Enums.HeistPhase.CASING, "starts casing")
 	EventBus.heist_phase_changed.connect(cb)
 	EventBus.alarm_raised.emit(&"test", 0)
 	assert_eq(rt.phase, Enums.HeistPhase.LOUD)
+	assert_eq(phases, [Enums.HeistPhase.LOUD] as Array[int], "alarm while casing: CASING -> LOUD directly (no STEALTH hop)")
 	assert_true(rt.map == map_before and is_instance_valid(map_before), "S11.2 same map instance")
 	for c: CrewController in rt.crew_members():
 		assert_true(c.masked, "S1.2 alarm masks everyone")
 	EventBus.heist_phase_changed.disconnect(cb)
-	assert_has(phases, Enums.HeistPhase.LOUD)
 	rt.teardown()
 
 

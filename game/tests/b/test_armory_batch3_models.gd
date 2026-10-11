@@ -135,3 +135,15 @@ func test_saw_rotor_and_pilot_light() -> void:
 		var at: Vector3 = mesh.global_transform * mesh.get_aabb().get_center() if mesh != null else pilot.global_position
 		assert_true(at.distance_to(f.get_base_marker(&"Muzzle").global_position) < 0.06, "pilot light at the nozzle")
 	f.queue_free()
+
+
+## D-058: the box/drum shotguns carry a separate `ChargingHandle` mesh on the receiver side (ENV A pulls it
+## back on bolt_release).
+func test_box_shotgun_charging_handles() -> void:
+	for id: StringName in [&"weapon.harrow_12", &"weapon.brute_12"]:
+		var v: WeaponVisual = _model_of(id)
+		var ch: Node3D = v.model.find_child("ChargingHandle", true, false) as Node3D
+		assert_true(ch != null, "%s ChargingHandle" % id)
+		if ch != null:
+			assert_true(ch is MeshInstance3D or ch.get_child_count() > 0, "%s handle has geometry" % id)
+		v.queue_free()

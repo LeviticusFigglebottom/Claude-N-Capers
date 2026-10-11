@@ -88,8 +88,8 @@ cards = Array[Dictionary]([{
 "grants": {
 &"progression.card_drop_quality_add": 0.1,
 &"team.damage_reduction_hostage": {
-"per": 0.08,
-"max": 0.08
+"absorb_per_hostage": 5.0,
+"max_hostages": 4
 },
 &"perk.crew_chief": {
 "team_dr": 0.08,

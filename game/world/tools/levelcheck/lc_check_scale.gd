@@ -329,6 +329,13 @@ func _check_flight(ctx: LcContext, st: Node3D) -> Dictionary:
 			break
 	var bw: Vector3 = xf * Vector3(cx, 0.0, zs[lo_i])
 	var tw: Vector3 = xf * Vector3(cx, 0.0, zs[hi_i])
+	var rails: LcStairRails = LcStairRails.new()
+	# Real nosing line: top of the first riser (first tread) -> top of the last riser.
+	var first_tread: float = float(flats[1]["y"]) if lo_end == first else float(flats[flats.size() - 2]["y"])
+	for msg: String in rails.check(ctx, st, xf, local, Vector3(cx, first_tread, zs[lo_i]), Vector3(cx, top, zs[hi_i])):
+		fail(ctx, st, null, msg)
+	for ln: String in rails.notes:
+		note(ln)
 	return {"node": st, "bottom": bottom, "top": top, "bottom_pt": Vector3(bw.x, bottom, bw.z),
 		"top_pt": Vector3(tw.x, top, tw.z)}
 

@@ -20,7 +20,7 @@ const GROUPS: Dictionary = {
 	"extra_loot": ["xl_delivery", "xl_manager_cash", "xl_none"],
 	"escape": ["esc_alley_west", "esc_pell"],
 	"customers": ["cust_1", "cust_2", "cust_3", "cust_4", "cust_5"],
-	"camera": ["cam_a", "cam_b", "cam_c"],
+	"camera": ["cam_c1", "cam_c2", "cam_c3", "cam_c4", "cam_c5", "cam_c6"],
 	"security_room_staffed": ["sec_staffed", "sec_empty"],
 	"code_note": ["code_admin", "code_breakroom", "code_jeweler_notebook"],
 	"manager_present": ["mgr_out", "mgr_in"],
@@ -169,9 +169,37 @@ func test_rule_constraints_hold() -> void:
 		var n: int = (v.get(&"customers", []) as Array).size()
 		assert_true(n >= 2 and n <= 4, "Routine customers 2-4 (got %d)" % n)
 		assert_eq((v.get(&"guard_post", []) as Array).size(), 1, "Routine: one rover")
-		assert_true((v.get(&"camera", []) as Array).is_empty(), "P2 cameras inactive in P1")
+		var cams: int = (v.get(&"camera", []) as Array).size()
+		assert_true(cams >= 1 and cams <= 3, "Routine: 1-3 live cameras (D-059, got %d)" % cams)
 		assert_eq((v.get(&"keycard", []) as Array).size(), 1, "exactly one keycard")
 		assert_eq((v.get(&"escape", []) as Array).size(), 1, "exactly one van slot")
 	GameRng.begin_run(9001)
 	var vb: Dictionary = VariantResolver.resolve(_map.variant_table, slots, Enums.Difficulty.BRUTAL)
 	assert_eq((vb.get(&"guard_post", []) as Array).size(), 2, "Brutal: two rovers")
+	assert_true((vb.get(&"camera", []) as Array).size() >= 2, "Brutal: >= 2 live cameras")
+
+
+## P1 gate finding: the consignment is only takeable once the safe opens (Safe enables loot
+## parented under it), and every camera slot carries a real SecurityCamera.
+func test_safe_loot_locked_in_safe() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	var safe: Node = _map.get_node_or_null("Gameplay/Workshop/WorkshopSafe")
+	assert_true(safe is Safe, "WorkshopSafe is a Safe")
+	var loot: Node = _map.get_node_or_null("Gameplay/Workshop/WorkshopSafe/SafeLoot")
+	assert_true(loot is GameplayPrefab, "SafeLoot is parented under WorkshopSafe")
+	assert_true(_map.get_node_or_null("Gameplay/Workshop/SafeLoot") == null, "no SafeLoot sibling outside the safe")
+	if loot is Node3D and safe is Node3D:
+		var p: Vector3 = (safe as Node3D).transform * (loot as Node3D).position
+		var d: float = (p - Vector3(6.5, 0.0, 1.2)).length()
+		assert_true(d < 0.01, "SafeLoot keeps its Workshop-local position (off by %.3f m)" % d)
+	var slots: Array[Node] = _map.find_children("Slot_cam_*", "VariantSlot", true, false)
+	assert_eq(slots.size(), 6, "six camera slots")
+	for n: Node in slots:
+		var cams: int = 0
+		for c: Node in n.get_children():
+			cams += 1 if c is SecurityCamera else 0
+		assert_eq(cams, 1, "%s has one SecurityCamera" % n.name)
+	var pre: Dictionary = (_map.heist_def.preplanning if _map.heist_def != null else {})
+	assert_false((pre.get("disable", []) as Array).has(&"asset.intel_cameras"), "intel_cameras offered again")

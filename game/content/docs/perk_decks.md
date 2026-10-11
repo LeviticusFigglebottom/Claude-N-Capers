@@ -72,10 +72,10 @@ Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). T
 | Hustler | Crook | `perk.crook` | `defense.dodge_add` 0.15, `defense.armor_regen_delay_mult` 0.9 |
 | Clean Sweep | Hitman / Sociopath | `perk.sociopath` | `defense.armor_mult` → 1.2, `defense.armor_regen_delay_mult` 0.9 |
 | Prowler | Burglar | `perk.burglar` | `defense.dodge_add` 0.3, `stealth.body_bag_speed_mult` 0.8, `interaction.lockpick_speed_mult` 0.8, `stealth.pager_answer_speed_mult` 0.9, `movement.crouch_speed_mult` 1.1 |
-| Knuckles | Infiltrator | `perk.infiltrator` | none |
+| Knuckles | Infiltrator | `perk.infiltrator` | all (same names) |
 | Bloodletter | Grinder | `perk.grinder` | `defense.health_mult` → 1.4, `weapon.armor_pierce_add.all` 0.2 |
 | Composure | Stoic | `perk.stoic`, `perk.throwable` | none |
-| Overclock | Anarchist | `perk.anarchist` | none |
+| Overclock | Anarchist | `perk.anarchist` | all (same names) |
 | Incumbent | Ex-President | `perk.ex_president` | `defense.health_mult` → 1.4, `defense.dodge_add` 0.15 |
 | Long Odds | Gambler | `perk.gambler` | `defense.health_mult` → 1.4 |
 | Overlord | Kingpin | `perk.kingpin`, `perk.throwable` | `defense.health_mult` → 1.8 |
@@ -110,8 +110,8 @@ All lengths are in meters, times in seconds, health and armor in PD2 display uni
 | hostage_stamina_per | float | fraction | 0.12 | 9 | Crew stamina bonus per hostage. |
 | hostage_max_count | int | count | 4 | 9 | Hostages counted for the two fields above. |
 
-Card 9 also grants `team.damage_reduction_hostage {per: 0.08, max: 0.08}`: 8% crew damage
-reduction while there is at least one hostage. Card 3 grants `ability.shout_range_mult` 1.25 (personal).
+Card 9 also grants `team.damage_reduction_hostage {absorb_per_hostage: 5.0, max_hostages: 4}` ◇ (D-056):
+the crew absorbs 5 damage (display units) from every hit per hostage, counting up to 4 hostages. Card 3 grants `ability.shout_range_mult` 1.25 (personal).
 Cards 3/5/7/9 `team.*` grants route to TEAM source `team_perk.foreman`.
 
 ### `perk.muscle` (Bulk)
@@ -260,9 +260,15 @@ Card 1 also grants `perk.throwable {item_id: &"throwable.boss_injector"}`.
 |---|---|---|
 | item_id | StringName | Throwable id that replaces the equipped throwable while the deck is active. |
 
-### `team.damage_reduction_hostage` (Foreman card 9; registry schema `{per, max}`)
-`per` = damage reduction per hostage, `max` = cap. We grant `{per: 0.08, max: 0.08}`, which means
-8% as soon as there is one hostage.
+### `team.damage_reduction_hostage` (Foreman card 9, Zip & Tie aced; D-056)
+PD2 Crew Chief shape: flat damage absorption per hostage, capped by hostage count.
+| Field | Type | Unit | Semantics |
+|---|---|---|---|
+| absorb_per_hostage | float | PD2 display units | Damage removed from every hit per hostage held (hit floored at 0). |
+| max_hostages | int | count | Hostages counted at most. |
+
+Foreman card 9 grants `{absorb_per_hostage: 5.0, max_hostages: 4}` ◇, Zip & Tie aced
+`{absorb_per_hostage: 5.0, max_hostages: 8}` (skills.md). No value-based shape detection.
 
 ## Requested keys (granted, D-031)
 
@@ -293,10 +299,12 @@ gating at every n, team_perk dedupe, exact PARAMS field sets = the schemas above
 `game/tests/b/test_perk_behaviour.gd` (behaviour on a `CrewController.spawn_for_range` crew member).
 `test_every_granted_key_is_hooked_or_filed` fails if a deck grants a key that is in neither list below.
 
-**Our side matches the approved schema.** Every PARAMS grant at 9 cards has exactly the fields and
-final values of the tables above; every armor id and throwable id it names exists. No data change was
-needed. ENV A reads **no** `perk.*` PARAMS key and has no `game/systems/modifiers_params.md`, so there
-are no field-name mismatches with A's code yet (nothing to compare); the schemas above stay authoritative.
+**Every granted key is hooked (D-056, A3-08 QB-56..62).** Every PARAMS grant at 9 cards has exactly the
+fields and final values of the tables above; every armor id and throwable id it names exists. ENV A's
+`game/systems/modifiers_params.md` reads every field under the same name (checked 2026-10-11), with
+`PerkTweak.defaults` for fields a card has not set yet. The schemas above stay authoritative. Since
+D-056 the modifiers reach a real heist through ENV A's server-side `LoadoutModifiers` push
+(`ModifierPush.push` for every launch, default and AI loadouts included); MenuFlow no longer pushes.
 
 ### Shared cards (identical in every deck)
 
@@ -305,25 +313,25 @@ are no field-name mismatches with A's code yet (nothing to compare); the schemas
 | 2 | `weapon.headshot_mult.all` 1.25 | ✅ A `systems/combat/crew_weapons.gd:202` (`headshot_bonus`) | `test_shared_cards_scale_weapon_damage_and_headshot_bonus` |
 | 4 | `stealth.concealment_add.all` 1 | ✅ B `content/progression/loadout_resolver.gd:160` (concealment bonus) | `test_concealment_bonus.gd`, `test_perk_resolver.gd` |
 | 4 | `progression.xp_mult` 1.45 | ✅ B `content/ui/results/payday.gd:269` → `PayoutCalculator` | `test_payout_calculator.gd` |
-| 4 | `movement.armor_penalty_mult` 0.85 | ❌ **QB-A1**: A applies no armor move-speed penalty at all (`crew_controller.gd:300-305` ignores `ArmorDef.move_speed_mult`) | skipped |
-| 6 | `weapon.ammo_pickup_mult.all` 1.35 | ❌ **QB-A2**: no ammo pickup (enemy ammo drops) in `game/systems` | skipped |
-| 6 | `deploy.armor_bag` true | ❌ **QB-A3**: no armor bag deployable / mid-heist armor swap | skipped |
+| 4 | `movement.armor_penalty_mult` 0.85 | ✅ A `player/crew_controller.gd` (`1 − (1 − move_speed_mult) × mult`, QB-56) | A `test_p4_*` |
+| 6 | `weapon.ammo_pickup_mult.all` 1.35 | ✅ A `combat/ammo_pickup_system.gd` (enemy ammo drops, QB-57) | A `test_p4_*` |
+| 6 | `deploy.armor_bag` true | ✅ A `deployables/deployable_system.gd` (armor bag, QB-58; prompt `ui.prompt.use_armor_bag`) | A `test_p4_*` |
 | 8 | `weapon.damage_mult.all` 1.05 | ✅ A `crew_weapons.gd:192` (`damage_at`) | `test_shared_cards_scale_weapon_damage_and_headshot_bonus` |
-| 8 | `interaction.doctor_bag_speed_mult` 0.8333 | ❌ **QB-A4**: doctor bag hold uses only `deploy.deploy_speed_mult` (`prefabs/deployable/deployable.gd:94`) | skipped |
+| 8 | `interaction.doctor_bag_speed_mult` 0.8333 | ✅ A `prefabs/deployable/deployable.gd` (doctor bag hold, QB-59) | A `test_p4_*` |
 | 9 | `progression.card_drop_quality_add` 0.1 | ✅ B `content/progression/payday_cards.gd:49` | `test_payday_cards.gd` |
 
 ### Deck cards 1/3/5/7/9 (generic keys)
 
 | Deck | Card | Key (cumulative at 9) | Hook | Behaviour test |
 |---|---|---|---|---|
-| Foreman | 3/5/7 | `team.stamina_mult` 1.5, `team.health_mult` 1.1, `team.armor_mult` 1.05 (TEAM `team_perk.foreman`) | ❌ **QB-A5**: no `team.*` hook anywhere (registry phase 3); no stamina system either | skipped |
-| Foreman | 3 | `ability.shout_range_mult` 1.25 | ⚠️ A `ai/police/police_surrender.gd:85` (police only). **QB-A6**: civilian shouts (`stealth/shout_system.gd:141`) and guard domination do not apply it, approved semantics = all shout targets | needs police NPCs (A test) |
+| Foreman | 3/5/7 | `team.stamina_mult` 1.5, `team.health_mult` 1.1, `team.armor_mult` 1.05 (TEAM `team_perk.foreman`) | ✅ A `combat/crew_health.gd` via `TeamModifiers.combined` (personal × team, QB-60); stamina `team_modifiers.gd` (ui_hud v1.4) | `test_perk_behaviour.gd` (Foreman 1.2 / 1.1, D-056) |
+| Foreman | 3 | `ability.shout_range_mult` 1.25 | ✅ A `ai/police/police_surrender.gd` + `stealth/shout_system.gd` (civilians and marks, QB-61) | A tests |
 | Foreman | 5/7 | `defense.health_mult` 1.0909091, `defense.armor_mult` 1.047619 | ✅ A `combat/crew_health.gd:80`, `:90` | `test_health_mult_decks_raise_max_health`, `test_armor_mult_decks_raise_max_armor` |
-| Foreman | 9 | `team.damage_reduction_hostage {per 0.08, max 0.08}` | ❌ QB-A5 | skipped |
+| Foreman | 9 | `team.damage_reduction_hostage {absorb_per_hostage 5, max_hostages 4}` | ✅ A `combat/team_modifiers.gd` (`hostage_reduced`, D-056) | A tests |
 | Bulk | 1/3/5/9 | `defense.health_mult` → 2.0 | ✅ `crew_health.gd:80` | `test_health_mult_decks_raise_max_health` (incl. 1-card gating) |
 | Ironclad | 1/3/5/9 | `defense.armor_mult` → 1.35 | ✅ `crew_health.gd:90` | `test_armor_mult_decks_raise_max_armor` (incl. 3-card gating) |
 | Ironclad | 7 | `defense.armor_regen_delay_mult` 0.9 | ✅ `crew_health.gd:168`, `:188` | `test_armor_regen_delay_decks_shorten_the_delay` (incl. 6-card gating) |
-| Ironclad | 9 | `team.armor_regen_delay_mult` 0.9 (TEAM `team_perk.ironclad`) | ❌ **QB-A5** (`crew_health.gd:168/188` read only the personal key) | skipped |
+| Ironclad | 9 | `team.armor_regen_delay_mult` 0.9 (TEAM `team_perk.ironclad`) | ✅ `crew_health.gd` (personal × team, QB-60) | `test_perk_behaviour.gd` (delay × 0.81, D-056) |
 | Slipper | 1/5/7 | `defense.dodge_add` 0.45 | ✅ `crew_health.gd:117` | `test_dodge_decks_add_to_armor_dodge` |
 | Slipper | 9 | `weapon.armor_pierce_add.all` 0.25 | ✅ `combat/combat_system.gd:113` (`pierce_profile`) | `test_armor_pierce_decks_raise_pierce_chance` |
 | Slipper | 9 | `weapon.swap_speed_mult.all` 1.8 | ✅ `crew_weapons.gd:289` | not exercised (equip timer is private) |
@@ -344,51 +352,29 @@ are no field-name mismatches with A's code yet (nothing to compare); the schemas
 | Overlord | 3/5/7/9 | `defense.health_mult` → 1.8 | ✅ `crew_health.gd:80` | `test_health_mult_decks_raise_max_health` |
 | Knuckles, Composure, Overclock | — | no generic keys | — | — |
 
-### Signature PARAMS keys (all ❌, **QB-A7**)
+### Signature PARAMS keys (all ✅, QB-62: `game/systems/combat/perks/perk_<name>.gd`)
 
 | Deck | Key (cards) | Fields we grant (approved schema) | Fields A reads |
 |---|---|---|---|
-| Foreman | `perk.crew_chief` (1/3/9) | team_dr, self_low_health_threshold, self_low_health_dr_mult, close_range_m, close_range_dr, hostage_health_per, hostage_stamina_per, hostage_max_count | none |
-| Bulk | `perk.muscle` (3/7/9) | aggro_near_crew_mult, near_crew_m, panic_chance, panic_radius_m, regen_fraction, regen_interval_s | none |
-| Ironclad | `perk.armorer` (7) | break_immunity_s, break_immunity_cooldown_s | none |
-| Slipper | `perk.rogue_dodge_stack` (3) | aggro_near_crew_mult, near_crew_m | none |
-| Hustler | `perk.crook` (3/5/7) | vest_armor_ids, vest_dodge_add, vest_armor_mult | none |
-| Clean Sweep | `perk.sociopath` (1/3/5/7/9) | kill_armor, kill_armor_cooldown_s, close_range_m, close_range_dr, melee_kill_health_fraction, melee_kill_cooldown_s, close_kill_armor, close_kill_panic_chance, close_kill_panic_cooldown_s, panic_radius_m, forced_regen_after_break_s | none |
-| Prowler | `perk.burglar` (3/5/7/9) | still_aggro_mult, still_regen_delay_mult | none |
-| Knuckles | `perk.infiltrator` (1/3/5/7/9) | surrounded_min_enemies, surrounded_radius_m, surrounded_dr, melee_chain_mult, melee_chain_window_s, close_range_m, close_range_dr, melee_hit_heal_fraction, melee_hit_heal_cooldown_s | none |
-| Bloodletter | `perk.grinder` (1/3/5/7/9) | allowed_armor_ids, heal_per_tick, tick_s, duration_s, stack_cooldown_s | none |
-| Composure | `perk.stoic` (1/3/5/7/9), `perk.throwable` (1) | delayed_fraction, dot_duration_s, flask_cooldown_s, kill_cooldown_reduction_s, armor_to_health, auto_negate_after_s, low_health_threshold, low_health_kill_cooldown_reduction_s, negate_heal_fraction; item_id | none |
-| Overclock | `perk.anarchist` (1/3/5/7/9) | tick_by_armor, break_immunity_s, break_immunity_cooldown_s, health_to_armor_fraction, health_to_armor_ratio, damage_dealt_armor, damage_dealt_armor_cooldown_s | none |
-| Incumbent | `perk.ex_president` (1/3/5/7/9) | store_per_kill, max_store_by_armor, max_store_mult, kill_regen_speedup_fraction | none |
-| Long Odds | `perk.gambler` (1/3/5/7/9) | heal_min, heal_max, heal_bonus, cooldown_s, lowest_health_bonus_per_ally, lowest_health_max_stacks, team_ammo_share, team_ammo_share_cooldown_s, team_heal_fraction | none |
-| Overlord | `perk.kingpin` (1/5/7/9), `perk.throwable` (1) | heal_fraction, duration_s, cooldown_s, kill_cooldown_reduction_s, draws_aggro, low_health_threshold, low_health_heal_bonus, overheal_per_cooldown_s; item_id | none |
+| Foreman | `perk.crew_chief` (1/3/9) | team_dr, self_low_health_threshold, self_low_health_dr_mult, close_range_m, close_range_dr, hostage_health_per, hostage_stamina_per, hostage_max_count | all (same names) |
+| Bulk | `perk.muscle` (3/7/9) | aggro_near_crew_mult, near_crew_m, panic_chance, panic_radius_m, regen_fraction, regen_interval_s | all (same names) |
+| Ironclad | `perk.armorer` (7) | break_immunity_s, break_immunity_cooldown_s | all (same names) |
+| Slipper | `perk.rogue_dodge_stack` (3) | aggro_near_crew_mult, near_crew_m | all (same names) |
+| Hustler | `perk.crook` (3/5/7) | vest_armor_ids, vest_dodge_add, vest_armor_mult | all (same names) |
+| Clean Sweep | `perk.sociopath` (1/3/5/7/9) | kill_armor, kill_armor_cooldown_s, close_range_m, close_range_dr, melee_kill_health_fraction, melee_kill_cooldown_s, close_kill_armor, close_kill_panic_chance, close_kill_panic_cooldown_s, panic_radius_m, forced_regen_after_break_s | all (same names) |
+| Prowler | `perk.burglar` (3/5/7/9) | still_aggro_mult, still_regen_delay_mult | all (same names) |
+| Knuckles | `perk.infiltrator` (1/3/5/7/9) | surrounded_min_enemies, surrounded_radius_m, surrounded_dr, melee_chain_mult, melee_chain_window_s, close_range_m, close_range_dr, melee_hit_heal_fraction, melee_hit_heal_cooldown_s | all (same names) |
+| Bloodletter | `perk.grinder` (1/3/5/7/9) | allowed_armor_ids, heal_per_tick, tick_s, duration_s, stack_cooldown_s | all (same names) |
+| Composure | `perk.stoic` (1/3/5/7/9), `perk.throwable` (1) | delayed_fraction, dot_duration_s, flask_cooldown_s, kill_cooldown_reduction_s, armor_to_health, auto_negate_after_s, low_health_threshold, low_health_kill_cooldown_reduction_s, negate_heal_fraction; item_id | all (same names) |
+| Overclock | `perk.anarchist` (1/3/5/7/9) | tick_by_armor, break_immunity_s, break_immunity_cooldown_s, health_to_armor_fraction, health_to_armor_ratio, damage_dealt_armor, damage_dealt_armor_cooldown_s | all (same names) |
+| Incumbent | `perk.ex_president` (1/3/5/7/9) | store_per_kill, max_store_by_armor, max_store_mult, kill_regen_speedup_fraction | all (same names) |
+| Long Odds | `perk.gambler` (1/3/5/7/9) | heal_min, heal_max, heal_bonus, cooldown_s, lowest_health_bonus_per_ally, lowest_health_max_stacks, team_ammo_share, team_ammo_share_cooldown_s, team_heal_fraction | all (same names) |
+| Overlord | `perk.kingpin` (1/5/7/9), `perk.throwable` (1) | heal_fraction, duration_s, cooldown_s, kill_cooldown_reduction_s, draws_aggro, low_health_threshold, low_health_heal_bonus, overheal_per_cooldown_s; item_id | all (same names) |
 
-### QBs filed (B4-14)
+### QBs filed (B4-14), all closed
 
-* **QB-A1** `movement.armor_penalty_mult`: A has no armor move-speed penalty (`ArmorDef.move_speed_mult`
-  is unused in `crew_controller.gd`); hook = `speed *= 1 − (1 − move_speed_mult) × mult`.
-* **QB-A2** `weapon.ammo_pickup_mult`: no ammo pickups in `game/systems` (also blocks Long Odds `perk.gambler`).
-* **QB-A3** `deploy.armor_bag`: no armor bag deployable; ENV B can author the `DeployableDef` once the
-  kind exists.
-* **QB-A4** `interaction.doctor_bag_speed_mult`: the doctor bag hold should multiply this key on top of
-  `deploy.deploy_speed_mult` (`deployable.gd:94`) for kind `doctor_bag`.
-* **QB-A5** `team.*` (`team.health_mult`, `team.armor_mult`, `team.stamina_mult`,
-  `team.damage_reduction_hostage`, `team.armor_regen_delay_mult`): no reader at all; the first three
-  are registry phase 3. `team.stamina_mult` also needs a stamina system (`movement.stamina_mult` is
-  unread as well).
-* **QB-A6** `ability.shout_range_mult` applies only to police surrender; civilians
-  (`shout_system.gd:141`, `stealth.civilian_intimidate_range_mult` only) and guard domination ignore it.
-* **QB-A7** all 15 perk PARAMS keys (`perk.*` incl. `perk.throwable`): no hook, no
-  `game/systems/modifiers_params.md`. Implement against the schemas above.
-* **QB-L1 (lead, docs)** `docs/contracts/modifiers.md` still shows `perk.stoic = {"dot_duration",
-  "flask_cooldown", "auto_flask_after_s"}`; the approved fields are `dot_duration_s`,
-  `flask_cooldown_s`, `auto_negate_after_s` (this file). Registry descriptions out of date:
-  `perk.burglar` ("low-concealment dodge": Prowler dodge is the generic `defense.dodge_add`; the
-  PARAMS are still_aggro_mult / still_regen_delay_mult), `team.armor_regen_delay_mult` ("It would
-  replace…": it did, D-031).
-* **QB-L2 (lead/A, wiring)** nothing calls `Modifiers.set_source(slot, &"skills"|&"perk", …)` or sets
-  the TEAM `team_skill.*`/`team_perk.*` sources at heist start: `HeistRuntime` receives the loadouts
-  (`heist_runtime.gd:332-336`) but never pushes their modifiers, so no skill or perk applies in a real
-  heist yet. Use `LoadoutResolver.resolve(l).modifiers` per slot and
-  `LoadoutResolver.crew_team_modifier_sources(loadouts)` once for TEAM (B4-14: keeps the strongest copy
-  of a shared team skill / deck instead of the last one set).
+* **QB-A1..A7** (armor move penalty, ammo pickups, armor bag, doctor bag speed, `team.*`, shout range
+  for every target, the 15 `perk.*` PARAMS keys): done by ENV A in A3-08 (QB-56..62, D-056).
+* **QB-L1** (registry text of `perk.stoic` / `perk.burglar` / `team.armor_regen_delay_mult`): lead.
+* **QB-L2** (no modifiers in a real heist): B4-14 `ModifierPush`, called by ENV A on the server for every
+  launch since D-056.

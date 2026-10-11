@@ -52,7 +52,7 @@ const PREFAB_VISUALS: Dictionary = {
 	"ladder": "prop_ladder_fire_escape_h420", "camera_station": "prop_camera_station",
 	"secure_zone": "veh_van_secure", "code_note": "prop_papers", "keycard_pickup": VIS_KEYCARD,
 	"small_loot": VIS_CASH, "loot_spawn": VIS_JEWELRY, "display_case": "prop_display_case_island",
-	"drill_point": VIS_EMPTY,
+	"drill_point": VIS_EMPTY, "security_camera": "prop_security_camera_wall",
 }
 var _root: HeistMap = null
 var _art: RefCounted = null
@@ -381,8 +381,13 @@ func _build_shell(geo: Node3D) -> void:
 	_vis_group = "Shell"
 	var fe: Node3D = _add(bld, _node3d("FireEscape")) as Node3D
 	_box_a(fe, "Landing", L.LANDING, "trim")
-	_box(fe, "BracketW", Vector3(1.05, 3.6, -0.6), Vector3(1.15, 4.1, -0.2), "trim")
-	_box(fe, "BracketE", Vector3(3.35, 3.6, -0.6), Vector3(3.45, 4.1, -0.2), "trim")
+	# Knee brackets under the landing: wall plate, horizontal arm under the deck, diagonal strut.
+	for bx: float in [1.1, 3.4]:
+		var tag: String = "W" if bx < 2.0 else "E"
+		_box(fe, "BracketPlate" + tag, Vector3(bx - 0.06, 3.2, -0.22), Vector3(bx + 0.06, 4.1, -0.2), "trim")
+		_box(fe, "BracketArm" + tag, Vector3(bx - 0.03, 4.02, -1.3), Vector3(bx + 0.03, 4.1, -0.22), "trim")
+		_bar(fe, "BracketStrut" + tag, Vector3(bx, 3.3, -0.25), Vector3(bx, 4.0, -1.15), Vector2(0.05, 0.05),
+			"metal_painted", true)
 	_build_static_windows(bld)
 
 
@@ -544,6 +549,19 @@ func _bar(parent: Node3D, nm: String, a: Vector3, b: Vector3, size: Vector2, key
 	return root
 
 
+## Kessel yard fence, alley side: steel posts every 2.4 m and two rails over the sheet panels.
+func _fence_detail(parent: Node3D) -> void:
+	var fd: Node3D = _add(parent, _node3d("KesselFenceDetail")) as Node3D
+	var x: float = -19.6
+	var i: int = 0
+	while x < 18.1:
+		_box(fd, "Post%02d" % i, Vector3(x - 0.05, 0.0, -6.2), Vector3(x + 0.05, 2.3, -6.12), "fence")
+		x += 2.4
+		i += 1
+	for r: Array in [["RailLow", 0.15], ["RailHigh", 2.0]]:
+		_box(fd, String(r[0]), Vector3(-19.9, float(r[1]), -6.2), Vector3(18.1, float(r[1]) + 0.06, -6.17), "fence")
+
+
 ## Neighbour garage (C1-08 review): the L2 -> L3 ramp with its upstand, railings on the open
 ## parapets and along the L3 cut-out, and painted stall lines.
 func _build_garage(parent: Node3D) -> void:
@@ -556,8 +574,12 @@ func _build_garage(parent: Node3D) -> void:
 	_bar(g, "Ramp", lo - up * t * 0.5, hi - up * t * 0.5, Vector2(float(rp["width"]), t), "concrete", true)
 	var ux: float = float(rp["upstand_x"])
 	var off: Vector3 = Vector3(ux - lo.x, 0.0, 0.0) + up * 0.45
-	_bar(g, "RampUpstand", lo + off, hi + off, Vector2(0.15, 1.0), "concrete", true)
-	_railing(g, "GarageRailL2", Vector3(32.3, 4.0, -15.95), Vector3(32.4, 4.45, 11.85))
+	var u0: Vector3 = lo.lerp(hi, float(rp["upstand_from"]))
+	_bar(g, "RampUpstand", u0 + off, hi + off, Vector2(0.15, 1.0), "concrete", true)
+	# L2: the P3 sniper perch bay (columns C-D, z -4.1..1.9) stays open above the 1.0 m parapet so a
+	# crouched sniper (eye ~1.2 m) sees the shopfront.
+	_railing(g, "GarageRailL2North", Vector3(32.3, 4.0, -15.95), Vector3(32.4, 4.45, -4.3))
+	_railing(g, "GarageRailL2South", Vector3(32.3, 4.0, 2.1), Vector3(32.4, 4.45, 11.85))
 	_railing(g, "GarageRailL3", Vector3(32.3, 7.0, -15.95), Vector3(32.4, 7.45, 11.85))
 	_railing(g, "GarageRailL3Cut", Vector3(36.1, 6.0, -6.45), Vector3(36.15, 7.05, 11.85))
 	for s: Array in L.GARAGE_STALLS:
@@ -581,29 +603,16 @@ func _build_static_windows(bld: Node3D) -> void:
 		_glass_blocker(gl, String(w[0]), piece, pos, yaw)
 		if bool(w[4]):
 			continue
-		_window_frame(pos, yaw, 3.0 if piece.contains("w300") else 1.0, 2.4 if piece.contains("h240") else 1.2,
-			"brass" if piece.contains("shop") else "metal_painted")
+		# Static glazing uses the catalog window visual (frame + glass, read from both sides).
+		var ps: PackedScene = _dress.scene(piece.replace("arch_", "prop_"))
+		if ps != null:
+			var vis: Node3D = ps.instantiate() as Node3D
+			vis.name = String(w[0]) + "Window"
+			vis.position = pos
+			vis.basis = _yaw_basis(yaw)
+			_add(gl, vis)
 	var bw: Dictionary = L.BREAKROOM_WINDOW
 	_glass_blocker(gl, "BreakRoomWindow", String(bw["kit"]), bw["pos"], float(bw["yaw"]))
-
-
-## Static window visual (library materials, world UVs): frame 0.06 m, 0.1 m deep, glass pane.
-func _window_frame(pos: Vector3, yaw: float, w: float, h: float, frame_key: String) -> void:
-	var xf: Transform3D = Transform3D(_yaw_basis(yaw), pos)
-	var f: float = 0.06
-	var parts: Array = [[-w * 0.5, -w * 0.5 + f, 0.0, h, -0.05, 0.05, frame_key], [w * 0.5 - f, w * 0.5, 0.0, h, -0.05, 0.05, frame_key],
-		[-w * 0.5 + f, w * 0.5 - f, 0.0, f, -0.05, 0.05, frame_key], [-w * 0.5 + f, w * 0.5 - f, h - f, h, -0.05, 0.05, frame_key],
-		[-w * 0.5 + f, w * 0.5 - f, f, h - f, -0.005, 0.005, "glass_clear"]]
-	if w > 2.0:
-		parts.append([-0.03, 0.03, f, h - f, -0.04, 0.04, frame_key])
-		parts[4] = [-w * 0.5 + f, -0.03, f, h - f, -0.005, 0.005, "glass_clear"]
-		parts.append([0.03, w * 0.5 - f, f, h - f, -0.005, 0.005, "glass_clear"])
-	for p: Array in parts:
-		var a: Vector3 = xf * Vector3(float(p[0]), float(p[2]), float(p[4]))
-		var b: Vector3 = xf * Vector3(float(p[1]), float(p[3]), float(p[5]))
-		var key: String = String(p[6])
-		_art.acc.box("Glazing", Vector3(minf(a.x, b.x), minf(a.y, b.y), minf(a.z, b.z)),
-			Vector3(maxf(a.x, b.x), maxf(a.y, b.y), maxf(a.z, b.z)), key)
 
 
 func _glass_blocker(parent: Node3D, nm: String, piece: String, pos: Vector3, yaw: float) -> void:
@@ -641,6 +650,7 @@ func _build_site(geo: Node3D) -> void:
 	for f: Array in L.FENCES:
 		_wall(fences, String(f[0]), String(f[1]), float(f[2]), float(f[3]), float(f[4]), 0.1,
 			Vector2(float(f[5]), float(f[6])), f[7], String(f[8]))
+	_fence_detail(fences)
 
 
 # --- Art pass (C1-08): finishes, trim, facade, neighbours, probes, occluders, audio -------------
@@ -745,6 +755,7 @@ func _build_lighting(lighting: Node3D) -> void:
 		_ceiling_light(fx, String(c[0]), c[1], c[2], float(c[3]), float(c[4]), Vector3(0.6, 0.05, 0.6))
 	for w: Array in L.WALL_LIGHTS:
 		_wall_light(fx, String(w[0]), w[1], float(w[2]), w[3], float(w[4]), float(w[5]), w[6])
+	_dress.fill_lights(_add(lighting, _node3d("Fill")) as Node3D)
 
 
 ## Interior VoxelGI over the building (data baked by bake_gi.gd under xvfb; see its header).
@@ -1130,8 +1141,10 @@ func _build_workshop(gp: Node3D) -> void:
 		if reader != null:
 			var targets: Array[NodePath] = [reader.get_path_to(safe)]
 			reader.set(&"targets", targets)
-	_prefab(ws, "loot_spawn", "SafeLoot", Vector3(6.5, 0.0, 1.2), 180.0,
-		{"loot_id": &"loot.jewelry", "count": 4, "objective_tag": &"safe_loot"})
+		# Under the safe: Safe only enables loot parented to it once it opens (P1 gate finding).
+		# Safe-local position: 0.64 m in front of the door, as before.
+		_prefab(safe, "loot_spawn", "SafeLoot", Vector3(0.0, 0.0, -0.64), 0.0,
+			{"loot_id": &"loot.jewelry", "count": 4, "objective_tag": &"safe_loot"})
 
 
 func _build_cases(gp: Node3D) -> void:
@@ -1326,31 +1339,21 @@ func _variants_rare(variants: Node3D) -> void:
 			"visual_scene": _dress.scene("prop_loot_bag_heavy")})
 
 
-## P2 rows of the variable table (designed now, rule pick 0 until P2 enables them).
+## Camera rows: one slot per camera (D-059: 1-3 live per run, more on higher difficulties); the
+## other P2 rows stay at pick 0.
 func _variants_p2(variants: Node3D) -> void:
 	var cams: Dictionary = {
 		"C1": [Vector3(12.5, 3.0, 6.1), 180.0], "C2": [Vector3(0.6, 3.0, 11.8), 0.0],
 		"C3": [Vector3(17.8, 2.6, 5.25), 90.0], "C4": [Vector3(5.0, 3.0, -0.2), 0.0],
 		"C5": [Vector3(9.5, 2.6, 4.4), 0.0], "C6": [Vector3(0.2, L.UPPER + 2.6, 5.25), -90.0],
 	}
-	var sets: Array = [["cam_a", ["C1", "C3", "C4"]], ["cam_b", ["C2", "C3", "C5"]], ["cam_c", ["C1", "C2", "C6"]]]
 	var cg: Node3D = _group(variants, "camera")
-	for s: Array in sets:
-		var slot: VariantSlot = _slot(cg, "camera", String(s[0]), 1.0, {"phase": 2})
-		for cid: Variant in s[1]:
-			# Mount points only: the security_camera prefab's collision box reaches 0.025 m behind
-			# its back-centre pivot, so a flush wall mount clips the wall (reported to ENV A).
-			var row: Array = cams[cid]
-			var m: Marker3D = Marker3D.new()
-			m.name = "CameraMount" + String(cid)
-			m.position = row[0]
-			m.basis = _yaw_basis(float(row[1]))
-			m.set_meta(&"camera_id", String(cid))
-			m.set_meta(&"mount", "wall")
-			m.set_meta(&"fov_deg", 60.0)
-			m.set_meta(&"range_m", 20.0)
-			m.add_to_group(G.CAMERA_SLOT, true)
-			_add(slot, m)
+	for cid: String in ["C1", "C2", "C3", "C4", "C5", "C6"]:
+		var slot: VariantSlot = _slot(cg, "camera", "cam_" + cid.to_lower(), 1.0)
+		var row: Array = cams[cid]
+		_prefab(slot, "security_camera", "Camera" + cid, row[0], float(row[1]),
+			{"fov_deg": 60.0, "range_m": 20.0, "pan_deg": 40.0}, null,
+			{"mount": "wall", "kind": "security_camera", "camera_id": cid})
 	var sr: Node3D = _group(variants, "security_room_staffed")
 	_slot(sr, "security_room_staffed", "sec_staffed", 0.6,
 		{"phase": 2, "operator_spawn": "Spawns/CameraOperatorSeat", "station": "Gameplay/Misc/CameraStation"})
@@ -1385,7 +1388,8 @@ func _build_nav_links(nav: NavigationRegion3D) -> void:
 func _prune_islands(nm: NavigationMesh) -> void:
 	var anchors: PackedVector3Array = PackedVector3Array()
 	for n: Node in _root.find_children("*", "", true, false):
-		if n is PatrolPoint or n is SpawnPoint or (n.name == &"UsePoint" and n is Node3D):
+		if n is PatrolPoint or n is SpawnPoint or (n.name == &"UsePoint" and n is Node3D) \
+				or (n is TacticalPoint and String(n.name) == "SniperGarageL2"):
 			anchors.append(_global_xform(n as Node3D).origin)
 		elif n is NavigationLink3D:
 			anchors.append((n as NavigationLink3D).start_position)

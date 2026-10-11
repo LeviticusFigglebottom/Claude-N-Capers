@@ -8,6 +8,11 @@
 ##   weapon.ammo_pickup_mult[weapon class]) rounds (GameRng &"ammo"; at least 1 when max > 0), capped
 ##   at what it is missing (DeployablePrefab.max_ammo), per crew member's own weapons and modifiers.
 ##   A box nobody can use stays on the floor.
+## * weapon.kill_ammo_drop {every_n_kills} (Scrounger aced): every n-th kill by that crew member drops an
+##   extra box (on top of the normal drop roll).
+## * weapon.ammo_pickup_throwable {base_chance, step} (Pack Mule aced): a taken box holds a throwable
+##   with base_chance + step x boxes taken without one (GameRng &"ammo"); +1 CrewWeapons.throwable_count
+##   up to the equipped ThrowableDef.count, and the streak resets.
 ## * `ammo_picked(crew, amount)` (amount = rounds added over both weapons) is the hook for perk
 ##   mechanics such as perk.gambler.
 ##
@@ -22,9 +27,14 @@ const SERVICE: StringName = &"ammo_pickups"
 const RNG_STREAM: StringName = &"ammo"
 const RANGE_KEY: StringName = &"weapon.ammo_pickup_range_mult"
 const AMOUNT_KEY: StringName = &"weapon.ammo_pickup_mult"
+const KILL_DROP_KEY: StringName = &"weapon.kill_ammo_drop"
+const THROWABLE_KEY: StringName = &"weapon.ammo_pickup_throwable"
 
 var _runtime: HeistRuntime = null
 var _boxes: Array[AmmoPickup] = []
+## crew slot -> kills (weapon.kill_ammo_drop) / boxes taken without a throwable (weapon.ammo_pickup_throwable).
+var _kills: Dictionary[int, int] = {}
+var _dry_boxes: Dictionary[int, int] = {}
 
 
 func _ready() -> void:
@@ -38,7 +48,7 @@ func _exit_tree() -> void:
 		EventBus.npc_killed.disconnect(_on_npc_killed)
 
 
-func _on_npc_killed(npc_net_id: int, _killer_net_id: int, _info: Dictionary) -> void:
+func _on_npc_killed(npc_net_id: int, killer_net_id: int, _info: Dictionary) -> void:
 	if not Net.is_authority() or _runtime == null or _runtime.is_replica:
 		return
 	var npc: NpcBase = Ids.lookup(npc_net_id) as NpcBase
@@ -47,9 +57,16 @@ func _on_npc_killed(npc_net_id: int, _killer_net_id: int, _info: Dictionary) -> 
 	var tw: AmmoPickupTweak = AmmoPickupTweak.data()
 	if tw.no_drop_roles.has(npc.role):
 		return
+	var pos: Vector3 = npc.global_position + Vector3(0.0, tw.drop_height_m, 0.0)
+	var killer: CrewController = Ids.lookup(killer_net_id) as CrewController
+	if killer != null:
+		var every: int = int(Modifiers.params(killer.slot, KILL_DROP_KEY).get("every_n_kills", 0))
+		_kills[killer.slot] = int(_kills.get(killer.slot, 0)) + 1
+		if every > 0 and int(_kills[killer.slot]) % every == 0:
+			drop(pos + Vector3(0.25, 0.0, 0.0))
 	if tw.drop_chance < 1.0 and GameRng.stream(RNG_STREAM).randf() >= tw.drop_chance:
 		return
-	drop(npc.global_position + Vector3(0.0, tw.drop_height_m, 0.0))
+	drop(pos)
 
 
 ## Server/test hook: drop an ammo box at `pos`. Returns it (null without a runtime).
@@ -112,6 +129,7 @@ func try_pickup(crew: CrewController, box: AmmoPickup) -> int:
 		total += add
 	if total <= 0:
 		return 0
+	_roll_throwable(crew, rng)
 	_remove(box)
 	ammo_picked.emit(crew, total)
 	return total
@@ -128,6 +146,23 @@ static func rounds_for(crew: CrewController, ws: int, rng: RandomNumberGenerator
 	var lo: float = minf(st.ammo_pickup_min, st.ammo_pickup_max)
 	var n: float = rng.randf_range(lo, st.ammo_pickup_max) * Modifiers.mult(crew.slot, AMOUNT_KEY, q)
 	return maxi(int(round(n)), 1)
+
+
+func _roll_throwable(crew: CrewController, rng: RandomNumberGenerator) -> void:
+	var p: Dictionary = Modifiers.params(crew.slot, THROWABLE_KEY)
+	if p.is_empty() or crew.loadout == null or crew.loadout.throwable == &"":
+		return
+	var def: ThrowableDef = ContentDB.throwable(crew.loadout.throwable)
+	var w: CrewWeapons = crew.weapons
+	if def == null or w.throwable_count >= def.count:
+		return
+	var dry: int = int(_dry_boxes.get(crew.slot, 0))
+	var chance: float = float(p.get("base_chance", 0.0)) + float(p.get("step", 0.0)) * float(dry)
+	if rng.randf() < chance:
+		w.throwable_count += 1
+		_dry_boxes[crew.slot] = 0
+	else:
+		_dry_boxes[crew.slot] = dry + 1
 
 
 func _remove(box: AmmoPickup) -> void:

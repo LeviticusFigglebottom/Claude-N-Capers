@@ -40,7 +40,7 @@ preplanning = {
 "tags": [&"stealth"]
 }
 },
-"disable": [&"asset.intel_cameras"],
+"disable": Array[StringName]([]),
 "favors": 4
 }
 escape_options = Array[StringName]([&"van"])

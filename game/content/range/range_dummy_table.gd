@@ -1,5 +1,5 @@
 ## Table of firing-range dummy presets (B1-05). Owner: ENV B.
-## Data: res://content/data/range/range_dummies.tres. See RangeDummyDef for the EnemyDef stopgap.
+## Data: res://content/data/range/range_dummies.tres. Balance comes from the EnemyDef (RangeDummyDef).
 class_name RangeDummyTable
 extends Resource
 

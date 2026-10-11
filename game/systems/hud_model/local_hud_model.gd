@@ -78,6 +78,9 @@ signal custody_changed()
 signal captain_changed()
 ## ui_hud v1.4 (QB-60): stamina, exhausted
 signal stamina_changed()
+## ui_hud v1.5 (D-057, B4-18): weapon_charge / weapon_spin
+signal weapon_charge_changed()
+signal weapon_spin_changed()
 
 ## S1.1 "Suspicious actions not allowed" prompt (strings.csv key, ENV B).
 const SUSPICIOUS_PROMPT_KEY: StringName = &"ui.prompt.suspicious_not_allowed"
@@ -109,6 +112,7 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"custody": &"custody_changed",
 	&"captain_resistance": &"captain_changed", &"captain_present": &"captain_changed",
 	&"stamina": &"stamina_changed", &"exhausted": &"stamina_changed",
+	&"weapon_charge": &"weapon_charge_changed", &"weapon_spin": &"weapon_spin_changed",
 }
 ## Extra (non-contract) properties included in snapshot().
 const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase"]
@@ -139,6 +143,10 @@ var bleedout_s: float = -1.0
 var stamina: float = 1.0
 ## True while sprint is blocked after running dry (until back above the threshold).
 var exhausted: bool = false
+# --- weapon_charge_changed / weapon_spin_changed (ui_hud v1.5, D-057)
+## Bow draw 0..1 while charging (0 otherwise); minigun spin-up 0..1 (CrewWeapons.charge / spin).
+var weapon_charge: float = 0.0
+var weapon_spin: float = 0.0
 # --- ammo_changed
 ## Enums.WeaponSlot (int) -> {"mag": int, "reserve": int} for PRIMARY and SECONDARY.
 var ammo: Dictionary = {}
@@ -351,6 +359,8 @@ func _poll_weapons(c: CrewController) -> void:
 	_assign(&"throwable_id", StringName(_read(w, &"throwable_id", lo.throwable if lo != null else &"")))
 	_assign(&"deployable_count", int(_read(w, &"deployable_count", 0)))
 	_assign(&"throwable_count", int(_read(w, &"throwable_count", 0)))
+	_assign(&"weapon_charge", snappedf(float(_read(w, &"charge", 0.0)), 0.01))
+	_assign(&"weapon_spin", snappedf(float(_read(w, &"spin", 0.0)), 0.01))
 
 
 func _poll_inventory(c: CrewController) -> void:

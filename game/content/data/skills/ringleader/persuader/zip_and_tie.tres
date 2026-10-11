@@ -19,7 +19,7 @@ grants_basic = {
 }
 grants_aced = {
 &"team.damage_reduction_hostage": {
-"per": 5.0,
-"max": 8
+"absorb_per_hostage": 5.0,
+"max_hostages": 8
 }
 }

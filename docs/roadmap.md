@@ -9,7 +9,7 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | Phase | Theme | Gate |
 |---|---|---|
 | **P0** | Foundations (lead) | Repo, docs, contracts, CI, environments live. ✅ when this commit lands |
-| **P1** | **Vertical slice**: Glasshouse, 1 guard type, 1 weapon, pagers, bodies, loud transition, 1 assault wave, escape, payday | `test_p1_vertical_slice.gd` + Glasshouse at level gate G2 + lead playthrough notes |
+| **P1** ✅ | **Vertical slice**: Glasshouse, 1 guard type, 1 weapon, pagers, bodies, loud transition, 1 assault wave, escape, payday | `test_p1_vertical_slice.gd` + Glasshouse at level gate G2 + lead playthrough notes |
 | **P2** | Stealth complete: cameras + operator, ECM, keycards/codes, saws, lasers, cuffs, civilians full, assets; heists Night Deposit + Shadow Ledger (stealth-only) | `test_p2_stealth.gd`: scripted ghost run on 3 seeds per heist; all S-rows of phase ≤ 2 tested |
 | **P3** | Loud complete: all specials + captain, director escalation, custody/trade, crowd control, AI teammate orders, factions; co-op loopback; Dockside Burn (loud-only) | `test_p3_loud.gd` (bot crew survives scripted waves; specials' counterplay verified) + `test_coop_loopback.gd` |
 | **P4** | Progression: 90 skills, 14 perk decks, armory 36 weapons + workshop, firing range full, hub/safehouse, board, pre-planning board, masks, payday cards, save v2 | `test_p4_progression.gd`: every modifier key ≤ P4 has a behaviour test; resolver golden tests |
@@ -47,6 +47,11 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | B4-18 | Armory batch 3: last 16 weapons to 36 (incl. special weapons), mods, models; list to lead early for ENV D FP sets | P4 armory |
 | B4-19 | Stamina HUD widget (ui_hud v1.4) | QB-60 |
 | B4-20 | Achievements stub: data-driven conditions, MaskLocker.grant_unlock, small screen | P8 |
+| B5-01 | Options menu: key/pad rebinding (all InputMap actions incl. look_*), audio buses (Master/Music/SFX/Voice/Ambience), video (resolution, vsync, FOV 60–110, quality presets), gameplay (hold vs toggle for ADS/crouch/interact), accessibility (colour-blind-safe detection/HUD palettes, subtitle size); persisted in the profile | P6 polish (pulled forward) |
+| B5-02 | Notoriety ranks (PD2 infamy analog): at level 100 reset to 0 for a rank (I–XXV), rank XP bonus, rank-gated cosmetic unlocks (masks/patterns/materials), skill-point refund on rank-up; save v6 + migration; rank UI in the hub | P6 |
+| B5-03 | Music selection: per-heist track choice in pre-planning/lobby (host decides), hub jukebox; data-driven track list (ENV C supplies the stems) | P5 music |
+| B5-04 | Dockside Burn content data (P3 loud-only heist): HeistDef skeleton, contract/briefing/strings, loot defs; objective ids from ENV C's G0 `[tag]`s once its design doc lands | P3 gate |
+| B5-05 | Civilian-mode UI (S1.3): HUD civilian state, gear-pickup prompt, briefing flag display (ENV A owns `start_mode = civilian` + the gear prefab) | P5 |
 
 | C2-00 | G0 design docs: Night Deposit and Shadow Ledger (stealth-only) | level_standards §9 |
 
@@ -146,4 +151,4 @@ Routine and Brutal. Solo-first, with every system written authority-correct.
 8. Get spotted masked by a guard (or fire unsuppressed nearby) → `alarm_raised` → phase LOUD **without scene change** (the same `HeistMap` instance; bodies/bags/doors persist).
 9. Assault: the director goes CONTROL → ANTICIPATION → BUILD → SUSTAIN → FADE (Engine.time_scale ×4), enemies spawn out of crew LOS and path toward the crew.
 10. The bot goes down → an AI teammate revives within its revive time.
-11. Escape with ≥ 1 bag → `heist_ended(success)`; the payout calculator gives contract + loot × difficulty.
+11. Escape with the mission's required bags (Glasshouse: 2) → `heist_ended(success)`; the payout calculator gives contract + loot × difficulty.
