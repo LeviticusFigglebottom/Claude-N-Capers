@@ -375,3 +375,42 @@ func test_d063_shared_reload_ratio_range() -> void:
 	assert_false(FpViewmodel.shared_reload_ratio_ok(3.6, 2.5), "x1.44: too fast")
 	assert_false(FpViewmodel.shared_reload_ratio_ok(2.0, 4.0), "x0.5: too slow")
 	assert_true(FpViewmodel.shared_reload_ratio_ok(0.0, 2.0), "no clip: nothing to check")
+
+
+## D-069: the FP left hand IKs to the weapon model's LeftHandIK (hand.L ends on the marker) and lets go while
+## the reload clip owns the hand.
+func test_d069_left_hand_ik_to_weapon_marker() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.arms_scene == null:
+		skip("char_arms_fp not delivered")
+		return
+	var c: CrewController = await _spawn(&"weapon.corsair_ar", &"weapon.kestrel_p9")
+	var fp: FpViewmodel = _fp(c)
+	assert_true(fp != null and fp.left_hand_ik != null, "left-hand IK built on the arms rig")
+	if fp == null or fp.left_hand_ik == null:
+		return
+	var marker: Node3D = (c.weapon_visual as WeaponVisual).get_marker(&"LeftHandIK")
+	assert_true(marker != null, "the Corsair has a LeftHandIK marker")
+	if marker == null:
+		return
+	fp.set_process(true)
+	await wait_frames(30)
+	assert_near(fp.left_hand_ik.ik.influence, 1.0, 0.001, "full influence while idle")
+	var hand: int = fp.skeleton.find_bone("hand.L")
+	# Modifier results are only in the pose during skeleton_updated (then the animated pose is restored).
+	var got: Array[Vector3] = [Vector3.INF]
+	var cb: Callable = func() -> void: got[0] = fp.skeleton.global_transform * fp.skeleton.get_bone_global_pose(hand).origin
+	fp.skeleton.skeleton_updated.connect(cb)
+	await wait_frames(3)
+	fp.skeleton.skeleton_updated.disconnect(cb)
+	var grip: Node3D = marker.get_node_or_null(FpLeftHandIk.GRIP_NAME) as Node3D
+	assert_true(grip != null, "IK target at the grip offset from LeftHandIK")
+	if grip != null:
+		assert_true(got[0].distance_to(grip.global_position) < 0.015,
+			"hand.L on the LeftHandIK grip (%.3f m)" % got[0].distance_to(grip.global_position))
+	var ws: int = c.weapons.equipped_slot
+	c.weapons.set_ammo(ws, 1, 60)
+	assert_true(c.weapons.start_reload(), "reload")
+	await wait_frames(20)
+	assert_true(fp.left_hand_ik.ik.influence < 0.05, "the reload clip owns the left hand")
+

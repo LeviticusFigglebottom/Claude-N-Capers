@@ -53,6 +53,8 @@ static var _reload_scale_logged: Dictionary = {}
 ## The arms rig's AnimationPlayer / Skeleton3D / instanced scene root.
 var player: AnimationPlayer = null
 var skeleton: Skeleton3D = null
+## D-069: runtime left-hand IK to the weapon's `LeftHandIK` (null when the rig has no left arm).
+var left_hand_ik: FpLeftHandIk = null
 var arms: Node3D = null
 ## BoneAttachment3D on the `weapon` bone: the WeaponVisual's parent.
 var weapon_attach: BoneAttachment3D = null
@@ -128,6 +130,7 @@ func _bind(inst: Node3D, crew: CrewController) -> bool:
 	weapon_attach = BoneAttachment3D.new()
 	weapon_attach.name = ATTACH_NAME
 	weapon_attach.bone_name = String(tw.weapon_bone)
+	left_hand_ik = FpLeftHandIk.create(skeleton)  # D-069: hand.L onto the weapon's LeftHandIK
 	skeleton.add_child(weapon_attach)
 	_no_shadows(inst)
 	_crew = crew
@@ -218,6 +221,8 @@ func tick(delta: float) -> void:
 		_play_base(tw)
 	_update_offset(delta, tw)
 	_update_magazine()
+	if left_hand_ik != null:  # D-069: the clip owns the left hand while reloading / swapping
+		left_hand_ik.update(delta, action == Action.NONE or action == Action.FIRE)
 
 
 # --- Gameplay signal handlers (presentation only) ---------------------------------------------
@@ -421,6 +426,8 @@ func _set_weapon(wv: WeaponVisual, set_id: StringName) -> void:
 		if node != null:
 			_part_nodes[n] = [node, node.transform]
 	_magwell = wv.get_base_marker(&"Magwell") if wv != null else null
+	if left_hand_ik != null:
+		left_hand_ik.set_target(wv.get_marker(&"LeftHandIK") if wv != null else null, set_id)
 	_magwell_rest = _magwell.transform if _magwell != null else Transform3D.IDENTITY
 
 
