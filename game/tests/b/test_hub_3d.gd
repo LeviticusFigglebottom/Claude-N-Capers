@@ -73,7 +73,9 @@ func test_data_toggle_and_strings() -> void:
 	var t: SafehouseHubTweak = SafehouseHubTweak.load_default()
 	assert_eq(t.scene_path, "res://world/hub/safehouse/safehouse.tscn", "C's scene path is data")
 	assert_eq(t.map_class, &"SafehouseMap")
-	assert_eq(t.station_group, &"hub_station")
+	assert_eq(t.spawn_marker, &"Spawn", "hub_map.md: unknown return ids fall back to Spawn")
+	assert_eq(t.duck_method, &"set_ducked")
+	assert_near(t.station_cam_fov, 60.0, 0.0001, "hub_map.md: StationCam fov default")
 	assert_near(t.station_cam_blend_s, 0.35, 0.0001)
 	var s: GameSettings = GameSettings.new()
 	assert_true(s.hub_walk(), "walk is the default")
@@ -88,7 +90,11 @@ func test_data_toggle_and_strings() -> void:
 		assert_has(table, "ui.prompt.station.%s" % id, "QC-47 prompt for %s" % id)
 	for k: String in ["ui.hub.pause.title", "ui.hub.pause.resume", "ui.hub.pause.quick_stations"]:
 		assert_has(table, k)
-	assert_eq(UiText.t(&"ui.prompt.station.board", {"key": "F"}), "[F] Check the Board")
+	# hub_map.md v1.0: same prompt format as the in-heist interactions ("Press {key} to ...").
+	assert_eq(UiText.t(&"ui.prompt.station.board", {"key": "F"}), "Press F to check the Board")
+	for id: StringName in HubStationList.load_default().ids():
+		var text: String = UiText.t(StringName("ui.prompt.station.%s" % id), {"key": "F"})
+		assert_true(text.begins_with("Press F to ") or text.begins_with("Hold F to "), "in-heist prompt format: %s" % text)
 
 
 func test_options_screen_has_the_toggle() -> void:
@@ -201,18 +207,79 @@ func test_station_cam_blend_before_the_screen() -> void:
 	var sh: SafehouseHost = f.safehouse
 	var walker_cam: Camera3D = _walker(f).get_node(^"Camera") as Camera3D
 	assert_true(walker_cam.current, "walker camera active")
+	var home: Transform3D = walker_cam.transform
+	var home_fov: float = walker_cam.fov
 	_station(f, &"board").call(&"use")
 	await wait_frames(1)
-	var blend: Camera3D = sh.map.get_node_or_null(^"StationBlendCam") as Camera3D
-	assert_true(blend != null and blend.current, "blending to StationCam")
+	assert_true(sh.map.find_children("*", "Camera3D", true, false).size() == 1, "no extra camera: the walker's own blends")
+	assert_true(walker_cam.current, "the walker camera stays current")
 	assert_eq(f.current, sh.hud as Control, "screen waits for the blend")
 	await get_tree().create_timer(0.3).timeout
 	assert_eq(f.current, f.board_screen as Control, "screen opens after the blend")
-	assert_true(blend.global_position.is_equal_approx(_marker(f, "Stations/board/StationCam")), "blend ends on StationCam")
+	var marker: Node3D = sh.map.get_node(^"Stations/board/StationCam") as Node3D
+	assert_true(marker is Marker3D, "StationCam is a Marker3D (hub_map.md v1.0)")
+	assert_true(walker_cam.global_position.is_equal_approx(marker.global_position), "blend ends on StationCam")
+	assert_true((-walker_cam.global_basis.z).is_equal_approx(-marker.global_basis.z), "-Z = view direction")
+	assert_near(walker_cam.fov, 50.0, 0.01, "FOV from the marker's fov meta")
 	f.board_screen.back_button.pressed.emit()
 	await wait_frames(2)
-	assert_false(is_instance_valid(blend) and blend.is_inside_tree(), "blend camera dropped")
-	assert_true(walker_cam.current, "walker camera back")
+	assert_true(walker_cam.current, "walker camera current")
+	assert_true(walker_cam.transform.is_equal_approx(home), "camera transform restored")
+	assert_near(walker_cam.fov, home_fov, 0.01, "camera FOV restored")
+	assert_true(_walker(f).global_position.is_equal_approx(_marker(f, "Stations/board/UsePoint")), "back at the UsePoint")
+	await _done(f)
+
+
+func test_station_cam_fov_default_and_unknown_spawn_fallback() -> void:
+	var f: MenuFlow = _flow(MOCK_SCENE, 0.05)
+	await _enter(f)
+	var sh: SafehouseHost = f.safehouse
+	(sh.map.get_node(^"Stations/board/StationCam") as Node).remove_meta(&"fov")
+	var walker_cam: Camera3D = _walker(f).get_node(^"Camera") as Camera3D
+	_station(f, &"board").call(&"use")
+	await get_tree().create_timer(0.2).timeout
+	assert_near(walker_cam.fov, 60.0, 0.01, "no fov meta -> 60 degrees")
+	f.board_screen.back_button.pressed.emit()
+	await wait_frames(2)
+	var spawn: Vector3 = _marker(f, "Spawns/Spawn")
+	assert_true(sh.spawn_transform(&"NoSuchMarker").origin.is_equal_approx(spawn), "root: unknown id -> Spawn")
+	assert_true(SafehouseHost.marker_transform(sh.map, &"NoSuchMarker", &"Spawn").origin.is_equal_approx(spawn),
+		"host fallback (root without spawn_transform): unknown id -> Spawn")
+	assert_true(SafehouseHost.marker_transform(sh.map, &"ReturnRange", &"Spawn").origin.is_equal_approx(
+		_marker(f, "Spawns/ReturnRange")), "known marker by name")
+	f.safehouse.leave(&"NoSuchMarker")
+	f.show_home()
+	await wait_frames(1)
+	assert_true(_walker(f).global_position.is_equal_approx(_marker(f, "Spawns/Spawn")), "never stranded: Spawn")
+	await _done(f)
+
+
+func test_cabinet_ducks_under_station_screens_but_not_the_jukebox() -> void:
+	var f: MenuFlow = _flow()
+	await _enter(f)
+	var sh: SafehouseHost = f.safehouse
+	var cabinet: Node = sh.jukebox()
+	_station(f, &"armory").call(&"use")
+	await wait_frames(2)
+	assert_true(sh.ducked, "armory screen ducks the cabinet")
+	assert_eq((cabinet.get(&"calls") as Array[String]).back(), "duck:true")
+	f.loadout_screen.back_button.pressed.emit()
+	await wait_frames(2)
+	assert_false(sh.ducked)
+	assert_eq((cabinet.get(&"calls") as Array[String]).back(), "duck:false", "un-ducked on return")
+	# Quick stations from the pause menu duck too.
+	sh.open_pause()
+	sh.pause_menu.station_button(&"notoriety").pressed.emit()
+	await wait_frames(2)
+	assert_true(sh.ducked, "quick station ducks")
+	(f.current as UiScreen).back_requested.emit()
+	await wait_frames(2)
+	assert_false(sh.ducked)
+	(cabinet.get(&"calls") as Array[String]).clear()
+	_station(f, &"jukebox").call(&"use")
+	await wait_frames(2)
+	assert_false(sh.ducked, "the jukebox screen never ducks its own previews")
+	assert_false((cabinet.get(&"calls") as Array[String]).has("duck:true"))
 	await _done(f)
 
 

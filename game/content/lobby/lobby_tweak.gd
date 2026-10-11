@@ -29,12 +29,12 @@ const DEFAULT_PATH: String = "res://content/data/lobby/lobby_tweak.tres"
 ## In-heist overlay: the closed panel starts fading this long after the last message, over chat_fade_time_s.
 @export var chat_fade_after_s: float = 8.0
 @export var chat_fade_time_s: float = 1.5
-## InputMap action that opens the chat (needs the lead to add it to project.godot); while it does not
-## exist the panel opens on chat_fallback_key.
+## InputMap action that opens the chat (project.godot `chat`: Enter / keypad Enter, D-072; T is `order_menu`).
 @export var chat_action: StringName = &"chat"
-@export var chat_fallback_key: Key = KEY_T
 ## Drop-in (B6-04): the host's join request dialog auto-denies after this many seconds.
 @export var dropin_request_timeout_s: float = 30.0
+## Drop-in policy a new lobby starts with (LobbyState.POLICIES: ask / auto / off; PD2 default ask).
+@export var dropin_default_policy: StringName = &"ask"
 
 
 static func load_default() -> LobbyTweak:
