@@ -354,13 +354,15 @@ func refund(sid: StringName) -> Dictionary:
 	select_skill(sid)
 	var r: Dictionary = SkillBuild.refund(profile.loadout.skills, sid)
 	if bool(r["ok"]):
+		NotorietySkills.release(profile, profile.active_skill_set)  # the player owns the build again
 		_commit()
 	return r
 
 
-## Free respec of the active set. Returns the points given back.
+## Free respec of the active set (drops a Notoriety-held build of that set). Returns the points given back.
 func respec() -> int:
 	_disarm_respec()
+	NotorietySkills.release(profile, profile.active_skill_set)
 	var back: int = SkillBuild.respec(profile.loadout.skills)
 	_commit()
 	return back

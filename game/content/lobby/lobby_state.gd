@@ -4,7 +4,8 @@
 ## Messages (Net.lobby_send(kind, data) / Net.lobby_message; contract docs/contracts/net.md, D-038).
 ## Every payload is JSON-safe (String keys; bool / int / float / String / Array / Dictionary values):
 ## * MSG_READY    {"ready": bool}                                 any human slot, for itself
-## * MSG_PROFILE  {"name", "level", "loadout": loadout_to_dict()} any human slot, for itself; sent at
+## * MSG_PROFILE  {"name", "level", "notoriety", "loadout": loadout_to_dict()} any human slot, for itself;
+##                `notoriety` = the Notoriety rank 0..max (B5-02; a summary without it reads as 0). Sent at
 ##                join and after every loadout change. Every peer validates it with validate_summary()
 ##                (SkillPoints.validate + LoadoutResolver mod legality + known ids, architecture §11):
 ##                an illegal summary is FLAGGED on its slot and blocks Start; the host never launches it.
@@ -229,19 +230,20 @@ func slot_view(slot: int) -> Dictionary:
 		"slot": slot, "occupied": not c.is_empty(), "is_ai": bool(c.get("is_ai", false)),
 		"is_local": slot == local_slot, "is_host": slot == host_slot and not c.is_empty(),
 		"name": String(s.get("name", c.get("display_name", ""))), "ready": is_ready(slot),
-		"has_summary": not s.is_empty(), "level": int(s.get("level", 0)),
+		"has_summary": not s.is_empty(), "level": int(s.get("level", 0)), "notoriety": int(s.get("notoriety", 0)),
 		"loadout": (s.get("loadout", {}) as Dictionary).duplicate(true),
 		"legal": is_legal(slot), "errors": (errors.get(slot, []) as Array).duplicate(),
 	}
 	return view
 
 
-## Profile summary the local player sends (MSG_PROFILE): name, level and the loadout's ids, with the
-## worn custom mask's descriptor (D-043 QA-25).
+## Profile summary the local player sends (MSG_PROFILE): name, level, Notoriety rank (B5-02) and the
+## loadout's ids, with the worn custom mask's descriptor (D-043 QA-25).
 static func summary_from(loadout: Loadout, profile: PlayerProfile) -> Dictionary:
 	var l: Loadout = loadout.duplicate(true) as Loadout
 	l.mask_descriptor = LoadoutResolver.mask_descriptor_for(loadout, profile)
-	return {"name": profile.profile_name, "level": profile.level, "loadout": loadout_to_dict(l)}
+	return {"name": profile.profile_name, "level": profile.level, "notoriety": profile.notoriety,
+			"loadout": loadout_to_dict(l)}
 
 
 ## JSON-safe loadout input (no resolved numbers; every peer resolves with LoadoutResolver).
@@ -286,7 +288,8 @@ static func loadout_from_dict(d: Dictionary) -> Loadout:
 ## integral floats (JSON) become ints; the name is cut to LobbyTweak.max_name_length.
 static func sanitize_summary(data: Dictionary) -> Dictionary:
 	var ld: Variant = data.get("loadout")
-	if not (data.get("name") is String) or not _is_int(data.get("level")) or not (ld is Dictionary):
+	var rank: Variant = data.get("notoriety", 0)
+	if not (data.get("name") is String) or not _is_int(data.get("level")) or not _is_int(rank) or not (ld is Dictionary):
 		return {}
 	var src: Dictionary = ld as Dictionary
 	var out: Dictionary = {}
@@ -320,11 +323,12 @@ static func sanitize_summary(data: Dictionary) -> Dictionary:
 		sk[k] = int(lv)
 	out["skills"] = sk
 	var max_len: int = LobbyTweak.load_default().max_name_length
-	return {"name": String(data["name"]).strip_edges().left(max_len), "level": int(data["level"]), "loadout": out}
+	return {"name": String(data["name"]).strip_edges().left(max_len), "level": int(data["level"]),
+			"notoriety": int(rank), "loadout": out}
 
 
 ## Legality problems of a sanitized summary ([] = legal), for logs and the slot's "illegal" flag:
-## level range, known item ids, weapon mods the resolver accepts, perk card count, the skill set
+## level and Notoriety rank ranges, known item ids, weapon mods the resolver accepts, perk card count, the skill set
 ## (SkillPoints.validate against the level's points) and the mask (preset id or a valid descriptor).
 static func validate_summary(s: Dictionary) -> Array[String]:
 	var out: Array[String] = []
@@ -332,6 +336,9 @@ static func validate_summary(s: Dictionary) -> Array[String]:
 	var max_level: int = SkillPoints.tree_def().max_level
 	if level < 0 or level > max_level:
 		out.append("level %d outside 0..%d" % [level, max_level])
+	var rank: int = int(s.get("notoriety", 0))
+	if rank < 0 or rank > Notoriety.max_rank():
+		out.append("notoriety %d outside 0..%d" % [rank, Notoriety.max_rank()])
 	var ld: Dictionary = s.get("loadout", {}) as Dictionary
 	for f: String in FIELD_KINDS:
 		var id: String = String(ld.get(f, ""))
