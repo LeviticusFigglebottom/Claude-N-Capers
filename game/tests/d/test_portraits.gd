@@ -45,7 +45,7 @@ func test_contact_characters_are_rig_humanoid() -> void:
 			continue
 		var root: Node3D = packed.instantiate() as Node3D
 		add_child(root)
-		var skel: Skeleton3D = root.get_node_or_null("rig_humanoid/Skeleton3D") as Skeleton3D
+		var skel: Skeleton3D = root.get_node_or_null("Skeleton3D") as Skeleton3D
 		assert_true(skel != null, "%s: Skeleton3D" % n)
 		if skel != null:
 			assert_eq(skel.get_bone_count(), BONES, "%s: bone count" % n)

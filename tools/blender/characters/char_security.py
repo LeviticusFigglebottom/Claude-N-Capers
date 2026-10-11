@@ -11,7 +11,7 @@ handcuff case, torch), black shoes.
 Two body variants so guards don't look cloned: ``char_security_officer`` (lean, 30s) and
 ``char_security_officer_b`` (heavy-set, older, darker skin, grey buzz cut).
 
-Meshes (Godot ``<root>/rig_humanoid/Skeleton3D/``): ``Body`` (covered skin removed), ``Hair``,
+Meshes (Godot ``<root>/Skeleton3D/``, exported with ``remove_armature``): ``Body`` (covered skin removed), ``Hair``,
 ``Outfit`` (cloth, belt, cable), ``Gear`` (rigid hard parts), ``Headwear`` (cap). No blend shapes:
 the body is baked at the params below (see ``_outfit_build``).
 """
@@ -25,7 +25,7 @@ from _outfit import Hull, Mesh, Vector
 from _outfit_build import Kit, build_character
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
 VARIANTS = {
     "char_security_officer": {"height": 1.80, "build": 0.45, "gender": 0.0, "age": 0.35, "skin": 2,

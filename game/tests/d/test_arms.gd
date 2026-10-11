@@ -17,6 +17,9 @@
 ## melee_blade, throwable, deploy_bag / deploy_small / deploy_sentry (clips, loops, events, data lengths);
 ## with ENV B's real models: the support hand on LeftHandIK and, in ADS, the AimPoint on the camera axis with
 ## the stock below the eye where it crosses the near plane (never enclosing the camera).
+## Vise two-half string (StringUpper / StringLower meeting at the string centre): fp.crossbow gives the latched
+## (on the Magwell) and released centres, curve.crossbow_<clip> the latch fraction per frame, and the left hand
+## pulls the centre from released to latched in the reload.
 extends TestCase
 
 const GLB: String = "res://assets/characters/char_arms_fp/char_arms_fp.glb"
@@ -159,6 +162,14 @@ const EVENTS: Dictionary = {
 	"shotgun_box_reload": ["mag_out", "mag_swap", "mag_in", "done"],
 	"shotgun_box_reload_empty": ["mag_out", "mag_swap", "mag_in", "bolt_release", "done"],
 }
+
+## Vise string centre, Godot weapon-model space: latched on the Magwell, released 0.16 m forward (ENV B's model).
+const CROSSBOW_LATCHED: Vector3 = Vector3(0.0, 0.066, -0.016)
+const CROSSBOW_RELEASED: Vector3 = Vector3(0.0, 0.066, -0.176)
+const CROSSBOW_LATCHED_TEXT: String = "(0.000, 0.066, -0.016)"
+const CROSSBOW_RELEASED_TEXT: String = "(0.000, 0.066, -0.176)"
+## Palm centre (hand.L .. middle_01.L midpoint) to the hooked string centre.
+const CROSSBOW_HOOK_TOL: float = 0.06
 
 var _root: Node3D = null
 var _skel: Skeleton3D = null
@@ -527,6 +538,59 @@ func test_batch3_fire_rates_and_parts() -> void:
 		assert_true(String(_source.get("fp.%s" % set_name, "")).length() > 40, "SOURCE fp.%s documented" % set_name)
 	assert_true(String(_source.get("curve.bow_draw_string", "")).begins_with("draw=0.000"), "bow draw curve listed")
 	assert_true(String(_source.get("curve.bow_hold", "")).begins_with("draw=1.000"), "bow hold at full draw")
+	_check_crossbow_string_halves()
+
+
+## "string=1.000,0.500,..." -> [1.0, 0.5, ...]
+func _curve(key: String) -> Array[float]:
+	var out: Array[float] = []
+	var row: String = String(_source.get(key, ""))
+	if not row.begins_with("string="):
+		return out
+	for v: String in row.trim_prefix("string=").split(","):
+		out.append(v.to_float())
+	return out
+
+
+func _check_crossbow_string_halves() -> void:
+	var doc: String = String(_source.get("fp.crossbow", ""))
+	assert_true(doc.contains("StringUpper") and doc.contains("StringLower"), "fp.crossbow: the two string halves")
+	assert_true(doc.contains(CROSSBOW_LATCHED_TEXT), "fp.crossbow: latched centre on the Magwell %s" % CROSSBOW_LATCHED_TEXT)
+	assert_true(doc.contains(CROSSBOW_RELEASED_TEXT), "fp.crossbow: released centre %s" % CROSSBOW_RELEASED_TEXT)
+	for clip: String in ["fire", "fire_ads"]:
+		var c: Array[float] = _curve("curve.crossbow_%s" % clip)
+		assert_true(c.size() >= 2 and is_equal_approx(c[0], 1.0) and is_equal_approx(c[c.size() - 1], 0.0),
+			"crossbow_%s: latched -> released (%s)" % [clip, c])
+	for clip: String in ["reload", "reload_empty"]:
+		var c: Array[float] = _curve("curve.crossbow_%s" % clip)
+		var a: Animation = _anim("crossbow_%s" % clip)
+		if c.is_empty() or a == null:
+			fail("curve.crossbow_%s / crossbow_%s missing" % [clip, clip])
+			continue
+		assert_eq(c.size(), int(round(a.length * 30.0)) + 1, "crossbow_%s: one string value per frame" % clip)
+		var mono: bool = true
+		for i: int in range(1, c.size()):
+			mono = mono and c[i] >= c[i - 1] - 1e-6
+		assert_true(mono and is_equal_approx(c[0], 0.0) and is_equal_approx(c[c.size() - 1], 1.0),
+			"crossbow_%s: released -> latched, never back" % clip)
+		# the left hand hooks the centre at cock and pulls it to the latch by string_back
+		var cock: int = _event("crossbow_%s" % clip, "cock")
+		var back: int = _event("crossbow_%s" % clip, "string_back")
+		if cock < 0 or back < 0:
+			fail("crossbow_%s: cock / string_back events" % clip)
+			continue
+		var worst: float = 0.0
+		for f: int in range(cock, back + 1):
+			_player.play(StringName("crossbow_%s" % clip))
+			_player.seek(float(f) / 30.0, true)
+			var wt: Transform3D = _skel.get_bone_global_pose(_skel.find_bone("weapon"))
+			var centre: Vector3 = wt * CROSSBOW_RELEASED.lerp(CROSSBOW_LATCHED, c[f])
+			var hand: Vector3 = _skel.get_bone_global_pose(_skel.find_bone("hand.L")).origin
+			var mid: Vector3 = _skel.get_bone_global_pose(_skel.find_bone("middle_01.L")).origin
+			worst = maxf(worst, ((hand + mid) * 0.5).distance_to(centre))
+		_player.stop()
+		assert_true(worst < CROSSBOW_HOOK_TOL, "crossbow_%s: the left palm stays %.3f m from the string centre while it pulls" % [
+			clip, worst])
 
 
 func test_events_are_listed() -> void:

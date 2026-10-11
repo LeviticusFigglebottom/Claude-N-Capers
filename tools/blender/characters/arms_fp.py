@@ -91,13 +91,18 @@ def notes() -> dict:
                         "local X), same timing rules as fp.break_action; eject: spawn the 40 mm casing; round_in: the round "
                         f"(in the left hand from round_in-16) is seated; fire/fire_ads {sets.LAUNCHER_FIRE} f heavy recoil; "
                         "reload_empty = reload; defaults 3.0 s / equip 0.7 s"),
-        "fp.crossbow": (f"String slides {sets.STRING_TRAVEL:.3f} m along local +Z from its released pose to the latch (ENV B's "
-                        "Vise models it latched: released = the scene pose moved that far along local -Z): "
-                        "fire/fire_ads string_release@0 (latched -> released over frames 0..1); reload: muzzle down, the "
-                        "left fingers hook the string at cock and pull it back to the latch by string_back (smoothstep "
-                        "cock..string_back); the bolt (Magwell) rides the magazine bone: hidden after the shot, shown at "
-                        "bolt_show (carried in the left hand), laid on the rail by bolt_in (bone identity from bolt_in); "
-                        "reload_empty = reload; defaults 2.0 s / equip 0.55 s"),
+        "fp.crossbow": (f"string = two halves StringUpper / StringLower (ENV B's Vise), each from its prod-tip anchor to "
+                        f"the string CENTRE where they meet; the model is LATCHED (centre on the Magwell, Godot model "
+                        f"{_g(sets.CROSSBOW.markers['string_latched'])}); released = the centre {sets.STRING_TRAVEL:.3f} m "
+                        f"forward, {_g(sets.CROSSBOW.markers['string_rest'])}. Per frame: centre = released + (latched - "
+                        "released) x string, string from curve.crossbow_<clip> (1 = latched, 0 = released; clips without "
+                        "a curve keep the current state: latched when loaded). ENV A bends each half about its fixed "
+                        "anchor: rotate it so its inner end points at the centre and stretch it along that line by "
+                        "|centre - anchor| / |latched - anchor|. fire/fire_ads string_release@0 (latched -> released over "
+                        "frames 0..1); reload: muzzle down, the left fingers hook the centre at cock and pull it back "
+                        "to the latch by string_back (smoothstep cock..string_back); the bolt (Magwell) rides the magazine "
+                        "bone: hidden after the shot, shown at bolt_show (carried in the left hand), laid on the rail by "
+                        "bolt_in (bone identity from bolt_in); reload_empty = reload; defaults 2.0 s / equip 0.55 s"),
         "fp.lever": (f"Lever swings {sets.LEVER_OPEN_DEG:.0f} deg down (+ about its local X: the loop's rear end goes down) "
                      "about its pivot: thrown over lever_open-4..lever_open, back by lever_close (smoothstep); the cycle "
                      "is inside fire/fire_ads (like the pump) and reload_end_empty; the right hand turns "
@@ -189,6 +194,23 @@ def export_name(name: str, table: dict) -> str:
     return f"{name}-loop" if table[name]["loop"] and not name.endswith("_loop") else name
 
 
+def _g(p) -> str:
+    """A Blender weapon-space point as Godot model coordinates (x, y up, -z muzzle)."""
+    return f"({p[0]:.3f}, {p[2]:.3f}, {-p[1]:.3f})"
+
+
+def crossbow_curves(sk) -> dict:
+    """``{clip: [string per frame]}`` for the crossbow clips that move the string (1 = latched, 0 = released)."""
+    s = sets.SETS["crossbow"]
+    fns = clips_mod.state_fns(sk, s)
+    out = {}
+    for c in sorted(s.clips):
+        vals = [fns[c](f).extra.get("string") for f in range(s.frames(c) + 1)]
+        if any(v is not None for v in vals):
+            out[c] = [1.0 if v is None else float(v) for v in vals]
+    return out
+
+
 def bow_curves(sk) -> dict:
     """``{clip: [draw per frame]}`` for the bow clips (string draw 0 = brace, 1 = full draw)."""
     s = sets.SETS["bow"]
@@ -236,6 +258,8 @@ def build(ctx) -> None:
         f"fp.throwable / fp.deploy)")
     for clip, vals in bow_curves(sk).items():
         ctx.source_extra[f"curve.bow_{clip}"] = "draw=" + ",".join(f"{v:.3f}" for v in vals)
+    for clip, vals in crossbow_curves(sk).items():
+        ctx.source_extra[f"curve.crossbow_{clip}"] = "string=" + ",".join(f"{v:.3f}" for v in vals)
     ctx.source_extra["loops"] = ",".join(sorted(n for n, r in table.items() if r["loop"]))
     ctx.source_extra["sets"] = ",".join(arms.SETS)
     for k, v in notes().items():

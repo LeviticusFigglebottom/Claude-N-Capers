@@ -28,7 +28,7 @@ from _outfit_build import Kit, build_character
 from char_crew import suit
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
 VARIANTS = {
     "char_contact_odile": {"height": 1.73, "build": 0.45, "gender": 1.0, "age": 0.25, "skin": 2, "hair": "none",
