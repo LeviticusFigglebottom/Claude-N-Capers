@@ -78,7 +78,8 @@ func _ready() -> void:
 
 ## Max health / armor from tweak, armor def and modifiers (re-evaluated every server tick).
 func compute_max_health() -> float:
-	return PerkHooks.max_health(self, Tweak.crew().base_health * TeamModifiers.health_mult(_slot()))  # QB-60 team.health_mult; perk hook
+	return PerkHooks.max_health(self, Tweak.crew().base_health
+		* TeamModifiers.combined(_slot(), &"defense.health_mult", &"team.health_mult"))  # QB-60 team.health_mult; perk hook
 
 
 func compute_max_armor() -> float:
@@ -88,7 +89,14 @@ func compute_max_armor() -> float:
 		var def: ArmorDef = ContentDB.armor(l.armor)
 		if def != null:
 			base = def.armor
-	return PerkHooks.max_armor(self, base * TeamModifiers.armor_mult(_slot()))  # QB-60: x team.armor_mult; perk hook
+	return PerkHooks.max_armor(self, base
+		* TeamModifiers.combined(_slot(), &"defense.armor_mult", &"team.armor_mult"))  # QB-60: x team.armor_mult; perk hook
+
+
+## Armor regen delay after a hit or dodge: personal x team key (QB-60).
+func _regen_delay(tw: CrewTweak) -> float:
+	return tw.armor_regen_delay_s * TeamModifiers.combined(_slot(), &"defense.armor_regen_delay_mult",
+		&"team.armor_regen_delay_mult")
 
 
 func max_downs() -> int:
@@ -169,7 +177,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		return out
 	# --- A2-06 dodge (L2.4): a ranged hit may do nothing; a dodge restarts the armor regen delay.
 	if int(info.get("type", Enums.DamageType.BULLET)) == Enums.DamageType.BULLET and _roll_dodge():
-		regen_delay_left = tw.armor_regen_delay_s * TeamModifiers.armor_regen_delay_mult(_slot())
+		regen_delay_left = _regen_delay(tw)
 		out["amount"] = 0.0
 		out["dodged"] = true
 		_publish(out, attacker_net_id)
@@ -190,7 +198,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		armor_dmg = dmg
 	armor -= armor_dmg
 	health = maxf(health - health_dmg, 0.0)
-	regen_delay_left = tw.armor_regen_delay_s * TeamModifiers.armor_regen_delay_mult(_slot())
+	regen_delay_left = _regen_delay(tw)
 	out["amount"] = armor_dmg + health_dmg
 	out["armor_damage"] = armor_dmg
 	out["health_damage"] = health_dmg

@@ -19,8 +19,14 @@ extends RefCounted
 const HOSTAGE_DR_KEY: StringName = &"team.damage_reduction_hostage"
 
 
+## `personal` key x `team` key for `slot` (MULT keys). Call sites name both keys literally, so the
+## B4-14 hook-coverage audit (test_perk_wiring.gd) finds the personal key in the file that applies it.
+static func combined(slot: int, personal: StringName, team: StringName) -> float:
+	return Modifiers.mult(slot, personal) * Modifiers.mult(slot, team)
+
+
 static func health_mult(slot: int) -> float:
-	return Modifiers.mult(slot, &"defense.health_mult") * Modifiers.mult(slot, &"team.health_mult")
+	return combined(slot, &"defense.health_mult", &"team.health_mult")
 
 
 static func armor_mult(slot: int) -> float:
