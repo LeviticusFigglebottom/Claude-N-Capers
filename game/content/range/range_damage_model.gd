@@ -3,16 +3,20 @@
 ## DPS/TTK readout simulates shots through the very same `apply()` on a scratch state, so the
 ## readout can never disagree with what the target does. Owner: ENV B.
 ##
-## Rules (docs/contracts/damage.md v1.0 + D-027, pd2_fidelity L3.3, L3.4, L4.2, L4.5, L4.6):
-## 1. Shield (hit arrived through the dummy's shield hitbox): explosions/fire pass; a bullet passes at
-##    x shield_pierce_mult when `info.shield_pierce`, otherwise it is blocked (0 damage).
-## 2. WEAKPOINT while plates remain: the amount goes into the current plate's HP pool (x1, no zone or
-##    crit multiplier, excess lost); emptying it breaks the plate and exposes the next stage. With no
-##    plates left (or none at all) WEAKPOINT counts x1 on health.
-## 3. HEAD: x headshot_mult x info.headshot_bonus, except x1 while plates remain (headshot-immune).
-## 4. Frontal armor: a BODY hit from the front takes x armor_body_mult (0 = blocked) unless
-##    `info.pierced_armor`; explosions and fire ignore it.
-## 5. Crit (D-027): x the HEAD multiplier on any zone (the same immunity applies).
+## Armour comes from ENV A's EnemyDef through RangeDummyDef.armor() (= NpcHitRules.armor_of, D-052)
+## and is applied with NpcHitRules / BulwarkShield / WreckerArmor semantics (systems/ai/README.md "Hit
+## resolution order", docs/contracts/damage.md v1.1, D-027, pd2_fidelity L3.3-L3.6, L4.2, L4.5, L4.6):
+## 1. EXPLOSION: x explosive_mult.
+## 2. Shield (hit arrived through the dummy's shield hitbox): explosions go around it; FIRE passes at
+##    x CombatTweak.shield_fire_damage_mult; a BULLET with `info.shield_pierce` passes at
+##    x shield_pierce_mult; anything else is blocked (amount 0, `blocked`).
+## 3. WEAKPOINT while plates remain (not explosions): the amount goes into the current plate's HP pool
+##    (x1, no zone multiplier, no crit, excess lost); emptying it breaks the plate. With no plates
+##    left WEAKPOINT counts x1 on health.
+## 4. HEAD: x headshot_mult x info.headshot_bonus, except x1 while plates remain (armoured head).
+##    BODY / LIMB BULLET without `info.pierced_armor`: x frontal_armor inside the frontal arc (0 =
+##    blocked), else x armor_body_mult. Fire, explosions and melee ignore armour.
+## 5. Crit (D-027): x headshot_mult on any zone, cleared on an armoured head.
 ## Health and plate pools live in a state Dictionary {health, plates: PackedFloat32Array, stage}.
 class_name RangeDamageModel
 extends RefCounted
@@ -22,11 +26,16 @@ const MAX_SIM_SHOTS: int = 20000
 
 var health: float = 1.0
 var headshot_mult: float = 1.0
-var frontal_armor: bool = false
-var armor_body_mult: float = 0.0
+## RangeDummyDef.armor() keys (canonical EnemyDef armour, D-052).
+var armor_body_mult: float = 1.0
+var frontal_armor: float = 1.0
+var frontal_armor_arc_deg: float = 0.0
+var explosive_mult: float = 1.0
 var shield: bool = false
-var shield_pierce_mult: float = 0.25
+var shield_pierce_mult: float = 1.0
 var plate_health: PackedFloat32Array = PackedFloat32Array()
+## CombatTweak.shield_fire_damage_mult (FIRE through a shield).
+var shield_fire_mult: float = 1.0
 
 
 static func from_def(def: RangeDummyDef, difficulty: int) -> RangeDamageModel:
@@ -35,12 +44,22 @@ static func from_def(def: RangeDummyDef, difficulty: int) -> RangeDamageModel:
 		return m
 	m.health = def.health_for(difficulty)
 	m.headshot_mult = def.headshot_mult_for(difficulty)
-	m.frontal_armor = def.has_frontal_armor()
-	m.armor_body_mult = def.armor_body_mult_value()
-	m.shield = def.has_shield()
-	m.shield_pierce_mult = def.shield_pierce_mult_value()
-	m.plate_health = def.plates()
+	var a: Dictionary = def.armor()
+	m.armor_body_mult = float(a["armor_body_mult"])
+	m.frontal_armor = float(a["frontal_armor"])
+	m.frontal_armor_arc_deg = float(a["frontal_armor_arc_deg"])
+	m.explosive_mult = float(a["explosive_mult"])
+	m.shield = bool(a["shield"])
+	m.shield_pierce_mult = float(a["shield_pierce_mult"])
+	for v: Variant in a["plate_health"] as Array:
+		m.plate_health.append(float(v))
+	m.shield_fire_mult = CombatTweak.data().shield_fire_damage_mult
 	return m
+
+
+## True when the dummy has frontal armour (an arc).
+func has_frontal_armor() -> bool:
+	return frontal_armor_arc_deg > 0.0
 
 
 func new_state() -> Dictionary:
@@ -62,51 +81,36 @@ func aim_zone(state: Dictionary, head: bool) -> int:
 	return Enums.HitZone.HEAD
 
 
-## Apply one hit to `state` (mutated). Returns {amount, killed, health_after, blocked,
-## pierced_shield, pierced_armor, plate_stage (-1 = none), plate_broken, plate_health_after}.
+## Apply one hit to `state` (mutated). `frontal`: the shot came from inside the frontal arc
+## (RangeTarget.is_frontal). Returns {amount, killed, health_after, blocked, pierced_shield,
+## pierced_armor, frontal_plate, armor_reduced, head_armored, plate_stage (-1 = none), plate_broken,
+## plate_health_after}.
 func apply(state: Dictionary, info: Dictionary, via_shield: bool, frontal: bool) -> Dictionary:
 	var out: Dictionary = {
 		"amount": 0.0, "killed": false, "health_after": float(state["health"]), "blocked": false,
-		"pierced_shield": false, "pierced_armor": false, "plate_stage": -1, "plate_broken": false,
-		"plate_health_after": 0.0,
+		"pierced_shield": false, "pierced_armor": false, "frontal_plate": false, "armor_reduced": false,
+		"head_armored": false, "plate_stage": -1, "plate_broken": false, "plate_health_after": 0.0,
 	}
 	var amount: float = maxf(float(info.get("amount", 0.0)), 0.0)
 	var dtype: int = int(info.get("type", Enums.DamageType.BULLET))
-	var ignores_armor: bool = dtype == Enums.DamageType.EXPLOSION or dtype == Enums.DamageType.FIRE
-	if via_shield and shield and not ignores_armor:
-		if not bool(info.get("shield_pierce", false)):
-			out["blocked"] = true
+	if dtype == Enums.DamageType.EXPLOSION:
+		amount *= explosive_mult
+	if via_shield and shield:
+		amount = _through_shield(info, dtype, amount, out)
+		if bool(out["blocked"]):
 			return out
-		amount *= shield_pierce_mult
-		out["pierced_shield"] = true
 	var zone: int = int(info.get("zone", Enums.HitZone.BODY))
-	var plates: PackedFloat32Array = state["plates"]
-	var stage: int = int(state["stage"])
-	if zone == Enums.HitZone.WEAKPOINT and stage < plates.size():
-		var hp: float = plates[stage]
-		var dealt: float = minf(amount, hp)
-		plates[stage] = hp - dealt
-		state["plates"] = plates
-		out["amount"] = dealt
-		out["plate_stage"] = stage
-		out["plate_health_after"] = plates[stage]
-		if plates[stage] <= RangeMath.EPS:
-			out["plate_broken"] = true
-			state["stage"] = stage + 1
-		return out
-	var head_mult: float = 1.0 if stage < plates.size() else headshot_mult
+	var plated: bool = plates_left(state) > 0
+	if zone == Enums.HitZone.WEAKPOINT and plated and dtype != Enums.DamageType.EXPLOSION:
+		return _hit_plate(state, amount, out)
 	var mult: float = 1.0
 	if zone == Enums.HitZone.HEAD:
-		mult = head_mult * float(info.get("headshot_bonus", 1.0))
-	elif zone == Enums.HitZone.BODY and frontal_armor and frontal and not ignores_armor:
-		if bool(info.get("pierced_armor", false)):
-			out["pierced_armor"] = true
-		else:
-			mult = armor_body_mult
-			if mult <= 0.0:
-				out["blocked"] = true
-	if bool(info.get("crit", false)):
-		mult *= head_mult
+		out["head_armored"] = plated
+		mult = (1.0 if plated else headshot_mult) * float(info.get("headshot_bonus", 1.0))
+	else:
+		mult = _armor_mult(info, dtype, zone, frontal, out)
+	if bool(info.get("crit", false)) and not bool(out["head_armored"]):
+		mult *= headshot_mult
 	amount *= mult
 	var h: float = maxf(float(state["health"]) - amount, 0.0)
 	state["health"] = h
@@ -114,6 +118,53 @@ func apply(state: Dictionary, info: Dictionary, via_shield: bool, frontal: bool)
 	out["health_after"] = h
 	out["killed"] = h <= RangeMath.EPS
 	return out
+
+
+## Shield rules (BulwarkShield): returns the amount that reaches the dummy; sets out.blocked.
+func _through_shield(info: Dictionary, dtype: int, amount: float, out: Dictionary) -> float:
+	if dtype == Enums.DamageType.EXPLOSION:
+		return amount  # explosions go around shields
+	if dtype == Enums.DamageType.FIRE:
+		return amount * shield_fire_mult
+	if dtype == Enums.DamageType.BULLET and bool(info.get("shield_pierce", false)):
+		out["pierced_shield"] = true
+		return amount * shield_pierce_mult
+	out["blocked"] = true
+	return 0.0
+
+
+## The current plate soaks `amount` (x1, excess lost); emptying it breaks the plate.
+func _hit_plate(state: Dictionary, amount: float, out: Dictionary) -> Dictionary:
+	var plates: PackedFloat32Array = state["plates"]
+	var stage: int = int(state["stage"])
+	var hp: float = plates[stage]
+	var dealt: float = minf(amount, hp)
+	plates[stage] = hp - dealt
+	state["plates"] = plates
+	out["amount"] = dealt
+	out["plate_stage"] = stage
+	out["plate_health_after"] = plates[stage]
+	if plates[stage] <= RangeMath.EPS:
+		out["plate_broken"] = true
+		state["stage"] = stage + 1
+	return out
+
+
+## Armour multiplier of a non-HEAD hit (NpcHitRules.pre_zone): BODY / LIMB BULLETs only.
+func _armor_mult(info: Dictionary, dtype: int, zone: int, frontal: bool, out: Dictionary) -> float:
+	if dtype != Enums.DamageType.BULLET or (zone != Enums.HitZone.BODY and zone != Enums.HitZone.LIMB):
+		return 1.0
+	var plate: bool = has_frontal_armor() and frontal
+	if bool(info.get("pierced_armor", false)):
+		out["pierced_armor"] = plate or armor_body_mult != 1.0
+		return 1.0
+	if plate:
+		out["frontal_plate"] = true
+		out["blocked"] = frontal_armor <= 0.0
+		return frontal_armor
+	out["armor_reduced"] = armor_body_mult != 1.0
+	out["blocked"] = armor_body_mult <= 0.0
+	return armor_body_mult
 
 
 ## The DamageInfo the readout assumes for one pellet of `s` at `distance_m` (what the attacker
