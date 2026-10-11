@@ -546,6 +546,7 @@ func _pick_target() -> void:
 		if c.crew_state == Enums.CrewState.CUSTODY or c.crew_state == Enums.CrewState.CUFFED:
 			continue
 		var d: float = c.global_position.distance_squared_to(_npc.global_position)
+		d /= PerkHooks.aggro_weight(c, _npc)  # perk hook (QB-62: perk target-selection weight)
 		if d < best_any:
 			best_any = d
 			any = c

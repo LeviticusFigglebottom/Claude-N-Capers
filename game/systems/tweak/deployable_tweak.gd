@@ -21,6 +21,7 @@ static var _cached: DeployableTweak = null
 		"params": {"refill_frac_per_use": 1.0}},
 	&"deployable.body_bag_case": {"kind": &"body_bag_case", "count": 1, "uses": 3, "deploy_time_s": 2.0,
 		"params": {"bags": 3}},
+	&"deployable.armor_bag": {"kind": &"armor_bag", "count": 1, "uses": 1, "deploy_time_s": 2.0, "params": {}},
 }
 ## Deploy hold time when a def has none (s).
 @export var default_deploy_time_s: float = 2.0
@@ -39,8 +40,11 @@ static var _cached: DeployableTweak = null
 @export_group("Use (◇ hold times, s)")
 ## kind -> hold time to use a placed deployable.
 @export var use_time_s: Dictionary = {
-	&"doctor_bag": 2.0, &"fak": 0.0, &"ammo_bag": 1.0, &"body_bag_case": 1.0, &"ecm": 0.5,
+	&"doctor_bag": 2.0, &"fak": 0.0, &"ammo_bag": 1.0, &"body_bag_case": 1.0, &"ecm": 0.5, &"armor_bag": 2.0,
 }
+## QB-58 armor bag (Walk-in Closet, deploy.armor_bag): the crew member starts in this armor and the
+## bag holds the loadout's armor until they use it.
+@export var armor_bag_start_armor: StringName = &"armor.tailored_suit"
 ## FAK heal (PD2 display units) when the def has no params.heal.
 @export var fak_heal: float = 150.0
 

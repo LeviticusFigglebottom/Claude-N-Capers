@@ -69,7 +69,7 @@ func _hit(amount: float) -> Dictionary:
 func test_health_mult_decks_raise_max_health() -> void:
 	var base: float = Tweak.crew().base_health
 	var expect: Dictionary = {&"perk.bulk": 2.0, &"perk.bloodletter": 1.4, &"perk.incumbent": 1.4,
-		&"perk.long_odds": 1.4, &"perk.overlord": 1.8, &"perk.foreman": 1.0909091, &"perk.slipper": 1.0}
+		&"perk.long_odds": 1.4, &"perk.overlord": 1.8, &"perk.foreman": 1.2, &"perk.slipper": 1.0}  # LEAD (D-056): x team.health_mult
 	for deck: StringName in expect:
 		_apply_deck(deck)
 		assert_near(_crew.health.max_health, base * float(expect[deck]), 0.01, "%s max health" % deck)
@@ -81,7 +81,7 @@ func test_health_mult_decks_raise_max_health() -> void:
 
 func test_armor_mult_decks_raise_max_armor() -> void:
 	var vest: float = ContentDB.armor(LIGHT_VEST).armor
-	var expect: Dictionary = {&"perk.ironclad": 1.35, &"perk.clean_sweep": 1.2, &"perk.foreman": 1.047619,
+	var expect: Dictionary = {&"perk.ironclad": 1.35, &"perk.clean_sweep": 1.2, &"perk.foreman": 1.1,  # LEAD (D-056): x team.armor_mult
 		&"perk.bulk": 1.0}
 	for deck: StringName in expect:
 		_apply_deck(deck)
@@ -92,7 +92,7 @@ func test_armor_mult_decks_raise_max_armor() -> void:
 
 func test_dodge_decks_add_to_armor_dodge() -> void:
 	var vest_dodge: float = ContentDB.armor(LIGHT_VEST).dodge
-	var expect: Dictionary = {&"perk.slipper": 0.45, &"perk.prowler": 0.3, &"perk.hustler": 0.15,
+	var expect: Dictionary = {&"perk.slipper": 0.45, &"perk.prowler": 0.3, &"perk.hustler": 0.40,  # LEAD (D-056): + perk.crook.vest_dodge_add
 		&"perk.incumbent": 0.15, &"perk.bulk": 0.0}
 	for deck: StringName in expect:
 		_apply_deck(deck)
@@ -102,7 +102,7 @@ func test_dodge_decks_add_to_armor_dodge() -> void:
 
 func test_armor_regen_delay_decks_shorten_the_delay() -> void:
 	var delay: float = Tweak.crew().armor_regen_delay_s
-	var expect: Dictionary = {&"perk.hustler": 0.9, &"perk.clean_sweep": 0.9, &"perk.ironclad": 0.9, &"perk.bulk": 1.0}
+	var expect: Dictionary = {&"perk.hustler": 0.9, &"perk.clean_sweep": 0.9, &"perk.ironclad": 0.81, &"perk.bulk": 1.0}  # LEAD: x team
 	for deck: StringName in expect:
 		_apply_deck(deck)
 		_hit(1.0)

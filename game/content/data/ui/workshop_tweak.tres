@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="WorkshopTweak" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/ui/workshop/workshop_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+fov_deg = 30.0
+frame_margin = 0.7
+start_yaw_deg = -28.0
+start_pitch_deg = 12.0
+pitch_limit_deg = 70.0
+zoom_min_mult = 0.18
+zoom_max_mult = 1.8
+zoom_step_mult = 1.12
+zoom_trigger_rate = 1.8
+drag_deg_per_px = 0.35
+pan_m_per_px = 0.0016
+stick_deg_s = 120.0
+pan_rate = 0.6
+key_deg_s = 90.0
+stick_deadzone = 0.2
+pan_limit_radii = 1.2
+idle_spin_after_s = 3.0
+idle_spin_deg_s = 10.0
+follow_rate = 9.0
+focus_distance_mult = 0.55
+focus_min_distance_m = 0.3
+focus_max_overview_frac = 0.85
+focus_pitch_above_deg = 18.0
+focus_pitch_below_deg = -4.0
+focus_rear_yaw_deg = 20.0
+focus_left_yaw_deg = -155.0
+gizmo_ring_frac = 0.05
+gizmo_axis_frac = 0.07
+gizmo_color = Color(0.31, 0.82, 0.91, 1.0)
+backdrop_top = Color(0.36, 0.35, 0.33, 1.0)
+backdrop_horizon = Color(0.2, 0.195, 0.185, 1.0)
+backdrop_floor = Color(0.07, 0.068, 0.064, 1.0)
+backdrop_energy = 1.0
+ambient_energy = 0.6
+key_color = Color(1.0, 0.95, 0.88, 1.0)
+key_energy = 2.8
+key_angles_deg = Vector2(40.0, 40.0)
+fill_color = Color(0.78, 0.84, 1.0, 1.0)
+fill_energy = 1.0
+fill_angles_deg = Vector2(12.0, -60.0)
+rim_color = Color(0.92, 0.95, 1.0, 1.0)
+rim_energy = 2.6
+rim_angles_deg = Vector2(30.0, 160.0)
+turntable_color = Color(0.045, 0.043, 0.041, 1.0)
+turntable_roughness = 0.9
+turntable_radius_mult = 0.8
+turntable_gap_m = 0.035

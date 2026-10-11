@@ -86,6 +86,34 @@ static func _warnings_only_script() -> GDScript:
 	return gd
 
 
+## ui_hud.md v1.4 (B4-19): stamina bar bound to stamina_changed / stamina, exhausted.
+func test_stamina_widget() -> void:
+	var w: StaminaBar = _hud.stamina
+	assert_has(_hud.widgets(), w)
+	assert_false(w.visible, "full stamina: hidden")
+	_model.stamina = 0.4
+	assert_true(w.visible, "draining: shown")
+	assert_near(w.bar.value, 0.4)
+	assert_eq(w.bar.self_modulate, _hud.stamina.tweak.stamina_color)
+	assert_eq(w.label.text, UiText.t(&"ui.hud.stamina"))
+	_model.stamina = 0.0
+	_model.exhausted = true
+	assert_true(w.visible)
+	assert_eq(w.bar.self_modulate, w.tweak.stamina_exhausted_color, "exhausted tint")
+	assert_eq(w.label.text, UiText.t(&"ui.hud.stamina_exhausted"))
+	_model.stamina = 1.0
+	assert_true(w.visible, "still exhausted at full: shown")
+	_model.exhausted = false
+	assert_false(w.visible, "recovered: hidden")
+	assert_eq(w.bar.self_modulate, w.tweak.stamina_color)
+	# A model without the v1.4 fields (ENV A before round 5): stays hidden, no errors.
+	var bare: Node = Node.new()
+	add_child(bare)
+	w.bind(bare)
+	assert_false(w.visible)
+	bare.queue_free()
+
+
 func test_vitals_and_downs() -> void:
 	_model.max_health = 200.0
 	_model.health = 50.0
@@ -192,15 +220,24 @@ func test_demo_driver_runs_every_stage() -> void:
 	await wait_frames(1)
 	var driver: MockHudDriver = demo.get_node("Driver") as MockHudDriver
 	var hud: Hud = demo.get_node("HudLayer/Hud") as Hud
+	assert_true(await wait_until(func() -> bool: return hud.model is MockHudModel, 2.0),
+			"demo HUD bound through the G.LOCAL_HUD_MODEL group")
+	hud.bind(driver.model)  # this test's own MockHudModel is in the group too
 	var captain_seen: bool = false
+	var exhausted_seen: bool = false
+	var drained: bool = false
 	for i: int in range(10):
 		driver.t = float(i) * 4.0 + 0.1
 		driver._process(0.0)
+		driver.t = float(i) * 4.0 + 2.0
+		driver._process(0.0)
 		captain_seen = captain_seen or driver.model.captain_present
+		exhausted_seen = exhausted_seen or (driver.model.exhausted and hud.stamina.visible)
+		drained = drained or (driver.model.stamina < 1.0 and not driver.model.exhausted)
 	assert_true(captain_seen, "the timeline has a captain step")
+	assert_true(drained and exhausted_seen, "the timeline drains stamina and shows exhausted")
+	assert_false(driver.model.exhausted, "recovered by the fade")
 	assert_false(driver.model.captain_present, "Brandt gone by the fade")
-	assert_true(await wait_until(func() -> bool: return hud.model is MockHudModel, 2.0),
-			"demo HUD bound through the G.LOCAL_HUD_MODEL group")
 	demo.queue_free()
 	await wait_frames(1)
 

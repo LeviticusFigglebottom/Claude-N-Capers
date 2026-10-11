@@ -9,7 +9,8 @@ forearm.L/R, hand.L/R`` and the 30 finger bones), with the clavicles parented to
 bones are added (contract proposal, see the D1-03 report):
 
 * ``weapon`` (child of ``hand.R``; identity relative to it except while the right hand works a bolt
-  (``sniper_bolt*``, ``sniper_reload_empty``), when it carries the gun held by the left hand): its head is the weapon origin and
+  (``sniper_bolt*``, ``sniper_reload_empty``) or a lever (the lever cycle, D-055), and in every ``bow`` clip (the
+  bow sits in ``hand.L``, ``_arms_bow``)): its head is the weapon origin and
   its axes are the weapon's Godot axes (bone Y = weapon up, bone Z = weapon back, X = right), at the
   HandR grip offset of ``_anim.grip_offset``. A BoneAttachment3D on ``weapon`` with the weapon scene
   as an identity child places the gun; the same offset applies to ``rig_humanoid``'s HandR.
@@ -79,9 +80,9 @@ def skeleton(height: float = rig.DEFAULT_HEIGHT) -> Skeleton:
 # animation sets (data in ``_arms_sets``, clips in ``_arms_clips``, choreography in ``_arms_choreo``)
 # =============================================================================================
 from _arms_clips import fp_clips, state_fns  # noqa: E402
-from _arms_sets import PISTOL, SETS, FPSet, clip_table  # noqa: E402
+from _arms_sets import B3, PISTOL, SETS, FPSet, clip_table  # noqa: E402
 
-__all__ = ["ARMATURE_NAME", "BONES", "PARENT", "PISTOL", "SETS", "FPSet", "build_arms_mesh", "build_arms_rig",
+__all__ = ["ARMATURE_NAME", "B3", "BONES", "PARENT", "PISTOL", "SETS", "FPSet", "build_arms_mesh", "build_arms_rig",
            "clip_table", "eye_point", "fp_clips", "segments", "skeleton", "state_fns"]
 
 

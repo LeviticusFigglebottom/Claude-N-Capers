@@ -64,11 +64,27 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `stealth_xp_bonus_mult` after a successful stealth heist, else 1.0). UI string:
   `ui.results.stealth_bonus_banked` ("... +{pct}%").
 * `SaveService` / `PlayerProfile`: versioned JSON at `user://profiles/profile_<n>.json`
-  (`CURRENT_VERSION` 4; v2 adds `banked_stealth_mult`, default 1.0; v3 `skill_sets`/`perk_cards`;
-  v4 `owned_mask_parts`/`custom_masks`; field list in `save/player_profile.gd`);
-  `load_profile/save_profile/migrate/apply_heist_payout(p, payout, XpCurve.level_for_xp)`.
+  (`CURRENT_VERSION` 5 = the roadmap's "save v2"; **every field, type, default and since-version:
+  `content/docs/save_format.md`**; v2 `banked_stealth_mult`, v3 `skill_sets`/`perk_cards`, v4
+  `owned_mask_parts`/`custom_masks`, v5 `unlocks`/`achievements`/`pro_job_locks`);
+  `load_profile/save_profile/migrate/profile_from_save/apply_heist_payout(p, payout, XpCurve.level_for_xp)`.
+  Loading runs migrate -> `ProfileSchema.sanitize` (wrong types -> default + Log.warn) -> from_dict ->
+  `ProfileValidator.validate` (unknown ids pruned, illegal skill sets reset, Log.warn each); golden
+  migration fixtures in `tests/b/fixtures/save/`.
   `apply_heist_payout` resets the bank when `stealth_bonus_consumed`, then stores
   `stealth_bonus_banked` if > 1.0.
+* `ProJobLocks` (`board/pro_job_locks.gd`): failed pro Board contracts persisted in
+  `PlayerProfile.pro_job_locks` (`lock/prune/is_locked`); MenuFlow mirrors them into `consumed_contracts`.
+* `MaskLocker.grant_unlock(profile, unlock_id)` records the unlock in `PlayerProfile.unlocks` and owns its
+  presets; `apply_unlocks(profile)` re-owns them on load. `ContentDB.has(kind, id)` = lookup without an error.
+* **Achievements (B4-20 stub).** `AchievementDef` (`defs/achievement_def.gd`; data `data/achievements/*.tres`,
+  ContentDB kind `achievements`): `id`, `name_key`/`desc_key`, `condition` {`event`: heist_completed |
+  heist_failed | stash_earned | level_reached, filters `heist`, `difficulty_min`, `stealth`, `loud`, `pro`,
+  `count`}, `unlock` (granted via `MaskLocker.grant_unlock`), `order`. `Achievements` (`progression/achievements.gd`):
+  `all()`, `on_payday(profile, result, payout, is_pro) -> newly unlocked ids` (PaydayScreen._apply, before the
+  save), `record(profile, event, ctx)`, `progress/is_unlocked`. State: `PlayerProfile.achievements` (save v5).
+  Screen: `AchievementsScreen` (`ui/achievements/`), from the hub profile panel (`HubMenu.achievements_requested`
+  -> `MenuFlow._open_achievements()`); payday lists unlocks (`ui.results.achievement_unlocked`).
 * `ContentDB.inject(kind, key, res)`: tests/tooling only (test-only SkillDef/PerkDeckDef);
   `clear_cache()` drops it.
 * `XpCurve.level_for_xp(xp)`, `xp_for_level(level)`. `VoiceLineTable` at `data/voice/lines.tres`.
@@ -148,7 +164,9 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   ui_hud.md v1.2; no adapter; v1.2 `custody` drives `CustodyPanel`: negotiation / auto-release timers while in
   custody, a trade hint for the highlighted hostage while free; v1.3 (D-049) `captain_changed` / `captain_present` /
   `captain_resistance` drive `CaptainPanel`: Brandt's name + Aegis resistance bar, and the status panel then drops
-  its `captain` warning line), polled while unbound and rediscovered if the model is freed; MenuFlow
+  its `captain` warning line; v1.4 (B4-19, ahead of ENV A) `stamina_changed` / `stamina` 0..1 / `exhausted` drive
+  `StaminaBar` above the vitals: shown while stamina < 1 or exhausted, `HudTweak.stamina_exhausted_color` tint
+  while exhausted, hidden when the model lacks the fields), polled while unbound and rediscovered if the model is freed; MenuFlow
   relies on that discovery in heists. `bind(model)` still works. `MockHudModel` (demo/tests) joins the
   same group. `MarkedTargets` draws a diamond per `marked_targets` entry; `InteractionPanel` fills a
   missing `{key}` prompt arg from the `interact` InputMap binding.

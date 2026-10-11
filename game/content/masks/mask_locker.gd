@@ -38,14 +38,30 @@ static func is_drop_owned(profile: PlayerProfile, id: StringName) -> bool:
 	return is_equippable(profile, id) if MaskCatalog.is_preset_id(id) else is_part_owned(profile, id)
 
 
-## Grants every preset whose `unlock` is `unlock_id` (e.g. an achievement, `unlock.achievement.<x>`;
-## the achievement system is a stub). Returns the newly owned preset ids.
+## Grants unlock `unlock_id` (e.g. an achievement's `unlock.achievement.<x>`, B4-20): records it in
+## `PlayerProfile.unlocks` (saved, v5) and owns every preset whose `unlock` is that id. Returns the
+## newly owned preset ids.
 static func grant_unlock(profile: PlayerProfile, unlock_id: StringName) -> Array[StringName]:
 	var out: Array[StringName] = []
-	if unlock_id == &"":
+	if profile == null or unlock_id == &"":
 		return out
+	if not profile.unlocks.has(unlock_id):
+		profile.unlocks.append(unlock_id)
+		ContentDB.sort_ids(profile.unlocks)
 	for md: MaskDef in MaskCatalog.presets():
 		if md.unlock == unlock_id and grant_preset(profile, md.id):
+			out.append(md.id)
+	return out
+
+
+## Owns every preset behind an unlock already recorded in `profile.unlocks` (load-time repair, so a
+## preset added later behind an earned unlock is owned). Returns the newly owned preset ids.
+static func apply_unlocks(profile: PlayerProfile) -> Array[StringName]:
+	var out: Array[StringName] = []
+	if profile == null:
+		return out
+	for md: MaskDef in MaskCatalog.presets():
+		if md.unlock != &"" and profile.unlocks.has(md.unlock) and grant_preset(profile, md.id):
 			out.append(md.id)
 	return out
 

@@ -28,7 +28,7 @@ signal captain_replicated(present: bool, resistance: float)
 ## Client: the connection to the host dropped while this replica runs (multiplayer.server_disconnected).
 ## Nothing is torn down here: the app flow (ENV B) shows its "host left" result, then calls
 ## HeistRuntime.teardown() and Net.leave(). `host_lost_at_s` keeps the heist time it happened.
-## TODO(net round 4): connect Net.host_lost instead once game/core/net.gd has it.
+## Driven by `Net.host_lost` (D-052), with multiplayer.server_disconnected as a fallback.
 signal host_lost()
 
 const SERVICE: StringName = &"net_sync"
@@ -75,11 +75,15 @@ static func can_rpc(node: Node) -> bool:
 
 func _ready() -> void:
 	_runtime = HeistRuntime.of(self)
+	if not Net.host_lost.is_connected(_on_server_disconnected):
+		Net.host_lost.connect(_on_server_disconnected)
 	if not multiplayer.server_disconnected.is_connected(_on_server_disconnected):
 		multiplayer.server_disconnected.connect(_on_server_disconnected)
 
 
 func _exit_tree() -> void:
+	if Net.host_lost.is_connected(_on_server_disconnected):
+		Net.host_lost.disconnect(_on_server_disconnected)
 	if multiplayer != null and multiplayer.server_disconnected.is_connected(_on_server_disconnected):
 		multiplayer.server_disconnected.disconnect(_on_server_disconnected)
 

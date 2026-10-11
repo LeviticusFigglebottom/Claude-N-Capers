@@ -205,7 +205,11 @@ func test_cues_and_anim_sets_follow_the_contract_pattern() -> void:
 		assert_has(ANIM_SETS, w.anim_set, "%s anim set" % w.id)
 		var family: StringName = CUE_FAMILY.get(w.anim_set, w.anim_set)
 		assert_eq(w.fire_cue, StringName("cue.weapon_%s_fire" % family), "%s fire cue" % w.id)
-		assert_eq(w.fire_cue_suppressed, StringName("cue.weapon_%s_fire_suppressed" % family), "%s suppressed cue" % w.id)
+		# A suppressed cue only where a suppressor can be fitted (ENV C: no orphan _suppressed cues).
+		var want_sup: StringName = &""
+		if w.mod_slots.has(Enums.ModType.SUPPRESSOR):
+			want_sup = StringName("cue.weapon_%s_fire_suppressed" % family)
+		assert_eq(w.fire_cue_suppressed, want_sup, "%s suppressed cue" % w.id)
 
 
 func test_every_weapon_has_three_optional_mods_and_stock_defaults() -> void:

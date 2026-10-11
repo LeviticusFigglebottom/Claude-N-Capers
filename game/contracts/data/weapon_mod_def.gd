@@ -11,3 +11,5 @@ extends Resource
 @export var model: PackedScene            ## attaches to the marker named in visual_slots.md
 ## Mods that cannot be combined with this one (e.g. a sight blocking a rail gadget).
 @export var conflicts: Array[StringName] = []
+## Shallow-merged over WeaponDef.params in mod order (D-057).
+@export var params: Dictionary = {}

@@ -22,8 +22,8 @@ target = &"heist_select"
 [sub_resource type="Resource" id="st_armory"]
 script = ExtResource("2")
 id = &"armory"
-title_key = &"ui.hub.station.armory"
-desc_key = &"ui.hub.station.armory.desc"
+title_key = &"ui.hub.station.armory_workshop"
+desc_key = &"ui.hub.station.armory_workshop.desc"
 icon_kind = &"armory"
 target = &"loadout"
 

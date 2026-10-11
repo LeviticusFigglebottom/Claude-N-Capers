@@ -7,7 +7,7 @@ extends Resource
 @export var manufacturer: String = ""
 @export var weapon_class: Enums.WeaponClass = Enums.WeaponClass.PISTOL
 @export var slot: Enums.WeaponSlot = Enums.WeaponSlot.SECONDARY
-@export var fire_modes: Array[StringName] = [&"semi"]  ## &"semi", &"auto", &"burst3", &"pump", &"bolt"
+@export var fire_modes: Array[StringName] = [&"semi"]  ## semi, auto, burst3, pump, bolt, charge (bow), lever (D-057)
 @export var base: WeaponStats
 @export var price: int = 0
 @export var unlock_level: int = 0
@@ -23,3 +23,6 @@ extends Resource
 @export var anim_set: StringName = &"pistol"
 ## Two guns (D-050): the `akimbo` modifier qualifier comes from this flag, never from anim_set.
 @export var akimbo: bool = false
+## Special-weapon parameters read by ENV A (bow draw, launcher blast, flame DOT, saw wear, minigun spin...;
+## schema in game/systems/modifiers_params.md). Mod `params` are shallow-merged over these in mod order (D-057).
+@export var params: Dictionary = {}

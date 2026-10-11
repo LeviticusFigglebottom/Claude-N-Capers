@@ -5,12 +5,14 @@
 ## its interactables call MenuFlow.open_station(id), the same path these cards use.
 ##
 ## API (MenuFlow wires it): setup(profile) before or after entering the tree; refresh_profile(p).
-## Signals: station_requested(id) (a card pressed); back_requested() (UiScreen, Esc / gamepad B,
+## Signals: station_requested(id) (a card pressed); achievements_requested() (the profile panel's
+## Achievements button, B4-20); back_requested() (UiScreen, Esc / gamepad B,
 ## and the Main Menu button).
 class_name HubMenu
 extends UiScreen
 
 signal station_requested(station_id: StringName)
+signal achievements_requested()
 
 @export var profile_slot: int = 0
 
@@ -27,6 +29,8 @@ var spending_label: Label
 var stash_label: Label
 var skill_points_label: Label
 var perk_points_label: Label
+## Profile panel button -> achievements_requested (B4-20).
+var achievements_button: Button
 
 
 func setup(p: PlayerProfile) -> void:
@@ -55,6 +59,10 @@ func build_ui() -> void:
 	side.custom_minimum_size = Vector2(520, 0)
 	body.add_child(side)
 	side.add_child(_build_profile_panel())
+	achievements_button = UiBuild.button(&"ui.hub.achievements")
+	achievements_button.pressed.connect(achievements_requested.emit)
+	side.add_child(achievements_button)
+	focus_chain.append(achievements_button)
 	var footer: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(footer)
 	back_button = UiBuild.button(&"ui.hub.main_menu")

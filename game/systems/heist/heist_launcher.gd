@@ -139,7 +139,7 @@ static func join_running(data: Dictionary, parent: Node = null, options: Diction
 ## (version mismatch, unknown map: Log.error), on timeout, when the connection to the host is lost
 ## (`multiplayer.server_disconnected`) or the session ends (`Net.leave()` -> Net.session_ended), and
 ## when cancel_launch_client() is called. While it waits, auto_join() does not also build a replica.
-## TODO(net round 4): also fail on Net.connection_failed / Net.host_lost once net.gd has them.
+## Also returns null on Net.connection_failed / Net.host_lost (D-052).
 static func launch_client(parent: Node = null, options: Dictionary = {}, timeout_s: float = 0.0) -> HeistRuntime:
 	var tree: SceneTree = Engine.get_main_loop() as SceneTree
 	if Net.is_authority():
@@ -156,6 +156,8 @@ static func launch_client(parent: Node = null, options: Dictionary = {}, timeout
 	var mp: MultiplayerAPI = tree.root.multiplayer
 	Net.lobby_message.connect(on_msg)
 	Net.session_ended.connect(on_lost)
+	Net.connection_failed.connect(on_lost)
+	Net.host_lost.connect(on_lost)
 	mp.server_disconnected.connect(on_lost)
 	_client_pending += 1
 	var gen: int = _client_gen
@@ -168,6 +170,8 @@ static func launch_client(parent: Node = null, options: Dictionary = {}, timeout
 	_client_pending -= 1
 	Net.lobby_message.disconnect(on_msg)
 	Net.session_ended.disconnect(on_lost)
+	Net.connection_failed.disconnect(on_lost)
+	Net.host_lost.disconnect(on_lost)
 	if mp.server_disconnected.is_connected(on_lost):
 		mp.server_disconnected.disconnect(on_lost)
 	var v: Variant = state["rt"]

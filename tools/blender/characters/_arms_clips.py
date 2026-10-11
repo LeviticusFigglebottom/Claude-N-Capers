@@ -48,6 +48,8 @@ def hold_frame(spec: tuple, dp=(0.0, 0.0, 0.0), yaw: float = 0.0, pitch: float =
 
 
 def ads_frame(s: FPSet) -> tuple[np.ndarray, np.ndarray]:
+    if s.ads_hold is not None:              # no sights (saw, minigun, bow): a raised hold instead
+        return hold_frame(s.ads_hold)
     return weapon_frame(v3(0.0, s.ads_dist, 0.0) - s.markers["aim"])
 
 
@@ -65,6 +67,11 @@ class Kit:
         if s.support == "pistol":
             self.support = hand_at(sk, "L", "w", m["left_ik"], (0.55, 0.45, -0.70), (0.85, 0.05, 0.25),
                                    s.pole_l, "support", share=0.45, off=0.016)
+        elif s.support in ("vgrip", "bow"):        # a pistol-style front grip / the bow riser (D-055)
+            self.support = left_grip(sk, m.get("vgrip", m["left_ik"]), s.pole_l)
+        elif s.support == "top":                   # a transverse top handle, palm down (saw, minigun)
+            self.support = hand_at(sk, "L", "w", m["left_ik"], (0.20, 0.95, -0.25), (0.05, 0.10, -0.99),
+                                   s.pole_l, hand_shape("grip", 0.85), share=0.55, off=0.017)
         else:
             self.support = hand_at(sk, "L", "w", m["left_ik"], (0.50, 0.80, 0.30), (0.55, -0.05, 0.83),
                                    s.pole_l, hand_shape("grip", 0.80), share=0.55, off=0.018)
@@ -121,6 +128,24 @@ class Kit:
         h = hand_at(self.sk, "R", "w", point, along, palm, pole, shape, share=share, off=off)
         h.twist = 0.6
         return h
+
+
+def left_grip(sk: Skeleton, at, pole) -> Hand:
+    """The left hand on a pistol-style grip whose pivot is ``at`` (weapon space): the mirrored
+    weapon grip offset (``_anim.grip_offset(sk, "L")``, the akimbo offhand convention)."""
+    R_off, t_off = A.grip_offset(sk, "L")
+    axes = R_off.T.copy()
+    return Hand("w", np.asarray(at, float) - axes @ t_off, axes, unit(np.asarray(pole, float)),
+                hand_shape("grip", 0.9), 0.5)
+
+
+def hand_w(sk: Skeleton, sfx: str, wf: tuple, point, along, palm, pole, shape, share: float = 0.5,
+           off: float = 0.016) -> Hand:
+    """A hand authored in camera space for the weapon hold ``wf`` (``hand_at`` arguments), stored in
+    weapon space so it stays on the weapon when the hold moves (D-055)."""
+    h = hand_at(sk, sfx, "c", point, along, palm, pole, shape, share=share, off=off)
+    R, o = wf
+    return Hand("w", R.T @ (h.wrist - o), R.T @ h.axes, h.pole, h.shape, h.twist)
 
 
 def K(f, wf, L, R, **kw) -> Key:
@@ -368,7 +393,7 @@ def clip_mag_reload(kit: Kit, s: FPSet, N: int, empty: bool):
     after = i + 4
     keys.append(K(after, tilt, g.moved(-s.markers["magwell_axis"] * 0.025).with_shape(hand_shape("relaxed")),
                   kit.grip, blade=bl, ease="out"))
-    if empty:
+    if empty or "belt_seat" in ev:
         after = _release_keys(kit, s, ev, keys, after)
     keys.append(K(done, hip, kit.support, kit.grip, blade=bl, arc_l=(-0.03, 0.0, -0.04)))
     keys.append(K(N, hip, kit.support, kit.grip, blade=bl, ease="settle"))
@@ -440,6 +465,21 @@ def _release_keys(kit: Kit, s: FPSet, ev: dict, keys: list, after: int) -> int:
         keys.append(K(rel + 4, hold, at(catch + v3(-0.04, 0.01, -0.01), hand_shape("relaxed")), kit.grip, blade=bl,
                       ease="out"))
         return rel + 4
+    if "belt_seat" in ev:           # minigun: feed the new belt into the feed chute (D-055)
+        seat = ev["belt_seat"]
+        feed = m["feed"]
+
+        def at_feed(dz: float, shape) -> Hand:
+            return kit.left_w(feed + v3(-0.012, 0.0, 0.004 + dz), (0.55, 0.45, 0.70), (0.75, 0.05, -0.65),
+                              pole=(-0.5, -0.3, -0.8), shape=shape, share=0.92, off=0.010)
+        look = hold_frame(s.reload_tilt, (0.0, 0.02, -0.02), yaw=-3.0, pitch=-6.0, roll=-4.0)
+        keys.append(K(seat - 9, look, at_feed(-0.07, "pinch"), kit.grip, blade=bl, arc_l=(-0.03, 0.0, 0.0)))
+        keys.append(K(seat - 3, look, at_feed(-0.02, "pinch"), kit.grip, blade=bl))
+        keys.append(K(seat, hold_frame(s.reload_tilt, (0.0, 0.02, -0.024), yaw=-3.0, pitch=-6.5, roll=-4.0),
+                      at_feed(0.0, "pinch"), kit.grip, blade=bl, ease="snap"))
+        keys.append(K(seat + 5, look, at_feed(0.03, "relaxed").moved(v3(-0.03, 0.0, 0.0)), kit.grip, blade=bl,
+                      ease="out"))
+        return seat + 5
     if s.name == "sniper":          # the bolt cycle (right hand); the left hand back on the stock
         b0 = ev["bolt_open"] - 10
         hold = _bolt_hold(s, ads=False)
@@ -641,6 +681,15 @@ def state_fns(sk: Skeleton, s: FPSet) -> dict:
     if s.support == "akimbo":
         from _arms_akimbo import akimbo_fns  # noqa: PLC0415 - imports this module
         return akimbo_fns(sk, s)
+    if s.name in ("break_action", "launcher", "crossbow", "lever"):
+        from _arms_breech import breech_fns  # noqa: PLC0415 - imports this module
+        return breech_fns(sk, s)
+    if s.name == "bow":
+        from _arms_bow import bow_fns  # noqa: PLC0415 - imports this module
+        return bow_fns(sk, s)
+    if s.name in ("flamethrower", "saw", "minigun"):
+        from _arms_heavy import heavy_fns  # noqa: PLC0415 - imports this module
+        return heavy_fns(sk, s)
     kit = Kit(sk, s)
     out = {}
     for clip in s.clips:

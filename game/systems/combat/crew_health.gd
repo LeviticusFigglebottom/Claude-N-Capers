@@ -78,7 +78,8 @@ func _ready() -> void:
 
 ## Max health / armor from tweak, armor def and modifiers (re-evaluated every server tick).
 func compute_max_health() -> float:
-	return Tweak.crew().base_health * Modifiers.mult(_slot(), &"defense.health_mult")
+	return PerkHooks.max_health(self, Tweak.crew().base_health
+		* TeamModifiers.combined(_slot(), &"defense.health_mult", &"team.health_mult"))  # QB-60 team.health_mult; perk hook
 
 
 func compute_max_armor() -> float:
@@ -88,7 +89,14 @@ func compute_max_armor() -> float:
 		var def: ArmorDef = ContentDB.armor(l.armor)
 		if def != null:
 			base = def.armor
-	return base * Modifiers.mult(_slot(), &"defense.armor_mult")
+	return PerkHooks.max_armor(self, base
+		* TeamModifiers.combined(_slot(), &"defense.armor_mult", &"team.armor_mult"))  # QB-60: x team.armor_mult; perk hook
+
+
+## Armor regen delay after a hit or dodge: personal x team key (QB-60).
+func _regen_delay(tw: CrewTweak) -> float:
+	return tw.armor_regen_delay_s * TeamModifiers.combined(_slot(), &"defense.armor_regen_delay_mult",
+		&"team.armor_regen_delay_mult")
 
 
 func max_downs() -> int:
@@ -115,7 +123,7 @@ func dodge_chance() -> float:
 		var def: ArmorDef = ContentDB.armor(l.armor)
 		if def != null:
 			base = def.dodge
-	return clampf(base + Modifiers.add(_slot(), &"defense.dodge_add"), 0.0, 1.0)
+	return clampf(base + Modifiers.add(_slot(), &"defense.dodge_add") + PerkHooks.dodge_add(self), 0.0, 1.0)  # perk hook
 
 
 ## A2-06 (L2.11): heal `amount` (clamped to max health); `reset_downs` (doctor bag) also restores
@@ -154,6 +162,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		return out
 	var tw: CrewTweak = Tweak.crew()
 	var dmg: float = maxf(float(info.get("amount", 0.0)), 0.0) * Modifiers.mult(_slot(), &"defense.damage_taken_mult")
+	dmg = TeamModifiers.hostage_reduced(_slot(), dmg, TeamModifiers.hostage_count(_crew))  # QB-60
 	if st == Enums.CrewState.DOWNED or _is_cuffed_while_down():
 		bleedout_health -= dmg
 		out["amount"] = dmg
@@ -168,12 +177,13 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		return out
 	# --- A2-06 dodge (L2.4): a ranged hit may do nothing; a dodge restarts the armor regen delay.
 	if int(info.get("type", Enums.DamageType.BULLET)) == Enums.DamageType.BULLET and _roll_dodge():
-		regen_delay_left = tw.armor_regen_delay_s * Modifiers.mult(_slot(), &"defense.armor_regen_delay_mult")
+		regen_delay_left = _regen_delay(tw)
 		out["amount"] = 0.0
 		out["dodged"] = true
 		_publish(out, attacker_net_id)
 		return out
 	# --- end A2-06
+	dmg = PerkHooks.incoming_damage(self, info, dmg)  # perk hook (QB-62: perk DR, perk.stoic DoT)
 	var armor_dmg: float = 0.0
 	var health_dmg: float = 0.0
 	if bool(info.get("pierced_armor", false)) or armor <= 0.0:
@@ -188,10 +198,11 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		armor_dmg = dmg
 	armor -= armor_dmg
 	health = maxf(health - health_dmg, 0.0)
-	regen_delay_left = tw.armor_regen_delay_s * Modifiers.mult(_slot(), &"defense.armor_regen_delay_mult")
+	regen_delay_left = _regen_delay(tw)
 	out["amount"] = armor_dmg + health_dmg
 	out["armor_damage"] = armor_dmg
 	out["health_damage"] = health_dmg
+	PerkHooks.after_hit(self, out)  # perk hook (QB-62)
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and rt.interaction != null and armor_dmg + health_dmg > 0.0:
 		rt.interaction.interrupt_on_damage(_crew.slot)  # S9.1
@@ -376,13 +387,15 @@ func server_tick(delta: float) -> void:
 				return  # L2.12: police-cuffed while downed, bleedout paused
 	if invuln_left > 0.0:
 		invuln_left = maxf(invuln_left - delta, 0.0)
+	if PerkHooks.tick(self, delta):  # perk hook (QB-62); true = a perk replaces the armor regen
+		return
 	if regen_delay_left > 0.0:
 		regen_delay_left -= delta
 		return
 	if armor < max_armor:
 		var tw: CrewTweak = Tweak.crew()
 		var rate: float = max_armor / maxf(tw.armor_regen_full_time_s, 0.001)
-		armor = minf(armor + rate * Modifiers.mult(_slot(), &"defense.armor_regen_rate_mult") * delta, max_armor)
+		armor = minf(armor + rate * TeamModifiers.armor_regen_rate_mult(_slot()) * delta, max_armor)
 
 
 ## Modifier changes mid-heist rescale the current values (keeps the fraction).

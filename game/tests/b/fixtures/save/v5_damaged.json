@@ -1,0 +1,31 @@
+{
+	"_doc": "A current-version file damaged by hand edits / a bad tool: wrong types, unknown ids, an illegal skill set.",
+	"version": 5,
+	"profile_name": 77,
+	"cash": "lots",
+	"stash": 5000,
+	"xp": [1, 2],
+	"level": 3,
+	"banked_stealth_mult": "high",
+	"owned_weapons": ["weapon.kestrel_p9", "weapon.retired_blaster", 12, null],
+	"owned_mods": ["mod.p9_suppressor", "mod.removed_mod"],
+	"owned_masks": ["mask.never_was", "mask.night_circuit"],
+	"owned_mask_parts": ["mask_pattern.dots", "mask_pattern.gone"],
+	"custom_masks": [{"base": "mask_base.heron", "material": "mask_material.gilt", "colors": "mask_colors.bone_ink", "pattern": "mask_pattern.gone"}, "junk", {"base": 3}],
+	"loadout": {
+		"primary": "weapon.retired_blaster", "primary_mods": ["mod.removed_mod"],
+		"secondary": "weapon.kestrel_p9", "secondary_mods": ["mod.p9_suppressor", "mod.removed_mod"],
+		"melee": "melee.spork", "throwable": 5, "deployable": "deployable.doctor_bag",
+		"deployable_secondary": "", "armor": "armor.cardboard", "mask": "mask.custom.0",
+		"perk_deck": "perk.unknown_deck", "perk_deck_cards": 4,
+		"skills": {"skill.juggernaut.plated": 2, "skill.not_a_skill": 1}
+	},
+	"skill_sets": [{"skill.juggernaut.plated": 2}, {"skill.juggernaut.thick_skin": 1, "skill.removed": 2}, "bad"],
+	"active_skill_set": 0,
+	"perk_cards": {"perk.bulk": 40, "perk.unknown_deck": 2, "perk.prowler": "two"},
+	"unlocks": ["unlock.achievement.cataclysm_clear", "not_an_unlock"],
+	"achievements": {"achievement.first_score": {"progress": 1, "unlocked": true}, "achievement.deleted": {"progress": 3, "unlocked": false}, "achievement.cataclysm_clear": "yes"},
+	"pro_job_locks": {"0:123": 1000.0, "garbage": 5.0, "1:9": "soon"},
+	"stats": {"heists_completed": 2, "heists_failed": "none"},
+	"settings": "loud"
+}

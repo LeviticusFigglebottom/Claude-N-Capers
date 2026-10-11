@@ -654,9 +654,9 @@ def gaits(table: dict) -> dict[str, Gait]:
                             strike=10.0, toeoff=-30.0, lean=12.0, pelvis_yaw=6.0, pelvis_roll=3.5, arm_swing=26.0,
                             arm_add=30.0, elbow=55.0, hand="loose_fist", centre={"L": (0.0, -0.06), "R": (0.0, -0.06)},
                             sway=0.016, upper=_carry_upper),
-        "shield_walk": g("shield_walk", beta=0.64, lift=0.055, drop=0.085, bob=0.010, strike=10.0, toeoff=-24.0, lean=8.0,
-                         pelvis_yaw=3.0, pelvis_roll=2.5, width=0.05, toe_out=12.0, sway=0.022, chest_counter=1.0,
-                         head_bob_comp=0.8, centre={"L": (0.0, 0.03), "R": (0.0, -0.09)}, upper=_shield_upper,
+        "shield_walk": g("shield_walk", beta=0.64, lift=0.055, drop=SHIELD_WALK_DROP, bob=0.010, strike=10.0, toeoff=-24.0,
+                         lean=SHIELD_WALK_LEAN, pelvis_yaw=3.0, pelvis_roll=2.5, width=0.05, toe_out=12.0, sway=0.022,
+                         chest_counter=1.0, head_bob_comp=0.8, centre={"L": (0.0, 0.03), "R": (0.0, -0.09)}, upper=_shield_upper,
                          exact_pivot=True),
         "dozer_walk": g("dozer_walk", beta=0.60, lift=0.06, lift_skew=0.7, drop=0.06, bob=0.032, strike=14.0, toeoff=-20.0,
                         flat_at=0.12, heel_rise=0.66, lean=6.0, pelvis_yaw=6.0, pelvis_roll=5.5, width=0.075, toe_out=13.0,
@@ -1078,12 +1078,53 @@ def shield_stance(sk: Skeleton, pose: Pose) -> None:
     spine(pose, lean=7, twist=-4, chest_lean=6, chest_twist=-5, neck=(-5, 0, 4), head=(-5, 0, 5), hips=(4, 0, -4))
 
 
-def shield_idle(sk: Skeleton, t: float = 0.0, sway: float = 1.0) -> Pose:
+def shield_brace(sk: Skeleton, t: float = 0.0, sway: float = 1.0) -> Pose:
+    """The braced stance with the shield and the pistol at their rest frames (the base of shield_bang)."""
     pose = Pose()
     shield_stance(sk, pose)
     hold_shield(sk, pose, shield_frame(sk))
     hold_pistol(sk, pose, shield_pistol_frame(sk, t, sway), one_hand=True)
     breathe(pose, t, 1.5, 0.8 * sway)
+    return pose
+
+
+#: shield_walk's mean trunk (its Gait lean, hip drop and ``_shield_upper``'s turn), held by shield_idle so
+#: that the two blend without the chest, head or hands moving: lean (deg), hip height (m).
+SHIELD_WALK_LEAN = 8.0
+SHIELD_WALK_DROP = 0.085
+
+
+def shield_idle(sk: Skeleton, f: int, N: int) -> Pose:
+    """Loop: braced behind the shield, the feet planted wide (``shield_stance``'s feet), the trunk,
+    shield and pistol at shield_walk's mean pose (so the two blend). Slow, deep breaths (2 per loop)
+    through the chest and shoulders, one weight shift between the feet per loop (the shield follows
+    the hips with shield_walk's share, the pistol drifts a few mm at the sight line) and a small
+    head scan."""
+    t = f / FPS
+    T = N / FPS
+    k = sk.scale
+    pose = Pose()
+    shield_stance(sk, pose)
+    pose.hip = v3(0.0, 0.0, -SHIELD_WALK_DROP * k)
+    ln = SHIELD_WALK_LEAN
+    spine(pose, lean=ln * 0.5, chest_lean=ln * 0.5, neck=(-ln * 0.45, 0.0, 0.0), head=(-ln * 0.45, 0.0, 0.0),
+          hips=(ln * 0.25, 0.0, 0.0))
+    add_rot(pose, "spine", rzd(-4.0))
+    add_rot(pose, "chest", rzd(-5.0))
+    look(pose, yaw=8.0)
+    shift(sk, pose, t, T, 0.010)
+    hx = pose.hip[0] / k
+    hz = pose.hip[2] / k + SHIELD_WALK_DROP
+    br = math.sin(TAU * 2.0 * t / T)
+    look(pose, yaw=2.5 * math.sin(TAU * t / T + 0.9), pitch=0.6 * math.sin(TAU * 2.0 * t / T + 0.3))
+    hold_shield(sk, pose, shield_frame(sk, dx=0.4 * hx, dz=0.55 * hz + 0.0015 * br,
+                                       yaw=0.5 * math.sin(TAU * t / T - 0.4)))
+    R, o = shield_pistol_frame(sk, 0.0, 0.0)
+    o = o + v3((0.3 * hx + 0.003 * math.sin(TAU * t / T + 0.7)) * k, 0.0,
+               (0.7 * hz + 0.003 * br + 0.002 * math.sin(TAU * 2.0 * t / T)) * k)
+    hold_pistol(sk, pose, (R @ rzd(0.6 * math.sin(TAU * t / T + 1.4)) @ rxd(0.4 * math.sin(TAU * 2.0 * t / T)), o),
+                one_hand=True)
+    breathe(pose, t, T / 2.0, 1.1)
     return pose
 
 
@@ -1094,7 +1135,7 @@ def _shield_upper(sk: Skeleton, pose: Pose, ph: float, f: int) -> None:
     add_rot(pose, "spine", rzd(-4.0))
     add_rot(pose, "chest", rzd(-5.0))
     look(pose, yaw=8.0)
-    hz = (pose.hip[2] / k + 0.085)
+    hz = (pose.hip[2] / k + SHIELD_WALK_DROP)
     hx = pose.hip[0] / k
     lag = math.cos(TAU * (ph - 0.08))
     wf = shield_frame(sk, dx=0.4 * hx, dz=0.55 * hz, yaw=1.2 * lag, roll=-0.8 * lag)
@@ -1129,7 +1170,7 @@ def _shield_bang(sk: Skeleton, N: int, hits: tuple) -> callable:
 
     def fn(f: int) -> Pose:
         t = f / FPS
-        pose = shield_idle(sk, t, 0.0)
+        pose = shield_brace(sk, t, 0.0)
         aim = shield_pistol_frame(sk, 0.0, 0.0)
         u = height(f)
         chop = (A.mslerp(hit_wf[0], top_wf[0], u), A.lerp(hit_wf[1], top_wf[1], u))
@@ -1325,6 +1366,7 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
         "investigate_look": investigate_look, "downed": downed, "interact_low": interact("low"),
         "interact_mid": interact("mid"), "interact_high": interact("high"), "browse": browse, "desk_type": desk_type,
         "sit_chair": sit_chair, "smoke": smoke, "lean_wall": lean_wall, "tased": tased, "climb_ladder": climb_ladder,
+        "shield_idle": shield_idle,
     }
     floor = {"lie_down": 0, "tied": 0, "kneel_cuffed": 0, "downed": 0, "surrender": -14}
     out: dict[str, Clip] = {}

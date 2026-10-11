@@ -68,3 +68,8 @@ New prefab requests from ENV C go to the lead as a status-file question.
 | `bag_lift` (P2, Night Deposit) | Cash/bag lift between floors: `targets: Array[NodePath]` (landing markers), `travel_s`, `capacity` (bags). Bags placed in the car + interact to send. Visual: `Car`, `DoorL/DoorR`, `Panel`. (QC-11, D-040) |
 | `hack_terminal` (P2) | Timed silent hack (server rack, time-lock override): `duration_s`, `interruptions` (like drill jams: rolled count; fix = re-interact), `targets`. Visual: `Screen` (A swaps materials for progress), `Panel`. (QC-12, D-040) |
 | `escape_zone` (v1.2, QC-19) | `escape_type`: one of `&"van"`, `&"boat"`, `&"heli"`, `&"lift"`, `&"zipline"`, `&"walk"`. `arrival_delay_s` (heli/boat approach after activation; 0 = present). `bag_only` (zipline: bags secured by line, crew leave by another escape). Visual nodes per type: van `Body/DoorL/DoorR`, heli `Body/Rotor`, boat `Body`. (D-042) |
+
+## v1.3 (D-057, B4-18)
+| Item | Contract |
+|---|---|
+| group `saw_target` | Prefabs a saw can cut (deposit boxes, ATMs, padlocks, chained doors). Implement `saw_cut(seconds: float, attacker_net_id: int) -> void` (server); the prefab accumulates cut time and opens itself. Group name constant in `G`. |

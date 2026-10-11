@@ -1,0 +1,31 @@
+{
+	"version": 5,
+	"profile_name": "Crew",
+	"cash": 42000,
+	"stash": 310000,
+	"xp": 90000,
+	"level": 12,
+	"banked_stealth_mult": 1.0,
+	"owned_weapons": ["weapon.kestrel_p9", "weapon.corsair_ar"],
+	"owned_mods": ["mod.p9_suppressor", "mod.corsair_suppressor"],
+	"owned_masks": [],
+	"owned_mask_parts": [],
+	"custom_masks": [],
+	"loadout": {
+		"primary": "weapon.corsair_ar", "primary_mods": ["mod.corsair_suppressor"],
+		"secondary": "weapon.kestrel_p9", "secondary_mods": ["mod.p9_suppressor"],
+		"melee": "melee.folding_knife", "throwable": "throwable.boss_injector",
+		"deployable": "deployable.ammo_bag", "deployable_secondary": "",
+		"armor": "armor.patrol_vest", "mask": "mask.gilded_heron",
+		"perk_deck": "perk.bulk", "perk_deck_cards": 3,
+		"skills": {"skill.juggernaut.thick_skin": 2}
+	},
+	"skill_sets": [{"skill.juggernaut.thick_skin": 2}],
+	"active_skill_set": 0,
+	"perk_cards": {"perk.bulk": 3},
+	"unlocks": [],
+	"achievements": {},
+	"pro_job_locks": {},
+	"stats": {"heists_completed": 6, "heists_failed": 1},
+	"settings": {"fov": 85}
+}
