@@ -185,7 +185,9 @@ func _check_door_code_bag() -> void:
 			secured[0] = true
 	EventBus.loot_secured.connect(on_secured)
 	var zone: Node3D = _rt.map.get_node(^"Zones/SecureLootVan/Shape") as Node3D
-	bag.release(Vector3(zone.global_position.x, 0.3, zone.global_position.z), Vector3.ZERO, false)
+	# Onto the van roof (inside the zone): at floor height the release point is inside VanSecure's collision box,
+	# and the depenetration pushed the bag below the floor (out of the zone) whenever a launch came before.
+	bag.release(Vector3(zone.global_position.x, zone.global_position.y + 1.1, zone.global_position.z), Vector3.ZERO, false)
 	var ok: bool = await wait_until(func() -> bool: return secured[0], _budget(10.0))
 	EventBus.loot_secured.disconnect(on_secured)
 	assert_true(ok, "bag secured on the server")
