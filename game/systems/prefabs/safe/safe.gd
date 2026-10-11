@@ -14,6 +14,8 @@
 ##             and an L3.6 blast (`Explosion.apply`, c4_blast_radius_m / c4_blast_damage) at the lock
 ##             attributed to the crew member who placed it (so it never hurts the crew)
 ## A drill_point whose `target` is this safe also works (`open_by_device()`).
+## QC-37 (gameplay_prefabs G.SAW_TARGET): with &"saw" in `methods` the handheld saw also cuts the lock:
+## `saw_cut(s)` adds up to InteractionTweak.hand_saw_safe_s[size], then the lock is beaten (beaten_by &"saw").
 ## A2-08 KEYCARD: with &"keycard" in `methods` the safe is opened by a keycard_reader (the safe's
 ## own Interactable never offers it). Wire it either way (both may be set, it opens once):
 ##   * the reader's `targets` lists the safe, or
@@ -78,6 +80,8 @@ var runner: DeviceRunner = null
 var timer_left: float = -1.0
 ## Method that beat the lock (&"code", &"lockpick", &"c4", &"device"), &"" while locked.
 var beaten_by: StringName = &""
+## QC-37: handheld saw progress on the lock (0..1, replicated).
+var saw_progress: float = 0.0
 
 var _place_time: float = 0.0
 ## net_id of the crew member who armed the C4 (blast attacker), 0 = none.
@@ -125,6 +129,8 @@ func _prefab_ready() -> void:
 	for p: GameplayPrefab in _inner_loot():
 		p.interactable.enabled = false
 	_bind_reader()
+	if methods.has(&"saw"):
+		add_to_group(G.SAW_TARGET)
 	# A1-03 behaviour (P3): hackable time-lock panel.
 
 
@@ -132,6 +138,21 @@ func _prefab_ready() -> void:
 ## door now, or arms the time lock first (`time_lock_s` > 0).
 func open_by_device() -> void:
 	_lock_beaten(&"device")
+
+
+## QC-37: where the handheld saw cuts (the visual's `DrillPoint` marker at the lock, else mid-height).
+func saw_point() -> Vector3:
+	var m: Node3D = visual_node("DrillPoint") as Node3D
+	return m.global_position if m != null else global_position + Vector3(0.0, 0.5, 0.0)
+
+
+## Server (QC-37, G.SAW_TARGET): the handheld saw cut the lock for `seconds`.
+func saw_cut(seconds: float, _attacker_net_id: int) -> void:
+	if not Net.is_authority() or not methods.has(&"saw") or opened or stage != Stage.LOCKED:
+		return
+	saw_progress = minf(saw_progress + seconds / maxf(_by_size(Tweak.interaction().hand_saw_safe_s, 40.0), 0.01), 1.0)
+	if saw_progress >= 1.0 - 0.0001:
+		_lock_beaten(&"saw")
 
 
 ## Server: a bound keycard_reader was used (A2-08 KEYCARD method).

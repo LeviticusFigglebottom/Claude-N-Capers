@@ -85,6 +85,16 @@ extends Resource
 ## S9.8 ◇ vault time lock: hold to start the timer at the panel once the lock is beaten.
 @export var time_lock_start_s: float = 2.0
 
+@export_group("Hand saw targets (QC-37, D-057 G.SAW_TARGET)")
+## Seconds of cutting with the handheld saw weapon (SpecialWeapons saw ticks call saw_cut) until each
+## prefab opens (◇; Night Deposit doc: deposit boxes 6 s).
+@export var hand_saw_deposit_box_s: float = 6.0
+@export var hand_saw_padlock_s: float = 2.0
+## Safes with &"saw" in `methods`, by Safe.Size (SMALL, MEDIUM, LARGE).
+@export var hand_saw_safe_s: PackedFloat32Array = PackedFloat32Array([20.0, 40.0, 80.0])
+## A SAW drill_point (cage gate, depository) cut by hand: x its device run time.
+@export var hand_saw_drill_point_mult: float = 1.0
+
 @export_group("Lasers, zipline, ladder (A2-04: S9.10, S9.11)")
 ## Thickness of a laser beam's detection box across the beam (m) ◇.
 @export var laser_beam_thickness_m: float = 0.03

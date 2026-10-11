@@ -44,7 +44,7 @@ var difficulty_def: DifficultyDef = null
 var options: Dictionary = {}
 ## D-062 (read-only): the options passed to HeistLauncher.launch() / launch_client(). On a replica the host's
 ## network-safe options (bring-up `launch_options`, e.g. "music_track") override the client's own.
-## S1.3: &"casing" (default) or &"civilian": options["start_mode"], else HeistDef.start_mode.
+## S1.3 (D-065): &"casing" (default) or &"civilian": options["start_mode"], else HeistDef.start_mode.
 var start_mode: StringName = START_CASING
 var launch_options: Dictionary:
 	get:
@@ -194,7 +194,7 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 
 
 func _resolve_start_mode() -> StringName:
-	var m: Variant = options.get("start_mode", map.heist_def.get(&"start_mode") if map.heist_def != null else null)
+	var m: Variant = options.get("start_mode", map.heist_def.start_mode if map.heist_def != null else START_CASING)
 	return START_CIVILIAN if m != null and StringName(m) == START_CIVILIAN else START_CASING
 
 

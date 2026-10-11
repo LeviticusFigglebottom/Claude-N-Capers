@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_box"]
+albedo_color = Color(0.55, 0.52, 0.45, 1)
+metallic = 0.6
+
+[sub_resource type="BoxMesh" id="box_box"]
+material = SubResource("mat_box")
+size = Vector3(0.3, 0.15, 0.05)
+
+[node name="DepositBoxPlaceholder" type="Node3D"]
+
+[node name="Box" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.025)
+mesh = SubResource("box_box")
