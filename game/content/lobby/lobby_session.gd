@@ -89,6 +89,7 @@ func host(port: int) -> Error:
 		return err
 	_active = true
 	state.reset(true)
+	state.dropin_policy = _remembered_policy()  # lead ruling: the host's preference starts each session
 	_kick_pending.clear()
 	net.call(&"fill_with_ai")  # empty seats show as Crew AI; a joining peer takes an AI seat (Net)
 	_on_crew_changed()
@@ -165,7 +166,17 @@ func set_drop_in_policy(policy: StringName) -> bool:
 	if not _active or not state.is_host or not LobbyState.POLICIES.has(policy):
 		return false
 	net.call(&"lobby_send", LobbyState.MSG_SETTINGS, LobbyState.settings_data(policy))
+	var gs: GameSettings = GameSettings.current()
+	if gs.dropin_policy() != policy:  # remember the host's choice for the next session
+		gs.set_value(GameSettings.GAMEPLAY, &"dropin_policy", String(policy))
+		gs.save()
 	return true
+
+
+## The host's remembered drop-in policy (GameSettings gameplay/dropin_policy), else the data default.
+static func _remembered_policy() -> StringName:
+	var p: StringName = GameSettings.current().dropin_policy()
+	return p if LobbyState.POLICIES.has(p) else LobbyState.default_policy()
 
 
 ## Host: how to answer a join / drop-in request (LobbyState.join_decision: kick list, then the drop-in policy).
