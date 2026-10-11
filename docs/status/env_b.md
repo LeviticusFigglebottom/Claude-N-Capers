@@ -3,6 +3,26 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11 UTC: B4-14, B4-16..B4-20, D-050/D-053/D-055 follow-ups
+### Done
+- B4-14 QB-L2 (afacf75): `ModifierPush.push(loadouts)` sets the per-slot `loadout` source and the TEAM sources at launch (solo and co-op host). D-050: Warden akimbo flag.
+- B4-16 (9ca14ff): save v5 with unlocks, achievements and pro_job_locks; ProfileSchema type sanitizing; ProfileValidator pruning; golden migration fixtures v0..v4 plus a damaged v5; save_format.md.
+- B4-17 (a713639): Workshop 3D orbit view with picker, turntable, slot focus, live deltas and DR preview, equip/buy.
+- B4-19 (e6ba2a7): StaminaBar on ui_hud v1.4 plus MockHudModel demo steps.
+- B4-20 (495cafb): achievements stub (8 defs), hooked on the payday apply path; the cataclysm_clear unlock; achievements screen.
+- B4-18 (merge 91f947d): armory batch 3 with 19 weapons (36 total), 89 mods, models on the pipeline, previews, strings and tests.
+- B4-12/B4-04 (8ac82cd, acd8fea): `fire_cue_suppressed` only on weapons with a SUPPRESSOR slot; test_armory enforces it.
+### In progress
+- Round-7 follow-ups once A's server-side push is on trunk: drop the MenuFlow ModifierPush calls, hooked keys and coverage, `ui.prompt.use_armor_bag`, D-056.
+### Blocked
+- Batch-3 special mechanics (bow/crossbow, launcher, flamethrower, saw, minigun, lever) wait on ENV A's answers. Anim sets wait on D.
+### Notes
+- The batch-3 tests tolerate missing anim sets.
+### Questions for lead
+- —
+### Ready for integration
+- yes; `check_all.sh --env b` @ 91f947d: PASS (1202 tests, 0 failed, 6 skipped)
+
 ## 2026-10-10 20:20 UTC — D-043..D-047 follow-ups, B4-07 hub + GSR theme
 ### Done
 - D-045 (35b3bcc): shell-fed reload times are derived by LoadoutResolver after mods (Plowman 0.4/0.4333/0.4/1.2 → 3.4/4.2 s); no raw reload deltas on shell-fed mods; test_armory uses the same formula.
@@ -340,15 +360,3 @@ Newest entry first, keep the last 10.
 - QB-13: The civilian penalty comes only out of spending cash (PD2) and also applies on failure; the stealth XP bonus (×1.2 ◇) applies to the same heist, not the next one as in PD2; AI teammates count toward the crew-alive XP bonus. Confirm or overrule.
 ### Ready for integration
 - yes (B1-01, B1-02, B1-06, B1-07, B1-08 data); `check_all.sh --env b` result: PASS
-
-## 2026-10-10 00:00 UTC: (not started)
-### Done
-- Environment created by lead.
-### In progress
-- —
-### Blocked
-- —
-### Questions for lead
-- —
-### Ready for integration
-- no
