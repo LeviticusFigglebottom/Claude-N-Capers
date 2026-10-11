@@ -29,6 +29,9 @@ signal shot(target: Node, hit: bool)
 signal melee_started(target: Node)
 signal melee_resolved(target: Node, result: StringName)
 
+## A3-13 windup cue [R]: the whoosh, and the replicated trigger for the `melee` clip (AnimDriver).
+const CUE_MELEE_SWING: StringName = &"cue.npc_melee_swing"
+
 ## Path of the brain node exposing wants_to_fire / combat_target.
 @export var brain_path: NodePath = NodePath("../Brain")
 
@@ -148,9 +151,8 @@ func _melee_ok(c: CrewController) -> bool:
 func _start_melee(c: CrewController) -> void:
 	target = c
 	melee_windup_left = CombatTweak.data().npc_melee_windup_s
-	var ad: AnimDriver = AnimDriver.of(_npc)
-	if ad != null:
-		ad.play_oneshot(&"melee", melee_windup_left + 0.3)
+	EventBus.audio_cue_requested.emit(CUE_MELEE_SWING, _npc.global_position, _npc.net_id)  # AnimDriver: `melee`
+	Net.replicate_event(&"audio_cue_requested", [CUE_MELEE_SWING, _npc.global_position, _npc.net_id])
 	melee_started.emit(c)
 
 

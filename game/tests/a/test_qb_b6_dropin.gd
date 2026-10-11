@@ -91,11 +91,11 @@ func test_policies_validation_and_kicked() -> void:
 	assert_eq(failed.back(), [PEER, DropInService.REASON_DENIED], "invalid summary: denied")
 	_svc.policy = HeistDropIn.POLICY_OFF
 	_request(_summary())
-	assert_eq(failed.back(), [PEER, HeistDropIn.R_OFF], "policy off")
+	assert_eq(failed.back(), [PEER, DropInService.REASON_OFF], "policy off")
 	_svc.policy = HeistDropIn.POLICY_ASK
 	_svc._kicked["Joiner"] = true
 	_request(_summary())
-	assert_eq(failed.back(), [PEER, HeistDropIn.R_KICKED], "kicked this session: auto-denied")
+	assert_eq(failed.back(), [PEER, DropInService.REASON_KICKED], "kicked this session: auto-denied")
 	_svc._kicked.clear()
 	Net.crew[1] = {"peer_id": Net.AI_PEER, "is_ai": true, "display_name": "AI 1"}
 	_request(_summary())
