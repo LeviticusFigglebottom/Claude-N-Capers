@@ -58,3 +58,9 @@ PreplanResult through ENV B's resolver (`PreplanPlan.resolve_ids(heist_id, ids)`
   crew members. AI never pays.
 * Votes in co-op go through `Net.lobby_send(kind, data)` / `Net.lobby_message` (core, D-038). Solo: the
   host decides alone.
+
+## v1.1 (D-068)
+* `drop` may name a loot id (`loot.<id>`): ENV A spawns that loot bag at the chosen point (e.g. `asset.thermite_drop`
+  → `loot.thermite`). Tool loot (`LootDef.is_tool`) never counts toward [secure].
+* Point ids are per map and may repeat across heists; point `label` strings are heist-qualified,
+  `ui.preplan.point.<heist>.<point_id>` (existing unqualified labels may stay).

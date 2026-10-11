@@ -64,7 +64,8 @@ func test_host_client_parity() -> void:
 	assert_true(joined, "client connected and got a crew slot")
 	if not joined:
 		return
-	_rt = await HeistLauncher.launch(&"dev_sandbox", SEED, Enums.Difficulty.ROUTINE, get_tree().root, {"skip_casing": true})
+	_rt = await HeistLauncher.launch(&"dev_sandbox", SEED, Enums.Difficulty.ROUTINE, get_tree().root,
+		{"skip_casing": true, "music_track": &"music.test_pick"})
 	assert_true(_rt != null, "host launched the dev_sandbox")
 	if _rt == null:
 		return
@@ -86,6 +87,7 @@ func _check_bring_up(snap: Dictionary) -> void:
 	assert_true(bool(snap["replica"]), "client runtime is a replica")
 	assert_true(bool(snap.get("launch_client", false)), "await HeistLauncher.launch_client() returned the replica")
 	assert_eq(int(snap["seed"]), SEED, "same run seed")
+	assert_eq(StringName(snap.get("music_track", &"")), &"music.test_pick", "D-062: the host's launch_options reach the client")
 	assert_eq(snap["variants"], _rt.variants, "same resolved variants")
 	assert_eq(snap["active_slots"], PROBE.active_variant_slots(_rt), "same active variant slots in the map")
 	assert_eq(int(snap["missing"]), 0, "every map id resolved on the client")

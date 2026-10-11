@@ -23,6 +23,7 @@ stubs listed at the end lands in M2.
   | `requires_item` | StringName | `&""` (keycard_reader: `&"item.keycard"`) |
   | `stealth_only` / `loud_only` | bool | false / false (camera_station: stealth_only true) |
   | `casing_allowed` | bool | false (keycard_pickup: true) |
+  | `civilian_allowed` | bool | false (gear_pickup: true). S1.3: civilians (no gear) may use only these |
   | `noise` | StringName | `&"silent"` (`&"quiet"`, `&"loud"`) |
 
 * Forward is −Z (the side facing the room/user) and pivots follow visual_slots.md. The UsePoint
@@ -51,6 +52,7 @@ Scene path = `res://systems/prefabs/<name>/<name>.tscn`. Placeholder = `<name>/<
 | `small_loot` | `SmallLoot` | Node3D | `value: int` (500), `loot_id` (&"") | `small_loot_s` | none | No collision. S10.3 |
 | `loot_spawn` | `LootSpawn` | Node3D | `loot_id` (&""), `count: int` (1) | `bag_loot_s` | none | Interaction = bag up the stack (kind `bag_loot`). Bag spawning: A1-07 |
 | `keycard_pickup` | `KeycardPickup` | Node3D | none (grants `item.keycard`) | `item_pickup_s` | none | casing_allowed = true. S9.6 |
+| `gear_pickup` | `GearPickup` | Node3D | none (kind `pick_up_gear`) | `item_pickup_s` | none | civilian_allowed = true; only civilians may use it. S1.3 |
 | `keycard_reader` | `KeycardReader` | Node3D | `targets: Array[NodePath]` ([]) | `keycard_s` | `Panel`, `Led` | Wall-mounted (back-centre). Consumes the keycard |
 | `keypad` | `Keypad` | Node3D | `code_group` (&""), `targets: Array[NodePath]` ([]) | `keypad_s` | `Panel`, `Led` | Wall-mounted. S9.7 |
 | `code_note` | `CodeNote` | Node3D | `code_group` (&"") | `read_note_s` | none | S9.7 |
@@ -88,6 +90,8 @@ live in InteractionTweak ("Device jams", "Glass"), StealthTweak and LootTweak.
   `open_changed(open, by_net_id)`. Child `NavLink` (NavigationLink3D through the doorway) is
   enabled while NPCs can pass (open, unlocked, or authorised) for maps whose bake closes doorways.
 * `keycard_pickup`: grants `item.keycard`, emits `item_picked_up` and frees itself.
+* `gear_pickup` (S1.3, start_mode = civilian): a civilian takes their gear. Civilian mode ends (casing:
+  can mask up), and it emits `item_picked_up(&"item.gear", slot)`. It stays for the rest of the crew.
 * `keycard_reader`: consumes the keycard, calls `unlock()` then `set_open(true)` / `open()` on each
   of `targets`, Led goes green. Single use.
 * `small_loot`: emits `small_loot_taken(value, slot)` and frees itself.

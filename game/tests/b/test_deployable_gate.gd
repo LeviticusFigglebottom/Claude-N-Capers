@@ -1,8 +1,10 @@
-## Armor bag gating (lead, D-056 follow-up): `deployable.armor_bag` needs `deploy.armor_bag` (shared perk
-## card 6). DeployableGate rules + the loadout picker shows it locked until the loadout grants the flag.
+## Loadout screen rules: armor bag gating (deploy.armor_bag, shared perk card 6) and the civilian-start
+## notice (D-065).
+## DeployableGate rules; the loadout picker shows the armor bag locked until the loadout grants the flag.
 extends TestCase
 
 const BAG: StringName = &"deployable.armor_bag"
+const LOADOUT_SCENE: PackedScene = preload("res://content/ui/menus/loadout.tscn")
 
 var _screen: LoadoutScreen
 
@@ -29,7 +31,7 @@ func _open(deck: StringName, cards: int, deployable: StringName) -> void:
 	p.loadout.perk_deck = deck
 	p.loadout.perk_deck_cards = cards
 	p.loadout.deployable = deployable
-	_screen = (load("res://content/ui/menus/loadout.tscn") as PackedScene).instantiate() as LoadoutScreen
+	_screen = LOADOUT_SCENE.instantiate() as LoadoutScreen
 	_screen.setup(p)
 	add_child(_screen)
 	await wait_frames(1)
@@ -76,3 +78,21 @@ func test_picker_offers_it_with_the_card() -> void:
 	assert_false(_screen.deployable_option.is_item_disabled(i), "unlocked by card 6")
 	assert_eq(_screen.deployable_option.get_item_text(i), UiText.t(&"item.deployable.armor_bag.name"))
 	assert_eq(_screen.current_loadout().deployable, BAG, "equipped")
+
+
+## D-065 / S1.3: a civilian-start heist shows the "no gear until pickup" notice on the loadout screen.
+func test_civilian_start_notice() -> void:
+	SaveService.delete_profile(0)
+	_screen = LOADOUT_SCENE.instantiate() as LoadoutScreen
+	_screen.start_mode = &"civilian"
+	_screen.setup(PlayerProfile.new_default())
+	add_child(_screen)
+	await wait_frames(1)
+	assert_true(_screen.civilian_notice.visible, "civilian start: notice shown")
+	assert_eq(_screen.civilian_notice.text, UiText.t(&"ui.loadout.civilian_start"))
+	_screen.queue_free()
+	_screen = LOADOUT_SCENE.instantiate() as LoadoutScreen
+	_screen.setup(PlayerProfile.new_default())
+	add_child(_screen)
+	await wait_frames(1)
+	assert_false(_screen.civilian_notice.visible, "casing start: no notice")

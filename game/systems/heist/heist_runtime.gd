@@ -28,6 +28,9 @@ const FAIL_ABORT: StringName = &"abort"
 ## A3-09: GUARD SpawnPoints carrying this tag are not spawned at load; HeistMission.spawn_guards()
 ## spawns them later (timed mission events, e.g. the armoured car's guards).
 const SCRIPTED_SPAWN_TAG: StringName = &"scripted"
+## S1.3 start modes (HeistDef.start_mode / options["start_mode"]).
+const START_CASING: StringName = &"casing"
+const START_CIVILIAN: StringName = &"civilian"
 
 static var _current: HeistRuntime = null
 
@@ -39,6 +42,13 @@ var heist_id: StringName = &""
 var difficulty: int = Enums.Difficulty.ROUTINE
 var difficulty_def: DifficultyDef = null
 var options: Dictionary = {}
+## D-062 (read-only): the options passed to HeistLauncher.launch() / launch_client(). On a replica the host's
+## network-safe options (bring-up `launch_options`, e.g. "music_track") override the client's own.
+## S1.3: &"casing" (default) or &"civilian": options["start_mode"], else HeistDef.start_mode.
+var start_mode: StringName = START_CASING
+var launch_options: Dictionary:
+	get:
+		return _launch_options
 ## True once the alarm has sounded (stays true through ESCAPE/ENDED).
 var went_loud: bool = false
 var interaction: InteractionSystem = null
@@ -74,6 +84,7 @@ var _pagers_answered: int = 0
 var _ended: bool = false
 ## QB-L2: slot -> effective Loadout (LoadoutModifiers.effective_loadouts), pushed before the crew spawns.
 var _crew_loadouts: Dictionary = {}
+var _launch_options: Dictionary = {}
 
 
 ## Nearest HeistRuntime above `node`, else the current one.
@@ -123,6 +134,7 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	run_seed = p_seed
 	difficulty = p_difficulty
 	options = p_options
+	_launch_options = p_options
 	_resolve_difficulty_def()
 	GameRng.begin_run(run_seed)
 	_start_msec = Time.get_ticks_msec()
@@ -169,6 +181,9 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	elif bool(options.get("skip_casing", false)):
 		_set_phase(Enums.HeistPhase.STEALTH)
 	else:
+		start_mode = _resolve_start_mode()
+		for slot: int in _crew:  # S1.3: civilian-start heists begin without gear
+			_crew[slot].civilian = start_mode == START_CIVILIAN
 		_set_phase(Enums.HeistPhase.CASING)
 	EventBus.heist_loaded.emit(heist_id, run_seed, variants)
 	# A3-07: clients emit heist_loaded themselves once their replica is built (_start_replica), so the
@@ -176,6 +191,11 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	if mission != null:
 		mission._on_mission_start()
 	return true
+
+
+func _resolve_start_mode() -> StringName:
+	var m: Variant = options.get("start_mode", map.heist_def.get(&"start_mode") if map.heist_def != null else null)
+	return START_CIVILIAN if m != null and StringName(m) == START_CIVILIAN else START_CASING
 
 
 # --- Co-op replica (A3-07, docs/contracts/net.md, heist/README.md "Co-op") -----------------------
@@ -190,6 +210,9 @@ func _start_replica(data: Dictionary, map_scene: PackedScene, p_options: Diction
 	run_seed = int(data.get("seed", 0))
 	difficulty = int(data.get("difficulty", Enums.Difficulty.ROUTINE))
 	options = p_options
+	_launch_options = p_options.duplicate()
+	_launch_options.erase("bring_up")
+	_launch_options.merge(data.get("launch_options", {}) as Dictionary, true)  # D-062: the host's pick wins
 	_resolve_difficulty_def()
 	GameRng.begin_run(run_seed)
 	_start_msec = Time.get_ticks_msec()

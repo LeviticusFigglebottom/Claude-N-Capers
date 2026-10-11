@@ -414,7 +414,7 @@ func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
 	if not occupied or is_ai:
 		tag_parts.append(UiText.t(&"ui.lobby.slot.ai_fill"))
 	tags.text = "  ".join(tag_parts)
-	level.text = UiText.t(&"ui.menu.level", {"level": int(view["level"])}) if has_sum else ""
+	level.text = NotorietyScreen.level_text(int(view["level"]), int(view.get("notoriety", 0))) if has_sum else ""
 	if human:
 		var is_ready: bool = bool(view["ready"])
 		rd.text = UiText.t(&"ui.lobby.slot.ready" if is_ready else &"ui.lobby.slot.not_ready")

@@ -271,6 +271,7 @@ func _apply_common_interaction() -> void:
 	interactable.stealth_only = bool(get(&"stealth_only"))
 	interactable.loud_only = bool(get(&"loud_only"))
 	interactable.casing_allowed = bool(get(&"casing_allowed"))
+	interactable.civilian_allowed = get(&"civilian_allowed") == true  # S1.3 (prefabs without the export: false)
 	interactable.noise = StringName(get(&"noise"))
 
 
