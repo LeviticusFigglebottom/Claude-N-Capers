@@ -9,3 +9,4 @@ display_name = "Thermite Bag"
 weight = 2
 value = 0
 conceals = false
+is_tool = true

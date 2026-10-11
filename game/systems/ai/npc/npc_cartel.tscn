@@ -1,0 +1,42 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://systems/ai/npc/npc_base.gd" id="1"]
+[ext_resource type="Resource" path="res://systems/ai/data/enemies/cartel_gunman.tres" id="2"]
+[ext_resource type="Script" path="res://systems/ai/cartel/cartel_brain.gd" id="3"]
+[ext_resource type="Script" path="res://systems/ai/npc/npc_motor.gd" id="4"]
+[ext_resource type="Resource" path="res://systems/ai/cartel/cartel_tweak.tres" id="5"]
+[ext_resource type="Script" path="res://systems/combat/npc_gunner.gd" id="gunner"]
+
+[sub_resource type="CapsuleShape3D" id="cap"]
+radius = 0.35
+height = 1.78
+
+[sub_resource type="CapsuleMesh" id="capmesh"]
+radius = 0.35
+height = 1.78
+
+[node name="Npc_cartel" type="CharacterBody3D"]
+script = ExtResource("1")
+role = &"cartel"
+enemy_def = ExtResource("2")
+detection_preset = &"guard"
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
+shape = SubResource("cap")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Placeholder" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
+mesh = SubResource("capmesh")
+
+[node name="Motor" type="Node" parent="."]
+script = ExtResource("4")
+
+[node name="Brain" type="Node" parent="."]
+script = ExtResource("3")
+tweak = ExtResource("5")
+
+[node name="Gunner" type="Node" parent="."]
+script = ExtResource("gunner")

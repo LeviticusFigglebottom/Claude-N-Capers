@@ -12,6 +12,7 @@ cover_search_radius_m = 8.0
 cover_taken_m = 1.0
 cover_arrive_m = 0.6
 revive_range_m = 1.2
+tasing_stinger_score_mult = 0.25
 revive_settle_speed = 0.3
 engage_range_m = 40.0
 scan_interval_s = 0.2

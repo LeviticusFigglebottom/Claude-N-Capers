@@ -9,10 +9,11 @@
 ##   follows its leader, mirrors the leader's mask and crouch, and stays detectable for the rest of
 ##   the stealth phase (even when later ordered to hold).
 ## - L6.1 loud: unhidden and masked (the alarm masks everyone). Priorities each tick:
-##   1. revive a DOWNED crew member (humans first, then AI; each downed member is assigned the nearest
+##   1. revive a DOWNED, CLOAKER_DOWNED or TASED crew member (needs_help; humans first, then AI; each is assigned the nearest
 ##      free AI) — walk to revive_range_m, hold interact with interact_target_net_id for the full
 ##      revive (L2.7, 6 s), and keep at it under fire (re-press after a damage interrupt, S9.1);
-##   2. fight: nearest visible hostile police/special/guard (guards only when ALARMED/COMBAT), aim
+##   2. fight: nearest visible hostile police/special/guard (guards only when ALARMED/COMBAT; a Stinger
+##      tasing a crew member first, tasing_stinger_score_mult), aim
 ##      at chest/head with an aim error (GameRng &"crew_ai"), pulse the trigger, reload when empty
 ##      (or tactically when no enemy is visible);
 ##   3. follow the nearest alive human (slot 0 fallback) within follow_min_m..follow_max_m, taking a
@@ -35,7 +36,7 @@ const NODE_NAME: String = "CrewAiBrain"
 const RNG_STREAM: StringName = &"crew_ai"
 const TWEAK_PATH: String = "res://systems/ai/crew_ai/crew_ai_tweak.tres"
 const WORLD_MASK: int = (1 << 0) | (1 << 1)
-const HOSTILE_ROLES: Array[StringName] = [&"police", &"special", &"guard"]
+const HOSTILE_ROLES: Array[StringName] = [&"police", &"special", &"guard", &"cartel"]
 
 @export var tweak: CrewAiTweak
 
@@ -175,7 +176,7 @@ func _apply_order(p_order: StringName, target_net_id: int, position: Vector3) ->
 			_drop_pending = true
 		&"revive":
 			var t: CrewController = Ids.lookup(target_net_id) as CrewController
-			if t == null or t == _crew or t.crew_state != Enums.CrewState.DOWNED:
+			if t == null or t == _crew or not needs_help(t):
 				return false
 			task = &"revive"
 			task_target_net_id = target_net_id
@@ -208,7 +209,14 @@ func ordered_revive_target() -> CrewController:
 	if task != &"revive":
 		return null
 	var t: CrewController = Ids.lookup(task_target_net_id) as CrewController
-	return t if t != null and t.crew_state == Enums.CrewState.DOWNED else null
+	return t if t != null and needs_help(t) else null
+
+
+## L2.7/L2.8 (P3 gate): crew members the ReviveInteractable frees: DOWNED, CLOAKER_DOWNED (kicked)
+## and TASED (also freed by killing the Stinger, which AI then prioritises).
+static func needs_help(c: CrewController) -> bool:
+	return c.crew_state == Enums.CrewState.DOWNED or c.crew_state == Enums.CrewState.CLOAKER_DOWNED \
+		or c.crew_state == Enums.CrewState.TASED
 
 
 ## Automatic revive assignment may send this AI to `t` (hold: only within hold_revive_radius_m).
@@ -350,7 +358,7 @@ func _pick_revive_target() -> CrewController:
 	var downed: Array[CrewController] = []
 	var free_ai: Array[CrewController] = []
 	for c: CrewController in _rt.crew_members():
-		if c.crew_state == Enums.CrewState.DOWNED:
+		if needs_help(c):
 			downed.append(c)
 		elif c.is_ai and c.crew_state == Enums.CrewState.NORMAL:
 			var b: CrewAiBrain = CrewAiBrain.of(c)
@@ -629,20 +637,27 @@ func _tick_scan(delta: float) -> void:
 				continue
 			var p: Vector3 = npc.global_position + Vector3(0.0, tweak.chest_height_m, 0.0)
 			var d: float = eye.distance_to(p)
-			if d > tweak.engage_range_m or d >= best_d or not _has_los(eye, p):
+			# L4.4 / P3 gate: a Stinger tasing a crew member is shot first (killing it breaks the tase).
+			var score: float = d * (tweak.tasing_stinger_score_mult if _is_tasing_crew(npc) else 1.0)
+			if d > tweak.engage_range_m or score >= best_d or not _has_los(eye, p):
 				continue
 			best = npc
-			best_d = d
+			best_d = score
 	if best != target_enemy:
 		_since_acquire = 0.0
 		_roll_aim()
 	target_enemy = best
 
 
+static func _is_tasing_crew(npc: NpcBase) -> bool:
+	var sb: StingerBrain = npc.get_node_or_null("Brain") as StingerBrain
+	return sb != null and sb.tase_victim != null and is_instance_valid(sb.tase_victim)
+
+
 func _is_hostile(npc: NpcBase) -> bool:
 	if not npc.alive or NpcBase.BLIND_STATES.has(npc.alert_state):
 		return false
-	if npc.role == &"guard":
+	if npc.role == &"guard" or npc.role == CartelBrain.ROLE:  # QC-36: sleeping cartel posts are left alone
 		return npc.alert_state == Enums.AlertState.COMBAT or npc.alert_state == Enums.AlertState.ALARMED
 	return HOSTILE_ROLES.has(npc.role)
 
