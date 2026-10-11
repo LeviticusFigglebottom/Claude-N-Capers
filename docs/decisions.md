@@ -533,3 +533,13 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   afterhours, rolling_thunder G0s (QC ranges 51–89) and confirms/renames D's invented companies.
 - Roadmap: A4-01..03 (fidelity audit, perf budgets, 4-client soak), B7-01..04 (career stats, achievements, contact
   radio, weapon finishes), D3-01..04 (P5 cast, P5 anims, mask batch 3, animation polish).
+
+## D-075 — 2026-10-11 — P5 G0 rulings; Meridian renamed
+- **`meridian_federal` → `ostrander_federal` ("Ostrander Federal")**: "Meridian" is used by real banks and credit
+  unions, and the standing rule is original names only. The branch already sits on Ostrander Plaza. Owners rename
+  ids/strings/files (B content + strings, C design doc, D p5_cast.json). The "meridian line" floor detail may stay.
+- P5 G0 drafts (ENV C 231c056) approved for G1 with rulings sent to ENV C (gala clock, camera-layout validator rules,
+  required loot, civilian staff doors closed, Afterhours contact = The Accountant, Rolling Thunder "Loud (ambush
+  start)" label, room purposes `gallery` / `hall` / `car_park` in C's scale table). Big prefab asks (armored_truck,
+  convoy_vehicle, C4 item) become ENV A roadmap rows A5-01..03.
+- L1.1 fade_threshold: data (8–18) wins; PD2's "50" rescaled to our enemy cap.

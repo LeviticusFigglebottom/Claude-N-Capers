@@ -13,7 +13,7 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | **P2** | Stealth complete: cameras + operator, ECM, keycards/codes, saws, lasers, cuffs, civilians full, assets; heists Night Deposit + Shadow Ledger (stealth-only) | `test_p2_stealth.gd`: scripted ghost run on 3 seeds per heist; all S-rows of phase ≤ 2 tested |
 | **P3** | Loud complete: all specials + captain, director escalation, custody/trade, crowd control, AI teammate orders, factions; co-op loopback; Dockside Burn (loud-only) | `test_p3_loud.gd` (bot crew survives scripted waves; specials' counterplay verified) + `test_coop_loopback.gd` |
 | **P4** | Progression: 90 skills, 14 perk decks, armory 36 weapons + workshop, firing range full, hub/safehouse, board, pre-planning board, masks, payday cards, save v2 | `test_p4_progression.gd`: every modifier key ≤ P4 has a behaviour test; resolver golden tests |
-| **P5** | Content: Gallery Night, Meridian Federal, Rolling Thunder, Afterhours; music ×3; civilian mode | Each heist passes G3 plus a ghost run and a loud run bot on 5 seeds |
+| **P5** | Content: Gallery Night, Ostrander Federal, Rolling Thunder, Afterhours; music ×3; civilian mode | Each heist passes G3 plus a ghost run and a loud run bot on 5 seeds |
 | **P6** | Co-op hardening, drop-in, performance, polish, Notoriety | 4-client soak test, perf budgets in CI |
 
 ## P3: Loud complete (ENV A tasks dispatched early, D-038)
@@ -74,6 +74,9 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | A4-01 | Fidelity audit: every pd2_fidelity row owned by ENV A with phase ≤ P5 → test coverage table (row, test, status); implement any row found missing (as L3.9 melee was) | all A rows |
 | A4-02 | Performance: frame/physics/AI/net budgets instrumented (Perf monitors + a headless perf scene: Dockside, 4 crew, enemy cap reached), CI perf test with thresholds; fix the worst offenders | P6 gate |
 | A4-03 | 4-client soak harness: host + 3 loopback clients with bot crew for a long loud run; checks desync (state hashes), memory growth, error log; feeds the lead's P6 gate | P6 gate |
+| A5-01 | `armored_truck` prefab (Rolling Thunder QC-80): vehicle-shaped LARGE safe — saw target, `charges_required`, lockdown state (saw ×1.5), roof-hatch thermite | P5 rolling_thunder |
+| A5-02 | `convoy_vehicle` mover (QC-82): path-following vehicles with stop/crash states, escort cars, replicated | P5 rolling_thunder |
+| A5-03 | C4 item + shaped charges (QC-84 / S9.5): carried charge count, `charges_required` doors/safes/trucks, placement interaction, detonation | S9.5, P5 |
 | D3-01 | P5 cast (casting per heist; reuse bodies/outfits via variants): Gallery Night (curator, gallery attendants, guards, patrons in evening wear), Meridian Federal (tellers, bank manager, bank guards, customers), Rolling Thunder (armoured-car crew, convoy escort), Afterhours (bouncers, bartenders, DJ, club patrons); names/roles from ENV C's G0 docs as they land | P5 |
 | D3-02 | P5 NPC ambient animations: club dance loops ×3, bartender wipe/pour, bouncer arms-crossed idle, teller counting at a counter, curator inspecting a painting, walking-while-texting, seated/standing cower variants | P5 |
 | D3-03 | Mask bases batch 3: +12 original base shapes through `_mask_base` (face-envelope fit), for ENV B's unlock sources (payday cards, Notoriety, achievements) | P8 |
