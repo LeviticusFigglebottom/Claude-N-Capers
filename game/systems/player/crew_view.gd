@@ -6,6 +6,7 @@
 ##   (CrewWeapons.equipped_changed) and on CrewController.set_loadout(). When someone else puts a
 ##   WeaponVisual under the camera (e.g. ENV B's firing range bridge), ours is removed and that one is kept.
 ##   With the first-person arms (FpViewmodel, characters.md v1.3) the WeaponVisual hangs on their `weapon` bone.
+##   None while the crew member is a civilian (S1.3 / QC-43 hub: no weapon drawn).
 ## - Every crew member, once masked: the mask at the model's `Head/Socket`, built on every peer from
 ##   `Loadout.mask_descriptor` (QA-25, D-043: MaskCatalog.from_descriptor; the server replicates it with
 ##   a reliable authority RPC on set_loadout, on mask-up and on set_mask_descriptor) or, when that is {}, the preset `Loadout.mask`
@@ -53,6 +54,7 @@ func _ready() -> void:
 	if _crew == null:
 		return
 	_crew.masked_changed.connect(func(_m: bool) -> void: refresh_mask())
+	_crew.civilian_changed.connect(func(_c: bool) -> void: refresh_weapon())
 	if _crew.weapons != null:
 		_crew.weapons.equipped_changed.connect(func(_ws: int) -> void: refresh_weapon(true))
 	var cam: Camera3D = camera()
@@ -116,6 +118,8 @@ func refresh_weapon(animated: bool = false) -> void:
 	var def: WeaponDef = null
 	if cam != null and _is_local_human() and _crew.weapons != null and _crew.weapons.has_weapon(ws):
 		def = ContentDB.weapon(_crew.weapons.weapon_id(ws))
+	if _crew.civilian:
+		def = null  # S1.3 / QC-43: civilian mode has no weapon drawn
 	if def == null or def.model == null:
 		_clear_viewmodel()
 		_clear_fp()

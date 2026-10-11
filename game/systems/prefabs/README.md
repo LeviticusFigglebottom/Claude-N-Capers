@@ -56,6 +56,7 @@ Scene path = `res://systems/prefabs/<name>/<name>.tscn`. Placeholder = `<name>/<
 | `padlock` | `Padlock` | Node3D | `targets: Array[NodePath]` ([]) | `lockpick_door_s` | `Body`, `Shackle` | Lockpick or saw (hand_saw_padlock_s) opens the targets. QC-37 |
 | `burn_point` | `BurnPoint` | Node3D | `requires_loot` (loot.thermite), `duration_s` (-1), `fire_volume_size` (6x3x6) | `burn_place_s` | `Fire` (optional); child `FireVolume` | Bag consumed, burn (no jams, device kind thermite), cue.burn_warning + burn_warning_s, device_finished, fire DoT ignoring armour + nav obstacle. QC-38 |
 | `gear_pickup` | `GearPickup` | Node3D | none (kind `pick_up_gear`) | `item_pickup_s` | none | civilian_allowed = true; only civilians may use it. S1.3 |
+| `hub_station` | `HubStation` | Node3D | `station_id` (&"") | 0 (instant) | none | Safehouse station (QC-44): kind `hub_station`, prompt `ui.prompt.station.<id>`, casing + civilian allowed, silent; `station_used(id, crew)` / `station_requested(id)` |
 | `keycard_reader` | `KeycardReader` | Node3D | `targets: Array[NodePath]` ([]) | `keycard_s` | `Panel`, `Led` | Wall-mounted (back-centre). Consumes the keycard |
 | `keypad` | `Keypad` | Node3D | `code_group` (&""), `targets: Array[NodePath]` ([]) | `keypad_s` | `Panel`, `Led` | Wall-mounted. S9.7 |
 | `code_note` | `CodeNote` | Node3D | `code_group` (&"") | `read_note_s` | none | S9.7 |
@@ -97,6 +98,9 @@ live in InteractionTweak ("Device jams", "Glass"), StealthTweak and LootTweak.
   `saw_point()` where the prefab has one): `deposit_box` (opens its take_loot), `padlock` (opens targets),
   `safe` with &"saw" in `methods` (hand_saw_safe_s by size, beaten_by &"saw"), SAW `drill_point`
   (effective_duration x hand_saw_drill_point_mult, opens its target).
+* `hub_station` (QC-44, safehouse): an instant press emits `station_used(station_id, crew)` and
+  `station_requested(station_id)` (no heist facts). The hub crew (`CrewController.spawn_for_hub`, QC-43) is a
+  civilian with its own InteractionSystem, so it needs no HeistRuntime.
 * `gear_pickup` (S1.3, start_mode = civilian): a civilian takes their gear. Civilian mode ends (casing:
   can mask up), and it emits `item_picked_up(&"item.gear", slot)`. It stays for the rest of the crew.
 * `keycard_reader`: consumes the keycard, calls `unlock()` then `set_open(true)` / `open()` on each

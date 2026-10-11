@@ -391,6 +391,8 @@ func _poll_interaction(c: CrewController, slot: int) -> void:
 	var prog: float = 0.0
 	var blocked: StringName = &""
 	var isys: InteractionSystem = _runtime.interaction if _runtime != null else null
+	if isys == null and c != null:
+		isys = c.hub_interaction  # QC-43: the safehouse crew's own system
 	if c != null and isys != null and is_instance_valid(isys):
 		var sess: Dictionary = isys.session(slot)
 		var comp: InteractableComponent = null

@@ -70,6 +70,8 @@ var intent: CrewIntent = CrewIntent.new()
 ## QB-60: sprint / jump stamina (CrewStamina), ticked by the movement simulation.
 var stamina: CrewStamina = CrewStamina.new()
 
+## QC-43: the hub crew's own InteractionSystem (no HeistRuntime in the safehouse).
+var hub_interaction: InteractionSystem = null
 var _runtime: HeistRuntime = null
 var _jump_latch: bool = false
 var _remote_pos: Vector3 = Vector3.INF
@@ -175,6 +177,36 @@ static func spawn_for_range(parent: Node, xform: Transform3D, p_loadout: Loadout
 	return crew
 
 
+## QC-43 (A3-11): the local crew member of the 3D safehouse: no HeistRuntime, no Net session needed (offline
+## solo peer like the range), unmasked in civilian mode (S1.3: no mask-up, no firing, no weapon drawn) with its
+## own InteractionSystem (`HubInteraction`, InteractionTweak.reach_m aimed reach) so hub stations work.
+## MenuFlow pauses it around station screens with set_input_paused; LocalHudModel.track(crew) shows prompts.
+static func spawn_for_hub(parent: Node, xform: Transform3D, p_loadout: Loadout) -> Node:
+	var crew: CrewController = (load(SCENE_PATH) as PackedScene).instantiate() as CrewController
+	var local_slot: int = Net.local_slot()
+	crew.setup(local_slot if local_slot >= 0 else 0,
+		{"peer_id": Net.local_peer_id(), "is_ai": false, "display_name": "Safehouse"}, p_loadout)
+	crew.civilian = true
+	var isys: InteractionSystem = InteractionSystem.new()
+	isys.name = "HubInteraction"
+	crew.add_child(isys)
+	crew.hub_interaction = isys
+	parent.add_child(crew)
+	NetIds.claim(crew)
+	crew.teleport(xform)
+	var pin: PlayerInput = PlayerInput.new()
+	pin.name = "PlayerInput"
+	crew.add_child(pin)
+	return crew
+
+
+## The InteractionSystem serving this crew member (the heist's, or the hub's own; null in the range).
+func _interaction_system() -> InteractionSystem:
+	if _runtime != null and _runtime.interaction != null:
+		return _runtime.interaction
+	return hub_interaction
+
+
 ## Server: the single hit entry point (docs/contracts/damage.md). CrewHealth applies armor, gating and
 ## downs (head x1 from NPC fire) and emits damage_applied itself.
 func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
@@ -272,8 +304,8 @@ func set_crew_state(s: Enums.CrewState) -> void:
 		return
 	var old: int = crew_state
 	crew_state = s
-	if s != Enums.CrewState.NORMAL and _runtime != null and _runtime.interaction != null:
-		_runtime.interaction.cancel(slot)
+	if s != Enums.CrewState.NORMAL and _interaction_system() != null:
+		_interaction_system().cancel(slot)
 	crew_state_changed.emit(old, s)
 
 
@@ -286,8 +318,8 @@ func teleport(xform: Transform3D) -> void:
 	rotation = Vector3(0.0, look_yaw, 0.0)
 	velocity = Vector3.ZERO
 	_remote_pos = Vector3.INF
-	if _runtime != null and _runtime.interaction != null:
-		_runtime.interaction.cancel(slot)
+	if _interaction_system() != null:
+		_interaction_system().cancel(slot)
 	if Net.is_authority() and _has_remote_owner() and _is_networked():
 		_teleport_seq += 1
 		_rpc_owner_teleport.rpc_id(peer_id, xform, _teleport_seq)  # A3-07: the owner predicts; move it too
@@ -388,8 +420,8 @@ func _tick_server_actions(delta: float) -> void:
 		melee.tick(intent, delta)
 	if throwables != null:
 		throwables.tick(intent, delta)
-	if _runtime != null and _runtime.interaction != null:
-		_runtime.interaction.tick(self, intent, delta)
+	if _interaction_system() != null:
+		_interaction_system().tick(self, intent, delta)
 	if _runtime != null:
 		_runtime.crew_actions_tick(self, intent, delta)
 
