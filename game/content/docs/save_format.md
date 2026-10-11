@@ -1,9 +1,9 @@
-# Profile save format (B4-16, save v5)
+# Profile save format (B4-16, save v6)
 
 Owner: ENV B. Code: `content/save/` (`SaveService`, `PlayerProfile`, `ProfileSchema`, `ProfileValidator`).
 Default profile: `content/data/save/default_profile.json`. Golden fixtures: `tests/b/fixtures/save/`.
 
-The roadmap calls this "save v2" (P4 gate). The file format's internal `version` is **5**.
+The roadmap calls this "save v2" (P4 gate). The file format's internal `version` is **6** (B5-02).
 
 ## Files
 `user://profiles/profile_<slot>.json` (pretty JSON, keys sorted), `.bak` = the previous good save,
@@ -14,7 +14,7 @@ place (atomic).
 1. Read `profile_<slot>.json`. If it is missing, unreadable, empty, truncated or not a JSON object, try `.bak`;
    if that fails too, use the default profile (`Log.error`).
 2. `version` > current: refused. The default profile is returned and the file is left untouched.
-3. `SaveService.migrate`: each step runs in order (0→1→2→3→4→5). A missing or non-numeric `version` is v0.
+3. `SaveService.migrate`: each step runs in order (0→1→2→3→4→5→6). A missing or non-numeric `version` is v0.
 4. `ProfileSchema.sanitize`: every field below is present with its JSON type. A missing field gets its
    default silently. A wrong type (e.g. `"cash": "lots"`) gets its default and a `Log.warn`. A bad element
    in a list or map (a number in `owned_weapons`, a string skill level) is dropped with a `Log.warn`.
@@ -30,6 +30,13 @@ place (atomic).
    * Perk card counts are clamped to the deck size.
    * Malformed unlock ids and lock keys are dropped.
    * Presets behind a recorded unlock are owned.
+   * `notoriety` is clamped to 0..25 and `notoriety_xp` to 0 or more. A rank unlock id
+     `unlock.notoriety.rank_<n>` for a rank the profile has not reached is dropped.
+   * `notoriety_choices` entries are dropped for an unreached rank, a rank without a choice, or an id the
+     rank does not offer.
+   * `held_skill_sets` loses unknown skills, levels other than 1 or 2, and entries past the last skill set.
+   * Every reached rank's rewards are re-granted (`Notoriety.apply_rewards`).
+   * `music_choice` is type-checked only (no track list yet).
 
 ## Fields
 Types are JSON types. `id` = a `String` content id (`domain.snake_name`). "Since" = the first version
@@ -37,7 +44,7 @@ that has the field. v0 is the pre-versioned dev save; its `money` became `cash` 
 
 | Field | Type | Default | Since | Notes |
 |---|---|---|---|---|
-| `version` | int | 5 on save | 1 | Missing = v0. |
+| `version` | int | 6 on save | 1 | Missing = v0. |
 | `profile_name` | string | `""` | 0 | Display name. |
 | `cash` | int | 0 | 0 | Spending cash (v0 `money`). |
 | `stash` | int | 0 | 0 | Offshore account (S10.4). |
@@ -56,6 +63,11 @@ that has the field. v0 is the pre-versioned dev save; its `money` became `cash` 
 | `unlocks` | id[] | `[]` | 5 | Granted unlock ids (`unlock.*`, e.g. `unlock.achievement.cataclysm_clear`; `MaskLocker.grant_unlock`). Sorted. |
 | `achievements` | object | `{}` | 5 | Achievement id → `{"progress": int, "unlocked": bool}` (`Achievements`, B4-20). |
 | `pro_job_locks` | object | `{}` | 5 | `BoardContracts.contract_key()` (`"<slot>:<bucket>"`) → `expires_at` float (Unix s). A failed pro contract stays locked until its rotation ends (QB-BRD1). Pruned by `ProJobLocks.prune` once expired. |
+| `notoriety` | int | 0 | 6 | Notoriety rank 0..25 (`Notoriety`, `content/docs/notoriety.md`). |
+| `notoriety_xp` | int | 0 | 6 | XP that rank-ups moved out of `xp`. Perk points count `xp + notoriety_xp`. |
+| `notoriety_choices` | object | `{}` | 6 | Rank (as a string key, e.g. `"5"`) → the reward id picked for that rank's choice (`Notoriety.choose`). |
+| `held_skill_sets` | object[] | `[]` | 6 | Index-aligned with `skill_sets`: the build a rank-up held, bought back as levels return (`NotorietySkills`). `{}` = nothing held. |
+| `music_choice` | string | `""` | 6 | Chosen heist music track id (B5-03). `""` = the heist's default. At most 64 characters; anything longer, or a non-string, falls back to `""` with a warning. Not yet checked against a track list. |
 | `stats` | object | `{}` | 0 | Counter name → int (`heists_completed`, `heists_failed`, ...). |
 | `settings` | object | `{}` | 0 | Any JSON values, stored as-is (numbers come back as float). |
 
@@ -81,6 +93,7 @@ that has the field. v0 is the pre-versioned dev save; its `money` became `cash` 
 | 2 → 3 | `loadout.skills` becomes `skill_sets[0]` (active 0). The equipped deck's `perk_deck_cards` becomes `perk_cards[deck]`. |
 | 3 → 4 | `owned_mask_parts = []`, `custom_masks = []`. |
 | 4 → 5 | `unlocks = []`, `achievements = {}`, `pro_job_locks = {}`. |
+| 5 → 6 | `notoriety = 0`, `notoriety_xp = 0`, `notoriety_choices = {}`, `held_skill_sets = []`, `music_choice = ""`. |
 
 ### Adding a version
 1. Bump `SaveService.CURRENT_VERSION` and `PlayerProfile.version`.

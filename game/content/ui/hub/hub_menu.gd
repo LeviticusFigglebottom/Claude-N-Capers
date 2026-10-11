@@ -6,14 +6,16 @@
 ##
 ## API (MenuFlow wires it): setup(profile) before or after entering the tree; refresh_profile(p).
 ## Signals: station_requested(id) (a card pressed); achievements_requested() (the profile panel's
-## Achievements button, B4-20); options_requested() (its Options button, B5-01); back_requested() (UiScreen, Esc / gamepad B,
-## and the Main Menu button).
+## Achievements button, B4-20); options_requested() (its Options button, B5-01); notoriety_requested() (its
+## Notoriety button, B5-02); back_requested() (UiScreen, Esc / gamepad B, and the Main Menu button). The
+## profile panel shows the Notoriety rank badge (roman numeral) next to the level and in its own line.
 class_name HubMenu
 extends UiScreen
 
 signal station_requested(station_id: StringName)
 signal achievements_requested()
 signal options_requested()
+signal notoriety_requested()
 
 @export var profile_slot: int = 0
 
@@ -30,10 +32,14 @@ var spending_label: Label
 var stash_label: Label
 var skill_points_label: Label
 var perk_points_label: Label
+## Notoriety rank badge line (B5-02).
+var notoriety_label: Label
 ## Profile panel button -> achievements_requested (B4-20).
 var achievements_button: Button
 ## Profile panel button -> options_requested (B5-01).
 var options_button: Button
+## Profile panel button -> notoriety_requested (B5-02).
+var notoriety_button: Button
 
 
 func setup(p: PlayerProfile) -> void:
@@ -70,6 +76,10 @@ func build_ui() -> void:
 	options_button.pressed.connect(options_requested.emit)
 	side.add_child(options_button)
 	focus_chain.append(options_button)
+	notoriety_button = UiBuild.button(&"ui.notoriety.open")
+	notoriety_button.pressed.connect(notoriety_requested.emit)
+	side.add_child(notoriety_button)
+	focus_chain.append(notoriety_button)
 	var footer: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(footer)
 	back_button = UiBuild.button(&"ui.hub.main_menu")
@@ -137,6 +147,8 @@ func _build_profile_panel() -> PanelContainer:
 	v.add_child(name_label)
 	level_label = UiBuild.label(&"", UiBuild.HEADER)
 	v.add_child(level_label)
+	notoriety_label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	v.add_child(notoriety_label)
 	xp_bar = UiBuild.bar(Color(1, 1, 1, 1), Vector2(0, 14))
 	xp_bar.self_modulate = UiAccent.table().fallback.lightened(0.15)
 	v.add_child(xp_bar)
@@ -162,7 +174,8 @@ func refresh_profile(p: PlayerProfile = null) -> void:
 		return
 	name_label.text = profile.profile_name
 	name_label.visible = profile.profile_name != ""
-	level_label.text = UiText.t(&"ui.menu.level", {"level": profile.level})
+	level_label.text = NotorietyScreen.level_text(profile.level, profile.notoriety)
+	notoriety_label.text = NotorietyScreen.badge_text(profile.notoriety)
 	var lvl: int = XpCurve.level_for_xp(profile.xp)
 	if lvl >= XpCurve.max_level():
 		xp_bar.value = 1.0

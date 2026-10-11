@@ -41,6 +41,7 @@ const BOARD_SCENE: PackedScene = preload("res://content/ui/board/board_screen.ts
 const LOBBY_SCENE: PackedScene = preload("res://content/ui/lobby/lobby_screen.tscn")
 const ACHIEVEMENTS_SCENE: PackedScene = preload("res://content/ui/achievements/achievements_screen.tscn")
 const OPTIONS_SCENE: PackedScene = preload("res://content/ui/menus/options_screen.tscn")
+const NOTORIETY_SCENE: PackedScene = preload("res://content/ui/notoriety/notoriety_screen.tscn")
 ## HubStation.target values open_station() understands.
 const TARGET_BOARD: StringName = &"board"
 const TARGET_HEIST_SELECT: StringName = &"heist_select"
@@ -128,6 +129,7 @@ func _ready() -> void:
 	hub.station_requested.connect(open_station)
 	hub.achievements_requested.connect(_open_achievements)
 	hub.options_requested.connect(options_menu.open)
+	hub.notoriety_requested.connect(_open_notoriety)
 	hub.back_requested.connect(_on_hub_back)
 	main_menu.firing_range_requested.connect(open_firing_range)
 	main_menu.settings_requested.connect(options_menu.open)
@@ -223,6 +225,20 @@ func _open_board() -> void:
 ## Achievements screen (B4-20) from the hub's profile panel; Back frees it and returns to the hub.
 func _open_achievements() -> void:
 	var screen: AchievementsScreen = ACHIEVEMENTS_SCENE.instantiate() as AchievementsScreen
+	screen.setup(SaveService.load_profile(profile_slot))
+	screen.visible = false
+	add_child(screen)
+	screen.back_requested.connect(func() -> void:
+		_free_screen(screen)
+		show_hub())
+	show_screen(screen)
+
+
+## Notoriety screen (B5-02) from the hub's profile panel; it saves the profile itself on a rank-up or
+## a reward choice. Back frees it and returns to the hub (show_hub re-reads the saved profile).
+func _open_notoriety() -> void:
+	var screen: NotorietyScreen = NOTORIETY_SCENE.instantiate() as NotorietyScreen
+	screen.profile_slot = profile_slot
 	screen.setup(SaveService.load_profile(profile_slot))
 	screen.visible = false
 	add_child(screen)

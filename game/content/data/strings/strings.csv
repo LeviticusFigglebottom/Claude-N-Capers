@@ -2139,3 +2139,55 @@ ui.action.drop_bag,Throw Bag
 ui.action.order_menu,Crew Order
 ui.action.scoreboard,Scoreboard
 ui.action.pause,Options / Pause
+ui.results.xp.notoriety,Notoriety bonus
+ui.notoriety.open,Notoriety
+ui.notoriety.title,NOTORIETY
+ui.notoriety.subtitle,"Trade a maxed-out level for a rank the whole underworld knows. Level 100 and a fortune buy the next one."
+ui.notoriety.current,CURRENT RANK
+ui.notoriety.badge,Notoriety {rank}
+ui.notoriety.badge_none,No notoriety yet
+ui.notoriety.level_badge,{rank} · Level {level}
+ui.notoriety.xp_bonus,XP bonus: +{pct}%
+ui.notoriety.xp_bonus_max,XP bonus: +{pct}% (maximum)
+ui.notoriety.held_skills,Skill points waiting to come back as you level: {points}
+ui.notoriety.next,Next rank: {rank}
+ui.notoriety.max_reached,You hold the highest rank there is.
+ui.notoriety.requirements,REQUIREMENTS
+ui.notoriety.check.level,Reach level {need} (now {have})
+ui.notoriety.check.cash,Spending cash: {need} (you have {have})
+ui.notoriety.check.cap,Ranks stop at {need}
+ui.notoriety.check.met,Done
+ui.notoriety.check.unmet,Missing
+ui.notoriety.cost,Cost: {amount}
+ui.notoriety.rewards,REWARDS AT RANK {rank}
+ui.notoriety.reward_line,{name}
+ui.notoriety.reward_choice,Pick one: {names}
+ui.notoriety.reward_xp,XP bonus rises to +{pct}%
+ui.notoriety.reward_none,The rank badge only
+ui.notoriety.choice_title,CHOOSE YOUR REWARD FOR RANK {rank}
+ui.notoriety.rank_up,Rank Up
+ui.notoriety.confirm_title,Go up to Notoriety {rank}?
+ui.notoriety.confirm_body,"Your level and XP drop back to 0, and {amount} leaves your spending cash. You keep your stash, weapons, masks, perk decks and skill builds. Skill points come back as you level up again, and your builds refill on their own."
+ui.notoriety.confirm,Confirm Rank Up
+ui.notoriety.cancel,Cancel
+ui.notoriety.done,Notoriety {rank} reached.
+ui.notoriety.unlock.unlock.music.vault_hymn,Music track: Vault Hymn
+ui.notoriety.unlock.unlock.music.long_con,Music track: The Long Con
+ui.notoriety.unlock.unlock.music.last_call,Music track: Last Call
+item.mask_colors.crown_ember.name,Crown Ember
+item.mask_colors.ash_regalia.name,Ash Regalia
+item.mask_colors.velvet_vault.name,Velvet Vault
+item.mask_colors.midnight_ledger.name,Midnight Ledger
+item.mask_colors.lantern_smoke.name,Lantern Smoke
+item.mask_colors.verdigris_crown.name,Verdigris Crown
+item.mask_colors.bloodline.name,Bloodline
+item.mask_colors.ghost_ledger.name,Ghost Ledger
+item.mask_colors.black_crown.name,Black Crown
+item.mask_colors.heat_shimmer.name,Heat Shimmer
+item.mask_material.weave.name,Carbon Weave
+item.mask_material.anodized.name,Night Anodized
+item.mask_material.crown_gold.name,Crown Gold
+item.mask.ledger_regent.name,Ledger Regent
+item.mask.ledger_regent.desc,"A gilded theatre face over a black crown. Worn by crews who have retired the top of the ladder ten times."
+item.mask.last_word.name,The Last Word
+item.mask.last_word.desc,"Carbon and ember for the crew that has nothing left to prove. Notoriety XXV only."
