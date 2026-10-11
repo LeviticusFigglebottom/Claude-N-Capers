@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://0hqr3b5gdchx" path="res://assets/weapons/wpn_rotor_saw/wpn_rotor_saw.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 30.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 600.0
+spread_deg_hip = 2.0
+spread_deg_ads = 2.0
+recoil_kick_deg = 0.4
+recoil_horizontal_deg = 0.4
+falloff_start_m = 1.5
+falloff_end_m = 2.0
+falloff_min_mult = 0.0
+mag_size = 150
+total_ammo = 300
+reload_time_s = 3.8
+reload_empty_time_s = 3.8
+equip_time_s = 0.8
+ads_time_s = 0.4
+concealment = 18
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 20.0
+ammo_pickup_min = 5.0
+ammo_pickup_max = 10.0
+suppressed = false
+noise_radius_m = 50.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.rotor_saw"
+params = {"saw": {"range_m": 1.6, "wear_per_tick_npc": 1, "wear_per_tick_object": 1, "cut_rate_mult": 1.0}}
+display_name = "Rotor Saw"
+manufacturer = "Graff-Lindqvist"
+weapon_class = 6
+slot = 1
+fire_modes = Array[StringName]([&"auto"])
+base = SubResource("base")
+price = 35000
+unlock_level = 14
+mod_slots = {
+3: [&"mod.saw_guide_notch"],
+5: [&"mod.saw_front_handle"],
+7: [&"mod.saw_standard_blade", &"mod.saw_carbide_blade", &"mod.saw_durable_blade"]
+}
+default_mods = {
+3: &"mod.saw_guide_notch",
+7: &"mod.saw_standard_blade"
+}
+fire_cue = &"cue.weapon_saw_fire"
+fire_cue_suppressed = &""
+anim_set = &"saw"
+model = ExtResource("3")

@@ -3,7 +3,6 @@
 [ext_resource type="AnimationLibrary" path="res://world/characters/anim_humanoid.res" id="1_anim"]
 [ext_resource type="ArrayMesh" path="res://world/characters/contact_odile/contact_odile_body.res" id="mesh_body"]
 [ext_resource type="ArrayMesh" path="res://world/characters/contact_odile/contact_odile_gear.res" id="mesh_gear"]
-[ext_resource type="ArrayMesh" path="res://world/characters/contact_odile/contact_odile_hair.res" id="mesh_hair"]
 [ext_resource type="ArrayMesh" path="res://world/characters/contact_odile/contact_odile_headwear.res" id="mesh_headwear"]
 [ext_resource type="ArrayMesh" path="res://world/characters/contact_odile/contact_odile_outfit.res" id="mesh_outfit"]
 
@@ -542,11 +541,6 @@ skeleton = NodePath("..")
 
 [node name="Gear" type="MeshInstance3D" parent="Skeleton3D" unique_id=1003050934]
 mesh = ExtResource("mesh_gear")
-skin = SubResource("skin_0")
-skeleton = NodePath("..")
-
-[node name="Hair" type="MeshInstance3D" parent="Skeleton3D" unique_id=1003082779]
-mesh = ExtResource("mesh_hair")
 skin = SubResource("skin_0")
 skeleton = NodePath("..")
 

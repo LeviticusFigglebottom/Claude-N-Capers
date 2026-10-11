@@ -28,7 +28,7 @@ import _anim as A
 from _anim import FPS, TAU, Clip, HandShape, Skeleton, Solver, hand_shape, mslerp, rxd, ryd, rzd, smooth, unit, v3, weapon_frame
 from _arms_choreo import I3, Choreo, Hand, Key, State, as_cam, grip_hand, hand_at, mag_cam, realize
 from _arms_sets import (BOLT_LIFT_DEG, BOLT_TRAVEL, PISTOL_AUTO_RECOIL, PUMP_TRAVEL, SHELL_END, SHELL_END_EMPTY,
-                        SHELL_LOOP, SHELL_START, SHOTGUN_SHELLS, FPSet)
+                        SHELL_LOOP, SHELL_START, SHOTGUN_BOX_CHARGE, SHOTGUN_SHELLS, FPSet)
 
 #: Magazine held by its base: index straight up the front edge, the other fingers wrapped round it.
 MAG_BASE_SHAPE = HandShape(curl={"index": (72.0, 12.0, 6.0), "middle": (80.0, 58.0, 30.0), "ring": (84.0, 62.0, 32.0),
@@ -372,12 +372,18 @@ def clip_mag_reload(kit: Kit, s: FPSet, N: int, empty: bool):
     drop = empty or s.support == "pistol"          # PD2 pistols always drop the magazine
     if s.support != "pistol":                      # reach the seated magazine
         keys.append(K(o - 6, tilt, g, kit.grip, mag=kit.mag_out(0.0), blade=bl, arc_l=(-0.03, -0.01, -0.06)))
-    if not drop:
+    rock = float(mg.get("rock", 0.0))              # rock-in drum / box (D-058): front lip first
+    if not drop and rock:
+        # tactical: rock the drum forward off its front lip, then down and away to the pouch
+        keys.append(K(o, tilt_out, g, kit.grip, mag=kit.mag_out(0.006, rock * 0.6), blade=bl, ease="snap"))
+        keys.append(K(o + 4, tilt_out, g, kit.grip, mag=kit.mag_out(clear + 0.02, rock), blade=bl))
+    elif not drop:
         # tactical: pull the magazine, carry it down to the pouch, come back with a fresh one
         keys.append(K(o, tilt_out, g, kit.grip, mag=kit.mag_out(clear * 0.55), blade=bl, ease="snap"))
         keys.append(K(o + 3, tilt_out, g, kit.grip, mag=kit.mag_out(clear + 0.02, -6.0), blade=bl))
+    if not drop:
         keys.append(K(sw, tilt, g, kit.grip, mag=kit.mag_for_hand(kit.pouch), blade=bl, arc_m=(-0.05, 0.0, 0.0)))
-    else:
+    elif drop:
         # the release is pressed, the magazine drops free; the left hand goes for the pouch
         let_go = (kit.support.moved(v3(-0.035, -0.01, -0.03)) if s.support == "pistol"
                   else g.moved(v3(-0.03, 0.0, 0.0))).with_shape(hand_shape("relaxed"))
@@ -385,9 +391,16 @@ def clip_mag_reload(kit: Kit, s: FPSet, N: int, empty: bool):
         keys.append(K(sw, tilt, g.with_shape(hand_shape("grip", 0.5)), kit.grip,
                       mag=kit.mag_for_hand(kit.pouch), blade=bl, arc_l=(-0.06, 0.0, 0.0)))
     # fresh magazine up under the magwell, aligned, then seated
-    keys.append(K(i - 9, tilt, g, kit.grip, mag=kit.mag_out(clear + 0.045, -4.0), blade=bl,
-                  arc_m=(-0.05, -0.02, -0.03)))
-    keys.append(K(i - 3, tilt, g, kit.grip, mag=kit.mag_out(clear * 0.5), blade=bl, ease="inout"))
+    if rock:
+        # rock-in: the drum comes up canted forward, its front lip hooks into the magwell, then the left
+        # hand rocks it back against the gun (tilt_in: the right hand meets it) until it latches at mag_in
+        keys.append(K(i - 11, tilt, g, kit.grip, mag=kit.mag_out(clear + 0.035, rock), blade=bl,
+                      arc_m=(-0.05, -0.02, -0.03)))
+        keys.append(K(i - 5, tilt, g, kit.grip, mag=kit.mag_out(0.004, rock * 0.85), blade=bl, ease="inout"))
+    else:
+        keys.append(K(i - 9, tilt, g, kit.grip, mag=kit.mag_out(clear + 0.045, -4.0), blade=bl,
+                      arc_m=(-0.05, -0.02, -0.03)))
+        keys.append(K(i - 3, tilt, g, kit.grip, mag=kit.mag_out(clear * 0.5), blade=bl, ease="inout"))
     seat = g if mg["grip"] == "base" else g.with_shape(hand_shape("grip", 0.45))
     keys.append(K(i, tilt_in, seat, kit.grip, mag=None, blade=bl, ease="snap"))
     after = i + 4
@@ -464,6 +477,22 @@ def _release_keys(kit: Kit, s: FPSet, ev: dict, keys: list, after: int) -> int:
                       at(catch, hand_shape("flat")), kit.grip, blade=bl, ease="snap"))
         keys.append(K(rel + 4, hold, at(catch + v3(-0.04, 0.01, -0.01), hand_shape("relaxed")), kit.grip, blade=bl,
                       ease="out"))
+        return rel + 4
+    if s.name == "shotgun_box":     # D-058: rack the charging handle (left side) and let it fly home
+        rel = ev["bolt_release"]
+        cock = m["cock"]
+        hold = hold_frame(s.reload_tilt, (0.0, 0.01, 0.0), pitch=2.0, roll=-12.0)
+
+        def on_handle(back: float, shape) -> Hand:
+            return kit.left_w(cock + v3(-0.010, -SHOTGUN_BOX_CHARGE * back, 0.004), (0.25, 0.55, 0.80),
+                              (0.92, -0.05, -0.38), pole=(-0.6, -0.35, -0.7), shape=shape, share=0.55, off=0.012)
+        keys.append(K(rel - 12, hold, on_handle(0.0, hand_shape("flat")).moved(v3(-0.03, -0.01, 0.02)), kit.grip,
+                      blade=bl, arc_l=(-0.03, 0.0, 0.03)))
+        keys.append(K(rel - 7, hold, on_handle(0.0, hand_shape("grip", 0.65)), kit.grip, blade=bl))
+        keys.append(K(rel - 1, hold_frame(s.reload_tilt, (0.0, 0.004, 0.0), pitch=1.5, roll=-13.0),
+                      on_handle(1.0, hand_shape("grip", 0.65)), kit.grip, blade=bl, ease="in"))
+        keys.append(K(rel + 4, hold, on_handle(1.0, hand_shape("relaxed")).moved(v3(-0.035, 0.01, 0.02)), kit.grip,
+                      blade=bl, ease="out"))
         return rel + 4
     if "belt_seat" in ev:           # minigun: feed the new belt into the feed chute (D-055)
         seat = ev["belt_seat"]
@@ -677,7 +706,15 @@ def clip_box_reload(kit: Kit, s: FPSet, N: int, empty: bool):
 # entry point
 # =============================================================================================
 def state_fns(sk: Skeleton, s: FPSet) -> dict:
-    """``{clip: f -> State}`` for every clip of the set."""
+    """``{clip: f -> State}`` for every clip of the set (errors name the set and its clip lengths)."""
+    try:
+        return _state_fns(sk, s)
+    except ValueError as e:
+        lengths = {c: s.frames(c) for c in s.clips}
+        raise ValueError(f"{s.name} (clip frames {lengths}): {e}") from e
+
+
+def _state_fns(sk: Skeleton, s: FPSet) -> dict:
     if s.support == "akimbo":
         from _arms_akimbo import akimbo_fns  # noqa: PLC0415 - imports this module
         return akimbo_fns(sk, s)

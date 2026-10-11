@@ -124,6 +124,7 @@ func refresh_weapon(animated: bool = false) -> void:
 		cam.add_child(wv)
 		wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
 	_crew.weapon_visual = wv
+	WeaponPartsAnimator.attach(wv, _crew.weapons)  # B4-18: Breech / Lever / String / Blade / Rotor
 
 
 ## Gameplay equip time of slot `ws` (CrewWeapons.equip: equip_time_s / weapon.swap_speed_mult).

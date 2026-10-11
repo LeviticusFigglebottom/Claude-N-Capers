@@ -1,8 +1,8 @@
 ## B4-14: perk decks change behaviour through ENV A's existing hooks (public APIs only), on a
 ## standalone crew member (CrewController.spawn_for_range, no heist): max health / armor, dodge,
 ## armor regen delay, weapon damage / headshot bonus, armor pierce, interaction hold times.
-## Keys without an ENV A hook (perk.* PARAMS, team.*, ammo pickup, armor bag, doctor bag speed,
-## armor move penalty) are skipped here and filed as QBs (perk_decks.md "Hook coverage").
+## The perk.* PARAMS, ammo pickup, armor bag, doctor bag speed and armor move penalty need a heist;
+## ENV A's own tests cover them (test_p4_perk_*, test_qb56_61_modifier_keys; perk_decks.md "Hook coverage").
 extends TestCase
 
 const LIGHT_VEST: StringName = &"armor.light_vest"

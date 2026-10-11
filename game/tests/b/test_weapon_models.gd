@@ -25,6 +25,26 @@ const STOCK_PARTS: Dictionary = {
 	&"weapon.falchion_dmr": [&"StockSight", &"StockMagazine"],
 	&"weapon.wasp_pdw": [&"StockSight", &"StockMagazine", &"StockStock"],
 	&"weapon.sparrow_mp": [&"StockSight", &"StockMagazine"],
+	# B4-18
+	&"weapon.wren_380": [&"StockSight", &"StockMagazine"],
+	&"weapon.ferret_9": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.lancet_45": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.hush_9": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.tern_556": [&"StockSight", &"StockMagazine"],
+	&"weapon.bastion_br": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.lark_carbine": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.harrow_12": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.brute_12": [&"StockSight", &"StockMagazine"],
+	&"weapon.reaper_db": [&"StockSight", &"StockMagazine", &"StockBarrel", &"StockStock"],
+	&"weapon.gale_mg": [&"StockSight", &"StockMagazine"],
+	&"weapon.osprey_762": [&"StockSight", &"StockMagazine"],
+	&"weapon.shrike_44": [&"StockSight", &"StockMagazine", &"StockBarrel"],
+	&"weapon.thorn_bow": [&"StockSight", &"StockMagazine"],
+	&"weapon.vise_crossbow": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.thumper_40": [&"StockSight", &"StockMagazine", &"StockStock"],
+	&"weapon.furnace_ft": [&"StockSight", &"StockMagazine"],
+	&"weapon.rotor_saw": [&"StockSight", &"StockMagazine", &"StockForegrip"],
+	&"weapon.cyclone_rotary": [&"StockSight", &"StockMagazine", &"StockBarrel"],
 }
 ## Overall length range (Muzzle to StockMount / rear-most marker), metres.
 const LENGTH_RANGE: Dictionary = {
@@ -36,7 +56,20 @@ const LENGTH_RANGE: Dictionary = {
 	&"weapon.mule_12": Vector2(0.44, 0.52), &"weapon.akimbo_warden_45": Vector2(0.18, 0.26),
 	&"weapon.marshal_357": Vector2(0.17, 0.25), &"weapon.falchion_dmr": Vector2(0.78, 0.90),
 	&"weapon.wasp_pdw": Vector2(0.30, 0.38), &"weapon.sparrow_mp": Vector2(0.16, 0.24),
+	# B4-18
+	&"weapon.wren_380": Vector2(0.12, 0.16), &"weapon.ferret_9": Vector2(0.30, 0.35),
+	&"weapon.lancet_45": Vector2(0.34, 0.39), &"weapon.hush_9": Vector2(0.48, 0.54),
+	&"weapon.tern_556": Vector2(0.76, 0.82), &"weapon.bastion_br": Vector2(0.66, 0.72),
+	&"weapon.lark_carbine": Vector2(0.41, 0.46), &"weapon.harrow_12": Vector2(0.54, 0.60),
+	&"weapon.brute_12": Vector2(0.76, 0.82), &"weapon.reaper_db": Vector2(0.70, 0.75),
+	&"weapon.gale_mg": Vector2(0.65, 0.71), &"weapon.osprey_762": Vector2(0.76, 0.82),
+	&"weapon.shrike_44": Vector2(0.57, 0.62), &"weapon.thorn_bow": Vector2(0.55, 0.61),
+	&"weapon.vise_crossbow": Vector2(0.49, 0.54), &"weapon.thumper_40": Vector2(0.33, 0.38),
+	&"weapon.furnace_ft": Vector2(0.58, 0.63), &"weapon.rotor_saw": Vector2(0.58, 0.63),
+	&"weapon.cyclone_rotary": Vector2(0.65, 0.70),
 }
+## What a magazine part shows (B4-18 adds arrows/bolts, saw blades and fuel tanks).
+const MAG_SHOWS: Array[String] = ["*Round", "*Shell", "*Belt", "*Arrow", "*Blade", "*Tank"]
 const WEAPONS_DIR: String = "res://assets/weapons"
 
 
@@ -263,7 +296,7 @@ func test_every_mod_attaches_on_every_weapon() -> void:
 						assert_true(inst.is_ancestor_of(v.get_marker(&"AimPoint")), "%s owns the AimPoint" % mid)
 					Enums.ModType.MAGAZINE:
 						var shows: bool = false
-						for pat: String in ["*Round", "*Shell", "*Belt"]:
+						for pat: String in MAG_SHOWS:
 							shows = shows or inst.find_child(pat, true, false) != null
 						assert_true(shows, "%s shows a round" % mid)
 				v.queue_free()
@@ -438,3 +471,4 @@ func test_akimbo_offhand_mirrors_the_kit() -> void:
 	assert_eq(v.attached_offhand.size(), 0, "rebuilt stock")
 	assert_true(v.offhand_stock_part(Enums.ModType.SIGHT).visible, "left stock sight back")
 	v.queue_free()
+

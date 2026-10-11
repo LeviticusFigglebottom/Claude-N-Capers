@@ -534,7 +534,6 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 	var options: Dictionary = build_launch_options(ai, Net.local_slot(), resolved, plan, pro)
 	visible = false
 	_spawn_in_heist_ui()
-	ModifierPush.push(options["loadouts"] as Dictionary)  # skills + perk cards (QB-L2)
 	runtime = await launcher.call(&"launch", heist_id, run_seed, difficulty, null, options)
 	if runtime == null:
 		Log.error(&"ui", "HeistLauncher.launch(%s) returned null; back to the main menu" % heist_id)
@@ -773,7 +772,6 @@ func launch_coop(info: Dictionary) -> void:
 	var options: Dictionary = build_coop_launch_options(lobby.state.launch_loadouts(), preplan, is_pro)
 	visible = false
 	_spawn_in_heist_ui()
-	ModifierPush.push(options["loadouts"] as Dictionary)  # host: skills + perk cards of every slot
 	runtime = await launcher.call(&"launch", _heist_id, int(info["seed"]), _difficulty, null, options)
 	if runtime == null:
 		Log.error(&"ui", "HeistLauncher.launch(%s) returned null (co-op); leaving" % _heist_id)

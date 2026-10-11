@@ -1,19 +1,19 @@
 asset: char_contact_odile
 script: tools/blender/characters/char_contacts.py
-params: {"age": 0.45, "build": 0.15, "gender": 1.0, "hair": "short", "hair_color": "dark", "height": 1.73, "look": "odile", "skin": 2}
+params: {"age": 0.25, "build": 0.45, "gender": 1.0, "hair": "none", "hair_color": "dark", "height": 1.73, "lip": "char_lip_rose", "look": "odile", "skin": 2}
 seed: 1325640228  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category characters --asset char_contact_odile
 edit policy: generated file, never edit by hand; change the script and rebuild
-attach_Back: bone chest, local [0.0000, 0.0865, 0.0963] (model [0.0000, 1.2635, 0.1143], Godot axes, rest pose)
+attach_Back: bone chest, local [0.0000, 0.0866, 0.0991] (model [0.0000, 1.2635, 0.1170], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0787, -0.0862] (model [0.0000, 1.6192, -0.0745], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1684, 0.0497, 0.0417] (model [0.1684, 0.9758, 0.0441], Godot axes, rest pose)
-body_faces_culled: 4825
-body_params: {"age": 0.45, "build": 0.15, "gender": 1.0, "hair": "short", "hair_color": "dark", "height": 1.73, "skin": 2}
+attach_Hip: bone hips, local [0.1759, 0.0498, 0.0426] (model [0.1759, 0.9758, 0.0450], Godot axes, rest pose)
+body_faces_culled: 4831
+body_params: {"age": 0.25, "beard_shadow": 0.0, "build": 0.45, "gender": 1.0, "hair": "none", "hair_color": "dark", "height": 1.73, "lip": "char_lip_rose", "skin": 2}
 bones: 52
-meshes: Body,Gear,Hair,Headwear,Outfit
+meshes: Body,Gear,Headwear,Outfit
 portrait: QB-50a contact bust: Odile Vance (fence)
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 33416
-tris_by_mesh: {"Body": 9094, "Gear": 1060, "Hair": 1200, "Headwear": 1156, "Outfit": 20906}
+tris: 33882
+tris_by_mesh: {"Body": 9082, "Gear": 1060, "Headwear": 2832, "Outfit": 20908}

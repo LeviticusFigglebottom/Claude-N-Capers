@@ -1,0 +1,62 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dyprkc32v24ts" path="res://assets/weapons/wpn_thumper_40/wpn_thumper_40.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 1000.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 60.0
+spread_deg_hip = 5.0
+spread_deg_ads = 2.0
+recoil_kick_deg = 2.4
+recoil_horizontal_deg = 0.6
+falloff_start_m = 9999.0
+falloff_end_m = 9999.0
+falloff_min_mult = 1.0
+mag_size = 1
+total_ammo = 6
+reload_time_s = 3.0
+reload_empty_time_s = 3.0
+equip_time_s = 0.6
+ads_time_s = 0.3
+concealment = 16
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 40.0
+ammo_pickup_min = 0.2
+ammo_pickup_max = 0.4
+suppressed = false
+noise_radius_m = 110.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.thumper_40"
+params = {"projectile": {"speed_mps": 45.0, "gravity_mult": 1.0, "lifetime_s": 8.0}, "explosion": {"radius_m": 3.5, "arm_distance_m": 0.0}}
+display_name = "Thumper 40"
+manufacturer = "Brannock Defense"
+weapon_class = 6
+slot = 0
+fire_modes = Array[StringName]([&"semi"])
+base = SubResource("base")
+price = 80000
+unlock_level = 38
+mod_slots = {
+3: [&"mod.thumper_leaf_sight", &"mod.rail_reflex_sight"],
+5: [&"mod.thumper_vertical_grip"],
+6: [&"mod.thumper_stockless"],
+7: [&"mod.thumper_grenade"]
+}
+default_mods = {
+3: &"mod.thumper_leaf_sight",
+7: &"mod.thumper_grenade"
+}
+fire_cue = &"cue.weapon_launcher_fire"
+fire_cue_suppressed = &""
+anim_set = &"launcher"
+model = ExtResource("3")

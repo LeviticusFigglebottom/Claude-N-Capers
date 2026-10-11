@@ -45,20 +45,21 @@ CONTACTS: dict[str, dict] = {
         "asset": "char_contact_odile",
         "pose": _ARMS_DOWN + [
             ("chest", (0, 0, 1), -6.0),
-            ("neck", (1, 0, 0), 5.0),             # chin up: impatient, looking down her nose
-            ("head", (1, 0, 0), 5.0),
-            ("head", (0, 0, 1), 16.0),            # turned toward the camera
-            ("head", (0, 1, 0), -4.0),            # slight disdainful tilt
+            ("neck", (1, 0, 0), 3.0),             # a slight chin lift: poised, a touch impatient
+            ("head", (1, 0, 0), 4.0),
+            ("head", (0, 0, 1), 20.0),            # turned toward the camera (the chignon still shows)
+            ("head", (0, 1, 0), -5.0),            # slight tilt
         ],
         # camera: target (z rel. to the eyes), distance, yaw (deg, + = character's left), dz, lens
-        "camera": {"target_dz": -0.12, "dist": 1.35, "yaw": -36.0, "cam_dz": 0.06, "lens": 85.0},
+        "camera": {"target_dz": -0.09, "dist": 1.22, "yaw": -36.0, "cam_dz": 0.13, "lens": 85.0},
         "bg": {"top": (0.018, 0.022, 0.030), "glow": (0.085, 0.040, 0.070), "glow_xy": (0.62, 0.58), "glow_r": 0.55},
         "lights": [
-            # short lighting: the cool key on the far side of the face, warm rims behind
-            ("key", "AREA", (0.80, 1.30, 1.80), (0.0, 0.0, 1.58), (0.78, 0.87, 1.00), 50.0, 0.8, 0.8),
-            ("rim", "AREA", (-0.95, -1.05, 1.62), (0.0, 0.0, 1.52), (1.00, 0.68, 0.40), 110.0, 0.4, 2.0),
-            ("rim_far", "AREA", (0.40, -1.35, 1.66), (0.0, 0.0, 1.52), (1.00, 0.72, 0.45), 70.0, 0.4, 2.0),
-            ("fill", "AREA", (-1.4, 1.1, 1.5), (0.0, 0.0, 1.50), (0.80, 0.78, 0.90), 8.0, 1.5, 0.3),
+            # soft loop lighting: a large warm-neutral key high and just camera-side of the nose, a
+            # broad fill from the camera side (no hollow under the cheekbone), warm rims behind
+            ("key", "AREA", (-0.10, 1.50, 1.90), (0.0, 0.0, 1.58), (1.00, 0.93, 0.86), 65.0, 1.4, 0.9),
+            ("fill", "AREA", (-1.25, 1.05, 1.50), (0.0, 0.0, 1.52), (0.88, 0.86, 0.95), 14.0, 1.6, 0.3),
+            ("rim", "AREA", (-0.95, -1.05, 1.62), (0.0, 0.0, 1.52), (1.00, 0.70, 0.45), 90.0, 0.5, 1.8),
+            ("rim_far", "AREA", (0.55, -1.25, 1.66), (0.0, 0.0, 1.52), (1.00, 0.74, 0.50), 70.0, 0.5, 1.8),
             ("hair", "AREA", (-0.3, -0.9, 2.3), (0.0, 0.0, 1.62), (0.90, 0.92, 1.00), 12.0, 0.4, 0.5),
         ],
         "ambient": (0.020, 0.022, 0.028),
@@ -143,20 +144,21 @@ def _render(name: str, out: str) -> None:
     ev = body.evaluated_get(dg)
     top = max((ev.matrix_world @ v.co).z for v in ev.data.vertices)
     eye_z = top - 0.115
-    # placeholder materials from the glb: soften the lens to a gloss and the skin to a light SSS
+    # the game's library textures (skin tint included), light SSS on skin/lips, no terminator
+    # strokes; then the art-directed tweaks: matte hair, glossy lenses, silk sheen
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import _review_mats  # noqa: PLC0415
+
+    _review_mats.prepare(skip_orm=("char_hair", "char_lens", "char_silk"))
     for m in bpy.data.materials:
         if not m.use_nodes:
             continue
         bsdf = m.node_tree.nodes.get("Principled BSDF")
         if bsdf is None:
             continue
-        if "char_skin" in m.name:
-            bsdf.inputs["Subsurface Weight"].default_value = 0.12
-            bsdf.inputs["Subsurface Radius"].default_value = (0.9, 0.35, 0.2)
-            bsdf.inputs["Subsurface Scale"].default_value = 0.01
-        if "char_hair" in m.name:              # matte, so dark hair stays dark under rims
-            bsdf.inputs["Specular IOR Level"].default_value = 0.25
-            bsdf.inputs["Roughness"].default_value = 0.7
+        if "char_hair" in m.name:              # low spec, so dark hair stays dark under rims
+            bsdf.inputs["Specular IOR Level"].default_value = 0.3
+            bsdf.inputs["Roughness"].default_value = 0.5
         if "char_lens" in m.name:
             bsdf.inputs["Roughness"].default_value = 0.03
             bsdf.inputs["Coat Weight"].default_value = 1.0

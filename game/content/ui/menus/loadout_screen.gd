@@ -208,6 +208,8 @@ func select_armor(armor_id: StringName) -> bool:
 ## Recompute every number from the widgets.
 func refresh() -> void:
 	var l: Loadout = current_loadout()
+	if _gate_deployables(LoadoutResolver.resolve_modifiers(l)):
+		l = current_loadout()
 	var resolved: Loadout = LoadoutResolver.resolve(l)
 	concealment_total = resolved.concealment_total
 	detection_risk = resolved.detection_risk
@@ -407,6 +409,28 @@ func _on_back() -> void:
 func _on_launch() -> void:
 	save()
 	launch_requested.emit(current_loadout())
+
+
+## Lock the deployables whose DeployableGate flag `modifiers` lacks (disabled, with the perk card that
+## unlocks them); a locked pick falls back to none. True when the selection changed.
+func _gate_deployables(modifiers: Dictionary) -> bool:
+	var changed: bool = false
+	for i: int in range(deployable_option.item_count):
+		var id: StringName = StringName(deployable_option.get_item_metadata(i))
+		if DeployableGate.required_flag(id) == &"":
+			continue
+		var ok: bool = DeployableGate.allowed(id, modifiers)
+		var text: String = UiText.t(UiText.item_key(id))
+		if not ok:
+			var card: Dictionary = DeployableGate.unlock_card(id)
+			text = UiText.t(&"ui.loadout.deployable_locked", {"item": text, "card": int(card.get("card", 0)),
+					"name": UiText.t(StringName(card.get("name", &"")))})
+		deployable_option.set_item_text(i, text)
+		deployable_option.set_item_disabled(i, not ok)
+		if not ok and deployable_option.selected == i:
+			_select_id(deployable_option, &"")
+			changed = true
+	return changed
 
 
 static func _add_item(o: OptionButton, text: String, id: StringName) -> void:

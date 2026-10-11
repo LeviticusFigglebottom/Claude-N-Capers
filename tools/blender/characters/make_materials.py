@@ -12,6 +12,9 @@ outfits; see ``_outfit_palette.all_char_materials()``) this writes
   (``resource_name = "M_<id>"``, ORM drives AO/roughness/metallic with multipliers 1.0, normal map
   on, mesh UVs, ``metadata/uv_tile_m = 2.0``: 1 UV unit = 2 m, which is what the outfit scripts'
   ``uv.box_project(density=512, texture_px=1024)`` produces). Skin adds a light subsurface scatter.
+* The body skins ``char_skin_<tone>[_stubble|_beard]`` are 512 px and carry the face colour baked in
+  body-UV space (``tint_atlas``: ``_body.skin_tint`` rasterised over the default body's skin faces;
+  the body UVs come from the shared basis, so one atlas fits every body).
 
 Textures are generated with ENV C's ``tools/texgen`` library (used read-only: noise, ops,
 ``materials.base.Ctx/Maps/finalize`` which enforces the style-guide albedo rules (linear luminance
@@ -26,7 +29,9 @@ Not an asset script (no ASSET_ID/VARIANTS), so build.py skips it.
 from __future__ import annotations
 
 import argparse
+import functools
 import pathlib
+import re
 import sys
 import zlib
 
@@ -47,6 +52,8 @@ MAT_DIR = REPO / "game" / "world" / "materials"
 TEX_DIR = REPO / "game" / "assets" / "characters" / "_textures"
 TEX_RES = "res://assets/characters/_textures"
 SIZE = 256
+SKIN_SIZE = 512          # the skin atlas carries the face colour: head tile = 256 px round the head
+SKIN_RE = re.compile(r"^char_skin_(\d)(_stubble|_beard)?$")
 TILE_M = 2.0
 FORBIDDEN = {"#4FD1E8"}
 #: ORM materials that also glow: id -> (emission sRGB hex, energy). Style guide §3: emissives may
@@ -122,17 +129,93 @@ def _leather(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
                 ao_radii_m=(0.01, 0.03), ao_depth_m=0.0006, ao_strength=0.4)
 
 
-def _skin(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
+def _skin(ctx: Ctx, base: np.ndarray, r: float, met: float, tint: np.ndarray | None = None) -> Maps:
+    """GSR skin: low-frequency mottling only (no grain). Broad tone blotches, a warm/olive hue
+    drift, a light pore bump and a roughness breakup, times ``tint`` (the face colour in body-UV
+    space, ``tint_atlas``) for the ``char_skin_*`` body materials."""
     u, v = ctx.u, ctx.v
-    mott = nz.fbm(u, v, ctx.per_m(5), ctx.s("mottle"), octaves=4)
-    blush = nz.fbm(u, v, ctx.per_m(1), ctx.s("blush"), octaves=2)
+    broad = nz.fbm(u, v, ctx.per_m(5), ctx.s("mottle"), octaves=2)
+    blot = nz.fbm(u, v, ctx.per_m(8), ctx.s("blot"), octaves=2)
+    hue = nz.fbm(u, v, ctx.per_m(3), ctx.s("blush"), octaves=2)
+    alb = ops.vary(base, 0.55 * broad + 0.45 * blot, 0.20)
     warm = ops.hex_to_linear("#B0705A")
-    alb = ops.vary(base, 0.5 * mott, 0.05)
-    alb = ops.hue_shift_toward(alb, warm, np.clip(0.12 * (blush + 0.3), 0.0, 0.12))
-    h = 0.00008 * nz.fbm(u, v, ctx.per_m(20), ctx.s("pore"), octaves=2)
-    rough = np.clip(r + 0.05 * mott, 0.0, 1.0)
+    olive = ops.hex_to_linear("#B89A6E")
+    alb = ops.hue_shift_toward(alb, warm, np.clip(0.10 + 0.30 * blot, 0.0, 0.22))
+    alb = ops.hue_shift_toward(alb, olive, np.clip(-0.35 * hue, 0.0, 0.10))
+    if tint is not None:                     # the face colour, baked in body-UV space
+        alb = alb * tint
+    h = 0.00006 * nz.fbm(u, v, ctx.per_m(24), ctx.s("pore"), octaves=2) + 0.00010 * broad
+    sheen = nz.fbm(u, v, ctx.per_m(8), ctx.s("sheen"), octaves=2)
+    rough = np.clip(r + 0.09 * sheen + 0.03 * blot, 0.0, 1.0)
     return Maps(alb, rough, np.full(ctx.shape, met), h, normal_strength=0.5,
                 ao_radii_m=(0.01,), ao_depth_m=0.001, ao_strength=0.1)
+
+
+@functools.lru_cache(maxsize=1)
+def _tint_vertices():
+    """Per-vertex skin tint of the default body without and with a full beard shadow, plus the
+    body-UV corners of every skin face (UVs come from the shared basis: one atlas fits all bodies)."""
+    import dataclasses
+
+    import _body as body
+
+    bd, _hair = body.body_mesh_data(body.body_params({}))
+    t0 = np.array(body.skin_tint(bd))
+    t1 = np.array(body.skin_tint(dataclasses.replace(bd, params=dict(bd.params, beard_shadow=1.0))))
+    uvs = body.face_uvs(bd.faces, bd.face_region, bd.face_mat, bd.face_side, bd.basis, float(bd.params["height"]))
+    tris = []
+    for f, mt, uv in zip(bd.faces, bd.face_mat, uvs):
+        if mt != "skin":
+            continue
+        for i in range(1, len(f) - 1):
+            tris.append(((f[0], f[i], f[i + 1]), (uv[0], uv[i], uv[i + 1])))
+    return t0, t1, tris
+
+
+def tint_atlas(size: int, beard: float) -> np.ndarray:
+    """(size, size, 3) linear albedo multipliers in body-UV space (row 0 = top = UV v 1): the
+    ``_body.skin_tint`` of every skin vertex rasterised over its faces, white elsewhere, dilated a
+    few texels past the UV island borders so bilinear filtering never pulls in white."""
+    t0, t1, tris = _tint_vertices()
+    tv = t0 * (1.0 + (t1 / t0 - 1.0) * beard)
+    acc = np.ones((size, size, 3))
+    cov = np.zeros((size, size), dtype=bool)
+    for (a, b, c), (ua, ub, uc) in tris:
+        ta, tb, tc = tv[a], tv[b], tv[c]
+        if (ta == 1.0).all() and (tb == 1.0).all() and (tc == 1.0).all():
+            continue
+        p = np.array([[ua[0] * size, (1.0 - ua[1]) * size], [ub[0] * size, (1.0 - ub[1]) * size],
+                      [uc[0] * size, (1.0 - uc[1]) * size]])
+        x0, y0 = np.floor(p.min(0)).astype(int)
+        x1, y1 = np.ceil(p.max(0)).astype(int)
+        x0, y0, x1, y1 = max(x0, 0), max(y0, 0), min(x1, size - 1), min(y1, size - 1)
+        if x1 < x0 or y1 < y0:
+            continue
+        xs, ys = np.meshgrid(np.arange(x0, x1 + 1) + 0.5, np.arange(y0, y1 + 1) + 0.5)
+        d = (p[1, 1] - p[2, 1]) * (p[0, 0] - p[2, 0]) + (p[2, 0] - p[1, 0]) * (p[0, 1] - p[2, 1])
+        if abs(d) < 1e-12:
+            continue
+        l0 = ((p[1, 1] - p[2, 1]) * (xs - p[2, 0]) + (p[2, 0] - p[1, 0]) * (ys - p[2, 1])) / d
+        l1 = ((p[2, 1] - p[0, 1]) * (xs - p[2, 0]) + (p[0, 0] - p[2, 0]) * (ys - p[2, 1])) / d
+        l2 = 1.0 - l0 - l1
+        inside = (l0 >= -1e-6) & (l1 >= -1e-6) & (l2 >= -1e-6)
+        if not inside.any():
+            continue
+        col = l0[..., None] * ta + l1[..., None] * tb + l2[..., None] * tc
+        sub = acc[y0:y1 + 1, x0:x1 + 1]
+        sub[inside] = col[inside]
+        cov[y0:y1 + 1, x0:x1 + 1] |= inside
+    for _ in range(3):                       # dilate tinted texels outwards
+        grown = acc.copy()
+        newcov = cov.copy()
+        for dy, dx in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+            src = np.roll(np.roll(acc, dy, 0), dx, 1)
+            scov = np.roll(np.roll(cov, dy, 0), dx, 1)
+            take = scov & ~newcov
+            grown[take] = src[take]
+            newcov |= take
+        acc, cov = grown, newcov
+    return acc
 
 
 def _hair(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
@@ -159,8 +242,10 @@ def _smooth(ctx: Ctx, base: np.ndarray, r: float, met: float, amount: float = 0.
                 ao_radii_m=(0.01,), ao_depth_m=0.001, ao_strength=0.05)
 
 
-def generate(ctx: Ctx, kind: str, hexc: str, rough: float, metal: float) -> Maps:
+def generate(ctx: Ctx, kind: str, hexc: str, rough: float, metal: float, tint: np.ndarray | None = None) -> Maps:
     base = ops.hex_to_linear(hexc)
+    if tint is not None:
+        return _skin(ctx, base, rough, metal, tint)
     if kind in ("cloth", "knit"):
         return _cloth(ctx, base, rough, metal, knit=kind == "knit")
     if kind == "leather":
@@ -177,9 +262,21 @@ def generate(ctx: Ctx, kind: str, hexc: str, rough: float, metal: float) -> Maps
 def build_one(mid: str, spec: tuple, preset: dict) -> dict:
     hexc, rough, metal, kind = spec
     k = kind_of(mid, kind)
-    ctx = Ctx(lib_id=mid, size=SIZE, tile_m=TILE_M, seed=zlib.crc32(mid.encode("utf-8")),
+    sk = SKIN_RE.match(mid)
+    tint = None
+    size, seed_id, extra = SIZE, mid, []
+    if sk:
+        # the body skins: one tileable base per tone (same seed for its beard variants) times the
+        # face colour atlas at the variant's beard strength
+        import _body as body
+
+        strength = next(st for sfx, st, _hi in body.BEARD_LEVELS if sfx == (sk.group(2) or ""))
+        size, seed_id = SKIN_SIZE, f"char_skin_{sk.group(1)}"
+        tint = tint_atlas(size, strength)
+        extra = [f"face colour: _body.skin_tint rasterised in body-UV space (beard strength {strength})"]
+    ctx = Ctx(lib_id=mid, size=size, tile_m=TILE_M, seed=zlib.crc32(seed_id.encode("utf-8")),
               params={}, rules=preset["rules"], scales={"wear": 0.0, "grime": 0.0})
-    enc = finalize(ctx, generate(ctx, k, hexc, rough, metal))
+    enc = finalize(ctx, generate(ctx, k, hexc, rough, metal, tint))
     d = TEX_DIR / mid
     files = {key: d / f"tex_{mid}_{key}.png" for key in ("albedo", "orm", "normal")}
     tio.write_png(files["albedo"], enc.albedo)
@@ -191,8 +288,9 @@ def build_one(mid: str, spec: tuple, preset: dict) -> dict:
         f"generator: python3 tools/blender/characters/make_materials.py --only {mid}",
         "palette: tools/blender/characters/_outfit_palette.py (all_char_materials)",
         f"kind: {k}; colour {hexc}; roughness {rough}; metallic {metal}",
-        f"seed: {ctx.seed} (zlib.crc32('{mid}'))",
-        f"size_px: {SIZE}; tile_m: {TILE_M} (1 UV unit = {TILE_M} m); texel_density_px_per_m: {SIZE / TILE_M:g}",
+        f"seed: {ctx.seed} (zlib.crc32('{seed_id}'))",
+        f"size_px: {size}; tile_m: {TILE_M} (1 UV unit = {TILE_M} m); texel_density_px_per_m: {size / TILE_M:g}",
+        *extra,
         "albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)",
         "texgen (ENV C, read-only): noise, ops, materials.base.finalize, io, godot",
         "edit policy: generated, never edit by hand",

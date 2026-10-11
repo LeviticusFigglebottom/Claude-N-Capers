@@ -4,7 +4,8 @@
 ##   `team.*` grants);
 ## * TEAM: LoadoutResolver.crew_team_modifier_sources() (`team_skill.<id>` / `team_perk.<deck>`, one
 ##   copy per source name, the strongest wins).
-## Call on the authority with the same {slot: resolved Loadout} dict passed to HeistLauncher.launch.
+## Called by ENV A on the server for every launch (LoadoutModifiers, D-056) with the launch loadouts,
+## default and AI loadouts included. MenuFlow does not call it.
 ## HeistRuntime.teardown() clears every source (Modifiers.clear_all()).
 class_name ModifierPush
 extends RefCounted

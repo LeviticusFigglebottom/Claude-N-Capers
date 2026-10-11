@@ -74,6 +74,10 @@ sc.collection.objects.link(cam)
 sc.camera = cam
 
 if mode in ("lineup", "officer", "face"):
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import _review_mats  # noqa: E402  (the game's library textures + skin tint on the glb placeholders)
+
+    _review_mats.prepare()
     bg.inputs[0].default_value = (0.30, 0.27, 0.24, 1)
     bg.inputs[1].default_value = 0.35
     bpy.ops.mesh.primitive_plane_add(size=40, location=(0, 0, 0))

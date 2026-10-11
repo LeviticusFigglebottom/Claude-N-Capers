@@ -11,6 +11,7 @@ Godot (after import): ``<root>/rig_humanoid/Skeleton3D/{Body,Hair}``; facing -Z,
 
 import _body as body
 import _rig as rig
+import _tri
 
 TRI_BUDGET = 35000
 EXPORT = {"embed": False, "animations": False, "skins": True, "morph": True}
@@ -31,6 +32,9 @@ def build(ctx) -> None:
     params = body.body_params(ctx.params)
     arm = rig.build_rig(ctx, params["height"])
     out = body.build_body(ctx, arm, params)
+    for name in ("Body", "Hair"):
+        if out[name] is not None:
+            _tri.triangulate(out[name])
     ctx.source_extra["bones"] = len(rig.BONES)
     ctx.source_extra["body_tris"] = out["tris"]
     ctx.source_extra["shape_keys"] = ",".join(body.SHAPE_KEYS)

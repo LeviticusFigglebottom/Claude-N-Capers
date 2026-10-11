@@ -32,9 +32,9 @@ TRI_BUDGET = 35000
 EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
 
 VARIANTS = {
-    "char_patrol_officer": {"height": 1.79, "build": 0.6, "gender": 0.0, "age": 0.4, "skin": 3, "hair": "short",
+    "char_patrol_officer": {"height": 1.79, "build": 0.6, "gender": 0.0, "age": 0.4, "skin": 3, "beard_shadow": 0.6, "hair": "short",
                             "hair_color": "dark", "unit": "patrol"},
-    "char_tac_light": {"height": 1.81, "build": 0.7, "gender": 0.0, "age": 0.3, "skin": 2, "hair": "buzz",
+    "char_tac_light": {"height": 1.81, "build": 0.7, "gender": 0.0, "age": 0.3, "skin": 2, "beard_shadow": 0.5, "hair": "buzz",
                        "hair_color": "brown", "unit": "tac"},
 }
 
@@ -78,9 +78,33 @@ def _base_uniform(kit: Kit, shirt_mat: str, trouser_mat: str, collar: str, boots
         for key in ("leg.L", "leg.R"):
             if key in tl:
                 o.straighten_loop(tr.mesh, tl[key], iters=2)
+        # ... but always outside the boot shaft (its top edge poked through the tapered leg): flare
+        # each leg radially by the worst intrusion, fading out above the boot top (no kinks)
+        boot_hull = Hull(fit, [shoes], body_regions=set())
+        for sfx, sx in (("L", -1.0), ("R", 1.0)):
+            cc = fit.ring_centre(f"calf.{sfx}")
+            ids = [i for i, q in enumerate(tr.mesh.v) if q.z < 0.32 * k and q.x * sx > 0.0]
+            need = 0.0
+            for i in ids:
+                q = tr.mesh.v[i]
+                if 0.15 * k < q.z < 0.235 * k:          # around the boot top edge only
+                    need = max(need, (o.push_out(q, boot_hull, 0.004 * k) - q).length)
+            need = min(need, 0.010 * k)
+            for i in ids:
+                q = tr.mesh.v[i]
+                rd = Vector((q.x - cc.x, q.y - cc.y, 0.0))
+                if rd.length < 1e-6:
+                    continue
+                w = 1.0 - o.smoothstep(0.215 * k, 0.32 * k, q.z)
+                tr.mesh.v[i] = q + rd.normalized() * (need * w)
     else:
         g.trouser_hems(tr, fit, Hull(fit, [shoes], body_regions=set()), trouser_mat)
-    o.hem_all(tr.mesh, thick=0.004 * k, depth=0.012 * k)
+    legs = [set(tl[key]) for key in ("leg.L", "leg.R") if boots and key in tl]
+    leg_loops = [lp for lp in o.boundary_loops(tr.mesh.f) if set(lp) in legs]
+    o.hem_all(tr.mesh, thick=0.004 * k, depth=0.012 * k, skip=lambda lp: set(lp) in legs)
+    for lp in leg_loops:
+        # bloused over the boot top: a shallow turn-in (a deep one pokes through the tapered leg)
+        o.hem(tr.mesh, lp, thick=0.003 * k, depth=0.004 * k)
     kit.add_soft(tr.mesh)
     belt = gk.Belt(fit, Hull(fit, [tr.mesh], body_regions=set()), belt_z, height=0.05, thick=0.007)
     kit.add_soft(belt.mesh("char_leather_black"))
@@ -274,8 +298,9 @@ def tac(kit: Kit) -> None:
     # shoulder line so TAC never reads as the Patrol officer in silhouette)
     for sx in (-1.0, 1.0):
         sh_pt = Vector(fit.J["shoulder.R" if sx > 0 else "shoulder.L"])
-        top = nk.point(sx * math.pi / 2, 0.0).lerp(sh_pt, 0.62)
-        mtx, loc = o.surface_frame(hull, Vector((top.x, top.y, top.z + 0.2)), Vector((sx * 0.25, 0.0, 1.0)),
+        # seated out on the shoulder cap (over the deltoid), tilted with the shoulder slope
+        top = nk.point(sx * math.pi / 2, 0.0).lerp(sh_pt, 1.0)
+        mtx, loc = o.surface_frame(hull, Vector((top.x + sx * 0.13, top.y, top.z + 0.2)), Vector((sx * 0.62, 0.0, 1.0)),
                                    up=Vector((0, 1, 0)))
         gp = o.Gear()
         gp.box((-0.040 * k, -0.062 * k, -0.004 * k), (0.040 * k, 0.062 * k, 0.026 * k), TAC_GEAR)

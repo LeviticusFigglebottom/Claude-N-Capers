@@ -362,3 +362,102 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Save format v5 (ENV B B4-16 = roadmap "save v2"): unlocks/achievements/pro_job_locks, sanitizing + validator
   pruning, golden v0..v4→v5 migrations, damaged-file fallback (content/docs/save_format.md).
 - Armory reaches 36 weapons (B4-18); stinger_45 renamed lancet_45 (name clash with a mod).
+
+## D-058 — 2026-10-11 — Batch-3 viewmodel notes; shotgun_box set
+- Harrow 12 / Brute 12 (box/drum-fed shotguns) get their own FP set `shotgun_box` (ENV D) instead of reusing `rifle`,
+  so their reload lengths follow their own data. ENV B sets `anim_set = &"shotgun_box"`.
+- characters.md v1.5: batch-2/3 sets, loop naming (`fire_hold`/`cut_hold`), bow draw curve + offhand hold, weapon-bone
+  exceptions, model-layout assumptions, Bulwark `shield_idle`.
+
+## D-059 — 2026-10-11 — Glasshouse passes G2 (final art); punch list for G3
+- Reviewed: contact sheet (all 23 shots) and 13 full-size shots (exteriors, workshop, salon, stair core, garage perch,
+  offices, G4 corridor, counter, site plan). validate_level glasshouse [final] PASS (18 checks), P1 gate 4/4.
+- **G2 approved.** Scale, lighting, dressing and the stealth reads (shopfront glazing, G4 sightline, safe + reader)
+  meet level_standards. QC-34: the 1.0 m parapet is the perch guard (no extra rail).
+- Punch list (non-blocking, fix before G3): wood plaque "VOSSBERG" lettering garbles (counter shot) and blocks at a
+  grazing angle; black splotch decals on desk fronts (security, admin); faint alley fence posts; add a garage-ramp
+  review shot; reframe admin_office (cabinet in front); U5 monitor orientation warning.
+- P1 sign-off is held until the P1 integration gate automates all 11 roadmap steps end-to-end (today: 1, 2/3, 4, 8/9).
+
+## D-060 — 2026-10-11 — P1 gate complete (all 11 steps end-to-end)
+- game/tests/integration/test_p1_vertical_slice_b.gd adds steps 3, 5, 6, 7, 10, 11 on the real Glasshouse map
+  (10/10 integration tests, two identical runs). Stated shortcuts: isolate_npc for NPCs outside the step, teleports
+  instead of walking, alarm/down injected in step 10. No missing APIs.
+- Roadmap step 11: "escape with the mission's required bags" (Glasshouse mission: 2).
+- Findings routed: ENV C, SafeLoot not parented under WorkshopSafe (the loot could be taken from a locked safe; P1
+  sign-off waits on this fix); camera variant group resolving to none (enable now that P2 is done); ENV A, a spurious
+  CASING→STEALTH hop on alarm-while-casing.
+
+## D-061 — 2026-10-11 — P1 signed off
+- All P1 gate items pass (docs/process/p1_signoff.md): the 11-step end-to-end gate, Glasshouse G2 (final art,
+  18/18 checks), characters, full CI. Known gaps are carried forward there; a product-owner playtest is recommended.
+- Glasshouse: security_room_staffed (operator 0.6 / empty 0.4) and code_note (one of three) are enabled (ENV C).
+
+## D-062 — 2026-10-11 — Music selection (B5-03)
+- ENV C: `MusicTrackTable` (`res://world/audio/music/tracks.tres`; id, stems, default_for_heists, unlock;
+  `load_default()`, `all()`); MusicDirector plays `rt.launch_options.music_track` when set, else `HeistDef.music_track`;
+  hub preview `MusicDirector.preview(track_id, stem = &"assault")` / `stop_preview()`. 3 more tracks for P5.
+- ENV A: `HeistRuntime.launch_options` (read-only dict from launch()/launch_client()), replicated in the bring-up so
+  every peer plays the host's pick.
+- ENV B: `options["music_track"]` from the pre-planning/lobby pick (host wins in co-op), hub jukebox UI, `music.<id>.name`
+  strings, track unlocks (Notoriety ranks) in the profile.
+
+## D-063 — 2026-10-11 — Shared-set reload scaling; heist NPC casting
+- An FP set whose one reload clip serves weapons with different reload times plays it at
+  `speed_scale = clip_len / reload_time_s` (and reload_empty likewise), allowed range 0.75–1.35×; outside that
+  a weapon needs its own clip. First use: `shotgun_box` authored to Brute (3.6/4.4), Harrow plays ≈1.24×.
+  Shell-by-shell pieces keep data timings (D-053). ENV A implements; test_arms accepts any weapon within range.
+- NPC casting follows the heist design docs:
+  - Night Deposit: night manager, cleaner, Halden Security guard (ENV D re-badges its bank guard).
+  - Shadow Ledger: cleaners (cleaner variant), an IT contractor (to build), Helena Moor (brief from ENV C), and Kessler
+    in a robe by default (`npc_kessler_coat` kept).
+  - Tellers are reserved for Meridian Federal; guests and the waitress for Gallery Night (P5).
+
+## D-064 — 2026-10-11 — Dockside Burn G0 approved
+- Loud-only (P3) heist; Ortega Cold Storage, Pier 9. Opens with a cartel phase, then police after a rolled 60/90/120 s
+  delay. Required: the burn + 4 bags (extra bags and product are a bonus). Base payout $95k (placeholder; P6 balance).
+- Approved: high-bay ceiling override 6.0–9.0 m; scale rule `industrial_door` 2.4–4.0 m wide × 2.1–4.5 m high;
+  the −1.8 Landing in floor_heights.
+- Cartel gunmen share `DifficultyDef.max_active_enemies` with police; the police quota is reduced by the cartel alive
+  count. Fire damages players (DoT, ignores armour, L3.4), telegraphed (warning cue + 5 s shutter countdown).
+- Police never spawn inside the building; they enter only via ENTRY TacticalPoints.
+- Two always-on sniper perches suffice for the P3 gate.
+- Requests:
+  - ENV A: QC-35 police start delay, QC-36 cartel EnemyDef, QC-37 saw_cut implementers, QC-38 burn_point, QC-41 one-way
+    rappel links.
+  - ENV B: QC-39 loot, QC-40 preplan assets.
+  - ENV D: the cartel gunman model.
+- Priority: Dockside Burn G1 (the P3 gate) before the ND/SL G2 art passes.
+
+## D-065 — 2026-10-11 — Civilian mode contracts (S1.3, B5-05)
+- `HeistDef.start_mode` (&"casing" default | &"civilian"); ui_hud v1.6 `player_mode_changed` + crew `mode`;
+  gameplay_prefabs v1.4 `gear_pickup` and the common `civilian_allowed` export (block reason `ui.blocked.civilian`).
+  ENV A implements, ENV B adds strings (`ui.prompt.pick_up_gear`, `ui.blocked.civilian`) + HUD, ENV C uses it on
+  Afterhours (P5).
+- D-063 range check landed (ENV A 34b5537). Outliers (furnace ×0.5, cyclone empty ×0.73) are re-measured after
+  ENV D's batch-3 rebuild (bfde340) reaches trunk; any that remain get their own clip (D) or adjusted data (B).
+
+## D-066 — 2026-10-11 — P3 gate tests drafted (Glasshouse until Dockside Burn)
+- game/tests/integration/test_p3_loud.gd: escalation and caps over 3 waves; counterplay for each special (Phantom,
+  Stinger, Bulwark, Wrecker, Longshot, Corpsman, Brandt/Aegis); custody + hostage trades; AI orders during an assault.
+  test_coop_loopback.gd: host/client parity (variants, crew, NPCs, a door, the alarm, a bag, heist_ended) with
+  D-051 process rules. 21 integration tests green on two runs (~85 s added).
+- Temporary workarounds accepted, each with a routed fix and a revisit:
+  - seed 3007 (salon open) until ENV A ships police door breaching / locked-door-aware pathing; then add seed 3001.
+  - loopback seed 3074 until ENV C fixes the esc_alley_west secure-zone floor offset.
+  - loopback ends through all-custody; revisit with Dockside Burn's loud escape.
+- Bugs routed:
+  - ENV A: police path through locked doors with no breach (`NpcMotor.door_blocked`).
+  - ENV A: AI teammates never free kicked or tased crew (only DOWNED), which breaks L2.8/L6.1.
+  - ENV C: VanSecureE1 zone floor at 0.0 vs alley ground −0.15.
+- The P3 gate switches its map constant to dockside_burn once that map reaches G1.
+
+## D-067 — 2026-10-11 — Faction variants, cartel look, repo size
+- characters.md v1.6: the faction variant scene convention (ENV D D2-01). ENV D adds `frd_agent` (plain-clothes federal
+  agent) and stronger Zero accents on Phantom/Longshot. Cartel gunmen get an `idle_thug` hunched idle (D authors, A maps).
+- Repo size: each assembled character duplicated its glb meshes into .res (~3.5 MB per character). ENV D switches
+  assembly to reference the glb meshes (the contract node paths must not change; any change needs a lead-approved
+  contract edit first). Git LFS is deferred: it is infra with storage/bandwidth costs on the owner's GitHub account,
+  so the lead raises it with the product owner if .git approaches 2 GB (411 MB now).
+- B5-01 options hooks routed (A: FOV/sensitivity/invert/toggles; C: brightness + palettes); B5-02 Notoriety costs
+  spending cash (no offshore account); music unlocks `unlock.music.vault_hymn`/`long_con`/`last_call` (ranks VII/XIII/XXI).

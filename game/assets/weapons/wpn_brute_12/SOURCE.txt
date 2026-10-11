@@ -1,0 +1,10 @@
+asset: wpn_brute_12
+script: tools/blender/weapons/brute_12.py
+params: {}
+seed: 1828111028  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category weapons --asset wpn_brute_12
+edit policy: generated file, never edit by hand; change the script and rebuild
+origin: firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top
+tri_budget: 25000
+tris_lod0: 8032

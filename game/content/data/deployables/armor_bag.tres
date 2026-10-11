@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DeployableDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/deployable_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"deployable.armor_bag"
+display_name = "Armor Bag"
+kind = &"armor_bag"
+count = 1
+uses = 1
+deploy_time_s = 2.0
+params = {}

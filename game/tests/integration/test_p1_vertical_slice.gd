@@ -1,6 +1,19 @@
 ## P1 GATE: vertical slice. Owner: LEAD. Spec: docs/roadmap.md "P1 gate".
 ## Uses only contracts/test_hooks.md APIs. ENV A's classes are resolved dynamically so this file
 ## parses before ENV A delivers; tests SKIP until HeistLauncher exists.
+## Roadmap step coverage (all 11 steps are automated on the real Glasshouse map):
+##   this file (part A)
+##     test_01_variants_deterministic        step 1  (seeds 1001 x2, 1002)
+##     test_02_casing_and_no_noise           step 2  (+ a smoke check of step 3)
+##     test_04_pager_answer                  step 4
+##     test_08_loud_transition_and_assault   steps 8 + 9
+##   test_p1_vertical_slice_b.gd (part B; static types: FAILS, never skips, if a mechanic is missing)
+##     test_03_sprint_jump_behind_guard_no_noise   step 3  (explicit: meter exactly 0, no noise)
+##     test_05_pager_released_early_alarm          step 5  (separate seed 1003)
+##     test_06_body_bag_hidden_never_discovered    step 6  (60 s of patrols at Engine.time_scale x4)
+##     test_07_display_case_and_secure_bag         step 7
+##     test_10_ai_teammate_revives_bot             step 10
+##     test_11_escape_success_and_payout           step 11 (PayoutCalculator, TENSE x2.0)
 extends TestCase
 
 const HEIST: StringName = &"glasshouse"

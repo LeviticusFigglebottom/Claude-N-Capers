@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://we34j33akocj" path="res://assets/weapons/wpn_cyclone_rotary/wpn_cyclone_rotary.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 28.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 1500.0
+spread_deg_hip = 7.0
+spread_deg_ads = 4.0
+recoil_kick_deg = 0.3
+recoil_horizontal_deg = 0.5
+falloff_start_m = 25.0
+falloff_end_m = 45.0
+falloff_min_mult = 0.6
+mag_size = 500
+total_ammo = 1000
+reload_time_s = 8.0
+reload_empty_time_s = 9.0
+equip_time_s = 1.4
+ads_time_s = 0.6
+concealment = 0
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 40.0
+ammo_pickup_min = 15.0
+ammo_pickup_max = 30.0
+suppressed = false
+noise_radius_m = 110.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.cyclone_rotary"
+params = {"spin": {"spin_up_s": 0.6, "spin_down_s": 0.8, "move_speed_mult": 0.5, "keep_spinning_on_ads": true}}
+display_name = "Cyclone Rotary"
+manufacturer = "Brannock Defense"
+weapon_class = 6
+slot = 0
+fire_modes = Array[StringName]([&"auto"])
+base = SubResource("base")
+price = 120000
+unlock_level = 45
+mod_slots = {
+0: [&"mod.cyclone_short_barrels"],
+3: [&"mod.cyclone_iron_sights", &"mod.rail_reflex_sight"],
+7: [&"mod.cyclone_box_500", &"mod.cyclone_box_750"]
+}
+default_mods = {
+3: &"mod.cyclone_iron_sights",
+7: &"mod.cyclone_box_500"
+}
+fire_cue = &"cue.weapon_minigun_fire"
+fire_cue_suppressed = &""
+anim_set = &"minigun"
+model = ExtResource("3")

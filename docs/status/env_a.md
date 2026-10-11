@@ -3,6 +3,22 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11 UTC: P4 queue (QB-L2, QB-56..62, D-049/D-052/D-056), FP viewmodel, B4-18 special weapons runtime
+### Done (85f2246, 91009d7, be70339, 855c8f0, 31939a5, 388d48b, c90a3e3, + B4-18 commit)
+- D-049/D-052: `crew_tase_ended`, replicated HUD captain fields, `HeistLauncher.launch_client` (null on host loss / connection failure), damage v1.1 flags, canonical EnemyDef armour params.
+- FP viewmodel (characters.md v1.4): char_arms_fp arms, per-set clips, fire/reload/swap/ADS timing, part travel; clip events parsed from ENV D's SOURCE.txt.
+- QB-L2 ModifierPush at launch; QB-56..61 (armor speed, ammo drops, armor bag, doctor bag, team.*, stamina + HUD v1.4, shout range); QB-62: all 15 perk.* mechanics (PerkHooks), modifiers_params.md.
+- D-056: `team.damage_reduction_hostage` = PD2 Crew Chief flat absorption `{absorb_per_hostage, max_hostages}`.
+- B4-18 runtime (answer sent to ENV B, cc lead): `SpecialWeapons` (params from `WeaponDef.params` merged with `WeaponModDef.params`, read defensively), flamethrower cone + FIRE + `BurnStatus` DoT/panic (L3.4), saw (contact-only, blade wear, `saw_target` group, armor/shield pierce), `WeaponProjectile` (bow/crossbow/launcher: gravity, swept hits, Explosion.apply on impact L3.6, retrievable arrows, replicated via dynamic_root), bow draw (`charge` fire mode, server-capped by elapsed time), minigun spin (`spin`, move_speed_mult), `WeaponPartsAnimator` (Breech/Lever/StringUpper/StringLower/String/Arrow/Blade/Rotor). Batch-3 foley cues `cue.weapon_<anim_set>_draw/ignite/stop/rev/spin_up/spin_down` (where the shooter is simulated, replicated from the authority) and `_impact`/`_explode` from projectiles (crossbow reuses bow_impact). Tests: test_b4_18_special_weapons.gd (7).
+- Last phase-4 keys: `movement.sprint_speed_mult` (+ server speed check), `weapon.kill_ammo_drop {every_n_kills}`, `weapon.ammo_pickup_throwable {base_chance, step}`; `CrewWeapons.throwable_count` now starts at the loadout ThrowableDef.count (was always 0). Tests: test_p4_modifier_keys_tail.gd (3).
+### In progress
+- After the lead's ruling: ui_hud v1.5 `weapon_charge`/`weapon_spin` in LocalHudModel; saw_cut on ENV A prefabs (deposit boxes, padlocks).
+### Questions for lead
+- QA-34 (B4-18 contract): `WeaponDef.params` + `WeaponModDef.params` (Dictionary; mod params shallow-merged in mod order); fire_modes `&"charge"`, `&"lever"`; gameplay_prefabs group `saw_target` with `saw_cut(seconds, attacker_net_id)`; modifier keys `weapon.saw_wear_mult`, `weapon.saw_damage_mult`, `weapon.saw_shield_pierce`; ui_hud v1.5 `weapon_charge`/`weapon_spin`.
+- Gaps: loop cues (flame/saw/minigun fire loops) need a CueEmitter on synced state; a remote human's draw/spin foley plays only on their own peer; throwable_count is not replicated to clients yet.
+### Ready for integration
+- yes after the clean-worktree `check_all.sh --env a` (result in the lead message)
+
 ## 2026-10-10 21:15 UTC: A3-07 co-op, prefab collision fit, C4 (trunk merged)
 ### Done (61411c3, 9619875, b4138ed)
 - A3-07: `HeistNetSync` (service `net_sync`): host bring-up via `Net.lobby_send(&"heist_bring_up")` (seed, resolved variants applied not rolled, map path→net_id table, crew ids, phase, preplan, full snapshot); `HeistLauncher.join_running()`; dynamic spawn/despawn RPCs; 15 Hz changed-key state (doors, glass, cameras, devices, NPC alert/health, crew vitals/inventory/bag, bags, interaction sessions → client HUD progress, known codes, custody); 15 Hz transforms. Two-process ENet loopback test (`test_a3_07_coop_loopback.gd`) asserts parity. Gaps (heist/README "Co-op"): no drop-in (P6), runtime-only interactables (corpse bagging, trade/surrender) absent on replicas, no transform interpolation, deployable inventories not mirrored.
