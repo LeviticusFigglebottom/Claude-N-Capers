@@ -52,9 +52,9 @@ static func validate_and_apply(claim: Dictionary, shooter: CrewController) -> Di
 		out["results"] = SpecialWeapons.server_apply(shooter, ws, claim, special)
 		for r: Variant in out["results"]:
 			var victim: Object = (r as Dictionary).get("victim") as Object if r is Dictionary else null
-			if victim != null and is_instance_valid(victim) and CrewStats.enemy_of(victim) != null:
+			if victim != null and is_instance_valid(victim) and CrewStatsService.enemy_of(victim) != null:
 				tally["hit"] = true
-		CrewStats.record_shot(shooter, bool(tally["hit"]), false)
+		CrewStatsService.record_shot(shooter, bool(tally["hit"]), false)
 		return out
 	var hits: Array = claim.get("hits", [])
 	var results: Array[Dictionary] = []
@@ -68,7 +68,7 @@ static func validate_and_apply(claim: Dictionary, shooter: CrewController) -> Di
 		if not res.is_empty():
 			results.append(res)
 	out["results"] = results
-	CrewStats.record_shot(shooter, bool(tally["hit"]), bool(tally["head"]))
+	CrewStatsService.record_shot(shooter, bool(tally["hit"]), bool(tally["head"]))
 	_near_misses(shooter, w, ws, claim, origin, hit_npcs)  # A3-06 (L3.5)
 	return out
 
@@ -105,7 +105,7 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 	info["blocked"] = false
 	info["wall_pierced"] = through_wall
 	var res: Dictionary = deliver_hit(target, info, shooter.net_id)
-	if CrewStats.enemy_of(target) != null:  # D-071: body, shield or plate, even for 0 damage
+	if CrewStatsService.enemy_of(target) != null:  # D-071: body, shield or plate, even for 0 damage
 		tally["hit"] = true
 		if int(info["zone"]) == Enums.HitZone.HEAD and target is NpcBase:
 			tally["head"] = true

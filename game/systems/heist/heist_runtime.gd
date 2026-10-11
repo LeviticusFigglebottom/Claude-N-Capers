@@ -56,8 +56,8 @@ var interaction: InteractionSystem = null
 var stealth: StealthDirector = null
 var mission: HeistMission = null
 var hud_model: LocalHudModel = null
-## D-071 per-crew counters (service CrewStats.SERVICE).
-var stats: CrewStats = null
+## D-071 per-crew counters (service CrewStatsService.SERVICE).
+var stats: CrewStatsService = null
 ## Container for runtime-spawned entities (NPCs, crew, bags).
 var dynamic_root: Node3D = null
 ## C3 pre-planning assets chosen for this run (A2-07, game/systems/heist/README.md).
@@ -344,9 +344,9 @@ func _create_services() -> void:
 	var hostage_stimuli: HostageStimuli = HostageStimuli.new()  # A2-07 (S6.4)
 	hostage_stimuli.name = "HostageStimuli"
 	add_child(hostage_stimuli)
-	stats = CrewStats.new()  # D-071: per-crew counters (HeistResult rows, ui_hud v1.7 crew_stats)
-	stats.name = "CrewStats"
-	register_service(CrewStats.SERVICE, stats)
+	stats = CrewStatsService.new()  # D-071: per-crew counters (HeistResult rows, ui_hud v1.7 crew_stats)
+	stats.name = "CrewStatsService"
+	register_service(CrewStatsService.SERVICE, stats)
 	var custody: CustodySystem = CustodySystem.new()  # A3-04 (L2.9, L2.10)
 	custody.name = "CustodySystem"
 	register_service(CustodySystem.SERVICE, custody)
@@ -493,9 +493,6 @@ func _spawn_crew() -> void:
 	for slot: int in Net.all_slots():
 		var crew: CrewController = scene.instantiate() as CrewController
 		crew.setup(slot, Net.crew[slot], _crew_loadouts.get(slot, loadouts.get(slot)) as Loadout)
-		var heisters: Dictionary = options.get("heisters", {})
-		if heisters.has(slot):
-			crew.heister = StringName(str(heisters[slot]))  # characters.md v1.8 FP sleeves
 		dynamic_root.add_child(crew)
 		var xf: Transform3D = Transform3D.IDENTITY
 		if not spawns.is_empty():

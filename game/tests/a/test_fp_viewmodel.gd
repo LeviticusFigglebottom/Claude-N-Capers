@@ -569,3 +569,19 @@ func test_d069_throw_clips() -> void:
 	assert_eq(fp.action, FpViewmodel.Action.NONE, "throw over")
 	assert_true(c.weapon_visual.visible, "gun back")
 	ContentDB.clear_cache()
+
+
+## Lead / ENV D: nothing under the local camera casts shadows (FP weapon rails on the sleeves), including
+## meshes added after the weapon is attached.
+func test_fp_weapon_casts_no_shadows() -> void:
+	var c: CrewController = await _spawn(&"weapon.corsair_ar", &"weapon.kestrel_p9")
+	var cam: Camera3D = _cam(c)
+	var late: MeshInstance3D = MeshInstance3D.new()
+	late.mesh = BoxMesh.new()
+	(c.weapon_visual if c.weapon_visual != null else cam).add_child(late)
+	await wait_frames(1)
+	var geoms: Array[Node] = cam.find_children("*", "GeometryInstance3D", true, false)
+	assert_true(geoms.size() > 1, "viewmodel meshes under the camera (%d)" % geoms.size())
+	for g: Node in geoms:
+		assert_eq((g as GeometryInstance3D).cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF,
+			"no shadow: %s" % cam.get_path_to(g))

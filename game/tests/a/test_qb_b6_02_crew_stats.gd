@@ -1,4 +1,4 @@
-## QB-B6-02 / D-071: CrewStats counts shots (one per trigger pull), hits (an enemy NPC struck, once per shot)
+## QB-B6-02 / D-071: CrewStatsService counts shots (one per trigger pull), hits (an enemy NPC struck, once per shot)
 ## and headshots (HitZone.HEAD on an enemy, once per shot); civilians and misses are shots without hits; melee
 ## is no shot. LocalHudModel.crew_stats (ui_hud v1.7) and HeistResult crew rows (events v1.1) carry them.
 extends TestCase
@@ -33,8 +33,8 @@ func test_shots_hits_headshots() -> void:
 	var c: CrewController = await _launch()
 	var g: NpcBase = _npc(&"guard", Vector3(0, 0.05, -6))
 	await wait_physics_frames(2)
-	var st: CrewStats = _rt.stats
-	assert_true(st != null and _rt.service(CrewStats.SERVICE) == st, "CrewStats service")
+	var st: CrewStatsService = _rt.stats
+	assert_true(st != null and _rt.service(CrewStatsService.SERVICE) == st, "CrewStatsService service")
 	await ACombatSpecials.shoot_at(_rt, 0, g.head_position())
 	assert_eq(st.value(0, &"shots"), 1, "one trigger pull")
 	assert_eq(st.value(0, &"hits"), 1, "an enemy struck")

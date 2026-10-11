@@ -28,7 +28,7 @@ const NPC_SERVER_ONLY: Array[String] = ["Brain", "Motor", "Gunner", "NavAgent"]
 const LOADOUT_PROPS: Array[StringName] = [
 	&"primary", &"secondary", &"melee", &"throwable", &"deployable", &"deployable_secondary", &"armor",
 	&"mask", &"mask_descriptor", &"perk_deck", &"perk_deck_cards", &"skills", &"modifiers",
-	&"concealment_total", &"detection_risk",
+	&"concealment_total", &"detection_risk", &"heister",
 ]
 
 

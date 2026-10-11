@@ -39,7 +39,7 @@ const SVC_INTERACTION: String = "isys"
 const SVC_CODES: String = "codes"
 const SVC_CUSTODY: String = "custody"
 const SVC_RUNTIME: String = "rt"
-## D-071 per-crew counters (CrewStats).
+## D-071 per-crew counters (CrewStatsService).
 const SVC_STATS: String = "stats"
 ## ui_hud v1.3: {"present": bool, "resistance": float 0..1} of the director's AegisCaptain.
 const SVC_CAPTAIN: String = "captain"
