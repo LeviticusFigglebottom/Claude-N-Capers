@@ -14,6 +14,9 @@
 ##   REASON_OFF (drop-in policy off). The joiner's join_failed reports that reason. The dialog decides with
 ##   LobbySession.join_decision (kick list + LobbyState.dropin_policy: auto accepts without a dialog).
 ##   An implementation with a two-argument answer_join gets (peer_id, accept) only.
+##   ENV A's HeistDropIn (the real service, B6-04 wiring) decides the policy itself (its `policy`, copied from
+##   LobbyState.dropin_policy at launch by DropInFlow.apply_host_policy) and emits join_requested only for `ask`;
+##   in the heist the dialog has no gate, so only A decides. The gate is for services that leave it to the UI.
 ## * kick(slot) -> bool: remove the human in crew slot `slot` (KickConfirmDialog); false when refused.
 ## Joining client:
 ## * request_join(summary): ask the host, with the loadout picked on DropInJoinScreen.
@@ -42,8 +45,10 @@ const REASON_HOST_LOST: StringName = &"host_lost"
 ## Kicked earlier this lobby session (D-072 kick list) / the host's drop-in policy is off.
 const REASON_KICKED: StringName = &"kicked"
 const REASON_OFF: StringName = &"off"
+## Joining client, B-side only (DropInFlow): the host could not be reached before a request was sent.
+const REASON_UNREACHABLE: StringName = &"unreachable"
 const REASONS: Array[StringName] = [REASON_DENIED, REASON_TIMEOUT, REASON_FULL, REASON_CANCELLED, REASON_HOST_LOST,
-	REASON_KICKED, REASON_OFF]
+	REASON_KICKED, REASON_OFF, REASON_UNREACHABLE]
 const LOG_CHANNEL: StringName = &"dropin"
 
 

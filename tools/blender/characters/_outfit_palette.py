@@ -151,6 +151,25 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_cartel_wood": ("#5E3D26", 0.55, 0.0, "plastic"),  # QC-36 cartel: slung gun stock / pump
     "char_cartel_gunmetal": ("#3C3E42", 0.40, 1.0, "metal"),  # QC-36 cartel: slung gun receiver / barrel
     "char_cartel_shell": ("#8E3228", 0.50, 0.0, "plastic"),  # QC-36 cartel: shotgun shell hulls
+    "char_gallery_bone": ("#CFC6B2", 0.80, 0.0, "cloth"),  # D3-01 gallery_night: curator's bone-white suit
+    "char_gallery_green": ("#2C463B", 0.80, 0.0, "cloth"),  # D3-01 gallery: Halberd Gallery Security blazer
+    "char_gallery_wine": ("#6E2A3A", 0.60, 0.0, "cloth"),  # D3-01 gallery: Halberd wine (crest, ties, pin enamel)
+    "char_glove_white": ("#D3D1C9", 0.75, 0.0, "cloth"),  # D3-01 gallery: attendants' cotton art-handling gloves
+    "char_satin_wine": ("#6A2433", 0.40, 0.0, "cloth"),  # D3-01 gallery: patron's wine satin cocktail dress
+    "char_velvet_midnight": ("#313A5C", 0.95, 0.0, "cloth"),  # D3-01 gallery: patron's velvet dinner jacket
+    "char_chino_navy": ("#343D52", 0.86, 0.0, "cloth"),  # D3-01 meridian_federal: customer's navy chinos
+    "char_blazer_grey": ("#6A6C70", 0.84, 0.0, "cloth"),  # D3-01 meridian: customer's unstructured grey blazer
+    "char_nylon_olive": ("#4E5640", 0.55, 0.0, "cloth"),  # D3-01 meridian: parent's olive nylon bomber
+    "char_sneaker_white": ("#CBC8C0", 0.70, 0.0, "cloth"),  # D3-01: white trainers
+    "char_vl_shirt": ("#A0946E", 0.86, 0.0, "cloth"),  # D3-01 rolling_thunder: Vaultline Armored sand shirt
+    "char_vl_trousers": ("#433A2F", 0.84, 0.0, "cloth"),  # D3-01 rolling_thunder: Vaultline brown trousers / cap
+    "char_vl_vest": ("#2A2C30", 0.80, 0.0, "cloth"),  # D3-01 rolling_thunder: Vaultline black ballistic vest
+    "char_vl_amber": ("#C98A3A", 0.55, 0.0, "cloth"),  # D3-01 rolling_thunder: Vaultline amber (patch, lettering)
+    "char_club_violet": ("#4E2F66", 0.80, 0.0, "cloth"),  # D3-01 afterhours: the Velvet's violet (DJ, bar staff)
+    "char_nylon_black": ("#26272B", 0.45, 0.0, "cloth"),  # D3-01 afterhours: bouncer's black nylon bomber
+    "char_satin_gold": ("#B8954E", 0.35, 0.0, "cloth"),  # D3-01 afterhours: patron's gold satin mini dress
+    "char_club_magenta": ("#9E3A72", 0.70, 0.0, "cloth"),  # D3-01 afterhours: patron's magenta top
+    "char_hoodie_cream": ("#B9AE98", 0.95, 0.0, "cloth"),  # D3-01 afterhours: patron's cream hoodie
 }
 
 #: Shared-library ids used by outfits, with a placeholder colour for the glb (the .tres wins).
