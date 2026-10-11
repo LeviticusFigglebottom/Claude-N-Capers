@@ -29,7 +29,9 @@ const BINDINGS: StringName = &"bindings"
 const VALUE_SECTIONS: Array[StringName] = [AUDIO, VIDEO, CONTROLS, ACCESSIBILITY]
 const META: String = "meta"
 ## Actions with a hold / toggle choice -> their controls key.
-const MODE_KEYS: Dictionary = {&"aim": &"aim_mode", &"crouch": &"crouch_mode", &"sprint": &"sprint_mode"}
+const MODE_KEYS: Dictionary = {
+	&"aim": &"aim_mode", &"crouch": &"crouch_mode", &"sprint": &"sprint_mode", &"scoreboard": &"scoreboard_mode",
+}
 
 ## Tests point this at a per-process folder (BTestUtil.settings_root()).
 static var root_dir: String = DEFAULT_ROOT_DIR
@@ -221,7 +223,7 @@ func pad_deadzone() -> float:
 	return float(get_value(CONTROLS, &"pad_deadzone"))
 
 
-## True when `action` (aim, crouch, sprint) is set to toggle instead of hold.
+## True when `action` (aim, crouch, sprint, scoreboard) is set to toggle instead of hold.
 func is_toggle(action: StringName) -> bool:
 	return MODE_KEYS.has(action) and String(get_value(CONTROLS, MODE_KEYS[action])) == "toggle"
 

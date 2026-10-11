@@ -28,6 +28,7 @@ it into `current()` on Apply). Generic access: `get_value(section, key)`; sectio
 | Pad look speed | `pad_sensitivity()` | float multiplier 0.1..5 | 1 | Multiply `PlayerInput.gamepad_look_speed`. |
 | Pad deadzone | `pad_deadzone()` | float 0.05..0.5 | 0.2 | `PlayerInput.gamepad_deadzone` (right stick). |
 | Hold / toggle | `is_toggle(&"aim")`, `&"crouch"`, `&"sprint"` | bool | false (hold) | Toggle = a press flips the state; release does nothing. Clearing the toggle on down / custody is A's call. |
+| Scoreboard hold / toggle (B6-02) | `is_toggle(&"scoreboard")` / `controls/scoreboard_mode` | bool | false (hold) | B's own: the HUD's `ScoreboardOverlay` reads it; nothing for ENV A. |
 
 Suggested hook (ENV A, `systems/player/player_input.gd`): in `_ready()` read the values above, connect
 `GameSettings.current().changed` and re-read on `section == &"controls"`; `crew_view.gd` sets
@@ -102,6 +103,7 @@ pad_deadzone=0.2
 aim_mode="hold"
 crouch_mode="hold"
 sprint_mode="hold"
+scoreboard_mode="hold"
 
 [accessibility]
 palette="default"
