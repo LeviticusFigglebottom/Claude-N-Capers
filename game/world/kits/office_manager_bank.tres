@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"office_manager_bank"
+purpose = &"office"
+required_items = Array[StringName]([&"desk", &"chair", &"credenza", &"bookshelf", &"picture", &"desk_lamp", &"plant", &"monitor", &"light_fixture"])
+optional_items = {
+&"file_cabinet": 0.6,
+&"picture": 1
+}
+clutter_groups = {
+&"credenza": {
+"anchors": Array[StringName]([&"credenza"]),
+"count": Vector2i(1, 2),
+"items": {&"binders": 1, &"plant_small": 1, &"table_lamp": 1},
+"radius": 0.4
+},
+&"desk": {
+"anchors": Array[StringName]([&"desk"]),
+"count": Vector2i(2, 3),
+"items": {&"binders": 1, &"mug": 1.5, &"notebook": 1.5, &"papers": 3, &"pen_cup": 1.5},
+"radius": 0.6
+}
+}
+min_density = 0.4
+max_density = 1.8
+min_props = 12
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 47
+counts = {
+&"chair": Vector2i(3, 3)
+}
+assets = {
+&"chair": PackedStringArray("prop_chair_task", "prop_chair_visitor", "prop_chair_visitor"),
+&"desk": PackedStringArray("prop_desk_bank"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"picture": PackedStringArray("prop_wall_art_c", "prop_wall_art_a", "prop_wall_art_b"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"rug": PackedStringArray("prop_rug_rect")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.4}
+notes = "G12 branch manager: desk at 0.74 m with the manager's NPC seat (task chair 0.47 m, D-063: desk_work / phone_seated), credenza, bookshelf, art. The small safe (xl_manager_safe) is a gameplay prefab."

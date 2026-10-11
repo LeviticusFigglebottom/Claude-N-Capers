@@ -48,7 +48,7 @@ const EXT_WALLS: Array = [
 	]],
 	["ExtSouthEast", "x", 20.0, 21.2, 26.2, 21.1, 25.8, -4.3, WING_PARAPET, 1.0, [
 		[21.6, 23.4, 0.3, 2.7],        # ATM vestibule green glass
-		[23.8, 24.7, 0.0, 2.2],        # ATM card-reader street door
+		[23.75, 24.75, 0.0, 2.2],        # ATM card-reader street door
 		[24.9, 25.7, 0.3, 2.7],
 	]],
 	["ExtWestWing", "z", 0.0, 0.0, 10.0, 0.2, 10.0, -4.3, WING_PARAPET, -1.0, []],   # party wall (chandlery)
@@ -80,13 +80,13 @@ const INT_WALLS: Array = [
 		[[11.5, 12.5, 0.0, 2.2], [15.5, 16.5, 0.0, 2.2], [19.0, 20.0, 0.0, 2.2], [23.0, 24.0, 0.0, 2.2]]],
 	["G_Z7_5", "x", 7.5, 0.2, 25.8, 0.0, WING_CEIL, [[1.5, 2.5, 0.0, 2.2], [23.0, 24.0, 0.0, 2.2]]],
 	# G8/G9: teller gate at x 1, counter x 2-19 (prop + bandit glass), wall x 19-21. Soffit above 3.0.
-	["G_Z10_W", "x", 10.0, 0.2, 2.0, 0.0, WING_CEIL, [[0.55, 1.45, 0.0, 2.2]]],
+	["G_Z10_W", "x", 10.0, 0.2, 2.0, 0.0, WING_CEIL, [[0.5, 1.5, 0.0, 2.2]]],
 	["G_Z10_E", "x", 10.0, 19.0, 20.9, 0.0, WING_CEIL, []],
 	# x 21: G8/G11, and the glass fronts of G11/G12 + the ATM inner door (G13) on the hall side.
 	["G_X21_S", "z", 21.0, 7.6, 19.8, 0.0, WING_CEIL, [
-		[10.05, 10.95, 0.0, 2.2], [11.15, 11.85, 0.9, 2.4],
-		[12.25, 13.35, 0.9, 2.4], [13.55, 14.45, 0.0, 2.2], [14.65, 15.8, 0.9, 2.4],
-		[17.55, 18.45, 0.0, 2.2],
+		[10.0, 11.0, 0.0, 2.2], [11.15, 11.85, 0.9, 2.4],
+		[12.25, 13.35, 0.9, 2.4], [13.5, 14.5, 0.0, 2.2], [14.65, 15.8, 0.9, 2.4],
+		[17.5, 18.5, 0.0, 2.2],
 	]],
 	["G_Z12", "x", 12.0, 21.1, 25.8, 0.0, WING_CEIL, []],
 	["G_Z16", "x", 16.0, 21.1, 25.8, 0.0, WING_CEIL, []],
@@ -98,16 +98,16 @@ const INT_WALLS: Array = [
 	["B_X16", "z", 16.0, 0.2, 5.9, BASE, BASE_CEIL, []],
 	["B_X21_N", "z", 21.0, 0.2, 5.9, BASE, BASE_CEIL, []],
 	["B_X13_5", "z", 13.5, 0.2, 2.5, BASE, BASE_CEIL, []],
-	["B_Z2_5", "x", 2.5, 13.4, 15.9, BASE, BASE_CEIL, [[14.3, 15.2, BASE, BD]]],
+	["B_Z2_5", "x", 2.5, 13.5, 15.9, BASE, BASE_CEIL, [[14.25, 15.25, BASE, BD]]],
 	["B_Z3_5", "x", 3.5, 7.1, 8.4, BASE, BASE_CEIL, []],
 	["B_X8_5", "z", 8.5, 3.6, 5.9, BASE, BASE_CEIL, []],
 	["B_Z6", "x", 6.0, 0.2, 25.8, BASE, BASE_CEIL, [
-		[3.0, 4.0, BASE, BD], [7.3, 8.2, BASE, BD], [8.7, 9.9, BASE, BD],
+		[3.0, 4.0, BASE, BD], [7.25, 8.25, BASE, BD], [8.7, 9.9, BASE, BD],
 		[11.5, 12.5, BASE, BD], [18.0, 19.0, BASE, BD], [23.0, 24.0, BASE, BD],
 	]],
 	["B_Z7_5", "x", 7.5, 0.2, 25.8, BASE, BASE_CEIL, [
-		[3.0, 4.0, BASE, BD], [7.55, 8.45, BASE, BD], [13.0, 15.0, BASE, BD],
-		[19.55, 20.45, BASE, BD], [23.0, 24.0, BASE, BD],
+		[3.0, 4.0, BASE, BD], [7.5, 8.5, BASE, BD], [13.0, 15.0, BASE, BD],
+		[19.5, 20.5, BASE, BD], [23.0, 24.0, BASE, BD],
 	]],
 	["B_X7_S", "z", 7.0, 7.6, 19.8, BASE, BASE_CEIL, []],
 	["B_X9_N", "z", 9.0, 7.6, 9.7, BASE, BASE_CEIL, []],
@@ -172,6 +172,7 @@ const RAILINGS: Array = [
 ]
 
 ## Static glazing: [name, axis, fixed, a0, a1, y0, y1]. Glass blocker (collision) + pane + frame.
+## The ATM vestibule's street glazing is the green-glass jewel (doc landmark 3).
 const GLAZING: Array = [
 	["G11East", "z", 26.0, 9.0, 11.0, 0.9, 2.1],
 	["G12East", "z", 26.0, 13.0, 15.0, 0.9, 2.1],
@@ -190,72 +191,74 @@ const GLAZING: Array = [
 ## Gameplay windows (breakable; police ENTRY bays): [name, kit piece, sill origin, yaw_deg].
 ## Yaw: 0 = front faces north (-z), 180 = south (+z), -90 = east (+x), 90 = west (-x).
 const WINDOWS: Array = [
-	["HallBay1", "arch_window_shop_w300_h240", Vector3(2.5, 1.0, 20.0), 180.0],
-	["HallBay2", "arch_window_shop_w300_h240", Vector3(6.0, 1.0, 20.0), 180.0],
-	["HallBay3", "arch_window_shop_w300_h240", Vector3(15.0, 1.0, 20.0), 180.0],
-	["HallBay4", "arch_window_shop_w300_h240", Vector3(18.5, 1.0, 20.0), 180.0],
+	["HallBay1", "prop_window_shop_w300_h240", Vector3(2.5, 1.0, 20.0), 180.0],
+	["HallBay2", "prop_window_shop_w300_h240", Vector3(6.0, 1.0, 20.0), 180.0],
+	["HallBay3", "prop_window_shop_w300_h240", Vector3(15.0, 1.0, 20.0), 180.0],
+	["HallBay4", "prop_window_shop_w300_h240", Vector3(18.5, 1.0, 20.0), 180.0],
 ]
 
-## Doors: [name, kit piece, origin (bottom-centre of the opening on the wall line), yaw_deg, lock,
+## Doors: [name, visual asset (world/props/door), origin (bottom-centre of the opening on the wall line), yaw_deg, lock,
 ## swing, objective_tag, extra]. Front (-Z, UsePoint side) is the corridor / outside side; INWARD
 ## leaves swing to the back (+Z) side, into the room (level_standards §3.3).
 ## Staff "keycard" doors other than the vault gate are LOCKPICK with guard/staff authorisation:
 ## the run has one keycard and the vault gate consumes it (deviation noted in the G1 report).
 const STAFF_TAGS: Array = ["guard_hall", "guard_basement", "guard_rover", "civ_manager", "civ_cleaner"]
 const DOORS: Array = [
-	["SallyPersonnelDoor", "arch_door_single_t40", Vector3(6.0, 0.0, 0.0), 0.0, "LOCKPICK", "INWARD", "sally_door",
+	["SallyPersonnelDoor", "prop_door_single_steel_t40", Vector3(6.0, 0.0, 0.0), 0.0, "LOCKPICK", "INWARD", "sally_door",
 		{"npc_auth": true}],
-	["LoadingDoor", "arch_door_single_t20", Vector3(6.0, 0.0, 6.0), 180.0, "NONE", "INWARD", "", {}],
-	["SecurityRoomDoor", "arch_door_single_t20", Vector3(12.0, 0.0, 6.0), 180.0, "NONE", "INWARD", "", {}],
-	["BreakRoomDoor", "arch_door_single_t20", Vector3(16.0, 0.0, 6.0), 180.0, "NONE", "INWARD", "", {}],
-	["ElectricalDoor", "arch_door_single_t20", Vector3(19.5, 0.0, 6.0), 180.0, "NONE", "INWARD", "", {}],
-	["StorageDoor", "arch_door_single_t20", Vector3(23.5, 0.0, 6.0), 180.0, "NONE", "INWARD", "", {}],
-	["TellerDoor", "arch_door_single_t20", Vector3(2.0, 0.0, 7.5), 0.0, "LOCKPICK", "INWARD", "teller_door",
+	["LoadingDoor", "prop_door_single_steel_t20", Vector3(6.0, 0.0, 6.0), 180.0, "NONE", "INWARD", "", {}],
+	["SecurityRoomDoor", "prop_door_single_steel_t20", Vector3(12.0, 0.0, 6.0), 180.0, "NONE", "INWARD", "", {}],
+	["BreakRoomDoor", "prop_door_single_ivory_t20", Vector3(16.0, 0.0, 6.0), 180.0, "NONE", "INWARD", "", {}],
+	["ElectricalDoor", "prop_door_single_steel_t20", Vector3(19.5, 0.0, 6.0), 180.0, "NONE", "INWARD", "", {}],
+	["StorageDoor", "prop_door_single_ivory_t20", Vector3(23.5, 0.0, 6.0), 180.0, "NONE", "INWARD", "", {}],
+	["TellerDoor", "prop_door_single_walnut_t20", Vector3(2.0, 0.0, 7.5), 0.0, "LOCKPICK", "INWARD", "teller_door",
 		{"npc_auth": true}],
-	["LoanCorridorDoor", "arch_door_single_t20", Vector3(23.5, 0.0, 7.5), 0.0, "NONE", "INWARD", "", {}],
-	["FireExit", "arch_door_service_t40", Vector3(26.0, 0.0, 6.75), 90.0, "NONE", "INWARD", "fire_exit",
+	["LoanCorridorDoor", "prop_door_single_ivory_t20", Vector3(23.5, 0.0, 7.5), 0.0, "NONE", "INWARD", "", {}],
+	["FireExit", "prop_door_service_steel_t40", Vector3(26.0, 0.0, 6.75), 90.0, "NONE", "INWARD", "fire_exit",
 		{"service": true, "fire_exit": true, "suspicious_when_open": true}],
-	["TellerGate", "arch_door_single_t20", Vector3(1.0, 0.0, 10.0), 180.0, "LOCKPICK", "INWARD", "teller_gate",
+	["TellerGate", "prop_door_single_walnut_t20", Vector3(1.0, 0.0, 10.0), 180.0, "LOCKPICK", "INWARD", "teller_gate",
 		{"npc_auth": true}],
-	["LoanHallDoor", "arch_door_single_t20", Vector3(21.0, 0.0, 10.5), 90.0, "NONE", "INWARD", "", {}],
-	["ManagerHallDoor", "arch_door_single_t20", Vector3(21.0, 0.0, 14.0), 90.0, "NONE", "INWARD", "", {}],
-	["AtmInnerDoor", "arch_door_single_t20", Vector3(21.0, 0.0, 18.0), -90.0, "LOCKPICK", "INWARD", "atm_door", {}],
-	["VestibuleInnerDoors", "arch_door_double_t20", Vector3(10.5, 0.0, 18.0), 180.0, "LOCKPICK", "DOUBLE", "", {}],
-	["MainEntrance", "arch_door_double_t40", Vector3(10.5, 0.0, 20.0), 180.0, "LOCKPICK", "DOUBLE", "main_entrance", {}],
-	["AtmStreetDoor", "arch_door_single_t40", Vector3(24.25, 0.0, 20.0), 180.0, "NONE", "INWARD", "atm_street_door", {}],
+	["LoanHallDoor", "prop_door_single_walnut_t20", Vector3(21.0, 0.0, 10.5), 90.0, "NONE", "INWARD", "", {}],
+	["ManagerHallDoor", "prop_door_single_walnut_t20", Vector3(21.0, 0.0, 14.0), 90.0, "NONE", "INWARD", "", {}],
+	["AtmInnerDoor", "prop_door_single_glass_t20", Vector3(21.0, 0.0, 18.0), -90.0, "LOCKPICK", "INWARD", "atm_door", {}],
+	["VestibuleInnerDoors", "prop_door_double_glass_t20", Vector3(10.5, 0.0, 18.0), 180.0, "LOCKPICK", "DOUBLE", "", {}],
+	["MainEntrance", "prop_door_double_bronze_t40", Vector3(10.5, 0.0, 20.0), 180.0, "LOCKPICK", "DOUBLE", "main_entrance", {}],
+	["AtmStreetDoor", "prop_door_single_steel_t40", Vector3(24.25, 0.0, 20.0), 180.0, "NONE", "INWARD", "atm_street_door", {}],
 	# Basement.
-	["XferDoor", "arch_door_single_t20", Vector3(3.5, BASE, 6.0), 180.0, "NONE", "INWARD", "", {}],
-	["JanitorDoor", "arch_door_single_t20", Vector3(7.75, BASE, 6.0), 180.0, "NONE", "INWARD", "", {}],
-	["LockerRoomDoor", "arch_door_single_t20", Vector3(12.0, BASE, 6.0), 180.0, "NONE", "INWARD", "", {}],
-	["WCDoor", "arch_door_single_t20", Vector3(14.75, BASE, 2.5), 180.0, "NONE", "INWARD", "", {}],
-	["PlantDoor", "arch_door_single_t20", Vector3(18.5, BASE, 6.0), 180.0, "NONE", "INWARD", "", {}],
-	["ServerDoor", "arch_door_single_t20", Vector3(23.5, BASE, 6.0), 180.0, "LOCKPICK", "INWARD", "server_door",
+	["XferDoor", "prop_door_single_steel_t20", Vector3(3.5, BASE, 6.0), 180.0, "NONE", "INWARD", "", {}],
+	["JanitorDoor", "prop_door_single_ivory_t20", Vector3(7.75, BASE, 6.0), 180.0, "NONE", "INWARD", "", {}],
+	["LockerRoomDoor", "prop_door_single_ivory_t20", Vector3(12.0, BASE, 6.0), 180.0, "NONE", "INWARD", "", {}],
+	["WCDoor", "prop_door_single_ivory_t20", Vector3(14.75, BASE, 2.5), 180.0, "NONE", "INWARD", "", {}],
+	["PlantDoor", "prop_door_single_steel_t20", Vector3(18.5, BASE, 6.0), 180.0, "NONE", "INWARD", "", {}],
+	["ServerDoor", "prop_door_single_steel_t20", Vector3(23.5, BASE, 6.0), 180.0, "LOCKPICK", "INWARD", "server_door",
 		{"npc_auth": true}],
-	["RecordsDoor", "arch_door_single_t20", Vector3(3.5, BASE, 7.5), 0.0, "NONE", "INWARD", "", {}],
-	["InspectionWestDoor", "arch_door_single_t20", Vector3(8.0, BASE, 7.5), 0.0, "NONE", "INWARD", "", {}],
-	["VaultGate", "arch_door_double_t20", Vector3(14.0, BASE, 7.5), 0.0, "KEYCARD", "DOUBLE", "vault_gate",
+	["RecordsDoor", "prop_door_single_ivory_t20", Vector3(3.5, BASE, 7.5), 0.0, "NONE", "INWARD", "", {}],
+	# B5 -> B7/B10: corridor to dead-end inspection passage, a fire-rated steel door (both sides are
+	# corridors, so it carries fire_exit like Glasshouse's LobbyDoor; it swings into the passage).
+	["InspectionWestDoor", "prop_door_single_steel_t20", Vector3(8.0, BASE, 7.5), 0.0, "NONE", "INWARD", "", {"fire_exit": true}],
+	["VaultGate", "prop_door_double_grille_t20", Vector3(14.0, BASE, 7.5), 0.0, "KEYCARD", "DOUBLE", "vault_gate",
 		{"npc_auth": true}],
-	["InspectionEastDoor", "arch_door_single_t20", Vector3(20.0, BASE, 7.5), 0.0, "NONE", "INWARD", "", {}],
-	["CountRoomDoor", "arch_door_single_t20", Vector3(23.5, BASE, 7.5), 0.0, "LOCKPICK", "INWARD", "count_door",
+	["InspectionEastDoor", "prop_door_single_steel_t20", Vector3(20.0, BASE, 7.5), 0.0, "NONE", "INWARD", "", {"fire_exit": true}],
+	["CountRoomDoor", "prop_door_single_steel_t20", Vector3(23.5, BASE, 7.5), 0.0, "LOCKPICK", "INWARD", "count_door",
 		{"npc_auth": true}],
-	["DepositoryDoor", "arch_door_single_t20", Vector3(23.5, BASE, 14.0), 0.0, "LOCKPICK", "INWARD", "depository_door",
+	["DepositoryDoor", "prop_door_single_steel_t20", Vector3(23.5, BASE, 14.0), 0.0, "LOCKPICK", "INWARD", "depository_door",
 		{"npc_auth": true}],
-	# Round vault door, 2.2 m (validator vault-door rule 1.8-2.4 m): greybox visual in greybox/.
-	["VaultDoor", "vault_door_visual", Vector3(14.0, BASE, 10.0), 0.0, "VAULT", "INWARD", "vault_door",
+	# Round vault door, 2.2 m (validator vault-door rule 1.8-2.4 m): prop_vault_door_round (tools/blender/props/bank.py).
+	["VaultDoor", "prop_vault_door_round", Vector3(14.0, BASE, 10.0), 0.0, "VAULT", "INWARD", "vault_door",
 		{"width_m": 2.2}],
-	["AreawayDoor", "arch_door_single_t40", Vector3(18.2, BASE, 0.0), 0.0, "NONE", "INWARD", "areaway_door", {}],
+	["AreawayDoor", "prop_door_single_steel_t40", Vector3(18.2, BASE, 0.0), 0.0, "NONE", "INWARD", "areaway_door", {}],
 	# Play-space closures: chained/barred gates the police open in loud (mission unlocks them).
-	["AlleyGate", "arch_door_double_t20", Vector3(-14.0, 0.0, -12.5), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["HarborWestGate", "arch_door_double_t20", Vector3(-14.0, ROAD_Y, 26.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["HarborEastGate", "arch_door_double_t20", Vector3(40.0, ROAD_Y, 26.2), 90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["WharfNorthGate", "arch_door_double_t20", Vector3(27.6, 0.0, -14.0), 180.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["AlleyGate", "prop_door_double_steel_t20", Vector3(-14.0, 0.0, -12.5), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["HarborWestGate", "prop_door_double_steel_t20", Vector3(-14.0, ROAD_Y, 26.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["HarborEastGate", "prop_door_double_steel_t20", Vector3(40.0, ROAD_Y, 26.2), 90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["WharfNorthGate", "prop_door_double_steel_t20", Vector3(27.6, 0.0, -14.0), 180.0, "BARRED", "DOUBLE", "police_gate", {}],
 ]
 
 ## Areaway (vent route): pit outside the north wall (floor -4.0), ladder on the ledge face, caged
 ## top with the grate gate (variant `vent_open`: unlocked 3 s / padlocked lockpick 8 s).
 const AREAWAY: Dictionary = {
 	"pit": [17.6, BASE, -2.4, 18.8, 0.0, -0.2], "ledge": [16.9, -4.3, -2.6, 17.6, 0.0, -0.2],
-	"gate_pos": Vector3(16.95, 0.0, -1.4), "gate_yaw": 90.0, "ladder_pos": Vector3(17.65, BASE, -1.4),
+	"gate_pos": Vector3(16.95, 0.0, -1.4), "gate_yaw": 90.0, "ladder_pos": Vector3(17.6, BASE, -0.55),
 	"ladder_yaw": -90.0, "cage_h": 2.2,
 }
 
@@ -263,7 +266,7 @@ const AREAWAY: Dictionary = {
 ## car floor centre at G1 = landing 0 (0.05 m sill so the car floor rests on the slab; B1 is BASE below),
 ## and the bag hatch in the west shaft wall on each floor (z range, sill/head above the floor: 0.8 m
 ## high, too low for a crouched crew capsule) with the call panel above it, `panel_y` above the car
-## floor (`cash_lift_visual.tscn` Panel at G1, a dressed panel at B1 for the runtime LandingPanel1).
+## floor (`art/nd_cash_lift.tscn` Panel at G1, a dressed panel at B1 for the runtime LandingPanel1).
 const LIFT: Dictionary = {"box": [5.6, 1.1, 6.9, 2.5], "car": Vector3(6.25, 0.05, 1.8), "hatch_z": [1.2, 2.4],
 	"hatch_y": [0.45, 1.25], "panel_y": 1.45}
 
@@ -281,13 +284,17 @@ const GROUND: Array = [
 	["WharfSidewalkW", [26.2, -0.3, -30.0, 29.0, 0.0, 20.2], "sidewalk"],
 	["WharfLane", [29.0, -0.3, -30.0, 36.0, ROAD_Y, 22.2], "asphalt"],
 	["WharfSidewalkE", [36.0, -0.3, -30.0, 37.2, 0.0, 20.2], "sidewalk"],
-	["HarborSidewalk", [-45.0, -0.3, 20.2, 60.0, 0.0, 22.2], "sidewalk"],
+	# Harbor St sidewalk, cut for the Wharf Lane junction (the lane runs through to the carriageway)
+	["HarborSidewalkW", [-45.0, -0.3, 20.2, 29.0, 0.0, 22.2], "sidewalk"],
+	["HarborSidewalkE", [36.0, -0.3, 20.2, 60.0, 0.0, 22.2], "sidewalk"],
 	["HarborStreet", [-45.0, -0.3, 22.2, 60.0, ROAD_Y, 30.2], "asphalt"],
 	["QuayW", [-45.0, -2.4, 30.2, 6.0, 0.0, 34.0], "quay"],
 	["QuayE", [11.0, -2.4, 30.2, 60.0, 0.0, 34.0], "quay"],
 	["QuayStepsHead", [6.0, -2.4, 30.2, 11.0, 0.0, 32.2], "quay"],
 	["QuayLanding", [5.5, -2.4, 34.0, 11.5, -1.2, 35.4], "quay"],
 	["Seabed", [-60.0, -7.0, 34.0, 80.0, -6.0, 160.0], "none"],
+	# crane / container yard behind the palisade (the containers stand on it)
+	["CraneYard", [37.2, -0.3, -30.0, 52.0, 0.0, 20.2], "paving"],
 ]
 
 ## Quay steps (dressing + walkable ramp): x 6-11, from the quay (0.0, z 32.2) down to the landing
@@ -295,7 +302,7 @@ const GROUND: Array = [
 const QUAY_STEPS: Dictionary = {"x": [6.0, 11.0], "z_top": 32.2, "z_bot": 34.0, "y_top": 0.0, "y_bot": -1.2, "risers": 7}
 
 ## Water (visual only; the OUT_OF_BOUNDS zone sits under its surface).
-const WATER: Array = [-200.0, WATER_Y - 0.05, 34.0, 250.0, WATER_Y, 320.0]
+const WATER: Array = [-450.0, WATER_Y - 0.05, 34.0, 450.0, WATER_Y, 320.0]
 
 ## Neighbour / dressing blocks (solid massing): [name, box, material].
 const BLOCKS: Array = [
@@ -303,41 +310,48 @@ const BLOCKS: Array = [
 	["ChandleryYardBlock", [-45.0, -0.3, -10.0, -14.0, 8.5, -0.2], "brick"],
 	["HarborNorthWest", [-45.0, -0.3, -0.2, -14.0, 11.0, 20.2], "facade_b"],
 	["AlleyEndBlock", [-45.0, -0.3, -15.0, -30.0, 9.0, -10.0], "brick"],
+	["YardEndBlock", [-45.0, -0.3, -19.0, -30.0, 9.0, -15.0], "brick"],
 	["WarehouseBacks", [-45.0, -0.3, -30.0, 26.2, 8.0, -19.0], "brick"],
 	["WarehouseDock1", [-6.0, -0.3, -19.0, 2.0, 1.2, -17.6], "concrete"],
 	["WarehouseDock2", [12.0, -0.3, -19.0, 20.0, 1.2, -17.6], "concrete"],
-	["TJunctionFacade", [15.0, -0.3, -40.0, 50.0, 12.0, -30.0], "facade_c"],
+	["TJunctionFacade", [15.0, -0.3, -40.0, 60.0, 12.0, -30.0], "facade_c"],
 	["BendFacade", [-52.0, -0.3, 20.2, -45.0, 12.0, 34.0], "facade_c"],
 	["HarborEastFacade", [52.0, -0.3, -30.0, 60.0, 10.0, 20.2], "facade_b"],
-	["DrawbridgeDeck", [60.0, ROAD_Y - 0.3, 22.2, 64.0, 9.0, 30.2], "trim"],
-	["DrawbridgeTowerN", [60.0, -0.3, 20.2, 63.0, 12.0, 22.2], "concrete"],
-	["DrawbridgeTowerS", [60.0, -0.3, 30.2, 63.0, 12.0, 32.2], "concrete"],
-	["FarShore", [-200.0, WATER_Y, 300.0, 250.0, 6.0, 310.0], "facade_c"],
+	["DrawbridgeDeck", [60.1, ROAD_Y - 0.3, 22.2, 64.0, 9.0, 30.2], "trim"],
+	["DrawbridgeTowerN", [60.0, -0.3, 20.2, 63.0, 12.0, 22.3], "concrete"],
+	["DrawbridgeTowerS", [60.0, -0.3, 30.1, 63.0, 12.0, 32.2], "concrete"],
+	["DrawbridgeAbutment", [60.0, -2.4, 32.2, 64.0, 3.0, 34.0], "concrete"],
+	["FarShore", [-450.0, WATER_Y, 300.0, 450.0, 6.0, 310.0], "facade_c"],
+	# pier sheds closing the harbour's flanks (vista: the water views end on buildings, not the void)
+	["EastPierSheds", [64.0, WATER_Y, 32.2, 72.0, 8.0, 120.0], "facade_b"],
+	["WestPierSheds", [-60.0, WATER_Y, 34.0, -52.0, 8.0, 120.0], "facade_a"],
 	# Crane / container yard (behind the palisade, x 37.2+).
 	["CraneOffice", [40.0, -0.3, 2.0, 44.0, 6.5, 6.0], "concrete"],
-	["ContainerStackA", [39.0, -0.3, -12.0, 51.0, 5.2, -9.5], "container"],
-	["ContainerStackB", [39.0, -0.3, -6.0, 51.0, 2.6, -3.5], "container"],
-	["ContainerStackC", [39.0, -0.3, 9.0, 51.0, 5.2, 11.5], "container"],
-	["ContainerStackD", [45.0, -0.3, 14.0, 51.0, 7.8, 16.5], "container"],
+	# container stacks: collision; the visuals are the ISO containers (dressing SITE_DRESSING)
+	["ContainerStackA", [39.0, -0.3, -12.0, 51.0, 5.2, -9.5], "container_hidden"],
+	["ContainerStackB", [39.0, -0.3, -6.0, 51.0, 2.6, -3.5], "container_hidden"],
+	["ContainerStackC", [39.0, -0.3, 9.0, 51.0, 5.2, 11.5], "container_hidden"],
+	["ContainerStackD", [45.0, -0.3, 14.0, 51.0, 7.8, 16.5], "container_hidden"],
 	["GantryCraneA", [38.5, -0.3, -20.0, 39.5, 22.0, -19.0], "crane"],
 	["GantryCraneABeam", [38.5, 20.0, -20.0, 58.0, 22.0, -19.0], "crane"],
 	["GantryCraneB", [38.5, -0.3, 17.0, 39.5, 22.0, 18.0], "crane"],
 	["GantryCraneBBeam", [38.5, 20.0, 17.0, 58.0, 22.0, 18.0], "crane"],
 	# Moored trawler west of the steps (P3 sniper perch on the wheelhouse).
-	["TrawlerHull", [-9.0, -2.4, 34.6, 1.0, -0.6, 38.6], "vehicle"],
-	["TrawlerWheelhouse", [-6.0, -0.6, 35.4, -2.0, 2.8, 37.8], "vehicle"],
+	["TrawlerHull", [-9.0, -2.4, 34.6, 1.0, -0.6, 38.6], "boat_hidden"],
+	["TrawlerWheelhouse", [-6.0, -0.6, 35.4, -2.0, 2.8, 37.8], "boat_hidden"],
 	# Escape boat E2 (Co-op launch) moored at the landing: walkable deck at -1.0.
-	["LaunchHull", [4.0, -2.4, 35.4, 13.0, -1.0, 38.4], "vehicle"],
-	["LaunchCabin", [10.0, -1.0, 36.2, 12.6, 1.0, 38.0], "vehicle"],
+	["LaunchHull", [4.0, -2.4, 35.4, 13.0, -1.0, 38.4], "boat_hidden"],
+	["LaunchCabin", [10.0, -1.0, 36.2, 12.6, 1.0, 38.0], "boat_hidden"],
 	# Roof plant (wing roof, condensers) + hall skylight laylight (P3 rappel).
 	["RoofCondenser1", [2.0, WING_ROOF, 2.0, 4.0, 4.8, 3.5], "trim"],
 	["RoofCondenser2", [5.0, WING_ROOF, 2.0, 7.0, 4.8, 3.5], "trim"],
 	["RoofAHU", [14.0, WING_ROOF, 1.5, 18.0, 5.2, 4.0], "trim"],
 	["HallSkylight", [7.0, HALL_ROOF, 13.0, 14.0, 6.9, 17.0], "glass"],
 	# Vista dressing beyond the closures.
-	["UtilityVanWest", [-20.0, ROAD_Y, 23.4, -15.2, 2.3, 25.4], "vehicle"],
+	["UtilityVanWest", [-20.0, ROAD_Y, 23.4, -15.2, 2.3, 25.4], "van_hidden"],
 	["PoliceBarrierWest", [-14.6, ROAD_Y, 22.4, -14.4, 1.1, 25.0], "barrier"],
-	["ContainerTrailer", [28.6, ROAD_Y, -15.2, 37.2, 3.9, -12.8], "container"],
+	["ContainerTrailerChassis", [28.65, ROAD_Y, -15.2, 37.15, 1.31, -12.8], "trim"],
+	["ContainerTrailer", [29.85, 1.31, -15.2, 35.95, 3.9, -12.8], "container_hidden"],
 	["RoadBarrierEast", [44.0, ROAD_Y, 22.4, 44.2, 1.1, 25.0], "barrier"],
 ]
 
@@ -355,169 +369,34 @@ const FENCES: Array = [
 ]
 
 
-# --- Props (gameplay-relevant blockers; placeholder boxes) ----------------------------------
+# --- Props ------------------------------------------------------------------------------------
 
-## [name, bottom-centre (x, y, z), size (x, y, z) before yaw, yaw_deg, kind, support, material].
+## Map-built props (G2: everything else is catalog dressing, night_deposit_dressing.gd):
+## [name, bottom-centre (x, y, z), size (x, y, z) before yaw, yaw_deg, kind, support, material class].
 const PROPS: Array = [
-	# G1 sally port
-	["CashCart", Vector3(1.6, 0.0, 4.6), Vector3(1.2, 0.9, 0.7), 0.0, "cart", true, "counter"],
-	["SallyShelving", Vector3(0.46, 0.0, 2.6), Vector3(0.5, 2.0, 1.6), 0.0, "shelf", true, "prop"],
-	# G3 security room
-	["KeyCabinet", Vector3(13.69, 0.0, 4.2), Vector3(0.4, 1.0, 0.8), 0.0, "cabinet", true, "trim"],
-	["GuardLockers", Vector3(12.6, 0.0, 0.46), Vector3(1.6, 1.8, 0.5), 0.0, "locker", false, "trim"],
-	# G4 break room
-	["BreakTable", Vector3(15.3, 0.0, 3.4), Vector3(1.2, 0.75, 0.8), 0.0, "table", true, "prop"],
-	["KitchenCounter", Vector3(15.5, 0.0, 0.51), Vector3(2.4, 0.9, 0.6), 0.0, "counter_service", true, "counter"],
-	["Fridge", Vector3(17.45, 0.0, 0.56), Vector3(0.7, 1.8, 0.7), 0.0, "fridge", false, "trim"],
-	["StaffLockers", Vector3(17.65, 0.0, 3.3), Vector3(0.5, 1.5, 1.6), 0.0, "locker", true, "trim"],
-	# G5 electrical
-	["Switchboard", Vector3(19.5, 0.0, 0.46), Vector3(2.0, 2.0, 0.5), 0.0, "switchboard", false, "trim"],
-	# G6 storage
-	["SuppliesShelf", Vector3(21.41, 0.0, 3.2), Vector3(0.6, 2.0, 3.0), 0.0, "shelf", true, "prop"],
-	# G8 / G9: the teller counter (1.05 transaction ledge; bandit glass above it is glazing).
-	["TellerCounter", Vector3(10.5, 0.0, 10.0), Vector3(17.0, 1.05, 0.6), 0.0, "counter_transaction", true, "counter"],
-	["NoteCounterDesk", Vector3(10.5, 0.0, 7.96), Vector3(4.0, 0.9, 0.7), 0.0, "counter_service", true, "counter"],
-	["CheckTableNW", Vector3(4.5, 0.0, 13.0), Vector3(1.4, 1.05, 0.6), 0.0, "table_standing", true, "prop"],
-	["CheckTableNE", Vector3(16.5, 0.0, 13.0), Vector3(1.4, 1.05, 0.6), 0.0, "table_standing", true, "prop"],
-	["CheckTableSW", Vector3(4.5, 0.0, 16.5), Vector3(1.4, 1.05, 0.6), 0.0, "table_standing", true, "prop"],
-	["CheckTableSE", Vector3(16.5, 0.0, 16.5), Vector3(1.4, 1.05, 0.6), 0.0, "table_standing", true, "prop"],
-	["WaitingBenchW", Vector3(0.45, 0.0, 14.5), Vector3(0.45, 0.45, 1.8), 0.0, "bench", false, "prop"],
-	["WaitingBenchE", Vector3(20.55, 0.0, 12.6), Vector3(0.45, 0.45, 1.6), 0.0, "bench", false, "prop"],
-	# G11 loan office
-	["LoanDesk", Vector3(24.0, 0.0, 10.0), Vector3(1.6, 0.75, 0.8), 0.0, "desk", true, "prop"],
-	["LoanFiles", Vector3(25.54, 0.0, 8.3), Vector3(0.5, 1.3, 1.2), 0.0, "cabinet", false, "trim"],
-	# G12 manager office
-	["ManagerDesk", Vector3(23.8, 0.0, 14.2), Vector3(1.6, 0.75, 0.8), 0.0, "desk", true, "prop"],
-	["Credenza", Vector3(25.54, 0.0, 12.9), Vector3(0.5, 0.8, 1.2), 0.0, "cabinet", true, "counter"],
-	# G13 ATM vestibule
-	["ATM1", Vector3(22.3, 0.0, 16.46), Vector3(0.7, 1.6, 0.7), 0.0, "atm", false, "trim"],
-	["ATM2", Vector3(23.4, 0.0, 16.46), Vector3(0.7, 1.6, 0.7), 0.0, "atm", false, "trim"],
-	["NightDropChute", Vector3(25.2, 0.0, 16.36), Vector3(0.8, 1.2, 0.5), 0.0, "night_drop", false, "trim"],
-	# B1 cash transfer
-	["CashCageA", Vector3(1.6, BASE, 2.4), Vector3(1.2, 1.6, 0.8), 0.0, "cash_cage", false, "trim"],
-	["CashCageB", Vector3(1.6, BASE, 4.0), Vector3(1.2, 1.6, 0.8), 0.0, "cash_cage", false, "trim"],
-	["SealedBagShelf", Vector3(3.6, BASE, 0.46), Vector3(2.4, 2.0, 0.5), 0.0, "shelf", true, "prop"],
-	# B2 locker room + B13 WCs
-	["StaffLockersB2", Vector3(11.8, BASE, 0.46), Vector3(2.8, 1.8, 0.5), 0.0, "locker", false, "trim"],
-	["LockerBench", Vector3(11.8, BASE, 2.2), Vector3(2.0, 0.45, 0.4), 0.0, "bench", false, "prop"],
-	["SinkRow", Vector3(15.65, BASE, 4.4), Vector3(0.5, 0.85, 1.6), 0.0, "sink", false, "prop"],
-	["ToiletA", Vector3(14.1, BASE, 0.51), Vector3(0.4, 0.8, 0.6), 0.0, "toilet", false, "prop"],
-	["ToiletB", Vector3(15.4, BASE, 0.51), Vector3(0.4, 0.8, 0.6), 0.0, "toilet", false, "prop"],
-	["CubiclePartition", Vector3(14.75, BASE, 0.85), Vector3(0.05, 2.0, 1.3), 0.0, "partition", false, "trim"],
-	# B3 plant
-	["Boiler", Vector3(19.7, BASE, 1.1), Vector3(2.0, 1.8, 1.4), 0.0, "boiler", false, "trim"],
-	["AirHandler", Vector3(19.7, BASE, 4.3), Vector3(1.8, 2.0, 1.2), 0.0, "ahu", false, "trim"],
-	["WaterTank", Vector3(16.75, BASE, 4.6), Vector3(1.1, 1.8, 1.1), 0.0, "tank", false, "trim"],
-	# B4 server room
-	["ServerRackA", Vector3(22.4, BASE, 3.2), Vector3(0.6, 2.0, 2.4), 0.0, "rack", false, "trim"],
-	["ServerRackB", Vector3(25.5, BASE, 3.6), Vector3(0.6, 2.0, 2.4), 0.0, "rack", false, "trim"],
-	# B6 records
-	["CompactShelvingA", Vector3(2.0, BASE, 9.4), Vector3(3.2, 2.2, 0.6), 0.0, "shelf", true, "prop"],
-	["CompactShelvingB", Vector3(2.0, BASE, 11.4), Vector3(3.2, 2.2, 0.6), 0.0, "shelf", true, "prop"],
-	["CompactShelvingC", Vector3(5.2, BASE, 18.0), Vector3(2.6, 2.2, 0.6), 0.0, "shelf", true, "prop"],
-	["MicroficheDesk", Vector3(3.0, BASE, 15.6), Vector3(1.4, 0.75, 0.7), 0.0, "desk", true, "prop"],
-	# B8 antechamber: viewing bench (behind the laser plane at z 8.5).
-	["ViewingBench", Vector3(11.0, BASE, 9.3), Vector3(1.6, 0.45, 0.45), 0.0, "bench", false, "prop"],
-	# B11 count room
-	["CountingTable", Vector3(23.5, BASE, 11.0), Vector3(2.0, 0.9, 1.0), 0.0, "counter_service", true, "counter"],
-	["SealingStation", Vector3(25.54, BASE, 12.6), Vector3(0.5, 0.9, 1.4), 0.0, "counter_service", true, "counter"],
-	# Lot (X1)
-	["CarLotA", Vector3(21.0, 0.0, -6.5), Vector3(1.8, 1.45, 4.4), 0.0, "vehicle", false, "vehicle"],
-	["CarLotB", Vector3(23.6, 0.0, -6.5), Vector3(1.8, 1.45, 4.4), 0.0, "vehicle", false, "vehicle"],
-	["CarLotC", Vector3(13.0, 0.0, -8.0), Vector3(1.8, 1.45, 4.4), 0.0, "vehicle", false, "vehicle"],
-	# Street / quay (X2)
-	["CarHarborA", Vector3(-6.0, ROAD_Y, 23.3), Vector3(4.4, 1.45, 1.8), 0.0, "vehicle", false, "vehicle"],
-	["CarHarborB", Vector3(17.0, ROAD_Y, 23.3), Vector3(4.4, 1.45, 1.8), 0.0, "vehicle", false, "vehicle"],
-	["CarWharf", Vector3(30.1, ROAD_Y, 8.0), Vector3(1.8, 1.45, 4.4), 0.0, "vehicle", false, "vehicle"],
-	["BollardA", Vector3(-8.0, 0.0, 33.5), Vector3(0.3, 0.8, 0.3), 0.0, "bollard", false, "trim"],
-	["BollardB", Vector3(2.0, 0.0, 33.5), Vector3(0.3, 0.8, 0.3), 0.0, "bollard", false, "trim"],
-	["BollardC", Vector3(14.0, 0.0, 33.5), Vector3(0.3, 0.8, 0.3), 0.0, "bollard", false, "trim"],
-	["BollardD", Vector3(24.0, 0.0, 33.5), Vector3(0.3, 0.8, 0.3), 0.0, "bollard", false, "trim"],
-	["QuayBenchA", Vector3(-2.0, 0.0, 31.2), Vector3(1.8, 0.45, 0.45), 0.0, "bench", false, "prop"],
-	["QuayBenchB", Vector3(20.0, 0.0, 31.2), Vector3(1.8, 0.45, 0.45), 0.0, "bench", false, "prop"],
+	# B13 WC cubicle partition (laminate panel between the two toilets)
+	["CubiclePartition", Vector3(14.75, BASE, 0.85), Vector3(0.05, 2.0, 1.3), 0.0, "partition", false, "partition"],
 ]
 
-## Chairs: [name, bottom-centre, yaw_deg (front -Z faces the table)], 0.45 x 0.85 x 0.45, seat 0.45.
-const CHAIRS: Array = [
-	["BreakChairN", Vector3(15.3, 0.0, 2.6), 180.0],
-	["BreakChairS", Vector3(15.3, 0.0, 4.2), 0.0],
-	["BreakChairW", Vector3(14.45, 0.0, 3.4), -90.0],
-	["BreakChairE", Vector3(16.35, 0.0, 3.4), 90.0],
-	["LoanVisitorA", Vector3(22.8, 0.0, 9.6), -90.0],
-	["LoanVisitorB", Vector3(22.8, 0.0, 10.5), -90.0],
-	["LoanOfficerChair", Vector3(25.2, 0.0, 10.0), 90.0],
-	["ManagerChair", Vector3(25.0, 0.0, 14.2), 90.0],
-	["CountChair", Vector3(23.5, BASE, 12.1), 0.0],
-]
-
-## Landmark 2: mosaic compass rose in the hall floor (visual inlay, Geometry).
+## Landmark 2: mosaic compass rose in the hall floor (inlay, nd_art.gd compass()).
 const COMPASS: Dictionary = {"pos": Vector3(10.5, 0.0, 14.5), "radius": 1.8}
-
-## Street lamps (sodium): [name, base, arm yaw_deg (the head overhangs the road)].
-const STREET_LAMPS: Array = [
-	["LampHarborN1", Vector3(-8.0, 0.0, 21.2), 180.0],
-	["LampHarborN2", Vector3(5.5, 0.0, 21.2), 180.0],
-	["LampHarborN3", Vector3(18.0, 0.0, 21.2), 180.0],
-	["LampHarborN4", Vector3(32.0, 0.0, 21.2), 180.0],
-	["LampQuayW", Vector3(-4.0, 0.0, 31.3), 0.0],
-	["LampQuayE", Vector3(15.0, 0.0, 31.3), 0.0],
-	["LampWharfW", Vector3(27.8, 0.0, -4.0), -90.0],
-	["LampWharfE", Vector3(36.6, 0.0, 8.0), 90.0],
-	["LampLotA", Vector3(4.0, 0.0, -9.6), 180.0],
-	["LampLotB", Vector3(16.0, 0.0, -9.6), 180.0],
-]
 
 
 # --- Lighting ------------------------------------------------------------------------------
 
-## Ceiling fixtures with an OmniLight: [name, (x, ceiling_y, z), colour, energy, range].
-## Zones (doc §Audio/lighting): hall night mode (dim brass pendants), BOH 4000 K, security monitor
-## glow, basement 5000 K utility, vault bright 4000 K strips, ATM cool LED.
+## Map-built ceiling fixtures (rooms without a dressing kit; dressed rooms get their fixtures from
+## the kit): [name, (x, ceiling_y, z), colour, energy, range].
 const CEILING_LIGHTS: Array = [
-	["LightHallW", Vector3(5.0, HALL_CEIL, 15.0), Color(1.0, 0.78, 0.5), 0.9, 9.0],
-	["LightHallE", Vector3(16.0, HALL_CEIL, 15.0), Color(1.0, 0.78, 0.5), 0.9, 9.0],
-	["LightG7W", Vector3(4.0, WING_CEIL, 6.75), Color(0.95, 0.95, 1.0), 0.6, 6.0],
-	["LightG7E", Vector3(18.0, WING_CEIL, 6.75), Color(0.95, 0.95, 1.0), 0.6, 6.0],
-	["LightG1", Vector3(3.5, WING_CEIL, 3.0), Color(0.92, 0.95, 1.0), 0.6, 6.0],
-	["LightG3", Vector3(12.0, WING_CEIL, 3.0), Color(0.7, 0.82, 1.0), 0.35, 4.5],
-	["LightG4", Vector3(16.0, WING_CEIL, 3.0), Color(1.0, 0.9, 0.78), 0.6, 5.0],
-	["LightG5", Vector3(19.5, WING_CEIL, 3.0), Color(0.95, 0.95, 1.0), 0.4, 4.0],
-	["LightG6", Vector3(23.5, WING_CEIL, 3.0), Color(0.95, 0.95, 1.0), 0.4, 5.0],
-	["LightG8", Vector3(10.5, WING_CEIL, 8.75), Color(0.95, 0.95, 1.0), 0.6, 8.0],
-	["LightG11", Vector3(23.5, WING_CEIL, 9.75), Color(0.95, 0.95, 1.0), 0.45, 4.5],
-	["LightG12", Vector3(23.5, WING_CEIL, 14.0), Color(1.0, 0.9, 0.78), 0.5, 4.5],
-	["LightG13", Vector3(23.5, WING_CEIL, 18.0), Color(0.75, 1.0, 0.88), 1.0, 5.0],
-	["LightG10", Vector3(10.5, WING_CEIL, 19.0), Color(1.0, 0.8, 0.55), 0.4, 3.5],
-	["LightStair", Vector3(8.5, 3.35, 3.0), Color(0.95, 0.95, 1.0), 0.8, 8.0],
-	["LightB1", Vector3(3.5, BASE_CEIL, 3.0), Color(0.93, 0.96, 1.0), 0.6, 6.0],
-	["LightB2", Vector3(12.0, BASE_CEIL, 4.0), Color(0.93, 0.96, 1.0), 0.6, 5.0],
-	["LightB3", Vector3(18.5, BASE_CEIL, 3.0), Color(0.93, 0.96, 1.0), 0.5, 5.0],
-	["LightB4", Vector3(23.5, BASE_CEIL, 3.0), Color(0.8, 0.9, 1.0), 0.5, 5.0],
-	["LightB5W", Vector3(5.0, BASE_CEIL, 6.75), Color(0.93, 0.96, 1.0), 0.6, 7.0],
-	["LightB5E", Vector3(19.0, BASE_CEIL, 6.75), Color(0.93, 0.96, 1.0), 0.6, 7.0],
-	["LightB6", Vector3(3.5, BASE_CEIL, 14.0), Color(0.93, 0.96, 1.0), 0.6, 7.0],
-	["LightB7", Vector3(8.0, BASE_CEIL, 14.0), Color(0.93, 0.96, 1.0), 0.35, 5.0],
-	["LightB10", Vector3(20.0, BASE_CEIL, 14.0), Color(0.93, 0.96, 1.0), 0.35, 5.0],
-	["LightB8", Vector3(14.0, BASE_CEIL, 8.75), Color(1.0, 0.92, 0.85), 0.6, 6.0],
-	["LightB9W", Vector3(12.0, VAULT_CEIL, 15.0), Color(1.0, 0.93, 0.85), 1.2, 7.0],
-	["LightB9E", Vector3(16.0, VAULT_CEIL, 15.0), Color(1.0, 0.93, 0.85), 1.2, 7.0],
-	["LightB11", Vector3(23.5, BASE_CEIL, 10.5), Color(0.93, 0.96, 1.0), 0.6, 5.5],
-	["LightB12", Vector3(23.5, BASE_CEIL, 17.0), Color(0.93, 0.96, 1.0), 0.5, 5.0],
+	["LightStair", Vector3(8.5, 3.35, 3.0), Color(0.95, 0.95, 1.0), 0.9, 8.0],
+	["LightG10", Vector3(10.5, WING_CEIL, 19.0), Color(1.0, 0.82, 0.6), 0.5, 3.5],
 ]
 
 ## Wall-mounted lights / signs: [name, pivot on the wall face, yaw_deg (front -Z out of the wall),
-## colour, energy, range, size].
+## colour, energy, range, size]. The ATM vestibule's lit fascia band (no lettering) and the stair's
+## half-landing bulkhead.
 const WALL_LIGHTS: Array = [
-	["SallyDoorLamp", Vector3(4.0, 3.2, -0.2), 0.0, Color(1.0, 0.62, 0.3), 0.8, 8.0, Vector3(0.3, 0.2, 0.2)],
-	["LotWallLamp", Vector3(14.0, 3.2, -0.2), 0.0, Color(1.0, 0.62, 0.3), 0.8, 8.0, Vector3(0.3, 0.2, 0.2)],
-	["AtmFascia", Vector3(23.5, 3.0, 20.2), 180.0, Color(0.6, 1.0, 0.8), 1.0, 6.0, Vector3(2.6, 0.5, 0.1)],
-	["FireExitLamp", Vector3(26.2, 2.6, 6.75), -90.0, Color(1.0, 0.62, 0.3), 0.5, 5.0, Vector3(0.3, 0.2, 0.2)],
-]
-
-## Landmark 1: brass harbor clock over the bronze entrance (exterior face, lit) + the inside clock.
-const CLOCKS: Array = [
-	["HarborClock", Vector3(10.5, 3.3, 20.2), 180.0, 0.6],
-	["HallClock", Vector3(10.5, 3.6, 19.8), 0.0, 0.45],
+	["AtmFascia", Vector3(23.5, 3.05, 20.2), 180.0, Color(0.7, 1.0, 0.85), 1.2, 6.0, Vector3(2.6, 0.4, 0.1)],
+	["StairLandingLight", Vector3(8.5, -0.5, 0.2), 180.0, Color(0.95, 0.95, 1.0), 0.8, 6.0, Vector3(0.3, 0.18, 0.12)],
 ]
 
 
@@ -547,7 +426,8 @@ const PLAYER_SPAWNS: Array = [
 const NPC_SPAWNS: Array = [
 	["GuardHall", "GUARD", Vector3(8.0, 0.0, 13.0), -90.0, ["guard_hall"], "", "Bank"],
 	["GuardBasement", "GUARD", Vector3(14.0, BASE, 6.9), 180.0, ["guard_basement"], "", "Bank"],
-	["CameraOperatorSeat", "CAMERA_OPERATOR", Vector3(11.35, 0.0, 2.5), 90.0, ["security_operator"], "desk_work", ""],
+	# D-063: the operator sits in the station's NPC seat (prop_chair_task, 0.47 m; desk 0.74 m)
+	["CameraOperatorSeat", "CAMERA_OPERATOR", Vector3(11.3, 0.0, 2.5), 90.0, ["security_operator"], "desk_work", ""],
 	["PoliceHarborWest", "POLICE", Vector3(-24.0, ROAD_Y, 26.2), -90.0, ["police_harbor_west"], "", ""],
 	["PoliceHarborEast", "POLICE", Vector3(48.0, ROAD_Y, 26.2), 90.0, ["police_harbor_east"], "", ""],
 	["PoliceWharfNorth", "POLICE", Vector3(32.5, ROAD_Y, -22.0), 180.0, ["police_wharf_north"], "", ""],
@@ -720,7 +600,7 @@ const PREPLAN_POINTS: Array = [
 const ROOMS: Array = [
 	["G1", "storage", "sally_port", 1, [[0.0, 0.0, 0.0, 7.0, WING_CEIL, 6.0]], null],
 	["G2", "stair", "", 1, [[7.0, BASE, 0.0, 10.0, 3.35, 6.0]], null],
-	["G3", "security_room", "security_office", 1, [[10.0, 0.0, 0.0, 14.0, WING_CEIL, 6.0]], null],
+	["G3", "security_room", "security_office_bank", 1, [[10.0, 0.0, 0.0, 14.0, WING_CEIL, 6.0]], null],
 	["G4", "break_room", "break_room", 1, [[14.0, 0.0, 0.0, 18.0, WING_CEIL, 6.0]], null],
 	["G5", "electrical", "electrical_closet", 1, [[18.0, 0.0, 0.0, 21.0, WING_CEIL, 6.0]], null],
 	["G6", "storage", "storage_supplies", 1, [[21.0, 0.0, 0.0, 26.0, WING_CEIL, 6.0]], null],
@@ -730,7 +610,7 @@ const ROOMS: Array = [
 		[0.0, 0.0, 18.0, 8.5, HALL_CEIL, 20.0], [12.5, 0.0, 18.0, 21.0, HALL_CEIL, 20.0]], null],
 	["G10", "corridor", "", 1, [[8.5, 0.0, 18.0, 12.5, WING_CEIL, 20.0]], null],
 	["G11", "office", "office_loan", 1, [[21.0, 0.0, 7.5, 26.0, WING_CEIL, 12.0]], null],
-	["G12", "office", "office_manager", 1, [[21.0, 0.0, 12.0, 26.0, WING_CEIL, 16.0]], null],
+	["G12", "office", "office_manager_bank", 1, [[21.0, 0.0, 12.0, 26.0, WING_CEIL, 16.0]], null],
 	["G13", "lobby", "atm_vestibule", 1, [[21.0, 0.0, 16.0, 26.0, WING_CEIL, 20.0]], null],
 	["B1", "storage", "cash_transfer", 0, [[0.0, BASE, 0.0, 7.0, BASE_CEIL, 6.0]], BASEMENT_CEIL_RANGE],
 	["B2", "locker_room", "locker_room", 0, [[10.0, BASE, 2.5, 16.0, BASE_CEIL, 6.0],
@@ -781,9 +661,9 @@ const REVIEW_CAMERAS: Array = [
 		"Exterior: Harbor St facade from the quay: harbor clock, bronze doors, tall hall windows (landmark)"],
 	["ExtAtmCorner", Vector3(33.0, 1.7, 29.0), Vector3(23.0, 2.0, 18.0), 70.0,
 		"Exterior: Harbor St / Wharf Ln corner: green-glass ATM vestibule (landmark), fire exit side"],
-	["ExtLotSallyPort", Vector3(24.0, 2.2, -12.5), Vector3(5.0, 1.5, -1.0), 70.0,
+	["ExtLotSallyPort", Vector3(14.0, 3.0, -13.0), Vector3(4.0, 1.0, -1.5), 70.0,
 		"Exterior: staff lot from the alley mouth: sally roller + personnel door, van E1 slot, dumpster, areaway cage"],
-	["ExtQuaySteps", Vector3(17.0, 1.7, 31.0), Vector3(8.5, -1.0, 36.0), 70.0,
+	["ExtQuaySteps", Vector3(13.6, 2.0, 30.7), Vector3(7.5, -1.0, 36.5), 70.0,
 		"Exterior: quay steps, landing and the moored launch (E2), chain railing"],
 	["ExtWharfLane", Vector3(32.5, 1.7, -12.0), Vector3(30.0, 1.5, 15.0), 70.0,
 		"Exterior: Wharf Lane from the trailer closure: crane yard palisade, bank east side"],
@@ -797,7 +677,7 @@ const REVIEW_CAMERAS: Array = [
 		"G8 teller workroom behind the counter (hidden from the seated hall guard)"],
 	["StaffCorridor", Vector3(25.4, 1.65, 6.75), Vector3(0.0, 1.4, 6.75), 60.0, "G7 staff corridor: the 26 m sightline"],
 	["SecurityRoom", Vector3(13.5, 1.8, 5.5), Vector3(10.2, 1.0, 2.0), 75.0, "G3 security room: camera station against the west wall"],
-	["SallyPort", Vector3(6.6, 1.8, 5.5), Vector3(3.0, 1.0, 0.3), 75.0, "G1 sally port: roller + personnel door, cash lift"],
+	["SallyPort", Vector3(0.9, 2.0, 5.25), Vector3(5.0, 0.9, 0.6), 75.0, "G1 sally port: roller + personnel door, cash lift"],
 	["StairCore", Vector3(7.7, 1.65, 6.9), Vector3(8.6, -2.0, 1.0), 75.0, "G2 U-stair from the corridor (railing over flight 2)"],
 	["BasementCorridor", Vector3(0.6, -2.35, 6.75), Vector3(26.0, -2.6, 6.75), 60.0, "B5 basement spine and the vault gate"],
 	["Antechamber", Vector3(9.75, -2.35, 8.1), Vector3(18.5, -3.2, 9.6), 75.0, "B8 antechamber: laser plane, time-lock panel, vault door"],
@@ -809,4 +689,13 @@ const REVIEW_CAMERAS: Array = [
 	["AtmVestibule", Vector3(25.2, 1.8, 19.2), Vector3(21.0, 1.0, 16.5), 75.0,
 		"G13 ATM vestibule (24 h, PUBLIC): ATMs, night drop, hall door"],
 	["CranePerch", Vector3(42.0, 8.2, 4.0), Vector3(10.0, 0.0, -3.0), 70.0, "Crane office roof (P3 sniper perch) over the lot and sally door"],
+	# G2 additions: one shot per remaining major room (level_standards §8)
+	["BreakRoom", Vector3(17.35, 1.7, 5.35), Vector3(14.6, 0.9, 1.0), 75.0, "G4 break room: kitchen run, lockers (kc_break_locker), table"],
+	["SuppliesStore", Vector3(21.65, 1.7, 5.35), Vector3(25.0, 0.8, 1.2), 75.0, "G6 supplies storage (srv_ground rack slot)"],
+	["LoanOffice", Vector3(21.65, 1.7, 8.15), Vector3(25.5, 0.6, 11.0), 75.0,
+		"G11 loan office: desk, officer seat, visitors, Wharf Lane window"],
+	["CashTransfer", Vector3(6.35, -2.35, 5.35), Vector3(1.0, -3.4, 1.5), 75.0, "B1 cash transfer: lift landing, cash cages, sorting bench"],
+	["LockerRoom", Vector3(14.9, -2.35, 5.4), Vector3(10.6, -3.4, 0.8), 75.0, "B2 locker room: lockers, bench, sink row (WC door)"],
+	["ServerRoom", Vector3(24.3, -2.35, 4.8), Vector3(21.5, -3.2, 0.8), 75.0, "B4 server room: rack rows, UPS, console (srv_basement slot)"],
+	["InspectionPassage", Vector3(7.9, -2.35, 8.35), Vector3(7.9, -3.0, 19.5), 70.0, "B7 vault inspection passage (dead end with a reason)"],
 ]

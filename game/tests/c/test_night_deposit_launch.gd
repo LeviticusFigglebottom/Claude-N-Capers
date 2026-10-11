@@ -130,7 +130,7 @@ func _check_lift(map: HeistMap) -> void:
 	await wait_physics_frames(2)
 	assert_eq(lift.landing_count(), 2, "B1 + G1 landings")
 	assert_eq(lift.panels.size(), 2, "a call/send panel per landing")
-	assert_false(lift.using_placeholder, "greybox lift visual (cash_lift_visual.tscn)")
+	assert_false(lift.using_placeholder, "generated lift visual (art/nd_cash_lift.tscn)")
 	assert_eq(lift.landing, 0, "car waits at G1")
 	assert_true(lift.send(1, 0), "send the car G1 -> B1")
 	assert_near(lift.travel_left(), 8.0, 0.1, "8 s trip")

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"vault_antechamber"
+purpose = &"vault"
+required_items = Array[StringName]([&"bench", &"fire_extinguisher", &"light_fixture"])
+optional_items = {
+&"picture": 0.4
+}
+clutter_groups = {}
+min_density = 0.1
+max_density = 1.5
+min_props = 4
+lone_ok_kinds = Array[StringName]([&"bench"])
+seed_salt = 55
+counts = {}
+assets = {
+&"bench": PackedStringArray("prop_vault_bench"),
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"picture": PackedStringArray("prop_notice_frame")
+}
+ceiling = {"prop_fluorescent": 2.6}
+notes = "B8: the viewing bench behind the laser plane is anchored; the laser grid, the time-lock panel and the round vault door are gameplay prefabs (keep-outs)."

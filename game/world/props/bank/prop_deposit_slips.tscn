@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_deposit_slips/prop_deposit_slips.glb" id="1_model"]
+
+[node name="PropDepositSlips" type="Node3D"]
+metadata/kind = &"slip_tray"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Tray" parent="Model"]
+visibility_range_end = 25
+visibility_range_end_margin = 2.5
+visibility_range_fade_mode = 1
+
+[editable path="Model"]

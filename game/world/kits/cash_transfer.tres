@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"cash_transfer"
+purpose = &"storage"
+required_items = Array[StringName]([&"cash_cage", &"shelving", &"packing_bench", &"pallet", &"light_fixture"])
+optional_items = {
+&"bin": 0.5,
+&"box": 1,
+&"fire_extinguisher": 0.6
+}
+clutter_groups = {
+&"bench": {
+"anchors": Array[StringName]([&"packing_bench"]),
+"count": Vector2i(1, 2),
+"items": {&"binders": 0.5, &"note_counter": 1, &"papers": 1},
+"radius": 0.5
+}
+}
+min_density = 0.3
+max_density = 1.6
+min_props = 8
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 49
+counts = {
+&"cash_cage": Vector2i(2, 3),
+&"shelving": Vector2i(2, 2)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_kitchen"),
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"pallet": PackedStringArray("prop_pallet"),
+&"shelving": PackedStringArray("prop_shelving_boxes")
+}
+ceiling = {"prop_fluorescent": 2.4}
+notes = "B1 cash transfer: the cash lift landing (shaft keep-out, NE), cash cages on wheels, sealed-bag shelving and a sorting bench. 5000 K."

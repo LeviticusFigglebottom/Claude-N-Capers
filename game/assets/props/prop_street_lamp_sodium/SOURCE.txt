@@ -1,0 +1,8 @@
+asset: prop_street_lamp_sodium
+script: tools/blender/props/exterior.py
+params: {"cat": {"fixture": true, "group": "exterior", "kind": "street_lamp", "light": {"angle": 65, "color": "#FF9A3C", "energy": 7.0, "pos": [0.0, 5.75, -1.3], "range": 15.0, "type": "spot"}, "place": "row", "standoff": 3.4}, "emit": "emit_sodium", "fn": "street_lamp"}
+seed: 3649445323  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_street_lamp_sodium
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 14000

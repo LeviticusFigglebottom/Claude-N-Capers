@@ -25,6 +25,8 @@ VARIANTS = {
     "prop_ultrasonic_cleaner": {"fn": "ultrasonic", "cat": {"kind": "ultrasonic_cleaner", "place": "on", "hosts": ["workbench", "jeweler_bench"], "group": "workshop"}},
     "prop_tool_wall": {"fn": "tool_wall", "cat": {"kind": "tool_wall", "place": "wall_mount", "z": 1.45, "group": "workshop"}},
     "prop_stool_shop": {"fn": "stool", "cat": {"kind": "stool", "place": "seat", "hosts": ["jeweler_bench", "workbench"], "group": "workshop"}},
+    "prop_stool_teller": {"fn": "stool", "seat": 0.72, "cat": {"kind": "stool", "place": "seat", "hosts": ["counter_transaction"], "group": "bank",
+                                                               "pin_only": True}},
     "prop_shelving_parts": {"fn": "shelving", "load": "parts", "cat": {"kind": "shelving", "place": "wall", "clear": 0.8, "group": "storage"}},
     "prop_shelving_boxes": {"fn": "shelving", "load": "boxes", "cat": {"kind": "shelving", "place": "wall", "clear": 0.8, "group": "storage"}},
     "prop_shelving_archive": {"fn": "shelving", "load": "archive", "cat": {"kind": "shelving", "place": "wall", "clear": 0.8, "group": "storage"}},
@@ -168,8 +170,9 @@ def _tool_wall(k: Kit, p: dict) -> None:
 def _stool(k: Kit, p: dict) -> None:
     o = k.obj("Stool")
     a = o.part(bevel=0.0)
-    a.cyl(0.18, 0.06, (0.0, 0.0, 0.62), "leather", segs=20)
-    a.rod((0.0, 0.0, 0.08), (0.0, 0.0, 0.59), 0.025, "steel", segs=10)
+    sz = p.get("seat", 0.62)
+    a.cyl(0.18, 0.06, (0.0, 0.0, sz), "leather", segs=20)
+    a.rod((0.0, 0.0, 0.08), (0.0, 0.0, 0.59 if "seat" not in p else sz - 0.03), 0.025, "steel", segs=10)
     for i in range(5):
         ang = 2 * math.pi * i / 5
         tip = (math.cos(ang) * 0.26, math.sin(ang) * 0.26, 0.04)
@@ -180,7 +183,8 @@ def _stool(k: Kit, p: dict) -> None:
         ang = 2 * math.pi * i / 3
         a.rod((0.0, 0.0, 0.3), (math.cos(ang) * 0.17, math.sin(ang) * 0.17, 0.3), 0.006, "steel", segs=5)
     o.build()
-    k.collision([], cylinders=[(0.26, 0.65, (0.0, 0.0, 0.325))])
+    top = 0.65 if "seat" not in p else sz + 0.03
+    k.collision([], cylinders=[(0.26, top, (0.0, 0.0, top / 2))])
 
 
 def _shelf_load(t, load: str, x0: float, x1: float, y0: float, y1: float, z: float, rng) -> None:

@@ -1,0 +1,8 @@
+asset: prop_clock_harbor
+script: tools/blender/props/bank.py
+params: {"cat": {"fixture": true, "group": "bank", "kind": "clock", "light": {"color": "#FFE6C0", "energy": 0.9, "pos": [0.0, 0.0, -0.7], "range": 4.0, "type": "omni"}, "place": "wall_mount", "z": 3.4}, "fn": "clock"}
+seed: 2841427976  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_clock_harbor
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 24000

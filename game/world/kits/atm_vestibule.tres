@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"atm_vestibule"
+purpose = &"lobby"
+required_items = Array[StringName]([&"atm", &"night_drop", &"bin", &"leaflet_rack", &"light_fixture"])
+optional_items = {
+&"leaflet_rack": 0.6,
+&"picture": 0.5
+}
+clutter_groups = {}
+min_density = 0.4
+max_density = 2
+min_props = 8
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 48
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_cool"),
+&"picture": PackedStringArray("prop_notice_frame")
+}
+ceiling = {"prop_ceiling_panel_cool": 1.8}
+notes = "G13 24 h ATM vestibule (PUBLIC): the two ATMs and the night depository head are anchored (saw targets on the ATMs, D-057). Cool LED, the green-white jewel on the corner."

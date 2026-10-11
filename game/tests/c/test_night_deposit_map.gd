@@ -196,8 +196,28 @@ func test_stair_flights() -> void:
 			flights.append(n)
 	assert_eq(flights.size(), 2, "two flights")
 	for f: Node in flights:
-		assert_eq(f.find_children("Step*", "MeshInstance3D", false, false).size() >= 10, true, "%s has 10 treads" % f.name)
+		# G2: the steps are one merged mesh per flight (Visual_<flight>); count its distinct tread levels
+		var mi: MeshInstance3D = f.get_node_or_null("Visual_" + String(f.name)) as MeshInstance3D
+		assert_true(mi != null and mi.mesh != null, "%s has its step mesh" % f.name)
+		if mi != null and mi.mesh != null:
+			assert_true(_tread_levels(mi.mesh) >= 10, "%s has 10 treads" % f.name)
 		assert_true(f.get_node_or_null("Ramp") is StaticBody3D, "%s has a ramp collider" % f.name)
+
+
+## Distinct heights (1 cm) of the horizontal triangles of a mesh: the tread levels of a flight.
+static func _tread_levels(mesh: Mesh) -> int:
+	var levels: Dictionary = {}
+	for s: int in range(mesh.get_surface_count()):
+		var arr: Array = mesh.surface_get_arrays(s)
+		var v: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+		var idx: PackedInt32Array = arr[Mesh.ARRAY_INDEX] if arr[Mesh.ARRAY_INDEX] != null else PackedInt32Array()
+		if idx.is_empty():
+			idx = PackedInt32Array(range(v.size()))
+		for t: int in range(0, idx.size(), 3):
+			var a: Vector3 = v[idx[t]]
+			if absf(a.y - v[idx[t + 1]].y) < 0.001 and absf(a.y - v[idx[t + 2]].y) < 0.001:
+				levels[roundi(a.y * 100.0)] = true
+	return levels.size()
 
 
 ## Doc constraints that the rule order must guarantee, over many seeds.

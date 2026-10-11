@@ -1,0 +1,8 @@
+asset: prop_atm
+script: tools/blender/props/bank.py
+params: {"cat": {"clear": 0.9, "group": "bank", "kind": "atm", "place": "wall"}, "fn": "atm"}
+seed: 283037007  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_atm
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 24000

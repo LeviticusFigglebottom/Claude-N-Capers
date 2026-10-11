@@ -30,9 +30,13 @@ VARIANTS = {
     "prop_alarm_button": {"fn": "alarm_button", "cat": {"prefab": "alarm_button", "kind": "alarm_button", "mount": "wall"}},
     "prop_phone_wall": {"fn": "phone_wall", "cat": {"prefab": "phone", "kind": "phone", "mount": "wall"}},
     "prop_camera_station": {"fn": "camera_station", "cat": {"prefab": "camera_station", "kind": "camera_station"}},
+    # D-063: the operator's sit_chair_watch / desk_work anims use a 0.74 m desk and a 0.47 m seat
+    "prop_camera_station_bank": {"fn": "camera_station", "h": 0.74, "seat": 0.47, "cat": {"prefab": "camera_station", "kind": "camera_station"}},
     "prop_dumpster": {"fn": "dumpster", "cat": {"prefab": "body_container", "kind": "dumpster"}},
     "prop_ladder_fire_escape_h300": {"fn": "ladder", "h": 3.0, "cat": {"prefab": "ladder", "kind": "ladder"}},
     "prop_ladder_fire_escape_h420": {"fn": "ladder", "h": 4.2, "cat": {"prefab": "ladder", "kind": "ladder"}},
+    "prop_ladder_wall_h400": {"fn": "ladder_wall", "h": 4.0, "cat": {"prefab": "ladder", "kind": "ladder"}},
+    "prop_padlock_brass": {"fn": "padlock", "cat": {"prefab": "padlock", "kind": "padlock"}},
     "veh_van_secure": {"fn": "van", "cat": {"prefab": "secure_zone", "kind": "van"}},
     "prop_loot_bag_light": {"fn": "bag", "size": (0.5, 0.28, 0.26), "cat": {"prefab": "loot_bag", "kind": "loot_bag"}},
     "prop_loot_bag_medium": {"fn": "bag", "size": (0.62, 0.34, 0.31), "cat": {"prefab": "loot_bag", "kind": "loot_bag"}},
@@ -218,7 +222,7 @@ def _phone_wall(k: Kit, p: dict) -> None:
 # ---------------------------------------------------------------------------- camera station
 
 def _camera_station(k: Kit, p: dict) -> None:
-    w, d, h = 1.6, 0.8, 0.75
+    w, d, h = 1.6, 0.8, p.get("h", 0.75)
     desk = k.obj("Desk")
     top = desk.part(bevel=0.004, segments=2)
     top.bx((-w / 2, -d / 2, h - 0.03), (w / 2, d / 2, h), "stone_dark")
@@ -263,7 +267,7 @@ def _camera_station(k: Kit, p: dict) -> None:
     sp.bx((-0.27, 0.0, h + 0.13), (0.27, 0.003, h + 0.43), "emit_screen")
     mon.build()
     sc.build()
-    k.empty("Seat", (0.0, 0.75, 0.45), rotation=(0.0, 0.0, math.pi))
+    k.empty("Seat", (0.0, 0.75, p.get("seat", 0.45)), rotation=(0.0, 0.0, math.pi))
 
 
 # ---------------------------------------------------------------------------------- dumpster
@@ -334,6 +338,55 @@ def _ladder(k: Kit, p: dict) -> None:
     lad.build()
     k.empty("Top", (0.0, -0.4, h))
     k.empty("Bottom", (0.0, 0.4, 0.0))
+
+
+def _ladder_wall(k: Kit, p: dict) -> None:
+    """Fixed steel pit ladder bolted to a wall (wall behind, Blender -Y at y 0): straight stiles that
+    run 1.0 m past the landing as grab rails (no gooseneck over the landing, so nothing overhangs a
+    ledge or a gate's swing), rungs every 0.3 m and wall brackets every 1.2 m."""
+    h = p["h"]
+    rail_x = 0.2
+    off = 0.16  # stile centre in front of the wall
+    lad = k.obj("Rails")
+    lp = lad.part(bevel=0.002)
+    top = h + 1.0
+    for sx in (-1, 1):
+        x = sx * rail_x
+        lp.bx((x - 0.03, off - 0.01, 0.0), (x + 0.03, off + 0.01, top), "metal_dark")
+        z = 0.6
+        while z < top - 0.2:
+            lp.bx((x - 0.012, 0.012, z - 0.02), (x + 0.012, off - 0.01, z + 0.02), "metal_dark")
+            lp.bx((x - 0.04, 0.0, z - 0.05), (x + 0.04, 0.012, z + 0.05), "metal_dark")
+            z += 1.2
+    z = 0.3
+    while z < h + 0.01:
+        lp.rod((-rail_x, off, z), (rail_x, off, z), 0.0125, "metal_dark", segs=8)
+        z += 0.3
+    lad.build()
+    k.empty("Top", (0.0, -0.4, h))
+    k.empty("Bottom", (0.0, 0.5, 0.0))
+
+
+def _padlock(k: Kit, p: dict) -> None:
+    """Brass padlock (padlock prefab, QC-37): `Body` = brass case, bottom at the pivot, a keyway on both
+    faces; `Shackle` = the steel hoop above it (the prefab hides it once the lock is cut or picked)."""
+    w, h, d = 0.05, 0.055, 0.022
+    b = k.obj("Body")
+    a = b.part(bevel=0.004, segments=2)
+    a.bx((-w / 2, -d / 2, 0.0), (w / 2, d / 2, h), "brass")
+    kp = b.part(bevel=0.0)
+    kp.cyl(0.004, 0.002, (0.0, d / 2 + 0.001, h * 0.35), "metal_dark", axis="Y", segs=10)
+    kp.cyl(0.004, 0.002, (0.0, -d / 2 - 0.001, h * 0.35), "metal_dark", axis="Y", segs=10)
+    b.build()
+    sh = k.obj("Shackle")
+    s2 = sh.part(bevel=0.0)
+    r = 0.016
+    for sx in (-1, 1):
+        s2.rod((sx * r, 0.0, h), (sx * r, 0.0, h + 0.014), 0.004, "chrome", segs=8)
+    n = 10
+    pts = [(math.cos(math.pi * i / n) * r, 0.0, h + 0.014 + math.sin(math.pi * i / n) * r) for i in range(n + 1)]
+    s2.tube(pts, 0.004, "chrome", segs=8)
+    sh.build()
 
 
 # --------------------------------------------------------------------------------------- van
