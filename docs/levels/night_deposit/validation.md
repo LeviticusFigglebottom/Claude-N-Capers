@@ -182,7 +182,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## zfight: Z-fighting
 
-- 418165 triangles in 100352 plane bins
+- 418165 triangles checked
 
 
 ## lights: Lighting is deliberate

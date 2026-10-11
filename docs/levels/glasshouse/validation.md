@@ -139,11 +139,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## zfight: Z-fighting
 
-<<<<<<< HEAD
-- 268913 triangles in 76037 plane bins
-=======
-- 268913 triangles in 76028 plane bins
->>>>>>> origin/claude/dreamy-hamilton-pc7vck
+- 268913 triangles checked
 
 
 ## lights: Lighting is deliberate

@@ -85,6 +85,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Rooms/RoomM1`: ceiling_range override (2.6, 3.0) (lead review)
 - `Rooms/RoomM1` (lounge): ceiling median 3.00 m (rule 2.6-3.0)
 - `Rooms/RoomM2` (lobby): ceiling median 3.00 m (rule 3.0-4.5)
+- `Rooms/RoomM3`: ceiling_range override (3.0, 4.5) (lead review)
 - `Rooms/RoomM3` (gallery): ceiling median 3.00 m (rule 3.0-4.5)
 - `Rooms/RoomM4` (office): ceiling median 3.00 m (rule 2.6-3.0)
 - `Rooms/RoomM5` (bedroom): ceiling median 3.00 m (rule 2.6-3.0)
