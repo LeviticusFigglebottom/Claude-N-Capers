@@ -100,7 +100,9 @@ func run(ctx: LcContext) -> void:
 							var centroid: Vector3 = ((t1[0] as Vector3) + (t1[1] as Vector3) + (t1[2] as Vector3)) / 3.0
 							fail(ctx, t1[7], centroid, "z-fights with `%s` (coplanar overlap %.4f m2, different materials)"
 								% [ctx.node_path(t2[7]), area])
-	note("%d triangles in %d plane bins" % [tris.size(), bins.size()])
+	# Triangle count only: the plane-bin count depends on float rounding at bin edges and varied
+	# run to run, which churned the committed validation reports (lead, round 31).
+	note("%d triangles checked" % tris.size())
 	if reports > MAX_REPORTS:
 		fail(ctx, ctx.map, null, "%d more z-fighting pairs not listed" % (reports - MAX_REPORTS))
 
