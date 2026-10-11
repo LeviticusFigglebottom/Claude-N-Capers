@@ -38,6 +38,22 @@ const PREFAB_CUES: Array[StringName] = [
 	&"cue.bag_lift_start", &"cue.bag_lift_arrive", &"cue.hack_start", &"cue.hack_interrupt", &"cue.hack_done",
 	&"cue.escape_arrive",
 ]
+## B4-18 armory batches 2 + 3 (anim_sets revolver, break_action, lever, bow, crossbow, launcher,
+## flamethrower, saw, minigun).
+const ARMORY_CUES: Array[StringName] = [
+	&"cue.weapon_revolver_fire", &"cue.weapon_revolver_cylinder_open", &"cue.weapon_revolver_eject",
+	&"cue.weapon_revolver_speedloader_in", &"cue.weapon_revolver_cylinder_close", &"cue.weapon_break_action_fire",
+	&"cue.weapon_break_action_open", &"cue.weapon_break_action_eject", &"cue.weapon_break_action_shell_in",
+	&"cue.weapon_break_action_close", &"cue.weapon_lever_fire", &"cue.weapon_lever_cycle", &"cue.weapon_bow_draw",
+	&"cue.weapon_bow_fire", &"cue.weapon_bow_impact", &"cue.weapon_crossbow_fire", &"cue.weapon_crossbow_load",
+	&"cue.weapon_launcher_fire", &"cue.weapon_launcher_reload", &"cue.weapon_launcher_explode",
+	&"cue.weapon_flamethrower_ignite", &"cue.weapon_flamethrower_fire", &"cue.weapon_flamethrower_stop",
+	&"cue.weapon_saw_rev", &"cue.weapon_saw_cut", &"cue.weapon_minigun_spin_up", &"cue.weapon_minigun_fire",
+	&"cue.weapon_minigun_spin_down",
+]
+const ARMORY_LOOPS: Array[StringName] = [
+	&"cue.weapon_flamethrower_fire", &"cue.weapon_saw_rev", &"cue.weapon_saw_cut", &"cue.weapon_minigun_fire",
+]
 const LOOPS: Array[StringName] = [
 	&"cue.pager_beep", &"cue.pager_radio", &"cue.alarm_bell", &"cue.drill_loop", &"cue.police_siren_far",
 ]
@@ -143,6 +159,28 @@ func test_special_and_prefab_cues() -> void:
 	assert_true(player.is_loop_active(&"captain_88"), "aegis loop while captain is present")
 	EventBus.captain_retreated.emit(88)
 	assert_false(player.is_loop_active(&"captain_88"), "aegis loop stops on retreat")
+	player.queue_free()
+
+
+func test_armory_batch_cues() -> void:
+	if _reg == null:
+		skip("no registry")
+		return
+	for id: StringName in ARMORY_CUES:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c != null, "registry has %s" % id)
+		if c == null:
+			continue
+		assert_true(c.positional, "%s positional" % id)
+		assert_eq(c.loop, ARMORY_LOOPS.has(id), "%s loop flag" % id)
+	for id: StringName in [&"cue.weapon_bow_fire", &"cue.weapon_bow_draw", &"cue.weapon_crossbow_fire"]:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c.max_distance <= 15.0 and c.volume_db <= -6.0, "%s is quiet / short range" % id)
+	assert_true(_reg.get_cue(&"cue.weapon_revolver_fire").streams.size() >= 3, "revolver variations")
+	var player: CuePlayer = _make_player()
+	var akimbo: WeaponDef = WeaponDef.new()
+	akimbo.anim_set = &"akimbo"
+	assert_eq(player.weapon_fire_cue(&"x", false, akimbo), &"cue.weapon_pistol_fire", "akimbo reuses pistol")
 	player.queue_free()
 
 
