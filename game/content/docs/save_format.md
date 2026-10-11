@@ -36,7 +36,7 @@ place (atomic).
      rank does not offer.
    * `held_skill_sets` loses unknown skills, levels other than 1 or 2, and entries past the last skill set.
    * Every reached rank's rewards are re-granted (`Notoriety.apply_rewards`).
-   * `music_choice` is type-checked only (no track list yet).
+   * `music_choice` is type-checked only. The launch resolves it against `MusicCatalog` (B5-03).
 
 ## Fields
 Types are JSON types. `id` = a `String` content id (`domain.snake_name`). "Since" = the first version
@@ -67,7 +67,7 @@ that has the field. v0 is the pre-versioned dev save; its `money` became `cash` 
 | `notoriety_xp` | int | 0 | 6 | XP that rank-ups moved out of `xp`. Perk points count `xp + notoriety_xp`. |
 | `notoriety_choices` | object | `{}` | 6 | Rank (as a string key, e.g. `"5"`) → the reward id picked for that rank's choice (`Notoriety.choose`). |
 | `held_skill_sets` | object[] | `[]` | 6 | Index-aligned with `skill_sets`: the build a rank-up held, bought back as levels return (`NotorietySkills`). `{}` = nothing held. |
-| `music_choice` | string | `""` | 6 | Chosen heist music track id (B5-03). `""` = the heist's default. At most 64 characters; anything longer, or a non-string, falls back to `""` with a warning. Not yet checked against a track list. |
+| `music_choice` | string | `""` | 6 | Chosen heist music track id (B5-03). `""` = the heist's default. At most 64 characters; anything longer, or a non-string, falls back to `""` with a warning. Load only type-checks it. At launch `MusicCatalog.resolve_choice` turns an unknown or locked id into `""` (B5-03, `content/docs/music.md`). |
 | `stats` | object | `{}` | 0 | Counter name → int (`heists_completed`, `heists_failed`, ...). |
 | `settings` | object | `{}` | 0 | Any JSON values, stored as-is (numbers come back as float). |
 

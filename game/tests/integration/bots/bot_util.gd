@@ -112,6 +112,19 @@ static func zone_center(zone: Area3D) -> Vector3:
 	return zone.global_position
 
 
+## Where a bot drops a bag to secure it: the owning SecureZone's `DropAnchor` (the van's open rear),
+## else the zone floor centre. The zone centre can sit inside a vehicle's solid body (D-066).
+static func drop_point(zone: Area3D) -> Vector3:
+	var n: Node = zone
+	while n != null and not (n is SecureZone):
+		n = n.get_parent()
+	if n != null:
+		var anchor: Node3D = n.find_child("DropAnchor", true, false) as Node3D
+		if anchor != null:
+			return anchor.global_position
+	return zone_center(zone)
+
+
 ## A navmesh point whose standing body (0.5 m up) is inside `zone`, nearest the zone centre first.
 static func nav_point_in_zone(zone: Area3D) -> Variant:
 	var center: Vector3 = zone_center(zone)

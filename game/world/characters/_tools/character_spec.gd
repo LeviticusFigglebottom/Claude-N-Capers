@@ -31,7 +31,16 @@ const TEST_SCENES: Dictionary = {
 const PROP_SCENES: Dictionary = {
 	"char_bulwark_shield": "res://world/characters/bulwark/bulwark_shield.tscn",
 	"char_bulwark_aegis_shield": "res://world/characters/bulwark_aegis/bulwark_aegis_shield.tscn",
+	"char_bulwark_frd_shield": "res://world/characters/bulwark_frd/bulwark_frd_shield.tscn",
+	"char_bulwark_sentinel_shield": "res://world/characters/bulwark_sentinel/bulwark_sentinel_shield.tscn",
+	"char_bulwark_zero_shield": "res://world/characters/bulwark_zero/bulwark_zero_shield.tscn",
 }
+## D2-01 faction reskins: SOURCE.txt `variant_of` (base character / prop id) and `visual_variant`
+## (EnemyDef.params.visual_variant: frd | sentinel | zero) are copied into the characters.json entry as
+## `variant_of` / `variant`. Scene convention: world/characters/<id>_<variant>/<id>_<variant>.tscn.
+const VARIANT_OF_KEY: String = "variant_of"
+const VARIANT_KEY: String = "visual_variant"
+const FACTION_VARIANTS: Array[String] = ["frd", "sentinel", "zero"]
 const SHIELD_LAYER: int = 1 << 1
 ## SOURCE.txt keys of the special characters (tools/blender/characters/_special_gear.py):
 ## `extra_markers` = JSON [{name, parent (path under Skeleton3D), origin [x, y, z] in the parent's
@@ -191,6 +200,13 @@ static func is_excluded(asset_id: String) -> bool:
 		if asset_id.begins_with(p):
 			return true
 	return false
+
+
+## Scene of character `char_id` (e.g. `tac_light`) for EnemyDef `params.visual_variant` (`frd`, ...);
+## an empty variant or `tac` is the base scene.
+static func variant_scene_path(char_id: String, variant: String) -> String:
+	var cid: String = char_id if variant.is_empty() or variant == "tac" else "%s_%s" % [char_id, variant]
+	return "%s%s/%s.tscn" % [OUT_DIR, cid, cid]
 
 
 static func is_prop(asset_id: String) -> bool:

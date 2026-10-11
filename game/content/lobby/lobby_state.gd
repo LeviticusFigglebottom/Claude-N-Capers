@@ -6,7 +6,10 @@
 ## * MSG_READY    {"ready": bool}                                 any human slot, for itself
 ## * MSG_PROFILE  {"name", "level", "notoriety", "loadout": loadout_to_dict()} any human slot, for itself;
 ##                `notoriety` = the Notoriety rank 0..max (B5-02; a summary without it reads as 0). Sent at
-##                join and after every loadout change. Every peer validates it with validate_summary()
+##                join and after every loadout change. `music` (B5-03) = the sender's resolved music pick
+##                (MusicCatalog.resolve_choice; "" = heist default; missing or not a String reads as ""):
+##                only the HOST's is used, shown read-only to clients (slot_view "music", host_music()).
+##                Every peer validates it with validate_summary()
 ##                (SkillPoints.validate + LoadoutResolver mod legality + known ids, architecture §11):
 ##                an illegal summary is FLAGGED on its slot and blocks Start; the host never launches it.
 ## * MSG_CONTRACT {"heist": String, "difficulty": int, "is_pro": bool}   host only. D-049: every player
@@ -231,10 +234,16 @@ func slot_view(slot: int) -> Dictionary:
 		"is_local": slot == local_slot, "is_host": slot == host_slot and not c.is_empty(),
 		"name": String(s.get("name", c.get("display_name", ""))), "ready": is_ready(slot),
 		"has_summary": not s.is_empty(), "level": int(s.get("level", 0)), "notoriety": int(s.get("notoriety", 0)),
+		"music": StringName(String(s.get("music", ""))),
 		"loadout": (s.get("loadout", {}) as Dictionary).duplicate(true),
 		"legal": is_legal(slot), "errors": (errors.get(slot, []) as Array).duplicate(),
 	}
 	return view
+
+
+## The host's music pick from its summary (&"" = heist default or no summary yet), B5-03.
+func host_music() -> StringName:
+	return StringName(String((summaries.get(host_slot, {}) as Dictionary).get("music", "")))
 
 
 ## Profile summary the local player sends (MSG_PROFILE): name, level, Notoriety rank (B5-02) and the
@@ -243,7 +252,7 @@ static func summary_from(loadout: Loadout, profile: PlayerProfile) -> Dictionary
 	var l: Loadout = loadout.duplicate(true) as Loadout
 	l.mask_descriptor = LoadoutResolver.mask_descriptor_for(loadout, profile)
 	return {"name": profile.profile_name, "level": profile.level, "notoriety": profile.notoriety,
-			"loadout": loadout_to_dict(l)}
+			"music": String(MusicCatalog.resolve_choice(profile)), "loadout": loadout_to_dict(l)}
 
 
 ## JSON-safe loadout input (no resolved numbers; every peer resolves with LoadoutResolver).
@@ -323,8 +332,10 @@ static func sanitize_summary(data: Dictionary) -> Dictionary:
 		sk[k] = int(lv)
 	out["skills"] = sk
 	var max_len: int = LobbyTweak.load_default().max_name_length
+	var music: Variant = data.get("music", "")
 	return {"name": String(data["name"]).strip_edges().left(max_len), "level": int(data["level"]),
-			"notoriety": int(rank), "loadout": out}
+			"notoriety": int(rank), "music": String(music).left(ProfileSchema.SHORT_ID_MAX_LENGTH) if music is String else "",
+			"loadout": out}
 
 
 ## Legality problems of a sanitized summary ([] = legal), for logs and the slot's "illegal" flag:

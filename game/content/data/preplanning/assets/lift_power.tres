@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.lift_power"
+category = &"access"
+cost = 1000
+favors = 1
+force_variants = {
+&"goods_lift": Array[StringName]([&"lift_powered"])
+}
+tags = Array[StringName]([&"loud"])
