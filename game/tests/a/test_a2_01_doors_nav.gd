@@ -183,3 +183,45 @@ func test_a2_01_ai_teammate_opens_door_in_loud() -> void:
 	assert_true(await wait_until(func() -> bool: return door.is_open, 8.0), "AI teammate opened the door on its way")
 	assert_true(await wait_until(func() -> bool: return ai.global_position.z > 1.0, 8.0),
 		"AI teammate followed through the doorway (z=%.2f)" % ai.global_position.z)
+
+
+## A police NPC whose brain is switched off (the test drives its NpcMotor).
+func _police_walker(pos: Vector3) -> NpcBase:
+	var npc: NpcBase = _rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, pos), {})
+	for nm: String in ["Brain", "Gunner"]:
+		var c: Node = npc.get_node_or_null(nm)
+		if c != null:
+			c.set_physics_process(false)
+	await wait_physics_frames(2)
+	return npc
+
+
+## P3 gate (Glasshouse seed 3001 SalonBackDoor): loud police breach a locked door on their path
+## (npc_door_breach_s), then walk through; the door stays unlocked and open.
+func test_p3_loud_police_breach_locked_door() -> void:
+	await _launch()
+	var door: Door = await _door(Door.Lock.LOCKPICK)
+	EventBus.alarm_raised.emit(&"test", 0)
+	var npc: NpcBase = await _police_walker(Vector3(0, 0.05, -4))
+	npc.max_health = 100000.0
+	npc.health = 100000.0
+	_motor(npc).go_to(Vector3(0, 0, 4), 2.5)
+	await wait_seconds(2.0)
+	assert_false(door.is_open, "breaching takes npc_door_breach_s")
+	await wait_seconds(Tweak.interaction().npc_door_breach_s + 3.0)
+	assert_true(door.is_open and not door.locked, "breached: unlocked and open")
+	assert_true(npc.global_position.z > 1.0, "the unit went through (z=%.2f)" % npc.global_position.z)
+
+
+func test_p3_police_cannot_breach_barred_or_in_stealth() -> void:
+	await _launch()
+	var door: Door = await _door(Door.Lock.BARRED)
+	EventBus.alarm_raised.emit(&"test", 0)
+	var npc: NpcBase = await _police_walker(Vector3(0, 0.05, -4))
+	assert_false(door.can_npc_open(npc), "BARRED: no breach")
+	var lp: Door = ATestMaps.add_prefab(_rt, "door", Vector3(6, 0, 0), func(p: GameplayPrefab) -> void:
+		(p as Door).lock = Door.Lock.LOCKPICK) as Door
+	await wait_physics_frames(1)
+	assert_true(lp.can_npc_open(npc), "LOCKPICK: breachable once loud")
+	var guard: NpcBase = await _walker(Vector3(3, 0.05, -4))
+	assert_false(lp.can_npc_open(guard), "guards never breach")

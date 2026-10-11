@@ -100,7 +100,7 @@ static func contextual_order(rt: HeistRuntime, human: CrewController, stances: D
 	for c: CrewController in rt.crew_members():
 		if c == human or c.crew_state == Enums.CrewState.CUSTODY:
 			continue
-		if not c.is_ai and c.crew_state != Enums.CrewState.DOWNED:
+		if not c.is_ai and not CrewAiBrain.needs_help(c):
 			continue
 		var a: float = _aim_angle(human, eye, dir, c.global_position + CHEST_UP, tw.order_range_m)
 		if a < best_a:
@@ -116,7 +116,7 @@ static func contextual_order(rt: HeistRuntime, human: CrewController, stances: D
 			best_a = a2
 	var crew: CrewController = best as CrewController
 	if crew != null:
-		if crew.crew_state == Enums.CrewState.DOWNED:
+		if CrewAiBrain.needs_help(crew):  # P3 gate: kicked / tased crew are revive orders too (L2.8)
 			return _o(&"revive", crew.net_id)
 		if crew.is_carrying_bag():
 			return _o(&"drop_bag", crew.net_id)

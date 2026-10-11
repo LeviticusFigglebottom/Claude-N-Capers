@@ -41,6 +41,9 @@ const RNG_DIRECTOR: StringName = &"director"
 const RNG_SPAWNS: StringName = &"spawns"
 const POLICE_ROLES: Array[StringName] = [&"police", &"special"]
 const LONGSHOT_ID: StringName = &"enemy.longshot"
+## QC-42 (D-064): a POLICE_SPAWN / ENTRY point tagged this is never a spawn (police only enter through it:
+## interior ENTRY points such as Dockside's quay doors are breach / entry targets, not spawns).
+const BREACH_ONLY_TAG: StringName = &"breach_only"
 
 @export var tweak: DirectorTweak
 
@@ -53,6 +56,14 @@ var phase_time: float = 0.0
 var hostages: int = 0
 var hostage_bonus_applied: bool = false
 var running: bool = false
+## QC-35 (D-064, Dockside Burn cartel phase): seconds the police start is held once begin() is called
+## (> 0 = waiting; HeistMission.police_delay_s sets it). Setting 0 while waiting starts the police now.
+var start_delay_s: float = 0.0:
+	set(v):
+		start_delay_s = maxf(v, 0.0)
+		if _start_held and start_delay_s <= 0.0:
+			_start_held = false
+			begin()
 ## Units spawned by the director (alive or not), in order.
 var spawned_total: int = 0
 ## A3-03 (L1.2): pressure 0..1.
@@ -62,6 +73,7 @@ var captain: AegisCaptain = null
 ## A3-03 (L1.5, L4.11): faction EnemyDefs and special caps.
 var roster: EnemyRoster = null
 
+var _start_held: bool = false
 var _runtime: HeistRuntime = null
 var _queue: Array[StringName] = []
 var _queue_index: int = 0
@@ -133,6 +145,11 @@ func enemy_cap() -> int:
 	return _runtime.difficulty_def.enemy_cap if _runtime != null and _runtime.difficulty_def != null else 20
 
 
+## D-064 (QC-36): police may fill enemy_cap() minus the alive cartel gunmen (they share the cap).
+func police_budget() -> int:
+	return enemy_cap() - (_runtime.npcs(CartelBrain.ROLE).size() if _runtime != null else 0)
+
+
 func is_assault_active() -> bool:
 	return assault_phase == Enums.AssaultPhase.BUILD or assault_phase == Enums.AssaultPhase.SUSTAIN \
 		or assault_phase == Enums.AssaultPhase.FADE
@@ -144,6 +161,9 @@ func begin() -> void:
 		return
 	if _runtime != null and _runtime.heist_mode == Enums.HeistMode.STEALTH_ONLY:
 		return  # S11.3: a stealth-only alarm aborts the heist, no assault
+	if start_delay_s > 0.0:
+		_start_held = true  # QC-35: _physics_process counts start_delay_s down, then begins
+		return
 	running = true
 	wave_index = 1
 	_first_responder_groups_left = tweak.first_responder_groups
@@ -230,7 +250,8 @@ func sustain_duration(wave: int, crew_count: int) -> float:
 	return base * mult
 
 
-## Spawn points valid right now (L1.4), nearest to the crew centroid first.
+## Spawn points valid right now (L1.4), nearest to the crew centroid first. Points tagged BREACH_ONLY_TAG
+## are skipped (QC-42).
 func valid_spawn_points() -> Array[Node3D]:
 	var out: Array[Node3D] = []
 	if _runtime == null or _runtime.map == null:
@@ -240,6 +261,9 @@ func valid_spawn_points() -> Array[Node3D]:
 	for g: StringName in [G.POLICE_SPAWN, G.ENTRY_POINT]:
 		for n: Node in _runtime.map.get_slots(g):
 			var p: Node3D = n as Node3D
+			var tags: Variant = p.get(&"tags") if p != null else null
+			if tags is Array and (tags as Array).has(BREACH_ONLY_TAG):
+				continue
 			if p != null and is_spawn_valid(p.global_position, crew):
 				cands.append(p)
 	if cands.is_empty():
@@ -275,6 +299,9 @@ func is_spawn_valid(pos: Vector3, crew: Array[CrewController] = []) -> bool:
 # --- Phase machine ----------------------------------------------------------------------------
 
 func _physics_process(delta: float) -> void:
+	if _start_held and Net.is_authority():
+		start_delay_s -= delta  # the setter begins at 0
+		return
 	if not running or not Net.is_authority() or _runtime == null:
 		return
 	if _runtime.phase == Enums.HeistPhase.ENDED:
@@ -398,7 +425,7 @@ func _tick_assault_spawns(delta: float) -> void:
 	if not tweak.stage_spawn_rate_mult.is_empty():
 		stage_mult = tweak.stage_spawn_rate_mult[clampi(stage(), 0, tweak.stage_spawn_rate_mult.size() - 1)]
 	_group_left = tweak.assault_group_interval_s / maxf(intensity * stage_mult * _drama_spawn_scale(), 0.05)
-	if alive_count() < enemy_cap():
+	if alive_count() < police_budget():
 		_enqueue(_pick_group(assault_phase))
 
 
@@ -470,7 +497,7 @@ func _tick_queue(delta: float) -> void:
 	_unit_left -= delta
 	if _unit_left > 0.0:
 		return
-	if alive_count() >= enemy_cap():
+	if alive_count() >= police_budget():
 		_queue.clear()
 		return
 	_spawn_next()
@@ -570,8 +597,12 @@ func _path_cost(from: Vector3, to: Vector3) -> float:
 	return total
 
 
-func _on_heist_phase_changed(_old_phase: int, new_phase: int) -> void:
-	if new_phase == Enums.HeistPhase.LOUD:
+func _on_heist_phase_changed(old_phase: int, new_phase: int) -> void:
+	if new_phase != Enums.HeistPhase.LOUD:
+		return
+	if old_phase == Enums.HeistPhase.LOADING:
+		begin.call_deferred()  # QC-35: loud at load (LOUD_ONLY): after the mission's start hook may hold it
+	else:
 		begin()
 
 

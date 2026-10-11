@@ -200,7 +200,9 @@ func test_unlocked_door_opens_instantly() -> void:
 	assert_near(leaf.rotation.y, -deg_to_rad(Tweak.interaction().door_open_angle_deg), 0.001, "INWARD swing")
 	var body: AnimatableBody3D = door.get_node(^"LeafBody") as AnimatableBody3D
 	assert_true(body.global_transform.is_equal_approx(leaf.global_transform), "leaf body follows Leaf")
-	assert_eq(body.collision_layer, 2, "world_dynamic")
+	assert_eq(body.collision_layer, 0, "P3 gate: an open leaf blocks nobody")
+	door.set_open(false)
+	assert_eq(body.collision_layer, 2, "closed leaf: world_dynamic")
 	rt.teardown()
 	await wait_frames(1)
 
