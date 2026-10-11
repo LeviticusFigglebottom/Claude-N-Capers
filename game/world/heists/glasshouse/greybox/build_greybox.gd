@@ -52,7 +52,7 @@ const PREFAB_VISUALS: Dictionary = {
 	"ladder": "prop_ladder_fire_escape_h420", "camera_station": "prop_camera_station",
 	"secure_zone": "veh_van_secure", "code_note": "prop_papers", "keycard_pickup": VIS_KEYCARD,
 	"small_loot": VIS_CASH, "loot_spawn": VIS_JEWELRY, "display_case": "prop_display_case_island",
-	"drill_point": VIS_EMPTY,
+	"drill_point": VIS_EMPTY, "security_camera": "prop_security_camera_wall",
 }
 var _root: HeistMap = null
 var _art: RefCounted = null
@@ -1141,8 +1141,10 @@ func _build_workshop(gp: Node3D) -> void:
 		if reader != null:
 			var targets: Array[NodePath] = [reader.get_path_to(safe)]
 			reader.set(&"targets", targets)
-	_prefab(ws, "loot_spawn", "SafeLoot", Vector3(6.5, 0.0, 1.2), 180.0,
-		{"loot_id": &"loot.jewelry", "count": 4, "objective_tag": &"safe_loot"})
+		# Under the safe: Safe only enables loot parented to it once it opens (P1 gate finding).
+		# Safe-local position: 0.64 m in front of the door, as before.
+		_prefab(safe, "loot_spawn", "SafeLoot", Vector3(0.0, 0.0, -0.64), 0.0,
+			{"loot_id": &"loot.jewelry", "count": 4, "objective_tag": &"safe_loot"})
 
 
 func _build_cases(gp: Node3D) -> void:
@@ -1337,31 +1339,21 @@ func _variants_rare(variants: Node3D) -> void:
 			"visual_scene": _dress.scene("prop_loot_bag_heavy")})
 
 
-## P2 rows of the variable table (designed now, rule pick 0 until P2 enables them).
+## Camera rows: one slot per camera (D-059: 1-3 live per run, more on higher difficulties); the
+## other P2 rows stay at pick 0.
 func _variants_p2(variants: Node3D) -> void:
 	var cams: Dictionary = {
 		"C1": [Vector3(12.5, 3.0, 6.1), 180.0], "C2": [Vector3(0.6, 3.0, 11.8), 0.0],
 		"C3": [Vector3(17.8, 2.6, 5.25), 90.0], "C4": [Vector3(5.0, 3.0, -0.2), 0.0],
 		"C5": [Vector3(9.5, 2.6, 4.4), 0.0], "C6": [Vector3(0.2, L.UPPER + 2.6, 5.25), -90.0],
 	}
-	var sets: Array = [["cam_a", ["C1", "C3", "C4"]], ["cam_b", ["C2", "C3", "C5"]], ["cam_c", ["C1", "C2", "C6"]]]
 	var cg: Node3D = _group(variants, "camera")
-	for s: Array in sets:
-		var slot: VariantSlot = _slot(cg, "camera", String(s[0]), 1.0, {"phase": 2})
-		for cid: Variant in s[1]:
-			# Mount points only: the security_camera prefab's collision box reaches 0.025 m behind
-			# its back-centre pivot, so a flush wall mount clips the wall (reported to ENV A).
-			var row: Array = cams[cid]
-			var m: Marker3D = Marker3D.new()
-			m.name = "CameraMount" + String(cid)
-			m.position = row[0]
-			m.basis = _yaw_basis(float(row[1]))
-			m.set_meta(&"camera_id", String(cid))
-			m.set_meta(&"mount", "wall")
-			m.set_meta(&"fov_deg", 60.0)
-			m.set_meta(&"range_m", 20.0)
-			m.add_to_group(G.CAMERA_SLOT, true)
-			_add(slot, m)
+	for cid: String in ["C1", "C2", "C3", "C4", "C5", "C6"]:
+		var slot: VariantSlot = _slot(cg, "camera", "cam_" + cid.to_lower(), 1.0)
+		var row: Array = cams[cid]
+		_prefab(slot, "security_camera", "Camera" + cid, row[0], float(row[1]),
+			{"fov_deg": 60.0, "range_m": 20.0, "pan_deg": 40.0}, null,
+			{"mount": "wall", "kind": "security_camera", "camera_id": cid})
 	var sr: Node3D = _group(variants, "security_room_staffed")
 	_slot(sr, "security_room_staffed", "sec_staffed", 0.6,
 		{"phase": 2, "operator_spawn": "Spawns/CameraOperatorSeat", "station": "Gameplay/Misc/CameraStation"})
