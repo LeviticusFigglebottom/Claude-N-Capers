@@ -95,6 +95,28 @@ multiplier (recorded from the G0 docs): **Night Deposit $800–2,400**, **Shadow
 **Dockside Burn: the G0 doc (D-064) gives no per-item range** (O2 dispatch safe ×3 and desk cash in O1/O2/M1); ◇ $600–1,500 proposed
 until ENV C sets the prefab values.
 
+P5 heists (B6-01; no G0 docs yet, so every heist assignment is a proposal for ENV C). Weight classes
+follow the roadmap row and PD2's carry classes (S10.1); values ◇ use the same bag shape as the
+P2/P3 loot above: a class band of LIGHT $1,000–2,000, MEDIUM $1,400–2,400, HEAVY $2,000–3,000, and a
+heavier bag is worth more per bag. `pd2_research.md` lists no per-bag values, so no value is V.
+| id | weight | value | heist (proposed) | src |
+|---|---|---|---|---|
+| `loot.gold` | HEAVY | $2,800 | Meridian Federal vault, Rolling Thunder trucks | weight V (roadmap, PD2 gold is a heavy bag); value ◇ (top bag: above the $2,000 weapon crate, PD2 gold is the best-paying common bag) |
+| `loot.cash_bricks` (existing) | MEDIUM | $1,600 | Meridian Federal vault, Rolling Thunder trucks, Afterhours count room | the roadmap's "money MEDIUM" is this def; no new money def |
+| `loot.server_drives` | MEDIUM | $1,800 | Rolling Thunder (courier truck), Meridian Federal (optional) | weight V (roadmap); value ◇ (= `loot.ledger_drives`, same kind of bag) |
+| `loot.bearer_bonds` | LIGHT | $1,400 | Meridian Federal (vault cage) | weight V (roadmap); value ◇ (between cash $1,200 and the parcels) |
+| `loot.parcels` | LIGHT | $1,500 | Afterhours (back office) | weight V (roadmap "coke LIGHT"; PD2 carries it light); value ◇ (a LIGHT bag above cash, as PD2's product bags pay more than light cash). Display "Sealed Parcels": the tasteful analog, like `loot.contraband` (MEDIUM, Dockside's discounted product) |
+| `loot.painting_tidewater_saint` | LIGHT | $1,300 | Gallery Night | weight V (PD2 cuts canvases from the frame and carries them rolled as a light bag); value ◇ |
+| `loot.painting_widow_in_blue` | LIGHT | $1,500 | Gallery Night | as above |
+| `loot.painting_salt_orchard` | LIGHT | $1,700 | Gallery Night | as above |
+| `loot.painting_lantern_bearer` | LIGHT | $2,000 | Gallery Night (centrepiece) | as above; the top of the LIGHT band |
+The four canvases are original works by invented painters (Maske, Sallow, Wilk, Calloway). Shadow
+Ledger's framed `loot.painting` stays MEDIUM (its G0 doc); Gallery Night uses the rolled variants.
+**Deposit-box valuables: no loot def** (S10.3, QB-52): Meridian Federal's deposit boxes spawn small loot
+reported as `loot.small_valuables`, valued by ENV C's prefab like Night Deposit's boxes. Per-item range
+◇ **$800–2,400** (Night Deposit's, the same kind of box) until the G0 doc sets one. Per-heist pay tables
+and loot lists: `content/docs/heists/<id>.md`.
+
 ## Difficulty: `difficulty/` (Routine, Tense, Hazardous, Brutal, Lethal, Cataclysm = PD2 Normal, Hard, Very Hard, Overkill, Mayhem, Death Sentence)
 | | Rou | Ten | Haz | Bru | Let | Cat | Src |
 |---|---|---|---|---|---|---|---|
