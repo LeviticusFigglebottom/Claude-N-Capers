@@ -1,4 +1,4 @@
-# Contract: characters (v1.7)
+# Contract: characters (v1.8)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -128,3 +128,12 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
   `phone_call` 4 s, `sit_chair_watch` 10 s, `mug_idle` 8 s (sip@105), `mug_carry_walk` 1.13 s (1.3 m/s), `mop` 4 s,
   `sit_bed_read` 10 s (page_turn@221; root on the mattress top), `idle_thug` 3.5 s (cartel; long gun held low,
   left hand off LeftHandIK). Seat, bed and prop grip placement is in char_anim_humanoid/SOURCE.txt.
+
+## v1.8: heister FP sleeves (D2-03, D-070)
+* `char_arms_fp_<heister>` (rook, sable, dutch, wren) at `res://assets/characters/char_arms_fp_<heister>/char_arms_fp_<heister>.glb`:
+  a mesh-only sleeve variant of `char_arms_fp` with `<root>/rig_arms/Skeleton3D/Arms` (a skinned MeshInstance3D) and no
+  AnimationPlayer; its rig_arms bones, order, rests and bind poses equal `char_arms_fp`'s.
+* ENV A's FpViewmodel instances the variant for the local player's heister, copies its `Arms` `mesh` and `skin` onto
+  `char_arms_fp`'s `Arms`, then frees the variant. Clips stay in `char_arms_fp`. No variant (generic crew or unknown
+  heister) = `char_arms_fp`'s own suit sleeves. Gloved hands use the glove material (no skin under the glove).
+* Humanoid `rappel` clip (ENV D, for A's QC-41 NpcMotor rappel descent): one-way descent loop on a rope, speed in SOURCE.
