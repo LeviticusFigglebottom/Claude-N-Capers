@@ -29,6 +29,7 @@ func _panel(m: Dictionary) -> PanelContainer:
 	var v: VBoxContainer = UiBuild.vbox(2)
 	var name_label: Label = UiBuild.label(&"", UiBuild.HUD)
 	name_label.text = String(m.get("name", ""))
+	name_label.add_theme_color_override(&"font_color", tweak.ally_color)
 	v.add_child(name_label)
 	name_labels[int(m.get("slot", -1))] = name_label
 	var armor_bar: ProgressBar = UiBuild.bar(tweak.armor_color, Vector2(200, 6))
@@ -43,6 +44,8 @@ func _panel(m: Dictionary) -> PanelContainer:
 		info.append(UiText.t(&"ui.hud.custody"))
 	elif st != Enums.CrewState.NORMAL:
 		info.append(UiText.t(&"ui.hud.downed"))
+	if StringName(m.get("mode", &"")) == &"civilian":
+		info.append(UiText.t(&"ui.hud.civilian"))  # v1.6 (D-065)
 	var loot: StringName = StringName(m.get("carried_loot_id", &""))
 	if loot != &"":
 		info.append(UiText.t(&"ui.hud.carrying", {"loot": UiText.t(UiText.item_key(loot))}))

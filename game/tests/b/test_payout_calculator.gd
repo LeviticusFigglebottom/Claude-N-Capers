@@ -222,7 +222,8 @@ func test_xp_lines_follow_c6_order() -> void:
 		keys.append(l["key"] as StringName)
 	assert_eq(keys, PayoutCalculator.XP_ORDER)
 	assert_eq(keys, [&"ui.results.xp.base", &"ui.results.xp.pro", &"ui.results.xp.difficulty",
-		&"ui.results.xp.custody", &"ui.results.xp.additive", &"ui.results.xp.stealth"] as Array[StringName])
+		&"ui.results.xp.custody", &"ui.results.xp.additive", &"ui.results.xp.notoriety",
+		&"ui.results.xp.stealth"] as Array[StringName])
 	var sum: int = 0
 	for l: Dictionary in out["xp_lines"] as Array:
 		sum += int(l["amount"])

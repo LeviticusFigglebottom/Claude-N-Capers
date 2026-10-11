@@ -1,5 +1,5 @@
 {
-	"version": 5,
+	"version": 6,
 	"profile_name": "Old Timer",
 	"cash": 5000,
 	"stash": 0,
@@ -24,6 +24,11 @@
 	"unlocks": [],
 	"achievements": {},
 	"pro_job_locks": {},
+	"notoriety": 0,
+	"notoriety_xp": 0,
+	"notoriety_choices": {},
+	"held_skill_sets": [],
+	"music_choice": "",
 	"stats": {},
 	"settings": {}
 }

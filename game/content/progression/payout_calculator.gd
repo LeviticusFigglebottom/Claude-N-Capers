@@ -3,8 +3,11 @@
 ## HeistResult.contract_pay and every HeistResult.loot[i].value are UNSCALED base values.
 ##
 ## compute(result, difficulty_def = null, tweak = null, is_pro = false, crew_slot = -1,
-##         banked_stealth_mult = 1.0, xp_mult = 1.0) -> Dictionary
+##         banked_stealth_mult = 1.0, xp_mult = 1.0, notoriety_bonus = 0.0) -> Dictionary
 ##   xp_mult             -> the player's progression.xp_mult; (xp_mult - 1) joins the additive XP line
+##   notoriety_bonus     -> Notoriety.xp_bonus(profile.notoriety) (B5-02, P10): additive like the
+##                          additive line (same running total), shown as its own "notoriety" line;
+##                          applies to failed heists too (a permanent player bonus, ◇).
 ##   difficulty_def null -> res://content/data/difficulty/<name>.tres from result.difficulty
 ##   tweak null          -> res://content/data/tweak/payout.tres
 ##   crew_slot           -> the player this payout is for (custody XP penalty, civilian penalty,
@@ -27,8 +30,9 @@
 ##     "total": int,                              gross - civilian_penalty (may be negative)
 ##     "stash": int,                              gross x stash_fraction
 ##     "spending": int,                           total - stash (the penalty comes out of spending)
-##     "xp_lines": [{ "key": StringName, "amount": int }],  always 6 lines, C6 order (base, pro,
-##                                                difficulty, custody, additive, stealth); 0 = n/a
+##     "xp_lines": [{ "key": StringName, "amount": int }],  always 7 lines, C6 order (base, pro,
+##                                                difficulty, custody, additive, notoriety, stealth);
+##                                                0 = n/a
 ##     "xp_total": int,                           sum of xp_lines (>= 0)
 ##     "stealth_bonus_consumed": bool,            success and banked_stealth_mult > 1 (bank spent)
 ##     "stealth_bonus_banked": float }            tweak.stealth_xp_bonus_mult on a successful stealth
@@ -57,13 +61,15 @@ const XP_DIFFICULTY: StringName = &"ui.results.xp.difficulty"
 const XP_CUSTODY: StringName = &"ui.results.xp.custody"
 const XP_ADDITIVE: StringName = &"ui.results.xp.additive"
 const XP_STEALTH: StringName = &"ui.results.xp.stealth"
-## C6 order. The payday UI lists xp_lines in exactly this order.
-const XP_ORDER: Array[StringName] = [XP_BASE, XP_PRO, XP_DIFFICULTY, XP_CUSTODY, XP_ADDITIVE, XP_STEALTH]
+const XP_NOTORIETY: StringName = &"ui.results.xp.notoriety"
+## C6 order (+ the Notoriety line next to the other additive bonus). The payday UI lists xp_lines in
+## exactly this order.
+const XP_ORDER: Array[StringName] = [XP_BASE, XP_PRO, XP_DIFFICULTY, XP_CUSTODY, XP_ADDITIVE, XP_NOTORIETY, XP_STEALTH]
 
 
 static func compute(result: Dictionary, difficulty_def: DifficultyDef = null, tweak: PayoutTweak = null,
 		is_pro: bool = false, crew_slot: int = -1, banked_stealth_mult: float = 1.0,
-		xp_mult: float = 1.0) -> Dictionary:
+		xp_mult: float = 1.0, notoriety_bonus: float = 0.0) -> Dictionary:
 	var diff: DifficultyDef = difficulty_def if difficulty_def != null else _load_difficulty(int(result.get("difficulty", 0)))
 	var tw: PayoutTweak = tweak if tweak != null else _load_tweak()
 	var success: bool = bool(result.get("success", false))
@@ -71,7 +77,8 @@ static func compute(result: Dictionary, difficulty_def: DifficultyDef = null, tw
 	var crew: Array = result.get("crew", []) as Array
 	var out: Dictionary = {"success": success, "stealth": stealth}
 	_compute_cash(out, result, diff, tw, success, crew, crew_slot)
-	_compute_xp(out, result, diff, tw, success, is_pro, crew, crew_slot, banked_stealth_mult, xp_mult)
+	_compute_xp(out, result, diff, tw, success, is_pro, crew, crew_slot, banked_stealth_mult,
+			{"xp_mult": xp_mult, "notoriety": notoriety_bonus})
 	out["stealth_bonus_banked"] = tw.stealth_xp_bonus_mult if success and stealth else 1.0
 	return out
 
@@ -119,7 +126,8 @@ static func _compute_cash(out: Dictionary, result: Dictionary, diff: DifficultyD
 
 static func _compute_xp(out: Dictionary, result: Dictionary, diff: DifficultyDef, tw: PayoutTweak,
 		success: bool, is_pro: bool, crew: Array, crew_slot: int, banked_stealth_mult: float,
-		xp_mult: float) -> void:
+		bonuses: Dictionary) -> void:
+	var xp_mult: float = float(bonuses.get("xp_mult", 1.0))
 	var base: int = 0
 	if success:
 		var bags: int = 0
@@ -146,13 +154,14 @@ static func _compute_xp(out: Dictionary, result: Dictionary, diff: DifficultyDef
 		# player's xp_mult - 1 joins the additive line (D-031; MULT stays a multiplier elsewhere).
 		frac += maxf(xp_mult - 1.0, 0.0)
 		additive = roundi(float(running) * frac)
-	running += additive
+	var notoriety: int = roundi(float(running) * maxf(float(bonuses.get("notoriety", 0.0)), 0.0))
+	running += additive + notoriety
 	var stealth_bonus: int = 0
 	var consumed: bool = success and banked_stealth_mult > 1.0
 	if consumed:
 		stealth_bonus = roundi(float(running) * (banked_stealth_mult - 1.0))
 	running += stealth_bonus
-	var amounts: Array[int] = [base, pro, difficulty, custody, additive, stealth_bonus]
+	var amounts: Array[int] = [base, pro, difficulty, custody, additive, notoriety, stealth_bonus]
 	var lines: Array[Dictionary] = []
 	for i: int in range(XP_ORDER.size()):
 		lines.append({"key": XP_ORDER[i], "amount": amounts[i]})

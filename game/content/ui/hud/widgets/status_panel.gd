@@ -1,6 +1,9 @@
-## Casing/masked indicator (S1.1), carried bag, hostages, special warnings (Phantom/Stinger).
+## Civilian/casing/masked indicator (S1.1, S1.3 civilian badge D-065), carried bag, hostages, special warnings (Phantom/Stinger).
 class_name StatusPanel
 extends HudWidget
+
+## player_mode -> ui.hud.<key>.
+const MODE_KEYS: Dictionary = {&"civilian": "civilian", &"casing": "unmasked", &"masked": "masked"}
 
 var mask_label: Label
 var bag_label: Label
@@ -16,6 +19,7 @@ func build() -> void:
 	bag_label = _add(v)
 	hostages_label = _add(v)
 	warnings_label = _add(v)
+	bag_label.add_theme_color_override(&"font_color", tweak.loot_color)
 	warnings_label.add_theme_color_override(&"font_color", tweak.assault_color)
 
 
@@ -27,13 +31,12 @@ func _add(parent: Container) -> Label:
 
 
 func watched_signals() -> Array[StringName]:
-	return [&"masked_changed", &"carried_bag_changed", &"hostages_changed", &"warnings_changed"]
+	return [&"masked_changed", &"carried_bag_changed", &"hostages_changed", &"warnings_changed", &"player_mode_changed"]
 
 
 func refresh() -> void:
-	var casing: bool = bool(prop(&"casing", false))
-	var masked: bool = bool(prop(&"masked", false))
-	mask_label.text = UiText.t(&"ui.hud.unmasked") if casing and not masked else (UiText.t(&"ui.hud.masked") if masked else "")
+	var mode: StringName = player_mode()
+	mask_label.text = UiText.t(StringName("ui.hud.%s" % MODE_KEYS[mode])) if MODE_KEYS.has(mode) else ""
 	mask_label.visible = mask_label.text != ""
 	var bag: Dictionary = prop(&"carried_bag", {}) as Dictionary
 	var loot: StringName = StringName(bag.get("loot_id", &""))

@@ -33,8 +33,13 @@ const STAT_ROWS: Array[Array] = [
 ## Armory mode (B4-07, opened from the safehouse hub): no heist to launch, so no Launch button;
 ## Back saves and returns to the hub.
 @export var hub_mode: bool = false
+## The heist's HeistDef.start_mode (D-065). &"civilian" shows a notice: you start without gear and pick
+## it up on site (S1.3). Set by MenuFlow before the screen enters the tree.
+@export var start_mode: StringName = &"casing"
 
 var profile: PlayerProfile
+## S1.3 civilian-start notice (visible only for a civilian-start heist).
+var civilian_notice: Label
 var weapon_option: OptionButton
 var melee_option: OptionButton
 var armor_option: OptionButton
@@ -75,6 +80,10 @@ func build_ui() -> void:
 	var root: VBoxContainer = UiBuild.vbox(16)
 	_content = UiBuild.screen_margin(self, root)
 	root.add_child(UiBuild.label(&"ui.loadout.title", UiBuild.HEADER))
+	civilian_notice = UiBuild.label(&"ui.loadout.civilian_start", UiBuild.DIM)
+	civilian_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	civilian_notice.visible = start_mode == &"civilian" and not hub_mode
+	root.add_child(civilian_notice)
 	var cols: HBoxContainer = UiBuild.hbox(48)
 	cols.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(cols)

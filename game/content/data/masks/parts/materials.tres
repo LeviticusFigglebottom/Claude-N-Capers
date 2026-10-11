@@ -15,6 +15,9 @@
 [ext_resource type="Material" path="res://world/materials/tile_ceramic_white.tres" id="13_b415p"]
 [ext_resource type="Material" path="res://world/materials/char_mask_lacquer_dark.tres" id="14_b415l"]
 [ext_resource type="Material" path="res://world/materials/polymer_stipple.tres" id="15_b415s"]
+[ext_resource type="Material" path="res://world/materials/carbon_fibre.tres" id="16_b502w"]
+[ext_resource type="Material" path="res://world/materials/alu_anodized_black.tres" id="17_b502a"]
+[ext_resource type="Material" path="res://world/materials/char_mask_gold.tres" id="18_b502g"]
 
 [sub_resource type="Resource" id="Resource_jkanb"]
 script = ExtResource("3_ktq15")
@@ -142,6 +145,39 @@ id = &"mask_material.stipple"
 display_name = "Stipple Grip"
 default_owned = true
 
+[sub_resource type="Resource" id="Resource_b502_weave"]
+script = ExtResource("3_ktq15")
+material_id = &"carbon_fibre"
+library_material = ExtResource("16_b502w")
+metallic = 0.35
+roughness = 0.3
+detail_strength = 0.7
+detail_mean = 0.148
+id = &"mask_material.weave"
+display_name = "Carbon Weave"
+
+[sub_resource type="Resource" id="Resource_b502_anodized"]
+script = ExtResource("3_ktq15")
+material_id = &"alu_anodized_black"
+library_material = ExtResource("17_b502a")
+metallic = 0.8
+roughness = 0.35
+detail_strength = 0.4
+detail_mean = 0.139
+id = &"mask_material.anodized"
+display_name = "Night Anodized"
+
+[sub_resource type="Resource" id="Resource_b502_crown_gold"]
+script = ExtResource("3_ktq15")
+material_id = &"char_mask_gold"
+library_material = ExtResource("18_b502g")
+metallic = 1.0
+roughness = 0.2
+detail_strength = 0.35
+detail_mean = 0.494
+id = &"mask_material.crown_gold"
+display_name = "Crown Gold"
+
 [resource]
 script = ExtResource("12_coas7")
-entries = Array[ExtResource("1_3q0c8")]([SubResource("Resource_jkanb"), SubResource("Resource_sv32n"), SubResource("Resource_llemd"), SubResource("Resource_7mia0"), SubResource("Resource_drm5c"), SubResource("Resource_ebhiw"), SubResource("Resource_eveee"), SubResource("Resource_ht48o"), SubResource("Resource_2vtjv"), SubResource("Resource_b415_porcelain"), SubResource("Resource_b415_ink_lacquer"), SubResource("Resource_b415_stipple")])
+entries = Array[ExtResource("1_3q0c8")]([SubResource("Resource_jkanb"), SubResource("Resource_sv32n"), SubResource("Resource_llemd"), SubResource("Resource_7mia0"), SubResource("Resource_drm5c"), SubResource("Resource_ebhiw"), SubResource("Resource_eveee"), SubResource("Resource_ht48o"), SubResource("Resource_2vtjv"), SubResource("Resource_b415_porcelain"), SubResource("Resource_b415_ink_lacquer"), SubResource("Resource_b415_stipple"), SubResource("Resource_b502_weave"), SubResource("Resource_b502_anodized"), SubResource("Resource_b502_crown_gold")])

@@ -122,6 +122,76 @@ color_b = Color(0.32, 0.32, 0.3, 1)
 id = &"mask_colors.sulfur_ash"
 display_name = "Sulfur Ash"
 
+[sub_resource type="Resource" id="Resource_b502_crown_ember"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.86, 0.68, 0.24, 1)
+color_b = Color(0.42, 0.13, 0.14, 1)
+id = &"mask_colors.crown_ember"
+display_name = "Crown Ember"
+
+[sub_resource type="Resource" id="Resource_b502_ash_regalia"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.62, 0.6, 0.58, 1)
+color_b = Color(0.3, 0.16, 0.36, 1)
+id = &"mask_colors.ash_regalia"
+display_name = "Ash Regalia"
+
+[sub_resource type="Resource" id="Resource_b502_velvet_vault"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.36, 0.14, 0.26, 1)
+color_b = Color(0.84, 0.74, 0.5, 1)
+id = &"mask_colors.velvet_vault"
+display_name = "Velvet Vault"
+
+[sub_resource type="Resource" id="Resource_b502_midnight_ledger"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.14, 0.16, 0.3, 1)
+color_b = Color(0.78, 0.8, 0.82, 1)
+id = &"mask_colors.midnight_ledger"
+display_name = "Midnight Ledger"
+
+[sub_resource type="Resource" id="Resource_b502_lantern_smoke"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.92, 0.62, 0.22, 1)
+color_b = Color(0.24, 0.24, 0.26, 1)
+id = &"mask_colors.lantern_smoke"
+display_name = "Lantern Smoke"
+
+[sub_resource type="Resource" id="Resource_b502_verdigris_crown"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.36, 0.6, 0.52, 1)
+color_b = Color(0.66, 0.48, 0.22, 1)
+id = &"mask_colors.verdigris_crown"
+display_name = "Verdigris Crown"
+
+[sub_resource type="Resource" id="Resource_b502_bloodline"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.56, 0.13, 0.13, 1)
+color_b = Color(0.9, 0.88, 0.84, 1)
+id = &"mask_colors.bloodline"
+display_name = "Bloodline"
+
+[sub_resource type="Resource" id="Resource_b502_ghost_ledger"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.86, 0.9, 0.92, 1)
+color_b = Color(0.5, 0.56, 0.62, 1)
+id = &"mask_colors.ghost_ledger"
+display_name = "Ghost Ledger"
+
+[sub_resource type="Resource" id="Resource_b502_black_crown"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.13, 0.13, 0.14, 1)
+color_b = Color(0.82, 0.66, 0.26, 1)
+id = &"mask_colors.black_crown"
+display_name = "Black Crown"
+
+[sub_resource type="Resource" id="Resource_b502_heat_shimmer"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.9, 0.4, 0.2, 1)
+color_b = Color(0.3, 0.13, 0.4, 1)
+id = &"mask_colors.heat_shimmer"
+display_name = "Heat Shimmer"
+
 [resource]
 script = ExtResource("3_g4u6w")
-entries = Array[ExtResource("1_ha374")]([SubResource("Resource_kgih8"), SubResource("Resource_b8leu"), SubResource("Resource_vf3hc"), SubResource("Resource_w37wc"), SubResource("Resource_nuwo3"), SubResource("Resource_ttqif"), SubResource("Resource_r2p5f"), SubResource("Resource_i4yrb"), SubResource("Resource_rvxx8"), SubResource("Resource_vk0q1"), SubResource("Resource_b415_tide_coral"), SubResource("Resource_b415_saffron_plum"), SubResource("Resource_b415_frost_slate"), SubResource("Resource_b415_oxblood_brass"), SubResource("Resource_b415_mint_graphite"), SubResource("Resource_b415_sulfur_ash")])
+entries = Array[ExtResource("1_ha374")]([SubResource("Resource_kgih8"), SubResource("Resource_b8leu"), SubResource("Resource_vf3hc"), SubResource("Resource_w37wc"), SubResource("Resource_nuwo3"), SubResource("Resource_ttqif"), SubResource("Resource_r2p5f"), SubResource("Resource_i4yrb"), SubResource("Resource_rvxx8"), SubResource("Resource_vk0q1"), SubResource("Resource_b415_tide_coral"), SubResource("Resource_b415_saffron_plum"), SubResource("Resource_b415_frost_slate"), SubResource("Resource_b415_oxblood_brass"), SubResource("Resource_b415_mint_graphite"), SubResource("Resource_b415_sulfur_ash"), SubResource("Resource_b502_crown_ember"), SubResource("Resource_b502_ash_regalia"), SubResource("Resource_b502_velvet_vault"), SubResource("Resource_b502_midnight_ledger"), SubResource("Resource_b502_lantern_smoke"), SubResource("Resource_b502_verdigris_crown"), SubResource("Resource_b502_bloodline"), SubResource("Resource_b502_ghost_ledger"), SubResource("Resource_b502_black_crown"), SubResource("Resource_b502_heat_shimmer")])

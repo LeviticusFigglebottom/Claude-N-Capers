@@ -66,7 +66,8 @@ static func roll(run_seed: int, slot: int, difficulty: int, profile: PlayerProfi
 
 ## Unowned, droppable items of an item type (sorted ids). Weapon mods: every mod that is not a
 ## weapon's stock part. Mask parts: every available part that is not default-owned (hidden bases
-## waiting for ENV D's mesh never drop), plus the locked presets with `unlock.payday_card`.
+## waiting for ENV D's mesh never drop) and not a Notoriety reward (Notoriety.exclusive_ids), plus the
+## locked presets with `unlock.payday_card`.
 static func pool(type: StringName, profile: PlayerProfile) -> Array[StringName]:
 	var out: Array[StringName] = []
 	match type:
@@ -80,9 +81,10 @@ static func pool(type: StringName, profile: PlayerProfile) -> Array[StringName]:
 				if not stock.has(id) and (profile == null or not profile.owned_mods.has(id)):
 					out.append(id)
 		MASK_PART:
+			var exclusive: Array[StringName] = Notoriety.exclusive_ids()
 			for kind: String in MaskCatalog.KINDS:
 				for p: MaskPartDef in MaskCatalog.parts(kind):
-					if not p.default_owned and not MaskLocker.is_part_owned(profile, p.id):
+					if not p.default_owned and not exclusive.has(p.id) and not MaskLocker.is_part_owned(profile, p.id):
 						out.append(p.id)
 			for md: MaskDef in MaskCatalog.payday_presets():
 				if not MaskLocker.is_drop_owned(profile, md.id):
@@ -102,8 +104,7 @@ static func grant(profile: PlayerProfile, card: Dictionary) -> bool:
 			profile.cash += int(card.get("amount", 0))
 			return true
 		XP:
-			profile.xp += int(card.get("amount", 0))
-			profile.level = XpCurve.level_for_xp(profile.xp)
+			SaveService.apply_heist_payout(profile, {"xp_total": int(card.get("amount", 0))}, XpCurve.level_for_xp)
 			return true
 		WEAPON_MOD:
 			if ContentDB.mod(item) == null or profile.owned_mods.has(item):
