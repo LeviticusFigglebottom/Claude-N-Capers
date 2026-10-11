@@ -16,7 +16,14 @@ detection_preset = &"police"
 params = {
 "_note": "L4.8 Corpsman (PD2 Medic). Heals/revives ONE ally within 7 m, 3 s cooldown (systems/ai/specials/heavy_special_tweak.tres). health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇).",
 "aim_delay_s": 0.6,
+"armor_body_mult": 1.0,
+"explosive_mult": 1.0,
 "fire_interval_s": 0.6,
-"scene": "res://systems/ai/npc/npc_corpsman.tscn"
+"frontal_armor": 1.0,
+"frontal_armor_arc_deg": 0.0,
+"plate_health": [],
+"scene": "res://systems/ai/npc/npc_corpsman.tscn",
+"shield": false,
+"shield_pierce_mult": 1.0
 }
 voice = &"police"

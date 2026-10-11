@@ -135,36 +135,36 @@ const WINDOWS: Array = [
 ## Break-room window (U1, variable `open_window`): built inside the variant slots.
 const BREAKROOM_WINDOW: Dictionary = {"kit": "arch_window_w100_h120", "pos": Vector3(2.25, 5.1, 0.0), "yaw": 0.0}
 
-## Doors: [name, kit piece, origin (bottom-centre of the opening on the wall line), yaw_deg, lock,
+## Doors: [name, visual asset (world/props/door), origin (bottom-centre of the opening on the wall line), yaw_deg, lock,
 ## swing, objective_tag, metas]. Front (-Z, UsePoint side) is the corridor / outside side; INWARD
 ## leaves swing to the back (+Z) side, into the room (level_standards §3.3).
 const DOORS: Array = [
-	["BackDoor", "arch_door_service_t40", Vector3(3.5, 0.0, 0.0), 0.0, "LOCKPICK", "INWARD", "back_door",
+	["BackDoor", "prop_door_service_steel_t40", Vector3(3.5, 0.0, 0.0), 0.0, "LOCKPICK", "INWARD", "back_door",
 		{"service": true}],
-	["ElectricalDoor", "arch_door_single_t20", Vector3(2.0, 0.0, 1.0), -90.0, "NONE", "INWARD", "", {}],
-	["ReceivingDoor", "arch_door_single_t20", Vector3(3.5, 0.0, 4.5), 180.0, "NONE", "INWARD", "", {}],
-	["WorkshopDoor", "arch_door_single_t20", Vector3(7.5, 0.0, 4.5), 180.0, "LOCKPICK", "INWARD", "workshop_door", {}],
-	["WCDoor", "arch_door_single_t20", Vector3(11.5, 0.0, 4.5), 180.0, "NONE", "INWARD", "", {}],
-	["JanitorDoor", "arch_door_single_t20", Vector3(15.3, 0.0, 4.5), 180.0, "NONE", "INWARD", "", {}],
-	["LobbyDoor", "arch_door_single_t20", Vector3(17.0, 0.0, 4.5), 180.0, "NONE", "INWARD", "", {}],
-	["FireExit", "arch_door_service_t40", Vector3(18.0, 0.0, 1.75), 90.0, "NONE", "INWARD", "fire_exit",
+	["ElectricalDoor", "prop_door_single_steel_t20", Vector3(2.0, 0.0, 1.0), -90.0, "NONE", "INWARD", "", {}],
+	["ReceivingDoor", "prop_door_single_ivory_t20", Vector3(3.5, 0.0, 4.5), 180.0, "NONE", "INWARD", "", {}],
+	["WorkshopDoor", "prop_door_single_steel_t20", Vector3(7.5, 0.0, 4.5), 180.0, "LOCKPICK", "INWARD", "workshop_door", {}],
+	["WCDoor", "prop_door_single_ivory_t20", Vector3(11.5, 0.0, 4.5), 180.0, "NONE", "INWARD", "", {}],
+	["JanitorDoor", "prop_door_single_ivory_t20", Vector3(15.3, 0.0, 4.5), 180.0, "NONE", "INWARD", "", {}],
+	["LobbyDoor", "prop_door_single_ivory_t20", Vector3(17.0, 0.0, 4.5), 180.0, "NONE", "INWARD", "", {"fire_exit": true}],
+	["FireExit", "prop_door_service_steel_t40", Vector3(18.0, 0.0, 1.75), 90.0, "NONE", "INWARD", "fire_exit",
 		{"service": true, "fire_exit": true, "suspicious_when_open": true}],
-	["StaffDoor", "arch_door_single_t20", Vector3(1.5, 0.0, 6.0), 0.0, "NONE", "INWARD", "staff_door", {}],
-	["SalonBackDoor", "arch_door_single_t20", Vector3(16.5, 0.0, 6.0), 0.0, "LOCKPICK", "INWARD", "", {}],
-	["SalonDoor", "arch_door_single_t20", Vector3(13.0, 0.0, 10.0), 90.0, "LOCKPICK", "INWARD", "salon_door", {}],
-	["MainEntrance", "arch_door_double_t40", Vector3(11.25, 0.0, 12.0), 180.0, "NONE", "DOUBLE", "main_entrance", {}],
-	["BreakRoomDoor", "arch_door_single_t20", Vector3(3.0, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
-	["SecurityDoor", "arch_door_single_t20", Vector3(8.0, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
-	["WCUpperDoor", "arch_door_single_t20", Vector3(11.5, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
-	["UpperLobbyDoor", "arch_door_single_t20", Vector3(17.0, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
-	["AdminDoor", "arch_door_single_t20", Vector3(4.0, UPPER, 6.0), 0.0, "NONE", "INWARD", "", {}],
-	["ManagerDoor", "arch_door_single_t20", Vector3(10.5, UPPER, 6.0), 0.0, "NONE", "INWARD", "", {}],
-	["StockDoor", "arch_door_single_t20", Vector3(13.0, UPPER, 6.0), 0.0, "NONE", "INWARD", "", {}],
+	["StaffDoor", "prop_door_single_walnut_t20", Vector3(1.5, 0.0, 6.0), 0.0, "NONE", "INWARD", "staff_door", {}],
+	["SalonBackDoor", "prop_door_single_walnut_t20", Vector3(16.5, 0.0, 6.0), 0.0, "LOCKPICK", "INWARD", "", {}],
+	["SalonDoor", "prop_door_single_walnut_t20", Vector3(13.0, 0.0, 10.0), 90.0, "LOCKPICK", "INWARD", "salon_door", {}],
+	["MainEntrance", "prop_door_double_glass_t40", Vector3(11.25, 0.0, 12.0), 180.0, "NONE", "DOUBLE", "main_entrance", {}],
+	["BreakRoomDoor", "prop_door_single_ivory_t20", Vector3(3.0, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
+	["SecurityDoor", "prop_door_single_steel_t20", Vector3(8.0, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
+	["WCUpperDoor", "prop_door_single_ivory_t20", Vector3(11.5, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
+	["UpperLobbyDoor", "prop_door_single_ivory_t20", Vector3(17.0, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {"fire_exit": true}],
+	["AdminDoor", "prop_door_single_walnut_t20", Vector3(4.0, UPPER, 6.0), 0.0, "NONE", "INWARD", "", {}],
+	["ManagerDoor", "prop_door_single_walnut_t20", Vector3(10.5, UPPER, 6.0), 0.0, "NONE", "INWARD", "", {}],
+	["StockDoor", "prop_door_single_ivory_t20", Vector3(13.0, UPPER, 6.0), 0.0, "NONE", "INWARD", "", {}],
 	# Play-space closures: chained/barred gates the police open in loud (mission unlocks them).
-	["AlleyGate", "arch_door_double_t20", Vector3(-14.0, 0.0, -3.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["HarlowWestGate", "arch_door_double_t20", Vector3(-14.0, ROAD_Y, 23.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["HarlowEastGate", "arch_door_double_t20", Vector3(32.5, ROAD_Y, 23.2), 90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["PellNorthGate", "arch_door_double_t20", Vector3(23.2, ROAD_Y, -8.0), 180.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["AlleyGate", "prop_door_double_steel_t20", Vector3(-14.0, 0.0, -3.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["HarlowWestGate", "prop_door_double_steel_t20", Vector3(-14.0, ROAD_Y, 23.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["HarlowEastGate", "prop_door_double_steel_t20", Vector3(32.5, ROAD_Y, 23.2), 90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["PellNorthGate", "prop_door_double_steel_t20", Vector3(23.2, ROAD_Y, -8.0), 180.0, "BARRED", "DOUBLE", "police_gate", {}],
 ]
 
 # --- Site -----------------------------------------------------------------------------------
@@ -204,10 +204,31 @@ const BLOCKS: Array = [
 	["SouthEastBlock", [32.2, -0.3, 34.2, 55.0, 13.0, 50.0], "facade_b"],
 	["PellSouthRamp", [18.2, -0.3, 40.0, 32.2, 6.0, 48.0], "concrete"],
 	["HotelCanopy", [-4.0, 3.4, 32.4, 4.0, 3.6, 34.2], "trim"],
-	# Garage decks (levels 2 and 3, open slots facing Pell St) and parapets.
-	["GarageDeck2", [32.2, 2.8, -16.0, 38.2, 3.0, 12.2], "concrete"],
-	["GarageDeck3", [32.2, 5.8, -16.0, 38.2, 6.0, 12.2], "concrete"],
-	["GarageRoof", [32.2, 8.8, -16.0, 38.2, 9.0, 12.2], "concrete"],
+	# Garage decks (levels 2 and 3, open slots facing Pell St) and parapets. Level 3 is cut back over
+	# the L2 -> L3 ramp (GARAGE_RAMP, back lane x 36.4-38.0); columns, end parapets, kerbs, the north
+	# end wall, railings and stall markings complete the structure (C1-08 review).
+	["GarageDeck2", [32.2, 2.8, -16.0, 38.2, 3.0, 12.2], "slab"],
+	["GarageDeck3", [32.2, 5.8, -16.0, 36.2, 6.0, 12.2], "slab"],
+	["GarageDeck3Back", [36.2, 5.8, -16.0, 38.2, 6.0, -6.5], "slab"],
+	["GarageRoof", [32.2, 8.8, -16.0, 38.2, 9.0, 12.2], "slab"],
+	["GarageNorthWall", [32.2, 2.8, -16.3, 38.2, 10.0, -16.0], "concrete"],
+	["GarageEndS2", [32.5, 3.0, 11.9, 38.2, 4.0, 12.2], "concrete"],
+	["GarageEndS3", [32.5, 6.0, 11.9, 36.2, 7.0, 12.2], "concrete"],
+	["GarageEndSRoof", [32.5, 9.0, 11.9, 38.2, 10.0, 12.2], "concrete"],
+	["GarageKerb2", [32.5, 3.0, -16.0, 32.7, 3.15, 11.9], "concrete"],
+	["GarageKerb3", [32.5, 6.0, -16.0, 32.7, 6.15, 11.9], "concrete"],
+	["GarageCol2A", [32.2, 3.0, -15.7, 32.6, 5.8, -15.3], "concrete"],
+	["GarageCol2B", [32.2, 3.0, -10.1, 32.6, 5.8, -9.7], "concrete"],
+	["GarageCol2C", [32.2, 3.0, -4.5, 32.6, 5.8, -4.1], "concrete"],
+	["GarageCol2D", [32.2, 3.0, 1.9, 32.6, 5.8, 2.3], "concrete"],
+	["GarageCol2E", [32.2, 3.0, 6.7, 32.6, 5.8, 7.1], "concrete"],
+	["GarageCol2F", [32.2, 3.0, 11.5, 32.6, 5.8, 11.9], "concrete"],
+	["GarageCol3A", [32.2, 6.0, -15.7, 32.6, 8.8, -15.3], "concrete"],
+	["GarageCol3B", [32.2, 6.0, -10.1, 32.6, 8.8, -9.7], "concrete"],
+	["GarageCol3C", [32.2, 6.0, -4.5, 32.6, 8.8, -4.1], "concrete"],
+	["GarageCol3D", [32.2, 6.0, 1.9, 32.6, 8.8, 2.3], "concrete"],
+	["GarageCol3E", [32.2, 6.0, 6.7, 32.6, 8.8, 7.1], "concrete"],
+	["GarageCol3F", [32.2, 6.0, 11.5, 32.6, 8.8, 11.9], "concrete"],
 	["GarageParapet2", [32.2, 3.0, -16.0, 32.5, 4.0, 12.2], "concrete"],
 	["GarageParapet3", [32.2, 6.0, -16.0, 32.5, 7.0, 12.2], "concrete"],
 	["GarageParapetRoof", [32.2, 9.0, -16.0, 32.5, 10.0, 12.2], "concrete"],
@@ -234,139 +255,170 @@ const FENCES: Array = [
 	["PellNorthHoarding", "x", -8.0, 18.21, 32.19, ROAD_Y, 2.4, [[22.2, 24.2, ROAD_Y, ROAD_Y + 2.2]], "fence"],
 ]
 
-# --- Props (gameplay-relevant blockers; placeholder boxes) ----------------------------------
+## Garage L2 -> L3 ramp: top surface from `low` up to `high` (centre line), width, slab thickness;
+## a 1.0 m concrete upstand on its open (west) side.
+const GARAGE_RAMP: Dictionary = {"low": Vector3(37.2, 3.0, 11.5), "high": Vector3(37.2, 6.0, -6.5), "width": 1.6,
+	"thick": 0.25, "upstand_x": 36.33}
+## Garage stall lines (paint) on the deck tops: [deck top y, x0, x1, z0, z1, pitch].
+const GARAGE_STALLS: Array = [[3.0, 33.0, 35.8, -15.0, 11.0, 2.6], [6.0, 33.0, 35.8, -15.0, 11.0, 2.6]]
 
-## [name, bottom-centre (x, y, z), size (x, y, z) before yaw, yaw_deg, kind, support, material].
+# --- Props --------------------------------------------------------------------------------------
+
+## Map-built props kept as greybox boxes: [name, bottom-centre, size, yaw_deg, kind, support, material].
 const PROPS: Array = [
-	# G5 sales floor
-	["SalesCounter", Vector3(3.5, 0.0, 7.5), Vector3(2.6, 0.9, 0.6), 0.0, "counter_service", true, "counter"],
-	["ConsultTable", Vector3(11.8, 0.0, 7.6), Vector3(1.0, 0.75, 0.8), 0.0, "table", true, "prop"],
-	["WindowBench", Vector3(5.0, 0.0, 11.4), Vector3(1.6, 0.45, 0.45), 0.0, "bench", false, "prop"],
-	# Shopfront window display boxes (bays A and C; bay B has the bench), lit from above (WALL_LIGHTS).
-	["WindowBoxA", Vector3(2.05, 0.0, 11.565), Vector3(2.3, 0.3, 0.45), 0.0, "window_box", true, "counter"],
-	["WindowBoxC", Vector3(8.0, 0.0, 11.565), Vector3(2.4, 0.3, 0.45), 0.0, "window_box", true, "counter"],
-	# G6 salon
-	["SalonSofa", Vector3(15.5, 0.0, 11.35), Vector3(2.0, 0.8, 0.8), 180.0, "sofa", false, "prop"],
-	["SalonCoffeeTable", Vector3(15.5, 0.0, 10.2), Vector3(1.0, 0.45, 0.6), 0.0, "table", true, "prop"],
-	["SalonVitrine", Vector3(13.41, 0.0, 7.4), Vector3(0.5, 1.8, 1.0), 0.0, "vitrine", true, "counter"],
-	# G2 workshop
-	["JewelerBenchA", Vector3(8.5, 0.0, 0.56), Vector3(1.2, 0.9, 0.7), 0.0, "workbench", true, "counter"],
-	["JewelerBenchB", Vector3(9.75, 0.0, 0.56), Vector3(1.1, 0.9, 0.7), 0.0, "workbench", true, "counter"],
-	["PolishingStation", Vector3(5.46, 0.0, 2.8), Vector3(0.7, 0.9, 1.2), 0.0, "workbench", true, "counter"],
-	# G1 receiving + G7 electrical
-	["ReceivingShelving", Vector3(0.51, 0.0, 3.25), Vector3(0.6, 2.0, 2.0), 0.0, "shelf", true, "prop"],
-	["PackingBench", Vector3(4.59, 0.0, 2.4), Vector3(0.6, 0.9, 1.6), 0.0, "workbench", true, "counter"],
-	["DeliveryCrates", Vector3(2.3, 0.0, 3.3), Vector3(0.6, 0.6, 0.6), 0.0, "box", false, "prop"],
-	["ITRack", Vector3(0.56, 0.0, 0.56), Vector3(0.6, 2.0, 0.6), 0.0, "rack", false, "trim"],
-	# G3 / U3 restrooms, G9 janitor
-	["ToiletG3", Vector3(11.8, 0.0, 0.51), Vector3(0.4, 0.8, 0.6), 0.0, "toilet", false, "prop"],
-	["SinkG3", Vector3(12.64, 0.0, 2.2), Vector3(0.5, 0.85, 0.5), 0.0, "sink", false, "prop"],
-	["JanitorShelf", Vector3(15.25, 0.0, 3.26), Vector3(1.2, 1.5, 0.3), 0.0, "shelf", true, "prop"],
-	["ToiletU3", Vector3(11.8, UPPER, 0.51), Vector3(0.4, 0.8, 0.6), 0.0, "toilet", false, "prop"],
-	["SinkU3", Vector3(12.64, UPPER, 2.2), Vector3(0.5, 0.85, 0.5), 0.0, "sink", false, "prop"],
-	# U1 break room
-	["BreakTable", Vector3(3.0, UPPER, 2.3), Vector3(1.2, 0.75, 0.8), 0.0, "table", true, "prop"],
-	["BreakLockers", Vector3(0.46, UPPER, 2.6), Vector3(0.5, 1.2, 1.4), 0.0, "locker", true, "trim"],
-	["KitchenCounter", Vector3(5.09, UPPER, 1.2), Vector3(0.6, 0.9, 1.8), 0.0, "counter_service", true, "counter"],
-	["Fridge", Vector3(5.09, UPPER, 2.62), Vector3(0.6, 1.8, 0.7), 0.0, "fridge", false, "trim"],
-	# U2 security office
-	["KeyCabinet", Vector3(10.19, UPPER, 3.4), Vector3(0.4, 1.0, 0.8), 0.0, "cabinet", true, "trim"],
-	["GuardLockers", Vector3(9.0, UPPER, 0.46), Vector3(1.2, 1.8, 0.5), 0.0, "locker", false, "trim"],
-	# U5 admin + appraisal
-	["DeskBookkeeping", Vector3(1.6, UPPER, 9.0), Vector3(1.4, 0.75, 0.7), 0.0, "desk", true, "prop"],
-	["DeskSalesAdmin", Vector3(4.2, UPPER, 9.0), Vector3(1.4, 0.75, 0.7), 0.0, "desk", true, "prop"],
-	["AppraisalBench", Vector3(5.8, UPPER, 11.29), Vector3(1.4, 0.9, 0.6), 0.0, "workbench", true, "counter"],
-	["FileCabinets", Vector3(6.64, UPPER, 7.8), Vector3(0.5, 1.3, 1.2), 0.0, "cabinet", false, "trim"],
-	# U6 manager
-	["ManagerDesk", Vector3(9.5, UPPER, 9.0), Vector3(1.6, 0.75, 0.8), 0.0, "desk", true, "prop"],
-	["Credenza", Vector3(7.36, UPPER, 9.5), Vector3(0.5, 0.8, 1.6), 0.0, "cabinet", true, "counter"],
-	["Bookshelf", Vector3(11.64, UPPER, 9.0), Vector3(0.5, 2.0, 1.2), 0.0, "shelf", true, "prop"],
-	# U7 stock / archive
-	["StockShelfA", Vector3(14.9, UPPER, 8.0), Vector3(3.6, 2.0, 0.5), 0.0, "shelf", true, "prop"],
-	["StockShelfB", Vector3(14.9, UPPER, 10.2), Vector3(3.6, 2.0, 0.5), 0.0, "shelf", true, "prop"],
 	# U8 roof-hatch ladder (fixed, locked in P1)
 	["RoofHatchLadder", Vector3(17.75, UPPER, 2.0), Vector3(0.08, 2.95, 0.5), 0.0, "ladder_fixed", false, "trim"],
-	# Alley (X1)
-	["HVACCondenser1", Vector3(13.0, 0.0, -0.71), Vector3(1.4, 1.0, 0.9), 0.0, "hvac", false, "trim"],
-	["HVACCondenser2", Vector3(14.6, 0.0, -0.71), Vector3(1.4, 1.0, 0.9), 0.0, "hvac", false, "trim"],
-	["Pallets", Vector3(16.6, 0.0, -0.8), Vector3(1.2, 0.3, 1.0), 0.0, "pallet", false, "prop"],
-	# Street (X2)
-	["CarHarlow1", Vector3(-11.0, ROAD_Y, 17.3), Vector3(4.4, 1.45, 1.8), 0.0, "vehicle", false, "vehicle"],
-	["CarHarlow2", Vector3(-5.0, ROAD_Y, 17.3), Vector3(4.4, 1.45, 1.8), 0.0, "vehicle", false, "vehicle"],
-	["CarHarlow3", Vector3(16.0, ROAD_Y, 17.3), Vector3(4.4, 1.45, 1.8), 0.0, "vehicle", false, "vehicle"],
-	["CarHarlowS1", Vector3(2.0, ROAD_Y, 29.1), Vector3(4.4, 1.45, 1.8), 0.0, "vehicle", false, "vehicle"],
-	["CarPell1", Vector3(28.2, ROAD_Y, -3.0), Vector3(1.8, 1.45, 4.4), 0.0, "vehicle", false, "vehicle"],
-	["CarPell2", Vector3(28.2, ROAD_Y, 37.0), Vector3(1.8, 1.45, 4.4), 0.0, "vehicle", false, "vehicle"],
-	["CarPell3", Vector3(28.2, ROAD_Y, 8.0), Vector3(1.8, 1.45, 4.4), 0.0, "vehicle", false, "vehicle"],
-	["BusShelter", Vector3(-4.5, 0.0, 15.4), Vector3(3.5, 2.5, 1.2), 0.0, "bus_shelter", false, "trim"],
-	["TrashBinHarlow", Vector3(9.4, 0.0, 15.8), Vector3(0.5, 1.0, 0.5), 0.0, "bin", false, "trim"],
-	["TrashBinPell", Vector3(20.8, 0.0, 10.8), Vector3(0.5, 1.0, 0.5), 0.0, "bin", false, "trim"],
 ]
 
-## Chairs: [name, bottom-centre, yaw_deg (front -Z faces the table)], 0.45 x 0.85 x 0.45, seat 0.45.
-const CHAIRS: Array = [
-	["ConsultChairW", Vector3(11.0, 0.0, 7.6), -90.0],
-	["ConsultChairE", Vector3(12.6, 0.0, 7.6), 90.0],
-	["BreakChairN", Vector3(3.0, UPPER, 1.5), 180.0],
-	["BreakChairS", Vector3(3.0, UPPER, 3.1), 0.0],
+## Dressing (C1-08, KitPlacer): every room with a RoomVolume.dressing_kit is dressed by the kit.
+## Designer anchors go in first (layout-relevant furniture: cover, sightlines, the surfaces that
+## carry gameplay items, and the landmarks): [room, name, catalog asset, pos, yaw_deg, metas].
+## Floor props: pos = bottom-centre (back against the wall face + 12 mm; in front of the shop
+## glazing, clear of the 0.24 m deep prop window frame). Wall mounts: pos = the
+## centre of the item on the wall face. Ceiling mounts: pos = the ceiling point.
+## Inner wall faces: exterior walls 0.2 m from the wall line, interior walls 0.1 m.
+const ANCHORS: Array = [
+	# G5 sales floor
+	["G5", "SalesCounter", "prop_counter_sales", Vector3(3.5, 0.0, 7.5), 180.0, {}],
+	["G5", "ConsultTable", "prop_consult_table", Vector3(11.8, 0.0, 7.6), 0.0, {}],
+	["G5", "WindowBench", "prop_bench_upholstered", Vector3(5.0, 0.0, 11.5), 0.0, {}],
+	["G5", "WindowDisplayA", "prop_window_display_box", Vector3(2.05, 0.0, 11.48), 0.0, {}],
+	["G5", "WindowDisplayC", "prop_window_display_box", Vector3(8.0, 0.0, 11.48), 0.0, {}],
+	["G5", "ChandelierRing", "prop_chandelier_ring", Vector3(7.0, 3.6, 9.0), 0.0, {}],
+	["G5", "TrackLightWallCases", "prop_track_light", Vector3(1.1, 3.6, 9.5), 90.0, {}],
+	# G6 private salon
+	["G6", "SalonSofa", "prop_sofa", Vector3(15.5, 0.0, 11.3), 0.0, {}],
+	["G6", "SalonRug", "prop_rug_rect", Vector3(15.5, 0.0, 10.0), 0.0, {}],
+	["G6", "SalonCoffeeTable", "prop_coffee_table", Vector3(15.5, 0.0112, 10.2), 0.0, {}],
+	["G6", "SalonVitrine", "prop_vitrine_decor", Vector3(13.347, 0.0, 7.4), -90.0, {}],
+	# G2 workshop (the safe and its reader are gameplay prefabs)
+	["G2", "JewelerBenchA", "prop_jeweler_bench", Vector3(8.5, 0.0, 0.542), 180.0, {}],
+	["G2", "JewelerBenchB", "prop_jeweler_bench", Vector3(9.75, 0.0, 0.542), 180.0, {}],
+	["G2", "PolishingStation", "prop_workbench", Vector3(5.462, 0.0, 2.8), -90.0, {}],
+	# G1 receiving + G7 electrical
+	["G1", "ReceivingShelving", "prop_shelving_boxes", Vector3(0.437, 0.0, 3.0), -90.0, {}],
+	["G1", "MopSink", "prop_mop_sink", Vector3(0.512, 0.0, 4.088), -90.0, {}],
+	["G1", "PackingBench", "prop_packing_bench", Vector3(4.508, 0.0, 2.4), 90.0, {}],
+	["G1", "DeliveryCrates", "prop_crate_wood", Vector3(2.3, 0.0, 3.3), 0.0, {}],
+	# G9 janitor closet under the stair: the inward door swing (hinge at x 15.75) keeps the BODY_HIDE
+	# floor clear; the sink sits in the NW corner just outside the 0.9 m leaf arc.
+	["G9", "MopSink", "prop_mop_sink", Vector3(14.908, 0.0, 3.412), 180.0, {}],
+	["G9", "MopBucket", "prop_mop_bucket", Vector3(15.47, 0.0, 3.292), 180.0, {}],
+	["G9", "LightSwitch", "prop_light_switch", Vector3(14.6, 1.2, 4.0), -90.0, {}],
+	["G7", "ITRack", "prop_it_rack", Vector3(0.55, 0.0, 0.612), 180.0, {}],
+	# U1 break room (kc_breakroom lies on the lockers: they carry it)
+	["U1", "BreakTable", "prop_table_break", Vector3(3.0, UPPER, 2.3), 0.0, {}],
+	["U1", "BreakLockers", "prop_lockers", Vector3(0.472, UPPER, 2.6), -90.0, {"support": true}],
+	["U1", "KitchenCounter", "prop_kitchen_counter", Vector3(5.063, UPPER, 1.42), 90.0, {}],
+	["U1", "Fridge", "prop_fridge", Vector3(5.018, UPPER, 3.0), 90.0, {}],
+	# U2 security office (camera_station prefab on the west wall; kc_security on the credenza)
+	["U2", "KeyCredenza", "prop_credenza", Vector3(10.153, UPPER, 3.4), 90.0, {}],
+	["U2", "KeyCabinet", "prop_key_cabinet", Vector3(10.4, UPPER + 1.45, 3.4), 90.0, {}],
+	["U2", "GuardLockers", "prop_lockers", Vector3(9.0, UPPER, 0.472), 180.0, {}],
+	# U5 admin + appraisal
+	["U5", "DeskBookkeeping", "prop_desk_office", Vector3(1.6, UPPER, 9.0), 0.0, {}],
+	["U5", "DeskSalesAdmin", "prop_desk_office", Vector3(4.2, UPPER, 9.0), 0.0, {}],
+	["U5", "AppraisalBench", "prop_workbench", Vector3(5.8, UPPER, 11.438), 0.0, {}],
+	["U5", "FileCabinets", "prop_file_cabinet", Vector3(6.563, UPPER, 7.8), 90.0, {}],
+	# U6 manager
+	["U6", "ManagerDesk", "prop_desk_exec", Vector3(9.5, UPPER, 9.0), 0.0, {}],
+	["U6", "Credenza", "prop_credenza", Vector3(7.347, UPPER, 9.5), -90.0, {}],
+	["U6", "VisitorChair", "prop_chair_visitor", Vector3(10.15, UPPER, 8.0), 147.0, {"faces_anchor": "ManagerDesk"}],
+	["U6", "Bookshelf", "prop_bookshelf", Vector3(11.713, UPPER, 9.0), 90.0, {}],
+	# U7 stock / archive: two free-standing shelf rows (aisle between them)
+	["U7", "StockShelfA1", "prop_shelving_archive", Vector3(13.69, UPPER, 8.0), 180.0, {}],
+	["U7", "StockShelfA2", "prop_shelving_archive", Vector3(14.9, UPPER, 8.0), 180.0, {}],
+	["U7", "StockShelfA3", "prop_shelving_archive", Vector3(16.11, UPPER, 8.0), 180.0, {}],
+	["U7", "StockShelfB1", "prop_shelving_archive", Vector3(13.69, UPPER, 10.2), 0.0, {}],
+	["U7", "StockShelfB2", "prop_shelving_archive", Vector3(14.9, UPPER, 10.2), 0.0, {}],
+	["U7", "StockShelfB3", "prop_shelving_archive", Vector3(16.11, UPPER, 10.2), 0.0, {}],
+	# X1 alley
+	["X1", "HVACCondenser1", "prop_hvac_condenser", Vector3(13.0, 0.0, -0.437), 0.0, {}],
+	["X1", "HVACCondenser2", "prop_hvac_condenser", Vector3(14.6, 0.0, -0.437), 0.0, {}],
+	["X1", "Pallets", "prop_pallet_loaded", Vector3(16.6, 0.0, -0.612), 0.0, {}],
+	["X1", "BackDoorLamp", "prop_wall_lamp", Vector3(3.5, 2.6, -0.2), 0.0, {}],
+	["X1", "AlleyLampEast", "prop_wall_lamp", Vector3(13.5, 3.2, -0.2), 0.0, {}],
+	["X1", "AlleyLampWest", "prop_wall_lamp", Vector3(-7.0, 3.2, -0.2), 0.0, {}],
+	# X2 Harlow Ave (facade = north side) and Pell St (facade = west side)
+	["X2H", "LampHarlowN1", "prop_street_lamp", Vector3(-10.0, 0.0, 15.2), 180.0, {}],
+	["X2H", "LampHarlowN2", "prop_street_lamp", Vector3(3.0, 0.0, 15.2), 180.0, {}],
+	["X2H", "LampHarlowN3", "prop_street_lamp", Vector3(17.5, 0.0, 15.2), 180.0, {}],
+	["X2H", "LampHarlowS1", "prop_street_lamp", Vector3(-8.0, 0.0, 31.2), 0.0, {}],
+	["X2H", "LampHarlowS2", "prop_street_lamp", Vector3(8.0, 0.0, 31.2), 0.0, {}],
+	["X2H", "LampHarlowS3", "prop_street_lamp", Vector3(16.0, 0.0, 31.2), 0.0, {}],
+	["X2H", "CarHarlow1", "veh_car_sedan_navy", Vector3(-11.0, ROAD_Y, 17.3), 90.0, {}],
+	["X2H", "CarHarlow2", "veh_car_sedan_silver", Vector3(-5.0, ROAD_Y, 17.3), 90.0, {}],
+	["X2H", "CarHarlow3", "veh_car_sedan_wine", Vector3(16.0, ROAD_Y, 17.3), 90.0, {}],
+	["X2H", "CarHarlowS1", "veh_car_sedan_silver", Vector3(2.0, ROAD_Y, 29.1), -90.0, {}],
+	["X2H", "BusShelter", "prop_bus_shelter", Vector3(-4.5, 0.0, 15.2), 180.0, {}],
+	["X2H", "TrashBinHarlow", "prop_bin_street", Vector3(9.4, 0.0, 15.8), 180.0, {}],
+	["X2H", "NeonVossbergSouth", "prop_neon_vossberg", Vector3(15.5, 3.4, 12.2), 180.0, {}],
+	["X2P", "LampPellW1", "prop_street_lamp", Vector3(20.2, 0.0, -3.5), -90.0, {}],
+	["X2P", "LampPellW2", "prop_street_lamp", Vector3(20.2, 0.0, 2.0), -90.0, {}],
+	["X2P", "CarPell1", "veh_car_sedan_wine", Vector3(28.1, ROAD_Y, -3.0), 0.0, {}],
+	["X2P", "CarPell3", "veh_car_sedan_navy", Vector3(28.1, ROAD_Y, 8.0), 180.0, {}],
+	["X2P", "TrashBinPell", "prop_bin_street", Vector3(20.8, 0.0, 10.8), -90.0, {}],
+	["X2P", "NeonVossbergEast", "prop_neon_vossberg", Vector3(18.2, 3.4, 9.0), -90.0, {}],
 ]
 
-## Chandelier display (landmark): round plinth + glass drum, ring chandelier above (Lighting).
-const CHANDELIER: Dictionary = {"pos": Vector3(7.0, 0.0, 9.0), "radius": 1.2, "plinth_h": 0.9, "glass_h": 0.6, "ceiling": 3.6}
-
-## Street lamps: [name, base (x, y, z), arm direction yaw_deg (the head overhangs the road)].
-const STREET_LAMPS: Array = [
-	["LampHarlowN1", Vector3(-10.0, 0.0, 15.2), 180.0],
-	["LampHarlowN2", Vector3(3.0, 0.0, 15.2), 180.0],
-	["LampHarlowN3", Vector3(17.5, 0.0, 15.2), 180.0],
-	["LampHarlowS1", Vector3(-8.0, 0.0, 31.2), 0.0],
-	["LampHarlowS2", Vector3(8.0, 0.0, 31.2), 0.0],
-	["LampHarlowS3", Vector3(16.0, 0.0, 31.2), 0.0],
-	["LampPellW1", Vector3(20.2, 0.0, -3.5), -90.0],
-	["LampPellW2", Vector3(20.2, 0.0, 2.0), -90.0],
-	["LampPellE1", Vector3(30.2, 0.0, -9.0), 90.0],
+## Props outside every kit room (placed directly): [name, asset, pos, yaw_deg].
+const DIRECT_PROPS: Array = [
+	["CarPell2", "veh_car_sedan_silver", Vector3(28.1, ROAD_Y, 37.0), 0.0],
+	["LampPellE1", "prop_street_lamp", Vector3(30.2, 0.0, -9.0), 90.0],
 ]
+
+## Kit rooms that are not a RoomVolume's own box (exterior: the sidewalk along the facade; cars,
+## the far sidewalks and the bus shelter come in as anchors). [kit room id, RoomVolume id, box, yaw_deg of the
+## local frame (wall 0 = the facade), floor y]. Exterior kits only use wall 0.
+const KIT_ROOMS_EXT: Array = [
+	["X1", "X1", [-14.0, 0.0, -6.2, 18.2, 4.0, -0.2], 180.0, 0.0],
+	["X2H", "X2", [-14.0, 0.0, 12.2, 21.2, 4.0, 16.2], 0.0, 0.0],
+	["X2P", "X2", [18.2, 0.0, -8.0, 21.2, 4.0, 12.2], 90.0, 0.0],
+]
+
+## Extra keep-outs per kit room (world boxes): the alley mouth, the G7 corner of G1.
+const KEEP_OUT: Dictionary = {
+	"G1": [[0.0, 0.0, 0.0, 2.1, 3.0, 2.1]],
+	"X2P": [[18.2, -0.5, -6.4, 21.2, 4.0, 0.0]],
+}
+
+## Kit seeds (variety: every room differs).
+const KIT_SEEDS: Dictionary = {
+	"G1": 4101, "G7": 4107, "G2": 4102, "G3": 4103, "G4": 4104, "G9": 4109, "G10": 4110, "G5": 4105, "G6": 4106,
+	"U1": 4201, "U2": 4202, "U3": 4203, "U4": 4204, "U8": 4208, "U5": 4205, "U6": 4206, "U7": 4207,
+	"X1": 4301, "X2H": 4302, "X2P": 4303,
+}
+
+## Kit fixture light overrides per kit room: {room: {kind: {light property: value}}}. The alley wall
+## lamps also have to light the fire escape and the back door wall (readable route at night).
+const LIGHT_TWEAKS: Dictionary = {
+	"X1": {"wall_lamp": {"spot_range": 9.0, "spot_angle": 75.0, "light_energy": 3.0}},
+}
+
+## Ceiling fixtures (kit-placed) that cast shadows: the fixture nearest to each point (<= 8 per view).
+const SHADOW_FIXTURES: Array = [["G5", Vector3(3.0, 3.6, 9.5)], ["G6", Vector3(15.5, 3.2, 9.0)], ["G2", Vector3(8.0, 3.0, 2.5)]]
+
+## Chandelier display (landmark): the round display case visual on a collision drum; the ring
+## chandelier above is an anchor (ANCHORS, G5).
+const CHANDELIER: Dictionary = {"pos": Vector3(7.0, 0.0, 9.0), "radius": 1.2, "height": 1.2, "ceiling": 3.6}
 
 # --- Lighting ------------------------------------------------------------------------------
 
-## Ceiling fixtures with an OmniLight: [name, (x, ceiling_y, z), colour, energy, range].
-## Zones (doc §Audio/lighting): sales 2700 K warm, salon dimmer, BOH 4000 K, workshop 5000 K,
-## receiving dimmer 5000 K, security dim + cool, break room 3500 K, offices 4000 K.
+## Map-built ceiling lights (rooms without a dressing kit): [name, (x, ceiling_y, z), colour, energy, range].
+## Dressed rooms get their fixtures from the kit (2700 K sales/salon downlights, 4000 K BOH panels,
+## 5000 K workshop, fluorescent storage).
 const CEILING_LIGHTS: Array = [
-	["LightG5West", Vector3(3.0, 3.6, 9.5), Color(1.0, 0.78, 0.55), 1.4, 7.0],
-	["LightG5East", Vector3(10.5, 3.6, 9.5), Color(1.0, 0.78, 0.55), 1.4, 7.0],
-	["LightG6", Vector3(15.5, 3.2, 9.0), Color(1.0, 0.74, 0.5), 0.9, 5.5],
-	["LightG4West", Vector3(4.5, 3.0, 5.25), Color(0.93, 0.95, 1.0), 0.7, 5.0],
-	["LightG4East", Vector3(13.5, 3.0, 5.25), Color(0.93, 0.95, 1.0), 0.7, 5.0],
-	["LightG1", Vector3(3.2, 3.0, 2.8), Color(0.9, 0.95, 1.0), 0.5, 4.5],
-	["LightG2", Vector3(8.0, 3.0, 2.5), Color(0.92, 0.96, 1.0), 0.6, 4.5],
-	["LightG3", Vector3(11.75, 3.0, 2.2), Color(0.93, 0.95, 1.0), 0.5, 3.5],
-	["LightG10", Vector3(17.0, 3.0, 2.2), Color(0.93, 0.95, 1.0), 0.5, 3.5],
-	["LightU1", Vector3(2.75, 7.2, 2.2), Color(1.0, 0.86, 0.7), 0.7, 5.0],
-	["LightU2", Vector3(8.0, 7.2, 2.2), Color(0.75, 0.85, 1.0), 0.35, 4.0],
-	["LightU3", Vector3(11.75, 7.2, 2.2), Color(0.93, 0.95, 1.0), 0.5, 3.5],
-	["LightU4West", Vector3(4.5, 7.2, 5.25), Color(0.93, 0.95, 1.0), 0.6, 5.0],
-	["LightU4East", Vector3(13.0, 7.2, 5.25), Color(0.93, 0.95, 1.0), 0.6, 5.0],
-	["LightU5", Vector3(3.5, 7.2, 9.0), Color(0.95, 0.95, 1.0), 0.8, 6.0],
-	["LightU6", Vector3(9.5, 7.2, 9.0), Color(0.95, 0.95, 1.0), 0.7, 5.5],
-	["LightU7", Vector3(15.0, 7.2, 9.0), Color(0.95, 0.95, 1.0), 0.6, 5.5],
-	["LightU8", Vector3(17.0, 7.2, 2.2), Color(0.93, 0.95, 1.0), 0.5, 3.5],
 	["LightStair", Vector3(14.5, 7.6, 2.4), Color(0.93, 0.95, 1.0), 0.8, 7.0],
 ]
 
 ## Wall-mounted lights: [name, pivot on the wall face, yaw_deg (front -Z out of the wall), colour,
-## energy, range, size].
+## energy, range, size]. Shopfront window displays, lit from above the glass.
 const WALL_LIGHTS: Array = [
-	["BackDoorLamp", Vector3(3.5, 2.6, -0.2), 0.0, Color(1.0, 0.85, 0.65), 0.8, 6.0, Vector3(0.3, 0.2, 0.2)],
-	["AlleyLampEast", Vector3(13.5, 3.2, -0.2), 0.0, Color(0.95, 0.95, 1.0), 0.7, 8.0, Vector3(0.3, 0.2, 0.2)],
-	["AlleyLampWest", Vector3(-7.0, 3.2, -0.2), 0.0, Color(0.95, 0.95, 1.0), 0.7, 8.0, Vector3(0.3, 0.2, 0.2)],
 	["WindowBoxLightA", Vector3(2.05, 2.95, 11.8), 0.0, Color(1.0, 0.8, 0.56), 0.9, 3.0, Vector3(2.0, 0.08, 0.12)],
 	["WindowBoxLightC", Vector3(8.0, 2.95, 11.8), 0.0, Color(1.0, 0.8, 0.56), 0.9, 3.0, Vector3(2.0, 0.08, 0.12)],
-	["MonitorWall", Vector3(5.6, 5.85, 2.0), -90.0, Color(0.55, 0.75, 1.0), 0.6, 3.5, Vector3(1.4, 0.6, 0.05)],
-	["TaskLampBenchA", Vector3(8.5, 1.55, 0.2), 180.0, Color(0.92, 0.96, 1.0), 0.7, 2.5, Vector3(0.3, 0.1, 0.18)],
-	["TaskLampBenchB", Vector3(9.75, 1.55, 0.2), 180.0, Color(0.92, 0.96, 1.0), 0.7, 2.5, Vector3(0.3, 0.1, 0.18)],
-	["NeonVossbergSouth", Vector3(15.5, 3.4, 12.2), 180.0, Color(1.0, 0.24, 0.65), 0.9, 4.5, Vector3(2.6, 0.6, 0.1)],
-	["NeonVossbergEast", Vector3(18.2, 3.4, 9.0), -90.0, Color(1.0, 0.24, 0.65), 0.9, 4.5, Vector3(2.6, 0.6, 0.1)],
+	# Alley bulkheads: the fire-escape landing / break-room window, and the upper alley wall.
+	["LandingBulkhead", Vector3(2.25, 6.75, -0.2), 0.0, Color(1.0, 0.85, 0.66), 1.2, 6.0, Vector3(0.3, 0.18, 0.14)],
+	["AlleyBulkheadUpper", Vector3(10.0, 6.75, -0.2), 0.0, Color(0.95, 0.93, 0.88), 1.0, 8.0, Vector3(0.3, 0.18, 0.14)],
 ]
 
 # --- Spawns, patrols, tactical -------------------------------------------------------------
@@ -587,7 +639,7 @@ const REVIEW_CAMERAS: Array = [
 	["UpperCorridor", Vector3(0.6, 5.85, 5.25), Vector3(18.0, 5.6, 5.25), 60.0, "U4 upper corridor and void railing"],
 	["SecurityOffice", Vector3(10.0, 5.85, 4.1), Vector3(6.0, 5.0, 1.5), 75.0,
 		"U2 security office: camera station (P2), key cabinet, alley window"],
-	["BreakRoom", Vector3(5.0, 5.85, 4.1), Vector3(1.5, 5.0, 0.5), 75.0, "U1 break room, fire-escape window, lockers"],
+	["BreakRoom", Vector3(3.4, 5.85, 4.15), Vector3(1.6, 4.9, 0.6), 75.0, "U1 break room, fire-escape window, lockers"],
 	["ManagerOffice", Vector3(11.5, 5.85, 6.6), Vector3(8.0, 4.8, 10.5), 75.0, "U6 manager office (keycard / cash slots)"],
 	["AdminOffice", Vector3(6.5, 5.85, 6.6), Vector3(1.0, 4.8, 10.5), 75.0, "U5 admin and appraisal office"],
 	["StockRoom", Vector3(17.4, 5.85, 6.6), Vector3(13.0, 4.8, 10.5), 75.0, "U7 stock and archive"],

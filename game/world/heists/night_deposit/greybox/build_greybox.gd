@@ -204,6 +204,66 @@ func _build_stair(bld: Node3D) -> void:
 	_ramp(f2, float(x2[0]), float(x2[1]), [
 		[Vector2(z_land, y_land), Vector2(z_top + tr, L.BASE), Vector2(z_land, L.BASE)],
 	])
+	# Handrails on both walls of each flight, following the nosing line from the top nosing to the
+	# bottom one (Flight1: (z_top, 0) -> (z_land, -10 r); Flight2: (z_land, -2) -> (z_top, -2 - 10 r)).
+	# Under `Stair/Handrails`, not the flights, so the flight boxes stay the steps.
+	var hr: Node3D = add(core, node3d("Handrails")) as Node3D
+	var n1: Vector2 = Vector2(z_top, 0.0)
+	var n1b: Vector2 = Vector2(z_land, -float(nr - 1) * r)
+	var n2: Vector2 = Vector2(z_land, y_land)
+	var n2b: Vector2 = Vector2(z_top, y_land - float(nr - 1) * r)
+	_handrail(hr, "Flight1West", xa, 1.0, n1, n1b)
+	_handrail(hr, "Flight1East", xb, -1.0, n1, n1b)
+	_handrail(hr, "Flight2West", float(x2[0]), 1.0, n2, n2b)
+	_handrail(hr, "Flight2East", float(x2[1]), -1.0, n2, n2b)
+
+
+## Wall handrail: a round bar `rail_h` above the nosing line between nosings a and b ((z, y) pairs),
+## `rail_off` out from the wall face at x `x_wall` (`inward` = +1 / -1 towards the flight), three
+## brackets and a return to the wall at each end. Only the bar carries meta kind = handrail (its own
+## tilted transform, so the validator's box is the bar). No collision: it never blocks the stair.
+func _handrail(parent: Node3D, nm: String, x_wall: float, inward: float, a: Vector2, b: Vector2) -> void:
+	var st: Dictionary = L.STAIR
+	var h: float = float(st["rail_h"])
+	var off: float = float(st["rail_off"])
+	var rad: float = float(st["rail_r"])
+	var x: float = x_wall + inward * off
+	var pa: Vector3 = Vector3(x, a.y + h, a.x)
+	var pb: Vector3 = Vector3(x, b.y + h, b.x)
+	var rail: Node3D = add(parent, node3d(nm)) as Node3D
+	var bar: MeshInstance3D = MeshInstance3D.new()
+	bar.name = "Bar"
+	bar.mesh = _rod_mesh(rad, pa.distance_to(pb))
+	var up: Vector3 = (pb - pa).normalized()
+	bar.transform = Transform3D(Basis(Vector3.RIGHT, up, Vector3.RIGHT.cross(up)), (pa + pb) * 0.5)
+	bar.set_meta(&"kind", "handrail")
+	add(rail, bar)
+	for e: Array in [["ReturnA", pa], ["ReturnB", pb]]:
+		var ret: MeshInstance3D = MeshInstance3D.new()
+		ret.name = String(e[0])
+		ret.mesh = _rod_mesh(rad, off)
+		var p: Vector3 = e[1]
+		ret.transform = Transform3D(Basis(Vector3.BACK, deg_to_rad(90.0)), Vector3(x_wall + inward * off * 0.5, p.y, p.z))
+		add(rail, ret)
+	for i: int in range(3):
+		var f: float = 0.2 + 0.3 * float(i)
+		var q: Vector3 = pa.lerp(pb, f)
+		mesh_box(rail, "Bracket%d" % i, Vector3(minf(x_wall, x), q.y - rad - 0.05, q.z - 0.015),
+			Vector3(maxf(x_wall, x), q.y - rad + 0.005, q.z + 0.015), "handrail")
+
+
+func _rod_mesh(radius: float, length: float) -> CylinderMesh:
+	var key: String = "rod|%.3f|%.3f" % [radius, length]
+	if not _box_mesh_cache.has(key):
+		var cm: CylinderMesh = CylinderMesh.new()
+		cm.top_radius = radius
+		cm.bottom_radius = radius
+		cm.height = length
+		cm.radial_segments = 12
+		cm.rings = 1
+		cm.material = lib_mat("handrail")
+		_box_mesh_cache[key] = cm
+	return _box_mesh_cache[key]
 
 
 ## Ramp collision: one StaticBody3D with convex prisms, each a (z, y) polygon extruded over x0..x1.

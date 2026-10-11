@@ -94,6 +94,8 @@ Node names above are **exact** (consumers find them by name). Additional childre
   `HeistMission` API, `EventBus`, `Services`, and node paths **inside their own map**.
 
 * `floor_heights` must be ascending and contain 0.0 (the ground floor); basements are negative (D-040).
+* Optional `floor_names: PackedStringArray` parallel to `floor_heights` (e.g. `L40`, `L41`, `Roof`); empty = tools
+  name floors by height; when set it must have the same size (validated). `HeistMap.floor_name(i)` (D-054, QC-32).
 
 ## 7. Scale & coordinate rules
 

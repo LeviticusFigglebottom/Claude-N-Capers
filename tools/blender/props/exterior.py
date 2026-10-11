@@ -134,17 +134,19 @@ def _car(k: Kit, p: dict) -> None:
         trim.bx((xs0, -hl + 1.05, 0.38), (xs1, -hl + 1.055, 0.95), "plastic_black")
         for yy in (-0.45, 0.55):
             trim.bx((sx * (w / 2 + 0.006) - 0.008, yy, 0.82), (sx * (w / 2 + 0.006) + 0.008, yy + 0.13, 0.845), "chrome")
-        trim.bx((sx * (w / 2 + 0.07) - 0.05, hl - 1.28, 1.0), (sx * (w / 2 + 0.07) + 0.05, hl - 1.18, 1.09), paint)
+        m0, m1 = sorted((sx * (w / 2 - 0.12), sx * (w / 2 + 0.12)))
+        trim.bx((m0, hl - 1.28, 1.0), (m1, hl - 1.18, 1.09), paint)                       # door mirror on its arm
         # wheel arches (dark liners)
         for wy in (-hl + 0.85, hl - 0.95):
             trim.tube([(sx * (w / 2 - 0.01), wy - 0.37 * math.cos(math.pi * i / 10), 0.34 + 0.37 * math.sin(math.pi * i / 10))
                        for i in range(11)], 0.03, "plastic_black", segs=6)
     a = (hl - 1.2, 0.96)
     b = (hl - 1.82, 1.41)
-    glass.profile_x([(a[0] + 0.006, a[1]), (b[0] + 0.006, b[1]), (b[0] - 0.006, b[1]), (a[0] - 0.006, a[1])], -w / 2 + 0.13, w / 2 - 0.13, "glass_tinted")
+    # screens sit proud of the cabin faces (no coplanar faces: levelcheck zfight)
+    glass.profile_x([(a[0] + 0.03, a[1]), (b[0] + 0.03, b[1]), (b[0] + 0.018, b[1]), (a[0] + 0.018, a[1])], -w / 2 + 0.13, w / 2 - 0.13, "glass_tinted")
     c = (-hl + 0.92, 0.96)
     d = (-hl + 1.42, 1.4)
-    glass.profile_x([(c[0] - 0.006, c[1]), (d[0] - 0.006, d[1]), (d[0] + 0.006, d[1]), (c[0] + 0.006, c[1])], -w / 2 + 0.13, w / 2 - 0.13, "glass_tinted")
+    glass.profile_x([(c[0] - 0.03, c[1]), (d[0] - 0.03, d[1]), (d[0] - 0.018, d[1]), (c[0] - 0.018, c[1])], -w / 2 + 0.13, w / 2 - 0.13, "glass_tinted")
     for sx in (-1, 1):
         trim.bx((sx * 0.62 - 0.18, hl - 0.06, 0.64), (sx * 0.62 + 0.18, hl + 0.004, 0.73), "glass_tinted")
         trim.bx((sx * 0.62 - 0.17, hl - 0.07, 0.65), (sx * 0.62 + 0.17, hl - 0.02, 0.72), "chrome")
@@ -237,7 +239,7 @@ def _awning(k: Kit, p: dict) -> None:
         c.profile_x([(proj - 0.012, low), (proj, low), (proj, low - drop + 0.25), (proj - 0.012, low - drop + 0.25)],
                     x0, x0 + w / n, key)
     for sx in (-1, 1):
-        x0, x1 = sorted((sx * w / 2, sx * (w / 2 - 0.012)))
+        x0, x1 = sorted((sx * (w / 2 + 0.004), sx * (w / 2 - 0.008)))
         c.profile_x([(0.0, top), (proj, low), (proj, low - 0.17), (0.0, top - 0.06)], x0, x1, "canvas_walnut")
     trim.bx((-w / 2 - 0.02, 0.0, top - 0.04), (w / 2 + 0.02, 0.05, top + 0.03), "brass")
     trim.rod((-w / 2, proj + 0.004, low - 0.17), (w / 2, proj + 0.004, low - 0.17), 0.008, "brass", segs=8)

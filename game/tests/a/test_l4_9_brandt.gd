@@ -297,3 +297,38 @@ func test_l4_9_destination_choice_and_timeout_fallback() -> void:
 	var ok: bool = await wait_until(func() -> bool: return c.in_position, 3.0)
 	assert_true(ok, "timeout fallback")
 	assert_false(c.reached_destination, "not by arrival")
+
+
+## ui_hud v1.3 (D-049): LocalHudModel captain_present / captain_resistance + captain_changed, assigned
+## and emitted only on change; the server value comes from HeistNetSync.captain_state().
+func test_l4_9_hud_captain_changed() -> void:
+	var tw: DirectorTweak = _tweak()
+	tw.aegis_resist_step_s = 100.0  # one value while in position
+	var c: AegisCaptain = await _summoned(tw)
+	var hud: LocalHudModel = _rt.hud_model
+	var fired: Array[int] = [0]
+	var cb: Callable = func() -> void: fired[0] += 1
+	hud.captain_changed.connect(cb)
+	hud.refresh()
+	assert_true(hud.captain_present, "present on arrival")
+	assert_near(hud.captain_resistance, 0.0, 0.0001, "no resistance before in position")
+	var ok: bool = await wait_until(func() -> bool: return c.in_position, 2.0)
+	assert_true(ok, "in position")
+	hud.refresh()
+	assert_near(hud.captain_resistance, 0.10, 0.001, "server resistance mirrored")
+	var st: Dictionary = _rt.net_sync.captain_state()
+	assert_true(bool(st["present"]), "net state present")
+	assert_near(float(st["resistance"]), 0.10, 0.001, "net state resistance")
+	assert_true(_rt.net_sync.services_state().has(HeistNetSync.SVC_CAPTAIN), "replicated in services")
+	var n: int = fired[0]
+	assert_true(n >= 1, "captain_changed fired")
+	hud.refresh()
+	hud.refresh()
+	assert_eq(fired[0], n, "no signal without a change")
+	c.retreat(&"test")
+	hud.refresh()
+	assert_false(hud.captain_present, "gone after the retreat")
+	assert_near(hud.captain_resistance, 0.0, 0.0001, "resistance 0 when absent")
+	assert_eq(fired[0], n + 1, "one captain_changed for both properties")
+	hud.captain_changed.disconnect(cb)
+	assert_true(hud.snapshot().has(&"captain_resistance"), "in snapshot()")

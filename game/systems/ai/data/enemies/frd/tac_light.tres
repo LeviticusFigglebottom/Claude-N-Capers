@@ -16,8 +16,15 @@ detection_preset = &"police"
 params = {
 "_note": "L1.5 FRD reskin of enemy.tac_light (role id kept, groups.md). Stats = TAC Light (◇).",
 "aim_delay_s": 0.6,
+"armor_body_mult": 1.0,
+"explosive_mult": 1.0,
 "faction": &"faction.frd",
 "fire_interval_s": 0.6,
+"frontal_armor": 1.0,
+"frontal_armor_arc_deg": 0.0,
+"plate_health": [],
+"shield": false,
+"shield_pierce_mult": 1.0,
 "visual_variant": &"frd"
 }
 voice = &"police_frd"

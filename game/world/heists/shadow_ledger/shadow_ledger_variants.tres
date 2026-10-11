@@ -1,0 +1,158 @@
+[gd_resource type="Resource" script_class="HeistVariantTable" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_variant_table.gd" id="1_v1m8c"]
+
+[resource]
+script = ExtResource("1_v1m8c")
+rules = Array[Dictionary]([{
+"group": &"late_partner",
+"pick": Vector2i(1, 1)
+}, {
+"force_if": [{
+"if": {
+&"late_partner": [&"moor_late"]
+},
+"then": [&"lap_moor"]
+}],
+"group": &"laptop",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"server_room",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"keycard",
+"pick": Vector2i(2, 2)
+}, {
+"group": &"code_note",
+"pick": Vector2i(1, 1),
+"slot_requires": {
+&"code_contractor": {
+&"server_room": [&"srv_contractor"]
+}
+}
+}, {
+"difficulty_add": Array[int]([0, 0, 1, 1, 1, 1]),
+"group": &"guard_post",
+"pick": Vector2i(1, 1)
+}, {
+"difficulty_add": Array[int]([0, 1, 1, 1, 2, 2]),
+"group": &"guard_extra",
+"pick": Vector2i(0, 0),
+"weights_by_difficulty": {
+3: {
+&"extra_none": 0.0
+},
+4: {
+&"extra_none": 0.0
+},
+5: {
+&"extra_none": 0.0
+}
+}
+}, {
+"group": &"security_room_staffed",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"camera",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"laser_pattern",
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+3: {
+&"lz_static": 0.2,
+&"lz_sweep": 0.4,
+&"lz_timed": 0.4
+},
+4: {
+&"lz_static": 0.2,
+&"lz_sweep": 0.4,
+&"lz_timed": 0.4
+},
+5: {
+&"lz_static": 0.2,
+&"lz_sweep": 0.4,
+&"lz_timed": 0.4
+}
+}
+}, {
+"group": &"vent_open",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"gondola",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"escape",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"cleaners",
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+2: {
+&"cleaners_1": 0.2,
+&"cleaners_2": 0.6,
+&"cleaners_3": 0.2
+},
+3: {
+&"cleaners_1": 0.0,
+&"cleaners_2": 0.5,
+&"cleaners_3": 0.5
+},
+4: {
+&"cleaners_1": 0.0,
+&"cleaners_2": 0.5,
+&"cleaners_3": 0.5
+},
+5: {
+&"cleaners_1": 0.0,
+&"cleaners_2": 0.5,
+&"cleaners_3": 0.5
+}
+}
+}, {
+"group": &"kessler",
+"pick": Vector2i(1, 1)
+}])
+rare_events = Array[Dictionary]([{
+"chance": 0.06,
+"effects": {
+"extra_books": 1
+},
+"good": true,
+"id": &"ledger_printout"
+}, {
+"chance": 0.03,
+"effects": {
+"requires_slot": &"srv_contractor"
+},
+"good": true,
+"id": &"cage_left_open"
+}, {
+"chance": 0.05,
+"effects": {
+"force_active": {
+"group": &"kessler",
+"slot": &"kessler_in"
+}
+},
+"good": false,
+"id": &"kessler_sleepover"
+}, {
+"chance": 0.1,
+"effects": {
+"time_lock_add_s": 60.0
+},
+"good": false,
+"id": &"timelock_extended",
+"min_difficulty": 3
+}])
+scalars = Array[Dictionary]([{
+"id": &"time_lock_s",
+"values": [90.0, 120.0],
+"weights": PackedFloat32Array(0.7, 0.3),
+"weights_by_difficulty": {
+3: PackedFloat32Array(0.3, 0.7),
+4: PackedFloat32Array(0.3, 0.7),
+5: PackedFloat32Array(0.3, 0.7)
+}
+}])

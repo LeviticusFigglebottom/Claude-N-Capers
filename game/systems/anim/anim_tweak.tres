@@ -7,8 +7,10 @@ script = ExtResource("1")
 clip_speeds = {
 &"carry_bag_walk": 2.4,
 &"crouch_walk": 1.5,
+&"dozer_walk": 1.6,
 &"flee": 4.0,
 &"run": 3.5,
+&"shield_walk": 1.6,
 &"sprint": 5.75,
 &"strafe_l": 1.2,
 &"strafe_r": 1.2,

@@ -1,10 +1,11 @@
 ## A3-07 co-op loopback (docs/contracts/net.md): a real host (this process, ENet server on
 ## localhost) and a real client (a second headless Godot process running
-## coop_loopback_client.tscn, which joins and builds its replica through HeistLauncher.auto_join).
+## coop_loopback_client.tscn, which joins and builds its replica through `await HeistLauncher.launch_client()`).
 ## Asserts host/client parity on the dev_sandbox: variants, map ids, NPC and crew net ids; a client
 ## crew intent moves its crew on the server; a client interaction completes on the server while the
 ## client's LocalHudModel shows its progress; the alarm (LOUD on both), a server door, a known code and a
-## bag spawn + secure reach the client.
+## bag spawn + secure reach the client; Commander Brandt's presence/resistance reaches the client's
+## LocalHudModel (ui_hud v1.3).
 ##
 ## Why two processes and not two SceneMultiplayer branches in one: every gameplay system guards with
 ## `Net.is_authority()` (the root multiplayer of the Net autoload, ~150 call sites), and EventBus,
@@ -77,11 +78,13 @@ func test_host_client_parity() -> void:
 		await _check_interaction(slot)
 		await _check_alarm()
 		await _check_door_code_bag()
+		await _check_captain()
 	assert_true(Time.get_ticks_msec() <= _deadline_ms, "finished within the %.0f s hard timeout" % HARD_TIMEOUT_S)
 
 
 func _check_bring_up(snap: Dictionary) -> void:
 	assert_true(bool(snap["replica"]), "client runtime is a replica")
+	assert_true(bool(snap.get("launch_client", false)), "await HeistLauncher.launch_client() returned the replica")
 	assert_eq(int(snap["seed"]), SEED, "same run seed")
 	assert_eq(snap["variants"], _rt.variants, "same resolved variants")
 	assert_eq(snap["active_slots"], PROBE.active_variant_slots(_rt), "same active variant slots in the map")
@@ -192,6 +195,45 @@ func _check_alarm() -> void:
 	var snap: Dictionary = await _snapshot()
 	assert_eq(int(snap["phase"]), int(Enums.HeistPhase.LOUD), "client is LOUD")
 	assert_true(bool(snap["went_loud"]) and bool(snap["stealth_alarm"]), "client saw the alarm")
+
+
+## ui_hud v1.3: the host's captain state is replicated (HeistNetSync services) to the client HUD. The
+## AegisCaptain state is driven directly (its tick paused): spawn validity is not under test here.
+func _check_captain() -> void:
+	var d: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
+	assert_true(d != null and d.captain != null, "host has the AegisCaptain")
+	if d == null or d.captain == null:
+		return
+	var c: AegisCaptain = d.captain
+	c.set_physics_process(false)
+	c.active = true
+	c.in_position = true
+	c.resistance = 0.35
+	var snap: Dictionary = {}
+	var t_end: int = Time.get_ticks_msec() + int(_budget(5.0) * 1000.0)
+	while Time.get_ticks_msec() < t_end:
+		snap = await _snapshot()
+		if bool(snap.get("hud_captain_present", false)) \
+				and absf(float(snap.get("hud_captain_resistance", -1.0)) - 0.35) < 0.001:
+			break
+		await wait_seconds(0.2)
+	var cs: Dictionary = snap.get("captain", {}) as Dictionary
+	assert_true(bool(cs.get("present", false)), "client net state: Brandt present (%s)" % cs)
+	assert_near(float(cs.get("resistance", -1.0)), 0.35, 0.001, "client captain resistance = host value")
+	assert_true(bool(snap.get("hud_captain_present", false)), "client HUD captain_present")
+	assert_near(float(snap.get("hud_captain_resistance", -1.0)), 0.35, 0.001, "client HUD captain_resistance")
+	c.active = false
+	c.in_position = false
+	c.resistance = 0.0
+	t_end = Time.get_ticks_msec() + int(_budget(5.0) * 1000.0)
+	while Time.get_ticks_msec() < t_end:
+		snap = await _snapshot()
+		if not bool(snap.get("hud_captain_present", true)):
+			break
+		await wait_seconds(0.2)
+	assert_false(bool(snap.get("hud_captain_present", true)), "client HUD: Brandt gone")
+	assert_near(float(snap.get("hud_captain_resistance", -1.0)), 0.0, 0.0001, "client HUD resistance 0")
+	c.set_physics_process(true)
 
 
 # --- Helpers -------------------------------------------------------------------------------------

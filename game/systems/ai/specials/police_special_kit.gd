@@ -7,6 +7,7 @@
 ## - Shield formation (L4.5 `shield_anchor`, dynamic anchor API): `spot_behind_bulwark(npc)` is the
 ##   position behind the nearest allied alive Bulwark within HeavySpecialTweak.formation_join_m
 ##   (Vector3.INF when none). Map-placed SHIELD_ANCHOR TacticalPoints are where Bulwarks stand.
+## - heavy_move_speed: walk-while-advancing speed of Bulwarks / Wreckers (PD2, lead ruling).
 class_name PoliceSpecialKit
 extends RefCounted
 
@@ -30,6 +31,19 @@ static func cue(npc: NpcBase, cue_id: StringName, pos: Vector3 = Vector3.INF) ->
 	var p: Vector3 = npc.global_position if pos == Vector3.INF else pos
 	EventBus.audio_cue_requested.emit(cue_id, p, npc.net_id)
 	Net.replicate_event(&"audio_cue_requested", [cue_id, p, npc.net_id])
+
+
+## Lead ruling (PD2): heavy specials (Bulwark, Wrecker) walk while advancing. Motor speed for a
+## PoliceBrain move in `move_mode`: EnemyDef.move_speed (`run_speed`) for HeavySpecialTweak.heavy_run_modes,
+## else EnemyDef.params.advance_speed (fallback heavy_advance_speed_m_s), never above `run_speed`.
+static func heavy_move_speed(npc: NpcBase, move_mode: StringName, run_speed: float) -> float:
+	var tw: HeavySpecialTweak = HeavySpecialTweak.data()
+	if tw.heavy_run_modes.has(move_mode):
+		return run_speed
+	var adv: float = tw.heavy_advance_speed_m_s
+	if npc != null and npc.enemy_def != null and npc.enemy_def.params.has("advance_speed"):
+		adv = float(npc.enemy_def.params["advance_speed"])
+	return minf(adv, run_speed) if adv > 0.0 else run_speed
 
 
 ## DifficultyDef.special_limits key for `enemy_id` (enemy.wrecker_g -> enemy.wrecker).

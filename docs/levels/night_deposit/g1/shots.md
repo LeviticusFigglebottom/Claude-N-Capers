@@ -18,7 +18,7 @@ Rendered by `tools/levelcheck/render_shots.sh` at 1920x1080. Contact sheet: `con
 | 12 | StaffCorridor | G7 staff corridor: the 26 m sightline | [staff_corridor.jpg](staff_corridor.jpg) | 64 |
 | 13 | SecurityRoom | G3 security room: camera station against the west wall | [security_room.jpg](security_room.jpg) | 62 |
 | 14 | SallyPort | G1 sally port: roller + personnel door, cash lift | [sally_port.jpg](sally_port.jpg) | 60 |
-| 15 | StairCore | G2 U-stair from the corridor (railing over flight 2) | [stair_core.jpg](stair_core.jpg) | 59 |
+| 15 | StairCore | G2 U-stair from the corridor (railing over flight 2) | [stair_core.jpg](stair_core.jpg) | 61 |
 | 16 | BasementCorridor | B5 basement spine and the vault gate | [basement_corridor.jpg](basement_corridor.jpg) | 59 |
 | 17 | Antechamber | B8 antechamber: laser plane, time-lock panel, vault door | [antechamber.jpg](antechamber.jpg) | 73 |
 | 18 | VaultInterior | B9 vault: cash cage, Co-op pallet, deposit box walls | [vault_interior.jpg](vault_interior.jpg) | 61 |
