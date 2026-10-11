@@ -17,18 +17,20 @@
 ## Setup shortcuts (outside the mechanic under test, each named where used): the director's timings are
 ## compressed with the launch option `director_tweak` (test_01, test_08, test_10) or emptied (special
 ## tests: no other police, so a counterplay is not decided by stray units); NPCs not under test are
-## despawned with isolate_npc(); crew damage immunity (`defense.damage_taken_mult` 0) and no dodge
-## (`defense.dodge_add` -1) are modifier sources where crew damage is not the subject; specials are
-## placed with SpecialSpawner / HeistRuntime.spawn_npc (the director's own spawn path); custody comes
-## from a lethal hit with no downs left (L2.6) instead of three full down/revive cycles.
+## despawned with isolate_npc() (special tests) or, for the Co-op's cartel gunmen (GUARD spawns, awake in
+## COMBAT from the load; not the subject of test_01, test_09 or test_10), with _despawn_cartel(); crew
+## damage immunity (`defense.damage_taken_mult` 0) and no dodge (`defense.dodge_add` -1) are modifier
+## sources where crew damage is not the subject; specials are placed with SpecialSpawner /
+## HeistRuntime.spawn_npc (the director's own spawn path), and so is the night-shift hostage test_09
+## needs beyond the rolled `night_shift`; custody comes from a lethal hit with no downs left (L2.6)
+## instead of three full down/revive cycles.
 ## The bots fight with real CrewIntent fire (hitscan claims validated by the server, CombatSystem).
 extends TestCase
 
-## P3 map. Glasshouse until Dockside Burn (B5-04 + ENV C) lands; switch this constant then.
-const HEIST: StringName = &"glasshouse"
-## Seed 3007 resolves salon = salon_open, escape = esc_pell. With salon_locked (e.g. seed 3001) police
-## spawned at the salon / fire-exit ENTRY points path through the locked SalonBackDoor and pile up there
-## for the whole assault (navmesh passes locked doorways, no police breach yet: reported to ENV A).
+## P3 map: Dockside Burn, the loud-only P3 heist (docs/design/heists/dockside_burn.md, D-064; D-070).
+const HEIST: StringName = &"dockside_burn"
+## Seed 3007 resolves guard_post = hall / platform / yard_e / yard_w (8 cartel gunmen), east_gangway =
+## gangway_up (no Pier 10 police spawn), escape = esc_van_gate, night_shift = shift_1 (one worker).
 const SEED: int = 3007
 ## Loud-gate difficulty: FRD faction, every special in the roster, Brandt eligible (captain_min_difficulty).
 const DIFF: Enums.Difficulty = Enums.Difficulty.HAZARDOUS
@@ -37,6 +39,10 @@ const TIME_SCALE: float = 2.0
 const WAVE_TIME_SCALE: float = 3.0
 const RISE_FRAMES: int = 3
 const ARENA_DIST_M: float = 12.0
+## test_01's hold: Ferro Street in front of the yard gate (dockside_burn.md Site: the gate is x 30-38 on
+## the z -34 fence, the street z -52..-40), the open street the crew arrives on; police come down it
+## from the closures at its ends.
+const WAVE_HOLD: Vector3 = Vector3(31.5, 0.0, -45.0)
 
 var _rt: HeistRuntime = null
 var _events: Array[Array] = []
@@ -45,6 +51,9 @@ var _t0: int = 0
 ## Most open navmesh point of the map (deterministic for HEIST + SEED), computed once per file.
 var _arena: Vector3 = Vector3.INF
 var _arena_dirs: Array[Vector3] = []
+## test_04: the most open navmesh point with no SHIELD_ANCHOR in a Bulwark's reach, computed once.
+var _standoff: Vector3 = Vector3.INF
+var _standoff_dirs: Array[Vector3] = []
 
 
 func before_each() -> void:
@@ -70,12 +79,15 @@ func after_each() -> void:
 # --- 01 Director --------------------------------------------------------------------------------------
 
 ## L1.1-L1.5, L4.11: three compressed waves on DIFF with the full default spawn groups. The crew holds
-## the open street; the bot (slot 0, sniper rifle) fights next to its AI crew, a lasing Longshot first.
+## the open street (WAVE_HOLD, Ferro Street; the cartel gunmen despawned); the bot (slot 0, sniper
+## rifle) fights next to its AI crew, a lasing Longshot first.
 ## Checks: stage curve 50/75/100% drives each wave's SUSTAIN length, drama rises under fire, specials
-## spawn in assaults AND between waves (CONTROL, wave >= 2), alive specials never exceed
-## DifficultyDef.special_limits (per limit key) nor alive police the enemy cap, the faction matches the
-## difficulty, and the crew survives: the heist still runs, the human bot never reaches custody and at
-## least one crew member is on its feet at every tick (AI teammates may be down / in custody).
+## spawn in assaults AND between waves (CONTROL, wave >= 2), no unit spawns at a `breach_only` ENTRY
+## point (L1.4, D-064 QC-42: building entries are breach targets, never spawns), alive specials never
+## exceed DifficultyDef.special_limits (per limit key) nor alive police the enemy cap, the faction
+## matches the difficulty, and the crew survives: the heist still runs, the human bot never reaches
+## custody and at least one crew member is on its feet at every tick (AI teammates may be down / in
+## custody).
 func test_01_scripted_waves_escalation_and_caps() -> void:
 	var tw: DirectorTweak = _wave_tweak()
 	if not await _launch(DIFF, {"director_tweak": tw, "captain": false, "loadouts": {0: _sniper_loadout()}}):
@@ -89,17 +101,21 @@ func test_01_scripted_waves_escalation_and_caps() -> void:
 	var on_phase: Callable = func(p: int, w: int) -> void:
 		if p == Enums.AssaultPhase.SUSTAIN:
 			sustains[w] = d.phase_time_left
-	var on_unit: Callable = func(npc: NpcBase, _point: Node3D) -> void:
+	var on_unit: Callable = func(npc: NpcBase, point: Node3D) -> void:
 		var def: EnemyDef = npc.enemy_def
+		var breach: bool = point != null and point.get(&"tags") is Array and (point.get(&"tags") as Array).has(&"breach_only")
 		spawned.append([def.id if def != null else &"", int(d.assault_phase), d.wave_index,
-			def != null and def.is_special, def.resource_path if def != null else ""])
+			def != null and def.is_special, def.resource_path if def != null else "", point.name if breach else &""])
 	d.phase_changed.connect(on_phase)
 	d.unit_spawned.connect(on_unit)
 	_conns.append([d.phase_changed, on_phase])
 	_conns.append([d.unit_spawned, on_unit])
-	# The crew holds the open street (the arena): police come at it from every side.
-	var a: Vector3 = _arena_point()
-	var fwd: Vector3 = _arena_dirs[0]
+	# The crew holds the open street (WAVE_HOLD), facing along it.
+	_despawn_cartel()
+	var a: Vector3 = _near(WAVE_HOLD, WAVE_HOLD)
+	var dirs: Array[Vector3] = _clear_dirs(a, ARENA_DIST_M)
+	assert_false(dirs.is_empty(), "WAVE_HOLD %s is open along the street" % WAVE_HOLD)
+	var fwd: Vector3 = dirs[0] if not dirs.is_empty() else Vector3.RIGHT
 	_place(0, a, a + fwd)
 	for s: int in [1, 2, 3]:
 		_rt.teleport_crew(s, BotUtil.facing(_near(a - fwd * 1.5 + _side(fwd) * float(s - 2) * 1.5, a), a + fwd))
@@ -136,7 +152,10 @@ func test_01_scripted_waves_escalation_and_caps() -> void:
 	var in_assault: int = 0
 	var between: int = 0
 	var faction_units: int = 0
+	var at_breach: Array[StringName] = []
 	for s: Array in spawned:
+		if StringName(s[5]) != &"" and not at_breach.has(StringName(s[5])):
+			at_breach.append(StringName(s[5]))
 		if bool(s[3]):
 			var p: int = int(s[1])
 			in_assault += 1 if p == Enums.AssaultPhase.BUILD or p == Enums.AssaultPhase.SUSTAIN else 0
@@ -146,6 +165,7 @@ func test_01_scripted_waves_escalation_and_caps() -> void:
 			faction_units += 1
 	assert_true(in_assault > 0, "specials spawned during assaults (%d)" % in_assault)
 	assert_true(between > 0, "specials spawned between waves (CONTROL, wave >= 2: %d)" % between)
+	assert_eq(at_breach, [] as Array[StringName], "L1.4: no unit spawned at a breach_only ENTRY point (QC-42)")
 	assert_eq(stats["over"], [], "alive specials within DifficultyDef.special_limits")
 	assert_eq(int(stats["cap_over"]), 0, "alive police never above the enemy cap (%d)" % d.enemy_cap())
 	# L1.5 faction.
@@ -157,9 +177,9 @@ func test_01_scripted_waves_escalation_and_caps() -> void:
 	assert_true(int(stats["min_standing"]) >= 1, "at least one crew member always on its feet")
 	print("[P3] waves: %d units (%d specials in assaults, %d between waves), peak specials %s, max alive %d, " % [
 		spawned.size(), in_assault, between, stats["peak"], stats["alive_max"]]
-		+ "max drama %.2f, downs %d, custody %d, tased %d, kicked %d, kills %d, sustain %s" % [stats["drama"],
-		_of(&"crew_downed").size(), _of(&"crew_custody").size(), _of(&"crew_tased").size(),
-		_of(&"crew_cloaker_downed").size(), _kills(), sustains])
+		+ "max drama %.2f, downs %d, custody %d, tased %d, kicked %d, kills %d, min standing %d, sustain %s" % [
+		stats["drama"], _of(&"crew_downed").size(), _of(&"crew_custody").size(), _of(&"crew_tased").size(),
+		_of(&"crew_cloaker_downed").size(), _kills(), stats["min_standing"], sustains])
 
 
 # --- 02 Phantom ----------------------------------------------------------------------------------------
@@ -264,13 +284,15 @@ func test_03_stinger_tase_broken_by_kill() -> void:
 ## L4.5 + L3.4: the Bulwark fixates on the nearest crew member and faces it. Frontal non-piercing fire
 ## (pistol) is blocked (amount 0, blocked); a flank shot from the teammate hits for full damage; a
 ## shield-piercing sniper round passes at x0.25 and its weight staggers the Bulwark (guard down).
+## The crew stands where no SHIELD_ANCHOR is in the Bulwark's reach (_standoff_point), so it holds its
+## standoff band in the open instead of claiming a doorway anchor (BulwarkBrain._find_cover).
 func test_04_bulwark_shield_pierce_flank_stagger() -> void:
 	if not await _launch(DIFF, _special_opts({0: _sniper_loadout()})):
 		return
 	await _loud_cleared()
 	_immune([0, 1])
-	var a: Vector3 = _arena_point()
-	var fwd: Vector3 = _arena_dirs[0]
+	var a: Vector3 = _standoff_point()
+	var fwd: Vector3 = _standoff_dirs[0]
 	_place(0, a, a + fwd)
 	_place(1, _near(a - fwd * 4.0, a), a + fwd)
 	await _equip(0, Enums.WeaponSlot.SECONDARY)
@@ -289,7 +311,9 @@ func test_04_bulwark_shield_pierce_flank_stagger() -> void:
 	var set_up: bool = await wait_until(func() -> bool:
 		return b.fixated == _crew(0) and bw.velocity.length() < 0.2 and _flat(bw.global_position - a) < 9.0, 15.0)
 	Engine.time_scale = 1.0
-	assert_true(set_up, "fixates on slot 0 and holds its standoff (mode %s)" % b.mode)
+	assert_true(set_up, "fixates on slot 0 and holds its standoff near %s (mode %s, %.1f m)" % [
+		a, b.mode, _flat(bw.global_position - a)])
+	print("[P3] bulwark standoff: crew at %s, Bulwark holds %.1f m out (mode %s)" % [a, _flat(bw.global_position - a), b.mode])
 	# 1. Frontal pistol fire: blocked.
 	var hp0: float = bw.health
 	var n0: int = _hits_on(bw).size()
@@ -555,19 +579,28 @@ func test_08_brandt_aegis_lock_resist_retreat() -> void:
 # --- 09 Custody / trade --------------------------------------------------------------------------------
 
 ## L2.9 / L2.10 / L6.3 on a trade-only difficulty: the bot shouts down and cable-ties two civilians
-## (hostages). An AI teammate goes into custody; after the negotiation the first hostage is highlighted
-## and the human trades it by interaction (crew_traded). Then the human itself goes into custody: with no
-## free human and a free AI, the trade happens automatically (solo with AI) and the human is back.
+## (hostages: the night shift). SEED rolls one worker (night_shift 1-3 is a variant), so a second is
+## spawned next to it with HeistRuntime.spawn_npc and the first one's spawn info. An AI teammate goes
+## into custody; after the negotiation the first hostage is highlighted and the human trades it by
+## interaction (crew_traded). Then the human itself goes into custody: with no free human and a free AI,
+## the trade happens automatically (solo with AI) and the human is back.
 func test_09_custody_and_hostage_trades() -> void:
 	if not await _launch(DIFF, {"director_tweak": _quiet_tweak(), "captain": false}):
 		return
+	_despawn_cartel()
+	var civs: Array[Node] = _rt.npcs(&"civilian")
+	assert_false(civs.is_empty(), "%s has a night shift" % HEIST)
+	if not civs.is_empty():
+		var w0: NpcBase = civs[0] as NpcBase
+		for k: int in range(civs.size(), 2):
+			var at: Vector3 = _near(w0.global_position + w0.global_basis.x * 1.5 * float(k), w0.global_position)
+			_rt.spawn_npc(&"civilian", Transform3D(w0.global_basis, at), w0.spawn_info.duplicate())
+	await wait_physics_frames(2)
 	await _go_loud()
-	for g: Node in _rt.npcs(&"guard"):
-		(g as NpcBase).die({}, 0)
 	Engine.time_scale = TIME_SCALE
 	var cs: CustodySystem = CustodySystem.of(_rt)
 	assert_true(cs != null, "custody service")
-	var civs: Array[Node] = _rt.npcs(&"civilian")
+	civs = _rt.npcs(&"civilian")
 	assert_true(civs.size() >= 2, "two civilians to take hostage (%d)" % civs.size())
 	if cs == null or civs.size() < 2:
 		return
@@ -624,6 +657,7 @@ func test_10_ai_orders_during_assault() -> void:
 	tw.assault_groups = (load(DIRECTOR_TWEAK) as DirectorTweak).assault_groups
 	if not await _launch(DIFF, {"director_tweak": tw, "captain": false}):
 		return
+	_despawn_cartel()
 	await _go_loud()
 	_immune([0, 1, 3])
 	var d: AssaultDirector = _director()
@@ -760,6 +794,19 @@ func _loud_cleared() -> void:
 	await _go_loud()
 	_rt.isolate_npc(null)
 	await wait_physics_frames(2)
+
+
+## The Co-op's cartel gunmen (GUARD spawns tagged `cartel`; role &"guard" while they are ordinary guards,
+## QC-36; matched by role, spawn tag or an enemy.cartel* EnemyDef) leave the map: queue_free while still
+## in the tree (isolate_npc's remove_child leaves the crew AI aiming at an out-of-tree node until the
+## free: crew_ai_brain.gd _aim_point errors).
+func _despawn_cartel() -> void:
+	for n: Node in _rt.npcs():
+		var npc: NpcBase = n as NpcBase
+		var tags: Variant = npc.spawn_info.get("tags", [])
+		if npc.role == &"guard" or npc.role == &"cartel" or (tags is Array and (tags as Array).has(&"cartel")) \
+				or (npc.enemy_def != null and String(npc.enemy_def.id).begins_with("enemy.cartel")):
+			npc.queue_free()
 
 
 func _immune(slots: Array[int]) -> void:
@@ -901,22 +948,78 @@ func _clear_dirs(p: Vector3, dist: float) -> Array[Vector3]:
 
 ## The most open navmesh point within 48 m of the crew spawn (its clear directions in _arena_dirs).
 func _arena_point() -> Vector3:
-	if _arena != Vector3.INF:
-		return _arena
+	if _arena == Vector3.INF:
+		var r: Array = _most_open(func(_p: Vector3) -> bool: return true)
+		_arena = r[0]
+		_arena_dirs.assign(r[1])
+		assert_true(_arena_dirs.size() >= 4, "an open arena on %s (%d clear directions)" % [HEIST, _arena_dirs.size()])
+		print("[P3] arena %s (%d clear directions)" % [_arena, _arena_dirs.size()])
+	return _arena
+
+
+## test_04: the most open navmesh point (as _arena_point) farther than the Bulwark's anchor reach
+## (HeavySpecialTweak.bulwark_anchor_max_from_target_m, + 2 m) from every SHIELD_ANCHOR point; only
+## directions whose opposite is clear too (Bulwark ahead, teammate behind). Directions in _standoff_dirs.
+func _standoff_point() -> Vector3:
+	if _standoff == Vector3.INF:
+		var reach: float = HeavySpecialTweak.data().bulwark_anchor_max_from_target_m + 2.0
+		var anchors: Array[Node] = _rt.map.get_slots(BulwarkBrain.ANCHOR_GROUP)
+		var r: Array = _most_open(func(p: Vector3) -> bool:
+			for n: Node in anchors:
+				if _flat((n as Node3D).global_position - p) < reach:
+					return false
+			return true, true)
+		_standoff = r[0]
+		_standoff_dirs.assign(r[1])
+		assert_false(_standoff_dirs.is_empty(), "a standoff spot on %s beyond %.0f m of every shield anchor" % [HEIST, reach])
+		if _standoff_dirs.is_empty():
+			_standoff_dirs.append(Vector3.FORWARD)
+	return _standoff
+
+
+## [point, clear directions] of the navmesh point within 48 m of the crew spawn (4 m grid) that passes
+## `accept`, is in the crew's space (_crew_reachable) and has the most _clear_dirs (with `both_ways`,
+## only those whose opposite is clear too).
+func _most_open(accept: Callable, both_ways: bool = false) -> Array:
 	var origin: Vector3 = (_rt.map.get_slots(G.PLAYER_SPAWN)[0] as Node3D).global_position
-	var best: int = -1
+	var locked: Array[Door] = []
+	for n: Node in get_tree().get_nodes_in_group(Door.GROUP):
+		if n is Door and _rt.is_ancestor_of(n) and (n as Door).locked and not (n as Door).is_open:
+			locked.append(n as Door)
+	var best_p: Vector3 = origin
+	var best: Array[Vector3] = []
 	for x: int in range(-48, 49, 4):
 		for z: int in range(-48, 49, 4):
 			var p: Variant = BotUtil.nav_point_near(_crew(0), origin + Vector3(x, 0.0, z), 0.8)
-			if p == null:
+			if p == null or not accept.call(p as Vector3):
 				continue
 			var dirs: Array[Vector3] = _clear_dirs(p as Vector3, ARENA_DIST_M)
-			if dirs.size() > best:
-				best = dirs.size()
-				_arena = p as Vector3
-				_arena_dirs = dirs
-	assert_true(best >= 4, "an open arena on %s (%d clear directions)" % [HEIST, best])
-	return _arena
+			if both_ways:
+				var kept: Array[Vector3] = []
+				for d: Vector3 in dirs:
+					if dirs.any(func(e: Vector3) -> bool: return e.dot(d) < -0.99):
+						kept.append(d)
+				dirs = kept
+			if dirs.size() > best.size() and _crew_reachable(origin, p as Vector3, locked):
+				best = dirs
+				best_p = p as Vector3
+	return [best_p, best]
+
+
+## True when the navmesh path from `from` to `to` passes none of the `locked` doors. The navmesh runs
+## through doorways, so a closure's barred police gate does not cut it: this keeps the search out of
+## the police spawn pockets beyond the closures (dockside_burn.md Play-space closure).
+func _crew_reachable(from: Vector3, to: Vector3, locked: Array[Door]) -> bool:
+	var path: PackedVector3Array = NavigationServer3D.map_get_path(_crew(0).get_world_3d().navigation_map, from, to, true)
+	if path.is_empty() or _flat(path[path.size() - 1] - to) > 0.5:
+		return false
+	for door: Door in locked:
+		var at: Vector3 = door.global_position
+		for k: int in range(1, path.size()):
+			var q: Vector3 = Geometry3D.get_closest_point_to_segment(at, path[k - 1], path[k])
+			if _flat(q - at) < door.effective_width() * 0.5 + 0.5 and absf(q.y - at.y) < 2.0:
+				return false
+	return true
 
 
 ## A navmesh point `offset` away from `npc` (+/- 60 deg, distance +- `slack`) with a clear line to it.
