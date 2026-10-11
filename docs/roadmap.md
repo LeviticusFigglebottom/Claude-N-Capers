@@ -58,6 +58,8 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | B6-04 | Drop-in + kick UI: host join-request dialog (accept/deny, PD2 drop-in), joining player's loadout pick + "joining" progress, host kick menu; on mocks until ENV A's drop-in lands | P6 |
 | B6-05 | Lobby codes (game_overview §9): short shareable code ⇄ address:port (no service), join-by-code field in the lobby; LAN host list if A exposes discovery | P6 |
 | B6-06 | 3D hub mode (QC-45..49): MenuFlow loads the safehouse from data, connects `station_requested`, pauses while a screen is open, returns to the station marker, 2D hub fallback + walk/menu toggle; `notoriety` and `crew` station ids; `ui.prompt.station.<id>`; minimal hub HUD + pause menu with a quick-stations list; jukebox previews through the safehouse jukebox | C4-01 |
+| B6-07 | Heister choice (D-073): `Loadout.heister` picker, unique per lobby (first come keeps it, conflicts fall back to the next free heister), every launch slot gets a distinct heister | D-073 |
+| B6-08 | Throwable data (D-073): `throwable.frag` / `concussion` / `incendiary` / `throwing_knife` ThrowableDefs for A3-12 + picker | A3-12 |
 
 | C2-00 | G0 design docs: Night Deposit and Shadow Ledger (stealth-only) | level_standards §9 |
 | C4-01 | 3D safehouse hub (fidelity C9): explorable safehouse whose stations are interactables calling `MenuFlow.open_station` (Board, planning table, armory/workshop bench, mask bench, jukebox, Notoriety, firing-range door); B's 2D hub stays as the menu fallback | P4 hub |

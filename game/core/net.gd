@@ -30,7 +30,7 @@ var crew: Dictionary[int, Dictionary] = {}
 var last_disconnect_reason: StringName = &""
 
 var _join_name: String = "Player"
-## Host: display names kicked this session; their next join is kicked again (net.md v1.1).
+## Host: lower-cased display names kicked this session; their next join is kicked again (net.md v1.1).
 var _kicked_names: Dictionary[String, bool] = {}
 
 
@@ -199,7 +199,7 @@ func kick(peer_id: int) -> bool:
 	var slot: int = slot_of_peer(peer_id)
 	if slot < 0:
 		return false
-	_kicked_names[String(crew[slot]["display_name"])] = true
+	_kicked_names[String(crew[slot]["display_name"]).to_lower()] = true
 	_rpc_kicked.rpc_id(peer_id)
 	# ENet drops queued packets on an immediate disconnect: let the notice flush first.
 	get_tree().create_timer(KICK_FLUSH_S, true, false, true).timeout.connect(_drop_peer.bind(peer_id))
@@ -277,7 +277,7 @@ func _rpc_hello(display_name: String) -> void:
 	if slot < 0:
 		return
 	crew[slot]["display_name"] = display_name.strip_edges().left(24)
-	if _kicked_names.has(String(crew[slot]["display_name"])):
+	if _kicked_names.has(String(crew[slot]["display_name"]).to_lower()):
 		kick(sender)
 		return
 	crew_changed.emit()
