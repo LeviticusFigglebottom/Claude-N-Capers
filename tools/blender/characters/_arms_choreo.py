@@ -24,6 +24,7 @@ Every clip animates the same transforms (rotation of every bone; location of the
 from __future__ import annotations
 
 import dataclasses
+import itertools
 import math
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -195,15 +196,45 @@ def key_state(k: Key) -> State:
     return State((k.wf[0].copy(), k.wf[1].copy()), k.L.copy(), k.R.copy(), _mag_of(k), k.blade, v3(*k.sh))
 
 
+def schedule(fs: list[int]) -> list[int]:
+    """Strictly increasing key frames for keys listed in choreography order.
+
+    Key frames are laid out from data-driven event frames (fractions of the clip length) plus fixed
+    frame offsets, so a shorter clip can collapse two keys onto one frame or even swap them. The
+    list order is the intended order: frames that are already strictly increasing are kept as they
+    are; otherwise the least-squares shift (rounded) that restores a 1-frame minimum spacing is used
+    (isotonic regression of ``f_i - i``, pool adjacent violators), held inside the span
+    ``min(fs)..max(fs)`` the keys covered, so the clip keeps its length and never runs past its end.
+    """
+    n = len(fs)
+    if all(b > a for a, b in itertools.pairwise(fs)):
+        return list(fs)
+    lo, hi = min(fs), max(fs)
+    if hi - lo < n - 1:
+        raise ValueError(f"{n} keys cannot fit frames {lo}..{hi} 1 frame apart: {fs}")
+    blocks: list[list[float]] = []                   # [mean of f_i - i, count]
+    for i, f in enumerate(fs):
+        blocks.append([float(f - i), 1.0])
+        while len(blocks) > 1 and blocks[-2][0] > blocks[-1][0]:
+            m1, c1 = blocks.pop()
+            m0, c0 = blocks.pop()
+            blocks.append([(m0 * c0 + m1 * c1) / (c0 + c1), c0 + c1])
+    h = [m for m, c in blocks for _ in range(int(c))]
+    out = [math.floor(v + 0.5) + i for i, v in enumerate(h)]
+    out = [min(max(g, lo + i), hi - (n - 1 - i)) for i, g in enumerate(out)]
+    if any(b <= a for a, b in itertools.pairwise(out)):     # unreachable: kept as a guard
+        raise ValueError(f"key schedule {fs} -> {out} is not strictly increasing")
+    return out
+
+
 class Choreo:
     """``f -> State`` from keys (the first key's ease is ignored); ``post(f, state)`` layers
-    procedural motion (recoil, sway, pump travel ...) on top."""
+    procedural motion (recoil, sway, pump travel ...) on top. Keys are given in choreography order;
+    their frames go through ``schedule`` (strictly increasing, see there)."""
 
     def __init__(self, keys: list[Key], post: Callable | None = None) -> None:
-        self.keys = sorted(keys, key=lambda k: k.f)
-        fs = [k.f for k in self.keys]
-        if len(set(fs)) != len(fs):
-            raise ValueError(f"duplicate key frames {fs}")
+        fs = schedule([k.f for k in keys])
+        self.keys = [k if k.f == f else dataclasses.replace(k, f=f) for k, f in zip(keys, fs)]
         self.post = post
 
     def __call__(self, f: int) -> State:

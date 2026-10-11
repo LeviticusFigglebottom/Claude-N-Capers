@@ -706,7 +706,15 @@ def clip_box_reload(kit: Kit, s: FPSet, N: int, empty: bool):
 # entry point
 # =============================================================================================
 def state_fns(sk: Skeleton, s: FPSet) -> dict:
-    """``{clip: f -> State}`` for every clip of the set."""
+    """``{clip: f -> State}`` for every clip of the set (errors name the set and its clip lengths)."""
+    try:
+        return _state_fns(sk, s)
+    except ValueError as e:
+        lengths = {c: s.frames(c) for c in s.clips}
+        raise ValueError(f"{s.name} (clip frames {lengths}): {e}") from e
+
+
+def _state_fns(sk: Skeleton, s: FPSet) -> dict:
     if s.support == "akimbo":
         from _arms_akimbo import akimbo_fns  # noqa: PLC0415 - imports this module
         return akimbo_fns(sk, s)

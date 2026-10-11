@@ -232,20 +232,28 @@ def bow_nock(bk: BowKit, N: int, ev: dict):
     def mag_for(hc: Hand) -> tuple:
         Rm = hc.axes @ g.axes.T
         return ("c", Rm, hc.wrist - Rm @ g.wrist)
+    # in-between keys scale with the data length (0.8 s nock: 24 f): the arrow comes up halfway from
+    # arrow_show to nocked, lies on the rest a third of that gap before the nock, the hand leaves the
+    # string after nocked and is back at the hip by done (or a frame later)
+    f_lift = max(1, min(5, show - 3))
+    f_up = show + max(2, round(0.5 * (nk - show)))
+    f_rest = nk - max(2, round((nk - show) / 3.0))
+    f_off = nk + 2                                   # 2 f off the string (1 f snaps the wrist ~60 deg)
+    f_hip = min(N - 1, max(done, f_off + 1))
     up_c = hand_at(bk.sk, "R", "c", (0.04, 0.24, -0.24), (-0.30, 0.90, 0.20), (-0.75, -0.20, -0.60),
                    (0.6, -0.5, -0.6), "pinch", share=0.92)
     keys = [Key(0, hip, bk.bow, bk.string(0.0, "relaxed"), blade=s.blade),
-            Key(5, tilt, bk.bow, bk.string(0.0, "relaxed").moved(v3(0.05, 0.02, -0.04)), blade=s.blade,
+            Key(f_lift, tilt, bk.bow, bk.string(0.0, "relaxed").moved(v3(0.05, 0.02, -0.04)), blade=s.blade,
                 arc_r=(0.03, 0.0, 0.0)),
             Key(show, tilt, bk.bow, g, mag=mag_for(quiver), blade=s.blade, arc_r=(0.06, -0.02, 0.0)),
-            Key(show + 6, look, bk.bow, g, mag=mag_for(up_c), blade=s.blade, arc_r=(0.04, 0.0, -0.03)),
+            Key(f_up, look, bk.bow, g, mag=mag_for(up_c), blade=s.blade, arc_r=(0.04, 0.0, -0.03)),
             # the shaft laid on the rest, the nock a little behind and above the string
-            Key(nk - 4, look, bk.bow, g, mag=("w", rxd(3.0), v3(0.0, -0.045, 0.012)), blade=s.blade,
+            Key(f_rest, look, bk.bow, g, mag=("w", rxd(3.0), v3(0.0, -0.045, 0.012)), blade=s.blade,
                 arc_m=(0.02, 0.0, 0.02)),
             Key(nk, hold_frame(s.reload_tilt, (0.0, 0.004, 0.012), yaw=2.0, pitch=4.5, roll=6.0), bk.bow, g, mag=None,
                 blade=s.blade, ease="snap"),
-            Key(nk + 2, look, bk.bow, bk.string(0.0), blade=s.blade),
-            Key(done, hip, bk.bow, bk.string(0.0), blade=s.blade),
+            Key(f_off, look, bk.bow, bk.string(0.0), blade=s.blade),
+            Key(f_hip, hip, bk.bow, bk.string(0.0), blade=s.blade),
             Key(N, hip, bk.bow, bk.string(0.0), blade=s.blade, ease="settle")]
     ch = Choreo(keys)
 
