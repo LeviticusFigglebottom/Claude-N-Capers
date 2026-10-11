@@ -293,3 +293,25 @@ func test_failure_reasons_have_strings() -> void:
 		assert_true(DropInService.REASONS.has(r), "lobby failure %s maps to a known reason" % r)
 	for k: String in ["ui.lobby.dropin_join", "ui.lobby.dropin_join.hint"]:
 		assert_has(table, k)
+
+
+## Lead ruling: a host's Options change of gameplay/dropin_policy applies to the running heist at once (PD2).
+func test_options_change_applies_to_the_live_heist() -> void:
+	var saved: GameSettings = GameSettings.current()
+	GameSettings.set_current(GameSettings.new())  # in-memory only: nothing is saved here
+	var flow: DropInFlow = DropInFlow.new()
+	add_child(flow)
+	assert_false(DropInFlow.apply_live_policy(get_tree(), null, LobbyState.POLICY_OFF), "no running heist: nothing live")
+	_rt = await HeistLauncher.launch(&"unit_map", 6405, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 2, "skip_casing": true})
+	assert_true(_rt != null, "heist running")
+	if _rt != null:
+		await wait_physics_frames(2)
+		var svc: HeistDropIn = HeistDropIn.ensure(get_tree())
+		DropInFlow.apply_host_policy(get_tree(), LobbyState.POLICY_ASK)
+		GameSettings.current().set_value(GameSettings.GAMEPLAY, &"dropin_policy", "off")
+		assert_eq(svc.policy, LobbyState.POLICY_OFF, "the Options change reached the live service")
+		assert_false(DropInFlow.apply_live_policy(get_tree(), null, &"sometimes"), "unknown values are ignored")
+		assert_eq(svc.policy, LobbyState.POLICY_OFF)
+	flow.queue_free()
+	GameSettings.set_current(saved)
