@@ -332,6 +332,8 @@ func _apply_loadout() -> void:
 		RangeCrewBridge.push_loadout(crew, resolved)
 		var mods: Array[StringName] = loadout.primary_mods if loadout.primary != &"" else loadout.secondary_mods
 		viewmodel = RangeCrewBridge.attach_viewmodel(crew, weapon_def, mods, tweak.viewmodel_offset)
+		if viewmodel != null:
+			viewmodel.apply_loadout_finish(loadout)  # B7-04: Loadout.weapon_finishes (stamped by MenuFlow)
 	if overlay != null:
 		overlay.show_weapon(weapon_def, mods_by_type())
 	_refresh_readout()

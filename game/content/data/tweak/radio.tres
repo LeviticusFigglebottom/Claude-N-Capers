@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="RadioTweak" format=3]
+
+[ext_resource type="Script" path="res://content/radio/radio_tweak.gd" id="1_radio"]
+
+[resource]
+script = ExtResource("1_radio")
+settle_s = 0.75
+max_wait_s = 4.0
+mission_suppress_s = 3.0
+no_repeat_depth = 2
+event_priority = {
+&"radio.alarm": 80,
+&"radio.assault_build": 60,
+&"radio.assault_fade": 40,
+&"radio.assault_sustain": 30,
+&"radio.escape": 75,
+&"radio.escape_available": 70,
+&"radio.loot_secured": 20,
+&"radio.objective_done": 50,
+&"radio.objective_failed": 55,
+&"radio.objective_new": 45
+}
+event_cooldown_s = {
+&"radio.assault_sustain": 45.0,
+&"radio.loot_secured": 12.0,
+&"radio.objective_done": 2.0,
+&"radio.objective_new": 2.0
+}
+once_per_heist = Array[StringName]([&"radio.alarm", &"radio.escape_available", &"radio.escape"])
+assault_tags = {
+2: &"radio.assault_build",
+3: &"radio.assault_sustain",
+4: &"radio.assault_fade"
+}
+ignored_loot = Array[StringName]([&"loot.body_bag", &"loot.thermite"])
+fallback_contact = &"contact.mercer"
+speaker_overrides = {}
+comms_speakers = Array[StringName]([&"mercer", &"vance", &"reyes", &"accountant"])
+escape_cue_prefix = "cue.escape_arrive"
+squelch_cue = &""
+subtitle_speakers = Array[StringName]([&"mercer", &"vance", &"reyes", &"accountant"])
+font_sizes = {
+"large": 36,
+"medium": 28,
+"small": 22
+}
+default_size = "medium"
+width_px = 800.0
+bottom_margin_px = 40.0
+max_lines = 2
+base_s = 1.2
+per_char_s = 0.055
+min_s = 2.5
+max_s = 9.0
+fade_s = 0.4
+panel_color = Color(0.04, 0.04, 0.05, 0.62)
+min_contrast = 4.5

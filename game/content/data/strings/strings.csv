@@ -2440,3 +2440,238 @@ ui.lobby.dropin_join.hint,"Join a crew whose heist has already started (the host
 ui.dropin.failed.unreachable,Could not reach the host. Check the address and port.
 item.loot.painting_study.name,Calloway's Study
 item.loot.painting_study.desc,"A charcoal-and-wash study for The Lantern Bearer, smaller and quicker to roll. Collectors pay for the hand, not the size."
+item.finish.gunmetal_blue.name,Gunmetal Blue
+item.finish.gunmetal_blue.desc,Brushed blue-grey on every metal part. The armourer's standard issue.
+item.finish.desert_tan.name,Desert Tan
+item.finish.desert_tan.desc,Sand-coloured coating over the furniture and matte metal; the bluing stays.
+item.finish.olive_drab.name,Olive Drab
+item.finish.olive_drab.desc,Flat field green over the polymer and matte metal; the bluing stays.
+item.finish.arctic.name,Arctic
+item.finish.arctic.desc,Snow-white furniture broken up with grey blotches. Wasted in a bank vault and nobody cares.
+item.finish.cherry_polymer.name,Cherry Polymer
+item.finish.cherry_polymer.desc,Lacquered deep red on the polymer only. The steel keeps its bluing.
+item.finish.carbon.name,Carbon Weave
+item.finish.carbon.desc,Woven carbon over the frame and matte parts under a hard clear coat.
+item.finish.urban_camo.name,Urban Camo
+item.finish.urban_camo.desc,Concrete greys in hard-edged blotches across the furniture and matte metal.
+item.finish.midnight_chrome.name,Midnight Chrome
+item.finish.midnight_chrome.desc,Mirror-polished black chrome on every metal part.
+item.finish.copper_patina.name,Copper Patina
+item.finish.copper_patina.desc,Copper-plated metal gone green at the edges like an old roof.
+item.finish.case_hardened.name,Case Hardened
+item.finish.case_hardened.desc,Straw and blue fire colours mottled into the steel. Furniture and fitted parts stay stock.
+item.finish.brass_engraved.name,Brass Engraved
+item.finish.brass_engraved.desc,Brass-plated metal cut with scrollwork. Furniture and fitted parts stay stock.
+item.finish.gilded_ledger.name,Gilded Ledger
+item.finish.gilded_ledger.desc,Gold on every metal part and gloss black on the rest. For crews who never cash out.
+ui.notoriety.unlock.unlock.finish.case_hardened,Weapon finish: Case Hardened
+ui.notoriety.unlock.unlock.finish.brass_engraved,Weapon finish: Brass Engraved
+ui.notoriety.unlock.unlock.finish.gilded_ledger,Weapon finish: Gilded Ledger
+ui.workshop.finish.title,Finish
+ui.workshop.finish.stock,Stock finish
+ui.workshop.finish.entry,{name}  ·  {status}
+ui.workshop.finish.equip,Apply Finish
+ui.workshop.finish.equipped,Finish Applied
+ui.workshop.finish.tag.owned,owned
+ui.workshop.finish.tag.equipped,applied
+ui.workshop.finish.tag.locked,locked
+ui.workshop.finish.status.owned,Owned. Apply it to wear it on this weapon.
+ui.workshop.finish.status.equipped,Applied to this weapon.
+ui.workshop.finish.status.stock,The weapon's own materials.
+ui.workshop.finish.source.achievement,Locked. Earn the achievement {name} to unlock it.
+ui.workshop.finish.source.notoriety,Locked. Reach Notoriety {rank} to unlock it.
+ui.workshop.finish.source.unknown,Locked. Earned through achievements.
+ui.workshop.finish.weapon_locked,Own this weapon to apply a finish.
+ui.workshop.finish.saved,Finish applied. Profile saved.
+ui.workshop.finish.not_saved,Finish applied for this session (this profile cannot store finishes yet).
+voice.vo.vance.radio_objective_done_1,Done? Lovely. Do keep going.
+voice.vo.vance.radio_objective_done_2,"That's one thing off my list, darling. Next."
+voice.vo.vance.radio_objective_done_3,Neatly handled. I may yet speak well of you.
+voice.vo.vance.radio_objective_new_1,"Something new for you, darling. Do look at your list."
+voice.vo.vance.radio_objective_new_2,A fresh task. Try not to make it messy.
+voice.vo.vance.radio_objective_new_3,There's more to do. There always is.
+voice.vo.vance.radio_objective_failed_1,"Well, that's gone. Find me another way."
+voice.vo.vance.radio_objective_failed_2,"Disappointing, darling. Improvise."
+voice.vo.vance.radio_objective_failed_3,That door's closed. I'm sure you'll find a window.
+voice.vo.vance.radio_alarm_1,An alarm. How very vulgar. Finish quickly.
+voice.vo.vance.radio_alarm_2,"Oh, they've noticed you. Let's not make a scene of it for longer than we must."
+voice.vo.vance.radio_alarm_3,"Bells, darling. The police will want to say hello."
+voice.vo.vance.radio_assault_build_1,They're coming in. Mind the merchandise.
+voice.vo.vance.radio_assault_build_2,Here come the uniforms. Do try to stay pretty.
+voice.vo.vance.radio_assault_build_3,"Assault, darling. Find something solid to stand behind."
+voice.vo.vance.radio_assault_sustain_1,They're still pushing. Hold your nerve.
+voice.vo.vance.radio_assault_sustain_2,This is the dull part. Keep shooting.
+voice.vo.vance.radio_assault_sustain_3,"Still coming, I'm afraid. Stay together."
+voice.vo.vance.radio_assault_fade_1,They're falling back. Use it.
+voice.vo.vance.radio_assault_fade_2,"A lull. Breathe, then get back to work."
+voice.vo.vance.radio_assault_fade_3,The police seem to need a rest. You don't.
+voice.vo.vance.radio_escape_available_1,"Your exit's open, darling. Leave when you're ready."
+voice.vo.vance.radio_escape_available_2,The way out is clear. Don't linger for compliments.
+voice.vo.vance.radio_escape_available_3,"You may go. Or stay greedy, if you must."
+voice.vo.vance.radio_escape_1,Your ride has arrived. Do get in.
+voice.vo.vance.radio_escape_2,The car's here. I hate to keep drivers waiting.
+voice.vo.vance.radio_escape_3,"Transport's waiting, darling. Off you go."
+voice.vo.vance.radio_loot_secured_1,That one's mine now. Thank you.
+voice.vo.vance.radio_loot_secured_2,Secured. I can already hear the buyers.
+voice.vo.vance.radio_loot_secured_3,Another bag. You are spoiling me.
+voice.vo.reyes.radio_objective_done_1,Good. Next.
+voice.vo.reyes.radio_objective_done_2,That's done. Keep moving.
+voice.vo.reyes.radio_objective_done_3,Nice work. Don't stop now.
+voice.vo.reyes.radio_objective_new_1,New job on your list. Look at it.
+voice.vo.reyes.radio_objective_new_2,Got something else for you.
+voice.vo.reyes.radio_objective_new_3,Change of plans. Check your list.
+voice.vo.reyes.radio_objective_failed_1,That's blown. Work around it.
+voice.vo.reyes.radio_objective_failed_2,Forget that one. Find another way.
+voice.vo.reyes.radio_objective_failed_3,"Lost it. Doesn't matter, keep going."
+voice.vo.reyes.radio_alarm_1,Alarm's up. Now we do it my way.
+voice.vo.reyes.radio_alarm_2,They heard you. Good. I was getting bored.
+voice.vo.reyes.radio_alarm_3,Here's the noise. Guns up.
+voice.vo.reyes.radio_assault_build_1,Cops are coming in heavy. Dig in.
+voice.vo.reyes.radio_assault_build_2,Here's the wave. Make 'em pay for every step.
+voice.vo.reyes.radio_assault_build_3,They're hitting you now. Hold the line.
+voice.vo.reyes.radio_assault_sustain_1,Still coming. Keep your heads down and your mags full.
+voice.vo.reyes.radio_assault_sustain_2,They don't quit. Neither do you.
+voice.vo.reyes.radio_assault_sustain_3,Hold. It's not over yet.
+voice.vo.reyes.radio_assault_fade_1,They're backing off. Move.
+voice.vo.reyes.radio_assault_fade_2,Wave's breaking. Get to work while you can.
+voice.vo.reyes.radio_assault_fade_3,They're licking their wounds. Go.
+voice.vo.reyes.radio_escape_available_1,Way out's open. Your call when.
+voice.vo.reyes.radio_escape_available_2,Exit's clear. Don't get greedy. Or do.
+voice.vo.reyes.radio_escape_available_3,You can leave. I'd grab one more bag first.
+voice.vo.reyes.radio_escape_1,Ride's here. Get in.
+voice.vo.reyes.radio_escape_2,Your wheels just pulled up. Move.
+voice.vo.reyes.radio_escape_3,Transport's waiting. Don't make it wait long.
+voice.vo.reyes.radio_loot_secured_1,That's a bag. Keep 'em coming.
+voice.vo.reyes.radio_loot_secured_2,Secured. I like the sound of that.
+voice.vo.reyes.radio_loot_secured_3,One more in the pile. Good.
+voice.vo.accountant.radio_objective_done_1,Completed. Proceed to the next item.
+voice.vo.accountant.radio_objective_done_2,That line is reconciled. Continue.
+voice.vo.accountant.radio_objective_done_3,"Done, and on schedule. Good."
+voice.vo.accountant.radio_objective_new_1,There is a new entry on your list.
+voice.vo.accountant.radio_objective_new_2,An additional item requires your attention.
+voice.vo.accountant.radio_objective_new_3,Please review your objectives. Something has changed.
+voice.vo.accountant.radio_objective_failed_1,That item is written off. Find an alternative.
+voice.vo.accountant.radio_objective_failed_2,A loss. Absorb it and continue.
+voice.vo.accountant.radio_objective_failed_3,That avenue is closed. Adjust.
+voice.vo.accountant.radio_alarm_1,The alarm is a cost. Keep it small.
+voice.vo.accountant.radio_alarm_2,Discretion has failed. Speed must replace it.
+voice.vo.accountant.radio_alarm_3,They know. Every minute is expensive now.
+voice.vo.accountant.radio_assault_build_1,Police are committing resources. Hold your position.
+voice.vo.accountant.radio_assault_build_2,"An assault. Protect the assets, including yourselves."
+voice.vo.accountant.radio_assault_build_3,They are coming in. I would prefer you survive.
+voice.vo.accountant.radio_assault_sustain_1,The pressure continues. Remain disciplined.
+voice.vo.accountant.radio_assault_sustain_2,Still under assault. Conserve ammunition.
+voice.vo.accountant.radio_assault_sustain_3,They are persistent. So are we.
+voice.vo.accountant.radio_assault_fade_1,They are withdrawing. Use the interval efficiently.
+voice.vo.accountant.radio_assault_fade_2,A pause. I suggest productive use of it.
+voice.vo.accountant.radio_assault_fade_3,Their assault has peaked. Resume work.
+voice.vo.accountant.radio_escape_available_1,Your exit is available. Leave on your own schedule.
+voice.vo.accountant.radio_escape_available_2,"The way out is open. Additional bags remain optional, and welcome."
+voice.vo.accountant.radio_escape_available_3,You may depart. I would not linger.
+voice.vo.accountant.radio_escape_1,Your transport has arrived.
+voice.vo.accountant.radio_escape_2,The vehicle is in position. Board it.
+voice.vo.accountant.radio_escape_3,Your ride is here. Punctuality is a virtue.
+voice.vo.accountant.radio_loot_secured_1,Received. I am adding it to the ledger.
+voice.vo.accountant.radio_loot_secured_2,Secured. The numbers improve.
+voice.vo.accountant.radio_loot_secured_3,Another bag. Thank you.
+voice.vo.mercer.radio_objective_done_1,That's done. On to the next.
+voice.vo.mercer.radio_objective_done_2,Good. Check your list.
+voice.vo.mercer.radio_objective_done_3,Nicely done. Keep it moving.
+voice.vo.mercer.radio_objective_new_1,New objective. Have a look.
+voice.vo.mercer.radio_objective_new_2,Something's changed. Check your objectives.
+voice.vo.mercer.radio_objective_new_3,There's more to do. I'll keep you posted.
+voice.vo.mercer.radio_objective_failed_1,That's off the table. We adapt.
+voice.vo.mercer.radio_objective_failed_2,"Lost that one. There's another way, there always is."
+voice.vo.mercer.radio_objective_failed_3,Not ideal. Work around it.
+voice.vo.mercer.radio_alarm_1,"Alarm's ringing. Masks on, heads down."
+voice.vo.mercer.radio_alarm_2,We're loud. Make it quick now.
+voice.vo.mercer.radio_alarm_3,That's the bell. Police are on their way.
+voice.vo.mercer.radio_assault_build_1,Assault incoming. Find cover.
+voice.vo.mercer.radio_assault_build_2,Here they come. Hold together.
+voice.vo.mercer.radio_assault_build_3,They're pushing in. Stay alive.
+voice.vo.mercer.radio_assault_sustain_1,Still coming. Hold out.
+voice.vo.mercer.radio_assault_sustain_2,They're not done yet. Stay on it.
+voice.vo.mercer.radio_assault_sustain_3,Keep it together. This won't last forever.
+voice.vo.mercer.radio_assault_fade_1,They're thinning out. Use it.
+voice.vo.mercer.radio_assault_fade_2,Assault's fading. Back to work.
+voice.vo.mercer.radio_assault_fade_3,Breather. Reload and get moving.
+voice.vo.mercer.radio_escape_available_1,Exit's open. Leave when you're ready.
+voice.vo.mercer.radio_escape_available_2,You can get out now. Your call.
+voice.vo.mercer.radio_escape_available_3,Way out's clear. Don't overstay.
+voice.vo.mercer.radio_escape_1,Ride's here. Go.
+voice.vo.mercer.radio_escape_2,Your transport just arrived.
+voice.vo.mercer.radio_escape_3,Wheels are waiting. Move.
+voice.vo.mercer.radio_loot_secured_1,Bag's in. Good.
+voice.vo.mercer.radio_loot_secured_2,Secured. Nice.
+voice.vo.mercer.radio_loot_secured_3,That's one more counted.
+voice.vo.vance.glasshouse_radio_casing,Seen enough of the showroom? Good. The pretty things are in the back.
+voice.vo.vance.glasshouse_radio_keycard,The manager's keycard. He really should keep better company.
+voice.vo.vance.glasshouse_radio_workshop_door,"The workshop. Mind the tools, darling, they're worth more than you are."
+voice.vo.vance.glasshouse_radio_safe,"The safe's open. Steady hands, please. Those are estate pieces."
+voice.vo.vance.glasshouse_radio_safe_loot_new,"Bag the consignment. All of it, if you love me."
+voice.vo.vance.glasshouse_radio_safe_loot,That's the estate consignment. I could kiss you. I won't.
+voice.vo.vance.glasshouse_radio_secure,Two bags. My minimum is met. Anything more is a gesture of affection.
+voice.vo.vance.glasshouse_radio_escape_new,Vossberg has entertained you long enough. Find your way out.
+voice.vo.vance.glasshouse_radio_escape_available,"The van is yours. Leave the windows, they're only glass."
+voice.vo.vance.glasshouse_radio_escape,"The van's at the curb, darling. Don't scratch it."
+voice.vo.vance.glasshouse_radio_loot_jewelry,Jewels in the van. Vossberg will be inconsolable.
+voice.vo.vance.glasshouse_radio_loot,Another bag from Vossberg's. Lovely.
+voice.vo.accountant.night_deposit_radio_casing,Your survey is complete. The bank is exactly as dull as its books.
+voice.vo.accountant.night_deposit_radio_keycard,A keycard. Access is a line item I am always happy to see.
+voice.vo.accountant.night_deposit_radio_code,The code works. Clerks are so dependable.
+voice.vo.accountant.night_deposit_radio_server,The server has given up its secret. As servers do.
+voice.vo.accountant.night_deposit_radio_vault_gate,The vault gate is open. Mind the time lock.
+voice.vo.accountant.night_deposit_radio_time_lock_new,"Start the time lock. Patience, in this case, is billable."
+voice.vo.accountant.night_deposit_radio_time_lock,"The time lock is running. Now we wait, which I do not enjoy paying for."
+voice.vo.accountant.night_deposit_radio_time_lock_wait_new,The time lock is counting down. Hold the floor until it finishes.
+voice.vo.accountant.night_deposit_radio_time_lock_wait,The time lock has opened. The cage is yours.
+voice.vo.accountant.night_deposit_radio_vault_drill_new,"Drill the vault door. Noisily, I suppose."
+voice.vo.accountant.night_deposit_radio_vault_drill,The vault door is through. Proceed.
+voice.vo.accountant.night_deposit_radio_vault_loot_new,The cage is open. Take what the Co-op's favoured customers left there.
+voice.vo.accountant.night_deposit_radio_vault_loot,The cage has been emptied. An excellent audit.
+voice.vo.accountant.night_deposit_radio_depository,The night drop is cleared. Every envelope accounted for.
+voice.vo.accountant.night_deposit_radio_secure,Four bags. My account is settled. The rest is yours.
+voice.vo.accountant.night_deposit_radio_escape_new,Your exit is arranged. Bring the bags.
+voice.vo.accountant.night_deposit_radio_escape_available,Your way out of Harbor Savings and Loan is open. Leave quietly if you can.
+voice.vo.accountant.night_deposit_radio_escape,Your vehicle has arrived outside the bank.
+voice.vo.accountant.night_deposit_radio_loot,"Undeclared money, now declared to me."
+voice.vo.accountant.night_deposit_radio_loot_cash_bricks,Another brick the Co-op cannot report stolen.
+voice.vo.accountant.shadow_ledger_radio_casing,You've seen the offices. Kessler and Moor are tidier than their clients.
+voice.vo.accountant.shadow_ledger_radio_laptop,The partners' laptop. That is the key to everything.
+voice.vo.accountant.shadow_ledger_radio_keycard,The keycard. The server room is expecting you.
+voice.vo.accountant.shadow_ledger_radio_server_door,You're in the server room. Touch nothing you don't need.
+voice.vo.accountant.shadow_ledger_radio_cage_code,The cage code. Someone wrote it down. Of course they did.
+voice.vo.accountant.shadow_ledger_radio_cage,The cage is open. The drives are behind it.
+voice.vo.accountant.shadow_ledger_radio_hack_new,"Run the hack, then make yourselves invisible while it works."
+voice.vo.accountant.shadow_ledger_radio_hack,The hack is complete. Pull the drives.
+voice.vo.accountant.shadow_ledger_radio_drives_new,Bag the drives. Gently. They are worth more than the building.
+voice.vo.accountant.shadow_ledger_radio_drives,Drives recovered. The ledger is nearly ours.
+voice.vo.accountant.shadow_ledger_radio_secure,Laptop and drives secured. The ledger is mine.
+voice.vo.accountant.shadow_ledger_radio_study_safe,The study safe. Private papers make very public scandals.
+voice.vo.accountant.shadow_ledger_radio_paintings,The paintings. Odile will be insufferable about this.
+voice.vo.accountant.shadow_ledger_radio_archive_safe,The archive safe. The printed books. You are very thorough.
+voice.vo.accountant.shadow_ledger_radio_escape_new,Leave the way you came: unseen.
+voice.vo.accountant.shadow_ledger_radio_escape_available,Your way out is ready. Nobody may see you use it.
+voice.vo.accountant.shadow_ledger_radio_escape,"Your ride is in position. Quietly, please."
+voice.vo.accountant.shadow_ledger_radio_loot,"Secured. Kessler and Moor are poorer, and they don't know it yet."
+voice.vo.accountant.shadow_ledger_radio_loot_laptop,The laptop is out. Now the drives have a reader.
+voice.vo.accountant.shadow_ledger_radio_loot_drives,"Another drive. Another page of the ledger, in my hands."
+voice.vo.reyes.dockside_burn_radio_cartel,Co-op boys are down. Now the cops get their turn.
+voice.vo.reyes.dockside_burn_radio_breach,You're in the cold store. Mind the frostbite.
+voice.vo.reyes.dockside_burn_radio_product,Found the product. Now let's watch it burn.
+voice.vo.reyes.dockside_burn_radio_burn_new,Thermite on the product. I want to smell it from here.
+voice.vo.reyes.dockside_burn_radio_burn,"That's burning. Smoke over Pier 9, just like I said."
+voice.vo.reyes.dockside_burn_radio_strongroom,Strongroom's open. Bag the cash.
+voice.vo.reyes.dockside_burn_radio_count_cage,"Count cage is cracked. Cash, and plenty of it."
+voice.vo.reyes.dockside_burn_radio_containers,Those are the Co-op's rifles. Now they're mine.
+voice.vo.reyes.dockside_burn_radio_secure,Four bags. That's the job. Everything else is gravy.
+voice.vo.reyes.dockside_burn_radio_escape_wait_new,Ride's on the way. Hold the pier until it shows.
+voice.vo.reyes.dockside_burn_radio_escape_wait,Ride's in. Quit holding and start leaving.
+voice.vo.reyes.dockside_burn_radio_escape_new,Get off that pier before the whole thing goes up.
+voice.vo.reyes.dockside_burn_radio_escape_available,Pier's yours. Get to the ride when you're done.
+voice.vo.reyes.dockside_burn_radio_escape,Your ride's at the pier. Don't make it wait.
+voice.vo.reyes.dockside_burn_radio_loot,Another bag off Pier 9. Keep 'em coming.
+voice.vo.reyes.dockside_burn_radio_loot_weapons,Co-op rifles in my lockup. Beautiful.
+voice.vo.reyes.dockside_burn_radio_loot_cash,"Co-op cash. Smells like fish, spends fine."
+voice.vo.reyes.dockside_burn_radio_loot_product,Product's out. My buyer says thanks. I say burn the rest.
+ui.subtitle.speaker,{name}:

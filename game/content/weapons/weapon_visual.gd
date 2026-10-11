@@ -11,6 +11,11 @@
 ## same model a second time as `offhand` (a sibling of `model`, placed at the marker's rest pose) and
 ## mirrors every mod onto it, so both guns show the same kit. `get_offhand_marker()` is the offhand's
 ## `get_marker()`. ENV A may reparent `offhand` to the left hand of the `akimbo` viewmodel set.
+## Finishes (B7-04): apply_finish(id) overrides the finish's material slots on the model, the offhand and
+## (FinishDef.covers_mods) the attached mods through surface override materials (FinishApplier; shared meshes
+## and library materials are never changed); &"" restores the stock look. The finish survives setup() (mod
+## changes keep it). apply_loadout_finish(loadout) applies `Loadout.weapon_finishes[weapon.id]`, so every
+## peer shows a teammate's finish from the replicated loadout.
 ## Visual only: no gameplay, no collision.
 class_name WeaponVisual
 extends Node3D
@@ -47,6 +52,8 @@ var attached: Dictionary = {}
 ## Akimbo only: the second gun (same model) and its attached mods (ModType -> instance).
 var offhand: Node3D
 var attached_offhand: Dictionary = {}
+## Worn finish id (&"" = stock). Kept across setup().
+var finish_id: StringName = &""
 
 
 ## Build the visual for `def` with `mods` equipped (missing slots use the stock parts).
@@ -69,6 +76,8 @@ func setup(def: WeaponDef, mods: Array[WeaponModDef]) -> void:
 	for mod: WeaponModDef in mods:
 		if mod != null:
 			_equip(mod)
+	if finish_id != &"":
+		apply_finish(finish_id)
 
 
 ## Reload-only parts (visual_slots D-053: the revolver `Speedloader`) start hidden; ENV A shows them
@@ -88,6 +97,23 @@ func setup_ids(weapon_id: StringName, mod_ids: Array[StringName]) -> void:
 		if m != null:
 			mods.append(m)
 	setup(ContentDB.weapon(weapon_id), mods)
+
+
+## Wear finish `id` (&"" = stock look). Unknown ids fall back to stock and return false. Returns true
+## when the finish (or stock) is on.
+func apply_finish(id: StringName) -> bool:
+	var d: FinishDef = WeaponFinishes.def(id)
+	finish_id = d.id if d != null else &""
+	for root: Node3D in [model, offhand]:
+		if root != null:
+			FinishApplier.apply(root, d)
+	return d != null or id == &""
+
+
+## Wear the finish `loadout` carries for this weapon (Loadout.weapon_finishes; stock when none).
+func apply_loadout_finish(loadout: Loadout) -> StringName:
+	apply_finish(WeaponFinishes.from_loadout(loadout, weapon.id if weapon != null else &""))
+	return finish_id
 
 
 func clear() -> void:

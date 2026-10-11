@@ -14,11 +14,12 @@ content/
     strings/strings.csv     all player-facing text (columns: keys,en)
     voice/lines.tres        voice line table (VoiceLineTable); text lives in strings.csv
   defs/                     content-side Resource schemas + ContentDB lookup (ContactDef)
-  docs/                     design authority: skills.md, perk_decks.md, masks.md, preplanning.md, scoreboard.md
+  docs/                     design authority: skills.md, perk_decks.md, masks.md, preplanning.md, scoreboard.md, radio.md
   masks/                    MaskCatalog, MaskComposer, MaskLocker (+ part defs)
   preplanning/              PreplanBoard, PreplanPlan, PlanVote, PreplanBlueprint
   lobby/                    LobbyState (co-op lobby model), LobbySession (Net glue), LobbyAddress, LobbyTweak
   progression/              LoadoutResolver, StatCalculator, PayoutCalculator, XpCurve
+  radio/                    ContactRadio, RadioLinePicker, RadioTweak: in-heist contact radio (B7-03)
   save/                     SaveService, PlayerProfile
   settings/                 GameSettings (options + settings.cfg), InputBindings, InputEventCodec, SettingsApplier
   strings/                  StringTable
@@ -153,6 +154,24 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   slot, shared `zero` awards, skipped when the stat is missing; `PaydayScreen.awards` / "Crew Honours" section.
   `Hud.scoreboard` (`ScoreboardOverlay`) reads the model's `crew_stats` + `crew_stats_changed` (QB to ENV A;
   `MockHudModel` has them) and shows while `scoreboard` is held (`controls/scoreboard_mode` toggle).
+* **Weapon finishes (B7-04).** `FinishDef` (`defs/finish_def.gd`; data `data/finishes/<name>.tres`, ContentDB
+  kind `finishes`, id `finish.<name>`, unlock `unlock.finish.<name>`, `default_owned`, `covers_mods`, `order`,
+  `layers: Array[FinishLayer]`). `FinishLayer` (`defs/finish_layer.gd`): `slots` (the weapon build scripts'
+  `Mats.*` names: polymer, stipple, steel, bare, matte, alu, wood, rubber, tan, olive), `albedo`, `metallic`,
+  `roughness`, optional `base_material` (a library Material reference; duplicated), `pattern` (`mottle`, `camo`,
+  `patina`, `engrave`, `brushed`; generated NoiseTexture2D), `pattern_color/scale/seed`, `clearcoat`.
+  `FinishApplier` (`weapons/`): matches surfaces by their stock material `M_<library_id>` (`SLOT_MATERIALS`) and
+  sets `surface_override_material`; never changes meshes or library materials; removes only its own overrides.
+  `FinishMaterials`: cached runtime materials (meta `finish_id`). `WeaponVisual.apply_finish(id)` (main gun,
+  offhand, mods when covered; kept across `setup()`; &"" = stock) and `apply_loadout_finish(loadout)`.
+  `WeaponFinishes` (`progression/`): `all/def/is_known/is_owned/owned`, `equipped/equip(profile, weapon, finish)`
+  (locked -> false), `store/persists` (`PlayerProfile.weapon_finishes`, save v7 by B7-01; read with `get()`,
+  metadata fallback while absent), `for_loadout`, `stamp(loadout, profile)` / `from_loadout(loadout, weapon)`
+  (`Loadout.weapon_finishes`, weapon id -> finish id, lead-approved for contracts round 28; MenuFlow stamps the
+  solo launch, `launch_options_for` and the range loadout; co-op goes through the lobby summary's
+  `loadout.weapon_finishes` -> `LobbyState.loadout_from_dict`), `sanitize_map`, `source_of(id)` (default /
+  achievement / notoriety rank). Workshop: `WorkshopFinishPanel` under the parts (`WorkshopScreen.select_finish`,
+  `equip_finish`). Strings `item.finish.<name>.name/.desc`, `ui.workshop.finish.*`.
 * `ContentDB.inject(kind, key, res)`: tests/tooling only (test-only SkillDef/PerkDeckDef);
   `clear_cache()` drops it.
 * `XpCurve.level_for_xp(xp)`, `xp_for_level(level)`. `VoiceLineTable` at `data/voice/lines.tres`.
@@ -401,6 +420,22 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
   `MenuFlow.build_launch_options` sets the solo player's and adds AI loadouts for the seats Net.start_solo fills;
   `build_coop_launch_options(..., ai_loadouts)` merges the AI seats' loadouts (ai_teammates still counts the seats
   humans leave). Every launched slot has a distinct heister. Tests `test_heisters.gd`.
+* **Contact radio + subtitles (B7-03; brief: `content/docs/radio.md`).** `ContactRadio` (`radio/contact_radio.gd`)
+  is the PD2 handler-on-comms: on every peer it turns replicated EventBus facts into `radio.*` VoiceLineTable lines
+  spoken by the heist's contact (`HeistDef.contact` -> `ContactDef.voice_speaker`; Glasshouse Vance, Night Deposit /
+  Shadow Ledger the Accountant, Dockside Reyes; Mercer as fallback). The mapping: `objective_updated` transitions ->
+  `radio.objective_done|new|failed` (heist lines keyed by the design doc `[tag]`), `alarm_raised` -> `radio.alarm`,
+  `assault_phase_changed` BUILD/SUSTAIN/FADE -> `radio.assault_*`, `heist_phase_changed` ESCAPE ->
+  `radio.escape_available`, `audio_cue_requested(cue.escape_arrive*)` -> `radio.escape`, `loot_secured` ->
+  `radio.loot_secured`. `RadioLinePicker` picks a heist line, else a generic one, with per-line cooldowns and
+  no-repeat, using `GameRng.stream(&"radio")`. Timing, priority, cooldowns, suppression and subtitle sizes are in
+  `data/tweak/radio.tres` (`RadioTweak`). A comms `voice_line_requested` that is not the radio's (a mission `say()`)
+  suppresses the radio briefly. The radio emits `voice_line_requested(speaker, id, {source: &"radio", radio: true,
+  local: true, ...})` locally; that is the hook for C's voice player / squelch (`RadioTweak.squelch_cue`).
+  `SubtitleOverlay` (`ui/hud/subtitle_overlay.gd`) shows radio and contact/handler lines: the speaker in their
+  accent, text in the HUD palette, time scaled by length, size from `accessibility/subtitle_size` live. It sits
+  bottom-centre, clear of the HUD corners. MenuFlow spawns both (`ContactRadio.spawn`, `MenuFlow.heist_radio`).
+  Strings `voice.vo.<contact>.radio_*`, `voice.vo.<contact>.<heist>_radio_*`, `ui.subtitle.speaker`.
 * **Throwables (D-073, B6-08).** `data/throwables/` frag / concussion / incendiary / throwing_knife (count 3,
   `anim_set` throwable; values in data/README.md). `ThrowableGate` (`progression/throwable_gate.gd`):
   `perk_item_ids()` (every perk card's `perk.throwable` item_id), `is_pickable(id)`, `pickable()`.
