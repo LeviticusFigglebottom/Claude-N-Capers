@@ -626,6 +626,7 @@ func _mast(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
 ## (~150 m visibility), sodium yard masts and the cold-store LEDs (doc Audio/lighting).
 func _build_lighting(lighting: Node3D) -> void:
 	var we: WorldEnvironment = WorldEnvironment.new()
+	we.set_script(load("res://world/lighting/heist_world_environment.gd"))  # brightness option (B5-01)
 	we.name = "WorldEnvironment"
 	var env: Environment = Environment.new()
 	env.resource_name = "env_dockside_burn_greybox"
