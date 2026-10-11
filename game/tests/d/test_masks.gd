@@ -4,6 +4,8 @@
 ## (the mask shader is applied as material_override), front-projected UV0 (x 0 = viewer's left
 ## = +X, y 0 = top), pivot at the face centre, -Z forward.
 ## B4-15: five more bases (skull, theatre, gasmask, demon, goalie) under the same contract.
+## D3-03: twelve more bases (ram, stag, cat, boar, serpent, moth, knight, doll, sunburst, geo, robot,
+## jester) under the same contract.
 ## D-073: every mask is fitted over the crew face envelope (tools/blender/masks/_face_envelope.py);
 ## the envelope must have been generated from the current crew heads.
 ## Run after `godot --import`.
@@ -15,6 +17,7 @@ const LIBRARY_PREFIX: String = "res://world/materials/char_mask_"
 # QB-50b customisable base masks
 const BASE_NAMES: Array[String] = [
 	"heron", "visage", "vulpine", "bruiser", "owl", "skull", "theatre", "gasmask", "demon", "goalie",
+	"ram", "stag", "cat", "boar", "serpent", "moth", "knight", "doll", "sunburst", "geo", "robot", "jester",
 ]
 const BASE_MATERIAL: String = "M_char_mask_base"
 const BASE_LIBRARY: String = "res://world/materials/char_mask_base.tres"
@@ -22,9 +25,10 @@ const BASE_TRI_BUDGET: int = 8000
 ## Masks whose front-most point is a centred beak/snout/nose/teeth/canister below the eye line.
 const CENTRED_FRONT: Array[String] = [
 	"heron", "visage", "vulpine", "owl", "skull", "theatre", "gasmask", "demon",
+	"ram", "stag", "cat", "moth", "doll", "sunburst", "geo", "robot", "jester",
 ]
-## The respirator pushes well forward of the face (its filter canister).
-const PROTRUDING_FRONT: Dictionary[String, float] = {"gasmask": -0.09}
+## The respirator pushes well forward of the face (its filter canister); the boar's snout disc too.
+const PROTRUDING_FRONT: Dictionary[String, float] = {"gasmask": -0.09, "boar": -0.08}
 ## D-073 mask fit: the crew face envelope the mask generator pushes every shell out of.
 const ENVELOPE_REL: String = "../tools/blender/masks/_crew_face_envelope.json"
 const CHARACTERS_DIR: String = "res://assets/characters"
