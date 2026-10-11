@@ -23,6 +23,7 @@ concealment = -2
 [resource]
 script = ExtResource("1")
 id = &"mod.furnace_long_nozzle"
+params = {"flame": {"range_m": 13.0, "cone_deg": 14.0, "dot_damage_per_s": 15.0, "dot_duration_s": 3.0, "panic_chance": 0.3, "panic_s": 2.5}}
 display_name = "Long Nozzle"
 mod_type = 1
 delta = SubResource("delta")

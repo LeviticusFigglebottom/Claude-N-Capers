@@ -37,6 +37,7 @@ magnification = 1.0
 [resource]
 script = ExtResource("1")
 id = &"weapon.cyclone_rotary"
+params = {"spin": {"spin_up_s": 0.6, "spin_down_s": 0.8, "move_speed_mult": 0.5, "keep_spinning_on_ads": true}}
 display_name = "Cyclone Rotary"
 manufacturer = "Brannock Defense"
 weapon_class = 6

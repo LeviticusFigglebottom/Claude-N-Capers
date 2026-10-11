@@ -6,7 +6,7 @@ trigger guard.
 
 Origin = firing-hand pivot on the grip (see _brute.py). Forward = Godot -Z.
 
-Node tree: ``Receiver`` (+ ``Butt``, ``CarryHandle``, ``ReceiverDetails``, ``TriggerGroup``, ``Grip``,
+Node tree: ``Receiver`` (+ ``Butt``, ``CarryHandle``, ``ReceiverDetails``, ``ChargingHandle``, ``TriggerGroup``, ``Grip``,
 ``Shroud``), ``Barrel``. Stock parts: ``SightRail/StockSight`` (carry-handle aperture + front post,
 ``AimPoint``), ``Magwell/StockMagazine`` (20-shell drum). ``StockMount`` = butt plate (no stock slot).
 """
@@ -52,7 +52,6 @@ def _receiver(ctx, mats):
     dark = dt.material(mats.polymer())
     s2 = dt.material(mats.bare())
     dt.box((u.REC_HW - 0.0005, 0.010, u.BORE_Z - 0.014), (u.REC_HW + 0.0005, 0.100, u.BORE_Z + 0.016), mat=dark)
-    dt.box((-u.REC_HW - 0.014, 0.180, u.BORE_Z + 0.010), (-u.REC_HW, 0.194, u.BORE_Z + 0.020), mat=s2)    # charger
     for side in (-1.0, 1.0):
         lo, hi = sorted((side * (u.REC_HW - 0.0003), side * (u.REC_HW + 0.0010)))
         for z in (0.034, 0.088):
@@ -60,6 +59,10 @@ def _receiver(ctx, mats):
         for y in (-0.060, 0.050, 0.220):
             dt.cylinder(0.0034, 0.0012, segments=12, centre=(side * (u.REC_HW + 0.0004), y, 0.060), axis="X", mat=s2)
     c.finish(dt, "ReceiverDetails", parent=rec)
+    ch = ctx.builder()  # D-058: own node so ENV A can pull it back on bolt_release
+    ch.box((-u.REC_HW - 0.014, 0.180, u.BORE_Z + 0.010), (-u.REC_HW, 0.194, u.BORE_Z + 0.020),
+           mat=ch.material(mats.bare()))
+    c.finish(ch, "ChargingHandle", bevel=0.0006, parent=rec)
     c.build_trigger_group(ctx, mats, 0.006 + u.GRIP_TAN * 0.010, 0.068, u.REC_BOTTOM_Z, -0.010, 0.034, parent=rec)
     c.build_grip(ctx, mats, "polymer", u.GRIP_TOP_Z, u.GRIP_BOTTOM_Z, 0.0200, 0.0155, u.GRIP_ANGLE_DEG, parent=rec,
                  finger_bumps=3)

@@ -24,7 +24,7 @@ reload_empty_time_s = 1.6
 equip_time_s = 0.6
 ads_time_s = 0.32
 concealment = 22
-armor_pierce = 0.0
+armor_pierce = 1.0
 shield_pierce = false
 wall_pierce = false
 suppression = 0.0
@@ -37,6 +37,7 @@ magnification = 1.0
 [resource]
 script = ExtResource("1")
 id = &"weapon.vise_crossbow"
+params = {"projectile": {"speed_mps": 60.0, "gravity_mult": 1.0, "lifetime_s": 10.0, "retrievable": true, "pickup_radius_m": 1.0, "despawn_s": 60.0}}
 display_name = "Vise Crossbow"
 manufacturer = "Tillman Ironworks"
 weapon_class = 6
