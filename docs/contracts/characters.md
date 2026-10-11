@@ -103,3 +103,11 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
 * Weapon-model layout assumed by the choreography: break-action hinge forward of and below the breech face; lever
   loading gate on the right; saw blade + side grip on the left; minigun left side grip and ammo box on the left.
 * Bulwark `shield_idle*` (humanoid, 3.6 s, speed 0) blends seamlessly with `shield_walk` frame 0.
+
+## v1.6: faction variants (QA-29, D-067)
+* A variant scene is `res://world/characters/<id>_<variant>/<id>_<variant>.tscn`, with variant = `frd` | `sentinel` | `zero`;
+  `tac` or empty = the base `<id>`. Shields are at `world/characters/bulwark_<v>/bulwark_<v>_shield.tscn`.
+* characters.json entries carry `variant_of` + `variant`. The helper is `variant_scene_path(char_id, variant)` in
+  `world/characters/_tools/character_spec.gd`. ENV A resolves EnemyDef visuals per faction (EnemyDef `params.visual_variant`).
+* Special colours (Stinger blue, medic white, Phantom lenses, hazard yellow) and every contract node are identical in
+  every variant. Brandt/Aegis have no variants.

@@ -451,3 +451,13 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   - ENV A: AI teammates never free kicked or tased crew (only DOWNED), which breaks L2.8/L6.1.
   - ENV C: VanSecureE1 zone floor at 0.0 vs alley ground −0.15.
 - The P3 gate switches its map constant to dockside_burn once that map reaches G1.
+
+## D-067 — 2026-10-11 — Faction variants, cartel look, repo size
+- characters.md v1.6: the faction variant scene convention (ENV D D2-01). ENV D adds `frd_agent` (plain-clothes federal
+  agent) and stronger Zero accents on Phantom/Longshot. Cartel gunmen get an `idle_thug` hunched idle (D authors, A maps).
+- Repo size: each assembled character duplicated its glb meshes into .res (~3.5 MB per character). ENV D switches
+  assembly to reference the glb meshes (the contract node paths must not change; any change needs a lead-approved
+  contract edit first). Git LFS is deferred: it is infra with storage/bandwidth costs on the owner's GitHub account,
+  so the lead raises it with the product owner if .git approaches 2 GB (411 MB now).
+- B5-01 options hooks routed (A: FOV/sensitivity/invert/toggles; C: brightness + palettes); B5-02 Notoriety costs
+  spending cash (no offshore account); music unlocks `unlock.music.vault_hymn`/`long_con`/`last_call` (ranks VII/XIII/XXI).
