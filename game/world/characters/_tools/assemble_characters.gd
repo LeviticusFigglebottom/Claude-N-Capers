@@ -390,6 +390,12 @@ func _add_markers(skel: Skeleton3D, source: Dictionary, asset_id: String) -> voi
 				local.origin = rest.affine_inverse() * Vector3(float(v[0]), float(v[1]), float(v[2]))
 			else:
 				_error("%s SOURCE.txt %s is not [x, y, z]" % [asset_id, key])
+		elif source.has(Spec.SEAT_PREFIX + marker):
+			var seat: Variant = Spec.parse_seat(String(source[Spec.SEAT_PREFIX + marker]))
+			if seat is Vector3:
+				local.origin = rest.affine_inverse() * (seat as Vector3)
+			else:
+				_error("%s SOURCE.txt %s%s has no (model [x, y, z] ...)" % [asset_id, Spec.SEAT_PREFIX, marker])
 		var socket: Marker3D = Marker3D.new()
 		socket.name = Spec.SOCKET_NAME
 		socket.transform = _rounded(local)
