@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="SafehouseHubTweak" format=3]
 
 ; B6-06 3D safehouse hub (QC-45). Every name SafehouseHost looks up in ENV C's scene / ENV A's hooks.
-; Contract: docs/design/heists/safehouse.md ("Stations", "Contract deviations").
+; Contract: docs/contracts/hub_map.md v1.0, docs/design/heists/safehouse.md ("Stations").
 
 [ext_resource type="Script" path="res://content/ui/hub/safehouse_hub_tweak.gd" id="1"]
 
@@ -9,11 +9,12 @@
 script = ExtResource("1")
 scene_path = "res://world/hub/safehouse/safehouse.tscn"
 map_class = &"SafehouseMap"
-station_group = &"hub_station"
 stations_node = "Stations"
 station_signals = Array[StringName]([&"station_requested", &"station_used"])
 use_point_name = "UsePoint"
 station_cam_name = "StationCam"
+station_cam_fov_meta = &"fov"
+station_cam_fov = 60.0
 station_cam_blend_s = 0.35
 crew_class = &"CrewController"
 spawn_method = &"spawn_for_hub"
@@ -21,7 +22,10 @@ walker_group = &"hub_walker"
 entry_marker = &"ReturnHeist"
 range_marker = &"ReturnRange"
 heist_marker = &"ReturnHeist"
+spawn_marker = &"Spawn"
 jukebox_property = &"jukebox"
 jukebox_node = "Jukebox"
 jukebox_track_method = &"set_jukebox_track"
+duck_method = &"set_ducked"
+jukebox_station = &"jukebox"
 dim_alpha = 0.72

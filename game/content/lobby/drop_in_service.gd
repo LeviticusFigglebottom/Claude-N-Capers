@@ -9,7 +9,11 @@
 ## Host side (authority):
 ## * signal join_requested(peer_id, summary): a peer asks to drop in. `summary` = LobbyState.summary_from()
 ##   shape ({"name", "level", "notoriety", "loadout", ...}); the host UI shows it (JoinRequestDialog).
-## * answer_join(peer_id, accept): the host's decision (also sent on the dialog's auto-deny timeout).
+## * answer_join(peer_id, accept, reason = REASON_DENIED): the host's decision; a deny carries why: REASON_DENIED
+##   (the host said no), REASON_TIMEOUT (dialog auto-deny), REASON_KICKED (kicked earlier this lobby session),
+##   REASON_OFF (drop-in policy off). The joiner's join_failed reports that reason. The dialog decides with
+##   LobbySession.join_decision (kick list + LobbyState.dropin_policy: auto accepts without a dialog).
+##   An implementation with a two-argument answer_join gets (peer_id, accept) only.
 ## * kick(slot) -> bool: remove the human in crew slot `slot` (KickConfirmDialog); false when refused.
 ## Joining client:
 ## * request_join(summary): ask the host, with the loadout picked on DropInJoinScreen.
@@ -28,14 +32,18 @@ signal joined(slot: int)
 signal join_failed(peer_id: int, reason: StringName)
 signal kicked(slot: int)
 
-## Scene-tree group the UI looks the service up in (ask the lead for G.DROP_IN_SERVICE, contracts/groups.md).
-const GROUP: StringName = &"drop_in_service"
+## Scene-tree group the UI looks the service up in: alias of G.DROP_IN_SERVICE (contracts/ids.gd, D-072).
+const GROUP: StringName = G.DROP_IN_SERVICE
 const REASON_DENIED: StringName = &"denied"
 const REASON_TIMEOUT: StringName = &"timeout"
 const REASON_FULL: StringName = &"full"
 const REASON_CANCELLED: StringName = &"cancelled"
 const REASON_HOST_LOST: StringName = &"host_lost"
-const REASONS: Array[StringName] = [REASON_DENIED, REASON_TIMEOUT, REASON_FULL, REASON_CANCELLED, REASON_HOST_LOST]
+## Kicked earlier this lobby session (D-072 kick list) / the host's drop-in policy is off.
+const REASON_KICKED: StringName = &"kicked"
+const REASON_OFF: StringName = &"off"
+const REASONS: Array[StringName] = [REASON_DENIED, REASON_TIMEOUT, REASON_FULL, REASON_CANCELLED, REASON_HOST_LOST,
+	REASON_KICKED, REASON_OFF]
 const LOG_CHANNEL: StringName = &"dropin"
 
 
@@ -43,9 +51,9 @@ func _enter_tree() -> void:
 	add_to_group(GROUP)
 
 
-## Host: accept or deny a pending join request.
-func answer_join(peer_id: int, accept: bool) -> void:
-	Log.warn(LOG_CHANNEL, "answer_join(%d, %s): no drop-in service implementation" % [peer_id, accept])
+## Host: accept or deny a pending join request (`reason`: why a deny happened, REASON_*).
+func answer_join(peer_id: int, accept: bool, reason: StringName = REASON_DENIED) -> void:
+	Log.warn(LOG_CHANNEL, "answer_join(%d, %s, %s): no drop-in service implementation" % [peer_id, accept, reason])
 
 
 ## Host: remove the human in `slot`. False when refused / not implemented.

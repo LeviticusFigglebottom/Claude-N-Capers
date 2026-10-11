@@ -217,11 +217,20 @@ func test_overlay_pauses_local_input_and_fades() -> void:
 	await wait_frames(1)
 	assert_false(panel.input.visible, "overlay input hidden until opened")
 	assert_eq(panel.modulate.a, 0.0, "empty overlay is invisible")
-	var key: InputEventKey = InputEventKey.new()
-	key.keycode = panel.tweak.chat_fallback_key
-	key.pressed = true
-	if not InputMap.has_action(panel.tweak.chat_action):
-		assert_true(panel.is_open_event(key), "fallback key opens the chat")
+	assert_true(InputMap.has_action(&"chat"), "project.godot has the chat action (D-072)")
+	var enter: InputEventKey = InputEventKey.new()
+	enter.physical_keycode = KEY_ENTER
+	enter.pressed = true
+	assert_true(panel.is_open_event(enter), "Enter opens the chat")
+	var kp: InputEventKey = InputEventKey.new()
+	kp.physical_keycode = KEY_KP_ENTER
+	kp.pressed = true
+	assert_true(panel.is_open_event(kp), "keypad Enter opens the chat")
+	var t_key: InputEventKey = InputEventKey.new()
+	t_key.physical_keycode = KEY_T
+	t_key.keycode = KEY_T
+	t_key.pressed = true
+	assert_false(panel.is_open_event(t_key), "T is order_menu, not chat")
 	panel.open()
 	assert_true(panel.is_open and panel.input.visible)
 	assert_true(me.paused, "local crew member's input paused while typing")
