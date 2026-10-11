@@ -21,20 +21,20 @@ const P2: Array[String] = [
 ]
 ## P3 special-enemy clips (Phantom kick, Bulwark shield, Corpsman heal, Wrecker walk).
 const SPECIALS: Array[String] = [
-	"kick_charge", "kick_hit", "shield_walk", "shield_bang", "heal_ally", "dozer_walk",
+	"kick_charge", "kick_hit", "shield_idle", "shield_walk", "shield_bang", "heal_ally", "dozer_walk",
 ]
 const LOOPED: Array[String] = [
 	"idle", "idle_alert", "walk", "run", "sprint", "crouch_idle", "crouch_walk", "strafe_l", "strafe_r",
 	"walk_back", "aim_rifle", "aim_pistol", "kneel_cuffed", "hands_up", "cower", "lie_down", "tied",
 	"flee", "phone_call", "pager_answer", "investigate_look", "smoke", "lean_wall", "sit_chair",
 	"desk_type", "browse", "downed", "tased", "climb_ladder", "carry_bag_walk", "interact_low",
-	"interact_mid", "interact_high", "shield_walk", "dozer_walk",
+	"interact_mid", "interact_high", "shield_idle", "shield_walk", "dozer_walk",
 ]
 ## Clip -> frames at 30 fps (anim_humanoid.CLIPS).
 const FRAMES: Dictionary = {"idle": 120, "walk": 30, "run": 21, "sprint": 18, "crouch_walk": 27,
 	"fire_pistol": 9, "fire_rifle": 6, "reload_pistol": 45, "reload_rifle": 72, "death_front": 54,
 	"radio_call": 60, "carry_bag_walk": 22, "flee": 20, "kick_charge": 15, "kick_hit": 21, "shield_walk": 28,
-	"shield_bang": 24, "heal_ally": 30, "dozer_walk": 33}
+	"shield_idle": 108, "shield_bang": 24, "heal_ally": 30, "dozer_walk": 33}
 ## Contract-listed event frames of the specials (SOURCE.txt `clip.<name>: ... events=`): ENV A syncs to them.
 const SPECIAL_EVENTS: Dictionary = {
 	"kick_hit": {"impact": 6}, "shield_bang": {"bang_1": 6, "bang_2": 12, "bang_3": 18},
@@ -231,7 +231,7 @@ func test_special_events_and_speeds_in_source() -> void:
 	for line: String in text.split("\n"):
 		if line.begins_with("loops:"):
 			loops = line
-	for clip: String in ["shield_walk", "dozer_walk"]:
+	for clip: String in ["shield_idle", "shield_walk", "dozer_walk"]:
 		assert_true(loops.contains(clip), "SOURCE.txt loops: lists %s" % clip)
 
 
@@ -273,3 +273,54 @@ func test_special_walks_keep_feet_above_floor() -> void:
 				lowest = minf(lowest, (_skel.global_transform * _skel.get_bone_global_pose(_skel.find_bone(b))).origin.y)
 		_player.stop()
 		assert_true(lowest > 0.0, "%s: ankles and balls stay above the floor (lowest %f)" % [clip, lowest])
+
+
+## shield_idle (the Bulwark's braced stand): both feet stay planted on the floor (no slide) and the
+## left fist on the shield handle and the pistol hand barely move, at shield_walk's upper-body pose.
+func test_shield_idle_is_planted_and_matches_shield_walk() -> void:
+	if not _ready_or_fail():
+		return
+	var a: Animation = _anim("shield_idle")
+	if a == null:
+		fail("shield_idle missing")
+		return
+	assert_true(a.length >= 3.0 and a.length <= 4.01, "shield_idle: 3-4 s (%f)" % a.length)
+	var bones: Array[String] = ["foot.L", "foot.R", "toe.L", "toe.R", "hand.L", "hand.R"]
+	var first: Dictionary = {}
+	var drift: Dictionary = {}
+	var lowest: float = 1.0
+	var highest_toe: float = 0.0
+	_player.play(&"shield_idle")
+	var n: int = int(round(a.length * 30.0))
+	for i: int in range(n + 1):
+		_player.seek(float(i) / 30.0, true)
+		for b: String in bones:
+			var p: Vector3 = (_skel.global_transform * _skel.get_bone_global_pose(_skel.find_bone(b))).origin
+			if i == 0:
+				first[b] = p
+				drift[b] = 0.0
+			drift[b] = maxf(float(drift[b]), p.distance_to(first[b]))
+			if b.begins_with("foot") or b.begins_with("toe"):
+				lowest = minf(lowest, p.y)
+			if b.begins_with("toe"):
+				highest_toe = maxf(highest_toe, p.y)
+	_player.stop()
+	assert_true(lowest > 0.0, "shield_idle: ankles and balls above the floor (lowest %f)" % lowest)
+	assert_true(highest_toe < 0.05, "shield_idle: balls of the feet on the floor (highest %f)" % highest_toe)
+	# exact in the source (0 mm); Godot's import keyframe optimizer leaves up to ~2 mm of jitter
+	for b: String in ["foot.L", "foot.R", "toe.L", "toe.R"]:
+		assert_true(float(drift[b]) < 0.003, "shield_idle: %s planted, no slide (%f m)" % [b, drift[b]])
+	for b: String in ["hand.L", "hand.R"]:
+		assert_true(float(drift[b]) < 0.03, "shield_idle: %s steady (%f m)" % [b, drift[b]])
+	var stance: float = absf(Vector3(first["foot.L"]).x - Vector3(first["foot.R"]).x)
+	assert_true(stance > 0.3, "shield_idle: wide braced stance (%f m between the ankles)" % stance)
+	# the hands sit where shield_walk holds the shield and the pistol (so A can blend the two)
+	var walk: Animation = _anim("shield_walk")
+	if walk == null:
+		return
+	_player.play(&"shield_walk")
+	_player.seek(0.0, true)
+	for b: String in ["hand.L", "hand.R"]:
+		var p: Vector3 = (_skel.global_transform * _skel.get_bone_global_pose(_skel.find_bone(b))).origin
+		assert_true(p.distance_to(first[b]) < 0.03, "shield_idle: %s at shield_walk's grip (%f m)" % [b, p.distance_to(first[b])])
+	_player.stop()

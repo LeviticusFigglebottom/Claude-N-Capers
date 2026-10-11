@@ -36,9 +36,10 @@ WEAPONS = {"pistol": REPO / "game/assets/weapons/wpn_kestrel_p9/wpn_kestrel_p9.g
            "rifle": REPO / "game/assets/weapons/wpn_corsair_ar/wpn_corsair_ar.glb"}
 GUN_CLIPS = {"aim_pistol": "pistol", "fire_pistol": "pistol", "reload_pistol": "pistol", "downed": "pistol",
              "aim_rifle": "rifle", "fire_rifle": "rifle", "reload_rifle": "rifle", "melee": "rifle",
-             "shield_walk": "pistol", "shield_bang": "pistol", "heal_ally": "rifle", "dozer_walk": "rifle"}
+             "shield_idle": "pistol", "shield_walk": "pistol", "shield_bang": "pistol", "heal_ally": "rifle",
+             "dozer_walk": "rifle"}
 #: Clips that also show the Bulwark shield proxy (a plate on the HandL/Socket frame, _anim_humanoid.SHIELD).
-SHIELD_CLIPS = ("shield_walk", "shield_bang")
+SHIELD_CLIPS = ("shield_idle", "shield_walk", "shield_bang")
 SPECIAL_CELLS = ["kick_charge:0", "kick_charge:4", "kick_charge:10", "kick_charge:15", "kick_hit:3", "kick_hit:6",
                  "kick_hit:6:0", "kick_hit:12", "kick_hit:21", "heal_ally:7:90", "heal_ally:12:90", "heal_ally:12:30",
                  "shield_walk:0:-58", "shield_walk:14:-58", "shield_walk:0:-90", "shield_walk:0:150",

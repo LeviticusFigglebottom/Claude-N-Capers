@@ -31,7 +31,8 @@ PARAMS = {"height": 1.78}
 # then `sprint` plays during the charge); kick_hit lands its kick at `impact`; shield_bang =
 # HeavySpecialTweak.bulwark_bang_hold_s (0.8 s), one event per bang; heal_ally = corpsman_heal_lock_s (1.0 s),
 # `heal` at the injector jab; dozer_walk cadence = wrecker_step_interval_s (0.55 s per step, step_l/step_r =
-# heel strikes). shield_walk / dozer_walk are walks (1.6 m/s native): EnemyDef.move_speed (Bulwark 3.2, Wrecker
+# heel strikes). shield_idle = the Bulwark's braced stand (shield_walk's upper body, to blend with it).
+# shield_walk / dozer_walk are walks (1.6 m/s native): EnemyDef.move_speed (Bulwark 3.2, Wrecker
 # 3.5 m/s) is a run speed, i.e. speed_scale 2.0 / 2.2.
 CLIPS = {
     "idle": {"frames": 120, "loop": True, "speed": 0.0, "priority": 1},
@@ -86,6 +87,7 @@ CLIPS = {
     "kick_charge": {"frames": 15, "loop": False, "speed": 0.0, "priority": 3},
     "kick_hit": {"frames": 21, "loop": False, "speed": 0.0, "priority": 3, "events": {"impact": 6}},
     "shield_walk": {"frames": 28, "loop": True, "speed": 1.6, "priority": 3},
+    "shield_idle": {"frames": 108, "loop": True, "speed": 0.0, "priority": 3},
     "shield_bang": {"frames": 24, "loop": False, "speed": 0.0, "priority": 3,
                     "events": {"bang_1": 6, "bang_2": 12, "bang_3": 18}},
     "heal_ally": {"frames": 30, "loop": False, "speed": 0.0, "priority": 3, "events": {"heal": 12}},
@@ -143,7 +145,8 @@ def build(ctx) -> None:
         f"z=({lz[0]:.4f},{lz[1]:.4f},{lz[2]:.4f}) origin=({px:.4f},{py:.4f},{pz:.4f}) relative to bone hand.L")
     hx, hy, hz = (float(c) for c in lib.SHIELD_HANDLE * sk.scale)
     ctx.source_extra["shield_grip"] = (
-        "shield_walk/shield_bang hold the Bulwark shield at HandL/Socket (the weapon grip convention, left fist): "
+        "shield_idle/shield_walk/shield_bang hold the Bulwark shield at HandL/Socket (the weapon grip convention, "
+        "left fist): "
         "the shield pivot = its vertical handle in the fist, socket -Z = the shield face normal (forward), socket +Y = "
         f"up the handle (matches char_bulwark_shield); handle at Godot ({hx:.3f}, {hz:.3f}, {-hy:.3f}) m in the braced "
         f"stance, the shield tilted {lib.SHIELD_PITCH:g} deg top-back and turned {lib.SHIELD_YAW:g} deg; pistol "
