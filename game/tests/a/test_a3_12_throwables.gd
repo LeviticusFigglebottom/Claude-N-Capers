@@ -77,6 +77,9 @@ func test_frag_explodes_on_fuse() -> void:
 	var n: NpcBase = _target(Vector3(0, 0.05, -6))
 	var noises: Array = []
 	_rt.noise_made.connect(func(_p: Vector3, _r: float, k: StringName, _s: int) -> void: noises.append(k))
+	var cues: Array[StringName] = []
+	var on_cue: Callable = func(id: StringName, _p: Vector3, _s: int) -> void: cues.append(id)
+	EventBus.audio_cue_requested.connect(on_cue)
 	assert_eq(c.weapons.throwable_count, 3, "ThrowableDef.count")
 	await _throw(c, Vector3(0, 0.0, -6), 0.15)
 	assert_true(c.throwables.busy(), "throwing")
@@ -90,6 +93,8 @@ func test_frag_explodes_on_fuse() -> void:
 	await wait_seconds(def.fuse_s + 0.3)
 	assert_eq(_hits(n, Enums.DamageType.EXPLOSION), 1, "frag: one explosion hit")
 	assert_true(noises.has(&"explosion"), "loud")
+	EventBus.audio_cue_requested.disconnect(on_cue)
+	assert_true(cues.has(ThrownItem.CUE_FRAG) and cues.has(CrewThrowables.CUE_PIN), "audio_cues v1.3 (%s)" % [cues])
 	assert_true(get_tree().get_nodes_in_group(ThrownItem.GROUP).is_empty(), "gone after the blast")
 
 
@@ -112,6 +117,8 @@ func test_incendiary_pool_sets_npcs_burning() -> void:
 	if pools.size() == 1:
 		var item: ThrownItem = pools[0] as ThrownItem
 		assert_true(item.pool_left > 0.0, "burning")
+		var loop: CueEmitter = item.get_node_or_null(^"FireLoop") as CueEmitter
+		assert_true(loop != null and loop.cue_id == ThrownItem.CUE_FIRE_LOOP, "fire loop with the pool")
 		assert_true(Vector2(item.global_position.x, item.global_position.z).distance_to(Vector2(0, -5)) < 3.0,
 			"landed near the aim point")
 	assert_true(n.get_node_or_null(BurnStatus.NODE_NAME) != null, "the NPC in the pool burns")
