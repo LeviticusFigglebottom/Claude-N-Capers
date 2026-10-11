@@ -19,6 +19,12 @@
 ## * PlanVote.MSG_CAST / MSG_RETRACT (preplanning.md): logged in order (vote_log) so a pre-planning
 ##                screen opened later can replay them (PreplanPlan.receive_vote); the live screen
 ##                applies them itself.
+## * MSG_CHAT     {"text": String}                               any human slot (B6-03). Validated by ChatLog
+##                (`chat`): attribution by the sender's slot, control characters stripped, length cap, rate
+##                limit per sender against `now_s` (R_RATE_LIMITED / R_EMPTY). Plain text only (no BBCode).
+## * MSG_KICK     {"slot": int}                                  host only (B6-04): the human in `slot` (not the
+##                host) must leave. Net has no way to drop a peer yet (QB to A), so the kicked client's own
+##                LobbySession leaves; a modified client could ignore it.
 ## receive() rejects unknown kinds, senders that are not a human crew slot, host-only kinds from
 ## anyone but the host slot, and malformed / non-JSON-safe payloads (R_* codes).
 class_name LobbyState
@@ -28,8 +34,11 @@ const MSG_READY: StringName = &"lobby.ready"
 const MSG_PROFILE: StringName = &"lobby.profile_summary"
 const MSG_CONTRACT: StringName = &"lobby.contract"
 const MSG_START: StringName = &"lobby.start"
-const KINDS: Array[StringName] = [MSG_READY, MSG_PROFILE, MSG_CONTRACT, MSG_START, PlanVote.MSG_CAST, PlanVote.MSG_RETRACT]
-const HOST_ONLY: Array[StringName] = [MSG_CONTRACT, MSG_START]
+const MSG_CHAT: StringName = &"lobby.chat"
+const MSG_KICK: StringName = &"lobby.kick"
+const KINDS: Array[StringName] = [MSG_READY, MSG_PROFILE, MSG_CONTRACT, MSG_START, PlanVote.MSG_CAST, PlanVote.MSG_RETRACT,
+	MSG_CHAT, MSG_KICK]
+const HOST_ONLY: Array[StringName] = [MSG_CONTRACT, MSG_START, MSG_KICK]
 
 ## receive() results.
 const OK: StringName = &""
@@ -37,6 +46,8 @@ const R_UNKNOWN_KIND: StringName = &"unknown_kind"
 const R_BAD_SENDER: StringName = &"bad_sender"
 const R_NOT_HOST: StringName = &"not_host"
 const R_BAD_PAYLOAD: StringName = &"bad_payload"
+const R_EMPTY: StringName = ChatLog.R_EMPTY
+const R_RATE_LIMITED: StringName = ChatLog.R_RATE_LIMITED
 ## start_block() reasons (UI text: strings.csv `ui.lobby.block.<reason>`).
 const BLOCK_NOT_HOST: StringName = &"not_host"
 const BLOCK_STARTED: StringName = &"started"
@@ -77,6 +88,10 @@ var contract: Dictionary = {}
 var started: Dictionary = {}
 ## Plan votes in arrival order: {"slot": int, "kind": StringName, "data": Dictionary}.
 var vote_log: Array[Dictionary] = []
+## Chat history + validation (B6-03). Survives crew changes; cleared by reset().
+var chat: ChatLog = ChatLog.new()
+## Clock (seconds) for the chat rate limit; LobbySession sets it before every receive().
+var now_s: float = 0.0
 
 
 func _init(p_is_host: bool = false) -> void:
@@ -94,6 +109,7 @@ func reset(p_is_host: bool) -> void:
 	contract = {}
 	started = {}
 	vote_log = []
+	chat.clear()
 
 
 ## New crew registry. A slot whose occupant changed (other peer, turned AI, emptied) loses its ready
@@ -144,6 +160,8 @@ func receive(from_slot: int, kind: StringName, data: Dictionary) -> StringName:
 		return R_NOT_HOST
 	if not is_json_safe(data):
 		return R_BAD_PAYLOAD
+	if kind == MSG_CHAT:
+		return chat.receive(from_slot, String(slot_view(from_slot)["name"]), data, now_s)
 	return OK if _apply(from_slot, kind, data) else R_BAD_PAYLOAD
 
 
@@ -175,6 +193,9 @@ func _apply(from_slot: int, kind: StringName, data: Dictionary) -> bool:
 			if ok:
 				st["seed"] = int(data["seed"])
 				started = st
+		MSG_KICK:
+			var target: Variant = data.get("slot")
+			ok = _is_int(target) and is_human(int(target)) and int(target) != host_slot
 		PlanVote.MSG_CAST, PlanVote.MSG_RETRACT:
 			var key: String = "option" if kind == PlanVote.MSG_CAST else "group"
 			ok = data.get(key) is String and String(data[key]) != ""

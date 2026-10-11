@@ -8,6 +8,9 @@
 ## picture. A lobby message is attributed to the SENDER'S crew slot (Net.slot_of_peer) and applied by
 ## LobbyState.receive (which rejects bad senders / payloads). MSG_START emits `started` on every peer,
 ## the host included (its own message comes back through Net), which is where MenuFlow launches.
+## Chat (B6-03): send_chat() -> LobbyState.MSG_CHAT over Net.lobby_send; every accepted message emits
+## chat_received (not `changed`). Net.lobby_send is the Net autoload's RPC, so it keeps working while a heist
+## runs on the same session (MenuFlow keeps this node alive until Net.leave()): the in-heist chat uses it too.
 class_name LobbySession
 extends Node
 
@@ -20,10 +23,14 @@ signal connection_failed(reason: StringName)
 ## The session ended (local Leave, or Net.leave() from anywhere).
 signal session_left()
 signal message_rejected(from_slot: int, kind: StringName, reason: StringName)
+## A chat message was accepted (LobbyState.chat entry: id, slot, name, text, time).
+signal chat_received(entry: Dictionary)
 
 const FAIL_TIMEOUT: StringName = &"timeout"
 const FAIL_HOST_LOST: StringName = &"host_lost"
 const FAIL_UNREACHABLE: StringName = &"unreachable"
+## The host kicked this peer (LobbyState.MSG_KICK, B6-04).
+const FAIL_KICKED: StringName = &"kicked"
 const LOG_CHANNEL: StringName = &"lobby"
 
 ## The Net API node (autoload `Net` when left null before _ready).
@@ -108,6 +115,43 @@ func send_profile(l: Loadout = null) -> void:
 	net.call(&"lobby_send", LobbyState.MSG_PROFILE, LobbyState.summary_from(loadout if loadout != null else p.loadout, p))
 
 
+## Send a chat line from the local slot. Returns LobbyState.OK (sent) or why not: R_BAD_SENDER (no
+## session / no slot yet), R_EMPTY (nothing printable), R_RATE_LIMITED (this peer would reject it too).
+func send_chat(text: String) -> StringName:
+	if not _active or state.local_slot < 0:
+		return LobbyState.R_BAD_SENDER
+	var clean: String = ChatLog.clean_text(text, state.chat.max_length)
+	if clean == "":
+		return LobbyState.R_EMPTY
+	if not state.chat.can_send(state.local_slot, now()):
+		return LobbyState.R_RATE_LIMITED
+	net.call(&"lobby_send", LobbyState.MSG_CHAT, ChatLog.message(clean))
+	return LobbyState.OK
+
+
+## Chat history so far (oldest first; copies).
+func chat_history() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for e: Dictionary in state.chat.entries:
+		out.append(e.duplicate())
+	return out
+
+
+## Host: kick the human in `slot` (LobbyState.MSG_KICK; that peer's session leaves with FAIL_KICKED).
+## The lobby half of the DropInService kick(slot) interface (KickConfirmDialog calls it). False when not
+## allowed (not the host, the host's own slot, an AI / empty seat).
+func kick(slot: int) -> bool:
+	if not _active or not state.is_host or slot == state.host_slot or not state.is_human(slot):
+		return false
+	net.call(&"lobby_send", LobbyState.MSG_KICK, {"slot": slot})
+	return true
+
+
+## Session clock for the chat rate limit (seconds since start-up).
+static func now() -> float:
+	return Time.get_ticks_msec() / 1000.0
+
+
 ## Host: set the lobby's contract (from the host's Board or planning table).
 func set_contract(heist_id: StringName, difficulty: int, is_pro: bool) -> bool:
 	if not _active or not state.is_host:
@@ -172,10 +216,18 @@ func _on_lobby_message(from_peer: int, kind: StringName, data: Dictionary) -> vo
 	if slot < 0 and from_peer == int(net.call(&"local_peer_id")):
 		slot = state.local_slot
 	var before: Dictionary = state.contract
+	state.now_s = now()
 	var r: StringName = state.receive(slot, kind, data)
 	if r != LobbyState.OK:
 		Log.warn(LOG_CHANNEL, "lobby message %s from slot %d rejected: %s" % [kind, slot, r])
 		message_rejected.emit(slot, kind, r)
+		return
+	if kind == LobbyState.MSG_CHAT:
+		chat_received.emit(state.chat.last())
+		return
+	if kind == LobbyState.MSG_KICK:
+		if int(data["slot"]) == state.local_slot and not state.is_host:
+			_fail(FAIL_KICKED)
 		return
 	if kind == LobbyState.MSG_PROFILE and not state.is_legal(slot):
 		Log.warn(LOG_CHANNEL, "slot %d loadout flagged illegal: %s" % [slot, ", ".join(state.errors.get(slot, []) as Array)])
