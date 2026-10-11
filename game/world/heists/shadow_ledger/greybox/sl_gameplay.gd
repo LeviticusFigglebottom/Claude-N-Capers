@@ -435,8 +435,8 @@ func _variants_security(variants: Node3D) -> void:
 ## M3 art-hall laser plane at x 26.5 across the full room width, carried by two emitter columns
 ## (a prop root, so the raised static grid rests on a support). lz_static: 3 beams at 1.27 / 1.8 /
 ## 2.33 m (grid y 1.0-2.6; the placeholder posts are 2 m tall from the grid origin, so the origin
-## cannot go above 1.0 under the 3.0 m ceiling): crouch under (meta bypass = false: the D-048
-## check measures side gaps only, see the G1 report). lz_sweep: 3 vertical beams, 6 s. lz_timed: 4 beams,
+## cannot go above 1.0 under the 3.0 m ceiling): crouch under (meta crouch_under = true and
+## bypass = false: the QC-29 vertical-gap check instead of a side gap). lz_sweep: 3 vertical beams, 6 s. lz_timed: 4 beams,
 ## off 4 s of every 16 s.
 func _variants_lasers(variants: Node3D) -> void:
 	var lg: Node3D = _group(variants, "laser_pattern")
@@ -457,7 +457,7 @@ func _variants_lasers(variants: Node3D) -> void:
 		var metas: Dictionary = {"kind": "laser_grid"}
 		if String(r[0]) == "lz_static":
 			metas["bypass"] = false
-			metas["bypass_mode"] = "crouch_under"
+			metas["crouch_under"] = true
 		prefab(em, "laser_grid", "ArtHallLasers", Vector3(L.LASER_X, L.F42 + float(r[2]), mid), 90.0, props, null, metas)
 
 

@@ -36,6 +36,10 @@ const RARE_PRINTOUT: StringName = &"ledger_printout"
 const RARE_CAGE_OPEN: StringName = &"cage_left_open"
 const RARE_TIMELOCK: StringName = &"timelock_extended"
 const TIMELOCK_EXTRA_S: float = 60.0
+## Strings keys for the escape in Mercer's line (ENV B resolves them).
+const ESCAPE_KEYS: Dictionary = {
+	TAG_ESCAPE_HELI: &"ui.escape.heli", TAG_ESCAPE_LINE: &"ui.escape.line", TAG_ESCAPE_SERVICE: &"ui.escape.lift",
+}
 
 var _cage_open: bool = false
 var _hacked: bool = false
@@ -231,7 +235,7 @@ func _try_escape() -> void:
 	say(&"vo.mercer.shadow_ledger_required_secured")
 	activate(&"escape")
 	var tag: StringName = _escape_tag()
-	say(&"vo.mercer.shadow_ledger_escape", {"escape": tag})
+	say(&"vo.mercer.shadow_ledger_escape", {"escape": ESCAPE_KEYS.get(tag, &"ui.escape.heli")})
 	activate_escape(tag)
 
 
