@@ -20,7 +20,7 @@ func build() -> void:
 	prompt_label = UiBuild.label(&"", UiBuild.HUD)
 	prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(prompt_label)
-	progress_bar = UiBuild.bar(Color.WHITE, Vector2(320, 10))
+	progress_bar = UiBuild.bar(tweak.interaction_color, Vector2(320, 10))
 	progress_bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	v.add_child(progress_bar)
 	blocked_label = UiBuild.label(&"", UiBuild.HUD)

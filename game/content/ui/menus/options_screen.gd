@@ -1,0 +1,266 @@
+## Options screen (roadmap B5-01). Owner: ENV B. Tabs: Controls (look / hold-toggle settings and the
+## rebind list, OptionsControlsTab), Audio (one slider per bus), Video, Accessibility (palette with a
+## swatch preview, HUD scale, subtitle size). Footer: Apply / Revert / Reset tab / Back.
+##
+## Edits go to `draft` (a copy of `settings`); Apply copies it into `settings` (GameSettings.current()
+## unless set before _ready), saves it (`save_on_apply`) and pushes it into the engine (`apply()`);
+## Revert reloads the draft; Back (button, Esc / pad B) discards unapplied edits. Opened by MenuFlow
+## from the main menu, the hub's profile panel and, in a heist, the `pause` action (open_options()).
+## Focus: tab row (left/right), the page's rows (up/down; sliders use left/right), footer.
+class_name OptionsScreen
+extends UiScreen
+
+signal applied()
+
+const TAB_CONTROLS: StringName = &"controls"
+const TAB_AUDIO: StringName = &"audio"
+const TAB_VIDEO: StringName = &"video"
+const TAB_ACCESSIBILITY: StringName = &"accessibility"
+const TABS: Array[StringName] = [TAB_CONTROLS, TAB_AUDIO, TAB_VIDEO, TAB_ACCESSIBILITY]
+## Settings sections each tab edits (Reset tab resets these).
+const TAB_SECTIONS: Dictionary = {
+	&"controls": [&"controls", &"bindings"], &"audio": [&"audio"], &"video": [&"video"], &"accessibility": [&"accessibility"],
+}
+
+## Write the file on Apply (tests turn it off).
+@export var save_on_apply: bool = true
+
+var settings: GameSettings = null
+var draft: GameSettings = null
+var current_tab: StringName = TAB_CONTROLS
+## tab id -> Button / page Control / Array[Control] (the page's vertical focus order).
+var tab_buttons: Dictionary = {}
+var pages: Dictionary = {}
+var page_focus: Dictionary = {}
+var controls_tab: OptionsControlsTab
+var palette_preview: HBoxContainer
+var apply_button: Button
+var revert_button: Button
+var reset_button: Button
+var back_button: Button
+var dirty_label: Label
+var _page_host: ScrollContainer
+
+
+func build_ui() -> void:
+	if settings == null:
+		settings = GameSettings.current()
+	draft = settings.duplicate_settings()
+	draft.changed.connect(_on_draft_changed)
+	var bg: ColorRect = ColorRect.new()
+	bg.color = UiAccent.app_bg()
+	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(bg)
+	var root: VBoxContainer = UiBuild.vbox(18)
+	UiBuild.screen_margin(self, root)
+	var header: HBoxContainer = UiBuild.hbox(20)
+	header.add_child(UiAccent.strip(UiAccent.table().fallback, 6.0))
+	header.add_child(UiBuild.label(&"ui.options.title", UiBuild.HEADER))
+	root.add_child(header)
+	var tab_row: HBoxContainer = UiBuild.hbox(12)
+	var group: ButtonGroup = ButtonGroup.new()
+	for t: StringName in TABS:
+		var b: Button = UiBuild.button(StringName("ui.options.tab.%s" % t))
+		b.custom_minimum_size = Vector2(260, 0)
+		b.toggle_mode = true
+		b.button_group = group
+		b.pressed.connect(show_tab.bind(t))
+		tab_row.add_child(b)
+		tab_buttons[t] = b
+	root.add_child(tab_row)
+	_page_host = ScrollContainer.new()
+	_page_host.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_page_host.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_page_host.follow_focus = true
+	root.add_child(_page_host)
+	root.add_child(_build_footer())
+	_build_pages()
+	show_tab(current_tab, false)
+
+
+func _build_footer() -> HBoxContainer:
+	var footer: HBoxContainer = UiBuild.hbox(16)
+	apply_button = UiBuild.primary(UiBuild.button(&"ui.options.apply"))
+	revert_button = UiBuild.button(&"ui.options.revert")
+	reset_button = UiBuild.button(&"ui.options.reset_tab")
+	back_button = UiBuild.button(&"ui.menu.back")
+	for b: Button in [apply_button, revert_button, reset_button, back_button]:
+		b.custom_minimum_size = Vector2(240, 0)
+		footer.add_child(b)
+	apply_button.pressed.connect(apply_changes)
+	revert_button.pressed.connect(revert)
+	reset_button.pressed.connect(reset_tab)
+	back_button.pressed.connect(back_requested.emit)
+	dirty_label = UiBuild.label(&"ui.options.unapplied", UiBuild.DIM)
+	dirty_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	footer.add_child(dirty_label)
+	var chain: Array[Control] = [apply_button, revert_button, reset_button, back_button]
+	UiNav.chain_horizontal(chain)
+	_update_dirty()
+	return footer
+
+
+## Shows tab `t` and rebuilds the focus chain (focus moves to the tab's first row when `focus` is set).
+func show_tab(t: StringName, focus: bool = true) -> void:
+	if not pages.has(t):
+		return
+	if controls_tab != null:
+		controls_tab.cancel_capture()
+		controls_tab.cancel_conflict()
+	current_tab = t
+	for id: Variant in pages:
+		(pages[id] as Control).visible = id == t
+		(tab_buttons[id] as Button).set_pressed_no_signal(id == t)
+	_rechain()
+	if focus and is_visible_in_tree():
+		for c: Control in page_focus[t] as Array[Control]:
+			if c.is_visible_in_tree() and not (c is BaseButton and (c as BaseButton).disabled):
+				OptionsRows.focus_later(c)
+				break
+
+
+## True when the draft differs from the applied settings.
+func is_dirty() -> bool:
+	return not draft.equals(settings)
+
+
+## Copies the draft into `settings`, saves it (save_on_apply) and applies it to the engine.
+func apply_changes() -> void:
+	settings.copy_from(draft)
+	if save_on_apply:
+		settings.save()
+	settings.apply(get_viewport())
+	_update_dirty()
+	applied.emit()
+
+
+## Drops unapplied edits (the pages are rebuilt from `settings`).
+func revert() -> void:
+	draft.copy_from(settings)
+	_build_pages()
+	show_tab(current_tab)
+
+
+## The current tab's settings back to their defaults (in the draft; Apply to keep them).
+func reset_tab() -> void:
+	for section: Variant in TAB_SECTIONS[current_tab]:
+		draft.reset_section(StringName(section))
+	_build_pages()
+	show_tab(current_tab)
+
+
+func _build_pages() -> void:
+	for c: Node in _page_host.get_children():
+		_page_host.remove_child(c)
+		c.queue_free()
+	var host: VBoxContainer = UiBuild.vbox(0)
+	host.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_page_host.add_child(host)
+	pages.clear()
+	page_focus.clear()
+	for t: StringName in TABS:
+		var page: VBoxContainer = UiBuild.vbox(10)
+		page.name = "Page_%s" % t
+		page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		host.add_child(page)
+		pages[t] = page
+		page_focus[t] = _fill_page(t, page)
+
+
+func _fill_page(t: StringName, page: VBoxContainer) -> Array[Control]:
+	var out: Array[Control] = []
+	match t:
+		TAB_CONTROLS:
+			out = _rows(page, GameSettings.CONTROLS)
+			page.add_child(HSeparator.new())
+			controls_tab = OptionsControlsTab.new()
+			page.add_child(controls_tab)
+			controls_tab.setup(draft)
+			controls_tab.bindings_changed.connect(_update_dirty)
+			out.append_array(controls_tab.focus_controls())
+		TAB_ACCESSIBILITY:
+			out = _rows(page, GameSettings.ACCESSIBILITY)
+			palette_preview = UiBuild.hbox(8)
+			palette_preview.name = "PalettePreview"
+			page.add_child(palette_preview)
+			_refresh_palette_preview()
+		_:
+			out = _rows(page, StringName(t))
+	return out
+
+
+## One row per key of `section` (slider / toggle / dropdown by spec type).
+func _rows(page: VBoxContainer, section: StringName) -> Array[Control]:
+	var out: Array[Control] = []
+	for key: StringName in draft.defaults.keys(section):
+		var sp: Dictionary = draft.defaults.spec(section, key)
+		var c: Control = null
+		match String(sp.get("type", "")):
+			SettingsDefaults.T_FLOAT:
+				c = OptionsRows.slider(page, draft, section, key)
+			SettingsDefaults.T_BOOL:
+				c = OptionsRows.toggle(page, draft, section, key)
+			_:
+				c = OptionsRows.choice(page, draft, section, key)
+		out.append(c)
+	return out
+
+
+func _rechain() -> void:
+	var tabs: Array[Control] = []
+	for t: StringName in TABS:
+		tabs.append(tab_buttons[t] as Control)
+	UiNav.chain_horizontal(tabs)
+	var vertical: Array[Control] = [tab_buttons[current_tab] as Control]
+	vertical.append_array(page_focus.get(current_tab, []) as Array[Control])
+	vertical.append(apply_button)
+	focus_chain = vertical
+	UiNav.chain_vertical(focus_chain)
+	var last: Control = vertical[vertical.size() - 2]
+	for b: Control in [revert_button, reset_button, back_button]:
+		b.focus_neighbor_top = b.get_path_to(last)
+		b.focus_neighbor_bottom = b.get_path_to(tab_buttons[current_tab] as Control)
+	for t: StringName in TABS:
+		var tb: Control = tab_buttons[t] as Control
+		tb.focus_neighbor_top = tb.get_path_to(apply_button)
+		var first: Control = vertical[1] if vertical.size() > 2 else apply_button
+		tb.focus_neighbor_bottom = tb.get_path_to(first)
+
+
+func _refresh_palette_preview() -> void:
+	if palette_preview == null or not is_instance_valid(palette_preview):
+		return
+	for c: Node in palette_preview.get_children():
+		palette_preview.remove_child(c)
+		c.queue_free()
+	var p: HudPalette = HudPaletteSet.active(draft)
+	for f: StringName in HudPalette.FIELDS:
+		var sw: ColorRect = ColorRect.new()
+		sw.color = p.color(f)
+		sw.custom_minimum_size = Vector2(48, 28)
+		sw.tooltip_text = UiText.t(StringName("ui.options.palette.field.%s" % f))
+		palette_preview.add_child(sw)
+
+
+func _on_draft_changed(section: StringName, _key: StringName) -> void:
+	if section == GameSettings.ACCESSIBILITY:
+		_refresh_palette_preview()
+	_update_dirty()
+
+
+func _update_dirty() -> void:
+	if apply_button == null:
+		return
+	var d: bool = is_dirty()
+	apply_button.disabled = not d
+	revert_button.disabled = not d
+	dirty_label.visible = d
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if controls_tab != null and (controls_tab.is_capturing() or not controls_tab.pending_conflict.is_empty()) \
+			and event.is_action_pressed(&"ui_cancel"):
+		get_viewport().set_input_as_handled()
+		controls_tab.resolve_conflict(OptionsControlsTab.CANCEL)
+		return
+	super._unhandled_input(event)

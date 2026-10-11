@@ -1989,3 +1989,153 @@ item.deployable.armor_bag.desc,"Holds your chosen armor. You start the job in a 
 ui.loadout.deployable_locked,"{item} (locked: perk card {card}, {name})"
 ui.prompt.pick_up_gear,Hold {key} to pick up your gear
 ui.blocked.civilian,You need your gear
+ui.options.title,Options
+ui.options.tab.controls,Controls
+ui.options.tab.audio,Audio
+ui.options.tab.video,Video
+ui.options.tab.accessibility,Accessibility
+ui.options.apply,Apply
+ui.options.revert,Revert
+ui.options.reset_tab,Reset Tab
+ui.options.unapplied,Unapplied changes
+ui.options.on,On
+ui.options.off,Off
+ui.options.value.percent,{value}%
+ui.options.value.degrees,{value}°
+ui.options.value.multiplier,{value}x
+ui.options.audio.master,Master Volume
+ui.options.audio.music,Music
+ui.options.audio.sfx,Sound Effects
+ui.options.audio.weapons,Weapons
+ui.options.audio.enemies,Enemies
+ui.options.audio.world,World
+ui.options.audio.ui,Interface
+ui.options.audio.voice,Voice
+ui.options.audio.ambience,Ambience
+ui.options.video.window_mode,Window Mode
+ui.options.video.window_mode.windowed,Windowed
+ui.options.video.window_mode.fullscreen,Borderless Fullscreen
+ui.options.video.window_mode.exclusive_fullscreen,Exclusive Fullscreen
+ui.options.video.vsync,V-Sync
+ui.options.video.max_fps,Frame Rate Limit
+ui.options.video.max_fps.unlimited,Unlimited
+ui.options.video.max_fps.value,{value} FPS
+ui.options.video.render_scale,Render Scale
+ui.options.video.msaa,MSAA
+ui.options.video.msaa.off,Off
+ui.options.video.msaa.2x,2x
+ui.options.video.msaa.4x,4x
+ui.options.video.msaa.8x,8x
+ui.options.video.fxaa,FXAA
+ui.options.video.brightness,Brightness
+ui.options.video.fov,Field of View
+ui.options.controls.mouse_sensitivity_x,Mouse Sensitivity (Horizontal)
+ui.options.controls.mouse_sensitivity_y,Mouse Sensitivity (Vertical)
+ui.options.controls.invert_y,Invert Vertical Look
+ui.options.controls.pad_sensitivity,Gamepad Look Sensitivity
+ui.options.controls.pad_deadzone,Gamepad Deadzone
+ui.options.controls.aim_mode,Aim Down Sights
+ui.options.controls.crouch_mode,Crouch
+ui.options.controls.sprint_mode,Sprint
+ui.options.mode.hold,Hold
+ui.options.mode.toggle,Toggle
+ui.options.controls.action,Action
+ui.options.controls.kbm,Keyboard / Mouse
+ui.options.controls.pad,Gamepad
+ui.options.controls.unbound,-
+ui.options.controls.reset,Reset
+ui.options.controls.reset_all,Reset All Bindings
+ui.options.controls.press_key,Press a key or mouse button for {action}. Esc cancels.
+ui.options.controls.press_pad,Press a gamepad button or push a stick for {action}. Esc cancels.
+ui.options.controls.waiting,...
+ui.options.controls.conflict,"{input} is already bound to {actions}. Swap them, keep both on {input} for {action}, or cancel?"
+ui.options.controls.swap,Swap
+ui.options.controls.keep_both,Keep Both
+ui.options.accessibility.palette,Colour Palette
+ui.options.accessibility.hud_scale,HUD Scale
+ui.options.accessibility.subtitle_size,Subtitle Size
+ui.options.accessibility.subtitle_size.small,Small
+ui.options.accessibility.subtitle_size.medium,Medium
+ui.options.accessibility.subtitle_size.large,Large
+ui.options.palette.default,Default
+ui.options.palette.deuteranopia,Deuteranopia (green-weak)
+ui.options.palette.protanopia,Protanopia (red-weak)
+ui.options.palette.tritanopia,Tritanopia (blue-weak)
+ui.options.palette.high_contrast,High Contrast
+ui.options.palette.field.detection_suspicious,Detection: suspicious
+ui.options.palette.field.detection_alert,Detection: alert
+ui.options.palette.field.detection_detected,Detection: detected
+ui.options.palette.field.health,Health
+ui.options.palette.field.armor,Armor
+ui.options.palette.field.low_health,Low health / warnings
+ui.options.palette.field.ally_marker,Crew
+ui.options.palette.field.enemy_marker,Marked enemies
+ui.options.palette.field.objective,Objectives
+ui.options.palette.field.loot_highlight,Loot
+ui.options.palette.field.interaction_highlight,Interaction
+ui.options.input.mouse_1,Mouse Left
+ui.options.input.mouse_2,Mouse Right
+ui.options.input.mouse_3,Mouse Middle
+ui.options.input.mouse_4,Wheel Up
+ui.options.input.mouse_5,Wheel Down
+ui.options.input.mouse_6,Wheel Left
+ui.options.input.mouse_7,Wheel Right
+ui.options.input.mouse_8,Mouse 4
+ui.options.input.mouse_9,Mouse 5
+ui.options.pad.button,Pad Button {n}
+ui.options.pad.button_0,A / Cross
+ui.options.pad.button_1,B / Circle
+ui.options.pad.button_2,X / Square
+ui.options.pad.button_3,Y / Triangle
+ui.options.pad.button_4,Back / Select
+ui.options.pad.button_5,Guide
+ui.options.pad.button_6,Start / Menu
+ui.options.pad.button_7,Left Stick Press
+ui.options.pad.button_8,Right Stick Press
+ui.options.pad.button_9,Left Bumper
+ui.options.pad.button_10,Right Bumper
+ui.options.pad.button_11,D-Pad Up
+ui.options.pad.button_12,D-Pad Down
+ui.options.pad.button_13,D-Pad Left
+ui.options.pad.button_14,D-Pad Right
+ui.options.pad.button_15,Misc / Share
+ui.options.pad.axis,Pad Axis {n}{dir}
+ui.options.pad.axis_0_neg,Left Stick Left
+ui.options.pad.axis_0_pos,Left Stick Right
+ui.options.pad.axis_1_neg,Left Stick Up
+ui.options.pad.axis_1_pos,Left Stick Down
+ui.options.pad.axis_2_neg,Right Stick Left
+ui.options.pad.axis_2_pos,Right Stick Right
+ui.options.pad.axis_3_neg,Right Stick Up
+ui.options.pad.axis_3_pos,Right Stick Down
+ui.options.pad.axis_4_neg,Left Trigger (-)
+ui.options.pad.axis_4_pos,Left Trigger
+ui.options.pad.axis_5_neg,Right Trigger (-)
+ui.options.pad.axis_5_pos,Right Trigger
+ui.action.move_forward,Move Forward
+ui.action.move_back,Move Back
+ui.action.move_left,Move Left
+ui.action.move_right,Move Right
+ui.action.sprint,Sprint
+ui.action.crouch,Crouch
+ui.action.jump,Jump
+ui.action.look_up,Look Up
+ui.action.look_down,Look Down
+ui.action.look_left,Look Left
+ui.action.look_right,Look Right
+ui.action.fire,Fire
+ui.action.aim,Aim Down Sights
+ui.action.reload,Reload
+ui.action.melee,Melee
+ui.action.slot_primary,Primary Weapon
+ui.action.slot_secondary,Secondary Weapon
+ui.action.swap_weapon,Swap Weapon
+ui.action.interact,Interact
+ui.action.shout,Shout / Mark
+ui.action.mask_up,Mask Up
+ui.action.throw_item,Throwable
+ui.action.deploy,Deployable
+ui.action.drop_bag,Throw Bag
+ui.action.order_menu,Crew Order
+ui.action.scoreboard,Scoreboard
+ui.action.pause,Options / Pause

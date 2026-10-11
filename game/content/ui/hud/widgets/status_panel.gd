@@ -16,6 +16,7 @@ func build() -> void:
 	bag_label = _add(v)
 	hostages_label = _add(v)
 	warnings_label = _add(v)
+	bag_label.add_theme_color_override(&"font_color", tweak.loot_color)
 	warnings_label.add_theme_color_override(&"font_color", tweak.assault_color)
 
 

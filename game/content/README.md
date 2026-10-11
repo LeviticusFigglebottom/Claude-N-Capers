@@ -18,6 +18,7 @@ content/
   lobby/                    LobbyState (co-op lobby model), LobbySession (Net glue), LobbyAddress, LobbyTweak
   progression/              LoadoutResolver, StatCalculator, PayoutCalculator, XpCurve
   save/                     SaveService, PlayerProfile
+  settings/                 GameSettings (options + settings.cfg), InputBindings, InputEventCodec, SettingsApplier
   strings/                  StringTable
   ui/                       every UI scene (menus, HUD, results); hud/mock/ = LocalHudModel mock
 ```
@@ -88,6 +89,22 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   save), `record(profile, event, ctx)`, `progress/is_unlocked`. State: `PlayerProfile.achievements` (save v5).
   Screen: `AchievementsScreen` (`ui/achievements/`), from the hub profile panel (`HubMenu.achievements_requested`
   -> `MenuFlow._open_achievements()`); payday lists unlocks (`ui.results.achievement_unlocked`).
+* **Options (B5-01; brief: `content/docs/options.md`).** `GameSettings.current()` (`settings/game_settings.gd`):
+  audio (0..1 per bus), video (window mode, vsync, max FPS, render scale, MSAA, FXAA, brightness, **FOV**),
+  controls (**mouse sensitivity x/y, invert Y, pad sensitivity, deadzone, hold/toggle aim/crouch/sprint**),
+  accessibility (HUD palette, HUD scale, subtitle size) and input bindings; `get_value/set_value`, signal
+  `changed(section, key)`; ENV A reads `fov()`, `mouse_sensitivity()`, `invert_y()`, `pad_sensitivity()`,
+  `pad_deadzone()`, `is_toggle(action)`. Defaults/ranges: `data/settings/settings_defaults.tres`
+  (`SettingsDefaults`). File `user://settings.cfg` (ConfigFile v1; `GameSettings.root_dir` for tests).
+  `apply()` = `SettingsApplier` (AudioServer buses on top of the layout's mix level, window/viewport,
+  InputMap) and runs in `MenuFlow._ready`. Rebinding: `InputBindings` (KBM / PAD columns, conflicts that
+  ignore project-designed shared keys, swap / keep both, reset per action / all) over `InputEventCodec`
+  plain dicts. HUD palettes: `data/ui/hud_palettes.tres` (`HudPaletteSet` / `HudPalette`, ids default,
+  deuteranopia, protanopia, tritanopia, high_contrast); `Hud` follows the palette and `hud_scale` live;
+  `ColorVision` (Machado 2009 + CIE76) for checks. Screen: `OptionsScreen` (`ui/menus/options_screen.tscn`)
+  via `MenuFlow.options_menu` (`MenuOptions`): main menu Options, hub `HubMenu.options_requested`, and the
+  `pause` action in a heist (overlay over the HUD; local crew input paused). Strings `ui.options.*`,
+  action names `ui.action.<action>`.
 * `ContentDB.inject(kind, key, res)`: tests/tooling only (test-only SkillDef/PerkDeckDef);
   `clear_cache()` drops it.
 * `XpCurve.level_for_xp(xp)`, `xp_for_level(level)`. `VoiceLineTable` at `data/voice/lines.tres`.

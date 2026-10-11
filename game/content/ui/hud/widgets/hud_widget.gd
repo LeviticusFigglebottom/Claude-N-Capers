@@ -25,6 +25,20 @@ func build() -> void:
 	pass
 
 
+## B5-01: switch to `t` (an accessibility palette applied to HudTweak, HudPaletteSet) and rebuild the
+## child controls so every colour taken at build time follows.
+func set_tweak(t: HudTweak) -> void:
+	tweak = t if t != null else HudTweak.load_default()
+	if not is_node_ready():
+		return
+	for c: Node in get_children():
+		remove_child(c)
+		c.queue_free()
+	build()
+	refresh()
+	queue_redraw()
+
+
 ## Override: model signal names that should trigger refresh().
 func watched_signals() -> Array[StringName]:
 	return []
