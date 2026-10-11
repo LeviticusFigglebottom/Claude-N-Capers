@@ -152,9 +152,14 @@ def clip_break_reload(kit, s: FPSet, N: int):
 # =============================================================================================
 # crossbow
 # =============================================================================================
+#: the cocking pull's key ease (hook(0) at cock -> hook(1) at string_back); string_pos follows the same curve
+STRING_PULL_EASE = "heavy"
+
+
 def string_pos(f: int, ev: dict | None, fire: bool = False) -> float:
-    """``String`` position 0 (released, scene pose) .. 1 (latched): fire = 1 -> 0 over frames 0..1;
-    reload: 0 until the hook (cock), follows the hand back to the latch by string_back."""
+    """String centre position 0 (released, the Vise's scene pose) .. 1 (latched): fire = 1 -> 0 over frames 0..1;
+    reload: 0 until the hook (cock), then follows the hand back to the latch by string_back with the hand's own
+    ``heavy`` key ease ((f - cock) / (string_back - cock))^2.4, so the hooked fingers stay on the centre."""
     if fire:
         return 1.0 if f <= 0 else 0.0
     c, sb = ev["cock"], ev["string_back"]
@@ -162,7 +167,7 @@ def string_pos(f: int, ev: dict | None, fire: bool = False) -> float:
         return 0.0
     if f >= sb:
         return 1.0
-    return smooth(c, sb, f)
+    return float(A.EASES[STRING_PULL_EASE]((f - c) / (sb - c)))
 
 
 def string_centre(s: FPSet, t: float) -> np.ndarray:
@@ -202,7 +207,7 @@ def clip_crossbow_reload(kit, s: FPSet, N: int):
     keys = [K(0, hip, sup, g, blade=bl),
             K(c - 5, tilt, hook(0.0, "flat").moved(v3(0.0, 0.03, 0.04)), g, blade=bl, arc_l=(-0.04, 0.0, 0.04)),
             K(c, tilt, hook(0.0), g, blade=bl, ease="out"),
-            K(sb, pull, hook(1.0), g, blade=bl, ease="heavy"),
+            K(sb, pull, hook(1.0), g, blade=bl, ease=STRING_PULL_EASE),
             K(sb + min(3, max(1, (bs - sb) // 3)), tilt, hook(1.0, "relaxed").moved(v3(-0.02, 0.0, 0.03)), g, blade=bl, ease="out"),
             K(bs, tilt, bolt_grip, g, mag=mag_for(pouch), blade=bl, arc_l=(-0.06, 0.0, 0.0)),
             K(bi - 7, tilt, bolt_grip, g, mag=("w", I3.copy(), v3(-0.004, -0.075, 0.030)), blade=bl,
