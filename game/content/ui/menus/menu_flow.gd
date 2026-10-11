@@ -419,6 +419,7 @@ func _on_preplan_confirmed(plan: Dictionary) -> void:
 	_connect_loadout_subscreens(loadout_screen)
 	if is_coop():
 		loadout_screen.launch_button.text = UiText.t(&"ui.lobby.ready_up")
+		loadout_screen.set_taken_heisters(lobby.state.heisters_taken_by_others(lobby.state.local_slot))  # D-073
 	show_screen(loadout_screen)
 
 
@@ -635,9 +636,18 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 ## pro job Board contract (omitted otherwise; informational for ENV A, the payout side is ours).
 ## `music_track` (always present, B5-03 / D-062) = the picked track id, &"" = HeistDef.music_track; callers
 ## pass MusicCatalog.resolve_choice(profile) so a removed or locked pick is already &"".
+## D-073: `resolved.heister` is set to the player's pick (no preference = the first heister in roster order)
+## and the AI teammates get the remaining heisters as loadouts of their own (Heisters.solo / ai_loadouts:
+## ENV A's default AI loadout + `heister`), so every launched slot has a distinct heister.
 static func build_launch_options(ai_teammates: int, local_slot: int, resolved: Loadout,
 		plan: Dictionary = {}, pro: bool = false, music: StringName = &"") -> Dictionary:
-	var options: Dictionary = {"ai_teammates": ai_teammates, "loadouts": {local_slot: resolved}, "music_track": music}
+	var loadouts: Dictionary = {local_slot: resolved}
+	if resolved != null:
+		var heisters: Dictionary = Heisters.solo(resolved.heister, local_slot, ai_teammates)
+		resolved.heister = StringName(heisters[local_slot])
+		heisters.erase(local_slot)
+		loadouts.merge(Heisters.ai_loadouts(heisters))
+	var options: Dictionary = {"ai_teammates": ai_teammates, "loadouts": loadouts, "music_track": music}
 	if not plan.is_empty():
 		options["preplan"] = plan
 	if pro:
@@ -882,7 +892,7 @@ func launch_coop(info: Dictionary) -> void:
 	_difficulty = int(info["difficulty"])
 	is_pro = bool(info["is_pro"])
 	var options: Dictionary = build_coop_launch_options(lobby.state.launch_loadouts(), preplan, is_pro,
-			MusicCatalog.resolve_choice(_menu_profile()))
+			MusicCatalog.resolve_choice(_menu_profile()), Heisters.ai_loadouts(lobby.state.ai_heisters()))
 	visible = false
 	_spawn_in_heist_ui()
 	runtime = await launcher.call(&"launch", _heist_id, int(info["seed"]), _difficulty, null, options)
@@ -896,9 +906,13 @@ func launch_coop(info: Dictionary) -> void:
 ## Co-op HeistLauncher options: `loadouts` = {slot: resolved Loadout} of the human slots
 ## (LobbyState.launch_loadouts()), `ai_teammates` = the seats left, plus `preplan` / `is_pro` as in
 ## build_launch_options(); `music_track` = the HOST's pick (host wins; ENV A replicates the options).
+## D-073: `ai_loadouts` = {slot: Loadout} for the AI seats (Heisters.ai_loadouts(LobbyState.ai_heisters()): the
+## default AI loadout with a heister left over), merged into `loadouts`; `ai_teammates` counts the seats humans leave.
 static func build_coop_launch_options(loadouts: Dictionary, plan: Dictionary = {}, pro: bool = false,
-		music: StringName = &"") -> Dictionary:
-	var options: Dictionary = {"ai_teammates": maxi(LobbyState.MAX_CREW - loadouts.size(), 0), "loadouts": loadouts,
+		music: StringName = &"", ai_loadouts: Dictionary = {}) -> Dictionary:
+	var all: Dictionary = loadouts.duplicate()
+	all.merge(ai_loadouts)
+	var options: Dictionary = {"ai_teammates": maxi(LobbyState.MAX_CREW - loadouts.size(), 0), "loadouts": all,
 			"music_track": music}
 	if not plan.is_empty():
 		options["preplan"] = plan

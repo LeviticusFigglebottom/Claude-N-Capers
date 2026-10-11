@@ -84,6 +84,7 @@ that has the field. v0 is the pre-versioned dev save; its `money` became `cash` 
 | `perk_deck` | id | `""` | `perk.*`. An unknown deck is cleared. |
 | `perk_deck_cards` | int | 0 | Mirrors `perk_cards[perk_deck]`. |
 | `skills` | object | `{}` | The active skill set. |
+| `heister` | short id | `""` | D-073, added inside v6 (no migration: a missing key reads as `""`). `rook` / `sable` / `dutch` / `wren`; `""` = no preference (the first free heister at launch). An unknown id is cleared to `""`. Fixture `v6_heister`. |
 
 ## Migrations (each step is kept; never edit a shipped step)
 | Step | Change |

@@ -9,6 +9,10 @@
 ##                join and after every loadout change. `music` (B5-03) = the sender's resolved music pick
 ##                (MusicCatalog.resolve_choice; "" = heist default; missing or not a String reads as ""):
 ##                only the HOST's is used, shown read-only to clients (slot_view "music", host_music()).
+##                `loadout.heister` (D-073) = the sender's heister pick ("" = no preference); every peer
+##                serves picks first-come (heister_assignment(), rule in Heisters): the slot whose current pick
+##                arrived first keeps it, a later conflicting pick falls back to the next free heister, and
+##                AI / empty seats fill the rest. An unknown heister id is illegal.
 ##                Every peer validates it with validate_summary()
 ##                (SkillPoints.validate + LoadoutResolver mod legality + known ids, architecture §11):
 ##                an illegal summary is FLAGGED on its slot and blocks Start; the host never launches it.
@@ -60,7 +64,7 @@ const MAX_CREW: int = 4
 const MAX_PERK_CARDS: int = 9
 ## Loadout fields carried by a profile summary (StringName ids; *_mods are id lists).
 const ID_FIELDS: Array[String] = ["primary", "secondary", "melee", "throwable", "deployable",
-	"deployable_secondary", "armor", "mask", "perk_deck"]
+	"deployable_secondary", "armor", "mask", "perk_deck", "heister"]
 const MOD_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 ## Item kind each id field is checked against (ContentDB kinds).
 const FIELD_KINDS: Dictionary = {
@@ -92,6 +96,9 @@ var vote_log: Array[Dictionary] = []
 var chat: ChatLog = ChatLog.new()
 ## Clock (seconds) for the chat rate limit; LobbySession sets it before every receive().
 var now_s: float = 0.0
+## slot -> claim number of the slot's current heister pick (D-073: lower = earlier = keeps the heister).
+var heister_claims: Dictionary = {}
+var _claim_counter: int = 0
 
 
 func _init(p_is_host: bool = false) -> void:
@@ -110,6 +117,8 @@ func reset(p_is_host: bool) -> void:
 	started = {}
 	vote_log = []
 	chat.clear()
+	heister_claims = {}
+	_claim_counter = 0
 
 
 ## New crew registry. A slot whose occupant changed (other peer, turned AI, emptied) loses its ready
@@ -177,6 +186,7 @@ func _apply(from_slot: int, kind: StringName, data: Dictionary) -> bool:
 			var s: Dictionary = sanitize_summary(data)
 			ok = not s.is_empty()
 			if ok:
+				_claim_heister(from_slot, s)
 				summaries[from_slot] = s
 				errors[from_slot] = validate_summary(s)
 		MSG_CONTRACT:
@@ -242,7 +252,56 @@ func launch_loadouts() -> Dictionary:
 	var out: Dictionary = {}
 	for slot: int in human_slots():
 		if is_legal(slot):
-			out[slot] = LoadoutResolver.resolve(loadout_from_dict(summaries[slot]["loadout"] as Dictionary))
+			var l: Loadout = LoadoutResolver.resolve(loadout_from_dict(summaries[slot]["loadout"] as Dictionary))
+			l.heister = heister_of(slot)
+			out[slot] = l
+	return out
+
+
+## D-073 heisters for every crew slot 0..MAX_CREW-1 (slot -> id; see Heisters for the rule): human slots
+## with a summary in claim order (first claim keeps its pick), then every other slot (AI, empty seats the
+## launcher fills with AI, humans still joining) in slot order.
+func heister_assignment() -> Dictionary:
+	var order: Array[int] = []
+	var picks: Dictionary = {}
+	for slot: int in human_slots():
+		if summaries.has(slot):
+			order.append(slot)
+			picks[slot] = StringName(String((summaries[slot]["loadout"] as Dictionary).get("heister", "")))
+	order.sort_custom(func(a: int, b: int) -> bool:
+		var ca: int = int(heister_claims.get(a, 0))
+		var cb: int = int(heister_claims.get(b, 0))
+		return ca < cb or (ca == cb and a < b))
+	var fill: Array[int] = []
+	for slot: int in range(MAX_CREW):
+		if not order.has(slot) and not is_human(slot):
+			fill.append(slot)
+	return Heisters.assign(order, picks, fill)
+
+
+## The heister `slot` launches as (&"" for a human without a summary yet).
+func heister_of(slot: int) -> StringName:
+	return StringName(heister_assignment().get(slot, &""))
+
+
+## Heisters the other HUMAN slots hold (AI only fills what is left): the loadout picker marks them taken.
+## Claim order is each peer's own arrival order; the host's view decides the launch (launch_loadouts).
+func heisters_taken_by_others(slot: int) -> Array[StringName]:
+	var out: Array[StringName] = []
+	var a: Dictionary = heister_assignment()
+	for s: Variant in a:
+		if int(s) != slot and is_human(int(s)) and StringName(a[s]) != &"":
+			out.append(StringName(a[s]))
+	return out
+
+
+## Heisters of the AI slots and empty seats (slot -> id), for their HeistLauncher loadouts (Heisters.ai_loadouts).
+func ai_heisters() -> Dictionary:
+	var out: Dictionary = {}
+	var a: Dictionary = heister_assignment()
+	for s: Variant in a:
+		if not is_human(int(s)):
+			out[int(s)] = a[s]
 	return out
 
 
@@ -255,7 +314,8 @@ func slot_view(slot: int) -> Dictionary:
 		"is_local": slot == local_slot, "is_host": slot == host_slot and not c.is_empty(),
 		"name": String(s.get("name", c.get("display_name", ""))), "ready": is_ready(slot),
 		"has_summary": not s.is_empty(), "level": int(s.get("level", 0)), "notoriety": int(s.get("notoriety", 0)),
-		"music": StringName(String(s.get("music", ""))),
+		"music": StringName(String(s.get("music", ""))), "heister": heister_of(slot),
+		"heister_pick": StringName(String((s.get("loadout", {}) as Dictionary).get("heister", ""))),
 		"loadout": (s.get("loadout", {}) as Dictionary).duplicate(true),
 		"legal": is_legal(slot), "errors": (errors.get(slot, []) as Array).duplicate(),
 	}
@@ -405,6 +465,9 @@ static func validate_summary(s: Dictionary) -> Array[String]:
 		skills[StringName(String(k))] = int(src[k])
 	for e: String in SkillPoints.validate(skills, SkillPoints.points_for_level(clampi(level, 0, max_level))):
 		out.append("skills: " + e)
+	var heister: StringName = StringName(String(ld.get("heister", "")))
+	if heister != &"" and not Heisters.is_known(heister):
+		out.append("heister: unknown id %s" % heister)
 	var mask: StringName = StringName(String(ld.get("mask", "")))
 	if mask != &"":
 		if MaskCatalog.is_custom_id(mask):
@@ -489,7 +552,17 @@ static func mask_def(loadout_dict: Dictionary) -> MaskDef:
 	return ContentDB.mask(id) as MaskDef if _known(ContentDB.MASKS, id) else null
 
 
+## A new or changed heister pick takes the next claim number; re-sending the same pick keeps its place.
+func _claim_heister(slot: int, summary: Dictionary) -> void:
+	var pick: String = String((summary["loadout"] as Dictionary).get("heister", ""))
+	var old: Dictionary = summaries.get(slot, {}) as Dictionary
+	if old.is_empty() or not heister_claims.has(slot) or String((old["loadout"] as Dictionary).get("heister", "")) != pick:
+		_claim_counter += 1
+		heister_claims[slot] = _claim_counter
+
+
 func _forget(slot: int) -> void:
+	heister_claims.erase(slot)
 	ready.erase(slot)
 	summaries.erase(slot)
 	errors.erase(slot)

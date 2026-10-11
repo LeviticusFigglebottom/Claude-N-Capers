@@ -2410,3 +2410,16 @@ ui.hub.pause.quick_stations,Quick Stations
 ui.options.controls.safehouse_hub,Safehouse
 ui.options.controls.safehouse_hub.walk,Walk Around (3D)
 ui.options.controls.safehouse_hub.menu,Station Menu (2D)
+item.throwable.frag.name,Frag Grenade
+item.throwable.frag.desc,"Pull, count, throw. A fragmentation charge that tears through everything within five meters when the fuse runs out."
+item.throwable.concussion.name,Concussion Grenade
+item.throwable.concussion.desc,"A flash and a bang that leaves nobody hurt and everybody reeling. Stuns the enemies caught in the blast."
+item.throwable.incendiary.name,Incendiary Grenade
+item.throwable.incendiary.desc,"Bursts into a pool of fire that burns anyone who walks through it. Good for closing a corridor."
+item.throwable.throwing_knife.name,Throwing Knives
+item.throwable.throwing_knife.desc,"Three balanced blades. Silent, and one clean hit drops most men where they stand."
+ui.loadout.heister,Heister
+ui.heister.any,Any Free Heister
+ui.loadout.heister_taken,{name} (taken)
+ui.lobby.slot.heister,Heister: {name}
+ui.lobby.slot.heister_fallback,"Heister: {name} ({pick} was taken)"
