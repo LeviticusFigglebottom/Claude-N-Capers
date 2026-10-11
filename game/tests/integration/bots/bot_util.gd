@@ -27,7 +27,9 @@ static func runtime_available() -> bool:
 ## Find a standing spot on the navmesh about `dist` m from `target`, either behind it (its +Z side)
 ## or in front (its -Z side), with clear line of sight from eye height to the target's head.
 ## Returns a Transform3D facing the target, or null if none found (QC-6, D-036).
-static func find_clear_point(target: Node3D, dist: float, behind: bool, eye: float = 1.65) -> Variant:
+## `props_block`: props/doors (world_dynamic) must not block the line either (a clear shot).
+static func find_clear_point(target: Node3D, dist: float, behind: bool, eye: float = 1.65,
+		props_block: bool = false) -> Variant:
 	var world: World3D = target.get_world_3d()
 	var space: PhysicsDirectSpaceState3D = world.direct_space_state
 	var nav_map: RID = world.navigation_map
@@ -64,7 +66,7 @@ static func find_clear_point(target: Node3D, dist: float, behind: bool, eye: flo
 			var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, head)
 			# Behind: only architecture matters (world_static). In front the target must really see
 			# the bot, so props (world_dynamic) block too. NPCs never block placement.
-			q.collision_mask = 1 if behind else (1 | 2)
+			q.collision_mask = 1 if behind and not props_block else (1 | 2)
 			if not space.intersect_ray(q).is_empty():
 				continue
 			var xf: Transform3D = Transform3D(Basis(), snap)
@@ -79,3 +81,44 @@ static func nav_ready(node: Node3D) -> bool:
 		return false
 	var p: Vector3 = NavigationServer3D.map_get_closest_point(nav, node.global_position)
 	return p != Vector3.ZERO and p.distance_to(node.global_position) < 2.0
+
+
+## Standing transform at `at` (feet) facing `look_point` horizontally (teleport_crew input).
+static func facing(at: Vector3, look_point: Vector3) -> Transform3D:
+	var xf: Transform3D = Transform3D(Basis(), at)
+	var flat: Vector3 = Vector3(look_point.x, at.y, look_point.z)
+	if flat.distance_to(at) < 0.01:
+		return xf
+	return xf.looking_at(flat, Vector3.UP)
+
+
+## Closest navmesh point to `want` on `node`'s navigation map, or null when it is more than
+## `max_off` m away horizontally (or 0.6 m vertically).
+static func nav_point_near(node: Node3D, want: Vector3, max_off: float = 0.5) -> Variant:
+	var nav: RID = node.get_world_3d().navigation_map
+	var snap: Vector3 = NavigationServer3D.map_get_closest_point(nav, want)
+	if Vector2(snap.x - want.x, snap.z - want.z).length() > max_off or absf(snap.y - want.y) > 0.6:
+		return null
+	return snap
+
+
+## Floor-level centre of a box MapZone (its first CollisionShape3D child), else the area origin.
+static func zone_center(zone: Area3D) -> Vector3:
+	for c: Node in zone.get_children():
+		var cs: CollisionShape3D = c as CollisionShape3D
+		var box: BoxShape3D = cs.shape as BoxShape3D if cs != null else null
+		if box != null:
+			return cs.global_position - cs.global_basis.y * (box.size.y * 0.5)
+	return zone.global_position
+
+
+## A navmesh point whose standing body (0.5 m up) is inside `zone`, nearest the zone centre first.
+static func nav_point_in_zone(zone: Area3D) -> Variant:
+	var center: Vector3 = zone_center(zone)
+	for r: float in [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0]:
+		for deg: int in range(0, 360, 30 if r > 0.0 else 360):
+			var want: Vector3 = center + Vector3.FORWARD.rotated(Vector3.UP, deg_to_rad(float(deg))) * r
+			var p: Variant = nav_point_near(zone, want, 0.4)
+			if p != null and ZoneUtil.contains(zone, (p as Vector3) + Vector3.UP * 0.5):
+				return p
+	return null
