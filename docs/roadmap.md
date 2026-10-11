@@ -59,6 +59,8 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | B6-05 | Lobby codes (game_overview §9): short shareable code ⇄ address:port (no service), join-by-code field in the lobby; LAN host list if A exposes discovery | P6 |
 
 | C2-00 | G0 design docs: Night Deposit and Shadow Ledger (stealth-only) | level_standards §9 |
+| C4-01 | 3D safehouse hub (fidelity C9): explorable safehouse whose stations are interactables calling `MenuFlow.open_station` (Board, planning table, armory/workshop bench, mask bench, jukebox, Notoriety, firing-range door); B's 2D hub stays as the menu fallback | P4 hub |
+| C5-01 | Music stems: night_deposit, shadow_ledger, dockside_burn heist tracks now (unlockables vault_hymn / long_con / last_call point at those stems meanwhile); the 3 unlockables get their own stems as P5 "music ×3" | P5 music |
 
 ## P2: Stealth complete (ENV A tasks dispatched early under the utilization policy, D-032)
 
