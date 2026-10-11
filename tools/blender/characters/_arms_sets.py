@@ -492,10 +492,13 @@ LAUNCHER = FPSet(
 )
 
 # -- crossbow (Vise crossbow: lever-cocked, one bolt) -------------------------------------------
-#: ``String`` slides STRING_TRAVEL m along its local +Z (back) from the released pose to the latch; the
-#: bolt rides the ``magazine`` bone (``Magwell``). ENV B's wpn_vise_crossbow models the string LATCHED (its
-#: centre on the latch, y 12 mm) with the bolt nocked: the released string is STRING_TRAVEL m forward.
+#: The string is two halves, ``StringUpper`` / ``StringLower`` (ENV B's rebuilt Vise), each running from its prod-tip
+#: anchor to the string CENTRE, where they meet. The model is LATCHED: the centre on the ``Magwell`` (Blender weapon
+#: (0, 0.016, 0.066) = Godot model (0, 0.066, -0.016)) with the bolt nocked; released, the centre is STRING_TRAVEL m
+#: forward (Blender +Y, Godot -Z). The cocking hand pulls the centre from released to latched; ENV A bends each half
+#: from its anchor to the centre (``string_centre``). The bolt rides the ``magazine`` bone (``Magwell``).
 STRING_TRAVEL = 0.160
+STRING_LATCHED = (0.0, 0.016, 0.066)            # Blender weapon space (x right, y muzzle, z up)
 CROSSBOW_DEFAULTS = {"reload_time_s": 2.0, "equip_time_s": 0.55, "fire_rate_rpm": 30.0}
 CROSSBOW_FIRE = 10
 
@@ -514,10 +517,12 @@ CROSSBOW_DATA = _b3_row("crossbow", CROSSBOW_DEFAULTS)
 CROSSBOW = FPSet(
     name="crossbow", weapon="wpn_vise_crossbow",
     # D2-04: ENV B's wpn_vise_crossbow: the left hand on the vertical Foregrip (palm on LeftHandIK),
-    # AimPoint = the peep, String latched at y 12 mm, BoltArrow nocked on Magwell (0.40 m)
+    # AimPoint = the peep, the string halves meet latched on the Magwell, BoltArrow nocked on Magwell (0.40 m);
+    # string_latched / string_rest = the string CENTRE (where StringUpper meets StringLower)
     markers={"left_ik": v3(-0.016, 0.250, -0.006), "left_palm": v3(-0.016, 0.250, -0.006),
              "aim": v3(0.0, -0.040, 0.1122),
-             "string_latched": v3(0.0, 0.012, 0.066), "string_rest": v3(0.0, 0.012 + STRING_TRAVEL, 0.066),
+             "string_latched": v3(*STRING_LATCHED),
+             "string_rest": v3(STRING_LATCHED[0], STRING_LATCHED[1] + STRING_TRAVEL, STRING_LATCHED[2]),
              "magwell": v3(0.0, 0.016, 0.066), "magwell_axis": v3(0.0, 1.0, 0.0), "bolt_len": 0.40,
              "prod": v3(0.0, 0.375, 0.053), "butt": v3(0.0, -0.316, 0.020)},
     hip=((0.13, 0.20, -0.18), 7.0, 1.5, -6.0),

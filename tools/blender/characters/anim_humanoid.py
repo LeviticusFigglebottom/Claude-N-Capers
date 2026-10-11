@@ -103,6 +103,10 @@ CLIPS = {
     "sit_bed_read": {"frames": 300, "loop": True, "speed": 0.0, "priority": 4, "events": {"page_turn": 221}},
     # cartel gunmen: hunched idle with a long gun held low across the body (weapon at HandR/Socket)
     "idle_thug": {"frames": 105, "loop": True, "speed": 0.0, "priority": 4},
+    # police rappel (QC-41, NpcMotor one-way rappel links): one hop per loop down a vertical rope, facing the wall,
+    # in place; ENV A moves the root straight down at `speed` (2.5 m/s native: an 8 m skylight drop in ~3 hops).
+    # `land` = the feet hit the wall (thud). Rope / hand / wall placement: SOURCE.txt `rappel_rope`.
+    "rappel": {"frames": 30, "loop": True, "speed": 2.5, "priority": 3, "axis": "down", "events": {"land": 0}},
 }
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)
@@ -130,7 +134,7 @@ def build(ctx) -> None:
     keep = {}
     for name in sorted(CLIPS):
         baked = anim.bake(solver, clips[name])
-        if name in ("sit_bed_read", "mop"):
+        if name in ("sit_bed_read", "mop", "rappel"):
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -244,8 +248,44 @@ def _npc_source(ctx, sk, keep: dict) -> None:
         f"idle_thug: the long gun at HandR/Socket (the weapon grip convention), held low across the body: muzzle "
         f"{-lib.THUG_MUZZLE_PITCH:g} deg below the horizontal, turned {lib.THUG_MUZZLE_YAW:g} deg to the left; the left "
         f"hand loosely under the front of the receiver (0.19 m behind LeftHandIK), not on LeftHandIK")
+    _rappel_source(ctx, sk, keep.get("rappel"))
     ctx.source_extra["mug_carry_walk_speed"] = (
         "mug_carry_walk is a careful carry at 1.3 m/s native (walk is 1.6); speed_scale = v / 1.3")
+
+
+def _rappel_source(ctx, sk, baked) -> None:
+    """SOURCE.txt ``rappel_rope``: where the rope, the fists and the wall are relative to the root (Godot axes)."""
+    import numpy as np  # noqa: PLC0415
+
+    if baked is None:
+        return
+    row = CLIPS["rappel"]
+    N, v = row["frames"], row["speed"]
+
+    def grip(s, sfx):
+        _r, t_off = anim.grip_offset(sk, sfx)
+        return s.P[f"hand.{sfx}"] + s.W[f"hand.{sfx}"] @ sk.B[f"hand.{sfx}"] @ t_off
+
+    def g(p) -> str:                       # Blender (x, y fwd, z up) -> Godot (x, y up, -z fwd)
+        return f"({p[0]:.3f},{p[2]:.3f},{-p[1]:.3f})"
+
+    s0 = baked.frames[0]
+    gl, gr = grip(s0, "L"), grip(s0, "R")
+    ball = max(float(s0.P[f"toe.{x}"][1]) for x in "LR")
+    gls = np.array([grip(s, "L") for s in baked.frames])
+    zl = np.maximum(gls[:, 2] - gls[0, 2], 0.0)
+    rise = v * lib.RAPPEL_CONTACT / anim.FPS
+    d = lib.RAPPEL_ROPE_D * sk.scale
+    ctx.source_extra["rappel_rope"] = (
+        f"rappel: the rope is a vertical line at Godot x=0.000 z={-d:.3f} (root space, {d:.2f} m in front of the root; "
+        f"the character faces the wall, -Z). Fists (grip centres = HandL/HandR Socket origins, rope along socket +Y) at "
+        f"frame 0: guide HandL {g(gl)} on the line, brake HandR {g(gr)} at the right hip ({gr[0]:.2f} m right of the "
+        f"line: the tail runs from the descender at the harness through the brake fist, then hangs). Both fists ride "
+        f"the body: 0..+{zl.max():.2f} m above their frame-0 height during the loop (the body is braked "
+        f"for the {lib.RAPPEL_CONTACT} wall-contact frames, rising {rise:.3f} m against the root, then drops back). "
+        f"Wall: the balls of the feet brace at Godot z={-ball:.2f} (frames 0..{lib.RAPPEL_CONTACT}, world-still at "
+        f"speed_mps={v}); a free-hanging drop (skylight) just plays it without a wall. Root at the bottom of the link: "
+        f"the feet are {float(min(s.P[f'foot.{x}'][2] for s in baked.frames for x in 'LR')):.2f} m+ above it")
 
 
 def _proxy(ctx, arm) -> None:
