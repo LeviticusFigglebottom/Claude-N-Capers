@@ -118,7 +118,7 @@ func test_team_perk_grants_route_to_team_perk_source() -> void:
 	assert_near(float(g[&"team.stamina_mult"]), 1.5)
 	assert_near(float(g[&"team.health_mult"]), 1.1)
 	assert_near(float(g[&"team.armor_mult"]), 1.05)
-	assert_eq(g[&"team.damage_reduction_hostage"], {"per": 0.08, "max": 0.08})
+	assert_eq(g[&"team.damage_reduction_hostage"], {"absorb_per_hostage": 5.0, "max_hostages": 4})
 	assert_eq(LoadoutResolver.team_modifier_sources(_loadout(&"perk.foreman", 2)), {}, "card 3 still locked")
 	var five: Dictionary = LoadoutResolver.team_modifier_sources(_loadout(&"perk.foreman", 5))
 	assert_eq((five[&"team_perk.foreman"] as Dictionary).keys().size(), 2, "cards 3 and 5")

@@ -556,7 +556,7 @@ perk.foreman.card5.desc,Your crew gets 10% more health. You get 20% more in tota
 perk.foreman.card7.name,Shield Wall
 perk.foreman.card7.desc,You get 10% more armor in total. Your crew gets 5% more armor.
 perk.foreman.card9.name,Leverage Play
-perk.foreman.card9.desc,"For each hostage (up to 4) you and your crew get 6% more health and 12% more stamina. With at least one hostage, the crew takes 8% less damage."
+perk.foreman.card9.desc,"For each hostage (up to 4) you and your crew get 6% more health and 12% more stamina. The crew also absorbs 5 damage from every hit per hostage (up to 4)."
 perk.bulk.name,Bulk
 perk.bulk.desc,"Doubles your health, pulls fire off the crew and slowly patches you up."
 perk.bulk.card1.name,Big Frame
@@ -1980,3 +1980,4 @@ item.mod.cyclone_box_750.desc,"A bigger ammunition box. More belt, slower to swa
 item.mod.cyclone_short_barrels.name,Short Barrel Cluster
 item.mod.cyclone_short_barrels.desc,"Six cut-down barrels. A little easier to carry, a lot less accurate."
 ui.lobby.error.unreachable,Could not reach the host. Check the address and port.
+ui.prompt.use_armor_bag,Hold {key} to change armor
