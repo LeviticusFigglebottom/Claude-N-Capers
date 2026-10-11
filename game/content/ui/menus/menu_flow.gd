@@ -105,6 +105,8 @@ var lobby_screen: LobbyScreen = null
 var lobby: LobbySession = null
 ## Options screen opener (B5-01): options_menu.open() from the menus, `pause` in a heist (MenuOptions).
 var options_menu: MenuOptions
+## Contact radio + subtitles of the running heist (B7-03; ContactRadio.spawn, every peer), else null.
+var heist_radio: ContactRadio = null
 ## In-heist chat overlay over the HUD (B6-03; co-op sessions only), else null.
 var heist_chat: ChatPanel = null
 ## Host's drop-in request dialog over the HUD (B6-04; co-op host only; binds to the DropInService group), else null.
@@ -694,6 +696,7 @@ func _spawn_in_heist_ui() -> void:
 	if _hud is Hud:
 		(_hud as Hud).heist_id = _heist_id
 	_in_heist.add_child(_hud)
+	heist_radio = ContactRadio.spawn(_in_heist, _heist_id)
 	var pd: PaydayScreen = PAYDAY_SCENE.instantiate() as PaydayScreen
 	pd.listen_heist_ended = true
 	pd.is_pro = is_pro
@@ -756,6 +759,7 @@ func _leave_heist() -> void:
 	if heist_chat != null and is_instance_valid(heist_chat):
 		heist_chat.close()
 	heist_chat = null
+	heist_radio = null
 	heist_join_dialog = null
 	options_menu.heist_layer = null
 	options_menu.heist_payday = null

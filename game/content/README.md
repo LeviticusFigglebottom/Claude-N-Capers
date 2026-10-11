@@ -14,11 +14,12 @@ content/
     strings/strings.csv     all player-facing text (columns: keys,en)
     voice/lines.tres        voice line table (VoiceLineTable); text lives in strings.csv
   defs/                     content-side Resource schemas + ContentDB lookup (ContactDef)
-  docs/                     design authority: skills.md, perk_decks.md, masks.md, preplanning.md, scoreboard.md
+  docs/                     design authority: skills.md, perk_decks.md, masks.md, preplanning.md, scoreboard.md, radio.md
   masks/                    MaskCatalog, MaskComposer, MaskLocker (+ part defs)
   preplanning/              PreplanBoard, PreplanPlan, PlanVote, PreplanBlueprint
   lobby/                    LobbyState (co-op lobby model), LobbySession (Net glue), LobbyAddress, LobbyTweak
   progression/              LoadoutResolver, StatCalculator, PayoutCalculator, XpCurve
+  radio/                    ContactRadio, RadioLinePicker, RadioTweak: in-heist contact radio (B7-03)
   save/                     SaveService, PlayerProfile
   settings/                 GameSettings (options + settings.cfg), InputBindings, InputEventCodec, SettingsApplier
   strings/                  StringTable
@@ -419,6 +420,22 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
   `MenuFlow.build_launch_options` sets the solo player's and adds AI loadouts for the seats Net.start_solo fills;
   `build_coop_launch_options(..., ai_loadouts)` merges the AI seats' loadouts (ai_teammates still counts the seats
   humans leave). Every launched slot has a distinct heister. Tests `test_heisters.gd`.
+* **Contact radio + subtitles (B7-03; brief: `content/docs/radio.md`).** `ContactRadio` (`radio/contact_radio.gd`)
+  is the PD2 handler-on-comms: on every peer it turns replicated EventBus facts into `radio.*` VoiceLineTable lines
+  spoken by the heist's contact (`HeistDef.contact` -> `ContactDef.voice_speaker`; Glasshouse Vance, Night Deposit /
+  Shadow Ledger the Accountant, Dockside Reyes; Mercer as fallback). The mapping: `objective_updated` transitions ->
+  `radio.objective_done|new|failed` (heist lines keyed by the design doc `[tag]`), `alarm_raised` -> `radio.alarm`,
+  `assault_phase_changed` BUILD/SUSTAIN/FADE -> `radio.assault_*`, `heist_phase_changed` ESCAPE ->
+  `radio.escape_available`, `audio_cue_requested(cue.escape_arrive*)` -> `radio.escape`, `loot_secured` ->
+  `radio.loot_secured`. `RadioLinePicker` picks a heist line, else a generic one, with per-line cooldowns and
+  no-repeat, using `GameRng.stream(&"radio")`. Timing, priority, cooldowns, suppression and subtitle sizes are in
+  `data/tweak/radio.tres` (`RadioTweak`). A comms `voice_line_requested` that is not the radio's (a mission `say()`)
+  suppresses the radio briefly. The radio emits `voice_line_requested(speaker, id, {source: &"radio", radio: true,
+  local: true, ...})` locally; that is the hook for C's voice player / squelch (`RadioTweak.squelch_cue`).
+  `SubtitleOverlay` (`ui/hud/subtitle_overlay.gd`) shows radio and contact/handler lines: the speaker in their
+  accent, text in the HUD palette, time scaled by length, size from `accessibility/subtitle_size` live. It sits
+  bottom-centre, clear of the HUD corners. MenuFlow spawns both (`ContactRadio.spawn`, `MenuFlow.heist_radio`).
+  Strings `voice.vo.<contact>.radio_*`, `voice.vo.<contact>.<heist>_radio_*`, `ui.subtitle.speaker`.
 * **Throwables (D-073, B6-08).** `data/throwables/` frag / concussion / incendiary / throwing_knife (count 3,
   `anim_set` throwable; values in data/README.md). `ThrowableGate` (`progression/throwable_gate.gd`):
   `perk_item_ids()` (every perk card's `perk.throwable` item_id), `is_pickable(id)`, `pickable()`.

@@ -39,7 +39,7 @@ Suggested hook (ENV A, `systems/player/player_input.gd`): in `_ready()` read the
 | What | API | Notes |
 |---|---|---|
 | Brightness | `video/brightness` (0.5..1.5, default 1.0) | `SettingsApplier.apply_environment(env)` sets `adjustment_enabled` + `adjustment_brightness` on a map's `Environment`. Call it when a heist map's WorldEnvironment is ready (and on `changed` for `&"video"/&"brightness"`). |
-| Subtitle size | `accessibility/subtitle_size` (`small`/`medium`/`large`) | For whoever draws voice-line subtitles (none yet). |
+| Subtitle size | `accessibility/subtitle_size` (`small`/`medium`/`large`) | ENV B's in-heist `SubtitleOverlay` (B7-03, `content/docs/radio.md`) follows it live: font sizes in `data/tweak/radio.tres` `font_sizes` (22 / 28 / 36 px at 1080p). |
 | Drop-in (host) | `gameplay/dropin_policy` (`ask`/`auto`/`off`, default `ask`) | ENV B: copied into each hosted lobby session (`LobbySession.host`); the host's in-lobby change is remembered here. Shown on the Controls tab. |
 
 ### What ENV B applies itself (`GameSettings.apply()` -> `SettingsApplier`)
