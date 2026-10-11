@@ -6,5 +6,6 @@ generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category weapons --asset wpn_vise_crossbow
 edit policy: generated file, never edit by hand; change the script and rebuild
 origin: firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top
+string: StringUpper (left) / StringLower (right): origins on the limb-tip axles at Godot x = -/+0.290; rest = relaxed, halves meet 0.160 m ahead of the nock (Magwell); latched = StringUpper -18.74 deg / StringLower +18.74 deg about local X, local Y scaled x1.3049
 tri_budget: 25000
-tris_lod0: 4670
+tris_lod0: 4742
