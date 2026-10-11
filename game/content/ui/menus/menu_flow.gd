@@ -96,6 +96,8 @@ var lobby_screen: LobbyScreen = null
 var lobby: LobbySession = null
 ## Options screen opener (B5-01): options_menu.open() from the menus, `pause` in a heist (MenuOptions).
 var options_menu: MenuOptions
+## In-heist chat overlay over the HUD (B6-03; co-op sessions only), else null.
+var heist_chat: ChatPanel = null
 var _heist_id: StringName = &""
 var _difficulty: int = Enums.Difficulty.ROUTINE
 var _in_heist: CanvasLayer = null
@@ -641,6 +643,11 @@ func _spawn_in_heist_ui() -> void:
 	_heist_payday = pd
 	options_menu.heist_layer = _in_heist
 	options_menu.heist_payday = pd
+	if is_coop():
+		heist_chat = ChatPanel.new()
+		heist_chat.name = "HeistChat"
+		heist_chat.setup(lobby, ChatPanel.Mode.OVERLAY)
+		_in_heist.add_child(heist_chat)
 	EventBus.heist_ended.connect(_on_heist_ended, CONNECT_ONE_SHOT)
 
 
@@ -675,6 +682,9 @@ func _leave_heist() -> void:
 	if EventBus.heist_ended.is_connected(_on_heist_ended):
 		EventBus.heist_ended.disconnect(_on_heist_ended)
 	options_menu.close_in_heist()
+	if heist_chat != null and is_instance_valid(heist_chat):
+		heist_chat.close()
+	heist_chat = null
 	options_menu.heist_layer = null
 	options_menu.heist_payday = null
 	if _in_heist != null:

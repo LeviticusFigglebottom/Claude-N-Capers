@@ -8,6 +8,7 @@
 ##   Contract / Briefing / Loadout buttons ask MenuFlow to open those screens (signals below).
 ##   Music (B5-03): the host picks the heist music (MusicPicker: profile.music_choice, saved, re-sent in
 ##   the host's profile summary); clients see the host's pick read-only (LobbyState.host_music()).
+## Chat (B6-03): a ChatPanel (Mode.LOBBY) next to the contract panel; the chat key focuses its input.
 ## All networking goes through `session` (LobbySession -> Net API). MenuFlow passes its session in with
 ## setup(); standalone the screen makes its own.
 class_name LobbyScreen
@@ -48,6 +49,8 @@ var briefing_button: Button
 var loadout_button: Button
 ## Host: heist music pick; clients: the host's pick, read-only (B5-03).
 var music_picker: MusicPicker
+## Lobby text chat (B6-03).
+var chat_panel: ChatPanel
 var ready_button: Button
 var start_button: Button
 var leave_button: Button
@@ -95,6 +98,8 @@ func _bind_session() -> void:
 		session.changed.connect(refresh)
 	if not session.connection_failed.is_connected(_on_connection_failed):
 		session.connection_failed.connect(_on_connection_failed)
+	if chat_panel != null and chat_panel.session != session:
+		chat_panel.setup(session, ChatPanel.Mode.LOBBY)
 
 
 func _build_header() -> HBoxContainer:
@@ -194,7 +199,15 @@ func _build_lobby() -> VBoxContainer:
 	music_picker.name = "MusicPicker"
 	music_picker.music_changed.connect(_on_music_changed)
 	cv.add_child(music_picker)
-	box.add_child(UiBuild.panel(cv))
+	var top: HBoxContainer = UiBuild.hbox(16)
+	var contract_panel: PanelContainer = UiBuild.panel(cv)
+	contract_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(contract_panel)
+	chat_panel = ChatPanel.new()
+	chat_panel.name = "ChatPanel"
+	chat_panel.setup(session, ChatPanel.Mode.LOBBY)
+	top.add_child(chat_panel)
+	box.add_child(top)
 	var slots: HBoxContainer = UiBuild.hbox(16)
 	slots.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	for _i: int in range(LobbyState.MAX_CREW):
@@ -483,6 +496,8 @@ func _rebuild_focus() -> void:
 	else:
 		cands = [board_button, planning_button, briefing_button, loadout_button, music_picker.option, ready_button, start_button,
 				leave_button]
+		if chat_panel.input != null:
+			cands.append(chat_panel.input)
 	for c: Control in cands:
 		if c.visible:
 			focus_chain.append(c)

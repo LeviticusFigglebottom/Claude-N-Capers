@@ -294,3 +294,13 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
 `vo.guard.cuff_warning`) get a `data/voice/lines.tres` entry and `voice.<id>` text;
 `test_strings.test_keys_requested_by_systems_exist` scans ENV A/C code for prompt/blocked/voice keys. Code that builds a mod delta starts from
 `WeaponStats.make_delta()`; `.tres` deltas spell its zeros out (D-022 QB-5). Tests: `game/tests/b/test_*.gd`.
+* **Chat (B6-03).** `LobbyState.MSG_CHAT` `{"text"}` over `Net.lobby_send`, validated by `ChatLog`
+  (`lobby/chat_log.gd`, `LobbyState.chat`): attribution by the sender's crew slot, `clean_text` (control / bidi /
+  zero-width characters stripped, spaces collapsed, cut to `LobbyTweak.chat_max_length`), rate limit per slot
+  (`chat_rate_count` per `chat_rate_window_s`, clock `LobbyState.now_s`), history cap. `LobbySession.send_chat(text)
+  -> OK | R_*`, `chat_history()`, signal `chat_received(entry)`. `Net.lobby_send` keeps working during a heist on the
+  same session, so the in-heist chat uses it too (no separate transport). UI: `ChatPanel` (`ui/chat/`), Mode.LOBBY
+  (lobby screen) / Mode.OVERLAY (MenuFlow.heist_chat over the HUD in co-op; fades after `chat_fade_after_s`; typing
+  pauses the local crew member's input). Lines are plain Labels (no BBCode). Open key: InputMap action `chat`
+  (lead: project.godot) else `LobbyTweak.chat_fallback_key` (T). `CrewInput` (`ui/common/`) = the shared
+  local-input pause with per-overlay holders (options, chat, drop-in). Strings `ui.chat.*`.
