@@ -47,6 +47,12 @@ REVIEW_CELLS = {
                "sniper_bolt:12", "sniper_bolt_ads:12", "sniper_reload:22", "sniper_reload:47"],
 }
 REVIEW_CELLS.update(__import__("_arms_review_b3").REVIEW_CELLS)       # D-055 sets (proxies)
+REVIEW_CELLS["shotgun_box"] = ["shotgun_box_idle:0", "shotgun_box_ads_idle:0", "shotgun_box_fire:1",
+                               "shotgun_box_reload:21", "shotgun_box_reload:56", "shotgun_box_reload:63",
+                               "shotgun_box_reload:67", "shotgun_box_reload_empty:101", "shotgun_box_sprint:4"]
+#: Optional extra weapon-glb root (``<root>/<asset>/<asset>.glb``) for models not on this branch yet
+#: (D-058: ENV B's wpn_brute_12, extracted to scratch); never written to.
+EXTRA_WEAPONS = os.environ.get("ARMS_REVIEW_WEAPONS", "")
 W, H = 640, 360
 SHELL_IN_HAND = (0.012, 0.100, -0.018)      # shell centre in hand.L bone space (review proxy)
 
@@ -71,9 +77,16 @@ class _Ctx:
         return materials.material(lib_id, color, roughness)
 
 
+def _weapon_glb(asset: str) -> pathlib.Path | None:
+    for root in (REPO / "game/assets/weapons", pathlib.Path(EXTRA_WEAPONS) if EXTRA_WEAPONS else None):
+        if root is not None and (root / asset / f"{asset}.glb").exists():
+            return root / asset / f"{asset}.glb"
+    return None
+
+
 def _import_weapon(asset: str):
     before = set(bpy.data.objects)
-    bpy.ops.import_scene.gltf(filepath=str(REPO / f"game/assets/weapons/{asset}/{asset}.glb"))
+    bpy.ops.import_scene.gltf(filepath=str(_weapon_glb(asset)))
     objs = [o for o in bpy.data.objects if o not in before]
     rest = {o.name: o.matrix_world.copy() for o in objs}
     gun = bpy.data.objects.new("Gun", None)
@@ -200,7 +213,7 @@ def render(out: pathlib.Path, args: list[str]) -> None:
     F.build_arms_mesh(_Ctx(), arm, {"skin": 2})
     rev = None
     b3 = None
-    if (REPO / f"game/assets/weapons/{s.weapon}/{s.weapon}.glb").exists():
+    if _weapon_glb(s.weapon) is not None:
         gun, parts, rest = _import_weapon(s.weapon)
     elif s.name in F.B3:                          # D-055: ENV B's model not on trunk yet: scratch proxy
         import _arms_review_b3 as RB
