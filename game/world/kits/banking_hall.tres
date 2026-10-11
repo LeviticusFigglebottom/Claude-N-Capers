@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"banking_hall"
+purpose = &"banking_hall"
+required_items = Array[StringName]([&"check_table", &"stanchion", &"bench", &"plant", &"picture", &"slip_tray", &"light_fixture"])
+optional_items = {
+&"bin": 0.6,
+&"picture": 1,
+&"plant": 1
+}
+clutter_groups = {
+&"tables": {
+"anchors": Array[StringName]([&"check_table"]),
+"count": Vector2i(1, 1),
+"items": {&"pen_cup": 0.5, &"slip_tray": 2},
+"radius": 0.4
+}
+}
+min_density = 0.06
+max_density = 0.6
+min_props = 18
+lone_ok_kinds = Array[StringName]([&"check_table", &"stanchion", &"bench", &"plant", &"bin"])
+seed_salt = 45
+counts = {
+&"picture": Vector2i(2, 3),
+&"plant": Vector2i(2, 3)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"light_fixture": PackedStringArray("prop_pendant_brass", "prop_pendant_brass_off"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_c", "prop_wall_art_b"),
+&"plant": PackedStringArray("prop_plant_tall")
+}
+ceiling = {}
+notes = "G9 banking hall (night mode): check-writing tables, queue stanchions, waiting benches, the compass rose (keep-out) and the brass pendants (night mode: a quarter lit) are anchored. Clocks are anchors too."

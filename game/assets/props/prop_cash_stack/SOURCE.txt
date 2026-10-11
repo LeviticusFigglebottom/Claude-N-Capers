@@ -1,0 +1,8 @@
+asset: prop_cash_stack
+script: tools/blender/props/bank.py
+params: {"cat": {"kind": "small_loot", "prefab": "small_loot"}, "fn": "cash_stack"}
+seed: 2904392174  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_cash_stack
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 24000

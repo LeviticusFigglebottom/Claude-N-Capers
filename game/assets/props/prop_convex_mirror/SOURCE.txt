@@ -1,0 +1,8 @@
+asset: prop_convex_mirror
+script: tools/blender/props/bank.py
+params: {"cat": {"group": "bank", "kind": "convex_mirror", "place": "wall_mount", "z": 2.4}, "fn": "convex_mirror"}
+seed: 2552244922  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_convex_mirror
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 24000

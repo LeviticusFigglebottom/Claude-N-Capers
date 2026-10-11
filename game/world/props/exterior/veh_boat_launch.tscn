@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/veh_boat_launch/veh_boat_launch.glb" id="1_model"]
+
+[node name="VehBoatLaunch" type="Node3D"]
+metadata/kind = &"boat"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

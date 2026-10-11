@@ -1,0 +1,8 @@
+asset: prop_vault_door_round
+script: tools/blender/props/bank.py
+params: {"cat": {"kind": "vault_door", "prefab": "door"}, "fn": "vault_door"}
+seed: 2540212847  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_vault_door_round
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 24000

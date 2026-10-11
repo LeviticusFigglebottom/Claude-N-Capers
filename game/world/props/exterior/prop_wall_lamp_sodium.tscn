@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_wall_lamp_sodium/prop_wall_lamp_sodium.glb" id="1_model"]
+
+[node name="PropWallLampSodium" type="Node3D" groups=["fixture"]]
+metadata/kind = &"wall_lamp"
+metadata/mount = &"wall"
+metadata/fixture = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Light" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.03, -0.31)
+spot_range = 9
+spot_angle = 75
+spot_angle_attenuation = 0.6
+light_color = Color(1, 0.6039, 0.2353, 1)
+light_energy = 3
+light_size = 0.05
+shadow_enabled = false

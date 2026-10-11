@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "M_pr_emit_mint"
+albedo_color = Color(0.2510, 0.3373, 0.2902, 1)
+roughness = 0.45
+emission_enabled = true
+emission = Color(0.8471, 1.0000, 0.9098, 1)
+emission_energy_multiplier = 3.00
+metadata/uv_tile_m = 2.0
+metadata/untextured_ok = true

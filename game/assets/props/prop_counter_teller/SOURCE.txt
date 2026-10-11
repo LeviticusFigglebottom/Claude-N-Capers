@@ -1,0 +1,8 @@
+asset: prop_counter_teller
+script: tools/blender/props/bank.py
+params: {"cat": {"clear": 0.9, "group": "bank", "kind": "counter_transaction", "place": "wall", "support": true, "top": 1.05}, "fn": "counter_teller"}
+seed: 1014834657  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_counter_teller
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 24000

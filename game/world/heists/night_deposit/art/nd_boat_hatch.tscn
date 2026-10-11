@@ -1,0 +1,46 @@
+[gd_scene format=4]
+
+[ext_resource type="Material" path="res://world/materials/brushed_steel.tres" id="1_nd"]
+[ext_resource type="Material" path="res://world/materials/wood_veneer_walnut.tres" id="2_nd"]
+
+[sub_resource type="ArrayMesh" id="nd_1"]
+resource_name = "gh_p"
+_surfaces = [{
+"aabb": AABB(-0.75, 0.1, -0.55, 1.5, 0.020000003, 1.1),
+"attribute_data": PackedByteArray("zcyMvs3MTL3NzIw+kMJ1vc3MjD7NzEy9zcyMvpDCdb3NzIw+zcxMvc3MjL6QwnW9zcyMPpDCdb3NzIy+zcxMvQAAwL7NzIy+AADAPs3MjD4AAMA+zcyMvgAAwL7NzIw+AADAvs3MjL4AAMA+zcyMPgAAwL7NzIw+AADAPs3MjL4AAMA+zcxMvQAAwL6QwnW9AADAPpDCdb0AAMC+zcxMvQAAwL7NzEy9AADAPpDCdb0AAMA+zcxMvQAAwL6QwnW9"),
+"format": 34359742487,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": ExtResource("1_nd"),
+"name": "brushed_steel",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AABAv83MzD3NzAy/AABAv5DC9T3NzAw/AABAv83MzD3NzAw/AABAv5DC9T3NzAy/AABAP83MzD3NzAy/AABAP5DC9T3NzAw/AABAP5DC9T3NzAy/AABAP83MzD3NzAw/AABAv83MzD3NzAy/AABAP83MzD3NzAw/AABAP83MzD3NzAy/AABAv83MzD3NzAw/AABAv5DC9T3NzAy/AABAP5DC9T3NzAw/AABAv5DC9T3NzAw/AABAP5DC9T3NzAy/AABAv83MzD3NzAy/AABAP5DC9T3NzAy/AABAv5DC9T3NzAy/AABAP83MzD3NzAy/AABAv83MzD3NzAw/AABAP5DC9T3NzAw/AABAP83MzD3NzAw/AABAv5DC9T3NzAw/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//7////9//////////3//////////f/////////9///////9/AAD///8//38AAP///z//fwAA////P/9/AAD///8//3///////7//f///////v/9///////+//3///////7//////AAD/v/////8AAP+//////wAA/7//////AAD/v/9//3////+//3//f////7//f/9/////v/9//3////+/")
+}, {
+"aabb": AABB(-0.7, 0, -0.5, 1.4, 0.1, 1),
+"attribute_data": PackedByteArray("AACAvgAAAIAAAIA+zcxMvQAAgD4AAACAAACAvs3MTL0AAIA+AAAAgAAAgL7NzEy9AACAPs3MTL0AAIC+AAAAgDMzs74AAIC+MzOzPgAAgD4zM7O+AACAPjMzsz4AAIC+MzOzPgAAAIAzM7O+zcxMvTMzsz7NzEy9MzOzvgAAAIAzM7O+AAAAgDMzsz7NzEy9MzOzPgAAAIAzM7O+zcxMvQ=="),
+"format": 34359742487,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"material": ExtResource("2_nd"),
+"name": "wood_veneer_walnut",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 20,
+"vertex_data": PackedByteArray("MzMzvwAAAAAAAAC/MzMzv83MzD0AAAA/MzMzvwAAAAAAAAA/MzMzv83MzD0AAAC/MzMzPwAAAAAAAAC/MzMzP83MzD0AAAA/MzMzP83MzD0AAAC/MzMzPwAAAAAAAAA/MzMzv83MzD0AAAC/MzMzP83MzD0AAAA/MzMzv83MzD0AAAA/MzMzP83MzD0AAAC/MzMzvwAAAAAAAAC/MzMzP83MzD0AAAC/MzMzv83MzD0AAAC/MzMzPwAAAAAAAAC/MzMzvwAAAAAAAAA/MzMzP83MzD0AAAA/MzMzPwAAAAAAAAA/MzMzv83MzD0AAAA/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//7////9//////////3//////////f/////////9///////9///////+//3///////7//f///////v/9///////+//////wAA/7//////AAD/v/////8AAP+//////wAA/7//f/9/////v/9//3////+//3//f////7//f/9/////vw==")
+}]
+
+[node name="NdBoatHatch" type="Node3D" unique_id=100001]
+
+[node name="Body" type="MeshInstance3D" parent="." unique_id=100002]
+mesh = SubResource("nd_1")
+
+[node name="DoorL" type="Node3D" parent="." unique_id=100003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.12, 0)
+
+[node name="DoorR" type="Node3D" parent="." unique_id=100004]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 0.12, 0)
+
+[node name="DropAnchor" type="Node3D" parent="." unique_id=100005]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0)

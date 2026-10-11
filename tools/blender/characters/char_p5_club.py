@@ -7,7 +7,8 @@ silhouette (dress, wide trousers, beanie + hoodie, shirt).
 
 * ``char_club_bouncer``: door security, the biggest build in the game (1.88 m, build 1.0, bald, full
   stubble): a black nylon bomber zipped over a black tee, SECURITY in pale block letters across the
-  back, black trousers, boots, an earpiece with a coiled cable (right ear).
+  back, a radio clipped outside the bomber on its ribbed waistband (right hip, over the hem; = the
+  ``Hip`` seat where the pager rides), black trousers, boots, an earpiece with a coiled cable (right ear).
 * ``char_club_bouncer_b``: the second bouncer (big build, buzz cut): no jacket, a tight black
   short-sleeved tee tucked in (SECURITY on the back), a belt with the radio on the right hip (= the
   ``Hip`` seat where the pager rides), black trousers, boots, earpiece.
@@ -98,10 +99,19 @@ def bouncer(kit: Kit) -> None:
     jk = crew.bomber(kit, "char_nylon_black", "char_knit_graphite", "char_knit_graphite", hips_z - 0.03 * k, 1.27 * k,
                      neck_w=0.07)
     n.cull_under(kit, n0, jk, "faces_hidden_by_bomber")
+    # pager role (QC-70): the radio is clipped OUTSIDE the bomber on its ribbed waistband (right hip),
+    # hanging over the hem so it reads at a glance; the Hip seat sits on it like the belt radios
+    hem_z = hips_z - 0.03 * k
+    wb = gk.Belt(fit, Hull(fit, [jk], body_regions=set()), hem_z + 0.032 * k, height=0.03, thick=0.003)
+    a_radio = math.radians(96.0)  # more to the side than the belt radios: the bomber stands further out
+    kit.add_gear(gk.radio(wb, a_radio))
+    kit.seats["Hip"] = wb.point(a_radio, dz=0.0, out=0.045 * k)
     p5.stamp_back(kit, "SECURITY", 1.33, 0.045, PALE)
     n.earpiece(kit, "R")
+    kit.notes["hip_note"] = ("Hip seat = the radio clipped outside the bomber on its ribbed waistband (right hip); "
+                             "the pager rides there")
     kit.notes["look"] = ("Velvet bouncer: biggest build, bald; black nylon bomber over a black tee, SECURITY across "
-                         "the back, black trousers, boots, earpiece")
+                         "the back, radio clipped on the bomber waistband, black trousers, boots, earpiece")
 
 
 def bouncer_b(kit: Kit) -> None:

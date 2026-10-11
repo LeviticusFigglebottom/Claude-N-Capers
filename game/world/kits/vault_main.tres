@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"vault_main"
+purpose = &"vault"
+required_items = Array[StringName]([&"deposit_boxes", &"table", &"cash_cage", &"light_fixture"])
+optional_items = {
+&"cash_cage": 0.5
+}
+clutter_groups = {}
+min_density = 0.1
+max_density = 1.2
+min_props = 10
+lone_ok_kinds = Array[StringName]([&"table", &"cash_cage", &"loot_spawn"])
+seed_salt = 56
+counts = {}
+assets = {
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"table": PackedStringArray("prop_vault_table")
+}
+ceiling = {"prop_fluorescent": 2.2}
+notes = "B9: deposit-box walls east and west (anchored; their saw points are drill_point prefabs), the cash cage (map) with the cage loot, the Co-op pallet. Bright 4000 K strips."
