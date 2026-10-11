@@ -3,7 +3,8 @@
 ## `Leaf` (pivot at the hinge, closed = rotation 0, A rotates it around Y), optional `Leaf2`
 ## (required for DOUBLE), `Handle` marker. Front (-Z) is the UsePoint side.
 ## INWARD opens away from the front (leaf swings toward +Z), OUTWARD toward -Z, DOUBLE = two leaves
-## opening inward. Leaf collision: `LeafBody` AnimatableBody3D (world_dynamic) following `Leaf`.
+## opening inward. Leaf collision: `LeafBody` AnimatableBody3D (world_dynamic) following `Leaf`, only while
+## closed (an open leaf blocks nobody, P3 gate).
 ## Locks: NONE opens instantly; LOCKPICK = S9.2 lockpick (`interaction.lockpick_speed_mult`);
 ## KEYCARD = S9.6 consumes `item.keycard`; CODE / ELECTRONIC / BARRED / VAULT are opened by other
 ## prefabs (keypad, keycard_reader, drill_point) through `unlock()`. Once unlocked, the door
@@ -18,6 +19,9 @@
 ## P3 police breach hooks there). Nav: the baked navmesh passes through doorways (heist_map.md §3);
 ## a `NavLink` NavigationLink3D through the doorway is enabled while the door is passable (open, or
 ## openable by NPCs) for maps whose bake closes the doorway.
+## P3 gate: police breach. Once loud, police (roles police / special) may also open locked doors that are
+## not BARRED / VAULT (`can_npc_open`): `npc_open` holds them InteractionTweak.npc_door_breach_s, then
+## the door is unlocked (for good) and open, cue.door_breach [R]. The NavLink stays enabled for such doors.
 ## A2-08 push-bar doors (fire exits, `push_bar`): while CLOSED the door opens only from its inside,
 ## the front (-Z, UsePoint) side: a crew member / NPC whose position in the door's local space has
 ## z < 0. From outside (z >= 0) the interaction is blocked (BLOCK_PUSH_BAR_OUTSIDE) and NPC doors
@@ -120,6 +124,7 @@ func _prefab_ready() -> void:
 	_setup_interactable()
 	_setup_leaf_bodies()
 	add_to_group(GROUP)
+	EventBus.heist_phase_changed.connect(_on_phase_for_breach)
 	_setup_nav_link()
 	if starts_open:
 		locked = false
@@ -192,7 +197,18 @@ func can_npc_open(agent: Node) -> bool:
 		return true
 	if push_bar and not is_inside(agent):
 		return false
-	return not locked or _guard_authorised(agent)
+	return not locked or _guard_authorised(agent) or _police_breach(agent)
+
+
+## P3 gate: `agent` is loud-phase police and this lock can be breached (not BARRED / VAULT).
+func _police_breach(agent: Node) -> bool:
+	if lock == Lock.BARRED or lock == Lock.VAULT:
+		return false
+	var npc: NpcBase = agent as NpcBase
+	if npc == null or not npc.alive or (npc.role != &"police" and npc.role != &"special"):
+		return false
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	return rt != null and rt.went_loud
 
 
 ## Locked door (not BARRED / VAULT): `agent` is a guard whose SpawnPoint tags meet the post tags.
@@ -232,6 +248,12 @@ func npc_open(agent: Node) -> bool:
 	var delay: float = tw.npc_door_open_stealth_s if stealth else tw.npc_door_open_loud_s
 	var by: int = NetIds.of(agent)
 	var was_locked: bool = locked
+	if locked and not _guard_authorised(agent):  # P3 gate: a police breach
+		delay = tw.npc_door_breach_s
+		was_locked = false
+		_npc_open_pending = true
+		get_tree().create_timer(delay, false, true).timeout.connect(_npc_apply_breach.bind(by))
+		return true
 	if delay <= 0.0:
 		_npc_apply_open(by, was_locked)
 	else:
@@ -249,6 +271,21 @@ func _npc_apply_open(by_net_id: int, was_locked: bool) -> void:
 	var close_s: float = Tweak.interaction().npc_locked_door_close_s
 	if was_locked and locked and close_s > 0.0:
 		get_tree().create_timer(close_s, false, true).timeout.connect(_npc_auto_close)
+
+
+func _on_phase_for_breach(_old: int, _new: int) -> void:
+	_update_nav_link()
+
+
+func _npc_apply_breach(by_net_id: int) -> void:
+	_npc_open_pending = false
+	if not is_inside_tree() or is_open:
+		return
+	unlock()
+	_npc_apply_open(by_net_id, false)
+	var p: Vector3 = global_position + Vector3(0.0, 1.0, 0.0)
+	EventBus.audio_cue_requested.emit(&"cue.door_breach", p, by_net_id)
+	Net.replicate_event(&"audio_cue_requested", [&"cue.door_breach", p, by_net_id])
 
 
 func _npc_auto_close() -> void:
@@ -320,7 +357,10 @@ func _setup_nav_link() -> void:
 func _update_nav_link() -> void:
 	if _nav_link == null:
 		return
-	_nav_link.enabled = is_open or not locked or (not npc_authorized_tags.is_empty() \
+	# P3 gate: once loud, breachable locks (not BARRED / VAULT) are linked: police breach them.
+	var rt: HeistRuntime = HeistRuntime.of(self) if is_inside_tree() else null
+	var breachable: bool = lock != Lock.BARRED and lock != Lock.VAULT and rt != null and rt.went_loud
+	_nav_link.enabled = is_open or not locked or breachable or (not npc_authorized_tags.is_empty() \
 		and lock != Lock.BARRED and lock != Lock.VAULT)
 	# A2-08: closed push-bar doors pass inside (-Z, start) -> outside (+Z, end) only.
 	_nav_link.bidirectional = is_open or not push_bar
@@ -340,6 +380,8 @@ func _update_open_stimulus() -> void:
 
 
 func _exit_tree() -> void:
+	if EventBus.heist_phase_changed.is_connected(_on_phase_for_breach):
+		EventBus.heist_phase_changed.disconnect(_on_phase_for_breach)
 	var st: StealthDirector = _stealth()
 	if st != null and _open_stim_id != 0:
 		st.unregister_stimulus(_open_stim_id)
@@ -440,3 +482,5 @@ func _setup_leaf_bodies() -> void:
 func _sync_leaf_bodies() -> void:
 	for i: int in range(mini(_leaves.size(), _leaf_bodies.size())):
 		_leaf_bodies[i].global_transform = _leaves[i].global_transform
+		# P3 gate: an open leaf never blocks (PD2): units filing through a breached door snagged on it.
+		_leaf_bodies[i].collision_layer = 0 if is_open else LAYER_WORLD_DYNAMIC

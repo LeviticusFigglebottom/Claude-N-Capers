@@ -119,6 +119,10 @@ extends Resource
 @export var npc_door_reach_m: float = 0.9
 ## ◇ A locked door opened by an authorised guard (keycard post) closes again after this (s); 0 = stays open.
 @export var npc_locked_door_close_s: float = 4.0
+## P3 gate (L1, PD2): once the heist is loud, police (roles police / special) breach locked doors
+## (not BARRED / VAULT) on their path: they hold this long (kick / shotgun the lock ◇), then the door
+## is unlocked and open for good.
+@export var npc_door_breach_s: float = 2.5
 ## Half length of the door's NavigationLink3D through the doorway (m, each side of the leaf).
 @export var door_nav_link_half_m: float = 0.6
 
