@@ -11,10 +11,10 @@ attach_Hip: bone hips, local [0.2033, 0.0537, 0.0373] (model [0.2033, 1.0604, 0.
 body_faces_culled: 4800
 body_params: {"age": 0.8, "beard_shadow": 0.25, "build": 0.35, "gender": 0.0, "hair": "side_part", "hair_color": "grey", "height": 1.88, "lip": "auto", "skin": 1}
 bones: 52
-faces_hidden_by_robe: 3230
+faces_hidden_by_robe: 3224
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 target_note: Kessler (default, in bed reading): tallest, silver hair; long ice-silk robe with a graphite shawl collar and sash over graphite pyjamas with ice piping. The long-coat version is char_npc_kessler_coat
 tri_budget: 35000
-tris: 26546
-tris_by_mesh: {"Body": 9144, "Gear": 196, "Hair": 1200, "Outfit": 16006}
+tris: 26558
+tris_by_mesh: {"Body": 9144, "Gear": 196, "Hair": 1200, "Outfit": 16018}

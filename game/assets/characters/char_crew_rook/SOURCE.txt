@@ -11,12 +11,12 @@ attach_Hip: bone hips, local [0.1924, 0.0525, 0.0359] (model [0.1924, 1.0378, 0.
 body_faces_culled: 5732
 body_params: {"age": 0.5, "beard_shadow": 0.5, "build": 0.55, "gender": 0.0, "hair": "side_part", "hair_color": "dark", "height": 1.84, "lip": "auto", "skin": 3}
 bones: 52
-faces_hidden_by_coat: 2947
+faces_hidden_by_coat: 2946
 fp_sleeve: {"cuff": "char_shirt_white", "glove": "char_leather_black", "sleeve": "char_crew_rook_coat"}
 head_note: hat-free; the crew mask attaches at Head (face centre)
 look: Rook: long charcoal overcoat (mid-calf) over white shirt + black tie, open oxblood scarf, black gloves
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27460
-tris_by_mesh: {"Body": 7364, "Gear": 456, "Hair": 1200, "Outfit": 18440}
+tris: 27462
+tris_by_mesh: {"Body": 7364, "Gear": 456, "Hair": 1200, "Outfit": 18442}

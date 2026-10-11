@@ -11,11 +11,11 @@ attach_Hip: bone hips, local [0.2234, 0.0677, 0.0736] (model [0.2234, 1.0512, 0.
 body_faces_culled: 4812
 body_params: {"age": 0.4, "beard_shadow": 0.6, "build": 0.7, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "height": 1.84, "lip": "auto", "skin": 5}
 bones: 52
-faces_hidden_by_jacket: 2823
+faces_hidden_by_jacket: 2821
 hip_note: Hip seat = the radio on the belt under the jacket (right hip); the pager rides there
 look: Northgate Executive Protection: charcoal suit, grey shirt, black tie, earpiece + coiled cable (right ear), Northgate gate lapel pin, belt radio under the jacket
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26182
-tris_by_mesh: {"Body": 9120, "Gear": 1010, "Hair": 1200, "Outfit": 14852}
+tris: 26186
+tris_by_mesh: {"Body": 9120, "Gear": 1010, "Hair": 1200, "Outfit": 14856}

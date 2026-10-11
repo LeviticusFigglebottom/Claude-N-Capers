@@ -226,24 +226,24 @@ class HeadShape:
         if not guide:
             # cheekbones: zygoma body, arch, malar fat pad, lateral orbital rim
             zr = _rot_xyz(0.0, 0.0, -0.45)
-            op(ADD, _ell((0.046 + 0.002 * b, -0.061 - 0.003 * g, -0.016 + 0.007 * g),
+            op(ADD, _ell((0.046 + 0.002 * b - 0.003 * g, -0.061 - 0.003 * g, -0.016 + 0.007 * g),
                          (0.0160 + 0.001 * b + 0.0015 * g, 0.020 + 0.001 * g, 0.0125 + 0.0015 * g), zr), 0.022 + 0.004 * g)
-            op(ADD, _cone((0.053, -0.046, -0.017), (0.063, -0.010, -0.019), 0.0050, 0.0050), 0.018)
+            op(ADD, _cone((0.053 - 0.002 * g, -0.046, -0.017), (0.063 - 0.002 * g, -0.010, -0.019), 0.0050, 0.0050 + 0.0010 * g), 0.018 + 0.010 * g)
             op(ADD, _ell((0.034 + 0.002 * g, -0.068 - 0.002 * a - 0.002 * g, -0.030 + 0.007 * g - 0.005 * a),
                          (0.017 + 0.003 * b + 0.002 * g, 0.015 + 0.002 * b + 0.002 * g, 0.016 + 0.002 * b)), 0.024)
             op(ADD, _cone((0.0545, -0.064, 0.020), (0.0525, -0.060, -0.012), 0.0065, 0.0065), 0.018)
         # ---- mandible: body block, ramus to a defined gonion, body to the chin
         jw = 1.0 + 0.10 * b - 0.15 * g
-        op(ADD, _sell((0.0, -0.026, -0.071 + 0.003 * g), (0.054 * jw, 0.062, 0.043 - 0.003 * g), 2.6 - 0.4 * g), 0.02 + 0.006 * g)
+        op(ADD, _sell((0.0, -0.026, -0.071 + 0.003 * g), (0.054 * jw, 0.062, 0.043 - 0.003 * g), 2.6 - 0.6 * g), 0.02 + 0.006 * g)
         if not guide:
             go = (0.0545 * jw, 0.004 - 0.008 * g, -0.084 + 0.012 * g)
             jr = 0.0092 * (1.0 + 0.2 * b - 0.40 * g)
             op(ADD, _cone((0.057 * jw, 0.012, -0.030), go, jr * 0.95, jr * 0.95), 0.022 + 0.008 * g)
             op(ADD, _cone(go, (0.028 * jw - 0.004 * g, -0.072, -0.107 + 0.004 * g), jr, jr), 0.024 + 0.012 * g)
-            op(ADD, _ell((0.043 * jw, -0.018, -0.050), (0.019 + 0.004 * b - 0.005 * g, 0.032, 0.033)), 0.024)    # masseter
-            op(ADD, _ell((0.052 * jw, -0.004, -0.026), (0.014, 0.028, 0.030)), 0.025)               # TMJ fill
+            op(ADD, _ell((0.043 * jw - 0.002 * g, -0.018, -0.050 + 0.004 * g), (0.019 + 0.004 * b - 0.008 * g, 0.032, 0.033 - 0.006 * g)), 0.024 + 0.006 * g)    # masseter
+            op(ADD, _ell((0.052 * (jw + 0.10 * g), -0.004, -0.026), (0.014, 0.028, 0.030)), 0.025)               # TMJ fill
         # chin block (narrower, rounder for gender)
-        op(ADD, _sell((0.0, -0.0855 + 0.004 * g, -0.106 + 0.005 * g),
+        op(ADD, _sell((0.0, -0.0855 - 0.0015 * g, -0.106 + 0.005 * g),
                       (0.025 * (1.0 - 0.32 * g) + 0.002 * b, 0.017 * (1.0 - 0.12 * g), 0.0175 * (1.0 - 0.20 * g)), 2.8 - 0.8 * g),
            0.018 + 0.006 * g)
         # submental soft tissue (build / age)
@@ -261,28 +261,28 @@ class HeadShape:
             return _smax(dn, Z + 0.02, 0.02)
         ops.append((ADD, 0.025, 0.0, 0.0, 0.0, -1.0, 0.0, neck))
         # ---- muzzle
-        op(ADD, _ell((0.0, -0.066 + 0.002 * g, -0.0705 + 0.002 * g), (0.041 - 0.006 * g, 0.034 - 0.002 * g, 0.028 - 0.003 * g)), 0.028)
+        op(ADD, _ell((0.0, -0.066 - 0.0005 * g, -0.0705 + 0.002 * g), (0.041 - 0.003 * g, 0.034, 0.028 - 0.003 * g)), 0.028)
         if guide:
             return ops
         # ---- lips: volume, corners, philtrum, mentolabial sulcus
-        lu = 1.0 + 0.24 * g - 0.30 * a
+        lu = 1.0 + 0.32 * g - 0.30 * a
         ll = 1.0 + 0.10 * g - 0.26 * a
-        op(ADD, _ell((0.0, -0.0996 - 0.0008 * g + 0.0016 * a, -0.0684),
+        op(ADD, _ell((0.0, -0.0996 + 0.0016 * g + 0.0016 * a, -0.0684),
                      (0.0228 - 0.001 * g, 0.0114 * (1.0 + 0.06 * g), 0.0080 * lu), _rot_xyz(-0.30, 0.0, 0.0)), 0.0035 + 0.0035 * g)
-        op(ADD, _ell((0.0, -0.0986 - 0.0008 * g + 0.0016 * a, -0.0832 - 0.0008 * g),
+        op(ADD, _ell((0.0, -0.0986 + 0.0034 * g + 0.0016 * a, -0.0832 - 0.0008 * g),
                      (0.0202 - 0.0008 * g, 0.0126 * (1.0 + 0.05 * g), 0.0108 * ll), _rot_xyz(0.35, 0.0, 0.0)), 0.0030 + 0.0035 * g)
         mcx = 0.0216 - 0.0010 * g + 0.0004 * b
-        op(SUB, _sphere((mcx, -0.0910, -0.0756 - 0.0012 * a), 0.0021 * (1.0 - 0.6 * g)), 0.0055)       # mouth corners
-        op(ADD, _ell((mcx + 0.0040, -0.0870, -0.0760 - 0.0012 * a), (0.0040 * (1.0 - 0.5 * g) + 0.0005, 0.0035 * (1.0 - 0.5 * g) + 0.0005, 0.0055 * (1.0 - 0.4 * g))), 0.006)   # modiolus
+        op(SUB, _sphere((mcx, -0.0910 + 0.0010 * g, -0.0756 - 0.0012 * a), 0.0021 * (1.0 - 0.15 * g)), 0.0055 + 0.0015 * g)       # mouth corners
+        op(ADD, _ell((mcx + 0.0040, -0.0870 + 0.0010 * g, -0.0760 - 0.0012 * a), (0.0040 * (1.0 - 0.5 * g) + 0.0005, 0.0035 * (1.0 - 0.5 * g) + 0.0005, 0.0055 * (1.0 - 0.4 * g))), 0.006)   # modiolus
         op(ADD, _cone((0.0042, -0.1040, -0.0585), (0.0056, -0.1030, -0.0662), 0.0017, 0.0017), 0.003)
         op(SUB, _cone((0.0, -0.1060, -0.0595), (0.0, -0.1062, -0.065), 0.0016, 0.0016), 0.003)
-        op(SUB, _ell((0.0, -0.0990 + 0.003 * g, -0.0958 + 0.003 * g), (0.017 - 0.002 * g, 0.0040 * (1.0 - 0.8 * g), 0.0045)), 0.011 + 0.006 * g)
+        op(SUB, _ell((0.0, -0.0990 + 0.0025 * g, -0.0958 + 0.003 * g), (0.017 - 0.002 * g, 0.0040 * (1.0 - 0.45 * g), 0.0045)), 0.011 + 0.006 * g)
         # ---- nose
         if not self.nose:
             return ops
         nl = 1.0 + 0.02 * a
         nw = 1.0 + 0.06 * b - 0.10 * g
-        tip = (0.0, -0.1165 * nl + 0.0005, -0.0425 * nl - 0.0025 * a)
+        tip = (0.0, -0.1165 * nl + 0.0005 + 0.0028 * g, -0.0425 * nl - 0.0025 * a + 0.0012 * g)
         op(ADD, _ell((0.0, -0.088, -0.026), (0.0135 * nw, 0.017, 0.026)), 0.012)                 # body
         op(ADD, _cone((0.0, -0.0925, 0.003), tip, 0.0058 * (1.0 - 0.14 * g), 0.0075 * nw), 0.008 + 0.002 * g)  # dorsum
         op(ADD, _sphere((0.0, tip[1] + 0.0024, tip[2] - 0.0012), 0.0080 * nw), 0.007)            # tip
@@ -292,13 +292,13 @@ class HeadShape:
         op(SUB, _cone((0.0222 * nw, -0.0945, -0.040), (0.0212 * nw, -0.0965, -0.052), 0.0006 * (1.0 - 0.7 * g), 0.0006 * (1.0 - 0.7 * g)), 0.009)
         # ---- gender: fuller, softer cheeks (fills the submalar hollow under the cheekbone)
         if g > 0.0:
-            op(ADD, _ell((0.041, -0.056, -0.034), (0.006 + 0.010 * g, 0.006 + 0.010 * g, 0.008 + 0.012 * g)), 0.022)
+            op(ADD, _ell((0.040, -0.060, -0.026), (0.005 + 0.008 * g, 0.005 + 0.008 * g, 0.006 + 0.009 * g)), 0.024)
             # ... and the nasolabial groove between the cheek and the muzzle (smooth, youthful)
-            op(ADD, _ell((0.029, -0.079, -0.054), (0.004 + 0.007 * g, 0.004 + 0.006 * g, 0.006 + 0.010 * g)), 0.018)
+            op(ADD, _ell((0.029, -0.079, -0.054), (0.004 + 0.005 * g, 0.004 + 0.004 * g, 0.006 + 0.008 * g)), 0.022)
         # ---- age: nasolabial fold, the cheek mass over it, jowls, temple hollow
         if a > 0.0:
-            op(ADD, _ell((0.027, -0.088, -0.052 - 0.002 * a), (0.012, 0.009 * a + 0.001, 0.014)), 0.010)
-            op(SUB, _cone((0.0250, -0.0955, -0.050), (0.0295, -0.0905, -0.080), 0.0010 * a * (1.0 - 0.6 * g), 0.0006 * a * (1.0 - 0.6 * g)), 0.008 + 0.006 * g)
+            op(ADD, _ell((0.031, -0.085, -0.060 - 0.002 * a), (0.011, 0.007 * a + 0.001, 0.013)), 0.020)
+            op(SUB, _cone((0.0262, -0.0945, -0.055), (0.0298, -0.0905, -0.072), 0.0001 * a, 0.0005 * a), 0.012)
             op(ADD, _ell((0.035, -0.066, -0.100), (0.011 * a + 0.001, 0.013 * a + 0.001, 0.009 * a + 0.001)), 0.016)
             op(SUB, _ell((0.067, -0.040, 0.030), (0.003 * a + 0.0005, 0.016, 0.018)), 0.010)
         # ---- orbits: hollow above the lid (upper lid crease), orbital depth, socket, closed lid dome
@@ -685,7 +685,7 @@ def _interp_loops(md, hs: HeadShape, per_ids: list[int], target: list[Vec], weig
 def nose_tip(hs: HeadShape) -> Vec:
     g, a = hs.gender, hs.age
     nl = 1.0 + 0.02 * a
-    return hp_to_local(0.0, -0.1165 * nl + 0.0005 - 0.004, -0.0425 * nl - 0.0025 * a - 0.0012)
+    return hp_to_local(0.0, -0.1165 * nl + 0.0005 + 0.0028 * g - 0.004, -0.0425 * nl - 0.0025 * a + 0.0012 * g - 0.0012)
 
 
 def _nose_loops(md, hs: HeadShape, per_ids: list[int]) -> tuple[list[list[int]], int]:
@@ -740,7 +740,7 @@ def lip_heights(build: float, gender: float, age: float) -> tuple[float, float]:
     """(upper, lower) vermilion height at the centre (head-local metres): fuller for gender,
     thinner with age."""
     del build
-    return ((0.0052 + 0.0024 * gender) * (1.0 - 0.28 * age), (0.0074 + 0.0012 * gender) * (1.0 - 0.22 * age))
+    return ((0.0052 + 0.0032 * gender) * (1.0 - 0.28 * age), (0.0074 + 0.0012 * gender) * (1.0 - 0.22 * age))
 
 
 def _vermilion_dz(ch: int, xr: float, hu: float, hl: float) -> float:
@@ -905,6 +905,15 @@ def head(md, hs: HeadShape, ref: tuple | None = None) -> list[int]:
     if ref is not None and ref[2][:n_grid] != free:
         raise AssertionError("head topology differs from the basis")
     reseat(free)
+    if ref is not None:
+        # the seat line's lateral part blends to the re-seated position: its own construction per
+        # config gives the key a jump against the re-seated grid beside the alae (a crease once the
+        # key is added to another shape, e.g. age on the feminine face); the midline keeps it
+        for vi in sorted(own):
+            p_own = md.verts[vi]
+            reseat([vi])
+            wm = 1.0 - smoothstep(0.010, 0.024, abs(ref[0][vi][0] - c[0]))
+            md.verts[vi] = lerp(md.verts[vi], p_own, wm)
     start = len(md.faces)
     # neck ring (n0) -> first head row (nc)
     group = []
@@ -937,6 +946,7 @@ def head(md, hs: HeadShape, ref: tuple | None = None) -> list[int]:
     edges = _directed_edges(md, start)
     # loops
     es = EyeShape.of(b, g, a)
+    mouth_outer: list[int] = []
     for cols, r0, r1, kind, sx in blocks:
         per = _perimeter(cols, r0, r1)
         per_ids = [rows[r][cc] for r, cc in per]
@@ -963,8 +973,13 @@ def head(md, hs: HeadShape, ref: tuple | None = None) -> list[int]:
             last = loops[-1]
             fan = [(last[j], last[(j + 1) % len(last)], pole_n) for j in range(len(last))]
             _emit(md, _bands(loops) + fan, edges)
+            # the outer nose loops are re-seated like the grid (see ``reseat``): their own cast would
+            # give the build/age keys a jump against the grid at the block border (creases beside
+            # the alae once a key is added to another shape, e.g. age on the feminine face)
+            free += [vi for ring in loops[1:3] for vi in ring]
         else:
             loops = _mouth_loops(md, hs, per_ids, chains, mouth_line(b, g, a))
+            mouth_outer = [vi for ring in loops[1:3] for vi in ring]
             n = len(per_ids)
             mats = ["lip" if k >= MOUTH_VERMILION else "skin" for k in range(len(loops) - 1) for _j in range(n)]
             _emit(md, _bands(loops), edges, mats)
@@ -997,7 +1012,52 @@ def head(md, hs: HeadShape, ref: tuple | None = None) -> list[int]:
     s_rows = gr["s_rows"]
     md.rings["head_brow"] = rows[min(range(1, HEAD_ROWS), key=lambda r: abs(s_rows[r] - 0.62)) - 1]
     reseat(free[n_grid:])
+    if ref is not None:
+        _smooth_key(md, ref[0], start, set(free) | own | set(mouth_outer), KEY_SMOOTH)
     return free
+
+
+#: Jacobi iterations smoothing a re-seated key's displacement over the skin (see ``_smooth_key``)
+KEY_SMOOTH = 6
+
+
+def _smooth_key(md, ref_verts: list, start: int, movable: set, iters: int) -> None:
+    """Smooth the displacement (this config - basis) of the ``movable`` skin vertices over the head
+    faces from ``start`` on; the other vertices (neck ring, lid margins, lip loops, nose tip) hold their
+    displacement. A key is added to every other shape (age on the feminine face, build on the old
+    one), so a displacement that changes sharply between neighbours (a cast landing on either side
+    of a groove) creases the sum even where the key alone looks clean."""
+    nbr: dict[int, set] = {}
+    for f in md.faces[start:]:
+        n = len(f)
+        for i in range(n):
+            a_, b_ = f[i], f[(i + 1) % n]
+            if a_ in movable:
+                nbr.setdefault(a_, set()).add(b_)
+            if b_ in movable:
+                nbr.setdefault(b_, set()).add(a_)
+    ids = sorted(nbr)
+    dlt = {}
+    for vi in {v for s_ in nbr.values() for v in s_} | set(ids):
+        dlt[vi] = sub(md.verts[vi], ref_verts[vi])
+    for _ in range(iters):
+        new = {}
+        for vi in ids:
+            ns = sorted(nbr[vi])
+            avg = mul(_vsum3([dlt[v] for v in ns]), 1.0 / len(ns))
+            new[vi] = lerp(dlt[vi], avg, 0.5)
+        dlt.update(new)
+    for vi in ids:
+        md.verts[vi] = add(ref_verts[vi], dlt[vi])
+
+
+def _vsum3(vs: list) -> Vec:
+    x = y = z = 0.0
+    for v in vs:
+        x += v[0]
+        y += v[1]
+        z += v[2]
+    return (x, y, z)
 
 
 def _newell_out(verts: list, idx, inside: Vec) -> float:
@@ -1151,10 +1211,10 @@ def brows(md, hs: HeadShape) -> None:
             u = i / n_seg
             x = sx * (0.0145 + 0.042 * u)
             arch = math.sin(math.pi * min(1.0, u / 0.68) * 0.5) if u < 0.68 else math.cos(math.pi * (u - 0.68) / 0.64 * 0.5)
-            arch_g = arch ** (1.0 + 1.2 * g)                 # feminine: a higher, sharper arch
-            z = (c[2] + 0.0362 + (0.0036 + 0.0042 * g) * arch_g - 0.0035 * u * u + 0.0034 * g
+            arch_g = arch ** (1.0 + 0.5 * g)                 # feminine: a higher, sharper arch
+            z = (c[2] + 0.0362 + (0.0036 + 0.0010 * g) * arch_g - 0.0035 * u * u + 0.0008 * g
                  - (0.0008 + 0.0024 * u * u) * a)
-            th = (0.0044 * (1.0 - u) ** 0.8 + 0.0008) * (0.75 + 0.25 * smoothstep(0.0, 0.2, u)) * (1.0 - 0.50 * g) * (1.0 + 0.12 * a)
+            th = (0.0044 * (1.0 - u) ** (0.8 + 0.5 * g) + 0.0008 * (1.0 - 0.4 * g)) * (0.75 + 0.25 * smoothstep(0.0, 0.2, u)) * (1.0 - 0.50 * g) * (1.0 + 0.12 * a)
             lift = 0.0017 * (1.0 - 0.4 * u) * (1.0 - 0.25 * g) * (0.15 + 0.85 * smoothstep(0.0, 0.16, u)) * (1.0 - 0.8 * smoothstep(0.85, 1.0, u))
             for row, dz, lf in ((0, th, 0.00012), (1, th * 0.35, lift), (2, -th * 0.45, lift * 0.8),
                                 (3, -th, 0.00012)):
