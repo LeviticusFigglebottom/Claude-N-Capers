@@ -81,6 +81,8 @@ signal stamina_changed()
 ## ui_hud v1.5 (D-057, B4-18): weapon_charge / weapon_spin
 signal weapon_charge_changed()
 signal weapon_spin_changed()
+## ui_hud v1.6 (S1.3, B5-05): player_mode
+signal player_mode_changed()
 
 ## S1.1 "Suspicious actions not allowed" prompt (strings.csv key, ENV B).
 const SUSPICIOUS_PROMPT_KEY: StringName = &"ui.prompt.suspicious_not_allowed"
@@ -113,6 +115,7 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"captain_resistance": &"captain_changed", &"captain_present": &"captain_changed",
 	&"stamina": &"stamina_changed", &"exhausted": &"stamina_changed",
 	&"weapon_charge": &"weapon_charge_changed", &"weapon_spin": &"weapon_spin_changed",
+	&"player_mode": &"player_mode_changed",
 }
 ## Extra (non-contract) properties included in snapshot().
 const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase"]
@@ -147,6 +150,9 @@ var exhausted: bool = false
 ## Bow draw 0..1 while charging (0 otherwise); minigun spin-up 0..1 (CrewWeapons.charge / spin).
 var weapon_charge: float = 0.0
 var weapon_spin: float = 0.0
+# --- player_mode_changed (ui_hud v1.6, S1.3)
+## &"civilian" (no gear yet) | &"casing" | &"masked" (CrewController.player_mode).
+var player_mode: StringName = &"casing"
 # --- ammo_changed
 ## Enums.WeaponSlot (int) -> {"mag": int, "reserve": int} for PRIMARY and SECONDARY.
 var ammo: Dictionary = {}
@@ -197,7 +203,8 @@ var hostages: int = 0
 var warnings: Array[StringName] = []
 # --- crew_changed
 ## Teammates only, by slot: [{"slot": int, "name": String, "is_ai": bool, "health_frac": float,
-## "armor_frac": float, "state": int (Enums.CrewState), "downs_left": int, "carried_loot_id": StringName}]
+## "armor_frac": float, "state": int (Enums.CrewState), "downs_left": int, "carried_loot_id": StringName,
+## "mode": StringName (ui_hud v1.6: &"civilian" / &"casing" / &"masked")}]
 var crew: Array[Dictionary] = []
 # --- masked_changed
 var masked: bool = false
@@ -344,6 +351,7 @@ func _poll_vitals(c: CrewController, slot: int) -> void:
 		_assign(&"casing", not c.masked)
 		_assign(&"mask_progress", c.mask_progress)
 		_assign(&"stamina", snappedf(c.stamina.fraction(), 0.01))
+		_assign(&"player_mode", c.player_mode)
 		_assign(&"exhausted", c.stamina.exhausted)
 
 
@@ -509,7 +517,7 @@ func _poll_crew(slot: int) -> void:
 				"health_frac": clampf(float(_read(hp, &"health", mh)) / mh, 0.0, 1.0),
 				"armor_frac": clampf(float(_read(hp, &"armor", ma)) / ma, 0.0, 1.0),
 				"state": int(c.crew_state), "downs_left": int(_read(hp, &"downs_left", downs_default)),
-				"carried_loot_id": bag,
+				"carried_loot_id": bag, "mode": c.player_mode,
 			})
 	_assign(&"crew", list)
 

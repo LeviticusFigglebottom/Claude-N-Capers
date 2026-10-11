@@ -41,6 +41,12 @@ static var _gen: int = 0
 ## Frames a part takes to reach the position its event names (the ramp ends on the event frame).
 @export var part_ramp_frames: float = 3.0
 
+@export_group("Shared reload clips (D-063)")
+## A set's single reload / reload_empty clip plays at clip time / the weapon's reload_time_s (reload_empty_time_s).
+## Outside this range (before skill multipliers) the weapon needs its own clip: FpViewmodel logs an error.
+@export var reload_scale_min: float = 0.75
+@export var reload_scale_max: float = 1.35
+
 @export_group("Special parts (B4-18, D-055)")
 ## WeaponPartsAnimator (◇ presentation): `Breech` opens about local X during a reload.
 @export var breech_open_deg: float = 40.0
