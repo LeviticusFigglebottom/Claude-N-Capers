@@ -273,21 +273,21 @@ def _atm(k: Kit, p: dict) -> None:
 
 def _night_drop(k: Kit, p: dict) -> None:
     """Night depository head unit: steel cabinet with a brass pull-down hopper; the chute runs
-    down into the basement depository safe."""
+    down into the basement depository safe. Dark parts are clean powder coat (no grime at arm's length)."""
     w, d, h = 0.8, 0.45, 1.3
     o = k.obj("NightDrop")
     a = o.part(bevel=0.006, segments=2)
     t = o.part(bevel=0.002)
     a.bx((-w / 2, -d / 2, 0.0), (w / 2, d / 2, h), "steel")
-    a.bx((-w / 2 - 0.01, -d / 2, h - 0.06), (w / 2 + 0.01, d / 2 + 0.02, h), "metal_dark")
-    a.bx((-w / 2 + 0.01, -d / 2 + 0.01, 0.0), (w / 2 - 0.01, d / 2 + 0.005, 0.08), "metal_dark")
+    a.bx((-w / 2 - 0.01, -d / 2, h - 0.06), (w / 2 + 0.01, d / 2 + 0.02, h), "powder_charcoal")
+    a.bx((-w / 2 + 0.01, -d / 2 + 0.01, 0.0), (w / 2 - 0.01, d / 2 + 0.005, 0.08), "powder_charcoal")
     # hopper: a brass panel tilted out, with a handle
     t.profile_x([(d / 2, 0.86), (d / 2 + 0.06, 0.88), (d / 2 + 0.03, 1.12), (d / 2, 1.12)], -0.28, 0.28, "brass")
     t.rod((-0.15, d / 2 + 0.075, 0.9), (0.15, d / 2 + 0.075, 0.9), 0.012, "brass", segs=10)
     for sx in (-0.15, 0.15):
         t.rod((sx, d / 2 + 0.05, 0.9), (sx, d / 2 + 0.075, 0.9), 0.009, "brass", segs=8)
     # keyed panel and an envelope shelf below
-    t.bx((-0.3, d / 2, 0.25), (0.3, d / 2 + 0.008, 0.75), "metal_dark")
+    t.bx((-0.3, d / 2, 0.25), (0.3, d / 2 + 0.008, 0.75), "powder_charcoal")
     knob(t, 0.22, d / 2 + 0.008, 0.5, "steel", r=0.016)
     t.bx((-0.25, d / 2, 0.8), (0.25, d / 2 + 0.1, 0.82), "steel")
     o.build()

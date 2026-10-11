@@ -57,6 +57,7 @@ Buses: `Master > Music, SFX (> Weapons, Enemies, World, UI), Voice, Ambience`.
 | cue.throwable_knife_hit | throwing knife hits a body (ENV A picks by target) | flesh thunk | 3 |
 | cue.throwable_knife_hit_hard | throwing knife hits world geometry | metallic ting / wood thunk | 3 |
 | cue.npc_melee_swing | NPC melee windup start (A3-13) [R], source = the NPC | short cloth/arm whoosh, 3D at the NPC, ~15 m | 3 |
+| cue.radio_squelch | contact radio line start/end (ENV B ContactRadio, B7-03), local | short squelch click on / off, 2D, Voice or UI bus | 5 |
 
 Special-action cues have no dedicated EventBus signals: ENV A triggers them with `audio_cue_requested` or a
 `CueEmitter`. Looping tells stop on the matching end fact (`crew_tase_ended` for `stinger_arc`, D-049) or locally.

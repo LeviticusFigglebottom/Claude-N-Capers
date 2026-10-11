@@ -104,7 +104,8 @@ func _on_pager_answered(total: int) -> void:
 
 # --- Setup ------------------------------------------------------------------------------------
 
-## Scalars: deposit_boxes (keep the first N saw points), depository_bags (+2 on co_op_courier).
+## Scalars: deposit_boxes (keep the first N deposit_box prefabs; each locks its own loot until sawn),
+## depository_bags (+2 on co_op_courier).
 func _apply_scalars() -> void:
 	var boxes: int = int(_scalar(&"deposit_boxes", 8))
 	var drills: Array[Node] = find_tagged(TAG_DEPOSIT_BOX)
@@ -115,6 +116,7 @@ func _apply_scalars() -> void:
 			_set_enabled(target, false)  # small loot unlocks when its box is sawn
 		if i >= boxes:
 			_set_enabled(drills[i], false)
+			drills[i].remove_from_group(G.SAW_TARGET)  # deposit_box: the saw can't open a disabled box
 			(drills[i] as Node3D).visible = false
 	var bags: int = int(_scalar(&"depository_bags", 4))
 	if _rare(RARE_COURIER):

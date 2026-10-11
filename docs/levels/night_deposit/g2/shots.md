@@ -21,7 +21,7 @@ Rendered by `tools/levelcheck/render_shots.sh` at 1920x1080. Contact sheet: `con
 | 15 | StairCore | G2 U-stair from the corridor (railing over flight 2) | [stair_core.jpg](stair_core.jpg) | 111 |
 | 16 | BasementCorridor | B5 basement spine and the vault gate | [basement_corridor.jpg](basement_corridor.jpg) | 93 |
 | 17 | Antechamber | B8 antechamber: laser plane, time-lock panel, vault door | [antechamber.jpg](antechamber.jpg) | 170 |
-| 18 | VaultInterior | B9 vault: cash cage, Co-op pallet, deposit box walls | [vault_interior.jpg](vault_interior.jpg) | 305 |
+| 18 | VaultInterior | B9 vault: cash cage, Co-op pallet, deposit box walls | [vault_interior.jpg](vault_interior.jpg) | 310 |
 | 19 | CountDepository | B11 count room and B12 depository safe | [count_depository.jpg](count_depository.jpg) | 142 |
 | 20 | RecordsRoom | B6 records: compact shelving, microfiche desk | [records_room.jpg](records_room.jpg) | 179 |
 | 21 | PlantAreaway | B3 plant room and the areaway door | [plant_areaway.jpg](plant_areaway.jpg) | 113 |
@@ -35,5 +35,11 @@ Rendered by `tools/levelcheck/render_shots.sh` at 1920x1080. Contact sheet: `con
 | 29 | LockerRoom | B2 locker room: lockers, bench, sink row (WC door) | [locker_room.jpg](locker_room.jpg) | 144 |
 | 30 | ServerRoom | B4 server room: rack rows, UPS, console (srv_basement slot) | [server_room.jpg](server_room.jpg) | 123 |
 | 31 | InspectionPassage | B7 vault inspection passage (dead end with a reason) | [inspection_passage.jpg](inspection_passage.jpg) | 109 |
+
+Notes:
+- **17 Antechamber** shows all three `laser_pattern` variant grids at once (static, timed, sweeping):
+  the review render keeps every variant slot visible. In a run only the rolled grid exists.
+- **23 AtmVestibule** and **18 VaultInterior** were re-rendered after the QC-37 prefab swap
+  (deposit_box, padlock) and the night-drop powder-coat fix; their contact-sheet tiles were updated.
 
 ![contact sheet](contact_sheet.jpg)

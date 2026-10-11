@@ -4949,6 +4949,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_padlock_brass": {
+  "aabb": [
+   -0.025,
+   0.0,
+   -0.013,
+   0.05,
+   0.089,
+   0.026
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_padlock_brass/prop_padlock_brass.glb",
+  "group": "padlock",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "padlock",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Shackle"
+  ],
+  "place": "none",
+  "prefab": "padlock",
+  "scene": "res://world/props/padlock/prop_padlock_brass.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_pallet": {
   "aabb": [
    -0.6,

@@ -685,6 +685,7 @@ func _build_art() -> void:
 ## interior VoxelGI is baked by bake_gi.gd.
 func _build_lighting(lighting: Node3D) -> void:
 	var we: WorldEnvironment = WorldEnvironment.new()
+	we.set_script(load("res://world/lighting/heist_world_environment.gd"))  # brightness option (B5-01)
 	we.name = "WorldEnvironment"
 	var env: Environment = Environment.new()
 	env.resource_name = "env_night_deposit"

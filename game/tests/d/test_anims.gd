@@ -10,6 +10,10 @@
 ## P5 NPC set (D3-02, priority 5): present, looped, events / speeds / bpm+beats / prop grips / placement in SOURCE.txt,
 ## planted feet (every heel / ball / toe-tip contact is still while it touches the floor), the props where they belong
 ## (rag on the bar, bottle over the glass while pouring, cash in hand, phone in front of the face) and the dances on the beat.
+## D3-04 polish (priority 6): 8-way walk / run sets phase-locked to walk / run (left foot down at the same normalised
+## time +-1 frame, speeds / directions in SOURCE.txt and matching the planted feet), start / stop transitions (hand-off
+## frames equal the cycle / idle pose, planted feet still at the documented root curve), directional hit reacts, death
+## variants ending on the floor, the downed crawl (palms planted at 0.3 m/s) and the heavy Wrecker stomp.
 extends TestCase
 
 const GLB: String = "res://assets/characters/char_anim_humanoid/char_anim_humanoid.glb"
@@ -97,6 +101,24 @@ const SPECIAL_EVENTS: Dictionary = {
 const SOURCE: String = "res://assets/characters/char_anim_humanoid/SOURCE.txt"
 ## Native speeds (m/s at 1.78 m) of the special locomotion loops.
 const SPECIAL_SPEEDS: Dictionary = {"shield_walk": 1.6, "dozer_walk": 1.6}
+## D3-04 polish set (priority 6).
+const D304_DIRS: Dictionary = {"fl": -45.0, "fr": 45.0, "l": -90.0, "r": 90.0, "bl": -135.0, "br": 135.0, "b": 180.0}
+const D304_GAITS: Dictionary = {"walk": [30, 1.6], "run": [21, 3.5]}
+const D304_ONESHOTS: Dictionary = {
+	"walk_start": 18, "walk_stop": 18, "run_start": 18, "run_stop": 20, "hit_react_back": 15, "hit_react_left": 15,
+	"hit_react_right": 15, "death_front_b": 60, "death_back_b": 60, "death_side": 60,
+}
+const D304_LOOPS: Dictionary = {"downed_crawl": 60, "dozer_walk_heavy": 33}
+const D304_EVENTS: Dictionary = {
+	"walk_start": {"step_r": 15}, "walk_stop": {"step_l": 14}, "run_start": {"step_r": 14},
+	"run_stop": {"step_l": 6, "step_r": 17}, "death_front_b": {"knees": 16, "impact": 38},
+	"death_back_b": {"step_r": 12, "step_l": 21, "impact": 44}, "death_side": {"impact": 36},
+	"dozer_walk_heavy": {"step_r": 0, "step_l": 16},
+}
+## Start / stop: the cycle frame each one hands over to / from (SOURCE.txt handoff_frame).
+const D304_HANDOFF: Dictionary = {"walk_start": 3, "walk_stop": 0, "run_start": 4, "run_stop": 0}
+const CRAWL_SPEED: float = 0.3
+const HEAVY_SPEED: float = 1.7
 
 var _root: Node3D = null
 var _player: AnimationPlayer = null
@@ -147,7 +169,7 @@ func test_delivered_p2_clips_are_present() -> void:
 	for clip: String in P2:
 		assert_true(_player.has_animation(StringName(clip)), "P2 clip %s" % clip)
 	var names: PackedStringArray = _player.get_animation_list()
-	assert_eq(names.size(), P1.size() + P2.size() + SPECIALS.size() + NPC.size() + POLICE.size() + P5.size(),
+	assert_eq(names.size(), P1.size() + P2.size() + SPECIALS.size() + NPC.size() + POLICE.size() + P5.size() + _d304().size(),
 		"no extra or misnamed clips: %s" % [names])
 	for n: String in names:
 		assert_false(n.ends_with("-loop") or n.ends_with("_loop"), "%s: loop suffix stripped" % n)
@@ -156,11 +178,12 @@ func test_delivered_p2_clips_are_present() -> void:
 func test_loop_modes() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE + P5:
+	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE + P5 + _d304():
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
-		var want: Animation.LoopMode = Animation.LOOP_LINEAR if LOOPED.has(clip) or P5.has(clip) else Animation.LOOP_NONE
+		var want: Animation.LoopMode = Animation.LOOP_LINEAR if LOOPED.has(clip) or P5.has(clip) or _d304_loops().has(clip) \
+			else Animation.LOOP_NONE
 		assert_eq(a.loop_mode, want, "loop mode of %s" % clip)
 
 
@@ -192,7 +215,7 @@ func test_lengths() -> void:
 func test_tracks_target_skeleton_bones() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE + P5:
+	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE + P5 + _d304():
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -212,7 +235,7 @@ func test_tracks_target_skeleton_bones() -> void:
 func test_loops_end_on_their_first_pose() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in LOOPED + P5:
+	for clip: String in LOOPED + P5 + _d304_loops():
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -227,7 +250,7 @@ func test_loops_end_on_their_first_pose() -> void:
 func test_values_are_finite_without_flips() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE + P5:
+	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE + P5 + _d304():
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -265,7 +288,7 @@ func test_walk_feet_stay_above_floor() -> void:
 	assert_true(lowest > 0.0, "walk: ankles and balls stay above the floor (lowest %f)" % lowest)
 
 
-func test_special_clips_are_present() -> void:
+func _check_special_clips_present() -> void:
 	if not _ready_or_fail():
 		return
 	for clip: String in SPECIALS:
@@ -273,6 +296,7 @@ func test_special_clips_are_present() -> void:
 
 
 func test_special_events_and_speeds_in_source() -> void:
+	_check_special_clips_present()
 	var text: String = FileAccess.get_file_as_string(SOURCE)
 	assert_true(not text.is_empty(), "read %s" % SOURCE)
 	var lines: Dictionary = {}
@@ -914,3 +938,389 @@ func _check_p5_dances_on_the_beat() -> void:
 					best = f
 			var off: int = best - beat * 15
 			assert_true(off >= -1 and off <= 4, "%s beat %d: hips lowest %d f after the beat" % [clip, beat + 1, off])
+
+
+# ---------------------------------------------------------------------------------------------
+# D3-04 polish set
+# ---------------------------------------------------------------------------------------------
+## The D3-04 set: presence and SOURCE facts, 8-way phase lock / speed / direction, start / stop hand-offs, hit reacts,
+## deaths, the downed crawl and the heavy Wrecker gait (one public test: the checks are the private _check_d304_* below).
+func test_d304_polish_set() -> void:
+	if not _ready_or_fail():
+		return
+	_check_d304_present_with_source_facts()
+	_check_d304_8way_phase_locked()
+	_check_d304_8way_speed_and_direction()
+	_check_d304_start_stop()
+	_check_d304_hit_reacts()
+	_check_d304_deaths_end_on_the_floor()
+	_check_d304_crawl_and_heavy_gait()
+
+
+func _d304_8way() -> Array[String]:
+	var out: Array[String] = []
+	for g: String in D304_GAITS:
+		for s: String in D304_DIRS:
+			out.append("%s_%s" % [g, s])
+	return out
+
+
+func _d304_loops() -> Array[String]:
+	var out: Array[String] = _d304_8way()
+	for c: String in D304_LOOPS:
+		out.append(c)
+	return out
+
+
+func _d304() -> Array[String]:
+	var out: Array[String] = _d304_loops()
+	for c: String in D304_ONESHOTS:
+		out.append(c)
+	return out
+
+
+func _d304_frames(clip: String) -> int:
+	if D304_ONESHOTS.has(clip):
+		return int(D304_ONESHOTS[clip])
+	if D304_LOOPS.has(clip):
+		return int(D304_LOOPS[clip])
+	return int(D304_GAITS[clip.get_slice("_", 0)][0])
+
+
+## Every bone's position at time `t` of `clip`.
+func _snapshot(clip: String, t: float) -> Array[Vector3]:
+	_player.play(StringName(clip))
+	_player.seek(t, true)
+	var out: Array[Vector3] = []
+	for b: int in range(_skel.get_bone_count()):
+		out.append((_skel.global_transform * _skel.get_bone_global_pose(b)).origin)
+	_player.stop()
+	return out
+
+
+static func _snap_dist(a: Array[Vector3], b: Array[Vector3]) -> float:
+	var worst: float = 0.0
+	for i: int in range(a.size()):
+		worst = maxf(worst, a[i].distance_to(b[i]))
+	return worst
+
+
+## Heel / ball / toe-tip points of both feet at the current pose: key -> position.
+func _contacts(pts: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for key: String in pts:
+		var spec: Array = pts[key]
+		out[key] = _skel.global_transform * _skel.get_bone_global_pose(int(spec[0])) * Vector3(spec[1])
+	return out
+
+
+## SOURCE.txt `check.NN: <clip>: ...` rows by clip.
+func _check_rows() -> Dictionary:
+	var out: Dictionary = {}
+	for line: String in FileAccess.get_file_as_string(SOURCE).split("\n"):
+		var m: RegExMatch = RegEx.create_from_string("^check\\.\\d+: (\\w+): (.*)$").search(line)
+		if m != null:
+			out[m.get_string(1)] = m.get_string(2)
+	return out
+
+
+static func _num(row: String, key: String) -> float:
+	var m: RegExMatch = RegEx.create_from_string(key + "=(-?[0-9.]+)").search(row)
+	return m.get_string(1).to_float() if m != null else INF
+
+
+func _check_d304_present_with_source_facts() -> void:
+	var lines: Dictionary = _source_lines()
+	var checks: Dictionary = _check_rows()
+	var loops: PackedStringArray = String(lines.get("loops", "")).split(",")
+	for clip: String in _d304():
+		assert_true(_player.has_animation(StringName(clip)), "D3-04 clip %s" % clip)
+		var row: String = String(lines.get("clip." + clip, ""))
+		assert_true(not row.is_empty(), "SOURCE.txt lists clip.%s" % clip)
+		assert_eq(loops.has(clip), _d304_loops().has(clip), "%s: in SOURCE loops iff looped" % clip)
+		var a: Animation = _anim(clip)
+		if a != null:
+			assert_near(a.length, float(_d304_frames(clip)) / 30.0, 0.002, "%s length" % clip)
+	for g: String in D304_GAITS:
+		for s: String in D304_DIRS:
+			var clip: String = "%s_%s" % [g, s]
+			var row: String = String(lines.get("clip." + clip, ""))
+			assert_true(row.contains("speed_mps=%s" % str(D304_GAITS[g][1])), "%s speed %s (%s)" % [clip, D304_GAITS[g][1], row])
+			assert_eq(_num(row, "dir_deg"), float(D304_DIRS[s]), "%s dir_deg" % clip)
+			assert_true(row.contains("foot_down=R@0.00,L@0.50"), "%s: foot_down documented" % clip)
+			assert_true(_num(String(checks.get(clip, "")), "slide") < 0.1, "%s: source slide %s" % [clip, checks.get(clip)])
+	for clip: String in D304_EVENTS:
+		var want: Dictionary = D304_EVENTS[clip]
+		for ev: String in want:
+			assert_true(String(lines.get("clip." + clip, "")).contains("%s@%d" % [ev, int(want[ev])]),
+				"%s event %s@%d" % [clip, ev, int(want[ev])])
+			assert_true(int(want[ev]) <= _d304_frames(clip), "%s: %s inside the clip" % [clip, ev])
+	for clip: String in D304_HANDOFF:
+		assert_eq(int(_num(String(lines.get("clip." + clip, "")), "handoff_frame")), int(D304_HANDOFF[clip]),
+			"%s handoff frame" % clip)
+		var row: String = String(checks.get(clip, ""))
+		assert_true(_num(row, "slide") < 0.1, "%s: planted feet in the source (%s)" % [clip, row])
+		assert_true(_num(row, "handoff_err") < 0.1 and _num(row, "idle0_err") < 0.1, "%s: exact hand-off in the source" % clip)
+	assert_true(String(lines.get("clip.downed_crawl", "")).contains("speed_mps=%s" % CRAWL_SPEED), "downed_crawl speed")
+	assert_true(_num(String(checks.get("downed_crawl", "")), "palm_slide") < 0.1, "downed_crawl: palms planted in the source")
+	assert_true(String(lines.get("clip.dozer_walk_heavy", "")).contains("speed_mps=%s" % HEAVY_SPEED), "dozer_walk_heavy speed")
+	assert_true(_num(String(checks.get("dozer_walk_heavy", "")), "slide") < 0.1, "dozer_walk_heavy: planted feet")
+	for n: String in ["locomotion_blend", "locomotion_transitions", "hit_react_dirs", "death_variants", "death_end_poses",
+			"downed_crawl_pose", "dozer_walk_heavy_speed"]:
+		assert_true(lines.has(n), "SOURCE.txt documents %s" % n)
+
+
+## Per frame: the height of each foot's lowest contact (heel / ball / toe tip) and the lowest of all.
+func _foot_heights(clip: String, frames: int) -> Dictionary:
+	var pts: Dictionary = _ground_locals()
+	var hl: Array[float] = []
+	var hr: Array[float] = []
+	var low: float = 1.0
+	_player.play(StringName(clip))
+	for f: int in range(frames + 1):
+		_player.seek(float(f) / 30.0, true)
+		var c: Dictionary = _contacts(pts)
+		var l: float = minf(Vector3(c["heel.L"]).y, minf(Vector3(c["ball.L"]).y, Vector3(c["tip.L"]).y))
+		var r: float = minf(Vector3(c["heel.R"]).y, minf(Vector3(c["ball.R"]).y, Vector3(c["tip.R"]).y))
+		hl.append(l)
+		hr.append(r)
+		low = minf(low, minf(l, r))
+	_player.stop()
+	return {"L": hl, "R": hr, "low": low}
+
+
+## Touch-down frames of a loop: on the floor (< 3 mm) after a frame in the air.
+static func _touchdowns(h: Array[float], frames: int) -> Array[int]:
+	var out: Array[int] = []
+	for f: int in range(frames):
+		if h[f] < 0.003 and h[posmod(f - 1, frames)] >= 0.003:
+			out.append(f)
+	return out
+
+
+## The 8-way cycles are phase-locked to walk / run: one touch-down per foot per loop, the right foot at normalised
+## time 0 and the left at 0.5 (+-1 frame) in every direction, like the forward clip; nothing below the floor.
+func _check_d304_8way_phase_locked() -> void:
+	for g: String in D304_GAITS:
+		var n: int = int(D304_GAITS[g][0])
+		var clips: Array[String] = [g]
+		for s: String in D304_DIRS:
+			clips.append("%s_%s" % [g, s])
+		for clip: String in clips:
+			if _anim(clip) == null:
+				continue
+			var hs: Dictionary = _foot_heights(clip, n)
+			var r: Array[int] = _touchdowns(hs["R"], n)
+			var l: Array[int] = _touchdowns(hs["L"], n)
+			assert_eq(r.size(), 1, "%s: one right touch-down per loop %s" % [clip, r])
+			assert_eq(l.size(), 1, "%s: one left touch-down per loop %s" % [clip, l])
+			if r.size() == 1:
+				var dr: int = mini(r[0], n - r[0])
+				assert_true(dr <= 1, "%s: right foot down at normalised 0 (frame %d of %d)" % [clip, r[0], n])
+			if l.size() == 1:
+				assert_true(absf(float(l[0]) - 0.5 * float(n)) <= 1.0, "%s: left foot down at normalised 0.5 (frame %d of %d)" % [clip, l[0], n])
+			if clip != g:
+				# 0 mm in the source; Godot's import keyframe optimizer leaves a few mm on the fast foot roll
+				assert_true(float(hs["low"]) > -0.006, "%s: heels / balls / toes above the floor (%f)" % [clip, hs["low"]])
+
+
+## The planted foot moves at -speed along the documented direction (root space): what SOURCE.txt says is the speed and
+## direction of the clip (+-4 %, +-3 deg), measured on the contact point that stays on the floor between frames.
+func _check_d304_8way_speed_and_direction() -> void:
+	var pts: Dictionary = _ground_locals()
+	for g: String in D304_GAITS:
+		var n: int = int(D304_GAITS[g][0])
+		var v: float = float(D304_GAITS[g][1])
+		for s: String in D304_DIRS:
+			var clip: String = "%s_%s" % [g, s]
+			if _anim(clip) == null:
+				continue
+			var a: float = deg_to_rad(float(D304_DIRS[s]))
+			var want: Vector3 = -Vector3(sin(a), 0.0, -cos(a)) * v / 30.0
+			var prev: Dictionary = {}
+			var sum: Vector3 = Vector3.ZERO
+			var count: int = 0
+			_player.play(StringName(clip))
+			for f: int in range(n + 1):
+				_player.seek(float(f) / 30.0, true)
+				var c: Dictionary = _contacts(pts)
+				for key: String in ["heel.R", "ball.R"]:
+					var p: Vector3 = c[key]
+					if prev.has(key) and p.y < 0.002 and Vector3(prev[key]).y < 0.002:
+						var d: Vector3 = p - Vector3(prev[key])
+						sum += Vector3(d.x, 0.0, d.z)
+						count += 1
+					prev[key] = p
+			_player.stop()
+			assert_true(count >= 4, "%s: the right foot is planted for a while (%d samples)" % [clip, count])
+			if count == 0:
+				continue
+			var mean: Vector3 = sum / float(count)
+			assert_near(mean.length(), want.length(), want.length() * 0.04, "%s: planted foot speed %f m/s" % [clip, mean.length() * 30.0])
+			assert_true(rad_to_deg(mean.angle_to(want)) < 3.0, "%s: travel direction (%s vs %s)" % [clip, mean, want])
+
+
+## Start / stop: frame 0 / the last frame equal idle frame 0 and the documented cycle frame; the documented root curve
+## starts / ends at the cycle speed and rest; with the root moved along it, planted contacts stay put.
+func _check_d304_start_stop() -> void:
+	var lines: Dictionary = _source_lines()
+	var pts: Dictionary = _ground_locals()
+	var idle0: Array[Vector3] = _snapshot("idle", 0.0)
+	for clip: String in D304_HANDOFF:
+		var a: Animation = _anim(clip)
+		if a == null:
+			continue
+		var n: int = _d304_frames(clip)
+		var gait: String = clip.get_slice("_", 0)
+		var v: float = float(D304_GAITS[gait][1])
+		var cyc: Array[Vector3] = _snapshot(gait, float(D304_HANDOFF[clip]) / 30.0)
+		var first: Array[Vector3] = _snapshot(clip, 0.0)
+		var last: Array[Vector3] = _snapshot(clip, float(n) / 30.0)
+		var starting: bool = clip.ends_with("start")
+		var e0: float = _snap_dist(first, idle0 if starting else cyc)
+		var e1: float = _snap_dist(last, cyc if starting else idle0)
+		var cyc_name: String = "%s frame %d" % [gait, D304_HANDOFF[clip]]
+		assert_true(e0 < 0.01, "%s: frame 0 == %s (%f m)" % [clip, "idle frame 0" if starting else cyc_name, e0])
+		assert_true(e1 < 0.01, "%s: last frame == %s (%f m)" % [clip, cyc_name if starting else "idle frame 0", e1])
+		var m: RegExMatch = RegEx.create_from_string("root_m=([-0-9.,]+)").search(String(lines.get("curve." + clip, "")))
+		if m == null:
+			fail("SOURCE.txt curve.%s" % clip)
+			continue
+		var curve: PackedFloat64Array = PackedFloat64Array()
+		for x: String in m.get_string(1).split(","):
+			curve.append(x.to_float())
+		assert_eq(curve.size(), n + 1, "curve.%s: a value per frame" % clip)
+		if curve.size() != n + 1:
+			continue
+		for f: int in range(1, n + 1):
+			assert_true(curve[f] >= curve[f - 1] - 1e-6, "curve.%s: never backwards (frame %d)" % [clip, f])
+		var step: float = v / 30.0
+		if starting:
+			assert_near(curve[n] - curve[n - 1], step, step * 0.03, "curve.%s: at the cycle speed at the hand-off" % clip)
+			assert_true(curve[1] - curve[0] < step * 0.1, "curve.%s: starts from rest" % clip)
+		else:
+			assert_near(curve[1] - curve[0], step, step * 0.12, "curve.%s: leaves the cycle at its speed" % clip)
+			assert_near(curve[n] - curve[n - 1], 0.0, 1e-4, "curve.%s: at rest at the end" % clip)
+		# planted contacts (on the floor for 3 frames running) are world-still: root space + the root's travel along -Z
+		var prev: Dictionary = {}
+		var prev2: Dictionary = {}
+		var slide: float = 0.0
+		var low: float = 1.0
+		_player.play(StringName(clip))
+		for f: int in range(n + 1):
+			_player.seek(float(f) / 30.0, true)
+			var c: Dictionary = _contacts(pts)
+			for key: String in c:
+				var p: Vector3 = Vector3(c[key]) + Vector3(0.0, 0.0, -curve[f])
+				low = minf(low, p.y)
+				if prev2.has(key) and p.y < 0.003 and Vector3(prev[key]).y < 0.003 and Vector3(prev2[key]).y < 0.003:
+					slide = maxf(slide, Vector2(p.x - Vector3(prev[key]).x, p.z - Vector3(prev[key]).z).length())
+				if prev.has(key):
+					prev2[key] = prev[key]
+				prev[key] = p
+		_player.stop()
+		assert_true(slide < 0.004, "%s: planted contacts do not slide at the documented root motion (%f m/frame)" % [clip, slide])
+		assert_true(low > -0.006, "%s: heels / balls / toes above the floor (%f)" % [clip, low])
+
+
+## Directional hit reacts: start and end on idle frame 0, feet planted, the chest knocked the right way at the hit.
+func _check_d304_hit_reacts() -> void:
+	var idle0: Array[Vector3] = _snapshot("idle", 0.0)
+	var chest: int = _skel.find_bone("chest")
+	var push: Dictionary = {"hit_react_back": Vector3(0.0, 0.0, -1.0), "hit_react_left": Vector3(1.0, 0.0, 0.0),
+		"hit_react_right": Vector3(-1.0, 0.0, 0.0), "hit_react": Vector3(0.0, 0.0, 1.0)}
+	for clip: String in push:
+		var a: Animation = _anim(clip)
+		if a == null:
+			continue
+		var n: int = int(round(a.length * 30.0))
+		var s0: Array[Vector3] = _snapshot(clip, 0.0)
+		var s3: Array[Vector3] = _snapshot(clip, 3.0 / 30.0)
+		var sn: Array[Vector3] = _snapshot(clip, float(n) / 30.0)
+		if clip != "hit_react":
+			assert_true(_snap_dist(s0, idle0) < 0.01 and _snap_dist(sn, idle0) < 0.01, "%s: from and back to idle frame 0" % clip)
+		var moved: Vector3 = s3[chest] - s0[chest]
+		assert_true(moved.dot(push[clip]) > 0.025, "%s: the chest is knocked %s (%s)" % [clip, push[clip], moved])
+		var drift: float = 0.0
+		for f: int in range(n + 1):
+			var s: Array[Vector3] = _snapshot(clip, float(f) / 30.0)
+			for b: String in ["foot.L", "foot.R", "toe.L", "toe.R"]:
+				drift = maxf(drift, s[_skel.find_bone(b)].distance_to(s0[_skel.find_bone(b)]))
+		assert_true(drift < 0.004, "%s: feet planted (%f m)" % [clip, drift])
+
+
+## Death variants start standing, reach the floor at `impact` and end lying on it: nothing below it at any frame,
+## the hips and every joint low at the end.
+func _check_d304_deaths_end_on_the_floor() -> void:
+	var idle0: Array[Vector3] = _snapshot("idle", 0.0)
+	var hips: int = _skel.find_bone("hips")
+	for clip: String in ["death_front_b", "death_back_b", "death_side"]:
+		var a: Animation = _anim(clip)
+		if a == null:
+			continue
+		var n: int = _d304_frames(clip)
+		assert_true(_snap_dist(_snapshot(clip, 0.0), idle0) < 0.01, "%s: starts from idle frame 0" % clip)
+		var lowest: float = 1.0
+		for f: int in range(0, n + 1, 2):
+			for p: Vector3 in _snapshot(clip, float(f) / 30.0):
+				lowest = minf(lowest, p.y)
+		assert_true(lowest > -0.01, "%s: no joint below the floor (%f)" % [clip, lowest])
+		var impact: int = int(D304_EVENTS[clip]["impact"])
+		var at: Array[Vector3] = _snapshot(clip, float(impact) / 30.0)
+		assert_true(at[hips].y < 0.4, "%s: down at the impact (hips %f m)" % [clip, at[hips].y])
+		var end: Array[Vector3] = _snapshot(clip, float(n) / 30.0)
+		var top: float = 0.0
+		var bottom: float = 1.0
+		for p: Vector3 in end:
+			top = maxf(top, p.y)
+			bottom = minf(bottom, p.y)
+		assert_true(end[hips].y < 0.3, "%s: ends lying down (hips %f m)" % [clip, end[hips].y])
+		assert_true(top < 0.6, "%s: every joint low at the end (highest %f m)" % [clip, top])
+		assert_true(bottom < 0.1, "%s: resting on the floor (lowest joint %f m)" % [clip, bottom])
+
+
+## downed_crawl: prone every frame, the palms planted (world-still while the root moves forward at 0.3 m/s; right hand
+## down from normalised 0, left from 0.5, 60 % stance each) and the heavy Wrecker stomp on its feet, lower than dozer_walk.
+func _check_d304_crawl_and_heavy_gait() -> void:
+	var a: Animation = _anim("downed_crawl")
+	if a != null:
+		var n: int = int(D304_LOOPS["downed_crawl"])
+		var hips: int = _skel.find_bone("hips")
+		var prev: Dictionary = {}
+		var slide: float = 0.0
+		var lowest: float = 1.0
+		var highest_hips: float = 0.0
+		for f: int in range(n + 1):
+			var s: Array[Vector3] = _snapshot("downed_crawl", float(f) / 30.0)
+			highest_hips = maxf(highest_hips, s[hips].y)
+			for p: Vector3 in s:
+				lowest = minf(lowest, p.y)
+			for sfx: String in ["R", "L"]:
+				var down: float = 0.0 if sfx == "R" else 0.5 * float(n)
+				var u: float = fposmod(float(f) - down, float(n))
+				var p: Vector3 = s[_skel.find_bone("hand." + sfx)] + Vector3(0.0, 0.0, -CRAWL_SPEED * float(f) / 30.0)
+				if u >= 1.0 and u <= 0.6 * float(n) - 1.0 and prev.has(sfx):
+					slide = maxf(slide, p.distance_to(prev[sfx]))
+					assert_true(p.y < 0.12, "downed_crawl f%d: %s hand on the floor (%f)" % [f, sfx, p.y])
+				prev[sfx] = p
+		assert_true(highest_hips < 0.3, "downed_crawl: prone (hips at most %f m)" % highest_hips)
+		assert_true(lowest > -0.01, "downed_crawl: nothing below the floor (%f)" % lowest)
+		assert_true(slide < 0.004, "downed_crawl: planted hands world-still (%f m/frame)" % slide)
+	var heavy: Animation = _anim("dozer_walk_heavy")
+	var walk: Animation = _anim("dozer_walk")
+	if heavy == null or walk == null:
+		fail("dozer_walk_heavy / dozer_walk missing")
+		return
+	var hs: Dictionary = _foot_heights("dozer_walk_heavy", 33)
+	assert_true(float(hs["low"]) > -0.003, "dozer_walk_heavy: feet above the floor (%f)" % hs["low"])
+	var r: Array[int] = _touchdowns(hs["R"], 33)
+	var l: Array[int] = _touchdowns(hs["L"], 33)
+	assert_true(r.size() == 1 and (r[0] <= 1 or r[0] >= 32), "dozer_walk_heavy: right heel strike at step_r@0 %s" % [r])
+	assert_true(l.size() == 1 and absi(l[0] - 16) <= 1, "dozer_walk_heavy: left heel strike at step_l@16 %s" % [l])
+	var mean_h: float = 0.0
+	var mean_w: float = 0.0
+	var hip: int = _skel.find_bone("hips")
+	for f: int in range(33):
+		mean_h += _snapshot("dozer_walk_heavy", float(f) / 30.0)[hip].y / 33.0
+		mean_w += _snapshot("dozer_walk", float(f) / 30.0)[hip].y / 33.0
+	assert_true(mean_h < mean_w - 0.01, "dozer_walk_heavy: lower, heavier stance than dozer_walk (%f vs %f m)" % [mean_h, mean_w])

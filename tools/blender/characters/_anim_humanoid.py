@@ -1914,10 +1914,22 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     if "rappel" in table:
         stationary["rappel"] = rappel_factory(float(table["rappel"]["speed"]))
     floor = {"lie_down": 0, "tied": 0, "kneel_cuffed": 0, "downed": 0, "surrender": -14, "sit_bed_read": 0}
+    import _anim_d304 as d304  # noqa: PLC0415 - D3-04 polish set; imports this module
+
+    extra = {}
+    if any(n in table for n in d304.NAMES):
+        # the 8-way and start / stop sets derive from walk / run (and idle): take them from the full table when a
+        # caller (review renders) passes a subset
+        from anim_humanoid import CLIPS as FULL  # noqa: PLC0415
+
+        extra = d304.clips(sk, solver, table, gaits(FULL), int(FULL["idle"]["frames"]))
     out: dict[str, Clip] = {}
     for name, row in table.items():
         N, loop, speed = int(row["frames"]), bool(row["loop"]), float(row["speed"])
         ev = dict(row.get("events", {}))
+        if name in extra:
+            out[name] = extra[name]
+            continue
         if name in G:
             g = G[name]
             out[name] = Clip(name, N, loop, (lambda f, g=g: g.pose(sk, f)), speed, g, ev)

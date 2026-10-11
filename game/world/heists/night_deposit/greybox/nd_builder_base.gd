@@ -28,7 +28,7 @@ const PREFAB_CLASSES: Dictionary = {
 	"alarm_button": "AlarmButton", "phone": "Phone", "secure_zone": "SecureZone", "escape_zone": "EscapeZone",
 	"body_container": "BodyContainer", "ladder": "Ladder", "camera_station": "CameraStation",
 	"security_camera": "SecurityCamera", "code_note": "CodeNote", "keypad": "Keypad", "laser_grid": "LaserGrid",
-	"bag_lift": "BagLift", "hack_terminal": "HackTerminal",
+	"bag_lift": "BagLift", "hack_terminal": "HackTerminal", "deposit_box": "DepositBox", "padlock": "Padlock",
 }
 var map_root: HeistMap = null
 var errors: PackedStringArray = PackedStringArray()

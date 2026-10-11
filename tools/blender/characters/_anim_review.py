@@ -6,6 +6,7 @@
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- npc OUT.png [clip:frame[:yaw] ...]
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- rappel OUT.png [clip:frame[:yaw] ...]
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- p5 OUT.png [clip:frame[:yaw] ...]
+    blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- d304 OUT.png [clip:frame[:yaw] ...]
 
 ``humanoid``: one posed ``char_body_base`` body per cell (Cycles CPU, low samples; EEVEE needs EGL),
 3/4 front view with a side-view row for locomotion, the weapon models attached through the HandR
@@ -38,7 +39,7 @@ from lib import meta, scene  # noqa: E402
 
 WEAPONS = {"pistol": REPO / "game/assets/weapons/wpn_kestrel_p9/wpn_kestrel_p9.glb",
            "rifle": REPO / "game/assets/weapons/wpn_corsair_ar/wpn_corsair_ar.glb"}
-GUN_CLIPS = {"aim_pistol": "pistol", "fire_pistol": "pistol", "reload_pistol": "pistol", "downed": "pistol",
+GUN_CLIPS = {"dozer_walk_heavy": "rifle", "aim_pistol": "pistol", "fire_pistol": "pistol", "reload_pistol": "pistol", "downed": "pistol",
              "aim_rifle": "rifle", "fire_rifle": "rifle", "reload_rifle": "rifle", "melee": "rifle",
              "shield_idle": "pistol", "shield_walk": "pistol", "shield_bang": "pistol", "heal_ally": "rifle",
              "dozer_walk": "rifle", "idle_thug": "rifle"}
@@ -66,6 +67,20 @@ P5_CELLS = ["dance_a:0", "dance_a:15", "dance_a:26", "dance_a:45", "dance_b:7", 
             "teller_count:144:40", "teller_count:177:70", "curator_inspect:30:70", "curator_inspect:85:70",
             "curator_inspect:150:70", "curator_inspect:180:20", "walk_text:0", "walk_text:12:30", "cower_seated:0",
             "cower_seated:0:70", "cower_stand:0", "cower_stand:42:60", "cower_stand:42"]
+#: D3-04 polish: 8-way walk / run, start / stop, directional hit reacts, death variety, downed crawl, heavy Wrecker gait.
+D304_CELLS = ["walk_l:0:-58", "walk_l:8:-58", "walk_r:0:-58", "walk_r:8:-58", "walk_fr:8:-58", "walk_bl:8:-58",
+              "walk_b:8:-58", "walk_br:22:-58",
+              "run_l:0:-58", "run_l:5:-58", "run_r:5:-58", "run_fr:5:-58", "run_bl:5:-58", "run_b:5:-58",
+              "walk_start:0:-58", "walk_start:8:-58",
+              "walk_start:12:-58", "walk_start:18:-58", "walk_stop:5:-58", "walk_stop:10:-58", "walk_stop:18:-58",
+              "run_start:6:-58", "run_start:11:-58", "run_start:18:-58",
+              "run_stop:3:-58", "run_stop:8:-58", "run_stop:13:-58", "run_stop:20:-58", "hit_react_back:3:-58",
+              "hit_react_left:3", "hit_react_left:7", "hit_react_right:3",
+              "death_front_b:10:-58", "death_front_b:16:-58", "death_front_b:28:-58", "death_front_b:60:-58",
+              "death_back_b:12:-58", "death_back_b:31:-58", "death_back_b:44:-58", "death_back_b:60:-58",
+              "death_side:4", "death_side:12", "death_side:21", "death_side:36", "death_side:60:90",
+              "downed_crawl:0:-58", "downed_crawl:15:-58", "downed_crawl:30:-58",
+              "dozer_walk_heavy:0:-58", "dozer_walk_heavy:8:-58", "dozer_walk_heavy:16:-58", "dozer_walk_heavy:8"]
 #: Clips that show hand-prop proxies (review only), and their furniture.
 PROP_CLIPS = {"phone_call": "phone", "phone_seated": "phone", "mug_idle": "mug", "mug_carry_walk": "mug", "mop": "mop",
               "sit_bed_read": "book", "walk_text": "phone", "bartender_wipe": "rag", "bartender_pour": ("bottle", "glass"),
@@ -286,7 +301,8 @@ def humanoid(out: pathlib.Path, cells: list[str]) -> None:
     baked = {n: A.bake(solver, clips[n]) for n in names}
     rows = math.ceil(len(cells) / cols)
     cam_obj, right, up = _camera((0.55, 1.0, 0.42))
-    dx, dy = 2.0, 2.35
+    env0 = __import__("os").environ
+    dx, dy = float(env0.get("REVIEW_DX", "2.0")), float(env0.get("REVIEW_DY", "2.35"))
     floor_mat = _mat("floor", (0.30, 0.30, 0.32), 0.9)
     shield_mat = _mat("shield", (0.10, 0.12, 0.16), 0.4)
     npc_mats = {"prop": _mat("prop", (0.08, 0.08, 0.09), 0.4), "book": _mat("book", (0.35, 0.08, 0.06), 0.6),
@@ -340,7 +356,7 @@ def humanoid(out: pathlib.Path, cells: list[str]) -> None:
         ev.to_mesh_clear()
         lows.append((cell, zmin - base[2]))
         floor = bpy.data.meshes.new(f"floor_{i}")
-        fx, fy = 0.75, 1.1
+        fx, fy = (float(x) for x in env0.get("REVIEW_FLOOR", "0.75,1.1").split(","))
         floor.from_pydata([(-fx, -fy, 0), (fx, -fy, 0), (fx, fy, 0), (-fx, fy, 0)], [], [(0, 1, 2, 3)])
         floor.materials.append(floor_mat)
         fo = bpy.data.objects.new(f"floor_{i}", floor)
@@ -425,6 +441,8 @@ def main() -> None:
         humanoid(out, argv[2:] or RAPPEL_CELLS)
     elif kind == "p5":
         humanoid(out, argv[2:] or P5_CELLS)
+    elif kind == "d304":
+        humanoid(out, argv[2:] or D304_CELLS)
     elif kind == "arms":
         import _arms_review  # noqa: PLC0415
 

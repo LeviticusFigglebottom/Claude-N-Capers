@@ -23,7 +23,8 @@ step "gdlint (ENV C code)"
 
 step "tests c + integration"
 for d in c integration; do
-  LOG="/tmp/push_gate_tests_$d.txt"
+  # Per-run log (a shared fixed path let concurrent gate runs read each other's results).
+  LOG="$(mktemp "/tmp/push_gate_tests_${d}_XXXXXX.txt")"
   "$ROOT/tools/ci/run_tests.sh" "$d" > "$LOG" 2>&1
   OUT="$(grep -E '^== ' "$LOG")"
   echo "$d: $OUT (log: $LOG)"
@@ -33,8 +34,9 @@ for d in c integration; do
 done
 
 step "validate_all"
-"$ROOT/tools/levelcheck/validate_all.sh" > /tmp/push_gate_validate.txt 2>&1 || FAIL=1
-grep -E 'PASS in|FAIL|exit' /tmp/push_gate_validate.txt | tail -6
+VLOG="$(mktemp /tmp/push_gate_validate_XXXXXX.txt)"
+"$ROOT/tools/levelcheck/validate_all.sh" > "$VLOG" 2>&1 || FAIL=1
+grep -E 'PASS in|FAIL|exit' "$VLOG" | tail -8
 
 echo
 if [[ $FAIL -eq 0 ]]; then echo "PUSH_GATE: PASS"; else echo "PUSH_GATE: FAIL"; fi

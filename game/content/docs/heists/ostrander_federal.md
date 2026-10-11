@@ -1,6 +1,6 @@
-# Meridian Federal: ENV B content stub (B6-01)
+# Ostrander Federal: ENV B content stub (B6-01; renamed from meridian_federal, D-075)
 
-Owner: ENV B. Heist row 6 of `docs/design/game_overview.md`: `meridian_federal`, **Meridian Federal**.
+Owner: ENV B. Heist row 6 of `docs/design/game_overview.md`: `ostrander_federal`, **Ostrander Federal**.
 PD2 analog: Big Bank. Stealth + loud, size L, phase P5.
 
 **Status: stub.** ENV C's G0 level doc does not exist yet. Until a HeistDef and a map scene ship, the
@@ -13,7 +13,7 @@ heist is hidden from the menus, the Board and the broker (QB-55, D-049; `test_p5
 | Board spot | district `financial`, anchor `(0.84, 0.24)` | `data/board/city_map.tres` |
 | Accent | banknote green `#6FCF97` ◇ (raw WCAG AA for text: 6.8:1 or better on our panels) | `data/ui/heist_accents.tres` |
 | Heist list | `solo_ai_teammates` 3 | `data/ui/heist_list.tres` |
-| Strings | `heist.meridian_federal.name` / `.subtitle` / `.brief` | `data/strings/strings.csv` |
+| Strings | `heist.ostrander_federal.name` / `.subtitle` / `.brief` | `data/strings/strings.csv` |
 | Base payout (`HeistDef.base_payout`, unscaled) | **$160,000 placeholder** ◇ | this doc (the def carries it) |
 
 ## Contact: The Accountant
@@ -38,7 +38,10 @@ far: $160,000, about 1.8× Night Deposit's $90,000.
 | `loot.small_valuables` (no def) | — | prefab, ◇ $800–2,400 per item | deposit boxes (S10.3, QB-52; as Night Deposit) |
 
 ## Waiting on ENV C (G0 doc)
-* Objective `[tag]`s → `objective.meridian_federal.*` strings and the briefing placeholder (none yet).
+* Objective `[tag]`s → `objective.ostrander_federal.*` strings and the briefing placeholder (none yet).
 * Vault layout, bag counts and the required bags; deposit-box counts and values.
 * Escape options, `HeistDef.contact` (Accountant proposed), music track, pre-planning points and assets.
-* Long briefing text (`heist.meridian_federal.briefing`) and briefing/mission VO.
+* Long briefing text (`heist.ostrander_federal.briefing`) and briefing/mission VO.
+
+## Required loot (D-075)
+6 bags to escape (4 on Routine); the rest is bonus.

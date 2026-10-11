@@ -15,11 +15,12 @@ const P5_LOOT: Array = [
 	[&"loot.painting_widow_in_blue", Enums.LootWeight.LIGHT, 1500],
 	[&"loot.painting_salt_orchard", Enums.LootWeight.LIGHT, 1700],
 	[&"loot.painting_lantern_bearer", Enums.LootWeight.LIGHT, 2000],
+	[&"loot.painting_study", Enums.LootWeight.LIGHT, 1100],  # D-075
 ]
 ## Gallery Night's rolled canvases (PD2 carries cut paintings as a light bag).
 const PAINTINGS: Array[StringName] = [
 	&"loot.painting_tidewater_saint", &"loot.painting_widow_in_blue", &"loot.painting_salt_orchard",
-	&"loot.painting_lantern_bearer",
+	&"loot.painting_lantern_bearer", &"loot.painting_study",
 ]
 ## Value band per weight class, from the loot already shipped (jewelry $1,000 .. weapon crate $2,000)
 ## stretched one step for gold: [min, max] by Enums.LootWeight.
@@ -27,14 +28,14 @@ const BANDS: Array = [[1000, 2000], [1400, 2400], [2000, 3000]]
 ## heist id -> [contact, district, placeholder base payout ◇ (unscaled)].
 const STUBS: Dictionary = {
 	&"gallery_night": [&"contact.vance", &"uptown", 105000],
-	&"meridian_federal": [&"contact.accountant", &"financial", 160000],
+	&"ostrander_federal": [&"contact.accountant", &"financial", 160000],
 	&"rolling_thunder": [&"contact.reyes", &"southfield", 85000],
-	&"afterhours": [&"contact.reyes", &"midtown", 75000],
+	&"afterhours": [&"contact.accountant", &"midtown", 75000],  # D-075
 }
 ## Contract pay by difficulty (Routine..Cataclysm) for each placeholder payout, as the docs print it.
 const PAY_TABLES: Dictionary = {
 	&"gallery_night": [105000, 210000, 273000, 441000, 756000, 966000],
-	&"meridian_federal": [160000, 320000, 416000, 672000, 1152000, 1472000],
+	&"ostrander_federal": [160000, 320000, 416000, 672000, 1152000, 1472000],
 	&"rolling_thunder": [85000, 170000, 221000, 357000, 612000, 782000],
 	&"afterhours": [75000, 150000, 195000, 315000, 540000, 690000],
 }

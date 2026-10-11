@@ -24,11 +24,10 @@ const PREFAB_VISUALS: Dictionary = {
 	"code_note": "prop_papers", "drill_point": VIS_EMPTY, "secure_zone": "veh_van_secure",
 	"hack_terminal": "prop_server_rack_terminal", "bag_lift": VIS_CASH_LIFT,
 }
-## D-057 / QC-37 saw targets (G.SAW_TARGET + saw metas; ENV A's saw_cut() reads them): seconds of cut.
-const SAW_DEPOSIT_BOX_S: float = 6.0
+## ATM cash: a SAW drill_point (placed saw 20 s; DrillPoint is also a G.SAW_TARGET for the handheld saw,
+## QC-37). The depository safe has &"saw" in its methods (Safe.saw_cut). Deposit boxes and the grate
+## padlock are ENV A's deposit_box / padlock prefabs.
 const SAW_ATM_S: float = 20.0
-const SAW_PADLOCK_S: float = 30.0
-const SAW_DEPOSITORY_S: float = 120.0
 const CAMERA_POSITIONS: Dictionary = {
 	# id: [pivot on the wall face, yaw (front -Z into the room)] (doc §Sightlines, 2.6-3.0 m).
 	"C1": [Vector3(20.3, 2.8, 10.1), 180.0], "C2": [Vector3(0.6, 2.8, 19.8), 0.0],
@@ -77,16 +76,6 @@ func _visual(id: String) -> PackedScene:
 	if id.begins_with("res://"):
 		return load(id) as PackedScene
 	return catalog_scene(id)
-
-
-## D-057 / QC-37: saw-able things join G.SAW_TARGET now (persistent group) and carry the saw metas
-## ENV A's `saw_cut(seconds, attacker_net_id)` will read: total cut seconds and what it opens.
-func saw_target(n: Node, seconds: float, what: String) -> void:
-	if n == null:
-		return
-	n.add_to_group(G.SAW_TARGET, true)
-	n.set_meta(&"saw_s", seconds)
-	n.set_meta(&"saw_opens", what)
 
 
 ## Catalog prop placed by the generator (variant content, the armoured car): instance + box collider
@@ -249,8 +238,8 @@ func _build_windows(gp: Node3D) -> void:
 
 ## Vault: round door (VAULT lock, 2.2 m; prop_vault_door_round), the thermal drill point (loud), the
 ## time-lock panel (keypad, code group nd_time_lock) behind the laser plane, cage cash, the Co-op
-## pallet and the safe-deposit box walls (catalog units anchored by the dressing; one saw point per
-## unit, a door at SAW_Y, with its small loot hidden inside; saw targets, D-057).
+## pallet and the safe-deposit box walls (catalog units anchored by the dressing; one deposit_box
+## prefab per unit at SAW_Y, QC-37).
 func _build_vault(gp: Node3D) -> void:
 	var v: Node3D = add(gp, node3d("Vault")) as Node3D
 	var door: Node3D = n("Gameplay/Doors/VaultDoor")
@@ -267,7 +256,9 @@ func _build_vault(gp: Node3D) -> void:
 	# Co-op pallet of cash bricks (the loot_spawn stack stands for the pallet; markers sit on the floor).
 	prefab(v, "loot_spawn", "CoopCashBricks", Vector3(14.0, L.BASE, 18.7), 0.0,
 		{"loot_id": &"loot.cash_bricks", "count": 3, "objective_tag": &"vault_loot", "visual_scene": catalog_scene("prop_cash_pallet")})
-	# Safe-deposit boxes: 4 units a side, one sawable door per unit (the mission keeps `deposit_boxes`).
+	# Safe-deposit boxes: 4 units a side, one sawable box door per unit (ENV A `deposit_box`, QC-37: small
+	# loot locked until the handheld saw cuts it, InteractionTweak.hand_saw_deposit_box_s; the mission
+	# keeps the first `deposit_boxes`). The unit dressing (prop_deposit_boxes) is the visual.
 	var idx: int = 0
 	for side: Array in [["W", DD.BOX_FRONT_W, 90.0, 1.0, 0.145], ["E", DD.BOX_FRONT_E, -90.0, -1.0, -0.145]]:
 		var dirx: float = float(side[3])
@@ -275,16 +266,9 @@ func _build_vault(gp: Node3D) -> void:
 			idx += 1
 			var z: float = uz + float(side[4])
 			var fx: float = float(side[1])
-			var floor_pt: Vector3 = Vector3(fx + dirx * 0.85, L.BASE, z)
-			var loot: Node3D = prefab(v, "small_loot", "BoxLoot%d" % idx, Vector3(fx - dirx * 0.2, L.BASE + DD.SAW_Y, z),
-				float(side[2]), {"loot_id": &"loot.small_valuables", "value": 750, "objective_tag": &"deposit_box_loot",
-					"visual_scene": load(VIS_EMPTY)}, floor_pt + Vector3(0.0, 0.0, 0.3))
-			var drill: Node3D = prefab(v, "drill_point", "Box%d" % idx, Vector3(fx + dirx * 0.01, L.BASE + DD.SAW_Y, z),
-				float(side[2]), {"device": "enum:SAW", "duration_s": SAW_DEPOSIT_BOX_S, "objective_tag": &"deposit_box"},
-				floor_pt + Vector3(0.0, 0.0, -0.3))
-			if drill != null and loot != null:
-				drill.set(&"target", drill.get_path_to(loot))
-			saw_target(drill, SAW_DEPOSIT_BOX_S, "deposit_box")
+			prefab(v, "deposit_box", "Box%d" % idx, Vector3(fx + dirx * 0.01, L.BASE + DD.SAW_Y, z), float(side[2]),
+				{"loot_id": &"loot.small_valuables", "value": 750, "objective_tag": &"deposit_box",
+					"visual_scene": load(VIS_EMPTY)}, Vector3(fx + dirx * 0.85, L.BASE, z))
 
 
 ## B12 night depository safe (MEDIUM: saw 120 s or drill); the chute drops into it. The night-drop
@@ -294,7 +278,6 @@ func _build_depository(gp: Node3D) -> void:
 	var safe: Node3D = prefab(dp, "safe", "DepositorySafe", Vector3(21.47, L.BASE, 17.0), -90.0,
 		{"size": "enum:MEDIUM", "methods": [&"saw", &"drill"] as Array[StringName], "objective_tag": &"depository"},
 		null, {"kind": "safe"})
-	saw_target(safe, SAW_DEPOSITORY_S, "safe")
 	# Night-drop bags: loot markers sit on the floor, so the stack stands in front of the safe and the
 	# mission enables it when the safe opens (Safe only gates loot parented under it).
 	if safe != null:
@@ -346,7 +329,6 @@ func _build_atms(gp: Node3D) -> void:
 			{"device": "enum:SAW", "duration_s": SAW_ATM_S, "objective_tag": &"atm"}, use + Vector3(0.0, 0.0, 0.15))
 		if drill != null and loot != null:
 			drill.set(&"target", drill.get_path_to(loot))
-		saw_target(drill, SAW_ATM_S, "atm")
 
 
 ## Cash lift (bag_lift, QC-11 / A3-09; doc §Loot path: bags only, 2 per cycle, 8 s). Landing 0 = G1
@@ -493,11 +475,12 @@ func _variants_server(variants: Node3D) -> void:
 			null, {"kind": "hack_terminal"})
 
 
-## Areaway grate gate: unlocked (3 s, silent) or padlocked (lockpick 8 s).
+## Areaway grate gate: unlocked (3 s, silent) or padlocked (the padlock prefab: lockpick 8 s or saw).
 func _variants_vent(variants: Node3D) -> void:
 	var vg: Node3D = _group(variants, "vent_open")
 	var a: Dictionary = L.AREAWAY
-	for r: Array in [["vent_open", "NONE", 3.0], ["vent_locked", "LOCKPICK", 8.0]]:
+	# vent_locked: the grate is BARRED and only its padlock (lockpick 8 s / saw) opens it.
+	for r: Array in [["vent_open", "NONE", 3.0], ["vent_locked", "BARRED", -1.0]]:
 		var s: VariantSlot = _slot(vg, "vent_open", String(r[0]), 0.5)
 		var gate: Node3D = prefab(s, "door", "AreawayGrate", a["gate_pos"], float(a["gate_yaw"]),
 			{"lock": "enum:" + String(r[1]), "swing": "enum:INWARD", "interaction_time_s": float(r[2]),
@@ -507,17 +490,17 @@ func _variants_vent(variants: Node3D) -> void:
 			_padlock(gate)
 
 
-## Padlock on the locked areaway grate (lot side, the door's front): a placed-saw drill point bound to
-## the gate, in G.SAW_TARGET with the saw metas (D-057; lockpick stays the quiet way in). As on
-## Dockside Burn the padlock has no art of its own yet (ENV A's `padlock` prefab, QC-37).
+## Padlock on the locked areaway grate (lot side, the door's front): ENV A's `padlock` prefab (QC-37):
+## lockpick 8 s (doc vent_locked) or the handheld saw (InteractionTweak.hand_saw_padlock_s); it unlocks
+## and opens the BARRED grate (DrillPoint.open_target).
 func _padlock(gate: Node3D) -> void:
 	var o: Vector3 = gate.position
 	var b: Basis = gate.basis
 	var use: Vector3 = o + b * Vector3(0.38, 0.0, -0.9)
 	use.y = o.y
-	var dp: Node3D = prefab(gate, "drill_point", "Padlock", Vector3(0.38, 1.05, -0.07), 180.0,
-		{"device": "enum:SAW", "duration_s": SAW_PADLOCK_S, "target": NodePath(".."), "objective_tag": &"padlock"}, use)
-	saw_target(dp, SAW_PADLOCK_S, "padlock")
+	prefab(gate, "padlock", "Padlock", Vector3(0.38, 1.0, -0.07), 180.0,
+		{"targets": [NodePath("..")] as Array[NodePath], "interaction_time_s": 8.0, "objective_tag": &"padlock",
+			"visual_scene": catalog_scene("prop_padlock_brass")}, use, {"mount": "door"})
 
 
 ## Antechamber laser grid across B8 (z 8.5) in front of the TL panel and the vault door.
