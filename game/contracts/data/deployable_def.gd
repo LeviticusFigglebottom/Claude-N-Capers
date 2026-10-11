@@ -10,3 +10,5 @@ extends Resource
 @export var deploy_time_s: float = 1.0
 @export var params: Dictionary = {}        ## kind-specific (ecm: {duration}, sentry: {ammo, damage, armor}, ...)
 @export var model: PackedScene
+## D-069: first-person AnimationLibrary (characters.md v1.7): &"deploy_bag" | &"deploy_small" | &"deploy_sentry".
+@export var anim_set: StringName = &"deploy_bag"

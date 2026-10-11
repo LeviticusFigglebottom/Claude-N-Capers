@@ -9,3 +9,5 @@ extends Resource
 @export var radius_m: float = 5.0
 @export var fuse_s: float = 2.5
 @export var model: PackedScene
+## D-069: first-person AnimationLibrary (characters.md v1.7).
+@export var anim_set: StringName = &"throwable"
