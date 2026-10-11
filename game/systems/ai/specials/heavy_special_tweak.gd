@@ -44,6 +44,13 @@ static var _cached: HeavySpecialTweak = null
 @export var formation_behind_m: float = 1.6
 @export var formation_side_m: float = 0.8
 
+@export_group("Heavy advance (PD2 walk, lead ruling)")
+## Bulwarks and Wreckers WALK while advancing (PD2): EnemyDef.params.advance_speed (m/s, 1.6-2.0),
+## this when the def has none. Run speed (EnemyDef.move_speed) only for the reposition modes below.
+@export var heavy_advance_speed_m_s: float = 1.8
+## PoliceBrain move modes that run (repositioning / flanking / director orders); every other move walks.
+@export var heavy_run_modes: Array[StringName] = [&"order", &"flank"]
+
 @export_group("Wrecker (L4.6)")
 @export var wrecker_standoff_min_m: float = 1.5
 @export var wrecker_standoff_pref_m: float = 3.0

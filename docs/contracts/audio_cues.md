@@ -1,4 +1,4 @@
-# Contract: audio cues (v1.0)
+# Contract: audio cues (v1.1)
 
 ENV C produces every sound (synthesized/procedural; see style guide §Audio) and the cue registry
 `game/world/audio/cues.tres` (`AudioCueDef` resources: streams[], volume_db, bus, 3D, max_distance,
@@ -38,7 +38,15 @@ Buses: `Master > Music, SFX (> Weapons, Enemies, World, UI), Voice, Ambience`.
 | cue.bag_lift_start / bag_lift_arrive | `bag_lift` prefab (A, CueEmitter/audio_cue_requested) | motor whine + cage rattle / bell + brake clunk | 2 |
 | cue.hack_start / hack_interrupt / hack_done | `hack_terminal` (device_* kind `&"hack"`) | keyboard burst + fan / error buzz / confirm chirp | 2 |
 | cue.escape_arrive (+ `_van`, `_boat`, `_heli`) | escape vehicle arrives (A via audio_cue_requested) | engine approach + horn / outboard + bump / rotor swell | 2 |
-| cue.weapon_revolver_fire | revolver anim set (B4-12) | heavy single crack + cylinder click tail | 4 |
+| cue.weapon_revolver_fire / _cylinder_open / _eject / _speedloader_in / _cylinder_close | revolver set (B4-12) | heavy crack + cylinder foley | 4 |
+| cue.weapon_break_action_fire / _open / _eject / _shell_in / _close | break_action set (B4-18) | double-barrel boom + breech foley | 4 |
+| cue.weapon_lever_fire / _cycle | lever set | rifle crack / lever cycle | 4 |
+| cue.weapon_bow_fire / _draw / _impact | bow set | release thwip (silent, −8 dB, 10 m) / draw creak / thunk | 4 |
+| cue.weapon_crossbow_fire / _load | crossbow set (impacts reuse bow_impact) | string snap (silent, 15 m) / cock | 4 |
+| cue.weapon_launcher_fire / _reload / _explode | launcher set | 40 mm thump / breech / explosion (World bus, 180 m) | 4 |
+| cue.weapon_flamethrower_ignite / _fire (loop) / _stop | flamethrower set | ignition / roar loop / cut-off | 4 |
+| cue.weapon_saw_rev (loop) / _cut (loop) | saw set | motor rev / blade cutting | 4 |
+| cue.weapon_minigun_spin_up / _fire (loop) / _spin_down | minigun set | whine up / 3000 rpm buzz / whine down | 4 |
 
 Special-action cues have no dedicated EventBus signals: ENV A triggers them with `audio_cue_requested` or a
 `CueEmitter`. Looping tells stop on the matching end fact (`crew_tase_ended` for `stinger_arc`, D-049) or locally.

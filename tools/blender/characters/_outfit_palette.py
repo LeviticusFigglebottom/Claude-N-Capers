@@ -73,6 +73,22 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_shoe_black": ("#1F1F22", 0.42, 0.0, "leather"),
     "char_shoe_brown": ("#5A3A26", 0.50, 0.0, "leather"),
     "char_lens": ("#1C2026", 0.06, 0.0, "gloss"),
+    "char_silk_plum": ("#5E2A44", 0.42, 0.0, "cloth"),     # contacts (QB-50a): Odile Vance's blouse
+    "char_suit_brown": ("#5A4632", 0.84, 0.0, "cloth"),    # contacts: Hollis Reyes's cheap suit
+    "char_tweed_grey": ("#5E5A50", 0.95, 0.0, "cloth"),    # contacts: Hollis Reyes's flat cap
+    "char_lip_rose": ("#7A3A44", 0.45, 0.0, "gloss"),      # contacts: Odile Vance's lipstick
+    "char_armor_black": ("#222327", 0.50, 0.0, "plastic"),  # specials (P3): Wrecker plates/helmet
+    "char_wrecker_suit": ("#25262A", 0.82, 0.0, "cloth"),  # specials: Wrecker bomb suit (#141518 lifted to the floor)
+    "char_hazard_yellow": ("#E6B43A", 0.45, 0.0, "plastic"),  # specials: Wrecker faceplate trim (#E6B422, sat cap)
+    "char_goggle_glow": ("#3FA860", 0.25, 0.0, "gloss"),  # specials: Phantom lenses (+ emission #3BFF6A)
+    "char_phantom_suit": ("#24272B", 0.78, 0.0, "cloth"),  # specials: Phantom suit and balaclava
+    "char_stinger_blue": ("#59A8FF", 0.45, 0.0, "plastic"),  # specials: Stinger electric blue
+    "char_medic_white": ("#DADCD8", 0.55, 0.0, "plastic"),  # specials: Corpsman white
+    "char_medic_red": ("#B3302D", 0.55, 0.0, "plastic"),  # specials: Corpsman emblem red (#B3261E, sat cap)
+    "char_aegis_steel": ("#5D6E80", 0.50, 0.0, "plastic"),  # specials: Aegis/Brandt steel-blue armour
+    "char_aegis_blue": ("#7FC8FF", 0.45, 0.0, "plastic"),  # specials: Aegis accents
+    "char_sniper_drab": ("#5B5A4C", 0.88, 0.0, "cloth"),  # specials: Longshot boonie/vest
+    "char_coat_command": ("#2E3440", 0.82, 0.0, "cloth"),  # specials: Brandt's command coat
 }
 
 #: Shared-library ids used by outfits, with a placeholder colour for the glb (the .tres wins).

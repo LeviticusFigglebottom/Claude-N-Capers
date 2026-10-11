@@ -16,7 +16,14 @@ detection_preset = &"police"
 params = {
 "_note": "L1.5 FRD field agent (PD2 FBI suit). Placeholder stats between Patrol Officer and TAC Light (◇).",
 "aim_delay_s": 0.65,
+"armor_body_mult": 1.0,
+"explosive_mult": 1.0,
 "faction": &"faction.frd",
-"fire_interval_s": 0.7
+"fire_interval_s": 0.7,
+"frontal_armor": 1.0,
+"frontal_armor_arc_deg": 0.0,
+"plate_health": [],
+"shield": false,
+"shield_pierce_mult": 1.0
 }
 voice = &"police_frd"

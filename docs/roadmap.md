@@ -42,6 +42,11 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | B4-13 | Firing range full: moving targets, armoured dummies (body armor, shield, Wrecker plate) for A3-06 piercing, damage-falloff graph, DPS readout | P4 range |
 | B4-14 | Perk decks complete: every card's modifier keys wired and behaviour-tested with ENV A hooks (P4 gate "every modifier key ≤ P4 has a behaviour test"); report missing hooks as QB | P4 |
 | B4-15 | Masks batch: +12 base shapes requested from ENV D, +16 patterns, +10 materials; mask unlock sources (payday cards, achievements stub) | P8 |
+| B4-16 | Save v2 + v1→v2 migration (armory batch 2, masks/unlocks, payday cards, Board locks, perk/skill progress), golden migration tests, corrupt-file fallback | P4 gate |
+| B4-17 | Workshop 3D orbit view: live mod swap, attach-marker previews, stat diff, gamepad orbit | P4 workshop |
+| B4-18 | Armory batch 3: last 16 weapons to 36 (incl. special weapons), mods, models; list to lead early for ENV D FP sets | P4 armory |
+| B4-19 | Stamina HUD widget (ui_hud v1.4) | QB-60 |
+| B4-20 | Achievements stub: data-driven conditions, MaskLocker.grant_unlock, small screen | P8 |
 
 | C2-00 | G0 design docs: Night Deposit and Shadow Ledger (stealth-only) | level_standards §9 |
 

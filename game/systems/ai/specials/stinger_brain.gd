@@ -7,8 +7,10 @@
 ##   CrewWeapons.involuntary_fire (spread x3, 15 deg up): it fires at max RPM and auto-reloads;
 ##   the victim cannot move or interact (CrewController: TASED is not mobile). cue.stinger_arc repeats
 ##   every stinger_arc_interval_s; `ArcBeam` (blue arc VFX node, C) is stretched to the victim;
-## - the tase breaks (victim back to NORMAL, crew_revived(slot, -1)) when the Stinger dies, is
-##   stunned, loses LOS, or the victim leaves stinger_break_range_m;
+## - the tase breaks (victim back to NORMAL via CrewHealth.end_tase(): NOT a revive, no crew_revived,
+##   D-049) when the Stinger dies, is stunned, loses LOS, or the victim leaves stinger_break_range_m;
+## - every end of the beam (any reason, incl. helpless / freed) emits crew_tase_ended(slot) [R] once:
+##   the end fact for the cue.stinger_arc loop and the HUD (a real revive still emits crew_revived);
 ## - long tase: after stinger_helpless_after_s the beam ends and the victim STAYS TASED (helpless,
 ##   L2.8) until a teammate revives them; the Stinger then retargets;
 ## - defense.shockproof (PARAMS): `backfire_chance` -> the tase backfires (Stinger knocked back, no
@@ -31,6 +33,7 @@ var _arc_left: float = 0.0
 var _counter_window: float = 0.0
 var _target_visible: bool = false
 var _arc_beam: Node3D = null
+var _tase_slot: int = -1
 
 
 func _on_started() -> void:
@@ -147,6 +150,7 @@ func _start_tase(v: CrewController) -> void:
 		_abort_windup()
 		return
 	tases_started += 1
+	_tase_slot = v.slot
 	tase_time = 0.0
 	_arc_left = 0.0
 	_counter_window = float(sp.get("counter_window", 0.0)) if bool(sp.get("can_interact_counter", false)) else 0.0
@@ -184,16 +188,23 @@ func _tick_tase(delta: float) -> void:
 		_end_tase(&"helpless", false)  # L4.4 long tase: stays TASED (helpless) until revived
 
 
-## End the beam. `free_victim`: the victim gets up (TASED -> NORMAL, crew_revived(slot, -1)).
+## End the beam. `free_victim`: the victim gets up (TASED -> NORMAL via CrewHealth.end_tase(), no
+## crew_revived). Always emits crew_tase_ended(victim slot) [R] (D-049).
 func _end_tase(reason: StringName, free_victim: bool) -> void:
 	last_break_reason = reason
 	var v: CrewController = tase_victim
+	var victim_slot: int = _tase_slot
 	if v != null and is_instance_valid(v):
+		victim_slot = v.slot
 		if v.weapons != null:
 			v.weapons.involuntary_fire = false
 		if free_victim and v.crew_state == Enums.CrewState.TASED and v.health != null:
-			v.health.revive(-1)
+			v.health.end_tase()
 	_release_claim()
+	_tase_slot = -1
+	if victim_slot >= 0:
+		EventBus.crew_tase_ended.emit(victim_slot)
+		Net.replicate_event(&"crew_tase_ended", [victim_slot])
 	tase_victim = null
 	tase_cooldown_left = tweak.stinger_tase_cooldown_s
 	if _arc_beam != null:
@@ -228,3 +239,8 @@ func _exit_tree() -> void:
 	if mode == &"tase" and tase_victim != null and is_instance_valid(tase_victim) and tase_victim.weapons != null:
 		tase_victim.weapons.involuntary_fire = false
 	_release_claim()
+	if mode == &"tase" and _tase_slot >= 0 and Net.is_authority():
+		# Despawned mid-tase: the beam ends (loop end fact); the victim stays TASED until revived.
+		EventBus.crew_tase_ended.emit(_tase_slot)
+		Net.replicate_event(&"crew_tase_ended", [_tase_slot])
+	_tase_slot = -1

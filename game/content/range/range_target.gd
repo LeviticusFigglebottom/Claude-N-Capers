@@ -3,22 +3,21 @@
 ## armor (B4-13: frontal plate, Bulwark-style shield, Wrecker-style staged face plates) and an
 ## automatic reset after death. Owner: ENV B. Range-only: it is not an NPC and runs no AI.
 ##
-## HIT API: docs/contracts/damage.md v1.0, the single hit path. On the server the attacker calls
+## HIT API: docs/contracts/damage.md v1.1, the single hit path. On the server the attacker calls
 ##   `take_hit(info: Dictionary, attacker_net_id: int) -> Dictionary`
 ## exactly once per hit, with `info = Damage.info(...)`. `info.amount` is BODY damage (after falloff
 ## and attacker-side modifiers, before zone). The target applies its own rules through
-## RangeDamageModel.apply() (zone mult x headshot_bonus, crit, frontal armor unless
-## `info.pierced_armor`, plates on WEAKPOINT). Hits on the shield hitbox resolve to the RangeShield
+## RangeDamageModel.apply() (ENV A's EnemyDef armour via NpcHitRules.armor_of: explosive mult,
+## frontal arc / body armour unless `info.pierced_armor`, plates on WEAKPOINT, zone mult x
+## headshot_bonus, crit). Hits on the shield hitbox resolve to the RangeShield
 ## node (its get_damage_target), whose take_hit routes them here as shield hits (x shield_pierce_mult
 ## with `info.shield_pierce`, else blocked). Either way THIS node then emits
 ## `EventBus.damage_applied(net_id, attacker_net_id, final_info)` once (blocked hits too, amount 0,
 ## `blocked` true) and returns final_info with the final `amount`, `killed`, `health_after` and the
 ## model's extra keys. A downed target ignores hits and returns {}. It never listens to
 ## damage_applied and never emits npc_killed (range dummies are not NPCs).
-## Pierce flags: `info.shield_pierce` / `info.pierced_armor` are attacker-side (A3-06). An info
-## without a `shield_pierce` key comes from a runtime that does not send them yet; the target then
-## uses `pierce_fallback` (the range shooter's resolved WeaponStats, set by FiringRange): its
-## shield_pierce, and an armor_pierce roll on GameRng.stream(&"range.armor_pierce").
+## Pierce flags: `info.shield_pierce` / `info.pierced_armor` are rolled attacker-side
+## (CombatSystem.pierce_profile, RangeDebugGun); a missing flag counts as false (D-053).
 ## Hitboxes (RangeHitbox, physics layer 5) implement get_damage_target() / get_hit_zone(), so
 ## `Damage.find_target(collider)` and `Damage.zone_of(collider)` resolve them.
 ##
@@ -31,7 +30,6 @@ signal damaged(target: RangeTarget, info: Dictionary, attacker_net_id: int)
 signal died(target: RangeTarget)
 signal reset_done(target: RangeTarget)
 
-const PIERCE_STREAM: StringName = &"range.armor_pierce"
 # Silhouette model (meters, origin = ground below the board centre, facing +Z = the shooting line).
 const STAND_TOP: float = 0.85
 const TORSO_SIZE: Vector3 = Vector3(0.46, 0.55, 0.03)
@@ -61,8 +59,6 @@ var tweak: RangeTweak = null
 var model: RangeDamageModel = RangeDamageModel.new()
 ## Health + plate pools (RangeDamageModel state).
 var state: Dictionary = {}
-## Shooter's resolved stats for infos without attacker-side pierce flags (see header).
-var pierce_fallback: WeaponStats = null
 ## The shield hit receiver (null without a shield).
 var shield_node: RangeShield = null
 
@@ -133,10 +129,9 @@ func take_shield_hit(info: Dictionary, attacker_net_id: int) -> Dictionary:
 func _hit(info: Dictionary, attacker_net_id: int, via_shield: bool) -> Dictionary:
 	if not alive:
 		return {}
-	var hit: Dictionary = _with_pierce(info)
-	var res: Dictionary = model.apply(state, hit, via_shield, is_frontal(hit))
+	var res: Dictionary = model.apply(state, info, via_shield, is_frontal(info))
 	health = float(state["health"])
-	var out: Dictionary = hit.duplicate()
+	var out: Dictionary = info.duplicate()
 	out.merge(res, true)
 	out["via_shield"] = via_shield
 	out["attacker_net_id"] = attacker_net_id
@@ -150,23 +145,18 @@ func _hit(info: Dictionary, attacker_net_id: int, via_shield: bool) -> Dictionar
 	return out
 
 
-## A hit travelling against the dummy's facing (+Z) is frontal; no direction counts as frontal.
+## The shot comes from inside the dummy's frontal armour arc (model.frontal_armor_arc_deg around
+## its facing +Z; NpcHitRules.is_from_front). No direction counts as frontal; no arc = false.
 func is_frontal(info: Dictionary) -> bool:
+	if not model.has_frontal_armor():
+		return false
 	var dir: Vector3 = info.get("direction", Vector3.ZERO)
+	dir.y = 0.0
 	if dir.length_squared() < RangeMath.EPS:
 		return true
 	var facing: Vector3 = global_transform.basis.z if is_inside_tree() else basis.z
-	return dir.dot(facing) < 0.0
-
-
-func _with_pierce(info: Dictionary) -> Dictionary:
-	if info.has("shield_pierce") or pierce_fallback == null:
-		return info
-	var out: Dictionary = info.duplicate()
-	out["shield_pierce"] = pierce_fallback.shield_pierce
-	if not bool(out.get("pierced_armor", false)) and pierce_fallback.armor_pierce > 0.0:
-		out["pierced_armor"] = GameRng.stream(PIERCE_STREAM).randf() < pierce_fallback.armor_pierce
-	return out
+	facing.y = 0.0
+	return (-dir.normalized()).dot(facing.normalized()) >= cos(deg_to_rad(model.frontal_armor_arc_deg * 0.5))
 
 
 ## Full health, standing, at the current difficulty.
@@ -310,7 +300,7 @@ func _build_visual() -> void:
 
 ## Chest plate (visual), face plate (WEAKPOINT hitbox + mesh) and shield (RangeShield + hitbox).
 func _build_armor(head_c: Vector3) -> void:
-	if model.frontal_armor:
+	if model.has_frontal_armor():
 		var chest: MeshInstance3D = _box(CHEST_PLATE_SIZE,
 				Vector3(0.0, TORSO_SIZE.y * 0.5 + 0.02, TORSO_SIZE.z * 0.5 + CHEST_PLATE_SIZE.z * 0.5), _mat(tweak.armor_color))
 		chest.name = "ChestPlate"

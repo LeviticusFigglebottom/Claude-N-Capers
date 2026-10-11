@@ -21,6 +21,8 @@ class_name CombatSystem
 extends RefCounted
 
 const REJECT_NONE: StringName = &""
+## DamageInfo flags guaranteed by ensure_info_v11() (damage.md v1.1).
+const V11_FLAGS: Array[String] = ["pierced_armor", "shield_pierce", "blocked", "crit"]
 
 
 ## Server: validate a claim from `shooter` and apply it. Returns
@@ -88,6 +90,7 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 	info["headshot_bonus"] = w.headshot_bonus(ws)
 	info["pierced_armor"] = roll_armor_pierce(float(prof["armor_pierce"]))
 	info["shield_pierce"] = bool(prof["shield_pierce"])
+	info["blocked"] = false
 	info["wall_pierced"] = through_wall
 	var res: Dictionary = deliver_hit(target, info, shooter.net_id)
 	var npc: NpcBase = target as NpcBase
@@ -186,6 +189,7 @@ static func can_take_hit(o: Object) -> bool:
 ## The single hit call (damage.md): `target.take_hit(info, attacker)` once; the target emits
 ## damage_applied itself. Legacy targets with only `apply_damage` are called through it.
 static func deliver_hit(target: Object, info: Dictionary, attacker_net_id: int) -> Dictionary:
+	ensure_info_v11(info)
 	var r: Variant = null
 	if target.has_method(&"take_hit"):
 		r = target.call(&"take_hit", info, attacker_net_id)
@@ -199,6 +203,17 @@ static func make_damage_info(amount: float, type: int, zone: int, weapon_id: Str
 		direction: Vector3, bypass_armor_gate: bool = false, attacker_net_id: int = 0) -> Dictionary:
 	var d: Dictionary = Damage.info(amount, type, zone, weapon_id, position, direction, attacker_net_id)
 	d["bypass_armor_gate"] = bypass_armor_gate
+	return ensure_info_v11(d)
+
+
+## damage.md v1.1 keys on a DamageInfo (in place; returns it): `shield_pierce` (attacker: the round
+## passes ballistic shields at the shield's shield_pierce_mult) and `blocked` (target: a shield or
+## immunity stopped the hit, amount 0) default to false, `pierced_armor` / `crit` too. Damage.info()
+## (LEAD helper) may not carry them yet; every A target calls this on its final_info.
+static func ensure_info_v11(d: Dictionary) -> Dictionary:
+	for k: String in V11_FLAGS:
+		if not d.has(k):
+			d[k] = false
 	return d
 
 
