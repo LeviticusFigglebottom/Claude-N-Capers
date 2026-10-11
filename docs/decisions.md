@@ -392,3 +392,12 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - All P1 gate items pass (docs/process/p1_signoff.md): the 11-step end-to-end gate, Glasshouse G2 (final art,
   18/18 checks), characters, full CI. Known gaps are carried forward there; a product-owner playtest is recommended.
 - Glasshouse: security_room_staffed (operator 0.6 / empty 0.4) and code_note (one of three) are enabled (ENV C).
+
+## D-062 — 2026-10-11 — Music selection (B5-03)
+- ENV C: `MusicTrackTable` (`res://world/audio/music/tracks.tres`; id, stems, default_for_heists, unlock;
+  `load_default()`, `all()`); MusicDirector plays `rt.launch_options.music_track` when set, else `HeistDef.music_track`;
+  hub preview `MusicDirector.preview(track_id, stem = &"assault")` / `stop_preview()`. 3 more tracks for P5.
+- ENV A: `HeistRuntime.launch_options` (read-only dict from launch()/launch_client()), replicated in the bring-up so
+  every peer plays the host's pick.
+- ENV B: `options["music_track"]` from the pre-planning/lobby pick (host wins in co-op), hub jukebox UI, `music.<id>.name`
+  strings, track unlocks (Notoriety ranks) in the profile.
