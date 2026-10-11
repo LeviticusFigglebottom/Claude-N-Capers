@@ -165,6 +165,7 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	_crew_loadouts = LoadoutModifiers.effective_loadouts(options.get("loadouts", {}), Net.all_slots())
 	LoadoutModifiers.push(_crew_loadouts)  # QB-L2: skills + perk deck, before the crew spawns
 	_claim_map_ids(map)
+	RappelLinks.build(map)  # QC-41: one-way rappel links from RAPPEL points
 	_spawn_npcs()
 	_spawn_crew()
 	preplan.spawn_drops(map, dynamic_root)  # C3: drop assets at their PREPLAN_POINTs

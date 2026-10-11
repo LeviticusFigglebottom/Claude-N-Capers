@@ -41,6 +41,9 @@ const RNG_DIRECTOR: StringName = &"director"
 const RNG_SPAWNS: StringName = &"spawns"
 const POLICE_ROLES: Array[StringName] = [&"police", &"special"]
 const LONGSHOT_ID: StringName = &"enemy.longshot"
+## QC-42 (D-064): a POLICE_SPAWN / ENTRY point tagged this is never a spawn (police only enter through it:
+## interior ENTRY points such as Dockside's quay doors are breach / entry targets, not spawns).
+const BREACH_ONLY_TAG: StringName = &"breach_only"
 
 @export var tweak: DirectorTweak
 
@@ -247,7 +250,8 @@ func sustain_duration(wave: int, crew_count: int) -> float:
 	return base * mult
 
 
-## Spawn points valid right now (L1.4), nearest to the crew centroid first.
+## Spawn points valid right now (L1.4), nearest to the crew centroid first. Points tagged BREACH_ONLY_TAG
+## are skipped (QC-42).
 func valid_spawn_points() -> Array[Node3D]:
 	var out: Array[Node3D] = []
 	if _runtime == null or _runtime.map == null:
@@ -257,6 +261,9 @@ func valid_spawn_points() -> Array[Node3D]:
 	for g: StringName in [G.POLICE_SPAWN, G.ENTRY_POINT]:
 		for n: Node in _runtime.map.get_slots(g):
 			var p: Node3D = n as Node3D
+			var tags: Variant = p.get(&"tags") if p != null else null
+			if tags is Array and (tags as Array).has(BREACH_ONLY_TAG):
+				continue
 			if p != null and is_spawn_valid(p.global_position, crew):
 				cands.append(p)
 	if cands.is_empty():
