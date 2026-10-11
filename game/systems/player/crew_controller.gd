@@ -28,6 +28,9 @@ var net_id: int = 0
 var peer_id: int = 0
 var is_ai: bool = false
 var display_name: String = ""
+## Playable heister (&"rook", &"sable", &"dutch", &"wren"; &"" = generic crew): Net.crew info `heister` or the
+## launch option `heisters` {slot: id}. Presentation only (FP sleeves, characters.md v1.8).
+var heister: StringName = &""
 var masked: bool = false
 ## S1.3 civilian mode (HeistDef.start_mode = civilian): no gear, undetectable, no mask-up or firing, only
 ## `civilian_allowed` interactions. Picking up gear (GearPickup) or any mask-up (alarm) ends it.
@@ -111,6 +114,7 @@ func setup(p_slot: int, info: Dictionary, p_loadout: Loadout) -> void:
 	peer_id = int(info.get("peer_id", 0))
 	is_ai = bool(info.get("is_ai", false))
 	display_name = String(info.get("display_name", "Crew %d" % p_slot))
+	heister = StringName(str(info.get("heister", "")))
 	loadout = CrewWeapons.build_loadout(p_loadout)  # resolved; default kestrel + suppressor if null
 	name = "Crew%d" % p_slot
 	var tw: CrewTweak = Tweak.crew()

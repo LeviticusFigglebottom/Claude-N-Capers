@@ -62,9 +62,11 @@ func test_hold_and_toggle() -> void:
 func test_camera_fov_ads_zoom_and_near_plane() -> void:
 	_gs.set_value(GameSettings.VIDEO, &"fov", 90.0)
 	_rt = await HeistLauncher.launch(&"unit_map", 5101, Enums.Difficulty.ROUTINE, self,
-		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 0, "crew_ai": false, "skip_casing": true})
+		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 0, "crew_ai": false, "skip_casing": true,
+		"heisters": {0: &"rook"}})
 	await wait_frames(4)
 	var c: CrewController = _rt.crew_controller(0) as CrewController
+	assert_eq(c.heister, &"rook", "launch option heisters (characters.md v1.8 sleeves)")
 	var view: CrewView = CrewView.of(c)
 	var cam: Camera3D = view.camera() if view != null else null
 	assert_true(cam != null, "local camera")

@@ -398,16 +398,18 @@ func test_d069_left_hand_ik_to_weapon_marker() -> void:
 	assert_near(fp.left_hand_ik.ik.influence, 1.0, 0.001, "full influence while idle")
 	var hand: int = fp.skeleton.find_bone("hand.L")
 	# Modifier results are only in the pose during skeleton_updated (then the animated pose is restored).
-	var got: Array[Vector3] = [Vector3.INF]
-	var cb: Callable = func() -> void: got[0] = fp.skeleton.global_transform * fp.skeleton.get_bone_global_pose(hand).origin
+	var grip: Node3D = marker.get_node_or_null(FpLeftHandIk.GRIP_NAME) as Node3D
+	assert_true(grip != null, "IK target at the grip offset from LeftHandIK")
+	# Hand and grip sampled together (the test crew falls, so the rig moves between frames).
+	var got: Array[float] = [INF]
+	var cb: Callable = func() -> void:
+		if grip != null:
+			got[0] = (fp.skeleton.global_transform * fp.skeleton.get_bone_global_pose(hand).origin).distance_to(grip.global_position)
 	fp.skeleton.skeleton_updated.connect(cb)
 	await wait_frames(3)
 	fp.skeleton.skeleton_updated.disconnect(cb)
-	var grip: Node3D = marker.get_node_or_null(FpLeftHandIk.GRIP_NAME) as Node3D
-	assert_true(grip != null, "IK target at the grip offset from LeftHandIK")
 	if grip != null:
-		assert_true(got[0].distance_to(grip.global_position) < 0.015,
-			"hand.L on the LeftHandIK grip (%.3f m)" % got[0].distance_to(grip.global_position))
+		assert_true(got[0] < 0.015, "hand.L on the LeftHandIK grip (%.3f m)" % got[0])
 	var ws: int = c.weapons.equipped_slot
 	c.weapons.set_ammo(ws, 1, 60)
 	assert_true(c.weapons.start_reload(), "reload")
@@ -485,3 +487,31 @@ func test_d069_deploy_place_clip() -> void:
 	fp.tick(0.016)
 	assert_eq(fp.action, FpViewmodel.Action.NONE, "released: cancelled")
 	assert_true(c.weapon_visual.visible, "gun back")
+
+
+## characters.md v1.8: the heister's sleeve variant replaces the rig's `Arms` mesh + skin; unknown = own sleeves.
+func test_v18_heister_sleeves() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.arms_scene == null or not tw.sleeve_scenes.has(&"rook"):
+		skip("no sleeve variants")
+		return
+	var c: CrewController = await _spawn(&"weapon.corsair_ar", &"weapon.kestrel_p9")
+	var fp: FpViewmodel = _fp(c)
+	var arms: MeshInstance3D = fp.skeleton.get_node_or_null(^"Arms") as MeshInstance3D if fp != null else null
+	assert_true(arms != null, "char_arms_fp has rig_arms/Skeleton3D/Arms")
+	if arms == null:
+		return
+	var suit: Mesh = arms.mesh
+	assert_false(fp.apply_sleeves(&""), "generic crew: own sleeves")
+	assert_false(fp.apply_sleeves(&"nobody"), "unknown heister: own sleeves")
+	assert_eq(arms.mesh, suit)
+	for h: StringName in tw.sleeve_scenes:
+		var v: Node = tw.sleeve_scenes[h].instantiate()
+		var src: MeshInstance3D = v.find_child("Arms", true, false) as MeshInstance3D
+		assert_true(fp.apply_sleeves(h), "%s sleeves" % h)
+		assert_true(src != null and arms.mesh == src.mesh and arms.skin == src.skin, "%s mesh + skin copied" % h)
+		var vs: Skeleton3D = src.get_parent() as Skeleton3D if src != null else null
+		if vs != null:
+			assert_eq(vs.get_bone_count(), fp.skeleton.get_bone_count(), "%s: same rig_arms bones" % h)
+		v.free()
+	assert_true(arms.mesh != suit, "sleeves changed")

@@ -67,6 +67,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"shield_bang": &"idle_alert", &"heal_ally": &"interact_mid",
 	&"desk_work": &"desk_type", &"phone_seated": &"phone_call", &"sit_chair_watch": &"sit_chair", &"mop": &"browse",
 	&"sit_bed_read": &"sit_chair", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
+	&"rappel": &"climb_ladder", &"climb_ladder": &"idle",
 }
 ## EnemyDef.params key: the unit's own walk clip (Bulwark shield_walk, Wrecker dozer_walk), played instead
 ## of walk while moving at walking speed (above it: run / sprint).
@@ -323,6 +324,9 @@ func _state_clip() -> StringName:
 		return &""
 	if _npc.is_stunned():
 		return &"tased"
+	var motor: NpcMotor = _body.get_node_or_null(^"Motor") as NpcMotor
+	if motor != null and motor.rappelling:
+		return &"rappel"  # QC-41 descent (characters.md v1.8 `rappel` loop)
 	if Net.is_authority() and _hint() != &"":
 		return &""  # the host's brain hint is authoritative; the fallbacks below are for clients
 	var out: StringName = &""

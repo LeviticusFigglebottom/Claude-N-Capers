@@ -28,6 +28,10 @@ static var _gen: int = 0
 ## {"<set>_<clip>": {event: frame}}.
 @export var extra_events: Dictionary = {}
 
+## characters.md v1.8: heister -> sleeve variant scene (`char_arms_fp_<heister>`, mesh only: its `Arms` mesh and
+## skin replace the rig's; no entry = the rig's own suit sleeves).
+@export var sleeve_scenes: Dictionary[StringName, PackedScene] = {}
+
 @export_group("Part travel (characters.md v1.4)")
 ## Pistol `Slide` travel along its local +Z when locked back / cycling (◇, not in the contract).
 @export var slide_travel_m: float = 0.028

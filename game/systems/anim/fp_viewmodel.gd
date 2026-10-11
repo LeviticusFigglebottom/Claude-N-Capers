@@ -145,8 +145,9 @@ func _bind(inst: Node3D, crew: CrewController) -> bool:
 	weapon_attach.bone_name = String(tw.weapon_bone)
 	left_hand_ik = FpLeftHandIk.create(skeleton)  # D-069: hand.L onto the weapon's LeftHandIK
 	skeleton.add_child(weapon_attach)
-	_no_shadows(inst)
 	_crew = crew
+	apply_sleeves(crew.heister if crew != null else &"")
+	_no_shadows(inst)
 	for ch: StringName in CHANNELS:
 		parts[ch] = 0.0
 	return true
@@ -175,6 +176,25 @@ func _exit_tree() -> void:
 		var sig: Signal = pair[0]
 		if sig.is_connected(pair[1]):
 			sig.disconnect(pair[1])
+
+
+## characters.md v1.8: copy the heister's sleeve variant `Arms` mesh + skin onto the rig's `Arms` (the variant is
+## freed). False when there is no variant for `heister` (the rig keeps its own sleeves).
+func apply_sleeves(heister: StringName) -> bool:
+	var ps: PackedScene = FpViewmodelTweak.data().sleeve_scenes.get(heister) if heister != &"" else null
+	var mine: MeshInstance3D = skeleton.get_node_or_null(^"Arms") as MeshInstance3D if skeleton != null else null
+	if ps == null or mine == null:
+		return false
+	var v: Node = ps.instantiate()
+	var theirs: MeshInstance3D = v.find_child("Arms", true, false) as MeshInstance3D
+	var ok: bool = theirs != null and theirs.mesh != null
+	if ok:
+		mine.mesh = theirs.mesh
+		mine.skin = theirs.skin
+		for i: int in theirs.get_surface_override_material_count():
+			mine.set_surface_override_material(i, theirs.get_surface_override_material(i))
+	v.free()
+	return ok
 
 
 ## True when the rig has a library for `set` (built from "<set>_<clip>" glb clips if needed) with `idle`.

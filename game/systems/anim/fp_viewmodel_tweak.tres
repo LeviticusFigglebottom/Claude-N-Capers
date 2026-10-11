@@ -1,11 +1,21 @@
-[gd_resource type="Resource" script_class="FpViewmodelTweak" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="FpViewmodelTweak" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://systems/anim/fp_viewmodel_tweak.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://c1kbgtywyoegv" path="res://assets/characters/char_arms_fp/char_arms_fp.glb" id="2"]
+[ext_resource type="PackedScene" uid="uid://ju5xh2o7pygo" path="res://assets/characters/char_arms_fp_rook/char_arms_fp_rook.glb" id="s_rook"]
+[ext_resource type="PackedScene" uid="uid://car31lsjj31ff" path="res://assets/characters/char_arms_fp_sable/char_arms_fp_sable.glb" id="s_sable"]
+[ext_resource type="PackedScene" uid="uid://yngqj36fwqfg" path="res://assets/characters/char_arms_fp_dutch/char_arms_fp_dutch.glb" id="s_dutch"]
+[ext_resource type="PackedScene" uid="uid://dc75nwt7p1abq" path="res://assets/characters/char_arms_fp_wren/char_arms_fp_wren.glb" id="s_wren"]
 
 [resource]
 script = ExtResource("1")
 arms_scene = ExtResource("2")
+sleeve_scenes = Dictionary[StringName, PackedScene]({
+&"rook": ExtResource("s_rook"),
+&"sable": ExtResource("s_sable"),
+&"dutch": ExtResource("s_dutch"),
+&"wren": ExtResource("s_wren")
+})
 weapon_bone = &"weapon"
 magazine_bone = &"magazine"
 fps = 30.0

@@ -489,6 +489,9 @@ func _spawn_crew() -> void:
 	for slot: int in Net.all_slots():
 		var crew: CrewController = scene.instantiate() as CrewController
 		crew.setup(slot, Net.crew[slot], _crew_loadouts.get(slot, loadouts.get(slot)) as Loadout)
+		var heisters: Dictionary = options.get("heisters", {})
+		if heisters.has(slot):
+			crew.heister = StringName(str(heisters[slot]))  # characters.md v1.8 FP sleeves
 		dynamic_root.add_child(crew)
 		var xf: Transform3D = Transform3D.IDENTITY
 		if not spawns.is_empty():
