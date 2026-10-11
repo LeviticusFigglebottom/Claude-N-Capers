@@ -166,12 +166,10 @@ func test_payday_renders_awards_section() -> void:
 	assert_eq(screen.awards, HeistAwards.compute(result["crew"] as Array), "screen uses HeistAwards as-is")
 	assert_has(screen.award_labels, &"most_kills")
 	assert_has(screen.award_labels, &"iron")
-	assert_has(screen.award_labels, &"civilian_friendly")
+	assert_false(screen.award_labels.has(&"civilian_friendly"), "the only human killed a civilian; AI never wins (D-071)")
 	assert_false(screen.award_labels.has(&"most_accurate"), "no shots/hits in HeistResult yet: skipped")
 	assert_false(screen.award_labels.has(&"most_headshots"))
-	assert_eq((screen.award_labels[&"civilian_friendly"] as Label).text, "%s, %s, %s" % [
-			screen._crew_name(1, true), screen._crew_name(2, true), screen._crew_name(3, true)], "shared, by slot")
-	assert_eq((screen.award_labels[&"iron"] as Label).text, screen._crew_name(0, false), "0 downs: the human wins the tie")
+	assert_eq((screen.award_labels[&"iron"] as Label).text, screen._crew_name(0, false), "0 downs: the human (AI never wins)")
 	assert_eq((screen.award_labels[&"most_kills"] as Label).text, screen._crew_name(0, false))
 	screen.free()
 	SaveService.root_dir = SaveService.DEFAULT_ROOT_DIR

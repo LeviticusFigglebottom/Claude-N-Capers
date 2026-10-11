@@ -50,7 +50,9 @@ Headshots. Rows by slot; the local row reads "{name} (you)" in the palette's `in
 | `civilian_friendly` | Clean Hands | shared by every member with 0 `civilians_killed` |
 
 * Candidates = rows carrying the stat; none -> no award (accuracy / headshots are skipped until A sends them).
-* `max` / `min`: one winner. **Tie-break: human players before Crew AI, then the lowest crew slot**
+* **Crew AI never wins (D-071)**: AI rows are on the scoreboard (tagged) but not award candidates; a solo
+  player still earns awards.
+* `max` / `min`: one winner. **Tie-break (D-071): the lowest crew slot**
   (`HeistAwards.tie_break_less`); input order never matters.
 * `zero`: every candidate at 0 wins, listed by slot; nobody at 0 -> no award.
 * Payday shows "Crew Honours": award name | winners | description with `{value}` (accuracy as %);
