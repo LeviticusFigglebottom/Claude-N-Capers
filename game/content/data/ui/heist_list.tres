@@ -4,6 +4,10 @@
 
 [resource]
 script = ExtResource("1")
-heists = {}
+heists = {
+&"dockside_burn": {
+"solo_ai_teammates": 3
+}
+}
 unlocked_difficulties = Array[int]([0, 3])
 solo_ai_teammates = 3

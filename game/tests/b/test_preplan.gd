@@ -38,7 +38,9 @@ func test_generic_assets_are_valid_and_grant_known_keys() -> void:
 		assert_eq(a2.validate(), [] as Array[String], "valid %s" % id)
 		for k: Variant in a2.grants:
 			assert_true(ModifierKeys.is_known(StringName(String(k))), "%s grants known key %s" % [id, k])
-		if a2.drop != &"":
+		if String(a2.drop).begins_with("loot."):  # a loot-bag drop (B5-04 QC-40: asset.thermite_drop)
+			assert_true(ContentDB.loot(a2.drop) != null, "%s drops a real loot bag" % id)
+		elif a2.drop != &"":
 			assert_true(ContentDB.deployable(a2.drop) != null, "%s drops a real deployable" % id)
 
 

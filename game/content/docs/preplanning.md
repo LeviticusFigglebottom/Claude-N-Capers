@@ -71,6 +71,11 @@ multiplier; DifficultyDef has none yet, so the tweak holds it.) Default favors: 
 | `asset.inside_keycard` (D-046) | `effect` `force_variant`: the point's params (`keycard` / `kc_breakroom`) | `point_ids` `pp_insider_breakroom` (Glasshouse) | 1,500 | 1 |
 | `asset.propped_door` (D-046) | `effect` `force_variant`: the point's params (`back_door` / `back_propped`) | `point_ids` `pp_back_door` (Glasshouse) | 1,000 | 1 |
 | `asset.riser_panel` (B4-10) | forced variant from the point's params (`vent_open` / `vent_l41` or `vent_l42`) | `point_ids` `pp_riser_l41`, `pp_riser_l42`; exclusive `vent_open` | 1,500 ◇ | 2 ◇ |
+| `asset.sniper_position` (B5-04) | `effect` `force_variant` (the point's `player_perch` slot) + `drop` `deployable.ammo_bag` | `point_ids` `pp_perch_roof`, `pp_perch_stack`; exclusive `player_perch` | 2,000 ◇ | 2 ◇ |
+| `asset.thermite_drop` (B5-04) | `drop` `loot.thermite` (a **loot bag**, not a deployable) | `point_ids` `pp_drop_gatehouse`, `pp_drop_lane`, `pp_drop_quay` | 1,500 ◇ | 1 ◇ |
+| `asset.gangway_raised` (B5-04) | `effect` `force_variant` (`east_gangway` / `gangway_up` from the point) | `point_ids` `pp_gangway` | 2,500 ◇ | 2 ◇ |
+| `asset.intel_containers` (B5-04) | `reveals` `weapons_containers` | crew | 1,500 ◇ | 1 ◇ |
+| `asset.lift_power` (B5-04) | `force_variants` `goods_lift` → `lift_powered` | crew | 1,000 ◇ | 1 ◇ |
 
 The gondola and riser assets are limited by `point_ids` (Shadow Ledger's insider points, D-042), not by
 the `insider` category, so they never appear on another heist's insider points (Night Deposit's
@@ -102,6 +107,14 @@ also `{group: slot}`, `params` sets `drop_params`) plus `category`, `tags`, `exc
 keys and bad grants are reported in `PreplanBoard.errors` and logged. A non-empty `preplanning` with
 none of the keys `favors` / `disable` / `assets` is the pre-D-038 format: the board logs one warning
 and ignores it (Glasshouse's data until ENV C migrates it).
+
+**Dockside Burn (B5-04, D-064, loud-only):** the five QC-40 assets above are library assets. The located ones
+are limited by Dockside's `point_ids`; the two crew assets name Dockside-only variant groups (`weapons_containers`,
+`goods_lift`), so QB-53 hides them on every heist without those groups. `asset.thermite_drop` is the first
+**loot-bag drop**: `drop = &"loot.thermite"` uses the existing `drop` field (a spawn kind), so the PreplanResult
+carries `{"kind": &"loot.thermite"}` and ENV A spawns a loot bag of that LootDef (`PreplanAssets.register_drop`;
+until then its `PreplanDrop` fallback). No schema change on ENV B's side. The full block is in
+`content/docs/heists/dockside_burn.md`.
 
 ## Points
 `PreplanBoard.blueprint_for(heist_id, def)`: the drawn schematic (`blueprints/<heist id>.tres`, else the
