@@ -1,8 +1,10 @@
-# Meridian Federal: the Ostrander Plaza main branch (meridian_federal)
-Status: G0 DRAFT: review requested (ENV C, 2026-10-11)
+# Ostrander Federal: the Ostrander Plaza main branch (ostrander_federal)
+Status: APPROVED (lead, 2026-10-11) (D-075). The lead's answers to the G0 open questions are folded in below (see Lead rulings).
+Renamed from `meridian_federal` / "Meridian Federal" (D-075: "Meridian" is used by real banks). The
+brass **meridian line** in the hall floor keeps its name: it is a feature, not the bank's name.
 
 ## Fiction
-- **Who:** **Meridian Federal**, the city's clearing bank, at its 1928 main branch on **Ostrander
+- **Who:** **Ostrander Federal**, the city's clearing bank, at its 1928 main branch on **Ostrander
   Plaza** in the financial district (Board district `financial`). It is a three-storey limestone
   banking house with a basement vault. It faces the plaza and **Halloran Avenue** (south), with
   **Tannery Street** on the east corner and **Ledger Lane**, the service lane, behind it (north).
@@ -11,12 +13,12 @@ Status: G0 DRAFT: review requested (ENV C, 2026-10-11)
   the **day manager**, Lionel Ashgrove, on his rounds. Guarding is contracted to **Halden
   Security**: the day officers, plus a camera operator in the security room.
 - **What:** the **quarterly consolidation**. Every branch in the region (Harbor Savings & Loan
-  among them) sends its surplus to Meridian's main vault before Monday's **Vaultline Armored
+  among them) sends its surplus to Ostrander Federal's main vault before Monday's **Vaultline Armored
   Transport** run to the reserve. For one weekend the vault holds pallets of strapped cash, the bank's
   own **gold** in the bullion cage, a drawer of **bearer bonds**, and two walls of private
   safe-deposit boxes.
 - **Why / contact:** **The Accountant** (bank and corporate jobs, never seen): *"Every dirty dollar
-  in this city passes through Meridian's vault on its way to looking clean. On Friday it all sits in
+  in this city passes through Ostrander Federal's vault on its way to looking clean. On Friday it all sits in
   one room. Ashgrove carries the card and somebody upstairs has the code. Bring me the consolidation,
   and if you can do it quietly, Monday's run will go out with a vault full of nothing."* The
   Accountant pays for the vault. The boxes, bonds and drives are the crew's own greed.
@@ -37,14 +39,14 @@ Status: G0 DRAFT: review requested (ENV C, 2026-10-11)
   the floor into the vault**.
 - **How it scales up from Night Deposit** (the small bank, P2), deliberately:
 
-  | | Night Deposit | Meridian Federal |
+  | | Night Deposit | Ostrander Federal |
   |---|---|---|
   | Time | 02:30, closed | 15:10, **open**: 11–18 civilians, casing in a busy public hall |
   | Keycard | 1 of 5 places, lying around | **carried by the manager** (or 3 fallbacks): take it from a person |
   | Code | a note in 1 of 4 places | **hack the right officer's computer** (1 of 5) or the server rack |
   | Time lock | 60–120 s | **150–270 s** while the bank keeps working above you |
   | Vault | 10 × 10 m, cage + boxes | **20 × 12 m**: cash cage, padlocked **bullion cage**, bond safe, 2 box walls, plus a **customer safe-deposit hall** |
-  | Required | 4 bags | **6 bags** |
+  | Required | 4 bags | **6 bags** (4 on Routine, D-075) |
   | Loud | thermal drill on the door | **thermal drill delivered in 2 bags, burns through the teller-floor "lid"**; the crew goes down a rope ladder and bags come up a hoist |
   | Size | 1 storey + basement, 26 × 20 m | **3 storeys + basement + roof, 48 × 36 m**; double-height hall with an officers' gallery |
 
@@ -109,7 +111,7 @@ Status: G0 DRAFT: review requested (ENV C, 2026-10-11)
     down), the **P5** police roof island on its +16.0 setback, and an office window at +20.0, perch
     **S3** (rare `tower_sniper`).
 - **Exterior landmarks:**
-  1. the **bronze Meridian sunburst** over the bronze doors: a 4 m gilded disc with the bank's
+  1. the **bronze sunburst** over the bronze doors: a 4 m gilded disc with the bank's
      name cut in the limestone frieze below it, visible from the plaza and the avenue;
   2. the **lantern skylight and the brass meridian line**. The glazed lantern rises over the hall
      roof (seen from the avenue, the terrace and the Corvino windows). Inside, a brass line with
@@ -178,7 +180,7 @@ default, lane, Tannery), `P1…P5` police spawn groups, `S1…S3` sniper perches
    66  %%%%%%%%%%%%% THE ASSAY OFFICE  S1 %%%%%%%%%%%%%%
        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ```
-(The site plan is schematic. `meridian_federal_site_ascii.py` (G1, as for Dockside Burn) generates
+(The site plan is schematic. `ostrander_federal_site_ascii.py` (G1, as for Dockside Burn) generates
 the scaled version from the same coordinates as the tables below.)
 
 ## Floor plans
@@ -186,7 +188,7 @@ the scaled version from the same coordinates as the tables below.)
 exterior 0.4 m, interior 0.2 m, stair/lift cores 0.3 m, **vault walls 0.8 m reinforced**. The origin
 is the bank's NW corner; +x is east and +z is south (Ledger Lane at the top, the plaza at the
 bottom). Rulers are in metres. The plans were drawn from room rectangles in metres. At G1,
-`tools/levelcheck/plans/meridian_federal_floors_ascii.py` generates them, and its `--check` mode
+`tools/levelcheck/plans/ostrander_federal_floors_ascii.py` generates them, and its `--check` mode
 verifies that the rooms tile each footprint, that every door sits on a wall, that every room has a
 door, and the stair arithmetic below (as for Night Deposit, Shadow Ledger and Dockside Burn).
 
@@ -210,7 +212,7 @@ hole under the lid, `SRV` server rack (`server_room` slot), `r` 1.1 m guard (gal
 | Level | FFL | Ceiling | Floor-to-floor / slab | Notes |
 |---|---|---|---|---|
 | Basement | −4.0 | 3.2 (vault 3.2) | 4.0 (0.8 vault-grade slab, Night Deposit precedent) | override 2.6–3.2 for the basement corridor, storage, lockers and comms (below) |
-| Ground | 0.0 | **banking hall 8.0** (override); teller workroom, client lounge, vestibules, dock 4.2; offices, BOH 3.0 (dropped ceiling) | 5.0 (4.2 + 0.8 slab; over the 3.0 rooms a 1.2 m plenum carries the HVAC trunks and the bank's pneumatic-tube system, as Shadow Ledger's BOH, D-042) | banking hall/lobby 3.0–4.5 ✓, warehouse 3.5–6 ✓, office 2.6–3.0 ✓ |
+| Ground | 0.0 | **banking hall 8.0** (`hall`, D-075); teller workroom, client lounge, vestibules, dock 4.2; offices, BOH 3.0 (dropped ceiling) | 5.0 (4.2 + 0.8 slab; over the 3.0 rooms a 1.2 m plenum carries the HVAC trunks and the bank's pneumatic-tube system, as Shadow Ledger's BOH, D-042) | hall 6–9 ✓ (D-075); banking_hall 3.5–6 ✓ (TW); lobby 3.0–4.5 ✓; warehouse 3.5–6 ✓; office 2.6–3.0 ✓ |
 | Gallery | 5.0 | 3.0; the gallery GA stands under the hall ceiling (3.0 headroom) | 3.6 (3.0 + 0.6) | office ✓, lobby ✓ |
 | Executive | 8.6 | 3.0 | 3.6 (3.0 + 0.6) | office ✓; the hall-roof terrace is at this level (exterior) |
 | Roof | 12.2 | head house 2.7 clear | — | parapet 1.1 m |
@@ -231,12 +233,14 @@ landing, and a flight is always one full storey (≥ 3.6 m) under the flight abo
 onto a level landing, never a flight. **Handrails 1.0 m on both sides of every flight** (D-054: the
 1.0–1.1 m band); the well side has a 1.05 m guard with a handrail top.
 
-**Per-room ceiling overrides (D-048).** The §2.6 table is generic. These rooms carry a
-`ceiling_range` override, for these reasons:
-- **BH** (banking hall), **8.0 m, override 6.0–8.5:** a 1928 main-branch banking hall is a
-  double-height civic room. The officers' gallery runs along its north side at +5.0 under a coffered
-  ceiling and a laylight. The `banking_hall` row (3.5–6.0) describes a branch like Night Deposit;
-  this one is the heist's landmark and its loud arena.
+**Ceiling bands and per-room overrides (D-048, D-075).** The §2.6 table is generic.
+- **BH** (banking hall), **8.0 m, purpose `hall` (6.0–9.0, D-075), no override:** a 1928 main-branch
+  banking hall is a double-height civic room. The officers' gallery runs along its north side at
+  +5.0 under a coffered ceiling and a laylight. The `banking_hall` row (3.5–6.0) describes a branch
+  like Night Deposit; this one is the heist's landmark and its loud arena, so the lead added the
+  `hall` purpose for it (and for Afterhours' dance hall).
+
+These rooms keep a `ceiling_range` override, for these reasons:
 - **Basement BB, RC, SS, LK, CM, CQ** (corridor, storage, lockers, comms), **3.2 m, override
   2.6–3.2:** the Night Deposit precedent (D-040/D-048): a vault-standard basement with a uniform
   3.2 m clear height under the 0.8 m slab, exposed services and no dropped ceiling.
@@ -528,7 +532,7 @@ BM, NA) have clear glass from 0.9 m.
 | PC | lobby (private-client lounge) | 8 × 10 | 4.2 | `lounge_client` | Armchairs, coffee service, 0–2 clients. Hall door unlocked; **the BC service door is unlocked during hours** (the coffee runs): the front route's way in. |
 | CN1, CN2 | office (consultation) | 8 × 5 each | 3.0 | `meeting_small` | Round table, 4 chairs, glass front. |
 | AV | lobby (ATM vestibule) | 8 × 7 | 4.2 | `atm_vestibule` | **PUBLIC.** 2 ATMs, night slot, street door, hall door. |
-| BH | banking_hall | 576 m² (32 × 19 less VE) | **8.0** (override 6.0–8.5) | `banking_hall_grand` | **PUBLIC.** The meridian line, 4 check-writing tables, queue rails, 6 benches, the lobby guard post, 2 arched-window bays × 2. The officers' gallery overhead (N). |
+| BH | hall (banking hall; D-075) | 576 m² (32 × 19 less VE) | **8.0** (`hall` 6.0–9.0) | `banking_hall_grand` | **PUBLIC.** The meridian line, 4 check-writing tables, queue rails, 6 benches, the lobby guard post, 2 arched-window bays × 2. The officers' gallery overhead (N). |
 | VE | lobby (vestibule) | 8 × 4 | 4.2 | `vestibule_bronze` | **PUBLIC.** Bronze outer doors, glass inner doors (both open during hours). |
 | BM | office (branch manager) | 8 × 8 | 3.0 | `office_manager` | See Ground notes. Window E. |
 | PW | restroom (customer) | 8 × 4 | 3.0 | `restroom_single` | **PUBLIC.** 2 single WCs off a sink lobby. The safe place to mask up in the hall. Drop zone `pp_drop_restroom`. |
@@ -634,7 +638,7 @@ Support-space check (level_standards §2.2):
 | Day manager (Lionel Ashgrove), keycard carrier | `bank_manager` → `bank_manager` | 1 | always; route by `manager_route` | `civ_manager_<route>` | `phone` / `desk_work` | `staff`, `staff_manager_<route>` |
 | Customer | `bank_customer` → `bank_customer`, `bank_customer_b` (parent with a backpack), `civilian_customer_a`, `civilian_customer_b` (elderly) | 4–8 hall + 2 plaza | `customers` scalar | `civ_customer`, `civ_plaza` | `browse`, `walk_text` | `civilian` |
 | Private client | `bank_customer` | 0–2 | `pc_clients` (part of `customers`: 1 at 6, 2 at 8) | `civ_client` | `sit` | — (stays in PC) |
-| Account officer | **new role `bank_officer`** (QC-67; until then `npc_bank_teller_b`) | 1–3 | `officers` scalar | `civ_officer` | `desk_work` | `staff`, `staff_gallery` |
+| Account officer | **new role `bank_officer`** (QC-67; the lead asks ENV D for it, D-075; until then `npc_bank_teller_b`) | 1–3 | `officers` scalar | `civ_officer` | `desk_work` | `staff`, `staff_gallery` |
 | VIP client + bodyguard | `bank_customer` + `bank_guard` (`security_officer_b`) | 0 / 1 + 1 | rare `vip_client` | `civ_vip`, `guard_vip` | `sit` | — (SD) |
 | Vaultline crew | `armored_car_crew` → `armored_car_crew`, `armored_car_crew_b` (Rolling Thunder cast, pagers) | 0 / 2 | rare `armored_car_early` | `guard_vaultline` | — | `guard_dock` |
 | Police | director | — | loud | POLICE spawns `police_s`, `police_se`, `police_n`, `police_e`, `police_roof` | — | — |
@@ -670,8 +674,8 @@ is not a plan**. The hall is cased unmasked and worked around, never subdued. Ci
 - **The gallery and loggias:** a masked player on GA/WL/EL is visible from the hall floor (the
   guard, customers). The gallery guard is 1.1 m high with a **solid bronze base to 1.0 m** and a
   0.1 m glass cap, so a crouched player (1.2 m capsule, eyes below the base top seen from 5 m
-  below) crossing GA is hidden from the hall floor. The validator's LOS sample checks it (open
-  question 9). The loggias are glazed full height: crossing them is timing, not crouching.
+  below) crossing GA is hidden from the hall floor. The validator's LOS sample checks it (**D-075:
+  the solid base is approved**). The loggias are glazed full height: crossing them is timing, not crouching.
 - **BC** (38 m straight): a guard in it sees end to end. Cover comes from 10 door recesses and the
   SA/SB landings. `rover_hall` loop (c) walks its full length.
 - **SR:** the operator faces N at the monitors. The door, the key cabinet (E wall, south end) and
@@ -895,7 +899,8 @@ S1 and S2 are always on (two always-on perches, D-064 Q8). S3 is a VariantSlot c
 rare event. **Player perches:** the main roof (S2, S3) and GA (the lantern rappellers).
 
 ## Loot path
-- **Required:** **≥ 6 bags** secured from the vault: cash (`loot.cash_bricks`), gold
+- **Required (D-075):** **≥ 6 bags** secured from the vault (**4 on Routine**; the mission reads the
+  difficulty for the `[secure]` target): cash (`loot.cash_bricks`), gold
   (`loot.gold`) and bearer bonds (`loot.bearer_bonds`) all count. Server drives, deposit boxes,
   safes and drawers are bonus. The drill parts are tools (`LootDef.is_tool`, D-068: never count).
 - **Vault → E1 (dock van):** VT → VC → the gate → BB (3 m) → CQ → **cash lift** (2 bags, 8 s) → LD
@@ -947,7 +952,7 @@ rare event. **Player perches:** the main roof (S2, S3) and GA (the lantern rappe
 8. Hold until it releases (`time_lock_s`). `[time_lock_wait]`
 9. Bag the vault: the cash cage `[vault_loot]`; *(optional)* the bullion cage padlock (lockpick 8 s or
    saw) `[gold_cage]`.
-10. Secure ≥ 6 bags. `[secure]`
+10. Secure ≥ 6 bags (4 on Routine). `[secure]`
 11. *(optional)* Saw the deposit boxes `[deposit_boxes]`, open the bond safe `[bond_safe]` and the
     president's safe `[president_safe]`, take the server drives `[server_drives]`.
 12. Escape. `[escape]`
@@ -960,11 +965,11 @@ rare event. **Player perches:** the main roof (S2, S3) and GA (the lantern rappe
 3. Assemble it on the lid (2 × 3 s) and hold the teller line (360 s, jams). `[vault_drill]`
 4. Through the floor: the ladder and the hoist drop in. `[vault_breach]`
 5. Bag the vault (`[vault_loot]`, `[gold_cage]`) and send the bags up the hoist.
-6. Secure ≥ 6 bags. `[secure]`
+6. Secure ≥ 6 bags (4 on Routine). `[secure]`
 7. Hold until the escape arrives (`escape_eta_s` after `[secure]`). `[escape_wait]`
 8. Escape. `[escape]`
 
-**Mission script notes** (`meridian_federal_mission.gd` on `HeistMission`):
+**Mission script notes** (`ostrander_federal_mission.gd` on `HeistMission`):
 - Find prefabs by objective_tag.
 - **Lockdown:** `alarm_raised` → abort the vault's time lock if it is running (QC-64), disable
   TL and the vault-control `hack_terminal` (`pause(&"lockdown")`), close the vault gate
@@ -998,7 +1003,7 @@ weights use A2-08 / A3-10 (QC-18).
 | `code_pc` (heist group) | `pc_ao1`, `pc_ao2`, `pc_ao3`, `pc_ops` (OF), `pc_vault_ops` (VO), `pc_exec` (EA) | 1, 1, 1, 0.75, 1, 0.75; pick 1 | **Which floor and which desk:** the west officers (WL, visible from the hall), the open office, vault ops, or the Executive level (roof route). `[code_hint]` reveals it. |
 | `officers` (scalar) | 1, 2, 3 | Routine 0.4/0.4/0.2; Brutal+ 0.2/0.4/0.4 | **Whether the code PC has someone at it:** wait for the coffee window or spend a tie. |
 | `server_room` | `srv_gallery` (SV), `srv_basement` (CM) | 0.55, 0.45 | **The code-free alternative and the laser switch:** upstairs (far from the vault, near the PCs) or in the basement (next to the vault, on `rover_basement`'s loop). |
-| `time_lock_s` (scalar) | 150, 210, 270 | Routine 0.4/0.4/0.2; Brutal+ 0.1/0.4/0.5 | **How long to hold the basement** against the vault post's loop, so whether to deal with him first. |
+| `time_lock_s` (scalar) | 150, 210, 270 (D-075: approved) | Routine 0.4/0.4/0.2; Brutal+ 0.1/0.4/0.5 | **How long to hold the basement** against the vault post's loop, so whether to deal with him first. |
 | `guard_post` | `rover_hall`, `rover_gallery`, `rover_basement`, `rover_dock` | 1 each; pick 1 (Routine/Tense), 2 (Hazardous), 3 (Brutal), 4 (Lethal+) via `difficulty_add` | **Which route is walked:** the dock, the back corridor, the gallery/Executive (PCs, roof route), or the time-lock wait. |
 | `security_room_staffed` | `sec_staffed`, `sec_empty` | Routine–Hazardous 0.6/0.4; Brutal+ 0.75/0.25 | **Live cameras or not.** Staffed: deal with him from behind (a pager) or live with cameras. |
 | `camera` | `cam_a`, `cam_b`, `cam_c` (table in Sightlines) | 1, 1, 1 | **Which entry needs ECM or timing,** and whether the E1 bag line needs an ECM window. |
@@ -1039,7 +1044,7 @@ weights use A2-08 / A3-10 (QC-18).
 ## Pre-planning (preplanning.md contract, D-046 shape)
 `Preplan` points (category; `floor` is the index into `floor_heights`: 0 Basement, 1 Ground,
 2 Gallery, 3 Executive, 4 Roof; point labels are heist-qualified,
-`ui.preplan.point.meridian_federal.<point_id>`, preplanning.md v1.1):
+`ui.preplan.point.ostrander_federal.<point_id>`, preplanning.md v1.1):
 
 | Point | Category | Params / asset |
 |---|---|---|
@@ -1064,7 +1069,7 @@ weights use A2-08 / A3-10 (QC-18).
 prices, scaled by `PreplanTweak.cost_mult`; values marked ◇ are my proposals for ENV B/lead):
 ```gdscript
 preplanning = {
-    "favors": 8,                                                                     # ◇ size L
+    "favors": 8,                                                                     # size L (D-075)
     "disable": [],
     "assets": {
         # library assets, limited to this heist's points
@@ -1099,7 +1104,7 @@ not exist here (laptop, gondola, riser, perches, containers, gangway, lift power
 the points' params. `asset.thermal_drill_drop` places the 2 bags at the chosen point at the start
 **and** forces that `drill_delivery` slot, so the mission skips the timed delivery. It needs `drop`
 with a count (`params.count`; preplanning.md v1.1 allows `params`). Blueprint:
-`docs/levels/meridian_federal/blueprint.png` from the plan renderer (5 floors).
+`docs/levels/ostrander_federal/blueprint.png` from the plan renderer (5 floors).
 
 ## Audio/lighting
 - **Palette** (proposed style guide §3 row, QC-69): **limestone `#CBC3B0`** dominant (the facade,
@@ -1113,7 +1118,7 @@ with a count (`params.count`; preplanning.md v1.1 allows `params`). Blueprint:
 
   | Heist | Dominant | Secondary | Accent | Mood / time |
   |---|---|---|---|---|
-  | meridian_federal | limestone `#CBC3B0` | deep ultramarine `#2F3F6B` | meridian bronze `#B8873A` | Friday afternoon, broken cloud, low SW sun shafts |
+  | ostrander_federal | limestone `#CBC3B0` | deep ultramarine `#2F3F6B` | meridian bronze `#B8873A` | Friday afternoon, broken cloud, low SW sun shafts |
 
 - **Time:** 15:10. The sun is 24° high in the SW (azimuth ~220°). It is **direct and intermittent**
   (the cloud-shadow animation is a slow light-energy curve on the sun, presentation only). Shafts
@@ -1138,32 +1143,32 @@ with a count (`params.count`; preplanning.md v1.1 allows `params`). Blueprint:
   (HVAC, fluorescents, distant phones), `amb_vault` (low ventilation, the time-lock clockwork tick
   while it runs), `amb_city_afternoon` (traffic, buses, pigeons on the plaza, wet tyres).
   `cue.alarm_bell` per-heist variant: a deep two-tone bank bell.
-- **Music:** `meridian_federal` (new track, ENV C stems): `stealth` 72 BPM (low strings and a
+- **Music:** `ostrander_federal` (new track, ENV C stems): `stealth` 72 BPM (low strings and a
   clockwork tick that tightens during the time lock), `control`, `anticipation` riser, `assault`
   148 BPM (driving percussion with a brass motif), `fade`, `win`/`lose` stingers (audio_cues.md
-  music stems). It joins `MusicTrackTable` with `default_for_heists [meridian_federal]`.
+  music stems). It joins `MusicTrackTable` with `default_for_heists [ostrander_federal]`.
 - **VO line ids** (`vo.<speaker>.<heist>_<line>`, D-051; ENV B writes the text):
-  - **The Accountant:** `vo.accountant.briefing_meridian_federal_1..3`,
-    `vo.accountant.meridian_federal_contact_intro`, `vo.accountant.meridian_federal_payday`.
-  - **Mercer:** `vo.mercer.briefing_meridian_federal_1..2`, `vo.mercer.meridian_federal_intro`,
-    `vo.mercer.meridian_federal_case_manager`, `vo.mercer.meridian_federal_case_gallery`,
-    `vo.mercer.meridian_federal_case_operator`, `vo.mercer.meridian_federal_keycard`,
-    `vo.mercer.meridian_federal_code_hint`, `vo.mercer.meridian_federal_pc_found`,
-    `vo.mercer.meridian_federal_hack_interrupt`, `vo.mercer.meridian_federal_code`,
-    `vo.mercer.meridian_federal_server_hack`, `vo.mercer.meridian_federal_vault_gate`,
-    `vo.mercer.meridian_federal_lasers_off`, `vo.mercer.meridian_federal_time_lock_started`,
-    `vo.mercer.meridian_federal_time_lock_60`, `vo.mercer.meridian_federal_time_lock_open`,
-    `vo.mercer.meridian_federal_last_pager`, `vo.mercer.meridian_federal_camera_warning`,
-    `vo.mercer.meridian_federal_lockdown`, `vo.mercer.meridian_federal_drill_inbound`,
-    `vo.mercer.meridian_federal_drill_delivered`, `vo.mercer.meridian_federal_drill_jam`,
-    `vo.mercer.meridian_federal_burn_through`, `vo.mercer.meridian_federal_hoist`,
-    `vo.mercer.meridian_federal_gold_cage`, `vo.mercer.meridian_federal_required_secured`,
-    `vo.mercer.meridian_federal_sniper_assay`, `vo.mercer.meridian_federal_sniper_garage`,
-    `vo.mercer.meridian_federal_sniper_tower`, `vo.mercer.meridian_federal_armored_car`,
-    `vo.mercer.meridian_federal_van_eta`, `vo.mercer.meridian_federal_heli_eta`,
-    `vo.mercer.meridian_federal_escape`.
+  - **The Accountant:** `vo.accountant.briefing_ostrander_federal_1..3`,
+    `vo.accountant.ostrander_federal_contact_intro`, `vo.accountant.ostrander_federal_payday`.
+  - **Mercer:** `vo.mercer.briefing_ostrander_federal_1..2`, `vo.mercer.ostrander_federal_intro`,
+    `vo.mercer.ostrander_federal_case_manager`, `vo.mercer.ostrander_federal_case_gallery`,
+    `vo.mercer.ostrander_federal_case_operator`, `vo.mercer.ostrander_federal_keycard`,
+    `vo.mercer.ostrander_federal_code_hint`, `vo.mercer.ostrander_federal_pc_found`,
+    `vo.mercer.ostrander_federal_hack_interrupt`, `vo.mercer.ostrander_federal_code`,
+    `vo.mercer.ostrander_federal_server_hack`, `vo.mercer.ostrander_federal_vault_gate`,
+    `vo.mercer.ostrander_federal_lasers_off`, `vo.mercer.ostrander_federal_time_lock_started`,
+    `vo.mercer.ostrander_federal_time_lock_60`, `vo.mercer.ostrander_federal_time_lock_open`,
+    `vo.mercer.ostrander_federal_last_pager`, `vo.mercer.ostrander_federal_camera_warning`,
+    `vo.mercer.ostrander_federal_lockdown`, `vo.mercer.ostrander_federal_drill_inbound`,
+    `vo.mercer.ostrander_federal_drill_delivered`, `vo.mercer.ostrander_federal_drill_jam`,
+    `vo.mercer.ostrander_federal_burn_through`, `vo.mercer.ostrander_federal_hoist`,
+    `vo.mercer.ostrander_federal_gold_cage`, `vo.mercer.ostrander_federal_required_secured`,
+    `vo.mercer.ostrander_federal_sniper_assay`, `vo.mercer.ostrander_federal_sniper_garage`,
+    `vo.mercer.ostrander_federal_sniper_tower`, `vo.mercer.ostrander_federal_armored_car`,
+    `vo.mercer.ostrander_federal_van_eta`, `vo.mercer.ostrander_federal_heli_eta`,
+    `vo.mercer.ostrander_federal_escape`.
   - Crew barks reuse the generic `vo.crew.*` set.
-- **LUT:** `lut_meridian_federal`: warm, slightly golden highlights, neutral-cool shadows, soft
+- **LUT:** `lut_ostrander_federal`: warm, slightly golden highlights, neutral-cool shadows, soft
   contrast. Daylight with no crushed blacks: it is the brightest heist so far.
 
 ## Review shots
@@ -1210,7 +1215,7 @@ room (C1-04 check). There are 34 shots: 1 top-down, 4 exterior, 3 landmarks (cov
 
 ## Budgets
 Targets from architecture §10 and D-038 QC-10, checked by the `perf` validator per review camera.
-Meridian Federal is the first **L** map: the hall is one 576 m², 8 m high room seen from the
+Ostrander Federal is the first **L** map: the hall is one 576 m², 8 m high room seen from the
 plaza, the gallery and the vestibule.
 
 | Budget | Target | Notes |
@@ -1227,39 +1232,16 @@ plaza, the gallery and the vestibule.
 heli net** exceed 3× their straight-line distance (SA is the only way up; a 3-storey climb over a
 ~20 m plan distance). That is by design (as Shadow Ledger's tower).
 
-## HeistDef (proposed data, `meridian_federal_def.tres`)
-`id meridian_federal`, display "Meridian Federal", contact `contact.accountant`, mode
+## HeistDef (proposed data, `ostrander_federal_def.tres`)
+`id ostrander_federal`, display "Ostrander Federal", contact `contact.accountant`, mode
 STEALTH_OR_LOUD, base_payout **$160,000** (ENV B's placeholder, P6 balance), loot
 `[loot.cash_bricks, loot.gold, loot.bearer_bonds, loot.server_drives]` (`loot.thermal_drill_part`
 is a tool; deposit-box valuables are prefab small loot), escape_options `[van, heli]`, music_track
-`meridian_federal`, objectives `[casing, keycard, code_hint, code_pc, server, vault_gate, lasers,
+`ostrander_federal`, objectives `[casing, keycard, code_hint, code_pc, server, vault_gate, lasers,
 time_lock, time_lock_wait, vault_loot, gold_cage, secure, deposit_boxes, bond_safe, president_safe,
 server_drives, drill_delivery, vault_drill, vault_breach, escape_wait, escape]`, preplanning as
-above. Map `game/world/heists/meridian_federal/meridian_federal.tscn`; `floor_heights [-4.0, 0.0,
+above. Map `game/world/heists/ostrander_federal/ostrander_federal.tscn`; `floor_heights [-4.0, 0.0,
 5.0, 8.6, 12.2]`, `floor_names ["Basement", "Ground", "Gallery", "Executive", "Roof"]`.
-
-## Open questions (for the lead)
-1. **Name originality.** "Meridian" appears in real-world bank and credit-union names. The slate
-   fixes the heist name. Inside the world, I use only "Meridian Federal" (no "Bank", "Credit Union"
-   or "Reserve"), with an original sunburst logo. Should the product owner rename it instead?
-2. **Ceiling overrides:** BH 6.0–8.5 (the double-height hall), basement 2.6–3.2 (ND precedent),
-   XL 2.6–3.0 (SL QC-31), and the ground floor's 1.2 m plenum over 3.0 m rooms (SL precedent).
-   Approve?
-3. **Required 6 bags** (ND 4, DB 4): the vault holds 9–18 bag-equivalents. Should the count be fixed
-   or per difficulty (Routine 4)?
-4. **Time lock 150/210/270 s** (ND 60–120): is this the right length for L, given the ghost line
-   waits 270 s in RC?
-5. **Thermal drill through the floor** with a hoist and a rope ladder (QC-60/61). The G1 fallback
-   until they ship: a plain `drill_point` THERMAL on the lid (no bags), and the mission toggles
-   visibility on a pre-placed ladder and `bag_lift` (TODO(QC-61)). Acceptable?
-6. **Civilian-carried keycard** (QC-62): until it ships, G1 places `kc_on_manager` as a
-   `keycard_pickup` that follows the manager's hip socket and is only usable while he is restrained
-   or dead. Acceptable as a placeholder?
-7. **Office staff cast:** p5_cast.json has no officer role. Should ENV D add `bank_officer` (QC-67),
-   or do the tellers' ids cover it?
-8. **Favors 8** for the first L heist (DB 5, SL 6, PD2 Big Bank 10)?
-9. **Gallery guard:** should the solid base be raised to 1.0 m so a crouched player crossing GA is
-   hidden from the hall? I lean yes (see Sightlines).
 
 ## Requests (to the lead; QC-60..69)
 - **QC-60 (ENV A):** thermal-drill **assembly from tool bags**. `drill_point` gains `requires_loot:
@@ -1283,17 +1265,17 @@ above. Map `game/world/heists/meridian_federal/meridian_federal.tscn`; `floor_he
 - **QC-65 (ENV B loot/strings):** `loot.thermal_drill_part` (HEAVY, `is_tool`, value 0). Please
   confirm `loot.cash_bricks` / `loot.gold` / `loot.bearer_bonds` / `loot.server_drives` for this
   heist and the deposit-box value band ($800–2,400) with or without a `loot.small_valuables` def.
-  Also: objective strings `objective.meridian_federal.<tag>` for the `[tag]`s above, the briefing
+  Also: objective strings `objective.ostrander_federal.<tag>` for the `[tag]`s above, the briefing
   text, the VO text, and the B6-01 stub's "waiting on ENV C" list (all answered here).
 - **QC-66 (ENV B assets):** new `asset.thermal_drill_drop` (force_variant + a 2-bag loot drop),
   `asset.intel_code_pc`, `asset.manager_schedule`, `asset.fire_escape_ladder` (shapes above), and
   the per-heist overrides of `asset.propped_door` and `asset.inside_keycard` (point params name
   this heist's groups, like Glasshouse).
-- **QC-67 (ENV D cast):** confirm the Meridian roles as used above (`bank_teller`, `bank_manager`,
+- **QC-67 (ENV D cast):** confirm the Ostrander Federal roles as used above (`bank_teller`, `bank_manager`,
   `bank_guard` with Halden badges, `bank_customer`) and the manager's name **Lionel Ashgrove**. Add
   a **`bank_officer`** role (account officers: day office wear in the bank livery; reuse
   `npc_bank_night_manager` re-dressed and `npc_bank_teller_b`, your call). Cast
-  `armored_car_crew` (Rolling Thunder) into Meridian for `armored_car_early` and a `bank_vip_client`
+  `armored_car_crew` (Rolling Thunder) into Ostrander Federal for `armored_car_early` and a `bank_vip_client`
   (any existing customer id in a better coat). Also confirm the ambient placements I sized to:
   `teller_count` (1.00 m top, near edge 0.28 m) and `cower_stand` (wall 0.21 m behind);
   `cower_seated` on hall benches and PC armchairs; `walk_text` for the plaza pedestrians.
@@ -1301,6 +1283,27 @@ above. Map `game/world/heists/meridian_federal/meridian_federal.tscn`; `floor_he
   (+16.0, police-only island) to the bank's main roof (+12.2) and terrace (+8.6), and from the
   terrace through the lantern into the hall (8.6 m). This is QC-41's mechanism with a longer drop.
   Validator side (mine): reachability through the chain.
-- **QC-69 (lead):** add the palette row above to style guide §3 (and `lut_meridian_federal`).
+- **QC-69 (lead):** add the palette row above to style guide §3 (and `lut_ostrander_federal`).
   Confirm ENV B's UI accent `#6FCF97` (banknote green). It is a UI colour, not a world colour, so it
-  does not need to match the palette. Also rule on the open questions above.
+  does not need to match the palette.
+
+## Lead rulings (D-075; the G0 open questions, closed)
+1. **Name:** renamed **Ostrander Federal** (`ostrander_federal`), because "Meridian" is used by real
+   banks. Every id follows (heist id, map path, music track, VO ids, objective/preplan strings, LUT
+   `lut_ostrander_federal`, display names). The brass **meridian line** in the hall floor keeps its
+   name (a feature, not the brand). Files outside ENV C that still say `meridian_federal` are listed
+   in ENV C's report to the lead (ENV B content, board, strings, tests; roadmap and overview docs).
+2. **Ceilings:** the validator's scale table gains **`hall`** (**6–9 m**), so BH is a `hall` with no
+   override. The basement (2.6–3.2, Night Deposit precedent) and XL (2.6–3.0, Shadow Ledger QC-31)
+   overrides and the ground floor's 1.2 m plenum are not changed by the D-075 rulings relayed to
+   ENV C; they stay as drafted, on their earlier precedents.
+3. **Required loot:** **6 bags**, **4 on Routine**.
+4. **Time lock:** 150–270 s (150/210/270) approved.
+5. **G1 fallbacks** for the floor burn (QC-60/61: a plain THERMAL `drill_point` on the lid and a
+   mission-toggled ladder and `bag_lift`, `TODO(QC-61)`) and the carried keycard (QC-62: a
+   `keycard_pickup` on the manager's hip, usable only while he is restrained or dead): fine.
+6. **Office staff:** the lead asks ENV D for the **`bank_officer`** role (QC-67); until it ships the
+   officers use `npc_bank_teller_b`.
+7. **Favors:** 8.
+8. **Gallery guard:** a **solid base** to 1.0 m (0.1 m glass cap), so a crouched player crossing GA
+   is hidden from the hall floor.

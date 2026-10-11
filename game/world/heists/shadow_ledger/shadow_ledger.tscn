@@ -13724,6 +13724,7 @@ room_id = &"M3"
 purpose = &"gallery"
 floor_index = 2
 dressing_kit = &"art_hall"
+metadata/ceiling_range = Vector2(3, 4.5)
 
 [node name="Shape" type="CollisionShape3D" parent="Rooms/RoomM3" unique_id=102717]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.5, 9.5, 3.75)

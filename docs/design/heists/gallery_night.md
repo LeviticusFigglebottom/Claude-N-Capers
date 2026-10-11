@@ -1,6 +1,6 @@
 # Gallery Night: Halberd Gallery (gallery_night)
-Status: G0 DRAFT: review requested (ENV C, 2026-10-11). Open questions for the lead are at the end
-(Open questions); cross-env requests are QC-51..QC-59.
+Status: APPROVED (lead, 2026-10-11) (D-075). The lead's answers to the G0 open questions are folded in below (see Lead rulings).
+Cross-env requests are QC-51..QC-59.
 
 ## Fiction
 - **Who:** the **Halberd Gallery**, a private Beaux-Arts gallery (built 1908 as the Halberd family's
@@ -39,7 +39,8 @@ Status: G0 DRAFT: review requested (ENV C, 2026-10-11). Open questions for the l
   listed canvases there hang in front of patrons, attendants and a guard. At last call the mission
   walks the guests out through the portico (no alarm), the waitstaff clear the bar, and those zones
   switch to **RESTRICTED** (QC-51). The decision: work BOH and upstairs early while the guests
-  distract the guards, or wait for an emptier but fully restricted building.
+  distract the guards, or wait for an emptier but fully restricted building. **D-075: approved as
+  the signature mechanic** (last call at 8/10/12 min, `last_call_s`).
 - **Casing:** unmasked guests may read the wall plaques. Walking within 4 m of a listed canvas marks
   it for the crew (Mercer callout; `[find_canvases]`). Upper galleries, BOH, basement and roof are
   RESTRICTED from the start (slow ×0.35 fill, S1.1). Ladders need the mask.
@@ -189,8 +190,8 @@ because Stair SS and the fire-escape ladder arrive on it.
 | Level | FFL | Ceiling | Floor-to-floor / slab | Notes |
 |---|---|---|---|---|
 | Basement | −4.2 | 3.0 (BOH); **3.4** art store and plant | 4.2 (1.2 m services void under the ground slab: the art store's climate ducts) | storage/corridor 2.6–3.0 ✓; vault and plant 2.6–6.0 ✓ |
-| Ground | 0.0 | galleries, vestibule, cloakroom, shop **4.5**; Great Hall **9.8** (atrium, coffered laylight); north BOH strip **3.0**; Loading Dock 4.5 | 5.4 (0.9 m plenum over 4.5 rooms; **2.4 m services void over the 3.0 m BOH strip**, see Open questions Q4) | gallery/lobby/retail 3.0–4.5 ✓; atrium ≤ 10 ✓; office/corridor 3.0 ✓; loading 3.5–6 ✓ |
-| Upper | 5.4 | top-lit galleries **6.0** to the laylight (override); balconies and loggia open to the hall ceiling (4.4 above them); BOH 3.0; Conservation Studio 4.0; Treasury 4.0 | 3.6 to the roof deck (BOH); the galleries rise to the lanterns | office 2.6–3.0 ✓; workshop 3.5–6 ✓; vault 2.6–6 ✓ |
+| Ground | 0.0 | galleries, vestibule, cloakroom, shop **4.5**; Great Hall **9.8** (atrium, coffered laylight); north BOH strip **3.0**; Loading Dock 4.5 | 5.4 (0.9 m plenum over 4.5 rooms; **2.4 m services void over the 3.0 m BOH strip**, see Lead rulings Q4) | gallery 4.5–6.5 ✓ (D-075; 4.5 is the band floor); lobby/retail 3.0–4.5 ✓; atrium ≤ 10 ✓; office/corridor 3.0 ✓; loading 3.5–6 ✓ |
+| Upper | 5.4 | top-lit galleries **6.0** to the laylight; balconies and loggia open to the hall ceiling (4.4 above them); BOH 3.0; Conservation Studio 4.0; Treasury 4.0 | 3.6 to the roof deck (BOH); the galleries rise to the lanterns | gallery 4.5–6.5 ✓ (D-075); balconies/loggia `atrium` ≤ 10 ✓; office 2.6–3.0 ✓; workshop 3.5–6 ✓; vault 2.6–6 ✓ |
 | Roof deck | 9.0 | open; head house and lift motor room 2.7 clear | — | parapet 1.1 m |
 | Stair SS (service) | −4.2 → 0.0 | U-stair, 2 flights × 12 risers @ 0.175 m, tread 0.28 m (run 3.08 m), width 1.2 m | 24 risers = 4.2 ✓ | landing every 12 ≤ 16 ✓ |
 | Stair SS | 0.0 → 5.4 | 2 flights × 15 risers @ 0.180 m, tread 0.28 m (run 3.92 m) | 30 risers = 5.4 ✓ | landing every 15 ≤ 16 ✓ |
@@ -206,12 +207,16 @@ shorter runs leave a deeper half landing. Headroom under each return flight ≥ 
 The stair door (1.0 m) is on the **east wall at the south floor landing** (x 3, z 6.5–7.5) on every
 level and opens onto a level landing, never a flight. Vision panel 0.15 × 0.6 m in each door.
 
-**Per-room ceiling overrides (D-048).** The §2.6 table caps `gallery` at 3.0–4.5 m. These rooms
-carry a `ceiling_range` override of **4.5–6.5 m**:
+**Ceiling bands (D-075: no per-room overrides).** The lead added a **`gallery`** purpose of
+**4.5–6.5 m** (top-lit) to the validator's scale table, so no room here carries a `ceiling_range`
+override:
 - **UG1, UG2, UG3** (top-lit picture galleries): a Beaux-Arts picture gallery lit from a laylight
   hangs large canvases up to two high; 6.0 m to the laylight over a 12 × 12 m room is the classic
   proportion (the walls need ~4.2 m of hang plus a cove). The laylight and its lantern attic sit
-  above (plenum, not playable).
+  above (plenum, not playable). Purpose `gallery`, inside the band.
+- **WG, DC, EG, EB** (ground galleries, 4.5 m): purpose `gallery`, on the band floor (4.5).
+- **BW, BE, SL** (balconies and loggia, open to the Great Hall's ceiling 4.4 m above them): purpose
+  **`atrium`** (≤ 10), since they are the upper edge of the hall's volume, not separate rooms.
 
 Every other room is in its purpose's band. The Great Hall uses `atrium` (≤ 10).
 
@@ -405,21 +410,21 @@ and Wexley St with closed blinds. Vestibule, cloakroom and shop have shop-front 
 | GS | retail (gift shop) | 6 × 4 | 4.5 | `gift_shop` | Closed for the gala: shutter down on the VE side, door from VE (LOCKPICK). Till (`small_loot`), print racks, books. Shop-front glazing to the Parade. |
 | WG | gallery (Founders' Gallery) | 12 × 12 | 4.5 | `gallery_hang` | 19th-century portraits. French doors W to the Sculpture Court (`court_doors`), art-handling door N to BC (`DD`, LOCKPICK). `widow_founders` slot + 2 studies. C3. |
 | DC | gallery (Drawings Cabinet) | 7 × 10 | 4.5 | `gallery_cabinet` | Low-light room (50 lux) for works on paper: wall vitrines and 2 studies. Dead end **with a reason** (a cabinet room). |
-| PWW, PWM | restroom (public) | 5 × 5 each | 3.0 (dropped ceiling; 1.5 m void above, Q4) | `restroom_public` | 3 cubicles each, marble vanity. Doors to GH. |
+| PWW, PWM | restroom (public) | 5 × 5 each | 3.0 (dropped ceiling; 1.5 m void above, Lead rulings Q4) | `restroom_public` | 3 cubicles each, marble vanity. Doors to GH. |
 | EG | gallery (Harbour Gallery) | 12 × 12 | 4.5 | `gallery_hang` | Marine paintings. Arch W (GH), opening S (EB), art door N (LD). `saint_harbour` + 2 studies. C4. |
 | EB | gallery (Benefactors' Room) | 12 × 6 | 4.5 | `gallery_hang` | Donor wall, two sofas, the gala's silent-auction table (catalogues). `orchard_benefactors` + 1 study. Windows S and E (blinds). |
 | UC | corridor (upper) | 29 × 2 | 3.0 | `corridor_office` | Doors to CO, AO, SV (CODE), UW, FS, LF, CS, BW, BE. C13 (W end, looks E). |
-| CO | office (curator) | 7 × 6 | 3.0 | `office_curator` | Margit Sorell's office: desk, reading table with catalogues, a **wall safe** (`safe` SMALL, `methods [drill, lockpick, saw]`, 3 `small_loot`), `code_curator_planner`, phone, window N. Her lanyard keycard is on her, not here (`kc_curator`). |
+| CO | office (curator) | 7 × 6 | 3.0 | `office_curator` | Margit Sorell's office: desk, reading table with catalogues, a **wall safe** (`safe` SMALL, `methods [drill, lockpick, saw]`, 3 `small_loot`), `code_curator_planner`, phone, window N. Her lanyard keycard is on her, not here (`kc_curator`; approved D-075). |
 | AO | office (development / admin) | 7 × 6 | 3.0 | `office_open` | 4 desks, printer, gala seating plans, `code_admin_postit` (monitor post-it), a working PA (`c`, `civ_admin`, rare). |
 | SV | server_room (Argus) | 6 × 6 | 3.0 | `server_room` | Racks, UPS, the Argus head-end with the **`hack_terminal`** (`objective_tag hack`). CODE door. No window. |
 | UW | restroom (staff) | 3 × 6 | 3.0 | `restroom_single` | WC, sink. |
 | FS | storage (frame and plinth store) | 2 × 6 | 3.0 | `storage_frames` | Plinths, spare frames. BODY_HIDE (1). |
 | CS | workshop (Conservation Studio) | 12 × 12 | 4.0 | `conservation_studio` | North-light sawtooth glazing, 3 easels, a suction table, a microscope cart, solvents cabinet, `kc_conservator` (bench drawer). `widow_conservation` slot (on the main easel, frame off). A conservator works late (`conservator`). Windows E. |
-| BW, BE | gallery (balconies) | 3 × 18 each | 4.4 (to the hall ceiling) | `gallery_balcony` | Sculpture on plinths, benches, the balustrade (throw spot to the hall). |
-| SL | gallery (south loggia) | 20 × 4 | 4.4 | `gallery_balcony` | Busts, a long bench, 4 tall windows S over the Parade (sill 0.9). Pause point `G` (22, 27). |
-| UG1 | gallery (Calloway Room, top-lit) | 12 × 12 | **6.0** (override 4.5–6.5) | `gallery_toplit` | The Calloway retrospective. Shuttered arch E (BW), arch S (UG2). `orchard_calloway` + 2 studies. C9. |
-| UG2 | gallery (Sallow Room, top-lit) | 12 × 10 | **6.0** (override) | `gallery_toplit` | Portraits. Arches N (UG1) and E (SL). `widow_sallow` + 2 studies. |
-| UG3 | gallery (Maritime Room, top-lit) | 12 × 12 | **6.0** (override) | `gallery_toplit` | Arch W (BE), door N (CS, LOCKPICK), doors S to AT and TR. `saint_maritime` + 2 studies. C10. |
+| BW, BE | atrium (balconies; D-075) | 3 × 18 each | 4.4 (to the hall ceiling) | `gallery_balcony` | Sculpture on plinths, benches, the balustrade (throw spot to the hall). |
+| SL | atrium (south loggia; D-075) | 20 × 4 | 4.4 | `gallery_balcony` | Busts, a long bench, 4 tall windows S over the Parade (sill 0.9). Pause point `G` (22, 27). |
+| UG1 | gallery (Calloway Room, top-lit) | 12 × 12 | **6.0** (`gallery` 4.5–6.5, D-075) | `gallery_toplit` | The Calloway retrospective. Shuttered arch E (BW), arch S (UG2). `orchard_calloway` + 2 studies. C9. |
+| UG2 | gallery (Sallow Room, top-lit) | 12 × 10 | **6.0** | `gallery_toplit` | Portraits. Arches N (UG1) and E (SL). `widow_sallow` + 2 studies. |
+| UG3 | gallery (Maritime Room, top-lit) | 12 × 12 | **6.0** | `gallery_toplit` | Arch W (BE), door N (CS, LOCKPICK), doors S to AT and TR. `saint_maritime` + 2 studies. C10. |
 | AT | staff_room (attendants' station) | 4 × 6 | 3.0 | `attendant_station` | Lockers for the white gloves, a kettle, the upper `phone` and `alarm_button`, the condition-check torches. Doors N (UG3) and W (SL). |
 | TR | vault (Treasury) | 8 × 6 | 4.0 | `treasury_cabinet` | Strong-room cabinet for the most valuable works on show: KEYCARD door + shutter, the **laser grid** across the room, one wall for one painting (`cp_treasury`, centred on the south wall) and 2 vitrines (`display_case`, `glass_breaks_alarm`, Calloway's sketchbooks as small loot). C11 (always live). |
 | X1 | exterior (Aldous Parade + portico) | 98 × 22 | — | `exterior_boulevard` | Red carpet, rope lines, lilac uplights, sodium-white street lamps, the median trees, parked limousines, the gala coach. |
@@ -566,7 +571,15 @@ tie (her keycard, QC-52). Solo means **waiting for last call and avoiding** civi
 | C14 | AS, NE corner (31.6, 8.4) | SW over the racks | **Always live**. |
 
 **Camera layouts** (`camera` variable; C11 and C14 always live). Design rule: **no layout watches
-both BC (C5) and UC (C13)**, and every layout leaves at least one camera-free entry:
+both BC (C5) and UC (C13)**, and every layout leaves at least one camera-free entry. **D-075: both
+camera-layout rules are approved** (this one and the partition-screen rule in the ghost line below)
+and become `validate_level` checks built at G1 (design note; not implemented yet):
+- **`camera_spine`:** for every value of the `camera` variable, the enabled `security_camera`s must
+  not cover both back-of-house corridors (BC and UC: a camera whose cone reaches either corridor's
+  RoomVolume counts for it). Fails naming the layout and the two cameras.
+- **`camera_screen`:** every upper list slot (`orchard_calloway`, `widow_sallow`, `saint_maritime`)
+  has a partition screen (meta `kind = "partition_screen"`) on the line from its room's camera
+  to the slot's centre, in every layout that enables that camera. Fails naming the slot and the camera.
 
 | Layout | Cameras (+ C11, C14) | Camera-free BOH line | Free entry |
 |---|---|---|---|
@@ -592,7 +605,7 @@ LD), the roof deck (`pp_spawn_roof`, unmasked on a RESTRICTED roof, masked to mo
    (LOCKPICK 8 s) → SS → UC: next to SV, CO and CS. Bags never use the ladder (S10.1b): loot leaves
    by the lift or the stairs.
 
-**Inside, the required line is:** find the Lantern Bearer and 2 more listed canvases → for each,
+**Inside, the required line is:** find the Lantern Bearer and 1 more listed canvas (D-075) → for each,
 the barrier its slot has (public view before last call, sensors, Treasury keycard + lasers, art-store
 keycard) → cut (4 s) → carry out.
 
@@ -641,10 +654,11 @@ Worked for `cam_a`:
    in the next gap → out (≈ 18–20 s in all; the jam is 20 s). The Lantern Bearer is LIGHT: carry it
    through BE.
 5. BW → UG1: C9 (SE corner, looking NW) is live; the `orchard_calloway` slot is on the W wall behind a
-   2.4 m partition screen at (6, 12–16) that shadows it from C9 (a G1 placement rule: **every upper
-   list slot has a screen between it and its room's camera**). Cut it after the rover's loop (a) pause
-   ends and he leaves through UG2. UG2 (no camera) → `widow_sallow`.
-6. Drop the three canvases from BE over the balustrade into the hall's east strip (x 29–32, out of
+   2.4 m partition screen at (6, 12–16) that shadows it from C9 (a G1 placement rule, approved D-075 and
+   checked by `camera_screen`: **every upper list slot has a screen between it and its room's camera**).
+   Cut it after the rover's loop (a) pause ends and he leaves through UG2: that is the second required
+   canvas (D-075: the Lantern Bearer + 1). UG2 (no camera) → `widow_sallow` is a bonus.
+6. Drop the canvases from BE over the balustrade into the hall's east strip (x 29–32, out of
    C1's cone: ≥ 70° off its axis, behind the bar straggler), take the stairs down, and carry them along
    the hall's south wall
    (C1's blind band below and behind its mount) into VE and out of the bronze doors (push bar from
@@ -654,7 +668,7 @@ Worked for `cam_a`:
 #1 for SC, 12 m from the staff door), UC free, ECM #2 at the TR door (C10 + C11). Worst case: 2 ECMs.
 A roll with `kc_curator` + `kc_conservator` (no `kc_security`) takes the conservator's card from the
 CS bench in her 50–80 s absence window (CS is reached from the UC east end, outside C13, or from UG3);
-the 1 + 2 rule leaves 3 required combinations, so a slot behind the second reader can be skipped. The
+the 1 + 1 rule (D-075) leaves a choice of 3 canvases for the second, so a slot behind the second reader can be skipped. The
 G3 ghost bot checks these rolls on 5 seeds (roadmap P5 gate).
 
 ## Loud
@@ -730,9 +744,9 @@ holdout centroid.
   pressures H1 and the parade escape.
 
 ## Loot path
-- **Required:** **The Lantern Bearer** (`loot.painting_lantern_bearer`) **+ 2 more listed canvases**
+- **Required (D-075):** **The Lantern Bearer** (`loot.painting_lantern_bearer`) **+ 1 more listed canvas**
   (any of `loot.painting_salt_orchard`, `loot.painting_widow_in_blue`,
-  `loot.painting_tidewater_saint`), all LIGHT, secured at the escape. The 4th listed canvas, the
+  `loot.painting_tidewater_saint`), both LIGHT, secured at the escape. The other listed canvases, the
   studies and small loot are bonus.
 - **Art lift (`bag_lift`, 4 bags, 10 s):** every floor. AS → BB → LF (12 m) → ground → LD (E door) →
   van E1 (8 m). Upper → UC → LF.
@@ -761,9 +775,9 @@ holdout centroid.
 5. *(as needed)* Open the Treasury (keycard, then the lasers) `[treasury]` or the art store (keycard)
    `[art_store]`.
 6. Cut the Lantern Bearer (4 s). `[centrepiece]`
-7. Cut 2 more listed canvases. `[canvases]`
-8. Secure the Lantern Bearer and 2 more listed canvases at the escape. `[secure]`
-9. *(optional)* The 4th canvas, studies, the consignment lockers `[lockers]`, the curator's safe
+7. Cut 1 more listed canvas. `[canvases]`
+8. Secure the Lantern Bearer and 1 more listed canvas at the escape (D-075). `[secure]`
+9. *(optional)* The other listed canvases, studies, the consignment lockers `[lockers]`, the curator's safe
    `[curator_safe]`. `[extras]`
 10. Escape. `[escape]`
 
@@ -772,7 +786,7 @@ holdout centroid.
 2. If a needed canvas is behind a shutter or in AS: **hack the Argus server** (120 s, 2–3
    interruptions; the SV door: code, or drill 60 s `[server_door]`) `[hack]`, **or** thermal-drill the
    vault door (240 s) `[vault_drill]`.
-3. Cut the Lantern Bearer and 2 more. `[centrepiece]` `[canvases]`
+3. Cut the Lantern Bearer and 1 more. `[centrepiece]` `[canvases]`
 4. Secure them. `[secure]`
 5. Hold until the escape arrives (`escape_eta_s` after `[secure]`; the van returns to the Mews or the
    limo to the kerb). `[escape_wait]`
@@ -791,7 +805,7 @@ holdout centroid.
 - **Lockdown:** on `alarm_raised` → BAR the three shutters, disable the AS reader (`kc` no longer
   works), retarget the hack's `duration_s` to 120 and interruptions to 2–3 (QC-55), enable the
   vault's thermal drill point. `device_finished` (hack) → open shutters, open the vault door.
-- **`[secure]`:** completes when the Lantern Bearer **and** 2 other list canvases are secured.
+- **`[secure]`:** completes when the Lantern Bearer **and** 1 other list canvas are secured (D-075).
   Studies never count.
 - **Escape:** stealth: the escape zone activates on `[secure]`. Loud: `arrival_delay_s =
   escape_eta_s`.
@@ -843,7 +857,8 @@ weights use A2-08.
   the start; the ESCAPE zone activates on `[secure]`. Loud: it leaves at the alarm and returns after
   `escape_eta_s` (from `[secure]`). SECURE_LOOT at the rear doors. Last holdout H4.
 - **Parade limo (E2):** a black gala limousine at the portico kerb (x 22, z 34), the crew's driver in
-  a chauffeur's cap. Type `van` (the boot is the secure zone). Same rules. Last holdout H1 (or the
+  a chauffeur's cap. Type `van` (the boot is the secure zone; D-075: approved as a van-type escape
+  with a limo visual, no new `escape_type`). Same rules. Last holdout H1 (or the
   portico itself). Before last call the kerb is public (guests waiting for cars): carrying a canvas
   there masked is seen by everyone.
 - **Walk-out** (stealth): an unmasked crew with no bags can leave by the portico before last call.
@@ -1004,7 +1019,7 @@ the single service stair). By design.
 `id gallery_night`, display "Gallery Night", contact `contact.vance`, mode STEALTH_OR_LOUD,
 base_payout **$105,000** (ENV B's placeholder, accepted), loot `[loot.painting_lantern_bearer,
 loot.painting_salt_orchard, loot.painting_widow_in_blue, loot.painting_tidewater_saint,
-loot.painting_study]` (`loot.painting_study` new, QC-57), escape_options `[van]`,
+loot.painting_study]` (`loot.painting_study` new, approved D-075, ENV B adds it, QC-57), escape_options `[van]`,
 music_track `gallery_night`, objectives `[casing, find_canvases, keycard, server_code, hack, treasury,
 art_store, centrepiece, canvases, secure, extras, lockers, curator_safe, lockdown, server_door,
 vault_drill, escape_wait, escape]`, `start_mode` `&"casing"`, preplanning as above. Map
@@ -1019,37 +1034,11 @@ vault_drill, escape_wait, escape]`, `start_mode` `&"casing"`, preplanning as abo
 | `loot.painting_salt_orchard` | LIGHT | $1,700 | `canvas_orchard` slot | 1 | exists |
 | `loot.painting_widow_in_blue` | LIGHT | $1,500 | `canvas_widow` slot | 1 | exists |
 | `loot.painting_tidewater_saint` | LIGHT | $1,300 | `canvas_saint` slot | 1 | exists |
-| `loot.painting_study` | LIGHT | ◇ $700 | 1–2 per gallery (≈ 12) + `store_paintings` (4–8) + `late_loan` (2) | 16–22 | **new** (QC-57) |
+| `loot.painting_study` | LIGHT | ◇ $700 | 1–2 per gallery (≈ 12) + `store_paintings` (4–8) + `late_loan` (2) | 16–22 | **new**, approved (D-075; ENV B, QC-57) |
 | small loot (`loot.small_valuables`, no def) | — | ◇ $600–2,400 per item | lockers (4–8 × 1), CO safe (3), TR vitrines (2), CK cash box (1), GS till (1) | 11–15 | prefab values (ENV C) |
 
 Not used: Shadow Ledger's framed `loot.painting` (same weight, but this heist's generic canvases are
-lesser studies valued below the list; ENV B may instead reuse `loot.painting` at its $1,500 and skip
-the new id: Q6).
-
-## Open questions (for the lead)
-1. **The gala clock.** Approve last call as a mission-driven zone switch (PUBLIC → RESTRICTED) with
-   guests walking out (QC-51)? Fallback if declined: no last call; `patrons` stay all night and the
-   ground rooms are RESTRICTED from the start except GH/VE/CK (a smaller public area).
-2. **Ghost line and cameras.** The worst roll is ghostable with at most 2 ECM charges because of two layout
-   rules: no layout watches both BC and UC (and C13 stops short of the SV door), and every upper list slot has a partition screen between
-   it and its room's camera. The Treasury and art-store cameras (C11, C14) are always live. Approve
-   the rules (they bind G1 placement), or prefer the inner cameras in the rolled layouts?
-3. **Required loot:** the Lantern Bearer + 2 of the other 3 listed canvases (3 LIGHT bags). Too light
-   for an M heist? Alternative: all 4 required on Routine–Tense is a worse experience (one slot can be
-   in AS with only 2 keycards). I recommend 1 + 2.
-4. **Services voids.** The ground BOH strip has 3.0 m ceilings under a 2.4 m void (floor-to-floor 5.4
-   set by the galleries); public WCs get a 3.0 m dropped ceiling with a 1.5 m void. Accept (with a
-   plenum note in the room list, Shadow Ledger's 1.4 m precedent), or should those rooms take a
-   `ceiling_range` override (3.0–4.5)?
-5. **Top-lit gallery override** `gallery` 4.5–6.5 m for UG1–UG3 (6.0 to the laylight). Approve?
-6. **Studies:** new `loot.painting_study` (LIGHT ◇ $700) or reuse `loot.painting` ($1,500)? Reuse would
-   make 20 generic canvases outweigh the list in pay.
-7. **Keycard on the curator** (QC-52): acceptable PD2-wise (PD2 civilians carry keycards that drop
-   when they are tied or killed)? If declined, `kc_curator` becomes "her desk drawer in CO".
-8. **Escape types:** the limo is a `van` escape type with a different visual. Fine, or add
-   `&"car"` to `escape_type`?
-9. **Vaultline:** I use ENV D's Vaultline crew in a rare event (`vaultline_early`) with an NPC-carried
-   bag (QC-57). Keep, or drop the carry and make them simply raise the alarm on an empty slot?
+lesser studies valued below the list; D-075 Q6: the new id is approved).
 
 ## Requests (to the lead; QC-51..QC-59)
 - **QC-51 (ENV A):** the **last-call hook**. (a) `MapZone` kind change at runtime from the mission
@@ -1059,7 +1048,7 @@ the new id: Q6).
 - **QC-52 (ENV A):** a **keycard carried by a civilian**: `keycard_pickup` as a child of an NPC
   spawn (or an NPC export `carried_item`), enabled once the NPC is tied, dominated or dead
   (interaction on the body / tied NPC, 1 s), PD2-faithful. The curator is the first user;
-  Meridian Federal's manager likely the second.
+  Ostrander Federal's manager likely the second.
 - **QC-53 (ENV A):** mission control of a `laser_grid`: `set_enabled(bool)` (replicated), so the
   landing curtain turns on at last call. Today a grid is always on.
 - **QC-54 (ENV A):** frame sensors as data: `loot_spawn.alarm_on_take: bool` + `alarm_group:
@@ -1078,7 +1067,7 @@ the new id: Q6).
 - **QC-58 (ENV D):** casting notes against `p5_cast.json`: (a) the **camera operator** uses
   `gallery_guard_b`; (b) the **conservator** reuses `gallery_attendant_b` (white gloves) unless D
   wants a lab-coat variant; (c) the **admin PA** (rare) needs an office-wear civilian: reuse a
-  Meridian Federal `bank_customer` look or `npc_penthouse_guest_a` with a cardigan variant; (d) the
+  Ostrander Federal `bank_customer` look or `npc_penthouse_guest_a` with a cardigan variant; (d) the
   **insurance inspectors** reuse `gallery_guard` (escorts) — or a suit civilian look if D prefers;
   (e) **Vaultline** couriers use `armored_car_crew` / `_b` (pager role) as cast. Ambient clips used:
   `curator_inspect`, `cower_stand`, `cower_seated`, `walk_text`, `smoke`, `desk_work`.
@@ -1096,3 +1085,25 @@ the new id: Q6).
   `gallery_patron` (+ `armored_car_crew` for the event). The curator is named here **Margit Sorell**
   (D's notes leave her unnamed); she is "the one pale suit at the gala" and the keycard carrier, as D
   modelled.
+
+## Lead rulings (D-075; the G0 open questions, closed)
+1. **The gala clock:** approved as the heist's signature mechanic. Last call at 8/10/12 min
+   (`last_call_s`) walks the guests out and flips the public zones to RESTRICTED (QC-51).
+2. **Camera layouts:** both rules approved, and they become `validate_level` checks built at G1
+   (design note only; see Sightlines): **no camera layout watches both back-of-house corridors**
+   (BC and UC), and **every upper list canvas has a partition screen between it and its room's
+   camera**.
+3. **Required loot:** **The Lantern Bearer + 1 more listed canvas**; the rest is bonus (Loot path,
+   Objectives and `[secure]` updated).
+4. **Services voids:** not covered by the D-075 rulings relayed to ENV C; G1 builds the drafted
+   3.0 m BOH ceilings with the services void above (plenum note, Shadow Ledger precedent) and no
+   override (`office`/`corridor`/`restroom` are inside their bands).
+5. **Ceilings:** the validator's scale table gains **`gallery`** (top-lit, **4.5–6.5 m**), so UG1–UG3
+   need no override. The ground galleries (4.5) are `gallery` on the band floor; the balconies and
+   the loggia (4.4, open to the hall) are `atrium`. (Same ruling: `hall` 6–9 m, `car_park` 2.2–3.0 m.)
+6. **`loot.painting_study`:** approved; ENV B adds it (LIGHT, ◇ $700).
+7. **The curator's lanyard keycard** (QC-52): fine (PD2-faithful).
+8. **The limo:** approved as a `van`-type escape with a limo visual.
+9. **Vaultline (`vaultline_early`):** not covered by the D-075 rulings relayed to ENV C; the rare event
+   stays as drafted, with the NPC-carried bag behind QC-57 (until it ships, the G1 greybox falls back
+   to the crew raising the alarm on an empty slot, marked `TODO(QC-57)`).

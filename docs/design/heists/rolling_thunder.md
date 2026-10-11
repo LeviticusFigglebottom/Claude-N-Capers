@@ -1,13 +1,13 @@
 # Rolling Thunder: the Vaultline convoy (rolling_thunder)
-Status: G0 DRAFT: review requested (ENV C, 2026-10-11). Open questions for the lead are at the end
-(Open questions); cross-env requests are QC-80..QC-89.
+Status: APPROVED (lead, 2026-10-11) (D-075). The lead's answers to the G0 open questions are folded in below (see Lead rulings).
+Cross-env requests are QC-80..QC-89; QC-80/82/84 are now ENV A roadmap rows A5-01..03.
 
 ## Fiction
 - **Who:** **Vaultline Armored Transport**, the cash-in-transit company that moves Southfield's money.
   ENV D cast and dressed its crews in D3-01: sand shirts, black ballistic vests, brown caps and the
   **amber Vaultline mark**. Every second Friday, Vaultline runs the **Southfield consolidation
   convoy**. It collects the week's takings from the Southfield cash centre and a bullion dealer's
-  stock, then drives them to the reserve vault at Meridian Federal. That is the P5 bank, a
+  stock, then drives them to the reserve vault at Ostrander Federal. That is the P5 bank, a
   deliberate tie-in. On bullion runs Vaultline pays the city for a **police escort**: a car in
   front and one behind.
 - **Name ruling (ENV D's invention): confirmed, "Vaultline Armored Transport".** Reasons:
@@ -42,7 +42,8 @@ Status: G0 DRAFT: review requested (ENV C, 2026-10-11). Open questions for the l
   starts in the STEALTH phase with the crew in casing mode. But **there is no stealth win**:
   - the trucks only exist after the convoy stops;
   - every route through the ambush ends in `alarm_raised`.
-  - The Board and briefing label it "Loud (ambush start)"; see Open question 1.
+  - The Board and briefing label it "Loud (ambush start)" (**D-075: STEALTH_OR_LOUD with this label
+    is approved**; no new `HeistMode`).
   - Size M (15–25 min). Phase P5.
 - **Phase 1: Setup (stealth, `convoy_eta_s` = 150/180/210 s from the start).** Mercer counts the
   convoy in, and the countdown is an objective timer on `[convoy]`.
@@ -86,7 +87,8 @@ Status: G0 DRAFT: review requested (ENV C, 2026-10-11). Open questions for the l
   - **The trucks are in lockdown:** deadbolts thrown, so saw times are ×1.5 (C4 and thermite are
     unchanged).
   - Mercer: "They know. Reyes, you're on. Everybody else, find cover and wait for it."
-  - This is the price of a sloppy setup, and the most dangerous way to play the heist.
+  - This is the price of a sloppy setup, and the most dangerous way to play the heist. **D-075: the
+    early-alarm penalty stands** (police at once, crash stop, truck lockdown with saws ×1.5).
 - **Phase 2: Loud.** After the ambush the convoy units fight from the vehicles as cover.
   - The police come after `police_delay_s` (45/60/90 s, rolled per difficulty; 0 after an early
     alarm). Then the `AssaultDirector` runs from the first CONTROL as usual (QC-35, already in
@@ -338,7 +340,7 @@ Legend:
 | Level | FFL | Ceiling | Floor-to-floor / slab | Notes |
 |---|---|---|---|---|
 | Underpass | −5.0 | open (bridge soffit −0.4: 4.6 m clear) | road ramp 5.0 over 32 m | exterior |
-| Street | 0.0 | car park 2.7 (new purpose `car_park`, QC-87); booth/WC 2.6; car-park plant 2.7; diner dining 3.0, kitchen/store/office/WC 2.8; site cabins 2.6; frame underside 3.2 (exterior) | car park 3.5 (0.3 slab + 0.5 downstand beams); diner 3.5 (0.5–0.7 plenum + slab) | office 2.6–3.0 ✓, restaurant 3.0–4.5 ✓, kitchen 2.6–3.0 ✓ |
+| Street | 0.0 | car park 2.7 (purpose `car_park` 2.2–3.0, D-075/QC-87); booth/WC 2.6; car-park plant 2.7; diner dining 3.0, kitchen/store/office/WC 2.8; site cabins 2.6; frame underside 3.2 (exterior) | car park 3.5 (0.3 slab + 0.5 downstand beams); diner 3.5 (0.5–0.7 plenum + slab) | car_park 2.2–3.0 ✓ (D-075); office 2.6–3.0 ✓, restaurant 3.0–4.5 ✓, kitchen 2.6–3.0 ✓ |
 | Upper | 3.5 | car park 2.7; diner function room 3.0, others 2.8; frame slab open | car park 3.5 to the roof | ✓ |
 | Roof | 7.0 | open; head houses 2.7 clear | — | parapet 1.1 m |
 | Car park stairs A, B | 0.0 → 3.5 → 7.0 | U-stair, 2 flights × 10 risers @ 0.175 m per storey, tread 0.28 m (run 2.52 m), width 1.2 m | 20 risers = 3.5 ✓ per storey | landing every 10 ≤ 16 ✓; headroom ≥ 3.2 ✓ |
@@ -724,7 +726,7 @@ Sizes are between wall centre lines (m).
 
 | id | purpose (`RoomVolume.purpose`) | size m | ceiling m | kit | notes |
 |---|---|---|---|---|---|
-| CP-G | car_park (QC-87; else `garage` with a 2.7 override) | 36 × 36 less cores/booth/plant | 2.7 | `car_park_deck` | Ground: 2 aisles, 5 m bays, ramp foot, E1 van in the west aisle. Concrete columns, painted bay lines, wheel stops, pay signs, fire extinguisher points, sodium-white LED battens. |
+| CP-G | car_park (2.2–3.0, D-075/QC-87; no override) | 36 × 36 less cores/booth/plant | 2.7 | `car_park_deck` | Ground: 2 aisles, 5 m bays, ramp foot, E1 van in the west aisle. Concrete columns, painted bay lines, wheel stops, pay signs, fire extinguisher points, sodium-white LED battens. |
 | CP-2 | car_park | 36 × 36 less cores | 2.7 | `car_park_deck` (layout differs) | Deck 2: H1. Parked cars (cover, 12–18 per deck), the barrier façade, the stair-B drop zone. |
 | CP-R | roof | 36 × 36 | open | `car_park_roof` | Heli pad, lighting columns, 4 parked cars on the east half, head houses. |
 | STA, STB | stair | 3 × 6 | open | — | `ST`/`SB` on the plans; U-stairs 0 → 3.5 → 7.0; head houses on the roof. STA has a street door to Orchard. |
@@ -1096,14 +1098,19 @@ enabled when they open, with its UsePoint on the rear step. No interior navmesh 
 - **The box-in is the level change.** The stopped convoy plus the mixer turns an open street into
   lanes. Clean stops build a **wall of steel** along the queue (cover on one side, a shooting gallery
   on the other). Crash stops scatter vehicles over the junction.
-- **G1 fallback until QC-80/81 ship:**
-  - a `safe` LARGE with `methods [saw, c4]` inside a static truck mesh, plus a `drill_point` SAW
-    targeting it;
-  - for the bullion hatch, a `drill_point` THERMAL with `duration_s` 45 and no bag;
-  - each marked `TODO(QC-80)` / `TODO(QC-81)`, as Dockside did.
+- **G1 placeholders until ENV A ships them** (D-075: QC-80/82/84 are now ENV A roadmap rows
+  **A5-01** `armored_truck`, **A5-02** `convoy_vehicle`, **A5-03** the C4 item; the G1 greybox does
+  not wait for them):
+  - `armored_truck` (A5-01, QC-80): a `safe` LARGE with `methods [saw, c4]` inside a static truck
+    mesh, plus a `drill_point` SAW targeting it;
+  - `convoy_vehicle` (A5-02, QC-82): the convoy is pre-placed at its stop layout and enabled by the
+    mission at `convoy_eta_s` (no drive-in; the mixer is static cover), with static nav obstacles;
+  - C4 (A5-03, QC-84): the magazine boxes are dressing and the trucks open by saw only;
+  - for the bullion hatch (QC-81), a `drill_point` THERMAL with `duration_s` 45 and no bag;
+  - each marked `TODO(A5-01)` / `TODO(A5-02)` / `TODO(A5-03)` / `TODO(QC-81)`, as Dockside did.
 
 ## Loot path
-- **Required** (the escape is called when it is done): **≥ 4 bags secured** from cash bricks
+- **Required** (the escape is called when it is done): **≥ 4 bags secured** (◇ tunable, D-075) from cash bricks
   (`loot.cash_bricks`, MEDIUM) and/or gold (`loot.gold`, HEAVY). Extra bags, bearer bonds and small
   loot are a bonus.
 - **Throw spots:**
@@ -1474,7 +1481,7 @@ because the stairs and the lift are the direct routes. Nothing else is expected.
 
 ## HeistDef (proposed data, `rolling_thunder_def.tres`)
 - **Identity:** `id rolling_thunder`, display "Rolling Thunder", contact `contact.reyes`, mode
-  `STEALTH_OR_LOUD` (stealth-start ambush; Open question 1).
+  `STEALTH_OR_LOUD` (stealth-start ambush, label "Loud (ambush start)"; D-075).
 - **Payout:** base_payout **$85,000** (ENV B's B6-01 placeholder, accepted; P6 balance).
 - **Loot:** `[loot.cash_bricks, loot.gold, loot.bearer_bonds]`. **No new loot ids**: all three exist
   (B6-01). `loot.thermite` is a tool bag (D-068).
@@ -1485,7 +1492,7 @@ because the stairs and the lift are the direct routes. Nothing else is expected.
   7.0]`, `floor_names ["Underpass", "Street", "Upper", "Roof"]`.
 
 ## Requests (to the lead; QC-80..QC-89)
-- **QC-80 (ENV A): `armored_truck` prefab.** A vehicle-shaped `safe` LARGE (it extends or composes
+- **QC-80 (ENV A, now roadmap A5-01): `armored_truck` prefab.** A vehicle-shaped `safe` LARGE (it extends or composes
   `Safe`).
   - Methods `[saw, c4]` (+ `thermite` through a bound `burn_point`, QC-81) and group
     **`G.SAW_TARGET`** (`saw_cut`, `hand_saw_truck_s` ◇ 60/90 by `size`).
@@ -1500,7 +1507,7 @@ because the stairs and the lift are the direct routes. Nothing else is expected.
 - **QC-81 (ENV A): `burn_point` `target: NodePath`** (on finish → `target.open_by_device()`) and
   `fire_volume_size = Vector3.ZERO` meaning no fire volume. It is for the bullion roof hatch:
   thermite through the roof, no lingering fire.
-- **QC-82 (ENV A): `convoy_vehicle` mover.**
+- **QC-82 (ENV A, now roadmap A5-02): `convoy_vehicle` mover.**
   - An `AnimatableBody3D` vehicle that drives along a `Path3D` to a target marker at a set speed
     with braking, replicated (server-authoritative transform; clients interpolate).
   - It ends static, carves the navmesh (or adds a `NavigationObstacle3D`), and emits
@@ -1520,7 +1527,7 @@ because the stairs and the lift are the direct routes. Nothing else is expected.
   - (c) The convoy units share `max_active_enemies` with police (the D-064 Q5 rule).
   - (d) A convoy unit's detection of a masked crew member during the window raises the ambush
     alarm, not a pager call.
-- **QC-84 (ENV A + ENV B): C4 as an item.**
+- **QC-84 (ENV A + ENV B, now roadmap A5-03): C4 as an item.**
   - An `item_pickup` prefab (`item_id`, `count`; the `keycard_pickup` shape generalised) granting
     `item.c4` ×4 from the magazine boxes.
   - A HUD count for `item.c4` (B), and trip mines counting as shaped charges toward
@@ -1533,7 +1540,7 @@ because the stairs and the lift are the direct routes. Nothing else is expected.
     `HeistMission.say(…, &"reyes")`).
   - Assets `asset.c4_drop`, `asset.signal_insider`, `asset.intel_route`, and the point labels.
   - Confirm the loot table (cash bricks / gold / bonds; no new ids) and $85k.
-  - The Board/briefing label "Loud (ambush start)" (Open question 1).
+  - The Board/briefing label "Loud (ambush start)" (approved, D-075).
   - The cue ids `cue.convoy_approach`, `cue.convoy_brake`, `cue.mixer_ram`, `cue.signal_click`,
     `cue.truck_doors_open` go to the lead for audio_cues v1.4. I make the sounds.
 - **QC-86 (ENV D): animation and casting.**
@@ -1547,7 +1554,7 @@ because the stairs and the lift are the direct routes. Nothing else is expected.
     `cower_stand` 0.21 m in front of a wall).
 - **QC-87 (lead; ENV C validator): scale and validation.**
   - (a) A new room purpose **`car_park`** with ceiling 2.2–3.0 m (car-park clear heights; `garage`
-    is 3.5–6.0).
+    is 3.5–6.0). **Done (D-075):** in `lc_check_scale.gd`, test `game/tests/c/test_validate_ceilings.gd`.
   - (b) Accept a floor reached only by road and sidewalk ramps (the −5.0 Underpass). It is listed
     for HUD names; there is no stair chain to check.
   - (c) My side: `--variants=all` also iterates the four convoy layouts as pseudo-variants
@@ -1564,24 +1571,21 @@ because the stairs and the lift are the direct routes. Nothing else is expected.
   - The Longshot at S1 on the same island.
   - Wrecker spawns restricted to vehicle-wide spawns (`wrecker_ok` tag on P_N, P_S, P_W, P_E).
 
-## Open questions (for the lead)
-1. **Mode:** `STEALTH_OR_LOUD` with no stealth win (every run ends loud), or a new `HeistMode`
-   (e.g. `AMBUSH`)?
-   - I propose no new mode; a run never earns the stealth bonus (S11.1: it never completes in
-     stealth).
-   - The Board and briefing show "Loud (ambush start)" from a `HeistDef` display tag (ENV B).
-2. **Early-alarm penalty:** police at once, convoy alerted, crash stop and truck lockdown (saws
-   ×1.5). Is the combination right, or too harsh?
-3. **Ambush window:** 8 s (escorts seated), with dismount 4 s after the alarm. These numbers are ◇.
-4. **Required loot:** 4 bags (as Dockside). Two trucks always give ≥ 7 bags.
-5. **Truck numbers** (◇): the placed saw 120/180 s, the hand saw 60/90 s, C4 4 charges (PD2),
-   thermite 45 s.
-6. **`car_park` purpose** (QC-87a) and the ramp-only Underpass floor (QC-87b).
-7. **First daylight heist:**
-   - one shadowed sun plus a low-sun glare axis down Tannery;
-   - glare is bloom only, never a gameplay blind;
-   - OK, or should the sun be higher?
-8. **Reyes in the mixer** speaks in-heist (speaker `reyes`). He is a cameo, not an NPC model:
-   the mixer's cab is tinted.
-9. **Perches:** S1 and S2 always on, S4 from Hazardous, S3 rare from Brutal.
-10. **Vaultline** name confirmed as above (no rename).
+## Lead rulings (D-075; the G0 open questions, closed)
+1. **Mode:** `STEALTH_OR_LOUD` with the Board/briefing label **"Loud (ambush start)"**: approved. No
+   new `HeistMode`; a run never earns the stealth bonus.
+2. **Early-alarm penalty:** stands (police at once, the convoy alerted, the crash stop, truck
+   lockdown with saw times ×1.5).
+3. **Ambush window** (8 s, dismount 4 s): ◇, tunable.
+4. **Required loot:** 4 bags, ◇ tunable.
+5. **Truck numbers** (saw 120/180 s, hand saw 60/90 s, C4 4 charges, thermite 45 s): ◇, tunable.
+6. **`car_park`:** the validator's scale table gains `car_park` (2.2–3.0 m), so CP-G and CP-2 need no
+   override. The ramp-only Underpass floor (QC-87b) is not covered by the D-075 rulings relayed to
+   ENV C; it stays as drafted (listed for HUD names, no stair chain).
+7. **Daylight:** approved as drafted (one shadowed low sun, glare as bloom only, never a blind).
+8. **Reyes** speaks in-heist **on the radio** (speaker `reyes`); no NPC model.
+9. **Perches** and 10. **Vaultline**: not covered by the D-075 rulings relayed to ENV C; they stay as
+   drafted.
+- **QC-80/82/84** (`armored_truck`, `convoy_vehicle`, the C4 item) are now ENV A roadmap rows
+  **A5-01..03**. Until they land, the G1 greybox uses the placeholders under Truck targets, each
+  marked with a `TODO(A5-0n)`.

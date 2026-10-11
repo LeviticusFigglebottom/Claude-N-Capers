@@ -113,7 +113,7 @@ const ROOM_META: Dictionary = {
 	"K21": ["office", "office_small", 3.0, 0.9, null], "K22": ["office", "office_small", 3.0, 0.9, null],
 	"K23": ["office", "office_small", 3.0, 0.9, null], "K24": ["office", "meeting_small", 3.0, 0.9, null],
 	"M1": ["lounge", "lounge_exec", 3.0, 0.3, Vector2(2.6, 3.0)], "M2": ["lobby", "gallery_mezzanine", 3.0, 0.3, null],
-	"M3": ["gallery", "art_hall", 3.0, 0.9, null], "M4": ["office", "study_exec", 3.0, 0.3, null],
+	"M3": ["gallery", "art_hall", 3.0, 0.9, Vector2(3.0, 4.5)], "M4": ["office", "study_exec", 3.0, 0.3, null],
 	"M5": ["bedroom", "bedroom_exec", 3.0, 0.9, null], "M6": ["restroom", "bathroom_ensuite", 2.7, 0.9, null],
 	"M7": ["dressing", "dressing_room", 2.7, 0.9, Vector2(2.6, 3.0)], "M8": ["dining_room", "dining_exec", 3.0, 0.3, Vector2(2.6, 3.0)],
 	"M9": ["corridor", "corridor_office", 2.7, 0.9, null], "M10": ["corridor", "corridor_service", 2.7, 0.9, null],
