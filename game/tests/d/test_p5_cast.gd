@@ -56,13 +56,13 @@ const MIN_COUNT: Dictionary = {
 ## New characters whose pager is answered at Hip/Socket (a belt radio).
 const RADIO: Array[String] = [
 	"char_gallery_guard", "char_gallery_guard_b", "char_armored_car_crew", "char_armored_car_crew_b",
-	"char_club_bouncer_b",
+	"char_club_bouncer", "char_club_bouncer_b",
 ]
 ## Roles whose bodies carry a pager (p5_cast.json pager_roles; club_bouncer per QC-70).
 const PAGER_ROLES: Array[String] = ["gallery_guard", "bank_guard", "armored_car_crew", "club_bouncer"]
-## New pager-role characters without a modelled radio: the pager is answered at the default hip
-## seat (club_bouncer's radio is under the bomber, not modelled; see the cast notes).
-const NO_RADIO: Array[String] = ["char_club_bouncer"]
+## New pager-role characters without a modelled radio (none: club_bouncer's radio is clipped
+## outside the bomber on its waistband since QC-70).
+const NO_RADIO: Array[String] = []
 const TRI_BUDGET: int = 35000
 const MIN_HEIGHT: float = 1.6
 const MAX_HEIGHT: float = 2.0
