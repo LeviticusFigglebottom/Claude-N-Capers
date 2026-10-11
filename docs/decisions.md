@@ -412,3 +412,19 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   - Shadow Ledger: cleaners (cleaner variant), an IT contractor (to build), Helena Moor (brief from ENV C), and Kessler
     in a robe by default (`npc_kessler_coat` kept).
   - Tellers are reserved for Meridian Federal; guests and the waitress for Gallery Night (P5).
+
+## D-064 — 2026-10-11 — Dockside Burn G0 approved
+- Loud-only (P3) heist; Ortega Cold Storage, Pier 9. Opens with a cartel phase, then police after a rolled 60/90/120 s
+  delay. Required: the burn + 4 bags (extra bags and product are a bonus). Base payout $95k (placeholder; P6 balance).
+- Approved: high-bay ceiling override 6.0–9.0 m; scale rule `industrial_door` 2.4–4.0 m wide × 2.1–4.5 m high;
+  the −1.8 Landing in floor_heights.
+- Cartel gunmen share `DifficultyDef.max_active_enemies` with police; the police quota is reduced by the cartel alive
+  count. Fire damages players (DoT, ignores armour, L3.4), telegraphed (warning cue + 5 s shutter countdown).
+- Police never spawn inside the building; they enter only via ENTRY TacticalPoints.
+- Two always-on sniper perches suffice for the P3 gate.
+- Requests:
+  - ENV A: QC-35 police start delay, QC-36 cartel EnemyDef, QC-37 saw_cut implementers, QC-38 burn_point, QC-41 one-way
+    rappel links.
+  - ENV B: QC-39 loot, QC-40 preplan assets.
+  - ENV D: the cartel gunman model.
+- Priority: Dockside Burn G1 (the P3 gate) before the ND/SL G2 art passes.
