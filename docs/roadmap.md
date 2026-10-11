@@ -63,6 +63,7 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | C4-01 | 3D safehouse hub (fidelity C9): explorable safehouse whose stations are interactables calling `MenuFlow.open_station` (Board, planning table, armory/workshop bench, mask bench, jukebox, Notoriety, firing-range door); B's 2D hub stays as the menu fallback | P4 hub |
 | C4-02 | Safehouse greybox (G1) per docs/design/heists/safehouse.md: SafehouseMap root, 8 stations, validate_level `--profile=hub` | C4-01 |
 | C4-03 | Safehouse art pass (G2/G3) + review shots; dedicated safehouse music track (C5 backlog) | C4-02 |
+| A3-12 | Player melee (L3.9, P2 gap): CrewMelee from Loadout.melee (MeleeDef timings, charge, knockdown), gun bash, silent stealth kills, server-validated hit; then CrewThrowables (frag / concussion / incendiary by ThrowableDef.kind, pin_pull / release) with the D-069 FP sets | L3.9, D-069 |
 | A3-11 | Hub support (QC-43/44): crew spawn + interaction without a HeistRuntime (civilian mode, HUD prompt), `hub_station` prefab emitting `station_requested(id)` | C4-01 |
 | C5-01 | Music stems: night_deposit, shadow_ledger, dockside_burn heist tracks now (unlockables vault_hymn / long_con / last_call point at those stems meanwhile); the 3 unlockables get their own stems as P5 "music ×3" | P5 music |
 

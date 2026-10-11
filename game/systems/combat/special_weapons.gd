@@ -125,10 +125,29 @@ static func saw_objects(crew: CrewController, origin: Vector3, fwd: Vector3, ran
 		var n3: Node3D = n as Node3D
 		if n3 == null or not n3.has_method(&"saw_cut"):
 			continue
-		if _in_cone(origin, fwd, n3.global_position, range_m, cos_half) \
-				and CombatSystem.has_los(crew, origin, n3.global_position, [crew, n3]):
+		var p: Vector3 = saw_point_of(n3)
+		if _in_cone(origin, fwd, p, range_m, cos_half) and _reaches(crew, origin, p, n3):
 			out.append(n3)
 	return out
+
+
+## Where a saw target is cut: its `saw_point()` (e.g. a safe's lock) when it has one, else its origin.
+static func saw_point_of(n: Node3D) -> Vector3:
+	if n.has_method(&"saw_point"):
+		return n.call(&"saw_point") as Vector3
+	return n.global_position
+
+
+## Nothing but `target` itself (any of its collision bodies) lies between `origin` and `point`.
+static func _reaches(crew: CrewController, origin: Vector3, point: Vector3, target: Node) -> bool:
+	var tw: CombatTweak = CombatTweak.data()
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(origin, point, tw.los_mask)
+	q.exclude = [crew.get_rid()]
+	var hit: Dictionary = crew.get_world_3d().direct_space_state.intersect_ray(q)
+	if hit.is_empty():
+		return true
+	var col: Node = hit.get("collider") as Node
+	return col != null and (col == target or target.is_ancestor_of(col))
 
 
 ## Client/server: would a saw cut something right now (cutting air costs no blade wear)?
