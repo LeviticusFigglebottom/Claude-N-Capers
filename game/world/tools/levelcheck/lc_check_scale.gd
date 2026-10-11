@@ -12,6 +12,10 @@ const DOOR_DOUBLE: Vector2 = Vector2(1.8, 1.8)
 const VAULT_DOOR_W: Vector2 = Vector2(1.8, 2.4)
 const VAULT_DOOR_H: Vector2 = Vector2(2.0, 2.4)
 const LOCK_VAULT: int = 6
+## Industrial doors (meta kind = "industrial_door": cold-store sliding doors, roller doors; D-064):
+## one or two leaves, total width 2.4-4.0 m, height 2.1-4.5 m.
+const INDUSTRIAL_DOOR_W: Vector2 = Vector2(2.4, 4.0)
+const INDUSTRIAL_DOOR_H: Vector2 = Vector2(2.1, 4.5)
 ## Max difference between a door prefab's `width_m` and its measured leaf width.
 const DOOR_WIDTH_MATCH: float = 0.05
 ## purpose -> allowed ceiling height range (m). level_standards §2.6.
@@ -110,10 +114,15 @@ static func is_vault_door(d: Node) -> bool:
 	return LcUtil.meta_s(d, &"kind") == &"vault_door" or ("lock" in d and int(d.get("lock")) == LOCK_VAULT)
 
 
+static func is_industrial_door(d: Node) -> bool:
+	return LcUtil.meta_s(d, &"kind") == &"industrial_door"
+
+
 func _check_door(ctx: LcContext, d: Node3D) -> void:
 	var total_w: float = 0.0
 	var leaves: int = 0
 	var vault: bool = is_vault_door(d)
+	var industrial: bool = is_industrial_door(d)
 	for leaf_name: String in ["Leaf", "Leaf2"]:
 		var leaf: Node3D = d.find_child(leaf_name, true, false) as Node3D
 		if leaf == null:
@@ -128,7 +137,11 @@ func _check_door(ctx: LcContext, d: Node3D) -> void:
 		total_w += lb.size.x * sx
 		leaves += 1
 		var hgt: float = lb.size.y * sy
-		if vault and not _in(hgt, VAULT_DOOR_H):
+		if industrial:
+			if not _in(hgt, INDUSTRIAL_DOOR_H):
+				fail(ctx, leaf, null, "industrial door height %.3f m, need %.1f-%.1f m"
+					% [hgt, INDUSTRIAL_DOOR_H.x, INDUSTRIAL_DOOR_H.y])
+		elif vault and not _in(hgt, VAULT_DOOR_H):
 			fail(ctx, leaf, null, "vault door height %.3f m, need %.1f-%.1f m" % [hgt, VAULT_DOOR_H.x, VAULT_DOOR_H.y])
 		elif not vault and not _in(hgt, DOOR_H):
 			fail(ctx, leaf, null, "door leaf height %.3f m, need %.2f m" % [hgt, DOOR_H.x])
@@ -136,15 +149,18 @@ func _check_door(ctx: LcContext, d: Node3D) -> void:
 		return
 	var service: bool = LcUtil.meta_b(d, &"service")
 	var ok: bool
-	if vault:
+	if industrial:
+		ok = _in(total_w, INDUSTRIAL_DOOR_W)
+	elif vault:
 		ok = _in(total_w, VAULT_DOOR_W)
 	elif leaves == 2:
 		ok = _in(total_w, DOOR_DOUBLE)
 	else:
 		ok = _in(total_w, DOOR_SINGLE) or (service and _in(total_w, DOOR_SERVICE))
 	if not ok:
-		fail(ctx, d, null, "door width %.3f m (%d leaf%s): single 0.9, double 1.8, service (meta service) 1.0-1.2, vault 1.8-2.4"
-			% [total_w, leaves, ", vault" if vault else ""])
+		var tag: String = ", vault" if vault else (", industrial" if industrial else "")
+		fail(ctx, d, null, ("door width %.3f m (%d leaf%s): single 0.9, double 1.8, service (meta service) 1.0-1.2, "
+			+ "vault 1.8-2.4, industrial 2.4-4.0") % [total_w, leaves, tag])
 	# Door prefabs size their gameplay opening (doorway crossing, leaf collision) from `width_m`
 	# (0 = contract default), independently of the visual: both must agree.
 	if "width_m" in d and float(d.get("width_m")) > 0.0:

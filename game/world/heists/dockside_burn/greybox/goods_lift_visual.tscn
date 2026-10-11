@@ -1,0 +1,58 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_car"]
+resource_name = "db_grey_lift_car"
+albedo_color = Color(0.55, 0.55, 0.58, 1)
+roughness = 0.5
+metallic = 0.4
+metadata/greybox = true
+
+[sub_resource type="BoxMesh" id="box_floor"]
+material = SubResource("mat_car")
+size = Vector3(1.2, 0.05, 1.14)
+
+[sub_resource type="BoxMesh" id="box_back"]
+material = SubResource("mat_car")
+size = Vector3(1.2, 1.2, 0.04)
+
+[sub_resource type="BoxMesh" id="box_side"]
+material = SubResource("mat_car")
+size = Vector3(0.04, 1.2, 1.1)
+
+[sub_resource type="BoxMesh" id="box_lip"]
+material = SubResource("mat_car")
+size = Vector3(1.2, 0.04, 0.04)
+
+[node name="GoodsLiftVisual" type="Node3D"]
+metadata/greybox = true
+
+[node name="Car" type="Node3D" parent="."]
+
+[node name="Floor" type="MeshInstance3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.025, 0)
+mesh = SubResource("box_floor")
+
+[node name="Back" type="MeshInstance3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0.55)
+mesh = SubResource("box_back")
+
+[node name="SideL" type="MeshInstance3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 0.6, 0)
+mesh = SubResource("box_side")
+
+[node name="SideR" type="MeshInstance3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58, 0.6, 0)
+mesh = SubResource("box_side")
+
+[node name="FrontLip" type="MeshInstance3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.18, -0.55)
+mesh = SubResource("box_lip")
+
+[node name="DoorL" type="Node3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.6, -0.55)
+
+[node name="DoorR" type="Node3D" parent="Car"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.6, -0.55)
+
+[node name="Panel" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -0.715)
