@@ -520,3 +520,6 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   audio_cues v1.3 `cue.throwable_*` (ENV C).
 - Masks clear the crew face envelope by ≥ 3 mm (ENV D fix for skin/hair poking through; characters v1.8).
 - Nav bake: BARRED/locked closure gates are baked closed (ENV C), A's door NavLink bridges them while passable.
+- D-067(b) implemented (ENV D fb65fdd): all 76 character scenes are inherited scenes of their glb (remove_armature),
+  367 per-scene .res removed, game/world/characters 114.9 MB → 3.3 MB; node-tree dump of 84 scenes identical
+  before/after; builds byte-deterministic. characters.md v1.6's variant text applies as written; ENV A unchanged.
