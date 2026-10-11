@@ -79,7 +79,11 @@ P2 heists (PD2 bag shape: a heavier bag is worth more per bag, but less per seco
 | `loot.ledger_drives` | MEDIUM | $1,800 | Shadow Ledger (required ×2, 3 spawn) | weight V (doc); value ◇ |
 | `loot.ledger_books` | MEDIUM | $2,400 | Shadow Ledger (optional, time-locked safe) | weight: lead (B4-10; the doc asked LIGHT); value ◇ (greed bag: costs a keycard + a time-lock hold) |
 | `loot.painting` | MEDIUM | $1,500 | Shadow Ledger art hall ×2, reusable by `gallery_night` | weight V (doc); value ◇ |
+| `loot.arms_crate` | HEAVY | $2,200 | Dockside Burn (cartel weapon crates; PD2 Firestarter weapons analog) | weight ◇ (B5-04; no research entry for PD2's weapons bag); value ◇ (heaviest bag, most per bag) |
+| `loot.product_crate` | MEDIUM | $1,800 | Dockside Burn (cold-room "fish" crates; PD2 Rats/Firestarter contraband analog) | weight ◇; value ◇ (between LIGHT cash and HEAVY arms) |
 Shadow Ledger's archive safe uses the existing `loot.cash`.
+Dockside Burn's counting room uses the existing `loot.cash` (LIGHT $1,200). Per-difficulty values and
+the C-side TODOs: `content/docs/heists/dockside_burn.md`.
 
 **Small loot (QB-52, D-049): no loot def.** Small loot (cash stacks, jewellery, deposit-box contents
 picked up by hand, not bagged) gets its value from the map prefab that spawns it (ENV A/C), which
@@ -87,6 +91,8 @@ reports the sum in `HeistResult.small_loot`; `PayoutCalculator` scales it by dif
 (`PayoutTweak.small_loot_scaled_by_difficulty`). `loot.small_loot_value_mult` (Plain Sight aced) belongs
 to the pickup side (ENV A). Per-item ranges before the difficulty
 multiplier (recorded from the G0 docs): **Night Deposit $800–2,400**, **Shadow Ledger $1,200–3,000**.
+**Dockside Burn $600–1,500 ◇ (B5-04 proposal, not yet from a G0 doc;** ENV C's G0 doc confirms or
+replaces it).
 
 ## Difficulty: `difficulty/` (Routine, Tense, Hazardous, Brutal, Lethal, Cataclysm = PD2 Normal, Hard, Very Hard, Overkill, Mayhem, Death Sentence)
 | | Rou | Ten | Haz | Bru | Let | Cat | Src |

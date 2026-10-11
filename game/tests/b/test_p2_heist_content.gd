@@ -1,6 +1,9 @@
 ## B4-09 (D-040, Night Deposit) / B4-10 (D-042, Shadow Ledger): ENV B content for the P2 heists:
 ## loot defs, objective strings from the design docs' `[tag]`s (D-039), briefing lines and the
 ## placeholder briefing/catalog data used until ENV C's HeistDefs land.
+## B5-04 (Dockside Burn, P3, loud-only): the content skeleton (game/content/docs/heists/dockside_burn.md).
+## ENV C's G0 doc, HeistDef and map are not required: the Dockside tests skip or fall back to the
+## proposal while `HeistRegistry.get_def(&"dockside_burn")` is null.
 extends TestCase
 
 ## Objective `[tag]`s in order of first appearance in the doc's "## Objectives" section (stealth
@@ -17,6 +20,31 @@ const SL_TAGS: Array[String] = [
 	"study_safe", "paintings", "archive_safe", "escape",
 ]
 const SL_ASSETS: Array[StringName] = [&"asset.intel_laptop", &"asset.gondola_left_hung", &"asset.riser_panel"]
+const DB_HEIST: StringName = &"dockside_burn"
+## Proposed HeistDef.base_payout (dockside_burn.md "Board contract"); the def wins once it exists.
+const DB_BASE_PAYOUT: int = 100000
+## The doc's contract pay table for DB_BASE_PAYOUT, Routine..Cataclysm.
+const DB_PAY_TABLE: Array[int] = [100000, 200000, 260000, 420000, 720000, 920000]
+## Library assets the proposal offers (all loud-useful).
+const DB_OFFERED: Array[StringName] = [
+	&"asset.alternate_entry", &"asset.ammo_bag_drop", &"asset.doctor_bag_drop", &"asset.escape_position",
+	&"asset.extra_cable_ties",
+]
+## The doc's proposed HeistDef.preplanning, verbatim (point ids are C's: TODO(C-G0)).
+const DB_PREPLAN: Dictionary = {
+	"assets": {
+		&"asset.alternate_entry": {"point_categories": [&"spawn"]},
+		&"asset.ammo_bag_drop": {"point_categories": [&"drop_zone"]},
+		&"asset.doctor_bag_drop": {"point_categories": [&"drop_zone"]},
+		&"asset.escape_position": {"point_categories": [&"escape"]},
+		&"asset.extra_cable_ties": {},
+	},
+	"disable": [
+		&"asset.body_bag_case_drop", &"asset.intel_cameras", &"asset.intel_guard_posts", &"asset.intel_keycards",
+		&"asset.intel_laptop", &"asset.spare_body_bags",
+	],
+	"favors": 6,
+}
 
 var _table: Dictionary = {}
 
@@ -184,3 +212,161 @@ func test_shadow_ledger_entry_assets_force_the_point_slot() -> void:
 	assert_eq(fv.get(&"gondola"), [&"gon_north_l42"] as Array[StringName])
 	assert_eq(fv.get(&"vent_open"), [&"vent_l41"] as Array[StringName])
 	assert_has(r["reveals"] as Array, &"laptop")
+
+
+# --- B5-04 Dockside Burn (skeleton; ENV C's G0 doc, HeistDef and map pending) ---
+
+func test_dockside_burn_loot() -> void:
+	_check_loot(&"loot.arms_crate", Enums.LootWeight.HEAVY)
+	_check_loot(&"loot.product_crate", Enums.LootWeight.MEDIUM)
+	var arms: LootDef = ContentDB.loot(&"loot.arms_crate")
+	var product: LootDef = ContentDB.loot(&"loot.product_crate")
+	if arms == null or product == null:
+		return
+	assert_true(arms.value > product.value and product.value > ContentDB.loot(&"loot.cash").value,
+			"heavier bag, more per bag (HEAVY arms > MEDIUM product > LIGHT cash)")
+	var def: HeistDef = HeistRegistry.get_def(DB_HEIST)
+	if def != null:
+		for id: StringName in def.loot:
+			if id != &"loot.small_valuables":  # small loot: no LootDef (QB-52)
+				assert_true(ContentDB.loot(id) != null, "dockside_burn def loot %s exists" % id)
+
+
+## Reyes (the contact) has 3 lines and Mercer closes; every other contact also has a set (as for
+## Glasshouse), so the briefing plays whoever ends up offering the contract.
+func test_dockside_burn_briefing() -> void:
+	_check_briefing(DB_HEIST, &"contact.reyes", 3)
+	for c: ContactDef in ContactDef.all():
+		if c.is_handler:
+			continue
+		var own: int = 0
+		for l: Dictionary in BriefingModel.voice_lines(DB_HEIST, c):
+			if StringName(l["speaker"]) == c.voice_speaker:
+				own += 1
+		assert_true(own >= 2, "%s has Dockside Burn briefing lines" % c.id)
+	var ph: Dictionary = BriefingModel.ui_data().placeholder_heists.get(DB_HEIST, {}) as Dictionary
+	for e: Variant in ph.get("escape_options", []) as Array:
+		assert_has(_table, "ui.escape.%s" % e, "escape VO context for %s" % e)
+	var def: HeistDef = HeistRegistry.get_def(DB_HEIST)
+	if def == null:
+		return
+	assert_eq(int(def.mode), Enums.HeistMode.LOUD_ONLY, "Dockside Burn is loud-only (game_overview row 4)")
+	for e: StringName in def.escape_options:
+		assert_has(_table, "ui.briefing.escape.%s" % e)
+
+
+## No objective id is guessed before ENV C's G0 doc (docs/design/heists/dockside_burn.md) lands; then
+## the strings must follow the doc's [tag]s like the other heists.
+func test_dockside_burn_objectives_wait_for_the_g0_doc() -> void:
+	var tags: Array[String] = _doc_tags(String(DB_HEIST))
+	if tags.is_empty():
+		var prefix: String = "objective.%s." % DB_HEIST
+		for k: String in _table.keys():
+			assert_false(k.begins_with(prefix), "no guessed objective key before the G0 doc: %s" % k)
+		var ph: Dictionary = BriefingModel.ui_data().placeholder_heists.get(DB_HEIST, {}) as Dictionary
+		assert_eq((ph.get("objectives", []) as Array).size(), 0, "placeholder objectives wait for the G0 doc")
+		return
+	var missing: Array[String] = []
+	for t: String in tags:
+		if not _table.has("objective.%s.%s" % [DB_HEIST, t]):
+			missing.append(t)
+	if not missing.is_empty():
+		skip("dockside_burn G0 doc landed; B5-04 TODO: objective strings for %s" % [missing])
+		return
+	_check_objectives(String(DB_HEIST), tags)
+
+
+## Board: Reyes' pin in the docks, the proposed payout through PayoutCalculator, the global
+## difficulty gates and pro eligibility (no per-heist overrides exist).
+func test_dockside_burn_board_contract() -> void:
+	var city: BoardCityMap = BoardCityMap.load_default()
+	assert_eq(city.heist_contact(DB_HEIST), &"contact.reyes")
+	assert_eq(city.heist_district(DB_HEIST), &"docks")
+	var poly: PackedVector2Array = city.districts[&"docks"]["polygon"] as PackedVector2Array
+	assert_true(Geometry2D.is_point_in_polygon(city.heist_anchor(DB_HEIST), poly), "pin inside the docks")
+	for d: int in range(DB_PAY_TABLE.size()):
+		assert_eq(HeistCatalog.contract_preview(DB_BASE_PAYOUT, d), DB_PAY_TABLE[d], "doc pay table, difficulty %d" % d)
+	var def: HeistDef = HeistRegistry.get_def(DB_HEIST)
+	var base: int = def.base_payout if def != null else DB_BASE_PAYOUT
+	var entry: Dictionary = {"id": DB_HEIST, "base_payout": base, "mode": Enums.HeistMode.LOUD_ONLY, "def": def}
+	var heist_pool: Array[Dictionary] = BoardContracts.pool_from([entry] as Array[Dictionary], city)
+	var contact: StringName = StringName(heist_pool[0]["contact"])
+	assert_true(ContactDef.find(contact) != null, "contact %s" % contact)
+	if def == null or def.contact == &"":
+		assert_eq(contact, &"contact.reyes", "map contact while the def is missing")
+	var tweak: BoardTweak = BoardTweak.load_default()
+	var allowed: Array[int] = BoardContracts.allowed_difficulties(0, tweak)
+	assert_false(allowed.has(Enums.Difficulty.LETHAL), "Lethal needs level 80")
+	var pros: int = 0
+	for bucket: int in range(200):
+		var c: Dictionary = BoardContracts.contract_for(0, bucket, allowed, heist_pool, tweak, city)
+		var d: int = int(c["difficulty"])
+		assert_has(allowed, d)
+		assert_eq(StringName(c["district"]), &"docks")
+		assert_eq(int(c["payout"]), HeistCatalog.contract_preview(base, d))
+		if bool(c["is_pro"]):
+			pros += 1
+			assert_true(d >= tweak.pro_min_difficulty, "pro only from Tense")
+	assert_true(pros > 0, "Dockside Burn can roll as a pro job")
+
+
+## The proposed loud pre-planning (library assets only) on synthetic points: it validates, disables
+## exactly the stealth-only library assets, and the 6 favors buy both drops + entry + escape.
+func test_dockside_burn_preplan_proposal() -> void:
+	PreplanBoard.clear_cache()
+	var lib: Dictionary = PreplanBoard.generic_assets()
+	var stealth_only: Array = []
+	for id: Variant in lib:
+		var a: PreplanAssetDef = lib[id] as PreplanAssetDef
+		if a.tags == [&"stealth"] as Array[StringName] and a.point_ids.is_empty():
+			stealth_only.append(StringName(id))
+	var disabled: Array = (DB_PREPLAN["disable"] as Array).duplicate()
+	ContentDB.sort_ids(stealth_only)
+	ContentDB.sort_ids(disabled)
+	assert_eq(disabled, stealth_only, "disable = every stealth-only library asset")
+	for id: StringName in DB_OFFERED:
+		assert_true(lib.has(id), "library has %s" % id)
+		if lib.has(id):
+			assert_has((lib[id] as PreplanAssetDef).tags, &"loud", "%s is a loud asset" % id)
+	var bp: PreplanBlueprint = PreplanBlueprint.new()
+	bp.heist_id = DB_HEIST
+	var rows: Array = [
+		[&"pp_test_drop_a", &"drop_zone", {}], [&"pp_test_drop_b", &"drop_zone", {}],
+		[&"pp_test_spawn", &"spawn", {"spawn_tag": &"test_spawn"}],
+		[&"pp_test_van", &"escape", {"variant_group": &"escape", "variant_slot": &"esc_test_van"}],
+		[&"pp_test_boat", &"escape", {"variant_group": &"escape", "variant_slot": &"esc_test_boat"}],
+	]
+	for i: int in range(rows.size()):
+		bp.points.append({"id": rows[i][0], "category": rows[i][1], "pos": Vector2(i * 4, 0), "floor": 0,
+				"label": StringName("ui.preplan.point.%s" % rows[i][0]), "params": rows[i][2]})
+	var def: HeistDef = HeistDef.new()
+	def.id = DB_HEIST
+	def.mode = Enums.HeistMode.LOUD_ONLY
+	def.preplanning = DB_PREPLAN.duplicate(true)
+	var b: PreplanBoard = PreplanBoard.build(DB_HEIST, Enums.Difficulty.ROUTINE, def, null, bp)
+	assert_eq(b.errors, [] as Array[String])
+	assert_eq(b.favors_budget, 6)
+	for id: Variant in disabled:
+		assert_false(b.assets.has(StringName(id)), "disabled %s" % id)
+	for id: StringName in DB_OFFERED:
+		assert_true(b.assets.has(id), "offered %s" % id)
+	var p: PreplanPlan = PreplanPlan.new(b)
+	assert_eq(p.add(&"asset.ammo_bag_drop", &"pp_test_drop_a", 0), PreplanPlan.OK)
+	assert_eq(p.add(&"asset.doctor_bag_drop", &"pp_test_drop_b", 0), PreplanPlan.OK)
+	assert_eq(p.add(&"asset.alternate_entry", &"pp_test_spawn", 0), PreplanPlan.OK)
+	assert_eq(p.add(&"asset.escape_position", &"pp_test_boat", 0), PreplanPlan.OK)
+	assert_eq(p.add(&"asset.extra_cable_ties", &"", 0), PreplanPlan.R_FAVORS, "6 favors: a real choice")
+	var r: Dictionary = p.apply()
+	assert_eq((r["drops"] as Array).size(), 2)
+	assert_eq(r["spawn_tag"], &"test_spawn")
+	assert_eq((r["force_variants"] as Dictionary).get(&"escape"), [&"esc_test_boat"] as Array[StringName])
+
+
+## UI: the heist list entry and an accent whose raw colour already passes WCAG AA for text (4.5:1).
+func test_dockside_burn_ui() -> void:
+	assert_eq(HeistCatalog.heist_list().solo_ai_for(DB_HEIST), 3, "loud-only: a full bot crew for solo")
+	assert_true(UiAccent.table().accents.has(DB_HEIST))
+	for bg: Color in [UiAccent.panel_bg(), UiAccent.app_bg()]:
+		assert_true(UiAccent.contrast_ratio(UiAccent.for_heist(DB_HEIST), bg) >= 4.5, "flare orange readable as is")
+	for k: String in ["name", "subtitle", "brief", "briefing"]:
+		assert_has(_table, "heist.%s.%s" % [DB_HEIST, k])

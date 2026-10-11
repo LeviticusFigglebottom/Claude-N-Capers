@@ -5,6 +5,13 @@
 [resource]
 script = ExtResource("1")
 placeholder_heists = {
+&"dockside_burn": {
+"briefing": "heist.dockside_burn.briefing",
+"contact": &"contact.reyes",
+"escape_options": Array[StringName]([&"van", &"boat"]),
+"loot": Array[StringName]([&"loot.arms_crate", &"loot.product_crate", &"loot.cash"]),
+"objectives": Array[StringName]([])
+},
 &"glasshouse": {
 "briefing": "heist.glasshouse.briefing",
 "contact": &"contact.vance",

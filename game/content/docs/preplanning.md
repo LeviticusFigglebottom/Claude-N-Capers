@@ -103,6 +103,10 @@ keys and bad grants are reported in `PreplanBoard.errors` and logged. A non-empt
 none of the keys `favors` / `disable` / `assets` is the pre-D-038 format: the board logs one warning
 and ignores it (Glasshouse's data until ENV C migrates it).
 
+**Dockside Burn (B5-04, loud-only):** proposed `preplanning` block (library assets only: ammo and
+doctor drops, alternate entry, escape position, cable ties; stealth-only library assets disabled;
+favors 6) in `content/docs/heists/dockside_burn.md`. The point ids wait on ENV C's G0 doc.
+
 ## Points
 `PreplanBoard.blueprint_for(heist_id, def)`: the drawn schematic (`blueprints/<heist id>.tres`, else the
 **placeholder**, a Glasshouse-like site plan with a "PLACEHOLDER BLUEPRINT" banner) supplies shapes and

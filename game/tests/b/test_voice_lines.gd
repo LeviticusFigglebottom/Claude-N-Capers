@@ -127,3 +127,28 @@ func test_every_mission_say_has_a_line() -> void:
 				var id: StringName = StringName(m.get_string(1))
 				assert_false(_table.line(id).is_empty(), "%s/%s says %s" % [heist, f, id])
 	assert_true(seen > 0, "mission scripts found")
+
+
+## B5-04 Dockside Burn mission lines that need no objective id (the objective-bound ones wait for ENV
+## C's G0 doc: game/content/docs/heists/dockside_burn.md). Mercer + Reyes' contact intro.
+func test_dockside_burn_mission_lines() -> void:
+	if _table == null:
+		fail("no table")
+		return
+	var ids: Array[StringName] = [&"vo.reyes.dockside_burn_contact_intro"]
+	for x: String in ["intro", "cartel_warning", "no_dominate", "cartel_reinforcements", "police_inbound",
+			"escape_eta", "escape"]:
+		ids.append(StringName("vo.mercer.dockside_burn_" + x))
+	for id: StringName in ids:
+		var l: Dictionary = _table.line(id)
+		assert_eq(l.get("event"), &"mission", "%s is a mission line" % id)
+		assert_eq(int(l.get("priority", 0)), 90, "%s priority" % id)
+		assert_has(_strings, "voice." + String(id))
+	var ctx: Dictionary = {
+		"vo.mercer.dockside_burn_escape_eta": "{seconds}",
+		"vo.mercer.dockside_burn_escape": "{escape}",
+	}
+	for id: String in ctx:
+		assert_true(String(_strings.get("voice." + id, "")).contains(String(ctx[id])), "%s uses %s" % [id, ctx[id]])
+	for e: String in ["van", "boat"]:
+		assert_has(_strings, "ui.escape." + e, "{escape} text for %s" % e)

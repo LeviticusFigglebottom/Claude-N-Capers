@@ -1987,3 +1987,29 @@ ui.escape.lift,service lift
 item.deployable.armor_bag.name,Armor Bag
 item.deployable.armor_bag.desc,"Holds your chosen armor. You start the job in a suit; put the bag down and change into the armor when it counts. One use."
 ui.loadout.deployable_locked,"{item} (locked: perk card {card}, {name})"
+heist.dockside_burn.name,Dockside Burn
+heist.dockside_burn.subtitle,Saltline Cold Storage
+heist.dockside_burn.brief,"A cartel cold store on Pier 14 keeps its guns and its product on ice. Hollis wants it emptied, then burned to the waterline."
+heist.dockside_burn.briefing,"Saltline Cold Storage stands at the end of Pier 14 in the Docks. On paper it chills fish for the Ortega Fisheries Co-op. Behind the freezer doors the Co-op's cartel keeps its arms crates, its product and the cash from the week's sales. There is no quiet way in: the cartel crew on the floor carries no pagers and will not put its hands up, and the gunfire will bring the police within minutes. Go in loud before dawn, bag the crates, the product and the cash, and leave nothing behind that the cartel can use. Hollis Reyes wants the place burning when you go."
+item.loot.arms_crate.name,Arms Crate
+item.loot.arms_crate.desc,"A sealed crate of rifles packed in grease paper and freezer foam. Heavy, awkward and worth every bruise."
+item.loot.product_crate.name,Product Crate
+item.loot.product_crate.desc,"A cold-room crate stencilled as frozen fish. What's inside sells for considerably more than fish."
+ui.escape.van,van
+ui.escape.boat,boat
+voice.vo.reyes.briefing_dockside_burn_1,"Saltline Cold Storage, end of Pier 14. The Ortega Co-op says it keeps fish in there. It keeps guns, product and a counting room."
+voice.vo.reyes.briefing_dockside_burn_2,"No sneaking on this one. Cartel boys don't carry pagers and they don't kneel, so you go in loud and you stay loud."
+voice.vo.reyes.briefing_dockside_burn_3,"Bag whatever pays, then light it up. I want the Co-op to wake up to a pier full of smoke and nothing left to sell."
+voice.vo.vance.briefing_dockside_burn_1,"Hollis's sort of evening, darling: a freezer full of men with guns. I only put my name on it for the commission."
+voice.vo.vance.briefing_dockside_burn_2,"If anything in there has a frame or a hallmark, it comes to me. The rest you may burn as you please."
+voice.vo.accountant.briefing_dockside_burn_1,The Co-op's cold store carries its inventory at a valuation nobody has ever audited. I would like it written down to zero.
+voice.vo.accountant.briefing_dockside_burn_2,"Take what can be sold and destroy what cannot. A competitor's losses are a perfectly respectable kind of profit."
+voice.vo.mercer.briefing_dockside_burn_1,"Pre-dawn, fog on the water and no quiet option. Masks on from the start, bags to the ride, and keep moving when the police join in."
+voice.vo.mercer.dockside_burn_intro,"Pier 14, half five, and the fog's thick. There's no quiet way into Saltline. Masks on, doors open, go."
+voice.vo.reyes.dockside_burn_contact_intro,"Hammer here. Everything in that cold store is mine now. Whatever you can't carry, burns."
+voice.vo.mercer.dockside_burn_cartel_warning,"Those are the Co-op's people, not hired guards. No pagers to answer, and they won't put their hands up."
+voice.vo.mercer.dockside_burn_no_dominate,Shouting won't work on that lot. They'd rather go down than kneel. Save your breath.
+voice.vo.mercer.dockside_burn_cartel_reinforcements,Cars at the pier gate. The Co-op's sent more of its people.
+voice.vo.mercer.dockside_burn_police_inbound,"Someone on the waterfront called it in. Police are coming, and they won't care whose side anyone's on."
+voice.vo.mercer.dockside_burn_escape_eta,Your ride's {seconds} seconds out. Hold the pier.
+voice.vo.mercer.dockside_burn_escape,"The {escape}'s here. Bags in, and don't stop to watch the smoke."
