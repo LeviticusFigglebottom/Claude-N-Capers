@@ -9,7 +9,7 @@ attach_Back: bone chest, local [0.0000, 0.0944, 0.1376] (model [0.0000, 1.3584, 
 attach_Head: bone head, local [0.0000, 0.0846, -0.0927] (model [0.0000, 1.7409, -0.0801], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.2271, 0.0532, 0.0390] (model [0.2271, 1.0491, 0.0416], Godot axes, rest pose)
 body_faces_culled: 5717
-body_params: {"age": 0.72, "beard_shadow": 0.95, "build": 0.95, "gender": 0.0, "hair": "buzz", "hair_color": "grey", "height": 1.86, "lip": "auto", "skin": 1}
+body_params: {"age": 0.72, "beard_shadow": 0.95, "build": 0.95, "gender": 0.0, "hair": "buzz", "hair_color": "grey", "hair_peak": 0.0, "height": 1.86, "lip": "auto", "skin": 1}
 bones: 52
 faces_hidden_by_bomber: 2446
 fp_sleeve: {"cuff": "char_knit_graphite", "glove": "char_crew_glove_tan", "sleeve": "char_crew_dutch_bomber"}

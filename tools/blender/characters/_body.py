@@ -63,7 +63,8 @@ HAIR_STYLES = _headmod.HAIR_STYLES   # none, buzz, short, side_part, bob, bald
 
 #: Default parameters (``char_body_base``).
 DEFAULTS: dict = {"height": REF_HEIGHT, "build": 0.4, "gender": 0.0, "age": 0.25, "skin": 2,
-                  "hide": frozenset(), "hair": "short", "hair_color": "dark", "beard_shadow": 0.0, "lip": "auto"}
+                  "hide": frozenset(), "hair": "short", "hair_color": "dark", "hair_peak": 0.0, "beard_shadow": 0.0,
+                  "lip": "auto"}
 #: Shape keys in export order and the generator configs that define them.
 SHAPE_KEYS = ("build", "gender", "age")
 
@@ -91,6 +92,8 @@ def body_params(params: dict | None = None, **overrides) -> dict:
         raise ValueError(f"hair must be one of {HAIR_STYLES}")
     if p["hair_color"] not in HAIR_COLORS:
         raise ValueError(f"hair_color must be one of {sorted(HAIR_COLORS)}")
+    if not 0.0 <= float(p["hair_peak"]) <= 1.0:
+        raise ValueError("hair_peak (widow's peak) must be in 0..1")
     if not 0.0 <= float(p["beard_shadow"]) <= 1.0:
         raise ValueError("beard_shadow must be in 0..1")
     if p["lip"] != "auto" and not str(p["lip"]).startswith("char_lip_"):
@@ -675,10 +678,10 @@ def _generate_body(build: float, gender: float, age: float) -> tuple[MeshData, H
 
 
 @lru_cache(maxsize=16)
-def _generate(build: float, gender: float, age: float, hair: str) -> tuple[MeshData, MeshData]:
+def _generate(build: float, gender: float, age: float, hair: str, peak: float = 0.0) -> tuple[MeshData, MeshData]:
     """(body, hair) at the reference height 1.78 m, full (nothing hidden)."""
     md, hs = _generate_body(build, gender, age)
-    return md, _headmod.hair(hs, hair)
+    return md, _headmod.hair(hs, hair, peak)
 
 
 def _configs() -> list[tuple[float, float, float]]:
@@ -747,7 +750,7 @@ def _assemble(parts: list[MeshData], p: dict, hide: frozenset) -> BodyData:
 def body_mesh_data(params: dict | None = None) -> tuple[BodyData, BodyData]:
     """(body, hair) data for ``params`` (see ``DEFAULTS``). Pure math; hair has no faces for "none"."""
     p = body_params(params)
-    gens = [_generate(b, g, a, p["hair"]) for b, g, a in _configs()]
+    gens = [_generate(b, g, a, p["hair"], float(p["hair_peak"])) for b, g, a in _configs()]
     for g in gens[1:]:
         for i in (0, 1):
             if [sorted(f) for f in g[i].faces] != [sorted(f) for f in gens[0][i].faces]:
@@ -1070,8 +1073,11 @@ def _make_object(name: str, data: BodyData, mats: dict, armature, weights: list[
             me.materials.append(mats[mname])
     idx = {m: i for i, m in enumerate(order)}
     me.polygons.foreach_set("material_index", [idx[m] for m in data.face_mat])
-    uvs = face_uvs(data.faces, data.face_region, data.face_mat, data.face_side, data.basis,
-                   float(data.params["height"]))
+    if name == "Hair":       # along the strands (the hair textures' detail runs along v)
+        uvs = _headmod.hair_uvs(data.faces, data.basis, data.params["hair"], float(data.params["height"]) / REF_HEIGHT)
+    else:
+        uvs = face_uvs(data.faces, data.face_region, data.face_mat, data.face_side, data.basis,
+                       float(data.params["height"]))
     layer = me.uv_layers.new(name="UVMap")
     flat = [c for f in uvs for uv in f for c in uv]
     layer.data.foreach_set("uv", flat)

@@ -9,7 +9,7 @@ attach_Back: bone chest, local [0.0000, 0.0932, 0.1069] (model [0.0000, 1.3584, 
 attach_Head: bone head, local [0.0000, 0.0846, -0.0927] (model [0.0000, 1.7409, -0.0801], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1815, 0.0708, 0.1089] (model [0.1815, 1.0632, 0.1123], Godot axes, rest pose)
 body_faces_culled: 5738
-body_params: {"age": 0.3, "beard_shadow": 0.0, "build": 0.15, "gender": 0.0, "hair": "none", "hair_color": "dark", "height": 1.86, "lip": "auto", "skin": 2}
+body_params: {"age": 0.3, "beard_shadow": 0.0, "build": 0.15, "gender": 0.0, "hair": "none", "hair_color": "dark", "hair_peak": 0.0, "height": 1.86, "lip": "auto", "skin": 2}
 bones: 52
 faction: zero
 faction_mask: zero: bone skull lower-face guard under the NVG (Headwear)

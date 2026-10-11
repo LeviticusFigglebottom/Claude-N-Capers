@@ -9,10 +9,10 @@ attach_Back: bone chest, local [0.0000, 0.0881, 0.1105] (model [0.0000, 1.2781, 
 attach_Head: bone head, local [0.0000, 0.0796, -0.0872] (model [0.0000, 1.6379, -0.0754], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1901, 0.0499, 0.0347] (model [0.1901, 0.9871, 0.0371], Godot axes, rest pose)
 body_faces_culled: 4804
-body_params: {"age": 0.6, "beard_shadow": 0.4, "build": 0.6, "gender": 0.0, "hair": "side_part", "hair_color": "dark", "height": 1.75, "lip": "auto", "skin": 3}
+body_params: {"age": 0.6, "beard_shadow": 0.4, "build": 0.6, "gender": 0.0, "hair": "side_part", "hair_color": "dark", "hair_peak": 0.0, "height": 1.75, "lip": "auto", "skin": 3}
 bones: 52
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 29098
-tris_by_mesh: {"Body": 9136, "Gear": 292, "Hair": 1200, "Headwear": 498, "Outfit": 17972}
+tris: 29754
+tris_by_mesh: {"Body": 9136, "Gear": 292, "Hair": 1856, "Headwear": 498, "Outfit": 17972}
