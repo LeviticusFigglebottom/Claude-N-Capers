@@ -46,7 +46,7 @@ const DEFAULT_PROFILE_PATH: String = "res://content/data/save/default_profile.js
 ## Loadout input fields that are persisted. Order matters only for readability of the file.
 const LOADOUT_ID_FIELDS: Array[String] = [
 	"primary", "secondary", "melee", "throwable", "deployable", "deployable_secondary",
-	"armor", "mask", "perk_deck",
+	"armor", "mask", "perk_deck", "heister",
 ]
 const LOADOUT_LIST_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 

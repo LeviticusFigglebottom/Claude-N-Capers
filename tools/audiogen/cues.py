@@ -1648,6 +1648,231 @@ def amb_street_dusk(rng: np.random.Generator, v: int) -> np.ndarray:
     return make_loop(render, 30.0, 2.0)
 
 
+# ------------------------------------------------------------ QA-36: police breach + thermite burn (audio_cues v1.2)
+
+
+def door_breach(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Police ram on a locked door: a 55-70 Hz ram thump with wood-panel body modes (170-900 Hz),
+    a broadband crack, then the frame splintering (dry 1-4 kHz snap grains thinning out over
+    0.6 s) and a lock/hinge clank. Niche: woody 150-900 Hz knock + crunchy splinter crackle; no
+    sustained sub (c4) and no glassy shimmer (glass_break). 1.6 s."""
+    dur = 1.6
+    k = 1 + 0.05 * (v - 1) + rng.uniform(-0.03, 0.03)
+    y = np.zeros(nsamp(dur))
+    ram = thud(rng, 62 * k, 0.6, 1.2) * 1.4
+    body = osc.partials([172 * k, 318 * k, 455 * k, 610 * k, 890 * k], [1.0, 0.8, 0.6, 0.45, 0.3],
+                        [0.16, 0.1, 0.07, 0.05, 0.035], 0.5, rng)
+    crack = filters.hp(noise.white(0.05, rng), 900) * env.exp_decay(0.05, 0.03, 0.0) * 2.0
+    place(y, ram, 0)
+    place(y, body, 0, 0.9)
+    place(y, crack, 0)
+
+    def splinter(i: int, r: np.random.Generator) -> np.ndarray:
+        d = r.uniform(0.008, 0.035)
+        g = filters.bp(noise.white(d, r), r.uniform(1000, 4200), r.uniform(1.5, 4.0)) * env.exp_decay(d, d * 0.8, 0.0)
+        if r.random() < 0.3:  # larger fibre snaps carry a short woody knock
+            g = g + osc.partials([r.uniform(500, 1200)], [0.6], [d * 0.6], d, r)
+        return g * r.uniform(0.3, 1.0)
+
+    times = np.sort(0.01 + rng.exponential(0.12 + 0.02 * v, 140 + 20 * v))
+    y += granular.cloud(dur, np.clip(times, 0, dur - 0.1), splinter, rng) * 0.9
+    # the door swings into the wall: second, softer knock + lock clank
+    hit2 = 0.38 + rng.uniform(-0.04, 0.06)
+    place(y, thud(rng, 95 * k, 0.4, 0.8) * 0.55, nsamp(hit2))
+    place(y, click(rng, (1250.0, 2400.0, 3600.0), 0.12, 12, 0.014, 0.9), nsamp(0.02))
+    place(y, click(rng, (980.0, 2100.0), 0.1, 10, 0.012, 0.5), nsamp(hit2 + 0.01))
+    y = fx.drive(y, 1.6)
+    y = fx.reverb(y, "store", 0.16, stereo_out=False, tail=False)
+    return fade(y, 0, 0.25)
+
+
+def burn_warning(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Thermite burn countdown (5 s): a hissing flare (4-9 kHz hiss with flicker and sputter pops)
+    under a pulsed warning tone that rises 520 -> 1560 Hz while the pulse rate speeds up 3 -> 9 Hz.
+    Niche: the only cue with a steadily accelerating pulsed sweep; hiss sits above it."""
+    dur = 5.0
+    n = nsamp(dur)
+    t = tvec(dur)
+    u = t / dur
+    ign = env.segments([(0, 0), (0.08, 1.0), (0.3, 0.75), (dur, 0.85)], dur)
+    flick = 0.75 + 0.25 * np.tanh(filters.lp(noise.white(dur, rng), 9) * 40)
+    hiss = filters.hp(noise.white(dur, rng), 3800) * 0.55 + filters.bp(noise.pink(dur, rng), 6500, 0.8) * 0.5
+    sput = filters.bp(noise.crackle(dur, rng, 45), 2200, 0.9) * 2.5
+    flare = (hiss * flick + sput) * ign
+    f = 520.0 * 3.0 ** (u ** 1.2)
+    tone = osc.triangle(f, dur) * 0.7 + osc.square(f * 1.5, dur, 0.4) * 0.12
+    rate = 3.0 + 6.0 * u ** 1.3
+    ph = np.cumsum(rate / SR) % 1.0
+    gate = filters.one_pole_lp((ph < 0.55).astype(float), 120)
+    tone *= gate * env.segments([(0, 0), (0.15, 0.6), (dur - 0.3, 1.0), (dur, 0.0)], dur)
+    y = flare * 0.8 + filters.lp(tone, 5000) * 0.9
+    return fade(y[:n], 0.01, 0.15)
+
+
+# ------------------------------------------------------------ throwables (audio_cues v1.3, D-073)
+
+
+def throwable_pin(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Grenade pin pull + spoon release: a short wire scrape (3-5 kHz), split-ring click, then the
+    spoon flies off with a bright springy ping (3.1/5.9 kHz partials, 150 ms ring). Niche: tiny,
+    bright, 0.55 s; nothing below 800 Hz."""
+    dur = 0.55
+    y = np.zeros(nsamp(dur))
+    sd = 0.07
+    scrape = filters.biquad_tv(noise.white(sd, rng), "bp", np.geomspace(3200, 5200, nsamp(sd)), 3.0)
+    place(y, scrape * env.segments([(0, 0), (0.01, 1), (sd, 0)], sd) * 0.6, 0)
+    place(y, click(rng, (2100.0, 3400.0), 0.05, 8, 0.008, 0.9), nsamp(0.065))
+    sp = 0.2 + rng.uniform(-0.02, 0.03)
+    k = rng.uniform(0.97, 1.03)
+    ping = osc.partials([3100 * k, 5900 * k, 8300 * k], [1.0, 0.5, 0.25], [0.15, 0.07, 0.035], 0.3, rng)
+    tt = tvec(0.3)
+    ping *= 1 + 0.25 * np.sin(2 * np.pi * 38 * tt) * np.exp(-tt / 0.08)  # spring wobble
+    place(y, click(rng, (1800.0, 4200.0), 0.03, 6, 0.004, 0.7), nsamp(sp))
+    place(y, ping * 0.8, nsamp(sp + 0.003))
+    y = filters.hp(y, 800)
+    return fade(y, 0, 0.05)
+
+
+def throwable_frag(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Fragmentation grenade: hard broadband crack, 45-55 Hz punch, 700 Hz roar (shorter than the
+    40 mm HE), and a spray of shrapnel zips (2-7 kHz band-passed noise falling in pitch) in the
+    first 0.4 s, then sparse debris and an alley tail. Niche: shrapnel 'zip' spray. 3.0 s."""
+    dur = 3.0
+    t = tvec(dur)
+    vr = 1 + 0.05 * (v - 1) + rng.uniform(-0.03, 0.03)
+    crack = filters.hp(noise.white(dur, rng), 1800) * env.exp_decay(dur, 0.04, 0.0) * 2.0
+    sub = osc.sine(50 * vr * (1 + 1.4 * np.exp(-t / 0.05)), dur) * env.exp_decay(dur, 0.7, 0.001) * 1.4
+    roar = filters.bp(noise.brown(dur, rng), 700 * vr, 0.7) * env.exp_decay(dur, 0.6, 0.002) * 2.0
+    y = fx.drive(crack + sub + roar, 2.6)
+
+    def zip_(i: int, r: np.random.Generator) -> np.ndarray:
+        d = r.uniform(0.04, 0.12)
+        f0 = r.uniform(2500, 7000)
+        z = filters.biquad_tv(noise.white(d, r), "bp", np.geomspace(f0, f0 * r.uniform(0.4, 0.7), nsamp(d)), 6.0)
+        return z * np.sin(np.linspace(0, np.pi, nsamp(d))) * r.uniform(0.3, 1.0)
+
+    y += granular.cloud(dur, np.sort(0.005 + rng.exponential(0.09, 45 + 5 * v)), zip_, rng) * 0.9
+
+    def debris(i: int, r: np.random.Generator) -> np.ndarray:
+        return click(r, (r.uniform(900, 2500), r.uniform(3000, 6000)), 0.05, 8, 0.006, r.uniform(0.15, 0.5))
+
+    y += granular.cloud(dur, np.sort(0.25 + rng.uniform(0, 1, 25) ** 1.6 * 1.4), debris, rng) * 0.4
+    y = fx.reverb(y, "alley", 0.3, stereo_out=False, tail=False, lowcut=70)
+    return fade(y, 0, 0.5)
+
+
+def throwable_concussion(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Concussion (flashbang-style) charge: a very short, sharp bang (hard 2 kHz+ crack, 90 Hz
+    punch, almost no roar or debris) followed by a high ear-ringing tone (3.7-4.1 kHz beating
+    sine pair, 1.8 s decay). Niche: dry bang + sustained high whine. 2.6 s."""
+    dur = 2.6
+    t = tvec(dur)
+    vr = 1 + 0.04 * (v - 1) + rng.uniform(-0.02, 0.02)
+    crack = filters.hp(noise.white(dur, rng), 2000) * env.exp_decay(dur, 0.04, 0.0) * 2.0
+    punch = osc.sine(90 * vr * (1 + 1.5 * np.exp(-t / 0.02)), dur) * env.exp_decay(dur, 0.3, 0.0005) * 1.6
+    body = filters.bp(noise.white(dur, rng), 1200 * vr, 0.6) * env.exp_decay(dur, 0.25, 0.0) * 1.6
+    y = fx.drive(crack + punch + body, 4.0)
+    y = fx.reverb(y, "alley", 0.22, stereo_out=False, tail=False, lowcut=120)
+    fr = 3850 * vr
+    ring = (osc.sine(fr, dur) + 0.6 * osc.sine(fr * 1.012, dur) + 0.15 * osc.sine(fr * 2.0, dur))
+    ring *= env.segments([(0, 0), (0.05, 0), (0.25, 1.0), (dur, 0.0)], dur) ** 1.6 * 0.12
+    return fade(y + ring, 0, 0.3)
+
+
+def throwable_incendiary(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Incendiary (bottle) grenade: a bottle smash (thick-glass body 650/1500 Hz + a shorter, lower
+    shard cloud than glass_break), then the fuel catches: a brown-noise whump swelling up with
+    flame roar, hiss and crackle that settles to a burn. Niche: glass burst into a < 900 Hz
+    whoosh. 2.4 s."""
+    dur = 2.4
+    y = np.zeros(nsamp(dur))
+    k = rng.uniform(0.95, 1.05)
+    place(y, filters.hp(noise.white(0.03, rng), 1500) * env.exp_decay(0.03, 0.02, 0.0) * 1.6, 0)
+    place(y, osc.partials([650 * k, 1520 * k, 2730 * k], [0.8, 0.6, 0.4], [0.05, 0.035, 0.02], 0.2, rng) * 0.8, 0)
+
+    def shard(i: int, r: np.random.Generator) -> np.ndarray:
+        d = r.uniform(0.02, 0.08)
+        base = r.uniform(2200, 6500)
+        return osc.partials([base, base * r.uniform(1.4, 1.9)], [1.0, 0.5], [d * 0.5, d * 0.3], d, r) * \
+            r.uniform(0.3, 1.0)
+
+    place(y, granular.cloud(0.7, np.clip(rng.exponential(0.06, 120 + 20 * v), 0, 0.55), shard, rng) * 0.3, 0)
+    ig = 0.12 + rng.uniform(0.0, 0.05)
+    wd = dur - ig
+    whump = filters.biquad_tv(noise.brown(wd, rng), "lp", np.geomspace(140, 900, nsamp(wd)), 1.0) * 3.2
+    whump *= env.segments([(0, 0), (0.12, 1.0), (0.5, 0.55), (wd, 0.35)], wd)
+    burn = _flame(rng, wd) * env.segments([(0, 0), (0.3, 0.9), (wd, 0.6)], wd) * 0.7
+    air = whoosh(rng, 0.6, 300, 1100, 500, 1.2) * 0.8
+    place(y, whump + burn, nsamp(ig))
+    place(y, air, nsamp(ig))
+    y = fx.reverb(y, "alley", 0.18, stereo_out=False, tail=False)
+    return fade(y, 0, 0.5)
+
+
+def throwable_knife_hit(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Throwing knife sinks into a body: a dull 140-180 Hz flesh thunk with a short, wet 650 Hz
+    'thock', a faint tip tick and a muffled blade twang (1.3/2.9 kHz, 40 Hz wobble, damped by the
+    body). Body only; world geometry is throwable_knife_hit_hard. Niche: duller than the arrow
+    (bow_impact 200 Hz + 350 Hz shaft). 0.45 s."""
+    dur = 0.45
+    t = tvec(dur)
+    k = rng.uniform(0.9, 1.1) * (1 + 0.06 * (v - 1))
+    y = thud(rng, 160 * k, dur, 0.8)
+    thock = filters.bp(noise.white(dur, rng), 650 * k, 1.6) * env.exp_decay(dur, 0.04, 0.0008) * 1.3
+    twang = osc.partials([1320 * k, 2950 * k], [0.6, 0.3], [0.06, 0.03], dur, rng)
+    twang *= 0.65 + 0.35 * np.sin(2 * np.pi * 40 * t)
+    y += thock + twang * 0.12
+    place(y, click(rng, (3300.0,), 0.03, 6, 0.003, 0.2), 0)
+    return fade(y, 0, 0.06)
+
+
+def throwable_knife_hit_hard(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Throwing knife hits world geometry. Even variations (_1, _3) = metal: hard tip tick and a
+    bright inharmonic ting (2.6-8.9 kHz, 0.16 s ring) over a small knock. Odd (_2, _4) = wood:
+    a 230 Hz knock with 480/1100 Hz grain modes plus the stuck blade's 40 Hz wobbling twang.
+    Niche: brighter and harder than the body thunk (throwable_knife_hit). 0.5 s."""
+    dur = 0.5
+    t = tvec(dur)
+    k = rng.uniform(0.94, 1.06) * (1 + 0.04 * (v // 2))
+    y = np.zeros(nsamp(dur))
+    if v % 2 == 0:
+        ting = osc.partials([2650 * k, 4120 * k, 6330 * k, 8900 * k], [1.0, 0.7, 0.45, 0.2],
+                            [0.16, 0.1, 0.06, 0.03], dur, rng)
+        y += ting * 0.7 + thud(rng, 320 * k, dur, 0.3) * 0.3
+        place(y, click(rng, (4100.0, 6800.0), 0.03, 6, 0.003, 1.0), 0)
+    else:
+        y += thud(rng, 230 * k, dur, 0.6)
+        y += osc.partials([480 * k, 1100 * k], [0.8, 0.4], [0.05, 0.03], dur, rng) * 0.8
+        twang = osc.partials([1320 * k, 2950 * k, 4700 * k], [0.6, 0.4, 0.2], [0.14, 0.08, 0.04], dur, rng)
+        y += twang * (0.65 + 0.35 * np.sin(2 * np.pi * 40 * t)) * 0.35
+        place(y, click(rng, (2600.0, 4200.0), 0.03, 6, 0.003, 0.5), 0)
+    return fade(y, 0, 0.06)
+
+
+def throwable_incendiary_fire(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Burning fuel pool, seamless 4 s loop: soft low burn (brown noise < 300 Hz with a slow
+    flutter), dense small crackle (1.5-4 kHz impulses), sparse larger wood-like snaps and a faint
+    hiss. Niche: crackle-dominated and quiet in the lows, unlike the flamethrower's < 600 Hz roar
+    (no gas roar, no pitched content)."""
+    def render(d: float) -> np.ndarray:
+        n = nsamp(d)
+        flutter = 0.7 + 0.3 * np.tanh(filters.lp(noise.white(d, rng), 4) * 30)
+        burn = filters.lp(noise.brown(d, rng), 280) * flutter * 0.9
+        lick = filters.bp(noise.pink(d, rng), 700, 0.8) * (0.6 + 0.4 * np.tanh(filters.lp(noise.white(d, rng), 7) * 30))
+        fine = filters.bp(noise.crackle(d, rng, 160), 2600, 0.7) * 2.2
+        mid = filters.bp(noise.crackle(d, rng, 35), 1500, 1.2) * 2.5
+
+        def snap(i: int, r: np.random.Generator) -> np.ndarray:
+            sd = r.uniform(0.01, 0.04)
+            g = filters.bp(noise.white(sd, r), r.uniform(900, 3200), r.uniform(1.5, 3.0)) * env.exp_decay(sd, sd * 0.7, 0.0)
+            return g * r.uniform(0.4, 1.0)
+
+        snaps = granular.cloud(d, np.sort(rng.uniform(0, d - 0.05, int(d * 3))), snap, rng) * 1.4
+        hiss = filters.hp(noise.white(d, rng), 5000) * 0.06
+        return (burn + lick * 0.25 + fine + mid + snaps + hiss)[:n]
+    return make_loop(render, 4.0, 0.4)
+
+
 # ============================================================ table
 
 CUES: list[CueSpec] = [
@@ -1810,4 +2035,23 @@ CUES: list[CueSpec] = [
             volume_db=-14.0, norm="bed"),
     CueSpec("amb_street_dusk", amb_street_dusk, bus="Ambience", positional=False, loop=True, volume_db=-12.0,
             norm="bed"),
+    CueSpec("door_breach", door_breach, variations=3, max_distance=60.0, pitch_jitter=0.04,
+            note="QA-36 audio_cues v1.2: police breach, 3D at the door"),
+    CueSpec("burn_warning", burn_warning, max_distance=50.0,
+            note="QA-36/QC-38 audio_cues v1.2: 5 s thermite countdown before the fire shutters"),
+    CueSpec("throwable_pin", throwable_pin, bus="Weapons", variations=2, max_distance=12.0, pitch_jitter=0.04,
+            volume_db=-5.0, note="audio_cues v1.3 (D-073) throwables: pin pull + spoon"),
+    CueSpec("throwable_frag", throwable_frag, variations=3, max_distance=150.0, pitch_jitter=0.03,
+            note="audio_cues v1.3 (D-073) throwables"),
+    CueSpec("throwable_concussion", throwable_concussion, variations=2, max_distance=120.0, pitch_jitter=0.02,
+            note="audio_cues v1.3 (D-073) throwables"),
+    CueSpec("throwable_incendiary", throwable_incendiary, variations=2, max_distance=60.0, pitch_jitter=0.04,
+            note="audio_cues v1.3 (D-073) throwables"),
+    CueSpec("throwable_knife_hit", throwable_knife_hit, bus="Weapons", variations=3, max_distance=15.0,
+            pitch_jitter=0.05, volume_db=-6.0, note="audio_cues v1.3 (D-073) throwables: body / flesh thunks only"),
+    CueSpec("throwable_knife_hit_hard", throwable_knife_hit_hard, bus="Weapons", variations=4, max_distance=15.0,
+            pitch_jitter=0.05, volume_db=-6.0,
+            note="audio_cues v1.3 throwables: world geometry; _1/_3 metal ting, _2/_4 wood thunk"),
+    CueSpec("throwable_incendiary_fire", throwable_incendiary_fire, loop=True, max_distance=25.0, volume_db=-4.0,
+            note="audio_cues v1.3 throwables: burning-pool crackle loop (ENV A starts/stops it with the pool)"),
 ]

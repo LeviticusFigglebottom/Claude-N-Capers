@@ -74,8 +74,8 @@ def _rot_about(R: np.ndarray, c) -> Matrix:
 
 def _bend_half(ob, rest: Matrix, c0: np.ndarray, c1: np.ndarray) -> Matrix:
     """Model-space matrix that swings a crossbow string half about its anchor (the part origin, or its mesh
-    point farthest from the latched centre when the origin sits at the centre) so the end at ``c0`` reaches
-    ``c1``, stretched along the half by the length ratio."""
+    point farthest from the rest centre ``c0`` when the origin sits at the centre) so the end at ``c0`` (the
+    model's released centre) reaches ``c1``, stretched along the half by the length ratio."""
     a = np.array(rest.to_translation())
     if np.linalg.norm(a - c0) < 0.03 and ob.type == "MESH" and len(ob.data.vertices):
         pts = np.array([tuple(rest @ v.co) for v in ob.data.vertices])
@@ -84,7 +84,7 @@ def _bend_half(ob, rest: Matrix, c0: np.ndarray, c1: np.ndarray) -> Matrix:
     l0, l1 = float(np.linalg.norm(u0)), float(np.linalg.norm(u1))
     n0, n1 = u0 / l0, u1 / l1
     ax = np.cross(n0, n1)
-    if np.linalg.norm(ax) < 1e-9:              # no swing (latched): any axis normal to the half
+    if np.linalg.norm(ax) < 1e-9:              # no swing (released): any axis normal to the half
         ax = np.cross(n0, np.array([0.0, 0.0, 1.0])) if abs(n0[2]) < 0.9 else np.cross(n0, np.array([1.0, 0.0, 0.0]))
     R = A.align(n0, ax, n1, ax)                # minimal rotation n0 -> n1 about n0 x n1
     S = np.eye(3) + (l1 / l0 - 1.0) * np.outer(n0, n0)
@@ -271,14 +271,12 @@ def _pose_real_parts(s, st, parts: dict, rest: dict, Mg: Matrix) -> None:
             A.rxd(np.degrees(st.extra.get("spin", 0.0))), np.array(rest["Blade"].to_translation())) @ rest["Blade"]
     halves = [n for n in ("StringUpper", "StringLower") if n in parts]
     if halves and s.name == "crossbow":
-        # the two-half string: each half bends from its prod-tip anchor to the string centre (fp.crossbow)
-        c0 = np.asarray(s.markers["string_latched"], float)
+        # the two-half string (fp.crossbow): each half node (origin = its prod-tip anchor; the ...Cord child follows)
+        # rests RELEASED, its cord ending on string_rest; it swings about the anchor and stretches to the centre
+        c0 = np.asarray(s.markers["string_rest"], float)
         c1 = B.string_centre(s, st.extra.get("string", 1.0))
         for n in halves:
             parts[n].matrix_world = Mg @ _bend_half(parts[n], rest[n], c0, c1) @ rest[n]
-    elif "String" in parts and s.name == "crossbow":
-        t = 1.0 - st.extra.get("string", 1.0)          # 0 = latched (the model's pose) .. 1 = released
-        about_origin("String", np.eye(3), (0.0, S.STRING_TRAVEL * t, 0.0))
 
 
 magazine_frame_cache: dict = {}

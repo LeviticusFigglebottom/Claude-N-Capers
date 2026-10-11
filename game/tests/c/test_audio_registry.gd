@@ -54,6 +54,13 @@ const ARMORY_CUES: Array[StringName] = [
 const ARMORY_LOOPS: Array[StringName] = [
 	&"cue.weapon_flamethrower_fire", &"cue.weapon_saw_rev", &"cue.weapon_saw_cut", &"cue.weapon_minigun_fire",
 ]
+## QA-36 (audio_cues v1.2: police breach, thermite burn) and throwables (audio_cues v1.3, D-073).
+const HAZARD_CUES: Array[StringName] = [&"cue.door_breach", &"cue.burn_warning"]
+const THROWABLE_CUES: Array[StringName] = [
+	&"cue.throwable_pin", &"cue.throwable_frag", &"cue.throwable_concussion", &"cue.throwable_incendiary",
+	&"cue.throwable_knife_hit", &"cue.throwable_knife_hit_hard", &"cue.throwable_incendiary_fire",
+]
+const THROWABLE_LOOPS: Array[StringName] = [&"cue.throwable_incendiary_fire"]
 const LOOPS: Array[StringName] = [
 	&"cue.pager_beep", &"cue.pager_radio", &"cue.alarm_bell", &"cue.drill_loop", &"cue.police_siren_far",
 ]
@@ -192,6 +199,39 @@ func test_armory_batch_cues() -> void:
 	assert_eq(player.weapon_fire_cue(&"x", false, akimbo), &"cue.weapon_pistol_fire", "akimbo reuses pistol")
 	player.queue_free()
 
+
+func test_breach_burn_and_throwable_cues() -> void:
+	if _reg == null:
+		skip("no registry")
+		return
+	for id: StringName in HAZARD_CUES + THROWABLE_CUES:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c != null, "registry has %s" % id)
+		if c == null:
+			continue
+		assert_true(c.positional, "%s positional (3D)" % id)
+		assert_eq(c.loop, THROWABLE_LOOPS.has(id), "%s loop flag" % id)
+	for id: StringName in [&"cue.door_breach", &"cue.burn_warning", &"cue.throwable_frag",
+			&"cue.throwable_concussion", &"cue.throwable_incendiary", &"cue.throwable_incendiary_fire"]:
+		var c: AudioCueDef = _reg.get_cue(id)
+		if c != null:
+			assert_eq(c.bus, &"World", "%s bus" % id)
+	for id: StringName in [&"cue.door_breach", &"cue.throwable_frag", &"cue.throwable_knife_hit",
+			&"cue.throwable_knife_hit_hard"]:
+		var c: AudioCueDef = _reg.get_cue(id)
+		if c != null:
+			assert_true(c.streams.size() >= 2, "%s variations" % id)
+	var frag: AudioCueDef = _reg.get_cue(&"cue.throwable_frag")
+	if frag != null:
+		assert_true(frag.max_distance >= 120.0, "frag carries far")
+	for id: StringName in [&"cue.throwable_pin", &"cue.throwable_knife_hit", &"cue.throwable_knife_hit_hard"]:
+		var c: AudioCueDef = _reg.get_cue(id)
+		if c != null:
+			assert_true(c.max_distance <= 15.0, "%s is short range" % id)
+	var burn: AudioCueDef = _reg.get_cue(&"cue.burn_warning")
+	if burn != null and burn.streams.size() > 0:
+		var len_s: float = burn.streams[0].get_length()
+		assert_true(absf(len_s - 5.0) < 0.1, "burn_warning is 5 s (got %.2f)" % len_s)
 
 func test_every_stream_loads_with_length() -> void:
 	if _reg == null:

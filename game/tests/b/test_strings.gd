@@ -114,7 +114,7 @@ func test_qa14_keys_and_blocked_rename() -> void:
 
 ## Every literal prompt / blocked key and voice line id in ENV A's and ENV C's code exists (read-only scan).
 func test_keys_requested_by_systems_exist() -> void:
-	var rx: RegEx = RegEx.create_from_string("\\b(ui\\.(?:blocked|prompt)\\.[a-z0-9_.]*[a-z0-9_]|vo\\.[a-z]+\\.[a-z0-9_]+)\\b")
+	var rx: RegEx = RegEx.create_from_string("\\b(ui\\.(?:blocked|prompt)\\.[a-z0-9_.]*[a-z0-9_]\\.?|vo\\.[a-z]+\\.[a-z0-9_]+)")
 	var table: VoiceLineTable = _voice_table()
 	var files: Array[String] = []
 	for root: String in ["res://systems", "res://world", "res://core"]:
@@ -128,6 +128,9 @@ func test_keys_requested_by_systems_exist() -> void:
 			if k.begins_with("vo.") and k.ends_with("_"):
 				# Format-string prefix (e.g. "vo.crew.ack_%s"): some line must complete it.
 				assert_true(_has_line_prefix(table, k), "voice lines %s* (used in %s)" % [k, path])
+			elif k.ends_with("."):
+				# Built prefix (e.g. "ui.prompt.station." + id): at least one real key must sit under it.
+				assert_true(_has_key_prefix(k), "keys %s* (used in %s)" % [k, path])
 			elif k.begins_with("vo."):
 				assert_false(table.line(StringName(k)).is_empty(), "voice line %s (used in %s)" % [k, path])
 				assert_has(_table, "voice.%s" % k, "voice text for %s (QA-27)" % k)
@@ -136,6 +139,13 @@ func test_keys_requested_by_systems_exist() -> void:
 				assert_has(_table, k, "used in %s" % path)
 	assert_true(found > 10, "scan found %d keys" % found)
 	assert_true(vo_ids >= 4, "scan found %d literal vo ids (abort, pager_last, cuff_warning, dev_start)" % vo_ids)
+
+
+func _has_key_prefix(prefix: String) -> bool:
+	for key: Variant in _table:
+		if String(key).begins_with(prefix) and String(key).length() > prefix.length():
+			return true
+	return false
 
 
 ## D-039: objective ids are the heist design doc's `[tag]`s, never guesses.

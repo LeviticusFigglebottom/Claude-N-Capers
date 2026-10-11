@@ -4,7 +4,7 @@
 extends TestCase
 
 const FIXTURES: String = "res://tests/b/fixtures/save"
-const GOLDEN: Array[String] = ["v0", "v1", "v2", "v3", "v4", "v5", "v5_damaged", "v6_damaged"]
+const GOLDEN: Array[String] = ["v0", "v1", "v2", "v3", "v4", "v5", "v5_damaged", "v6_damaged", "v6_heister"]
 const SLOT: int = 5
 
 
