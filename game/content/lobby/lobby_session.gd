@@ -15,7 +15,7 @@ signal changed()
 signal contract_changed(contract: Dictionary)
 ## The host's MSG_START was accepted: {"heist": StringName, "difficulty", "is_pro", "seed"}.
 signal started(info: Dictionary)
-## A join never got a crew slot (timeout), or the host went away.
+## A join could not connect (unreachable), never got a crew slot (timeout), or the host went away.
 signal connection_failed(reason: StringName)
 ## The session ended (local Leave, or Net.leave() from anywhere).
 signal session_left()
@@ -23,6 +23,7 @@ signal message_rejected(from_slot: int, kind: StringName, reason: StringName)
 
 const FAIL_TIMEOUT: StringName = &"timeout"
 const FAIL_HOST_LOST: StringName = &"host_lost"
+const FAIL_UNREACHABLE: StringName = &"unreachable"
 const LOG_CHANNEL: StringName = &"lobby"
 
 ## The Net API node (autoload `Net` when left null before _ready).
@@ -46,15 +47,8 @@ func _ready() -> void:
 	net.connect(&"crew_changed", _on_crew_changed)
 	net.connect(&"lobby_message", _on_lobby_message)
 	net.connect(&"session_ended", _on_session_ended)
-	# Not part of the Net API yet (asked: QB-L1): a client learns that the host vanished only here.
-	if not net.multiplayer.server_disconnected.is_connected(_on_host_lost):
-		net.multiplayer.server_disconnected.connect(_on_host_lost)
-
-
-func _exit_tree() -> void:
-	if net != null and is_instance_valid(net) and net.multiplayer != null \
-			and net.multiplayer.server_disconnected.is_connected(_on_host_lost):
-		net.multiplayer.server_disconnected.disconnect(_on_host_lost)
+	net.connect(&"connection_failed", _on_unreachable)  # D-052
+	net.connect(&"host_lost", _on_host_lost)
 
 
 ## True from host()/join() until the session ends.
@@ -81,7 +75,8 @@ func host(port: int) -> Error:
 
 
 func join(address: String, port: int) -> Error:
-	var err: Error = net.call(&"join", address, port) as Error
+	var p: PlayerProfile = _profile()
+	var err: Error = net.call(&"join", address, port, p.profile_name if p.profile_name != "" else "Player") as Error
 	if err != OK:
 		Log.warn(LOG_CHANNEL, "join %s:%d failed: %s" % [address, port, error_string(err)])
 		return err
@@ -201,16 +196,22 @@ func _on_session_ended() -> void:
 	changed.emit()
 
 
+func _on_unreachable() -> void:
+	if _active and not state.is_host:
+		_fail(FAIL_UNREACHABLE, false)  # Net leaves by itself
+
+
 func _on_host_lost() -> void:
 	if _active and not state.is_host:
-		_fail(FAIL_HOST_LOST)
+		_fail(FAIL_HOST_LOST, false)
 
 
-func _fail(reason: StringName) -> void:
+func _fail(reason: StringName, leave_net: bool = true) -> void:
 	_join_left_s = -1.0
 	Log.warn(LOG_CHANNEL, "co-op session failed: %s" % reason)
 	connection_failed.emit(reason)
-	net.call(&"leave")
+	if leave_net:
+		net.call(&"leave")
 
 
 func _profile() -> PlayerProfile:

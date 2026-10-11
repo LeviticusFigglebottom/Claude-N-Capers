@@ -181,3 +181,33 @@ func test_lobby_screen_draws_the_crew() -> void:
 	assert_true(screen.focus_chain.has(screen.ready_button))
 	screen.queue_free()
 	await wait_frames(1)
+
+
+## D-052: the join carries the profile name into the Net crew registry; host_lost fails the client.
+func test_join_name_and_host_lost() -> void:
+	var pair: Array[LobbySession] = await _connected_pair()
+	var host: LobbySession = pair[0]
+	var client: LobbySession = pair[1]
+	var cs: int = client.state.local_slot
+	var named: Callable = func() -> bool:
+		return (host.net.get(&"crew") as Dictionary).get(cs, {}).get("display_name", "") == "Client Cole"
+	assert_true(await wait_until(named, 10.0), "Net.join sent the profile name")
+	var reasons: Array[StringName] = []
+	client.connection_failed.connect(func(r: StringName) -> void: reasons.append(r))
+	host.leave()
+	assert_true(await wait_until(func() -> bool: return not reasons.is_empty(), 10.0), "client noticed")
+	assert_eq(reasons, [LobbySession.FAIL_HOST_LOST] as Array[StringName])
+	assert_false(client.is_active(), "Net left the session")
+
+
+## D-052: Net.connection_failed while joining reports `unreachable` (Net itself leaves).
+func test_unreachable_join_fails() -> void:
+	var client: LobbySession = _session(_branch("ClientBranch"), "Client Cole", 8)
+	assert_eq(client.join("127.0.0.1", _port), OK)
+	var reasons: Array[StringName] = []
+	client.connection_failed.connect(func(r: StringName) -> void: reasons.append(r))
+	client.net.emit_signal(&"connection_failed")
+	assert_eq(reasons, [LobbySession.FAIL_UNREACHABLE] as Array[StringName])
+	assert_true(client.is_active(), "the session waits for Net's own leave()")
+	client.net.call(&"leave")
+	assert_false(client.is_active())

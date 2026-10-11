@@ -70,7 +70,7 @@ func test_dummy_types_are_data() -> void:
 		ids.append(d.id)
 		assert_true(String(d.enemy_id).begins_with("enemy."), "%s mirrors an EnemyDef id" % d.id)
 		assert_true(d.health_for(Enums.Difficulty.ROUTINE) > 0.0, "%s has HP" % d.id)
-		assert_true(d.uses_enemy_def() or not d.health.is_empty(), "%s: EnemyDef or B stopgap HP" % d.id)
+		assert_true(d.uses_enemy_def(), "%s reads HP from its EnemyDef" % d.id)
 	for id: StringName in [&"range_dummy.light", &"range_dummy.heavy", &"range_dummy.bulwark",
 			&"range_dummy.wrecker", &"range_dummy.corpsman"]:
 		assert_has(ids, id)

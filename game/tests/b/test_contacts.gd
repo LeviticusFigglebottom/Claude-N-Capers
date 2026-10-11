@@ -55,12 +55,27 @@ func test_placeholder_portrait_draws_without_art() -> void:
 	var p: ContactPortrait = ContactPortrait.new()
 	p.size = Vector2(200, 200)
 	add_child(p)
-	p.set_contact(ContactDef.find(&"contact.vance"))
+	p.set_contact(ContactDef.find(&"contact.mercer"))
 	await wait_frames(1)
 	assert_true(p.uses_placeholder(), "no portrait art yet: procedural silhouette")
-	var art: ContactDef = ContactDef.find(&"contact.reyes").duplicate() as ContactDef
+	var art: ContactDef = ContactDef.find(&"contact.mercer").duplicate() as ContactDef
 	art.portrait_texture = PlaceholderTexture2D.new()
 	p.set_contact(art)
 	assert_false(p.uses_placeholder(), "texture fills the slot")
 	assert_true(p.art is TextureRect)
 	p.queue_free()
+
+
+## QB-50a: D's portraits (vance's Odile is provisional). Only portrait_texture is set.
+func test_contact_portraits_assigned() -> void:
+	var want: Dictionary = {
+		&"contact.vance": "res://assets/characters/portraits/odile.png",
+		&"contact.reyes": "res://assets/characters/portraits/hollis.png",
+		&"contact.accountant": "res://assets/characters/portraits/accountant.png",
+	}
+	for id: StringName in want:
+		var c: ContactDef = ContactDef.find(id)
+		assert_true(c.portrait_texture != null, "%s has a portrait" % id)
+		if c.portrait_texture != null:
+			assert_eq(c.portrait_texture.resource_path, want[id], "%s portrait path" % id)
+	assert_true(ContactDef.find(&"contact.mercer").portrait_texture == null, "Mercer keeps the silhouette")

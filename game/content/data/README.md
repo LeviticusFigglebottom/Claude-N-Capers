@@ -136,18 +136,18 @@ all (D-026). Fire cues `cue.weapon_<anim_set>_fire(_suppressed)`; anim sets `pis
 | `warden_45` Warden .45 | PISTOL / SEC / semi | 62 | 400 | 8 / 72 | 15 / 30 / 0.5 | 27 | 1.7 / 2.3 | 18000 / 6 |
 | `hornet_9` Hornet 9 | SMG / SEC / auto, semi | 36 | 800 | 30 / 180 | 18 / 36 / 0.55 | 24 | 2.2 / 3.0 | 24000 / 4 |
 | `corsair_ar` Corsair | AR / PRI / auto, semi | 55 | 700 | 30 / 150 | 9999 / 9999 / 1.0 (none) | 20 | 2.4 / 3.1 | 32000 / 3 |
-| `plowman_12` Plowman 12 | SHOTGUN / PRI / pump | 16 × 10 | 70 | 6 / 48 | 8 / 22 / 0.15 | 21 | 3.3 / 3.8 | 28000 / 8 |
+| `plowman_12` Plowman 12 | SHOTGUN / PRI / pump | 16 × 10 | 70 | 6 / 48 | 8 / 22 / 0.15 | 21 | 3.4 / 4.2 | 28000 / 8 |
 | `rampart_lmg` Rampart | LMG / PRI / auto | 48 | 750 | 100 / 300 | 25 / 45 / 0.6 | 2 | 5.6 / 6.6 | 54000 / 18 |
 | `heron_308` Heron .308 | SNIPER / PRI / bolt | 230 | 50 | 5 / 40 | 25 / 60 / **1.35** (gains) | 6 | 3.0 / 3.8 | 48000 / 14 |
 Heron: `armor_pierce` 1.0, `shield_pierce`, `wall_pierce` (L3.4). Threat (suppression) 11 / 10 /
 12 / 18 / 22 / 30; noise 70 / 60 / 70 / 80 / 90 / 100 m; spreads, recoil, equip/ADS times and ammo
-pickups are in the .tres files (all ◇). Shell-by-shell reload (D-034 QB-43): the Plowman 12 sets
-`reload_start_s` 0.4, `reload_per_round_s` 0.5, `reload_end_s` 0.4 ◇; ENV A loads one shell per
-`reload_per_round_s` and firing interrupts it. The whole-reload fields stay consistent for the UI and
-for any code that reads them: `reload_empty_time_s` = start + mag x per_round + end (6 shells: 3.8 s),
-`reload_time_s` = start + (mag - 1) x per_round + end (one shell left: 3.3 s); the Extended Tube adds
-2 x 0.5 = 1.0 s to both. The Heron .308 has a detachable 5-round box magazine, so it keeps a magazine
-reload (the three fields 0). `test_shell_by_shell_reload_fields` checks this.
+pickups are in the .tres files (all ◇). Shell-by-shell reload (D-034 QB-43, D-045): the Plowman 12 sets
+`reload_start_s` 0.4, `reload_per_round_s` 0.4333, `reload_end_s` 0.4, `reload_end_empty_s` 1.2 ◇; ENV A
+loads one shell per `reload_per_round_s` and firing interrupts it. LoadoutResolver derives the
+whole-reload fields after mods: `reload_time_s` = start + mag x per_round + end (6 shells: 3.4 s),
+`reload_empty_time_s` = start + mag x per_round + end_empty (4.2 s); with the Extended Tube (8 shells)
+4.27 / 5.07 s. The Heron .308 has a detachable 5-round box magazine, so it keeps a magazine
+reload (the shell fields 0). `test_shell_by_shell_reload_fields` checks this.
 
 Mods (stock defaults have a zero delta, except the Heron's stock 4x scope = magnification 4.0):
 | Weapon | Optional mods (type: main effect / downside) |
@@ -155,7 +155,7 @@ Mods (stock defaults have a zero delta, except the Heron's stock 4x scope = magn
 | Warden | `w45_suppressor` (SUPP: silent, threat 0 / dmg −4, conc −3, ADS +0.05), `w45_compensator` (BARREL_EXT: kick −0.5 / conc −2; **conflicts** with the suppressor), `w45_reflex_sight` (SIGHT: ADS spread −0.15, 1.1× / conc −1), `w45_extended_mag` (MAG: +4 / conc −2, reload +0.25) |
 | Hornet | `hornet_suppressor` (silent, threat 0 / dmg −3, conc −2), `rail_reflex_sight`, `hornet_extended_mag` (+15 / conc −3, reload +0.4), `hornet_stock_folded` (STOCK: conc +3 / kick +0.35, horiz +0.2, ADS spread +0.3) |
 | Corsair | `corsair_suppressor` (silent, threat 0 / dmg −4, conc −3), `rail_reflex_sight`, `rail_prism_scope` (3×, ADS spread −0.25 / conc −3, ADS +0.08), `corsair_vertical_grip` (FOREGRIP: kick −0.2 / conc −1, ADS +0.03), `corsair_extended_mag` (+10 / conc −2) |
-| Plowman | `plowman_choke` (BARREL_EXT: spreads −0.5 / conc −1), `rail_reflex_sight`, `plowman_extended_tube` (+2 / conc −2, reload +1.0 = 2 shells), `plowman_pistol_grip` (STOCK: conc +5, hip −0.3 / kick +0.8, ADS spread +0.5) |
+| Plowman | `plowman_choke` (BARREL_EXT: spreads −0.5 / conc −1), `rail_reflex_sight`, `plowman_extended_tube` (+2 / conc −2; the resolver adds 2 shells of reload), `plowman_pistol_grip` (STOCK: conc +5, hip −0.3 / kick +0.8, ADS spread +0.5) |
 | Rampart | `rampart_short_barrel` (BARREL: conc +4 / ADS spread +0.4, kick +0.15), `rail_reflex_sight`, `rail_prism_scope`, `rampart_bipod` (FOREGRIP: kick −0.35 / conc −2, ADS +0.05), `rampart_box_200` (+100 / conc −3, reload +1.2, equip +0.1) |
 | Heron | `heron_suppressor` (silent, threat 0 / dmg −20, conc −3), `heron_scope_10x` (8× / conc −2, ADS +0.08), `heron_bipod` (kick −0.6 / conc −2), `heron_extended_mag` (+5 / conc −2) |
 Shared rail optics: `rail_reflex_sight` (ADS spread −0.1, 1.15× / conc −1, ADS +0.02, $3000) and
