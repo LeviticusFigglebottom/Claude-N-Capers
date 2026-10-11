@@ -1,0 +1,60 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://bhj0pw72dm8x5" path="res://assets/weapons/wpn_harrow_12/wpn_harrow_12.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 13.0
+pellets = 10
+headshot_mult = 1.0
+fire_rate_rpm = 300.0
+spread_deg_hip = 4.5
+spread_deg_ads = 2.6
+recoil_kick_deg = 2.4
+recoil_horizontal_deg = 1.0
+falloff_start_m = 6.0
+falloff_end_m = 18.0
+falloff_min_mult = 0.12
+mag_size = 8
+total_ammo = 56
+reload_time_s = 2.9
+reload_empty_time_s = 3.6
+equip_time_s = 0.6
+ads_time_s = 0.3
+concealment = 16
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 16.0
+ammo_pickup_min = 1.0
+ammo_pickup_max = 3.0
+suppressed = false
+noise_radius_m = 80.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.harrow_12"
+display_name = "Harrow 12"
+manufacturer = "Graff-Lindqvist"
+weapon_class = 3
+slot = 0
+fire_modes = Array[StringName]([&"semi"])
+base = SubResource("base")
+price = 48000
+unlock_level = 21
+mod_slots = {
+1: [&"mod.harrow_muzzle_brake"],
+3: [&"mod.harrow_iron_sights", &"mod.rail_reflex_sight"],
+7: [&"mod.harrow_standard_mag", &"mod.harrow_extended_mag"]
+}
+default_mods = {
+3: &"mod.harrow_iron_sights",
+7: &"mod.harrow_standard_mag"
+}
+fire_cue = &"cue.weapon_shotgun_fire"
+fire_cue_suppressed = &""
+anim_set = &"rifle"
+model = ExtResource("3")

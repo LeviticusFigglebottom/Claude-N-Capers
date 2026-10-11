@@ -21,7 +21,7 @@ from __future__ import annotations
 import math
 
 import bmesh
-from mathutils import Vector
+from mathutils import Matrix, Vector
 
 from lib import geo, uv
 
@@ -510,3 +510,163 @@ def build_flipup_irons(ctx, mats: Mats, rear_y: float, front_y: float, front_bas
     mb.box((-0.0012, y - 0.0015, z0 + 0.006), (0.0012, y + 0.0015, aim_z), mat=alu)
     body = finish(mb, name, bevel=0.0005, segments=1, parent=parent)
     return body, aim_z
+
+
+# --- B4-18: batch 3 helpers (generic parts reused by the batch-3 weapons) ---------------------
+def chamfer_rect(hw: float, z0: float, z1: float, ch: float, x0: float = 0.0) -> list[tuple[float, float]]:
+    """Chamfered rectangle cross-section (u = x, v = z) for ``axis="Y"`` prisms."""
+    return [(x0 - hw, z0 + ch), (x0 - hw + ch, z0), (x0 + hw - ch, z0), (x0 + hw, z0 + ch), (x0 + hw, z1 - ch),
+            (x0 + hw - ch, z1), (x0 - hw + ch, z1), (x0 - hw, z1 - ch)]
+
+
+def build_grip(ctx, mats: Mats, mat_name: str, top_z: float, bottom_z: float, half_depth: float, half_width: float,
+               angle_deg: float, name: str = "Grip", parent=None, finger_bumps: int = 3, palm_swell: float = 0.003,
+               y0: float = 0.0, bevel: float = 0.0030):
+    """Raked pistol grip prism (see ``raked_grip_profile``) with a rounded bevel."""
+    mb = ctx.builder()
+    m = mb.material(getattr(mats, mat_name)())
+    mb.prism(raked_grip_profile(top_z, bottom_z, half_depth, angle_deg, palm_swell=palm_swell,
+                                finger_bumps=finger_bumps, y0=y0), axis="X", start=-half_width, end=half_width, mat=m)
+    return finish(mb, name, bevel=bevel, segments=2, parent=parent)
+
+
+def build_trigger_group(ctx, mats: Mats, rear_y: float, front_y: float, top_z: float, bottom_z: float,
+                        trigger_y: float, mat_name: str = "steel", name: str = "TriggerGroup", parent=None,
+                        hw: float = 0.0065):
+    """Trigger guard loop (side profile) plus a curved trigger blade hanging from ``top_z`` at ``trigger_y``."""
+    mb = ctx.builder()
+    m = mb.material(getattr(mats, mat_name)())
+    outer = [(rear_y, top_z), (front_y, top_z), (front_y, bottom_z + 0.008), (front_y - 0.010, bottom_z),
+             (rear_y + 0.006, bottom_z), (rear_y, bottom_z + 0.006)]
+    t = 0.0045
+    hole = [(rear_y + t, top_z - 0.0005), (front_y - t, top_z - 0.0005), (front_y - t, bottom_z + t + 0.006),
+            (front_y - t - 0.008, bottom_z + t), (rear_y + t + 0.004, bottom_z + t), (rear_y + t, bottom_z + t + 0.004)]
+    mb.prism(outer, holes=[list(reversed(hole))], axis="X", start=-hw, end=hw, mat=m)
+    pf, pb = [], []
+    for i in range(8):
+        s = i / 7
+        z = top_z - s * min(0.020, (top_z - bottom_z) * 0.7)
+        yc = trigger_y + 0.006 * s * s
+        pf.append((yc + 0.0020, z))
+        pb.append((yc - 0.0020, z))
+    mb.prism(pf + list(reversed(pb)), axis="X", start=-0.0030, end=0.0030, mat=m)
+    return finish(mb, name, bevel=0.0006, segments=1, parent=parent)
+
+
+def build_barrel(ctx, mats: Mats, r: float, y0: float, y1: float, z: float, name: str = "Barrel", parent=None,
+                 mat_name: str = "steel", bore_r: float = 0.0, segments: int = 24, crown: bool = True):
+    """Barrel along +Y from ``y0`` to ``y1`` on the bore axis at height ``z`` (open bore when ``bore_r``)."""
+    mb = ctx.builder()
+    m = mb.material(getattr(mats, mat_name)())
+    if bore_r > 0.0:
+        ring_y(mb, r, bore_r, y0, y1, z, m, segments=segments)
+    else:
+        mb.cylinder(r, y1 - y0, segments=segments, centre=(0.0, (y0 + y1) / 2, z), axis="Y", mat=m)
+    if crown:
+        mb.cylinder(r + 0.0010, 0.008, segments=segments, centre=(0.0, y1 - 0.004, z), axis="Y", mat=m)
+    return finish(mb, name, bevel=0.0004, parent=parent)
+
+
+def build_flash_hider(ctx, mats: Mats, r: float, y0: float, length: float, z: float, name: str = "FlashHider",
+                      parent=None, slots: int = 4, bore_r: float = 0.0045):
+    """Slotted birdcage flash hider along +Y from ``y0``; dark slots cut visually as inset boxes."""
+    mb = ctx.builder()
+    st = mb.material(mats.steel())
+    dark = mb.material(mats.polymer())
+    ring_y(mb, r, bore_r, y0, y0 + length, z, st, segments=24)
+    for i in range(slots):
+        a = 2 * math.pi * (i + 0.5) / slots
+        cx, cz = math.cos(a) * (r - 0.0006), z + math.sin(a) * (r - 0.0006)
+        mb.box((cx - 0.0016, y0 + 0.010, cz - 0.0016), (cx + 0.0016, y0 + length - 0.004, cz + 0.0016), mat=dark)
+    return finish(mb, name, bevel=0.0004, parent=parent)
+
+
+def build_butt_stock(ctx, mats: Mats, mat_name: str, profile: list[tuple[float, float]], hw: float,
+                     name: str = "Stock", parent=None, pad_y: float | None = None, pad_z: tuple[float, float] = (0, 0),
+                     bevel: float = 0.0030, taper=None):
+    """Side-profile (y, z) butt stock of half width ``hw`` with an optional rubber butt pad at ``pad_y``."""
+    mb = ctx.builder()
+    m = mb.material(getattr(mats, mat_name)())
+    mb.prism(profile, axis="X", start=-hw, end=hw, mat=m)
+    if taper is not None:
+        taper_x(mb, taper)
+    body = finish(mb, name, bevel=bevel, segments=2, parent=parent)
+    if pad_y is not None:
+        pd = ctx.builder()
+        rub = pd.material(mats.rubber())
+        pd.box((-hw - 0.0005, pad_y - 0.012, pad_z[0]), (hw + 0.0005, pad_y, pad_z[1]), mat=rub)
+        finish(pd, name + "Pad", bevel=0.0020, segments=2, parent=body)
+    return body
+
+
+def build_shell(ctx, mats: Mats, centre: tuple[float, float, float], r: float = 0.0100, length: float = 0.065,
+                axis_y: bool = True, name: str = "Shell", parent=None):
+    """12-gauge shell: polymer hull + brass head (head towards -Y when ``axis_y``)."""
+    mb = ctx.builder()
+    hull = mb.material(mats.olive())
+    br = mb.material(mats.brass())
+    x, y, z = centre
+    if axis_y:
+        mb.cylinder(r, length - 0.012, segments=20, centre=(x, y + 0.006, z), axis="Y", mat=hull)
+        mb.cylinder(r + 0.0006, 0.012, segments=20, centre=(x, y - (length - 0.012) / 2, z), axis="Y", mat=br)
+    else:
+        mb.cylinder(r, length - 0.012, segments=20, centre=(x, y, z + 0.006), axis="Z", mat=hull)
+        mb.cylinder(r + 0.0006, 0.012, segments=20, centre=(x, y, z - (length - 0.012) / 2), axis="Z", mat=br)
+    return finish(mb, name, bevel=0.0004, parent=parent)
+
+
+def rot_matrix(angle: float, axis: str):
+    """4x4 rotation matrix about a world axis ("X"/"Y"/"Z") for ``MeshBuilder.transform``."""
+    return Matrix.Rotation(angle, 4, axis)
+
+
+def rod(mb, p0, p1, r, mat, segments=6):
+    """Thin closed tube from ``p0`` to ``p1`` (cables, wires)."""
+    a, b = Vector(p0), Vector(p1)
+    d = (b - a).normalized()
+    u = d.orthogonal().normalized()
+    v = d.cross(u)
+    bm = mb.bm
+    ra = [bm.verts.new(a + (u * math.cos(2 * math.pi * i / segments) + v * math.sin(2 * math.pi * i / segments)) * r)
+          for i in range(segments)]
+    rb = [bm.verts.new(b + (u * math.cos(2 * math.pi * i / segments) + v * math.sin(2 * math.pi * i / segments)) * r)
+          for i in range(segments)]
+    faces = [bm.faces.new(list(reversed(ra))), bm.faces.new(rb)]
+    for i in range(segments):
+        j = (i + 1) % segments
+        faces.append(bm.faces.new((ra[i], ra[j], rb[j], rb[i])))
+    for f in faces:
+        f.material_index = mat
+    bmesh.ops.recalc_face_normals(bm, faces=faces)
+
+
+def plate(mb, pts, n, t, mat):
+    """Thin slab from a planar polygon ``pts`` (3D) extruded by ``t`` along the unit normal ``n``."""
+    bm = mb.bm
+    a = [bm.verts.new(p) for p in pts]
+    b = [bm.verts.new((p[0] + n[0] * t, p[1] + n[1] * t, p[2] + n[2] * t)) for p in pts]
+    faces = [bm.faces.new(a), bm.faces.new(list(reversed(b)))]
+    k = len(pts)
+    for i in range(k):
+        faces.append(bm.faces.new((a[i], b[i], b[(i + 1) % k], a[(i + 1) % k])))
+    for f in faces:
+        f.material_index = mat
+    bmesh.ops.recalc_face_normals(bm, faces=faces)
+
+
+def radial(prof, a):
+    """(r, z) profile -> 3D points on the half-plane at angle ``a`` about local Z."""
+    return [(r * math.cos(a), r * math.sin(a), z) for r, z in prof]
+
+
+def cone_z(mb, r, z0, z1, mat, segments=12):
+    """Closed cone along local Z: base ring of radius ``r`` at ``z0``, tip at ``z1`` (arrow and bolt heads)."""
+    bm = mb.bm
+    ring = [bm.verts.new((r * math.cos(2 * math.pi * i / segments), r * math.sin(2 * math.pi * i / segments), z0))
+            for i in range(segments)]
+    tip = bm.verts.new((0.0, 0.0, z1))
+    for i in range(segments):
+        f = bm.faces.new((ring[i], ring[(i + 1) % segments], tip))
+        f.material_index = mat
+    f = bm.faces.new(list(reversed(ring)))
+    f.material_index = mat
