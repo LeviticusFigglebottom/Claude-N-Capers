@@ -2138,6 +2138,7 @@ ui.action.deploy,Deployable
 ui.action.drop_bag,Throw Bag
 ui.action.order_menu,Crew Order
 ui.action.scoreboard,Scoreboard
+ui.action.chat,Chat
 ui.action.pause,Options / Pause
 ui.results.xp.notoriety,Notoriety bonus
 ui.notoriety.open,Notoriety
