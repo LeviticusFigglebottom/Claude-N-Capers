@@ -4,6 +4,8 @@
 ## (the mask shader is applied as material_override), front-projected UV0 (x 0 = viewer's left
 ## = +X, y 0 = top), pivot at the face centre, -Z forward.
 ## B4-15: five more bases (skull, theatre, gasmask, demon, goalie) under the same contract.
+## D-073: every mask is fitted over the crew face envelope (tools/blender/masks/_face_envelope.py);
+## the envelope must have been generated from the current crew heads.
 ## Run after `godot --import`.
 extends TestCase
 
@@ -23,6 +25,13 @@ const CENTRED_FRONT: Array[String] = [
 ]
 ## The respirator pushes well forward of the face (its filter canister).
 const PROTRUDING_FRONT: Dictionary[String, float] = {"gasmask": -0.09}
+## D-073 mask fit: the crew face envelope the mask generator pushes every shell out of.
+const ENVELOPE_REL: String = "../tools/blender/masks/_crew_face_envelope.json"
+const CHARACTERS_DIR: String = "res://assets/characters"
+const STALE_HINT: String = (
+	"regenerate _crew_face_envelope.json (blender -b --factory-startup --python "
+	+ "tools/blender/masks/_face_envelope.py) and rebuild masks (tools/blender/build.py --category masks)"
+)
 
 
 func _load_mask() -> Node3D:
@@ -222,3 +231,27 @@ func test_base_masks_uv0_is_front_projected() -> void:
 			"%s UV0 spans 0..1 (%s..%s)" % [base_name, uv_min, uv_max])
 		assert_true(worst < 0.005, "%s UV0 = front projection (x 0 at +X, y 0 at top); max error %.4f" % [base_name, worst])
 		root.queue_free()
+
+
+## D-073: the mask fit is only valid for the crew heads it was measured on. The envelope stores the
+## sha256 of every crew glb; any crew head change must regenerate it and rebuild the masks.
+func test_crew_face_envelope_matches_current_crew() -> void:
+	var path: String = ProjectSettings.globalize_path("res://").path_join(ENVELOPE_REL)
+	if not FileAccess.file_exists(path):
+		fail("missing %s: %s" % [path, STALE_HINT])
+		return
+	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if not (data is Dictionary) or not ((data as Dictionary).get("crew_sha256") is Dictionary):
+		fail("%s has no crew_sha256: %s" % [path, STALE_HINT])
+		return
+	var stored: Dictionary = (data as Dictionary)["crew_sha256"]
+	var crew: Array[String] = []
+	for dir_name: String in DirAccess.get_directories_at(CHARACTERS_DIR):
+		if dir_name.begins_with("char_crew_"):
+			crew.append(dir_name)
+	assert_true(crew.size() >= 6, "found the crew glbs (%d)" % crew.size())
+	for cid: String in crew:
+		var glb: String = "%s/%s/%s.glb" % [CHARACTERS_DIR, cid, cid]
+		assert_true(stored.has(cid), "envelope covers %s: %s" % [cid, STALE_HINT])
+		assert_eq(FileAccess.get_sha256(glb), String(stored.get(cid, "")),
+			"%s sha256 matches the envelope: %s" % [cid, STALE_HINT])

@@ -59,8 +59,12 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
+import json
+import pathlib
+
 import bmesh
 import bpy
+import numpy as np
 from mathutils import Vector, geometry
 
 from lib import geo, uv
@@ -106,6 +110,11 @@ DEFAULTS: dict[str, Any] = {
     "res": 0.0085,           # interior triangle size, outer skin
     "res_back": 0.014,       # interior triangle size, inner skin (rarely seen)
     "edge_res": 0.005,       # boundary sampling
+    # mask fit: push the shell out of the crew face envelope (_crew_face_envelope.json) so its
+    # inner skin clears every crew head by fit_clearance; "none" keeps the analytic form only
+    "fit": "crew",
+    "fit_clearance": 0.003,  # minimum gap between any crew face and the inner skin (m)
+    "fit_blur": 0.008,       # smoothing radius of the fit displacement (m)
 }
 
 CORNER_DEG = 35.0  # turning angle above which an outline vertex is kept as a hard corner
@@ -376,6 +385,9 @@ class FaceSurface:
         self.eye_u = half
         self.eye_v = float(p["eye_v"])
         self.mouth_closed = p["mouth"] == "closed"
+        self.fit: CrewFit | None = None
+        if p.get("fit", "crew") == "crew":
+            self.fit = CrewFit(self, float(p["fit_clearance"]) + float(p["thickness"]), float(p["fit_blur"]))
 
     # half width and depth falloff of the head cross-section at height v
     def width(self, v: float) -> float:
@@ -420,11 +432,22 @@ class FaceSurface:
             f += self.extra(u, v)
         return f
 
-    def base(self, u: float, v: float) -> Vector:
+    def raw(self, u: float, v: float) -> Vector:
+        """Analytic skin before the crew fit."""
         w = self.width(v)
         d = self.R * w / self.W0
         a = u / self.R
         return Vector((w * math.sin(a), self.profile(v) - d * (1 - math.cos(a)) + self.features(u, v), v))
+
+    def base(self, u: float, v: float) -> Vector:
+        p = self.raw(u, v)
+        if self.fit is not None:
+            d = self.fit.at(u, v)
+            if d > 0.0:
+                rad = Vector((p.x, p.y - self.fit.axis_y, 0.0))
+                if rad.length > 1e-9:
+                    p = p + rad.normalized() * d
+        return p
 
     def normal(self, u: float, v: float) -> Vector:
         h = self.H
@@ -448,6 +471,107 @@ class FaceSurface:
     def depth_at(self, x: float, z: float, offset: float = 0.0) -> float:
         """Blender y of the skin (plus ``offset`` along y) under the point (x, z)."""
         return self.base(self.uv_of_x(x, z), z).y + offset
+
+
+# --- crew fit ----------------------------------------------------------------------------------
+ENVELOPE_PATH = pathlib.Path(__file__).resolve().parent / "_crew_face_envelope.json"
+
+
+class FaceEnvelope:
+    """Cylindrical height map of all crew faces (``_face_envelope.py``): r(theta, z) about x=0, y=axis_y."""
+
+    _cache: "FaceEnvelope | None" = None
+
+    def __init__(self) -> None:
+        e = json.loads(ENVELOPE_PATH.read_text())
+        self.axis_y = float(e["axis_y"])
+        self.th0, _th1, self.dth = (math.radians(float(x)) for x in e["theta_deg"])
+        self.z0, _z1, self.dz = (float(x) for x in e["z"])
+        self.r = np.array(e["r"], dtype=np.float64)
+
+    @classmethod
+    def get(cls) -> "FaceEnvelope":
+        if cls._cache is None:
+            cls._cache = FaceEnvelope()
+        return cls._cache
+
+    def radius(self, th: np.ndarray, z: np.ndarray) -> np.ndarray:
+        nz, nth = self.r.shape
+        fi = (th - self.th0) / self.dth
+        fj = (z - self.z0) / self.dz
+        inside = (fi >= 0) & (fi <= nth - 1) & (fj >= 0) & (fj <= nz - 1)
+        i0 = np.clip(np.floor(fi).astype(int), 0, nth - 2)
+        j0 = np.clip(np.floor(fj).astype(int), 0, nz - 2)
+        a, b = np.clip(fi - i0, 0, 1), np.clip(fj - j0, 0, 1)
+        r = self.r
+        out = ((r[j0, i0] * (1 - a) + r[j0, i0 + 1] * a) * (1 - b)
+               + (r[j0 + 1, i0] * (1 - a) + r[j0 + 1, i0 + 1] * a) * b)
+        return np.where(inside, out, 0.0)
+
+
+def _blur(a: np.ndarray, sigma_cells: float) -> np.ndarray:
+    n = max(1, int(math.ceil(sigma_cells * 3)))
+    k = np.exp(-0.5 * (np.arange(-n, n + 1) / sigma_cells) ** 2)
+    k /= k.sum()
+    pad = np.pad(a, n, mode="edge")
+    pad = np.apply_along_axis(lambda row: np.convolve(row, k, mode="same"), 1, pad)
+    pad = np.apply_along_axis(lambda col: np.convolve(col, k, mode="same"), 0, pad)
+    return pad[n:-n, n:-n]
+
+
+def _dilate(a: np.ndarray, cells: int) -> np.ndarray:
+    out = a.copy()
+    pad = np.pad(a, cells, mode="edge")
+    h, w = a.shape
+    for dy in range(-cells, cells + 1):
+        for dx in range(-cells, cells + 1):
+            if dx * dx + dy * dy <= cells * cells:
+                out = np.maximum(out, pad[cells + dy:cells + dy + h, cells + dx:cells + dx + w])
+    return out
+
+
+class CrewFit:
+    """Smooth radial displacement d(u, v) >= 0 that lifts the outer skin to at least ``need`` (thickness +
+    clearance) outside the crew face envelope. Computed once on a (u, v) grid (STEP), dilated and blurred
+    (``blur``) and iteratively topped up so the smoothed field still covers every point's requirement."""
+
+    STEP = 0.003
+    U = 0.21
+    V0, V1 = -0.18, 0.18
+
+    def __init__(self, surf: "FaceSurface", need: float, blur: float) -> None:
+        env = FaceEnvelope.get()
+        self.axis_y = env.axis_y
+        self.us = np.arange(-self.U, self.U + 1e-9, self.STEP)
+        self.vs = np.arange(self.V0, self.V1 + 1e-9, self.STEP)
+        pts = np.array([[tuple(surf.raw(float(u), float(v))) for u in self.us] for v in self.vs])
+        x, y, z = pts[..., 0], pts[..., 1] - env.axis_y, pts[..., 2]
+        r = np.hypot(x, y)
+        th = np.arctan2(x, y)
+        r_env = env.radius(th, z)
+        d0 = np.where(r_env > 0, np.maximum(0.0, r_env + need - r), 0.0)
+        cells = max(1, round(blur / self.STEP))
+        d = np.zeros_like(d0)
+        for _ in range(6):
+            res = np.maximum(0.0, d0 - d)
+            if res.max() < 2e-4:
+                break
+            d = d + _blur(_dilate(res, cells), cells * 0.6) * 1.15
+        self.d = d
+        self.max = float(d.max())
+
+    def at(self, u: float, v: float) -> float:
+        fi = (u + self.U) / self.STEP
+        fj = (v - self.V0) / self.STEP
+        nv, nu = self.d.shape
+        if fi < 0 or fj < 0 or fi > nu - 1 or fj > nv - 1:
+            return 0.0
+        i0 = min(int(fi), nu - 2)
+        j0 = min(int(fj), nv - 2)
+        a, b = fi - i0, fj - j0
+        d = self.d
+        return float((d[j0, i0] * (1 - a) + d[j0, i0 + 1] * a) * (1 - b)
+                     + (d[j0 + 1, i0] * (1 - a) + d[j0 + 1, i0 + 1] * a) * b)
 
 
 # --- outlines and holes ------------------------------------------------------------------------
@@ -933,6 +1057,10 @@ def build_mask(ctx, params: dict[str, Any] | None, mats: dict[str, bpy.types.Mat
          slots["primary"], slots["primary"], slots["inner"], float(p["res"]), float(p["res_back"]),
          float(p["edge_res"]), bottom=True, refine=refine)
     print(f"[mask] shell: {mb.tri_count()} tris")
+    if surf.fit is not None:
+        print(f"[mask] crew fit: max lift {surf.fit.max * 1000:.1f} mm")
+        ctx.source_extra["fit"] = (f"crew face envelope (_crew_face_envelope.json), clearance "
+                                   f"{float(p['fit_clearance']) * 1000:.1f} mm, max lift {surf.fit.max * 1000:.1f} mm")
     for fn in ornaments:
         before = mb.tri_count()
         fn(kit)
