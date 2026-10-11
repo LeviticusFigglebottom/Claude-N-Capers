@@ -87,3 +87,19 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
 * `rig_arms` `weapon` bone: identity under hand.R except during `sniper_bolt*` and `sniper_reload_empty` (the left hand holds the gun).
 * Part travel for ENV A: pump 0.075 m; bolt lift 62° + 0.075 m; LMG feed cover 78°. Weapon models with a hinged feed cover
   expose `FeedCover` (pivot at the rear hinge, rotating about local X) (visual_slots.md).
+
+## v1.5: batch-2/3 viewmodel sets (D-053, D-058)
+* Sets: `akimbo`, `revolver`, `break_action`, `lever`, `bow`, `crossbow`, `launcher`, `flamethrower`, `saw`, `minigun`,
+  `shotgun_box` (box/drum-fed shotguns Harrow/Brute; D-058), plus pistol `fire_auto`/`fire_auto_ads` (3 f).
+* Loop naming: Godot strips a `_loop` suffix only when the short name is free, so hold loops are named `fire_hold`
+  (flamethrower, minigun) and `cut_hold` (saw); the lever keeps `reload_loop`. Every clip imports exactly as named.
+* Shell-fed sets (shotgun, lever) always use the shell pieces (D-053). Lever `fire` includes the lever cycle
+  (lever_open/lever_close events).
+* Bow: held in hand.L; the `weapon` bone carries the bow (origin = riser grip, Y = arrow, Z = up the riser) at
+  hand.L × `fp.offhand_grip`. The arrow rides the `magazine` bone (drawn back 0.40 m × draw, hidden at release).
+  SOURCE `curve.bow_<clip>: draw=…` gives per-frame draw (0 brace … 1 full); ENV A bends StringUpper/Lower so the nock
+  sits 0.175 + 0.40 × draw m behind the grip. `fire` = release, `reload` = nock; `draw_string`'s last frame = `hold` frame 0.
+* The `weapon` bone moves relative to hand.R during the lever cycle and every bow clip (SOURCE `weapon_bone` lists them).
+* Weapon-model layout assumed by the choreography: break-action hinge forward of and below the breech face; lever
+  loading gate on the right; saw blade + side grip on the left; minigun left side grip and ammo box on the left.
+* Bulwark `shield_idle*` (humanoid, 3.6 s, speed 0) blends seamlessly with `shield_walk` frame 0.

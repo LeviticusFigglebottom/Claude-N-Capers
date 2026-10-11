@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://bdrlsevt6o60n" path="res://assets/weapons/wpn_reaper_db/wpn_reaper_db.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 19.0
+pellets = 10
+headshot_mult = 1.0
+fire_rate_rpm = 300.0
+spread_deg_hip = 4.2
+spread_deg_ads = 2.2
+recoil_kick_deg = 3.2
+recoil_horizontal_deg = 1.0
+falloff_start_m = 8.0
+falloff_end_m = 22.0
+falloff_min_mult = 0.15
+mag_size = 2
+total_ammo = 40
+reload_time_s = 2.4
+reload_empty_time_s = 2.4
+equip_time_s = 0.5
+ads_time_s = 0.28
+concealment = 18
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 20.0
+ammo_pickup_min = 1.0
+ammo_pickup_max = 2.0
+suppressed = false
+noise_radius_m = 85.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.reaper_db"
+display_name = "Reaper Double"
+manufacturer = "Marrow & Kell"
+weapon_class = 3
+slot = 0
+fire_modes = Array[StringName]([&"semi"])
+base = SubResource("base")
+price = 40000
+unlock_level = 17
+mod_slots = {
+0: [&"mod.reaper_short_barrels"],
+3: [&"mod.reaper_bead_sight", &"mod.reaper_fiber_sight"],
+6: [&"mod.reaper_sawn_stock"],
+7: [&"mod.reaper_shells"]
+}
+default_mods = {
+3: &"mod.reaper_bead_sight",
+7: &"mod.reaper_shells"
+}
+fire_cue = &"cue.weapon_shotgun_fire"
+fire_cue_suppressed = &""
+anim_set = &"break_action"
+model = ExtResource("3")

@@ -1,0 +1,64 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://b5ftomjgejqha" path="res://assets/weapons/wpn_shrike_44/wpn_shrike_44.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 180.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 75.0
+spread_deg_hip = 4.0
+spread_deg_ads = 0.4
+recoil_kick_deg = 2.2
+recoil_horizontal_deg = 0.5
+falloff_start_m = 20.0
+falloff_end_m = 50.0
+falloff_min_mult = 1.2
+mag_size = 8
+total_ammo = 48
+reload_time_s = 4.4
+reload_empty_time_s = 4.9
+reload_per_round_s = 0.45
+reload_start_s = 0.4
+reload_end_s = 0.4
+reload_end_empty_s = 0.9
+equip_time_s = 0.6
+ads_time_s = 0.3
+concealment = 16
+armor_pierce = 1.0
+shield_pierce = true
+wall_pierce = true
+suppression = 18.0
+ammo_pickup_min = 1.0
+ammo_pickup_max = 2.5
+suppressed = false
+noise_radius_m = 90.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.shrike_44"
+display_name = "Shrike Lever"
+manufacturer = "Marrow & Kell"
+weapon_class = 5
+slot = 0
+fire_modes = Array[StringName]([&"bolt"])
+base = SubResource("base")
+price = 44000
+unlock_level = 19
+mod_slots = {
+0: [&"mod.shrike_carbine_barrel"],
+3: [&"mod.shrike_iron_sights", &"mod.shrike_peep_sight", &"mod.shrike_scout_scope"],
+7: [&"mod.shrike_tube"]
+}
+default_mods = {
+3: &"mod.shrike_iron_sights",
+7: &"mod.shrike_tube"
+}
+fire_cue = &"cue.weapon_sniper_fire"
+fire_cue_suppressed = &""
+anim_set = &"lever"
+model = ExtResource("3")

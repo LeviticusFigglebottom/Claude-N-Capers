@@ -1,0 +1,9 @@
+asset: mod_cyclone_box_750
+script: tools/blender/weapons/cyclone_rotary_mods.py
+params: {"part": "box_big"}
+seed: 3559236167  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category weapons --asset mod_cyclone_box_750
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 25000
+tris_lod0: 484

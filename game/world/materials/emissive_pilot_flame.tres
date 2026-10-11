@@ -1,0 +1,24 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[sub_resource type="Gradient" id="Gradient_emit"]
+offsets = PackedFloat32Array(0, 0.35, 0.55, 1)
+colors = PackedColorArray(0.1216, 0.3020, 1.0000, 1, 0.2392, 0.3882, 0.9412, 1, 1.0000, 0.4784, 0.1216, 1, 0.9098, 0.2902, 0.0471, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_emit"]
+gradient = SubResource("Gradient_emit")
+width = 16
+height = 64
+fill_from = Vector2(0.5, 1)
+fill_to = Vector2(0.5, 0)
+
+[resource]
+resource_name = "M_emissive_pilot_flame"
+albedo_color = Color(0.0549, 0.0588, 0.0784, 1)
+roughness = 1.0
+emission_enabled = true
+emission = Color(1.0000, 1.0000, 1.0000, 1)
+emission_energy_multiplier = 1.0
+disable_receive_shadows = true
+emission_operator = 1
+emission_texture = SubResource("GradientTexture2D_emit")
+metadata/uv_tile_m = 1.0

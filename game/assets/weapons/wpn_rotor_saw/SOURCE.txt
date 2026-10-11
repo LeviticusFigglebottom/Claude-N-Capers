@@ -1,0 +1,10 @@
+asset: wpn_rotor_saw
+script: tools/blender/weapons/rotor_saw.py
+params: {}
+seed: 1683163529  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category weapons --asset wpn_rotor_saw
+edit policy: generated file, never edit by hand; change the script and rebuild
+origin: firing-hand pivot: rear handle centre plane, mid grip depth, 20 mm below its top
+tri_budget: 25000
+tris_lod0: 3932
