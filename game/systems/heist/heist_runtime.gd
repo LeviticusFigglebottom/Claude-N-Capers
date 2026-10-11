@@ -39,6 +39,11 @@ var heist_id: StringName = &""
 var difficulty: int = Enums.Difficulty.ROUTINE
 var difficulty_def: DifficultyDef = null
 var options: Dictionary = {}
+## D-062 (read-only): the options passed to HeistLauncher.launch() / launch_client(). On a replica the host's
+## network-safe options (bring-up `launch_options`, e.g. "music_track") override the client's own.
+var launch_options: Dictionary:
+	get:
+		return _launch_options
 ## True once the alarm has sounded (stays true through ESCAPE/ENDED).
 var went_loud: bool = false
 var interaction: InteractionSystem = null
@@ -74,6 +79,7 @@ var _pagers_answered: int = 0
 var _ended: bool = false
 ## QB-L2: slot -> effective Loadout (LoadoutModifiers.effective_loadouts), pushed before the crew spawns.
 var _crew_loadouts: Dictionary = {}
+var _launch_options: Dictionary = {}
 
 
 ## Nearest HeistRuntime above `node`, else the current one.
@@ -123,6 +129,7 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	run_seed = p_seed
 	difficulty = p_difficulty
 	options = p_options
+	_launch_options = p_options
 	_resolve_difficulty_def()
 	GameRng.begin_run(run_seed)
 	_start_msec = Time.get_ticks_msec()
@@ -190,6 +197,9 @@ func _start_replica(data: Dictionary, map_scene: PackedScene, p_options: Diction
 	run_seed = int(data.get("seed", 0))
 	difficulty = int(data.get("difficulty", Enums.Difficulty.ROUTINE))
 	options = p_options
+	_launch_options = p_options.duplicate()
+	_launch_options.erase("bring_up")
+	_launch_options.merge(data.get("launch_options", {}) as Dictionary, true)  # D-062: the host's pick wins
 	_resolve_difficulty_def()
 	GameRng.begin_run(run_seed)
 	_start_msec = Time.get_ticks_msec()
