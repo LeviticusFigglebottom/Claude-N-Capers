@@ -52,6 +52,11 @@ LIBRARY: dict[str, dict] = {
     "glass_lens_coated": {"size": 512, "tile_m": 1.0, "kind": "glass"},
     # No textures: a flat emissive StandardMaterial3D (a reticle is a tiny emissive mesh/decal).
     "emissive_reticle_red": {"kind": "emissive"},
+    # Armory batch 3.
+    "paint_safety_orange": {"size": 1024, "tile_m": 1.0},
+    "carbon_fibre": {"size": 1024, "tile_m": 1.0},
+    # Emissive with an embedded GradientTexture2D (blue base -> orange tip along mesh V).
+    "emissive_pilot_flame": {"kind": "emissive"},
     # Trim sheet (trim.py). Strip UV ranges: game/assets/textures/trim_interior/trim_table.json
     "trim_interior": {"size": 1024, "trim": True},
 }

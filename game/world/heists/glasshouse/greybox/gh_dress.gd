@@ -137,6 +137,7 @@ func _dress_room(room: KitRoom, world_box: AABB, id: String, kit_id: String, pro
 				else:
 					nodes[i].set_meta(StringName(String(k)), metas[k])
 	_room_nodes[id] = nodes
+	_link_monitors(nodes, id)
 	var tweaks: Dictionary = L.LIGHT_TWEAKS.get(id, {})
 	for n: Node3D in nodes:
 		var kind: String = String(n.get_meta(&"kind", ""))
@@ -152,6 +153,32 @@ func _dress_room(room: KitRoom, world_box: AABB, id: String, kit_id: String, pro
 	report.append("%s (%s, seed %d): %d props%s%s" % [id, kit_id, seed, nodes.size(),
 		"" if missing.is_empty() else ", MISSING " + ",".join(missing),
 		"" if warnings.is_empty() else ", warnings: " + "; ".join(warnings)])
+
+
+## Monitors face the chair in front of them (orientation check): the nearest chair within 30 deg
+## of the screen's front.
+func _link_monitors(nodes: Array[Node3D], id: String) -> void:
+	for m: Node3D in nodes:
+		if String(m.get_meta(&"kind", "")) != "monitor" or m.has_meta(&"faces"):
+			continue
+		var front: Vector3 = -m.transform.basis.z
+		front.y = 0.0
+		var best: Node3D = null
+		var best_d: float = INF
+		for c: Node3D in nodes:
+			if String(c.get_meta(&"kind", "")) != "chair":
+				continue
+			var to: Vector3 = c.position - m.position
+			to.y = 0.0
+			if to.length() < 0.05 or front.normalized().dot(to.normalized()) < cos(deg_to_rad(30.0)):
+				continue
+			if to.length() < best_d:
+				best_d = to.length()
+				best = c
+		if best != null:
+			m.set_meta(&"faces", NodePath("../" + String(best.name)))
+		else:
+			report.append("WARN %s: monitor %s has no chair in front" % [id, m.name])
 
 
 func _anchor_index(rows: Array, anchor_name: String) -> int:
@@ -418,6 +445,12 @@ func _collect() -> void:
 		var s: Vector3 = p[2]
 		var base: Vector3 = p[1]
 		_boxes.append(AABB(base - Vector3(s.x * 0.5, 0.0, s.z * 0.5), s).grow(0.05))
+	# Review cameras: keep their standpoint (and 0.6 m around it) clear of dressing.
+	for cam: Array in L.REVIEW_CAMERAS:
+		if String(cam[0]).begins_with("TopDown"):
+			continue
+		var cpos: Vector3 = cam[1]
+		_boxes.append(AABB(cpos - Vector3(0.6, 1.75, 0.6), Vector3(1.2, 2.1, 1.2)))
 	var ch: Dictionary = L.CHANDELIER
 	var cp: Vector3 = ch["pos"]
 	var cr: float = float(ch["radius"]) + 0.1
@@ -469,6 +502,44 @@ func _collect_node(n: Node) -> void:
 
 func _gx(n: Node3D) -> Transform3D:
 	return _b.call(&"_global_xform", n)
+
+
+## Soft fill per dressed interior room (level_standards §3.7: meta fill, energy <= 0.3, no
+## shadows, <= 2 per room): the kit fixtures are downward spots, so this lifts the ceilings and
+## upper walls. Long rooms get two, at a quarter and three quarters of their length.
+func fill_lights(parent: Node3D) -> void:
+	for r: Array in L.ROOMS:
+		var id: String = String(r[0])
+		if String(r[2]) == "" or id.begins_with("X"):
+			continue
+		var boxes: Array = r[4]
+		var b: Array = boxes[0]
+		var lo: Vector3 = Vector3(float(b[0]), float(b[1]), float(b[2]))
+		var hi: Vector3 = Vector3(float(b[3]), float(b[4]), float(b[5]))
+		for k: int in range(1, boxes.size()):
+			var b2: Array = boxes[k]
+			lo = lo.min(Vector3(float(b2[0]), float(b2[1]), float(b2[2])))
+			hi = hi.max(Vector3(float(b2[3]), float(b2[4]), float(b2[5])))
+		var size: Vector3 = hi - lo
+		var long_x: bool = size.x >= size.z
+		var length: float = maxf(size.x, size.z)
+		var spots: Array[float] = [0.5]
+		if length >= 2.5 * minf(size.x, size.z):
+			spots = [0.25, 0.75]
+		var i: int = 0
+		for f: float in spots:
+			var p: Vector3 = Vector3(lerpf(lo.x, hi.x, f if long_x else 0.5), hi.y - 0.6, lerpf(lo.z, hi.z, 0.5 if long_x else f))
+			var light: OmniLight3D = OmniLight3D.new()
+			light.name = "Fill%s_%d" % [id, i]
+			light.position = p
+			light.light_color = Color(1.0, 0.93, 0.84)
+			light.light_energy = 0.25
+			light.omni_range = clampf(length / float(spots.size()) * 0.75 + 1.5, 3.0, 8.0)
+			light.shadow_enabled = false
+			light.set_meta(&"fill", true)
+			parent.add_child(light)
+			light.owner = _root
+			i += 1
 
 
 # --- Generated visuals --------------------------------------------------------------------------

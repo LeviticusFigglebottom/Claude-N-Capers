@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="WeaponModDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_mod_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dursfe8t4q6qd" path="res://assets/weapons/mod_osprey_extended_mag/mod_osprey_extended_mag.glb" id="3"]
+
+[sub_resource type="Resource" id="delta"]
+script = ExtResource("2")
+pellets = 0
+falloff_start_m = 0.0
+falloff_end_m = 0.0
+falloff_min_mult = 0.0
+headshot_mult = 0.0
+magnification = 0.0
+equip_time_s = 0.0
+ads_time_s = 0.0
+noise_radius_m = 0.0
+mag_size = 10
+total_ammo = 20
+reload_time_s = 0.35
+reload_empty_time_s = 0.35
+concealment = -2
+
+[resource]
+script = ExtResource("1")
+id = &"mod.osprey_extended_mag"
+display_name = "Twenty-Round Magazine"
+mod_type = 7
+delta = SubResource("delta")
+price = 4000
+unlock = &""
+model = ExtResource("3")

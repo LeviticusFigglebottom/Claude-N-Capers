@@ -381,8 +381,13 @@ func _build_shell(geo: Node3D) -> void:
 	_vis_group = "Shell"
 	var fe: Node3D = _add(bld, _node3d("FireEscape")) as Node3D
 	_box_a(fe, "Landing", L.LANDING, "trim")
-	_box(fe, "BracketW", Vector3(1.05, 3.6, -0.6), Vector3(1.15, 4.1, -0.2), "trim")
-	_box(fe, "BracketE", Vector3(3.35, 3.6, -0.6), Vector3(3.45, 4.1, -0.2), "trim")
+	# Knee brackets under the landing: wall plate, horizontal arm under the deck, diagonal strut.
+	for bx: float in [1.1, 3.4]:
+		var tag: String = "W" if bx < 2.0 else "E"
+		_box(fe, "BracketPlate" + tag, Vector3(bx - 0.06, 3.2, -0.22), Vector3(bx + 0.06, 4.1, -0.2), "trim")
+		_box(fe, "BracketArm" + tag, Vector3(bx - 0.03, 4.02, -1.3), Vector3(bx + 0.03, 4.1, -0.22), "trim")
+		_bar(fe, "BracketStrut" + tag, Vector3(bx, 3.3, -0.25), Vector3(bx, 4.0, -1.15), Vector2(0.05, 0.05),
+			"metal_painted", true)
 	_build_static_windows(bld)
 
 
@@ -544,6 +549,19 @@ func _bar(parent: Node3D, nm: String, a: Vector3, b: Vector3, size: Vector2, key
 	return root
 
 
+## Kessel yard fence, alley side: steel posts every 2.4 m and two rails over the sheet panels.
+func _fence_detail(parent: Node3D) -> void:
+	var fd: Node3D = _add(parent, _node3d("KesselFenceDetail")) as Node3D
+	var x: float = -19.6
+	var i: int = 0
+	while x < 18.1:
+		_box(fd, "Post%02d" % i, Vector3(x - 0.05, 0.0, -6.2), Vector3(x + 0.05, 2.3, -6.12), "fence")
+		x += 2.4
+		i += 1
+	for r: Array in [["RailLow", 0.15], ["RailHigh", 2.0]]:
+		_box(fd, String(r[0]), Vector3(-19.9, float(r[1]), -6.2), Vector3(18.1, float(r[1]) + 0.06, -6.17), "fence")
+
+
 ## Neighbour garage (C1-08 review): the L2 -> L3 ramp with its upstand, railings on the open
 ## parapets and along the L3 cut-out, and painted stall lines.
 func _build_garage(parent: Node3D) -> void:
@@ -556,8 +574,12 @@ func _build_garage(parent: Node3D) -> void:
 	_bar(g, "Ramp", lo - up * t * 0.5, hi - up * t * 0.5, Vector2(float(rp["width"]), t), "concrete", true)
 	var ux: float = float(rp["upstand_x"])
 	var off: Vector3 = Vector3(ux - lo.x, 0.0, 0.0) + up * 0.45
-	_bar(g, "RampUpstand", lo + off, hi + off, Vector2(0.15, 1.0), "concrete", true)
-	_railing(g, "GarageRailL2", Vector3(32.3, 4.0, -15.95), Vector3(32.4, 4.45, 11.85))
+	var u0: Vector3 = lo.lerp(hi, float(rp["upstand_from"]))
+	_bar(g, "RampUpstand", u0 + off, hi + off, Vector2(0.15, 1.0), "concrete", true)
+	# L2: the P3 sniper perch bay (columns C-D, z -4.1..1.9) stays open above the 1.0 m parapet so a
+	# crouched sniper (eye ~1.2 m) sees the shopfront.
+	_railing(g, "GarageRailL2North", Vector3(32.3, 4.0, -15.95), Vector3(32.4, 4.45, -4.3))
+	_railing(g, "GarageRailL2South", Vector3(32.3, 4.0, 2.1), Vector3(32.4, 4.45, 11.85))
 	_railing(g, "GarageRailL3", Vector3(32.3, 7.0, -15.95), Vector3(32.4, 7.45, 11.85))
 	_railing(g, "GarageRailL3Cut", Vector3(36.1, 6.0, -6.45), Vector3(36.15, 7.05, 11.85))
 	for s: Array in L.GARAGE_STALLS:
@@ -581,29 +603,16 @@ func _build_static_windows(bld: Node3D) -> void:
 		_glass_blocker(gl, String(w[0]), piece, pos, yaw)
 		if bool(w[4]):
 			continue
-		_window_frame(pos, yaw, 3.0 if piece.contains("w300") else 1.0, 2.4 if piece.contains("h240") else 1.2,
-			"brass" if piece.contains("shop") else "metal_painted")
+		# Static glazing uses the catalog window visual (frame + glass, read from both sides).
+		var ps: PackedScene = _dress.scene(piece.replace("arch_", "prop_"))
+		if ps != null:
+			var vis: Node3D = ps.instantiate() as Node3D
+			vis.name = String(w[0]) + "Window"
+			vis.position = pos
+			vis.basis = _yaw_basis(yaw)
+			_add(gl, vis)
 	var bw: Dictionary = L.BREAKROOM_WINDOW
 	_glass_blocker(gl, "BreakRoomWindow", String(bw["kit"]), bw["pos"], float(bw["yaw"]))
-
-
-## Static window visual (library materials, world UVs): frame 0.06 m, 0.1 m deep, glass pane.
-func _window_frame(pos: Vector3, yaw: float, w: float, h: float, frame_key: String) -> void:
-	var xf: Transform3D = Transform3D(_yaw_basis(yaw), pos)
-	var f: float = 0.06
-	var parts: Array = [[-w * 0.5, -w * 0.5 + f, 0.0, h, -0.05, 0.05, frame_key], [w * 0.5 - f, w * 0.5, 0.0, h, -0.05, 0.05, frame_key],
-		[-w * 0.5 + f, w * 0.5 - f, 0.0, f, -0.05, 0.05, frame_key], [-w * 0.5 + f, w * 0.5 - f, h - f, h, -0.05, 0.05, frame_key],
-		[-w * 0.5 + f, w * 0.5 - f, f, h - f, -0.005, 0.005, "glass_clear"]]
-	if w > 2.0:
-		parts.append([-0.03, 0.03, f, h - f, -0.04, 0.04, frame_key])
-		parts[4] = [-w * 0.5 + f, -0.03, f, h - f, -0.005, 0.005, "glass_clear"]
-		parts.append([0.03, w * 0.5 - f, f, h - f, -0.005, 0.005, "glass_clear"])
-	for p: Array in parts:
-		var a: Vector3 = xf * Vector3(float(p[0]), float(p[2]), float(p[4]))
-		var b: Vector3 = xf * Vector3(float(p[1]), float(p[3]), float(p[5]))
-		var key: String = String(p[6])
-		_art.acc.box("Glazing", Vector3(minf(a.x, b.x), minf(a.y, b.y), minf(a.z, b.z)),
-			Vector3(maxf(a.x, b.x), maxf(a.y, b.y), maxf(a.z, b.z)), key)
 
 
 func _glass_blocker(parent: Node3D, nm: String, piece: String, pos: Vector3, yaw: float) -> void:
@@ -641,6 +650,7 @@ func _build_site(geo: Node3D) -> void:
 	for f: Array in L.FENCES:
 		_wall(fences, String(f[0]), String(f[1]), float(f[2]), float(f[3]), float(f[4]), 0.1,
 			Vector2(float(f[5]), float(f[6])), f[7], String(f[8]))
+	_fence_detail(fences)
 
 
 # --- Art pass (C1-08): finishes, trim, facade, neighbours, probes, occluders, audio -------------
@@ -745,6 +755,7 @@ func _build_lighting(lighting: Node3D) -> void:
 		_ceiling_light(fx, String(c[0]), c[1], c[2], float(c[3]), float(c[4]), Vector3(0.6, 0.05, 0.6))
 	for w: Array in L.WALL_LIGHTS:
 		_wall_light(fx, String(w[0]), w[1], float(w[2]), w[3], float(w[4]), float(w[5]), w[6])
+	_dress.fill_lights(_add(lighting, _node3d("Fill")) as Node3D)
 
 
 ## Interior VoxelGI over the building (data baked by bake_gi.gd under xvfb; see its header).
@@ -1385,7 +1396,8 @@ func _build_nav_links(nav: NavigationRegion3D) -> void:
 func _prune_islands(nm: NavigationMesh) -> void:
 	var anchors: PackedVector3Array = PackedVector3Array()
 	for n: Node in _root.find_children("*", "", true, false):
-		if n is PatrolPoint or n is SpawnPoint or (n.name == &"UsePoint" and n is Node3D):
+		if n is PatrolPoint or n is SpawnPoint or (n.name == &"UsePoint" and n is Node3D) \
+				or (n is TacticalPoint and String(n.name) == "SniperGarageL2"):
 			anchors.append(_global_xform(n as Node3D).origin)
 		elif n is NavigationLink3D:
 			anchors.append((n as NavigationLink3D).start_position)

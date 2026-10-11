@@ -74,12 +74,12 @@ check.lever_fire: reach_err=0.0mm step=19.0deg
 check.lever_fire_ads: reach_err=0.0mm step=19.0deg
 check.lever_holster: reach_err=0.0mm step=12.1deg
 check.lever_idle: reach_err=0.0mm step=0.1deg
-check.lever_reload: reach_err=0.0mm step=57.6deg
-check.lever_reload_empty: reach_err=0.0mm step=59.4deg
-check.lever_reload_end: reach_err=0.0mm step=57.6deg
-check.lever_reload_end_empty: reach_err=0.0mm step=59.4deg
+check.lever_reload: reach_err=0.0mm step=18.6deg
+check.lever_reload_empty: reach_err=0.0mm step=19.0deg
+check.lever_reload_end: reach_err=0.0mm step=18.6deg
+check.lever_reload_end_empty: reach_err=0.0mm step=19.0deg
 check.lever_reload_loop: reach_err=0.0mm step=9.6deg
-check.lever_reload_start: reach_err=0.0mm step=52.0deg
+check.lever_reload_start: reach_err=0.0mm step=12.6deg
 check.lever_sprint: reach_err=0.0mm step=3.7deg
 check.lmg_ads_idle: reach_err=0.0mm step=0.0deg
 check.lmg_draw: reach_err=0.0mm step=9.0deg
@@ -144,6 +144,15 @@ check.saw_reload_empty: reach_err=0.0mm step=45.9deg
 check.saw_rev: reach_err=0.0mm step=6.5deg
 check.saw_sprint: reach_err=0.0mm step=3.0deg
 check.shotgun_ads_idle: reach_err=0.0mm step=0.0deg
+check.shotgun_box_ads_idle: reach_err=0.0mm step=0.0deg
+check.shotgun_box_draw: reach_err=0.0mm step=10.8deg
+check.shotgun_box_fire: reach_err=0.0mm step=12.6deg
+check.shotgun_box_fire_ads: reach_err=0.0mm step=7.5deg
+check.shotgun_box_holster: reach_err=0.0mm step=10.8deg
+check.shotgun_box_idle: reach_err=0.0mm step=0.1deg
+check.shotgun_box_reload: reach_err=0.0mm step=16.6deg
+check.shotgun_box_reload_empty: reach_err=0.0mm step=19.5deg
+check.shotgun_box_sprint: reach_err=0.0mm step=4.5deg
 check.shotgun_draw: reach_err=0.0mm step=15.3deg
 check.shotgun_fire: reach_err=0.0mm step=24.4deg
 check.shotgun_fire_ads: reach_err=0.0mm step=8.9deg
@@ -246,9 +255,9 @@ clip.lever_fire_ads: 20f loop=False events=shot@0,lever_open@7,lever_close@12,do
 clip.lever_holster: 18f loop=False events=gone@18
 clip.lever_idle: 90f loop=True
 clip.lever_reload: 147f loop=False events=round_in_1@25,round_in_2@40,round_in_3@55,round_in_4@70,round_in_5@85,round_in_6@100,round_in_7@115,round_in_8@130,done@145
-clip.lever_reload_empty: 165f loop=False events=round_in_1@25,round_in_2@40,round_in_3@55,round_in_4@70,round_in_5@85,round_in_6@100,round_in_7@115,round_in_8@130,lever_open@149,lever_close@155,done@162
+clip.lever_reload_empty: 165f loop=False events=round_in_1@25,round_in_2@40,round_in_3@55,round_in_4@70,round_in_5@85,round_in_6@100,round_in_7@115,round_in_8@130,lever_open@151,lever_close@156,done@162
 clip.lever_reload_end: 12f loop=False events=done@10
-clip.lever_reload_end_empty: 30f loop=False events=lever_open@14,lever_close@20,done@27
+clip.lever_reload_end_empty: 30f loop=False events=lever_open@16,lever_close@21,done@27
 clip.lever_reload_loop: 15f loop=False events=round_in@10,done@15
 clip.lever_reload_start: 15f loop=False events=ready@15
 clip.lever_sprint: 18f loop=True
@@ -315,6 +324,15 @@ clip.saw_reload_empty: 90f loop=False events=nut_off@14,blade_out@23,blade_in@56
 clip.saw_rev: 12f loop=False events=rev@0,ready@12
 clip.saw_sprint: 18f loop=True
 clip.shotgun_ads_idle: 90f loop=True
+clip.shotgun_box_ads_idle: 90f loop=True
+clip.shotgun_box_draw: 21f loop=False events=ready@21
+clip.shotgun_box_fire: 9f loop=False events=shot@0
+clip.shotgun_box_fire_ads: 9f loop=False events=shot@0
+clip.shotgun_box_holster: 21f loop=False events=gone@21
+clip.shotgun_box_idle: 90f loop=True
+clip.shotgun_box_reload: 108f loop=False events=mag_out@19,mag_swap@39,mag_in@67,done@96
+clip.shotgun_box_reload_empty: 132f loop=False events=mag_out@17,mag_swap@40,mag_in@73,bolt_release@102,done@120
+clip.shotgun_box_sprint: 18f loop=True
 clip.shotgun_draw: 17f loop=False events=ready@17
 clip.shotgun_fire: 24f loop=False events=shot@0,pump_back@9,pump_forward@14,done@21
 clip.shotgun_fire_ads: 24f loop=False events=shot@0,pump_back@9,pump_forward@14,done@21
@@ -364,7 +382,7 @@ fp.akimbo: one gun on the weapon bone (right) + the offhand gun on hand.L; fire 
 fp.bow: held in the LEFT hand: the weapon bone carries the bow frame (origin = the riser grip, Y = arrow direction, Z = up the riser) at hand.L x the fp.offhand_grip offset in every bow clip (it moves relative to hand.R); the right hand holds the nocked arrow on the string; Arrow (Magwell) rides the magazine bone: identity = nocked at brace, drawn back 0.400 m x draw along local +Z, carried by the right hand in nock from arrow_show, on the string at nocked; hide it at release (spawn the projectile); StringUpper / StringLower turn about their cam axles so the string's nock point sits 0.175 + 0.400 x draw m behind the grip (draw per frame: curve.bow_<clip>, 0 = brace, 1 = full draw, negative = the string's forward overshoot after release); clips: draw_string (charge, last frame = hold frame 0, event drawn), hold* (full draw, tremble), release (release@0), nock (= reload = reload_empty), fire / fire_ads = release; no sights: ads_idle raises the undrawn bow to the centre
 fp.break_action: Breech (barrels + fore-end) pivots at the hinge pin, opens 38 deg muzzle-down (- about its local X) over breech_open-2..breech_open+1 (a small bounce on the stop until breech_open+5), closes over breech_close-3..breech_close; the left hand rides the fore-end while it moves; eject: spawn the empties, hide the chamber rounds; shell_in_1 / shell_in_2: show round 1 / 2 in its chamber (the round travels in the left hand from about shell_in_1-13); one barrel per fire (alternate barrels per shot); reload_empty = reload (always both chambers); lengths from the break_action weapon data when present, else 2.6 s / equip 0.6 s
 fp.camera: review camera = crew camera: 75 deg vertical FOV (crew_member.tscn), root = eye
-fp.clips: <set>_<clip>; all sets: idle*, ads_idle*, sprint* (loops), draw, holster, fire, fire_ads, reload, reload_empty; shotgun, lever: reload_start, reload_loop, reload_end, reload_end_empty; sniper: bolt, bolt_ads; pistol: fire_auto, fire_auto_ads; akimbo: fire_l, fire_ads_l; bow: draw_string, hold*, release, nock; flamethrower: fire_start, fire_hold*, fire_end; saw: rev, cut_hold*, cut_end; minigun: spin_up, fire_hold*, spin_down
+fp.clips: <set>_<clip>; all sets: idle*, ads_idle*, sprint* (loops), draw, holster, fire, fire_ads, reload, reload_empty; shotgun, lever: reload_start, reload_loop, reload_end, reload_end_empty; sniper: bolt, bolt_ads; pistol: fire_auto, fire_auto_ads; akimbo: fire_l, fire_ads_l; bow: draw_string, hold*, release, nock; flamethrower: fire_start, fire_hold*, fire_end; saw: rev, cut_hold*, cut_end; minigun: spin_up, fire_hold*, spin_down; shotgun_box: the common clips only (mag swap reloads)
 fp.crossbow: String slides 0.160 m along local +Z from its released (scene) pose to the latch: fire/fire_ads string_release@0 (latched -> released over frames 0..1); reload: muzzle down, the left fingers hook the string at cock and pull it back to the latch by string_back (smoothstep cock..string_back); the bolt (Magwell) rides the magazine bone: hidden after the shot, shown at bolt_show (carried in the left hand), laid on the rail by bolt_in (bone identity from bolt_in); reload_empty = reload; defaults 2.0 s / equip 0.55 s
 fp.fire: fire/fire_ads start at rest, kick peaks on frame 1; full-auto sets (smg, rifle, lmg) are 3 f (<= 1.5 shot intervals) so the game restarts them every shot
 fp.flamethrower: hold to fire: fire_start (ignite@2: light the flame; ready at its end) -> fire_hold* (loop it while the trigger is held) -> fire_end (extinguish@0); fire / fire_ads are 3 f one-shot shudders kept for the generic per-shot path (restart per damage tick); PilotLight: a marker only (no motion); the fuel canister rides the magazine bone (mag_out / mag_swap / mag_in, dropped on reload_empty); left hand on a raked front grip (vgrip)
@@ -373,15 +391,16 @@ fp.lever: Lever swings 52 deg down (+ about its local X: the loop's rear end goe
 fp.lmg: reload: cover_open, mag_out (box off), mag_in (box on), belt_seat, cover_close; reload_empty adds charge (charging handle pulled back by the left hand)
 fp.minigun: spin_up (spin@0 -> spun@15: Rotor at speed, fire may start) -> fire_hold* -> spin_down (stopped@end); Rotor spins about its local Z (ENV A); fire / fire_ads = 3 f shudders; reload / reload_empty: the ammo box rides the magazine bone (mag_out, mag_swap, mag_in; dropped when empty), belt_seat (the left hand feeds the belt into the chute); sprint* = a 24 f heavy jog; left hand on the left side grip (vgrip); no sights: ads_idle is a raised hip hold
 fp.offhand_grip: akimbo left gun: attach the second WeaponVisual to hand.L (BoneAttachment3D + Socket) at basis x=(-0.0000,-0.0000,-1.0000) y=(0.9511,-0.3090,0.0000) z=(-0.3090,-0.9511,-0.0000) origin=(0.0120,0.0720,-0.0300) (hand.L bone space; = _anim.grip_offset L = the X-mirror of the weapon bone's hand.R offset: the same gun model, not mirrored; no helper bone)
-fp.parts: Pump: slides 0.075 m along local +Z (back) between the pump_back ramp and pump_forward; Bolt: handle lifts 62 deg about the bore axis (bolt_open), slides 0.075 m along +Z (bolt_back), returns (bolt_forward), locks down (bolt_close); Rampart feed cover: opens 78 deg about its front hinge (cover_open .. cover_close; the weapon scene needs a hinged FeedCover pivot); Slide (pistol): slide_release; smg/rifle bolt_release (cocking-handle slap / bolt catch)
+fp.parts: Pump: slides 0.075 m along local +Z (back) between the pump_back ramp and pump_forward; Bolt: handle lifts 62 deg about the bore axis (bolt_open), slides 0.075 m along +Z (bolt_back), returns (bolt_forward), locks down (bolt_close); Rampart feed cover: opens 78 deg about its front hinge (cover_open .. cover_close; the weapon scene needs a hinged FeedCover pivot); Slide (pistol): slide_release; smg/rifle bolt_release (cocking-handle slap / bolt catch); shotgun_box bolt_release (charging handle released after a 0.070 m pull)
 fp.pistol_auto: pistol fire_auto / fire_auto_ads: 3 f machine-pistol kick (<= 1.5 shot intervals up to 900 rpm), restarted every shot; the semi-auto pistol clips are unchanged
 fp.revolver: Crane: pivot on the hinge line parallel to the bore, opens 80 deg (+ about its local Z; the cylinder swings to -X) over crane_open-2..crane_open+1, closes over crane_close-3..crane_close; Cylinder (child of Crane) turns 60 deg per shot; eject: palm on the ejector rod, muzzle up (rod stroke eject-3..eject, spawn 6 casings at eject); Speedloader rides the magazine bone: its weapon-scene pose = loaded against the closed cylinder (bone identity), visible loader_show..crane_close, seated on the open cylinder at speedloader_in (its rounds move to the cylinder), twisted and released at loader_drop (falls away empty), bone back to identity at crane_close; reload_empty = reload (same motion and events); fire/fire_ads 9 f, heavier kick than the pistol
 fp.saw: hold to cut: rev (rev@0: spin the Blade up; ready at its end) -> cut_hold* (pushed into the cut, vibrating) -> cut_end; fire / fire_ads = 3 f shudders (generic per-shot path); Blade spins about its local X (ENV A, from rev until cut_end ends) and rides the magazine bone in the blade change: nut_off, blade_out (bone slides 0.03 m along -X off the arbor, then the left hand carries it away), blade_in (seated: bone identity), nut_on, done; reload_empty = reload; left hand on the side handle (vgrip); no sights: ads_idle is a raised hold
 fp.shotgun: pump folded into fire/fire_ads (events pump_back, pump_forward); shell-by-shell = reload_start + n x reload_loop (frame 0 == last frame; imports LOOP_LINEAR via Godot's _loop suffix: loop it n x its length) + reload_end (reload_end_empty when the tube was empty: adds a pump); reload/reload_empty = the same pieces for 6 rounds (3.4 s / 4.2 s); suggested data: reload_start_s 0.4, reload_per_round_s 0.4333, reload_end_s 0.4 (empty 1.2)
+fp.shotgun_box: box / drum-fed self-loading shotguns (anim_set shotgun_box): the rifle hold (left hand on LeftHandIK under the fore-end / shroud) with a shotgun kick; fire / fire_ads 9 f (<= 1.5 shot intervals at the data's rpm, restarted every shot, semi or auto); reload: mag_out (the drum / box rocks forward off its front lip, magazine bone), mag_swap (old one stowed off screen, fresh one in the left hand), mag_in (rocked in front lip first: canted forward, hooked, rocked back until it latches; bone identity from mag_in), done; reload_empty: the empty drops at mag_out (falls on the magazine bone), then the same rock-in and the left hand racks the charging handle on the receiver's left side (0.070 m back) and lets it fly home at bolt_release; lengths from the first shotgun_box weapon data (sorted by file name) when present, else 3.6 s / 4.4 s / equip 0.7 s / 300 rpm
 fp.sniper: fire/fire_ads = recoil only (9 f); play bolt (hip) / bolt_ads after each shot (27 f; 9 + 27 = 36 f = 1.2 s = 50 rpm); during the bolt the right hand leaves the grip and the weapon bone moves relative to hand.R (the left hand holds the gun); reload_empty ends with the bolt cycle
-loops: akimbo_ads_idle,akimbo_idle,akimbo_sprint,bow_ads_idle,bow_hold,bow_idle,bow_sprint,break_action_ads_idle,break_action_idle,break_action_sprint,crossbow_ads_idle,crossbow_idle,crossbow_sprint,flamethrower_ads_idle,flamethrower_fire_hold,flamethrower_idle,flamethrower_sprint,launcher_ads_idle,launcher_idle,launcher_sprint,lever_ads_idle,lever_idle,lever_sprint,lmg_ads_idle,lmg_idle,lmg_sprint,minigun_ads_idle,minigun_fire_hold,minigun_idle,minigun_sprint,pistol_ads_idle,pistol_idle,pistol_sprint,revolver_ads_idle,revolver_idle,revolver_sprint,rifle_ads_idle,rifle_idle,rifle_sprint,saw_ads_idle,saw_cut_hold,saw_idle,saw_sprint,shotgun_ads_idle,shotgun_idle,shotgun_sprint,smg_ads_idle,smg_idle,smg_sprint,sniper_ads_idle,sniper_idle,sniper_sprint
+loops: akimbo_ads_idle,akimbo_idle,akimbo_sprint,bow_ads_idle,bow_hold,bow_idle,bow_sprint,break_action_ads_idle,break_action_idle,break_action_sprint,crossbow_ads_idle,crossbow_idle,crossbow_sprint,flamethrower_ads_idle,flamethrower_fire_hold,flamethrower_idle,flamethrower_sprint,launcher_ads_idle,launcher_idle,launcher_sprint,lever_ads_idle,lever_idle,lever_sprint,lmg_ads_idle,lmg_idle,lmg_sprint,minigun_ads_idle,minigun_fire_hold,minigun_idle,minigun_sprint,pistol_ads_idle,pistol_idle,pistol_sprint,revolver_ads_idle,revolver_idle,revolver_sprint,rifle_ads_idle,rifle_idle,rifle_sprint,saw_ads_idle,saw_cut_hold,saw_idle,saw_sprint,shotgun_ads_idle,shotgun_box_ads_idle,shotgun_box_idle,shotgun_box_sprint,shotgun_idle,shotgun_sprint,smg_ads_idle,smg_idle,smg_sprint,sniper_ads_idle,sniper_idle,sniper_sprint
 root: camera origin = rig_humanoid eye midpoint (0.0000,0.0645,1.6660) m Blender
-sets: pistol,smg,rifle,shotgun,lmg,sniper,akimbo,revolver,break_action,lever,bow,crossbow,launcher,flamethrower,saw,minigun
+sets: pistol,smg,rifle,shotgun,lmg,sniper,akimbo,revolver,break_action,lever,bow,crossbow,launcher,flamethrower,saw,minigun,shotgun_box
 tri_budget: 12000
 tris: 9048
 weapon_bone: child of hand.R at the HandR grip offset: basis x=(0.0000,0.0000,1.0000) y=(-0.9511,-0.3090,0.0000) z=(0.3090,-0.9511,-0.0000) origin=(-0.0120,0.0720,-0.0300); identity relative to hand.R except in sniper_bolt, sniper_bolt_ads and sniper_reload_empty, the lever cycle (lever_fire*, lever_reload_end_empty and the composed lever_reload_empty) and every bow clip (the bow is in hand.L)

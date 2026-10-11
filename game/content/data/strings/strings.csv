@@ -1801,3 +1801,182 @@ ui.workshop.save_failed,Could not save the profile.
 ui.hub.station.armory_workshop,Armory & Workshop
 ui.hub.station.armory_workshop.desc,"Loadout, the 3D weapon workshop, armor, skills and perk decks."
 ui.workshop.status.none,Nothing fitted
+item.weapon.wren_380.name,Wren .380
+item.weapon.wren_380.desc,"A slim Halvard .380 for deep carry. Small rounds and a short magazine, but nothing hides better."
+item.mod.wren_iron_sights.name,Standard Notch Sights
+item.mod.wren_standard_mag.name,Seven-Round Magazine
+item.mod.wren_extended_mag.name,Ten-Round Magazine
+item.mod.wren_extended_mag.desc,Three more rounds and a grip sleeve for the little finger. A little harder to hide.
+item.mod.wren_suppressor.name,Pocket Suppressor
+item.mod.wren_suppressor.desc,"A short can on a threaded barrel. Near silent, at a small cost in damage and concealment."
+item.mod.wren_reflex_sight.name,Micro Red Dot
+item.mod.wren_reflex_sight.desc,"A tiny red dot in the rear-sight cut. Faster on target, slightly bulkier."
+item.weapon.ferret_9.name,Ferret 9
+item.weapon.ferret_9.desc,"A boxy, open-bolt Graff-Lindqvist SMG. The magazine goes through the grip and it keeps firing."
+item.mod.ferret_iron_sights.name,Standard Iron Sights
+item.mod.ferret_standard_mag.name,Thirty-Two-Round Magazine
+item.mod.ferret_extended_mag.name,Forty-Round Magazine
+item.mod.ferret_extended_mag.desc,"Forty rounds in a longer stick through the grip. Slower to swap, harder to hide."
+item.mod.ferret_suppressor.name,Hushbox Suppressor
+item.mod.ferret_suppressor.desc,"A fat can on the barrel nut. Near silent, with a damage cost."
+item.mod.ferret_wood_stock.name,Fixed Wood Stock
+item.mod.ferret_wood_stock.desc,"A solid walnut stock in place of the folding one. Steadier, but bulky."
+item.weapon.lancet_45.name,Lancet .45
+item.weapon.lancet_45.desc,A Brannock .45 that fires very fast and kicks very little. The angular body hides a recoil-mitigating action.
+item.mod.lancet_iron_sights.name,Standard Iron Sights
+item.mod.lancet_standard_mag.name,Twenty-Five-Round Magazine
+item.mod.lancet_extended_mag.name,Forty-Round Magazine
+item.mod.lancet_extended_mag.desc,"A long .45 stick. Fifteen more rounds, slower to swap, harder to hide."
+item.mod.lancet_suppressor.name,Lancet Suppressor
+item.mod.lancet_suppressor.desc,"A long can for the .45. Near silent, with a damage cost."
+item.mod.lancet_vertical_grip.name,Vertical Grip
+item.mod.lancet_vertical_grip.desc,A short foregrip on the lower rail. Less muzzle climb.
+item.weapon.hush_9.name,Hush 9
+item.weapon.hush_9.desc,"A Tillman 9 mm with the suppressor built around the barrel. Quiet out of the box, at the cost of some punch."
+item.mod.hush_iron_sights.name,Drum Rear Sight
+item.mod.hush_standard_mag.name,Thirty-Round Magazine
+item.mod.hush_extended_mag.name,Forty-Round Magazine
+item.mod.hush_extended_mag.desc,"A longer curved magazine. Ten more rounds, slower to swap, harder to hide."
+item.mod.hush_collapsed_stock.name,Collapsed Stock
+item.mod.hush_collapsed_stock.desc,"The sliding stock pushed all the way in. Shorter, but harder to hold on target."
+item.weapon.tern_556.name,Tern Bullpup
+item.weapon.tern_556.desc,"A compact Graff-Lindqvist bullpup. A full-length barrel in a short body, at the cost of a slow reload."
+item.mod.tern_iron_sights.name,Standard Iron Sights
+item.mod.tern_standard_mag.name,Thirty-Round Magazine
+item.mod.tern_extended_mag.name,Forty-Two-Round Magazine
+item.mod.tern_extended_mag.desc,"A long translucent magazine behind the grip. More rounds, slower to swap, harder to hide."
+item.mod.tern_suppressor.name,Tern Suppressor
+item.mod.tern_suppressor.desc,"A rifle can over the flash hider. Near silent, with a damage cost."
+item.mod.tern_vertical_grip.name,Vertical Grip
+item.mod.tern_vertical_grip.desc,A foregrip under the handguard. Less muzzle climb.
+item.weapon.bastion_br.name,Bastion BR
+item.weapon.bastion_br.desc,A heavy Tillman battle rifle in 7.62. Every round hits hard; the recoil makes you earn it.
+item.mod.bastion_iron_sights.name,Drum Rear Sight
+item.mod.bastion_standard_mag.name,Twenty-Round Magazine
+item.mod.bastion_extended_mag.name,Thirty-Round Magazine
+item.mod.bastion_extended_mag.desc,"Ten more heavy rounds. Slower to swap, harder to hide."
+item.mod.bastion_suppressor.name,Bastion Suppressor
+item.mod.bastion_suppressor.desc,"A big can for the 7.62. Near silent, with a clear damage cost."
+item.mod.bastion_bipod.name,Folding Bipod
+item.mod.bastion_bipod.desc,"A bipod clamped under the handguard. Steadier, heavier."
+item.weapon.lark_carbine.name,Lark Carbine
+item.weapon.lark_carbine.desc,"A short Halvard carbine with a three-round burst. Light rounds, light handling, easy to carry."
+item.mod.lark_iron_sights.name,Standard Iron Sights
+item.mod.lark_standard_mag.name,Thirty-Round Magazine
+item.mod.lark_extended_mag.name,Forty-Round Magazine
+item.mod.lark_extended_mag.desc,"Ten more rounds in a longer curved magazine. Slower to swap, harder to hide."
+item.mod.lark_suppressor.name,Lark Suppressor
+item.mod.lark_suppressor.desc,"A short rifle can. Near silent, with a damage cost."
+item.mod.lark_folded_stock.name,Folded Stock
+item.mod.lark_folded_stock.desc,"The skeleton stock folded to the side. Shorter, but much harder to control."
+item.weapon.harrow_12.name,Harrow 12
+item.weapon.harrow_12.desc,A Graff-Lindqvist semi-automatic shotgun fed from a box magazine. Fast follow-up shots and a quick reload.
+item.mod.harrow_iron_sights.name,Standard Iron Sights
+item.mod.harrow_standard_mag.name,Eight-Shell Box
+item.mod.harrow_extended_mag.name,Twelve-Shell Box
+item.mod.harrow_extended_mag.desc,"A long box magazine for twelve shells. Slower to swap, harder to hide."
+item.mod.harrow_muzzle_brake.name,Muzzle Brake
+item.mod.harrow_muzzle_brake.desc,"A ported brake that pushes the muzzle down. Less kick, a little longer."
+item.weapon.brute_12.name,Brute 12
+item.weapon.brute_12.desc,A Tillman full-automatic shotgun fed from a drum. It empties fast and it does not care what is in front of it.
+item.mod.brute_iron_sights.name,Carry-Handle Sights
+item.mod.brute_drum_20.name,Twenty-Shell Drum
+item.mod.brute_box_8.name,Eight-Shell Box
+item.mod.brute_box_8.desc,"A slim box instead of the drum. Much easier to hide and to swap, but only eight shells."
+item.mod.brute_drum_32.name,Thirty-Two-Shell Drum
+item.mod.brute_drum_32.desc,"A huge drum. Twelve more shells, slow to swap and impossible to hide."
+item.weapon.reaper_db.name,Reaper Double
+item.weapon.reaper_db.desc,"A Marrow & Kell side-by-side. Two barrels, two shells, both reloaded at once. Devastating up close."
+item.mod.reaper_bead_sight.name,Brass Bead
+item.mod.reaper_shells.name,Two Shells
+item.mod.reaper_fiber_sight.name,Fibre-Optic Rib Sight
+item.mod.reaper_fiber_sight.desc,A glowing front bead and a notched rear on the tang. Easier to aim.
+item.mod.reaper_short_barrels.name,Sawn-Off Barrels
+item.mod.reaper_short_barrels.desc,"The barrels cut back to the forend. Much easier to hide, much wider spread."
+item.mod.reaper_sawn_stock.name,Sawn-Off Stock
+item.mod.reaper_sawn_stock.desc,"The stock cut down to a pistol grip. Easier to hide, brutal to fire."
+item.weapon.gale_mg.name,Gale MG
+item.weapon.gale_mg.desc,"A Graff-Lindqvist belt-fed gun with a very high rate of fire. Loud, hungry and hard to stop."
+item.mod.gale_iron_sights.name,Standard Iron Sights
+item.mod.gale_box_100.name,Hundred-Round Belt Box
+item.mod.gale_box_200.name,Two-Hundred-Round Belt Box
+item.mod.gale_box_200.desc,A bigger box for twice the belt. Slower to swap and very heavy.
+item.mod.gale_bipod.name,Folding Bipod
+item.mod.gale_bipod.desc,"A bipod under the barrel shroud. Steadier, heavier."
+item.weapon.osprey_762.name,Osprey Marksman
+item.weapon.osprey_762.desc,"A Brannock semi-automatic marksman rifle. Less punch per shot than a bolt gun, but no bolt to work."
+item.mod.osprey_scope_4x.name,Fixed 4x Scope
+item.mod.osprey_standard_mag.name,Ten-Round Magazine
+item.mod.osprey_scope_8x.name,8x Precision Scope
+item.mod.osprey_scope_8x.desc,"A long 8x scope with a parallax knob. More reach, slower to raise."
+item.mod.osprey_extended_mag.name,Twenty-Round Magazine
+item.mod.osprey_extended_mag.desc,"Twice the rounds. Slower to swap, harder to hide."
+item.mod.osprey_suppressor.name,Osprey Suppressor
+item.mod.osprey_suppressor.desc,"A large can for the marksman rifle. Near silent, with a clear damage cost."
+item.mod.osprey_bipod.name,Folding Bipod
+item.mod.osprey_bipod.desc,"A bipod on the handguard rail. Steadier, heavier."
+item.weapon.shrike_44.name,Shrike Lever
+item.weapon.shrike_44.desc,A Marrow & Kell lever-action in a heavy pistol calibre. Loads through the gate one round at a time.
+item.mod.shrike_iron_sights.name,Buckhorn Sights
+item.mod.shrike_tube.name,Eight-Round Tube
+item.mod.shrike_peep_sight.name,Tang Peep Sight
+item.mod.shrike_peep_sight.desc,"A folding aperture on the tang. More precise, a little slower to raise."
+item.mod.shrike_scout_scope.name,Scout Scope
+item.mod.shrike_scout_scope.desc,"A long-eye-relief 3x scope over the barrel. Reach, at the cost of bulk."
+item.mod.shrike_carbine_barrel.name,Carbine Barrel
+item.mod.shrike_carbine_barrel.desc,"A shorter barrel. Easier to carry, less power."
+item.weapon.thorn_bow.name,Thorn Compound Bow
+item.weapon.thorn_bow.desc,"A Brannock compound bow. Silent, deadly at full draw, and the arrows can be picked up again."
+item.mod.thorn_pin_sight.name,Single-Pin Sight
+item.mod.thorn_arrow.name,Carbon Arrow
+item.mod.thorn_five_pin_sight.name,Five-Pin Sight
+item.mod.thorn_five_pin_sight.desc,"A pin for every range. More precise, slightly bulkier."
+item.mod.thorn_stabilizer.name,Stabilizer
+item.mod.thorn_stabilizer.desc,"A weighted rod off the riser. Steadier release, harder to hide."
+item.mod.thorn_broadhead_arrow.name,Broadhead Arrows
+item.mod.thorn_broadhead_arrow.desc,"Heavy fixed-blade heads. More damage, and fewer fit in the quiver."
+item.weapon.vise_crossbow.name,Vise Crossbow
+item.weapon.vise_crossbow.desc,"A Tillman crossbow with a cocking lever in the stock. Silent and accurate, slow to reload."
+item.mod.vise_iron_sights.name,Standard Iron Sights
+item.mod.vise_bolt.name,Carbon Bolt
+item.mod.vise_heavy_bolt.name,Heavy Bolts
+item.mod.vise_heavy_bolt.desc,"Heavier bolts with steel heads. More damage, fewer carried."
+item.mod.vise_folded_stock.name,Folded Stock
+item.mod.vise_folded_stock.desc,"The skeleton stock folded away. Easier to hide, harder to hold steady."
+item.weapon.thumper_40.name,Thumper 40
+item.weapon.thumper_40.desc,"A Brannock single-shot 40 mm launcher. Break it open, drop in a grenade, clear the room."
+item.mod.thumper_leaf_sight.name,Folding Leaf Sight
+item.mod.thumper_grenade.name,40 mm Grenade
+item.mod.thumper_vertical_grip.name,Vertical Grip
+item.mod.thumper_vertical_grip.desc,"A grip under the forend. Less kick, a little bulkier."
+item.mod.thumper_stockless.name,Stockless
+item.mod.thumper_stockless.desc,"The stock comes off. Easier to hide, and it kicks like a mule."
+item.weapon.furnace_ft.name,Furnace
+item.weapon.furnace_ft.desc,"A Tillman flamethrower. Short range, sets everything in front of it alight and keeps it burning."
+item.mod.furnace_post_sight.name,Post Sight
+item.mod.furnace_tank.name,Standard Tank
+item.mod.furnace_large_tank.name,Large Tank
+item.mod.furnace_large_tank.desc,"A bigger tank. A hundred more units of fuel, heavy and hard to hide."
+item.mod.furnace_wide_nozzle.name,Wide Nozzle
+item.mod.furnace_wide_nozzle.desc,"A flared nozzle. A hotter, wider plume that is harder to place."
+item.mod.furnace_long_nozzle.name,Long Nozzle
+item.mod.furnace_long_nozzle.desc,"A long, narrow nozzle. A tighter stream that burns a little cooler."
+item.weapon.rotor_saw.name,Rotor Saw
+item.weapon.rotor_saw.desc,"A Graff-Lindqvist portable cut-off saw. It opens locks, boxes and anyone who gets too close."
+item.mod.saw_guide_notch.name,Guide Notch
+item.mod.saw_standard_blade.name,Standard Blade
+item.mod.saw_carbide_blade.name,Carbide Blade
+item.mod.saw_carbide_blade.desc,"Carbide teeth that bite harder. More damage, but the blade wears faster."
+item.mod.saw_durable_blade.name,Durable Blade
+item.mod.saw_durable_blade.desc,A thick abrasive disc that lasts much longer and cuts a little slower.
+item.mod.saw_front_handle.name,Wide Front Handle
+item.mod.saw_front_handle.desc,"A wider loop handle. Easier to hold steady, harder to hide."
+item.weapon.cyclone_rotary.name,Cyclone Rotary
+item.weapon.cyclone_rotary.desc,"A Brannock six-barrel rotary gun. It needs a moment to spin up, then nothing stands in front of it."
+item.mod.cyclone_iron_sights.name,Carry-Handle Sights
+item.mod.cyclone_box_500.name,Five-Hundred-Round Box
+item.mod.cyclone_box_750.name,Seven-Hundred-Fifty-Round Box
+item.mod.cyclone_box_750.desc,"A bigger ammunition box. More belt, slower to swap, even heavier."
+item.mod.cyclone_short_barrels.name,Short Barrel Cluster
+item.mod.cyclone_short_barrels.desc,"Six cut-down barrels. A little easier to carry, a lot less accurate."
+ui.lobby.error.unreachable,Could not reach the host. Check the address and port.

@@ -122,6 +122,23 @@ PRESET = {
         },
         "steel_bare": {"base": "#B7B9BC", "rough": (0.22, 0.32), "streak": 0.05, "wear": 0.0, "grime": 0.05},
         "metal_matte": {"base": "#575A5E", "rough": (0.5, 0.6), "wear": 0.2, "grime": 0.2},
+        # Armory batch 3.
+        "paint_safety_orange": {
+            # #E8641E pulled to the 0.75 saturation cap and a little darker so it stays rich under AgX.
+            "paint": "#CC6633", "steel": "#B4B7BA", "rough": (0.36, 0.46), "steel_rough": 0.32,
+            "chip": 0.5, "wear": 0.45, "grime": 0.35,
+        },
+        "carbon_fibre": {
+            "base": "#2A2B2D", "sheen": "#414347", "tows_per_m": 256, "rough": (0.3, 0.42),
+            "lum_min": 0.02, "specular": 0.5, "clearcoat": {"amount": 1.0, "roughness": 0.08},
+            "wear": 0.0, "grime": 0.05,
+        },
+        "emissive_pilot_flame": {
+            "albedo": "#0E0F14", "emission": "#FFFFFF", "emission_energy": 1.0, "roughness": 1.0,
+            # Blue core at the burner (mesh V = 1, bottom) to orange tip (V = 0, top).
+            "gradient": [(0.0, "#1F4DFF"), (0.35, "#3D63F0"), (0.55, "#FF7A1F"), (1.0, "#E84A0C")],
+            "gradient_from": (0.5, 1.0), "gradient_to": (0.5, 0.0),
+        },
         # D-034 additions.
         "alu_anodized_black": {
             "base": "#2D2F33", "worn": "#BEC1C5", "rough": (0.34, 0.44), "worn_rough": 0.3,
