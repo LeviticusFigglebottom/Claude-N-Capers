@@ -59,6 +59,5 @@ default_mods = {
 7: &"mod.mule_standard_tube"
 }
 fire_cue = &"cue.weapon_shotgun_fire"
-fire_cue_suppressed = &"cue.weapon_shotgun_fire_suppressed"
 anim_set = &"shotgun"
 model = ExtResource("3")
