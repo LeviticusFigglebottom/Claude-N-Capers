@@ -11,12 +11,16 @@
 ##     "text_key": StringName     voice.<id> in strings.csv
 ##     "cooldown_s": float        min seconds before the same line (id) may play again
 ##     "priority": int            higher interrupts lower on the same speaker channel }
+## Optional keys: "heist" (briefing / mission / radio lines of one heist), "order" (briefing), "objective"
+## (radio.objective_* lines: the HeistMission objective id, D-039 `[tag]`), "loot" (radio.loot_secured: a loot id).
+## Contact radio (B7-03, content/docs/radio.md): `radio.*` events are picked by ContactRadio on every peer.
 ## Crew barks are written per heister; pick the lines whose speaker matches the crew member's
 ## character and choose among variants with GameRng.stream(&"voice").
 class_name VoiceLineTable
 extends Resource
 
-## Contacts (vance, reyes, accountant) speak only briefing lines (B2-02); see ContactDef.voice_speaker.
+## Contacts (vance, reyes, accountant) speak briefing (B2-02), mission and contact-radio (B7-03) lines; see
+## ContactDef.voice_speaker.
 ## &"guard" = any guard NPC (ENV A requests guard lines by id, e.g. StealthTweak.cuff_yell_line).
 const SPEAKERS: Array[StringName] = [
 	&"mercer", &"rook", &"sable", &"dutch", &"wren", &"crew", &"vance", &"reyes", &"accountant", &"guard",
@@ -42,6 +46,10 @@ const EVENTS: Array[StringName] = [
 	&"briefing",
 	# Mission script lines (ENV C say(); D-048): id vo.<speaker>.<heist>_<line>, ctx args per line.
 	&"mission",
+	# Contact radio (B7-03, ContactRadio; content/docs/radio.md): generic per contact, or per heist ("heist" key).
+	&"radio.objective_done", &"radio.objective_new", &"radio.objective_failed", &"radio.alarm",
+	&"radio.assault_build", &"radio.assault_sustain", &"radio.assault_fade", &"radio.escape_available",
+	&"radio.escape", &"radio.loot_secured",
 ]
 
 @export var lines: Array[Dictionary] = []
