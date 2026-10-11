@@ -1,4 +1,4 @@
-# Contract: groups and ids (v1.0)
+# Contract: groups and ids (v1.1)
 
 All group names and service names are constants in `game/contracts/ids.gd` (class `G`). Never type
 the literal strings. Map-placed groups are added automatically by the contract node scripts in
@@ -13,3 +13,7 @@ Id formats (StringName): `weapon.<name>`, `mod.<name>`, `melee.<name>`, `throwab
 `enemy.frd_agent`, `enemy.phantom`, `enemy.stinger`, `enemy.bulwark`, `enemy.wrecker` (variants
 `enemy.wrecker_g|_b|_s|_m` all count toward the `enemy.wrecker` limit), `enemy.longshot`, `enemy.corpsman`,
 `enemy.brandt`, `enemy.aegis`, `enemy.cartel_gunman`. Faction reskins keep the role id; the faction comes from difficulty.
+
+## v1.1 (D-072)
+`G.HUB_STATION` = `&"hub_station"` (safehouse stations, hub_map.md), `G.DROP_IN_SERVICE` = `&"drop_in_service"` (ENV A's
+drop-in service during a heist, net.md v1.1).
