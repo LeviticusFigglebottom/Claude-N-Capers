@@ -2315,15 +2315,15 @@ item.loot.painting_lantern_bearer.desc,"The centrepiece: a night procession by I
 heist.gallery_night.name,Gallery Night
 heist.gallery_night.subtitle,Halberd Gallery
 heist.gallery_night.brief,"The Halberd hangs four canvases a collector wants quietly gone. Odile wants them rolled, not framed."
-heist.meridian_federal.name,Meridian Federal
-heist.meridian_federal.subtitle,Meridian Federal Bank
-heist.meridian_federal.brief,"The biggest vault in the Financial District, and the Accountant has its floor plans. Cash, gold and bonds, if you can reach them."
+heist.ostrander_federal.name,Ostrander Federal
+heist.ostrander_federal.subtitle,Ostrander Federal Bank
+heist.ostrander_federal.brief,"The biggest vault in the Financial District, and the Accountant has its floor plans. Cash, gold and bonds, if you can reach them."
 heist.rolling_thunder.name,Rolling Thunder
 heist.rolling_thunder.subtitle,Armored Convoy
 heist.rolling_thunder.brief,"Three armored trucks on the Southfield bypass, one bad turn from a standstill. Hollis brings the roadblock; you bring the saws."
 heist.afterhours.name,Afterhours
 heist.afterhours.subtitle,The Velvet
-heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rope. Hollis wants the back office emptied before the doors close."
+heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rope. The Accountant wants its books and its count room emptied before the doors close."
 ui.jukebox.no_stems,{name} has no recording yet.
 ui.options.controls.scoreboard_mode,Scoreboard
 ui.scoreboard.title,Crew Tally
@@ -2438,3 +2438,5 @@ ui.options.tab.gameplay,Gameplay
 ui.lobby.dropin_join,Drop In to a Running Heist
 ui.lobby.dropin_join.hint,"Join a crew whose heist has already started (the host may have to accept you)."
 ui.dropin.failed.unreachable,Could not reach the host. Check the address and port.
+item.loot.painting_study.name,Calloway's Study
+item.loot.painting_study.desc,"A charcoal-and-wash study for The Lantern Bearer, smaller and quicker to roll. Collectors pay for the hand, not the size."

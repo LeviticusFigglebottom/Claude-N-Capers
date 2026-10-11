@@ -35,6 +35,7 @@ Deposit ($90,000) and Shadow Ledger ($110,000): $105,000.
 | `loot.painting_widow_in_blue` | LIGHT | $1,500 | canvas |
 | `loot.painting_salt_orchard` | LIGHT | $1,700 | canvas |
 | `loot.painting_lantern_bearer` | LIGHT | $2,000 | centrepiece |
+| `loot.painting_study` | LIGHT | $1,100 | Calloway's study for the centrepiece (D-075) |
 | `loot.small_valuables` (no def) | — | prefab | office and gift-shop small loot (S10.3) |
 
 PD2 cuts canvases out of the frame and carries them rolled, as a light bag. Shadow Ledger's framed
@@ -45,3 +46,6 @@ PD2 cuts canvases out of the frame and carries them rolled, as a light bag. Shad
 * Which canvases spawn, how many, and how many are required; small-loot values.
 * Escape options, `HeistDef.contact` (Vance proposed), music track, pre-planning points and assets.
 * Long briefing text (`heist.gallery_night.briefing`) and briefing/mission VO.
+
+## Required loot (D-075)
+The Lantern Bearer plus one more canvas to escape; the rest is bonus.
