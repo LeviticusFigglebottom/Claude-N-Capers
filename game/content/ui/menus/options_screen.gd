@@ -19,7 +19,7 @@ const TAB_ACCESSIBILITY: StringName = &"accessibility"
 const TABS: Array[StringName] = [TAB_CONTROLS, TAB_AUDIO, TAB_VIDEO, TAB_ACCESSIBILITY]
 ## Settings sections each tab edits (Reset tab resets these).
 const TAB_SECTIONS: Dictionary = {
-	&"controls": [&"controls", &"bindings"], &"audio": [&"audio"], &"video": [&"video"], &"accessibility": [&"accessibility"],
+	&"controls": [&"controls", &"gameplay", &"bindings"], &"audio": [&"audio"], &"video": [&"video"], &"accessibility": [&"accessibility"],
 }
 
 ## Write the file on Apply (tests turn it off).
@@ -172,6 +172,7 @@ func _fill_page(t: StringName, page: VBoxContainer) -> Array[Control]:
 	match t:
 		TAB_CONTROLS:
 			out = _rows(page, GameSettings.CONTROLS)
+			out.append_array(_rows(page, GameSettings.GAMEPLAY))
 			page.add_child(HSeparator.new())
 			controls_tab = OptionsControlsTab.new()
 			page.add_child(controls_tab)

@@ -24,9 +24,11 @@ const AUDIO: StringName = &"audio"
 const VIDEO: StringName = &"video"
 const CONTROLS: StringName = &"controls"
 const ACCESSIBILITY: StringName = &"accessibility"
+## Gameplay preferences (lead ruling on B6-04: the host's remembered drop-in policy).
+const GAMEPLAY: StringName = &"gameplay"
 const BINDINGS: StringName = &"bindings"
 ## Sections validated by SettingsDefaults (BINDINGS is validated by InputBindings).
-const VALUE_SECTIONS: Array[StringName] = [AUDIO, VIDEO, CONTROLS, ACCESSIBILITY]
+const VALUE_SECTIONS: Array[StringName] = [AUDIO, VIDEO, CONTROLS, ACCESSIBILITY, GAMEPLAY]
 const META: String = "meta"
 ## Actions with a hold / toggle choice -> their controls key.
 const MODE_KEYS: Dictionary = {
@@ -221,6 +223,11 @@ func pad_sensitivity() -> float:
 ## Right-stick radial deadzone 0..1.
 func pad_deadzone() -> float:
 	return float(get_value(CONTROLS, &"pad_deadzone"))
+
+
+## The host's remembered drop-in policy (&"ask" / &"auto" / &"off"); copied into each new lobby session.
+func dropin_policy() -> StringName:
+	return StringName(String(get_value(GAMEPLAY, &"dropin_policy")))
 
 
 ## B6-06 (QC-45): the safehouse hub is walked in 3D ("walk", default) or the 2D station menu ("menu").

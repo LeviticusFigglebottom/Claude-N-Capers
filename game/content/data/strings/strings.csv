@@ -2430,3 +2430,8 @@ ui.lobby.dropin.off,Not allowed
 ui.dropin.failed.kicked,The host removed you from this crew earlier.
 ui.dropin.failed.off,The host does not allow drop-in.
 ui.chat.kick_notice,{name} was removed from the crew.
+ui.options.gameplay.dropin_policy,Drop-in (when hosting)
+ui.options.gameplay.dropin_policy.ask,Ask Me
+ui.options.gameplay.dropin_policy.auto,Let Players In
+ui.options.gameplay.dropin_policy.off,Off
+ui.options.tab.gameplay,Gameplay

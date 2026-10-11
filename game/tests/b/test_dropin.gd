@@ -11,6 +11,7 @@ const LOBBY_SCENE: PackedScene = preload("res://content/ui/lobby/lobby_screen.ts
 
 var _port: int = 0
 var _port2: int = 0
+var _saved_settings: GameSettings = null
 
 
 class FakeCrew:
@@ -26,11 +27,20 @@ func before_all() -> void:
 	SaveService.root_dir = BTestUtil.profile_root()
 	_port = BTestUtil.port(19)
 	_port2 = BTestUtil.port(29)
+	# set_drop_in_policy remembers the host's choice in GameSettings: keep it off the real settings file.
+	_saved_settings = GameSettings.current()
+	GameSettings.root_dir = BTestUtil.settings_root()
 
 
 func after_all() -> void:
 	SaveService.delete_profile(0)
 	SaveService.root_dir = SaveService.DEFAULT_ROOT_DIR
+	GameSettings.set_current(_saved_settings)
+	GameSettings.root_dir = GameSettings.DEFAULT_ROOT_DIR
+
+
+func before_each() -> void:
+	GameSettings.set_current(GameSettings.new())  # every test starts at the default policy (ask)
 
 
 func after_each() -> void:
@@ -408,3 +418,20 @@ func test_join_screen_cancel_and_denied() -> void:
 	assert_eq(j2.phase, DropInJoinScreen.Phase.FAILED)
 	assert_eq(j2.status_label.text, UiText.t(&"ui.dropin.failed.denied"))
 	assert_eq(j2.cancel_button.text, UiText.t(&"ui.menu.back"))
+
+
+## Lead ruling: the host's drop-in choice is remembered (GameSettings gameplay/dropin_policy) and starts the
+## next hosted session; the host can still change it per session.
+func test_host_policy_is_remembered_for_the_next_session() -> void:
+	var pair: Array[LobbySession] = await _connected_pair(_port)
+	var host: LobbySession = pair[0]
+	assert_eq(host.state.dropin_policy, LobbyState.POLICY_ASK, "default preference: ask")
+	assert_true(host.set_drop_in_policy(LobbyState.POLICY_AUTO))
+	assert_eq(GameSettings.current().dropin_policy(), LobbyState.POLICY_AUTO, "remembered")
+	assert_true(FileAccess.file_exists(GameSettings.file_path()), "saved under the test settings root")
+	host.leave()
+	await wait_frames(2)
+	var next: Array[LobbySession] = await _connected_pair(_port2)
+	assert_eq(next[0].state.dropin_policy, LobbyState.POLICY_AUTO, "a new session starts with the preference")
+	assert_true(await wait_until(func() -> bool: return next[1].state.dropin_policy == LobbyState.POLICY_AUTO, 5.0),
+		"and the client sees it")
