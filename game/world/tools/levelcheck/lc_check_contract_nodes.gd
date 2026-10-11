@@ -64,6 +64,11 @@ func _check_floors(ctx: LcContext) -> void:
 	for i: int in range(1, fh.size()):
 		if fh[i] <= fh[i - 1]:
 			fail(ctx, ctx.map, null, "floor_heights must be strictly ascending: %s" % [fh])
+	# D-054: floor_names is optional; when given it names every floor.
+	var names: PackedStringArray = ctx.map.floor_names
+	if not names.is_empty() and names.size() != fh.size():
+		fail(ctx, ctx.map, null, "floor_names has %d entries for %d floor_heights (give one name per floor or none)"
+			% [names.size(), fh.size()])
 
 
 func _check_spawns(ctx: LcContext) -> void:

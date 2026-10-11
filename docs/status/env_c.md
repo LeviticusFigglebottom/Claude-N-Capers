@@ -3,6 +3,29 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11: C1-08 Glasshouse G2 final, C2 Night Deposit / Shadow Ledger G1 follow-ups, C1-04 validator checks
+### Done
+- C1-08 **Glasshouse G2 final** (stage=final). validate_level final passes all 18 checks, including the new
+  `cameras` check. P1 gate 4/4. Includes 23 review shots, a labelled contact sheet and the blueprint
+  re-render in docs/levels/glasshouse/g2/. VoxelGI re-baked.
+- C1-04 validator: stair handrail detection (lc_stair_rails), laser crouch-under, review-camera
+  placement check (cameras >= 0.5 m inside their room), and floor_name support in review_shots
+  (D-054). Also push_gate.sh (463942f), which runs validate_all before every push.
+- C2 Night Deposit: stair handrails (55eec68), review cameras moved inside their rooms (0679122).
+- C2 Shadow Ledger: G1 (9065410) and follow-up (7d0fc5b).
+- C1-06 / C1-07: batch-3 weapon cues (09c05a3, ca5022d), batch-3 materials (630c68d), catalog
+  texel/zfight pass (ee11936).
+### In progress
+- Waiting on the lead's review of the Glasshouse G2 final set.
+### Blocked
+- Night Deposit / Shadow Ledger G2 art passes: SAW_TARGET from ENV A.
+### Questions for lead
+- QC-34: garage perch. The parapet is the 1.0 m guard and the extra steel rail is removed in the
+  perch bay. Is that interpretation right?
+### Ready for integration
+- yes. push_gate PASS: import, banned/ownership, gdlint, tests c 123/123, integration 4/4, and
+  validate_all (glasshouse final, night_deposit and shadow_ledger greybox).
+
 ## 2026-10-10 17:00 UTC: C1-00, C1-01, C1-02, C1-03 (G1), C1-04, C1-06, C1-07 (part), D-026, D-034
 ### Done
 - C1-00 counter style samples + comparison sheet (6b289a6). The product owner chose GSR (D-035).
