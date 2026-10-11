@@ -1,74 +1,75 @@
 {
-  "_doc": "Ownership map. Owner: LEAD. See docs/architecture.md \u00a72. Paths not matched by any env are LEAD-owned. Globs use fnmatch with ** support.",
-  "trunk": "claude/dreamy-hamilton-pc7vck",
-  "envs": {
-    "a": {
-      "branch": "env/a-core",
-      "owns": [
-        "game/systems/**",
-        "game/tests/a/**",
-        "docs/status/env_a.md"
-      ]
-    },
-    "b": {
-      "branch": "env/b-content",
-      "owns": [
-        "game/content/**",
-        "game/assets/weapons/**",
-        "tools/blender/weapons/**",
-        "game/tests/b/**",
-        "docs/status/env_b.md"
-      ]
-    },
-    "c": {
-      "branch": "env/c-worlds",
-      "owns": [
-        "game/world/**",
-        "game/assets/**",
-        "tools/blender/**",
-        "tools/texgen/**",
-        "tools/audiogen/**",
-        "tools/levelcheck/**",
-        "docs/levels/**",
-        "docs/design/heists/**",
-        "game/tests/c/**",
-        "docs/status/env_c.md",
-        "docs/art/pipeline.md",
-        "docs/art/style_samples/**"
-      ],
-      "excludes": [
-        "game/assets/weapons/**",
-        "tools/blender/weapons/**",
-        "game/world/characters/**",
-        "game/assets/characters/**",
-        "tools/blender/characters/**",
-        "game/assets/masks/**",
-        "tools/blender/masks/**",
-        "game/world/materials/char_*",
-        "docs/art/style_samples/*/officer*",
-        "tools/blender/style_samples/officer.py",
-        "tools/blender/style_samples/head.py"
-      ]
-    },
-    "d": {
-      "branch": "env/d-art",
-      "owns": [
-        "game/world/characters/**",
-        "game/assets/characters/**",
-        "tools/blender/characters/**",
-        "game/assets/masks/**",
-        "tools/blender/masks/**",
-        "game/world/materials/char_*",
-        "docs/art/style_samples/*/officer*",
-        "game/tests/d/**",
-        "docs/status/env_d.md",
-        "tools/blender/style_samples/officer.py",
-        "tools/blender/style_samples/head.py"
-      ]
-    }
+ "_doc": "Ownership map. Owner: LEAD. See docs/architecture.md §2. Paths not matched by any env are LEAD-owned. Globs use fnmatch with ** support.",
+ "trunk": "claude/dreamy-hamilton-pc7vck",
+ "envs": {
+  "a": {
+   "branch": "env/a-core",
+   "owns": [
+    "game/systems/**",
+    "game/tests/a/**",
+    "docs/status/env_a.md",
+    "docs/status/env_a_fidelity.md"
+   ]
   },
-  "always_allowed": [
-    "*.import",
-    "game/**/*.uid"
-  ]
+  "b": {
+   "branch": "env/b-content",
+   "owns": [
+    "game/content/**",
+    "game/assets/weapons/**",
+    "tools/blender/weapons/**",
+    "game/tests/b/**",
+    "docs/status/env_b.md"
+   ]
+  },
+  "c": {
+   "branch": "env/c-worlds",
+   "owns": [
+    "game/world/**",
+    "game/assets/**",
+    "tools/blender/**",
+    "tools/texgen/**",
+    "tools/audiogen/**",
+    "tools/levelcheck/**",
+    "docs/levels/**",
+    "docs/design/heists/**",
+    "game/tests/c/**",
+    "docs/status/env_c.md",
+    "docs/art/pipeline.md",
+    "docs/art/style_samples/**"
+   ],
+   "excludes": [
+    "game/assets/weapons/**",
+    "tools/blender/weapons/**",
+    "game/world/characters/**",
+    "game/assets/characters/**",
+    "tools/blender/characters/**",
+    "game/assets/masks/**",
+    "tools/blender/masks/**",
+    "game/world/materials/char_*",
+    "docs/art/style_samples/*/officer*",
+    "tools/blender/style_samples/officer.py",
+    "tools/blender/style_samples/head.py"
+   ]
+  },
+  "d": {
+   "branch": "env/d-art",
+   "owns": [
+    "game/world/characters/**",
+    "game/assets/characters/**",
+    "tools/blender/characters/**",
+    "game/assets/masks/**",
+    "tools/blender/masks/**",
+    "game/world/materials/char_*",
+    "docs/art/style_samples/*/officer*",
+    "game/tests/d/**",
+    "docs/status/env_d.md",
+    "tools/blender/style_samples/officer.py",
+    "tools/blender/style_samples/head.py"
+   ]
+  }
+ },
+ "always_allowed": [
+  "*.import",
+  "game/**/*.uid"
+ ]
 }
