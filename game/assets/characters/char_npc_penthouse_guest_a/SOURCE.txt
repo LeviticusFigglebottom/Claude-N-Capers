@@ -1,0 +1,18 @@
+asset: char_npc_penthouse_guest_a
+script: tools/blender/characters/char_npc_penthouse.py
+params: {"age": 0.35, "build": 0.25, "gender": 1.0, "hair": "side_part", "hair_color": "blond", "height": 1.73, "lip": "char_lip_rose", "look": "guest_a", "skin": 3}
+seed: 4260434057  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_npc_penthouse_guest_a
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0863, 0.0908] (model [0.0000, 1.2635, 0.1088], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0787, -0.0862] (model [0.0000, 1.6192, -0.0745], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1630, 0.0497, 0.0407] (model [0.1630, 0.9758, 0.0432], Godot axes, rest pose)
+body_faces_culled: 2526
+body_params: {"age": 0.35, "beard_shadow": 0.0, "build": 0.25, "gender": 1.0, "hair": "side_part", "hair_color": "blond", "height": 1.73, "lip": "char_lip_rose", "skin": 3}
+bones: 52
+meshes: Body,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 24368
+tris_by_mesh: {"Body": 13692, "Hair": 1200, "Headwear": 1520, "Outfit": 7956}

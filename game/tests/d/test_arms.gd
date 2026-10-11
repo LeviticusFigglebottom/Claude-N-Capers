@@ -11,6 +11,12 @@
 ## lengths are checked against ENV B's batch-3 data once it exists (DATA_PENDING until then).
 ## D-058: shotgun_box (box / drum-fed shotguns: rifle hold, shotgun kick, rock-in mag swap, charging
 ## handle on reload_empty); the lever gate <-> fore-end hand moves turn the wrist <= LEVER_MAX_STEP_DEG / frame.
+## D-063: a set's reload clips play at speed_scale = clip / reload_time_s for every weapon of the set, so one weapon
+## must match exactly and every weapon must sit within RELOAD_RATIO_MIN..MAX of the clip.
+## D2-04: a `bash` (quick melee with the gun out) in every gun set; the non-gun sets melee_knife / melee_blunt /
+## melee_blade, throwable, deploy_bag / deploy_small / deploy_sentry (clips, loops, events, data lengths);
+## with ENV B's real models: the support hand on LeftHandIK and, in ADS, the AimPoint on the camera axis with
+## the stock below the eye where it crosses the near plane (never enclosing the camera).
 extends TestCase
 
 const GLB: String = "res://assets/characters/char_arms_fp/char_arms_fp.glb"
@@ -27,6 +33,49 @@ const DATA_PENDING: Array[String] = [
 	"akimbo", "revolver", "break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun",
 	"shotgun_box",
 ]
+## D2-04 non-gun sets and their clips (lengths from MeleeDef / DeployableDef when that data exists).
+const ITEM_SETS: Array[String] = [
+	"melee_knife", "melee_blunt", "melee_blade", "throwable", "deploy_bag", "deploy_small", "deploy_sentry",
+]
+const ITEM_CLIPS: Dictionary = {
+	"melee": ["idle", "sprint", "draw", "holster", "swing", "charge_start", "charge", "charge_swing"],
+	"throwable": ["idle", "sprint", "draw", "holster", "throw", "throw_low"],
+	"deploy": ["idle", "draw", "holster", "place"],
+}
+const ITEM_EVENTS: Dictionary = {
+	"swing": ["hit", "done"], "charge_swing": ["hit", "done"], "charge_start": ["charged"], "draw": ["ready"],
+	"holster": ["gone"], "throw": ["release", "done"], "throw_low": ["release", "done"], "place": ["place", "done"],
+}
+## MeleeDef id fragments per melee set until MeleeDef.anim_set exists (as _arms_sets.MELEE_MATCH).
+const MELEE_MATCH: Dictionary = {
+	"melee_knife": ["knife", "dagger", "shank"],
+	"melee_blunt": ["baton", "bat", "club", "hammer", "pipe", "crowbar", "wrench"],
+	"melee_blade": ["machete", "sword", "katana", "axe", "cleaver"],
+}
+const DEPLOY_KINDS: Dictionary = {
+	"deploy_bag": ["ammo_bag", "doctor_bag", "body_bag_case", "armor_bag"],
+	"deploy_small": ["ecm", "trip_mine", "fak"], "deploy_sentry": ["sentry"],
+}
+## D-063: every weapon of a set plays its reload at clip / reload_time_s within these bounds.
+const RELOAD_RATIO_MIN: float = 0.75
+const RELOAD_RATIO_MAX: float = 1.35
+## Reference model per set for the marker fit checks (ENV B's glbs).
+const REF_WEAPON: Dictionary = {
+	"pistol": "kestrel_p9", "smg": "hornet_9", "rifle": "corsair_ar", "shotgun": "plowman_12", "lmg": "rampart_lmg",
+	"sniper": "heron_308", "revolver": "marshal_357", "break_action": "reaper_db", "lever": "shrike_44",
+	"crossbow": "vise_crossbow", "launcher": "thumper_40", "flamethrower": "furnace_ft", "saw": "rotor_saw",
+	"minigun": "cyclone_rotary", "shotgun_box": "brute_12",
+}
+## Sets without sight alignment in ADS (a raised hold instead).
+const NO_SIGHTS: Array[String] = ["saw", "minigun"]
+## ADS stock check (D2-04): no weapon geometry may cross the camera's near plane inside the view, i.e. where a
+## stock passes under the eye it is cut by the near plane below the view's bottom edge (half height =
+## near x tan(37.5 deg) at the crew camera's 75 deg FOV; 16:9 half width). CAMERA_NEAR is the viewmodel near
+## plane proposed to the lead (0.02 m; the Camera3D default 0.05 m cuts every shouldered stock, the accepted
+## smg / rifle / shotgun ones too).
+const CAMERA_NEAR: float = 0.02
+const NEAR_HALF_H: float = 0.0153
+const NEAR_HALF_W: float = 0.0272
 ## Largest single-frame rotation (deg) of any arm joint in the lever's gate <-> fore-end pieces (B4-18 polish).
 const LEVER_MAX_STEP_DEG: float = 25.0
 ## One reload motion whatever the ammo state: reload_empty is the same clip (timed by reload_time_s).
@@ -49,7 +98,7 @@ const EXTRA: Dictionary = {
 	"minigun": ["spin_up", "fire_hold", "spin_down"],
 }
 ## Clips that must import looped (besides LOOPED; Godot also loops names ending in "_loop").
-const EXTRA_LOOPS: Array[String] = ["hold", "fire_hold", "cut_hold", "reload_loop"]
+const EXTRA_LOOPS: Array[String] = ["hold", "fire_hold", "cut_hold", "reload_loop", "charge"]
 ## Events every clip of that kind must list in SOURCE.txt (per set where it differs).
 const EVENTS: Dictionary = {
 	"pistol_reload": ["mag_out", "mag_in", "done"],
@@ -158,8 +207,19 @@ static func expected_bones() -> Array[String]:
 	return out
 
 
+static func item_kind(set_name: String) -> String:
+	if set_name.begins_with("melee_"):
+		return "melee"
+	return "deploy" if set_name.begins_with("deploy_") else "throwable"
+
+
 static func clips_of(set_name: String) -> Array[String]:
 	var out: Array[String] = []
+	if ITEM_SETS.has(set_name):
+		for c: Variant in ITEM_CLIPS[item_kind(set_name)]:
+			out.append(String(c))
+		return out
+	out.append("bash")
 	for c: String in COMMON:
 		out.append(c)
 	for c: Variant in EXTRA.get(set_name, []):
@@ -314,7 +374,7 @@ func test_every_set_has_its_clips() -> void:
 		return
 	var layout: Array[String] = _track_layout(_anim("pistol_idle"))
 	assert_true(layout.size() > 0, "pistol_idle has tracks")
-	for set_name: String in SETS:
+	for set_name: String in SETS + ITEM_SETS:
 		for clip: String in clips_of(set_name):
 			var name: String = "%s_%s" % [set_name, clip]
 			var a: Animation = _anim(name)
@@ -351,15 +411,7 @@ func test_clip_lengths_follow_the_weapon_data() -> void:
 			pairs = {}
 			_check_shell_pieces(set_name)
 		for clip: String in pairs:
-			var times: Array[float] = _weapon_times(set_name, pairs[clip])
-			assert_true(not times.is_empty(), "a weapon uses anim_set %s" % set_name)
-			var a: Animation = _anim("%s_%s" % [set_name, clip])
-			if a == null or times.is_empty():
-				continue
-			var hit: bool = false
-			for t: float in times:
-				hit = hit or absf(a.length - t) < 0.002
-			assert_true(hit, "%s_%s length %.3f matches %s %s" % [set_name, clip, a.length, pairs[clip], times])
+			_check_reload_ratio(set_name, clip, pairs[clip], 0.002)
 		var draw: Animation = _anim("%s_draw" % set_name)
 		var equip: Array[float] = _weapon_times(set_name, "equip_time_s")
 		if draw != null and not equip.is_empty():
@@ -410,10 +462,7 @@ func _check_shell_pieces(set_name: String) -> void:
 		var times: Array[float] = _weapon_times(set_name, pieces[clip])
 		if a == null or times.is_empty() or times.max() <= 0.0:
 			continue
-		var hit: bool = false
-		for t: float in times:
-			hit = hit or absf(a.length - t) < 0.02
-		assert_true(hit, "%s_%s length %.3f matches %s %s" % [set_name, clip, a.length, pieces[clip], times])
+		_check_reload_ratio(set_name, clip, pieces[clip], 0.02)
 
 
 func test_batch3_fire_rates_and_parts() -> void:
@@ -642,3 +691,240 @@ func test_lever_hand_moves_are_smooth() -> void:
 		for bone: String in ["clavicle.L", "upper_arm.L", "forearm.L", "hand.L"]:
 			var step: float = _max_step(a, bone)
 			assert_true(step <= LEVER_MAX_STEP_DEG, "lever_%s %s steps %.1f deg/frame (<= %.0f)" % [clip, bone, step, LEVER_MAX_STEP_DEG])
+
+
+## {weapon id: base stats Resource} of the weapons using `set_name`.
+func _weapons_of(set_name: String) -> Dictionary:
+	var out: Dictionary = {}
+	var dir: DirAccess = DirAccess.open(WEAPONS_DIR)
+	if dir == null:
+		return out
+	for fname: String in dir.get_files():
+		if not fname.ends_with(".tres"):
+			continue
+		var def: Resource = load("%s/%s" % [WEAPONS_DIR, fname])
+		if def != null and String(def.get("anim_set")) == set_name and def.get("base") != null:
+			out[fname.get_basename()] = def.get("base")
+	return out
+
+
+## D-063: `<set>_<clip>` matches `field` of one weapon (within `tol` s) and every weapon of the set plays it at
+## clip / field within RELOAD_RATIO_MIN..MAX (a weapon outside needs its own set: named in the failure).
+func _check_reload_ratio(set_name: String, clip: String, field: String, tol: float) -> void:
+	var a: Animation = _anim("%s_%s" % [set_name, clip])
+	var weapons: Dictionary = _weapons_of(set_name)
+	if a == null or weapons.is_empty():
+		return
+	var exact: bool = false
+	var times: Array[float] = []
+	for id: Variant in weapons:
+		var t: float = float((weapons[id] as Resource).get(field))
+		if t <= 0.0:
+			continue
+		times.append(t)
+		exact = exact or absf(a.length - t) < tol
+		var ratio: float = a.length / t
+		assert_true(ratio >= RELOAD_RATIO_MIN and ratio <= RELOAD_RATIO_MAX,
+				"%s_%s (%.3f s) plays at %.2fx for %s (%s %.3f s): outside %.2f..%.2f" % [
+					set_name, clip, a.length, ratio, id, field, t, RELOAD_RATIO_MIN, RELOAD_RATIO_MAX])
+	if not times.is_empty():
+		assert_true(exact, "%s_%s length %.3f matches %s of one weapon %s" % [set_name, clip, a.length, field, times])
+
+
+## Frame of event `ev` of `<clip>` from SOURCE.txt (-1 when missing).
+func _event(clip: String, ev: String) -> int:
+	var row: String = String(_source.get("clip.%s" % clip, ""))
+	var key: String = "%s@" % ev
+	var at: int = row.find(key)
+	if at < 0 or (at > 0 and not row[at - 1] in "=,"):
+		return -1
+	return row.substr(at + key.length()).split(",")[0].to_int()
+
+
+func _same_rotation(a: Animation, ta: float, b: Animation, tb: float, bones: Array, tol_deg: float) -> bool:
+	for bone: Variant in bones:
+		var q0: Quaternion = a.rotation_track_interpolate(_track(a, String(bone), Animation.TYPE_ROTATION_3D), ta)
+		var q1: Quaternion = b.rotation_track_interpolate(_track(b, String(bone), Animation.TYPE_ROTATION_3D), tb)
+		if q0.angle_to(q1) > deg_to_rad(tol_deg):
+			return false
+	return true
+
+
+func test_gun_bash() -> void:
+	if not _ready_or_fail():
+		return
+	var bones: Array = ["clavicle.R", "upper_arm.R", "forearm.R", "hand.R", "upper_arm.L", "forearm.L", "hand.L"]
+	for set_name: String in SETS:
+		var name: String = "%s_bash" % set_name
+		var a: Animation = _anim(name)
+		var idle: Animation = _anim("%s_idle" % set_name)
+		if a == null or idle == null:
+			fail("missing %s" % name)
+			continue
+		var n: int = roundi(a.length * FPS)
+		var hit: int = _event(name, "hit")
+		assert_true(hit > 2 and hit < n - 3, "%s hit@%d inside the strike" % [name, hit])
+		assert_eq(_event(name, "done"), n, "%s done@ = the last frame" % name)
+		# starts and ends on idle frame 0, and actually moves at the hit
+		assert_true(_same_rotation(a, 0.0, idle, 0.0, bones, 0.5), "%s starts on idle" % name)
+		assert_true(_same_rotation(a, a.length, idle, 0.0, bones, 0.5), "%s ends on idle" % name)
+		assert_false(_same_rotation(a, hit / FPS, idle, 0.0, ["forearm.R"], 3.0), "%s strikes" % name)
+	assert_true(String(_source.get("fp.bash", "")).contains("hit@"), "SOURCE fp.bash documented")
+
+
+## The first content/data/<kind> row (as a Resource) that `want` accepts, else null.
+func _def(kind: String, want: Callable) -> Resource:
+	var dir: DirAccess = DirAccess.open("res://content/data/%s" % kind)
+	if dir == null:
+		return null
+	var files: PackedStringArray = dir.get_files()
+	files.sort()
+	for fname: String in files:
+		if fname.ends_with(".tres"):
+			var r: Resource = load("res://content/data/%s/%s" % [kind, fname])
+			if r != null and want.call(r):
+				return r
+	return null
+
+
+func test_item_sets() -> void:
+	if not _ready_or_fail():
+		return
+	for set_name: String in ITEM_SETS:
+		for clip: String in clips_of(set_name):
+			var name: String = "%s_%s" % [set_name, clip]
+			var a: Animation = _anim(name)
+			if a == null:
+				continue  # reported by test_every_set_has_its_clips
+			for ev: Variant in ITEM_EVENTS.get(clip, []):
+				var f: int = _event(name, String(ev))
+				assert_true(f >= 0 and f <= roundi(a.length * FPS), "%s lists %s@ inside the clip (%d)" % [name, ev, f])
+	# melee: the charge loop is seamless, starts where charge_start ends; charge_swing starts there too;
+	# swings end on idle; charge_start follows MeleeDef.charge_time_s when the data exists
+	var arm: Array = ["clavicle.R", "upper_arm.R", "forearm.R", "hand.R", "hand.L"]
+	for set_name: String in ["melee_knife", "melee_blunt", "melee_blade"]:
+		var cs: Animation = _anim("%s_charge_start" % set_name)
+		var ch: Animation = _anim("%s_charge" % set_name)
+		var sw: Animation = _anim("%s_charge_swing" % set_name)
+		var idle: Animation = _anim("%s_idle" % set_name)
+		var tap: Animation = _anim("%s_swing" % set_name)
+		if cs == null or ch == null or sw == null or idle == null or tap == null:
+			continue
+		assert_true(_same_rotation(cs, cs.length, ch, 0.0, arm, 1.0), "%s charge_start ends on charge" % set_name)
+		assert_true(_same_rotation(ch, 0.0, ch, ch.length, arm, 0.5), "%s charge loops" % set_name)
+		assert_true(_same_rotation(sw, 0.0, ch, 0.0, arm, 1.0), "%s charge_swing starts from the charge" % set_name)
+		assert_true(_same_rotation(tap, tap.length, idle, 0.0, arm, 1.0), "%s swing ends on idle" % set_name)
+		assert_true(_same_rotation(sw, sw.length, idle, 0.0, arm, 1.0), "%s charge_swing ends on idle" % set_name)
+		var frags: Array = MELEE_MATCH[set_name]
+		var def: Resource = _def("melee", func(r: Resource) -> bool:
+			if "anim_set" in r:
+				return String(r.get("anim_set")) == set_name
+			for k: Variant in frags:
+				if String(r.get("id")).contains(String(k)):
+					return true
+			return false)
+		if def != null:
+			assert_near(cs.length, float(def.get("charge_time_s")), 0.02, "%s_charge_start = charge_time_s" % set_name)
+	# deployables: `place` lands on DeployableDef.deploy_time_s (the hold); the item is lowered out of view
+	for set_name: String in ["deploy_bag", "deploy_small", "deploy_sentry"]:
+		var kinds: Array = DEPLOY_KINDS[set_name]
+		var def: Resource = _def("deployables", func(r: Resource) -> bool:
+			if "anim_set" in r:
+				return String(r.get("anim_set")) == set_name
+			return kinds.has(String(r.get("kind"))))
+		var place: int = _event("%s_place" % set_name, "place")
+		if def != null:
+			assert_eq(place, roundi(float(def.get("deploy_time_s")) * FPS), "%s place@ = deploy_time_s" % set_name)
+	# the throw releases before the follow-through and frees the gun's draw afterwards
+	for clip: String in ["throw", "throw_low"]:
+		var rel: int = _event("throwable_%s" % clip, "release")
+		var a: Animation = _anim("throwable_%s" % clip)
+		assert_true(a != null and rel > 4 and rel < roundi(a.length * FPS) - 6, "throwable_%s release@%d" % [clip, rel])
+	assert_true(_event("throwable_draw", "pin_pull") > 0, "throwable_draw pin_pull@")
+	for key: String in ["fp.melee", "fp.throwable", "fp.deploy"]:
+		assert_true(String(_source.get(key, "")).length() > 60, "SOURCE %s documented" % key)
+
+
+## Pose the arms at `<clip>` frame 0 and return {"weapon": Transform3D, "palm_l", "palm_r": Vector3} in skeleton
+## (camera) space; the palm = the middle of hand.<s> and middle_01.<s>.
+func _pose_at(clip: String) -> Dictionary:
+	_player.play(StringName(clip))
+	_player.seek(0.0, true)
+	_player.stop()
+	var out: Dictionary = {}
+	out["weapon"] = _skel.get_bone_global_pose(_skel.find_bone("weapon"))
+	for s: String in ["L", "R"]:
+		var a: Vector3 = _skel.get_bone_global_pose(_skel.find_bone("hand.%s" % s)).origin
+		var b: Vector3 = _skel.get_bone_global_pose(_skel.find_bone("middle_01.%s" % s)).origin
+		out["palm_%s" % s.to_lower()] = (a + b) * 0.5
+	return out
+
+
+## Instantiated weapon scene + {marker name: Transform3D relative to its root}.
+func _weapon_model(id: String) -> Dictionary:
+	var path: String = "res://assets/weapons/wpn_%s/wpn_%s.glb" % [id, id]
+	if not ResourceLoader.exists(path):
+		return {}
+	var root: Node3D = (load(path) as PackedScene).instantiate() as Node3D
+	add_child(root)
+	var marks: Dictionary = {}
+	for n: Node in root.find_children("*", "Node3D", true, false):
+		marks[String(n.name)] = root.global_transform.affine_inverse() * (n as Node3D).global_transform
+	return {"root": root, "marks": marks}
+
+
+## Highest point (camera y) of the weapon geometry cut by the plane z = -depth within |x| < half_w.
+func _cut_top(root: Node3D, weapon: Transform3D, depth: float, half_w: float) -> float:
+	var top: float = -INF
+	var inv: Transform3D = root.global_transform.affine_inverse()
+	for mi_node: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = mi_node as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		var xf: Transform3D = weapon * inv * mi.global_transform
+		var faces: PackedVector3Array = mi.mesh.get_faces()
+		for i: int in range(0, faces.size(), 3):
+			var p: Array[Vector3] = [xf * faces[i], xf * faces[i + 1], xf * faces[i + 2]]
+			for e: int in 3:
+				var a: Vector3 = p[e]
+				var b: Vector3 = p[(e + 1) % 3]
+				var da: float = a.z + depth
+				var db: float = b.z + depth
+				if (da < 0.0) == (db < 0.0):
+					continue
+				var c: Vector3 = a.lerp(b, da / (da - db))
+				if absf(c.x) < half_w:
+					top = maxf(top, c.y)
+	return top
+
+
+func test_hands_and_sights_on_the_real_models() -> void:
+	if not _ready_or_fail():
+		return
+	for set_name: String in REF_WEAPON:
+		var w: Dictionary = _weapon_model(String(REF_WEAPON[set_name]))
+		if w.is_empty():
+			continue
+		var marks: Dictionary = w["marks"]
+		var root: Node3D = w["root"]
+		# the support hand's palm on LeftHandIK (hip and ADS)
+		var tol: float = 0.04 if set_name == "saw" else 0.03
+		for clip: String in ["idle", "ads_idle"]:
+			var pose: Dictionary = _pose_at("%s_%s" % [set_name, clip])
+			if marks.has("LeftHandIK") and set_name != "bow":
+				var lhik: Vector3 = (pose["weapon"] as Transform3D) * (marks["LeftHandIK"] as Transform3D).origin
+				var d: float = (pose["palm_l"] as Vector3).distance_to(lhik)
+				assert_true(d < tol, "%s_%s: left palm %.3f m from %s LeftHandIK" % [set_name, clip, d, REF_WEAPON[set_name]])
+		# ADS: the AimPoint on the camera axis, in front of the eye; the stock below the eye at the near plane
+		if marks.has("AimPoint") and not NO_SIGHTS.has(set_name):
+			var pose: Dictionary = _pose_at("%s_ads_idle" % set_name)
+			var wt: Transform3D = pose["weapon"]
+			var aim: Vector3 = wt * (marks["AimPoint"] as Transform3D).origin
+			assert_true(Vector2(aim.x, aim.y).length() < 0.003 and -aim.z > 0.08 and -aim.z < 0.6,
+					"%s ADS: AimPoint %s on the camera axis" % [set_name, aim])
+			var top: float = _cut_top(root, wt, CAMERA_NEAR, NEAR_HALF_W)
+			assert_true(top <= -NEAR_HALF_H,
+					"%s ADS: the weapon crosses the near plane %.3f m below the eye (<= -%.4f: never cut in view)" % [
+						set_name, top, NEAR_HALF_H])
+		root.queue_free()
+	_player.stop()
