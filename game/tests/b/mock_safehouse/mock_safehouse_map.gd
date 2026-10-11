@@ -20,6 +20,9 @@ func set_jukebox_track(track_id: StringName) -> void:
 	jukebox_tracks.append(track_id)
 
 
+## hub_map.md v1.0: an unknown id falls back to the `Spawn` marker.
 func spawn_transform(return_id: StringName) -> Transform3D:
 	var m: Node3D = get_node_or_null(NodePath("Spawns/%s" % return_id)) as Node3D
+	if m == null:
+		m = get_node_or_null(^"Spawns/Spawn") as Node3D
 	return m.global_transform if m != null else Transform3D.IDENTITY

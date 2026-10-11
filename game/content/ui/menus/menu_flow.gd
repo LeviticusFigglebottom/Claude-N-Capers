@@ -220,6 +220,7 @@ func open_station(station_id: StringName) -> bool:
 		return false
 	_in_safehouse = true
 	refund_preplan()
+	safehouse.station_opened(station_id)  # ducks the 3D cabinet under every screen but the jukebox
 	match st.target:
 		TARGET_BOARD:
 			_open_board()
