@@ -13,6 +13,8 @@ extends Resource
 @export var deployable_secondary: StringName = &""
 @export var armor: StringName = &""
 @export var mask: StringName = &""
+## D-073: chosen heister (&"rook" | &"sable" | &"dutch" | &"wren"); &"" = generic crew (no FP sleeve variant).
+@export var heister: StringName = &""
 ## Custom mask descriptor (ENV B MaskCatalog format) so every peer renders the same mask; {} = preset `mask` (QA-25).
 @export var mask_descriptor: Dictionary = {}
 @export var perk_deck: StringName = &""

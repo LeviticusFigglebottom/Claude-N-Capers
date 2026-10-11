@@ -502,3 +502,24 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   `hits`, `headshots`; counting rules in ui_hud v1.7 (a shield/plate strike is a hit: accuracy measures aim). ENV A owns.
 - Payday "Crew Honours": AI teammates appear on the scoreboard but **never win awards** (PD2's end screen honours
   players); among humans, ties break by lowest slot. A solo player still gets awards they earn.
+
+## D-072 — 2026-10-11 — Net.kick, chat, drop-in policy, safehouse hub contract (B6-03..06)
+- `Net.kick(peer_id)` (lead, core/net.gd): host-only; notice RPC then disconnect after 0.25 s (ENet drops queued
+  packets on an immediate disconnect); `peer_kicked(peer_id, slot)`; client `last_disconnect_reason = &"kicked"`;
+  kicked display names are re-kicked for the rest of the session. net.md v1.1 also reserves `lobby.chat`/`lobby.kick`.
+- Input action `chat` = Enter / keypad Enter (T is `order_menu`). `G.HUB_STATION`, `G.DROP_IN_SERVICE`.
+- Rulings for ENV B: kicked peers cannot rejoin that session; drop-in policy ask (default) / auto / off (PD2);
+  hub return to the station UsePoint; jukebox duck is MusicDirector `set_ducked`; hub prompts use the in-heist
+  prompt format; IPv6 lobby codes out of scope.
+- hub_map.md v1.0 (safehouse scene, stations, StationCam as Marker3D) with ENV C's wording.
+
+## D-073 — 2026-10-11 — Heister choice, throwables, mask fit
+- `Loadout.heister: StringName` (&"" = generic crew): the player's heister rides the loadout; ENV B sets it from the
+  profile (unique per lobby, PD2); ENV A's FpViewmodel reads it for the sleeve variant (characters v1.8).
+- A3-12 throwables: ENV B adds `throwable.frag` / `concussion` / `incendiary` / `throwing_knife` data (◇);
+  audio_cues v1.3 `cue.throwable_*` (ENV C).
+- Masks clear the crew face envelope by ≥ 3 mm (ENV D fix for skin/hair poking through; characters v1.8).
+- Nav bake: BARRED/locked closure gates are baked closed (ENV C), A's door NavLink bridges them while passable.
+- D-067(b) implemented (ENV D fb65fdd): all 76 character scenes are inherited scenes of their glb (remove_armature),
+  367 per-scene .res removed, game/world/characters 114.9 MB → 3.3 MB; node-tree dump of 84 scenes identical
+  before/after; builds byte-deterministic. characters.md v1.6's variant text applies as written; ENV A unchanged.

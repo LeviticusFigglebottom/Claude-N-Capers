@@ -14,15 +14,24 @@ signal lobby_message(from_peer: int, kind: StringName, data: Dictionary)
 signal connected_to_host()
 signal connection_failed()
 signal host_lost()
+## Host: a peer was kicked with kick() (net.md v1.1, D-072).
+signal peer_kicked(peer_id: int, slot: int)
 
 const MAX_CREW: int = 4
 const DEFAULT_PORT: int = 27655
 const AI_PEER: int = 0
+## Seconds between the kick notice and the disconnect (lets the reliable notice reach the client).
+const KICK_FLUSH_S: float = 0.25
 
 ## crew_slot -> CrewSlotInfo dictionary: { "peer_id": int, "is_ai": bool, "display_name": String }
 var crew: Dictionary[int, Dictionary] = {}
 
+## Why the last client session ended: &"" or &"kicked" (set before host_lost; reset by host()/join()).
+var last_disconnect_reason: StringName = &""
+
 var _join_name: String = "Player"
+## Host: display names kicked this session; their next join is kicked again (net.md v1.1).
+var _kicked_names: Dictionary[String, bool] = {}
 
 
 func is_authority() -> bool:
@@ -51,6 +60,7 @@ func host(port: int = DEFAULT_PORT, display_name: String = "Host") -> Error:
 	_disconnect_handlers()
 	multiplayer.multiplayer_peer = peer
 	crew.clear()
+	_kicked_names.clear()
 	_assign_slot(1, false, display_name)
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
@@ -67,6 +77,7 @@ func join(address: String, port: int = DEFAULT_PORT, display_name: String = "Pla
 		return err
 	_disconnect_handlers()
 	_join_name = display_name
+	last_disconnect_reason = &""
 	multiplayer.multiplayer_peer = peer
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	multiplayer.connection_failed.connect(_on_connection_failed)
@@ -178,6 +189,36 @@ func _rpc_crew(new_crew: Dictionary) -> void:
 	crew_changed.emit()
 
 
+## Host only: drop a connected human peer (D-072). Its slot falls back to AI through the normal disconnect
+## path; its name stays on the kick list for the rest of the session. False for self, AI, unknown peers or offline.
+func kick(peer_id: int) -> bool:
+	if not is_authority() or multiplayer.multiplayer_peer is OfflineMultiplayerPeer:
+		return false
+	if peer_id == local_peer_id() or peer_id == AI_PEER:
+		return false
+	var slot: int = slot_of_peer(peer_id)
+	if slot < 0:
+		return false
+	_kicked_names[String(crew[slot]["display_name"])] = true
+	_rpc_kicked.rpc_id(peer_id)
+	# ENet drops queued packets on an immediate disconnect: let the notice flush first.
+	get_tree().create_timer(KICK_FLUSH_S, true, false, true).timeout.connect(_drop_peer.bind(peer_id))
+	peer_kicked.emit(peer_id, slot)
+	return true
+
+
+func _drop_peer(peer_id: int) -> void:
+	var mp: MultiplayerPeer = multiplayer.multiplayer_peer
+	if mp != null and not (mp is OfflineMultiplayerPeer) and multiplayer.get_peers().has(peer_id):
+		mp.disconnect_peer(peer_id)
+
+
+## Client: the host is about to drop this peer.
+@rpc("authority", "call_remote", "reliable")
+func _rpc_kicked() -> void:
+	last_disconnect_reason = &"kicked"
+
+
 ## Send a lobby message to every peer (including self). Data must be network-serializable.
 ## Solo/offline: delivered locally only.
 func lobby_send(kind: StringName, data: Dictionary) -> void:
@@ -231,9 +272,13 @@ func _on_server_disconnected() -> void:
 func _rpc_hello(display_name: String) -> void:
 	if not is_authority():
 		return
-	var slot: int = slot_of_peer(multiplayer.get_remote_sender_id())
+	var sender: int = multiplayer.get_remote_sender_id()
+	var slot: int = slot_of_peer(sender)
 	if slot < 0:
 		return
 	crew[slot]["display_name"] = display_name.strip_edges().left(24)
+	if _kicked_names.has(String(crew[slot]["display_name"])):
+		kick(sender)
+		return
 	crew_changed.emit()
 	_sync_crew()

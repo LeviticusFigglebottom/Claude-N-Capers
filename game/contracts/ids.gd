@@ -36,6 +36,8 @@ const HOSTAGE: StringName = &"hostage"
 const RANGE_TARGET: StringName = &"range_target"  ## firing-range targets: never in ENEMY/NPC (QB-24)
 const SAW_TARGET: StringName = &"saw_target"  ## prefabs with saw_cut(seconds, attacker_net_id) (D-057)
 const LOCAL_HUD_MODEL: StringName = &"local_hud_model"  ## exactly one per peer during a heist (ui_hud.md)
+const HUB_STATION: StringName = &"hub_station"  ## safehouse stations (hub_map.md, D-072)
+const DROP_IN_SERVICE: StringName = &"drop_in_service"  ## ENV A drop-in service during a heist (net.md v1.1)
 
 # --- HeistRuntime services ---
 const SVC_STEALTH: StringName = &"stealth"
