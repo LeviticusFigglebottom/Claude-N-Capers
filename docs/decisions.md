@@ -436,3 +436,28 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   Afterhours (P5).
 - D-063 range check landed (ENV A 34b5537). Outliers (furnace ×0.5, cyclone empty ×0.73) are re-measured after
   ENV D's batch-3 rebuild (bfde340) reaches trunk; any that remain get their own clip (D) or adjusted data (B).
+
+## D-066 — 2026-10-11 — P3 gate tests drafted (Glasshouse until Dockside Burn)
+- game/tests/integration/test_p3_loud.gd: escalation and caps over 3 waves; counterplay for each special (Phantom,
+  Stinger, Bulwark, Wrecker, Longshot, Corpsman, Brandt/Aegis); custody + hostage trades; AI orders during an assault.
+  test_coop_loopback.gd: host/client parity (variants, crew, NPCs, a door, the alarm, a bag, heist_ended) with
+  D-051 process rules. 21 integration tests green on two runs (~85 s added).
+- Temporary workarounds accepted, each with a routed fix and a revisit:
+  - seed 3007 (salon open) until ENV A ships police door breaching / locked-door-aware pathing; then add seed 3001.
+  - loopback seed 3074 until ENV C fixes the esc_alley_west secure-zone floor offset.
+  - loopback ends through all-custody; revisit with Dockside Burn's loud escape.
+- Bugs routed:
+  - ENV A: police path through locked doors with no breach (`NpcMotor.door_blocked`).
+  - ENV A: AI teammates never free kicked or tased crew (only DOWNED), which breaks L2.8/L6.1.
+  - ENV C: VanSecureE1 zone floor at 0.0 vs alley ground −0.15.
+- The P3 gate switches its map constant to dockside_burn once that map reaches G1.
+
+## D-067 — 2026-10-11 — Faction variants, cartel look, repo size
+- characters.md v1.6: the faction variant scene convention (ENV D D2-01). ENV D adds `frd_agent` (plain-clothes federal
+  agent) and stronger Zero accents on Phantom/Longshot. Cartel gunmen get an `idle_thug` hunched idle (D authors, A maps).
+- Repo size: each assembled character duplicated its glb meshes into .res (~3.5 MB per character). ENV D switches
+  assembly to reference the glb meshes (the contract node paths must not change; any change needs a lead-approved
+  contract edit first). Git LFS is deferred: it is infra with storage/bandwidth costs on the owner's GitHub account,
+  so the lead raises it with the product owner if .git approaches 2 GB (411 MB now).
+- B5-01 options hooks routed (A: FOV/sensitivity/invert/toggles; C: brightness + palettes); B5-02 Notoriety costs
+  spending cash (no offshore account); music unlocks `unlock.music.vault_hymn`/`long_con`/`last_call` (ranks VII/XIII/XXI).

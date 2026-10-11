@@ -9,9 +9,11 @@ so the topology is fixed and deterministic.
 * ``fedora``: a felt fedora with a pinched, centre-dented crown, a ribbon band and a brim that
   snaps down at the front and curls up at the sides.
 * ``chignon``: a full two-lobe updo high on the back of the head, with a coiled wrap.
+* ``crown_volume``: a soft shell of volume over the crown and upper sides of the hair.
 * ``side_fringe``: a side-swept fringe from the parting across the forehead to behind the ear.
 * ``moustache``: a thick tapered moustache over the upper lip.
 * ``earrings``: small gold studs with a short drop.
+* ``heavy_lids``: a lowered upper lid line (liner band over the top of the eyeball).
 * ``lenses``: lens discs for ``_gear_kit.glasses`` (same rim layout), glossy so they glint.
 * ``lapel_pin``: a small gold bar pin.
 """
@@ -21,6 +23,7 @@ from __future__ import annotations
 import itertools
 import math
 
+import _head
 import _outfit as o
 from _gear_kit import HEAD_W, HeadHull, _smooth_circ
 from _outfit import UP, Fit, Gear, Hull, Mesh, Vector, lerp, smoothstep
@@ -235,54 +238,113 @@ def _ellipsoid(m: Mesh, c: Vector, r: Vector, mat: str, segs: int = 16, rows: in
         m.face((rings[-1][j], rings[-1][jj], bot), mat, inside=c)
 
 
-def chignon(fit: Fit, mat: str) -> Mesh:
+def chignon(fit: Fit, mat: str, size: float = 1.0, lift: float = 0.0) -> Mesh:
     """An elegant updo at the back of the head: a full two-lobe bun set high on the occiput (the
-    upper lobe tucked under the crown volume), a coiled wrap round its base and a short twist."""
+    upper lobe tucked under the crown volume), a coiled wrap round its base and a short twist. ``size``
+    scales the bun, ``lift`` raises it (m, before height scaling)."""
     k = fit.k
+    ks = k * size
     eye = fit.eye_centre()
     c = fit.head_centre()
     hh = HeadHull(fit)
-    z = eye.z + 0.020 * k
+    z = eye.z + (0.020 + lift) * k
     hit = hh.cast(Vector((0.0, c.y - 0.5, z)), Vector((0, 1, 0)), 1.0)
     back = hit[0].y if hit[0] is not None else c.y - 0.11 * k
     m = Mesh()
-    ctr = Vector((0.0, back - 0.026 * k, z))
+    ctr = Vector((0.0, back - 0.026 * ks, z))
     tilt = math.radians(28.0)       # bun axis leans up/back
     ax_y = Vector((0.0, -math.cos(tilt), math.sin(tilt)))
     ax_z = Vector((0.0, math.sin(tilt), math.cos(tilt)))
     ax_x = Vector((1, 0, 0))
-    _ellipsoid(m, ctr, Vector((0.052 * k, 0.034 * k, 0.044 * k)), mat, segs=20, rows=9, axes=(ax_x, ax_z, ax_y))
-    top = ctr + ax_z * (0.026 * k) + ax_y * (0.004 * k)
-    _ellipsoid(m, top, Vector((0.040 * k, 0.026 * k, 0.026 * k)), mat, segs=16, rows=7, axes=(ax_x, ax_z, ax_y))
+    _ellipsoid(m, ctr, Vector((0.052 * ks, 0.034 * ks, 0.044 * ks)), mat, segs=20, rows=9, axes=(ax_x, ax_z, ax_y))
+    top = ctr + ax_z * (0.026 * ks) + ax_y * (0.004 * ks)
+    _ellipsoid(m, top, Vector((0.040 * ks, 0.026 * ks, 0.026 * ks)), mat, segs=16, rows=7, axes=(ax_x, ax_z, ax_y))
     # coiled wrap: a helix of hair round the bun base (reads as the twisted coil of a chignon)
     pts = []
-    turns, steps = 1.5, 54
+    turns, steps = 1.5, 36
     for j in range(steps + 1):
         t = j / steps
         a = math.tau * turns * t
-        rr = (0.049 - 0.010 * t) * k
-        pts.append(ctr + ax_y * ((0.010 - 0.016 * t) * k) + ax_x * (rr * math.cos(a)) + ax_z * (rr * 0.86 * math.sin(a)))
-    o.tube(m, pts, lambda t: (0.0045 + 0.0035 * math.sin(math.pi * t)) * k, mat, sides=6, weights=lambda p, t: HEAD_W)
+        rr = (0.049 - 0.010 * t) * ks
+        pts.append(ctr + ax_y * ((0.010 - 0.016 * t) * ks) + ax_x * (rr * math.cos(a)) + ax_z * (rr * 0.86 * math.sin(a)))
+    o.tube(m, pts, lambda t: (0.0045 + 0.0035 * math.sin(math.pi * t)) * ks, mat, sides=6, weights=lambda p, t: HEAD_W)
     # base ring where the bun meets the head
     ring = []
-    for j in range(25):
-        t = math.tau * j / 24
-        ring.append(ctr + ax_y * (0.017 * k) + ax_x * (0.044 * k * math.cos(t)) + ax_z * (0.038 * k * math.sin(t)))
-    o.tube(m, ring, 0.0060 * k, mat, sides=6, weights=lambda p, t: HEAD_W, caps=False)
+    for j in range(17):
+        t = math.tau * j / 16
+        ring.append(ctr + ax_y * (0.017 * ks) + ax_x * (0.044 * ks * math.cos(t)) + ax_z * (0.038 * ks * math.sin(t)))
+    o.tube(m, ring, 0.0060 * ks, mat, sides=6, weights=lambda p, t: HEAD_W, caps=False)
     return m
 
 
-def side_fringe(fit: Fit, mat: str, part_deg: float = 30.0) -> Mesh:
+#: Hairline of ``crown_volume``: (azimuth deg from the front, polar deg from the crown), symmetric.
+#: The default follows a scraped-back updo on a bald scalp: the forehead, the temples, over the ears,
+#: the nape under the chignon.
+CROWN_HAIRLINE = ((0.0, 56.0), (25.0, 62.0), (50.0, 80.0), (70.0, 98.0), (90.0, 106.0), (120.0, 122.0),
+                  (150.0, 140.0), (180.0, 146.0))
+
+
+def _crown_edge(a: float, line: tuple = CROWN_HAIRLINE) -> float:
+    """Hairline polar angle (radians from the crown) of ``crown_volume`` at azimuth ``a``."""
+    d = abs(math.degrees(o.wrap(a)))
+    d = 360.0 - d if d > 180.0 else d
+    for (a0, p0), (a1, p1) in itertools.pairwise(line):
+        if d <= a1:
+            f = smoothstep(0.0, 1.0, (d - a0) / (a1 - a0))
+            return math.radians(lerp(p0, p1, f))
+    return math.radians(line[-1][1])
+
+
+def _crown_offset(a: float, ph: float, top: float, sides: float, line: tuple = CROWN_HAIRLINE) -> float:
+    """Thickness (m, before height scaling) of ``crown_volume`` at azimuth ``a``, polar angle ``ph``."""
+    u = min(1.0, ph / _crown_edge(a, line))
+    return 0.0006 + (1.0 - u ** 4) * (top + sides * math.sin(a) ** 2 * math.sin(math.pi * min(1.0, 0.25 + u)) ** 0.8)
+
+
+def crown_volume(fit: Fit, mat: str, top: float = 0.004, sides: float = 0.010, line: tuple = CROWN_HAIRLINE,
+                 n_th: int = 36, n_ph: int = 10) -> Mesh:
+    """Smooth swept-back hair (an updo's backcombed crown) as a shell on rays from the head centre:
+    fullest at the upper sides (width rather than height, so the head reads less long) and tucked
+    to ~0.6 mm at the hairline ``line`` (see ``CROWN_HAIRLINE``). Over a bald head (``hair: none``)
+    it is the whole hair; over a hair cap, ``line`` should end above the cap's edge. ``top``/``sides``
+    are the extra volume in metres (before height scaling)."""
+    k = fit.k
+    c = fit.head_centre()
+    hh = HeadHull(fit)
+
+    def point(a: float, ph: float) -> Vector:
+        d = Vector((math.sin(ph) * math.sin(a), math.sin(ph) * math.cos(a), math.cos(ph)))
+        hit = hh.cast(c + d * 0.4, -d, 0.6)
+        base = hit[0] if hit[0] is not None else c + d * 0.1 * k
+        return base + d * _crown_offset(a, ph, top, sides, line) * k
+
+    th = [math.tau * i / n_th for i in range(n_th)]
+    m = Mesh()
+    rings = [m.ring([point(a, _crown_edge(a, line) * i / n_ph) for a in th], HEAD_W) for i in range(1, n_ph + 1)]
+    inside = Vector((c.x, c.y, c.z))
+    for a_, b_ in itertools.pairwise(rings):
+        m.band(a_, b_, mat, inside=inside)
+    pole = m.add(point(0.0, 0.0), HEAD_W)
+    for j in range(n_th):
+        m.face((rings[0][j], rings[0][(j + 1) % n_th], pole), mat, inside=inside)
+    return m
+
+
+def side_fringe(fit: Fit, mat: str, part_deg: float = 30.0, crown: tuple[float, float] | None = None,
+                sweep: float = 1.0) -> Mesh:
     """A side-swept fringe: a soft, lifted sheet of hair from the parting (``part_deg``, + = the
-    character's right) across the forehead and down to behind the other ear. Lofted on the head +
-    hair surface (rays), thick in the middle, tapering at both ends."""
+    character's right) across the forehead and down to behind the other ear, framing the face. Lofted
+    on the head + hair surface (rays), thick in the middle, tapering at both ends. ``crown`` = the
+    (top, sides) of a ``crown_volume`` it lies over; ``sweep`` (0..1) drops the arc lower over the
+    forehead and temple (1 = a clear sweep just above the brow)."""
     k = fit.k
     c = fit.head_centre()
     hh = HeadHull(fit)
     side = 1.0 if part_deg >= 0.0 else -1.0
     # path: (theta deg from the front, + = right; phi deg from the crown)
-    path = [(part_deg, 34.0), (part_deg * 0.5, 44.0), (-side * 4.0, 52.0), (-side * 30.0, 58.0), (-side * 56.0, 64.0),
-            (-side * 78.0, 71.0), (-side * 96.0, 80.0)]
+    path = [(part_deg, 30.0), (part_deg * 0.45, 42.0 + 3.0 * sweep), (-side * 6.0, 52.0 + 6.0 * sweep),
+            (-side * 30.0, 58.0 + 8.0 * sweep), (-side * 54.0, 66.0 + 10.0 * sweep),
+            (-side * 78.0, 76.0 + 14.0 * sweep), (-side * 102.0, 88.0 + 14.0 * sweep)]
 
     def dirv(th: float, ph: float) -> Vector:
         t_, p_ = math.radians(th), math.radians(ph)
@@ -295,15 +357,18 @@ def side_fringe(fit: Fit, mat: str, part_deg: float = 30.0) -> Mesh:
         f = f * f * (3 - 2 * f)
         return (path[i][0] + (path[i + 1][0] - path[i][0]) * f, path[i][1] + (path[i + 1][1] - path[i][1]) * f)
 
+    def under(th: float, ph: float) -> float:      # thickness of the crown volume below the fringe
+        return _crown_offset(math.radians(th), math.radians(ph), *crown) * k if crown else 0.0
+
     def surf(th: float, ph: float) -> tuple[Vector, Vector]:
         d = dirv(th, ph)
         hit = hh.cast(c + d * 0.4, -d, 0.6)
         if hit[0] is None:
             return c + d * 0.1 * k, d
         n = hit[1].normalized()
-        return hit[0], n if n.dot(d) > 0 else -n
+        return hit[0] + d * under(th, ph), n if n.dot(d) > 0 else -n
 
-    n_rows, n_across = 24, 7
+    n_rows, n_across = 18, 7
     rows = []
     for r in range(n_rows + 1):
         t = r / n_rows
@@ -313,14 +378,15 @@ def side_fringe(fit: Fit, mat: str, part_deg: float = 30.0) -> Mesh:
         th0, ph0 = interp(max(0.0, t - 0.02))
         tang = (surf(th2, ph2)[0] - surf(th0, ph0)[0]).normalized()
         sd = n.cross(tang).normalized()
-        w = (0.020 + 0.040 * math.sin(math.pi * min(1.0, t * 1.25)) ** 0.8) * (1.0 - 0.7 * smoothstep(0.75, 1.0, t)) * k
-        lift = (0.0030 + 0.0065 * math.sin(math.pi * t) ** 0.7) * k
+        w = (0.022 + 0.046 * math.sin(math.pi * min(1.0, t * 1.25)) ** 0.8) * (1.0 - 0.5 * smoothstep(0.75, 1.0, t)) * k
+        lift = (0.0035 + 0.0085 * math.sin(math.pi * t) ** 0.7) * k
+        off = under(th, ph)
         tops, bots = [], []
         for a in range(n_across + 1):
             s_ = -1.0 + 2.0 * a / n_across
             q = p + sd * (s_ * 0.5 * w)
             hq = hh.cast(q + n * 0.05, -n, 0.1)
-            base = hq[0] if hq[0] is not None else q
+            base = hq[0] + n * off if hq[0] is not None else q
             prof = max(0.0, 1.0 - s_ * s_) ** 0.5
             # the leading (lower) edge curls slightly under, the trailing edge blends into the hair
             tops.append(base + n * (0.0008 * k + lift * (0.35 + 0.65 * prof)))
@@ -389,6 +455,40 @@ def earrings(fit: Fit, mat: str, drop: bool = True) -> Mesh:
             d = p + Vector((0.0, 0.0, -0.016 * k))
             o.tube(m, [p - Vector((0, 0, 0.003 * k)), d], 0.0010 * k, mat, sides=5, weights=lambda q, t: HEAD_W)
             _ellipsoid(m, d - Vector((0, 0, 0.004 * k)), Vector((0.0032, 0.0032, 0.0048)) * k, mat, segs=8, rows=5)
+    return m
+
+
+def heavy_lids(fit: Fit, mat: str, build: float, gender: float, age: float, drop: float = 0.5,
+               n_u: int = 12) -> Mesh:
+    """A lowered upper lid line (a smoky liner band): a thin shell just over the eyeball from the
+    lid margin (``_head.EyeShape`` for the body params) down by ``drop`` of the upper opening, so the
+    eyes read heavy-lidded and unimpressed instead of wide. Tucked under the lid at the top."""
+    k = fit.k
+    es = _head.EyeShape.of(build, gender, age)
+    rad = (_head.EYE_RADIUS + 0.0009) * k
+    m = Mesh()
+    for s_ in ("L", "R"):
+        e = Vector(fit.J[f"eye.{s_}"])
+        sx = 1.0 if e.x > 0 else -1.0
+        f = Vector((sx * 0.10, 1.0, 0.0)).normalized()
+        up = (Vector((0, 0, 1)) - f * f.z).normalized()
+        lat = f.cross(up).normalized() * sx
+        rows = []
+        for i in range(n_u + 1):
+            u = 0.02 + 0.96 * i / n_u
+            psi, ep_top = es.angles(1, u)
+            _psi, ep_c = es.angles(0, u)
+            ep_hi = ep_top + 4.0
+            ep_lo = ep_top - drop * (ep_top - ep_c)
+            row = []
+            for t in (0.0, 0.5, 1.0):
+                pp, ee = math.radians(psi), math.radians(lerp(ep_lo, ep_hi, t))
+                d = f * (math.cos(pp) * math.cos(ee)) + lat * (math.sin(pp) * math.cos(ee)) + up * math.sin(ee)
+                row.append(m.add(e + d * rad, HEAD_W))
+            rows.append(row)
+        for i in range(n_u):
+            for j in range(2):
+                m.face((rows[i][j], rows[i + 1][j], rows[i + 1][j + 1], rows[i][j + 1]), mat, inside=e)
     return m
 
 

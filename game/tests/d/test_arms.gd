@@ -347,9 +347,6 @@ func test_clip_lengths_follow_the_weapon_data() -> void:
 			pairs["nock"] = "reload_time_s"
 		if DATA_PENDING.has(set_name) and _weapon_times(set_name, "equip_time_s").is_empty():
 			continue
-		# LEAD (B4-18): ENV B's batch-3 data landed; ENV D rebuilds these sets to it. Re-enable then.
-		if set_name in ["break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun"]:
-			continue
 		if SHELL_SETS.has(set_name):  # composed previews (D-053): the pieces follow the data
 			pairs = {}
 			_check_shell_pieces(set_name)

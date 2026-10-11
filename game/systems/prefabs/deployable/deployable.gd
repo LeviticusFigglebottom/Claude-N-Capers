@@ -26,7 +26,7 @@ const KIND_INTERACTION: Dictionary = {
 	&"ammo_bag": [&"use_ammo_bag", &"ui.prompt.use_ammo_bag"],
 	&"body_bag_case": [&"take_body_bag", &"ui.prompt.take_body_bag"],
 	&"ecm": [&"ecm_feedback", &"ui.prompt.ecm_feedback"],
-	&"armor_bag": [&"use_armor_bag", &"ui.prompt.interact"],  # TODO(ENV B): a dedicated "use armor bag" prompt string (strings.csv)
+	&"armor_bag": [&"use_armor_bag", &"ui.prompt.use_armor_bag"],
 }
 const AMMO_EPSILON: float = 0.0005
 
