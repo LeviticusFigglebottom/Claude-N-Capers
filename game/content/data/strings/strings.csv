@@ -2676,3 +2676,142 @@ voice.vo.reyes.dockside_burn_radio_loot_cash,"Co-op cash. Smells like fish, spen
 voice.vo.reyes.dockside_burn_radio_loot_product,Product's out. My buyer says thanks. I say burn the rest.
 ui.subtitle.speaker,{name}:
 ui.options.accessibility.subtitles_all_speakers,Subtitles for Guards and Crew
+ui.career.open,Career
+ui.career.title,CAREER
+ui.career.subtitle,"Every job on the record. Counting started with this version of the save, so older heists are not here."
+ui.career.summary,Record
+ui.career.money,Money
+ui.career.combat,Combat
+ui.career.heists,Heists
+ui.career.not_tracked,—
+ui.career.none,None yet
+ui.career.empty,No heists on the record yet.
+ui.career.percent,{value}%
+ui.career.time_format,{hours}h {minutes}m
+ui.career.played,Heists played
+ui.career.won,Heists won
+ui.career.failed,Heists failed
+ui.career.stealth_wins,Stealth wins
+ui.career.loud_wins,Loud wins
+ui.career.win_rate,Success rate
+ui.career.time_played,Time on the job
+ui.career.spending_earned,Spending cash earned
+ui.career.stash_earned,Offshore earned
+ui.career.cash_spent,Spending cash spent
+ui.career.offshore_spent,Offshore spent
+ui.career.xp_earned,XP earned
+ui.career.bags,Bags secured
+ui.career.small_loot,Small loot
+ui.career.favourite_weapon,Favourite weapon
+ui.career.kills,Kills
+ui.career.specials_killed,Specials killed
+ui.career.civilians_killed,Civilians killed
+ui.career.downs,Times downed
+ui.career.custody,Heists ended in custody
+ui.career.shots,Shots fired
+ui.career.hits,Hits
+ui.career.headshots,Headshots
+ui.career.accuracy,Accuracy
+ui.career.col.heist,Heist
+ui.career.col.played,Played
+ui.career.col.won,Won
+ui.career.col.failed,Failed
+ui.career.col.stealth,Stealth
+ui.career.col.loud,Loud
+ui.career.col.best,Best difficulty
+ui.career.col.fastest,Fastest win
+item.mask_base.ram.name,Battering Ram
+item.mask_base.stag.name,Royal Stag
+item.mask_base.cat.name,Alley Cat
+item.mask_base.boar.name,Tusker
+item.mask_base.serpent.name,Coiled Serpent
+item.mask_base.moth.name,Night Moth
+item.mask_base.knight.name,Iron Knight
+item.mask_base.doll.name,Cracked Doll
+item.mask_base.sunburst.name,Sunburst
+item.mask_base.geo.name,Facet
+item.mask_base.robot.name,Tin Sentinel
+item.mask_base.jester.name,Jester
+item.mask.silent_partner.name,Silent Partner
+item.mask.silent_partner.desc,"A pale owl in mint and graphite. Earned by crews who walk the Ledger out without a single alarm."
+item.mask.dock_boss.name,Dock Boss
+item.mask.dock_boss.desc,"Blued steel with hazard stripes. Earned by crews who run the docks on Lethal."
+item.mask.grand_tourist.name,Grand Tourist
+item.mask.grand_tourist.desc,"A chrome fox with a souvenir from every job. Earned by finishing every heist."
+item.mask.thousand_yard.name,Thousand Yard
+item.mask.thousand_yard.desc,"A cracked white grin. Earned by crews with a thousand takedowns behind them."
+achievement.steady_work.name,Steady Work
+achievement.steady_work.desc,"Win 10 heists. Unlocks the Moss Bark colours."
+achievement.hard_lessons.name,Hard Lessons
+achievement.hard_lessons.desc,"Fail a heist. Everyone does, once."
+achievement.clocked_in.name,Clocked In
+achievement.clocked_in.desc,"Spend 10 hours on the job, counting heist time only."
+achievement.career_criminal.name,Career Criminal
+achievement.career_criminal.desc,"Win 100 heists. Unlocks the Knight mask base."
+achievement.top_of_the_ladder.name,Top of the Ladder
+achievement.top_of_the_ladder.desc,"Reach reputation level 100. Unlocks the Chrome material."
+achievement.dock_work.name,Dock Work
+achievement.dock_work.desc,"Complete Dockside Burn five times. Unlocks the Urban Camo weapon finish."
+achievement.harbour_master.name,Harbour Master
+achievement.harbour_master.desc,"Complete Dockside Burn on Lethal or higher. Unlocks the Dock Boss mask."
+achievement.night_shift.name,Night Shift
+achievement.night_shift.desc,"Complete Night Deposit without raising the alarm. Unlocks the Midnight Chrome weapon finish."
+achievement.shattered_glass.name,Shattered Glass
+achievement.shattered_glass.desc,"Complete Glasshouse loud on Cataclysm. Unlocks the Rose Cinder colours."
+achievement.grand_tour.name,Grand Tour
+achievement.grand_tour.desc,"Complete every heist at least once. Unlocks the Grand Tourist mask."
+achievement.lethal_itinerary.name,Lethal Itinerary
+achievement.lethal_itinerary.desc,"Complete every heist on Lethal or higher. Unlocks the Stag mask base."
+achievement.nobody_saw.name,Nobody Saw a Thing
+achievement.nobody_saw.desc,"Win 10 heists in stealth. Unlocks the Jade Rust colours and the Arctic weapon finish."
+achievement.ghost_story.name,Ghost Story
+achievement.ghost_story.desc,"Win 25 heists in stealth. Unlocks the Serpent mask base."
+achievement.off_the_books.name,Off the Books
+achievement.off_the_books.desc,"Complete Shadow Ledger in stealth. Unlocks the Silent Partner mask."
+achievement.ledger_closed.name,Ledger Closed
+achievement.ledger_closed.desc,"Complete Shadow Ledger on Lethal or higher. Unlocks the Porcelain material."
+achievement.ten_alarms.name,Ten Alarms
+achievement.ten_alarms.desc,"Win 10 loud heists. Unlocks the Cobalt Flare colours and the Cherry Polymer weapon finish."
+achievement.riot_season.name,Riot Season
+achievement.riot_season.desc,"Win 25 loud heists. Unlocks the Ram mask base."
+achievement.hundred_down.name,Hundred Down
+achievement.hundred_down.desc,"Kill 100 enemies."
+achievement.thousand_down.name,Thousand-Yard Stare
+achievement.thousand_down.desc,"Kill 1,000 enemies. Unlocks the Thousand Yard mask."
+achievement.special_handling.name,Special Handling
+achievement.special_handling.desc,"Kill 50 special enemies. Unlocks the Sulfur Ash colours and the Carbon Weave weapon finish."
+achievement.big_game.name,Big Game
+achievement.big_game.desc,"Kill 500 special enemies. Unlocks the Blued Steel material."
+achievement.clean_lines.name,Clean Lines
+achievement.clean_lines.desc,"Land 250 headshots."
+achievement.headhunter.name,Headhunter
+achievement.headhunter.desc,"Land 2,500 headshots. Unlocks the Robot mask base."
+achievement.trigger_discipline.name,Trigger Discipline
+achievement.trigger_discipline.desc,"Land 5,000 hits. Unlocks the Walnut material."
+achievement.back_on_your_feet.name,Back on Your Feet
+achievement.back_on_your_feet.desc,"Go down 25 times and keep working."
+achievement.time_served.name,Time Served
+achievement.time_served.desc,"End five heists in custody."
+achievement.offshore_ten_million.name,Offshore Empire
+achievement.offshore_ten_million.desc,"Bank a total of 10,000,000 in the offshore stash. Unlocks the Sunburst mask base."
+achievement.bag_man.name,Bag Man
+achievement.bag_man.desc,"Secure 100 bags. Unlocks the Saffron Plum colours and the Copper Patina weapon finish."
+achievement.heavy_lifting.name,Heavy Lifting
+achievement.heavy_lifting.desc,"Secure 1,000 bags. Unlocks the Marble material."
+achievement.big_spender.name,Big Spender
+achievement.big_spender.desc,"Spend 5,000,000 of spending cash. Unlocks the Rubber material."
+achievement.pocket_change.name,Pocket Change
+achievement.pocket_change.desc,"Pocket 250,000 in small loot. Unlocks the Ink Lacquer material."
+achievement.clean_slate.name,Clean Slate
+achievement.clean_slate.desc,"Reach Notoriety I. Unlocks the Signal White colours."
+achievement.old_hand.name,Old Hand
+achievement.old_hand.desc,"Reach Notoriety V. Unlocks the Moth mask base."
+ui.achievements.category.career,Career
+ui.achievements.category.heists,Heists
+ui.achievements.category.stealth,Stealth
+ui.achievements.category.loud,Loud
+ui.achievements.category.combat,Combat
+ui.achievements.category.wealth,Wealth
+ui.achievements.category.notoriety,Notoriety
+ui.achievements.reward_pending,{name} (arrives with the next mask delivery)
+ui.achievements.reward_finish,{name} weapon finish

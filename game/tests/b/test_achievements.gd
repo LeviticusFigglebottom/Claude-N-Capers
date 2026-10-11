@@ -22,7 +22,7 @@ func after_all() -> void:
 
 func test_data_is_complete() -> void:
 	var defs: Array[AchievementDef] = Achievements.all()
-	assert_true(defs.size() >= 6 and defs.size() <= 10, "6..10 achievements: %d" % defs.size())
+	assert_true(defs.size() >= 35 and defs.size() <= 45, "about 40 achievements (B7-02): %d" % defs.size())
 	var strings: Dictionary = StringTable.parse_csv()
 	for a: AchievementDef in defs:
 		assert_true(String(a.id).begins_with("achievement."), String(a.id))
@@ -37,7 +37,8 @@ func test_data_is_complete() -> void:
 
 func test_first_heist_and_failures() -> void:
 	var p: PlayerProfile = PlayerProfile.new_default()
-	assert_eq(Achievements.on_payday(p, _result(false, 0, false), {"success": false}), [] as Array[StringName])
+	assert_eq(Achievements.on_payday(p, _result(false, 0, false), {"success": false}), [&"achievement.hard_lessons"] as Array[StringName],
+			"only the first-failure achievement")
 	assert_false(Achievements.is_unlocked(p, &"achievement.first_score"), "a failure is not a completion")
 	var got: Array[StringName] = Achievements.on_payday(p, _result(true, 0, false), {"success": true})
 	assert_has(got, &"achievement.first_score")

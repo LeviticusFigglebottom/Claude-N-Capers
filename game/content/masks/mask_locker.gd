@@ -39,8 +39,9 @@ static func is_drop_owned(profile: PlayerProfile, id: StringName) -> bool:
 
 
 ## Grants unlock `unlock_id` (e.g. an achievement's `unlock.achievement.<x>`, B4-20): records it in
-## `PlayerProfile.unlocks` (saved, v5) and owns every preset whose `unlock` is that id. Returns the
-## newly owned preset ids.
+## `PlayerProfile.unlocks` (saved, v5) and owns every preset whose `unlock` is that id, and every
+## AVAILABLE mask part whose `unlock` is that id (B7-02; a part still waiting for its ENV D model is owned
+## by apply_unlocks once the glb lands). Returns the newly owned preset and part ids.
 static func grant_unlock(profile: PlayerProfile, unlock_id: StringName) -> Array[StringName]:
 	var out: Array[StringName] = []
 	if profile == null or unlock_id == &"":
@@ -51,11 +52,13 @@ static func grant_unlock(profile: PlayerProfile, unlock_id: StringName) -> Array
 	for md: MaskDef in MaskCatalog.presets():
 		if md.unlock == unlock_id and grant_preset(profile, md.id):
 			out.append(md.id)
+	var ids: Array[StringName] = [unlock_id]
+	out.append_array(_grant_unlock_parts(profile, ids))
 	return out
 
 
-## Owns every preset behind an unlock already recorded in `profile.unlocks` (load-time repair, so a
-## preset added later behind an earned unlock is owned). Returns the newly owned preset ids.
+## Owns every preset and available part behind an unlock already recorded in `profile.unlocks` (load-time
+## repair, so a preset or part added later behind an earned unlock is owned). Returns the newly owned ids.
 static func apply_unlocks(profile: PlayerProfile) -> Array[StringName]:
 	var out: Array[StringName] = []
 	if profile == null:
@@ -63,6 +66,17 @@ static func apply_unlocks(profile: PlayerProfile) -> Array[StringName]:
 	for md: MaskDef in MaskCatalog.presets():
 		if md.unlock != &"" and profile.unlocks.has(md.unlock) and grant_preset(profile, md.id):
 			out.append(md.id)
+	out.append_array(_grant_unlock_parts(profile, profile.unlocks))
+	return out
+
+
+## Available parts whose `unlock` is in `unlock_ids`, granted (grant_part). Returns the newly owned ids.
+static func _grant_unlock_parts(profile: PlayerProfile, unlock_ids: Array[StringName]) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for kind: String in MaskCatalog.KINDS:
+		for part: MaskPartDef in MaskCatalog.parts(kind):
+			if part.unlock != &"" and unlock_ids.has(part.unlock) and grant_part(profile, part.id):
+				out.append(part.id)
 	return out
 
 

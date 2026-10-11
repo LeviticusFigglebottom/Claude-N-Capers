@@ -7,7 +7,8 @@
 ## API (MenuFlow wires it): setup(profile) before or after entering the tree; refresh_profile(p).
 ## Signals: station_requested(id) (a card pressed); achievements_requested() (the profile panel's
 ## Achievements button, B4-20); options_requested() (its Options button, B5-01); notoriety_requested() (its
-## Notoriety button, B5-02); back_requested() (UiScreen, Esc / gamepad B, and the Main Menu button). The
+## Notoriety button, B5-02); career_requested() (its Career button, B7-01: CareerScreen);
+## back_requested() (UiScreen, Esc / gamepad B, and the Main Menu button). The
 ## profile panel shows the Notoriety rank badge (roman numeral) next to the level and in its own line.
 class_name HubMenu
 extends UiScreen
@@ -16,6 +17,7 @@ signal station_requested(station_id: StringName)
 signal achievements_requested()
 signal options_requested()
 signal notoriety_requested()
+signal career_requested()
 
 @export var profile_slot: int = 0
 
@@ -40,6 +42,8 @@ var achievements_button: Button
 var options_button: Button
 ## Profile panel button -> notoriety_requested (B5-02).
 var notoriety_button: Button
+## Profile panel button -> career_requested (B7-01).
+var career_button: Button
 
 
 func setup(p: PlayerProfile) -> void:
@@ -76,6 +80,10 @@ func build_ui() -> void:
 	side.custom_minimum_size = Vector2(520, 0)
 	body.add_child(side)
 	side.add_child(_build_profile_panel())
+	career_button = UiBuild.button(&"ui.career.open")
+	career_button.pressed.connect(career_requested.emit)
+	side.add_child(career_button)
+	focus_chain.append(career_button)
 	achievements_button = UiBuild.button(&"ui.hub.achievements")
 	achievements_button.pressed.connect(achievements_requested.emit)
 	side.add_child(achievements_button)

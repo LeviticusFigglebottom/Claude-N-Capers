@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.top_of_the_ladder"
+name_key = &"achievement.top_of_the_ladder.name"
+desc_key = &"achievement.top_of_the_ladder.desc"
+condition = {"event": &"level_reached", "count": 100}
+unlock = &""
+order = 80
+category = &"career"
+rewards = Array[StringName]([&"mask_material.chrome"])
+unlocks = Array[StringName]([])

@@ -262,6 +262,7 @@ func buy_weapon(id: StringName) -> bool:
 	if w == null or weapon_state(id) != ItemState.FOR_SALE or not can_afford(w.price):
 		return false
 	profile.cash -= w.price
+	Career.add_spent(profile, w.price)
 	profile.owned_weapons.append(id)
 	ContentDB.sort_ids(profile.owned_weapons)
 	return true
@@ -273,6 +274,7 @@ func buy_mod(id: StringName) -> bool:
 	if m == null or mod_state(id) != ItemState.FOR_SALE or not can_afford(m.price):
 		return false
 	profile.cash -= m.price
+	Career.add_spent(profile, m.price)
 	profile.owned_mods.append(id)
 	ContentDB.sort_ids(profile.owned_mods)
 	return true

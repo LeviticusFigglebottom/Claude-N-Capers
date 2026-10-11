@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.lethal_itinerary"
+name_key = &"achievement.lethal_itinerary.name"
+desc_key = &"achievement.lethal_itinerary.desc"
+condition = {"event": &"heists_all", "difficulty_min": 4, "count": 0}
+unlock = &"unlock.achievement.lethal_itinerary"
+order = 180
+category = &"heists"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])

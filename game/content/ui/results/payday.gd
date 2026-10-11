@@ -13,6 +13,8 @@
 ## Leaving with an unpicked card (QB-PC1, D-049): the screen leaving the tree, the app quitting
 ## (WM close request), a new result replacing this one, or MenuFlow leaving the heist auto-pick it
 ## with the same deterministic `auto_pick` as the timeout (finish_card_pick()); no save change.
+## Career (B7-01): _apply banks the result into profile.career (Career.record, local crew slot) before the
+## achievements, so career-stat achievements see this payday.
 ## Achievements (B4-20): _apply runs Achievements.on_payday on the profile before saving; ids unlocked by
 ## this payday are in `achievements_unlocked` and listed under the summary.
 ## Awards (B6-02; content/docs/scoreboard.md): HeistAwards.compute over result.crew -> `awards`, shown as
@@ -290,6 +292,7 @@ func _apply() -> void:
 	_applied = true
 	SaveService.apply_heist_payout(profile, payout, XpCurve.level_for_xp)
 	profile.add_stat("heists_completed" if bool(payout.get("success", false)) else "heists_failed")
+	Career.record(profile, result, payout, Net.local_slot())
 	achievements_unlocked = Achievements.on_payday(profile, result, payout, is_pro)
 	SaveService.save_profile(profile, profile_slot)
 

@@ -10,6 +10,15 @@
 ##       "pro": true = pro Board jobs only.
 ##     &"stash_earned": + the payday's offshore share (PayoutCalculator "stash").
 ##     &"level_reached": progress = the profile's level (a high-water mark).
+##   State conditions (B7-02; Achievements.sync after every payday and Notoriety rank-up; progress is a
+##   high-water mark of the current value, so the career already on the profile counts):
+##     &"career_stat": a Career counter (B7-01). "stat": a Career totals key (won, loud_wins, kills,
+##       headshots, bags, cash_spent, ...); optional "heist": read that heist's counter instead; optional
+##       "bag": read career.bags[<loot id>]. A counter the HeistResult never carried (D-071 shots / hits /
+##       headshots) stays 0, so the achievement stays locked until the data exists.
+##     &"notoriety_reached": progress = the Notoriety rank.
+##     &"heists_all": distinct offered heists (HeistCatalog.ids()) won at least once; filters
+##       "difficulty_min", "stealth", "loud" as above. "count" 0 (or absent) = every offered heist.
 ##   "count": int target (default 1).
 class_name AchievementDef
 extends Resource
@@ -18,10 +27,19 @@ extends Resource
 @export var name_key: StringName = &""
 @export var desc_key: StringName = &""
 @export var condition: Dictionary = {}
-## Unlock id granted on completion (MaskLocker.grant_unlock), e.g. &"unlock.achievement.cataclysm_clear".
+## Unlock id granted on completion (MaskLocker.grant_unlock), e.g. &"unlock.achievement.cataclysm_clear" or a
+## weapon finish &"unlock.finish.arctic" (B7-04).
 @export var unlock: StringName = &""
 ## Display order on the achievements screen (then id).
 @export var order: int = 0
+## Screen category (strings `ui.achievements.category.<category>`): career, heists, stealth, loud, combat,
+## wealth, notoriety (B7-02).
+@export var category: StringName = &"career"
+## Mask part ids granted directly on completion (MaskLocker.grant_part; colours, materials) (B7-02).
+@export var rewards: Array[StringName] = []
+## Extra unlock ids recorded on completion (MaskLocker.grant_unlock), beside `unlock` (B7-02). Weapon finishes
+## (B7-04) use `unlock` itself (`unlock.finish.<id>`, one achievement each).
+@export var unlocks: Array[StringName] = []
 
 
 func target() -> int:

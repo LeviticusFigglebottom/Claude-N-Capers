@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.pocket_change"
+name_key = &"achievement.pocket_change.name"
+desc_key = &"achievement.pocket_change.desc"
+condition = {"event": &"career_stat", "stat": "small_loot", "count": 250000}
+unlock = &""
+order = 560
+category = &"wealth"
+rewards = Array[StringName]([&"mask_material.ink_lacquer"])
+unlocks = Array[StringName]([])

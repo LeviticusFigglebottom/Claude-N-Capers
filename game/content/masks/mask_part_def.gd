@@ -11,3 +11,7 @@ extends Resource
 ## Owned by every profile from the start (P9 stub: later parts come from payday card drops and are
 ## stored in PlayerProfile.owned_mask_parts).
 @export var default_owned: bool = false
+## Locked behind an unlock id (B7-02): owned once `PlayerProfile.unlocks` records it (MaskLocker.grant_unlock /
+## apply_unlocks), e.g. `unlock.achievement.<name>` or `unlock.notoriety.rank_<n>`. Such a part never
+## drops from payday cards. &"" = an ordinary part (default_owned or a payday drop).
+@export var unlock: StringName = &""

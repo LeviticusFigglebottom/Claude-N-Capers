@@ -124,6 +124,7 @@ static func rank_up(p: PlayerProfile) -> Dictionary:
 	var rank: int = p.notoriety + 1
 	var cost: int = cost_for(rank)
 	p.cash -= cost
+	Career.add_spent(p, cost)
 	p.notoriety_xp += maxi(p.xp, 0)
 	p.xp = 0
 	p.level = 0
@@ -134,11 +135,12 @@ static func rank_up(p: PlayerProfile) -> Dictionary:
 	out["cost"] = cost
 	out["granted"] = _grant_rank(p, rank)
 	out["choices"] = choice_options(p, rank)
+	out["achievements"] = Achievements.sync(p)  # B7-02: notoriety_reached achievements
 	return out
 
 
-## What reaching `rank` gives (choices excluded): fixed rewards, presets behind the rank's unlock id and
-## the plain unlock ids, in that order.
+## What reaching `rank` gives (choices excluded): fixed rewards, presets and available mask parts behind the
+## rank's unlock id (MaskPartDef.unlock, B7-02) and the plain unlock ids, in that order.
 static func rewards_for(rank: int) -> Array[StringName]:
 	var out: Array[StringName] = []
 	var d: NotorietyDef = def_for(rank)
@@ -147,6 +149,10 @@ static func rewards_for(rank: int) -> Array[StringName]:
 	for md: MaskDef in MaskCatalog.presets():
 		if md.unlock == unlock_id(rank):
 			out.append(md.id)
+	for kind: String in MaskCatalog.KINDS:
+		for part: MaskPartDef in MaskCatalog.parts(kind):
+			if part.unlock == unlock_id(rank):
+				out.append(part.id)
 	if d != null:
 		out.append_array(d.unlocks)
 	return out

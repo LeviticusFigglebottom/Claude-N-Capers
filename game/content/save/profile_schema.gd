@@ -28,6 +28,12 @@ const STRING_MAP: StringName = &"string_map"
 ## A String of at most SHORT_ID_MAX_LENGTH characters (music_choice); longer -> default + warn.
 const SHORT_ID: StringName = &"short_id"
 const SHORT_ID_MAX_LENGTH: int = 64
+## Career stats (v7, B7-01): {section: {key: int >= 0}} / {section: {id: {key: int >= 0}}} (Career.SECTIONS).
+const CAREER: StringName = &"career"
+## String -> String map whose keys and values are at most SHORT_ID_MAX_LENGTH characters (weapon_finishes).
+const SHORT_STRING_MAP: StringName = &"short_string_map"
+## Career sections whose values are counter maps (the others are counters directly).
+const CAREER_NESTED: Array[String] = ["heists", "difficulties"]
 ## Top-level field -> [kind, default, since-version]. Order = file order of the doc.
 const FIELDS: Dictionary = {
 	"version": [INT, 0, 1],
@@ -54,6 +60,8 @@ const FIELDS: Dictionary = {
 	"notoriety_choices": [STRING_MAP, {}, 6],
 	"held_skill_sets": [SKILL_SETS, [], 6],
 	"music_choice": [SHORT_ID, "", 6],
+	"career": [CAREER, {"totals": {}, "heists": {}, "difficulties": {}, "bags": {}, "weapons": {}}, 7],
+	"weapon_finishes": [SHORT_STRING_MAP, {}, 7],
 	"stats": [INT_MAP, {}, 0],
 	"settings": [ANY_MAP, {}, 0],
 }
@@ -128,6 +136,10 @@ static func _container(path: String, v: Variant, kind: StringName) -> Variant:
 				out = _achievements(path, m)
 			STRING_MAP:
 				out = _string_map(path, m)
+			SHORT_STRING_MAP:
+				out = _short_string_map(path, m)
+			CAREER:
+				out = _career(path, m)
 	elif v is Array:
 		match kind:
 			SKILL_SETS:
@@ -175,6 +187,58 @@ static func _string_map(path: String, m: Dictionary) -> Dictionary:
 			_warn("%s.%s: expected string, got %s; dropped" % [path, k, type_string(typeof(v))])
 			continue
 		out[String(k)] = String(v)
+	return out
+
+
+static func _short_string_map(path: String, m: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for k: Variant in m:
+		var v: Variant = m[k]
+		var ok: bool = (v is String or v is StringName) and String(v).length() <= SHORT_ID_MAX_LENGTH
+		if not ok or String(k).length() > SHORT_ID_MAX_LENGTH or String(k) == "":
+			_warn("%s.%s: expected a short string (<= %d chars); dropped" % [path, k, SHORT_ID_MAX_LENGTH])
+			continue
+		out[String(k)] = String(v)
+	return out
+
+
+## Every Career section present; counters are ints >= 0 with short keys; difficulty keys are ints.
+static func _career(path: String, m: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for k: Variant in m:
+		if not Career.SECTIONS.has(String(k)):
+			_warn("%s.%s: unknown career section; dropped" % [path, k])
+	for sec: String in Career.SECTIONS:
+		var v: Variant = m.get(sec, {})
+		var sp: String = "%s.%s" % [path, sec]
+		if not v is Dictionary:
+			_warn("%s: expected a map; emptied" % sp)
+			v = {}
+		if not CAREER_NESTED.has(sec):
+			out[sec] = _counters(sp, v as Dictionary)
+			continue
+		var nested: Dictionary = {}
+		for id: Variant in (v as Dictionary):
+			var e: Variant = (v as Dictionary)[id]
+			var bad_key: bool = String(id) == "" or String(id).length() > SHORT_ID_MAX_LENGTH
+			bad_key = bad_key or (sec == "difficulties" and not String(id).is_valid_int())
+			if bad_key or not e is Dictionary:
+				_warn("%s.%s: bad entry; dropped" % [sp, id])
+				continue
+			nested[String(id)] = _counters("%s.%s" % [sp, id], e as Dictionary)
+		out[sec] = nested
+	return out
+
+
+## Short key -> int >= 0; anything else dropped with a warning.
+static func _counters(path: String, m: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for k: Variant in m:
+		var n: Variant = _as_int(m[k])
+		if n == null or int(n) < 0 or String(k) == "" or String(k).length() > SHORT_ID_MAX_LENGTH:
+			_warn("%s.%s: expected a counter (int >= 0), got %s; dropped" % [path, k, var_to_str(m[k])])
+			continue
+		out[String(k)] = n
 	return out
 
 
