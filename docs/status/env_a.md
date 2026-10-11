@@ -29,7 +29,23 @@ Newest entry first, keep the last 10.
 - characters v1.8:
   - FP heister sleeves: `crew.heister` comes from the Net.crew info `heister` or the launch option `heisters` {slot: id}; FpViewmodelTweak.sleeve_scenes copies the variant's Arms mesh + skin;
   - AnimDriver plays `rappel` while NpcMotor.rappelling (fallback climb_ladder → idle).
-- Trunk round 18 merged.
+- A3-11 hub (QC-43/44):
+  - `CrewController.spawn_for_hub`: civilian, unmasked, no weapon drawn (CrewView hides the viewmodel while civilian), own `HubInteraction` InteractionSystem, HUD prompt via `LocalHudModel.track(crew)`;
+  - `hub_station` prefab, class `HubStationPrefab` (B's `HubStation` resource owns that name): group `hub_station`, instant press, civilian + casing allowed, `station_used(id, crew)` / `station_requested(id)`.
+- QB-B6-02 (D-071): CrewStats service owns the per-crew counters (kills, specials, civilians, downs, plus new shots / hits / headshots per ui_hud v1.7 rules), replicated in the services state. Adds `LocalHudModel.crew_stats` + `crew_stats_changed` and HeistResult crew `name/shots/hits/headshots`.
+- D-070:
+  - crossbow StringUpper/StringLower latch (−/+18.74°, ×1.3049 Y, held while loaded);
+  - bow pull-back sign fixed;
+  - Speedloader shown only while reloading;
+  - Bulwark takes near-side anchors only;
+  - CrewAiBrain drops out-of-tree targets;
+  - rappel speed 2.5 m/s (D's clip).
+- Melee per lead: knockdown only on charged hits; specials resist it.
+- Fixes: the round-18 merge took the old test_s1_3 (restored the D-065 assert); a3_07 polls until `launch_client()` has returned.
+- Trunk round 18 + D-071 merged.
+### Waiting
+- QB-B6-DROPIN: B's `DropInService` interface and `Net.kick` (round 20) are not on any branch yet.
+- `Loadout.heister` (D-073, round 21): switch the sleeves to it when it lands.
 ### Questions for lead
 - QA (heister source): nothing in the lobby or Loadout carries the chosen heister yet; the sleeves read Net.crew[slot].heister or the launch option `heisters`. Should it be a Loadout field (lead contract)?
 - QA (content): no frag/concussion/incendiary ThrowableDefs exist in content yet (P5 "6 throwables"); tests inject defs. Audio: proposed `cue.throwable_pin` / `cue.throwable_<kind>` (now: launcher explode / flamethrower ignite).
