@@ -58,12 +58,13 @@ func test_heist_select_locks_and_preview() -> void:
 	add_child(s)
 	await wait_frames(1)
 	assert_true(s.heist_buttons.size() >= 1, "at least the Glasshouse entry")
+	assert_true(s.select_heist_id(&"glasshouse"), "glasshouse offered (not necessarily first: ids sort)")
 	assert_eq(s.selected_heist_id(), &"glasshouse")
 	assert_false(s.difficulty_buttons[Enums.Difficulty.ROUTINE].disabled)
 	assert_false(s.difficulty_buttons[Enums.Difficulty.BRUTAL].disabled)
 	assert_true(s.difficulty_buttons[Enums.Difficulty.TENSE].disabled, "tense locked in P1")
 	assert_true(s.difficulty_buttons[Enums.Difficulty.CATACLYSM].disabled)
-	var base: int = int(HeistCatalog.entries()[0]["base_payout"])
+	var base: int = int(HeistRegistry.get_def(&"glasshouse").base_payout)
 	s.select_difficulty(Enums.Difficulty.BRUTAL)
 	var probe: Dictionary = {"success": true, "difficulty": Enums.Difficulty.BRUTAL, "contract_pay": base,
 			"loot": [], "small_loot": 0, "crew": []}

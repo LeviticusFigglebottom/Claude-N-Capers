@@ -1,5 +1,5 @@
 # Dockside Burn: Ortega Cold Storage (dockside_burn)
-Status: G0 DRAFT: review requested
+Status: APPROVED (lead, 2026-10-11) (D-064). The lead's answers to the G0 open questions are folded in below (see Lead rulings).
 
 ## Fiction
 - **Who:** **Ortega Cold Storage**, Pier 9, the freezer warehouse of the **Ortega Fisheries Co-op**:
@@ -33,7 +33,8 @@ Status: G0 DRAFT: review requested
   `police_delay_s`** (60–120 s; Mercer: "Gunfire on the docks. Somebody's calling it in."). The
   mission then starts the `AssaultDirector`, which runs from the first CONTROL (first responders) as
   usual. Cartel survivors keep fighting the crew (they and the police ignore each other, as in PD2).
-  This needs a director-start hook for LOUD_ONLY heists (QC-35).
+  This needs a director-start hook for LOUD_ONLY heists (QC-35). **D-064 (Q1): approved as written:
+  the cartel phase comes first and the police arrive after the rolled `police_delay_s` (60/90/120 s).**
 - **It uses the full P3 loud set:** every special (Phantom, Stinger, Bulwark, Wrecker, Longshot,
   Corpsman), Commander Brandt + Aegis, escalation by wave, custody and hostage trades (the night
   shift are the hostages), crowd control, AI teammate orders (`carry_bag`, `hold`), plus the
@@ -209,7 +210,7 @@ vent), `P` player spawn, `p` roof parapet (1.1 m, 45° coping), `HH` stair head 
 **Vertical data** (`HeistMap.floor_heights = [-1.8, 0.0, 3.6, 7.2]`, `floor_names = ["Landing",
 "Ground", "Mezzanine", "Roof"]`, D-054). The landing stage is listed because the quay steps arrive
 on it, and every stair chain must run between `floor_heights` entries. It is ascending and contains
-0.0 (D-040).
+0.0 (D-040). **D-064 (Q4): keep the −1.8 Landing entry** (the stair-chain rule needs it).
 
 | Level | FFL | Ceiling | Floor-to-floor / slab | Notes |
 |---|---|---|---|---|
@@ -229,6 +230,7 @@ the level landing, never a flight. Headroom under the return flight ≥ 3.3 m �
 
 **Per-room ceiling overrides (D-048).** The §2.6 table caps `warehouse` at 3.5–6.0 m. These rooms
 carry a `ceiling_range` override of **6.0–9.0 m**:
+**Approved (D-064, Q3).**
 - **C1, C2** (freezer chambers) and **SP** (spine aisle): a high-bay cold store. Three pallet levels
   at 2.2 m pitch put the top beam at 6.6 m. Evaporator units and sprinkler clearance above that give
   8.0 m clear to the underside of the roof purlins. That is a standard modern cold-store clear height,
@@ -239,8 +241,9 @@ validator's confirmed ranges; `workshop`, `warehouse` 3.5–6.0).
 
 **Wide doors.** The cold-store sliding doors (2.4 × 3.6 m) and roller doors (3.6 × 4.5 m) are
 `door` prefabs with `width_m` 2.4/3.6 and meta `kind = "industrial_door"`. My `scale` check gains an
-`industrial_door` rule (width 2.4–4.0, height 2.1–4.5), as Night Deposit's vault-door rule did
-(lead to confirm, Open questions). Personnel and service doors keep the §2.6 sizes.
+`industrial_door` rule (width 2.4–4.0, height 2.1–4.5), as Night Deposit's vault-door rule did.
+**Approved (D-064, Q3)** and implemented in `game/world/tools/levelcheck/lc_check_scale.gd`
+(meta `kind = "industrial_door"`; test in `game/tests/c/test_validate_doors.gd`). Personnel and service doors keep the §2.6 sizes.
 
 ### Ground floor (FFL 0.0)
 ```
@@ -424,9 +427,10 @@ Support-space check (level_standards §2.2):
 | Lethal | 5 (10) | 0.7 / 0.3 / 0 | 1–3 | as Brutal |
 | Cataclysm | 6 (12) | 1 / 0 / 0 | 1–3 | as Brutal |
 
-The cartel counts toward the 60-enemy budget (architecture §10). The director's `enemy_cap` counts
-police units only (`alive_units()`), so the cartel adds up to 12 (16 with reinforcements) on top: see
-Budgets.
+**Enemy cap (D-064, Q5):** cartel gunmen count against `DifficultyDef.max_active_enemies`. The
+director's police quota is reduced by the number of cartel gunmen alive, so at Cataclysm the 12 (16
+with reinforcements) gunmen plus police never exceed the cap. ENV A enforces this (director side);
+the map and the mission do nothing extra.
 
 ## Sightlines
 - **The yard is the kill zone.** It is 70 m wide and open between the two container blocks. The
@@ -458,7 +462,8 @@ beyond 30 m except on Cataclysm):**
 | **S4** trawler wheelhouse (rare `harbor_unit`) | (70, 50, +4.5) | the quay east half, the AN quay doors, the landing stage | AN doors ~38 m | the pontoon (QS and the net stacks block it), the yard |
 
 The perches are `TacticalPoint` SNIPER_PERCH (the Longshot spawns there via `SpecialSpawner`). S3 and
-S4 are VariantSlot children, enabled by their rare events. **Player perches:** the office roof
+S4 are VariantSlot children, enabled by their rare events. **D-064 (Q8): the two always-on perches
+(S1, S2) are enough** for the P3 gate. **Player perches:** the office roof
 (`perch_roof`, +7.2) has LOS to S3 (54 m) and the yard. D1's top (`perch_stack`, +5.2) has LOS to S1
 (73 m, through fog) and the whole yard. Counter-sniping a Longshot is the player answer.
 
@@ -522,10 +527,12 @@ centroid. All are ≥ 23 m (≥ 15 m required), so a crew inside a holdout never
 - P4 is "police boats" in the fiction: a harbour RIB is moored at the shed (dressing). Units spawn
   on the stage and come up the quay steps; no boat AI is needed.
 - P5 units reach the interior only through the one-way **rappel links** at the skylights (QC-41).
-- The **ENTRY points nearest the holdouts** (the AN quay doors are 5–8 m from H2's centroid; the
-  OC/MC doors 3–14 m from H1's) only become live spawns when the crew is away from them or cannot
-  see them. That is the PD2 breach behaviour, and it is why every holdout has an entry it cannot
-  watch (QC-42 asks whether interior ENTRY points should be breach-only).
+- **QC-42 (D-064): police never spawn inside the building.** Police units spawn only at the
+  exterior POLICE spawns above and enter the building only through ENTRY `TacticalPoint`s (breach
+  of a door or roller door, rappel through a skylight, an open door). Every ENTRY point on the
+  building shell carries the tag `breach_only` (a breach target, never a spawn candidate); ENV A's
+  director honours it. Every holdout still has an entry it cannot watch, because the breach comes
+  from outside the wall the crew is holding.
 
 ### Police entry points (`TacticalPoint`)
 
@@ -561,10 +568,12 @@ centroid. All are ≥ 23 m (≥ 15 m required), so a crew inside a holdout never
   is to hold H1/H2 until he retreats.
 
 ### Fire shutters (the burn as a level change)
-When a burn point finishes (`device_finished(&"thermite")`, QC-38), the mission **closes and BARs
-the burning room's doors** (fire shutters: `door` prefabs with `lock` set to BARRED at runtime,
-nav links off). A fire volume fills the room (fire damage per L3.4 if QC-38's hazard is accepted;
-otherwise it is visual only and the shutters do the work):
+When a burn point finishes (`device_finished(&"thermite")`, QC-38), the mission plays a **warning
+cue** (klaxon + Mercer: "Shutters coming down!") and starts a **5 s countdown**; then it **closes and
+BARs the burning room's doors** (fire shutters: `door` prefabs locked BARRED at runtime, nav links
+off). **D-064 (Q6): the fire damages players** in the burning room's fire volume as damage over time
+(fire ignores armour, L3.4). The shutters are the main level change (the fire volume is the reason
+not to stay inside):
 - `prod_chamber_a` burned: C1's hall, PK and SP doors close. The hall↔PK flank through C1 and the
   C1 rappel route are gone.
 - `prod_chamber_b` burned: C2's hall, SP and AN doors close. **H2 loses two entries.**
@@ -573,10 +582,10 @@ otherwise it is visual only and the shutters do the work):
 Burning early trades the remaining product bags (greed) for a smaller map.
 
 ## Loot path
-- **Required** (the escape is called when both are done): **the burn** (thermite on the product
-  room's burn point) **and ≥ 4 bags secured** from cash bricks (`loot.cash_bricks`, MEDIUM) and/or
-  weapon crates (`loot.weapon_crate`, HEAVY). Product (`loot.contraband`) pays but does not count
-  toward the 4.
+- **Required** (the escape is called when both are done; **D-064, Q2: approved**): **the burn**
+  (thermite on the product room's burn point) **and ≥ 4 bags secured** from cash bricks
+  (`loot.cash_bricks`, MEDIUM) and/or weapon crates (`loot.weapon_crate`, HEAVY). Extra bags and
+  product (`loot.contraband`) are a bonus: they pay but do not count toward the 4.
 - **The thermite bag** (`loot.thermite`, HEAVY, no value, consumed) starts at the crew's spawn (or at a
   `asset.thermite_drop` point) and must be carried to the active burn point. The routes from the
   gate spawn: C1 ≈ 45 m (yard → hall → C1), C2 ≈ 52 m, PK ≈ 60 m (through the hall, OC and WS, or
@@ -625,8 +634,9 @@ Burning early trades the remaining product bags (greed) for a smaller map.
   `police_delay_s` (timer); the rare `police_tipped` starts it at once.
 - **Cartel wake:** ENV A's cartel AI does this (QC-36); the mission only says Mercer's line on the
   first `npc_alerted` of a cartel NPC.
-- **Burn:** `device_finished(&"thermite")` → close and BAR the burning room's doors (fire shutters),
-  enable its fire volume, Mercer line, complete `[burn]`.
+- **Burn:** `device_finished(&"thermite")` → warning cue + Mercer line → 5 s countdown → close and BAR
+  the burning room's doors (fire shutters), enable its fire volume (fire DoT, ignores armour; D-064),
+  complete `[burn]`.
 - **Escape:** when `[burn]` and `[secure]` are done, the active `escape_zone` gets
   `arrival_delay_s = escape_eta_s` (+30 s with `fog_lifts` for the boat) and activates.
 - **`cartel_reinforcements`:** a timed NPC spawn at 180 s (QC-25 hook) at the gate.
@@ -680,7 +690,7 @@ weights use A2-08 / A3-10 (QC-18).
 
 ## Pre-planning (preplanning.md contract, D-046 shape)
 `Preplan` points (category; `floor` is the index into `floor_heights`: 0 Landing, 1 Ground,
-2 Mezzanine, 3 Roof):
+2 Mezzanine, 3 Roof; point labels are heist-qualified, `ui.preplan.point.dockside_burn.<point_id>`, ENV B B5-04):
 
 | Point | Category | Params / asset |
 |---|---|---|
@@ -715,10 +725,10 @@ preplanning = {
         &"asset.sniper_position": {"effect": &"force_variant", "drop": &"ammo_bag",
                                    "point_ids": ["pp_perch_roof", "pp_perch_stack"],
                                    "exclusive_group": &"player_perch", "max_count": 1,
-                                   "cost": 2000, "favors": 2, "category": &"loud", "tags": [&"loud"]},   # ◇
+                                   "cost": 2000, "favors": 2, "tags": [&"loud"]},   # ◇
         &"asset.thermite_drop": {"drop": &"loot.thermite",                 # needs a bag drop kind (QC-40)
                                  "point_ids": ["pp_drop_gatehouse", "pp_drop_lane", "pp_drop_quay"],
-                                 "max_count": 1, "cost": 1500, "favors": 1, "category": &"loud"},     # ◇
+                                 "max_count": 1, "cost": 1500, "favors": 1, "tags": [&"loud"]},          # ◇
         &"asset.gangway_raised": {"effect": &"force_variant", "point_ids": ["pp_gangway"],
                                   "max_count": 1, "cost": 2500, "favors": 2, "category": &"access"},  # ◇
         &"asset.intel_containers": {"reveals": [&"weapons_containers"],
@@ -828,7 +838,7 @@ Targets from architecture §10 and D-038 QC-10, checked by the `perf` validator 
 | Triangles per view | ≤ 3M (provisional, QC-10) | Racking uses 2 LODs; Pier 10 stacks and the far facades are low-poly LOD dressing. |
 | Shadowed lights in any shot | ≤ 8 | 4 sodium masts (yard), 1 per chamber, 1 AN, 1 hall; the rest unshadowed. The fire light is shadowless. |
 | Texture memory | ≤ 1.5 GB | The shared library (corrugated steel, concrete, insulated panel, rust trims) covers ~90% of surfaces. |
-| NPCs alive | police ≤ `enemy_cap` (difficulty) **plus cartel ≤ 12 (16 with reinforcements)**, civilians ≤ 3 | The total stays ≤ 60 at Cataclysm if `enemy_cap` ≤ 44 there; otherwise the mission holds the director's first CONTROL until ≤ 4 gunmen remain (lead to choose, Open questions). |
+| NPCs alive | police + cartel ≤ `DifficultyDef.max_active_enemies`, civilians ≤ 3 | D-064 (Q5): the gunmen count against the cap; the director's police quota is reduced by the cartel alive count (ENV A). |
 | Fog | one volumetric fog (WorldEnvironment), no per-room FogVolumes | Exteriors only via a height falloff; interiors get a light haze in the chambers. |
 | Fire VFX | ≤ 3 GPUParticles3D emitters × 2,000 particles per burning room, 1 OmniLight | Only one room burns per run. |
 | **Density (kits)** | hall 0.04–0.08 props/m² (pallet groups by the doors); chambers: racking bays 70–85% filled, aisles clear (3.0 m); AN 0.05–0.10; yard: clutter in clusters at the container ends, the masts and the fence (no uniform scatter); offices/break room per their kit minimums | Same-kit rooms (C1/C2) must differ in layout hash (the `variety` check). |
@@ -838,7 +848,7 @@ its straight line is pontoon → K1 (≈ 102 m for a 75 m straight line, 1.4×).
 
 ## HeistDef (proposed data, `dockside_burn_def.tres`)
 `id dockside_burn`, display "Dockside Burn", contact `contact.reyes`, mode LOUD_ONLY, base_payout
-proposed **$95,000** (lead/B to confirm; between Night Deposit $90k and Shadow Ledger $110k),
+**$95,000** (D-064, Q7: a placeholder, like the loot values below; ENV B balances them in P6),
 loot `[loot.cash_bricks, loot.weapon_crate, loot.contraband]` (the new ids are B to confirm; `loot.thermite` is a
 tool bag, not payout loot), escape_options `[van, boat]`, music_track `dockside_burn`, objectives
 `[cartel, breach, product, burn, strongroom, count_cage, containers, secure, escape_wait, escape]`,
@@ -880,21 +890,25 @@ preplanning as above. Map `game/world/heists/dockside_burn/dockside_burn.tscn`;
   be breach targets only (tag `breach_only`)? The holdout design works with either, but the
   distances above assume the current behaviour.
 
-## Open questions for the lead
-1. **Cartel phase.** Is a 60–120 s cartel fight before the police (PD2's gangster heists) the right
-   reading of "loud-only", or should the director start at once and the cartel just be extra
-   enemies? The design works both ways; `police_delay_s` would then be removed.
-2. **Required loot.** The burn plus 4 bags of cash and/or weapons, with product as a bonus that does
-   not count. OK, or should 2 weapon crates be required as their own objective (Firestarter-faithful)?
-3. **High-bay ceiling override** 6.0–9.0 m (8.0 m clear) for C1, C2 and SP (D-048 rule), and an
-   `industrial_door` scale rule (2.4–4.0 × 2.1–4.5 m) for cold-store sliding and roller doors.
-4. **floor_heights** includes the −1.8 landing stage only so the quay-steps chain validates. OK, or
-   should the stage be a ramped exterior (no steps) at 0.0?
-5. **Enemy budget** at Cataclysm: 12 cartel + `enemy_cap` may exceed 60. Clamp the cartel posts by
-   difficulty, or hold the first CONTROL until ≤ 4 gunmen remain?
-6. **Fire hazard** (QC-38): damaging fire volumes, or visual fire with the shutters as the only
-   gameplay effect?
-7. **Payout** $95,000 proposed, with `loot.weapon_crate` 2,000 and `loot.contraband` 1,400 (◇).
-8. **Rare perches:** S3 and S4 only with `fog_lifts`/`harbor_unit`, so the base map has 2 perches
-   (S1, S2), both with LOS to the bag routes. Enough for the P3 gate's "sniper perches", or should S3
-   always be on?
+## Lead rulings (D-064; the G0 open questions, closed)
+1. **Cartel phase:** approved. Cartel first; the police come after the rolled `police_delay_s`
+   (60/90/120 s; `police_tipped` = 0).
+2. **Required loot:** the burn + 4 secured bags (cash and/or weapon crates). Extra bags and product
+   are a bonus.
+3. **High-bay ceiling override** 6.0–9.0 m for C1, C2, SP: approved. The **`industrial_door`** scale
+   rule (2.4–4.0 m wide × 2.1–4.5 m high) is approved and implemented in the validator's scale check.
+4. **floor_heights:** keep the −1.8 Landing (the stair-chain rule needs it).
+5. **Cataclysm cap:** cartel gunmen count against `DifficultyDef.max_active_enemies`; the director's
+   police quota is reduced by the cartel alive count. ENV A enforces it; documented only here.
+6. **Fire:** damages players (fire ignores armour) as damage over time inside the fire volume.
+   Telegraph: a warning cue, then the shutters drop after a 5 s countdown. The shutters are the main
+   level change.
+7. **Payout:** $95k base and the loot values are placeholders; ENV B balances them in P6.
+8. **Perches:** the two always-on perches (S1, S2) are enough.
+- **QC-42:** yes: police never spawn inside the building, only via ENTRY TacticalPoints (breach,
+  rappel, doors). Building ENTRY points carry the tag `breach_only`.
+- **QC-37:** the map adds the `G.SAW_TARGET` group and saw metadata now on the padlocks and other
+  saw-able things; ENV A ships `saw_cut()` later.
+- **QC-35/36/38/39/40/41** are routed to ENV A/B/D. Until they ship, the G1 greybox uses placeholders
+  that degrade gracefully (each marked with a `TODO(QC-nn)` in the code; listed in
+  `docs/levels/dockside_burn/validation.md` notes and the G1 report).

@@ -59,6 +59,9 @@ TINTED: dict[str, dict] = {
     "paint_sage": {"source": "drywall_painted", "color": "#8A9483", "roughness": 0.75},
     "metal_grey": {"source": "drywall_painted", "color": "#A4A8A8", "roughness": 0.9},
     "metal_dark": {"source": "metal_painted", "color": "#3B3E41", "roughness": 0.9},
+    # metal_dark without the chipped-paint pattern (its bare-metal chips read as black keyhole-like
+    # blots on large flat office panels); powder-coated steel furniture uses this
+    "powder_charcoal": {"source": "drywall_painted", "color": "#3B3E41", "roughness": 0.9},
     "metal_green": {"source": "drywall_painted", "color": "#3D5645", "roughness": 1.0},
     "metal_red": {"source": "drywall_painted", "color": "#9B2E28", "roughness": 0.8},
     "metal_yellow": {"source": "drywall_painted", "color": "#C99E38", "roughness": 0.9},

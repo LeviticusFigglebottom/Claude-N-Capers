@@ -79,7 +79,12 @@ P2 heists (PD2 bag shape: a heavier bag is worth more per bag, but less per seco
 | `loot.ledger_drives` | MEDIUM | $1,800 | Shadow Ledger (required ×2, 3 spawn) | weight V (doc); value ◇ |
 | `loot.ledger_books` | MEDIUM | $2,400 | Shadow Ledger (optional, time-locked safe) | weight: lead (B4-10; the doc asked LIGHT); value ◇ (greed bag: costs a keycard + a time-lock hold) |
 | `loot.painting` | MEDIUM | $1,500 | Shadow Ledger art hall ×2, reusable by `gallery_night` | weight V (doc); value ◇ |
+| `loot.weapon_crate` | HEAVY | $2,000 | Dockside Burn (2 crates in each of 2 yard containers; PD2 Firestarter weapons analog) | weight V (G0 doc, QC-39); value ◇ (doc) |
+| `loot.contraband` | MEDIUM | $1,400 | Dockside Burn (product; a bonus that does **not** count toward the 4 required bags) | weight V (doc); value ◇ (doc: Reyes' buyer takes it at a discount) |
+| `loot.thermite` | HEAVY | $0 | Dockside Burn tool bag, consumed by the burn point | **tool bag**: value 0, in `PayoutTweak.xp_loot_excluded_ids` (no bag XP), excluded from `[secure]` by the mission (ENV A/C) |
 Shadow Ledger's archive safe uses the existing `loot.cash`.
+Dockside Burn's cash is the existing `loot.cash_bricks` (MEDIUM $1,600: strongroom pallets or the count-room cage). Per-difficulty values and
+the C-side TODOs: `content/docs/heists/dockside_burn.md`.
 
 **Small loot (QB-52, D-049): no loot def.** Small loot (cash stacks, jewellery, deposit-box contents
 picked up by hand, not bagged) gets its value from the map prefab that spawns it (ENV A/C), which
@@ -87,6 +92,8 @@ reports the sum in `HeistResult.small_loot`; `PayoutCalculator` scales it by dif
 (`PayoutTweak.small_loot_scaled_by_difficulty`). `loot.small_loot_value_mult` (Plain Sight aced) belongs
 to the pickup side (ENV A). Per-item ranges before the difficulty
 multiplier (recorded from the G0 docs): **Night Deposit $800–2,400**, **Shadow Ledger $1,200–3,000**.
+**Dockside Burn: the G0 doc (D-064) gives no per-item range** (O2 dispatch safe ×3 and desk cash in O1/O2/M1); ◇ $600–1,500 proposed
+until ENV C sets the prefab values.
 
 ## Difficulty: `difficulty/` (Routine, Tense, Hazardous, Brutal, Lethal, Cataclysm = PD2 Normal, Hard, Very Hard, Overkill, Mayhem, Death Sentence)
 | | Rou | Ten | Haz | Bru | Let | Cat | Src |

@@ -57,14 +57,10 @@ rules = Array[Dictionary]([{
 "pick": Vector2i(1, 3)
 }, {
 "group": &"security_room_staffed",
-"phase": 2,
-"pick": Vector2i(0, 0),
-"pick_p2": Vector2i(1, 1)
+"pick": Vector2i(1, 1)
 }, {
 "group": &"code_note",
-"phase": 2,
-"pick": Vector2i(0, 0),
-"pick_p2": Vector2i(1, 1)
+"pick": Vector2i(1, 1)
 }])
 rare_events = Array[Dictionary]([{
 "chance": 0.03,

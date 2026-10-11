@@ -8,7 +8,7 @@ extends Resource
 @export var id: StringName = &""
 @export var title_key: StringName = &""
 @export var desc_key: StringName = &""
-## Glyph HubStationIcon draws: &"board", &"planning", &"armory", &"masks", &"range", &"crew" (unknown = a plain dot).
+## Glyph HubStationIcon draws: &"board", &"planning", &"armory", &"masks", &"range", &"crew", &"jukebox" (unknown = a plain dot).
 @export var icon_kind: StringName = &""
-## What MenuFlow opens (MenuFlow.TARGETS): &"board", &"heist_select", &"loadout", &"masks", &"firing_range", &"lobby".
+## What MenuFlow opens (MenuFlow.TARGETS): &"board", &"heist_select", &"loadout", &"masks", &"firing_range", &"lobby", &"jukebox".
 @export var target: StringName = &""

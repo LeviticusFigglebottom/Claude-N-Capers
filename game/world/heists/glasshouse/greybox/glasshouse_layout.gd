@@ -320,6 +320,10 @@ const ANCHORS: Array = [
 	# U5 admin + appraisal
 	["U5", "DeskBookkeeping", "prop_desk_office", Vector3(1.6, UPPER, 9.0), 0.0, {}],
 	["U5", "DeskSalesAdmin", "prop_desk_office", Vector3(4.2, UPPER, 9.0), 0.0, {}],
+	# one task chair per desk (G2 review: the kit seated both chairs at the bookkeeping desk, so the
+	# sales-admin monitor had no chair to face)
+	["U5", "ChairBookkeeping", "prop_chair_office", Vector3(1.6, UPPER, 8.3), 180.0, {"faces_anchor": "DeskBookkeeping"}],
+	["U5", "ChairSalesAdmin", "prop_chair_office", Vector3(4.2, UPPER, 8.3), 180.0, {"faces_anchor": "DeskSalesAdmin"}],
 	["U5", "AppraisalBench", "prop_workbench", Vector3(5.8, UPPER, 11.39), 0.0, {}],
 	["U5", "FileCabinets", "prop_file_cabinet", Vector3(6.563, UPPER, 7.8), 90.0, {}],
 	# U6 manager
@@ -417,6 +421,12 @@ const CHANDELIER: Dictionary = {"pos": Vector3(7.0, 0.0, 9.0), "radius": 1.2, "h
 ## 5000 K workshop, fluorescent storage).
 const CEILING_LIGHTS: Array = [
 	["LightStair", Vector3(14.5, 7.6, 2.4), Color(0.93, 0.95, 1.0), 0.8, 7.0],
+	# Neighbour garage: L2 drive-lane panels under the L3 deck and two over the ramp cut-out (under
+	# the roof slab), so the ramp reads at night (GarageRamp review shot).
+	["GarageL2LightS", Vector3(35.0, 5.8, 8.5), Color(0.9, 0.94, 1.0), 1.0, 8.0],
+	["GarageL2LightN", Vector3(35.0, 5.8, -1.0), Color(0.9, 0.94, 1.0), 1.0, 8.0],
+	["GarageRampLightS", Vector3(37.2, 8.8, 5.0), Color(0.9, 0.94, 1.0), 1.2, 9.0],
+	["GarageRampLightN", Vector3(37.2, 8.8, -3.5), Color(0.9, 0.94, 1.0), 1.2, 9.0],
 ]
 
 ## Wall-mounted lights: [name, pivot on the wall face, yaw_deg (front -Z out of the wall), colour,
@@ -653,8 +663,10 @@ const REVIEW_CAMERAS: Array = [
 		"U2 security office: camera station (P2), key cabinet, alley window"],
 	["BreakRoom", Vector3(3.7, 5.8, 3.7), Vector3(1.6, 4.9, 0.6), 75.0, "U1 break room, fire-escape window, lockers"],
 	["ManagerOffice", Vector3(11.5, 5.85, 6.6), Vector3(8.0, 4.8, 10.5), 75.0, "U6 manager office (keycard / cash slots)"],
-	["AdminOffice", Vector3(6.5, 5.85, 6.6), Vector3(1.0, 4.8, 10.5), 75.0, "U5 admin and appraisal office"],
+	["AdminOffice", Vector3(5.0, 5.85, 6.55), Vector3(1.2, 4.8, 11.2), 75.0, "U5 admin and appraisal office"],
 	["StockRoom", Vector3(17.4, 5.85, 6.6), Vector3(13.0, 4.8, 10.5), 75.0, "U7 stock and archive"],
 	["GaragePerch", Vector3(33.0, 4.2, 0.0), Vector3(17.0, 1.6, 6.0), 70.0,
 		"Garage level 2 (P3 sniper perch), crouched eye over the 1.0 m parapet: alley mouth and salon"],
+	["GarageRamp", Vector3(36.0, 4.8, 11.3), Vector3(37.0, 5.0, -2.0), 70.0,
+		"Garage L2 -> L3 ramp from its foot: upstand, L3 cut-out railing, stalls"],
 ]

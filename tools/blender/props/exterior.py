@@ -211,10 +211,14 @@ def _neon(k: Kit, p: dict) -> None:
     o = k.obj("Neon")
     rc = o.part(bevel=0.006, segments=2)
     tube = o.part(bevel=0.0)
+    # smooth arcs (res 3) and 8-sided swept tubes (<= 8000 tris, style guide §5): round letters at
+    # grazing angles
     width = lettering(tube, "VOSSBERG", 0.5, 0.0, 0.1, -0.25, "emit_neon_magenta", stroke=0.026, depth=0.0,
-                      round_tube=True, slant=0.22, spacing=0.18)
-    # dark raceway behind the letters + standoffs; underline swash
-    rc.bx((-width / 2 - 0.08, 0.0, -0.08), (width / 2 + 0.18, 0.08, 0.06), "metal_dark")
+                      round_tube=True, slant=0.22, spacing=0.18, res=3, tube_segs=8)
+    # dark raceway behind the letters + standoffs; underline swash. The slant shifts the letter tops
+    # towards -X (the viewer's right), so the raceway spans exactly the slanted text, no stub.
+    lean = 0.22 * 0.5
+    rc.bx((-width / 2 - lean - 0.06, 0.0, -0.08), (width / 2 + 0.06, 0.08, 0.06), "metal_dark")
     for i in range(9):
         x = -width / 2 + i * width / 8
         rc.rod((x, 0.08, -0.01), (x, 0.1, -0.01), 0.006, "steel", segs=6)

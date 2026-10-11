@@ -23,8 +23,12 @@ step "gdlint (ENV C code)"
 
 step "tests c + integration"
 for d in c integration; do
-  OUT="$("$ROOT/tools/ci/run_tests.sh" "$d" 2>&1 | grep -E '^== ')"
-  echo "$d: $OUT"
+  LOG="/tmp/push_gate_tests_$d.txt"
+  "$ROOT/tools/ci/run_tests.sh" "$d" > "$LOG" 2>&1
+  OUT="$(grep -E '^== ' "$LOG")"
+  echo "$d: $OUT (log: $LOG)"
+  # Name the failures (an unnamed one cannot be told apart from a flake later).
+  grep -A2 -E '^FAIL ' "$LOG" | head -20
   echo "$OUT" | grep -q ' 0 failed' || FAIL=1
 done
 

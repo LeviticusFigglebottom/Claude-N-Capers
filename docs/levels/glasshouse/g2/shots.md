@@ -6,10 +6,10 @@ Rendered by `tools/levelcheck/render_shots.sh` at 1920x1080. Contact sheet: `con
 |---|---|---|---|---|
 | 1 | TopDownSite | Top-down site: building, alley, Harlow Ave, Pell St, closures | [top_down_site.jpg](top_down_site.jpg) | 84 |
 | 2 | TopDownBuilding | Top-down building footprint (roof, parapet, HVAC, hatch) | [top_down_building.jpg](top_down_building.jpg) | 106 |
-| 3 | ExtHarlowCorner | Exterior: Harlow Ave / Pell St corner, neon sign + salon glazing (landmark) | [ext_harlow_corner.jpg](ext_harlow_corner.jpg) | 127 |
-| 4 | ExtShopfront | Exterior: shopfront from Harlow Ave; chandelier display visible through the glass | [ext_shopfront.jpg](ext_shopfront.jpg) | 221 |
-| 5 | ExtAlleyWest | Exterior: service alley from the west (van E1 slot, back door, dumpsters, fire escape) | [ext_alley_west.jpg](ext_alley_west.jpg) | 98 |
-| 6 | ExtAlleyMouth | Exterior: alley mouth from Pell St | [ext_alley_mouth.jpg](ext_alley_mouth.jpg) | 231 |
+| 3 | ExtHarlowCorner | Exterior: Harlow Ave / Pell St corner, neon sign + salon glazing (landmark) | [ext_harlow_corner.jpg](ext_harlow_corner.jpg) | 128 |
+| 4 | ExtShopfront | Exterior: shopfront from Harlow Ave; chandelier display visible through the glass | [ext_shopfront.jpg](ext_shopfront.jpg) | 223 |
+| 5 | ExtAlleyWest | Exterior: service alley from the west (van E1 slot, back door, dumpsters, fire escape) | [ext_alley_west.jpg](ext_alley_west.jpg) | 106 |
+| 6 | ExtAlleyMouth | Exterior: alley mouth from Pell St | [ext_alley_mouth.jpg](ext_alley_mouth.jpg) | 233 |
 | 7 | ExtFireEscape | Exterior: fire-escape ladder + landing under the break-room window | [ext_fire_escape.jpg](ext_fire_escape.jpg) | 275 |
 | 8 | ExtPellFireExit | Exterior: Pell St side, fire exit + van E2 slot | [ext_pell_fire_exit.jpg](ext_pell_fire_exit.jpg) | 228 |
 | 9 | SalesFloorEntrance | G5 sales floor from the entrance (floor guard post view) | [sales_floor_entrance.jpg](sales_floor_entrance.jpg) | 257 |
@@ -24,8 +24,9 @@ Rendered by `tools/levelcheck/render_shots.sh` at 1920x1080. Contact sheet: `con
 | 18 | SecurityOffice | U2 security office: camera station (P2), key cabinet, alley window | [security_office.jpg](security_office.jpg) | 167 |
 | 19 | BreakRoom | U1 break room, fire-escape window, lockers | [break_room.jpg](break_room.jpg) | 139 |
 | 20 | ManagerOffice | U6 manager office (keycard / cash slots) | [manager_office.jpg](manager_office.jpg) | 180 |
-| 21 | AdminOffice | U5 admin and appraisal office | [admin_office.jpg](admin_office.jpg) | 187 |
+| 21 | AdminOffice | U5 admin and appraisal office | [admin_office.jpg](admin_office.jpg) | 198 |
 | 22 | StockRoom | U7 stock and archive | [stock_room.jpg](stock_room.jpg) | 196 |
-| 23 | GaragePerch | Garage level 2 (P3 sniper perch), crouched eye over the 1.0 m parapet: alley mouth and salon | [garage_perch.jpg](garage_perch.jpg) | 119 |
+| 23 | GaragePerch | Garage level 2 (P3 sniper perch), crouched eye over the 1.0 m parapet: alley mouth and salon | [garage_perch.jpg](garage_perch.jpg) | 130 |
+| 24 | GarageRamp | Garage L2 -> L3 ramp from its foot: upstand, L3 cut-out railing, stalls | [garage_ramp.jpg](garage_ramp.jpg) | 137 |
 
 ![contact sheet](contact_sheet.jpg)

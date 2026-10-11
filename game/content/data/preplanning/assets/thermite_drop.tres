@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.thermite_drop"
+category = &"supply"
+cost = 1500
+favors = 1
+point_ids = Array[StringName]([&"pp_drop_gatehouse", &"pp_drop_lane", &"pp_drop_quay"])
+drop = &"loot.thermite"
+tags = Array[StringName]([&"loud"])

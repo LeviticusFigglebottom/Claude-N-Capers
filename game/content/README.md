@@ -6,6 +6,7 @@ current when an API changes.
 ## Layout
 ```
 content/
+  audio/                    MusicCatalog (+ MusicCatalogTweak / MusicStubTrack): view over C's music table (B5-03)
   data/                     every balance number (.tres / .csv); no constants in scripts
     weapons/ mods/ melee/ armor/ deployables/ loot/ throwables/ difficulty/ masks/ contacts/ preplanning/
     tweak/                  concealment_curve.tres, display_stats.tres, payout.tres, perk_points.tres, xp_curve.tres, notoriety.tres
@@ -103,6 +104,20 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   * UI: `NotorietyScreen` (`ui/notoriety/`) from the hub profile panel (`HubMenu.notoriety_requested` ->
     `MenuFlow._open_notoriety()`). `NotorietyScreen.level_text(level, rank)` / `badge_text(rank)` give the
     badge text used by the hub and lobby.
+* **Music selection (B5-03, D-062; brief `content/docs/music.md`).** `MusicCatalog` (`audio/music_catalog.gd`,
+  static) is a read-only view over ENV C's `MusicTrackTable` (`MusicCatalogTweak.table_path` in `data/tweak/music.tres`,
+  read as `MusicTrackTable.load_default().all()`, class looked up by name and entries duck-typed). While that table is
+  missing it falls back to the stub list in the same `.tres`.
+  * `tracks() -> Array[Dictionary]` gives `{id, unlock, default_for_heists}` in id order.
+  * `is_unlocked(profile, id)`, `available(profile)`, `display_key(id)` (`music.<id>.name`), `unlock_rank(id)`,
+    `default_for(heist)`.
+  * `resolve_choice(profile)` gives `profile.music_choice` while it is known and unlocked, else `&""`.
+  * `MusicPicker` (`ui/common/`) writes `music_choice` and saves. It sits in the pre-planning bottom bar (solo / host)
+    and the lobby (host editable; clients see `LobbyState.host_music()`, the `music` field of the host's summary).
+  * Launch options always carry `options["music_track"]` (`build_launch_options(..., music)` /
+    `build_coop_launch_options(..., music)`; the host's pick in co-op; `&""` = `HeistDef.music_track`).
+  * Hub station `jukebox` opens `JukeboxScreen` (`ui/jukebox/`). It drives C's `MusicDirector.preview(id)` /
+    `stop_preview()` via `call()` when that API exists, else Play is disabled with a notice. Leaving stops the preview.
 * `ProJobLocks` (`board/pro_job_locks.gd`): failed pro Board contracts persisted in
   `PlayerProfile.pro_job_locks` (`lock/prune/is_locked`); MenuFlow mirrors them into `consumed_contracts`.
 * `MaskLocker.grant_unlock(profile, unlock_id)` records the unlock in `PlayerProfile.unlocks` and owns its
@@ -156,7 +171,7 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 * **Safehouse hub (B4-07, C9).** `HubMenu` (`ui/hub/hub_menu.tscn`) is the 2D layer of the safehouse:
   station cards + a profile summary (level, XP bar, spending, stash, free skill/perk points). Stations are
   data: `data/ui/hub_stations.tres` (`HubStationList` of `HubStation {id, title_key, desc_key, icon_kind,
-  target}`). Ids: `board`, `planning`, `armory`, `masks`, `range`, `crew` (co-op lobby, B4-11).
+  target}`). Ids: `board`, `planning`, `armory`, `masks`, `range`, `crew` (co-op lobby, B4-11), `jukebox` (B5-03).
   **`MenuFlow.open_station(id: StringName) -> bool`** opens one (false + `Log.error` for an unknown id);
   it is the API **ENV C's 3D safehouse interactables call** (find the MenuFlow node, call it with the
   station id), works from any menu state, refunds a confirmed-but-unlaunched plan, and Back on every

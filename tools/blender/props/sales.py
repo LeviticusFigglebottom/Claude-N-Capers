@@ -312,7 +312,10 @@ def _sign(k: Kit, p: dict) -> None:
     trim.bx((-w / 2 - 0.004, 0.0, -h / 2 - 0.004), (w / 2 + 0.004, 0.026, -h / 2 + 0.004), "brass")
     trim.bx((-w / 2 - 0.004, 0.0, h / 2 - 0.004), (w / 2 + 0.004, 0.026, h / 2 + 0.004), "brass")
     letters = o.part(bevel=0.0)
-    lettering(letters, "VOSSBERG", 0.18, 0.0, 0.03, -0.09, "brass", stroke=0.022, depth=0.012, spacing=0.3)
+    # flat cut-brass letters 3 mm proud of the board: mitred ribbons with smooth arcs, so the name
+    # reads cleanly even at the grazing angle of the counter shot (no overlapping bar/cube joints)
+    lettering(letters, "VOSSBERG", 0.19, 0.0, 0.03, -0.095, "brass", stroke=0.026, depth=0.003, spacing=0.3,
+              res=3, inlay=True)
     o.build()
 
 

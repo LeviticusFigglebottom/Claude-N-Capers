@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="MusicTrackTable" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://world/audio/music_track_table.gd" id="1_tbl"]
+[ext_resource type="Script" path="res://world/audio/music_track_entry.gd" id="2_ent"]
+
+[sub_resource type="Resource" id="e1"]
+script = ExtResource("2_ent")
+id = &"glasshouse"
+stems = "res://world/audio/music/glasshouse"
+unlock = &""
+default_for_heists = Array[StringName]([&"glasshouse"])
+
+[sub_resource type="Resource" id="e2"]
+script = ExtResource("2_ent")
+id = &"night_deposit"
+stems = "res://world/audio/music/night_deposit"
+unlock = &""
+default_for_heists = Array[StringName]([&"night_deposit"])
+
+[sub_resource type="Resource" id="e3"]
+script = ExtResource("2_ent")
+id = &"shadow_ledger"
+stems = "res://world/audio/music/shadow_ledger"
+unlock = &""
+default_for_heists = Array[StringName]([&"shadow_ledger"])
+
+[sub_resource type="Resource" id="e4"]
+script = ExtResource("2_ent")
+id = &"dockside_burn"
+stems = "res://world/audio/music/dockside_burn"
+unlock = &""
+default_for_heists = Array[StringName]([&"dockside_burn"])
+
+[sub_resource type="Resource" id="e5"]
+script = ExtResource("2_ent")
+id = &"vault_hymn"
+stems = "res://world/audio/music/vault_hymn"
+unlock = &"unlock.music.vault_hymn"
+default_for_heists = Array[StringName]([])
+
+[sub_resource type="Resource" id="e6"]
+script = ExtResource("2_ent")
+id = &"long_con"
+stems = "res://world/audio/music/long_con"
+unlock = &"unlock.music.long_con"
+default_for_heists = Array[StringName]([])
+
+[sub_resource type="Resource" id="e7"]
+script = ExtResource("2_ent")
+id = &"last_call"
+stems = "res://world/audio/music/last_call"
+unlock = &"unlock.music.last_call"
+default_for_heists = Array[StringName]([])
+
+[resource]
+script = ExtResource("1_tbl")
+entries = Array[ExtResource("2_ent")]([SubResource("e1"), SubResource("e2"), SubResource("e3"), SubResource("e4"), SubResource("e5"), SubResource("e6"), SubResource("e7")])

@@ -36,6 +36,8 @@ func _draw() -> void:
 			_range(c, u, w)
 		&"crew":
 			_crew(c, u, w)
+		&"jukebox":
+			_jukebox(c, u, w)
 		_:
 			draw_circle(c, u * 0.2, color)
 
@@ -104,3 +106,15 @@ func _crew(c: Vector2, u: float, w: float) -> void:
 		draw_circle(head, u * 0.15, color)
 		draw_arc(head + Vector2(0, 0.3) * u, u * 0.17, PI, TAU, 12, Color(color, 0.85), w, true)
 		draw_line(head + Vector2(0, 0.3) * u, c + Vector2(x, 0.34) * u, Color(color, 0.55), w)
+
+
+## Two beamed eighth notes (jukebox, B5-03).
+func _jukebox(c: Vector2, u: float, w: float) -> void:
+	var heads: Array[Vector2] = [c + Vector2(-0.38, 0.38) * u, c + Vector2(0.34, 0.26) * u]
+	for h: Vector2 in heads:
+		draw_circle(h, u * 0.16, color)
+		draw_line(h + Vector2(u * 0.14, 0), h + Vector2(u * 0.14, -u * 0.82), color, w * 1.2)
+	var a: Vector2 = heads[0] + Vector2(u * 0.14, -u * 0.82)
+	var b: Vector2 = heads[1] + Vector2(u * 0.14, -u * 0.82)
+	draw_colored_polygon(PackedVector2Array([a, b, b + Vector2(0, u * 0.16), a + Vector2(0, u * 0.16)]), color)
+	draw_arc(c, u * 0.78, PI * 1.05, PI * 1.35, 10, Color(color, 0.45), w, true)

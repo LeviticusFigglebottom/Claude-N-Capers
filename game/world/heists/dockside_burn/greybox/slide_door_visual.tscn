@@ -1,0 +1,82 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_frame"]
+resource_name = "db_grey_slide_frame"
+albedo_color = Color(0.42, 0.44, 0.46, 1)
+roughness = 0.6
+metadata/greybox = true
+
+[sub_resource type="StandardMaterial3D" id="mat_leaf"]
+resource_name = "db_grey_slide_leaf"
+albedo_color = Color(0.78, 0.8, 0.8, 1)
+roughness = 0.5
+metallic = 0.1
+metadata/greybox = true
+
+[sub_resource type="BoxMesh" id="box_jamb"]
+material = SubResource("mat_frame")
+size = Vector3(0.1, 3.7, 0.3)
+
+[sub_resource type="BoxMesh" id="box_header"]
+material = SubResource("mat_frame")
+size = Vector3(2.6, 0.1, 0.3)
+
+[sub_resource type="BoxShape3D" id="shape_jamb"]
+size = Vector3(0.1, 3.7, 0.3)
+
+[sub_resource type="BoxShape3D" id="shape_header"]
+size = Vector3(2.6, 0.1, 0.3)
+
+[sub_resource type="BoxMesh" id="box_leaf"]
+material = SubResource("mat_leaf")
+size = Vector3(1.2, 3.6, 0.08)
+
+[node name="SlideDoorVisual" type="Node3D"]
+metadata/greybox = true
+
+[node name="Frame" type="Node3D" parent="."]
+
+[node name="JambL" type="MeshInstance3D" parent="Frame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.85, 0)
+mesh = SubResource("box_jamb")
+
+[node name="JambR" type="MeshInstance3D" parent="Frame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 1.85, 0)
+mesh = SubResource("box_jamb")
+
+[node name="Header" type="MeshInstance3D" parent="Frame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.65, 0)
+mesh = SubResource("box_header")
+
+[node name="Collision" type="StaticBody3D" parent="Frame"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="JambL" type="CollisionShape3D" parent="Frame/Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.85, 0)
+shape = SubResource("shape_jamb")
+
+[node name="JambR" type="CollisionShape3D" parent="Frame/Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 1.85, 0)
+shape = SubResource("shape_jamb")
+
+[node name="Header" type="CollisionShape3D" parent="Frame/Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.65, 0)
+shape = SubResource("shape_header")
+
+[node name="Leaf" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0, 0)
+
+[node name="Panel" type="MeshInstance3D" parent="Leaf"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 1.8, 0)
+mesh = SubResource("box_leaf")
+
+[node name="Handle" type="Marker3D" parent="Leaf"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, 1.0, -0.1)
+
+[node name="Leaf2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 0, 0)
+
+[node name="Panel" type="MeshInstance3D" parent="Leaf2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 1.8, 0)
+mesh = SubResource("box_leaf")
