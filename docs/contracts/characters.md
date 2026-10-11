@@ -139,3 +139,6 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
 * Humanoid `rappel` clip (ENV D, for A's QC-41 NpcMotor rappel descent): 30 f loop (1 s per hop), 2.5 m/s straight down
   (A's rappel speed defaults to this ◇), event `land@0`; rope at x 0, z −0.24 in root space, wall contact at z −0.80
   (play it without a wall for skylight drops). Details: SOURCE `rappel_rope`.
+* **Masks clear the crew face envelope** (D-073): crew masks are built to clear the crew face envelope
+  (`tools/blender/masks/_crew_face_envelope.json`, a cylindrical height map of every crew head + hair at Head/Socket)
+  by ≥ 3 mm. A crew head change regenerates the envelope and rebuilds the masks; a staleness test guards it.
