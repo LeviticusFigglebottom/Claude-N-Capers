@@ -38,6 +38,7 @@ func _focused() -> Control:
 func _to_preplanning(f: MenuFlow) -> void:
 	f.main_menu.safehouse_button.pressed.emit()
 	f.hub.station_button(&"planning").pressed.emit()
+	assert_true(f.heist_select.select_heist_id(&"glasshouse"), "glasshouse offered")
 	f.heist_select.next_button.pressed.emit()
 	await wait_frames(1)
 	f.briefing_screen.continue_button.pressed.emit()
@@ -67,6 +68,7 @@ func test_full_path_and_back_navigation() -> void:
 	assert_eq(f.current, f.heist_select as Control)
 	assert_eq(f.heist_select.next_button.text, UiText.t(&"ui.heist_select.next"))
 	f.heist_select.select_difficulty(Enums.Difficulty.BRUTAL)
+	assert_true(f.heist_select.select_heist_id(&"glasshouse"), "glasshouse offered")
 	f.heist_select.next_button.pressed.emit()
 	await wait_frames(2)
 	# heist select -> briefing
@@ -78,6 +80,7 @@ func test_full_path_and_back_navigation() -> void:
 	await wait_frames(2)
 	assert_eq(f.current, f.heist_select as Control, "briefing Back -> heist select")
 	assert_eq(_focused(), f.heist_select.heist_buttons[0] as Control, "heist select: first heist focused")
+	assert_true(f.heist_select.select_heist_id(&"glasshouse"), "glasshouse offered")
 	f.heist_select.next_button.pressed.emit()
 	await wait_frames(1)
 	assert_eq(f.current, f.briefing_screen as Control)
@@ -167,6 +170,7 @@ func test_choosing_a_heist_again_resets_the_path() -> void:
 	f.briefing_screen.back_button.pressed.emit()
 	await wait_frames(1)
 	assert_eq(f.current, f.heist_select as Control)
+	assert_true(f.heist_select.select_heist_id(&"glasshouse"), "glasshouse offered")
 	f.heist_select.next_button.pressed.emit()
 	await wait_frames(1)
 	assert_eq(f.current, f.briefing_screen as Control)

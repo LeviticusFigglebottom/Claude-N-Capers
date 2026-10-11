@@ -104,6 +104,15 @@ func select_heist(index: int) -> void:
 	_update_preview()
 
 
+## Select the heist with `heist_id` (as if its button were pressed). False when it is not offered.
+func select_heist_id(heist_id: StringName) -> bool:
+	for i: int in range(_entries.size()):
+		if StringName(_entries[i]["id"]) == heist_id:
+			select_heist(i)
+			return true
+	return false
+
+
 func select_difficulty(d: int) -> void:
 	if not HeistCatalog.is_difficulty_unlocked(d):
 		return
