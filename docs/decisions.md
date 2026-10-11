@@ -467,3 +467,17 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   `loot.<id>` drop kinds spawn that bag; point labels heist-qualified for new heists.
 - $95k base is a placeholder (P6 balance); per-heist Board gating is P6; no armor-bag drop on loud-only jobs; small
   loot $600–1,500 until ENV C sets prefab values.
+
+## D-069 — 2026-10-11 — Item FP contracts, gun bash, music hooks, B6 dispatch
+- ENV D's seven proposals (D2-04) accepted: `anim_set` on MeleeDef/ThrowableDef/DeployableDef plus optional
+  `MeleeDef.swing_time_s` / `hit_delay_s` / `equip_time_s` (contracts/data, lead); item-model conventions
+  (visual_slots.md "Items"); `<set>_bash` with hit@; viewmodel near plane 0.02 m and runtime left-hand IK to
+  `LeftHandIK` (ENV A); bow brace 0.155 m; crossbow string halves and the Marshal `Speedloader` (ENV B).
+  characters.md v1.7 records the sets and D2-02's NPC ambient clips.
+- B5-03 music: `MusicTrackTable` (ENV C, `res://world/audio/music/tracks.tres`), `MusicDirector.preview/stop_preview`
+  usable without the EventBus, heist music = `launch_options["music_track"]` else `HeistDef.music_track`; ENV A
+  replicates `music_track`. The lobby profile summary gains an optional `music` field (missing reads as "").
+- Glasshouse G3 signed off (ENV C 21ca875; garage lights accepted). Polish backlog: garage parked cars as props,
+  stray bracket by the VOSSBERG neon, security-office bins.
+- ENV B dispatched B6-01..05 (P5 loot/contracts, Tab scoreboard + awards, chat, drop-in/kick UI, lobby codes).
+- Gate hygiene: HUD-model asserts after a physics wait call `hud_model.refresh()` first (it polls on render frames).
