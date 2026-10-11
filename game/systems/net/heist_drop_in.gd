@@ -32,8 +32,6 @@ const KIND_ANSWER: StringName = &"dropin.answer"
 const KIND_PROGRESS: StringName = &"dropin.progress"
 const KIND_CANCEL: StringName = &"dropin.cancel"
 ## Reasons beyond DropInService.REASONS (net.md v1.1); named apart so the base can add its own constants.
-const R_KICKED: StringName = &"kicked"
-const R_OFF: StringName = &"off"
 const POLICY_ASK: StringName = &"ask"
 const POLICY_AUTO: StringName = &"auto"
 const POLICY_OFF: StringName = &"off"
@@ -111,7 +109,7 @@ func _on_request(peer_id: int, summary: Dictionary) -> void:
 		_deny(peer_id, REASON_FULL)
 		return
 	if _kicked.has(String(summary.get("name", ""))):
-		_deny(peer_id, R_KICKED)
+		_deny(peer_id, REASON_KICKED)
 		return
 	var errors: Array[String] = LobbyState.validate_summary(summary)
 	if not errors.is_empty():
@@ -120,7 +118,7 @@ func _on_request(peer_id: int, summary: Dictionary) -> void:
 		return
 	match policy:
 		POLICY_OFF:
-			_deny(peer_id, R_OFF)
+			_deny(peer_id, REASON_OFF)
 		POLICY_AUTO:
 			_accept(peer_id, summary)
 		_:
@@ -208,8 +206,8 @@ func request_join(summary: Dictionary) -> void:
 		return
 	joining = false
 	if rt == null:
-		if Net.last_disconnect_reason == R_KICKED:
-			join_failed.emit(Net.local_peer_id(), R_KICKED)
+		if Net.last_disconnect_reason == REASON_KICKED:
+			join_failed.emit(Net.local_peer_id(), REASON_KICKED)
 		return  # denied / cancelled / host lost: join_failed already emitted
 	join_progress.emit(Net.local_peer_id(), 1.0)
 	_send(KIND_PROGRESS, {"frac": 1.0})
