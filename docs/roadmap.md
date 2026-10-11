@@ -52,6 +52,11 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | B5-03 | Music selection: per-heist track choice in pre-planning/lobby (host decides), hub jukebox; data-driven track list (ENV C supplies the stems) | P5 music |
 | B5-04 | Dockside Burn content data (P3 loud-only heist): HeistDef skeleton, contract/briefing/strings, loot defs; objective ids from ENV C's G0 `[tag]`s once its design doc lands | P3 gate |
 | B5-05 | Civilian-mode UI (S1.3): HUD civilian state, gear-pickup prompt, briefing flag display (ENV A owns `start_mode = civilian` + the gear prefab) | P5 |
+| B6-01 | P5 loot + contract catalogue: PD2-shaped LootDefs the P5 heists need (gold HEAVY, money MEDIUM, coke LIGHT, painting variants, bearer bonds LIGHT, server drives MEDIUM, deposit-box valuables), values/weights per pd2_fidelity S10; Board contract stubs for gallery_night / meridian_federal / rolling_thunder / afterhours hidden until a HeistDef ships | P5 |
+| B6-02 | Heist stats: Tab scoreboard overlay (per crew: kills, specials, civilians, downs, accuracy, headshots) over HeistRuntime crew stats + end-of-heist awards on payday (PD2 "best of" lines); missing counters (shots/hits/headshots) → QB to ENV A | P6 |
+| B6-03 | Chat: lobby + in-heist text chat UI (open/close key, history, fade), over `Net.lobby_send` in the lobby; in-heist transport → QB to ENV A if absent | P6 |
+| B6-04 | Drop-in + kick UI: host join-request dialog (accept/deny, PD2 drop-in), joining player's loadout pick + "joining" progress, host kick menu; on mocks until ENV A's drop-in lands | P6 |
+| B6-05 | Lobby codes (game_overview §9): short shareable code ⇄ address:port (no service), join-by-code field in the lobby; LAN host list if A exposes discovery | P6 |
 
 | C2-00 | G0 design docs: Night Deposit and Shadow Ledger (stealth-only) | level_standards §9 |
 
