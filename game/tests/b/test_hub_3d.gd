@@ -42,6 +42,7 @@ func _flow(scene_path: String = MOCK_SCENE, blend_s: float = 0.0, map_class: Str
 		t.scene_path = scene_path
 		t.map_class = map_class
 		t.station_cam_blend_s = blend_s
+		t.crew_class = &"NoSuchCrewClass"  # LEAD: mock-walker tests use the stand-in now that A's spawn_for_hub exists
 		f.safehouse.tweak = t
 	return f
 
