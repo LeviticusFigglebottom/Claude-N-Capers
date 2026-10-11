@@ -301,3 +301,33 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
 `vo.guard.cuff_warning`) get a `data/voice/lines.tres` entry and `voice.<id>` text;
 `test_strings.test_keys_requested_by_systems_exist` scans ENV A/C code for prompt/blocked/voice keys. Code that builds a mod delta starts from
 `WeaponStats.make_delta()`; `.tres` deltas spell its zeros out (D-022 QB-5). Tests: `game/tests/b/test_*.gd`.
+* **Chat (B6-03).** `LobbyState.MSG_CHAT` `{"text"}` over `Net.lobby_send`, validated by `ChatLog`
+  (`lobby/chat_log.gd`, `LobbyState.chat`): attribution by the sender's crew slot, `clean_text` (control / bidi /
+  zero-width characters stripped, spaces collapsed, cut to `LobbyTweak.chat_max_length`), rate limit per slot
+  (`chat_rate_count` per `chat_rate_window_s`, clock `LobbyState.now_s`), history cap. `LobbySession.send_chat(text)
+  -> OK | R_*`, `chat_history()`, signal `chat_received(entry)`. `Net.lobby_send` keeps working during a heist on the
+  same session, so the in-heist chat uses it too (no separate transport). UI: `ChatPanel` (`ui/chat/`), Mode.LOBBY
+  (lobby screen) / Mode.OVERLAY (MenuFlow.heist_chat over the HUD in co-op; fades after `chat_fade_after_s`; typing
+  pauses the local crew member's input). Lines are plain Labels (no BBCode). Open key: InputMap action `chat`
+  (lead: project.godot) else `LobbyTweak.chat_fallback_key` (T). `CrewInput` (`ui/common/`) = the shared
+  local-input pause with per-overlay holders (options, chat, drop-in). Strings `ui.chat.*`.
+* **Drop-in + kick (B6-04, on mocks until ENV A's drop-in lands).** `DropInService` (`lobby/drop_in_service.gd`):
+  the interface B's UI binds to by duck typing (group `drop_in_service`, `DropInService.find(tree)`): signals
+  `join_requested(peer_id, summary)`, `join_progress(peer_id, frac)`, `joined(slot)`, `join_failed(peer_id, reason)`,
+  `kicked(slot)`; methods `answer_join(peer_id, accept)`, `kick(slot) -> bool`, `request_join(summary)`,
+  `cancel_join()`; reasons `denied|timeout|full|cancelled|host_lost`. `MockDropInService` (`lobby/mock/`).
+  UI (`ui/dropin/`): `JoinRequestDialog` (host: name, level + Notoriety badge, Accept / Deny, auto-deny after
+  `LobbyTweak.dropin_request_timeout_s`, queue; MenuFlow.heist_join_dialog over the HUD for a co-op host, pauses
+  local input while shown), `KickConfirmDialog` (calls `target.kick(slot)`), `DropInJoinScreen` (joining player:
+  `LoadoutScreen.compact_mode` pick -> "Joining" progress with Cancel; not wired into MenuFlow until A's client path
+  exists). Lobby kick works today: `LobbySession.kick(slot)` -> host-only `LobbyState.MSG_KICK`; the kicked client's
+  session leaves (`connection_failed(FAIL_KICKED)`), honour-based until Net can drop a peer. Strings `ui.dropin.*`,
+  `ui.kick.*`.
+* **Lobby codes (B6-05, game_overview §9).** `LobbyCode` (`lobby/lobby_code.gd`, static, pure): `encode(ipv4, port,
+  default_port = tweak) -> String` (Crockford base32 + Luhn mod 32 check symbol; 8 symbols for the default port,
+  11 otherwise; "" for IPv6 / host names / bad ports), `decode(code) -> {address, port} | {error: E_*}` (case,
+  dashes and spaces ignored, O/I/L read as 0/1, pad bits checked), `display(code)` ("ABCD-EFGH"), `normalize`,
+  `pick_lan_ipv4(IP.get_local_addresses())` (private LAN IPv4 first). Lobby screen: host header shows the code +
+  Copy (`DisplayServer.clipboard_set`) + WAN hint (public address + forwarded UDP port); Join panel has a code
+  field (`LobbyScreen.join_by_code()` -> fills address / port -> `join()`). No LAN host list: Net has no
+  discovery. Strings `ui.lobby.code.*`.
