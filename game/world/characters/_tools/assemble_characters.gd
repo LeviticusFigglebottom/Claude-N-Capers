@@ -13,7 +13,12 @@
 ##    shapes from SOURCE.txt params) + AnimationPlayer (library "humanoid"), and BoneAttachment3D
 ##    markers HandR/HandL/Head/Back/Hip under Skeleton3D, each with a `Socket` Marker3D child at
 ##    the attach point. Meshes are saved next to the scene as binary <scene>_<node>.res.
-## 3. Writes world/characters/characters.json (the index ENV A and the tests read).
+## 3. Special characters (P3): SOURCE.txt `extra_markers` add Marker3D nodes (Longshot `LaserOrigin`)
+##    and `material_override` sets MeshInstance3D.material_override (Phantom `Goggles`); extra named
+##    meshes (Wrecker `Faceplate` / `Visor` / `HeadArmored`) come through as they are.
+##    Prop assets (CharacterSpec.PROP_SCENES: the Bulwark shields) become `Shield` AnimatableBody3D
+##    scenes with `Collision` + `Visual` (see _assemble_prop).
+## 4. Writes world/characters/characters.json (the index ENV A and the tests read).
 ##
 ## Deterministic: sorted iteration, fixed sub-resource / ext-resource ids and path-derived uids, so
 ## re-runs produce identical bytes. Exit code 1 on any error.
@@ -36,6 +41,14 @@ func _initialize() -> void:
 	print("assemble_characters: hand sockets from %s" % hands[1])
 	var lib: AnimationLibrary = _build_library()
 	var entries: Array[Dictionary] = []
+	var props: Array[Dictionary] = []
+	var prop_ids: Array[String] = []
+	prop_ids.assign(Spec.PROP_SCENES.keys())
+	prop_ids.sort()
+	for asset_id: String in prop_ids:
+		var prop_scene: String = Spec.PROP_SCENES[asset_id]
+		if ResourceLoader.exists(_glb(asset_id)) and _assemble_prop(asset_id, prop_scene):
+			props.append({"id": Spec.character_id(asset_id), "asset": asset_id, "scene": prop_scene})
 	for asset_id: String in _asset_ids():
 		var scene: String = Spec.scene_path(asset_id)
 		if _assemble(asset_id, scene, lib):
@@ -43,9 +56,9 @@ func _initialize() -> void:
 				"id": Spec.character_id(asset_id), "asset": asset_id, "scene": scene,
 				"test": Spec.TEST_SCENES.has(asset_id),
 			})
-	_write_index(entries)
-	print("assemble_characters: %d scene(s), %d clip(s), %d error(s)" % [
-		entries.size(), lib.get_animation_list().size(), _errors])
+	_write_index(entries, props)
+	print("assemble_characters: %d scene(s), %d prop(s), %d clip(s), %d error(s)" % [
+		entries.size(), props.size(), lib.get_animation_list().size(), _errors])
 	quit(1 if _errors > 0 else 0)
 
 
@@ -185,6 +198,8 @@ func _asset_ids() -> Array[String]:
 	for asset_id: String in names:
 		if Spec.is_excluded(asset_id) and not Spec.TEST_SCENES.has(asset_id):
 			continue
+		if Spec.is_prop(asset_id):
+			continue
 		if ResourceLoader.exists(_glb(asset_id)):
 			out.append(asset_id)
 	return out
@@ -227,6 +242,8 @@ func _assemble(asset_id: String, scene_path: String, lib: AnimationLibrary) -> b
 		root.free()
 		return false
 	_add_markers(skel, source, asset_id)
+	_add_extra_markers(skel, source, asset_id)
+	_apply_overrides(skel, source, asset_id)
 	var player: AnimationPlayer = AnimationPlayer.new()
 	player.name = "AnimationPlayer"
 	root.add_child(player)
@@ -395,6 +412,121 @@ func _add_markers(skel: Skeleton3D, source: Dictionary, asset_id: String) -> voi
 		att.add_child(socket)
 
 
+## SOURCE.txt `extra_markers`: Marker3D nodes under existing nodes of the skeleton (e.g. the Longshot's
+## `LaserOrigin` under `HandR/Socket`), origin in the parent's space, identity basis.
+func _add_extra_markers(skel: Skeleton3D, source: Dictionary, asset_id: String) -> void:
+	if not source.has(Spec.EXTRA_MARKERS_KEY):
+		return
+	var data: Variant = JSON.parse_string(String(source[Spec.EXTRA_MARKERS_KEY]))
+	if not data is Array:
+		_error("%s SOURCE.txt %s is not a JSON array" % [asset_id, Spec.EXTRA_MARKERS_KEY])
+		return
+	for e: Variant in data:
+		if not e is Dictionary:
+			_error("%s: bad %s entry" % [asset_id, Spec.EXTRA_MARKERS_KEY])
+			continue
+		var d: Dictionary = e
+		var parent: Node = skel.get_node_or_null(NodePath(String(d.get("parent", ""))))
+		var org: Variant = d.get("origin", [])
+		if parent == null or not org is Array or (org as Array).size() != 3:
+			_error("%s: %s needs an existing parent and origin [x, y, z]" % [asset_id, d.get("name", "?")])
+			continue
+		var marker: Marker3D = Marker3D.new()
+		marker.name = String(d.get("name", "Marker"))
+		marker.transform = _rounded(Transform3D(Basis.IDENTITY, Vector3(float(org[0]), float(org[1]), float(org[2]))))
+		parent.add_child(marker)
+
+
+## SOURCE.txt `material_override`: {mesh node name: material path} -> material_override (the Phantom's
+## `Goggles` get the emissive library material, which ENV A duplicates per instance and ramps).
+func _apply_overrides(skel: Skeleton3D, source: Dictionary, asset_id: String) -> void:
+	if not source.has(Spec.OVERRIDE_KEY):
+		return
+	var data: Variant = JSON.parse_string(String(source[Spec.OVERRIDE_KEY]))
+	if not data is Dictionary:
+		_error("%s SOURCE.txt %s is not a JSON object" % [asset_id, Spec.OVERRIDE_KEY])
+		return
+	var names: Array = (data as Dictionary).keys()
+	names.sort()
+	for nm: Variant in names:
+		var mi: MeshInstance3D = skel.get_node_or_null(NodePath(String(nm))) as MeshInstance3D
+		var mat: Material = load(String(data[nm])) as Material
+		if mi == null or mat == null:
+			_error("%s: material_override %s -> %s unresolved" % [asset_id, nm, data[nm]])
+			continue
+		mi.material_override = mat
+
+
+# --------------------------------------------------------------------------------------------
+# props (Bulwark shields)
+# --------------------------------------------------------------------------------------------
+
+## `Shield` AnimatableBody3D (world_dynamic layer, no script: ENV A owns the behaviour) with the
+## glb's convex hull as `Collision` and its mesh as `Visual` (saved as <scene>_visual.res). The glb's
+## origin (the grip, -Z = shield face) is the scene origin.
+func _assemble_prop(asset_id: String, scene_path: String) -> bool:
+	var packed: PackedScene = load(_glb(asset_id)) as PackedScene
+	if packed == null:
+		_error("could not load %s (run godot --import first)" % _glb(asset_id))
+		return false
+	var src: Node = packed.instantiate()
+	var mesh_node: MeshInstance3D = null
+	for n: Node in src.find_children("*", "MeshInstance3D", true, false):
+		if mesh_node == null or String(n.name) == "Visual":
+			mesh_node = n as MeshInstance3D
+	var shape_node: CollisionShape3D = null
+	for n: Node in src.find_children("*", "CollisionShape3D", true, false):
+		shape_node = n as CollisionShape3D
+		break
+	if mesh_node == null or shape_node == null or shape_node.shape == null:
+		_error("%s needs a mesh and a convex Collision" % asset_id)
+		src.free()
+		return false
+	var root: AnimatableBody3D = AnimatableBody3D.new()
+	root.name = "Shield"
+	root.collision_layer = Spec.SHIELD_LAYER
+	root.collision_mask = 0
+	root.sync_to_physics = false
+	var col: CollisionShape3D = CollisionShape3D.new()
+	col.name = "Collision"
+	var shape: Shape3D = shape_node.shape.duplicate()
+	shape.resource_path = ""
+	shape.set_scene_unique_id("collision_shape")
+	col.shape = shape
+	col.transform = _rounded(_rel_xform(src, shape_node))
+	root.add_child(col)
+	var vis: MeshInstance3D = MeshInstance3D.new()
+	vis.name = "Visual"
+	vis.transform = _rounded(_rel_xform(src, mesh_node))
+	vis.mesh = mesh_node.mesh
+	root.add_child(vis)
+	src.free()
+	var mesh: Mesh = vis.mesh
+	for s2: int in range(mesh.get_surface_count()):
+		var mat: Material = mesh.surface_get_material(s2)
+		if mat != null and (mat.resource_path.is_empty() or mat.resource_path.contains("::")):
+			mat.set_scene_unique_id("mat_%d" % s2)
+	var am: ArrayMesh = mesh as ArrayMesh
+	if am != null and am.shadow_mesh != null:
+		am.shadow_mesh.set_scene_unique_id("shadow")
+	var mesh_path: String = "%s_visual.res" % scene_path.get_basename()
+	if not _save(mesh, mesh_path):
+		root.free()
+		return false
+	var saved: Mesh = load(mesh_path) as Mesh
+	saved.set_id_for_path(scene_path, "mesh_visual")
+	vis.mesh = saved
+	_own(root, root)
+	var scene: PackedScene = PackedScene.new()
+	var err: Error = scene.pack(root)
+	root.free()
+	if err != OK:
+		_error("could not pack %s (%s)" % [scene_path, error_string(err)])
+		return false
+	_fix_node_ids(scene, scene_path)
+	return _save(scene, scene_path)
+
+
 ## Rounds to 0.1 mm / 1e-5 so float noise never changes the saved text.
 static func _rounded(t: Transform3D) -> Transform3D:
 	var b: Basis = t.basis
@@ -416,7 +548,7 @@ static func _own(n: Node, owner_node: Node) -> void:
 		_own(c, owner_node)
 
 
-func _write_index(entries: Array[Dictionary]) -> void:
+func _write_index(entries: Array[Dictionary], props: Array[Dictionary] = []) -> void:
 	entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return String(a["scene"]) < String(b["scene"]))
 	var data: Dictionary = {
 		"_doc": "Generated by world/characters/_tools/assemble_characters.gd; do not edit. " +
@@ -425,6 +557,9 @@ func _write_index(entries: Array[Dictionary]) -> void:
 		"anim_library": Spec.ANIM_LIBRARY_PATH,
 		"characters": entries,
 	}
+	if not props.is_empty():
+		props.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return String(a["scene"]) < String(b["scene"]))
+		data["props"] = props
 	var f: FileAccess = FileAccess.open(Spec.INDEX_PATH, FileAccess.WRITE)
 	if f == null:
 		_error("could not write %s" % Spec.INDEX_PATH)

@@ -12,8 +12,12 @@ const LIBRARY: Array[String] = [
 	"plaster_painted", "drywall_painted", "concrete", "terrazzo", "marble_cream", "carpet_commercial",
 	"ceiling_tile", "wood_veneer_walnut", "brushed_steel", "chrome", "brass", "glass_clear",
 	"rubber_black", "fabric_upholstery", "leather_dark", "plastic_matte", "brick_red", "asphalt",
-	"tile_ceramic_white", "vinyl_floor", "metal_painted",
+	"tile_ceramic_white", "vinyl_floor", "metal_painted", "paint_white",
 ]
+## Door frame casing beyond the opening (prop door frames: 1.15 / 2.15 / 1.35 m for 0.9 / 1.8 / 1.1).
+const DOOR_CASING: float = 0.18
+## Window frame visuals overhang the opening by 0.04 m a side.
+const WINDOW_CASING: float = 0.06
 ## Untextured emissive / glass surfaces (meta untextured_ok): key -> [albedo, emission, energy, alpha].
 const EMISSIVE: Dictionary = {
 	"emit_warm": [Color(1.0, 0.86, 0.66), Color(1.0, 0.82, 0.58), 3.0, 1.0],
@@ -31,7 +35,7 @@ const FINISH: Dictionary = {
 	"G2": ["vinyl_floor", "drywall_painted", "ceiling_tile"],
 	"G3": ["tile_ceramic_white", "tile_ceramic_white", "ceiling_tile"],
 	"G4": ["vinyl_floor", "drywall_painted", "ceiling_tile"],
-	"G8": ["", "drywall_painted", "plaster_painted"],
+	"G8": ["terrazzo", "drywall_painted", "plaster_painted"],
 	"G9": ["vinyl_floor", "drywall_painted", "ceiling_tile"],
 	"G10": ["vinyl_floor", "drywall_painted", "ceiling_tile"],
 	"G5": ["terrazzo", "plaster_painted", "plaster_painted"],
@@ -57,7 +61,8 @@ const CLASS_MAT: Dictionary = {
 ## "@room" = the finish of the room the face looks into; "@parapet" = concrete above the roof only.
 const CLASS_FACES: Dictionary = {
 	"wall_ext": ["", "concrete", "brick_red"], "wall": ["", "@parapet", "@room"], "floor": ["", "", "drywall_painted"],
-	"roof": ["plaster_painted", "concrete", ""], "asphalt": ["", "asphalt", "concrete"], "stair": ["", "terrazzo", "terrazzo"],
+	"roof": ["plaster_painted", "concrete", ""], "slab": ["concrete", "concrete", "concrete"],
+	"asphalt": ["", "asphalt", "concrete"], "stair": ["", "terrazzo", "terrazzo"],
 	"none": ["", "", ""],
 }
 const BASEBOARD_H: float = 0.125
@@ -105,6 +110,15 @@ func setup() -> void:
 
 func mat(key: String) -> Material:
 	return _mats.get(key)
+
+
+## Tinted copy of a library material (keeps its textures, so it stays a textured library surface).
+func add_tint(key: String, base: String, tint: Color) -> void:
+	var m: BaseMaterial3D = (_mats[base] as BaseMaterial3D).duplicate() as BaseMaterial3D
+	m.resource_name = key
+	m.albedo_color = tint
+	_mats[key] = m
+	acc.register_material(key, m)
 
 
 # --- Rooms -------------------------------------------------------------------------------------
@@ -274,7 +288,9 @@ func wall_runs(axis: String, fixed: float, a0: float, a1: float, ya: float, yb: 
 		var segs: Array[Vector2] = [Vector2(maxf(float(w[2]), a0), minf(float(w[3]), a1))]
 		for o: Array in w[6]:
 			if float(o[2]) < yb - 0.001 and float(o[3]) > ya + 0.001:
-				segs = _subtract(segs, Vector2(float(o[0]), float(o[1])))
+				# Door openings: stop the run at the door casing (frame visuals are 0.13-0.18 m wider).
+				var m: float = DOOR_CASING if float(o[2]) <= float(w[4]) + 0.01 else WINDOW_CASING
+				segs = _subtract(segs, Vector2(float(o[0]) - m, float(o[1]) + m))
 		for s: Vector2 in segs:
 			if s.y - s.x > 0.05:
 				solid.append(s)
@@ -304,7 +320,7 @@ static func _subtract(segs: Array[Vector2], cut: Vector2) -> Array[Vector2]:
 # --- Facade -----------------------------------------------------------------------------------
 
 ## Concrete plinth (two bands so the 0.3 m shop sills keep a base), cornice band above the upper
-## windows, brass surrounds on the shopfront bays, entrance and salon glazing.
+## windows (the shopfront and entrance frames are the prop window / door visuals).
 func facade() -> void:
 	var lines: Array = [["x", 0.0, -1.0], ["x", 12.0, 1.0], ["z", 0.0, -1.0], ["z", 18.0, 1.0]]
 	for ln: Array in lines:
@@ -331,38 +347,26 @@ func facade() -> void:
 				var back: int = (5 if outward < 0.0 else 4) if axis == "x" else (1 if outward < 0.0 else 0)
 				acc.box("Shell", lo, hi, func(f: int, _n: Vector3, _c: Vector3) -> String:
 					return "" if f == back or (f == 2 and ya < 0.001) else "concrete")
-	_brass_surrounds()
+	_thresholds()
 
 
-func _brass_surrounds() -> void:
-	# [axis, fixed, outward, a0, a1, sill, head]
-	var bays: Array = [
-		["x", 12.0, 1.0, 0.3, 3.3, 0.3, 2.7], ["x", 12.0, 1.0, 3.5, 6.5, 0.3, 2.7], ["x", 12.0, 1.0, 6.7, 9.7, 0.3, 2.7],
-		["x", 12.0, 1.0, 10.25, 12.25, 0.0, 2.2], ["x", 12.0, 1.0, 14.0, 17.0, 0.3, 2.7], ["z", 18.0, 1.0, 7.5, 10.5, 0.3, 2.7],
-	]
-	var w: float = 0.07
-	var d: float = 0.02
-	for b: Array in bays:
-		var axis: String = String(b[0])
-		var face: float = float(b[1]) + float(b[2]) * L.EXT_T * 0.5
-		var a0: float = float(b[3])
-		var a1: float = float(b[4])
-		var s: float = float(b[5])
-		var h: float = float(b[6])
-		# Jambs start above the concrete plinth (0.6 m), which also forms the sill.
-		var j0: float = maxf(s, 0.6)
-		var pieces: Array = [[a0 - w, a0, j0, h + w], [a1, a1 + w, j0, h + w], [a0, a1, h, h + w]]
-		for p: Array in pieces:
-			var lo: Vector3
-			var hi: Vector3
-			if axis == "x":
-				lo = Vector3(float(p[0]), float(p[2]), face)
-				hi = Vector3(float(p[1]), float(p[3]), face + d)
-			else:
-				lo = Vector3(face, float(p[2]), float(p[0]))
-				hi = Vector3(face + d, float(p[3]), float(p[1]))
-			var back: int = 4 if axis == "x" else 0
-			acc.box("Shell", lo, hi, func(f: int, _n: Vector3, _c: Vector3) -> String: return "" if f == back else "brass")
+## Exterior door thresholds: the outer half of the wall under ground-floor doors (room floors stop
+## at the wall line).
+func _thresholds() -> void:
+	for d: Array in L.DOORS:
+		var p: Vector3 = d[2]
+		if absf(p.y) > 0.01:
+			continue
+		var w: float = 1.8 if String(d[1]).contains("double") else (1.1 if String(d[1]).contains("service") else 0.9)
+		var key: String = "terrazzo" if String(d[0]) == "MainEntrance" else "concrete"
+		var h: float = L.EXT_T * 0.5
+		if absf(p.z - 12.0) < 0.01 or absf(p.z) < 0.01:
+			var z0: float = p.z if p.z > 6.0 else p.z - h
+			acc.quad("Shell", key, Vector3(p.x - w * 0.5, 0.0, z0), Vector3(p.x + w * 0.5, 0.0, z0),
+				Vector3(p.x + w * 0.5, 0.0, z0 + h), Vector3(p.x - w * 0.5, 0.0, z0 + h), Vector3.UP)
+		elif absf(p.x - 18.0) < 0.01 and p.z > 0.0 and p.z < 12.0:
+			acc.quad("Shell", key, Vector3(18.0, 0.0, p.z - w * 0.5), Vector3(18.0 + h, 0.0, p.z - w * 0.5),
+				Vector3(18.0 + h, 0.0, p.z + w * 0.5), Vector3(18.0, 0.0, p.z + w * 0.5), Vector3.UP)
 
 
 # --- Neighbours: windows, shopfronts, copings ----------------------------------------------------

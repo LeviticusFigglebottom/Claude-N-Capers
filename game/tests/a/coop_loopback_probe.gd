@@ -11,6 +11,8 @@ const NODE_NAME: String = "LoopbackProbe"
 ## Client: highest LocalHudModel interaction progress seen, and its prompt key.
 var hud_max_progress: float = 0.0
 var hud_prompt: StringName = &""
+## Client: the HeistRuntime returned by `await HeistLauncher.launch_client()` (null with --join=auto).
+var launched_rt: HeistRuntime = null
 
 
 func _physics_process(_delta: float) -> void:
@@ -91,6 +93,10 @@ func snapshot(args: Dictionary = {}) -> Dictionary:
 		"codes": codes.known_codes() if codes != null else {},
 		"hud_max_progress": hud_max_progress, "hud_prompt": hud_prompt,
 		"stealth_alarm": rt.stealth != null and rt.stealth.alarm_raised,
+		"launch_client": is_instance_valid(launched_rt) and launched_rt == rt,
+		"captain": rt.net_sync.captain_state(),
+		"hud_captain_present": rt.hud_model.captain_present if rt.hud_model != null else false,
+		"hud_captain_resistance": rt.hud_model.captain_resistance if rt.hud_model != null else -1.0,
 	}
 
 

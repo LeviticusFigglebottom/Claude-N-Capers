@@ -22,7 +22,8 @@
 ##   lands normally (zero health -> go_down). Emits crew_tased / crew_cloaker_downed [R].
 ## - L2.12 (A3-04): a downed crew member cuffed by police (CrewCuffs.cuff_downed) is CUFFED with the
 ##   bleedout paused; hits still drain the bleedout pool; freed -> DOWNED again.
-## Events: crew_downed / crew_revived / crew_custody [R]; damage_applied [R].
+## Events: crew_downed / crew_revived / crew_custody [R]; damage_applied [R]. A broken tase is
+## end_tase() (no crew_revived; StingerBrain emits crew_tase_ended).
 ## HUD duck-typed interface (local_hud_model.gd): health, max_health, armor, max_armor, downs_left,
 ## bleedout_left.
 class_name CrewHealth
@@ -137,8 +138,10 @@ func is_downed() -> bool:
 ## Damage.info(); crew take x1 on the head (NPC fire), so `zone` / `headshot_bonus` are ignored.
 ## Emits damage_applied [R] itself. Returns the final DamageInfo (amount removed from armor +
 ## health, `armor_damage`, `health_damage`, `killed` = went down / to custody on this hit).
+## damage.md v1.1: `info.pierced_armor` skips armor (straight to health, no armor gate); crew carry no
+## shields, so `shield_pierce` is ignored and `blocked` stays false.
 func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
-	var out: Dictionary = info.duplicate()
+	var out: Dictionary = CombatSystem.ensure_info_v11(info.duplicate())
 	out["armor_damage"] = 0.0
 	out["health_damage"] = 0.0
 	out["killed"] = false
@@ -322,6 +325,17 @@ func is_incapacitated() -> bool:
 ## L2.12: cuffed by police while downed (bleedout paused, pool still takes hits).
 func _is_cuffed_while_down() -> bool:
 	return _crew != null and _crew.crew_state == Enums.CrewState.CUFFED and bleedout_left > 0.0
+
+
+## Server: a BROKEN tase (Stinger killed / stunned / LOS / range / counter, L4.4): a TASED crew member
+## gets up with the health and armor they had. Not a revive: no crew_revived (D-049); the Stinger
+## emits crew_tase_ended [R]. Returns false when not TASED.
+func end_tase() -> bool:
+	if _crew == null or not Net.is_authority() or _crew.crew_state != Enums.CrewState.TASED:
+		return false
+	_disable_revive()
+	_crew.set_crew_state(Enums.CrewState.NORMAL)
+	return true
 
 
 ## Server: custody release (P3 hostage trade): back to NORMAL at full health, downs reset.

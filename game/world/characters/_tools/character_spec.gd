@@ -22,6 +22,25 @@ const TEST_SCENES: Dictionary = {
 	"char_body_base": "res://world/characters/_test/body_base.tscn",
 }
 
+## Prop assets made by the character scripts that are NOT characters (no Skeleton3D): asset id ->
+## scene path. The Bulwark shields (characters.md "Bulwark `Shield` scene (separate, with
+## `Collision`)") are assembled into the shape of ENV A's placeholder systems/ai/specials/bulwark_shield.tscn:
+## root `Shield` AnimatableBody3D (layer 2 `world_dynamic`, mask 0, no script: ENV A attaches its
+## BulwarkShield behaviour, e.g. with an inherited scene) > `Collision` CollisionShape3D (convex) +
+## `Visual` MeshInstance3D. Listed under "props" in the index.
+const PROP_SCENES: Dictionary = {
+	"char_bulwark_shield": "res://world/characters/bulwark/bulwark_shield.tscn",
+	"char_bulwark_aegis_shield": "res://world/characters/bulwark_aegis/bulwark_aegis_shield.tscn",
+}
+const SHIELD_LAYER: int = 1 << 1
+## SOURCE.txt keys of the special characters (tools/blender/characters/_special_gear.py):
+## `extra_markers` = JSON [{name, parent (path under Skeleton3D), origin [x, y, z] in the parent's
+## space}] -> Marker3D nodes (Longshot `LaserOrigin` under `HandR/Socket`);
+## `material_override` = JSON {mesh node name: material path} -> MeshInstance3D.material_override
+## (Phantom `Goggles`, so ENV A can ramp the emission per instance).
+const EXTRA_MARKERS_KEY: String = "extra_markers"
+const OVERRIDE_KEY: String = "material_override"
+
 ## Looped clips (the `*` names in characters.md). Fallback only: the tool prefers a `loops:` line in
 ## char_anim_humanoid/SOURCE.txt, then `LOOPS` in tools/blender/characters/anim_humanoid.py.
 const DEFAULT_LOOPS: Array[String] = [
@@ -172,6 +191,10 @@ static func is_excluded(asset_id: String) -> bool:
 		if asset_id.begins_with(p):
 			return true
 	return false
+
+
+static func is_prop(asset_id: String) -> bool:
+	return PROP_SCENES.has(asset_id)
 
 
 ## The index written by assemble_characters.gd: Array of {id, asset, scene, test}.

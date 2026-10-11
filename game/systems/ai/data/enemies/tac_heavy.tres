@@ -14,10 +14,15 @@ move_speed = 3.6
 weapon = &"weapon.npc_rifle"
 detection_preset = &"police"
 params = {
-"_note": "L4.2 TAC Heavy (PD2 heavy SWAT). Frontal plate: non-AP bullet body hits from the front arc deal x frontal_plate_mult (0); the head stays vulnerable (NpcHitRules). health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇).",
+"_note": "L4.2 TAC Heavy (PD2 heavy SWAT). Frontal plate: non-AP bullet body hits from the front arc deal x frontal_armor (0) within frontal_armor_arc_deg; the head stays vulnerable (NpcHitRules). health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇).",
 "aim_delay_s": 0.7,
+"armor_body_mult": 1.0,
+"explosive_mult": 1.0,
 "fire_interval_s": 0.6,
-"frontal_plate_arc_deg": 120.0,
-"frontal_plate_mult": 0.0
+"frontal_armor": 0.0,
+"frontal_armor_arc_deg": 120.0,
+"plate_health": [],
+"shield": false,
+"shield_pierce_mult": 1.0
 }
 voice = &"police"

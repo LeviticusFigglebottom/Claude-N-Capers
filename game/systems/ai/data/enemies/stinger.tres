@@ -16,9 +16,16 @@ detection_preset = &"police"
 params = {
 "_note": "L4.4 Stinger (PD2 Taser). damage = rifle shots when not tasing. health/damage per Difficulty PD2-shaped design values (◇). Deploys in pairs (group_size). Behaviour numbers: systems/ai/specials/special_tweak.tres.",
 "aim_delay_s": 0.8,
+"armor_body_mult": 1.0,
+"explosive_mult": 1.0,
 "fire_interval_s": 0.7,
+"frontal_armor": 1.0,
+"frontal_armor_arc_deg": 0.0,
 "group_size": 2,
 "group_spread_m": 1.5,
-"scene": "res://systems/ai/npc/npc_stinger.tscn"
+"plate_health": [],
+"scene": "res://systems/ai/npc/npc_stinger.tscn",
+"shield": false,
+"shield_pierce_mult": 1.0
 }
 voice = &"stinger"

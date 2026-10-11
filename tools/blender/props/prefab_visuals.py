@@ -339,58 +339,79 @@ def _ladder(k: Kit, p: dict) -> None:
 # --------------------------------------------------------------------------------------- van
 
 def _van(k: Kit, p: dict) -> None:
+    """Panel van (secure_zone): shaped cab (sloped bonnet, raked screen), boxy cargo body with
+    rounded edges, wheel arches, side rubbing strip and sliding-door seams, grille, lamps and
+    bumpers; two rear doors with windows and handles on hinge pivots. The rear faces Blender +Y."""
     w, l, h = 2.0, 5.0, 2.2
     yr = l / 2           # rear (Blender +Y = Godot -Z)
-    body = k.obj("Body")
-    shell = body.part(bevel=0.04, segments=2)
-    trim = body.part(bevel=0.006)
-    glass = body.part(bevel=0.0)
     clear = 0.35
-    # cargo box + cab with a sloped bonnet/windscreen (side profile y, z), extruded along X
-    prof = [(-yr, clear + 0.1), (-yr, 0.95), (-yr + 0.55, 1.15), (-yr + 1.25, h - 0.05), (yr, h - 0.05), (yr, clear + 0.1)]
-    shell.profile_x(prof, -w / 2 + 0.04, w / 2 - 0.04, "metal_white")
-    # windscreen and side windows
-    a = (-yr + 0.6, 1.17)
-    b = (-yr + 1.2, h - 0.12)
-    nx, nz = (b[1] - a[1]), -(b[0] - a[0])
-    ln = math.hypot(nx, nz)
-    nx, nz = nx / ln * 0.006, nz / ln * 0.006
-    glass.profile_x([(a[0] - nx, a[1] - nz), (b[0] - nx, b[1] - nz), (b[0] + nx, b[1] + nz), (a[0] + nx, a[1] + nz)],
+    body = k.obj("Body")
+    shell = body.part(bevel=0.05, segments=3)
+    trim = body.part(bevel=0.004)
+    glass = body.part(bevel=0.0)
+    run = body.part(bevel=0.0)
+    prof = [(-yr + 0.02, clear + 0.1), (-yr, 0.62), (-yr + 0.05, 0.98), (-yr + 0.6, 1.12), (-yr + 1.3, h - 0.08),
+            (-yr + 1.45, h - 0.04), (yr - 0.03, h - 0.04), (yr, h - 0.1), (yr, clear + 0.12), (yr - 0.2, clear + 0.08)]
+    shell.profile_x(prof, -w / 2, w / 2, "metal_white")
+    # windscreen and cab side windows, proud of the shell (no coplanar faces)
+    a, b = (-yr + 0.62, 1.15), (-yr + 1.26, h - 0.14)
+    ln = math.hypot(b[0] - a[0], b[1] - a[1])
+    nx, nz = -(b[1] - a[1]) / ln, (b[0] - a[0]) / ln
+    glass.profile_x([(a[0] + nx * 0.004, a[1] + nz * 0.004), (b[0] + nx * 0.004, b[1] + nz * 0.004),
+                     (b[0] + nx * 0.014, b[1] + nz * 0.014), (a[0] + nx * 0.014, a[1] + nz * 0.014)],
                     -w / 2 + 0.12, w / 2 - 0.12, "glass_tinted")
     for sx in (-1, 1):
-        x0, x1 = sorted((sx * (w / 2 - 0.045), sx * (w / 2 - 0.03)))
-        glass.profile_x([(-yr + 1.0, 1.3), (-yr + 1.75, 1.3), (-yr + 1.75, h - 0.25), (-yr + 1.28, h - 0.25)], x0, x1, "glass_tinted")
-        trim.bx((x0, -yr + 1.8, 1.05), (x1 + 0.005 * sx, -yr + 1.84, 1.95), "plastic_black")
-        # side mirrors and door handles
-        trim.bx((sx * (w / 2 + 0.12) - 0.06, -yr + 0.95, 1.3), (sx * (w / 2 + 0.12) + 0.06, -yr + 1.0, 1.5), "plastic_black")
-        trim.bx((sx * (w / 2) - 0.02, -yr + 1.55, 1.15), (sx * (w / 2) + 0.02, -yr + 1.7, 1.18), "plastic_black")
-        trim.bx((sx * (w / 2) - 0.02, -0.4, 1.0), (sx * (w / 2) + 0.02, -0.25, 1.03), "plastic_black")
-        # sliding-door seam and rubbing strip
-        trim.bx((x0 - 0.002 * sx, -0.6, clear + 0.25), (x1 + 0.004 * sx, 1.2, clear + 0.33), "plastic_black")
-    # bumpers, grille, lights
-    trim.bx((-w / 2, -yr - 0.08, clear), (w / 2, -yr + 0.15, clear + 0.25), "plastic_black")
-    trim.bx((-w / 2, yr - 0.15, clear), (w / 2, yr + 0.08, clear + 0.22), "plastic_black")
-    trim.bx((-0.55, -yr - 0.01, 0.65), (0.55, -yr + 0.02, 0.9), "plastic_black")
+        g0, g1 = sorted((sx * (w / 2 + 0.004), sx * (w / 2 + 0.012)))
+        glass.profile_x([(-yr + 1.0, 1.3), (-yr + 1.7, 1.3), (-yr + 1.7, h - 0.3), (-yr + 1.3, h - 0.3)], g0, g1, "glass_tinted")
+        t0, t1 = sorted((sx * (w / 2 + 0.004), sx * (w / 2 + 0.03)))
+        trim.bx((t0, -yr + 0.4, clear + 0.38), (t1, yr - 0.25, clear + 0.48), "plastic_black")      # rubbing strip
+        s0, s1 = sorted((sx * (w / 2 + 0.004), sx * (w / 2 + 0.009)))
+        for yy in (-yr + 1.75, -0.35, 1.05):                                                        # door seams
+            trim.bx((s0, yy, clear + 0.15), (s1, yy + 0.012, h - 0.12), "plastic_black")
+        trim.bx((s0, -yr + 1.75, h - 0.33), (s1, 1.06, h - 0.32), "plastic_black")                  # slide rail
+        h0, h1 = sorted((sx * (w / 2 + 0.004), sx * (w / 2 + 0.02)))
+        trim.bx((h0, -yr + 1.5, 1.12), (h1, -yr + 1.64, 1.15), "plastic_black")                     # handles
+        trim.bx((h0, -0.55, 1.05), (h1, -0.41, 1.08), "plastic_black")
+        m0, m1 = sorted((sx * (w / 2 + 0.03), sx * (w / 2 + 0.2)))
+        trim.bx((m0, -yr + 1.0, 1.3), (m1, -yr + 1.06, 1.52), "plastic_black")                      # mirror
+        for wy in (-yr + 0.95, yr - 1.0):
+            trim.tube([(sx * (w / 2 + 0.006), wy - 0.43 * math.cos(math.pi * i / 10), 0.38 + 0.43 * math.sin(math.pi * i / 10))
+                       for i in range(11)], 0.035, "plastic_black", segs=6)
+            run.cyl(0.36, 0.24, (sx * (w / 2 - 0.15), wy, 0.36), "rubber", axis="X", segs=28)
+            run.cyl(0.22, 0.245, (sx * (w / 2 - 0.15), wy, 0.36), "steel", axis="X", segs=20)
+            run.cyl(0.08, 0.25, (sx * (w / 2 - 0.15), wy, 0.36), "chrome", axis="X", segs=12)
+        # tail lights wrap the rear corners on the sides (clear of the rear doors)
+        l0, l1 = sorted((sx * (w / 2 + 0.004), sx * (w / 2 + 0.014)))
+        trim.bx((l0, yr - 0.14, 0.95), (l1, yr - 0.02, 1.55), "metal_red")
+    # front: grille, headlamps, bumper; rear bumper with step; plates
+    trim.bx((-0.6, -yr - 0.012, 0.66), (0.6, -yr + 0.03, 0.9), "plastic_black")
+    for gz in (0.71, 0.77, 0.83):
+        trim.bx((-0.56, -yr - 0.02, gz), (0.56, -yr - 0.012, gz + 0.025), "chrome")
     for sx in (-1, 1):
-        trim.bx((sx * 0.75 - 0.16, -yr - 0.005, 0.82), (sx * 0.75 + 0.16, -yr + 0.03, 0.95), "chrome")
-        trim.bx((sx * 0.9 - 0.06, yr - 0.02, 1.0), (sx * 0.9 + 0.06, yr + 0.015, 1.5), "metal_red")
-    # wheels and arches
-    run = body.part(bevel=0.0)
-    for sy in (-yr + 0.95, yr - 1.0):
-        for sx in (-1, 1):
-            run.cyl(0.36, 0.24, (sx * (w / 2 - 0.15), sy, 0.36), "rubber", axis="X", segs=24)
-            run.cyl(0.22, 0.245, (sx * (w / 2 - 0.15), sy, 0.36), "steel", axis="X", segs=16)
+        trim.bx((sx * 0.78 - 0.17, -yr + 0.02, 0.86), (sx * 0.78 + 0.17, -yr + 0.08, 0.98), "glass_tinted")
+        trim.bx((sx * 0.78 - 0.15, -yr + 0.012, 0.88), (sx * 0.78 + 0.15, -yr + 0.03, 0.96), "chrome")
+    trim.bx((-w / 2 + 0.02, -yr - 0.1, clear), (w / 2 - 0.02, -yr + 0.15, clear + 0.24), "plastic_black")
+    trim.bx((-w / 2 + 0.02, yr - 0.15, clear), (w / 2 - 0.02, yr + 0.1, clear + 0.2), "plastic_black")
+    trim.bx((-0.35, yr + 0.1, clear + 0.06), (0.35, yr + 0.22, clear + 0.09), "steel")
+    trim.bx((-0.25, -yr - 0.12, clear + 0.06), (0.25, -yr - 0.1, clear + 0.17), "plastic_white")
     body.build()
     # rear doors (hinged at the outer edges, closed = flush with the rear)
     for name, sx in (("DoorL", -1), ("DoorR", 1)):
         piv = k.empty(name, (sx * (w / 2 - 0.04), yr, clear + 0.1))
         dm = k.obj(name + "Mesh", parent=piv)
         dp = dm.part(bevel=0.02, segments=2)
+        dt = dm.part(bevel=0.003)
         x0, x1 = sorted((0.0, -sx * (w / 2 - 0.045)))
-        dp.bx((x0, -0.04, 0.0), (x1, 0.02, h - 0.15 - clear - 0.1), "metal_white")
+        dh = h - 0.15 - clear - 0.1
+        dp.bx((x0, -0.035, 0.0), (x1, 0.025, dh), "metal_white")
         g = dm.part(bevel=0.0)
-        g.bx((x0 + 0.1, 0.02, 1.05), (x1 - 0.1, 0.026, 1.5), "glass_tinted")
-        g.bx((x0 + 0.05 if sx > 0 else x1 - 0.12, 0.02, 0.6), (x0 + 0.12 if sx > 0 else x1 - 0.05, 0.05, 0.64), "plastic_black")
+        g.bx((x0 + 0.1, 0.03, dh - 0.62), (x1 - 0.1, 0.036, dh - 0.16), "glass_tinted")
+        dt.bx((x0 + 0.08, 0.025, dh - 0.66), (x1 - 0.08, 0.03, dh - 0.12), "plastic_black")
+        hx0, hx1 = (x1 - 0.14, x1 - 0.05) if sx < 0 else (x0 + 0.05, x0 + 0.14)
+        dt.bx((hx0, 0.025, 0.6), (hx1, 0.06, 0.64), "plastic_black")
+        hinge_x = -0.012 if sx < 0 else 0.012
+        for hz in (0.25, dh - 0.3):
+            dt.cyl(0.018, 0.12, (hinge_x, 0.03, hz), "steel", segs=10)
         dm.build()
     k.empty("DropAnchor", (0.0, yr + 0.7, 0.1))
 

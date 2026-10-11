@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.3)
+# Contract: HUD data (v1.4)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -60,3 +60,8 @@ instantiates UI.
 | Signal | Properties |
 |---|---|
 | `captain_changed` | `captain_resistance: float` (0..1, server value replicated via Net; 0 when no captain) and `captain_present: bool`. ENV A writes; ENV B shows a widget while the captain is present. |
+
+## v1.4 (QB-60, D-054)
+| Signal | Properties |
+|---|---|
+| `stamina_changed` | `stamina: float` (0..1 of max), `exhausted: bool` (sprint/jump locked until recovery). ENV A writes; ENV B shows a widget. |

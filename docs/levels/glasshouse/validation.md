@@ -30,12 +30,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 160 props checked
+- 389 props checked
 
 
 ## clipping: Nothing clips
 
-- 160 props, 23 doors checked
+- 389 props, 23 doors checked
 
 
 ## scale: Human scale
@@ -66,40 +66,40 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 1225 polygons, cell 0.10/0.10 m
-- 144 markers checked
+- navmesh: 1277 polygons, cell 0.10/0.10 m
+- 141 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
-| `Rooms/RoomG1` | 17 | 17 | 100% |
+| `Rooms/RoomG1` | 16 | 16 | 100% |
 | `Rooms/RoomG7` | 1 | 1 | 100% |
-| `Rooms/RoomG2` | 51 | 51 | 100% |
-| `Rooms/RoomG3` | 19 | 19 | 100% |
+| `Rooms/RoomG2` | 31 | 31 | 100% |
+| `Rooms/RoomG3` | 22 | 22 | 100% |
 | `Rooms/RoomG4` | 70 | 70 | 100% |
-| `Rooms/RoomG8` | 2 | 2 | 100% |
+| `Rooms/RoomG8` | 0 | 0 | 100% |
 | `Rooms/RoomG9` | 0 | 0 | 100% |
 | `Rooms/RoomG10` | 18 | 18 | 100% |
-| `Rooms/RoomG5` | 124 | 124 | 100% |
-| `Rooms/RoomG6` | 38 | 38 | 100% |
-| `Rooms/RoomU1` | 30 | 30 | 100% |
-| `Rooms/RoomU2` | 49 | 49 | 100% |
-| `Rooms/RoomU3` | 19 | 19 | 100% |
+| `Rooms/RoomG5` | 95 | 95 | 100% |
+| `Rooms/RoomG6` | 30 | 30 | 100% |
+| `Rooms/RoomU1` | 25 | 25 | 100% |
+| `Rooms/RoomU2` | 41 | 41 | 100% |
+| `Rooms/RoomU3` | 26 | 26 | 100% |
 | `Rooms/RoomU4` | 70 | 70 | 100% |
 | `Rooms/RoomU8` | 16 | 16 | 100% |
-| `Rooms/RoomU5` | 97 | 97 | 100% |
-| `Rooms/RoomU6` | 74 | 74 | 100% |
-| `Rooms/RoomU7` | 54 | 54 | 100% |
-| `Rooms/RoomX1` | 575 | 573 | 100% |
-| `Rooms/RoomX2` | 768 | 768 | 100% |
+| `Rooms/RoomU5` | 71 | 71 | 100% |
+| `Rooms/RoomU6` | 38 | 38 | 100% |
+| `Rooms/RoomU7` | 39 | 39 | 100% |
+| `Rooms/RoomX1` | 556 | 554 | 100% |
+| `Rooms/RoomX2` | 739 | 739 | 100% |
 
 
 ## reachability: Reachability (per variant)
 
-- 43 variant configuration(s), 67524 spawn->target path queries
+- 43 variant configuration(s), 66012 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 888 / 888 spawn->target walks ok
+- 852 / 852 spawn->target walks ok
 
 
 ## patrols: Patrol graphs

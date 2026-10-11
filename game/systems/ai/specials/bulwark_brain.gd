@@ -4,6 +4,9 @@
 ##   front (bulwark_shield_offset). It blocks all but shield-piercing rounds (x0.25), fire and
 ##   explosions (which go around it). Flanks and the back are unprotected (weak to flanks). On death the
 ##   shield is dropped in place and keeps blocking.
+## - Movement (PD2, lead ruling): walks while advancing at EnemyDef.params.advance_speed (1.8 m/s;
+##   shield_walk), EnemyDef.move_speed only for director orders (PoliceSpecialKit.heavy_move_speed).
+## - Shield visual / body follow the character visual's `HandL/Socket` when it has one (BulwarkShield).
 ## - Fixation: the first target picked is kept until it is in CUSTODY or gone (PD2 shields lock on).
 ## - Doorways: a free SHIELD_ANCHOR TacticalPoint near the target with LOS to it is claimed and held
 ##   (one Bulwark per point); otherwise a short standoff band (bulwark_standoff_*). No cover, no flank.
@@ -152,6 +155,11 @@ func _attach_shield() -> void:
 
 
 # --- PoliceBrain overrides -------------------------------------------------------------------
+
+## PD2: walks while advancing (EnemyDef.params.advance_speed), runs only to reposition / flank.
+func _move_speed(move_mode: StringName) -> float:
+	return PoliceSpecialKit.heavy_move_speed(_npc, move_mode, _run_speed())
+
 
 func _pick_target() -> void:
 	if fixated != null and is_instance_valid(fixated) and fixated.crew_state != Enums.CrewState.CUSTODY:

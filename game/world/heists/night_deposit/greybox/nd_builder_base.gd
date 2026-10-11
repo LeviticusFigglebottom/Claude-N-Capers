@@ -27,6 +27,7 @@ const LIB_MATS: Dictionary = {
 	"wall": "grey_wall", "wall_ext": "grey_wall_ext", "floor": "grey_floor", "ceiling": "grey_ceiling",
 	"roof": "grey_ceiling", "stair": "grey_stair", "counter": "grey_counter", "prop": "grey_prop",
 	"trim": "grey_trim", "glass": "grey_glass", "frame": "grey_frame", "door": "grey_door",
+	"handrail": "brushed_steel",
 }
 ## Site surface classes (greybox flat colours, one per class; meta greybox = true).
 const SITE_MATS: Dictionary = {

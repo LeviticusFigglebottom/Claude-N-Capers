@@ -49,8 +49,8 @@ func test_l4_6_defs_and_variants() -> void:
 		var hp_mult: float = 2.0 if id == "wrecker_m" else 1.0  # minigun: 2x HP (L4.6)
 		assert_near(d.health[0], 2000.0 * hp_mult, 0.1, "%s HP on the lowest difficulty" % id)
 		assert_near(d.health[5], 24000.0 * hp_mult, 0.1, "%s HP on the top difficulty" % id)
-		assert_near(float(d.params["faceplate_hp"]), 150.0, 0.01)
-		assert_near(float(d.params["visor_hp"]), 160.0, 0.01)
+		assert_near(float((d.params["plate_health"] as Array)[0]), 150.0, 0.01)
+		assert_near(float((d.params["plate_health"] as Array)[1]), 160.0, 0.01)
 		assert_near(float(d.params["explosive_mult"]), 1.1, 0.0001)
 		assert_eq(String(d.params["scene"]), "res://systems/ai/npc/npc_wrecker.tscn")
 	assert_ne(ACombatSpecials.def("wrecker_g").weapon, ACombatSpecials.def("wrecker_s").weapon, "pump vs LMG")
@@ -171,3 +171,43 @@ func test_l4_6_wrecker_m_minigun_spin_up_and_rpm() -> void:
 	await wait_seconds(float(d.params["spin_down_s"]) + 0.3)
 	assert_false(gun.spun_up, "spins down without a target")
 	gun.shot.disconnect(cb)
+
+
+## damage.md v1.1 plates: x1, no crit, excess lost (never carried to the visor or the head).
+func test_d052_plates_x1_no_crit_excess_lost() -> void:
+	var w: NpcBase = _wrecker()
+	await wait_physics_frames(3)
+	var armor: WreckerArmor = w.get_node("Weakpoints") as WreckerArmor
+	var hb: Hitbox = w.get_node("Hitboxes/Faceplate") as Hitbox
+	var info: Dictionary = Damage.info(100.0, Enums.DamageType.BULLET, hb.get_hit_zone(), &"weapon.test",
+		w.head_position(), Vector3(0, 0, -1), 0)
+	info["crit"] = true
+	info["headshot_bonus"] = 3.0
+	var r: Dictionary = CombatSystem.deliver_hit(Damage.find_target(hb), info, 0)
+	assert_near(float(r["amount"]), 100.0, 0.001, "x1: no crit, no headshot bonus on a plate")
+	assert_false(bool(r["crit"]), "crit cleared on plates")
+	assert_false(bool(r["blocked"]), "a plate hit is not blocked")
+	var hp0: float = w.health
+	r = _weak_hit(w, "Faceplate", 500.0)
+	assert_true(bool(r["plate_broken"]), "faceplate broken")
+	assert_near(float(r["amount"]), 50.0, 0.001, "only the 50 HP left are dealt")
+	assert_eq(armor.current_plate(), &"Visor")
+	assert_near(armor.hp_left(), 160.0, 0.001, "excess lost: the visor is untouched")
+	assert_near(w.health, hp0, 0.001, "and the Wrecker too")
+
+
+## damage.md v1.0 addendum (D-027): a crit multiplies by the HEAD zone multiplier on any zone, except an
+## armored head.
+func test_d052_crit_target_side() -> void:
+	var w: NpcBase = _wrecker()
+	await wait_physics_frames(3)
+	var hm: float = w.enemy_def.headshot_mult[0]
+	var target: Vector3 = CombatSystem.target_center(w)
+	var info: Dictionary = Damage.info(10.0, Enums.DamageType.BULLET, Enums.HitZone.BODY, &"weapon.test",
+		target, Vector3(0, 0, -1), 0)
+	info["crit"] = true
+	assert_near(float(w.take_hit(info, 0)["amount"]), 10.0 * hm, 0.001, "body crit x head mult")
+	info["zone"] = Enums.HitZone.HEAD
+	var r: Dictionary = w.take_hit(info, 0)
+	assert_near(float(r["amount"]), 10.0, 0.001, "armored head: x1, no crit")
+	assert_false(bool(r["crit"]), "crit cleared on the armored head")

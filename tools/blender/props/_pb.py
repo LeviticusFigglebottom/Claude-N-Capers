@@ -258,7 +258,8 @@ class Obj:
     def build(self, density: float = uv.DENSITY_NEAR, smooth_angle: float = 30.0) -> bpy.types.Object | None:
         mats: list[bpy.types.Material] = []
         out = bmesh.new()
-        for p in self.parts:
+        part_layer = out.faces.layers.int.new("part")
+        for pi, p in enumerate(self.parts):
             if not p.bm.faces:
                 p.bm.free()
                 continue
@@ -274,12 +275,18 @@ class Obj:
             me = bpy.data.meshes.new("_tmp")
             p.bm.to_mesh(me)
             p.bm.free()
+            n_before = len(out.faces)
             out.from_mesh(me)
             bpy.data.meshes.remove(me)
+            out.faces.ensure_lookup_table()
+            for fi in range(n_before, len(out.faces)):
+                out.faces[fi][part_layer] = pi
         if not out.faces:
             out.free()
             return None
-        uv.box_project(out, density=density)
+        dezfight(out, part_layer)
+        out.faces.layers.int.remove(part_layer)
+        project_uvs(out, mats, density)
         mb = geo.MeshBuilder()
         mb.bm.free()
         mb.bm = out
@@ -288,6 +295,101 @@ class Obj:
         geo.mark_sharp(obj, smooth_angle)
         geo.add_weighted_normals(obj)
         return obj
+
+
+# ------------------------------------------------------------------------------- validator rules
+
+ZF_EPS = 0.0035     # levelcheck zfight flags planes < 2 mm apart (margin for float32 + bevels)
+ZF_PUSH = 0.004     # moved faces end up this far in front of the face they covered
+ZF_AREA = 0.0003    # overlap (m², bounding boxes in the plane) worth fixing (check: 4 cm²)
+
+
+def _plane_box(f, u: Vector, w: Vector) -> tuple[float, float, float, float]:
+    xs = [v.co.dot(u) for v in f.verts]
+    ys = [v.co.dot(w) for v in f.verts]
+    return min(xs), min(ys), max(xs), max(ys)
+
+
+def dezfight(bm: bmesh.types.BMesh, part_layer, passes: int = 40) -> None:
+    """Remove z-fighting inside one object (levelcheck `zfight`): wherever a face of a later part
+    (trim, inlay, label, decal...) lies within 2 mm of a same-facing face of a different material
+    and overlaps it, push it 2.5 mm out along its normal. Floor-contact bottom faces that are
+    hidden anyway are deleted instead. Pure math in face order: deterministic."""
+    for _ in range(passes):
+        bm.normal_update()
+        bm.verts.index_update()
+        bm.faces.index_update()
+        bm.faces.ensure_lookup_table()
+        zmin = min(v.co.z for v in bm.verts)
+        buckets: dict[tuple, list] = {}
+        for f in bm.faces:
+            n = f.normal
+            if n.length < 0.5 or f.calc_area() < 1e-6:
+                continue
+            key = (round(n.x * 40), round(n.y * 40), round(n.z * 40))
+            buckets.setdefault(key, []).append((n.dot(f.verts[0].co), f[part_layer], f.index, f))
+        push: dict[int, float] = {}
+        drop: list = []
+        for key in sorted(buckets):
+            items = sorted(buckets[key], key=lambda t: (t[0], t[1], t[2]))
+            n0 = items[0][3].normal
+            u = (Vector((0, 0, 1)) if abs(n0.z) < 0.9 else Vector((1, 0, 0))).cross(n0).normalized()
+            w = n0.cross(u)
+            boxes = {t[2]: _plane_box(t[3], u, w) for t in items}
+            for a in range(len(items)):
+                da, pa, ia, fa = items[a]
+                for b in range(a + 1, len(items)):
+                    db, pb, ib, fb = items[b]
+                    if db - da >= ZF_EPS:
+                        break
+                    if fa.material_index == fb.material_index or fa.normal.dot(fb.normal) < 0.999:
+                        continue
+                    ba, bb = boxes[ia], boxes[ib]
+                    ox = min(ba[2], bb[2]) - max(ba[0], bb[0])
+                    oy = min(ba[3], bb[3]) - max(ba[1], bb[1])
+                    if ox <= 0 or oy <= 0 or ox * oy < ZF_AREA:
+                        continue
+                    # move the later one (part order, then face order)
+                    lo, hi = ((da, ia), (db, ib)) if (pa, ia) < (pb, ib) else ((db, ib), (da, ia))
+                    f_hi = fb if hi[1] == ib else fa
+                    if f_hi.normal.z < -0.99 and all(abs(v.co.z - zmin) < 0.001 for v in f_hi.verts):
+                        drop.append(f_hi)
+                    elif f_hi.normal.z < -0.99:
+                        # never below the object's base (pivot contract): undersides move up instead
+                        off = lo[0] - ZF_PUSH - hi[0]
+                        push[hi[1]] = min(push.get(hi[1], 0.0), off)
+                    else:
+                        push[hi[1]] = max(push.get(hi[1], 0.0), lo[0] + ZF_PUSH - hi[0])
+        if not push and not drop:
+            return
+        moved: set[int] = set()
+        for fi in sorted(push):
+            f = bm.faces[fi]
+            off = f.normal * push[fi]
+            for v in f.verts:
+                if v.index not in moved:
+                    v.co += off
+                    moved.add(v.index)
+        if drop:
+            uniq = sorted({f.index: f for f in drop}.items())
+            bmesh.ops.delete(bm, geom=[f for _, f in uniq], context="FACES_ONLY")
+        bm.verts.index_update()
+
+
+def _texture_px(mat: bpy.types.Material) -> float:
+    lib = mat.name[2:] if mat.name.startswith("M_") else mat.name
+    return _matlib.texture_px(lib)
+
+
+def project_uvs(bm: bmesh.types.BMesh, mats: list, density: float) -> None:
+    """World-scaled box UVs at the texel density the validator expects (512 px/m within reach):
+    1024 px library tiles repeat every 2 m, the 512 px low-detail tiles (chrome, rubber, plastic,
+    glass and their tints) every 1 m."""
+    uv.box_project(bm, density=density)
+    small = [i for i, m in enumerate(mats) if m is not None and _texture_px(m) < 1024]
+    if small:
+        faces = [f for f in bm.faces if f.material_index in small]
+        uv.box_project(bm, density=density, texture_px=512.0, faces=faces)
 
 
 # ----------------------------------------------------------------------------- furniture bits

@@ -9,11 +9,11 @@ const PATH: String = "res://systems/anim/anim_tweak.tres"
 
 static var _cached: AnimTweak = null
 
-@export_group("Clip facts (characters.md v1.3)")
+@export_group("Clip facts (characters.md v1.3 / v1.4)")
 ## Root speed of each locomotion clip at 1.78 m (m/s). speed_scale = v / (clip speed x motion_scale).
 @export var clip_speeds: Dictionary = {
 	&"walk": 1.6, &"run": 3.5, &"sprint": 5.75, &"crouch_walk": 1.5, &"strafe_l": 1.2, &"strafe_r": 1.2,
-	&"walk_back": 1.3, &"flee": 4.0, &"carry_bag_walk": 2.4,
+	&"walk_back": 1.3, &"flee": 4.0, &"carry_bag_walk": 2.4, &"shield_walk": 1.6, &"dozer_walk": 1.6,
 }
 ## Seconds from clip start to the reload `done` event (SOURCE.txt: pistol done@34, rifle done@58, 30 fps).
 ## The reload clip is sped up/slowed so `done` lands when the gameplay reload finishes.

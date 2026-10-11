@@ -17,7 +17,7 @@
 ## - Swap: the old set's `holster` (FpViewmodelTweak.holster_share of the gameplay equip time), then the new
 ##   set's `draw` with its `ready` frame on the end of the equip time.
 ## - Parts: `Slide` / `Pump` / `Bolt` / `FeedCover` of the weapon model move from the clip event frames
-##   (FpViewmodelTweak.clip_events, mirrored from SOURCE.txt) with the contract travels. Pistol slides lock
+##   (FpViewmodelTweak.clip_events(): parsed from SOURCE.txt + extra_events) with the contract travels. Pistol slides lock
 ##   back on the last round until `slide_release`.
 ## - ADS: while aimed the arms shift so the weapon's `AimPoint` sits on the camera axis (when present).
 class_name FpViewmodel

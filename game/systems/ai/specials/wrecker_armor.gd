@@ -2,8 +2,12 @@
 ## Child `Weakpoints` of npc_wrecker.tscn. Builds two Hitbox areas (zone WEAKPOINT, layer 5) in front of
 ## the head: `Faceplate` (outermost) and `Visor` (behind it); the head sphere is behind both. Every
 ## WEAKPOINT hit is routed here (Hitbox.target = this node) and damages the CURRENT stage only, so the
-## plates always break in order: Faceplate (EnemyDef.params.faceplate_hp, 150) -> Visor (visor_hp, 160)
-## -> head exposed. Same HP on every difficulty (PD2). Plate hits never hurt the Wrecker's health.
+## plates always break in order: Faceplate -> Visor -> head exposed, HP from EnemyDef.params.plate_health
+## [faceplate, visor] = [150, 160] (D-052; legacy faceplate_hp / visor_hp still read). Same HP on every
+## difficulty (PD2). Plate hits never hurt the Wrecker's health. damage.md v1.1: a plate takes the
+## body amount x1 (no zone multiplier, no headshot bonus, no crit: `crit` is cleared); damage beyond the
+## plate's remaining HP is lost (never carried to the next plate or the head); the reported `amount`
+## is what the plate actually lost. Explosions do not hit plates.
 ## While a plate stands `is_head_armored()` is true and NpcHitRules turns HEAD hits into x1 hits;
 ## afterwards the EnemyDef headshot multiplier applies.
 ## Each break: cue.wrecker_plate_crack [R] at the head, the plate's hitbox is disabled, and the
@@ -16,7 +20,6 @@ extends Node
 signal plate_broken(plate: StringName, stage: int)
 
 const STAGES: Array[StringName] = [&"Faceplate", &"Visor"]
-const HP_KEYS: Array[String] = ["faceplate_hp", "visor_hp"]
 const HP_DEFAULT: Array[float] = [150.0, 160.0]
 ## Extra mesh hidden with each stage (characters.md `HeadArmored` variants).
 const EXTRA_HIDE: Dictionary = {&"Visor": [&"HeadArmored"]}
@@ -51,9 +54,10 @@ func hp_left() -> float:
 
 ## Hit on a WEAKPOINT hitbox (docs/contracts/damage.md single hit path: this node is the target).
 func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
-	var out: Dictionary = info.duplicate()
+	var out: Dictionary = CombatSystem.ensure_info_v11(info.duplicate())
 	out["amount"] = 0.0
 	out["killed"] = false
+	out["crit"] = false
 	if not Net.is_authority() or _npc == null or not _npc.alive:
 		return out
 	if not is_head_armored():
@@ -64,6 +68,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	if int(info.get("type", Enums.DamageType.BULLET)) == Enums.DamageType.EXPLOSION:
 		amount = 0.0  # blasts hit the body, not the plates
 	var plate: StringName = current_plate()
+	amount = minf(amount, maxf(plate_hp[stage], 0.0))  # excess is lost
 	plate_hp[stage] -= amount
 	out["amount"] = amount
 	out["zone"] = Enums.HitZone.WEAKPOINT
@@ -110,10 +115,10 @@ func _hide_meshes(plate: StringName) -> void:
 func _build() -> void:
 	if _npc == null or not is_instance_valid(_npc):
 		return
-	var p: Dictionary = _npc.enemy_def.params if _npc.enemy_def != null else {}
+	var hp: Array[float] = NpcHitRules.armor_of(_npc.enemy_def)["plate_health"]
 	plate_hp.clear()
 	for i: int in range(STAGES.size()):
-		plate_hp.append(float(p.get(HP_KEYS[i], HP_DEFAULT[i])))
+		plate_hp.append(hp[i] if i < hp.size() else HP_DEFAULT[i])
 	var root: Node3D = _npc.get_node_or_null("Hitboxes") as Node3D
 	if root == null:
 		root = Node3D.new()

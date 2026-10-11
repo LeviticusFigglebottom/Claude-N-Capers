@@ -5,9 +5,11 @@
 ## gameplay code may read animation state. Headless-safe.
 ## Each frame it picks one clip, by priority:
 ##   death_front/back (from the last hit direction vs facing) > crew state (downed, tased, kneel_cuffed) /
-##   stun (tased) > pose hints (tied, cower, hands_up, surrender, lie_down, kneel_cuffed) > one-shots (turn,
-##   fire, reload, throw_bag, melee) > interact_* / pager_answer > locomotion by velocity (walk, run,
-##   sprint, crouch_walk, strafe, walk_back, flee, carry_bag_walk; speed_scale = v / clip speed) > aim_* >
+##   stun (tased) > pose hints (tied, cower, hands_up, surrender, lie_down, kneel_cuffed) > special actions
+##   (kick_charge, shield_bang, heal_ally) > one-shots (turn, fire, reload, throw_bag, melee, kick_hit,
+##   hit_react) > interact_* / pager_answer > locomotion by velocity (walk, run, sprint, crouch_walk, strafe,
+##   walk_back, flee, carry_bag_walk, the unit's EnemyDef.params.anim_walk_clip = shield_walk / dozer_walk at
+##   walking speed; speed_scale = v / clip speed) > aim_* >
 ##   the brain's `anim_hint` idles (phone_call, smoke, radio_call, investigate_look...) > idle / idle_alert /
 ##   crouch_idle. Clips crossfade (AnimTweak.blend_s).
 ## Turn in place: a standing body whose yaw moved more than AnimTweak.turn_threshold_deg plays turn_l/r while
@@ -31,7 +33,10 @@ const HINT_CLIPS: Dictionary = {
 	&"kneel_cuffed": &"kneel_cuffed", &"lie_down": &"lie_down", &"surrender": &"surrender",
 	&"browse": &"browse", &"desk_type": &"desk_type", &"sit_chair": &"sit_chair", &"lean_wall": &"lean_wall",
 	&"melee": &"melee", &"flee": &"flee", &"aim_pistol": &"aim_pistol", &"aim_rifle": &"aim_rifle",
-	&"tased": &"tased", &"downed": &"downed",
+	&"tased": &"tased", &"downed": &"downed", &"hit_react": &"hit_react",
+	# Specials (characters.md v1.4): Phantom windup / kick, Bulwark bang, Corpsman heal.
+	&"kick_charge": &"kick_charge", &"kick_hit": &"kick_hit", &"shield_bang": &"shield_bang",
+	&"heal_ally": &"heal_ally",
 	# Brain / patrol-point aliases.
 	&"phone": &"phone_call", &"call": &"phone_call", &"desk_work": &"desk_type", &"sit": &"sit_chair",
 	&"queue": &"idle", &"lean": &"lean_wall", &"check_door": &"investigate_look", &"down": &"lie_down",
@@ -41,15 +46,25 @@ const HINT_CLIPS: Dictionary = {
 const POSE_CLIPS: Array[StringName] = [
 	&"tied", &"kneel_cuffed", &"lie_down", &"cower", &"hands_up", &"surrender", &"downed", &"tased",
 ]
+## Special actions held while the hint lasts: they win over one-shots, locomotion and aim (the brain
+## stands the body still for them).
+const ACTION_CLIPS: Array[StringName] = [&"kick_charge", &"shield_bang", &"heal_ally"]
 ## Hints played once when the hint changes to them.
-const ONESHOT_HINTS: Array[StringName] = [&"melee"]
+const ONESHOT_HINTS: Array[StringName] = [&"melee", &"kick_hit", &"hit_react"]
+## One-shot hints that are not held as an idle once played (the hint may linger in the brain).
+const ONCE_ONLY_HINTS: Array[StringName] = [&"kick_hit", &"hit_react"]
 ## Clip -> substitute when the library lacks it (then idle).
 const FALLBACK_CLIPS: Dictionary = {
 	&"aim_pistol": &"idle_alert", &"aim_rifle": &"idle_alert", &"interact_low": &"interact_mid",
 	&"interact_high": &"interact_mid", &"flee": &"run", &"carry_bag_walk": &"walk", &"crouch_walk": &"walk",
 	&"crouch_idle": &"idle", &"strafe_l": &"walk", &"strafe_r": &"walk", &"walk_back": &"walk",
 	&"sprint": &"run", &"pager_answer": &"phone_call", &"idle_alert": &"idle",
+	&"shield_walk": &"walk", &"dozer_walk": &"walk", &"kick_charge": &"idle_alert", &"kick_hit": &"melee",
+	&"shield_bang": &"idle_alert", &"heal_ally": &"interact_mid",
 }
+## EnemyDef.params key: the unit's own walk clip (Bulwark shield_walk, Wrecker dozer_walk), played instead
+## of walk while moving at walking speed (above it: run / sprint).
+const WALK_CLIP_PARAM: String = "anim_walk_clip"
 const CREW_STATE_CLIPS: Dictionary = {
 	Enums.CrewState.DOWNED: &"downed", Enums.CrewState.CLOAKER_DOWNED: &"downed",
 	Enums.CrewState.TASED: &"tased", Enums.CrewState.CUFFED: &"kneel_cuffed",
@@ -116,6 +131,14 @@ static func find_player(body: Node) -> AnimationPlayer:
 		if ap != null and ap.has_animation_library(LIBRARY):
 			return ap
 	return null
+
+
+## `<Marker>/Socket` (characters.md v1.2: HandR, HandL, Head, Back, Hip) of `body`'s contract visual, or null
+## (capsule placeholder / no skeleton).
+static func socket_of(body: Node, marker: String) -> Node3D:
+	var ap: AnimationPlayer = find_player(body)
+	var root: Node = ap.get_parent() if ap != null else null
+	return root.get_node_or_null(NodePath("Skeleton3D/%s/Socket" % marker)) as Node3D if root != null else null
 
 
 ## Add a driver to `body` when its visual has a contract AnimationPlayer (else none; returns the driver or null).
@@ -228,7 +251,7 @@ func choose_clip() -> StringName:
 	if state_clip != &"":
 		return state_clip
 	var hint_clip: StringName = HINT_CLIPS.get(_hint(), &"")
-	if POSE_CLIPS.has(hint_clip):
+	if POSE_CLIPS.has(hint_clip) or ACTION_CLIPS.has(hint_clip):
 		return hint_clip
 	return _active_clip(hint_clip)
 
@@ -247,7 +270,7 @@ func _active_clip(hint_clip: StringName) -> StringName:
 		out = _locomotion_clip(speed, tw)
 	elif _aiming():
 		out = &"aim_rifle" if weapon_kind == &"rifle" else &"aim_pistol"
-	elif hint_clip != &"" and hint_clip != &"idle":
+	elif hint_clip != &"" and hint_clip != &"idle" and not ONCE_ONLY_HINTS.has(hint_clip):
 		out = hint_clip
 	return out
 
@@ -310,7 +333,7 @@ func _state_clip() -> StringName:
 
 
 func _locomotion_clip(speed: float, tw: AnimTweak) -> StringName:
-	var special: StringName = _special_locomotion()
+	var special: StringName = _special_locomotion(speed, tw)
 	if special != &"":
 		return special
 	var fwd: Vector3 = -_body.global_transform.basis.z
@@ -329,8 +352,9 @@ func _locomotion_clip(speed: float, tw: AnimTweak) -> StringName:
 	return out
 
 
-## Crouch / carry / sprint (crew) and flee (panicked civilians); &"" = pick by speed and direction.
-func _special_locomotion() -> StringName:
+## Crouch / carry / sprint (crew), flee (panicked civilians) and the unit's own walk clip (EnemyDef
+## params anim_walk_clip, only at walking speed); &"" = pick by speed and direction.
+func _special_locomotion(speed: float, tw: AnimTweak) -> StringName:
 	var out: StringName = &""
 	if _crew != null:
 		if _crew.crouched:
@@ -342,7 +366,21 @@ func _special_locomotion() -> StringName:
 	elif _npc != null and _npc.role == &"civilian" and (
 			_npc.alert_state == Enums.AlertState.PANICKED or _hint() == &"run" or _hint() == &"flee"):
 		out = &"flee"
+	elif _npc != null:
+		out = _unit_walk_clip(speed, tw)
 	return out
+
+
+## The NPC's own walk clip at `speed`, or &"" (no such clip, or faster than a walk: never above
+## AnimTweak.speed_scale_max nor walk_run_split_mps; then run / sprint play).
+func _unit_walk_clip(speed: float, tw: AnimTweak) -> StringName:
+	if _npc.enemy_def == null or not _npc.enemy_def.params.has(WALK_CLIP_PARAM):
+		return &""
+	var c: StringName = StringName(str(_npc.enemy_def.params[WALK_CLIP_PARAM]))
+	var clip_speed: float = float(tw.clip_speeds.get(c, tw.clip_speeds.get(&"walk", 1.6))) * _motion_scale()
+	if c == &"" or speed > minf(tw.walk_run_split_mps, clip_speed * tw.speed_scale_max):
+		return &""
+	return c
 
 
 func _interact_clip(tw: AnimTweak) -> StringName:
@@ -407,12 +445,14 @@ func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:
 		return _oneshot_speed
 	if not tw.clip_speeds.has(p_clip):
 		return 1.0
-	var motion: float = 1.0
-	var skel: Skeleton3D = rig.get_node_or_null(^"Skeleton3D") as Skeleton3D if rig != null else null
-	if skel != null and skel.motion_scale > 0.0:
-		motion = skel.motion_scale
-	var s: float = horizontal_speed() / maxf(float(tw.clip_speeds[p_clip]) * motion, 0.01)
+	var s: float = horizontal_speed() / maxf(float(tw.clip_speeds[p_clip]) * _motion_scale(), 0.01)
 	return clampf(s, tw.speed_scale_min, tw.speed_scale_max)
+
+
+## Skeleton3D.motion_scale of the rig (1 when unset): clip speeds scale with character height.
+func _motion_scale() -> float:
+	var skel: Skeleton3D = rig.get_node_or_null(^"Skeleton3D") as Skeleton3D if rig != null else null
+	return skel.motion_scale if skel != null and skel.motion_scale > 0.0 else 1.0
 
 
 # --- Frame update helpers ---------------------------------------------------------------------
@@ -437,9 +477,10 @@ func _update_turn(delta: float, tw: AnimTweak) -> void:
 	var body_yaw: float = _body.global_rotation.y if _body.is_inside_tree() else _body.rotation.y
 	var standing: bool = horizontal_speed() <= tw.move_threshold_mps
 	var held: bool = (_npc != null and not _npc.alive) or _interact_kind != &""
+	var now: StringName = choose_clip() if standing and not held else &""
 	if held:
 		pass
-	elif not standing or POSE_CLIPS.has(choose_clip()):
+	elif not standing or POSE_CLIPS.has(now) or ACTION_CLIPS.has(now):
 		_visual_yaw = body_yaw
 		_turning_left = 0.0
 	else:

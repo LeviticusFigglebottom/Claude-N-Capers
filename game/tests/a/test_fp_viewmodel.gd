@@ -231,24 +231,79 @@ static func _bare_scene() -> PackedScene:
 	return ps
 
 
-func test_events_match_source_txt() -> void:
-	var path: String = "res://assets/characters/char_arms_fp/SOURCE.txt"
-	if not FileAccess.file_exists(path):
+func test_parse_events_tolerates_unknown_lines() -> void:
+	var text: String = "\n".join([
+		"asset: char_arms_fp",
+		"check.pistol_fire: reach_err=0.0mm step=9.1deg",
+		"clip.pistol_idle: 90f loop=True",
+		"clip.pistol_fire: 6f loop=False events=shot@0",
+		"  clip.akimbo_reload: 80f loop=False events=mag_out@6,mag_in@29.5,done@70 future=1  ",
+		"clip.revolver_fire_auto: 4f loop=False newkey=x events=shot@0,bad,@3,cock@x,hammer@2",
+		"clip.: 3f",
+		"clip.broken no colon",
+		"fp.clips: <set>_<clip>; all sets: idle*",
+		"sets: pistol,akimbo",
+	])
+	var ev: Dictionary = FpViewmodelTweak.parse_events(text)
+	assert_eq(ev.size(), 4, "one entry per clip line (%s)" % [ev.keys()])
+	assert_eq(ev.get(&"pistol_idle"), {}, "clip without events -> empty entry")
+	assert_eq(ev.get(&"pistol_fire"), {&"shot": 0})
+	var ak: Dictionary = ev.get(&"akimbo_reload", {})
+	assert_eq(ak.get(&"mag_out"), 6)
+	assert_near(float(ak.get(&"mag_in", -1)), 29.5, 0.0001, "fractional frame")
+	assert_eq(ak.get(&"done"), 70)
+	assert_eq(ev.get(&"revolver_fire_auto"), {&"shot": 0, &"hammer": 2}, "malformed tokens skipped")
+	assert_true(FpViewmodelTweak.parse_events("").is_empty(), "empty text")
+
+
+func test_merged_events_and_timing() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.new()
+	tw.events_source = "res://__missing__/SOURCE.txt"
+	tw.extra_events = {&"pistol_fire": {&"slide_back": 1}}
+	assert_eq(tw.clip_events(), {&"pistol_fire": {&"slide_back": 1}}, "missing SOURCE.txt: extras only")
+	assert_near(tw.event_s(&"pistol_fire", &"slide_back"), 1.0 / 30.0, 0.0001)
+	assert_eq(tw.event_s(&"pistol_fire", &"shot"), -1.0, "unknown event")
+	var real: FpViewmodelTweak = FpViewmodelTweak.data()
+	if not FileAccess.file_exists(real.events_path()):
 		skip("char_arms_fp SOURCE.txt missing")
 		return
-	var rx: RegEx = RegEx.create_from_string("^clip\\.(\\w+): \\d+f loop=\\w+ events=(.*)$")
+	var ev: Dictionary = real.events_s(&"pistol_fire")
+	assert_true(ev.has(&"shot"), "SOURCE.txt event kept")
+	assert_true(ev.has(&"slide_back") and ev.has(&"slide_forward"), "extra_events merged in")
+
+
+func test_parsed_events_cover_arms_clips() -> void:
 	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.arms_scene == null or not FileAccess.file_exists(tw.events_path()):
+		skip("char_arms_fp not delivered")
+		return
+	var events: Dictionary = tw.clip_events()
+	var inst: Node = tw.arms_scene.instantiate()
+	var aps: Array[Node] = inst.find_children("*", "AnimationPlayer", true, false)
+	assert_false(aps.is_empty(), "arms AnimationPlayer")
+	var clips: Dictionary = {}
+	for ap_node: Node in aps:
+		var ap: AnimationPlayer = ap_node as AnimationPlayer
+		for lib_name: StringName in ap.get_animation_library_list():
+			var lib: AnimationLibrary = ap.get_animation_library(lib_name)
+			for a: StringName in lib.get_animation_list():
+				var full: StringName = a if lib_name == &"" else StringName("%s_%s" % [lib_name, a])
+				clips[full] = lib.get_animation(a).length
+	inst.free()
+	assert_true(clips.size() > 50, "arms clips (%d)" % clips.size())
 	var n: int = 0
-	for line: String in FileAccess.get_file_as_string(path).split("\n"):
-		var m: RegExMatch = rx.search(line.strip_edges())
-		if m == null:
-			continue
-		for e: String in m.get_string(2).split(","):
-			var kv: PackedStringArray = e.split("@")
-			assert_near(tw.event_s(StringName(m.get_string(1)), StringName(kv[0])), float(kv[1]) / FPS, 0.0001,
-				"%s %s" % [m.get_string(1), kv[0]])
+	for c: StringName in clips:
+		assert_true(events.has(c), "SOURCE.txt has a clip line for %s" % c)
+		var ev: Dictionary = events.get(c, {})
+		var last: float = float(clips[c]) * tw.fps
+		for e: Variant in ev:
+			assert_true(e is StringName and String(e) != "", "%s: event name" % c)
+			var f: float = float(ev[e])
+			assert_true(f >= 0.0 and f <= last + 0.5, "%s %s@%s within the clip (%.1f f)" % [c, e, ev[e], last])
 			n += 1
-	assert_true(n > 50, "events parsed (%d)" % n)
+	for c: Variant in events:
+		assert_true(clips.has(StringName(c)), "event clip %s exists in the arms scene" % c)
+	assert_true(n > 50, "events checked (%d)" % n)
 
 
 func test_real_arms_smoke() -> void:

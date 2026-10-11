@@ -32,7 +32,7 @@ func test_l4_2_tac_heavy_def() -> void:
 	var light: EnemyDef = ACombatSpecials.def("tac_light")
 	for i: int in range(6):
 		assert_true(d.health[i] > light.health[i], "heavier than TAC Light on difficulty %d" % i)
-	assert_true(float(d.params["frontal_plate_arc_deg"]) > 0.0, "frontal plate configured")
+	assert_true(float(d.params["frontal_armor_arc_deg"]) > 0.0, "frontal plate configured")
 	var npc: NpcBase = _heavy()
 	assert_true(npc.get_node("Brain") is PoliceBrain, "uses the police brain (npc_police scene)")
 

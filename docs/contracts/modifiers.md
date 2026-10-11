@@ -16,7 +16,7 @@ modifier keys. This is how PD2's `upgrade_value` system works, and it keeps ENV 
 * Qualified keys (`weapon.damage_mult.shotgun`): grant with a class qualifier or `.all`; query with
   `Modifiers.mult(slot, &"weapon.damage_mult", Enums.weapon_class_qualifier(cls))`.
 * PARAMS keys carry dictionaries for perk-deck signature mechanics, e.g.
-  `perk.stoic = {"dot_duration": 8.0, "flask_cooldown": 20.0, "auto_flask_after_s": 4.0}`.
+  `perk.stoic = {"delayed_fraction": 0.75, "dot_duration_s": 12.0, "flask_cooldown_s": 10.0, "auto_negate_after_s": 4.0, ...}` (full field list in game/content/docs/perk_decks.md § perk.stoic).
   The param schema for each PARAMS key is documented by ENV A in `game/systems/modifiers_params.md`
   when it implements the key, and reviewed by the lead.
 * Team-skill non-stacking (PD2 rule): crew-wide keys (`team.*`) from the **same skill id** held by
