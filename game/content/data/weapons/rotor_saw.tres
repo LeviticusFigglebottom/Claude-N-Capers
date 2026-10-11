@@ -37,6 +37,7 @@ magnification = 1.0
 [resource]
 script = ExtResource("1")
 id = &"weapon.rotor_saw"
+params = {"saw": {"range_m": 1.6, "wear_per_tick_npc": 1, "wear_per_tick_object": 1, "cut_rate_mult": 1.0}}
 display_name = "Rotor Saw"
 manufacturer = "Graff-Lindqvist"
 weapon_class = 6

@@ -37,6 +37,7 @@ magnification = 1.0
 [resource]
 script = ExtResource("1")
 id = &"weapon.thumper_40"
+params = {"projectile": {"speed_mps": 45.0, "gravity_mult": 1.0, "lifetime_s": 8.0}, "explosion": {"radius_m": 3.5, "arm_distance_m": 0.0}}
 display_name = "Thumper 40"
 manufacturer = "Brannock Defense"
 weapon_class = 6

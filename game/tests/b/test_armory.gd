@@ -11,7 +11,7 @@ const NEW_WEAPONS: Array[StringName] = [
 ## `akimbo` (pairs; D-050) and `revolver`; B4-18 requests the special sets from ENV D (they may lag: these
 ## tests check names only, never animation libraries).
 const ANIM_SETS: Array[StringName] = [&"pistol", &"smg", &"rifle", &"shotgun", &"lmg", &"sniper", &"akimbo", &"revolver",
-	&"break_action", &"lever", &"bow", &"crossbow", &"launcher", &"flamethrower", &"saw", &"minigun"]
+	&"break_action", &"lever", &"bow", &"crossbow", &"launcher", &"flamethrower", &"saw", &"minigun", &"shotgun_box"]
 ## Cue family per anim set where they differ: pairs fire pistol rounds (D-050).
 const CUE_FAMILY: Dictionary = {&"akimbo": &"pistol"}
 ## B4-18: weapons that borrow another family's viewmodel set keep their own sound (a box-fed shotgun reloads
@@ -135,8 +135,8 @@ func test_class_falloff_shapes() -> void:
 		assert_near(s.headshot_mult, 1.0, 0.0001, "%s headshot bonus 1.0 (D-026)" % w.id)
 
 
-## L3.4: snipers pierce body armor, shields and thin walls; nothing else does yet. Bolt action, or semi-auto
-## (B4-18 Osprey, like PD2's semi-automatic snipers).
+## L3.4: snipers pierce body armor, shields and thin walls; nothing else does yet. Bolt action, lever action
+## (B4-18 Shrike, D-057) or semi-auto (B4-18 Osprey, like PD2's semi-automatic snipers).
 func test_sniper_pierces() -> void:
 	for w: WeaponDef in ContentDB.all_weapons():
 		var sniper: bool = w.weapon_class == Enums.WeaponClass.SNIPER
@@ -144,8 +144,8 @@ func test_sniper_pierces() -> void:
 		assert_eq(w.base.wall_pierce, sniper, "%s wall pierce" % w.id)
 		if sniper:
 			assert_near(w.base.armor_pierce, 1.0, 0.0001, "%s armor pierce" % w.id)
-			assert_true(w.fire_modes.has(&"bolt") or w.fire_modes == ([&"semi"] as Array[StringName]),
-				"%s bolt action or semi-auto" % w.id)
+			assert_true(w.fire_modes.has(&"bolt") or w.fire_modes.has(&"lever") \
+					or w.fire_modes == ([&"semi"] as Array[StringName]), "%s bolt, lever or semi-auto" % w.id)
 
 
 func test_class_stat_shapes() -> void:

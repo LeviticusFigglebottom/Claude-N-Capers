@@ -1981,3 +1981,6 @@ item.mod.cyclone_short_barrels.name,Short Barrel Cluster
 item.mod.cyclone_short_barrels.desc,"Six cut-down barrels. A little easier to carry, a lot less accurate."
 ui.lobby.error.unreachable,Could not reach the host. Check the address and port.
 ui.prompt.use_armor_bag,Hold {key} to change armor
+ui.escape.heli,helicopter
+ui.escape.line,zipline
+ui.escape.lift,service lift
