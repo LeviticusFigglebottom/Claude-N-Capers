@@ -550,7 +550,9 @@ def _lever_clips(row: dict) -> dict:
     out["reload_start"] = _one(st, {"ready": st})
     out["reload_loop"] = _one(lp, {"round_in": rin, "done": lp})
     out["reload_end"] = _one(en, {"done": en - 2})
-    eev = {"lever_open": round(0.48 * ee), "lever_close": round(0.66 * ee), "done": ee - 3}
+    # the left hand needs ~0.4 s from the gate back to the fore-end (a ~165 deg wrist turn at <= ~20 deg /
+    # frame, ``_arms_breech.cam_path``) before the lever is thrown at lever_open - 4
+    eev = {"lever_open": round(0.53 * ee), "lever_close": round(0.70 * ee), "done": ee - 3}
     out["reload_end_empty"] = _one(ee, eev)
     for empty in (False, True):
         ev = {f"round_in_{i + 1}": st + i * lp + rin for i in range(n)}
@@ -742,11 +744,65 @@ MINIGUN = FPSet(
     clips=_minigun_clips(MINIGUN_DATA),
 )
 
+# =============================================================================================
+# D-058: shotgun_box: box / drum-fed self-loading shotguns (Brute 12 drum, Harrow 12 box). The rifle
+# hold (shouldered, left hand on the fore-end / shroud ``LeftHandIK``) with a shotgun's kick; the
+# magazine swap rocks the drum (or box) in front lip first; reload_empty ends with the left hand
+# racking the charging handle (``bolt_release``). Lengths from the first weapon .tres with
+# ``anim_set = &"shotgun_box"`` (sorted by file name: brute_12, the drum), else SHOTGUN_BOX_DEFAULTS
+# (the Brute's numbers).
+# =============================================================================================
+SHOTGUN_BOX_DEFAULTS = {"reload_time_s": 3.6, "reload_empty_time_s": 4.4, "equip_time_s": 0.7,
+                        "fire_rate_rpm": 300.0}
+#: charging-handle stroke (m, along weapon -Y), left side of the receiver
+SHOTGUN_BOX_CHARGE = 0.070
+
+
+def shotgun_box_fire_frames(rpm: float) -> int:
+    """9..12 f of heavy kick, no longer than 1.5 shot intervals (restarted every shot like the
+    full-auto clips; 300 rpm = 6 f per shot -> 9 f)."""
+    return max(9, min(12, int(1.5 * 1800.0 / max(1.0, rpm) + 1e-6)))
+
+
+def _shotgun_box_clips(row: dict) -> dict:
+    n_r = _f(row["reload_time_s"])
+    n_e = _f(row["reload_empty_time_s"])
+    out = _std(_equip(row), shotgun_box_fire_frames(row["fire_rate_rpm"]))
+    out["reload"] = _one(n_r, {"mag_out": round(0.18 * n_r), "mag_swap": round(0.36 * n_r),
+                               "mag_in": round(0.62 * n_r), "done": n_r - 12})
+    out["reload_empty"] = _one(n_e, {"mag_out": round(0.13 * n_e), "mag_swap": round(0.30 * n_e),
+                                     "mag_in": round(0.55 * n_e), "bolt_release": round(0.77 * n_e),
+                                     "done": n_e - 12})
+    return out
+
+
+SHOTGUN_BOX_DATA = _b3_row("shotgun_box", SHOTGUN_BOX_DEFAULTS)
+#: Brute 12 markers (ENV B ``tools/blender/weapons/_brute.py``): LeftHandIK under the shroud, AimPoint =
+#: the carry-handle aperture, Magwell ahead of the trigger guard (drum: feed tower 20 mm up, r 74 mm
+#: drum centred 94 mm below it, 30 mm half width + side plates).
+SHOTGUN_BOX = FPSet(
+    name="shotgun_box", weapon="wpn_brute_12",
+    markers={"left_ik": v3(-0.026, 0.330, 0.046), "aim": v3(0.0, -0.040, 0.1482),
+             "magwell": v3(0.0, 0.150, 0.022), "magwell_axis": v3(0.0, 0.0, 1.0),
+             "cock": v3(-0.034, 0.200, 0.084), "butt": v3(0.0, -0.330, 0.060)},
+    hip=((0.13, 0.20, -0.185), 7.0, 1.5, -6.0),
+    ads_dist=0.13,
+    sprint=((0.15, 0.21, -0.23), 28.0, -8.0, -40.0),
+    lowered=((0.16, 0.06, -0.57), 20.0, -55.0, -35.0),
+    reload_tilt=((0.075, 0.21, -0.165), 14.0, 14.0, 34.0),
+    support="handguard", blade=44.0, blade_ads=48.0, reload="mag",
+    recoil={"back": 0.042, "up": 0.015, "pitch": 7.5, "roll": 1.8, "yaw": 0.9},
+    recoil_ads={"back": 0.030, "up": 0.009, "pitch": 4.8, "roll": 1.1, "yaw": 0.5},
+    mag={"top": 0.020, "bottom": -0.168, "hw": 0.034, "depth": 0.150, "grip": "box", "rock": 14.0},
+    clips=_shotgun_box_clips(SHOTGUN_BOX_DATA),
+)
+
 #: the D-055 sets (clips in ``_arms_breech`` / ``_arms_bow`` / ``_arms_heavy``)
 B3_SETS = ("break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun")
 
 B3: dict[str, FPSet] = {s.name: s for s in (BREAK_ACTION, LEVER, BOW, CROSSBOW, LAUNCHER, FLAMETHROWER, SAW, MINIGUN)}
-SETS: dict[str, FPSet] = {s.name: s for s in (PISTOL, SMG, RIFLE, SHOTGUN, LMG, SNIPER, AKIMBO, REVOLVER, *B3.values())}
+SETS: dict[str, FPSet] = {s.name: s for s in (PISTOL, SMG, RIFLE, SHOTGUN, LMG, SNIPER, AKIMBO, REVOLVER, *B3.values(),
+                                              SHOTGUN_BOX)}
 
 
 def clip_table() -> dict[str, dict]:

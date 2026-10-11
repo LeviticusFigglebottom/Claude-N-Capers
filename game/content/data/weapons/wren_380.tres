@@ -1,0 +1,60 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dpyproh8y0kd6" path="res://assets/weapons/wpn_wren_380/wpn_wren_380.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 30.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 520.0
+spread_deg_hip = 3.0
+spread_deg_ads = 1.1
+recoil_kick_deg = 0.8
+recoil_horizontal_deg = 0.35
+falloff_start_m = 12.0
+falloff_end_m = 26.0
+falloff_min_mult = 0.45
+mag_size = 7
+total_ammo = 98
+reload_time_s = 1.4
+reload_empty_time_s = 2.0
+equip_time_s = 0.3
+ads_time_s = 0.18
+concealment = 30
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 6.0
+ammo_pickup_min = 3.0
+ammo_pickup_max = 7.0
+suppressed = false
+noise_radius_m = 55.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.wren_380"
+display_name = "Wren .380"
+manufacturer = "Halvard Arms"
+weapon_class = 0
+slot = 1
+fire_modes = Array[StringName]([&"semi"])
+base = SubResource("base")
+price = 9000
+unlock_level = 2
+mod_slots = {
+2: [&"mod.wren_suppressor"],
+3: [&"mod.wren_iron_sights", &"mod.wren_reflex_sight"],
+7: [&"mod.wren_standard_mag", &"mod.wren_extended_mag"]
+}
+default_mods = {
+3: &"mod.wren_iron_sights",
+7: &"mod.wren_standard_mag"
+}
+fire_cue = &"cue.weapon_pistol_fire"
+fire_cue_suppressed = &"cue.weapon_pistol_fire_suppressed"
+anim_set = &"pistol"
+model = ExtResource("3")

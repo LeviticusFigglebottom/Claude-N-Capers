@@ -179,3 +179,50 @@ item never runs out. Grenades and other thrown objects are not implemented.
 * HUD: the throwable slot still shows `Loadout.throwable`. `PerkHooks.throwable_id` is the override.
 * `defense.healing_received_mult` is not applied by `CrewHealth.heal`. If it is added there, perk
   heals get it automatically.
+
+## `team.damage_reduction_hostage` (PARAMS, LIST; D-056)
+PD2 Crew Chief shape: flat damage absorption per hostage, capped by hostage count. Every granting
+source counts (sum of absorptions), applied after `defense.damage_taken_mult`.
+
+| Field | Type | Meaning |
+|---|---|---|
+| absorb_per_hostage | float (HP) | Damage absorbed from each hit per hostage held by the crew. |
+| max_hostages | int | Hostages counted at most (0 = no cap). |
+
+## `weapon.kill_ammo_drop` (PARAMS), AmmoPickupSystem
+| Field | Type | Meaning |
+|---|---|---|
+| every_n_kills | int | Every n-th kill by the holder drops one extra ammo box, on top of the normal drop roll. |
+
+## `weapon.ammo_pickup_throwable` (PARAMS), AmmoPickupSystem
+Applies when a taken ammo box gave rounds and `CrewWeapons.throwable_count` is below the equipped
+`ThrowableDef.count`. The roll uses GameRng `&"ammo"`.
+
+| Field | Type | Meaning |
+|---|---|---|
+| base_chance | float 0..1 | Chance that a box holds a throwable (+1 throwable_count). |
+| step | float | Added to the chance for each box taken without a throwable. The count resets on success. |
+
+`movement.sprint_speed_mult` (MULT) scales `CrewTweak.sprint_speed`. The server's speed check allows for it.
+
+## `WeaponDef.params` / `WeaponModDef.params` (D-057, B4-18), SpecialWeapons
+Mod params are shallow-merged over the weapon's params in mod order. Kind: a weapon with `flame` is a
+cone volume, `saw` a contact volume, `projectile` a WeaponProjectile, anything else hitscan.
+Fire modes: `&"charge"` (hold to draw, release to fire) and `&"lever"` (semi at fire_rate_rpm).
+
+| Block | Field | Type | Meaning |
+|---|---|---|---|
+| charge | draw_time_s | float | Seconds to full draw. |
+| charge | min_damage_mult / min_speed_mult | float | Damage and projectile speed factors at zero draw (×1 at full). |
+| projectile | speed_mps, gravity_mult, lifetime_s | float | Flight. |
+| projectile | retrievable, pickup_radius_m, despawn_s | bool/float | Landed arrows go back to the owner's reserve, 1 round each. |
+| explosion | radius_m | float | Impact calls Explosion.apply (L3.6) with WeaponStats.damage at the centre. |
+| explosion | arm_distance_m | float | Inside this distance a hit is a dud (×0.1 impact, no blast). |
+| flame | range_m, cone_deg | float | Cone of DamageType.FIRE hits per fire tick (L3.4: ignores armor and shields). |
+| flame | dot_damage_per_s, dot_duration_s | float | BurnStatus DoT. |
+| flame | panic_chance, panic_s | float | Panic stun when ignited. |
+| saw | range_m, cone_deg | float | Contact volume. Cutting air costs no blade. |
+| saw | wear_per_tick_npc / wear_per_tick_object | float | Rounds per cutting tick (× weapon.saw_wear_mult). |
+| saw | cut_rate_mult | float | Seconds passed to `saw_cut()` per tick, × fire interval. |
+| saw | shield_pierce | bool (true) | Bulwark pass at ×0.25 (or the weapon.saw_shield_pierce key). |
+| spin | spin_up_s, spin_down_s, move_speed_mult | float | Minigun spin. It fires only at full spin and slows the holder while spinning. |

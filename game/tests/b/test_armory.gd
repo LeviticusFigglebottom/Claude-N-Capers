@@ -8,10 +8,22 @@ const NEW_WEAPONS: Array[StringName] = [
 	&"weapon.rampart_lmg", &"weapon.heron_308",
 ]
 ## Weapon families with a viewmodel anim set + fire cue pair (characters.md, audio_cues.md). B4-12 adds
-## `akimbo` (pairs; D-050) and `revolver`.
-const ANIM_SETS: Array[StringName] = [&"pistol", &"smg", &"rifle", &"shotgun", &"lmg", &"sniper", &"akimbo", &"revolver"]
+## `akimbo` (pairs; D-050) and `revolver`; B4-18 requests the special sets from ENV D (they may lag: these
+## tests check names only, never animation libraries).
+const ANIM_SETS: Array[StringName] = [&"pistol", &"smg", &"rifle", &"shotgun", &"lmg", &"sniper", &"akimbo", &"revolver",
+	&"break_action", &"lever", &"bow", &"crossbow", &"launcher", &"flamethrower", &"saw", &"minigun", &"shotgun_box"]
 ## Cue family per anim set where they differ: pairs fire pistol rounds (D-050).
 const CUE_FAMILY: Dictionary = {&"akimbo": &"pistol"}
+## B4-18: weapons that borrow another family's viewmodel set keep their own sound (a box-fed shotgun reloads
+## like a rifle but fires 12-gauge).
+const CUE_FAMILY_BY_WEAPON: Dictionary = {
+	&"weapon.harrow_12": &"shotgun", &"weapon.brute_12": &"shotgun", &"weapon.reaper_db": &"shotgun",
+	&"weapon.osprey_762": &"sniper", &"weapon.shrike_44": &"sniper",
+}
+## B4-18: silent without a suppressor slot (integral can, bow, crossbow): suppressed, noise <= 1 m, threat 0.
+const INHERENTLY_SILENT: Array[StringName] = [&"weapon.hush_9", &"weapon.thorn_bow", &"weapon.vise_crossbow"]
+## B4-18: PD2 specials are primaries except the portable saw (OVE9000: secondary).
+const SECONDARY_SPECIALS: Array[StringName] = [&"weapon.rotor_saw"]
 ## PD2 exceptions to the class -> slot rule: short shotguns in the secondary slot (Locomotive analog) and
 ## akimbo pairs in the primary slot.
 const SECONDARY_PRIMARY_CLASS: Array[StringName] = [&"weapon.mule_12"]
@@ -89,6 +101,9 @@ func test_slots_follow_pd2() -> void:
 			assert_eq(w.slot, Enums.WeaponSlot.SECONDARY, "%s is a secondary (PD2 short shotgun)" % w.id)
 		elif w.anim_set == &"akimbo":
 			assert_eq(w.slot, Enums.WeaponSlot.PRIMARY, "%s: PD2 akimbo pairs are primaries" % w.id)
+		elif w.weapon_class == Enums.WeaponClass.SPECIAL:
+			var want: int = Enums.WeaponSlot.SECONDARY if SECONDARY_SPECIALS.has(w.id) else Enums.WeaponSlot.PRIMARY
+			assert_eq(int(w.slot), want, "%s: PD2 special slot" % w.id)
 		elif PRIMARY_CLASSES.has(int(w.weapon_class)):
 			assert_eq(w.slot, Enums.WeaponSlot.PRIMARY, "%s is a primary" % w.id)
 		else:
@@ -120,7 +135,8 @@ func test_class_falloff_shapes() -> void:
 		assert_near(s.headshot_mult, 1.0, 0.0001, "%s headshot bonus 1.0 (D-026)" % w.id)
 
 
-## L3.4: snipers pierce body armor, shields and thin walls; nothing else does yet.
+## L3.4: snipers pierce body armor, shields and thin walls; nothing else does yet. Bolt action, lever action
+## (B4-18 Shrike, D-057) or semi-auto (B4-18 Osprey, like PD2's semi-automatic snipers).
 func test_sniper_pierces() -> void:
 	for w: WeaponDef in ContentDB.all_weapons():
 		var sniper: bool = w.weapon_class == Enums.WeaponClass.SNIPER
@@ -128,7 +144,8 @@ func test_sniper_pierces() -> void:
 		assert_eq(w.base.wall_pierce, sniper, "%s wall pierce" % w.id)
 		if sniper:
 			assert_near(w.base.armor_pierce, 1.0, 0.0001, "%s armor pierce" % w.id)
-			assert_true(w.fire_modes.has(&"bolt"), "%s bolt action" % w.id)
+			assert_true(w.fire_modes.has(&"bolt") or w.fire_modes.has(&"lever") \
+					or w.fire_modes == ([&"semi"] as Array[StringName]), "%s bolt, lever or semi-auto" % w.id)
 
 
 func test_class_stat_shapes() -> void:
@@ -156,7 +173,7 @@ func test_class_stat_shapes() -> void:
 ##   reload_empty_time_s = start + mag x per_round + end_empty
 ## and no mod adds raw reload time (a tube mod changes the totals through mag_size only).
 func test_shell_by_shell_reload_fields() -> void:
-	const SHELL_LOADED: Array[StringName] = [&"weapon.plowman_12", &"weapon.mule_12"]
+	const SHELL_LOADED: Array[StringName] = [&"weapon.plowman_12", &"weapon.mule_12", &"weapon.shrike_44"]
 	for w: WeaponDef in ContentDB.all_weapons():
 		var b: WeaponStats = w.base
 		var shell: bool = SHELL_LOADED.has(w.id)
@@ -203,7 +220,7 @@ func test_plowman_reload_timings() -> void:
 func test_cues_and_anim_sets_follow_the_contract_pattern() -> void:
 	for w: WeaponDef in ContentDB.all_weapons():
 		assert_has(ANIM_SETS, w.anim_set, "%s anim set" % w.id)
-		var family: StringName = CUE_FAMILY.get(w.anim_set, w.anim_set)
+		var family: StringName = CUE_FAMILY_BY_WEAPON.get(w.id, CUE_FAMILY.get(w.anim_set, w.anim_set))
 		assert_eq(w.fire_cue, StringName("cue.weapon_%s_fire" % family), "%s fire cue" % w.id)
 		# A suppressed cue only where a suppressor can be fitted (ENV C: no orphan _suppressed cues).
 		var want_sup: StringName = &""
@@ -293,7 +310,13 @@ func test_suppressors_silence_and_zero_threat() -> void:
 			assert_true(s.noise_radius_m <= 1.0, "%s noise %f" % [mid, s.noise_radius_m])
 			assert_near(s.suppression, 0.0, 0.0001, "%s on %s threat 0" % [mid, w.id])
 			assert_eq(StatCalculator.display(s)["threat"], 0, "%s displays threat 0" % mid)
-		assert_false(_stock_stats(w).suppressed, "%s loud by default" % w.id)
+		var stock: WeaponStats = _stock_stats(w)
+		if INHERENTLY_SILENT.has(w.id):
+			assert_true(stock.suppressed and stock.noise_radius_m <= 1.0, "%s silent out of the box" % w.id)
+			assert_near(stock.suppression, 0.0, 0.0001, "%s threat 0" % w.id)
+			assert_false(w.mod_slots.has(Enums.ModType.SUPPRESSOR), "%s takes no suppressor" % w.id)
+		else:
+			assert_false(stock.suppressed, "%s loud by default" % w.id)
 	assert_true(found >= 5, "suppressors for every weapon that takes one (%d)" % found)
 
 

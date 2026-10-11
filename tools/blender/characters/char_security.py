@@ -30,7 +30,7 @@ EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
 VARIANTS = {
     "char_security_officer": {"height": 1.80, "build": 0.45, "gender": 0.0, "age": 0.35, "skin": 2,
                               "hair": "short", "hair_color": "brown"},
-    "char_security_officer_b": {"height": 1.76, "build": 0.95, "gender": 0.0, "age": 0.8, "skin": 5,
+    "char_security_officer_b": {"height": 1.76, "build": 0.95, "gender": 0.0, "age": 0.8, "skin": 5, "beard_shadow": 0.85,
                                 "hair": "buzz", "hair_color": "grey"},
 }
 

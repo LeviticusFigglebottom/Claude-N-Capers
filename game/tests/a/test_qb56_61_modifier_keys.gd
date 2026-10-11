@@ -186,16 +186,18 @@ func test_qb60_team_damage_reduction_per_hostage() -> void:
 	var c: CrewController = await _launch()
 	var ct: CivilianTargets = CivilianTargets.ensure(_rt)
 	ct.hostage_count = 2
-	Modifiers.set_source(Modifiers.TEAM, &"team_perk.foreman", {&"team.damage_reduction_hostage": {"per": 0.08, "max": 0.08}})
+	# D-056: flat absorption per hostage capped by hostage count.
+	Modifiers.set_source(Modifiers.TEAM, &"team_perk.foreman",
+		{&"team.damage_reduction_hostage": {"absorb_per_hostage": 2.0, "max_hostages": 1}})
 	var out: Dictionary = c.health.take_hit(_hit(10.0))
-	assert_near(float(out["amount"]), 9.2, 0.01, "Foreman: 8 % with hostages (capped at max)")
+	assert_near(float(out["amount"]), 8.0, 0.01, "2 absorbed per hostage, capped at 1 hostage")
 	Modifiers.clear_all()
 	c.health.invuln_left = 0.0
 	c.health.armor = c.health.max_armor
 	Modifiers.set_source(Modifiers.TEAM, &"team_skill.skill.persuader.zip_and_tie",
-		{&"team.damage_reduction_hostage": {"per": 5.0, "max": 8}})
+		{&"team.damage_reduction_hostage": {"absorb_per_hostage": 5.0, "max_hostages": 8}})
 	out = c.health.take_hit(_hit(15.0))
-	assert_near(float(out["amount"]), 5.0, 0.01, "Zip & Tie: 5 absorbed per hostage (2 hostages)")
+	assert_near(float(out["amount"]), 5.0, 0.01, "5 absorbed per hostage (2 hostages)")
 	ct.hostage_count = 0
 	c.health.invuln_left = 0.0
 	c.health.armor = c.health.max_armor

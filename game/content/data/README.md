@@ -58,6 +58,9 @@ divided by the suit's (36.8 speed, 51.3 stamina).
 Doctor bag 2 uses (V), ammo bag 4 uses = 400% (V), body bag case 3 bags (V, research §1.7).
 Deploy time 2.0 s for all three ◇. Params: doctor `{heal_frac 1.0, resets_downs}`, ammo
 `{refill_frac_per_use 1.0}` ◇, case `{bags 3}`.
+Armor bag (QB-58, ENV A kind `armor_bag`): count 1, one use, 2.0 s ◇, no params; it holds the loadout's
+armor and the wearer starts in A's `armor_bag_start_armor`. Gated: needs `deploy.armor_bag` (shared
+perk card 6, Go Bag) through `DeployableGate`; the loadout picker shows it locked until then.
 
 ## Throwables: `throwables/`
 Perk-deck items (data only, no models yet): `throwable.steady_flask` (Composure's flask, kind
@@ -136,18 +139,18 @@ all (D-026). Fire cues `cue.weapon_<anim_set>_fire(_suppressed)`; anim sets `pis
 | `warden_45` Warden .45 | PISTOL / SEC / semi | 62 | 400 | 8 / 72 | 15 / 30 / 0.5 | 27 | 1.7 / 2.3 | 18000 / 6 |
 | `hornet_9` Hornet 9 | SMG / SEC / auto, semi | 36 | 800 | 30 / 180 | 18 / 36 / 0.55 | 24 | 2.2 / 3.0 | 24000 / 4 |
 | `corsair_ar` Corsair | AR / PRI / auto, semi | 55 | 700 | 30 / 150 | 9999 / 9999 / 1.0 (none) | 20 | 2.4 / 3.1 | 32000 / 3 |
-| `plowman_12` Plowman 12 | SHOTGUN / PRI / pump | 16 × 10 | 70 | 6 / 48 | 8 / 22 / 0.15 | 21 | 3.3 / 3.8 | 28000 / 8 |
+| `plowman_12` Plowman 12 | SHOTGUN / PRI / pump | 16 × 10 | 70 | 6 / 48 | 8 / 22 / 0.15 | 21 | 3.4 / 4.2 | 28000 / 8 |
 | `rampart_lmg` Rampart | LMG / PRI / auto | 48 | 750 | 100 / 300 | 25 / 45 / 0.6 | 2 | 5.6 / 6.6 | 54000 / 18 |
 | `heron_308` Heron .308 | SNIPER / PRI / bolt | 230 | 50 | 5 / 40 | 25 / 60 / **1.35** (gains) | 6 | 3.0 / 3.8 | 48000 / 14 |
 Heron: `armor_pierce` 1.0, `shield_pierce`, `wall_pierce` (L3.4). Threat (suppression) 11 / 10 /
 12 / 18 / 22 / 30; noise 70 / 60 / 70 / 80 / 90 / 100 m; spreads, recoil, equip/ADS times and ammo
-pickups are in the .tres files (all ◇). Shell-by-shell reload (D-034 QB-43): the Plowman 12 sets
-`reload_start_s` 0.4, `reload_per_round_s` 0.5, `reload_end_s` 0.4 ◇; ENV A loads one shell per
-`reload_per_round_s` and firing interrupts it. The whole-reload fields stay consistent for the UI and
-for any code that reads them: `reload_empty_time_s` = start + mag x per_round + end (6 shells: 3.8 s),
-`reload_time_s` = start + (mag - 1) x per_round + end (one shell left: 3.3 s); the Extended Tube adds
-2 x 0.5 = 1.0 s to both. The Heron .308 has a detachable 5-round box magazine, so it keeps a magazine
-reload (the three fields 0). `test_shell_by_shell_reload_fields` checks this.
+pickups are in the .tres files (all ◇). Shell-by-shell reload (D-034 QB-43, D-045): the Plowman 12 sets
+`reload_start_s` 0.4, `reload_per_round_s` 0.4333, `reload_end_s` 0.4, `reload_end_empty_s` 1.2 ◇; ENV A
+loads one shell per `reload_per_round_s` and firing interrupts it. LoadoutResolver derives the
+whole-reload fields after mods: `reload_time_s` = start + mag x per_round + end (6 shells: 3.4 s),
+`reload_empty_time_s` = start + mag x per_round + end_empty (4.2 s); with the Extended Tube (8 shells)
+4.27 / 5.07 s. The Heron .308 has a detachable 5-round box magazine, so it keeps a magazine
+reload (the shell fields 0). `test_shell_by_shell_reload_fields` checks this.
 
 Mods (stock defaults have a zero delta, except the Heron's stock 4x scope = magnification 4.0):
 | Weapon | Optional mods (type: main effect / downside) |
@@ -155,7 +158,7 @@ Mods (stock defaults have a zero delta, except the Heron's stock 4x scope = magn
 | Warden | `w45_suppressor` (SUPP: silent, threat 0 / dmg −4, conc −3, ADS +0.05), `w45_compensator` (BARREL_EXT: kick −0.5 / conc −2; **conflicts** with the suppressor), `w45_reflex_sight` (SIGHT: ADS spread −0.15, 1.1× / conc −1), `w45_extended_mag` (MAG: +4 / conc −2, reload +0.25) |
 | Hornet | `hornet_suppressor` (silent, threat 0 / dmg −3, conc −2), `rail_reflex_sight`, `hornet_extended_mag` (+15 / conc −3, reload +0.4), `hornet_stock_folded` (STOCK: conc +3 / kick +0.35, horiz +0.2, ADS spread +0.3) |
 | Corsair | `corsair_suppressor` (silent, threat 0 / dmg −4, conc −3), `rail_reflex_sight`, `rail_prism_scope` (3×, ADS spread −0.25 / conc −3, ADS +0.08), `corsair_vertical_grip` (FOREGRIP: kick −0.2 / conc −1, ADS +0.03), `corsair_extended_mag` (+10 / conc −2) |
-| Plowman | `plowman_choke` (BARREL_EXT: spreads −0.5 / conc −1), `rail_reflex_sight`, `plowman_extended_tube` (+2 / conc −2, reload +1.0 = 2 shells), `plowman_pistol_grip` (STOCK: conc +5, hip −0.3 / kick +0.8, ADS spread +0.5) |
+| Plowman | `plowman_choke` (BARREL_EXT: spreads −0.5 / conc −1), `rail_reflex_sight`, `plowman_extended_tube` (+2 / conc −2; the resolver adds 2 shells of reload), `plowman_pistol_grip` (STOCK: conc +5, hip −0.3 / kick +0.8, ADS spread +0.5) |
 | Rampart | `rampart_short_barrel` (BARREL: conc +4 / ADS spread +0.4, kick +0.15), `rail_reflex_sight`, `rail_prism_scope`, `rampart_bipod` (FOREGRIP: kick −0.35 / conc −2, ADS +0.05), `rampart_box_200` (+100 / conc −3, reload +1.2, equip +0.1) |
 | Heron | `heron_suppressor` (silent, threat 0 / dmg −20, conc −3), `heron_scope_10x` (8× / conc −2, ADS +0.08), `heron_bipod` (kick −0.6 / conc −2), `heron_extended_mag` (+5 / conc −2) |
 Shared rail optics: `rail_reflex_sight` (ADS spread −0.1, 1.15× / conc −1, ADS +0.02, $3000) and
@@ -219,3 +222,120 @@ bolt now too), `FeedCover` (Anvil, rear hinge, D-044), `Slide` (Sparrow), and th
 the speedloader `Magwell` on the cylinder. Stock parts beyond sight/magazine: `StockStock` (Drover walnut
 stock, Mastiff wire stock, Wasp collapsed stock), `StockBarrel` (Anvil, Marshal), `StockGrip` (Marshal).
 Previews: `game/assets/weapons/<weapon>_preview_*.png`.
+
+## Armory batch 3 (B4-18): `weapons/` + `mods/`
+The last 19 weapons of the P5 launch armory: 36 weapons = 6 pistols, 6 SMGs, 6 ARs, 5 shotguns, 3 LMGs,
+4 snipers, 6 specials (bow, crossbow, 40 mm launcher, flamethrower, portable saw, rotary gun). Makers are
+the existing original ones. Shapes are V (L3.2 falloff by class, L3.4 sniper piercing, L3.5/L3.7
+suppressors, P6 trade-offs, PD2 slots: specials are primaries except the saw, which is a secondary like
+PD2's OVE9000). Every number is ◇. Headshot bonus 1.0 for all (D-026).
+
+| Weapon | Class / slot / modes / anim set | Dmg × pellets | RPM | Mag / total | Falloff start/end/min | Conc | Reload | Threat | Price / unlock |
+|---|---|---|---|---|---|---|---|---|---|
+| `wren_380` Wren .380 (Halvard Arms) | PISTOL / SEC / semi / pistol | 30 | 520 | 7 / 98 | 12 / 26 / 0.45 | 30 | 1.4 / 2 | 6 | 9000 / 2 |
+| `ferret_9` Ferret 9 (Graff-Lindqvist) | SMG / SEC / auto, semi / smg | 40 | 600 | 32 / 192 | 16 / 32 / 0.5 | 23 | 2.3 / 3 | 10 | 20000 / 3 |
+| `lancet_45` Lancet .45 (Brannock Defense) | SMG / SEC / auto, semi / smg | 46 | 880 | 25 / 150 | 15 / 30 / 0.5 | 22 | 2.3 / 3 | 11 | 38000 / 22 |
+| `hush_9` Hush 9 (Tillman Ironworks) | SMG / SEC / auto, semi / smg | 34 | 700 | 30 / 180 | 16 / 32 / 0.5 | 21 | 2.4 / 3.1 | 0 | 34000 / 15 |
+| `tern_556` Tern Bullpup (Graff-Lindqvist) | AR / PRI / auto, semi / rifle | 52 | 680 | 30 / 150 | none | 21 | 2.8 / 3.6 | 12 | 38000 / 12 |
+| `bastion_br` Bastion BR (Tillman Ironworks) | AR / PRI / auto, semi / rifle | 100 | 550 | 20 / 100 | none | 11 | 2.7 / 3.5 | 16 | 56000 / 24 |
+| `lark_carbine` Lark Carbine (Halvard Arms) | AR / PRI / burst3, auto, semi / rifle | 44 | 750 | 30 / 180 | none | 23 | 2.2 / 2.9 | 11 | 26000 / 5 |
+| `harrow_12` Harrow 12 (Graff-Lindqvist) | SHOTGUN / PRI / semi / shotgun_box | 13 × 10 | 300 | 8 / 56 | 6 / 18 / 0.12 | 16 | 2.9 / 3.6 | 16 | 48000 / 21 |
+| `brute_12` Brute 12 (Tillman Ironworks) | SHOTGUN / PRI / auto / shotgun_box | 11 × 10 | 300 | 20 / 80 | 6 / 16 / 0.1 | 8 | 3.6 / 4.4 | 18 | 64000 / 30 |
+| `reaper_db` Reaper Double (Marrow & Kell) | SHOTGUN / PRI / semi / break_action | 19 × 10 | 300 | 2 / 40 | 8 / 22 / 0.15 | 18 | 2.4 / 2.4 | 20 | 40000 / 17 |
+| `gale_mg` Gale MG (Graff-Lindqvist) | LMG / PRI / auto / lmg | 50 | 880 | 100 / 300 | 25 / 45 / 0.6 | 2 | 5.8 / 6.8 | 24 | 72000 / 34 |
+| `osprey_762` Osprey Marksman (Brannock Defense) | SNIPER / PRI / semi / rifle | 160 | 140 | 10 / 50 | 25 / 60 / 1.25 | 5 | 2.9 / 3.7 | 30 | 70000 / 28 |
+| `shrike_44` Shrike Lever (Marrow & Kell) | SNIPER / PRI / bolt / lever | 180 | 75 | 8 / 48 | 20 / 50 / 1.2 | 16 | shell: 0.4 + n × 0.45 + 0.4 (0.9 empty) | 18 | 44000 / 19 |
+| `thorn_bow` Thorn Compound Bow (Brannock Defense) | SPECIAL / PRI / semi / bow | 400 | 60 | 1 / 30 | none | 26 | 0.8 / 0.8 | 0 | 50000 / 25 |
+| `vise_crossbow` Vise Crossbow (Tillman Ironworks) | SPECIAL / PRI / semi / crossbow | 350 | 50 | 1 / 25 | none | 22 | 1.6 / 1.6 | 0 | 46000 / 23 |
+| `thumper_40` Thumper 40 (Brannock Defense) | SPECIAL / PRI / semi / launcher | 1000 | 60 | 1 / 6 | none | 16 | 3 / 3 | 40 | 80000 / 38 |
+| `furnace_ft` Furnace (Tillman Ironworks) | SPECIAL / PRI / auto / flamethrower | 20 | 600 | 300 / 600 | 7 / 10 / 0.0 | 5 | 6 / 7 | 30 | 82000 / 40 |
+| `rotor_saw` Rotor Saw (Graff-Lindqvist) | SPECIAL / SEC / auto / saw | 30 | 600 | 150 / 300 | 1.5 / 2 / 0.0 | 18 | 3.8 / 3.8 | 20 | 35000 / 14 |
+| `cyclone_rotary` Cyclone Rotary (Brannock Defense) | SPECIAL / PRI / auto / minigun | 28 | 1500 | 500 / 1000 | 25 / 45 / 0.6 | 0 | 8 / 9 | 40 | 120000 / 45 |
+
+| Weapon | Optional mods (type: effect) |
+|---|---|
+| Wren .380 | `wren_extended_mag` (MAG: mag +3, total +21, conc −1, reload +0.15), `wren_suppressor` (SUPP: silent, threat 0, dmg −2, conc −2, ADS +0.03), `wren_reflex_sight` (SIGHT: ADS spread −0.15, 1.1x, conc −1) |
+| Ferret 9 | `ferret_extended_mag` (MAG: mag +8, total +48, conc −2, reload +0.3), `ferret_suppressor` (SUPP: silent, threat 0, dmg −3, conc −2, ADS +0.03), `ferret_wood_stock` (STOCK: kick −0.25, horiz −0.15, ADS spread −0.2, conc −3), `rail_reflex_sight` |
+| Lancet .45 | `lancet_extended_mag` (MAG: mag +15, total +50, conc −3, reload +0.4), `lancet_suppressor` (SUPP: silent, threat 0, dmg −4, conc −3, ADS +0.04), `lancet_vertical_grip` (FOREGRIP: kick −0.15, conc −1, ADS +0.03), `rail_reflex_sight`, `rail_prism_scope` |
+| Hush 9 | `hush_extended_mag` (MAG: mag +10, total +40, conc −2, reload +0.3), `hush_collapsed_stock` (STOCK: conc +3, kick +0.3, horiz +0.2, ADS spread +0.35), `rail_reflex_sight` |
+| Tern Bullpup | `tern_extended_mag` (MAG: mag +12, total +30, conc −2, reload +0.4), `tern_suppressor` (SUPP: silent, threat 0, dmg −4, conc −3, ADS +0.04), `tern_vertical_grip` (FOREGRIP: kick −0.2, conc −1, ADS +0.03), `rail_reflex_sight`, `rail_prism_scope` |
+| Bastion BR | `bastion_extended_mag` (MAG: mag +10, total +30, conc −3, reload +0.35), `bastion_suppressor` (SUPP: silent, threat 0, dmg −8, conc −3, ADS +0.05), `bastion_bipod` (FOREGRIP: kick −0.5, conc −2, ADS +0.05), `rail_reflex_sight`, `rail_prism_scope` |
+| Lark Carbine | `lark_extended_mag` (MAG: mag +10, total +20, conc −2, reload +0.3), `lark_suppressor` (SUPP: silent, threat 0, dmg −3, conc −3, ADS +0.04), `lark_folded_stock` (STOCK: conc +3, kick +0.35, horiz +0.2, ADS spread +0.35), `rail_reflex_sight`, `rail_prism_scope` |
+| Harrow 12 | `harrow_extended_mag` (MAG: mag +4, total +16, conc −3, reload +0.35), `harrow_muzzle_brake` (BARREL_EXT: kick −0.5, horiz −0.2, conc −1), `rail_reflex_sight` |
+| Brute 12 | `brute_box_8` (MAG: mag −12, total −24, conc +5, reload −0.8), `brute_drum_32` (MAG: mag +12, total +24, conc −3, reload +0.6, equip +0.1), `rail_reflex_sight` |
+| Reaper Double | `reaper_fiber_sight` (SIGHT: ADS spread −0.4, conc −1; **conflicts** with `reaper_short_barrels`), `reaper_short_barrels` (BARREL: conc +5, hip spread +0.6, ADS spread +0.8), `reaper_sawn_stock` (STOCK: conc +4, kick +1, horiz +0.4, ADS spread +0.3) |
+| Gale MG | `gale_box_200` (MAG: mag +100, total +100, conc −3, reload +1, equip +0.1), `gale_bipod` (FOREGRIP: kick −0.4, conc −2, ADS +0.05), `rail_reflex_sight`, `rail_prism_scope` |
+| Osprey Marksman | `osprey_scope_8x` (SIGHT: 8.0x, conc −2, ADS +0.08), `osprey_extended_mag` (MAG: mag +10, total +20, conc −2, reload +0.35), `osprey_suppressor` (SUPP: silent, threat 0, dmg −12, conc −3, ADS +0.06), `osprey_bipod` (FOREGRIP: kick −0.6, conc −2, ADS +0.05) |
+| Shrike Lever | `shrike_peep_sight` (SIGHT: ADS spread −0.2, conc −1, ADS +0.02), `shrike_scout_scope` (SIGHT: 3.0x, conc −2, ADS +0.06), `shrike_carbine_barrel` (BARREL: conc +3, dmg −15, ADS spread +0.15) |
+| Thorn Compound Bow | `thorn_five_pin_sight` (SIGHT: ADS spread −0.15, conc −1), `thorn_stabilizer` (FOREGRIP: kick −0.2, horiz −0.1, conc −2), `thorn_broadhead_arrow` (MAG: dmg +80, total −8) |
+| Vise Crossbow | `vise_heavy_bolt` (MAG: dmg +70, total −5), `vise_folded_stock` (STOCK: conc +4, kick +0.4, ADS spread +0.3), `rail_reflex_sight`, `rail_prism_scope` |
+| Thumper 40 | `thumper_vertical_grip` (FOREGRIP: kick −0.6, conc −1, ADS +0.03), `thumper_stockless` (STOCK: conc +5, kick +1.2, ADS spread +0.6), `rail_reflex_sight` |
+| Furnace | `furnace_large_tank` (MAG: mag +100, total +100, conc −3, reload +0.8, equip +0.15), `furnace_wide_nozzle` (BARREL_EXT: dmg +3, hip spread +1, ADS spread +1, conc −1), `furnace_long_nozzle` (BARREL_EXT: ADS spread −1, kick −0.1, dmg −2, conc −2) |
+| Rotor Saw | `saw_carbide_blade` (MAG: dmg +12, mag −30, total −60), `saw_durable_blade` (MAG: mag +50, total +100, dmg −5), `saw_front_handle` (FOREGRIP: kick −0.15, horiz −0.15, conc −2, ADS +0.05) |
+| Cyclone Rotary | `cyclone_box_750` (MAG: mag +250, total +250, conc −2, reload +1, equip +0.2), `cyclone_short_barrels` (BARREL: conc +3, hip spread +1, ADS spread +1, kick +0.2), `rail_reflex_sight` |
+
+Every suppressor's `suppression` delta equals minus its weapon's threat (L3.5). Mod prices are ◇. Stock
+defaults have a zero delta, except the Osprey's stock 4x scope (magnification 4.0).
+
+Rules the numbers respect (test-enforced in `test_armory.gd`, `test_armory_batch2.gd`, `test_armory_batch3.gd`):
+* Weapons on ENV D's existing sets keep the clip limits (full-auto smg/rifle/lmg below 900 rpm: ENV D's test_arms compares the 3-frame clip to 1.5 shot intervals without a tolerance, so 900 exactly fails on float rounding; the Lancet and the Gale use 880). The box-fed
+  Harrow 12 and the drum-fed Brute 12 use their own `shotgun_box` set (D-058: magazine reload, no pump in
+  the fire clip) and the shotgun cue family; the semi-auto Osprey uses the `rifle` set and the sniper cue family
+  (`CUE_FAMILY_BY_WEAPON` in `test_armory.gd`). Snipers are bolt action or semi-auto (PD2 has both).
+* New viewmodel sets for ENV D (one weapon each): `break_action` (Reaper), `lever` (Shrike), `bow` (Thorn),
+  `crossbow` (Vise), `launcher` (Thumper), `flamethrower` (Furnace), `saw` (Rotor Saw), `minigun` (Cyclone).
+  Fire cues follow `cue.weapon_<family>_fire`; `fire_cue_suppressed` is set only on weapons with a
+  SUPPRESSOR slot and left empty otherwise (CuePlayer falls back to `cue.weapon_<anim_set>_fire_suppressed`
+  for the inherently silent Hush 9, Thorn and Vise).
+* Inherently silent (no suppressor slot): Hush 9 (integral can), Thorn, Vise: `suppressed`, noise 1 m or
+  less, threat 0 out of the box.
+* Shell-by-shell (D-045): the Shrike's tube (start 0.4, per round 0.45, end 0.4, end empty 0.9; ENV D's
+  `lever` set should match). The Reaper swaps both shells at once (magazine-style, tactical = empty); the
+  Thumper and the bows load one round per reload (magazine-style).
+* The Reaper's fibre sight conflicts with the sawn-off barrels (its front bead clamps on the full-length rib).
+
+Special mechanics, expressed with existing `WeaponStats` fields only (questions for ENV A, B4-18):
+* Bow and crossbow: `mag_size` 1, `suppressed`, damage = full-draw damage. Open: draw/charge time and
+  partial-draw damage (PD2 bows), arrow retrieval (pick-up from bodies/walls), projectile travel and drop.
+  The fire mode is `semi` until a `draw` mode exists.
+* Thumper: damage 1000 per grenade. Open: explosive projectile (radius, falloff, self-damage, arc), damage
+  type EXPLOSION, the Wrecker ×1.1 explosive multiplier (L4.6) and Bulwark shield bypass (L4.5).
+* Furnace: damage 20 per tick at 600 ticks/min, falloff 7/10/0.0 (about 10 m reach). Open: FIRE damage type,
+  burning DOT and panic, fuel as ammo, flame volume instead of a hitscan ray, Bulwark bypass (fire, L4.5).
+* Rotor Saw: damage 30 per tick at 600/min, falloff 1.5/2.0/0.0 (contact only), `mag_size` = blade wear
+  (150 per blade, 2 blades). Open: saw-cuttable targets (deposit boxes, locks, safes as `drill_point` saws,
+  S9.4), wear rate against enemies vs objects, Saw Massacre / Portable Saw skill hooks.
+* Cyclone: 1500 rpm, 500-round box. Open: spin-up/spin-down time before firing, movement penalty while firing.
+* Shrike: fire mode `bolt` (one manual action per shot) until a `lever` fire mode exists.
+
+Models: `tools/blender/weapons/<weapon>.py` + `<weapon>_mods.py`, helpers `_<weapon>.py`; B4-18 generic parts
+(grip, trigger group, barrel, flash hider, butt stock, shell, rod/plate/cone) are in `_common.py`. Animated
+parts (B4-18, visual_slots round 6): `Slide` (Wren), `FeedCover` (Gale, D-044), `Breech` (Reaper, Thumper;
+origin = hinge pin below the bore, a negative rotation about local X drops the muzzle; barrels, Muzzle,
+BarrelMount, the chamber Magwell, Underbarrel and LeftHandIK ride on it), `Lever` (Shrike; origin = lever
+pivot, a positive rotation about local X drops the loop), `StringUpper`/`StringLower` (Thorn; origins on
+the cam axles), `String` (Vise; origin = the latch), `Blade` (Rotor Saw; empty on the spindle, the blade
+Magwell rides on it), `Rotor` (Cyclone; empty on the bore axis carrying BarrelMount and the cluster) and
+`PilotLight` (Furnace; emissive igniter under the nozzle). Projectile magazines: the arrow/bolt sits on
+`Magwell` at the nock with its insertion axis forward; the break actions' `Magwell` is at the chamber mouth
+(insertion axis forward). Stock parts beyond sight/magazine: `StockStock` (Ferret, Lancet, Hush, Bastion,
+Lark, Harrow, Reaper, Vise, Thumper), `StockBarrel` (Reaper, Shrike, Cyclone), `StockForegrip` (Rotor Saw).
+Materials are library ids only: the weapon set plus `leather_dark` (Thorn grip) and `brushed_steel`
+(Furnace tank, saw blades). Previews: `game/assets/weapons/<weapon>_preview_*.png`.
+
+### Special-weapon `params` (D-057, numbers from ENV A, all ◇)
+Mechanics that WeaponStats cannot express live in `WeaponDef.params`; ENV A reads them (schemas: ENV A's
+message of 2026-10-11, to be written into `game/systems/modifiers_params.md`). Mod `params` are shallow-merged
+over the weapon's in mod order, so a mod replaces a whole block.
+* Thorn bow: fire mode `charge`; `charge {draw_time_s 0.8, min_damage_mult 0.1, min_speed_mult 0.3}`,
+  `projectile {speed_mps 60, gravity_mult 1, lifetime_s 10, retrievable, pickup_radius_m 1, despawn_s 60}`;
+  armor_pierce 1.0, no shield pierce. Vise crossbow: `semi`, the same `projectile`, armor_pierce 1.0.
+* Thumper 40: `projectile {speed_mps 45, gravity_mult 1, lifetime_s 8}`, `explosion {radius_m 3.5,
+  arm_distance_m 0}`; `damage` is the blast centre damage (L3.6 falloff).
+* Furnace: `flame {range_m 10, cone_deg 20, dot_damage_per_s 15, dot_duration_s 3, panic_chance 0.3,
+  panic_s 2.5}`. Wide Nozzle: range 8 / cone 28; Long Nozzle: range 13 / cone 14 (full blocks).
+* Rotor saw: `saw {range_m 1.6, wear_per_tick_npc 1, wear_per_tick_object 1, cut_rate_mult 1}`; the
+  magazine is the blade.
+* Cyclone: `spin {spin_up_s 0.6, spin_down_s 0.8, move_speed_mult 0.5, keep_spinning_on_ads}`.
+* Shrike 44: fire mode `lever` (semi timing; the lever cycles per shot, shells load one by one).
+* Harrow 12 / Brute 12: anim set `shotgun_box` (D-058).

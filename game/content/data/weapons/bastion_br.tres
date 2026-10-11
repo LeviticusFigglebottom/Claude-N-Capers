@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://4tent1ntrl6h" path="res://assets/weapons/wpn_bastion_br/wpn_bastion_br.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 100.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 550.0
+spread_deg_hip = 4.2
+spread_deg_ads = 0.9
+recoil_kick_deg = 1.6
+recoil_horizontal_deg = 0.6
+falloff_start_m = 9999.0
+falloff_end_m = 9999.0
+falloff_min_mult = 1.0
+mag_size = 20
+total_ammo = 100
+reload_time_s = 2.7
+reload_empty_time_s = 3.5
+equip_time_s = 0.65
+ads_time_s = 0.32
+concealment = 11
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 16.0
+ammo_pickup_min = 2.0
+ammo_pickup_max = 5.0
+suppressed = false
+noise_radius_m = 80.0
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.bastion_br"
+display_name = "Bastion BR"
+manufacturer = "Tillman Ironworks"
+weapon_class = 2
+slot = 0
+fire_modes = Array[StringName]([&"auto", &"semi"])
+base = SubResource("base")
+price = 56000
+unlock_level = 24
+mod_slots = {
+2: [&"mod.bastion_suppressor"],
+3: [&"mod.bastion_iron_sights", &"mod.rail_reflex_sight", &"mod.rail_prism_scope"],
+5: [&"mod.bastion_bipod"],
+7: [&"mod.bastion_standard_mag", &"mod.bastion_extended_mag"]
+}
+default_mods = {
+3: &"mod.bastion_iron_sights",
+7: &"mod.bastion_standard_mag"
+}
+fire_cue = &"cue.weapon_rifle_fire"
+fire_cue_suppressed = &"cue.weapon_rifle_fire_suppressed"
+anim_set = &"rifle"
+model = ExtResource("3")

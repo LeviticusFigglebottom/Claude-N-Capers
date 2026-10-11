@@ -8,7 +8,8 @@ so the topology is fixed and deterministic.
   over a short stiff peak.
 * ``fedora``: a felt fedora with a pinched, centre-dented crown, a ribbon band and a brim that
   snaps down at the front and curls up at the sides.
-* ``chignon``: a low, severe bun at the nape (hair material) with a wrap ring.
+* ``chignon``: a full two-lobe updo high on the back of the head, with a coiled wrap.
+* ``side_fringe``: a side-swept fringe from the parting across the forehead to behind the ear.
 * ``moustache``: a thick tapered moustache over the upper lip.
 * ``earrings``: small gold studs with a short drop.
 * ``lenses``: lens discs for ``_gear_kit.glasses`` (same rim layout), glossy so they glint.
@@ -235,28 +236,107 @@ def _ellipsoid(m: Mesh, c: Vector, r: Vector, mat: str, segs: int = 16, rows: in
 
 
 def chignon(fit: Fit, mat: str) -> Mesh:
-    """Low bun at the nape: a flattened ellipsoid seated on the back of the hair, plus a twist ring."""
+    """An elegant updo at the back of the head: a full two-lobe bun set high on the occiput (the
+    upper lobe tucked under the crown volume), a coiled wrap round its base and a short twist."""
     k = fit.k
     eye = fit.eye_centre()
     c = fit.head_centre()
     hh = HeadHull(fit)
-    z = eye.z + 0.006 * k
+    z = eye.z + 0.020 * k
     hit = hh.cast(Vector((0.0, c.y - 0.5, z)), Vector((0, 1, 0)), 1.0)
     back = hit[0].y if hit[0] is not None else c.y - 0.11 * k
     m = Mesh()
-    ctr = Vector((0.0, back - 0.024 * k, z))
-    tilt = math.radians(20.0)       # bun axis leans up/back
+    ctr = Vector((0.0, back - 0.026 * k, z))
+    tilt = math.radians(28.0)       # bun axis leans up/back
     ax_y = Vector((0.0, -math.cos(tilt), math.sin(tilt)))
     ax_z = Vector((0.0, math.sin(tilt), math.cos(tilt)))
-    _ellipsoid(m, ctr, Vector((0.044 * k, 0.030 * k, 0.038 * k)), mat, segs=18, rows=8,
-               axes=(Vector((1, 0, 0)), ax_z, ax_y))
-    # twist: a torus-ish tube around the bun base
+    ax_x = Vector((1, 0, 0))
+    _ellipsoid(m, ctr, Vector((0.052 * k, 0.034 * k, 0.044 * k)), mat, segs=20, rows=9, axes=(ax_x, ax_z, ax_y))
+    top = ctr + ax_z * (0.026 * k) + ax_y * (0.004 * k)
+    _ellipsoid(m, top, Vector((0.040 * k, 0.026 * k, 0.026 * k)), mat, segs=16, rows=7, axes=(ax_x, ax_z, ax_y))
+    # coiled wrap: a helix of hair round the bun base (reads as the twisted coil of a chignon)
     pts = []
+    turns, steps = 1.5, 54
+    for j in range(steps + 1):
+        t = j / steps
+        a = math.tau * turns * t
+        rr = (0.049 - 0.010 * t) * k
+        pts.append(ctr + ax_y * ((0.010 - 0.016 * t) * k) + ax_x * (rr * math.cos(a)) + ax_z * (rr * 0.86 * math.sin(a)))
+    o.tube(m, pts, lambda t: (0.0045 + 0.0035 * math.sin(math.pi * t)) * k, mat, sides=6, weights=lambda p, t: HEAD_W)
+    # base ring where the bun meets the head
+    ring = []
     for j in range(25):
         t = math.tau * j / 24
-        pts.append(ctr + ax_y * (0.004 * k) + Vector((1, 0, 0)) * (0.040 * k * math.cos(t))
-                   + ax_z * (0.034 * k * math.sin(t)))
-    o.tube(m, pts, 0.0065 * k, mat, sides=6, weights=lambda p, t: HEAD_W, caps=False)
+        ring.append(ctr + ax_y * (0.017 * k) + ax_x * (0.044 * k * math.cos(t)) + ax_z * (0.038 * k * math.sin(t)))
+    o.tube(m, ring, 0.0060 * k, mat, sides=6, weights=lambda p, t: HEAD_W, caps=False)
+    return m
+
+
+def side_fringe(fit: Fit, mat: str, part_deg: float = 30.0) -> Mesh:
+    """A side-swept fringe: a soft, lifted sheet of hair from the parting (``part_deg``, + = the
+    character's right) across the forehead and down to behind the other ear. Lofted on the head +
+    hair surface (rays), thick in the middle, tapering at both ends."""
+    k = fit.k
+    c = fit.head_centre()
+    hh = HeadHull(fit)
+    side = 1.0 if part_deg >= 0.0 else -1.0
+    # path: (theta deg from the front, + = right; phi deg from the crown)
+    path = [(part_deg, 34.0), (part_deg * 0.5, 44.0), (-side * 4.0, 52.0), (-side * 30.0, 58.0), (-side * 56.0, 64.0),
+            (-side * 78.0, 71.0), (-side * 96.0, 80.0)]
+
+    def dirv(th: float, ph: float) -> Vector:
+        t_, p_ = math.radians(th), math.radians(ph)
+        return Vector((math.sin(p_) * math.sin(t_), math.sin(p_) * math.cos(t_), math.cos(p_)))
+
+    def interp(t: float) -> tuple[float, float]:
+        x = t * (len(path) - 1)
+        i = min(int(x), len(path) - 2)
+        f = x - i
+        f = f * f * (3 - 2 * f)
+        return (path[i][0] + (path[i + 1][0] - path[i][0]) * f, path[i][1] + (path[i + 1][1] - path[i][1]) * f)
+
+    def surf(th: float, ph: float) -> tuple[Vector, Vector]:
+        d = dirv(th, ph)
+        hit = hh.cast(c + d * 0.4, -d, 0.6)
+        if hit[0] is None:
+            return c + d * 0.1 * k, d
+        n = hit[1].normalized()
+        return hit[0], n if n.dot(d) > 0 else -n
+
+    n_rows, n_across = 24, 7
+    rows = []
+    for r in range(n_rows + 1):
+        t = r / n_rows
+        th, ph = interp(t)
+        p, n = surf(th, ph)
+        th2, ph2 = interp(min(1.0, t + 0.02))
+        th0, ph0 = interp(max(0.0, t - 0.02))
+        tang = (surf(th2, ph2)[0] - surf(th0, ph0)[0]).normalized()
+        sd = n.cross(tang).normalized()
+        w = (0.020 + 0.040 * math.sin(math.pi * min(1.0, t * 1.25)) ** 0.8) * (1.0 - 0.7 * smoothstep(0.75, 1.0, t)) * k
+        lift = (0.0030 + 0.0065 * math.sin(math.pi * t) ** 0.7) * k
+        tops, bots = [], []
+        for a in range(n_across + 1):
+            s_ = -1.0 + 2.0 * a / n_across
+            q = p + sd * (s_ * 0.5 * w)
+            hq = hh.cast(q + n * 0.05, -n, 0.1)
+            base = hq[0] if hq[0] is not None else q
+            prof = max(0.0, 1.0 - s_ * s_) ** 0.5
+            # the leading (lower) edge curls slightly under, the trailing edge blends into the hair
+            tops.append(base + n * (0.0008 * k + lift * (0.35 + 0.65 * prof)))
+            bots.append(base + n * (0.0008 * k))
+        rows.append(tops + list(reversed(bots[1:-1])))
+    m = Mesh()
+    ids = [m.ring(rw, HEAD_W) for rw in rows]
+    inside = Vector((c.x, c.y, c.z))
+    for i in range(len(ids) - 1):
+        m.band(ids[i], ids[i + 1], mat, inside=inside)
+    for end, ref in ((ids[0], rows[0]), (ids[-1], rows[-1])):
+        ctr = sum(ref, Vector()) / len(ref)
+        pc = m.add(ctr, HEAD_W)
+        nn = len(end)
+        for j in range(nn):
+            m.face((end[j], end[(j + 1) % nn], pc), mat, inside=inside)
     return m
 
 

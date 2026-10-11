@@ -23,12 +23,12 @@ static func apply(ctx: Node3D, position: Vector3, radius: float, damage: float, 
 		return out
 	var tw: CombatTweak = CombatTweak.data()
 	var crew_attack: bool = Ids.lookup(attacker_net_id) is CrewController
-	for target: Object in _targets(ctx, position, radius, tw):
+	for target: Object in targets_in_sphere(ctx, position, radius, tw):
 		if crew_attack and target is CrewController:
 			continue
 		var center: Vector3 = _center(target, position)
 		var d: float = center.distance_to(position)
-		if d > radius or not _blast_los(ctx, position, center, target, tw):
+		if d > radius or not blast_los(ctx, position, center, target, tw):
 			continue
 		var amount: float = damage_at(damage, d, radius)
 		if amount <= 0.0:
@@ -49,7 +49,8 @@ static func damage_at(damage: float, distance: float, radius: float) -> float:
 	return damage * pow(clampf(1.0 - distance / radius, 0.0, 1.0), CombatTweak.data().explosion_falloff_pow)
 
 
-static func _targets(ctx: Node3D, position: Vector3, radius: float, tw: CombatTweak) -> Array[Object]:
+## Damageable targets around `position` (NPCs alive, hittable crew, hitboxes on explosion_target_mask).
+static func targets_in_sphere(ctx: Node3D, position: Vector3, radius: float, tw: CombatTweak) -> Array[Object]:
 	var found: Array[Object] = []
 	for n: Node in ctx.get_tree().get_nodes_in_group(G.NPC):
 		var npc: NpcBase = n as NpcBase
@@ -86,7 +87,7 @@ static func _center(target: Object, fallback: Vector3) -> Vector3:
 	return n3.global_position if n3 != null else fallback
 
 
-static func _blast_los(ctx: Node3D, from: Vector3, to: Vector3, target: Object, tw: CombatTweak) -> bool:
+static func blast_los(ctx: Node3D, from: Vector3, to: Vector3, target: Object, tw: CombatTweak) -> bool:
 	var seg: Vector3 = to - from
 	if seg.length() < 0.05:
 		return true

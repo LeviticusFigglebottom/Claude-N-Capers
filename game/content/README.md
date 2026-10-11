@@ -56,6 +56,9 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 * `StringTable.text(key: StringName, args: Dictionary = {}) -> String` = `tr(key)` + `{name}`
   formatting. Strings: `data/strings/strings.csv` (standard Godot CSV import; the lead registers
   the translation in project.godot, D-021). No runtime registration.
+* `DeployableGate.required_flag(id)`, `.allowed(id, modifiers)`, `.allowed_for(loadout, id)`,
+  `.unlock_card(id)`: deployables that need a modifier FLAG (armor bag: `deploy.armor_bag`); the loadout
+  picker locks them until the loadout's skills / perk cards grant it.
 * `PayoutCalculator.compute(result, difficulty_def = null, tweak = null, is_pro = false,
   crew_slot = -1, banked_stealth_mult = 1.0) -> Dictionary` from a HeistResult
   (contracts/events.md). Output shape documented in its header. Stealth bonus (D-022 QB-13, S11.1):

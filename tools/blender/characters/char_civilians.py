@@ -36,7 +36,7 @@ VARIANTS = {
                             "hair_color": "dark", "look": "dress"},
     "char_civilian_jeweler": {"height": 1.74, "build": 0.2, "gender": 0.0, "age": 0.75, "skin": 1, "hair": "short",
                               "hair_color": "grey", "look": "apron"},
-    "char_civilian_manager": {"height": 1.81, "build": 0.55, "gender": 0.0, "age": 0.45, "skin": 3,
+    "char_civilian_manager": {"height": 1.81, "build": 0.55, "gender": 0.0, "age": 0.45, "skin": 3, "beard_shadow": 0.35,
                               "hair": "buzz", "hair_color": "dark", "look": "blazer"},
 }
 

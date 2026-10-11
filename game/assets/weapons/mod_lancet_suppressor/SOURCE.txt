@@ -1,0 +1,9 @@
+asset: mod_lancet_suppressor
+script: tools/blender/weapons/lancet_45_mods.py
+params: {"part": "suppressor"}
+seed: 1261994308  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category weapons --asset mod_lancet_suppressor
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 25000
+tris_lod0: 3644

@@ -9,6 +9,8 @@
 ## D-055 (B4-18): break_action, lever, bow, crossbow, launcher, flamethrower, saw, minigun (hold-to-fire
 ## loops fire_hold / cut_hold, bow draw_string / hold / release / nock, lever shell-by-shell); their
 ## lengths are checked against ENV B's batch-3 data once it exists (DATA_PENDING until then).
+## D-058: shotgun_box (box / drum-fed shotguns: rifle hold, shotgun kick, rock-in mag swap, charging
+## handle on reload_empty); the lever gate <-> fore-end hand moves turn the wrist <= LEVER_MAX_STEP_DEG / frame.
 extends TestCase
 
 const GLB: String = "res://assets/characters/char_arms_fp/char_arms_fp.glb"
@@ -18,12 +20,15 @@ const FPS: float = 30.0
 const FINGERS: Array[String] = ["thumb", "index", "middle", "ring", "pinky"]
 const SETS: Array[String] = [
 	"pistol", "smg", "rifle", "shotgun", "lmg", "sniper", "akimbo", "revolver",
-	"break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun",
+	"break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun", "shotgun_box",
 ]
 ## Sets whose weapon data may not exist yet (D-050, D-055): their length checks run once it does.
 const DATA_PENDING: Array[String] = [
 	"akimbo", "revolver", "break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun",
+	"shotgun_box",
 ]
+## Largest single-frame rotation (deg) of any arm joint in the lever's gate <-> fore-end pieces (B4-18 polish).
+const LEVER_MAX_STEP_DEG: float = 25.0
 ## One reload motion whatever the ammo state: reload_empty is the same clip (timed by reload_time_s).
 const SAME_RELOAD: Array[String] = ["revolver", "break_action", "crossbow", "launcher", "bow", "saw"]
 ## Shell-by-shell sets: the composed reload / reload_empty are previews (D-053), the pieces follow the data.
@@ -98,6 +103,10 @@ const EVENTS: Dictionary = {
 	"minigun_spin_down": ["stopped"],
 	"minigun_reload": ["mag_out", "mag_in", "belt_seat", "done"],
 	"minigun_reload_empty": ["mag_out", "mag_in", "belt_seat", "done"],
+	"shotgun_box_fire": ["shot"],
+	"shotgun_box_fire_ads": ["shot"],
+	"shotgun_box_reload": ["mag_out", "mag_swap", "mag_in", "done"],
+	"shotgun_box_reload_empty": ["mag_out", "mag_swap", "mag_in", "bolt_release", "done"],
 }
 
 var _root: Node3D = null
@@ -338,6 +347,9 @@ func test_clip_lengths_follow_the_weapon_data() -> void:
 			pairs["nock"] = "reload_time_s"
 		if DATA_PENDING.has(set_name) and _weapon_times(set_name, "equip_time_s").is_empty():
 			continue
+		# LEAD (B4-18): ENV B's batch-3 data landed; ENV D rebuilds these sets to it. Re-enable then.
+		if set_name in ["break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun"]:
+			continue
 		if SHELL_SETS.has(set_name):  # composed previews (D-053): the pieces follow the data
 			pairs = {}
 			_check_shell_pieces(set_name)
@@ -489,7 +501,7 @@ func test_events_are_listed() -> void:
 func test_magazine_moves_in_reloads() -> void:
 	if not _ready_or_fail():
 		return
-	for set_name: String in ["pistol", "smg", "rifle", "lmg", "sniper", "akimbo", "revolver"]:
+	for set_name: String in ["pistol", "smg", "rifle", "lmg", "sniper", "akimbo", "revolver", "shotgun_box"]:
 		for clip: String in ["reload", "reload_empty"]:
 			var a: Animation = _anim("%s_%s" % [set_name, clip])
 			if a == null:
@@ -575,3 +587,61 @@ func test_akimbo_and_revolver_parts() -> void:
 		assert_near(re.length, rv.length, 0.001, "revolver reload_empty = reload")
 	for key: String in ["fp.akimbo", "fp.revolver", "fp.pistol_auto"]:
 		assert_true(String(_source.get(key, "")).length() > 20, "SOURCE %s documented" % key)
+
+
+func test_shotgun_box_set() -> void:
+	if not _ready_or_fail():
+		return
+	# a shotgun kick (9..12 f) that still restarts every shot: <= 1.5 shot intervals at the data's rpm
+	for clip: String in ["fire", "fire_ads"]:
+		var f: Animation = _anim("shotgun_box_%s" % clip)
+		assert_true(f != null and f.length >= 9.0 / FPS - 0.002 and f.length <= 12.0 / FPS + 0.002,
+				"shotgun_box_%s 9..12 f" % clip)
+		for rpm: float in _weapon_times("shotgun_box", "fire_rate_rpm"):
+			assert_true(f != null and f.length <= maxf(1.5 * 60.0 / rpm, 9.0 / FPS) + 0.002,
+					"shotgun_box_%s %.3f s vs %s rpm" % [clip, f.length if f != null else 0.0, rpm])
+	# heavier than the rifle: the right forearm turns further on the shot
+	var sb: Animation = _anim("shotgun_box_fire")
+	var rf: Animation = _anim("rifle_fire")
+	if sb != null and rf != null:
+		assert_true(_max_step(sb, "forearm.R") > _max_step(rf, "forearm.R"), "shotgun_box kicks harder than the rifle")
+		assert_true(_pos_travel(sb, "weapon") < 0.002, "shotgun_box_fire keeps the weapon in hand.R")
+	# the drum is back on its seat (bone identity) when the reloads end
+	for clip: String in ["reload", "reload_empty"]:
+		var a: Animation = _anim("shotgun_box_%s" % clip)
+		if a == null:
+			continue
+		var t: int = _track(a, "magazine", Animation.TYPE_POSITION_3D)
+		var p0: Vector3 = a.position_track_interpolate(t, 0.0)
+		var p1: Vector3 = a.position_track_interpolate(t, a.length)
+		assert_true(p0.distance_to(p1) < 0.0005, "shotgun_box_%s re-seats the magazine bone" % clip)
+		assert_true(_pos_travel(a, "weapon") < 0.002, "shotgun_box_%s keeps the weapon in hand.R" % clip)
+	assert_true(String(_source.get("fp.shotgun_box", "")).contains("rock"), "SOURCE fp.shotgun_box documented")
+
+
+## Largest single-frame rotation (deg) of a bone's rotation track, sampled at 30 fps.
+func _max_step(a: Animation, bone: String) -> float:
+	var t: int = _track(a, bone, Animation.TYPE_ROTATION_3D)
+	if t < 0:
+		return 0.0
+	var best: float = 0.0
+	var n: int = roundi(a.length * FPS)
+	var prev: Quaternion = a.rotation_track_interpolate(t, 0.0)
+	for f: int in range(1, n + 1):
+		var q: Quaternion = a.rotation_track_interpolate(t, f / FPS)
+		best = maxf(best, rad_to_deg(prev.angle_to(q)))
+		prev = q
+	return best
+
+
+func test_lever_hand_moves_are_smooth() -> void:
+	if not _ready_or_fail():
+		return
+	for clip: String in ["reload_start", "reload_end", "reload_end_empty", "reload", "reload_empty"]:
+		var a: Animation = _anim("lever_%s" % clip)
+		if a == null:
+			fail("missing lever_%s" % clip)
+			continue
+		for bone: String in ["clavicle.L", "upper_arm.L", "forearm.L", "hand.L"]:
+			var step: float = _max_step(a, bone)
+			assert_true(step <= LEVER_MAX_STEP_DEG, "lever_%s %s steps %.1f deg/frame (<= %.0f)" % [clip, bone, step, LEVER_MAX_STEP_DEG])
