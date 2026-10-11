@@ -95,6 +95,16 @@ extends Resource
 ## A SAW drill_point (cage gate, depository) cut by hand: x its device run time.
 @export var hand_saw_drill_point_mult: float = 1.0
 
+@export_group("Burn point (QC-38, D-064 Dockside Burn)")
+## Hold to place the carried thermite bag (consumed), burn time, then the telegraph (warning cue) and the
+## countdown before device_finished (the mission drops the fire shutters) and the fire volume lights.
+@export var burn_place_s: float = 3.0
+@export var burn_duration_s: float = 30.0
+@export var burn_warning_s: float = 5.0
+## Fire volume damage to crew inside (DamageType.FIRE, ignores armour, L3.4), per second, ticked.
+@export var burn_fire_dps: float = 20.0
+@export var burn_fire_tick_s: float = 0.5
+
 @export_group("Lasers, zipline, ladder (A2-04: S9.10, S9.11)")
 ## Thickness of a laser beam's detection box across the beam (m) ◇.
 @export var laser_beam_thickness_m: float = 0.03
