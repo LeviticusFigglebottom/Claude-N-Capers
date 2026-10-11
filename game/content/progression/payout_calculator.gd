@@ -93,6 +93,8 @@ static func _compute_cash(out: Dictionary, result: Dictionary, diff: DifficultyD
 	if success:
 		contract = roundi(float(result.get("contract_pay", 0)) * mult)
 		for entry: Dictionary in result.get("loot", []) as Array:
+			if _is_tool(StringName(entry.get("loot_id", &""))):
+				continue  # D-068: tools are not profit (no payday line)
 			var base: int = int(entry.get("value", 0))
 			var value: int = roundi(float(base) * mult)
 			loot_lines.append({"loot_id": StringName(entry.get("loot_id", &"")), "base": base, "value": value})
@@ -132,7 +134,8 @@ static func _compute_xp(out: Dictionary, result: Dictionary, diff: DifficultyDef
 	if success:
 		var bags: int = 0
 		for entry: Dictionary in result.get("loot", []) as Array:
-			if not tw.xp_loot_excluded_ids.has(StringName(entry.get("loot_id", &""))):
+			var lid: StringName = StringName(entry.get("loot_id", &""))
+			if not tw.xp_loot_excluded_ids.has(lid) and not _is_tool(lid):
 				bags += 1
 		base = tw.base_xp_success + bags * tw.xp_per_loot_bag
 	else:
@@ -222,3 +225,9 @@ static func _load_tweak() -> PayoutTweak:
 		Log.warn(&"content", "PayoutCalculator: %s missing, using script defaults" % DEFAULT_TWEAK_PATH)
 		tw = PayoutTweak.new()
 	return tw
+
+
+## D-068: a carried tool (thermite) is never profit: no cash, no bag XP.
+static func _is_tool(loot_id: StringName) -> bool:
+	var d: LootDef = ContentDB.loot(loot_id) if ContentDB.has(ContentDB.LOOT, loot_id) else null
+	return d != null and d.is_tool
