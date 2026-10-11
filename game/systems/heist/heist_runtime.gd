@@ -231,6 +231,7 @@ func _start_replica(data: Dictionary, map_scene: PackedScene, p_options: Diction
 	_create_services()
 	net_sync.replica_spawned.connect(_on_replica_spawned)
 	net_sync.phase_replicated.connect(_on_phase_replicated)
+	EventBus.heist_phase_changed.connect(_on_relayed_phase)  # the relayed fact lands before heist_ended
 	add_child(map)
 	move_child(map, 0)
 	dynamic_root = Node3D.new()
@@ -275,6 +276,13 @@ func _on_phase_replicated(new_phase: int, loud: bool) -> void:
 		var old: int = phase
 		phase = new_phase as Enums.HeistPhase
 		phase_changed.emit(old, new_phase)
+
+
+## Client: the relayed heist_phase_changed fact, so `phase` is ENDED before the relayed heist_ended
+## arrives (the 15 Hz state sync alone lags a few frames behind the facts).
+func _on_relayed_phase(_old: int, new_phase: int) -> void:
+	if is_replica:
+		_on_phase_replicated(new_phase, went_loud or new_phase == Enums.HeistPhase.LOUD)
 
 
 func _adopt_map_ids(table: Dictionary) -> void:
@@ -526,6 +534,7 @@ func _disconnect_events() -> void:
 		[EventBus.npc_killed, _on_npc_killed], [EventBus.civilian_killed, _on_civilian_killed],
 		[EventBus.crew_downed, _on_crew_downed], [EventBus.loot_secured, _on_loot_secured],
 		[EventBus.small_loot_taken, _on_small_loot], [EventBus.pager_answered, _on_pager_answered],
+		[EventBus.heist_phase_changed, _on_relayed_phase],
 	]:
 		var sig: Signal = pair[0]
 		if sig.is_connected(pair[1]):
