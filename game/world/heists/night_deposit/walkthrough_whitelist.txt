@@ -11,52 +11,50 @@
 # stair at the north wall -> B5 -> back south (or, from the quay, the same plus Harbor St), 45-76 m.
 # Lot spawns (behind the building, next to the stair) stay under 3x for every target.
 #
-# 1) Vault B9 (cage cash, Co-op pallet, safe-deposit box walls) and the antechamber B8.
+# 1) Vault B9 (cage cash, Co-op pallet, the safe-deposit box units: drill / saw points Box<n> and their
+#    loot BoxLoot<n>) and the antechamber B8.
 * Gameplay/Vault/CageCash
 * Gameplay/Vault/CageCash/UsePoint
-* Gameplay/Vault/CageCash/Visual/LootSpawnPlaceholder
 * Gameplay/Vault/CoopCashBricks
 * Gameplay/Vault/CoopCashBricks/UsePoint
-* Gameplay/Vault/CoopCashBricks/Visual/LootSpawnPlaceholder
-* Gameplay/Vault/DepositBoxWallE/Box5
-* Gameplay/Vault/DepositBoxWallE/Box5/UsePoint
-* Gameplay/Vault/DepositBoxWallE/Box6
-* Gameplay/Vault/DepositBoxWallE/Box6/UsePoint
-* Gameplay/Vault/DepositBoxWallE/Box7
-* Gameplay/Vault/DepositBoxWallE/Box7/UsePoint
-* Gameplay/Vault/DepositBoxWallE/Box8
-* Gameplay/Vault/DepositBoxWallE/Box8/UsePoint
-* Gameplay/Vault/DepositBoxWallE/BoxLoot5
-* Gameplay/Vault/DepositBoxWallE/BoxLoot5/UsePoint
-* Gameplay/Vault/DepositBoxWallE/BoxLoot6
-* Gameplay/Vault/DepositBoxWallE/BoxLoot6/UsePoint
-* Gameplay/Vault/DepositBoxWallE/BoxLoot7
-* Gameplay/Vault/DepositBoxWallE/BoxLoot7/UsePoint
-* Gameplay/Vault/DepositBoxWallE/BoxLoot8
-* Gameplay/Vault/DepositBoxWallE/BoxLoot8/UsePoint
-* Gameplay/Vault/DepositBoxWallW/Box1
-* Gameplay/Vault/DepositBoxWallW/Box1/UsePoint
-* Gameplay/Vault/DepositBoxWallW/Box2
-* Gameplay/Vault/DepositBoxWallW/Box2/UsePoint
-* Gameplay/Vault/DepositBoxWallW/Box3
-* Gameplay/Vault/DepositBoxWallW/Box3/UsePoint
-* Gameplay/Vault/DepositBoxWallW/Box4
-* Gameplay/Vault/DepositBoxWallW/Box4/UsePoint
-* Gameplay/Vault/DepositBoxWallW/BoxLoot1
-* Gameplay/Vault/DepositBoxWallW/BoxLoot1/UsePoint
-* Gameplay/Vault/DepositBoxWallW/BoxLoot2
-* Gameplay/Vault/DepositBoxWallW/BoxLoot2/UsePoint
-* Gameplay/Vault/DepositBoxWallW/BoxLoot3
-* Gameplay/Vault/DepositBoxWallW/BoxLoot3/UsePoint
-* Gameplay/Vault/DepositBoxWallW/BoxLoot4
-* Gameplay/Vault/DepositBoxWallW/BoxLoot4/UsePoint
+* Gameplay/Vault/Box5
+* Gameplay/Vault/Box5/UsePoint
+* Gameplay/Vault/Box6
+* Gameplay/Vault/Box6/UsePoint
+* Gameplay/Vault/Box7
+* Gameplay/Vault/Box7/UsePoint
+* Gameplay/Vault/Box8
+* Gameplay/Vault/Box8/UsePoint
+* Gameplay/Vault/BoxLoot5
+* Gameplay/Vault/BoxLoot5/UsePoint
+* Gameplay/Vault/BoxLoot6
+* Gameplay/Vault/BoxLoot6/UsePoint
+* Gameplay/Vault/BoxLoot7
+* Gameplay/Vault/BoxLoot7/UsePoint
+* Gameplay/Vault/BoxLoot8
+* Gameplay/Vault/BoxLoot8/UsePoint
+* Gameplay/Vault/Box1
+* Gameplay/Vault/Box1/UsePoint
+* Gameplay/Vault/Box2
+* Gameplay/Vault/Box2/UsePoint
+* Gameplay/Vault/Box3
+* Gameplay/Vault/Box3/UsePoint
+* Gameplay/Vault/Box4
+* Gameplay/Vault/Box4/UsePoint
+* Gameplay/Vault/BoxLoot1
+* Gameplay/Vault/BoxLoot1/UsePoint
+* Gameplay/Vault/BoxLoot2
+* Gameplay/Vault/BoxLoot2/UsePoint
+* Gameplay/Vault/BoxLoot3
+* Gameplay/Vault/BoxLoot3/UsePoint
+* Gameplay/Vault/BoxLoot4
+* Gameplay/Vault/BoxLoot4/UsePoint
 #
 # 2) Count room / depository B11-B12 (south-east basement, under G12/G13).
 * Gameplay/Depository/DepositorySafe
 * Gameplay/Depository/DepositorySafe/UsePoint
 * Gameplay/Depository/NightDropBags
 * Gameplay/Depository/NightDropBags/UsePoint
-* Gameplay/Depository/NightDropBags/Visual/LootSpawnPlaceholder
 * Gameplay/Doors/DepositoryDoor
 * Gameplay/Doors/DepositoryDoor/UsePoint
 #

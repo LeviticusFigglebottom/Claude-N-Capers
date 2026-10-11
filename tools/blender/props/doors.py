@@ -17,14 +17,24 @@ from _pb import Kit, panel_door
 TRI_BUDGET = 8000
 _KINDS = {"single": (0.9, 0.05, 1), "double": (0.9, 0.1, 2), "service": (1.1, 0.05, 1)}
 VARIANTS = {
-    f"prop_door_{kind}_{fin}_t{t}": {
-        "kind": kind, "finish": fin, "wall_t": t / 100,
-        "cat": {"prefab": "door", "kind": "door", "service": kind == "service"},
-    }
-    for kind in ("single", "double", "service")
-    for fin in ("walnut", "ivory", "steel", "glass")
-    for t in (20, 40)
-    if fin != "glass" or kind == "double"
+    **{
+        f"prop_door_{kind}_{fin}_t{t}": {
+            "kind": kind, "finish": fin, "wall_t": t / 100,
+            "cat": {"prefab": "door", "kind": "door", "service": kind == "service"},
+        }
+        for kind in ("single", "double", "service")
+        for fin in ("walnut", "ivory", "steel", "glass")
+        for t in (20, 40)
+        if fin != "glass" or kind == "double"
+    },
+    # Night Deposit: the basement vault gate (steel grille, double, t20) and the bronze street doors (double, t40).
+    "prop_door_double_grille_t20": {"kind": "double", "finish": "grille", "wall_t": 0.2,
+                                    "cat": {"prefab": "door", "kind": "door", "service": False}},
+    "prop_door_double_bronze_t40": {"kind": "double", "finish": "bronze", "wall_t": 0.4,
+                                    "cat": {"prefab": "door", "kind": "door", "service": False}},
+    # the ATM vestibule's interior glass door to the banking hall (casing view, doc §Sightlines)
+    "prop_door_single_glass_t20": {"kind": "single", "finish": "glass", "wall_t": 0.2,
+                                   "cat": {"prefab": "door", "kind": "door", "service": False}},
 }
 
 LEAF_H = 2.1
@@ -36,7 +46,8 @@ ARCH_T = 0.018    # architrave projection
 def _frame(k: Kit, hw: float, wall_t: float, finish: str):
     """Jamb lining (in the opening) and architraves on both wall faces; trimesh collision."""
     fr = k.obj("Frame")
-    key = {"walnut": "walnut", "ivory": "paint_ivory", "steel": "metal_dark", "glass": "brass"}[finish]
+    key = {"walnut": "walnut", "ivory": "paint_ivory", "steel": "metal_dark", "glass": "brass", "grille": "metal_dark",
+           "bronze": "brass"}[finish]
     lin = fr.part(bevel=0.003)
     arch = fr.part(bevel=0.004, segments=2)
     lining = 0.03
@@ -90,7 +101,48 @@ def _leaf(k: Kit, name: str, hinge_x: float, sign: float, leaf_w: float, finish:
     lf = k.obj("LeafMesh" + suffix, parent=pivot)
     body = lf.part(bevel=0.003, segments=1)
     trim = lf.part(bevel=0.0015)
-    hw_key = {"walnut": "brass", "ivory": "steel", "steel": "steel", "glass": "brass"}[finish]
+    hw_key = {"walnut": "brass", "ivory": "steel", "steel": "steel", "glass": "brass", "grille": "steel", "bronze": "brass"}[finish]
+    if finish == "grille":
+        # vault gate: flat-bar frame, vertical round bars, two rails and a lock box at the meeting stile
+        stile = 0.06
+        body.bx((lo, -0.02, 0.008), (hi, 0.02, 0.008 + stile), "metal_dark")
+        body.bx((lo, -0.02, LEAF_H - stile - 0.003), (hi, 0.02, LEAF_H - 0.003), "metal_dark")
+        body.bx((lo, -0.02, 0.008), (lo + stile, 0.02, LEAF_H - 0.003), "metal_dark")
+        body.bx((hi - stile, -0.02, 0.008), (hi, 0.02, LEAF_H - 0.003), "metal_dark")
+        for z in (0.75, 1.45):
+            body.bx((lo + stile, -0.012, z), (hi - stile, 0.012, z + 0.04), "metal_dark")
+        g = lf.part(bevel=0.0)
+        n = 7
+        for i in range(n):
+            x = lo + stile + (hi - lo - 2 * stile) * (i + 0.5) / n
+            g.rod((x, 0.0, 0.008 + stile), (x, 0.0, LEAF_H - stile - 0.003), 0.011, "steel", segs=8)
+        hx = hi - 0.03 if sign > 0 else lo + 0.03
+        trim.bx((hx - 0.03 - 0.06 * (sign > 0), -0.05, 0.9), (hx + 0.03 + 0.06 * (sign < 0), 0.05, 1.12), "metal_dark")
+        for z in (0.25, 1.05, 1.85):
+            trim.cyl(0.012, 0.12, (lo - 0.004 if sign > 0 else hi + 0.004, 0.0, z), hw_key, segs=10)
+        lf.build()
+        k.empty("Handle" + suffix, (hx, 0.0, 1.0), parent=pivot)
+        return
+    if finish == "bronze":
+        # bronze street doors: cast panels in a heavy frame, push plates and pull bars both faces
+        body.bx((lo, -t / 2, 0.008), (hi, t / 2, LEAF_H - 0.003), "brass")
+        for side in (1, -1):
+            for z0, z1 in ((0.15, 0.95), (1.08, LEAF_H - 0.15)):
+                y0, y1 = sorted((side * t / 2, side * (t / 2 + 0.012)))
+                body.bx((lo + 0.1, y0, z0), (hi - 0.1, y1, z1), "brass")
+                y2, y3 = sorted((side * (t / 2 + 0.012), side * (t / 2 + 0.02)))
+                body.bx((lo + 0.16, y2, z0 + 0.06), (hi - 0.16, y3, z1 - 0.06), "metal_dark")
+            hx2 = hi - 0.07 if sign > 0 else lo + 0.07
+            trim.rod((hx2, side * (t / 2 + 0.06), 0.8), (hx2, side * (t / 2 + 0.06), 1.3), 0.015, "brass", segs=12)
+            trim.rod((hx2, side * t / 2, 0.85), (hx2, side * (t / 2 + 0.06), 0.85), 0.01, "brass", segs=10)
+            trim.rod((hx2, side * t / 2, 1.25), (hx2, side * (t / 2 + 0.06), 1.25), 0.01, "brass", segs=10)
+        hx_h2 = lo - 0.002 if sign > 0 else hi + 0.002
+        for z in (0.25, 1.05, 1.85):
+            trim.cyl(0.01, 0.12, (hx_h2, -t / 2 - 0.004, z), "brass", segs=10)
+        lf.build()
+        hx = hi - 0.07 if sign > 0 else lo + 0.07
+        k.empty("Handle" + suffix, (hx, 0.0, 1.0), parent=pivot)
+        return
     if finish == "glass":
         stile = 0.09
         body.bx((lo, -t / 2, 0.006), (hi, t / 2, 0.006 + 0.22), "brass")

@@ -13,6 +13,9 @@
 ##                serves picks first-come (heister_assignment(), rule in Heisters): the slot whose current pick
 ##                arrived first keeps it, a later conflicting pick falls back to the next free heister, and
 ##                AI / empty seats fill the rest. An unknown heister id is illegal.
+##                `loadout.weapon_finishes` (B7-04) = {weapon id: finish id} for the equipped primary /
+##                secondary (WeaponFinishes.for_loadout); cosmetic, so unknown ids are dropped, never illegal.
+##                launch_loadouts() copies it into Loadout.weapon_finishes once that contract field exists.
 ##                Every peer validates it with validate_summary()
 ##                (SkillPoints.validate + LoadoutResolver mod legality + known ids, architecture §11):
 ##                an illegal summary is FLAGGED on its slot and blocks Start; the host never launches it.
@@ -394,8 +397,10 @@ func host_music() -> StringName:
 static func summary_from(loadout: Loadout, profile: PlayerProfile) -> Dictionary:
 	var l: Loadout = loadout.duplicate(true) as Loadout
 	l.mask_descriptor = LoadoutResolver.mask_descriptor_for(loadout, profile)
+	var ld: Dictionary = loadout_to_dict(l)
+	ld["weapon_finishes"] = WeaponFinishes.sanitize_map(WeaponFinishes.for_loadout(profile, loadout))  # B7-04
 	return {"name": profile.profile_name, "level": profile.level, "notoriety": profile.notoriety,
-			"music": String(MusicCatalog.resolve_choice(profile)), "loadout": loadout_to_dict(l)}
+			"music": String(MusicCatalog.resolve_choice(profile)), "loadout": ld}
 
 
 ## JSON-safe loadout input (no resolved numbers; every peer resolves with LoadoutResolver).
@@ -409,6 +414,7 @@ static func loadout_to_dict(l: Loadout) -> Dictionary:
 			ids.append(String(m))
 		d[f] = ids
 	d["mask_descriptor"] = _json_copy(l.mask_descriptor)
+	d["weapon_finishes"] = WeaponFinishes.sanitize_map(l.get(&"weapon_finishes"))  # B7-04: {} until the field lands
 	d["perk_deck_cards"] = l.perk_deck_cards
 	var skills: Dictionary = {}
 	for k: Variant in l.skills:
@@ -427,6 +433,12 @@ static func loadout_from_dict(d: Dictionary) -> Loadout:
 			ids.append(StringName(String(m)))
 		l.set(f, ids)
 	l.mask_descriptor = (d.get("mask_descriptor", {}) as Dictionary).duplicate(true)
+	if &"weapon_finishes" in l:  # B7-04: Loadout.weapon_finishes (contracts round 28)
+		var fin: Dictionary = {}
+		var src_f: Dictionary = WeaponFinishes.sanitize_map(d.get("weapon_finishes", {}))
+		for k: Variant in src_f:
+			fin[StringName(String(k))] = StringName(String(src_f[k]))
+		l.set(&"weapon_finishes", fin)
 	l.perk_deck_cards = int(d.get("perk_deck_cards", 0))
 	var skills: Dictionary = {}
 	var src: Dictionary = d.get("skills", {}) as Dictionary
@@ -466,6 +478,7 @@ static func sanitize_summary(data: Dictionary) -> Dictionary:
 	if not (desc is Dictionary) or not _is_int(cards) or not (skills is Dictionary):
 		return {}
 	out["mask_descriptor"] = (desc as Dictionary).duplicate(true)
+	out["weapon_finishes"] = WeaponFinishes.sanitize_map(src.get("weapon_finishes", {}))  # cosmetic: unknown ids dropped
 	out["perk_deck_cards"] = int(cards)
 	var sk: Dictionary = {}
 	for k: Variant in skills as Dictionary:

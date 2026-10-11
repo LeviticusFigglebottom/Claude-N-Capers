@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="FinishDef" format=3]
+
+[ext_resource type="Script" path="res://content/defs/finish_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://content/defs/finish_layer.gd" id="2_layer"]
+
+[sub_resource type="Resource" id="Resource_layer_0"]
+script = ExtResource("2_layer")
+slots = Array[StringName]([&"steel", &"bare", &"matte", &"alu"])
+albedo = Color(0.12, 0.12, 0.14, 1)
+metallic = 1
+roughness = 0.08
+clearcoat = 0.3
+
+[resource]
+script = ExtResource("1_def")
+id = &"finish.midnight_chrome"
+display_name = "Midnight Chrome"
+unlock = &"unlock.finish.midnight_chrome"
+default_owned = false
+covers_mods = true
+order = 80
+layers = Array[ExtResource("2_layer")]([SubResource("Resource_layer_0")])

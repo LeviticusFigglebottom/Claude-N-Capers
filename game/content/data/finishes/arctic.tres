@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="FinishDef" format=3]
+
+[ext_resource type="Script" path="res://content/defs/finish_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://content/defs/finish_layer.gd" id="2_layer"]
+
+[sub_resource type="Resource" id="Resource_layer_0"]
+script = ExtResource("2_layer")
+slots = Array[StringName]([&"polymer", &"stipple", &"matte", &"alu", &"tan", &"olive"])
+albedo = Color(0.86, 0.88, 0.9, 1)
+metallic = 0.05
+roughness = 0.75
+pattern = &"camo"
+pattern_color = Color(0.52, 0.56, 0.6, 1)
+pattern_scale = 0.6
+pattern_seed = 41
+
+[resource]
+script = ExtResource("1_def")
+id = &"finish.arctic"
+display_name = "Arctic"
+unlock = &"unlock.finish.arctic"
+default_owned = false
+covers_mods = true
+order = 40
+layers = Array[ExtResource("2_layer")]([SubResource("Resource_layer_0")])

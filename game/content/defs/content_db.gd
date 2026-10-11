@@ -18,9 +18,12 @@ const PERKS: StringName = &"perks"
 const THROWABLES: StringName = &"throwables"
 ## Achievement defs (B4-20, data/achievements/).
 const ACHIEVEMENTS: StringName = &"achievements"
+## Weapon finish defs (B7-04, data/finishes/).
+const FINISHES: StringName = &"finishes"
 ## Every kind folder ContentDB indexes by `id` (difficulty is indexed by its enum value).
 const KINDS: Array[StringName] = [
 	WEAPONS, MODS, MELEE, ARMOR, DEPLOYABLES, LOOT, DIFFICULTY, MASKS, SKILLS, PERKS, THROWABLES, ACHIEVEMENTS,
+	FINISHES,
 ]
 const LOG_CHANNEL: StringName = &"content"
 

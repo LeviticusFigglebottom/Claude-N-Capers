@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"teller_line"
+purpose = &"office"
+required_items = Array[StringName]([&"counter_transaction", &"stool", &"note_counter", &"credenza", &"file_cabinet", &"printer", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"credenza": 1,
+&"file_cabinet": 1,
+&"picture": 0.6
+}
+clutter_groups = {
+&"back": {
+"anchors": Array[StringName]([&"credenza"]),
+"count": Vector2i(1, 2),
+"items": {&"binders": 1, &"mug": 1, &"note_counter": 1.5, &"papers": 1.5},
+"radius": 0.5
+},
+&"counter": {
+"anchors": Array[StringName]([&"counter_transaction"]),
+"count": Vector2i(0, 1),
+"items": {&"note_counter": 1, &"papers": 2, &"pen_cup": 1},
+"radius": 0.5
+}
+}
+min_density = 0.3
+max_density = 1.5
+min_props = 16
+lone_ok_kinds = Array[StringName]([&"stool"])
+seed_salt = 44
+counts = {
+&"credenza": Vector2i(2, 3),
+&"note_counter": Vector2i(2, 3)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"picture": PackedStringArray("prop_notice_frame"),
+&"stool": PackedStringArray("prop_stool_teller")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.4}
+notes = "G8 teller workroom: the 1.05 m transaction counter (6 stations) is anchored along the hall; stools, note counters, the back counters (credenzas) along the corridor wall, files and a printer. No tellers at night (D-063): the stools are anchored pushed back against the wall; the map keeps the staff walkway along the counter clear (keep-out)."

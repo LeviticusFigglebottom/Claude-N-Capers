@@ -189,6 +189,10 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
         "seat_side": cat.get("seat_side", "front"),
         "standoff": float(cat.get("standoff", 0.0)),
     }
+    if cat.get("pin_only"):
+        # only used where a kit pins it (or a map anchors it): unpinned kit picks of its kind (and
+        # their RNG draws) stay exactly as they were before it existed
+        e["pin_only"] = True
     lines = ['[gd_scene load_steps=2 format=3]', "",
              f'[ext_resource type="PackedScene" path="{e["glb"]}" id="1_model"]', ""]
     # a visual that carries a light is its fixture (levelcheck `lights`: fixture ancestor)

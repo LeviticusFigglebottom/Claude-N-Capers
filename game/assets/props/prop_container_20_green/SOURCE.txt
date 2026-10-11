@@ -1,0 +1,8 @@
+asset: prop_container_20_green
+script: tools/blender/props/harbor.py
+params: {"cat": {"group": "exterior", "kind": "container"}, "fn": "container", "len": 6.06, "paint": "container_green"}
+seed: 3263266679  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_container_20_green
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

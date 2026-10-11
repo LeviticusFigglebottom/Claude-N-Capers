@@ -13,6 +13,17 @@ LED = "#FFD9B0"
 VARIANTS = {
     "prop_street_lamp": {"fn": "street_lamp", "cat": {"kind": "street_lamp", "place": "row", "standoff": 3.4, "fixture": True, "group": "exterior",
                                                       "light": {"type": "spot", "color": LED, "energy": 6.0, "range": 14.0, "angle": 60, "pos": [0.0, 5.75, -1.3]}}},
+    # Night Deposit: low-pressure sodium (~2000 K) street and wall lights (docs/design/heists/night_deposit.md)
+    "prop_street_lamp_sodium": {"fn": "street_lamp", "emit": "emit_sodium", "cat": {"kind": "street_lamp", "place": "row", "standoff": 3.4, "pin_only": True,
+                                                                                    "fixture": True, "group": "exterior",
+                                                                                    "light": {"type": "spot", "color": "#FF9A3C", "energy": 7.0,
+                                                                                              "range": 15.0, "angle": 65,
+                                                                                              "pos": [0.0, 5.75, -1.3]}}},
+    "prop_wall_lamp_sodium": {"fn": "wall_lamp", "emit": "emit_sodium", "cat": {"kind": "wall_lamp", "place": "wall_mount", "z": 3.0, "pin_only": True,
+                                                                                "fixture": True, "group": "exterior",
+                                                                                "light": {"type": "spot", "color": "#FF9A3C", "energy": 3.0,
+                                                                                          "range": 9.0, "angle": 75,
+                                                                                          "pos": [0.0, 0.03, -0.31]}}},
     "prop_bin_street": {"fn": "bin_street", "cat": {"kind": "bin_street", "place": "row", "standoff": 2.9, "group": "exterior"}},
     "prop_bus_shelter": {"fn": "bus_shelter", "cat": {"kind": "bus_shelter", "place": "row", "standoff": 2.2, "fixture": True, "group": "exterior",
                                                       "light": {"type": "omni", "color": LED, "energy": 1.0, "range": 4.0, "pos": [0.0, 2.3, 0.0]}}},
@@ -42,7 +53,7 @@ def _street_lamp(k: Kit, p: dict) -> None:
     h = o.part(bevel=0.01, segments=2)
     h.bx((-0.16, 1.05, 5.82), (0.16, 1.6, 5.94), "metal_dark")
     e = o.part(bevel=0.0)
-    e.bx((-0.13, 1.1, 5.815), (0.13, 1.55, 5.82), "emit_neutral")
+    e.bx((-0.13, 1.1, 5.815), (0.13, 1.55, 5.82), p.get("emit", "emit_neutral"))
     a.bx((-0.08, -0.1, 2.4), (0.08, -0.06, 2.6), "metal_grey")
     o.build()
     k.collision([], cylinders=[(0.12, 5.9, (0.0, 0.0, 2.95))])
@@ -267,7 +278,7 @@ def _wall_lamp(k: Kit, p: dict) -> None:
     a.lathe([(0.0, 0.0), (0.025, 0.0), (0.04, -0.03), (0.13, -0.09), (0.14, -0.1), (0.13, -0.095), (0.035, -0.035),
              (0.0, -0.035)], "metal_green", centre=c, segs=28)
     e = o.part(bevel=0.0)
-    e.sphere(0.035, (c[0], c[1], c[2] - 0.06), "emit_warm", segs=12, rings=6)
+    e.sphere(0.035, (c[0], c[1], c[2] - 0.06), p.get("emit", "emit_warm"), segs=12, rings=6)
     o.build()
 
 
