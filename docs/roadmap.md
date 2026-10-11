@@ -146,4 +146,4 @@ Routine and Brutal. Solo-first, with every system written authority-correct.
 8. Get spotted masked by a guard (or fire unsuppressed nearby) → `alarm_raised` → phase LOUD **without scene change** (the same `HeistMap` instance; bodies/bags/doors persist).
 9. Assault: the director goes CONTROL → ANTICIPATION → BUILD → SUSTAIN → FADE (Engine.time_scale ×4), enemies spawn out of crew LOS and path toward the crew.
 10. The bot goes down → an AI teammate revives within its revive time.
-11. Escape with ≥ 1 bag → `heist_ended(success)`; the payout calculator gives contract + loot × difficulty.
+11. Escape with the mission's required bags (Glasshouse: 2) → `heist_ended(success)`; the payout calculator gives contract + loot × difficulty.

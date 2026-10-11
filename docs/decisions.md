@@ -378,3 +378,12 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   grazing angle; black splotch decals on desk fronts (security, admin); faint alley fence posts; add a garage-ramp
   review shot; reframe admin_office (cabinet in front); U5 monitor orientation warning.
 - P1 sign-off is held until the P1 integration gate automates all 11 roadmap steps end-to-end (today: 1, 2/3, 4, 8/9).
+
+## D-060 — 2026-10-11 — P1 gate complete (all 11 steps end-to-end)
+- game/tests/integration/test_p1_vertical_slice_b.gd adds steps 3, 5, 6, 7, 10, 11 on the real Glasshouse map
+  (10/10 integration tests, two identical runs). Stated shortcuts: isolate_npc for NPCs outside the step, teleports
+  instead of walking, alarm/down injected in step 10. No missing APIs.
+- Roadmap step 11: "escape with the mission's required bags" (Glasshouse mission: 2).
+- Findings routed: ENV C, SafeLoot not parented under WorkshopSafe (the loot could be taken from a locked safe; P1
+  sign-off waits on this fix); camera variant group resolving to none (enable now that P2 is done); ENV A, a spurious
+  CASING→STEALTH hop on alarm-while-casing.
