@@ -67,6 +67,10 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | C4-03 | Safehouse art pass (G2/G3) + review shots; dedicated safehouse music track (C5 backlog) | C4-02 |
 | A3-12 | Player melee (L3.9, P2 gap): CrewMelee from Loadout.melee (MeleeDef timings, charge, knockdown), gun bash, silent stealth kills, server-validated hit; then CrewThrowables (frag / concussion / incendiary by ThrowableDef.kind, pin_pull / release) with the D-069 FP sets | L3.9, D-069 |
 | A3-13 | Enemy close-range melee (PD2 point-blank shove/strike on crew; drives `defense.melee_counter` and `defense.melee_damage_taken_mult`) | L3.9, L2 |
+| D3-01 | P5 cast (casting per heist; reuse bodies/outfits via variants): Gallery Night (curator, gallery attendants, guards, patrons in evening wear), Meridian Federal (tellers, bank manager, bank guards, customers), Rolling Thunder (armoured-car crew, convoy escort), Afterhours (bouncers, bartenders, DJ, club patrons); names/roles from ENV C's G0 docs as they land | P5 |
+| D3-02 | P5 NPC ambient animations: club dance loops ×3, bartender wipe/pour, bouncer arms-crossed idle, teller counting at a counter, curator inspecting a painting, walking-while-texting, seated/standing cower variants | P5 |
+| D3-03 | Mask bases batch 3: +12 original base shapes through `_mask_base` (face-envelope fit), for ENV B's unlock sources (payday cards, Notoriety, achievements) | P8 |
+| D3-04 | Animation polish: crew locomotion blend set (start/stop, strafe 8-way), hit-react and death variety (×3 each), downed crawl, a heavy (Wrecker) gait | P6 polish |
 | A3-11 | Hub support (QC-43/44): crew spawn + interaction without a HeistRuntime (civilian mode, HUD prompt), `hub_station` prefab emitting `station_requested(id)` | C4-01 |
 | C5-01 | Music stems: night_deposit, shadow_ledger, dockside_burn heist tracks now (unlockables vault_hymn / long_con / last_call point at those stems meanwhile); the 3 unlockables get their own stems as P5 "music ×3" | P5 music |
 

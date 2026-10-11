@@ -78,3 +78,6 @@ extends Resource
 ## Capsule placeholder only: `Visual/Head/Socket` offset from the crew origin (assembled characters
 ## carry their own `Head/Socket`, characters.md v1.2).
 @export var placeholder_head_socket: Vector3 = Vector3(0.0, 1.62, -0.3)
+## D-073: third-person body per Loadout.heister (B gives every launch slot one); no entry (generic crew) = the
+## capsule placeholder.
+@export var body_scenes: Dictionary[StringName, PackedScene] = {}
