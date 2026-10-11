@@ -179,3 +179,12 @@ item never runs out. Grenades and other thrown objects are not implemented.
 * HUD: the throwable slot still shows `Loadout.throwable`. `PerkHooks.throwable_id` is the override.
 * `defense.healing_received_mult` is not applied by `CrewHealth.heal`. If it is added there, perk
   heals get it automatically.
+
+## `team.damage_reduction_hostage` (PARAMS, LIST; D-056)
+PD2 Crew Chief shape: flat damage absorption per hostage, capped by hostage count. Every granting
+source counts (sum of absorptions), applied after `defense.damage_taken_mult`.
+
+| Field | Type | Meaning |
+|---|---|---|
+| absorb_per_hostage | float (HP) | Damage absorbed from each hit per hostage held by the crew. |
+| max_hostages | int | Hostages counted at most (0 = no cap). |
