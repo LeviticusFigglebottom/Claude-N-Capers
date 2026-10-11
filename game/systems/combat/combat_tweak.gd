@@ -64,6 +64,23 @@ static var _cached: CombatTweak = null
 @export var npc_fallback_damage: float = 10.0
 
 
+@export_group("Melee (L3.9, D-069)")
+## A melee press released before this is a quick swing; held longer it charges (MeleeDef.charge_time_s).
+@export var melee_tap_s: float = 0.2
+## Swing length / hit moment when the MeleeDef leaves swing_time_s / hit_delay_s at 0 (◇ PD2 knife shape).
+@export var melee_swing_s: float = 0.6
+@export var melee_hit_delay_s: float = 0.25
+## Hit volume: cone (full angle) out to MeleeDef.range_m from the eye.
+@export var melee_cone_deg: float = 50.0
+## A knockdown (MeleeDef.knockdown chance x weapon.melee_knockdown_mult) stuns the NPC this long ◇.
+@export var melee_knockdown_s: float = 1.2
+## Gun bash (no melee item equipped): PD2 weapon butt ◇.
+@export var bash_damage: float = 30.0
+@export var bash_range_m: float = 1.5
+@export var bash_knockdown: float = 0.5
+@export var bash_swing_s: float = 0.55
+@export var bash_hit_delay_s: float = 0.2
+
 @export_group("Piercing (A3-06, L3.4)")
 ## Physics layer 9 `bullet_penetrable` (thin walls): stops bullets unless the weapon has wall_pierce.
 @export_flags_3d_physics var penetrable_mask: int = 1 << 8

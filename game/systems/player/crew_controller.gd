@@ -78,6 +78,8 @@ var _send_accum: float = 0.0
 ## Combat components (A1-08); null only for a scene without them.
 @onready var health: CrewHealth = get_node_or_null("Health") as CrewHealth
 @onready var weapons: CrewWeapons = get_node_or_null("Weapons") as CrewWeapons
+## L3.9 melee (CrewMelee), ticked with the weapons.
+@onready var melee: CrewMelee = get_node_or_null("Melee") as CrewMelee
 @onready var _collision: CollisionShape3D = $Collision
 @onready var _head: Node3D = $Head
 
@@ -297,6 +299,8 @@ func _physics_process(delta: float) -> void:
 		_simulate(delta)  # client-side prediction of own movement
 		if weapons != null:
 			weapons.client_tick(intent, delta)
+		if melee != null:
+			melee.tick(intent, delta)  # presentation on the owning client (hits are server-side)
 		_client_send(delta)
 
 
@@ -372,6 +376,8 @@ func _tick_server_actions(delta: float) -> void:
 		health.server_tick(delta)
 	if weapons != null:
 		weapons.server_tick(intent, delta)
+	if melee != null:
+		melee.tick(intent, delta)
 	if _runtime != null and _runtime.interaction != null:
 		_runtime.interaction.tick(self, intent, delta)
 	if _runtime != null:
