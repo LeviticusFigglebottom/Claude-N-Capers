@@ -69,7 +69,12 @@ func test_host_client_parity() -> void:
 	assert_true(_rt != null, "host launched the dev_sandbox")
 	if _rt == null:
 		return
+	# The replica exists before `await launch_client()` returns on the client (bring-up waits): poll until it has.
 	var snap: Dictionary = await _snapshot()
+	var t0: int = Time.get_ticks_msec()
+	while not bool(snap.get("launch_client", false)) and Time.get_ticks_msec() - t0 < int(_budget(20.0) * 1000.0):
+		await wait_seconds(0.25)
+		snap = await _snapshot()
 	var ok: bool = bool(snap.get("has_rt", false))
 	assert_true(ok, "client built a replica (%s)" % snap)
 	if ok:
@@ -180,7 +185,9 @@ func _check_door_code_bag() -> void:
 			secured[0] = true
 	EventBus.loot_secured.connect(on_secured)
 	var zone: Node3D = _rt.map.get_node(^"Zones/SecureLootVan/Shape") as Node3D
-	bag.release(Vector3(zone.global_position.x, 0.3, zone.global_position.z), Vector3.ZERO, false)
+	# Onto the van roof (inside the zone): at floor height the release point is inside VanSecure's collision box,
+	# and the depenetration pushed the bag below the floor (out of the zone) whenever a launch came before.
+	bag.release(Vector3(zone.global_position.x, zone.global_position.y + 1.1, zone.global_position.z), Vector3.ZERO, false)
 	var ok: bool = await wait_until(func() -> bool: return secured[0], _budget(10.0))
 	EventBus.loot_secured.disconnect(on_secured)
 	assert_true(ok, "bag secured on the server")

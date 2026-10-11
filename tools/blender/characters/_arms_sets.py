@@ -378,10 +378,11 @@ def _revolver_clips(row: dict) -> dict:
 REVOLVER_DATA = weapon_data("revolver")
 REVOLVER = FPSet(
     name="revolver", weapon="wpn_marshal_357",
-    markers={"left_ik": v3(-0.025, 0.0115, -0.020), "aim": v3(0.0, -0.026, 0.0645),
-             "cyl": v3(0.0, 0.030, 0.034), "cyl_len": 0.040, "cyl_r": 0.019,
-             "hinge": v3(-0.007, 0.030, 0.008), "rod_tip": v3(0.0, 0.094, 0.034),
-             "loader": v3(0.0, 0.0, 0.034)},
+    # D2-04: ENV B's wpn_marshal_357 (LeftHandIK, AimPoint; Crane pivot, Cylinder 10..54 mm, r 21 mm)
+    markers={"left_ik": v3(-0.028, 0.0054, -0.020), "aim": v3(0.0, -0.008, 0.082),
+             "cyl": v3(0.0, 0.032, 0.0478), "cyl_len": 0.044, "cyl_r": 0.021,
+             "hinge": v3(-0.006, 0.032, 0.0288), "rod_tip": v3(0.0, 0.086, 0.0478),
+             "loader": v3(0.0, 0.0, 0.0478)},
     hip=((0.105, 0.36, -0.175), 5.0, 2.0, -4.0),
     ads_dist=0.31, sh=(0.0, 0.02, -0.08),
     pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
@@ -449,12 +450,14 @@ def _break_clips(row: dict, rounds: int, fire: int) -> dict:
 BREAK_DATA = _b3_row("break_action", BREAK_DEFAULTS)
 BREAK_ACTION = FPSet(
     name="break_action", weapon="wpn_reaper_db",
-    markers={"left_ik": v3(-0.024, 0.320, 0.018), "aim": v3(0.0, 0.020, 0.0705),
-             "hinge": v3(0.0, 0.136, 0.012), "chambers": (v3(-0.0105, 0.120, 0.046), v3(0.0105, 0.120, 0.046)),
-             "lever": v3(0.0, 0.020, 0.064), "butt": v3(0.0, -0.340, -0.020),
-             "magwell": v3(0.0, 0.120, 0.046), "magwell_axis": v3(0.0, -1.0, 0.0)},
+    # D2-04: ENV B's wpn_reaper_db (LeftHandIK on the Breech fore-end, AimPoint = the tang sight, Breech
+    # pivot = the hinge pin, the shells' bases at the breech face)
+    markers={"left_ik": v3(-0.022, 0.200, 0.034), "aim": v3(0.0, -0.016, 0.086),
+             "hinge": v3(0.0, 0.066, 0.028), "chambers": (v3(-0.012, 0.071, 0.054), v3(0.012, 0.071, 0.054)),
+             "lever": v3(0.0, 0.020, 0.078), "butt": v3(0.0, -0.346, 0.0),
+             "magwell": v3(0.0, 0.071, 0.054), "magwell_axis": v3(0.0, -1.0, 0.0)},
     hip=((0.13, 0.20, -0.18), 7.0, 1.5, -6.0),
-    ads_dist=0.19,
+    ads_dist=0.20,
     sprint=((0.15, 0.21, -0.22), 28.0, -8.0, -40.0),
     lowered=((0.16, 0.06, -0.56), 20.0, -55.0, -35.0),
     reload_tilt=((0.07, 0.24, -0.15), 14.0, 16.0, 20.0),
@@ -471,12 +474,14 @@ LAUNCHER_FIRE = 14
 LAUNCHER_DATA = _b3_row("launcher", LAUNCHER_DEFAULTS)
 LAUNCHER = FPSet(
     name="launcher", weapon="wpn_thumper_40",
-    markers={"left_ik": v3(-0.030, 0.270, 0.012), "aim": v3(0.0, 0.060, 0.0985),
-             "hinge": v3(0.0, 0.140, 0.006), "chambers": (v3(0.0, 0.118, 0.052),),
-             "lever": v3(0.0, 0.020, 0.074), "butt": v3(0.0, -0.320, -0.020),
-             "magwell": v3(0.0, 0.118, 0.052), "magwell_axis": v3(0.0, -1.0, 0.0)},
+    # D2-04: ENV B's wpn_thumper_40 (LeftHandIK on the Forend, AimPoint = the leaf sight, Breech pivot,
+    # the GrenadeRound base at the breech face)
+    markers={"left_ik": v3(-0.024, 0.170, 0.0265), "aim": v3(0.0, 0.110, 0.1097),
+             "hinge": v3(0.0, 0.056, 0.026), "chambers": (v3(0.0, 0.062, 0.058),),
+             "lever": v3(0.0, 0.020, 0.080), "butt": v3(0.0, -0.298, 0.0),
+             "magwell": v3(0.0, 0.062, 0.058), "magwell_axis": v3(0.0, -1.0, 0.0)},
     hip=((0.13, 0.21, -0.19), 7.0, 2.5, -6.0),
-    ads_dist=0.22,
+    ads_dist=0.27,
     sprint=((0.15, 0.21, -0.23), 28.0, -8.0, -40.0),
     lowered=((0.16, 0.06, -0.57), 20.0, -55.0, -35.0),
     reload_tilt=((0.07, 0.24, -0.16), 14.0, 18.0, 20.0),
@@ -487,9 +492,16 @@ LAUNCHER = FPSet(
 )
 
 # -- crossbow (Vise crossbow: lever-cocked, one bolt) -------------------------------------------
-#: ``String`` slides STRING_TRAVEL m along its local +Z (back) from the released (scene) pose to the
-#: latch; the bolt rides the ``magazine`` bone (``Magwell``).
+#: The string is two halves, ``StringUpper`` (left) / ``StringLower`` (right) (ENV B's Vise, ``_vise.py``): each half
+#: node's origin is its prod-tip anchor (limb-tip axle, Blender weapon (-/+0.290, 0.339, 0.066)) and its ``...Cord``
+#: runs to the string CENTRE, where they meet. The model RESTS RELEASED (brace): the halves meet STRING_TRAVEL m ahead
+#: of the nock, Blender (0, 0.176, 0.066) = Godot model (0, 0.066, -0.176). Latched, the centre is on the ``Magwell``
+#: (Blender (0, 0.016, 0.066) = Godot (0, 0.066, -0.016)) with the bolt nocked. The cocking hand pulls the centre from
+#: released to latched; ENV A bends each half from its anchor to the centre (``string_centre``). The bolt rides the
+#: ``magazine`` bone (``Magwell``).
 STRING_TRAVEL = 0.160
+STRING_LATCHED = (0.0, 0.016, 0.066)            # Blender weapon space (x right, y muzzle, z up)
+STRING_ANCHOR_X, STRING_ANCHOR_Y = 0.290, 0.339  # the halves' prod-tip anchors (-/+x, y, STRING_LATCHED z)
 CROSSBOW_DEFAULTS = {"reload_time_s": 2.0, "equip_time_s": 0.55, "fire_rate_rpm": 30.0}
 CROSSBOW_FIRE = 10
 
@@ -507,16 +519,21 @@ def _crossbow_clips(row: dict) -> dict:
 CROSSBOW_DATA = _b3_row("crossbow", CROSSBOW_DEFAULTS)
 CROSSBOW = FPSet(
     name="crossbow", weapon="wpn_vise_crossbow",
-    markers={"left_ik": v3(-0.024, 0.200, 0.008), "aim": v3(0.0, 0.010, 0.0905),
-             "string_latched": v3(0.0, 0.060, 0.052), "string_rest": v3(0.0, 0.220, 0.052),
-             "magwell": v3(0.0, 0.070, 0.052), "magwell_axis": v3(0.0, 1.0, 0.0), "bolt_len": 0.36,
-             "prod": v3(0.0, 0.330, 0.040), "butt": v3(0.0, -0.320, -0.010)},
+    # D2-04: ENV B's wpn_vise_crossbow: the left hand on the vertical Foregrip (palm on LeftHandIK),
+    # AimPoint = the peep, the string halves rest released (string_rest) and latch on the Magwell, BoltArrow nocked
+    # on Magwell (0.40 m); string_latched / string_rest = the string CENTRE (where StringUpper meets StringLower)
+    markers={"left_ik": v3(-0.016, 0.250, -0.006), "left_palm": v3(-0.016, 0.250, -0.006),
+             "aim": v3(0.0, -0.040, 0.1122),
+             "string_latched": v3(*STRING_LATCHED),
+             "string_rest": v3(STRING_LATCHED[0], STRING_LATCHED[1] + STRING_TRAVEL, STRING_LATCHED[2]),
+             "magwell": v3(0.0, 0.016, 0.066), "magwell_axis": v3(0.0, 1.0, 0.0), "bolt_len": 0.40,
+             "prod": v3(0.0, 0.375, 0.053), "butt": v3(0.0, -0.316, 0.020)},
     hip=((0.13, 0.20, -0.18), 7.0, 1.5, -6.0),
-    ads_dist=0.17,
+    ads_dist=0.12,
     sprint=((0.15, 0.21, -0.22), 28.0, -8.0, -40.0),
     lowered=((0.16, 0.06, -0.56), 20.0, -55.0, -35.0),
     reload_tilt=((0.050, 0.30, -0.215), 12.0, -24.0, 6.0),
-    support="handguard", blade=44.0, blade_ads=48.0, reload="crossbow",
+    support="vgrip", blade=44.0, blade_ads=48.0, reload="crossbow", pole_l=(-0.7, -0.25, -0.65),
     recoil={"back": 0.026, "up": 0.010, "pitch": 4.5, "roll": 1.0, "yaw": 0.6},
     recoil_ads={"back": 0.018, "up": 0.006, "pitch": 2.6, "roll": 0.6, "yaw": 0.3},
     clips=_crossbow_clips(CROSSBOW_DATA),
@@ -568,11 +585,13 @@ def _lever_clips(row: dict) -> dict:
 LEVER_DATA = _b3_row("lever", LEVER_DEFAULTS)
 LEVER = FPSet(
     name="lever", weapon="wpn_shrike_44",
-    markers={"left_ik": v3(-0.023, 0.290, 0.020), "aim": v3(0.0, 0.170, 0.0655),
-             "lever_pivot": v3(0.0, 0.072, -0.004), "magwell": v3(0.017, 0.060, 0.020),
-             "magwell_axis": v3(-0.10, 0.99, 0.0), "butt": v3(0.0, -0.350, -0.015)},
+    # D2-04: ENV B's wpn_shrike_44 (LeftHandIK on the Forend, AimPoint = the buckhorn rear sight on the
+    # barrel, Lever pivot at its front end); the loading gate on the receiver's right side
+    markers={"left_ik": v3(-0.022, 0.250, 0.0275), "aim": v3(0.0, 0.270, 0.074),
+             "lever_pivot": v3(0.0, 0.124, 0.010), "magwell": v3(0.017, 0.095, 0.028),
+             "magwell_axis": v3(-0.10, 0.99, 0.0), "butt": v3(0.0, -0.320, -0.010)},
     hip=((0.13, 0.20, -0.18), 7.0, 1.5, -6.0),
-    ads_dist=0.34,
+    ads_dist=0.44,
     sprint=((0.15, 0.21, -0.22), 28.0, -8.0, -40.0),
     lowered=((0.16, 0.06, -0.56), 20.0, -55.0, -35.0),
     reload_tilt=((-0.030, 0.31, -0.185), 14.0, 6.0, -60.0),
@@ -586,9 +605,12 @@ LEVER = FPSet(
 #: The bow is held in the LEFT hand: the ``weapon`` bone is animated every frame so the bow's origin
 #: (its riser grip) sits in hand.L at the mirrored grip offset (``fp.offhand_grip``); the right hand
 #: holds the nocked arrow on the string. Weapon axes: Y = arrow direction, Z = up along the riser.
-BOW_BRACE = 0.175                   # string (nock) behind the grip at rest (m)
+#: D2-04: ENV B's wpn_thorn_bow: the nock (CarbonArrow / Magwell / LeftHandIK) 155 mm behind and 50 mm
+#: above the grip pivot, the arrow 14 mm left of the riser (on the rest); cam axles at y -0.125, z +-0.405
+BOW_BRACE = 0.155                   # string (nock) behind the grip at rest (m)
 BOW_DRAW = 0.400                    # extra string travel at full draw (m)
-BOW_NOCK_Z = 0.058                  # nocking point / arrow height above the grip pivot
+BOW_NOCK_Z = 0.050                  # nocking point / arrow height above the grip pivot
+BOW_ARROW_X = -0.014                # the arrow on the rest, left of the riser
 BOW_DEFAULTS = {"reload_time_s": 1.0, "equip_time_s": 0.6}
 BOW_DRAW_FRAMES = 21                # 0.7 s: last frame = full draw (= hold frame 0)
 BOW_RELEASE = 15
@@ -612,9 +634,9 @@ BOW_DATA = _b3_row("bow", BOW_DEFAULTS)
 BOW = FPSet(
     name="bow", weapon="wpn_thorn_bow",
     markers={"left_ik": v3(0.0, 0.0, 0.0), "aim": v3(0.0, 0.40, BOW_NOCK_Z),
-             "nock": v3(0.0, -BOW_BRACE, BOW_NOCK_Z), "rest": v3(-0.006, 0.010, BOW_NOCK_Z),
-             "cam_upper": v3(0.0, -0.045, 0.385), "cam_lower": v3(0.0, -0.045, -0.330),
-             "magwell": v3(0.0, -BOW_BRACE, BOW_NOCK_Z), "magwell_axis": v3(0.0, 1.0, 0.0), "arrow_len": 0.72},
+             "nock": v3(BOW_ARROW_X, -BOW_BRACE, BOW_NOCK_Z), "rest": v3(BOW_ARROW_X, 0.010, BOW_NOCK_Z),
+             "cam_upper": v3(0.0, -0.125, 0.405), "cam_lower": v3(0.0, -0.125, -0.405),
+             "magwell": v3(BOW_ARROW_X, -BOW_BRACE, BOW_NOCK_Z), "magwell_axis": v3(0.0, 1.0, 0.0), "arrow_len": 0.67},
     # the bow (left hand) at rest: low left, canted, an arrow nocked
     hip=((-0.165, 0.42, -0.225), -8.0, 4.0, 24.0),
     ads_dist=0.0, ads_hold=((-0.115, 0.45, -0.185), -5.0, 3.0, 18.0),
@@ -654,11 +676,13 @@ def _flame_clips(row: dict) -> dict:
 FLAME_DATA = _b3_row("flamethrower", FLAME_DEFAULTS)
 FLAMETHROWER = FPSet(
     name="flamethrower", weapon="wpn_furnace_ft",
-    markers={"left_ik": v3(0.0, 0.300, -0.050), "vgrip": v3(0.0, 0.300, -0.008), "aim": v3(0.0, 0.040, 0.1235),
-             "magwell": v3(0.0, 0.130, -0.018), "magwell_axis": v3(0.0, 0.0, 1.0),
-             "pilot": v3(0.0, 0.640, 0.022), "butt": v3(0.0, -0.300, 0.030)},
-    hip=((0.13, 0.20, -0.20), 6.0, 1.5, -5.0),
-    ads_dist=0.20,
+    # D2-04: ENV B's wpn_furnace_ft: the left hand on the vertical FrontHandle (palm on LeftHandIK), AimPoint
+    # on the post sight rail, the FuelTank under the housing (Magwell = its top), PilotLight at the nozzle
+    markers={"left_ik": v3(-0.016, 0.380, -0.001), "left_palm": v3(-0.016, 0.380, -0.001), "aim": v3(0.0, 0.030, 0.106),
+             "magwell": v3(0.0, 0.200, 0.033), "magwell_axis": v3(0.0, 0.0, 1.0),
+             "pilot": v3(0.0, 0.512, 0.051), "butt": v3(0.0, -0.272, 0.030)},
+    hip=((0.13, 0.16, -0.20), 6.0, 1.5, -5.0),         # D2-04: pulled back (the real FrontHandle is at y 0.38)
+    ads_dist=0.19,
     sprint=((0.15, 0.20, -0.25), 26.0, -8.0, -36.0),
     lowered=((0.16, 0.05, -0.58), 20.0, -55.0, -35.0),
     reload_tilt=((0.07, 0.21, -0.17), 16.0, 16.0, 26.0),
@@ -666,7 +690,7 @@ FLAMETHROWER = FPSet(
     pole_l=(-0.7, -0.25, -0.65),
     recoil={"back": 0.004, "up": 0.002, "pitch": 0.5, "roll": 0.3, "yaw": 0.2},
     recoil_ads={"back": 0.003, "up": 0.001, "pitch": 0.3, "roll": 0.2, "yaw": 0.1},
-    mag={"top": 0.0, "bottom": -0.165, "hw": 0.045, "depth": 0.090, "grip": "box"},
+    mag={"top": 0.0, "bottom": -0.090, "hw": 0.040, "depth": 0.210, "grip": "box"},
     clips=_flame_clips(FLAME_DATA),
 )
 
@@ -691,15 +715,18 @@ def _saw_clips(row: dict) -> dict:
 SAW_DATA = _b3_row("saw", SAW_DEFAULTS)
 SAW = FPSet(
     name="saw", weapon="wpn_rotor_saw",
-    markers={"left_ik": v3(-0.072, 0.135, 0.080), "vgrip": v3(-0.072, 0.135, 0.080), "arbor": v3(-0.042, 0.300, 0.030),
+    # D2-04: ENV B's wpn_rotor_saw: the left hand palm-down on the transverse top FrontHandle (LeftHandIK on
+    # its left half; the palm rests on the bar top, 136 mm), the Blade (r 150 mm) centred on the arbor at
+    # x 0 (the arm on its right, the nut on its left)
+    markers={"left_ik": v3(-0.030, 0.205, 0.122), "top_bar": v3(-0.030, 0.203, 0.140), "arbor": v3(0.0, 0.420, -0.010),
              "blade_r": 0.150,
-             "magwell": v3(-0.042, 0.300, 0.030), "magwell_axis": v3(1.0, 0.0, 0.0), "aim": v3(0.0, 0.0, 0.15)},
-    hip=((0.14, 0.30, -0.315), 10.0, 6.0, -4.0),
+             "magwell": v3(0.0, 0.420, -0.010), "magwell_axis": v3(1.0, 0.0, 0.0), "aim": v3(0.0, 0.110, 0.096)},
+    hip=((0.14, 0.26, -0.315), 10.0, 6.0, -4.0),       # D2-04: pulled back (the left hand on the top bar)
     ads_dist=0.0, ads_hold=((0.11, 0.32, -0.285), 6.0, 7.0, -2.0),
     sprint=((0.15, 0.21, -0.26), 22.0, -14.0, -26.0),
     lowered=((0.15, 0.08, -0.57), 18.0, -50.0, -30.0),
     reload_tilt=((0.10, 0.17, -0.28), 36.0, 20.0, 46.0),
-    support="vgrip", blade=26.0, blade_ads=28.0, reload="blade",
+    support="top", blade=26.0, blade_ads=28.0, reload="blade",
     pole_l=(-0.6, -0.2, -0.75), pole_l_ads=(-0.6, -0.2, -0.75),
     recoil={"back": 0.004, "up": 0.003, "pitch": 0.6, "roll": 0.5, "yaw": 0.3},
     recoil_ads={"back": 0.003, "up": 0.002, "pitch": 0.4, "roll": 0.3, "yaw": 0.2},
@@ -728,9 +755,12 @@ def _minigun_clips(row: dict) -> dict:
 MINIGUN_DATA = _b3_row("minigun", MINIGUN_DEFAULTS)
 MINIGUN = FPSet(
     name="minigun", weapon="wpn_cyclone_rotary",
-    markers={"left_ik": v3(-0.090, 0.200, 0.020), "vgrip": v3(-0.090, 0.200, 0.020), "aim": v3(0.0, 0.0, 0.20),
-             "magwell": v3(-0.110, 0.040, -0.030), "magwell_axis": v3(0.0, 0.0, 1.0),
-             "feed": v3(-0.058, 0.060, 0.030), "rotor": v3(0.0, 0.300, 0.010)},
+    # D2-04: ENV B's wpn_cyclone_rotary: the left hand on the vertical FrontHandle under the housing (palm on
+    # LeftHandIK), the AmmoBox on the left (Magwell = its top right corner: the box is 117 mm wide, centred
+    # 54.5 mm left of it), the belt chute into the left of the housing, Rotor axis at z 80 mm
+    markers={"left_ik": v3(-0.016, 0.090, -0.014), "left_palm": v3(-0.016, 0.090, -0.014), "aim": v3(0.0, -0.060, 0.1892),
+             "magwell": v3(-0.048, 0.0, 0.036), "magwell_axis": v3(0.0, 0.0, 1.0),
+             "feed": v3(-0.060, 0.0, 0.022), "rotor": v3(0.0, 0.124, 0.080)},
     hip=((0.11, 0.22, -0.30), 9.0, 7.0, -3.0),
     ads_dist=0.0, ads_hold=((0.085, 0.25, -0.255), 6.0, 5.0, -2.0),
     sprint=((0.13, 0.18, -0.33), 20.0, -6.0, -18.0),
@@ -740,7 +770,7 @@ MINIGUN = FPSet(
     pole_l=(-0.6, -0.2, -0.75), pole_l_ads=(-0.6, -0.2, -0.75),
     recoil={"back": 0.006, "up": 0.003, "pitch": 0.8, "roll": 0.5, "yaw": 0.4},
     recoil_ads={"back": 0.005, "up": 0.002, "pitch": 0.6, "roll": 0.4, "yaw": 0.3},
-    mag={"top": 0.0, "bottom": -0.170, "hw": 0.050, "depth": 0.200, "grip": "box"},
+    mag={"top": 0.004, "bottom": -0.115, "hw": 0.0585, "depth": 0.144, "grip": "box", "cx": -0.0545},
     clips=_minigun_clips(MINIGUN_DATA),
 )
 
@@ -800,9 +830,173 @@ SHOTGUN_BOX = FPSet(
 #: the D-055 sets (clips in ``_arms_breech`` / ``_arms_bow`` / ``_arms_heavy``)
 B3_SETS = ("break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun")
 
+# =============================================================================================
+# D2-04: non-gun sets (clips in ``_arms_melee`` / ``_arms_items``) and the gun ``bash`` (quick melee)
+# =============================================================================================
+#: Lengths come from ENV B's MeleeDef / ThrowableDef / DeployableDef data where a field exists
+#: (``charge_time_s``, ``deploy_time_s``), else from the defaults below (DATA_PENDING in test_arms).
+CONTENT_DIR = WEAPONS_DIR.parent
+
+
+def def_rows(kind: str) -> list[dict]:
+    """``[{field: value}]`` of ``content/data/<kind>/*.tres`` (sorted by file name): numbers as floats,
+    StringName / string fields (id, kind, anim_set) as bare strings."""
+    out = []
+    d = CONTENT_DIR / kind
+    if not d.is_dir():
+        return out
+    for path in sorted(d.glob("*.tres")):
+        row: dict = {}
+        for line in path.read_text().splitlines():
+            m = _RX_KV.match(line.strip())
+            if not m:
+                continue
+            k, v = m.group(1), m.group(2).strip()
+            if v.startswith(("&\"", "\"")):
+                row.setdefault(k, v.lstrip("&").strip('"'))
+                continue
+            try:
+                row.setdefault(k, float(v))
+            except ValueError:
+                pass
+        out.append(row)
+    return out
+
+
+def def_row(kind: str, anim_set: str, match=None) -> dict:
+    """The first row of ``kind`` whose ``anim_set`` is ``anim_set``, else (no anim_set field yet) the first
+    one ``match(row)`` accepts; {} when none."""
+    rows = def_rows(kind)
+    for r in rows:
+        if r.get("anim_set") == anim_set:
+            return r
+    for r in rows:
+        if "anim_set" not in r and match is not None and match(r):
+            return r
+    return {}
+
+
+def _len(row: dict, key: str, default_s: float) -> int:
+    v = row.get(key)
+    return _f(float(v)) if isinstance(v, float) and v > 0.0 else _f(default_s)
+
+
+# -- melee -------------------------------------------------------------------------------------
+#: melee kinds: (swing frames, hit frame, charged swing frames, hit frame, draw frames). PD2: a quick
+#: swing lands ~0.2 s after the press; the charged swing is quicker to land (the wind-up is done).
+MELEE_TIMING = {"melee_knife": (18, 6, 18, 5, 12), "melee_blunt": (24, 10, 22, 7, 15),
+                "melee_blade": (22, 9, 20, 7, 14)}
+MELEE_DEFAULTS = {"charge_time_s": 1.0}
+MELEE_CHARGE_LOOP = 30
+#: MeleeDef ids without an ``anim_set`` field map by name until ENV B adds it (contract proposal)
+MELEE_MATCH = {"melee_knife": ("knife", "dagger", "shank"), "melee_blunt": ("baton", "bat", "club", "hammer", "pipe",
+                                                                          "crowbar", "wrench"),
+               "melee_blade": ("machete", "sword", "katana", "axe", "cleaver")}
+
+
+def _melee_clips(name: str, row: dict) -> dict:
+    sw, hit, csw, chit, dr = MELEE_TIMING[name]
+    nc = _len(row, "charge_time_s", MELEE_DEFAULTS["charge_time_s"])
+    return {
+        "idle": {"frames": 90, "loop": True},
+        "sprint": {"frames": 18, "loop": True},
+        "draw": _one(dr, {"ready": dr}),
+        "holster": _one(dr, {"gone": dr}),
+        "swing": _one(sw, {"hit": hit, "done": sw}),
+        "charge_start": _one(nc, {"charged": nc}),
+        "charge": {"frames": MELEE_CHARGE_LOOP, "loop": True, "events": {}},
+        "charge_swing": _one(csw, {"hit": chit, "done": csw}),
+    }
+
+
+def _item_set(name: str, hip: tuple, sprint: tuple, lowered: tuple, clips: dict, support: str, data: dict) -> FPSet:
+    s = FPSet(name=name, weapon="", markers={"left_ik": v3(0.0, 0.0, 0.0), "aim": v3(0.0, 0.0, 0.0)}, hip=hip,
+              ads_dist=0.0, sprint=sprint, lowered=lowered, reload_tilt=hip, support=support, blade=0.0,
+              blade_ads=0.0, reload="none", clips=clips, pole_l=(-0.6, -0.4, -0.7), pole_r=(0.7, -0.3, -0.65))
+    s.markers["data"] = data
+    return s
+
+
+def _melee_set(name: str) -> FPSet:
+    keys = MELEE_MATCH[name]
+    row = def_row("melee", name, lambda r: any(k in str(r.get("id", "")) for k in keys))
+    return _item_set(name, ((0.15, 0.30, -0.20), 0.0, 0.0, 0.0), ((0.16, 0.24, -0.26), 0.0, 0.0, 0.0),
+                     ((0.17, 0.12, -0.50), 0.0, 0.0, 0.0), _melee_clips(name, row), "melee", row)
+
+
+MELEE_KNIFE = _melee_set("melee_knife")
+MELEE_BLUNT = _melee_set("melee_blunt")
+MELEE_BLADE = _melee_set("melee_blade")
+
+# -- throwable (frag / concussion / incendiary: the pin pulled, an overhand or underhand throw) -----
+THROW_DRAW, THROW_PIN, THROW_N, THROW_RELEASE, THROW_HOLSTER = 18, 9, 24, 11, 12
+
+
+def _throw_clips() -> dict:
+    return {
+        "idle": {"frames": 90, "loop": True},
+        "sprint": {"frames": 18, "loop": True},
+        "draw": _one(THROW_DRAW, {"pin_pull": THROW_PIN, "ready": THROW_DRAW}),
+        "holster": _one(THROW_HOLSTER, {"gone": THROW_HOLSTER}),
+        "throw": _one(THROW_N, {"release": THROW_RELEASE, "done": THROW_N}),
+        "throw_low": _one(THROW_N, {"release": THROW_RELEASE + 1, "done": THROW_N}),
+    }
+
+
+THROWABLE_DATA = def_row("throwables", "throwable", lambda r: r.get("kind") in ("frag", "concussion", "incendiary"))
+THROWABLE = _item_set("throwable", ((0.14, 0.30, -0.18), 0.0, 0.0, 0.0), ((0.16, 0.24, -0.26), 0.0, 0.0, 0.0),
+                      ((0.16, 0.12, -0.50), 0.0, 0.0, 0.0), _throw_clips(), "throw", THROWABLE_DATA)
+
+# -- deployables: bag (ammo / doctor / body bag case / armor), small (ECM, trip mine, FAK), sentry -----
+#: ``place`` = the deploy hold (DeployableDef.deploy_time_s; ``place`` lands on its end: ENV A spawns the
+#: prefab there) + DEPLOY_RECOVER frames back off screen
+DEPLOY_RECOVER = 12
+DEPLOY_DEFAULTS = {"deploy_bag": 2.0, "deploy_small": 2.0, "deploy_sentry": 2.0}
+DEPLOY_KINDS = {"deploy_bag": ("ammo_bag", "doctor_bag", "body_bag_case", "armor_bag"),
+                "deploy_small": ("ecm", "trip_mine", "fak"), "deploy_sentry": ("sentry",)}
+DEPLOY_DRAW = {"deploy_bag": 15, "deploy_small": 12, "deploy_sentry": 24}
+
+
+def _deploy_set(name: str) -> FPSet:
+    row = def_row("deployables", name, lambda r: r.get("kind") in DEPLOY_KINDS[name])
+    n = _len(row, "deploy_time_s", DEPLOY_DEFAULTS[name])
+    dr = DEPLOY_DRAW[name]
+    clips = {"idle": {"frames": 90, "loop": True},
+             "draw": _one(dr, {"ready": dr}),
+             "holster": _one(12, {"gone": 12}),
+             "place": _one(n + DEPLOY_RECOVER, {"place": n, "done": n + DEPLOY_RECOVER})}
+    return _item_set(name, ((0.10, 0.34, -0.28), 0.0, 0.0, 0.0), ((0.10, 0.30, -0.30), 0.0, 0.0, 0.0),
+                     ((0.10, 0.16, -0.62), 0.0, 0.0, 0.0), clips, "deploy", row)
+
+
+DEPLOY_BAG = _deploy_set("deploy_bag")
+DEPLOY_SMALL = _deploy_set("deploy_small")
+DEPLOY_SENTRY = _deploy_set("deploy_sentry")
+
+#: the D2-04 non-gun sets
+ITEM_SETS = ("melee_knife", "melee_blunt", "melee_blade", "throwable", "deploy_bag", "deploy_small", "deploy_sentry")
+
 B3: dict[str, FPSet] = {s.name: s for s in (BREAK_ACTION, LEVER, BOW, CROSSBOW, LAUNCHER, FLAMETHROWER, SAW, MINIGUN)}
 SETS: dict[str, FPSet] = {s.name: s for s in (PISTOL, SMG, RIFLE, SHOTGUN, LMG, SNIPER, AKIMBO, REVOLVER, *B3.values(),
                                               SHOTGUN_BOX)}
+GUN_SETS = tuple(SETS)
+
+# -- the gun bash (PD2 quick melee with the weapon out): one ``bash`` clip per gun set ---------------
+#: (frames, hit) by family: one-handed / pistols are quick, heavy guns slow
+BASH = {"pistol": (15, 6), "long": (18, 7), "heavy": (24, 10), "bow": (18, 7)}
+BASH_FAMILY = {"pistol": "pistol", "revolver": "pistol", "akimbo": "pistol", "lmg": "heavy", "minigun": "heavy",
+               "flamethrower": "heavy", "saw": "heavy", "bow": "bow"}
+
+
+def bash_family(name: str) -> str:
+    return BASH_FAMILY.get(name, "long")
+
+
+for _s in list(SETS.values()):
+    _n, _h = BASH[bash_family(_s.name)]
+    _s.clips["bash"] = _one(_n, {"hit": _h, "done": _n})
+SETS.update({s.name: s for s in (MELEE_KNIFE, MELEE_BLUNT, MELEE_BLADE, THROWABLE, DEPLOY_BAG, DEPLOY_SMALL,
+                                  DEPLOY_SENTRY)})
 
 
 def clip_table() -> dict[str, dict]:

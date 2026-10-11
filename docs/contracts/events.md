@@ -1,4 +1,4 @@
-# Contract: EventBus events (v1.0)
+# Contract: EventBus events (v1.1)
 
 Code: `game/core/event_bus.gd` (the signal list there is authoritative; this file adds emitter and
 replication rules). Rules: architecture.md §5.
@@ -40,8 +40,9 @@ Unmarked events are server-only facts (clients learn the outcome through synced 
 ```
 { "heist_id": StringName, "success": bool, "stealth": bool, "time_s": float, "difficulty": int,
   "contract_pay": int (HeistDef.base_payout, UNSCALED; ENV B applies all difficulty/bonus multipliers), "loot": [{ "loot_id": StringName, "value": int }], "small_loot": int,
-  "crew": [{ "slot": int, "is_ai": bool, "kills": int, "specials_killed": int, "downs": int,
-             "civilians_killed": int, "in_custody": bool, "escaped": bool }],
+  "crew": [{ "slot": int, "is_ai": bool, "name": String, "kills": int, "specials_killed": int, "downs": int,
+             "civilians_killed": int, "shots": int, "hits": int, "headshots": int,
+             "in_custody": bool, "escaped": bool }],   # v1.1 (D-071): name/shots/hits/headshots, ui_hud v1.7 rules
   "pagers_answered": int, "seed": int, "variants": Dictionary,
   "fail_reason": StringName }   # &"" on success; e.g. &"stealth_only_alarm", &"all_custody", &"abort" (D-038)
 ```

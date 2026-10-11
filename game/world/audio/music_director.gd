@@ -2,6 +2,9 @@
 ## BAR boundary of the playing stem (beat-synced from playback position), keeping the musical
 ## phrase position. Win/lose stingers on heist_ended. Headless-safe (no audio output required:
 ## tests read target_stem / current_stem).
+## Track choice (D-062): in a heist, `launch_options["music_track"]` when non-empty, else the map's
+## HeistDef.music_track, else `track_id`. Hub jukebox: a bare `MusicDirector.new()` with
+## `listen_to_event_bus = false` plays any table track via preview() / stop_preview().
 class_name MusicDirector
 extends Node
 
@@ -29,6 +32,8 @@ var _players: Array[AudioStreamPlayer] = []
 var _active: int = -1
 var _stinger: AudioStreamPlayer = null
 var _tweens: Array[Tween] = [null, null]
+## True once the track came from the heist (launch options / HeistDef), not the `track_id` export.
+var _heist_track: bool = false
 
 
 ## Pure mapping (PD2 music logic): stealth bed while casing/stealth; loud follows the assault
@@ -55,10 +60,75 @@ static func stem_for(p_heist_phase: int, p_assault_phase: int) -> StringName:
 
 func _ready() -> void:
 	AudioCueLib.ensure_buses()
+	if listen_to_event_bus:
+		_resolve_heist_track()
 	if track == null and track_id != &"":
-		track = MusicTrack.load_track(track_id)
-	if track == null:
+		track = MusicTrackTable.load_default().load_track(track_id)
+	if track == null and listen_to_event_bus:
 		Log.warn(&"audio", "MusicDirector: no music track '%s'" % track_id)
+	_ensure_players()
+	if listen_to_event_bus:
+		EventBus.heist_phase_changed.connect(_on_heist_phase_changed)
+		EventBus.assault_phase_changed.connect(_on_assault_phase_changed)
+		EventBus.heist_ended.connect(_on_heist_ended)
+
+
+## The heist's track id: launch option first, then the map's HeistDef (&"" outside a heist).
+static func heist_track_id(rt: HeistRuntime) -> StringName:
+	if rt == null:
+		return &""
+	var opt: StringName = StringName(String(rt.launch_options.get("music_track", "")))
+	if opt != &"":
+		return opt
+	if rt.map != null and rt.map.heist_def != null:
+		return rt.map.heist_def.music_track
+	return &""
+
+
+## Switch to the running heist's track (once). Called at ready and again on the first phase fact,
+## since the map can enter the tree before the runtime has its launch options.
+func _resolve_heist_track() -> void:
+	if _heist_track:
+		return
+	var tid: StringName = heist_track_id(HeistRuntime.of(self))
+	if tid == &"":
+		return
+	var t: MusicTrack = MusicTrackTable.load_default().load_track(tid)
+	if t == null:
+		Log.warn(&"audio", "MusicDirector: no music track '%s' (keeping '%s')" % [tid, track_id])
+		return
+	_heist_track = true
+	track_id = tid
+	track = t
+
+
+## Hub jukebox (D-062): play `stem` of `p_track_id` right away (no bar wait). Returns false when the
+## track or stem does not exist.
+func preview(p_track_id: StringName, stem: StringName = MusicTrack.STEM_ASSAULT) -> bool:
+	var t: MusicTrack = MusicTrackTable.load_default().load_track(p_track_id)
+	if t == null or t.stem(stem) == null:
+		Log.warn(&"audio", "MusicDirector.preview: no track/stem '%s'/'%s'" % [p_track_id, stem])
+		return false
+	_ensure_players()
+	stop_preview()
+	track_id = p_track_id
+	track = t
+	target_stem = stem
+	_switch(0.0)
+	return true
+
+
+## Stop the jukebox preview immediately.
+func stop_preview() -> void:
+	stop_all()
+	_active = -1
+	target_stem = SILENCE
+	current_stem = SILENCE
+
+
+func _ensure_players() -> void:
+	if not _players.is_empty():
+		return
 	for i: int in range(2):
 		var p: AudioStreamPlayer = AudioStreamPlayer.new()
 		p.name = "Stem%d" % i
@@ -70,10 +140,6 @@ func _ready() -> void:
 	_stinger.name = "Stinger"
 	_stinger.bus = AudioCueLib.bus_or_master(bus)
 	add_child(_stinger)
-	if listen_to_event_bus:
-		EventBus.heist_phase_changed.connect(_on_heist_phase_changed)
-		EventBus.assault_phase_changed.connect(_on_assault_phase_changed)
-		EventBus.heist_ended.connect(_on_heist_ended)
 
 
 func _exit_tree() -> void:
@@ -90,6 +156,8 @@ func stop_all() -> void:
 
 func _process(delta: float) -> void:
 	if target_stem == current_stem:
+		return
+	if _players.is_empty():
 		return
 	if _active < 0 or not _players[_active].playing or current_stem == SILENCE:
 		_switch(0.0)
@@ -117,7 +185,7 @@ func time_to_next_bar() -> float:
 
 func play_stinger(stinger_name: StringName) -> void:
 	last_stinger = stinger_name
-	if track == null or not track.stingers.has(stinger_name):
+	if track == null or _stinger == null or not track.stingers.has(stinger_name):
 		return
 	_stinger.stream = track.stingers[stinger_name]
 	AudioCueLib.set_loop(_stinger.stream, false)
@@ -126,6 +194,7 @@ func play_stinger(stinger_name: StringName) -> void:
 
 
 func _on_heist_phase_changed(_old_phase: int, new_phase: int) -> void:
+	_resolve_heist_track()
 	heist_phase = new_phase
 	if new_phase != Enums.HeistPhase.LOUD:
 		assault_phase = Enums.AssaultPhase.NONE
@@ -167,7 +236,8 @@ func _switch(bar_pos: float) -> void:
 	var length: float = stream.get_length()
 	var start: float = fmod(bar_pos, length) if length > 0.0 else 0.0
 	p.volume_db = FADE_FLOOR_DB
-	p.play(start)
+	if p.is_inside_tree():
+		p.play(start)
 	_fade(nxt, track.stem_gain_db(to_stem), fade_s, false)
 	_active = nxt
 

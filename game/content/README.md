@@ -6,18 +6,21 @@ current when an API changes.
 ## Layout
 ```
 content/
+  audio/                    MusicCatalog (+ MusicCatalogTweak / MusicStubTrack): view over C's music table (B5-03)
   data/                     every balance number (.tres / .csv); no constants in scripts
-    weapons/ mods/ melee/ armor/ deployables/ loot/ throwables/ difficulty/ masks/ contacts/ preplanning/
-    tweak/                  concealment_curve.tres, display_stats.tres, payout.tres, perk_points.tres, xp_curve.tres
+    weapons/ mods/ melee/ armor/ deployables/ loot/ throwables/ difficulty/ masks/ contacts/ preplanning/ heisters/
+    tweak/                  concealment_curve.tres, display_stats.tres, payout.tres, perk_points.tres, xp_curve.tres, notoriety.tres
+    notoriety/ranks.tres    NotorietyTable: rewards per Notoriety rank (B5-02)
     strings/strings.csv     all player-facing text (columns: keys,en)
     voice/lines.tres        voice line table (VoiceLineTable); text lives in strings.csv
   defs/                     content-side Resource schemas + ContentDB lookup (ContactDef)
-  docs/                     design authority: skills.md, perk_decks.md, masks.md, preplanning.md
+  docs/                     design authority: skills.md, perk_decks.md, masks.md, preplanning.md, scoreboard.md
   masks/                    MaskCatalog, MaskComposer, MaskLocker (+ part defs)
   preplanning/              PreplanBoard, PreplanPlan, PlanVote, PreplanBlueprint
   lobby/                    LobbyState (co-op lobby model), LobbySession (Net glue), LobbyAddress, LobbyTweak
   progression/              LoadoutResolver, StatCalculator, PayoutCalculator, XpCurve
   save/                     SaveService, PlayerProfile
+  settings/                 GameSettings (options + settings.cfg), InputBindings, InputEventCodec, SettingsApplier
   strings/                  StringTable
   ui/                       every UI scene (menus, HUD, results); hud/mock/ = LocalHudModel mock
 ```
@@ -67,15 +70,54 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   `stealth_xp_bonus_mult` after a successful stealth heist, else 1.0). UI string:
   `ui.results.stealth_bonus_banked` ("... +{pct}%").
 * `SaveService` / `PlayerProfile`: versioned JSON at `user://profiles/profile_<n>.json`
-  (`CURRENT_VERSION` 5 = the roadmap's "save v2"; **every field, type, default and since-version:
+  (`CURRENT_VERSION` 6; the roadmap calls the format "save v2". **Every field, type, default and since-version:
   `content/docs/save_format.md`**; v2 `banked_stealth_mult`, v3 `skill_sets`/`perk_cards`, v4
-  `owned_mask_parts`/`custom_masks`, v5 `unlocks`/`achievements`/`pro_job_locks`);
+  `owned_mask_parts`/`custom_masks`, v5 `unlocks`/`achievements`/`pro_job_locks`, v6 `notoriety`/
+  `notoriety_xp`/`notoriety_choices`/`held_skill_sets`/`music_choice`);
   `load_profile/save_profile/migrate/profile_from_save/apply_heist_payout(p, payout, XpCurve.level_for_xp)`.
   Loading runs migrate -> `ProfileSchema.sanitize` (wrong types -> default + Log.warn) -> from_dict ->
   `ProfileValidator.validate` (unknown ids pruned, illegal skill sets reset, Log.warn each); golden
   migration fixtures in `tests/b/fixtures/save/`.
   `apply_heist_payout` resets the bank when `stealth_bonus_consumed`, then stores
-  `stealth_bonus_banked` if > 1.0.
+  `stealth_bonus_banked` if > 1.0. A level gain re-buys skills a Notoriety rank-up held
+  (`NotorietySkills.restore`).
+* **Notoriety (B5-02, P10; design + numbers `content/docs/notoriety.md`).** `Notoriety` (`progression/notoriety.gd`,
+  static):
+  * Data: `tweak()` -> `NotorietyTweak` (`data/tweak/notoriety.tres`: `max_rank` 25, `required_level` 100,
+    `costs`, `xp_bonus_per_rank`, `xp_bonus_cap`); `table()` / `def_for(rank)` -> `NotorietyDef {rank, rewards,
+    unlocks, choices}` (`data/notoriety/ranks.tres`).
+  * `cost_for(rank)`, `xp_bonus(rank)`, `roman(n)`, `unlock_id(rank)` (`unlock.notoriety.rank_<n>`).
+  * Rank-up: `requirements(p)` (checklist rows `{code: REQ_LEVEL|REQ_CASH|REQ_CAP, met, have, need}`),
+    `can_rank_up(p)`, `rank_up(p) -> {ok, reason, rank, cost, granted, choices}`. The rank-up takes the cost
+    from spending cash and resets level and XP to 0 (XP moves to `notoriety_xp`, so perk points stay). It holds
+    every skill set (`NotorietySkills`) and grants the rank unlock, rewards and plain unlock ids such as
+    `unlock.music.*` (D-062).
+  * Rewards: `rewards_for(rank)`, `choice_options(p, rank)`, `choose(p, rank, id)`, `pending_choices(p)`,
+    `exclusive_ids()` (left out of payday card pools), `apply_rewards(p)` (load-time repair),
+    `reward_name(id)`.
+  * `NotorietySkills`: `hold(p)`, `restore(p)` (after level gains; always legal), `release(p, set_index)`
+    (skill screen refund/respec), `held_points(p, i)`.
+  * Payout: `PayoutCalculator.compute(..., notoriety_bonus)` adds the `ui.results.xp.notoriety` XP line (now
+    7 lines). `PaydayScreen.compute_payout` passes `Notoriety.xp_bonus(profile.notoriety)`.
+  * Co-op: `LobbyState.summary_from` carries `"notoriety": int`. It is validated as 0..25 (missing = 0) and
+    shown in `slot_view`.
+  * UI: `NotorietyScreen` (`ui/notoriety/`) from the hub profile panel (`HubMenu.notoriety_requested` ->
+    `MenuFlow._open_notoriety()`). `NotorietyScreen.level_text(level, rank)` / `badge_text(rank)` give the
+    badge text used by the hub and lobby.
+* **Music selection (B5-03, D-062; brief `content/docs/music.md`).** `MusicCatalog` (`audio/music_catalog.gd`,
+  static) is a read-only view over ENV C's `MusicTrackTable` (`MusicCatalogTweak.table_path` in `data/tweak/music.tres`,
+  read as `MusicTrackTable.load_default().all()`, class looked up by name and entries duck-typed). While that table is
+  missing it falls back to the stub list in the same `.tres`.
+  * `tracks() -> Array[Dictionary]` gives `{id, unlock, default_for_heists}` in id order.
+  * `is_unlocked(profile, id)`, `available(profile)`, `display_key(id)` (`music.<id>.name`), `unlock_rank(id)`,
+    `default_for(heist)`.
+  * `resolve_choice(profile)` gives `profile.music_choice` while it is known and unlocked, else `&""`.
+  * `MusicPicker` (`ui/common/`) writes `music_choice` and saves. It sits in the pre-planning bottom bar (solo / host)
+    and the lobby (host editable; clients see `LobbyState.host_music()`, the `music` field of the host's summary).
+  * Launch options always carry `options["music_track"]` (`build_launch_options(..., music)` /
+    `build_coop_launch_options(..., music)`; the host's pick in co-op; `&""` = `HeistDef.music_track`).
+  * Hub station `jukebox` opens `JukeboxScreen` (`ui/jukebox/`). It drives C's `MusicDirector.preview(id)` /
+    `stop_preview()` via `call()` when that API exists, else Play is disabled with a notice. Leaving stops the preview.
 * `ProJobLocks` (`board/pro_job_locks.gd`): failed pro Board contracts persisted in
   `PlayerProfile.pro_job_locks` (`lock/prune/is_locked`); MenuFlow mirrors them into `consumed_contracts`.
 * `MaskLocker.grant_unlock(profile, unlock_id)` records the unlock in `PlayerProfile.unlocks` and owns its
@@ -88,6 +130,29 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   save), `record(profile, event, ctx)`, `progress/is_unlocked`. State: `PlayerProfile.achievements` (save v5).
   Screen: `AchievementsScreen` (`ui/achievements/`), from the hub profile panel (`HubMenu.achievements_requested`
   -> `MenuFlow._open_achievements()`); payday lists unlocks (`ui.results.achievement_unlocked`).
+* **Options (B5-01; brief: `content/docs/options.md`).** `GameSettings.current()` (`settings/game_settings.gd`):
+  audio (0..1 per bus), video (window mode, vsync, max FPS, render scale, MSAA, FXAA, brightness, **FOV**),
+  controls (**mouse sensitivity x/y, invert Y, pad sensitivity, deadzone, hold/toggle aim/crouch/sprint**),
+  accessibility (HUD palette, HUD scale, subtitle size) and input bindings; `get_value/set_value`, signal
+  `changed(section, key)`; ENV A reads `fov()`, `mouse_sensitivity()`, `invert_y()`, `pad_sensitivity()`,
+  `pad_deadzone()`, `is_toggle(action)`. Defaults/ranges: `data/settings/settings_defaults.tres`
+  (`SettingsDefaults`). File `user://settings.cfg` (ConfigFile v1; `GameSettings.root_dir` for tests).
+  `apply()` = `SettingsApplier` (AudioServer buses on top of the layout's mix level, window/viewport,
+  InputMap) and runs in `MenuFlow._ready`. Rebinding: `InputBindings` (KBM / PAD columns, conflicts that
+  ignore project-designed shared keys, swap / keep both, reset per action / all) over `InputEventCodec`
+  plain dicts. HUD palettes: `data/ui/hud_palettes.tres` (`HudPaletteSet` / `HudPalette`, ids default,
+  deuteranopia, protanopia, tritanopia, high_contrast); `Hud` follows the palette and `hud_scale` live;
+  `ColorVision` (Machado 2009 + CIE76) for checks. Screen: `OptionsScreen` (`ui/menus/options_screen.tscn`)
+  via `MenuFlow.options_menu` (`MenuOptions`): main menu Options, hub `HubMenu.options_requested`, and the
+  `pause` action in a heist (overlay over the HUD; local crew input paused). Strings `ui.options.*`,
+  action names `ui.action.<action>`.
+* **Scoreboard + awards (B6-02; brief: `content/docs/scoreboard.md`).** `CrewStats` (`progression/crew_stats.gd`):
+  per-crew rows (HeistResult.crew keys + `name`, `is_local`, `shots`, `hits`, `headshots`), `has_stat(row, stat)`
+  per row (missing = "—" / no award), derived `accuracy`. `HeistAwards.compute(crew_rows, table = null)` (pure;
+  data `data/ui/heist_awards.tres`, `HeistAwardTable`): max/min awards with tie-break humans before AI then lowest
+  slot, shared `zero` awards, skipped when the stat is missing; `PaydayScreen.awards` / "Crew Honours" section.
+  `Hud.scoreboard` (`ScoreboardOverlay`) reads the model's `crew_stats` + `crew_stats_changed` (QB to ENV A;
+  `MockHudModel` has them) and shows while `scoreboard` is held (`controls/scoreboard_mode` toggle).
 * `ContentDB.inject(kind, key, res)`: tests/tooling only (test-only SkillDef/PerkDeckDef);
   `clear_cache()` drops it.
 * `XpCurve.level_for_xp(xp)`, `xp_for_level(level)`. `VoiceLineTable` at `data/voice/lines.tres`.
@@ -113,7 +178,9 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
 * **Safehouse hub (B4-07, C9).** `HubMenu` (`ui/hub/hub_menu.tscn`) is the 2D layer of the safehouse:
   station cards + a profile summary (level, XP bar, spending, stash, free skill/perk points). Stations are
   data: `data/ui/hub_stations.tres` (`HubStationList` of `HubStation {id, title_key, desc_key, icon_kind,
-  target}`). Ids: `board`, `planning`, `armory`, `masks`, `range`, `crew` (co-op lobby, B4-11).
+  target}`). Ids: `board`, `planning`, `armory`, `masks`, `range`, `crew` (co-op lobby, B4-11), `jukebox` (B5-03),
+  `notoriety` (B6-06 / QC-46: the Old Press -> `NotorietyScreen`; the profile panel button stays). Prompts
+  `ui.prompt.station.<id>` (QC-47).
   **`MenuFlow.open_station(id: StringName) -> bool`** opens one (false + `Log.error` for an unknown id);
   it is the API **ENV C's 3D safehouse interactables call** (find the MenuFlow node, call it with the
   station id), works from any menu state, refunds a confirmed-but-unlaunched plan, and Back on every
@@ -121,6 +188,27 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   usual). Briefing Back returns to where the contract came from (Board or heist select). After a heist
   (or the stub/sample payday) the flow returns "home": the hub once the safehouse was entered, else the
   main menu (`MenuFlow.show_home()`).
+* **3D safehouse hub (B6-06, QC-45..49; contract `docs/contracts/hub_map.md` v1.0, D-072).** `MenuFlow.safehouse`
+  (`SafehouseHost`, `ui/hub/`) is `show_hub()`'s 3D branch. Data `data/ui/safehouse_hub.tres` (`SafehouseHubTweak`):
+  `scene_path` (C's scene; no `res://world/` path in code), `map_class` (`SafehouseMap`, looked up by name),
+  stations in group `G.HUB_STATION` and/or under `stations_node` (`Stations`), `station_signals` (`station_requested(id)`,
+  A's `station_used(id, crew)`), `use_point_name` (`UsePoint`), `station_cam_name` (`StationCam`: a Marker3D,
+  -Z = view direction, meta `station_cam_fov_meta` `fov` in degrees, default `station_cam_fov` 60; the walker's
+  OWN camera blends to its transform and FOV over `station_cam_blend_s` 0.35 and is restored on return), A's
+  `crew_class.spawn_method` (`CrewController.spawn_for_hub(parent, xform, loadout)`, QC-43; else a stand-in in
+  `walker_group` `hub_walker`), markers `ReturnHeist` / `ReturnRange` (root `spawn_transform(id)`, else
+  `SafehouseHost.marker_transform`: a Marker3D of that name, else `spawn_marker` `Spawn`), the root's `jukebox`
+  (C's MusicDirector: preview target, and `set_ducked(true)` while any station screen but the jukebox's is open,
+  `false` on return; called only when the method exists) and `set_jukebox_track(id)`. Station used -> walker
+  `set_input_paused(true)`, mouse released, view dimmed, optional StationCam blend, `open_station(id)`; every Back
+  -> `show_hub()` -> walker back at that station's UsePoint. Station prompts `ui.prompt.station.<id>` use the
+  in-heist prompt format ("Press {key} to ...").
+  `SafehouseHud` (centre dot + `InteractionPanel` on the walker's LocalHudModel); Esc / `pause` ->
+  `SafehousePauseMenu` (Resume, quick stations, Options, Achievements, Main Menu). Range / heist launch free
+  the scene and re-enter at ReturnRange / ReturnHeist. The 2D `HubMenu` stays the fallback (scene, class or
+  walker missing; Options `controls/safehouse_hub` = `menu`, `GameSettings.hub_walk()`; co-op lobby). Jukebox
+  (QC-48): `JukeboxScreen.preview_target` = the cabinet in 3D, else its own bare MusicDirector. Mock scene:
+  `tests/b/mock_safehouse/`, tests `test_hub_3d.gd`.
 * **Co-op lobby (B4-11).** Crew station `crew` (target `lobby`) -> `LobbyScreen` (`ui/lobby/lobby_screen.tscn`):
   Host (port; default `data/lobby/lobby_tweak.tres` = Net.DEFAULT_PORT), Join (address + port, `LobbyAddress`
   validation), loopback quick-join (`LobbyTweak.loopback_address`), Leave. 4 crew slots from `Net.crew` (host
@@ -236,3 +324,93 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
 `vo.guard.cuff_warning`) get a `data/voice/lines.tres` entry and `voice.<id>` text;
 `test_strings.test_keys_requested_by_systems_exist` scans ENV A/C code for prompt/blocked/voice keys. Code that builds a mod delta starts from
 `WeaponStats.make_delta()`; `.tres` deltas spell its zeros out (D-022 QB-5). Tests: `game/tests/b/test_*.gd`.
+* **Chat (B6-03).** `LobbyState.MSG_CHAT` `{"text"}` over `Net.lobby_send`, validated by `ChatLog`
+  (`lobby/chat_log.gd`, `LobbyState.chat`): attribution by the sender's crew slot, `clean_text` (control / bidi /
+  zero-width characters stripped, spaces collapsed, cut to `LobbyTweak.chat_max_length`), rate limit per slot
+  (`chat_rate_count` per `chat_rate_window_s`, clock `LobbyState.now_s`), history cap. `LobbySession.send_chat(text)
+  -> OK | R_*`, `chat_history()`, signal `chat_received(entry)`. `Net.lobby_send` keeps working during a heist on the
+  same session, so the in-heist chat uses it too (no separate transport). UI: `ChatPanel` (`ui/chat/`), Mode.LOBBY
+  (lobby screen) / Mode.OVERLAY (MenuFlow.heist_chat over the HUD in co-op; fades after `chat_fade_after_s`; typing
+  pauses the local crew member's input). Lines are plain Labels (no BBCode). Open key: InputMap action `chat`
+  (`LobbyTweak.chat_action`; Enter / keypad Enter, D-072; no fallback, T is `order_menu`). `CrewInput` (`ui/common/`) = the shared
+  local-input pause with per-overlay holders (options, chat, drop-in). Strings `ui.chat.*`.
+* **Drop-in + kick (B6-04, on mocks until ENV A's drop-in lands).** `DropInService` (`lobby/drop_in_service.gd`):
+  the interface B's UI binds to by duck typing (group `G.DROP_IN_SERVICE` = `DropInService.GROUP`, `DropInService.find(tree)`): signals
+  `join_requested(peer_id, summary)`, `join_progress(peer_id, frac)`, `joined(slot)`, `join_failed(peer_id, reason)`,
+  `kicked(slot)`; methods `answer_join(peer_id, accept, reason)`, `kick(slot) -> bool`, `request_join(summary)`,
+  `cancel_join()`; reasons `denied|timeout|full|cancelled|host_lost|kicked|off`. `MockDropInService` (`lobby/mock/`).
+  UI (`ui/dropin/`): `JoinRequestDialog` (host: name, level + Notoriety badge, Accept / Deny, auto-deny after
+  `LobbyTweak.dropin_request_timeout_s`, queue; MenuFlow.heist_join_dialog over the HUD for a co-op host, pauses
+  local input while shown), `KickConfirmDialog` (calls `target.kick(slot)`), `DropInJoinScreen` (joining player:
+  `LoadoutScreen.compact_mode` pick -> "Joining" progress with Cancel; opened by DropInFlow, below). **Kick (D-072):** `LobbySession.kick(slot)` -> `Net.kick(peer_id)` (host only). `Net.peer_kicked` puts the
+  player on the session kick list (`KickList`, `lobby/kick_list.gd`, `LobbyState.kicked`: peer id + normalized profile
+  name; cleared with the session) and sends `LobbyState.MSG_KICK` only as a crew notice (every peer remembers the kick;
+  `LobbySession.kick_notice` -> a dim `ui.chat.kick_notice` line in `ChatPanel`). The kicked client gets
+  `connection_failed(FAIL_KICKED)` from `Net.last_disconnect_reason == &"kicked"` and the lobby shows
+  `ui.lobby.error.kicked`. The host re-kicks a kicked peer id / name that comes back (crew change or profile summary;
+  Net also re-kicks exact display names), ignores a kicked peer's messages, and `LobbySession.join_decision(peer,
+  summary)` auto-denies its drop-in requests with `DropInService.REASON_KICKED`.
+  **Drop-in policy (B6-04, PD2):** `LobbyState.dropin_policy` `ask` (default, `LobbyTweak.dropin_default_policy`) /
+  `auto` / `off`, set by the host (`LobbySession.set_drop_in_policy`, lobby screen option "Drop-in"; clients see it
+  read-only) and replicated as host-only `LobbyState.MSG_SETTINGS {dropin}` (re-sent on crew changes). It lives in the
+  lobby session, not GameSettings: it is a property of the hosted lobby that every member sees and the host's
+  drop-in path reads, not a per-machine preference. `JoinRequestDialog.gate` (mock / lobby path only; the heist dialog on A's service has none, below) decides first:
+  kicked -> deny `kicked`, `off` -> deny `off`, `auto` -> accept, all without a dialog; `ask` shows it (timeout ->
+  deny `timeout`). `DropInService.answer_join(peer_id, accept, reason = REASON_DENIED)`; reasons add `kicked`, `off`.
+  Strings `ui.dropin.*`, `ui.kick.*`, `ui.lobby.dropin.*`.
+* **Drop-in wired to ENV A's HeistDropIn (B6-04).** `DropInFlow` (`ui/dropin/drop_in_flow.gd`, `MenuFlow.drop_in`).
+  **Who decides: ENV A** (lead ruling). `MenuFlow.launch_coop` calls `DropInFlow.apply_host_policy(tree,
+  lobby.state.dropin_policy)` = `HeistDropIn.ensure(tree).policy = ...` before the launch; from then on A's service
+  checks every request (no running heist -> denied, no slot -> full, kicked -> kicked, `validate_summary`, then the
+  policy: off denies, auto accepts, ask emits `join_requested`). The heist's `JoinRequestDialog` has **no gate** and
+  its `policy` stays ask, so it only shows A's asks and answers each once (auto / off never reach it). The B gate
+  (`LobbySession.join_decision`) stays for services that leave the decision to the UI (the mock, tests). The dialog
+  calls `answer_join(peer, accept, reason)` when the service takes 3 arguments, else `(peer, accept)`; a
+  `join_failed` for a queued peer (cancelled, left) drops that request. The lobby's policy is copied once, at
+  launch (it cannot change in the heist: the lobby screen is hidden).
+  **Joining client:** the lobby Join panel's "Drop In to a Running Heist" (`LobbyScreen.dropin_button`, `drop_in()`:
+  address / port fields, or the code when the address is empty) -> `dropin_requested(address, port)` -> MenuFlow
+  opens `DropInJoinScreen` with `DropInFlow` as its service (a duck-typed proxy, not in `G.DROP_IN_SERVICE`). Drop In
+  on the compact loadout -> `DropInFlow.request_join(summary)`: `lobby.join(address, port)` (Net.join; the lobby
+  advertises the picked loadout), then on the lobby Net's `connected_to_host`: `HeistDropIn.ensure(tree)`
+  (`service_provider` in tests) `.request_join(summary)`. A's `join_progress` / `joined(slot)` / `join_failed` are
+  passed on. On `joined` MenuFlow hides the menus and spawns the in-heist UI (HUD, payday, chat) like a co-op client
+  launch (`_begin_client_heist`, heist / difficulty from `HeistRuntime.current()`, else the lobby contract; `is_pro`
+  from the contract) and never calls `launch_client` again. On `join_failed` (or a lobby failure before the request:
+  unreachable -> `unreachable`, no slot in time -> `timeout`, host lost, kicked) the screen shows
+  `ui.dropin.failed.<reason>`, the session is left (`Net.leave`, A's client does not), and Back returns to the
+  lobby's connect view with the reason in its error line (none for `cancelled`). Cancel while connecting just
+  leaves; once asked it is A's `cancel_join`. Reason `unreachable` is B-only (`DropInService.REASON_UNREACHABLE`).
+  Tests `test_dropin_wiring.gd`.
+* **Heister choice (D-073, B6-07).** `Loadout.heister` (&"rook" | &"sable" | &"dutch" | &"wren"; &"" = no preference).
+  Data `data/heisters/roster.tres` (`HeisterRoster`: roster order, accents, `portrait_dir`); `Heisters`
+  (`progression/heisters.gd`, static): `ids()`, `is_known`, `name_key` (`crew.<id>`, &"" = `ui.heister.any`),
+  `display_name`, `accent`, `portrait` (null until ENV D ships `<portrait_dir>/<id>.png`), `next_free`,
+  `assign(order, picks, fill)`, `solo(pick, local_slot, ai)`, `solo_ai_slots`, `ai_loadouts(slot -> id)` (ENV A's
+  default AI loadout, `CrewWeapons.build_loadout(null)`, + heister). **Rule** (PD2 unique heisters): humans are
+  served first-come (the slot whose current pick reached this peer first keeps it; re-sending the same pick keeps
+  the place, a changed pick takes a new place); a later conflicting pick is not refused and never blocks Start: it
+  falls back to the next free heister after its pick in roster order (wrapping), after every uncontested pick; no
+  preference takes the first free one; AI and empty seats take the rest in roster order, lowest slot first.
+  Save: `loadout.heister` (save_format.md; additive in v6). Picker: `LoadoutScreen.heister_option` (accent swatch
+  icons, accent strip + portrait), `select_heister`, `set_taken_heisters` (co-op: MenuFlow passes
+  `LobbyState.heisters_taken_by_others(local_slot)`; taken entries are disabled). Lobby: the summary's
+  `loadout.heister` (sanitized as a String, unknown id illegal), `LobbyState.heister_claims`,
+  `heister_assignment()`, `heister_of(slot)`, `ai_heisters()`, slot_view `heister` / `heister_pick`; the slot card
+  shows "Heister: X" (or "X (Y was taken)"). Launch: `launch_loadouts()` sets each human's assigned heister;
+  `MenuFlow.build_launch_options` sets the solo player's and adds AI loadouts for the seats Net.start_solo fills;
+  `build_coop_launch_options(..., ai_loadouts)` merges the AI seats' loadouts (ai_teammates still counts the seats
+  humans leave). Every launched slot has a distinct heister. Tests `test_heisters.gd`.
+* **Throwables (D-073, B6-08).** `data/throwables/` frag / concussion / incendiary / throwing_knife (count 3,
+  `anim_set` throwable; values in data/README.md). `ThrowableGate` (`progression/throwable_gate.gd`):
+  `perk_item_ids()` (every perk card's `perk.throwable` item_id), `is_pickable(id)`, `pickable()`.
+  `LoadoutScreen.throwable_option` (after the deployable; "None" first) lists `pickable()`, so the flask and the
+  injector are never offered; `option_ids(o)` lists a picker's ids. Tests `test_throwables.gd`.
+* **Lobby codes (B6-05, game_overview §9).** `LobbyCode` (`lobby/lobby_code.gd`, static, pure): `encode(ipv4, port,
+  default_port = tweak) -> String` (Crockford base32 + Luhn mod 32 check symbol; 8 symbols for the default port,
+  11 otherwise; "" for IPv6 / host names / bad ports), `decode(code) -> {address, port} | {error: E_*}` (case,
+  dashes and spaces ignored, O/I/L read as 0/1, pad bits checked), `display(code)` ("ABCD-EFGH"), `normalize`,
+  `pick_lan_ipv4(IP.get_local_addresses())` (private LAN IPv4 first). Lobby screen: host header shows the code +
+  Copy (`DisplayServer.clipboard_set`) + WAN hint (public address + forwarded UDP port); Join panel has a code
+  field (`LobbyScreen.join_by_code()` -> fills address / port -> `join()`). No LAN host list: Net has no
+  discovery. Strings `ui.lobby.code.*`.

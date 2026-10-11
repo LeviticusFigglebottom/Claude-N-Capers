@@ -1,5 +1,5 @@
 {
-	"version": 5,
+	"version": 6,
 	"profile_name": "Old Timer",
 	"cash": 5000,
 	"stash": 0,
@@ -15,7 +15,7 @@
 		"primary": "", "primary_mods": [],
 		"secondary": "weapon.kestrel_p9", "secondary_mods": [],
 		"melee": "melee.folding_knife", "throwable": "", "deployable": "", "deployable_secondary": "",
-		"armor": "armor.tailored_suit", "mask": "", "perk_deck": "", "perk_deck_cards": 0,
+		"armor": "armor.tailored_suit", "mask": "", "perk_deck": "", "heister": "", "perk_deck_cards": 0,
 		"skills": {"skill.juggernaut.thick_skin": 1}
 	},
 	"skill_sets": [{"skill.juggernaut.thick_skin": 1}],
@@ -24,6 +24,11 @@
 	"unlocks": [],
 	"achievements": {},
 	"pro_job_locks": {},
+	"notoriety": 0,
+	"notoriety_xp": 0,
+	"notoriety_choices": {},
+	"held_skill_sets": [],
+	"music_choice": "",
 	"stats": {},
 	"settings": {}
 }

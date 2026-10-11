@@ -50,6 +50,12 @@ UV0 x across the face (0 = the viewer's left looking at the front = Blender/Godo
 (:func:`base_materials`) to get the single surface the mask shader expects. ``surface_extra``,
 ``outline_fn`` and ``holes_fn`` let a script reshape the skin, the outline (ears, ruffs: see
 :func:`radial_union`) and cut extra holes (vents).
+
+D3-03 helpers for parts that leave the face: :class:`RimSurface` (a flat flange continuing out of
+the shell edge: hoods, ray crowns, wings, cap points) and :class:`DishSurface` (a free shallow dish)
+take the place of the face skin in :func:`slab`; :func:`tube`/:func:`bezier3` (tines, tusks),
+:func:`sphere` (bells, ball tips), :func:`ray_radius` (robust outline radius per angle) and
+``build_mask(surface_wrap=...)`` (replace the skin, e.g. planar facets).
 """
 
 from __future__ import annotations
@@ -59,8 +65,12 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
+import json
+import pathlib
+
 import bmesh
 import bpy
+import numpy as np
 from mathutils import Vector, geometry
 
 from lib import geo, uv
@@ -106,6 +116,11 @@ DEFAULTS: dict[str, Any] = {
     "res": 0.0085,           # interior triangle size, outer skin
     "res_back": 0.014,       # interior triangle size, inner skin (rarely seen)
     "edge_res": 0.005,       # boundary sampling
+    # mask fit: push the shell out of the crew face envelope (_crew_face_envelope.json) so its
+    # inner skin clears every crew head by fit_clearance; "none" keeps the analytic form only
+    "fit": "crew",
+    "fit_clearance": 0.003,  # minimum gap between any crew face and the inner skin (m)
+    "fit_blur": 0.008,       # smoothing radius of the fit displacement (m)
 }
 
 CORNER_DEG = 35.0  # turning angle above which an outline vertex is kept as a hard corner
@@ -376,6 +391,9 @@ class FaceSurface:
         self.eye_u = half
         self.eye_v = float(p["eye_v"])
         self.mouth_closed = p["mouth"] == "closed"
+        self.fit: CrewFit | None = None
+        if p.get("fit", "crew") == "crew":
+            self.fit = CrewFit(self, float(p["fit_clearance"]) + float(p["thickness"]), float(p["fit_blur"]))
 
     # half width and depth falloff of the head cross-section at height v
     def width(self, v: float) -> float:
@@ -420,11 +438,22 @@ class FaceSurface:
             f += self.extra(u, v)
         return f
 
-    def base(self, u: float, v: float) -> Vector:
+    def raw(self, u: float, v: float) -> Vector:
+        """Analytic skin before the crew fit."""
         w = self.width(v)
         d = self.R * w / self.W0
         a = u / self.R
         return Vector((w * math.sin(a), self.profile(v) - d * (1 - math.cos(a)) + self.features(u, v), v))
+
+    def base(self, u: float, v: float) -> Vector:
+        p = self.raw(u, v)
+        if self.fit is not None:
+            d = self.fit.at(u, v)
+            if d > 0.0:
+                rad = Vector((p.x, p.y - self.fit.axis_y, 0.0))
+                if rad.length > 1e-9:
+                    p = p + rad.normalized() * d
+        return p
 
     def normal(self, u: float, v: float) -> Vector:
         h = self.H
@@ -448,6 +477,107 @@ class FaceSurface:
     def depth_at(self, x: float, z: float, offset: float = 0.0) -> float:
         """Blender y of the skin (plus ``offset`` along y) under the point (x, z)."""
         return self.base(self.uv_of_x(x, z), z).y + offset
+
+
+# --- crew fit ----------------------------------------------------------------------------------
+ENVELOPE_PATH = pathlib.Path(__file__).resolve().parent / "_crew_face_envelope.json"
+
+
+class FaceEnvelope:
+    """Cylindrical height map of all crew faces (``_face_envelope.py``): r(theta, z) about x=0, y=axis_y."""
+
+    _cache: "FaceEnvelope | None" = None
+
+    def __init__(self) -> None:
+        e = json.loads(ENVELOPE_PATH.read_text())
+        self.axis_y = float(e["axis_y"])
+        self.th0, _th1, self.dth = (math.radians(float(x)) for x in e["theta_deg"])
+        self.z0, _z1, self.dz = (float(x) for x in e["z"])
+        self.r = np.array(e["r"], dtype=np.float64)
+
+    @classmethod
+    def get(cls) -> "FaceEnvelope":
+        if cls._cache is None:
+            cls._cache = FaceEnvelope()
+        return cls._cache
+
+    def radius(self, th: np.ndarray, z: np.ndarray) -> np.ndarray:
+        nz, nth = self.r.shape
+        fi = (th - self.th0) / self.dth
+        fj = (z - self.z0) / self.dz
+        inside = (fi >= 0) & (fi <= nth - 1) & (fj >= 0) & (fj <= nz - 1)
+        i0 = np.clip(np.floor(fi).astype(int), 0, nth - 2)
+        j0 = np.clip(np.floor(fj).astype(int), 0, nz - 2)
+        a, b = np.clip(fi - i0, 0, 1), np.clip(fj - j0, 0, 1)
+        r = self.r
+        out = ((r[j0, i0] * (1 - a) + r[j0, i0 + 1] * a) * (1 - b)
+               + (r[j0 + 1, i0] * (1 - a) + r[j0 + 1, i0 + 1] * a) * b)
+        return np.where(inside, out, 0.0)
+
+
+def _blur(a: np.ndarray, sigma_cells: float) -> np.ndarray:
+    n = max(1, int(math.ceil(sigma_cells * 3)))
+    k = np.exp(-0.5 * (np.arange(-n, n + 1) / sigma_cells) ** 2)
+    k /= k.sum()
+    pad = np.pad(a, n, mode="edge")
+    pad = np.apply_along_axis(lambda row: np.convolve(row, k, mode="same"), 1, pad)
+    pad = np.apply_along_axis(lambda col: np.convolve(col, k, mode="same"), 0, pad)
+    return pad[n:-n, n:-n]
+
+
+def _dilate(a: np.ndarray, cells: int) -> np.ndarray:
+    out = a.copy()
+    pad = np.pad(a, cells, mode="edge")
+    h, w = a.shape
+    for dy in range(-cells, cells + 1):
+        for dx in range(-cells, cells + 1):
+            if dx * dx + dy * dy <= cells * cells:
+                out = np.maximum(out, pad[cells + dy:cells + dy + h, cells + dx:cells + dx + w])
+    return out
+
+
+class CrewFit:
+    """Smooth radial displacement d(u, v) >= 0 that lifts the outer skin to at least ``need`` (thickness +
+    clearance) outside the crew face envelope. Computed once on a (u, v) grid (STEP), dilated and blurred
+    (``blur``) and iteratively topped up so the smoothed field still covers every point's requirement."""
+
+    STEP = 0.003
+    U = 0.21
+    V0, V1 = -0.18, 0.18
+
+    def __init__(self, surf: "FaceSurface", need: float, blur: float) -> None:
+        env = FaceEnvelope.get()
+        self.axis_y = env.axis_y
+        self.us = np.arange(-self.U, self.U + 1e-9, self.STEP)
+        self.vs = np.arange(self.V0, self.V1 + 1e-9, self.STEP)
+        pts = np.array([[tuple(surf.raw(float(u), float(v))) for u in self.us] for v in self.vs])
+        x, y, z = pts[..., 0], pts[..., 1] - env.axis_y, pts[..., 2]
+        r = np.hypot(x, y)
+        th = np.arctan2(x, y)
+        r_env = env.radius(th, z)
+        d0 = np.where(r_env > 0, np.maximum(0.0, r_env + need - r), 0.0)
+        cells = max(1, round(blur / self.STEP))
+        d = np.zeros_like(d0)
+        for _ in range(6):
+            res = np.maximum(0.0, d0 - d)
+            if res.max() < 2e-4:
+                break
+            d = d + _blur(_dilate(res, cells), cells * 0.6) * 1.15
+        self.d = d
+        self.max = float(d.max())
+
+    def at(self, u: float, v: float) -> float:
+        fi = (u + self.U) / self.STEP
+        fj = (v - self.V0) / self.STEP
+        nv, nu = self.d.shape
+        if fi < 0 or fj < 0 or fi > nu - 1 or fj > nv - 1:
+            return 0.0
+        i0 = min(int(fi), nu - 2)
+        j0 = min(int(fj), nv - 2)
+        a, b = fi - i0, fj - j0
+        d = self.d
+        return float((d[j0, i0] * (1 - a) + d[j0, i0 + 1] * a) * (1 - b)
+                     + (d[j0 + 1, i0] * (1 - a) + d[j0 + 1, i0 + 1] * a) * b)
 
 
 # --- outlines and holes ------------------------------------------------------------------------
@@ -558,6 +688,17 @@ def _ray_far(c: Point2, d: Point2, loop: Sequence[Point2]) -> float:
     return best
 
 
+def ray_radius(centre: Point2, phi: float, loop: Sequence[Point2]) -> float:
+    """Distance from ``centre`` to the far crossing of ``loop`` along angle ``phi`` (D3-03).
+
+    Like :func:`_ray_far` but robust when the ray passes exactly through a loop vertex (both
+    neighbouring edges can then miss by rounding): it also tries two tiny angular offsets."""
+    best = 0.0
+    for e in (0.0, 1e-7, -1e-7):
+        best = max(best, _ray_far(centre, (math.cos(phi + e), math.sin(phi + e)), loop))
+    return best
+
+
 def radial_union(loops: Sequence[Sequence[Point2]], centre: Point2 = (0.0, 0.0), n: int = 360,
                  keep: Sequence[Point2] = ()) -> Loop2:
     """Outline of the union of star-shaped ``loops`` as seen from ``centre`` (CCW, ``n`` rays).
@@ -630,6 +771,145 @@ def lathe(mb: geo.MeshBuilder, centre: Vector, axis: Vector, profile: Sequence[P
             _orient(f, mid * da - ax * dr)
             made.append(f)
     return made
+
+
+def sphere(mb: geo.MeshBuilder, centre: Vector, r: float, mat: int, n: int = 12, rings: int = 6,
+           axis: Vector = Vector((0.0, 0.0, 1.0))) -> list[bmesh.types.BMFace]:
+    """UV sphere (poles on ``axis``) via :func:`lathe`: bells, studs, ball tips (D3-03)."""
+    prof = [(r * math.sin(math.pi * k / rings), -r * math.cos(math.pi * k / rings)) for k in range(rings + 1)]
+    return lathe(mb, centre, axis, prof, mat, n=n)
+
+
+def tube(mb: geo.MeshBuilder, path: Sequence[Vector], radius: Callable[[float], float], mat: int,
+         n: int = 10, tip: bool = True, cap_start: bool = True,
+         up: Vector = Vector((0.0, 0.0, 1.0))) -> list[bmesh.types.BMFace]:
+    """Round tube along a 3D polyline ``path`` (tines, tusks, antennae, stalks) (D3-03).
+
+    ``radius(s)`` with s = 0 at the first point and 1 at the last; frames are parallel-transported
+    from ``up``. With ``tip`` the last point is a single pointed vertex, else a flat end cap."""
+    pts = [Vector(q) for q in path]
+    m = len(pts) - (1 if tip else 0)
+    tans = []
+    for i in range(len(pts)):
+        a, b = pts[max(0, i - 1)], pts[min(len(pts) - 1, i + 1)]
+        tans.append((b - a).normalized())
+    nrm = Vector(up) - tans[0] * Vector(up).dot(tans[0])
+    if nrm.length < 1e-6:
+        nrm = Vector((1.0, 0.0, 0.0)) - tans[0] * tans[0].x
+    nrm.normalize()
+    sections = []
+    for i in range(m):
+        t = tans[i]
+        nrm = (nrm - t * nrm.dot(t)).normalized()
+        bi = t.cross(nrm).normalized()
+        r = radius(i / (len(pts) - 1))
+        sections.append([pts[i] + nrm * (r * math.cos(2 * math.pi * j / n)) + bi * (r * math.sin(2 * math.pi * j / n))
+                         for j in range(n)])
+    return loft(mb, sections, mat, tip=pts[-1] if tip else None, cap_start=cap_start)
+
+
+def bezier3(p0: Vector, p1: Vector, p2: Vector, p3: Vector, k: int) -> list[Vector]:
+    """``k + 1`` points on the cubic Bezier p0..p3 (paths for :func:`tube`) (D3-03)."""
+    out = []
+    for i in range(k + 1):
+        t = i / k
+        a, b, c, d = (1 - t) ** 3, 3 * (1 - t) ** 2 * t, 3 * (1 - t) * t * t, t ** 3
+        out.append(Vector(p0) * a + Vector(p1) * b + Vector(p2) * c + Vector(p3) * d)
+    return out
+
+
+class DishSurface:
+    """A shallow dish facing +Y, for flat parts that leave the face (halos, hoods, fans) (D3-03).
+
+    Same interface as :class:`FaceSurface` (``point(u, v, offset)``, ``normal(u, v)``) so
+    :func:`slab` can build on it: x = u, z = v, y = y0 - slope * r - curve * r^2 with r the distance
+    from ``centre`` in (u, v). Plates on it use the same (u, v) design space as the face."""
+
+    H = 1e-5
+
+    def __init__(self, y0: float, centre: Point2 = (0.0, 0.0), slope: float = 0.0, curve: float = 0.0,
+                 extra: Callable[[float, float], float] | None = None) -> None:
+        self.y0, self.centre, self.slope, self.curve, self.extra = y0, centre, slope, curve, extra
+
+    def base(self, u: float, v: float) -> Vector:
+        r = math.hypot(u - self.centre[0], v - self.centre[1])
+        y = self.y0 - self.slope * r - self.curve * r * r
+        if self.extra is not None:
+            y += self.extra(u, v)
+        return Vector((u, y, v))
+
+    def normal(self, u: float, v: float) -> Vector:
+        h = self.H
+        du = self.base(u + h, v) - self.base(u - h, v)
+        dv = self.base(u, v + h) - self.base(u, v - h)
+        n = dv.cross(du)
+        n.normalize()
+        return n
+
+    def point(self, u: float, v: float, offset: float = 0.0) -> Vector:
+        p = self.base(u, v)
+        if offset != 0.0:
+            p += self.normal(u, v) * offset
+        return p
+
+
+class RimSurface:
+    """A flange continuing outward from the shell's edge (hoods, ray crowns, wings, cap points) (D3-03).
+
+    Same interface as :class:`FaceSurface`. Design points (u, v) are read in polar form about
+    ``centre``: angle phi and distance r. The shell ``outline`` gives r_o(phi); the flange point is
+    the anchor A(phi) (the outline point pulled ``inset`` toward the centre, on the shell at skin
+    offset ``depth``, e.g. -thickness to start on the inner skin) moved by (r - r_o) along the
+    outward direction (cos phi, -tilt, sin phi). So a slab whose inner edge lies a few mm inside the
+    outline tucks under the shell rim and its outer part spreads flat, not wrapping round the head.
+    ``tilt`` > 0 sweeps the flange back, < 0 cups it forward; ``extra(u, v)`` adds +Y relief."""
+
+    H = 1e-5
+
+    def __init__(self, surf: FaceSurface, outline: Sequence[Point2], centre: Point2 = (0.0, 0.0),
+                 inset: float = 0.004, depth: float = -0.005, tilt: float = 0.0,
+                 extra: Callable[[float, float], float] | None = None, n: int = 720) -> None:
+        self.c, self.tilt, self.extra, self.n = centre, tilt, extra, n
+        loop = [(float(p[0]), float(p[1])) for p in outline]
+        self.table: list[tuple[float, Vector]] = []
+        for i in range(n):
+            a = 2 * math.pi * i / n
+            d = (math.cos(a), math.sin(a))
+            r = ray_radius(centre, a, loop)
+            q = (centre[0] + d[0] * (r - inset), centre[1] + d[1] * (r - inset))
+            self.table.append((r, surf.point(q[0], q[1], depth)))
+
+    def _at(self, phi: float) -> tuple[float, Vector]:
+        x = (phi % (2 * math.pi)) / (2 * math.pi) * self.n
+        i = int(math.floor(x)) % self.n
+        t = x - math.floor(x)
+        (r0, a0), (r1, a1) = self.table[i], self.table[(i + 1) % self.n]
+        return r0 + (r1 - r0) * t, a0.lerp(a1, t)
+
+    def base(self, u: float, v: float) -> Vector:
+        du, dv = u - self.c[0], v - self.c[1]
+        phi = math.atan2(dv, du)
+        r_o, anchor = self._at(phi)
+        rho = math.hypot(du, dv) - r_o
+        d = Vector((math.cos(phi), -self.tilt, math.sin(phi))).normalized()
+        p = anchor + d * rho
+        if self.extra is not None:
+            p.y += self.extra(u, v)
+        return p
+
+    def normal(self, u: float, v: float) -> Vector:
+        h = self.H
+        du = self.base(u + h, v) - self.base(u - h, v)
+        dv = self.base(u, v + h) - self.base(u, v - h)
+        n = dv.cross(du)
+        n.normalize()
+        return n
+
+    def point(self, u: float, v: float, offset: float = 0.0) -> Vector:
+        p = self.base(u, v)
+        if offset != 0.0:
+            p += self.normal(u, v) * offset
+        return p
 
 
 def front_project(bm: bmesh.types.BMesh, layer_name: str = "UVMap") -> tuple[float, float, float]:
@@ -909,7 +1189,8 @@ def build_mask(ctx, params: dict[str, Any] | None, mats: dict[str, bpy.types.Mat
                surface_extra: Callable[[float, float], float] | None = None,
                outline_fn: Callable[[MaskShape], Loop2] | None = None,
                holes_fn: Callable[[MaskShape], list[Loop2]] | None = None,
-               uv_mode: str = "box", refine: Sequence[Refine] = ()) -> bpy.types.Object:
+               uv_mode: str = "box", refine: Sequence[Refine] = (),
+               surface_wrap: Callable[[FaceSurface], Any] | None = None) -> bpy.types.Object:
     """Build the shell plus ornaments as one mesh object ``name`` at the face-centre pivot.
 
     Shell: outer skin + rim chamfers + wall in ``primary``, inner skin in ``inner``. Ornament
@@ -919,9 +1200,13 @@ def build_mask(ctx, params: dict[str, Any] | None, mats: dict[str, bpy.types.Mat
 
     ``surface_extra(u, v)`` adds forward displacement to the skin, ``outline_fn(shape)`` replaces the
     outline, ``holes_fn(shape)`` adds shell holes; ``uv_mode="front"`` uses :func:`front_project`;
-    ``refine`` lists finer-mesh ellipses on the shell's outer skin (see :func:`triangulate`)."""
+    ``refine`` lists finer-mesh ellipses on the shell's outer skin (see :func:`triangulate`).
+    ``surface_wrap(surf)`` (D3-03) may return a replacement skin with the same ``point``/``normal``
+    interface (e.g. planar facets sampled from the fitted face); shell and plates then use it."""
     p = params_with_defaults(params)
     surf = FaceSurface(p, surface_extra)
+    if surface_wrap is not None:
+        surf = surface_wrap(surf)
     shape = MaskShape(p, surf)
     mb = geo.MeshBuilder()
     slots = {role: mb.material(m) for role, m in mats.items()}
@@ -933,6 +1218,10 @@ def build_mask(ctx, params: dict[str, Any] | None, mats: dict[str, bpy.types.Mat
          slots["primary"], slots["primary"], slots["inner"], float(p["res"]), float(p["res_back"]),
          float(p["edge_res"]), bottom=True, refine=refine)
     print(f"[mask] shell: {mb.tri_count()} tris")
+    if surf.fit is not None:
+        print(f"[mask] crew fit: max lift {surf.fit.max * 1000:.1f} mm")
+        ctx.source_extra["fit"] = (f"crew face envelope (_crew_face_envelope.json), clearance "
+                                   f"{float(p['fit_clearance']) * 1000:.1f} mm, max lift {surf.fit.max * 1000:.1f} mm")
     for fn in ornaments:
         before = mb.tri_count()
         fn(kit)

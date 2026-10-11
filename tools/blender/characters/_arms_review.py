@@ -46,7 +46,8 @@ REVIEW_CELLS = {
     "sniper": ["sniper_idle:0", "sniper_ads_idle:0", "sniper_sprint:4", "sniper_fire:1", "sniper_bolt:9",
                "sniper_bolt:12", "sniper_bolt_ads:12", "sniper_reload:22", "sniper_reload:47"],
 }
-REVIEW_CELLS.update(__import__("_arms_review_b3").REVIEW_CELLS)       # D-055 sets (proxies)
+REVIEW_CELLS.update(__import__("_arms_review_b3").REVIEW_CELLS)       # D-055 sets (ENV B's models now)
+REVIEW_CELLS.update(__import__("_arms_review_items").REVIEW_CELLS)    # D2-04 non-gun sets (proxies) + bash
 REVIEW_CELLS["shotgun_box"] = ["shotgun_box_idle:0", "shotgun_box_ads_idle:0", "shotgun_box_fire:1",
                                "shotgun_box_reload:21", "shotgun_box_reload:56", "shotgun_box_reload:63",
                                "shotgun_box_reload:67", "shotgun_box_reload_empty:101", "shotgun_box_sprint:4"]
@@ -71,10 +72,29 @@ def _rot_about(R: np.ndarray, c) -> Matrix:
     return _m(R, c - R @ c)
 
 
+def _bend_half(ob, rest: Matrix, c0: np.ndarray, c1: np.ndarray) -> Matrix:
+    """Model-space matrix that swings a crossbow string half about its anchor (the part origin, or its mesh
+    point farthest from the rest centre ``c0`` when the origin sits at the centre) so the end at ``c0`` (the
+    model's released centre) reaches ``c1``, stretched along the half by the length ratio."""
+    a = np.array(rest.to_translation())
+    if np.linalg.norm(a - c0) < 0.03 and ob.type == "MESH" and len(ob.data.vertices):
+        pts = np.array([tuple(rest @ v.co) for v in ob.data.vertices])
+        a = pts[int(np.argmax(np.linalg.norm(pts - c0, axis=1)))]
+    u0, u1 = c0 - a, c1 - a
+    l0, l1 = float(np.linalg.norm(u0)), float(np.linalg.norm(u1))
+    n0, n1 = u0 / l0, u1 / l1
+    ax = np.cross(n0, n1)
+    if np.linalg.norm(ax) < 1e-9:              # no swing (released): any axis normal to the half
+        ax = np.cross(n0, np.array([0.0, 0.0, 1.0])) if abs(n0[2]) < 0.9 else np.cross(n0, np.array([1.0, 0.0, 0.0]))
+    R = A.align(n0, ax, n1, ax)                # minimal rotation n0 -> n1 about n0 x n1
+    S = np.eye(3) + (l1 / l0 - 1.0) * np.outer(n0, n0)
+    return _rot_about(R @ S, a)
+
+
 class _Ctx:
-    def material(self, lib_id, color, roughness=0.6):
+    def material(self, lib_id, color, roughness=0.6, metallic=0.0):
         from lib import materials
-        return materials.material(lib_id, color, roughness)
+        return materials.material(lib_id, color, roughness, metallic)
 
 
 def _weapon_glb(asset: str) -> pathlib.Path | None:
@@ -199,40 +219,89 @@ def _shell(mat):
     return ob
 
 
-def render(out: pathlib.Path, args: list[str]) -> None:
+def _set_of(clip_name: str):
+    """The set a ``<set>_<clip>`` name belongs to (longest matching set name)."""
+    best = max((n for n in F.SETS if clip_name.startswith(n + "_")), key=len)
+    return F.SETS[best]
+
+
+def _new_objs(before: set) -> list:
+    return [o for o in bpy.data.objects if o not in before]
+
+
+def _build_prop(s) -> dict:
+    """Everything shown with set ``s``: the weapon model (or a review proxy) and its moving parts."""
+    before = set(bpy.data.objects)
+    pr: dict = {"gun": None, "parts": {}, "rest": {}, "rev": None, "b3": None, "items": None, "gun_l": None,
+                "mag_l": None, "rest_l": {}}
+    if s.support in ("melee", "throw", "deploy"):          # D2-04: no ENV B models yet
+        import _arms_review_items as RI
+        pr["items"] = RI.build(s.name)
+    elif _weapon_glb(s.weapon) is not None:
+        pr["gun"], pr["parts"], pr["rest"] = _import_weapon(s.weapon)
+    elif s.name in F.B3:                          # D-055: ENV B's model not on trunk yet: scratch proxy
+        import _arms_review_b3 as RB
+        pr["b3"] = RB.build(s)
+    else:                                         # no marshal model yet: scratch proxy (never exported)
+        pr["rev"] = _revolver_proxy(s)
+    pr["mag_node"] = next((o for n, o in pr["parts"].items() if n.startswith("StockMagazine")), None)
+    if s.support == "akimbo":                     # the second gun (WeaponVisual on hand.L in game)
+        pr["gun_l"], parts_l, pr["rest_l"] = _import_weapon(s.weapon)
+        pr["mag_l"] = next((o for n, o in parts_l.items() if n.startswith("StockMagazine")), None)
+    pr["objs"] = _new_objs(before)
+    return pr
+
+
+#: D2-04: moving parts of ENV B's real batch-3 models (pivot = the part node's own origin)
+def _pose_real_parts(s, st, parts: dict, rest: dict, Mg: Matrix) -> None:
+    import _arms_breech as B
+    import _arms_sets as S
+
+    def about_origin(name: str, R: np.ndarray, t=(0.0, 0.0, 0.0)) -> None:
+        c = np.array(rest[name].to_translation())
+        parts[name].matrix_world = Mg @ Matrix.Translation(t) @ _rot_about(R, c) @ rest[name]
+    if "Breech" in parts and "breech" in st.extra:
+        about_origin("Breech", B.breech_rot(s, st.extra["breech"]))
+    if "Lever" in parts:
+        about_origin("Lever", A.rxd(S.LEVER_OPEN_DEG * st.extra.get("lever", 0.0)))
+    if "Rotor" in parts:
+        about_origin("Rotor", A.ryd(np.degrees(st.extra.get("spin", 0.0))))
+    if "Blade" in parts and s.name == "saw":
+        parts["Blade"].matrix_world = magazine_frame_cache["Mm"] @ _rot_about(
+            A.rxd(np.degrees(st.extra.get("spin", 0.0))), np.array(rest["Blade"].to_translation())) @ rest["Blade"]
+    halves = [n for n in ("StringUpper", "StringLower") if n in parts]
+    if halves and s.name == "crossbow":
+        # the two-half string (fp.crossbow): each half node (origin = its prod-tip anchor; the ...Cord child follows)
+        # rests RELEASED, its cord ending on string_rest; it swings about the anchor and stretches to the centre
+        c0 = np.asarray(s.markers["string_rest"], float)
+        c1 = B.string_centre(s, st.extra.get("string", 1.0))
+        for n in halves:
+            parts[n].matrix_world = Mg @ _bend_half(parts[n], rest[n], c0, c1) @ rest[n]
+
+
+magazine_frame_cache: dict = {}
+
+
+def render(out: pathlib.Path, args: list[str], mesh_params: dict | None = None, cols: int = 3) -> None:
+    """Contact sheet of ``args`` cells; ``mesh_params`` = the ``build_arms_mesh`` params (default: the generic
+    ``char_arms_fp`` arms, skin 2; ``{"heister": ...}`` for a sleeve variant, ``_arms_sleeves``)."""
     from _anim_review import _setup_render
 
     set_name = args[0] if args and ":" not in args[0] else "pistol"
     cells = [a for a in args if ":" in a] or REVIEW_CELLS[set_name]
-    s = F.SETS.get(set_name) or F.B3[set_name]
     scene.reset()
     sk = F.skeleton()
     solver = A.Solver(sk)
-    fns = CL.state_fns(sk, s)
     arm = F.build_arms_rig()
-    F.build_arms_mesh(_Ctx(), arm, {"skin": 2})
-    rev = None
-    b3 = None
-    if _weapon_glb(s.weapon) is not None:
-        gun, parts, rest = _import_weapon(s.weapon)
-    elif s.name in F.B3:                          # D-055: ENV B's model not on trunk yet: scratch proxy
-        import _arms_review_b3 as RB
-        b3 = RB.build(s)
-        gun, parts, rest = None, {}, {}
-    else:                                         # no marshal model yet: scratch proxy (never exported)
-        rev = _revolver_proxy(s)
-        gun, parts, rest = None, {}, {}
-    mag_node = next((o for n, o in parts.items() if n.startswith("StockMagazine")), None)
-    gun_l, mag_l = None, None
-    if s.support == "akimbo":                     # the second gun (WeaponVisual on hand.L in game)
-        gun_l, parts_l, rest_l = _import_weapon(s.weapon)
-        mag_l = next((o for n, o in parts_l.items() if n.startswith("StockMagazine")), None)
+    F.build_arms_mesh(_Ctx(), arm, mesh_params or {"skin": 2})
+    props: dict = {}
+    fns_of: dict = {}
     from lib import materials
     shell = _shell(materials.material("review_shell", "#B0322A", 0.4))
     cam = bpy.data.cameras.new("FP")
     cam.sensor_fit = "VERTICAL"
     cam.angle_y = math.radians(float(os.environ.get("FP_FOV", "75")))
-    cam.clip_start = 0.03
+    cam.clip_start = float(os.environ.get("FP_NEAR", "0.02"))       # the viewmodel near plane (D2-04 proposal)
     co = bpy.data.objects.new("FP", cam)
     co.rotation_euler = (math.radians(90.0), 0.0, 0.0)          # look along +Y
     scene.link(co)
@@ -246,38 +315,50 @@ def render(out: pathlib.Path, args: list[str]) -> None:
     tmp = pathlib.Path(tempfile.mkdtemp(prefix="arms_review_")) / out.stem      # panels never land in the project
     for i, cell in enumerate(cells):
         name, fs = cell.split(":")
+        s = _set_of(name)
         clip = name[len(s.name) + 1:]
-        st = fns[clip](int(fs))
+        if s.name not in props:
+            props[s.name] = _build_prop(s)
+            fns_of[s.name] = CL.state_fns(sk, s)
+        for n, p in props.items():
+            for o in p["objs"]:
+                o.hide_render = n != s.name
+        pr = props[s.name]
+        gun, parts, rest, mag_node = pr["gun"], pr["parts"], pr["rest"], pr["mag_node"]
+        st = fns_of[s.name][clip](int(fs))
         sv = solver.solve(realize(sk, solver, st, s.sh))
         A.apply_frame(arm, sv)
         Rw, pw = weapon_of(sk, sv)
         Mg = _m(Rw, pw)
+        Rm, pm = magazine_of(sk, sv)
+        magazine_frame_cache["Mm"] = _m(Rm, pm)
         if gun is not None:
             gun.matrix_world = Mg
-        if gun_l is not None:
-            gun_l.matrix_world = _m(*st.extra["wf_l"])
+        if pr["gun_l"] is not None:
+            pr["gun_l"].matrix_world = _m(*st.extra["wf_l"])
             bpy.context.view_layer.update()
-            if mag_l is not None:
-                mag_l.matrix_world = _m(*st.extra["mag_l"]) @ rest_l[mag_l.name]
-        if b3 is not None:
-            Rm, pm = magazine_of(sk, sv)
+            if pr["mag_l"] is not None:
+                pr["mag_l"].matrix_world = _m(*st.extra["mag_l"]) @ pr["rest_l"][pr["mag_l"].name]
+        if pr["items"] is not None:
+            import _arms_review_items as RI
+            RI.pose(pr["items"], Mg, st)
+        if pr["b3"] is not None:
+            import _arms_review_b3 as RB
             Rh = sv.W["hand.L"] @ sk.B["hand.L"]
-            RB.pose(b3, s, st, Mg, _m(Rm, pm), int(fs), clip, (Rh, sv.P["hand.L"]))
-        if rev is not None:
+            RB.pose(pr["b3"], s, st, Mg, _m(Rm, pm), int(fs), clip, (Rh, sv.P["hand.L"]))
+        if pr["rev"] is not None:
             import _arms_revolver as RV
-            static, crane, loader = rev
+            static, crane, loader = pr["rev"]
             for o in static:
                 o.matrix_world = Mg
             Rc, tc = RV.crane_frame(s, st.extra.get("crane", 0.0))
             for o in crane:
                 o.matrix_world = Mg @ _m(Rc, tc)
-            Rm, pm = magazine_of(sk, sv)
             for o in loader:
                 o.matrix_world = _m(Rm, pm)
                 o.hide_render = not st.extra.get("loader", False)
         bpy.context.view_layer.update()
         if mag_node is not None:
-            Rm, pm = magazine_of(sk, sv)
             mag_node.matrix_world = _m(Rm, pm) @ rest[mag_node.name]
         if "Pump" in parts:
             p = st.extra.get("pump", 0.0)
@@ -292,6 +373,12 @@ def render(out: pathlib.Path, args: list[str]) -> None:
             ang = st.extra.get("cover", 0.0)
             parts["FeedCover"].matrix_world = Mg @ _rot_about(A.rxd(-CL.COVER_OPEN_DEG * ang),
                                                               s.markers["cover_hinge"]) @ rest["FeedCover"]
+        if gun is not None and s.name in F.B3:
+            _pose_real_parts(s, st, parts, rest, Mg)
+        if "Crane" in parts and s.reload == "speedloader":     # ENV B's wpn_marshal_357 (D2-04)
+            import _arms_revolver as RV
+            Rc, tc = RV.crane_frame(s, st.extra.get("crane", 0.0))
+            parts["Crane"].matrix_world = Mg @ _m(Rc, tc) @ rest["Crane"]
         shell.hide_render = not st.extra.get("shell", False)
         if not shell.hide_render:
             Rh = sv.W["hand.L"] @ sk.B["hand.L"]
@@ -302,7 +389,6 @@ def render(out: pathlib.Path, args: list[str]) -> None:
         bpy.context.scene.render.filepath = path
         bpy.ops.render.render(write_still=True)
         panels.append((cell, path))
-    cols = 3
     rows = math.ceil(len(panels) / cols)
     sheet = np.zeros((rows * H, cols * W, 4), dtype=np.float32)
     for i, (_cell, path) in enumerate(panels):

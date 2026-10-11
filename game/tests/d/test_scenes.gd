@@ -186,7 +186,10 @@ func test_no_null_materials() -> void:
 			assert_true(mi.mesh != null, "%s/%s has a mesh" % [e["id"], mi.name])
 			if mi.mesh == null:
 				continue
-			assert_false(mi.mesh.resource_path.is_empty(), "%s/%s mesh is an external resource" % [e["id"], mi.name])
+			# D-067(b): the scene inherits the glb, so every mesh is the glb's own imported sub-resource.
+			var glb: String = "res://assets/characters/%s/%s.glb" % [e["asset"], e["asset"]]
+			assert_true(mi.mesh.resource_path.begins_with(glb + "::"),
+				"%s/%s mesh comes from %s (got '%s')" % [e["id"], mi.name, glb, mi.mesh.resource_path])
 			for s: int in range(mi.mesh.get_surface_count()):
 				var mat: Material = mi.get_active_material(s)
 				assert_true(mat != null, "%s/%s surface %d material" % [e["id"], mi.name, s])

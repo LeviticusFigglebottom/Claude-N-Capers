@@ -38,6 +38,15 @@ GLYPHS = {
     "C": [(0, 0, 1, 5), (0, 4, 3, 5), (0, 0, 3, 1)],
     "I": [(1, 0, 2, 5), (0, 4, 3, 5), (0, 0, 3, 1)],
     "L": [(0, 0, 1, 5), (0, 0, 3, 1)],
+    # D2-01 faction words (FRD, SENTINEL, ZERO); also the faction lettering of ``_faction``
+    "F": [(0, 0, 1, 5), (1, 4, 3, 5), (1, 2, 2, 3)],
+    "R": [(0, 0, 1, 5), (1, 4, 2, 5), (2, 3, 3, 4), (1, 2, 2, 3), (2, 0, 3, 2)],
+    "D": [(0, 0, 1, 5), (1, 4, 2, 5), (1, 0, 2, 1), (2, 1, 3, 4)],
+    "S": [(0, 4, 3, 5), (0, 3, 1, 4), (0, 2, 3, 3), (2, 1, 3, 2), (0, 0, 3, 1)],
+    "E": [(0, 0, 1, 5), (1, 4, 3, 5), (1, 2, 2, 3), (1, 0, 3, 1)],
+    "N": [(0, 0, 1, 5), (2, 0, 3, 5), (1, 2, 2, 4)],
+    "Z": [(0, 4, 3, 5), (2, 3, 3, 4), (1, 2, 2, 3), (0, 1, 1, 2), (0, 0, 3, 1)],
+    "O": [(0, 0, 1, 5), (2, 0, 3, 5), (1, 4, 2, 5), (1, 0, 2, 1)],
 }
 WORD = "TACTICAL"
 
@@ -55,7 +64,7 @@ def _wing(sx: float) -> Matrix:
             @ Matrix.Rotation(math.radians(WING_DEG) * sx, 4, "Y"))
 
 
-def shield_mesh(face: str, edge: str, letters: str, glass: str, metal: str) -> Mesh:
+def shield_mesh(face: str, edge: str, letters: str, glass: str, metal: str, word: str = WORD) -> Mesh:
     base = _to_blender()
     m = Mesh()
     hh = HEIGHT / 2
@@ -77,12 +86,13 @@ def shield_mesh(face: str, edge: str, letters: str, glass: str, metal: str) -> M
           glass)
     g.bevel(0.002, 1, 30.0)
     # raised block letters under the window
-    unit = 0.0105
-    n = len(WORD)
+    n = len(word)
     total = n * 3 + (n - 1)
+    # 8-letter words at 10.5 mm per glyph unit; shorter faction words grow to fill the same width
+    unit = 0.0105 if n >= 8 else min(0.021, 0.0105 * 31 / total)
     x0 = -total * unit / 2
     y0 = wz - wh / 2 - fr - 0.03 - 5 * unit
-    for ci, ch in enumerate(WORD):
+    for ci, ch in enumerate(word):
         gx = x0 + ci * 4 * unit
         for a, b, c_, d in GLYPHS[ch]:
             g.box((gx + a * unit, y0 + b * unit, THICK - 0.001), (gx + c_ * unit, y0 + d * unit, THICK + 0.0035), letters)
@@ -150,7 +160,8 @@ def build_shield(ctx, colors: dict) -> None:
     import bmesh
     from lib import geo, scene, uv
 
-    m = shield_mesh(colors["face"], colors["edge"], colors["letters"], colors["glass"], colors["metal"])
+    word = colors.get("word", WORD)
+    m = shield_mesh(colors["face"], colors["edge"], colors["letters"], colors["glass"], colors["metal"], word)
     me_name = "Visual"
     import bpy
 
@@ -182,4 +193,4 @@ def build_shield(ctx, colors: dict) -> None:
     ctx.source_extra["shield"] = (f"{W_CENTRE + 2 * W_WING * math.cos(math.radians(WING_DEG)):.3f} m wide x {HEIGHT:.2f} m; "
                                   f"pivot = grip centre, -Z (Godot) = face outward; face {GRIP_BACK + THICK:.3f} m in "
                                   f"front of the grip, shield centre {GRIP_UP:.2f} m below it")
-    ctx.source_extra["word"] = WORD
+    ctx.source_extra["word"] = word

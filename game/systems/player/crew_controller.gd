@@ -28,6 +28,9 @@ var net_id: int = 0
 var peer_id: int = 0
 var is_ai: bool = false
 var display_name: String = ""
+## Playable heister (&"rook", &"sable", &"dutch", &"wren"; &"" = generic crew): the slot's Loadout.heister
+## (D-073). Presentation only (FP sleeves, characters.md v1.8).
+var heister: StringName = &""
 var masked: bool = false
 ## S1.3 civilian mode (HeistDef.start_mode = civilian): no gear, undetectable, no mask-up or firing, only
 ## `civilian_allowed` interactions. Picking up gear (GearPickup) or any mask-up (alarm) ends it.
@@ -67,6 +70,8 @@ var intent: CrewIntent = CrewIntent.new()
 ## QB-60: sprint / jump stamina (CrewStamina), ticked by the movement simulation.
 var stamina: CrewStamina = CrewStamina.new()
 
+## QC-43: the hub crew's own InteractionSystem (no HeistRuntime in the safehouse).
+var hub_interaction: InteractionSystem = null
 var _runtime: HeistRuntime = null
 var _jump_latch: bool = false
 var _remote_pos: Vector3 = Vector3.INF
@@ -78,6 +83,10 @@ var _send_accum: float = 0.0
 ## Combat components (A1-08); null only for a scene without them.
 @onready var health: CrewHealth = get_node_or_null("Health") as CrewHealth
 @onready var weapons: CrewWeapons = get_node_or_null("Weapons") as CrewWeapons
+## L3.9 melee (CrewMelee), ticked with the weapons.
+@onready var melee: CrewMelee = get_node_or_null("Melee") as CrewMelee
+## A3-12 grenades / throwing knives (CrewThrowables), ticked with the weapons.
+@onready var throwables: CrewThrowables = get_node_or_null(CrewThrowables.NODE_NAME) as CrewThrowables
 @onready var _collision: CollisionShape3D = $Collision
 @onready var _head: Node3D = $Head
 
@@ -110,6 +119,7 @@ func setup(p_slot: int, info: Dictionary, p_loadout: Loadout) -> void:
 	is_ai = bool(info.get("is_ai", false))
 	display_name = String(info.get("display_name", "Crew %d" % p_slot))
 	loadout = CrewWeapons.build_loadout(p_loadout)  # resolved; default kestrel + suppressor if null
+	heister = loadout.heister if loadout.heister != &"" or p_loadout == null else p_loadout.heister  # D-073
 	name = "Crew%d" % p_slot
 	var tw: CrewTweak = Tweak.crew()
 	body_bags = mini(tw.body_bags_base + int(Modifiers.add(slot, &"stealth.body_bags_extra")),
@@ -124,6 +134,7 @@ func is_local() -> bool:
 ## Instant loadout swap (firing range, QB-25): re-resolve, re-arm weapons, refill health/armor.
 func set_loadout(p_loadout: Loadout) -> void:
 	loadout = CrewWeapons.build_loadout(p_loadout)
+	heister = loadout.heister if loadout.heister != &"" or p_loadout == null else p_loadout.heister  # D-073
 	if weapons != null:
 		weapons.set_loadout(loadout)
 	if health != null:
@@ -131,6 +142,8 @@ func set_loadout(p_loadout: Loadout) -> void:
 	var view: CrewView = CrewView.of(self)
 	if view != null:
 		view.refresh()  # QB-47: weapon visual + mask of the new loadout
+		if view.fp_viewmodel() != null:
+			view.fp_viewmodel().apply_sleeves(heister)  # characters.md v1.8
 		view.replicate_mask_descriptor()  # QA-25: server -> every peer
 
 
@@ -165,6 +178,36 @@ static func spawn_for_range(parent: Node, xform: Transform3D, p_loadout: Loadout
 	pin.name = "PlayerInput"
 	crew.add_child(pin)
 	return crew
+
+
+## QC-43 (A3-11): the local crew member of the 3D safehouse: no HeistRuntime, no Net session needed (offline
+## solo peer like the range), unmasked in civilian mode (S1.3: no mask-up, no firing, no weapon drawn) with its
+## own InteractionSystem (`HubInteraction`, InteractionTweak.reach_m aimed reach) so hub stations work.
+## MenuFlow pauses it around station screens with set_input_paused; LocalHudModel.track(crew) shows prompts.
+static func spawn_for_hub(parent: Node, xform: Transform3D, p_loadout: Loadout) -> Node:
+	var crew: CrewController = (load(SCENE_PATH) as PackedScene).instantiate() as CrewController
+	var local_slot: int = Net.local_slot()
+	crew.setup(local_slot if local_slot >= 0 else 0,
+		{"peer_id": Net.local_peer_id(), "is_ai": false, "display_name": "Safehouse"}, p_loadout)
+	crew.civilian = true
+	var isys: InteractionSystem = InteractionSystem.new()
+	isys.name = "HubInteraction"
+	crew.add_child(isys)
+	crew.hub_interaction = isys
+	parent.add_child(crew)
+	NetIds.claim(crew)
+	crew.teleport(xform)
+	var pin: PlayerInput = PlayerInput.new()
+	pin.name = "PlayerInput"
+	crew.add_child(pin)
+	return crew
+
+
+## The InteractionSystem serving this crew member (the heist's, or the hub's own; null in the range).
+func _interaction_system() -> InteractionSystem:
+	if _runtime != null and _runtime.interaction != null:
+		return _runtime.interaction
+	return hub_interaction
 
 
 ## Server: the single hit entry point (docs/contracts/damage.md). CrewHealth applies armor, gating and
@@ -264,8 +307,8 @@ func set_crew_state(s: Enums.CrewState) -> void:
 		return
 	var old: int = crew_state
 	crew_state = s
-	if s != Enums.CrewState.NORMAL and _runtime != null and _runtime.interaction != null:
-		_runtime.interaction.cancel(slot)
+	if s != Enums.CrewState.NORMAL and _interaction_system() != null:
+		_interaction_system().cancel(slot)
 	crew_state_changed.emit(old, s)
 
 
@@ -278,8 +321,8 @@ func teleport(xform: Transform3D) -> void:
 	rotation = Vector3(0.0, look_yaw, 0.0)
 	velocity = Vector3.ZERO
 	_remote_pos = Vector3.INF
-	if _runtime != null and _runtime.interaction != null:
-		_runtime.interaction.cancel(slot)
+	if _interaction_system() != null:
+		_interaction_system().cancel(slot)
 	if Net.is_authority() and _has_remote_owner() and _is_networked():
 		_teleport_seq += 1
 		_rpc_owner_teleport.rpc_id(peer_id, xform, _teleport_seq)  # A3-07: the owner predicts; move it too
@@ -297,6 +340,10 @@ func _physics_process(delta: float) -> void:
 		_simulate(delta)  # client-side prediction of own movement
 		if weapons != null:
 			weapons.client_tick(intent, delta)
+		if melee != null:
+			melee.tick(intent, delta)  # presentation on the owning client (hits are server-side)
+		if throwables != null:
+			throwables.tick(intent, delta)
 		_client_send(delta)
 
 
@@ -372,8 +419,12 @@ func _tick_server_actions(delta: float) -> void:
 		health.server_tick(delta)
 	if weapons != null:
 		weapons.server_tick(intent, delta)
-	if _runtime != null and _runtime.interaction != null:
-		_runtime.interaction.tick(self, intent, delta)
+	if melee != null:
+		melee.tick(intent, delta)
+	if throwables != null:
+		throwables.tick(intent, delta)
+	if _interaction_system() != null:
+		_interaction_system().tick(self, intent, delta)
 	if _runtime != null:
 		_runtime.crew_actions_tick(self, intent, delta)
 

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.sniper_position"
+category = &"supply"
+cost = 2000
+favors = 2
+point_ids = Array[StringName]([&"pp_perch_roof", &"pp_perch_stack"])
+exclusive_group = &"player_perch"
+drop = &"deployable.ammo_bag"
+tags = Array[StringName]([&"loud"])
+effect = &"force_variant"

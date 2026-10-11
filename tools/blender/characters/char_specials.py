@@ -39,12 +39,18 @@ the special gear of ``_special_gear``. Silhouette at 30 m is the design driver
 * ``char_brandt`` (Captain Winters analogue): heavy steel-blue armour under a knee-length command
   coat (open front), pauldrons over the coat, a crested helmet (blue crest fin front-to-back).
 
+Faction variants (D2-01): ``char_<id>_<v>`` for every special above except Brandt / Aegis (faction-free
+boss squad) and ``v`` in frd, sentinel, zero, via ``_faction.dress`` (recolour + original insignia, zero:
+bone face mask, bone "skull" Wrecker faceplate); the special nodes are built by the same recipes, so
+every variant keeps them. Bulwark shields per variant: ``char_bulwark_<v>_shield`` (``FACTION_SHIELDS``).
+
 Meshes: ``Body``, ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (+ ``Faceplate``, ``Visor``,
 ``HeadArmored`` on the Wrecker, ``Goggles`` on the Phantom). No blend shapes (baked).
 """
 
 import math
 
+import _faction as faction
 import _gear_kit as gk
 import _outfit as o
 import _outfit_garments as g
@@ -53,9 +59,9 @@ import char_police as police
 from _outfit import Hull, Mesh, Vector, lerp, smoothstep
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
-VARIANTS = {
+BASE_VARIANTS = {
     "char_tac_heavy": {"height": 1.83, "build": 1.0, "gender": 0.0, "age": 0.4, "skin": 1, "beard_shadow": 0.7, "hair": "buzz",
                        "hair_color": "dark", "unit": "tac_heavy"},
     "char_phantom": {"height": 1.86, "build": 0.15, "gender": 0.0, "age": 0.3, "skin": 2, "hair": "none",
@@ -81,6 +87,24 @@ VARIANTS = {
     "char_bulwark_aegis_shield": {"unit": "shield", "face": "char_aegis_steel", "edge": "rubber_black",
                                   "letters": "char_aegis_blue", "glass": "char_lens", "metal": "polymer_black"},
 }
+#: D2-01 faction reskins (``_faction``) of the law-enforcement specials: ``char_<id>_<variant>``, plus a
+#: recoloured shield per Bulwark variant (``char_bulwark_<variant>_shield``, word = the faction's name)
+FACTIONS = ("frd", "sentinel", "zero")
+FACTION_ROLES = ("char_tac_heavy", "char_phantom", "char_stinger", "char_bulwark", "char_wrecker", "char_longshot",
+                 "char_corpsman")
+FACTION_SHIELDS = {
+    "char_bulwark_frd_shield": {"unit": "shield", "faction": "frd", "face": "char_frd_helmet", "edge": "rubber_black",
+                                "letters": "char_frd_yellow", "glass": "char_lens", "metal": "polymer_black",
+                                "word": "FRD"},
+    "char_bulwark_sentinel_shield": {"unit": "shield", "faction": "sentinel", "face": "char_sen_white",
+                                     "edge": "rubber_black", "letters": "char_sen_red", "glass": "char_lens",
+                                     "metal": "polymer_black", "word": "SENTINEL"},
+    "char_bulwark_zero_shield": {"unit": "shield", "faction": "zero", "face": "char_zero_armor", "edge": "rubber_black",
+                                 "letters": "char_zero_bone", "glass": "char_lens", "metal": "polymer_black",
+                                 "word": "ZERO"},
+}
+VARIANTS = {**BASE_VARIANTS, **FACTION_SHIELDS,
+            **{f"{aid}_{fac}": {**BASE_VARIANTS[aid], "faction": fac} for aid in FACTION_ROLES for fac in FACTIONS}}
 
 TAC = "char_tac_charcoal"
 TAC_GEAR = "char_tac_gear"
@@ -798,12 +822,16 @@ def wrecker(kit) -> None:
 def recipe(kit) -> None:
     {"tac_heavy": tac_heavy, "phantom": phantom, "stinger": stinger, "bulwark": bulwark, "wrecker": wrecker,
      "longshot": longshot, "corpsman": corpsman, "brandt": brandt}[kit.opts["unit"]](kit)
+    faction.dress(kit)
 
 
 def build(ctx) -> None:
     if ctx.params.get("unit") == "shield":
         import _special_shield as shield
 
-        shield.build_shield(ctx, {k: ctx.params[k] for k in ("face", "edge", "letters", "glass", "metal")})
+        shield.build_shield(ctx, {k: ctx.params[k] for k in ("face", "edge", "letters", "glass", "metal", "word")
+                                  if k in ctx.params})
+        if ctx.params.get("faction"):
+            faction.tag(ctx, ctx.params["faction"])
         return
     sg.build_special(ctx, recipe)

@@ -207,3 +207,35 @@ func _open_all_doors(root: Node) -> void:
 		if n.has_method(&"set_open") and n.has_method(&"unlock"):
 			n.call(&"unlock")
 			n.call(&"set_open", true)
+
+
+## P3 gate (L2.8 / L6.1): AI teammates free a kicked (CLOAKER_DOWNED) or tased human like a revive.
+func test_p3_ai_frees_cloaker_downed_and_tased_human() -> void:
+	Engine.time_scale = TIME_SCALE
+	await _go_loud()
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(4, 0.05, 0)))
+	await wait_physics_frames(2)
+	for state: int in [Enums.CrewState.CLOAKER_DOWNED, Enums.CrewState.TASED]:
+		assert_true(_crew(0).health.incapacitate(state, 0), "incapacitated (%s)" % Enums.CrewState.keys()[state])
+		var ok: bool = await wait_until(func() -> bool: return _crew(0).crew_state == Enums.CrewState.NORMAL, 20.0)
+		assert_true(ok, "an AI teammate freed the %s human within 20 s" % Enums.CrewState.keys()[state])
+		await wait_physics_frames(10)
+
+
+func test_p3_ai_shoots_the_tasing_stinger_first() -> void:
+	await _go_loud()
+	var brain: CrewAiBrain = CrewAiBrain.of(_crew(1))
+	var near: NpcBase = ACombatSpecials.spawn(_rt, "patrol_officer", _crew(1).global_position + Vector3(0, 0, -5))
+	var stinger: NpcBase = ACombatSpecials.spawn(_rt, "stinger", _crew(1).global_position + Vector3(0, 0, -12))
+	for n: NpcBase in [near, stinger]:
+		n.max_health = 100000.0
+		n.health = 100000.0
+		var g: Node = n.get_node_or_null("Gunner")
+		if g != null:
+			g.set_physics_process(false)
+	var sb: StingerBrain = stinger.get_node("Brain") as StingerBrain
+	sb.set_physics_process(false)
+	sb.tase_victim = _crew(0)
+	await wait_seconds(1.0)
+	assert_eq(brain.target_enemy, stinger, "the Stinger tasing a crew member is the target (L4.4)")
+	sb.tase_victim = null

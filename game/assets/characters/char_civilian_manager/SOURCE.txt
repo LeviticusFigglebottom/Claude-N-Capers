@@ -7,9 +7,9 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_civil
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0910, 0.1128] (model [0.0000, 1.3219, 0.1316], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0824, -0.0902] (model [0.0000, 1.6941, -0.0780], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1918, 0.0517, 0.0360] (model [0.1918, 1.0209, 0.0385], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1915, 0.0517, 0.0359] (model [0.1915, 1.0209, 0.0385], Godot axes, rest pose)
 body_faces_culled: 4810
-body_params: {"age": 0.45, "beard_shadow": 0.35, "build": 0.55, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "height": 1.81, "lip": "auto", "skin": 3}
+body_params: {"age": 0.45, "beard_shadow": 0.35, "build": 0.55, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "hair_peak": 0.0, "height": 1.81, "lip": "auto", "skin": 3}
 bones: 52
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)

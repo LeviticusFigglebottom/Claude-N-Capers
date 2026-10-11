@@ -461,3 +461,85 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   so the lead raises it with the product owner if .git approaches 2 GB (411 MB now).
 - B5-01 options hooks routed (A: FOV/sensitivity/invert/toggles; C: brightness + palettes); B5-02 Notoriety costs
   spending cash (no offshore account); music unlocks `unlock.music.vault_hymn`/`long_con`/`last_call` (ranks VII/XIII/XXI).
+
+## D-068 — 2026-10-11 — Dockside Burn content answers (B5-04)
+- `LootDef.is_tool` (contracts/data): no value, no XP, never counts toward [secure] (thermite). preplanning.md v1.1:
+  `loot.<id>` drop kinds spawn that bag; point labels heist-qualified for new heists.
+- $95k base is a placeholder (P6 balance); per-heist Board gating is P6; no armor-bag drop on loud-only jobs; small
+  loot $600–1,500 until ENV C sets prefab values.
+
+## D-069 — 2026-10-11 — Item FP contracts, gun bash, music hooks, B6 dispatch
+- ENV D's seven proposals (D2-04) accepted: `anim_set` on MeleeDef/ThrowableDef/DeployableDef plus optional
+  `MeleeDef.swing_time_s` / `hit_delay_s` / `equip_time_s` (contracts/data, lead); item-model conventions
+  (visual_slots.md "Items"); `<set>_bash` with hit@; viewmodel near plane 0.02 m and runtime left-hand IK to
+  `LeftHandIK` (ENV A); bow brace 0.155 m; crossbow string halves and the Marshal `Speedloader` (ENV B).
+  characters.md v1.7 records the sets and D2-02's NPC ambient clips.
+- B5-03 music: `MusicTrackTable` (ENV C, `res://world/audio/music/tracks.tres`), `MusicDirector.preview/stop_preview`
+  usable without the EventBus, heist music = `launch_options["music_track"]` else `HeistDef.music_track`; ENV A
+  replicates `music_track`. The lobby profile summary gains an optional `music` field (missing reads as "").
+- Glasshouse G3 signed off (ENV C 21ca875; garage lights accepted). Polish backlog: garage parked cars as props,
+  stray bracket by the VOSSBERG neon, security-office bins.
+- ENV B dispatched B6-01..05 (P5 loot/contracts, Tab scoreboard + awards, chat, drop-in/kick UI, lobby codes).
+- Gate hygiene: HUD-model asserts after a physics wait call `hud_model.refresh()` first (it polls on render frames).
+
+## D-070 — 2026-10-11 — P3 gate on Dockside Burn; safehouse; contract updates
+- **P3 gate map = dockside_burn** (test_p3_loud, seed 3007): wave hold on Ferro Street (the open street; the holdouts
+  were hollow while police spawned at `breach_only` doors), cartel gunmen despawned where they are not the subject,
+  Bulwark standoff point clear of every SHIELD_ANCHOR, a second hostage spawned (night_shift rolls 1–3). New assert:
+  no unit spawns at a `breach_only` ENTRY point (QC-42, ENV A 878d35f). 10/10 on 3+2 runs. test_coop_loopback stays on
+  Glasshouse (it needs a STEALTH phase), now seed 3071 with bags dropped at the van `DropAnchor`.
+- Routed from the port: ENV A — navmesh through barred Ferro gates (or ENV C bake), Bulwark anchors behind the target,
+  CrewAiBrain out-of-tree targets; ENV C — holdouts need ≥ 2 non-breach-only approaches, keep the yard arena open.
+- Safehouse "The Press" G0 approved (docs/design/heists/safehouse.md): SafehouseMap root (contract hub_map.md v1.0 to be
+  written with C4-02), 8 stations incl. `crew` phone and `notoriety`, solo v1, 2D hub fallback. Roadmap C4-01..03,
+  A3-11 hub support, B6-06 3D hub mode, C5-01 stems (unlockables alias heist stems until P5 music ×3).
+- Contracts: characters v1.8 (heister FP sleeves, `rappel` clip), visual_slots crossbow `StringUpper`/`StringLower`
+  + revolver `Speedloader`, audio_cues v1.2 (`cue.door_breach`, `cue.burn_warning`). Shadow Ledger painting = LIGHT.
+- A3-12: player melee (L3.9) was never implemented — ENV A builds CrewMelee then CrewThrowables (high priority).
+
+## D-071 — 2026-10-11 — Scoreboard stats and payday awards (B6-02)
+- ui_hud v1.7 `crew_stats_changed` (`crew_stats` rows) and events v1.1 HeistResult crew rows gain `name`, `shots`,
+  `hits`, `headshots`; counting rules in ui_hud v1.7 (a shield/plate strike is a hit: accuracy measures aim). ENV A owns.
+- Payday "Crew Honours": AI teammates appear on the scoreboard but **never win awards** (PD2's end screen honours
+  players); among humans, ties break by lowest slot. A solo player still gets awards they earn.
+
+## D-072 — 2026-10-11 — Net.kick, chat, drop-in policy, safehouse hub contract (B6-03..06)
+- `Net.kick(peer_id)` (lead, core/net.gd): host-only; notice RPC then disconnect after 0.25 s (ENet drops queued
+  packets on an immediate disconnect); `peer_kicked(peer_id, slot)`; client `last_disconnect_reason = &"kicked"`;
+  kicked display names are re-kicked for the rest of the session. net.md v1.1 also reserves `lobby.chat`/`lobby.kick`.
+- Input action `chat` = Enter / keypad Enter (T is `order_menu`). `G.HUB_STATION`, `G.DROP_IN_SERVICE`.
+- Rulings for ENV B: kicked peers cannot rejoin that session; drop-in policy ask (default) / auto / off (PD2);
+  hub return to the station UsePoint; jukebox duck is MusicDirector `set_ducked`; hub prompts use the in-heist
+  prompt format; IPv6 lobby codes out of scope.
+- hub_map.md v1.0 (safehouse scene, stations, StationCam as Marker3D) with ENV C's wording.
+
+## D-073 — 2026-10-11 — Heister choice, throwables, mask fit
+- `Loadout.heister: StringName` (&"" = generic crew): the player's heister rides the loadout; ENV B sets it from the
+  profile (unique per lobby, PD2); ENV A's FpViewmodel reads it for the sleeve variant (characters v1.8).
+- A3-12 throwables: ENV B adds `throwable.frag` / `concussion` / `incendiary` / `throwing_knife` data (◇);
+  audio_cues v1.3 `cue.throwable_*` (ENV C).
+- Masks clear the crew face envelope by ≥ 3 mm (ENV D fix for skin/hair poking through; characters v1.8).
+- Nav bake: BARRED/locked closure gates are baked closed (ENV C), A's door NavLink bridges them while passable.
+- D-067(b) implemented (ENV D fb65fdd): all 76 character scenes are inherited scenes of their glb (remove_armature),
+  367 per-scene .res removed, game/world/characters 114.9 MB → 3.3 MB; node-tree dump of 84 scenes identical
+  before/after; builds byte-deterministic. characters.md v1.6's variant text applies as written; ENV A unchanged.
+
+## D-074 — 2026-10-11 — Weapon finishes, kick-list query, P5 prep
+- `Loadout.weapon_finishes: Dictionary` (weapon_id → finish_id, ENV B B7-04; save v7 reserves `weapon_finishes`).
+- `Net.was_kicked(display_name)`: public query of the session kick list (HeistDropIn and lobby agree).
+- Drop-in: host sends `full` when no human-replaceable seat; a host's policy change applies live; B's client-side
+  `unreachable` reason. characters v1.9 adds D3-02's P5 ambient clips with placement numbers for ENV C.
+- P5 preparation: ENV D's P5 cast (fda27f0) precedes the P5 G0 docs; ENV C drafts gallery_night, meridian_federal,
+  afterhours, rolling_thunder G0s (QC ranges 51–89) and confirms/renames D's invented companies.
+- Roadmap: A4-01..03 (fidelity audit, perf budgets, 4-client soak), B7-01..04 (career stats, achievements, contact
+  radio, weapon finishes), D3-01..04 (P5 cast, P5 anims, mask batch 3, animation polish).
+
+## D-075 — 2026-10-11 — P5 G0 rulings; Meridian renamed
+- **`meridian_federal` → `ostrander_federal` ("Ostrander Federal")**: "Meridian" is used by real banks and credit
+  unions, and the standing rule is original names only. The branch already sits on Ostrander Plaza. Owners rename
+  ids/strings/files (B content + strings, C design doc, D p5_cast.json). The "meridian line" floor detail may stay.
+- P5 G0 drafts (ENV C 231c056) approved for G1 with rulings sent to ENV C (gala clock, camera-layout validator rules,
+  required loot, civilian staff doors closed, Afterhours contact = The Accountant, Rolling Thunder "Loud (ambush
+  start)" label, room purposes `gallery` / `hall` / `car_park` in C's scale table). Big prefab asks (armored_truck,
+  convoy_vehicle, C4 item) become ENV A roadmap rows A5-01..03.
+- L1.1 fade_threshold: data (8–18) wins; PD2's "50" rescaled to our enemy cap.

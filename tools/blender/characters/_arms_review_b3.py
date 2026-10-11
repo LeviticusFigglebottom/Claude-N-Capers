@@ -26,9 +26,10 @@ REVIEW_CELLS = {
     "launcher": ["launcher_idle:0", "launcher_ads_idle:0", "launcher_fire:2", "launcher_reload:16",
                  "launcher_reload:23", "launcher_reload:48", "launcher_reload:52", "launcher_reload:71",
                  "launcher_draw:10"],
-    "crossbow": ["crossbow_idle:0", "crossbow_ads_idle:0", "crossbow_fire:1", "crossbow_reload:10",
-                 "crossbow_reload:17", "crossbow_reload:30", "crossbow_reload:34", "crossbow_sprint:4",
-                 "crossbow_draw:10"],
+    # fire:0 latched / fire:1 released; reload cock@10 (hooked, released) .. 13 (mid pull) .. string_back@17 (latched)
+    "crossbow": ["crossbow_ads_idle:0", "crossbow_fire:0", "crossbow_fire:1", "crossbow_reload:10",
+                 "crossbow_reload:13", "crossbow_reload:17", "crossbow_reload:30", "crossbow_reload:34",
+                 "crossbow_idle:0"],
     "lever": ["lever_idle:0", "lever_ads_idle:0", "lever_fire:8", "lever_fire_ads:8", "lever_reload_start:12",
               "lever_reload_loop:6", "lever_reload_loop:9", "lever_reload_end_empty:13", "lever_sprint:4"],
     "bow": ["bow_idle:0", "bow_ads_idle:0", "bow_draw_string:10", "bow_hold:0", "bow_release:2", "bow_nock:6",

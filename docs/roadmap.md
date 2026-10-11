@@ -13,7 +13,7 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | **P2** | Stealth complete: cameras + operator, ECM, keycards/codes, saws, lasers, cuffs, civilians full, assets; heists Night Deposit + Shadow Ledger (stealth-only) | `test_p2_stealth.gd`: scripted ghost run on 3 seeds per heist; all S-rows of phase ≤ 2 tested |
 | **P3** | Loud complete: all specials + captain, director escalation, custody/trade, crowd control, AI teammate orders, factions; co-op loopback; Dockside Burn (loud-only) | `test_p3_loud.gd` (bot crew survives scripted waves; specials' counterplay verified) + `test_coop_loopback.gd` |
 | **P4** | Progression: 90 skills, 14 perk decks, armory 36 weapons + workshop, firing range full, hub/safehouse, board, pre-planning board, masks, payday cards, save v2 | `test_p4_progression.gd`: every modifier key ≤ P4 has a behaviour test; resolver golden tests |
-| **P5** | Content: Gallery Night, Meridian Federal, Rolling Thunder, Afterhours; music ×3; civilian mode | Each heist passes G3 plus a ghost run and a loud run bot on 5 seeds |
+| **P5** | Content: Gallery Night, Ostrander Federal, Rolling Thunder, Afterhours; music ×3; civilian mode | Each heist passes G3 plus a ghost run and a loud run bot on 5 seeds |
 | **P6** | Co-op hardening, drop-in, performance, polish, Notoriety | 4-client soak test, perf budgets in CI |
 
 ## P3: Loud complete (ENV A tasks dispatched early, D-038)
@@ -52,8 +52,37 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | B5-03 | Music selection: per-heist track choice in pre-planning/lobby (host decides), hub jukebox; data-driven track list (ENV C supplies the stems) | P5 music |
 | B5-04 | Dockside Burn content data (P3 loud-only heist): HeistDef skeleton, contract/briefing/strings, loot defs; objective ids from ENV C's G0 `[tag]`s once its design doc lands | P3 gate |
 | B5-05 | Civilian-mode UI (S1.3): HUD civilian state, gear-pickup prompt, briefing flag display (ENV A owns `start_mode = civilian` + the gear prefab) | P5 |
+| B6-01 | P5 loot + contract catalogue: PD2-shaped LootDefs the P5 heists need (gold HEAVY, money MEDIUM, coke LIGHT, painting variants, bearer bonds LIGHT, server drives MEDIUM, deposit-box valuables), values/weights per pd2_fidelity S10; Board contract stubs for gallery_night / meridian_federal / rolling_thunder / afterhours hidden until a HeistDef ships | P5 |
+| B6-02 | Heist stats: Tab scoreboard overlay (per crew: kills, specials, civilians, downs, accuracy, headshots) over HeistRuntime crew stats + end-of-heist awards on payday (PD2 "best of" lines); missing counters (shots/hits/headshots) → QB to ENV A | P6 |
+| B6-03 | Chat: lobby + in-heist text chat UI (open/close key, history, fade), over `Net.lobby_send` in the lobby; in-heist transport → QB to ENV A if absent | P6 |
+| B6-04 | Drop-in + kick UI: host join-request dialog (accept/deny, PD2 drop-in), joining player's loadout pick + "joining" progress, host kick menu; on mocks until ENV A's drop-in lands | P6 |
+| B6-05 | Lobby codes (game_overview §9): short shareable code ⇄ address:port (no service), join-by-code field in the lobby; LAN host list if A exposes discovery | P6 |
+| B6-06 | 3D hub mode (QC-45..49): MenuFlow loads the safehouse from data, connects `station_requested`, pauses while a screen is open, returns to the station marker, 2D hub fallback + walk/menu toggle; `notoriety` and `crew` station ids; `ui.prompt.station.<id>`; minimal hub HUD + pause menu with a quick-stations list; jukebox previews through the safehouse jukebox | C4-01 |
+| B6-07 | Heister choice (D-073): `Loadout.heister` picker, unique per lobby (first come keeps it, conflicts fall back to the next free heister), every launch slot gets a distinct heister | D-073 |
+| B6-08 | Throwable data (D-073): `throwable.frag` / `concussion` / `incendiary` / `throwing_knife` ThrowableDefs for A3-12 + picker | A3-12 |
+| B7-01 | Career stats + profile screen: lifetime counters from HeistResult (heists by difficulty, stealth/loud, kills, specials, accuracy, downs, cash), per-heist best times, favourite weapon; save v7 + migration | P6 |
+| B7-02 | Achievements expansion: 8 → ~40 PD2-style data-driven achievements (heist/difficulty/stealth/weapon/special/crew feats) with mask/material/colour unlocks | P8 |
+| B7-03 | Contact radio (PD2 "Bain" analog): data-driven contact lines keyed by mission facts (objective_updated, alarm, assault phases, escape, loot secured), subtitle overlay (accessibility subtitle size), `vo.<contact>.<line>` keys; lines for the 4 existing heists | P5 charm |
+| B7-04 | Weapon finishes: earned cosmetic finishes (colour/material/pattern) from payday cards and achievements, applied through WeaponVisual material overrides; workshop preview | P8 |
 
 | C2-00 | G0 design docs: Night Deposit and Shadow Ledger (stealth-only) | level_standards §9 |
+| C4-01 | 3D safehouse hub (fidelity C9): explorable safehouse whose stations are interactables calling `MenuFlow.open_station` (Board, planning table, armory/workshop bench, mask bench, jukebox, Notoriety, firing-range door); B's 2D hub stays as the menu fallback | P4 hub |
+| C4-02 | Safehouse greybox (G1) per docs/design/heists/safehouse.md: SafehouseMap root, 8 stations, validate_level `--profile=hub` | C4-01 |
+| C4-03 | Safehouse art pass (G2/G3) + review shots; dedicated safehouse music track (C5 backlog) | C4-02 |
+| A3-12 | Player melee (L3.9, P2 gap): CrewMelee from Loadout.melee (MeleeDef timings, charge, knockdown), gun bash, silent stealth kills, server-validated hit; then CrewThrowables (frag / concussion / incendiary by ThrowableDef.kind, pin_pull / release) with the D-069 FP sets | L3.9, D-069 |
+| A3-13 | Enemy close-range melee (PD2 point-blank shove/strike on crew; drives `defense.melee_counter` and `defense.melee_damage_taken_mult`) | L3.9, L2 |
+| A4-01 | Fidelity audit: every pd2_fidelity row owned by ENV A with phase ≤ P5 → test coverage table (row, test, status); implement any row found missing (as L3.9 melee was) | all A rows |
+| A4-02 | Performance: frame/physics/AI/net budgets instrumented (Perf monitors + a headless perf scene: Dockside, 4 crew, enemy cap reached), CI perf test with thresholds; fix the worst offenders | P6 gate |
+| A4-03 | 4-client soak harness: host + 3 loopback clients with bot crew for a long loud run; checks desync (state hashes), memory growth, error log; feeds the lead's P6 gate | P6 gate |
+| A5-01 | `armored_truck` prefab (Rolling Thunder QC-80): vehicle-shaped LARGE safe — saw target, `charges_required`, lockdown state (saw ×1.5), roof-hatch thermite | P5 rolling_thunder |
+| A5-02 | `convoy_vehicle` mover (QC-82): path-following vehicles with stop/crash states, escort cars, replicated | P5 rolling_thunder |
+| A5-03 | C4 item + shaped charges (QC-84 / S9.5): carried charge count, `charges_required` doors/safes/trucks, placement interaction, detonation | S9.5, P5 |
+| D3-01 | P5 cast (casting per heist; reuse bodies/outfits via variants): Gallery Night (curator, gallery attendants, guards, patrons in evening wear), Meridian Federal (tellers, bank manager, bank guards, customers), Rolling Thunder (armoured-car crew, convoy escort), Afterhours (bouncers, bartenders, DJ, club patrons); names/roles from ENV C's G0 docs as they land | P5 |
+| D3-02 | P5 NPC ambient animations: club dance loops ×3, bartender wipe/pour, bouncer arms-crossed idle, teller counting at a counter, curator inspecting a painting, walking-while-texting, seated/standing cower variants | P5 |
+| D3-03 | Mask bases batch 3: +12 original base shapes through `_mask_base` (face-envelope fit), for ENV B's unlock sources (payday cards, Notoriety, achievements) | P8 |
+| D3-04 | Animation polish: crew locomotion blend set (start/stop, strafe 8-way), hit-react and death variety (×3 each), downed crawl, a heavy (Wrecker) gait | P6 polish |
+| A3-11 | Hub support (QC-43/44): crew spawn + interaction without a HeistRuntime (civilian mode, HUD prompt), `hub_station` prefab emitting `station_requested(id)` | C4-01 |
+| C5-01 | Music stems: night_deposit, shadow_ledger, dockside_burn heist tracks now (unlockables vault_hymn / long_con / last_call point at those stems meanwhile); the 3 unlockables get their own stems as P5 "music ×3" | P5 music |
 
 ## P2: Stealth complete (ENV A tasks dispatched early under the utilization policy, D-032)
 

@@ -9,6 +9,11 @@
 ##   3. discovery through group G.LOCAL_HUD_MODEL (ui_hud.md v1.1, D-024: exactly one per peer,
 ##      joined in the model's _ready), polled every LOOKUP_INTERVAL_S while unbound, and again after
 ##      the bound model is freed. This is how the in-heist HUD finds HeistRuntime's model.
+## Accessibility (B5-01): widget colours come from the active HudPalette (GameSettings
+## `accessibility/palette`, HudPaletteSet.active_tweak) and the corner widgets scale with
+## `accessibility/hud_scale`; both follow GameSettings.changed live (apply_accessibility()).
+## B6-02: `scoreboard` (ScoreboardOverlay) shows the per-crew tally while the `scoreboard` action is held
+## (or toggled, `controls/scoreboard_mode`), from the model's `crew_stats` (content/docs/scoreboard.md).
 ## No hard dependency on ENV A classes (duck-typed get() + signals by name). Layout is anchored for 1280x720 .. 3840x2160 (canvas_items
 ## stretch at the 1920x1080 base).
 class_name Hud
@@ -26,6 +31,10 @@ const TOAST_S: float = 3.0
 ## (UiAccent.for_heist, B4-07). Empty = no accent.
 @export var heist_id: StringName = &""
 
+## Settings the HUD follows (null = GameSettings.current(); tests set their own before _ready).
+var settings: GameSettings = null
+## HudTweak recoloured by the active palette (what every widget reads).
+var tweak: HudTweak = null
 var model: Node = null
 var chevrons: DetectionChevrons
 var marks: MarkedTargets
@@ -40,6 +49,8 @@ var status: StatusPanel
 var custody: CustodyPanel
 var captain: CaptainPanel
 var stamina: StaminaBar
+## B6-02 Tab scoreboard (hold / toggle the `scoreboard` action).
+var scoreboard: ScoreboardOverlay
 var toast_label: Label
 var secured_bags: int = 0
 var _lookup_t: float = 0.0
@@ -51,8 +62,13 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if theme == null:
 		theme = UiBuild.theme()
+	if settings == null:
+		settings = GameSettings.current()
+	tweak = HudPaletteSet.active_tweak(settings)
 	_build()
 	_connect_events()
+	settings.changed.connect(_on_settings_changed)
+	apply_accessibility()
 	if model == null and not model_path.is_empty() and has_node(model_path):
 		bind(get_node(model_path))
 
@@ -66,7 +82,8 @@ func bind(m: Node) -> void:
 
 
 func widgets() -> Array[HudWidget]:
-	return [chevrons, marks, interaction, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina]
+	return [chevrons, marks, interaction, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina,
+			scoreboard]
 
 
 func _build() -> void:
@@ -89,6 +106,9 @@ func _build() -> void:
 	status = _place(StatusPanel.new(), Control.PRESET_TOP_RIGHT, Vector2(-448, 48), Vector2(400, 180)) as StatusPanel
 	custody = _place(CustodyPanel.new(), Control.PRESET_CENTER, Vector2(-300, -200), Vector2(600, 130)) as CustodyPanel
 	captain = _place(CaptainPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-260, 104), Vector2(520, 84)) as CaptainPanel
+	var board: ScoreboardOverlay = ScoreboardOverlay.new()
+	board.settings = settings
+	scoreboard = _place(board, Control.PRESET_CENTER, Vector2(-500, -240), Vector2(1000, 480)) as ScoreboardOverlay
 	toast_label = UiBuild.label(&"", UiBuild.HUD_BIG)
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(toast_label, Control.PRESET_CENTER, Vector2(-500, -260), Vector2(1000, 60))
@@ -96,6 +116,8 @@ func _build() -> void:
 
 
 func _place(c: Control, preset: Control.LayoutPreset, offset: Vector2, min_size: Vector2) -> Control:
+	if c is HudWidget:
+		(c as HudWidget).tweak = tweak
 	add_child(c)
 	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	c.set_anchors_preset(preset)
@@ -107,6 +129,42 @@ func _place(c: Control, preset: Control.LayoutPreset, offset: Vector2, min_size:
 	else:
 		c.set_offsets_preset(Control.PRESET_FULL_RECT)
 	return c
+
+
+func _exit_tree() -> void:
+	if settings != null and settings.changed.is_connected(_on_settings_changed):
+		settings.changed.disconnect(_on_settings_changed)
+
+
+## Re-reads the palette and HUD scale from `settings` (palette change = widgets rebuilt).
+func apply_accessibility() -> void:
+	var t: HudTweak = HudPaletteSet.active_tweak(settings)
+	if not _same_colors(t, tweak):
+		tweak = t
+		for w: HudWidget in widgets():
+			w.set_tweak(tweak)
+	var s: float = float(settings.get_value(GameSettings.ACCESSIBILITY, &"hud_scale"))
+	for c: Node in get_children():
+		var ctl: Control = c as Control
+		if ctl == null or (ctl.anchor_left == 0.0 and ctl.anchor_right == 1.0 and ctl.anchor_top == 0.0 and ctl.anchor_bottom == 1.0):
+			continue  # full-screen overlays (chevrons, marks) are not scaled
+		ctl.pivot_offset = Vector2(ctl.anchor_left, ctl.anchor_top) * (ctl.custom_minimum_size.max(ctl.size))
+		ctl.scale = Vector2(s, s)
+
+
+func _on_settings_changed(section: StringName, _key: StringName) -> void:
+	if section == GameSettings.ACCESSIBILITY:
+		apply_accessibility()
+
+
+static func _same_colors(a: HudTweak, b: HudTweak) -> bool:
+	if a == null or b == null:
+		return false
+	for f: StringName in [&"detection_blue", &"detection_orange", &"detection_red", &"health_color", &"armor_color",
+			&"low_health_color", &"ally_color", &"mark_color", &"objective_color", &"loot_color", &"interaction_color"]:
+		if a.get(f) != b.get(f):
+			return false
+	return true
 
 
 func _connect_events() -> void:

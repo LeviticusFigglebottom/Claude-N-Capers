@@ -1,5 +1,5 @@
 {
-	"version": 5,
+	"version": 6,
 	"profile_name": "",
 	"cash": 0,
 	"stash": 5000,
@@ -16,7 +16,7 @@
 		"secondary": "weapon.kestrel_p9", "secondary_mods": ["mod.p9_suppressor"],
 		"melee": "melee.folding_knife", "throwable": "", "deployable": "deployable.doctor_bag",
 		"deployable_secondary": "", "armor": "armor.tailored_suit", "mask": "mask.gilded_heron",
-		"perk_deck": "", "perk_deck_cards": 0,
+		"perk_deck": "", "heister": "", "perk_deck_cards": 0,
 		"skills": {}
 	},
 	"skill_sets": [{}, {"skill.juggernaut.thick_skin": 1}, {}],
@@ -25,6 +25,11 @@
 	"unlocks": ["unlock.achievement.cataclysm_clear"],
 	"achievements": {"achievement.first_score": {"progress": 1, "unlocked": true}},
 	"pro_job_locks": {"0:123": 1000.0},
+	"notoriety": 0,
+	"notoriety_xp": 0,
+	"notoriety_choices": {},
+	"held_skill_sets": [],
+	"music_choice": "",
 	"stats": {"heists_completed": 2},
 	"settings": {}
 }

@@ -20,13 +20,26 @@
 ##   (FpViewmodelTweak.clip_events(): parsed from SOURCE.txt + extra_events) with the contract travels. Pistol slides lock
 ##   back on the last round until `slide_release`.
 ## - ADS: while aimed the arms shift so the weapon's `AimPoint` sits on the camera axis (when present).
+## - Melee (D-069, CrewMelee signals): with a MeleeDef the gun is hidden and the item (`MeleeDef.model`) rides the
+##   weapon bone in its `anim_set`: `charge_start` (its `charged` frame on the full charge) + `charge` loop while
+##   held, then `swing` / `charge_swing` re-timed so `hit@` lands on the gameplay strike; without one the gun
+##   set's `bash` (hit@ on the bash strike). The gun comes back when the swing clip ends.
+## - Throw (A3-12, D-069): CrewThrowables.pin_pulled plays the `throwable` set's `draw` then `throw` (`throw_low`
+##   crouched), re-timed so `release@` lands on the gameplay release (CombatTweak.throw_windup_s); the item's
+##   `Pin` hides at `pin_pull@` and the item itself at the release.
+## - Deploy (D-069): holding intent.deploy with a deployable left (masked, NORMAL) plays the DeployableDef
+##   `anim_set` `place` with its `place@` frame on the deploy hold time (DeployableSystem.deploy_time_for); the
+##   held form (`DeployableDef.model`) replaces the gun; releasing early cancels it.
 class_name FpViewmodel
 extends Node3D
 
-enum Action { NONE, FIRE, RELOAD, SWAP }
+enum Action { NONE, FIRE, RELOAD, SWAP, MELEE, DEPLOY, THROW }
 
 const NODE_NAME: String = "FpViewmodel"
 const ATTACH_NAME: String = "WeaponBone"
+const ITEM_NAME: String = "HeldItem"
+## `charge` loop repetitions queued behind charge_start (the release replaces the sequence).
+const CHARGE_LOOPS: int = 600
 ## Clip -> substitute when the set lacks it (then nothing).
 const FALLBACK_CLIPS: Dictionary = {
 	&"ads_idle": &"idle", &"sprint": &"idle", &"fire_ads": &"fire", &"bolt_ads": &"bolt",
@@ -53,6 +66,8 @@ static var _reload_scale_logged: Dictionary = {}
 ## The arms rig's AnimationPlayer / Skeleton3D / instanced scene root.
 var player: AnimationPlayer = null
 var skeleton: Skeleton3D = null
+## D-069: runtime left-hand IK to the weapon's `LeftHandIK` (null when the rig has no left arm).
+var left_hand_ik: FpLeftHandIk = null
 var arms: Node3D = null
 ## BoneAttachment3D on the `weapon` bone: the WeaponVisual's parent.
 var weapon_attach: BoneAttachment3D = null
@@ -88,6 +103,11 @@ var _weapon_bone: int = -1
 var _mag_bone: int = -1
 var _bob_phase: float = 0.0
 var _bob_weight: float = 0.0
+## The item model on the weapon bone during a melee / deploy one-shot (null = none / gun bash).
+var _item: Node3D = null
+var _deploy_prev: bool = false
+## Seconds into the THROW one-shot when the item's Pin hides (< 0 = done / none).
+var _pin_t: float = -1.0
 
 
 ## The camera's viewmodel arms (null when none).
@@ -128,9 +148,11 @@ func _bind(inst: Node3D, crew: CrewController) -> bool:
 	weapon_attach = BoneAttachment3D.new()
 	weapon_attach.name = ATTACH_NAME
 	weapon_attach.bone_name = String(tw.weapon_bone)
+	left_hand_ik = FpLeftHandIk.create(skeleton)  # D-069: hand.L onto the weapon's LeftHandIK
 	skeleton.add_child(weapon_attach)
-	_no_shadows(inst)
 	_crew = crew
+	apply_sleeves(crew.heister if crew != null else &"")
+	_no_shadows(inst)
 	for ch: StringName in CHANNELS:
 		parts[ch] = 0.0
 	return true
@@ -141,18 +163,48 @@ func _ready() -> void:
 		_crew.weapons.fired.connect(_on_fired)
 		_crew.weapons.reload_started.connect(_on_reload_started)
 		_crew.weapons.reload_finished.connect(_on_reload_finished)
+	if _crew != null and _crew.melee != null:
+		_crew.melee.charge_started.connect(_on_melee_charge)
+		_crew.melee.swung.connect(_on_melee_swung)
+	if _crew != null and _crew.throwables != null:
+		_crew.throwables.pin_pulled.connect(_on_pin_pulled)
+		_crew.throwables.released.connect(_on_throw_released)
 
 
 func _exit_tree() -> void:
 	if _crew == null or not is_instance_valid(_crew) or _crew.weapons == null:
 		return
-	for pair: Array in [
+	var pairs: Array = [
 		[_crew.weapons.fired, _on_fired], [_crew.weapons.reload_started, _on_reload_started],
 		[_crew.weapons.reload_finished, _on_reload_finished],
-	]:
+	]
+	if _crew.melee != null:
+		pairs.append_array([[_crew.melee.charge_started, _on_melee_charge], [_crew.melee.swung, _on_melee_swung]])
+	if _crew.throwables != null:
+		pairs.append_array([[_crew.throwables.pin_pulled, _on_pin_pulled], [_crew.throwables.released, _on_throw_released]])
+	for pair: Array in pairs:
 		var sig: Signal = pair[0]
 		if sig.is_connected(pair[1]):
 			sig.disconnect(pair[1])
+
+
+## characters.md v1.8: copy the heister's sleeve variant `Arms` mesh + skin onto the rig's `Arms` (the variant is
+## freed). False when there is no variant for `heister` (the rig keeps its own sleeves).
+func apply_sleeves(heister: StringName) -> bool:
+	var ps: PackedScene = FpViewmodelTweak.data().sleeve_scenes.get(heister) if heister != &"" else null
+	var mine: MeshInstance3D = skeleton.get_node_or_null(^"Arms") as MeshInstance3D if skeleton != null else null
+	if ps == null or mine == null:
+		return false
+	var v: Node = ps.instantiate()
+	var theirs: MeshInstance3D = v.find_child("Arms", true, false) as MeshInstance3D
+	var ok: bool = theirs != null and theirs.mesh != null
+	if ok:
+		mine.mesh = theirs.mesh
+		mine.skin = theirs.skin
+		for i: int in theirs.get_surface_override_material_count():
+			mine.set_surface_override_material(i, theirs.get_surface_override_material(i))
+	v.free()
+	return ok
 
 
 ## True when the rig has a library for `set` (built from "<set>_<clip>" glb clips if needed) with `idle`.
@@ -212,12 +264,16 @@ func tick(delta: float) -> void:
 		while action != Action.NONE and _seg_i >= 0 and _seg_i < _segs.size() \
 				and _seq_t >= float(_segs[_seg_i]["start"]) + float(_segs[_seg_i]["dur"]):
 			_play_segment(_seg_i + 1)
+	_update_deploy()
+	_update_pin()
 	_update_parts()
 	_update_ads(delta, tw)
 	if action == Action.NONE:
 		_play_base(tw)
 	_update_offset(delta, tw)
 	_update_magazine()
+	if left_hand_ik != null:  # D-069: the clip owns the left hand while reloading / swapping
+		left_hand_ik.update(delta, action == Action.NONE or action == Action.FIRE)
 
 
 # --- Gameplay signal handlers (presentation only) ---------------------------------------------
@@ -310,6 +366,108 @@ func _on_reload_finished(_ws: int) -> void:
 	_reload_done = true
 
 
+## The melee item's set when the rig has it (&"" = gun bash / no item clips).
+func _melee_set() -> StringName:
+	var def: MeleeDef = _crew.melee.melee_def() if _crew != null and _crew.melee != null else null
+	return def.anim_set if def != null and supports(def.anim_set) else &""
+
+
+func _on_melee_charge() -> void:
+	var set_id: StringName = _melee_set()
+	if set_id == &"" or action == Action.SWAP:
+		return  # gun bash: the clip plays on the swing
+	var def: MeleeDef = _crew.melee.melee_def()
+	var full_s: float = def.charge_time_s / maxf(Modifiers.mult(_crew.slot, &"weapon.melee_charge_speed_mult"), 0.01)
+	var segs: Array[Dictionary] = []
+	_add_timed(segs, set_id, &"charge_start", &"charged", full_s)
+	var loop: StringName = _resolve(set_id, &"charge")
+	if loop != &"":
+		_add_seg(segs, set_id, loop, _length(set_id, loop) * CHARGE_LOOPS, 1.0, CHARGE_LOOPS)
+	_start_item(Action.MELEE, segs, def.model)
+
+
+func _on_melee_swung(charged: bool) -> void:
+	if action == Action.SWAP:
+		return
+	var set_id: StringName = _melee_set()
+	var hit_s: float = maxf(_crew.melee.hit_left, 0.01)
+	var segs: Array[Dictionary] = []
+	if set_id != &"":
+		var c: StringName = _resolve(set_id, &"charge_swing" if charged else &"swing")
+		if c == &"":
+			c = _resolve(set_id, &"swing")
+		if c == &"":
+			return
+		_add_timed(segs, set_id, c, &"hit", hit_s)
+		_start_item(Action.MELEE, segs, _crew.melee.melee_def().model)
+		return
+	if _resolve(anim_set, &"bash") == &"":
+		return
+	_add_timed(segs, anim_set, &"bash", &"hit", hit_s)
+	_end_action()
+	_start(Action.MELEE, segs)
+
+
+func _on_pin_pulled() -> void:
+	var def: ThrowableDef = _crew.throwables.throwable_def() if _crew.throwables != null else null
+	if def == null or action == Action.SWAP or not supports(def.anim_set):
+		return
+	var windup: float = CombatTweak.data().throw_windup_s
+	var throw_c: StringName = _resolve(def.anim_set, &"throw_low" if _crew.intent != null and _crew.intent.crouch else &"throw")
+	if throw_c == &"":
+		throw_c = _resolve(def.anim_set, &"throw")
+	if throw_c == &"":
+		return
+	var draw_c: StringName = _resolve(def.anim_set, &"draw")
+	var draw_n: float = _length(def.anim_set, draw_c) if draw_c != &"" else 0.0
+	var rel_n: float = maxf(_event(def.anim_set, throw_c, &"release"), 0.01)
+	var share: float = draw_n / (draw_n + rel_n)  # split the windup in the clips' native proportion
+	var segs: Array[Dictionary] = []
+	if draw_c != &"":
+		_add_timed(segs, def.anim_set, draw_c, &"ready", windup * share)
+	_add_timed(segs, def.anim_set, throw_c, &"release", windup * (1.0 - share))
+	_start_item(Action.THROW, segs, def.model)
+	var pin: float = _event(def.anim_set, draw_c, &"pin_pull") if draw_c != &"" else -1.0
+	_pin_t = pin / maxf(float(segs[0]["speed"]), 0.001) if pin >= 0.0 else 0.0
+
+
+func _on_throw_released() -> void:
+	if action == Action.THROW and _item != null and is_instance_valid(_item):
+		_item.visible = false  # the ThrownItem flies from here
+	_pin_t = -1.0
+
+
+func _update_pin() -> void:
+	if action != Action.THROW or _pin_t < 0.0 or _seq_t < _pin_t:
+		return
+	_pin_t = -1.0
+	var pin: Node3D = _item.find_child("Pin", true, false) as Node3D if _item != null and is_instance_valid(_item) else null
+	if pin != null:
+		pin.visible = false  # visual_slots.md Items: ENV A hides the Pin at pin_pull
+
+
+## Item one-shot (MELEE / DEPLOY / THROW) with `model` in the hands (the gun hidden until _end_action).
+func _start_item(kind: int, segs: Array[Dictionary], model: PackedScene) -> void:
+	_end_action()
+	if weapon_visual != null and is_instance_valid(weapon_visual):
+		weapon_visual.visible = false
+	if model != null:
+		_item = model.instantiate() as Node3D
+		if _item != null:
+			_item.name = ITEM_NAME
+			weapon_attach.add_child(_item)
+			_no_shadows(_item)
+	_start(kind, segs)
+
+
+func _clear_item() -> void:
+	if _item != null and is_instance_valid(_item):
+		_free_node(_item)
+	_item = null
+	if weapon_visual != null and is_instance_valid(weapon_visual) and _incoming == null:
+		weapon_visual.visible = true
+
+
 # --- Sequences --------------------------------------------------------------------------------
 
 ## Append clip `c` of `set_id` for `dur` real seconds at `speed`; `loops` = repetitions (looped clips).
@@ -335,6 +493,8 @@ func _add_timed(segs: Array[Dictionary], set_id: StringName, c: StringName, even
 
 
 func _start(kind: int, segs: Array[Dictionary]) -> void:
+	if _item_action() and kind != action:
+		_clear_item()  # e.g. a reload started mid-charge
 	action = kind
 	_segs = segs
 	_seq_t = 0.0
@@ -385,6 +545,8 @@ func _play_segment(i: int) -> void:
 func _end_action() -> void:
 	for k: Dictionary in _keys:  # settle the parts on the one-shot's final positions
 		parts[k["ch"]] = float(k["v"])
+	if _item_action():
+		_clear_item()
 	_finish_swap()
 	action = Action.NONE
 	action_speed = 1.0
@@ -421,10 +583,41 @@ func _set_weapon(wv: WeaponVisual, set_id: StringName) -> void:
 		if node != null:
 			_part_nodes[n] = [node, node.transform]
 	_magwell = wv.get_base_marker(&"Magwell") if wv != null else null
+	if left_hand_ik != null:
+		left_hand_ik.set_target(wv.get_marker(&"LeftHandIK") if wv != null else null, set_id)
 	_magwell_rest = _magwell.transform if _magwell != null else Transform3D.IDENTITY
 
 
 # --- Per-frame helpers ------------------------------------------------------------------------
+
+func _item_action() -> bool:
+	return action == Action.MELEE or action == Action.DEPLOY or action == Action.THROW
+
+
+## D-069 deploy `place` while intent.deploy is held (presentation of DeployableSystem's server hold).
+func _update_deploy() -> void:
+	var held: bool = _crew != null and _crew.intent != null and _crew.intent.deploy
+	var pressed: bool = held and not _deploy_prev
+	_deploy_prev = held
+	if action == Action.DEPLOY:
+		if not held:
+			_end_action()  # released early (or the clip outlived the hold)
+		return
+	if not pressed or action == Action.SWAP or action == Action.MELEE or action == Action.THROW or not _can_deploy():
+		return
+	var def: DeployableDef = DeployableSystem.def_for(_crew.weapons.deployable_id)
+	if def == null or not supports(def.anim_set):
+		return
+	var segs: Array[Dictionary] = []
+	_add_timed(segs, def.anim_set, &"place", &"place", DeployableSystem.deploy_time_for(_crew.slot, def))
+	if segs.is_empty() or StringName(segs[0]["clip"]) == &"":
+		return
+	_start_item(Action.DEPLOY, segs, def.model)
+
+
+func _can_deploy() -> bool:
+	return _crew.weapons != null and _crew.weapons.deployable_count > 0 and _crew.masked \
+		and _crew.crew_state == Enums.CrewState.NORMAL
 
 func _play_base(tw: FpViewmodelTweak) -> void:
 	if anim_set == &"":

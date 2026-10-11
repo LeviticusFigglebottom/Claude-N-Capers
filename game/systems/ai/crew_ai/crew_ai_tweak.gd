@@ -25,6 +25,9 @@ extends Resource
 @export_group("Revive (L6.1, L2.7)")
 ## Get this close (horizontal, m) to a downed crew member before holding interact.
 @export var revive_range_m: float = 1.2
+## L4.4 (P3 gate): a Stinger tasing a crew member scores its distance x this when the AI picks a target
+## (lower = preferred; 0.25 = shot first unless something is 4x closer) ◇.
+@export var tasing_stinger_score_mult: float = 0.25
 ## Start holding interact only below this horizontal speed (m/s) so the session is not cancelled
 ## by the deceleration slide (InteractionTweak.cancel_move_m).
 @export var revive_settle_speed: float = 0.3

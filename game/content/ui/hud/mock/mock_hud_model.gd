@@ -25,6 +25,8 @@ signal masked_changed()          ## masked, casing
 signal custody_changed()         ## custody (v1.2)
 signal captain_changed()         ## captain_present, captain_resistance (v1.3)
 signal stamina_changed()         ## stamina, exhausted (v1.4)
+signal player_mode_changed()     ## player_mode (v1.6)
+signal crew_stats_changed()      ## crew_stats (B6-02 proposal, QB to ENV A; content/docs/scoreboard.md)
 
 ## PD2 display units (health 0..max_health, armor 0..max_armor).
 var health: float = 100.0:
@@ -161,7 +163,7 @@ var warnings: Array[StringName] = []:
 		warnings_changed.emit()
 ## Teammates (not the local player): [{ "slot": int, "name": String, "is_ai": bool,
 ##   "health_frac": float, "armor_frac": float, "state": int (Enums.CrewState), "downs_left": int,
-##   "carried_loot_id": StringName }]
+##   "carried_loot_id": StringName, "mode": StringName (v1.6) }]
 var crew: Array[Dictionary] = []:
 	set(v):
 		crew = v
@@ -175,6 +177,13 @@ var casing: bool = true:
 	set(v):
 		casing = v
 		masked_changed.emit()
+
+## v1.6 (D-065): &"civilian" / &"casing" / &"masked" for the local player; &"" = unset (widgets then
+## derive it from masked / casing, like a pre-v1.6 model).
+var player_mode: StringName = &"":
+	set(v):
+		player_mode = v
+		player_mode_changed.emit()
 
 ## v1.2 (D-043): {} or { "in_custody": bool, "negotiation_left_s": float, "auto_release_left_s": float
 ##   (< 0 = none), "highlighted_hostage_net_id": int }
@@ -200,6 +209,14 @@ var exhausted: bool = false:
 	set(v):
 		exhausted = v
 		stamina_changed.emit()
+## B6-02 (proposed for ui_hud.md; ahead of ENV A): EVERY crew member incl. the local player and AI,
+##   [{ "slot": int, "name": String, "is_ai": bool, "is_local": bool, "kills": int, "specials_killed": int,
+##   "civilians_killed": int, "downs": int, "shots": int, "hits": int, "headshots": int }]
+##   Counters ENV A does not track yet are simply absent from a row (the scoreboard shows "—").
+var crew_stats: Array[Dictionary] = []:
+	set(v):
+		crew_stats = v
+		crew_stats_changed.emit()
 ## v1.2: the crew member followed without a HeistRuntime (firing range); see track().
 var tracked_crew: Node = null
 

@@ -1,0 +1,13 @@
+asset: mask_base_moth
+script: tools/blender/masks/base_moth.py
+params: {"bottom": -0.104, "brow": 0.6, "cheek": 0.8, "coverage": "full", "edge_res": 0.005, "eye_height": 0.03, "eye_shape": "round", "eye_spacing": 0.074, "eye_tilt_deg": 0.0, "eye_width": 0.034, "jaw": 0.6, "jaw_taper": 0.4, "mouth": "none", "nose": 0.2, "res": 0.009, "res_back": 0.016, "side_arc": 0.098, "top": 0.094}
+seed: 2182408650  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category masks --asset mask_base_moth
+edit policy: generated file, never edit by hand; change the script and rebuild
+coverage: full
+fit: crew face envelope (_crew_face_envelope.json), clearance 3.0 mm, max lift 52.7 mm
+pivot: face centre: midway between the eye centres at eye (cornea) depth; Blender +Y = Godot -Z = forward, +Z = up
+tri_budget: 8000
+tris_lod0: 7639
+uv0: front planar along -Z (Godot), x 0..1 = +X..-X (viewer's left to right), y 0..1 = top..bottom; bounds x +-0.1409 m, z -0.1037..0.1684 m

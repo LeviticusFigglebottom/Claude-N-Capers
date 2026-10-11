@@ -33,7 +33,7 @@ import numpy as np
 import _anim as A
 from _anim import TAU, Skeleton, hand_shape, mslerp, rxd, ryd, rzd, smooth, unit, v3
 from _arms_choreo import I3, Choreo, Hand, Key, State, as_cam, hand_at
-from _arms_sets import BOW_BRACE, BOW_DRAW, BOW_NOCK_Z, FPSet
+from _arms_sets import BOW_ARROW_X, BOW_BRACE, BOW_DRAW, BOW_NOCK_Z, FPSet
 
 #: full draw: the nock point just below and right of the eye (camera space), the bow's yaw / pitch / roll
 FULL_NOCK = v3(0.040, 0.030, -0.100)
@@ -43,7 +43,7 @@ BLADE_FULL = 62.0
 
 def nock_point(d: float) -> np.ndarray:
     """String nock point (weapon space) at draw ``d`` (0 = brace, 1 = full)."""
-    return v3(0.0, -BOW_BRACE - BOW_DRAW * d, BOW_NOCK_Z)
+    return v3(BOW_ARROW_X, -BOW_BRACE - BOW_DRAW * d, BOW_NOCK_Z)
 
 
 def full_frame(dp=(0.0, 0.0, 0.0), yaw: float = 0.0, pitch: float = 0.0, roll: float = 0.0) -> tuple:

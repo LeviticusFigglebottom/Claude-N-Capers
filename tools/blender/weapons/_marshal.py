@@ -11,6 +11,9 @@ Animated parts (proposed visual_slots addition, B4-12):
 * ``Crane/Cylinder``: pivot on the cylinder axis at the rear face; rotates about local Z, 60 deg per shot.
 * ``Crane/Cylinder/Magwell``: the speedloader point at the cylinder's rear face, local +Z = insertion
   axis (forward, into the chambers); ``StockMagazine`` = the six cartridges.
+* ``Speedloader`` (D-053; hidden in game, see ``build_speedloader``): at the model root, frame = the closed
+  cylinder's ``Magwell`` (origin on the cylinder axis at its rear face, local +Z (Blender) = Godot local +Y =
+  forward into the chambers); its six rounds sit in the chambers of the closed cylinder.
 The barrel (with its underlug and front sight) is the stock part ``BarrelMount/StockBarrel``; the walnut
 grip is ``GripMount/StockGrip``.
 """
@@ -116,6 +119,45 @@ def build_cartridges(ctx, mats, parent=None, name="Rounds"):
         pr.cylinder(0.0016, 0.0006, segments=10, centre=(x, y, -0.0012), axis="Z", mat=pm)     # primers
     c.finish(pr, name + "Round", parent=body)
     return body
+
+
+def chamber_xy(i: int) -> tuple[float, float]:
+    """Chamber ``i`` (0..5) centre in the Magwell / Speedloader frame (the cartridge pattern)."""
+    a = math.pi / 2 + i * math.pi / 3
+    return math.cos(a) * CYL_CHAMBER_R, math.sin(a) * CYL_CHAMBER_R
+
+
+LOADER_R = CYL_R - 0.0015
+LOADER_BACK = 0.0130                                # body depth behind the rims
+
+
+def build_speedloader(ctx, mats, parent=None, name="Speedloader"):
+    """Speedloader seated on the cylinder, in the Magwell frame (origin = cylinder rear face on its axis, +Z forward
+    into the chambers): a scalloped dark body behind the rims with a knurled release knob, holding six rounds whose
+    rims sit on the rear face exactly where ``build_cartridges`` puts the stock rounds. ``parent`` = the
+    ``Speedloader`` node; children ``<name>Body`` and ``<name>Rounds``."""
+    mb = ctx.builder()
+    body = mb.material(mats.polymer())
+    knob = mb.material(mats.steel())
+    ca, sa = math.cos(math.pi / 6), math.sin(math.pi / 6)                       # scallops between the rounds
+    plate = [(x * ca - y * sa, x * sa + y * ca) for x, y in c.fluted(LOADER_R, LOADER_R - 0.0028, 6)]
+    mb.prism(plate, axis="Z", start=-0.0012 - LOADER_BACK + 0.0030,
+             end=-0.0012, mat=body)                                                              # rim plate
+    mb.cylinder(LOADER_R - 0.0040, 0.0030, segments=24, centre=(0.0, 0.0, -0.0012 - LOADER_BACK + 0.0015),
+                axis="Z", mat=body)                                                              # chamfered back
+    mb.cylinder(0.0034, 0.0060, segments=12, centre=(0.0, 0.0, -0.0012 - LOADER_BACK - 0.0030), axis="Z", mat=knob)
+    mb.prism(c.fluted(0.0068, 0.0058, 10), axis="Z", start=-0.0012 - LOADER_BACK - 0.0150,
+             end=-0.0012 - LOADER_BACK - 0.0060, mat=knob)                                        # knurled knob
+    c.finish(mb, name + "Body", bevel=0.0004, parent=parent)
+    rb = ctx.builder()
+    br = rb.material(mats.brass())
+    pm = rb.material(mats.bare())
+    for i in range(6):
+        x, y = chamber_xy(i)
+        rb.cylinder(0.0048, 0.0012, segments=14, centre=(x, y, -0.0004), axis="Z", mat=br)     # rim
+        rb.cylinder(0.0040, 0.030, segments=12, centre=(x, y, 0.015), axis="Z", mat=br)         # case
+        rb.cylinder(0.0016, 0.0006, segments=10, centre=(x, y, -0.0012), axis="Z", mat=pm)     # primer
+    return c.finish(rb, name + "Rounds", parent=parent)
 
 
 def grip_profile():

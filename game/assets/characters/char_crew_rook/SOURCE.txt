@@ -1,0 +1,22 @@
+asset: char_crew_rook
+script: tools/blender/characters/char_crew.py
+params: {"age": 0.5, "beard_shadow": 0.5, "build": 0.55, "gender": 0.0, "hair": "side_part", "hair_color": "dark", "height": 1.84, "heister": "rook", "skin": 3}
+seed: 1821952649  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_crew_rook
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0927, 0.1190] (model [0.0000, 1.3438, 0.1381], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0837, -0.0917] (model [0.0000, 1.7222, -0.0793], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1924, 0.0525, 0.0359] (model [0.1924, 1.0378, 0.0385], Godot axes, rest pose)
+body_faces_culled: 5732
+body_params: {"age": 0.5, "beard_shadow": 0.5, "build": 0.55, "gender": 0.0, "hair": "side_part", "hair_color": "dark", "hair_peak": 0.0, "height": 1.84, "lip": "auto", "skin": 3}
+bones: 52
+faces_hidden_by_coat: 2946
+fp_sleeve: {"cuff": "char_shirt_white", "glove": "char_leather_black", "sleeve": "char_crew_rook_coat"}
+head_note: hat-free; the crew mask attaches at Head (face centre)
+look: Rook: long charcoal overcoat (mid-calf) over white shirt + black tie, open oxblood scarf, black gloves
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 28118
+tris_by_mesh: {"Body": 7364, "Gear": 456, "Hair": 1856, "Outfit": 18442}

@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://wqg1cgvg3s1y"]
+
+[ext_resource type="AnimationLibrary" path="res://world/characters/anim_humanoid.res" id="1_anim"]
+[ext_resource type="PackedScene" path="res://assets/characters/char_crew_rook/char_crew_rook.glb" id="1_glb"]
+
+[node name="CrewRook" unique_id=586703299 instance=ExtResource("1_glb")]
+
+[node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="4" unique_id=110191281]
+transform = Transform3D(1, 4.440892e-15, 1.01338856e-07, 4.050312e-09, 0.99920106, -0.039968047, -1.01257896e-07, 0.03996806, 0.99920094, 1.4829856e-15, 1.2559551, 0.0155056175)
+bone_name = "chest"
+bone_idx = 3
+
+[node name="Socket" type="Marker3D" parent="Skeleton3D/Back" index="0" unique_id=634359401]
+transform = Transform3D(1, 0, 0, 0, 0.9992, 0.03997, 0, -0.03997, 0.9992, 0, 0.092099994, 0.104899995)
+
+[node name="HandL" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=422214119]
+transform = Transform3D(0.07391281, -0.7032332, -0.70710677, 0.07391283, -0.70323336, 0.70710695, -0.99452204, -0.104528464, 6.024387e-08, -0.578241, 1.0829272, -0.008946514)
+bone_name = "hand.L"
+bone_idx = 9
+
+[node name="Socket" type="Marker3D" parent="Skeleton3D/HandL" index="0" unique_id=843820255]
+transform = Transform3D(0, 0.95106, -0.30901998, 0, -0.30901998, -0.95106, -1, 0, 0, 0.012399999, 0.0744, -0.031)
+
+[node name="HandR" type="BoneAttachment3D" parent="Skeleton3D" index="6" unique_id=422214125]
+transform = Transform3D(0.0739128, 0.70323294, 0.7071067, -0.0739128, -0.7032332, 0.70710695, 0.99452174, -0.104528464, -4.8186224e-09, 0.5782409, 1.0829273, -0.008946504)
+bone_name = "hand.R"
+bone_idx = 28
+
+[node name="Socket" type="Marker3D" parent="Skeleton3D/HandR" index="0" unique_id=1003924005]
+transform = Transform3D(0, -0.95106, 0.30901998, 0, -0.30901998, -0.95106, 1, 0, 0, -0.012399999, 0.0744, -0.031)
+
+[node name="Head" type="BoneAttachment3D" parent="Skeleton3D" index="7" unique_id=110411186]
+transform = Transform3D(1, 5.3290705e-15, 1.19209275e-07, -3.8857806e-15, 1.0000002, 0, -1.1920929e-07, 7.450581e-09, 1, 2.967815e-15, 1.6384269, 0.012404497)
+bone_name = "head"
+bone_idx = 5
+
+[node name="Socket" type="Marker3D" parent="Skeleton3D/Head" index="0" unique_id=929062474]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0837, -0.091699995)
+
+[node name="Hip" type="BoneAttachment3D" parent="Skeleton3D" index="8" unique_id=589023297]
+transform = Transform3D(1, 2.220446e-16, 7.823111e-08, 3.9066776e-09, 0.99875236, -0.04993765, -7.813351e-08, 0.04993765, 0.99875236, 0, 0.987191, 0)
+bone_name = "hips"
+bone_idx = 1
+
+[node name="Socket" type="Marker3D" parent="Skeleton3D/Hip" index="0" unique_id=555618809]
+transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.1757, 0.046499997, -0.0023)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="1" unique_id=592142239]
+libraries/humanoid = ExtResource("1_anim")

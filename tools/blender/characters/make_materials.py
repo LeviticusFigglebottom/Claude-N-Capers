@@ -53,6 +53,7 @@ TEX_DIR = REPO / "game" / "assets" / "characters" / "_textures"
 TEX_RES = "res://assets/characters/_textures"
 SIZE = 256
 SKIN_SIZE = 512          # the skin atlas carries the face colour: head tile = 256 px round the head
+HAIR_SIZE = 512          # hair: body hair UVs go twice round the head (_head.hair_uvs): ~0.5 mm/texel across strands
 SKIN_RE = re.compile(r"^char_skin_(\d)(_stubble|_beard)?$")
 TILE_M = 2.0
 FORBIDDEN = {"#4FD1E8"}
@@ -219,14 +220,25 @@ def tint_atlas(size: int, beard: float) -> np.ndarray:
 
 
 def _hair(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
+    """GSR hair: strand grain. The texture itself is only mildly elongated along v (so box-projected
+    hair gear, buns and fringes, shows no projection seams); the body hair UVs (``_head.hair_uvs``)
+    follow the strands and squeeze it across them (u = twice round the combing pole, v slow along
+    the strand), which turns the grain into long strands and strand groups. Crest lines catch the
+    light and the roughness follows them (streaky, anisotropic-looking highlights)."""
     u, v = ctx.u, ctx.v
-    strands = nz.value(u, v, (ctx.per_m(40), ctx.per_m(2)), ctx.s("strand"))
-    clump = nz.fbm(u, v, ctx.per_m(6), ctx.s("clump"), octaves=3)
-    alb = ops.vary(base, 0.8 * (strands - 0.5) + 0.3 * clump, 0.16)
-    h = 0.0002 * strands
-    rough = np.clip(r + 0.08 * (strands - 0.5), 0.0, 1.0)
-    return Maps(alb, rough, np.full(ctx.shape, met), h, normal_strength=0.6,
-                ao_radii_m=(0.008,), ao_depth_m=0.0005, ao_strength=0.3)
+    wu = u + 0.003 * nz.fbm(u, v, (8, 8), ctx.s("wave"), octaves=2)          # strands wave a little
+    groups = nz.fbm(wu, v, (24, 12), ctx.s("groups"), octaves=2)             # strand groups
+    fine = nz.value(wu, v, (192, 96), ctx.s("strand"))                      # single strands
+    crest = nz.ridged(wu, v, (96, 48), ctx.s("crest"), octaves=2, sharpness=3.0)
+    tone = nz.fbm(u, v, (6, 6), ctx.s("tone"), octaves=2)
+    # v ~ 0 is the whorl/crown on the body hair (the strands converge there): calm the fine detail
+    calm = ops.smoothstep(0.0, 0.003, np.minimum(v, 1.0 - v))
+    fine, crest = fine * calm, 0.5 + (crest - 0.5) * calm
+    alb = ops.vary(base, 0.30 * fine + 0.45 * groups + 0.35 * (crest - 0.5) + 0.25 * tone, 0.30)
+    h = 0.0011 * groups + 0.00035 * fine + 0.0005 * crest
+    rough = np.clip(r - 0.16 * (crest - 0.5) - 0.05 * fine + 0.06 * np.abs(groups), 0.0, 1.0)
+    return Maps(alb, rough, np.full(ctx.shape, met), h, normal_strength=2.0,
+                ao_radii_m=(0.006, 0.016), ao_depth_m=0.0007, ao_strength=0.45)
 
 
 def _smooth(ctx: Ctx, base: np.ndarray, r: float, met: float, amount: float = 0.03, brushed: bool = False) -> Maps:
@@ -265,6 +277,9 @@ def build_one(mid: str, spec: tuple, preset: dict) -> dict:
     sk = SKIN_RE.match(mid)
     tint = None
     size, seed_id, extra = SIZE, mid, []
+    if k == "hair":
+        size = HAIR_SIZE
+        extra = ["uv: body hair along the strands (tools/blender/characters/_head.py hair_uvs); detail along v"]
     if sk:
         # the body skins: one tileable base per tone (same seed for its beard variants) times the
         # face colour atlas at the variant's beard strength

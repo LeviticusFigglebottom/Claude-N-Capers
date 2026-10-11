@@ -18,6 +18,7 @@ const NPC_SCENES: Dictionary = {
 	&"guard": "res://systems/ai/npc/npc_guard.tscn",
 	&"civilian": "res://systems/ai/npc/npc_civilian.tscn",
 	&"police": "res://systems/ai/npc/npc_police.tscn",
+	&"cartel": "res://systems/ai/npc/npc_cartel.tscn",
 }
 
 ## HeistResult.fail_reason values (events.md, D-038 QA-19). &"" on success.
@@ -44,7 +45,7 @@ var difficulty_def: DifficultyDef = null
 var options: Dictionary = {}
 ## D-062 (read-only): the options passed to HeistLauncher.launch() / launch_client(). On a replica the host's
 ## network-safe options (bring-up `launch_options`, e.g. "music_track") override the client's own.
-## S1.3: &"casing" (default) or &"civilian": options["start_mode"], else HeistDef.start_mode.
+## S1.3 (D-065): &"casing" (default) or &"civilian": options["start_mode"], else HeistDef.start_mode.
 var start_mode: StringName = START_CASING
 var launch_options: Dictionary:
 	get:
@@ -55,6 +56,8 @@ var interaction: InteractionSystem = null
 var stealth: StealthDirector = null
 var mission: HeistMission = null
 var hud_model: LocalHudModel = null
+## D-071 per-crew counters (service CrewStatsService.SERVICE).
+var stats: CrewStatsService = null
 ## Container for runtime-spawned entities (NPCs, crew, bags).
 var dynamic_root: Node3D = null
 ## C3 pre-planning assets chosen for this run (A2-07, game/systems/heist/README.md).
@@ -71,19 +74,19 @@ var net_sync: HeistNetSync = null
 var is_replica: bool = false
 ## A3-07 (client): map paths of the bring-up id table that did not resolve in the local map.
 var replica_missing_ids: Array[String] = []
+## QB-L2: slot -> effective Loadout (LoadoutModifiers.effective_loadouts), pushed before the crew spawns;
+## HeistDropIn replaces a drop-in's slot and pushes again.
+var crew_loadouts: Dictionary = {}
 
 var _crew: Dictionary[int, CrewController] = {}
 var _bot_intents: Dictionary[int, CrewIntent] = {}
 var _services: Dictionary[StringName, Node] = {}
 var _crew_tick_handlers: Array[Callable] = []
 var _start_msec: int = 0
-var _stats: Dictionary[int, Dictionary] = {}
 var _loot_secured: Array[Dictionary] = []
 var _small_loot: int = 0
 var _pagers_answered: int = 0
 var _ended: bool = false
-## QB-L2: slot -> effective Loadout (LoadoutModifiers.effective_loadouts), pushed before the crew spawns.
-var _crew_loadouts: Dictionary = {}
 var _launch_options: Dictionary = {}
 
 
@@ -161,9 +164,10 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	VariantResolver.configure_pending(pending)
 	_apply_rare_modifiers()
 	preplan.apply_modifiers()  # C3: TEAM sources `asset.<id>`, before the crew reads modifiers
-	_crew_loadouts = LoadoutModifiers.effective_loadouts(options.get("loadouts", {}), Net.all_slots())
-	LoadoutModifiers.push(_crew_loadouts)  # QB-L2: skills + perk deck, before the crew spawns
+	crew_loadouts = LoadoutModifiers.effective_loadouts(options.get("loadouts", {}), Net.all_slots())
+	LoadoutModifiers.push(crew_loadouts)  # QB-L2: skills + perk deck, before the crew spawns
 	_claim_map_ids(map)
+	RappelLinks.build(map)  # QC-41: one-way rappel links from RAPPEL points
 	_spawn_npcs()
 	_spawn_crew()
 	preplan.spawn_drops(map, dynamic_root)  # C3: drop assets at their PREPLAN_POINTs
@@ -194,7 +198,7 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 
 
 func _resolve_start_mode() -> StringName:
-	var m: Variant = options.get("start_mode", map.heist_def.get(&"start_mode") if map.heist_def != null else null)
+	var m: Variant = options.get("start_mode", map.heist_def.start_mode if map.heist_def != null else START_CASING)
 	return START_CIVILIAN if m != null and StringName(m) == START_CIVILIAN else START_CASING
 
 
@@ -231,6 +235,7 @@ func _start_replica(data: Dictionary, map_scene: PackedScene, p_options: Diction
 	_create_services()
 	net_sync.replica_spawned.connect(_on_replica_spawned)
 	net_sync.phase_replicated.connect(_on_phase_replicated)
+	EventBus.heist_phase_changed.connect(_on_relayed_phase)  # the relayed fact lands before heist_ended
 	add_child(map)
 	move_child(map, 0)
 	dynamic_root = Node3D.new()
@@ -256,7 +261,7 @@ func _on_replica_spawned(node: Node) -> void:
 	var crew: CrewController = node as CrewController
 	if crew != null:
 		_crew[crew.slot] = crew
-		_stats[crew.slot] = {"kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0}
+		stats.ensure(crew.slot)
 		if crew.is_local() and crew.get_node_or_null(^"PlayerInput") == null:
 			var pin: PlayerInput = PlayerInput.new()
 			pin.name = "PlayerInput"
@@ -275,6 +280,13 @@ func _on_phase_replicated(new_phase: int, loud: bool) -> void:
 		var old: int = phase
 		phase = new_phase as Enums.HeistPhase
 		phase_changed.emit(old, new_phase)
+
+
+## Client: the relayed heist_phase_changed fact, so `phase` is ENDED before the relayed heist_ended
+## arrives (the 15 Hz state sync alone lags a few frames behind the facts).
+func _on_relayed_phase(_old: int, new_phase: int) -> void:
+	if is_replica:
+		_on_phase_replicated(new_phase, went_loud or new_phase == Enums.HeistPhase.LOUD)
 
 
 func _adopt_map_ids(table: Dictionary) -> void:
@@ -333,6 +345,9 @@ func _create_services() -> void:
 	var hostage_stimuli: HostageStimuli = HostageStimuli.new()  # A2-07 (S6.4)
 	hostage_stimuli.name = "HostageStimuli"
 	add_child(hostage_stimuli)
+	stats = CrewStatsService.new()  # D-071: per-crew counters (HeistResult rows, ui_hud v1.7 crew_stats)
+	stats.name = "CrewStatsService"
+	register_service(CrewStatsService.SERVICE, stats)
 	var custody: CustodySystem = CustodySystem.new()  # A3-04 (L2.9, L2.10)
 	custody.name = "CustodySystem"
 	register_service(CustodySystem.SERVICE, custody)
@@ -346,6 +361,8 @@ func _create_services() -> void:
 	net_sync = HeistNetSync.new()  # A3-07: idle in solo
 	net_sync.name = HeistNetSync.NODE_NAME
 	register_service(HeistNetSync.SERVICE, net_sync)
+	if Net.is_authority():
+		HeistDropIn.ensure(get_tree())  # QB-B6-DROPIN: the host answers drop-in requests while the heist runs
 	var factories: Array = options.get("extra_services", [])
 	for f: Variant in factories:
 		if f is Callable:
@@ -404,6 +421,11 @@ func _spawn_npcs() -> void:
 		var gsp: SpawnPoint = sp_node as SpawnPoint
 		if gsp != null and gsp.tags.has(SCRIPTED_SPAWN_TAG):
 			continue  # A3-09: spawned later by the mission (spawn_guards)
+		if gsp != null and gsp.tags.has(CartelBrain.SPAWN_TAG):  # QC-36: a cartel post on a GUARD spawn
+			var info: Dictionary = spawn_info(gsp)
+			info["enemy_def"] = load(CartelBrain.ENEMY_DEF) as EnemyDef
+			spawn_npc(CartelBrain.ROLE, gsp.global_transform, info)
+			continue
 		_spawn_npc_at(&"guard", gsp)
 	for sp_node: Node in map.get_slots(G.CIVILIAN_SPAWN):
 		_spawn_npc_at(&"civilian", sp_node as SpawnPoint)
@@ -473,7 +495,7 @@ func _spawn_crew() -> void:
 	var scene: PackedScene = load(CREW_SCENE) as PackedScene
 	for slot: int in Net.all_slots():
 		var crew: CrewController = scene.instantiate() as CrewController
-		crew.setup(slot, Net.crew[slot], _crew_loadouts.get(slot, loadouts.get(slot)) as Loadout)
+		crew.setup(slot, Net.crew[slot], crew_loadouts.get(slot, loadouts.get(slot)) as Loadout)
 		dynamic_root.add_child(crew)
 		var xf: Transform3D = Transform3D.IDENTITY
 		if not spawns.is_empty():
@@ -484,7 +506,7 @@ func _spawn_crew() -> void:
 		crew.teleport(xf)
 		NetIds.claim(crew)
 		_crew[slot] = crew
-		_stats[slot] = {"kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0}
+		stats.ensure(slot)
 		if crew.is_local():
 			var pin: PlayerInput = PlayerInput.new()
 			pin.name = "PlayerInput"
@@ -512,9 +534,6 @@ func _set_phase(p: Enums.HeistPhase) -> void:
 func _connect_events() -> void:
 	EventBus.alarm_raised.connect(_on_alarm_raised)
 	EventBus.crew_masked.connect(_on_crew_masked)
-	EventBus.npc_killed.connect(_on_npc_killed)
-	EventBus.civilian_killed.connect(_on_civilian_killed)
-	EventBus.crew_downed.connect(_on_crew_downed)
 	EventBus.loot_secured.connect(_on_loot_secured)
 	EventBus.small_loot_taken.connect(_on_small_loot)
 	EventBus.pager_answered.connect(_on_pager_answered)
@@ -523,9 +542,9 @@ func _connect_events() -> void:
 func _disconnect_events() -> void:
 	for pair: Array in [
 		[EventBus.alarm_raised, _on_alarm_raised], [EventBus.crew_masked, _on_crew_masked],
-		[EventBus.npc_killed, _on_npc_killed], [EventBus.civilian_killed, _on_civilian_killed],
-		[EventBus.crew_downed, _on_crew_downed], [EventBus.loot_secured, _on_loot_secured],
+		[EventBus.loot_secured, _on_loot_secured],
 		[EventBus.small_loot_taken, _on_small_loot], [EventBus.pager_answered, _on_pager_answered],
+		[EventBus.heist_phase_changed, _on_relayed_phase],
 	]:
 		var sig: Signal = pair[0]
 		if sig.is_connected(pair[1]):
@@ -571,12 +590,14 @@ func end_heist(success: bool, escaped_slots: Array[int] = [], fail_reason: Strin
 	var reason: StringName = FAIL_NONE if success else (fail_reason if fail_reason != FAIL_NONE else FAIL_ABORT)
 	var crew_rows: Array[Dictionary] = []
 	for slot: int in Net.all_slots():
-		var st: Dictionary = _stats.get(slot, {})
+		var st: Dictionary = stats.row(slot) if stats != null else {}
 		var c: CrewController = _crew.get(slot)
 		crew_rows.append({
-			"slot": slot, "is_ai": c.is_ai if c != null else true,
-			"kills": int(st.get("kills", 0)), "specials_killed": int(st.get("specials_killed", 0)),
-			"downs": int(st.get("downs", 0)), "civilians_killed": int(st.get("civilians_killed", 0)),
+			"slot": slot, "is_ai": c.is_ai if c != null else true, "name": c.display_name if c != null else "",
+			"kills": int(st.get(&"kills", 0)), "specials_killed": int(st.get(&"specials_killed", 0)),
+			"downs": int(st.get(&"downs", 0)), "civilians_killed": int(st.get(&"civilians_killed", 0)),
+			"shots": int(st.get(&"shots", 0)), "hits": int(st.get(&"hits", 0)),
+			"headshots": int(st.get(&"headshots", 0)),
 			"in_custody": c != null and c.crew_state == Enums.CrewState.CUSTODY,
 			"escaped": escaped_slots.has(slot) or (success and escaped_slots.is_empty()),
 		})
@@ -592,31 +613,6 @@ func end_heist(success: bool, escaped_slots: Array[int] = [], fail_reason: Strin
 	EventBus.heist_ended.emit(result)
 	Net.replicate_event(&"heist_ended", [result])
 	return result
-
-
-func _slot_of_net_id(id: int) -> int:
-	var n: Node = Ids.lookup(id)
-	var c: CrewController = n as CrewController
-	return c.slot if c != null else -1
-
-
-func _on_npc_killed(npc_id: int, killer_id: int, _info: Dictionary) -> void:
-	var s: int = _slot_of_net_id(killer_id)
-	if s >= 0 and _stats.has(s):
-		_stats[s]["kills"] = int(_stats[s]["kills"]) + 1
-		var npc: NpcBase = Ids.lookup(npc_id) as NpcBase
-		if npc != null and npc.enemy_def != null and npc.enemy_def.is_special:
-			_stats[s]["specials_killed"] = int(_stats[s]["specials_killed"]) + 1
-
-
-func _on_civilian_killed(_npc_id: int, slot: int) -> void:
-	if _stats.has(slot):
-		_stats[slot]["civilians_killed"] = int(_stats[slot]["civilians_killed"]) + 1
-
-
-func _on_crew_downed(slot: int, _downs: int) -> void:
-	if _stats.has(slot):
-		_stats[slot]["downs"] = int(_stats[slot]["downs"]) + 1
 
 
 func _on_loot_secured(_bag: int, loot_id: StringName, value: int) -> void:

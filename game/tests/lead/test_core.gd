@@ -81,6 +81,25 @@ func test_modifiers_list_accepts_array_values() -> void:
 
 
 ## D-052: hosting, leaving and hosting again leaves exactly one handler connected (no double-connect error).
+## D-072 net.md v1.1: kick() is host-only and refuses self, AI, unknown peers and offline sessions.
+func test_net_kick_guards() -> void:
+	Net.start_solo("Tester", 3)
+	assert_false(Net.kick(2), "offline: no kick")
+	var port: int = 30000 + GameRng.stream(&"test_net_kick").randi_range(0, 9999)
+	assert_eq(Net.host(port, "Host"), OK, "host")
+	Net._kicked_names["griefer"] = true
+	assert_true(Net.was_kicked("  Griefer "), "was_kicked is case- and space-insensitive")
+	assert_false(Net.was_kicked("Friend"), "others are not kicked")
+	assert_false(Net.kick(Net.local_peer_id()), "never kicks the host itself")
+	assert_false(Net.kick(Net.AI_PEER), "AI slots are not peers")
+	assert_false(Net.kick(4242), "unknown peer")
+	Net.leave()
+	assert_eq(Net.host(port, "Host"), OK, "host again")
+	assert_true(Net._kicked_names.is_empty(), "a new session clears the kick list")
+	Net.leave()
+	Net.start_solo("Tester", 3)
+
+
 func test_net_host_twice_after_leave() -> void:
 	var port: int = 30000 + GameRng.stream(&"test_net").randi_range(0, 9999)
 	assert_eq(Net.host(port, "A"), OK, "first host")

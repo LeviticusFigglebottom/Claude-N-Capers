@@ -194,6 +194,10 @@ func _cover_ok(tp: TacticalPoint, t: Node3D) -> bool:
 		return false
 	if _flat(t.global_position - tp.global_position).length() > special_tweak.bulwark_anchor_max_from_target_m:
 		return false
+	var to_t: Vector3 = _flat(t.global_position - _npc.global_position)
+	var to_a: Vector3 = _flat(tp.global_position - _npc.global_position)
+	if to_a.length() > 0.5 and (to_a.dot(to_t) <= 0.0 or to_a.length() >= to_t.length()):
+		return false  # PD2: advance to cover between itself and the crew, never past / behind the target
 	var c: CrewController = t as CrewController
 	var to: Vector3 = c.eye_position() if c != null else t.global_position + Vector3.UP * 1.5
 	return CombatSystem.has_npc_los(_npc, tp.global_position + Vector3(0.0, _npc.head_height, 0.0), to, [_npc, t])

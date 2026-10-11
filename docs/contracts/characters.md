@@ -1,4 +1,4 @@
-# Contract: characters (v1.4)
+# Contract: characters (v1.9)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -98,7 +98,7 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
 * Bow: held in hand.L; the `weapon` bone carries the bow (origin = riser grip, Y = arrow, Z = up the riser) at
   hand.L × `fp.offhand_grip`. The arrow rides the `magazine` bone (drawn back 0.40 m × draw, hidden at release).
   SOURCE `curve.bow_<clip>: draw=…` gives per-frame draw (0 brace … 1 full); ENV A bends StringUpper/Lower so the nock
-  sits 0.175 + 0.40 × draw m behind the grip. `fire` = release, `reload` = nock; `draw_string`'s last frame = `hold` frame 0.
+  sits 0.155 + 0.40 × draw m behind the grip (brace 0.155 since v1.7, matching ENV B's Thorn). `fire` = release, `reload` = nock; `draw_string`'s last frame = `hold` frame 0.
 * The `weapon` bone moves relative to hand.R during the lever cycle and every bow clip (SOURCE `weapon_bone` lists them).
 * Weapon-model layout assumed by the choreography: break-action hinge forward of and below the breech face; lever
   loading gate on the right; saw blade + side grip on the left; minigun left side grip and ammo box on the left.
@@ -111,3 +111,45 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
   `world/characters/_tools/character_spec.gd`. ENV A resolves EnemyDef visuals per faction (EnemyDef `params.visual_variant`).
 * Special colours (Stinger blue, medic white, Phantom lenses, hazard yellow) and every contract node are identical in
   every variant. Brandt/Aegis have no variants.
+
+## v1.7: non-gun first-person sets, gun bash, NPC ambient clips (D-069)
+* **FP sets for items** (AnimationLibrary named by the item def's `anim_set`, see data contracts):
+  * melee: `melee_knife`, `melee_blunt`, `melee_blade` with `idle*`, `sprint*`, `draw`, `holster`, `swing`
+    (hit@ event), `charge_start`, `charge*`, `charge_swing` (hit@). `charge_start` lasts `MeleeDef.charge_time_s`.
+  * throwable: `throwable` with `draw` (pin_pull@; ENV A hides the item's `Pin` there), `throw`, `throw_low` (release@).
+  * deployables: `deploy_bag`, `deploy_small`, `deploy_sentry` with `place` (place@ = `DeployableDef.deploy_time_s`).
+* **Gun bash:** every gun set has `<set>_bash` with a `hit@` event (PD2 weapon butt).
+* Items ride the `weapon` bone in item clips (it is not identity under hand.R there); see visual_slots.md "Items".
+* **Viewmodel camera near plane 0.02 m** (the 0.05 default cuts shouldered stocks in ADS). ENV A sets it on the crew
+  Camera3D in first person.
+* **Left hand:** ENV A IKs the FP left hand to the equipped weapon model's `LeftHandIK` at runtime; guns sharing a set
+  differ by up to 0.24 m, so the clip's left hand is only a default.
+* **NPC ambient clips** (humanoid, all loops, speed 0 unless noted): `desk_work` 12 s, `phone_seated` 8 s,
+  `phone_call` 4 s, `sit_chair_watch` 10 s, `mug_idle` 8 s (sip@105), `mug_carry_walk` 1.13 s (1.3 m/s), `mop` 4 s,
+  `sit_bed_read` 10 s (page_turn@221; root on the mattress top), `idle_thug` 3.5 s (cartel; long gun held low,
+  left hand off LeftHandIK). Seat, bed and prop grip placement is in char_anim_humanoid/SOURCE.txt.
+
+## v1.8: heister FP sleeves (D2-03, D-070)
+* `char_arms_fp_<heister>` (rook, sable, dutch, wren) at `res://assets/characters/char_arms_fp_<heister>/char_arms_fp_<heister>.glb`:
+  a mesh-only sleeve variant of `char_arms_fp` with `<root>/rig_arms/Skeleton3D/Arms` (a skinned MeshInstance3D) and no
+  AnimationPlayer; its rig_arms bones, order, rests and bind poses equal `char_arms_fp`'s.
+* ENV A's FpViewmodel instances the variant for the local player's heister, copies its `Arms` `mesh` and `skin` onto
+  `char_arms_fp`'s `Arms`, then frees the variant. Clips stay in `char_arms_fp`. No variant (generic crew or unknown
+  heister) = `char_arms_fp`'s own suit sleeves. Gloved hands use the glove material (no skin under the glove).
+* Humanoid `rappel` clip (ENV D, for A's QC-41 NpcMotor rappel descent): 30 f loop (1 s per hop), 2.5 m/s straight down
+  (A's rappel speed defaults to this ◇), event `land@0`; rope at x 0, z −0.24 in root space, wall contact at z −0.80
+  (play it without a wall for skylight drops). Details: SOURCE `rappel_rope`.
+* **Masks clear the crew face envelope** (D-073): crew masks are built to clear the crew face envelope
+  (`tools/blender/masks/_crew_face_envelope.json`, a cylindrical height map of every crew head + hair at Head/Socket)
+  by ≥ 3 mm. A crew head change regenerates the envelope and rebuilds the masks; a staleness test guards it.
+
+## v1.9: P5 NPC ambient clips (D3-02, D-074)
+* Humanoid loops (priority 5): `dance_a` / `dance_b` / `dance_c` (120 BPM, 8 beats, beat 1 at frame 0; ENV A syncs with
+  `speed_scale = track_bpm / 120`), `bartender_wipe`, `bartender_pour` (lift@2, pour_start@39, pour_end@77, set_down@110),
+  `bouncer_idle` (watch@222), `teller_count` (count_start@6 … stack_down@144, tap_1/2), `curator_inspect` (steps back
+  0.38 m and returns; step events), `walk_text` (1.2 m/s), `cower_seated` (npc_seat chair), `cower_stand` (flinch_1/2;
+  distinct from the crouched `cower`).
+* Prop grips in SOURCE: `rag_grip`, `bottle_grip` (HandR), `glass_grip`, `cash_grip` (HandL); `walk_text` uses `phone_grip`.
+* Placement for ENV C (root space, −Z ahead): bar top 1.05 m, near edge 0.28 m ahead; teller counter top 1.00 m, near edge
+  0.28 m; painting centre 1.55 m high on a wall 0.80 m ahead with 0.73 m clear behind the NPC; `cower_stand` wants a wall
+  at z +0.21 behind.

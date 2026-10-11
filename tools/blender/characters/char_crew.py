@@ -1,10 +1,18 @@
-"""Crew body (the player heisters): dark two-piece heist suit, shirt and tie, leather gloves,
-black shoes (D1-02). The face is covered in game by the mask on the ``Head`` seat (face centre,
-see ``_mask_base``), so the head stays visible here with short hair. Two suit colourways.
+"""Crew bodies (the player heisters). The face is covered in game by the mask on the ``Head`` seat
+(face centre, see ``_mask_base``), so heads stay visible and nothing is worn on the head.
 
-Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``. No blend shapes (baked).
+* ``char_crew_body`` / ``char_crew_body_b`` (D1-02): the generic crew, a dark two-piece heist suit,
+  shirt and tie, leather gloves, black shoes; two suit colourways.
+* ``char_crew_rook`` / ``char_crew_sable`` / ``char_crew_dutch`` / ``char_crew_wren`` (D2-03): the four
+  named heisters, each with a distinct heist outfit and 30 m silhouette (long coat, cropped blazer,
+  bulky bomber, waistcoat and rolled sleeves). Design notes in ``_crew_heisters``.
+
+Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear`` (+ ``Headwear`` for earrings).
+No blend shapes (baked).
 """
+import json
 
+import _crew_heisters as crew
 import _gear_kit as gk
 import _outfit as o
 import _outfit_garments as g
@@ -12,7 +20,7 @@ from _outfit import Hull, Mesh, Vector
 from _outfit_build import Kit, build_character
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
 VARIANTS = {
     "char_crew_body": {"height": 1.78, "build": 0.5, "gender": 0.0, "age": 0.3, "skin": 2, "hair": "short",
@@ -21,6 +29,14 @@ VARIANTS = {
     "char_crew_body_b": {"height": 1.78, "build": 0.5, "gender": 0.0, "age": 0.3, "skin": 2, "hair": "short",
                          "hair_color": "dark", "suit": "char_suit_navy", "shirt": "char_shirt_black",
                          "tie": "char_tie_burgundy"},
+    "char_crew_rook": {"height": 1.84, "build": 0.55, "gender": 0.0, "age": 0.5, "skin": 3, "hair": "side_part",
+                       "hair_color": "dark", "beard_shadow": 0.5, "heister": "rook"},
+    "char_crew_sable": {"height": 1.75, "build": 0.2, "gender": 1.0, "age": 0.38, "skin": 5, "hair": "bob",
+                        "hair_color": "dark", "heister": "sable"},
+    "char_crew_dutch": {"height": 1.86, "build": 0.95, "gender": 0.0, "age": 0.72, "skin": 1, "hair": "buzz",
+                        "hair_color": "grey", "beard_shadow": 0.95, "heister": "dutch"},
+    "char_crew_wren": {"height": 1.68, "build": 0.3, "gender": 1.0, "age": 0.08, "skin": 2, "hair": "short",
+                       "hair_color": "brown", "heister": "wren"},
 }
 
 
@@ -102,6 +118,12 @@ def suit(kit: Kit, suit_mat: str, shirt_mat: str, tie_mat: str | None, shoe_mat:
 
 def recipe(kit: Kit) -> None:
     opts = kit.opts
+    if "heister" in opts:
+        who = opts["heister"]
+        crew.LOOKS[who](kit)
+        kit.notes["fp_sleeve"] = json.dumps(crew.FP_SLEEVES[who], sort_keys=True)
+        kit.notes["head_note"] = "hat-free; the crew mask attaches at Head (face centre)"
+        return
     suit(kit, opts["suit"], opts["shirt"], opts["tie"], gloves="char_leather_black")
     kit.notes["head_note"] = "head visible with short hair; the crew mask attaches at Head (face centre)"
 

@@ -13,7 +13,7 @@ extends Node
 
 const NODE_NAME: String = "AllyBrain"
 const RNG_STREAM: StringName = &"convert_fire"
-const HOSTILE_ROLES: Array[StringName] = [&"police", &"special", &"guard"]
+const HOSTILE_ROLES: Array[StringName] = [&"police", &"special", &"guard", &"cartel"]
 
 ## Crew slot that owns this convert.
 var owner_slot: int = -1
@@ -81,7 +81,7 @@ func _is_hostile(e: NpcBase) -> bool:
 		return false
 	if e.is_in_group(PoliceSurrender.CONVERT_GROUP):
 		return false
-	if e.role == &"guard":
+	if e.role == &"guard" or e.role == CartelBrain.ROLE:
 		return e.alert_state == Enums.AlertState.COMBAT or e.alert_state == Enums.AlertState.ALARMED
 	return true
 

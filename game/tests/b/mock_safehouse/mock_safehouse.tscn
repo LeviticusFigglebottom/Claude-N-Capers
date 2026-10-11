@@ -1,0 +1,78 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://tests/b/mock_safehouse/mock_safehouse_map.gd" id="1_map"]
+[ext_resource type="Script" path="res://tests/b/mock_safehouse/mock_hub_station.gd" id="2_st"]
+[ext_resource type="Script" path="res://tests/b/mock_safehouse/mock_hub_walker.gd" id="3_walk"]
+[ext_resource type="Script" path="res://tests/b/mock_safehouse/mock_jukebox.gd" id="4_jb"]
+
+[node name="MockSafehouse" type="Node3D"]
+script = ExtResource("1_map")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Spawn" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 5.3)
+
+[node name="ReturnHeist" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 4)
+
+[node name="ReturnRange" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.75, 0, 16.4)
+
+[node name="Stations" type="Node3D" parent="."]
+
+[node name="board" type="Node3D" parent="Stations" groups=["hub_station"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 0.23)
+script = ExtResource("2_st")
+station_id = &"board"
+
+[node name="UsePoint" type="Marker3D" parent="Stations/board"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.17)
+
+[node name="StationCam" type="Marker3D" parent="Stations/board"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 2.5)
+metadata/fov = 50.0
+
+[node name="armory" type="Node3D" parent="Stations" groups=["hub_station"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.4, 0, 3.5)
+script = ExtResource("2_st")
+station_id = &"armory"
+
+[node name="UsePoint" type="Marker3D" parent="Stations/armory"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+
+[node name="jukebox" type="Node3D" parent="Stations" groups=["hub_station"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0, 10.25)
+script = ExtResource("2_st")
+station_id = &"jukebox"
+
+[node name="UsePoint" type="Marker3D" parent="Stations/jukebox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0, 0)
+
+[node name="notoriety" type="Node3D" parent="Stations" groups=["hub_station"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, 10.4)
+script = ExtResource("2_st")
+station_id = &"notoriety"
+prefab_signal = true
+
+[node name="UsePoint" type="Marker3D" parent="Stations/notoriety"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.3)
+
+[node name="range" type="Node3D" parent="Stations" groups=["hub_station"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.75, 1.05, 17.8)
+script = ExtResource("2_st")
+station_id = &"range"
+
+[node name="UsePoint" type="Marker3D" parent="Stations/range"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.05, -0.9)
+
+[node name="Audio" type="Node3D" parent="."]
+
+[node name="Jukebox" type="Node" parent="Audio"]
+script = ExtResource("4_jb")
+
+[node name="Walker" type="Node3D" parent="." groups=["hub_walker"]]
+script = ExtResource("3_walk")
+
+[node name="Camera" type="Camera3D" parent="Walker"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)

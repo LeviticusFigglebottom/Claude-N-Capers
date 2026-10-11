@@ -16,27 +16,54 @@ straight-sided vest torso; TAC = round, wide helmet + square padded shoulders + 
 deep cummerbund; Halden Security = flat saucer cap on a slim shirted torso; suits/civilians are
 bare-headed with tapered torsos.
 
+Faction variants (D2-01): ``char_patrol_officer_<v>`` / ``char_tac_light_<v>`` for ``v`` in frd, sentinel,
+zero (``_faction``: recolour + original insignia; zero adds the bone face mask and, on the Light,
+pauldrons). The base ids are faction ``tac`` and are unchanged.
+
+FRD field agent (D-067, ``enemy.frd_agent``, FRD-only): ``char_frd_agent`` / ``char_frd_agent_b`` (a second
+body: woman, darker skin, younger) = the FRD look: a plain-clothes agent in suit trousers, white shirt and
+dark tie under a navy nylon raid windbreaker (cropped above the belt, zipped to mid-chest) with gold
+FRD block letters across the back and on the left chest (``_faction`` lettering), an earpiece, a gold
+badge on the belt and a holstered pistol; bare head. ``char_frd_agent_sentinel``: the Sentinel Corp
+reskin of the role (grey windbreaker, the Sentinel logo, crimson tie).
+
 Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (cap, helmet).
 No blend shapes (baked at the params below).
 """
 
 import math
 
+import _faction as faction
 import _gear_kit as gk
 import _outfit as o
 import _outfit_garments as g
+import _special_gear as sg
 from _outfit import Hull, Mesh, Vector, smoothstep
 from _outfit_build import Kit, build_character
 
 TRI_BUDGET = 35000
-EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False}
+EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
-VARIANTS = {
+BASE_VARIANTS = {
     "char_patrol_officer": {"height": 1.79, "build": 0.6, "gender": 0.0, "age": 0.4, "skin": 3, "beard_shadow": 0.6, "hair": "short",
                             "hair_color": "dark", "unit": "patrol"},
     "char_tac_light": {"height": 1.81, "build": 0.7, "gender": 0.0, "age": 0.3, "skin": 2, "beard_shadow": 0.5, "hair": "buzz",
                        "hair_color": "brown", "unit": "tac"},
 }
+#: D2-01 faction reskins (``_faction``): ``char_<id>_<variant>`` = the base look + faction colours/insignia
+FACTIONS = ("frd", "sentinel", "zero")
+#: D2-01 / D-067 FRD field agent (``enemy.frd_agent``): FRD-only, so the base id is the FRD look; ``_b`` is a
+#: second body for variety and ``_sentinel`` the Sentinel Corp reskin (``EnemyDef.params.visual_variant``)
+AGENT = {"height": 1.82, "build": 0.55, "gender": 0.0, "age": 0.55, "skin": 2, "beard_shadow": 0.55,
+         "hair": "side_part", "hair_color": "brown", "unit": "frd_agent"}
+AGENT_VARIANTS = {
+    "char_frd_agent": AGENT,
+    "char_frd_agent_b": {"height": 1.72, "build": 0.4, "gender": 1.0, "age": 0.3, "skin": 5, "hair": "bob",
+                         "hair_color": "dark", "unit": "frd_agent"},
+    "char_frd_agent_sentinel": {**AGENT, "faction": "sentinel"},
+}
+VARIANTS = {**BASE_VARIANTS, **AGENT_VARIANTS,
+            **{f"{aid}_{fac}": {**p, "faction": fac} for aid, p in BASE_VARIANTS.items() for fac in FACTIONS}}
 
 NAVY = "char_police_navy"
 HIVIS = "char_hivis"
@@ -351,8 +378,184 @@ def tac(kit: Kit) -> None:
     kit.seats["Hip"] = belt.point(math.radians(140.0), dz=0.0, out=0.05 * k)
 
 
+# =============================================================================================
+# FRD field agent (D-067)
+# =============================================================================================
+#: windbreaker colour and emblem per look (base = FRD; the Sentinel reskin wears its own corporate grey)
+AGENT_LOOK = {"frd": ("char_frd_navy", "char_tie_black"), "sentinel": ("char_sen_grey", "char_sen_red")}
+
+
+def windbreaker(kit: Kit, mat: str, bottom_z: float, v_z: float, neck_w: float = 0.07) -> Mesh:
+    """Nylon raid windbreaker: a roomy torso + sleeve shell bloused over a ribbed waistband (cropped
+    above the belt so the badge and holster show) and ribbed cuffs, zipped up to ``v_z`` (shirt
+    collar and tie show in the V), a turned-down collar, slash pockets."""
+    fit, k = kit.fit, kit.k
+    hull = kit.hull()
+
+    def extra(p: Vector, r: str) -> float:
+        if r in ("torso", "pelvis", "neck"):
+            return 0.008 * k * smoothstep(bottom_z + 0.02 * k, bottom_z + 0.14 * k, p.z) \
+                * smoothstep(1.50 * k, 1.36 * k, p.z) + 0.003 * k
+        return 0.007 * k
+
+    sh = g.upper_shell(fit, mat, bottom_z=bottom_z, sleeve=1.9, base=0.013, waist_blouse=0.014, arm_ease=2.4,
+                       hull=hull, iters=6, min_off=0.007 * k, extra=extra)
+    m = sh.mesh
+    loops = g.classify_loops(m)
+    g.bottom_tuck(m, loops["hem"], bottom_z)
+    for key in ("cuff.L", "cuff.R"):
+        o.straighten_loop(m, loops[key], iters=2)
+    mh = Hull(fit, [m])
+    g.cuff_band(m, loops["hem"], mh, 0.05 * k, 0.004 * k, mat)
+    for key in ("cuff.L", "cuff.R"):
+        g.cuff_band(m, loops[key], mh, 0.045 * k, 0.0035 * k, mat)
+    nk = g.Neck(fit)
+    neck_z = nk.point(0.0, 0.0).z
+    cy = fit.ring_centre("chest").y
+
+    def v_half(z: float) -> float:
+        t = o.clamp((z - v_z) / max(neck_z - v_z, 1e-3), 0.0, 1.0)
+        return o.lerp(0.004 * k, neck_w * k, t ** 0.9)
+
+    g.delete_faces(m, lambda c: c.y > cy and c.z >= v_z and abs(c.x) < v_half(c.z) and c.z < neck_z + 0.08)
+    g.snap_opening(m, v_half, cy, v_z, neck_z + 0.02, hull, 0.005 * k)
+    o.hem_all(m, thick=0.005 * k, depth=0.016 * k)
+    kit.add_soft(m)
+    bh = Hull(fit, [m])
+    zp = Mesh()
+    path = g.front_path(bh, 0.0, v_z + 0.004 * k, bottom_z - 0.045 * k, step=0.02 * k)
+    o.strip(zp, bh, path, 0.005 * k, 0.002 * k, "polymer_black", segs_across=1, chamfer=0.001 * k)
+    kit.add_gear(zp)
+    pull = o.Gear()
+    pull.box((-0.005 * k, -0.016 * k, 0.0), (0.005 * k, 0.004 * k, 0.004 * k), "chrome")
+    pull.bevel(0.0015 * k, 1, 30.0)
+    hit = bh.cast(Vector((0.0, 0.6, v_z - 0.006 * k)), Vector((0, -1, 0)), 1.2)
+    pp = hit[0] if hit[0] is not None else Vector((0.0, cy + 0.15 * k, v_z - 0.006 * k))
+    kit.add_gear(pull.to_mesh(o.frame_from(pp, Vector((0.0, 1.0, 0.1))), anchor=pp))
+    # turned-down collar: narrow lapels up the V edges and a band round the back of the neck
+    col = Mesh()
+    rows = 8
+    for sx in (-1.0, 1.0):
+        pts = []
+        for i in range(rows):
+            t = i / (rows - 1)
+            z = o.lerp(v_z + 0.006 * k, neck_z - 0.004 * k, t)
+            w = o.lerp(0.010, 0.026, smoothstep(0.0, 0.8, t)) * k
+            hit = bh.cast(Vector((sx * (v_half(z) + w * 1.1), 0.6, z)), Vector((0, -1, 0)), 1.2)
+            pts.append(hit[0] if hit[0] is not None else Vector((sx * (v_half(z) + w), cy + 0.12 * k, z)))
+        o.strip(col, bh, pts, lambda t: o.lerp(0.010, 0.026, smoothstep(0.0, 0.8, t)) * k, 0.006 * k, mat,
+                side_hint=Vector((sx, 0, 0)), segs_across=2, chamfer=0.003 * k)
+    back = [nk.point(th, 0.0, 0.024 * k) - Vector((0.0, 0.0, 0.010 * k))
+            for th in [o.lerp(0.62, o.TAU - 0.62, i / 20) for i in range(21)]]
+    o.strip(col, kit.hull(), back, 0.032 * k, 0.007 * k, mat, side_hint=o.UP, segs_across=2, chamfer=0.003 * k,
+            cast_back=0.06)
+    kit.add_soft(col)
+    # slash pockets (welts) on the front
+    bh = kit.hull()
+    pk = Mesh()
+    for sx in (-1.0, 1.0):
+        o.patch(pk, bh, Vector((sx * 0.11 * k, 0.0, bottom_z + 0.10 * k)), Vector((1, 0, 0)), o.UP,
+                o.rounded_rect(0.022 * k, 0.12 * k, 0.006 * k, 2), 0.003 * k, mat,
+                cast_dir=Vector((0.3 * sx, -1, 0)), rings=1, chamfer=0.002 * k)
+    kit.add_soft(pk)
+    return m
+
+
+def earpiece(kit: Kit, sfx: str = "R", mat: str = "char_cable_black") -> None:
+    """Earpiece bud in the ear with a coiled cable curling down behind the ear into the collar."""
+    fit, k = kit.fit, kit.k
+    sx = 1.0 if sfx == "R" else -1.0
+    eye = fit.eye_centre()
+    c = fit.head_centre()
+    hh = gk.HeadHull(fit)
+    best = None
+    for dy in (0.000, -0.006, 0.006, -0.012):
+        for dz in (-0.028, -0.022, -0.034):
+            hit = hh.cast(Vector((sx * 0.3, c.y + dy * k, eye.z + dz * k)), Vector((-sx, 0, 0)), 0.4)
+            if hit[0] is not None and (best is None or sx * hit[0].x > sx * best.x):
+                best = hit[0]
+    if best is None:
+        return
+    head_w = {"head": 1.0}
+    m = Mesh()
+    gr = o.Gear()
+    gr.cyl(0.0055 * k, 0.006 * k, centre=(0, 0, 0.002 * k), axis="Z", segs=10, mat=mat)
+    gr.bevel(0.0015 * k, 1, 30.0)
+    m.extend(gr.to_mesh(o.frame_from(best, Vector((sx, 0.0, 0.0))), weights=head_w))
+    nk = g.Neck(fit)
+    hull = kit.hull()
+    a = best + Vector((sx * 0.004 * k, -0.006 * k, -0.006 * k))
+    b = o.push_out(nk.point(sx * 2.3, 0.70, 0.012 * k), hull, 0.008 * k)
+    pts = []
+    for i in range(23):
+        t = i / 22
+        p = a.lerp(b, t) + Vector((sx * 0.012 * k, -0.010 * k, 0.0)) * math.sin(math.pi * t)
+        coil = 0.0045 * k * smoothstep(0.15, 0.3, t) * smoothstep(0.95, 0.75, t)
+        ang = t * 2 * math.pi * 6
+        pts.append(p + Vector((math.cos(ang) * coil * sx, math.sin(ang) * coil, 0.0)))
+
+    def w(q: Vector, t: float) -> dict:
+        h = smoothstep(0.55, 0.25, t)
+        return {"head": h, "neck": 1.0 - h} if 0.0 < h < 1.0 else (head_w if h >= 1.0 else {"neck": 1.0})
+
+    o.tube(m, pts, 0.0016 * k, mat, sides=5, weights=w)
+    kit.add_gear(m, layer=False)
+
+
+def belt_badge(belt: gk.Belt, a: float, k: float, rim: str = "brass", fill: str = "brass") -> Mesh:
+    """Gold shield badge on a black leather belt clip, worn on the belt beside the buckle."""
+    gp = o.Gear()
+    gp.box((-0.026 * k, -0.040 * k, 0.0), (0.026 * k, 0.026 * k, 0.005 * k), "char_leather_black")
+    gp.bevel(0.002 * k, 1, 30.0)
+    outline = [(x, y - 0.006 * k) for x, y in o.shield_outline(0.040 * k, 0.050 * k)]
+    gp.prism(outline, 0.0045 * k, 0.0080 * k, rim)
+    inner = [(x, y - 0.008 * k) for x, y in o.shield_outline(0.028 * k, 0.036 * k)]
+    gp.prism(inner, 0.0075 * k, 0.0092 * k, fill)
+    return gp.to_mesh(belt.frame(a, dz=-0.004 * k), anchor=belt.point(a))
+
+
+def frd_agent(kit: Kit) -> None:
+    """Plain-clothes federal agent: dark suit trousers, white shirt and dark tie under a navy nylon raid
+    windbreaker with gold FRD block letters across the back and on the left chest; earpiece, gold
+    badge on the belt, holstered pistol on the right hip. Bare head (no cap / helmet): the bare-headed,
+    jacketed silhouette is distinct from the capped Patrol and helmeted TAC at 30 m."""
+    fit, k = kit.fit, kit.k
+    emblem = kit.opts.get("faction") or "frd"
+    jacket_mat, tie_mat = AGENT_LOOK[emblem]
+    base = _base_uniform(kit, "char_shirt_white", "char_suit_dark", "fold", boots=False)
+    belt = base["belt"]
+    nk = g.Neck(fit)
+    det = Mesh()
+    knot = g.tie(det, kit.hull(), fit, nk.point(0.0, 0.0, 0.0).z - 0.035 * k, base["belt_z"] + 0.03 * k, tie_mat,
+                 width=0.07)
+    kit.add_soft(det)
+    tk = o.Gear()
+    tk.prism([(0.015 * k, 0.015 * k), (-0.015 * k, 0.015 * k), (-0.010 * k, -0.018 * k), (0.010 * k, -0.018 * k)],
+             0.0, 0.015 * k, tie_mat)
+    tk.bevel(0.004 * k, 2, 30.0)
+    kp = knot + Vector((0.0, 0.002 * k, 0.026 * k))
+    kit.add_gear(tk.to_mesh(o.frame_from(kp, Vector((0.0, 1.0, 0.35))), anchor=kp))
+    n0 = len(kit.soft.f)
+    jk = windbreaker(kit, jacket_mat, base["belt_z"] + 0.04 * k, 1.30 * k)
+    kit.notes["faces_hidden_by_windbreaker"] = str(sg.cull_hidden(kit.soft, n0, Hull(fit, [jk], body_regions=set())))
+    gear = Mesh()
+    gear.extend(gk.buckle(belt, "chrome", w=0.045, h=0.04))
+    gear.extend(belt_badge(belt, math.radians(-32.0), k))
+    gear.extend(gk.holster(belt, math.radians(100.0)))
+    gear.extend(gk.pouch(belt, math.radians(-115.0), 0.05, 0.06, 0.026, "char_leather_black", snap="chrome"))
+    kit.add_gear(gear)
+    earpiece(kit, "R")
+    # faction marks (the base look is FRD): big letters across the back, small on the left chest
+    faction.torso_mark(kit, emblem, 1.27, front=False, h=0.12 if emblem == "frd" else 0.13)
+    faction.torso_mark(kit, emblem, 1.36, front=True, h=0.032 if emblem == "frd" else 0.044)
+    kit.seats["Hip"] = belt.point(math.radians(100.0), dz=0.0, out=0.05 * k)
+    kit.notes["look"] = ("FRD field agent: {} windbreaker with {} marks (back + left chest), white shirt, tie, suit "
+                         "trousers, earpiece (right), gold belt badge, holster; bare head").format(jacket_mat, emblem)
+
+
 def recipe(kit: Kit) -> None:
-    {"patrol": patrol, "tac": tac}[kit.opts["unit"]](kit)
+    {"patrol": patrol, "tac": tac, "frd_agent": frd_agent}[kit.opts["unit"]](kit)
+    faction.dress(kit)
 
 
 def build(ctx) -> None:

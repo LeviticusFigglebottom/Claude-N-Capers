@@ -1,5 +1,5 @@
 {
-	"version": 5,
+	"version": 6,
 	"profile_name": "Crew",
 	"cash": 42000,
 	"stash": 310000,
@@ -17,7 +17,7 @@
 		"melee": "melee.folding_knife", "throwable": "throwable.boss_injector",
 		"deployable": "deployable.ammo_bag", "deployable_secondary": "",
 		"armor": "armor.patrol_vest", "mask": "mask.gilded_heron",
-		"perk_deck": "perk.bulk", "perk_deck_cards": 3,
+		"perk_deck": "perk.bulk", "heister": "", "perk_deck_cards": 3,
 		"skills": {"skill.juggernaut.thick_skin": 2}
 	},
 	"skill_sets": [{"skill.juggernaut.thick_skin": 2}],
@@ -26,6 +26,11 @@
 	"unlocks": [],
 	"achievements": {},
 	"pro_job_locks": {},
+	"notoriety": 0,
+	"notoriety_xp": 0,
+	"notoriety_choices": {},
+	"held_skill_sets": [],
+	"music_choice": "",
 	"stats": {"heists_completed": 6, "heists_failed": 1},
 	"settings": {"fov": 85}
 }

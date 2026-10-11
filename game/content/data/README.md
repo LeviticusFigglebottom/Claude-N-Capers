@@ -68,6 +68,26 @@ Perk-deck items (data only, no models yet): `throwable.steady_flask` (Composure'
 count 1, damage 0). Radius and fuse 0 (not thrown). Their effects live in the deck's `perk.*`
 grants. `test_perk_throwables_exist` checks every `perk.throwable` item id resolves.
 
+Player throwables (D-073, for ENV A's A3-12 runtime, which switches on `kind`). Every one has count 3 (lead brief,
+PD2-shaped ◇) and `anim_set = &"throwable"` (D-069). Display units. No models yet.
+The ThrowableDef contract has no `params`, so stun time, fire-pool time and burn damage are not data yet
+(asked of the lead / ENV A).
+| id | kind | damage | radius_m | fuse_s | src / meaning |
+|---|---|---|---|---|---|
+| `throwable.frag` | `frag` | 1,600 | 5.0 | 2.5 | PD2 frag shape: ~1,600 within 5 m after a 2.5 s fuse (lead brief) ◇ |
+| `throwable.concussion` | `concussion` | 0 | 10.0 | 1.5 | stun only; wider than the frag, shorter fuse ◇ |
+| `throwable.incendiary` | `incendiary` | 40 | 4.0 | 2.5 | A3-12 reads `damage` as the pool's burn DPS (= A's `incendiary_burn_dps` 40); `radius_m` = the fire pool; ignites on first contact, so `fuse_s` is unused ◇ |
+| `throwable.throwing_knife` | `throwing_knife` | 1,000 | 0 | 0 | single target, hits on impact (radius and fuse 0) ◇ |
+
+The loadout picker offers these four (ThrowableGate: any throwable a perk card's `perk.throwable` names is
+perk-only and never listed).
+
+## Heisters: `heisters/roster.tres` (D-073)
+`HeisterRoster`: `ids` in roster order (`rook`, `sable`, `dutch`, `wren`; the order fallbacks and AI fill take),
+`accents` (picker swatch + lobby slot colour, original, never the focus cyan), `generic_accent` for "Any Free
+Heister", `portrait_dir` (ENV D's 2D portraits `<dir>/<id>.png`; none exist yet, so the picker shows the name and
+accent only). Names: strings `crew.<id>`.
+
 ## Loot: `loot/`
 Jewelry $1,000 LIGHT ◇, cash $1,200 LIGHT ◇, body bag $0 HEAVY (S6.3, D-032). Base values before the
 difficulty multiplier.
@@ -78,8 +98,13 @@ P2 heists (PD2 bag shape: a heavier bag is worth more per bag, but less per seco
 | `loot.ledger_laptop` | LIGHT | $2,000 | Shadow Ledger (required) | weight V (doc QC-15); value ◇ (one bag, the key to the data) |
 | `loot.ledger_drives` | MEDIUM | $1,800 | Shadow Ledger (required ×2, 3 spawn) | weight V (doc); value ◇ |
 | `loot.ledger_books` | MEDIUM | $2,400 | Shadow Ledger (optional, time-locked safe) | weight: lead (B4-10; the doc asked LIGHT); value ◇ (greed bag: costs a keycard + a time-lock hold) |
-| `loot.painting` | MEDIUM | $1,500 | Shadow Ledger art hall ×2, reusable by `gallery_night` | weight V (doc); value ◇ |
+| `loot.painting` | LIGHT | $1,500 | Shadow Ledger art hall ×2, reusable by `gallery_night` | weight: lead ruling (cut and rolled, PD2); value ◇ |
+| `loot.weapon_crate` | HEAVY | $2,000 | Dockside Burn (2 crates in each of 2 yard containers; PD2 Firestarter weapons analog) | weight V (G0 doc, QC-39); value ◇ (doc) |
+| `loot.contraband` | MEDIUM | $1,400 | Dockside Burn (product; a bonus that does **not** count toward the 4 required bags) | weight V (doc); value ◇ (doc: Reyes' buyer takes it at a discount) |
+| `loot.thermite` | HEAVY | $0 | Dockside Burn tool bag, consumed by the burn point | **tool bag**: value 0, in `PayoutTweak.xp_loot_excluded_ids` (no bag XP), excluded from `[secure]` by the mission (ENV A/C) |
 Shadow Ledger's archive safe uses the existing `loot.cash`.
+Dockside Burn's cash is the existing `loot.cash_bricks` (MEDIUM $1,600: strongroom pallets or the count-room cage). Per-difficulty values and
+the C-side TODOs: `content/docs/heists/dockside_burn.md`.
 
 **Small loot (QB-52, D-049): no loot def.** Small loot (cash stacks, jewellery, deposit-box contents
 picked up by hand, not bagged) gets its value from the map prefab that spawns it (ENV A/C), which
@@ -87,6 +112,30 @@ reports the sum in `HeistResult.small_loot`; `PayoutCalculator` scales it by dif
 (`PayoutTweak.small_loot_scaled_by_difficulty`). `loot.small_loot_value_mult` (Plain Sight aced) belongs
 to the pickup side (ENV A). Per-item ranges before the difficulty
 multiplier (recorded from the G0 docs): **Night Deposit $800–2,400**, **Shadow Ledger $1,200–3,000**.
+**Dockside Burn: the G0 doc (D-064) gives no per-item range** (O2 dispatch safe ×3 and desk cash in O1/O2/M1); ◇ $600–1,500 proposed
+until ENV C sets the prefab values.
+
+P5 heists (B6-01; no G0 docs yet, so every heist assignment is a proposal for ENV C). Weight classes
+follow the roadmap row and PD2's carry classes (S10.1); values ◇ use the same bag shape as the
+P2/P3 loot above: a class band of LIGHT $1,000–2,000, MEDIUM $1,400–2,400, HEAVY $2,000–3,000, and a
+heavier bag is worth more per bag. `pd2_research.md` lists no per-bag values, so no value is V.
+| id | weight | value | heist (proposed) | src |
+|---|---|---|---|---|
+| `loot.gold` | HEAVY | $2,800 | Meridian Federal vault, Rolling Thunder trucks | weight V (roadmap, PD2 gold is a heavy bag); value ◇ (top bag: above the $2,000 weapon crate, PD2 gold is the best-paying common bag) |
+| `loot.cash_bricks` (existing) | MEDIUM | $1,600 | Meridian Federal vault, Rolling Thunder trucks, Afterhours count room | the roadmap's "money MEDIUM" is this def; no new money def |
+| `loot.server_drives` | MEDIUM | $1,800 | Rolling Thunder (courier truck), Meridian Federal (optional) | weight V (roadmap); value ◇ (= `loot.ledger_drives`, same kind of bag) |
+| `loot.bearer_bonds` | LIGHT | $1,400 | Meridian Federal (vault cage) | weight V (roadmap); value ◇ (between cash $1,200 and the parcels) |
+| `loot.parcels` | LIGHT | $1,500 | Afterhours (back office) | weight V (roadmap "coke LIGHT"; PD2 carries it light); value ◇ (a LIGHT bag above cash, as PD2's product bags pay more than light cash). Display "Sealed Parcels": the tasteful analog, like `loot.contraband` (MEDIUM, Dockside's discounted product) |
+| `loot.painting_tidewater_saint` | LIGHT | $1,300 | Gallery Night | weight V (PD2 cuts canvases from the frame and carries them rolled as a light bag); value ◇ |
+| `loot.painting_widow_in_blue` | LIGHT | $1,500 | Gallery Night | as above |
+| `loot.painting_salt_orchard` | LIGHT | $1,700 | Gallery Night | as above |
+| `loot.painting_lantern_bearer` | LIGHT | $2,000 | Gallery Night (centrepiece) | as above; the top of the LIGHT band |
+The four canvases are original works by invented painters (Maske, Sallow, Wilk, Calloway). Shadow
+Ledger's `loot.painting` is LIGHT too (lead ruling: cut and rolled); Gallery Night uses the rolled variants.
+**Deposit-box valuables: no loot def** (S10.3, QB-52): Meridian Federal's deposit boxes spawn small loot
+reported as `loot.small_valuables`, valued by ENV C's prefab like Night Deposit's boxes. Per-item range
+◇ **$800–2,400** (Night Deposit's, the same kind of box) until the G0 doc sets one. Per-heist pay tables
+and loot lists: `content/docs/heists/<id>.md`.
 
 ## Difficulty: `difficulty/` (Routine, Tense, Hazardous, Brutal, Lethal, Cataclysm = PD2 Normal, Hard, Very Hard, Overkill, Mayhem, Death Sentence)
 | | Rou | Ten | Haz | Bru | Let | Cat | Src |
@@ -314,7 +363,9 @@ parts (B4-18, visual_slots round 6): `Slide` (Wren), `FeedCover` (Gale, D-044), 
 origin = hinge pin below the bore, a negative rotation about local X drops the muzzle; barrels, Muzzle,
 BarrelMount, the chamber Magwell, Underbarrel and LeftHandIK ride on it), `Lever` (Shrike; origin = lever
 pivot, a positive rotation about local X drops the loop), `StringUpper`/`StringLower` (Thorn; origins on
-the cam axles), `String` (Vise; origin = the latch), `Blade` (Rotor Saw; empty on the spindle, the blade
+the cam axles; also Vise: two halves on the limb-tip axles, rest = relaxed, latched = Upper -18.74° /
+Lower +18.74° about local X and ×1.305 along local Y, meeting on the nock), `Speedloader` (Marshal; at
+the closed cylinder's Magwell, hidden at rest by WeaponVisual), `Blade` (Rotor Saw; empty on the spindle, the blade
 Magwell rides on it), `Rotor` (Cyclone; empty on the bore axis carrying BarrelMount and the cluster) and
 `PilotLight` (Furnace; emissive igniter under the nozzle). Projectile magazines: the arrow/bolt sits on
 `Magwell` at the nock with its insertion axis forward; the break actions' `Magwell` is at the chamber mouth

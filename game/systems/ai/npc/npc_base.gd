@@ -25,7 +25,7 @@ const BLIND_STATES: Array[int] = [
 	Enums.AlertState.DOMINATED, Enums.AlertState.CONVERTED, Enums.AlertState.DEAD,
 ]
 
-## &"guard", &"civilian", &"police", &"special" (test_hooks.md npcs(role)).
+## &"guard", &"civilian", &"police", &"special", &"cartel" (QC-36) (test_hooks.md npcs(role)).
 @export var role: StringName = &"guard"
 @export var enemy_def: EnemyDef
 @export var visual_scene: PackedScene
@@ -55,7 +55,8 @@ var stun_left: float = 0.0
 
 func _ready() -> void:
 	add_to_group(G.NPC)
-	add_to_group(G.OBSERVER)
+	if role != CartelBrain.ROLE:  # QC-36: cartel gunmen sight crew themselves (CartelBrain), no stealth meter
+		add_to_group(G.OBSERVER)
 	if role == &"civilian":
 		add_to_group(G.CIVILIAN)
 	else:
@@ -66,6 +67,12 @@ func _ready() -> void:
 		detection_preset = enemy_def.detection_preset
 	if visual_scene == null and enemy_def != null:
 		visual_scene = enemy_def.visual  # characters.md: the EnemyDef's character visual
+		var alts: Variant = enemy_def.params.get("visual_alternates", [])
+		if visual_scene != null and alts is Array and not (alts as Array).is_empty():
+			# Alternate looks (cartel_gunman_b/_c): the same pick on every peer (the node name is replicated).
+			var pick: int = absi(hash(String(name))) % ((alts as Array).size() + 1)
+			if pick > 0 and ResourceLoader.exists(String((alts as Array)[pick - 1])):
+				visual_scene = load(String((alts as Array)[pick - 1])) as PackedScene
 	if visual_scene != null and visual_root != null:
 		for c: Node in visual_root.get_children():
 			c.queue_free()

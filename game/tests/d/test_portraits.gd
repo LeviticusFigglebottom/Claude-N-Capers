@@ -7,9 +7,11 @@
 ##   ContactPortrait renders it in a SubViewport), a Camera3D, a WorldEnvironment, lights and the
 ##   character, and its PortraitBust script poses the arms down and frames the head.
 ## * Each still assets/characters/portraits/<name>.png is a square 1024 x 1024 texture.
+## * Each crew heister (D-073) has an unmasked square 1024 x 1024 picker still at the same path.
 extends TestCase
 
 const CONTACTS: Array[String] = ["odile", "hollis", "accountant"]
+const HEISTERS: Array[String] = ["rook", "sable", "dutch", "wren"]
 const BONES: int = 52
 const TRI_BUDGET: int = 35000
 const SIZE: int = 1024
@@ -45,7 +47,7 @@ func test_contact_characters_are_rig_humanoid() -> void:
 			continue
 		var root: Node3D = packed.instantiate() as Node3D
 		add_child(root)
-		var skel: Skeleton3D = root.get_node_or_null("rig_humanoid/Skeleton3D") as Skeleton3D
+		var skel: Skeleton3D = root.get_node_or_null("Skeleton3D") as Skeleton3D
 		assert_true(skel != null, "%s: Skeleton3D" % n)
 		if skel != null:
 			assert_eq(skel.get_bone_count(), BONES, "%s: bone count" % n)
@@ -110,6 +112,19 @@ func test_portrait_textures_are_square_1024() -> void:
 	for n: String in CONTACTS:
 		var tex: Texture2D = load(_png(n)) as Texture2D
 		assert_true(tex != null, "%s: portrait texture loads" % n)
+		if tex == null:
+			continue
+		assert_eq(tex.get_width(), SIZE, "%s: width" % n)
+		assert_eq(tex.get_height(), SIZE, "%s: height" % n)
+
+
+## D-073: the crew heister picker portraits (Heisters.portrait loads `<portrait_dir>/<id>.png`):
+## one unmasked 1024 x 1024 still per roster heister (tools/blender/characters/_heister_portrait.py).
+func test_heister_portraits_are_square_1024() -> void:
+	for n: String in HEISTERS:
+		assert_true(ResourceLoader.exists(_png(n)), "%s: heister portrait exists" % n)
+		var tex: Texture2D = load(_png(n)) as Texture2D
+		assert_true(tex != null, "%s: heister portrait loads as Texture2D" % n)
 		if tex == null:
 			continue
 		assert_eq(tex.get_width(), SIZE, "%s: width" % n)

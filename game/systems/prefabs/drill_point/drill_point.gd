@@ -3,6 +3,8 @@
 ## (-1 = default per device) × `interaction.device_speed_mult`, jams (DeviceRunner, GameRng
 ## &"devices"), the same Interactable becomes "fix" (kind &"fix_drill", drill_fix_s) while jammed,
 ## and on finish it calls `open_by_device()` on `target` (Safe, vault...) or `unlock()` + open.
+## QC-37 (G.SAW_TARGET): a SAW drill_point can also be cut with the handheld saw: `saw_cut(s)` adds
+## up to effective_duration() x InteractionTweak.hand_saw_drill_point_mult, then opens `target`.
 ## The drill art is a separate device visual with a `Bit` node (visual_slots.md); the placeholder
 ## only marks the spot. -Z points into the lock.
 class_name DrillPoint
@@ -27,6 +29,8 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/drill_point/dril
 @export var noise: StringName = &"silent"
 
 var runner: DeviceRunner = null
+## QC-37: handheld saw progress (0..1, replicated).
+var saw_progress: float = 0.0
 
 var _place_time: float = 0.0
 
@@ -68,7 +72,22 @@ func device_state() -> int:
 	return runner.state
 
 
+## Server (QC-37): the handheld saw cut this saw spot for `seconds`.
+func saw_cut(seconds: float, _attacker_net_id: int) -> void:
+	if not Net.is_authority() or device != Device.SAW or saw_progress >= 1.0 \
+			or (runner != null and runner.state == DeviceRunner.State.DONE):
+		return
+	var need: float = effective_duration() * Tweak.interaction().hand_saw_drill_point_mult
+	saw_progress = minf(saw_progress + seconds / maxf(need, 0.01), 1.0)
+	if saw_progress >= 1.0 - 0.0001:
+		saw_progress = 1.0
+		interactable.enabled = false
+		_on_device_finished()
+
+
 func _prefab_ready() -> void:
+	if device == Device.SAW:
+		add_to_group(G.SAW_TARGET)
 	runner = DeviceRunner.new(self, device_kind())
 	runner.state_changed.connect(_on_device_state)
 	runner.finished.connect(_on_device_finished)

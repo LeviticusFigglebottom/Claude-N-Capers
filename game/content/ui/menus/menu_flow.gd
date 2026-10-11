@@ -15,6 +15,20 @@
 ## App shell (D-024): core/boot.gd routes here. It owns launch, the HUD/payday layer, and
 ## HeistRuntime.teardown() + Net.leave() after results. Direct launch skips the menus:
 ##   godot --path game -- --heist=<id> [--seed=<n>] [--difficulty=<0..5>]   (LaunchArgs)
+## Options (B5-01): GameSettings.current() is applied in _ready (audio buses, window, InputMap);
+## `options_menu.open()` (MenuOptions) shows OptionsScreen from the main menu (Options) and the hub's profile
+## panel; in a heist the `pause` action opens it over the HUD (the local crew's input is paused, the
+## mouse released; Back closes it and restores both). There is no other pause menu.
+## Music (B5-03, D-062): options["music_track"] = MusicCatalog.resolve_choice(profile) (the host's profile in
+## co-op; &"" = heist default). The `jukebox` station opens JukeboxScreen (hub previews via C's MusicDirector).
+## 3D hub (B6-06, QC-45..49): `safehouse` (SafehouseHost) is show_hub()'s 3D branch: ENV C's safehouse scene
+## from data/ui/safehouse_hub.tres, the local walker, station signals -> open_station, the hub HUD and the
+## pause menu. The 2D HubMenu stays the fallback (scene / class / walker missing, Options "menu" mode, co-op).
+## Drop-in (B6-04, ENV A's HeistDropIn): the co-op host's launch copies LobbyState.dropin_policy into A's service
+## (DropInFlow.apply_host_policy; A decides every request, the heist JoinRequestDialog only shows A's `ask`s). The
+## lobby's "Drop in to a running heist" opens DropInJoinScreen through `drop_in` (DropInFlow: pick -> Net.join ->
+## HeistDropIn.request_join); on joined the in-heist UI comes up like a co-op client launch (A's service already
+## ran HeistLauncher.launch_client); a failure shows its reason, Back returns to the lobby with it.
 class_name MenuFlow
 extends Control
 
@@ -36,6 +50,9 @@ const HUB_SCENE: PackedScene = preload("res://content/ui/hub/hub_menu.tscn")
 const BOARD_SCENE: PackedScene = preload("res://content/ui/board/board_screen.tscn")
 const LOBBY_SCENE: PackedScene = preload("res://content/ui/lobby/lobby_screen.tscn")
 const ACHIEVEMENTS_SCENE: PackedScene = preload("res://content/ui/achievements/achievements_screen.tscn")
+const OPTIONS_SCENE: PackedScene = preload("res://content/ui/menus/options_screen.tscn")
+const NOTORIETY_SCENE: PackedScene = preload("res://content/ui/notoriety/notoriety_screen.tscn")
+const JUKEBOX_SCENE: PackedScene = preload("res://content/ui/jukebox/jukebox_screen.tscn")
 ## HubStation.target values open_station() understands.
 const TARGET_BOARD: StringName = &"board"
 const TARGET_HEIST_SELECT: StringName = &"heist_select"
@@ -43,7 +60,10 @@ const TARGET_LOADOUT: StringName = &"loadout"
 const TARGET_MASKS: StringName = &"masks"
 const TARGET_RANGE: StringName = &"firing_range"
 const TARGET_LOBBY: StringName = &"lobby"
-const TARGETS: Array[StringName] = [TARGET_BOARD, TARGET_HEIST_SELECT, TARGET_LOADOUT, TARGET_MASKS, TARGET_RANGE, TARGET_LOBBY]
+const TARGET_JUKEBOX: StringName = &"jukebox"
+const TARGET_NOTORIETY: StringName = &"notoriety"
+const TARGETS: Array[StringName] = [TARGET_BOARD, TARGET_HEIST_SELECT, TARGET_LOADOUT, TARGET_MASKS, TARGET_RANGE, TARGET_LOBBY,
+		TARGET_JUKEBOX, TARGET_NOTORIETY]
 
 var main_menu: MainMenu
 ## Safehouse hub (B4-07).
@@ -83,6 +103,20 @@ var stations: HubStationList
 ## lobby is "home": show_hub() shows it instead, so every Back of the contract path lands there.
 var lobby_screen: LobbyScreen = null
 var lobby: LobbySession = null
+## Options screen opener (B5-01): options_menu.open() from the menus, `pause` in a heist (MenuOptions).
+var options_menu: MenuOptions
+## In-heist chat overlay over the HUD (B6-03; co-op sessions only), else null.
+var heist_chat: ChatPanel = null
+## Host's drop-in request dialog over the HUD (B6-04; co-op host only; binds to the DropInService group), else null.
+var heist_join_dialog: JoinRequestDialog = null
+## Drop-in wiring (B6-04): host policy + the joining client's flow (DropInFlow).
+var drop_in: DropInFlow
+## Joining client's drop-in screen while open, else null.
+var drop_in_screen: DropInJoinScreen = null
+## 3D safehouse hub mode (B6-06): see SafehouseHost.
+var safehouse: SafehouseHost
+## Full-screen backdrop behind every screen (dimmed / hidden over the 3D safehouse).
+var background: ColorRect
 var _heist_id: StringName = &""
 var _difficulty: int = Enums.Difficulty.ROUTINE
 var _in_heist: CanvasLayer = null
@@ -101,23 +135,43 @@ var _in_safehouse: bool = false
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	theme = UiBuild.theme()
-	var bg: ColorRect = ColorRect.new()
-	bg.color = UiAccent.app_bg()
-	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(bg)
+	GameSettings.current().apply(get_viewport())
+	options_menu = MenuOptions.new()
+	options_menu.name = "Options"
+	options_menu.flow = self
+	add_child(options_menu)
+	drop_in = DropInFlow.new()
+	drop_in.name = "DropIn"
+	add_child(drop_in)
+	background = ColorRect.new()
+	background.name = "Background"
+	background.color = UiAccent.app_bg()
+	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(background)
 	stations = HubStationList.load_default()
 	main_menu = _add(MAIN_SCENE) as MainMenu
 	hub = _add(HUB_SCENE) as HubMenu
 	hub.profile_slot = profile_slot
+	safehouse = SafehouseHost.new()
+	safehouse.name = "Safehouse"
+	add_child(safehouse)
+	safehouse.setup(self)
+	safehouse.pause_menu.back_requested.connect(show_hub)
+	safehouse.pause_menu.station_requested.connect(open_station)
+	safehouse.pause_menu.options_requested.connect(options_menu.open)
+	safehouse.pause_menu.achievements_requested.connect(_open_achievements)
+	safehouse.pause_menu.main_menu_requested.connect(_on_hub_back)
 	heist_select = _add(SELECT_SCENE) as HeistSelect
 	stub_screen = _add(STUB_SCENE) as StubScreen
 	main_menu.safehouse_requested.connect(show_hub)
 	hub.station_requested.connect(open_station)
 	hub.achievements_requested.connect(_open_achievements)
+	hub.options_requested.connect(options_menu.open)
+	hub.notoriety_requested.connect(_open_notoriety)
 	hub.back_requested.connect(_on_hub_back)
 	main_menu.firing_range_requested.connect(open_firing_range)
-	main_menu.settings_requested.connect(_show_stub.bind(&"ui.menu.settings_soon", false))
+	main_menu.settings_requested.connect(options_menu.open)
 	main_menu.quit_requested.connect(get_tree().quit)
 	heist_select.back_requested.connect(show_hub)
 	heist_select.heist_chosen.connect(_on_heist_chosen)
@@ -138,7 +192,8 @@ func show_screen(screen: Control) -> void:
 		(screen as MainMenu).refresh_profile()
 
 
-## The safehouse hub with a freshly loaded profile (stations save the profile themselves).
+## The safehouse hub with a freshly loaded profile (stations save the profile themselves): the 3D
+## safehouse when available and picked in Options (B6-06, SafehouseHost), else the 2D HubMenu.
 ## In a co-op session the lobby is shown instead (B4-11).
 func show_hub() -> void:
 	_in_safehouse = true
@@ -146,6 +201,8 @@ func show_hub() -> void:
 		show_lobby()
 		return
 	profile = SaveService.load_profile(profile_slot)
+	if safehouse.show_home(profile):
+		return
 	hub.refresh_profile(profile)
 	show_screen(hub)
 
@@ -160,11 +217,12 @@ func show_home() -> void:
 
 func _on_hub_back() -> void:
 	_in_safehouse = false
+	safehouse.leave()
 	show_screen(main_menu)
 
 
 ## Opens safehouse station `station_id` (data/ui/hub_stations.tres; ids board, planning, armory,
-## masks, range, crew). The API for the 2D hub cards AND ENV C's 3D safehouse interactables. Leaving a
+## masks, range, crew, jukebox, notoriety). The API for the 2D hub cards AND ENV C's 3D safehouse interactables. Leaving a
 ## contract path this way drops it (a confirmed plan's cash is refunded). Back on every station
 ## returns to the hub. Returns false (and logs an error) for an unknown id or target.
 func open_station(station_id: StringName) -> bool:
@@ -174,6 +232,7 @@ func open_station(station_id: StringName) -> bool:
 		return false
 	_in_safehouse = true
 	refund_preplan()
+	safehouse.station_opened(station_id)  # ducks the 3D cabinet under every screen but the jukebox
 	match st.target:
 		TARGET_BOARD:
 			_open_board()
@@ -187,6 +246,10 @@ func open_station(station_id: StringName) -> bool:
 			open_firing_range()
 		TARGET_LOBBY:
 			show_lobby()
+		TARGET_JUKEBOX:
+			_open_jukebox()
+		TARGET_NOTORIETY:
+			_open_notoriety()
 	return true
 
 
@@ -210,6 +273,34 @@ func _open_board() -> void:
 ## Achievements screen (B4-20) from the hub's profile panel; Back frees it and returns to the hub.
 func _open_achievements() -> void:
 	var screen: AchievementsScreen = ACHIEVEMENTS_SCENE.instantiate() as AchievementsScreen
+	screen.setup(SaveService.load_profile(profile_slot))
+	screen.visible = false
+	add_child(screen)
+	screen.back_requested.connect(func() -> void:
+		_free_screen(screen)
+		show_hub())
+	show_screen(screen)
+
+
+## Notoriety screen (B5-02) from the hub's profile panel; it saves the profile itself on a rank-up or
+## a reward choice. Back frees it and returns to the hub (show_hub re-reads the saved profile).
+func _open_notoriety() -> void:
+	var screen: NotorietyScreen = NOTORIETY_SCENE.instantiate() as NotorietyScreen
+	screen.profile_slot = profile_slot
+	screen.setup(SaveService.load_profile(profile_slot))
+	screen.visible = false
+	add_child(screen)
+	screen.back_requested.connect(func() -> void:
+		_free_screen(screen)
+		show_hub())
+	show_screen(screen)
+
+
+## Jukebox station (B5-03): track list with hub previews; leaving it stops the preview (the screen does).
+## In the 3D safehouse it previews through the cabinet (QC-48); show_hub then replays the saved pick there.
+func _open_jukebox() -> void:
+	var screen: JukeboxScreen = JUKEBOX_SCENE.instantiate() as JukeboxScreen
+	screen.preview_target = safehouse.jukebox()
 	screen.setup(SaveService.load_profile(profile_slot))
 	screen.visible = false
 	add_child(screen)
@@ -314,6 +405,7 @@ func _on_briefing_continue(heist_id: StringName, difficulty: int) -> void:
 	_free_screen(preplanning_screen)
 	preplanning_screen = PREPLAN_SCENE.instantiate() as PreplanningScreen
 	preplanning_screen.profile_slot = profile_slot
+	preplanning_screen.music_enabled = not is_coop() or lobby.state.is_host
 	preplanning_screen.setup(heist_id, difficulty, _menu_profile())
 	preplanning_screen.visible = false
 	add_child(preplanning_screen)
@@ -330,6 +422,8 @@ func _on_preplan_confirmed(plan: Dictionary) -> void:
 	_free_screen(loadout_screen)
 	loadout_screen = LOADOUT_SCENE.instantiate() as LoadoutScreen
 	loadout_screen.profile_slot = profile_slot
+	var def: HeistDef = HeistRegistry.get_def(_heist_id)
+	loadout_screen.start_mode = def.start_mode if def != null else &"casing"  # D-065 civilian notice
 	loadout_screen.setup(_menu_profile())
 	loadout_screen.visible = false
 	add_child(loadout_screen)
@@ -338,6 +432,7 @@ func _on_preplan_confirmed(plan: Dictionary) -> void:
 	_connect_loadout_subscreens(loadout_screen)
 	if is_coop():
 		loadout_screen.launch_button.text = UiText.t(&"ui.lobby.ready_up")
+		loadout_screen.set_taken_heisters(lobby.state.heisters_taken_by_others(lobby.state.local_slot))  # D-073
 	show_screen(loadout_screen)
 
 
@@ -454,6 +549,9 @@ func open_firing_range() -> void:
 	if firing_range != null:
 		return
 	_range_return = current
+	if safehouse.is_active():  # B6-06: the range frees the safehouse; coming back re-enters at ReturnRange
+		_range_return = hub
+		safehouse.leave(safehouse.tweak.range_marker)
 	var range_scene: FiringRange = RANGE_SCENE.instantiate() as FiringRange
 	range_scene.setup(LoadoutResolver.resolve(SaveService.load_profile(profile_slot).loadout))
 	range_scene.exit_requested.connect(close_firing_range)
@@ -485,7 +583,8 @@ func _on_launch_requested(loadout: Loadout) -> void:
 ## confirmed plan, is_pro of the chosen contract). Pure apart from reading Net.local_slot().
 func launch_options_for(loadout: Loadout) -> Dictionary:
 	var ai: int = HeistCatalog.heist_list().solo_ai_for(_heist_id)
-	return build_launch_options(ai, Net.local_slot(), LoadoutResolver.resolve(loadout), preplan, is_pro)
+	return build_launch_options(ai, Net.local_slot(), LoadoutResolver.resolve(loadout), preplan, is_pro,
+			MusicCatalog.resolve_choice(_menu_profile()))
 
 
 ## Direct launch (D-024): `args` from LaunchArgs.parse(). Skips the menus and launches `heist_id`
@@ -531,7 +630,8 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 	var ai: int = HeistCatalog.heist_list().solo_ai_for(heist_id)
 	var profile: PlayerProfile = SaveService.load_profile()
 	Net.start_solo(profile.profile_name, ai)
-	var options: Dictionary = build_launch_options(ai, Net.local_slot(), resolved, plan, pro)
+	var options: Dictionary = build_launch_options(ai, Net.local_slot(), resolved, plan, pro,
+			MusicCatalog.resolve_choice(profile))
 	visible = false
 	_spawn_in_heist_ui()
 	runtime = await launcher.call(&"launch", heist_id, run_seed, difficulty, null, options)
@@ -547,9 +647,20 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 ## Loadout}, `preplan` = the PreplanResult v1 (PreplanPlan.apply(), contract preplanning.md) when a
 ## plan was confirmed (omitted when `plan` is empty, e.g. direct launch), and `is_pro` = true for a
 ## pro job Board contract (omitted otherwise; informational for ENV A, the payout side is ours).
+## `music_track` (always present, B5-03 / D-062) = the picked track id, &"" = HeistDef.music_track; callers
+## pass MusicCatalog.resolve_choice(profile) so a removed or locked pick is already &"".
+## D-073: `resolved.heister` is set to the player's pick (no preference = the first heister in roster order)
+## and the AI teammates get the remaining heisters as loadouts of their own (Heisters.solo / ai_loadouts:
+## ENV A's default AI loadout + `heister`), so every launched slot has a distinct heister.
 static func build_launch_options(ai_teammates: int, local_slot: int, resolved: Loadout,
-		plan: Dictionary = {}, pro: bool = false) -> Dictionary:
-	var options: Dictionary = {"ai_teammates": ai_teammates, "loadouts": {local_slot: resolved}}
+		plan: Dictionary = {}, pro: bool = false, music: StringName = &"") -> Dictionary:
+	var loadouts: Dictionary = {local_slot: resolved}
+	if resolved != null:
+		var heisters: Dictionary = Heisters.solo(resolved.heister, local_slot, ai_teammates)
+		resolved.heister = StringName(heisters[local_slot])
+		heisters.erase(local_slot)
+		loadouts.merge(Heisters.ai_loadouts(heisters))
+	var options: Dictionary = {"ai_teammates": ai_teammates, "loadouts": loadouts, "music_track": music}
 	if not plan.is_empty():
 		options["preplan"] = plan
 	if pro:
@@ -569,6 +680,7 @@ func in_heist_ui_spawned() -> bool:
 
 ## HUD + payday (listening for heist_ended) on their own layer above the map.
 func _spawn_in_heist_ui() -> void:
+	safehouse.leave(safehouse.tweak.heist_marker)  # B6-06: home after payday re-enters at ReturnHeist
 	_in_heist = CanvasLayer.new()
 	_in_heist.layer = 10
 	add_sibling.call_deferred(_in_heist)
@@ -584,6 +696,23 @@ func _spawn_in_heist_ui() -> void:
 	pd.continue_pressed.connect(_leave_heist)
 	_in_heist.add_child(pd)
 	_heist_payday = pd
+	options_menu.heist_layer = _in_heist
+	options_menu.heist_payday = pd
+	if is_coop():
+		heist_chat = ChatPanel.new()
+		heist_chat.name = "HeistChat"
+		heist_chat.setup(lobby, ChatPanel.Mode.OVERLAY)
+		_in_heist.add_child(heist_chat)
+	if is_coop() and lobby.state.is_host:
+		heist_join_dialog = JoinRequestDialog.new()
+		heist_join_dialog.name = "JoinRequests"
+		heist_join_dialog.pause_gameplay = true
+		heist_join_dialog.auto_find = true
+		heist_join_dialog.local_slot = Net.local_slot()
+		# No gate: A's HeistDropIn already applied the kick list, validation and the policy (copied from the lobby
+		# at launch) and asks only for `ask`; a B gate on top would decide twice (B6-04, DropInFlow).
+		_in_heist.add_child(heist_join_dialog)
+		heist_join_dialog.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP, Control.PRESET_MODE_MINSIZE, 96)
 	EventBus.heist_ended.connect(_on_heist_ended, CONNECT_ONE_SHOT)
 
 
@@ -617,6 +746,13 @@ func _leave_heist() -> void:
 	runtime = null
 	if EventBus.heist_ended.is_connected(_on_heist_ended):
 		EventBus.heist_ended.disconnect(_on_heist_ended)
+	options_menu.close_in_heist()
+	if heist_chat != null and is_instance_valid(heist_chat):
+		heist_chat.close()
+	heist_chat = null
+	heist_join_dialog = null
+	options_menu.heist_layer = null
+	options_menu.heist_payday = null
 	if _in_heist != null:
 		_in_heist.queue_free()
 		_in_heist = null
@@ -665,6 +801,7 @@ func show_lobby() -> void:
 		lobby.session_left.connect(_on_lobby_left)
 	if lobby_screen == null:
 		lobby_screen = LOBBY_SCENE.instantiate() as LobbyScreen
+		lobby_screen.profile_slot = profile_slot
 		lobby_screen.setup(lobby, _menu_profile())
 		lobby_screen.visible = false
 		add_child(lobby_screen)
@@ -672,6 +809,8 @@ func show_lobby() -> void:
 		lobby_screen.contract_requested.connect(_on_lobby_contract_requested)
 		lobby_screen.briefing_requested.connect(_on_lobby_briefing)
 		lobby_screen.loadout_requested.connect(_open_armory)  # not open_station: that refunds the plan
+		lobby_screen.dropin_requested.connect(_open_drop_in)
+	drop_in.lobby = lobby
 	lobby.profile = _menu_profile()
 	lobby_screen.profile = lobby.profile
 	if is_coop():
@@ -745,18 +884,61 @@ func _on_lobby_started(info: Dictionary) -> void:
 		return
 	var launcher: Script = UiNav.global_class(&"HeistLauncher")
 	if launcher != null and _script_has_method(launcher, &"launch_client"):
-		_heist_id = info["heist"]
-		_difficulty = int(info["difficulty"])
-		is_pro = bool(info["is_pro"])
-		visible = false
-		_spawn_in_heist_ui()
-		runtime = await launcher.call(&"launch_client", _heist_id, int(info["seed"]), _difficulty, null, {})
+		_begin_client_heist(info)
+		runtime = await launcher.call(&"launch_client")  # (parent = null, options = {}, timeout_s = 0): net.md A3-07
 		if runtime == null:
 			_leave_heist()
 		else:
 			heist_launched.emit(runtime)
 		return
 	_show_stub(&"ui.lobby.client_launch_missing", false)
+
+
+## A co-op client enters a heist (lobby start or drop-in): `info` {"heist", "difficulty", "is_pro"}; the menus
+## hide and the in-heist UI (HUD, payday, chat overlay) comes up.
+func _begin_client_heist(info: Dictionary) -> void:
+	_heist_id = StringName(info["heist"])
+	_difficulty = int(info["difficulty"])
+	is_pro = bool(info["is_pro"])
+	visible = false
+	_spawn_in_heist_ui()
+
+
+## Lobby "Drop in to a running heist" (B6-04): the compact loadout pick + progress screen bound to DropInFlow.
+func _open_drop_in(address: String, port: int) -> void:
+	_free_screen(drop_in_screen)
+	drop_in.lobby = lobby
+	drop_in_screen = drop_in.open(address, port, _menu_profile(), profile_slot)
+	drop_in_screen.visible = false
+	add_child(drop_in_screen)
+	drop_in_screen.back_requested.connect(_close_drop_in)
+	drop_in_screen.joined.connect(_on_drop_in_joined)
+	show_screen(drop_in_screen)
+
+
+## Back / Cancel on the drop-in screen: back to the lobby's connect view, with the failure reason if any.
+func _close_drop_in() -> void:
+	_free_screen(drop_in_screen)
+	drop_in_screen = null
+	if drop_in.is_joining():
+		drop_in.cancel_join()
+	show_lobby()
+	var reason: StringName = drop_in.last_failure
+	if reason != &"" and reason != DropInService.REASON_CANCELLED:
+		var key: StringName = StringName("ui.dropin.failed.%s" % reason)
+		lobby_screen.error_label.text = UiText.t(key if DropInService.REASONS.has(reason) else &"ui.dropin.failed.unknown")
+
+
+## A's service reports the local player in (its HeistLauncher.launch_client already built the replica): switch
+## to the in-heist UI like a co-op client launch, without launching again.
+func _on_drop_in_joined(_slot: int) -> void:
+	_free_screen(drop_in_screen)
+	drop_in_screen = null
+	var info: Dictionary = drop_in.heist_info()
+	_begin_client_heist(info)
+	runtime = info["runtime"] as Object
+	if runtime != null:
+		heist_launched.emit(runtime)
 
 
 ## Host launch of a co-op contract: the live session (no Net.start_solo; HeistLauncher fills empty
@@ -769,7 +951,9 @@ func launch_coop(info: Dictionary) -> void:
 	_heist_id = info["heist"]
 	_difficulty = int(info["difficulty"])
 	is_pro = bool(info["is_pro"])
-	var options: Dictionary = build_coop_launch_options(lobby.state.launch_loadouts(), preplan, is_pro)
+	var options: Dictionary = build_coop_launch_options(lobby.state.launch_loadouts(), preplan, is_pro,
+			MusicCatalog.resolve_choice(_menu_profile()), Heisters.ai_loadouts(lobby.state.ai_heisters()))
+	DropInFlow.apply_host_policy(get_tree(), lobby.state.dropin_policy)  # B6-04: A's service decides drop-ins
 	visible = false
 	_spawn_in_heist_ui()
 	runtime = await launcher.call(&"launch", _heist_id, int(info["seed"]), _difficulty, null, options)
@@ -782,9 +966,15 @@ func launch_coop(info: Dictionary) -> void:
 
 ## Co-op HeistLauncher options: `loadouts` = {slot: resolved Loadout} of the human slots
 ## (LobbyState.launch_loadouts()), `ai_teammates` = the seats left, plus `preplan` / `is_pro` as in
-## build_launch_options().
-static func build_coop_launch_options(loadouts: Dictionary, plan: Dictionary = {}, pro: bool = false) -> Dictionary:
-	var options: Dictionary = {"ai_teammates": maxi(LobbyState.MAX_CREW - loadouts.size(), 0), "loadouts": loadouts}
+## build_launch_options(); `music_track` = the HOST's pick (host wins; ENV A replicates the options).
+## D-073: `ai_loadouts` = {slot: Loadout} for the AI seats (Heisters.ai_loadouts(LobbyState.ai_heisters()): the
+## default AI loadout with a heister left over), merged into `loadouts`; `ai_teammates` counts the seats humans leave.
+static func build_coop_launch_options(loadouts: Dictionary, plan: Dictionary = {}, pro: bool = false,
+		music: StringName = &"", ai_loadouts: Dictionary = {}) -> Dictionary:
+	var all: Dictionary = loadouts.duplicate()
+	all.merge(ai_loadouts)
+	var options: Dictionary = {"ai_teammates": maxi(LobbyState.MAX_CREW - loadouts.size(), 0), "loadouts": all,
+			"music_track": music}
 	if not plan.is_empty():
 		options["preplan"] = plan
 	if pro:

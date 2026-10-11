@@ -162,6 +162,7 @@ func test_bow_draw_projectile_hit_and_retrieve() -> void:
 	_rt.set_bot_intent(0, aim)
 	await wait_physics_frames(20)
 	assert_near(w.charge, 1.0, 0.001, "full draw after draw_time_s")
+	_rt.hud_model.refresh()
 	assert_near(_rt.hud_model.weapon_charge, 1.0, 0.001, "ui_hud v1.5 weapon_charge")
 	assert_eq(w.mag(Enums.WeaponSlot.PRIMARY), 1, "holding the draw does not shoot")
 	_rt.set_bot_intent(0, BotUtil.look_at_intent(c.eye_position(), CombatSystem.target_center(npc)))
@@ -215,6 +216,7 @@ func test_minigun_spins_up_before_firing_and_slows_the_crew() -> void:
 	await wait_physics_frames(15)
 	assert_eq(w.mag(Enums.WeaponSlot.PRIMARY), 200, "no shots while spinning up")
 	assert_near(w.move_speed_mult, 0.4, 0.001, "slowed while spinning")
+	_rt.hud_model.refresh()
 	assert_true(_rt.hud_model.weapon_spin > 0.0, "ui_hud v1.5 weapon_spin")
 	await wait_physics_frames(30)
 	assert_true(w.mag(Enums.WeaponSlot.PRIMARY) < 200, "fires once spun up")
@@ -246,5 +248,46 @@ func test_parts_animator_drives_named_parts() -> void:
 	assert_true(rotor.transform.basis.get_euler().length() > 0.01, "Rotor spins with the minigun spin")
 	assert_near(breech.rotation.x, -deg_to_rad(FpViewmodelTweak.data().breech_open_deg), 0.01, "Breech open while reloading")
 	c.weapons.spin = 0.0
+	c.weapons.reloading = false
+	vis.queue_free()
+
+
+## D-070: bow pull-back turns StringUpper negative / StringLower positive; a crossbow latches its halves while
+## a bolt is loaded (Upper -18.74 deg, Lower +, x1.3049 along Y); the revolver Speedloader shows only reloading.
+func test_d070_string_halves_and_speedloader() -> void:
+	var c: CrewController = await ACombatSpecials.place_crew(_rt, 0, Vector3(0, 0.05, 0))
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	var vis: FakeVisual = FakeVisual.new()
+	for nm: String in ["StringUpper", "StringLower", "Speedloader"]:
+		var p: Node3D = Node3D.new()
+		p.name = nm
+		vis.add_child(p)
+	add_child(vis)
+	var a: WeaponPartsAnimator = WeaponPartsAnimator.attach(vis, c.weapons)
+	var up: Node3D = vis.get_node("StringUpper") as Node3D
+	var lo: Node3D = vis.get_node("StringLower") as Node3D
+	var sl: Node3D = vis.get_node("Speedloader") as Node3D
+	a.crossbow = false
+	c.weapons.charge = 1.0
+	await wait_frames(2)
+	assert_true(up.rotation.x < -0.01 and lo.rotation.x > 0.01, "bow pull-back: Upper negative, Lower positive")
+	c.weapons.charge = 0.0
+	await wait_frames(2)
+	assert_false(sl.visible, "Speedloader hidden at rest")
+	a.crossbow = true
+	var ws: int = c.weapons.equipped_slot
+	c.weapons.set_ammo(ws, 1, 10)
+	await wait_frames(2)
+	assert_near(up.rotation.x, -deg_to_rad(tw.crossbow_latch_deg), 0.01, "latched: Upper -18.74 deg")
+	assert_near(lo.rotation.x, deg_to_rad(tw.crossbow_latch_deg), 0.01, "latched: Lower +18.74 deg")
+	assert_near(up.transform.basis.get_scale().y, tw.crossbow_latch_stretch, 0.01, "stretched along local Y")
+	c.weapons.set_ammo(ws, 0, 10)
+	await wait_frames(2)
+	assert_near(up.rotation.x, 0.0, 0.001, "shot: relaxed")
+	c.weapons.reloading = true
+	c.weapons.reload_left = 100.0
+	await wait_seconds(tw.crossbow_latch_s + 0.2)
+	assert_near(lo.rotation.x, deg_to_rad(tw.crossbow_latch_deg), 0.01, "latched by the reload")
+	assert_true(sl.visible, "Speedloader shown while reloading")
 	c.weapons.reloading = false
 	vis.queue_free()

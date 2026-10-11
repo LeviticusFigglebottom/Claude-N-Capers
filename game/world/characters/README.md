@@ -1,7 +1,9 @@
 # world/characters (ENV D)
 
 Assembled character scenes for ENV A, in the shape of `docs/contracts/characters.md` v1.1 (D-029).
-Everything here except `_tools/` and this README is **generated**; never edit it by hand.
+Everything here except `_tools/` and this README is **generated**; never edit it by hand, and
+never open-and-save a character scene in the editor (the editor would re-add the glb's random
+imported node ids, see Determinism). Change the Blender script or the assembly tool and regenerate.
 
 ## Regenerate (one line)
 
@@ -19,21 +21,26 @@ Order: `build.py` (Blender: glbs + SOURCE.txt) → `godot --headless --path game
 | Output | From |
 |---|---|
 | `anim_humanoid.res` | `AnimationLibrary` built from `assets/characters/char_anim_humanoid/char_anim_humanoid.glb`: track paths rewritten to `Skeleton3D:<bone>` (relative to the character Root), non-bone tracks dropped, `RESET` skipped, loop mode `LOOP_LINEAR` for looped clips. Empty library (plus a warning) until that glb exists. |
-| `<id>/<id>.tscn` | `assets/characters/char_<id>/char_<id>.glb`; `<id>` is the asset id without `char_` (e.g. `security_officer/security_officer.tscn`, Root `SecurityOfficer`). |
-| `<id>/<id>_<mesh>.res` | The meshes, saved as binary resources the scene references (a `.tscn` cannot reference a glb's sub-resources; embedding would put megabytes of text in the scene). |
+| `<id>/<id>.tscn` | An **inherited scene** of `assets/characters/char_<id>/char_<id>.glb` (D-067b); `<id>` is the asset id without `char_` (e.g. `security_officer/security_officer.tscn`, Root `SecurityOfficer`). The meshes and skins stay in the imported glb (no per-scene mesh copies); the `.tscn` only stores the differences: root name, blend shape values, `material_override`s, and the added markers, sockets, extra markers and AnimationPlayer. |
+| `<id>/<id>_shield.tscn`, `<id>_shield_visual.res` | Bulwark shield props (`Shield` AnimatableBody3D, `Collision` + `Visual`); these still save the visual mesh as a `.res`. |
 | `_test/body_base.tscn` | Test fixture from `char_body_base` (always built; `"test": true` in the index). |
 | `characters.json` | Index `{characters: [{id, asset, scene, test}], anim_library}` sorted by scene path. |
 
 **Which assets become characters:** every folder `assets/characters/char_<id>/` with
-`char_<id>.glb` containing a Skeleton3D, except the prefixes `char_anim_` (animation source),
+`char_<id>.glb`, except the prefixes `char_anim_` (animation source),
 `char_arms_` (first-person arms), `char_mask_` and `char_body_base` (test bodies; only
 `char_body_base` is built, as the `_test` fixture). The rule lives in `_tools/character_spec.gd`.
+
+**glb requirement:** the Blender script's `EXPORT` must set `"remove_armature": True`, so the glb
+imports as `<root> > Skeleton3D > meshes` (no `rig_humanoid` wrapper node) and every mesh is
+parented to the armature. A character glb without a top-level `Skeleton3D` (or with a mesh outside
+it) is an assembly **error**: rebuild it with `remove_armature`.
 
 ## Scene shape
 
 ```
 SecurityOfficer (Node3D)
-├── Skeleton3D (52 contract bones; the glb's rig_humanoid wrapper is folded away)
+├── Skeleton3D (52 contract bones; inherited from the glb)
 │   ├── Body, Hair, <outfit parts>... (MeshInstance3D, skinned; blend_shapes/build|gender|age from SOURCE.txt params)
 │   ├── HandR (BoneAttachment3D, hand.R) └── Socket (Marker3D)
 │   ├── HandL (BoneAttachment3D, hand.L) └── Socket
@@ -60,9 +67,11 @@ SOURCE.txt (Godot character space, metres, rest pose, at the asset's own height)
 
 Re-running the assembly gives byte-identical files, also from scratch and after a re-import of the
 glbs: assets are visited in sorted order; resource uids are derived from the file path
-(`ResourceSaver.set_uid`); ext/sub-resource ids are fixed (`1_anim`, `mesh_<node>`, `skin_0`,
-`mat_<surface>`, `anim_<clip>`); node `unique_id`s are a hash of the node path; socket transforms
-are rounded to 0.1 mm.
+(`ResourceSaver.set_uid`); ext/sub-resource ids are fixed (`1_glb`, `1_anim`,
+`2_<material>` for overrides, `anim_<clip>`; shields: `mesh_visual`, `mat_<surface>`,
+`collision_shape`); node `unique_id`s are a hash of the node path; socket transforms are rounded
+to 0.1 mm. The glb's imported node ids are random per import, so the assembly drops the scene's
+`id_paths` (references into the glb by id); Godot then matches the inherited nodes by path.
 
 ## Loops
 

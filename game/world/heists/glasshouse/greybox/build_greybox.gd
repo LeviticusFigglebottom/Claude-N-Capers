@@ -739,6 +739,7 @@ func _chandelier_plinth(parent: Node3D) -> void:
 
 func _build_lighting(lighting: Node3D) -> void:
 	var we: WorldEnvironment = WorldEnvironment.new()
+	we.set_script(load("res://world/lighting/heist_world_environment.gd"))  # brightness option (B5-01)
 	we.name = "WorldEnvironment"
 	we.environment = load(ENV_PATH) as Environment
 	_add(lighting, we)

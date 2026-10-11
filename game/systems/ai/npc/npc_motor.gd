@@ -7,6 +7,9 @@
 ## position and calls `Door.npc_open(npc)` (`waiting_door` until it is open), or, when the NPC may
 ## not open it (locked), stops there: `blocked_door` is set, `arrived` becomes true and
 ## `door_blocked(door)` fires (P3 hook: police breach locked doors from this signal).
+## QC-41 rappel: reaching a NavigationLink3D marked RappelLinks.META (one-way, built from RAPPEL
+## TacticalPoints) the unit descends straight to the link's exit at `rappel_speed` (`rappelling`; no
+## collision on the way, so skylight glass does not stop it), then resumes its path.
 class_name NpcMotor
 extends Node
 
@@ -17,6 +20,8 @@ signal door_blocked(door: Node)
 @export var arrive_distance: float = 0.4
 @export var turn_speed_deg: float = 360.0
 @export var gravity: float = 9.8
+## QC-41: descent speed on a rappel link (m/s) ◇; 2.5 matches ENV D's `rappel` clip (characters.md v1.8).
+@export var rappel_speed: float = 2.5
 
 var target: Vector3 = Vector3.INF
 var speed: float = 0.0
@@ -28,12 +33,15 @@ var face_dir: Vector3 = Vector3.ZERO
 var waiting_door: Door = null
 ## A2-01: closed door that stopped the last go_to (null when none).
 var blocked_door: Door = null
+## QC-41: descending a rappel link (animation hint for the AnimDriver: &"rappel").
+var rappelling: bool = false
 
 var _body: CharacterBody3D = null
 var _agent: NavigationAgent3D = null
 var _door_check_left: float = 0.0
 var _door_ahead: Door = null
 var _door_point: Vector3 = Vector3.INF
+var _rappel_to: Vector3 = Vector3.INF
 
 
 func _ready() -> void:
@@ -47,6 +55,8 @@ func _ready() -> void:
 		_agent.path_desired_distance = 0.5
 		_agent.target_desired_distance = arrive_distance
 		_body.add_child.call_deferred(_agent)
+	if _agent != null:
+		_agent.link_reached.connect(_on_link_reached)
 
 
 func go_to(pos: Vector3, move_speed: float) -> void:
@@ -89,6 +99,9 @@ func _physics_process(delta: float) -> void:
 	var npc: NpcBase = _body as NpcBase
 	if npc != null and (not npc.alive or npc.is_stunned()):  # A2-03: stunned NPCs hold still
 		return
+	if rappelling:
+		_tick_rappel(delta)
+		return
 	var horiz: Vector3 = Vector3.ZERO
 	if not arrived and target != Vector3.INF:
 		if distance_to_target() <= arrive_distance:
@@ -120,6 +133,37 @@ func _physics_process(delta: float) -> void:
 	else:
 		_body.velocity.y = minf(_body.velocity.y, 0.0)
 	_body.move_and_slide()
+
+
+# --- Rappel (QC-41) ------------------------------------------------------------------------
+
+## Start a rappel descent to `exit` (server). Called on link_reached for rappel links; tests may call it.
+func start_rappel(exit: Vector3) -> void:
+	if _body == null or exit.y >= _body.global_position.y - 0.2:
+		return
+	rappelling = true
+	_rappel_to = exit
+
+
+func _on_link_reached(details: Dictionary) -> void:
+	var link: Node = details.get("owner") as Node
+	if link != null and link.has_meta(RappelLinks.META):
+		start_rappel(details.get("link_exit_position", details.get("position", Vector3.INF)) as Vector3)
+
+
+func _tick_rappel(delta: float) -> void:
+	var p: Vector3 = _body.global_position
+	var flat: Vector2 = Vector2(_rappel_to.x - p.x, _rappel_to.z - p.z)
+	var step: float = rappel_speed * delta
+	p.y = maxf(p.y - step, _rappel_to.y)
+	if flat.length() > 0.001:
+		var f: Vector2 = flat.limit_length(step)
+		p.x += f.x
+		p.z += f.y
+	_body.global_position = p
+	_body.velocity = Vector3.ZERO
+	if p.y <= _rappel_to.y + 0.01 and flat.length() <= step:
+		rappelling = false
 
 
 # --- Doors (A2-01) -------------------------------------------------------------------------

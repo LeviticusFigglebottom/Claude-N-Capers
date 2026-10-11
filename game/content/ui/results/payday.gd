@@ -15,6 +15,8 @@
 ## with the same deterministic `auto_pick` as the timeout (finish_card_pick()); no save change.
 ## Achievements (B4-20): _apply runs Achievements.on_payday on the profile before saving; ids unlocked by
 ## this payday are in `achievements_unlocked` and listed under the summary.
+## Awards (B6-02; content/docs/scoreboard.md): HeistAwards.compute over result.crew -> `awards`, shown as
+## their own "Crew Honours" section under the crew stats (`award_labels`: award id -> winner names Label).
 ## Continue emits continue_pressed; if nobody listens it returns to the main menu scene.
 class_name PaydayScreen
 extends UiScreen
@@ -45,6 +47,10 @@ var xp_before: int = 0
 var xp_after: int = 0
 ## PaydayCards.roll output for the shown result ({} = no card pick).
 var card_roll: Dictionary = {}
+## HeistAwards.compute(result.crew) for the shown result (B6-02).
+var awards: Array[Dictionary] = []
+## Award id -> the Label with the winners' names (tests).
+var award_labels: Dictionary = {}
 ## Achievement ids this payday unlocked (B4-20).
 var achievements_unlocked: Array[StringName] = []
 ## Index of the picked card (-1 = not picked yet).
@@ -108,6 +114,7 @@ func show_result(heist_result: Dictionary) -> void:
 	xp_before = profile.xp
 	xp_after = xp_before + int(payout.get("xp_total", 0))
 	_applied = false
+	awards = HeistAwards.compute(result.get("crew", []) as Array)
 	achievements_unlocked = []
 	if apply_to_profile:
 		_apply()
@@ -265,14 +272,16 @@ func _update_timer_label() -> void:
 
 
 ## PayoutCalculator.compute for `crew_slot` with the profile's banked stealth multiplier (D-022);
-## `pro` = a pro job contract.
+## `pro` = a pro job contract. The profile's Notoriety rank adds its XP bonus line (Notoriety.xp_bonus).
 static func compute_payout(heist_result: Dictionary, p: PlayerProfile, crew_slot: int, pro: bool = false) -> Dictionary:
 	var banked: float = p.banked_stealth_mult if p != null else 1.0
 	var xp_mult: float = 1.0
+	var notoriety: float = 0.0
 	if p != null:
 		var mods: Dictionary = LoadoutResolver.resolve(p.loadout).modifiers
 		xp_mult = float(mods.get(&"progression.xp_mult", 1.0))
-	return PayoutCalculator.compute(heist_result, null, null, pro, crew_slot, banked, xp_mult)
+		notoriety = Notoriety.xp_bonus(p.notoriety)
+	return PayoutCalculator.compute(heist_result, null, null, pro, crew_slot, banked, xp_mult, notoriety)
 
 
 func _apply() -> void:
@@ -304,6 +313,7 @@ func _render() -> void:
 	cols.add_child(UiBuild.panel(_build_cash()))
 	cols.add_child(UiBuild.panel(_build_xp()))
 	_content.add_child(UiBuild.panel(_build_stats()))
+	_content.add_child(UiBuild.panel(_build_awards()))
 	for id: StringName in achievements_unlocked:
 		var a: AchievementDef = ContentDB.by_id(ContentDB.ACHIEVEMENTS, id) as AchievementDef
 		if a != null:
@@ -373,6 +383,36 @@ func _build_stats() -> VBoxContainer:
 		grid.add_child(UiBuild.label(StringName(_crew_name(slot, bool(member.get("is_ai", false))))))
 		for k: String in ["kills", "specials_killed", "downs", "civilians_killed"]:
 			grid.add_child(UiBuild.label(StringName(str(int(member.get(k, 0))))))
+	return v
+
+
+## B6-02 "Crew Honours": award name | winners | what it was for.
+func _build_awards() -> VBoxContainer:
+	award_labels.clear()
+	var v: VBoxContainer = UiBuild.vbox(6)
+	v.add_child(UiBuild.label(&"ui.awards.title", UiBuild.SUBHEADER))
+	if awards.is_empty():
+		v.add_child(UiBuild.label(&"ui.awards.none", UiBuild.DIM))
+		return v
+	var by_slot: Dictionary = {}
+	for member: Dictionary in result.get("crew", []) as Array:
+		by_slot[int(member.get("slot", -1))] = member
+	var grid: GridContainer = GridContainer.new()
+	grid.columns = 3
+	grid.add_theme_constant_override(&"h_separation", 36)
+	v.add_child(grid)
+	for a: Dictionary in awards:
+		grid.add_child(UiBuild.label(StringName(a["name_key"])))
+		var names: Array[String] = []
+		for slot: int in a["slots"] as Array:
+			var member: Dictionary = by_slot.get(slot, {}) as Dictionary
+			var n: String = String(member.get("name", ""))
+			names.append(n if n != "" else _crew_name(slot, bool(member.get("is_ai", false))))
+		var who: Label = UiBuild.label()
+		who.text = ", ".join(names)
+		grid.add_child(who)
+		award_labels[StringName(a["id"])] = who
+		grid.add_child(UiBuild.label(StringName(a["desc_key"]), UiBuild.DIM, {"value": roundi(float(a["value"]))}))
 	return v
 
 

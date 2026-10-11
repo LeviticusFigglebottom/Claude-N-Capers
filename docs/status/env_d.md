@@ -3,6 +3,29 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11: session 1, continued (P3 + D2 batch landed)
+### Done (all on env/d-art, check_all --env d green at 4616b1b)
+- P3: special models (TAC Heavy, Phantom, Stinger, Bulwark + shield, Aegis, Wrecker 3 head states, Longshot,
+  Corpsman, Brandt), special anims (kick, shield walk/bang/idle, heal, dozer walk), cartel gunmen x3 (QC-36).
+- FP: 16+ weapon sets (pistol..minigun, akimbo, revolver, shotgun_box, batch-3), melee knife/blunt/blade,
+  throwable, deployables, gun bash; lengths data-driven (D-063 ratio rule), order-preserving key scheduling.
+- D2-01 faction reskins frd/sentinel/zero + frd_agent; D2-02 heist NPCs per ENV C casting (Halden/Northgate
+  guards, cleaners, IT contractor, Helena Moor, Kessler robe/coat) + NPC anims (desk_work, phone_seated,
+  sit_chair_watch, mug, mop, sit_bed_read, idle_thug); D2-03 crew heisters Rook/Sable/Dutch/Wren.
+- Polish: skin/lips/beard shadow, feminine head + Odile v3, determinism root cause (Blender multithreaded tangents,
+  build with --threads 1), mask bases x10, contact portraits.
+### In progress / next
+- D-067(b) scene mesh dedupe: prototype verified; waiting on ENV C `export_armature_object_remove` option in
+  tools/blender/lib/export.py (requested via lead), then one migration commit.
+- Female-face pass on _head.py, then rebuild female characters + Odile/Moor renders.
+- FP sleeve variants per heister (fp_sleeve in crew SOURCE).
+### Blocked
+- Dedupe migration on the ENV C export.py change.
+### Questions for lead
+- See messages: contract proposals for NPC clip names, item anim_set fields, viewmodel near plane 0.02 m.
+### Ready for integration
+- yes (4616b1b)
+
 ## 2026-10-10: session 1 (D1-00 v2, D1-01, D1-04 done; D1-02/03/05 in progress)
 ### Done
 - D1-00: officer style-sample renders v1 (3 styles, 677fdc8); v2 GSR after the lead review and the D-035 lock (d93751f):

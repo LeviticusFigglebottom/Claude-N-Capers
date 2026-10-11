@@ -70,6 +70,8 @@ signal hostages_changed()
 signal warnings_changed()
 ## crew
 signal crew_changed()
+## ui_hud v1.7 (D-071): crew_stats
+signal crew_stats_changed()
 ## masked, casing
 signal masked_changed()
 ## ui_hud v1.2 (D-043): `custody` changed.
@@ -110,6 +112,7 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"hostages": &"hostages_changed",
 	&"warnings": &"warnings_changed",
 	&"crew": &"crew_changed",
+	&"crew_stats": &"crew_stats_changed",
 	&"masked": &"masked_changed", &"casing": &"masked_changed",
 	&"custody": &"custody_changed",
 	&"captain_resistance": &"captain_changed", &"captain_present": &"captain_changed",
@@ -206,6 +209,11 @@ var warnings: Array[StringName] = []
 ## "armor_frac": float, "state": int (Enums.CrewState), "downs_left": int, "carried_loot_id": StringName,
 ## "mode": StringName (ui_hud v1.6: &"civilian" / &"casing" / &"masked")}]
 var crew: Array[Dictionary] = []
+# --- crew_stats_changed (ui_hud v1.7, D-071)
+## Every crew member (humans and Crew AI, local included), by slot: {"slot", "name", "is_ai", "is_local",
+## "kills", "specials_killed", "civilians_killed", "downs", "shots", "hits", "headshots"} (server counts,
+## CrewStatsService, replicated).
+var crew_stats: Array[Dictionary] = []
 # --- masked_changed
 var masked: bool = false
 ## Casing mode (S1.1) = tracked crew member unmasked.
@@ -327,6 +335,7 @@ func refresh() -> void:
 	_poll_objectives()
 	_poll_warnings(c)
 	_poll_crew(slot)
+	_poll_crew_stats()
 	_poll_custody(c, slot)
 	_poll_captain()
 	_flush()
@@ -391,6 +400,8 @@ func _poll_interaction(c: CrewController, slot: int) -> void:
 	var prog: float = 0.0
 	var blocked: StringName = &""
 	var isys: InteractionSystem = _runtime.interaction if _runtime != null else null
+	if isys == null and c != null:
+		isys = c.hub_interaction  # QC-43: the safehouse crew's own system
 	if c != null and isys != null and is_instance_valid(isys):
 		var sess: Dictionary = isys.session(slot)
 		var comp: InteractableComponent = null
@@ -520,6 +531,19 @@ func _poll_crew(slot: int) -> void:
 				"carried_loot_id": bag, "mode": c.player_mode,
 			})
 	_assign(&"crew", list)
+
+
+func _poll_crew_stats() -> void:
+	var list: Array[Dictionary] = []
+	var st: CrewStatsService = _runtime.stats if _runtime != null else null
+	if st != null:
+		for c: CrewController in _runtime.crew_members():
+			var row: Dictionary = {"slot": c.slot, "name": c.display_name, "is_ai": c.is_ai, "is_local": c.is_local()}
+			for k: StringName in CrewStatsService.COUNTERS:
+				row[String(k)] = st.value(c.slot, k)
+			list.append(row)
+		list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["slot"]) < int(b["slot"]))
+	_assign(&"crew_stats", list)
 
 
 ## ui_hud v1.3: Commander Brandt from HeistNetSync.captain_state() (server: the director's

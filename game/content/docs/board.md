@@ -54,6 +54,10 @@ session state (not saved): a contract lives one rotation only.
 * **Pool:** `HeistCatalog.entries()`: registry heists with a HeistDef and a map scene (QB-55; no
   placeholders). The contact comes from `HeistDef.contact`, then the city map's
   `heists[id].contact`, then a deterministic pick from `fallback_contacts`.
+* **P5 stubs (B6-01):** `gallery_night`, `meridian_federal`, `rolling_thunder` and `afterhours` already
+  have a map spot, an accent, a heist list entry and name/subtitle/brief strings, but no HeistDef, so
+  they never enter the pool (`test_p5_catalogue.gd`). Placeholder payouts live in
+  `docs/heists/<id>.md` until ENV C's def carries them.
 * **Payout preview** is `HeistCatalog.contract_preview(base, difficulty)`. It runs through
   PayoutCalculator, so it matches heist select and the payday screen.
 * The screen re-generates when the earliest expiry passes, ticking every 0.5 s. Pins are reused per

@@ -1,4 +1,4 @@
-# Contract: audio cues (v1.1)
+# Contract: audio cues (v1.3)
 
 ENV C produces every sound (synthesized/procedural; see style guide §Audio) and the cue registry
 `game/world/audio/cues.tres` (`AudioCueDef` resources: streams[], volume_db, bus, 3D, max_distance,
@@ -47,6 +47,16 @@ Buses: `Master > Music, SFX (> Weapons, Enemies, World, UI), Voice, Ambience`.
 | cue.weapon_flamethrower_ignite / _fire (loop) / _stop | flamethrower set | ignition / roar loop / cut-off | 4 |
 | cue.weapon_saw_rev (loop) / _cut (loop) | saw set | motor rev / blade cutting | 4 |
 | cue.weapon_minigun_spin_up / _fire (loop) / _spin_down | minigun set | whine up / 3000 rpm buzz / whine down | 4 |
+| cue.door_breach | police breach a locked door (L1, A 878d35f) [R] | heavy ram impact + splintering frame, 3D at the door | 3 |
+| cue.burn_warning | thermite burn_point countdown starts (QC-38) | hissing flare + rising warning tone, 5 s | 3 |
+| cue.throwable_pin | grenade pin pulled (A3-12, local + 3D quiet) | pin pull + spoon ping | 3 |
+| cue.throwable_frag | frag detonation | grenade blast, World bus, ~150 m | 3 |
+| cue.throwable_concussion | concussion detonation | sharp bang + high ringing tail | 3 |
+| cue.throwable_incendiary | incendiary impact | glass smash + fuel whoosh + short tail | 3 |
+| cue.throwable_incendiary_fire (loop) | the incendiary fire pool burns (stop when it ends) | fire crackle loop, 3D at the pool | 3 |
+| cue.throwable_knife_hit | throwing knife hits a body (ENV A picks by target) | flesh thunk | 3 |
+| cue.throwable_knife_hit_hard | throwing knife hits world geometry | metallic ting / wood thunk | 3 |
+| cue.npc_melee_swing | NPC melee windup start (A3-13) [R], source = the NPC | short cloth/arm whoosh, 3D at the NPC, ~15 m | 3 |
 
 Special-action cues have no dedicated EventBus signals: ENV A triggers them with `audio_cue_requested` or a
 `CueEmitter`. Looping tells stop on the matching end fact (`crew_tase_ended` for `stinger_arc`, D-049) or locally.

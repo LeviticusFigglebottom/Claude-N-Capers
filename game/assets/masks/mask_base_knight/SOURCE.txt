@@ -1,0 +1,13 @@
+asset: mask_base_knight
+script: tools/blender/masks/base_knight.py
+params: {"bottom": -0.12, "brow": 0.0, "cheek": 0.0, "chin_point": 0.016, "coverage": "full", "edge_res": 0.005, "eye_height": 0.019, "eye_shape": "slit", "eye_spacing": 0.064, "eye_tilt_deg": 0.0, "eye_width": 0.046, "face_half_width": 0.084, "jaw": 0.3, "jaw_taper": 0.3, "mouth": "none", "nose": 0.0, "res": 0.0085, "res_back": 0.015, "side_arc": 0.106, "top": 0.104, "wrap_radius": 0.092}
+seed: 289448875  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category masks --asset mask_base_knight
+edit policy: generated file, never edit by hand; change the script and rebuild
+coverage: full
+fit: crew face envelope (_crew_face_envelope.json), clearance 3.0 mm, max lift 42.0 mm
+pivot: face centre: midway between the eye centres at eye (cornea) depth; Blender +Y = Godot -Z = forward, +Z = up
+tri_budget: 8000
+tris_lod0: 5374
+uv0: front planar along -Z (Godot), x 0..1 = +X..-X (viewer's left to right), y 0..1 = top..bottom; bounds x +-0.0862 m, z -0.1360..0.1166 m

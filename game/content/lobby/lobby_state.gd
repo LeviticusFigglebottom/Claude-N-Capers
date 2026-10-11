@@ -4,8 +4,16 @@
 ## Messages (Net.lobby_send(kind, data) / Net.lobby_message; contract docs/contracts/net.md, D-038).
 ## Every payload is JSON-safe (String keys; bool / int / float / String / Array / Dictionary values):
 ## * MSG_READY    {"ready": bool}                                 any human slot, for itself
-## * MSG_PROFILE  {"name", "level", "loadout": loadout_to_dict()} any human slot, for itself; sent at
-##                join and after every loadout change. Every peer validates it with validate_summary()
+## * MSG_PROFILE  {"name", "level", "notoriety", "loadout": loadout_to_dict()} any human slot, for itself;
+##                `notoriety` = the Notoriety rank 0..max (B5-02; a summary without it reads as 0). Sent at
+##                join and after every loadout change. `music` (B5-03) = the sender's resolved music pick
+##                (MusicCatalog.resolve_choice; "" = heist default; missing or not a String reads as ""):
+##                only the HOST's is used, shown read-only to clients (slot_view "music", host_music()).
+##                `loadout.heister` (D-073) = the sender's heister pick ("" = no preference); every peer
+##                serves picks first-come (heister_assignment(), rule in Heisters): the slot whose current pick
+##                arrived first keeps it, a later conflicting pick falls back to the next free heister, and
+##                AI / empty seats fill the rest. An unknown heister id is illegal.
+##                Every peer validates it with validate_summary()
 ##                (SkillPoints.validate + LoadoutResolver mod legality + known ids, architecture §11):
 ##                an illegal summary is FLAGGED on its slot and blocks Start; the host never launches it.
 ## * MSG_CONTRACT {"heist": String, "difficulty": int, "is_pro": bool}   host only. D-049: every player
@@ -15,6 +23,16 @@
 ## * PlanVote.MSG_CAST / MSG_RETRACT (preplanning.md): logged in order (vote_log) so a pre-planning
 ##                screen opened later can replay them (PreplanPlan.receive_vote); the live screen
 ##                applies them itself.
+## * MSG_CHAT     {"text": String}                               any human slot (B6-03). Validated by ChatLog
+##                (`chat`): attribution by the sender's slot, control characters stripped, length cap, rate
+##                limit per sender against `now_s` (R_RATE_LIMITED / R_EMPTY). Plain text only (no BBCode).
+## * MSG_KICK     {"slot": int}                                  host only (B6-04, D-072): a UI notice that the
+##                host kicked the human in `slot` (not the host). Net.kick does the actual drop; every peer
+##                adds that slot's peer id + name to `kicked` (KickList: no rejoin this session).
+## * MSG_SETTINGS {"dropin": "ask"|"auto"|"off"}                  host only (B6-04): the lobby's host settings.
+##                `dropin_policy` (PD2 drop-in: ask = the host answers each request, auto = accepted without a
+##                dialog, off = denied). Session state, not GameSettings: every member sees it and the host's
+##                drop-in path reads it (join_decision); default LobbyTweak.dropin_default_policy.
 ## receive() rejects unknown kinds, senders that are not a human crew slot, host-only kinds from
 ## anyone but the host slot, and malformed / non-JSON-safe payloads (R_* codes).
 class_name LobbyState
@@ -24,8 +42,20 @@ const MSG_READY: StringName = &"lobby.ready"
 const MSG_PROFILE: StringName = &"lobby.profile_summary"
 const MSG_CONTRACT: StringName = &"lobby.contract"
 const MSG_START: StringName = &"lobby.start"
-const KINDS: Array[StringName] = [MSG_READY, MSG_PROFILE, MSG_CONTRACT, MSG_START, PlanVote.MSG_CAST, PlanVote.MSG_RETRACT]
-const HOST_ONLY: Array[StringName] = [MSG_CONTRACT, MSG_START]
+const MSG_CHAT: StringName = &"lobby.chat"
+const MSG_KICK: StringName = &"lobby.kick"
+const MSG_SETTINGS: StringName = &"lobby.settings"
+const KINDS: Array[StringName] = [MSG_READY, MSG_PROFILE, MSG_CONTRACT, MSG_START, PlanVote.MSG_CAST, PlanVote.MSG_RETRACT,
+	MSG_CHAT, MSG_KICK, MSG_SETTINGS]
+const HOST_ONLY: Array[StringName] = [MSG_CONTRACT, MSG_START, MSG_KICK, MSG_SETTINGS]
+## Drop-in policies (host setting, PD2). UI text: `ui.lobby.dropin.<policy>`.
+const POLICY_ASK: StringName = &"ask"
+const POLICY_AUTO: StringName = &"auto"
+const POLICY_OFF: StringName = &"off"
+const POLICIES: Array[StringName] = [POLICY_ASK, POLICY_AUTO, POLICY_OFF]
+## join_decision() results besides a deny reason (DropInService.REASON_KICKED / REASON_OFF).
+const JOIN_ASK: StringName = &"ask"
+const JOIN_ACCEPT: StringName = &"accept"
 
 ## receive() results.
 const OK: StringName = &""
@@ -33,6 +63,8 @@ const R_UNKNOWN_KIND: StringName = &"unknown_kind"
 const R_BAD_SENDER: StringName = &"bad_sender"
 const R_NOT_HOST: StringName = &"not_host"
 const R_BAD_PAYLOAD: StringName = &"bad_payload"
+const R_EMPTY: StringName = ChatLog.R_EMPTY
+const R_RATE_LIMITED: StringName = ChatLog.R_RATE_LIMITED
 ## start_block() reasons (UI text: strings.csv `ui.lobby.block.<reason>`).
 const BLOCK_NOT_HOST: StringName = &"not_host"
 const BLOCK_STARTED: StringName = &"started"
@@ -45,7 +77,7 @@ const MAX_CREW: int = 4
 const MAX_PERK_CARDS: int = 9
 ## Loadout fields carried by a profile summary (StringName ids; *_mods are id lists).
 const ID_FIELDS: Array[String] = ["primary", "secondary", "melee", "throwable", "deployable",
-	"deployable_secondary", "armor", "mask", "perk_deck"]
+	"deployable_secondary", "armor", "mask", "perk_deck", "heister"]
 const MOD_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 ## Item kind each id field is checked against (ContentDB kinds).
 const FIELD_KINDS: Dictionary = {
@@ -73,10 +105,22 @@ var contract: Dictionary = {}
 var started: Dictionary = {}
 ## Plan votes in arrival order: {"slot": int, "kind": StringName, "data": Dictionary}.
 var vote_log: Array[Dictionary] = []
+## Chat history + validation (B6-03). Survives crew changes; cleared by reset().
+var chat: ChatLog = ChatLog.new()
+## Clock (seconds) for the chat rate limit; LobbySession sets it before every receive().
+var now_s: float = 0.0
+## slot -> claim number of the slot's current heister pick (D-073: lower = earlier = keeps the heister).
+var heister_claims: Dictionary = {}
+## Host setting (MSG_SETTINGS): POLICY_ASK / POLICY_AUTO / POLICY_OFF.
+var dropin_policy: StringName = POLICY_ASK
+## Players kicked this session (MSG_KICK notices; the host also adds Net.peer_kicked). Cleared by reset().
+var kicked: KickList = KickList.new()
+var _claim_counter: int = 0
 
 
 func _init(p_is_host: bool = false) -> void:
 	is_host = p_is_host
+	dropin_policy = default_policy()
 
 
 func reset(p_is_host: bool) -> void:
@@ -90,6 +134,11 @@ func reset(p_is_host: bool) -> void:
 	contract = {}
 	started = {}
 	vote_log = []
+	chat.clear()
+	heister_claims = {}
+	_claim_counter = 0
+	dropin_policy = default_policy()
+	kicked.clear()
 
 
 ## New crew registry. A slot whose occupant changed (other peer, turned AI, emptied) loses its ready
@@ -140,6 +189,8 @@ func receive(from_slot: int, kind: StringName, data: Dictionary) -> StringName:
 		return R_NOT_HOST
 	if not is_json_safe(data):
 		return R_BAD_PAYLOAD
+	if kind == MSG_CHAT:
+		return chat.receive(from_slot, String(slot_view(from_slot)["name"]), data, now_s)
 	return OK if _apply(from_slot, kind, data) else R_BAD_PAYLOAD
 
 
@@ -155,6 +206,7 @@ func _apply(from_slot: int, kind: StringName, data: Dictionary) -> bool:
 			var s: Dictionary = sanitize_summary(data)
 			ok = not s.is_empty()
 			if ok:
+				_claim_heister(from_slot, s)
 				summaries[from_slot] = s
 				errors[from_slot] = validate_summary(s)
 		MSG_CONTRACT:
@@ -171,12 +223,57 @@ func _apply(from_slot: int, kind: StringName, data: Dictionary) -> bool:
 			if ok:
 				st["seed"] = int(data["seed"])
 				started = st
+		MSG_KICK:
+			var target: Variant = data.get("slot")
+			ok = _is_int(target) and is_human(int(target)) and int(target) != host_slot
+			if ok:
+				remember_kick(int(target))
+		MSG_SETTINGS:
+			var policy: Variant = data.get("dropin")
+			ok = policy is String and POLICIES.has(StringName(String(policy)))
+			if ok:
+				dropin_policy = StringName(String(policy))
 		PlanVote.MSG_CAST, PlanVote.MSG_RETRACT:
 			var key: String = "option" if kind == PlanVote.MSG_CAST else "group"
 			ok = data.get(key) is String and String(data[key]) != ""
 			if ok:
 				vote_log.append({"slot": from_slot, "kind": kind, "data": data.duplicate(true)})
 	return ok
+
+
+## Put the human in `slot` on the kick list (its peer id, Net display name and summary name).
+func remember_kick(slot: int) -> void:
+	var c: Dictionary = crew.get(slot, {}) as Dictionary
+	if c.is_empty() or bool(c.get("is_ai", true)):
+		return
+	kicked.add(int(c.get("peer_id", 0)), String(c.get("display_name", "")))
+	var s: Dictionary = summaries.get(slot, {}) as Dictionary
+	kicked.add(0, String(s.get("name", "")))
+
+
+## Host: what to do with a join / drop-in request from `peer_id` with profile `summary` (LobbyState.summary_from
+## shape): DropInService.REASON_KICKED (kicked this session), DropInService.REASON_OFF (policy off), JOIN_ACCEPT
+## (policy auto) or JOIN_ASK (show the request dialog).
+func join_decision(peer_id: int, summary: Dictionary) -> StringName:
+	var player: String = String(summary.get("name", "")) if summary.get("name") is String else ""
+	if kicked.has(peer_id, player):
+		return DropInService.REASON_KICKED
+	match dropin_policy:
+		POLICY_OFF:
+			return DropInService.REASON_OFF
+		POLICY_AUTO:
+			return JOIN_ACCEPT
+	return JOIN_ASK
+
+
+## The data default drop-in policy (LobbyTweak.dropin_default_policy; ask when unknown).
+static func default_policy() -> StringName:
+	var p: StringName = LobbyTweak.load_default().dropin_default_policy
+	return p if POLICIES.has(p) else POLICY_ASK
+
+
+static func settings_data(policy: StringName) -> Dictionary:
+	return {"dropin": String(policy)}
 
 
 ## Why the host cannot Start right now (OK = it can): host only, once, with a contract, and every human
@@ -217,7 +314,56 @@ func launch_loadouts() -> Dictionary:
 	var out: Dictionary = {}
 	for slot: int in human_slots():
 		if is_legal(slot):
-			out[slot] = LoadoutResolver.resolve(loadout_from_dict(summaries[slot]["loadout"] as Dictionary))
+			var l: Loadout = LoadoutResolver.resolve(loadout_from_dict(summaries[slot]["loadout"] as Dictionary))
+			l.heister = heister_of(slot)
+			out[slot] = l
+	return out
+
+
+## D-073 heisters for every crew slot 0..MAX_CREW-1 (slot -> id; see Heisters for the rule): human slots
+## with a summary in claim order (first claim keeps its pick), then every other slot (AI, empty seats the
+## launcher fills with AI, humans still joining) in slot order.
+func heister_assignment() -> Dictionary:
+	var order: Array[int] = []
+	var picks: Dictionary = {}
+	for slot: int in human_slots():
+		if summaries.has(slot):
+			order.append(slot)
+			picks[slot] = StringName(String((summaries[slot]["loadout"] as Dictionary).get("heister", "")))
+	order.sort_custom(func(a: int, b: int) -> bool:
+		var ca: int = int(heister_claims.get(a, 0))
+		var cb: int = int(heister_claims.get(b, 0))
+		return ca < cb or (ca == cb and a < b))
+	var fill: Array[int] = []
+	for slot: int in range(MAX_CREW):
+		if not order.has(slot) and not is_human(slot):
+			fill.append(slot)
+	return Heisters.assign(order, picks, fill)
+
+
+## The heister `slot` launches as (&"" for a human without a summary yet).
+func heister_of(slot: int) -> StringName:
+	return StringName(heister_assignment().get(slot, &""))
+
+
+## Heisters the other HUMAN slots hold (AI only fills what is left): the loadout picker marks them taken.
+## Claim order is each peer's own arrival order; the host's view decides the launch (launch_loadouts).
+func heisters_taken_by_others(slot: int) -> Array[StringName]:
+	var out: Array[StringName] = []
+	var a: Dictionary = heister_assignment()
+	for s: Variant in a:
+		if int(s) != slot and is_human(int(s)) and StringName(a[s]) != &"":
+			out.append(StringName(a[s]))
+	return out
+
+
+## Heisters of the AI slots and empty seats (slot -> id), for their HeistLauncher loadouts (Heisters.ai_loadouts).
+func ai_heisters() -> Dictionary:
+	var out: Dictionary = {}
+	var a: Dictionary = heister_assignment()
+	for s: Variant in a:
+		if not is_human(int(s)):
+			out[int(s)] = a[s]
 	return out
 
 
@@ -229,19 +375,27 @@ func slot_view(slot: int) -> Dictionary:
 		"slot": slot, "occupied": not c.is_empty(), "is_ai": bool(c.get("is_ai", false)),
 		"is_local": slot == local_slot, "is_host": slot == host_slot and not c.is_empty(),
 		"name": String(s.get("name", c.get("display_name", ""))), "ready": is_ready(slot),
-		"has_summary": not s.is_empty(), "level": int(s.get("level", 0)),
+		"has_summary": not s.is_empty(), "level": int(s.get("level", 0)), "notoriety": int(s.get("notoriety", 0)),
+		"music": StringName(String(s.get("music", ""))), "heister": heister_of(slot),
+		"heister_pick": StringName(String((s.get("loadout", {}) as Dictionary).get("heister", ""))),
 		"loadout": (s.get("loadout", {}) as Dictionary).duplicate(true),
 		"legal": is_legal(slot), "errors": (errors.get(slot, []) as Array).duplicate(),
 	}
 	return view
 
 
-## Profile summary the local player sends (MSG_PROFILE): name, level and the loadout's ids, with the
-## worn custom mask's descriptor (D-043 QA-25).
+## The host's music pick from its summary (&"" = heist default or no summary yet), B5-03.
+func host_music() -> StringName:
+	return StringName(String((summaries.get(host_slot, {}) as Dictionary).get("music", "")))
+
+
+## Profile summary the local player sends (MSG_PROFILE): name, level, Notoriety rank (B5-02) and the
+## loadout's ids, with the worn custom mask's descriptor (D-043 QA-25).
 static func summary_from(loadout: Loadout, profile: PlayerProfile) -> Dictionary:
 	var l: Loadout = loadout.duplicate(true) as Loadout
 	l.mask_descriptor = LoadoutResolver.mask_descriptor_for(loadout, profile)
-	return {"name": profile.profile_name, "level": profile.level, "loadout": loadout_to_dict(l)}
+	return {"name": profile.profile_name, "level": profile.level, "notoriety": profile.notoriety,
+			"music": String(MusicCatalog.resolve_choice(profile)), "loadout": loadout_to_dict(l)}
 
 
 ## JSON-safe loadout input (no resolved numbers; every peer resolves with LoadoutResolver).
@@ -286,7 +440,8 @@ static func loadout_from_dict(d: Dictionary) -> Loadout:
 ## integral floats (JSON) become ints; the name is cut to LobbyTweak.max_name_length.
 static func sanitize_summary(data: Dictionary) -> Dictionary:
 	var ld: Variant = data.get("loadout")
-	if not (data.get("name") is String) or not _is_int(data.get("level")) or not (ld is Dictionary):
+	var rank: Variant = data.get("notoriety", 0)
+	if not (data.get("name") is String) or not _is_int(data.get("level")) or not _is_int(rank) or not (ld is Dictionary):
 		return {}
 	var src: Dictionary = ld as Dictionary
 	var out: Dictionary = {}
@@ -320,11 +475,14 @@ static func sanitize_summary(data: Dictionary) -> Dictionary:
 		sk[k] = int(lv)
 	out["skills"] = sk
 	var max_len: int = LobbyTweak.load_default().max_name_length
-	return {"name": String(data["name"]).strip_edges().left(max_len), "level": int(data["level"]), "loadout": out}
+	var music: Variant = data.get("music", "")
+	return {"name": String(data["name"]).strip_edges().left(max_len), "level": int(data["level"]),
+			"notoriety": int(rank), "music": String(music).left(ProfileSchema.SHORT_ID_MAX_LENGTH) if music is String else "",
+			"loadout": out}
 
 
 ## Legality problems of a sanitized summary ([] = legal), for logs and the slot's "illegal" flag:
-## level range, known item ids, weapon mods the resolver accepts, perk card count, the skill set
+## level and Notoriety rank ranges, known item ids, weapon mods the resolver accepts, perk card count, the skill set
 ## (SkillPoints.validate against the level's points) and the mask (preset id or a valid descriptor).
 static func validate_summary(s: Dictionary) -> Array[String]:
 	var out: Array[String] = []
@@ -332,6 +490,9 @@ static func validate_summary(s: Dictionary) -> Array[String]:
 	var max_level: int = SkillPoints.tree_def().max_level
 	if level < 0 or level > max_level:
 		out.append("level %d outside 0..%d" % [level, max_level])
+	var rank: int = int(s.get("notoriety", 0))
+	if rank < 0 or rank > Notoriety.max_rank():
+		out.append("notoriety %d outside 0..%d" % [rank, Notoriety.max_rank()])
 	var ld: Dictionary = s.get("loadout", {}) as Dictionary
 	for f: String in FIELD_KINDS:
 		var id: String = String(ld.get(f, ""))
@@ -366,6 +527,9 @@ static func validate_summary(s: Dictionary) -> Array[String]:
 		skills[StringName(String(k))] = int(src[k])
 	for e: String in SkillPoints.validate(skills, SkillPoints.points_for_level(clampi(level, 0, max_level))):
 		out.append("skills: " + e)
+	var heister: StringName = StringName(String(ld.get("heister", "")))
+	if heister != &"" and not Heisters.is_known(heister):
+		out.append("heister: unknown id %s" % heister)
 	var mask: StringName = StringName(String(ld.get("mask", "")))
 	if mask != &"":
 		if MaskCatalog.is_custom_id(mask):
@@ -450,7 +614,17 @@ static func mask_def(loadout_dict: Dictionary) -> MaskDef:
 	return ContentDB.mask(id) as MaskDef if _known(ContentDB.MASKS, id) else null
 
 
+## A new or changed heister pick takes the next claim number; re-sending the same pick keeps its place.
+func _claim_heister(slot: int, summary: Dictionary) -> void:
+	var pick: String = String((summary["loadout"] as Dictionary).get("heister", ""))
+	var old: Dictionary = summaries.get(slot, {}) as Dictionary
+	if old.is_empty() or not heister_claims.has(slot) or String((old["loadout"] as Dictionary).get("heister", "")) != pick:
+		_claim_counter += 1
+		heister_claims[slot] = _claim_counter
+
+
 func _forget(slot: int) -> void:
+	heister_claims.erase(slot)
 	ready.erase(slot)
 	summaries.erase(slot)
 	errors.erase(slot)

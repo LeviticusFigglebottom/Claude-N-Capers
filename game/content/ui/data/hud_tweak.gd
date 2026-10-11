@@ -30,6 +30,12 @@ const DEFAULT_PATH: String = "res://content/data/ui/hud_tweak.tres"
 @export var delta_worse_color: Color = Color(1.0, 0.35, 0.3)
 ## Marked targets (S2.9 marks; the outline shader comes later): diamond above each marked unit.
 @export var mark_color: Color = Color(1.0, 0.85, 0.25)
+## B5-01 palette colours (HudPalette.apply_to overrides them with the active accessibility palette):
+## teammate names (ally marker), active objective rows, carried loot, interaction hold bar.
+@export var ally_color: Color = Color(0.36, 0.84, 1.0)
+@export var objective_color: Color = Color(0.88, 0.72, 0.29)
+@export var loot_color: Color = Color(0.4, 0.88, 0.4)
+@export var interaction_color: Color = Color(1.0, 1.0, 1.0)
 @export var mark_size_px: float = 14.0
 ## Height above the marked unit's world_pos (its feet) where the marker is drawn, m.
 @export var mark_height_m: float = 2.1

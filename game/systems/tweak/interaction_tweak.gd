@@ -85,6 +85,28 @@ extends Resource
 ## S9.8 ◇ vault time lock: hold to start the timer at the panel once the lock is beaten.
 @export var time_lock_start_s: float = 2.0
 
+@export_group("Hand saw targets (QC-37, D-057 G.SAW_TARGET)")
+## Seconds of cutting with the handheld saw weapon (SpecialWeapons saw ticks call saw_cut) until each
+## prefab opens (◇; Night Deposit doc: deposit boxes 6 s).
+@export var hand_saw_deposit_box_s: float = 6.0
+@export var hand_saw_padlock_s: float = 2.0
+## Safes with &"saw" in `methods`, by Safe.Size (SMALL, MEDIUM, LARGE).
+@export var hand_saw_safe_s: PackedFloat32Array = PackedFloat32Array([20.0, 40.0, 80.0])
+## A SAW drill_point (cage gate, depository) cut by hand: x its device run time.
+@export var hand_saw_drill_point_mult: float = 1.0
+
+@export_group("Burn point (QC-38, D-064 Dockside Burn)")
+## Hold to place the carried thermite bag (consumed), burn time, then the telegraph (warning cue) and the
+## countdown before device_finished (the mission drops the fire shutters) and the fire volume lights.
+@export var burn_place_s: float = 3.0
+## D-068: a thermite bag lying this close to the burn point (m) is used as well as a carried one.
+@export var burn_bag_radius_m: float = 2.5
+@export var burn_duration_s: float = 30.0
+@export var burn_warning_s: float = 5.0
+## Fire volume damage to crew inside (DamageType.FIRE, ignores armour, L3.4), per second, ticked.
+@export var burn_fire_dps: float = 20.0
+@export var burn_fire_tick_s: float = 0.5
+
 @export_group("Lasers, zipline, ladder (A2-04: S9.10, S9.11)")
 ## Thickness of a laser beam's detection box across the beam (m) ◇.
 @export var laser_beam_thickness_m: float = 0.03
@@ -109,6 +131,10 @@ extends Resource
 @export var npc_door_reach_m: float = 0.9
 ## ◇ A locked door opened by an authorised guard (keycard post) closes again after this (s); 0 = stays open.
 @export var npc_locked_door_close_s: float = 4.0
+## P3 gate (L1, PD2): once the heist is loud, police (roles police / special) breach locked doors
+## (not BARRED / VAULT) on their path: they hold this long (kick / shotgun the lock ◇), then the door
+## is unlocked and open for good.
+@export var npc_door_breach_s: float = 2.5
 ## Half length of the door's NavigationLink3D through the doorway (m, each side of the leaf).
 @export var door_nav_link_half_m: float = 0.6
 

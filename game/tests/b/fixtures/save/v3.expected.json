@@ -1,5 +1,5 @@
 {
-	"version": 5,
+	"version": 6,
 	"profile_name": "Planner",
 	"cash": 8800,
 	"stash": 125000,
@@ -16,7 +16,7 @@
 		"secondary": "weapon.kestrel_p9", "secondary_mods": ["mod.p9_extended_mag"],
 		"melee": "melee.folding_knife", "throwable": "", "deployable": "deployable.doctor_bag",
 		"deployable_secondary": "", "armor": "armor.light_vest", "mask": "mask.night_circuit",
-		"perk_deck": "perk.prowler", "perk_deck_cards": 2,
+		"perk_deck": "perk.prowler", "heister": "", "perk_deck_cards": 2,
 		"skills": {"skill.slipstream.light_step": 1}
 	},
 	"skill_sets": [{"skill.juggernaut.thick_skin": 1}, {"skill.slipstream.light_step": 1}, {}],
@@ -25,6 +25,11 @@
 	"unlocks": [],
 	"achievements": {},
 	"pro_job_locks": {},
+	"notoriety": 0,
+	"notoriety_xp": 0,
+	"notoriety_choices": {},
+	"held_skill_sets": [],
+	"music_choice": "",
 	"stats": {"heists_completed": 9, "heists_failed": 2},
 	"settings": {"name_tag": "planner"}
 }

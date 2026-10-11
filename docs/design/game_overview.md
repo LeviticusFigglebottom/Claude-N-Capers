@@ -95,7 +95,7 @@ Results / Payday ◄── escape ◄── secure loot ◄───────
 | 3 | `shadow_ledger` | **Shadow Ledger**: Kessler & Moor penthouse | Shadow Raid / data theft | **stealth-only** | M | P2 |
 | 4 | `dockside_burn` | **Dockside Burn**: cartel cold-storage warehouse | Firestarter / Rats | **loud-only** | M | P3 |
 | 5 | `gallery_night` | **Gallery Night**: Halberd Gallery | Framing Frame | stealth + loud | M | P5 |
-| 6 | `meridian_federal` | **Meridian Federal** | Big Bank | stealth + loud | L | P5 |
+| 6 | `ostrander_federal` | **Ostrander Federal** (renamed from Meridian Federal, D-075: "Meridian" is a real bank name) | Big Bank | stealth + loud | L | P5 |
 | 7 | `rolling_thunder` | **Rolling Thunder**: armored convoy | Transport | loud (stealth-start ambush) | M | P5 |
 | 8 | `afterhours` | **Afterhours**: the Velvet nightclub | Nightclub | stealth + loud | M | P5 |
 

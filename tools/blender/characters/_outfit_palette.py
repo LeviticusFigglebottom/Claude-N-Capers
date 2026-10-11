@@ -89,6 +89,87 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_aegis_blue": ("#7FC8FF", 0.45, 0.0, "plastic"),  # specials: Aegis accents
     "char_sniper_drab": ("#5B5A4C", 0.88, 0.0, "cloth"),  # specials: Longshot boonie/vest
     "char_coat_command": ("#2E3440", 0.82, 0.0, "cloth"),  # specials: Brandt's command coat
+    "char_bank_slate": ("#3F5A52", 0.80, 0.0, "cloth"),  # npcs (D2-02): night_deposit slate green (bank livery)
+    "char_bank_slate_dark": ("#2D3B37", 0.82, 0.0, "cloth"),  # npcs: bank livery trousers/skirts
+    "char_bank_cream": ("#D9D2C2", 0.82, 0.0, "cloth"),  # npcs: marble cream blouses/shirts, patch border
+    "char_bank_red": ("#9E302A", 0.70, 0.0, "cloth"),  # npcs: bank red (#9E2B25, sat cap): ties, scarves, manager suit
+    "char_knit_slate": ("#4A665D", 0.95, 0.0, "cloth"),  # npcs: teller's sweater vest
+    "char_cleaner_tabard": ("#4C6680", 0.80, 0.0, "cloth"),  # npcs: cleaning contractor tabard
+    "char_knit_grey": ("#6B6C70", 0.95, 0.0, "cloth"),  # npcs: cleaner's long-sleeve top
+    "char_rubber_yellow": ("#D2AE3E", 0.40, 0.0, "plastic"),  # npcs: cleaner's rubber gloves
+    "char_satin_teal": ("#2F5558", 0.40, 0.0, "cloth"),  # npcs: shadow_ledger guest dress (glass teal, deep)
+    "char_satin_black": ("#202024", 0.35, 0.0, "gloss"),  # npcs: dinner-jacket lapels
+    "char_tux_black": ("#232327", 0.74, 0.0, "cloth"),  # npcs: dinner suit
+    "char_waistcoat_graphite": ("#2E3136", 0.66, 0.0, "cloth"),  # npcs: penthouse staff waistcoat (graphite)
+    "char_coat_ice": ("#BCC9D0", 0.85, 0.0, "cloth"),  # npcs: Kessler's coat (cold white accent #CFE3EE, toned)
+    "char_knit_graphite": ("#2A2C30", 0.95, 0.0, "cloth"),  # npcs: Kessler's roll-neck
+    "char_frd_olive": ("#434A3A", 0.86, 0.0, "cloth"),  # D2-01 faction FRD: olive uniform / green Wrecker suit
+    "char_frd_coyote": ("#7A6B50", 0.86, 0.0, "cloth"),  # D2-01 FRD: coyote carrier, pouches, drag bag
+    "char_frd_helmet": ("#4E5544", 0.55, 0.0, "plastic"),  # D2-01 FRD: olive-grey helmet / armour plates
+    "char_frd_armor": ("#3E4634", 0.50, 0.0, "plastic"),  # D2-01 FRD: green Wrecker armour
+    "char_frd_yellow": ("#D6B34A", 0.60, 0.0, "cloth"),  # D2-01 FRD: lettering, bands, patch borders
+    "char_frd_dark": ("#2C3028", 0.78, 0.0, "cloth"),  # D2-01 FRD: Phantom suit (dark olive)
+    "char_frd_navy": ("#252D3D", 0.72, 0.0, "cloth"),  # D2-01 FRD: field agent's nylon raid windbreaker (navy)
+    "char_sen_grey": ("#60666D", 0.84, 0.0, "cloth"),  # D2-01 faction Sentinel: slate-grey uniform
+    "char_sen_light": ("#A2A6A9", 0.84, 0.0, "cloth"),  # D2-01 Sentinel: light-grey carrier, pouches
+    "char_sen_white": ("#C8CAC6", 0.45, 0.0, "plastic"),  # D2-01 Sentinel: off-white helmet / armour
+    "char_sen_red": ("#A3302F", 0.55, 0.0, "cloth"),  # D2-01 Sentinel: corporate crimson (logo, bands)
+    "char_sen_dark": ("#363B42", 0.78, 0.0, "cloth"),  # D2-01 Sentinel: Phantom suit (dark slate)
+    "char_zero_black": ("#1D1E22", 0.80, 0.0, "cloth"),  # D2-01 faction Zero Division: black uniform
+    "char_zero_gear": ("#292B30", 0.82, 0.0, "cloth"),  # D2-01 Zero: black carrier
+    "char_zero_armor": ("#2C2E34", 0.30, 0.0, "gloss"),  # D2-01 Zero: gloss-black helmet / armour
+    "char_zero_bone": ("#BDB4A0", 0.50, 0.0, "plastic"),  # D2-01 Zero: bone face mask, Zero mark
+    "char_zero_red": ("#6E2329", 0.60, 0.0, "cloth"),  # D2-01 Zero: oxblood bands / mark ring
+    "char_crew_rook_coat": ("#2E3138", 0.86, 0.0, "cloth"),  # D2-03 crew Rook: long charcoal overcoat
+    "char_crew_rook_scarf": ("#6A2229", 0.92, 0.0, "cloth"),  # D2-03 Rook: oxblood scarf / pocket square
+    "char_crew_sable_blazer": ("#40273A", 0.74, 0.0, "cloth"),  # D2-03 Sable: aubergine cropped blazer
+    "char_crew_glove_ivory": ("#CFC6B4", 0.50, 0.0, "leather"),  # D2-03 Sable: ivory kid gloves
+    "char_crew_dutch_bomber": ("#4E3726", 0.62, 0.0, "leather"),  # D2-03 Dutch: brown leather bomber
+    "char_crew_shearling": ("#C9B696", 0.97, 0.0, "cloth"),  # D2-03 Dutch: cream shearling collar
+    "char_crew_glove_tan": ("#7A5A3E", 0.55, 0.0, "leather"),  # D2-03 Dutch: tan work gloves
+    "char_crew_wren_vest": ("#8A6A30", 0.82, 0.0, "cloth"),  # D2-03 Wren: mustard tweed waistcoat
+    "char_sec_knit": ("#2C2F35", 0.95, 0.0, "cloth"),  # npcs (D-063): Halden night-shift guard's V-neck sweater vest
+    "char_cleaner_teal": ("#4F7F82", 0.80, 0.0, "cloth"),  # npcs: shadow_ledger cleaner tabard (glass teal #5D8C8F, toned)
+    "char_hoodie_rust": ("#7A4C34", 0.95, 0.0, "cloth"),  # npcs: IT contractor's hoodie
+    "char_denim": ("#36455C", 0.90, 0.0, "cloth"),  # npcs: IT contractor's jeans
+    "char_sneaker_grey": ("#9D9B94", 0.75, 0.0, "cloth"),  # npcs: IT contractor's trainers
+    "char_lanyard": ("#3D6EA3", 0.60, 0.0, "cloth"),  # npcs: contractor lanyard / visitor badge band
+    "char_silk_ice": ("#BCC9D0", 0.45, 0.0, "cloth"),  # npcs: Kessler's dressing robe (cold-white accent, silk)
+    "char_silk_graphite": ("#30343A", 0.42, 0.0, "cloth"),  # npcs: Kessler's pyjamas / robe shawl collar
+    "char_ng_shirt": ("#9EA2A6", 0.82, 0.0, "cloth"),  # npcs: Northgate Executive Protection grey shirt
+    "char_ng_enamel": ("#2F4E6E", 0.40, 0.0, "gloss"),  # npcs: Northgate lapel-pin enamel (steel blue)
+    "char_silk_ivory": ("#D3CBB8", 0.45, 0.0, "cloth"),  # npcs: Helena Moor's silk blouse
+    "char_cartel_wax_rust": ("#6E4630", 0.55, 0.0, "cloth"),  # QC-36 cartel gunmen: rust waxed dock jacket (#7A4A2E)
+    "char_cartel_cord": ("#3F3127", 0.95, 0.0, "cloth"),  # QC-36 cartel: corduroy jacket collar
+    "char_cartel_cargo": ("#58553F", 0.88, 0.0, "cloth"),  # QC-36 cartel: drab cargo trousers
+    "char_cartel_rubber": ("#2E3830", 0.42, 0.0, "plastic"),  # QC-36 cartel: dark-green rubber fishing boots
+    "char_cartel_flare": ("#D06E36", 0.85, 0.0, "cloth"),  # QC-36 cartel: flare-orange bandana (#FF6B1A, sat cap)
+    "char_cartel_oilskin": ("#B85E32", 0.38, 0.0, "cloth"),  # QC-36 cartel: orange oilskin bib overalls
+    "char_cartel_hoodie": ("#4A4B4E", 0.95, 0.0, "cloth"),  # QC-36 cartel: heather-grey hoodie
+    "char_cartel_puffer": ("#26272A", 0.45, 0.0, "cloth"),  # QC-36 cartel: black quilted puffer vest
+    "char_cartel_webbing": ("#4B4536", 0.90, 0.0, "cloth"),  # QC-36 cartel: sling webbing
+    "char_cartel_wood": ("#5E3D26", 0.55, 0.0, "plastic"),  # QC-36 cartel: slung gun stock / pump
+    "char_cartel_gunmetal": ("#3C3E42", 0.40, 1.0, "metal"),  # QC-36 cartel: slung gun receiver / barrel
+    "char_cartel_shell": ("#8E3228", 0.50, 0.0, "plastic"),  # QC-36 cartel: shotgun shell hulls
+    "char_gallery_bone": ("#CFC6B2", 0.80, 0.0, "cloth"),  # D3-01 gallery_night: curator's bone-white suit
+    "char_gallery_green": ("#2C463B", 0.80, 0.0, "cloth"),  # D3-01 gallery: Halberd Gallery Security blazer
+    "char_gallery_wine": ("#6E2A3A", 0.60, 0.0, "cloth"),  # D3-01 gallery: Halberd wine (crest, ties, pin enamel)
+    "char_glove_white": ("#D3D1C9", 0.75, 0.0, "cloth"),  # D3-01 gallery: attendants' cotton art-handling gloves
+    "char_satin_wine": ("#6A2433", 0.40, 0.0, "cloth"),  # D3-01 gallery: patron's wine satin cocktail dress
+    "char_velvet_midnight": ("#313A5C", 0.95, 0.0, "cloth"),  # D3-01 gallery: patron's velvet dinner jacket
+    "char_chino_navy": ("#343D52", 0.86, 0.0, "cloth"),  # D3-01 meridian_federal: customer's navy chinos
+    "char_blazer_grey": ("#6A6C70", 0.84, 0.0, "cloth"),  # D3-01 meridian: customer's unstructured grey blazer
+    "char_nylon_olive": ("#4E5640", 0.55, 0.0, "cloth"),  # D3-01 meridian: parent's olive nylon bomber
+    "char_sneaker_white": ("#CBC8C0", 0.70, 0.0, "cloth"),  # D3-01: white trainers
+    "char_vl_shirt": ("#A0946E", 0.86, 0.0, "cloth"),  # D3-01 rolling_thunder: Vaultline Armored sand shirt
+    "char_vl_trousers": ("#433A2F", 0.84, 0.0, "cloth"),  # D3-01 rolling_thunder: Vaultline brown trousers / cap
+    "char_vl_vest": ("#2A2C30", 0.80, 0.0, "cloth"),  # D3-01 rolling_thunder: Vaultline black ballistic vest
+    "char_vl_amber": ("#C98A3A", 0.55, 0.0, "cloth"),  # D3-01 rolling_thunder: Vaultline amber (patch, lettering)
+    "char_club_violet": ("#4E2F66", 0.80, 0.0, "cloth"),  # D3-01 afterhours: the Velvet's violet (DJ, bar staff)
+    "char_nylon_black": ("#26272B", 0.45, 0.0, "cloth"),  # D3-01 afterhours: bouncer's black nylon bomber
+    "char_satin_gold": ("#B8954E", 0.35, 0.0, "cloth"),  # D3-01 afterhours: patron's gold satin mini dress
+    "char_club_magenta": ("#9E3A72", 0.70, 0.0, "cloth"),  # D3-01 afterhours: patron's magenta top
+    "char_hoodie_cream": ("#B9AE98", 0.95, 0.0, "cloth"),  # D3-01 afterhours: patron's cream hoodie
 }
 
 #: Shared-library ids used by outfits, with a placeholder colour for the glb (the .tres wins).

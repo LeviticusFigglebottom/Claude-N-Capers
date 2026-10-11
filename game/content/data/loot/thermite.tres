@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="LootDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/loot_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"loot.thermite"
+display_name = "Thermite Bag"
+weight = 2
+value = 0
+conceals = false
+is_tool = true

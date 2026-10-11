@@ -53,6 +53,8 @@ func refresh() -> void:
 		l.text = UiText.t(_state_key(st), {"text": UiText.t(StringName(o.get("text_key", &"")), o.get("args", {}) as Dictionary)})
 		if st != Enums.ObjectiveState.ACTIVE:
 			l.modulate = Color(1, 1, 1, 0.55)
+		else:
+			l.add_theme_color_override(&"font_color", tweak.objective_color)
 		list_box.add_child(l)
 		shown += 1
 	visible = shown > 0

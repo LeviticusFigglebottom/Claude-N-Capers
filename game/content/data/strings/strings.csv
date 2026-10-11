@@ -1989,3 +1989,452 @@ item.deployable.armor_bag.desc,"Holds your chosen armor. You start the job in a 
 ui.loadout.deployable_locked,"{item} (locked: perk card {card}, {name})"
 ui.prompt.pick_up_gear,Hold {key} to pick up your gear
 ui.blocked.civilian,You need your gear
+ui.options.title,Options
+ui.options.tab.controls,Controls
+ui.options.tab.audio,Audio
+ui.options.tab.video,Video
+ui.options.tab.accessibility,Accessibility
+ui.options.apply,Apply
+ui.options.revert,Revert
+ui.options.reset_tab,Reset Tab
+ui.options.unapplied,Unapplied changes
+ui.options.on,On
+ui.options.off,Off
+ui.options.value.percent,{value}%
+ui.options.value.degrees,{value}°
+ui.options.value.multiplier,{value}x
+ui.options.audio.master,Master Volume
+ui.options.audio.music,Music
+ui.options.audio.sfx,Sound Effects
+ui.options.audio.weapons,Weapons
+ui.options.audio.enemies,Enemies
+ui.options.audio.world,World
+ui.options.audio.ui,Interface
+ui.options.audio.voice,Voice
+ui.options.audio.ambience,Ambience
+ui.options.video.window_mode,Window Mode
+ui.options.video.window_mode.windowed,Windowed
+ui.options.video.window_mode.fullscreen,Borderless Fullscreen
+ui.options.video.window_mode.exclusive_fullscreen,Exclusive Fullscreen
+ui.options.video.vsync,V-Sync
+ui.options.video.max_fps,Frame Rate Limit
+ui.options.video.max_fps.unlimited,Unlimited
+ui.options.video.max_fps.value,{value} FPS
+ui.options.video.render_scale,Render Scale
+ui.options.video.msaa,MSAA
+ui.options.video.msaa.off,Off
+ui.options.video.msaa.2x,2x
+ui.options.video.msaa.4x,4x
+ui.options.video.msaa.8x,8x
+ui.options.video.fxaa,FXAA
+ui.options.video.brightness,Brightness
+ui.options.video.fov,Field of View
+ui.options.controls.mouse_sensitivity_x,Mouse Sensitivity (Horizontal)
+ui.options.controls.mouse_sensitivity_y,Mouse Sensitivity (Vertical)
+ui.options.controls.invert_y,Invert Vertical Look
+ui.options.controls.pad_sensitivity,Gamepad Look Sensitivity
+ui.options.controls.pad_deadzone,Gamepad Deadzone
+ui.options.controls.aim_mode,Aim Down Sights
+ui.options.controls.crouch_mode,Crouch
+ui.options.controls.sprint_mode,Sprint
+ui.options.mode.hold,Hold
+ui.options.mode.toggle,Toggle
+ui.options.controls.action,Action
+ui.options.controls.kbm,Keyboard / Mouse
+ui.options.controls.pad,Gamepad
+ui.options.controls.unbound,-
+ui.options.controls.reset,Reset
+ui.options.controls.reset_all,Reset All Bindings
+ui.options.controls.press_key,Press a key or mouse button for {action}. Esc cancels.
+ui.options.controls.press_pad,Press a gamepad button or push a stick for {action}. Esc cancels.
+ui.options.controls.waiting,...
+ui.options.controls.conflict,"{input} is already bound to {actions}. Swap them, keep both on {input} for {action}, or cancel?"
+ui.options.controls.swap,Swap
+ui.options.controls.keep_both,Keep Both
+ui.options.accessibility.palette,Colour Palette
+ui.options.accessibility.hud_scale,HUD Scale
+ui.options.accessibility.subtitle_size,Subtitle Size
+ui.options.accessibility.subtitle_size.small,Small
+ui.options.accessibility.subtitle_size.medium,Medium
+ui.options.accessibility.subtitle_size.large,Large
+ui.options.palette.default,Default
+ui.options.palette.deuteranopia,Deuteranopia (green-weak)
+ui.options.palette.protanopia,Protanopia (red-weak)
+ui.options.palette.tritanopia,Tritanopia (blue-weak)
+ui.options.palette.high_contrast,High Contrast
+ui.options.palette.field.detection_suspicious,Detection: suspicious
+ui.options.palette.field.detection_alert,Detection: alert
+ui.options.palette.field.detection_detected,Detection: detected
+ui.options.palette.field.health,Health
+ui.options.palette.field.armor,Armor
+ui.options.palette.field.low_health,Low health / warnings
+ui.options.palette.field.ally_marker,Crew
+ui.options.palette.field.enemy_marker,Marked enemies
+ui.options.palette.field.objective,Objectives
+ui.options.palette.field.loot_highlight,Loot
+ui.options.palette.field.interaction_highlight,Interaction
+ui.options.input.mouse_1,Mouse Left
+ui.options.input.mouse_2,Mouse Right
+ui.options.input.mouse_3,Mouse Middle
+ui.options.input.mouse_4,Wheel Up
+ui.options.input.mouse_5,Wheel Down
+ui.options.input.mouse_6,Wheel Left
+ui.options.input.mouse_7,Wheel Right
+ui.options.input.mouse_8,Mouse 4
+ui.options.input.mouse_9,Mouse 5
+ui.options.pad.button,Pad Button {n}
+ui.options.pad.button_0,A / Cross
+ui.options.pad.button_1,B / Circle
+ui.options.pad.button_2,X / Square
+ui.options.pad.button_3,Y / Triangle
+ui.options.pad.button_4,Back / Select
+ui.options.pad.button_5,Guide
+ui.options.pad.button_6,Start / Menu
+ui.options.pad.button_7,Left Stick Press
+ui.options.pad.button_8,Right Stick Press
+ui.options.pad.button_9,Left Bumper
+ui.options.pad.button_10,Right Bumper
+ui.options.pad.button_11,D-Pad Up
+ui.options.pad.button_12,D-Pad Down
+ui.options.pad.button_13,D-Pad Left
+ui.options.pad.button_14,D-Pad Right
+ui.options.pad.button_15,Misc / Share
+ui.options.pad.axis,Pad Axis {n}{dir}
+ui.options.pad.axis_0_neg,Left Stick Left
+ui.options.pad.axis_0_pos,Left Stick Right
+ui.options.pad.axis_1_neg,Left Stick Up
+ui.options.pad.axis_1_pos,Left Stick Down
+ui.options.pad.axis_2_neg,Right Stick Left
+ui.options.pad.axis_2_pos,Right Stick Right
+ui.options.pad.axis_3_neg,Right Stick Up
+ui.options.pad.axis_3_pos,Right Stick Down
+ui.options.pad.axis_4_neg,Left Trigger (-)
+ui.options.pad.axis_4_pos,Left Trigger
+ui.options.pad.axis_5_neg,Right Trigger (-)
+ui.options.pad.axis_5_pos,Right Trigger
+ui.action.move_forward,Move Forward
+ui.action.move_back,Move Back
+ui.action.move_left,Move Left
+ui.action.move_right,Move Right
+ui.action.sprint,Sprint
+ui.action.crouch,Crouch
+ui.action.jump,Jump
+ui.action.look_up,Look Up
+ui.action.look_down,Look Down
+ui.action.look_left,Look Left
+ui.action.look_right,Look Right
+ui.action.fire,Fire
+ui.action.aim,Aim Down Sights
+ui.action.reload,Reload
+ui.action.melee,Melee
+ui.action.slot_primary,Primary Weapon
+ui.action.slot_secondary,Secondary Weapon
+ui.action.swap_weapon,Swap Weapon
+ui.action.interact,Interact
+ui.action.shout,Shout / Mark
+ui.action.mask_up,Mask Up
+ui.action.throw_item,Throwable
+ui.action.deploy,Deployable
+ui.action.drop_bag,Throw Bag
+ui.action.order_menu,Crew Order
+ui.action.scoreboard,Scoreboard
+ui.action.chat,Chat
+ui.action.pause,Options / Pause
+ui.results.xp.notoriety,Notoriety bonus
+ui.notoriety.open,Notoriety
+ui.notoriety.title,NOTORIETY
+ui.notoriety.subtitle,"Trade a maxed-out level for a rank the whole underworld knows. Level 100 and a fortune buy the next one."
+ui.notoriety.current,CURRENT RANK
+ui.notoriety.badge,Notoriety {rank}
+ui.notoriety.badge_none,No notoriety yet
+ui.notoriety.level_badge,{rank} · Level {level}
+ui.notoriety.xp_bonus,XP bonus: +{pct}%
+ui.notoriety.xp_bonus_max,XP bonus: +{pct}% (maximum)
+ui.notoriety.held_skills,Skill points waiting to come back as you level: {points}
+ui.notoriety.next,Next rank: {rank}
+ui.notoriety.max_reached,You hold the highest rank there is.
+ui.notoriety.requirements,REQUIREMENTS
+ui.notoriety.check.level,Reach level {need} (now {have})
+ui.notoriety.check.cash,Spending cash: {need} (you have {have})
+ui.notoriety.check.cap,Ranks stop at {need}
+ui.notoriety.check.met,Done
+ui.notoriety.check.unmet,Missing
+ui.notoriety.cost,Cost: {amount}
+ui.notoriety.rewards,REWARDS AT RANK {rank}
+ui.notoriety.reward_line,{name}
+ui.notoriety.reward_choice,Pick one: {names}
+ui.notoriety.reward_xp,XP bonus rises to +{pct}%
+ui.notoriety.reward_none,The rank badge only
+ui.notoriety.choice_title,CHOOSE YOUR REWARD FOR RANK {rank}
+ui.notoriety.rank_up,Rank Up
+ui.notoriety.confirm_title,Go up to Notoriety {rank}?
+ui.notoriety.confirm_body,"Your level and XP drop back to 0, and {amount} leaves your spending cash. You keep your stash, weapons, masks, perk decks and skill builds. Skill points come back as you level up again, and your builds refill on their own."
+ui.notoriety.confirm,Confirm Rank Up
+ui.notoriety.cancel,Cancel
+ui.notoriety.done,Notoriety {rank} reached.
+ui.notoriety.unlock.unlock.music.vault_hymn,Music track: Vault Hymn
+ui.notoriety.unlock.unlock.music.long_con,Music track: The Long Con
+ui.notoriety.unlock.unlock.music.last_call,Music track: Last Call
+item.mask_colors.crown_ember.name,Crown Ember
+item.mask_colors.ash_regalia.name,Ash Regalia
+item.mask_colors.velvet_vault.name,Velvet Vault
+item.mask_colors.midnight_ledger.name,Midnight Ledger
+item.mask_colors.lantern_smoke.name,Lantern Smoke
+item.mask_colors.verdigris_crown.name,Verdigris Crown
+item.mask_colors.bloodline.name,Bloodline
+item.mask_colors.ghost_ledger.name,Ghost Ledger
+item.mask_colors.black_crown.name,Black Crown
+item.mask_colors.heat_shimmer.name,Heat Shimmer
+item.mask_material.weave.name,Carbon Weave
+item.mask_material.anodized.name,Night Anodized
+item.mask_material.crown_gold.name,Crown Gold
+item.mask.ledger_regent.name,Ledger Regent
+item.mask.ledger_regent.desc,"A gilded theatre face over a black crown. Worn by crews who have retired the top of the ladder ten times."
+item.mask.last_word.name,The Last Word
+item.mask.last_word.desc,"Carbon and ember for the crew that has nothing left to prove. Notoriety XXV only."
+ui.hud.civilian,Civilian: no gear
+ui.loadout.civilian_start,"This job starts in civilian clothes: no weapons or equipment until you pick up your gear on site. Your loadout waits there."
+heist.dockside_burn.name,Dockside Burn
+heist.dockside_burn.subtitle,Ortega Cold Storage
+heist.dockside_burn.brief,"The Co-op's freezer warehouse on Pier 9 holds its cash, its guns and its product. Hollis wants the first two and the third on fire."
+heist.dockside_burn.briefing,"Ortega Cold Storage on Pier 9 is the freezer warehouse of the Ortega Fisheries Co-op, the same cartel front whose night drop you took at Harbor Savings. Its shipments land here: cash waiting for the laundering run, in the strongroom or the count room; rifles in two of the shipping containers in the yard; and product, boxed as frozen fish in a freezer chamber or the packing hall. The Co-op guards it with its own gunmen, who carry no pagers and will not surrender, and the gunfire brings the police within a couple of minutes. Breach the warehouse, carry the thermite to the product and burn it, and secure at least four bags of cash and weapons. Product you carry out before the burn is a bonus. Then hold until the van or the boat arrives."
+item.loot.weapon_crate.name,Weapon Crate
+item.loot.weapon_crate.desc,"A crate of rifles out of a Co-op container, packed in grease paper. Heavy and slow, and worth every bruise."
+item.loot.contraband.name,Contraband
+item.loot.contraband.desc,"Vacuum-packed bricks boxed as frozen fish. Reyes' buyer takes it at a discount, so it pays, but it doesn't count toward the job."
+item.loot.thermite.name,Thermite Bag
+item.loot.thermite.desc,"Your own kit: enough thermite to burn out a freezer room. Heavy, worth nothing at payday, and the job fails without it."
+objective.dockside_burn.cartel,Thin out the Co-op's gunmen before the police arrive
+objective.dockside_burn.breach,Get into the warehouse
+objective.dockside_burn.product,Find the product
+objective.dockside_burn.burn,Burn the product with the thermite
+objective.dockside_burn.strongroom,Drill the strongroom door
+objective.dockside_burn.count_cage,Open the cash cage in the count room
+objective.dockside_burn.containers,Find the weapons containers
+objective.dockside_burn.secure,Secure the bags ({count}/{total})
+objective.dockside_burn.escape_wait,Hold until the escape arrives
+objective.dockside_burn.escape,Get to the escape
+item.asset.sniper_position.name,Sniper position
+item.asset.sniper_position.desc,"A counter-sniper spot is ready for you, with an ammo bag waiting: the roof door left unlocked, or a ladder up the double-stacked container."
+item.asset.thermite_drop.name,Thermite drop
+item.asset.thermite_drop.desc,The thermite bag is left here instead of at your start: a shorter carry to the burn.
+item.asset.gangway_raised.name,Raised gangway
+item.asset.gangway_raised.desc,A harbour hand swings the Pier 10 gangway away before you arrive. The police lose their way in from the east.
+item.asset.intel_containers.name,Insider: weapons containers
+item.asset.intel_containers.desc,Reyes' contact marks which yard containers hold the rifles.
+item.asset.lift_power.name,Powered goods lift
+item.asset.lift_power.desc,"Someone makes sure the goods lift has power tonight, so count-room bags ride down two at a time."
+ui.preplan.point.pp_spawn_gate,Gate: Ferro Street
+ui.preplan.point.pp_spawn_lane,West lane: cut in the fence
+ui.preplan.point.pp_spawn_pontoon,Pontoon: by launch
+ui.preplan.point.pp_drop_gatehouse,Behind the gatehouse
+ui.preplan.point.pp_drop_lane,West lane: by the fire stair
+ui.preplan.point.dockside_burn.pp_drop_quay,Quay net store
+ui.preplan.point.pp_drop_platform,Hall platform
+ui.preplan.point.pp_escape_gate,Van at the weighbridge
+ui.preplan.point.pp_escape_lane,Van in the west lane
+ui.preplan.point.dockside_burn.pp_escape_boat,Launch at the pontoon
+ui.preplan.point.pp_perch_roof,Office roof
+ui.preplan.point.pp_perch_stack,Double-stacked container
+ui.preplan.point.pp_gangway,Pier 10 gangway
+voice.vo.reyes.briefing_dockside_burn_1,"Ortega Cold Storage, Pier 9. The Co-op says it freezes fish. It freezes cash, guns and product, and its own boys guard it."
+voice.vo.reyes.briefing_dockside_burn_2,"The Co-op thinks the harbor's theirs because nobody's ever argued. We're arguing. Take the money, take the guns, and torch whatever they were going to sell."
+voice.vo.reyes.briefing_dockside_burn_3,"Four bags of cash or rifles, and the product burning: that's the job. Any product you carry out first, my buyer takes at a discount. I want smoke over Pier 9 by sunrise."
+voice.vo.vance.briefing_dockside_burn_1,"Hollis's sort of evening, darling: a freezer full of men with guns. I only put my name on it for the commission."
+voice.vo.vance.briefing_dockside_burn_2,"If anything in there has a frame or a hallmark, it comes to me. The rest you may burn as you please."
+voice.vo.accountant.briefing_dockside_burn_1,The Co-op's cold store carries its inventory at a valuation nobody has ever audited. I would like it written down to zero.
+voice.vo.accountant.briefing_dockside_burn_2,"Take what can be sold and destroy what cannot. A competitor's losses are a perfectly respectable kind of profit."
+voice.vo.mercer.briefing_dockside_burn_1,"Ten past five, fog on the water, and no quiet option. The Co-op's gunmen start on their posts, so take a few down before the shooting wakes the rest."
+voice.vo.mercer.briefing_dockside_burn_2,"Once it's loud, the police are a minute or two out. Get the thermite to the product, get four bags to the ride, and pick a place you can hold."
+voice.vo.mercer.dockside_burn_intro,"Ortega Cold Storage. The Co-op's gunmen haven't noticed you yet. Keep it that way as long as you can."
+voice.vo.reyes.dockside_burn_contact_intro,"Hammer here. Everything in that cold store is mine now. Whatever you can't carry, burns."
+voice.vo.mercer.dockside_burn_cartel_awake,That's woken them. The Co-op's boys don't carry pagers and they don't put their hands up. Put them down.
+voice.vo.mercer.dockside_burn_police_called,Gunfire on the docks. Somebody's calling it in.
+voice.vo.mercer.dockside_burn_breach,"You're inside. The product's in one of the freezer chambers or the packing hall. Find it."
+voice.vo.mercer.dockside_burn_product_found,"There's the product. Bag what you want, then the thermite goes on the burn point."
+voice.vo.mercer.dockside_burn_thermite_reminder,Nothing burns without the thermite bag. Somebody bring it.
+voice.vo.mercer.dockside_burn_burn_started,Thermite's lit. Stay clear of that room.
+voice.vo.mercer.dockside_burn_burn_done,"Fire shutters are down. That room's gone, and so is anything you left in it."
+voice.vo.mercer.dockside_burn_strongroom_drill,"Thermal drill's on the strongroom door. It's slow and it will jam. Hold the anteroom."
+voice.vo.mercer.dockside_burn_drill_jam,Drill's jammed. Get back on it.
+voice.vo.mercer.dockside_burn_strongroom_open,"Strongroom's open. Shrink-wrapped cash, pallets of it. Start bagging."
+voice.vo.mercer.dockside_burn_count_cage,"The cash is in a cage in the count room upstairs. Drill it or blow it, then get the bags down."
+voice.vo.mercer.dockside_burn_lift_dead,"Goods lift's dead. The breaker's in the electrical room off the office corridor, or carry the bags down the stairs."
+voice.vo.mercer.dockside_burn_containers_hint,"Two of those containers hold the rifles. Look for the Co-op's brass padlocks, not the customs seals."
+voice.vo.mercer.dockside_burn_weapons_found,"Rifle crates. They're heavy, so no sprinting. Get them to the ride."
+voice.vo.mercer.dockside_burn_sniper_crane,Sniper in the crane cab across the slip. Stay off the apron.
+voice.vo.mercer.dockside_burn_sniper_roof,"Shooter on the ice company roof. He's got the lane and the quay."
+voice.vo.mercer.dockside_burn_gangway,The Pier 10 gangway is down. Expect police from the east.
+voice.vo.mercer.dockside_burn_reinforcements,Pickup at the gate. The Co-op's sent four more of its people.
+voice.vo.mercer.dockside_burn_fog_lifts,"Fog's lifting. The viaduct has a shooter's view now, and the boat will be slower."
+voice.vo.mercer.dockside_burn_required_secured,"Four bags and the product's burning. That's the job; I'm calling your ride. Anything more is a bonus."
+voice.vo.mercer.dockside_burn_van_eta,Van's {seconds} seconds out. Hold.
+voice.vo.mercer.dockside_burn_boat_eta,Launch is {seconds} seconds out. Hold the quay.
+voice.vo.mercer.dockside_burn_escape,"Ride's here. Bags in, and don't stop to watch the smoke."
+voice.vo.reyes.dockside_burn_payday,"Smoke over Pier 9 and the Co-op's rifles in my lockup. That's a good morning. You've earned it."
+music.glasshouse.name,Glass Ceiling
+music.night_deposit.name,Night Shift
+music.shadow_ledger.name,Off the Books
+music.dockside_burn.name,Cold Storage
+music.vault_hymn.name,Vault Hymn
+music.long_con.name,The Long Con
+music.last_call.name,Last Call
+ui.music.title,Music
+ui.music.heist_default,Heist default
+ui.music.heist_default_named,Heist default ({name})
+ui.music.locked,{name} (locked)
+ui.music.locked_rank,{name} (Notoriety {rank})
+ui.hub.station.jukebox,Jukebox
+ui.hub.station.jukebox.desc,"Listen through the crew's heist tracks. New ones come with Notoriety."
+ui.jukebox.title,Jukebox
+ui.jukebox.subtitle,"Every heist track the crew can play. Pick one for a job in pre-planning or the lobby."
+ui.jukebox.preview_missing,Track previews arrive with the music update.
+ui.jukebox.play,Play
+ui.jukebox.stop,Stop
+ui.jukebox.unlocked,Unlocked
+ui.jukebox.locked,Locked
+ui.jukebox.locked_rank,Locked: Notoriety {rank}
+ui.jukebox.idle,Nothing playing.
+ui.jukebox.now_playing,Now playing: {name}
+item.loot.gold.name,Gold Bars
+item.loot.gold.desc,"Twelve-kilo bars in a reinforced bag. The heaviest thing you will ever be glad to carry: no sprinting, no jumping, and worth it."
+item.loot.bearer_bonds.name,Bearer Bonds
+item.loot.bearer_bonds.desc,"Unregistered certificates, payable to whoever holds them. Light, flat, and nobody's name on them but yours."
+item.loot.server_drives.name,Server Drives
+item.loot.server_drives.desc,A rack's worth of drives in a padded case. Somebody pays well for what is on them.
+item.loot.parcels.name,Sealed Parcels
+item.loot.parcels.desc,"Tightly taped parcels from a back room nobody admits to. Light, and the buyer pays for the weight, not the questions."
+item.loot.painting_tidewater_saint.name,The Tidewater Saint
+item.loot.painting_tidewater_saint.desc,"A fisherman's saint in grey-green oils by Aurel Maske, cut from the stretcher and rolled. Light, and fragile in the wrong hands."
+item.loot.painting_widow_in_blue.name,Widow in Blue
+item.loot.painting_widow_in_blue.desc,"Henrike Sallow's portrait of a woman who never smiled for anyone. Rolled canvas, carried like a newborn."
+item.loot.painting_salt_orchard.name,The Salt Orchard
+item.loot.painting_salt_orchard.desc,"Teodor Wilk's orchard under a white sky, the gallery's poster piece. Rolled tight, worth more than the frame it left."
+item.loot.painting_lantern_bearer.name,The Lantern Bearer
+item.loot.painting_lantern_bearer.desc,"The centrepiece: a night procession by Ines Calloway, lit by one lantern. Rolled canvas, and the one the buyer asked for by name."
+heist.gallery_night.name,Gallery Night
+heist.gallery_night.subtitle,Halberd Gallery
+heist.gallery_night.brief,"The Halberd hangs four canvases a collector wants quietly gone. Odile wants them rolled, not framed."
+heist.meridian_federal.name,Meridian Federal
+heist.meridian_federal.subtitle,Meridian Federal Bank
+heist.meridian_federal.brief,"The biggest vault in the Financial District, and the Accountant has its floor plans. Cash, gold and bonds, if you can reach them."
+heist.rolling_thunder.name,Rolling Thunder
+heist.rolling_thunder.subtitle,Armored Convoy
+heist.rolling_thunder.brief,"Three armored trucks on the Southfield bypass, one bad turn from a standstill. Hollis brings the roadblock; you bring the saws."
+heist.afterhours.name,Afterhours
+heist.afterhours.subtitle,The Velvet
+heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rope. Hollis wants the back office emptied before the doors close."
+ui.jukebox.no_stems,{name} has no recording yet.
+ui.options.controls.scoreboard_mode,Scoreboard
+ui.scoreboard.title,Crew Tally
+ui.scoreboard.name,Crew
+ui.scoreboard.kills,Kills
+ui.scoreboard.specials,Specials
+ui.scoreboard.civilians,Civilians
+ui.scoreboard.downs,Downs
+ui.scoreboard.accuracy,Accuracy
+ui.scoreboard.headshots,Headshots
+ui.scoreboard.missing,—
+ui.scoreboard.pct,{value}%
+ui.scoreboard.you,{name} (you)
+ui.scoreboard.ai,{name} [AI]
+ui.awards.title,Crew Honours
+ui.awards.none,No honours handed out this time.
+ui.awards.most_kills.name,Body Count
+ui.awards.most_kills.desc,Most kills: {value}
+ui.awards.most_specials.name,Giant Slayer
+ui.awards.most_specials.desc,Most specials dropped: {value}
+ui.awards.most_accurate.name,Steady Hand
+ui.awards.most_accurate.desc,Best accuracy: {value}%
+ui.awards.most_headshots.name,Between the Eyes
+ui.awards.most_headshots.desc,Most headshots: {value}
+ui.awards.iron.name,Iron Spine
+ui.awards.iron.desc,Fewest times downed: {value}
+ui.awards.civilian_friendly.name,Clean Hands
+ui.awards.civilian_friendly.desc,No civilians harmed
+ui.chat.title,Crew Chat
+ui.chat.line,{name}:
+ui.chat.placeholder,"Type a message, Enter to send"
+ui.chat.rate_limited,Slow down: too many messages.
+ui.dropin.request.title,Drop-in request
+ui.dropin.request.body,{name} ({level}) wants to join.
+ui.dropin.request.auto_deny,Auto-deny in {seconds}s
+ui.dropin.request.more,{count} more waiting
+ui.dropin.accept,Accept
+ui.dropin.deny,Deny
+ui.dropin.unknown_player,Unknown player
+ui.dropin.join_button,Drop In
+ui.dropin.joining,Joining the heist
+ui.dropin.waiting_host,Waiting for the host to accept...
+ui.dropin.progress,Loading the heist: {pct}%
+ui.dropin.joined,You are in. Dropping in...
+ui.dropin.cancel,Cancel
+ui.dropin.failed.denied,The host denied your request.
+ui.dropin.failed.timeout,The host did not answer in time.
+ui.dropin.failed.full,The crew is full.
+ui.dropin.failed.cancelled,You cancelled the join.
+ui.dropin.failed.host_lost,Lost the connection to the host.
+ui.dropin.failed.unknown,Could not join the heist.
+ui.kick.button,Kick
+ui.kick.title,Kick player
+ui.kick.confirm,Kick {name} from the crew?
+ui.kick.yes,Kick
+ui.kick.no,Cancel
+ui.lobby.error.kicked,The host removed you from the lobby.
+ui.lobby.code.title,Lobby code
+ui.lobby.code.value,Lobby code: {code}
+ui.lobby.code.copy,Copy
+ui.lobby.code.copied,Copied to the clipboard.
+ui.lobby.code.wan_hint,"Works on your local network. For internet play, forward the UDP port on your router and share your public address."
+ui.lobby.code.unavailable,No local IPv4 address found: share your address and port instead.
+ui.lobby.code.hint,ABCD-EFGH
+ui.lobby.code.join,Join by Code
+ui.lobby.code.error.empty,Enter a lobby code.
+ui.lobby.code.error.char,"That code has a character lobby codes never use (only 0-9 and A-Z, without U)."
+ui.lobby.code.error.length,A lobby code has 8 or 11 characters.
+ui.lobby.code.error.checksum,That code has a typo: check it with the host.
+ui.lobby.code.error.format,That is not a valid lobby code.
+ui.hub.station.notoriety,The Old Press
+ui.hub.station.notoriety.desc,"Notoriety: rank up, pick rewards and see what each rank unlocks."
+ui.prompt.station.board,Press {key} to check the Board
+ui.prompt.station.planning,Press {key} to plan a job
+ui.prompt.station.armory,Press {key} to open the armory
+ui.prompt.station.masks,Press {key} to pick a mask
+ui.prompt.station.jukebox,Press {key} to choose the music
+ui.prompt.station.notoriety,Press {key} to check your Notoriety
+ui.prompt.station.range,Press {key} to enter the firing range
+ui.prompt.station.crew,Press {key} to call the crew
+ui.hub.pause.title,Paused
+ui.hub.pause.resume,Resume
+ui.hub.pause.quick_stations,Quick Stations
+ui.options.controls.safehouse_hub,Safehouse
+ui.options.controls.safehouse_hub.walk,Walk Around (3D)
+ui.options.controls.safehouse_hub.menu,Station Menu (2D)
+item.throwable.frag.name,Frag Grenade
+item.throwable.frag.desc,"Pull, count, throw. A fragmentation charge that tears through everything within five meters when the fuse runs out."
+item.throwable.concussion.name,Concussion Grenade
+item.throwable.concussion.desc,"A flash and a bang that leaves nobody hurt and everybody reeling. Stuns the enemies caught in the blast."
+item.throwable.incendiary.name,Incendiary Grenade
+item.throwable.incendiary.desc,"Bursts into a pool of fire that burns anyone who walks through it. Good for closing a corridor."
+item.throwable.throwing_knife.name,Throwing Knives
+item.throwable.throwing_knife.desc,"Three balanced blades. Silent, and one clean hit drops most men where they stand."
+ui.loadout.heister,Heister
+ui.heister.any,Any Free Heister
+ui.loadout.heister_taken,{name} (taken)
+ui.lobby.slot.heister,Heister: {name}
+ui.lobby.slot.heister_fallback,"Heister: {name} ({pick} was taken)"
+ui.lobby.dropin.title,Drop-in
+ui.lobby.dropin.ask,Ask me first
+ui.lobby.dropin.auto,Allowed
+ui.lobby.dropin.off,Not allowed
+ui.dropin.failed.kicked,The host removed you from this crew earlier.
+ui.dropin.failed.off,The host does not allow drop-in.
+ui.chat.kick_notice,{name} was removed from the crew.
+ui.options.gameplay.dropin_policy,Drop-in (when hosting)
+ui.options.gameplay.dropin_policy.ask,Ask Me
+ui.options.gameplay.dropin_policy.auto,Let Players In
+ui.options.gameplay.dropin_policy.off,Off
+ui.options.tab.gameplay,Gameplay
+ui.lobby.dropin_join,Drop In to a Running Heist
+ui.lobby.dropin_join.hint,"Join a crew whose heist has already started (the host may have to accept you)."
+ui.dropin.failed.unreachable,Could not reach the host. Check the address and port.

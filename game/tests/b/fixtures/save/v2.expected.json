@@ -1,5 +1,5 @@
 {
-	"version": 5,
+	"version": 6,
 	"profile_name": "Ghost",
 	"cash": 1500,
 	"stash": 64000,
@@ -16,7 +16,7 @@
 		"secondary": "weapon.kestrel_p9", "secondary_mods": ["mod.p9_suppressor"],
 		"melee": "melee.folding_knife", "throwable": "", "deployable": "deployable.body_bag_case",
 		"deployable_secondary": "", "armor": "armor.tailored_suit", "mask": "mask.gilded_heron",
-		"perk_deck": "perk.hustler", "perk_deck_cards": 0,
+		"perk_deck": "perk.hustler", "heister": "", "perk_deck_cards": 0,
 		"skills": {"skill.slipstream.light_step": 2}
 	},
 	"skill_sets": [{"skill.slipstream.light_step": 2}],
@@ -25,6 +25,11 @@
 	"unlocks": [],
 	"achievements": {},
 	"pro_job_locks": {},
+	"notoriety": 0,
+	"notoriety_xp": 0,
+	"notoriety_choices": {},
+	"held_skill_sets": [],
+	"music_choice": "",
 	"stats": {"heists_completed": 3},
 	"settings": {}
 }

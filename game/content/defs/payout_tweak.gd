@@ -19,9 +19,10 @@ extends Resource
 @export var base_xp_success: int = 2000
 ## ◇ Base XP on failure = base_xp_success x this. No loot XP on failure.
 @export var base_xp_failure_fraction: float = 0.25
-## ◇ Base XP per secured loot bag (bags in xp_loot_excluded_ids don't count).
+## ◇ Base XP per secured loot bag (tool bags, LootDef.is_tool (D-068), and bags in xp_loot_excluded_ids
+## don't count).
 @export var xp_per_loot_bag: int = 250
-## Loot ids that never earn bag XP (body bags are loot bags, but not profit).
+## Loot ids that never earn bag XP besides tools (body bags are loot bags, but not profit).
 @export var xp_loot_excluded_ids: Array[StringName] = [&"loot.body_bag"]
 ## Pro job XP multiplier (PD2: +20%).
 @export var pro_job_xp_mult: float = 1.2

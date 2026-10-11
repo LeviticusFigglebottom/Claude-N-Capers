@@ -12,7 +12,8 @@ The idle / ads_idle / sprint / draw / holster clips are the generic long-gun bui
   (``shell_in_1`` / ``shell_in_2``, or ``round_in``), then lifts the fore-end and the gun snaps shut
   (``breech_close``).
 * ``crossbow``: fire = recoil + ``string_release``. ``reload`` (= ``reload_empty``): muzzle raised, the
-  left hand hooks the ``String`` (``cock``) and pulls it back to the latch (``string_back``), takes a
+  left hand hooks the string centre (where ``StringUpper`` meets ``StringLower``; ``cock``) and pulls it
+  back to the latch on the Magwell (``string_back``; ``string_centre``), takes a
   bolt from the quiver (``bolt_show``, off screen; the bolt rides the ``magazine`` bone in the hand) and
   lays it on the rail (``bolt_in``).
 * ``lever``: the lever cycle is part of fire / fire_ads (``lever_open`` / ``lever_close``, like the pump):
@@ -151,9 +152,14 @@ def clip_break_reload(kit, s: FPSet, N: int):
 # =============================================================================================
 # crossbow
 # =============================================================================================
+#: the cocking pull's key ease (hook(0) at cock -> hook(1) at string_back); string_pos follows the same curve
+STRING_PULL_EASE = "heavy"
+
+
 def string_pos(f: int, ev: dict | None, fire: bool = False) -> float:
-    """``String`` position 0 (released, scene pose) .. 1 (latched): fire = 1 -> 0 over frames 0..1;
-    reload: 0 until the hook (cock), follows the hand back to the latch by string_back."""
+    """String centre position 0 (released, the Vise's scene pose) .. 1 (latched): fire = 1 -> 0 over frames 0..1;
+    reload: 0 until the hook (cock), then follows the hand back to the latch by string_back with the hand's own
+    ``heavy`` key ease ((f - cock) / (string_back - cock))^2.4, so the hooked fingers stay on the centre."""
     if fire:
         return 1.0 if f <= 0 else 0.0
     c, sb = ev["cock"], ev["string_back"]
@@ -161,7 +167,15 @@ def string_pos(f: int, ev: dict | None, fire: bool = False) -> float:
         return 0.0
     if f >= sb:
         return 1.0
-    return smooth(c, sb, f)
+    return float(A.EASES[STRING_PULL_EASE]((f - c) / (sb - c)))
+
+
+def string_centre(s: FPSet, t: float) -> np.ndarray:
+    """The string centre (where ``StringUpper`` meets ``StringLower``) in Blender weapon space for
+    ``string_pos`` ``t`` (0 = released, 1 = latched on the Magwell). ENV A bends each half from its prod-tip
+    anchor to this point."""
+    m = s.markers
+    return m["string_rest"] + (m["string_latched"] - m["string_rest"]) * t
 
 
 def clip_crossbow_reload(kit, s: FPSet, N: int):
@@ -179,7 +193,7 @@ def clip_crossbow_reload(kit, s: FPSet, N: int):
 
     def hook(t: float, shape="grip") -> Hand:
         """Fingers hooked over the string centre, ``t`` = 0 (released) .. 1 (latched)."""
-        p = m["string_rest"] + (m["string_latched"] - m["string_rest"]) * t + v3(-0.004, 0.012, 0.006)
+        p = string_centre(s, t) + v3(-0.004, 0.012, 0.006)
         return kit.left_w(p, (0.25, 0.55, -0.80), (0.0, 0.85, 0.50), pole=(-0.6, -0.5, -0.6),
                           shape=hand_shape(shape, 0.75) if shape == "grip" else shape, share=0.80, off=0.010)
     bolt_grip = kit.left_w(m["magwell"] + v3(-0.004, 0.030, 0.012), (0.35, 0.80, -0.45), (0.25, 0.05, -0.97),
@@ -193,7 +207,7 @@ def clip_crossbow_reload(kit, s: FPSet, N: int):
     keys = [K(0, hip, sup, g, blade=bl),
             K(c - 5, tilt, hook(0.0, "flat").moved(v3(0.0, 0.03, 0.04)), g, blade=bl, arc_l=(-0.04, 0.0, 0.04)),
             K(c, tilt, hook(0.0), g, blade=bl, ease="out"),
-            K(sb, pull, hook(1.0), g, blade=bl, ease="heavy"),
+            K(sb, pull, hook(1.0), g, blade=bl, ease=STRING_PULL_EASE),
             K(sb + min(3, max(1, (bs - sb) // 3)), tilt, hook(1.0, "relaxed").moved(v3(-0.02, 0.0, 0.03)), g, blade=bl, ease="out"),
             K(bs, tilt, bolt_grip, g, mag=mag_for(pouch), blade=bl, arc_l=(-0.06, 0.0, 0.0)),
             K(bi - 7, tilt, bolt_grip, g, mag=("w", I3.copy(), v3(-0.004, -0.075, 0.030)), blade=bl,

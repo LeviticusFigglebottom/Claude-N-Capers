@@ -1,5 +1,5 @@
 ## Ammo (mag / reserve of the equipped slot) and equipment counts (deployable, throwable, cable
-## ties, body bags).
+## ties, body bags). Hidden in civilian mode (S1.3: no gear until the gear pickup, D-065).
 class_name AmmoPanel
 extends HudWidget
 
@@ -19,10 +19,11 @@ func build() -> void:
 
 
 func watched_signals() -> Array[StringName]:
-	return [&"ammo_changed", &"inventory_changed"]
+	return [&"ammo_changed", &"inventory_changed", &"player_mode_changed"]
 
 
 func refresh() -> void:
+	visible = player_mode() != &"civilian"
 	var slots: Dictionary = prop(&"ammo", {}) as Dictionary
 	var slot: int = int(prop(&"equipped_slot", Enums.WeaponSlot.SECONDARY))
 	var a: Dictionary = slots.get(slot, {}) as Dictionary

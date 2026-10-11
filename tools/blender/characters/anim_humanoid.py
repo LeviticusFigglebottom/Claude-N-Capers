@@ -18,6 +18,7 @@ Locomotion clips plant the stance foot exactly: at ``speed`` m/s (for 1.78 m; mu
 
 import _anim as anim
 import _anim_humanoid as lib
+import _anim_p5 as p5
 import _rig as rig
 
 TRI_BUDGET = 35000
@@ -92,9 +93,46 @@ CLIPS = {
                     "events": {"bang_1": 6, "bang_2": 12, "bang_3": 18}},
     "heal_ally": {"frames": 30, "loop": False, "speed": 0.0, "priority": 3, "events": {"heal": 12}},
     "dozer_walk": {"frames": 33, "loop": True, "speed": 1.6, "priority": 3, "events": {"step_r": 0, "step_l": 16}},
+    # NPC ambient set (priority 4, heist casting: night_deposit / shadow_ledger civilians and staff). Props ride
+    # HandR/Socket (SOURCE.txt `<prop>_grip`); seated clips share sit_chair's seat (0.47 m) and desk (0.74 m).
+    "desk_work": {"frames": 360, "loop": True, "speed": 0.0, "priority": 4},
+    "phone_seated": {"frames": 240, "loop": True, "speed": 0.0, "priority": 4},
+    "sit_chair_watch": {"frames": 300, "loop": True, "speed": 0.0, "priority": 4},
+    "mug_idle": {"frames": 240, "loop": True, "speed": 0.0, "priority": 4, "events": {"sip": 105}},
+    "mug_carry_walk": {"frames": 34, "loop": True, "speed": 1.3, "priority": 4},
+    "mop": {"frames": 120, "loop": True, "speed": 0.0, "priority": 4},
+    "sit_bed_read": {"frames": 300, "loop": True, "speed": 0.0, "priority": 4, "events": {"page_turn": 221}},
+    # cartel gunmen: hunched idle with a long gun held low across the body (weapon at HandR/Socket)
+    "idle_thug": {"frames": 105, "loop": True, "speed": 0.0, "priority": 4},
+    # police rappel (QC-41, NpcMotor one-way rappel links): one hop per loop down a vertical rope, facing the wall,
+    # in place; ENV A moves the root straight down at `speed` (2.5 m/s native: an 8 m skylight drop in ~3 hops).
+    # `land` = the feet hit the wall (thud). Rope / hand / wall placement: SOURCE.txt `rappel_rope`.
+    "rappel": {"frames": 30, "loop": True, "speed": 2.5, "priority": 3, "axis": "down", "events": {"land": 0}},
+    # P5 NPC ambient set (priority 5, D3-02: Afterhours, Gallery Night, Meridian Federal, Rolling Thunder casting), all
+    # loops. Dances: 8 beats at 120 BPM (beat every 15 f from frame 0; speed_scale = track_bpm / 120). Bar, counter,
+    # painting, seat and wall placement and the new prop grips: SOURCE.txt (`p5_placement`, `<prop>_grip`).
+    "dance_a": {"frames": 120, "loop": True, "speed": 0.0, "priority": 5, "bpm": 120, "beats": 8},
+    "dance_b": {"frames": 120, "loop": True, "speed": 0.0, "priority": 5, "bpm": 120, "beats": 8},
+    "dance_c": {"frames": 120, "loop": True, "speed": 0.0, "priority": 5, "bpm": 120, "beats": 8},
+    "bartender_wipe": {"frames": 180, "loop": True, "speed": 0.0, "priority": 5},
+    "bartender_pour": {"frames": 150, "loop": True, "speed": 0.0, "priority": 5,
+                       "events": {"lift": 2, "pour_start": 39, "pour_end": 77, "set_down": 110}},
+    "bouncer_idle": {"frames": 300, "loop": True, "speed": 0.0, "priority": 5, "events": {"watch": 222}},
+    "teller_count": {"frames": 240, "loop": True, "speed": 0.0, "priority": 5,
+                     "events": {"count_start": 6, "count_end": 120, "stack_down": 144, "tap_1": 177, "tap_2": 189}},
+    "curator_inspect": {"frames": 360, "loop": True, "speed": 0.0, "priority": 5,
+                        "events": {"step_back_r": 93, "step_back_l": 110, "step_fwd_l": 256, "step_fwd_r": 272}},
+    "walk_text": {"frames": 36, "loop": True, "speed": 1.2, "priority": 5},
+    "cower_seated": {"frames": 90, "loop": True, "speed": 0.0, "priority": 5},
+    "cower_stand": {"frames": 150, "loop": True, "speed": 0.0, "priority": 5, "events": {"flinch_1": 39, "flinch_2": 108}},
 }
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)
+#: Clips whose solved frames build() keeps for SOURCE.txt measurements.
+KEEP = ("sit_bed_read", "mop", "rappel", "bartender_pour", "bartender_wipe", "teller_count", "curator_inspect",
+        "cower_seated", "cower_stand", "walk_text", "dance_a", "dance_b", "dance_c", "bouncer_idle")
+#: The P5 set (D3-02): the SOURCE check row also reports contact_slide (planted heel / ball / toe tip, mm per frame).
+P5 = sorted(name for name, row in CLIPS.items() if row["priority"] == 5)
 #: Contract names not delivered by this asset yet (none since the P3 specials).
 NOT_YET = []
 
@@ -116,8 +154,11 @@ def build(ctx) -> None:
     clips = lib.clips(sk, CLIPS)
     bpy.context.scene.render.fps = anim.FPS
     report = []
+    keep = {}
     for name in sorted(CLIPS):
         baked = anim.bake(solver, clips[name])
+        if name in KEEP:
+            keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
         row = (f"{name}: {CLIPS[name]['frames']}f {CLIPS[name]['frames'] / anim.FPS:.2f}s"
@@ -125,6 +166,9 @@ def build(ctx) -> None:
                f" reach_err={c['max_reach_err_m'] * 1000:.1f}mm step={c['max_joint_step_deg']:.1f}deg")
         if "max_foot_slide_mm" in c:
             row += f" slide={c['max_foot_slide_mm']:.3f}mm/f"
+        elif name in P5:
+            cs, _low = p5.contact_slide(sk, baked.frames)
+            row += f" contact_slide={cs:.3f}mm/f"
         report.append(row)
         print(f"[anim] {row}")
     for pb in arm.pose.bones:
@@ -151,6 +195,7 @@ def build(ctx) -> None:
         f"up the handle (matches char_bulwark_shield); handle at Godot ({hx:.3f}, {hz:.3f}, {-hy:.3f}) m in the braced "
         f"stance, the shield tilted {lib.SHIELD_PITCH:g} deg top-back and turned {lib.SHIELD_YAW:g} deg; pistol "
         "one-handed at HandR/Socket just outside the shield's right edge")
+    _npc_source(ctx, sk, keep)
     for name in sorted(CLIPS):
         row = CLIPS[name]
         extra = f"{row['frames']}f loop={row['loop']} speed_mps={row['speed']}"
@@ -160,9 +205,132 @@ def build(ctx) -> None:
             extra += f" root_turn_deg={row['turn_deg']}"
         if "axis" in row:
             extra += f" travel_axis={row['axis']}"
+        if "bpm" in row:
+            extra += f" bpm={row['bpm']} beats={row['beats']} beat_frames={row['frames'] // row['beats']}"
         ctx.source_extra[f"clip.{name}"] = extra
     for i, row in enumerate(report):
         ctx.source_extra[f"check.{i:02d}"] = row
+
+
+def _xform(basis, origin) -> str:
+    (x, y, z), (ox, oy, oz) = basis, origin
+    return (f"basis x=({x[0]:.4f},{x[1]:.4f},{x[2]:.4f}) y=({y[0]:.4f},{y[1]:.4f},{y[2]:.4f}) "
+            f"z=({z[0]:.4f},{z[1]:.4f},{z[2]:.4f}) origin=({ox:.4f},{oy:.4f},{oz:.4f})")
+
+
+#: Prop conventions in Godot axes (the prop scene's own frame); the grip transform puts that frame relative to
+#: HandR/Socket (child Node3D of the Socket with this transform, or prop = socket * grip).
+PROP_DOCS = {
+    "phone": "phone 0.072 x 0.147 x 0.009 m slab: origin at its centre, +Y = the speaker end, the screen faces +Z, "
+             "held to the right ear in phone_call / phone_seated (palm on the back, fingers up the phone)",
+    "mug": "mug r 0.041 m, h 0.095 m: origin at the base centre, +Y = up the mug axis, handle toward -X; held around "
+           "the body in the right hand (thumb on top); level in mug_carry_walk / mug_idle, tipped to the lips at `sip`",
+    "mop": "string mop: origin at the floor end of the shaft (the head's centre on the floor), +Y = up the shaft (length "
+           "{length} m), the right fist {r} m up the shaft (the socket, thumb toward the top), the left fist at {l} m "
+           "(the HandL weapon-grip convention on the same shaft axes)",
+    "book": "open book 0.30 x 0.23 x 0.022 m: origin at its centre, +Y = the top edge, the pages face +Z (toward the "
+            "reader); right hand behind the right cover (thumb side over the edge), the left hand behind the left cover "
+            "except during the page turn",
+    "rag": "bar rag (a folded towel) 0.20 x 0.022 x 0.13 m: origin at the centre of its underside, +Y = up; flat under "
+           "the right palm (fingers toward -Z), lying on the bar top in bartender_wipe",
+    "bottle": "liquor bottle r 0.04 m, 0.30 m tall (mouth at +Y 0.30): origin at the base centre, +Y = up the axis; the "
+              "right hand round the body 0.15 m up from its +X side (thumb up); bartender_pour stands it on the bar at frame 0 "
+              "and from `set_down` on",
+    "glass": "tumbler r 0.04 m, h 0.10 m: origin at the base centre, +Y = up; the LEFT hand round it from its -X side, "
+             "standing on the bar for the whole of bartender_pour",
+    "cash": "banknote stack 0.156 x 0.015 x 0.066 m (+X = the long edge, +Y = the face normal, Z = the short edge): origin "
+            "at its centre; lying in the LEFT palm (palm on the -Y face, fingers along +X) in teller_count",
+}
+
+
+def _npc_source(ctx, sk, keep: dict) -> None:
+    """SOURCE.txt facts for the NPC ambient set (props at HandR/Socket, furniture and bed placement)."""
+    import numpy as np  # noqa: PLC0415
+
+    for prop, doc in PROP_DOCS.items():
+        basis, origin = lib.prop_in_socket_godot(sk, prop)
+        doc = doc.format(length=lib.MOP_LENGTH, r=lib.MOP_GRIP_R, l=lib.MOP_GRIP_L)
+        hand = "HandL" if lib.GRIPS[prop]["sfx"] == "L" else "HandR"
+        ctx.source_extra[f"{prop}_grip"] = f"{_xform(basis, origin)} relative to {hand}/Socket; {doc}"
+    ctx.source_extra["npc_seat"] = (
+        f"sit_chair, desk_type, desk_work, phone_seated, sit_chair_watch: root on the floor under the seat centre, "
+        f"facing the desk; seat top {lib.SEAT_H:.2f} m (pelvis on it, thighs level, feet flat 0.40 m ahead), desk top "
+        f"{lib.DESK_Z:.2f} m with its front edge 0.20-0.25 m ahead of the root (keyboard 0.36 m ahead, mouse 0.27 m "
+        f"right; phone_seated's note pad 0.10 m left; sit_chair_watch's joystick/mouse 0.21 m right, monitors ahead "
+        f"from -25 to +25 deg)")
+    bed = keep.get("sit_bed_read")
+    if bed is not None:
+        s0 = bed.frames[0]
+        hips = float(s0.P["hips"][2])
+        heel = max(float(s0.P[f"foot.{x}"][1]) for x in "LR")
+        probe = anim.probe_for(sk)
+        V = probe.posed(s0)
+        back = V[(V[:, 2] > 0.15 * sk.scale) & (V[:, 2] < 0.6 * sk.scale)]
+        by = float(back[:, 1].min())
+        bz = float(back[np.argmin(back[:, 1]), 2])
+        v = s0.P["neck"] - s0.P["spine"]
+        rec = float(np.degrees(np.arctan2(-v[1], v[2])))
+        ctx.source_extra["bed_pose"] = (
+            f"sit_bed_read: the root is ON THE MATTRESS TOP under the pelvis (place it at the sleeping surface, e.g. a "
+            f"0.55 m bed -> root at y 0.55), facing the foot end; hips joint {hips:.3f} m above the root, buttocks and "
+            f"heels on the surface (lowest skin {probe.margin * 1000:.0f} mm above it), ankles {heel:.2f} m ahead "
+            f"(mattress >= {heel + 0.25:.2f} m ahead of the root), trunk reclined {rec:.0f} deg on pillows/headboard "
+            f"whose face meets the back {-by:.2f} m behind the root at {bz:.2f} m height")
+    mop = keep.get("mop")
+    if mop is not None:
+        pts = np.array([lib.prop_frame(sk, s, "mop")[1] for s in mop.frames])
+        ctx.source_extra["mop_sweep"] = (
+            f"mop: in place, the head sweeps x {pts[:, 0].min():.2f}..{pts[:, 0].max():.2f} m, "
+            f"{pts[:, 1].min():.2f}..{pts[:, 1].max():.2f} m ahead of the root (two sweeps per loop); keep ~1 m clear ahead")
+    ctx.source_extra["idle_thug_weapon"] = (
+        f"idle_thug: the long gun at HandR/Socket (the weapon grip convention), held low across the body: muzzle "
+        f"{-lib.THUG_MUZZLE_PITCH:g} deg below the horizontal, turned {lib.THUG_MUZZLE_YAW:g} deg to the left; the left "
+        f"hand loosely under the front of the receiver (0.19 m behind LeftHandIK), not on LeftHandIK")
+    _rappel_source(ctx, sk, keep.get("rappel"))
+    ctx.source_extra["mug_carry_walk_speed"] = (
+        "mug_carry_walk is a careful carry at 1.3 m/s native (walk is 1.6); speed_scale = v / 1.3")
+    _p5_source(ctx, sk, keep)
+
+
+def _p5_source(ctx, sk, keep: dict) -> None:
+    """SOURCE.txt facts for the P5 NPC set (D3-02): dance tempo, bar / counter / painting / seat / wall placement."""
+    for key, text in p5.source_notes(sk, CLIPS, keep).items():
+        ctx.source_extra[key] = text
+
+
+def _rappel_source(ctx, sk, baked) -> None:
+    """SOURCE.txt ``rappel_rope``: where the rope, the fists and the wall are relative to the root (Godot axes)."""
+    import numpy as np  # noqa: PLC0415
+
+    if baked is None:
+        return
+    row = CLIPS["rappel"]
+    N, v = row["frames"], row["speed"]
+
+    def grip(s, sfx):
+        _r, t_off = anim.grip_offset(sk, sfx)
+        return s.P[f"hand.{sfx}"] + s.W[f"hand.{sfx}"] @ sk.B[f"hand.{sfx}"] @ t_off
+
+    def g(p) -> str:                       # Blender (x, y fwd, z up) -> Godot (x, y up, -z fwd)
+        return f"({p[0]:.3f},{p[2]:.3f},{-p[1]:.3f})"
+
+    s0 = baked.frames[0]
+    gl, gr = grip(s0, "L"), grip(s0, "R")
+    ball = max(float(s0.P[f"toe.{x}"][1]) for x in "LR")
+    gls = np.array([grip(s, "L") for s in baked.frames])
+    zl = np.maximum(gls[:, 2] - gls[0, 2], 0.0)
+    rise = v * lib.RAPPEL_CONTACT / anim.FPS
+    d = lib.RAPPEL_ROPE_D * sk.scale
+    ctx.source_extra["rappel_rope"] = (
+        f"rappel: the rope is a vertical line at Godot x=0.000 z={-d:.3f} (root space, {d:.2f} m in front of the root; "
+        f"the character faces the wall, -Z). Fists (grip centres = HandL/HandR Socket origins, rope along socket +Y) at "
+        f"frame 0: guide HandL {g(gl)} on the line, brake HandR {g(gr)} at the right hip ({gr[0]:.2f} m right of the "
+        f"line: the tail runs from the descender at the harness through the brake fist, then hangs). Both fists ride "
+        f"the body: 0..+{zl.max():.2f} m above their frame-0 height during the loop (the body is braked "
+        f"for the {lib.RAPPEL_CONTACT} wall-contact frames, rising {rise:.3f} m against the root, then drops back). "
+        f"Wall: the balls of the feet brace at Godot z={-ball:.2f} (frames 0..{lib.RAPPEL_CONTACT}, world-still at "
+        f"speed_mps={v}); a free-hanging drop (skylight) just plays it without a wall. Root at the bottom of the link: "
+        f"the feet are {float(min(s.P[f'foot.{x}'][2] for s in baked.frames for x in 'LR')):.2f} m+ above it")
 
 
 def _proxy(ctx, arm) -> None:

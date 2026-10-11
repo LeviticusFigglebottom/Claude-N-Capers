@@ -11,10 +11,22 @@
 ## lengths are checked against ENV B's batch-3 data once it exists (DATA_PENDING until then).
 ## D-058: shotgun_box (box / drum-fed shotguns: rifle hold, shotgun kick, rock-in mag swap, charging
 ## handle on reload_empty); the lever gate <-> fore-end hand moves turn the wrist <= LEVER_MAX_STEP_DEG / frame.
+## D-063: a set's reload clips play at speed_scale = clip / reload_time_s for every weapon of the set, so one weapon
+## must match exactly and every weapon must sit within RELOAD_RATIO_MIN..MAX of the clip.
+## D2-04: a `bash` (quick melee with the gun out) in every gun set; the non-gun sets melee_knife / melee_blunt /
+## melee_blade, throwable, deploy_bag / deploy_small / deploy_sentry (clips, loops, events, data lengths);
+## with ENV B's real models: the support hand on LeftHandIK and, in ADS, the AimPoint on the camera axis with
+## the stock below the eye where it crosses the near plane (never enclosing the camera).
+## Vise two-half string (StringUpper / StringLower meeting at the string centre): fp.crossbow gives the latched
+## (on the Magwell) and released centres, curve.crossbow_<clip> the latch fraction per frame, and the left hand
+## pulls the centre from released to latched in the reload; ENV B's model rests released (cords meet there).
+## Arm skin weights change smoothly along every edge of the sleeves / cuffs / wrists (ARM_WEIGHT_GRADIENT_MAX).
 extends TestCase
 
 const GLB: String = "res://assets/characters/char_arms_fp/char_arms_fp.glb"
 const SOURCE: String = "res://assets/characters/char_arms_fp/SOURCE.txt"
+## D2-03 follow-up: crew heisters with a first-person sleeve variant char_arms_fp_<heister>.
+const HEISTERS: Array[String] = ["rook", "sable", "dutch", "wren"]
 const WEAPONS_DIR: String = "res://content/data/weapons"
 const FPS: float = 30.0
 const FINGERS: Array[String] = ["thumb", "index", "middle", "ring", "pinky"]
@@ -27,6 +39,49 @@ const DATA_PENDING: Array[String] = [
 	"akimbo", "revolver", "break_action", "lever", "bow", "crossbow", "launcher", "flamethrower", "saw", "minigun",
 	"shotgun_box",
 ]
+## D2-04 non-gun sets and their clips (lengths from MeleeDef / DeployableDef when that data exists).
+const ITEM_SETS: Array[String] = [
+	"melee_knife", "melee_blunt", "melee_blade", "throwable", "deploy_bag", "deploy_small", "deploy_sentry",
+]
+const ITEM_CLIPS: Dictionary = {
+	"melee": ["idle", "sprint", "draw", "holster", "swing", "charge_start", "charge", "charge_swing"],
+	"throwable": ["idle", "sprint", "draw", "holster", "throw", "throw_low"],
+	"deploy": ["idle", "draw", "holster", "place"],
+}
+const ITEM_EVENTS: Dictionary = {
+	"swing": ["hit", "done"], "charge_swing": ["hit", "done"], "charge_start": ["charged"], "draw": ["ready"],
+	"holster": ["gone"], "throw": ["release", "done"], "throw_low": ["release", "done"], "place": ["place", "done"],
+}
+## MeleeDef id fragments per melee set until MeleeDef.anim_set exists (as _arms_sets.MELEE_MATCH).
+const MELEE_MATCH: Dictionary = {
+	"melee_knife": ["knife", "dagger", "shank"],
+	"melee_blunt": ["baton", "bat", "club", "hammer", "pipe", "crowbar", "wrench"],
+	"melee_blade": ["machete", "sword", "katana", "axe", "cleaver"],
+}
+const DEPLOY_KINDS: Dictionary = {
+	"deploy_bag": ["ammo_bag", "doctor_bag", "body_bag_case", "armor_bag"],
+	"deploy_small": ["ecm", "trip_mine", "fak"], "deploy_sentry": ["sentry"],
+}
+## D-063: every weapon of a set plays its reload at clip / reload_time_s within these bounds.
+const RELOAD_RATIO_MIN: float = 0.75
+const RELOAD_RATIO_MAX: float = 1.35
+## Reference model per set for the marker fit checks (ENV B's glbs).
+const REF_WEAPON: Dictionary = {
+	"pistol": "kestrel_p9", "smg": "hornet_9", "rifle": "corsair_ar", "shotgun": "plowman_12", "lmg": "rampart_lmg",
+	"sniper": "heron_308", "revolver": "marshal_357", "break_action": "reaper_db", "lever": "shrike_44",
+	"crossbow": "vise_crossbow", "launcher": "thumper_40", "flamethrower": "furnace_ft", "saw": "rotor_saw",
+	"minigun": "cyclone_rotary", "shotgun_box": "brute_12",
+}
+## Sets without sight alignment in ADS (a raised hold instead).
+const NO_SIGHTS: Array[String] = ["saw", "minigun"]
+## ADS stock check (D2-04): no weapon geometry may cross the camera's near plane inside the view, i.e. where a
+## stock passes under the eye it is cut by the near plane below the view's bottom edge (half height =
+## near x tan(37.5 deg) at the crew camera's 75 deg FOV; 16:9 half width). CAMERA_NEAR is the viewmodel near
+## plane proposed to the lead (0.02 m; the Camera3D default 0.05 m cuts every shouldered stock, the accepted
+## smg / rifle / shotgun ones too).
+const CAMERA_NEAR: float = 0.02
+const NEAR_HALF_H: float = 0.0153
+const NEAR_HALF_W: float = 0.0272
 ## Largest single-frame rotation (deg) of any arm joint in the lever's gate <-> fore-end pieces (B4-18 polish).
 const LEVER_MAX_STEP_DEG: float = 25.0
 ## One reload motion whatever the ammo state: reload_empty is the same clip (timed by reload_time_s).
@@ -49,7 +104,7 @@ const EXTRA: Dictionary = {
 	"minigun": ["spin_up", "fire_hold", "spin_down"],
 }
 ## Clips that must import looped (besides LOOPED; Godot also loops names ending in "_loop").
-const EXTRA_LOOPS: Array[String] = ["hold", "fire_hold", "cut_hold", "reload_loop"]
+const EXTRA_LOOPS: Array[String] = ["hold", "fire_hold", "cut_hold", "reload_loop", "charge"]
 ## Events every clip of that kind must list in SOURCE.txt (per set where it differs).
 const EVENTS: Dictionary = {
 	"pistol_reload": ["mag_out", "mag_in", "done"],
@@ -109,6 +164,22 @@ const EVENTS: Dictionary = {
 	"shotgun_box_reload_empty": ["mag_out", "mag_swap", "mag_in", "bolt_release", "done"],
 }
 
+## Vise string centre, Godot weapon-model space: latched on the Magwell, released 0.16 m forward (ENV B's model).
+const CROSSBOW_LATCHED: Vector3 = Vector3(0.0, 0.066, -0.016)
+const CROSSBOW_RELEASED: Vector3 = Vector3(0.0, 0.066, -0.176)
+const CROSSBOW_LATCHED_TEXT: String = "(0.000, 0.066, -0.016)"
+const CROSSBOW_RELEASED_TEXT: String = "(0.000, 0.066, -0.176)"
+## The string halves' prod-tip anchors (StringUpper left, StringLower right), Godot weapon-model space.
+const CROSSBOW_ANCHOR: Vector3 = Vector3(0.290, 0.066, -0.339)
+const CROSSBOW_ANCHOR_TEXT: String = "(-0.290 / 0.290, 0.066, -0.339)"
+## Arm skin weights (verts weighted to upper_arm / forearm / hand only: the sleeves, cuffs and the wrist): the
+## largest weight change per metre along a mesh edge. The loft's elbow / wrist blends stay near 23 /m; a ring
+## whose verts alternate between bones (a sawtooth under a forearm roll) would be hundreds.
+const ARM_WEIGHT_GRADIENT_MAX: float = 35.0
+## Palm centre (hand.L .. middle_01.L midpoint) to the hooked string centre (29 mm: the fingers curl over it;
+## the string follows the hand's own ease, so the distance holds through the pull).
+const CROSSBOW_HOOK_TOL: float = 0.04
+
 var _root: Node3D = null
 var _skel: Skeleton3D = null
 var _player: AnimationPlayer = null
@@ -158,8 +229,19 @@ static func expected_bones() -> Array[String]:
 	return out
 
 
+static func item_kind(set_name: String) -> String:
+	if set_name.begins_with("melee_"):
+		return "melee"
+	return "deploy" if set_name.begins_with("deploy_") else "throwable"
+
+
 static func clips_of(set_name: String) -> Array[String]:
 	var out: Array[String] = []
+	if ITEM_SETS.has(set_name):
+		for c: Variant in ITEM_CLIPS[item_kind(set_name)]:
+			out.append(String(c))
+		return out
+	out.append("bash")
 	for c: String in COMMON:
 		out.append(c)
 	for c: Variant in EXTRA.get(set_name, []):
@@ -299,6 +381,9 @@ func test_mesh_and_budget() -> void:
 	assert_true(mesh_node != null, "Arms mesh under the skeleton")
 	if mesh_node == null:
 		return
+	if mesh_node.skin != null:
+		var g: float = _arm_weight_gradient(mesh_node, _skel)
+		assert_true(g < ARM_WEIGHT_GRADIENT_MAX, "char_arms_fp: arm weight gradient %.1f /m < %.0f" % [g, ARM_WEIGHT_GRADIENT_MAX])
 	var tris: int = 0
 	for si: int in range(mesh_node.mesh.get_surface_count()):
 		var arrays: Array = mesh_node.mesh.surface_get_arrays(si)
@@ -314,7 +399,7 @@ func test_every_set_has_its_clips() -> void:
 		return
 	var layout: Array[String] = _track_layout(_anim("pistol_idle"))
 	assert_true(layout.size() > 0, "pistol_idle has tracks")
-	for set_name: String in SETS:
+	for set_name: String in SETS + ITEM_SETS:
 		for clip: String in clips_of(set_name):
 			var name: String = "%s_%s" % [set_name, clip]
 			var a: Animation = _anim(name)
@@ -351,15 +436,7 @@ func test_clip_lengths_follow_the_weapon_data() -> void:
 			pairs = {}
 			_check_shell_pieces(set_name)
 		for clip: String in pairs:
-			var times: Array[float] = _weapon_times(set_name, pairs[clip])
-			assert_true(not times.is_empty(), "a weapon uses anim_set %s" % set_name)
-			var a: Animation = _anim("%s_%s" % [set_name, clip])
-			if a == null or times.is_empty():
-				continue
-			var hit: bool = false
-			for t: float in times:
-				hit = hit or absf(a.length - t) < 0.002
-			assert_true(hit, "%s_%s length %.3f matches %s %s" % [set_name, clip, a.length, pairs[clip], times])
+			_check_reload_ratio(set_name, clip, pairs[clip], 0.002)
 		var draw: Animation = _anim("%s_draw" % set_name)
 		var equip: Array[float] = _weapon_times(set_name, "equip_time_s")
 		if draw != null and not equip.is_empty():
@@ -410,10 +487,7 @@ func _check_shell_pieces(set_name: String) -> void:
 		var times: Array[float] = _weapon_times(set_name, pieces[clip])
 		if a == null or times.is_empty() or times.max() <= 0.0:
 			continue
-		var hit: bool = false
-		for t: float in times:
-			hit = hit or absf(a.length - t) < 0.02
-		assert_true(hit, "%s_%s length %.3f matches %s %s" % [set_name, clip, a.length, pieces[clip], times])
+		_check_reload_ratio(set_name, clip, pieces[clip], 0.02)
 
 
 func test_batch3_fire_rates_and_parts() -> void:
@@ -476,6 +550,135 @@ func test_batch3_fire_rates_and_parts() -> void:
 		assert_true(String(_source.get("fp.%s" % set_name, "")).length() > 40, "SOURCE fp.%s documented" % set_name)
 	assert_true(String(_source.get("curve.bow_draw_string", "")).begins_with("draw=0.000"), "bow draw curve listed")
 	assert_true(String(_source.get("curve.bow_hold", "")).begins_with("draw=1.000"), "bow hold at full draw")
+	_check_crossbow_string_halves()
+
+
+## "string=1.000,0.500,..." -> [1.0, 0.5, ...]
+func _curve(key: String) -> Array[float]:
+	var out: Array[float] = []
+	var row: String = String(_source.get(key, ""))
+	if not row.begins_with("string="):
+		return out
+	for v: String in row.trim_prefix("string=").split(","):
+		out.append(v.to_float())
+	return out
+
+
+func _check_crossbow_string_halves() -> void:
+	var doc: String = String(_source.get("fp.crossbow", ""))
+	assert_true(doc.contains("StringUpper") and doc.contains("StringLower"), "fp.crossbow: the two string halves")
+	assert_true(doc.contains(CROSSBOW_LATCHED_TEXT), "fp.crossbow: latched centre on the Magwell %s" % CROSSBOW_LATCHED_TEXT)
+	assert_true(doc.contains(CROSSBOW_RELEASED_TEXT), "fp.crossbow: released centre %s" % CROSSBOW_RELEASED_TEXT)
+	assert_true(doc.contains(CROSSBOW_ANCHOR_TEXT), "fp.crossbow: the halves' anchors %s" % CROSSBOW_ANCHOR_TEXT)
+	_check_vise_string_model()
+	for clip: String in ["fire", "fire_ads"]:
+		var c: Array[float] = _curve("curve.crossbow_%s" % clip)
+		assert_true(c.size() >= 2 and is_equal_approx(c[0], 1.0) and is_equal_approx(c[c.size() - 1], 0.0),
+			"crossbow_%s: latched -> released (%s)" % [clip, c])
+	for clip: String in ["reload", "reload_empty"]:
+		var c: Array[float] = _curve("curve.crossbow_%s" % clip)
+		var a: Animation = _anim("crossbow_%s" % clip)
+		if c.is_empty() or a == null:
+			fail("curve.crossbow_%s / crossbow_%s missing" % [clip, clip])
+			continue
+		assert_eq(c.size(), int(round(a.length * 30.0)) + 1, "crossbow_%s: one string value per frame" % clip)
+		var mono: bool = true
+		for i: int in range(1, c.size()):
+			mono = mono and c[i] >= c[i - 1] - 1e-6
+		assert_true(mono and is_equal_approx(c[0], 0.0) and is_equal_approx(c[c.size() - 1], 1.0),
+			"crossbow_%s: released -> latched, never back" % clip)
+		# the left hand hooks the centre at cock and pulls it to the latch by string_back
+		var cock: int = _event("crossbow_%s" % clip, "cock")
+		var back: int = _event("crossbow_%s" % clip, "string_back")
+		if cock < 0 or back < 0:
+			fail("crossbow_%s: cock / string_back events" % clip)
+			continue
+		var worst: float = 0.0
+		for f: int in range(cock, back + 1):
+			_player.play(StringName("crossbow_%s" % clip))
+			_player.seek(float(f) / 30.0, true)
+			var wt: Transform3D = _skel.get_bone_global_pose(_skel.find_bone("weapon"))
+			var centre: Vector3 = wt * CROSSBOW_RELEASED.lerp(CROSSBOW_LATCHED, c[f])
+			var hand: Vector3 = _skel.get_bone_global_pose(_skel.find_bone("hand.L")).origin
+			var mid: Vector3 = _skel.get_bone_global_pose(_skel.find_bone("middle_01.L")).origin
+			worst = maxf(worst, ((hand + mid) * 0.5).distance_to(centre))
+		_player.stop()
+		assert_true(worst < CROSSBOW_HOOK_TOL, "crossbow_%s: the left palm stays %.3f m from the string centre while it pulls" % [
+			clip, worst])
+
+
+## ENV B's real Vise: the half nodes sit on the anchors and, at rest, their cords meet on the RELEASED centre
+## (the model rests released; fp.crossbow's bend is relative to that pose).
+func _check_vise_string_model() -> void:
+	var w: Dictionary = _weapon_model(String(REF_WEAPON["crossbow"]))
+	if w.is_empty():
+		return
+	var marks: Dictionary = w["marks"]
+	var root: Node3D = w["root"]
+	for half: String in ["StringUpper", "StringLower"]:
+		var anchor: Vector3 = CROSSBOW_ANCHOR * Vector3(-1.0 if half == "StringUpper" else 1.0, 1.0, 1.0)
+		if not marks.has(half) or not marks.has(half + "Cord"):
+			fail("wpn_vise_crossbow: %s / %sCord" % [half, half])
+			continue
+		var o: Vector3 = (marks[half] as Transform3D).origin
+		assert_true(o.distance_to(anchor) < 0.002, "vise %s origin %s on its anchor %s" % [half, o, anchor])
+		var mi: MeshInstance3D = root.find_child(half + "Cord", true, false) as MeshInstance3D
+		var far: Vector3 = o
+		if mi != null and mi.mesh != null:
+			var xf: Transform3D = marks[half + "Cord"]
+			for p: Vector3 in mi.mesh.get_faces():
+				var q: Vector3 = xf * p
+				if q.distance_to(o) > far.distance_to(o):
+					far = q
+		assert_true(far.distance_to(CROSSBOW_RELEASED) < 0.004,
+				"vise %sCord ends %.4f m from the released centre %s (rest = released)" % [
+					half, far.distance_to(CROSSBOW_RELEASED), CROSSBOW_RELEASED])
+	root.queue_free()
+
+
+## Largest |weight change| / edge length over the edges of `arms` whose two verts are skinned to upper_arm /
+## forearm / hand bones only (named binds of `skin`, else bones of `sk`).
+static func _arm_weight_gradient(arms: MeshInstance3D, sk: Skeleton3D) -> float:
+	var names: Array[String] = []
+	for i: int in range(arms.skin.get_bind_count()):
+		var n: String = String(arms.skin.get_bind_name(i))
+		names.append(n if n != "" else sk.get_bone_name(arms.skin.get_bind_bone(i)))
+	var worst: float = 0.0
+	for si: int in range(arms.mesh.get_surface_count()):
+		var arr: Array = arms.mesh.surface_get_arrays(si)
+		var pos: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+		var bones: PackedInt32Array = arr[Mesh.ARRAY_BONES]
+		var wts: PackedFloat32Array = arr[Mesh.ARRAY_WEIGHTS]
+		var idx: PackedInt32Array = arr[Mesh.ARRAY_INDEX]
+		var k: int = bones.size() / maxi(1, pos.size())
+		var vw: Array[Dictionary] = []
+		for v: int in range(pos.size()):
+			var d: Dictionary = {}
+			var arm_only: bool = true
+			for j: int in range(k):
+				var x: float = wts[v * k + j]
+				if x <= 0.0:
+					continue
+				var n: String = names[bones[v * k + j]]
+				arm_only = arm_only and (n.begins_with("upper_arm") or n.begins_with("forearm") or n.begins_with("hand"))
+				d[n] = float(d.get(n, 0.0)) + x
+			vw.append(d if arm_only else {})
+		for t: int in range(0, idx.size(), 3):
+			for e: int in 3:
+				var a: int = idx[t + e]
+				var b: int = idx[t + (e + 1) % 3]
+				if vw[a].is_empty() or vw[b].is_empty():
+					continue
+				var ln: float = pos[a].distance_to(pos[b])
+				if ln < 1e-4:
+					continue
+				var jump: float = 0.0
+				for n: String in vw[a]:
+					jump = maxf(jump, absf(float(vw[a][n]) - float(vw[b].get(n, 0.0))))
+				for n: String in vw[b]:
+					jump = maxf(jump, absf(float(vw[b][n]) - float(vw[a].get(n, 0.0))))
+				worst = maxf(worst, jump / ln)
+	return worst
 
 
 func test_events_are_listed() -> void:
@@ -642,3 +845,334 @@ func test_lever_hand_moves_are_smooth() -> void:
 		for bone: String in ["clavicle.L", "upper_arm.L", "forearm.L", "hand.L"]:
 			var step: float = _max_step(a, bone)
 			assert_true(step <= LEVER_MAX_STEP_DEG, "lever_%s %s steps %.1f deg/frame (<= %.0f)" % [clip, bone, step, LEVER_MAX_STEP_DEG])
+
+
+## {weapon id: base stats Resource} of the weapons using `set_name`.
+func _weapons_of(set_name: String) -> Dictionary:
+	var out: Dictionary = {}
+	var dir: DirAccess = DirAccess.open(WEAPONS_DIR)
+	if dir == null:
+		return out
+	for fname: String in dir.get_files():
+		if not fname.ends_with(".tres"):
+			continue
+		var def: Resource = load("%s/%s" % [WEAPONS_DIR, fname])
+		if def != null and String(def.get("anim_set")) == set_name and def.get("base") != null:
+			out[fname.get_basename()] = def.get("base")
+	return out
+
+
+## D-063: `<set>_<clip>` matches `field` of one weapon (within `tol` s) and every weapon of the set plays it at
+## clip / field within RELOAD_RATIO_MIN..MAX (a weapon outside needs its own set: named in the failure).
+func _check_reload_ratio(set_name: String, clip: String, field: String, tol: float) -> void:
+	var a: Animation = _anim("%s_%s" % [set_name, clip])
+	var weapons: Dictionary = _weapons_of(set_name)
+	if a == null or weapons.is_empty():
+		return
+	var exact: bool = false
+	var times: Array[float] = []
+	for id: Variant in weapons:
+		var t: float = float((weapons[id] as Resource).get(field))
+		if t <= 0.0:
+			continue
+		times.append(t)
+		exact = exact or absf(a.length - t) < tol
+		var ratio: float = a.length / t
+		assert_true(ratio >= RELOAD_RATIO_MIN and ratio <= RELOAD_RATIO_MAX,
+				"%s_%s (%.3f s) plays at %.2fx for %s (%s %.3f s): outside %.2f..%.2f" % [
+					set_name, clip, a.length, ratio, id, field, t, RELOAD_RATIO_MIN, RELOAD_RATIO_MAX])
+	if not times.is_empty():
+		assert_true(exact, "%s_%s length %.3f matches %s of one weapon %s" % [set_name, clip, a.length, field, times])
+
+
+## Frame of event `ev` of `<clip>` from SOURCE.txt (-1 when missing).
+func _event(clip: String, ev: String) -> int:
+	var row: String = String(_source.get("clip.%s" % clip, ""))
+	var key: String = "%s@" % ev
+	var at: int = row.find(key)
+	if at < 0 or (at > 0 and not row[at - 1] in "=,"):
+		return -1
+	return row.substr(at + key.length()).split(",")[0].to_int()
+
+
+func _same_rotation(a: Animation, ta: float, b: Animation, tb: float, bones: Array, tol_deg: float) -> bool:
+	for bone: Variant in bones:
+		var q0: Quaternion = a.rotation_track_interpolate(_track(a, String(bone), Animation.TYPE_ROTATION_3D), ta)
+		var q1: Quaternion = b.rotation_track_interpolate(_track(b, String(bone), Animation.TYPE_ROTATION_3D), tb)
+		if q0.angle_to(q1) > deg_to_rad(tol_deg):
+			return false
+	return true
+
+
+func test_gun_bash() -> void:
+	if not _ready_or_fail():
+		return
+	var bones: Array = ["clavicle.R", "upper_arm.R", "forearm.R", "hand.R", "upper_arm.L", "forearm.L", "hand.L"]
+	for set_name: String in SETS:
+		var name: String = "%s_bash" % set_name
+		var a: Animation = _anim(name)
+		var idle: Animation = _anim("%s_idle" % set_name)
+		if a == null or idle == null:
+			fail("missing %s" % name)
+			continue
+		var n: int = roundi(a.length * FPS)
+		var hit: int = _event(name, "hit")
+		assert_true(hit > 2 and hit < n - 3, "%s hit@%d inside the strike" % [name, hit])
+		assert_eq(_event(name, "done"), n, "%s done@ = the last frame" % name)
+		# starts and ends on idle frame 0, and actually moves at the hit
+		assert_true(_same_rotation(a, 0.0, idle, 0.0, bones, 0.5), "%s starts on idle" % name)
+		assert_true(_same_rotation(a, a.length, idle, 0.0, bones, 0.5), "%s ends on idle" % name)
+		assert_false(_same_rotation(a, hit / FPS, idle, 0.0, ["forearm.R"], 3.0), "%s strikes" % name)
+	assert_true(String(_source.get("fp.bash", "")).contains("hit@"), "SOURCE fp.bash documented")
+
+
+## The first content/data/<kind> row (as a Resource) that `want` accepts, else null.
+func _def(kind: String, want: Callable) -> Resource:
+	var dir: DirAccess = DirAccess.open("res://content/data/%s" % kind)
+	if dir == null:
+		return null
+	var files: PackedStringArray = dir.get_files()
+	files.sort()
+	for fname: String in files:
+		if fname.ends_with(".tres"):
+			var r: Resource = load("res://content/data/%s/%s" % [kind, fname])
+			if r != null and want.call(r):
+				return r
+	return null
+
+
+func test_item_sets() -> void:
+	if not _ready_or_fail():
+		return
+	for set_name: String in ITEM_SETS:
+		for clip: String in clips_of(set_name):
+			var name: String = "%s_%s" % [set_name, clip]
+			var a: Animation = _anim(name)
+			if a == null:
+				continue  # reported by test_every_set_has_its_clips
+			for ev: Variant in ITEM_EVENTS.get(clip, []):
+				var f: int = _event(name, String(ev))
+				assert_true(f >= 0 and f <= roundi(a.length * FPS), "%s lists %s@ inside the clip (%d)" % [name, ev, f])
+	# melee: the charge loop is seamless, starts where charge_start ends; charge_swing starts there too;
+	# swings end on idle; charge_start follows MeleeDef.charge_time_s when the data exists
+	var arm: Array = ["clavicle.R", "upper_arm.R", "forearm.R", "hand.R", "hand.L"]
+	for set_name: String in ["melee_knife", "melee_blunt", "melee_blade"]:
+		var cs: Animation = _anim("%s_charge_start" % set_name)
+		var ch: Animation = _anim("%s_charge" % set_name)
+		var sw: Animation = _anim("%s_charge_swing" % set_name)
+		var idle: Animation = _anim("%s_idle" % set_name)
+		var tap: Animation = _anim("%s_swing" % set_name)
+		if cs == null or ch == null or sw == null or idle == null or tap == null:
+			continue
+		assert_true(_same_rotation(cs, cs.length, ch, 0.0, arm, 1.0), "%s charge_start ends on charge" % set_name)
+		assert_true(_same_rotation(ch, 0.0, ch, ch.length, arm, 0.5), "%s charge loops" % set_name)
+		assert_true(_same_rotation(sw, 0.0, ch, 0.0, arm, 1.0), "%s charge_swing starts from the charge" % set_name)
+		assert_true(_same_rotation(tap, tap.length, idle, 0.0, arm, 1.0), "%s swing ends on idle" % set_name)
+		assert_true(_same_rotation(sw, sw.length, idle, 0.0, arm, 1.0), "%s charge_swing ends on idle" % set_name)
+		var frags: Array = MELEE_MATCH[set_name]
+		var def: Resource = _def("melee", func(r: Resource) -> bool:
+			if "anim_set" in r:
+				return String(r.get("anim_set")) == set_name
+			for k: Variant in frags:
+				if String(r.get("id")).contains(String(k)):
+					return true
+			return false)
+		if def != null:
+			assert_near(cs.length, float(def.get("charge_time_s")), 0.02, "%s_charge_start = charge_time_s" % set_name)
+	# deployables: `place` lands on DeployableDef.deploy_time_s (the hold); the item is lowered out of view
+	for set_name: String in ["deploy_bag", "deploy_small", "deploy_sentry"]:
+		var kinds: Array = DEPLOY_KINDS[set_name]
+		var def: Resource = _def("deployables", func(r: Resource) -> bool:
+			if "anim_set" in r:
+				return String(r.get("anim_set")) == set_name
+			return kinds.has(String(r.get("kind"))))
+		var place: int = _event("%s_place" % set_name, "place")
+		if def != null:
+			assert_eq(place, roundi(float(def.get("deploy_time_s")) * FPS), "%s place@ = deploy_time_s" % set_name)
+	# the throw releases before the follow-through and frees the gun's draw afterwards
+	for clip: String in ["throw", "throw_low"]:
+		var rel: int = _event("throwable_%s" % clip, "release")
+		var a: Animation = _anim("throwable_%s" % clip)
+		assert_true(a != null and rel > 4 and rel < roundi(a.length * FPS) - 6, "throwable_%s release@%d" % [clip, rel])
+	assert_true(_event("throwable_draw", "pin_pull") > 0, "throwable_draw pin_pull@")
+	for key: String in ["fp.melee", "fp.throwable", "fp.deploy"]:
+		assert_true(String(_source.get(key, "")).length() > 60, "SOURCE %s documented" % key)
+
+
+## Pose the arms at `<clip>` frame 0 and return {"weapon": Transform3D, "palm_l", "palm_r": Vector3} in skeleton
+## (camera) space; the palm = the middle of hand.<s> and middle_01.<s>.
+func _pose_at(clip: String) -> Dictionary:
+	_player.play(StringName(clip))
+	_player.seek(0.0, true)
+	_player.stop()
+	var out: Dictionary = {}
+	out["weapon"] = _skel.get_bone_global_pose(_skel.find_bone("weapon"))
+	for s: String in ["L", "R"]:
+		var a: Vector3 = _skel.get_bone_global_pose(_skel.find_bone("hand.%s" % s)).origin
+		var b: Vector3 = _skel.get_bone_global_pose(_skel.find_bone("middle_01.%s" % s)).origin
+		out["palm_%s" % s.to_lower()] = (a + b) * 0.5
+	return out
+
+
+## Instantiated weapon scene + {marker name: Transform3D relative to its root}.
+func _weapon_model(id: String) -> Dictionary:
+	var path: String = "res://assets/weapons/wpn_%s/wpn_%s.glb" % [id, id]
+	if not ResourceLoader.exists(path):
+		return {}
+	var root: Node3D = (load(path) as PackedScene).instantiate() as Node3D
+	add_child(root)
+	var marks: Dictionary = {}
+	for n: Node in root.find_children("*", "Node3D", true, false):
+		marks[String(n.name)] = root.global_transform.affine_inverse() * (n as Node3D).global_transform
+	return {"root": root, "marks": marks}
+
+
+## Highest point (camera y) of the weapon geometry cut by the plane z = -depth within |x| < half_w.
+func _cut_top(root: Node3D, weapon: Transform3D, depth: float, half_w: float) -> float:
+	var top: float = -INF
+	var inv: Transform3D = root.global_transform.affine_inverse()
+	for mi_node: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = mi_node as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		var xf: Transform3D = weapon * inv * mi.global_transform
+		var faces: PackedVector3Array = mi.mesh.get_faces()
+		for i: int in range(0, faces.size(), 3):
+			var p: Array[Vector3] = [xf * faces[i], xf * faces[i + 1], xf * faces[i + 2]]
+			for e: int in 3:
+				var a: Vector3 = p[e]
+				var b: Vector3 = p[(e + 1) % 3]
+				var da: float = a.z + depth
+				var db: float = b.z + depth
+				if (da < 0.0) == (db < 0.0):
+					continue
+				var c: Vector3 = a.lerp(b, da / (da - db))
+				if absf(c.x) < half_w:
+					top = maxf(top, c.y)
+	return top
+
+
+func test_hands_and_sights_on_the_real_models() -> void:
+	if not _ready_or_fail():
+		return
+	for set_name: String in REF_WEAPON:
+		var w: Dictionary = _weapon_model(String(REF_WEAPON[set_name]))
+		if w.is_empty():
+			continue
+		var marks: Dictionary = w["marks"]
+		var root: Node3D = w["root"]
+		# the support hand's palm on LeftHandIK (hip and ADS)
+		var tol: float = 0.04 if set_name == "saw" else 0.03
+		for clip: String in ["idle", "ads_idle"]:
+			var pose: Dictionary = _pose_at("%s_%s" % [set_name, clip])
+			if marks.has("LeftHandIK") and set_name != "bow":
+				var lhik: Vector3 = (pose["weapon"] as Transform3D) * (marks["LeftHandIK"] as Transform3D).origin
+				var d: float = (pose["palm_l"] as Vector3).distance_to(lhik)
+				assert_true(d < tol, "%s_%s: left palm %.3f m from %s LeftHandIK" % [set_name, clip, d, REF_WEAPON[set_name]])
+		# ADS: the AimPoint on the camera axis, in front of the eye; the stock below the eye at the near plane
+		if marks.has("AimPoint") and not NO_SIGHTS.has(set_name):
+			var pose: Dictionary = _pose_at("%s_ads_idle" % set_name)
+			var wt: Transform3D = pose["weapon"]
+			var aim: Vector3 = wt * (marks["AimPoint"] as Transform3D).origin
+			assert_true(Vector2(aim.x, aim.y).length() < 0.003 and -aim.z > 0.08 and -aim.z < 0.6,
+					"%s ADS: AimPoint %s on the camera axis" % [set_name, aim])
+			var top: float = _cut_top(root, wt, CAMERA_NEAR, NEAR_HALF_W)
+			assert_true(top <= -NEAR_HALF_H,
+					"%s ADS: the weapon crosses the near plane %.3f m below the eye (<= -%.4f: never cut in view)" % [
+						set_name, top, NEAR_HALF_H])
+		root.queue_free()
+	_player.stop()
+
+
+## D2-03 follow-up: the per-heister sleeve variants `char_arms_fp_<heister>` (mesh only, the clips stay in
+## char_arms_fp): the same rig_arms bones / order / rests, one skinned `Arms` whose binds resolve to the same
+## bones with the same bind poses as char_arms_fp's (so ENV A can put its mesh + skin on char_arms_fp's Arms),
+## library materials incl. the heister's `fp_sleeve` ids (char_crew_<heister>/SOURCE.txt), <= 12k triangles.
+func test_heister_sleeve_variants() -> void:
+	if not _ready_or_fail():
+		return
+	var base_arms: MeshInstance3D = _skel.get_node_or_null("Arms") as MeshInstance3D
+	assert_true(base_arms != null and base_arms.skin != null, "char_arms_fp Arms is skinned")
+	if base_arms == null or base_arms.skin == null:
+		return
+	var base_binds: Dictionary = _binds(base_arms.skin, _skel)
+	for h: String in HEISTERS:
+		var id: String = "char_arms_fp_%s" % h
+		var packed: PackedScene = load("res://assets/characters/%s/%s.glb" % [id, id]) as PackedScene
+		assert_true(packed != null, "%s imported" % id)
+		if packed == null:
+			continue
+		var root: Node3D = packed.instantiate() as Node3D
+		var sk: Skeleton3D = root.get_node_or_null("rig_arms/Skeleton3D") as Skeleton3D
+		var arms: MeshInstance3D = sk.get_node_or_null("Arms") as MeshInstance3D if sk != null else null
+		assert_true(arms != null and arms.skin != null, "%s: rig_arms/Skeleton3D/Arms, skinned" % id)
+		if arms == null or arms.skin == null:
+			root.free()
+			continue
+		var players: Array[Node] = root.find_children("*", "AnimationPlayer", true, false)
+		assert_true(players.is_empty() or (players[0] as AnimationPlayer).get_animation_list().is_empty(),
+				"%s: mesh only, no clips" % id)
+		assert_eq(sk.get_bone_count(), _skel.get_bone_count(), "%s: bone count" % id)
+		for b: int in range(mini(sk.get_bone_count(), _skel.get_bone_count())):
+			assert_eq(sk.get_bone_name(b), _skel.get_bone_name(b), "%s: bone %d" % [id, b])
+			assert_eq(sk.get_bone_parent(b), _skel.get_bone_parent(b), "%s: parent of %s" % [id, sk.get_bone_name(b)])
+			assert_true(sk.get_bone_rest(b).is_equal_approx(_skel.get_bone_rest(b)),
+					"%s: rest of %s" % [id, sk.get_bone_name(b)])
+		var binds: Dictionary = _binds(arms.skin, sk)
+		for bone: String in binds:
+			assert_true(base_binds.has(bone), "%s: bind %s exists in char_arms_fp" % [id, bone])
+			if base_binds.has(bone):
+				var d: Transform3D = binds[bone]
+				assert_true(d.is_equal_approx(base_binds[bone]), "%s: bind pose of %s" % [id, bone])
+		for b: String in ["forearm.L", "forearm.R", "hand.L", "hand.R", "index_01.R", "thumb_03.L"]:
+			assert_true(binds.has(b), "%s: skinned to %s" % [id, b])
+		var tris: int = 0
+		var mats: Array[String] = []
+		for si: int in range(arms.mesh.get_surface_count()):
+			var idx: PackedInt32Array = arms.mesh.surface_get_arrays(si)[Mesh.ARRAY_INDEX]
+			tris += idx.size() / 3
+			var m: Material = arms.mesh.surface_get_material(si)
+			assert_true(m != null and m.resource_path.begins_with("res://world/materials/"),
+					"%s: surface %d has a library material (%s)" % [id, si, m.resource_path if m != null else "none"])
+			if m != null:
+				mats.append(m.resource_name.trim_prefix("M_"))
+		assert_true(tris <= 12000, "%s: triangles %d <= 12000" % [id, tris])
+		var g: float = _arm_weight_gradient(arms, sk)
+		assert_true(g < ARM_WEIGHT_GRADIENT_MAX, "%s: arm weight gradient %.1f /m < %.0f" % [id, g, ARM_WEIGHT_GRADIENT_MAX])
+		for want: String in _fp_sleeve_ids(h):
+			assert_has(mats, want, "%s: fp_sleeve material %s" % [id, want])
+		if h == "wren":
+			assert_has(mats, "char_skin_2", "wren: bare forearm skin")
+		else:
+			assert_false(mats.any(func(s: String) -> bool: return s.begins_with("char_skin_")),
+					"%s: gloved hands, no skin surface" % id)
+		root.free()
+
+
+
+## {bone name: bind pose} of `skin` (named binds, else bind bone indices of `sk`).
+static func _binds(skin: Skin, sk: Skeleton3D) -> Dictionary:
+	var out: Dictionary = {}
+	for i: int in range(skin.get_bind_count()):
+		var n: String = String(skin.get_bind_name(i))
+		if n == "":
+			n = sk.get_bone_name(skin.get_bind_bone(i))
+		out[n] = skin.get_bind_pose(i)
+	return out
+
+
+## The library ids of `fp_sleeve` in char_crew_<h>/SOURCE.txt (descriptions such as Wren's bare cuff skipped).
+static func _fp_sleeve_ids(h: String) -> Array[String]:
+	var out: Array[String] = []
+	var f: FileAccess = FileAccess.open("res://assets/characters/char_crew_%s/SOURCE.txt" % h, FileAccess.READ)
+	if f == null:
+		return out
+	for line: String in f.get_as_text().split("\n"):
+		if line.begins_with("fp_sleeve: "):
+			var d: Variant = JSON.parse_string(line.trim_prefix("fp_sleeve: "))
+			if d is Dictionary:
+				for k: String in ["sleeve", "cuff", "glove"]:
+					var v: String = String((d as Dictionary).get(k, ""))
+					if v.begins_with("char_") and not v.contains(" "):
+						out.append(v)
+	return out

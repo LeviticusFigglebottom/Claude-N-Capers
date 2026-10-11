@@ -1,0 +1,14 @@
+asset: char_arms_fp_sable
+script: tools/blender/characters/arms_fp_heisters.py
+params: {"heister": "sable", "skin": 5}
+seed: 34724450  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_arms_fp_sable
+edit policy: generated file, never edit by hand; change the script and rebuild
+fp.variant: mesh-only sleeve variant of char_arms_fp (no AnimationPlayer): <root>/rig_arms/Skeleton3D/Arms, same rig_arms bones / rest / bind poses; ENV A puts this Arms' mesh + skin on char_arms_fp's Arms (the clips stay in char_arms_fp); the hands are glove-material hands (no skin under the glove)
+heister: sable
+layers: char_crew_glove_ivory u=-0.030..0.000 m; char_knit_graphite u=-0.062..-0.012 m ribs=32; char_crew_sable_blazer u=-0.389..-0.035 m
+look: aubergine blazer sleeve, black roll-neck knit cuff (fine rib) showing 23 mm, ivory kid gloves
+materials: char_crew_glove_ivory,char_crew_sable_blazer,char_knit_graphite
+tri_budget: 12000
+tris: 10200

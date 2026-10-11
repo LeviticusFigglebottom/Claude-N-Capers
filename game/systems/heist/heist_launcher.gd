@@ -147,7 +147,7 @@ static func launch_client(parent: Node = null, options: Dictionary = {}, timeout
 		return null
 	var state: Dictionary = {"done": false, "rt": null}
 	var on_msg: Callable = func(from_peer: int, kind: StringName, data: Dictionary) -> void:
-		if bool(state["done"]) or kind != BRING_UP_KIND or from_peer != 1:
+		if bool(state["done"]) or kind != BRING_UP_KIND or from_peer != 1 or not for_me(data):
 			return
 		state["done"] = true
 		state["rt"] = join_running(data, parent if is_instance_valid(parent) else null, options)
@@ -183,6 +183,11 @@ static func launch_client(parent: Node = null, options: Dictionary = {}, timeout
 	return rt if is_instance_valid(rt) else null
 
 
+## QB-B6-DROPIN: a drop-in's bring-up names its peer ("for_peer"); everyone else is already in the heist.
+static func for_me(data: Dictionary) -> bool:
+	return not data.has("for_peer") or int(data["for_peer"]) == Net.local_peer_id()
+
+
 ## Client: every pending launch_client() returns null (lobby left / cancelled by the UI).
 static func cancel_launch_client() -> void:
 	_client_gen += 1
@@ -203,7 +208,7 @@ static func stop_auto_join() -> void:
 
 
 static func _on_lobby_message(from_peer: int, kind: StringName, data: Dictionary) -> void:
-	if kind != BRING_UP_KIND or Net.is_authority() or from_peer != 1 or _client_pending > 0:
+	if kind != BRING_UP_KIND or Net.is_authority() or from_peer != 1 or _client_pending > 0 or not for_me(data):
 		return
 	var parent: Node = _auto_join.get("parent") as Node if is_instance_valid(_auto_join.get("parent")) else null
 	var rt: HeistRuntime = join_running(data, parent, _auto_join.get("options", {}) as Dictionary)

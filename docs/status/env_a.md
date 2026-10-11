@@ -3,6 +3,122 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11 13:00 UTC: A3-13 enemy melee, heister bodies, round 23
+### Done
+- Pushed fd51e2d and a2bd853: heister third-person bodies (CrewTweak.body_scenes by Loadout.heister), answer_join reason (B f46b038), infiltrator chain in CrewMelee.
+- A3-13 enemy close-range melee (NpcGunner): non-special NPCs within npc_melee_range_m strike instead of shooting.
+  - Windup, then one MELEE hit of npc_melee_damage[difficulty]; the shove cancels a reload; cooldown between strikes.
+  - `defense.melee_counter`: a crew member charging or swinging a melee knocks the unit down and takes nothing.
+  - `defense.melee_damage_taken_mult` (CrewHealth) scales the hit.
+  - Tests pass, P3 gate 10/10.
+- Trunk round 23 (1d053f8) merged.
+### Ready for integration
+- yes after this entry's clean check_all (result in the lead message).
+
+## 2026-10-11 11:30 UTC: A3-12 melee + throwables, D-069 item FP clips, characters v1.8
+### Done
+- A3-12 / L3.9 melee (CrewMelee, child `Melee` of the crew):
+  - quick swing (MeleeDef.damage) vs charged swing (lerps to charged_damage over charge_time_s / weapon.melee_charge_speed_mult);
+  - gun bash without a melee item (CombatTweak bash_*);
+  - strike at hit_delay_s on the nearest target in a melee_cone_deg cone with LOS (server);
+  - knockdown chance × weapon.melee_knockdown_mult (stun), Bulwark stagger with weapon.shield_knockback, bloodthirst;
+  - silent: a stealth melee kill alarms nobody;
+  - no melee while casing/downed; a swing cancels a reload; no shooting mid-melee.
+- A3-12 throwables (CrewThrowables `Throwables` + ThrownItem, replicated under dynamic_root):
+  - frag: fuse → Explosion.apply + noise;
+  - concussion: stun in radius with LOS, no damage unless `damage` > 0;
+  - incendiary: fire pool on first contact, sets NPCs burning (BurnStatus);
+  - throwing_knife: one MELEE hit;
+  - a throw takes one from throwable_count, synced to a remote owner (`CrewThrowables.set_count`, also used by ammo pickups);
+  - perk-deck flask/injector stay with PerkThrowable;
+  - tunables in CombatTweak "Throwables (A3-12)" (◇).
+- D-069 FP item clips in FpViewmodel:
+  - melee `charge_start` (charged@ on the full charge) → `charge` loop → `swing`/`charge_swing` with hit@ on the gameplay strike;
+  - `<set>/bash` with hit@ on the bash strike;
+  - deploy `place` with place@ on the deploy hold time (release cancels);
+  - throwable `draw` → `throw`/`throw_low` with release@ on the gameplay release; the Pin hides at pin_pull@ and the item at the release;
+  - the item model (`model`) replaces the gun during the one-shot.
+- characters v1.8:
+  - FP heister sleeves: `crew.heister` comes from the Net.crew info `heister` or the launch option `heisters` {slot: id}; FpViewmodelTweak.sleeve_scenes copies the variant's Arms mesh + skin;
+  - AnimDriver plays `rappel` while NpcMotor.rappelling (fallback climb_ladder → idle).
+- A3-11 hub (QC-43/44):
+  - `CrewController.spawn_for_hub`: civilian, unmasked, no weapon drawn (CrewView hides the viewmodel while civilian), own `HubInteraction` InteractionSystem, HUD prompt via `LocalHudModel.track(crew)`;
+  - `hub_station` prefab, class `HubStationPrefab` (B's `HubStation` resource owns that name): group `hub_station`, instant press, civilian + casing allowed, `station_used(id, crew)` / `station_requested(id)`.
+- QB-B6-02 (D-071): CrewStats service owns the per-crew counters (kills, specials, civilians, downs, plus new shots / hits / headshots per ui_hud v1.7 rules), replicated in the services state. Adds `LocalHudModel.crew_stats` + `crew_stats_changed` and HeistResult crew `name/shots/hits/headshots`.
+- D-070:
+  - crossbow StringUpper/StringLower latch (−/+18.74°, ×1.3049 Y, held while loaded);
+  - bow pull-back sign fixed;
+  - Speedloader shown only while reloading;
+  - Bulwark takes near-side anchors only;
+  - CrewAiBrain drops out-of-tree targets;
+  - rappel speed 2.5 m/s (D's clip).
+- Melee per lead: knockdown only on charged hits; specials resist it.
+- Fixes: the round-18 merge took the old test_s1_3 (restored the D-065 assert); a3_07 polls until `launch_client()` has returned.
+- Trunk round 21 (f94d2b6) merged.
+- Round 21 follow-ups:
+  - FP sleeves read `Loadout.heister` (D-073; carried in the net loadout dict); the launch-option / Net.crew fallback is gone;
+  - nothing under the local camera casts shadows (FP weapon rails on the sleeves);
+  - audio_cues v1.3 throwable cues: pin, frag, concussion, incendiary + `_incendiary_fire` loop (a CueEmitter on the pool, every peer), knife hit / hit_hard by target;
+  - my stats service is `CrewStatsService` (B's `CrewStats` owns the name).
+- QB-B6-DROPIN: `HeistDropIn` (extends B's DropInService, node `/root/DropIn`, group G.DROP_IN_SERVICE, `HeistDropIn.ensure(tree)`):
+  - host: policy ask / auto / off; checks running heist, slot (full), kicked names, `LobbyState.validate_summary`;
+  - accept: the slot's AI crew member becomes the peer's (loadout + modifiers re-pushed, name, CrewAiBrain removed), then a bring-up addressed to the peer (`HeistNetSync.late_bring_up`, `for_peer`; others ignore it);
+  - `kick(slot)` uses `Net.kick`; any human leaving mid-heist turns back into an AI teammate (crew_member_left [R]);
+  - crew codec replicates owner / AI / name;
+  - client entry: `Net.join(...)`, then on `Net.connected_to_host` call `HeistDropIn.ensure(get_tree()).request_join(LobbyState.summary_from(...))`;
+  - tests: in-process host logic, plus a two-process loopback drop-in (the client connects after launch).
+### Ready for integration
+- yes; `check_all.sh --env a` on 578e238 (clean worktree): PASS, 1508 tests, 0 failed, 5 skipped. This entry's later commits are checked before their push.
+### Questions for lead
+- (answered: Loadout.heister in D-073; throwable cues in audio_cues v1.3; ThrowableDefs coming from B.)
+
+## 2026-10-11 08:30 UTC: round-16 follow-ups, options hooks, D-069 FP left-hand IK, D-063 clean
+### Done
+- Civilian strings (`ui.prompt.pick_up_gear`, `ui.blocked.civilian`). AI teammates gear up with the first human (P5 ruling, heist README). The lead's `hud_model.refresh()` hotfix is merged (it was the same fix).
+- D-068:
+  - `loot.<id>` pre-plan drop kinds spawn a LootBag;
+  - burn_point also uses a thermite bag lying within burn_bag_radius_m;
+  - tool loot (`LootDef.is_tool`) is never secured (`LootManager.is_tool_loot`).
+- B5-01 options:
+  - CrewView FOV = GameSettings.fov() every frame, with ADS zoom fov / magnification (ads_zoom_rate);
+  - PlayerInput: mouse sensitivity x/y, invert_y (mouse + pad), pad sensitivity / deadzone;
+  - hold/toggle for aim/crouch/sprint with its own edge detection: intents are built on physics ticks, so just_pressed missed presses; a toggled sprint ends when not running forward.
+- D-069:
+  - crew camera near 0.02 m;
+  - FP left-hand IK (FpLeftHandIk, TwoBoneIK3D upper_arm.L → hand.L) to a `LeftHandGrip` child of the weapon's `LeftHandIK` at left_hand_grip_offset (wrist vs palm, measured from D's baked rifle pose on four guns);
+  - off during reload/swap and for bow/akimbo; test: hand within 1.5 cm.
+- D-063 re-measured after D's rebuild (bfde340): no weapon is outside 0.75–1.35×.
+### In progress / waiting on trunk
+- D-069 item FP sets (melee swing/charge hit@, throwable pin_pull/release + Pin hide, deployable place@) and `<set>_bash` hit@: the clips and the `anim_set` fields on Melee/Throwable/DeployableDef are not on trunk yet.
+- AnimDriver HINT_CLIPS for D's NPC ambient anims (4355913) once on trunk. A3-11 hub (QC-43/44) after that.
+
+## 2026-10-11 06:30 UTC: P3 gate bugs, Dockside Burn QC-35..42, saw targets
+### Done
+- QC-37 hand saw targets (G.SAW_TARGET `saw_cut`):
+  - saw-capable `safe` (hand_saw_safe_s by size, beaten_by saw) and SAW `drill_point` (effective_duration × hand_saw_drill_point_mult);
+  - new `deposit_box` (SmallLoot locked until cut, 6 s) and `padlock` (lockpick or saw, opens its `targets`);
+  - saw LOS accepts the target's own collider; `saw_point()`.
+- P3 gate 1, police breach: loud police (roles police/special) breach locked doors except BARRED/VAULT (`npc_door_breach_s` 2.5 s, cue.door_breach [R]); breachable doors are nav-linked once loud. Open door leaves no longer collide; units were snagging on the breached SalonBackDoor. Glasshouse seed 3001: no more pile-up, police reach and fight the crew. test_p3_loud test_01 at 3001 then wipes the crew (all 4 in custody in wave 3; at 3007 three of four), which is a balance/gate call.
+- P3 gate 2, AI rescue: AI teammates free CLOAKER_DOWNED and TASED crew like a revive (auto and orders; `CrewAiBrain.needs_help`) and shoot a tasing Stinger first (`tasing_stinger_score_mult`).
+- Replica phase follows the relayed heist_phase_changed (ENDED before heist_ended).
+- QC-35: `AssaultDirector.start_delay_s` / `HeistMission.police_delay_s` (0 = start now). Load-time loud begins after `_on_mission_start`.
+- QC-36: `enemy.cartel_gunman`, role `cartel`, `npc_cartel.tscn`, CartelBrain, CartelTweak:
+  - spawns on GUARD spawns tagged `cartel`;
+  - asleep until a noise, sighting, damage or shout wakes it, and wakes its neighbours;
+  - holds its post with cover; never dominated, no pager, no cuffs, no surrender;
+  - not in alive_units; `police_budget()` = enemy_cap − cartel alive.
+- QC-38: `burn_point` prefab (thermite bag consumed, timed burn, cue.burn_warning + burn_warning_s, device_finished, then a fire volume DoT ignoring armour + nav obstacle).
+- QC-41: RappelLinks, one-way NavigationLink3D from each RAPPEL point to the floor below; NpcMotor rappel descent (`rappelling`).
+- QC-42: POLICE_SPAWN / ENTRY points tagged `breach_only` are never spawns. A sky test was rejected because Shadow Ledger's stair/lift spawns are indoors by design.
+- Test fixes: HUD asserts call `refresh()` (poll race under load).
+### Questions for lead
+- QA-36: cues for ENV C: `cue.door_breach`, `cue.burn_warning`; anim clip `rappel` for ENV D (NpcMotor.rappelling).
+- QA-37: ENV C: tag the Dockside interior ENTRY points `breach_only`; tag cartel GUARD spawns `cartel`.
+- QA-38: test_p3_loud test_01 at seed 3001 now fails on crew survival, not on stalls.
+- Known: test_a3_07 loopback fails when run after the other `test_a3_0*` files (`--filter=test_a3_0`) at e02b81c too, so it predates this round; it passes alone and in the full suite. Investigating.
+### Ready for integration
+- yes after the clean-worktree check_all (result in the lead message)
+
 ## 2026-10-11 04:00 UTC: D-062 launch_options, D-063 reload range, S1.3 civilian mode, fixes
 ### Done
 - D-062: `HeistRuntime.launch_options` (read-only; the network-safe part travels in the bring-up, and the host's values win on replicas). The loopback test checks `music_track`.
@@ -124,66 +240,3 @@ Newest entry first, keep the last 10.
 - Not replicated yet (P3/P6 net hardening): placed deployables, known codes, pre-plan drops, interaction progress on remote clients.
 ### Ready for integration
 - yes; `check_all.sh --env a` result: PASS
-
-## 2026-10-10 16:00 UTC: A-M2 + A-M3 (A1-03 behaviour, A1-04..A1-10, A1-12), trunk merged (D-026..D-029)
-### Done
-- A1-04 detection: per-(observer, slot) meters, S2.2 formula, DR table, casing (PUBLIC always safe, D-025), crouch ×0.75, stimuli (corpse/bags/glass/drill/alerted NPC/restrained/open door), noise propagation (halved without LOS, cameras deaf), cameras with 7 s countdown, detection_progress to the observed peer only. (9a7328f)
-- A1-05 Security Officer: PatrolGraph routes (`&"patrols"` stream), pauses, investigate, 2 s radio (cancelled by death), COMBAT; `security_officer.tres`.
-- A1-06 civilians: idle/wander, panic → phone/alarm button/guard → call → alarm, shout/intimidate (D-016 roll), re-shout, cable ties, hostage count. (6309f2c)
-- A1-07 pagers (2–4 s delay, 12 s window, 10 s hold, juggling, 4 cap, timeout), body bagging, loot bags (carry/drop/throw by weight, secure after 0.5 s rest, BODY_HIDE hiding), small loot; A1-03 behaviour for display case, drill (jams per seed, fix, auto-restart, noise), safe, keycard reader, window, body container, escape zone. (bced306)
-- A1-08 combat on the D-026 single hit path: crew weapons (semi/auto, RPM, spread, falloff, reload, suppressed noise), server-validated hit claims, health/armor gating/regen, downs/bleedout/custody, revive; NPC gunner; `CrewController.spawn_for_range()` / `set_loadout()` (QB-25); default loadout = kestrel_p9 + suppressor via LoadoutResolver stored on `crew.loadout`.
-- A1-09 AssaultDirector: CONTROL → ANTICIPATION → BUILD → SUSTAIN → FADE → CONTROL, out-of-LOS + 15 m spawns, enemy cap; Patrol Officer / TAC Light brains (cover-lite, flank-lite). Solo Routine reaches FADE in ~125–155 game s.
-- A1-10 AI teammates: hidden at spawn in stealth (D-014), loud follow/fight/revive (humans first).
-- A1-12: test that every phase-1 modifier key has a hook in game/systems and a behaviour test.
-- `game/tests/a/test_p1_sandbox_gate.gd`: the lead's gate steps 1, 2, 4, 8 copied verbatim onto the dev sandbox, plus steps 5, 7, 10, 11 — all 8 PASS. (6986a91 and later)
-- ENV A tests: ~200; `check_all.sh --env a` PASS on a clean worktree.
-### In progress
-- Waiting for Glasshouse G1 to run the real gate; polish backlog: door nav toggling, AI door handling, co-op net_id path table for map prefabs.
-### Blocked
-- —
-### Questions for lead
-- QA-9: gate step 4 masks the bot in full view of the target guard; on a populated map (the sandbox) OTHER guards/civilians see the masked bot and raise the alarm before the 10 s answer completes. My sandbox copy removes the other NPCs for steps 4/5. Glasshouse may hit the same: either pick an isolated guard in the gate, or hide the bot (unmask until behind the guard).
-- QA-10 (ENV B data): `loot.body_bag` has weight MEDIUM but S6.3 says HEAVY (ENV A forces HEAVY via LootTweak); `weapon.kestrel_p9` `headshot_mult` is 2.0 but D-026 makes it a bonus (should be 1.0, else player headshots are ×6).
-- QA-11: AI teammates can't open doors; closed prefab doors aren't in the navmesh. Proposal: in loud, doors on an AI path are opened by the AI (instant for unlocked doors). OK?
-- QA-12: alarm reasons in use: guard_radio, civilian_call, phone_call (phone prefab), alarm_button, glass_alarm, pager_failed, pager_limit, camera. Going loud cancels pending pagers with `pager_failed(&"cancelled")` (no alarm); audio/voice should ignore that reason. Please list these in events.md if you agree.
-- Lead's question (ENV split): A1-09/A1-10 are already implemented and tested here; carving them out now would cost more than it saves. ≥ 2 h queued: no (≈ 1–2 h of polish plus the Glasshouse gate bring-up; P4 modifier hooks after that).
-### Ready for integration
-- yes; `check_all.sh --env a` result: PASS (local suites green; clean-worktree run in progress at push time, lead pre-review 424 tests: all ENV A pass)
-
-## 2026-10-10 14:30 UTC: A1-01, A1-02, A1-03 (shape), A1-11, dev sandbox — milestone A-M1
-### Done
-- A1-01 `HeistLauncher.launch()` (await-able), `HeistRuntime` (phase machine LOADING→CASING→STEALTH→LOUD→ESCAPE→ENDED, services, crew/NPC spawning, HeistResult), `VariantResolver` (rules/pick/difficulty_add/requires/excludes, scalars, rare events, strips inactive slots before spawning), `HeistMission` base (objectives, on_event, timers, require_items/require_loot, say, activate_escape, end_heist), every test hook in test_hooks.md. (29b908d, f965586)
-- A1-02 `CrewController` (walk/sprint/crouch/jump, casing limits S1.1, 1 s mask-up hold S1.2, bag weight limits S10.1, no movement noise S1.5, eye 1.65 m), `PlayerInput` → CrewIntent, intent/position RPC skeleton (client predicts, server sanity-checks).
-- A1-03 shape: 21 prefabs at `game/systems/prefabs/<name>/<name>.tscn` with contract exports, `UsePoint`, `Interactable`, runtime-instanced placeholder visuals carrying visual_slots.md node names. **ENV C: read `game/systems/prefabs/README.md`.** Working behaviour so far: door (none/lockpick/keycard), keycard pickup, small loot, escape zone activate. (73bce75)
-- Interaction framework: `InteractableComponent` + server `InteractionSystem` (2 m ray + 10° cone, explicit target for bots, cancel on 0.5 m move / 40° look-away / damage, juggling support).
-- A1-11 `LocalHudModel` with the full ui_hud.md property list + signals. **ENV B: read `game/systems/hud_model/README.md`.** (6f5bff4)
-- Dev sandbox `res://systems/dev/dev_sandbox.tscn` (`HeistLauncher.launch(&"dev_sandbox", …)`), generated by `build_dev_sandbox.gd`, baked navmesh, all contract nodes, 15 prefab types placed.
-- Stealth API skeleton (`StealthDirector`, observer protocol, stimuli, NPC damage/death/one-shot rule), `NpcMotor`.
-- Tests: 33 ENV A tests (A1-01/02/03/11, sandbox). `check_all.sh --env a` PASS on 584a480.
-### In progress
-- A-M2: A1-04 detection, A1-05 guard AI, A1-06 civilians (subagents running); next A1-07 pagers/bodies/bags + A1-03 behaviour.
-### Blocked
-- —
-### Questions for lead
-- QA-1: HeistLauncher cannot build `res://world/heists/<id>/<id>.tscn` (check_banned forbids cross-env paths from systems/). Proposal: ENV C ships a global `class_name HeistCatalog` with `static func map_scene_path(id: StringName) -> String` (C-owned, like B's ContentDB); the launcher already uses it when present. Until then: `options.map_scene` or `HeistLauncher.register_map()`.
-- QA-2: gate step 4 says the kill uses the suppressed pistol, step 8 says the default pistol is unsuppressed; neither passes `loadouts`. Proposal: launcher default loadout (no `loadouts` option) = `weapon.kestrel_p9` + suppressor resolved via LoadoutResolver. Step 8 still goes loud because the guard sees the masked bot 6 m in front of him.
-- QA-3: HeistVariantTable `excludes` semantics are unspecified. Implemented: if any listed slot of the other group is active, this rule picks 0 (empty list = any slot). Please confirm or specify per-slot exclusion.
-- QA-4: project.godot has no InputMap actions; PlayerInput registers defaults at runtime when missing (move_*, sprint, crouch, jump, interact, fire, aim, reload, shout, melee, throw_item, deploy, mask_up, slot_primary/secondary, drop_bag). Please add them to project.godot.
-- QA-5: S1.1 "within 3 m of a guard fills while casing" conflicts with gate step 2 ("unmasked in a PUBLIC zone next to a guard for 5 s → no detection"). Implemented: the too-close rule does not apply inside PUBLIC zones (tweak flag `casing_too_close_applies_in_public = false`). Please confirm.
-- QA-6: bug in `tools/ci/check_banned.py`: the `*input*.gd` exemption tests `"Input." in rx.pattern`, but the pattern text is `\bInput\.` so the exemption never fires. `player_input.gd` reads Input via `Engine.get_singleton(&"Input")` until it is fixed; I'll revert after.
-- QA-7: with agent radius 0.35 a 0.25 m nav cell closes 0.9 m doors and lifts the navmesh 0.5 m. The sandbox bakes at cell 0.05; please set `navigation/3d/default_cell_size`/`default_cell_height` = 0.05 in project.godot (ENV C heists will need it too).
-- QA-8 (for ENV C, confirm): prefab `UsePoint` sits on the object's −Z side (visual_slots.md: −Z faces the room/user), rotated so its −Z faces the object; exception drill_point (its −Z points into the lock).
-### Ready for integration
-- yes (A-M1); `check_all.sh --env a` result: PASS
-
-## 2026-10-10 00:00 UTC: (not started)
-### Done
-- Environment created by lead.
-### In progress
-- —
-### Blocked
-- —
-### Questions for lead
-- —
-### Ready for integration
-- no

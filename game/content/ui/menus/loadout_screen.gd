@@ -11,6 +11,10 @@
 ## B4-17: "Workshop" opens the 3D WorkshopScreen over this screen on the same profile (open_workshop();
 ## its Back calls close_workshop(), which re-reads the weapon and mods it may have equipped). Self-contained,
 ## so MenuFlow needs no change: the armory station and the heist path both reach it from here.
+## D-073: a throwable picker (ThrowableGate.pickable(): perk-deck items such as the flask and the injector are
+## never offered) and a heister picker ("Any free heister" + Heisters.ids(), each with its accent swatch and ENV
+## D's 2D portrait when one exists). In co-op MenuFlow sets `taken_heisters` (LobbyState.heisters_taken_by_others):
+## those are shown taken and cannot be picked (the lobby's first-come rule still settles races).
 class_name LoadoutScreen
 extends UiScreen
 
@@ -33,13 +37,28 @@ const STAT_ROWS: Array[Array] = [
 ## Armory mode (B4-07, opened from the safehouse hub): no heist to launch, so no Launch button;
 ## Back saves and returns to the hub.
 @export var hub_mode: bool = false
+## The heist's HeistDef.start_mode (D-065). &"civilian" shows a notice: you start without gear and pick
+## it up on site (S1.3). Set by MenuFlow before the screen enters the tree.
+@export var start_mode: StringName = &"casing"
+## Compact mode (B6-04 drop-in loadout pick): no Skills / Perk Deck / Workshop / Masks buttons; the owner
+## relabels Launch.
+@export var compact_mode: bool = false
 
 var profile: PlayerProfile
+## S1.3 civilian-start notice (visible only for a civilian-start heist).
+var civilian_notice: Label
 var weapon_option: OptionButton
 var melee_option: OptionButton
 var armor_option: OptionButton
 var deployable_option: OptionButton
+var throwable_option: OptionButton
 var mask_option: OptionButton
+## D-073 heister picker: metadata = heister id (&"" = any free heister); accent strip + portrait beside it.
+var heister_option: OptionButton
+var heister_swatch: ColorRect
+var heister_portrait: TextureRect
+## Heisters other crew members hold (co-op); shown taken and disabled in the picker.
+var taken_heisters: Array[StringName] = []
 ## ModType (int) -> OptionButton for the current weapon.
 var mod_options: Dictionary = {}
 var concealment_label: Label
@@ -75,6 +94,10 @@ func build_ui() -> void:
 	var root: VBoxContainer = UiBuild.vbox(16)
 	_content = UiBuild.screen_margin(self, root)
 	root.add_child(UiBuild.label(&"ui.loadout.title", UiBuild.HEADER))
+	civilian_notice = UiBuild.label(&"ui.loadout.civilian_start", UiBuild.DIM)
+	civilian_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	civilian_notice.visible = start_mode == &"civilian" and not hub_mode
+	root.add_child(civilian_notice)
 	var cols: HBoxContainer = UiBuild.hbox(48)
 	cols.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(cols)
@@ -93,11 +116,23 @@ func build_ui() -> void:
 	melee_option = _row(left, &"ui.loadout.melee")
 	armor_option = _row(left, &"ui.loadout.armor")
 	deployable_option = _row(left, &"ui.loadout.deployable")
+	throwable_option = _row(left, &"ui.loadout.throwable")
 	mask_option = _row(left, &"ui.loadout.mask")
 	masks_button = UiBuild.button(&"ui.masks.open")
 	masks_button.custom_minimum_size = Vector2(180, 0)
 	masks_button.pressed.connect(_on_progression.bind(masks_requested))
 	mask_option.get_parent().add_child(masks_button)
+	heister_option = _row(left, &"ui.loadout.heister")
+	heister_swatch = ColorRect.new()
+	heister_swatch.custom_minimum_size = Vector2(8, 0)
+	heister_swatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	heister_option.get_parent().add_child(heister_swatch)
+	heister_portrait = TextureRect.new()
+	heister_portrait.custom_minimum_size = Vector2(72, 72)
+	heister_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	heister_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	heister_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	heister_option.get_parent().add_child(heister_portrait)
 	cols.add_child(_build_stats_panel())
 	var nav: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(nav)
@@ -119,6 +154,8 @@ func build_ui() -> void:
 	nav.add_child(workshop_button)
 	nav.add_child(launch_button)
 	launch_button.visible = not hub_mode
+	for b: Button in [skills_button, perks_button, workshop_button, masks_button]:
+		b.visible = not compact_mode
 	_fill_options()
 	_rebuild_mod_rows()
 	_rebuild_focus()
@@ -183,7 +220,9 @@ func current_loadout() -> Loadout:
 	l.melee = _selected_id(melee_option)
 	l.armor = _selected_id(armor_option)
 	l.deployable = _selected_id(deployable_option)
+	l.throwable = _selected_id(throwable_option)
 	l.mask = _selected_id(mask_option)
+	l.heister = _selected_id(heister_option)
 	l.mask_descriptor = LoadoutResolver.mask_descriptor_for(l, profile)  # D-043 QA-25: travels with launch
 	return l
 
@@ -196,6 +235,31 @@ func select_mod(mod_type: int, mod_id: StringName) -> bool:
 	if ok:
 		refresh()
 	return ok
+
+
+## Pick a heister (&"" = any free one) as if chosen in the UI. False when unknown or taken.
+func select_heister(heister_id: StringName) -> bool:
+	for i: int in range(heister_option.item_count):
+		if StringName(heister_option.get_item_metadata(i)) == heister_id and not heister_option.is_item_disabled(i):
+			heister_option.select(i)
+			_on_heister_changed(i)
+			return true
+	return false
+
+
+## Mark `ids` taken (co-op: other crew members hold them) and re-list the heister picker.
+func set_taken_heisters(ids: Array[StringName]) -> void:
+	taken_heisters = ids.duplicate()
+	if heister_option != null:
+		_fill_heisters(_selected_id(heister_option) if heister_option.item_count > 0 else profile.loadout.heister)
+
+
+## Ids the given picker lists, in order (&"" = none / any first): throwable_option, heister_option, ...
+func option_ids(o: OptionButton) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for i: int in range(o.item_count):
+		out.append(StringName(o.get_item_metadata(i)))
+	return out
 
 
 func select_armor(armor_id: StringName) -> bool:
@@ -271,9 +335,43 @@ func _fill_options() -> void:
 	_fill_from(melee_option, ContentDB.all_melees(), profile.loadout.melee, false)
 	_fill_from(armor_option, ContentDB.all_armors(), profile.loadout.armor, false)
 	_fill_from(deployable_option, ContentDB.all_deployables(), profile.loadout.deployable, true)
+	_fill_from(throwable_option, ThrowableGate.pickable(), profile.loadout.throwable, true)
 	_fill_masks(profile.loadout.mask)
-	for o: OptionButton in [melee_option, armor_option, deployable_option, mask_option]:
+	_fill_heisters(profile.loadout.heister)
+	for o: OptionButton in [melee_option, armor_option, deployable_option, throwable_option, mask_option]:
 		o.item_selected.connect(_on_item_changed)
+	heister_option.item_selected.connect(_on_heister_changed)
+
+
+## Heister picker: "Any free heister" first, then the roster with accent swatches; taken ones disabled.
+func _fill_heisters(selected: StringName) -> void:
+	heister_option.clear()
+	_add_item(heister_option, UiText.t(Heisters.name_key(&"")), &"")
+	heister_option.set_item_icon(0, _swatch_icon(Heisters.accent(&"")))
+	for id: StringName in Heisters.ids():
+		var taken: bool = taken_heisters.has(id)
+		var text: String = Heisters.display_name(id)
+		if taken:
+			text = UiText.t(&"ui.loadout.heister_taken", {"name": text})
+		_add_item(heister_option, text, id)
+		var i: int = heister_option.item_count - 1
+		heister_option.set_item_icon(i, _swatch_icon(Heisters.accent(id)))
+		heister_option.set_item_disabled(i, taken)
+	if not _select_id(heister_option, selected):
+		heister_option.select(0)
+	_show_heister(_selected_id(heister_option))
+
+
+func _on_heister_changed(_index: int) -> void:
+	_show_heister(_selected_id(heister_option))
+	refresh()
+
+
+func _show_heister(id: StringName) -> void:
+	heister_swatch.color = Heisters.accent(id)
+	var tex: Texture2D = Heisters.portrait(id)
+	heister_portrait.texture = tex
+	heister_portrait.visible = tex != null
 
 
 ## Re-read the mask picker from the profile (after the mask screen edited / equipped masks).
@@ -342,14 +440,17 @@ func _rebuild_focus() -> void:
 	types.sort()
 	for t: Variant in types:
 		focus_chain.append(mod_options[t] as Control)
-	for c: Control in [melee_option, armor_option, deployable_option, mask_option, masks_button, launch_button,
+	for c: Control in [melee_option, armor_option, deployable_option, throwable_option, mask_option, masks_button,
+			heister_option, launch_button,
 			skills_button, perks_button, workshop_button, back_button]:
-		if c != launch_button or not hub_mode:
+		if (c != launch_button or not hub_mode) and (c.visible or not compact_mode):
 			focus_chain.append(c)
 	if is_inside_tree():
 		UiNav.chain_vertical(focus_chain)
 		UiNav.chain_horizontal([mask_option, masks_button] as Array[Control], false)
-		var nav: Array[Control] = [back_button, skills_button, perks_button, workshop_button]
+		var nav: Array[Control] = [back_button]
+		if not compact_mode:
+			nav.append_array([skills_button, perks_button, workshop_button] as Array[Control])
 		if not hub_mode:
 			nav.append(launch_button)
 		UiNav.chain_horizontal(nav, false)
@@ -431,6 +532,12 @@ func _gate_deployables(modifiers: Dictionary) -> bool:
 			_select_id(deployable_option, &"")
 			changed = true
 	return changed
+
+
+static func _swatch_icon(c: Color) -> ImageTexture:
+	var img: Image = Image.create(16, 16, false, Image.FORMAT_RGBA8)
+	img.fill(c)
+	return ImageTexture.create_from_image(img)
 
 
 static func _add_item(o: OptionButton, text: String, id: StringName) -> void:

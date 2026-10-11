@@ -35,6 +35,18 @@ var elapsed_s: float:
 	get:
 		return _runtime.heist_time_s if _runtime != null else 0.0
 
+## QC-35 (D-064): hold the police (AssaultDirector) this long after the heist goes loud, e.g. a cartel
+## phase on a LOUD_ONLY heist: set it in `_on_mission_start()` (60 / 90 / 120 s rolled by the mission).
+## Setting 0 later (police tipped off) starts the police at once. Reads back the time left.
+var police_delay_s: float:
+	get:
+		var d: AssaultDirector = _director()
+		return d.start_delay_s if d != null else 0.0
+	set(v):
+		var d: AssaultDirector = _director()
+		if d != null:
+			d.start_delay_s = v
+
 var _runtime: HeistRuntime = null
 ## objective id -> { "id", "text_key", "state", "data", "order" }
 var _objectives: Dictionary[StringName, Dictionary] = {}
@@ -323,3 +335,7 @@ func _publish(objective_id: StringName) -> void:
 	EventBus.objective_updated.emit(objective_id, int(o["state"]), data)
 	Net.replicate_event(&"objective_updated", [objective_id, int(o["state"]), data])
 	objectives_changed.emit()
+
+
+func _director() -> AssaultDirector:
+	return _runtime.service(G.SVC_DIRECTOR) as AssaultDirector if _runtime != null else null

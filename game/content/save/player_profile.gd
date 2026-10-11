@@ -1,6 +1,6 @@
 ## A local player's persistent progression profile. Owner: ENV B. Persisted by SaveService.
 ##
-## JSON shape (version 5; see SaveService for migrations). Every field, type, default and since-version:
+## JSON shape (version 6; see SaveService for migrations). Every field, type, default and since-version:
 ## content/docs/save_format.md (ProfileSchema sanitizes types, ProfileValidator prunes unknown ids on load).
 ##   version: int, profile_name: String,
 ##   cash: int (spending cash), stash: int (offshore, "the stash"; pd2_fidelity S10.4),
@@ -30,6 +30,12 @@
 ##   achievements: Dictionary achievement id -> {"progress": int, "unlocked": bool} (v5, Achievements).
 ##   pro_job_locks: Dictionary BoardContracts.contract_key() -> float expires_at (Unix s) (v5,
 ##     QB-BRD1): failed pro Board contracts, locked until their rotation ends (ProJobLocks prunes them).
+##   notoriety: int 0..NotorietyTweak.max_rank (v6, B5-02, P10): Notoriety rank (Notoriety.rank_up).
+##   notoriety_xp: int (v6): XP moved out of `xp` by rank-ups; perk points count xp + notoriety_xp.
+##   notoriety_choices: Dictionary rank (int; JSON string key) -> chosen reward id (v6, Notoriety.choose).
+##   held_skill_sets: Array of skill dicts (v6), index-aligned with skill_sets: the build held by a
+##     rank-up and re-bought as levels return (NotorietySkills); {} = nothing held.
+##   music_choice: StringName (v6, B5-03): chosen heist music track id, &"" = the heist default.
 ##   stats: Dictionary String -> int counters (heists_completed, ...).
 ##   settings: Dictionary of JSON values, stored as-is (JSON numbers come back as float).
 ## StringNames are written as strings and converted back on load.
@@ -40,11 +46,11 @@ const DEFAULT_PROFILE_PATH: String = "res://content/data/save/default_profile.js
 ## Loadout input fields that are persisted. Order matters only for readability of the file.
 const LOADOUT_ID_FIELDS: Array[String] = [
 	"primary", "secondary", "melee", "throwable", "deployable", "deployable_secondary",
-	"armor", "mask", "perk_deck",
+	"armor", "mask", "perk_deck", "heister",
 ]
 const LOADOUT_LIST_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 
-var version: int = 5
+var version: int = 6
 var profile_name: String = ""
 var cash: int = 0
 var stash: int = 0
@@ -66,6 +72,16 @@ var unlocks: Array[StringName] = []
 var achievements: Dictionary = {}
 ## Contract key (String) -> expires_at (float, Unix seconds) (v5).
 var pro_job_locks: Dictionary = {}
+## Notoriety rank 0..max_rank (v6).
+var notoriety: int = 0
+## XP earned before the last rank-ups (v6); perk points count it.
+var notoriety_xp: int = 0
+## Rank (int) -> chosen reward id (StringName) (v6).
+var notoriety_choices: Dictionary = {}
+## Held skill builds (v6), index-aligned with skill_sets ({} = nothing held).
+var held_skill_sets: Array[Dictionary] = []
+## Heist music track id (v6); &"" = the heist's default.
+var music_choice: StringName = &""
 var stats: Dictionary = {}
 var settings: Dictionary = {}
 
@@ -122,6 +138,20 @@ static func from_dict(d: Dictionary) -> PlayerProfile:
 	if locks is Dictionary:
 		for k: Variant in (locks as Dictionary):
 			p.pro_job_locks[String(k)] = float((locks as Dictionary)[k])
+	p.notoriety = int(d.get("notoriety", 0))
+	p.notoriety_xp = int(d.get("notoriety_xp", 0))
+	p.notoriety_choices = {}
+	var ch: Variant = d.get("notoriety_choices", {})
+	if ch is Dictionary:
+		for k: Variant in (ch as Dictionary):
+			if String(k).is_valid_int():
+				p.notoriety_choices[int(String(k))] = StringName(String((ch as Dictionary)[k]))
+	p.held_skill_sets = []
+	var held: Variant = d.get("held_skill_sets", [])
+	if held is Array:
+		for e: Variant in (held as Array):
+			p.held_skill_sets.append(_skills_from(e))
+	p.music_choice = StringName(String(d.get("music_choice", "")))
 	p.stats = {}
 	var st: Variant = d.get("stats", {})
 	if st is Dictionary:
@@ -159,6 +189,11 @@ func to_dict() -> Dictionary:
 		"unlocks": _to_strings(unlocks),
 		"achievements": _achievements_to(achievements),
 		"pro_job_locks": _locks_to(pro_job_locks),
+		"notoriety": notoriety,
+		"notoriety_xp": notoriety_xp,
+		"notoriety_choices": _choices_to(notoriety_choices),
+		"held_skill_sets": _held_to_list(),
+		"music_choice": String(music_choice),
 		"stats": st,
 		"settings": settings.duplicate(true),
 	}
@@ -255,6 +290,20 @@ static func _achievements_to(a: Dictionary) -> Dictionary:
 	for k: Variant in a:
 		var e: Dictionary = a[k] as Dictionary
 		out[String(k)] = {"progress": int(e.get("progress", 0)), "unlocked": bool(e.get("unlocked", false))}
+	return out
+
+
+static func _choices_to(c: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for k: Variant in c:
+		out[str(k)] = String(c[k])
+	return out
+
+
+func _held_to_list() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for h: Dictionary in held_skill_sets:
+		out.append(_skills_to(h))
 	return out
 
 

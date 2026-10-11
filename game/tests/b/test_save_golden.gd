@@ -1,10 +1,10 @@
-## B4-16 save v5 (P4 gate "save v2"): golden migration fixtures (tests/b/fixtures/save/<name>.json ->
+## B4-16 save v5 -> B5-02 save v6 (P4 gate "save v2"): golden migration fixtures (tests/b/fixtures/save/<name>.json ->
 ## <name>.expected.json, hand-written), round trip, future-version refusal, truncated / corrupt files,
 ## wrong types sanitized with a warning, unknown ids pruned, illegal skill sets reset.
 extends TestCase
 
 const FIXTURES: String = "res://tests/b/fixtures/save"
-const GOLDEN: Array[String] = ["v0", "v1", "v2", "v3", "v4", "v5_damaged"]
+const GOLDEN: Array[String] = ["v0", "v1", "v2", "v3", "v4", "v5", "v5_damaged", "v6_damaged", "v6_heister"]
 const SLOT: int = 5
 
 
@@ -24,8 +24,8 @@ func after_all() -> void:
 	SaveService.root_dir = SaveService.DEFAULT_ROOT_DIR
 
 
-func test_current_version_is_5() -> void:
-	assert_eq(SaveService.CURRENT_VERSION, 5)
+func test_current_version_is_6() -> void:
+	assert_eq(SaveService.CURRENT_VERSION, 6)
 	assert_eq(PlayerProfile.new().version, SaveService.CURRENT_VERSION)
 	assert_eq(ProfileSchema.FIELDS.size(), PlayerProfile.new_default().to_dict().size(), "schema covers every saved field")
 	for f: String in PlayerProfile.new_default().to_dict():
@@ -51,11 +51,12 @@ func test_golden_fixtures_through_the_file() -> void:
 func test_each_migration_step_kept() -> void:
 	var v0: Dictionary = _fixture("v0")
 	var m: Dictionary = SaveService.migrate(v0)
-	assert_eq(int(m["version"]), 5)
+	assert_eq(int(m["version"]), 6)
 	assert_eq(int(m["cash"]), 5000)
 	assert_false(m.has("money"))
 	for k: String in ["banked_stealth_mult", "skill_sets", "perk_cards", "owned_mask_parts", "custom_masks",
-			"unlocks", "achievements", "pro_job_locks"]:
+			"unlocks", "achievements", "pro_job_locks", "notoriety", "notoriety_xp", "notoriety_choices",
+			"held_skill_sets", "music_choice"]:
 		assert_true(m.has(k), "v0 gains %s" % k)
 	var v4: Dictionary = _fixture("v4")
 	var m4: Dictionary = SaveService.migrate(v4)
@@ -64,6 +65,16 @@ func test_each_migration_step_kept() -> void:
 	assert_eq(m4["pro_job_locks"], {})
 	assert_eq(m4["custom_masks"], v4["custom_masks"], "4 -> 5 keeps the v4 fields")
 	assert_false(v4.has("unlocks"), "input not mutated")
+	var v5: Dictionary = _fixture("v5")
+	var m5: Dictionary = SaveService.migrate(v5)
+	assert_eq(int(m5["version"]), 6)
+	assert_eq(m5["notoriety"], 0)
+	assert_eq(m5["notoriety_xp"], 0)
+	assert_eq(m5["notoriety_choices"], {})
+	assert_eq(m5["held_skill_sets"], [])
+	assert_eq(m5["music_choice"], "", "5 -> 6: the heist's default music")
+	assert_eq(m5["unlocks"], v5["unlocks"], "5 -> 6 keeps the v5 fields")
+	assert_false(v5.has("notoriety"), "input not mutated")
 
 
 func test_expected_files_round_trip() -> void:
@@ -84,6 +95,52 @@ func test_v5_fields_round_trip() -> void:
 	assert_near(float(q.pro_job_locks["2:5501"]), 1.98e9, 1.0)
 	assert_eq(q.unlocks, p.unlocks)
 	assert_has(q.owned_masks, &"mask.oxblood_herald", "a recorded unlock owns its preset on load")
+
+
+func test_v6_fields_round_trip() -> void:
+	var p: PlayerProfile = SaveService.profile_from_save(_fixture("v5.expected"))
+	p.cash = Notoriety.cost_for(1)
+	assert_true(bool(Notoriety.rank_up(p)["ok"]))
+	p.music_choice = &"track.glasshouse_alt"
+	assert_eq(SaveService.save_profile(p, SLOT), OK)
+	var q: PlayerProfile = SaveService.load_profile(SLOT)
+	assert_eq(q.notoriety, 1)
+	assert_eq(q.notoriety_xp, 11600000)
+	assert_eq(q.music_choice, &"track.glasshouse_alt")
+	assert_eq(q.held_skill_sets, p.held_skill_sets, "held builds saved")
+	assert_eq(q.held_skill_sets[0], {&"skill.slipstream.light_step": 2, &"skill.juggernaut.thick_skin": 2})
+	assert_has(q.unlocks, &"unlock.notoriety.rank_1")
+	assert_has(q.owned_mask_parts, &"mask_colors.crown_ember")
+	q.notoriety_choices[5] = &"mask_colors.lantern_smoke"
+	q.notoriety = 5
+	assert_eq(_norm(q.to_dict())["notoriety_choices"], {"5": "mask_colors.lantern_smoke"}, "rank keys are strings in JSON")
+	var back: PlayerProfile = SaveService.profile_from_save(_norm(q.to_dict()))
+	assert_eq(back.notoriety_choices, {5: &"mask_colors.lantern_smoke"})
+
+
+func test_v6_damage_warns_and_repairs() -> void:
+	Log.capture = true
+	var d: Dictionary = _fixture("v6_damaged")
+	d["notoriety"] = 40
+	var q: PlayerProfile = SaveService.profile_from_save(d)
+	assert_eq(q.notoriety, Notoriety.max_rank(), "rank clamped to the cap")
+	assert_true(_warned("notoriety: 40 clamped to 0..25"))
+	assert_true(_warned("notoriety_xp: -50 clamped to 0"))
+	assert_true(_warned("music_choice: expected short_id"))
+	assert_true(_warned("notoriety_choices.2: 'mask_colors.bloodline' not offered"))
+	assert_true(_warned("held_skill_sets[0]: 'skill.gone'"))
+	assert_true(_warned("held_skill_sets: 3 entries for 2 skill sets"))
+	assert_true(_warned("unlocks: 'unlock.notoriety.rank_x'"))
+	assert_has(q.owned_mask_parts, &"mask_colors.heat_shimmer", "every reached rank's reward re-granted")
+	assert_has(q.unlocks, &"unlock.notoriety.rank_25")
+	assert_has(q.owned_masks, &"mask.last_word")
+	for line: String in Log.captured:
+		assert_false(line.begins_with("[ERROR]"), "no errors for damaged fields: " + line)
+	var ok: Dictionary = _fixture("v6_damaged")
+	ok["music_choice"] = "x".repeat(ProfileSchema.SHORT_ID_MAX_LENGTH)
+	assert_eq(String(SaveService.profile_from_save(ok).music_choice).length(), 64, "64 chars is the limit, kept")
+	ok["music_choice"] = 7
+	assert_eq(SaveService.profile_from_save(ok).music_choice, &"", "a number is not a track id")
 
 
 func test_future_version_refused() -> void:

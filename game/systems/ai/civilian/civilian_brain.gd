@@ -25,8 +25,10 @@ extends Node
 enum Mode { IDLE, WANDER, RUN_TO_CALL, CALLING, FLEE, COWER, DOWN, TIED, DEAD }
 
 ## Idle activities that may wander (seated / queued / desk civilians stay put).
-const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone"]
-const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", &"queue", &"sit"]
+const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone", &"mug"]
+## D-069 adds mug (walks with it: mug_walk), mop, phone_seated (characters.md v1.7 ambient clips).
+const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", &"queue", &"sit", &"mug", &"mop",
+	&"phone_seated"]
 const KIND_GUARD: StringName = &"guard"
 const KIND_POINT: StringName = &"point"
 const RETARGET_S: float = 0.5
@@ -411,7 +413,7 @@ func _tick_idle(delta: float) -> void:
 	var pick: PatrolPoint = options[GameRng.weighted_index(&"civilians", weights)]
 	call_target = {"kind": KIND_POINT, "node": pick, "position": pick.global_position, "reason": &""}
 	mode = Mode.WANDER
-	anim_hint = &"walk"
+	anim_hint = &"mug_walk" if _idle_activity == &"mug" else &"walk"
 	_motor.go_to(pick.global_position, Tweak.stealth().civilian_walk_speed)
 
 

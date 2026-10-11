@@ -6,6 +6,21 @@
 ##   loadout summary: primary / secondary / armor / deployable / perk deck, mask name + colours, AI, and an
 ##   "illegal loadout" flag), Ready toggle, host-only Start (LobbyState.start_block() says why not), Leave.
 ##   Contract / Briefing / Loadout buttons ask MenuFlow to open those screens (signals below).
+##   Music (B5-03): the host picks the heist music (MusicPicker: profile.music_choice, saved, re-sent in
+##   the host's profile summary); clients see the host's pick read-only (LobbyState.host_music()).
+## Lobby codes (B6-05, LobbyCode): the host sees its code (LAN IPv4 from IP.get_local_addresses() + the hosted
+## port) in the header with Copy (DisplayServer.clipboard_set) and a hint that internet play needs the public
+## address and a forwarded port; the Join panel has a code field (join_by_code() decodes it into the address /
+## port fields and runs the normal join()). No LAN host list: Net has no discovery API.
+## Drop-in (B6-04): "Drop in to a running heist" next to Join (drop_in(): the address / port fields, or the code
+## field when the address is empty) emits dropin_requested(address, port); MenuFlow opens DropInJoinScreen
+## through DropInFlow (compact loadout pick -> connect -> HeistDropIn.request_join -> progress / cancel).
+## Kick (B6-04, D-072): the host sees Kick on every other human's slot card; KickConfirmDialog asks first, then
+## LobbySession.kick(slot) -> Net.kick. A kicked client lands back on the connect view with
+## `ui.lobby.error.kicked` (LobbySession FAIL_KICKED, from Net.last_disconnect_reason); the crew's chat shows the
+## notice. Drop-in policy (B6-04, PD2): the host picks Ask / Allowed / Not allowed (LobbySession.set_drop_in_policy,
+## LobbyState.dropin_policy); clients see it read-only.
+## Chat (B6-03): a ChatPanel (Mode.LOBBY) next to the contract panel; the chat key focuses its input.
 ## All networking goes through `session` (LobbySession -> Net API). MenuFlow passes its session in with
 ## setup(); standalone the screen makes its own.
 class_name LobbyScreen
@@ -17,9 +32,13 @@ signal contract_requested(target: StringName)
 signal briefing_requested()
 ## Open the loadout (armory) screen; its Back returns here and re-sends the profile summary.
 signal loadout_requested()
+## Drop in to the heist running at `address`:`port` (B6-04; MenuFlow opens DropInJoinScreen).
+signal dropin_requested(address: String, port: int)
 
 const SLOT_CARD_MIN: Vector2 = Vector2(360, 380)
 
+## Profile slot the music pick saves to (MenuFlow.profile_slot).
+var profile_slot: int = 0
 var session: LobbySession = null
 var profile: PlayerProfile = null
 var tweak: LobbyTweak
@@ -30,7 +49,12 @@ var host_button: Button
 var join_address_edit: LineEdit
 var join_port_edit: LineEdit
 var join_button: Button
+## "Drop in to a running heist" (B6-04).
+var dropin_button: Button
 var loopback_button: Button
+## Join by lobby code (B6-05).
+var code_edit: LineEdit
+var code_join_button: Button
 var back_button: Button
 var error_label: Label
 ## Lobby mode widgets.
@@ -42,12 +66,30 @@ var board_button: Button
 var planning_button: Button
 var briefing_button: Button
 var loadout_button: Button
+## Host: heist music pick; clients: the host's pick, read-only (B5-03).
+var music_picker: MusicPicker
+## Drop-in policy (B6-04): host option (LobbyState.POLICIES order); clients: the value as text.
+var dropin_option: OptionButton
+var dropin_value_label: Label
+## Host's lobby code (B6-05): box (hosting only), "Lobby code: XXXX-XXXX", Copy, hint line.
+var code_box: VBoxContainer
+var code_label: Label
+var copy_button: Button
+var code_hint_label: Label
+## Port this screen hosted on (-1 = not hosting from here) and the last text put on the clipboard.
+var hosted_port: int = -1
+var last_copied: String = ""
+## Lobby text chat (B6-03).
+var chat_panel: ChatPanel
+## Host kick confirmation over the screen (B6-04).
+var kick_dialog: KickConfirmDialog
 var ready_button: Button
 var start_button: Button
 var leave_button: Button
 var block_label: Label
-## Per slot: {"panel", "name", "tags", "level", "ready", "items": {field: Label}, "mask", "swatch_a",
-## "swatch_b", "flag"}.
+## Per slot: {"panel", "name", "tags", "level", "heister" (D-073: assigned heister in its accent), "ready",
+## "items": {field: Label}, "mask", "swatch_a",
+## "swatch_b", "flag", "kick"}.
 var slot_widgets: Array[Dictionary] = []
 
 
@@ -80,6 +122,11 @@ func build_ui() -> void:
 	root.add_child(connect_box)
 	lobby_box = _build_lobby()
 	root.add_child(lobby_box)
+	kick_dialog = KickConfirmDialog.new()
+	kick_dialog.name = "KickDialog"
+	add_child(kick_dialog)
+	kick_dialog.confirmed.connect(_on_kick_closed.unbind(2))
+	kick_dialog.cancelled.connect(_on_kick_closed)
 	_bind_session()
 	refresh()
 
@@ -89,6 +136,8 @@ func _bind_session() -> void:
 		session.changed.connect(refresh)
 	if not session.connection_failed.is_connected(_on_connection_failed):
 		session.connection_failed.connect(_on_connection_failed)
+	if chat_panel != null and chat_panel.session != session:
+		chat_panel.setup(session, ChatPanel.Mode.LOBBY)
 
 
 func _build_header() -> HBoxContainer:
@@ -100,6 +149,22 @@ func _build_header() -> HBoxContainer:
 	status_label = UiBuild.label(&"ui.lobby.status.offline", UiBuild.DIM)
 	titles.add_child(status_label)
 	header.add_child(titles)
+	var spacer: Control = Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(spacer)
+	code_box = UiBuild.vbox(4)
+	var row: HBoxContainer = UiBuild.hbox(12)
+	code_label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	row.add_child(code_label)
+	copy_button = UiBuild.button(&"ui.lobby.code.copy")
+	copy_button.custom_minimum_size = Vector2(160, 0)
+	copy_button.pressed.connect(copy_code)
+	row.add_child(copy_button)
+	code_box.add_child(row)
+	code_hint_label = UiBuild.label(&"ui.lobby.code.wan_hint", UiBuild.DIM)
+	code_box.add_child(code_hint_label)
+	code_box.visible = false
+	header.add_child(code_box)
 	return header
 
 
@@ -131,11 +196,25 @@ func _build_connect() -> VBoxContainer:
 	join_button = UiBuild.button(&"ui.lobby.join")
 	join_button.pressed.connect(_on_join)
 	join_row.add_child(join_button)
+	dropin_button = UiBuild.button(&"ui.lobby.dropin_join")
+	dropin_button.tooltip_text = UiText.t(&"ui.lobby.dropin_join.hint")
+	dropin_button.pressed.connect(_on_drop_in)
+	join_row.add_child(dropin_button)
 	join_v.add_child(join_row)
 	loopback_button = UiBuild.button(&"ui.lobby.loopback", {"address": tweak.loopback_address})
 	loopback_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	loopback_button.pressed.connect(join_loopback)
 	join_v.add_child(loopback_button)
+	var code_row: HBoxContainer = UiBuild.hbox(16)
+	code_row.add_child(UiBuild.label(&"ui.lobby.code.title"))
+	code_edit = _edit("", &"ui.lobby.code.hint", 360)
+	code_edit.max_length = 24
+	code_edit.text_submitted.connect(_on_code_submitted)
+	code_row.add_child(code_edit)
+	code_join_button = UiBuild.button(&"ui.lobby.code.join")
+	code_join_button.pressed.connect(join_by_code)
+	code_row.add_child(code_join_button)
+	join_v.add_child(code_row)
 	box.add_child(UiBuild.panel(join_v))
 	error_label = UiBuild.label(&"", UiBuild.DIM)
 	error_label.add_theme_color_override(&"font_color", tweak.illegal_color)
@@ -184,7 +263,20 @@ func _build_lobby() -> VBoxContainer:
 	briefing_button.pressed.connect(briefing_requested.emit)
 	loadout_button.pressed.connect(loadout_requested.emit)
 	cv.add_child(crow)
-	box.add_child(UiBuild.panel(cv))
+	music_picker = MusicPicker.new()
+	music_picker.name = "MusicPicker"
+	music_picker.music_changed.connect(_on_music_changed)
+	cv.add_child(music_picker)
+	cv.add_child(_build_dropin_row())
+	var top: HBoxContainer = UiBuild.hbox(16)
+	var contract_panel: PanelContainer = UiBuild.panel(cv)
+	contract_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(contract_panel)
+	chat_panel = ChatPanel.new()
+	chat_panel.name = "ChatPanel"
+	chat_panel.setup(session, ChatPanel.Mode.LOBBY)
+	top.add_child(chat_panel)
+	box.add_child(top)
 	var slots: HBoxContainer = UiBuild.hbox(16)
 	slots.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	for _i: int in range(LobbyState.MAX_CREW):
@@ -209,14 +301,30 @@ func _build_lobby() -> VBoxContainer:
 	return box
 
 
+func _build_dropin_row() -> HBoxContainer:
+	var row: HBoxContainer = UiBuild.hbox(12)
+	row.add_child(UiBuild.label(&"ui.lobby.dropin.title"))
+	dropin_option = UiBuild.option_button()
+	dropin_option.name = "DropInPolicy"
+	for policy: StringName in LobbyState.POLICIES:
+		dropin_option.add_item(UiText.t(policy_key(policy)))
+	dropin_option.custom_minimum_size = Vector2(260, 0)
+	dropin_option.item_selected.connect(_on_dropin_selected)
+	row.add_child(dropin_option)
+	dropin_value_label = UiBuild.label(&"", UiBuild.DIM)
+	row.add_child(dropin_value_label)
+	return row
+
+
 func _slot_card() -> PanelContainer:
 	var v: VBoxContainer = UiBuild.vbox(6)
 	var w: Dictionary = {}
 	w["name"] = UiBuild.label(&"", UiBuild.SUBHEADER)
 	w["tags"] = UiBuild.label(&"", UiBuild.DIM)
 	w["level"] = UiBuild.label(&"")
+	w["heister"] = UiBuild.label(&"")
 	w["ready"] = UiBuild.label(&"")
-	for k: String in ["name", "tags", "level", "ready"]:
+	for k: String in ["name", "tags", "level", "heister", "ready"]:
 		var l: Label = w[k] as Label
 		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		v.add_child(l)
@@ -244,6 +352,15 @@ func _slot_card() -> PanelContainer:
 	flag.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(flag)
 	w["flag"] = flag
+	var spacer: Control = Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(spacer)
+	var kick: Button = UiBuild.button(&"ui.kick.button")
+	kick.custom_minimum_size = Vector2(160, 0)
+	kick.size_flags_horizontal = Control.SIZE_SHRINK_END
+	kick.pressed.connect(ask_kick.bind(slot_widgets.size()))
+	v.add_child(kick)
+	w["kick"] = kick
 	var p: PanelContainer = UiBuild.panel(v)
 	p.custom_minimum_size = SLOT_CARD_MIN
 	p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -267,6 +384,7 @@ func host() -> Error:
 		_show_error(&"ui.lobby.error.port", {"min": tweak.min_port, "max": tweak.max_port})
 		return ERR_INVALID_PARAMETER
 	var err: Error = session.host(port)
+	hosted_port = port if err == OK else -1
 	if err != OK:
 		_show_error(&"ui.lobby.error.host", {"port": port})
 	return err
@@ -274,18 +392,80 @@ func host() -> Error:
 
 ## Join the address / port fields. Returns OK or the error (shown on the screen).
 func join() -> Error:
-	var address: String = LobbyAddress.parse_address(join_address_edit.text)
-	if address == "":
-		_show_error(&"ui.lobby.error.address")
+	var target: Dictionary = _join_target()
+	if target.is_empty():
 		return ERR_INVALID_PARAMETER
-	var port: int = LobbyAddress.parse_port(join_port_edit.text, tweak)
-	if port < 0:
-		_show_error(&"ui.lobby.error.port", {"min": tweak.min_port, "max": tweak.max_port})
-		return ERR_INVALID_PARAMETER
+	var address: String = target["address"]
+	var port: int = target["port"]
 	var err: Error = session.join(address, port)
 	if err != OK:
 		_show_error(&"ui.lobby.error.join", {"address": address, "port": port})
 	return err
+
+
+## Join by the code field (LobbyCode): fills the address / port fields and runs join(). A bad code shows
+## `ui.lobby.code.error.<reason>` and returns ERR_INVALID_DATA.
+func join_by_code() -> Error:
+	var d: Dictionary = LobbyCode.decode(code_edit.text, tweak.default_port)
+	if d.has("error"):
+		_show_error(StringName("ui.lobby.code.error.%s" % d["error"]))
+		return ERR_INVALID_DATA
+	join_address_edit.text = String(d["address"])
+	join_port_edit.text = str(int(d["port"]))
+	return join()
+
+
+## The host's lobby code (no dashes) for this machine's LAN IPv4 and the hosted port, "" when unknown.
+func lobby_code() -> String:
+	if hosted_port < 0:
+		return ""
+	return LobbyCode.encode(LobbyCode.pick_lan_ipv4(IP.get_local_addresses()), hosted_port, tweak.default_port)
+
+
+## Copy the code (display form) to the clipboard.
+func copy_code() -> void:
+	var code: String = lobby_code()
+	if code == "":
+		return
+	last_copied = LobbyCode.display(code)
+	DisplayServer.clipboard_set(last_copied)
+	code_hint_label.text = UiText.t(&"ui.lobby.code.copied")
+
+
+func _on_code_submitted(_text: String) -> void:
+	join_by_code()
+
+
+## Drop in to a running heist (B6-04): the address / port fields (an empty address with a code typed in uses
+## the code) -> dropin_requested(address, port). Returns OK or the error (shown on the screen); nothing connects
+## here (DropInFlow does after the loadout pick).
+func drop_in() -> Error:
+	if LobbyAddress.parse_address(join_address_edit.text) == "" and code_edit.text.strip_edges() != "":
+		var d: Dictionary = LobbyCode.decode(code_edit.text, tweak.default_port)
+		if d.has("error"):
+			_show_error(StringName("ui.lobby.code.error.%s" % d["error"]))
+			return ERR_INVALID_DATA
+		join_address_edit.text = String(d["address"])
+		join_port_edit.text = str(int(d["port"]))
+	var target: Dictionary = _join_target()
+	if target.is_empty():
+		return ERR_INVALID_PARAMETER
+	error_label.text = ""
+	dropin_requested.emit(String(target["address"]), int(target["port"]))
+	return OK
+
+
+## {"address", "port"} from the join fields, or {} after showing why not.
+func _join_target() -> Dictionary:
+	var address: String = LobbyAddress.parse_address(join_address_edit.text)
+	if address == "":
+		_show_error(&"ui.lobby.error.address")
+		return {}
+	var port: int = LobbyAddress.parse_port(join_port_edit.text, tweak)
+	if port < 0:
+		_show_error(&"ui.lobby.error.port", {"min": tweak.min_port, "max": tweak.max_port})
+		return {}
+	return {"address": address, "port": port}
 
 
 ## Quick-join the loopback address on the join port field's value (dev / tests).
@@ -309,12 +489,53 @@ func start() -> StringName:
 	return r
 
 
+## Host: ask to kick the human in `slot` (confirm dialog). False when that slot cannot be kicked.
+func ask_kick(slot: int) -> bool:
+	var st: LobbyState = session.state
+	if not st.is_host or slot == st.local_slot or not st.is_human(slot):
+		return false
+	kick_dialog.target = session
+	kick_dialog.ask(slot, String(st.slot_view(slot)["name"]))
+	return true
+
+
+## Host: change the lobby's drop-in policy (LobbyState.POLICY_*). False for a client or a bad value.
+func set_drop_in_policy(policy: StringName) -> bool:
+	return session.set_drop_in_policy(policy)
+
+
+## UI text key of a drop-in policy.
+static func policy_key(policy: StringName) -> StringName:
+	return StringName("ui.lobby.dropin.%s" % policy)
+
+
+func _on_dropin_selected(index: int) -> void:
+	if index >= 0 and index < LobbyState.POLICIES.size():
+		set_drop_in_policy(LobbyState.POLICIES[index])
+
+
+func _refresh_dropin(st: LobbyState) -> void:
+	dropin_option.visible = st.is_host
+	dropin_value_label.visible = not st.is_host
+	dropin_option.select(maxi(LobbyState.POLICIES.find(st.dropin_policy), 0))
+	dropin_value_label.text = UiText.t(policy_key(st.dropin_policy))
+
+
+func _on_kick_closed() -> void:
+	refresh()
+	focus_default()
+
+
 func _on_host() -> void:
 	host()
 
 
 func _on_join() -> void:
 	join()
+
+
+func _on_drop_in() -> void:
+	drop_in()
 
 
 func _on_ready_toggled(on: bool) -> void:
@@ -341,6 +562,9 @@ func refresh() -> void:
 		error_label.text = ""
 	status_label.text = _status_text()
 	_refresh_contract(st)
+	_refresh_code(active and st.is_host)
+	_refresh_music(st)
+	_refresh_dropin(st)
 	for i: int in range(slot_widgets.size()):
 		_refresh_slot(slot_widgets[i], st.slot_view(i))
 	var in_slot: bool = st.local_slot >= 0
@@ -360,6 +584,19 @@ func refresh() -> void:
 	_rebuild_focus()
 	if was_lobby != active:
 		focus_default()
+
+
+func _refresh_code(hosting: bool) -> void:
+	if not hosting:
+		hosted_port = -1 if not session.is_active() else hosted_port
+		code_hint_label.text = UiText.t(&"ui.lobby.code.wan_hint")
+	code_box.visible = hosting and hosted_port >= 0
+	if not code_box.visible:
+		return
+	var code: String = lobby_code()
+	code_label.text = UiText.t(&"ui.lobby.code.value", {"code": LobbyCode.display(code)}) if code != "" \
+			else UiText.t(&"ui.lobby.code.unavailable")
+	copy_button.visible = code != ""
 
 
 func _status_text() -> String:
@@ -384,6 +621,22 @@ func _refresh_contract(st: LobbyState) -> void:
 		detail += "   " + UiText.t(&"ui.board.pro")
 	contract_detail_label.text = detail
 	contract_label.add_theme_color_override(&"font_color", UiAccent.text_color(heist, UiAccent.panel_bg()))
+
+
+func _refresh_music(st: LobbyState) -> void:
+	var heist: StringName = st.contract.get("heist", &"")
+	music_picker.profile_slot = profile_slot
+	if st.is_host:
+		music_picker.editable = true
+		music_picker.setup(profile if profile != null else session.profile, heist)
+	else:
+		music_picker.heist_id = heist
+		music_picker.set_read_only(st.host_music())
+
+
+## Host picked a track: re-send the summary so every client shows it.
+func _on_music_changed(_track_id: StringName) -> void:
+	session.send_profile()
 
 
 func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
@@ -414,7 +667,7 @@ func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
 	if not occupied or is_ai:
 		tag_parts.append(UiText.t(&"ui.lobby.slot.ai_fill"))
 	tags.text = "  ".join(tag_parts)
-	level.text = UiText.t(&"ui.menu.level", {"level": int(view["level"])}) if has_sum else ""
+	level.text = NotorietyScreen.level_text(int(view["level"]), int(view.get("notoriety", 0))) if has_sum else ""
 	if human:
 		var is_ready: bool = bool(view["ready"])
 		rd.text = UiText.t(&"ui.lobby.slot.ready" if is_ready else &"ui.lobby.slot.not_ready")
@@ -437,6 +690,7 @@ func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
 	if mdef != null:
 		sa.color = mdef.color_a
 		sb.color = mdef.color_b
+	_refresh_heister(w["heister"] as Label, view, occupied and (is_ai or has_sum))
 	flag.visible = has_sum and not bool(view["legal"])
 	if human and not has_sum:
 		level.text = UiText.t(&"ui.lobby.slot.waiting")
@@ -446,19 +700,41 @@ func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
 	else:
 		panel.remove_theme_stylebox_override(&"panel")
 	panel.modulate.a = 1.0 if human else 0.7
+	(w["kick"] as Button).visible = session.state.is_host and human and not bool(view["is_local"])
+
+
+## D-073: the slot's heister in its accent; a pick lost to an earlier claim shows what was wanted.
+func _refresh_heister(l: Label, view: Dictionary, shown: bool) -> void:
+	var id: StringName = StringName(view.get("heister", &""))
+	l.visible = shown and id != &""
+	if not l.visible:
+		return
+	var pick: StringName = StringName(view.get("heister_pick", &""))
+	var args: Dictionary = {"name": Heisters.display_name(id), "pick": Heisters.display_name(pick)}
+	var lost: bool = not bool(view["is_ai"]) and pick != &"" and pick != id
+	l.text = UiText.t(&"ui.lobby.slot.heister_fallback" if lost else &"ui.lobby.slot.heister", args)
+	l.add_theme_color_override(&"font_color", Heisters.accent(id).lerp(Color.WHITE, 0.35))
 
 
 func _rebuild_focus() -> void:
 	focus_chain.clear()
 	var cands: Array[Control] = []
 	if connect_box.visible:
-		cands = [host_port_edit, host_button, join_address_edit, join_port_edit, join_button, loopback_button, back_button]
+		cands = [host_port_edit, host_button, join_address_edit, join_port_edit, join_button, dropin_button, loopback_button,
+				code_edit, code_join_button, back_button]
 	else:
-		cands = [board_button, planning_button, briefing_button, loadout_button, ready_button, start_button, leave_button]
+		cands = [board_button, planning_button, briefing_button, loadout_button, music_picker.option, dropin_option, ready_button,
+				start_button, leave_button]
+		for w: Dictionary in slot_widgets:
+			cands.append(w["kick"] as Control)
+		if code_box.visible:
+			cands.append(copy_button)
+		if chat_panel.input != null:
+			cands.append(chat_panel.input)
 	for c: Control in cands:
 		if c.visible:
 			focus_chain.append(c)
 	UiNav.chain_vertical(focus_chain)
 	if connect_box.visible:
 		# The join row reads left to right: left/right walk it too (up/down follow the chain).
-		UiNav.chain_horizontal([join_address_edit, join_port_edit, join_button] as Array[Control], false)
+		UiNav.chain_horizontal([join_address_edit, join_port_edit, join_button, dropin_button] as Array[Control], false)

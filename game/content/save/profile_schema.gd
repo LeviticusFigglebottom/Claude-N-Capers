@@ -23,6 +23,11 @@ const SKILL_SETS: StringName = &"skill_sets"
 const CUSTOM_MASKS: StringName = &"custom_masks"
 const ACHIEVEMENTS: StringName = &"achievements"
 const LOADOUT: StringName = &"loadout"
+## String -> String map (notoriety_choices).
+const STRING_MAP: StringName = &"string_map"
+## A String of at most SHORT_ID_MAX_LENGTH characters (music_choice); longer -> default + warn.
+const SHORT_ID: StringName = &"short_id"
+const SHORT_ID_MAX_LENGTH: int = 64
 ## Top-level field -> [kind, default, since-version]. Order = file order of the doc.
 const FIELDS: Dictionary = {
 	"version": [INT, 0, 1],
@@ -44,6 +49,11 @@ const FIELDS: Dictionary = {
 	"unlocks": [ID_LIST, [], 5],
 	"achievements": [ACHIEVEMENTS, {}, 5],
 	"pro_job_locks": [FLOAT_MAP, {}, 5],
+	"notoriety": [INT, 0, 6],
+	"notoriety_xp": [INT, 0, 6],
+	"notoriety_choices": [STRING_MAP, {}, 6],
+	"held_skill_sets": [SKILL_SETS, [], 6],
+	"music_choice": [SHORT_ID, "", 6],
 	"stats": [INT_MAP, {}, 0],
 	"settings": [ANY_MAP, {}, 0],
 }
@@ -54,6 +64,7 @@ const LOADOUT_FIELDS: Dictionary = {
 	"melee": [STRING, ""], "throwable": [STRING, ""], "deployable": [STRING, ""],
 	"deployable_secondary": [STRING, ""], "armor": [STRING, ""], "mask": [STRING, ""],
 	"perk_deck": [STRING, ""], "perk_deck_cards": [INT, 0], "skills": [INT_MAP, {}],
+	"heister": [SHORT_ID, ""],  # D-073, additive in v6: a missing key reads as "" (no preference)
 }
 
 
@@ -81,17 +92,25 @@ static func _field(path: String, d: Dictionary, kind: StringName, default: Varia
 ## The sanitized value, or null when `v` has the wrong type for `kind`.
 static func _value(path: String, v: Variant, kind: StringName) -> Variant:
 	match kind:
-		INT:
-			return _as_int(v)
-		FLOAT:
-			return float(v) if (v is int or v is float) else null
-		STRING:
-			return String(v) if (v is String or v is StringName) else null
+		INT, FLOAT, STRING, SHORT_ID:
+			return _scalar(v, kind)
 		ID_LIST:
 			return _id_list(path, v) if v is Array else null
 		LOADOUT:
 			return _loadout(path, v as Dictionary) if v is Dictionary else null
 	return _container(path, v, kind)
+
+
+static func _scalar(v: Variant, kind: StringName) -> Variant:
+	var is_text: bool = v is String or v is StringName
+	match kind:
+		INT:
+			return _as_int(v)
+		FLOAT:
+			return float(v) if (v is int or v is float) else null
+		SHORT_ID:
+			return String(v) if is_text and String(v).length() <= SHORT_ID_MAX_LENGTH else null
+	return String(v) if is_text else null
 
 
 static func _container(path: String, v: Variant, kind: StringName) -> Variant:
@@ -107,6 +126,8 @@ static func _container(path: String, v: Variant, kind: StringName) -> Variant:
 				out = m.duplicate(true)
 			ACHIEVEMENTS:
 				out = _achievements(path, m)
+			STRING_MAP:
+				out = _string_map(path, m)
 	elif v is Array:
 		match kind:
 			SKILL_SETS:
@@ -143,6 +164,17 @@ static func _int_map(path: String, m: Dictionary) -> Dictionary:
 			_warn("%s.%s: expected int, got %s; dropped" % [path, k, type_string(typeof(m[k]))])
 			continue
 		out[String(k)] = n
+	return out
+
+
+static func _string_map(path: String, m: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for k: Variant in m:
+		var v: Variant = m[k]
+		if not (v is String or v is StringName):
+			_warn("%s.%s: expected string, got %s; dropped" % [path, k, type_string(typeof(v))])
+			continue
+		out[String(k)] = String(v)
 	return out
 
 
