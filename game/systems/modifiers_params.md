@@ -140,8 +140,8 @@ Dodge, swap speed and armor pierce come from the generic keys.
 | melee_chain_mult / melee_chain_window_s | 10 / 1 | A MELEE hit dealt by the holder opens the window. While it is open, `PerkHooks.melee_damage_mult(crew)` returns the mult. `PerkHooks.on_melee_miss` resets it. |
 | melee_hit_heal_fraction / _cooldown_s | 0 / 10 | A MELEE hit heals max health x f. |
 
-There is no crew melee attack yet. The melee parts run off MELEE DamageInfos, and the future melee
-code must multiply by `melee_damage_mult` and call `on_melee_miss`.
+CrewMelee (L3.9) multiplies every melee hit by `melee_damage_mult` and calls `on_melee_miss` on a swing
+that hits nothing. The melee parts run off the MELEE DamageInfos it deals.
 
 ## `perk.muscle` (Bulk), PerkMuscle
 | Field | Default | Read as |

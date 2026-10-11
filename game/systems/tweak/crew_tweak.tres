@@ -1,6 +1,16 @@
 [gd_resource type="Resource" script_class="CrewTweak" format=3]
 
 [ext_resource type="Script" path="res://systems/tweak/crew_tweak.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://wqg1cgvg3s1y" path="res://world/characters/crew_rook/crew_rook.tscn" id="b_rook"]
+[ext_resource type="PackedScene" uid="uid://bhl3aktor0viq" path="res://world/characters/crew_sable/crew_sable.tscn" id="b_sable"]
+[ext_resource type="PackedScene" uid="uid://dnvyfyagok4sg" path="res://world/characters/crew_dutch/crew_dutch.tscn" id="b_dutch"]
+[ext_resource type="PackedScene" uid="uid://clae5evgj8n2u" path="res://world/characters/crew_wren/crew_wren.tscn" id="b_wren"]
 
 [resource]
 script = ExtResource("1")
+body_scenes = Dictionary[StringName, PackedScene]({
+&"rook": ExtResource("b_rook"),
+&"sable": ExtResource("b_sable"),
+&"dutch": ExtResource("b_dutch"),
+&"wren": ExtResource("b_wren")
+})
