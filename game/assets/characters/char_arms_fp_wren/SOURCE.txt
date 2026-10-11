@@ -1,0 +1,14 @@
+asset: char_arms_fp_wren
+script: tools/blender/characters/arms_fp_heisters.py
+params: {"heister": "wren", "skin": 2}
+seed: 1131308309  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_arms_fp_wren
+edit policy: generated file, never edit by hand; change the script and rebuild
+fp.variant: mesh-only sleeve variant of char_arms_fp (no AnimationPlayer): <root>/rig_arms/Skeleton3D/Arms, same rig_arms bones / rest / bind poses; ENV A puts this Arms' mesh + skin on char_arms_fp's Arms (the clips stay in char_arms_fp); the hands are glove-material hands (no skin under the glove)
+heister: wren
+layers: char_tac_glove u=-0.020..0.000 m; char_tac_glove u=-0.017..-0.005 m; char_shirt_blue u=-0.389..-0.204 m
+look: pale-blue shirt sleeve rolled to just below the elbow (double roll tucked onto the skin), bare forearm (body forearm region, skin tone of the variant), short tactical gloves with a strap
+materials: char_shirt_blue,char_skin_2,char_tac_glove
+tri_budget: 12000
+tris: 11096
