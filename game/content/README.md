@@ -335,17 +335,30 @@ Typed GDScript, gdlint clean, no `randi()/randf()`, never assume one player, eve
   (`LobbyTweak.chat_action`; Enter / keypad Enter, D-072; no fallback, T is `order_menu`). `CrewInput` (`ui/common/`) = the shared
   local-input pause with per-overlay holders (options, chat, drop-in). Strings `ui.chat.*`.
 * **Drop-in + kick (B6-04, on mocks until ENV A's drop-in lands).** `DropInService` (`lobby/drop_in_service.gd`):
-  the interface B's UI binds to by duck typing (group `drop_in_service`, `DropInService.find(tree)`): signals
+  the interface B's UI binds to by duck typing (group `G.DROP_IN_SERVICE` = `DropInService.GROUP`, `DropInService.find(tree)`): signals
   `join_requested(peer_id, summary)`, `join_progress(peer_id, frac)`, `joined(slot)`, `join_failed(peer_id, reason)`,
-  `kicked(slot)`; methods `answer_join(peer_id, accept)`, `kick(slot) -> bool`, `request_join(summary)`,
-  `cancel_join()`; reasons `denied|timeout|full|cancelled|host_lost`. `MockDropInService` (`lobby/mock/`).
+  `kicked(slot)`; methods `answer_join(peer_id, accept, reason)`, `kick(slot) -> bool`, `request_join(summary)`,
+  `cancel_join()`; reasons `denied|timeout|full|cancelled|host_lost|kicked|off`. `MockDropInService` (`lobby/mock/`).
   UI (`ui/dropin/`): `JoinRequestDialog` (host: name, level + Notoriety badge, Accept / Deny, auto-deny after
   `LobbyTweak.dropin_request_timeout_s`, queue; MenuFlow.heist_join_dialog over the HUD for a co-op host, pauses
   local input while shown), `KickConfirmDialog` (calls `target.kick(slot)`), `DropInJoinScreen` (joining player:
   `LoadoutScreen.compact_mode` pick -> "Joining" progress with Cancel; not wired into MenuFlow until A's client path
-  exists). Lobby kick works today: `LobbySession.kick(slot)` -> host-only `LobbyState.MSG_KICK`; the kicked client's
-  session leaves (`connection_failed(FAIL_KICKED)`), honour-based until Net can drop a peer. Strings `ui.dropin.*`,
-  `ui.kick.*`.
+  exists). **Kick (D-072):** `LobbySession.kick(slot)` -> `Net.kick(peer_id)` (host only). `Net.peer_kicked` puts the
+  player on the session kick list (`KickList`, `lobby/kick_list.gd`, `LobbyState.kicked`: peer id + normalized profile
+  name; cleared with the session) and sends `LobbyState.MSG_KICK` only as a crew notice (every peer remembers the kick;
+  `LobbySession.kick_notice` -> a dim `ui.chat.kick_notice` line in `ChatPanel`). The kicked client gets
+  `connection_failed(FAIL_KICKED)` from `Net.last_disconnect_reason == &"kicked"` and the lobby shows
+  `ui.lobby.error.kicked`. The host re-kicks a kicked peer id / name that comes back (crew change or profile summary;
+  Net also re-kicks exact display names), ignores a kicked peer's messages, and `LobbySession.join_decision(peer,
+  summary)` auto-denies its drop-in requests with `DropInService.REASON_KICKED`.
+  **Drop-in policy (B6-04, PD2):** `LobbyState.dropin_policy` `ask` (default, `LobbyTweak.dropin_default_policy`) /
+  `auto` / `off`, set by the host (`LobbySession.set_drop_in_policy`, lobby screen option "Drop-in"; clients see it
+  read-only) and replicated as host-only `LobbyState.MSG_SETTINGS {dropin}` (re-sent on crew changes). It lives in the
+  lobby session, not GameSettings: it is a property of the hosted lobby that every member sees and the host's
+  drop-in path reads, not a per-machine preference. `JoinRequestDialog.gate` (MenuFlow: the session) decides first:
+  kicked -> deny `kicked`, `off` -> deny `off`, `auto` -> accept, all without a dialog; `ask` shows it (timeout ->
+  deny `timeout`). `DropInService.answer_join(peer_id, accept, reason = REASON_DENIED)`; reasons add `kicked`, `off`.
+  Strings `ui.dropin.*`, `ui.kick.*`, `ui.lobby.dropin.*`.
 * **Lobby codes (B6-05, game_overview §9).** `LobbyCode` (`lobby/lobby_code.gd`, static, pure): `encode(ipv4, port,
   default_port = tweak) -> String` (Crockford base32 + Luhn mod 32 check symbol; 8 symbols for the default port,
   11 otherwise; "" for IPv6 / host names / bad ports), `decode(code) -> {address, port} | {error: E_*}` (case,

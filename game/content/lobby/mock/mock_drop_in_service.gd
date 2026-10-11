@@ -1,14 +1,14 @@
 ## B-side mock of the drop-in service (B6-04) until ENV A's lands. Owner: ENV B. Implements the DropInService
 ## interface and records what the UI did; tests and dev scenes drive the other side.
 ## * Host side: simulate_request(peer_id, summary) emits join_requested; answer_join() records the answer and
-##   emits join_progress(peer, 0) on accept or join_failed(peer, REASON_DENIED) on deny; kick() records the slot.
+##   emits join_progress(peer, 0) on accept or join_failed(peer, reason) on deny; kick() records the slot.
 ## * Client side: request_join() records the summary and starts a fake load; advance(delta) (or _process
 ##   when `auto_progress`) emits join_progress until 1.0, then joined(assign_slot); deny_local() / cancel_join()
 ##   emit join_failed for the local peer.
 class_name MockDropInService
 extends DropInService
 
-## {"peer_id": int, "accept": bool} per answer_join() call.
+## {"peer_id": int, "accept": bool, "reason": StringName (&"" on accept)} per answer_join() call.
 var answers: Array[Dictionary] = []
 ## Slots passed to kick().
 var kicks: Array[int] = []
@@ -31,13 +31,13 @@ func simulate_request(peer_id: int, summary: Dictionary) -> void:
 	join_requested.emit(peer_id, summary)
 
 
-func answer_join(peer_id: int, accept: bool) -> void:
-	answers.append({"peer_id": peer_id, "accept": accept})
+func answer_join(peer_id: int, accept: bool, reason: StringName = REASON_DENIED) -> void:
+	answers.append({"peer_id": peer_id, "accept": accept, "reason": &"" if accept else reason})
 	pending.erase(peer_id)
 	if accept:
 		join_progress.emit(peer_id, 0.0)
 	else:
-		join_failed.emit(peer_id, REASON_DENIED)
+		join_failed.emit(peer_id, reason)
 
 
 func kick(slot: int) -> bool:

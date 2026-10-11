@@ -2410,3 +2410,10 @@ ui.hub.pause.quick_stations,Quick Stations
 ui.options.controls.safehouse_hub,Safehouse
 ui.options.controls.safehouse_hub.walk,Walk Around (3D)
 ui.options.controls.safehouse_hub.menu,Station Menu (2D)
+ui.lobby.dropin.title,Drop-in
+ui.lobby.dropin.ask,Ask me first
+ui.lobby.dropin.auto,Allowed
+ui.lobby.dropin.off,Not allowed
+ui.dropin.failed.kicked,The host removed you from this crew earlier.
+ui.dropin.failed.off,The host does not allow drop-in.
+ui.chat.kick_notice,{name} was removed from the crew.

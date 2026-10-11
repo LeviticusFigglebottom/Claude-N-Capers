@@ -33,6 +33,8 @@ const DEFAULT_PATH: String = "res://content/data/lobby/lobby_tweak.tres"
 @export var chat_action: StringName = &"chat"
 ## Drop-in (B6-04): the host's join request dialog auto-denies after this many seconds.
 @export var dropin_request_timeout_s: float = 30.0
+## Drop-in policy a new lobby starts with (LobbyState.POLICIES: ask / auto / off; PD2 default ask).
+@export var dropin_default_policy: StringName = &"ask"
 
 
 static func load_default() -> LobbyTweak:

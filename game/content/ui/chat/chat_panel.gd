@@ -7,6 +7,7 @@
 ##   message (over chat_fade_time_s). The chat key opens the input; while it is open the local crew member's
 ##   gameplay input is paused (CrewInput holder &"chat", the B5-01 options mechanism). Enter sends and
 ##   closes; Esc closes.
+## Crew notices (B6-04): LobbySession.kick_notice draws a dim system line (`ui.chat.kick_notice`), not logged.
 ## Open key: the InputMap action LobbyTweak.chat_action (`chat` = Enter / keypad Enter, D-072). No fallback key:
 ## T is `order_menu`.
 class_name ChatPanel
@@ -40,6 +41,8 @@ var _built: bool = false
 func setup(p_session: LobbySession, p_mode: Mode = Mode.LOBBY) -> void:
 	if session != null and session != p_session and session.chat_received.is_connected(add_entry):
 		session.chat_received.disconnect(add_entry)
+	if session != null and session != p_session and session.kick_notice.is_connected(_on_kick_notice):
+		session.kick_notice.disconnect(_on_kick_notice)
 	session = p_session
 	mode = p_mode
 	if _built:
@@ -101,6 +104,8 @@ func _bind() -> void:
 		return
 	if not session.chat_received.is_connected(add_entry):
 		session.chat_received.connect(add_entry)
+	if not session.kick_notice.is_connected(_on_kick_notice):
+		session.kick_notice.connect(_on_kick_notice)
 	for e: Dictionary in session.chat_history():
 		add_entry(e)
 
@@ -148,13 +153,30 @@ func send(text: String) -> StringName:
 
 ## Draw one log entry (also used for history replay). Oldest lines beyond chat_history_cap are dropped.
 func add_entry(entry: Dictionary) -> void:
+	_add_line(line_text(entry), false)
+
+
+## Draw a system line (plain text, dimmed): crew notices such as a kick.
+func add_notice(text: String) -> void:
+	_add_line(text, true)
+
+
+func _on_kick_notice(_slot: int, player_name: String) -> void:
+	add_notice(UiText.t(&"ui.chat.kick_notice", {"name": player_name}))
+
+
+func _add_line(text: String, dim: bool) -> void:
 	var l: Label = Label.new()
 	l.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if mode == Mode.OVERLAY:
 		l.theme_type_variation = UiBuild.HUD
-	l.text = line_text(entry)
+	elif dim:
+		l.theme_type_variation = UiBuild.DIM
+	if dim:
+		l.modulate = Color(1, 1, 1, 0.75)
+	l.text = text
 	history_box.add_child(l)
 	while history_box.get_child_count() > tweak.chat_history_cap:
 		var old: Node = history_box.get_child(0)

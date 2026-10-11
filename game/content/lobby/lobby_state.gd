@@ -22,9 +22,13 @@
 ## * MSG_CHAT     {"text": String}                               any human slot (B6-03). Validated by ChatLog
 ##                (`chat`): attribution by the sender's slot, control characters stripped, length cap, rate
 ##                limit per sender against `now_s` (R_RATE_LIMITED / R_EMPTY). Plain text only (no BBCode).
-## * MSG_KICK     {"slot": int}                                  host only (B6-04): the human in `slot` (not the
-##                host) must leave. Net has no way to drop a peer yet (QB to A), so the kicked client's own
-##                LobbySession leaves; a modified client could ignore it.
+## * MSG_KICK     {"slot": int}                                  host only (B6-04, D-072): a UI notice that the
+##                host kicked the human in `slot` (not the host). Net.kick does the actual drop; every peer
+##                adds that slot's peer id + name to `kicked` (KickList: no rejoin this session).
+## * MSG_SETTINGS {"dropin": "ask"|"auto"|"off"}                  host only (B6-04): the lobby's host settings.
+##                `dropin_policy` (PD2 drop-in: ask = the host answers each request, auto = accepted without a
+##                dialog, off = denied). Session state, not GameSettings: every member sees it and the host's
+##                drop-in path reads it (join_decision); default LobbyTweak.dropin_default_policy.
 ## receive() rejects unknown kinds, senders that are not a human crew slot, host-only kinds from
 ## anyone but the host slot, and malformed / non-JSON-safe payloads (R_* codes).
 class_name LobbyState
@@ -36,9 +40,18 @@ const MSG_CONTRACT: StringName = &"lobby.contract"
 const MSG_START: StringName = &"lobby.start"
 const MSG_CHAT: StringName = &"lobby.chat"
 const MSG_KICK: StringName = &"lobby.kick"
+const MSG_SETTINGS: StringName = &"lobby.settings"
 const KINDS: Array[StringName] = [MSG_READY, MSG_PROFILE, MSG_CONTRACT, MSG_START, PlanVote.MSG_CAST, PlanVote.MSG_RETRACT,
-	MSG_CHAT, MSG_KICK]
-const HOST_ONLY: Array[StringName] = [MSG_CONTRACT, MSG_START, MSG_KICK]
+	MSG_CHAT, MSG_KICK, MSG_SETTINGS]
+const HOST_ONLY: Array[StringName] = [MSG_CONTRACT, MSG_START, MSG_KICK, MSG_SETTINGS]
+## Drop-in policies (host setting, PD2). UI text: `ui.lobby.dropin.<policy>`.
+const POLICY_ASK: StringName = &"ask"
+const POLICY_AUTO: StringName = &"auto"
+const POLICY_OFF: StringName = &"off"
+const POLICIES: Array[StringName] = [POLICY_ASK, POLICY_AUTO, POLICY_OFF]
+## join_decision() results besides a deny reason (DropInService.REASON_KICKED / REASON_OFF).
+const JOIN_ASK: StringName = &"ask"
+const JOIN_ACCEPT: StringName = &"accept"
 
 ## receive() results.
 const OK: StringName = &""
@@ -92,10 +105,15 @@ var vote_log: Array[Dictionary] = []
 var chat: ChatLog = ChatLog.new()
 ## Clock (seconds) for the chat rate limit; LobbySession sets it before every receive().
 var now_s: float = 0.0
+## Host setting (MSG_SETTINGS): POLICY_ASK / POLICY_AUTO / POLICY_OFF.
+var dropin_policy: StringName = POLICY_ASK
+## Players kicked this session (MSG_KICK notices; the host also adds Net.peer_kicked). Cleared by reset().
+var kicked: KickList = KickList.new()
 
 
 func _init(p_is_host: bool = false) -> void:
 	is_host = p_is_host
+	dropin_policy = default_policy()
 
 
 func reset(p_is_host: bool) -> void:
@@ -110,6 +128,8 @@ func reset(p_is_host: bool) -> void:
 	started = {}
 	vote_log = []
 	chat.clear()
+	dropin_policy = default_policy()
+	kicked.clear()
 
 
 ## New crew registry. A slot whose occupant changed (other peer, turned AI, emptied) loses its ready
@@ -196,12 +216,54 @@ func _apply(from_slot: int, kind: StringName, data: Dictionary) -> bool:
 		MSG_KICK:
 			var target: Variant = data.get("slot")
 			ok = _is_int(target) and is_human(int(target)) and int(target) != host_slot
+			if ok:
+				remember_kick(int(target))
+		MSG_SETTINGS:
+			var policy: Variant = data.get("dropin")
+			ok = policy is String and POLICIES.has(StringName(String(policy)))
+			if ok:
+				dropin_policy = StringName(String(policy))
 		PlanVote.MSG_CAST, PlanVote.MSG_RETRACT:
 			var key: String = "option" if kind == PlanVote.MSG_CAST else "group"
 			ok = data.get(key) is String and String(data[key]) != ""
 			if ok:
 				vote_log.append({"slot": from_slot, "kind": kind, "data": data.duplicate(true)})
 	return ok
+
+
+## Put the human in `slot` on the kick list (its peer id, Net display name and summary name).
+func remember_kick(slot: int) -> void:
+	var c: Dictionary = crew.get(slot, {}) as Dictionary
+	if c.is_empty() or bool(c.get("is_ai", true)):
+		return
+	kicked.add(int(c.get("peer_id", 0)), String(c.get("display_name", "")))
+	var s: Dictionary = summaries.get(slot, {}) as Dictionary
+	kicked.add(0, String(s.get("name", "")))
+
+
+## Host: what to do with a join / drop-in request from `peer_id` with profile `summary` (LobbyState.summary_from
+## shape): DropInService.REASON_KICKED (kicked this session), DropInService.REASON_OFF (policy off), JOIN_ACCEPT
+## (policy auto) or JOIN_ASK (show the request dialog).
+func join_decision(peer_id: int, summary: Dictionary) -> StringName:
+	var player: String = String(summary.get("name", "")) if summary.get("name") is String else ""
+	if kicked.has(peer_id, player):
+		return DropInService.REASON_KICKED
+	match dropin_policy:
+		POLICY_OFF:
+			return DropInService.REASON_OFF
+		POLICY_AUTO:
+			return JOIN_ACCEPT
+	return JOIN_ASK
+
+
+## The data default drop-in policy (LobbyTweak.dropin_default_policy; ask when unknown).
+static func default_policy() -> StringName:
+	var p: StringName = LobbyTweak.load_default().dropin_default_policy
+	return p if POLICIES.has(p) else POLICY_ASK
+
+
+static func settings_data(policy: StringName) -> Dictionary:
+	return {"dropin": String(policy)}
 
 
 ## Why the host cannot Start right now (OK = it can): host only, once, with a contract, and every human
