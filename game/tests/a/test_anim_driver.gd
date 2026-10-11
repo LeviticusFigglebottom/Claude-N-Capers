@@ -139,7 +139,7 @@ func test_anim_hint_mapping() -> void:
 		[&"investigate_look", &"investigate_look"], [&"check_door", &"investigate_look"],
 		[&"pager_answer", &"pager_answer"], [&"idle_alert", &"idle_alert"], [&"aim_pistol", &"aim_pistol"],
 		[&"aim", &"aim_pistol"], [&"cower", &"cower"], [&"hands_up", &"hands_up"], [&"tied", &"tied"],
-		[&"kneel_cuffed", &"kneel_cuffed"], [&"down", &"lie_down"], [&"desk_work", &"desk_type"],
+		[&"kneel_cuffed", &"kneel_cuffed"], [&"down", &"lie_down"], [&"desk_work", &"desk_work"],
 		[&"sit", &"sit_chair"], [&"lean", &"lean_wall"], [&"walk", &"idle"],
 	]
 	for c: Array in cases:
@@ -430,3 +430,32 @@ func test_heavy_brains_advance_walking() -> void:
 	Modifiers.clear_all()
 	rt.teardown()
 	await wait_frames(2)
+
+
+## D-069 ambient substitutions (characters.md v1.7): cleaners mop, Kessler reads in bed, seated phone calls,
+## the camera operator watches monitors, cartel gunmen idle as thugs; mug_walk walks at v / 1.3.
+func test_d069_ambient_hint_substitutions() -> void:
+	var civ: NpcBase = _npc(&"civilian")
+	var d: AnimDriver = _drv(civ)
+	var brain: Node = civ.get_node(^"Brain")
+	civ.spawn_info = {"tags": [&"civ_cleaner_l41", &"civ_staff"]}
+	brain.set(&"anim_hint", &"browse")
+	assert_eq(d._hint(), &"mop", "cleaner browse -> mop")
+	civ.spawn_info = {"tags": [&"civ_kessler"]}
+	brain.set(&"anim_hint", &"sit")
+	assert_eq(d._hint(), &"sit_bed_read", "Kessler sit -> sit_bed_read")
+	civ.spawn_info = {"tags": [], "idle_activity": &"sit"}
+	brain.set(&"anim_hint", &"phone")
+	assert_eq(d._hint(), &"phone_seated", "seated phone call")
+	civ.spawn_info = {"tags": []}
+	brain.set(&"anim_hint", &"browse")
+	assert_eq(d._hint(), &"browse", "others browse")
+	var op: NpcBase = _npc(&"guard")
+	op.spawn_info = {"tags": [], "no_patrol": true}
+	op.get_node(^"Brain").set(&"anim_hint", &"idle")
+	assert_eq(_drv(op)._hint(), &"sit_chair_watch", "camera operator at the monitors")
+	var gang: NpcBase = _npc(CartelBrain.ROLE)
+	gang.get_node(^"Brain").set(&"anim_hint", &"idle")
+	assert_eq(_drv(gang)._hint(), &"idle_thug", "cartel idle")
+	assert_eq(AnimDriver.HINT_CLIPS[&"mug"], &"mug_idle")
+	assert_near(float(AnimTweak.data().clip_speeds[&"mug_carry_walk"]), 1.3, 0.001, "mug walk speed_scale = v / 1.3")
