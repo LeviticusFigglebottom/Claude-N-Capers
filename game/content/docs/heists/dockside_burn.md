@@ -1,150 +1,162 @@
 # Dockside Burn: ENV B content (B5-04)
 
-Owner: ENV B. Heist row 4 of `docs/design/game_overview.md`: `dockside_burn`, **Dockside Burn**, a
-cartel cold-storage warehouse. PD2 analog: Firestarter / Rats. **Loud-only**, size M, phase P3.
-Faction: pd2_fidelity **L4.10**, the Cartel crew (see "Faction" below).
+Owner: ENV B. Heist row 4 of `docs/design/game_overview.md`: `dockside_burn`, **Dockside Burn**, Ortega
+Cold Storage. PD2 analog: Firestarter / Rats. **Loud-only**, size M, phase P3. Faction: pd2_fidelity
+**L4.10**, the Cartel crew (see "Faction" below).
 
-This is the **content skeleton**. ENV C's G0 level doc (`docs/design/heists/dockside_burn.md`) has
-not landed, so nothing here names an objective id, a pre-planning point id or an escape tag.
-Everything that waits on C is a `TODO(C-G0)` in the last section. Symbols: **V** means taken from PD2
-research, and **◇** marks a choice of ours.
+Source: ENV C's G0 level doc `docs/design/heists/dockside_burn.md`, approved in **D-064** (read at
+`8e3efe5`). Objective ids, VO ids, point ids, loot ids (QC-39) and the pre-planning assets (QC-40) come
+from it. Symbols: **V** means taken from the doc or the PD2 research, and **◇** marks a choice of ours.
 
 ## Content summary
-Saltline Cold Storage stands at the end of Pier 14 in the Docks district. On paper it chills fish
-for the Ortega Fisheries Co-op, the same cartel front that Night Deposit robs at the bank. Behind
-the freezer doors the Co-op keeps arms crates, "product" and the cash from the week's sales.
-Hollis Reyes wants it emptied and then burned. There is no stealth path: the floor crew is cartel
-(no pagers, no surrender), and the police arrive once the shooting starts.
+Ortega Cold Storage, Pier 9, is the freezer warehouse of the Ortega Fisheries Co-op, the cartel front
+from Night Deposit. Reyes wants the Co-op's cash and rifles, and its product burned. It is loud from
+the first frame. The Co-op's own gunmen (no pagers, no surrender) hold the yard until the police
+arrive after `police_delay_s`.
 
-| What | Where | Status |
-|---|---|---|
-| Board spot (district `docks`, contact `contact.reyes`) | `data/board/city_map.tres` | already present (B4-06); unchanged |
-| Accent `#FF6B1A` (flare orange, style guide §heist palettes) | `data/ui/heist_accents.tres` | already present; WCAG test added |
-| Heist list entry (`solo_ai_teammates` 3) | `data/ui/heist_list.tres` | **new** |
-| Briefing placeholder (contact, loot, escapes; objectives empty) | `ui/briefing/briefing_ui.tres` | **new** |
-| Loot `loot.arms_crate`, `loot.product_crate` | `data/loot/` | **new** |
-| Strings: name, subtitle, brief, briefing, loot, `ui.escape.van/boat`, VO | `data/strings/strings.csv` | **new** (appended) |
-| Briefing VO (all three contacts + Mercer) and mission VO | `data/voice/lines.tres` | **new** |
-| Pre-planning | proposed `HeistDef.preplanning` below (ENV C data) | proposal only |
-| Tests | `tests/b/test_p2_heist_content.gd` (Dockside section), `tests/b/test_voice_lines.gd` | **new** |
+| What | Where |
+|---|---|
+| Board spot (district `docks`, contact `contact.reyes`) | `data/board/city_map.tres` (B4-06, unchanged) |
+| Accent `#FF6B1A` flare orange (style guide; WCAG AA as is) | `data/ui/heist_accents.tres` (unchanged) |
+| Heist list entry (`solo_ai_teammates` 3) | `data/ui/heist_list.tres` |
+| Briefing placeholder (contact, loot, escapes, the doc's objectives) | `ui/briefing/briefing_ui.tres` |
+| Loot `loot.weapon_crate`, `loot.contraband`, `loot.thermite` | `data/loot/` |
+| Pre-planning assets (QC-40) | `data/preplanning/assets/` (5 new) |
+| Thermite excluded from bag XP | `data/tweak/payout.tres` `xp_loot_excluded_ids` |
+| Strings: heist, objectives, loot, assets, point labels, VO | `data/strings/strings.csv` |
+| Briefing and mission VO (the doc's 31 ids + Vance/Accountant briefing sets) | `data/voice/lines.tres` |
+| Tests | `tests/b/test_p2_heist_content.gd` (Dockside section), `tests/b/test_voice_lines.gd` |
 
-The menus, Board and broker only list a heist with a HeistDef **and** a map scene (QB-55, D-049),
-so Dockside stays invisible until ENV C lands both. Nothing in this skeleton needs a def to load.
+The menus, Board and broker list a heist only once it has a HeistDef **and** a map scene (QB-55,
+D-049). The tests check the proposal while the def is missing, and check the def once it lands.
 
 ## Contact: Hollis "Hammer" Reyes
-`game_overview.md` §contacts: Reyes is the fixer for "loud jobs, armored trucks, warehouses", and a
-cartel warehouse is all three at once apart from the truck. Odile Vance fences jewelry and art, and
-the Accountant runs quiet bank and data jobs. A job you cannot do quietly, which ends with the place
-on fire, belongs to Reyes. The city map already gives `dockside_burn` to `contact.reyes`, so the
-Board agrees whatever the HeistDef says (the Board uses `HeistDef.contact` first, then the map).
+`game_overview.md` §contacts: Reyes is the fixer for "loud jobs, armored trucks, warehouses". Odile
+Vance fences jewelry and art, and the Accountant runs quiet bank and data jobs. The G0 doc and the
+city map both name `contact.reyes`.
 
-## Board contract
+## Board contract and payout
 | Field | Value | Src |
 |---|---|---|
-| Contact | `contact.reyes` | above |
+| Contact | `contact.reyes` | doc, city map |
 | District / pin | `docks`, anchor `(0.885, 0.62)` (inside the docks polygon) | city_map (B4-06) |
-| Base payout (unscaled `HeistDef.base_payout`) | **$100,000** | ◇ |
-| Difficulty gating | global Board rules: `difficulty_min_level` `[0,0,0,0,80,80]` plus the build gate (`unlocked_difficulties`) | board_tweak (C1) |
-| Pro job | eligible under the global rule: Tense and up, `pro_chance` 0.2; no restart, +20% XP | board_tweak (C1) |
+| Base payout (`HeistDef.base_payout`, unscaled) | **$95,000 placeholder** | lead (B5-04); doc open question 7 |
+| Required to escape | **the burn + 4 bags secured** (cash bricks and/or weapon crates) | doc "Loot path" |
+| Bonus | bags beyond 4, all product (`loot.contraband`, does not count toward the 4), dispatch-safe and desk small loot | doc |
+| Difficulty gating | global Board rules: `difficulty_min_level` `[0,0,0,0,80,80]` plus the build gate | board_tweak (C1) |
+| Pro job | eligible under the global rule: Tense+, `pro_chance` 0.2; no restart, +20% XP | board_tweak (C1) |
 | Broker price | `broker_cost_by_difficulty[d] + 5%` of the contract preview | board_tweak |
 
-The payout is ◇. Dockside is size M like Night Deposit ($90,000), but loud-only, so it can never earn
-the 1.15 stealth bonus. +11% makes up most of that gap. Contract pay by difficulty (×
-`payout_mult` 1 / 2 / 2.6 / 4.2 / 7.2 / 9.2, V S10.4, via `HeistCatalog.contract_preview`):
+Contract pay by difficulty (× `payout_mult` 1 / 2 / 2.6 / 4.2 / 7.2 / 9.2, via `HeistCatalog.contract_preview`):
 
 | Routine | Tense | Hazardous | Brutal | Lethal | Cataclysm |
 |---|---|---|---|---|---|
-| $100,000 | $200,000 | $260,000 | $420,000 | $720,000 | $920,000 |
+| $95,000 | $190,000 | $247,000 | $399,000 | $684,000 | $874,000 |
 
-Neither the Board nor `BoardTweak` has a per-heist difficulty floor or pro flag, so Dockside uses
-the global rules. See Q-DB2.
+The required 4 bags add $6,400 (4 cash bricks) to $8,000 (4 crates) at Routine, before the
+multiplier. The Board card has no field for the requirement. It shows in the briefing (objectives
+`burn` and `secure`) and in the HUD's objective panel. There is no per-heist difficulty floor or pro
+flag in `BoardTweak`, so Dockside uses the global rules (Q-DB2).
 
-## Loot
-PD2 bag shape: a heavier bag is worth more per bag and less per second of carrying. Values are
-base values before `DifficultyDef.payout_mult`. The weight is the existing `Enums.LootWeight` throw
-and carry class.
+## Loot (QC-39)
+Base values before `DifficultyDef.payout_mult`. Weight is the `Enums.LootWeight` throw/carry class
+(HEAVY: ×0.75 speed, no sprint, 3 m throw, per the doc).
 
-| id | Name | Weight | Base | Tense | Hazardous | Brutal | Lethal | Cataclysm | PD2 analog | Src |
+| id | Name | Weight | Base | Tense | Hazardous | Brutal | Lethal | Cataclysm | Role | Src |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `loot.arms_crate` | Arms Crate | HEAVY | $2,200 | $4,400 | $5,720 | $9,240 | $15,840 | $20,240 | Firestarter weapons bags | weight ◇, value ◇ |
-| `loot.product_crate` | Product Crate | MEDIUM | $1,800 | $3,600 | $4,680 | $7,560 | $12,960 | $16,560 | Rats / Firestarter contraband | weight ◇, value ◇ |
-| `loot.cash` (existing) | Cash | LIGHT | $1,200 | $2,400 | $3,120 | $5,040 | $8,640 | $11,040 | Rats cash | existing def |
+| `loot.cash_bricks` (existing) | Cash Bricks | MEDIUM | $1,600 | $3,200 | $4,160 | $6,720 | $11,520 | $14,720 | required (counts toward 4); strongroom pallets or count-room cage | B4-09 def |
+| `loot.weapon_crate` | Weapon Crate | HEAVY | $2,000 | $4,000 | $5,200 | $8,400 | $14,400 | $18,400 | required (counts toward 4); 2 containers × 2 crates | weight V, value ◇ (doc) |
+| `loot.contraband` | Contraband | MEDIUM | $1,400 | $2,800 | $3,640 | $5,880 | $10,080 | $12,880 | bonus only; burns with the room | weight V, value ◇ (doc) |
+| `loot.thermite` | Thermite Bag | HEAVY | $0 | – | – | – | – | – | **tool bag**, consumed by the burn point | V (doc) |
 
-* The research has no entry for PD2's weapons or contraband bag classes (`pd2_research.md`), so both
-  weights are ◇. HEAVY > MEDIUM > LIGHT keeps the ordering the other heists use: cash $1,200 LIGHT,
-  cash bricks $1,600 MEDIUM, ledger books $2,400 MEDIUM.
-* "Product" is deliberately vague. It is a cold-room crate stencilled as frozen fish, with no drug
-  named and no drug art (tasteful, original).
-* **Small loot ◇ (proposal):** $600–1,500 per item before the difficulty multiplier (loose bills
-  and watches in the counting room and the foreman's office). It is reported the QB-52 way
-  (`HeistResult.small_loot` from the prefab, no LootDef), and recorded in `data/README.md`. ENV C's
-  G0 doc confirms or replaces the range.
-* Spawn counts, which crates are required and the bag minimum are **TODO(C-G0)**.
+**Tool bag.** `LootDef` has no "tool" flag. Zero value already means no cash: `PayoutCalculator`
+multiplies `value` by `payout_mult`. Bag XP counts every secured bag except
+`PayoutTweak.xp_loot_excluded_ids`, so `loot.thermite` is now listed there, next to `loot.body_bag`.
+`test_dockside_burn_loot` checks that a thermite line adds no cash and no XP. Keeping it out of the
+`[secure]` count is the mission's job (ENV A/C), and the HeistDef's `loot` list omits it so the
+briefing does not show it as loot. If a thermite bag is ever secured, it still appears as a $0 line
+on the payday screen, as a body bag would. See Q-DB5.
 
-## Briefing
-`ui/briefing/briefing_ui.tres` has a placeholder entry (contact Reyes, loot, escapes `van` and
-`boat`). The `objectives` list is **empty** on purpose. Once the HeistDef exists, the def wins.
-Strings: `heist.dockside_burn.name` "Dockside Burn", `.subtitle` "Saltline Cold Storage", `.brief`,
-`.briefing`.
+Small loot: the doc places the O2 dispatch safe (×3) and desk cash (O1, O2, M1) without a per-item
+range. ◇ $600–1,500 is proposed in `data/README.md` until C sets the prefab values.
 
-Briefing VO (event `briefing`, priority 90, `heist` `dockside_burn`). Every contact has a set, as for
-Glasshouse, so the briefing still plays if a broker or fallback pick changes the contact:
+## Objectives (doc `[tag]`s, D-039 rule)
+`objective.dockside_burn.<tag>`, in the doc's order: `cartel` (optional), `breach`, `product`,
+`burn`, `strongroom`, `count_cage`, `containers`, `secure` (`{count}/{total}`), `escape_wait`,
+`escape`. They are also the briefing placeholder's ids and the proposed `HeistDef.objectives`.
 
+## Briefing VO (event `briefing`, priority 90)
 | id | order |
 |---|---|
-| `vo.reyes.briefing_dockside_burn_1..3` | 1–3 (the contact) |
-| `vo.vance.briefing_dockside_burn_1..2` | 1–2 |
-| `vo.accountant.briefing_dockside_burn_1..2` | 1–2 |
-| `vo.mercer.briefing_dockside_burn_1` | 100 (Mercer closes) |
+| `vo.reyes.briefing_dockside_burn_1..3` (doc) | 1–3 |
+| `vo.vance.briefing_dockside_burn_1..2` (ours) | 1–2 |
+| `vo.accountant.briefing_dockside_burn_1..2` (ours) | 1–2 |
+| `vo.mercer.briefing_dockside_burn_1..2` (doc) | 100–101 (Mercer closes) |
+
+The Vance and Accountant sets are not in the doc. They follow Glasshouse, so the briefing still
+plays if a broker or fallback pick changes the contact.
 
 ## Mission VO (event `mission`, priority 90, cooldown 0)
-These lines are **not tied to an objective id**. ENV C's `dockside_burn_mission.gd` may `say()` them
-as they are. Text is `voice.<id>` in strings.csv.
+Every id from the doc's "VO line ids" list: 31 in total, including the 5 briefing ids above. The
+coordinator counted 30; the doc lists Reyes 5 and Mercer 2 + 24. `say()` context: only the two ETA
+lines use `{seconds}`.
 
-| id | When | Context |
-|---|---|---|
-| `vo.mercer.dockside_burn_intro` | heist start (masked; loud from the first second) | none |
-| `vo.reyes.dockside_burn_contact_intro` | right after the intro | none |
-| `vo.mercer.dockside_burn_cartel_warning` | first cartel unit seen or first shot | none |
-| `vo.mercer.dockside_burn_no_dominate` | a player shouts at a cartel unit (L4.10: can't be dominated) | none |
-| `vo.mercer.dockside_burn_cartel_reinforcements` | a cartel reinforcement wave arrives | none |
-| `vo.mercer.dockside_burn_police_inbound` | the police response starts (first assault anticipation) | none |
-| `vo.mercer.dockside_burn_escape_eta` | escape called | `{seconds}` |
-| `vo.mercer.dockside_burn_escape` | escape available | `{escape}`: `ui.escape.van` / `ui.escape.boat` (new) |
+| id | trigger (doc "Mission script notes") |
+|---|---|
+| `vo.mercer.dockside_burn_intro` | start (cartel unaware) |
+| `vo.reyes.dockside_burn_contact_intro` | after the intro |
+| `vo.mercer.dockside_burn_cartel_awake` | first `npc_alerted` of a cartel NPC |
+| `vo.mercer.dockside_burn_police_called` | the director starts (after `police_delay_s`) |
+| `vo.mercer.dockside_burn_breach` | `[breach]` done |
+| `vo.mercer.dockside_burn_product_found` | `[product]` done |
+| `vo.mercer.dockside_burn_thermite_reminder` | product found, thermite not moving |
+| `vo.mercer.dockside_burn_burn_started` / `_burn_done` | thermite placed / `device_finished(&"thermite")` (shutters) |
+| `vo.mercer.dockside_burn_strongroom_drill` / `_drill_jam` / `_strongroom_open` | the thermal drill on SR |
+| `vo.mercer.dockside_burn_count_cage` | `cash_countroom`: the cage |
+| `vo.mercer.dockside_burn_lift_dead` | `lift_dead` and bags in M1 |
+| `vo.mercer.dockside_burn_containers_hint` / `_weapons_found` | the yard containers |
+| `vo.mercer.dockside_burn_sniper_crane` / `_sniper_roof` | Longshot at S1 / S2 |
+| `vo.mercer.dockside_burn_gangway` | `gangway_down` police from the east |
+| `vo.mercer.dockside_burn_reinforcements` | rare `cartel_reinforcements` |
+| `vo.mercer.dockside_burn_fog_lifts` | rare `fog_lifts` |
+| `vo.mercer.dockside_burn_required_secured` | `[burn]` + `[secure]` done (escape called) |
+| `vo.mercer.dockside_burn_van_eta` / `_boat_eta` | `{seconds}` |
+| `vo.mercer.dockside_burn_escape` | escape arrived |
+| `vo.reyes.dockside_burn_payday` | success (payday) |
 
-**TODO(C-G0), objective-bound lines (not drafted):** a line for each objective `[tag]` the G0 doc
-defines, for example "crates found", the freezer or vault door (opening method, drill or saw
-jams), "burn started", "fire spreading / get out", "required bags secured" and the bag count.
-Their ids follow `vo.mercer.dockside_burn_<line>` and are written once C's `say()` ids exist
-(`test_every_mission_say_has_a_line` then enforces them).
+The skeleton's extra lines (`no_dominate`, `police_inbound`, `cartel_warning`, `escape_eta`, and the
+`{escape}` form of `escape`) were dropped or renamed to the doc's ids before push.
 
-## Pre-planning (proposal for `HeistDef.preplanning`, ENV C data)
-PD2 offers loud jobs supply drops (ammo and medic bags), a spawn choice and an escape choice. Every
-asset below already exists in the library (`data/preplanning/assets/`). Dockside needs **no new
-asset**.
+## Pre-planning (QC-40)
+Five new **library** assets in `data/preplanning/assets/`. Values ◇ are the doc's.
 
-| Asset | Where | Routine $ / favors (library) | Why |
+| Asset | Effect | Where | Routine $ / favors |
 |---|---|---|---|
-| `asset.ammo_bag_drop` | `drop_zone` points (max 2) | 1,200 / 2 | loud supply |
-| `asset.doctor_bag_drop` | `drop_zone` points (max 2) | 1,600 / 2 | loud supply |
-| `asset.alternate_entry` | `spawn` points, exclusive `spawn`, the point's `params.spawn_tag` | 500 / 1 | start position |
-| `asset.escape_position` | `escape` points, vote group `escape` (cost split), the point's `params.variant_group/variant_slot` | 1,000 / 1 | escape vehicle choice (van at the pier gate or boat at the quay) |
-| `asset.extra_cable_ties` | crew | 800 / 1 | civilian hostages for trades (L6) |
+| `asset.sniper_position` | `effect force_variant` (the point's `player_perch` slot) + `drop deployable.ammo_bag` | `point_ids` `pp_perch_roof`, `pp_perch_stack`; exclusive `player_perch` | 2,000 / 2 |
+| `asset.thermite_drop` | `drop loot.thermite`: a **loot bag** at the point | `point_ids` `pp_drop_gatehouse`, `pp_drop_lane`, `pp_drop_quay` | 1,500 / 1 |
+| `asset.gangway_raised` | `effect force_variant` (`east_gangway` / `gangway_up`) | `point_ids` `pp_gangway` | 2,500 / 2 |
+| `asset.intel_containers` | `reveals weapons_containers` | crew | 1,500 / 1 |
+| `asset.lift_power` | `force_variants {goods_lift: [lift_powered]}` | crew | 1,000 / 1 |
 
-**Disabled** (rule: every library asset tagged only `stealth` that is not already limited by
-`point_ids`): `asset.body_bag_case_drop`, `asset.intel_cameras`, `asset.intel_guard_posts`,
-`asset.intel_keycards`, `asset.intel_laptop`, `asset.spare_body_bags`. The `point_ids`-limited
-stealth assets (`gondola_left_hung`, `riser_panel`, `inside_keycard`, `propped_door`) can never
-appear on Dockside's points anyway. Favors: **6** ◇ (exactly both drops plus entry plus escape).
-`test_dockside_burn_preplan_proposal` builds this block on synthetic points and checks that the rule
-holds.
-
-**TODO(C-G0):** point ids and their params (`drop_zone` ×2+, `spawn` with `params.spawn_tag`,
-`escape` with `params.variant_group`/`variant_slot` for van and boat), plus any heist-only asset C
-wants to add, for example a "crane" or "forklift" pre-positioned to shorten a bag route.
+* The doc's `category: loud` is not a UI category (`PreplanTweak.category_order` is supply, intel,
+  gear, entry, access, escape). The perch and thermite use `supply`. The `loud` hint lives in `tags`.
+* **Loot-bag drop (no schema change).** `drop` is already a StringName "spawn kind", so
+  `&"loot.thermite"` is valid data, and the PreplanResult carries `{"kind": &"loot.thermite"}`.
+  ENV A has to spawn a `LootBag` of that LootDef for kinds starting `loot.`
+  (`PreplanAssets.register_drop`; until then the `PreplanDrop` fallback node appears). That is a
+  contract clarification for the lead and ENV A (`docs/contracts/preplanning.md` lists only
+  deployable examples), not a new field.
+* The located assets are limited by Dockside's point ids. The crew assets name Dockside-only
+  variant groups, so QB-53 hides them elsewhere (`test_dockside_burn_assets_stay_on_dockside`).
+* **Point labels:** `ui.preplan.point.<id>` for all 13 points. **`pp_drop_quay` and
+  `pp_escape_boat` already exist for Night Deposit** ("Quay bollards", "Boat: quay steps"), so
+  Dockside's labels are `ui.preplan.point.dockside_burn.pp_drop_quay` and
+  `ui.preplan.point.dockside_burn.pp_escape_boat`. ENV C sets those keys as the Marker3D `label`
+  metadata, or renames the two points (Q-DB6).
 
 ## Proposed HeistDef (for ENV C: `world/heists/dockside_burn/dockside_burn_def.tres`)
-Every field of `contracts/data/heist_def.gd`:
+Every field of `contracts/data/heist_def.gd`, aligned with the doc's "HeistDef (proposed data)" and
+"Pre-planning" sections:
 ```
 [resource]
 script = ExtResource("<heist_def.gd>")
@@ -154,74 +166,69 @@ contact = &"contact.reyes"
 briefing = "heist.dockside_burn.briefing"
 mode = 2
 map_scene = "res://world/heists/dockside_burn/dockside_burn.tscn"
-base_payout = 100000
+base_payout = 95000
 stealth_bonus_mult = 1.0
-loot = Array[StringName]([&"loot.arms_crate", &"loot.product_crate", &"loot.cash"])
-objectives = Array[StringName]([])
+loot = Array[StringName]([&"loot.cash_bricks", &"loot.weapon_crate", &"loot.contraband"])
+objectives = Array[StringName]([&"cartel", &"breach", &"product", &"burn", &"strongroom", &"count_cage", &"containers", &"secure", &"escape_wait", &"escape"])
 preplanning = {
 "assets": {
-&"asset.alternate_entry": {
-"point_categories": [&"spawn"]
-},
 &"asset.ammo_bag_drop": {
-"point_categories": [&"drop_zone"]
+"point_ids": [&"pp_drop_gatehouse", &"pp_drop_lane", &"pp_drop_quay", &"pp_drop_platform"]
 },
 &"asset.doctor_bag_drop": {
-"point_categories": [&"drop_zone"]
+"point_ids": [&"pp_drop_gatehouse", &"pp_drop_lane", &"pp_drop_quay", &"pp_drop_platform"]
 },
-&"asset.escape_position": {
-"point_categories": [&"escape"]
+&"asset.gangway_raised": {},
+&"asset.intel_containers": {},
+&"asset.lift_power": {},
+&"asset.sniper_position": {},
+&"asset.thermite_drop": {}
 },
-&"asset.extra_cable_ties": {}
-},
-"disable": [&"asset.body_bag_case_drop", &"asset.intel_cameras", &"asset.intel_guard_posts", &"asset.intel_keycards", &"asset.intel_laptop", &"asset.spare_body_bags"],
-"favors": 6
+"disable": [&"asset.body_bag_case_drop", &"asset.spare_body_bags", &"asset.intel_cameras", &"asset.intel_keycards"],
+"favors": 5
 }
 escape_options = Array[StringName]([&"van", &"boat"])
 music_track = &"dockside_burn"
 ```
 Notes for C:
-* `mode = 2` is `Enums.HeistMode.LOUD_ONLY`.
-* `briefing` is a strings.csv key. `BriefingModel.briefing_text` resolves keys, and a key keeps the
-  text translatable. Literal text, as the other defs use, also works.
-* `stealth_bonus_mult = 1.0`, because a loud-only job never pays the stealth bonus. The default 1.15
-  would be harmless but misleading.
-* `objectives` stays **empty until the G0 doc**. Every id must have `objective.dockside_burn.<id>` in
-  strings.csv. ENV B adds those strings from the doc's `[tag]`s, as it did for D-039.
-* `loot`: add `loot.small_valuables` only if the map uses it (Night Deposit lists it; it has no
-  LootDef, and `BriefingModel` skips unknown ids).
-* `escape_options`: `van` and `boat` have briefing strings (`ui.briefing.escape.*`) and VO strings
-  (`ui.escape.*`). Any other id needs both from ENV B.
-* `music_track`: ENV C's audio id. `&"dockside_burn"` follows the other heists.
+* `mode = 2` is LOUD_ONLY.
+* `briefing` is a strings.csv key, which `BriefingModel` resolves. Literal text also works.
+* `stealth_bonus_mult = 1.0`: a loud-only job never earns the stealth bonus.
+* The five new assets carry their fields in the library, so `{}` is enough. Listing the doc's inline
+  fields instead also works, except `"category": &"loud"`, which is not a UI category. Leave that out.
+* The `asset.intel_containers` and `asset.lift_power` entries need `weapons_containers` and
+  `goods_lift` in `dockside_burn_variants.tres`, or the board reports an error.
+* `asset.alternate_entry` and `asset.escape_position` need no entry: they work from the points'
+  params, as on every heist.
+* `asset.intel_guard_posts` and `asset.extra_cable_ties` stay on (doc).
+* The two drop zones on the perch points take only `asset.sniper_position`, because ammo and doctor
+  are limited to the four drop points.
+* `loot` leaves out `loot.thermite`, which is a tool. Add `loot.small_valuables` only if the map
+  uses it (it has no LootDef).
 
 ## Faction (pd2_fidelity L4.10)
-The on-site enemies are the **Cartel crew**, ENV A's faction (P3), and not Security Officers:
-* **no pagers**: the pager VO and the stealth flow never trigger, which matches loud-only;
-* **cannot be dominated**: `vo.mercer.dockside_burn_no_dominate` covers the failed shout;
-* the police assault director still runs on top (L1), so `police_inbound` marks the hand-over.
+The on-site enemies are `enemy.cartel_gunman` (ENV A, QC-36): no pagers, not dominatable, no cuffs.
+They start unalerted, and the police director starts after `police_delay_s` (QC-35). The VO covers
+both stages (`cartel_awake`, `police_called`, `reinforcements`). ENV B's data does not depend on
+the faction id or roster.
 
-The faction id (for example `faction.cartel`), its unit roster and how it mixes with the police
-waves belong to ENV A. Nothing in ENV B's data depends on them. Cartel civilians and workers, if C
-places any, count for `civilian_kill_penalty` like any civilian (ENV A's rule).
-
-## TODO list waiting on ENV C's G0 doc
-1. **Objective ids**: `HeistDef.objectives`, the `objective.dockside_burn.<tag>` strings, and the
-   briefing placeholder `objectives`. The test then switches from "no guessed keys" to `_check_objectives`.
-2. **Mission VO ids** for objective events (above). Ids come from `dockside_burn_mission.gd` `say()` calls.
-3. **Pre-planning point ids** and their params (`drop_zone`, `spawn` + `spawn_tag`, `escape` +
-   `variant_group/variant_slot`), and the final `preplanning` block.
-4. **Escape tags/slots** for van and boat (the variant group name and slot ids), the ETA timing,
-   and whether both are offered on every difficulty.
-5. **Loot placement**: spawn counts, which bags are required, the bag minimum, and confirmation of
-   the small-loot range.
-6. **"Burn" mechanic**: if the fire is an objective with a timer, Mercer's lines and
-   `{seconds}` context are added then.
+## Remaining dependencies (not B's)
+1. ENV C: the HeistDef (block above), the map, `dockside_burn_variants.tres` (groups
+   `weapons_containers`, `goods_lift`, `player_perch`, `east_gangway`, `escape`), the point `label`
+   metadata (Q-DB6), and `dockside_burn_mission.gd` `say()`ing the ids above
+   (`test_every_mission_say_has_a_line` enforces them).
+2. ENV A: `loot.*` drop kinds spawn a loot bag (QC-40), the `burn_point` consuming `loot.thermite`
+   (QC-38), excluding thermite from `[secure]`, the director start hook (QC-35), and
+   `enemy.cartel_gunman` (QC-36).
 
 ## Open questions (for the lead)
-* Q-DB1: The lore tie-in, Saltline as the Ortega Fisheries Co-op's cold store (the Night Deposit
-  cartel front). Is that fine with ENV C's G0 doc, or should the cartel get its own name?
 * Q-DB2: Should the Board get per-heist gating, such as a minimum difficulty or a pro-only or
   never-pro flag, as PD2 has? Today all heists share the global rules.
-* Q-DB3: Should loud jobs get an armor bag drop pre-plan asset? `deployable.armor_bag` exists but is
-  card-gated (QB-58), so a drop would bypass the gate. Not proposed.
-* Q-DB4: Is $100,000 right for an M loud-only job? (Night Deposit $90,000, Shadow Ledger $110,000.)
+* Q-DB3: Should loud jobs get an armor bag drop? `deployable.armor_bag` is card-gated (QB-58), and a
+  drop would bypass the gate. Not proposed.
+* Q-DB5: Should `LootDef` get an explicit `is_tool` flag, rather than value 0 plus the XP exclusion
+  list, so the payday screen and `[secure]` can skip tool bags generically? That is a schema
+  change, so it is the lead's call.
+* Q-DB6: For `pp_drop_quay` and `pp_escape_boat`, which are shared with Night Deposit, should C
+  rename the points or set the qualified label keys?
+* Q-DB7: Is $95,000 final? (Night Deposit $90,000, Shadow Ledger $110,000; loud-only gets no stealth bonus.)

@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1")
-id = &"loot.arms_crate"
-display_name = "Arms Crate"
+id = &"loot.thermite"
+display_name = "Thermite Bag"
 weight = 2
-value = 2200
+value = 0
 conceals = false

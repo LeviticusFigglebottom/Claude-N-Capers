@@ -1988,28 +1988,80 @@ item.deployable.armor_bag.name,Armor Bag
 item.deployable.armor_bag.desc,"Holds your chosen armor. You start the job in a suit; put the bag down and change into the armor when it counts. One use."
 ui.loadout.deployable_locked,"{item} (locked: perk card {card}, {name})"
 heist.dockside_burn.name,Dockside Burn
-heist.dockside_burn.subtitle,Saltline Cold Storage
-heist.dockside_burn.brief,"A cartel cold store on Pier 14 keeps its guns and its product on ice. Hollis wants it emptied, then burned to the waterline."
-heist.dockside_burn.briefing,"Saltline Cold Storage stands at the end of Pier 14 in the Docks. On paper it chills fish for the Ortega Fisheries Co-op. Behind the freezer doors the Co-op's cartel keeps its arms crates, its product and the cash from the week's sales. There is no quiet way in: the cartel crew on the floor carries no pagers and will not put its hands up, and the gunfire will bring the police within minutes. Go in loud before dawn, bag the crates, the product and the cash, and leave nothing behind that the cartel can use. Hollis Reyes wants the place burning when you go."
-item.loot.arms_crate.name,Arms Crate
-item.loot.arms_crate.desc,"A sealed crate of rifles packed in grease paper and freezer foam. Heavy, awkward and worth every bruise."
-item.loot.product_crate.name,Product Crate
-item.loot.product_crate.desc,"A cold-room crate stencilled as frozen fish. What's inside sells for considerably more than fish."
-ui.escape.van,van
-ui.escape.boat,boat
-voice.vo.reyes.briefing_dockside_burn_1,"Saltline Cold Storage, end of Pier 14. The Ortega Co-op says it keeps fish in there. It keeps guns, product and a counting room."
-voice.vo.reyes.briefing_dockside_burn_2,"No sneaking on this one. Cartel boys don't carry pagers and they don't kneel, so you go in loud and you stay loud."
-voice.vo.reyes.briefing_dockside_burn_3,"Bag whatever pays, then light it up. I want the Co-op to wake up to a pier full of smoke and nothing left to sell."
+heist.dockside_burn.subtitle,Ortega Cold Storage
+heist.dockside_burn.brief,"The Co-op's freezer warehouse on Pier 9 holds its cash, its guns and its product. Hollis wants the first two and the third on fire."
+heist.dockside_burn.briefing,"Ortega Cold Storage on Pier 9 is the freezer warehouse of the Ortega Fisheries Co-op, the same cartel front whose night drop you took at Harbor Savings. Its shipments land here: cash waiting for the laundering run, in the strongroom or the count room; rifles in two of the shipping containers in the yard; and product, boxed as frozen fish in a freezer chamber or the packing hall. The Co-op guards it with its own gunmen, who carry no pagers and will not surrender, and the gunfire brings the police within a couple of minutes. Breach the warehouse, carry the thermite to the product and burn it, and secure at least four bags of cash and weapons. Product you carry out before the burn is a bonus. Then hold until the van or the boat arrives."
+item.loot.weapon_crate.name,Weapon Crate
+item.loot.weapon_crate.desc,"A crate of rifles out of a Co-op container, packed in grease paper. Heavy and slow, and worth every bruise."
+item.loot.contraband.name,Contraband
+item.loot.contraband.desc,"Vacuum-packed bricks boxed as frozen fish. Reyes' buyer takes it at a discount, so it pays, but it doesn't count toward the job."
+item.loot.thermite.name,Thermite Bag
+item.loot.thermite.desc,"Your own kit: enough thermite to burn out a freezer room. Heavy, worth nothing at payday, and the job fails without it."
+objective.dockside_burn.cartel,Thin out the Co-op's gunmen before the police arrive
+objective.dockside_burn.breach,Get into the warehouse
+objective.dockside_burn.product,Find the product
+objective.dockside_burn.burn,Burn the product with the thermite
+objective.dockside_burn.strongroom,Drill the strongroom door
+objective.dockside_burn.count_cage,Open the cash cage in the count room
+objective.dockside_burn.containers,Find the weapons containers
+objective.dockside_burn.secure,Secure the bags ({count}/{total})
+objective.dockside_burn.escape_wait,Hold until the escape arrives
+objective.dockside_burn.escape,Get to the escape
+item.asset.sniper_position.name,Sniper position
+item.asset.sniper_position.desc,"A counter-sniper spot is ready for you, with an ammo bag waiting: the roof door left unlocked, or a ladder up the double-stacked container."
+item.asset.thermite_drop.name,Thermite drop
+item.asset.thermite_drop.desc,The thermite bag is left here instead of at your start: a shorter carry to the burn.
+item.asset.gangway_raised.name,Raised gangway
+item.asset.gangway_raised.desc,A harbour hand swings the Pier 10 gangway away before you arrive. The police lose their way in from the east.
+item.asset.intel_containers.name,Insider: weapons containers
+item.asset.intel_containers.desc,Reyes' contact marks which yard containers hold the rifles.
+item.asset.lift_power.name,Powered goods lift
+item.asset.lift_power.desc,"Someone makes sure the goods lift has power tonight, so count-room bags ride down two at a time."
+ui.preplan.point.pp_spawn_gate,Gate: Ferro Street
+ui.preplan.point.pp_spawn_lane,West lane: cut in the fence
+ui.preplan.point.pp_spawn_pontoon,Pontoon: by launch
+ui.preplan.point.pp_drop_gatehouse,Behind the gatehouse
+ui.preplan.point.pp_drop_lane,West lane: by the fire stair
+ui.preplan.point.dockside_burn.pp_drop_quay,Quay net store
+ui.preplan.point.pp_drop_platform,Hall platform
+ui.preplan.point.pp_escape_gate,Van at the weighbridge
+ui.preplan.point.pp_escape_lane,Van in the west lane
+ui.preplan.point.dockside_burn.pp_escape_boat,Launch at the pontoon
+ui.preplan.point.pp_perch_roof,Office roof
+ui.preplan.point.pp_perch_stack,Double-stacked container
+ui.preplan.point.pp_gangway,Pier 10 gangway
+voice.vo.reyes.briefing_dockside_burn_1,"Ortega Cold Storage, Pier 9. The Co-op says it freezes fish. It freezes cash, guns and product, and its own boys guard it."
+voice.vo.reyes.briefing_dockside_burn_2,"The Co-op thinks the harbor's theirs because nobody's ever argued. We're arguing. Take the money, take the guns, and torch whatever they were going to sell."
+voice.vo.reyes.briefing_dockside_burn_3,"Four bags of cash or rifles, and the product burning: that's the job. Any product you carry out first, my buyer takes at a discount. I want smoke over Pier 9 by sunrise."
 voice.vo.vance.briefing_dockside_burn_1,"Hollis's sort of evening, darling: a freezer full of men with guns. I only put my name on it for the commission."
 voice.vo.vance.briefing_dockside_burn_2,"If anything in there has a frame or a hallmark, it comes to me. The rest you may burn as you please."
 voice.vo.accountant.briefing_dockside_burn_1,The Co-op's cold store carries its inventory at a valuation nobody has ever audited. I would like it written down to zero.
 voice.vo.accountant.briefing_dockside_burn_2,"Take what can be sold and destroy what cannot. A competitor's losses are a perfectly respectable kind of profit."
-voice.vo.mercer.briefing_dockside_burn_1,"Pre-dawn, fog on the water and no quiet option. Masks on from the start, bags to the ride, and keep moving when the police join in."
-voice.vo.mercer.dockside_burn_intro,"Pier 14, half five, and the fog's thick. There's no quiet way into Saltline. Masks on, doors open, go."
+voice.vo.mercer.briefing_dockside_burn_1,"Ten past five, fog on the water, and no quiet option. The Co-op's gunmen start on their posts, so take a few down before the shooting wakes the rest."
+voice.vo.mercer.briefing_dockside_burn_2,"Once it's loud, the police are a minute or two out. Get the thermite to the product, get four bags to the ride, and pick a place you can hold."
+voice.vo.mercer.dockside_burn_intro,"Ortega Cold Storage. The Co-op's gunmen haven't noticed you yet. Keep it that way as long as you can."
 voice.vo.reyes.dockside_burn_contact_intro,"Hammer here. Everything in that cold store is mine now. Whatever you can't carry, burns."
-voice.vo.mercer.dockside_burn_cartel_warning,"Those are the Co-op's people, not hired guards. No pagers to answer, and they won't put their hands up."
-voice.vo.mercer.dockside_burn_no_dominate,Shouting won't work on that lot. They'd rather go down than kneel. Save your breath.
-voice.vo.mercer.dockside_burn_cartel_reinforcements,Cars at the pier gate. The Co-op's sent more of its people.
-voice.vo.mercer.dockside_burn_police_inbound,"Someone on the waterfront called it in. Police are coming, and they won't care whose side anyone's on."
-voice.vo.mercer.dockside_burn_escape_eta,Your ride's {seconds} seconds out. Hold the pier.
-voice.vo.mercer.dockside_burn_escape,"The {escape}'s here. Bags in, and don't stop to watch the smoke."
+voice.vo.mercer.dockside_burn_cartel_awake,That's woken them. The Co-op's boys don't carry pagers and they don't put their hands up. Put them down.
+voice.vo.mercer.dockside_burn_police_called,Gunfire on the docks. Somebody's calling it in.
+voice.vo.mercer.dockside_burn_breach,"You're inside. The product's in one of the freezer chambers or the packing hall. Find it."
+voice.vo.mercer.dockside_burn_product_found,"There's the product. Bag what you want, then the thermite goes on the burn point."
+voice.vo.mercer.dockside_burn_thermite_reminder,Nothing burns without the thermite bag. Somebody bring it.
+voice.vo.mercer.dockside_burn_burn_started,Thermite's lit. Stay clear of that room.
+voice.vo.mercer.dockside_burn_burn_done,"Fire shutters are down. That room's gone, and so is anything you left in it."
+voice.vo.mercer.dockside_burn_strongroom_drill,"Thermal drill's on the strongroom door. It's slow and it will jam. Hold the anteroom."
+voice.vo.mercer.dockside_burn_drill_jam,Drill's jammed. Get back on it.
+voice.vo.mercer.dockside_burn_strongroom_open,"Strongroom's open. Shrink-wrapped cash, pallets of it. Start bagging."
+voice.vo.mercer.dockside_burn_count_cage,"The cash is in a cage in the count room upstairs. Drill it or blow it, then get the bags down."
+voice.vo.mercer.dockside_burn_lift_dead,"Goods lift's dead. The breaker's in the electrical room off the office corridor, or carry the bags down the stairs."
+voice.vo.mercer.dockside_burn_containers_hint,"Two of those containers hold the rifles. Look for the Co-op's brass padlocks, not the customs seals."
+voice.vo.mercer.dockside_burn_weapons_found,"Rifle crates. They're heavy, so no sprinting. Get them to the ride."
+voice.vo.mercer.dockside_burn_sniper_crane,Sniper in the crane cab across the slip. Stay off the apron.
+voice.vo.mercer.dockside_burn_sniper_roof,"Shooter on the ice company roof. He's got the lane and the quay."
+voice.vo.mercer.dockside_burn_gangway,The Pier 10 gangway is down. Expect police from the east.
+voice.vo.mercer.dockside_burn_reinforcements,Pickup at the gate. The Co-op's sent four more of its people.
+voice.vo.mercer.dockside_burn_fog_lifts,"Fog's lifting. The viaduct has a shooter's view now, and the boat will be slower."
+voice.vo.mercer.dockside_burn_required_secured,"Four bags and the product's burning. That's the job; I'm calling your ride. Anything more is a bonus."
+voice.vo.mercer.dockside_burn_van_eta,Van's {seconds} seconds out. Hold.
+voice.vo.mercer.dockside_burn_boat_eta,Launch is {seconds} seconds out. Hold the quay.
+voice.vo.mercer.dockside_burn_escape,"Ride's here. Bags in, and don't stop to watch the smoke."
+voice.vo.reyes.dockside_burn_payday,"Smoke over Pier 9 and the Co-op's rifles in my lockup. That's a good morning. You've earned it."

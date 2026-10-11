@@ -129,26 +129,31 @@ func test_every_mission_say_has_a_line() -> void:
 	assert_true(seen > 0, "mission scripts found")
 
 
-## B5-04 Dockside Burn mission lines that need no objective id (the objective-bound ones wait for ENV
-## C's G0 doc: game/content/docs/heists/dockside_burn.md). Mercer + Reyes' contact intro.
-func test_dockside_burn_mission_lines() -> void:
+## B5-04 Dockside Burn: every VO id in ENV C's G0 doc (D-064, "VO line ids"): Reyes and Mercer
+## mission lines (event mission, priority 90) plus the briefing sets. Text in strings.csv (voice.<id>).
+func test_dockside_burn_doc_lines() -> void:
 	if _table == null:
 		fail("no table")
 		return
-	var ids: Array[StringName] = [&"vo.reyes.dockside_burn_contact_intro"]
-	for x: String in ["intro", "cartel_warning", "no_dominate", "cartel_reinforcements", "police_inbound",
-			"escape_eta", "escape"]:
-		ids.append(StringName("vo.mercer.dockside_burn_" + x))
-	for id: StringName in ids:
+	var mission: Array[StringName] = [
+		&"vo.reyes.dockside_burn_contact_intro", &"vo.reyes.dockside_burn_payday", &"vo.mercer.dockside_burn_intro",
+	]
+	for x: String in ["cartel_awake", "police_called", "breach", "product_found", "thermite_reminder",
+			"burn_started", "burn_done", "strongroom_drill", "drill_jam", "strongroom_open", "count_cage", "lift_dead",
+			"containers_hint", "weapons_found", "sniper_crane", "sniper_roof", "gangway", "reinforcements",
+			"fog_lifts", "required_secured", "van_eta", "boat_eta", "escape"]:
+		mission.append(StringName("vo.mercer.dockside_burn_" + x))
+	for id: StringName in mission:
 		var l: Dictionary = _table.line(id)
 		assert_eq(l.get("event"), &"mission", "%s is a mission line" % id)
 		assert_eq(int(l.get("priority", 0)), 90, "%s priority" % id)
 		assert_has(_strings, "voice." + String(id))
-	var ctx: Dictionary = {
-		"vo.mercer.dockside_burn_escape_eta": "{seconds}",
-		"vo.mercer.dockside_burn_escape": "{escape}",
-	}
-	for id: String in ctx:
-		assert_true(String(_strings.get("voice." + id, "")).contains(String(ctx[id])), "%s uses %s" % [id, ctx[id]])
-	for e: String in ["van", "boat"]:
-		assert_has(_strings, "ui.escape." + e, "{escape} text for %s" % e)
+	var briefing: Array[StringName] = [
+		&"vo.reyes.briefing_dockside_burn_1", &"vo.reyes.briefing_dockside_burn_2", &"vo.reyes.briefing_dockside_burn_3",
+		&"vo.mercer.briefing_dockside_burn_1", &"vo.mercer.briefing_dockside_burn_2",
+	]
+	for id: StringName in briefing:
+		assert_eq(_table.line(id).get("event"), &"briefing", "%s is a briefing line" % id)
+	assert_eq(mission.size() + briefing.size(), 31, "the doc's VO id list")
+	for id: String in ["vo.mercer.dockside_burn_van_eta", "vo.mercer.dockside_burn_boat_eta"]:
+		assert_true(String(_strings.get("voice." + id, "")).contains("{seconds}"), "%s uses {seconds}" % id)

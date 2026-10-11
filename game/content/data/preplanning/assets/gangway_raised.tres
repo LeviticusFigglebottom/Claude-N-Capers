@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.gangway_raised"
+category = &"access"
+cost = 2500
+favors = 2
+point_ids = Array[StringName]([&"pp_gangway"])
+tags = Array[StringName]([&"loud"])
+effect = &"force_variant"

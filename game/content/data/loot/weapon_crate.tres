@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1")
-id = &"loot.product_crate"
-display_name = "Product Crate"
-weight = 1
-value = 1800
+id = &"loot.weapon_crate"
+display_name = "Weapon Crate"
+weight = 2
+value = 2000
 conceals = false
