@@ -21,6 +21,8 @@ and the magazine with a BoneAttachment3D on ``magazine``. Every clip keys the sa
 numbers at 30 fps) and the moving-part conventions are listed in SOURCE.txt.
 """
 
+import math
+
 import _anim as anim
 import _arms as arms
 import _arms_clips as clips_mod
@@ -91,16 +93,21 @@ def notes() -> dict:
                         "local X), same timing rules as fp.break_action; eject: spawn the 40 mm casing; round_in: the round "
                         f"(in the left hand from round_in-16) is seated; fire/fire_ads {sets.LAUNCHER_FIRE} f heavy recoil; "
                         "reload_empty = reload; defaults 3.0 s / equip 0.7 s"),
-        "fp.crossbow": (f"string = two halves StringUpper / StringLower (ENV B's Vise), each from its prod-tip anchor to "
-                        f"the string CENTRE where they meet; the model is LATCHED (centre on the Magwell, Godot model "
-                        f"{_g(sets.CROSSBOW.markers['string_latched'])}); released = the centre {sets.STRING_TRAVEL:.3f} m "
-                        f"forward, {_g(sets.CROSSBOW.markers['string_rest'])}. Per frame: centre = released + (latched - "
+        "fp.crossbow": (f"string = two halves StringUpper (left) / StringLower (right) (ENV B's Vise), each node's origin "
+                        f"= its fixed prod-tip anchor, Godot model ({-sets.STRING_ANCHOR_X:.3f} / {sets.STRING_ANCHOR_X:.3f}, "
+                        f"{sets.STRING_LATCHED[2]:.3f}, {-sets.STRING_ANCHOR_Y:.3f}), its ...Cord running to the string "
+                        f"CENTRE where they meet; the model RESTS RELEASED (rotation 0: centre "
+                        f"{_g(sets.CROSSBOW.markers['string_rest'])}, {sets.STRING_TRAVEL:.3f} m ahead of the nock); "
+                        f"latched = the centre on the Magwell, Godot model {_g(sets.CROSSBOW.markers['string_latched'])}. "
+                        "Per frame: centre = released + (latched - "
                         "released) x string, string from curve.crossbow_<clip> (1 = latched, 0 = released; clips without "
                         "a curve keep the current state: latched when loaded). ENV A bends each half about its fixed "
-                        "anchor: rotate it so its inner end points at the centre and stretch it along that line by "
-                        "|centre - anchor| / |latched - anchor|. fire/fire_ads string_release@0 (latched -> released over "
+                        "anchor: rotate it (about its local X) so its inner end points at the centre and stretch it along "
+                        f"that line (local Y) by |centre - anchor| / |released - anchor| (latched: {_latch_swing()}). "
+                        "fire/fire_ads string_release@0 (latched -> released over "
                         "frames 0..1); reload: muzzle down, the left fingers hook the centre at cock and pull it back "
-                        "to the latch by string_back (smoothstep cock..string_back); the bolt (Magwell) rides the magazine "
+                        "to the latch by string_back (string = ((f - cock) / (string_back - cock))^2.4, the hand's own ease, "
+                        "so the fingers stay on the centre); the bolt (Magwell) rides the magazine "
                         "bone: hidden after the shot, shown at bolt_show (carried in the left hand), laid on the rail by "
                         "bolt_in (bone identity from bolt_in); reload_empty = reload; defaults 2.0 s / equip 0.55 s"),
         "fp.lever": (f"Lever swings {sets.LEVER_OPEN_DEG:.0f} deg down (+ about its local X: the loop's rear end goes down) "
@@ -192,6 +199,15 @@ def export_name(name: str, table: dict) -> str:
     """Loops get Godot's ``-loop`` suffix (stripped on import), except names already ending in ``_loop``,
     which Godot loops by that suffix while keeping the name (``shotgun_reload_loop`` precedent)."""
     return f"{name}-loop" if table[name]["loop"] and not name.endswith("_loop") else name
+
+
+def _latch_swing() -> str:
+    """The latched swing / stretch of a string half from the markers (ENV B's SOURCE: +/-18.74 deg, x1.3049)."""
+    m = sets.CROSSBOW.markers
+    rx, ry = m["string_rest"][0] - sets.STRING_ANCHOR_X, m["string_rest"][1] - sets.STRING_ANCHOR_Y
+    lx, ly = m["string_latched"][0] - sets.STRING_ANCHOR_X, m["string_latched"][1] - sets.STRING_ANCHOR_Y
+    ang = math.degrees(abs(math.atan2(ly, lx) - math.atan2(ry, rx)))
+    return f"-/+{ang:.2f} deg, x{math.hypot(lx, ly) / math.hypot(rx, ry):.4f}"
 
 
 def _g(p) -> str:

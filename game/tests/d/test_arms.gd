@@ -19,7 +19,8 @@
 ## the stock below the eye where it crosses the near plane (never enclosing the camera).
 ## Vise two-half string (StringUpper / StringLower meeting at the string centre): fp.crossbow gives the latched
 ## (on the Magwell) and released centres, curve.crossbow_<clip> the latch fraction per frame, and the left hand
-## pulls the centre from released to latched in the reload.
+## pulls the centre from released to latched in the reload; ENV B's model rests released (cords meet there).
+## Arm skin weights change smoothly along every edge of the sleeves / cuffs / wrists (ARM_WEIGHT_GRADIENT_MAX).
 extends TestCase
 
 const GLB: String = "res://assets/characters/char_arms_fp/char_arms_fp.glb"
@@ -168,8 +169,16 @@ const CROSSBOW_LATCHED: Vector3 = Vector3(0.0, 0.066, -0.016)
 const CROSSBOW_RELEASED: Vector3 = Vector3(0.0, 0.066, -0.176)
 const CROSSBOW_LATCHED_TEXT: String = "(0.000, 0.066, -0.016)"
 const CROSSBOW_RELEASED_TEXT: String = "(0.000, 0.066, -0.176)"
-## Palm centre (hand.L .. middle_01.L midpoint) to the hooked string centre.
-const CROSSBOW_HOOK_TOL: float = 0.06
+## The string halves' prod-tip anchors (StringUpper left, StringLower right), Godot weapon-model space.
+const CROSSBOW_ANCHOR: Vector3 = Vector3(0.290, 0.066, -0.339)
+const CROSSBOW_ANCHOR_TEXT: String = "(-0.290 / 0.290, 0.066, -0.339)"
+## Arm skin weights (verts weighted to upper_arm / forearm / hand only: the sleeves, cuffs and the wrist): the
+## largest weight change per metre along a mesh edge. The loft's elbow / wrist blends stay near 23 /m; a ring
+## whose verts alternate between bones (a sawtooth under a forearm roll) would be hundreds.
+const ARM_WEIGHT_GRADIENT_MAX: float = 35.0
+## Palm centre (hand.L .. middle_01.L midpoint) to the hooked string centre (29 mm: the fingers curl over it;
+## the string follows the hand's own ease, so the distance holds through the pull).
+const CROSSBOW_HOOK_TOL: float = 0.04
 
 var _root: Node3D = null
 var _skel: Skeleton3D = null
@@ -372,6 +381,9 @@ func test_mesh_and_budget() -> void:
 	assert_true(mesh_node != null, "Arms mesh under the skeleton")
 	if mesh_node == null:
 		return
+	if mesh_node.skin != null:
+		var g: float = _arm_weight_gradient(mesh_node, _skel)
+		assert_true(g < ARM_WEIGHT_GRADIENT_MAX, "char_arms_fp: arm weight gradient %.1f /m < %.0f" % [g, ARM_WEIGHT_GRADIENT_MAX])
 	var tris: int = 0
 	for si: int in range(mesh_node.mesh.get_surface_count()):
 		var arrays: Array = mesh_node.mesh.surface_get_arrays(si)
@@ -557,6 +569,8 @@ func _check_crossbow_string_halves() -> void:
 	assert_true(doc.contains("StringUpper") and doc.contains("StringLower"), "fp.crossbow: the two string halves")
 	assert_true(doc.contains(CROSSBOW_LATCHED_TEXT), "fp.crossbow: latched centre on the Magwell %s" % CROSSBOW_LATCHED_TEXT)
 	assert_true(doc.contains(CROSSBOW_RELEASED_TEXT), "fp.crossbow: released centre %s" % CROSSBOW_RELEASED_TEXT)
+	assert_true(doc.contains(CROSSBOW_ANCHOR_TEXT), "fp.crossbow: the halves' anchors %s" % CROSSBOW_ANCHOR_TEXT)
+	_check_vise_string_model()
 	for clip: String in ["fire", "fire_ads"]:
 		var c: Array[float] = _curve("curve.crossbow_%s" % clip)
 		assert_true(c.size() >= 2 and is_equal_approx(c[0], 1.0) and is_equal_approx(c[c.size() - 1], 0.0),
@@ -591,6 +605,80 @@ func _check_crossbow_string_halves() -> void:
 		_player.stop()
 		assert_true(worst < CROSSBOW_HOOK_TOL, "crossbow_%s: the left palm stays %.3f m from the string centre while it pulls" % [
 			clip, worst])
+
+
+## ENV B's real Vise: the half nodes sit on the anchors and, at rest, their cords meet on the RELEASED centre
+## (the model rests released; fp.crossbow's bend is relative to that pose).
+func _check_vise_string_model() -> void:
+	var w: Dictionary = _weapon_model(String(REF_WEAPON["crossbow"]))
+	if w.is_empty():
+		return
+	var marks: Dictionary = w["marks"]
+	var root: Node3D = w["root"]
+	for half: String in ["StringUpper", "StringLower"]:
+		var anchor: Vector3 = CROSSBOW_ANCHOR * Vector3(-1.0 if half == "StringUpper" else 1.0, 1.0, 1.0)
+		if not marks.has(half) or not marks.has(half + "Cord"):
+			fail("wpn_vise_crossbow: %s / %sCord" % [half, half])
+			continue
+		var o: Vector3 = (marks[half] as Transform3D).origin
+		assert_true(o.distance_to(anchor) < 0.002, "vise %s origin %s on its anchor %s" % [half, o, anchor])
+		var mi: MeshInstance3D = root.find_child(half + "Cord", true, false) as MeshInstance3D
+		var far: Vector3 = o
+		if mi != null and mi.mesh != null:
+			var xf: Transform3D = marks[half + "Cord"]
+			for p: Vector3 in mi.mesh.get_faces():
+				var q: Vector3 = xf * p
+				if q.distance_to(o) > far.distance_to(o):
+					far = q
+		assert_true(far.distance_to(CROSSBOW_RELEASED) < 0.004,
+				"vise %sCord ends %.4f m from the released centre %s (rest = released)" % [
+					half, far.distance_to(CROSSBOW_RELEASED), CROSSBOW_RELEASED])
+	root.queue_free()
+
+
+## Largest |weight change| / edge length over the edges of `arms` whose two verts are skinned to upper_arm /
+## forearm / hand bones only (named binds of `skin`, else bones of `sk`).
+static func _arm_weight_gradient(arms: MeshInstance3D, sk: Skeleton3D) -> float:
+	var names: Array[String] = []
+	for i: int in range(arms.skin.get_bind_count()):
+		var n: String = String(arms.skin.get_bind_name(i))
+		names.append(n if n != "" else sk.get_bone_name(arms.skin.get_bind_bone(i)))
+	var worst: float = 0.0
+	for si: int in range(arms.mesh.get_surface_count()):
+		var arr: Array = arms.mesh.surface_get_arrays(si)
+		var pos: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+		var bones: PackedInt32Array = arr[Mesh.ARRAY_BONES]
+		var wts: PackedFloat32Array = arr[Mesh.ARRAY_WEIGHTS]
+		var idx: PackedInt32Array = arr[Mesh.ARRAY_INDEX]
+		var k: int = bones.size() / maxi(1, pos.size())
+		var vw: Array[Dictionary] = []
+		for v: int in range(pos.size()):
+			var d: Dictionary = {}
+			var arm_only: bool = true
+			for j: int in range(k):
+				var x: float = wts[v * k + j]
+				if x <= 0.0:
+					continue
+				var n: String = names[bones[v * k + j]]
+				arm_only = arm_only and (n.begins_with("upper_arm") or n.begins_with("forearm") or n.begins_with("hand"))
+				d[n] = float(d.get(n, 0.0)) + x
+			vw.append(d if arm_only else {})
+		for t: int in range(0, idx.size(), 3):
+			for e: int in 3:
+				var a: int = idx[t + e]
+				var b: int = idx[t + (e + 1) % 3]
+				if vw[a].is_empty() or vw[b].is_empty():
+					continue
+				var ln: float = pos[a].distance_to(pos[b])
+				if ln < 1e-4:
+					continue
+				var jump: float = 0.0
+				for n: String in vw[a]:
+					jump = maxf(jump, absf(float(vw[a][n]) - float(vw[b].get(n, 0.0))))
+				for n: String in vw[b]:
+					jump = maxf(jump, absf(float(vw[b][n]) - float(vw[a].get(n, 0.0))))
+				worst = maxf(worst, jump / ln)
+	return worst
 
 
 func test_events_are_listed() -> void:
@@ -1049,6 +1137,8 @@ func test_heister_sleeve_variants() -> void:
 			if m != null:
 				mats.append(m.resource_name.trim_prefix("M_"))
 		assert_true(tris <= 12000, "%s: triangles %d <= 12000" % [id, tris])
+		var g: float = _arm_weight_gradient(arms, sk)
+		assert_true(g < ARM_WEIGHT_GRADIENT_MAX, "%s: arm weight gradient %.1f /m < %.0f" % [id, g, ARM_WEIGHT_GRADIENT_MAX])
 		for want: String in _fp_sleeve_ids(h):
 			assert_has(mats, want, "%s: fp_sleeve material %s" % [id, want])
 		if h == "wren":
