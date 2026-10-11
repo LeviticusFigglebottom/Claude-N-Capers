@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.6)
+# Contract: HUD data (v1.7)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -76,3 +76,13 @@ instantiates UI.
 | Signal | Properties |
 |---|---|
 | `player_mode_changed` | `player_mode: StringName` (&"civilian" / &"casing" / &"masked") for the local player; each `crew[]` entry gains `mode`. |
+
+## v1.7 (B6-02 scoreboard, D-071)
+| Signal | Properties |
+|---|---|
+| `crew_stats_changed` | `crew_stats: Array[Dictionary]`, one row per crew member (humans and Crew AI, local included): `{slot, name, is_ai, is_local, kills, specials_killed, civilians_killed, downs, shots, hits, headshots}`. Server counts, replicated to every peer; `name` = `CrewController.display_name`. A counter that does not exist yet is **omitted** (not 0). |
+
+Counting rules (ENV A): a **shot** = one firearm trigger pull (a shotgun blast is 1; melee, throwables, deployables,
+sentries never count). A **hit** = a shot that struck an enemy NPC (body, shield or armour plate, even for 0 damage),
+at most once per shot. A **headshot** = a shot that struck an enemy's HitZone.HEAD, at most once per shot. AI crew
+are counted the same way.

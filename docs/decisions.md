@@ -496,3 +496,9 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Contracts: characters v1.8 (heister FP sleeves, `rappel` clip), visual_slots crossbow `StringUpper`/`StringLower`
   + revolver `Speedloader`, audio_cues v1.2 (`cue.door_breach`, `cue.burn_warning`). Shadow Ledger painting = LIGHT.
 - A3-12: player melee (L3.9) was never implemented — ENV A builds CrewMelee then CrewThrowables (high priority).
+
+## D-071 — 2026-10-11 — Scoreboard stats and payday awards (B6-02)
+- ui_hud v1.7 `crew_stats_changed` (`crew_stats` rows) and events v1.1 HeistResult crew rows gain `name`, `shots`,
+  `hits`, `headshots`; counting rules in ui_hud v1.7 (a shield/plate strike is a hit: accuracy measures aim). ENV A owns.
+- Payday "Crew Honours": AI teammates appear on the scoreboard but **never win awards** (PD2's end screen honours
+  players); among humans, ties break by lowest slot. A solo player still gets awards they earn.
