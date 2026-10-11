@@ -12,7 +12,7 @@
 ## Host: a request (kind REQUEST) is checked in order:
 ##   no running heist / heist over -> denied; the peer has no crew slot (crew full of humans) -> full;
 ##   kicked this session -> kicked; LobbyState.validate_summary errors -> denied; then `policy`:
-##   &"off" -> denied, &"auto" -> accept, &"ask" (default) -> join_requested(peer, summary), the host UI
+##   &"off" -> off, &"auto" -> accept, &"ask" (default) -> join_requested(peer, summary), the host UI
 ##   answers with answer_join() (B's dialog auto-denies on its timeout).
 ## Accept: the AI crew member of the peer's slot (Net assigns a joining peer an AI slot) becomes the
 ## peer's: owner, name and the summary's loadout (modifiers pushed again), its CrewAiBrain removed; then a
@@ -31,7 +31,9 @@ const KIND_REQUEST: StringName = &"dropin.request"
 const KIND_ANSWER: StringName = &"dropin.answer"
 const KIND_PROGRESS: StringName = &"dropin.progress"
 const KIND_CANCEL: StringName = &"dropin.cancel"
-const REASON_KICKED: StringName = &"kicked"
+## Reasons beyond DropInService.REASONS (net.md v1.1); named apart so the base can add its own constants.
+const R_KICKED: StringName = &"kicked"
+const R_OFF: StringName = &"off"
 const POLICY_ASK: StringName = &"ask"
 const POLICY_AUTO: StringName = &"auto"
 const POLICY_OFF: StringName = &"off"
@@ -78,7 +80,7 @@ func _exit_tree() -> void:
 
 # --- Host -----------------------------------------------------------------------------------------
 
-func answer_join(peer_id: int, accept: bool) -> void:
+func answer_join(peer_id: int, accept: bool, reason: StringName = REASON_DENIED) -> void:
 	if not Net.is_authority() or not pending.has(peer_id):
 		return
 	var summary: Dictionary = pending[peer_id]
@@ -86,7 +88,7 @@ func answer_join(peer_id: int, accept: bool) -> void:
 	if accept:
 		_accept(peer_id, summary)
 	else:
-		_deny(peer_id, REASON_DENIED)
+		_deny(peer_id, reason)  # B's dialog: denied / timeout
 
 
 func kick(slot: int) -> bool:
@@ -109,7 +111,7 @@ func _on_request(peer_id: int, summary: Dictionary) -> void:
 		_deny(peer_id, REASON_FULL)
 		return
 	if _kicked.has(String(summary.get("name", ""))):
-		_deny(peer_id, REASON_KICKED)
+		_deny(peer_id, R_KICKED)
 		return
 	var errors: Array[String] = LobbyState.validate_summary(summary)
 	if not errors.is_empty():
@@ -118,7 +120,7 @@ func _on_request(peer_id: int, summary: Dictionary) -> void:
 		return
 	match policy:
 		POLICY_OFF:
-			_deny(peer_id, REASON_DENIED)
+			_deny(peer_id, R_OFF)
 		POLICY_AUTO:
 			_accept(peer_id, summary)
 		_:
@@ -206,8 +208,8 @@ func request_join(summary: Dictionary) -> void:
 		return
 	joining = false
 	if rt == null:
-		if Net.last_disconnect_reason == REASON_KICKED:
-			join_failed.emit(Net.local_peer_id(), REASON_KICKED)
+		if Net.last_disconnect_reason == R_KICKED:
+			join_failed.emit(Net.local_peer_id(), R_KICKED)
 		return  # denied / cancelled / host lost: join_failed already emitted
 	join_progress.emit(Net.local_peer_id(), 1.0)
 	_send(KIND_PROGRESS, {"frac": 1.0})
