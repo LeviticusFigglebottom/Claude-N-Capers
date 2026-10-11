@@ -1,0 +1,23 @@
+asset: char_tac_light_zero
+script: tools/blender/characters/char_police.py
+params: {"age": 0.3, "beard_shadow": 0.5, "build": 0.7, "faction": "zero", "gender": 0.0, "hair": "buzz", "hair_color": "brown", "height": 1.81, "skin": 2, "unit": "tac"}
+seed: 4193679299  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_tac_light_zero
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0926, 0.1517] (model [0.0000, 1.3219, 0.1706], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0824, -0.0902] (model [0.0000, 1.6941, -0.0780], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1294, 0.0722, 0.1556] (model [0.1294, 1.0354, 0.1590], Godot axes, rest pose)
+body_faces_culled: 5718
+body_params: {"age": 0.3, "beard_shadow": 0.5, "build": 0.7, "gender": 0.0, "hair": "buzz", "hair_color": "brown", "height": 1.81, "lip": "auto", "skin": 2}
+bones: 52
+faction: zero
+faction_mask: zero: bone face mask under the helmet rim (Headwear)
+hat: helmet + ear protection (Headwear), top z 1.845 m
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 32152
+tris_by_mesh: {"Body": 7392, "Gear": 3912, "Hair": 1200, "Headwear": 2520, "Outfit": 17128}
+variant_of: tac_light
+visual_variant: zero

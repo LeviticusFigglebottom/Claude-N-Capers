@@ -27,6 +27,48 @@
 			"test": false
 		},
 		{
+			"asset": "char_bulwark_frd",
+			"id": "bulwark_frd",
+			"scene": "res://world/characters/bulwark_frd/bulwark_frd.tscn",
+			"test": false,
+			"variant": "frd",
+			"variant_of": "bulwark"
+		},
+		{
+			"asset": "char_bulwark_sentinel",
+			"id": "bulwark_sentinel",
+			"scene": "res://world/characters/bulwark_sentinel/bulwark_sentinel.tscn",
+			"test": false,
+			"variant": "sentinel",
+			"variant_of": "bulwark"
+		},
+		{
+			"asset": "char_bulwark_zero",
+			"id": "bulwark_zero",
+			"scene": "res://world/characters/bulwark_zero/bulwark_zero.tscn",
+			"test": false,
+			"variant": "zero",
+			"variant_of": "bulwark"
+		},
+		{
+			"asset": "char_cartel_gunman",
+			"id": "cartel_gunman",
+			"scene": "res://world/characters/cartel_gunman/cartel_gunman.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_cartel_gunman_b",
+			"id": "cartel_gunman_b",
+			"scene": "res://world/characters/cartel_gunman_b/cartel_gunman_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_cartel_gunman_c",
+			"id": "cartel_gunman_c",
+			"scene": "res://world/characters/cartel_gunman_c/cartel_gunman_c.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_civilian_customer_a",
 			"id": "civilian_customer_a",
 			"scene": "res://world/characters/civilian_customer_a/civilian_customer_a.tscn",
@@ -81,6 +123,30 @@
 			"test": false
 		},
 		{
+			"asset": "char_corpsman_frd",
+			"id": "corpsman_frd",
+			"scene": "res://world/characters/corpsman_frd/corpsman_frd.tscn",
+			"test": false,
+			"variant": "frd",
+			"variant_of": "corpsman"
+		},
+		{
+			"asset": "char_corpsman_sentinel",
+			"id": "corpsman_sentinel",
+			"scene": "res://world/characters/corpsman_sentinel/corpsman_sentinel.tscn",
+			"test": false,
+			"variant": "sentinel",
+			"variant_of": "corpsman"
+		},
+		{
+			"asset": "char_corpsman_zero",
+			"id": "corpsman_zero",
+			"scene": "res://world/characters/corpsman_zero/corpsman_zero.tscn",
+			"test": false,
+			"variant": "zero",
+			"variant_of": "corpsman"
+		},
+		{
 			"asset": "char_crew_body",
 			"id": "crew_body",
 			"scene": "res://world/characters/crew_body/crew_body.tscn",
@@ -93,9 +159,167 @@
 			"test": false
 		},
 		{
+			"asset": "char_crew_dutch",
+			"id": "crew_dutch",
+			"scene": "res://world/characters/crew_dutch/crew_dutch.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_crew_rook",
+			"id": "crew_rook",
+			"scene": "res://world/characters/crew_rook/crew_rook.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_crew_sable",
+			"id": "crew_sable",
+			"scene": "res://world/characters/crew_sable/crew_sable.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_crew_wren",
+			"id": "crew_wren",
+			"scene": "res://world/characters/crew_wren/crew_wren.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_frd_agent",
+			"id": "frd_agent",
+			"scene": "res://world/characters/frd_agent/frd_agent.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_frd_agent_b",
+			"id": "frd_agent_b",
+			"scene": "res://world/characters/frd_agent_b/frd_agent_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_frd_agent_sentinel",
+			"id": "frd_agent_sentinel",
+			"scene": "res://world/characters/frd_agent_sentinel/frd_agent_sentinel.tscn",
+			"test": false,
+			"variant": "sentinel",
+			"variant_of": "frd_agent"
+		},
+		{
 			"asset": "char_longshot",
 			"id": "longshot",
 			"scene": "res://world/characters/longshot/longshot.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_longshot_frd",
+			"id": "longshot_frd",
+			"scene": "res://world/characters/longshot_frd/longshot_frd.tscn",
+			"test": false,
+			"variant": "frd",
+			"variant_of": "longshot"
+		},
+		{
+			"asset": "char_longshot_sentinel",
+			"id": "longshot_sentinel",
+			"scene": "res://world/characters/longshot_sentinel/longshot_sentinel.tscn",
+			"test": false,
+			"variant": "sentinel",
+			"variant_of": "longshot"
+		},
+		{
+			"asset": "char_longshot_zero",
+			"id": "longshot_zero",
+			"scene": "res://world/characters/longshot_zero/longshot_zero.tscn",
+			"test": false,
+			"variant": "zero",
+			"variant_of": "longshot"
+		},
+		{
+			"asset": "char_npc_bank_cleaner",
+			"id": "npc_bank_cleaner",
+			"scene": "res://world/characters/npc_bank_cleaner/npc_bank_cleaner.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_bank_guard",
+			"id": "npc_bank_guard",
+			"scene": "res://world/characters/npc_bank_guard/npc_bank_guard.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_bank_night_manager",
+			"id": "npc_bank_night_manager",
+			"scene": "res://world/characters/npc_bank_night_manager/npc_bank_night_manager.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_bank_teller",
+			"id": "npc_bank_teller",
+			"scene": "res://world/characters/npc_bank_teller/npc_bank_teller.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_bank_teller_b",
+			"id": "npc_bank_teller_b",
+			"scene": "res://world/characters/npc_bank_teller_b/npc_bank_teller_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_cleaner_sl",
+			"id": "npc_cleaner_sl",
+			"scene": "res://world/characters/npc_cleaner_sl/npc_cleaner_sl.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_helena_moor",
+			"id": "npc_helena_moor",
+			"scene": "res://world/characters/npc_helena_moor/npc_helena_moor.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_it_contractor",
+			"id": "npc_it_contractor",
+			"scene": "res://world/characters/npc_it_contractor/npc_it_contractor.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_kessler",
+			"id": "npc_kessler",
+			"scene": "res://world/characters/npc_kessler/npc_kessler.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_kessler_coat",
+			"id": "npc_kessler_coat",
+			"scene": "res://world/characters/npc_kessler_coat/npc_kessler_coat.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_northgate_guard",
+			"id": "npc_northgate_guard",
+			"scene": "res://world/characters/npc_northgate_guard/npc_northgate_guard.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_northgate_guard_b",
+			"id": "npc_northgate_guard_b",
+			"scene": "res://world/characters/npc_northgate_guard_b/npc_northgate_guard_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_penthouse_guest_a",
+			"id": "npc_penthouse_guest_a",
+			"scene": "res://world/characters/npc_penthouse_guest_a/npc_penthouse_guest_a.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_penthouse_guest_b",
+			"id": "npc_penthouse_guest_b",
+			"scene": "res://world/characters/npc_penthouse_guest_b/npc_penthouse_guest_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_penthouse_staff",
+			"id": "npc_penthouse_staff",
+			"scene": "res://world/characters/npc_penthouse_staff/npc_penthouse_staff.tscn",
 			"test": false
 		},
 		{
@@ -105,10 +329,58 @@
 			"test": false
 		},
 		{
+			"asset": "char_patrol_officer_frd",
+			"id": "patrol_officer_frd",
+			"scene": "res://world/characters/patrol_officer_frd/patrol_officer_frd.tscn",
+			"test": false,
+			"variant": "frd",
+			"variant_of": "patrol_officer"
+		},
+		{
+			"asset": "char_patrol_officer_sentinel",
+			"id": "patrol_officer_sentinel",
+			"scene": "res://world/characters/patrol_officer_sentinel/patrol_officer_sentinel.tscn",
+			"test": false,
+			"variant": "sentinel",
+			"variant_of": "patrol_officer"
+		},
+		{
+			"asset": "char_patrol_officer_zero",
+			"id": "patrol_officer_zero",
+			"scene": "res://world/characters/patrol_officer_zero/patrol_officer_zero.tscn",
+			"test": false,
+			"variant": "zero",
+			"variant_of": "patrol_officer"
+		},
+		{
 			"asset": "char_phantom",
 			"id": "phantom",
 			"scene": "res://world/characters/phantom/phantom.tscn",
 			"test": false
+		},
+		{
+			"asset": "char_phantom_frd",
+			"id": "phantom_frd",
+			"scene": "res://world/characters/phantom_frd/phantom_frd.tscn",
+			"test": false,
+			"variant": "frd",
+			"variant_of": "phantom"
+		},
+		{
+			"asset": "char_phantom_sentinel",
+			"id": "phantom_sentinel",
+			"scene": "res://world/characters/phantom_sentinel/phantom_sentinel.tscn",
+			"test": false,
+			"variant": "sentinel",
+			"variant_of": "phantom"
+		},
+		{
+			"asset": "char_phantom_zero",
+			"id": "phantom_zero",
+			"scene": "res://world/characters/phantom_zero/phantom_zero.tscn",
+			"test": false,
+			"variant": "zero",
+			"variant_of": "phantom"
 		},
 		{
 			"asset": "char_security_officer",
@@ -129,10 +401,58 @@
 			"test": false
 		},
 		{
+			"asset": "char_stinger_frd",
+			"id": "stinger_frd",
+			"scene": "res://world/characters/stinger_frd/stinger_frd.tscn",
+			"test": false,
+			"variant": "frd",
+			"variant_of": "stinger"
+		},
+		{
+			"asset": "char_stinger_sentinel",
+			"id": "stinger_sentinel",
+			"scene": "res://world/characters/stinger_sentinel/stinger_sentinel.tscn",
+			"test": false,
+			"variant": "sentinel",
+			"variant_of": "stinger"
+		},
+		{
+			"asset": "char_stinger_zero",
+			"id": "stinger_zero",
+			"scene": "res://world/characters/stinger_zero/stinger_zero.tscn",
+			"test": false,
+			"variant": "zero",
+			"variant_of": "stinger"
+		},
+		{
 			"asset": "char_tac_heavy",
 			"id": "tac_heavy",
 			"scene": "res://world/characters/tac_heavy/tac_heavy.tscn",
 			"test": false
+		},
+		{
+			"asset": "char_tac_heavy_frd",
+			"id": "tac_heavy_frd",
+			"scene": "res://world/characters/tac_heavy_frd/tac_heavy_frd.tscn",
+			"test": false,
+			"variant": "frd",
+			"variant_of": "tac_heavy"
+		},
+		{
+			"asset": "char_tac_heavy_sentinel",
+			"id": "tac_heavy_sentinel",
+			"scene": "res://world/characters/tac_heavy_sentinel/tac_heavy_sentinel.tscn",
+			"test": false,
+			"variant": "sentinel",
+			"variant_of": "tac_heavy"
+		},
+		{
+			"asset": "char_tac_heavy_zero",
+			"id": "tac_heavy_zero",
+			"scene": "res://world/characters/tac_heavy_zero/tac_heavy_zero.tscn",
+			"test": false,
+			"variant": "zero",
+			"variant_of": "tac_heavy"
 		},
 		{
 			"asset": "char_tac_light",
@@ -141,10 +461,58 @@
 			"test": false
 		},
 		{
+			"asset": "char_tac_light_frd",
+			"id": "tac_light_frd",
+			"scene": "res://world/characters/tac_light_frd/tac_light_frd.tscn",
+			"test": false,
+			"variant": "frd",
+			"variant_of": "tac_light"
+		},
+		{
+			"asset": "char_tac_light_sentinel",
+			"id": "tac_light_sentinel",
+			"scene": "res://world/characters/tac_light_sentinel/tac_light_sentinel.tscn",
+			"test": false,
+			"variant": "sentinel",
+			"variant_of": "tac_light"
+		},
+		{
+			"asset": "char_tac_light_zero",
+			"id": "tac_light_zero",
+			"scene": "res://world/characters/tac_light_zero/tac_light_zero.tscn",
+			"test": false,
+			"variant": "zero",
+			"variant_of": "tac_light"
+		},
+		{
 			"asset": "char_wrecker",
 			"id": "wrecker",
 			"scene": "res://world/characters/wrecker/wrecker.tscn",
 			"test": false
+		},
+		{
+			"asset": "char_wrecker_frd",
+			"id": "wrecker_frd",
+			"scene": "res://world/characters/wrecker_frd/wrecker_frd.tscn",
+			"test": false,
+			"variant": "frd",
+			"variant_of": "wrecker"
+		},
+		{
+			"asset": "char_wrecker_sentinel",
+			"id": "wrecker_sentinel",
+			"scene": "res://world/characters/wrecker_sentinel/wrecker_sentinel.tscn",
+			"test": false,
+			"variant": "sentinel",
+			"variant_of": "wrecker"
+		},
+		{
+			"asset": "char_wrecker_zero",
+			"id": "wrecker_zero",
+			"scene": "res://world/characters/wrecker_zero/wrecker_zero.tscn",
+			"test": false,
+			"variant": "zero",
+			"variant_of": "wrecker"
 		}
 	],
 	"props": [
@@ -157,6 +525,27 @@
 			"asset": "char_bulwark_aegis_shield",
 			"id": "bulwark_aegis_shield",
 			"scene": "res://world/characters/bulwark_aegis/bulwark_aegis_shield.tscn"
+		},
+		{
+			"asset": "char_bulwark_frd_shield",
+			"id": "bulwark_frd_shield",
+			"scene": "res://world/characters/bulwark_frd/bulwark_frd_shield.tscn",
+			"variant": "frd",
+			"variant_of": "bulwark_shield"
+		},
+		{
+			"asset": "char_bulwark_sentinel_shield",
+			"id": "bulwark_sentinel_shield",
+			"scene": "res://world/characters/bulwark_sentinel/bulwark_sentinel_shield.tscn",
+			"variant": "sentinel",
+			"variant_of": "bulwark_shield"
+		},
+		{
+			"asset": "char_bulwark_zero_shield",
+			"id": "bulwark_zero_shield",
+			"scene": "res://world/characters/bulwark_zero/bulwark_zero_shield.tscn",
+			"variant": "zero",
+			"variant_of": "bulwark_shield"
 		}
 	],
 	"version": 1

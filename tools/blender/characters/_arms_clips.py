@@ -67,10 +67,12 @@ class Kit:
         if s.support == "pistol":
             self.support = hand_at(sk, "L", "w", m["left_ik"], (0.55, 0.45, -0.70), (0.85, 0.05, 0.25),
                                    s.pole_l, "support", share=0.45, off=0.016)
+        elif s.support == "vgrip" and "left_palm" in m:   # a vertical front grip, palm on LeftHandIK (D2-04)
+            self.support = left_vgrip(sk, m["left_palm"], s.pole_l)
         elif s.support in ("vgrip", "bow"):        # a pistol-style front grip / the bow riser (D-055)
             self.support = left_grip(sk, m.get("vgrip", m["left_ik"]), s.pole_l)
-        elif s.support == "top":                   # a transverse top handle, palm down (saw, minigun)
-            self.support = hand_at(sk, "L", "w", m["left_ik"], (0.20, 0.95, -0.25), (0.05, 0.10, -0.99),
+        elif s.support == "top":                   # a transverse top handle, palm down (saw)
+            self.support = hand_at(sk, "L", "w", m.get("top_bar", m["left_ik"]), (0.20, 0.95, -0.25), (0.05, 0.10, -0.99),
                                    s.pole_l, hand_shape("grip", 0.85), share=0.55, off=0.017)
         else:
             self.support = hand_at(sk, "L", "w", m["left_ik"], (0.50, 0.80, 0.30), (0.55, -0.05, 0.83),
@@ -95,7 +97,7 @@ class Kit:
             return hand_at(self.sk, "L", "m", pt, unit(v3(0.0, 0.62, 0.0) + ax * 0.78), v3(1.0, 0.0, 0.05),
                            (-0.6, -0.5, -0.6), hand_shape("grip", 0.72), share=0.42, off=0.012)
         if kind == "box":         # belt box: palm on its left side, fingers under the bottom front
-            pt = m["magwell"] + v3(-mg["hw"] - 0.012, 0.0, mg["bottom"] * 0.55)
+            pt = m["magwell"] + v3(mg.get("cx", 0.0) - mg["hw"] - 0.012, 0.0, mg["bottom"] * 0.55)
             return hand_at(self.sk, "L", "m", pt, v3(0.0, 0.85, -0.52), v3(1.0, 0.0, 0.1),
                            (-0.6, -0.5, -0.6), hand_shape("grip", 0.55), share=0.5, off=0.012)
         # "base": palm under the base, index along the front, fingers wrapped round the body
@@ -137,6 +139,21 @@ def left_grip(sk: Skeleton, at, pole) -> Hand:
     axes = R_off.T.copy()
     return Hand("w", np.asarray(at, float) - axes @ t_off, axes, unit(np.asarray(pole, float)),
                 hand_shape("grip", 0.9), 0.5)
+
+
+#: palm centre of a gripping hand: half way along the hand bone, this far in front of it (m); the
+#: midpoint of ``hand.<s>`` and ``middle_01.<s>`` sits ~19 mm from a marker the palm is placed on
+PALM_SHARE, PALM_OFF = 0.5, 0.018
+
+
+def left_vgrip(sk: Skeleton, palm_w, pole) -> Hand:
+    """The left hand closed round a VERTICAL front grip (D2-04: crossbow, flamethrower, minigun) with its
+    palm centre on ``palm_w`` (the weapon's LeftHandIK): the mirrored grip offset turned upright (the
+    pistol grip's 18 deg rake removed) and moved so the palm lands on the marker."""
+    h = left_grip(sk, v3(0.0, 0.0, 0.0), pole)
+    h = h.turned(rxd(A.GRIP_RAKE_DEG), v3(0.0, 0.0, 0.0))
+    palm = h.wrist + h.axes @ v3(0.0, PALM_SHARE * sk.length("hand.L"), -PALM_OFF * sk.scale)
+    return h.moved(np.asarray(palm_w, float) - palm)
 
 
 def hand_w(sk: Skeleton, sfx: str, wf: tuple, point, along, palm, pole, shape, share: float = 0.5,
@@ -706,9 +723,21 @@ def clip_box_reload(kit: Kit, s: FPSet, N: int, empty: bool):
 # entry point
 # =============================================================================================
 def state_fns(sk: Skeleton, s: FPSet) -> dict:
-    """``{clip: f -> State}`` for every clip of the set (errors name the set and its clip lengths)."""
+    """``{clip: f -> State}`` for every clip of the set (errors name the set and its clip lengths). The gun
+    ``bash`` (D2-04, ``_arms_melee.bash_fn``) is layered on the set's own idle for every gun set; the
+    non-gun sets (melee, throwable, deployables) are ``_arms_items``."""
     try:
-        return _state_fns(sk, s)
+        if s.support in ("melee", "throw", "deploy"):
+            from _arms_items import item_fns  # noqa: PLC0415 - imports this module
+            return item_fns(sk, s)
+        if "bash" not in s.clips:
+            return _state_fns(sk, s)
+        import dataclasses  # noqa: PLC0415
+
+        from _arms_melee import bash_fn  # noqa: PLC0415 - imports this module
+        out = _state_fns(sk, dataclasses.replace(s, clips={c: r for c, r in s.clips.items() if c != "bash"}))
+        out["bash"] = bash_fn(sk, s, out["idle"], s.frames("bash"), s.ev("bash"))
+        return out
     except ValueError as e:
         lengths = {c: s.frames(c) for c in s.clips}
         raise ValueError(f"{s.name} (clip frames {lengths}): {e}") from e
