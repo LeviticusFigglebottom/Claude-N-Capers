@@ -292,9 +292,6 @@ func test_clip_lengths_follow_the_weapon_data() -> void:
 			pairs["reload_empty"] = "reload_time_s"
 		if DATA_PENDING.has(set_name) and _weapon_times(set_name, "reload_time_s").is_empty():
 			continue
-		# LEAD (B4-12): ENV B's batch-2 data landed; ENV D rebuilds the akimbo/revolver clips to it. Re-enable then.
-		if set_name in ["akimbo", "revolver"]:
-			continue
 		for clip: String in pairs:
 			var times: Array[float] = _weapon_times(set_name, pairs[clip])
 			assert_true(not times.is_empty(), "a weapon uses anim_set %s" % set_name)
