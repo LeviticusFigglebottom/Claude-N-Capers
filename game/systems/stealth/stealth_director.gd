@@ -361,6 +361,8 @@ func _fill_rate(st: StealthObserverState, crew: CrewController, eye: Vector3, fw
 ## civilians never; others only in RESTRICTED or within casing_too_close_m of a guard observer
 ## (not inside PUBLIC unless casing_too_close_applies_in_public), at casing_rate_mult.
 func _rule_mult(st: StealthObserverState, crew: CrewController) -> float:
+	if crew.civilian:
+		return 0.0  # S1.3: civilians are undetectable (laser grids still trip)
 	if crew.masked:
 		return Modifiers.mult(crew.slot, &"stealth.detection_rate_mult")
 	if st.kind == Enums.ObserverKind.CIVILIAN:

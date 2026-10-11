@@ -154,8 +154,21 @@ func bring_up() -> Dictionary:
 		"difficulty": rt.difficulty, "map_scene": rt.map.scene_file_path, "variants": rt.variants.duplicate(true),
 		"map_ids": map_ids, "crew_ids": crew_ids, "phase": int(rt.phase), "went_loud": rt.went_loud,
 		"heist_time_s": rt.heist_time_s, "preplan": rt.preplan.result.duplicate(true) if rt.preplan.is_active() else {},
-		"runtime_path": String(rt.get_path()), "snapshot": snap,
+		"runtime_path": String(rt.get_path()), "snapshot": snap, "launch_options": public_options(rt.launch_options),
 	}
+
+
+## D-062: the network-safe part of launch options (String/StringName/number/bool values; no resources,
+## callables or loadouts) that every peer shares, e.g. "music_track".
+static func public_options(opts: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for k: Variant in opts:
+		if k == "bring_up":
+			continue
+		var v: Variant = opts[k]
+		if v is String or v is StringName or v is int or v is float or v is bool:
+			out[k] = v
+	return out
 
 
 ## Client: apply the bring-up snapshot (after the map ids were adopted).
