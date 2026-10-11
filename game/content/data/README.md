@@ -321,7 +321,9 @@ parts (B4-18, visual_slots round 6): `Slide` (Wren), `FeedCover` (Gale, D-044), 
 origin = hinge pin below the bore, a negative rotation about local X drops the muzzle; barrels, Muzzle,
 BarrelMount, the chamber Magwell, Underbarrel and LeftHandIK ride on it), `Lever` (Shrike; origin = lever
 pivot, a positive rotation about local X drops the loop), `StringUpper`/`StringLower` (Thorn; origins on
-the cam axles), `String` (Vise; origin = the latch), `Blade` (Rotor Saw; empty on the spindle, the blade
+the cam axles; also Vise: two halves on the limb-tip axles, rest = relaxed, latched = Upper -18.74° /
+Lower +18.74° about local X and ×1.305 along local Y, meeting on the nock), `Speedloader` (Marshal; at
+the closed cylinder's Magwell, hidden at rest by WeaponVisual), `Blade` (Rotor Saw; empty on the spindle, the blade
 Magwell rides on it), `Rotor` (Cyclone; empty on the bore axis carrying BarrelMount and the cluster) and
 `PilotLight` (Furnace; emissive igniter under the nozzle). Projectile magazines: the arrow/bolt sits on
 `Magwell` at the nock with its insertion axis forward; the break actions' `Magwell` is at the chamber mouth
