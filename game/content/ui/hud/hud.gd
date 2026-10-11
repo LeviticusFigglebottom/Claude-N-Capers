@@ -12,6 +12,8 @@
 ## Accessibility (B5-01): widget colours come from the active HudPalette (GameSettings
 ## `accessibility/palette`, HudPaletteSet.active_tweak) and the corner widgets scale with
 ## `accessibility/hud_scale`; both follow GameSettings.changed live (apply_accessibility()).
+## B6-02: `scoreboard` (ScoreboardOverlay) shows the per-crew tally while the `scoreboard` action is held
+## (or toggled, `controls/scoreboard_mode`), from the model's `crew_stats` (content/docs/scoreboard.md).
 ## No hard dependency on ENV A classes (duck-typed get() + signals by name). Layout is anchored for 1280x720 .. 3840x2160 (canvas_items
 ## stretch at the 1920x1080 base).
 class_name Hud
@@ -47,6 +49,8 @@ var status: StatusPanel
 var custody: CustodyPanel
 var captain: CaptainPanel
 var stamina: StaminaBar
+## B6-02 Tab scoreboard (hold / toggle the `scoreboard` action).
+var scoreboard: ScoreboardOverlay
 var toast_label: Label
 var secured_bags: int = 0
 var _lookup_t: float = 0.0
@@ -78,7 +82,8 @@ func bind(m: Node) -> void:
 
 
 func widgets() -> Array[HudWidget]:
-	return [chevrons, marks, interaction, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina]
+	return [chevrons, marks, interaction, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina,
+			scoreboard]
 
 
 func _build() -> void:
@@ -101,6 +106,9 @@ func _build() -> void:
 	status = _place(StatusPanel.new(), Control.PRESET_TOP_RIGHT, Vector2(-448, 48), Vector2(400, 180)) as StatusPanel
 	custody = _place(CustodyPanel.new(), Control.PRESET_CENTER, Vector2(-300, -200), Vector2(600, 130)) as CustodyPanel
 	captain = _place(CaptainPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-260, 104), Vector2(520, 84)) as CaptainPanel
+	var board: ScoreboardOverlay = ScoreboardOverlay.new()
+	board.settings = settings
+	scoreboard = _place(board, Control.PRESET_CENTER, Vector2(-500, -240), Vector2(1000, 480)) as ScoreboardOverlay
 	toast_label = UiBuild.label(&"", UiBuild.HUD_BIG)
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(toast_label, Control.PRESET_CENTER, Vector2(-500, -260), Vector2(1000, 60))
