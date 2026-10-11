@@ -16,6 +16,8 @@ class_name WeaponVisual
 extends Node3D
 
 ## Contract markers every weapon model carries (visual_slots.md).
+## Parts that are hidden until ENV A shows them (reload props).
+const HIDDEN_AT_REST: Array[StringName] = [&"Speedloader"]
 const MARKERS: Array[StringName] = [
 	&"Muzzle", &"Eject", &"SightRail", &"Magwell", &"Underbarrel", &"SideRail", &"StockMount",
 	&"GripMount", &"BarrelMount", &"LeftHandIK",
@@ -57,6 +59,7 @@ func setup(def: WeaponDef, mods: Array[WeaponModDef]) -> void:
 	model = def.model.instantiate() as Node3D
 	model.name = &"Model"
 	add_child(model)
+	_hide_reload_props(model)
 	var hand: Node3D = model.find_child(String(OFFHAND_MARKER), true, false) as Node3D
 	if hand != null:
 		offhand = def.model.instantiate() as Node3D
@@ -66,6 +69,15 @@ func setup(def: WeaponDef, mods: Array[WeaponModDef]) -> void:
 	for mod: WeaponModDef in mods:
 		if mod != null:
 			_equip(mod)
+
+
+## Reload-only parts (visual_slots D-053: the revolver `Speedloader`) start hidden; ENV A shows them
+## during the reload. glTF has no visibility flag, so the visual hides them after instancing.
+static func _hide_reload_props(root: Node3D) -> void:
+	for n: StringName in HIDDEN_AT_REST:
+		var part: Node3D = root.find_child(String(n), true, false) as Node3D
+		if part != null:
+			part.visible = false
 
 
 ## Convenience: resolve ids through ContentDB.

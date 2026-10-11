@@ -67,16 +67,14 @@ func test_marshal_speedloader_seated_on_the_chambers() -> void:
 	v.queue_free()
 
 
-## D-053: the speedloader is hidden until a reload shows it. glTF carries no visibility flag and the pipeline has
-## no hidden-node mechanism yet, so this skips until the imported/instanced model hides it.
+## D-053: the speedloader is hidden until a reload shows it (WeaponVisual hides HIDDEN_AT_REST parts on setup;
+## glTF carries no visibility flag).
 func test_marshal_speedloader_hidden_by_default() -> void:
 	var v: WeaponVisual = _marshal()
 	var loader: Node3D = v.model.find_child("Speedloader", true, false) as Node3D
 	assert_true(loader != null, "Speedloader node")
-	if loader != null and loader.visible:
-		v.queue_free()
-		skip("no hidden-by-default mechanism for model nodes yet (pipeline / WeaponVisual): Speedloader is visible")
-		return
+	if loader != null:
+		assert_false(loader.visible, "hidden at rest")
 	v.queue_free()
 
 

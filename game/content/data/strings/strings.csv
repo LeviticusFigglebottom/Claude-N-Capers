@@ -2294,3 +2294,4 @@ ui.jukebox.locked,Locked
 ui.jukebox.locked_rank,Locked: Notoriety {rank}
 ui.jukebox.idle,Nothing playing.
 ui.jukebox.now_playing,Now playing: {name}
+music.dockside_burn.name,Cold Storage
