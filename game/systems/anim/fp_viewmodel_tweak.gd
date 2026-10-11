@@ -41,6 +41,23 @@ static var _gen: int = 0
 ## Frames a part takes to reach the position its event names (the ramp ends on the event frame).
 @export var part_ramp_frames: float = 3.0
 
+@export_group("Special parts (B4-18, D-055)")
+## WeaponPartsAnimator (◇ presentation): `Breech` opens about local X during a reload.
+@export var breech_open_deg: float = 40.0
+@export var breech_ramp_s: float = 0.15
+## `Lever` throw about local X after each shot, over `lever_cycle_s`.
+@export var lever_throw_deg: float = 55.0
+@export var lever_cycle_s: float = 0.35
+## Bow `StringUpper`/`StringLower` limb flex about local X at full draw; `String` travel along +Z at full draw.
+@export var bow_limb_deg: float = 10.0
+@export var string_draw_m: float = 0.12
+## `Arrow` / bolt on the Magwell hidden this long after a shot (until the next one is nocked).
+@export var arrow_hidden_s: float = 0.3
+## `Blade` spin (rev/s) while firing / idle; `Rotor` spin at full minigun spin.
+@export var blade_rps_firing: float = 14.0
+@export var blade_rps_idle: float = 1.0
+@export var rotor_rps_max: float = 9.0
+
 @export_group("Timing")
 ## Crossfade between idle / ads_idle / sprint.
 @export var blend_s: float = 0.15

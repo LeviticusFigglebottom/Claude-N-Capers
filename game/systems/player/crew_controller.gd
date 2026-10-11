@@ -314,6 +314,8 @@ func _simulate(delta: float) -> void:
 	elif sprinting:
 		speed = tw.sprint_speed
 	speed *= Modifiers.mult(slot, &"movement.speed_mult")
+	if weapons != null:  # B4-18: minigun spinning (SpecialWeapons params.spin.move_speed_mult)
+		speed *= weapons.move_speed_mult
 	if armor_def != null:  # QB-56: armor move-speed penalty x movement.armor_penalty_mult
 		speed *= clampf(1.0 - (1.0 - armor_def.move_speed_mult) * Modifiers.mult(slot, &"movement.armor_penalty_mult"), 0.1, 1.0)
 	if bag_w >= 0 and not Modifiers.flag(slot, &"stealth.body_bag_concealed_carry"):

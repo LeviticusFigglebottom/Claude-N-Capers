@@ -34,6 +34,9 @@ class WeaponState:
 	var mag: int = 0
 	var reserve: int = 0
 	var mag_size: int = 0
+	## B4-18: merged WeaponDef/WeaponModDef params (SpecialWeapons) and the resulting kind.
+	var special: Dictionary = {}
+	var kind: StringName = &""
 
 ## Equipped Enums.WeaponSlot (HUD).
 var equipped_slot: int = Enums.WeaponSlot.SECONDARY
@@ -60,6 +63,11 @@ var involuntary_fire: bool = false:
 			involuntary_pitch_up_deg = 0.0
 var involuntary_spread_mult: float = 1.0
 var involuntary_pitch_up_deg: float = 0.0
+## B4-18 (presentation + HUD): bow draw 0..1 while the trigger is held, minigun spin 0..1.
+var charge: float = 0.0
+var spin: float = 0.0
+## B4-18: CrewController multiplies its move speed by this (minigun spinning: params.spin.move_speed_mult).
+var move_speed_mult: float = 1.0
 
 var _crew: CrewController = null
 var _states: Dictionary[int, WeaponState] = {}
@@ -71,6 +79,7 @@ var _seq: int = 0
 var _server_clock: float = 0.0
 var _last_server_shot_clock: float = -INF
 var _last_server_seq: int = 0
+var _drawing: bool = false
 
 
 func _ready() -> void:
@@ -110,15 +119,16 @@ func set_loadout(l: Loadout) -> void:
 	_states.clear()
 	if l != null:
 		deployable_id = l.deployable  # A2-06: HUD fallback until DeployableSystem syncs
-		_add_state(Enums.WeaponSlot.PRIMARY, l.primary, l.resolved_primary)
-		_add_state(Enums.WeaponSlot.SECONDARY, l.secondary, l.resolved_secondary)
+		_add_state(Enums.WeaponSlot.PRIMARY, l.primary, l.resolved_primary, l.primary_mods)
+		_add_state(Enums.WeaponSlot.SECONDARY, l.secondary, l.resolved_secondary, l.secondary_mods)
 	equipped_slot = Enums.WeaponSlot.PRIMARY if _states.has(Enums.WeaponSlot.PRIMARY) else Enums.WeaponSlot.SECONDARY
 	reloading = false
 	_equip_left = 0.0
 	_cooldown = 0.0
+	_reset_special()
 
 
-func _add_state(ws: int, id: StringName, st: WeaponStats) -> void:
+func _add_state(ws: int, id: StringName, st: WeaponStats, mods: Array[StringName] = []) -> void:
 	if id == &"" or st == null:
 		return
 	var s: WeaponState = WeaponState.new()
@@ -126,6 +136,8 @@ func _add_state(ws: int, id: StringName, st: WeaponStats) -> void:
 	s.def = ContentDB.weapon(id)
 	s.stats = st
 	s.qualifier = Enums.weapon_class_qualifier(s.def.weapon_class) if s.def != null else &"pistol"
+	s.special = SpecialWeapons.params_of(s.def, mods)
+	s.kind = SpecialWeapons.kind_of(s.special)
 	var slot: int = _crew.slot if _crew != null else -1
 	s.mag_size = maxi(st.mag_size + int(Modifiers.add(slot, &"weapon.mag_extra", s.qualifier)), 1)
 	var total: int = int(round(float(st.total_ammo) * Modifiers.mult(slot, &"weapon.ammo_total_mult", s.qualifier)))
@@ -285,6 +297,7 @@ func equip(ws: int) -> bool:
 	equipped_slot = ws
 	reloading = false
 	reload_left = 0.0
+	_reset_special()
 	var s: WeaponState = _states[ws]
 	_equip_left = s.stats.equip_time_s / maxf(Modifiers.mult(_crew.slot, &"weapon.swap_speed_mult", s.qualifier), 0.01)
 	equipped_changed.emit(ws)
@@ -324,9 +337,11 @@ func _finish_reload() -> void:
 
 
 func _try_fire(intent: CrewIntent) -> void:
+	var s: WeaponState = _states.get(equipped_slot)
+	if s != null and not s.special.is_empty() and not _special_gate(s, intent):
+		return
 	if not intent.fire:
 		return
-	var s: WeaponState = _states.get(equipped_slot)
 	if s == null or not can_fire() or _equip_left > 0.0:
 		return
 	var auto: bool = s.def != null and s.def.fire_modes.has(&"auto")
@@ -339,6 +354,10 @@ func _try_fire(intent: CrewIntent) -> void:
 		if pressed:
 			start_reload()  # PD2: dry trigger starts a reload
 		return
+	_fire_shot(s, intent)
+
+
+func _fire_shot(s: WeaponState, intent: CrewIntent) -> void:
 	var claim: Dictionary = _build_claim(s, intent)
 	var interval: float = 60.0 / maxf(s.stats.fire_rate_rpm, 1.0)
 	_cooldown = maxf(_cooldown, -get_physics_process_delta_time()) + interval
@@ -352,6 +371,51 @@ func _try_fire(intent: CrewIntent) -> void:
 		last_shot_age = 0.0
 		ammo_changed.emit(equipped_slot)
 		_rpc_hit_claim.rpc_id(1, _strip_objects(claim))
+
+
+## B4-18 (SpecialWeapons): bow draw / minigun spin / saw contact before the normal trigger logic.
+## Returns true when the normal fire path should run this tick.
+func _special_gate(s: WeaponState, intent: CrewIntent) -> bool:
+	var dt: float = get_physics_process_delta_time()
+	var ready: bool = can_fire() and _equip_left <= 0.0 and not reloading
+	var sp: Dictionary = SpecialWeapons.block(s.special, "spin")
+	if not sp.is_empty():
+		var up: bool = intent.fire and ready and s.mag > 0
+		var rate: float = 1.0 / maxf(float(sp.get("spin_up_s" if up else "spin_down_s", 0.5)), 0.01)
+		spin = clampf(spin + (rate if up else -rate) * dt, 0.0, 1.0)
+		move_speed_mult = float(sp.get("move_speed_mult", 1.0)) if spin > 0.0 else 1.0
+		if spin < 1.0 and s.mag > 0:
+			return false
+	if s.def != null and s.def.fire_modes.has(&"charge"):
+		return _charge_gate(s, intent, ready, dt)
+	if s.kind == SpecialWeapons.KIND_SAW and intent.fire and s.mag > 0:
+		return SpecialWeapons.saw_has_contact(_crew, _crew.eye_position(), _crew.aim_direction(), s.special)
+	return true
+
+
+## Bow: hold to draw (charge 0..1 over draw_time_s), release to loose at the reached draw.
+func _charge_gate(s: WeaponState, intent: CrewIntent, ready: bool, dt: float) -> bool:
+	if s.mag <= 0:
+		charge = 0.0
+		return true  # dry trigger -> reload via the normal path
+	if intent.fire and ready:
+		var draw: float = SpecialWeapons.draw_time(s.special)
+		charge = 1.0 if draw <= 0.0 else minf(charge + dt / draw, 1.0)
+		_drawing = true
+		return false
+	if _drawing and not intent.fire and ready and _cooldown <= 0.0:
+		_fire_shot(s, intent)
+	if not intent.fire:
+		_drawing = false
+		charge = 0.0
+	return false
+
+
+func _reset_special() -> void:
+	charge = 0.0
+	spin = 0.0
+	move_speed_mult = 1.0
+	_drawing = false
 
 
 ## A3-01a (L4.4): tased auto-fire (server): max RPM regardless of fire mode, auto-reload when empty.
@@ -386,14 +450,15 @@ func _build_claim(s: WeaponState, intent: CrewIntent) -> Dictionary:
 		if right.length() > 0.001:
 			fwd = fwd.rotated(right.normalized(), deg_to_rad(involuntary_pitch_up_deg)).normalized()
 	var hits: Array[Dictionary] = []
-	for p: int in range(maxi(s.stats.pellets, 1)):
+	# B4-18: flame / saw / projectile shots carry no hits (the server derives them).
+	for p: int in range(maxi(s.stats.pellets, 1) if s.kind == SpecialWeapons.KIND_HITSCAN else 0):
 		var dir: Vector3 = _spread_dir(fwd, _spread_deg(s, intent) * (involuntary_spread_mult if involuntary_fire else 1.0))
 		var h: Dictionary = _hitscan(origin, dir, tw, s.stats.wall_pierce)
 		if not h.is_empty():
 			hits.append(h)
 	return {
 		"seq": _seq, "weapon_slot": equipped_slot, "weapon_id": s.id, "origin": origin, "direction": fwd,
-		"muzzle": _muzzle_position(), "hits": hits,
+		"muzzle": _muzzle_position(), "hits": hits, "charge": charge if _drawing else 1.0,
 	}
 
 
@@ -545,6 +610,10 @@ func server_commit_shot(claim: Dictionary) -> void:
 		_finish_reload()  # the owning client finished its reload before our mirrored timer did
 	var ws: int = int(claim.get("weapon_slot", equipped_slot))
 	var s: WeaponState = _states[ws]
+	if s.def != null and s.def.fire_modes.has(&"charge"):  # B4-18: no fuller draw than the time since the last shot
+		var draw: float = SpecialWeapons.draw_time(s.special)
+		var cap: float = 1.0 if draw <= 0.0 else (_server_clock - _last_server_shot_clock) / (draw * CombatTweak.data().claim_rof_tolerance)
+		claim["charge"] = clampf(float(claim.get("charge", 1.0)), 0.0, minf(cap, 1.0))
 	s.mag -= 1
 	_last_server_seq = int(claim.get("seq", 0))
 	_last_server_shot_clock = _server_clock
