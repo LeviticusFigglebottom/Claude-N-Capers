@@ -28,6 +28,9 @@ const FAIL_ABORT: StringName = &"abort"
 ## A3-09: GUARD SpawnPoints carrying this tag are not spawned at load; HeistMission.spawn_guards()
 ## spawns them later (timed mission events, e.g. the armoured car's guards).
 const SCRIPTED_SPAWN_TAG: StringName = &"scripted"
+## S1.3 start modes (HeistDef.start_mode / options["start_mode"]).
+const START_CASING: StringName = &"casing"
+const START_CIVILIAN: StringName = &"civilian"
 
 static var _current: HeistRuntime = null
 
@@ -41,6 +44,8 @@ var difficulty_def: DifficultyDef = null
 var options: Dictionary = {}
 ## D-062 (read-only): the options passed to HeistLauncher.launch() / launch_client(). On a replica the host's
 ## network-safe options (bring-up `launch_options`, e.g. "music_track") override the client's own.
+## S1.3: &"casing" (default) or &"civilian": options["start_mode"], else HeistDef.start_mode.
+var start_mode: StringName = START_CASING
 var launch_options: Dictionary:
 	get:
 		return _launch_options
@@ -176,6 +181,9 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	elif bool(options.get("skip_casing", false)):
 		_set_phase(Enums.HeistPhase.STEALTH)
 	else:
+		start_mode = _resolve_start_mode()
+		for slot: int in _crew:  # S1.3: civilian-start heists begin without gear
+			_crew[slot].civilian = start_mode == START_CIVILIAN
 		_set_phase(Enums.HeistPhase.CASING)
 	EventBus.heist_loaded.emit(heist_id, run_seed, variants)
 	# A3-07: clients emit heist_loaded themselves once their replica is built (_start_replica), so the
@@ -183,6 +191,11 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	if mission != null:
 		mission._on_mission_start()
 	return true
+
+
+func _resolve_start_mode() -> StringName:
+	var m: Variant = options.get("start_mode", map.heist_def.get(&"start_mode") if map.heist_def != null else null)
+	return START_CIVILIAN if m != null and StringName(m) == START_CIVILIAN else START_CASING
 
 
 # --- Co-op replica (A3-07, docs/contracts/net.md, heist/README.md "Co-op") -----------------------

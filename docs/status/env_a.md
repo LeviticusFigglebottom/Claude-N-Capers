@@ -3,6 +3,22 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11 04:00 UTC: D-062 launch_options, D-063 reload range, S1.3 civilian mode, fixes
+### Done
+- D-062: `HeistRuntime.launch_options` (read-only; the network-safe part travels in the bring-up, and the host's values win on replicas). The loopback test checks `music_track`.
+- D-063: `FpViewmodel.shared_reload_ratio_ok` / FpViewmodelTweak `reload_scale_min/max` (0.75–1.35, clip length / reload time). One error per weapon+clip. Out of range today: furnace_ft (×0.50/0.51), cyclone_rotary reload_empty (×0.73).
+- S1.3 civilian mode (B5-05):
+  - `CrewController.civilian` / `player_mode` / `civilian_changed`; `HeistRuntime.start_mode` (options["start_mode"], else HeistDef.start_mode read defensively).
+  - Civilians are undetectable, can't mask up or fire, and use only `civilian_allowed` interactables. Masking (alarm) ends civilian mode.
+  - New `gear_pickup` prefab (kind pick_up_gear, item_picked_up(&"item.gear", slot), not consumed).
+  - LocalHudModel `player_mode` / `player_mode_changed` and `crew[].mode` (ui_hud v1.6 proposal); replicated (`civ`). Tests: test_s1_3_civilian_mode.gd (5).
+- Alarm while casing goes straight CASING → LOUD; the armor bag uses ui.prompt.use_armor_bag.
+### Questions for lead
+- QA-35 (S1.3 contracts): HeistDef.start_mode, ui_hud v1.6 player_mode + crew[].mode, gameplay_prefabs gear_pickup + `civilian_allowed`. Strings for ENV B: the gear prompt and the civilian block reason. Until they land I use ui.prompt.interact / ui.blocked.state.
+- AI teammates never pick up gear: they stay civilian until an alarm (OK for P5?).
+### Ready for integration
+- yes after the clean-worktree check_all (result in the lead message)
+
 ## 2026-10-11 UTC: P4 queue (QB-L2, QB-56..62, D-049/D-052/D-056), FP viewmodel, B4-18 special weapons runtime
 ### Done (85f2246, 91009d7, be70339, 855c8f0, 31939a5, 388d48b, c90a3e3, + B4-18 commit)
 - D-049/D-052: `crew_tase_ended`, replicated HUD captain fields, `HeistLauncher.launch_client` (null on host loss / connection failure), damage v1.1 flags, canonical EnemyDef armour params.

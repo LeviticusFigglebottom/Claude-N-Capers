@@ -18,6 +18,9 @@ const BLOCK_PHASE: StringName = &"ui.blocked.phase"
 const BLOCK_BUSY: StringName = &"ui.blocked.busy"
 const BLOCK_DISABLED: StringName = &"ui.blocked.disabled"
 const BLOCK_STATE: StringName = &"ui.blocked.state"
+## S1.3: a civilian (no gear) uses only `civilian_allowed` interactables. TODO(ENV B): its own blocked string
+## (".blocked.civilian") once it is in strings.csv; until then the generic state string.
+const BLOCK_CIVILIAN: StringName = BLOCK_STATE
 
 ## Interaction kind for events/HUD (&"lockpick", &"answer_pager", &"bag_body", &"take_loot"...).
 @export var kind: StringName = &"use"
@@ -29,6 +32,8 @@ const BLOCK_STATE: StringName = &"ui.blocked.state"
 @export var stealth_only: bool = false
 @export var loud_only: bool = false
 @export var casing_allowed: bool = false
+## S1.3: usable in civilian mode (gear pickup; ENV C may flag other prefab instances per map).
+@export var civilian_allowed: bool = false
 ## Noise profile id (InteractionTweak.noise_profiles) emitted when the interaction starts.
 @export var noise: StringName = &"silent"
 ## Strings-table key for the HUD prompt (ui_hud.md).
@@ -91,6 +96,8 @@ func _phase_block() -> StringName:
 func _crew_block(crew: Node) -> StringName:
 	if int(crew.get(&"crew_state")) != Enums.CrewState.NORMAL:
 		return BLOCK_STATE
+	if crew.get(&"civilian") == true and not civilian_allowed:
+		return BLOCK_CIVILIAN
 	if not casing_allowed and not bool(crew.get(&"masked")):
 		return BLOCK_CASING
 	if not allowed_with_bag and crew.call(&"is_carrying_bag"):
