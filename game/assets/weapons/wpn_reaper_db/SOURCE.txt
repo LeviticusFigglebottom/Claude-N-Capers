@@ -1,0 +1,10 @@
+asset: wpn_reaper_db
+script: tools/blender/weapons/reaper_db.py
+params: {}
+seed: 2475722045  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category weapons --asset wpn_reaper_db
+edit policy: generated file, never edit by hand; change the script and rebuild
+origin: firing-hand pivot: wrist centre plane, mid grip depth, 20 mm below the wrist top
+tri_budget: 25000
+tris_lod0: 3844

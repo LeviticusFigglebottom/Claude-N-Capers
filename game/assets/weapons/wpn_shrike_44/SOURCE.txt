@@ -1,0 +1,10 @@
+asset: wpn_shrike_44
+script: tools/blender/weapons/shrike_44.py
+params: {}
+seed: 659302781  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category weapons --asset wpn_shrike_44
+edit policy: generated file, never edit by hand; change the script and rebuild
+origin: firing-hand pivot: wrist centre plane, mid grip depth, 20 mm below the wrist top
+tri_budget: 25000
+tris_lod0: 3152

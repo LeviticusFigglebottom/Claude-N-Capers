@@ -1,0 +1,60 @@
+[gd_resource type="Resource" script_class="WeaponDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://bnter67l51dyw" path="res://assets/weapons/wpn_thorn_bow/wpn_thorn_bow.glb" id="3"]
+
+[sub_resource type="Resource" id="base"]
+script = ExtResource("2")
+damage = 400.0
+pellets = 1
+headshot_mult = 1.0
+fire_rate_rpm = 60.0
+spread_deg_hip = 6.0
+spread_deg_ads = 0.4
+recoil_kick_deg = 0.5
+recoil_horizontal_deg = 0.2
+falloff_start_m = 9999.0
+falloff_end_m = 9999.0
+falloff_min_mult = 1.0
+mag_size = 1
+total_ammo = 30
+reload_time_s = 0.8
+reload_empty_time_s = 0.8
+equip_time_s = 0.6
+ads_time_s = 0.35
+concealment = 26
+armor_pierce = 0.0
+shield_pierce = false
+wall_pierce = false
+suppression = 0.0
+ammo_pickup_min = 0.5
+ammo_pickup_max = 1.0
+suppressed = true
+noise_radius_m = 0.5
+magnification = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"weapon.thorn_bow"
+display_name = "Thorn Compound Bow"
+manufacturer = "Brannock Defense"
+weapon_class = 6
+slot = 0
+fire_modes = Array[StringName]([&"semi"])
+base = SubResource("base")
+price = 50000
+unlock_level = 25
+mod_slots = {
+3: [&"mod.thorn_pin_sight", &"mod.thorn_five_pin_sight"],
+5: [&"mod.thorn_stabilizer"],
+7: [&"mod.thorn_arrow", &"mod.thorn_broadhead_arrow"]
+}
+default_mods = {
+3: &"mod.thorn_pin_sight",
+7: &"mod.thorn_arrow"
+}
+fire_cue = &"cue.weapon_bow_fire"
+fire_cue_suppressed = &""
+anim_set = &"bow"
+model = ExtResource("3")
