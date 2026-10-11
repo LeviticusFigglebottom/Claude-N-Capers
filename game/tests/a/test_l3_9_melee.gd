@@ -116,3 +116,21 @@ func test_no_melee_while_casing_and_knockdown() -> void:
 	await _swing(c, CombatSystem.target_center(n), ContentDB.melee(&"melee.folding_knife").charge_time_s + 0.2)
 	assert_eq(_melee_hits(n).size(), 2, "charged hit")
 	assert_true(n.is_stunned(), "charged knockdown (MeleeDef.knockdown x weapon.melee_knockdown_mult)")
+
+
+func test_infiltrator_chain_on_real_swings() -> void:
+	var c: CrewController = await _launch(&"melee.folding_knife")
+	c.set_masked()
+	Modifiers.set_source(0, &"perk", {&"perk.infiltrator": {"melee_chain_mult": 3.0, "melee_chain_window_s": 5.0,
+		"melee_hit_heal_fraction": 0.0, "melee_hit_heal_cooldown_s": 10.0}})
+	var knife: MeleeDef = ContentDB.melee(&"melee.folding_knife")
+	var n: NpcBase = _target()
+	await wait_physics_frames(2)
+	await _swing(c, CombatSystem.target_center(n), 0.05)
+	await _swing(c, CombatSystem.target_center(n), 0.05)
+	var hits: Array[Dictionary] = _melee_hits(n)
+	assert_eq(hits.size(), 2)
+	if hits.size() == 2:
+		assert_near(float(hits[1]["amount"]), knife.damage * 3.0, 0.5, "perk.infiltrator: the chained hit x3 (PerkHooks)")
+	await _swing(c, Vector3(5, 1.5, 5), 0.05)  # a miss
+	assert_near(PerkHooks.melee_damage_mult(c), 1.0, 0.001, "a miss resets the chain")
