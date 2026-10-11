@@ -74,8 +74,10 @@ def _no_aslr() -> tuple[str, ...]:
 
 def run_blender(blender: str, script: pathlib.Path, out_root: pathlib.Path, ids: list[str],
                 verbose: bool) -> tuple[pathlib.Path, int, str]:
-    cmd = [*_no_aslr(), blender, "-b", "--factory-startup", "--python-exit-code", "1", "--python", str(RUNNER),
-           "--", str(script), str(out_root), *ids]
+    # --threads 1: multithreaded tangent calculation adds ~1e-7 float noise that flips the glTF
+    # exporter's 4-decimal rounding of normals/tangents in ~1 of 4 builds (ENV D root cause).
+    cmd = [*_no_aslr(), blender, "--threads", "1", "-b", "--factory-startup", "--python-exit-code", "1",
+           "--python", str(RUNNER), "--", str(script), str(out_root), *ids]
     env = dict(os.environ, PYTHONHASHSEED="0", TZ="UTC", LC_ALL="C")
     proc = subprocess.run(cmd, capture_output=True, text=True, env=env, check=False)
     log = proc.stdout + proc.stderr

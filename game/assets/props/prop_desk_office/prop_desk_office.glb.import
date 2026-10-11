@@ -41,15 +41,15 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "materials": {
-"M_pr_metal_dark": {
-"use_external/enabled": true,
-"use_external/fallback_path": "res://world/props/materials/pr_metal_dark.tres",
-"use_external/path": "res://world/props/materials/pr_metal_dark.tres"
-},
 "M_pr_metal_grey": {
 "use_external/enabled": true,
 "use_external/fallback_path": "res://world/props/materials/pr_metal_grey.tres",
 "use_external/path": "res://world/props/materials/pr_metal_grey.tres"
+},
+"M_pr_powder_charcoal": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_powder_charcoal.tres",
+"use_external/path": "res://world/props/materials/pr_powder_charcoal.tres"
 },
 "M_pr_wood_oak": {
 "use_external/enabled": true,

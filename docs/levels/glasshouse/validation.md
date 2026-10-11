@@ -11,7 +11,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | cameras | PASS | 0 | 0 |
 | floating | PASS | 0 | 0 |
 | clipping | PASS | 0 | 0 |
-| orientation | PASS | 0 | 1 |
+| orientation | PASS | 0 | 0 |
 | scale | PASS | 0 | 0 |
 | navmesh | PASS | 0 | 0 |
 | reachability | PASS | 0 | 0 |
@@ -31,22 +31,21 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## cameras: Review camera placement
 
-- 21 perspective review camera(s) checked
+- 22 perspective review camera(s) checked
 
 
 ## floating: Nothing floats
 
-- 384 props checked
+- 388 props checked
 
 
 ## clipping: Nothing clips
 
-- 384 props, 23 doors checked
+- 388 props, 23 doors checked
 
 
 ## orientation: Flush and oriented
 
-- WARN `Props/U5/Monitor_2` @ (4.34, 4.94, 9.17): monitor without a `faces` link (should face its chair/seating)
 
 ## scale: Human scale
 
@@ -78,7 +77,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 1344 polygons, cell 0.10/0.10 m
+- navmesh: 1343 polygons, cell 0.10/0.10 m
 - 141 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -97,10 +96,10 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomU3` | 26 | 26 | 100% |
 | `Rooms/RoomU4` | 70 | 70 | 100% |
 | `Rooms/RoomU8` | 16 | 16 | 100% |
-| `Rooms/RoomU5` | 69 | 69 | 100% |
+| `Rooms/RoomU5` | 71 | 71 | 100% |
 | `Rooms/RoomU6` | 39 | 39 | 100% |
 | `Rooms/RoomU7` | 36 | 36 | 100% |
-| `Rooms/RoomX1` | 556 | 554 | 100% |
+| `Rooms/RoomX1` | 552 | 552 | 100% |
 | `Rooms/RoomX3` | 347 | 347 | 100% |
 | `Rooms/RoomX2` | 739 | 739 | 100% |
 
@@ -129,17 +128,17 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 1440 surfaces checked
+- 1452 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 264328 triangles in 73469 plane bins
+- 267017 triangles in 75307 plane bins
 
 
 ## lights: Lighting is deliberate
 
-- 129 lights, 130 fixture meshes
+- 133 lights, 134 fixture meshes
 
 
 ## density: Dressing density
@@ -196,27 +195,28 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 953 | 531238 | 6 |
-| `TopDownBuilding` | 1005 | 529242 | 6 |
-| `ExtHarlowCorner` | 1056 | 558372 | 6 |
-| `ExtShopfront` | 1386 | 567660 | 6 |
-| `ExtAlleyWest` | 1267 | 564122 | 6 |
-| `ExtAlleyMouth` | 1274 | 530796 | 6 |
-| `ExtFireEscape` | 793 | 346238 | 3 |
-| `ExtPellFireExit` | 1299 | 534012 | 6 |
-| `SalesFloorEntrance` | 844 | 379220 | 4 |
-| `ChandelierLandmark` | 1008 | 411304 | 6 |
-| `CounterStaffDoor` | 418 | 243126 | 3 |
-| `SalonPrivate` | 1202 | 465994 | 6 |
-| `CorridorG4` | 1085 | 444888 | 6 |
-| `WorkshopSafe` | 175 | 69364 | 2 |
-| `ReceivingBackDoor` | 159 | 76570 | 2 |
-| `StairCore` | 266 | 90194 | 2 |
-| `UpperCorridor` | 894 | 350036 | 6 |
-| `SecurityOffice` | 423 | 162784 | 3 |
-| `BreakRoom` | 144 | 69730 | 2 |
-| `ManagerOffice` | 498 | 261280 | 5 |
-| `AdminOffice` | 327 | 180264 | 2 |
-| `StockRoom` | 793 | 391232 | 6 |
-| `GaragePerch` | 1202 | 567290 | 6 |
+| `TopDownSite` | 954 | 529474 | 6 |
+| `TopDownBuilding` | 1005 | 528498 | 6 |
+| `ExtHarlowCorner` | 1059 | 557664 | 6 |
+| `ExtShopfront` | 1396 | 567688 | 6 |
+| `ExtAlleyWest` | 1279 | 564174 | 6 |
+| `ExtAlleyMouth` | 1277 | 529782 | 6 |
+| `ExtFireEscape` | 801 | 345234 | 3 |
+| `ExtPellFireExit` | 1301 | 533040 | 6 |
+| `SalesFloorEntrance` | 853 | 378324 | 4 |
+| `ChandelierLandmark` | 1018 | 418582 | 6 |
+| `CounterStaffDoor` | 425 | 236962 | 3 |
+| `SalonPrivate` | 1213 | 472350 | 6 |
+| `CorridorG4` | 1093 | 443884 | 6 |
+| `WorkshopSafe` | 176 | 69364 | 2 |
+| `ReceivingBackDoor` | 163 | 77638 | 2 |
+| `StairCore` | 267 | 90194 | 2 |
+| `UpperCorridor` | 905 | 357970 | 6 |
+| `SecurityOffice` | 419 | 161854 | 3 |
+| `BreakRoom` | 148 | 70798 | 2 |
+| `ManagerOffice` | 503 | 259208 | 5 |
+| `AdminOffice` | 274 | 146776 | 2 |
+| `StockRoom` | 798 | 389664 | 6 |
+| `GaragePerch` | 1202 | 566546 | 6 |
+| `GarageRamp` | 40 | 33906 | 1 |
 

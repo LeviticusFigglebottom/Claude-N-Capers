@@ -549,17 +549,17 @@ func _bar(parent: Node3D, nm: String, a: Vector3, b: Vector3, size: Vector2, key
 	return root
 
 
-## Kessel yard fence, alley side: steel posts every 2.4 m and two rails over the sheet panels.
+## Kessel yard fence, alley side: light-painted posts every 2.4 m (read against the dark panels) and two rails.
 func _fence_detail(parent: Node3D) -> void:
 	var fd: Node3D = _add(parent, _node3d("KesselFenceDetail")) as Node3D
 	var x: float = -19.6
 	var i: int = 0
 	while x < 18.1:
-		_box(fd, "Post%02d" % i, Vector3(x - 0.05, 0.0, -6.2), Vector3(x + 0.05, 2.3, -6.12), "fence")
+		_box(fd, "Post%02d" % i, Vector3(x - 0.07, 0.0, -6.2), Vector3(x + 0.07, 2.3, -6.12), "fence_post")
 		x += 2.4
 		i += 1
 	for r: Array in [["RailLow", 0.15], ["RailHigh", 2.0]]:
-		_box(fd, String(r[0]), Vector3(-19.9, float(r[1]), -6.2), Vector3(18.1, float(r[1]) + 0.06, -6.17), "fence")
+		_box(fd, String(r[0]), Vector3(-19.9, float(r[1]), -6.2), Vector3(18.1, float(r[1]) + 0.06, -6.16), "fence_post")
 
 
 ## Neighbour garage (C1-08 review): the L2 -> L3 ramp with its upstand, railings on the open
