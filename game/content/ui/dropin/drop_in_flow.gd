@@ -50,6 +50,33 @@ static func apply_host_policy(tree: SceneTree, policy: StringName) -> void:
 	HeistDropIn.ensure(tree).policy = policy if LobbyState.POLICIES.has(policy) else LobbyState.POLICY_ASK
 
 
+## Lead ruling: the host's Options change of gameplay/dropin_policy also applies to a running heist right
+## away (PD2 hosts toggle drop-in mid-heist): the live HeistDropIn and the hosted lobby session follow it.
+static func apply_live_policy(tree: SceneTree, lobby_session: LobbySession, policy: StringName) -> bool:
+	if not LobbyState.POLICIES.has(policy) or not Net.is_authority():
+		return false
+	var applied: bool = false
+	var live: HeistDropIn = tree.root.get_node_or_null(HeistDropIn.NODE_NAME) as HeistDropIn
+	if live != null and HeistRuntime.current() != null:
+		live.policy = policy
+		applied = true
+	if lobby_session != null and lobby_session.is_active() and lobby_session.state.is_host \
+			and lobby_session.state.dropin_policy != policy:
+		applied = lobby_session.set_drop_in_policy(policy) or applied
+	return applied
+
+
+func _ready() -> void:
+	var gs: GameSettings = GameSettings.current()
+	if not gs.changed.is_connected(_on_setting_changed):
+		gs.changed.connect(_on_setting_changed)
+
+
+func _on_setting_changed(section: StringName, key: StringName) -> void:
+	if section == GameSettings.GAMEPLAY and key == &"dropin_policy" and is_inside_tree():
+		apply_live_policy(get_tree(), lobby, GameSettings.current().dropin_policy())
+
+
 ## Client: a DropInJoinScreen for `p_address`:`p_port` bound to this node (not added to the tree).
 func open(p_address: String, p_port: int, p: PlayerProfile, profile_slot: int) -> DropInJoinScreen:
 	_reset()

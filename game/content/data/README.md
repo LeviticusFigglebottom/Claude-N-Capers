@@ -121,18 +121,19 @@ P2/P3 loot above: a class band of LIGHT $1,000–2,000, MEDIUM $1,400–2,400, H
 heavier bag is worth more per bag. `pd2_research.md` lists no per-bag values, so no value is V.
 | id | weight | value | heist (proposed) | src |
 |---|---|---|---|---|
-| `loot.gold` | HEAVY | $2,800 | Meridian Federal vault, Rolling Thunder trucks | weight V (roadmap, PD2 gold is a heavy bag); value ◇ (top bag: above the $2,000 weapon crate, PD2 gold is the best-paying common bag) |
-| `loot.cash_bricks` (existing) | MEDIUM | $1,600 | Meridian Federal vault, Rolling Thunder trucks, Afterhours count room | the roadmap's "money MEDIUM" is this def; no new money def |
-| `loot.server_drives` | MEDIUM | $1,800 | Rolling Thunder (courier truck), Meridian Federal (optional) | weight V (roadmap); value ◇ (= `loot.ledger_drives`, same kind of bag) |
-| `loot.bearer_bonds` | LIGHT | $1,400 | Meridian Federal (vault cage) | weight V (roadmap); value ◇ (between cash $1,200 and the parcels) |
+| `loot.gold` | HEAVY | $2,800 | Ostrander Federal vault, Rolling Thunder trucks | weight V (roadmap, PD2 gold is a heavy bag); value ◇ (top bag: above the $2,000 weapon crate, PD2 gold is the best-paying common bag) |
+| `loot.cash_bricks` (existing) | MEDIUM | $1,600 | Ostrander Federal vault, Rolling Thunder trucks, Afterhours count room | the roadmap's "money MEDIUM" is this def; no new money def |
+| `loot.server_drives` | MEDIUM | $1,800 | Rolling Thunder (courier truck), Ostrander Federal (optional) | weight V (roadmap); value ◇ (= `loot.ledger_drives`, same kind of bag) |
+| `loot.bearer_bonds` | LIGHT | $1,400 | Ostrander Federal (vault cage) | weight V (roadmap); value ◇ (between cash $1,200 and the parcels) |
 | `loot.parcels` | LIGHT | $1,500 | Afterhours (back office) | weight V (roadmap "coke LIGHT"; PD2 carries it light); value ◇ (a LIGHT bag above cash, as PD2's product bags pay more than light cash). Display "Sealed Parcels": the tasteful analog, like `loot.contraband` (MEDIUM, Dockside's discounted product) |
+| `loot.painting_study` | LIGHT | $1,100 | Gallery Night (D-075) | weight: rolled canvas (LIGHT); value ◇ (a study for the Lantern Bearer, below the canvases) |
 | `loot.painting_tidewater_saint` | LIGHT | $1,300 | Gallery Night | weight V (PD2 cuts canvases from the frame and carries them rolled as a light bag); value ◇ |
 | `loot.painting_widow_in_blue` | LIGHT | $1,500 | Gallery Night | as above |
 | `loot.painting_salt_orchard` | LIGHT | $1,700 | Gallery Night | as above |
 | `loot.painting_lantern_bearer` | LIGHT | $2,000 | Gallery Night (centrepiece) | as above; the top of the LIGHT band |
 The four canvases are original works by invented painters (Maske, Sallow, Wilk, Calloway). Shadow
 Ledger's `loot.painting` is LIGHT too (lead ruling: cut and rolled); Gallery Night uses the rolled variants.
-**Deposit-box valuables: no loot def** (S10.3, QB-52): Meridian Federal's deposit boxes spawn small loot
+**Deposit-box valuables: no loot def** (S10.3, QB-52): Ostrander Federal's deposit boxes spawn small loot
 reported as `loot.small_valuables`, valued by ENV C's prefab like Night Deposit's boxes. Per-item range
 ◇ **$800–2,400** (Night Deposit's, the same kind of box) until the G0 doc sets one. Per-heist pay tables
 and loot lists: `content/docs/heists/<id>.md`.

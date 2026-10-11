@@ -41,3 +41,6 @@ Burn ($95,000): $85,000. A loud job gets no stealth bonus.
   separate `HeistMode`.
 * Escape options, `HeistDef.contact` (Reyes proposed), music track, pre-planning points and assets.
 * Long briefing text (`heist.rolling_thunder.briefing`) and briefing/mission VO.
+
+## Required loot (D-075)
+4 bags to escape; the rest is bonus.
