@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="HeisterRoster" format=3]
+
+[ext_resource type="Script" path="res://content/defs/heister_roster.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+ids = Array[StringName]([&"rook", &"sable", &"dutch", &"wren"])
+accents = {
+&"dutch": Color(0.83, 0.6, 0.23, 1),
+&"rook": Color(0.44, 0.56, 0.75, 1),
+&"sable": Color(0.75, 0.31, 0.3, 1),
+&"wren": Color(0.5, 0.69, 0.42, 1)
+}
+generic_accent = Color(0.55, 0.53, 0.5, 1)
+portrait_dir = "res://assets/characters/portraits"

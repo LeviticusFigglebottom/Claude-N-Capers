@@ -8,7 +8,8 @@
 ##     (MaskLocker.apply_unlocks), so a preset added later behind an earned unlock is owned too.
 ##   * loadout: an unknown weapon / melee / throwable / deployable / armor id falls back to the default
 ##     profile's value (data/save/default_profile.json); unknown mods are pruned; a mask that is not
-##     equippable falls back to the default mask; an unknown perk deck is cleared (cards 0).
+##     equippable falls back to the default mask; an unknown perk deck is cleared (cards 0); an unknown
+##     heister (D-073) is cleared to "" (no preference).
 ##   * perk_cards: unknown decks pruned, counts clamped to 0..deck size.
 ##   * skill sets (every set incl. the active one = loadout.skills): unknown skill ids pruned, then a set
 ##     that is still illegal for the profile's level (SkillPoints.validate) is reset to empty.
@@ -131,6 +132,9 @@ static func _loadout(p: PlayerProfile, notes: Array[String]) -> void:
 	if not MaskLocker.is_equippable(p, l.mask):
 		notes.append("loadout.mask: '%s' not equippable; reset to '%s'" % [l.mask, def.mask])
 		l.mask = def.mask if MaskLocker.is_equippable(p, def.mask) else &""
+	if l.heister != &"" and not Heisters.is_known(l.heister):
+		notes.append("loadout.heister: unknown heister '%s' cleared" % l.heister)
+		l.heister = &""
 	if l.perk_deck != &"" and not ContentDB.has(ContentDB.PERKS, l.perk_deck):
 		notes.append("loadout.perk_deck: unknown deck '%s' cleared" % l.perk_deck)
 		l.perk_deck = &""

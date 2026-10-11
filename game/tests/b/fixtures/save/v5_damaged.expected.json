@@ -16,7 +16,7 @@
 		"secondary": "weapon.kestrel_p9", "secondary_mods": ["mod.p9_suppressor"],
 		"melee": "melee.folding_knife", "throwable": "", "deployable": "deployable.doctor_bag",
 		"deployable_secondary": "", "armor": "armor.tailored_suit", "mask": "mask.gilded_heron",
-		"perk_deck": "", "perk_deck_cards": 0,
+		"perk_deck": "", "heister": "", "perk_deck_cards": 0,
 		"skills": {}
 	},
 	"skill_sets": [{}, {"skill.juggernaut.thick_skin": 1}, {}],

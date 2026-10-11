@@ -16,7 +16,7 @@
 		"secondary": "weapon.kestrel_p9", "secondary_mods": ["mod.p9_suppressor"],
 		"melee": "melee.folding_knife", "throwable": "", "deployable": "deployable.doctor_bag",
 		"deployable_secondary": "", "armor": "armor.tailored_suit", "mask": "mask.custom.0",
-		"perk_deck": "perk.bulk", "perk_deck_cards": 9,
+		"perk_deck": "perk.bulk", "heister": "", "perk_deck_cards": 9,
 		"skills": {"skill.slipstream.light_step": 2, "skill.juggernaut.thick_skin": 2}
 	},
 	"skill_sets": [{"skill.slipstream.light_step": 2, "skill.juggernaut.thick_skin": 2}, {"skill.juggernaut.thick_skin": 1}],
