@@ -6,6 +6,5 @@
 script = ExtResource("1")
 id = &"loot.painting"
 display_name = "Painting"
-weight = 1
 value = 1500
 conceals = false
