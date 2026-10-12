@@ -263,8 +263,8 @@ static func _compact(arrays: Array, idx: PackedInt32Array) -> Array:
 
 static func _finish(arrays: Array) -> ArrayMesh:
 	var out: ArrayMesh = ArrayMesh.new()
-	# Compressed positions/normals (16-bit in the AABB, octahedral): LOD2 is a far-distance mesh.
-	out.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {}, Mesh.ARRAY_FLAG_COMPRESS_ATTRIBUTES)
+	# No ARRAY_FLAG_COMPRESS_ATTRIBUTES: with it the skinned LOD2 renders exploded (seen in lod_review.png).
+	out.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {}, 0)
 	var lod_mat: Material = load(MATERIAL_PATH) as Material
 	if lod_mat != null:
 		out.surface_set_material(0, lod_mat)
