@@ -58,10 +58,11 @@ var staffed: bool = false
 ## True once the operator was neutralised (cameras off for good).
 var cameras_off: bool = false
 
-## {camera_net_id, left} dispatches waiting for camera_dispatch_delay_s.
-var _pending: Array[Dictionary] = []
 ## S8.3: active loops {slot: {camera_net_id, left}}; one per crew member.
 var loops: Dictionary = {}
+
+## {camera_net_id, left} dispatches waiting for camera_dispatch_delay_s.
+var _pending: Array[Dictionary] = []
 var _screens_off: StandardMaterial3D = null
 
 

@@ -119,3 +119,48 @@ func test_s5_8_calm_guard_cannot_be_dominated() -> void:
 	await _shout(i)
 	assert_ne(_brain().state_name(), &"dominated", "no window without a detection")
 	assert_true(not _brain().can_be_dominated_by(_crew()))
+
+
+## D-079: range 10 m x 1.5 (domination skill) x 1.25 (Crew Chief); cone max(8, 90 -> 30 deg over 0..12 m).
+func test_d079_range_and_cone() -> void:
+	var c: CrewController = _crew()
+	assert_near(ShoutSystem.guard_dominate_range_for(c), 10.0, 0.001, "base 10 m")
+	Modifiers.set_source(0, &"skills", {&"ability.intimidate_cops": true})
+	assert_near(ShoutSystem.guard_dominate_range_for(c), 15.0, 0.001, "x1.5 skill")
+	Modifiers.set_source(0, &"perk", {&"ability.shout_range_mult": 1.25})
+	assert_near(ShoutSystem.guard_dominate_range_for(c), 18.75, 0.001, "x1.25 Crew Chief, multiplicative")
+	assert_near(ShoutSystem.guard_dominate_cone_half_deg(0.0), 90.0, 0.001)
+	assert_near(ShoutSystem.guard_dominate_cone_half_deg(6.0), 60.0, 0.001)
+	assert_near(ShoutSystem.guard_dominate_cone_half_deg(12.0), 30.0, 0.001)
+	assert_near(ShoutSystem.guard_dominate_cone_half_deg(18.0), 8.0, 0.001, "floor 8 deg")
+
+
+## D-079: a guard 12 m away is out of base range; with the domination skill he can be dominated.
+func test_d079_twelve_metres_needs_the_skill() -> void:
+	Modifiers.set_source(0, &"skills", {&"stealth.can_dominate_guards": true})
+	var g: NpcBase = _guard()
+	_crew().set_masked(true)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, g.global_position + Vector3(0, 0.05, 12.0)))
+	await wait_physics_frames(1)
+	var d: Vector3 = g.global_position + Vector3(0, 1.2, 0) - _crew().eye_position()
+	var i: CrewIntent = CrewIntent.new()
+	i.look_yaw = atan2(-d.x, -d.z)
+	i.look_pitch = atan2(d.y, Vector2(d.x, d.z).length())
+	_rt.set_bot_intent(0, i)
+	await wait_physics_frames(2)
+	g.notify_crew_spotted(_crew())
+	await wait_physics_frames(1)
+	var shout: ShoutSystem = ShoutSystem.ensure(_rt)
+	assert_true(shout.guard_target_for(_crew()) == null, "12 m > 10 m base range")
+	Modifiers.set_source(0, &"skills2", {&"ability.intimidate_cops": true})
+	assert_true(shout.guard_target_for(_crew()) == _guard(), "15 m with the domination skill")
+
+
+## D-079: a dominated guard is a hostage a trade can use (PD2).
+func test_d079_dominated_guard_is_tradeable_hostage() -> void:
+	Modifiers.set_source(0, &"skills", {&"stealth.can_dominate_guards": true})
+	_brain().dominate(0)
+	await wait_physics_frames(1)
+	var cs: CustodySystem = CustodySystem.of(_rt)
+	assert_true(cs != null, "custody system")
+	assert_has(cs.hostage_candidates(), _guard(), "dominated guard is a trade candidate")

@@ -144,8 +144,7 @@ func guard_target_for(crew: CrewController) -> NpcBase:
 	if rt == null or not Modifiers.flag(crew.slot, &"stealth.can_dominate_guards"):
 		return null
 	var tw: StealthTweak = Tweak.stealth()
-	var range_m: float = tw.guard_dominate_range_m * Modifiers.mult(crew.slot, &"ability.shout_range_mult")
-	var half: float = deg_to_rad(tw.guard_dominate_cone_half_deg)
+	var range_m: float = guard_dominate_range_for(crew)
 	var eye: Vector3 = crew.eye_position()
 	var aim: Vector3 = crew.aim_direction()
 	var st: StealthDirector = rt.stealth
@@ -159,13 +158,29 @@ func guard_target_for(crew: CrewController) -> NpcBase:
 		var point: Vector3 = npc.global_position + Vector3(0.0, 1.2, 0.0)
 		var to: Vector3 = point - eye
 		var ang: float = aim.angle_to(to)
-		if to.length() > range_m or ang > half or ang >= best_ang:
+		if to.length() > range_m or ang > deg_to_rad(guard_dominate_cone_half_deg(to.length())) or ang >= best_ang:
 			continue
 		if st != null and st.is_inside_tree() and not st.has_los(eye, point, [crew.get_rid(), npc.get_rid()]):
 			continue
 		best = npc
 		best_ang = ang
 	return best
+
+
+## D-079: guard domination range for `crew` (m): base x skill x Crew Chief (shout range), multiplicative.
+static func guard_dominate_range_for(crew: CrewController) -> float:
+	var tw: StealthTweak = Tweak.stealth()
+	var r: float = tw.guard_dominate_range_m * Modifiers.mult(crew.slot, &"ability.shout_range_mult")
+	if Modifiers.flag(crew.slot, &"ability.intimidate_cops"):
+		r *= tw.guard_dominate_skill_range_mult
+	return r
+
+
+## D-079: aim cone half-angle (deg) at distance `d` m: max(8, 90 -> 30 linear over 0..12 m, extrapolated).
+static func guard_dominate_cone_half_deg(d: float) -> float:
+	var tw: StealthTweak = Tweak.stealth()
+	var t: float = d / maxf(tw.guard_dominate_cone_far_m, 0.001)
+	return maxf(tw.guard_dominate_cone_min_deg, lerpf(tw.guard_dominate_cone_near_deg, tw.guard_dominate_cone_far_deg, t))
 
 
 ## Civilians a shout from `crew` reaches right now (before the D-016 roll).

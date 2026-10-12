@@ -3,6 +3,18 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12 18:15 ET: D-079 guard domination range / cone / hostages
+### Decisions
+- D-079 (lead ruling): dominated guards count as hostages (tradeable), PD2 exactly. Domination range 10 m base,
+  x1.5 with the domination skill, x1.25 with Crew Chief (multiplicative). Aim cone half-angle =
+  max(8°, linear 90° at 0 m -> 30° at 12 m). Replaces 15 m / 20°.
+  - Implementation: ShoutSystem.guard_dominate_range_for / guard_dominate_cone_half_deg; StealthTweak keys.
+  - Assumption to confirm: "domination skill" = `ability.intimidate_cops` (Turncoat, the PD2 Dominator analog);
+    Crew Chief = `ability.shout_range_mult` (foreman card 3 grants 1.25).
+  - Dominated guards were already in G.HOSTAGE, so CustodySystem.hostage_candidates includes them (test added).
+### Tests
+- test_s5_8 7/7, shout suites 16/16; gdlint clean on all changed files.
+
 ## 2026-10-12 18:00 ET: A4-01 queue (L3.3 check, S2.7, S1.1, L2.1, S8.3, S9.5 safes)
 ### Decisions (lead rulings 2026-10-12)
 - L3.3: the server checks a claimed HEAD zone: the point must be within CombatTweak.claim_head_tolerance_m (0.45 m)

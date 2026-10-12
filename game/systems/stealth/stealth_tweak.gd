@@ -177,7 +177,13 @@ extends Resource
 ## S5.8: a shout from crew with `stealth.can_dominate_guards` within this many seconds after a
 ## guard's "!" makes him kneel and cuff himself (100% inside the window). His pager still fires.
 @export var guard_dominate_window_s: float = 1.5
-## S5.8 ◇: the shout reaches the guard nearest the aim line within this range (m, × ability.shout_range_mult)
-## and half-angle (deg), with line of sight.
-@export var guard_dominate_range_m: float = 15.0
-@export var guard_dominate_cone_half_deg: float = 20.0
+## S5.8 / D-079: the shout reaches the guard nearest the aim line within guard_dominate_range_m (10 m),
+## x guard_dominate_skill_range_mult (1.5) with the domination skill (`ability.intimidate_cops`, the
+## Dominator analog) x ability.shout_range_mult (Crew Chief 1.25), multiplicative, with line of sight.
+@export var guard_dominate_range_m: float = 10.0
+@export var guard_dominate_skill_range_mult: float = 1.5
+## D-079 aim cone half-angle (deg): max(min, linear from near_deg at 0 m to far_deg at far_m).
+@export var guard_dominate_cone_near_deg: float = 90.0
+@export var guard_dominate_cone_far_deg: float = 30.0
+@export var guard_dominate_cone_far_m: float = 12.0
+@export var guard_dominate_cone_min_deg: float = 8.0
