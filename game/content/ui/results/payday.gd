@@ -263,6 +263,16 @@ func _reveal() -> void:
 	_update_timer_label()
 
 
+## Seconds left at which the pick timer turns urgent (B-PP-3).
+const URGENT_S: float = 5.0
+const URGENT_COLOR: Color = Color(1.0, 0.42, 0.32)
+
+
+## True while the card stage is waiting for a pick and URGENT_S or less remain.
+func timer_is_urgent() -> bool:
+	return cards_stage and picked_index < 0 and time_left <= URGENT_S
+
+
 func _update_timer_label() -> void:
 	if timer_label == null:
 		return
@@ -270,6 +280,12 @@ func _update_timer_label() -> void:
 		timer_label.text = UiText.t(&"ui.payday_cards.auto_picked") if auto_picked else ""
 	else:
 		timer_label.text = UiText.t(&"ui.payday_cards.timer", {"seconds": ceili(time_left)})
+	# B-PP-3: the PD2 30 s auto-pick stays (pd2_fidelity P9), but the last seconds are flagged so the
+	# timeout never silently picks for a player who is still deciding.
+	if timer_is_urgent():
+		timer_label.add_theme_color_override(&"font_color", URGENT_COLOR)
+	else:
+		timer_label.remove_theme_color_override(&"font_color")
 	timer_label.visible = timer_label.text != ""
 
 
