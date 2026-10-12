@@ -3,6 +3,26 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11 (new account, session 2): IN PROGRESS (kept current per D-077)
+### In progress
+- **Shadow Ledger G2**: helper in worktree ~/caper/env-c-sl, branch c/sl-wip (local only). Brief: port the
+  Night Deposit G2 approach (sl_art.gd / sl_dress.gd / shadow_ledger_dressing.gd / bake_gi.gd), the 13:45 entry's
+  requirements, stage final, g2 shots + contact sheet in docs/levels/shadow_ledger/g2/, plus a stuck-spot audit.
+  Next step if resumed: `git log c/sl-wip`, continue from the last commit, then validate_level final.
+- **Dockside Burn G2**: helper in ~/caper/env-c-db, branch c/db-wip (local only). Order: nav/gameplay first (barred
+  gates baked closed + generic validate check "no nav path through a BARRED doorway", >= 2 non-breach approaches
+  per holdout, A's burn_point/padlock/deposit_box, cue.burn_warning, test_p3_loud green), then the art pass.
+  Next step if resumed: `git log c/db-wip`, continue from the last commit.
+- Integration: ENV C merges c/sl-wip and c/db-wip into env/c-worlds, runs check_all --env c, pushes on PASS.
+### Paused (D-076)
+- C5-01 music stems: WIP in `git stash` on ~/caper/env-c ("C5-01 music stems WIP"): music_parts.py (shared
+  parts, moved out of music_glasshouse.py) + music_night_deposit/shadow_ledger/dockside_burn.py. Not built or
+  validated; build.py multi-track support and MusicTrackEntry.source_track / MusicDirector.set_ducked not started.
+- C4-02 safehouse greybox: not started (helper stopped before any edit).
+### Notes
+- Baseline check_all --env c on 0771daef: FAIL, only test_b4_18_special_weapons::test_parts_animator_drives_named_parts
+  (ENV B test: "Breech open while reloading" expected -0.698 got -0.591), 1673 tests / 1 failed; validate_all 4/4 pass.
+
 ## 2026-10-11 13:45 UTC: HANDOFF (session shut down by the PO; account move)
 Branch env/c-worlds is the source of truth. Everything listed under Done is pushed and passed a clean push_gate.
 ### Done (on origin)
