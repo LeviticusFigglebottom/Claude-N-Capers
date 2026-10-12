@@ -60,6 +60,7 @@ func _build() -> void:
 	build_gameplay(n("Gameplay"))
 	build_variants(n("Variants"))
 	_build_nav_links(nav)
+	_close_barred_doorways()
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -873,9 +874,23 @@ func _build_nav_links(nav: NavigationRegion3D) -> void:
 
 # --- Navigation bake --------------------------------------------------------------------------
 
+## D-073: BARRED / VAULT doorways (roller doors, the strongroom, the play-space closure gates) are
+## baked CLOSED: a projected obstruction fills the opening (+0.15 m into each jamb, 0.3 m each side of
+## the wall line), so the agent-radius erosion leaves no navmesh through it. ENV A's door NavLink
+## (InteractionTweak.door_nav_link_half_m) bridges the gap while the door is passable. validate_level
+## `barred_doors` asserts it.
+func _close_barred_doorways() -> void:
+	for d: Array in L.DOORS:
+		if not (String(d[4]) in ["BARRED", "VAULT"]):
+			continue
+		var w: float = float(L.DOOR_OPENINGS[_door_type(d)][0]) + 0.3
+		var o: Vector3 = d[2]
+		obstruct(Transform3D(yaw_basis(float(d[3])), o), AABB(Vector3(-w * 0.5, -0.2, -0.3), Vector3(w, 2.6, 0.6)))
+
+
 ## Bakes the walkable navmesh (heist_map.md §3: agent radius 0.3, height 1.8, climb 0.3, slope 40,
 ## cell 0.1 / 0.1) from the Geometry colliders. Props and prefab bodies are projected obstructions.
-## Doors stay open.
+## Doors stay open except the BARRED / VAULT doorways (_close_barred_doorways).
 func _bake(nav: NavigationRegion3D) -> int:
 	var nm: NavigationMesh = NavigationMesh.new()
 	nm.agent_radius = 0.3
