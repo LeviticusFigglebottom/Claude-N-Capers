@@ -62,6 +62,51 @@ func test_doors_dockside_burn() -> void:
 	await _walk_heist(&"dockside_burn", true)
 
 
+## LEAD 2026-10-12: the Glasshouse SalonDoor frame (13.0, 0, 10.0) snag. The door is opened by setup (it is
+## LOCKPICK), then slot 0 walks through the frame both ways, 3 lateral offsets, AI corner + human door-centre
+## modes, in stealth and after the alarm (loud). Each crossing is a leg; a stall is a STUCK row.
+func test_salon_door_glasshouse() -> void:
+	_rt = await HeistLauncher.launch(&"glasshouse", 1001, Enums.Difficulty.ROUTINE, self,
+		{"ai_teammates": 0, "crew_ai": false, "skip_casing": true})
+	if _rt == null:
+		fail("launch glasshouse")
+		return
+	_inp = PInputDriver.new(self)
+	_inp.capture_mouse()
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	assert_true(await wait_until(func() -> bool: return BotUtil.nav_ready(c), 10.0), "nav ready")
+	_rt.isolate_npc(null)
+	var door: Door = _rt.map.get_node("Gameplay/Doors/SalonDoor") as Door
+	door.call(&"unlock")
+	door.call(&"set_open", true)
+	await wait_physics_frames(10)
+	var rid: RID = c.get_world_3d().navigation_map
+	for loud: bool in [false, true]:
+		if loud:
+			_rt.stealth.raise_alarm(&"pp_salon", 0)
+			await wait_until(func() -> bool: return _rt.phase == Enums.HeistPhase.LOUD, 3.0)
+		for door_centres: bool in [false, true]:
+			var ok: int = 0
+			var n: int = 0
+			for dz: float in [-0.3, 0.0, 0.3]:
+				for pair: Array in [[Vector3(10.5, 0.0, 10.0 + dz), Vector3(15.0, 0.0, 10.0 - dz)],
+						[Vector3(15.0, 0.0, 10.0 + dz), Vector3(10.5, 0.0, 10.0 - dz)]]:
+					var a0: Vector3 = NavigationServer3D.map_get_closest_point(rid, pair[0])
+					var b0: Vector3 = NavigationServer3D.map_get_closest_point(rid, pair[1])
+					_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, a0 + Vector3.UP * 0.05))
+					await wait_physics_frames(3)
+					var path: PackedVector3Array = NavigationServer3D.map_get_path(rid, c.global_position, b0, true)
+					n += 1
+					var res: Dictionary = await _follow(c, _door_centred(path) if door_centres else path)
+					if bool(res["ok"]):
+						ok += 1
+					else:
+						_row(&"glasshouse", "STUCK-%s-%s" % ["DOOR" if door_centres else "AI", "LOUD" if loud else "STEALTH"],
+							"SalonDoor", res["at"], "stalled before corner %s (%s)" % [res["corner"], res["why"]])
+			print("[PP-C-1] glasshouse SalonDoor (%s, %s): %d / %d crossings ok" % [
+				"doors" if door_centres else "corners", "loud" if loud else "stealth", ok, n])
+
+
 func _walk_heist(heist: StringName, door_centres: bool = false) -> void:
 	_rt = await HeistLauncher.launch(heist, int(HEISTS[heist]), Enums.Difficulty.ROUTINE, self,
 		{"ai_teammates": 0, "crew_ai": false, "skip_casing": true})
