@@ -164,3 +164,19 @@ func test_d079_dominated_guard_is_tradeable_hostage() -> void:
 	var cs: CustodySystem = CustodySystem.of(_rt)
 	assert_true(cs != null, "custody system")
 	assert_has(cs.hostage_candidates(), _guard(), "dominated guard is a trade candidate")
+
+
+## PP-A-1: the local HUD model exposes the guard a shout would dominate during his window.
+func test_pp_a1_hud_dominate_prompt() -> void:
+	Modifiers.set_source(0, &"skills", {&"stealth.can_dominate_guards": true})
+	await _face_guard()
+	_rt.hud_model.refresh()
+	assert_eq(_rt.hud_model.dominate_target, 0, "no window yet")
+	_guard().notify_crew_spotted(_crew())
+	await wait_physics_frames(1)
+	_rt.hud_model.refresh()
+	assert_eq(_rt.hud_model.dominate_target, _guard().net_id, "prompt on the spotting guard")
+	assert_true(_rt.hud_model.dominate_window_s > 0.0)
+	await wait_seconds(Tweak.stealth().guard_dominate_window_s + 0.2)
+	_rt.hud_model.refresh()
+	assert_eq(_rt.hud_model.dominate_target, 0, "window closed")

@@ -85,6 +85,8 @@ signal weapon_charge_changed()
 signal weapon_spin_changed()
 ## ui_hud v1.6 (S1.3, B5-05): player_mode
 signal player_mode_changed()
+## PP-A-1 (S5.8): dominate_target / dominate_window_s changed.
+signal dominate_prompt_changed()
 
 ## S1.1 "Suspicious actions not allowed" prompt (strings.csv key, ENV B).
 const SUSPICIOUS_PROMPT_KEY: StringName = &"ui.prompt.suspicious_not_allowed"
@@ -119,6 +121,7 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"stamina": &"stamina_changed", &"exhausted": &"stamina_changed",
 	&"weapon_charge": &"weapon_charge_changed", &"weapon_spin": &"weapon_spin_changed",
 	&"player_mode": &"player_mode_changed",
+	&"dominate_target": &"dominate_prompt_changed", &"dominate_window_s": &"dominate_prompt_changed",
 }
 ## Extra (non-contract) properties included in snapshot().
 const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase"]
@@ -156,6 +159,12 @@ var weapon_spin: float = 0.0
 # --- player_mode_changed (ui_hud v1.6, S1.3)
 ## &"civilian" (no gear yet) | &"casing" | &"masked" (CrewController.player_mode).
 var player_mode: StringName = &"casing"
+## PP-A-1 (S5.8 / D-079): net id of the guard a shout would dominate right now (tracked crew has
+## stealth.can_dominate_guards, guard inside his window, in range + aim cone), 0 = none. HUD (ENV B) shows
+## the shout prompt / "!" telegraph while non-zero.
+var dominate_target: int = 0
+## Seconds left in that guard's window (0 when dominate_target is 0); client value is approximate.
+var dominate_window_s: float = 0.0
 # --- ammo_changed
 ## Enums.WeaponSlot (int) -> {"mag": int, "reserve": int} for PRIMARY and SECONDARY.
 var ammo: Dictionary = {}
@@ -334,6 +343,7 @@ func refresh() -> void:
 	_publish_pagers()
 	_poll_objectives()
 	_poll_warnings(c)
+	_poll_dominate(c)
 	_poll_crew(slot)
 	_poll_crew_stats()
 	_poll_custody(c, slot)
@@ -507,6 +517,33 @@ func _poll_warnings(c: CrewController) -> void:
 	if _captain_present:
 		out.append(WARNING_CAPTAIN)
 	_assign(&"warnings", out)
+
+
+## PP-A-1: the guard nearest the aim line inside his S5.8 window, in D-079 range and cone (no LOS test:
+## presentation only, the server decides).
+func _poll_dominate(c: CrewController) -> void:
+	var best: NpcBase = null
+	var best_left: float = 0.0
+	if c != null and c.is_inside_tree() and _runtime != null and Modifiers.flag(c.slot, &"stealth.can_dominate_guards"):
+		var eye: Vector3 = c.eye_position()
+		var aim: Vector3 = c.aim_direction()
+		var range_m: float = ShoutSystem.guard_dominate_range_for(c)
+		var best_ang: float = INF
+		for n: Node in _runtime.npcs(&"guard"):
+			var npc: NpcBase = n as NpcBase
+			var gb: GuardBrain = npc.get_node_or_null(^"Brain") as GuardBrain if npc != null else null
+			if gb == null or not npc.alive or gb.dominate_window_left <= 0.0:
+				continue
+			var to: Vector3 = npc.global_position + Vector3(0.0, 1.2, 0.0) - eye
+			var ang: float = aim.angle_to(to)
+			if to.length() > range_m or ang > deg_to_rad(ShoutSystem.guard_dominate_cone_half_deg(to.length())) \
+					or ang >= best_ang:
+				continue
+			best = npc
+			best_ang = ang
+			best_left = gb.dominate_window_left
+	_assign(&"dominate_target", best.net_id if best != null else 0)
+	_assign(&"dominate_window_s", snappedf(best_left, 0.1))
 
 
 func _poll_crew(slot: int) -> void:
