@@ -9,10 +9,6 @@ extends TestCase
 const HEISTS: Array[String] = ["glasshouse", "night_deposit", "dockside_burn"]
 const EYE_M: float = 1.6
 const FACE_M: float = 0.08
-## Open findings logged in docs/levels/pp_c2_handplay.md (PP-C-2, 2026-10-12), not fixed yet: Night Deposit ATM1/ATM2
-## (decorative ATM prop collision over the AtmCash interactables), kc_break_locker (inside the G4 lockers, same bug as
-## Glasshouse kc_breakroom); Dockside count-room CageCashA/B (UsePoint behind wall M_X9_00). The check fails on any new one.
-const KNOWN_OPEN: Dictionary = {"glasshouse": 0, "night_deposit": 9, "dockside_burn": 2}
 
 
 func test_interact_slots_clear() -> void:
@@ -94,7 +90,6 @@ func _check(heist: String) -> void:
 	for b: String in bad:
 		print("[C3]   " + b)
 	assert_true(checked > 0, "%s: interact slots found" % heist)
-	assert_true(bad.size() <= int(KNOWN_OPEN[heist]), "%s: interact slots clear and aimable, %d known open (%s)" % [
-		heist, int(KNOWN_OPEN[heist]), "; ".join(bad.slice(0, 5))])
+	assert_eq(bad.size(), 0, "%s: interact slots clear and aimable (%s)" % [heist, "; ".join(bad.slice(0, 5))])
 	map.queue_free()
 	await wait_frames(2)

@@ -323,7 +323,7 @@ func _build_atms(gp: Node3D) -> void:
 		var p: Vector3 = a[3]
 		var front_z: float = p.z + 0.36
 		var use: Vector3 = Vector3(p.x, 0.0, front_z + 0.75)
-		var loot: Node3D = prefab(atm, "small_loot", "AtmCash%d" % i, Vector3(p.x, 0.45, p.z), 0.0,
+		var loot: Node3D = prefab(atm, "small_loot", "AtmCash%d" % i, Vector3(p.x, 0.9, front_z + 0.05), 0.0,
 			{"loot_id": &"loot.cash", "value": 1500, "objective_tag": &"atm_cash", "visual_scene": load(VIS_EMPTY)}, use)
 		var drill: Node3D = prefab(atm, "drill_point", "AtmSaw%d" % i, Vector3(p.x - 0.12, 0.62, front_z + 0.02), 0.0,
 			{"device": "enum:SAW", "duration_s": SAW_ATM_S, "objective_tag": &"atm"}, use + Vector3(0.0, 0.0, 0.15))
@@ -450,7 +450,7 @@ func _variants_keycard(variants: Node3D) -> void:
 	var rows: Array = [
 		["kc_manager_desk", 1.0, Vector3(23.5, 0.74, 13.3), Vector3(23.6, 0.0, 12.6)],
 		["kc_teller_drawer", 1.0, Vector3(6.0, 1.05, 9.85), Vector3(6.0, 0.0, 9.1)],
-		["kc_break_locker", 1.0, Vector3(17.6, 1.8, 3.0), Vector3(16.95, 0.0, 3.0)],
+		["kc_break_locker", 1.0, Vector3(15.85, 0.9, 0.7), Vector3(15.85, 0.0, 1.45)],  # on the kitchen counter (locker face is flush, PP-C-2)
 		["kc_security", 0.75, Vector3(13.55, 0.75, 4.1), Vector3(12.95, 0.0, 4.1)],
 		["kc_records", 1.0, Vector3(0.5, L.BASE + 0.74, 15.1), Vector3(1.35, L.BASE, 14.75)],
 	]

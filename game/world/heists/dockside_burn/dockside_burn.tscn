@@ -16394,19 +16394,35 @@ collision_mask = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("db_977")
 
-[node name="CageCashA" type="Node3D" parent="Variants/Group_cash_location/Slot_cash_countroom" unique_id=103177 instance=ExtResource("37_db")]
+[node name="CageCashA" parent="Variants/Group_cash_location/Slot_cash_countroom" unique_id=103177 instance=ExtResource("37_db")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9.65, 3.6, 2.4)
 script = ExtResource("38_db")
 loot_id = &"loot.cash_bricks"
 count = 2
 objective_tag = &"cash_bricks"
 
-[node name="CageCashB" type="Node3D" parent="Variants/Group_cash_location/Slot_cash_countroom" unique_id=103178 instance=ExtResource("37_db")]
+[node name="UsePoint" parent="Variants/Group_cash_location/Slot_cash_countroom/CageCashA" index="1"]
+transform = Transform3D(0.92847663, 0, 0.37139085, 0, 1, 0, -0.37139085, 0, 0.92847663, 0.3000002, 0, 0.75)
+
+[node name="Interactable" parent="Variants/Group_cash_location/Slot_cash_countroom/CageCashA" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.2)
+script = ExtResource("17_db")
+kind = &"bag_loot"
+
+[node name="CageCashB" parent="Variants/Group_cash_location/Slot_cash_countroom" unique_id=103178 instance=ExtResource("37_db")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9.65, 3.6, 1.2)
 script = ExtResource("38_db")
 loot_id = &"loot.cash_bricks"
 count = 2
 objective_tag = &"cash_bricks"
+
+[node name="UsePoint" parent="Variants/Group_cash_location/Slot_cash_countroom/CageCashB" index="1"]
+transform = Transform3D(1, 0, -4.371139e-08, 0, 1, 0, 4.371139e-08, 0, 1, 0, 0, 0.75)
+
+[node name="Interactable" parent="Variants/Group_cash_location/Slot_cash_countroom/CageCashB" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.2)
+script = ExtResource("17_db")
+kind = &"bag_loot"
 
 [node name="FishBlocks" type="StaticBody3D" parent="Variants/Group_cash_location/Slot_cash_countroom" unique_id=103179]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, 28.6)
@@ -17296,6 +17312,8 @@ metadata/caption = "S1 crane cab: the Longshot's view over the yard and apron"
 [editable path="Gameplay/Misc/DeskCashM1"]
 [editable path="Gameplay/Misc/GoodsLift"]
 [editable path="Variants/Group_cash_location/Slot_cash_countroom/CountCage"]
+[editable path="Variants/Group_cash_location/Slot_cash_countroom/CageCashA"]
+[editable path="Variants/Group_cash_location/Slot_cash_countroom/CageCashB"]
 [editable path="Variants/Group_product_location/Slot_prod_chamber_a/BurnPoint"]
 [editable path="Variants/Group_product_location/Slot_prod_chamber_b/BurnPoint"]
 [editable path="Variants/Group_product_location/Slot_prod_packing/BurnPoint"]

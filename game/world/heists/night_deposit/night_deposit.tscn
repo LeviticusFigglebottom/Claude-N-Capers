@@ -13774,7 +13774,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4, 0)
 [node name="Atms" type="Node3D" parent="Gameplay" unique_id=102400]
 
 [node name="AtmCash1" parent="Gameplay/Atms" unique_id=102401 instance=ExtResource("200_nd")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.3, 0.45, 16.472)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.3, 0.9, 16.882)
 script = ExtResource("201_nd")
 value = 1500
 loot_id = &"loot.cash"
@@ -13783,7 +13783,7 @@ objective_tag = &"atm_cash"
 metadata/kind = "small_loot"
 
 [node name="UsePoint" parent="Gameplay/Atms/AtmCash1" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 1.1100006)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0.70000076)
 
 [node name="Interactable" parent="Gameplay/Atms/AtmCash1" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -13809,7 +13809,7 @@ script = ExtResource("183_nd")
 kind = &"place_drill"
 
 [node name="AtmCash2" parent="Gameplay/Atms" unique_id=102403 instance=ExtResource("200_nd")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.4, 0.45, 16.472)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.4, 0.9, 16.882)
 script = ExtResource("201_nd")
 value = 1500
 loot_id = &"loot.cash"
@@ -13818,7 +13818,7 @@ objective_tag = &"atm_cash"
 metadata/kind = "small_loot"
 
 [node name="UsePoint" parent="Gameplay/Atms/AtmCash2" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 1.1100006)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0.70000076)
 
 [node name="Interactable" parent="Gameplay/Atms/AtmCash2" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -14235,14 +14235,14 @@ slot_group = &"keycard"
 slot_id = &"kc_break_locker"
 
 [node name="Keycard" parent="Variants/Group_keycard/Slot_kc_break_locker" unique_id=102458 instance=ExtResource("227_nd")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.6, 1.8, 3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.85, 0.9, 0.7)
 script = ExtResource("228_nd")
 visual_scene = ExtResource("229_nd")
 objective_tag = &"keycard"
 metadata/kind = "keycard_pickup"
 
 [node name="UsePoint" parent="Variants/Group_keycard/Slot_kc_break_locker/Keycard" index="1"]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -0.6499996, -1.8, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0.75000006)
 
 [node name="Interactable" parent="Variants/Group_keycard/Slot_kc_break_locker/Keycard" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)

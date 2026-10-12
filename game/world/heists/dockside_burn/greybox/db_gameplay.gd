@@ -368,7 +368,7 @@ func _variants_cash(variants: Node3D) -> void:
 		Vector3(10.4, L.MEZZ, 4.4), {"kind": "safe"})
 	for c2: Array in [["CageCashA", Vector3(9.65, L.MEZZ, 2.4)], ["CageCashB", Vector3(9.65, L.MEZZ, 1.2)]]:
 		prefab(cr, "loot_spawn", String(c2[0]), c2[1], 90.0, {"loot_id": &"loot.cash_bricks", "count": 2,
-			"objective_tag": &"cash_bricks"})
+			"objective_tag": &"cash_bricks"}, Vector3(10.4, L.MEZZ, minf((c2[1] as Vector3).z, 2.1)))  # use inside the cage, not past M_X9
 	# The empty strongroom: fish blocks on the floor.
 	prop_box(cr, "FishBlocks", Vector3(21.0, 0.0, 28.6), Vector3(2.0, 1.2, 2.0), 0.0, "fish_blocks", false, "panel")
 
