@@ -9,6 +9,21 @@
     "game/tests/a/**",
     "docs/status/env_a.md",
     "docs/status/env_a_fidelity.md"
+   ],
+   "excludes": [
+    "game/systems/player/**",
+    "game/systems/anim/fp_viewmodel*",
+    "game/systems/tweak/crew_tweak.*"
+   ]
+  },
+  "p": {
+   "branch": "env/p-play",
+   "owns": [
+    "game/systems/player/**",
+    "game/systems/anim/fp_viewmodel*",
+    "game/systems/tweak/crew_tweak.*",
+    "game/tests/p/**",
+    "docs/status/env_p.md"
    ]
   },
   "b": {
