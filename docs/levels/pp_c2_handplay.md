@@ -68,3 +68,11 @@ Mean luma (0..1) over the frame: higher = brighter.
 | dockside_burn | STUCK | `Gameplay/Doors/PKRoller` | at (9.2, 0.0, 20.3): stalled before corner (10.14927, 0.200001, 20.48335) (no progress after interact (0.0 m of 1.0 m)) |
 | dockside_burn | STUCK | `Gameplay/Doors/ChamberANorth` | at (7.8, 0.0, 32.7): stalled before corner (11.5, 0.200001, 32.6) (no progress after interact (0.0 m of 3.7 m)) |
 | dockside_burn | STUCK | `Gameplay/Doors/HallRoller3` | at (24.5, 0.0, 9.0): stalled before corner (26.52907, 0.200001, 9.040011) (no progress after interact (0.0 m of 2.1 m)) |
+
+## Interact slots in prop collision / not aimable (test_interact_slots_clear.gd, 2026-10-12 19:10 ET)
+Glasshouse 0/34 (kc_breakroom fixed in 356d5087). Open, not fixed yet (KNOWN_OPEN in the test, which fails on any new one):
+| heist | slot | finding |
+|---|---|---|
+| night_deposit | Gameplay/Atms/AtmCash1, AtmCash2 | inside the decorative Props/G13/ATM1/ATM2 collision; the aim ray hits the prop 1.02 m out: no prompt |
+| night_deposit | Variants/Group_keycard/Slot_kc_break_locker/Keycard | inside Props/G4/BreakLockers (same bug as Glasshouse kc_breakroom); aim blocked at 0.43 m |
+| dockside_burn | Variants/Group_cash_location/Slot_cash_countroom/CageCashA, CageCashB | UsePoint behind interior wall M_X9_00: aim blocked at 0.32 m |
