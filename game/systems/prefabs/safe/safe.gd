@@ -433,6 +433,8 @@ func _inner_loot() -> Array[GameplayPrefab]:
 			stack.append(c)
 	while not stack.is_empty():
 		var n: Node = stack.pop_back()
+		if n is DrillPoint:
+			continue  # the safe's own drill point (e.g. Glasshouse SafeDrill) is how it opens, not loot
 		var p: GameplayPrefab = n as GameplayPrefab
 		if p != null and p.interactable != null:
 			out.append(p)
