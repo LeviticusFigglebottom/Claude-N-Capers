@@ -3,6 +3,20 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12 19:00 ET: IN PROGRESS (ENV C)
+### Done
+- fbd1e837 test_glasshouse_police_gates: the 4 BARRED gates are shut before the alarm, open by the first assault, and every
+  police spawn reaches both holdouts (workshop G2, G4/G10 corner); seeds 1001 + 3071 PASS. validate_level glasshouse PASS.
+- b0b274a0 secure objective data gains `count` (bags secured) and `total` (bags required) in glasshouse, night_deposit
+  and dockside_burn (+ dockside launch assert); tests/c launch 7/7.
+- f966a008 PP-C-2 headless hand-play (prompt reach + cover gaps), notes docs/levels/pp_c2_handplay.md.
+- ee7e83b2 PP-C-1 walks: D-085 human door-centre mode beside the AI corner mode.
+### Next
+- PP-C-1 rerun in the scratch worktree /workspace/cnc-team/c/walks-wt (env/c-worlds + A 946384de + P d1858e83, never
+  merged into env/c-worlds), both modes; then zoom_factor (D-084, low priority).
+### Blockers
+- None. Not pushed (LEAD pushes).
+
 ## 2026-10-12 18:45 ET: IN PROGRESS (ENV C)
 ### Done
 - 0b13456f Glasshouse: AlleyGate, HarlowWestGate, HarlowEastGate, PellNorthGate baked closed in the navmesh
