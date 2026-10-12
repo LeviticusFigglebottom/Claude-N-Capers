@@ -3,6 +3,24 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12 18:05 ET: IN PROGRESS (ENV C, Dockside G2 gameplay)
+### Done
+- a00cdf3b reverts the Shadow Ledger WIP merge 0b68bd67 (does not build); reapply once it builds.
+- fd0bcc24 Dockside G2: game/tests/c/test_dockside_burn_routes.gd (D-070: every holdout has >= 2 non-breach_only
+  police approaches on the baked navmesh from legal spawns; H1 platform stair + ST door, H2 SP mouth + C2 south,
+  H3 quay W + E, H4 gate + yard W/E); the cartel hold (police_delay_s) is compressed by the same factor as a
+  `director_tweak` override's first_control_s (shipped tweak: unchanged 60/90/120 s); cue.burn_warning now 3
+  variations (audio_cues v1.2) + registry test.
+- Box results: test_p3_loud 10/10 PASS (was 8/10: test_08 captain, test_10 assault never started under the
+  cartel hold); tests/c dockside 15/15; validate_level dockside_burn PASS; walkthrough PASS; yard arena
+  (35.5, -18.5) open, 11 clear directions. Hall open floor >= 12 m + crate cover, burn_point/padlock prefabs,
+  barred doors baked closed: already in the db-wip merge, all checks green.
+### Next
+- check_all --env c (queued on the lock), then PP-C-1 (real-input walk via game/tests/p/p_input_driver.gd).
+### Blockers / for LEAD
+- Ferro St (P1e/P1w), Bellweather (P2), Pier 10 (P3) police spawns have NO navmesh path anywhere until the
+  mission opens the police gates (door NavLinks); fine in play, but any pre-gate director pick there stalls.
+
 ## 2026-10-12 17:40 ET: IN PROGRESS (ENV C, hourly checkpoint)
 ### Done
 - Unshallowed the box clone and merged both backups into env/c-worlds locally (--no-ff, no conflicts, no conflict markers):
