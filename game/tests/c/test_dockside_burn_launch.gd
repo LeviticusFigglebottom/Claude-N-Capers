@@ -82,7 +82,7 @@ func test_launch_routine_seed_1001() -> void:
 	await _teardown(rt)
 
 
-## The burn finishing drops the burning room's fire shutters 5 s later (D-064 Q6); four secured bags
+## The burn point lighting (device_finished, after its 5 s telegraph) drops the fire shutters (D-064 Q6); four secured bags
 ## after the burn call the escape (D-064 Q2).
 func test_burn_shutters_and_escape_call() -> void:
 	if _launcher == null:
@@ -104,10 +104,7 @@ func test_burn_shutters_and_escape_call() -> void:
 	EventBus.device_finished.emit(int(bp.get(&"net_id")))
 	await wait_physics_frames(2)
 	assert_eq(mission.objective_state(&"burn"), Enums.ObjectiveState.COMPLETED, "burn objective")
-	Engine.time_scale = 4.0
-	await wait_until(func() -> bool: return mission.timer_left(&"fire_shutters") <= 0.0, 5.0)
 	await wait_physics_frames(3)
-	Engine.time_scale = 1.0
 	for dn: String in SHUTTERS[sid]:
 		var d: Door = map.get_node_or_null("Gameplay/Doors/" + dn) as Door
 		assert_true(d != null and not d.is_open, "fire shutter %s closed" % dn)
