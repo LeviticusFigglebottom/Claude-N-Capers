@@ -15,11 +15,12 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   share target, FpViewmodelTweak.ads_rate and smoothstep ease (PI-16/17/18) + real-input tests.
 - (this commit's parent) D-085 edge assist + door tests: head-on frame-edge hits stalled dead before
   (probe: offsets 0.40-0.60 m stuck at the wall face); now slides to the opening within 0.45 m.
-- `run_tests.sh p` 31/31; a: fp_viewmodel 15/15, crew_controller 8/8, l6_ai_teammates 11/11, a3_05 12/12.
+- Casing hides the FP viewmodel (PD2), shown with the draw on mask-up.
+- `run_tests.sh p` 32/32; b hub_3d 13/13, b range 35/35; a: fp_viewmodel 15/15, crew_controller 8/8, l6_ai_teammates 11/11, a3_05 12/12.
 ### In progress
 - PI-15 mask-up grace: left as is (PD2 resets on release; design call). PI-19 AimPoint audit, PI-21 arms step lag.
 ### Blocked
-- Push of commits after 091ea17e: auto-review requires approval; not pushed.
+- Push of commits after 091ea17e: approval requests interrupted; not pushed (local only).
 ### Questions for lead
 - QP-4: ENV A: CrewWeapons spread uses intent.aim (crew_weapons.gd:514) even while sprinting/reloading; should
   use CrewView.is_aiming(crew) for consistency.
