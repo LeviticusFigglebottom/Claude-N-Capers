@@ -89,3 +89,64 @@ func test_options_and_keybinds_gamepad_only() -> void:
 	assert_eq(f.current, f.main_menu as Control, "B leaves Options (unapplied edits dropped)")
 	f.queue_free()
 	await wait_frames(2)
+
+
+## Payday with the pad only at 720p: A on Continue opens the cards, d-pad moves to card 2, A picks
+## it (after the input grace), A on Continue finishes.
+func test_payday_gamepad_only() -> void:
+	SaveService.delete_profile(SLOT)
+	var s: PaydayScreen = (load("res://content/ui/results/payday.tscn") as PackedScene).instantiate() as PaydayScreen
+	add_child(s)
+	await wait_frames(1)
+	s.show_result(HeistCatalog.sample_result())
+	var done: Array[int] = [0]
+	s.continue_pressed.connect(func() -> void: done[0] += 1)
+	await wait_frames(2)
+	var vis: Rect2 = s.get_viewport().get_visible_rect().grow(1.0)
+	assert_true(vis.encloses(s.continue_button.get_global_rect()), "Continue on screen at 720p")
+	if s.has_card_pick():
+		assert_true(await _nav_to(s.continue_button, "result Continue"))
+		await _pad(JOY_BUTTON_A)
+		assert_true(s.cards_stage, "A opens the cards")
+		s.tick(PaydayScreen.INPUT_GRACE_S + 0.01)
+		for c: Control in s.card_views:
+			assert_true(vis.encloses(c.get_global_rect()), "card on screen at 720p")
+		assert_true(await _nav_to(s.card_views[1], "card 2"))
+		await _pad(JOY_BUTTON_A)
+		assert_eq(s.picked_index, 1, "A picks the focused card")
+		await wait_frames(2)
+	assert_true(await _nav_to(s.continue_button, "Continue"))
+	await _pad(JOY_BUTTON_A)
+	assert_eq(done[0], 1, "A on Continue finishes the payday")
+	s.queue_free()
+	await wait_frames(2)
+
+
+## Quit to the main menu and back with the pad (2D hub, the shipped hub): the saved profile is what
+## the main menu and the hub show after the round trip.
+func test_hub_quit_and_reload_gamepad_only() -> void:
+	var p: PlayerProfile = PlayerProfile.new_default()
+	p.level = 7
+	SaveService.save_profile(p, SLOT)
+	var f: MenuFlow = FLOW_SCENE.instantiate() as MenuFlow
+	add_child(f)
+	await wait_frames(2)
+	assert_true(await _nav_to(f.main_menu.safehouse_button, "Safehouse"))
+	await _pad(JOY_BUTTON_A)
+	assert_eq(f.current, f.hub as Control, "A enters the hub")
+	assert_true(f.hub.level_label.text.contains("7"), f.hub.level_label.text)
+	assert_true(await _nav_to(f.hub.back_button, "hub Main menu"))
+	await _pad(JOY_BUTTON_A)
+	assert_eq(f.current, f.main_menu as Control, "A on Main menu quits to the main menu")
+	assert_true(f.main_menu.profile_label.text.contains("7"), f.main_menu.profile_label.text)
+	p.level = 8
+	SaveService.save_profile(p, SLOT)
+	await _pad(JOY_BUTTON_B)
+	assert_eq(f.current, f.main_menu as Control, "B on the main menu does nothing")
+	assert_true(await _nav_to(f.main_menu.safehouse_button, "Safehouse again"))
+	await _pad(JOY_BUTTON_A)
+	assert_true(f.hub.level_label.text.contains("8"), "hub reloads the saved profile: %s" % f.hub.level_label.text)
+	await _pad(JOY_BUTTON_B)
+	assert_eq(f.current, f.main_menu as Control, "B on the hub goes back to the main menu")
+	f.queue_free()
+	await wait_frames(2)

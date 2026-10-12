@@ -88,7 +88,7 @@ Newest entry first, keep the last 10.
 1. PQ-B-19 Live interact key on a real interactable with PInputDriver (when on trunk) (40 min).
 2. PQ-B-1 Switch real-input helpers to PInputDriver (20 min).
 3. PQ-B-23 Floating HUD text on bright scenes: lead decision outline 8 vs backing panel, then apply + re-capture (30 min). DONE: lead chose outline 8 + soft dark drop shadow, no panel (UiBuild.float_text on the toast/casing hint, domination prompt and interaction prompt/blocked labels). A faint backing panel goes only on prompts that fail in D's renders over the brightest scenes, re-checked with D's flags.
-4. PQ-B-24 Contrast capture for menus (hub, payday, loadout) over the real 3D safehouse backdrop (40 min). DONE over the 2D hub: hub / loadout / payday 0 failures. The real 3D safehouse scene (res://world/hub/safehouse/safehouse.tscn, ENV C) is on no branch (trunk, env/c-worlds), so the flow falls back to the 2D hub; re-run `-- menus` when C ships it.
+4. PQ-B-24 Contrast capture for menus (hub, payday, loadout) over the real 3D safehouse backdrop (40 min). DONE over the 2D hub: hub / loadout / payday 0 failures. The real 3D safehouse scene (res://world/hub/safehouse/safehouse.tscn, ENV C) is on no branch (trunk, env/c-worlds), so the flow falls back to the 2D hub; CLOSED: Env C says safehouse.tscn (C4-01) is frozen under D-082. The 2D hub is the shipped hub and its capture stands.
 5. PQ-B-25 Live heist: domination prompt + casing hint seen in a real run once A/P fields are on trunk (30 min).
 6. PQ-B-26 Gamepad-only Board (contract pick) and Notoriety reward picks (30 min).
 
@@ -393,3 +393,8 @@ Newest entry first, keep the last 10.
 - Fix: the status lines ("Unmasked: casing", "Carrying: ...", hostages, warnings) also float over the world, and they were the weakest text by eye in the captures. They now use float_text too, and the test covers them.
 - Tool fix: labels clipped by a ScrollContainer (hub's The Record card, loadout's Mask row below the fold) were false FAILs (ratio 1.0 / 2.1). The check now cuts to the visible rect.
 - Pad walk (76238ea5): options, all tabs, pad keybind capture (the A that opens the capture is not captured), B drops unapplied edits. No player trip found.
+
+### 2026-10-12 19:15 ET pad-only + 720p walks (in-heist pause, payday, quit / reload)
+- test_pp_pad_walks: payday with the pad (Continue -> cards -> d-pad to card 2 -> A -> Continue, all on screen at 720p) and hub -> main menu -> hub with the pad (the saved profile reloads, B backs out). Both pass, no bug found.
+- In-heist pause: Start opens Options over the HUD and B closes it (already covered by PQ-B-20).
+- PLAYER TRIP (needs a lead ruling, not fixed because of the D-082 freeze): the in-heist pause (Options) has NO way to leave or abandon a heist. The strings `ui.menu.leave_heist` ("Leave Heist") and `ui.menu.quit_confirm` have shipped since B1-07, and MenuFlow._leave_heist() exists, but no button calls them. A solo player who wants out must finish or fail the heist (or kill the game). Proposed: a Leave Heist button with confirm in the in-heist Options footer, wired to _leave_heist (about 30 min + test). Is this a fix or new content under D-082?
