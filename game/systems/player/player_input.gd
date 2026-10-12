@@ -55,7 +55,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		var gs: GameSettings = GameSettings.current()  # B5-01 options
 		var ms: Vector2 = gs.mouse_sensitivity() if gs != null else Vector2.ONE
 		var inv: float = -1.0 if gs != null and gs.invert_y() else 1.0
-		add_look(-mm.relative.x * mouse_sensitivity * ms.x, -mm.relative.y * mouse_sensitivity * ms.y * inv)
+		# P1-01 (mouse gain): screen_relative = raw device counts. `relative` is scaled by the canvas_items stretch
+		# (base 1920x1080 / window size), which made sensitivity depend on resolution (x0.75 at 1440p, x0.5 at 4K,
+		# x1.5 at 720p, x30 headless).
+		var d: Vector2 = mm.screen_relative
+		add_look(-d.x * mouse_sensitivity * ms.x, -d.y * mouse_sensitivity * ms.y * inv)
 
 
 ## QB-46: paused input stops building intents; resuming re-reads the crew's look direction.

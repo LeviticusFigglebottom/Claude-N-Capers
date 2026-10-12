@@ -21,9 +21,6 @@ extends RefCounted
 var _t: Node = null
 var _held: Dictionary[StringName, bool] = {}
 var _keys: Dictionary[int, bool] = {}
-## Measured yaw radians per event pixel. Headless runs scale mouse motion by the stretch transform (window vs
-## base viewport size), so the nominal mouse_radians_per_px() can be off by a large factor; measure it.
-var _gain: float = -1.0
 
 
 func _init(test: Node) -> void:
@@ -128,10 +125,7 @@ func turn_to_yaw(crew: Node3D, yaw: float, tol: float = 0.02, timeout_s: float =
 		var err: float = wrapf(yaw - float(crew.get(&"look_yaw")), -PI, PI)
 		if absf(err) <= tol:
 			return true
-		if _gain <= 0.0:
-			await _calibrate(crew)
-			continue
-		look(-err / _gain, 0.0)
+		look(-err / mouse_radians_per_px(), 0.0)
 		var before: float = float(crew.get(&"look_yaw"))
 		for _i: int in 10:
 			await _ticks(1)
@@ -147,19 +141,10 @@ func turn_to_yaw(crew: Node3D, yaw: float, tol: float = 0.02, timeout_s: float =
 static func mouse_radians_per_px() -> float:
 	var gs: GameSettings = GameSettings.current()
 	var ms: float = gs.mouse_sensitivity().x if gs != null else 1.0
-	return PlayerInput.new().mouse_sensitivity * ms
-
-
-func _calibrate(crew: Node3D) -> void:
-	var y0: float = float(crew.get(&"look_yaw"))
-	look(-4.0, 0.0)
-	for _i: int in 10:
-		await _ticks(1)
-		if absf(float(crew.get(&"look_yaw")) - y0) > 1e-6:
-			break
-	await _ticks(2)
-	var d: float = float(crew.get(&"look_yaw")) - y0
-	_gain = absf(d) / 4.0 if absf(d) > 1e-6 else mouse_radians_per_px()
+	var pin: PlayerInput = PlayerInput.new()
+	var sens: float = pin.mouse_sensitivity
+	pin.free()
+	return sens * ms
 
 
 func _ticks(n: int) -> void:

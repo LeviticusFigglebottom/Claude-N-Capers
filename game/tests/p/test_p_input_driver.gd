@@ -78,3 +78,25 @@ func test_hold_mask_up() -> void:
 	assert_false(c.masked, "short hold does not mask")
 	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
 	assert_true(c.masked, "full hold masks up")
+
+
+## Mouse gain is resolution independent: N mouse counts turn exactly N x sensitivity, whatever the window size.
+## Headless runs have a 1/30 stretch transform (InputEventMouseMotion.relative = 30 x counts), so this also fails
+## if PlayerInput ever goes back to `relative`.
+func test_degrees_per_mouse_count() -> void:
+	var c: CrewController = _crew()
+	_inp.capture_mouse()
+	await wait_physics_frames(2)
+	var per: float = PInputDriver.mouse_radians_per_px()
+	assert_true(per > 0.0, "sensitivity")
+	var y0: float = c.look_yaw
+	_inp.look(-400.0, 0.0)  # 400 counts left
+	await wait_physics_frames(3)
+	assert_near(c.look_yaw - y0, 400.0 * per, 1e-4, "400 counts left = %.2f deg (got %.2f deg)"
+		% [rad_to_deg(400.0 * per), rad_to_deg(c.look_yaw - y0)])
+	var p0: float = c.look_pitch
+	_inp.look(0.0, -100.0)  # 100 counts up
+	await wait_physics_frames(3)
+	var inv: float = -1.0 if GameSettings.current() != null and GameSettings.current().invert_y() else 1.0
+	var ms: Vector2 = GameSettings.current().mouse_sensitivity() if GameSettings.current() != null else Vector2.ONE
+	assert_near(c.look_pitch - p0, 100.0 * PInputDriver.mouse_radians_per_px() / maxf(ms.x, 1e-6) * ms.y * inv, 1e-4, "100 counts up")
