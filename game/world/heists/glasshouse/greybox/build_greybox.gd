@@ -1271,12 +1271,12 @@ func _variants_keycard(variants: Node3D) -> void:
 		["kc_counter", 1.0, Vector3(3.2, 0.9, 7.4), 0.0, Vector3(3.2, 0.0, 6.75)],
 		["kc_manager", 1.0, Vector3(9.2, L.UPPER + 0.75, 8.75), 0.0, Vector3(9.2, L.UPPER, 8.05)],
 		["kc_security", 1.0, Vector3(10.15, L.UPPER + 0.75, 3.4), 90.0, Vector3(9.45, L.UPPER, 3.4)],
-		["kc_breakroom", 1.0, Vector3(0.46, L.UPPER + 1.8, 2.6), -90.0, Vector3(1.2, L.UPPER, 2.6)],
+		["kc_breakroom", 1.0, Vector3(2.6, L.UPPER + 0.74, 2.3), -90.0, Vector3(1.8, L.UPPER, 2.3)],
 		["kc_jeweler", 0.75, Vector3(9.75, 0.92, 0.75), 0.0, Vector3(9.75, 0.0, 1.45)],
 	]
 	for r: Array in rows:
 		var s: VariantSlot = _slot(kc, "keycard", String(r[0]), float(r[1]))
-		_prefab(s, "keycard_pickup", "Keycard", r[2], float(r[3]), {"objective_tag": &"keycard"}, r[4])
+		_prefab(s, "keycard_pickup", "Keycard", r[2], float(r[3]), {"objective_tag": &"keycard"}, r[4], r[5] if r.size() > 5 else {})
 		if String(r[0]) == "kc_jeweler":
 			# The card on the bench implies the jeweler is working (doc: kc_jeweler requires jw_working).
 			_spawn(s, "Jeweler", "CIVILIAN", Vector3(8.5, 0.0, 1.45), 0.0, ["civ_staff_workshop"], "desk_work", "")

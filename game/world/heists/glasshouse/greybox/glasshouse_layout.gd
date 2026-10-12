@@ -308,7 +308,7 @@ const ANCHORS: Array = [
 	["G9", "MopBucket", "prop_mop_bucket", Vector3(15.47, 0.0, 3.292), 180.0, {}],
 	["G9", "LightSwitch", "prop_light_switch", Vector3(14.6, 1.2, 4.0), -90.0, {}],
 	["G7", "ITRack", "prop_it_rack", Vector3(0.55, 0.0, 0.612), 180.0, {}],
-	# U1 break room (kc_breakroom lies on the lockers: they carry it)
+	# U1 break room (kc_breakroom on the break table's locker end: the lockers' top was not aimable)
 	["U1", "BreakTable", "prop_table_break", Vector3(3.0, UPPER, 2.3), 0.0, {}],
 	["U1", "BreakLockers", "prop_lockers", Vector3(0.472, UPPER, 2.6), -90.0, {"support": true}],
 	["U1", "KitchenCounter", "prop_kitchen_counter", Vector3(5.063, UPPER, 1.42), 90.0, {}],
