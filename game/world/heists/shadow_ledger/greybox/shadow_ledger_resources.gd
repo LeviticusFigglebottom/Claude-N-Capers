@@ -138,59 +138,6 @@ static func read_uid(path: String) -> String:
 	return m.get_string(1) if m != null else ""
 
 
-## Drops property overrides that PackedScene.pack records inside nested imported models of an
-## editable prop instance (`…/Model` subtrees: the editable flag is only there to override the
-## prop's own Light), plus the sub-resources only they used, so a re-imported glb is never shadowed
-## by a stale embedded mesh.
-static func strip_nested_overrides(path: String) -> void:
-	var abs_path: String = ProjectSettings.globalize_path(path)
-	var f: FileAccess = FileAccess.open(abs_path, FileAccess.READ)
-	var lines: PackedStringArray = f.get_as_text().split("\n")
-	f.close()
-	var out: PackedStringArray = PackedStringArray()
-	var skipping: bool = false
-	for line: String in lines:
-		if line.begins_with("["):
-			skipping = (line.begins_with("[node ") and line.contains("/Model\"")) \
-				or (line.begins_with("[editable ") and line.contains("/Model\""))
-			if line.begins_with("[editable ") and skipping:
-				skipping = false
-				continue
-		if not skipping:
-			out.append(line)
-	# Blocks start at "[" lines; drop sub_resource blocks nothing references any more (repeat: a
-	# removed mesh may have been the only user of its materials).
-	var blocks: Array[String] = []
-	var cur: PackedStringArray = PackedStringArray()
-	for line2: String in out:
-		if line2.begins_with("[") and not cur.is_empty():
-			blocks.append("\n".join(cur))
-			cur = PackedStringArray()
-		cur.append(line2)
-	blocks.append("\n".join(cur))
-	var decl: RegEx = RegEx.create_from_string("^\\[sub_resource [^\\n]*id=\"([^\"]+)\"")
-	var ref: RegEx = RegEx.create_from_string("SubResource\\(\"([^\"]+)\"\\)")
-	var removed: bool = true
-	while removed:
-		removed = false
-		var used: Dictionary = {}
-		for blk: String in blocks:
-			for m: RegExMatch in ref.search_all(blk):
-				used[m.get_string(1)] = true
-		var kept: Array[String] = []
-		for blk2: String in blocks:
-			var d: RegExMatch = decl.search(blk2)
-			if d != null and not used.has(d.get_string(1)):
-				removed = true
-				continue
-			kept.append(blk2)
-		blocks = kept
-	var text: String = "\n".join(blocks)
-	var w: FileAccess = FileAccess.open(abs_path, FileAccess.WRITE)
-	w.store_string(text)
-	w.close()
-
-
 ## Rewrites the random parts of a saved .tscn (ext/sub resource ids, node unique_ids) as
 ## sequential values so reruns are byte-identical, and keeps the scene's previous uid.
 static func normalize_scene(path: String, old_uid: String) -> void:

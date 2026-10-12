@@ -1,8 +1,0 @@
-asset: prop_table_conference
-script: tools/blender/props/tower.py
-params: {"cat": {"clear": 0.8, "group": "tower", "kind": "table", "pin_only": true, "place": "center", "support": true, "top": 0.74}, "d": 1.2, "fn": "table_racetrack", "w": 3.0}
-seed: 560719340  (zlib.crc32(asset_id))
-generator: Blender 4.5, tools/blender/lib 1.0.0
-rebuild: python3 tools/blender/build.py --category props --asset prop_table_conference
-edit policy: generated file, never edit by hand; change the script and rebuild
-tri_budget: 16000

@@ -1,8 +1,0 @@
-asset: prop_laptop
-script: tools/blender/props/tower.py
-params: {"cat": {"group": "tower", "hosts": ["desk", "table"], "kind": "laptop", "place": "on"}, "fn": "laptop"}
-seed: 3435988889  (zlib.crc32(asset_id))
-generator: Blender 4.5, tools/blender/lib 1.0.0
-rebuild: python3 tools/blender/build.py --category props --asset prop_laptop
-edit policy: generated file, never edit by hand; change the script and rebuild
-tri_budget: 16000

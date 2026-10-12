@@ -226,38 +226,6 @@
   "weight": 1.0,
   "z": 0.0
  },
- "prop_bar_counter": {
-  "aabb": [
-   -1.22,
-   0.0,
-   -0.4444,
-   2.44,
-   1.1,
-   0.7444
-  ],
-  "clear": 0.9,
-  "fixture": false,
-  "glb": "res://assets/props/prop_bar_counter/prop_bar_counter.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "counter_bar",
-  "mount": "",
-  "nodes": [
-   "Bar"
-  ],
-  "place": "wall",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_bar_counter.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": true,
-  "top": 1.1,
-  "visibility_range_end": 60.0,
-  "weight": 1.0,
-  "z": 0.0
- },
  "prop_barrier_jersey": {
   "aabb": [
    -1.0,
@@ -319,39 +287,6 @@
   "support": false,
   "top": 0.0,
   "visibility_range_end": 0.0,
-  "weight": 1.0,
-  "z": 0.0
- },
- "prop_bed_double": {
-  "aabb": [
-   -1.0,
-   0.0,
-   -1.035,
-   2.0,
-   1.2,
-   2.135
-  ],
-  "clear": 0.6,
-  "fixture": false,
-  "glb": "res://assets/props/prop_bed_double/prop_bed_double.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "bed",
-  "mount": "",
-  "nodes": [
-   "Bed",
-   "Pelvis"
-  ],
-  "place": "wall",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_bed_double.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": true,
-  "top": 0.55,
-  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1376,42 +1311,6 @@
   "place": "seat",
   "prefab": "",
   "scene": "res://world/props/sales/prop_chair_consult.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": false,
-  "top": 0.0,
-  "visibility_range_end": 60.0,
-  "weight": 1.0,
-  "z": 0.0
- },
- "prop_chair_dining": {
-  "aabb": [
-   -0.23,
-   0.0,
-   -0.25,
-   0.46,
-   0.95,
-   0.5198
-  ],
-  "clear": 0.0,
-  "fixture": false,
-  "glb": "res://assets/props/prop_chair_dining/prop_chair_dining.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [
-   "table"
-  ],
-  "keepout": [],
-  "kind": "chair",
-  "mount": "",
-  "nodes": [
-   "Chair",
-   "Seat"
-  ],
-  "pin_only": true,
-  "place": "seat",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_chair_dining.tscn",
   "seat_side": "front",
   "standoff": 0.0,
   "support": false,
@@ -4228,78 +4127,6 @@
   "weight": 1.0,
   "z": 0.0
  },
- "prop_lamp_bedside": {
-  "aabb": [
-   -0.13,
-   0.0,
-   -0.13,
-   0.26,
-   0.46,
-   0.26
-  ],
-  "clear": 0.0,
-  "fixture": true,
-  "glb": "res://assets/props/prop_lamp_bedside/prop_lamp_bedside.glb",
-  "group": "tower",
-  "has_light": true,
-  "hosts": [
-   "nightstand",
-   "side_table",
-   "credenza"
-  ],
-  "keepout": [],
-  "kind": "table_lamp",
-  "mount": "",
-  "nodes": [
-   "Lamp"
-  ],
-  "pin_only": true,
-  "place": "on",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_lamp_bedside.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": false,
-  "top": 0.0,
-  "visibility_range_end": 25.0,
-  "weight": 1.0,
-  "z": 0.0
- },
- "prop_laptop": {
-  "aabb": [
-   -0.165,
-   0.0,
-   -0.115,
-   0.33,
-   0.2278,
-   0.2921
-  ],
-  "clear": 0.0,
-  "fixture": false,
-  "glb": "res://assets/props/prop_laptop/prop_laptop.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [
-   "desk",
-   "table"
-  ],
-  "keepout": [],
-  "kind": "laptop",
-  "mount": "",
-  "nodes": [
-   "Laptop"
-  ],
-  "place": "on",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_laptop.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": false,
-  "top": 0.0,
-  "visibility_range_end": 25.0,
-  "weight": 1.0,
-  "z": 0.0
- },
  "prop_leaflet_rack": {
   "aabb": [
    -0.25,
@@ -4484,38 +4311,6 @@
   "place": "none",
   "prefab": "loot_bag",
   "scene": "res://world/props/loot_bag/prop_loot_bag_medium.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": false,
-  "top": 0.0,
-  "visibility_range_end": 0.0,
-  "weight": 1.0,
-  "z": 0.0
- },
- "prop_lounger": {
-  "aabb": [
-   -0.35,
-   0.0,
-   -0.95,
-   0.7,
-   0.8199,
-   1.7562
-  ],
-  "clear": 0.4,
-  "fixture": false,
-  "glb": "res://assets/props/prop_lounger/prop_lounger.glb",
-  "group": "exterior",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "lounger",
-  "mount": "",
-  "nodes": [
-   "Lounger"
-  ],
-  "place": "floor",
-  "prefab": "",
-  "scene": "res://world/props/exterior/prop_lounger.tscn",
   "seat_side": "front",
   "standoff": 0.0,
   "support": false,
@@ -4965,38 +4760,6 @@
   "weight": 1.0,
   "z": 0.0
  },
- "prop_nightstand": {
-  "aabb": [
-   -0.255,
-   0.0,
-   -0.237,
-   0.51,
-   0.55,
-   0.447
-  ],
-  "clear": 0.0,
-  "fixture": false,
-  "glb": "res://assets/props/prop_nightstand/prop_nightstand.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "nightstand",
-  "mount": "",
-  "nodes": [
-   "Nightstand"
-  ],
-  "place": "wall",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_nightstand.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": true,
-  "top": 0.55,
-  "visibility_range_end": 25.0,
-  "weight": 1.0,
-  "z": 0.0
- },
  "prop_note_counter": {
   "aabb": [
    -0.13,
@@ -5358,38 +5121,6 @@
   "weight": 1.0,
   "z": 0.0
  },
- "prop_patio_heater": {
-  "aabb": [
-   -0.43,
-   0.0,
-   -0.43,
-   0.86,
-   2.24,
-   0.86
-  ],
-  "clear": 0.0,
-  "fixture": true,
-  "glb": "res://assets/props/prop_patio_heater/prop_patio_heater.glb",
-  "group": "exterior",
-  "has_light": true,
-  "hosts": [],
-  "keepout": [],
-  "kind": "heater",
-  "mount": "",
-  "nodes": [
-   "Heater"
-  ],
-  "place": "floor",
-  "prefab": "",
-  "scene": "res://world/props/exterior/prop_patio_heater.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": false,
-  "top": 0.0,
-  "visibility_range_end": 0.0,
-  "weight": 1.0,
-  "z": 0.0
- },
  "prop_pen_cup": {
   "aabb": [
    -0.0397,
@@ -5566,38 +5297,6 @@
   "weight": 1.0,
   "z": 0.0
  },
- "prop_piano_grand": {
-  "aabb": [
-   -0.756,
-   0.0,
-   -1.25,
-   1.518,
-   0.975,
-   2.5178
-  ],
-  "clear": 0.6,
-  "fixture": false,
-  "glb": "res://assets/props/prop_piano_grand/prop_piano_grand.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "piano",
-  "mount": "",
-  "nodes": [
-   "Piano"
-  ],
-  "place": "floor",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_piano_grand.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": false,
-  "top": 0.0,
-  "visibility_range_end": 60.0,
-  "weight": 1.0,
-  "z": 0.0
- },
  "prop_plant_small": {
   "aabb": [
    -0.0842,
@@ -5698,71 +5397,6 @@
   "support": false,
   "top": 0.0,
   "visibility_range_end": 0.0,
-  "weight": 1.0,
-  "z": 0.0
- },
- "prop_planter_terrace": {
-  "aabb": [
-   -1.2,
-   0.0,
-   -0.4,
-   2.4,
-   1.1371,
-   0.8
-  ],
-  "clear": 0.0,
-  "fixture": false,
-  "glb": "res://assets/props/prop_planter_terrace/prop_planter_terrace.glb",
-  "group": "exterior",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "planter",
-  "mount": "",
-  "nodes": [
-   "Planter"
-  ],
-  "pin_only": true,
-  "place": "wall",
-  "prefab": "",
-  "scene": "res://world/props/exterior/prop_planter_terrace.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": false,
-  "top": 0.0,
-  "visibility_range_end": 0.0,
-  "weight": 1.0,
-  "z": 0.0
- },
- "prop_plinth": {
-  "aabb": [
-   -0.25,
-   0.0,
-   -0.25,
-   0.5,
-   1.1,
-   0.5
-  ],
-  "clear": 0.4,
-  "fixture": false,
-  "glb": "res://assets/props/prop_plinth/prop_plinth.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "plinth",
-  "mount": "",
-  "nodes": [
-   "Plinth"
-  ],
-  "place": "floor",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_plinth.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": true,
-  "top": 1.1,
-  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -5928,46 +5562,6 @@
   "weight": 1.0,
   "z": 0.0
  },
- "prop_reception_desk": {
-  "aabb": [
-   -1.52,
-   0.0,
-   -0.4,
-   3.04,
-   1.05,
-   0.804
-  ],
-  "clear": 1.0,
-  "fixture": false,
-  "glb": "res://assets/props/prop_reception_desk/prop_reception_desk.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [
-   [
-    -1.6,
-    -0.1,
-    1.6,
-    0.5
-   ]
-  ],
-  "kind": "counter_transaction",
-  "mount": "",
-  "nodes": [
-   "Desk"
-  ],
-  "pin_only": true,
-  "place": "wall",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_reception_desk.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": true,
-  "top": 1.05,
-  "visibility_range_end": 0.0,
-  "weight": 1.0,
-  "z": 0.0
- },
  "prop_ring_tray": {
   "aabb": [
    -0.12,
@@ -6001,39 +5595,6 @@
   "support": false,
   "top": 0.0,
   "visibility_range_end": 25.0,
-  "weight": 1.0,
-  "z": 0.0
- },
- "prop_rug_dining": {
-  "aabb": [
-   -2.0,
-   0.0,
-   -1.5,
-   4.0,
-   0.014,
-   3.0
-  ],
-  "clear": 0.0,
-  "fixture": false,
-  "glb": "res://assets/props/prop_rug_dining/prop_rug_dining.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "rug",
-  "mount": "",
-  "nodes": [
-   "Rug"
-  ],
-  "pin_only": true,
-  "place": "rug",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_rug_dining.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": true,
-  "top": 0.0,
-  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -6764,39 +6325,6 @@
   "weight": 1.0,
   "z": 0.0
  },
- "prop_table_boardroom": {
-  "aabb": [
-   -2.104,
-   0.0,
-   -0.654,
-   4.2085,
-   0.74,
-   1.3085
-  ],
-  "clear": 0.8,
-  "fixture": false,
-  "glb": "res://assets/props/prop_table_boardroom/prop_table_boardroom.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "table",
-  "mount": "",
-  "nodes": [
-   "Table"
-  ],
-  "pin_only": true,
-  "place": "center",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_table_boardroom.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": true,
-  "top": 0.74,
-  "visibility_range_end": 0.0,
-  "weight": 1.0,
-  "z": 0.0
- },
  "prop_table_break": {
   "aabb": [
    -0.6033,
@@ -6825,72 +6353,6 @@
   "standoff": 0.0,
   "support": true,
   "top": 0.0,
-  "visibility_range_end": 60.0,
-  "weight": 1.0,
-  "z": 0.0
- },
- "prop_table_conference": {
-  "aabb": [
-   -1.5,
-   0.0,
-   -0.6,
-   3.0,
-   0.744,
-   1.2
-  ],
-  "clear": 0.8,
-  "fixture": false,
-  "glb": "res://assets/props/prop_table_conference/prop_table_conference.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "table",
-  "mount": "",
-  "nodes": [
-   "Table"
-  ],
-  "pin_only": true,
-  "place": "center",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_table_conference.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": true,
-  "top": 0.74,
-  "visibility_range_end": 60.0,
-  "weight": 1.0,
-  "z": 0.0
- },
- "prop_table_dining": {
-  "aabb": [
-   -1.204,
-   0.0,
-   -0.504,
-   2.4085,
-   0.74,
-   1.0085
-  ],
-  "clear": 0.8,
-  "fixture": false,
-  "glb": "res://assets/props/prop_table_dining/prop_table_dining.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "table",
-  "mount": "",
-  "nodes": [
-   "Table"
-  ],
-  "pin_only": true,
-  "place": "center",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_table_dining.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": true,
-  "top": 0.74,
   "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
@@ -7092,38 +6554,6 @@
   "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 0.0
- },
- "prop_tv_wall": {
-  "aabb": [
-   -0.825,
-   -0.475,
-   -0.059,
-   1.65,
-   0.95,
-   0.059
-  ],
-  "clear": 0.0,
-  "fixture": false,
-  "glb": "res://assets/props/prop_tv_wall/prop_tv_wall.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "tv",
-  "mount": "wall",
-  "nodes": [
-   "Display"
-  ],
-  "place": "wall_mount",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_tv_wall.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": false,
-  "top": 0.0,
-  "visibility_range_end": 60.0,
-  "weight": 1.0,
-  "z": 1.45
  },
  "prop_ultrasonic_cleaner": {
   "aabb": [
@@ -7520,38 +6950,6 @@
   "weight": 1.0,
   "z": 3.0
  },
- "prop_wardrobe": {
-  "aabb": [
-   -0.815,
-   0.0,
-   -0.332,
-   1.63,
-   2.1,
-   0.632
-  ],
-  "clear": 0.7,
-  "fixture": false,
-  "glb": "res://assets/props/prop_wardrobe/prop_wardrobe.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "wardrobe",
-  "mount": "",
-  "nodes": [
-   "Wardrobe"
-  ],
-  "place": "wall",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_wardrobe.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": false,
-  "top": 0.0,
-  "visibility_range_end": 60.0,
-  "weight": 1.0,
-  "z": 0.0
- },
  "prop_water_cooler": {
   "aabb": [
    -0.16,
@@ -7850,38 +7248,6 @@
   "support": false,
   "top": 0.0,
   "visibility_range_end": 0.0,
-  "weight": 1.0,
-  "z": 0.0
- },
- "prop_wine_rack": {
-  "aabb": [
-   -0.61,
-   0.0,
-   -0.21,
-   1.22,
-   2.0,
-   0.41
-  ],
-  "clear": 0.7,
-  "fixture": false,
-  "glb": "res://assets/props/prop_wine_rack/prop_wine_rack.glb",
-  "group": "tower",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "wine_rack",
-  "mount": "",
-  "nodes": [
-   "Rack"
-  ],
-  "place": "wall",
-  "prefab": "",
-  "scene": "res://world/props/tower/prop_wine_rack.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": false,
-  "top": 0.0,
-  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },

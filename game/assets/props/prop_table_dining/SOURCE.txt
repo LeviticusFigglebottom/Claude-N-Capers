@@ -1,8 +1,0 @@
-asset: prop_table_dining
-script: tools/blender/props/tower.py
-params: {"bases": 2, "cat": {"clear": 0.8, "group": "tower", "kind": "table", "pin_only": true, "place": "center", "support": true, "top": 0.74}, "d": 1.0, "fn": "table_slab", "w": 2.4}
-seed: 7046905  (zlib.crc32(asset_id))
-generator: Blender 4.5, tools/blender/lib 1.0.0
-rebuild: python3 tools/blender/build.py --category props --asset prop_table_dining
-edit policy: generated file, never edit by hand; change the script and rebuild
-tri_budget: 16000

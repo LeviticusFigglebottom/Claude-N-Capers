@@ -1,8 +1,0 @@
-asset: prop_reception_desk
-script: tools/blender/props/tower.py
-params: {"cat": {"clear": 1.0, "group": "tower", "keepout": [[-1.6, -0.1, 1.6, 0.5]], "kind": "counter_transaction", "pin_only": true, "place": "wall", "support": true, "top": 1.05}, "fn": "reception_desk"}
-seed: 4248019023  (zlib.crc32(asset_id))
-generator: Blender 4.5, tools/blender/lib 1.0.0
-rebuild: python3 tools/blender/build.py --category props --asset prop_reception_desk
-edit policy: generated file, never edit by hand; change the script and rebuild
-tri_budget: 16000

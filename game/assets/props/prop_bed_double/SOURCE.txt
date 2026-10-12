@@ -1,8 +1,0 @@
-asset: prop_bed_double
-script: tools/blender/props/tower.py
-params: {"cat": {"clear": 0.6, "group": "tower", "kind": "bed", "place": "wall", "support": true, "top": 0.55}, "fn": "bed_double"}
-seed: 368999723  (zlib.crc32(asset_id))
-generator: Blender 4.5, tools/blender/lib 1.0.0
-rebuild: python3 tools/blender/build.py --category props --asset prop_bed_double
-edit policy: generated file, never edit by hand; change the script and rebuild
-tri_budget: 16000

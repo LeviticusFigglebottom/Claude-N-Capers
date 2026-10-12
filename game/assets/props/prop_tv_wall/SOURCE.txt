@@ -1,8 +1,0 @@
-asset: prop_tv_wall
-script: tools/blender/props/tower.py
-params: {"cat": {"group": "tower", "kind": "tv", "place": "wall_mount", "z": 1.45}, "fn": "tv_wall"}
-seed: 3895895039  (zlib.crc32(asset_id))
-generator: Blender 4.5, tools/blender/lib 1.0.0
-rebuild: python3 tools/blender/build.py --category props --asset prop_tv_wall
-edit policy: generated file, never edit by hand; change the script and rebuild
-tri_budget: 16000

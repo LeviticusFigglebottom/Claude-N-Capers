@@ -213,10 +213,8 @@ KITS: dict[str, dict] = {
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from _kits_bank import BANK_KITS  # noqa: E402  (Night Deposit kits)
-from _kits_tower import TOWER_KITS  # noqa: E402  (Shadow Ledger kits)
 
 KITS.update(BANK_KITS)
-KITS.update(TOWER_KITS)
 
 
 def _sn(s: str) -> str:
