@@ -25,6 +25,13 @@ Newest entry first, keep the last 10.
   Downs 0 / 0/0 ammo. That may just be a slow first frame, not a bug, so nothing is logged as a game issue.
   The process used 2.8 GB RSS with other envs' tests running, so I stopped it. Real hand play needs a GPU
   machine (Aaron's) or a lighter renderer (e.g. --rendering-driver opengl3 / compatibility) to try next.
+- Retry with `--rendering-method gl_compatibility --rendering-driver opengl3` at 960x540: the HUD now fills
+  in (Armor 20, Health 230, 3 downs, 17/136, AI 1-3 cards, "Unmasked: casing"), but the 3D world draws
+  black (llvmpipe + compatibility), so no AI or interaction play was possible. Things seen, not in A's area:
+  - [B] objective line shows the raw text "Secure the bags ({count}/{total})" (placeholders not filled in).
+  - [P] the FP weapon viewmodel is drawn while unmasked/casing (PD2: no weapon while casing; CrewView only
+    hides it for civilians). Could be intended, worth a P check.
+  No A issues logged: guards, civilians, pagers and interact timing still need a GPU session.
 
 ## 2026-10-12 19:00 ET: S9.5 doors, phase-2/4 keys, L2.4, fidelity table, A4-04 start
 ### Done (local; targeted tests PASS under timeout; gdlint clean on changed files)
