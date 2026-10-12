@@ -87,6 +87,7 @@ ui.hud.captain_resistance,Aegis field: {pct}% damage resistance
 ui.hud.interaction_progress,{percent}%
 ui.prompt.interact,Hold {key} to interact
 ui.prompt.answer_pager,Hold {key} to answer the pager
+ui.hud.dominate_prompt,Press {key} to make the guard surrender ({seconds} s)
 ui.prompt.bag_body,Hold {key} to bag the body
 ui.prompt.tie_civilian,Hold {key} to tie up
 ui.prompt.intimidate,Press {key} to shout

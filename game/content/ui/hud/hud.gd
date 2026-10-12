@@ -39,6 +39,8 @@ var model: Node = null
 var chevrons: DetectionChevrons
 var marks: MarkedTargets
 var interaction: InteractionPanel
+## PP-A-1: guard-domination prompt (above the interaction prompt).
+var dominate: DominatePrompt
 var vitals: VitalsPanel
 var ammo: AmmoPanel
 var pager: PagerPanel
@@ -82,7 +84,7 @@ func bind(m: Node) -> void:
 
 
 func widgets() -> Array[HudWidget]:
-	return [chevrons, marks, interaction, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina,
+	return [chevrons, marks, interaction, dominate, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina,
 			scoreboard]
 
 
@@ -94,6 +96,7 @@ func _build() -> void:
 	crosshair.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_place(crosshair, Control.PRESET_CENTER, Vector2(-20, -20), Vector2(40, 40))
 	interaction = _place(InteractionPanel.new(), Control.PRESET_CENTER, Vector2(-300, 60), Vector2(600, 110)) as InteractionPanel
+	dominate = _place(DominatePrompt.new(), Control.PRESET_CENTER, Vector2(-360, -130), Vector2(720, 56)) as DominatePrompt
 	stamina = _place(StaminaBar.new(), Control.PRESET_BOTTOM_LEFT, Vector2(48, -248), Vector2(340, 40)) as StaminaBar
 	vitals = _place(VitalsPanel.new(), Control.PRESET_BOTTOM_LEFT, Vector2(48, -200), Vector2(340, 160)) as VitalsPanel
 	ammo = _place(AmmoPanel.new(), Control.PRESET_BOTTOM_RIGHT, Vector2(-388, -200), Vector2(340, 160)) as AmmoPanel

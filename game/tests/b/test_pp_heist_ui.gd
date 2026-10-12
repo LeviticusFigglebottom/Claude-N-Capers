@@ -136,3 +136,39 @@ func test_mission_end_keyboard_only() -> void:
 	assert_true(done[0], "Enter on Continue leaves the payday")
 	s.queue_free()
 	await wait_frames(1)
+
+
+## Lead bug: "Secure the bags ({count}/{total})" showed raw. Missions pass {"bags": N}; the panel fills
+## total from bags and count from secured bags, and never shows raw braces.
+func test_objective_placeholders_filled() -> void:
+	_model.objectives = [{"id": &"secure", "text_key": &"objective.glasshouse.secure",
+			"args": {"bags": 2, "optional_more": true}, "state": Enums.ObjectiveState.ACTIVE}]
+	await wait_frames(1)
+	var l: Label = _hud.objectives.list_box.get_child(0) as Label
+	assert_false(l.text.contains("{"), "no raw placeholder: " + l.text)
+	assert_true(l.text.contains("0/2"), "count/total filled: " + l.text)
+	EventBus.loot_secured.emit(7, &"loot.jewelry", 1000)
+	await wait_frames(1)
+	l = _hud.objectives.list_box.get_child(0) as Label
+	assert_true(l.text.contains("1/2"), "count follows secured bags: " + l.text)
+	var raw: String = ObjectivesPanel.objective_text({"text_key": &"objective.glasshouse.secure", "args": {}})
+	assert_false(raw.contains("{"), "unknown total drops the ( ) group: " + raw)
+	assert_eq(ObjectivesPanel.objective_text({"text_key": &"objective.glasshouse.secure",
+			"args": {"count": 3, "total": 4}}), UiText.t(&"objective.glasshouse.secure", {"count": 3, "total": 4}))
+
+
+## PP-A-1: domination prompt visible while dominate_target != 0, hidden at 0, names the shout key.
+func test_dominate_prompt_follows_guard_id() -> void:
+	assert_false(_hud.dominate.visible, "hidden with no guard")
+	_model.dominate_window_s = 2.4
+	_model.dominate_target = 4711
+	await wait_frames(1)
+	assert_true(_hud.dominate.visible, "shown for a guard id")
+	_on_screen(_hud.dominate, "domination prompt")
+	var key: String = InteractionPanel.action_key_text(&"shout")
+	assert_ne(key, "")
+	assert_true(_hud.dominate.prompt_label.text.contains(key), _hud.dominate.prompt_label.text)
+	assert_true(_hud.dominate.prompt_label.text.contains("2.4"), _hud.dominate.prompt_label.text)
+	_model.dominate_target = 0
+	await wait_frames(1)
+	assert_false(_hud.dominate.visible, "hidden again at 0")
