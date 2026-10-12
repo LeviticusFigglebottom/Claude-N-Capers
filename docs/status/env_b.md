@@ -14,9 +14,12 @@ Newest entry first, keep the last 10.
 - Trunk 930e6013 (round 33) merged (0771daef).
 ### In progress
 - None. P5 contract data is NOT started (D-076 pause). No local P5 edits.
+- Resume point (wind-down): all work is committed. Trunk 4e6c9af6 (incl. a2d82434 flake fix) merged at bb5d7eb9.
+  If env/b-content on origin is behind local HEAD, run `tools/ci/check_all.sh --env b` and push.
 ### Next
 - When P5 resumes: read-only notes for it are in the lead report (painting_study value conflict, point-label collisions, Rolling Thunder mode label, Afterhours escape_options, `dj` speaker).
 ### Notes
+- Runs 1 and 2 of check_all (before the a2d82434 merge) also failed on stale origin trunk (ownership) and one gdlint line (fixed in 5d6c920e).
 - First full check_all here failed one ENV A test once (test_b4_18_special_weapons:test_parts_animator_drives_named_parts); it passed 2/2 on rerun in isolation. Looks flaky.
 ### Ready for integration
 - see the CHECK_ALL line in the commit/report
