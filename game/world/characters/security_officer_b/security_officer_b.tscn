@@ -3,6 +3,7 @@
 [ext_resource type="AnimationLibrary" path="res://world/characters/anim_humanoid.res" id="1_anim"]
 [ext_resource type="PackedScene" path="res://assets/characters/char_security_officer_b/char_security_officer_b.glb" id="1_glb"]
 [ext_resource type="ArrayMesh" path="res://world/characters/security_officer_b/security_officer_b_lod.res" id="3_lod"]
+[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="3_tair2"]
 
 [sub_resource type="Skin" id="skin_lod"]
 resource_name = "Skin"
@@ -232,6 +233,7 @@ visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")
 skeleton = NodePath("..")
+script = ExtResource("3_tair2")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="1" unique_id=901537749]
 libraries/humanoid = ExtResource("1_anim")

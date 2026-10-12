@@ -3,6 +3,16 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12: session 3c (D-084 self-subscribe; local only, pushes need Aaron's approval)
+- CrowdLod subscribes itself: every proxy carries `_tools/crowd_lod_proxy.gd`, which creates one
+  `/root/CrowdLodZoom` watcher (`_tools/crowd_lod_zoom.gd`). It calls `CrewView.local_view()` and connects
+  `zoom_factor_changed(f)` -> `CrowdLod.apply_zoom_all(tree, f)`; re-checked when a CrewView enters the tree (spawn),
+  reset to 1x when the view leaves; late-spawned proxies get the current zoom. No CrewView class / `local_view` /
+  signal = no-op (P's b0fceb0c not on trunk yet). Test `test_crowd_lod_subscribes_to_zoom`; `run_tests.sh d` 115/0.
+- Accent check at 720p (fp_30m/fp_40m): Corpsman white shoulder caps read clearly at 30 and 40 m. TAC Heavy steel
+  trim reads at 30 m, faint at 40 m (mid-grey on near-black). Security white cap band does not read at 30-40 m
+  (a few pixels); the light-blue shirt already carries that silhouette. Possible follow-up: brighter TAC Heavy trim.
+
 ## 2026-10-12: session 3b (lead rulings D-080, D-084, accents)
 ### Done (pushed to origin/env/d-art at 4cc3d516)
 - 12bc7737 D-080: specials (char_specials.py) keep LOD0/1 only: no CrowdLod, 22 `*_lod.res` removed (LOD res now

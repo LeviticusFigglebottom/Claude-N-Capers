@@ -168,3 +168,40 @@ func test_zoom_scales_crowd_lod_switch() -> void:
 	assert_false(CrowdLod.apply_zoom(special, 4.0), "specials have nothing to scale")
 	special.free()
 	root.queue_free()
+
+
+class _SignalView extends Node:
+	signal zoom_factor_changed(f: float)
+	var zoom_factor: float = 1.0
+
+
+## D-084: a CrowdLod entering the tree creates the watcher; with no CrewView.local_view it is a no-op;
+## a view's zoom_factor_changed drives the switch; the view leaving resets to 1x.
+func test_crowd_lod_subscribes_to_zoom() -> void:
+	var Zoom: GDScript = load("res://world/characters/_tools/crowd_lod_zoom.gd") as GDScript
+	var root: Node3D = (load("res://world/characters/club_patron/club_patron.tscn") as PackedScene).instantiate() as Node3D
+	add_child(root)
+	await get_tree().process_frame
+	var w: Node = get_tree().root.get_node_or_null(NodePath(Zoom.NODE_NAME))
+	assert_true(w != null, "watcher created by the CrowdLod proxy")
+	if w == null:
+		root.queue_free()
+		return
+	w.call(&"recheck")
+	var proxy: MeshInstance3D = root.get_node("Skeleton3D/CrowdLod") as MeshInstance3D
+	var base: float = float(proxy.get_meta(CrowdLod.META_BASE, proxy.visibility_range_begin))
+	var view: _SignalView = _SignalView.new()
+	add_child(view)
+	w.call(&"subscribe", view)
+	view.zoom_factor_changed.emit(4.0)
+	assert_near(proxy.visibility_range_begin, base * 4.0, 0.001, "zoom_factor_changed(4) scales the switch")
+	var late: Node3D = (load("res://world/characters/club_patron_b/club_patron_b.tscn") as PackedScene).instantiate() as Node3D
+	add_child(late)
+	var lp: MeshInstance3D = late.get_node("Skeleton3D/CrowdLod") as MeshInstance3D
+	assert_near(lp.visibility_range_begin, float(lp.get_meta(CrowdLod.META_BASE)) * 4.0, 0.001, "late spawn gets the zoom")
+	view.queue_free()
+	await get_tree().process_frame
+	assert_near(proxy.visibility_range_begin, base, 0.001, "view gone -> back to 1x")
+	assert_false(bool(w.call(&"is_subscribed")), "unsubscribed after the view left")
+	late.queue_free()
+	root.queue_free()

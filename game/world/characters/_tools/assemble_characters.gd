@@ -480,6 +480,7 @@ func _add_crowd_lod(skel: Skeleton3D, source: Dictionary, asset_id: String, scen
 		mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
 	var lod: MeshInstance3D = MeshInstance3D.new()
 	lod.name = CrowdLod.NODE_NAME
+	lod.set_script(load("res://world/characters/_tools/crowd_lod_proxy.gd"))
 	lod.mesh = saved
 	if skin != null:
 		skin.resource_path = ""

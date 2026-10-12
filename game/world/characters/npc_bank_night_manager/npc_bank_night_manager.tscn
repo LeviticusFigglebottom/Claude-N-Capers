@@ -2,6 +2,7 @@
 
 [ext_resource type="AnimationLibrary" path="res://world/characters/anim_humanoid.res" id="1_anim"]
 [ext_resource type="PackedScene" path="res://assets/characters/char_npc_bank_night_manager/char_npc_bank_night_manager.glb" id="1_glb"]
+[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="3_30kpw"]
 [ext_resource type="ArrayMesh" path="res://world/characters/npc_bank_night_manager/npc_bank_night_manager_lod.res" id="3_lod"]
 
 [sub_resource type="Skin" id="skin_lod"]
@@ -228,6 +229,7 @@ visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")
 skeleton = NodePath("..")
+script = ExtResource("3_30kpw")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="1" unique_id=600338343]
 libraries/humanoid = ExtResource("1_anim")
