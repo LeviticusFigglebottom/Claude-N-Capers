@@ -58,6 +58,22 @@ Newest entry first, keep the last 10.
 7. PQ-B-21 Live heist end -> payday -> cards -> Continue -> menus, keyboard and pad (30 min).
 8. PQ-B-1 Switch real-input helpers to PInputDriver (when on trunk) (20 min).
 
+### Round 4 (2026-10-12 ~22:45 UTC)
+- e4ac7a3a Lead bug: objective "Secure the bags ({count}/{total})" showed raw. UiText.t was called, but the missions pass {"bags": N} with no count / total. ObjectivesPanel.objective_text fills total from bags / required and count from secured bags (EventBus.loot_secured), and drops any still-unfilled "( {x} )" group. Mission-side data (ENV C) could also send count / total; not touched.
+- e4ac7a3a PP-A-1: DominatePrompt HUD widget, visible while `dominate_target` != 0 (LocalHudModel on env/a-core), with the shout key and `dominate_window_s`. MockHudModel has the same fields + `dominate_prompt_changed`.
+- 24cd3572 PQ-B-15: gamepad-only skills / perk deck / masks / workshop, open with A and close with B from the loadout.
+- PQ-B-16 (lobby host Ready + Start, pad only) committed after 24cd3572.
+- PQ-B-14 contrast: BLOCKED. The box has no GPU, so only layout / overlap / font px are checked. Contrast needs a rendered capture (lead suggests LIBGL_ALWAYS_SOFTWARE=1 + lavapipe + xvfb-run); not tried yet.
+- Tooling note for lead: when a test file has a parse error, the runner prints "Nonexistent function 'new'" in a loop and never exits (hit a 150 s timeout). It should fail fast.
+### Queue (about 3 h)
+1. PQ-B-17 DimLabel 20 units = 13.3 px at 720p in every menu: sweep, raise to 21 if layouts hold (40 min).
+2. PQ-B-18 Subtitles small / large, two-line wrap, clear of the interaction + domination prompts at hud_scale 1.5 (20 min).
+3. PQ-B-19 Live heist: real interact key on a real interactable, prompt + progress (PInputDriver once on trunk) (40 min).
+4. PQ-B-20 Live heist pause / options with pad Start and B, then resume (30 min).
+5. PQ-B-21 Live heist end -> payday -> cards -> Continue -> menus, keyboard and pad (30 min).
+6. PQ-B-22 HUD contrast captures via xvfb + lavapipe (40 min, may stay blocked).
+7. PQ-B-1 Switch real-input helpers to PInputDriver (when on trunk) (20 min).
+
 ## 2026-10-11 UTC (7): B7 loose ends (lead answers); P5 paused (D-076)
 ### Done
 - B7-01 `profile` station (hub_map v1.1, d1a89b5f): `st_profile` (target `career`, icon `profile`) in data/ui/hub_stations.tres.
