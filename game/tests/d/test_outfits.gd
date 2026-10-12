@@ -41,7 +41,8 @@ func _load(id: String) -> Node3D:
 func _meshes(root: Node) -> Array[MeshInstance3D]:
 	var out: Array[MeshInstance3D] = []
 	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
-		out.append(n as MeshInstance3D)
+		if String(n.name) != "CrowdLod":  # D4-01 LOD2 proxy: checked by test_lod.gd
+			out.append(n as MeshInstance3D)
 	return out
 
 
