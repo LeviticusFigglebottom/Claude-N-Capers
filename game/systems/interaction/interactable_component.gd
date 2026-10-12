@@ -120,4 +120,8 @@ func duration_for(crew: Node) -> float:
 	var slot: int = int(crew.get(&"slot")) if crew != null else -1
 	if speed_modifier_key != &"" and slot >= 0:
 		d *= Modifiers.mult(slot, speed_modifier_key)
+	if slot >= 0:
+		d *= Modifiers.mult(slot, &"interaction.speed_mult")  # phase-2 key: every hold
+		if kind == &"fix_drill":
+			d *= Modifiers.mult(slot, &"interaction.device_fix_speed_mult")  # phase-4 key
 	return maxf(d, 0.0)

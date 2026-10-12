@@ -131,7 +131,7 @@ func dodge_chance() -> float:
 func heal(amount: float, reset_downs: bool = false) -> void:
 	if _crew == null or not Net.is_authority() or _crew.crew_state != Enums.CrewState.NORMAL:
 		return
-	health = minf(health + maxf(amount, 0.0), max_health)
+	health = minf(health + maxf(amount, 0.0) * Modifiers.mult(_slot(), &"defense.healing_received_mult"), max_health)
 	if reset_downs:
 		downs_used = 0
 
@@ -406,7 +406,8 @@ func server_tick(delta: float) -> void:
 func _tick_health_regen(delta: float) -> void:
 	var r: float = Modifiers.add(_slot(), &"defense.health_regen_per_sec")
 	if r > 0.0 and health > 0.0 and health < max_health:
-		health = minf(health + max_health * r * delta, max_health)
+		health = minf(health + max_health * r * delta * Modifiers.mult(_slot(), &"defense.healing_received_mult"),
+			max_health)
 
 
 ## Modifier changes mid-heist rescale the current values (keeps the fraction).
