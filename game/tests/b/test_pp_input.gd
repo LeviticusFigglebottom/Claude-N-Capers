@@ -232,3 +232,107 @@ func test_hub_focus_shows_station_detail() -> void:
 	assert_true(hub.station_detail.is_visible_in_tree())
 	f.queue_free()
 	await wait_frames(1)
+
+
+## PQ-B-9: the urgent window requests one tick cue per whole second (when a cue id is configured).
+func test_payday_urgent_ticks_request_cue() -> void:
+	var s: PaydayScreen = await _payday_cards()
+	var t: PaydayCardsTable = PaydayCards.table()
+	var old_cue: StringName = t.urgent_tick_cue
+	t.urgent_tick_cue = &"cue.detect_tick"  # any registered cue
+	var got: Array[StringName] = []
+	var cb: Callable = func(id: StringName, _p: Vector3, _n: int) -> void: got.append(id)
+	EventBus.audio_cue_requested.connect(cb)
+	s.tick(s.time_left - t.urgent_time_s - 0.5)
+	assert_eq(s.urgent_ticks, 0, "no ticks before the window")
+	for i: int in range(3):
+		s.tick(1.0)
+	assert_eq(s.urgent_ticks, 3)
+	assert_eq(got.count(&"cue.detect_tick"), 3)
+	await _key(KEY_1)
+	s.tick(1.0)
+	assert_eq(s.urgent_ticks, 3, "no ticks after a pick")
+	EventBus.audio_cue_requested.disconnect(cb)
+	t.urgent_tick_cue = old_cue
+	s.queue_free()
+	await wait_frames(1)
+
+
+## PQ-B-9: an unregistered cue id (e.g. cue.payday_tick before ENV C ships it) requests nothing.
+func test_payday_missing_cue_is_silent() -> void:
+	assert_false(PaydayScreen.cue_registered(&"cue.no_such_cue"))
+	var s: PaydayScreen = await _payday_cards()
+	var t: PaydayCardsTable = PaydayCards.table()
+	var old_cue: StringName = t.urgent_tick_cue
+	t.urgent_tick_cue = &"cue.no_such_cue"
+	var got: Array[StringName] = []
+	var cb: Callable = func(id: StringName, _p: Vector3, _n: int) -> void: got.append(id)
+	EventBus.audio_cue_requested.connect(cb)
+	s.tick(s.time_left - 2.5)
+	s.tick(1.0)
+	assert_true(s.urgent_ticks > 0)
+	assert_eq(got.size(), 0, "no request for a missing cue")
+	EventBus.audio_cue_requested.disconnect(cb)
+	t.urgent_tick_cue = old_cue
+	s.queue_free()
+	await wait_frames(1)
+
+
+## PQ-B-10: LB / RB move along the cards (actions added here when project.godot lacks them yet).
+func test_payday_shoulder_buttons_move_focus() -> void:
+	var added: Array[StringName] = []
+	for a: StringName in [&"ui_payday_prev", &"ui_payday_next"]:
+		if not InputMap.has_action(a):
+			InputMap.add_action(a)
+			added.append(a)
+	var s: PaydayScreen = await _payday_cards()
+	s.tick(PaydayScreen.INPUT_GRACE_S + 0.01)
+	s.card_views[0].grab_focus()
+	await wait_frames(1)
+	await _press(&"ui_payday_next")
+	assert_eq(_focused(s), s.card_views[1] as Control, "RB -> next card")
+	await _press(&"ui_payday_prev")
+	await _press(&"ui_payday_prev")
+	assert_eq(_focused(s), s.card_views[s.card_views.size() - 1] as Control, "LB wraps to the last card")
+	assert_eq(s.picked_index, -1, "moving does not pick")
+	for a: StringName in added:
+		InputMap.erase_action(a)
+	s.queue_free()
+	await wait_frames(1)
+
+
+## PQ-B-10: the real RB joypad button (when project.godot maps ui_payday_next) moves focus and is consumed.
+func test_payday_rb_joypad_button() -> void:
+	if not InputMap.has_action(&"ui_payday_next") or InputMap.action_get_events(&"ui_payday_next").is_empty():
+		skip("ui_payday_next not mapped in project.godot yet")
+		return
+	var jb: InputEventJoypadButton = InputMap.action_get_events(&"ui_payday_next")[0] as InputEventJoypadButton
+	var s: PaydayScreen = await _payday_cards()
+	s.tick(PaydayScreen.INPUT_GRACE_S + 0.01)
+	s.card_views[0].grab_focus()
+	await wait_frames(1)
+	var leaked: Array[bool] = [false]
+	var probe: PpUnhandledProbe = PpUnhandledProbe.new()
+	probe.hit = func() -> void: leaked[0] = true
+	add_child(probe)
+	for down: bool in [true, false]:
+		var e: InputEventJoypadButton = InputEventJoypadButton.new()
+		e.button_index = jb.button_index
+		e.pressed = down
+		Input.parse_input_event(e)
+		await wait_frames(2)
+	assert_eq(_focused(s), s.card_views[1] as Control, "RB button -> next card")
+	assert_false(leaked[0], "RB consumed: gameplay (throw/melee) never sees it")
+	probe.queue_free()
+	s.queue_free()
+	await wait_frames(1)
+
+
+## Records any pressed joypad button that reaches _unhandled_input (stand-in for gameplay input).
+class PpUnhandledProbe:
+	extends Node
+	var hit: Callable
+
+	func _unhandled_input(event: InputEvent) -> void:
+		if event is InputEventJoypadButton and event.is_pressed():
+			hit.call()

@@ -26,8 +26,6 @@ extends UiScreen
 signal continue_pressed()
 
 const MENU_SCENE: String = "res://content/ui/menus/menu_flow.tscn"
-## Seconds left at which the pick timer turns urgent (B-PP-3).
-const URGENT_S: float = 5.0
 const URGENT_COLOR: Color = Color(1.0, 0.42, 0.32)
 ## PQ-B-5: player picks are ignored this long after the cards appear.
 const INPUT_GRACE_S: float = 0.6
@@ -70,6 +68,8 @@ var cards_stage: bool = false
 var card_views: Array[PaydayCardView] = []
 var timer_label: Label
 var card_result_label: Label
+## Urgent-window second ticks so far (PQ-B-9).
+var urgent_ticks: int = 0
 var _content: VBoxContainer
 var _summary: ScrollContainer
 var _cards_root: VBoxContainer
@@ -134,6 +134,7 @@ func show_result(heist_result: Dictionary) -> void:
 		card_roll = PaydayCards.roll(int(result.get("seed", 0)), Net.local_slot(), int(result.get("difficulty", 0)),
 				profile, PaydayCards.quality_add_for(profile))
 		time_left = PaydayCards.table().pick_time_s
+		urgent_ticks = 0
 	if _content != null:
 		_render()
 		_set_stage(false)
@@ -240,7 +241,10 @@ func tick(delta: float) -> void:
 	if not cards_stage or picked_index >= 0:
 		return
 	_input_grace = maxf(_input_grace - delta, 0.0)
+	var before: int = ceili(time_left)
 	time_left = maxf(time_left - delta, 0.0)
+	if timer_is_urgent() and ceili(time_left) < before and time_left > 0.0:
+		_urgent_tick()
 	if time_left <= 0.0:
 		finish_card_pick()
 	_update_timer_label()
@@ -295,9 +299,51 @@ func _reveal() -> void:
 	_update_timer_label()
 
 
-## True while the card stage is waiting for a pick and URGENT_S or less remain.
+## True while the card stage is waiting for a pick and PaydayCardsTable.urgent_time_s or less remain.
+## PQ-B-9: one cue request per whole second in the urgent window (PaydayCardsTable.urgent_tick_cue).
+func _urgent_tick() -> void:
+	urgent_ticks += 1
+	var cue: StringName = PaydayCards.table().urgent_tick_cue
+	if cue_registered(cue):
+		EventBus.audio_cue_requested.emit(cue, Vector3.ZERO, -1)
+
+
+## True when ENV C's cue registry has `cue_id` (no hard dependency on world/audio; false when absent).
+static func cue_registered(cue_id: StringName) -> bool:
+	if cue_id == &"":
+		return false
+	var reg_script: Script = UiNav.global_class(&"AudioCueRegistry")
+	if reg_script == null:
+		return false
+	var reg: Object = reg_script.call(&"load_default") as Object
+	return reg != null and bool(reg.call(&"has_cue", cue_id))
+
+
+## Gamepad LB / RB (ui_payday_prev / ui_payday_next, once the lead adds them): move along the cards.
+## LB / RB are shared with throw / melee, so this runs in _input (before gameplay's unhandled input),
+## only while focus is inside this screen, and consumes the event.
+func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree() or not cards_stage or picked_index >= 0 or card_views.is_empty():
+		return
+	var owner_ctl: Control = get_viewport().gui_get_focus_owner()
+	if owner_ctl == null or not is_ancestor_of(owner_ctl):
+		return
+	var step: int = 0
+	if InputMap.has_action(&"ui_payday_prev") and event.is_action_pressed(&"ui_payday_prev"):
+		step = -1
+	elif InputMap.has_action(&"ui_payday_next") and event.is_action_pressed(&"ui_payday_next"):
+		step = 1
+	if step == 0:
+		return
+	get_viewport().set_input_as_handled()
+	var cur: int = card_views.find(owner_ctl as PaydayCardView)
+	var n: int = card_views.size()
+	var nxt: int = (maxi(cur, 0) + step + n) % n if cur >= 0 else (0 if step > 0 else n - 1)
+	card_views[nxt].grab_focus()
+
+
 func timer_is_urgent() -> bool:
-	return cards_stage and picked_index < 0 and time_left <= URGENT_S
+	return cards_stage and picked_index < 0 and time_left <= PaydayCards.table().urgent_time_s
 
 
 func _update_timer_label() -> void:
