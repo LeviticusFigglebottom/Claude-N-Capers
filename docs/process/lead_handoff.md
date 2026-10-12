@@ -92,35 +92,30 @@ Common fields: `source_url` = `https://github.com/LeviticusFigglebottom/Claude-N
    `isolation: worktree`, then re-run its result on the merged trunk before merging. Worktrees live
    under `.claude/worktrees/` (gitignored).
 
-## 4. State at handoff (round 32, trunk 5fdfa27, 1651 tests green)
-* **P1 ✅** (D-061). **P3**: the gate tests pass (`test_p3_loud` on dockside_burn 10/10; `test_coop_loopback`
-  on glasshouse seed 3071). **Sign off P3 when Dockside Burn reaches G2** (ENV C is on it): write
-  `docs/process/p3_signoff.md`, a decisions entry, and mark P3 ✅ in the roadmap.
-* **Lead backlog:** P2 gate `test_p2_stealth.gd` (scripted ghost run, 3 seeds per stealth heist) is not
-  written yet. Neither are the P4 gate `test_p4_progression.gd` and the P6 gate (4-client soak, built on
-  ENV A's A4-03 harness).
-* Heists: Glasshouse final (G3); Night Deposit G2 final; Shadow Ledger G2 rendering; Dockside Burn G1
-  → G2 next. P5 G0s approved (D-075): gallery_night, ostrander_federal (renamed from meridian_federal),
-  afterhours, rolling_thunder. Safehouse G0 approved (hub_map.md v1.0).
-* Contracts at: characters 1.10, ui_hud 1.7, events 1.1, net 1.1, groups 1.1, audio_cues 1.3,
-  hub_map 1.0.
+## 4. State at handoff (2026-10-12, Grok Bot team, trunk 64f10747, merge round 34 next)
+* Team = Grok Bot agents on the shared box (communication.md §1, D-078); BOARD + SendToAgent; WSL retired;
+  unpushed WSL work is on `backup/2026-10-12/*`.
+* **Priority (D-082): full practical gameplay pass + real-input player test suite before anything new.**
+  P5 and all new content (incl. B4-12..18) are frozen until it is done (supersedes the narrower D-076).
+  Issue list and suite plan: `docs/process/playability_pass.md`.
+* **P1 ✅** (D-061). **P2** gate `test_p2_stealth.gd` WIP on `lead/p2-gate` (16b9ad96): Night Deposit ghost
+  passes operator → keycard → code → vault_gate on seed 2001; next: antechamber laser walk (see file header).
+  **P3** sign-off waits on Dockside Burn G2 (ENV C). **P4** gate landed 64f10747 (ratchet 69 unhooked + 31
+  untested keys). P6 gate not written.
+* Round 34: env/b-content merged (lead/round-34); env/a-core and env/d-art not yet pushed (WSL work restored
+  from backups, check_all pending).
+* Rulings D-079..D-081 (domination, LODs, painting_study) are decided.
 
-## 5. Env queues at handoff (paste into each resume dispatch)
-* **A:** A4-01 gap fixes in order (S5.8 guard domination, L3.3 pellet headshot, S2.7 DR targeting range,
-  S1.2 mask-up slow-mo, S1.1 casing pickup, L2.1 regen, S8.3 camera loop, S9.5 shaped charges together
-  with A5-03 C4, phase-2/3 modifier keys, L2.4, phase-4 keys, test-only gaps). Then: the fidelity table in
-  docs/status/env_a_fidelity.md, HeistDropIn `full` reason + `Net.was_kicked`, `apply_loadout_finish`
-  in anim_driver/fp_viewmodel, an `escape_arrived` [R] fact, client GameRng seeding, AnimDriver hint
-  clips for the P5 ambient set, BlendSpace2D locomotion (characters v1.10), A4-02 perf (Dockside physics
-  cost: 800+ static bodies, route merging to C), A4-03 soak harness, A5-01/02 armored_truck +
-  convoy_vehicle, the dev_sandbox DropAnchor inside its zone.
-* **B:** B7-01 career stats (save v7 with `weapon_finishes`), B7-02 achievements (~40, unlocks including
-  D's 23 mask bases and the finishes), then the P5 contract data from C's approved G0 `[tag]`s.
-* **C:** Shadow Ledger G2 → Dockside G2 (P3 sign-off; nav bake closes barred gates + a validate check;
-  ≥ 2 non-breach approaches per holdout; G1 notes) → C5-01 music stems → C4-02 safehouse greybox → P5 G1s
-  (gallery_night, ostrander_federal, afterhours, rolling_thunder). Also cues `cue.radio_squelch` and
-  `cue.npc_melee_swing`, mission `say()` lines spoken by the heist contact, and the Night Deposit G3
-  punch list (bank sign, vault cash pallet, teller-window details).
-* **D:** the attachment-socket fix + envelope regen (in progress), D4-01 character LODs, D4-03 four new
-  heisters (Juno, Ash, Hale, Vesper; approved), D4-02 crowd variety, serpent/moth mask polish, and the
-  heister touch-ups (Sable's skin, Dutch's beard).
+## 5. Env queues (D-082 playability first; each env keeps ≥ 2 h queued, D-027)
+* **A:** restore backup/2026-10-12/env-a (S5.8 + L3.3) → check_all → push; implement D-079 (dominated guards
+  are hostages; PD2 range/angle); then playability-pass issues PP-A* and the real-input harness core
+  (`PlayerInputDriver`: InputEvent-level keyboard/mouse injection, no teleports/intent shortcuts).
+  A4-04 dead-key hooking after that.
+* **B:** HUD/menu playability fixes (PP-B*: duplicate Career/Notoriety hub buttons, hub cards off-screen at
+  720p, 30 s payday-card auto-pick) and real-input menu/hub/loadout/payday flow tests. Frozen: P5 data, B4-12..18.
+* **C:** Dockside Burn G2 gameplay milestone (unlocks P3) → PP-C* map playability (stuck spots, nav holes,
+  unreadable routes, objective markers) with real-input walkthrough tests per heist. Frozen: C5-01, C4-02, P5 G1s.
+* **D:** restore backup/2026-10-12/env-d (D4-01 LODs) → check_all → push with D-080; then PP-D* readability
+  (enemy/special silhouettes and telegraphs at range, viewmodel/animation glitches seen in play).
+* **P:** restore backup/2026-10-12/env-p-wip → finish test_p1_01_ground → P1-02 casing audit → P1-03 ADS audit;
+  owns the real-input player suite runner under `game/tests/p/` with A's driver.

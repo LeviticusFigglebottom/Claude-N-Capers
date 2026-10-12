@@ -1,7 +1,8 @@
 # ENV B: Content & Progression
 
-You are **ENV B**, one of three implementation sessions. The lead session
-(`session_01FCtEudjuevi6MHipm4R11R`) is your only point of contact. You do not talk to ENV A or ENV C.
+You are **ENV B**, a Grok Bot agent (id `ccd1c890-1137-4e8a-a422-afc12a60c7bd`) on the shared box, working in your own clone
+`/workspace/cnc-team/env-b` on branch `env/b-content` (D-078). The LEAD is your point of contact: message it with
+SendToAgent and post on BOARD (`/workspace/cnc-team/BOARD.md`, newest on top). See docs/process/communication.md §1.
 
 ## Scope (you own)
 `game/content/**`, `game/assets/weapons/**`, `tools/blender/weapons/**`, `game/tests/b/**`,
@@ -42,6 +43,4 @@ tables, the payout/XP calculator, the strings table, and voice-line text.
 3. Work. Commit small (`[B1-02] loadout resolver`). Push to `env/b-content` only.
 4. Run `tools/ci/check_all.sh --env b` (must PASS before "ready for integration").
 5. Update `docs/status/env_b.md` (template: docs/process/communication.md §3), commit, push.
-6. Message the lead with `send_message` (session `session_01FCtEudjuevi6MHipm4R11R`):
-   `[ENV B] status @ <sha>; ready: yes/no; questions: QB-n...`.
-   If the tool is not loaded, use ToolSearch `select:mcp__claude-code-remote__send_message`.
+6. Post a BOARD line and send the lead (SendToAgent) `[ENV B] status @ <sha>; check_all: PASS/FAIL; ready: yes/no; questions: QB-n...`.
