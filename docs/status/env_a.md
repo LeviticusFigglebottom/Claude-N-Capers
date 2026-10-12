@@ -3,6 +3,18 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11 (new session): IN PROGRESS (A4-01 redo)
+### Done
+- d2ce45f pushed: breech parts test polls (wait_until) instead of wait_frames(20) (lead flake).
+- S5.8 guard domination + test_s5_8_guard_domination (local commit, full check pending).
+### Next (queue order, per lead; S1.2 + fp_viewmodel finish moved to ENV P by D-076)
+- L3.3 pellet headshot, S2.7 DR targeting range, S1.1 casing pickup, L2.1 regen, S8.3 camera loop, S9.5 shaped
+  charges / A5-03 C4, phase-2/3 keys, L2.4, phase-4 keys, docs/status/env_a_fidelity.md, HeistDropIn `full` +
+  Net.was_kicked, anim_driver apply_loadout_finish, escape_arrived [R], client GameRng seeding.
+### Notes
+- check_all ownership step fails while origin trunk lags the local trunk; use
+  `python3 tools/ci/check_ownership.py a --base claude/dreamy-hamilton-pc7vck` (D-076).
+
 ## 2026-10-11 14:30 UTC: HANDOFF (session shut down by the lead; account move)
 ### State
 - Pushed: env/a-core = 112c7f3 (round 28 content). Nothing newer is on origin.
