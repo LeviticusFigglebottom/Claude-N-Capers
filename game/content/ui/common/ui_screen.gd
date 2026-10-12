@@ -15,6 +15,7 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	if theme == null:
 		theme = UiBuild.theme()
+	UiNav.ensure_pad_ui_actions()
 	build_ui()
 	UiNav.chain_vertical(focus_chain)
 	visibility_changed.connect(_on_visibility_changed)
