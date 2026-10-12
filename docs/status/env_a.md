@@ -444,3 +444,7 @@ but have not been run on fb517093.
 
 ## Anim fixes (lead priority)
 * The first clip snaps in with blend 0, so spawns no longer fade in from the A-pose. Above strafe_max_mps (2.2), movement relative to facing picks run_l / run_r / run_b (falling back to run), so crew no longer moonwalk at 3.5 m/s. Tests: test_first_clip_has_no_fade_in, test_directional_run_above_strafe_speed (17/17 in test_anim_driver). Commit c9d4dd98.
+
+## P handoffs (lead-allowed under D-082)
+* B5-01: applied P's patch `test_b5_01_mask_before_ads.patch`. The test now masks before ADS, per the lead's ruling that ADS stays blocked while unmasked. test_b5_01_options_hooks 3/3. Commit 1b5eb843.
+* S9.8: `Safe._inner_loot()` counted the safe's own child DrillPoint (Glasshouse WorkshopSafe/SafeDrill) as loot and disabled it, so the safe could never be drilled. It now skips DrillPoint nodes. New test test_child_drill_point_drills_safe_and_unlocks_loot (place, fix jams, safe opens, inner loot enabled) fails before the fix and passes after. test_s9_8_safes 5/5. Commit ddda749e.
