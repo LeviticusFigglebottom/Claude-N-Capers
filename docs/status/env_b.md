@@ -88,7 +88,7 @@ Newest entry first, keep the last 10.
 1. PQ-B-19 Live interact key on a real interactable with PInputDriver (when on trunk) (40 min).
 2. PQ-B-1 Switch real-input helpers to PInputDriver (20 min).
 3. PQ-B-23 Floating HUD text on bright scenes: lead decision outline 8 vs backing panel, then apply + re-capture (30 min). DONE: lead chose outline 8 + soft dark drop shadow, no panel (UiBuild.float_text on the toast/casing hint, domination prompt and interaction prompt/blocked labels). A faint backing panel goes only on prompts that fail in D's renders over the brightest scenes, re-checked with D's flags.
-4. PQ-B-24 Contrast capture for menus (hub, payday, loadout) over the real 3D safehouse backdrop (40 min). BLOCKED: contrast stays blocked until Env D posts the flags.
+4. PQ-B-24 Contrast capture for menus (hub, payday, loadout) over the real 3D safehouse backdrop (40 min). DONE over the 2D hub: hub / loadout / payday 0 failures. The real 3D safehouse scene (res://world/hub/safehouse/safehouse.tscn, ENV C) is on no branch (trunk, env/c-worlds), so the flow falls back to the 2D hub; re-run `-- menus` when C ships it.
 5. PQ-B-25 Live heist: domination prompt + casing hint seen in a real run once A/P fields are on trunk (30 min).
 6. PQ-B-26 Gamepad-only Board (contract pick) and Notoriety reward picks (30 min).
 
@@ -381,5 +381,15 @@ Newest entry first, keep the last 10.
 ### 2026-10-12 19:05 ET
 - PQ-B-26 Board half done (9ebf482a): pad-only Board -> Take -> briefing -> B back. Briefing no longer logs `unknown loot id 'loot.small_valuables'` (skips ids without a LootDef via ContentDB.has). Notoriety reward pick with pad still open.
 - PQ-B-1 trial (scratch worktree, discarded, nothing committed): test_pp_input helpers (_accept/_press/_key) switched to PInputDriver from origin/env/p-play plus P's player_input.gd; test_assume_captured=true in before_each, release_all() in after_each. Result: 13 tests, 0 failed, 1 skipped, same as now. Ready to switch for real once round 34 is on trunk.
-- Contrast: kept BLOCKED until Env D posts the flags (lead's instruction). Note: hud_contrast_capture tool from earlier (xvfb + LIBGL_ALWAYS_SOFTWARE=1, opengl3) is already in the tree; UNOFFICIAL: kept in the tree, its PASS is not a sign-off; swap to Env D's flags when posted.
+- Contrast: OFFICIAL now, switched to Env D's flags (the earlier .tscn route is retired).
 - PQ-B-26 DONE (9ebf482a Board, e0cc1db8 Notoriety rank-up + reward pick with pad only).
+
+### 2026-10-12 19:20 ET contrast (Env D flags)
+- Command (clone root, not --headless, one render at a time):
+  `flock /workspace/cnc-team/render.lock xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --audio-driver Dummy --path game --script res://tests/b/render/hud_contrast_capture.gd -- hud|menus`
+  SubViewport own_world_3d + UPDATE_ALWAYS, 8 frames + frame_post_draw. PNGs: ~/.local/share/godot/app_userdata/CAPERWORKS/contrast_<shot>.png.
+  Gotcha: a --script SceneTree is compiled before autoloads exist (Identifier not found: EventBus / Log), so the launcher loads render/contrast_worker.gd at runtime.
+- HUD over dark / mid / bright / white backdrops: PASS, 0 failures. Floating text holds up on white with outline 8 + shadow, so no backing panel was added.
+- Fix: the status lines ("Unmasked: casing", "Carrying: ...", hostages, warnings) also float over the world, and they were the weakest text by eye in the captures. They now use float_text too, and the test covers them.
+- Tool fix: labels clipped by a ScrollContainer (hub's The Record card, loadout's Mask row below the fold) were false FAILs (ratio 1.0 / 2.1). The check now cuts to the visible rect.
+- Pad walk (76238ea5): options, all tabs, pad keybind capture (the A that opens the capture is not captured), B drops unapplied edits. No player trip found.

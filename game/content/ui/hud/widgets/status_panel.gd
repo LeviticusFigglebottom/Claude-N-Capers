@@ -24,7 +24,7 @@ func build() -> void:
 
 
 func _add(parent: Container) -> Label:
-	var l: Label = UiBuild.label(&"", UiBuild.HUD)
+	var l: Label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD))  # floats over the world (PQ-B-23)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	parent.add_child(l)
 	return l
