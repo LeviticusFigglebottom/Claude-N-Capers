@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"lounge_exec"
+purpose = &"lounge"
+required_items = Array[StringName]([&"rug", &"sofa", &"coffee_table", &"armchair", &"floor_lamp", &"plant", &"picture", &"light_fixture"])
+optional_items = {
+&"bench": 0.3,
+&"floor_lamp": 0.6,
+&"picture": 1,
+&"plant": 0.8,
+&"side_table": 1,
+&"vitrine": 0.4
+}
+clutter_groups = {
+&"side": {
+"anchors": Array[StringName]([&"side_table"]),
+"count": Vector2i(1, 1),
+"items": {&"plant_small": 1, &"table_lamp": 1.2},
+"radius": 0.3
+}
+}
+min_density = 0.12
+max_density = 1.2
+min_props = 16
+lone_ok_kinds = Array[StringName]([&"piano", &"counter_bar", &"plant", &"vitrine", &"floor_lamp", &"bench"])
+seed_salt = 213
+counts = {
+&"armchair": Vector2i(2, 3),
+&"picture": Vector2i(2, 3),
+&"plant": Vector2i(2, 3),
+&"sofa": Vector2i(1, 2)
+}
+assets = {
+&"bench": PackedStringArray("prop_bench_upholstered"),
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_b", "prop_wall_art_c"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"rug": PackedStringArray("prop_rug_rect", "prop_rug_round")
+}
+ceiling = {"prop_chandelier_ring": 14, "prop_downlight": 3}
+notes = "M1 partners' lounge: the bar counter (prop_bar_counter) and the grand piano (prop_piano_grand) are map anchors. Seating group(s) on rugs, floor lamps, plants, art, ring chandelier + downlights."

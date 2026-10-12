@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"library_law"
+purpose = &"office"
+required_items = Array[StringName]([&"rug", &"bookshelf", &"table", &"chair", &"credenza", &"desk_lamp", &"coffee_table", &"armchair", &"light_fixture"])
+optional_items = {
+&"armchair": 0.4,
+&"bookshelf": 1,
+&"floor_lamp": 0.8,
+&"picture": 0.6,
+&"side_table": 0.5
+}
+clutter_groups = {
+&"side": {
+"anchors": Array[StringName]([&"side_table"]),
+"count": Vector2i(1, 1),
+"items": {&"plant_small": 1, &"table_lamp": 1.2},
+"radius": 0.3
+},
+&"table": {
+"anchors": Array[StringName]([&"table"]),
+"count": Vector2i(1, 2),
+"items": {&"binders": 1, &"notebook": 2, &"papers": 1.5},
+"radius": 0.5
+}
+}
+min_density = 0.3
+max_density = 2
+min_props = 12
+lone_ok_kinds = Array[StringName]([&"table"])
+seed_salt = 211
+counts = {
+&"bookshelf": Vector2i(4, 6),
+&"chair": Vector2i(2, 4)
+}
+assets = {
+&"chair": PackedStringArray("prop_chair_dining"),
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_b"),
+&"rug": PackedStringArray("prop_rug_rect"),
+&"table": PackedStringArray("prop_table_dining")
+}
+ceiling = {"prop_downlight": 2.4}
+notes = "K19 law library: walnut bookshelves round the walls, a reading table with upholstered chairs, a credenza with the desk lamp, an armchair at a low table on the rug. Warm downlights."

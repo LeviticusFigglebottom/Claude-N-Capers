@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"copy_room"
+purpose = &"storage"
+required_items = Array[StringName]([&"printer", &"shelving", &"archive_box", &"box", &"bin", &"light_fixture"])
+optional_items = {
+&"archive_box": 1,
+&"box": 1,
+&"file_cabinet": 0.5,
+&"shelving": 0.4
+}
+clutter_groups = {}
+min_density = 0.4
+max_density = 2.5
+min_props = 7
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 210
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"shelving": PackedStringArray("prop_shelving_archive", "prop_shelving_boxes")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.2}
+notes = "K15 copy / supplies room: printer, paper and archive boxes on shelving, bin."

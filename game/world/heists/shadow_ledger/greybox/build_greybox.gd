@@ -1,9 +1,10 @@
-## Shadow Ledger G1 greybox generator. Owner: ENV C (C2).
+## Shadow Ledger generator (G1 greybox, G2 art + dressing). Owner: ENV C (C2).
 ## Regenerate (deterministic; never hand-edit the outputs):
 ##   /opt/godot/godot --headless --path game --script res://world/heists/shadow_ledger/greybox/build_greybox.gd
-## Reads shadow_ledger_layout.gd and writes, under res://world/heists/shadow_ledger/:
+## then re-bake the interior GI under xvfb (bake_gi.gd header). Reads shadow_ledger_layout.gd and
+## shadow_ledger_dressing.gd and writes, under res://world/heists/shadow_ledger/:
 ##   shadow_ledger.tscn (HeistMap, navmesh baked and embedded), shadow_ledger_def.tres,
-##   shadow_ledger_variants.tres. Contracts: docs/contracts/heist_map.md v1.2, gameplay_prefabs.md,
+##   shadow_ledger_variants.tres, art/*.tscn (generated prefab visuals). Contracts: docs/contracts/heist_map.md v1.2, gameplay_prefabs.md,
 ##   preplanning.md. Design: docs/design/heists/shadow_ledger.md (APPROVED, D-042).
 ## Interior walls are derived from the plan rectangles (shared edges once, core edges 0.3 m), the
 ## curtain wall from the facade edges (sill / head per room), the slabs from the floor plate minus
@@ -13,6 +14,7 @@ extends "res://world/heists/shadow_ledger/greybox/sl_gameplay.gd"
 
 ## Storey tops for the curtain wall (next FFL).
 const STOREY_TOP: Dictionary = {"L41": 8.0, "L42": 11.6}
+const GI_PATH: String = OUT_DIR + "shadow_ledger_voxelgi.res"
 const ROOM_LIGHT: Dictionary = {
 	"exec": [Color(1.0, 0.82, 0.62), 0.6, 8.0], "office": [Color(1.0, 0.93, 0.85), 0.35, 7.0],
 	"boh": [Color(0.95, 0.97, 1.0), 0.6, 6.0], "security": [Color(0.6, 0.75, 1.0), 0.3, 5.0],
@@ -28,6 +30,12 @@ func _initialize() -> void:
 
 
 func _build() -> void:
+	art = A.new()
+	art.setup()
+	var vis_err: String = DR.make_visuals(art, R, _visual_specs())
+	if vis_err != "":
+		_fail(vis_err)
+		return
 	var old_scene_uid: String = R.read_uid(SCENE_PATH)
 	var def: HeistDef = R.make_def()
 	var table: HeistVariantTable = R.make_variants()
@@ -42,6 +50,8 @@ func _build() -> void:
 	map_root.variant_table = load(VARIANTS_PATH) as HeistVariantTable
 	map_root.floor_heights = PackedFloat32Array(L.FLOOR_HEIGHTS)
 	map_root.floor_names = PackedStringArray(L.FLOOR_NAMES)
+	dress = DR.new()
+	dress.setup(self, map_root)
 	for nm: String in ["Geometry", "Props", "Lighting"]:
 		add(map_root, node3d(nm))
 	var nav: NavigationRegion3D = NavigationRegion3D.new()
@@ -71,6 +81,13 @@ func _build() -> void:
 	build_gameplay(n("Gameplay"))
 	build_variants(n("Variants"))
 	_build_nav_links(nav)
+	dress.dress(n("Props"))
+	dress.fill_lights(add(n("Lighting"), node3d("Fill")) as Node3D)
+	for line: String in dress.report:
+		printerr("dress: " + line)
+		if line.begins_with("ERROR"):
+			errors.append(line)
+	_build_art()
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -86,6 +103,7 @@ func _build() -> void:
 	if err != OK:
 		_fail("cannot save %s (%d)" % [SCENE_PATH, err])
 		return
+	R.strip_nested_overrides(SCENE_PATH)
 	R.normalize_scene(SCENE_PATH, old_scene_uid)
 	print("shadow_ledger: saved %s (navmesh polygons: %d)" % [SCENE_PATH, polys])
 	quit(0)
@@ -152,13 +170,11 @@ func _glass(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a
 	var body: Node3D = box(parent, nm, mn, mx, "glass")
 	if body == null:
 		return
-	var span: float = a1 - a0
-	var fs: Vector3 = Vector3(span, 0.05, 0.06) if axis == "x" else Vector3(0.06, 0.05, span)
-	var head: MeshInstance3D = MeshInstance3D.new()
-	head.name = "FrameHead"
-	head.mesh = box_mesh(fs, "frame")
-	head.position = Vector3(0.0, (y1 - y0) * 0.5 - 0.025, 0.0)
-	add(body, head)
+	# slim frame: head and sill rails, 3 cm proud of the pane on both sides
+	for ys: Vector2 in [Vector2(y1 - 0.05, y1), Vector2(y0, y0 + 0.04)]:
+		var fmn: Vector3 = Vector3(a0, ys.x, fixed - 0.03) if axis == "x" else Vector3(fixed - 0.03, ys.x, a0)
+		var fmx: Vector3 = Vector3(a1, ys.y, fixed + 0.03) if axis == "x" else Vector3(fixed + 0.03, ys.y, a1)
+		mesh_box(fmn, fmx, "frame")
 
 
 ## Interval list minus cuts: [[a, b], ...] - [[c, d], ...].
@@ -257,14 +273,14 @@ func _build_shell(geo: Node3D) -> void:
 	var panels: Node3D = add(bld, node3d("DoorPanels")) as Node3D
 	for p: Array in L.DOOR_PANELS:
 		var b: Array = p[1]
-		mesh_box(panels, String(p[0]), v3(b, 0), v3(b, 3), "door")
+		mesh_box(v3(b, 0), v3(b, 3), "door")
 	var br: Node3D = add(bld, node3d("CameraBrackets")) as Node3D
 	for cid2: String in L.CAMERAS:
 		var row: Array = L.CAMERAS[cid2]
 		if row[2] != null:
 			box_a(br, "Bracket" + cid2, row[2], "trim")
-	var logo: MeshInstance3D = mesh_box(bld, "LogoWall", v3(L.LOGO_WALL, 0), v3(L.LOGO_WALL, 3), "logo_teal")
-	logo.set_meta(&"landmark", "km_logo_wall")
+	# landmark: the K&M logo wall (glass teal, lit)
+	mesh_box(v3(L.LOGO_WALL, 0), v3(L.LOGO_WALL, 3), "logo_teal")
 
 
 ## Interior walls per level from the room edges (shared edges once; core edges 0.3 m).
@@ -455,23 +471,23 @@ func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, glass: bool =
 	var size: Vector3 = mx - mn
 	var along_x: bool = size.x >= size.z
 	var length: float = size.x if along_x else size.z
-	var t: float = minf(size.x, size.z)
-	var top: MeshInstance3D = MeshInstance3D.new()
-	top.name = "TopRail"
-	top.mesh = box_mesh(Vector3(length, 0.05, t + 0.02) if along_x else Vector3(t + 0.02, 0.05, length), "trim")
-	top.position = Vector3(0.0, size.y * 0.5 - 0.025, 0.0)
-	add(body, top)
+	var c: Vector3 = (mn + mx) * 0.5
+	var grow: Vector3 = Vector3(0.0, 0.0, 0.01) if along_x else Vector3(0.01, 0.0, 0.0)
+	mesh_box(Vector3(mn.x, mx.y - 0.05, mn.z) - grow, mx + grow, "steel")
 	if glass:
-		mesh_box(body, "Pane", Vector3(-size.x * 0.5, -size.y * 0.5, -size.z * 0.5) + Vector3(0.0, 0.05, 0.0),
-			Vector3(size.x * 0.5, size.y * 0.5 - 0.05, size.z * 0.5), "teal_glass")
+		mesh_box(Vector3(mn.x, mn.y + 0.05, mn.z), Vector3(mx.x, mx.y - 0.05, mx.z), "teal_glass")
 	var posts: int = mini(maxi(2, int(ceil(length / 1.5)) + 1), 40)
 	for i: int in range(posts):
 		var off: float = -length * 0.5 + 0.025 + (length - 0.05) * float(i) / float(posts - 1)
-		var post: MeshInstance3D = MeshInstance3D.new()
-		post.name = "Post%d" % i
-		post.mesh = box_mesh(Vector3(0.05, size.y, t + 0.02), "trim")
-		post.position = Vector3(off, 0.0, 0.0) if along_x else Vector3(0.0, 0.0, off)
-		add(body, post)
+		var pc: Vector3 = c + (Vector3(off, 0.0, 0.0) if along_x else Vector3(0.0, 0.0, off))
+		var half: Vector3 = Vector3(0.025, 0.0, size.z * 0.5 + 0.012) if along_x else Vector3(size.x * 0.5 + 0.012, 0.0, 0.025)
+		mesh_box(Vector3(pc.x - half.x, mn.y, pc.z - half.z), Vector3(pc.x + half.x, mx.y - 0.05, pc.z + half.z), "steel")
+
+
+## Visual box in a node's local frame (yaw a multiple of 90 deg): world AABB into the accumulator.
+func local_vis(node: Node3D, mn: Vector3, mx: Vector3, mat_id: String) -> void:
+	var wb: AABB = global_xform(node) * AABB(mn, mx - mn)
+	mesh_box(wb.position, wb.end, mat_id)
 
 
 # --- Stairs -----------------------------------------------------------------------------------
@@ -490,7 +506,7 @@ func _flight(parent: Node3D, nm: String, origin: Vector3, yaw: float, w: float, 
 	for k: int in range(1, nr):
 		var top: float = float(k) * r
 		var lo: float = (float(solid_y) - origin.y) if solid_y != null else top - r - 0.15
-		mesh_box(f, "Step%02d" % k, Vector3(-w * 0.5, lo, float(k - 1) * t), Vector3(w * 0.5, top, float(k) * t + SEAM), "stair")
+		local_vis(f, Vector3(-w * 0.5, lo, float(k - 1) * t), Vector3(w * 0.5, top, float(k) * t + SEAM), "stair")
 	var ramp_t: float = 0.3
 	var end_z: float = float(nr - 1) * t
 	_ramp(f, -w * 0.5, w * 0.5, [[Vector2(-t, 0.0), Vector2(end_z, float(nr) * r), Vector2(end_z, float(nr) * r - ramp_t),
@@ -658,16 +674,7 @@ func _coping(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, 
 	col.name = "Collision"
 	col.shape = shp
 	add(body, col)
-	var pm: PrismMesh = PrismMesh.new()
-	pm.size = Vector3(L.EXT_T, h, a1 - a0)
-	pm.material = lib_mat("trim")
-	var mi: MeshInstance3D = MeshInstance3D.new()
-	mi.name = "Mesh"
-	mi.mesh = pm
-	var mid: float = (a0 + a1) * 0.5
-	mi.position = Vector3(mid, y + h * 0.5, fixed) if axis == "x" else Vector3(fixed, y + h * 0.5, mid)
-	mi.basis = Basis(Vector3.UP, PI * 0.5) if axis == "x" else Basis.IDENTITY
-	add(body, mi)
+	art.coping(axis, fixed, a0, a1, y, h, "metal_dark")
 
 
 ## Server cage K11: mesh enclosure with the gate opening on its south side (gate = door prefab).
@@ -687,10 +694,10 @@ func _build_cage(bld: Node3D) -> void:
 	for i: int in range(posts.size()):
 		var px: float = float(posts[i][0])
 		var pz: float = float(posts[i][1])
-		mesh_box(cg, "Post%d" % i, Vector3(px - 0.035, y0, pz - 0.035), Vector3(px + 0.035, y1, pz + 0.035), "trim")
+		mesh_box(Vector3(px - 0.035, y0, pz - 0.035), Vector3(px + 0.035, y1, pz + 0.035), "trim")
 	for e: Array in [["RailN", b[0], b[1], b[2], b[1]], ["RailS", b[0], b[3], b[2], b[3]], ["RailW", b[0], b[1], b[0], b[3]],
 			["RailE", b[2], b[1], b[2], b[3]]]:
-		mesh_box(cg, String(e[0]), Vector3(minf(float(e[1]), float(e[3])) - 0.035, y1 - 0.06, minf(float(e[2]), float(e[4])) - 0.035),
+		mesh_box(Vector3(minf(float(e[1]), float(e[3])) - 0.035, y1 - 0.06, minf(float(e[2]), float(e[4])) - 0.035),
 			Vector3(maxf(float(e[1]), float(e[3])) + 0.035, y1, maxf(float(e[2]), float(e[4])) + 0.035), "trim")
 
 
@@ -711,7 +718,7 @@ func _handrail(parent: Node3D, nm: String, a: Vector3, b: Vector3) -> void:
 	add(body, col)
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Mesh"
-	mi.mesh = box_mesh(size, "trim")
+	mi.mesh = art.local_box_mesh([[size, Vector3.ZERO, "handrail"]])
 	add(body, mi)
 
 
@@ -729,13 +736,14 @@ func _flight_rails(parent: Node3D, nm: String, xs: Array, z0: float, y0: float, 
 ## the skyline, streets and the river far below; crown fins, helipad lights, beacons, BMU rail.
 func _build_site(geo: Node3D) -> void:
 	var site: Node3D = add(geo, node3d("Site")) as Node3D
-	var blocks: Node3D = add(site, node3d("Blocks")) as Node3D
+	vis_group = "Site"
 	for b: Array in L.SITE_BLOCKS:
-		var mi: Node3D = box_a(blocks, String(b[0]), b[1], String(b[2]), false)
-		mi.set_meta(&"distant", true)
-	var lit: Node3D = add(site, node3d("CityLights")) as Node3D
-	# Lit window rows: each band is split into 2 m windows with 1 m piers, flush on its facade.
+		mesh_box(v3(b[1], 0), v3(b[1], 3), String(b[2]))
+	# Lit window rows on the far skyline: each band split into 2 m windows with 1 m piers (Arden and
+	# Vantage get full window grids from sl_art.neighbours()).
 	for c: Array in L.CITY_LIGHTS:
+		if String(c[0]).begins_with("Arden"):
+			continue
 		var mn: Vector3 = v3(c[1], 0)
 		var mx: Vector3 = v3(c[1], 3)
 		var along_x: bool = (mx.x - mn.x) > (mx.z - mn.z)

@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"refuse_room"
+purpose = &"storage"
+required_items = Array[StringName]([&"shelving", &"mop_bucket", &"box", &"light_fixture"])
+optional_items = {
+&"box": 1.5,
+&"fire_extinguisher": 0.6,
+&"shelving": 0.5
+}
+clutter_groups = {
+&"floor": {
+"anchors": Array[StringName]([&"wall", &"corner"]),
+"count": Vector2i(1, 2),
+"items": {&"archive_box": 1, &"box": 3},
+"radius": 1
+}
+}
+min_density = 0.25
+max_density = 2
+min_props = 6
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 202
+counts = {}
+assets = {
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"shelving": PackedStringArray("prop_shelving_cleaning", "prop_shelving_boxes")
+}
+ceiling = {"prop_fluorescent": 2.2}
+notes = "S2 refuse room: the two wheelie bins are gameplay prefabs (keep-outs); cleaning shelf, mop bucket, flattened boxes. Fluorescent."

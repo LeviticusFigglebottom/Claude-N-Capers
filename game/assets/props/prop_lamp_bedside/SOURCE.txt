@@ -1,0 +1,8 @@
+asset: prop_lamp_bedside
+script: tools/blender/props/tower.py
+params: {"cat": {"fixture": true, "group": "tower", "hosts": ["nightstand", "side_table", "credenza"], "kind": "table_lamp", "light": {"color": "#FFB46B", "energy": 0.5, "pos": [0.0, 0.4, 0.0], "range": 2.5, "type": "omni"}, "pin_only": true, "place": "on"}, "fn": "lamp_bedside"}
+seed: 3915869636  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_lamp_bedside
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

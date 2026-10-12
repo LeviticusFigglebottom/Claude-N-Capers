@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_roof"
+purpose = &"exterior"
+required_items = Array[StringName]([&"hvac"])
+optional_items = {
+&"hvac": 1
+}
+clutter_groups = {}
+min_density = 0.003
+max_density = 0.3
+min_props = 3
+lone_ok_kinds = Array[StringName]([&"hvac"])
+seed_salt = 226
+counts = {
+&"hvac": Vector2i(3, 5)
+}
+assets = {}
+ceiling = {}
+notes = "X2 plant roof: condensers backed to the plant-room walls / parapet. Roof hatch, lift overrun and the window-cleaning rail are map pieces (keep-outs)."
