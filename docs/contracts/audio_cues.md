@@ -1,4 +1,4 @@
-# Contract: audio cues (v1.3)
+# Contract: audio cues (v1.4)
 
 ENV C produces every sound (synthesized/procedural; see style guide §Audio) and the cue registry
 `game/world/audio/cues.tres` (`AudioCueDef` resources: streams[], volume_db, bus, 3D, max_distance,
@@ -58,6 +58,7 @@ Buses: `Master > Music, SFX (> Weapons, Enemies, World, UI), Voice, Ambience`.
 | cue.throwable_knife_hit_hard | throwing knife hits world geometry | metallic ting / wood thunk | 3 |
 | cue.npc_melee_swing | NPC melee windup start (A3-13) [R], source = the NPC | short cloth/arm whoosh, 3D at the NPC, ~15 m | 3 |
 | cue.radio_squelch | contact radio line start/end (ENV B ContactRadio, B7-03), local | short squelch click on / off, 2D, Voice or UI bus | 5 |
+| cue.payday_tick | payday card-pick timer, each of the last 5 s (ENV B payday screen), local | 60 ms dry UI tick, 2D, UI bus (ENV C 51cfb287) | PP (D-082) |
 
 Special-action cues have no dedicated EventBus signals: ENV A triggers them with `audio_cue_requested` or a
 `CueEmitter`. Looping tells stop on the matching end fact (`crew_tase_ended` for `stinger_arc`, D-049) or locally.
