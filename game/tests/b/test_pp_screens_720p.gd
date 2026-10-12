@@ -4,6 +4,7 @@
 extends TestCase
 
 const SLOT: int = 0
+const FLOW_SCENE: PackedScene = preload("res://content/ui/menus/menu_flow.tscn")
 ## Stations that are screens (range loads a level, so it is excluded).
 const STATIONS: Array[StringName] = [&"board", &"planning", &"armory", &"masks", &"crew", &"jukebox",
 		&"notoriety", &"profile"]
@@ -46,7 +47,7 @@ static func offscreen(screen: Control, chain: Array[Control]) -> Array[String]:
 
 func _check(open: Callable, label: String) -> void:
 	SaveService.save_profile(PlayerProfile.new_default(), SLOT)
-	var f: MenuFlow = (load("res://content/ui/menus/menu_flow.tscn") as PackedScene).instantiate() as MenuFlow
+	var f: MenuFlow = FLOW_SCENE.instantiate() as MenuFlow
 	add_child(f)
 	await wait_frames(1)
 	f.show_hub()
@@ -69,3 +70,40 @@ func test_station_screens_fit_720p() -> void:
 
 func test_achievements_fits_720p() -> void:
 	await _check(func(f: MenuFlow) -> void: f.hub.achievements_requested.emit(), "achievements")
+
+
+## PQ-B-11: every Options tab (the in-heist pause uses the same OptionsScreen) fits at 720p.
+func test_options_tabs_fit_720p() -> void:
+	SaveService.save_profile(PlayerProfile.new_default(), SLOT)
+	var f: MenuFlow = FLOW_SCENE.instantiate() as MenuFlow
+	add_child(f)
+	await wait_frames(1)
+	f.show_hub()
+	await wait_frames(1)
+	var s: OptionsScreen = f.options_menu.open()
+	await wait_frames(2)
+	for t: StringName in OptionsScreen.TABS:
+		s.show_tab(t)
+		await wait_frames(2)
+		var bad: Array[String] = offscreen(s, s.focus_chain)
+		assert_eq(bad.size(), 0, "options/%s off-screen at 720p: %s" % [t, ", ".join(bad)])
+	f.queue_free()
+	await wait_frames(2)
+
+
+## PQ-B-11: the safehouse pause menu fits at 720p.
+func test_safehouse_pause_fits_720p() -> void:
+	SaveService.save_profile(PlayerProfile.new_default(), SLOT)
+	var f: MenuFlow = FLOW_SCENE.instantiate() as MenuFlow
+	add_child(f)
+	await wait_frames(1)
+	f.show_hub()
+	await wait_frames(1)
+	var p: SafehousePauseMenu = f.safehouse.pause_menu
+	p.visible = true
+	await wait_frames(2)
+	assert_true(p.focus_chain.size() > 0)
+	var bad: Array[String] = offscreen(p, p.focus_chain)
+	assert_eq(bad.size(), 0, "safehouse pause off-screen at 720p: %s" % ", ".join(bad))
+	f.queue_free()
+	await wait_frames(2)
