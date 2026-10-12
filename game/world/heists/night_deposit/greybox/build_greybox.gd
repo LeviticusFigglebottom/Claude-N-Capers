@@ -79,6 +79,7 @@ func _build() -> void:
 			errors.append(line)
 	_build_art()
 	_tune_street_light(n("Props"))
+	_close_barred_doorways()
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -997,10 +998,14 @@ func _prune_islands(nm: NavigationMesh) -> void:
 		var best_d: float = 1.5
 		for pi2: int in range(polys.size()):
 			var c: Vector3 = Vector3.ZERO
+			var p2: PackedVector2Array = PackedVector2Array()
 			for vi2: int in polys[pi2]:
 				c += verts[vi2]
+				p2.append(Vector2(verts[vi2].x, verts[vi2].z))
 			c /= float(polys[pi2].size())
 			var d: float = Vector2(c.x - a.x, c.z - a.z).length() + absf(c.y - a.y) * 2.0
+			# An anchor inside a big polygon (police spawn island behind a closed gate) keeps it.
+			d = 0.0 if Geometry2D.is_point_in_polygon(Vector2(a.x, a.z), p2) and absf(c.y - a.y) < 1.0 else d
 			if d < best_d:
 				best_d = d
 				best = pi2
@@ -1082,3 +1087,10 @@ func _tune_street_light(props: Node) -> void:
 		if c.r > 0.9 and c.b < 0.4:  # sodium orange
 			light.light_color = Color(1.0, 0.8, 0.6)
 			light.light_energy *= 1.2
+
+
+## D-073 / D-085: BARRED police gates baked CLOSED; only the door's NavLink bridges them (as Glasshouse).
+func _close_barred_doorways() -> void:
+	for d: Array in L.DOORS.filter(func(r: Array) -> bool: return String(r[4]) == "BARRED"):
+		var w: float = (1.8 if String(d[5]) == "DOUBLE" else 0.9) + 0.6  # leaf + jamb tolerance
+		obstruct(Transform3D(yaw_basis(float(d[3])), d[2]), AABB(Vector3(-w * 0.5, -0.2, -0.3), Vector3(w, 2.8, 0.6)))

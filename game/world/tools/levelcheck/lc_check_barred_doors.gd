@@ -33,7 +33,7 @@ func run(ctx: LcContext) -> void:
 			continue
 		barred.append(d)
 	var saved: Array[Array] = ctx.set_door_links(false)
-	await ctx.await_sync(3)
+	await ctx.await_sync(8)  # 3 frames was not always enough for the link disable to reach the map (flaky FAIL)
 	for d2: Door in barred:
 		_check_door(ctx, d2)
 	ctx.restore_links(saved)
