@@ -627,3 +627,11 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   fighting the engine's FOV-based mesh LOD.
 - Context (ENV P, `env/p-play` `1328183f`): mouse look used `InputEventMouseMotion.relative`, which is
   stretch-scaled and wrong at non-1080p; switched to `screen_relative` for correct sensitivity.
+
+## D-085 — 2026-10-12 — Door snagging: fix movement, not the navmesh (supersedes "capsule 0.35 re-bake")
+- Navmesh `agent_radius` **stays 0.30**: with `cell_size` 0.1, 0.35 ceils to 0.4 and breaks `validate_level`.
+  The crew capsule **stays 0.35**. The earlier "re-bake for a 0.35 capsule" instruction is withdrawn.
+- **ENV P:** the player capsule slides along door frames and props instead of snagging. Test with real input:
+  a 0.9 m door, 30° approach, walking and sprinting.
+- **ENV A:** AI followers keep ~0.1 m off path corners, with headroom in `path_desired_distance`.
+- Human real-input walk tests aim at door centres; corner-following is checked only for AI.
