@@ -64,7 +64,6 @@ const UNHOOKED: Dictionary = {
 	&"weapon.crit_chance_add": "A",
 	&"weapon.crit_per_concealment": "A",
 	&"weapon.falloff_range_mult": "A",
-	&"weapon.fire_rate_mult": "A",
 	&"weapon.graze": "A",
 	&"weapon.headshot_refund": "A",
 	&"weapon.hip_fire_rate_mult": "A",
@@ -80,6 +79,7 @@ const UNHOOKED: Dictionary = {
 
 ## Read by runtime code (hook file in the comment) but no behaviour test.
 const UNTESTED: Dictionary = {
+	&"weapon.fire_rate_mult": "A",  # systems/anim/fp_viewmodel.gd (behaviour test in tests/p, not scanned)
 	&"ability.convert_damage_mult": "A",  # systems/ai/police/converted_ally_brain.gd
 	&"ability.convert_speed_mult": "A",  # systems/ai/police/police_surrender.gd
 	&"defense.armor_regen_rate_mult": "A",  # systems/combat/team_modifiers.gd

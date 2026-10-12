@@ -94,6 +94,23 @@ func test_held_jump_does_not_bunny_hop() -> void:
 	assert_true(peak < y_land + 0.1, "holding jump does not re-jump (%.2f)" % (peak - y_land))
 
 
+## PI-25: jump pressed while airborne and held through the landing jumps once on landing (was eaten).
+func test_jump_held_from_air_fires_on_landing() -> void:
+	var c: CrewController = await _masked_crew()
+	await _inp.tap(&"jump")
+	await wait_physics_frames(6)
+	assert_false(c.grounded, "airborne")
+	_inp.press(&"jump")
+	await wait_until(func() -> bool: return c.grounded, 2.0)
+	var y: float = c.global_position.y
+	var peak: float = y
+	for _i: int in 30:
+		await wait_physics_frames(1)
+		peak = maxf(peak, c.global_position.y)
+	_inp.release(&"jump")
+	assert_true(peak > y + 0.3, "held jump from the air jumps on landing (%.2f)" % (peak - y))
+
+
 func test_shout_while_casing_does_not_unmask_or_alarm() -> void:
 	var c: CrewController = _crew()
 	await wait_until(func() -> bool: return c.grounded, 2.0)

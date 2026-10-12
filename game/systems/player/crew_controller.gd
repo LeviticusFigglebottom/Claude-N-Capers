@@ -431,11 +431,15 @@ func _simulate(delta: float) -> void:
 	var can_jump: bool = not casing and mobile and not crouched
 	if bag_w >= 0:
 		can_jump = can_jump and tw.bag_can_jump[bag_w]
+	var jumped: bool = false
 	if i.jump and not _jump_latch and grounded and can_jump and stamina.can_jump():
 		velocity.y = tw.jump_velocity
 		stamina.on_jump()
+		jumped = true
 	stamina.tick(sprinting, delta)
-	_jump_latch = i.jump  # PI-05: a held jump fires once; the next jump needs a release
+	# PI-05: a held jump fires once; the next jump needs a release. PI-25: the latch arms only on a jump that
+	# fired, so jump pressed in the air / while blocked (and held) still jumps on landing instead of being eaten.
+	_jump_latch = i.jump and (_jump_latch or jumped)
 	_move_grounded(delta, tw)
 	_edge_assist(wish, delta, tw)
 	_step_offset *= exp(-tw.step_smooth_rate * delta)
