@@ -35,6 +35,14 @@ Newest entry first, keep the last 10.
 ### Next queue
 - PQ-B-1 (when the driver is on trunk); PQ-B-9 urgent-timer audio cue request; PQ-B-10 gamepad shoulder quick-pick on payday (needs input actions in project.godot via lead); PQ-B-11 720p sweep of in-heist pause/options and lobby co-op states.
 
+### Round 2 (2026-10-12 ~22:15 UTC)
+- PQ-B-9/10 c6970fba: payday urgent window requests `cue.payday_tick` once per second, only if ENV C's AudioCueRegistry has it (PaydayCardsTable.urgent_time_s / urgent_tick_cue, data-driven). LB/RB via `ui_payday_prev/next` (guarded by InputMap.has_action) move card focus in `_input`, only while focus is in the payday screen, and consume the event (no throw/melee leak). Verified locally with lead 31307ed2's project.godot (not committed).
+- PQ-B-11 5228ae02: 720p tests for all 4 Options tabs (same screen as in-heist pause) and the safehouse pause menu. Lobby co-op states not covered yet.
+- PQ-B-12 668e622b: test_pp_heist_ui: interaction prompt names the really-bound key and that key fires `interact`; carried bag + secured toast on screen; Tab scoreboard follows the real key; payday summary -> card (key 3) -> Continue by keyboard.
+- 7556091f: RangeSpectator aim look uses `screen_relative` (relative is stretch-scaled: 1.5x at 720p, 30x headless); test_range_mouse_counts (fails on `relative`). workshop_stage / mask_preview drags still use `relative` on purpose: they are GUI orbit drags, where canvas units keep the drag proportional to the screen.
+### Next
+- PQ-B-1 when p_input_driver.gd reaches trunk; lobby co-op 720p states; drop the RB test skip once lead's input actions are on trunk.
+
 ## 2026-10-11 UTC (7): B7 loose ends (lead answers); P5 paused (D-076)
 ### Done
 - B7-01 `profile` station (hub_map v1.1, d1a89b5f): `st_profile` (target `career`, icon `profile`) in data/ui/hub_stations.tres.
