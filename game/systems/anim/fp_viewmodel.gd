@@ -62,6 +62,8 @@ const PART_COVER: StringName = &"FeedCover"
 
 ## D-063: weapon|clip pairs already reported outside the shared-clip speed range.
 static var _reload_scale_logged: Dictionary = {}
+## PI-19: weapon ids already warned for having no `AimPoint` (sights cannot align while aimed).
+static var _aim_missing_logged: Dictionary = {}
 
 ## The arms rig's AnimationPlayer / Skeleton3D / instanced scene root.
 var player: AnimationPlayer = null
@@ -588,6 +590,35 @@ func _set_weapon(wv: WeaponVisual, set_id: StringName) -> void:
 	if left_hand_ik != null:
 		left_hand_ik.set_target(wv.get_marker(&"LeftHandIK") if wv != null else null, set_id)
 	_magwell_rest = _magwell.transform if _magwell != null else Transform3D.IDENTITY
+	_check_aim_point(wv)
+
+
+## PI-19: true when the visual (base model or an attached sight) has an `AimPoint` the ADS offset can align.
+static func has_aim_point(wv: WeaponVisual) -> bool:
+	return wv != null and is_instance_valid(wv) and wv.get_marker(WeaponVisual.AIM_POINT) != null
+
+
+## PI-19: weapon ids among `defs` whose bare visual has no `AimPoint` (ADS would sit off-axis on them).
+static func missing_aim_points(defs: Array) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for d: Variant in defs:
+		var def: WeaponDef = d as WeaponDef
+		if def == null or def.model == null:
+			continue
+		var wv: WeaponVisual = WeaponVisual.new()
+		var none: Array[WeaponModDef] = []
+		wv.setup(def, none)
+		if not has_aim_point(wv):
+			out.append(def.id)
+		wv.free()
+	return out
+
+
+func _check_aim_point(wv: WeaponVisual) -> void:
+	if wv == null or wv.weapon == null or has_aim_point(wv) or _aim_missing_logged.has(wv.weapon.id):
+		return
+	_aim_missing_logged[wv.weapon.id] = true
+	Log.warn(&"anim", "PI-19: %s has no AimPoint marker; ADS sights cannot align to the camera axis" % wv.weapon.id)
 
 
 # --- Per-frame helpers ------------------------------------------------------------------------
@@ -652,6 +683,7 @@ func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 	_bob_phase = fmod(_bob_phase + delta * TAU * tw.bob_frequency_hz * maxf(target, 0.5), TAU * 2.0)
 	var amp: float = _bob_weight * lerpf(1.0, tw.ads_bob_mult, ads_weight)
 	var off: Vector3 = Vector3(sin(_bob_phase) * tw.bob_amplitude.x, sin(_bob_phase * 2.0) * tw.bob_amplitude.y, 0.0) * amp
+	off.y += step_lag(tw)
 	if tw.ads_align_aim_point and ads_weight > 0.0 and weapon_visual != null and is_instance_valid(weapon_visual) \
 			and is_inside_tree():
 		var aim: Node3D = weapon_visual.get_marker(WeaponVisual.AIM_POINT)
@@ -659,6 +691,14 @@ func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 			var p: Vector3 = arms.global_transform.affine_inverse() * aim.global_position
 			off += Vector3(-p.x, -p.y, 0.0) * ads_weight
 	position = off
+
+
+## PI-21: vertical arms lag from the camera's step smoothing (m): the arms dip after a step up and float after
+## a step down, then settle with the camera. Reduced while aimed like the walk bob.
+func step_lag(tw: FpViewmodelTweak) -> float:
+	if _crew == null or not is_instance_valid(_crew):
+		return 0.0
+	return _crew.step_offset * tw.step_lag_mult * lerpf(1.0, tw.ads_bob_mult, ads_weight)
 
 
 func _update_parts() -> void:

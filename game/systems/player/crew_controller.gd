@@ -82,6 +82,10 @@ var stamina: CrewStamina = CrewStamina.new()
 
 ## QC-43: the hub crew's own InteractionSystem (no HeistRuntime in the safehouse).
 var hub_interaction: InteractionSystem = null
+## PI-21: the camera's remaining step-smoothing offset (m, negative after a step up). Presentation reads it.
+var step_offset: float:
+	get:
+		return _step_offset
 var _runtime: HeistRuntime = null
 var _jump_latch: bool = false
 ## PI-13: last tick's crouch / sprint / jump intent (press edges for casing_blocked).

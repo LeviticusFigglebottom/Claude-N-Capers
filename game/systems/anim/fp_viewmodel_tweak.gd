@@ -106,6 +106,9 @@ static var _gen: int = 0
 @export var ads_bob_mult: float = 0.2
 ## Bob amplitude response rate (1/s) when starting / stopping.
 @export var bob_rate: float = 8.0
+## PI-21: share of the camera's step smoothing offset (CrewController.step_offset) the arms add on top, so they
+## trail the camera on stairs and curbs instead of riding it rigidly. 0 = off; ADS scales it by `ads_bob_mult`.
+@export var step_lag_mult: float = 0.6
 ## While aimed, shift the arms so the weapon's `AimPoint` sits on the camera axis.
 @export var ads_align_aim_point: bool = true
 ## Viewmodel meshes cast no world shadows.
