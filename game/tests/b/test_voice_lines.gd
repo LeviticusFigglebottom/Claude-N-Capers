@@ -2,12 +2,11 @@
 extends TestCase
 
 const LINES_PATH: String = "res://content/data/voice/lines.tres"
+## Mercer's generic alarm / assault / loot / escape lines were retired (lead): the contact radio speaks those facts.
 const MERCER_EVENTS: Array[StringName] = [
 	&"heist_start_casing", &"crew_masked", &"pager_started", &"pager_answered", &"pager_last_answer",
-	&"pager_limit", &"body_discovered", &"camera_spotted", &"alarm_raised", &"device_started",
-	&"device_jammed", &"device_finished", &"assault_anticipation", &"assault_build", &"assault_fade",
-	&"assault_control", &"loot_secured", &"escape_available", &"crew_downed", &"crew_custody",
-	&"heist_success", &"heist_failed", &"stealth_success",
+	&"pager_limit", &"body_discovered", &"camera_spotted", &"device_started", &"device_jammed",
+	&"device_finished", &"crew_downed", &"crew_custody", &"heist_success", &"heist_failed", &"stealth_success",
 ]
 const CREW_EVENTS: Array[StringName] = [
 	&"pager_started", &"reloading", &"device_jammed", &"bagging_body", &"going_loud", &"crew_downed",

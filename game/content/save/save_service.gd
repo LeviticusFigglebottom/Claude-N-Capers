@@ -11,7 +11,8 @@
 ## 4 = adds `owned_mask_parts` and `custom_masks` (mask customisation, B2-03; content/docs/masks.md);
 ## 5 = adds `unlocks`, `achievements` (B4-20) and `pro_job_locks` (persisted pro-job locks, QB-BRD1);
 ## 6 = adds `notoriety`, `notoriety_xp`, `notoriety_choices`, `held_skill_sets` (Notoriety ranks, B5-02)
-## and `music_choice` (B5-03).
+## and `music_choice` (B5-03); 7 = adds `career` (lifetime career stats, B7-01) and `weapon_finishes`
+## (weapon id -> finish id, reserved for B7-04).
 ## Field reference: content/docs/save_format.md. Golden migration fixtures: tests/b/fixtures/save/.
 ## Load pipeline (profile_from_save): migrate -> ProfileSchema.sanitize (types; wrong type -> default +
 ## Log.warn) -> PlayerProfile.from_dict -> ProfileValidator.validate (unknown ids pruned, illegal skill
@@ -19,7 +20,7 @@
 class_name SaveService
 extends RefCounted
 
-const CURRENT_VERSION: int = 6
+const CURRENT_VERSION: int = 7
 const DEFAULT_ROOT_DIR: String = "user://profiles"
 
 ## Tests point this at e.g. `user://test_profiles`.
@@ -123,6 +124,8 @@ static func migrate(data: Dictionary) -> Dictionary:
 				d = _migrate_4_to_5(d)
 			5:
 				d = _migrate_5_to_6(d)
+			6:
+				d = _migrate_6_to_7(d)
 			_:
 				Log.error(&"save", "no migration from version %d" % v)
 				return d
@@ -227,6 +230,16 @@ static func _migrate_5_to_6(d: Dictionary) -> Dictionary:
 		d["held_skill_sets"] = []
 	if not d.get("music_choice") is String:
 		d["music_choice"] = ""
+	return d
+
+
+## v6 -> v7: an empty career (nothing counted before v7) and no weapon finishes (every weapon on its
+## default finish). Everything else is unchanged.
+static func _migrate_6_to_7(d: Dictionary) -> Dictionary:
+	if not d.get("career") is Dictionary:
+		d["career"] = Career.empty()
+	if not d.get("weapon_finishes") is Dictionary:
+		d["weapon_finishes"] = {}
 	return d
 
 

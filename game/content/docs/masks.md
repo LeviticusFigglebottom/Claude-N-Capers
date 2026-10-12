@@ -107,6 +107,12 @@ starburst, Night Circuit and the skull/gasmask/demon request slots; uncommon (1)
 there. Request slots carry their tier ahead of the mesh, so they drop at the right rarity the day
 they light up.
 
+## Batch-3 bases (ENV D D3-03, B7-02)
+Twelve more base slots (`ram`, `stag`, `cat`, `boar`, `serpent`, `moth`, `knight`, `doll`, `sunburst`, `geo`,
+`robot`, `jester`) with `requires_model = true` until their glb lands. Most sit behind an unlock id
+(`MaskPartDef.unlock`: achievements or Notoriety ranks; owned via `MaskLocker.grant_unlock` / `apply_unlocks`,
+never payday drops); `cat` and `boar` are payday drops. Mapping: `content/docs/achievements.md`.
+
 ## Requested bases (ENV D request spec, B4-15)
 `bases.tres` holds five **request slots** with `requires_model = true`. Such a base is **hidden**
 (`MaskCatalog.is_available` false): not in `MaskCatalog.parts()` (pickers, the mask screen, the

@@ -242,11 +242,15 @@ func test_parts_animator_drives_named_parts() -> void:
 	c.weapons.spin = 1.0
 	c.weapons.reloading = true
 	c.weapons.reload_left = 100.0
-	await wait_frames(20)
 	var rotor: Node3D = vis.get_node("Rotor") as Node3D
 	var breech: Node3D = vis.get_node("Breech") as Node3D
+	var open_x: float = -deg_to_rad(FpViewmodelTweak.data().breech_open_deg)
+	# The ramp is delta-timed: poll for the open breech instead of counting frames (flaked under load).
+	var opened: Callable = func() -> bool:
+		return absf(breech.rotation.x - open_x) < 0.005 and rotor.transform.basis.get_euler().length() > 0.01
+	await wait_until(opened, 3.0)
 	assert_true(rotor.transform.basis.get_euler().length() > 0.01, "Rotor spins with the minigun spin")
-	assert_near(breech.rotation.x, -deg_to_rad(FpViewmodelTweak.data().breech_open_deg), 0.01, "Breech open while reloading")
+	assert_near(breech.rotation.x, open_x, 0.01, "Breech open while reloading")
 	c.weapons.spin = 0.0
 	c.weapons.reloading = false
 	vis.queue_free()

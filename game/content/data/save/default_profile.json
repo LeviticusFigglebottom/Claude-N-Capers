@@ -1,5 +1,5 @@
 {
-	"version": 6,
+	"version": 7,
 	"profile_name": "Crew",
 	"cash": 0,
 	"stash": 0,
@@ -37,6 +37,8 @@
 	"notoriety_choices": {},
 	"held_skill_sets": [],
 	"music_choice": "",
+	"career": {"totals": {}, "heists": {}, "difficulties": {}, "bags": {}, "weapons": {}},
+	"weapon_finishes": {},
 	"stats": {
 		"heists_completed": 0,
 		"heists_failed": 0

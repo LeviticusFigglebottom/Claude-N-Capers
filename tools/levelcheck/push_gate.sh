@@ -14,6 +14,10 @@ step "import"
 BAD="$(grep -rl 'valid=false' "$ROOT/game" --include='*.import' || true)"
 if [[ -n "$BAD" ]]; then echo "invalid imports:"; echo "$BAD"; FAIL=1; else echo ok; fi
 
+step "conflict markers"
+CM="$(cd "$ROOT" && git grep -nE '^(<<<<<<< |>>>>>>> )' -- . ':!*.png' ':!*.jpg' || true)"
+if [[ -n "$CM" ]]; then echo "merge-conflict markers:"; echo "$CM" | head -10; FAIL=1; else echo ok; fi
+
 step "banned + ownership"
 python3 "$ROOT/tools/ci/check_banned.py" | tail -1 || FAIL=1
 python3 "$ROOT/tools/ci/check_ownership.py" c | tail -1 || FAIL=1

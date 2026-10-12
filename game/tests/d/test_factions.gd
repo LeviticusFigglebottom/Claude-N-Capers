@@ -96,6 +96,8 @@ func test_variants_follow_the_contract() -> void:
 					"%s: %s/Socket" % [path, marker])
 			var tris: int = 0
 			for n: Node in root.find_children("*", "MeshInstance3D", true, false):
+				if String(n.name) == "CrowdLod":  # D4-01 LOD2 proxy (test_lod.gd)
+					continue
 				tris += _tris((n as MeshInstance3D).mesh)
 				assert_true((n as MeshInstance3D).skin != null, "%s/%s skinned" % [path, n.name])
 			assert_true(tris <= TRI_BUDGET, "%s: %d triangles within %d" % [path, tris, TRI_BUDGET])
@@ -128,6 +130,8 @@ func _check_scene(path: String, id: String) -> Array[String]:
 			"%s: %s/Socket" % [path, marker])
 	var tris: int = 0
 	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
+		if String(n.name) == "CrowdLod":  # D4-01 LOD2 proxy (test_lod.gd)
+			continue
 		tris += _tris((n as MeshInstance3D).mesh)
 		assert_true((n as MeshInstance3D).skin != null, "%s/%s skinned" % [path, n.name])
 	assert_true(tris <= TRI_BUDGET, "%s: %d triangles within %d" % [path, tris, TRI_BUDGET])

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.steady_work"
+name_key = &"achievement.steady_work.name"
+desc_key = &"achievement.steady_work.desc"
+condition = {"event": &"career_stat", "stat": "won", "count": 10}
+unlock = &""
+order = 40
+category = &"career"
+rewards = Array[StringName]([&"mask_colors.moss_bark"])
+unlocks = Array[StringName]([])

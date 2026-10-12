@@ -19,7 +19,7 @@ major version and comes with a `docs/decisions.md` entry and a migration note to
 | [ui_hud.md](ui_hud.md) | 1.7 | A (state) → B (HUD widgets) | — |
 | [groups.md](groups.md) | 1.1 | all | `game/contracts/ids.gd` (`G`) |
 | [net.md](net.md) | 1.1 | LEAD → A, B | `game/core/net.gd` |
-| [hub_map.md](hub_map.md) | 1.0 | C/A → B (safehouse hub) | `SafehouseMap`, `hub_station` |
+| [hub_map.md](hub_map.md) | 1.1 | C/A → B (safehouse hub) | `SafehouseMap`, `hub_station` |
 
 Rules shared by all contracts:
 * Producers ship **placeholders** first so consumers are never blocked (capsule NPCs, box props,

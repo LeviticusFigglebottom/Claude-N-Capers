@@ -1,4 +1,4 @@
-# Contract: safehouse hub map (v1.0)
+# Contract: safehouse hub map (v1.1)
 
 Owner: LEAD. Producer ENV C (scene, art), ENV A (`hub_station` prefab, hub crew spawn: A3-11), consumer ENV B
 (MenuFlow / SafehouseHost, B6-06). Design: docs/design/heists/safehouse.md ("The Press"). Decision: D-072.
@@ -25,7 +25,7 @@ Owner: LEAD. Producer ENV C (scene, art), ENV A (`hub_station` prefab, hub crew 
   over 0.35 s). Interaction reach is measured from the station's origin, not the UsePoint.
 * Signal: `station_requested(id)` (or ENV A's prefab `station_used(id, crew)`). Interaction reach 2.0 m, prompt key
   `ui.prompt.station.<id>`, same prompt format as in-heist interactions.
-* The 8 ids: `board`, `planning`, `armory`, `masks`, `jukebox`, `notoriety`, `range`, `crew`.
+* The 9 ids: `board`, `planning`, `armory`, `masks`, `jukebox`, `notoriety`, `range`, `crew`, `profile` (career screen, B7-01; added in v1.1).
 
 ## Session
 * Solo / local (PD2). The walker is spawned by `CrewController.spawn_for_hub(parent, xform, loadout) -> Node`

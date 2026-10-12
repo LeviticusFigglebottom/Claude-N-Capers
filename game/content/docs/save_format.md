@@ -1,9 +1,9 @@
-# Profile save format (B4-16, save v6)
+# Profile save format (B4-16, save v7)
 
 Owner: ENV B. Code: `content/save/` (`SaveService`, `PlayerProfile`, `ProfileSchema`, `ProfileValidator`).
 Default profile: `content/data/save/default_profile.json`. Golden fixtures: `tests/b/fixtures/save/`.
 
-The roadmap calls this "save v2" (P4 gate). The file format's internal `version` is **6** (B5-02).
+The roadmap calls this "save v2" (P4 gate). The file format's internal `version` is **7** (B7-01).
 
 ## Files
 `user://profiles/profile_<slot>.json` (pretty JSON, keys sorted), `.bak` = the previous good save,
@@ -14,7 +14,7 @@ place (atomic).
 1. Read `profile_<slot>.json`. If it is missing, unreadable, empty, truncated or not a JSON object, try `.bak`;
    if that fails too, use the default profile (`Log.error`).
 2. `version` > current: refused. The default profile is returned and the file is left untouched.
-3. `SaveService.migrate`: each step runs in order (0→1→2→3→4→5→6). A missing or non-numeric `version` is v0.
+3. `SaveService.migrate`: each step runs in order (0→1→2→3→4→5→6→7). A missing or non-numeric `version` is v0.
 4. `ProfileSchema.sanitize`: every field below is present with its JSON type. A missing field gets its
    default silently. A wrong type (e.g. `"cash": "lots"`) gets its default and a `Log.warn`. A bad element
    in a list or map (a number in `owned_weapons`, a string skill level) is dropped with a `Log.warn`.
@@ -37,6 +37,9 @@ place (atomic).
    * `held_skill_sets` loses unknown skills, levels other than 1 or 2, and entries past the last skill set.
    * Every reached rank's rewards are re-granted (`Notoriety.apply_rewards`).
    * `music_choice` is type-checked only. The launch resolves it against `MusicCatalog` (B5-03).
+   * `career.weapons` loses unknown weapon ids. Heist and loot ids in `career` are kept (history).
+   * `weapon_finishes` loses unknown weapon ids. TODO(B7-04): finish ids are not checked yet; B7-04
+     validates them against its finish data.
 
 ## Fields
 Types are JSON types. `id` = a `String` content id (`domain.snake_name`). "Since" = the first version
@@ -44,7 +47,7 @@ that has the field. v0 is the pre-versioned dev save; its `money` became `cash` 
 
 | Field | Type | Default | Since | Notes |
 |---|---|---|---|---|
-| `version` | int | 6 on save | 1 | Missing = v0. |
+| `version` | int | 7 on save | 1 | Missing = v0. |
 | `profile_name` | string | `""` | 0 | Display name. |
 | `cash` | int | 0 | 0 | Spending cash (v0 `money`). |
 | `stash` | int | 0 | 0 | Offshore account (S10.4). |
@@ -68,6 +71,8 @@ that has the field. v0 is the pre-versioned dev save; its `money` became `cash` 
 | `notoriety_choices` | object | `{}` | 6 | Rank (as a string key, e.g. `"5"`) → the reward id picked for that rank's choice (`Notoriety.choose`). |
 | `held_skill_sets` | object[] | `[]` | 6 | Index-aligned with `skill_sets`: the build a rank-up held, bought back as levels return (`NotorietySkills`). `{}` = nothing held. |
 | `music_choice` | string | `""` | 6 | Chosen heist music track id (B5-03). `""` = the heist's default. At most 64 characters; anything longer, or a non-string, falls back to `""` with a warning. Load only type-checks it. At launch `MusicCatalog.resolve_choice` turns an unknown or locked id into `""` (B5-03, `content/docs/music.md`). |
+| `career` | object | 5 empty sections | 7 | Lifetime career stats (B7-01, `Career`). See "career" below. |
+| `weapon_finishes` | object | `{}` | 7 | Weapon id → finish id (reserved for B7-04 weapon finishes). `""` or no entry = the default finish. Keys and values are strings of at most 64 characters; anything else is dropped with a warning. |
 | `stats` | object | `{}` | 0 | Counter name → int (`heists_completed`, `heists_failed`, ...). |
 | `settings` | object | `{}` | 0 | Any JSON values, stored as-is (numbers come back as float). |
 
@@ -86,6 +91,32 @@ that has the field. v0 is the pre-versioned dev save; its `money` became `cash` 
 | `skills` | object | `{}` | The active skill set. |
 | `heister` | short id | `""` | D-073, added inside v6 (no migration: a missing key reads as `""`). `rook` / `sable` / `dutch` / `wren`; `""` = no preference (the first free heister at launch). An unknown id is cleared to `""`. Fixture `v6_heister`. |
 
+### `career` (v7, B7-01)
+`progression/career.gd` (`Career`) writes it once per payday (`Career.record`, from `PaydayScreen._apply`
+before the achievements) and on spending (`Career.add_spent`). Every counter is an int ≥ 0. **A missing key
+means "never counted", not 0**: e.g. `shots` / `hits` / `headshots` only appear once a HeistResult crew row
+carries them (D-071), and accuracy is shown only when `shots` exists.
+
+| Section | Keys | Source |
+|---|---|---|
+| `totals` | `played`, `won`, `failed`, `stealth_wins`, `loud_wins` | HeistResult `success` / `stealth` |
+| | `spending_earned`, `stash_earned`, `xp_earned`, `small_loot` | PayoutCalculator `spending`, `stash`, `xp_total`, `small_loot` (cash paid) |
+| | `bags` | HeistResult `loot` entries, counted on a success only (secured bags) |
+| | `cash_spent` | workshop buys, pre-planning (refunds subtract), Notoriety rank-up cost |
+| | `offshore_spent` | Board broker (stash) |
+| | `kills`, `specials_killed`, `civilians_killed`, `downs`, `shots`, `hits`, `headshots` | the local player's HeistResult crew row; a counter the row lacks is not counted |
+| | `custody` | crew row `in_custody` (heists ended in custody) |
+| | `time_played_s` | HeistResult `time_s` (heist time only, rounded) |
+| `heists` | heist id → `played`, `won`, `failed`, `stealth_wins`, `loud_wins`, `won_d<n>` (wins on difficulty n), `fastest_win_ms` | per heist; best difficulty = highest `won_d<n>` |
+| `difficulties` | `"<n>"` (Enums.Difficulty) → `played`, `won`, `failed` | per difficulty |
+| `bags` | loot id → secured bags | HeistResult `loot` |
+| `weapons` | weapon id → heists carried | the loadout's primary / secondary at payday (favourite weapon = most carried) |
+
+Not tracked (no source yet, TODO): kills per weapon, melee / throwable kills, payday card cash and XP,
+menu time, pagers answered per player.
+Sanitizing: a non-object `career` gets the default with a warning; an unknown section is dropped; a counter
+that is not an int ≥ 0, a key over 64 characters, or a non-integer difficulty key is dropped with a warning.
+
 ## Migrations (each step is kept; never edit a shipped step)
 | Step | Change |
 |---|---|
@@ -95,6 +126,7 @@ that has the field. v0 is the pre-versioned dev save; its `money` became `cash` 
 | 3 → 4 | `owned_mask_parts = []`, `custom_masks = []`. |
 | 4 → 5 | `unlocks = []`, `achievements = {}`, `pro_job_locks = {}`. |
 | 5 → 6 | `notoriety = 0`, `notoriety_xp = 0`, `notoriety_choices = {}`, `held_skill_sets = []`, `music_choice = ""`. |
+| 6 → 7 | `career` = 5 empty sections (nothing was counted before v7), `weapon_finishes = {}`. Fixtures `v6` (migration) and `v7_damaged`. |
 
 ### Adding a version
 1. Bump `SaveService.CURRENT_VERSION` and `PlayerProfile.version`.

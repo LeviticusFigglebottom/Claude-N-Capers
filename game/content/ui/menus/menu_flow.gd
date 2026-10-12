@@ -53,6 +53,7 @@ const ACHIEVEMENTS_SCENE: PackedScene = preload("res://content/ui/achievements/a
 const OPTIONS_SCENE: PackedScene = preload("res://content/ui/menus/options_screen.tscn")
 const NOTORIETY_SCENE: PackedScene = preload("res://content/ui/notoriety/notoriety_screen.tscn")
 const JUKEBOX_SCENE: PackedScene = preload("res://content/ui/jukebox/jukebox_screen.tscn")
+const CAREER_SCENE: PackedScene = preload("res://content/ui/career/career_screen.tscn")
 ## HubStation.target values open_station() understands.
 const TARGET_BOARD: StringName = &"board"
 const TARGET_HEIST_SELECT: StringName = &"heist_select"
@@ -171,6 +172,7 @@ func _ready() -> void:
 	hub.achievements_requested.connect(_open_achievements)
 	hub.options_requested.connect(options_menu.open)
 	hub.notoriety_requested.connect(_open_notoriety)
+	hub.career_requested.connect(_open_career)
 	hub.back_requested.connect(_on_hub_back)
 	main_menu.firing_range_requested.connect(open_firing_range)
 	main_menu.settings_requested.connect(options_menu.open)
@@ -288,6 +290,19 @@ func _open_achievements() -> void:
 ## a reward choice. Back frees it and returns to the hub (show_hub re-reads the saved profile).
 func _open_notoriety() -> void:
 	var screen: NotorietyScreen = NOTORIETY_SCENE.instantiate() as NotorietyScreen
+	screen.profile_slot = profile_slot
+	screen.setup(SaveService.load_profile(profile_slot))
+	screen.visible = false
+	add_child(screen)
+	screen.back_requested.connect(func() -> void:
+		_free_screen(screen)
+		show_hub())
+	show_screen(screen)
+
+
+## Career screen (B7-01) from the hub's profile panel (read-only); Back frees it and returns to the hub.
+func _open_career() -> void:
+	var screen: CareerScreen = CAREER_SCENE.instantiate() as CareerScreen
 	screen.profile_slot = profile_slot
 	screen.setup(SaveService.load_profile(profile_slot))
 	screen.visible = false
@@ -459,6 +474,7 @@ func refund_preplan() -> int:
 	if amount > 0:
 		var p: PlayerProfile = _menu_profile()
 		p.cash += amount
+		Career.add_spent(p, -amount)
 		SaveService.save_profile(p, profile_slot)
 	return amount
 

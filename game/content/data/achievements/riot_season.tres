@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.riot_season"
+name_key = &"achievement.riot_season.name"
+desc_key = &"achievement.riot_season.desc"
+condition = {"event": &"career_stat", "stat": "loud_wins", "count": 25}
+unlock = &"unlock.achievement.riot_season"
+order = 330
+category = &"loud"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])

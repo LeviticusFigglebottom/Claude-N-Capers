@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.big_spender"
+name_key = &"achievement.big_spender.name"
+desc_key = &"achievement.big_spender.desc"
+condition = {"event": &"career_stat", "stat": "cash_spent", "count": 5000000}
+unlock = &""
+order = 550
+category = &"wealth"
+rewards = Array[StringName]([&"mask_material.rubber"])
+unlocks = Array[StringName]([])

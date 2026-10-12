@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.ledger_closed"
+name_key = &"achievement.ledger_closed.name"
+desc_key = &"achievement.ledger_closed.desc"
+condition = {"event": &"heist_completed", "heist": &"shadow_ledger", "difficulty_min": 4, "count": 1}
+unlock = &""
+order = 250
+category = &"stealth"
+rewards = Array[StringName]([&"mask_material.porcelain"])
+unlocks = Array[StringName]([])
