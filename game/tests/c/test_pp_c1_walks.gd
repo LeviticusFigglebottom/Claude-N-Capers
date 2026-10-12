@@ -48,7 +48,21 @@ func test_walk_dockside_burn() -> void:
 	await _walk_heist(&"dockside_burn")
 
 
-func _walk_heist(heist: StringName) -> void:
+## D-085 human mode: the same legs, but a path corner next to a doorway is replaced by the door's centre line
+## (1 m in front of the leaf, then 1 m behind it), the way a player lines up a door.
+func test_doors_glasshouse() -> void:
+	await _walk_heist(&"glasshouse", true)
+
+
+func test_doors_night_deposit() -> void:
+	await _walk_heist(&"night_deposit", true)
+
+
+func test_doors_dockside_burn() -> void:
+	await _walk_heist(&"dockside_burn", true)
+
+
+func _walk_heist(heist: StringName, door_centres: bool = false) -> void:
 	_rt = await HeistLauncher.launch(heist, int(HEISTS[heist]), Enums.Difficulty.ROUTINE, self,
 		{"ai_teammates": 0, "crew_ai": false, "skip_casing": true})
 	if _rt == null:
@@ -74,20 +88,22 @@ func _walk_heist(heist: StringName) -> void:
 			_row(heist, "NAV", tg[0], c.global_position, "no navmesh path from the previous stop")
 			continue
 		legs += 1
-		var res: Dictionary = await _follow(c, path)
+		var res: Dictionary = await _follow(c, _door_centred(path) if door_centres else path)
 		walked += float(res["walked"])
 		if bool(res["ok"]):
 			ok_legs += 1
 		else:
 			stuck += 1
-			_row(heist, "STUCK", tg[0], res["at"], "stalled before corner %s (%s)" % [res["corner"], res["why"]])
+			_row(heist, "STUCK-" + ("DOOR" if door_centres else "AI"), tg[0], res["at"],
+				"stalled before corner %s (%s)" % [res["corner"], res["why"]])
 			_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, goal + Vector3.UP * 0.05))  # setup reset (logged)
 			await wait_physics_frames(3)
 	var secs: float = float(Time.get_ticks_msec() - t0) / 1000.0
-	print("[PP-C-1] %s: %d targets, %d legs walked, %d ok, %d stuck, %.0f m in %.0f s wall" % [heist,
+	var mode: String = "doors" if door_centres else "corners"
+	print("[PP-C-1] %s (%s): %d targets, %d legs walked, %d ok, %d stuck, %.0f m in %.0f s wall" % [heist, mode,
 		targets.size(), legs, ok_legs, stuck, walked, secs])
 	assert_true(legs > 0, "%s: at least one leg walked" % heist)
-	_rows.append("| %s | summary | | %d/%d legs ok, %d stuck, %.0f m walked |" % [heist, ok_legs, legs, stuck, walked])
+	_rows.append("| %s | summary (%s) | | %d/%d legs ok, %d stuck, %.0f m walked |" % [heist, mode, ok_legs, legs, stuck, walked])
 
 
 ## Walk a nav path with real input. Returns {"ok", "at", "corner", "why", "walked"}.
@@ -157,3 +173,38 @@ func _row(heist: StringName, kind: String, target: String, at: Vector3, note: St
 	var s: String = "| %s | %s | `%s` | at (%.1f, %.1f, %.1f): %s |" % [heist, kind, target, at.x, at.y, at.z, note]
 	_rows.append(s)
 	print("[PP-C-1] " + s)
+
+
+## Corners within 1.5 m (flat) of a Door become [1 m before the leaf centre, 1 m past it] on the walker's side.
+func _door_centred(path: PackedVector3Array) -> PackedVector3Array:
+	var doors: Array[Node] = _rt.map.find_children("*", "Door", true, false)
+	var out: PackedVector3Array = PackedVector3Array([path[0]])
+	var used: Dictionary = {}
+	for i: int in range(1, path.size()):
+		var p: Vector3 = path[i]
+		var hit: Door = null
+		for n: Node in doors:
+			var d: Door = n as Door
+			var o: Vector3 = d.global_position
+			if Vector2(o.x - p.x, o.z - p.z).length() < 1.5 and absf(o.y - p.y) < 1.5 and i < path.size() - 1:
+				hit = d
+				break
+		if hit == null:
+			out.append(p)
+			continue
+		if used.has(hit.get_instance_id()):
+			continue
+		used[hit.get_instance_id()] = true
+		var xf: Transform3D = hit.global_transform
+		var front: Vector3 = xf * Vector3(0.0, 0.0, -1.0)
+		var back: Vector3 = xf * Vector3(0.0, 0.0, 1.0)
+		var prev: Vector3 = out[out.size() - 1]
+		if prev.distance_to(back) < prev.distance_to(front):
+			var t: Vector3 = front
+			front = back
+			back = t
+		front.y = p.y
+		back.y = p.y
+		out.append(front)
+		out.append(back)
+	return out
