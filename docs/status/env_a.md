@@ -14,7 +14,7 @@ Newest entry first, keep the last 10.
   unconsumed key list.
 - (next commit) A4-04: weapon.fire_rate_mult (client + server cadence), defense.bleedout_health_mult,
   loot.small_loot_value_mult (test_a4_keys_phase24 5/5, l3_ 38/38, weapon 25/25).
-- Push: 403 at each attempt (token issue).
+- Push: 403 until ~19:00 ET; then env/a-core pushed to origin (d65c8ad5..78a6fabd).
 ### In progress / next
 - A4-04: remaining unconsumed keys (env_a_fidelity.md list); ENV P must mirror weapon.fire_rate_mult in fp_viewmodel.
 - Trip-mine placement runtime (deployable kind trip_mine); B strings for door place_c4 prompt reuse ui.prompt.place_c4.
