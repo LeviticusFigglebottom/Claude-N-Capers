@@ -429,3 +429,15 @@ Scope: ENV A-owned paths (tools/ci/owners.json: game/systems/** minus player/, f
 ### 5. Not verified (needs Godot)
 Everything above. The local S5.8 and L3.3 tests (test_s5_8_guard_domination, test_l3_3_pellet_headshot) are present
 but have not been run on fb517093.
+
+## Headless playability audit (Glasshouse, Night Deposit), test_pp_audit_maps.gd
+
+| Row | Map | Finding | Owner | State |
+|---|---|---|---|---|
+| PP-A-AUD-1 | both | ATM (small_loot behind drill_point) cash could be taken before sawing/while casing | A | FIXED c9f6d186 (test_pp_small_loot_behind_device) |
+| PP-A-AUD-2 | Glasshouse | Slot_kc_breakroom Keycard sits ~0.29 m inside Props/U1/Lockers_1 collision, so you can't aim at it from its UsePoint | C | OPEN (map fix) |
+| PP-A-AUD-3 | Glasshouse | Pager on a fresh corpse can't be aimed from 1.2 m (hold_interact still answers it). Probably the component sits in or under body/prop geometry | A | OPEN (investigate) |
+| PP-A-AUD-4 | both | Detection at 6 m: Glasshouse 2.9 s, Night Deposit 1.8 s to ALARMED. Pager starts at 3.7 s, answered within the window, max=4 | A | OK |
+| PP-A-AUD-5 | both | Domination end to end (shout, cuff, hostage) | A | OK |
+| PP-A-AUD-6 | both | Civilian intimidate + tie OK. The first failure came from the audit itself (0.8 s shout cooldown and rising edge right after domination), not a game bug | A | OK |
+| PP-A-AUD-7 | both | All doors are 0.90 m, which the D-085 0.9 m angled-door follower test covers. No real-map follower run yet | A | OK (covered) |
