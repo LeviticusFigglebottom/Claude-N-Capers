@@ -3,6 +3,29 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12 ~18:30 ET: D-082 freeze, PP-A-1, D-085, hand-play attempt
+### Done (pushed)
+- 86757557 PP-A-1: LocalHudModel.dominate_target (guard net id) / dominate_window_s + dominate_prompt_changed;
+  NPC net state carries "dom" so clients see the window (test_s5_8 8/8, hud suites 38/38).
+  **Ask ENV B:** render a shout prompt / "!" telegraph while dominate_target != 0. LEAD: add the two
+  properties to the ui_hud contract.
+- 0dab334e S9.5 trip mine deployable (committed before the D-082 freeze; kept, no further work).
+- d57383b6 D-085: CrewAiBrain.offset_corners pushes interior nav corners 0.1 m (CrewAiTweak.corner_margin_m)
+  off the turn's inner side. test_d085 2/2, a2_01 10/10, crew_ai 4/4. NOTE: the 0.9 m angled-door test also
+  passes with margin 0, so it guards regressions but does not reproduce a stall.
+### Frozen (D-082)
+- Trip mines + remaining A4-04 keys. defense.interact_damage_taken_mult work is in `git stash` (not committed).
+- P4 allowlist (game/tests/integration/test_p4_progression.gd, LEAD-owned): hooked keys the lead may drop:
+  interaction.speed_mult, interaction.device_fix_speed_mult, defense.healing_received_mult,
+  weapon.fire_rate_mult, defense.bleedout_health_mult, loot.small_loot_value_mult, deploy.trip_mine_radius_mult.
+### Blocked
+- Round 34 not on trunk yet (origin trunk 64f10747, already merged); docs/process/playability_pass.md absent.
+- Hand play: launched `--heist=night_deposit --seed=7` on the box display (:3). Renderer is llvmpipe (software
+  Vulkan); after ~100 s in CASING the view never changed with mouse/W input and the HUD read Armor 0 / Health 0 /
+  Downs 0 / 0/0 ammo. That may just be a slow first frame, not a bug, so nothing is logged as a game issue.
+  The process used 2.8 GB RSS with other envs' tests running, so I stopped it. Real hand play needs a GPU
+  machine (Aaron's) or a lighter renderer (e.g. --rendering-driver opengl3 / compatibility) to try next.
+
 ## 2026-10-12 19:00 ET: S9.5 doors, phase-2/4 keys, L2.4, fidelity table, A4-04 start
 ### Done (local; targeted tests PASS under timeout; gdlint clean on changed files)
 - ecfc2a9a S9.5/A5-03 doors: Door.charges_required (>0) on CODE/ELECTRONIC/BARRED: place_c4 hold, C4 first else
