@@ -3,6 +3,22 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12: CORRECTION + RESUME (ENV C, new agent on the box)
+The 2026-10-11 13:45 handoff below said the SL/DB WIP was "lost with this container". **That is out of date.** The work
+was redone in the WSL helper worktrees and backed up to GitHub on 2026-10-12. These are raw snapshots and have not been through check_all:
+- `backup/2026-10-12/env-c-db-wip` 1e09a054: Dockside Burn G2 gameplay WIP (c/db-wip 9fecaf9e) + the 8 uncommitted files
+  (dockside_burn.tscn, db_gameplay.gd, layout, 2 tests, validation/walkthrough md, .wiplogs/). Padlock/burn_point/
+  deposit_box prefabs, QC-35 police delay, BARRED doorways baked closed + barred_doors check. **Top priority.**
+- `backup/2026-10-12/env-c-sl` eb07ae4f: Shadow Ledger G2 art pass (sl_art accumulator, 19 tower props, 26 kits).
+  **Does not build yet.**
+- `backup/2026-10-12/env-c-stash` 95412d3b: C5-01 music stems WIP (paused, D-076).
+### Next
+1. Once LEAD posts that Godot and Blender are set up on the box: Dockside G2 from db-wip. Remaining work: >= 2 non-breach police
+   routes per holdout, hall cover, cue.burn_warning, test_p3_loud green. Then push the gameplay milestone, which unlocks P3 sign-off.
+2. Shadow Ledger G2: get it building, then finish it. 3. C4-01/C4-02 safehouse hub.
+### Blockers
+- Waiting on box setup (Godot 4.7.2 / Blender) from LEAD.
+
 ## 2026-10-11 (new account, session 2): IN PROGRESS (kept current per D-077)
 ### In progress
 - **Shadow Ledger G2**: helper in worktree ~/caper/env-c-sl, branch c/sl-wip (local only). Brief: port the
@@ -32,7 +48,7 @@ Branch env/c-worlds is the source of truth. Everything listed under Done is push
 - Safehouse G0 approved (docs/design/heists/safehouse.md; hub_map.md v1.0, D-072).
 - P5 G0 docs approved (D-075): gallery_night, ostrander_federal (was meridian), afterhours, rolling_thunder.
 - push_gate.sh: per-run mktemp logs, plus a conflict-marker step (6622218). zfight report shows the triangle count only.
-### In progress: NOT pushed, lost with this container (not validated)
+### In progress: NOT pushed at handoff (SUPERSEDED: redone in WSL and backed up 2026-10-12, see the newest entry)
 - **Shadow Ledger G2:** the agent had dressing, props and VoxelGI done, stage final, 26/~30 g2 shots rendered, and was at lint/ownership. Redo from the brief:
   - KitPlacer dressing, upscale palette, rain/night exterior;
   - saw_target via A's prefabs on the server cage (safe methods [code, saw]);
