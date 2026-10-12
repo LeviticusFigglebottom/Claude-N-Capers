@@ -78,6 +78,7 @@ func _build() -> void:
 		if line.begins_with("ERROR"):
 			errors.append(line)
 	_build_art()
+	_tune_street_light(n("Props"))
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -699,11 +700,13 @@ func _build_lighting(lighting: Node3D) -> void:
 	sky.sky_material = sky_mat
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 0.7
+	# Cool moonlit ambient (D-086: blue/grey kits read at 20 m instead of brown-black under sodium).
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = Color(0.36, 0.42, 0.55)
+	env.ambient_light_energy = 0.55
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_AGX
-	env.tonemap_exposure = 1.15
+	env.tonemap_exposure = 1.25
 	env.ssao_enabled = true
 	env.ssao_radius = 1.2
 	env.ssao_intensity = 1.4
@@ -728,8 +731,8 @@ func _build_lighting(lighting: Node3D) -> void:
 	moon.name = "Moon"
 	moon.basis = Basis.looking_at(Vector3(0.4, -0.35, 0.85).normalized(), Vector3.UP)
 	moon.position = Vector3(13.0, 30.0, 10.0)
-	moon.light_color = Color(0.62, 0.7, 0.85)
-	moon.light_energy = 0.12
+	moon.light_color = Color(0.6, 0.7, 0.9)
+	moon.light_energy = 0.22
 	moon.shadow_enabled = false
 	add(lighting, moon)
 	_voxel_gi(lighting)
@@ -1068,3 +1071,14 @@ func _bake(nav: NavigationRegion3D) -> int:
 	await process_frame
 	nav.navigation_mesh = nm
 	return nm.get_polygon_count()
+
+
+## D-086 (D's 20 m read): sodium street/wall lamps desaturated toward warm white and a bit brighter, so enemy
+## kits keep their colours where they stand; the map stays dark (no new lights, small energy step).
+func _tune_street_light(props: Node) -> void:
+	for l: Node in props.find_children("*", "Light3D", true, false):
+		var light: Light3D = l as Light3D
+		var c: Color = light.light_color
+		if c.r > 0.9 and c.b < 0.4:  # sodium orange
+			light.light_color = Color(1.0, 0.8, 0.6)
+			light.light_energy *= 1.2
