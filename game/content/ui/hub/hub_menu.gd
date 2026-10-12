@@ -31,6 +31,8 @@ var profile: PlayerProfile = null
 ## Station id -> its card Button.
 var station_buttons: Dictionary = {}
 var back_button: Button
+## PQ-B-8: full description of the focused / hovered station card (cards trim it with an ellipsis).
+var station_detail: Label
 var name_label: Label
 var level_label: Label
 var xp_label: Label
@@ -86,6 +88,11 @@ func build_ui() -> void:
 	side.custom_minimum_size = Vector2(520, 0)
 	body.add_child(side)
 	side.add_child(_build_profile_panel())
+	station_detail = UiBuild.label(&"", UiBuild.DIM)
+	station_detail.name = "StationDetail"
+	station_detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	station_detail.custom_minimum_size = Vector2(0, 72)
+	side.add_child(station_detail)
 	achievements_button = UiBuild.button(&"ui.hub.achievements")
 	achievements_button.pressed.connect(achievements_requested.emit)
 	side.add_child(achievements_button)
@@ -155,6 +162,8 @@ func _station_card(s: HubStation) -> Button:
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	b.tooltip_text = UiText.t(s.desc_key)
 	b.pressed.connect(station_requested.emit.bind(s.id))
+	b.focus_entered.connect(show_station_detail.bind(s.id))
+	b.mouse_entered.connect(show_station_detail.bind(s.id))
 	var m: MarginContainer = MarginContainer.new()
 	m.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	m.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -239,6 +248,13 @@ func refresh_profile(p: PlayerProfile = null) -> void:
 			{"points": skill_total - SkillPoints.spent_total(profile.loadout.skills), "total": skill_total})
 	perk_points_label.text = UiText.t(&"ui.hub.profile.perk_points",
 			{"points": PerkProgress.available(profile, ProgressionUiTweak.load_default())})
+
+
+## Shows station `id`'s full description in the side panel (focus or hover, PQ-B-8).
+func show_station_detail(station_id: StringName) -> void:
+	var st: HubStation = stations.find(station_id) if stations != null else null
+	if station_detail != null and st != null:
+		station_detail.text = UiText.t(st.desc_key)
 
 
 ## The card for station `id` (null when unknown).

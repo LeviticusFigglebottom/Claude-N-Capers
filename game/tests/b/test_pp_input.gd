@@ -218,3 +218,17 @@ func test_payday_number_key_picks() -> void:
 	assert_eq(s.picked_index, 1, "key 2 picks the middle card")
 	s.queue_free()
 	await wait_frames(1)
+
+
+## PQ-B-8: focusing a card by d-pad shows its full description (not only a mouse tooltip).
+func test_hub_focus_shows_station_detail() -> void:
+	var f: MenuFlow = await _hub_flow()
+	var hub: HubMenu = f.hub
+	hub.station_button(&"board").grab_focus()
+	await wait_frames(1)
+	await _press(&"ui_right")
+	var id: StringName = hub.stations.stations[1].id
+	assert_eq(hub.station_detail.text, UiText.t(hub.stations.stations[1].desc_key), "detail follows focus to " + String(id))
+	assert_true(hub.station_detail.is_visible_in_tree())
+	f.queue_free()
+	await wait_frames(1)
