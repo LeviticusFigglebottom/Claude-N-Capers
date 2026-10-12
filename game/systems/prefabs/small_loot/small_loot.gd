@@ -39,5 +39,6 @@ func _on_completed(crew: Node) -> void:
 		return
 	taken = true
 	var slot: int = int(crew.get(&"slot")) if crew != null else -1
-	_emit_fact(&"small_loot_taken", [value, slot])
+	var v: int = int(round(float(value) * Modifiers.mult(slot, &"loot.small_loot_value_mult"))) if slot >= 0 else value
+	_emit_fact(&"small_loot_taken", [v, slot])  # A4-04: loot.small_loot_value_mult
 	queue_free()

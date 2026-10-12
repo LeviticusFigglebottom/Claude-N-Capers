@@ -38,3 +38,35 @@ func test_healing_received_mult() -> void:
 	Modifiers.set_source(0, &"test", {&"defense.healing_received_mult": 1.5})
 	c.health.heal(20.0)
 	assert_near(c.health.health, 130.0, 0.001, "20 x 1.5")
+
+
+func test_a4_04_fire_rate_mult() -> void:
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	var s: Variant = c.weapons._states[c.weapons.equipped_slot]
+	var base: float = c.weapons._shot_interval(s)
+	Modifiers.set_source(0, &"test", {&"weapon.fire_rate_mult.all": 2.0})
+	assert_near(c.weapons._shot_interval(s), base * 0.5, 0.0001, "x2 rate = half interval")
+
+
+func test_a4_04_bleedout_health_mult() -> void:
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	c.set_masked()
+	Modifiers.set_source(0, &"test", {&"defense.bleedout_health_mult": 2.0})
+	c.health.armor = 0.0
+	c.take_hit(Damage.info(10000.0, Enums.DamageType.BULLET, Enums.HitZone.BODY, &"t", c.global_position,
+		Vector3.FORWARD, 0))
+	assert_eq(c.crew_state, Enums.CrewState.DOWNED)
+	assert_near(c.health.bleedout_health, Tweak.crew().bleedout_health * 2.0, 0.001)
+
+
+func test_a4_04_small_loot_value_mult() -> void:
+	var got: Array = []
+	var cb: Callable = func(v: int, slot: int) -> void: got.append([v, slot])
+	EventBus.small_loot_taken.connect(cb)
+	Modifiers.set_source(0, &"test", {&"loot.small_loot_value_mult": 1.5})
+	var sl: Node = ATestMaps.add_prefab(_rt, "small_loot", Vector3(0, 0, -3), func(n: Node) -> void:
+		n.set(&"value", 1000))
+	await wait_physics_frames(1)
+	sl.call(&"_on_completed", _rt.crew_controller(0))
+	EventBus.small_loot_taken.disconnect(cb)
+	assert_eq(got, [[1500, 0]], "1000 x 1.5")

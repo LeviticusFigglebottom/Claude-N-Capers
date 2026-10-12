@@ -251,7 +251,7 @@ func go_down() -> void:
 	armor = 0.0
 	invuln_left = 0.0
 	bleedout_left = tw.bleedout_time_s + Modifiers.add(_slot(), &"defense.bleedout_time_add")
-	bleedout_health = tw.bleedout_health
+	bleedout_health = tw.bleedout_health * Modifiers.mult(_slot(), &"defense.bleedout_health_mult")  # A4-04
 	_crew.set_crew_state(Enums.CrewState.DOWNED)
 	if _revive != null:
 		_revive.enabled = true
