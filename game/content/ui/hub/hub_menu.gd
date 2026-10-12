@@ -5,6 +5,8 @@
 ## its interactables call MenuFlow.open_station(id), the same path these cards use.
 ##
 ## API (MenuFlow wires it): setup(profile) before or after entering the tree; refresh_profile(p).
+## B-PP-1: Career and Notoriety open only via their station cards (profile / notoriety); the duplicate
+## side-panel buttons are gone. The signals stay for API compatibility.
 ## Signals: station_requested(id) (a card pressed); achievements_requested() (the profile panel's
 ## Achievements button, B4-20); options_requested() (its Options button, B5-01); notoriety_requested() (its
 ## Notoriety button, B5-02); career_requested() (its Career button, B7-01: CareerScreen);
@@ -25,6 +27,8 @@ var stations: HubStationList
 var profile: PlayerProfile = null
 ## Station id -> its card Button.
 var station_buttons: Dictionary = {}
+## Station cards per row (B-PP-2).
+const CARD_COLUMNS: int = 2
 var back_button: Button
 var name_label: Label
 var level_label: Label
@@ -40,10 +44,6 @@ var notoriety_label: Label
 var achievements_button: Button
 ## Profile panel button -> options_requested (B5-01).
 var options_button: Button
-## Profile panel button -> notoriety_requested (B5-02).
-var notoriety_button: Button
-## Profile panel button -> career_requested (B7-01).
-var career_button: Button
 
 
 func setup(p: PlayerProfile) -> void:
@@ -60,9 +60,14 @@ func build_ui() -> void:
 	var body: HBoxContainer = UiBuild.hbox(48)
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(body)
-	var list: VBoxContainer = UiBuild.vbox(14)
+	# B-PP-2: nine stations in one column overflowed the 1080-unit canvas (= 1280x720 under canvas_items
+	# stretch). Two columns of compact cards fit every card on screen; the scroll stays as a safety net.
+	var list: GridContainer = GridContainer.new()
+	list.name = "StationGrid"
+	list.columns = CARD_COLUMNS
+	list.add_theme_constant_override("h_separation", 14)
+	list.add_theme_constant_override("v_separation", 14)
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	# Seven stations (B5-03 jukebox) outgrow 1080 px with the header: the cards scroll, focus follows.
 	var list_scroll: ScrollContainer = ScrollContainer.new()
 	list_scroll.name = "StationScroll"
 	list_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -80,10 +85,6 @@ func build_ui() -> void:
 	side.custom_minimum_size = Vector2(520, 0)
 	body.add_child(side)
 	side.add_child(_build_profile_panel())
-	career_button = UiBuild.button(&"ui.career.open")
-	career_button.pressed.connect(career_requested.emit)
-	side.add_child(career_button)
-	focus_chain.append(career_button)
 	achievements_button = UiBuild.button(&"ui.hub.achievements")
 	achievements_button.pressed.connect(achievements_requested.emit)
 	side.add_child(achievements_button)
@@ -92,10 +93,6 @@ func build_ui() -> void:
 	options_button.pressed.connect(options_requested.emit)
 	side.add_child(options_button)
 	focus_chain.append(options_button)
-	notoriety_button = UiBuild.button(&"ui.notoriety.open")
-	notoriety_button.pressed.connect(notoriety_requested.emit)
-	side.add_child(notoriety_button)
-	focus_chain.append(notoriety_button)
 	var footer: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(footer)
 	back_button = UiBuild.button(&"ui.hub.main_menu")
@@ -121,7 +118,8 @@ func _station_card(s: HubStation) -> Button:
 	b.theme_type_variation = &"StationButton"
 	b.focus_mode = Control.FOCUS_ALL
 	b.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	b.custom_minimum_size = Vector2(720, 108)
+	b.custom_minimum_size = Vector2(0, 96)
+	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	b.tooltip_text = UiText.t(s.desc_key)
 	b.pressed.connect(station_requested.emit.bind(s.id))
 	var m: MarginContainer = MarginContainer.new()
