@@ -18,6 +18,9 @@
 class_name CrewView
 extends Node
 
+## D-084: the local view's zoom changed (f = zoom_factor). Emitted only by the local human's view.
+signal zoom_factor_changed(f: float)
+
 const NODE_NAME: String = "View"
 const VIEWMODEL_NAME: String = "Viewmodel"
 const MASK_NAME: String = "Mask"
@@ -40,6 +43,14 @@ var _fp: FpViewmodel = null
 var _mask: Node3D = null
 var _mask_id: StringName = &""
 var _ads_weight: float = 0.0
+## D-084 (read-only): linear zoom of the local camera, tan(base_fov/2) / tan(current_fov/2); 1.0 at hip fire and
+## for every non-local view. ENV C/D scale visibility ranges by it (mesh LOD is already FOV-aware in Godot).
+var zoom_factor: float:
+	get:
+		return _zoom_factor
+var _zoom_factor: float = 1.0
+## The local human's view (null when none).
+static var _local_view: CrewView = null
 ## Descriptor the current mask was built from (rebuild when it changes).
 var _mask_desc: Dictionary = {}
 ## Heister whose body is under `Visual` (&"" = the placeholder).
@@ -49,6 +60,18 @@ var _body_id: StringName = &""
 ## The crew member's view component (null when missing).
 static func of(crew: Node) -> CrewView:
 	return crew.get_node_or_null(NODE_NAME) as CrewView if crew != null else null
+
+
+## D-084: zoom_factor of the local player's view; 1.0 when there is none.
+static func local_zoom_factor() -> float:
+	if _local_view == null or not is_instance_valid(_local_view) or not _local_view.is_inside_tree():
+		return 1.0
+	return _local_view.zoom_factor
+
+
+## D-084: the local player's view (null when none), for connecting zoom_factor_changed.
+static func local_view() -> CrewView:
+	return _local_view if _local_view != null and is_instance_valid(_local_view) else null
 
 
 func _ready() -> void:
@@ -67,6 +90,8 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if _local_view == self:
+		_local_view = null
 	if get_tree().node_added.is_connected(_on_node_added):
 		get_tree().node_added.disconnect(_on_node_added)
 
@@ -145,6 +170,23 @@ func _process(delta: float) -> void:
 	var aiming: bool = _crew.intent != null and _crew.intent.aim
 	_ads_weight = move_toward(_ads_weight, 1.0 if aiming else 0.0, delta * Tweak.crew().ads_zoom_rate)
 	cam.fov = gs.fov() / lerpf(1.0, mag, _ads_weight)
+	_local_view = self
+	_set_zoom_factor(zoom_factor_for(gs.fov(), cam.fov))
+
+
+## D-084: linear zoom of `fov_deg` relative to `base_fov_deg` (both vertical, degrees).
+static func zoom_factor_for(base_fov_deg: float, fov_deg: float) -> float:
+	var t: float = tan(deg_to_rad(clampf(fov_deg, 1.0, 179.0)) * 0.5)
+	return tan(deg_to_rad(clampf(base_fov_deg, 1.0, 179.0)) * 0.5) / t if t > 0.0 else 1.0
+
+
+func _set_zoom_factor(f: float) -> void:
+	if absf(f - 1.0) < 1e-4:
+		f = 1.0
+	if absf(f - _zoom_factor) < 1e-4 and not (f == 1.0 and _zoom_factor != 1.0):
+		return
+	_zoom_factor = f
+	zoom_factor_changed.emit(f)
 
 
 ## Local human only: WeaponVisual of the equipped weapon under the camera. With the first-person arms
