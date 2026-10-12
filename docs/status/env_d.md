@@ -4,7 +4,7 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## 2026-10-12: session 3b (lead rulings D-080, D-084, accents)
-### Done (local on env/d-art; push still 403)
+### Done (pushed to origin/env/d-art at 4cc3d516)
 - 12bc7737 D-080: specials (char_specials.py) keep LOD0/1 only: no CrowdLod, 22 `*_lod.res` removed (LOD res now
   9.1 MB total, was 13 MB); new `test_specials_have_no_lod2`. Closes issue 3 (Corpsman cross).
 - 65289015 accents (issue 2): TAC Heavy steel pauldron trim (`char_aegis_steel`, override `shoulder_accent`),
