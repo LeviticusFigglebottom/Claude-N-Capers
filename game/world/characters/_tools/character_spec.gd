@@ -87,7 +87,10 @@ const SOCKET_NAME: String = "Socket"
 ## * Back: behind the chest on the spine line, ~17 mm off the bare back surface (bag pivot).
 ## * Hip: right side of the belt (pager/radio).
 ## Outfit SOURCE.txt may override any of them with `attach_<head|hand_r|hand_l|back|hip>: [x, y, z]`
-## in the same space at the asset's own height (not rescaled).
+## in the same space at the asset's own height (not rescaled). Outfit-built characters
+## (tools/blender/characters/_outfit_build.py) record their measured seats as
+## `attach_<Head|Back|Hip>: bone <b>, local [..] (model [x, y, z], Godot axes, rest pose)`; the
+## model point is used when no lowercase override is present.
 const SOCKET_POINTS: Dictionary = {
 	"Head": Vector3(0.0, 1.666, -0.0767),
 	"Back": Vector3(0.0, 1.30, 0.12),
@@ -110,6 +113,8 @@ const SOURCE_KEYS: Dictionary = {
 	"Back": "attach_back",
 	"Hip": "attach_hip",
 }
+## Prefix of the outfit seat lines (`attach_Head`, `attach_Back`, `attach_Hip`).
+const SEAT_PREFIX: String = "attach_"
 ## Head bone height at the 1.78 m default; the socket points are scaled by head_y / this.
 const DEFAULT_HEAD_Y: float = 1.585
 ## The animation generator, relative to the repository root (outside res://).
@@ -294,3 +299,18 @@ static func parse_names(text: String) -> Array[String]:
 		if not out.has(s):
 			out.append(s)
 	return out
+
+
+## The `model [x, y, z]` point of an outfit seat line, or null when the line has none.
+static func parse_seat(line: String) -> Variant:
+	var at: int = line.find("model [")
+	if at < 0:
+		return null
+	var end: int = line.find("]", at)
+	if end < 0:
+		return null
+	var parts: PackedStringArray = line.substr(at + 7, end - at - 7).split(",")
+	if parts.size() != 3:
+		return null
+	return Vector3(parts[0].strip_edges().to_float(), parts[1].strip_edges().to_float(),
+		parts[2].strip_edges().to_float())

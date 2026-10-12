@@ -63,6 +63,63 @@ def _head_radii(fit: Fit, z_of, th: list[float], c: Vector, clear: float) -> lis
 
 
 # ---------------------------------------------------------------------------------------------
+# strand UVs for hair pieces on Headwear
+# ---------------------------------------------------------------------------------------------
+#: Strand UV scale (UV units per metre; 1 UV unit = 2 m of texture): across the strands squeezed
+#: like the body hair (``_head.hair_uvs``: u twice round a ~0.55 m head), along them stretched
+#: (``_head.HAIR_UV_V`` per radian over ~0.1 m of arc), so the hair texture's grain reads as strands.
+STRAND_U_PER_M = 2.0 / 0.55
+STRAND_V_PER_M = _head.HAIR_UV_V / 0.1
+
+
+def head_piece(kit, m: Mesh) -> Mesh:
+    """``kit.add_head(m)``, remembering ``m.strand_uv`` (per-vertex UVs, u wrap period) when the
+    piece has one, for ``apply_strand_uvs``."""
+    n0 = len(kit.head.v)
+    kit.add_head(m)
+    rec = getattr(m, "strand_uv", None)
+    if rec is not None:
+        kit.strand_uvs = [*getattr(kit, "strand_uvs", []), (n0, rec[0], rec[1])]
+    return m
+
+
+def apply_strand_uvs(kit) -> int:
+    """After ``build_character``: replace the box-projected UVs of the ``Headwear`` faces that belong
+    to strand-UV pieces (``head_piece``) by their strand UVs, so the hair normal map runs along the
+    strands instead of switching projection axis from face to face (which reads as facets under a
+    hard key). Vertex order survives ``make_object``/``_tri.triangulate``. Returns faces changed."""
+    import bpy
+
+    recs = getattr(kit, "strand_uvs", [])
+    if not recs:
+        return 0
+    obj = next(ob for ob in bpy.data.objects if ob.type == "MESH" and ob.name.split(".")[0] == "Headwear")
+    me = obj.data
+    if len(me.vertices) != len(kit.head.v):
+        raise AssertionError("Headwear vertex order differs from kit.head")
+    table: dict[int, tuple[tuple[float, float], float | None]] = {}
+    for n0, uvs, wrap in recs:
+        for i, uv in enumerate(uvs):
+            table[n0 + i] = (uv, wrap)
+    layer = me.uv_layers.active
+    n = 0
+    for poly in me.polygons:
+        vs = list(poly.vertices)
+        if not all(v in table for v in vs):
+            continue
+        corners = [table[v][0] for v in vs]
+        wrap = table[vs[0]][1]
+        if wrap:
+            u0 = corners[0][0]
+            corners = [(u - wrap * round((u - u0) / wrap), v) for u, v in corners]
+        for li, uv in zip(poly.loop_indices, corners):
+            layer.data[li].uv = uv
+        n += 1
+    me.update()
+    return n
+
+
+# ---------------------------------------------------------------------------------------------
 # hats
 # ---------------------------------------------------------------------------------------------
 def flat_cap(fit: Fit, mat: str, band_mat: str | None = None, n: int = 40) -> tuple[Mesh, dict]:
@@ -314,7 +371,7 @@ def _crown_offset(a: float, ph: float, top: float, sides: float, line: tuple = C
 #: irregular strand clumps separated by grooves ``_SWEEP_GROOVE`` (fraction of the volume) deep.
 _SWEEP_POLE = (0.0, -1.0, 0.12)
 _SWEEP_CLUMPS = 12
-_SWEEP_GROOVE = 0.6
+_SWEEP_GROOVE = 0.38                  # shallow enough to stay smooth-shaded (Headwear: hard edges > 40 deg)
 
 
 def _sweep_clump(i_max: int, s: float, salt: int = 0) -> tuple[float, float]:
@@ -332,7 +389,7 @@ def _sweep_clump(i_max: int, s: float, salt: int = 0) -> tuple[float, float]:
 
 
 def crown_volume(fit: Fit, mat: str, top: float = 0.004, sides: float = 0.010, line: tuple = CROWN_HAIRLINE,
-                 n_al: int = 48, n_be: int = 11) -> Mesh:
+                 n_al: int = 64, n_be: int = 12, relax: int = 4) -> Mesh:
     """Swept-back hair (an updo's backcombed crown) as a shell on rays from the head centre:
     fullest at the upper sides (width rather than height, so the head reads less long) and tucked
     to ~0.6 mm at the hairline ``line`` (see ``CROWN_HAIRLINE``). Over a bald head (``hair: none``)
@@ -342,7 +399,10 @@ def crown_volume(fit: Fit, mat: str, top: float = 0.004, sides: float = 0.010, l
     The grid follows the strands: ``n_al`` columns on great circles from the chignon pole
     (``_SWEEP_POLE``, hidden under the bun) forward to the hairline, ``n_be`` rows along them. Strand
     clumps are cut in as grooves between the columns (subtractive: the envelope is kept) and reach a
-    little over the hairline at the front, so the edge breaks up."""
+    little over the hairline at the front, so the edge breaks up. The grid is fine enough (~5 columns
+    per clump) that no groove edge passes ``Headwear``'s 40 deg hard-edge angle, and the scalp radii
+    are relaxed over the grid (``relax`` passes, never inwards) so the shell does not copy the low-poly
+    head's facets under a hard key."""
     k = fit.k
     c = fit.head_centre()
     hh = HeadHull(fit)
@@ -360,11 +420,13 @@ def crown_volume(fit: Fit, mat: str, top: float = 0.004, sides: float = 0.010, l
     def dirv(al: float, be: float) -> Vector:
         return (pole * math.cos(be) + (e1 * math.cos(al) + e2 * math.sin(al)) * math.sin(be)).normalized()
 
-    def point(d: Vector, mod: float) -> Vector:
-        a, ph = crown_ang(d)
+    def base_r(d: Vector) -> float:
         hit = hh.cast(c + d * 0.4, -d, 0.6)
-        base = hit[0] if hit[0] is not None else c + d * 0.1 * k
-        return base + d * _crown_offset(a, ph, top, sides, line) * k * mod
+        return (hit[0] - c).length if hit[0] is not None else 0.1 * k
+
+    def point(d: Vector, mod: float, r: float | None = None) -> Vector:
+        a, ph = crown_ang(d)
+        return c + d * ((base_r(d) if r is None else r) + _crown_offset(a, ph, top, sides, line) * k * mod)
 
     m = Mesh()
     edges = []
@@ -378,7 +440,8 @@ def crown_volume(fit: Fit, mat: str, top: float = 0.004, sides: float = 0.010, l
             mid = 0.5 * (lo + hi)
             lo, hi = (mid, hi) if inside(dirv(al, mid)) else (lo, mid)
         edges.append(lo)
-    cols = []
+    edges = _smooth_circ(edges, 2)
+    grid = []                                    # (direction, radius, offset factor) per column/row
     for j in range(n_al):
         al = math.tau * j / n_al
         edge = edges[j]
@@ -391,8 +454,20 @@ def crown_volume(fit: Fit, mat: str, top: float = 0.004, sides: float = 0.010, l
             t = r / n_be
             be = edge * (1.0 - (1.0 - t) ** 1.3)
             fade = smoothstep(math.radians(12.0), math.radians(40.0), be)
-            col.append(point(dirv(al, be), 1.0 - _SWEEP_GROOVE * groove * fade))
-        cols.append(col)
+            d = dirv(al, be)
+            col.append([d, base_r(d), 1.0 - _SWEEP_GROOVE * groove * fade])
+        grid.append(col)
+    for _ in range(relax):                       # lift the radii onto a smooth hull of the facets
+        new = [[q[1] for q in col] for col in grid]
+        for j in range(n_al):
+            for r in range(n_be):
+                nb = [grid[(j - 1) % n_al][r][1], grid[(j + 1) % n_al][r][1]]
+                nb += [grid[j][rr][1] for rr in (r - 1, r + 1) if 0 <= rr < n_be]
+                new[j][r] = max(grid[j][r][1], 0.5 * grid[j][r][1] + 0.5 * sum(nb) / len(nb))
+        for j in range(n_al):
+            for r in range(n_be):
+                grid[j][r][1] = new[j][r]
+    cols = [[point(d, mod, rad) for d, rad, mod in col] for col in grid]
     ids = [m.ring([cols[j][r] for j in range(n_al)], HEAD_W) for r in range(n_be)]
     inside_c = Vector((c.x, c.y, c.z))
     for a_, b_ in itertools.pairwise(ids):
@@ -400,6 +475,10 @@ def crown_volume(fit: Fit, mat: str, top: float = 0.004, sides: float = 0.010, l
     pc = m.add(point(pole, 1.0), HEAD_W)
     for j in range(n_al):
         m.face((ids[0][j], ids[0][(j + 1) % n_al], pc), mat, inside=inside_c)
+    # strand UVs: u twice round the sweep pole (whole repeats: no seam), v along the strands
+    v_rad = STRAND_V_PER_M * 0.1 * k
+    uvs = [(2.0 * j / n_al, pole.angle(cols[j][r] - c) * v_rad) for r in range(n_be) for j in range(n_al)]
+    m.strand_uv = ([*uvs, (0.0, 0.0)], 2.0)
     return m
 
 
@@ -441,25 +520,54 @@ def side_fringe(fit: Fit, mat: str, part_deg: float = 30.0, crown: tuple[float, 
         n = hit[1].normalized()
         return hit[0] + d * under(th, ph), n if n.dot(d) > 0 else -n
 
-    n_rows, n_across = 18, 7
-    rows = []
-    for r in range(n_rows + 1):
-        t = r / n_rows
+    n_rows, n_across = 24, 7
+    # the row frames: surface points along the path, normals and tangents smoothed along it (the
+    # head is low poly: raw hit normals jump from face to face and crumple the sheet under a key)
+    ts = [r / n_rows for r in range(n_rows + 1)]
+    pn = [surf(*interp(t)) for t in ts]
+    ps = [q for q, _n in pn]
+    ns = [nn for _q, nn in pn]
+    for _ in range(3):
+        ns = [ns[0]] + [(ns[i - 1] + 2.0 * ns[i] + ns[i + 1]).normalized() for i in range(1, n_rows)] + [ns[-1]]
+    grid = []                                    # per row: (centre, normal, side, [(q, base dist)])
+    for r, t in enumerate(ts):
         th, ph = interp(t)
-        p, n = surf(th, ph)
-        th2, ph2 = interp(min(1.0, t + 0.02))
-        th0, ph0 = interp(max(0.0, t - 0.02))
-        tang = (surf(th2, ph2)[0] - surf(th0, ph0)[0]).normalized()
+        p, n = ps[r], ns[r]
+        tang = (ps[min(r + 1, n_rows)] - ps[max(r - 1, 0)]).normalized()
         sd = n.cross(tang).normalized()
         w = (0.022 + 0.046 * math.sin(math.pi * min(1.0, t * 1.25)) ** 0.8) * (1.0 - 0.5 * smoothstep(0.75, 1.0, t)) * k
-        lift = (0.0035 + 0.0085 * math.sin(math.pi * t) ** 0.7) * k
         off = under(th, ph)
-        tops, bots = [], []
+        cells = []
         for a in range(n_across + 1):
             s_ = -1.0 + 2.0 * a / n_across
             q = p + sd * (s_ * 0.5 * w)
             hq = hh.cast(q + n * 0.05, -n, 0.1)
-            base = hq[0] + n * off if hq[0] is not None else q
+            cells.append([q, (0.05 - hq[3]) + off if hq[0] is not None else 0.0])
+        grid.append((n, cells))
+    for _ in range(3):                           # relax the base heights (never inwards)
+        new = [[cl[1] for cl in cells] for _n, cells in grid]
+        for r in range(n_rows + 1):
+            for a in range(n_across + 1):
+                nb = [grid[rr][1][a][1] for rr in (r - 1, r + 1) if 0 <= rr <= n_rows]
+                nb += [grid[r][1][aa][1] for aa in (a - 1, a + 1) if 0 <= aa <= n_across]
+                cur = grid[r][1][a][1]
+                new[r][a] = max(cur, 0.5 * cur + 0.5 * sum(nb) / len(nb))
+        for r in range(n_rows + 1):
+            for a in range(n_across + 1):
+                grid[r][1][a][1] = new[r][a]
+    rows = []
+    uvs: list[tuple[float, float]] = []
+    along = 0.0
+    for r, t in enumerate(ts):
+        n, cells = grid[r]
+        along += (ps[r] - ps[r - 1]).length if r else 0.0
+        lift = (0.0035 + 0.0085 * math.sin(math.pi * t) ** 0.7) * k
+        tops, bots = [], []
+        us = [(q - cells[0][0]).length * STRAND_U_PER_M for q, _h in cells]
+        uvs += [(u, along * STRAND_V_PER_M) for u in us + list(reversed(us[1:-1]))]
+        for a, (q, h) in enumerate(cells):
+            s_ = -1.0 + 2.0 * a / n_across
+            base = q + n * h
             prof = max(0.0, 1.0 - s_ * s_) ** 0.5
             # strand clumps: two grooves along the sweep (a = 2 and 5), shallow at the root
             groove = (0.30 if a in (2, 5) else 0.0) * smoothstep(0.05, 0.3, t)
@@ -478,12 +586,15 @@ def side_fringe(fit: Fit, mat: str, part_deg: float = 30.0, crown: tuple[float, 
         nn = len(end)
         for j in range(nn):
             m.face((end[j], end[(j + 1) % nn], pc), mat, inside=inside)
+    m.strand_uv = ([*uvs, (us[len(us) // 2], 0.0), (us[len(us) // 2], along * STRAND_V_PER_M)], None)
     return m
 
 
-def moustache(fit: Fit, mat: str, z_off: float = -0.066, half_w: float = 0.034, thick: float = 0.0062) -> Mesh:
+def moustache(fit: Fit, mat: str, z_off: float = -0.066, half_w: float = 0.034, thick: float = 0.0062,
+              sides: int = 8) -> Mesh:
     """A thick 'workman' moustache over the upper lip, drooping at the corners. ``z_off`` is the
-    centre line relative to the eyes (head-local metres before height scaling)."""
+    centre line relative to the eyes (head-local metres before height scaling); ``sides`` > 9 keeps
+    the tube smooth-shaded on ``Headwear`` (hard edges above 40 deg)."""
     k = fit.k
     eye = fit.eye_centre()
     hh = HeadHull(fit)
@@ -497,7 +608,7 @@ def moustache(fit: Fit, mat: str, z_off: float = -0.066, half_w: float = 0.034, 
         y = hit[0].y if hit[0] is not None else eye.y + 0.03 * k
         y += 0.0035 * k - 0.004 * k * u * u
         pts.append(Vector((x, y, z)))
-    o.tube(m, pts, lambda t: (0.0022 + thick * (1 - (2 * t - 1) ** 2) ** 0.7) * k, mat, sides=8,
+    o.tube(m, pts, lambda t: (0.0022 + thick * (1 - (2 * t - 1) ** 2) ** 0.7) * k, mat, sides=sides,
            weights=lambda p, t: HEAD_W)
     return m
 

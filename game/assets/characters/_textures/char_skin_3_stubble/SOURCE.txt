@@ -1,6 +1,6 @@
 generator: python3 tools/blender/characters/make_materials.py --only char_skin_3_stubble
 palette: tools/blender/characters/_outfit_palette.py (all_char_materials)
-kind: skin; colour #B7835F; roughness 0.55; metallic 0.0
+kind: skin; colour #B7835F; roughness 0.66; metallic 0.0; metallic_specular 0.35
 seed: 4122073112 (zlib.crc32('char_skin_3'))
 size_px: 512; tile_m: 2.0 (1 UV unit = 2.0 m); texel_density_px_per_m: 256
 face colour: _body.skin_tint rasterised in body-UV space (beard strength 0.5)

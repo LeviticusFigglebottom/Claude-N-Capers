@@ -18,5 +18,5 @@ look: Rook: long charcoal overcoat (mid-calf) over white shirt + black tie, open
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28118
-tris_by_mesh: {"Body": 7364, "Gear": 456, "Hair": 1856, "Outfit": 18442}
+tris: 28180
+tris_by_mesh: {"Body": 7364, "Gear": 560, "Hair": 1856, "Outfit": 18400}

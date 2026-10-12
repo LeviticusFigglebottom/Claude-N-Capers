@@ -7,11 +7,14 @@
   named heisters, each with a distinct heist outfit and 30 m silhouette (long coat, cropped blazer,
   bulky bomber, waistcoat and rolled sleeves). Design notes in ``_crew_heisters``.
 
-Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear`` (+ ``Headwear`` for earrings).
+Meshes: ``Body`` (covered skin removed), ``Hair`` (Dutch: + his beard and moustache, built as ``Headwear``
+with strand UVs, ``_contact_gear.apply_strand_uvs``, then joined in), ``Outfit``, ``Gear`` (+ ``Headwear``
+for Sable's earrings).
 No blend shapes (baked).
 """
 import json
 
+import _contact_gear as cg
 import _crew_heisters as crew
 import _gear_kit as gk
 import _outfit as o
@@ -129,4 +132,35 @@ def recipe(kit: Kit) -> None:
 
 
 def build(ctx) -> None:
-    build_character(ctx, recipe)
+    kits: list[Kit] = []
+
+    def rec(kit: Kit) -> None:
+        kits.append(kit)
+        recipe(kit)
+
+    build_character(ctx, rec)
+    if cg.apply_strand_uvs(kits[0]):   # Dutch's beard: strand UVs instead of the box projection
+        _headwear_into_hair(ctx)
+
+
+def _headwear_into_hair(ctx) -> None:
+    """Dutch: the beard and moustache are hair, so they join the ``Hair`` mesh (the whole ``Headwear``
+    is hair-material: masks seat over hair, garments may not poke into them, see test_crew.gd)."""
+    import bpy
+
+    hw = bpy.data.objects.get("Headwear")
+    hair = bpy.data.objects.get("Hair")
+    if hw is None or hair is None or not all(m.name.startswith("M_char_hair_") for m in hw.data.materials):
+        return
+    n_hw = len(hw.data.polygons)
+    for ob in bpy.context.view_layer.objects:
+        ob.select_set(False)
+    hw.select_set(True)
+    hair.select_set(True)
+    bpy.context.view_layer.objects.active = hair
+    bpy.ops.object.join()
+    tris = json.loads(ctx.source_extra["tris_by_mesh"])
+    tris["Hair"] = tris.get("Hair", 0) + tris.pop("Headwear")
+    ctx.source_extra["tris_by_mesh"] = json.dumps(tris, sort_keys=True)
+    ctx.source_extra["meshes"] = ",".join(sorted(tris))
+    ctx.source_extra["hair_note"] = f"beard + moustache ({n_hw} tris) joined into Hair"

@@ -9,6 +9,7 @@ resource_name = "M_char_skin_4_stubble"
 texture_filter = 5
 albedo_texture = ExtResource("1_albedo")
 metallic = 1.0
+metallic_specular = 0.35
 roughness = 1.0
 orm_texture = ExtResource("2_orm")
 normal_enabled = true

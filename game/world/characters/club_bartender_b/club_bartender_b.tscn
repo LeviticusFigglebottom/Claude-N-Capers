@@ -11,7 +11,7 @@ bone_name = "chest"
 bone_idx = 3
 
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Back" index="0" unique_id=980144269]
-transform = Transform3D(1, 0, 0, 0, 0.9992, 0.03997, 0, -0.03997, 0.9992, 0, 0.0846, 0.0964)
+transform = Transform3D(1, 0, 0, 0, 0.9992, 0.03997, 0, -0.03997, 0.9992, 0, 0.0846, 0.0941)
 
 [node name="HandL" type="BoneAttachment3D" parent="Skeleton3D" index="6" unique_id=1037627659]
 transform = Transform3D(0.07391267, -0.70323306, -0.70710695, 0.07391297, -0.7032333, 0.70710653, -0.9945218, -0.10452844, 2.371625e-07, -0.531102, 0.994645, -0.008217167)
@@ -43,7 +43,7 @@ bone_name = "hips"
 bone_idx = 1
 
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Hip" index="0" unique_id=208183197]
-transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.16139999, 0.0427, -0.0021)
+transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.17119999, 0.0486, 0.041899998)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="1" unique_id=499694403]
 libraries/humanoid = ExtResource("1_anim")
