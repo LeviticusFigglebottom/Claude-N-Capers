@@ -30,6 +30,7 @@ func _default_interaction_time() -> float:
 
 func _prefab_ready() -> void:
 	interactable.kind = &"take_loot"
+	interactable.casing_pickup_item = true  # S1.1
 	interactable.completed.connect(_on_completed)
 
 

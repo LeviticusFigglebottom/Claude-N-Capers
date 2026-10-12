@@ -31,6 +31,8 @@ const BLOCK_CIVILIAN: StringName = &"ui.blocked.civilian"
 @export var stealth_only: bool = false
 @export var loud_only: bool = false
 @export var casing_allowed: bool = false
+## S1.1: a small item/loot pickup; allowed while casing when the crew has stealth.casing_can_pickup_items.
+@export var casing_pickup_item: bool = false
 ## S1.3: usable in civilian mode (gear pickup; ENV C may flag other prefab instances per map).
 @export var civilian_allowed: bool = false
 ## Noise profile id (InteractionTweak.noise_profiles) emitted when the interaction starts.
@@ -97,13 +99,17 @@ func _crew_block(crew: Node) -> StringName:
 		return BLOCK_STATE
 	if crew.get(&"civilian") == true and not civilian_allowed:
 		return BLOCK_CIVILIAN
-	if not casing_allowed and not bool(crew.get(&"masked")):
+	if not casing_allowed and not bool(crew.get(&"masked")) and not _casing_pickup_ok(crew):
 		return BLOCK_CASING
 	if not allowed_with_bag and crew.call(&"is_carrying_bag"):
 		return BLOCK_STATE
 	if requires_item != &"" and int(crew.call(&"item_count", requires_item)) <= 0:
 		return BLOCK_ITEM
 	return BLOCK_NONE
+
+
+func _casing_pickup_ok(crew: Node) -> bool:
+	return casing_pickup_item and Modifiers.flag(int(crew.get(&"slot")), &"stealth.casing_can_pickup_items")
 
 
 ## Effective hold time for `crew` (modifiers applied).
