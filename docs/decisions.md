@@ -573,3 +573,65 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   - Push the env branch whenever a checked unit passes, at least about hourly. Failing checks are never pushed and
     nobody force-pushes.
 - Envs that don't push (P, the lead's helpers) commit on their local branch and notify the lead per finished item.
+- **Known-flake waiver (temporary):** until ENV A's condition-wait fix to
+  `game/tests/a/test_b4_18_special_weapons.gd:test_parts_animator_drives_named_parts` reaches trunk, a check_all
+  whose only failure is that test ("Breech open while reloading") counts as a pass for env pushes. The env names
+  the waiver in its push report. The lead's trunk gate is not waived.
+
+## D-078 — 2026-10-12 — Team moves to Grok Bot agents on the shared box
+- The Claude Code cloud sessions / WSL subagents are retired. LEAD + ENV A/B/C/D/P are Grok Bot agents, each in its
+  own clone under `/workspace/cnc-team/<role>/` on the shared box. Coordination: BOARD (`/workspace/cnc-team/BOARD.md`),
+  SendToAgent messages, and docs/ on trunk for anything durable. Unpushed WSL work is on `backup/2026-10-12/*`.
+- communication.md §1/§4, envs/*/CLAUDE.md and lead_handoff.md §4–5 rewritten accordingly. D-027, D-077 still apply.
+
+## D-079 — 2026-10-12 — Guard domination (product owner + PD2 precedent)
+- **Dominated (cuffed) guards count as hostages** (trade/hostage count), as in PD2. They also stay a `hostage`
+  stimulus (S6.4) and their pager still fires (S5.8).
+- Range/angle follow PD2 (`playertweakdata.lua` long_dis_interaction, `playerstandard.lua`
+  `_add_unit_to_char_table`), replacing 15 m / 20°: base shout range **10 m** to enemies × `intimidate_range_mul`
+  (1.5, Dominator/Confident) × passive mul (1.25, Crew Chief); target check tolerance ×1.05 (CopLogicIntimidated).
+  Aim cone: `max(8°, lerp(90°, 30°, dist / 12 m))` (tight areas `lerp(30°, 10°, …)`). 15 m is the skilled
+  value, not base. ENV A updates S5.8 data/tests; pd2_fidelity S5.8 gets these numbers.
+
+## D-080 — 2026-10-12 — Character LODs (ENV D, ENV P)
+- 13 MB total of `*_lod.res` is accepted (disk only; attribute compression stays off because it breaks skinning).
+- **Specials have no LOD2** (PD2 precedent: specials must be readable at range); they use LOD0/1 only, so silhouettes
+  and telegraphs (e.g. Corpsman red cross) survive at distance. Regular units use LOD2.
+- Near-black armed units (`tac_heavy`, `corpsman`, `security_officer`) get a lighter shoulder/helmet accent (ENV D)
+  so they read against dark backgrounds.
+- Scopes: a **zoom-aware LOD bias in camera code** (ENV P), not raised LOD switch distances. *(Superseded by D-084.)*
+
+## D-081 — 2026-10-12 — `loot.painting_study` value
+- **$700** (LIGHT bag, ◇), as in gallery_night.md QC-57/D-075: a study is minor loot, below a full painting, in line
+  with PD2 where light art bags are worth less than the main pieces. Not $1,100. P5 is frozen, so this lands when P5 resumes.
+
+## D-082 — 2026-10-12 — Playability pass before anything new (product owner)
+- Before any new addition, the game gets a **full practical gameplay pass** plus a **test suite that plays it as a
+  real player would**: real input events (keyboard/mouse through Godot's Input), real camera/aim, walking every route,
+  no teleports, no direct intent/state shortcuts, no bot short-cuts. The team builds the issue list itself
+  (`docs/process/playability_pass.md`); no waiting on the product owner.
+- **P5 and all new content are frozen** until the pass is done, including ENV B's B4-12..18. Supersedes D-076's scope.
+- Every env queue is steered toward it (lead_handoff §5).
+
+## D-083 — 2026-10-12 — Push blocker and merge order
+- The box's GitHub token lacks `contents:write` (403 on push): pushes/merges to origin are blocked until the
+  product owner fixes it. Meanwhile the lead prepares merges locally (lead/round-34, lead/p2-gate, lead/d078-docs).
+- When pushes work, **first** merge `p_input_driver.gd` (env/p-play a43d33b7 + 6b858a0b) to trunk (D-082 real-input
+  suite foundation), then round 34 (env/b-content), the docs branch, and A/D once they pass check_all.
+
+## D-084 — 2026-10-12 — Scope LOD via zoom_factor (supersedes D-080 scope bullet)
+- Godot's mesh LOD already scales with camera FOV, so **no extra `mesh_lod_threshold` bias for scopes**.
+  That part of D-080 is superseded.
+- Instead, **CrewView (ENV P) publishes a `zoom_factor`**. Props/characters in ENV C and ENV D that use
+  visibility ranges scale those ranges by it while ADS/scoped, so distant detail stays up under zoom without
+  fighting the engine's FOV-based mesh LOD.
+- Context (ENV P, `env/p-play` `1328183f`): mouse look used `InputEventMouseMotion.relative`, which is
+  stretch-scaled and wrong at non-1080p; switched to `screen_relative` for correct sensitivity.
+
+## D-085 — 2026-10-12 — Door snagging: fix movement, not the navmesh (supersedes "capsule 0.35 re-bake")
+- Navmesh `agent_radius` **stays 0.30**: with `cell_size` 0.1, 0.35 ceils to 0.4 and breaks `validate_level`.
+  The crew capsule **stays 0.35**. The earlier "re-bake for a 0.35 capsule" instruction is withdrawn.
+- **ENV P:** the player capsule slides along door frames and props instead of snagging. Test with real input:
+  a 0.9 m door, 30° approach, walking and sprinting.
+- **ENV A:** AI followers keep ~0.1 m off path corners, with headroom in `path_desired_distance`.
+- Human real-input walk tests aim at door centres; corner-following is checked only for AI.
