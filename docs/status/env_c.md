@@ -3,6 +3,20 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12 19:45 ET: IN PROGRESS (ENV C)
+### Done
+- 3c3a31c5 interact slots fixed: ND ATM1/ATM2 cash on the ATM front face, kc_break_locker on the G4 kitchen counter,
+  DB CageCashA/B UsePoints inside the count cage; test_interact_slots_clear 0 problems on all 3 maps, no allowlist.
+- 91c3a3c1 Night Deposit BARRED police gates (Alley, HarborWest, HarborEast, WharfNorth) baked closed at r 0.30,
+  spawn islands kept; test_night_deposit_police_gates seeds 1001 + 3071 PASS; validate_level night_deposit PASS
+  (x2). barred_doors check waits 8 frames for the link disable (it failed ~1 in 2 full Dockside runs).
+- 1acba8c3 PP-C-1 STUCK rows name the nearest door. b0b274a0 (count/total with bags) was already in.
+### Next
+- PP-C-1 rerun running in /workspace/cnc-team/c/walks-wt (scratch/c-walks = env/c-worlds + A 7cf4240e + P 0a906e03,
+  never merged into env/c-worlds), both modes; then zoom_factor (D-084, low).
+### Blockers
+- None. Not pushed (LEAD pushes).
+
 ## 2026-10-12 19:30 ET: IN PROGRESS (ENV C)
 ### Done
 - 6943ce02 Night Deposit lighting for D 20 m readability: desaturated sodium lamps +20%, cool colour
