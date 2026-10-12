@@ -4,8 +4,18 @@
 ## RESUME NOTES (D-077: keep current; a fresh agent resumes from here)
 ##   Done:  test_99_s_rows_phase_2_covered (coverage map of pd2_fidelity S-rows -> behaviour tests,
 ##          parsed from the doc at run time; fails listing uncovered rows; prints partial rows).
-##   Next:  ghost runs test_01..06 (night_deposit / shadow_ledger x 3 Routine seeds, sec_staffed).
-##          Plan: mask -> kill the camera operator from behind (pager answered, body bagged + hidden:
+##          Harness + Night Deposit line written (test_01, seed 2001); Shadow Ledger not written yet.
+##   State (2026-10-12): test_01 FAILS at the first step: "a quiet moment to take out the operator"
+##          (_take_out_operator waited 240 s game time). Cause (my condition, not a game bug): it also
+##          requires no NPC within 14 m straight-line of the operator, and the G7 corridor guards
+##          (rover_ground, hall/basement guards using the stair) are always within 14 m of G3.
+##   EXACT NEXT STEP: in _take_out_operator replace the 14 m straight-line rule with a navmesh path
+##          length check (NavigationServer3D.map_get_path, > ~20 m) or drop it and rely on _watchers;
+##          rerun `tools/ci/run_tests.sh integration test_p2_stealth.gd:test_01`; then fix gdlint
+##          max-returns in _nd_line (split it), then pick seeds (resolver probe: sec_staffed, code as a
+##          note), then write _ghost_sl (laptop -> keycard -> server reader -> cage code -> hack with
+##          re-interacts on device_jammed -> 2 drives + laptop secured -> escape tag by variant).
+##   Plan:  mask -> kill the camera operator from behind (pager answered, body bagged + hidden:
 ##          all cameras off, S8.2) -> objectives by teleport, each step only when no observer
 ##          (guard/civilian/live camera) can see the spot (_watchers), aborting a hold when a
 ##          detection meter on the bot rises -> laser grids crossed by WALKING through a gap/window
