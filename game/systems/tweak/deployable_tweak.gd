@@ -28,6 +28,14 @@ static var _cached: DeployableTweak = null
 ## Deploy hold time when a def has none (s).
 @export var default_deploy_time_s: float = 2.0
 
+@export_group("Trip mine (S9.5)")
+## ◇ arming delay after placement, proximity trigger radius, blast radius (x deploy.trip_mine_radius_mult),
+## blast damage (L3.6 falloff) and explosion noise radius.
+@export var trip_mine_arm_s: float = 1.0
+@export var trip_mine_trigger_m: float = 1.5
+@export var trip_mine_radius_m: float = 3.0
+@export var trip_mine_damage: float = 600.0
+@export var trip_mine_noise_radius_m: float = 45.0
 @export_group("Placement")
 ## The deployable lands this far in front of the crew member's feet (m), on the floor below.
 @export var place_forward_m: float = 0.8
