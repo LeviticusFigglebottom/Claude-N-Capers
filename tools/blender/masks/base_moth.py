@@ -46,7 +46,7 @@ TUCK = 0.0015
 TILT = 0.14
 # right wings, upper then lower: (leading-edge start, apex, trailing-edge end angle in degrees,
 # apex length beyond the shell edge m)
-WINGS = [(74.0, 18.0, -8.0, 0.068), (-14.0, -42.0, -70.0, 0.042)]
+WINGS = [(76.0, 18.0, -10.0, 0.072), (-14.0, -44.0, -72.0, 0.050)]
 # antenna: root and tip in (u, v), right side
 ANT_ROOT = (0.012, 0.091)
 ANT_TIP = (0.062, 0.168)
@@ -115,22 +115,22 @@ def _wings(kit: mask.MaskKit) -> None:
             # eyespot: a ring with a dot, in the broad part of the wing
             spot = ang(apex + 0.30 * (a_in - apex))
             ring_c = _at(outline, spot, _wing_rho(spot) * 0.50)
-            r_out = 0.0125 if upper else 0.0080
+            r_out = 0.0150 if upper else 0.0095
             ring = mask.disc(ring_c[0], ring_c[1], r_out, 18)
             hole = mask.disc(ring_c[0], ring_c[1], r_out * 0.62, 14)
-            mask.slab(kit.mb, rim, ring, [hole], -0.001, 0.0020, 0.0007, m, m, None, 0.03, 0.03, 0.004, bottom=False)
-            _flat(kit, rim, mask.disc(ring_c[0], ring_c[1], r_out * 0.30, 10), 0.0026)
+            mask.slab(kit.mb, rim, ring, [hole], -0.001, 0.0028, 0.0007, m, m, None, 0.03, 0.03, 0.004, bottom=False)
+            _flat(kit, rim, mask.disc(ring_c[0], ring_c[1], r_out * 0.34, 10), 0.0032)
             # veins fanning out on either side of the eyespot
             for f in (0.12, 0.72):
                 phi = ang(a_in + (a_out - a_in) * f)
                 vl = _wing_rho(phi)
                 pts = [_at(outline, phi, 0.002 + (vl - 0.009) * q) for q in (k / 5 for k in range(6))]
-                _flat(kit, rim, mask.resample(mask.strip(pts, 0.0030, 0.0016), 0.005), 0.0016)
+                _flat(kit, rim, mask.resample(mask.strip(pts, 0.0040, 0.0020), 0.005), 0.0022)
 
 
 def _antenna_loop(side: int) -> mask.Loop2:
     """A curved spine with a comb of thin barbs on both sides (bipectinate), tapering to the tip."""
-    n = 10
+    n = 8
     root, tip = ANT_ROOT, ANT_TIP
     mid = (root[0] + (tip[0] - root[0]) * 0.35, root[1] + (tip[1] - root[1]) * 0.6)
 
@@ -147,10 +147,10 @@ def _antenna_loop(side: int) -> mask.Loop2:
     for i in range(n + 2):
         t = i / (n + 1)
         p, tx, ty, px, py = frame(t)
-        spine = 0.0024 * (1 - 0.55 * t)
+        spine = 0.0036 * (1 - 0.45 * t)
         if 0 < i <= n:
-            barb = 0.0120 * math.sin(math.pi * (0.12 + 0.80 * t))
-            w = 0.0016
+            barb = 0.0150 * math.sin(math.pi * (0.12 + 0.80 * t))
+            w = 0.0022
             for sgn, out in ((1, left), (-1, right)):
                 out += [(p[0] + sgn * px * spine - tx * w, p[1] + sgn * py * spine - ty * w),
                         (p[0] + sgn * px * (spine + barb) + tx * 0.008, p[1] + sgn * py * (spine + barb) + ty * 0.008),
