@@ -52,6 +52,8 @@ const BAY_CEIL_RANGE: Vector2 = Vector2(6.0, 9.0)
 ## Kit doors (0.9 / 1.8 / 1.1 m leaves), the cold-store sliding doors (2.4 x 3.6, two 1.2 m leaves),
 ## roller doors (3.6 x 4.0, two 1.8 m leaves; G1 hinged stand-ins) and the strongroom vault door
 ## (2.0 x 2.2, one leaf).
+## Lead G2 review: the loading hall's open floor (no props; >= 12 m) [x0, z0, x1, z1].
+const HALL_OPEN_FLOOR: Array = [28.6, 0.4, 42.4, 9.6]
 const DOOR_OPENINGS: Dictionary = {
 	"single": [1.0, 2.2], "double": [2.0, 2.2], "service": [1.2, 2.2], "slide": [2.6, 3.7],
 	"roller": [3.8, 4.1], "vault": [2.2, 2.3],
@@ -517,14 +519,18 @@ const PROPS: Array = [
 	["ANForklift", Vector3(43.5, 0.0, 28.5), Vector3(1.2, 2.1, 2.6), 90.0, "forklift", false, "vehicle"],
 	["ANPalletC", Vector3(46.8, 0.0, 25.4), Vector3(1.2, 1.6, 1.2), 0.0, "pallet_wrapped", false, "prop"],
 	["ANPalletD", Vector3(36.0, 0.0, 30.6), Vector3(1.2, 1.6, 1.2), 0.0, "pallet_wrapped", false, "prop"],
-	# H marshalling hall: pallet groups by the doors, a pallet jack
-	["HallPalletA", Vector3(29.6, 0.0, 4.0), Vector3(1.2, 1.4, 1.0), 0.0, "pallet_wrapped", false, "prop"],
-	["HallPalletB", Vector3(30.9, 0.0, 4.0), Vector3(1.2, 1.4, 1.0), 0.0, "pallet_wrapped", false, "prop"],
-	["HallPalletC", Vector3(38.0, 0.0, 6.0), Vector3(1.2, 1.4, 1.0), 0.0, "pallet_wrapped", false, "prop"],
-	["HallPalletD", Vector3(39.3, 0.0, 6.0), Vector3(1.2, 1.4, 1.0), 0.0, "pallet_wrapped", false, "prop"],
-	["HallPalletE", Vector3(44.0, 0.0, 8.6), Vector3(1.2, 1.4, 1.0), 0.0, "pallet_wrapped", false, "prop"],
-	["HallPalletF", Vector3(45.3, 0.0, 8.6), Vector3(1.2, 1.4, 1.0), 0.0, "pallet_wrapped", false, "prop"],
-	["PalletJack", Vector3(37.0, 0.0, 8.8), Vector3(0.6, 1.2, 1.6), 0.0, "pallet_jack", false, "trim"],
+	# H loading hall (lead G2 review): an open floor x 28.6-42.4 (13.8 m, the full hall depth) between
+	# two crate-cover banks (shipping crates 1.2 m, stacks 1.8 m): west by the platform stair, east by
+	# the dock door. HALL_OPEN_FLOOR is asserted by test_dockside_burn_map.
+	["HallCrateW1", Vector3(26.9, 0.0, 3.2), Vector3(1.2, 1.2, 1.2), 0.0, "crate", true, "prop"],
+	["HallCrateW2", Vector3(26.9, 0.0, 4.5), Vector3(1.2, 1.8, 1.2), 0.0, "crate", false, "prop"],
+	["HallCrateW3", Vector3(25.6, 0.0, 3.2), Vector3(1.2, 1.8, 1.2), 0.0, "crate", false, "prop"],
+	["HallCrateW4", Vector3(26.9, 0.0, 5.8), Vector3(1.2, 1.2, 1.2), 0.0, "crate", true, "prop"],
+	["HallCrateE1", Vector3(43.7, 0.0, 3.4), Vector3(1.2, 1.2, 1.2), 0.0, "crate", true, "prop"],
+	["HallCrateE2", Vector3(43.7, 0.0, 4.7), Vector3(1.2, 1.8, 1.2), 0.0, "crate", false, "prop"],
+	["HallCrateE3", Vector3(45.0, 0.0, 6.0), Vector3(1.2, 1.8, 1.2), 0.0, "crate", false, "prop"],
+	["HallCrateE4", Vector3(43.7, 0.0, 8.4), Vector3(1.2, 1.2, 1.2), 0.0, "crate", true, "prop"],
+	["PalletJack", Vector3(46.6, 0.0, 9.0), Vector3(0.6, 1.2, 1.6), 90.0, "pallet_jack", false, "trim"],
 	# GH gatehouse / QS net store
 	["GateConsole", Vector3(29.4, 0.0, -30.0), Vector3(0.7, 0.9, 1.6), 0.0, "counter_service", true, "counter"],
 	["GateHeater", Vector3(24.5, 0.0, -29.2), Vector3(0.4, 0.6, 0.8), 0.0, "heater", false, "trim"],
@@ -677,7 +683,7 @@ const CARTEL_POSTS: Dictionary = {
 		"cartel_yard_w", ""],
 	"post_yard_e": [[["GunmanYardEA", Vector3(44.0, 0.0, -22.8), -90.0], ["GunmanYardEB", Vector3(60.0, 0.0, -23.0), -90.0]],
 		"cartel_yard_e", ""],
-	"post_hall": [[["GunmanHallA", Vector3(34.6, 0.0, 5.0), 0.0], ["GunmanHallB", Vector3(44.8, 0.0, 4.2), -90.0]],
+	"post_hall": [[["GunmanHallA", Vector3(34.6, 0.0, 5.0), 0.0], ["GunmanHallB", Vector3(46.4, 0.0, 3.4), -90.0]],
 		"cartel_hall", ""],
 	"post_platform": [[["GunmanPlatformA", Vector3(20.0, MEZZ, 4.8), 90.0], ["GunmanPlatformB", Vector3(6.6, MEZZ, 4.7), 0.0]],
 		"cartel_platform", "sit"],
@@ -836,8 +842,8 @@ const TACTICAL: Array = [
 	["CoverReefer", "COVER", Vector3(52.0, 0.0, -6.0), 180.0, ["vehicle"], false],
 	["CoverWeighKerb", "COVER", Vector3(29.4, 0.0, -25.0), -90.0, ["kerb"], false],
 	["CoverIceBins", "COVER", Vector3(24.6, 0.0, -19.0), 180.0, ["ice_bins"], false],
-	["CoverHallPallets", "COVER", Vector3(30.2, 0.0, 5.0), 0.0, ["pallets"], false],
-	["CoverHallPalletsE", "COVER", Vector3(38.6, 0.0, 7.0), 0.0, ["pallets"], false],
+	["CoverHallCratesW", "COVER", Vector3(28.1, 0.0, 3.8), 90.0, ["crates"], false],
+	["CoverHallCratesE", "COVER", Vector3(42.5, 0.0, 4.0), -90.0, ["crates"], false],
 	["CoverPlatformStair", "COVER", Vector3(26.0, 0.0, 9.0), 0.0, ["stair"], false],
 	["CoverRackC1", "COVER", Vector3(25.0, 0.0, 22.2), 0.0, ["rack"], false],
 	["CoverRackC2", "COVER", Vector3(41.0, 0.0, 22.2), 0.0, ["rack"], false],

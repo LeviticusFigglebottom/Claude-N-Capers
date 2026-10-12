@@ -405,7 +405,7 @@ func _variants_product(variants: Node3D) -> void:
 		var fmx: Vector3 = v3(fb, 3)
 		var bp: Node3D = prefab(s, "burn_point", "BurnPoint", base + Vector3(0.0, 1.2, 0.0), 0.0,
 			{"duration_s": BURN_S, "loud_only": true, "objective_tag": &"burn", "fire_volume_size": fmx - fmn},
-			base + Vector3(0.0, 0.0, 1.3), {"mount": "prop"})
+			base + Vector3(0.0, 0.0, 1.3))
 		if bp != null:
 			var fv: Node3D = bp.get_node_or_null(^"FireVolume") as Node3D
 			if fv == null:
