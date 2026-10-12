@@ -23,6 +23,12 @@ signal model_bound(model: Node)
 
 const LOOKUP_INTERVAL_S: float = 0.25
 const TOAST_S: float = 3.0
+## PI-13: how long a casing_blocked hint stays up.
+const CASING_HINT_S: float = 1.5
+## casing_blocked action -> hint string key (unknown actions use ui.hud.casing_blocked.generic).
+const CASING_HINT_KEYS: Dictionary = {
+	&"sprint": &"ui.hud.casing_blocked.sprint", &"crouch": &"ui.hud.casing_blocked.crouch",
+	&"jump": &"ui.hud.casing_blocked.jump"}
 
 @export var model_path: NodePath
 ## Discover the model through group G.LOCAL_HUD_MODEL when nothing is bound.
@@ -57,6 +63,7 @@ var toast_label: Label
 var secured_bags: int = 0
 var _lookup_t: float = 0.0
 var _toast_t: float = 0.0
+var _watched_crew: Node = null
 
 
 func _ready() -> void:
@@ -214,11 +221,40 @@ func _connect_events() -> void:
 	EventBus.crew_custody.connect(_on_crew_custody)
 
 
-## Toast a strings key for TOAST_S seconds.
-func toast(key: StringName, args: Dictionary = {}) -> void:
+## Toast a strings key for `seconds` (default TOAST_S).
+func toast(key: StringName, args: Dictionary = {}, seconds: float = TOAST_S) -> void:
 	toast_label.text = UiText.t(key, args)
 	toast_label.visible = true
-	_toast_t = TOAST_S
+	_toast_t = seconds
+
+
+## PI-13 (ENV P): connect the local CrewController's `casing_blocked(action)` when it has one (no-op
+## on builds without the signal). Returns whether a connection exists now.
+func watch_crew(crew: Node) -> bool:
+	if crew == null or not crew.has_signal(&"casing_blocked"):
+		return false
+	if _watched_crew != null and is_instance_valid(_watched_crew) and _watched_crew != crew \
+			and _watched_crew.is_connected(&"casing_blocked", _on_casing_blocked):
+		_watched_crew.disconnect(&"casing_blocked", _on_casing_blocked)
+	if not crew.is_connected(&"casing_blocked", _on_casing_blocked):
+		crew.connect(&"casing_blocked", _on_casing_blocked)
+	_watched_crew = crew
+	return true
+
+
+## Brief "Mask up to sprint" style hint (CASING_HINT_S) for a move blocked while casing.
+func _on_casing_blocked(action: StringName) -> void:
+	var key: StringName = CASING_HINT_KEYS.get(action, &"ui.hud.casing_blocked.generic") as StringName
+	toast(key, {"key": InteractionPanel.action_key_text(&"mask_up")}, CASING_HINT_S)
+
+
+func _find_local_crew() -> void:
+	if _watched_crew != null and is_instance_valid(_watched_crew):
+		return
+	for n: Node in get_tree().get_nodes_in_group(G.CREW):
+		if int(n.get(&"slot") if n.get(&"slot") != null else -1) == Net.local_slot():
+			watch_crew(n)
+			return
 
 
 func _process(delta: float) -> void:
@@ -227,11 +263,13 @@ func _process(delta: float) -> void:
 		toast_label.visible = _toast_t > 0.0
 	if model != null and not is_instance_valid(model):
 		bind(null)
-	if model == null and auto_find_model:
+	if auto_find_model and (model == null or _watched_crew == null or not is_instance_valid(_watched_crew)):
 		_lookup_t -= delta
 		if _lookup_t <= 0.0:
 			_lookup_t = LOOKUP_INTERVAL_S
-			discover_model()
+			if model == null:
+				discover_model()
+			_find_local_crew()
 
 
 ## Bind the local HUD model found through group G.LOCAL_HUD_MODEL. Returns it (or null).

@@ -172,3 +172,31 @@ func test_dominate_prompt_follows_guard_id() -> void:
 	_model.dominate_target = 0
 	await wait_frames(1)
 	assert_false(_hud.dominate.visible, "hidden again at 0")
+
+
+## Stand-in for ENV P's CrewController (PI-13 casing_blocked); no P files used.
+class FakeCrew:
+	extends Node
+	signal casing_blocked(action: StringName)
+	var slot: int = 0
+
+
+## PI-13: a blocked sprint while casing shows "Mask up to sprint" for ~1.5 s; no-op without the signal.
+func test_casing_blocked_hint() -> void:
+	assert_false(_hud.watch_crew(Node.new()), "no signal -> no-op")
+	var crew: FakeCrew = FakeCrew.new()
+	add_child(crew)
+	assert_true(_hud.watch_crew(crew))
+	crew.casing_blocked.emit(&"sprint")
+	await wait_frames(1)
+	assert_true(_hud.toast_label.visible)
+	assert_true(_hud.toast_label.text.begins_with("Mask up to sprint"), _hud.toast_label.text)
+	assert_false(_hud.toast_label.text.contains("{"), _hud.toast_label.text)
+	await wait_seconds(Hud.CASING_HINT_S + 0.3)
+	assert_false(_hud.toast_label.visible, "hint gone after ~1.5 s")
+	crew.casing_blocked.emit(&"ladder")
+	await wait_frames(1)
+	assert_eq(_hud.toast_label.text, UiText.t(&"ui.hud.casing_blocked.generic",
+			{"key": InteractionPanel.action_key_text(&"mask_up")}), "unknown action -> generic hint")
+	crew.queue_free()
+	await wait_frames(1)

@@ -71,6 +71,10 @@ ui.hud.objectives,Objectives
 ui.hud.casing,Casing
 ui.hud.masked,Masked
 ui.hud.mask_up_hint,Hold {key} to mask up
+ui.hud.casing_blocked.sprint,Mask up to sprint ({key})
+ui.hud.casing_blocked.crouch,Mask up to crouch ({key})
+ui.hud.casing_blocked.jump,Mask up to jump ({key})
+ui.hud.casing_blocked.generic,Mask up first ({key})
 ui.hud.assault,Police assault in progress
 ui.hud.assault_anticipation,Police assault incoming
 ui.hud.assault_wave,Wave {wave}
