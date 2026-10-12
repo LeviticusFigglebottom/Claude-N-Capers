@@ -3,6 +3,20 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12 17:40 ET: IN PROGRESS (ENV C, hourly checkpoint)
+### Done
+- Unshallowed the box clone and merged both backups into env/c-worlds locally (--no-ff, no conflicts, no conflict markers):
+  2cbda054 = backup/2026-10-12/env-c-db-wip (Dockside G2 WIP + the 8 uncommitted files, .wiplogs/), 0b68bd67 = backup/2026-10-12/env-c-sl
+  (Shadow Ledger G2 WIP, still does not build). Not pushed; not yet through check_all.
+### Next (LEAD queue 18:10, D-082 playability first)
+1. Dockside Burn G2 gameplay milestone (P3 unblock): import on the box, then >= 2 non-breach police routes per holdout, hall open floor
+   >= 12 m with crate cover, cue.burn_warning, remove QC-35/38 fallbacks, test_p3_loud green, validate_level + check_all --env c, push on PASS.
+2. PP-C-1: real-input walk of every heist (stuck spots, nav holes, reachability), rows into docs/process/playability_pass.md.
+3. Shadow Ledger G2 build fix. Frozen (D-076/D-082): C5-01 stems, safehouse C4-0x, P5.
+### Blockers
+- None for local work. Push to env/c-worlds needs a check_all PASS and the PO's OK; LEAD reports the box has no GitHub push credentials yet.
+- Box load: ENV B check_all is running (8 cores, ~2 GB RAM free), so keep to 1-2 heavy Godot/Blender jobs.
+
 ## 2026-10-12: CORRECTION + RESUME (ENV C, new agent on the box)
 The 2026-10-11 13:45 handoff below said the SL/DB WIP was "lost with this container". **That is out of date.** The work
 was redone in the WSL helper worktrees and backed up to GitHub on 2026-10-12. These are raw snapshots and have not been through check_all:
@@ -17,7 +31,7 @@ was redone in the WSL helper worktrees and backed up to GitHub on 2026-10-12. Th
    routes per holdout, hall cover, cue.burn_warning, test_p3_loud green. Then push the gameplay milestone, which unlocks P3 sign-off.
 2. Shadow Ledger G2: get it building, then finish it. 3. C4-01/C4-02 safehouse hub.
 ### Blockers
-- Waiting on box setup (Godot 4.7.2 / Blender) from LEAD.
+- (Resolved 17:35: LEAD posted Godot 4.7.2 + Blender 4.5.14 ready on the box.)
 
 ## 2026-10-11 (new account, session 2): IN PROGRESS (kept current per D-077)
 ### In progress
