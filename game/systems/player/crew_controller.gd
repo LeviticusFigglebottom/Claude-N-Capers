@@ -239,6 +239,16 @@ func eye_height() -> float:
 	return tw.eye_crouched if crouched else tw.eye_standing
 
 
+## P1-01: on the ground (floor, or resting on a step edge while climbing); false while airborne.
+func is_grounded() -> bool:
+	return _grounded
+
+
+## P1-01: camera-only vertical smoothing offset (m) currently applied to `Head` after a step.
+func step_view_offset() -> float:
+	return _step_offset
+
+
 func eye_position() -> Vector3:
 	return global_position + Vector3(0.0, eye_height(), 0.0)
 
@@ -461,7 +471,12 @@ func _try_step_up(h_motion: Vector3, tw: CrewTweak) -> bool:
 	if not test_move(xf, Vector3.DOWN * up.y, col, safe_margin, false, 1):
 		return false  # nothing to stand on up there
 	var rise: float = xf.origin.y + col.get_travel().y - global_position.y
-	if rise <= 0.002 or not _walkable_below(xf.origin + col.get_travel(), tw.step_height_m):
+	if rise <= 0.002:
+		return false
+	# The surface just past the landing contact must be walkable: a step's top (the capsule lands on its
+	# edge), not a steep slope (which would otherwise be climbed one step-up at a time).
+	var past: Vector3 = col.get_position() + h_motion.normalized() * 0.03
+	if not _walkable_below(past, 0.06):
 		return false
 	global_position.y += rise
 	velocity.y = 0.0
@@ -488,7 +503,7 @@ func _hit_wall(col: KinematicCollision3D) -> bool:
 	return false
 
 
-## Walkable ground (normal within floor_max_angle) directly under `feet` within `depth` m.
+## Walkable ground (normal within floor_max_angle) directly under `feet` (from 5 cm above) within `depth` m.
 func _walkable_below(feet: Vector3, depth: float) -> bool:
 	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(feet + Vector3.UP * 0.05,
 		feet + Vector3.DOWN * (depth + 0.05), collision_mask, [get_rid()])
