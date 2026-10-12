@@ -93,7 +93,7 @@ func _ready() -> void:
 	_crew = get_parent() as CrewController
 	if _crew == null:
 		return
-	_crew.masked_changed.connect(func(_m: bool) -> void: refresh_mask())
+	_crew.masked_changed.connect(_on_masked_changed)
 	_crew.civilian_changed.connect(func(_c: bool) -> void: refresh_weapon())
 	if _crew.weapons != null:
 		_crew.weapons.equipped_changed.connect(func(_ws: int) -> void: refresh_weapon(true))
@@ -247,6 +247,29 @@ func refresh_weapon(animated: bool = false) -> void:
 		wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
 	_crew.weapon_visual = wv
 	WeaponPartsAnimator.attach(wv, _crew.weapons)  # B4-18: Breech / Lever / String / Blade / Rotor
+	_apply_casing_visibility()
+
+
+## PD2: casing (unmasked) shows no first-person weapon or arms; masking up draws it (P, lead request).
+## Visibility only: the WeaponVisual stays attached (its Muzzle marker is gameplay's tracer origin).
+func _apply_casing_visibility() -> void:
+	var show: bool = not _crew.is_casing()
+	if _fp != null and is_instance_valid(_fp):
+		_fp.visible = show
+	if _viewmodel != null and is_instance_valid(_viewmodel) and (_fp == null or not is_instance_valid(_fp)):
+		_viewmodel.visible = show
+
+
+## Is the first-person weapon / arms visible (false while casing or with none).
+func viewmodel_visible() -> bool:
+	if _fp != null and is_instance_valid(_fp):
+		return _fp.is_visible_in_tree()
+	return _viewmodel != null and is_instance_valid(_viewmodel) and _viewmodel.is_visible_in_tree()
+
+
+func _on_masked_changed(_m: bool) -> void:
+	refresh_mask()
+	refresh_weapon(true)  # shown again with the draw clip
 
 
 ## Gameplay equip time of slot `ws` (CrewWeapons.equip: equip_time_s / weapon.swap_speed_mult).
