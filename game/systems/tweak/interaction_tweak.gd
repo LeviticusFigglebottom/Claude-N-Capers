@@ -29,6 +29,9 @@ extends Resource
 @export var keypad_s: float = 2.0
 @export var read_note_s: float = 1.0
 @export var camera_loop_s: float = 5.0
+## S8.3: how long a looped camera stays blind (fidelity spec 25 s; lead ruling 2026-10-12: spec wins
+## over the modifier key text's 20 s).
+@export var camera_loop_active_s: float = 25.0
 @export var display_case_open_s: float = 2.0
 @export var window_open_s: float = 1.0
 @export var zipline_attach_s: float = 1.0

@@ -60,6 +60,8 @@ var cameras_off: bool = false
 
 ## {camera_net_id, left} dispatches waiting for camera_dispatch_delay_s.
 var _pending: Array[Dictionary] = []
+## S8.3: active loops {slot: {camera_net_id, left}}; one per crew member.
+var loops: Dictionary = {}
 var _screens_off: StandardMaterial3D = null
 
 
@@ -202,7 +204,10 @@ func _on_camera_disabled(camera_net_id: int, reason: StringName) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if _pending.is_empty() or not Net.is_authority():
+	if not Net.is_authority():
+		return
+	_tick_loops(delta)
+	if _pending.is_empty():
 		return
 	var due: Array[int] = []
 	for p: Dictionary in _pending:
@@ -251,6 +256,48 @@ func _loop_check(crew: Node) -> StringName:
 	return InteractableComponent.BLOCK_NONE
 
 
-## P3 (S8.3 `stealth.camera_loop`): loop one camera for camera_loop_s; A2-02 only exposes the hook.
+## S8.3 (`stealth.camera_loop`, Nimble basic): loop one camera for InteractionTweak.camera_loop_active_s
+## (25 s, fidelity spec). One loop per crew member: a new loop ends that member's previous one. The
+## camera picked is the nearest working, not-yet-looped camera to the crew member.
 func _on_loop_completed(crew: Node) -> void:
 	loop_requested.emit(crew)
+	if not Net.is_authority() or crew == null:
+		return
+	var slot: int = int(crew.get(&"slot"))
+	end_loop(slot)
+	var looped: Dictionary = {}
+	for l: Variant in loops.values():
+		looped[int((l as Dictionary)["camera_net_id"])] = true
+	var pos: Vector3 = (crew as Node3D).global_position if crew is Node3D else global_position
+	var best: SecurityCamera = null
+	for cam: SecurityCamera in cameras():
+		if cam.disabled_reason != &"" or looped.has(cam.net_id):
+			continue
+		if best == null or cam.global_position.distance_to(pos) < best.global_position.distance_to(pos):
+			best = cam
+	if best == null:
+		return
+	best.set_suppressed(_loop_source(slot), true)
+	loops[slot] = {"camera_net_id": best.net_id, "left": Tweak.interaction().camera_loop_active_s}
+
+
+## S8.3: end crew `slot`'s loop (if any); the camera sees again.
+func end_loop(slot: int) -> void:
+	if not loops.has(slot):
+		return
+	var cam: SecurityCamera = Ids.lookup(int((loops[slot] as Dictionary)["camera_net_id"])) as SecurityCamera
+	if cam != null and is_instance_valid(cam):
+		cam.set_suppressed(_loop_source(slot), false)
+	loops.erase(slot)
+
+
+func _tick_loops(delta: float) -> void:
+	for slot: Variant in loops.keys():
+		var l: Dictionary = loops[slot]
+		l["left"] = float(l["left"]) - delta
+		if float(l["left"]) <= 0.0:
+			end_loop(int(slot))
+
+
+static func _loop_source(slot: int) -> StringName:
+	return StringName("camera_loop_%d" % slot)
