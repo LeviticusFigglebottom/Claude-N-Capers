@@ -10557,6 +10557,7 @@ metadata/swing_side = "back"
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 11.25, 0, 12)
 script = ExtResource("148_gh")
 swing = 2
+casing_allowed = true
 visual_scene = ExtResource("153_gh")
 objective_tag = &"main_entrance"
 metadata/kind = "door"

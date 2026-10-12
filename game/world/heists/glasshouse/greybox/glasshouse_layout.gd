@@ -152,7 +152,7 @@ const DOORS: Array = [
 	["StaffDoor", "prop_door_single_walnut_t20", Vector3(1.5, 0.0, 6.0), 0.0, "NONE", "INWARD", "staff_door", {}],
 	["SalonBackDoor", "prop_door_single_walnut_t20", Vector3(16.5, 0.0, 6.0), 0.0, "LOCKPICK", "INWARD", "", {}],
 	["SalonDoor", "prop_door_single_walnut_t20", Vector3(13.0, 0.0, 10.0), 90.0, "LOCKPICK", "INWARD", "salon_door", {}],
-	["MainEntrance", "prop_door_double_glass_t40", Vector3(11.25, 0.0, 12.0), 180.0, "NONE", "DOUBLE", "main_entrance", {}],
+	["MainEntrance", "prop_door_double_glass_t40", Vector3(11.25, 0.0, 12.0), 180.0, "NONE", "DOUBLE", "main_entrance", {"public": true}],
 	["BreakRoomDoor", "prop_door_single_ivory_t20", Vector3(3.0, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
 	["SecurityDoor", "prop_door_single_steel_t20", Vector3(8.0, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
 	["WCUpperDoor", "prop_door_single_ivory_t20", Vector3(11.5, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],

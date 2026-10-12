@@ -1117,8 +1117,8 @@ func _build_gameplay(gp: Node3D) -> void:
 			metas["service"] = true
 		if bool(extra.get("fire_exit", false)):
 			metas["fire_exit"] = true
-		if bool(extra.get("suspicious_when_open", false)):
-			props["suspicious_when_open"] = true
+		props["suspicious_when_open"] = bool(extra.get("suspicious_when_open", false))
+		props["casing_allowed"] = bool(extra.get("public", false))  # public door: opens unmasked while casing (PD2)
 		if String(d[1]).contains("service"):
 			props["width_m"] = 1.1
 		_prefab(doors, "door", String(d[0]), d[2], float(d[3]), props, null, metas)

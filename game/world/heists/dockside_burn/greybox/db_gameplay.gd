@@ -194,6 +194,8 @@ func _build_doors(gp: Node3D) -> void:
 		var metas: Dictionary = {"kind": "industrial_door" if dtype in ["slide", "roller"] else "door", "swing_side": "back"}
 		if bool(extra.get("service", false)):
 			metas["service"] = true
+		if bool(extra.get("public", false)):
+			props["casing_allowed"] = true  # public-facing: openable unmasked while casing (PD2); none at the closed yard
 		if bool(extra.get("fire_exit", false)):
 			metas["fire_exit"] = true
 		if extra.has("shutter"):

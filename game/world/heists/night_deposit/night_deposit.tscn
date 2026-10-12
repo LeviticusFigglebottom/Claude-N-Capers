@@ -13189,6 +13189,7 @@ metadata/swing_side = "back"
 [node name="AtmStreetDoor" type="Node3D" parent="Gameplay/Doors" unique_id=102346 instance=ExtResource("168_nd")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 24.25, 0, 20)
 script = ExtResource("169_nd")
+casing_allowed = true
 visual_scene = ExtResource("170_nd")
 objective_tag = &"atm_street_door"
 metadata/kind = "door"

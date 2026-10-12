@@ -212,6 +212,8 @@ func _build_doors(gp: Node3D) -> void:
 			metas["fire_exit"] = true
 		if bool(extra.get("suspicious_when_open", false)):
 			props["suspicious_when_open"] = true
+		if bool(extra.get("public", false)):
+			props["casing_allowed"] = true  # public-facing: openable unmasked while casing (PD2)
 		if bool(extra.get("npc_auth", false)):
 			props["npc_authorized_tags"] = _names(L.STAFF_TAGS)
 		if String(d[1]).contains("service"):
