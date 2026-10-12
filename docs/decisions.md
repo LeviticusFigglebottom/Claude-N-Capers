@@ -593,11 +593,13 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   Aim cone: `max(8°, lerp(90°, 30°, dist / 12 m))` (tight areas `lerp(30°, 10°, …)`). 15 m is the skilled
   value, not base. ENV A updates S5.8 data/tests; pd2_fidelity S5.8 gets these numbers.
 
-## D-080 — 2026-10-12 — Character LODs (ENV D)
+## D-080 — 2026-10-12 — Character LODs (ENV D, ENV P)
 - 13 MB total of `*_lod.res` is accepted (disk only; attribute compression stays off because it breaks skinning).
-- PD2 precedent: specials must be identifiable at range. **Specials keep LOD0/1 only (no LOD2)** so silhouettes and
-  telegraphs (e.g. Corpsman red cross) survive at distance; regular units use LOD2. Revisit only if A4-02 perf
-  budgets fail.
+- **Specials have no LOD2** (PD2 precedent: specials must be readable at range); they use LOD0/1 only, so silhouettes
+  and telegraphs (e.g. Corpsman red cross) survive at distance. Regular units use LOD2.
+- Near-black armed units (`tac_heavy`, `corpsman`, `security_officer`) get a lighter shoulder/helmet accent (ENV D)
+  so they read against dark backgrounds.
+- Scopes: a **zoom-aware LOD bias in camera code** (ENV P), not raised LOD switch distances.
 
 ## D-081 — 2026-10-12 — `loot.painting_study` value
 - **$700** (LIGHT bag, ◇), as in gallery_night.md QC-57/D-075: a study is minor loot, below a full painting, in line
@@ -610,3 +612,9 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   (`docs/process/playability_pass.md`); no waiting on the product owner.
 - **P5 and all new content are frozen** until the pass is done, including ENV B's B4-12..18. Supersedes D-076's scope.
 - Every env queue is steered toward it (lead_handoff §5).
+
+## D-083 — 2026-10-12 — Push blocker and merge order
+- The box's GitHub token lacks `contents:write` (403 on push): pushes/merges to origin are blocked until the
+  product owner fixes it. Meanwhile the lead prepares merges locally (lead/round-34, lead/p2-gate, lead/d078-docs).
+- When pushes work, **first** merge `p_input_driver.gd` (env/p-play a43d33b7 + 6b858a0b) to trunk (D-082 real-input
+  suite foundation), then round 34 (env/b-content), the docs branch, and A/D once they pass check_all.
