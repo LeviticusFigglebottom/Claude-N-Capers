@@ -3,6 +3,29 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12 19:30 ET: IN PROGRESS (ENV C)
+### Done
+- 6943ce02 Night Deposit lighting for D 20 m readability: desaturated sodium lamps +20%, cool colour
+  ambient, brighter moon, exposure 1.25 (map stays dark). Before/after renders in /workspace/cnc-team/c/renders/.
+- 4efb5b21 test_interact_slots_clear: interactables clear of prop collision and aimable from UsePoint
+  (3 heists; open ND/DB findings logged). 356d5087 Glasshouse kc_breakroom off locker tops onto break table.
+- c7f4ab5a PP-C-2 lighting rows from software renders (Night Deposit, Dockside).
+- Prior hour still stands: glasshouse police gates (fbd1e837), bag count/total (b0b274a0), PP-C-1/2 harness.
+### In progress (dirty, not committed)
+- ND/DB UsePoint aimability tweaks (AtmCash height, kc_break_locker, DB cage cash use inside cage).
+- player_input.gd: screen_relative mouse gain + `test_assume_captured` for headless PInputDriver walks
+  (P-owned path — local walk aid only until P lands equivalent).
+- test_p3_loud re-run against the dirty tree (prior clean tree was 10/10; one dirty run flaked 8/10 on
+  captain_arrived / assault phase).
+- PP-C-1 stuck audit (walks-wt + main): night_deposit 5 ok / 9 stuck; dockside_burn 2 ok / 12 stuck.
+### Next
+1. Commit interact/use-point WIP once test_p3_loud is green on the dirty tree.
+2. Keep fixing PP-C-1 door/use stuck spots; rerun walks.
+3. check_all --env c when the lead lock frees; push env/c-worlds on PASS (D-083 lift).
+4. zoom_factor (D-084, low).
+### Blockers
+- None for local work. check_all lock held by lead (~19:06 start). Not pushed (LEAD pushes).
+
 ## 2026-10-12 19:00 ET: IN PROGRESS (ENV C)
 ### Done
 - fbd1e837 test_glasshouse_police_gates: the 4 BARRED gates are shut before the alarm, open by the first assault, and every
