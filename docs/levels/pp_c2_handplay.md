@@ -26,6 +26,22 @@ test (exit 143); Dockside was rerun on its own (exit 0).
   in from the gate under police fire; a reach-stacker or a pallet stack at about z -9 would break it up without closing
   the arena at (35, -18). For LEAD to rule on.
 
+## Lighting (software render, xvfb + SubViewport, 2026-10-12 ~19:05 ET)
+Renders: /workspace/cnc-team/c/renders/{nd_before,db}_N.png on the box (not committed); 1280x720, eye 1.6 m, FOV 75.
+Mean luma (0..1) over the frame: higher = brighter.
+| heist | spot (x, y, z, yaw) | luma | note |
+|---|---|---|---|
+| night_deposit | (9.8, 1.6, 21.5, 0) vault box corridor | 0.19 | darkest ND spot: warm wall + brass double door readable, the doorway interior is near black; a figure in the doorway would be a silhouette |
+| night_deposit | (14, -2.4, 11.5, 0) vault level | 0.26 | dark; matches the D question on 20 m enemy readability (not changed: waiting for D's confirmation) |
+| night_deposit | (21.4, 1.6, 17.8, 90) lobby | 0.45 | fine |
+| night_deposit | (24, 1.6, 6, 180) fire-exit alley | 0.55 | fine |
+| night_deposit | (12, 1.6, 4, 0) sally port | 0.52 | fine |
+| dockside_burn | (26.5, 1.6, -16.9, 180) yard -> hall rollers | 0.26 | greybox: flat grey yard, roller doors dark under 2 small lights; the no-cover stretch above reads open and flat |
+| dockside_burn | (34, 1.6, 5, 0) hall | 0.37 | fine |
+| dockside_burn | (8, 1.6, 3, 0) office | 0.37 | fine |
+| dockside_burn | (3, 1.6, 4, 180) office corridor | 0.30 | dim |
+| dockside_burn | (30, 1.6, 28, 0) anteroom | 0.38 | fine |
+
 ## Rows
 | heist | kind | target | detail |
 |---|---|---|---|
