@@ -17,6 +17,8 @@ signal inventory_changed()
 signal carried_bag_changed(bag: Node)
 ## S1.3: civilian mode started / ended (gear picked up, or masked by an alarm).
 signal civilian_changed(civilian: bool)
+## PI-13: crouch / sprint / jump pressed while casing (S1.1 blocks it); once per press. HUD hint source.
+signal casing_blocked(action: StringName)
 ## PI-06: a hard move (teleport) set position and look; PlayerInput re-reads the look from it.
 signal teleported()
 
@@ -82,6 +84,8 @@ var stamina: CrewStamina = CrewStamina.new()
 var hub_interaction: InteractionSystem = null
 var _runtime: HeistRuntime = null
 var _jump_latch: bool = false
+## PI-13: last tick's crouch / sprint / jump intent (press edges for casing_blocked).
+var _blocked_prev: Dictionary[StringName, bool] = {}
 var _remote_pos: Vector3 = Vector3.INF
 ## A3-07: bumped by every server teleport of a remote-owned crew member; the owner echoes it with its
 ## positions, so positions sent before the owner applied the teleport are ignored, not rejected.
@@ -382,6 +386,10 @@ func _simulate(delta: float) -> void:
 	var mobile: bool = crew_state == Enums.CrewState.NORMAL or crew_state == Enums.CrewState.SWAN_SONG
 	var casing: bool = is_casing()
 	# S1.1: no crouch/sprint/jump while casing.
+	if casing and mobile:
+		_report_casing_blocked(&"crouch", i.crouch)
+		_report_casing_blocked(&"sprint", i.sprint and i.move.y > 0.1)
+		_report_casing_blocked(&"jump", i.jump)
 	var want_crouch: bool = i.crouch and not casing and mobile
 	if crouched and not want_crouch and not _has_stand_headroom(tw):
 		want_crouch = true  # PI-04: stay crouched under a low ceiling until there is room to stand
@@ -554,6 +562,12 @@ func _bag_weight() -> int:
 		return -1
 	var w: Variant = carried_bag.get(&"weight")
 	return int(w) if w != null else Enums.LootWeight.MEDIUM
+
+
+func _report_casing_blocked(action: StringName, held: bool) -> void:
+	if held and not bool(_blocked_prev.get(action, false)):
+		casing_blocked.emit(action)
+	_blocked_prev[action] = held
 
 
 ## PI-04: room above the crouched capsule to grow to standing height.
