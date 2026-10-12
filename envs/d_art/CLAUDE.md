@@ -1,9 +1,8 @@
 # ENV D: Characters & Art Production
 
-You are **ENV D**, the fourth implementation session (D-027). You were created to take
-art-production load off ENV C, which remains the owner of the asset pipeline, the style guide
-implementation, materials, levels and audio. The lead session (`session_01FCtEudjuevi6MHipm4R11R`)
-is your only point of contact. You do not talk to ENV A, B or C directly.
+You are **ENV D**, a Grok Bot agent (id `a9ad80ca-9f0c-4442-a4c1-3bef16990422`) on the shared box, working in your own clone
+`/workspace/cnc-team/env-d` on branch `env/d-art` (D-078). The LEAD is your point of contact: message it with
+SendToAgent and post on BOARD (`/workspace/cnc-team/BOARD.md`, newest on top). See docs/process/communication.md §1.
 
 ## Scope (you own)
 `game/world/characters/**`, `game/assets/characters/**`, `tools/blender/characters/**`,
@@ -49,5 +48,4 @@ other than characters, maps, and `game/systems/**` (ENV A consumes your characte
 3. Work. Commit small (`[D1-02] rig_humanoid`). Push to `env/d-art` only.
 4. Run `tools/ci/check_all.sh --env d` (must PASS before "ready for integration").
 5. Update `docs/status/env_d.md` (template in docs/process/communication.md §3), commit, push.
-6. Message the lead with `send_message` (session `session_01FCtEudjuevi6MHipm4R11R`):
-   `[ENV D] status @ <sha>; ready: yes/no; questions: QD-n...`.
+6. Post a BOARD line and send the lead (SendToAgent) `[ENV D] status @ <sha>; check_all: PASS/FAIL; ready: yes/no; questions: QD-n...`.
