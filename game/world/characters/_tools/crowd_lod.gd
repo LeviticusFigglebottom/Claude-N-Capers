@@ -35,7 +35,9 @@ const CROWD_SCRIPTS: Array[String] = [
 	"char_civilians.py", "char_npc_bank.py", "char_npc_calder.py", "char_npc_penthouse.py",
 	"char_p5_bank.py", "char_p5_club.py", "char_p5_convoy.py", "char_p5_gallery.py",
 ]
-const UNIT_SCRIPTS: Array[String] = ["char_security.py", "char_police.py", "char_cartel.py", "char_specials.py"]
+## D-080: specials (char_specials.py: TAC Heavy, Corpsman, Stinger, Longshot, Bulwark, Brandt, ...) keep LOD0/1 only,
+## so their telegraphs (Corpsman cross, Bulwark shield, Longshot scope) never collapse on a proxy.
+const UNIT_SCRIPTS: Array[String] = ["char_security.py", "char_police.py", "char_cartel.py"]
 ## Vertices closer than this (same colour and influences) are welded in LOD2.
 const WELD_M: float = 0.001
 ## LOD2 aim as a share of the full character's tris (the roadmap's ~15 %).

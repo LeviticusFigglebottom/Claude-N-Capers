@@ -118,3 +118,21 @@ func test_telegraph_characters_keep_full_meshes() -> void:
 		add_child(root)
 		assert_true(root.get_node_or_null("Skeleton3D/" + CrowdLod.NODE_NAME) == null, "%s has no CrowdLod" % id)
 		root.queue_free()
+
+
+## D-080: no special (char_specials.py) has a CrowdLod; LOD0/1 only.
+func test_specials_have_no_lod2() -> void:
+	var n: int = 0
+	for id: String in ["tac_heavy", "tac_heavy_frd", "corpsman", "corpsman_zero", "stinger", "longshot", "bulwark",
+			"bulwark_aegis", "brandt", "wrecker", "phantom"]:
+		var path: String = "res://world/characters/%s/%s.tscn" % [id, id]
+		if not ResourceLoader.exists(path):
+			continue
+		n += 1
+		var root: Node3D = (load(path) as PackedScene).instantiate() as Node3D
+		add_child(root)
+		assert_true(root.get_node_or_null("Skeleton3D/" + CrowdLod.NODE_NAME) == null, "%s has no CrowdLod (D-080)" % id)
+		for mi: Node in root.find_children("*", "MeshInstance3D", true, false):
+			assert_near((mi as MeshInstance3D).visibility_range_end, 0.0, 0.001, "%s/%s never culled" % [id, mi.name])
+		root.queue_free()
+	assert_true(n >= 8, "specials checked (%d)" % n)
