@@ -162,7 +162,9 @@ func test_throw_uses_a_throwable() -> void:
 
 
 func test_gamepad_buttons_match_keyboard() -> void:
-	for a: StringName in [&"sprint", &"crouch", &"jump", &"interact", &"reload", &"melee", &"throw_item", &"mask_up", &"swap_weapon", &"pause"]:
+	var acts: Array[StringName] = [&"sprint", &"crouch", &"jump", &"interact", &"reload", &"melee", &"throw_item",
+		&"mask_up", &"swap_weapon", &"pause"]
+	for a: StringName in acts:
 		var joy: bool = false
 		for e: InputEvent in InputMap.action_get_events(a):
 			joy = joy or e is InputEventJoypadButton or e is InputEventJoypadMotion
