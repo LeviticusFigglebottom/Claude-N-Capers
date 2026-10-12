@@ -169,3 +169,52 @@ func test_hub_grid_navigation() -> void:
 	assert_eq(_focused(hub), hub.back_button as Control, "below the grid -> Main Menu")
 	f.queue_free()
 	await wait_frames(1)
+
+
+func _payday_cards() -> PaydayScreen:
+	SaveService.delete_profile(SLOT)
+	var s: PaydayScreen = PAYDAY_SCENE.instantiate() as PaydayScreen
+	add_child(s)
+	await wait_frames(1)
+	s.show_result(HeistCatalog.sample_result())
+	s.show_cards()
+	await wait_frames(2)
+	return s
+
+
+func _key(code: Key) -> void:
+	for down: bool in [true, false]:
+		var e: InputEventKey = InputEventKey.new()
+		e.keycode = code
+		e.physical_keycode = code
+		e.pressed = down
+		Input.parse_input_event(e)
+		await wait_frames(2)
+
+
+## PQ-B-5: an accept that arrives right as the cards appear does not pick blind.
+func test_payday_input_grace_blocks_blind_pick() -> void:
+	var s: PaydayScreen = await _payday_cards()
+	assert_true(s.in_input_grace())
+	s.card_views[0].grab_focus()
+	await _accept()
+	assert_eq(s.picked_index, -1, "accept during grace ignored")
+	s.tick(PaydayScreen.INPUT_GRACE_S + 0.01)
+	assert_false(s.in_input_grace())
+	s.card_views[0].grab_focus()
+	await wait_frames(1)
+	await _accept()
+	assert_eq(s.picked_index, 0, "accept after grace picks the focused card")
+	assert_false(s.auto_picked)
+	s.queue_free()
+	await wait_frames(1)
+
+
+## PQ-B-4: number keys pick directly.
+func test_payday_number_key_picks() -> void:
+	var s: PaydayScreen = await _payday_cards()
+	s.tick(PaydayScreen.INPUT_GRACE_S + 0.01)
+	await _key(KEY_2)
+	assert_eq(s.picked_index, 1, "key 2 picks the middle card")
+	s.queue_free()
+	await wait_frames(1)

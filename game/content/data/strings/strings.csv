@@ -1349,7 +1349,7 @@ objective.glasshouse.safe,Open the safe
 objective.glasshouse.safe_loot,Bag the consignment
 objective.glasshouse.secure,Secure the bags ({count}/{total})
 ui.payday_cards.title,Pick a card
-ui.payday_cards.hint,"One of three is yours. Mouse, Enter or the A button."
+ui.payday_cards.hint,"One of three is yours. Mouse, Enter, the A button or keys 1-3."
 ui.payday_cards.timer,Auto-pick in {seconds} s
 ui.payday_cards.auto_picked,Time ran out: a card was picked for you
 ui.payday_cards.you_got,You got: {reward}

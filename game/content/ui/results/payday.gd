@@ -151,7 +151,7 @@ func show_cards() -> void:
 	for i: int in range(cards.size()):
 		var v: PaydayCardView = PaydayCardView.new()
 		v.setup(i, PaydayCards.table())
-		v.pressed.connect(pick.bind(i))
+		v.pressed.connect(_on_card_pressed.bind(i))
 		_cards_row.add_child(v)
 		card_views.append(v)
 	var chain: Array[Control] = []
@@ -167,6 +167,35 @@ func show_cards() -> void:
 	focus_chain = chain
 	focus_chain.append(continue_button)
 	focus_default()
+	_input_grace = INPUT_GRACE_S
+
+
+## PQ-B-5: player picks are ignored for INPUT_GRACE_S after the cards appear, so an accept held or
+## mashed through the summary cannot pick the default-focused card blind. The timer is unaffected.
+const INPUT_GRACE_S: float = 0.6
+var _input_grace: float = 0.0
+
+
+## True while player card picks are still being ignored.
+func in_input_grace() -> bool:
+	return _input_grace > 0.0
+
+
+func _on_card_pressed(index: int) -> void:
+	if in_input_grace():
+		return
+	pick(index)
+
+
+## PQ-B-4: number keys 1..3 pick a card directly (after the grace).
+func _unhandled_key_input(event: InputEvent) -> void:
+	var k: InputEventKey = event as InputEventKey
+	if k == null or not k.pressed or k.echo or not cards_stage or picked_index >= 0 or in_input_grace():
+		return
+	var idx: int = int(k.physical_keycode) - int(KEY_1)
+	if idx >= 0 and idx < card_views.size():
+		get_viewport().set_input_as_handled()
+		pick(idx)
 
 
 ## Pick card `index` (player or timer): reveals all cards, grants the reward and saves the profile.
@@ -208,6 +237,7 @@ func _exit_tree() -> void:
 func tick(delta: float) -> void:
 	if not cards_stage or picked_index >= 0:
 		return
+	_input_grace = maxf(_input_grace - delta, 0.0)
 	time_left = maxf(time_left - delta, 0.0)
 	if time_left <= 0.0:
 		finish_card_pick()
