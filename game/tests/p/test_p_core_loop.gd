@@ -152,13 +152,16 @@ func test_melee_swing() -> void:
 func test_throw_uses_a_throwable() -> void:
 	var c: CrewController = await _masked_crew()
 	var w: CrewWeapons = c.weapons
-	if w.throwable_count <= 0:
-		assert_true(true, "loadout has no throwable")
-		return
-	var n0: int = w.throwable_count
+	c.loadout.throwable = &"throwable.concussion"  # setup only: a real grenade in the loadout
+	CrewThrowables.set_count(c, 2)
+	assert_true(c.throwables.throwable_def() != null, "concussion is a throwable def")
+	var spawned: Array = []
+	c.throwables.released.connect(func() -> void: spawned.append(true))
 	await _inp.tap(&"throw_item")
-	await wait_physics_frames(60)
-	assert_true(w.throwable_count < n0 or c.throwables.busy(), "throw spends a throwable (%d -> %d)" % [n0, w.throwable_count])
+	assert_true(await wait_until(func() -> bool: return w.throwable_count == 1, 3.0),
+		"throw spends a throwable (count %d)" % w.throwable_count)
+	assert_eq(spawned.size(), 1, "released one throwable")
+	assert_eq(c.throwables.throws, 1, "one throw counted")
 
 
 func test_gamepad_buttons_match_keyboard() -> void:
