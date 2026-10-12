@@ -3,6 +3,23 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12 19:00 ET: S9.5 doors, phase-2/4 keys, L2.4, fidelity table, A4-04 start
+### Done (local; targeted tests PASS under timeout; gdlint clean on changed files)
+- ecfc2a9a S9.5/A5-03 doors: Door.charges_required (>0) on CODE/ELECTRONIC/BARRED: place_c4 hold, C4 first else
+  trip mines (interaction.shaped_charge), fuse, explosion noise/cue/blast, unlock + open (test_s9_ 26/26, door 23/23).
+  Shared Safe.charge_source_for / consume_charges_for.
+- d65c8ad5 interaction.speed_mult (all holds), interaction.device_fix_speed_mult (fix_drill), defense.healing_received_mult.
+- d5054a2c L2.4 melee hits can be dodged; knockback still applied by NpcGunner (test_l2_4 4/4, a3_13, l4_3, p4_perk).
+- a0ba851b docs/status/env_a_fidelity.md: 108 A rows, 90 with a referencing test (scan, not a completeness claim) +
+  unconsumed key list.
+- (next commit) A4-04: weapon.fire_rate_mult (client + server cadence), defense.bleedout_health_mult,
+  loot.small_loot_value_mult (test_a4_keys_phase24 5/5, l3_ 38/38, weapon 25/25).
+- Push: 403 at each attempt (token issue).
+### In progress / next
+- A4-04: remaining unconsumed keys (env_a_fidelity.md list); ENV P must mirror weapon.fire_rate_mult in fp_viewmodel.
+- Trip-mine placement runtime (deployable kind trip_mine); B strings for door place_c4 prompt reuse ui.prompt.place_c4.
+- PP-A-1 S5.8 HUD cue; confirm D-079 "domination skill" = ability.intimidate_cops.
+
 ## 2026-10-12 18:15 ET: D-079 guard domination range / cone / hostages
 ### Decisions
 - D-079 (lead ruling): dominated guards count as hostages (tradeable), PD2 exactly. Domination range 10 m base,
