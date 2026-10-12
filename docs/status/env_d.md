@@ -3,10 +3,44 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12: session 3e (PP-D heist readability + anim; local only, no push)
+### Render path (works on this GPU-less box)
+`flock /workspace/cnc-team/render.lock xvfb-run -a -s "-screen 0 1280x720x24" godot --audio-driver Dummy --path game
+--script res://world/characters/_tools/render_heist_review.gd [-- <map> <tag|-> <dist>]` -> Forward+ on Vulkan
+llvmpipe (lavapipe). gl_compatibility + LIBGL_ALWAYS_SOFTWARE=1 under xvfb also works; `--headless` never draws.
+Line-up: Spawns marker x 16 yaws scored by clear slots; slots on floor only (down ray within 0.25 m of the marker
+floor), 0.35 m standing room, eye->head/chest/knee line of sight; camera aims at the line-up centroid.
+Group a (L->R): patrol_officer, security_officer, tac_light, cartel_gunman, frd_agent; group b: tac_heavy, stinger,
+bulwark, longshot, corpsman, phantom. Crops: `_review/heist_<map>_<d>m_crop.png` (top a, bottom b).
+### Readability misses (idle_alert, FOV 75, 720p)
+| map | d | does not read | reads |
+|---|---|---|---|
+| Night Deposit | 10 m | - (all read) | all |
+| Night Deposit | 20 m | tac_light / stinger / bulwark (same brown-black under sodium light); longshot (hat only), phantom (green goggles only) | patrol stripes, security shirt, cartel, frd shirt, tac_heavy shoulders, corpsman |
+| Night Deposit | 40 m | everything but security shirt (dark fence backdrop); 3 of 6 slots clear | security_officer (faint) |
+| Glasshouse | 10 m | bulwark vs tac_light in the alley shadow | rest |
+| Glasshouse | 20 m | bulwark; only 3 slots clear (narrow alley) | patrol, security, tac_light shape, tac_heavy, stinger blue |
+| Glasshouse | 40 m | not testable: 2 slots clear (alley) - coverage gap | patrol, security |
+| Dockside Burn | 10 m | - (fog washes legs, classes still read) | all |
+| Dockside Burn | 20 m | stinger / bulwark / longshot in fog | patrol, security, cartel, tac_heavy, corpsman, phantom goggles |
+| Dockside Burn | 40 m | all but patrol stripes + security shirt (fog) | patrol, security |
+Cause: lighting/fog (ENV C) plus near-black kits; per lead, accents untouched. Known script limit: the line-of-sight
+rays ignore vehicles without collision (ND 40 m: one unit behind the parked car).
+### Anim (item 2)
+- Spawn A-pose blend and >2.2 m/s strafe/back moonwalk were ENV A (anim_driver.gd); fixed by A in c9d4dd98, checked
+  in a scratch worktree (see report). An `autoplay idle` try on the D side broke 4 D tests (mask seat, portraits) and
+  was reverted. LOD switches mid-fight: no pop issue found (proxy shares the skeleton, weapon stays on HandR/Socket).
+### D rows for playability_pass.md
+- PP-D-1 LOD pop / skinning: PASS (anim_lod_*.png, fp_pop_*.png). D-080, D-084 in.
+- PP-D-2 class readability 10 m: PASS on all three maps.
+- PP-D-3 class readability 20 m: FAIL ND + DB for tac_light/stinger/bulwark/longshot (lighting + dark kits; C first).
+- PP-D-4 class readability 40 m: FAIL ND + DB (all but patrol/security); GH not testable (no 40 m sight line).
+- PP-D-5 spawn A-pose / foot slide: A-side fix c9d4dd98, verify on trunk after merge.
+
 ## 2026-10-12: session 3d (TAC Heavy accent; local only, push after round 34 + Aaron's approval)
 - TAC Heavy (+ frd/sentinel/zero): shoulder trim is now matte white `char_glove_white` (albedo ~208; the metallic
   `char_aegis_steel` rendered dark without reflections), trim layer 0.92 of the plate, upper-arm plates also white.
-  Reads clearly on both shoulders in fp_30m and fp_40m (720p). Tris 31630-32590 / 35000. Security officer left as is.
+  Reads clearly on both shoulders in fp_30m and fp_40m (720p). Tris 31,630-32,786 / 35000 (base 31,630, frd 32,590, sentinel 31,950, zero 32,786). Security officer left as is.
   `run_tests.sh d` 115/0.
 
 ## 2026-10-12: session 3c (D-084 self-subscribe; local only, pushes need Aaron's approval)
