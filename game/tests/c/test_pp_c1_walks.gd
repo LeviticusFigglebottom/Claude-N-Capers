@@ -170,7 +170,8 @@ func _targets(map: Node) -> Array[Array]:
 
 
 func _row(heist: StringName, kind: String, target: String, at: Vector3, note: String) -> void:
-	var s: String = "| %s | %s | `%s` | at (%.1f, %.1f, %.1f): %s |" % [heist, kind, target, at.x, at.y, at.z, note]
+	var s: String = "| %s | %s | `%s` | at (%.1f, %.1f, %.1f), nearest door %s: %s |" % [heist, kind, target, at.x, at.y,
+		at.z, _nearest_door(at), note]
 	_rows.append(s)
 	print("[PP-C-1] " + s)
 
@@ -208,3 +209,17 @@ func _door_centred(path: PackedVector3Array) -> PackedVector3Array:
 		out.append(front)
 		out.append(back)
 	return out
+
+
+## Nearest Door prefab to `at` ("name d m"), so A / P can reproduce a stall headless.
+func _nearest_door(at: Vector3) -> String:
+	if _rt == null or _rt.map == null:
+		return "?"
+	var best: String = "none"
+	var best_d: float = INF
+	for n: Node in _rt.map.find_children("*", "Door", true, false):
+		var d: float = (n as Node3D).global_position.distance_to(at)
+		if d < best_d:
+			best_d = d
+			best = "`%s` %.1f m" % [n.name, d]
+	return best
