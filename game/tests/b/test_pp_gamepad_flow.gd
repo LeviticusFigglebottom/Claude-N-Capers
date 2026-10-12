@@ -124,3 +124,27 @@ func test_loadout_subscreens_gamepad_only() -> void:
 		assert_true(_focus() != null, "focus restored after leaving " + label)
 	f.queue_free()
 	await wait_frames(2)
+
+
+## PQ-B-26: the Board with the pad only: a pin has default focus, d-pad moves to Take, A takes the
+## contract (briefing opens), B on the briefing returns to the Board.
+func test_board_take_contract_gamepad_only() -> void:
+	SaveService.save_profile(PlayerProfile.new_default(), SLOT)
+	var f: MenuFlow = FLOW_SCENE.instantiate() as MenuFlow
+	add_child(f)
+	await wait_frames(2)
+	f.show_hub()
+	await wait_frames(1)
+	assert_true(await _nav_to(f.hub.station_button(&"board"), "Board card"))
+	await _pad(JOY_BUTTON_A)
+	assert_eq(f.current, f.board_screen as Control, "A opens the Board")
+	await wait_frames(2)
+	assert_true(_focus() != null, "Board gives the pad a focused control")
+	assert_true(await _nav_to(f.board_screen.take_button, "Take"))
+	assert_false(f.board_screen.take_button.disabled, "a contract is selected")
+	await _pad(JOY_BUTTON_A)
+	assert_true(f.current is BriefingScreen, "A on Take opens the briefing")
+	await _pad(JOY_BUTTON_B)
+	assert_eq(f.current, f.board_screen as Control, "B returns to the Board")
+	f.queue_free()
+	await wait_frames(2)
