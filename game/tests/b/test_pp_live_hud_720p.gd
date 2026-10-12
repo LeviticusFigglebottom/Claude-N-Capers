@@ -89,3 +89,52 @@ func test_live_heist_hud_readable_at_720p() -> void:
 		assert_true(vis.encloses(Rect2(sr.position.x, sr.position.y, sr.size.x, maxf(sr.size.y, 1.0))), "subtitles on screen %s" % sr)
 		for w: Control in [hud.vitals, hud.ammo]:
 			assert_false(sr.intersects(_rect(w)), "subtitles clear of %s (%s / %s)" % [w.name, sr, _rect(w)])
+
+
+func _pad(button: JoyButton) -> void:
+	UiNav.ensure_pad_ui_actions()
+	for down: bool in [true, false]:
+		var e: InputEventJoypadButton = InputEventJoypadButton.new()
+		e.button_index = button
+		e.pressed = down
+		Input.parse_input_event(e)
+		await wait_frames(3)
+
+
+## PQ-B-20: in a live heist, pad Start opens Options over the HUD (crew input paused, 720p fit) and
+## pad B closes it and resumes input.
+func test_live_heist_pause_with_pad() -> void:
+	if UiNav.global_class(&"HeistLauncher") == null:
+		skip("no HeistLauncher")
+		return
+	SaveService.save_profile(PlayerProfile.new_default(), SLOT)
+	_flow = FLOW_SCENE.instantiate() as MenuFlow
+	add_child(_flow)
+	await wait_frames(1)
+	assert_true(_flow.direct_launch(LaunchArgs.parse(PackedStringArray(["--heist=glasshouse", "--seed=43",
+			"--difficulty=0"]))))
+	assert_true(await wait_until(func() -> bool: return _find_hud() != null, 60.0), "live HUD")
+	await wait_frames(5)
+	await _pad(JOY_BUTTON_START)
+	var opts: OptionsScreen = _flow.options_menu.heist_screen
+	assert_true(opts != null and opts.is_visible_in_tree(), "Start opens Options in the heist")
+	if opts == null:
+		return
+	assert_true(CrewInput.is_held(&"options"), "local crew input paused while Options is up")
+	var vis: Rect2 = opts.get_viewport().get_visible_rect().grow(1.0)
+	for c: Control in opts.focus_chain:
+		if c.is_visible_in_tree():
+			var n: Node = c.get_parent()
+			var r: Rect2 = c.get_global_rect()
+			while n != null:
+				if n is ScrollContainer:
+					r = (n as ScrollContainer).get_global_rect()
+					break
+				n = n.get_parent()
+			assert_true(vis.encloses(r), "%s on screen %s" % [c.name, r])
+	assert_true(opts.get_viewport().gui_get_focus_owner() != null, "pad has a focused control")
+	await _pad(JOY_BUTTON_B)
+	await wait_frames(3)
+	assert_true(_flow.options_menu.heist_screen == null or not _flow.options_menu.heist_screen.is_visible_in_tree(),
+			"B closes Options")
+	assert_false(CrewInput.is_held(&"options"), "input resumed")
