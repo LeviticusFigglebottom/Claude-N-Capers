@@ -543,3 +543,17 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   start)" label, room purposes `gallery` / `hall` / `car_park` in C's scale table). Big prefab asks (armored_truck,
   convoy_vehicle, C4 item) become ENV A roadmap rows A5-01..03.
 - L1.1 fade_threshold: data (8–18) wins; PD2's "50" rescaled to our enemy cap.
+
+## D-076 — 2026-10-11 — Playability before content (product owner)
+- **New content is paused until a playability pass lands.** Hands-on play is largely unplayable today. The gates
+  pass because the bots use shortcuts (teleports, isolate_npc, injected downs; p1_signoff.md "known gaps"), and the
+  recommended product-owner playtest before P5 content scaling never happened.
+- Paused: the P5 heists (G1s, P5 contract data), D4-03 new heisters, D4-02 crowd variety, C5-01 music stems, and
+  new roadmap content rows.
+- Continues: finishing existing heists (Shadow Ledger G2, Dockside Burn G2 → P3 sign-off), A4-01 fidelity gap fixes,
+  bug fixes, B7 loose ends, D's socket fix / LODs / touch-ups, and the lead's P2/P4 gates.
+- The pass: the product owner plays and lists quirks; the lead turns them into roadmap rows (mostly ENV A
+  controller/ADS/casing, ENV D animation, ENV B HUD/menus). Each fix ships with a test that drives the crew the way
+  a player does (real movement input, no teleports) where a test can catch it.
+- Seed items: CrewController has no step-up (plain `move_and_slide()`, so curbs and small ledges block the player);
+  ADS animation quality; casing-mode quirks (incl. the spurious STEALTH hop when the alarm goes off while casing).
