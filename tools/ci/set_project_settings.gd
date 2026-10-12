@@ -56,6 +56,8 @@ func _initialize() -> void:
 		"look_right": [_axis(JOY_AXIS_RIGHT_X, 1.0)],
 		"look_up": [_axis(JOY_AXIS_RIGHT_Y, -1.0)],
 		"look_down": [_axis(JOY_AXIS_RIGHT_Y, 1.0)],
+		"ui_payday_prev": [_joy(JOY_BUTTON_LEFT_SHOULDER)],
+		"ui_payday_next": [_joy(JOY_BUTTON_RIGHT_SHOULDER)],
 	}
 	for action: String in m:
 		ProjectSettings.set_setting("input/" + action, {"deadzone": 0.2, "events": m[action]})

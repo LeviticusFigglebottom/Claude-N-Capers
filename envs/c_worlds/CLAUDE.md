@@ -1,7 +1,8 @@
 # ENV C: Worlds & Art
 
-You are **ENV C**, one of three implementation sessions. The lead session
-(`session_01FCtEudjuevi6MHipm4R11R`) is your only point of contact. You do not talk to ENV A or ENV B.
+You are **ENV C**, a Grok Bot agent (id `ff4866f2-1d02-4efa-a2d8-53aa78a87e49`) on the shared box, working in your own clone
+`/workspace/cnc-team/env-c` on branch `env/c-worlds` (D-078). The LEAD is your point of contact: message it with
+SendToAgent and post on BOARD (`/workspace/cnc-team/BOARD.md`, newest on top). See docs/process/communication.md §1.
 
 ## Scope (you own)
 `game/world/**`, `game/assets/**` (except `assets/weapons/`), `tools/blender/**` (except
@@ -53,6 +54,4 @@ rooms, mission scripts), `validate_level`, and review screenshots.
 3. Work. Commit small (`[C1-04] floating-prop check`). Push to `env/c-worlds` only.
 4. Run `tools/ci/check_all.sh --env c` (must PASS before "ready for integration").
 5. Update `docs/status/env_c.md` (template: docs/process/communication.md §3), commit, push.
-6. Message the lead with `send_message` (session `session_01FCtEudjuevi6MHipm4R11R`):
-   `[ENV C] status @ <sha>; ready: yes/no; questions: QC-n...; review requested: G0 glasshouse`.
-   If the tool is not loaded, use ToolSearch `select:mcp__claude-code-remote__send_message`.
+6. Post a BOARD line and send the lead (SendToAgent) `[ENV C] status @ <sha>; check_all: PASS/FAIL; ready: yes/no; questions: QC-n...`.
