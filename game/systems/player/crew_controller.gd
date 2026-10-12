@@ -378,6 +378,8 @@ func _simulate(delta: float) -> void:
 	var casing: bool = is_casing()
 	# S1.1: no crouch/sprint/jump while casing.
 	var want_crouch: bool = i.crouch and not casing and mobile
+	if crouched and not want_crouch and not _has_stand_headroom(tw):
+		want_crouch = true  # PI-04: stay crouched under a low ceiling until there is room to stand
 	if want_crouch != crouched:
 		_apply_stance(want_crouch)
 	var bag_w: int = _bag_weight()
@@ -416,7 +418,7 @@ func _simulate(delta: float) -> void:
 		velocity.y = tw.jump_velocity
 		stamina.on_jump()
 	stamina.tick(sprinting, delta)
-	_jump_latch = i.jump and not grounded
+	_jump_latch = i.jump  # PI-05: a held jump fires once; the next jump needs a release
 	_move_grounded(delta, tw)
 	_step_offset *= exp(-tw.step_smooth_rate * delta)
 	if absf(_step_offset) < 0.0005:
@@ -547,6 +549,12 @@ func _bag_weight() -> int:
 		return -1
 	var w: Variant = carried_bag.get(&"weight")
 	return int(w) if w != null else Enums.LootWeight.MEDIUM
+
+
+## PI-04: room above the crouched capsule to grow to standing height.
+func _has_stand_headroom(tw: CrewTweak) -> bool:
+	var rise: float = tw.height_standing - tw.height_crouched
+	return rise <= 0.0 or not test_move(global_transform, Vector3.UP * rise, null, safe_margin, false, 1)
 
 
 func _apply_stance(crouch: bool) -> void:

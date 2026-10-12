@@ -1,6 +1,7 @@
 ## P1-01: step-up, floor snapping and slope limits (CrewController._move_grounded, CrewTweak "Ground").
-## The crew member is placed once per course (setup), then driven only by movement intents, the way a
-## player's input drives it: no teleports during the traversal. Waits are conditions with game-time timeouts.
+## The crew member is placed once per course (setup teleport), then driven by real input through PInputDriver
+## (InputMap actions + mouse look into PlayerInput): no bot intents, no teleports during the traversal. The AI
+## teammate in the stairs test is driven by bot intents (an AI has no input device). Waits are game-time.
 extends TestCase
 
 const LANE_START_Z: float = 1.0
@@ -8,14 +9,17 @@ const LANE_START_Z: float = 1.0
 const MAX_CAM_STEP_M: float = 0.06
 
 var _rt: HeistRuntime = null
+var _inp: PInputDriver = null
 
 
 func before_each() -> void:
 	_rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.basic(0, 0), "crew_ai": false})
+	_inp = PInputDriver.new(self)
 
 
 func after_each() -> void:
+	_inp.release_all()
 	if _rt != null and is_instance_valid(_rt):
 		_rt.teardown()
 	_rt = null
@@ -45,7 +49,10 @@ func _ramp(x: float, z0: float, h: float, angle_deg: float, width: float = 2.5) 
 func _start(slot: int, pos: Vector3, yaw: float = 0.0) -> CrewController:
 	var c: CrewController = _rt.crew_controller(slot) as CrewController
 	_rt.teleport_crew(slot, Transform3D(Basis(Vector3.UP, yaw), pos))
-	_rt.set_bot_intent(slot, _walk_intent(yaw, 0.0))
+	if c.is_ai:
+		_rt.set_bot_intent(slot, _walk_intent(yaw, 0.0))
+	else:
+		assert_true(await _inp.turn_to_yaw(c, yaw), "mouse-look to the course heading")
 	assert_true(await wait_until(func() -> bool: return c.grounded, 2.0), "grounded at the start")
 	return c
 
@@ -65,14 +72,21 @@ func _walk(slot: int, yaw: float, cond: Callable, timeout_s: float) -> Dictionar
 	var cam: PackedFloat32Array = PackedFloat32Array()
 	var body: PackedFloat32Array = PackedFloat32Array()
 	var air: Array[int] = [0]
-	_rt.set_bot_intent(slot, _walk_intent(yaw))
-	var ok: bool = await wait_until(func() -> bool:
+	var sample: Callable = func() -> void:
 		cam.append(cam_node.global_position.y)
 		body.append(c.global_position.y)
 		if not c.grounded:
 			air[0] += 1
-		return cond.call(), timeout_s)
-	_rt.set_bot_intent(slot, _walk_intent(yaw, 0.0))
+	var ok: bool = false
+	if c.is_ai:
+		_rt.set_bot_intent(slot, _walk_intent(yaw))
+		ok = await wait_until(func() -> bool:
+			sample.call()
+			return cond.call(), timeout_s)
+		_rt.set_bot_intent(slot, _walk_intent(yaw, 0.0))
+	else:
+		assert_true(await _inp.turn_to_yaw(c, yaw), "mouse-look to heading %.2f" % yaw)
+		ok = await _inp.walk_until(&"move_forward", cond, timeout_s, sample)
 	return {"ok": ok, "cam": cam, "body": body, "airborne_ticks": air[0]}
 
 
@@ -208,18 +222,59 @@ func test_jump_and_ledge_fall() -> void:
 	_box(Vector3(0.0, 0.5, -3.0), Vector3(3.0, 1.0, 4.0))
 	await wait_physics_frames(2)
 	var c: CrewController = _rt.crew_controller(0) as CrewController
-	c.set_masked()
-	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0.0, 1.05, -2.5)))
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)  # casing cannot jump: mask up with G
+	assert_true(c.masked, "masked up by holding G")
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0.0, 1.05, -2.5)))  # course setup
 	assert_true(await wait_until(func() -> bool: return c.grounded, 2.0), "on the 1 m block")
 	var r: Dictionary = await _walk(0, PI, func() -> bool: return c.global_position.z > 0.5, 3.0)
 	assert_true(r["ok"], "walked off")
 	assert_true(r["airborne_ticks"] > 5, "fell off a 1 m ledge (airborne %d ticks)" % r["airborne_ticks"])
 	assert_true(await wait_until(func() -> bool: return c.grounded and c.global_position.y < 0.02, 2.0), "landed")
-	var j: CrewIntent = CrewIntent.new()
-	j.jump = true
-	_rt.set_bot_intent(0, j)
 	var peak: Array[float] = [0.0]
+	_inp.press(&"jump")
 	await wait_until(func() -> bool:
 		peak[0] = maxf(peak[0], c.global_position.y)
 		return peak[0] > 0.5, 1.0)
+	_inp.release(&"jump")
 	assert_true(peak[0] > 0.5, "jumped (peak %.2f)" % peak[0])
+
+
+## PI-05: holding Space jumps once; a new jump needs a release (no auto bunny hop).
+func test_held_jump_jumps_once() -> void:
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
+	assert_true(await wait_until(func() -> bool: return c.grounded, 2.0), "grounded")
+	var takeoffs: Array[int] = [0]
+	var was: Array[bool] = [true]
+	_inp.press(&"jump")
+	await wait_until(func() -> bool:
+		if was[0] and not c.grounded and c.velocity.y > 0.0:
+			takeoffs[0] += 1
+		was[0] = c.grounded
+		return false, 2.5)
+	_inp.release(&"jump")
+	assert_eq(takeoffs[0], 1, "held jump for 2.5 s: one takeoff")
+	assert_true(await wait_until(func() -> bool: return c.grounded, 2.0), "landed")
+	await wait_physics_frames(2)
+	await _inp.tap(&"jump")
+	assert_true(await wait_until(func() -> bool: return not c.grounded, 0.5), "released and pressed again: jumps")
+
+
+## PI-04: releasing crouch under a low ceiling keeps the player crouched until there is headroom.
+func test_uncrouch_needs_headroom() -> void:
+	_box(Vector3(0.0, 1.65, -4.0), Vector3(3.0, 0.3, 3.0))  # ceiling underside at 1.5 m over z -2.5..-5.5
+	await wait_physics_frames(2)
+	var c: CrewController = await _start(0, Vector3(0.0, 0.05, LANE_START_Z))
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)  # casing cannot crouch
+	_inp.press(&"crouch")
+	await wait_physics_frames(3)
+	assert_true(c.crouched, "crouched")
+	var r: Dictionary = await _walk(0, 0.0, func() -> bool: return c.global_position.z < -4.0, 4.0)
+	assert_true(r["ok"], "crouch-walked under the ceiling")
+	_inp.release(&"crouch")
+	await wait_physics_frames(10)
+	assert_true(c.crouched, "still crouched under the 1.5 m ceiling")
+	assert_true(c.global_position.y < 0.05, "not pushed into / through the ceiling (y %.2f)" % c.global_position.y)
+	var out: Dictionary = await _walk(0, 0.0, func() -> bool: return c.global_position.z < -6.5, 4.0)
+	assert_true(out["ok"], "walked out crouched")
+	assert_true(await wait_until(func() -> bool: return not c.crouched, 1.0), "stands up once clear")
