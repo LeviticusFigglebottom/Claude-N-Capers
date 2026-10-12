@@ -114,3 +114,51 @@ func test_host_and_client_states_fit_720p() -> void:
 	hs.queue_free()
 	cs.queue_free()
 	await wait_frames(1)
+
+
+func _pad(button: JoyButton) -> void:
+	UiNav.ensure_pad_ui_actions()
+	for down: bool in [true, false]:
+		var e: InputEventJoypadButton = InputEventJoypadButton.new()
+		e.button_index = button
+		e.pressed = down
+		Input.parse_input_event(e)
+		await wait_frames(2)
+
+
+func _nav_to(target: Control) -> bool:
+	var dirs: Array[JoyButton] = [JOY_BUTTON_DPAD_DOWN, JOY_BUTTON_DPAD_RIGHT, JOY_BUTTON_DPAD_UP,
+			JOY_BUTTON_DPAD_LEFT]
+	var d: int = 0
+	var seen: Dictionary = {}
+	for _i: int in range(40):
+		var f: Control = get_viewport().gui_get_focus_owner()
+		if f == target:
+			return true
+		seen[f] = true
+		await _pad(dirs[d])
+		if seen.has(get_viewport().gui_get_focus_owner()):
+			d = (d + 1) % dirs.size()
+	return get_viewport().gui_get_focus_owner() == target
+
+
+## PQ-B-16: the host readies up and starts with the pad only (contract set by the session = setup).
+func test_host_ready_and_start_gamepad_only() -> void:
+	var pair: Array[LobbySession] = await _pair()
+	var host: LobbySession = pair[0]
+	var client: LobbySession = pair[1]
+	var started: Array[bool] = [false]
+	host.started.connect(func(_i: Dictionary) -> void: started[0] = true)
+	var hs: LobbyScreen = await _screen(host)
+	assert_true(host.set_contract(&"glasshouse", Enums.Difficulty.ROUTINE, false))
+	client.set_ready(true)
+	await wait_frames(5)
+	assert_true(await _nav_to(hs.ready_button), "Ready reachable by d-pad")
+	await _pad(JOY_BUTTON_A)
+	assert_true(await wait_until(func() -> bool: return host.state.can_start(), 5.0), "A readied the host")
+	await wait_frames(3)
+	assert_true(await _nav_to(hs.start_button), "Start reachable by d-pad")
+	await _pad(JOY_BUTTON_A)
+	assert_true(await wait_until(func() -> bool: return started[0], 5.0), "A on Start started the run")
+	hs.queue_free()
+	await wait_frames(1)
