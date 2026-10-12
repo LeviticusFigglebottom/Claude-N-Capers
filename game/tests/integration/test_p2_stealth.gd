@@ -5,16 +5,14 @@
 ##   Done:  test_99_s_rows_phase_2_covered (coverage map of pd2_fidelity S-rows -> behaviour tests,
 ##          parsed from the doc at run time; fails listing uncovered rows; prints partial rows).
 ##          Harness + Night Deposit line written (test_01, seed 2001); Shadow Ledger not written yet.
-##   State (2026-10-12): test_01 FAILS at the first step: "a quiet moment to take out the operator"
-##          (_take_out_operator waited 240 s game time). Cause (my condition, not a game bug): it also
-##          requires no NPC within 14 m straight-line of the operator, and the G7 corridor guards
-##          (rover_ground, hall/basement guards using the stair) are always within 14 m of G3.
-##   EXACT NEXT STEP: in _take_out_operator replace the 14 m straight-line rule with a navmesh path
-##          length check (NavigationServer3D.map_get_path, > ~20 m) or drop it and rely on _watchers;
-##          rerun `tools/ci/run_tests.sh integration test_p2_stealth.gd:test_01`; then fix gdlint
-##          max-returns in _nd_line (split it), then pick seeds (resolver probe: sec_staffed, code as a
-##          note), then write _ghost_sl (laptop -> keycard -> server reader -> cage code -> hack with
-##          re-interacts on device_jammed -> 2 drives + laptop secured -> escape tag by variant).
+##   State (2026-10-12 18:00 ET, LEAD/Grok): 14 m straight-line rule replaced by _nav_path_length
+##          (P2_NEAR_PATH_M, currently 0 = rely on _watchers); operator take-out, pager, keycard (freed-node
+##          fix), code and vault_gate now PASS on seed 2001. test_01 now FAILS at "walked across
+##          AntechamberLasers (bypass gap)" (max meter 0.48, 3 holds abandoned) -> time_lock/secure/escape.
+##   EXACT NEXT STEP: debug the antechamber laser walk (gap point vs laser_sweep timing), rerun
+##          `tools/ci/run_tests.sh integration test_p2_stealth.gd:test_01`; then gdlint max-returns in
+##          _nd_line (split it), pick seeds, write _ghost_sl (laptop -> keycard -> server reader -> cage
+##          code -> hack with re-interacts on device_jammed -> 2 drives + laptop secured -> escape).
 ##   Plan:  mask -> kill the camera operator from behind (pager answered, body bagged + hidden:
 ##          all cameras off, S8.2) -> objectives by teleport, each step only when no observer
 ##          (guard/civilian/live camera) can see the spot (_watchers), aborting a hold when a
@@ -24,6 +22,8 @@
 ##   Scratch: test_zz_probe.gd (untracked scouting probe; delete before the final commit).
 extends TestCase
 
+## Nobody may be within this walking distance of the operator (pager window). 0 = rely on _watchers only.
+const P2_NEAR_PATH_M: float = 0.0
 const FIDELITY_DOC: String = "docs/design/pd2_fidelity.md"
 
 ## Every S-row of phase <= P2 -> behaviour test functions ("dir/file.gd:test_name" under res://tests)
@@ -500,7 +500,7 @@ func _take_out_operator() -> bool:
 		if not _watchers(at, [op]).is_empty() or not _watchers(op.global_position, [op]).is_empty():
 			return false
 		for n: Node in _rt.npcs():
-			if n != op and (n as Node3D).global_position.distance_to(op.global_position) < 14.0:
+			if n != op and _nav_path_length((n as Node3D).global_position, op.global_position) < P2_NEAR_PATH_M:
 				return false
 		return true, CLEAR_TIMEOUT_S)
 	assert_true(quiet, "a quiet moment to take out the operator")
@@ -520,6 +520,18 @@ func _take_out_operator() -> bool:
 	if not await _answer_pager(op):
 		return false
 	return await _hide_body(op)
+
+
+## Walking distance on the navmesh (straight line fallback when no map/path); stairs and walls count.
+func _nav_path_length(from: Vector3, to: Vector3) -> float:
+	var map: RID = _rt.map.get_world_3d().navigation_map
+	var path: PackedVector3Array = NavigationServer3D.map_get_path(map, from, to, true)
+	if path.size() < 2:
+		return from.distance_to(to)
+	var total: float = 0.0
+	for i: int in range(1, path.size()):
+		total += path[i - 1].distance_to(path[i])
+	return total
 
 
 func _answer_pager(guard: NpcBase) -> bool:
@@ -863,7 +875,7 @@ func _ghost_nd(seed_value: int) -> void:
 func _nd_line() -> bool:
 	var m: HeistMission = _rt.mission
 	var card: KeycardPickup = _rt.find_by_tag(&"keycard")[0] as KeycardPickup
-	if not await _step_prefab("keycard", card, func() -> bool: return card.taken, Tweak.interaction().item_pickup_s):
+	if not await _step_prefab("keycard", card, func() -> bool: return not is_instance_valid(card) or card.taken, Tweak.interaction().item_pickup_s):
 		return false
 	var notes: Array[Node] = _rt.find_by_tag(&"code_note")
 	assert_false(notes.is_empty(), "a code note to read (code_on_manager seeds are not used)")
