@@ -125,6 +125,7 @@ func _build() -> void:
 		if line.begins_with("ERROR"):
 			_errors.append(line)
 	_build_art()
+	_close_barred_doorways()
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -314,6 +315,12 @@ func _prefab_scene(prefab: String) -> PackedScene:
 		_errors.append("gameplay prefab `%s` (class %s) not found" % [prefab, cls])
 	_scene_cache[prefab] = ps
 	return ps
+
+
+func _close_barred_doorways() -> void:
+	for d: Array in L.DOORS.filter(func(r: Array) -> bool: return String(r[4]) == "BARRED"):
+		var w: float = (1.8 if String(d[5]) == "DOUBLE" else 0.9) + 0.6  # leaf + jamb tolerance
+		_obstruct(Transform3D(_yaw_basis(float(d[3])), d[2]), AABB(Vector3(-w * 0.5, -0.2, -0.3), Vector3(w, 2.8, 0.6)))
 
 
 ## Records a projected navmesh obstruction for a box (local AABB under xform).
@@ -1384,10 +1391,7 @@ func _build_nav_links(nav: NavigationRegion3D) -> void:
 
 
 # --- Navigation bake --------------------------------------------------------------------------
-
-## Keeps only navmesh components that hold a gameplay marker (spawns, patrol points, UsePoints,
-## nav-link ends): no islands on neighbour roofs, garage decks or the shop roof, which would let
-## NPC queries snap there and make the bounds check cast from unreachable places.
+## Keeps only navmesh components with a gameplay marker (spawns, patrol/use points, link ends) inside or near a polygon.
 func _prune_islands(nm: NavigationMesh) -> void:
 	var anchors: PackedVector3Array = PackedVector3Array()
 	for n: Node in _root.find_children("*", "", true, false):
@@ -1421,10 +1425,13 @@ func _prune_islands(nm: NavigationMesh) -> void:
 		var best_d: float = 1.5
 		for pi2: int in range(polys.size()):
 			var c: Vector3 = Vector3.ZERO
+			var p2: PackedVector2Array = PackedVector2Array()
 			for vi2: int in polys[pi2]:
 				c += verts[vi2]
+				p2.append(Vector2(verts[vi2].x, verts[vi2].z))
 			c /= float(polys[pi2].size())
 			var d: float = Vector2(c.x - a.x, c.z - a.z).length() + absf(c.y - a.y) * 2.0
+			d = 0.0 if Geometry2D.is_point_in_polygon(Vector2(a.x, a.z), p2) and absf(c.y - a.y) < 1.0 else d
 			if d < best_d:
 				best_d = d
 				best = pi2
@@ -1464,9 +1471,7 @@ static func _union(parent: PackedInt32Array, a: int, b: int) -> void:
 		parent[maxi(ra, rb)] = mini(ra, rb)
 
 
-## Bakes the walkable navmesh (heist_map.md §3 v1.1: agent radius 0.3, height 1.8, climb 0.3,
-## slope 40, cell 0.1 / 0.1) from the Geometry colliders. Props and prefab bodies are projected
-## obstructions, so no navmesh is generated on top of furniture or vans. Doors stay open.
+## Navmesh (heist_map.md §3: r 0.3, h 1.8, climb 0.3, slope 40, cell 0.1); props + BARRED gates (D-073) obstruct.
 func _bake(nav: NavigationRegion3D) -> int:
 	var nm: NavigationMesh = NavigationMesh.new()
 	nm.agent_radius = 0.3
