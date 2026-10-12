@@ -43,6 +43,21 @@ Newest entry first, keep the last 10.
 ### Next
 - PQ-B-1 when p_input_driver.gd reaches trunk; lobby co-op 720p states; drop the RB test skip once lead's input actions are on trunk.
 
+### Round 3 (2026-10-12 ~22:45 UTC)
+- 3e13adaa PQ-B-11b: real bug, the lobby host view pushed Leave / Ready / Start to y=1095 (off-screen at 720p). Contract + crew body now scrolls, footer pinned. test_pp_lobby_720p covers connect / host no contract / host ready / client (ENet loopback).
+- 7217ee2d PQ-B-13: real bug, gamepad A / B did nothing in any menu: project.godot ui_accept / ui_cancel have no joypad events. UiNav.ensure_pad_ui_actions() (called from UiScreen._ready) adds A / B at runtime when missing; SafehouseHud ignores pad B while walking (B is a gameplay button). **Lead: please add JOY A to ui_accept and JOY B to ui_cancel in project.godot**, then the runtime add is a no-op. test_pp_gamepad_flow: hub -> select -> briefing (B back) -> preplan -> loadout -> Launch, d-pad + A only.
+- ddb08e5a PQ-B-14: test_pp_live_hud_720p in a live glasshouse run (direct_launch, real LocalHudModel): found teammate info line 18 units = 12 px at 720p; now 21 (14 px) and wraps. Subtitles default 28 units = 18.7 px, clear of vitals / ammo.
+- PQ-B-1 still waiting: p_input_driver.gd not on origin trunk (64f10747).
+### Queue (about 4 h)
+1. PQ-B-15 Gamepad-only masks, workshop, skill tree, perk deck: reach every tab and Back with d-pad / A / B (40 min).
+2. PQ-B-16 Gamepad-only lobby host flow: contract, ready, start (30 min).
+3. PQ-B-17 DimLabel is 20 units = 13.3 px at 720p across all menus: sweep for readability, raise to 21 if layouts hold (40 min).
+4. PQ-B-18 Subtitles small / large, two-line wrap, clear of the interaction prompt at hud_scale 1.5 (20 min).
+5. PQ-B-19 Live heist: press the real interact key on a real interactable and watch the prompt + progress (with PInputDriver once on trunk) (40 min).
+6. PQ-B-20 Live heist pause / options with pad Start and B, then resume (30 min).
+7. PQ-B-21 Live heist end -> payday -> cards -> Continue -> menus, keyboard and pad (30 min).
+8. PQ-B-1 Switch real-input helpers to PInputDriver (when on trunk) (20 min).
+
 ## 2026-10-11 UTC (7): B7 loose ends (lead answers); P5 paused (D-076)
 ### Done
 - B7-01 `profile` station (hub_map v1.1, d1a89b5f): `st_profile` (target `career`, icon `profile`) in data/ui/hub_stations.tres.
