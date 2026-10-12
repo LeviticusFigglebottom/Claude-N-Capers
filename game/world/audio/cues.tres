@@ -226,24 +226,26 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/door_breach/sfx_door_breach_1.ogg" id="s222"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/door_breach/sfx_door_breach_2.ogg" id="s223"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/door_breach/sfx_door_breach_3.ogg" id="s224"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/burn_warning/sfx_burn_warning.ogg" id="s225"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_pin/sfx_throwable_pin_1.ogg" id="s226"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_pin/sfx_throwable_pin_2.ogg" id="s227"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_frag/sfx_throwable_frag_1.ogg" id="s228"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_frag/sfx_throwable_frag_2.ogg" id="s229"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_frag/sfx_throwable_frag_3.ogg" id="s230"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_concussion/sfx_throwable_concussion_1.ogg" id="s231"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_concussion/sfx_throwable_concussion_2.ogg" id="s232"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_incendiary/sfx_throwable_incendiary_1.ogg" id="s233"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_incendiary/sfx_throwable_incendiary_2.ogg" id="s234"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit/sfx_throwable_knife_hit_1.ogg" id="s235"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit/sfx_throwable_knife_hit_2.ogg" id="s236"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit/sfx_throwable_knife_hit_3.ogg" id="s237"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_1.ogg" id="s238"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_2.ogg" id="s239"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_3.ogg" id="s240"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_4.ogg" id="s241"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_incendiary_fire/sfx_throwable_incendiary_fire.ogg" id="s242"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/burn_warning/sfx_burn_warning_1.ogg" id="s225"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/burn_warning/sfx_burn_warning_2.ogg" id="s226"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/burn_warning/sfx_burn_warning_3.ogg" id="s227"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_pin/sfx_throwable_pin_1.ogg" id="s228"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_pin/sfx_throwable_pin_2.ogg" id="s229"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_frag/sfx_throwable_frag_1.ogg" id="s230"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_frag/sfx_throwable_frag_2.ogg" id="s231"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_frag/sfx_throwable_frag_3.ogg" id="s232"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_concussion/sfx_throwable_concussion_1.ogg" id="s233"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_concussion/sfx_throwable_concussion_2.ogg" id="s234"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_incendiary/sfx_throwable_incendiary_1.ogg" id="s235"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_incendiary/sfx_throwable_incendiary_2.ogg" id="s236"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit/sfx_throwable_knife_hit_1.ogg" id="s237"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit/sfx_throwable_knife_hit_2.ogg" id="s238"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit/sfx_throwable_knife_hit_3.ogg" id="s239"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_1.ogg" id="s240"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_2.ogg" id="s241"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_3.ogg" id="s242"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_4.ogg" id="s243"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_incendiary_fire/sfx_throwable_incendiary_fire.ogg" id="s244"]
 
 [sub_resource type="Resource" id="cue_1"]
 script = ExtResource("2_def")
@@ -1700,7 +1702,7 @@ loop = false
 [sub_resource type="Resource" id="cue_122"]
 script = ExtResource("2_def")
 id = &"cue.burn_warning"
-streams = Array[AudioStream]([ExtResource("s225")])
+streams = Array[AudioStream]([ExtResource("s225"), ExtResource("s226"), ExtResource("s227")])
 volume_db = 0.0
 bus = &"World"
 positional = true
@@ -1712,7 +1714,7 @@ loop = false
 [sub_resource type="Resource" id="cue_123"]
 script = ExtResource("2_def")
 id = &"cue.throwable_pin"
-streams = Array[AudioStream]([ExtResource("s226"), ExtResource("s227")])
+streams = Array[AudioStream]([ExtResource("s228"), ExtResource("s229")])
 volume_db = -5.0
 bus = &"Weapons"
 positional = true
@@ -1724,7 +1726,7 @@ loop = false
 [sub_resource type="Resource" id="cue_124"]
 script = ExtResource("2_def")
 id = &"cue.throwable_frag"
-streams = Array[AudioStream]([ExtResource("s228"), ExtResource("s229"), ExtResource("s230")])
+streams = Array[AudioStream]([ExtResource("s230"), ExtResource("s231"), ExtResource("s232")])
 volume_db = 0.0
 bus = &"World"
 positional = true
@@ -1736,7 +1738,7 @@ loop = false
 [sub_resource type="Resource" id="cue_125"]
 script = ExtResource("2_def")
 id = &"cue.throwable_concussion"
-streams = Array[AudioStream]([ExtResource("s231"), ExtResource("s232")])
+streams = Array[AudioStream]([ExtResource("s233"), ExtResource("s234")])
 volume_db = 0.0
 bus = &"World"
 positional = true
@@ -1748,7 +1750,7 @@ loop = false
 [sub_resource type="Resource" id="cue_126"]
 script = ExtResource("2_def")
 id = &"cue.throwable_incendiary"
-streams = Array[AudioStream]([ExtResource("s233"), ExtResource("s234")])
+streams = Array[AudioStream]([ExtResource("s235"), ExtResource("s236")])
 volume_db = 0.0
 bus = &"World"
 positional = true
@@ -1760,7 +1762,7 @@ loop = false
 [sub_resource type="Resource" id="cue_127"]
 script = ExtResource("2_def")
 id = &"cue.throwable_knife_hit"
-streams = Array[AudioStream]([ExtResource("s235"), ExtResource("s236"), ExtResource("s237")])
+streams = Array[AudioStream]([ExtResource("s237"), ExtResource("s238"), ExtResource("s239")])
 volume_db = -6.0
 bus = &"Weapons"
 positional = true
@@ -1772,7 +1774,7 @@ loop = false
 [sub_resource type="Resource" id="cue_128"]
 script = ExtResource("2_def")
 id = &"cue.throwable_knife_hit_hard"
-streams = Array[AudioStream]([ExtResource("s238"), ExtResource("s239"), ExtResource("s240"), ExtResource("s241")])
+streams = Array[AudioStream]([ExtResource("s240"), ExtResource("s241"), ExtResource("s242"), ExtResource("s243")])
 volume_db = -6.0
 bus = &"Weapons"
 positional = true
@@ -1784,7 +1786,7 @@ loop = false
 [sub_resource type="Resource" id="cue_129"]
 script = ExtResource("2_def")
 id = &"cue.throwable_incendiary_fire"
-streams = Array[AudioStream]([ExtResource("s242")])
+streams = Array[AudioStream]([ExtResource("s244")])
 volume_db = -4.0
 bus = &"World"
 positional = true

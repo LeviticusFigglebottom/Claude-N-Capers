@@ -1699,7 +1699,7 @@ def burn_warning(rng: np.random.Generator, v: int) -> np.ndarray:
     hiss = filters.hp(noise.white(dur, rng), 3800) * 0.55 + filters.bp(noise.pink(dur, rng), 6500, 0.8) * 0.5
     sput = filters.bp(noise.crackle(dur, rng, 45), 2200, 0.9) * 2.5
     flare = (hiss * flick + sput) * ign
-    f = 520.0 * 3.0 ** (u ** 1.2)
+    f = 520.0 * (1.0 + 0.05 * v) * 3.0 ** (u ** 1.2)  # v: 3 variations a semitone-ish apart
     tone = osc.triangle(f, dur) * 0.7 + osc.square(f * 1.5, dur, 0.4) * 0.12
     rate = 3.0 + 6.0 * u ** 1.3
     ph = np.cumsum(rate / SR) % 1.0
@@ -2037,7 +2037,7 @@ CUES: list[CueSpec] = [
             norm="bed"),
     CueSpec("door_breach", door_breach, variations=3, max_distance=60.0, pitch_jitter=0.04,
             note="QA-36 audio_cues v1.2: police breach, 3D at the door"),
-    CueSpec("burn_warning", burn_warning, max_distance=50.0,
+    CueSpec("burn_warning", burn_warning, variations=3, max_distance=50.0,
             note="QA-36/QC-38 audio_cues v1.2: 5 s thermite countdown before the fire shutters"),
     CueSpec("throwable_pin", throwable_pin, bus="Weapons", variations=2, max_distance=12.0, pitch_jitter=0.04,
             volume_db=-5.0, note="audio_cues v1.3 (D-073) throwables: pin pull + spoon"),

@@ -7,4 +7,6 @@ loudness: -18.0 LUFS (short), true peak <= -1.0 dBTP
 encode: ffmpeg libvorbis -q:a 6 48 kHz, -fflags +bitexact -flags +bitexact -map_metadata -1, -serial_offset = seed & 0x7fffffff
 loop: false
 files:
-  sfx_burn_warning.ogg  seed=zlib.crc32('cue.burn_warning#0')=3489651468
+  sfx_burn_warning_1.ogg  seed=zlib.crc32('cue.burn_warning#0')=3489651468
+  sfx_burn_warning_2.ogg  seed=zlib.crc32('cue.burn_warning#1')=3103320986
+  sfx_burn_warning_3.ogg  seed=zlib.crc32('cue.burn_warning#2')=569489952

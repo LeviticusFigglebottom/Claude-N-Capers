@@ -232,6 +232,8 @@ func test_breach_burn_and_throwable_cues() -> void:
 	if burn != null and burn.streams.size() > 0:
 		var len_s: float = burn.streams[0].get_length()
 		assert_true(absf(len_s - 5.0) < 0.1, "burn_warning is 5 s (got %.2f)" % len_s)
+	if burn != null:
+		assert_eq(burn.streams.size(), 3, "cue.burn_warning has 3 variations (audio_cues v1.2)")
 
 func test_every_stream_loads_with_length() -> void:
 	if _reg == null:

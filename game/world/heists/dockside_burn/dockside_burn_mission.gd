@@ -192,8 +192,12 @@ func _on_entry_door(open: bool, _by_net_id: int) -> void:
 ## Cartel phase, then the police (D-064 Q1, QC-35): police_delay_s holds the assault director for the
 ## rolled delay; the same timer opens the closure gates (baked closed, D-073), says the lines and
 ## closes [cartel].
+## A compressed director (launch option `director_tweak`, e.g. test_p3_loud) compresses the cartel
+## hold by the same factor as its first CONTROL phase (first_control_s vs the shipped tweak); the
+## shipped tweak keeps the rolled 60 / 90 / 120 s.
 func _schedule_police() -> void:
 	var delay: float = 0.0 if _rare(RARE_POLICE_TIPPED) else float(_scalar(&"police_delay_s", 90.0))
+	delay *= _director_time_scale()
 	police_delay_s = delay
 	start_timer(&"police_delay", delay, _on_police_called)
 
@@ -466,3 +470,13 @@ func _is_tagged(net_id: int, tag: StringName) -> bool:
 		if _net_id(n) == net_id:
 			return true
 	return false
+
+
+func _director_time_scale() -> float:
+	var d: AssaultDirector = _director()
+	if d == null or d.tweak == null:
+		return 1.0
+	var base: DirectorTweak = load(AssaultDirector.DEFAULT_TWEAK) as DirectorTweak
+	if base == null or base.first_control_s <= 0.0:
+		return 1.0
+	return clampf(d.tweak.first_control_s / base.first_control_s, 0.0, 1.0)
