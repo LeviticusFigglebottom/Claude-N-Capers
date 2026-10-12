@@ -26,6 +26,8 @@ extends Node
 @export var gamepad_requires_capture: bool = false
 
 var enabled: bool = true
+## Tests only (PInputDriver): headless cannot capture the mouse; treat motion as captured.
+static var test_assume_captured: bool = false
 var _yaw: float = 0.0
 var _pitch: float = 0.0
 var _crew: CrewController = null
@@ -49,7 +51,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not enabled:
 		return
 	var mm: InputEventMouseMotion = event as InputEventMouseMotion
-	if mm != null and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+	if mm != null and (Input.mouse_mode == Input.MOUSE_MODE_CAPTURED or test_assume_captured):
 		var gs: GameSettings = GameSettings.current()  # B5-01 options
 		var ms: Vector2 = gs.mouse_sensitivity() if gs != null else Vector2.ONE
 		var inv: float = -1.0 if gs != null and gs.invert_y() else 1.0
