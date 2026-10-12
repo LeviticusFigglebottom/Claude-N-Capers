@@ -2,6 +2,31 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-12 22:20 UTC — P1-01 mouse gain, PI-06, PI-03, UI shoulder gating; LOD bias question
+### Done
+- Mouse sensitivity bug (real, not headless-only): PlayerInput used InputEventMouseMotion.relative, which the
+  canvas_items stretch scales by 1920/window width (xvfb probe: 1080p x1, 1440p x0.75, 4K x0.5, 720p x1.5,
+  headless x30). Now screen_relative + test_degrees_per_mouse_count (fails on the old code with 30x). 1328183f.
+  Probe project: /workspace/cnc-team/p/mouse_probe. Same bug in ENV B content/range/range_spectator_input.gd:98.
+- PI-06 teleport keeps facing + test (failed before fix): 75ccbead. PI-03 diagonal/strafe/standstill: passes, not
+  reproduced. PI-02: not reproduced; floor_snap_length unchanged.
+- LB/RB shared with ui_payday_prev/next: paused input already blocks them; but a shoulder held through the UI
+  close meleed/threw on resume (test failed). Fixed: resume-gated actions until released. p_input_driver gains
+  joy_button(). `run_tests.sh p` 17/17; tests/b hub_3d 13/13; gdlint clean on P files.
+### In progress
+- LOD zoom bias: on hold, see Questions.
+- Next: P1-02 casing audit, then P1-03 ADS.
+### Blocked
+- Push: 403 (permission denied to LeviticusFigglebottom).
+### Questions for lead
+- QP-3: Godot already divides mesh LOD by zoom (Projection::get_lod_multiplier = 2*tan(fov/2), used for mesh LOD
+  selection), so scaling Viewport.mesh_lod_threshold with zoom would double-count (a 4x scope at 40 m would pick
+  the LOD of ~2.5 m, not 10 m). Visibility ranges (HLOD, used in world/props/**) are NOT FOV aware and have no
+  viewport bias. Proposal: no mesh_lod_threshold change; for HLOD, a P-side zoom factor published by CrewView that
+  ENV C/D props read, or accept pop-in through scopes. Which?
+### Ready for integration
+- yes; check_all not run (lead rule).
+
 ## 2026-10-12 22:05 UTC — P1-01 (step-up/snap, PI-04, PI-05), PInputDriver, PI-10 handoff
 ### Done
 - PInputDriver (game/tests/p/p_input_driver.gd) + self-test 5/5: a43d33b7, uids 6b858a0b. PlayerInput gets a
