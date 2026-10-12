@@ -303,7 +303,8 @@ func _open_notoriety() -> void:
 	show_screen(screen)
 
 
-## Career screen (B7-01) from the hub's profile panel or the `profile` station (hub_map v1.1; read-only); Back frees it and returns to the hub.
+## Career screen (B7-01) from the hub's profile panel or the `profile` station (hub_map v1.1; read-only).
+## Back frees it and returns to the hub.
 func _open_career() -> void:
 	var screen: CareerScreen = CAREER_SCENE.instantiate() as CareerScreen
 	screen.profile_slot = profile_slot
