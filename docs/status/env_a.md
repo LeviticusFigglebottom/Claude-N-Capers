@@ -3,6 +3,26 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12: WIND DOWN (A4-01 redo, session stopped by the lead)
+### Done
+- d2ce45f PUSHED: breech parts test polls (wait_until) instead of wait_frames(20) (lead flake); 3/3 targeted runs pass.
+- LOCAL ONLY (not pushed: no full check_all has passed on them yet):
+  - S5.8 guard domination (GuardBrain.dominate_window_left / can_be_dominated_by / on_shouted / dominate,
+    ShoutSystem.guard_target_for, StealthTweak "Guard domination (S5.8)") + test_s5_8_guard_domination (4/4 pass);
+    related suites test_s3_3, test_s7_shout, test_s2_9, test_s5_pagers, test_l5_1 pass.
+  - L3.3 pellet headshot (CombatSystem.pellet_headshots, applied in validate_and_apply when pellets > 1)
+    + test_l3_3_pellet_headshot (2/2 pass).
+### Resume step
+- Merge origin trunk a2d82434, run `tools/ci/check_all.sh --env a` (ownership: if origin lags, use
+  `python3 tools/ci/check_ownership.py a --base claude/dreamy-hamilton-pc7vck`), push if PASS.
+### Next (queue order, per lead; S1.2 + fp_viewmodel finish moved to ENV P by D-076; then A4-04 key hooks)
+- S2.7 DR targeting range, S1.1 casing pickup, L2.1 regen, S8.3 camera loop, S9.5 shaped
+  charges / A5-03 C4, phase-2/3 keys, L2.4, phase-4 keys, docs/status/env_a_fidelity.md, HeistDropIn `full` +
+  Net.was_kicked, anim_driver apply_loadout_finish, escape_arrived [R], client GameRng seeding.
+### Notes
+- check_all ownership step fails while origin trunk lags the local trunk; use
+  `python3 tools/ci/check_ownership.py a --base claude/dreamy-hamilton-pc7vck` (D-076).
+
 ## 2026-10-11 14:30 UTC: HANDOFF (session shut down by the lead; account move)
 ### State
 - Pushed: env/a-core = 112c7f3 (round 28 content). Nothing newer is on origin.

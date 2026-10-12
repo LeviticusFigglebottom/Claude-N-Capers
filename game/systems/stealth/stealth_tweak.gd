@@ -172,3 +172,12 @@ extends Resource
 @export var sixth_sense_still_s: float = 3.5
 @export var sixth_sense_radius_m: float = 10.0
 @export var sixth_sense_still_speed: float = 0.1
+
+@export_group("Guard domination (S5.8)")
+## S5.8: a shout from crew with `stealth.can_dominate_guards` within this many seconds after a
+## guard's "!" makes him kneel and cuff himself (100% inside the window). His pager still fires.
+@export var guard_dominate_window_s: float = 1.5
+## S5.8 ◇: the shout reaches the guard nearest the aim line within this range (m, × ability.shout_range_mult)
+## and half-angle (deg), with line of sight.
+@export var guard_dominate_range_m: float = 15.0
+@export var guard_dominate_cone_half_deg: float = 20.0
