@@ -45,6 +45,14 @@ func _ready() -> void:
 	_crew = get_parent() as CrewController
 	if _crew != null:
 		_yaw = _crew.look_yaw
+		_pitch = _crew.look_pitch
+		_crew.teleported.connect(_on_teleported)
+
+
+## PI-06: spawns, custody release and server teleports set the facing; keep it instead of snapping back.
+func _on_teleported() -> void:
+	_yaw = _crew.look_yaw
+	_pitch = _crew.look_pitch
 
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -278,3 +278,39 @@ func test_uncrouch_needs_headroom() -> void:
 	var out: Dictionary = await _walk(0, 0.0, func() -> bool: return c.global_position.z < -6.5, 4.0)
 	assert_true(out["ok"], "walked out crouched")
 	assert_true(await wait_until(func() -> bool: return not c.crouched, 1.0), "stands up once clear")
+
+
+## PI-06: a teleport (spawn, custody release) sets the facing; player input keeps it instead of snapping back.
+func test_teleport_keeps_new_facing() -> void:
+	var c: CrewController = await _start(0, Vector3(0.0, 0.05, LANE_START_Z), 0.0)
+	_inp.capture_mouse()
+	_inp.look(-200.0, 50.0)  # some look first, so PlayerInput holds a non-trivial yaw/pitch
+	await wait_physics_frames(3)
+	_rt.teleport_crew(0, Transform3D(Basis(Vector3.UP, PI * 0.5), Vector3(2.0, 0.05, 0.0)))
+	await wait_physics_frames(10)
+	assert_near(wrapf(c.look_yaw - PI * 0.5, -PI, PI), 0.0, 0.01, "faces the teleport heading (yaw %.3f)" % c.look_yaw)
+	assert_near(c.look_pitch, 0.0, 0.01, "level after the teleport")
+	var x0: float = c.global_position.x
+	await _inp.walk_until(&"move_forward", func() -> bool: return false, 0.5)
+	assert_true(c.global_position.x < x0 - 0.5, "W walks along the new heading (-X), dx %.2f" % (c.global_position.x - x0))
+	_inp.look(-100.0, 0.0)
+	await wait_physics_frames(3)
+	assert_true(c.look_yaw > PI * 0.5 + 0.05, "mouse look continues from the new heading")
+
+
+## PI-03: approaching a curb diagonally, strafing into it, or from a standstill still steps up.
+func test_curb_diagonal_strafe_and_slow() -> void:
+	_box(Vector3(0.0, 0.075, -6.0), Vector3(12.0, 0.15, 8.0))  # 15 cm curb, face at z = -2
+	await wait_physics_frames(2)
+	# Diagonal: heading 45 deg left of the curb normal.
+	var c: CrewController = await _start(0, Vector3(2.0, 0.05, LANE_START_Z), PI * 0.25)
+	var r: Dictionary = await _walk(0, PI * 0.25, func() -> bool: return c.global_position.y > 0.12, 3.0)
+	assert_true(r["ok"], "diagonal: onto the curb (y %.3f z %.2f)" % [c.global_position.y, c.global_position.z])
+	# Strafe: facing along the curb, A/D into it.
+	c = await _start(0, Vector3(0.0, 0.05, -1.5), -PI * 0.5)  # facing +X; left = -Z
+	var s_ok: bool = await _inp.walk_until(&"move_left", func() -> bool: return c.global_position.y > 0.12, 2.0)
+	assert_true(s_ok, "strafe: onto the curb (y %.3f)" % c.global_position.y)
+	# Standstill right at the face.
+	c = await _start(0, Vector3(-3.0, 0.05, -2.0 + Tweak.crew().capsule_radius + 0.02), 0.0)
+	var r2: Dictionary = await _walk(0, 0.0, func() -> bool: return c.global_position.y > 0.12, 2.0)
+	assert_true(r2["ok"], "from a standstill at the face (y %.3f)" % c.global_position.y)

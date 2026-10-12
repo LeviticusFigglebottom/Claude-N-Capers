@@ -17,6 +17,8 @@ signal inventory_changed()
 signal carried_bag_changed(bag: Node)
 ## S1.3: civilian mode started / ended (gear picked up, or masked by an alarm).
 signal civilian_changed(civilian: bool)
+## PI-06: a hard move (teleport) set position and look; PlayerInput re-reads the look from it.
+signal teleported()
 
 const COLLISION_LAYER_PLAYERS: int = 1 << 2
 const COLLISION_MASK_WORLD: int = (1 << 0) | (1 << 1) | (1 << 3)
@@ -336,6 +338,9 @@ func teleport(xform: Transform3D) -> void:
 	_step_offset = 0.0  # P1-01: a hard move is not a step to smooth; airborne until it lands
 	grounded = false
 	_remote_pos = Vector3.INF
+	intent.look_yaw = look_yaw  # PI-06: the held intent must not turn the body back this tick
+	intent.look_pitch = look_pitch
+	teleported.emit()
 	if _interaction_system() != null:
 		_interaction_system().cancel(slot)
 	if Net.is_authority() and _has_remote_owner() and _is_networked():
