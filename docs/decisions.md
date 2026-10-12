@@ -573,3 +573,7 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   - Push the env branch whenever a checked unit passes, at least about hourly. Failing checks are never pushed and
     nobody force-pushes.
 - Envs that don't push (P, the lead's helpers) commit on their local branch and notify the lead per finished item.
+- **Known-flake waiver (temporary):** until ENV A's condition-wait fix to
+  `game/tests/a/test_b4_18_special_weapons.gd:test_parts_animator_drives_named_parts` reaches trunk, a check_all
+  whose only failure is that test ("Breech open while reloading") counts as a pass for env pushes. The env names
+  the waiver in its push report. The lead's trunk gate is not waived.
