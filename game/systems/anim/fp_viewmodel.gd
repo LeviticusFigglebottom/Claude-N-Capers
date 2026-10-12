@@ -763,8 +763,19 @@ func _sprinting(tw: FpViewmodelTweak) -> bool:
 func _shot_interval() -> float:
 	if _crew == null or _crew.weapons == null:
 		return 1.0
-	var st: WeaponStats = _crew.weapons.stats(_crew.weapons.equipped_slot)
-	return 60.0 / maxf(st.fire_rate_rpm, 1.0) if st != null else 1.0
+	var ws: int = _crew.weapons.equipped_slot
+	var st: WeaponStats = _crew.weapons.stats(ws)
+	if st == null:
+		return 1.0
+	return 60.0 / maxf(st.fire_rate_rpm * maxf(fire_rate_mult(_crew.slot, _crew.weapons.weapon_id(ws)), 0.01), 1.0)
+
+
+## A4-04 weapon.fire_rate_mult (higher = faster), qualified by the weapon class like CrewWeapons; 1.0 when no
+## source sets it (Modifiers.mult default), so this matches the gameplay cadence before and after A's merge.
+static func fire_rate_mult(slot: int, weapon_id: StringName) -> float:
+	var def: WeaponDef = ContentDB.weapon(weapon_id) if weapon_id != &"" else null
+	var q: StringName = Enums.weapon_class_qualifier(def.weapon_class) if def != null else &""
+	return Modifiers.mult(slot, &"weapon.fire_rate_mult", q)
 
 
 func _last_round() -> bool:
