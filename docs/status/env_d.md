@@ -3,6 +3,33 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12: session 3 (targeted tests only; lead runs check_all)
+### Done (local on env/d-art; push blocked by GitHub 403 for every env, see lead)
+- D4-01: D-080 is not in docs/decisions.md, so specials keep the current CrowdLod approach; 13 MB `*_lod.res` kept as is.
+- Mask polish (8fa5d3e1): serpent gets a sharp chevron hood crest + keel scale (5610 tris); moth gets thicker antennae
+  (spine 3.6 mm, barbs 15 mm, 8 barbs), bigger wings, raised eyespots and veins (7891/8000 tris, width inside
+  the 0.30 m test limit). Rebuilt twice, byte-identical. test_masks 9/9; `run_tests.sh d` 112 tests, 0 failed.
+- PP-D-1 review renders: `_tools/render_fp_review.gd` -> `game/assets/characters/_review/fp_{10,20,30,40}m.png`,
+  `fp_pop_crowd.png` (18.5 vs 21.5 m), `fp_pop_unit.png` (33.5 vs 36.5 m). Eye 1.65 m, vertical FOV 75 (assumed
+  default), 1280x720, real visibility ranges (nothing forced).
+### PP-D-1: art playability issues (first person)
+1. Size: a 1.78 m character is ~95 px tall at 10 m and ~25 px at 40 m (720p). Past 30 m faces and badges are gone;
+   only body colour and silhouette tell roles apart.
+2. Dark-on-dark: tac_heavy, corpsman and security_officer trousers/armour are near-black; against dark level
+   backgrounds the armed units lose their silhouette past ~30 m. Proposal: a lighter shoulder/helmet accent on armed units.
+3. Corpsman red cross becomes a red patch at CrowdLod (open since session 2); it is the specials telegraph.
+   Waiting on D-080 (specials LOD0/1 only); kept as is for now.
+4. LOD pop: fade is disabled (opaque pass, by design), so the switch is a hard cut. At 20 m (crowd) and 35 m (units)
+   the change is small (slight loss of hair and hand shape, no colour shift). Low priority; 1 m hysteresis holds.
+5. Skinning at distance: the renders are rest pose only. The CrowdLod skinned proxy under a playing clip is not
+   reviewed yet. Next: animated render at 20-40 m.
+6. ADS: zoomed FOV = fov / magnification, so a 4x scope shows a 40 m CrowdLod at 10 m size. Needs a
+   magnification-aware LOD bias (camera, ENV A/P) or larger switch distances. Not yet rendered.
+### Next
+- Animated CrowdLod render (issue 5), then the ADS render (issue 6). D4-02/D4-03 stay paused (D-076).
+### Ready for integration
+- needs the lead's check_all run
+
 ## 2026-10-11: session 2 (new account), IN PROGRESS
 ### In progress (resume here)
 - D4-01 LODs: `game/world/characters/_tools/crowd_lod.gd` + `assemble_characters.gd::_add_crowd_lod` write
