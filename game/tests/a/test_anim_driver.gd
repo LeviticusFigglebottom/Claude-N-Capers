@@ -459,3 +459,51 @@ func test_d069_ambient_hint_substitutions() -> void:
 	assert_eq(_drv(gang)._hint(), &"idle_thug", "cartel idle")
 	assert_eq(AnimDriver.HINT_CLIPS[&"mug"], &"mug_idle")
 	assert_near(float(AnimTweak.data().clip_speeds[&"mug_carry_walk"]), 1.3, 0.001, "mug walk speed_scale = v / 1.3")
+
+
+## Lead fix: the first clip a driver plays snaps in (no 0.2 s crossfade from the bind / A-pose at spawn).
+func test_first_clip_has_no_fade_in() -> void:
+	var npc: NpcBase = _npc()
+	var d: AnimDriver = _drv(npc)
+	assert_eq(d.clip, &"", "nothing played before the first tick")
+	npc.velocity = Vector3.ZERO
+	d.tick(0.016)
+	assert_eq(d.clip, &"idle")
+	assert_near(d.last_blend_s, 0.0, 0.0001, "first clip plays with no fade in")
+	npc.velocity = Vector3(0, 0, -1.6)
+	d.tick(0.016)
+	assert_eq(d.clip, &"walk")
+	assert_near(d.last_blend_s, AnimTweak.data().blend_s, 0.0001, "later changes still crossfade")
+
+
+## Lead fix: above strafe_max_mps (2.2) sideways / backward motion plays run_l / run_r / run_b, not the
+## forward run (crew at 3.5 m/s moonwalked); falls back to run when the library lacks the 8-way clips.
+func test_directional_run_above_strafe_speed() -> void:
+	var npc: NpcBase = _npc()
+	var d: AnimDriver = _drv(npc)
+	var lib: AnimationLibrary = d.player.get_animation_library(AnimDriver.LIBRARY)
+	for c: StringName in [&"run_l", &"run_r", &"run_b"]:
+		var a: Animation = Animation.new()
+		a.length = 1.0
+		a.loop_mode = Animation.LOOP_LINEAR
+		lib.add_animation(c, a)
+	var cases: Array = [
+		[Vector3(3.5, 0, 0), &"run_r"], [Vector3(-3.5, 0, 0), &"run_l"], [Vector3(0, 0, 3.5), &"run_b"],
+		[Vector3(0, 0, -3.5), &"run"], [Vector3(0, 0, 2.4), &"run_b"], [Vector3(1.2, 0, 0), &"strafe_r"],
+		[Vector3(0, 0, 1.3), &"walk_back"],
+	]
+	for c: Array in cases:
+		npc.velocity = c[0]
+		for _i: int in 3:
+			d.tick(0.016)
+		assert_eq(d.clip, c[1], "clip for v=%s" % c[0])
+		assert_eq(String(d.player.current_animation), "humanoid/%s" % c[1], "played for v=%s" % c[0])
+	npc.velocity = Vector3(3.5, 0, 0)
+	d.tick(0.016)
+	assert_near(d.player.speed_scale, 1.0, 0.001, "run_r scaled by its 3.5 m/s clip speed")
+	var plain: NpcBase = _npc()
+	var d2: AnimDriver = _drv(plain)
+	plain.velocity = Vector3(0, 0, 3.5)
+	for _i: int in 3:
+		d2.tick(0.016)
+	assert_eq(String(d2.player.current_animation), "humanoid/run", "run_b falls back to run")

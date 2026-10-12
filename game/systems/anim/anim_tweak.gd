@@ -14,7 +14,7 @@ static var _cached: AnimTweak = null
 @export var clip_speeds: Dictionary = {
 	&"walk": 1.6, &"run": 3.5, &"sprint": 5.75, &"crouch_walk": 1.5, &"strafe_l": 1.2, &"strafe_r": 1.2,
 	&"walk_back": 1.3, &"flee": 4.0, &"carry_bag_walk": 2.4, &"shield_walk": 1.6, &"dozer_walk": 1.6,
-	&"mug_carry_walk": 1.3,
+	&"mug_carry_walk": 1.3, &"run_l": 3.5, &"run_r": 3.5, &"run_b": 3.5,
 }
 ## Seconds from clip start to the reload `done` event (SOURCE.txt: pistol done@34, rifle done@58, 30 fps).
 ## The reload clip is sped up/slowed so `done` lands when the gameplay reload finishes.
@@ -32,7 +32,7 @@ static var _cached: AnimTweak = null
 ## Strafe / walk-back pick (dot of the move direction with the body's right / forward axis).
 @export var strafe_side_dot: float = 0.7
 @export var walk_back_dot: float = -0.5
-## Strafe and walk_back only below this speed (faster sideways motion plays run).
+## Strafe and walk_back below this speed; above it (up to run_sprint_split_mps) run_l / run_r / run_b.
 @export var strafe_max_mps: float = 2.2
 ## speed_scale clamp for locomotion clips.
 @export var speed_scale_min: float = 0.4
