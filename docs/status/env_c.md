@@ -3,6 +3,20 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12 18:45 ET: IN PROGRESS (ENV C)
+### Done
+- 0b13456f Glasshouse: AlleyGate, HarlowWestGate, HarlowEastGate, PellNorthGate baked closed in the navmesh
+  (agent_radius 0.30 per D-085; obstruction = leaf + 0.6 m). The police spawns behind them became separate islands
+  whose big polygons' centroids were > 1.5 m from the spawn, so _prune_islands now also keeps an island whose
+  polygon contains the marker. validate_level glasshouse [final]: PASS (all 20 checks, barred_doors included).
+  Targeted tests: tests/c glasshouse 10/10, test_coop_loopback 1/1, test_p1_vertical_slice 10/10.
+- 65580d9c Dockside police gates open before the first assault (test, seeds 1001 + 3007); 63164285 .wiplogs/ removed;
+  51cfb287 cue.payday_tick; 7359ab85 PP-C-1 harness + docs/levels/pp_c1.md.
+### Next
+- PP-C-1 rerun once ENV P's capsule slide fix lands; then zoom_factor (D-084, low priority).
+### Blockers
+- None. Not pushed (LEAD pushes).
+
 ## 2026-10-12 18:05 ET: IN PROGRESS (ENV C, Dockside G2 gameplay)
 ### Done
 - a00cdf3b reverts the Shadow Ledger WIP merge 0b68bd67 (does not build); reapply once it builds.
