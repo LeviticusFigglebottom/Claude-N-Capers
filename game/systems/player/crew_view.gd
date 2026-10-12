@@ -38,6 +38,11 @@ var mask_descriptor: Dictionary:
 		set_mask_descriptor(value)
 ## True once an external WeaponVisual owns the camera (ours is no longer attached).
 var external_viewmodel: bool = false
+## P1-03 (read-only): eased 0 (hip) .. 1 (ADS) shared by the camera zoom and the FpViewmodel arms (one weight, one
+## rate: FpViewmodelTweak.ads_rate, smoothstep ease). Follows CrewController.is_aiming().
+var ads_blend: float:
+	get:
+		return smoothstep(0.0, 1.0, _ads_weight)
 ## D-084 (read-only): linear zoom of the local camera, tan(base_fov/2) / tan(current_fov/2); 1.0 at hip fire and
 ## for every non-local view. ENV C/D scale visibility ranges by it (mesh LOD is already FOV-aware in Godot).
 var zoom_factor: float:
@@ -60,6 +65,16 @@ var _body_id: StringName = &""
 ## The crew member's view component (null when missing).
 static func of(crew: Node) -> CrewView:
 	return crew.get_node_or_null(NODE_NAME) as CrewView if crew != null else null
+
+
+## P1-03: `crew` is actually aiming down sights: aim held, masked, mobile, not sprinting (sprint wins, PD2) and
+## not reloading. Camera zoom (CrewView) and arms (FpViewmodel) both follow this.
+static func is_aiming(crew: CrewController) -> bool:
+	if crew == null or crew.intent == null or not crew.intent.aim or crew.is_casing() or crew.sprinting:
+		return false
+	if crew.crew_state != Enums.CrewState.NORMAL and crew.crew_state != Enums.CrewState.SWAN_SONG:
+		return false
+	return crew.weapons == null or not crew.weapons.reloading
 
 
 ## D-084: zoom_factor of the local player's view; 1.0 when there is none.
@@ -155,7 +170,7 @@ func refresh_camera() -> void:
 
 
 ## B5-01 options: the local camera FOV is GameSettings.fov() (re-read every frame, so a changed setting
-## applies at once); aiming zooms to fov / WeaponStats.magnification at CrewTweak.ads_zoom_rate.
+## applies at once); aiming zooms to fov / WeaponStats.magnification at FpViewmodelTweak.ads_rate (P1-03).
 func _process(delta: float) -> void:
 	if _crew == null or not _is_local_human():
 		return
@@ -167,9 +182,9 @@ func _process(delta: float) -> void:
 	var w: CrewWeapons = _crew.weapons
 	if w != null and w.stats(w.equipped_slot) != null:
 		mag = maxf(w.stats(w.equipped_slot).magnification, 1.0)
-	var aiming: bool = _crew.intent != null and _crew.intent.aim
-	_ads_weight = move_toward(_ads_weight, 1.0 if aiming else 0.0, delta * Tweak.crew().ads_zoom_rate)
-	cam.fov = gs.fov() / lerpf(1.0, mag, _ads_weight)
+	# P1-03: arms' rate
+	_ads_weight = move_toward(_ads_weight, 1.0 if CrewView.is_aiming(_crew) else 0.0, delta * FpViewmodelTweak.data().ads_rate)
+	cam.fov = gs.fov() / lerpf(1.0, mag, ads_blend)
 	_local_view = self
 	_set_zoom_factor(zoom_factor_for(gs.fov(), cam.fov))
 

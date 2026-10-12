@@ -102,6 +102,8 @@ var _magwell_rest: Transform3D = Transform3D.IDENTITY
 var _weapon_bone: int = -1
 var _mag_bone: int = -1
 var _bob_phase: float = 0.0
+## Linear ADS progress behind the eased ads_weight.
+var _ads_lin: float = 0.0
 var _bob_weight: float = 0.0
 ## The item model on the weapon bone during a melee / deploy one-shot (null = none / gun bash).
 var _item: Node3D = null
@@ -635,8 +637,11 @@ func _play_base(tw: FpViewmodelTweak) -> void:
 
 
 func _update_ads(delta: float, tw: FpViewmodelTweak) -> void:
-	var target: float = 1.0 if _aim_wanted() and action != Action.RELOAD and action != Action.SWAP else 0.0
-	ads_weight = move_toward(ads_weight, target, tw.ads_rate * delta)
+	# P1-03: same target (CrewView.is_aiming), rate (FpViewmodelTweak.ads_rate) and smoothstep ease as the camera
+	# zoom in CrewView, so sights and zoom arrive together. A swap also drops the sights (arms only).
+	var target: float = 1.0 if _aim_wanted() and action != Action.SWAP else 0.0
+	_ads_lin = move_toward(_ads_lin, target, tw.ads_rate * delta)
+	ads_weight = smoothstep(0.0, 1.0, _ads_lin)
 
 
 func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
@@ -749,7 +754,7 @@ func _build_library(set_id: StringName) -> void:
 
 
 func _aim_wanted() -> bool:
-	return _crew != null and _crew.intent != null and _crew.intent.aim
+	return _crew != null and CrewView.is_aiming(_crew)
 
 
 func _speed() -> float:
