@@ -119,7 +119,7 @@ func _build() -> void:
 	var board: ScoreboardOverlay = ScoreboardOverlay.new()
 	board.settings = settings
 	scoreboard = _place(board, Control.PRESET_CENTER, Vector2(-500, -240), Vector2(1000, 480)) as ScoreboardOverlay
-	toast_label = UiBuild.label(&"", UiBuild.HUD_BIG)
+	toast_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD_BIG))
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(toast_label, Control.PRESET_CENTER, Vector2(-500, -260), Vector2(1000, 60))
 	toast_label.visible = false

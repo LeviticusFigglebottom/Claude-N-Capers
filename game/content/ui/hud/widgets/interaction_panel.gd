@@ -17,13 +17,13 @@ func build() -> void:
 	v.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(v)
-	prompt_label = UiBuild.label(&"", UiBuild.HUD)
+	prompt_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD))
 	prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(prompt_label)
 	progress_bar = UiBuild.bar(tweak.interaction_color, Vector2(320, 10))
 	progress_bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	v.add_child(progress_bar)
-	blocked_label = UiBuild.label(&"", UiBuild.HUD)
+	blocked_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD))
 	blocked_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	blocked_label.add_theme_color_override(&"font_color", tweak.low_health_color)
 	v.add_child(blocked_label)

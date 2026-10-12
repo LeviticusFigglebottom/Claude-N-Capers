@@ -87,7 +87,7 @@ Newest entry first, keep the last 10.
 ### Queue (about 2.5 h)
 1. PQ-B-19 Live interact key on a real interactable with PInputDriver (when on trunk) (40 min).
 2. PQ-B-1 Switch real-input helpers to PInputDriver (20 min).
-3. PQ-B-23 Floating HUD text on bright scenes: lead decision outline 8 vs backing panel, then apply + re-capture (30 min). BLOCKED: needs the lead to choose outline 8 or a backing panel, and the re-capture needs Env D's flags.
+3. PQ-B-23 Floating HUD text on bright scenes: lead decision outline 8 vs backing panel, then apply + re-capture (30 min). DONE: lead chose outline 8 + soft dark drop shadow, no panel (UiBuild.float_text on the toast/casing hint, domination prompt and interaction prompt/blocked labels). A faint backing panel goes only on prompts that fail in D's renders over the brightest scenes, re-checked with D's flags.
 4. PQ-B-24 Contrast capture for menus (hub, payday, loadout) over the real 3D safehouse backdrop (40 min). BLOCKED: contrast stays blocked until Env D posts the flags.
 5. PQ-B-25 Live heist: domination prompt + casing hint seen in a real run once A/P fields are on trunk (30 min).
 6. PQ-B-26 Gamepad-only Board (contract pick) and Notoriety reward picks (30 min).

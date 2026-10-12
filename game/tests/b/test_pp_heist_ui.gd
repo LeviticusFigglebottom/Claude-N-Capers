@@ -200,3 +200,17 @@ func test_casing_blocked_hint() -> void:
 			{"key": InteractionPanel.action_key_text(&"mask_up")}), "unknown action -> generic hint")
 	crew.queue_free()
 	await wait_frames(1)
+
+
+## PQ-B-23 (lead ruling): floating HUD text uses outline 8 + a soft dark drop shadow, no backing panel.
+func test_floating_text_outline_and_shadow() -> void:
+	var labels: Array[Label] = [_hud.toast_label, _hud.dominate.prompt_label, _hud.interaction.prompt_label,
+			_hud.interaction.blocked_label]
+	for l: Label in labels:
+		assert_eq(l.get_theme_constant(&"outline_size"), 8, l.name)
+		assert_eq(l.get_theme_color(&"font_outline_color"), Color(0, 0, 0, 1), l.name)
+		var sh: Color = l.get_theme_color(&"font_shadow_color")
+		assert_true(sh.a > 0.3 and sh.a < 1.0 and sh.get_luminance() < 0.1, "soft dark shadow %s" % l.name)
+		assert_true(l.get_theme_constant(&"shadow_offset_y") > 0, l.name)
+		assert_true(l.get_theme_constant(&"shadow_outline_size") > 0, "blurred shadow %s" % l.name)
+		assert_false(l.get_parent() is PanelContainer, "no backing panel %s" % l.name)

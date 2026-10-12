@@ -10,7 +10,7 @@ var prompt_label: Label
 
 
 func build() -> void:
-	prompt_label = UiBuild.label(&"", UiBuild.HUD_BIG)
+	prompt_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD_BIG))
 	prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	prompt_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	prompt_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
