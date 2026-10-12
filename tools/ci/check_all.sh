@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Full validation gate. Owner: LEAD.
-# usage: tools/ci/check_all.sh [--env a|b|c|d] [--no-levels]
+# usage: tools/ci/check_all.sh [--env a|b|c|d|p] [--no-levels]
 # Run by every env before reporting "ready for integration" and by the lead before merging.
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
