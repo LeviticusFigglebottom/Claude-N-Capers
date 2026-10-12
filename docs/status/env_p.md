@@ -2,6 +2,30 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-12 22:45 UTC — P1-02 casing audit, P1-03 ADS, D-084, D-085, UI focus, fire_rate_mult
+### Done
+- 200949ba/b0fceb0c D-084 CrewView.zoom_factor + local_zoom_factor() + zoom_factor_changed.
+- 091ea17e P1-02 casing tests: PI-11 (alarm with AI crew) and PI-12 (AI keeps casing) NOT reproduced (pass);
+  PI-13 casing_blocked(action) signal added (HUD hint source for ENV B). PI-10 hop patch verified: handoff test
+  fails on trunk, passes with /workspace/cnc-team/p/handoff_env_a/pi10_casing_hop_heist_runtime.patch (ENV A).
+- 8b770a5a PlayerInput: a focused visible Control (payday grab_focus, menus) blocks ALL polled gameplay input;
+  actions held through the UI stay ignored until released (real gamepad LB/RB test).
+- a1916bdb fp_viewmodel shot interval x weapon.fire_rate_mult (1.0 when unset) + test.
+- d5186bc7 ADS: CrewView.is_aiming(crew) (aim, masked, mobile, not sprinting, not reloading); camera and arms
+  share target, FpViewmodelTweak.ads_rate and smoothstep ease (PI-16/17/18) + real-input tests.
+- (this commit's parent) D-085 edge assist + door tests: head-on frame-edge hits stalled dead before
+  (probe: offsets 0.40-0.60 m stuck at the wall face); now slides to the opening within 0.45 m.
+- `run_tests.sh p` 31/31; a: fp_viewmodel 15/15, crew_controller 8/8, l6_ai_teammates 11/11, a3_05 12/12.
+### In progress
+- PI-15 mask-up grace: left as is (PD2 resets on release; design call). PI-19 AimPoint audit, PI-21 arms step lag.
+### Blocked
+- Push of commits after 091ea17e: auto-review requires approval; not pushed.
+### Questions for lead
+- QP-4: ENV A: CrewWeapons spread uses intent.aim (crew_weapons.gd:514) even while sprinting/reloading; should
+  use CrewView.is_aiming(crew) for consistency.
+### Ready for integration
+- yes; check_all not run (lead rule).
+
 ## 2026-10-12 22:20 UTC — P1-01 mouse gain, PI-06, PI-03, UI shoulder gating; LOD bias question
 ### Done
 - Mouse sensitivity bug (real, not headless-only): PlayerInput used InputEventMouseMotion.relative, which the
