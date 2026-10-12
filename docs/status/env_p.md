@@ -2,6 +2,14 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-12 19:xx: PT-01 core-loop playtest (real input)
+- No separate "Aaron's playtest list" exists; the P rows in docs/process/playability_pass.md (PP-P-1..3) are done
+  via P1-01..03. Played the core loop by real input instead: game/tests/p/test_p_core_loop.gd, 12/12 pass
+  (spawn, casing, mask-up hold, walk/sprint/crouch speeds, jump + no bunny-hop on held jump, F while casing,
+  aim+fire+reload, sprint vs fire, melee, throw, gamepad bindings, pad mask-up + jump).
+- No new P bugs found. Open: throw test is vacuous if the unit-map loadout carries no throwable; ledge (mantle)
+  not covered - no mantle mechanic exists to test. Next: PI-08 tuning, PP rows as other envs log them.
+
 ## 2026-10-12 22:45 UTC — P1-02 casing audit, P1-03 ADS, D-084, D-085, UI focus, fire_rate_mult
 ### Done
 - 200949ba/b0fceb0c D-084 CrewView.zoom_factor + local_zoom_factor() + zoom_factor_changed.
