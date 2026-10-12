@@ -423,9 +423,16 @@ func _simulate(delta: float) -> void:
 		speed = 0.0
 	var mv: Vector2 = i.move.limit_length(1.0)
 	var wish: Vector3 = Basis(Vector3.UP, look_yaw) * Vector3(mv.x, 0.0, -mv.y) * speed
-	var accel: float = tw.acceleration * (1.0 if grounded else tw.air_control)
-	velocity.x = move_toward(velocity.x, wish.x, accel * delta)
-	velocity.z = move_toward(velocity.z, wish.z, accel * delta)
+	var hv: Vector2 = Vector2(velocity.x, velocity.z)
+	var wv: Vector2 = Vector2(wish.x, wish.z)
+	var accel: float = tw.acceleration
+	if not grounded:
+		accel *= tw.air_control
+	elif wv.length() < hv.length() or wv.dot(hv) < 0.0:
+		accel = tw.deceleration  # PI-08: braking / reversing on the ground
+	hv = hv.move_toward(wv, accel * delta)
+	velocity.x = hv.x
+	velocity.z = hv.y
 	if not grounded:
 		velocity.y -= tw.gravity * delta
 	var can_jump: bool = not casing and mobile and not crouched

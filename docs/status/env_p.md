@@ -2,6 +2,22 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-12 19:50 ET: PT-02 Glasshouse E2E, PT-03 FP renders, PI-08, lead interrupt
+- PT-02 game/tests/p/test_p_glasshouse_e2e.gd (real input; setup: isolate_npc, cameras removed in stealth run).
+  Stealth run reaches the escape (keycard, workshop lockpick, safe reader, 2 bags thrown into the van, escape);
+  fails only on the casing finding below. Loud run blocked (drill, SalonDoor snag).
+- PT-03 renders: /workspace/cnc-team/p/renders/01..09 (scene res://tests/p/_review/fp_capture.tscn).
+- PI-24 FIXED 0e1315a8: swap_weapon desynced after 1/2 keys or a failed equip (no-op swap).
+- PI-25 FIXED 839c0330: jump latch armed on any held jump, so jump pressed in the air/after teleport was eaten
+  (slice step 3 'bot jumped').
+- PI-08 FIXED: CrewTweak.deceleration 50 for grounded braking/reversing (sprint stop 0.19 -> <=0.16 s incl. input).
+- Routed: C - MainEntrance (glasshouse.tscn:10518) casing_allowed=false: a casing player cannot open the shop's
+  public front door. A - Safe._inner_loot (safe.gd:129-130, 386-398) disables the child SafeDrill DrillPoint as if
+  it were loot: drill point unusable (the Safe's own place_drill still works). A/C - loud walker stuck on the
+  SalonDoor frame at (12.5,0,9.6) (LeafBody overlaps there). A - test_b5_01 line 91 aims unmasked (patch in
+  /workspace/cnc-team/p/handoff_env_a/). Viewmodel (P/D): hip pistol canted ~40 deg, ADS forearms fill the lower
+  corners with wrists through the grip; no crosshair in renders (HUD not in the capture scene - unverified).
+
 ## 2026-10-12 19:xx: PT-01 core-loop playtest (real input)
 - No separate "Aaron's playtest list" exists; the P rows in docs/process/playability_pass.md (PP-P-1..3) are done
   via P1-01..03. Played the core loop by real input instead: game/tests/p/test_p_core_loop.gd, 12/12 pass

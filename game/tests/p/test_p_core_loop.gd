@@ -181,6 +181,35 @@ func test_throw_uses_a_throwable() -> void:
 	assert_eq(c.throwables.throws, 1, "one throw counted")
 
 
+func test_pi08_ground_stop_is_crisp() -> void:
+	var c: CrewController = await _masked_crew()
+	_inp.press(&"move_forward")
+	_inp.press(&"sprint")
+	await wait_physics_frames(60)
+	_inp.release_all()
+	var t: int = 0
+	while _speed(c) > 0.05 and t < 60:
+		await wait_physics_frames(1)
+		t += 1
+	var s: float = float(t) / float(Engine.physics_ticks_per_second)
+	assert_true(s <= 0.16, "sprint stop in %.2f s (PI-08, was 0.19)" % s)
+
+
+
+## PI-08: starting from rest still uses `acceleration` (walk speed reached in under 0.2 s), air control unchanged.
+func test_pi08_start_and_air_unchanged() -> void:
+	var c: CrewController = await _masked_crew()
+	var tw: CrewTweak = Tweak.crew()
+	_inp.press(&"move_forward")
+	var t: int = 0
+	while _speed(c) < tw.walk_speed * 0.95 and t < 60:
+		await wait_physics_frames(1)
+		t += 1
+	_inp.release_all()
+	assert_true(float(t) / Engine.physics_ticks_per_second <= 0.2, "walk start %.2f s" % (float(t) / Engine.physics_ticks_per_second))
+	assert_true(tw.deceleration > tw.acceleration, "braking is crisper than starting")
+
+
 func test_gamepad_buttons_match_keyboard() -> void:
 	var acts: Array[StringName] = [&"sprint", &"crouch", &"jump", &"interact", &"reload", &"melee", &"throw_item",
 		&"mask_up", &"swap_weapon", &"pause"]

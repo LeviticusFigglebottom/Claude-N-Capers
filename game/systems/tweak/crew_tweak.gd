@@ -10,6 +10,8 @@ extends Resource
 @export var jump_velocity: float = 4.6
 @export var gravity: float = 9.8
 @export var acceleration: float = 30.0
+## PI-08: grounded braking (wish slower than / against the current velocity) - PD2 stops crisply.
+@export var deceleration: float = 50.0
 @export var air_control: float = 0.3
 ## Max yaw/pitch speed is unbounded: intents carry absolute angles.
 @export var max_pitch_deg: float = 89.0
