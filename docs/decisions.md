@@ -599,7 +599,7 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   and telegraphs (e.g. Corpsman red cross) survive at distance. Regular units use LOD2.
 - Near-black armed units (`tac_heavy`, `corpsman`, `security_officer`) get a lighter shoulder/helmet accent (ENV D)
   so they read against dark backgrounds.
-- Scopes: a **zoom-aware LOD bias in camera code** (ENV P), not raised LOD switch distances.
+- Scopes: a **zoom-aware LOD bias in camera code** (ENV P), not raised LOD switch distances. *(Superseded by D-084.)*
 
 ## D-081 — 2026-10-12 — `loot.painting_study` value
 - **$700** (LIGHT bag, ◇), as in gallery_night.md QC-57/D-075: a study is minor loot, below a full painting, in line
@@ -618,3 +618,12 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   product owner fixes it. Meanwhile the lead prepares merges locally (lead/round-34, lead/p2-gate, lead/d078-docs).
 - When pushes work, **first** merge `p_input_driver.gd` (env/p-play a43d33b7 + 6b858a0b) to trunk (D-082 real-input
   suite foundation), then round 34 (env/b-content), the docs branch, and A/D once they pass check_all.
+
+## D-084 — 2026-10-12 — Scope LOD via zoom_factor (supersedes D-080 scope bullet)
+- Godot's mesh LOD already scales with camera FOV, so **no extra `mesh_lod_threshold` bias for scopes**.
+  That part of D-080 is superseded.
+- Instead, **CrewView (ENV P) publishes a `zoom_factor`**. Props/characters in ENV C and ENV D that use
+  visibility ranges scale those ranges by it while ADS/scoped, so distant detail stays up under zoom without
+  fighting the engine's FOV-based mesh LOD.
+- Context (ENV P, `env/p-play` `1328183f`): mouse look used `InputEventMouseMotion.relative`, which is
+  stretch-scaled and wrong at non-1080p; switched to `screen_relative` for correct sensitivity.
