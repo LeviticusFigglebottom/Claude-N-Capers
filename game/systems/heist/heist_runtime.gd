@@ -362,7 +362,9 @@ func _create_services() -> void:
 	net_sync.name = HeistNetSync.NODE_NAME
 	register_service(HeistNetSync.SERVICE, net_sync)
 	if Net.is_authority():
-		HeistDropIn.ensure(get_tree())  # QB-B6-DROPIN: the host answers drop-in requests while the heist runs
+		# QB-B6-DROPIN: the host answers drop-in requests while the heist runs. Deferred: the root is still
+		# setting up children at heist start ("parent busy" add_child error otherwise).
+		HeistDropIn.ensure.call_deferred(get_tree())
 	var factories: Array = options.get("extra_services", [])
 	for f: Variant in factories:
 		if f is Callable:
