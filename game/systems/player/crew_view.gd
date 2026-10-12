@@ -29,6 +29,8 @@ const FIRST_PERSON_HIDDEN_LAYER: int = 1 << 19
 
 ## Compatibility alias of the crew member's `Loadout.mask_descriptor` (QA-25); setting it calls
 ## set_mask_descriptor().
+## The local human's view (null when none).
+static var _local_view: CrewView = null
 var mask_descriptor: Dictionary:
 	get:
 		return _crew.loadout.mask_descriptor if _crew != null and _crew.loadout != null else {}
@@ -36,6 +38,11 @@ var mask_descriptor: Dictionary:
 		set_mask_descriptor(value)
 ## True once an external WeaponVisual owns the camera (ours is no longer attached).
 var external_viewmodel: bool = false
+## D-084 (read-only): linear zoom of the local camera, tan(base_fov/2) / tan(current_fov/2); 1.0 at hip fire and
+## for every non-local view. ENV C/D scale visibility ranges by it (mesh LOD is already FOV-aware in Godot).
+var zoom_factor: float:
+	get:
+		return _zoom_factor
 
 var _crew: CrewController = null
 var _viewmodel: Node3D = null
@@ -43,14 +50,7 @@ var _fp: FpViewmodel = null
 var _mask: Node3D = null
 var _mask_id: StringName = &""
 var _ads_weight: float = 0.0
-## D-084 (read-only): linear zoom of the local camera, tan(base_fov/2) / tan(current_fov/2); 1.0 at hip fire and
-## for every non-local view. ENV C/D scale visibility ranges by it (mesh LOD is already FOV-aware in Godot).
-var zoom_factor: float:
-	get:
-		return _zoom_factor
 var _zoom_factor: float = 1.0
-## The local human's view (null when none).
-static var _local_view: CrewView = null
 ## Descriptor the current mask was built from (rebuild when it changes).
 var _mask_desc: Dictionary = {}
 ## Heister whose body is under `Visual` (&"" = the placeholder).
