@@ -2,6 +2,25 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-12 22:05 UTC — P1-01 (step-up/snap, PI-04, PI-05), PInputDriver, PI-10 handoff
+### Done
+- PInputDriver (game/tests/p/p_input_driver.gd) + self-test 5/5: a43d33b7, uids 6b858a0b. PlayerInput gets a
+  test-only `test_assume_captured` (headless cannot capture the mouse). Mouse gain is calibrated at run time
+  because headless stretch scales motion ~30x.
+- CrewController.mask_forced for ENV A's hop fix: 4860fdbc. Handoff for ENV A (owner of heist_runtime.gd):
+  /workspace/cnc-team/p/handoff_env_a/ (patch + test_p1_02_casing_hop.gd, which fails on trunk: STEALTH -> LOUD).
+- P1-01: WIP step-up/snap passes as written; test_p1_01_ground ported to real input (human); PI-05 jump latch and
+  PI-04 uncrouch headroom fixed with tests. `run_tests.sh p`: 13 tests, 0 failed (local run).
+- PI-23 was wrong: slot 1 IS an AI in that launch (test passes).
+### In progress
+- Next: PI-02 snap length, PI-03 step probe, PI-06 teleport look resync.
+### Blocked
+- check_all not run (lead rule 17:55 ET). Push: see report.
+### Questions for lead
+- none new
+### Ready for integration
+- yes for P1-01 items above; check_all not run by rule; `run_tests.sh p` 13/13.
+
 ## 2026-10-12 21:55 UTC — P1-01 / P1-02 / P1-03 issue list + queue (code read only, Godot not installed)
 ### Done
 - Playability issue list + 2h+ fix queue below (this commit). Built by reading code only; nothing run.
