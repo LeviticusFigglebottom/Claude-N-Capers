@@ -21,6 +21,20 @@ Newest entry first, keep the last 10.
 7. PQ-B-7 Main menu -> hub -> heist select -> loadout -> launch real-input walk test (30 min).
 8. PQ-B-8 Tooltips-only station descriptions are invisible on gamepad; show the desc in a focus panel (20 min).
 
+### Queue progress (2026-10-12 ~22:10 UTC)
+- PQ-B-1 deferred: p_input_driver.gd is not on trunk yet (per lead: local-only use, no P files committed here). Swap test_pp_input helpers to PInputDriver once it is on trunk.
+- PQ-B-2 done 150fdf58: test_pp_screens_720p (8 station screens + achievements on screen at 720p). No offenders found.
+- PQ-B-3 done 7101d48b: HubMenu.chain_grid() arrow/d-pad neighbours for the 2-col grid; test_hub_grid_navigation.
+- PQ-B-4/5 done 258ba7ab: payday keys 1-3 quick-pick; 0.6 s INPUT_GRACE_S ignores blind player picks (timer unaffected). Urgent-tick audio NOT done (needs a cue from ENV C via lead).
+- PQ-B-6 done 7d7db3b3: real bug at hud_scale 1.5: stamina/vitals/teammates/objectives overlapped, interaction overlapped stamina. Hud._stack_left_column() stacks them; test_pp_hud_720p.
+- PQ-B-7 done 6751d8ab: test_pp_menu_walk (main menu -> hub -> select -> briefing -> preplan -> loadout -> Launch, real clicks/Enter; level load intercepted).
+- PQ-B-8 done 0f1ad18a: hub side panel StationDetail label follows focus/hover.
+### Notes
+- D-081: painting_study stays at $700. It is P5 content (frozen), so no change now.
+- Push: origin rejects with 403 (token lacks write on the repo); all commits local.
+### Next queue
+- PQ-B-1 (when the driver is on trunk); PQ-B-9 urgent-timer audio cue request; PQ-B-10 gamepad shoulder quick-pick on payday (needs input actions in project.godot via lead); PQ-B-11 720p sweep of in-heist pause/options and lobby co-op states.
+
 ## 2026-10-11 UTC (7): B7 loose ends (lead answers); P5 paused (D-076)
 ### Done
 - B7-01 `profile` station (hub_map v1.1, d1a89b5f): `st_profile` (target `career`, icon `profile`) in data/ui/hub_stations.tres.
