@@ -18,7 +18,8 @@ extends Node
 ## Actions held when a UI released the input (payday LB/RB, menus): ignored until released once, so the
 ## press that closed or navigated the UI does not also melee / throw / fire in the game.
 const RESUME_GATED: Array[StringName] = [&"fire", &"melee", &"throw_item", &"mask_up", &"drop_bag", &"deploy",
-	&"interact", &"shout", &"reload", &"jump"]
+	&"interact", &"shout", &"reload", &"jump", &"aim", &"slot_primary", &"slot_secondary",
+	&"swap_weapon"]
 
 ## Tests only (PInputDriver): headless cannot capture the mouse; treat motion as captured.
 static var test_assume_captured: bool = false
@@ -35,6 +36,7 @@ static var test_assume_captured: bool = false
 
 var enabled: bool = true
 var _suppressed: Dictionary[StringName, bool] = {}
+var _ui_focused: bool = false
 var _yaw: float = 0.0
 var _pitch: float = 0.0
 var _crew: CrewController = null
@@ -84,10 +86,24 @@ func set_paused(paused: bool) -> void:
 		_yaw = _crew.look_yaw
 		_pitch = _crew.look_pitch
 	if not paused:
-		_suppressed.clear()
-		for a: StringName in RESUME_GATED:
-			if InputMap.has_action(a) and Input.is_action_pressed(a):
-				_suppressed[a] = true
+		_latch_held()
+
+
+## Every gameplay read here polls Input (is_action_pressed / just_pressed), so a UI consuming the event (payday
+## LB/RB, menus) does not stop it: actions held when the UI lets go stay ignored until released once.
+func _latch_held() -> void:
+	_suppressed.clear()
+	for a: StringName in RESUME_GATED:
+		if InputMap.has_action(a) and Input.is_action_pressed(a):
+			_suppressed[a] = true
+
+
+## A visible Control holds keyboard/gamepad focus (payday cards, menus, pause, chat): gameplay input is off.
+func ui_has_focus() -> bool:
+	if not is_inside_tree():
+		return false
+	var f: Control = get_viewport().gui_get_focus_owner()
+	return f != null and f.is_visible_in_tree()
 
 
 ## Add yaw/pitch (radians); pitch clamped to +-89 degrees.
@@ -123,6 +139,16 @@ func _physics_process(delta: float) -> void:
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and rt.has_bot_intent(_crew.slot):
 		return
+	if ui_has_focus():  # same as paused: idle intent, nothing polled reaches gameplay
+		_ui_focused = true
+		var idle: CrewIntent = CrewIntent.new()
+		idle.look_yaw = _yaw
+		idle.look_pitch = _pitch
+		_crew.apply_intent(idle)
+		return
+	if _ui_focused:
+		_ui_focused = false
+		_latch_held()
 	_crew.apply_intent(build_intent(rt))
 
 
@@ -178,6 +204,9 @@ func build_intent(rt: HeistRuntime) -> CrewIntent:
 		i.throw_item = i.throw_item and not _suppressed.has(&"throw_item") and not _suppressed.has(&"mask_up")
 		i.throw_bag = i.throw_bag and not _suppressed.has(&"throw_item") and not _suppressed.has(&"drop_bag") \
 			and not _suppressed.has(&"mask_up")
+		i.aim = i.aim and not _suppressed.has(&"aim")
+		if _suppressed.has(&"slot_primary") or _suppressed.has(&"slot_secondary") or _suppressed.has(&"swap_weapon"):
+			i.weapon_slot = -1
 		if _suppressed.has(&"interact") or _suppressed.has(&"shout"):
 			i.interact = false
 			i.shout = false
