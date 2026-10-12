@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MaskDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://contracts/data/mask_def.gd" id="1_mask"]
+[ext_resource type="PackedScene" path="res://assets/masks/mask_base_skull/mask_base_skull.glb" id="2_model"]
+
+[resource]
+script = ExtResource("1_mask")
+id = &"mask.thousand_yard"
+display_name = "Thousand Yard"
+model = ExtResource("2_model")
+color_a = Color(0.95, 0.95, 0.93, 1)
+color_b = Color(0.75, 0.12, 0.12, 1)
+material_id = &"rubber_black"
+pattern_id = &"mask_pattern.crackle"
+unlock = &"unlock.achievement.thousand_down"
+metadata/mask_base = &"mask_base.skull"

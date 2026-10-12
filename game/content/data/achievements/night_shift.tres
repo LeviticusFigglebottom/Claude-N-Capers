@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.night_shift"
+name_key = &"achievement.night_shift.name"
+desc_key = &"achievement.night_shift.desc"
+condition = {"event": &"heist_completed", "heist": &"night_deposit", "stealth": true, "count": 1}
+unlock = &"unlock.finish.midnight_chrome"
+order = 140
+category = &"heists"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])

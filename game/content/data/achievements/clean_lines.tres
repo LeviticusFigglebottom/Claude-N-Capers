@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.clean_lines"
+name_key = &"achievement.clean_lines.name"
+desc_key = &"achievement.clean_lines.desc"
+condition = {"event": &"career_stat", "stat": "headshots", "count": 250}
+unlock = &""
+order = 450
+category = &"combat"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])

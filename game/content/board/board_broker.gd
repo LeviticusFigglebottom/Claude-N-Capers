@@ -44,7 +44,9 @@ static func buy(profile: PlayerProfile, heist_id: StringName, difficulty: int, h
 	var reason: StringName = check(profile, heist_id, difficulty, heist_pool, tweak, build_unlocked)
 	if reason != OK:
 		return reason
-	profile.stash -= cost(int(find_heist(heist_pool, heist_id)["base_payout"]), difficulty, tweak)
+	var price: int = cost(int(find_heist(heist_pool, heist_id)["base_payout"]), difficulty, tweak)
+	profile.stash -= price
+	Career.add_spent(profile, price, true)
 	return OK
 
 

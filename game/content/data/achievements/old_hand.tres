@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.old_hand"
+name_key = &"achievement.old_hand.name"
+desc_key = &"achievement.old_hand.desc"
+condition = {"event": &"notoriety_reached", "count": 5}
+unlock = &"unlock.achievement.old_hand"
+order = 620
+category = &"notoriety"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])

@@ -10,3 +10,6 @@ desc_key = &"achievement.first_score.desc"
 condition = {"event": &"heist_completed", "count": 1}
 unlock = &""
 order = 10
+category = &"career"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])

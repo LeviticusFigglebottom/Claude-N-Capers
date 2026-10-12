@@ -298,6 +298,7 @@ func charge_profile(profile: PlayerProfile, slot: int) -> int:
 	if profile == null or c > profile.cash:
 		return 0
 	profile.cash -= c
+	Career.add_spent(profile, c)
 	return c
 
 

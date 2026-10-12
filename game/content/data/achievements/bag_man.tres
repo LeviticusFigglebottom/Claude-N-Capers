@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.bag_man"
+name_key = &"achievement.bag_man.name"
+desc_key = &"achievement.bag_man.desc"
+condition = {"event": &"career_stat", "stat": "bags", "count": 100}
+unlock = &"unlock.finish.copper_patina"
+order = 530
+category = &"wealth"
+rewards = Array[StringName]([&"mask_colors.saffron_plum"])
+unlocks = Array[StringName]([])

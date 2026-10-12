@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.heavy_lifting"
+name_key = &"achievement.heavy_lifting.name"
+desc_key = &"achievement.heavy_lifting.desc"
+condition = {"event": &"career_stat", "stat": "bags", "count": 1000}
+unlock = &""
+order = 540
+category = &"wealth"
+rewards = Array[StringName]([&"mask_material.marble"])
+unlocks = Array[StringName]([])

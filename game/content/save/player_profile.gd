@@ -1,6 +1,6 @@
 ## A local player's persistent progression profile. Owner: ENV B. Persisted by SaveService.
 ##
-## JSON shape (version 6; see SaveService for migrations). Every field, type, default and since-version:
+## JSON shape (version 7; see SaveService for migrations). Every field, type, default and since-version:
 ## content/docs/save_format.md (ProfileSchema sanitizes types, ProfileValidator prunes unknown ids on load).
 ##   version: int, profile_name: String,
 ##   cash: int (spending cash), stash: int (offshore, "the stash"; pd2_fidelity S10.4),
@@ -36,6 +36,10 @@
 ##   held_skill_sets: Array of skill dicts (v6), index-aligned with skill_sets: the build held by a
 ##     rank-up and re-bought as levels return (NotorietySkills); {} = nothing held.
 ##   music_choice: StringName (v6, B5-03): chosen heist music track id, &"" = the heist default.
+##   career: Dictionary (v7, B7-01): lifetime career stats, JSON-shaped (String keys, int counters);
+##     shape and sources in Career (progression/career.gd). Missing counter = never counted.
+##   weapon_finishes: Dictionary weapon id -> finish id (v7, reserved for B7-04 weapon finishes);
+##     &"" (or no entry) = the default finish.
 ##   stats: Dictionary String -> int counters (heists_completed, ...).
 ##   settings: Dictionary of JSON values, stored as-is (JSON numbers come back as float).
 ## StringNames are written as strings and converted back on load.
@@ -50,7 +54,7 @@ const LOADOUT_ID_FIELDS: Array[String] = [
 ]
 const LOADOUT_LIST_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 
-var version: int = 6
+var version: int = 7
 var profile_name: String = ""
 var cash: int = 0
 var stash: int = 0
@@ -82,6 +86,10 @@ var notoriety_choices: Dictionary = {}
 var held_skill_sets: Array[Dictionary] = []
 ## Heist music track id (v6); &"" = the heist's default.
 var music_choice: StringName = &""
+## Lifetime career stats (v7, Career); JSON-shaped: String keys, int values.
+var career: Dictionary = Career.empty()
+## Weapon id (StringName) -> finish id (StringName) (v7, B7-04); &"" = default finish.
+var weapon_finishes: Dictionary = {}
 var stats: Dictionary = {}
 var settings: Dictionary = {}
 
@@ -152,6 +160,12 @@ static func from_dict(d: Dictionary) -> PlayerProfile:
 		for e: Variant in (held as Array):
 			p.held_skill_sets.append(_skills_from(e))
 	p.music_choice = StringName(String(d.get("music_choice", "")))
+	p.career = _career_from(d.get("career", {}))
+	p.weapon_finishes = {}
+	var wf: Variant = d.get("weapon_finishes", {})
+	if wf is Dictionary:
+		for k: Variant in (wf as Dictionary):
+			p.weapon_finishes[StringName(String(k))] = StringName(String((wf as Dictionary)[k]))
 	p.stats = {}
 	var st: Variant = d.get("stats", {})
 	if st is Dictionary:
@@ -194,6 +208,8 @@ func to_dict() -> Dictionary:
 		"notoriety_choices": _choices_to(notoriety_choices),
 		"held_skill_sets": _held_to_list(),
 		"music_choice": String(music_choice),
+		"career": career.duplicate(true),
+		"weapon_finishes": _finishes_to(weapon_finishes),
 		"stats": st,
 		"settings": settings.duplicate(true),
 	}
@@ -304,6 +320,35 @@ func _held_to_list() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for h: Dictionary in held_skill_sets:
 		out.append(_skills_to(h))
+	return out
+
+
+## Career dict with int counters (JSON numbers parse as float); sections missing -> empty.
+static func _career_from(v: Variant) -> Dictionary:
+	var out: Dictionary = Career.empty()
+	if not v is Dictionary:
+		return out
+	for sec: String in Career.SECTIONS:
+		var m: Variant = (v as Dictionary).get(sec)
+		if not m is Dictionary:
+			continue
+		var dst: Dictionary = out[sec] as Dictionary
+		for k: Variant in (m as Dictionary):
+			var e: Variant = (m as Dictionary)[k]
+			if e is Dictionary:
+				var inner: Dictionary = {}
+				for ik: Variant in (e as Dictionary):
+					inner[String(ik)] = int((e as Dictionary)[ik])
+				dst[String(k)] = inner
+			else:
+				dst[String(k)] = int(e)
+	return out
+
+
+static func _finishes_to(f: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for k: Variant in f:
+		out[String(k)] = String(f[k])
 	return out
 
 

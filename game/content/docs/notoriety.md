@@ -72,7 +72,9 @@ crew-alive part, it also applies to failed heists, because it is a permanent pla
 
 ## Rewards (`data/notoriety/ranks.tres`)
 Every rank records the unlock id `unlock.notoriety.rank_<n>` in `PlayerProfile.unlocks`. That owns every
-preset whose `MaskDef.unlock` is that id. A `NotorietyDef` can also add:
+preset whose `MaskDef.unlock` is that id, and every available mask part whose `MaskPartDef.unlock` is that id
+(B7-02: batch-3 bases `doll` at VII, `jester` at XV, `geo` at XX, owned once ENV D's model lands). Reaching a
+rank also runs `Achievements.sync` (`notoriety_reached` achievements). A `NotorietyDef` can also add:
 * `rewards`: mask part or preset ids that the rank grants.
 * `unlocks`: plain unlock ids written into `PlayerProfile.unlocks` (D-062: music tracks,
   `unlock.music.<track_id>`. ENV C's music table reads them, and we do not check them against it), and

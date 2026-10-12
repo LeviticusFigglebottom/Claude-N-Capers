@@ -1,7 +1,7 @@
 ## B7-04: weapon finishes. Data (12 finishes, strings, recipes, unlock ids), FinishApplier overrides on the
 ## right surfaces (model, akimbo offhand, mods when covered) with the stock look restored, no shared material
 ## mutated, ownership (locked finishes cannot be equipped), persistence through PlayerProfile.weapon_finishes
-## when the field exists, the workshop picker (preview + equip), and the loadout / lobby summary carry.
+## (save v7), the workshop picker (preview + equip), and the loadout / lobby summary carry.
 extends TestCase
 
 const CORSAIR: StringName = &"weapon.corsair_ar"
@@ -19,12 +19,6 @@ const EXPECTED: Array[String] = [
 ]
 
 var _nodes: Array[Node] = []
-
-
-## A profile type that has the save-v7 field (B7-01), for trees where PlayerProfile does not yet.
-class FieldProfile:
-	extends PlayerProfile
-	var weapon_finishes: Dictionary = {}
 
 
 func before_all() -> void:
@@ -239,24 +233,15 @@ func test_notoriety_and_sources() -> void:
 		assert_true(WorkshopFinishPanel.source_text(d.id) != "", "%s has a source text" % d.id)
 
 
-func test_finish_persists_when_the_field_exists() -> void:
+func test_finish_persists_through_save_v7() -> void:
 	var p: PlayerProfile = _profile()
-	if &"weapon_finishes" in p:
-		assert_true(WeaponFinishes.persists(p))
-		assert_true(WeaponFinishes.equip(p, CORSAIR, GUNMETAL))
-		assert_eq(SaveService.save_profile(p, 0), OK)
-		var back: PlayerProfile = SaveService.load_profile(0)
-		assert_eq(WeaponFinishes.equipped(back, CORSAIR), GUNMETAL, "saved and loaded (save v7)")
-	else:
-		assert_false(WeaponFinishes.persists(p), "no save field yet (B7-01 adds it)")
-		assert_true(WeaponFinishes.equip(p, CORSAIR, GUNMETAL), "kept in memory")
-		assert_eq(WeaponFinishes.equipped(p, CORSAIR), GUNMETAL)
-	var fp: FieldProfile = FieldProfile.new()
-	fp.owned_weapons.append(CORSAIR)
-	assert_true(WeaponFinishes.persists(fp))
-	assert_true(WeaponFinishes.equip(fp, CORSAIR, GUNMETAL))
-	assert_eq(StringName(fp.weapon_finishes.get(CORSAIR, &"")), GUNMETAL, "written to profile.weapon_finishes")
-	assert_false(fp.has_meta(WeaponFinishes.PROFILE_FIELD), "no fallback when the field exists")
+	assert_true(WeaponFinishes.persists(p), "PlayerProfile.weapon_finishes (save v7)")
+	assert_true(WeaponFinishes.equip(p, CORSAIR, GUNMETAL))
+	assert_eq(StringName(p.weapon_finishes.get(CORSAIR, &"")), GUNMETAL, "written to profile.weapon_finishes")
+	assert_false(p.has_meta(WeaponFinishes.PROFILE_FIELD), "no fallback when the field exists")
+	assert_eq(SaveService.save_profile(p, 0), OK)
+	var back: PlayerProfile = SaveService.load_profile(0)
+	assert_eq(WeaponFinishes.equipped(back, CORSAIR), GUNMETAL, "saved and loaded (save v7)")
 
 
 func test_picker_previews_and_equips() -> void:

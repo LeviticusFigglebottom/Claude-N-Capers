@@ -1,10 +1,10 @@
-## B4-16 save v5 -> B5-02 save v6 (P4 gate "save v2"): golden migration fixtures (tests/b/fixtures/save/<name>.json ->
+## B4-16 save v5 -> B5-02 save v6 -> B7-01 save v7 (P4 gate "save v2"): golden migration fixtures (tests/b/fixtures/save/<name>.json ->
 ## <name>.expected.json, hand-written), round trip, future-version refusal, truncated / corrupt files,
 ## wrong types sanitized with a warning, unknown ids pruned, illegal skill sets reset.
 extends TestCase
 
 const FIXTURES: String = "res://tests/b/fixtures/save"
-const GOLDEN: Array[String] = ["v0", "v1", "v2", "v3", "v4", "v5", "v5_damaged", "v6_damaged", "v6_heister"]
+const GOLDEN: Array[String] = ["v0", "v1", "v2", "v3", "v4", "v5", "v5_damaged", "v6_damaged", "v6_heister", "v6", "v7_damaged"]
 const SLOT: int = 5
 
 
@@ -24,8 +24,8 @@ func after_all() -> void:
 	SaveService.root_dir = SaveService.DEFAULT_ROOT_DIR
 
 
-func test_current_version_is_6() -> void:
-	assert_eq(SaveService.CURRENT_VERSION, 6)
+func test_current_version_is_7() -> void:
+	assert_eq(SaveService.CURRENT_VERSION, 7)
 	assert_eq(PlayerProfile.new().version, SaveService.CURRENT_VERSION)
 	assert_eq(ProfileSchema.FIELDS.size(), PlayerProfile.new_default().to_dict().size(), "schema covers every saved field")
 	for f: String in PlayerProfile.new_default().to_dict():
@@ -51,12 +51,12 @@ func test_golden_fixtures_through_the_file() -> void:
 func test_each_migration_step_kept() -> void:
 	var v0: Dictionary = _fixture("v0")
 	var m: Dictionary = SaveService.migrate(v0)
-	assert_eq(int(m["version"]), 6)
+	assert_eq(int(m["version"]), 7)
 	assert_eq(int(m["cash"]), 5000)
 	assert_false(m.has("money"))
 	for k: String in ["banked_stealth_mult", "skill_sets", "perk_cards", "owned_mask_parts", "custom_masks",
 			"unlocks", "achievements", "pro_job_locks", "notoriety", "notoriety_xp", "notoriety_choices",
-			"held_skill_sets", "music_choice"]:
+			"held_skill_sets", "music_choice", "career", "weapon_finishes"]:
 		assert_true(m.has(k), "v0 gains %s" % k)
 	var v4: Dictionary = _fixture("v4")
 	var m4: Dictionary = SaveService.migrate(v4)
@@ -67,7 +67,7 @@ func test_each_migration_step_kept() -> void:
 	assert_false(v4.has("unlocks"), "input not mutated")
 	var v5: Dictionary = _fixture("v5")
 	var m5: Dictionary = SaveService.migrate(v5)
-	assert_eq(int(m5["version"]), 6)
+	assert_eq(int(m5["version"]), 7)
 	assert_eq(m5["notoriety"], 0)
 	assert_eq(m5["notoriety_xp"], 0)
 	assert_eq(m5["notoriety_choices"], {})
@@ -75,6 +75,14 @@ func test_each_migration_step_kept() -> void:
 	assert_eq(m5["music_choice"], "", "5 -> 6: the heist's default music")
 	assert_eq(m5["unlocks"], v5["unlocks"], "5 -> 6 keeps the v5 fields")
 	assert_false(v5.has("notoriety"), "input not mutated")
+	var v6: Dictionary = _fixture("v6")
+	var m6: Dictionary = SaveService.migrate(v6)
+	assert_eq(int(m6["version"]), 7)
+	assert_eq(m6["career"], Career.empty(), "6 -> 7: nothing counted yet")
+	assert_eq(m6["weapon_finishes"], {}, "6 -> 7: every weapon on its default finish")
+	assert_eq(m6["stats"], v6["stats"], "6 -> 7 keeps the v6 fields")
+	assert_eq(m6["unlocks"], v6["unlocks"])
+	assert_false(v6.has("career"), "input not mutated")
 
 
 func test_expected_files_round_trip() -> void:
@@ -141,6 +149,48 @@ func test_v6_damage_warns_and_repairs() -> void:
 	assert_eq(String(SaveService.profile_from_save(ok).music_choice).length(), 64, "64 chars is the limit, kept")
 	ok["music_choice"] = 7
 	assert_eq(SaveService.profile_from_save(ok).music_choice, &"", "a number is not a track id")
+
+
+func test_v7_damage_warns_and_repairs() -> void:
+	Log.capture = true
+	var q: PlayerProfile = SaveService.profile_from_save(_fixture("v7_damaged"))
+	assert_eq(Career.total(q, "kills"), -1, "a negative counter is dropped (not counted)")
+	assert_eq(Career.total(q, "shots"), -1, "a string counter is dropped")
+	assert_eq(Career.total(q, "hits"), 120, "a whole JSON number is an int")
+	assert_eq(Career.best_difficulty(q, &"glasshouse"), 2)
+	assert_near(Career.fastest_win_s(q, &"glasshouse"), 412.0, 0.001)
+	assert_eq(Career.accuracy(q), -1.0, "no shots counted -> no accuracy")
+	assert_true(_warned("career.trophies: unknown career section"))
+	assert_true(_warned("career.totals.kills: expected a counter"))
+	assert_true(_warned("career.heists.night_deposit: bad entry"))
+	assert_true(_warned("career.difficulties.hard: bad entry"))
+	assert_true(_warned("career.weapons: unknown weapon 'weapon.retired_blaster'"))
+	assert_true(_warned("weapon_finishes.weapon.kestrel_p9x: expected a short string"))
+	assert_true(_warned("weapon_finishes: unknown weapon 'weapon.retired_blaster'"))
+	assert_eq(q.weapon_finishes, {&"weapon.kestrel_p9": &"finish.gunmetal"})
+	for line: String in Log.captured:
+		assert_false(line.begins_with("[ERROR]"), "no errors for damaged fields: " + line)
+	var bad: Dictionary = _fixture("v7_damaged")
+	bad["career"] = "lots"
+	bad["weapon_finishes"] = []
+	var r: PlayerProfile = SaveService.profile_from_save(bad)
+	assert_eq(r.career, Career.empty(), "a non-object career -> empty")
+	assert_eq(r.weapon_finishes, {})
+	assert_true(_warned("career: expected career"))
+
+
+func test_v7_fields_round_trip() -> void:
+	var p: PlayerProfile = SaveService.profile_from_save(_fixture("v6.expected"))
+	var r: Dictionary = {"heist_id": &"glasshouse", "success": true, "stealth": true, "difficulty": 3, "time_s": 300.4,
+		"loot": [{"loot_id": &"loot.cash", "value": 1}], "crew": [{"slot": 0, "kills": 2, "shots": 10, "hits": 4}]}
+	Career.record(p, r, {"success": true, "stash": 100, "spending": 20, "xp_total": 900}, 0)
+	p.weapon_finishes[&"weapon.kestrel_p9"] = &"finish.gunmetal"
+	assert_eq(SaveService.save_profile(p, SLOT), OK)
+	var q: PlayerProfile = SaveService.load_profile(SLOT)
+	assert_eq(q.career, p.career, "career saved exactly")
+	assert_eq(Career.total(q, "hits"), 4)
+	assert_eq(Career.best_difficulty(q, &"glasshouse"), 3)
+	assert_eq(q.weapon_finishes, {&"weapon.kestrel_p9": &"finish.gunmetal"})
 
 
 func test_future_version_refused() -> void:

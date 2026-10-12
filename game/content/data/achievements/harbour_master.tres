@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.harbour_master"
+name_key = &"achievement.harbour_master.name"
+desc_key = &"achievement.harbour_master.desc"
+condition = {"event": &"heist_completed", "heist": &"dockside_burn", "difficulty_min": 4, "count": 1}
+unlock = &"unlock.achievement.harbour_master"
+order = 130
+category = &"heists"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
