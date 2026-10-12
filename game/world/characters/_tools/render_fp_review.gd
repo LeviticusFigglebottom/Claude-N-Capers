@@ -13,6 +13,10 @@ const DISTANCES: Array[int] = [10, 20, 30, 40]
 const FP_FOV: float = 75.0
 const EYE_H: float = 1.65
 const SIZE: Vector2i = Vector2i(1280, 720)
+const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
+const ANIM_IDS: Array[String] = ["club_patron", "security_officer", "cartel_gunman"]
+const CLIPS: Array[StringName] = [&"humanoid/walk", &"humanoid/run", &"humanoid/aim_rifle"]
+const SCOPE_ZOOM: float = 4.0
 
 
 func _initialize() -> void:
@@ -25,6 +29,15 @@ func _run() -> void:
 		img.save_png(OUT_DIR + "fp_%dm.png" % d)
 	await _pop("fp_pop_crowd.png", ["club_patron", "gallery_patron"], 20.0)
 	await _pop("fp_pop_unit.png", ["security_officer", "cartel_gunman"], 35.0)
+	# anim_lod_<clip>.png: top row LOD0, bottom row CrowdLod (forced), mid-clip pose, close ortho-ish crop
+	for clip: StringName in CLIPS:
+		var a: Image = await _render(6.0, ANIM_IDS, FP_FOV, 1.0, clip, 0)
+		var b: Image = await _render(6.0, ANIM_IDS, FP_FOV, 1.0, clip, 1)
+		_stack(a, b).save_png(OUT_DIR + "anim_lod_%s.png" % String(clip).get_file())
+	# scope_40m.png: 40 m at FOV/4; top = zoom ignored (CrowdLod shows), bottom = D-084 apply_zoom (LOD0)
+	var s0: Image = await _render(40.0, IDS, FP_FOV / SCOPE_ZOOM, 1.0)
+	var s1: Image = await _render(40.0, IDS, FP_FOV / SCOPE_ZOOM, SCOPE_ZOOM)
+	_stack(s0, s1).save_png(OUT_DIR + "scope_40m.png")
 	print("render_fp_review: wrote fp_*m.png, fp_pop_*.png")
 	quit(0)
 
@@ -40,13 +53,22 @@ func _pop(name: String, ids: Array[String], switch_m: float) -> void:
 	out.save_png(OUT_DIR + name)
 
 
+func _stack(a: Image, b: Image) -> Image:
+	var out: Image = Image.create(a.get_width(), a.get_height() * 2 + 4, false, a.get_format())
+	out.fill(Color.BLACK)
+	out.blit_rect(a, Rect2i(Vector2i.ZERO, a.get_size()), Vector2i.ZERO)
+	out.blit_rect(b, Rect2i(Vector2i.ZERO, b.get_size()), Vector2i(0, a.get_height() + 4))
+	return out
+
+
 func _crop(img: Image) -> Image:
 	var w: int = 160
 	var h: int = 120
 	return img.get_region(Rect2i(SIZE.x / 2 - w / 2, SIZE.y / 2 - h / 2 + 10, w, h))
 
 
-func _render(dist: float, ids: Array[String]) -> Image:
+func _render(dist: float, ids: Array[String], fov: float = FP_FOV, zoom: float = 1.0, clip: StringName = &"",
+		force: int = -1) -> Image:
 	var vp: SubViewport = SubViewport.new()
 	vp.size = SIZE
 	vp.own_world_3d = true
@@ -80,8 +102,17 @@ func _render(dist: float, ids: Array[String]) -> Image:
 		var ch: Node3D = packed.instantiate() as Node3D
 		ch.position = Vector3(spacing * (i - (ids.size() - 1) * 0.5), 0.0, 0.0)
 		vp.add_child(ch)
+		if force >= 0:
+			CrowdLod.force_level(ch, force == 1)
+		else:
+			CrowdLod.apply_zoom(ch, zoom)
+		if clip != &"":
+			var ap: AnimationPlayer = ch.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+			ap.play(clip)
+			ap.seek(ap.current_animation_length * 0.4, true)
+			ap.pause()
 	var cam: Camera3D = Camera3D.new()
-	cam.fov = FP_FOV
+	cam.fov = fov
 	cam.near = 0.05
 	cam.far = 200.0
 	vp.add_child(cam)

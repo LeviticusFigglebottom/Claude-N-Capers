@@ -3,6 +3,24 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12: session 3b (lead rulings D-080, D-084, accents)
+### Done (local on env/d-art; push still 403)
+- 12bc7737 D-080: specials (char_specials.py) keep LOD0/1 only: no CrowdLod, 22 `*_lod.res` removed (LOD res now
+  9.1 MB total, was 13 MB); new `test_specials_have_no_lod2`. Closes issue 3 (Corpsman cross).
+- 65289015 accents (issue 2): TAC Heavy steel pauldron trim (`char_aegis_steel`, override `shoulder_accent`),
+  Corpsman white shoulder caps (single plate, keeps the 35k tri budget on frd/zero), security officer white cap band.
+  All faction variants rebuilt; char_tac_heavy rebuilt twice, byte-identical. fp_30m/fp_40m re-rendered.
+- 35015f0e D-084: `CrowdLod.zoom_factor_of(view)` (reads `zoom_factor`, default 1.0, clamp >= 1),
+  `apply_zoom(character, zoom)` / `apply_zoom_all(tree, zoom)` scale the switch (CrowdLod begin + glb ends) by zoom;
+  proxies are in the persistent `crowd_lod` group. Hook for ENV P (CrewView, per frame or on zoom change):
+  `CrowdLod.apply_zoom_all(get_tree(), CrowdLod.zoom_factor_of(self))`. Test `test_zoom_scales_crowd_lod_switch`.
+- Issue 5 (skinning): `anim_lod_{walk,run,aim_rifle}.png` (top LOD0, bottom forced CrowdLod, mid-clip): the
+  skinned proxy follows the pose with no explosion or stretched verts. No fix needed.
+- Issue 6 (scope): `scope_40m.png` at 40 m, FOV 75/4: top (zoom ignored) shows CrowdLod, so the far model comes from
+  the visibility ranges (camera distance), not mesh LOD; bottom (apply_zoom 4) shows LOD0. Fixed by D-084 once wired.
+- D-084 input check: no InputEventMouseMotion / `.relative` in any D-owned file; nothing to change.
+- `run_tests.sh d` 114 tests, 0 failed (test_lod 5/5).
+
 ## 2026-10-12: session 3 (targeted tests only; lead runs check_all)
 ### Done (local on env/d-art; push blocked by GitHub 403 for every env, see lead)
 - D4-01: D-080 is not in docs/decisions.md, so specials keep the current CrowdLod approach; 13 MB `*_lod.res` kept as is.
