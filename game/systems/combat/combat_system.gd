@@ -57,6 +57,9 @@ static func validate_and_apply(claim: Dictionary, shooter: CrewController) -> Di
 		CrewStatsService.record_shot(shooter, bool(tally["hit"]), false)
 		return out
 	var hits: Array = claim.get("hits", [])
+	var st: WeaponStats = w.stats(ws)
+	if st != null and st.pellets > 1:
+		hits = pellet_headshots(hits)  # L3.3
 	var results: Array[Dictionary] = []
 	var hit_npcs: Array = []
 	for h: Variant in hits:
@@ -115,6 +118,41 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 		if float(res.get("amount", 0.0)) > 0.0:
 			NpcSuppression.add_threat(npc, float(prof["suppression"]) * tw.threat_per_suppression_hit, origin)
 	return res
+
+
+## L3.3: for a multi-pellet shot, any pellet on the head makes every pellet of that shot on the same
+## target a headshot. Returns copies of the hit dictionaries (the claim is left as sent).
+static func pellet_headshots(hits: Array) -> Array:
+	var head_keys: Dictionary = {}
+	for h: Variant in hits:
+		if h is Dictionary and int((h as Dictionary).get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD:
+			var k: String = _hit_target_key(h as Dictionary)
+			if k != "":
+				head_keys[k] = true
+	if head_keys.is_empty():
+		return hits
+	var out: Array = []
+	for h: Variant in hits:
+		if not h is Dictionary:
+			out.append(h)
+			continue
+		var d: Dictionary = (h as Dictionary).duplicate()
+		if head_keys.has(_hit_target_key(d)):
+			d["zone"] = Enums.HitZone.HEAD
+		out.append(d)
+	return out
+
+
+## Identity of a claimed hit's target: the net id, else the local object's instance id ("" = unknown:
+## re-raycast targets without an id are never upgraded).
+static func _hit_target_key(hit: Dictionary) -> String:
+	var tid: int = int(hit.get("target_id", 0))
+	if tid != 0:
+		return "id:%d" % tid
+	var obj: Variant = hit.get("target")
+	if obj is Object and is_instance_valid(obj):
+		return "obj:%d" % (obj as Object).get_instance_id()
+	return ""
 
 
 ## A3-06 (L3.4/L3.5): the piercing/threat profile of `shooter`'s weapon in slot `ws`:
