@@ -736,13 +736,14 @@ func _flight_rails(parent: Node3D, nm: String, xs: Array, z0: float, y0: float, 
 ## the skyline, streets and the river far below; crown fins, helipad lights, beacons, BMU rail.
 func _build_site(geo: Node3D) -> void:
 	var site: Node3D = add(geo, node3d("Site")) as Node3D
-	var blocks: Node3D = add(site, node3d("Blocks")) as Node3D
+	vis_group = "Site"
 	for b: Array in L.SITE_BLOCKS:
-		var mi: Node3D = box_a(blocks, String(b[0]), b[1], String(b[2]), false)
-		mi.set_meta(&"distant", true)
-	var lit: Node3D = add(site, node3d("CityLights")) as Node3D
-	# Lit window rows: each band is split into 2 m windows with 1 m piers, flush on its facade.
+		mesh_box(v3(b[1], 0), v3(b[1], 3), String(b[2]))
+	# Lit window rows on the far skyline: each band split into 2 m windows with 1 m piers (Arden and
+	# Vantage get full window grids from sl_art.neighbours()).
 	for c: Array in L.CITY_LIGHTS:
+		if String(c[0]).begins_with("Arden"):
+			continue
 		var mn: Vector3 = v3(c[1], 0)
 		var mx: Vector3 = v3(c[1], 3)
 		var along_x: bool = (mx.x - mn.x) > (mx.z - mn.z)
