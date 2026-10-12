@@ -557,3 +557,9 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   a player does (real movement input, no teleports) where a test can catch it.
 - Seed items: CrewController has no step-up (plain `move_and_slide()`, so curbs and small ledges block the player);
   ADS animation quality; casing-mode quirks (incl. the spurious STEALTH hop when the alarm goes off while casing).
+- **ENV P (Playability), branch `env/p-play`:** a dedicated env for player feel. For the pass it owns
+  `game/systems/player/**` (CrewController, CrewView, PlayerInput, stamina), `game/systems/anim/fp_viewmodel*`
+  (first-person viewmodel and ADS) and `game/systems/tweak/crew_tweak.*`, plus `game/tests/p/**` and
+  `docs/status/env_p.md`. These are excluded from ENV A (owners.json). Moved from ENV A's queue to P: S1.2 mask-up
+  feel and apply_loadout_finish in fp_viewmodel. P's changes to other envs' files go through the lead, as usual.
+  P's branch is merged locally by the lead.

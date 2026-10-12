@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fail if an environment branch changes files it does not own. Owner: LEAD.
 
-usage: check_ownership.py <a|b|c|d> [--base <ref>]
+usage: check_ownership.py <a|b|c|d|p> [--base <ref>]
 Compares HEAD against merge-base(HEAD, base) (default: origin/<trunk>).
 """
 import argparse
@@ -33,7 +33,7 @@ def owned(path: str, env: dict, always: list[str]) -> bool:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("env", choices=["a", "b", "c", "d"])
+    ap.add_argument("env", choices=["a", "b", "c", "d", "p"])
     ap.add_argument("--base", default=None)
     args = ap.parse_args()
     cfg = json.loads((ROOT / "tools/ci/owners.json").read_text())
