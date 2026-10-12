@@ -563,3 +563,13 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   `docs/status/env_p.md`. These are excluded from ENV A (owners.json). Moved from ENV A's queue to P: S1.2 mask-up
   feel and apply_loadout_finish in fp_viewmodel. P's changes to other envs' files go through the lead, as usual.
   P's branch is merged locally by the lead.
+
+## D-077 — 2026-10-11 — Checkpoint cadence (product owner)
+- Sessions can stop without warning (credits or usage limits). Every agent works so that a stop loses at most about
+  30 minutes:
+  - Commit locally every 20–30 minutes and at each logical step, WIP included (`WIP` prefix is fine).
+  - Keep the status file's In progress entry current (done / half-done / exact next step) so a fresh agent can
+    resume from the file alone.
+  - Push the env branch whenever a checked unit passes, at least about hourly. Failing checks are never pushed and
+    nobody force-pushes.
+- Envs that don't push (P, the lead's helpers) commit on their local branch and notify the lead per finished item.
