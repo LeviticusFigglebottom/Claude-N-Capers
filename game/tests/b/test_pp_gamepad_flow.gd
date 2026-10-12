@@ -148,3 +148,35 @@ func test_board_take_contract_gamepad_only() -> void:
 	assert_eq(f.current, f.board_screen as Control, "B returns to the Board")
 	f.queue_free()
 	await wait_frames(2)
+
+
+## PQ-B-26: Notoriety with the pad only: A on Rank up, A on Confirm, then d-pad to the 2nd reward
+## choice and A picks it (saved).
+func test_notoriety_rank_up_and_reward_pick_gamepad_only() -> void:
+	var p: PlayerProfile = PlayerProfile.new_default()
+	p.notoriety = 4
+	p.xp = XpCurve.xp_for_level(100)
+	p.level = 100
+	p.cash = Notoriety.cost_for(5)
+	Notoriety.clear_cache()
+	var s: NotorietyScreen = (load("res://content/ui/notoriety/notoriety_screen.tscn") as PackedScene).instantiate()
+	s.profile_slot = SLOT
+	s.setup(p)
+	add_child(s)
+	await wait_frames(2)
+	assert_true(await _nav_to(s.rank_up_button, "Rank up"))
+	await _pad(JOY_BUTTON_A)
+	assert_true(s.is_confirming(), "A opens the confirm")
+	await wait_frames(1)
+	assert_true(await _nav_to(s.confirm_button, "Confirm"))
+	await _pad(JOY_BUTTON_A)
+	assert_eq(p.notoriety, 5, "A confirms")
+	await wait_frames(2)
+	assert_eq(s.choice_buttons.size(), 3)
+	var second: StringName = s.choice_buttons.keys()[1] as StringName
+	assert_true(await _nav_to(s.choice_buttons[second] as Control, "2nd reward"))
+	await _pad(JOY_BUTTON_A)
+	assert_eq(p.notoriety_choices.get(5), second, "A picks the focused reward")
+	assert_eq(SaveService.load_profile(SLOT).notoriety_choices.get(5), second, "saved")
+	s.queue_free()
+	await wait_frames(2)
