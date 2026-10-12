@@ -387,6 +387,7 @@ func server_tick(delta: float) -> void:
 		Enums.CrewState.CUFFED:
 			if bleedout_left > 0.0:
 				return  # L2.12: police-cuffed while downed, bleedout paused
+	_tick_health_regen(delta)  # L2.1
 	if invuln_left > 0.0:
 		invuln_left = maxf(invuln_left - delta, 0.0)
 	if PerkHooks.tick(self, delta):  # perk hook (QB-62); true = a perk replaces the armor regen
@@ -398,6 +399,14 @@ func server_tick(delta: float) -> void:
 		var tw: CrewTweak = Tweak.crew()
 		var rate: float = max_armor / maxf(tw.armor_regen_full_time_s, 0.001)
 		armor = minf(armor + rate * TeamModifiers.armor_regen_rate_mult(_slot()) * delta, max_armor)
+
+
+## L2.1: no base regen; defense.health_regen_per_sec (fraction of max health per second) heals while
+## up (never while downed / custody / incapacitated: server_tick returns before this for those).
+func _tick_health_regen(delta: float) -> void:
+	var r: float = Modifiers.add(_slot(), &"defense.health_regen_per_sec")
+	if r > 0.0 and health > 0.0 and health < max_health:
+		health = minf(health + max_health * r * delta, max_health)
 
 
 ## Modifier changes mid-heist rescale the current values (keeps the fraction).
