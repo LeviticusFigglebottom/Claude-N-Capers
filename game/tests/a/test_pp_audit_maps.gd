@@ -127,6 +127,10 @@ func _audit_runtime(heist: StringName) -> void:
 	EventBus.pager_started.connect(a)
 	EventBus.pager_answered.connect(b)
 	EventBus.pager_failed.connect(f)
+	for cn: Node in _rt.npcs(&"civilian"):  # isolate the pager: no witness calls during this segment
+		var cb: Node = cn.get_node_or_null(^"Brain")
+		if cb != null:
+			cb.process_mode = Node.PROCESS_MODE_DISABLED
 	g2.die({"type": Enums.DamageType.BULLET, "zone": Enums.HitZone.HEAD}, c.net_id)
 	var t2: float = 0.0
 	while started.is_empty() and t2 < 6.0:
@@ -135,7 +139,7 @@ func _audit_runtime(heist: StringName) -> void:
 	print("AUDIT %s pager started after %.1f s (%d)" % [heist, t2, started.size()])
 	var comp: InteractableComponent = g2.get_node_or_null(^"PagerInteractable") as InteractableComponent
 	if comp != null:
-		_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, g2.global_position + Vector3(0, 0.05, 1.2)))
+		_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, _clear_side(c, comp.global_position, g2.global_position)))
 		await wait_physics_frames(1)
 		_rt.set_bot_intent(0, _aim(c, comp.global_position))
 		await wait_physics_frames(2)
@@ -210,3 +214,14 @@ func test_pp_audit_runtime_glasshouse() -> void:
 
 func test_pp_audit_runtime_night_deposit() -> void:
 	await _audit_runtime(&"night_deposit")
+
+
+## A standing spot 1.2 m from `body` (on its floor) with a clear line from eye height to `target`.
+func _clear_side(c: CrewController, target: Vector3, body: Vector3) -> Vector3:
+	var space: PhysicsDirectSpaceState3D = c.get_world_3d().direct_space_state
+	for off: Vector3 in [Vector3(0, 0, 1.2), Vector3(0, 0, -1.2), Vector3(1.2, 0, 0), Vector3(-1.2, 0, 0)]:
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(body + off + Vector3(0, 1.6, 0), target, 1)
+		q.exclude = [c.get_rid()]
+		if space.intersect_ray(q).is_empty():
+			return body + off + Vector3(0, 0.05, 0)
+	return body + Vector3(0, 0.05, 1.2)
