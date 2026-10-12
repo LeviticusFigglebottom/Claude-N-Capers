@@ -4,6 +4,8 @@
 extends TestCase
 
 const SLOT: int = 0
+## PQ-B-17: visible, non-empty labels rendering below MIN_PX real pixels at 1280x720.
+const MIN_PX: float = 14.0
 const FLOW_SCENE: PackedScene = preload("res://content/ui/menus/menu_flow.tscn")
 ## Stations that are screens (range loads a level, so it is excluded).
 const STATIONS: Array[StringName] = [&"board", &"planning", &"armory", &"masks", &"crew", &"jukebox",
@@ -45,8 +47,6 @@ static func offscreen(screen: Control, chain: Array[Control]) -> Array[String]:
 	return out
 
 
-## PQ-B-17: visible, non-empty labels rendering below MIN_PX real pixels at 1280x720.
-const MIN_PX: float = 14.0
 
 
 static func small_text(screen: Control) -> Array[String]:
