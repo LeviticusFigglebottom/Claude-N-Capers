@@ -3,6 +3,12 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12: session 3d (TAC Heavy accent; local only, push after round 34 + Aaron's approval)
+- TAC Heavy (+ frd/sentinel/zero): shoulder trim is now matte white `char_glove_white` (albedo ~208; the metallic
+  `char_aegis_steel` rendered dark without reflections), trim layer 0.92 of the plate, upper-arm plates also white.
+  Reads clearly on both shoulders in fp_30m and fp_40m (720p). Tris 31630-32590 / 35000. Security officer left as is.
+  `run_tests.sh d` 115/0.
+
 ## 2026-10-12: session 3c (D-084 self-subscribe; local only, pushes need Aaron's approval)
 - CrowdLod subscribes itself: every proxy carries `_tools/crowd_lod_proxy.gd`, which creates one
   `/root/CrowdLodZoom` watcher (`_tools/crowd_lod_zoom.gd`). It calls `CrewView.local_view()` and connects
