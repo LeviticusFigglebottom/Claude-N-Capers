@@ -79,8 +79,9 @@ var _remote_pos: Vector3 = Vector3.INF
 ## positions, so positions sent before the owner applied the teleport are ignored, not rejected.
 var _teleport_seq: int = 0
 var _send_accum: float = 0.0
-## P1-01: standing on ground (floor, or a step edge the capsule rests on while climbing). See _move_grounded.
-var _grounded: bool = false
+## P1-01 (read-only outside): on the ground (floor, or a step edge the capsule rests on while climbing); false
+## while airborne. See _move_grounded.
+var grounded: bool = false
 ## P1-01: camera-only vertical lag after step-ups / step-downs (m, decays at CrewTweak.step_smooth_rate).
 var _step_offset: float = 0.0
 
@@ -239,16 +240,6 @@ func eye_height() -> float:
 	return tw.eye_crouched if crouched else tw.eye_standing
 
 
-## P1-01: on the ground (floor, or resting on a step edge while climbing); false while airborne.
-func is_grounded() -> bool:
-	return _grounded
-
-
-## P1-01: camera-only vertical smoothing offset (m) currently applied to `Head` after a step.
-func step_view_offset() -> float:
-	return _step_offset
-
-
 func eye_position() -> Vector3:
 	return global_position + Vector3(0.0, eye_height(), 0.0)
 
@@ -338,6 +329,8 @@ func teleport(xform: Transform3D) -> void:
 	look_pitch = 0.0
 	rotation = Vector3(0.0, look_yaw, 0.0)
 	velocity = Vector3.ZERO
+	_step_offset = 0.0  # P1-01: a hard move is not a step to smooth; airborne until it lands
+	grounded = false
 	_remote_pos = Vector3.INF
 	if _interaction_system() != null:
 		_interaction_system().cancel(slot)
@@ -407,19 +400,19 @@ func _simulate(delta: float) -> void:
 		speed = 0.0
 	var mv: Vector2 = i.move.limit_length(1.0)
 	var wish: Vector3 = Basis(Vector3.UP, look_yaw) * Vector3(mv.x, 0.0, -mv.y) * speed
-	var accel: float = tw.acceleration * (1.0 if _grounded else tw.air_control)
+	var accel: float = tw.acceleration * (1.0 if grounded else tw.air_control)
 	velocity.x = move_toward(velocity.x, wish.x, accel * delta)
 	velocity.z = move_toward(velocity.z, wish.z, accel * delta)
-	if not _grounded:
+	if not grounded:
 		velocity.y -= tw.gravity * delta
 	var can_jump: bool = not casing and mobile and not crouched
 	if bag_w >= 0:
 		can_jump = can_jump and tw.bag_can_jump[bag_w]
-	if i.jump and not _jump_latch and _grounded and can_jump and stamina.can_jump():
+	if i.jump and not _jump_latch and grounded and can_jump and stamina.can_jump():
 		velocity.y = tw.jump_velocity
 		stamina.on_jump()
 	stamina.tick(sprinting, delta)
-	_jump_latch = i.jump and not _grounded
+	_jump_latch = i.jump and not grounded
 	_move_grounded(delta, tw)
 	_step_offset *= exp(-tw.step_smooth_rate * delta)
 	if absf(_step_offset) < 0.0005:
@@ -431,62 +424,62 @@ func _simulate(delta: float) -> void:
 ## P1-01: move_and_slide with PD2-like ground handling. Walks up lips up to CrewTweak.step_height_m, follows
 ## the floor down steps and ramps of that height instead of falling, and treats slopes steeper than
 ## max_slope_deg as walls. Same code for the server, the owner's prediction and AI crew (deterministic, no
-## state beyond `_grounded`). The rounded capsule bottom rests on a step's edge while it climbs: that contact
-## counts as ground (`_grounded`) though is_on_floor() calls it a wall.
+## state beyond `grounded`). The rounded capsule bottom rests on a step's edge while it climbs: that contact
+## counts as ground (`grounded`) though is_on_floor() calls it a wall.
 func _move_grounded(delta: float, tw: CrewTweak) -> void:
-	var was_grounded: bool = _grounded
+	var was_grounded: bool = grounded
 	var y0: float = global_position.y
 	var stepped: bool = false
 	var h_motion: Vector3 = Vector3(velocity.x, 0.0, velocity.z) * delta
 	if was_grounded and velocity.y <= 0.0 and h_motion.length_squared() > 1e-8:
-		stepped = _try_step_up(h_motion, tw)
+		var rise: float = _step_up_rise(h_motion, tw)
+		stepped = rise > 0.0
+		if stepped:
+			global_position.y += rise
+			velocity.y = 0.0
 	move_and_slide()
-	_grounded = is_on_floor()
-	if not _grounded and (was_grounded or stepped) and velocity.y <= 0.0:
-		_grounded = _snap_down(tw)
-	if _grounded and velocity.y < 0.0:
+	grounded = is_on_floor()
+	if not grounded and (was_grounded or stepped) and velocity.y <= 0.0:
+		grounded = _snap_down(tw)
+	if grounded and velocity.y < 0.0:
 		velocity.y = 0.0
-	if was_grounded and _grounded:
+	if was_grounded and grounded:
 		_step_offset = clampf(_step_offset - (global_position.y - y0), -tw.step_height_m, tw.step_height_m)
 
 
-## Raises the body onto a lip ahead (<= step_height_m, walkable top) before the horizontal move. True if raised.
-func _try_step_up(h_motion: Vector3, tw: CrewTweak) -> bool:
+## How far to raise the body onto a lip ahead (<= step_height_m, walkable top) before the horizontal move;
+## 0 when there is no step to take (no wall ahead, no headroom, too tall, nothing to stand on, steep slope).
+func _step_up_rise(h_motion: Vector3, tw: CrewTweak) -> float:
 	var col: KinematicCollision3D = KinematicCollision3D.new()
 	if not test_move(global_transform, h_motion, col, safe_margin, false, 4) or not _hit_wall(col):
-		return false
+		return 0.0
 	var xf: Transform3D = global_transform
 	var up: Vector3 = Vector3.UP * tw.step_height_m
 	if test_move(xf, up, col, safe_margin, false, 1):
-		up = col.get_travel()
-	if up.y < 0.01:
-		return false  # no headroom
+		up = col.get_travel()  # headroom
 	xf.origin += up
 	var fwd: Vector3 = h_motion
 	if test_move(xf, h_motion, col, safe_margin, false, 1):
 		fwd = col.get_travel()
-	if fwd.length() < h_motion.length() * 0.25:
-		return false  # still blocked at step height: too tall
 	xf.origin += fwd
-	if not test_move(xf, Vector3.DOWN * up.y, col, safe_margin, false, 1):
-		return false  # nothing to stand on up there
+	# Still blocked at step height (too tall), or nothing to stand on up there.
+	if up.y < 0.01 or fwd.length() < h_motion.length() * 0.25 \
+			or not test_move(xf, Vector3.DOWN * up.y, col, safe_margin, false, 1):
+		return 0.0
 	var rise: float = xf.origin.y + col.get_travel().y - global_position.y
-	if rise <= 0.002:
-		return false
 	# The surface just past the landing contact must be walkable: a step's top (the capsule lands on its
-	# edge), not a steep slope (which would otherwise be climbed one step-up at a time).
-	var past: Vector3 = col.get_position() + h_motion.normalized() * 0.03
-	if not _walkable_below(past, 0.06):
-		return false
-	global_position.y += rise
-	velocity.y = 0.0
-	return true
+	# edge), not a steep slope (which would otherwise be climbed one step-up at a time). The top's height
+	# (not the landing height: the rounded bottom lands on a taller edge) caps the step.
+	var top: float = _ground_height(col.get_position() + h_motion.normalized() * 0.03, 0.06)
+	if rise <= 0.002 or is_nan(top) or top - global_position.y > tw.step_height_m + 0.005:
+		return 0.0
+	return rise
 
 
 ## Follows the floor down when the body just left it (a step or ramp edge) and walkable ground lies within
 ## step_height_m under the capsule. True if supported (moved down, or resting on an edge).
 func _snap_down(tw: CrewTweak) -> bool:
-	if not _walkable_below(global_position, tw.step_height_m):
+	if is_nan(_ground_height(global_position, tw.step_height_m)):
 		return false
 	var col: KinematicCollision3D = KinematicCollision3D.new()
 	if not test_move(global_transform, Vector3.DOWN * tw.step_height_m, col, safe_margin, false, 1):
@@ -503,12 +496,15 @@ func _hit_wall(col: KinematicCollision3D) -> bool:
 	return false
 
 
-## Walkable ground (normal within floor_max_angle) directly under `feet` (from 5 cm above) within `depth` m.
-func _walkable_below(feet: Vector3, depth: float) -> bool:
+## Height of walkable ground (normal within floor_max_angle) directly under `feet` (searched from 5 cm above)
+## within `depth` m; NAN when there is none.
+func _ground_height(feet: Vector3, depth: float) -> float:
 	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(feet + Vector3.UP * 0.05,
 		feet + Vector3.DOWN * (depth + 0.05), collision_mask, [get_rid()])
 	var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(q)
-	return not hit.is_empty() and (hit["normal"] as Vector3).angle_to(up_direction) <= floor_max_angle + 0.01
+	if hit.is_empty() or (hit["normal"] as Vector3).angle_to(up_direction) > floor_max_angle + 0.01:
+		return NAN
+	return (hit["position"] as Vector3).y
 
 
 func _tick_server_actions(delta: float) -> void:
