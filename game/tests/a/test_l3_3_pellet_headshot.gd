@@ -18,7 +18,7 @@ func test_l3_3_pellet_headshots_upgrades_same_target_only() -> void:
 	var hits: Array = [
 		{"target_id": 7, "zone": Enums.HitZone.BODY},
 		{"target_id": 7, "zone": Enums.HitZone.HEAD},
-		{"target_id": 7, "zone": Enums.HitZone.LEGS},
+		{"target_id": 7, "zone": Enums.HitZone.LIMB},
 		{"target_id": 9, "zone": Enums.HitZone.BODY},
 		{"zone": Enums.HitZone.HEAD},
 	]
