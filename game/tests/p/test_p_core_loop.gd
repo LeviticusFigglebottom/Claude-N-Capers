@@ -199,3 +199,24 @@ func test_gamepad_mask_up_and_jump() -> void:
 		await wait_physics_frames(1)
 		peak = maxf(peak, c.global_position.y)
 	assert_true(peak > y0 + 0.3, "pad jump %.2f" % (peak - y0))
+
+
+## PT-03: swap_weapon always goes to the other slot, even after picking a slot with 1/2.
+func test_swap_after_slot_key_toggles() -> void:
+	var c: CrewController = await _masked_crew()
+	var w: CrewWeapons = c.weapons
+	if not (w.has_weapon(Enums.WeaponSlot.PRIMARY) and w.has_weapon(Enums.WeaponSlot.SECONDARY)):
+		c.loadout.primary = &"weapon.brute_12"  # setup: the P1 default loadout carries no primary
+		c.loadout.resolved_primary = LoadoutResolver.resolve_weapon(c.loadout.primary, c.loadout.primary_mods)
+		w.set_loadout(c.loadout)
+		await wait_physics_frames(2)
+	assert_true(w.has_weapon(Enums.WeaponSlot.PRIMARY), "two weapons for the swap test")
+	await _inp.tap(&"slot_primary")
+	await wait_seconds(1.0)
+	assert_eq(w.equipped_slot, Enums.WeaponSlot.PRIMARY, "1 equips primary")
+	await _inp.tap(&"swap_weapon")
+	await wait_seconds(1.0)
+	assert_eq(w.equipped_slot, Enums.WeaponSlot.SECONDARY, "swap goes to secondary")
+	await _inp.tap(&"swap_weapon")
+	await wait_seconds(1.0)
+	assert_eq(w.equipped_slot, Enums.WeaponSlot.PRIMARY, "swap back to primary")

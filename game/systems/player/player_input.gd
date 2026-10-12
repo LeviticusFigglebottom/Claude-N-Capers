@@ -191,7 +191,10 @@ func build_intent(rt: HeistRuntime) -> CrewIntent:
 	elif Input.is_action_just_pressed(&"slot_secondary"):
 		i.weapon_slot = Enums.WeaponSlot.SECONDARY
 	elif Input.is_action_just_pressed(&"swap_weapon"):
-		_last_slot = Enums.WeaponSlot.PRIMARY if _last_slot == Enums.WeaponSlot.SECONDARY else Enums.WeaponSlot.SECONDARY
+		# PT-03: swap from what is actually held (1/2 keys or a failed equip used to desync a local toggle,
+		# so a swap press could pick the slot already in hand and do nothing).
+		var held: int = _crew.weapons.equipped_slot if _crew.weapons != null else _last_slot
+		_last_slot = Enums.WeaponSlot.PRIMARY if held == Enums.WeaponSlot.SECONDARY else Enums.WeaponSlot.SECONDARY
 		i.weapon_slot = _last_slot
 	_order_input(rt, i)
 	if not _suppressed.is_empty():
