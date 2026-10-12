@@ -1,6 +1,7 @@
 ## Options screen (roadmap B5-01). Owner: ENV B. Tabs: Controls (look / hold-toggle settings and the
 ## rebind list, OptionsControlsTab), Audio (one slider per bus), Video, Accessibility (palette with a
-## swatch preview, HUD scale, subtitle size). Footer: Apply / Revert / Reset tab / Back.
+## swatch preview, HUD scale, subtitle size). Footer: Apply / Revert / Reset tab / Back (+ Leave Heist
+## in a heist: `in_heist`, confirm dialog, then `leave_heist_requested`; B / Esc cancels the dialog).
 ##
 ## Edits go to `draft` (a copy of `settings`); Apply copies it into `settings` (GameSettings.current()
 ## unless set before _ready), saves it (`save_on_apply`) and pushes it into the engine (`apply()`);
@@ -11,6 +12,8 @@ class_name OptionsScreen
 extends UiScreen
 
 signal applied()
+## In-heist only: the player confirmed Leave Heist (MenuOptions wires it to MenuFlow._leave_heist).
+signal leave_heist_requested()
 
 const TAB_CONTROLS: StringName = &"controls"
 const TAB_AUDIO: StringName = &"audio"
@@ -26,6 +29,12 @@ const TAB_SECTIONS: Dictionary = {
 @export var save_on_apply: bool = true
 
 var settings: GameSettings = null
+## Set before _ready by MenuOptions.open_in_heist: shows Leave Heist in the footer.
+var in_heist: bool = false
+var leave_button: Button = null
+var leave_confirm: Control = null
+var leave_confirm_button: Button = null
+var leave_cancel_button: Button = null
 var draft: GameSettings = null
 var current_tab: StringName = TAB_CONTROLS
 ## tab id -> Button / page Control / Array[Control] (the page's vertical focus order).
@@ -76,6 +85,61 @@ func build_ui() -> void:
 	root.add_child(_build_footer())
 	_build_pages()
 	show_tab(current_tab, false)
+	if in_heist:
+		_build_leave_confirm()
+
+
+func _build_leave_confirm() -> void:
+	var dim: ColorRect = ColorRect.new()
+	dim.color = Color(0, 0, 0, 0.6)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	var center: CenterContainer = CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dim.add_child(center)
+	var panel: PanelContainer = PanelContainer.new()
+	center.add_child(panel)
+	var v: VBoxContainer = UiBuild.vbox(18)
+	panel.add_child(v)
+	v.add_child(UiBuild.label(&"ui.menu.leave_heist", UiBuild.SUBHEADER))
+	v.add_child(UiBuild.label(&"ui.menu.quit_confirm"))
+	var h: HBoxContainer = UiBuild.hbox(16)
+	leave_confirm_button = UiBuild.primary(UiBuild.button(&"ui.menu.confirm"))
+	leave_cancel_button = UiBuild.button(&"ui.menu.cancel")
+	for b: Button in [leave_confirm_button, leave_cancel_button]:
+		b.custom_minimum_size = Vector2(240, 0)
+		b.focus_neighbor_top = NodePath(".")  # the d-pad stays inside the dialog
+		b.focus_neighbor_bottom = NodePath(".")
+		h.add_child(b)
+	UiNav.chain_horizontal([leave_confirm_button, leave_cancel_button] as Array[Control])
+	leave_confirm_button.pressed.connect(func() -> void:
+		close_leave_confirm()
+		leave_heist_requested.emit())
+	leave_cancel_button.pressed.connect(close_leave_confirm)
+	v.add_child(h)
+	dim.visible = false
+	add_child(dim)
+	leave_confirm = dim
+
+
+func is_leave_confirming() -> bool:
+	return leave_confirm != null and leave_confirm.visible
+
+
+## Opens the Leave Heist confirm; focus starts on Cancel so a stray A does not leave.
+func open_leave_confirm() -> void:
+	if leave_confirm == null:
+		return
+	leave_confirm.visible = true
+	leave_cancel_button.grab_focus.call_deferred()
+
+
+func close_leave_confirm() -> void:
+	if not is_leave_confirming():
+		return
+	leave_confirm.visible = false
+	if leave_button != null:
+		leave_button.grab_focus.call_deferred()
 
 
 func _build_footer() -> HBoxContainer:
@@ -84,7 +148,12 @@ func _build_footer() -> HBoxContainer:
 	revert_button = UiBuild.button(&"ui.options.revert")
 	reset_button = UiBuild.button(&"ui.options.reset_tab")
 	back_button = UiBuild.button(&"ui.menu.back")
-	for b: Button in [apply_button, revert_button, reset_button, back_button]:
+	var chain: Array[Control] = [apply_button, revert_button, reset_button, back_button]
+	if in_heist:
+		leave_button = UiBuild.button(&"ui.menu.leave_heist")
+		leave_button.pressed.connect(open_leave_confirm)
+		chain.append(leave_button)
+	for b: Control in chain:
 		b.custom_minimum_size = Vector2(240, 0)
 		footer.add_child(b)
 	apply_button.pressed.connect(apply_changes)
@@ -94,7 +163,6 @@ func _build_footer() -> HBoxContainer:
 	dirty_label = UiBuild.label(&"ui.options.unapplied", UiBuild.DIM)
 	dirty_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	footer.add_child(dirty_label)
-	var chain: Array[Control] = [apply_button, revert_button, reset_button, back_button]
 	UiNav.chain_horizontal(chain)
 	_update_dirty()
 	return footer
@@ -218,7 +286,9 @@ func _rechain() -> void:
 	focus_chain = vertical
 	UiNav.chain_vertical(focus_chain)
 	var last: Control = vertical[vertical.size() - 2]
-	for b: Control in [revert_button, reset_button, back_button]:
+	for b: Control in [revert_button, reset_button, back_button, leave_button]:
+		if b == null:
+			continue
 		b.focus_neighbor_top = b.get_path_to(last)
 		b.focus_neighbor_bottom = b.get_path_to(tab_buttons[current_tab] as Control)
 	for t: StringName in TABS:
@@ -259,6 +329,10 @@ func _update_dirty() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if is_leave_confirming() and event.is_action_pressed(&"ui_cancel"):
+		get_viewport().set_input_as_handled()
+		close_leave_confirm()
+		return
 	if controls_tab != null and (controls_tab.is_capturing() or not controls_tab.pending_conflict.is_empty()) \
 			and event.is_action_pressed(&"ui_cancel"):
 		get_viewport().set_input_as_handled()

@@ -43,7 +43,9 @@ func open_in_heist() -> OptionsScreen:
 	if heist_layer == null or not is_instance_valid(heist_layer):
 		return null
 	heist_screen = flow.OPTIONS_SCENE.instantiate() as OptionsScreen
+	heist_screen.in_heist = true
 	heist_screen.back_requested.connect(close_in_heist)
+	heist_screen.leave_heist_requested.connect(flow.call.bind(&"_leave_heist"))
 	heist_layer.add_child(heist_screen)
 	_set_local_input_paused(true)
 	if DisplayServer.get_name() != "headless":

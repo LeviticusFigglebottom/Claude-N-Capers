@@ -192,3 +192,57 @@ func test_live_heist_end_to_menus_keyboard() -> void:
 	_flow.queue_free()
 	_flow = null
 	await wait_frames(3)
+
+
+## D-082 fix (lead ruling): in a live heist, pad-only: Start -> d-pad to Leave Heist (on screen at 720p)
+## -> A opens the confirm (focus on Cancel) -> B cancels -> Leave again -> d-pad to Confirm -> A leaves
+## the heist and returns to the hub.
+func test_live_heist_leave_with_pad() -> void:
+	if UiNav.global_class(&"HeistLauncher") == null:
+		skip("no HeistLauncher")
+		return
+	SaveService.save_profile(PlayerProfile.new_default(), SLOT)
+	_flow = FLOW_SCENE.instantiate() as MenuFlow
+	add_child(_flow)
+	await wait_frames(1)
+	_flow.show_hub()
+	await wait_frames(1)
+	assert_true(_flow.direct_launch(LaunchArgs.parse(PackedStringArray(["--heist=glasshouse", "--seed=45",
+			"--difficulty=0"]))))
+	assert_true(await wait_until(func() -> bool: return _find_hud() != null and _flow.runtime != null, 60.0), "live")
+	await wait_frames(5)
+	await _pad(JOY_BUTTON_START)
+	var opts: OptionsScreen = _flow.options_menu.heist_screen
+	assert_true(opts != null and opts.leave_button != null, "in-heist Options has Leave Heist")
+	if opts == null or opts.leave_button == null:
+		return
+	var vis: Rect2 = opts.get_viewport().get_visible_rect().grow(1.0)
+	assert_true(vis.encloses(opts.leave_button.get_global_rect()), "Leave Heist on screen at 720p")
+	for _attempt: int in range(2):
+		var steps: int = 0
+		while opts.get_viewport().gui_get_focus_owner() != opts.leave_button and steps < 40:
+			var on_footer: bool = opts.get_viewport().gui_get_focus_owner() in [opts.apply_button,
+					opts.revert_button, opts.reset_button, opts.back_button]
+			await _pad(JOY_BUTTON_DPAD_RIGHT if on_footer else JOY_BUTTON_DPAD_UP)
+			steps += 1
+		assert_eq(opts.get_viewport().gui_get_focus_owner(), opts.leave_button as Control, "d-pad reaches Leave Heist")
+		await _pad(JOY_BUTTON_A)
+		await wait_frames(2)
+		assert_true(opts.is_leave_confirming(), "A opens the confirm")
+		assert_eq(opts.get_viewport().gui_get_focus_owner(), opts.leave_cancel_button as Control, "focus on Cancel")
+		assert_true(vis.encloses(opts.leave_confirm_button.get_global_rect()), "Confirm on screen at 720p")
+		if _attempt == 0:
+			await _pad(JOY_BUTTON_B)
+			await wait_frames(2)
+			assert_false(opts.is_leave_confirming(), "B cancels the confirm")
+			assert_true(_flow.runtime != null, "still in the heist")
+			assert_true(opts.is_visible_in_tree(), "Options stays open")
+	await _pad(JOY_BUTTON_DPAD_DOWN)
+	assert_eq(opts.get_viewport().gui_get_focus_owner(), opts.leave_cancel_button as Control, "d-pad stays in the dialog")
+	await _pad(JOY_BUTTON_DPAD_LEFT)
+	assert_eq(opts.get_viewport().gui_get_focus_owner(), opts.leave_confirm_button as Control)
+	await _pad(JOY_BUTTON_A)
+	assert_true(await wait_until(func() -> bool: return _flow.current == (_flow.hub as Control) and _flow.visible, 10.0),
+			"Confirm leaves the heist to the hub")
+	assert_true(_flow.runtime == null, "heist torn down")
+	assert_false(CrewInput.is_held(&"options"), "input pause released")
