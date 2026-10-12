@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="HubStationList" load_steps=11 format=3]
+[gd_resource type="Resource" script_class="HubStationList" load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://content/ui/data/hub_station_list.gd" id="1"]
 [ext_resource type="Script" path="res://content/ui/data/hub_station.gd" id="2"]
@@ -67,6 +67,14 @@ desc_key = &"ui.hub.station.notoriety.desc"
 icon_kind = &"notoriety"
 target = &"notoriety"
 
+[sub_resource type="Resource" id="st_profile"]
+script = ExtResource("2")
+id = &"profile"
+title_key = &"ui.hub.station.profile"
+desc_key = &"ui.hub.station.profile.desc"
+icon_kind = &"profile"
+target = &"career"
+
 [resource]
 script = ExtResource("1")
-stations = Array[ExtResource("2")]([SubResource("st_board"), SubResource("st_planning"), SubResource("st_armory"), SubResource("st_masks"), SubResource("st_range"), SubResource("st_crew"), SubResource("st_jukebox"), SubResource("st_notoriety")])
+stations = Array[ExtResource("2")]([SubResource("st_board"), SubResource("st_planning"), SubResource("st_armory"), SubResource("st_masks"), SubResource("st_range"), SubResource("st_crew"), SubResource("st_jukebox"), SubResource("st_notoriety"), SubResource("st_profile")])
