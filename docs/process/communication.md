@@ -2,15 +2,24 @@
 
 Owner: **LEAD**.
 
-## 1. The four sessions
+## 1. The team (Grok Bot agents, D-078)
 
-| Role | What it is | Branch it pushes to | Owns |
-|---|---|---|---|
-| **LEAD** (orchestrator) | Claude Code cloud session that created this repo | `claude/dreamy-hamilton-pc7vck` (= **trunk**, the integration branch) | architecture, contracts, docs, core/, contracts/, CI, integration tests, merges |
-| **ENV A — Core Systems & AI** | Separate Claude Code cloud session, own container | `env/a-core` | `game/systems/**`, `game/tests/a/**`, `docs/status/env_a.md` |
-| **ENV B — Content & Progression** | Separate Claude Code cloud session, own container | `env/b-content` | `game/content/**`, `game/assets/weapons/**`, `tools/blender/weapons/**`, `game/tests/b/**`, `docs/status/env_b.md` |
-| **ENV D — Characters & Art Production** (D-027) | Separate Claude Code cloud session, own container | `env/d-art` | characters, animations, masks, `char_` materials, officer style-sample renders (see owners.json) |
-| **ENV C — Worlds & Art** | Separate Claude Code cloud session, own container | `env/c-worlds` | `game/world/**`, `game/assets/**` (except weapons), `tools/blender/**` (except weapons), `tools/texgen/**`, `tools/audiogen/**`, `tools/levelcheck/**`, `docs/levels/**`, `docs/design/heists/**` (drafts), `game/tests/c/**`, `docs/status/env_c.md` |
+Since 2026-10-12 the team is a set of **Grok Bot agents** on one shared Linux box (Aaron's Grok Bot computer).
+The earlier Claude Code cloud sessions and the WSL-local subagents are retired; their unpushed work is on GitHub as
+`backup/2026-10-12/*`. Nobody works in the WSL distro or the Windows checkout on Aaron's PC.
+
+| Role | Agent id | Clone on the box | Branch it pushes to | Owns |
+|---|---|---|---|---|
+| **LEAD** | (lead agent) | `/workspace/cnc-team/lead` | `claude/dreamy-hamilton-pc7vck` (= **trunk**) | architecture, contracts, docs, core/, CI, integration tests, merges |
+| **ENV A — Core Systems & AI** | `d7c2f4bb-5bea-4fc5-92cf-7e3ab20a4989` | `/workspace/cnc-team/env-a` | `env/a-core` | `game/systems/**`, `game/tests/a/**`, `docs/status/env_a.md` |
+| **ENV B — Content & Progression** | `ccd1c890-1137-4e8a-a422-afc12a60c7bd` | `/workspace/cnc-team/env-b` | `env/b-content` | `game/content/**`, weapons, `game/tests/b/**`, `docs/status/env_b.md` |
+| **ENV C — Worlds & Art** | `ff4866f2-1d02-4efa-a2d8-53aa78a87e49` | `/workspace/cnc-team/env-c` | `env/c-worlds` | `game/world/**`, assets (non-weapon/char), tools/blender, texgen, audiogen, levelcheck, `docs/levels/**`, `game/tests/c/**` |
+| **ENV D — Characters & Art** | `a9ad80ca-9f0c-4442-a4c1-3bef16990422` | `/workspace/cnc-team/env-d` | `env/d-art` | characters, animations, masks, `char_` materials (see owners.json) |
+| **ENV P — Playability** | `3d922e3f-065c-4ebc-857e-dc8cc2e404e9` | `/workspace/cnc-team/env-p` | `env/p-play` | `game/systems/player/**`, `fp_viewmodel*`, `crew_tweak.*`, `game/tests/p/**` |
+
+Shared toolchain (installed once by the LEAD): Godot 4.7.2 `/opt/godot/godot`, Blender 4.5.14 `/opt/blender/blender`,
+pip deps from `tools/requirements.txt` (gdlint in `~/.local/bin`), xvfb-run. The box is shared: run long Godot
+suites under `timeout`, Blender with `--threads 1`, and don't start more than one full check_all per env at a time.
 
 The authoritative ownership map is `tools/ci/owners.json`. `tools/ci/check_ownership.py <env>`
 fails if an env branch diverges from trunk in any file it does not own.
@@ -19,17 +28,12 @@ Each environment is a **separate session with its own container, tools, and suba
 domain an environment works subagentically (spawns its own Agent subtasks in parallel for
 independent pieces) but its session is the single accountable owner of its branch.
 
-### Live sessions
-
-| Role | Session id | Branch |
-|---|---|---|
-| LEAD | `session_01FCtEudjuevi6MHipm4R11R` | `claude/dreamy-hamilton-pc7vck` |
-| ENV A | `session_016DAFQRw44j8Tz7NA7mCGJw` | `env/a-core` |
-| ENV B | `session_01UY8DitCKjvthQK7cYwvcja` | `env/b-content` |
-| ENV C | `session_01V39kctNgrNn7iYUNoTEiNF` | `env/c-worlds` |
-| ENV D | `session_016Esc7YANZPKv4jDCqWdvQ8` | `env/d-art` |
-
-Sessions talk with the `claude-code-remote` `send_message` tool. Environments message only the lead.
+### Coordination surfaces
+* **BOARD** `/workspace/cnc-team/BOARD.md` (on the box, newest entry on top, `[YYYY-MM-DD HH:MM ET] [ROLE] text`):
+  short-lived coordination: toolchain state, who is merging, blockers, pushes, queue changes.
+* **SendToAgent** (Grok Bot agent messaging, ids in the table above): direct messages. Delivered on the
+  recipient's next turn, not live, so put everything needed in one message.
+* **docs/ on trunk**: anything durable (decisions, contracts, status). Nothing is agreed until it is in docs on trunk.
 
 ## 2. Branch flow
 
@@ -70,15 +74,14 @@ template (newest entry on top, keep the last 10 entries):
 
 ## 4. Messaging
 
-* Envs report **only to the lead**, never to each other.
-* After pushing a status update an env sends the lead session a short message:
-  `"[ENV A] status updated @ <sha>; ready-for-integration: yes; questions: QA-3, QA-4"`.
-* The lead dispatches tasks by message to each env session, always referencing the
-  task id in `docs/roadmap.md` and the contracts that apply.
-* Cross-env needs ("ENV A needs a `KeycardSlot` with a facing marker") are written as a
-  **question in the asking env's status file**. The lead answers by updating a contract or
-  appending to `docs/decisions.md`, then notifies **both** envs. **Nothing is agreed until it is
-  written in docs on trunk.**
+* Envs report **to the lead** with SendToAgent and a BOARD line; they do not task each other.
+* After pushing (or, for ENV P, committing) a checked unit an env posts on BOARD and sends the lead:
+  `"[ENV A] status @ <sha>; check_all: PASS; ready-for-integration: yes; questions: QA-3"`.
+* The lead dispatches tasks by SendToAgent (mirrored on BOARD), referencing the roadmap / playability-list id
+  and the contracts that apply.
+* Cross-env needs are written as a **question in the asking env's status file**; the lead answers in a contract
+  or `docs/decisions.md` and notifies both envs.
+* Pushing to trunk needs the lead's gate (check_all PASS) and the product owner's approval; never force-push.
 
 ## 5. Lead review checklist (before every merge)
 
