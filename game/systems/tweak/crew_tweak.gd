@@ -22,6 +22,8 @@ extends Resource
 @export var step_height_m: float = 0.35
 ## Steepest walkable ramp (deg); steeper is a wall. >= the navmesh agent_max_slope (40 deg).
 @export var max_slope_deg: float = 45.0
+## D-085: max sideways search (m) for an opening when walking head-on into a wall / frame edge (0 = off).
+@export var edge_assist_m: float = 0.45
 ## Camera-only smoothing of step-up / step-down height changes (1/s, exponential); gameplay position is exact.
 @export var step_smooth_rate: float = 14.0
 

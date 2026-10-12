@@ -314,3 +314,60 @@ func test_curb_diagonal_strafe_and_slow() -> void:
 	c = await _start(0, Vector3(-3.0, 0.05, -2.0 + Tweak.crew().capsule_radius + 0.02), 0.0)
 	var r2: Dictionary = await _walk(0, 0.0, func() -> bool: return c.global_position.y > 0.12, 2.0)
 	assert_true(r2["ok"], "from a standstill at the face (y %.3f)" % c.global_position.y)
+
+
+## D-085: a 0.9 m door (capsule 0.35 m radius, 0.1 m clearance per side) in a 0.2 m wall at z = -3.
+func _door_wall(z: float, width: float = 0.9) -> void:
+	var t: float = 0.2
+	var half: float = width * 0.5
+	_box(Vector3(-half - 5.0, 1.25, z), Vector3(10.0, 2.5, t))
+	_box(Vector3(half + 5.0, 1.25, z), Vector3(10.0, 2.5, t))
+	_box(Vector3(0.0, 2.35, z), Vector3(width, 0.3, t))  # lintel at 2.2 m
+
+
+## D-085: walking at the door 30 deg off its axis (aimed at the opening) slides through the frame, no stall.
+func test_door_30deg_approach_slides_through() -> void:
+	_door_wall(-3.0)
+	await wait_physics_frames(2)
+	for side: float in [1.0, -1.0]:
+		var yaw: float = deg_to_rad(30.0) * side  # +yaw turns left (towards -X)
+		var dist: float = 3.0 - 0.0  # start 3 m before the wall, on the line through the door centre
+		var start: Vector3 = Vector3(dist * tan(yaw), 0.05, 0.0)
+		var c: CrewController = await _start(0, start, yaw)
+		var stall: Array[int] = [0]
+		var r: Dictionary = await _walk(0, yaw, func() -> bool:
+			if Vector2(c.velocity.x, c.velocity.z).length() < 0.3:
+				stall[0] += 1
+			return c.global_position.z < -4.0, 4.0)
+		assert_true(r["ok"], "%s 30 deg: through the door (x %.2f z %.2f)" % ["left" if side > 0 else "right",
+			c.global_position.x, c.global_position.z])
+		assert_true(stall[0] < 10, "no stall (%d slow ticks)" % stall[0])
+
+
+## D-085: walking and sprinting straight at a 0.9 m door (with a 3 cm sill) up to 5 cm off the frame edge
+## (capsule centre on/next to the edge: a flat head-on hit) gets through instead of stopping dead.
+func test_door_head_on_frame_edge_walk_and_sprint() -> void:
+	_door_wall(-4.0)
+	_box(Vector3(0.0, 0.015, -4.0), Vector3(0.9, 0.03, 0.3))
+	await wait_physics_frames(2)
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)  # casing cannot sprint
+	for off: float in [0.3, 0.45, -0.45, 0.5]:
+		for spr: bool in [false, true]:
+			c = await _start(0, Vector3(off, 0.05, 0.0), 0.0)
+			if spr:
+				_inp.press(&"sprint")
+			var sprinted: Array[bool] = [false]
+			var stall: Array[int] = [0]
+			var r: Dictionary = await _walk(0, 0.0, func() -> bool:
+				sprinted[0] = sprinted[0] or c.sprinting
+				if c.global_position.z < -1.0 and c.global_position.z > -4.6 \
+						and Vector2(c.velocity.x, c.velocity.z).length() < 0.3:
+					stall[0] += 1
+				return c.global_position.z < -5.0, 4.0)
+			_inp.release(&"sprint")
+			var tag: String = "off %.2f %s" % [off, "sprint" if spr else "walk"]
+			assert_true(r["ok"], "%s: through the door (x %.2f z %.2f)" % [tag, c.global_position.x, c.global_position.z])
+			assert_true(stall[0] < 8, "%s: no stall (%d slow ticks)" % [tag, stall[0]])
+			if spr:
+				assert_true(sprinted[0], "%s: actually sprinted" % tag)

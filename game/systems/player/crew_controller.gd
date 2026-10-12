@@ -433,6 +433,7 @@ func _simulate(delta: float) -> void:
 	stamina.tick(sprinting, delta)
 	_jump_latch = i.jump  # PI-05: a held jump fires once; the next jump needs a release
 	_move_grounded(delta, tw)
+	_edge_assist(wish, delta, tw)
 	_step_offset *= exp(-tw.step_smooth_rate * delta)
 	if absf(_step_offset) < 0.0005:
 		_step_offset = 0.0
@@ -505,6 +506,44 @@ func _snap_down(tw: CrewTweak) -> bool:
 		return false
 	global_position += col.get_travel()
 	return true
+
+
+## D-085: the capsule (0.35 m) walks paths laid out for the 0.30 m nav agent. When a move is stopped head-on by a
+## wall but an opening (door, gap between props) is within CrewTweak.edge_assist_m to one side, slide sideways
+## toward it (nearest side first) at up to the wish speed instead of stopping dead. Pure collision probes,
+## deterministic, same for server, prediction and AI.
+func _edge_assist(wish: Vector3, delta: float, tw: CrewTweak) -> void:
+	var w: Vector3 = Vector3(wish.x, 0.0, wish.z)
+	if w.length() < 0.5 or tw.edge_assist_m <= 0.0:
+		return
+	var dir: Vector3 = w.normalized()
+	var head_on: bool = false
+	for k: int in range(get_slide_collision_count()):
+		var n: Vector3 = get_slide_collision(k).get_normal()
+		n.y = 0.0
+		if n.length() > 0.5 and n.normalized().dot(dir) < -0.85:
+			head_on = true
+	if not head_on or Vector3(velocity.x, 0.0, velocity.z).dot(dir) > w.length() * 0.5:
+		return
+	var side: Vector3 = dir.cross(Vector3.UP).normalized()
+	var lift: Vector3 = Vector3.UP * tw.step_height_m  # look past sills / lips the step-up takes anyway
+	var probe: Vector3 = dir * (tw.capsule_radius + 0.1)
+	var steps: int = int(ceil(tw.edge_assist_m / 0.05))
+	for i: int in range(1, steps + 1):
+		for sgn: float in [1.0, -1.0]:
+			var off: Vector3 = side * sgn * minf(0.05 * i, tw.edge_assist_m)
+			if test_move(global_transform, off, null, safe_margin, false, 1):
+				continue  # no room to shift that way
+			var xf: Transform3D = global_transform
+			xf.origin += off
+			if test_move(xf, lift, null, safe_margin, false, 1):
+				continue
+			xf.origin += lift
+			if test_move(xf, probe, null, safe_margin, false, 1):
+				continue
+			var step: float = minf(off.length(), w.length() * delta)
+			move_and_collide(side * sgn * step)
+			return
 
 
 ## Any contact steeper than the walkable slope.
