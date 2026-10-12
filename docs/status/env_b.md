@@ -87,8 +87,8 @@ Newest entry first, keep the last 10.
 ### Queue (about 2.5 h)
 1. PQ-B-19 Live interact key on a real interactable with PInputDriver (when on trunk) (40 min).
 2. PQ-B-1 Switch real-input helpers to PInputDriver (20 min).
-3. PQ-B-23 Floating HUD text on bright scenes: lead decision outline 8 vs backing panel, then apply + re-capture (30 min).
-4. PQ-B-24 Contrast capture for menus (hub, payday, loadout) over the real 3D safehouse backdrop (40 min).
+3. PQ-B-23 Floating HUD text on bright scenes: lead decision outline 8 vs backing panel, then apply + re-capture (30 min). BLOCKED: needs the lead to choose outline 8 or a backing panel, and the re-capture needs Env D's flags.
+4. PQ-B-24 Contrast capture for menus (hub, payday, loadout) over the real 3D safehouse backdrop (40 min). BLOCKED: contrast stays blocked until Env D posts the flags.
 5. PQ-B-25 Live heist: domination prompt + casing hint seen in a real run once A/P fields are on trunk (30 min).
 6. PQ-B-26 Gamepad-only Board (contract pick) and Notoriety reward picks (30 min).
 
@@ -382,3 +382,4 @@ Newest entry first, keep the last 10.
 - PQ-B-26 Board half done (9ebf482a): pad-only Board -> Take -> briefing -> B back. Briefing no longer logs `unknown loot id 'loot.small_valuables'` (skips ids without a LootDef via ContentDB.has). Notoriety reward pick with pad still open.
 - PQ-B-1 trial (scratch worktree, discarded, nothing committed): test_pp_input helpers (_accept/_press/_key) switched to PInputDriver from origin/env/p-play plus P's player_input.gd; test_assume_captured=true in before_each, release_all() in after_each. Result: 13 tests, 0 failed, 1 skipped, same as now. Ready to switch for real once round 34 is on trunk.
 - Contrast: kept BLOCKED until Env D posts the flags (lead's instruction). Note: hud_contrast_capture tool from earlier (xvfb + LIBGL_ALWAYS_SOFTWARE=1, opengl3) is already in the tree; UNOFFICIAL: kept in the tree, its PASS is not a sign-off; swap to Env D's flags when posted.
+- PQ-B-26 DONE (9ebf482a Board, e0cc1db8 Notoriety rank-up + reward pick with pad only).
