@@ -74,6 +74,24 @@ Newest entry first, keep the last 10.
 6. PQ-B-22 HUD contrast captures via xvfb + lavapipe (40 min, may stay blocked).
 7. PQ-B-1 Switch real-input helpers to PInputDriver (when on trunk) (20 min).
 
+### Round 5 (2026-10-12 ~23:10 UTC, D-082 freeze: fixes only)
+- b5a228ca PQ-B-17: per-screen readability check (visible text >= 14 px at 720p). DimLabel 20 -> 21 units; small overrides (skill tree 18/20, perk deck 19, preplan 20, blueprint 17, scoreboard 18) -> 21. All screen / layout tests still pass.
+- 9641b6b2 PI-13 (ENV P casing_blocked): Hud.watch_crew() connects the local CrewController's `casing_blocked(action)` when the signal exists (no-op otherwise); 1.5 s "Mask up to sprint / crouch / jump ({key})" hint.
+- 5cf1224d PQ-B-18: real bug, large subtitles (36 units, 800 wide) wrapped to 225 units and covered the interaction prompt. RadioTweak.max_height_px (300) drops the oldest row; tests for small / medium / large x hud_scale 1.0 / 1.5.
+- 2f890e51 PQ-B-22: rendered HUD contrast works without a GPU. Exact command (from repo root):
+  `LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --rendering-driver opengl3 --resolution 1280x720 res://tests/b/render/hud_contrast_capture.tscn`
+  Renderer: Mesa llvmpipe (OpenGL 4.5 compat), ~1 s. PNGs: ~/.local/share/godot/app_userdata/CAPERWORKS/hud_contrast_{dark,mid,bright}.png. Result: PASS (0 labels < 4.5:1; text vs outline/panel, brightest vs darkest 3% px). Caveat: the metric is coarse; by eye, floating labels with no panel (status "Unmasked: casing", green "Carrying", interaction prompt) are the weakest on the bright backdrop. Candidate fix for lead review: HudLabel outline 6 -> 8 or a panel behind status / interaction.
+- 219debc4 PQ-B-20: live heist, pad Start opens Options over the HUD (crew input held, 720p fit), pad B closes and resumes.
+- 64b9fd17 PQ-B-21: live heist end_heist -> payday -> key 1 card -> Enter -> main menu.
+- PQ-B-19 / PQ-B-1 waiting: p_input_driver.gd still not on origin trunk (64f10747).
+### Queue (about 2.5 h)
+1. PQ-B-19 Live interact key on a real interactable with PInputDriver (when on trunk) (40 min).
+2. PQ-B-1 Switch real-input helpers to PInputDriver (20 min).
+3. PQ-B-23 Floating HUD text on bright scenes: lead decision outline 8 vs backing panel, then apply + re-capture (30 min).
+4. PQ-B-24 Contrast capture for menus (hub, payday, loadout) over the real 3D safehouse backdrop (40 min).
+5. PQ-B-25 Live heist: domination prompt + casing hint seen in a real run once A/P fields are on trunk (30 min).
+6. PQ-B-26 Gamepad-only Board (contract pick) and Notoriety reward picks (30 min).
+
 ## 2026-10-11 UTC (7): B7 loose ends (lead answers); P5 paused (D-076)
 ### Done
 - B7-01 `profile` station (hub_map v1.1, d1a89b5f): `st_profile` (target `career`, icon `profile`) in data/ui/hub_stations.tres.
