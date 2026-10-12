@@ -212,9 +212,18 @@ func _can_engage(c: CrewController) -> bool:
 		return false  # L2.12 (A3-04): police-cuffed while downed = a downed player who cannot shoot
 	var tw: CombatTweak = CombatTweak.data()
 	var aim: Vector3 = _aim_point(c)
-	if _npc.eye_position().distance_to(aim) > tw.npc_max_range_m:
+	if _npc.eye_position().distance_to(aim) > target_range_for(c):
 		return false
 	return CombatSystem.has_npc_los(_npc, _npc.eye_position(), aim, [_npc, c])  # A3-06: shields
+
+
+## S2.7: loud targeting range from the target's detection risk, lerp(min, max, (DR - 3) / 72) (80 m at DR 3,
+## 180 m at DR 75). Falls back to StealthTweak.default_detection_risk without a loadout.
+static func target_range_for(c: CrewController) -> float:
+	var tw: CombatTweak = CombatTweak.data()
+	var dr: float = float(c.loadout.detection_risk) if c != null and c.loadout != null \
+		else float(Tweak.stealth().default_detection_risk)
+	return lerpf(tw.ai_target_range_min_m, tw.ai_target_range_max_m, clampf((dr - 3.0) / 72.0, 0.0, 1.0))
 
 
 func _aim_point(c: CrewController) -> Vector3:

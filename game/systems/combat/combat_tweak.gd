@@ -54,6 +54,9 @@ static var _cached: CombatTweak = null
 ## Delay before the first shot after acquiring a target (EnemyDef.params.aim_delay_s overrides, ◇).
 @export var npc_aim_delay_s: float = 0.6
 @export var npc_max_range_m: float = 60.0
+## S2.7: NPC loud targeting range at DR 3 / DR 75 (lerped on the target's detection risk).
+@export var ai_target_range_min_m: float = 80.0
+@export var ai_target_range_max_m: float = 180.0
 ## Point on the crew member NPCs aim at (height above the feet).
 @export var npc_aim_height_m: float = 1.2
 ## Hit chance by distance (x = metres, y = chance 0..1), linear between points (◇ curve).
