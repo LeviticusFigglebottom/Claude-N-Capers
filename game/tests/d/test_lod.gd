@@ -136,3 +136,35 @@ func test_specials_have_no_lod2() -> void:
 			assert_near((mi as MeshInstance3D).visibility_range_end, 0.0, 0.001, "%s/%s never culled" % [id, mi.name])
 		root.queue_free()
 	assert_true(n >= 8, "specials checked (%d)" % n)
+
+
+class _FakeView extends Node:
+	var zoom_factor: float = 4.0
+
+
+## D-084: zoom_factor read defensively; the CrowdLod switch scales by it and returns to base at 1.0.
+func test_zoom_scales_crowd_lod_switch() -> void:
+	assert_near(CrowdLod.zoom_factor_of(null), 1.0, 0.0001, "null view -> 1.0")
+	var plain: Node = Node.new()
+	assert_near(CrowdLod.zoom_factor_of(plain), 1.0, 0.0001, "view without zoom_factor -> 1.0")
+	plain.free()
+	var view: _FakeView = _FakeView.new()
+	assert_near(CrowdLod.zoom_factor_of(view), 4.0, 0.0001, "zoom_factor read")
+	view.zoom_factor = 0.5
+	assert_near(CrowdLod.zoom_factor_of(view), 1.0, 0.0001, "zoom < 1 clamps to 1")
+	view.free()
+	var root: Node3D = (load("res://world/characters/club_patron/club_patron.tscn") as PackedScene).instantiate() as Node3D
+	add_child(root)
+	var proxy: MeshInstance3D = root.get_node("Skeleton3D/" + CrowdLod.NODE_NAME) as MeshInstance3D
+	assert_true(proxy.is_in_group(CrowdLod.GROUP), "CrowdLod is in the crowd_lod group")
+	var base: float = proxy.visibility_range_begin
+	assert_true(CrowdLod.apply_zoom_all(get_tree(), 4.0) >= 1, "apply_zoom_all found the proxy")
+	assert_near(proxy.visibility_range_begin, base * 4.0, 0.001, "switch x4 at 4x zoom")
+	var body: MeshInstance3D = CrowdLod.source_meshes(proxy.get_parent())[0]
+	assert_near(body.visibility_range_end, base * 4.0, 0.001, "LOD0 end follows the switch")
+	CrowdLod.apply_zoom(root, 1.0)
+	assert_near(proxy.visibility_range_begin, base, 0.001, "back to base at 1x")
+	var special: Node = (load("res://world/characters/tac_heavy/tac_heavy.tscn") as PackedScene).instantiate()
+	assert_false(CrowdLod.apply_zoom(special, 4.0), "specials have nothing to scale")
+	special.free()
+	root.queue_free()

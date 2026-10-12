@@ -226,7 +226,7 @@ bone_idx = 1
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Hip" index="0" unique_id=1030429089]
 transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.20539999, 0.064399995, 0.0773)
 
-[node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="10" unique_id=560548742]
+[node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="10" unique_id=560548742 groups=["crowd_lod"]]
 visibility_range_begin = 20.0
 visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")

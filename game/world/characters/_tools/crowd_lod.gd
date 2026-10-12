@@ -29,6 +29,9 @@ const MIN_SURFACE_TRIS: int = 150
 const CROWD_SWITCH_M: float = 20.0
 const UNIT_SWITCH_M: float = 35.0
 const MARGIN_M: float = 1.0
+## D-084: every CrowdLod proxy is in this group (persistent, set by the assembler) so the switch can follow zoom.
+const GROUP: StringName = &"crowd_lod"
+const META_BASE: StringName = &"crowd_lod_switch_m"
 ## Mesh node names a character may have and still get LOD2 (anything else is gameplay-visible).
 const PLAIN_MESHES: Array[String] = ["Body", "Gear", "Hair", "Headwear", "Outfit"]
 const CROWD_SCRIPTS: Array[String] = [
@@ -69,6 +72,50 @@ static func source_meshes(skel: Node) -> Array[MeshInstance3D]:
 			out.append(c as MeshInstance3D)
 	out.sort_custom(func(a: MeshInstance3D, b: MeshInstance3D) -> bool: return String(a.name) < String(b.name))
 	return out
+
+
+## D-084: the camera zoom (ADS / scope) as a factor >= 1.0, read defensively: CrewView (ENV P) publishes
+## `zoom_factor`; anything without it (or null) is 1.0.
+static func zoom_factor_of(view: Object) -> float:
+	if view == null or not is_instance_valid(view):
+		return 1.0
+	var z: Variant = view.get(&"zoom_factor")
+	if typeof(z) != TYPE_FLOAT and typeof(z) != TYPE_INT:
+		return 1.0
+	return maxf(1.0, float(z))
+
+
+## D-084: scale one character's LOD switch by `zoom` (switch = base * zoom; base is the assembled distance).
+## Returns false when the character has no CrowdLod (specials, heisters: nothing to scale).
+static func apply_zoom(proxy_or_character: Node, zoom: float) -> bool:
+	var proxy: MeshInstance3D = proxy_or_character as MeshInstance3D
+	if proxy == null or String(proxy.name) != NODE_NAME:
+		proxy = proxy_or_character.get_node_or_null(NodePath("Skeleton3D/" + NODE_NAME)) as MeshInstance3D
+	if proxy == null:
+		return false
+	if not proxy.has_meta(META_BASE):
+		proxy.set_meta(META_BASE, proxy.visibility_range_begin)
+	var base: float = float(proxy.get_meta(META_BASE))
+	if base <= 0.0:
+		return false
+	var d: float = base * maxf(1.0, zoom)
+	proxy.visibility_range_begin = d
+	var skel: Node = proxy.get_parent()
+	if skel != null:
+		for mi: MeshInstance3D in source_meshes(skel):
+			mi.visibility_range_end = d
+	return true
+
+
+## D-084: call once per frame (or when zoom changes) from the local camera owner, e.g. in CrewView:
+##   CrowdLod.apply_zoom_all(get_tree(), CrowdLod.zoom_factor_of(self))
+## Returns the number of proxies updated.
+static func apply_zoom_all(tree: SceneTree, zoom: float) -> int:
+	var n: int = 0
+	for node: Node in tree.get_nodes_in_group(GROUP):
+		if apply_zoom(node, zoom):
+			n += 1
+	return n
 
 
 ## Review renders: show one level regardless of camera distance (lod2 = false: the glb meshes only).
