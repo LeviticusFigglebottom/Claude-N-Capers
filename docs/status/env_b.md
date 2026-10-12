@@ -377,3 +377,8 @@ Newest entry first, keep the last 10.
 - QB-51: ENV A should rely on content classes `MaskCatalog.resolve/from_descriptor` + `MaskComposer.instantiate` to attach masks. Record this in characters.md?
 ### Ready for integration
 - yes (everything up to 8eeb53c); `check_all.sh --env b` result: PASS
+
+### 2026-10-12 19:05 ET
+- PQ-B-26 Board half done (9ebf482a): pad-only Board -> Take -> briefing -> B back. Briefing no longer logs `unknown loot id 'loot.small_valuables'` (skips ids without a LootDef via ContentDB.has). Notoriety reward pick with pad still open.
+- PQ-B-1 trial (scratch worktree, discarded, nothing committed): test_pp_input helpers (_accept/_press/_key) switched to PInputDriver from origin/env/p-play plus P's player_input.gd; test_assume_captured=true in before_each, release_all() in after_each. Result: 13 tests, 0 failed, 1 skipped, same as now. Ready to switch for real once round 34 is on trunk.
+- Contrast: kept BLOCKED until Env D posts the flags (lead's instruction). Note: hud_contrast_capture tool from earlier (xvfb + LIBGL_ALWAYS_SOFTWARE=1, opengl3) is already in the tree; UNOFFICIAL: kept in the tree, its PASS is not a sign-off; swap to Env D's flags when posted.
