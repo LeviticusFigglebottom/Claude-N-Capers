@@ -395,3 +395,20 @@ func _make_player() -> CuePlayer:
 	p.siren_delay_s = 0.05
 	add_child(p)
 	return p
+
+
+## cue.payday_tick (ENV B payday timer, last seconds): a short 2D UI tick on the UI bus.
+func test_payday_tick_cue() -> void:
+	if _reg == null:
+		skip("no registry")
+		return
+	var c: AudioCueDef = _reg.get_cue(&"cue.payday_tick")
+	assert_true(c != null, "registry has cue.payday_tick")
+	if c == null:
+		return
+	assert_false(c.positional, "payday_tick is 2D")
+	assert_eq(c.bus, &"UI", "payday_tick on the UI bus")
+	assert_false(c.loop, "payday_tick does not loop")
+	assert_eq(c.streams.size(), 1, "one tick stream")
+	if c.streams.size() > 0:
+		assert_true(c.streams[0].get_length() < 0.2, "a short tick (%.3f s)" % c.streams[0].get_length())

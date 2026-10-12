@@ -1319,6 +1319,14 @@ def ui_click(rng: np.random.Generator, v: int) -> np.ndarray:
     return osc.sine(1200, dur) * env.exp_decay(dur, 0.025, 0.0004) + click(rng, (2600.0,), dur, 4, 0.003, 0.2)
 
 
+def payday_tick(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Payday timer tick (ENV B, last seconds of the payday card pick): a dry clock tick, 1.8 kHz
+    damped sine over a 3.2 kHz wood-like transient, 60 ms. Niche: drier and lower than ui_click,
+    no pitch rise (unlike detect_tick), so it reads as a countdown, not as UI or detection."""
+    dur = 0.06
+    return osc.sine(1800, dur) * env.exp_decay(dur, 0.018, 0.0003) * 0.8 + click(rng, (3200.0,), dur, 4, 0.002, 0.35)
+
+
 # ============================================================ QA-28 / D-049: P3 specials + new prefabs
 # Readability (PD2 rule): every special tell is short, rhythmic or tonal, and centred in the
 # 600 Hz - 4 kHz region where the assault stem and gunfire leave the most room (checked against
@@ -2005,6 +2013,8 @@ CUES: list[CueSpec] = [
     CueSpec("zipline_attach", zipline_attach, max_distance=20.0, pitch_jitter=0.04, note="QA-15"),
     CueSpec("lockpick", lockpick, loop=True, max_distance=8.0, volume_db=-8.0),
     CueSpec("ui_click", ui_click, bus="UI", positional=False, volume_db=-10.0, cooldown_s=0.02),
+    CueSpec("payday_tick", payday_tick, bus="UI", positional=False, volume_db=-8.0, cooldown_s=0.2,
+            note="ENV B payday timer: one tick per second in the last seconds (Lead-approved polish, D-082)"),
     CueSpec("phantom_hum", phantom_hum, bus="Enemies", loop=True, max_distance=15.0, volume_db=-2.0, note="QA-28"),
     CueSpec("phantom_charge", phantom_charge, bus="Enemies", max_distance=30.0, cooldown_s=1.0, note="QA-28"),
     CueSpec("stinger_windup", stinger_windup, bus="Enemies", max_distance=30.0, cooldown_s=0.5, note="QA-28"),
