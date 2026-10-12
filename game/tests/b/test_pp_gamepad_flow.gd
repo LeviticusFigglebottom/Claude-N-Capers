@@ -86,3 +86,41 @@ func test_select_to_launch_gamepad_only() -> void:
 	assert_true(launched[0], "A on Launch")
 	f.queue_free()
 	await wait_frames(2)
+
+
+## PQ-B-15: from the armory loadout, every sub-screen (skills, perk deck, masks, workshop) opens with
+## d-pad + A and B returns to the loadout.
+func test_loadout_subscreens_gamepad_only() -> void:
+	SaveService.save_profile(PlayerProfile.new_default(), SLOT)
+	var f: MenuFlow = FLOW_SCENE.instantiate() as MenuFlow
+	add_child(f)
+	await wait_frames(2)
+	f.show_hub()
+	await wait_frames(1)
+	f.open_station(&"armory")  # setup only; the subject is the pad navigation below
+	await wait_frames(2)
+	var ls: LoadoutScreen = f.loadout_screen
+	assert_true(f.current == (ls as Control))
+	var subs: Array[Array] = [
+		[ls.skills_button, "skills", func() -> bool: return f.current is SkillTreeScreen],
+		[ls.perks_button, "perk deck", func() -> bool: return f.current is PerkDeckScreen],
+		[ls.masks_button, "masks", func() -> bool: return f.current is MaskScreen],
+		[ls.workshop_button, "workshop", func() -> bool:
+			return ls.workshop != null and is_instance_valid(ls.workshop) and ls.workshop.is_visible_in_tree()],
+	]
+	for sub: Array in subs:
+		var b: Button = sub[0] as Button
+		var label: String = sub[1] as String
+		var opened: Callable = sub[2] as Callable
+		if not await _nav_to(b, label + " button"):
+			continue
+		await _pad(JOY_BUTTON_A)
+		await wait_frames(2)
+		assert_true(opened.call(), "A opens " + label)
+		assert_true(_focus() != null, label + " gives the pad a focused control")
+		await _pad(JOY_BUTTON_B)
+		await wait_frames(3)
+		assert_true(f.current == (ls as Control) and not opened.call(), "B returns from %s to the loadout" % label)
+		assert_true(_focus() != null, "focus restored after leaving " + label)
+	f.queue_free()
+	await wait_frames(2)
