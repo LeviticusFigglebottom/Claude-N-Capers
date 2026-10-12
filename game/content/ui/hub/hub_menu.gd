@@ -102,6 +102,38 @@ func build_ui() -> void:
 	refresh_profile(profile)
 
 
+func _ready() -> void:
+	super()
+	chain_grid()
+
+
+## PQ-B-3: arrow / d-pad neighbours that match the 2-column card grid (UiScreen's vertical chain
+## would send "down" to the card on the right). Right of the right column goes to the profile panel,
+## below the last row to Main Menu. Tab order (focus_next) keeps the vertical chain.
+func chain_grid() -> void:
+	var cards: Array[Button] = []
+	for s: HubStation in stations.stations:
+		cards.append(station_buttons[s.id] as Button)
+	var n: int = cards.size()
+	if n == 0:
+		return
+	var side_first: Control = achievements_button
+	for i: int in range(n):
+		var b: Button = cards[i]
+		var col: int = i % CARD_COLUMNS
+		b.set_focus_neighbor(SIDE_LEFT, b.get_path_to(cards[i - 1]) if col > 0 else NodePath(""))
+		var right: Control = cards[i + 1] if col < CARD_COLUMNS - 1 and i + 1 < n else side_first
+		b.set_focus_neighbor(SIDE_RIGHT, b.get_path_to(right))
+		var up: Control = cards[i - CARD_COLUMNS] if i >= CARD_COLUMNS else back_button
+		b.set_focus_neighbor(SIDE_TOP, b.get_path_to(up))
+		var down: Control = cards[i + CARD_COLUMNS] if i + CARD_COLUMNS < n else back_button
+		b.set_focus_neighbor(SIDE_BOTTOM, b.get_path_to(down))
+	for c: Control in [achievements_button, options_button]:
+		c.set_focus_neighbor(SIDE_LEFT, c.get_path_to(cards[0]))
+	back_button.set_focus_neighbor(SIDE_TOP, back_button.get_path_to(cards[n - 1]))
+	back_button.set_focus_neighbor(SIDE_BOTTOM, back_button.get_path_to(cards[0]))
+
+
 func _build_header() -> HBoxContainer:
 	var header: HBoxContainer = UiBuild.hbox(20)
 	header.add_child(UiAccent.strip(UiAccent.table().fallback, 6.0))

@@ -127,3 +127,45 @@ func test_payday_card_click_and_urgent_timer() -> void:
 	assert_false(s.timer_is_urgent())
 	s.queue_free()
 	await wait_frames(1)
+
+
+func _press(action: StringName) -> void:
+	for down: bool in [true, false]:
+		var e: InputEventAction = InputEventAction.new()
+		e.action = action
+		e.pressed = down
+		Input.parse_input_event(e)
+		await wait_frames(2)
+
+
+func _focused(c: Control) -> Control:
+	return c.get_viewport().gui_get_focus_owner()
+
+
+## PQ-B-3: d-pad / arrows follow the 2-column grid.
+func test_hub_grid_navigation() -> void:
+	var f: MenuFlow = await _hub_flow()
+	var hub: HubMenu = f.hub
+	var ids: Array[StringName] = []
+	for s: HubStation in hub.stations.stations:
+		ids.append(s.id)
+	hub.station_button(ids[0]).grab_focus()
+	await wait_frames(1)
+	await _press(&"ui_right")
+	assert_eq(_focused(hub), hub.station_button(ids[1]) as Control, "right -> card on the right")
+	await _press(&"ui_down")
+	assert_eq(_focused(hub), hub.station_button(ids[3]) as Control, "down -> card below")
+	await _press(&"ui_left")
+	assert_eq(_focused(hub), hub.station_button(ids[2]) as Control, "left -> card on the left")
+	await _press(&"ui_up")
+	assert_eq(_focused(hub), hub.station_button(ids[0]) as Control, "up -> card above")
+	hub.station_button(ids[1]).grab_focus()
+	await wait_frames(1)
+	await _press(&"ui_right")
+	assert_eq(_focused(hub), hub.achievements_button as Control, "right of the grid -> profile panel")
+	hub.station_button(ids[ids.size() - 1]).grab_focus()
+	await wait_frames(1)
+	await _press(&"ui_down")
+	assert_eq(_focused(hub), hub.back_button as Control, "below the grid -> Main Menu")
+	f.queue_free()
+	await wait_frames(1)
