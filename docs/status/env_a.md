@@ -3,6 +3,27 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12 18:00 ET: A4-01 queue (L3.3 check, S2.7, S1.1, L2.1, S8.3, S9.5 safes)
+### Decisions (lead rulings 2026-10-12)
+- L3.3: the server checks a claimed HEAD zone: the point must be within CombatTweak.claim_head_tolerance_m (0.45 m)
+  of NpcBase.head_position(), else it is downgraded to BODY before the pellet rule (CombatSystem.validate_head_zones).
+- S8.3 / S9.5 follow pd2_fidelity.md + PD2 precedent; where spec and key text disagree the spec wins: camera loop 25 s
+  (InteractionTweak.camera_loop_active_s; camera_loop_s 5 s stays the station hold time). Domination stays 15 m / 20°.
+### Done (local commits, targeted tests PASS under timeout)
+- b33e4bdc L3.3 server head check (test_l3_3 3/3)
+- 118c516b S2.7 NpcGunner.target_range_for: lerp(80,180,(DR-3)/72) replaces npc_max_range_m (test_s2_7 1/1)
+- 7154507b L2.1 defense.health_regen_per_sec in CrewHealth.server_tick (test_l2_survival 14/14)
+- 1101d390 S1.1 InteractableComponent.casing_pickup_item (small_loot) + stealth.casing_can_pickup_items (s1_1 8/8)
+- d0969fc0 S8.3 CameraStation loops: nearest working camera, one per crew, 25 s (test_s8_3 1/1)
+- a952cc04 S9.5/A5-03 (safes): Safe.charges_required; C4 items first, else trip mines with interaction.shaped_charge;
+  DeployableSystem.count_of_kind/consume_kind; fallback deployable.trip_mine (count 3) (test_s9_8 4/4)
+- Full check_all was started then stopped per the new lead rule (no result). gdlint is not installed on the box.
+- Tests still use set_bot_intent/hold_interact: p_input_driver.gd is not on trunk yet.
+### Next
+- S9.5 doors (charges_required per door type, place/detonate interaction), trip-mine placement runtime, B strings.
+- Phase 2/3/4 modifier keys, L2.4, env_a_fidelity.md, A4-04; Env P casing STEALTH-hop fix in heist_runtime.gd when sent.
+- Broader regression run of test_s8_*, test_l3_*, test_a3_13 (interrupted, not run).
+
 ## 2026-10-12 17:50 ET: PLAYABILITY LIST (code reading only, Godot not installed)
 ### State
 - env/a-core = fb517093 + this commit; backup (S5.8, L3.3 local work) and trunk merged. **NOT tested, NOT pushed.**
