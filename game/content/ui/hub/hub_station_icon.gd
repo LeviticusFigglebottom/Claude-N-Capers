@@ -40,6 +40,8 @@ func _draw() -> void:
 			_jukebox(c, u, w)
 		&"notoriety":
 			_notoriety(c, u, w)
+		&"profile":
+			_profile(c, u, w)
 		_:
 			draw_circle(c, u * 0.2, color)
 
@@ -131,3 +133,16 @@ func _notoriety(c: Vector2, u: float, w: float) -> void:
 		var r: float = 0.56 if i % 2 == 0 else 0.23
 		pts.append(c + Vector2(cos(a), sin(a)) * u * r)
 	draw_colored_polygon(pts, color)
+
+
+## Dossier card: a head-and-shoulders portrait beside record lines (career screen, hub_map v1.1).
+func _profile(c: Vector2, u: float, w: float) -> void:
+	var r: Rect2 = Rect2(c - Vector2(u * 0.72, u * 0.52), Vector2(u * 1.44, u * 1.04))
+	draw_rect(r, Color(color, 0.55), false, w)
+	var head: Vector2 = c + Vector2(-0.34, -0.1) * u
+	draw_circle(head, u * 0.16, color)
+	draw_arc(head + Vector2(0, 0.42) * u, u * 0.24, PI, TAU, 14, color, w * 1.4, true)
+	for i: int in range(3):
+		var y: float = -0.22 + float(i) * 0.22
+		var x1: float = 0.5 if i == 1 else 0.56
+		draw_line(c + Vector2(0.04, y) * u, c + Vector2(x1, y) * u, Color(color, 0.85 if i == 0 else 0.5), w)

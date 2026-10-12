@@ -2396,6 +2396,8 @@ ui.lobby.code.error.checksum,That code has a typo: check it with the host.
 ui.lobby.code.error.format,That is not a valid lobby code.
 ui.hub.station.notoriety,The Old Press
 ui.hub.station.notoriety.desc,"Notoriety: rank up, pick rewards and see what each rank unlocks."
+ui.hub.station.profile,The Record
+ui.hub.station.profile.desc,"Career: every job, kill and payout on the record, with your best times."
 ui.prompt.station.board,Press {key} to check the Board
 ui.prompt.station.planning,Press {key} to plan a job
 ui.prompt.station.armory,Press {key} to open the armory
@@ -2404,6 +2406,7 @@ ui.prompt.station.jukebox,Press {key} to choose the music
 ui.prompt.station.notoriety,Press {key} to check your Notoriety
 ui.prompt.station.range,Press {key} to enter the firing range
 ui.prompt.station.crew,Press {key} to call the crew
+ui.prompt.station.profile,Press {key} to read your record
 ui.hub.pause.title,Paused
 ui.hub.pause.resume,Resume
 ui.hub.pause.quick_stations,Quick Stations

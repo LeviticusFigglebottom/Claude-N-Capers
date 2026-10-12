@@ -39,7 +39,7 @@
 		"weapons": {"weapon.kestrel_p9": 9, "weapon.retired_blaster": 4},
 		"trophies": {"gold": 1}
 	},
-	"weapon_finishes": {"weapon.kestrel_p9": "finish.gunmetal", "weapon.retired_blaster": "finish.rust", "weapon.kestrel_p9x": 7, "weapon.this_identifier_is_far_too_long_to_be_any_real_weapon_id_xxxxxx": "finish.a"},
+	"weapon_finishes": {"weapon.kestrel_p9": "finish.gunmetal_blue", "weapon.retired_blaster": "finish.rust", "weapon.brute_12": "finish.retired_rust", "weapon.kestrel_p9x": 7, "weapon.this_identifier_is_far_too_long_to_be_any_real_weapon_id_xxxxxx": "finish.a"},
 	"stats": {},
 	"settings": {}
 }

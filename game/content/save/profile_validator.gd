@@ -21,8 +21,8 @@
 ##     rank's rewards (data added later reaches old profiles). music_choice is type-checked only (B5-03).
 ##   * career (v7): career.weapons entries for unknown weapon ids pruned (heist / loot ids are kept: a heist
 ##     removed from the registry still belongs to the player's history).
-##   * weapon_finishes (v7): entries for unknown weapon ids pruned. TODO(B7-04): validate the finish ids
-##     against the finish data (and ownership) once B7-04 defines them; until then any short id is kept.
+##   * weapon_finishes (v7): entries for unknown weapon ids or unknown finish ids pruned (lead ruling, as for
+##     unknown masks). Ownership is not checked here: FinishApplier / WeaponFinishes.for_loadout skip unowned ones.
 ## Returns the repair messages (empty = the profile was already valid).
 class_name ProfileValidator
 extends RefCounted
@@ -254,6 +254,9 @@ static func _career(p: PlayerProfile, notes: Array[String]) -> void:
 	for id: Variant in p.weapon_finishes.keys():
 		if not ContentDB.has(ContentDB.WEAPONS, StringName(String(id))):
 			notes.append("weapon_finishes: unknown weapon '%s' dropped" % id)
+			p.weapon_finishes.erase(id)
+		elif not WeaponFinishes.is_known(StringName(String(p.weapon_finishes[id]))):
+			notes.append("weapon_finishes.%s: unknown finish '%s' dropped" % [id, p.weapon_finishes[id]])
 			p.weapon_finishes.erase(id)
 
 
