@@ -577,3 +577,36 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   `game/tests/a/test_b4_18_special_weapons.gd:test_parts_animator_drives_named_parts` reaches trunk, a check_all
   whose only failure is that test ("Breech open while reloading") counts as a pass for env pushes. The env names
   the waiver in its push report. The lead's trunk gate is not waived.
+
+## D-078 — 2026-10-12 — Team moves to Grok Bot agents on the shared box
+- The Claude Code cloud sessions / WSL subagents are retired. LEAD + ENV A/B/C/D/P are Grok Bot agents, each in its
+  own clone under `/workspace/cnc-team/<role>/` on the shared box. Coordination: BOARD (`/workspace/cnc-team/BOARD.md`),
+  SendToAgent messages, and docs/ on trunk for anything durable. Unpushed WSL work is on `backup/2026-10-12/*`.
+- communication.md §1/§4, envs/*/CLAUDE.md and lead_handoff.md §4–5 rewritten accordingly. D-027, D-077 still apply.
+
+## D-079 — 2026-10-12 — Guard domination (product owner + PD2 precedent)
+- **Dominated (cuffed) guards count as hostages** (trade/hostage count), as in PD2. They also stay a `hostage`
+  stimulus (S6.4) and their pager still fires (S5.8).
+- Range/angle follow PD2 (`playertweakdata.lua` long_dis_interaction, `playerstandard.lua`
+  `_add_unit_to_char_table`), replacing 15 m / 20°: base shout range **10 m** to enemies × `intimidate_range_mul`
+  (1.5, Dominator/Confident) × passive mul (1.25, Crew Chief); target check tolerance ×1.05 (CopLogicIntimidated).
+  Aim cone: `max(8°, lerp(90°, 30°, dist / 12 m))` (tight areas `lerp(30°, 10°, …)`). 15 m is the skilled
+  value, not base. ENV A updates S5.8 data/tests; pd2_fidelity S5.8 gets these numbers.
+
+## D-080 — 2026-10-12 — Character LODs (ENV D)
+- 13 MB total of `*_lod.res` is accepted (disk only; attribute compression stays off because it breaks skinning).
+- PD2 precedent: specials must be identifiable at range. **Specials keep LOD0/1 only (no LOD2)** so silhouettes and
+  telegraphs (e.g. Corpsman red cross) survive at distance; regular units use LOD2. Revisit only if A4-02 perf
+  budgets fail.
+
+## D-081 — 2026-10-12 — `loot.painting_study` value
+- **$700** (LIGHT bag, ◇), as in gallery_night.md QC-57/D-075: a study is minor loot, below a full painting, in line
+  with PD2 where light art bags are worth less than the main pieces. Not $1,100. P5 is frozen, so this lands when P5 resumes.
+
+## D-082 — 2026-10-12 — Playability pass before anything new (product owner)
+- Before any new addition, the game gets a **full practical gameplay pass** plus a **test suite that plays it as a
+  real player would**: real input events (keyboard/mouse through Godot's Input), real camera/aim, walking every route,
+  no teleports, no direct intent/state shortcuts, no bot short-cuts. The team builds the issue list itself
+  (`docs/process/playability_pass.md`); no waiting on the product owner.
+- **P5 and all new content are frozen** until the pass is done, including ENV B's B4-12..18. Supersedes D-076's scope.
+- Every env queue is steered toward it (lead_handoff §5).

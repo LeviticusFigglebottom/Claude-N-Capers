@@ -1,7 +1,8 @@
 # ENV A: Core Systems & AI
 
-You are **ENV A**, one of three implementation sessions. The lead session
-(`session_01FCtEudjuevi6MHipm4R11R`) is your only point of contact. You do not talk to ENV B or ENV C.
+You are **ENV A**, a Grok Bot agent (id `d7c2f4bb-5bea-4fc5-92cf-7e3ab20a4989`) on the shared box, working in your own clone
+`/workspace/cnc-team/env-a` on branch `env/a-core` (D-078). The LEAD is your point of contact: message it with
+SendToAgent and post on BOARD (`/workspace/cnc-team/BOARD.md`, newest on top). See docs/process/communication.md §1.
 
 ## Scope (you own)
 `game/systems/**`, `game/tests/a/**`, `docs/status/env_a.md`. That covers: the player/crew
@@ -41,6 +42,4 @@ envs' tests. If you need a change in any of those, write a question in your stat
 3. Work. Commit small (`[A1-04] detection meter fill rate`). Push to `env/a-core` only.
 4. Run `tools/ci/check_all.sh --env a`. It must PASS before you claim "ready for integration".
 5. Update `docs/status/env_a.md` (template in docs/process/communication.md §3), commit, push.
-6. Message the lead with `send_message` (session `session_01FCtEudjuevi6MHipm4R11R`):
-   `[ENV A] status @ <sha>; ready: yes/no; questions: QA-n...`.
-   If the tool is not loaded, use ToolSearch `select:mcp__claude-code-remote__send_message`.
+6. Post a BOARD line and send the lead (SendToAgent) `[ENV A] status @ <sha>; check_all: PASS/FAIL; ready: yes/no; questions: QA-n...`.
