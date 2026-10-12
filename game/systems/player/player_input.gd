@@ -15,6 +15,14 @@
 class_name PlayerInput
 extends Node
 
+## Actions held when a UI released the input (payday LB/RB, menus): ignored until released once, so the
+## press that closed or navigated the UI does not also melee / throw / fire in the game.
+const RESUME_GATED: Array[StringName] = [&"fire", &"melee", &"throw_item", &"mask_up", &"drop_bag", &"deploy",
+	&"interact", &"shout", &"reload", &"jump"]
+
+## Tests only (PInputDriver): headless cannot capture the mouse; treat motion as captured.
+static var test_assume_captured: bool = false
+
 @export var mouse_sensitivity: float = 0.0025
 ## Gamepad look: radians per second at full stick deflection (yaw; pitch uses the same rate).
 @export var gamepad_look_speed: float = 3.0
@@ -26,8 +34,7 @@ extends Node
 @export var gamepad_requires_capture: bool = false
 
 var enabled: bool = true
-## Tests only (PInputDriver): headless cannot capture the mouse; treat motion as captured.
-static var test_assume_captured: bool = false
+var _suppressed: Dictionary[StringName, bool] = {}
 var _yaw: float = 0.0
 var _pitch: float = 0.0
 var _crew: CrewController = null
@@ -76,6 +83,11 @@ func set_paused(paused: bool) -> void:
 	if not paused and _crew != null:
 		_yaw = _crew.look_yaw
 		_pitch = _crew.look_pitch
+	if not paused:
+		_suppressed.clear()
+		for a: StringName in RESUME_GATED:
+			if InputMap.has_action(a) and Input.is_action_pressed(a):
+				_suppressed[a] = true
 
 
 ## Add yaw/pitch (radians); pitch clamped to +-89 degrees.
@@ -115,6 +127,9 @@ func _physics_process(delta: float) -> void:
 
 
 func build_intent(rt: HeistRuntime) -> CrewIntent:
+	for a: StringName in _suppressed.keys():
+		if not Input.is_action_pressed(a):
+			_suppressed.erase(a)
 	var i: CrewIntent = CrewIntent.new()
 	i.move = Input.get_vector(&"move_left", &"move_right", &"move_back", &"move_forward")
 	i.look_yaw = _yaw
@@ -153,6 +168,19 @@ func build_intent(rt: HeistRuntime) -> CrewIntent:
 		_last_slot = Enums.WeaponSlot.PRIMARY if _last_slot == Enums.WeaponSlot.SECONDARY else Enums.WeaponSlot.SECONDARY
 		i.weapon_slot = _last_slot
 	_order_input(rt, i)
+	if not _suppressed.is_empty():
+		i.fire = i.fire and not _suppressed.has(&"fire")
+		i.melee = i.melee and not _suppressed.has(&"melee")
+		i.reload = i.reload and not _suppressed.has(&"reload")
+		i.deploy = i.deploy and not _suppressed.has(&"deploy")
+		i.jump = i.jump and not _suppressed.has(&"jump")
+		i.mask_up = i.mask_up and not _suppressed.has(&"mask_up")
+		i.throw_item = i.throw_item and not _suppressed.has(&"throw_item") and not _suppressed.has(&"mask_up")
+		i.throw_bag = i.throw_bag and not _suppressed.has(&"throw_item") and not _suppressed.has(&"drop_bag") \
+			and not _suppressed.has(&"mask_up")
+		if _suppressed.has(&"interact") or _suppressed.has(&"shout"):
+			i.interact = false
+			i.shout = false
 	return i
 
 

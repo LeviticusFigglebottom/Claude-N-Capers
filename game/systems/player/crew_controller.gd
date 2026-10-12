@@ -70,6 +70,9 @@ var mask_forced: bool = false
 ## D-014 / L6.1: an AI teammate waiting at the van in stealth (CrewAiBrain); the StealthDirector
 ## never observes a hidden crew member.
 var stealth_hidden: bool = false
+## P1-01 (read-only outside): on the ground (floor, or a step edge the capsule rests on while climbing); false
+## while airborne. See _move_grounded.
+var grounded: bool = false
 ## Last intent applied (held by the server for this tick).
 var intent: CrewIntent = CrewIntent.new()
 ## QB-60: sprint / jump stamina (CrewStamina), ticked by the movement simulation.
@@ -84,9 +87,6 @@ var _remote_pos: Vector3 = Vector3.INF
 ## positions, so positions sent before the owner applied the teleport are ignored, not rejected.
 var _teleport_seq: int = 0
 var _send_accum: float = 0.0
-## P1-01 (read-only outside): on the ground (floor, or a step edge the capsule rests on while climbing); false
-## while airborne. See _move_grounded.
-var grounded: bool = false
 ## P1-01: camera-only vertical lag after step-ups / step-downs (m, decays at CrewTweak.step_smooth_rate).
 var _step_offset: float = 0.0
 

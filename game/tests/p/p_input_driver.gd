@@ -21,6 +21,7 @@ extends RefCounted
 var _t: Node = null
 var _held: Dictionary[StringName, bool] = {}
 var _keys: Dictionary[int, bool] = {}
+var _joy: Dictionary[int, bool] = {}
 
 
 func _init(test: Node) -> void:
@@ -62,6 +63,21 @@ func key(keycode: Key, pressed: bool) -> void:
 		_keys.erase(keycode)
 
 
+## Gamepad button (e.g. JOY_BUTTON_LEFT_SHOULDER), device 0: exercises the joypad InputMap bindings.
+func joy_button(button: JoyButton, pressed: bool) -> void:
+	var ev: InputEventJoypadButton = InputEventJoypadButton.new()
+	ev.device = 0
+	ev.button_index = button
+	ev.pressed = pressed
+	ev.pressure = 1.0 if pressed else 0.0
+	Input.parse_input_event(ev)
+	Input.flush_buffered_events()
+	if pressed:
+		_joy[button] = true
+	else:
+		_joy.erase(button)
+
+
 func is_held(action: StringName) -> bool:
 	return _held.has(action)
 
@@ -71,6 +87,8 @@ func release_all() -> void:
 		release(a)
 	for k: int in _keys.keys():
 		key(k as Key, false)
+	for b: int in _joy.keys():
+		joy_button(b as JoyButton, false)
 	PlayerInput.test_assume_captured = false
 
 
