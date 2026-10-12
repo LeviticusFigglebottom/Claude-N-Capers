@@ -3,6 +3,22 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12: session 3f (rechecks; local only)
+- ND 20 m on ENV C 6943ce02 lighting (scratch worktree of c/repo with D's current characters copied in):
+  `_review/heist_night_deposit_20m_c6943_compare.png` (rows: specials before/after, regulars before/after).
+  Now read: Stinger (blue cells), Phantom (green goggles), Longshot (hat + drab), TAC Light (olive-grey helmeted
+  rifleman), plus everything that read before. Still weak: Bulwark (dark hooded bulk; it reads in game only by its
+  shield, which this line-up does not carry) and TAC Light vs Bulwark without the shield. No accent change needed.
+- Anim on env/a-core 7cf4240e (scratch worktree, crew_rook, 3.5 m/s, 60 fps): clips now run_l / run_r / run_b
+  (no more forward-run moonwalk); spawn frame 1 = idle with blend 0.00, upper_arm.L 38.7 deg off rest (no A-pose).
+  Planted-foot speed metric: run_l 0.62, run_r 0.61, run_b 0.24, forward run 0.50 m/s (baseline); same order as the
+  forward run, so no strafe-specific slide; the metric itself is coarse (3 cm stance band).
+- FP arms (ENV P report: pistol tilted ~40 deg up-left, wrists through the grip): no P renders in p/renders (empty).
+  char_arms_fp: 41 bones, `weapon` child of hand.R present; in pistol/rifle idle the `weapon` muzzle is 2 deg up,
+  5 deg left, 3.5 deg roll of camera forward; hand.R axes are 131 deg from the weapon axes; wrist skin: 743 verts
+  blended hand.R/forearm.R, 0 unweighted. Verdict: attach the WeaponVisual to the `weapon` bone (contract) and fix the
+  pose/IK on the P/A side; no D mesh change.
+
 ## 2026-10-12: session 3e (PP-D heist readability + anim; local only, no push)
 ### Render path (works on this GPU-less box)
 `flock /workspace/cnc-team/render.lock xvfb-run -a -s "-screen 0 1280x720x24" godot --audio-driver Dummy --path game
