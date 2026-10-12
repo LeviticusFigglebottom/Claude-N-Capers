@@ -17,12 +17,18 @@ Newest entry first, keep the last 10.
 - d0969fc0 S8.3 CameraStation loops: nearest working camera, one per crew, 25 s (test_s8_3 1/1)
 - a952cc04 S9.5/A5-03 (safes): Safe.charges_required; C4 items first, else trip mines with interaction.shaped_charge;
   DeployableSystem.count_of_kind/consume_kind; fallback deployable.trip_mine (count 3) (test_s9_8 4/4)
+- bb0e5905 HeistRuntime defers HeistDropIn.ensure at start ("parent busy" add_child gone; dropin 6/6)
+- dadb7b1b P1-02/PI-10 casing hop: _on_crew_masked ignores forced masks (duck-typed `mask_forced`, needs ENV P
+  4860fdbc on trunk to take effect). P's test_p1_02_casing_hop 3/3 PASS locally with 4860fdbc applied
+  temporarily (P files not committed here).
+- Regression: test_s1_2 2/2, test_s8_ 30/30, test_a3_13 4/4, test_s5_8 4/4, test_l3_ 38/38.
+- Push of env/a-core: 403 (token issue, lead fixing); commits are local.
 - Full check_all was started then stopped per the new lead rule (no result). gdlint is not installed on the box.
 - Tests still use set_bot_intent/hold_interact: p_input_driver.gd is not on trunk yet.
 ### Next
 - S9.5 doors (charges_required per door type, place/detonate interaction), trip-mine placement runtime, B strings.
 - Phase 2/3/4 modifier keys, L2.4, env_a_fidelity.md, A4-04; Env P casing STEALTH-hop fix in heist_runtime.gd when sent.
-- Broader regression run of test_s8_*, test_l3_*, test_a3_13 (interrupted, not run).
+- Switch tests to p_input_driver.gd once it is on trunk.
 
 ## 2026-10-12 17:50 ET: PLAYABILITY LIST (code reading only, Godot not installed)
 ### State
