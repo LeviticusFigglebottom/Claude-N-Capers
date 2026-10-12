@@ -28,6 +28,7 @@
 extends SceneTree
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
+const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
 
 var _errors: int = 0
 ## Override with `-- --anim-glb=res://...` (testing the conversion against another glb).
@@ -250,6 +251,7 @@ func _assemble(asset_id: String, scene_path: String, lib: AnimationLibrary) -> b
 	_add_markers(skel, source, asset_id)
 	_add_extra_markers(skel, source, asset_id)
 	_apply_overrides(skel, source, asset_id, scene_path)
+	_add_crowd_lod(skel, source, asset_id, scene_path)
 	var player: AnimationPlayer = AnimationPlayer.new()
 	player.name = "AnimationPlayer"
 	root.add_child(player)
@@ -447,6 +449,47 @@ func _apply_overrides(skel: Skeleton3D, source: Dictionary, asset_id: String, sc
 			continue
 		mat.set_id_for_path(scene_path, "2_" + mat.resource_path.get_file().get_basename())
 		mi.material_override = mat
+
+
+## D4-01: LOD2 (CrowdLod.gd): `Skeleton3D/CrowdLod`, one merged skinned surface saved as <scene>_lod.res,
+## visible from the switch distance on; the glb meshes get the matching visibility_range_end. LOD1 is
+## Godot's automatic mesh LOD (import option), so the existing nodes keep their paths and meshes.
+func _add_crowd_lod(skel: Skeleton3D, source: Dictionary, asset_id: String, scene_path: String) -> void:
+	var meshes: Array[MeshInstance3D] = CrowdLod.source_meshes(skel)
+	var names: Array[String] = []
+	for mi: MeshInstance3D in meshes:
+		names.append(String(mi.name))
+	var switch_m: float = CrowdLod.switch_m(source, names)
+	var mesh_path: String = "%s_lod.res" % scene_path.get_basename()
+	if switch_m <= 0.0 or meshes.is_empty():
+		if FileAccess.file_exists(mesh_path):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(mesh_path))
+		return
+	var mesh: ArrayMesh = CrowdLod.build_mesh(meshes)
+	if mesh == null:
+		_error("%s: no surface qualifies for the LOD2 mesh" % asset_id)
+		return
+	if not _save(mesh, mesh_path):
+		return
+	var saved: Mesh = ResourceLoader.load(mesh_path, "", ResourceLoader.CACHE_MODE_REPLACE) as Mesh
+	saved.set_id_for_path(scene_path, "3_lod")
+	var skin: Skin = meshes[0].skin.duplicate() if meshes[0].skin != null else null
+	for mi: MeshInstance3D in meshes:
+		mi.visibility_range_end = switch_m
+		mi.visibility_range_end_margin = CrowdLod.MARGIN_M
+		mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+	var lod: MeshInstance3D = MeshInstance3D.new()
+	lod.name = CrowdLod.NODE_NAME
+	lod.mesh = saved
+	if skin != null:
+		skin.resource_path = ""
+		skin.set_scene_unique_id("skin_lod")
+		lod.skin = skin
+	lod.visibility_range_begin = switch_m
+	lod.visibility_range_begin_margin = CrowdLod.MARGIN_M
+	lod.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+	skel.add_child(lod)
+	lod.skeleton = NodePath("..")
 
 
 # --------------------------------------------------------------------------------------------

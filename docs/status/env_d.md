@@ -3,6 +3,15 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-11: session 2 (new account), IN PROGRESS
+### In progress (resume here)
+- D4-01 LODs: `game/world/characters/_tools/crowd_lod.gd` + `assemble_characters.gd::_add_crowd_lod` write
+  `Skeleton3D/CrowdLod` (one merged skinned surface, `<id>_lod.res`, material `world/materials/char_crowd_lod.tres`)
+  for crowd NPCs (switch 20 m) and armed units (35 m); glb meshes get `visibility_range_end`. LOD1 = Godot auto LOD.
+  Assembled once (99 scenes, deterministic). Next: test_lod.gd, run d tests (tri-budget tests may count CrowdLod),
+  review render `_review/lod_review.png`, check_all, push.
+- D-076: D4-02 / D4-03 paused (not started).
+
 ## 2026-10-11: HANDOFF (session moving to a new account)
 ### Done since last entry (all on env/d-art, check_all --env d PASS at e528d192, round-31 trunk merged)
 - D-067b dedupe (inherited scenes of the glb, `remove_armature`), D-073 mask fit to the crew face envelope
