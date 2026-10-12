@@ -71,3 +71,21 @@ func test_l3_3_shotgun_claim_applies_head_mult_to_every_pellet() -> void:
 	assert_true(bool(res["accepted"]), "claim accepted: %s" % res["reason"])
 	assert_eq(zones, [Enums.HitZone.HEAD, Enums.HitZone.HEAD, Enums.HitZone.HEAD] as Array[int],
 		"L3.3: every pellet on the target is a headshot")
+
+
+func test_l3_3_server_rejects_head_zone_far_from_head() -> void:
+	_rt = await HeistLauncher.launch(&"unit_map", 34, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(1, 0), "crew_ai": false})
+	await wait_physics_frames(1)
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	var g: NpcBase = _rt.npcs(&"guard")[0] as NpcBase
+	var eye: Vector3 = c.eye_position()
+	var body_pt: Vector3 = g.global_position + Vector3(0, 0.9, 0)
+	var hits: Array = [
+		{"target_id": g.net_id, "zone": Enums.HitZone.HEAD, "position": body_pt},
+		{"target_id": g.net_id, "zone": Enums.HitZone.HEAD, "position": g.head_position()},
+	]
+	var out: Array = CombatSystem.validate_head_zones(c, eye, hits)
+	assert_eq(int(out[0]["zone"]), Enums.HitZone.BODY, "HEAD claimed at the chest is downgraded")
+	assert_eq(int(out[1]["zone"]), Enums.HitZone.HEAD, "HEAD claimed at the head stands")
+	assert_eq(int(hits[0]["zone"]), Enums.HitZone.HEAD, "the claim itself is not modified")

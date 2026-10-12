@@ -37,6 +37,8 @@ static var _cached: CombatTweak = null
 @export var claim_origin_tolerance_m: float = 2.0
 ## Max distance between the claimed hit point and the target's centre.
 @export var claim_target_tolerance_m: float = 1.6
+## L3.3: max distance from a claimed HEAD hit point to the NPC head point (head sphere 0.14 m + lag) ◇.
+@export var claim_head_tolerance_m: float = 0.45
 ## Max mismatch between the claimed and recomputed distance.
 @export var claim_distance_tolerance_m: float = 1.0
 

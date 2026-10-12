@@ -57,6 +57,7 @@ static func validate_and_apply(claim: Dictionary, shooter: CrewController) -> Di
 		CrewStatsService.record_shot(shooter, bool(tally["hit"]), false)
 		return out
 	var hits: Array = claim.get("hits", [])
+	hits = validate_head_zones(shooter, origin, hits)  # L3.3 lead ruling: server checks claimed HEAD
 	var st: WeaponStats = w.stats(ws)
 	if st != null and st.pellets > 1:
 		hits = pellet_headshots(hits)  # L3.3
@@ -139,6 +140,26 @@ static func pellet_headshots(hits: Array) -> Array:
 		var d: Dictionary = (h as Dictionary).duplicate()
 		if head_keys.has(_hit_target_key(d)):
 			d["zone"] = Enums.HitZone.HEAD
+		out.append(d)
+	return out
+
+
+## L3.3 (lead ruling 2026-10-12): a claimed HEAD hit on an NpcBase stands only when the claimed point
+## lies within CombatTweak.claim_head_tolerance_m of the NPC's head point; otherwise it is downgraded
+## to BODY. Returns copies (the claim is left as sent). Non-NPC targets keep their zone.
+static func validate_head_zones(shooter: CrewController, origin: Vector3, hits: Array) -> Array:
+	var tol: float = CombatTweak.data().claim_head_tolerance_m
+	var out: Array = []
+	for h: Variant in hits:
+		if not h is Dictionary or int((h as Dictionary).get("zone", Enums.HitZone.BODY)) != Enums.HitZone.HEAD:
+			out.append(h)
+			continue
+		var d: Dictionary = (h as Dictionary).duplicate()
+		var npc: NpcBase = _claimed_target(shooter, origin, d) as NpcBase if shooter != null else null
+		if npc != null:
+			var pos: Vector3 = d.get("position", origin)
+			if pos.distance_to(npc.head_position()) > tol:
+				d["zone"] = Enums.HitZone.BODY
 		out.append(d)
 	return out
 
