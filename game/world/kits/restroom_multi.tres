@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"restroom_multi"
+purpose = &"restroom"
+required_items = Array[StringName]([&"toilet", &"sink", &"mirror", &"paper_dispenser", &"soap_dispenser", &"hand_dryer", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"grab_bar": 0.4
+}
+clutter_groups = {}
+min_density = 0.35
+max_density = 2.5
+min_props = 8
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 203
+counts = {
+&"sink": Vector2i(1, 2),
+&"toilet": Vector2i(2, 3)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_small"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"mirror": PackedStringArray("prop_mirror_restroom")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.2}
+notes = "Tower restrooms (4 rooms, 3 x 6.5 m): 2-3 WCs (cubicle partitions, if any, are map anchors), vanity sinks with mirrors and soap, paper by the WCs, a hand dryer."

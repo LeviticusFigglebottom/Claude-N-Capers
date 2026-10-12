@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_reception_desk/prop_reception_desk.glb" id="1_model"]
+
+[node name="PropReceptionDesk" type="Node3D"]
+metadata/kind = &"counter_transaction"
+metadata/support = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"service_lobby"
+purpose = &"lobby"
+required_items = Array[StringName]([&"bench", &"bulletin_board", &"fire_extinguisher", &"bin", &"light_fixture"])
+optional_items = {
+&"exit_sign": 0.6,
+&"picture": 1,
+&"plant": 0.4,
+&"switch": 0.8
+}
+clutter_groups = {}
+min_density = 0.15
+max_density = 1.5
+min_props = 7
+lone_ok_kinds = Array[StringName]([&"bench", &"bin", &"plant"])
+seed_salt = 201
+counts = {}
+assets = {
+&"bench": PackedStringArray("prop_bench_corridor"),
+&"bin": PackedStringArray("prop_bin_kitchen"),
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"picture": PackedStringArray("prop_notice_frame"),
+&"plant": PackedStringArray("prop_plant_tall")
+}
+ceiling = {"prop_fluorescent": 2.4}
+notes = "S1 service lobby by the freight lift: waiting bench, notice board, extinguisher, bin, fluorescent strips. The freight-lift doors and their landing stay clear (keep-out)."

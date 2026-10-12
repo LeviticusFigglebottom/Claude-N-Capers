@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"dressing_room"
+purpose = &"dressing"
+required_items = Array[StringName]([&"wardrobe", &"mirror", &"bench", &"light_fixture"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.5
+max_density = 3
+min_props = 5
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 219
+counts = {
+&"wardrobe": Vector2i(2, 2)
+}
+assets = {
+&"bench": PackedStringArray("prop_bench_upholstered"),
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"mirror": PackedStringArray("prop_mirror_wall")
+}
+ceiling = {"prop_downlight": 1.6}
+notes = "M7 dressing room (4 x 2 m): two wardrobes, a full-length mirror, an upholstered bench."

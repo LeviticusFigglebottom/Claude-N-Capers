@@ -1,0 +1,8 @@
+asset: prop_bar_counter
+script: tools/blender/props/tower.py
+params: {"cat": {"clear": 0.9, "group": "tower", "kind": "counter_bar", "place": "wall", "support": true, "top": 1.1}, "fn": "bar_counter"}
+seed: 2345996511  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_bar_counter
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000
