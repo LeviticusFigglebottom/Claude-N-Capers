@@ -152,9 +152,14 @@ func _walk_to(goal: Vector3, label: String, tol: float = 0.6, sprint: bool = fal
 				_inp.release_all()
 				var comp: InteractableComponent = _comp(door)
 				if comp != null:
+					# A player opens (or lockpicks) the door in the way: hold F until it opens.
 					await _look_at(comp.global_position)
-					await _inp.hold(&"interact", 0.4)
-					await wait_seconds(Tweak.interaction().door_open_s + 0.3)
+					_inp.press(&"interact")
+					var opened: bool = await wait_until(func() -> bool: return door.is_open, comp.interaction_time_s + 2.0)
+					_inp.release(&"interact")
+					await wait_physics_frames(4)
+					print("[PT-02] %s: door %s in the way (lock %d) -> %s" % [label, door.name, door.lock,
+						"opened" if opened else "still closed"])
 				_inp.press(&"move_forward")
 				continue
 			if unstick == 1 or unstick == 3:

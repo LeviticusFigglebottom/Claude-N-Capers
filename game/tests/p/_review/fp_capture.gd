@@ -13,7 +13,11 @@ var _inp: PInputDriver = null
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(OUT)
 	await get_tree().process_frame
-	_rt = await HeistLauncher.launch(&"glasshouse", 1002, Enums.Difficulty.ROUTINE, self, {"ai_teammates": 0})
+	var l: Loadout = CrewWeapons.build_loadout(null).duplicate() as Loadout
+	l.primary = &"weapon.brute_12"  # PT-03: a primary so the swap / primary frames show a second gun
+	l.resolved_primary = LoadoutResolver.resolve_weapon(l.primary, l.primary_mods)
+	_rt = await HeistLauncher.launch(&"glasshouse", 1002, Enums.Difficulty.ROUTINE, self,
+		{"ai_teammates": 0, "loadouts": {0: l}})
 	_rt.isolate_npc(null)
 	_inp = PInputDriver.new(self)
 	_inp.capture_mouse()
@@ -24,6 +28,8 @@ func _ready() -> void:
 	await _shot("02_mask_up_mid")
 	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)
 	await _frames(20)
+	await _inp.tap(&"slot_secondary")
+	await _frames(60)
 	await _shot("03_masked_hip_secondary")
 	_inp.press(&"aim")
 	await _frames(40)
@@ -36,12 +42,14 @@ func _ready() -> void:
 	await _frames(40)
 	await _shot("06_ads_primary")
 	_inp.press(&"fire")
-	await _frames(4)
+	await _frames(2)
 	await _shot("07_ads_primary_firing")
+	print("[PT-03] after fire: mag %d/%d" % [c.weapons.mag(c.weapons.equipped_slot), c.weapons.mag_size(c.weapons.equipped_slot)])
 	_inp.release_all()
 	await _frames(20)
 	await _inp.tap(&"reload")
-	await _frames(25)
+	await _frames(12)
+	print("[PT-03] reloading=%s slot=%d" % [c.weapons.reloading, c.weapons.equipped_slot])
 	await _shot("08_reload_mid")
 	_inp.press(&"move_forward")
 	_inp.press(&"sprint")
@@ -51,6 +59,7 @@ func _ready() -> void:
 	_inp.press(&"crouch")
 	await _frames(30)
 	await _shot("10_crouch")
+	print("[PT-03] crouched=%s" % c.crouched)
 	_inp.release_all()
 	print("[PT-03] crew at ", c.global_position, " done")
 	get_tree().quit(0)
