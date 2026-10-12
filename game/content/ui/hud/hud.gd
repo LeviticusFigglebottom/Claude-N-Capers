@@ -150,6 +150,43 @@ func apply_accessibility() -> void:
 			continue  # full-screen overlays (chevrons, marks) are not scaled
 		ctl.pivot_offset = Vector2(ctl.anchor_left, ctl.anchor_top) * (ctl.custom_minimum_size.max(ctl.size))
 		ctl.scale = Vector2(s, s)
+	_stack_left_column(s)
+
+
+## PQ-B-6: the left column (objectives / teammates / stamina / vitals) is a stack, so scaling each
+## widget about its own anchor made them overlap at hud_scale 1.5 on a 1080-unit canvas. Stamina sits
+## on top of the scaled vitals; teammates fit the band between objectives and stamina, shrinking
+## below `s` only when that band is too short.
+func _stack_left_column(s: float) -> void:
+	if vitals == null or stamina == null or teammates == null or objectives == null:
+		return
+	var h: float = size.y if size.y > 0.0 else 1080.0
+	var gap: float = 12.0
+	var vitals_top: float = vitals.offset_bottom - (vitals.offset_bottom - vitals.offset_top) * s  # rel. bottom
+	var stam_h: float = stamina.offset_bottom - stamina.offset_top
+	stamina.offset_bottom = vitals_top - gap
+	stamina.offset_top = stamina.offset_bottom - stam_h
+	stamina.pivot_offset = Vector2(0.0, stam_h)
+	var band_top: float = objectives.offset_top + (objectives.offset_bottom - objectives.offset_top) * s + gap
+	var band_bottom: float = h + stamina.offset_bottom - stam_h * s - gap
+	var tm_w: float = teammates.offset_right - teammates.offset_left
+	var tm_h: float = teammates.offset_bottom - teammates.offset_top
+	var ts: float = clampf((band_bottom - band_top) / tm_h, 0.1, s)
+	var left: float = teammates.offset_left
+	teammates.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	teammates.offset_left = left
+	teammates.offset_right = left + tm_w
+	teammates.offset_top = band_top + ((band_bottom - band_top) - tm_h * ts) * 0.5
+	teammates.offset_bottom = teammates.offset_top + tm_h
+	teammates.pivot_offset = Vector2.ZERO
+	teammates.scale = Vector2(ts, ts)
+	# The centred interaction prompt must clear the left column's width (stamina / vitals) too.
+	if interaction != null:
+		var w: float = size.x if size.x > 0.0 else 1920.0
+		var col_right: float = vitals.offset_left + (vitals.offset_right - vitals.offset_left) * s + gap
+		var iw: float = interaction.offset_right - interaction.offset_left
+		var i_scale: float = clampf((w * 0.5 - col_right) * 2.0 / iw, 0.1, s)
+		interaction.scale = Vector2(i_scale, i_scale)
 
 
 func _on_settings_changed(section: StringName, _key: StringName) -> void:

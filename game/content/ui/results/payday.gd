@@ -26,6 +26,11 @@ extends UiScreen
 signal continue_pressed()
 
 const MENU_SCENE: String = "res://content/ui/menus/menu_flow.tscn"
+## Seconds left at which the pick timer turns urgent (B-PP-3).
+const URGENT_S: float = 5.0
+const URGENT_COLOR: Color = Color(1.0, 0.42, 0.32)
+## PQ-B-5: player picks are ignored this long after the cards appear.
+const INPUT_GRACE_S: float = 0.6
 
 @export var listen_heist_ended: bool = false
 @export var apply_to_profile: bool = true
@@ -71,6 +76,7 @@ var _cards_root: VBoxContainer
 var _cards_row: HBoxContainer
 var _cards_title: Label
 var _applied: bool = false
+var _input_grace: float = 0.0
 
 
 func setup(p: PlayerProfile) -> void:
@@ -172,10 +178,6 @@ func show_cards() -> void:
 
 ## PQ-B-5: player picks are ignored for INPUT_GRACE_S after the cards appear, so an accept held or
 ## mashed through the summary cannot pick the default-focused card blind. The timer is unaffected.
-const INPUT_GRACE_S: float = 0.6
-var _input_grace: float = 0.0
-
-
 ## True while player card picks are still being ignored.
 func in_input_grace() -> bool:
 	return _input_grace > 0.0
@@ -291,11 +293,6 @@ func _reveal() -> void:
 		card_result_label.text = UiText.t(&"ui.payday_cards.you_got",
 				{"reward": PaydayCardView.reward_text(cards[picked_index] as Dictionary)})
 	_update_timer_label()
-
-
-## Seconds left at which the pick timer turns urgent (B-PP-3).
-const URGENT_S: float = 5.0
-const URGENT_COLOR: Color = Color(1.0, 0.42, 0.32)
 
 
 ## True while the card stage is waiting for a pick and URGENT_S or less remain.

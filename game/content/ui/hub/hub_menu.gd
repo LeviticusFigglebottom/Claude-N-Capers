@@ -21,14 +21,15 @@ signal options_requested()
 signal notoriety_requested()
 signal career_requested()
 
+## Station cards per row (B-PP-2).
+const CARD_COLUMNS: int = 2
+
 @export var profile_slot: int = 0
 
 var stations: HubStationList
 var profile: PlayerProfile = null
 ## Station id -> its card Button.
 var station_buttons: Dictionary = {}
-## Station cards per row (B-PP-2).
-const CARD_COLUMNS: int = 2
 var back_button: Button
 var name_label: Label
 var level_label: Label
