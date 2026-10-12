@@ -153,7 +153,7 @@ def recipe(kit: Kit) -> None:
     kit.seats["Hip"] = belt.point(a_radio, dz=0.0, out=0.045 * k)
 
     # peaked cap
-    cap, info = gk.peaked_cap(fit, CHARCOAL, CHARCOAL, "char_visor_gloss", GOLD)
+    cap, info = gk.peaked_cap(fit, CHARCOAL, "char_shirt_white", "char_visor_gloss", GOLD)  # PP-D-1: light cap band
     kit.add_head(cap)
     kit.notes["hat"] = "peaked cap (Headwear), crown top z {:.3f} m".format(info["crown_top_z"])
 
