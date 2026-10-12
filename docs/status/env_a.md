@@ -3,6 +3,27 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12 17:50 ET: PLAYABILITY LIST (code reading only, Godot not installed)
+### State
+- env/a-core = fb517093 + this commit; backup (S5.8, L3.3 local work) and trunk merged. **NOT tested, NOT pushed.**
+- docs/status/env_a_playability.md: PP-A-1..13 real-input issues + queue needs.
+### In progress
+- Nothing running. Exact next step: when Godot is ready run `tools/ci/check_all.sh --env a`; push on PASS
+  (D-077 flake waiver applies) once GitHub creds exist on the box.
+### Queue (>= 2 h)
+1. check_all --env a on the merged tree (S5.8 / L3.3 tests incl.) (~30 min)
+2. PP-A-1 S5.8 domination cue + real-input shout test (~1 h)
+3. L2.1 regen consumer (PP-A-8) (~45 min)
+4. S1.1 casing pickup (PP-A-3) (~1 h)
+5. S2.7 DR targeting range (PP-A-9) (~1 h)
+6. S8.3 camera loop (PP-A-5) (~1 h)
+7. HeistDropIn full/was_kicked verify (PP-A-12), GameRng client audit (PP-A-11)
+8. S9.5/A5-03 shaped charges + C4 after LEAD ruling
+### Questions for lead
+- S8.3 duration: tweak says 5 s, fidelity 25 s, modifier_keys text 20 s. Use 25 s?
+- S9.5 vs A5-03: shaped charges (trip mines) and C4 as separate paths?
+- PP-A-6: accept client-claimed head zone, or add a server check?
+
 ## 2026-10-12: WIND DOWN (A4-01 redo, session stopped by the lead)
 ### Done
 - d2ce45f PUSHED: breech parts test polls (wait_until) instead of wait_frames(20) (lead flake); 3/3 targeted runs pass.
