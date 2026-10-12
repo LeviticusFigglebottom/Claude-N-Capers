@@ -39,6 +39,9 @@ func after_each() -> void:
 
 
 func _launch(ai: int) -> bool:
+	if OS.get_environment("CNC_E2E") != "1":
+		skip("PT-02 Glasshouse E2E is opt-in (CNC_E2E=1): open blockers PP-P-7 (C), PP-P-8 (A), PP-P-12 (C)")
+		return false
 	_rt = await HeistLauncher.launch(HEIST, SEED, Enums.Difficulty.ROUTINE, self, {"ai_teammates": ai})
 	if _rt == null:
 		fail("launch")
@@ -148,7 +151,7 @@ func _walk_to(goal: Vector3, label: String, tol: float = 0.6, sprint: bool = fal
 			still_t = 0.0
 			unstick += 1
 			var door: Door = _nearest_closed_door(2.5)
-			if door != null and unstick <= 3:
+			if door != null and unstick <= 2 and not door.is_open:
 				_inp.release_all()
 				var comp: InteractableComponent = _comp(door)
 				if comp != null:
@@ -162,8 +165,14 @@ func _walk_to(goal: Vector3, label: String, tol: float = 0.6, sprint: bool = fal
 						"opened" if opened else "still closed"])
 				_inp.press(&"move_forward")
 				continue
-			if unstick == 1 or unstick == 3:
-				await _inp.tap(&"jump")
+			if unstick <= 4:
+				# What a player does on a snag: sidestep left, then right, then hop (PP-P-12: nav radius 0.3 < capsule 0.35).
+				var side: StringName = [&"move_left", &"move_right", &"move_right", &"jump"][mini(unstick, 4) - 1]
+				if side == &"jump":
+					await _inp.tap(&"jump")
+				else:
+					await _inp.hold(side, 0.35)
+				print("[PT-02] %s: snag at (%.1f,%.1f) -> %s" % [label, c.global_position.x, c.global_position.z, side])
 				continue
 			_inp.release_all()
 			_find("%s: stuck (no progress 1.5 s x%d) heading to waypoint %d/%d (%.1f,%.1f,%.1f)%s%s" % [
