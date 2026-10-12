@@ -186,3 +186,23 @@ func test_drill_finish_with_time_lock_and_size_durations() -> void:
 	assert_eq(l.stage, Safe.Stage.TIME_LOCK)
 	l.swing_open()
 	assert_true(l.opened, "missions can force it")
+
+
+## S9.5 / A5-03: charges_required C4 items, or trip mines as shaped charges with interaction.shaped_charge.
+func test_s9_5_charges_required_c4_or_shaped_charges() -> void:
+	var c: CrewController = _crew()
+	var safe: Safe = _safe(Vector3(3, 0, -6), [&"c4"], Safe.Size.MEDIUM, func(s: Safe) -> void: s.charges_required = 2)
+	await wait_physics_frames(2)
+	c.add_item(Safe.C4_ITEM, 1)
+	assert_eq(safe.interactable.availability(c), InteractableComponent.BLOCK_ITEM, "1 C4 < 2 required")
+	var dep: DeployableSystem = _rt.service(DeployableSystem.SERVICE) as DeployableSystem
+	dep.give(c.slot, &"deployable.trip_mine")
+	assert_eq(dep.count_of_kind(c.slot, &"trip_mine"), 3, "3 base trip mines")
+	assert_eq(safe.charge_source(c), &"", "trip mines need interaction.shaped_charge")
+	Modifiers.set_source(c.slot, &"test", {&"interaction.shaped_charge": true})
+	assert_eq(safe.charge_source(c), &"shaped")
+	assert_eq(safe.interactable.availability(c), InteractableComponent.BLOCK_NONE)
+	await _use(safe, Tweak.interaction().c4_place_s)
+	assert_eq(safe.stage, Safe.Stage.C4_ARMED, "shaped charges armed")
+	assert_eq(dep.count_of_kind(c.slot, &"trip_mine"), 1, "2 trip mines spent")
+	assert_eq(c.item_count(Safe.C4_ITEM), 1, "C4 untouched")
