@@ -138,3 +138,57 @@ func test_live_heist_pause_with_pad() -> void:
 	assert_true(_flow.options_menu.heist_screen == null or not _flow.options_menu.heist_screen.is_visible_in_tree(),
 			"B closes Options")
 	assert_false(CrewInput.is_held(&"options"), "input resumed")
+
+
+func _key(code: Key) -> void:
+	for down: bool in [true, false]:
+		var e: InputEventKey = InputEventKey.new()
+		e.keycode = code
+		e.physical_keycode = code
+		e.pressed = down
+		Input.parse_input_event(e)
+		await wait_frames(3)
+
+
+## PQ-B-21: a live heist ends (HeistRuntime.end_heist) -> payday -> card -> Continue -> main menu,
+## keyboard only, everything on screen at 720p.
+func test_live_heist_end_to_menus_keyboard() -> void:
+	if UiNav.global_class(&"HeistLauncher") == null:
+		skip("no HeistLauncher")
+		return
+	SaveService.save_profile(PlayerProfile.new_default(), SLOT)
+	_flow = FLOW_SCENE.instantiate() as MenuFlow
+	add_child(_flow)
+	await wait_frames(1)
+	assert_true(_flow.direct_launch(LaunchArgs.parse(PackedStringArray(["--heist=glasshouse", "--seed=44",
+			"--difficulty=0"]))))
+	assert_true(await wait_until(func() -> bool: return _find_hud() != null and _flow.runtime != null, 60.0), "live")
+	var escaped: Array[int] = [Net.local_slot()]
+	_flow.runtime.call(&"end_heist", true, escaped)
+	var pd: Array[PaydayScreen] = [null]
+	assert_true(await wait_until(func() -> bool:
+		for n: Node in get_tree().root.find_children("*", "PaydayScreen", true, false):
+			if (n as PaydayScreen).is_visible_in_tree():
+				pd[0] = n as PaydayScreen
+				return true
+		return false, 10.0), "payday shown after the heist ends")
+	var s: PaydayScreen = pd[0]
+	if s == null:
+		return
+	var vis: Rect2 = s.get_viewport().get_visible_rect().grow(1.0)
+	assert_true(vis.encloses(s.continue_button.get_global_rect()), "Continue on screen")
+	s.continue_button.grab_focus()
+	await wait_frames(2)
+	await _key(KEY_ENTER)
+	if s.has_card_pick() or s.cards_stage:
+		assert_true(s.cards_stage, "Enter opens the cards")
+		s.tick(PaydayScreen.INPUT_GRACE_S + 0.01)
+		await _key(KEY_1)
+		assert_eq(s.picked_index, 0, "key 1 picks")
+		await wait_frames(2)
+		await _key(KEY_ENTER)
+	assert_true(await wait_until(func() -> bool: return _flow.current is MainMenu and _flow.visible, 10.0),
+			"Continue returns to the main menu")
+	_flow.queue_free()
+	_flow = null
+	await wait_frames(3)
