@@ -3,6 +3,14 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12: session 3g (WIP: TAC Light accent, unverified)
+- TAC Light (+ frd/sentinel/zero): matte cream (`char_bank_cream`, albedo ~215) placard bars across the front and back
+  plates (`char_police.tac_placard`, TAC Light only; Corpsman not affected). A chest/back bar, distinct from TAC
+  Heavy's white shoulders. Tris: base 30,108, frd 31,708, sentinel 30,748, zero 32,320 (budget 35,000).
+- NOT VERIFIED: the Glasshouse 10/20 m renders were stopped at wrap-up before writing an image. Next: run
+  `render_heist_review.gd -- glasshouse tacl 10` and `... 20` behind render.lock and judge TAC Light vs Bulwark.
+- `run_tests.sh d` 115 tests, 0 failed.
+
 ## 2026-10-12: session 3f (rechecks; local only)
 - ND 20 m on ENV C 6943ce02 lighting (scratch worktree of c/repo with D's current characters copied in):
   `_review/heist_night_deposit_20m_c6943_compare.png` (rows: specials before/after, regulars before/after).

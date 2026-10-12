@@ -553,8 +553,25 @@ def frd_agent(kit: Kit) -> None:
                          "trousers, earpiece (right), gold belt badge, holster; bare head").format(jacket_mat, emblem)
 
 
+def tac_placard(kit: Kit, mat: str = "char_bank_cream") -> None:
+    """PP-D: matte high-value placard bars across the front and back plates (TAC Light only, not the Corpsman),
+    so TAC Light reads apart from Bulwark in shadow; a chest/back bar, unlike TAC Heavy's white shoulders."""
+    k = kit.k
+    hull = kit.hull()
+    pl = Mesh()
+    o.patch(pl, hull, Vector((0.0, 0.0, 1.30 * k)), Vector((1, 0, 0)), Vector((0, 0, 1)),
+            o.rounded_rect(0.26 * k, 0.075 * k, 0.012 * k, 2), 0.006 * k, mat, cast_dir=Vector((0, -1, 0)),
+            rings=1, chamfer=0.003 * k)
+    o.patch(pl, hull, Vector((0.0, 0.0, 1.32 * k)), Vector((-1, 0, 0)), Vector((0, 0, 1)),
+            o.rounded_rect(0.28 * k, 0.085 * k, 0.012 * k, 2), 0.006 * k, mat, cast_dir=Vector((0, 1, 0)),
+            rings=1, chamfer=0.003 * k)
+    kit.add_soft(pl)
+
+
 def recipe(kit: Kit) -> None:
     {"patrol": patrol, "tac": tac, "frd_agent": frd_agent}[kit.opts["unit"]](kit)
+    if kit.opts["unit"] == "tac":
+        tac_placard(kit, kit.opts.get("placard", "char_bank_cream"))
     faction.dress(kit)
 
 
