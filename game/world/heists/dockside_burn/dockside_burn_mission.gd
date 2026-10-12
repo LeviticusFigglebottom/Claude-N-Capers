@@ -83,7 +83,7 @@ func _on_mission_start() -> void:
 		Enums.ObjectiveState.ACTIVE if countroom else Enums.ObjectiveState.HIDDEN, {"alternative": &"strongroom"})
 	add_objective(&"containers", &"objective.dockside_burn.containers")
 	add_objective(&"secure", &"objective.dockside_burn.secure", Enums.ObjectiveState.ACTIVE,
-		{"bags": MIN_BAGS, "optional_more": true})
+		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true})
 	require_loot(&"secure", MIN_BAGS)
 	add_objective(&"escape_wait", &"objective.dockside_burn.escape_wait", Enums.ObjectiveState.HIDDEN)
 	add_objective(&"escape", &"objective.dockside_burn.escape", Enums.ObjectiveState.HIDDEN)
@@ -315,6 +315,7 @@ func _on_device_jammed(device_net_id: int) -> void:
 
 
 func _on_bag_secured(_bag_net_id: int, _loot_id: StringName, _value: int) -> void:
+	update_objective_data(&"secure", {"count": bags_secured, "total": MIN_BAGS})  # HUD: count / total bags
 	if bags_secured == MIN_BAGS:
 		say(&"vo.mercer.dockside_burn_required_secured")
 	_try_escape()

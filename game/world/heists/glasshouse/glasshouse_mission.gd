@@ -40,7 +40,8 @@ func _on_mission_start() -> void:
 	add_objective(&"workshop_door", &"objective.glasshouse.workshop_door")
 	add_objective(&"safe", &"objective.glasshouse.safe", Enums.ObjectiveState.ACTIVE, {"methods": [&"keycard", &"drill"]})
 	add_objective(&"safe_loot", &"objective.glasshouse.safe_loot", Enums.ObjectiveState.HIDDEN)
-	add_objective(&"secure", &"objective.glasshouse.secure", Enums.ObjectiveState.ACTIVE, {"bags": MIN_BAGS, "optional_more": true})
+	add_objective(&"secure", &"objective.glasshouse.secure", Enums.ObjectiveState.ACTIVE,
+		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true})
 	require_loot(&"secure", MIN_BAGS)
 	add_objective(&"escape", &"objective.glasshouse.escape", Enums.ObjectiveState.HIDDEN)
 	on_event(&"interaction_completed", _on_interaction_completed)
@@ -127,6 +128,7 @@ func _open_safe() -> void:
 
 
 func _on_bag_secured(_bag_net_id: int, _loot_id: StringName, _value: int) -> void:
+	update_objective_data(&"secure", {"count": bags_secured, "total": MIN_BAGS})  # HUD: count / total bags
 	_try_escape()
 
 
