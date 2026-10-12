@@ -62,6 +62,9 @@ var carried_bag: Node = null
 var weapon_visual: Node3D = null
 ## Mask-up hold progress 0..1 (HUD).
 var mask_progress: float = 0.0
+## P1-02: true when the mask went on by force (detection / combat / alarm), false for a voluntary G hold.
+## HeistRuntime reads it so a forced mask does not move CASING -> STEALTH (no STEALTH hop before LOUD).
+var mask_forced: bool = false
 ## D-014 / L6.1: an AI teammate waiting at the van in stealth (CrewAiBrain); the StealthDirector
 ## never observes a hidden crew member.
 var stealth_hidden: bool = false
@@ -298,6 +301,7 @@ func set_masked(forced: bool = false) -> void:
 	if masked:
 		return
 	masked = true
+	mask_forced = forced
 	civilian = false  # S1.3: masking (alarm) ends civilian mode with the gear on
 	mask_progress = 1.0
 	masked_changed.emit(true)
