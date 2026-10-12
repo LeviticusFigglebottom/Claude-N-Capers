@@ -339,7 +339,7 @@ func _build_panel() -> PanelContainer:
 	v.add_child(HSeparator.new())
 	v.add_child(UiBuild.label(&"ui.preplan.your_plan", UiBuild.DIM))
 	plan_label = _wrap_label(&"")
-	plan_label.add_theme_font_size_override(&"font_size", 20)
+	plan_label.add_theme_font_size_override(&"font_size", 21)
 	v.add_child(plan_label)
 	vote_label = _wrap_label(UiBuild.DIM)
 	v.add_child(vote_label)

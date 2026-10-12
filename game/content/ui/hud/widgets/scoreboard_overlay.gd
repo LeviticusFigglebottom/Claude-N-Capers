@@ -140,7 +140,7 @@ func _process(_delta: float) -> void:
 
 func _header(col: StringName) -> void:
 	var l: Label = UiBuild.label(HEADER_KEYS[col] as StringName, UiBuild.HUD)
-	l.add_theme_font_size_override(&"font_size", 18)
+	l.add_theme_font_size_override(&"font_size", 21)
 	if col != NAME:
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	grid.add_child(l)

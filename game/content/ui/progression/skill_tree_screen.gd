@@ -237,7 +237,7 @@ func _skill_button(sid: StringName) -> Button:
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	b.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	b.custom_minimum_size = Vector2(0, 96)
-	b.add_theme_font_size_override(&"font_size", 20)
+	b.add_theme_font_size_override(&"font_size", 21)
 	b.pressed.connect(buy.bind(sid))
 	b.focus_entered.connect(select_skill.bind(sid))
 	b.mouse_entered.connect(select_skill.bind(sid))
@@ -604,5 +604,5 @@ static func _wrap_label() -> Label:
 func _note_label() -> Label:
 	var l: Label = _wrap_label()
 	l.add_theme_color_override(&"font_color", tweak.note_color)
-	l.add_theme_font_size_override(&"font_size", 18)
+	l.add_theme_font_size_override(&"font_size", 21)
 	return l

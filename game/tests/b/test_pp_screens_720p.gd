@@ -45,6 +45,29 @@ static func offscreen(screen: Control, chain: Array[Control]) -> Array[String]:
 	return out
 
 
+## PQ-B-17: visible, non-empty labels rendering below MIN_PX real pixels at 1280x720.
+const MIN_PX: float = 14.0
+
+
+static func small_text(screen: Control) -> Array[String]:
+	var out: Array[String] = []
+	for n: Node in screen.find_children("*", "Label", true, false):
+		var l: Label = n as Label
+		if not l.is_visible_in_tree() or l.text.strip_edges() == "":
+			continue
+		var px: float = l.get_theme_font_size(&"font_size") * l.get_global_transform().get_scale().y * 720.0 / 1080.0
+		if px < MIN_PX - 0.01:
+			out.append("%s/%s %.1fpx '%s'" % [l.get_parent().name, l.name, px, l.text.left(20)])
+	for n: Node in screen.find_children("*", "Button", true, false):
+		var b: Button = n as Button
+		if not b.is_visible_in_tree() or b.text.strip_edges() == "":
+			continue
+		var bpx: float = b.get_theme_font_size(&"font_size") * b.get_global_transform().get_scale().y * 720.0 / 1080.0
+		if bpx < MIN_PX - 0.01:
+			out.append("button %.1fpx '%s'" % [bpx, b.text.left(20)])
+	return out
+
+
 func _check(open: Callable, label: String) -> void:
 	SaveService.save_profile(PlayerProfile.new_default(), SLOT)
 	var f: MenuFlow = FLOW_SCENE.instantiate() as MenuFlow
@@ -59,6 +82,8 @@ func _check(open: Callable, label: String) -> void:
 	if screen != null:
 		var bad: Array[String] = offscreen(screen, screen.focus_chain)
 		assert_eq(bad.size(), 0, "%s off-screen at 720p: %s" % [label, ", ".join(bad)])
+		var tiny: Array[String] = small_text(screen)
+		assert_eq(tiny.size(), 0, "%s text below %.0f px at 720p: %s" % [label, MIN_PX, "; ".join(tiny)])
 	f.queue_free()
 	await wait_frames(2)
 
