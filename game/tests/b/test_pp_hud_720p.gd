@@ -4,6 +4,21 @@ extends TestCase
 
 const HUD_SCENE: PackedScene = preload("res://content/ui/hud/hud.tscn")
 
+var _root_size: Vector2i
+
+
+## A real 1280x720 window (the headless one is 0x0, which window/stretch/aspect="expand" turns into a
+## square canvas): the canvas is then exactly 1920x1080 under both "keep" and "expand" (D-098).
+func before_each() -> void:
+	_root_size = get_tree().root.size
+	get_tree().root.size = Vector2i(1280, 720)
+	await wait_frames(1)
+
+
+func after_each() -> void:
+	get_tree().root.size = _root_size
+	await wait_frames(1)
+
 
 func _rects(scale: float) -> Dictionary:
 	var s: GameSettings = GameSettings.load_file("user://pp_hud_none.cfg")
