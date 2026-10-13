@@ -67,6 +67,12 @@ extends Resource
 ## D-085: interior path corners are pushed this far away from the inside of the turn (the wall corner the
 ## navmesh path hugs), so the 0.35 m crew capsule clears a corner baked for a 0.30 m nav agent.
 @export var corner_margin_m: float = 0.1
+## A bot steering along its path below this horizontal speed (m/s) for stuck_time_s is blocked by a body the
+## navmesh does not carve (e.g. a variant's van) ◇.
+@export var stuck_speed: float = 0.3
+@export var stuck_time_s: float = 0.4
+## A blocked bot side-steps along the blocking surface for this long (s), then re-plans ◇.
+@export var stuck_detour_s: float = 0.6
 
 @export_group("Orders (L6.1, A3-05)")
 ## D-014 "P4 option": a follow / carry_bag / revive order in STEALTH un-hides the AI so it follows and

@@ -72,6 +72,11 @@ var _path: PackedVector3Array = PackedVector3Array()
 var _path_idx: int = 0
 var _path_goal: Vector3 = Vector3.INF
 var _repath_left: float = 0.0
+## Blocked-by-an-uncarved-body recovery (_unstick): time spent stuck, detour time left and direction.
+var _stuck_s: float = 0.0
+var _detour_left: float = 0.0
+var _detour_dir: Vector3 = Vector3.ZERO
+var _moving_s: float = 0.0
 var _scan_left: float = 0.0
 var _since_acquire: float = 0.0
 var _shot_left: float = 0.0
@@ -580,10 +585,49 @@ func _steer(goal: Vector3, delta: float) -> Vector3:
 		_path_idx += 1
 	var next: Vector3 = _path[_path_idx] if _path_idx < _path.size() else goal
 	if _door_hold(pos):
+		_stuck_s = 0.0
 		return Vector3.ZERO
 	var dir: Vector3 = next - pos
 	dir.y = 0.0
-	return dir.normalized() if dir.length() > 0.05 else Vector3.ZERO
+	if dir.length() <= 0.05:
+		_stuck_s = 0.0
+		return Vector3.ZERO
+	return _unstick(dir.normalized(), goal, delta)
+
+
+## The navmesh is baked without some collision bodies (variant prefabs such as an escape van are not
+## carved), so a path can run into a wall the bot cannot pass. A bot steering at no speed for
+## stuck_time_s side-steps along the blocking surface (toward the goal's side) for stuck_detour_s, then
+## re-plans from there.
+func _unstick(dir: Vector3, goal: Vector3, delta: float) -> Vector3:
+	if _detour_left > 0.0:
+		_detour_left -= delta
+		if _detour_left <= 0.0:
+			_path = PackedVector3Array()
+		return _detour_dir
+	var hv: float = Vector2(_crew.velocity.x, _crew.velocity.z).length()
+	_stuck_s = _stuck_s + delta if hv < tweak.stuck_speed else 0.0
+	_moving_s = 0.0 if hv < tweak.stuck_speed else _moving_s + delta
+	if _moving_s > tweak.stuck_detour_s * 2.0:
+		_detour_dir = Vector3.ZERO  # moving freely again: the next block is a new obstacle
+	if _stuck_s < tweak.stuck_time_s:
+		return dir
+	_stuck_s = 0.0
+	var normal: Vector3 = -dir
+	var hit: KinematicCollision3D = _crew.get_last_slide_collision()
+	if hit != null and Vector2(hit.get_normal().x, hit.get_normal().z).length() > 0.1:
+		normal = hit.get_normal()
+	normal.y = 0.0
+	var side: Vector3 = normal.normalized().cross(Vector3.UP)
+	var to_goal: Vector3 = goal - _crew.global_position
+	to_goal.y = 0.0
+	# Toward the goal's side of the obstacle; stuck again right after a detour that way: the other way.
+	side = side if side.dot(to_goal) >= 0.0 else -side
+	if side.is_equal_approx(_detour_dir):
+		side = -side
+	_detour_dir = side
+	_detour_left = tweak.stuck_detour_s
+	return _detour_dir
 
 
 func _plan(goal: Vector3) -> void:
