@@ -8,8 +8,13 @@ Newest entry first, keep the last 10.
 - h02 notes (9e54061f): crosshair hidden until masked (fades in); only the current objective's marker unless Tab is held; the objective flash strikes the finished step through, then slides the next one in.
 - Lane 11: first-time onboarding cards (OnboardingCard, right of centre), one per situation and shown the first time it arises: casing, stealth (masked, no alarm), loud (LOUD phase or an assault), escape (ESCAPE phase). Each card has 3-4 short rows with key caps (mask up / interact / throw bag / shout), drains over 14 s, H closes it, and a later situation waits for the open card. Seen ids live in the profile's `settings.onboarding_seen` (OnboardingTips), so the save shape and version are unchanged. Writes are blocked inside the test runner and the captures. Windowed contrast `-- onboarding`: PASS.
 - Lane 12: the scoreboard names heisters in their colour, is as tall as its rows, is 1240 wide (x1.5 fits 1920; test_pp_hud_720p was red at x1.5), and the markers draw over it while Tab is held.
+- Lane 13: stretch aspect "expand" (D-098, lead set it); UiScreen.fit_width keeps menus in a centred 16:9 column; hub station cards grow with their text (16:10). test_pp_hud_720p runs in a real 1280x720 window. Windowed 21:9 (menus + heist HUD) and 16:10 reviewed; shots in content/ui/_review/after/uw_* / w1610_*.
+- Onboarding: dismiss_tip action (D-096), a new situation replaces the open card, the card hides under the Tab sheet; h01/h02/h09 recaptured after P's AR hip pose.
+- Folding knife model (subagent, scripted, original) wired on melee.folding_knife.
+- D-097/098/099: P's PD2 spread / recoil on all 36 WeaponDefs, PD2 ADS times (0.23, AR 0.25), mods on PD2 index steps (accuracy -0.24 hip / -0.192 ADS per step; stability -0.1 x class vmid / hmid), no mod ADS deltas, LMG drift bias. Accuracy display on PD2's scale; Stability 0..12 deg.
+- accessibility/head_bob + GameSettings.head_bob() for P.
 ### Next
-- Recapture h01/h02 after the trunk merge (P's AR hip pose); lane 13 (2560x1080 + 16:10); a pad dismiss for the card needs an input action (ask the lead).
+- Lead applies the P4 golden values (sent). SafehouseHud restyle only if cheap (lane 10).
 
 ## 2026-10-13 late (round 36 merged): PO-4 iteration 2
 ### Done (b4c291ab..HEAD)
