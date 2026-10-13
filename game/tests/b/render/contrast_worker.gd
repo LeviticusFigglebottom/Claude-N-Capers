@@ -59,6 +59,15 @@ func _run() -> void:
 		await _onboarding()
 	elif mode == "feedback":
 		await _feedback()
+	elif mode == "loading":
+		# The game's canvas stretched into the 1280x720 shot: look at the PNG; label rects are in canvas
+		# units here, so this mode's contrast numbers do not apply.
+		_vp.size_2d_override = Vector2i(1920, 1080)
+		_vp.size_2d_override_stretch = true
+		var l: LoadingScreen = LoadingScreen.new()
+		l.setup(&"glasshouse", Enums.Difficulty.HAZARDOUS)
+		_vp.add_child(l)
+		await _shot("loading", l)
 	else:
 		await _hud()
 	print("CONTRAST %s (%d failures, min %.1f:1)" % ["PASS" if _fails == 0 else "FAIL", _fails, MIN_RATIO])
