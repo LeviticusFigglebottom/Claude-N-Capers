@@ -3,6 +3,17 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-13 late (round 36 merged): PO-4 iteration 2
+### Done (b4c291ab..HEAD)
+- Round 36 merged; style.md + audit.md committed (docs/design/ui/** is B's).
+- KR-5 fixed: MouseCapture ate the payday Continue click as a capture click; PaydayScreen holds &"payday" while shown. KR-6: Board pad test takes the designed path (A on a pin -> Take); the d-pad walk depended on the time-rotating pin layout.
+- MouseCapture migration (input_focus 1.1): pause/options &"pause", drop-in &"dropin", safehouse &"station", range panels &"menu", spectator registers as an owner (QB-4 to lead). No Input.mouse_mode writes in game/content.
+- QB-1: default profile owns + equips weapon.corsair_ar (tests updated).
+- Lead notes: frameless HUD (outline + shadow text, hairline objective edge, thin bars, flush corners), crew rows named by heister + colour (Hud.set_crew_heisters from MenuFlow); loadout slot cards (ItemSlot, OptionButton-compatible API) + ItemPicker grid with diff preview + stat bars + d-pad pairs; main menu hero = equipped mask (MaskPreview); payday total count-up (skippable, Reduce Motion aware); objective-complete flash.
+- UI cue list sent to the lead (ui_focus, ui_confirm, ui_back, ui_primary, ui_error, ui_tab, hud_objective_done, hud_hint_appear, payday_tick, payday_total, card_flip).
+### Next
+- Wire UI cues when ids exist; Board / skills / perks / masks detail pass; hub cards shorter text; HUD crosshair hidden while casing (check with P); preview stats for the primary in the loadout.
+
 ## 2026-10-13 (team v3, D-086): PO-4 UI pass "Case File"
 Session: Claude Code cloud (env/b-content). Lead: session_014E3p2DmSYTneJjytGwKKfc.
 ### Done (commits f9b52550..e595f5da)

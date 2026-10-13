@@ -123,3 +123,19 @@ func test_objective_complete_flash() -> void:
 	await wait_seconds(ObjectivesPanel.FLASH_S + 0.2)
 	assert_false(_hud.objectives.flashing)
 	assert_eq(_hud.objectives.header_label.text, UiText.t(&"ui.hud.objectives"))
+
+
+func test_crew_rows_named_by_heister_before_ready() -> void:
+	_model = MockHudModel.new()
+	add_child(_model)
+	_hud = (load(HUD_PATH) as PackedScene).instantiate() as Hud
+	_hud.auto_find_model = false
+	var hid: StringName = Heisters.ids()[0]
+	_hud.set_crew_heisters({2: hid})  # MenuFlow hands them over before the HUD enters the tree
+	add_child(_hud)
+	await wait_frames(1)
+	_hud.bind(_model)
+	_model.crew = [{"slot": 2, "name": "AI 1", "is_ai": true, "health_frac": 1.0, "armor_frac": 1.0,
+			"state": Enums.CrewState.NORMAL, "downs_left": 3, "carried_loot_id": &""}]
+	await wait_frames(1)
+	assert_eq((_hud.teammates.name_labels[2] as Label).text, Heisters.display_name(hid))

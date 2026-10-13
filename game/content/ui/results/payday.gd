@@ -29,6 +29,8 @@ const MENU_SCENE: String = "res://content/ui/menus/menu_flow.tscn"
 const URGENT_COLOR: Color = Color(1.0, 0.42, 0.32)
 ## PQ-B-5: player picks are ignored this long after the cards appear.
 const INPUT_GRACE_S: float = 0.6
+## PO-4: seconds the payday total takes to count up.
+const COUNT_S: float = 1.2
 
 @export var listen_heist_ended: bool = false
 @export var apply_to_profile: bool = true
@@ -77,6 +79,7 @@ var _cards_row: HBoxContainer
 var _cards_title: Label
 var _applied: bool = false
 var _input_grace: float = 0.0
+var _counter: Tween = null
 
 
 func _sync_cursor() -> void:
@@ -442,6 +445,7 @@ func _build_hero(success: bool) -> HBoxContainer:
 	total.add_theme_color_override(&"font_color", UiTokens.BRASS_HI if success else UiTokens.PAPER_MUTE)
 	left.add_child(total)
 	value_labels[&"hero_total"] = total
+	_count_up(total, int(payout.get("total", 0)))
 	var split: Label = UiBuild.label(&"", UiBuild.DIM)
 	split.text = "%s   ·   %s" % [
 		UiText.t(&"ui.results.stash_line", {"amount": UiText.money(int(payout.get("stash", 0)))}),
@@ -456,6 +460,24 @@ func _build_hero(success: bool) -> HBoxContainer:
 	xp.text = "+" + UiText.group_digits(int(payout.get("xp_total", 0)))
 	right.add_child(xp)
 	return row
+
+
+## PO-4 motion: the hero total ticks up from 0 over COUNT_S (ease out); any accept / click skips to the
+## end. Reduce Motion (or headless) shows the final number at once.
+func _count_up(l: Label, amount: int) -> void:
+	if not UiTokens.motion_ok() or DisplayServer.get_name() == "headless" or amount <= 0 or not is_inside_tree():
+		return
+	_counter = create_tween()
+	_counter.tween_method(func(v: float) -> void: l.text = UiText.money(roundi(v)), 0.0, float(amount), COUNT_S) \
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+
+
+## Jumps a running count-up to its end. Returns whether one was running.
+func skip_count() -> bool:
+	if _counter != null and _counter.is_valid() and _counter.is_running():
+		_counter.custom_step(COUNT_S)
+		return true
+	return false
 
 
 func _build_cash() -> VBoxContainer:
@@ -613,6 +635,8 @@ func _on_heist_ended(heist_result: Dictionary) -> void:
 
 
 func _on_continue() -> void:
+	if skip_count():
+		return  # PO-4: the first press finishes the count-up
 	if not cards_stage and has_card_pick():
 		show_cards()
 		return
