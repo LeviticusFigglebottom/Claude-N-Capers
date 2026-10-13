@@ -405,3 +405,13 @@ Newest entry first, keep the last 10.
 ### 2026-10-12 19:55 ET trunk db22c24c merged (round 34)
 - Merged origin/claude/dreamy-hamilton-pc7vck db22c24c into env/b-content (03087809), clean, no other env's files touched. Green: test_pp_pad_walks 3, test_pp_live_hud_720p 4, test_pp_screens_720p 4, test_options_screen 8, test_options_bindings 10, test_options_apply 3, test_options_settings 11, test_options_palettes 6, test_pp_input 13 (0 skipped: the payday LB/RB actions are on trunk now, so the shoulder-button test runs for real). gdlint: fixed one ordering error in test_pp_screens_720p.
 - BLOCKED, still: PQ-B-1 / PQ-B-19 / PQ-B-25. Trunk db22c24c does NOT contain P's work. There is no game/tests/p/p_input_driver.gd and no PlayerInput.test_assume_captured. A's LocalHudModel domination fields and P's CrewController.casing_blocked signal are not on trunk either. db22c24c is the lead/d078-docs merge (D-078..D-085, audio_cues v1.4, payday LB/RB). P's env/p-play and A's env/a-core still need to land.
+
+### 2026-10-12 20:15 ET PQ-B-1 / 19 / 25 handoff patch (not on env/b-content)
+- Scratch: env/b-content c3a62c96 + origin/env/p-play + origin/env/a-core (clean merges, worktree deleted after).
+- Patch: handoff/pq_b_1_19.patch (untracked, B test files only, `git apply --check` clean on env/b-content).
+  - PQ-B-1: 7 test_pp_* files switch their _pad / _key / _press / _accept helpers to PInputDriver. test_assume_captured is set in before_each, release_all() runs in after_each.
+  - PQ-B-19 / PQ-B-25: new test_pp_live_prompts.gd, a live glasshouse run with real input. Sprint while casing shows "Mask up to sprint". A guard in its window in front of the crew shows the domination prompt with the shout key, and it hides afterwards. Mask up (hold G), aim with the real mouse, and holding interact starts a lockpick, with the HUD showing the key and progress.
+  - Scratch results: gamepad_flow 4, heist_ui 8, input 13, live_hud_720p 4, lobby_720p 3, menu_walk 1, pad_walks 3, live_prompts 3 (2 runs): all 0 failed. gdlint clean.
+  - Test-writing note: setting crew.look_pitch directly gets overwritten by PlayerInput. Aim with PInputDriver.look() instead.
+  - Apply with `git apply handoff/pq_b_1_19.patch` once P + A are on trunk.
+- Lead playability_pass.md B rows (PP-B-1..3) are all already fixed (PQ-B-2..4). No unblocked B row is left.
