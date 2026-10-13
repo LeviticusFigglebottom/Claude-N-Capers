@@ -400,6 +400,14 @@ func smash_camera(cam: SecurityCamera) -> String:
 
 # --- Routes -----------------------------------------------------------------------------------
 
+## Ground-floor spots a masked crew member must not go: the sales floor and the G4 west end by the
+## staff door (customers walk through it; the sales floor sees in when it stands open).
+static func exposed(v: Vector3) -> bool:
+	if not inside(v) or v.y > 2.0:
+		return false
+	return v.z > 6.0 or (v.z > 4.3 and v.x < 4.8)
+
+
 static func inside(v: Vector3) -> bool:
 	return v.x > 0.0 and v.x < 18.0 and v.z > 0.0 and v.z < 12.0
 
@@ -465,8 +473,8 @@ func hunt(g: NpcBase, timeout_s: float) -> String:
 		if _arresting_us(g):
 			await _await_arrest(g)
 			continue
-		if inside(g.global_position) and g.global_position.z > 6.0 and g.global_position.y < 2.0:
-			await f.wait_s(0.5)  # on the sales floor (customers, cameras): wait for him in the back
+		if exposed(g.global_position):
+			await f.wait_s(0.5)  # on the sales floor / by the staff door (customers, cameras): wait in the back
 			continue
 		var d: float = p.flat_dist(g.global_position, crew.global_position)
 		if d <= 1.45 and absf(g.global_position.y - crew.global_position.y) < 1.0:

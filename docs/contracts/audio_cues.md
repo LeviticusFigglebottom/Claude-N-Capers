@@ -1,4 +1,4 @@
-# Contract: audio cues (v1.5)
+# Contract: audio cues (v1.6)
 
 ENV C produces every sound (synthesized/procedural; see style guide §Audio) and the cue registry
 `game/world/audio/cues.tres` (`AudioCueDef` resources: streams[], volume_db, bus, 3D, max_distance,
@@ -69,6 +69,10 @@ Buses: `Master > Music, SFX (> Weapons, Enemies, World, UI), Voice, Ambience`.
 | cue.hud_hint | contextual hint appears | very soft blip | PP (D-090) |
 | cue.payday_total | payday hero total lands | register "cha-chunk" | PP (D-090) |
 | cue.card_flip | payday card reveal | card flip | PP (D-090) |
+| cue.hud_hit | local player's shot hits (non-zero damage), HUD | 35 ms tick, -13 dB, cooldown 0.04, jitter 0.03, UI bus 2D (B, build_ui.py) | PP (D-100) |
+| cue.hud_headshot | local player's headshot/crit | 80 ms 3.5 kHz tink, -12 dB, cooldown 0.05 | PP (D-100) |
+| cue.hud_kill | local player's kill | 120 ms 280 Hz thock + click, -9 dB, cooldown 0.06 | PP (D-100) |
+| cue.hud_heartbeat | one pulse of the low-health vignette (< 25 % health, standing) | lub-dub 450 ms, -12 dB, cooldown 0.3, never looped | PP (D-100) |
 
 UI cues (D-090) are built by `python3 tools/audiogen/ui/build_ui.py` (ENV B). `tools/audiogen/build.py` rewrites
 `cues.tres`: after it, run `python3 tools/audiogen/ui/build_ui.py --registry-only` (or have C's build call it) so the

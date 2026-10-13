@@ -12,6 +12,8 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 00:40: **round 64 ON ORIGIN**: env/b-content (hit/headshot/kill markers + damage arcs + low-health vignette/heartbeat, payday XP bar, downed-state screen, equipment icon chips, assault phase strip, loading screen with tips). ui_hud 1.9/1.10 (local_net_id, revive_progress/reviver_slot → A). b targeted + P1 slice green.
+- 2026-10-14 00:20: **round 63 ON ORIGIN**: env/p-play (knife melee framing eased per playing set), env/a-core (gh_stealth WIP harness). p + fp_viewmodel/d069 green.
 - 2026-10-14 00:10: **round 62 ON ORIGIN**: env/b-content (all 64 mods on PD2 accuracy/stability steps, mod ADS deltas zeroed, PD2 ADS times, LMG drift values, 21:9 in-heist HUD captures uw_*), lead P4 goldens to match (9/0). b/a/p targeted green.
 - 2026-10-13 23:55: **round 61 ON ORIGIN**: env/a-core 0ca5ff38 (Bulwark shield clips, all-NPC spawn-yaw snap fix). a targeted + P1 slice green. gh_loud release check running at A (seed 1791914030).
 - 2026-10-13 23:45: **round 60 ON ORIGIN**: env/a-core (D-095 key interior lights on viewmodel_lit across all 4 maps; A4-02 probe: real characters cost ≈ +0.02 ms/NPC CPU vs capsules). Map tests + d095 green. Pending: B's PD2 mod rescale (802ae2b1) lands with lead P4 goldens once ADS deltas are zeroed.
