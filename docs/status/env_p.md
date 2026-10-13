@@ -2,6 +2,17 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-13 20:30 ET: rounds 35-42 merged, viewmodel lanes
+- Merged trunk round 42 (892c64b9). Pushed 2c8cc473.
+- AR hip pose (61d9e075): measured with res://tests/p/_review/vm_probe.tscn (`-- --out=DIR --primary=weapon.corsair_ar
+  --slot=primary [--heist=glasshouse] [--no_ik]`, Vulkan windowed, dumps markers/AABB in camera space): authored rifle
+  hip had the gun's rear 0.11 m behind the lens. FpViewmodelTweak.set_hip_offset / set_ads_offset_z per anim_set
+  (rifle (0.02,-0.03,-0.16), ADS -0.06). Rifle left hand fingers-up is the authored clip (same with IK off): D's pose.
+- L4 (897c39aa, subagent): PD2 pad yaw ramp (PlayerInput gamepad_ramp_*), test_p_l4_look_feel.gd; Options mouse
+  slider confirmed a pure multiplier on D-091's 0.0016 gain.
+- L3 PP-P-12 door head-on: subagent in a worktree (pending). Next: pistol hip cant / brute_12 left hand (L2),
+  movement/ADS transitions review (L5), glasshouse AR capture.
+
 ## 2026-10-13 ET: team v3 dispatch (D-086), PO-2 mouse capture
 - Queue: PO-2 mouse capture -> PO-1 casing exit -> PO-3 bump/step snags on all 4 heists -> feel pass.
 - PO-2: game/systems/player/mouse_capture.gd (`MouseCapture`, D-087, input_focus.md 1.0) is the only writer of
