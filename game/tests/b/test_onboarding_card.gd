@@ -73,9 +73,7 @@ func test_card_times_out_and_dismiss_key_closes_it() -> void:
 	assert_false(_card.visible, "auto-hides after DWELL_S")
 	_model.player_mode = &"masked"
 	assert_true(_card.visible)
-	var k: InputEventKey = InputEventKey.new()
-	k.physical_keycode = OnboardingCard.DISMISS_KEY
-	k.pressed = true
+	var k: InputEvent = _dismiss_event()
 	_card._input(k)
 	assert_false(_card.visible, "H closes the card")
 
@@ -98,3 +96,17 @@ func test_seen_tips_persist_in_profile_settings() -> void:
 	saved = SaveService.load_profile(0).settings.get(OnboardingTips.SETTINGS_KEY, []) as Array
 	assert_eq(saved, ["casing", "loud"], "stored as a plain array in the free-form settings dict")
 	assert_false(OnboardingTips._writes(), "never writes the real save from inside the test runner")
+
+
+## The dismiss_tip action's first event (D-096), or H before the action exists.
+func _dismiss_event() -> InputEvent:
+	if InputMap.has_action(OnboardingCard.DISMISS_ACTION):
+		for ev: InputEvent in InputMap.action_get_events(OnboardingCard.DISMISS_ACTION):
+			var e: InputEvent = ev.duplicate() as InputEvent
+			if e is InputEventKey:
+				(e as InputEventKey).pressed = true
+				return e
+	var k: InputEventKey = InputEventKey.new()
+	k.physical_keycode = OnboardingCard.DISMISS_KEY
+	k.pressed = true
+	return k
