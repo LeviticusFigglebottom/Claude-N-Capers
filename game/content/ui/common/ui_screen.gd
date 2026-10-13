@@ -91,6 +91,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed(&"ui_cancel"):
 		get_viewport().set_input_as_handled()
+		UiSfx.play(UiSfx.BACK)  # D-090
 		back_requested.emit()
 
 

@@ -64,7 +64,14 @@ static func button(key: StringName, args: Dictionary = {}) -> Button:
 	b.text = UiText.t(key, args)
 	b.focus_mode = Control.FOCUS_ALL
 	b.custom_minimum_size = Vector2(320, 0)
-	return b
+	return sfx(b, UiSfx.KIND_CONFIRM) as Button
+
+
+## D-090 UI sounds: wires `b` to play the focus cue on keyboard / pad navigation and the press cue of
+## `kind` (UiSfx.KIND_*: confirm, primary, back, tab, none). Every button() is wired as confirm;
+## primary() / ghost() / tab() switch the kind. Returns `b`.
+static func sfx(b: BaseButton, kind: StringName) -> BaseButton:
+	return UiSfx.wire(b, kind)
 
 
 ## Tracked-caps caption label (field names, breadcrumbs, column heads).
@@ -94,6 +101,7 @@ static func keycap(text: String, font_size: int = UiTokens.FONT_HUD) -> PanelCon
 ## Marks `b` as a tertiary action (Back, Reset): no fill until hovered. Returns `b`.
 static func ghost(b: Button) -> Button:
 	b.theme_type_variation = GHOST
+	sfx(b, UiSfx.KIND_BACK)
 	return b
 
 
@@ -102,12 +110,14 @@ static func tab(b: Button) -> Button:
 	b.theme_type_variation = TAB
 	b.toggle_mode = true
 	b.custom_minimum_size = Vector2(0, 0)
+	sfx(b, UiSfx.KIND_TAB)
 	return b
 
 
 ## Marks `b` as the screen's primary action (theme variation PrimaryButton). Returns `b`.
 static func primary(b: Button) -> Button:
 	b.theme_type_variation = PRIMARY
+	sfx(b, UiSfx.KIND_PRIMARY)
 	return b
 
 
