@@ -2,38 +2,39 @@
 
 Owner: **LEAD**.
 
-## 1. The team (Grok Bot agents, D-078)
+## 1. The team (team v3: Claude Code cloud sessions, D-086)
 
-Since 2026-10-12 the team is a set of **Grok Bot agents** on one shared Linux box (Aaron's Grok Bot computer).
-The earlier Claude Code cloud sessions and the WSL-local subagents are retired; their unpushed work is on GitHub as
-`backup/2026-10-12/*`. Nobody works in the WSL distro or the Windows checkout on Aaron's PC.
+Since 2026-10-13 the team is a **LEAD Claude Code session plus three dispatched Claude Code cloud sessions**, each in
+its own container with its own clone, tools and subagents. The Grok Bot box (D-078: BOARD.md, SendToAgent,
+`/workspace/cnc-team/*`) is retired; ignore any reference to it. Session ids are in `docs/process/board.md`.
 
-| Role | Agent id | Clone on the box | Branch it pushes to | Owns |
-|---|---|---|---|---|
-| **LEAD** | (lead agent) | `/workspace/cnc-team/lead` | `claude/dreamy-hamilton-pc7vck` (= **trunk**) | architecture, contracts, docs, core/, CI, integration tests, merges |
-| **ENV A — Core Systems & AI** | `d7c2f4bb-5bea-4fc5-92cf-7e3ab20a4989` | `/workspace/cnc-team/env-a` | `env/a-core` | `game/systems/**`, `game/tests/a/**`, `docs/status/env_a.md` |
-| **ENV B — Content & Progression** | `ccd1c890-1137-4e8a-a422-afc12a60c7bd` | `/workspace/cnc-team/env-b` | `env/b-content` | `game/content/**`, weapons, `game/tests/b/**`, `docs/status/env_b.md` |
-| **ENV C — Worlds & Art** | `ff4866f2-1d02-4efa-a2d8-53aa78a87e49` | `/workspace/cnc-team/env-c` | `env/c-worlds` | `game/world/**`, assets (non-weapon/char), tools/blender, texgen, audiogen, levelcheck, `docs/levels/**`, `game/tests/c/**` |
-| **ENV D — Characters & Art** | `a9ad80ca-9f0c-4442-a4c1-3bef16990422` | `/workspace/cnc-team/env-d` | `env/d-art` | characters, animations, masks, `char_` materials (see owners.json) |
-| **ENV P — Playability** | `3d922e3f-065c-4ebc-857e-dc8cc2e404e9` | `/workspace/cnc-team/env-p` | `env/p-play` | `game/systems/player/**`, `fp_viewmodel*`, `crew_tweak.*`, `game/tests/p/**` |
+| Role | Status | Branch it pushes to | Owns (authoritative: `tools/ci/owners.json`) |
+|---|---|---|---|
+| **LEAD** | active | `claude/dreamy-hamilton-pc7vck` (= **trunk**) | architecture, contracts, docs, core/, project.godot, CI, integration tests, merges |
+| **ENV P — Player & Input** | active | `env/p-play` | `game/systems/player/**`, `fp_viewmodel*`, `crew_tweak.*`, `game/tests/p/**` |
+| **ENV B — Content & UI** | active | `env/b-content` | `game/content/**` (all UI), weapons, `docs/design/ui/**`, `game/tests/b/**` |
+| **ENV A — Core Systems & Heist Loop** | active | `env/a-core` | `game/systems/**` (minus P's), `game/world/heists/**` + `game/world/props/**` during the pass (D-086), `game/tests/a/**` |
+| ENV C — Worlds & Art | dormant | `env/c-worlds` | (owners.json; A covers heist-map playability fixes meanwhile) |
+| ENV D — Characters & Art | dormant | `env/d-art` | (owners.json) |
 
-Shared toolchain (installed once by the LEAD): Godot 4.7.2 `/opt/godot/godot`, Blender 4.5.14 `/opt/blender/blender`,
-pip deps from `tools/requirements.txt` (gdlint in `~/.local/bin`), xvfb-run. The box is shared: run long Godot
-suites under `timeout`, Blender with `--threads 1`, and don't start more than one full check_all per env at a time.
-
-The authoritative ownership map is `tools/ci/owners.json`. `tools/ci/check_ownership.py <env>`
-fails if an env branch diverges from trunk in any file it does not own.
-
-Each environment is a **separate session with its own container, tools, and subagents**. Inside its
-domain an environment works subagentically (spawns its own Agent subtasks in parallel for
-independent pieces) but its session is the single accountable owner of its branch.
+Toolchain per container: Godot 4.7.2 at `/opt/godot/godot` (SessionStart hook, or `bash tools/setup/install_godot.sh`),
+`pip install -r tools/requirements.txt` (gdlint), `xvfb-run` for windowed runs. Full `check_all` takes ~40 min on
+4 cores: run single test dirs while iterating (`tools/ci/run_tests.sh p`), the full gate before a push.
 
 ### Coordination surfaces
-* **BOARD** `/workspace/cnc-team/BOARD.md` (on the box, newest entry on top, `[YYYY-MM-DD HH:MM ET] [ROLE] text`):
-  short-lived coordination: toolchain state, who is merging, blockers, pushes, queue changes.
-* **SendToAgent** (Grok Bot agent messaging, ids in the table above): direct messages. Delivered on the
-  recipient's next turn, not live, so put everything needed in one message.
-* **docs/ on trunk**: anything durable (decisions, contracts, status). Nothing is agreed until it is in docs on trunk.
+* **`docs/process/board.md`** (trunk, LEAD-written): live state: session ids, who works on what, merge rounds,
+  open questions and their answers, blockers. Read it at the start of every work session and after each lead message.
+* **`send_message`** (claude-code-remote MCP): env → lead reports and questions; lead → env dispatches and answers.
+  Messages arrive on the recipient's next turn, so put everything needed in one message. Envs may message **each
+  other directly** for quick technical questions (a signal name, "is X already done?") and must cc the lead with a
+  one-line summary; anything that changes a contract, ownership, or priorities goes through the lead.
+* **`docs/` on trunk**: anything durable (decisions, contracts, issue list, status). Nothing is agreed until it is in docs on trunk.
+* **Status files** `docs/status/env_<x>.md` on the env branch: end-of-session log and resume point (§3).
+
+### Verification rule (D-086)
+A player-facing fix is **verified** only when it has been seen working in a **windowed** run (`xvfb-run` with a real
+display server, not `--headless`), with a screenshot or a test that runs windowed. Tests that fake engine state
+(`test_assume_captured`, teleports, intent injection) are fine as regression tests but do not count as verification.
 
 ## 2. Branch flow
 
@@ -74,14 +75,14 @@ template (newest entry on top, keep the last 10 entries):
 
 ## 4. Messaging
 
-* Envs report **to the lead** with SendToAgent and a BOARD line; they do not task each other.
-* After pushing (or, for ENV P, committing) a checked unit an env posts on BOARD and sends the lead:
-  `"[ENV A] status @ <sha>; check_all: PASS; ready-for-integration: yes; questions: QA-3"`.
-* The lead dispatches tasks by SendToAgent (mirrored on BOARD), referencing the roadmap / playability-list id
-  and the contracts that apply.
-* Cross-env needs are written as a **question in the asking env's status file**; the lead answers in a contract
-  or `docs/decisions.md` and notifies both envs.
-* Pushing to trunk needs the lead's gate (check_all PASS) and the product owner's approval; never force-push.
+* Envs report **to the lead** with `send_message`; they never task each other (peer questions only, §1).
+* After pushing a checked unit an env sends the lead:
+  `"[ENV P] pushed <sha>; check: <what ran> PASS; verified windowed: <how>; ready-for-integration: yes; questions: QP-3"`.
+* The lead dispatches tasks by `send_message` and mirrors them in `docs/process/board.md`, referencing the
+  playability-list id (`docs/process/playability_pass.md`) or roadmap id and the contracts that apply.
+* Cross-env needs: a question in the asking env's status file **and** in the message to the lead; the lead answers
+  in a contract or `docs/decisions.md`, notes it on the board, and notifies both envs.
+* After each merge round the lead sends "round N ON ORIGIN: trunk <sha>"; envs merge trunk before their next push.
 
 ## 5. Lead review checklist (before every merge)
 

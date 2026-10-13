@@ -10,9 +10,24 @@ extends Resource
 @export var jump_velocity: float = 4.6
 @export var gravity: float = 9.8
 @export var acceleration: float = 30.0
+## PI-08: grounded braking (wish slower than / against the current velocity) - PD2 stops crisply.
+@export var deceleration: float = 50.0
 @export var air_control: float = 0.3
 ## Max yaw/pitch speed is unbounded: intents carry absolute angles.
 @export var max_pitch_deg: float = 89.0
+
+@export_group("Ground (P1-01)")
+## Tallest lip walked up without jumping, and deepest drop followed down without leaving the floor (m).
+## level_standards.md §2.6: stair risers 0.15–0.19 m and curbs/door sills fit with margin; >= the navmesh
+## agent_max_climb (0.3 m) so AI crew never stall where their path climbs; < a chair seat (0.45 m), so
+## furniture and 0.4 m+ ledges still need a jump.
+@export var step_height_m: float = 0.35
+## Steepest walkable ramp (deg); steeper is a wall. >= the navmesh agent_max_slope (40 deg).
+@export var max_slope_deg: float = 45.0
+## D-085: max sideways search (m) for an opening when walking head-on into a wall / frame edge (0 = off).
+@export var edge_assist_m: float = 0.45
+## Camera-only smoothing of step-up / step-down height changes (1/s, exponential); gameplay position is exact.
+@export var step_smooth_rate: float = 14.0
 
 @export_group("Stamina (QB-60, PD2 movement_state.stamina)")
 ## Pool before movement.stamina_mult x team.stamina_mult x ArmorDef.stamina_mult.

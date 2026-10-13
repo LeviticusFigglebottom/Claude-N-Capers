@@ -38,8 +38,7 @@ place (atomic).
    * Every reached rank's rewards are re-granted (`Notoriety.apply_rewards`).
    * `music_choice` is type-checked only. The launch resolves it against `MusicCatalog` (B5-03).
    * `career.weapons` loses unknown weapon ids. Heist and loot ids in `career` are kept (history).
-   * `weapon_finishes` loses unknown weapon ids. TODO(B7-04): finish ids are not checked yet; B7-04
-     validates them against its finish data.
+   * `weapon_finishes` loses entries with an unknown weapon id or an unknown finish id (`WeaponFinishes.is_known`).
 
 ## Fields
 Types are JSON types. `id` = a `String` content id (`domain.snake_name`). "Since" = the first version

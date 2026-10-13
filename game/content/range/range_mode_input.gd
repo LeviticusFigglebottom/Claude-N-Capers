@@ -23,8 +23,12 @@ func set_aim_active(on: bool) -> void:
 	RangeCrewBridge.set_input_enabled(crew, false)
 	if on:
 		_try_resume()
-	if DisplayServer.get_name() != "headless":
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if on else Input.MOUSE_MODE_VISIBLE
+	# input_focus.md 1.1: aim mode = the crew's PlayerInput enabled -> MouseCapture captures; the panels
+	# (aim off) hold the cursor with the &"menu" release.
+	if on:
+		MouseCapture.pop_release(&"menu")
+	else:
+		MouseCapture.push_release(&"menu")
 
 
 func _physics_process(_delta: float) -> void:
@@ -40,8 +44,7 @@ func _try_resume() -> void:
 
 
 func _exit_tree() -> void:
-	if aim_active and DisplayServer.get_name() != "headless":
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	MouseCapture.pop_release(&"menu")
 
 
 func _unhandled_input(event: InputEvent) -> void:

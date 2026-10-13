@@ -65,6 +65,18 @@ func _exit_tree() -> void:
 func _process(delta: float) -> void:
 	if auto_process:
 		advance(delta)
+	fit_height()
+
+
+## Drops the oldest rows while the shown rows are taller than RadioTweak.max_height_px (one row stays).
+func fit_height() -> void:
+	while rows.size() > 1:
+		var h: float = 0.0
+		for r: Dictionary in rows:
+			h += (r["panel"] as Control).size.y + 6.0
+		if h <= tweak.max_height_px:
+			return
+		_drop(0)
 
 
 ## Shows `line_id` said by `speaker` (ctx = voice_line_requested context). False when it is not shown (unknown

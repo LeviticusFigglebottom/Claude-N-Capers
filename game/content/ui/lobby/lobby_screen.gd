@@ -276,12 +276,22 @@ func _build_lobby() -> VBoxContainer:
 	chat_panel.name = "ChatPanel"
 	chat_panel.setup(session, ChatPanel.Mode.LOBBY)
 	top.add_child(chat_panel)
-	box.add_child(top)
+	# PQ-B-11b: contract + crew cards outgrow the 1080-unit canvas (1280x720) and pushed the
+	# Leave / Ready / Start footer off-screen. They scroll now; the footer stays pinned.
+	var body_scroll: ScrollContainer = ScrollContainer.new()
+	body_scroll.name = "LobbyBodyScroll"
+	body_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	body_scroll.follow_focus = true
+	var body: VBoxContainer = UiBuild.vbox(20)
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body_scroll.add_child(body)
+	box.add_child(body_scroll)
+	body.add_child(top)
 	var slots: HBoxContainer = UiBuild.hbox(16)
-	slots.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	for _i: int in range(LobbyState.MAX_CREW):
 		slots.add_child(_slot_card())
-	box.add_child(slots)
+	body.add_child(slots)
 	var footer: HBoxContainer = UiBuild.hbox(16)
 	leave_button = UiBuild.button(&"ui.lobby.leave")
 	ready_button = UiBuild.button(&"ui.lobby.ready")

@@ -40,6 +40,18 @@ func _draw() -> void:
 			_jukebox(c, u, w)
 		&"notoriety":
 			_notoriety(c, u, w)
+		&"profile":
+			_profile(c, u, w)
+		&"pistol":
+			_pistol(c, u, w)
+		&"knife":
+			_knife(c, u, w)
+		&"vest":
+			_vest(c, u, w)
+		&"bag":
+			_bag(c, u, w)
+		&"grenade":
+			_grenade(c, u, w)
 		_:
 			draw_circle(c, u * 0.2, color)
 
@@ -131,3 +143,58 @@ func _notoriety(c: Vector2, u: float, w: float) -> void:
 		var r: float = 0.56 if i % 2 == 0 else 0.23
 		pts.append(c + Vector2(cos(a), sin(a)) * u * r)
 	draw_colored_polygon(pts, color)
+
+
+## Dossier card: a head-and-shoulders portrait beside record lines (career screen, hub_map v1.1).
+func _profile(c: Vector2, u: float, w: float) -> void:
+	var r: Rect2 = Rect2(c - Vector2(u * 0.72, u * 0.52), Vector2(u * 1.44, u * 1.04))
+	draw_rect(r, Color(color, 0.55), false, w)
+	var head: Vector2 = c + Vector2(-0.34, -0.1) * u
+	draw_circle(head, u * 0.16, color)
+	draw_arc(head + Vector2(0, 0.42) * u, u * 0.24, PI, TAU, 14, color, w * 1.4, true)
+	for i: int in range(3):
+		var y: float = -0.22 + float(i) * 0.22
+		var x1: float = 0.5 if i == 1 else 0.56
+		draw_line(c + Vector2(0.04, y) * u, c + Vector2(x1, y) * u, Color(color, 0.85 if i == 0 else 0.5), w)
+
+
+## PO-4 loadout slot glyphs (ItemSlot cards).
+## Pistol: slide, grip and trigger guard.
+func _pistol(c: Vector2, u: float, w: float) -> void:
+	draw_colored_polygon(PackedVector2Array([c + Vector2(-0.55, -0.32) * u, c + Vector2(0.6, -0.32) * u,
+			c + Vector2(0.6, -0.08) * u, c + Vector2(-0.55, -0.08) * u]), Color(color, 0.85))
+	draw_colored_polygon(PackedVector2Array([c + Vector2(-0.5, -0.08) * u, c + Vector2(-0.18, -0.08) * u,
+			c + Vector2(-0.08, 0.55) * u, c + Vector2(-0.42, 0.55) * u]), color)
+	draw_arc(c + Vector2(0.02, -0.02) * u, u * 0.16, 0.0, PI, 10, color, w)
+
+
+## Folding knife: blade and handle.
+func _knife(c: Vector2, u: float, w: float) -> void:
+	draw_colored_polygon(PackedVector2Array([c + Vector2(-0.1, -0.1) * u, c + Vector2(0.75, -0.1) * u,
+			c + Vector2(0.55, 0.08) * u, c + Vector2(-0.1, 0.08) * u]), Color(color, 0.85))
+	draw_rect(Rect2(c + Vector2(-0.75, -0.12) * u, Vector2(0.62, 0.24) * u), color)
+	draw_line(c + Vector2(-0.1, -0.16) * u, c + Vector2(-0.1, 0.14) * u, Color(tile_color, 1.0), w)
+
+
+## Armour vest: shoulders, neck cut, plate line.
+func _vest(c: Vector2, u: float, w: float) -> void:
+	var v: PackedVector2Array = PackedVector2Array([c + Vector2(-0.55, -0.6) * u, c + Vector2(-0.2, -0.6) * u,
+			c + Vector2(0.0, -0.35) * u, c + Vector2(0.2, -0.6) * u, c + Vector2(0.55, -0.6) * u,
+			c + Vector2(0.6, 0.6) * u, c + Vector2(-0.6, 0.6) * u])
+	draw_colored_polygon(v, Color(color, 0.8))
+	draw_line(c + Vector2(-0.45, 0.1) * u, c + Vector2(0.45, 0.1) * u, Color(tile_color, 1.0), w)
+
+
+## Duffel bag with handles.
+func _bag(c: Vector2, u: float, w: float) -> void:
+	draw_rect(Rect2(c + Vector2(-0.7, -0.2) * u, Vector2(1.4, 0.7) * u), Color(color, 0.85))
+	draw_arc(c + Vector2(0, -0.2) * u, u * 0.3, PI, TAU, 12, color, w * 1.4)
+	draw_line(c + Vector2(-0.7, 0.12) * u, c + Vector2(0.7, 0.12) * u, Color(tile_color, 1.0), w)
+
+
+## Grenade: body, lever and pin ring.
+func _grenade(c: Vector2, u: float, w: float) -> void:
+	draw_circle(c + Vector2(0, 0.15) * u, u * 0.42, Color(color, 0.85))
+	draw_rect(Rect2(c + Vector2(-0.14, -0.45) * u, Vector2(0.28, 0.2) * u), color)
+	draw_line(c + Vector2(0.14, -0.4) * u, c + Vector2(0.45, -0.05) * u, color, w * 1.4)
+	draw_arc(c + Vector2(-0.3, -0.45) * u, u * 0.14, 0.0, TAU, 12, color, w)

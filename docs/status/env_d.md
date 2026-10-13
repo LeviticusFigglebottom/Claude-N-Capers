@@ -3,6 +3,139 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12: session 3g (WIP: TAC Light accent, unverified)
+- TAC Light (+ frd/sentinel/zero): matte cream (`char_bank_cream`, albedo ~215) placard bars across the front and back
+  plates (`char_police.tac_placard`, TAC Light only; Corpsman not affected). A chest/back bar, distinct from TAC
+  Heavy's white shoulders. Tris: base 30,108, frd 31,708, sentinel 30,748, zero 32,320 (budget 35,000).
+- NOT VERIFIED: the Glasshouse 10/20 m renders were stopped at wrap-up before writing an image. Next: run
+  `render_heist_review.gd -- glasshouse tacl 10` and `... 20` behind render.lock and judge TAC Light vs Bulwark.
+- `run_tests.sh d` 115 tests, 0 failed.
+
+## 2026-10-12: session 3f (rechecks; local only)
+- ND 20 m on ENV C 6943ce02 lighting (scratch worktree of c/repo with D's current characters copied in):
+  `_review/heist_night_deposit_20m_c6943_compare.png` (rows: specials before/after, regulars before/after).
+  Now read: Stinger (blue cells), Phantom (green goggles), Longshot (hat + drab), TAC Light (olive-grey helmeted
+  rifleman), plus everything that read before. Still weak: Bulwark (dark hooded bulk; it reads in game only by its
+  shield, which this line-up does not carry) and TAC Light vs Bulwark without the shield. No accent change needed.
+- Anim on env/a-core 7cf4240e (scratch worktree, crew_rook, 3.5 m/s, 60 fps): clips now run_l / run_r / run_b
+  (no more forward-run moonwalk); spawn frame 1 = idle with blend 0.00, upper_arm.L 38.7 deg off rest (no A-pose).
+  Planted-foot speed metric: run_l 0.62, run_r 0.61, run_b 0.24, forward run 0.50 m/s (baseline); same order as the
+  forward run, so no strafe-specific slide; the metric itself is coarse (3 cm stance band).
+- FP arms (ENV P report: pistol tilted ~40 deg up-left, wrists through the grip): no P renders in p/renders (empty).
+  char_arms_fp: 41 bones, `weapon` child of hand.R present; in pistol/rifle idle the `weapon` muzzle is 2 deg up,
+  5 deg left, 3.5 deg roll of camera forward; hand.R axes are 131 deg from the weapon axes; wrist skin: 743 verts
+  blended hand.R/forearm.R, 0 unweighted. Verdict: attach the WeaponVisual to the `weapon` bone (contract) and fix the
+  pose/IK on the P/A side; no D mesh change.
+
+## 2026-10-12: session 3e (PP-D heist readability + anim; local only, no push)
+### Render path (works on this GPU-less box)
+`flock /workspace/cnc-team/render.lock xvfb-run -a -s "-screen 0 1280x720x24" godot --audio-driver Dummy --path game
+--script res://world/characters/_tools/render_heist_review.gd [-- <map> <tag|-> <dist>]` -> Forward+ on Vulkan
+llvmpipe (lavapipe). gl_compatibility + LIBGL_ALWAYS_SOFTWARE=1 under xvfb also works; `--headless` never draws.
+Line-up: Spawns marker x 16 yaws scored by clear slots; slots on floor only (down ray within 0.25 m of the marker
+floor), 0.35 m standing room, eye->head/chest/knee line of sight; camera aims at the line-up centroid.
+Group a (L->R): patrol_officer, security_officer, tac_light, cartel_gunman, frd_agent; group b: tac_heavy, stinger,
+bulwark, longshot, corpsman, phantom. Crops: `_review/heist_<map>_<d>m_crop.png` (top a, bottom b).
+### Readability misses (idle_alert, FOV 75, 720p)
+| map | d | does not read | reads |
+|---|---|---|---|
+| Night Deposit | 10 m | - (all read) | all |
+| Night Deposit | 20 m | tac_light / stinger / bulwark (same brown-black under sodium light); longshot (hat only), phantom (green goggles only) | patrol stripes, security shirt, cartel, frd shirt, tac_heavy shoulders, corpsman |
+| Night Deposit | 40 m | everything but security shirt (dark fence backdrop); 3 of 6 slots clear | security_officer (faint) |
+| Glasshouse | 10 m | bulwark vs tac_light in the alley shadow | rest |
+| Glasshouse | 20 m | bulwark; only 3 slots clear (narrow alley) | patrol, security, tac_light shape, tac_heavy, stinger blue |
+| Glasshouse | 40 m | not testable: 2 slots clear (alley) - coverage gap | patrol, security |
+| Dockside Burn | 10 m | - (fog washes legs, classes still read) | all |
+| Dockside Burn | 20 m | stinger / bulwark / longshot in fog | patrol, security, cartel, tac_heavy, corpsman, phantom goggles |
+| Dockside Burn | 40 m | all but patrol stripes + security shirt (fog) | patrol, security |
+Cause: lighting/fog (ENV C) plus near-black kits; per lead, accents untouched. Known script limit: the line-of-sight
+rays ignore vehicles without collision (ND 40 m: one unit behind the parked car).
+### Anim (item 2)
+- Spawn A-pose blend and >2.2 m/s strafe/back moonwalk were ENV A (anim_driver.gd); fixed by A in c9d4dd98, checked
+  in a scratch worktree (see report). An `autoplay idle` try on the D side broke 4 D tests (mask seat, portraits) and
+  was reverted. LOD switches mid-fight: no pop issue found (proxy shares the skeleton, weapon stays on HandR/Socket).
+### D rows for playability_pass.md
+- PP-D-1 LOD pop / skinning: PASS (anim_lod_*.png, fp_pop_*.png). D-080, D-084 in.
+- PP-D-2 class readability 10 m: PASS on all three maps.
+- PP-D-3 class readability 20 m: FAIL ND + DB for tac_light/stinger/bulwark/longshot (lighting + dark kits; C first).
+- PP-D-4 class readability 40 m: FAIL ND + DB (all but patrol/security); GH not testable (no 40 m sight line).
+- PP-D-5 spawn A-pose / foot slide: A-side fix c9d4dd98, verify on trunk after merge.
+
+## 2026-10-12: session 3d (TAC Heavy accent; local only, push after round 34 + Aaron's approval)
+- TAC Heavy (+ frd/sentinel/zero): shoulder trim is now matte white `char_glove_white` (albedo ~208; the metallic
+  `char_aegis_steel` rendered dark without reflections), trim layer 0.92 of the plate, upper-arm plates also white.
+  Reads clearly on both shoulders in fp_30m and fp_40m (720p). Tris 31,630-32,786 / 35000 (base 31,630, frd 32,590, sentinel 31,950, zero 32,786). Security officer left as is.
+  `run_tests.sh d` 115/0.
+
+## 2026-10-12: session 3c (D-084 self-subscribe; local only, pushes need Aaron's approval)
+- CrowdLod subscribes itself: every proxy carries `_tools/crowd_lod_proxy.gd`, which creates one
+  `/root/CrowdLodZoom` watcher (`_tools/crowd_lod_zoom.gd`). It calls `CrewView.local_view()` and connects
+  `zoom_factor_changed(f)` -> `CrowdLod.apply_zoom_all(tree, f)`; re-checked when a CrewView enters the tree (spawn),
+  reset to 1x when the view leaves; late-spawned proxies get the current zoom. No CrewView class / `local_view` /
+  signal = no-op (P's b0fceb0c not on trunk yet). Test `test_crowd_lod_subscribes_to_zoom`; `run_tests.sh d` 115/0.
+- Accent check at 720p (fp_30m/fp_40m): Corpsman white shoulder caps read clearly at 30 and 40 m. TAC Heavy steel
+  trim reads at 30 m, faint at 40 m (mid-grey on near-black). Security white cap band does not read at 30-40 m
+  (a few pixels); the light-blue shirt already carries that silhouette. Possible follow-up: brighter TAC Heavy trim.
+
+## 2026-10-12: session 3b (lead rulings D-080, D-084, accents)
+### Done (pushed to origin/env/d-art at 4cc3d516)
+- 12bc7737 D-080: specials (char_specials.py) keep LOD0/1 only: no CrowdLod, 22 `*_lod.res` removed (LOD res now
+  9.1 MB total, was 13 MB); new `test_specials_have_no_lod2`. Closes issue 3 (Corpsman cross).
+- 65289015 accents (issue 2): TAC Heavy steel pauldron trim (`char_aegis_steel`, override `shoulder_accent`),
+  Corpsman white shoulder caps (single plate, keeps the 35k tri budget on frd/zero), security officer white cap band.
+  All faction variants rebuilt; char_tac_heavy rebuilt twice, byte-identical. fp_30m/fp_40m re-rendered.
+- 35015f0e D-084: `CrowdLod.zoom_factor_of(view)` (reads `zoom_factor`, default 1.0, clamp >= 1),
+  `apply_zoom(character, zoom)` / `apply_zoom_all(tree, zoom)` scale the switch (CrowdLod begin + glb ends) by zoom;
+  proxies are in the persistent `crowd_lod` group. Hook for ENV P (CrewView, per frame or on zoom change):
+  `CrowdLod.apply_zoom_all(get_tree(), CrowdLod.zoom_factor_of(self))`. Test `test_zoom_scales_crowd_lod_switch`.
+- Issue 5 (skinning): `anim_lod_{walk,run,aim_rifle}.png` (top LOD0, bottom forced CrowdLod, mid-clip): the
+  skinned proxy follows the pose with no explosion or stretched verts. No fix needed.
+- Issue 6 (scope): `scope_40m.png` at 40 m, FOV 75/4: top (zoom ignored) shows CrowdLod, so the far model comes from
+  the visibility ranges (camera distance), not mesh LOD; bottom (apply_zoom 4) shows LOD0. Fixed by D-084 once wired.
+- D-084 input check: no InputEventMouseMotion / `.relative` in any D-owned file; nothing to change.
+- `run_tests.sh d` 114 tests, 0 failed (test_lod 5/5).
+
+## 2026-10-12: session 3 (targeted tests only; lead runs check_all)
+### Done (local on env/d-art; push blocked by GitHub 403 for every env, see lead)
+- D4-01: D-080 is not in docs/decisions.md, so specials keep the current CrowdLod approach; 13 MB `*_lod.res` kept as is.
+- Mask polish (8fa5d3e1): serpent gets a sharp chevron hood crest + keel scale (5610 tris); moth gets thicker antennae
+  (spine 3.6 mm, barbs 15 mm, 8 barbs), bigger wings, raised eyespots and veins (7891/8000 tris, width inside
+  the 0.30 m test limit). Rebuilt twice, byte-identical. test_masks 9/9; `run_tests.sh d` 112 tests, 0 failed.
+- PP-D-1 review renders: `_tools/render_fp_review.gd` -> `game/assets/characters/_review/fp_{10,20,30,40}m.png`,
+  `fp_pop_crowd.png` (18.5 vs 21.5 m), `fp_pop_unit.png` (33.5 vs 36.5 m). Eye 1.65 m, vertical FOV 75 (assumed
+  default), 1280x720, real visibility ranges (nothing forced).
+### PP-D-1: art playability issues (first person)
+1. Size: a 1.78 m character is ~95 px tall at 10 m and ~25 px at 40 m (720p). Past 30 m faces and badges are gone;
+   only body colour and silhouette tell roles apart.
+2. Dark-on-dark: tac_heavy, corpsman and security_officer trousers/armour are near-black; against dark level
+   backgrounds the armed units lose their silhouette past ~30 m. Proposal: a lighter shoulder/helmet accent on armed units.
+3. Corpsman red cross becomes a red patch at CrowdLod (open since session 2); it is the specials telegraph.
+   Waiting on D-080 (specials LOD0/1 only); kept as is for now.
+4. LOD pop: fade is disabled (opaque pass, by design), so the switch is a hard cut. At 20 m (crowd) and 35 m (units)
+   the change is small (slight loss of hair and hand shape, no colour shift). Low priority; 1 m hysteresis holds.
+5. Skinning at distance: the renders are rest pose only. The CrowdLod skinned proxy under a playing clip is not
+   reviewed yet. Next: animated render at 20-40 m.
+6. ADS: zoomed FOV = fov / magnification, so a 4x scope shows a 40 m CrowdLod at 10 m size. Needs a
+   magnification-aware LOD bias (camera, ENV A/P) or larger switch distances. Not yet rendered.
+### Next
+- Animated CrowdLod render (issue 5), then the ADS render (issue 6). D4-02/D4-03 stay paused (D-076).
+### Ready for integration
+- needs the lead's check_all run
+
+## 2026-10-11: session 2 (new account), IN PROGRESS
+### In progress (resume here)
+- D4-01 LODs: `game/world/characters/_tools/crowd_lod.gd` + `assemble_characters.gd::_add_crowd_lod` write
+  `Skeleton3D/CrowdLod` (one merged skinned surface, `<id>_lod.res`, material `world/materials/char_crowd_lod.tres`)
+  for crowd NPCs (switch 20 m) and armed units (35 m); glb meshes get `visibility_range_end`. LOD1 = Godot auto LOD.
+  Assembled (99 scenes, 81 with CrowdLod, re-run byte-identical). `game/tests/d/test_lod.gd` added; the glb-part
+  tests skip CrowdLod; `run_tests.sh d` = 112 tests, 0 failed. Review: `game/assets/characters/_review/lod_review.png`
+  (top LOD0, bottom LOD2) and `lod_review_30m.png` (render script `_tools/render_lod_review.gd`).
+  Found: `ARRAY_FLAG_COMPRESS_ATTRIBUTES` makes the skinned proxy render exploded, so it is off; `*_lod.res` = 13 MB in total.
+  Open: the Corpsman's red cross shrinks to a red patch on LOD2 (maybe leave specials with telegraphs at LOD0/1).
+- NOT PUSHED: full check_all has not been run on this state (wind-down). Resume: `tools/ci/check_all.sh --env d`
+  (restore docs/levels/*/validation.md afterwards); if it prints PASS, push env/d-art; then write the final D4-01 entry.
+- D-076: D4-02 / D4-03 paused (not started). Mask polish and touch-ups not started.
+
 ## 2026-10-11: HANDOFF (session moving to a new account)
 ### Done since last entry (all on env/d-art, check_all --env d PASS at e528d192, round-31 trunk merged)
 - D-067b dedupe (inherited scenes of the glb, `remove_armature`), D-073 mask fit to the crew face envelope

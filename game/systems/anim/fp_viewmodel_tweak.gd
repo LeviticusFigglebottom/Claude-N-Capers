@@ -95,6 +95,11 @@ static var _gen: int = 0
 ## ADS weight rate (1/s toward the target).
 @export var ads_rate: float = 10.0
 
+@export_group("Viewmodel camera (PP-P-11)")
+## PD2-style fixed vertical FOV (deg) the first-person arms/weapon render with, independent of the world FOV
+## setting and ADS zoom (no stretched guns at wide FOV). 0 = draw them with the world camera.
+@export var viewmodel_fov_deg: float = 52.0
+
 @export_group("Motion")
 ## Horizontal speed (m/s) above which walk bob / sprint play.
 @export var move_threshold_mps: float = 0.3
@@ -106,6 +111,9 @@ static var _gen: int = 0
 @export var ads_bob_mult: float = 0.2
 ## Bob amplitude response rate (1/s) when starting / stopping.
 @export var bob_rate: float = 8.0
+## PI-21: share of the camera's step smoothing offset (CrewController.step_offset) the arms add on top, so they
+## trail the camera on stairs and curbs instead of riding it rigidly. 0 = off; ADS scales it by `ads_bob_mult`.
+@export var step_lag_mult: float = 0.6
 ## While aimed, shift the arms so the weapon's `AimPoint` sits on the camera axis.
 @export var ads_align_aim_point: bool = true
 ## Viewmodel meshes cast no world shadows.

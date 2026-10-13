@@ -16,13 +16,10 @@ const UNHOOKED: Dictionary = {
 	&"defense.armor_break_speed_buff": "A",
 	&"defense.armor_broken_stagger": "A",
 	&"defense.berserk": "A",
-	&"defense.bleedout_health_mult": "A",
 	&"defense.bleedout_pause_unseen": "A",
 	&"defense.bullseye": "A",
 	&"defense.dodge_per_concealment": "A",
 	&"defense.flashbang_duration_mult": "A",
-	&"defense.healing_received_mult": "A",
-	&"defense.health_regen_per_sec": "A",
 	&"defense.interact_damage_taken_mult": "A",
 	&"defense.outnumbered": "A",
 	&"defense.post_revive_buff": "A",
@@ -42,18 +39,11 @@ const UNHOOKED: Dictionary = {
 	&"deploy.sentry_shield": "A",
 	&"deploy.sentry_turn_speed_mult": "A",
 	&"deploy.trip_mine_fire": "A",
-	&"deploy.trip_mine_radius_mult": "A",
-	&"interaction.device_fix_speed_mult": "A",
 	&"interaction.device_melee_restart": "A",
-	&"interaction.shaped_charge": "A",
-	&"interaction.speed_mult": "A",
-	&"loot.small_loot_value_mult": "A (pickup) or B (payout)",
 	&"movement.ads_speed_penalty_mult": "A",
 	&"movement.reload_while_sprinting": "A",
 	&"movement.shoot_while_sprinting": "A",
 	&"movement.sprint_any_direction": "A",
-	&"stealth.can_dominate_guards": "A",
-	&"stealth.casing_can_pickup_items": "A",
 	&"stealth.mark_by_aim": "A",
 	&"stealth.mark_damage_bonus_mult": "A",
 	&"stealth.mark_far_damage_mult": "A",
@@ -64,7 +54,6 @@ const UNHOOKED: Dictionary = {
 	&"weapon.crit_chance_add": "A",
 	&"weapon.crit_per_concealment": "A",
 	&"weapon.falloff_range_mult": "A",
-	&"weapon.fire_rate_mult": "A",
 	&"weapon.graze": "A",
 	&"weapon.headshot_refund": "A",
 	&"weapon.hip_fire_rate_mult": "A",
@@ -80,6 +69,7 @@ const UNHOOKED: Dictionary = {
 
 ## Read by runtime code (hook file in the comment) but no behaviour test.
 const UNTESTED: Dictionary = {
+	&"deploy.trip_mine_radius_mult": "A",  # LEAD round 35: hooked, behaviour test pending
 	&"ability.convert_damage_mult": "A",  # systems/ai/police/converted_ally_brain.gd
 	&"ability.convert_speed_mult": "A",  # systems/ai/police/police_surrender.gd
 	&"defense.armor_regen_rate_mult": "A",  # systems/combat/team_modifiers.gd
@@ -94,7 +84,6 @@ const UNTESTED: Dictionary = {
 	&"movement.speed_mult": "A",  # systems/player/crew_controller.gd
 	&"stealth.body_bag_concealed_carry": "A",  # systems/player/crew_controller.gd
 	&"stealth.cable_tie_speed_mult": "A",  # systems/ai/civilian/civilian_brain.gd, ...
-	&"stealth.camera_loop": "A",  # systems/prefabs/camera_station/camera_station.gd
 	&"stealth.casing_detection_rate_mult": "A",  # systems/stealth/stealth_director.gd
 	&"stealth.civilian_intimidate_range_mult": "A",  # systems/stealth/shout_system.gd
 	&"stealth.civilian_stay_down_mult": "A",  # systems/ai/civilian/civilian_brain.gd

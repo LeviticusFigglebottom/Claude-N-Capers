@@ -48,7 +48,7 @@ func bind_model(m: Node) -> void:
 func prompt_text() -> String:
 	if prompt == null or not prompt.visible:
 		return ""
-	return prompt.prompt_label.text
+	return prompt.prompt.text
 
 
 func _draw_dot() -> void:
@@ -58,6 +58,8 @@ func _draw_dot() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
-	if event.is_action_pressed(&"ui_cancel") or (InputMap.has_action(PAUSE_ACTION) and event.is_action_pressed(PAUSE_ACTION)):
+	# Walking the 3D safehouse, pad B is a gameplay button: only Esc (ui_cancel) or Start (pause) open the menu.
+	var esc: bool = event.is_action_pressed(&"ui_cancel") and not event is InputEventJoypadButton
+	if esc or (InputMap.has_action(PAUSE_ACTION) and event.is_action_pressed(PAUSE_ACTION)):
 		get_viewport().set_input_as_handled()
 		back_requested.emit()

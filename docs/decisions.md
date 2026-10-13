@@ -635,3 +635,60 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   a 0.9 m door, 30° approach, walking and sprinting.
 - **ENV A:** AI followers keep ~0.1 m off path corners, with headroom in `path_desired_distance`.
 - Human real-input walk tests aim at door centres; corner-following is checked only for AI.
+
+## D-086 — 2026-10-13 — Team v3: lead + three Claude Code cloud sessions; product-owner playtest issues first
+- The Grok Bot team (D-078) is retired. A LEAD Claude Code session dispatches three cloud sessions: **ENV P** (Player &
+  Input, `env/p-play`), **ENV B** (Content & UI, `env/b-content`), **ENV A** (Core Systems & Heist Loop, `env/a-core`).
+  ENV C and ENV D are **dormant** (their branches were merged as-is in round 35; no new C/D work). Protocol:
+  communication.md §1/§4, live state in `docs/process/board.md`.
+- Ownership during the pass: ENV A also owns `game/world/heists/**` and `game/world/props/**` (heist-map collision,
+  nav, door and objective fixes that ENV C would otherwise do). ENV B owns `docs/design/ui/**` (UI style spec).
+- **Product-owner playtest (2026-10-13), top priority, rows PO-1..PO-5 in playability_pass.md:** the mouse is never
+  captured in a heist so you cannot turn; you cannot leave casing mode; a slight bump in the road stops the player; the
+  UI is cluttered, unintuitive and unstyled. Found by the lead: no game code sets `MOUSE_MODE_CAPTURED` outside the
+  safehouse, and every real-input test fakes capture (`PlayerInput.test_assume_captured`), so the suite never saw it.
+- **Verification rule:** a player-facing fix counts as verified only when seen in a **windowed** run (xvfb with a real
+  display server, not `--headless`): screenshot or windowed test. Fake-state tests stay as regressions only.
+- D-082 stands: end-to-end playability (main menu → hub → loadout → heist stealth and loud → payday → hub) before any
+  new heist or content. P5 stays frozen.
+
+## D-087 — 2026-10-13 — Mouse capture has one owner (`input_focus.md` 1.0)
+- One module, `MouseCapture` (ENV P, `game/systems/player/mouse_capture.gd`), is the only code that writes
+  `Input.mouse_mode`. Gameplay (PlayerInput of a local human crew in a heist or the walkable safehouse) declares itself
+  active; every UI that needs a cursor holds a named release. Captured = gameplay active ∧ no release held ∧ window focused.
+  Contract: `docs/contracts/input_focus.md`. ENV B migrates its four direct writers (menu_flow, menu_options,
+  join_request_dialog, safehouse_host) once P's module is on trunk. The lead adds a banned-pattern check afterwards.
+
+## D-088 — 2026-10-13 — Targeted checks; the full suite runs only at the lead (product owner)
+- **Envs never run `check_all.sh` or a whole test dir as a routine pre-push step.** Before a push an env runs only what
+  its change touches: `gdlint` on changed files, `python3 tools/ci/check_ownership.py <env>`, `python3 tools/ci/check_banned.py`,
+  and the specific test files it changed or that exercise the changed code (single-file runs), plus its windowed
+  verification (D-086). Long runs (>~5 min) stay in the background so work continues meanwhile.
+- **The full gate (`check_all` / `lead_push.sh` with no args) runs only at the LEAD, occasionally**: per merge round, in
+  the background in a separate worktree, while everyone keeps working. A failure there goes back to the owning env as a
+  normal task. Supersedes the "check_all PASS before push" rule in communication.md §2–§5 and the env manuals.
+
+## D-089 — 2026-10-13 — Objective world markers (ui_hud 1.8); placeholder-capsule NPCs
+- ENV A's QA-PO5-1 approved: objectives carry `data.marker_tags`; `LocalHudModel.objective_markers` (ui_hud 1.8). ENV B draws them.
+- NPCs/police rendering as placeholder capsules (PO-5.7, B's captures) is a top playability issue. ENV A diagnoses
+  first: wiring (EnemyDef/NPC spawn pointing at placeholders, a failed scene load: A's domain) vs missing assets
+  (ENV D, dormant). If assets are missing, the lead decides whether to wake ENV D.
+
+## D-090 — 2026-10-13 — UI sound cues (audio_cues 1.5); ENV B synthesises them while ENV C is dormant
+- audio_cues 1.5 adds ten UI/HUD cue ids (`cue.ui_*`, `cue.hud_objective_done`, `cue.hud_hint`, `cue.payday_total`, `cue.card_flip`).
+- ENV C is dormant, so **ENV B builds them** with ENV C's `tools/audiogen` synth core (read-only for B) via new scripts in
+  `tools/audiogen/ui/**`, output in `game/assets/audio/sfx/ui/**`, and registers them in `game/world/audio/cues.tres`
+  (co-owned by B for UI-bus entries only while C is dormant). Procedural only, no third-party audio. UI bus, 2D.
+
+## D-091 — 2026-10-13 — Look sensitivity defaults (ENV P, PO-4 feel)
+- Default mouse gain 0.0016 rad/count (≈0.092°/count; was 0.0025). ADS/scoped look divides by `CrewView.zoom_factor`
+  (PD2 zoom sensitivity: 4× scope → ¼ turn rate). Both stay player-adjustable in Options (B5-01); defaults live in
+  ENV P's tweak data. Verified windowed via the real menu flow (env/p-play c1b3c2ad).
+
+## D-092 — 2026-10-13 — Parallel lanes, no idling (product owner)
+- Every env runs **several lanes at once**: slow windowed runs go to the background, and independent items run as Agent
+  subagents in their own git worktrees (or on disjoint files). The env integrates, runs each lane's targeted tests (D-088)
+  and **pushes each lane as soon as it is green**; no batching, and nothing sits unpushed for more than ~1 h.
+- Limits on 4 cores: at most 2 windowed Godot processes at once (`--rendering-driver opengl3`, small windows for
+  non-visual runs, waits in physics ticks); code-only subagents run alongside.
+- Each env always keeps ≥ 2 h of queued lanes and proposes the next ones before the current ones run dry (D-027).

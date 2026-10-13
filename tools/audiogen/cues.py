@@ -1319,6 +1319,14 @@ def ui_click(rng: np.random.Generator, v: int) -> np.ndarray:
     return osc.sine(1200, dur) * env.exp_decay(dur, 0.025, 0.0004) + click(rng, (2600.0,), dur, 4, 0.003, 0.2)
 
 
+def payday_tick(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Payday timer tick (ENV B, last seconds of the payday card pick): a dry clock tick, 1.8 kHz
+    damped sine over a 3.2 kHz wood-like transient, 60 ms. Niche: drier and lower than ui_click,
+    no pitch rise (unlike detect_tick), so it reads as a countdown, not as UI or detection."""
+    dur = 0.06
+    return osc.sine(1800, dur) * env.exp_decay(dur, 0.018, 0.0003) * 0.8 + click(rng, (3200.0,), dur, 4, 0.002, 0.35)
+
+
 # ============================================================ QA-28 / D-049: P3 specials + new prefabs
 # Readability (PD2 rule): every special tell is short, rhythmic or tonal, and centred in the
 # 600 Hz - 4 kHz region where the assault stem and gunfire leave the most room (checked against
@@ -1699,7 +1707,7 @@ def burn_warning(rng: np.random.Generator, v: int) -> np.ndarray:
     hiss = filters.hp(noise.white(dur, rng), 3800) * 0.55 + filters.bp(noise.pink(dur, rng), 6500, 0.8) * 0.5
     sput = filters.bp(noise.crackle(dur, rng, 45), 2200, 0.9) * 2.5
     flare = (hiss * flick + sput) * ign
-    f = 520.0 * 3.0 ** (u ** 1.2)
+    f = 520.0 * (1.0 + 0.05 * v) * 3.0 ** (u ** 1.2)  # v: 3 variations a semitone-ish apart
     tone = osc.triangle(f, dur) * 0.7 + osc.square(f * 1.5, dur, 0.4) * 0.12
     rate = 3.0 + 6.0 * u ** 1.3
     ph = np.cumsum(rate / SR) % 1.0
@@ -2005,6 +2013,8 @@ CUES: list[CueSpec] = [
     CueSpec("zipline_attach", zipline_attach, max_distance=20.0, pitch_jitter=0.04, note="QA-15"),
     CueSpec("lockpick", lockpick, loop=True, max_distance=8.0, volume_db=-8.0),
     CueSpec("ui_click", ui_click, bus="UI", positional=False, volume_db=-10.0, cooldown_s=0.02),
+    CueSpec("payday_tick", payday_tick, bus="UI", positional=False, volume_db=-8.0, cooldown_s=0.2,
+            note="ENV B payday timer: one tick per second in the last seconds (Lead-approved polish, D-082)"),
     CueSpec("phantom_hum", phantom_hum, bus="Enemies", loop=True, max_distance=15.0, volume_db=-2.0, note="QA-28"),
     CueSpec("phantom_charge", phantom_charge, bus="Enemies", max_distance=30.0, cooldown_s=1.0, note="QA-28"),
     CueSpec("stinger_windup", stinger_windup, bus="Enemies", max_distance=30.0, cooldown_s=0.5, note="QA-28"),
@@ -2037,7 +2047,7 @@ CUES: list[CueSpec] = [
             norm="bed"),
     CueSpec("door_breach", door_breach, variations=3, max_distance=60.0, pitch_jitter=0.04,
             note="QA-36 audio_cues v1.2: police breach, 3D at the door"),
-    CueSpec("burn_warning", burn_warning, max_distance=50.0,
+    CueSpec("burn_warning", burn_warning, variations=3, max_distance=50.0,
             note="QA-36/QC-38 audio_cues v1.2: 5 s thermite countdown before the fire shutters"),
     CueSpec("throwable_pin", throwable_pin, bus="Weapons", variations=2, max_distance=12.0, pitch_jitter=0.04,
             volume_db=-5.0, note="audio_cues v1.3 (D-073) throwables: pin pull + spoon"),

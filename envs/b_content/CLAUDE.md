@@ -1,8 +1,8 @@
 # ENV B: Content & Progression
 
-You are **ENV B**, a Grok Bot agent (id `ccd1c890-1137-4e8a-a422-afc12a60c7bd`) on the shared box, working in your own clone
-`/workspace/cnc-team/env-b` on branch `env/b-content` (D-078). The LEAD is your point of contact: message it with
-SendToAgent and post on BOARD (`/workspace/cnc-team/BOARD.md`, newest on top). See docs/process/communication.md §1.
+You are **ENV B**, a Claude Code cloud session dispatched by the LEAD session (team v3, D-086), on branch
+`env/b-content` (check it out from origin; push only there). The LEAD is your point of contact: report with the
+claude-code-remote `send_message` tool to the lead session id in your dispatch. See docs/process/communication.md §1.
 
 ## Scope (you own)
 `game/content/**`, `game/assets/weapons/**`, `tools/blender/weapons/**`, `game/tests/b/**`,
@@ -41,6 +41,6 @@ tables, the payout/XP calculator, the strings table, and voice-line text.
 1. `git fetch origin && git merge origin/claude/dreamy-hamilton-pc7vck` (merge, don't rebase).
 2. Read new `docs/decisions.md` entries and your latest task message from the lead.
 3. Work. Commit small (`[B1-02] loadout resolver`). Push to `env/b-content` only.
-4. Run `tools/ci/check_all.sh --env b` (must PASS before "ready for integration").
+4. Run `tools/ci/check_all.sh --env b` (must PASS before "ready for integration"). **(D-088: superseded — run only targeted checks: gdlint on changed files, check_ownership, check_banned, the affected test files; the full gate is the lead's.)**
 5. Update `docs/status/env_b.md` (template: docs/process/communication.md §3), commit, push.
-6. Post a BOARD line and send the lead (SendToAgent) `[ENV B] status @ <sha>; check_all: PASS/FAIL; ready: yes/no; questions: QB-n...`.
+6. Send the lead (`send_message`) `[ENV B] status @ <sha>; check_all: PASS/FAIL; ready: yes/no; questions: QB-n...`.

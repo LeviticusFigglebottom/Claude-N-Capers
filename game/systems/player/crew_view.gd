@@ -18,14 +18,22 @@
 class_name CrewView
 extends Node
 
+## D-084: the local view's zoom changed (f = zoom_factor). Emitted only by the local human's view.
+signal zoom_factor_changed(f: float)
+
 const NODE_NAME: String = "View"
 const VIEWMODEL_NAME: String = "Viewmodel"
 const MASK_NAME: String = "Mask"
 ## Render layer 20: third-person-only parts of the local human (culled by its own camera).
 const FIRST_PERSON_HIDDEN_LAYER: int = 1 << 19
+## PP-P-11: render layer of everything under the local camera (arms, weapon, held items); drawn by the
+## viewmodel camera at FpViewmodelTweak.viewmodel_fov_deg, culled from the world camera.
+const VIEWMODEL_LAYER: int = 1 << 18
 
 ## Compatibility alias of the crew member's `Loadout.mask_descriptor` (QA-25); setting it calls
 ## set_mask_descriptor().
+## The local human's view (null when none).
+static var _local_view: CrewView = null
 var mask_descriptor: Dictionary:
 	get:
 		return _crew.loadout.mask_descriptor if _crew != null and _crew.loadout != null else {}
@@ -33,13 +41,26 @@ var mask_descriptor: Dictionary:
 		set_mask_descriptor(value)
 ## True once an external WeaponVisual owns the camera (ours is no longer attached).
 var external_viewmodel: bool = false
+## P1-03 (read-only): eased 0 (hip) .. 1 (ADS) shared by the camera zoom and the FpViewmodel arms (one weight, one
+## rate: FpViewmodelTweak.ads_rate, smoothstep ease). Follows CrewController.is_aiming().
+var ads_blend: float:
+	get:
+		return smoothstep(0.0, 1.0, _ads_weight)
+## D-084 (read-only): linear zoom of the local camera, tan(base_fov/2) / tan(current_fov/2); 1.0 at hip fire and
+## for every non-local view. ENV C/D scale visibility ranges by it (mesh LOD is already FOV-aware in Godot).
+var zoom_factor: float:
+	get:
+		return _zoom_factor
 
 var _crew: CrewController = null
 var _viewmodel: Node3D = null
 var _fp: FpViewmodel = null
+var _vm_viewport: SubViewport = null
+var _vm_cam: Camera3D = null
 var _mask: Node3D = null
 var _mask_id: StringName = &""
 var _ads_weight: float = 0.0
+var _zoom_factor: float = 1.0
 ## Descriptor the current mask was built from (rebuild when it changes).
 var _mask_desc: Dictionary = {}
 ## Heister whose body is under `Visual` (&"" = the placeholder).
@@ -51,11 +72,33 @@ static func of(crew: Node) -> CrewView:
 	return crew.get_node_or_null(NODE_NAME) as CrewView if crew != null else null
 
 
+## P1-03: `crew` is actually aiming down sights: aim held, masked, mobile, not sprinting (sprint wins, PD2) and
+## not reloading. Camera zoom (CrewView) and arms (FpViewmodel) both follow this.
+static func is_aiming(crew: CrewController) -> bool:
+	if crew == null or crew.intent == null or not crew.intent.aim or crew.is_casing() or crew.sprinting:
+		return false
+	if crew.crew_state != Enums.CrewState.NORMAL and crew.crew_state != Enums.CrewState.SWAN_SONG:
+		return false
+	return crew.weapons == null or not crew.weapons.reloading
+
+
+## D-084: zoom_factor of the local player's view; 1.0 when there is none.
+static func local_zoom_factor() -> float:
+	if _local_view == null or not is_instance_valid(_local_view) or not _local_view.is_inside_tree():
+		return 1.0
+	return _local_view.zoom_factor
+
+
+## D-084: the local player's view (null when none), for connecting zoom_factor_changed.
+static func local_view() -> CrewView:
+	return _local_view if _local_view != null and is_instance_valid(_local_view) else null
+
+
 func _ready() -> void:
 	_crew = get_parent() as CrewController
 	if _crew == null:
 		return
-	_crew.masked_changed.connect(func(_m: bool) -> void: refresh_mask())
+	_crew.masked_changed.connect(_on_masked_changed)
 	_crew.civilian_changed.connect(func(_c: bool) -> void: refresh_weapon())
 	if _crew.weapons != null:
 		_crew.weapons.equipped_changed.connect(func(_ws: int) -> void: refresh_weapon(true))
@@ -67,6 +110,8 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if _local_view == self:
+		_local_view = null
 	if get_tree().node_added.is_connected(_on_node_added):
 		get_tree().node_added.disconnect(_on_node_added)
 
@@ -81,6 +126,8 @@ func _on_node_added(n: Node) -> void:
 	var cam: Camera3D = camera()
 	if cam != null and cam.is_ancestor_of(g):
 		g.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		if _vm_cam != null:
+			g.layers = VIEWMODEL_LAYER
 
 
 ## Re-apply everything (camera, weapon visual, mask).
@@ -130,7 +177,7 @@ func refresh_camera() -> void:
 
 
 ## B5-01 options: the local camera FOV is GameSettings.fov() (re-read every frame, so a changed setting
-## applies at once); aiming zooms to fov / WeaponStats.magnification at CrewTweak.ads_zoom_rate.
+## applies at once); aiming zooms to fov / WeaponStats.magnification at FpViewmodelTweak.ads_rate (P1-03).
 func _process(delta: float) -> void:
 	if _crew == null or not _is_local_human():
 		return
@@ -142,9 +189,91 @@ func _process(delta: float) -> void:
 	var w: CrewWeapons = _crew.weapons
 	if w != null and w.stats(w.equipped_slot) != null:
 		mag = maxf(w.stats(w.equipped_slot).magnification, 1.0)
-	var aiming: bool = _crew.intent != null and _crew.intent.aim
-	_ads_weight = move_toward(_ads_weight, 1.0 if aiming else 0.0, delta * Tweak.crew().ads_zoom_rate)
-	cam.fov = gs.fov() / lerpf(1.0, mag, _ads_weight)
+	# P1-03: arms' rate
+	_ads_weight = move_toward(_ads_weight, 1.0 if CrewView.is_aiming(_crew) else 0.0, delta * FpViewmodelTweak.data().ads_rate)
+	cam.fov = gs.fov() / lerpf(1.0, mag, ads_blend)
+	_update_viewmodel_camera(cam)
+	_local_view = self
+	_set_zoom_factor(zoom_factor_for(gs.fov(), cam.fov))
+
+
+## PP-P-11 (PD2): the arms and weapon under `cam` render through a second camera with a fixed narrower FOV into a
+## transparent SubViewport (same World3D: same lights, GI and shadows) drawn under the HUD; the world camera
+## culls them. The world FOV setting and ADS zoom no longer stretch the gun. The viewmodel camera shares the
+## world camera's transform, so the ADS AimPoint on the camera axis stays on the crosshair.
+func _update_viewmodel_camera(cam: Camera3D) -> void:
+	var fov: float = FpViewmodelTweak.data().viewmodel_fov_deg
+	if fov <= 0.0:
+		return
+	if _vm_cam == null or not is_instance_valid(_vm_cam):
+		_build_viewmodel_camera(cam)
+	var size: Vector2i = Vector2i(cam.get_viewport().get_visible_rect().size)
+	if _vm_viewport.size != size and size.x > 0 and size.y > 0:
+		_vm_viewport.size = size
+	cam.cull_mask &= ~VIEWMODEL_LAYER
+	_vm_cam.global_transform = cam.global_transform
+	_vm_cam.fov = fov
+	_vm_cam.near = cam.near
+
+
+## Viewmodel camera FOV in degrees (0 when the arms draw with the world camera).
+func viewmodel_fov() -> float:
+	return _vm_cam.fov if _vm_cam != null and is_instance_valid(_vm_cam) else 0.0
+
+
+func _build_viewmodel_camera(cam: Camera3D) -> void:
+	var layer: CanvasLayer = CanvasLayer.new()
+	layer.name = "ViewmodelLayer"
+	layer.layer = -1  # above the 3D world, below the HUD
+	add_child(layer)
+	var vp: SubViewport = SubViewport.new()
+	vp.name = "Viewmodel"
+	vp.transparent_bg = true
+	vp.handle_input_locally = false
+	vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	vp.size = Vector2i(cam.get_viewport().get_visible_rect().size)
+	layer.add_child(vp)  # no own_world_3d: the parent viewport's World3D (same lights / GI)
+	_vm_cam = Camera3D.new()
+	_vm_cam.name = "ViewmodelCamera"
+	_vm_cam.cull_mask = VIEWMODEL_LAYER
+	_vm_cam.far = 20.0
+	var we: Environment = cam.get_world_3d().environment if cam.get_world_3d() != null else null
+	if we != null:
+		var env: Environment = we.duplicate() as Environment
+		env.background_mode = Environment.BG_CLEAR_COLOR  # transparent: only the arms draw here
+		env.fog_enabled = false
+		env.volumetric_fog_enabled = false
+		env.ssr_enabled = false
+		env.sdfgi_enabled = false
+		_vm_cam.environment = env
+	vp.add_child(_vm_cam)
+	_vm_cam.current = true
+	_vm_viewport = vp
+	var tr: TextureRect = TextureRect.new()
+	tr.name = "ViewmodelImage"
+	tr.texture = vp.get_texture()
+	tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tr.set_anchors_preset(Control.PRESET_FULL_RECT)
+	tr.stretch_mode = TextureRect.STRETCH_SCALE
+	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	layer.add_child(tr)
+	for n: Node in cam.find_children("*", "GeometryInstance3D", true, false):
+		(n as GeometryInstance3D).layers = VIEWMODEL_LAYER
+
+
+## D-084: linear zoom of `fov_deg` relative to `base_fov_deg` (both vertical, degrees).
+static func zoom_factor_for(base_fov_deg: float, fov_deg: float) -> float:
+	var t: float = tan(deg_to_rad(clampf(fov_deg, 1.0, 179.0)) * 0.5)
+	return tan(deg_to_rad(clampf(base_fov_deg, 1.0, 179.0)) * 0.5) / t if t > 0.0 else 1.0
+
+
+func _set_zoom_factor(f: float) -> void:
+	if absf(f - 1.0) < 1e-4:
+		f = 1.0
+	if absf(f - _zoom_factor) < 1e-4 and not (f == 1.0 and _zoom_factor != 1.0):
+		return
+	_zoom_factor = f
+	zoom_factor_changed.emit(f)
 
 
 ## Local human only: WeaponVisual of the equipped weapon under the camera. With the first-person arms
@@ -190,6 +319,29 @@ func refresh_weapon(animated: bool = false) -> void:
 		wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
 	_crew.weapon_visual = wv
 	WeaponPartsAnimator.attach(wv, _crew.weapons)  # B4-18: Breech / Lever / String / Blade / Rotor
+	_apply_casing_visibility()
+
+
+## PD2: casing (unmasked) shows no first-person weapon or arms; masking up draws it (P, lead request).
+## Visibility only: the WeaponVisual stays attached (its Muzzle marker is gameplay's tracer origin).
+func _apply_casing_visibility() -> void:
+	var show: bool = not _crew.is_casing()
+	if _fp != null and is_instance_valid(_fp):
+		_fp.visible = show
+	if _viewmodel != null and is_instance_valid(_viewmodel) and (_fp == null or not is_instance_valid(_fp)):
+		_viewmodel.visible = show
+
+
+## Is the first-person weapon / arms visible (false while casing or with none).
+func viewmodel_visible() -> bool:
+	if _fp != null and is_instance_valid(_fp):
+		return _fp.is_visible_in_tree()
+	return _viewmodel != null and is_instance_valid(_viewmodel) and _viewmodel.is_visible_in_tree()
+
+
+func _on_masked_changed(_m: bool) -> void:
+	refresh_mask()
+	refresh_weapon(true)  # shown again with the draw clip
 
 
 ## Gameplay equip time of slot `ws` (CrewWeapons.equip: equip_time_s / weapon.swap_speed_mult).

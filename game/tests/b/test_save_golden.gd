@@ -167,7 +167,8 @@ func test_v7_damage_warns_and_repairs() -> void:
 	assert_true(_warned("career.weapons: unknown weapon 'weapon.retired_blaster'"))
 	assert_true(_warned("weapon_finishes.weapon.kestrel_p9x: expected a short string"))
 	assert_true(_warned("weapon_finishes: unknown weapon 'weapon.retired_blaster'"))
-	assert_eq(q.weapon_finishes, {&"weapon.kestrel_p9": &"finish.gunmetal"})
+	assert_true(_warned("weapon_finishes.weapon.brute_12: unknown finish 'finish.retired_rust'"), "lead ruling: unknown finish ids pruned")
+	assert_eq(q.weapon_finishes, {&"weapon.kestrel_p9": &"finish.gunmetal_blue"})
 	for line: String in Log.captured:
 		assert_false(line.begins_with("[ERROR]"), "no errors for damaged fields: " + line)
 	var bad: Dictionary = _fixture("v7_damaged")
@@ -184,13 +185,13 @@ func test_v7_fields_round_trip() -> void:
 	var r: Dictionary = {"heist_id": &"glasshouse", "success": true, "stealth": true, "difficulty": 3, "time_s": 300.4,
 		"loot": [{"loot_id": &"loot.cash", "value": 1}], "crew": [{"slot": 0, "kills": 2, "shots": 10, "hits": 4}]}
 	Career.record(p, r, {"success": true, "stash": 100, "spending": 20, "xp_total": 900}, 0)
-	p.weapon_finishes[&"weapon.kestrel_p9"] = &"finish.gunmetal"
+	p.weapon_finishes[&"weapon.kestrel_p9"] = &"finish.gunmetal_blue"
 	assert_eq(SaveService.save_profile(p, SLOT), OK)
 	var q: PlayerProfile = SaveService.load_profile(SLOT)
 	assert_eq(q.career, p.career, "career saved exactly")
 	assert_eq(Career.total(q, "hits"), 4)
 	assert_eq(Career.best_difficulty(q, &"glasshouse"), 3)
-	assert_eq(q.weapon_finishes, {&"weapon.kestrel_p9": &"finish.gunmetal"})
+	assert_eq(q.weapon_finishes, {&"weapon.kestrel_p9": &"finish.gunmetal_blue"})
 
 
 func test_future_version_refused() -> void:
@@ -261,7 +262,7 @@ func test_unknown_ids_never_crash_and_skill_sets_reset() -> void:
 	assert_eq(p.loadout.skills, {}, "illegal active set reset")
 	assert_eq(p.skill_sets[1], {&"skill.juggernaut.thick_skin": 1}, "legal set kept")
 	assert_false(p.owned_weapons.has(&"weapon.gone"))
-	assert_eq(p.loadout.primary, &"", "default primary")
+	assert_eq(p.loadout.primary, &"weapon.corsair_ar", "default primary (QB-1 starter)")
 	assert_eq(p.loadout.mask, &"mask.gilded_heron", "locked mask -> default mask")
 	assert_eq(notes.size(), 4)
 

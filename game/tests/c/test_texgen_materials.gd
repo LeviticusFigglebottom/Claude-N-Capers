@@ -42,7 +42,8 @@ func test_every_library_material_is_orm_pbr() -> void:
 	var ids: Array[String] = _library_ids()
 	assert_true(ids.size() >= EXPECTED.size() + WEAPON.size(), "too few library materials")
 	for id: String in ids:
-		if id in EMISSIVE:
+		# LEAD round 35: char_crowd_lod (ENV D, D4-01) is a shared skinned crowd-LOD material, not a library PBR.
+		if id in EMISSIVE or id == "char_crowd_lod":
 			continue
 		var res: Resource = load(MATERIAL_DIR + id + ".tres")
 		assert_true(res is ORMMaterial3D, "%s is not ORMMaterial3D" % id)

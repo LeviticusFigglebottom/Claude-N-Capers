@@ -23,6 +23,12 @@ signal model_bound(model: Node)
 
 const LOOKUP_INTERVAL_S: float = 0.25
 const TOAST_S: float = 3.0
+## PI-13: how long a casing_blocked hint stays up.
+const CASING_HINT_S: float = 1.5
+## casing_blocked action -> hint string key (unknown actions use ui.hud.casing_blocked.generic).
+const CASING_HINT_KEYS: Dictionary = {
+	&"sprint": &"ui.hud.casing_blocked.sprint", &"crouch": &"ui.hud.casing_blocked.crouch",
+	&"jump": &"ui.hud.casing_blocked.jump"}
 
 @export var model_path: NodePath
 ## Discover the model through group G.LOCAL_HUD_MODEL when nothing is bound.
@@ -31,6 +37,8 @@ const TOAST_S: float = 3.0
 ## (UiAccent.for_heist, B4-07). Empty = no accent.
 @export var heist_id: StringName = &""
 
+## PO-4: slot -> heister id (MenuFlow at launch); teammate rows show the heister's name and colour.
+var crew_heisters: Dictionary = {}
 ## Settings the HUD follows (null = GameSettings.current(); tests set their own before _ready).
 var settings: GameSettings = null
 ## HudTweak recoloured by the active palette (what every widget reads).
@@ -39,6 +47,8 @@ var model: Node = null
 var chevrons: DetectionChevrons
 var marks: MarkedTargets
 var interaction: InteractionPanel
+## PP-A-1: guard-domination prompt (above the interaction prompt).
+var dominate: DominatePrompt
 var vitals: VitalsPanel
 var ammo: AmmoPanel
 var pager: PagerPanel
@@ -49,12 +59,15 @@ var status: StatusPanel
 var custody: CustodyPanel
 var captain: CaptainPanel
 var stamina: StaminaBar
+## PO-4 contextual control hint (bottom centre): click to resume / mask up / throw the bag.
+var hint: HintStrip
 ## B6-02 Tab scoreboard (hold / toggle the `scoreboard` action).
 var scoreboard: ScoreboardOverlay
 var toast_label: Label
 var secured_bags: int = 0
 var _lookup_t: float = 0.0
 var _toast_t: float = 0.0
+var _watched_crew: Node = null
 
 
 func _ready() -> void:
@@ -81,9 +94,16 @@ func bind(m: Node) -> void:
 		model_bound.emit(m)
 
 
+func set_crew_heisters(map: Dictionary) -> void:
+	crew_heisters = map.duplicate()
+	if teammates != null:
+		teammates.heisters = crew_heisters
+		teammates.refresh()
+
+
 func widgets() -> Array[HudWidget]:
-	return [chevrons, marks, interaction, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina,
-			scoreboard]
+	return [chevrons, marks, interaction, dominate, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina,
+			scoreboard, hint]
 
 
 func _build() -> void:
@@ -94,6 +114,7 @@ func _build() -> void:
 	crosshair.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_place(crosshair, Control.PRESET_CENTER, Vector2(-20, -20), Vector2(40, 40))
 	interaction = _place(InteractionPanel.new(), Control.PRESET_CENTER, Vector2(-300, 60), Vector2(600, 110)) as InteractionPanel
+	dominate = _place(DominatePrompt.new(), Control.PRESET_CENTER, Vector2(-360, -130), Vector2(720, 56)) as DominatePrompt
 	stamina = _place(StaminaBar.new(), Control.PRESET_BOTTOM_LEFT, Vector2(48, -248), Vector2(340, 40)) as StaminaBar
 	vitals = _place(VitalsPanel.new(), Control.PRESET_BOTTOM_LEFT, Vector2(48, -200), Vector2(340, 160)) as VitalsPanel
 	ammo = _place(AmmoPanel.new(), Control.PRESET_BOTTOM_RIGHT, Vector2(-388, -200), Vector2(340, 160)) as AmmoPanel
@@ -106,10 +127,12 @@ func _build() -> void:
 	status = _place(StatusPanel.new(), Control.PRESET_TOP_RIGHT, Vector2(-448, 48), Vector2(400, 180)) as StatusPanel
 	custody = _place(CustodyPanel.new(), Control.PRESET_CENTER, Vector2(-300, -200), Vector2(600, 130)) as CustodyPanel
 	captain = _place(CaptainPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-260, 104), Vector2(520, 84)) as CaptainPanel
+	# Below the interaction prompt, clear of the subtitles at the bottom (audit: they collided).
+	hint = _place(HintStrip.new(), Control.PRESET_CENTER, Vector2(-450, 190), Vector2(900, 64)) as HintStrip
 	var board: ScoreboardOverlay = ScoreboardOverlay.new()
 	board.settings = settings
 	scoreboard = _place(board, Control.PRESET_CENTER, Vector2(-500, -240), Vector2(1000, 480)) as ScoreboardOverlay
-	toast_label = UiBuild.label(&"", UiBuild.HUD_BIG)
+	toast_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD_BIG))
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(toast_label, Control.PRESET_CENTER, Vector2(-500, -260), Vector2(1000, 60))
 	toast_label.visible = false
@@ -150,6 +173,43 @@ func apply_accessibility() -> void:
 			continue  # full-screen overlays (chevrons, marks) are not scaled
 		ctl.pivot_offset = Vector2(ctl.anchor_left, ctl.anchor_top) * (ctl.custom_minimum_size.max(ctl.size))
 		ctl.scale = Vector2(s, s)
+	_stack_left_column(s)
+
+
+## PQ-B-6: the left column (objectives / teammates / stamina / vitals) is a stack, so scaling each
+## widget about its own anchor made them overlap at hud_scale 1.5 on a 1080-unit canvas. Stamina sits
+## on top of the scaled vitals; teammates fit the band between objectives and stamina, shrinking
+## below `s` only when that band is too short.
+func _stack_left_column(s: float) -> void:
+	if vitals == null or stamina == null or teammates == null or objectives == null:
+		return
+	var h: float = size.y if size.y > 0.0 else 1080.0
+	var gap: float = 12.0
+	var vitals_top: float = vitals.offset_bottom - (vitals.offset_bottom - vitals.offset_top) * s  # rel. bottom
+	var stam_h: float = stamina.offset_bottom - stamina.offset_top
+	stamina.offset_bottom = vitals_top - gap
+	stamina.offset_top = stamina.offset_bottom - stam_h
+	stamina.pivot_offset = Vector2(0.0, stam_h)
+	var band_top: float = objectives.offset_top + (objectives.offset_bottom - objectives.offset_top) * s + gap
+	var band_bottom: float = h + stamina.offset_bottom - stam_h * s - gap
+	var tm_w: float = teammates.offset_right - teammates.offset_left
+	var tm_h: float = teammates.offset_bottom - teammates.offset_top
+	var ts: float = clampf((band_bottom - band_top) / tm_h, 0.1, s)
+	var left: float = teammates.offset_left
+	teammates.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	teammates.offset_left = left
+	teammates.offset_right = left + tm_w
+	teammates.offset_top = band_top + ((band_bottom - band_top) - tm_h * ts) * 0.5
+	teammates.offset_bottom = teammates.offset_top + tm_h
+	teammates.pivot_offset = Vector2.ZERO
+	teammates.scale = Vector2(ts, ts)
+	# The centred interaction prompt must clear the left column's width (stamina / vitals) too.
+	if interaction != null:
+		var w: float = size.x if size.x > 0.0 else 1920.0
+		var col_right: float = vitals.offset_left + (vitals.offset_right - vitals.offset_left) * s + gap
+		var iw: float = interaction.offset_right - interaction.offset_left
+		var i_scale: float = clampf((w * 0.5 - col_right) * 2.0 / iw, 0.1, s)
+		interaction.scale = Vector2(i_scale, i_scale)
 
 
 func _on_settings_changed(section: StringName, _key: StringName) -> void:
@@ -174,11 +234,48 @@ func _connect_events() -> void:
 	EventBus.crew_custody.connect(_on_crew_custody)
 
 
-## Toast a strings key for TOAST_S seconds.
-func toast(key: StringName, args: Dictionary = {}) -> void:
+## Toast a strings key for `seconds` (default TOAST_S).
+func toast(key: StringName, args: Dictionary = {}, seconds: float = TOAST_S) -> void:
 	toast_label.text = UiText.t(key, args)
 	toast_label.visible = true
-	_toast_t = TOAST_S
+	_toast_t = seconds
+
+
+## PI-13 (ENV P): connect the local CrewController's `casing_blocked(action)` when it has one (no-op
+## on builds without the signal). Returns whether a connection exists now.
+func watch_crew(crew: Node) -> bool:
+	if crew == null or not crew.has_signal(&"casing_blocked"):
+		return false
+	if _watched_crew != null and is_instance_valid(_watched_crew) and _watched_crew != crew \
+			and _watched_crew.is_connected(&"casing_blocked", _on_casing_blocked):
+		_watched_crew.disconnect(&"casing_blocked", _on_casing_blocked)
+	if not crew.is_connected(&"casing_blocked", _on_casing_blocked):
+		crew.connect(&"casing_blocked", _on_casing_blocked)
+	_watched_crew = crew
+	return true
+
+
+## Brief "Mask up to sprint" style hint (CASING_HINT_S) for a move blocked while casing.
+func _on_casing_blocked(action: StringName) -> void:
+	var key: StringName = CASING_HINT_KEYS.get(action, &"ui.hud.casing_blocked.generic") as StringName
+	toast(key, {"key": InteractionPanel.action_key_text(&"mask_up")}, CASING_HINT_S)
+
+
+func _find_local_crew() -> void:
+	if _watched_crew != null and is_instance_valid(_watched_crew):
+		return
+	for n: Node in get_tree().get_nodes_in_group(G.CREW):
+		if int(n.get(&"slot") if n.get(&"slot") != null else -1) == Net.local_slot():
+			watch_crew(n)
+			return
+
+
+## Prompts name the device the player is using (pad buttons vs keys); redraw on a switch.
+func _input(event: InputEvent) -> void:
+	if InteractionPanel.note_input(event):
+		for w: HudWidget in widgets():
+			if w != null and is_instance_valid(w):
+				w.refresh()
 
 
 func _process(delta: float) -> void:
@@ -187,11 +284,13 @@ func _process(delta: float) -> void:
 		toast_label.visible = _toast_t > 0.0
 	if model != null and not is_instance_valid(model):
 		bind(null)
-	if model == null and auto_find_model:
+	if auto_find_model and (model == null or _watched_crew == null or not is_instance_valid(_watched_crew)):
 		_lookup_t -= delta
 		if _lookup_t <= 0.0:
 			_lookup_t = LOOKUP_INTERVAL_S
-			discover_model()
+			if model == null:
+				discover_model()
+			_find_local_crew()
 
 
 ## Bind the local HUD model found through group G.LOCAL_HUD_MODEL. Returns it (or null).

@@ -9,11 +9,16 @@ var equipment_label: Label
 
 func build() -> void:
 	var v: VBoxContainer = UiBuild.vbox(2)
-	add_child(UiBuild.panel(v, UiBuild.HUD_PANEL))
+	var p: PanelContainer = UiBuild.panel(v, UiBuild.HUD_PANEL)
+	add_child(p)
+	# PO-4: hug the bottom-right corner (the frameless text must line up with the screen margin).
+	p.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	p.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	p.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	ammo_label = UiBuild.label(&"", UiBuild.HUD_BIG)
 	ammo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	v.add_child(ammo_label)
-	equipment_label = UiBuild.label(&"", UiBuild.HUD)
+	equipment_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.DIM))
 	equipment_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	v.add_child(equipment_label)
 
