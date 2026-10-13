@@ -98,7 +98,7 @@ func _unhandled_input(event: InputEvent) -> void:
 ## updated, so focusing right away would find no visible control (menu transitions lost focus).
 func _on_visibility_changed() -> void:
 	focus_default.call_deferred()
-	if visible and motion_enabled and is_inside_tree() and DisplayServer.get_name() != "headless":
+	if visible and motion_enabled and UiTokens.motion_ok() and is_inside_tree() and DisplayServer.get_name() != "headless":
 		modulate.a = 0.0
 		var tw: Tween = create_tween()
 		tw.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)

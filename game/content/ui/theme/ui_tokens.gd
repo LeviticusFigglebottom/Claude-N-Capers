@@ -75,6 +75,12 @@ const SLIDE: float = 24.0  ## screen-in slide distance
 static var _fonts: Dictionary = {}
 
 
+## False when the player turned on accessibility/reduce_motion (fades / slides are skipped; state
+## changes still happen at once).
+static func motion_ok() -> bool:
+	return not bool(GameSettings.current().get_value(GameSettings.ACCESSIBILITY, &"reduce_motion"))
+
+
 ## Tracked uppercase caption font (FontVariation over the engine default font, no font files).
 static func font_caps() -> FontVariation:
 	return _variation(&"caps", 0.35, TRACK_CAPS)

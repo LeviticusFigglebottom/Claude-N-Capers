@@ -94,7 +94,7 @@ func _flash_complete() -> void:
 	flashing = true
 	header_label.text = UiText.t(&"ui.hud.objective_complete")
 	header_label.add_theme_color_override(&"font_color", UiTokens.OK)
-	list_box.modulate.a = 0.0
+	list_box.modulate.a = 0.0 if UiTokens.motion_ok() else 1.0
 	_flash_tween = create_tween()
 	_flash_tween.tween_interval(FLASH_S)
 	_flash_tween.tween_callback(_end_flash)
