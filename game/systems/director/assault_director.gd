@@ -73,6 +73,8 @@ var spawned_total: int = 0
 var assault_spawned: int = 0
 ## PO-5.4 (L1.1): units ordered to retreat in this FADE.
 var retreating: Array[NpcBase] = []
+## D-099: corpses removed by the loud-phase body cleanup (tests / telemetry).
+var bodies_despawned: int = 0
 ## A3-03 (L1.2): pressure 0..1.
 var drama: float = 0.0
 ## A3-02 (L4.9): Commander Brandt + Aegis squad.
@@ -94,6 +96,10 @@ var _low_drama_t: float = 0.0
 ## Seconds until Brandt's scheduled arrival in this assault (-1 = none).
 var _captain_due_t: float = -1.0
 var _control_special_left: float = 0.0
+## D-099 body cleanup: corpse -> body clock time it was first seen dead.
+var _body_died_at: Dictionary = {}
+var _body_clock: float = 0.0
+var _body_check_left: float = 0.0
 
 
 func _ready() -> void:
@@ -368,6 +374,7 @@ func _physics_process(delta: float) -> void:
 	phase_time_left -= delta
 	drama = maxf(drama - tweak.drama_decay_per_s * delta, 0.0)
 	_tick_captain(delta)
+	_tick_bodies(delta)
 	match assault_phase:
 		Enums.AssaultPhase.CONTROL:
 			_tick_control_spawns(delta)
@@ -677,6 +684,36 @@ func _tick_retreat() -> void:
 		retreating.remove_at(i)
 		npc.get_parent().remove_child(npc)
 		npc.queue_free()
+
+
+## D-099: loud-phase corpse cleanup. Bodies dead for body_despawn_delay_s that no crew member can see are
+## removed (like retreating units; the node free replicates as for them).
+func _tick_bodies(delta: float) -> void:
+	_body_clock += delta
+	_body_check_left -= delta
+	if tweak.body_despawn_delay_s <= 0.0 or _body_check_left > 0.0:
+		return
+	_body_check_left = tweak.body_despawn_check_s
+	var crew: Array[CrewController] = _active_crew()
+	var seen_now: Dictionary = {}
+	for n: Node in get_tree().get_nodes_in_group(G.BODY):
+		var npc: NpcBase = n as NpcBase
+		if npc == null or npc.alive or not _runtime.is_ancestor_of(npc):
+			continue
+		seen_now[npc] = true
+		if not _body_died_at.has(npc):
+			_body_died_at[npc] = _body_clock
+			continue
+		if _body_clock - _body_died_at[npc] < tweak.body_despawn_delay_s or _seen_by_crew(npc, crew):
+			continue
+		_body_died_at.erase(npc)
+		npc.clear_corpse()
+		npc.get_parent().remove_child(npc)
+		npc.queue_free()
+		bodies_despawned += 1
+	for k: Variant in _body_died_at.keys():
+		if not is_instance_valid(k) or not seen_now.has(k):
+			_body_died_at.erase(k)  # bagged or freed elsewhere
 
 
 ## FADE over: units still on the map fight on.
