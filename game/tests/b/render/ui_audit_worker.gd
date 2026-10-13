@@ -69,6 +69,9 @@ func _menus() -> void:
 	await _shot("options")
 	_close_options()
 	await _shot("hub_after_options", 4)
+	_flow.call(&"_show_sample_payday")
+	await _shot("payday_sample", 20)
+	_flow.show_hub()
 
 
 func _heist() -> void:

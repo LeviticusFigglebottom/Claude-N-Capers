@@ -183,6 +183,8 @@ ui.results.subtotal,Subtotal
 ui.results.total,Total payout
 ui.results.stash,To the stash
 ui.results.spending,Spending cash
+ui.results.stash_line,{amount} to the stash
+ui.results.spending_line,{amount} spending cash
 ui.results.xp_header,Experience
 ui.results.xp.base,Heist experience
 ui.results.xp.pro,Pro job bonus
