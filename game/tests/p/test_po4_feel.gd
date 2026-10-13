@@ -162,3 +162,4 @@ func test_landing_dip_and_recovery() -> void:
 	assert_true(lowest < -0.005, "landing dipped the camera (%.3f m)" % lowest)
 	assert_true(lowest >= -Tweak.crew().land_dip_max_m - 0.005, "dip capped")
 	assert_near(c.land_dip, 0.0, 0.002, "recovered")
+
