@@ -30,6 +30,9 @@ var alarm: StringName = &""
 var pagers_answered: int = 0
 ## Civilians we shouted down and still have to keep down (no tie left for them).
 var downed: Array[NpcBase] = []
+var answered_guards: Array[NpcBase] = []
+## Last spot (masked) no calm civilian could see.
+var safe_spot: Vector3 = Vector3.INF
 var _last_meter_note: float = -10.0
 
 
@@ -210,6 +213,9 @@ func _keycard_masked() -> String:
 
 ## Guards whose patrol reaches where we work (back of house, upstairs, the loot path) die by the knife.
 func _guards() -> String:
+	if not crew.masked:
+		# Stair landing: off every camera cone (C3 looks down G4, C6 down U4) and every room.
+		await p.goto(Vector3(14.5, 2.1, 0.8), 0.6, 60.0)
 	if not await mask_up():
 		return "PO-5.stealth.mask: could not mask up"
 	for _round: int in 4:
@@ -235,7 +241,7 @@ func _guards() -> String:
 func _workshop() -> String:
 	var wdoor: InteractableComponent = comp_tagged(&"workshop_door")
 	var door: Door = wdoor.owner_node() as Door
-	if not await p.goto(p.stand_point(Vector3(7.5, 0.0, 5.3)), 0.5, 90.0):
+	if not await sneak_to(p.stand_point(Vector3(7.5, 0.0, 5.3)), 0.5, 120.0):
 		return "PO-5.stealth.workshop: could not reach the workshop door"
 	if not door.is_open:
 		await p.use(wdoor, 20.0, func() -> bool: return door.is_open)
@@ -298,6 +304,7 @@ func _bags() -> String:
 	while bags < 2 and tries < 5:
 		tries += 1
 		if not crew.is_carrying_bag():
+			await sneak_to(p.stand_point(loot.global_position), 0.8)
 			await p.use(loot, 10.0, func() -> bool: return crew.is_carrying_bag())
 		if not crew.is_carrying_bag():
 			f.note("could not bag the safe loot (try %d)" % tries)
@@ -417,10 +424,11 @@ static func inside(v: Vector3) -> bool:
 func via_fire_exit(to_outside: bool) -> bool:
 	if inside(crew.global_position) != to_outside:
 		return true
-	var pts: Array[Vector3] = [Vector3(17.0, 0.0, 2.6), Vector3(19.6, 0.0, 1.9)]
-	if not to_outside:
-		pts.reverse()
-	for wp: Vector3 in pts:
+	if to_outside:
+		if not await sneak_to(Vector3(17.0, 0.0, 2.6), 0.6, 120.0):
+			return false
+		return await p.goto(Vector3(19.6, 0.0, 1.9), 0.6, 60.0)
+	for wp: Vector3 in [Vector3(19.6, 0.0, 1.9), Vector3(17.0, 0.0, 2.6)]:
 		if not await p.goto(wp, 0.6, 60.0):
 			return false
 	return true
@@ -434,6 +442,29 @@ func to_alley() -> bool:
 
 
 # --- Guards -----------------------------------------------------------------------------------
+
+## Calm civilians that would see a masked crew member standing at `pos` (FOV, range, line of sight).
+func civ_watchers(pos: Vector3) -> Array[NpcBase]:
+	var out: Array[NpcBase] = []
+	var target: Vector3 = pos + Vector3(0.0, 1.0, 0.0)
+	var space: PhysicsDirectSpaceState3D = crew.get_world_3d().direct_space_state
+	for c: NpcBase in civilians():
+		var b: CivilianBrain = _civ_brain(c)
+		if b.mode != CivilianBrain.Mode.IDLE and b.mode != CivilianBrain.Mode.WANDER:
+			continue
+		var eye: Vector3 = c.eye_position()
+		var to: Vector3 = target - eye
+		if to.length() > 20.0:
+			continue
+		var fw: Vector3 = c.look_forward()
+		if Vector2(fw.x, fw.z).angle_to(Vector2(to.x, to.z)) > deg_to_rad(75.0) and Vector2(to.x, to.z).length() > 2.5:
+			continue
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(eye, target, StealthDirector.VISION_MASK)
+		q.exclude = [c.get_rid(), crew.get_rid()]
+		if space.intersect_ray(q).is_empty():
+			out.append(c)
+	return out
+
 
 ## A guard matters when his patrol (or post) reaches where we work: back of house / upstairs, or the
 ## alley when the van is there.
@@ -481,10 +512,79 @@ func hunt(g: NpcBase, timeout_s: float) -> String:
 			await knife(g, 0.0)
 			continue
 		var goal: Vector3 = g.global_position - _flat(g.look_forward()) * 0.9
+		if not civ_watchers(crew.global_position).is_empty():
+			if safe_spot != Vector3.INF and p.flat_dist(safe_spot, crew.global_position) > 0.5:
+				f.note("seen by civilians %s at %s: back to %s" % [civ_watchers(crew.global_position).map(func(c: NpcBase) -> String: return c.name),
+					Po5Pilot._v(crew.global_position), Po5Pilot._v(safe_spot)])
+				await p.goto(safe_spot, 0.4, 3.0)
+			else:
+				await f.wait_s(0.3)
+			continue
+		safe_spot = crew.global_position
+		var step: Vector3 = _path_step(goal, 1.5)
+		if not civ_watchers(step).is_empty():
+			await f.wait_s(0.4)  # the next stretch is in a civilian's view: let them look away / walk on
+			continue
 		await p.goto(p.stand_point(goal), 0.6, 0.6)
 	p.quiet = false
 	f.note("%s down t=%.0f" % [g.name, rt.heist_time_s])
-	return await answer_pager(g)
+	var err: String = await answer_pager(g)
+	if err == "":
+		await bag_if_seen(g)
+	return err
+
+
+## A body where the floor guard could see it (the G4 corridor, through the staff door) is bagged with our
+## one body bag (guards only investigate a body bag; civilians ignore it).
+func bag_if_seen(body: NpcBase) -> void:
+	var v: Vector3 = body.global_position
+	if crew.body_bags <= 0 or not inside(v) or v.y > 2.0 or v.z < 4.3 or v.z > 6.2:
+		return
+	var comp: InteractableComponent = body.get_node_or_null(^"BagBodyInteractable") as InteractableComponent
+	if comp == null:
+		return
+	await p.use(comp, 6.0, func() -> bool: return crew.body_bags <= 0 or not is_instance_valid(body))
+	f.note("bagged body %s -> bags left %d" % [body.name if is_instance_valid(body) else "?", crew.body_bags])
+
+
+## Masked walk inside the building in short legs, holding (or backing off to the last unseen spot)
+## while a calm civilian would see us. Arrives within `arrive_m`.
+func sneak_to(goal: Vector3, arrive_m: float = 0.6, timeout_s: float = 120.0) -> bool:
+	if not crew.masked:
+		return await p.goto(goal, arrive_m, timeout_s)
+	var t0: float = rt.heist_time_s
+	p.quiet = true
+	while rt.heist_time_s - t0 < timeout_s and alarm == &"":
+		if p.flat_dist(crew.global_position, goal) <= arrive_m and absf(crew.global_position.y - goal.y) < 1.2:
+			p.quiet = false
+			return true
+		if not civ_watchers(crew.global_position).is_empty():
+			if safe_spot != Vector3.INF and p.flat_dist(safe_spot, crew.global_position) > 0.5:
+				await p.goto(safe_spot, 0.4, 3.0)
+			else:
+				await f.wait_s(0.3)
+			continue
+		safe_spot = crew.global_position
+		if not civ_watchers(_path_step(goal, 1.5)).is_empty():
+			await f.wait_s(0.4)
+			continue
+		await p.goto(goal, arrive_m, 0.8)
+	p.quiet = false
+	return p.flat_dist(crew.global_position, goal) <= arrive_m
+
+
+## The point `ahead_m` along the nav path to `goal`.
+func _path_step(goal: Vector3, ahead_m: float) -> Vector3:
+	var path: PackedVector3Array = p.nav_path(p.stand_point(goal))
+	var left: float = ahead_m
+	var prev: Vector3 = crew.global_position
+	for q: Vector3 in path:
+		var seg: float = prev.distance_to(q)
+		if seg >= left:
+			return prev.lerp(q, left / maxf(seg, 0.001))
+		left -= seg
+		prev = q
+	return prev
 
 
 func _arresting_us(g: NpcBase) -> bool:
@@ -546,14 +646,17 @@ func _civ_threat() -> NpcBase:
 		var want: bool = false
 		match b.mode:
 			CivilianBrain.Mode.IDLE, CivilianBrain.Mode.WANDER:
-				want = st.detection_value(c, crew.slot) > 0.4
+				want = st.detection_value(c, crew.slot) > 0.3
 			CivilianBrain.Mode.RUN_TO_CALL, CivilianBrain.Mode.CALLING:
 				want = true
 			CivilianBrain.Mode.DOWN:
 				want = b.intimidate_left < 12.0 and d < 6.0
-		if want and d < best_d and p.has_los(c.global_position + Vector3(0.0, 1.0, 0.0), c):
-			best = c
-			best_d = d
+		if want and d < best_d:
+			if p.has_los(c.global_position + Vector3(0.0, 1.0, 0.0), c):
+				best = c
+				best_d = d
+			elif rt.heist_time_s - _last_meter_note > 1.0:
+				f.note("civilian %s noticing us (mode %d) but no LOS to shout" % [c.name, b.mode])
 	return best
 
 
@@ -610,6 +713,8 @@ func subdue(c: NpcBase) -> String:
 		if c.is_alive():
 			await knife(c, 0.0)
 		f.note("civilian %s knifed while down -> alive=%s" % [c.name, c.is_alive()])
+		if not c.is_alive():
+			await bag_if_seen(c)
 	if c.is_alive() and b.mode != CivilianBrain.Mode.TIED and not downed.has(c):
 		downed.append(c)
 	return ""
@@ -629,6 +734,12 @@ func mask_up() -> bool:
 ## Face the NPC's chest and swing the knife (charged when `charge_s` > 0). True when it died.
 func knife(npc: NpcBase, charge_s: float = 1.05) -> bool:
 	await p.face(npc.global_position + Vector3(0.0, 1.1, 0.0), 0.04, 1.0)
+	var nd: float = p.flat_dist(npc.global_position, crew.global_position)
+	for c: NpcBase in civilians():
+		if c != npc and p.flat_dist(c.global_position, crew.global_position) < minf(nd + 0.2, 2.2):
+			f.note("knife held: civilian %s is in the way of %s" % [c.name, npc.name])
+			await f.wait_s(0.3)
+			return false
 	if charge_s > 0.0:
 		await p.inp.hold(&"melee", charge_s)
 	else:
@@ -643,6 +754,8 @@ func knife(npc: NpcBase, charge_s: float = 1.05) -> bool:
 
 ## Wait for the dead guard's pager to beep, then hold F on the body until it is answered.
 func answer_pager(guard: NpcBase) -> String:
+	if answered_guards.has(guard):
+		return ""
 	var comp: InteractableComponent = null
 	var t: float = 0.0
 	while t < 6.0:
@@ -662,6 +775,7 @@ func answer_pager(guard: NpcBase) -> String:
 	if not answered[0]:
 		await f.shot("pager_failed")
 		return "PO-5.stealth.pager: pager on %s not answered" % guard.name
+	answered_guards.append(guard)
 	return ""
 
 

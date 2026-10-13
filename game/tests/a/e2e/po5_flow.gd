@@ -87,6 +87,7 @@ func enter_heist() -> bool:
 	await shot("heist_start")
 	pilot = Po5Pilot.new(self, crew)
 	await capture_like_player()
+	await pilot.calibrate()
 	for c: CrewController in rt.crew_members():
 		var slot: int = c.slot
 		c.crew_state_changed.connect(func(o: int, n: int) -> void:
@@ -120,6 +121,9 @@ func _telemetry() -> void:
 			near_m = minf(near_m, ed)
 			en_close += 1 if ed < 15.0 else 0
 		cs.append("nearest_enemy=%.1fm within15=%d" % [near_m, en_close])
+		var pin: Node = crew.get_node_or_null(^"PlayerInput") if crew != null else null
+		cs.append("input_enabled=%s captured=%s paused_by=%s" % [pin.get(&"enabled") if pin != null else "-",
+			MouseCapture.is_captured(), (load("res://content/ui/common/crew_input.gd") as GDScript).get(&"_holders")])
 		var worst: float = _worst_frame_ms
 		_worst_frame_ms = 0.0
 		note("TEL worst_frame=%.0fms t=%.0f phase=%d phys=%.1fms proc=%.1fms nodes=%d enemies=%d civs=%d crew=[%s]" % [worst, rt.heist_time_s,
