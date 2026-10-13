@@ -138,7 +138,7 @@ func _build() -> void:
 	hint = _place(HintStrip.new(), Control.PRESET_CENTER, Vector2(-450, 190), Vector2(900, 64)) as HintStrip
 	var board: ScoreboardOverlay = ScoreboardOverlay.new()
 	board.settings = settings
-	scoreboard = _place(board, Control.PRESET_CENTER, Vector2(-500, -240), Vector2(1000, 480)) as ScoreboardOverlay
+	scoreboard = _place(board, Control.PRESET_CENTER, Vector2(-680, -260), Vector2(1360, 520)) as ScoreboardOverlay
 	toast_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD_BIG))
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(toast_label, Control.PRESET_CENTER, Vector2(-500, -260), Vector2(1000, 60))

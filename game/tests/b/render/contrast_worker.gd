@@ -166,3 +166,17 @@ func _loud() -> void:
 	for bg: String in BACKDROPS:
 		back.color = BACKDROPS[bg] as Color
 		await _shot("loud_" + bg, hud)
+	# PO-4 scoreboard sheet (Tab) with the full objective list.
+	model.objectives = [
+		{"id": &"keycard", "text_key": &"objective.glasshouse.keycard", "args": {}, "state": Enums.ObjectiveState.COMPLETED},
+		{"id": &"safe", "text_key": &"objective.glasshouse.safe", "args": {}, "state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"secure", "text_key": &"objective.glasshouse.secure", "args": {"bags": 2, "count": 1, "total": 2},
+			"state": Enums.ObjectiveState.ACTIVE}]
+	hud.scoreboard.set_process(false)  # no Tab held in a capture
+	hud.scoreboard.set_shown(true)
+	back.color = BACKDROPS["bright"] as Color
+	model.crew_stats = [
+		{"slot": 0, "name": "Sable", "is_ai": false, "is_local": true, "kills": 7, "specials_killed": 1, "civilians_killed": 0, "downs": 1},
+		{"slot": 1, "name": "Dutch", "is_ai": true, "is_local": false, "kills": 4, "specials_killed": 0, "civilians_killed": 0, "downs": 0}]
+	hud.scoreboard.refresh()
+	await _shot("loud_scoreboard", hud.scoreboard)  # only the sheet: the HUD under it is covered on purpose

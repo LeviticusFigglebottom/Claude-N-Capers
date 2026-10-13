@@ -2374,6 +2374,7 @@ heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rop
 ui.jukebox.no_stems,{name} has no recording yet.
 ui.options.controls.scoreboard_mode,Scoreboard
 ui.scoreboard.title,Crew Tally
+ui.scoreboard.objectives,Objectives
 ui.scoreboard.name,Crew
 ui.scoreboard.kills,Kills
 ui.scoreboard.specials,Specials

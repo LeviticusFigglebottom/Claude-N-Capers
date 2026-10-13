@@ -117,6 +117,13 @@ func _heist() -> void:
 	if rt != null and rt.service(G.SVC_STEALTH) != null:
 		rt.service(G.SVC_STEALTH).call(&"raise_alarm", &"audit")
 	await _shot("hud_loud", 30)
+	var hud: Hud = _hud()
+	if hud != null:
+		hud.scoreboard.set_process(false)  # no Tab held in a capture
+		hud.scoreboard.set_shown(true)
+		await _shot("hud_scoreboard", 10)
+		hud.scoreboard.set_shown(false)
+		hud.scoreboard.set_process(true)
 	var pm: PauseMenu = _flow.options_menu.open_pause()
 	await _shot("pause_in_heist")
 	if pm != null:
