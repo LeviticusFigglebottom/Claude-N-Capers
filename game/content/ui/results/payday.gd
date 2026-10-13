@@ -29,6 +29,9 @@ const MENU_SCENE: String = "res://content/ui/menus/menu_flow.tscn"
 const URGENT_COLOR: Color = Color(1.0, 0.42, 0.32)
 ## PQ-B-5: player picks are ignored this long after the cards appear.
 const INPUT_GRACE_S: float = 0.6
+## Crew table column -> header strings key.
+const CREW_COLUMN_KEYS: Dictionary = {"kills": &"ui.results.kills", "specials_killed": &"ui.results.specials_killed",
+	"downs": &"ui.results.downs", "civilians_killed": &"ui.results.civilians_killed"}
 ## PO-4: seconds the payday total takes to count up.
 const COUNT_S: float = 1.2
 ## D-090: at most one count-up tick per this many ms.
@@ -570,7 +573,7 @@ func _build_stats() -> VBoxContainer:
 	grid.columns = cols.size() + 1
 	grid.add_child(UiBuild.caption(&"ui.results.crew"))
 	for k: String in cols:
-		grid.add_child(UiBuild.caption(StringName("ui.results." + k)))
+		grid.add_child(UiBuild.caption(CREW_COLUMN_KEYS[k] as StringName))
 	for member: Dictionary in crew:
 		var slot: int = int(member.get("slot", 0))
 		grid.add_child(UiBuild.label(StringName(_crew_name(slot, bool(member.get("is_ai", false))))))

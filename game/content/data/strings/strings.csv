@@ -25,6 +25,7 @@ ui.menu.level,Level {level}
 ui.menu.stash,Stash: {amount}
 ui.menu.spending,Spending: {amount}
 ui.heist_select.title,Select a Job
+ui.heist_select.crumb,Safehouse / Planning table
 ui.heist_select.contact,Contact: {name}
 ui.heist_select.difficulty,Difficulty
 ui.heist_select.jobs,Jobs
@@ -41,6 +42,7 @@ ui.heist_select.start,Start Heist
 ui.heist_select.next,Briefing
 ui.heist_select.crew_ai,Fill empty slots with crew AI
 ui.loadout.title,Loadout
+ui.loadout.crumb,Contract / Gear up
 ui.loadout.primary,Primary
 ui.loadout.secondary,Secondary
 ui.loadout.melee,Melee

@@ -104,7 +104,7 @@ func build_ui() -> void:
 		profile = SaveService.load_profile(profile_slot)
 	var root: VBoxContainer = UiBuild.vbox(16)
 	_content = UiBuild.screen_margin(self, root)
-	root.add_child(UiBuild.label(&"ui.loadout.title", UiBuild.HEADER))
+	root.add_child(UiBuild.header(&"ui.workshop.crumb" if hub_mode else &"ui.loadout.crumb", &"ui.loadout.title"))
 	civilian_notice = UiBuild.label(&"ui.loadout.civilian_start", UiBuild.DIM)
 	civilian_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	civilian_notice.visible = start_mode == &"civilian" and not hub_mode
