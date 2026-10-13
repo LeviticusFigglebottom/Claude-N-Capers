@@ -27,8 +27,9 @@ var hook_need: Callable = Callable()
 var hook: Callable = Callable()
 ## goto() does not log its timeouts (short step-wise gotos while stalking).
 var quiet: bool = false
-## _unstick shouts at a civilian blocking the way (loud flows). Stealth turns it off: a shouted
-## civilian gets up panicked when the intimidation runs out.
+## _unstick shouts at a civilian blocking the way at once (loud flows). Stealth turns it off: it backs off
+## and lets them pass first, and shouts only after 4 tries (a shouted civilian gets up panicked when the
+## intimidation runs out, so the stealth flow then has to keep them down).
 var shout_blockers: bool = true
 ## goto() also needs |dy| <= this to arrive (INF = horizontal distance only; stealth flows set it for stairs).
 var arrive_dy: float = INF
@@ -267,7 +268,7 @@ func _log_stuck(corner: Vector3) -> void:
 func _unstick(attempt: int) -> void:
 	for i: int in crew.get_slide_collision_count():
 		var blocker: NpcBase = crew.get_slide_collision(i).get_collider() as NpcBase
-		if not shout_blockers and blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():
+		if not shout_blockers and attempt < 4 and blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():
 			# Stealth: step back and sidestep away from the civilian instead of shouting.
 			var to_b: Vector3 = blocker.global_position - crew.global_position
 			var right: Vector3 = Vector3(cos(crew.look_yaw), 0.0, -sin(crew.look_yaw))
@@ -278,7 +279,7 @@ func _unstick(attempt: int) -> void:
 			await inp.hold(&"move_left" if right.dot(to_b) > 0.0 else &"move_right", 0.5)
 			await inp.ticks(int(2.5 * Engine.physics_ticks_per_second))
 			return
-		if shout_blockers and blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():
+		if blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():
 			d.note("pilot: civilian %s blocks the way: shout" % blocker.name)
 			await face(blocker.head_position() - Vector3(0, 0.4, 0), 0.05, 1.0)
 			await inp.tap(&"shout")
