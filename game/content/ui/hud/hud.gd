@@ -118,7 +118,8 @@ func _build() -> void:
 	status = _place(StatusPanel.new(), Control.PRESET_TOP_RIGHT, Vector2(-448, 48), Vector2(400, 180)) as StatusPanel
 	custody = _place(CustodyPanel.new(), Control.PRESET_CENTER, Vector2(-300, -200), Vector2(600, 130)) as CustodyPanel
 	captain = _place(CaptainPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-260, 104), Vector2(520, 84)) as CaptainPanel
-	hint = _place(HintStrip.new(), Control.PRESET_CENTER_BOTTOM, Vector2(-450, -170), Vector2(900, 64)) as HintStrip
+	# Below the interaction prompt, clear of the subtitles at the bottom (audit: they collided).
+	hint = _place(HintStrip.new(), Control.PRESET_CENTER, Vector2(-450, 190), Vector2(900, 64)) as HintStrip
 	var board: ScoreboardOverlay = ScoreboardOverlay.new()
 	board.settings = settings
 	scoreboard = _place(board, Control.PRESET_CENTER, Vector2(-500, -240), Vector2(1000, 480)) as ScoreboardOverlay

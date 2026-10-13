@@ -10,6 +10,8 @@ ui.menu.loadout,Loadout
 ui.menu.options,Options
 ui.menu.quit,Quit
 ui.menu.back,Back
+ui.hint.select,Select
+ui.hint.back,Back
 ui.menu.confirm,Confirm
 ui.menu.cancel,Cancel
 ui.menu.resume,Resume

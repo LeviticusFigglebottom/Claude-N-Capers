@@ -22,6 +22,7 @@ func after_all() -> void:
 
 
 func before_each() -> void:
+	InteractionPanel.pad_active = false  # earlier pad-driven tests leave the static set
 	_model = MockHudModel.new()
 	add_child(_model)
 	_hud = HUD_SCENE.instantiate() as Hud
