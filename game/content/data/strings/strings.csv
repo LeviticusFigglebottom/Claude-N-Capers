@@ -1391,13 +1391,16 @@ ui.payday_cards.mask_kind.colors,Mask colours
 ui.payday_cards.mask_kind.pattern,Mask pattern
 ui.payday_cards.mask_kind.preset,Complete mask
 ui.board.title,The Board
+ui.board.crumb,Safehouse / Contracts
 ui.board.subtitle,Contracts from your contacts. Each stays up for {minutes} minutes; new ones land all the time.
-ui.board.level_stash,Level {level}  |  Stash: {amount}
+ui.board.level_caption,Level
+ui.board.stash_caption,Stash
+ui.board.pay_caption,Contract pay
+ui.board.difficulty_caption,Difficulty
+ui.board.expires_caption,Expires in
 ui.board.empty,No contracts on the board right now.
 ui.board.contact,From {name}
 ui.board.difficulty,Difficulty: {name}
-ui.board.payout,Contract pay: {amount}
-ui.board.expires,Expires in {time}
 ui.board.pro,PRO JOB
 ui.board.pro_desc,No restarts: fail it and the contract is gone. +{pct}% XP.
 ui.board.consumed,Pro job failed: this contract is burned until the board rotates.
@@ -1408,7 +1411,7 @@ ui.board.broker.title,Contract Broker
 ui.board.broker.desc,"Buy any contract you have unlocked, paid from the stash. No refunds."
 ui.board.broker.heist,Heist
 ui.board.broker.difficulty,Difficulty
-ui.board.broker.cost,Price: {amount}
+ui.board.broker.price,Price
 ui.board.broker.buy,Buy Contract
 ui.board.broker.locked_level,{name} (level {level})
 ui.board.broker.reason.unknown_heist,Unknown heist.
