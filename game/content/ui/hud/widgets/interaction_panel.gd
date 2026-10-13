@@ -1,4 +1,4 @@
-## Interaction prompt (tr(text_key) with args), hold progress bar and blocked reason (S9.1, S1.1).
+## Interaction prompt (tr(text_key) with args), hold progress ring around the key cap and blocked reason (S9.1, S1.1).
 ## PO-4: the key is drawn as a key cap (KeyPrompt).
 ## The input key name is presentation (hud_model README): when the model's args carry no `key`,
 ## the first keyboard binding of INTERACT_ACTION is filled in for the `{key}` placeholder.
@@ -17,6 +17,7 @@ const PAD_BUTTON_NAMES: Dictionary = {JOY_BUTTON_A: "A", JOY_BUTTON_B: "B", JOY_
 static var pad_active: bool = false
 
 var prompt: KeyPrompt
+## A ProgressRing (ProgressBar API) drawn around the key cap.
 var progress_bar: ProgressBar
 var blocked_label: Label
 
@@ -30,9 +31,11 @@ func build() -> void:
 	prompt = KeyPrompt.new(UiTokens.FONT_LEAD)
 	prompt.set_color(tweak.interaction_color)
 	v.add_child(prompt)
-	progress_bar = UiBuild.bar(tweak.interaction_color, Vector2(320, 8))
-	progress_bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	v.add_child(progress_bar)
+	# Lead round 64: the hold progress is a ring around the key cap (PD2), not a bar under the line.
+	progress_bar = ProgressRing.new()
+	progress_bar.self_modulate = tweak.interaction_color
+	prompt.cap.add_child(progress_bar)
+	prompt.add_theme_constant_override(&"separation", UiTokens.S2 + int(ProgressRing.PAD + ProgressRing.WIDTH))  # room for the ring
 	blocked_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD))
 	blocked_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	blocked_label.add_theme_color_override(&"font_color", tweak.low_health_color)

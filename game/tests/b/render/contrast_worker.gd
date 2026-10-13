@@ -84,8 +84,8 @@ func _shot(shot: String, under: Node) -> void:
 	var bad: int = 0
 	for n: Node in under.find_children("*", "Label", true, false):
 		var l: Label = n as Label
-		if not l.is_visible_in_tree() or l.text.strip_edges() == "":
-			continue
+		if not l.is_visible_in_tree() or l.text.strip_edges() == "" or _alpha(l) < 0.05:
+			continue  # faded-out labels (e.g. the crosshair while casing) are not on screen
 		var gr: Rect2 = _visible_rect(l)
 		if gr.size.x < 4.0 or gr.size.y < 4.0:
 			continue  # scrolled out of view / clipped
@@ -95,6 +95,16 @@ func _shot(shot: String, under: Node) -> void:
 			print("CONTRAST FAIL shot=%s %s '%s' ratio=%.2f" % [shot, l.get_path(), l.text.left(30), ratio])
 	print("SHOT %s: %d failures" % [shot, bad])
 	_fails += bad
+
+
+## Effective alpha of `c` (its modulate times every CanvasItem ancestor's).
+static func _alpha(c: CanvasItem) -> float:
+	var a: float = c.modulate.a * c.self_modulate.a
+	var p: Node = c.get_parent()
+	while p is CanvasItem:
+		a *= (p as CanvasItem).modulate.a
+		p = p.get_parent()
+	return a
 
 
 ## The label's rect cut to its clipping ancestors (ScrollContainer etc.) and the viewport.
