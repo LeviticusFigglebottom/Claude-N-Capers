@@ -12,6 +12,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-13 20:25: **round 44 ON ORIGIN**: env/b-content 8070c7c7 (8 screen families restyled to Case File, 720p fixes, objective-marker label/priority fixes; B full dir 824/0).
 - 2026-10-13 20:35: **round 43 ON ORIGIN**: env/a-core 5ebe9f86 (KR-2 FIXED: bot unstick on Dockside van; L2.5 downed bots no longer count pre-down shots; KR-1 partly, director pressure under review), env/p-play 0cb3e25f (viewmodel lit: key light on the vm layer, D-094). p 63/0, a targeted + P1 slice green.
 - 2026-10-13 20:15: **round 42 ON ORIGIN**: env/a-core 097d8432 (ui_hud 1.8 objective_markers live; lockdown advances the Glasshouse objective; PO-5.7 NpcVisuals: police/guards/civilians wear the real character models, no more capsules), env/b-content 350040b1 (casing guidance strings, briefing timeline, pad glyphs). Lead hotfix: G.CHARACTERS_DIR contract constant (banned hard path in npc_visuals.gd). Targeted a/b + P1 slice 10/0 green.
 - 2026-10-13 20:00: **round 41 ON ORIGIN**: env/b-content 4641bae1 (mask-up ring, weapon HUD hidden until masked, lockdown objective skip, difficulties unlock in order, 10 UI cues + UiSfx, ObjectiveMarkers widget awaiting A's model). Targeted b + c audio green. Full gate on round 40 running in background.
