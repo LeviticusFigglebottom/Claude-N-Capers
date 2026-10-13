@@ -50,3 +50,31 @@ func test_ads_look_scales_with_zoom() -> void:
 	_inp.release(&"aim")
 	st.magnification = mag0
 	assert_near(ads, hip / z, hip * 0.03, "ADS turn %.4f = hip %.4f / zoom %.2f" % [ads, hip, z])
+
+
+## PO-4: at hip fire the whole rifle sits in front of the lens (the authored rig had the stock 0.11 m behind the
+## camera, so the receiver filled the lower right). FpViewmodelTweak.set_hip_offset.
+func test_rifle_hip_in_front_of_lens() -> void:
+	_rt.teardown()
+	var l: Loadout = CrewWeapons.build_loadout(null).duplicate() as Loadout
+	l.primary = &"weapon.corsair_ar"
+	l.resolved_primary = LoadoutResolver.resolve_weapon(l.primary, l.primary_mods)
+	_rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(0, 0), "crew_ai": false, "loadouts": {0: l}})
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
+	await _inp.tap(&"slot_primary")
+	await wait_seconds(2.0)
+	var cam: Camera3D = CrewView.of(c).camera()
+	var vm: FpViewmodel = FpViewmodel.of(cam)
+	assert_true(vm != null and vm.weapon_visual != null, "rifle in the hands")
+	if vm == null or vm.weapon_visual == null:
+		return
+	assert_eq(vm.anim_set, &"rifle", "rifle set")
+	var inv: Transform3D = cam.global_transform.affine_inverse()
+	var rear: float = -INF
+	for n: Node in vm.weapon_visual.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = n as MeshInstance3D
+		var b: AABB = (inv * mi.global_transform) * mi.get_aabb()
+		rear = maxf(rear, b.end.z)
+	assert_true(rear < -0.02, "rifle rear %.3f m (camera space z) is in front of the lens" % rear)
