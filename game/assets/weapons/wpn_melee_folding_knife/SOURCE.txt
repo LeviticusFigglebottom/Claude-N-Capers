@@ -1,0 +1,10 @@
+asset: wpn_melee_folding_knife
+script: tools/blender/weapons/folding_knife.py
+params: {}
+seed: 2255026108  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category weapons --asset wpn_melee_folding_knife
+edit policy: generated file, never edit by hand; change the script and rebuild
+origin: handle axis, 20 mm below the top of the fist; handle +Y, edge -Z (Godot)
+tri_budget: 6000
+tris_lod0: 4010
