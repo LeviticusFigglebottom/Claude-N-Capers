@@ -72,9 +72,26 @@ static func wire(b: BaseButton, kind: StringName = KIND_CONFIRM) -> BaseButton:
 	if first:
 		b.focus_entered.connect(_on_focus_entered)
 		b.pressed.connect(_on_pressed.bind(b))
+		b.gui_input.connect(_on_gui_input.bind(b))
 		if DisplayServer.get_name() != "headless":
 			_ensure()  # the player node also watches navigation input for the focus cue
 	return b
+
+
+## Lane 6: a click / accept on a disabled button (can't afford, locked, nothing selected) buzzes.
+static func _on_gui_input(event: InputEvent, b: BaseButton) -> void:
+	if not b.disabled:
+		return
+	var mb: InputEventMouseButton = event as InputEventMouseButton
+	if (mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT) or event.is_action_pressed(&"ui_accept"):
+		play(ERROR)
+
+
+## Lane 6: plays the error cue when an action reports failure; returns `ok` (wrap action results).
+static func check(ok: bool) -> bool:
+	if not ok:
+		play(ERROR)
+	return ok
 
 
 ## The kind `b` was wired with (&"" = not wired).

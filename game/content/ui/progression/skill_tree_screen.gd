@@ -159,7 +159,7 @@ func _build_details() -> PanelContainer:
 	# Buy / Refund act on the selected skill; build_ui puts them in the footer (bottom right).
 	buy_button = UiBuild.button(&"ui.skills.buy_basic", {"cost": 0})
 	refund_button = UiBuild.button(&"ui.skills.refund")
-	buy_button.pressed.connect(func() -> void: buy(selected_skill))
+	buy_button.pressed.connect(func() -> void: UiSfx.check(bool(buy(selected_skill)["ok"])))
 	refund_button.pressed.connect(func() -> void: refund(selected_skill))
 	return UiBuild.panel(v)
 

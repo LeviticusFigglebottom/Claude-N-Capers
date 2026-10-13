@@ -325,7 +325,7 @@ func _build_footer() -> HBoxContainer:
 	back_button.pressed.connect(back_requested.emit)
 	buy_button = UiBuild.button(&"ui.workshop.buy_none")
 	buy_button.custom_minimum_size = Vector2(380, 0)
-	buy_button.pressed.connect(buy_selected)
+	buy_button.pressed.connect(func() -> void: UiSfx.check(buy_selected()))
 	equip_button = UiBuild.button(&"ui.workshop.equip")
 	equip_button.custom_minimum_size = Vector2(380, 0)
 	equip_button.pressed.connect(equip_selected)

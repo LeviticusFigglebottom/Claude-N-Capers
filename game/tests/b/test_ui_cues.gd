@@ -174,3 +174,24 @@ func test_payday_total_and_card_flip_cues() -> void:
 	assert_eq(UiSfx.kind_of(s.card_views[0]), UiSfx.KIND_NONE, "cards tick on navigation only")
 	s.queue_free()
 	await wait_frames(1)
+
+
+## Lane 6: a refused action buzzes: a click on a disabled button, or an action reporting failure.
+func test_refusals_play_the_error_cue() -> void:
+	var b: Button = UiBuild.primary(UiBuild.button(&"ui.menu.confirm"))
+	add_child(b)
+	b.disabled = true
+	var click: InputEventMouseButton = InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	b.gui_input.emit(click)
+	assert_eq(UiSfx.played.back(), UiSfx.ERROR, "disabled click buzzes")
+	UiSfx.played.clear()
+	b.disabled = false
+	b.gui_input.emit(click)
+	assert_false(UiSfx.played.has(UiSfx.ERROR), "an enabled button does not buzz")
+	await wait_seconds(0.2)
+	assert_false(UiSfx.check(false))
+	assert_eq(UiSfx.played.back(), UiSfx.ERROR, "a failed action buzzes")
+	assert_true(UiSfx.check(true))
+	b.queue_free()
