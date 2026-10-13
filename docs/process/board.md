@@ -7,9 +7,9 @@ Read it at the start of every work session.
 | Role | Session id | Branch | Focus now |
 |---|---|---|---|
 | LEAD | session_014E3p2DmSYTneJjytGwKKfc | claude/dreamy-hamilton-pc7vck | merges, rulings, contracts, gates |
-| ENV P | (dispatching) | env/p-play | PO-2 mouse capture, PO-1 casing exit, PO-3 bumps |
-| ENV B | (dispatching) | env/b-content | PO-4 UI/UX overhaul (style spec first) |
-| ENV A | (dispatching) | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
+| ENV P | session_01FYVVhNtxKAoQmyfnZ9rb3t | env/p-play | PO-2 mouse capture, PO-1 casing exit, PO-3 bumps |
+| ENV B | session_0159qCTRV9CsDQs465nGSW28 | env/b-content | PO-4 UI/UX overhaul (style spec first) |
+| ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
 - 2026-10-13: round 35 = all five env branches (a, b, c, d, p) merged as left by the Grok team + D-086/D-087 docs. Gate running.
