@@ -12,6 +12,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 00:10: **round 62 ON ORIGIN**: env/b-content (all 64 mods on PD2 accuracy/stability steps, mod ADS deltas zeroed, PD2 ADS times, LMG drift values, 21:9 in-heist HUD captures uw_*), lead P4 goldens to match (9/0). b/a/p targeted green.
 - 2026-10-13 23:55: **round 61 ON ORIGIN**: env/a-core 0ca5ff38 (Bulwark shield clips, all-NPC spawn-yaw snap fix). a targeted + P1 slice green. gh_loud release check running at A (seed 1791914030).
 - 2026-10-13 23:45: **round 60 ON ORIGIN**: env/a-core (D-095 key interior lights on viewmodel_lit across all 4 maps; A4-02 probe: real characters cost ≈ +0.02 ms/NPC CPU vs capsules). Map tests + d095 green. Pending: B's PD2 mod rescale (802ae2b1) lands with lead P4 goldens once ADS deltas are zeroed.
 - 2026-10-13 23:30: **round 59 ON ORIGIN**: env/p-play 4f4cfa6d (subtle PD2 head bob behind GameSettings.head_bob, d084 race fixed, ultrawide vm framing checked), env/a-core 0c7f0f66 (LMG drift consumed from WeaponStats bias), env/b-content (head_bob setting). p 83/0, a/b targeted green.
