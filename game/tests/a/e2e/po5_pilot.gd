@@ -17,6 +17,8 @@ var max_px_per_tick: float = 120.0
 var stuck_spots: Array[Dictionary] = []
 ## Loud: shoot enemies in sight while walking / waiting.
 var combat: bool = false
+## Where to look while holding a position with nobody in sight (the doorway the police come through).
+var watch_point: Vector3 = Vector3.INF
 var shots_fired: int = 0
 var _last_engage: float = -1.0
 var _door_tries: Dictionary[Door, int] = {}
@@ -339,14 +341,66 @@ func hold_position(seconds: float, until: Callable = Callable()) -> void:
 	while t < seconds:
 		if until.is_valid() and bool(until.call()):
 			return
-		var foe: NpcBase = nearest_enemy(30.0) if combat else null
+		var foe: NpcBase = nearest_enemy(40.0) if combat else null
 		if foe != null:
 			await engage(foe, 2.0)
 			t += 2.0
 		else:
+			if watch_point != Vector3.INF:
+				await face(watch_point, 0.05, 0.3)
 			await inp.tap(&"reload")
-			await inp.ticks(28)
+			await inp.ticks(10)
 			t += 0.5
+
+
+## The active, in-tree secure zone (variant slot chosen) nearest to the crew.
+func secure_zone() -> SecureZone:
+	var best: SecureZone = null
+	for n: Node in crew.get_tree().get_nodes_in_group(G.LOOT_SECURE_ZONE):
+		var z: Node = n
+		while z != null and not (z is SecureZone):
+			z = z.get_parent()
+		var sz: SecureZone = z as SecureZone
+		if sz != null and sz.is_visible_in_tree() and (best == null or flat_dist(sz.global_position, crew.global_position)
+				< flat_dist(best.global_position, crew.global_position)):
+			best = sz
+	return best
+
+
+## Carries the bag on our back to `zone` and throws it in (G while masked + carrying), like a player
+## tossing a bag into the van. Returns true when loot_secured fired for it.
+func secure_carried_bag(zone: Node3D) -> bool:
+	var secured: Array[int] = [0]
+	var cb: Callable = func(_b: int, _l: StringName, _v: int) -> void: secured[0] += 1
+	EventBus.loot_secured.connect(cb)
+	var target: Vector3 = zone.global_position
+	await goto(stand_point(target), 3.0, 120.0)
+	await face(target + Vector3(0, 0.8, 0), 0.05, 2.0)
+	var tries: int = 0
+	while crew.is_carrying_bag() and tries < 3:
+		await inp.tap(&"drop_bag")
+		await inp.ticks(10)
+		tries += 1
+	var t: float = 0.0
+	while secured[0] == 0 and t < 8.0:
+		await tick()
+		t += dt()
+	if secured[0] == 0 and not crew.is_carrying_bag():
+		d.note("pilot: thrown bag not secured within 8 s (zone at %s, crew at %s)" % [_v(target), _v(crew.global_position)])
+	EventBus.loot_secured.disconnect(cb)
+	return secured[0] > 0
+
+
+## The escape zone the mission activated (null until then).
+func active_escape() -> EscapeZone:
+	for n: Node in crew.get_tree().get_nodes_in_group(G.ESCAPE_ZONE):
+		var z: Node = n
+		while z != null and not (z is EscapeZone):
+			z = z.get_parent()
+		var ez: EscapeZone = z as EscapeZone
+		if ez != null and ez.active:
+			return ez
+	return null
 
 
 ## The closest navmesh point to `target` (where a person would stand to reach it).

@@ -113,6 +113,32 @@ func _telemetry() -> void:
 			get_tree().get_nodes_in_group(G.ENEMY).size(), get_tree().get_nodes_in_group(G.CIVILIAN).size(), " ".join(cs)])
 
 
+## After heist_ended: screenshot the payday, click through it like a player until the hub shows.
+func payday_to_hub() -> int:
+	set_fast(false)
+	await seconds(3.0)
+	await shot("payday")
+	note("payday buttons: %s" % [visible_buttons()])
+	for i: int in 12:
+		if find_button("Planning Table") != null:
+			await shot("back_in_hub")
+			note("back in the hub")
+			return 0
+		var clicked: bool = false
+		for label: String in ["Continue", "Skip", "Next", "Collect", "Done", "Back to Safehouse", "Safehouse", "OK"]:
+			var b: Button = find_button(label)
+			if b != null:
+				await click_control(b)
+				clicked = true
+				break
+		if not clicked:
+			note("payday: nothing to click; buttons %s" % [visible_buttons()])
+		await seconds(2.0)
+		await shot("payday_%d" % i)
+	note("FAIL PO-5.payday: never got back to the hub; buttons %s" % [visible_buttons()])
+	return 1
+
+
 ## Game-time wait (physics ticks).
 func wait_s(s: float) -> void:
 	for _i: int in int(s * Engine.physics_ticks_per_second):

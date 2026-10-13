@@ -40,6 +40,7 @@ func play(flow: Node) -> int:
 		await p.use(wdoor, 40.0, func() -> bool: return door.is_open)
 	f.note("workshop door open=%s" % door.is_open)
 	await f.shot("workshop_door")
+	p.watch_point = wdoor.global_position + Vector3(0, 0.6, 0)
 	var drill: InteractableComponent = comp_tagged(&"safe_drill")
 	var dp: DrillPoint = drill.owner_node() as DrillPoint
 	await p.use(drill, 15.0, func() -> bool: return dp.runner != null and dp.runner.state != DeviceRunner.State.IDLE)
@@ -50,9 +51,13 @@ func play(flow: Node) -> int:
 	var last_shot: float = t0
 	while not loot.enabled and rt.heist_time_s - t0 < 420.0:
 		if p.crew.crew_state != Enums.CrewState.NORMAL:
-			f.note("crew state %d (downed?) at %.0f s" % [p.crew.crew_state, rt.heist_time_s])
+			f.note("player state %d at %.0f s; waiting for a revive" % [p.crew.crew_state, rt.heist_time_s])
 			await f.shot("player_down")
-			return await fail("PO-5.down: player went down while drilling")
+			while p.crew.crew_state != Enums.CrewState.NORMAL and p.crew.crew_state != Enums.CrewState.CUSTODY:
+				await f.wait_s(1.0)
+			if p.crew.crew_state == Enums.CrewState.CUSTODY:
+				return await fail("PO-5.down: player went down while drilling and ended in custody at %.0f s" % rt.heist_time_s)
+			f.note("player back up at %.0f s" % rt.heist_time_s)
 		if dp.runner != null and dp.runner.state == DeviceRunner.State.JAMMED:
 			f.note("drill jammed at %.0f s (progress %.2f)" % [rt.heist_time_s, dp.runner.progress])
 			await p.use(drill, 20.0, func() -> bool: return dp.runner.state != DeviceRunner.State.JAMMED)
@@ -66,7 +71,51 @@ func play(flow: Node) -> int:
 	if not loot.enabled:
 		return await fail("PO-5.drill: safe loot never enabled (state %d progress %.2f)" % [dp.runner.state, dp.runner.progress])
 	f.note("safe open after %.0f s" % (rt.heist_time_s - t0))
-	return 0
+	await f.shot("safe_open")
+	var zone: SecureZone = p.secure_zone()
+	if zone == null:
+		return await fail("PO-5.van: no active secure zone")
+	f.note("secure zone %s at %s" % [zone.get_path(), Po5Pilot._v(zone.global_position)])
+	var bags: int = 0
+	var tries: int = 0
+	while bags < 2 and tries < 5:
+		tries += 1
+		if not p.crew.is_carrying_bag():
+			await p.use(loot, 20.0, func() -> bool: return p.crew.is_carrying_bag())
+		if not p.crew.is_carrying_bag():
+			f.note("could not bag the safe loot (try %d)" % tries)
+			continue
+		if await p.secure_carried_bag(zone):
+			bags += 1
+			f.note("bag %d secured t=%.0f" % [bags, rt.heist_time_s])
+			await f.shot("bag_%d" % bags)
+	if bags < 2:
+		return await fail("PO-5.bags: only %d bags secured" % bags)
+	return await escape()
+
+
+func escape() -> int:
+	var t0: float = rt.heist_time_s
+	var ended: Array[bool] = [false]
+	EventBus.heist_ended.connect(func(r: Dictionary) -> void:
+		ended[0] = true
+		f.note("EVENT heist_ended %s" % [r]))
+	while p.active_escape() == null and rt.heist_time_s - t0 < 400.0:
+		await p.hold_position(5.0, func() -> bool: return p.active_escape() != null)
+	var ez: EscapeZone = p.active_escape()
+	if ez == null:
+		return await fail("PO-5.escape: escape never activated (%.0f s after bags)" % (rt.heist_time_s - t0))
+	f.note("escape active at %s after %.0f s" % [Po5Pilot._v(ez.global_position), rt.heist_time_s - t0])
+	await p.goto(p.stand_point(ez.global_position), 1.0, 120.0)
+	var t1: float = rt.heist_time_s
+	while not ended[0] and rt.heist_time_s - t1 < 60.0:
+		await p.hold_position(2.0, func() -> bool: return ended[0])
+		if not ended[0] and p.flat_dist(p.crew.global_position, ez.global_position) > 1.5:
+			await p.goto(p.stand_point(ez.global_position), 0.8, 20.0)
+	if not ended[0]:
+		await f.shot("escape_stuck")
+		return await fail("PO-5.escape: standing in the escape zone did not end the heist")
+	return await f.payday_to_hub()
 
 
 func comp_tagged(tag: StringName) -> InteractableComponent:
