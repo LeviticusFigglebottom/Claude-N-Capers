@@ -47,6 +47,10 @@ ui.loadout.deployable,Deployable
 ui.loadout.armor,Armor
 ui.loadout.mask,Mask
 ui.loadout.mods,Modifications
+ui.loadout.section.weapons,Weapons
+ui.loadout.section.gear,Gear
+ui.loadout.section.crew,Mask and heister
+ui.loadout.primary_none,None yet: buy and equip one in the Workshop
 ui.loadout.equip,Equip
 ui.loadout.equipped,Equipped
 ui.loadout.locked,Locked
