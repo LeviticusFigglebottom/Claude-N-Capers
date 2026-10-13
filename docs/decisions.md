@@ -708,3 +708,10 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 ## D-095 — 2026-10-13 — `viewmodel_lit` is render layer 21 (supersedes D-094's layer number, QP-3)
 - Layer 20 (`1 << 19`) is already the local player's hidden third-person body/mask (CrewView.FIRST_PERSON_HIDDEN_LAYER) and
   levelcheck's PROXY_LAYER. `viewmodel_lit` = **layer 21 (`1 << 20`)**, `CrewView.VIEWMODEL_LIT_LAYER`. visual_slots 1.2.
+
+## D-096 — 2026-10-13 — `dismiss_tip` input action (QB-5); recoil numbers via ENV B data
+- New InputMap action `dismiss_tip`: key **H**, pad **D-pad right** (button 14, unused elsewhere). B's onboarding cards
+  and any future tip/hint dismissal use it (rebindable in Options).
+- Recoil/spread per weapon class: ENV P owns delivery (PD2-like eased kick, no auto-recovery, dff06548); the numbers stay
+  in ENV B's WeaponDef data. ENV P sends B a PD2-reference table (first-shot kick, horizontal, hip/ADS spread per class);
+  ENV B applies it and keeps the resolver goldens green.
