@@ -106,8 +106,8 @@ func set_crew_heisters(map: Dictionary) -> void:
 
 
 func widgets() -> Array[HudWidget]:
-	return [chevrons, marks, objective_markers, interaction, dominate, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina,
-			scoreboard, hint, mask_ring]
+	return [chevrons, marks, objective_markers, interaction, dominate, vitals, ammo, pager, objectives, assault,
+			teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring]
 
 
 func _build() -> void:
