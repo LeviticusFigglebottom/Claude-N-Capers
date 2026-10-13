@@ -22,6 +22,7 @@ const RESUME_GATED: Array[StringName] = [&"fire", &"melee", &"throw_item", &"mas
 	&"swap_weapon"]
 
 ## Tests only (PInputDriver): headless cannot capture the mouse; treat motion as captured.
+## Never set by game code: the real capture is MouseCapture's (D-087).
 static var test_assume_captured: bool = false
 
 @export var mouse_sensitivity: float = 0.0025
@@ -56,6 +57,29 @@ func _ready() -> void:
 		_yaw = _crew.look_yaw
 		_pitch = _crew.look_pitch
 		_crew.teleported.connect(_on_teleported)
+	var n: Object = MouseCapture.notifier()
+	if n != null:
+		n.connect(&"changed", _on_capture_changed)
+	_sync_capture()
+
+
+func _exit_tree() -> void:
+	MouseCapture.set_gameplay_active(self, false)
+
+
+func _process(_delta: float) -> void:
+	_sync_capture()
+
+
+## D-087: the live local human's input owns the gameplay mouse capture (a paused / disabled input does not).
+func _sync_capture() -> void:
+	MouseCapture.set_gameplay_active(self, enabled and is_inside_tree() and _crew != null)
+
+
+## The click that (re)captured the mouse, or a button held through a capture, must not also fire / act.
+func _on_capture_changed(captured: bool) -> void:
+	if captured:
+		_latch_held()
 
 
 ## PI-06: spawns, custody release and server teleports set the facing; keep it instead of snapping back.
@@ -64,11 +88,13 @@ func _on_teleported() -> void:
 	_pitch = _crew.look_pitch
 
 
-func _unhandled_input(event: InputEvent) -> void:
+## D-087: mouse look reads _input, not _unhandled_input: with the mouse captured no Control under the screen
+## centre (HUD panel, a MenuFlow left with MOUSE_FILTER_STOP) may swallow the motion.
+func _input(event: InputEvent) -> void:
 	if not enabled:
 		return
 	var mm: InputEventMouseMotion = event as InputEventMouseMotion
-	if mm != null and (Input.mouse_mode == Input.MOUSE_MODE_CAPTURED or test_assume_captured):
+	if mm != null and (MouseCapture.is_captured() or test_assume_captured):
 		var gs: GameSettings = GameSettings.current()  # B5-01 options
 		var ms: Vector2 = gs.mouse_sensitivity() if gs != null else Vector2.ONE
 		var inv: float = -1.0 if gs != null and gs.invert_y() else 1.0
@@ -87,6 +113,7 @@ func set_paused(paused: bool) -> void:
 		_pitch = _crew.look_pitch
 	if not paused:
 		_latch_held()
+	_sync_capture()
 
 
 ## Every gameplay read here polls Input (is_action_pressed / just_pressed), so a UI consuming the event (payday
@@ -131,7 +158,7 @@ func gamepad_look_delta(stick: Vector2, delta: float) -> Vector2:
 func _physics_process(delta: float) -> void:
 	if not enabled or _crew == null:
 		return
-	if not gamepad_requires_capture or Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+	if not gamepad_requires_capture or MouseCapture.is_captured():
 		var stick: Vector2 = Input.get_vector(&"look_left", &"look_right", &"look_up", &"look_down", 0.0)
 		var d: Vector2 = gamepad_look_delta(stick, delta)
 		if d != Vector2.ZERO:
