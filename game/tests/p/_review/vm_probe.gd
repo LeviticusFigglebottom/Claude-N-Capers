@@ -6,6 +6,7 @@ extends Node
 var _out: String = "/tmp"
 var _slot: String = ""
 var _heist: StringName = &""
+var _moves: bool = false
 var _primary: StringName = &"weapon.corsair_ar"
 
 
@@ -17,6 +18,8 @@ func _ready() -> void:
 			_primary = StringName(a.trim_prefix("--primary="))
 		elif a.begins_with("--heist="):
 			_heist = StringName(a.trim_prefix("--heist="))
+		elif a == "--moves":
+			_moves = true
 		elif a == "--no_ik":
 			FpViewmodelTweak.data().left_hand_ik_skip_sets.append(&"rifle")
 			FpViewmodelTweak.data().left_hand_ik_skip_sets.append(&"pistol")
@@ -51,8 +54,38 @@ func _ready() -> void:
 		c.loadout.secondary])
 	await _shot("vm_hip")
 	_dump(c)
+	if _moves:
+		inp.press(&"move_forward")
+		inp.press(&"sprint")
+		for _i: int in 60:
+			await get_tree().physics_frame
+		await _shot("vm_sprint")
+		inp.release(&"sprint")
+		inp.release(&"move_forward")
+		inp.press(&"crouch")
+		for _i: int in 40:
+			await get_tree().physics_frame
+		await _shot("vm_crouch")
+		inp.release(&"crouch")
+		for _i: int in 30:
+			await get_tree().physics_frame
+		inp.press(&"jump")
+		for _i: int in 12:
+			await get_tree().physics_frame
+		await _shot("vm_jump_air")
+		inp.release(&"jump")
+		for _i: int in 60:
+			await get_tree().physics_frame
 	inp.press(&"aim")
-	for _i: int in 60:
+	for k: int in 7:
+		for _i: int in 2:
+			await get_tree().physics_frame
+		await _shot("vm_ads_t%02d" % (k * 2 + 2))
+		var vmn: FpViewmodel = FpViewmodel.of(CrewView.of(c).camera())
+		if vmn != null:
+			print("[VM] t%02d ads_weight=%.2f anim=%s pos=%s" % [k * 2 + 2, vmn.ads_weight,
+				vmn.player.current_animation if vmn.player != null else "", vmn.position])
+	for _i: int in 46:
 		await get_tree().physics_frame
 	await _shot("vm_ads")
 	_dump(c)

@@ -12,6 +12,8 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-13 21:10: **round 49 ON ORIGIN**: env/p-play 42dfaf93 (ADS sights aligned on the current animated pose; centred from 0.1 s). Tip for all: windowed visual checks use `--fixed-fps 60`.
+- 2026-10-13 21:05: **round 48 ON ORIGIN**: env/p-play f11b4df1 (hip framing for all 34 FP guns, enforced by test_po4_viewmodel_classes; brute_12 hand on the fore-end).
 - 2026-10-13 21:00: **round 47 ON ORIGIN**: env/b-content 7d29463b (pre-planning restyled, 4K pass clean, breadcrumbs, hub/payday polish; h01-h04 live captures). Targeted b green.
 - 2026-10-13 20:50: full gate on round 40 (1916db6e): 1817 tests, 3 failed, all known: options_palettes (FIXED r41), p3_loud test_10 (FIXED r43), p3_loud test_01 (KR-1, A); validate_level KR-3 night_deposit zfight + KR-4 shadow_ledger barred_doors still open (A).
 - 2026-10-13 20:45: **round 46 ON ORIGIN**: env/b-content 934e355a (review PNGs in game/content/ui/_review/after/: r_* restyled screens, h01 casing with real NPCs + hints, h02 masked with objective markers; refusal cue; perk grid pad scroll). Targeted b green.
@@ -42,7 +44,7 @@ Read it at the start of every work session.
 - D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
 
 ## Open questions (id → answer)
-- QP-2 world lights on the viewmodel → render layer 20 `viewmodel_lit` (visual_slots 1.1, D-094).
+- QP-2/QP-3 world lights on the viewmodel → render layer **21** `viewmodel_lit` (visual_slots 1.2, D-095; 20 was taken).
 - QB-4 RangeSpectatorInput as a gameplay owner → OK, input_focus 1.2.
 - QP-1 where was the PO's bump → asked the product owner; working assumption: their build predated step-up (round 35).
 - QB-1 starter primary in default profile → YES (data only, existing AR; closes PP-P-10).
