@@ -713,6 +713,8 @@ func _hand_heisters(options: Dictionary) -> void:
 		if l != null and l.heister != &"":
 			map[int(slot)] = l.heister
 	(_hud as Hud).set_crew_heisters(map)
+	if _heist_payday != null and is_instance_valid(_heist_payday):
+		_heist_payday.crew_heisters = map
 
 
 ## True while the HUD/payday layer of a launched heist exists.
