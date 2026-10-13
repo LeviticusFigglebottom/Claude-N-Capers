@@ -3,6 +3,19 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-13 (team v3, D-086): PO-4 UI pass "Case File"
+Session: Claude Code cloud (env/b-content). Lead: session_014E3p2DmSYTneJjytGwKKfc.
+### Done (commits f9b52550..e595f5da)
+- Windowed audit (xvfb, not headless) of the real flow at 1280x720 + 1920x1080: `game/tests/b/render/ui_audit_capture.gd -- <out_dir> [menus|heist]`. Findings: docs/design/ui/audit.md (uncommitted until round 35 gives B docs/design/ui/**). Before PNGs: game/content/ui/_review/before/.
+- Style spec "Case File": docs/design/ui/style.md (same: waiting for ownership). Tokens: content/ui/theme/ui_tokens.gd; UiThemeFactory builds caper_theme.tres (regenerate: `godot --headless --path game --script res://content/ui/theme/build_theme.gd`; test_ui_theme guards drift). Built-in font only, FontVariation styles.
+- HUD: one objective line (caption OBJECTIVE), compact teammate rows, CASING/CIVILIAN chip, key-cap prompts (KeyPrompt), HintStrip (Click to resume / Hold [G] to mask up / throw bag) below the prompt.
+- In-heist PauseMenu (Resume / Options / Leave Heist + confirm) over a scrim; Options from it returns to it; Leave Heist moved out of the Options footer.
+- Every UiScreen: fade-in, footer control hints ([Enter] Select [Esc] Back, device aware).
+- Main menu wordmark, CaseBackdrop, hub START HERE (new profile), heist select, loadout (sections, Primary row, DR hero), payday hero row, pre-planning label overlap fix, options tabs.
+### Open / next
+- MouseCapture migration (input_focus.md) once ENV P lands it; briefing, Board, workshop, skills/perks, masks, lobby restyle; HUD motion (objective done flash); sound hooks.
+- QB-1: new profile owns only a pistol (default_profile.json has no primary). PD2 starts with a primary + secondary. Add a starter primary?
+
 ## 2026-10-12 21:50 UTC (8): D-076 playability pass (B-PP)
 ### Done
 - B-PP-1 (a2e2785b): hub side panel no longer has Career / Notoriety buttons (duplicates of the Record / Old Press station cards). Signals kept for API; test_career / test_notoriety_ui now open them via the station cards.
