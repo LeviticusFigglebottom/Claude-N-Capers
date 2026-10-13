@@ -673,3 +673,9 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - NPCs/police rendering as placeholder capsules (PO-5.7, B's captures) is a top playability issue. ENV A diagnoses
   first: wiring (EnemyDef/NPC spawn pointing at placeholders, a failed scene load: A's domain) vs missing assets
   (ENV D, dormant). If assets are missing, the lead decides whether to wake ENV D.
+
+## D-090 — 2026-10-13 — UI sound cues (audio_cues 1.5); ENV B synthesises them while ENV C is dormant
+- audio_cues 1.5 adds ten UI/HUD cue ids (`cue.ui_*`, `cue.hud_objective_done`, `cue.hud_hint`, `cue.payday_total`, `cue.card_flip`).
+- ENV C is dormant, so **ENV B builds them** with ENV C's `tools/audiogen` synth core (read-only for B) via new scripts in
+  `tools/audiogen/ui/**`, output in `game/assets/audio/sfx/ui/**`, and registers them in `game/world/audio/cues.tres`
+  (co-owned by B for UI-bus entries only while C is dormant). Procedural only, no third-party audio. UI bus, 2D.
