@@ -122,6 +122,10 @@ var _ads_lin: float = 0.0
 var _bob_weight: float = 0.0
 ## PO-4: hip/bob/step offset (_update_offset) and the ADS alignment (AdsAlign, late) that make up `position`.
 var _base_offset: Vector3 = Vector3.ZERO
+## PO-4: per-shot muzzle light (FpViewmodelTweak.muzzle_light_*), seconds left of the current flash.
+var _muzzle_light: OmniLight3D = null
+var _flash_left: float = 0.0
+var _flash_peak: float = 0.0
 var _align: Vector3 = Vector3.ZERO
 ## The item model on the weapon bone during a melee / deploy one-shot (null = none / gun bash).
 var _item: Node3D = null
@@ -296,6 +300,7 @@ func tick(delta: float) -> void:
 		_play_base(tw)
 	_update_offset(delta, tw)
 	_update_magazine()
+	_update_flash(delta, tw)
 	if left_hand_ik != null:  # D-069: the clip owns the left hand while reloading / swapping
 		left_hand_ik.update(delta, action == Action.NONE or action == Action.FIRE)
 
@@ -305,6 +310,7 @@ func tick(delta: float) -> void:
 func _on_fired(_claim: Dictionary) -> void:
 	if anim_set == &"" or action == Action.SWAP:
 		return
+	_flash_muzzle()
 	var aimed: bool = _aim_wanted()
 	var fire: StringName = _resolve(anim_set, &"fire_ads" if aimed else &"fire")
 	if fire == &"":
@@ -708,6 +714,42 @@ func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 	off += hip.lerp(Vector3(0.0, 0.0, float(tw.set_ads_offset_z.get(anim_set, 0.0))), ads_weight)
 	_base_offset = off
 	position = off + _align
+
+
+## PO-4: light the muzzle for one shot (world layer + CrewView.VIEWMODEL_LIT_LAYER, D-094).
+func _flash_muzzle() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.muzzle_light_energy <= 0.0 or weapon_visual == null or not is_instance_valid(weapon_visual):
+		return
+	var muzzle: Node3D = weapon_visual.get_marker(&"Muzzle")
+	if muzzle == null or not muzzle.is_inside_tree():
+		return
+	if _muzzle_light == null or not is_instance_valid(_muzzle_light):
+		_muzzle_light = OmniLight3D.new()
+		_muzzle_light.name = "MuzzleLight"
+		_muzzle_light.layers = 1 | CrewView.VIEWMODEL_LIT_LAYER
+		_muzzle_light.shadow_enabled = false
+		add_child(_muzzle_light)
+	var st: WeaponStats = _crew.weapons.stats(_crew.weapons.equipped_slot) \
+		if _crew != null and _crew.weapons != null else null
+	var mult: float = tw.muzzle_light_suppressed_mult if st != null and st.suppressed else 1.0
+	_muzzle_light.omni_range = tw.muzzle_light_range_m
+	_muzzle_light.light_color = tw.muzzle_light_color
+	_muzzle_light.global_position = muzzle.global_position
+	_flash_peak = tw.muzzle_light_energy * mult
+	_flash_left = tw.muzzle_light_s
+	_muzzle_light.light_energy = _flash_peak
+	_muzzle_light.visible = _flash_peak > 0.0
+
+
+func _update_flash(delta: float, tw: FpViewmodelTweak) -> void:
+	if _muzzle_light == null or not is_instance_valid(_muzzle_light) or not _muzzle_light.visible:
+		return
+	_flash_left -= delta
+	if _flash_left <= 0.0:
+		_muzzle_light.visible = false
+		return
+	_muzzle_light.light_energy = _flash_peak * _flash_left / maxf(tw.muzzle_light_s, 0.001)
 
 
 ## AdsAlign (skeleton modifier, this frame's pose): shift so the weapon's AimPoint sits on the camera axis while aimed.

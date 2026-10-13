@@ -7,6 +7,7 @@ var _out: String = "/tmp"
 var _slot: String = ""
 var _heist: StringName = &""
 var _moves: bool = false
+var _fire: bool = false
 var _primary: StringName = &"weapon.corsair_ar"
 
 
@@ -18,6 +19,8 @@ func _ready() -> void:
 			_primary = StringName(a.trim_prefix("--primary="))
 		elif a.begins_with("--heist="):
 			_heist = StringName(a.trim_prefix("--heist="))
+		elif a == "--fire":
+			_fire = true
 		elif a == "--moves":
 			_moves = true
 		elif a == "--no_ik":
@@ -54,6 +57,19 @@ func _ready() -> void:
 		c.loadout.secondary])
 	await _shot("vm_hip")
 	_dump(c)
+	if _fire:
+		inp.press(&"fire")
+		for k: int in 4:
+			await get_tree().physics_frame
+			var ml: OmniLight3D = c.find_child("MuzzleLight", true, false) as OmniLight3D
+			print("[VM] fire t%d light=%s" % [k, "none" if ml == null else "vis=%s e=%.2f at=%s" % [ml.visible,
+				ml.light_energy, ml.global_position]])
+			if ml != null and ml.visible:
+				await _shot("vm_fire_flash")
+				break
+		inp.release(&"fire")
+		for _i: int in 30:
+			await get_tree().physics_frame
 	if _moves:
 		inp.press(&"move_forward")
 		inp.press(&"sprint")
