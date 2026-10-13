@@ -5,13 +5,15 @@
 ##   loud    - heist_phase LOUD or an assault   (waves, hostages, keep moving the loot)
 ##   escape  - heist_phase ESCAPE               (the getaway, unsecured bags, whole crew in the zone)
 ## A card shows SHOW_DELAY_S after its situation starts, stays DWELL_S (a thin bar drains) and closes
-## early on DISMISS_KEY. Shown ids are stored in the profile (OnboardingTips), so each card appears
+## early on the dismiss_tip action (D-096). Shown ids are stored in the profile (OnboardingTips), so each card appears
 ## once per profile. A later situation replaces an earlier card. Owner: ENV B.
 class_name OnboardingCard
 extends HudWidget
 
 const DWELL_S: float = 14.0
 const SHOW_DELAY_S: float = 1.2
+## D-096 input action (H / pad D-pad right); DISMISS_KEY is the fallback before the action exists.
+const DISMISS_ACTION: StringName = &"dismiss_tip"
 const DISMISS_KEY: Key = KEY_H
 const WIDTH: float = 600.0
 ## tip id -> rows [input action (&"" = bullet), strings key].
@@ -95,6 +97,8 @@ func current_situation() -> StringName:
 func refresh() -> void:
 	if panel == null or model == null:
 		return
+	if shown != &"":
+		_update_footer()  # Hud refreshes every widget on a device switch
 	situation = current_situation()
 	if shown != &"" or situation == &"" or OnboardingTips.is_seen(situation):
 		return  # an open card stays until it times out or is dismissed; dismiss() looks again
@@ -124,11 +128,17 @@ func _process(delta: float) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	var k: InputEventKey = event as InputEventKey
-	if shown != &"" and k != null and k.pressed and not k.echo \
-			and (k.physical_keycode == DISMISS_KEY or k.keycode == DISMISS_KEY):
+	if shown != &"" and is_dismiss(event):
 		dismiss()
 		get_viewport().set_input_as_handled()
+
+
+## True for a press of the dismiss_tip action (or of H while the action is not in the InputMap).
+static func is_dismiss(event: InputEvent) -> bool:
+	if InputMap.has_action(DISMISS_ACTION):
+		return event.is_action_pressed(DISMISS_ACTION, false, true)
+	var k: InputEventKey = event as InputEventKey
+	return k != null and k.pressed and not k.echo and (k.physical_keycode == DISMISS_KEY or k.keycode == DISMISS_KEY)
 
 
 func _show(id: StringName) -> void:
@@ -143,10 +153,7 @@ func _show(id: StringName) -> void:
 		c.queue_free()
 	for r: Array in ROWS[id] as Array:
 		rows_box.add_child(_row(StringName(r[0]), StringName(r[1])))
-	if InteractionPanel.pad_active:
-		footer.set_line(UiText.t(&"ui.tip.auto_close"), "")
-	else:
-		footer.set_prompt(&"ui.tip.dismiss", {}, OS.get_keycode_string(DISMISS_KEY))
+	_update_footer()
 	_left = DWELL_S
 	dwell_bar.value = 1.0
 	visible = true
@@ -159,6 +166,16 @@ func _show(id: StringName) -> void:
 		tw.tween_property(self, ^"modulate:a", 1.0, UiTokens.T_SLOW).set_ease(Tween.EASE_OUT)
 		tw.tween_property(self, ^"position:x", position.x - UiTokens.S5, UiTokens.T_SLOW) \
 				.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+
+
+## "Press [H] to close" in the last device's glyph; "Closes by itself" when the action has no glyph.
+func _update_footer() -> void:
+	var glyph: String = InteractionPanel.action_key_text(DISMISS_ACTION) if InputMap.has_action(DISMISS_ACTION) \
+			else ("" if InteractionPanel.pad_active else OS.get_keycode_string(DISMISS_KEY))
+	if glyph == "":
+		footer.set_line(UiText.t(&"ui.tip.auto_close"), "")
+	else:
+		footer.set_prompt(&"ui.tip.dismiss", {}, glyph)
 
 
 ## Closes the card; a situation that started meanwhile (and is unseen) shows next.

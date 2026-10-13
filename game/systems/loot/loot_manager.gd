@@ -158,7 +158,10 @@ func _throw_velocity(crew: CrewController, w: int, fwd: Vector3) -> Vector3:
 	var h: float = _tw.throw_release_height_m
 	var t: float = sqrt(maxf(2.0 * (h + dist * tan(theta)) / g, 0.0001))
 	var v: float = dist / (cos(theta) * t)
-	return fwd * v * cos(theta) + Vector3.UP * v * sin(theta)
+	# PO-5 (PD2): aim the throw with the camera; the flat-ground speed above keeps the distance tuning.
+	var elev: float = clampf(crew.look_pitch + deg_to_rad(_tw.throw_pitch_bias_deg),
+		deg_to_rad(_tw.throw_min_elev_deg), deg_to_rad(_tw.throw_max_elev_deg))
+	return fwd * v * cos(elev) + Vector3.UP * v * sin(elev)
 
 
 func _on_crew_tick(crew: CrewController, intent: CrewIntent, _delta: float) -> void:

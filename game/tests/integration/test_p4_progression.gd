@@ -26,6 +26,7 @@
 ## LoadoutResolver's header / skills.md / perk_decks.md (derivations in the comments), never
 ## snapshotted from the resolver's output.
 extends TestCase
+# LEAD D-097: spread/recoil goldens follow ENV B's PD2 table (env/b-content b4b4697b).
 
 ## Keys uncovered when the gate landed (shrink-only allowlist, with owners).
 const RATCHET: GDScript = preload("res://tests/integration/p4_coverage_ratchet.gd")
@@ -344,8 +345,8 @@ func test_10_golden_suppressed_ar_stealth_build() -> void:
 	}
 	var r: Loadout = LoadoutResolver.resolve(l)
 	_assert_stats(r.resolved_primary, {
-		"damage": 51.0, "pellets": 1, "fire_rate_rpm": 700.0, "spread_deg_hip": 3.6, "spread_deg_ads": 0.7,
-		"recoil_kick_deg": 0.6, "recoil_horizontal_deg": 0.35, "falloff_start_m": 9999.0,
+		"damage": 51.0, "pellets": 1, "fire_rate_rpm": 700.0, "spread_deg_hip": 3.4, "spread_deg_ads": 2.6,
+		"recoil_kick_deg": 0.75, "recoil_horizontal_deg": 1.4, "falloff_start_m": 9999.0,
 		"falloff_end_m": 9999.0, "mag_size": 40, "total_ammo": 180, "reload_time_s": 2.7,
 		"reload_empty_time_s": 3.5, "equip_time_s": 0.55, "ads_time_s": 0.39, "concealment": 13,
 		"suppression": 0.0, "suppressed": true, "noise_radius_m": 1.0, "magnification": 1.15,
@@ -398,8 +399,8 @@ func test_11_golden_shotgun_foreman_five_cards() -> void:
 	l.perk_deck_cards = 5
 	var r: Loadout = LoadoutResolver.resolve(l)
 	_assert_stats(r.resolved_primary, {
-		"damage": 16.0, "pellets": 10, "fire_rate_rpm": 70.0, "spread_deg_hip": 3.2, "spread_deg_ads": 2.0,
-		"recoil_kick_deg": 3.4, "recoil_horizontal_deg": 1.2, "falloff_start_m": 8.0, "falloff_end_m": 22.0,
+		"damage": 16.0, "pellets": 10, "fire_rate_rpm": 70.0, "spread_deg_hip": 2.8, "spread_deg_ads": 2.9,
+		"recoil_kick_deg": 5.1, "recoil_horizontal_deg": 0.75, "falloff_start_m": 8.0, "falloff_end_m": 22.0,
 		"falloff_min_mult": 0.15, "mag_size": 8, "total_ammo": 56, "reload_time_s": 4.2664,
 		"reload_empty_time_s": 5.0664, "ads_time_s": 0.32, "concealment": 23, "suppressed": false,
 		"noise_radius_m": 80.0,
@@ -543,7 +544,7 @@ func test_14_golden_illegal_mods_rejected_stock_stats_kept() -> void:
 	# plowman_choke: not in Corsair's slots -> rejected; extended mag taken, standard mag rejected
 	# (slot already filled): mag 40, total 180, concealment 18, reload 2.7 / 3.5, rest stock.
 	_assert_stats(s, {"damage": 55.0, "mag_size": 40, "total_ammo": 180, "concealment": 18,
-		"reload_time_s": 2.7, "reload_empty_time_s": 3.5, "spread_deg_hip": 3.6, "spread_deg_ads": 0.8,
+		"reload_time_s": 2.7, "reload_empty_time_s": 3.5, "spread_deg_hip": 3.4, "spread_deg_ads": 2.7,
 		"suppressed": false, "noise_radius_m": 70.0}, "corsair illegal mods")
 	_assert_stats(LoadoutResolver.resolve_weapon(CORSAIR, []), {"damage": 55.0, "mag_size": 30,
 		"total_ammo": 150, "concealment": 20, "reload_time_s": 2.4, "ads_time_s": 0.28}, "corsair stock")
