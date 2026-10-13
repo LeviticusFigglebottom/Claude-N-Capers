@@ -704,3 +704,7 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   lit by sky ambient only (near-black at night). ENV P adds a viewmodel-only key light (FpViewmodelTweak).
 - Option (a) adopted for world lights: render layer 20 `viewmodel_lit` (visual_slots 1.1). ENV P adds it to the viewmodel
   camera's cull_mask and to its own muzzle flash; ENV A tags heist-map key lights and NPC/crew flashlights/muzzle flashes.
+
+## D-095 — 2026-10-13 — `viewmodel_lit` is render layer 21 (supersedes D-094's layer number, QP-3)
+- Layer 20 (`1 << 19`) is already the local player's hidden third-person body/mask (CrewView.FIRST_PERSON_HIDDEN_LAYER) and
+  levelcheck's PROXY_LAYER. `viewmodel_lit` = **layer 21 (`1 << 20`)**, `CrewView.VIEWMODEL_LIT_LAYER`. visual_slots 1.2.

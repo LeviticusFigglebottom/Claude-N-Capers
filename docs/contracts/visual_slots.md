@@ -1,4 +1,4 @@
-# Contract: visual slots (v1.1)
+# Contract: visual slots (v1.2)
 
 How art scenes (ENV C props/characters, ENV B weapons) plug into ENV A gameplay prefabs.
 
@@ -50,10 +50,11 @@ ENV A must ship placeholder visuals with the **same named nodes** so swapping ar
 * **Deployables (held form):** a `Handle` Marker3D where the right hand grips.
 * In first person every item rides the `rig_arms` `weapon` bone (characters.md v1.7).
 
-## v1.1 (QP-2, D-094): render layers for first-person lighting
+## v1.1 (QP-2, D-094) / v1.2 (QP-3: layer 20 was taken, viewmodel_lit moved to 21): render layers for first-person lighting
 | 3D render layer (1-based) | Bit | Name | Set by | Meaning |
 |---|---|---|---|---|
 | 19 | `1 << 18` | `viewmodel` | ENV P (`CrewView.VIEWMODEL_LAYER`) | first-person arms/gun geometry, seen only by the viewmodel camera |
-| 20 | `1 << 19` | `viewmodel_lit` | any env owning a `Light3D` | set **in addition** to the light's normal layers on lights that should light the viewmodel (map lamps near play spaces, muzzle flashes, flashlights, explosions) |
-The viewmodel camera's `cull_mask` includes `viewmodel | viewmodel_lit`; geometry never uses layer 20 (so nothing is drawn twice).
+| 20 | `1 << 19` | `first_person_hidden` | ENV P (`CrewView.FIRST_PERSON_HIDDEN_LAYER`); levelcheck `PROXY_LAYER` | the local player's own third-person body + mask, culled from their own camera. **Not** for lights |
+| 21 | `1 << 20` | `viewmodel_lit` | any env owning a `Light3D` | set **in addition** to the light's normal layers on lights that should light the viewmodel (map lamps near play spaces, muzzle flashes, flashlights, explosions) |
+The viewmodel camera's `cull_mask` includes `viewmodel | viewmodel_lit` (layers 19 + 21); geometry never uses layer 21 (so nothing is drawn twice).
 Heist maps/props (ENV A during the pass) tag their key lights; levelcheck gets a rule later (ENV C when active).
