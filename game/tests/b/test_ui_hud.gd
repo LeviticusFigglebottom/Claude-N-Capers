@@ -131,7 +131,7 @@ func test_interaction_prompt_and_blocked_reason() -> void:
 	_model.interaction = {"text_key": &"ui.prompt.answer_pager", "args": {"key": "F"}, "progress": 0.4,
 			"blocked_reason": &""}
 	assert_true(_hud.interaction.visible)
-	assert_eq(_hud.interaction.prompt_label.text, UiText.t(&"ui.prompt.answer_pager", {"key": "F"}))
+	assert_eq(_hud.interaction.prompt.text, UiText.t(&"ui.prompt.answer_pager", {"key": "F"}))
 	assert_near(_hud.interaction.progress_bar.value, 0.4)
 	assert_false(_hud.interaction.blocked_label.visible)
 	_model.interaction = {"text_key": &"ui.prompt.pick_lock", "args": {"key": "F"}, "progress": 0.0,
@@ -403,7 +403,7 @@ func test_interaction_key_filled_when_model_has_none() -> void:
 	_model.interaction = {"text_key": &"ui.prompt.interact", "args": {}, "progress": 0.0, "blocked_reason": &""}
 	var key: String = InteractionPanel.action_key_text(&"interact")
 	assert_ne(key, "", "interact is bound in the InputMap")
-	assert_eq(_hud.interaction.prompt_label.text, UiText.t(&"ui.prompt.interact", {"key": key}))
+	assert_eq(_hud.interaction.prompt.text, UiText.t(&"ui.prompt.interact", {"key": key}))
 
 
 ## v1.6 civilian mode (S1.3, D-065): no gear widgets, a Civilian badge, teammates show their mode.

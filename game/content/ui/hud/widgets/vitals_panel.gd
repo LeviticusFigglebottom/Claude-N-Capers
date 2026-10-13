@@ -22,13 +22,13 @@ func build() -> void:
 	health_label = _row(v, &"ui.hud.health")
 	health_bar = UiBuild.bar(tweak.health_color, Vector2(300, 16))
 	v.add_child(health_bar)
-	downs_label = UiBuild.label(&"", UiBuild.HUD)
+	downs_label = UiBuild.label(&"", UiBuild.DIM)
 	v.add_child(downs_label)
 
 
 func _row(parent: Container, key: StringName) -> Label:
 	var h: HBoxContainer = UiBuild.hbox(8)
-	var cap: Label = UiBuild.label(key, UiBuild.HUD)
+	var cap: Label = UiBuild.caption(key)  # PO-4: label as caption, value as text
 	cap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(cap)
 	var val: Label = UiBuild.label(&"", UiBuild.HUD)

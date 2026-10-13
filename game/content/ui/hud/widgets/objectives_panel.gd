@@ -1,5 +1,7 @@
-## Objectives list (active first, completed dimmed, hidden ones omitted). B4-07: the panel carries
-## the heist's accent (UiAccent; set_accent) on its edge and header.
+## Current objective (PO-4, docs/design/ui/style.md §8): a caption "OBJECTIVE" over ONE line, the
+## first ACTIVE objective (PD2 shows the current step, not the whole plan; the full list is on the
+## scoreboard). Hidden when nothing is active. B4-07: the heist's accent (UiAccent; set_accent) edges
+## the panel and tints the caption.
 class_name ObjectivesPanel
 extends HudWidget
 
@@ -13,12 +15,14 @@ var secured_count: int = 0
 
 
 func build() -> void:
-	var v: VBoxContainer = UiBuild.vbox(4)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S1)
 	panel = UiBuild.panel(v, UiBuild.HUD_PANEL)
+	panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	add_child(panel)
-	header_label = UiBuild.label(&"ui.hud.objectives", UiBuild.HUD)
+	header_label = UiBuild.caption(&"ui.hud.objectives")
+	header_label.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
 	v.add_child(header_label)
-	list_box = UiBuild.vbox(2)
+	list_box = UiBuild.vbox(UiTokens.S1)
 	v.add_child(list_box)
 	_apply_accent()
 
@@ -83,20 +87,18 @@ func refresh() -> void:
 	for c: Node in list_box.get_children():
 		list_box.remove_child(c)
 		c.queue_free()
-	var shown: int = 0
 	for o: Dictionary in prop(&"objectives", []) as Array:
-		var st: int = int(o.get("state", Enums.ObjectiveState.ACTIVE))
-		if st == Enums.ObjectiveState.HIDDEN:
+		if int(o.get("state", Enums.ObjectiveState.ACTIVE)) != Enums.ObjectiveState.ACTIVE:
 			continue
 		var l: Label = UiBuild.label(&"", UiBuild.HUD)
-		l.text = UiText.t(_state_key(st), {"text": objective_text(o, secured_count)})
-		if st != Enums.ObjectiveState.ACTIVE:
-			l.modulate = Color(1, 1, 1, 0.55)
-		else:
-			l.add_theme_color_override(&"font_color", tweak.objective_color)
+		l.text = UiText.t(&"ui.hud.objective_active", {"text": objective_text(o, secured_count)})
+		l.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)
+		l.add_theme_constant_override(&"outline_size", 0)
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		l.custom_minimum_size = Vector2(380, 0)
 		list_box.add_child(l)
-		shown += 1
-	visible = shown > 0
+		break
+	visible = list_box.get_child_count() > 0
 
 
 static func _state_key(st: int) -> StringName:

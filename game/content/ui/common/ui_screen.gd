@@ -7,6 +7,10 @@ extends Control
 
 signal back_requested()
 
+## PO-4 motion (style.md §6): a shown screen fades in over UiTokens.T_BASE. Off for captures / tests
+## that read pixels right away.
+static var motion_enabled: bool = true
+
 ## Focus order for keyboard/gamepad; the first enabled one gets focus when the screen is shown.
 var focus_chain: Array[Control] = []
 
@@ -44,3 +48,8 @@ func _unhandled_input(event: InputEvent) -> void:
 ## updated, so focusing right away would find no visible control (menu transitions lost focus).
 func _on_visibility_changed() -> void:
 	focus_default.call_deferred()
+	if visible and motion_enabled and is_inside_tree() and DisplayServer.get_name() != "headless":
+		modulate.a = 0.0
+		var tw: Tween = create_tween()
+		tw.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		tw.tween_property(self, ^"modulate:a", 1.0, UiTokens.T_BASE)

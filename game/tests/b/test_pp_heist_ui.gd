@@ -65,7 +65,7 @@ func test_interaction_prompt_matches_real_binding() -> void:
 	await wait_frames(1)
 	var code: Key = _first_key(&"interact")
 	assert_ne(code, KEY_NONE, "interact has a keyboard binding")
-	assert_true(_hud.interaction.prompt_label.text.contains(OS.get_keycode_string(code)), "prompt names the bound key")
+	assert_true(_hud.interaction.prompt.text.contains(OS.get_keycode_string(code)), "prompt names the bound key")
 	_on_screen(_hud.interaction, "interaction prompt")
 	await _key(code, true)
 	assert_true(Input.is_action_pressed(&"interact"), "pressing the shown key fires interact")
@@ -167,8 +167,8 @@ func test_dominate_prompt_follows_guard_id() -> void:
 	_on_screen(_hud.dominate, "domination prompt")
 	var key: String = InteractionPanel.action_key_text(&"shout")
 	assert_ne(key, "")
-	assert_true(_hud.dominate.prompt_label.text.contains(key), _hud.dominate.prompt_label.text)
-	assert_true(_hud.dominate.prompt_label.text.contains("2.4"), _hud.dominate.prompt_label.text)
+	assert_true(_hud.dominate.prompt.text.contains(key), _hud.dominate.prompt.text)
+	assert_true(_hud.dominate.prompt.text.contains("2.4"), _hud.dominate.prompt.text)
 	_model.dominate_target = 0
 	await wait_frames(1)
 	assert_false(_hud.dominate.visible, "hidden again at 0")
@@ -204,7 +204,7 @@ func test_casing_blocked_hint() -> void:
 
 ## PQ-B-23 (lead ruling): floating HUD text uses outline 8 + a soft dark drop shadow, no backing panel.
 func test_floating_text_outline_and_shadow() -> void:
-	var labels: Array[Label] = [_hud.toast_label, _hud.dominate.prompt_label, _hud.interaction.prompt_label,
+	var labels: Array[Label] = [_hud.toast_label, _hud.dominate.prompt.left, _hud.interaction.prompt.left,
 			_hud.interaction.blocked_label, _hud.status.mask_label, _hud.status.bag_label,
 			_hud.status.hostages_label, _hud.status.warnings_label]
 	for l: Label in labels:
@@ -225,7 +225,7 @@ func test_prompts_follow_last_device() -> void:
 	_model.dominate_target = 3
 	await wait_frames(1)
 	var key: String = InteractionPanel.action_key_text(&"interact")
-	assert_true(_hud.interaction.prompt_label.text.contains(key), _hud.interaction.prompt_label.text)
+	assert_true(_hud.interaction.prompt.text.contains(key), _hud.interaction.prompt.text)
 	for down: bool in [true, false]:
 		var e: InputEventJoypadButton = InputEventJoypadButton.new()
 		e.button_index = JOY_BUTTON_Y
@@ -234,10 +234,10 @@ func test_prompts_follow_last_device() -> void:
 		await wait_frames(2)
 	var pad: String = InteractionPanel.pad_text(&"interact")
 	assert_ne(pad, "", "interact has a pad binding")
-	assert_true(_hud.interaction.prompt_label.text.contains(pad), "pad name: " + _hud.interaction.prompt_label.text)
-	assert_false(_hud.interaction.prompt_label.text.contains(" %s " % key), _hud.interaction.prompt_label.text)
-	assert_true(_hud.dominate.prompt_label.text.contains(InteractionPanel.pad_text(&"shout")), _hud.dominate.prompt_label.text)
+	assert_true(_hud.interaction.prompt.text.contains(pad), "pad name: " + _hud.interaction.prompt.text)
+	assert_false(_hud.interaction.prompt.text.contains(" %s " % key), _hud.interaction.prompt.text)
+	assert_true(_hud.dominate.prompt.text.contains(InteractionPanel.pad_text(&"shout")), _hud.dominate.prompt.text)
 	await _key(KEY_ESCAPE, true)
 	await _key(KEY_ESCAPE, false)
-	assert_true(_hud.interaction.prompt_label.text.contains(key), "back to keys: " + _hud.interaction.prompt_label.text)
+	assert_true(_hud.interaction.prompt.text.contains(key), "back to keys: " + _hud.interaction.prompt.text)
 	_model.dominate_target = 0

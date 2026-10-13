@@ -13,7 +13,7 @@ func build() -> void:
 	ammo_label = UiBuild.label(&"", UiBuild.HUD_BIG)
 	ammo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	v.add_child(ammo_label)
-	equipment_label = UiBuild.label(&"", UiBuild.HUD)
+	equipment_label = UiBuild.label(&"", UiBuild.DIM)
 	equipment_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	v.add_child(equipment_label)
 

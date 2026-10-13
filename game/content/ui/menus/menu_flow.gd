@@ -120,7 +120,7 @@ var drop_in_screen: DropInJoinScreen = null
 ## 3D safehouse hub mode (B6-06): see SafehouseHost.
 var safehouse: SafehouseHost
 ## Full-screen backdrop behind every screen (dimmed / hidden over the 3D safehouse).
-var background: ColorRect
+var background: ColorRect  ## a CaseBackdrop (PO-4)
 var _heist_id: StringName = &""
 var _difficulty: int = Enums.Difficulty.ROUTINE
 var _in_heist: CanvasLayer = null
@@ -147,7 +147,7 @@ func _ready() -> void:
 	drop_in = DropInFlow.new()
 	drop_in.name = "DropIn"
 	add_child(drop_in)
-	background = ColorRect.new()
+	background = CaseBackdrop.new()
 	background.name = "Background"
 	background.color = UiAccent.app_bg()
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
