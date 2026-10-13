@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.7)
+# Contract: HUD data (v1.8)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -86,3 +86,11 @@ Counting rules (ENV A): a **shot** = one firearm trigger pull (a shotgun blast i
 sentries never count). A **hit** = a shot that struck an enemy NPC (body, shield or armour plate, even for 0 damage),
 at most once per shot. A **headshot** = a shot that struck an enemy's HitZone.HEAD, at most once per shot. AI crew
 are counted the same way.
+
+## v1.8 (QA-PO5-1, D-089): objective world markers
+* An objective def may carry `data.marker_tags: Array[StringName]`, map `objective_tags` that place its markers.
+* `LocalHudModel.objective_markers: Array[Dictionary]`, each `{id: StringName, text_key: StringName, position: Vector3,
+  state: Enums.ObjectiveState}`, **only for ACTIVE objectives** of the local crew's view; signal
+  `objective_markers_changed(markers)`. Positions are world space; ENV B projects them (edge-clamped, distance label,
+  hidden while casing unless the objective is a casing objective). Markers update when an objective changes (incl. the
+  stealth → loud transition) and when a tagged node moves or frees.

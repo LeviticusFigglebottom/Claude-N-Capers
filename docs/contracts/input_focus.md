@@ -1,13 +1,13 @@
 # Contract: input focus and mouse capture
 
-Version **1.1** (D-087; 1.1 adds P's helpers, env/p-play 6596da59). Owner: LEAD. Producer: ENV P (`MouseCapture`). Consumers: ENV B (every UI screen), ENV A.
+Version **1.2** (D-087; 1.1 adds P's helpers, env/p-play 6596da59; 1.2 QB-4 non-crew gameplay owners). Owner: LEAD. Producer: ENV P (`MouseCapture`). Consumers: ENV B (every UI screen), ENV A.
 
 ## Rule
 `MouseCapture` (`game/systems/player/mouse_capture.gd`, `class_name MouseCapture`, static API) is the **only** code that
 writes `Input.mouse_mode`. Anything else that writes it is a contract violation.
 
 The mouse is **captured** exactly when all of these hold:
-1. gameplay is active: at least one local human crew's `PlayerInput` is live in a heist or the walkable safehouse;
+1. gameplay is active: at least one local human crew's `PlayerInput` is live in a heist or the walkable safehouse, or another declared gameplay owner (1.2);
 2. no release is held (see API);
 3. the game window has focus.
 
@@ -17,7 +17,7 @@ gesture yet, focus just returned), the next left click in the game viewport capt
 ## API (static)
 | Call | Who | Meaning |
 |---|---|---|
-| `MouseCapture.set_gameplay_active(owner: Object, active: bool)` | ENV P PlayerInput (local human only) | declare/clear live gameplay; several owners allowed (split-screen-safe) |
+| `MouseCapture.set_gameplay_active(owner: Object, active: bool)` | ENV P PlayerInput (local human only); also any local first-person gameplay controller with no PlayerInput (1.2, QB-4: `RangeSpectatorInput` while aiming) | declare/clear live gameplay; several owners allowed (split-screen-safe) |
 | `MouseCapture.push_release(key: StringName)` | any UI needing a cursor (pause, options, payday, menus, chat, drop-in dialog, station screens) | hold the cursor visible; idempotent per key |
 | `MouseCapture.pop_release(key: StringName)` | same UI, on close / `tree_exiting` | drop that hold |
 | `MouseCapture.is_captured() -> bool` | PlayerInput, HUD | effective state (tests can read it) |
@@ -31,7 +31,10 @@ While captured, gameplay ignores focused GUI controls (no hidden focused Control
 
 ## Keys (StringName, lowercase): `pause`, `options`, `payday`, `menu`, `chat`, `dropin`, `station`, `scoreboard` (scoreboard does NOT release; listed only to say so).
 
-## Migration (ENV B)
+## Rule of thumb (1.2)
+A screen that wants clicks while a gameplay owner is live MUST hold a release, or MouseCapture eats the first click as "click to capture" (KR-5: payday).
+
+## Migration (ENV B) — done in env/b-content e8f0537c
 Direct writers to remove: menu_flow.gd, menu_options.gd, join_request_dialog.gd, safehouse_host.gd, range_spectator_input.gd, range_mode_input.gd.
 
 ## Tests

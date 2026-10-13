@@ -36,7 +36,10 @@
     "tools/blender/weapons/**",
     "game/tests/b/**",
     "docs/status/env_b.md",
-    "docs/design/ui/**"
+    "docs/design/ui/**",
+    "tools/audiogen/ui/**",
+    "game/assets/audio/sfx/ui/**",
+    "game/world/audio/cues.tres"
    ]
   },
   "c": {

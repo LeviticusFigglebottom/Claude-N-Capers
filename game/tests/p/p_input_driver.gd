@@ -156,14 +156,16 @@ func turn_to_yaw(crew: Node3D, yaw: float, tol: float = 0.02, timeout_s: float =
 	return false
 
 
-## Radians of yaw per pixel of mouse motion (PlayerInput.mouse_sensitivity x GameSettings mouse sensitivity).
+## Radians of yaw per pixel of mouse motion (PlayerInput.mouse_sensitivity x GameSettings mouse sensitivity,
+## divided by the local camera zoom while aiming).
 static func mouse_radians_per_px() -> float:
 	var gs: GameSettings = GameSettings.current()
 	var ms: float = gs.mouse_sensitivity().x if gs != null else 1.0
 	var pin: PlayerInput = PlayerInput.new()
 	var sens: float = pin.mouse_sensitivity
+	var zoomed: bool = pin.scale_look_by_zoom
 	pin.free()
-	return sens * ms
+	return sens * ms / (maxf(CrewView.local_zoom_factor(), 1.0) if zoomed else 1.0)
 
 
 func _ticks(n: int) -> void:

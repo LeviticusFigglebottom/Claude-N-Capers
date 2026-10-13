@@ -16,7 +16,28 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   `--rendering-driver opengl3`. xdotool (apt) gives real X pointer events.
 - Still writing the mode (ENV B migrates): menu_flow.gd:749, menu_options.gd:51/63, join_request_dialog.gd:232/234,
   safehouse_host.gd:348, and range: range_spectator_input.gd:68, range_mode_input.gd:27/44.
-- PO-1 lead: the string ui.hud.mask_up_hint ("Hold {key} to mask up") exists but no code shows it.
+- PO-1 (casing exit) ROOT CAUSE, windowed real-flow repro (game/tests/p/_review/po_playthrough.tscn: main menu ->
+  2D hub (3D safehouse scene not on this branch) -> planning -> glasshouse -> briefing -> preplanning -> loadout
+  "Start Heist", all xdotool clicks; then mouse look, hold real G, W): P/A side works: CAPTURED at spawn, no GUI
+  focus owner, G held masks up in 57 ticks (0.9 s game). The gap is UI (ENV B, sent): no "Hold G to mask up" hint
+  (ui.hud.mask_up_hint defined, never rendered), no mask progress bar, objective "{count}/{total}" unformatted.
+  First repro "failed" only because llvmpipe glasshouse runs ~1 fps = ~1 physics tick/s (30 s wall < 1 s game):
+  windowed harnesses must wait in physics ticks, not wall clock.
+- PO-3: game/tests/p/_review/po3_snag_probe.tscn (headless, `--fixed-fps 60`, `-- --heist=<id> [--stance ...]
+  [--approach=touch] [--selftest]`) sweeps every reachable walkable edge with the real controller: ~150k trials on
+  all 4 heists x walk/sprint/crouch/touch: 0 step snags (kerbs 0.10-0.36 m all climbed; one false positive between
+  G6 CoffeeTable_1/Armchair_1). Likely the PO played a build before P1-01 step-up (round 35). Notes for C/D: every
+  prop has two colliders (X/Collision box + X/Model/Collision convex); quay edges QuayE/QuayW (10.9,-0.47,32.9) and
+  Pier9East (57.8,-0.64,41.4) are 0.47-0.69 m drops, check they are meant to be.
+- PO-3 windowed: po_playthrough now also turns 180 deg by real mouse, walks W off the glasshouse sidewalk kerb
+  (0.25 m, at ~(4.4, 0, 13.2)) and back up it: PASS (y 0.00 -> 0.23).
+- PO-4 (b9383a9d): look divides by CrewView.zoom_factor while aiming (PD2 zoom sensitivity); default mouse gain
+  0.0025 -> 0.0016 rad/count. test_po4_feel.gd.
+- test_p3_loud:test_10_ai_orders_during_assault ("follow: the AI caught up") fails on the pre-PO-2 base 7a417116 too:
+  pre-existing, A's (crew AI follow), not caused by P.
+- Feel-pass open: masked viewmodel pistol renders as a near-black silhouette and large in the 1280x720 frame
+  (opengl3 run; compare under Vulkan before acting). Next: that, ADS transitions, sprint/crouch/jump, door snag
+  PP-P-12, brute_12 left hand, 1920x1080 review.
 
 ## 2026-10-12 20:25 ET: merge round 34, renders, loud run
 - a2ddb786 merge trunk db22c24c (--no-ff). P suite 53 (only the opt-in E2E failed, now skipped by default),

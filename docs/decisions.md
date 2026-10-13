@@ -667,3 +667,28 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - **The full gate (`check_all` / `lead_push.sh` with no args) runs only at the LEAD, occasionally**: per merge round, in
   the background in a separate worktree, while everyone keeps working. A failure there goes back to the owning env as a
   normal task. Supersedes the "check_all PASS before push" rule in communication.md §2–§5 and the env manuals.
+
+## D-089 — 2026-10-13 — Objective world markers (ui_hud 1.8); placeholder-capsule NPCs
+- ENV A's QA-PO5-1 approved: objectives carry `data.marker_tags`; `LocalHudModel.objective_markers` (ui_hud 1.8). ENV B draws them.
+- NPCs/police rendering as placeholder capsules (PO-5.7, B's captures) is a top playability issue. ENV A diagnoses
+  first: wiring (EnemyDef/NPC spawn pointing at placeholders, a failed scene load: A's domain) vs missing assets
+  (ENV D, dormant). If assets are missing, the lead decides whether to wake ENV D.
+
+## D-090 — 2026-10-13 — UI sound cues (audio_cues 1.5); ENV B synthesises them while ENV C is dormant
+- audio_cues 1.5 adds ten UI/HUD cue ids (`cue.ui_*`, `cue.hud_objective_done`, `cue.hud_hint`, `cue.payday_total`, `cue.card_flip`).
+- ENV C is dormant, so **ENV B builds them** with ENV C's `tools/audiogen` synth core (read-only for B) via new scripts in
+  `tools/audiogen/ui/**`, output in `game/assets/audio/sfx/ui/**`, and registers them in `game/world/audio/cues.tres`
+  (co-owned by B for UI-bus entries only while C is dormant). Procedural only, no third-party audio. UI bus, 2D.
+
+## D-091 — 2026-10-13 — Look sensitivity defaults (ENV P, PO-4 feel)
+- Default mouse gain 0.0016 rad/count (≈0.092°/count; was 0.0025). ADS/scoped look divides by `CrewView.zoom_factor`
+  (PD2 zoom sensitivity: 4× scope → ¼ turn rate). Both stay player-adjustable in Options (B5-01); defaults live in
+  ENV P's tweak data. Verified windowed via the real menu flow (env/p-play c1b3c2ad).
+
+## D-092 — 2026-10-13 — Parallel lanes, no idling (product owner)
+- Every env runs **several lanes at once**: slow windowed runs go to the background, and independent items run as Agent
+  subagents in their own git worktrees (or on disjoint files). The env integrates, runs each lane's targeted tests (D-088)
+  and **pushes each lane as soon as it is green**; no batching, and nothing sits unpushed for more than ~1 h.
+- Limits on 4 cores: at most 2 windowed Godot processes at once (`--rendering-driver opengl3`, small windows for
+  non-visual runs, waits in physics ticks); code-only subagents run alongside.
+- Each env always keeps ≥ 2 h of queued lanes and proposes the next ones before the current ones run dry (D-027).
