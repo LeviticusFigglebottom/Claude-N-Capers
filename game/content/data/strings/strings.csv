@@ -68,6 +68,10 @@ ui.hud.health,Health
 ui.hud.armor,Armor
 ui.hud.downs_left,Downs left: {count}
 ui.hud.bleedout,Bleeding out {seconds}
+ui.hud.downed_title,Downed
+ui.hud.bleedout_big,{seconds}
+ui.hud.being_revived,{name} is reviving you
+ui.hud.downed_hint,Hold on: your crew can revive you
 ui.hud.custody,In custody
 ui.hud.custody_release,Release in {seconds}
 ui.hud.custody_trade,Waiting for a hostage trade

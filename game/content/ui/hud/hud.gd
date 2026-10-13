@@ -71,6 +71,8 @@ var hint: HintStrip
 var hit_feedback: HitFeedback
 var damage_direction: DamageDirection
 var low_health: LowHealthVignette
+## Lead queue (a): the grey downed screen with the big bleedout timer and the revive line.
+var downed: DownedOverlay
 ## PO-4 lane 11 first-time onboarding cards (right of centre).
 var onboarding: OnboardingCard
 ## B6-02 Tab scoreboard (hold / toggle the `scoreboard` action).
@@ -111,6 +113,8 @@ func set_crew_heisters(map: Dictionary) -> void:
 	if teammates != null:
 		teammates.heisters = crew_heisters
 		teammates.refresh()
+	if downed != null:
+		downed.heisters = crew_heisters
 	if scoreboard != null:
 		scoreboard.heisters = crew_heisters
 		scoreboard.refresh()
@@ -119,11 +123,13 @@ func set_crew_heisters(map: Dictionary) -> void:
 func widgets() -> Array[HudWidget]:
 	return [chevrons, marks, objective_markers, interaction, dominate, vitals, ammo, pager, objectives, assault,
 			teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring, onboarding, hit_feedback,
-			damage_direction, low_health]
+			damage_direction, low_health, downed]
 
 
 func _build() -> void:
 	low_health = _place(LowHealthVignette.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as LowHealthVignette
+	downed = _place(DownedOverlay.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DownedOverlay
+	downed.heisters = crew_heisters
 	marks = _place(MarkedTargets.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as MarkedTargets
 	objective_markers = _place(ObjectiveMarkers.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as ObjectiveMarkers
 	chevrons = _place(DetectionChevrons.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DetectionChevrons

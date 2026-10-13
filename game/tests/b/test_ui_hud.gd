@@ -123,7 +123,16 @@ func test_vitals_and_downs() -> void:
 	assert_eq(_hud.vitals.downs_label.text, UiText.t(&"ui.hud.downs_left", {"count": 1}))
 	_model.bleedout_s = 12.2
 	_model.crew_state = Enums.CrewState.DOWNED
-	assert_true(_hud.vitals.state_label.visible, "bleedout shown when downed")
+	assert_false(_hud.vitals.state_label.visible, "downed: the centre overlay owns the bleedout")
+	assert_true(_hud.downed.active and _hud.downed.timer_label.visible, "big bleedout timer when downed")
+	assert_eq(_hud.downed.timer_label.text, UiText.t(&"ui.hud.bleedout_big", {"seconds": 13}))
+	assert_eq(_hud.downed.revive_label.text, UiText.t(&"ui.hud.downed_hint"), "no revive yet")
+	_model.revive_progress = 0.4  # ENV A extras (asked)
+	_model.reviver_slot = 1
+	assert_true(_hud.downed.revive_bar.visible)
+	assert_near(_hud.downed.revive_bar.value, 0.4)
+	_model.crew_state = Enums.CrewState.NORMAL
+	assert_false(_hud.downed.active)
 
 
 func test_interaction_prompt_and_blocked_reason() -> void:
