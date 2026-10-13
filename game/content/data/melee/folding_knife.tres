@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="MeleeDef" format=3]
 
 [ext_resource type="Script" path="res://contracts/data/melee_def.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://x1jfjn6c15ty" path="res://assets/weapons/wpn_melee_folding_knife/wpn_melee_folding_knife.glb" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -14,3 +15,4 @@ knockdown = 0.2
 concealment = 30
 silent = true
 price = 0
+model = ExtResource("2")
