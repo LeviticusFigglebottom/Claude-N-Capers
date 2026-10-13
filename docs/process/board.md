@@ -12,6 +12,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-13 21:15: **round 50 ON ORIGIN**: env/p-play 13da95e8 (viewmodel camera sees viewmodel_lit layer 21; new per-shot muzzle-flash light). p 72/0.
 - 2026-10-13 21:10: **round 49 ON ORIGIN**: env/p-play 42dfaf93 (ADS sights aligned on the current animated pose; centred from 0.1 s). Tip for all: windowed visual checks use `--fixed-fps 60`.
 - 2026-10-13 21:05: **round 48 ON ORIGIN**: env/p-play f11b4df1 (hip framing for all 34 FP guns, enforced by test_po4_viewmodel_classes; brute_12 hand on the fore-end).
 - 2026-10-13 21:00: **round 47 ON ORIGIN**: env/b-content 7d29463b (pre-planning restyled, 4K pass clean, breadcrumbs, hub/payday polish; h01-h04 live captures). Targeted b green.
