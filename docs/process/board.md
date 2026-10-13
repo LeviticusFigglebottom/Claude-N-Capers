@@ -74,7 +74,7 @@ Read it at the start of every work session.
 
 ## Backlog for dormant envs (wake decision: LEAD)
 - C: PP-C-1 walk test can't pass LOCKPICK doors unmasked and chains 0 m legs after teleports (ND STUCK-DOOR rows are test artefacts, maps are fine; A 21:49).
-- D: rifle idle left hand authored fingers-up on the handguard side (PD2 cups underneath); reads odd, not broken.
+- (D-101: P now co-owns the FP arms scripts → these two items move to P.) D: rifle idle left hand authored fingers-up on the handguard side (PD2 cups underneath); reads odd, not broken.
 - D: ADS forearm size vs vm FOV 52 (P investigating).
 
 ## Routed findings

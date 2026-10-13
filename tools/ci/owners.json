@@ -25,7 +25,9 @@
     "game/systems/anim/fp_viewmodel*",
     "game/systems/tweak/crew_tweak.*",
     "game/tests/p/**",
-    "docs/status/env_p.md"
+    "docs/status/env_p.md",
+    "tools/blender/characters/_arms*",
+    "game/assets/characters/char_arms_fp*/**"
    ]
   },
   "b": {
