@@ -136,6 +136,8 @@ static var _gen: int = 0
 ## PO-4: extra forward offset (m, negative = away from the eye) per anim_set when fully aimed (eye relief), on top
 ## of the AimPoint alignment. Sets not listed: 0.
 @export var set_ads_offset_z: Dictionary[StringName, float] = {}
+## PO-4: how fast (m/s) the framing offset moves when the playing set changes (gun <-> melee item, swaps).
+@export var set_offset_rate: float = 1.5
 ## While aimed, shift the arms so the weapon's `AimPoint` sits on the camera axis.
 @export var ads_align_aim_point: bool = true
 ## Viewmodel meshes cast no world shadows.

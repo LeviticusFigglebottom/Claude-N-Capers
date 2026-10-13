@@ -23,6 +23,9 @@ func _ready() -> void:
 			_heist = StringName(a.trim_prefix("--heist="))
 		elif a.begins_with("--melee_id="):
 			_melee_id = StringName(a.trim_prefix("--melee_id="))
+		elif a.begins_with("--hip="):
+			var hp: PackedStringArray = a.trim_prefix("--hip=").split(":")
+			FpViewmodelTweak.data().set_hip_offset[StringName(hp[0])] = Vector3(float(hp[1]), float(hp[2]), float(hp[3]))
 		elif a == "--melee":
 			_melee = true
 		elif a == "--fire":
