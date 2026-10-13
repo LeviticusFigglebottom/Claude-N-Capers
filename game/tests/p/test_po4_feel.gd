@@ -81,8 +81,8 @@ func test_rifle_hip_in_front_of_lens() -> void:
 
 
 ## PO-4 (PD2): a shot's kick punches the camera up over PlayerInput.recoil_apply_s (not a one-tick snap), the full
-## kick lands, and nothing recovers on its own. Real fire input.
-func test_recoil_punch_eases_in_and_holds() -> void:
+## kick lands and holds while fire is held, and after release the camera recovers the whole kick. Real fire input.
+func test_recoil_punch_eases_in_and_recovers() -> void:
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
 	await wait_physics_frames(30)
@@ -103,8 +103,9 @@ func test_recoil_punch_eases_in_and_holds() -> void:
 		if d > 0.0001 and d < total - 0.0001:
 			kick_ticks += 1
 	assert_true(kick_ticks >= 2, "kick spread over several ticks (%d), trace %s" % [kick_ticks, trace])
+	assert_true(trace[trace.size() - 1] >= trace[trace.size() - 2] - 1e-5, "holds while fire is held")
 	await wait_physics_frames(60)
-	assert_near(c.look_pitch - p0, total, 0.0005, "no auto-recovery (PD2)")
+	assert_near(c.look_pitch - p0, 0.0, total * 0.05 + 1e-4, "PD2 recovery: the kick is put back after release")
 	assert_true(pin.recoil_apply_s > 0.0, "tunable on")
 
 
