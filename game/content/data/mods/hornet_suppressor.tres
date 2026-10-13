@@ -18,7 +18,7 @@ suppressed = true
 noise_radius_m = 1.0
 damage = -3.0
 concealment = -2
-ads_time_s = 0.05
+ads_time_s = 0.0
 suppression = -10.0
 recoil_kick_deg = -0.07
 

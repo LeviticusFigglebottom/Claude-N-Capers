@@ -16,7 +16,7 @@ equip_time_s = 0.0
 noise_radius_m = 0.0
 recoil_kick_deg = 0.0
 recoil_horizontal_deg = -0.2
-ads_time_s = 0.05
+ads_time_s = 0.0
 concealment = -2
 
 [resource]

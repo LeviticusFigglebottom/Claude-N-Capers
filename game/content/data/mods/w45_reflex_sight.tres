@@ -17,7 +17,7 @@ equip_time_s = 0.0
 spread_deg_ads = -0.384
 magnification = 1.1
 concealment = -1
-ads_time_s = 0.02
+ads_time_s = 0.0
 
 [resource]
 script = ExtResource("1")
