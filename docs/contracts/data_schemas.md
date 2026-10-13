@@ -40,3 +40,6 @@ For weapons with `reload_per_round_s > 0`:
 ENV B's resolver **derives** both after mods (a mod changing `mag_size` changes the totals; mods don't add raw reload time
 to shell weapons). ENV A's runtime loads shells one by one and may be interrupted by firing; the derived totals exist
 for UI and animation length checks. Plowman: start 0.4, per 0.4333, end 0.4, end_empty 1.2 → 3.4 s / 4.2 s at 6 shells.
+
+## WeaponStats addition (D-099)
+`recoil_horizontal_bias_deg: float = 0.0`: signed per-shot mean of the horizontal kick (deg, + = right); additive in `plus()`; 0 for every weapon except PD2-drifting LMGs. Producer B (data), consumer A (CrewWeapons).

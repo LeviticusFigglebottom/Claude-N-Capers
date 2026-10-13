@@ -193,7 +193,7 @@ func test_death_clip_from_hit_direction() -> void:
 
 
 func test_noop_on_capsule_visual() -> void:
-	var npc: NpcBase = _npc(&"guard", false)
+	var npc: NpcBase = _npc(&"special", false)  # no EnemyDef / role character (NpcVisuals): the capsule stays
 	assert_true(AnimDriver.of(npc) == null, "no driver for the capsule placeholder")
 	assert_false(AnimDriver.drives(npc))
 	var d: AnimDriver = AnimDriver.new()
@@ -370,21 +370,31 @@ func test_special_action_hints() -> void:
 	assert_eq(_drv(md).clip, &"heal_ally", "Corpsman heal plays heal_ally")
 
 
-## characters.md: the shield grip is HandL/Socket (socket -Z = shield face); with no skeleton the offset stays.
+## characters.md: the shield grip is HandL/Socket (socket -Z = shield face). Only the shield's Visual follows
+## it (in a holding pose); the body (collision) stays at the carry offset; with no skeleton nothing moves.
 func test_bulwark_shield_follows_handl_socket() -> void:
 	var tw: HeavySpecialTweak = HeavySpecialTweak.data()
 	var bw: NpcBase = _special("shield_walk")
 	var shield: BulwarkShield = tw.bulwark_shield_scene.instantiate() as BulwarkShield
 	shield.attach_to(bw, tw.bulwark_shield_offset)
+	var vis: Node3D = shield.get_node(^"Visual") as Node3D
 	var socket: Node3D = AnimDriver.socket_of(bw, "HandL")
 	assert_true(socket != null and shield.grip_socket == socket, "grip socket found on the visual")
-	assert_true(shield.global_transform.is_equal_approx(socket.global_transform), "aligned to HandL/Socket")
+	assert_true(vis.global_transform.is_equal_approx(socket.global_transform), "Visual aligned to HandL/Socket")
+	assert_true(shield.position.is_equal_approx(tw.bulwark_shield_offset), "the body stays at the carry offset")
 	assert_true(shield.get_parent() == bw and shield.get_node_or_null("Collision") != null, "still a carried body")
 	bw.global_position = Vector3(3, 0, 1)
 	shield.follow_grip(0.016)
-	assert_true(shield.global_transform.origin.is_equal_approx(socket.global_transform.origin), "follows the carrier")
+	assert_true(vis.global_transform.origin.is_equal_approx(socket.global_transform.origin), "follows the carrier")
+	# A socket pose that is not a shield hold (hand at the side, face sideways): the Visual rests on the body.
+	socket.transform = Transform3D(Basis(Vector3.UP, PI * 0.5), Vector3(-0.6, 1.0, 0.0))
+	assert_false(shield.follow_grip(0.016), "no holding pose: no grip")
+	assert_true(vis.transform.is_equal_approx(Transform3D.IDENTITY), "Visual back on the body")
+	socket.transform = HANDL_SOCKET
+	assert_true(shield.follow_grip(0.016), "holding pose again")
 	shield.set_guard(false, tw.bulwark_stagger_shield_offset)
 	assert_false(shield.follow_grip(0.016), "lowered guard keeps the stagger offset")
+	assert_true(vis.transform.is_equal_approx(Transform3D.IDENTITY), "lowered: Visual on the body")
 	var cap: NpcBase = _npc(&"special", false)
 	var s2: BulwarkShield = tw.bulwark_shield_scene.instantiate() as BulwarkShield
 	s2.attach_to(cap, tw.bulwark_shield_offset)

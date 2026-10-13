@@ -40,7 +40,7 @@ func test_arms_and_camera_share_eased_weight() -> void:
 	var mid: bool = false
 	for _k: int in 60:
 		view._process(dt)
-		fp._update_ads(dt, FpViewmodelTweak.data())
+		fp._update_ads(dt)
 		diffs.append(absf(fp.ads_weight - view.ads_blend))
 		mid = mid or (view.ads_blend > 0.2 and view.ads_blend < 0.8)
 	assert_true(mid, "saw the transition")
@@ -78,3 +78,23 @@ func test_sprint_cancels_ads() -> void:
 	assert_true(view.ads_blend <= 0.0, "camera not zoomed while sprinting (%.2f)" % view.ads_blend)
 	_inp.release(&"sprint")
 	assert_true(await wait_until(func() -> bool: return view.ads_blend >= 1.0, 2.0), "ADS back after sprint")
+
+
+## PO-4 (PD2 TRANSITION_DURATION 0.23 s): ADS takes the equipped weapon's WeaponStats.ads_time_s (data), not a fixed
+## rate; arms and camera together. Stepped deterministically like the shared-weight test above.
+func test_ads_time_follows_weapon_data() -> void:
+	var c: CrewController = await _masked()
+	var view: CrewView = CrewView.of(c)
+	var st: WeaponStats = c.weapons.stats(c.weapons.equipped_slot)
+	assert_true(st != null and st.ads_time_s > 0.0, "weapon has ads_time_s")
+	view.set_process(false)
+	_inp.press(&"aim")
+	await wait_physics_frames(2)
+	var dt: float = 1.0 / 120.0
+	var t: float = 0.0
+	while view.ads_blend < 1.0 and t < 2.0:
+		view._process(dt)
+		t += dt
+	view.set_process(true)
+	assert_near(t, st.ads_time_s, 2.0 * dt, "full ADS after the weapon's ads_time_s (%.3f s vs %.3f s)" % [t, st.ads_time_s])
+	assert_near(CrewView.ads_rate(c), 1.0 / st.ads_time_s, 1e-4, "shared rate")

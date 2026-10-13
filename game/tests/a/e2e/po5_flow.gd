@@ -114,6 +114,8 @@ func _telemetry() -> void:
 		var near_m: float = INF
 		var en_close: int = 0
 		for e: Node in get_tree().get_nodes_in_group(G.ENEMY):
+			if not (e as NpcBase).is_alive():
+				continue
 			var ed: float = (e as Node3D).global_position.distance_to(crew.global_position)
 			near_m = minf(near_m, ed)
 			en_close += 1 if ed < 15.0 else 0
@@ -123,7 +125,7 @@ func _telemetry() -> void:
 		note("TEL worst_frame=%.0fms t=%.0f phase=%d phys=%.1fms proc=%.1fms nodes=%d enemies=%d civs=%d crew=[%s]" % [worst, rt.heist_time_s,
 			rt.phase, Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
 			Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
-			get_tree().get_nodes_in_group(G.ENEMY).size(), get_tree().get_nodes_in_group(G.CIVILIAN).size(), " ".join(cs)])
+			_alive_in(G.ENEMY), _alive_in(G.CIVILIAN), " ".join(cs)])
 
 
 ## After heist_ended: screenshot the payday, click through it like a player until the hub shows.
@@ -182,6 +184,14 @@ func _watchdog() -> void:
 	note("FAIL budget %.0f s exceeded" % _budget_s)
 	await shot("budget_exceeded")
 	_finish(2)
+
+
+## Live NPCs in `group` (corpses stay in their groups).
+func _alive_in(group: StringName) -> int:
+	var n: int = 0
+	for x: Node in get_tree().get_nodes_in_group(group):
+		n += 1 if x is NpcBase and (x as NpcBase).is_alive() else 0
+	return n
 
 
 ## Game-time wait (physics ticks).

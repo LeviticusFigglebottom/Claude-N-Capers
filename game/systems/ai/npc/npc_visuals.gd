@@ -1,7 +1,7 @@
 ## PO-5.7 (D-089): resolves an NPC's character visual when neither the NPC scene nor its EnemyDef sets one,
 ## so police, specials, guards and civilians wear ENV D's characters instead of placeholder capsules.
-## Order: EnemyDef id (`enemy.<id>` -> character <id>, faction variant from params.visual_variant,
-## characters.md v1.6) -> SpawnPoint tag (NpcVisualTweak.tag_characters) -> role (role_characters).
+## Order: EnemyDef id (`enemy.<id>` -> character <id>, or NpcVisualTweak.enemy_characters; faction variant
+## from params.visual_variant, characters.md v1.6) -> SpawnPoint tag (NpcVisualTweak.tag_characters) -> role (role_characters).
 ## The pick among several ids hashes the NPC's node name (replicated), so every peer shows the same look.
 ## Missing scenes fall through (the capsule stays). Owner: ENV A.
 class_name NpcVisuals
@@ -28,10 +28,11 @@ static func scene_path(char_id: String, variant: String = "") -> String:
 
 static func resolve(npc: NpcBase) -> PackedScene:
 	var def: EnemyDef = npc.enemy_def
-	if def != null and def.is_special:
-		return null  # specials (shield grip, Wrecker plates...) need their own visual pass: scene visual stays
 	if def != null and String(def.id).begins_with("enemy."):
 		var cid: String = String(def.id).substr(6)
+		var tw0: NpcVisualTweak = tweak()
+		if tw0 != null and tw0.enemy_characters.has(def.id):
+			cid = String(tw0.enemy_characters[def.id])
 		var variant: String = String(def.params.get("visual_variant", ""))
 		for path: String in [scene_path(cid, variant), scene_path(cid)]:
 			var ps: PackedScene = _load(path)
@@ -50,6 +51,17 @@ static func resolve(npc: NpcBase) -> PackedScene:
 	if tw.role_characters.has(npc.role):
 		return _pick(npc, tw.role_characters[npc.role])
 	return null
+
+
+## A prop scene of the NPC's character visual (characters.md v1.6: `<dir>/<cid>_<prop>.tscn` beside
+## `<dir>/<cid>.tscn`, e.g. the Bulwark shields `bulwark_<v>/bulwark_<v>_shield.tscn`), or null.
+static func prop_scene(npc: NpcBase, prop: String) -> PackedScene:
+	if npc == null or npc.visual_scene == null:
+		return null
+	var path: String = npc.visual_scene.resource_path
+	if not path.begins_with(CHAR_DIR) or not path.ends_with(".tscn"):
+		return null
+	return _load("%s_%s.tscn" % [path.trim_suffix(".tscn"), prop])
 
 
 static func _pick(npc: NpcBase, ids: Variant) -> PackedScene:

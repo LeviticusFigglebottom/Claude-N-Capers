@@ -12,6 +12,9 @@ static var _cached: HeavySpecialTweak = null
 @export var bulwark_shield_scene: PackedScene
 ## Shield position in the Bulwark's local space (in front of the body, -Z forward).
 @export var bulwark_shield_offset: Vector3 = Vector3(0.0, 0.95, -0.6)
+## Carried position of a character's own shield (characters.md v1.6 `bulwark_<v>_shield.tscn`, origin =
+## the grip): ENV D's HandL/Socket in shield_idle / shield_walk (about (-0.09, 1.08, -0.34) at 1.78 m).
+@export var bulwark_grip_offset: Vector3 = Vector3(-0.09, 1.08, -0.36)
 ## Standoff band toward the fixated target (◇: shields push in close).
 @export var bulwark_standoff_min_m: float = 3.0
 @export var bulwark_standoff_pref_m: float = 5.0

@@ -1,5 +1,9 @@
 ## A police spawn group (L1.4): which units arrive together, how often per difficulty, in which
 ## assault phases. Owner: ENV A. Data: systems/ai/data/groups/*.tres. ◇ = design values.
+## PO-5.4 specials by difficulty follow PD2's besiege.assault.groups / recon.groups (◇ in the weights):
+## Routine (Normal) has Bulwarks only (no Stinger, Corpsman, Wrecker, Phantom); Tense (Hard) adds
+## Stingers; Wreckers and Phantoms from Hazardous (Very Hard); Corpsmen from Brutal (Overkill); no
+## between-wave (CONTROL) specials below Hazardous (PD2 recon groups have none).
 class_name SpawnGroupDef
 extends Resource
 

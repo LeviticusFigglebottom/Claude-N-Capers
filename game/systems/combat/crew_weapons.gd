@@ -514,19 +514,20 @@ func _spread_deg(s: WeaponState, intent: CrewIntent) -> float:
 	var base: float = s.stats.spread_deg_ads if intent.aim else s.stats.spread_deg_hip
 	var hv: float = Vector2(_crew.velocity.x, _crew.velocity.z).length()
 	var mult: float = tw.spread_mult_still
-	if hv > tw.moving_speed_threshold:
+	if _crew.crouched:
+		mult = tw.spread_mult_crouched  # D-097: PD2 crouching row (moving or not)
+	elif hv > tw.moving_speed_threshold:
 		mult = tw.spread_mult_moving
-	elif _crew.crouched:
-		mult = tw.spread_mult_crouched
 	return maxf(base * mult * Modifiers.mult(_crew.slot, &"weapon.spread_mult", s.qualifier), 0.0)
 
 
-## Uniform direction inside a cone of half-angle `deg` around `fwd` (GameRng &"spread").
+## Direction inside a cone of half-angle `deg` around `fwd` (GameRng &"spread"). D-097 (PD2): the radius is
+## uniform in [0, max] (not area-uniform), so shots cluster toward the centre as in PD2.
 func _spread_dir(fwd: Vector3, deg: float) -> Vector3:
 	if deg <= 0.0001:
 		return fwd
 	var rng: RandomNumberGenerator = GameRng.stream(&"spread")
-	var r: float = tan(deg_to_rad(deg)) * sqrt(rng.randf())
+	var r: float = tan(deg_to_rad(deg)) * rng.randf()
 	var phi: float = rng.randf() * TAU
 	var right: Vector3 = fwd.cross(Vector3.UP)
 	if right.length() < 0.001:

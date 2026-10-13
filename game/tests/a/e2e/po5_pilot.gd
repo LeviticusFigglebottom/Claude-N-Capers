@@ -20,6 +20,19 @@ var combat: bool = false
 ## Where to look while holding a position with nobody in sight (the doorway the police come through).
 var watch_point: Vector3 = Vector3.INF
 var shots_fired: int = 0
+## Stealth hook: every goto / use tick (not while answering a pager) the pilot asks `hook_need`
+## (`func() -> bool`, synchronous); when true it lets go of its keys and awaits `hook` (`func() -> bool`,
+## may take over the input: shout a civilian...; returns true when it acted), then carries on.
+var hook_need: Callable = Callable()
+var hook: Callable = Callable()
+## goto() does not log its timeouts (short step-wise gotos while stalking).
+var quiet: bool = false
+## _unstick shouts at a civilian blocking the way (loud flows). Stealth turns it off: a shouted
+## civilian gets up panicked when the intimidation runs out.
+var shout_blockers: bool = true
+## goto() also needs |dy| <= this to arrive (INF = horizontal distance only; stealth flows set it for stairs).
+var arrive_dy: float = INF
+var _in_hook: bool = false
 var _last_engage: float = -1.0
 var _door_tries: Dictionary[Door, int] = {}
 var _rad_px: Vector2 = Vector2.ONE
@@ -31,7 +44,7 @@ func _init(driver: Node, p_crew: CrewController) -> void:
 	d = driver
 	crew = p_crew
 	inp = PlayerInputDriver.new(driver)
-	inp.capture_mouse()
+	# PO-5.1: the game captures the mouse itself (MouseCapture, D-087); po5_flow clicks like a player
 	_rad_px = PlayerInputDriver.mouse_radians_per_px()
 
 
@@ -102,7 +115,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 	var recover: int = 0
 	var ok: bool = false
 	while t < timeout_s:
-		if flat_dist(crew.global_position, target) <= arrive_m:
+		if flat_dist(crew.global_position, target) <= arrive_m and absf(crew.global_position.y - target.y) <= arrive_dy:
 			ok = true
 			break
 		if repath_t <= 0.0:
@@ -120,6 +133,11 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 				repath_t = 0.0
 				hist_pos = crew.global_position
 				hist_t = 0.0
+		if _hook_wanted() and await _run_hook():
+			repath_t = 0.0
+			hist_pos = crew.global_position
+			hist_t = 0.0
+			continue
 		var corner: Vector3 = target
 		for p: Vector3 in path:
 			if flat_dist(p, crew.global_position) > 0.45:
@@ -161,9 +179,26 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 	inp.release(&"move_forward")
 	inp.release(&"sprint")
 	await inp.ticks(2)
-	if not ok:
+	if not ok and not quiet:
 		d.note("pilot: goto %s FAILED at %s after %.1f s" % [_v(target), _v(crew.global_position), t])
 	return ok
+
+
+func _hook_wanted() -> bool:
+	return hook.is_valid() and hook_need.is_valid() and not _in_hook and bool(hook_need.call())
+
+
+## Runs `hook` once (not re-entrant); true when it took over the input.
+func _run_hook() -> bool:
+	if not hook.is_valid() or _in_hook:
+		return false
+	_in_hook = true
+	var took: bool = bool(await hook.call())
+	_in_hook = false
+	if took:
+		inp.release(&"move_forward")
+		inp.release(&"sprint")
+	return took
 
 
 func _log_stuck(corner: Vector3) -> void:
@@ -195,7 +230,7 @@ func _log_stuck(corner: Vector3) -> void:
 func _unstick(attempt: int) -> void:
 	for i: int in crew.get_slide_collision_count():
 		var blocker: NpcBase = crew.get_slide_collision(i).get_collider() as NpcBase
-		if blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():
+		if shout_blockers and blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():
 			d.note("pilot: civilian %s blocks the way: shout" % blocker.name)
 			await face(blocker.head_position() - Vector3(0, 0.4, 0), 0.05, 1.0)
 			await inp.tap(&"shout")
@@ -240,6 +275,11 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 		if foe != null:
 			inp.release(&"interact")
 			await engage(foe, 2.0)
+			inp.press(&"interact")
+		if comp.kind != &"answer_pager" and _hook_wanted():
+			inp.release(&"interact")
+			if await _run_hook():
+				await face(target, 0.03, 1.0)
 			inp.press(&"interact")
 		steer_at(target)
 		await tick()

@@ -86,6 +86,10 @@ var hub_interaction: InteractionSystem = null
 var step_offset: float:
 	get:
 		return _step_offset
+## PO-4 (read-only): the camera's remaining crouch / stand easing (m).
+var crouch_cam_offset: float:
+	get:
+		return _crouch_cam
 ## PO-4 (read-only): the camera landing dip (m, negative while dipping).
 var land_dip: float:
 	get:
@@ -104,6 +108,9 @@ var _step_offset: float = 0.0
 ## PO-4: landing dip spring (camera only, local human): offset (m) and its velocity (m/s).
 var _land_dip: float = 0.0
 var _land_dip_v: float = 0.0
+## PO-4: camera-only crouch / stand easing (m, eases to 0) and the stance it last saw.
+var _crouch_cam: float = 0.0
+var _cam_crouched: bool = false
 
 ## Combat components (A1-08); null only for a scene without them.
 @onready var health: CrewHealth = get_node_or_null("Health") as CrewHealth
@@ -353,6 +360,8 @@ func teleport(xform: Transform3D) -> void:
 	_step_offset = 0.0  # P1-01: a hard move is not a step to smooth; airborne until it lands
 	_land_dip = 0.0
 	_land_dip_v = 0.0
+	_crouch_cam = 0.0
+	_cam_crouched = crouched
 	grounded = false
 	_remote_pos = Vector3.INF
 	intent.look_yaw = look_yaw  # PI-06: the held intent must not turn the body back this tick
@@ -462,8 +471,9 @@ func _simulate(delta: float) -> void:
 	if absf(_step_offset) < 0.0005:
 		_step_offset = 0.0
 	_tick_land_dip(delta, tw)
+	_tick_crouch_cam(delta, tw)
 	if _head != null:
-		_head.position.y = eye_height() + _step_offset + _land_dip
+		_head.position.y = eye_height() + _step_offset + _land_dip + _crouch_cam
 
 
 ## P1-01: move_and_slide with PD2-like ground handling. Walks up lips up to CrewTweak.step_height_m, follows
@@ -503,6 +513,21 @@ func _on_landed(impact_mps: float, tw: CrewTweak) -> void:
 	# Critically damped spring from rest: an initial velocity v0 peaks at v0 / (w e) after 1/w s.
 	var w: float = TAU * tw.land_dip_hz
 	_land_dip_v = minf(_land_dip_v, -depth * w * exp(1.0))
+
+
+## PO-4: ease the camera through a crouch / stand change instead of snapping the eye 0.6 m in one tick.
+func _tick_crouch_cam(delta: float, tw: CrewTweak) -> void:
+	if crouched != _cam_crouched:
+		var from: float = tw.eye_crouched if _cam_crouched else tw.eye_standing
+		_crouch_cam = clampf(_crouch_cam + from - eye_height(), -absf(tw.eye_standing - tw.eye_crouched),
+			absf(tw.eye_standing - tw.eye_crouched))
+		_cam_crouched = crouched
+		if tw.crouch_smooth_rate <= 0.0:
+			_crouch_cam = 0.0
+	if _crouch_cam != 0.0:
+		_crouch_cam *= exp(-tw.crouch_smooth_rate * delta)
+		if absf(_crouch_cam) < 0.0005:
+			_crouch_cam = 0.0
 
 
 func _tick_land_dip(delta: float, tw: CrewTweak) -> void:

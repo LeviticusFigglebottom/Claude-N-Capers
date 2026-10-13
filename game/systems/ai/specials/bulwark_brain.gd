@@ -6,7 +6,8 @@
 ##   shield is dropped in place and keeps blocking.
 ## - Movement (PD2, lead ruling): walks while advancing at EnemyDef.params.advance_speed (1.8 m/s;
 ##   shield_walk), EnemyDef.move_speed only for director orders (PoliceSpecialKit.heavy_move_speed).
-## - Shield visual / body follow the character visual's `HandL/Socket` when it has one (BulwarkShield).
+## - Shield: the character's own `<char>_shield.tscn` geometry when it wears an ENV D character
+##   (NpcVisuals.prop_scene, at bulwark_grip_offset); its Visual follows `HandL/Socket` (BulwarkShield).
 ## - Fixation: the first target picked is kept until it is in CUSTODY or gone (PD2 shields lock on).
 ## - Doorways: a free SHIELD_ANCHOR TacticalPoint near the target with LOS to it is claimed and held
 ##   (one Bulwark per point); otherwise a short standoff band (bulwark_standoff_*). No cover, no flank.
@@ -127,7 +128,7 @@ func stagger() -> bool:
 func _raise_guard() -> void:
 	_stagger_left = 0.0
 	if shield != null and is_instance_valid(shield) and not shield.dropped:
-		shield.set_guard(true, special_tweak.bulwark_shield_offset)
+		shield.set_guard(true, shield.carry_offset)
 
 
 func _on_shield_struck(info: Dictionary) -> void:
@@ -150,7 +151,11 @@ func _attach_shield() -> void:
 	if shield == null:
 		Log.error(&"ai", "BulwarkBrain: bulwark_shield_scene root is not a BulwarkShield")
 		return
-	shield.attach_to(_npc, special_tweak.bulwark_shield_offset)
+	# characters.md v1.6: the carrier's character brings its own shield (origin = grip).
+	var own: PackedScene = NpcVisuals.prop_scene(_npc, "shield")
+	var at: Vector3 = special_tweak.bulwark_grip_offset if own != null and shield.use_scene(own) \
+		else special_tweak.bulwark_shield_offset
+	shield.attach_to(_npc, at)
 	shield.struck.connect(_on_shield_struck)
 
 

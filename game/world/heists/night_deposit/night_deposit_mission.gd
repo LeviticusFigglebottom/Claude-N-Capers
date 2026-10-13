@@ -32,6 +32,8 @@ const TAG_DEPOSIT_BOX: StringName = &"deposit_box"
 const TAG_POLICE_GATE: StringName = &"police_gate"
 const TAG_ESCAPE_VAN: StringName = &"escape_van"
 const TAG_ESCAPE_BOAT: StringName = &"escape_boat"
+## PO-5 (D-089 markers): the rolled escape's secure zone (VanSecureE1 / BoatSecureE2).
+const TAG_LOOT_SECURE: StringName = &"loot_secure"
 const RARE_GLITCH: StringName = &"time_lock_glitch"
 const RARE_ARMORED_CAR: StringName = &"armored_car_early"
 const RARE_FOG: StringName = &"fog_lifts"
@@ -59,21 +61,29 @@ func _on_mission_start() -> void:
 	say(&"vo.mercer.night_deposit_intro")
 	say(&"vo.accountant.night_deposit_contact_intro", {}, &"accountant")
 	add_objective(&"casing", &"objective.night_deposit.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
-	add_objective(&"keycard", &"objective.night_deposit.keycard")
+	add_objective(&"keycard", &"objective.night_deposit.keycard", Enums.ObjectiveState.ACTIVE, {"marker_tags": [&"keycard"]})
 	require_items(&"keycard", ITEM_KEYCARD)
-	add_objective(&"code", &"objective.night_deposit.code", Enums.ObjectiveState.ACTIVE, {"alternative": &"server"})
+	add_objective(&"code", &"objective.night_deposit.code", Enums.ObjectiveState.ACTIVE,
+		{"alternative": &"server", "marker_tags": [&"code_note"]})
 	add_objective(&"server", &"objective.night_deposit.server", Enums.ObjectiveState.ACTIVE,
-		{"alternative": &"code", "optional": true, "location": variant(&"server_room")})
-	add_objective(&"vault_gate", &"objective.night_deposit.vault_gate")
-	add_objective(&"time_lock", &"objective.night_deposit.time_lock", Enums.ObjectiveState.HIDDEN)
-	add_objective(&"time_lock_wait", &"objective.night_deposit.time_lock_wait", Enums.ObjectiveState.HIDDEN)
-	add_objective(&"vault_drill", &"objective.night_deposit.vault_drill", Enums.ObjectiveState.HIDDEN)
-	add_objective(&"vault_loot", &"objective.night_deposit.vault_loot", Enums.ObjectiveState.HIDDEN)
-	add_objective(&"depository", &"objective.night_deposit.depository", Enums.ObjectiveState.ACTIVE, {"optional": true})
+		{"alternative": &"code", "optional": true, "location": variant(&"server_room"),
+			"marker_tags": [TAG_SERVER_HACK]})
+	add_objective(&"vault_gate", &"objective.night_deposit.vault_gate", Enums.ObjectiveState.ACTIVE,
+		{"marker_tags": [TAG_VAULT_GATE]})
+	add_objective(&"time_lock", &"objective.night_deposit.time_lock", Enums.ObjectiveState.HIDDEN,
+		{"marker_tags": [TAG_TIME_LOCK]})
+	add_objective(&"time_lock_wait", &"objective.night_deposit.time_lock_wait", Enums.ObjectiveState.HIDDEN,
+		{"marker_tags": [TAG_VAULT_DOOR]})
+	add_objective(&"vault_drill", &"objective.night_deposit.vault_drill", Enums.ObjectiveState.HIDDEN,
+		{"marker_tags": [TAG_VAULT_DRILL]})
+	add_objective(&"vault_loot", &"objective.night_deposit.vault_loot", Enums.ObjectiveState.HIDDEN,
+		{"marker_tags": [TAG_VAULT_LOOT]})
+	add_objective(&"depository", &"objective.night_deposit.depository", Enums.ObjectiveState.ACTIVE,
+		{"optional": true, "marker_tags": [TAG_DEPOSITORY]})
 	add_objective(&"secure", &"objective.night_deposit.secure", Enums.ObjectiveState.ACTIVE,
-		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true})
+		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
 	require_loot(&"secure", MIN_BAGS)
-	add_objective(&"escape", &"objective.night_deposit.escape", Enums.ObjectiveState.HIDDEN)
+	add_objective(&"escape", &"objective.night_deposit.escape", Enums.ObjectiveState.HIDDEN, {"marker_tags": [_escape_tag()]})
 	on_event(&"interaction_completed", _on_interaction_completed)
 	on_event(&"device_finished", _on_device_finished)
 	on_event(&"device_jammed", _on_device_jammed)
