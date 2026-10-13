@@ -12,6 +12,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-13 23:15: **round 58 ON ORIGIN**: env/a-core 7a6c25e0 (D-099: corpses leave G.ENEMY; loud director despawns unseen bodies after 30 s); lead applied A's condition-based tie patch to test_p3_loud test_09 (flake), p3_loud 10/0 ×2.
 - 2026-10-13 22:45: **round 57 ON ORIGIN**: env/p-play (ADS time from weapon data + clip crossfade, PD2 sprint→fire exit, crouch camera easing), env/b-content (folding-knife model, onboarding replace fix), env/a-core. D-099 WeaponStats.recoil_horizontal_bias_deg. p 82/0, b/a targeted green. Round 56 (A's director/specials/KR fixes) pushed before it. Full gate on round 57 running in background.
 - 2026-10-13 22:25: **round 56 ON ORIGIN**: env/a-core (ALL known reds fixed: KR-1 director force model, KR-3 ND zfight, KR-4 SL barred doors; specials wear characters; ND objective markers; D-097 stance spread 1.0/1.0/0.4 + uniform radius), env/p-play 96c142ef (ADS eye relief, enforced for all 34 weapons), env/b-content. D-099. Full gate started in background.
 - 2026-10-13 22:10: **round 55 ON ORIGIN**: env/b-content 673150c9; lead flipped window/stretch/aspect="expand" (D-098; 21:9 fills the window). b UI tests + p 79/0 + P1 slice green.
