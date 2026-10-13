@@ -12,6 +12,9 @@ signal point_focused(point_id: StringName)
 ## Pixels kept free around the drawn bounds.
 const PAD: float = 28.0
 
+## Zone name size (canvas units) in _draw(); _zone_label_rects() measures with it.
+const ZONE_FONT: int = 16
+
 var board: PreplanBoard
 var tweak: PreplanTweak
 var floor_index: int = 0
@@ -121,7 +124,7 @@ func _build_markers() -> void:
 ## right and left of its marker and takes the first spot that hits no marker and no placed label;
 ## a label with no free spot is hidden and shows while its marker is focused or hovered.
 func _layout_markers() -> void:
-	var taken: Array[Rect2] = []
+	var taken: Array[Rect2] = _zone_label_rects()
 	for pid: Variant in markers:
 		var p: Dictionary = board.blueprint.point(StringName(pid))
 		var b: Button = markers[pid] as Button
@@ -158,6 +161,26 @@ func _layout_markers() -> void:
 		l.set_meta(&"crowded", not placed)
 		l.visible = placed
 	queue_redraw()
+
+
+## Rects of the zone names _draw() prints (same rules: top-left of the zone, only when it fits).
+func _zone_label_rects() -> Array[Rect2]:
+	var out: Array[Rect2] = []
+	if board == null or size == Vector2.ZERO:
+		return out
+	var s: float = float(_transform()["scale"])
+	var font: Font = get_theme_default_font()
+	for sh: Dictionary in board.blueprint.shapes:
+		var key: StringName = StringName(sh.get("label", &""))
+		var fl: int = int(sh.get("floor", -1))
+		if key == &"" or (fl >= 0 and fl != floor_index):
+			continue
+		var r: Rect2 = sh.get("rect", Rect2()) as Rect2
+		var vr: Rect2 = Rect2(world_to_view(r.position), r.size * s)
+		var ts: Vector2 = font.get_string_size(UiText.t(key).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT)
+		if ts.x <= vr.size.x - 8.0:
+			out.append(Rect2(vr.position + Vector2(6, 4), ts))
+	return out
 
 
 func _peek_label(pid: StringName, on: bool) -> void:
@@ -237,7 +260,7 @@ func _draw() -> void:
 		var r2: Rect2 = sh.get("rect", Rect2()) as Rect2
 		var vr2: Rect2 = Rect2(world_to_view(r2.position), r2.size * s)
 		var text: String = UiText.t(key).to_upper()
-		var fs: int = 16
+		var fs: int = ZONE_FONT
 		var tw: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		if tw > vr2.size.x - 8.0:
 			continue
