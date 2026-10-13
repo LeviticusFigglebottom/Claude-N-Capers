@@ -48,6 +48,8 @@ func _run() -> void:
 	var mode: String = args[0] if args.size() > 0 else "hud"
 	if mode == "menus":
 		await _menus()
+	elif mode == "loud":
+		await _loud()
 	else:
 		await _hud()
 	print("CONTRAST %s (%d failures, min %.1f:1)" % ["PASS" if _fails == 0 else "FAIL", _fails, MIN_RATIO])
@@ -130,3 +132,32 @@ func _menus() -> void:
 	pd.show_cards()
 	await _shot("menu_payday", pd)
 	SaveService.delete_profile(0)
+
+
+## PP-B-7: loud state (assault, downed + bleedout, low ammo, bag, hostages) over the same backdrops.
+func _loud() -> void:
+	var back: ColorRect = ColorRect.new()
+	back.size = Vector2(SIZE)
+	_vp.add_child(back)
+	var model: MockHudModel = MockHudModel.new()
+	_vp.add_child(model)
+	var hud: Hud = (load("res://content/ui/hud/hud.tscn") as PackedScene).instantiate() as Hud
+	hud.auto_find_model = false
+	_vp.add_child(hud)
+	await get_tree().process_frame
+	hud.bind(model)
+	model.masked = true
+	model.casing = false
+	model.assault_phase = Enums.AssaultPhase.SUSTAIN
+	model.assault_wave = 3
+	model.ammo = {Enums.WeaponSlot.PRIMARY: {"mag": 4, "reserve": 87}}
+	model.equipped_slot = Enums.WeaponSlot.PRIMARY
+	model.carried_bag = {"loot_id": &"loot.jewelry", "weight": Enums.LootWeight.LIGHT}
+	model.hostages = 3
+	model.health = 0.0
+	model.downs_left = 1
+	model.crew_state = Enums.CrewState.DOWNED
+	model.bleedout_s = 23.4
+	for bg: String in BACKDROPS:
+		back.color = BACKDROPS[bg] as Color
+		await _shot("loud_" + bg, hud)

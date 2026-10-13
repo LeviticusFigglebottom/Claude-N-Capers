@@ -50,3 +50,64 @@ func test_hud_fits_720p_scale_1() -> void:
 
 func test_hud_fits_720p_scale_max() -> void:
 	await _check(1.5)
+
+
+## PP-B-7: loud play state (assault, downed with a bleedout timer, low ammo, carrying a bag, hostages):
+## the labels a player reads mid-fight are visible, on screen, >= 14 px at 720p and do not overlap.
+func _loud(scale: float) -> void:
+	var s: GameSettings = GameSettings.load_file("user://pp_hud_none.cfg")
+	s.set_value(GameSettings.ACCESSIBILITY, &"hud_scale", scale)
+	var model: MockHudModel = MockHudModel.new()
+	add_child(model)
+	var hud: Hud = HUD_SCENE.instantiate() as Hud
+	hud.auto_find_model = false
+	hud.settings = s
+	add_child(hud)
+	await wait_frames(1)
+	hud.bind(model)
+	model.masked = true
+	model.casing = false
+	model.assault_phase = Enums.AssaultPhase.SUSTAIN
+	model.assault_wave = 3
+	model.ammo = {Enums.WeaponSlot.PRIMARY: {"mag": 4, "reserve": 87}, Enums.WeaponSlot.SECONDARY: {"mag": 12, "reserve": 40}}
+	model.equipped_slot = Enums.WeaponSlot.PRIMARY
+	model.carried_bag = {"loot_id": &"loot.jewelry", "weight": Enums.LootWeight.LIGHT}
+	model.hostages = 3
+	model.health = 0.0
+	model.downs_left = 1
+	model.crew_state = Enums.CrewState.DOWNED
+	model.bleedout_s = 23.4
+	await wait_frames(3)
+	var px_per_unit: float = 720.0 / hud.get_viewport().get_visible_rect().size.y
+	var vis: Rect2 = hud.get_viewport().get_visible_rect().grow(1.0)
+	var reads: Dictionary = {"ammo": hud.ammo.ammo_label, "bleedout": hud.vitals.state_label,
+		"bag": hud.status.bag_label, "hostages": hud.status.hostages_label}
+	var rects: Dictionary = {}
+	for k: String in reads:
+		var l: Label = reads[k] as Label
+		assert_true(l.is_visible_in_tree() and l.text.strip_edges() != "", "x%.1f %s shown ('%s')" % [scale, k, l.text])
+		var xf: Transform2D = l.get_global_transform()
+		var r: Rect2 = Rect2(xf.origin, l.size * xf.get_scale())
+		rects[k] = r
+		assert_true(vis.encloses(r), "x%.1f %s on screen %s" % [scale, k, r])
+		var px: float = float(l.get_theme_font_size(&"font_size")) * xf.get_scale().y * px_per_unit
+		assert_true(px >= 14.0, "x%.1f %s %.1f px at 720p" % [scale, k, px])
+	assert_true(hud.vitals.state_label.text.contains("24") or hud.vitals.state_label.text.contains("23"),
+			"bleedout seconds shown: " + hud.vitals.state_label.text)
+	assert_true(hud.ammo.ammo_label.text.contains("4") and hud.ammo.ammo_label.text.contains("87"), hud.ammo.ammo_label.text)
+	var keys: Array = rects.keys()
+	for i: int in range(keys.size()):
+		for j: int in range(i + 1, keys.size()):
+			assert_false((rects[keys[i]] as Rect2).intersects(rects[keys[j]] as Rect2),
+					"x%.1f %s overlaps %s" % [scale, keys[i], keys[j]])
+	hud.queue_free()
+	model.queue_free()
+	await wait_frames(1)
+
+
+func test_loud_hud_readable_720p_scale_1() -> void:
+	await _loud(1.0)
+
+
+func test_loud_hud_readable_720p_scale_max() -> void:
+	await _loud(1.5)

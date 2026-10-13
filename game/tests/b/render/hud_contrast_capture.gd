@@ -6,7 +6,7 @@
 ##   menus : MenuFlow over its real 3D safehouse: hub, armory loadout, payday cards.
 ## Run (Env D's flags; from the clone root, NOT --headless, one render at a time):
 ##   flock /workspace/cnc-team/render.lock xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot \
-##     --audio-driver Dummy --path game --script res://tests/b/render/hud_contrast_capture.gd -- hud|menus
+##     --audio-driver Dummy --path game --script res://tests/b/render/hud_contrast_capture.gd -- hud|loud|menus
 ## Prints "CONTRAST FAIL ..." lines and "CONTRAST PASS/FAIL", saves PNGs to user://contrast_<shot>.png,
 ## exits 0 / 1. Forward+ falls back to llvmpipe; `--rendering-driver opengl3` also works.
 extends SceneTree
