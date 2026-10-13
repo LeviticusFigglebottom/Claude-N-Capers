@@ -12,9 +12,12 @@
 ## spawn point nearest to the crew centroid (nav path length when a navmesh path exists, else
 ## straight). Valid = a POLICE SpawnPoint or ENTRY TacticalPoint with no LOS from any non-custody
 ## crew eye and >= min_crew_distance_m from every one of them, re-checked at each unit's spawn time.
-## Alive police (roles &"police" + &"special") never exceed DifficultyDef.enemy_cap. CONTROL spawns
-## are low-rate; BUILD/SUSTAIN spawn a group every assault_group_interval_s / assault_intensity.
-## FADE: the director stops reinforcing; units keep fighting (no retreat in P1).
+## Alive police (roles &"police" + &"special") never exceed police_budget(): force_cap() (PO-5.4:
+## DifficultyDef.enemy_cap x PD2 crew balance x L1.3 stage force) and enemy_cap minus cartel. CONTROL
+## spawns are low-rate; BUILD/SUSTAIN spawn a group every assault_group_interval_s / assault_intensity
+## until the assault's _force_pool() is spent (then FADE, as PD2's task_spawn_allowance).
+## FADE (L1.1): the director stops reinforcing and orders its units to retreat (fade_retreat): each
+## unit with a PoliceBrain walks to the nearest spawn point and leaves the map there out of crew LOS.
 ## A3-03 drama (L1.2): `drama` 0..1 rises with crew damage taken, crew downs and shots/kills within
 ## drama_combat_radius_m of the crew; decays drama_decay_per_s. BUILD/SUSTAIN spawn rate x
 ## (1 - drama_spawn_scale * drama). After the sustain timer FADE also comes once drama stayed below
@@ -66,6 +69,10 @@ var start_delay_s: float = 0.0:
 			begin()
 ## Units spawned by the director (alive or not), in order.
 var spawned_total: int = 0
+## PO-5.4: units spawned in the current assault's BUILD/SUSTAIN (_force_pool() spending).
+var assault_spawned: int = 0
+## PO-5.4 (L1.1): units ordered to retreat in this FADE.
+var retreating: Array[NpcBase] = []
 ## A3-03 (L1.2): pressure 0..1.
 var drama: float = 0.0
 ## A3-02 (L4.9): Commander Brandt + Aegis squad.
@@ -146,8 +153,55 @@ func enemy_cap() -> int:
 
 
 ## D-064 (QC-36): police may fill enemy_cap() minus the alive cartel gunmen (they share the cap).
+## PO-5.4: and never more than force_cap().
 func police_budget() -> int:
-	return enemy_cap() - (_runtime.npcs(CartelBrain.ROLE).size() if _runtime != null else 0)
+	var cartel: int = _runtime.npcs(CartelBrain.ROLE).size() if _runtime != null else 0
+	return mini(force_cap(), enemy_cap() - cartel)
+
+
+## PO-5.4: PD2 force crew count (GroupAIStateBase:_get_balancing_multiplier): crew not in custody,
+## AI teammates counted as max(1, floor(bots / 2)) when tweak.bots_count_half. At least 1.
+func _force_crew_count() -> int:
+	if _runtime == null:
+		return 1
+	var humans: int = 0
+	var bots: int = 0
+	for c: CrewController in _active_crew():
+		if c.is_ai:
+			bots += 1
+		else:
+			humans += 1
+	var n: int = humans + ((maxi(1, bots / 2) if tweak.bots_count_half else bots) if bots > 0 else 0)
+	return maxi(n, 1)
+
+
+## PO-5.4 (L1.1/L1.3): alive police the director fills to in `wave` (default: the current one) =
+## enemy_cap x force_crew_mult[force_crew_count] x stage_force_mult[stage], clamped to
+## [force_min, enemy_cap].
+func force_cap(wave: int = 0) -> int:
+	return _force_cap_at(stage_for_wave(wave if wave > 0 else maxi(wave_index, 1)))
+
+
+## PO-5.4: units the BUILD/SUSTAIN of `wave` may spawn in total (0 = unlimited): ceil(full-stage
+## force cap x force_pool_per_force[stage]) (PD2 force_pool / force).
+func _force_pool(wave: int = 0) -> int:
+	if tweak.force_pool_per_force.is_empty():
+		return 0
+	var st: int = stage_for_wave(wave if wave > 0 else maxi(wave_index, 1))
+	var ratio: float = tweak.force_pool_per_force[clampi(st, 0, tweak.force_pool_per_force.size() - 1)]
+	if ratio <= 0.0:
+		return 0
+	return ceili(float(_force_cap_at(tweak.stage_force_mult.size() - 1)) * ratio)
+
+
+func _force_cap_at(stage_i: int) -> int:
+	var cap: int = enemy_cap()
+	var mult: float = 1.0
+	if not tweak.force_crew_mult.is_empty():
+		mult *= tweak.force_crew_mult[clampi(_force_crew_count() - 1, 0, tweak.force_crew_mult.size() - 1)]
+	if not tweak.stage_force_mult.is_empty():
+		mult *= tweak.stage_force_mult[clampi(stage_i, 0, tweak.stage_force_mult.size() - 1)]
+	return clampi(roundi(float(cap) * mult), mini(tweak.force_min, cap), cap)
 
 
 func is_assault_active() -> bool:
@@ -236,6 +290,8 @@ func spawn_enemy(def: EnemyDef, xf: Transform3D, point: Node3D = null, extra: Di
 	var npc: NpcBase = _runtime.spawn_npc(_spawn_role(def), xf, info)
 	if npc != null:
 		spawned_total += 1
+		if not extra.has("captain") and not extra.has("aegis"):
+			_count_assault_spawn()  # Brandt's squad is outside the force pool
 		unit_spawned.emit(npc, point)
 	return npc
 
@@ -320,6 +376,7 @@ func _physics_process(delta: float) -> void:
 				_maybe_hostage_bonus()
 		Enums.AssaultPhase.ANTICIPATION:
 			if phase_time_left <= 0.0:
+				assault_spawned = 0
 				_enter(Enums.AssaultPhase.BUILD, tweak.build_s)
 				_roll_captain()
 		Enums.AssaultPhase.BUILD:
@@ -331,7 +388,9 @@ func _physics_process(delta: float) -> void:
 		Enums.AssaultPhase.SUSTAIN:
 			_tick_sustain(delta)
 		Enums.AssaultPhase.FADE:
+			_tick_retreat()
 			if phase_time_left <= 0.0:
+				_end_retreat()
 				wave_index += 1
 				_enter(Enums.AssaultPhase.CONTROL, tweak.control_between_waves_s)
 	_tick_queue(delta)
@@ -351,8 +410,14 @@ func _tick_sustain(delta: float) -> void:
 	var thr: int = tweak.fade_threshold[clampi(_runtime.difficulty, 0, tweak.fade_threshold.size() - 1)] \
 		if not tweak.fade_threshold.is_empty() else 0
 	if alive_count() < thr or _low_drama_t >= tweak.drama_fade_window_s or _sustain_over_t >= tweak.fade_wait_cap_s:
-		_queue.clear()
-		_enter(Enums.AssaultPhase.FADE, tweak.fade_s)
+		_enter_fade()
+
+
+## L1.1 FADE: stop spawning (queue dropped) and retreat.
+func _enter_fade() -> void:
+	_queue.clear()
+	_enter(Enums.AssaultPhase.FADE, tweak.fade_s)
+	_begin_retreat()
 
 
 func _enter(p: Enums.AssaultPhase, duration: float) -> void:
@@ -417,6 +482,11 @@ func _tick_control_spawns(delta: float) -> void:
 
 
 func _tick_assault_spawns(delta: float) -> void:
+	var pool: int = _force_pool()
+	if pool > 0 and assault_spawned >= pool and _queue_empty() and not captain_active():
+		Log.info(&"director", "force pool spent (%d units): FADE" % assault_spawned)
+		_enter_fade()  # PD2: task_spawn_allowance <= 0 -> fade (BUILD or SUSTAIN)
+		return
 	_group_left -= delta
 	if _group_left > 0.0 or not _queue_empty():
 		return
@@ -516,6 +586,7 @@ func _spawn_next() -> void:
 		var info: Dictionary = {"assault_wave": wave_index, "faction": faction()}
 		for sniper: NpcBase in SpecialSpawner.spawn_special(_runtime, def.id, Transform3D(), info):
 			spawned_total += 1
+			_count_assault_spawn()
 			unit_spawned.emit(sniper, null)
 	else:
 		var points: Array[Node3D] = valid_spawn_points()
@@ -559,6 +630,88 @@ func _spawn_role(def: EnemyDef) -> StringName:
 func _perch_only(def: EnemyDef) -> bool:
 	return def.id == LONGSHOT_ID or SpecialSpawner.PERCH_ONLY.has(def.id)
 
+
+
+func _count_assault_spawn() -> void:
+	if assault_phase == Enums.AssaultPhase.BUILD or assault_phase == Enums.AssaultPhase.SUSTAIN:
+		assault_spawned += 1
+
+
+# --- FADE retreat (L1.1) ------------------------------------------------------------------------
+
+## Order every alive police unit with a PoliceBrain (not Brandt's squad) to its nearest spawn point.
+func _begin_retreat() -> void:
+	retreating.clear()
+	if not tweak.fade_retreat or _runtime == null or _runtime.map == null:
+		return
+	var points: Array[Node3D] = _retreat_points()
+	if points.is_empty():
+		return
+	for npc: NpcBase in alive_units():
+		var brain: PoliceBrain = npc.get_node_or_null(^"Brain") as PoliceBrain
+		if brain == null or (captain != null and (npc == captain.brandt or captain.shields.has(npc))):
+			continue
+		var best: Node3D = points[0]
+		for p: Node3D in points:
+			if p.global_position.distance_to(npc.global_position) < best.global_position.distance_to(npc.global_position):
+				best = p
+		brain.set_order_position(best.global_position)
+		npc.set_meta(&"retreat_to", best.global_position)
+		retreating.append(npc)
+
+
+## Despawn retreating units that reached their point unseen by the crew.
+func _tick_retreat() -> void:
+	if retreating.is_empty():
+		return
+	var crew: Array[CrewController] = _active_crew()
+	for i: int in range(retreating.size() - 1, -1, -1):
+		var npc: NpcBase = retreating[i]
+		if not is_instance_valid(npc) or not npc.alive or not POLICE_ROLES.has(npc.role) \
+				or NpcBase.BLIND_STATES.has(npc.alert_state):
+			retreating.remove_at(i)
+			continue
+		var to: Vector3 = npc.get_meta(&"retreat_to", npc.global_position)
+		if _flat(to - npc.global_position).length() > tweak.retreat_arrive_m or _seen_by_crew(npc, crew):
+			continue
+		retreating.remove_at(i)
+		npc.get_parent().remove_child(npc)
+		npc.queue_free()
+
+
+## FADE over: units still on the map fight on.
+func _end_retreat() -> void:
+	for npc: NpcBase in retreating:
+		if is_instance_valid(npc):
+			npc.remove_meta(&"retreat_to")
+			var brain: PoliceBrain = npc.get_node_or_null(^"Brain") as PoliceBrain
+			if brain != null:
+				brain.clear_order()
+	retreating.clear()
+
+
+## POLICE_SPAWN / ENTRY points a unit may leave through (breach_only entries excluded).
+func _retreat_points() -> Array[Node3D]:
+	var out: Array[Node3D] = []
+	for g: StringName in [G.POLICE_SPAWN, G.ENTRY_POINT]:
+		for n: Node in _runtime.map.get_slots(g):
+			var p: Node3D = n as Node3D
+			var tags: Variant = p.get(&"tags") if p != null else null
+			if p != null and not (tags is Array and (tags as Array).has(BREACH_ONLY_TAG)):
+				out.append(p)
+	return out
+
+
+func _seen_by_crew(npc: NpcBase, crew: Array[CrewController]) -> bool:
+	var space: PhysicsDirectSpaceState3D = _runtime.map.get_world_3d().direct_space_state
+	var probe: Vector3 = npc.global_position + Vector3(0.0, tweak.los_check_height_m, 0.0)
+	for c: CrewController in crew:
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(c.eye_position(), probe,
+			StealthDirector.VISION_MASK)
+		q.exclude = [c.get_rid(), npc.get_rid()]
+		if space.intersect_ray(q).is_empty():
+			return true
+	return false
 
 
 # --- Helpers ----------------------------------------------------------------------------------

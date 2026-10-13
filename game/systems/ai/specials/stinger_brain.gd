@@ -20,6 +20,9 @@
 class_name StingerBrain
 extends SpecialBrain
 
+## Arc origin ahead of the HandR/Socket grip (m): about the taser muzzle.
+const ARC_MUZZLE_M: float = 0.3
+
 ## Why the last tase ended: &"killed", &"stunned", &"los", &"range", &"helpless", &"counter",
 ## &"backfire", &"freed" (revived by a teammate), &"aborted" (windup broken).
 var last_break_reason: StringName = &""
@@ -164,6 +167,15 @@ func _start_tase(v: CrewController) -> void:
 		_arc_beam.visible = true
 
 
+## Where the arc leaves the Stinger (presentation only): ahead of the character's weapon hand
+## (`HandR/Socket`, -Z = muzzle, characters.md v1.2), else chest height on the capsule placeholder.
+func arc_origin() -> Vector3:
+	var socket: Node3D = AnimDriver.socket_of(_npc, "HandR")
+	if socket != null and socket.is_inside_tree():
+		return socket.global_transform * Vector3(0.0, 0.0, -ARC_MUZZLE_M)
+	return _npc.eye_position() + Vector3(0.0, -0.3, 0.0)
+
+
 func _tick_tase(delta: float) -> void:
 	var v: CrewController = tase_victim
 	if v == null or not is_instance_valid(v) or v.crew_state != Enums.CrewState.TASED:
@@ -175,7 +187,7 @@ func _tick_tase(delta: float) -> void:
 	if _arc_left <= 0.0:
 		_arc_left = tweak.stinger_arc_interval_s
 		cue(&"cue.stinger_arc", v.global_position)
-	aim_beam(_arc_beam, _npc.eye_position() + Vector3(0.0, -0.3, 0.0), CombatSystem.target_center(v))
+	aim_beam(_arc_beam, arc_origin(), CombatSystem.target_center(v))
 	if _counter_window > 0.0 and tase_time <= _counter_window and v.intent != null and v.intent.interact:
 		_end_tase(&"counter", true)
 		_knockback(&"counter")

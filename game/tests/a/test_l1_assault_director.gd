@@ -119,6 +119,8 @@ func test_l1_4_spawns_out_of_los_15m_and_capped() -> void:
 	tw.build_s = 60.0
 	tw.assault_group_interval_s = 0.5
 	tw.unit_spawn_interval_s = 0.2
+	tw.force_crew_mult = PackedFloat32Array([1.0])  # PO-5.4 force scaling off: the enemy cap alone binds
+	tw.stage_force_mult = PackedFloat32Array([1.0])
 	var diff: DifficultyDef = DifficultyDef.new()
 	diff.enemy_cap = 5
 	diff.assault_intensity = 1.0

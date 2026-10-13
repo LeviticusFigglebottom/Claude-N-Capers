@@ -13,10 +13,15 @@
 ## FIRE passes at CombatTweak.shield_fire_damage_mult. The forwarded hit is the single take_hit of that
 ## target (it emits damage_applied; the shield itself takes no damage).
 ## Explosions go around shields (Explosion ignores this group for LOS, PD2 behaviour).
-## Grip (characters.md v1.2/v1.4): when the carrier's character visual has a skeleton, the shield (body and
-## its Visual) follows `HandL/Socket` each physics frame, oriented by it (socket -Z = shield face) while the
-## guard is up; with no socket (capsule placeholder) it stays at the carrier-local offset. Collision,
-## blocking and dropping are unchanged.
+## Geometry (characters.md v1.6): when the carrier wears an ENV D character, BulwarkBrain swaps in that
+## character's own shield (`<char>/<char>_shield.tscn`: `Collision` + `Visual`, origin = the grip, -Z =
+## shield face) via use_scene(), carried at HeavySpecialTweak.bulwark_grip_offset; the capsule placeholder
+## keeps this scene's box at bulwark_shield_offset.
+## Grip (characters.md v1.2/v1.4): the BODY (collision, blocking, dropping) always stays at the carrier-local
+## carry offset, so gameplay never depends on animation. Only the `Visual` follows `HandL/Socket` each
+## physics frame (socket -Z = shield face) while the guard is up and the socket is in a shield-holding pose
+## (in front of the carrier, facing forward: shield_idle / shield_walk / shield_bang); otherwise (other
+## clips, bind pose, capsule placeholder, guard down, dropped) the Visual rests on the body.
 class_name BulwarkShield
 extends AnimatableBody3D
 
@@ -30,6 +35,10 @@ const LAYER_WORLD_DYNAMIC: int = 1 << 1
 const GRIP_MARKER: String = "HandL"
 ## Seconds between socket lookups while the carrier has no animated visual (placeholder).
 const GRIP_LOOKUP_S: float = 0.5
+## A socket pose is a shield hold when its -Z is within this angle of the carrier's forward...
+const GRIP_MAX_TILT_DEG: float = 40.0
+## ...and it is at least this far in front of the carrier (carrier-local -Z, m).
+const GRIP_MIN_FRONT_M: float = 0.15
 
 ## The carrying Bulwark (null once dropped).
 var carrier: NpcBase = null
@@ -41,14 +50,21 @@ var guard_down: bool = false
 ## Damage factor of a shield-piercing round (set from the carrier's EnemyDef in attach_to(), kept when
 ## dropped). < 0 = CombatTweak.shield_pierce_damage_mult.
 var pierce_mult: float = -1.0
-## The carrier visual's HandL/Socket the shield follows (null = the attach offset).
+## The carrier visual's HandL/Socket the shield visual follows (null = none found).
 var grip_socket: Node3D = null
+## Carrier-local position of the carried, guard-up body (set by attach_to()).
+var carry_offset: Vector3 = Vector3.ZERO
+## True once use_scene() swapped in a character's shield geometry (origin = grip).
+var character_geometry: bool = false
 
 var _grip_lookup_left: float = 0.0
+var _visual: Node3D = null
+var _visual_rest: Transform3D = Transform3D.IDENTITY
 
 
 func _ready() -> void:
 	add_to_group(GROUP)
+	_bind_visual()
 	collision_layer = LAYER_WORLD_DYNAMIC
 	collision_mask = 0
 	sync_to_physics = false
@@ -58,23 +74,77 @@ func _physics_process(delta: float) -> void:
 	follow_grip(delta)
 
 
-## Align to the carrier's grip socket (guard up, carried). Returns true when aligned; false = offset kept.
+## Align the `Visual` to the carrier's grip socket (guard up, carried, shield-holding pose). Returns true
+## when aligned; false = the Visual rests on the body. The body itself never moves here.
 func follow_grip(delta: float = 0.0) -> bool:
 	if dropped or guard_down or carrier == null or not is_instance_valid(carrier) or get_parent() != carrier \
 			or not is_inside_tree():
+		_rest_visual()
 		return false
 	if grip_socket == null or not is_instance_valid(grip_socket) or not grip_socket.is_inside_tree():
 		grip_socket = null
 		_grip_lookup_left -= delta
 		if _grip_lookup_left > 0.0:
+			_rest_visual()
 			return false
 		_grip_lookup_left = GRIP_LOOKUP_S
 		grip_socket = AnimDriver.socket_of(carrier, GRIP_MARKER)
 		if grip_socket == null or not grip_socket.is_inside_tree():
 			grip_socket = null
+			_rest_visual()
 			return false
-	global_transform = grip_socket.global_transform.orthonormalized()
+	var xf: Transform3D = grip_socket.global_transform.orthonormalized()
+	if _visual == null or not is_holding_pose(carrier.global_transform.affine_inverse() * xf):
+		_rest_visual()
+		return false
+	_visual.global_transform = xf
 	return true
+
+
+## A carrier-local socket transform is a shield hold: in front of the carrier, its -Z facing forward.
+static func is_holding_pose(local_xf: Transform3D) -> bool:
+	var face: Vector3 = -local_xf.basis.z.normalized()
+	return local_xf.origin.z <= -GRIP_MIN_FRONT_M and face.dot(Vector3.FORWARD) >= cos(deg_to_rad(GRIP_MAX_TILT_DEG))
+
+
+## Swap in a character's shield scene geometry (characters.md v1.6 `bulwark_<v>_shield.tscn`: its
+## `Collision` and `Visual` replace this scene's). Call before attach_to(). False = kept as is.
+func use_scene(ps: PackedScene) -> bool:
+	var src: Node = ps.instantiate() if ps != null else null
+	if src == null:
+		return false
+	var col: CollisionShape3D = src.get_node_or_null(^"Collision") as CollisionShape3D
+	var vis: Node3D = src.get_node_or_null(^"Visual") as Node3D
+	if col == null or col.shape == null or vis == null:
+		src.free()
+		return false
+	for nm: String in ["Collision", "Visual"]:
+		var old: Node = get_node_or_null(NodePath(nm))
+		if old != null:
+			remove_child(old)
+			old.free()
+	for n: Node in [col, vis]:
+		src.remove_child(n)
+		n.owner = null
+		add_child(n)
+	src.free()
+	character_geometry = true
+	_visual = null
+	_bind_visual()
+	return true
+
+
+func _bind_visual() -> void:
+	if _visual == null or not is_instance_valid(_visual):
+		_visual = get_node_or_null(^"Visual") as Node3D
+		if _visual != null:
+			_visual_rest = _visual.transform
+
+
+func _rest_visual() -> void:
+	_bind_visual()
+	if _visual != null and not _visual.transform.is_equal_approx(_visual_rest):
+		_visual.transform = _visual_rest
 
 
 ## Server: attach to `npc` at `local_pos` (the shield never collides with its carrier).
@@ -87,6 +157,7 @@ func attach_to(npc: NpcBase, local_pos: Vector3) -> void:
 		if get_parent() != null:
 			get_parent().remove_child(self)
 		npc.add_child(self)
+	carry_offset = local_pos
 	position = local_pos
 	rotation = Vector3.ZERO
 	npc.add_collision_exception_with(self)
@@ -103,6 +174,7 @@ func set_guard(up: bool, local_pos: Vector3) -> void:
 	if carrier != null and get_parent() == carrier:
 		position = local_pos
 		rotation = Vector3.ZERO if up else Vector3(-PI * 0.3, 0.0, 0.0)
+	follow_grip()
 
 
 ## The Bulwark died: the shield stays where it is (reparented under `new_parent`, transform kept).
@@ -110,6 +182,7 @@ func drop(new_parent: Node) -> void:
 	if dropped:
 		return
 	dropped = true
+	_rest_visual()  # the dropped shield looks where it blocks
 	var xf: Transform3D = global_transform
 	if carrier != null and is_instance_valid(carrier):
 		carrier.remove_collision_exception_with(self)
