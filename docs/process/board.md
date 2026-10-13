@@ -12,6 +12,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-13 18:10: round 36 merging: env/p-play 6596da59 (PO-2 MouseCapture), env/b-content ce7abdc0 (PO-4 "Case File" first pass). Targeted p + b tests running.
 - 2026-10-13 17:40: **round 35 ON ORIGIN** = all five env branches (a, b, c, d, p) as left by the Grok team + D-086..D-088 docs
   + lead fixes (lint, P4 ratchet shrink, crowd-LOD material exemption). Full gate 1803 tests: pushed with **known red** (D-088),
   each routed to ENV A:
@@ -25,7 +26,13 @@ Read it at the start of every work session.
 - D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
 
 ## Open questions (id → answer)
-- (none)
+- QB-1 starter primary in default profile → YES (data only, existing AR; closes PP-P-10).
+- QB-2 fonts → built-in font + FontVariation final for this pass.
+- QB-3 docs/design/ui/** → B's (owners.json on trunk since aefdfa70).
+
+## Routed findings
+- A: loud transition doesn't advance the Glasshouse objective (still "Find the manager's keycard"); NPCs render as grey capsules while casing.
+- P: FP pistol + crosshair visible while casing (PD2: no weapon out).
 
 ## Cross-env handoffs in flight
 - P → B: `MouseCapture` (input_focus.md). B migrates its 4 direct `Input.mouse_mode` writers after P's module is on trunk.

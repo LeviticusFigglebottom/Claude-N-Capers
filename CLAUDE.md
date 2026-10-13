@@ -23,7 +23,8 @@ Look at your git branch:
 - Units: meters and seconds; PD2 display units for health, armor and damage.
 - No third-party art or audio assets of any kind. Third-party code/tools are fine; record them in
   `docs/third_party.md` via the lead.
-- Validate before you push: `tools/ci/check_all.sh --env <a|b|c|d>`. Godot is at `/opt/godot/godot`
+- Validate before you push with **targeted** checks only (D-088): gdlint on changed files, `check_ownership.py <env>`,
+  `check_banned.py`, the affected test files, plus windowed verification (D-086). The full `check_all` is the lead's, occasionally. Godot is at `/opt/godot/godot`
   (the SessionStart hook installs it, or run `bash tools/setup/install_godot.sh`).
 - Never force-push. Never push to a branch other than your own.
 - Commit messages: `[A1-03] short summary` (task id from docs/roadmap.md).
