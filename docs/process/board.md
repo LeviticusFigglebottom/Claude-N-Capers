@@ -12,6 +12,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 01:00: **round 65 ON ORIGIN**: env/b-content (radial interaction ring, hostage/trade strip, Tab loot-secured list), plus A/P merge commits. b targeted + p 83/0 green.
 - 2026-10-14 00:50: full gate on round 57 (adaae46b): 1854 tests, 3 failed (B: ui.action.dismiss_tip string ×2; qb_b6_02 crew stats shots/hits, likely PD2 spread vs test aim). **validate_level: all 4 maps PASS** (first time). Routed to B.
 - 2026-10-14 00:40: **round 64 ON ORIGIN**: env/b-content (hit/headshot/kill markers + damage arcs + low-health vignette/heartbeat, payday XP bar, downed-state screen, equipment icon chips, assault phase strip, loading screen with tips). ui_hud 1.9/1.10 (local_net_id, revive_progress/reviver_slot → A). b targeted + P1 slice green.
 - 2026-10-14 00:20: **round 63 ON ORIGIN**: env/p-play (knife melee framing eased per playing set), env/a-core (gh_stealth WIP harness). p + fp_viewmodel/d069 green.
@@ -73,7 +74,7 @@ Read it at the start of every work session.
 
 ## Backlog for dormant envs (wake decision: LEAD)
 - C: PP-C-1 walk test can't pass LOCKPICK doors unmasked and chains 0 m legs after teleports (ND STUCK-DOOR rows are test artefacts, maps are fine; A 21:49).
-- D: rifle idle left hand authored fingers-up on the handguard side (PD2 cups underneath); reads odd, not broken.
+- (D-101: P now co-owns the FP arms scripts → these two items move to P.) D: rifle idle left hand authored fingers-up on the handguard side (PD2 cups underneath); reads odd, not broken.
 - D: ADS forearm size vs vm FOV 52 (P investigating).
 
 ## Routed findings

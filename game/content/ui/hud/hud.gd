@@ -56,6 +56,8 @@ var ammo: AmmoPanel
 var pager: PagerPanel
 var objectives: ObjectivesPanel
 var assault: AssaultBanner
+## Lead round 64: hostage count + trade state, right of the assault banner.
+var hostages: HostageStrip
 var teammates: TeammatePanels
 var status: StatusPanel
 var custody: CustodyPanel
@@ -123,7 +125,7 @@ func set_crew_heisters(map: Dictionary) -> void:
 func widgets() -> Array[HudWidget]:
 	return [chevrons, marks, objective_markers, interaction, dominate, vitals, ammo, pager, objectives, assault,
 			teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring, onboarding, hit_feedback,
-			damage_direction, low_health, downed]
+			damage_direction, low_health, downed, hostages]
 
 
 func _build() -> void:
@@ -151,6 +153,7 @@ func _build() -> void:
 	if heist_id != &"":
 		objectives.set_accent(UiAccent.for_heist(heist_id))
 	assault = _place(AssaultBanner.new(), Control.PRESET_CENTER_TOP, Vector2(-260, 40), Vector2(520, 56)) as AssaultBanner
+	hostages = _place(HostageStrip.new(), Control.PRESET_CENTER_TOP, Vector2(280, 40), Vector2(220, 80)) as HostageStrip
 	pager = _place(PagerPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-200, 110), Vector2(400, 200)) as PagerPanel
 	status = _place(StatusPanel.new(), Control.PRESET_TOP_RIGHT, Vector2(-448, 48), Vector2(400, 180)) as StatusPanel
 	custody = _place(CustodyPanel.new(), Control.PRESET_CENTER, Vector2(-300, -200), Vector2(600, 130)) as CustodyPanel
@@ -321,7 +324,7 @@ func _process(delta: float) -> void:
 		hint.note.visible = hint.hint == &"mask_up" and onboarding.shown == &""  # the card already says it
 	if _toast_t > 0.0:
 		_toast_t -= delta
-		toast_label.visible = _toast_t > 0.0
+		toast_label.visible = _toast_t > 0.0 and not (scoreboard != null and scoreboard.visible)  # not over the Tab sheet
 	if model != null and not is_instance_valid(model):
 		bind(null)
 	if auto_find_model and (model == null or _watched_crew == null or not is_instance_valid(_watched_crew)):
