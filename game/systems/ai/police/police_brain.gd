@@ -222,13 +222,23 @@ func _tick_move(delta: float) -> void:
 			_hold(tpos)
 		return
 	var d: float = _flat(tpos - _npc.global_position).length()
-	if not _target_visible or d > tweak.standoff_max_m or (mode == &"approach" and d > tweak.standoff_pref_m):
+	var pushing: bool = _assault_pushing()
+	var s_min: float = tweak.assault_standoff_min_m if pushing else tweak.standoff_min_m
+	var s_pref: float = tweak.assault_standoff_pref_m if pushing else tweak.standoff_pref_m
+	if not _target_visible or d > tweak.standoff_max_m or (mode == &"approach" and d > s_pref):
 		_move_to(tpos, &"approach")
-	elif d < tweak.standoff_min_m:
+	elif d < s_min:
 		var away: Vector3 = _flat(_npc.global_position - tpos).normalized()
-		_move_to(_npc.global_position + away * (tweak.standoff_pref_m - d), &"back_off")
+		_move_to(_npc.global_position + away * (s_pref - d), &"back_off")
 	else:
 		_hold(tpos)
+
+
+## PO-5.14: an assault is building or sustaining (L1.1): units push in (assault standoff band).
+func _assault_pushing() -> bool:
+	var rt: HeistRuntime = HeistRuntime.of(_npc)
+	var dir: AssaultDirector = rt.service(G.SVC_DIRECTOR) as AssaultDirector if rt != null else null
+	return dir != null and (dir.assault_phase == Enums.AssaultPhase.BUILD or dir.assault_phase == Enums.AssaultPhase.SUSTAIN)
 
 
 ## L2.12: go for / apply the cuffs on a downed, non-shooting target. True while doing so.

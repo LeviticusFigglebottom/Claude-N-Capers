@@ -17,7 +17,7 @@ func _rects(scale: float) -> Dictionary:
 		"stamina": hud.stamina, "vitals": hud.vitals, "ammo": hud.ammo, "teammates": hud.teammates,
 		"objectives": hud.objectives, "status": hud.status, "interaction": hud.interaction,
 		"assault": hud.assault, "pager": hud.pager, "captain": hud.captain, "custody": hud.custody,
-		"scoreboard": hud.scoreboard}
+		"scoreboard": hud.scoreboard, "onboarding": hud.onboarding}
 	var rects: Dictionary = {}
 	for k: String in out:
 		var c: Control = out[k] as Control

@@ -61,10 +61,14 @@ var status: StatusPanel
 var custody: CustodyPanel
 var captain: CaptainPanel
 var stamina: StaminaBar
+## The crosshair: hidden while casing / civilian, fades in once masked (lead ruling, PD2).
+var crosshair: Label
 ## PO-1 mask-up progress ring around the crosshair while mask up is held.
 var mask_ring: MaskProgress
 ## PO-4 contextual control hint (bottom centre): click to resume / mask up / throw the bag.
 var hint: HintStrip
+## PO-4 lane 11 first-time onboarding cards (right of centre).
+var onboarding: OnboardingCard
 ## B6-02 Tab scoreboard (hold / toggle the `scoreboard` action).
 var scoreboard: ScoreboardOverlay
 var toast_label: Label
@@ -103,18 +107,22 @@ func set_crew_heisters(map: Dictionary) -> void:
 	if teammates != null:
 		teammates.heisters = crew_heisters
 		teammates.refresh()
+	if scoreboard != null:
+		scoreboard.heisters = crew_heisters
+		scoreboard.refresh()
 
 
 func widgets() -> Array[HudWidget]:
 	return [chevrons, marks, objective_markers, interaction, dominate, vitals, ammo, pager, objectives, assault,
-			teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring]
+			teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring, onboarding]
 
 
 func _build() -> void:
 	marks = _place(MarkedTargets.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as MarkedTargets
 	objective_markers = _place(ObjectiveMarkers.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as ObjectiveMarkers
 	chevrons = _place(DetectionChevrons.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DetectionChevrons
-	var crosshair: Label = UiBuild.label(&"ui.hud.crosshair", UiBuild.HUD)
+	crosshair = UiBuild.label(&"ui.hud.crosshair", UiBuild.HUD)
+	crosshair.modulate.a = 0.0  # lead ruling: no crosshair until masked (PD2)
 	crosshair.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	crosshair.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_place(crosshair, Control.PRESET_CENTER, Vector2(-20, -20), Vector2(40, 40))
@@ -136,9 +144,12 @@ func _build() -> void:
 	mask_ring = _place(MaskProgress.new(), Control.PRESET_CENTER, Vector2(-120, -40), Vector2(240, 110)) as MaskProgress
 	# Below the interaction prompt, clear of the subtitles at the bottom (audit: they collided).
 	hint = _place(HintStrip.new(), Control.PRESET_CENTER, Vector2(-450, 190), Vector2(900, 64)) as HintStrip
+	onboarding = _place(OnboardingCard.new(), Control.PRESET_CENTER_RIGHT, Vector2(-OnboardingCard.WIDTH - 48, -300),
+			Vector2(OnboardingCard.WIDTH, 0)) as OnboardingCard
 	var board: ScoreboardOverlay = ScoreboardOverlay.new()
 	board.settings = settings
-	scoreboard = _place(board, Control.PRESET_CENTER, Vector2(-500, -240), Vector2(1000, 480)) as ScoreboardOverlay
+	board.heisters = crew_heisters
+	scoreboard = _place(board, Control.PRESET_CENTER, Vector2(-620, -260), Vector2(1240, 520)) as ScoreboardOverlay  # x1.5 fits 1920
 	toast_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD_BIG))
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(toast_label, Control.PRESET_CENTER, Vector2(-500, -260), Vector2(1000, 60))
@@ -286,6 +297,12 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
+	_update_crosshair(delta)
+	if objective_markers != null and scoreboard != null:
+		objective_markers.show_all = scoreboard.visible  # Tab shows every objective's marker
+		objective_markers.z_index = 1 if scoreboard.visible else 0  # drawn over the sheet, not under it
+	if hint != null and onboarding != null:
+		hint.note.visible = hint.hint == &"mask_up" and not onboarding.visible  # the card already says it
 	if _toast_t > 0.0:
 		_toast_t -= delta
 		toast_label.visible = _toast_t > 0.0
@@ -298,6 +315,20 @@ func _process(delta: float) -> void:
 			if model == null:
 				discover_model()
 			_find_local_crew()
+
+
+## Crosshair alpha toward 1 when masked (or the mode is unknown, e.g. tests), toward 0 otherwise.
+func _update_crosshair(delta: float) -> void:
+	if crosshair == null:
+		return
+	var mode: StringName = StringName(model.get(&"player_mode")) if model != null and model.get(&"player_mode") != null else &""
+	if mode == &"" and model != null and model.get(&"masked") != null:
+		mode = &"masked" if bool(model.get(&"masked")) else &"casing"
+	var target: float = 1.0 if mode == &"masked" or model == null else 0.0
+	if not UiTokens.motion_ok():
+		crosshair.modulate.a = target
+	else:
+		crosshair.modulate.a = move_toward(crosshair.modulate.a, target, delta / UiTokens.T_SLOW)
 
 
 ## Bind the local HUD model found through group G.LOCAL_HUD_MODEL. Returns it (or null).

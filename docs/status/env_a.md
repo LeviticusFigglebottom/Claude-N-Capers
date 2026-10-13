@@ -3,6 +3,23 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-13 21:05 UTC — PO-5 loud win, D-093, PO-5.14
+### Done (pushed; last b9f4b9ef)
+- FIRST END-TO-END LOUD WIN, windowed, through the real menus: Glasshouse Routine. The drill opened the safe at 188 s,
+  2 bags went in the alley van (t=254/296), escape opened, and walking into it ended the heist on the real Payday screen
+  ("HEIST COMPLETE $46,200"). AI crew all alive. Payday → hub click-through gets re-verified on the next run (the harness
+  missed the end event; fixed in b9f4b9ef).
+- 044a8a59 D-093: helpless (tased / cloaker) members not revived within bleedout_time_s go to custody, no down (+test).
+- f7bdc9a1 PO-5.14: police push in during BUILD/SUSTAIN (assault standoff band) instead of hovering in doorways (+test).
+- 5ebe9f86 KR-2 fixed (bot unstick vs bodies the navmesh misses); L2.5 shot-age bug (downed bots shot to custody in 0.2 s).
+- b9f4b9ef harness: real MouseCapture (click to capture, forced only as a logged FINDING); generic auto_loud flow driven
+  by objective_markers.
+### In progress (parallel lanes)
+- Stealth flow (subagent); KR-3/KR-4 + ND stuck doors (subagent); director caps vs PD2 Normal for PO-5.4/KR-1 (subagent);
+  specials wear characters (subagent); Glasshouse loud rerun for payday → hub; ND marker_tags staged (wait for map lane).
+### Queued
+- ND / SL / DB loud via auto_loud; ND/SL/DB stealth; D-094 viewmodel_lit lights; P's duplicate prop colliders.
+
 ## 2026-10-13 20:10 UTC — PO-5 (D-086 windowed playthrough), team v3
 ### Done (pushed to env/a-core; last 097d8432)
 - Harness `game/tests/a/e2e/` (po5_runner.tscn, po5_flow.gd, po5_pilot.gd, po5_flow_gh_loud.gd): the real game runs

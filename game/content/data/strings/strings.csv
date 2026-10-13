@@ -89,6 +89,28 @@ ui.hud.casing,Casing
 ui.hud.masked,Masked
 ui.hud.mask_up_hint,Hold {key} to mask up
 ui.hud.casing_note,Unlocked doors open while casing. Locks and anything suspicious need the mask.
+ui.tip.caption,First time
+ui.tip.step,{n}/{total}
+ui.tip.dismiss,Press {key} to close
+ui.tip.auto_close,Closes by itself
+ui.tip.casing.title,Casing the place
+ui.tip.casing.1,"Walk in like you belong. Unmasked, nobody minds you."
+ui.tip.casing.2,"Find the guards, the cameras and the way to the loot."
+ui.tip.casing.3,Unlocked doors are fine. Locks and loot need the mask.
+ui.tip.casing.mask,Hold to mask up. It stays on.
+ui.tip.stealth.title,Stay quiet
+ui.tip.stealth.1,Guards and cameras spot you over time. Watch the chevrons.
+ui.tip.stealth.2,"Answer a downed guard's pager fast, or the alarm goes off."
+ui.tip.stealth.interact,"Interact: doors, loot, pagers, cable ties."
+ui.tip.stealth.throw,Throw a carried bag. Heavy ones slow you down.
+ui.tip.loud.title,The alarm is up
+ui.tip.loud.1,The police assault in waves. Move in the lulls.
+ui.tip.loud.shout,Shout civilians down and tie them. Hostages buy time.
+ui.tip.loud.3,Keep moving the loot to the secure zone.
+ui.tip.escape.title,Get out
+ui.tip.escape.1,The getaway is here. Head for the escape zone.
+ui.tip.escape.2,Unsecured bags pay nothing. Go now or grab more.
+ui.tip.escape.3,You leave when the whole crew is in the zone.
 ui.hud.hint.click_resume,Click to resume
 ui.hud.casing_blocked.sprint,Mask up to sprint ({key})
 ui.hud.casing_blocked.crouch,Mask up to crouch ({key})
@@ -2374,6 +2396,7 @@ heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rop
 ui.jukebox.no_stems,{name} has no recording yet.
 ui.options.controls.scoreboard_mode,Scoreboard
 ui.scoreboard.title,Crew Tally
+ui.scoreboard.objectives,Objectives
 ui.scoreboard.name,Crew
 ui.scoreboard.kills,Kills
 ui.scoreboard.specials,Specials

@@ -79,6 +79,8 @@ var card_result_label: Label
 var urgent_ticks: int = 0
 ## Times the hero total landed (cue.payday_total requested; tests).
 var total_landed_count: int = 0
+## slot -> heister id (MenuFlow at launch); crew rows name the heister.
+var crew_heisters: Dictionary = {}
 var _content: VBoxContainer
 var _summary: ScrollContainer
 var _cards_root: VBoxContainer
@@ -653,6 +655,8 @@ func _grouped_loot() -> Array[Dictionary]:
 
 
 func _crew_name(slot: int, is_ai: bool) -> String:
+	if crew_heisters.has(slot):  # PO-4: the heister the slot played, like the HUD crew rows
+		return Heisters.display_name(StringName(crew_heisters[slot]))
 	if Net.crew.has(slot):
 		return String(Net.crew[slot].get("display_name", ""))
 	return UiText.t(&"ui.results.crew_ai" if is_ai else &"ui.results.crew_slot", {"slot": slot + 1})
