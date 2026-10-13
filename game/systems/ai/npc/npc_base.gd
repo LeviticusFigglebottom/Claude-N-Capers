@@ -73,8 +73,8 @@ func _ready() -> void:
 			var pick: int = absi(hash(String(name))) % ((alts as Array).size() + 1)
 			if pick > 0 and ResourceLoader.exists(String((alts as Array)[pick - 1])):
 				visual_scene = load(String((alts as Array)[pick - 1])) as PackedScene
-	if visual_scene == null:
-		visual_scene = NpcVisuals.resolve(self)  # PO-5.7: ENV D characters instead of capsules
+	if visual_scene == null and AnimDriver.find_player(self) == null:
+		visual_scene = NpcVisuals.resolve(self)  # PO-5.7: ENV D characters instead of capsules (not over a rig)
 	if visual_scene != null and visual_root != null:
 		for c: Node in visual_root.get_children():
 			c.queue_free()
