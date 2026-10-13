@@ -26,6 +26,9 @@ const VIEWMODEL_NAME: String = "Viewmodel"
 const MASK_NAME: String = "Mask"
 ## Render layer 20: third-person-only parts of the local human (culled by its own camera).
 const FIRST_PERSON_HIDDEN_LAYER: int = 1 << 19
+## PP-P-11: render layer of everything under the local camera (arms, weapon, held items); drawn by the
+## viewmodel camera at FpViewmodelTweak.viewmodel_fov_deg, culled from the world camera.
+const VIEWMODEL_LAYER: int = 1 << 18
 
 ## Compatibility alias of the crew member's `Loadout.mask_descriptor` (QA-25); setting it calls
 ## set_mask_descriptor().
@@ -52,6 +55,8 @@ var zoom_factor: float:
 var _crew: CrewController = null
 var _viewmodel: Node3D = null
 var _fp: FpViewmodel = null
+var _vm_viewport: SubViewport = null
+var _vm_cam: Camera3D = null
 var _mask: Node3D = null
 var _mask_id: StringName = &""
 var _ads_weight: float = 0.0
@@ -121,6 +126,8 @@ func _on_node_added(n: Node) -> void:
 	var cam: Camera3D = camera()
 	if cam != null and cam.is_ancestor_of(g):
 		g.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		if _vm_cam != null:
+			g.layers = VIEWMODEL_LAYER
 
 
 ## Re-apply everything (camera, weapon visual, mask).
@@ -185,8 +192,73 @@ func _process(delta: float) -> void:
 	# P1-03: arms' rate
 	_ads_weight = move_toward(_ads_weight, 1.0 if CrewView.is_aiming(_crew) else 0.0, delta * FpViewmodelTweak.data().ads_rate)
 	cam.fov = gs.fov() / lerpf(1.0, mag, ads_blend)
+	_update_viewmodel_camera(cam)
 	_local_view = self
 	_set_zoom_factor(zoom_factor_for(gs.fov(), cam.fov))
+
+
+## PP-P-11 (PD2): the arms and weapon under `cam` render through a second camera with a fixed narrower FOV into a
+## transparent SubViewport (same World3D: same lights, GI and shadows) drawn under the HUD; the world camera
+## culls them. The world FOV setting and ADS zoom no longer stretch the gun. The viewmodel camera shares the
+## world camera's transform, so the ADS AimPoint on the camera axis stays on the crosshair.
+func _update_viewmodel_camera(cam: Camera3D) -> void:
+	var fov: float = FpViewmodelTweak.data().viewmodel_fov_deg
+	if fov <= 0.0:
+		return
+	if _vm_cam == null or not is_instance_valid(_vm_cam):
+		_build_viewmodel_camera(cam)
+	var size: Vector2i = Vector2i(cam.get_viewport().get_visible_rect().size)
+	if _vm_viewport.size != size and size.x > 0 and size.y > 0:
+		_vm_viewport.size = size
+	cam.cull_mask &= ~VIEWMODEL_LAYER
+	_vm_cam.global_transform = cam.global_transform
+	_vm_cam.fov = fov
+	_vm_cam.near = cam.near
+
+
+## Viewmodel camera FOV in degrees (0 when the arms draw with the world camera).
+func viewmodel_fov() -> float:
+	return _vm_cam.fov if _vm_cam != null and is_instance_valid(_vm_cam) else 0.0
+
+
+func _build_viewmodel_camera(cam: Camera3D) -> void:
+	var layer: CanvasLayer = CanvasLayer.new()
+	layer.name = "ViewmodelLayer"
+	layer.layer = -1  # above the 3D world, below the HUD
+	add_child(layer)
+	var vp: SubViewport = SubViewport.new()
+	vp.name = "Viewmodel"
+	vp.transparent_bg = true
+	vp.handle_input_locally = false
+	vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	vp.size = Vector2i(cam.get_viewport().get_visible_rect().size)
+	layer.add_child(vp)  # no own_world_3d: the parent viewport's World3D (same lights / GI)
+	_vm_cam = Camera3D.new()
+	_vm_cam.name = "ViewmodelCamera"
+	_vm_cam.cull_mask = VIEWMODEL_LAYER
+	_vm_cam.far = 20.0
+	var we: Environment = cam.get_world_3d().environment if cam.get_world_3d() != null else null
+	if we != null:
+		var env: Environment = we.duplicate() as Environment
+		env.background_mode = Environment.BG_CLEAR_COLOR  # transparent: only the arms draw here
+		env.fog_enabled = false
+		env.volumetric_fog_enabled = false
+		env.ssr_enabled = false
+		env.sdfgi_enabled = false
+		_vm_cam.environment = env
+	vp.add_child(_vm_cam)
+	_vm_cam.current = true
+	_vm_viewport = vp
+	var tr: TextureRect = TextureRect.new()
+	tr.name = "ViewmodelImage"
+	tr.texture = vp.get_texture()
+	tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tr.set_anchors_preset(Control.PRESET_FULL_RECT)
+	tr.stretch_mode = TextureRect.STRETCH_SCALE
+	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	layer.add_child(tr)
+	for n: Node in cam.find_children("*", "GeometryInstance3D", true, false):
+		(n as GeometryInstance3D).layers = VIEWMODEL_LAYER
 
 
 ## D-084: linear zoom of `fov_deg` relative to `base_fov_deg` (both vertical, degrees).

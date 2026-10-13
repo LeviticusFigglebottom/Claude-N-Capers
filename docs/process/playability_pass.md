@@ -27,10 +27,10 @@ Owner: LEAD. Goal: the game is practically playable start to finish, proven by a
 | PP-P-5 | P | FIXED 839c0330 (PI-25): jump pressed in the air / held through landing was eaten by the jump latch |
 | PP-P-6 | P | FIXED 5b863e1b (PI-08): icy stop from sprint (0.19 s); grounded deceleration 50 |
 | PP-P-7 | C | Glasshouse MainEntrance (glasshouse.tscn:10518) not openable while casing (casing_allowed=false); ruling: public doors open unmasked (C) |
-| PP-P-8 | A | Safe._inner_loot (safe.gd:129-130, 386-398) disables the safe's own child DrillPoint as if it were loot: SafeDrill never usable; the Safe's place_drill still works (two drill prompts design) |
+| PP-P-8 | A | FIXED by A ddda749e: Safe._inner_loot (safe.gd:129-130, 386-398) disables the safe's own child DrillPoint as if it were loot: SafeDrill never usable; the Safe's place_drill still works (two drill prompts design) |
 | PP-P-9 | A/C | Navmesh routes through locked closed doors (Glasshouse SalonDoor, LOCKPICK, loud) - player-facing paths/AI must lockpick or detour; confirm intended (heist_map.md §3) |
 | PP-P-10 | B | P1 default loadout has no primary and a suppressed pistol: a player cannot go loud by shooting (by design? confirm) |
-| PP-P-11 | P | Hip-fire suppressed pistol reads ~40 deg canted on screen: weapon bone is within ~5 deg of straight; perspective of a long gun 0.36 m from a 70 deg camera (viewmodel FOV ruling needed) |
-| PP-P-12 | C | Glasshouse navmesh agent_radius 0.3 (glasshouse.tscn:2579) < crew capsule 0.35 (crew_member.tscn:11): paths hug door jambs, player/bots snag at SalonDoor (12.5,0,9.3) |
+| PP-P-11 | P | FIXED (Lead ruling 20:23): separate PD2-style viewmodel camera, fixed 52 deg (FpViewmodelTweak.viewmodel_fov_deg), world FOV/ADS no longer stretch the gun. Shotgun left hand: marker is B-exact (-0.026,0.046,-0.33) in weapon space; the 0.52 m was camera depth (weapon bone 0.20 m + 0.33), IK reaches it (influence 1) - no reach error |
+| PP-P-12 | P | Nav radius 0.30 < capsule 0.35 is intended (D-085). SalonDoor passes 24/24 once open (C); not a real snag - SKIPPED by Lead. Note: a head-on approach from 0.55 m off the doorway (z 9.3/10.7) still stops (edge_assist_m 0.45); WIP test in /workspace/cnc-team/p/wip/ |
 | PP-L-1 | LEAD | P2 ghost run: antechamber laser walk fails on Night Deposit seed 2001 |
 Envs append rows as they find issues while playing.

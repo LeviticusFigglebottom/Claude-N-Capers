@@ -95,6 +95,11 @@ static var _gen: int = 0
 ## ADS weight rate (1/s toward the target).
 @export var ads_rate: float = 10.0
 
+@export_group("Viewmodel camera (PP-P-11)")
+## PD2-style fixed vertical FOV (deg) the first-person arms/weapon render with, independent of the world FOV
+## setting and ADS zoom (no stretched guns at wide FOV). 0 = draw them with the world camera.
+@export var viewmodel_fov_deg: float = 52.0
+
 @export_group("Motion")
 ## Horizontal speed (m/s) above which walk bob / sprint play.
 @export var move_threshold_mps: float = 0.3

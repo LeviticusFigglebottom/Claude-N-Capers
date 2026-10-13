@@ -25,6 +25,9 @@ func before_each() -> void:
 
 func after_each() -> void:
 	_inp.release_all()
+	for t: Node in get_children():
+		if t is Timer:
+			t.queue_free()
 	Engine.time_scale = 1.0
 	for c: Array in _conns:
 		if (c[0] as Signal).is_connected(c[1]):
@@ -384,9 +387,19 @@ func test_stealth_run() -> void:
 
 
 func test_loud_run() -> void:
-	if not await _launch(3):
+	if not await _launch(0):
 		return
 	_rt.isolate_npc(null)
+	# Setup (Lead 20:23): no AI crew (their cuffing is A's open bug) and police removed as they spawn, so the
+	# walker is not downed mid-route. Revive is NOT covered by this run (needs a 2nd human; see env_p.md).
+	var clear_police: Callable = func() -> void:
+		if _rt != null and is_instance_valid(_rt):
+			_rt.isolate_npc(null)
+	var ticker: Timer = Timer.new()
+	ticker.wait_time = 0.5
+	ticker.timeout.connect(clear_police)
+	add_child(ticker)
+	ticker.start()
 	var c: CrewController = _c()
 	assert_true(await _mask_up(), "mask up")
 	# Go loud the way a player does: unsuppressed shots in the shop (swap to the primary, fire).
@@ -449,18 +462,7 @@ func test_loud_run() -> void:
 			t_end -= 0.5
 		Engine.time_scale = 1.0
 		assert_true(done, "drill finished, safe open")
-	# Downed + revived by an AI teammate.
-	var hit: Dictionary = Damage.info(c.health.health + 1.0, Enums.DamageType.BULLET, Enums.HitZone.BODY,
-		&"test.pt02", c.global_position, Vector3.FORWARD)
-	hit["pierced_armor"] = true
-	c.take_hit(hit, 0)
-	assert_eq(c.crew_state, Enums.CrewState.DOWNED, "downed")
-	Engine.time_scale = 2.0
-	var rev: bool = await wait_until(func() -> bool: return not _of(&"crew_revived").is_empty(), c.health.bleedout_left + 2.0)
-	Engine.time_scale = 1.0
-	if not rev:
-		_find("downed in the workshop: no AI teammate revived within the bleedout")
-	assert_true(rev, "revived")
+	var rev: bool = true  # revive not covered here (no AI crew, no 2nd human)
 	var zone: Area3D = _secure_zone()
 	for i: int in 2:
 		var src: Node3D = _bag_source()
