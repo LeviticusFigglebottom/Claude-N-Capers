@@ -407,6 +407,7 @@ func _setup_interactable() -> void:
 	match lock:
 		Lock.NONE:
 			interactable.kind = &"open_door"
+			interactable.casing_allowed = true  # PO-5 (S1.1): opening an unlocked door is not suspicious
 		Lock.LOCKPICK:
 			interactable.kind = &"lockpick"
 			interactable.speed_modifier_key = &"interaction.lockpick_speed_mult"  # S9.2
@@ -442,6 +443,7 @@ func _apply_unlocked_interaction() -> void:
 	if interactable == null:
 		return
 	interactable.kind = &"open_door"
+	interactable.casing_allowed = true  # PO-5 (S1.1): a casing player opens/closes unlocked doors
 	interactable.interaction_time_s = Tweak.interaction().door_open_s
 	interactable.requires_item = &""
 	interactable.consumes_item = false
