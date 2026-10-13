@@ -15,6 +15,15 @@
 class_name PlayerInput
 extends Node
 
+## Actions held when a UI released the input (payday LB/RB, menus): ignored until released once, so the
+## press that closed or navigated the UI does not also melee / throw / fire in the game.
+const RESUME_GATED: Array[StringName] = [&"fire", &"melee", &"throw_item", &"mask_up", &"drop_bag", &"deploy",
+	&"interact", &"shout", &"reload", &"jump", &"aim", &"slot_primary", &"slot_secondary",
+	&"swap_weapon"]
+
+## Tests only (PInputDriver): headless cannot capture the mouse; treat motion as captured.
+static var test_assume_captured: bool = false
+
 @export var mouse_sensitivity: float = 0.0025
 ## Gamepad look: radians per second at full stick deflection (yaw; pitch uses the same rate).
 @export var gamepad_look_speed: float = 3.0
@@ -26,6 +35,8 @@ extends Node
 @export var gamepad_requires_capture: bool = false
 
 var enabled: bool = true
+var _suppressed: Dictionary[StringName, bool] = {}
+var _ui_focused: bool = false
 var _yaw: float = 0.0
 var _pitch: float = 0.0
 var _crew: CrewController = null
@@ -43,17 +54,29 @@ func _ready() -> void:
 	_crew = get_parent() as CrewController
 	if _crew != null:
 		_yaw = _crew.look_yaw
+		_pitch = _crew.look_pitch
+		_crew.teleported.connect(_on_teleported)
+
+
+## PI-06: spawns, custody release and server teleports set the facing; keep it instead of snapping back.
+func _on_teleported() -> void:
+	_yaw = _crew.look_yaw
+	_pitch = _crew.look_pitch
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not enabled:
 		return
 	var mm: InputEventMouseMotion = event as InputEventMouseMotion
-	if mm != null and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+	if mm != null and (Input.mouse_mode == Input.MOUSE_MODE_CAPTURED or test_assume_captured):
 		var gs: GameSettings = GameSettings.current()  # B5-01 options
 		var ms: Vector2 = gs.mouse_sensitivity() if gs != null else Vector2.ONE
 		var inv: float = -1.0 if gs != null and gs.invert_y() else 1.0
-		add_look(-mm.relative.x * mouse_sensitivity * ms.x, -mm.relative.y * mouse_sensitivity * ms.y * inv)
+		# P1-01 (mouse gain): screen_relative = raw device counts. `relative` is scaled by the canvas_items stretch
+		# (base 1920x1080 / window size), which made sensitivity depend on resolution (x0.75 at 1440p, x0.5 at 4K,
+		# x1.5 at 720p, x30 headless).
+		var d: Vector2 = mm.screen_relative
+		add_look(-d.x * mouse_sensitivity * ms.x, -d.y * mouse_sensitivity * ms.y * inv)
 
 
 ## QB-46: paused input stops building intents; resuming re-reads the crew's look direction.
@@ -62,6 +85,25 @@ func set_paused(paused: bool) -> void:
 	if not paused and _crew != null:
 		_yaw = _crew.look_yaw
 		_pitch = _crew.look_pitch
+	if not paused:
+		_latch_held()
+
+
+## Every gameplay read here polls Input (is_action_pressed / just_pressed), so a UI consuming the event (payday
+## LB/RB, menus) does not stop it: actions held when the UI lets go stay ignored until released once.
+func _latch_held() -> void:
+	_suppressed.clear()
+	for a: StringName in RESUME_GATED:
+		if InputMap.has_action(a) and Input.is_action_pressed(a):
+			_suppressed[a] = true
+
+
+## A visible Control holds keyboard/gamepad focus (payday cards, menus, pause, chat): gameplay input is off.
+func ui_has_focus() -> bool:
+	if not is_inside_tree():
+		return false
+	var f: Control = get_viewport().gui_get_focus_owner()
+	return f != null and f.is_visible_in_tree()
 
 
 ## Add yaw/pitch (radians); pitch clamped to +-89 degrees.
@@ -97,10 +139,23 @@ func _physics_process(delta: float) -> void:
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and rt.has_bot_intent(_crew.slot):
 		return
+	if ui_has_focus():  # same as paused: idle intent, nothing polled reaches gameplay
+		_ui_focused = true
+		var idle: CrewIntent = CrewIntent.new()
+		idle.look_yaw = _yaw
+		idle.look_pitch = _pitch
+		_crew.apply_intent(idle)
+		return
+	if _ui_focused:
+		_ui_focused = false
+		_latch_held()
 	_crew.apply_intent(build_intent(rt))
 
 
 func build_intent(rt: HeistRuntime) -> CrewIntent:
+	for a: StringName in _suppressed.keys():
+		if not Input.is_action_pressed(a):
+			_suppressed.erase(a)
 	var i: CrewIntent = CrewIntent.new()
 	i.move = Input.get_vector(&"move_left", &"move_right", &"move_back", &"move_forward")
 	i.look_yaw = _yaw
@@ -136,9 +191,28 @@ func build_intent(rt: HeistRuntime) -> CrewIntent:
 	elif Input.is_action_just_pressed(&"slot_secondary"):
 		i.weapon_slot = Enums.WeaponSlot.SECONDARY
 	elif Input.is_action_just_pressed(&"swap_weapon"):
-		_last_slot = Enums.WeaponSlot.PRIMARY if _last_slot == Enums.WeaponSlot.SECONDARY else Enums.WeaponSlot.SECONDARY
+		# PT-03: swap from what is actually held (1/2 keys or a failed equip used to desync a local toggle,
+		# so a swap press could pick the slot already in hand and do nothing).
+		var held: int = _crew.weapons.equipped_slot if _crew.weapons != null else _last_slot
+		_last_slot = Enums.WeaponSlot.PRIMARY if held == Enums.WeaponSlot.SECONDARY else Enums.WeaponSlot.SECONDARY
 		i.weapon_slot = _last_slot
 	_order_input(rt, i)
+	if not _suppressed.is_empty():
+		i.fire = i.fire and not _suppressed.has(&"fire")
+		i.melee = i.melee and not _suppressed.has(&"melee")
+		i.reload = i.reload and not _suppressed.has(&"reload")
+		i.deploy = i.deploy and not _suppressed.has(&"deploy")
+		i.jump = i.jump and not _suppressed.has(&"jump")
+		i.mask_up = i.mask_up and not _suppressed.has(&"mask_up")
+		i.throw_item = i.throw_item and not _suppressed.has(&"throw_item") and not _suppressed.has(&"mask_up")
+		i.throw_bag = i.throw_bag and not _suppressed.has(&"throw_item") and not _suppressed.has(&"drop_bag") \
+			and not _suppressed.has(&"mask_up")
+		i.aim = i.aim and not _suppressed.has(&"aim")
+		if _suppressed.has(&"slot_primary") or _suppressed.has(&"slot_secondary") or _suppressed.has(&"swap_weapon"):
+			i.weapon_slot = -1
+		if _suppressed.has(&"interact") or _suppressed.has(&"shout"):
+			i.interact = false
+			i.shout = false
 	return i
 
 
