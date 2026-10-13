@@ -252,6 +252,10 @@ func go_down() -> void:
 	invuln_left = 0.0
 	bleedout_left = tw.bleedout_time_s + Modifiers.add(_slot(), &"defense.bleedout_time_add")
 	bleedout_health = tw.bleedout_health * Modifiers.mult(_slot(), &"defense.bleedout_health_mult")  # A4-04
+	if _crew.weapons != null:
+		# L2.5: only shots fired from the down make a downed crew member a target; the shots that were
+		# being fired when it went down do not (the shooting grace starts with its first downed shot).
+		_crew.weapons.last_shot_age = INF
 	_crew.set_crew_state(Enums.CrewState.DOWNED)
 	if _revive != null:
 		_revive.enabled = true

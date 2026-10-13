@@ -22,7 +22,7 @@ func build() -> void:
 
 
 func watched_signals() -> Array[StringName]:
-	return [&"objective_markers_changed", &"player_mode_changed"]
+	return [&"objective_markers_changed", &"player_mode_changed", &"objectives_changed"]
 
 
 func refresh() -> void:
@@ -42,6 +42,15 @@ func shows(m: Dictionary) -> bool:
 	if player_mode() != &"casing":
 		return true
 	return is_casing_objective(m)
+
+
+## The objective the panel shows (first ACTIVE, not disabled); &"" when none.
+func current_objective_id() -> StringName:
+	for o: Dictionary in prop(&"objectives", []) as Array:
+		if int(o.get("state", Enums.ObjectiveState.ACTIVE)) == Enums.ObjectiveState.ACTIVE \
+				and not bool((o.get("args", {}) as Dictionary).get("disabled", false)):
+			return StringName(o.get("id", &""))
+	return &""
 
 
 static func is_casing_objective(m: Dictionary) -> bool:
@@ -71,6 +80,10 @@ func _layout(entries: Array) -> void:
 		return
 	var to_local: Transform2D = get_global_transform_with_canvas().affine_inverse()
 	var area: Rect2 = Rect2(Vector2.ZERO, size)
+	var current: StringName = current_objective_id()
+	var args_by_id: Dictionary = {}
+	for o: Dictionary in prop(&"objectives", []) as Array:
+		args_by_id[StringName(o.get("id", &""))] = o
 	for m: Dictionary in entries:
 		if int(m.get("state", Enums.ObjectiveState.ACTIVE)) != Enums.ObjectiveState.ACTIVE or not shows(m):
 			continue
@@ -78,22 +91,27 @@ func _layout(entries: Array) -> void:
 		var behind: bool = cam.is_position_behind(world)
 		var local: Vector2 = to_local * cam.unproject_position(world)
 		var placed: Array = clamp_to_edge(local, behind, area)
-		drawn.append({"id": StringName(m.get("id", &"")), "pos": placed[0] as Vector2, "clamped": bool(placed[1]),
-				"distance_m": cam.global_position.distance_to(world),
-				"label": UiText.t(StringName(m.get("text_key", &"")))})
+		var id: StringName = StringName(m.get("id", &""))
+		var o: Dictionary = args_by_id.get(id, {"text_key": m.get("text_key", &""), "args": {}}) as Dictionary
+		drawn.append({"id": id, "pos": placed[0] as Vector2, "clamped": bool(placed[1]),
+				"distance_m": cam.global_position.distance_to(world), "current": current == &"" or id == current,
+				"label": ObjectivesPanel.objective_text(o)})
 
 
 func _draw() -> void:
 	var fs: int = UiTokens.FONT_SMALL
 	for d: Dictionary in drawn:
+		# PO-4: the panel's current objective gets the full marker; other live steps a small dim one.
+		var cur: bool = bool(d["current"])
+		var r: float = SIZE if cur else SIZE * 0.6
 		var c: Vector2 = d["pos"] as Vector2
-		var pts: PackedVector2Array = PackedVector2Array([c + Vector2(0, -SIZE), c + Vector2(SIZE, 0),
-				c + Vector2(0, SIZE), c + Vector2(-SIZE, 0)])
-		draw_colored_polygon(pts, UiTokens.BRASS_HI)
+		var pts: PackedVector2Array = PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0),
+				c + Vector2(0, r), c + Vector2(-r, 0)])
+		draw_colored_polygon(pts, UiTokens.BRASS_HI if cur else Color(UiTokens.PAPER_DIM, 0.75))
 		draw_polyline(PackedVector2Array([pts[0], pts[1], pts[2], pts[3], pts[0]]), Color(UiTokens.INK_0, 0.9), 2.0)
 		var dist: String = UiText.t(&"ui.hud.marker_distance", {"m": roundi(float(d["distance_m"]))})
-		_text(c + Vector2(0, SIZE + fs + 2), dist, fs, UiTokens.PAPER)
-		if not bool(d["clamped"]):
+		_text(c + Vector2(0, r + fs + 2), dist, fs, UiTokens.PAPER if cur else UiTokens.PAPER_DIM)
+		if cur and not bool(d["clamped"]):
 			_text(c + Vector2(0, -SIZE - 8), String(d["label"]), fs, UiTokens.PAPER)
 
 

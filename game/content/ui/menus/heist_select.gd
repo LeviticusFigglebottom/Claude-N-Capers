@@ -24,7 +24,7 @@ func build_ui() -> void:
 	_entries = HeistCatalog.entries()
 	var root: VBoxContainer = UiBuild.vbox(18)
 	UiBuild.screen_margin(self, root)
-	root.add_child(UiBuild.label(&"ui.heist_select.title", UiBuild.HEADER))
+	root.add_child(UiBuild.header(&"ui.heist_select.crumb", &"ui.heist_select.title"))
 	var cols: HBoxContainer = UiBuild.hbox(40)
 	cols.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(cols)

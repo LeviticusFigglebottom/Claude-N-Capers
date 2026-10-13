@@ -60,17 +60,13 @@ func build_ui() -> void:
 	bg.color = UiAccent.app_bg()
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
-	var root: VBoxContainer = UiBuild.vbox(18)
+	var root: VBoxContainer = UiBuild.vbox(UiTokens.S3)
 	UiBuild.screen_margin(self, root)
-	var header: HBoxContainer = UiBuild.hbox(20)
-	header.add_child(UiAccent.strip(UiAccent.table().fallback, 6.0))
-	header.add_child(UiBuild.label(&"ui.options.title", UiBuild.HEADER))
-	root.add_child(header)
-	var tab_row: HBoxContainer = UiBuild.hbox(12)
+	root.add_child(UiBuild.header(&"ui.options.crumb", &"ui.options.title"))
+	var tab_row: HBoxContainer = UiBuild.hbox(UiTokens.S2)
 	var group: ButtonGroup = ButtonGroup.new()
 	for t: StringName in TABS:
 		var b: Button = UiBuild.tab(UiBuild.button(StringName("ui.options.tab.%s" % t)))
-		b.text = b.text.to_upper()
 		b.custom_minimum_size = Vector2(220, 0)
 		b.button_group = group
 		b.pressed.connect(show_tab.bind(t))
@@ -90,28 +86,28 @@ func build_ui() -> void:
 
 
 func _build_leave_confirm() -> void:
-	var dim: ColorRect = ColorRect.new()
-	dim.color = Color(0, 0, 0, 0.6)
+	var dim: PanelContainer = PanelContainer.new()
+	dim.theme_type_variation = UiBuild.SCRIM
 	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	var center: CenterContainer = CenterContainer.new()
-	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	dim.add_child(center)
 	var panel: PanelContainer = PanelContainer.new()
+	panel.theme_type_variation = &"AlertPanel"  # leaving forfeits the job: a loud box
 	center.add_child(panel)
-	var v: VBoxContainer = UiBuild.vbox(18)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S3)
 	panel.add_child(v)
 	v.add_child(UiBuild.label(&"ui.menu.leave_heist", UiBuild.SUBHEADER))
 	v.add_child(UiBuild.label(&"ui.menu.quit_confirm"))
-	var h: HBoxContainer = UiBuild.hbox(16)
-	leave_confirm_button = UiBuild.primary(UiBuild.button(&"ui.menu.confirm"))
+	# Cancel (ghost) left, Confirm (primary) right, like every footer.
+	leave_confirm_button = UiBuild.button(&"ui.menu.confirm")
 	leave_cancel_button = UiBuild.button(&"ui.menu.cancel")
 	for b: Button in [leave_confirm_button, leave_cancel_button]:
 		b.custom_minimum_size = Vector2(240, 0)
 		b.focus_neighbor_top = NodePath(".")  # the d-pad stays inside the dialog
 		b.focus_neighbor_bottom = NodePath(".")
-		h.add_child(b)
-	UiNav.chain_horizontal([leave_confirm_button, leave_cancel_button] as Array[Control])
+	var h: HBoxContainer = UiBuild.footer(leave_cancel_button, leave_confirm_button)
+	UiNav.chain_horizontal([leave_cancel_button, leave_confirm_button] as Array[Control])
 	leave_confirm_button.pressed.connect(func() -> void:
 		close_leave_confirm()
 		leave_heist_requested.emit())
@@ -142,27 +138,32 @@ func close_leave_confirm() -> void:
 		leave_button.grab_focus.call_deferred()
 
 
+## PO-4 footer: Back (ghost) and, in a heist, Leave Heist on the left; Revert and Reset tab (ghost);
+## the unapplied note; Apply (the screen's primary) bottom right.
 func _build_footer() -> HBoxContainer:
-	var footer: HBoxContainer = UiBuild.hbox(16)
-	apply_button = UiBuild.primary(UiBuild.button(&"ui.options.apply"))
-	revert_button = UiBuild.button(&"ui.options.revert")
-	reset_button = UiBuild.button(&"ui.options.reset_tab")
+	apply_button = UiBuild.button(&"ui.options.apply")
+	revert_button = UiBuild.ghost(UiBuild.button(&"ui.options.revert"))
+	reset_button = UiBuild.ghost(UiBuild.button(&"ui.options.reset_tab"))
 	back_button = UiBuild.button(&"ui.menu.back")
-	var chain: Array[Control] = [apply_button, revert_button, reset_button, back_button]
+	var chain: Array[Control] = [back_button]
 	if in_heist:
 		leave_button = UiBuild.button(&"ui.menu.leave_heist")
 		leave_button.pressed.connect(open_leave_confirm)
 		chain.append(leave_button)
+	chain.append_array([revert_button, reset_button, apply_button] as Array[Control])
 	for b: Control in chain:
-		b.custom_minimum_size = Vector2(240, 0)
-		footer.add_child(b)
+		b.custom_minimum_size = Vector2(220, 0)
 	apply_button.pressed.connect(apply_changes)
 	revert_button.pressed.connect(revert)
 	reset_button.pressed.connect(reset_tab)
 	back_button.pressed.connect(back_requested.emit)
 	dirty_label = UiBuild.label(&"ui.options.unapplied", UiBuild.DIM)
 	dirty_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	footer.add_child(dirty_label)
+	dirty_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dirty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var middle: Array[Control] = chain.slice(1, chain.size() - 1)
+	middle.append(dirty_label)
+	var footer: HBoxContainer = UiBuild.footer(back_button, apply_button, middle)
 	UiNav.chain_horizontal(chain)
 	_update_dirty()
 	return footer
@@ -249,7 +250,7 @@ func _fill_page(t: StringName, page: VBoxContainer) -> Array[Control]:
 			out.append_array(controls_tab.focus_controls())
 		TAB_ACCESSIBILITY:
 			out = _rows(page, GameSettings.ACCESSIBILITY)
-			palette_preview = UiBuild.hbox(8)
+			palette_preview = UiBuild.hbox(UiTokens.S2)
 			palette_preview.name = "PalettePreview"
 			page.add_child(palette_preview)
 			_refresh_palette_preview()
@@ -308,7 +309,7 @@ func _refresh_palette_preview() -> void:
 	for f: StringName in HudPalette.FIELDS:
 		var sw: ColorRect = ColorRect.new()
 		sw.color = p.color(f)
-		sw.custom_minimum_size = Vector2(48, 28)
+		sw.custom_minimum_size = Vector2(UiTokens.S6, UiTokens.S5)
 		sw.tooltip_text = UiText.t(StringName("ui.options.palette.field.%s" % f))
 		palette_preview.add_child(sw)
 

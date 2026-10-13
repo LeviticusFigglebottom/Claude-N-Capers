@@ -13,20 +13,21 @@ const DEFAULT_PATH: String = "res://content/data/ui/progression_ui.tres"
 @export var dev_unlock_all_perks: bool = false
 ## Perk deck list order (ids); decks missing here follow, sorted by id.
 @export var deck_order: Array[StringName] = []
-## Skill button border colors per state (SkillBuild.STATE_*).
-@export var skill_locked_color: Color = Color(0.22, 0.23, 0.26)
-@export var skill_available_color: Color = Color(0.45, 0.5, 0.58)
-@export var skill_basic_color: Color = Color(0.35, 0.65, 1.0)
-@export var skill_aced_color: Color = Color(1.0, 0.75, 0.25)
+## Skill button border colors per state (SkillBuild.STATE_*). PO-4 "Case File": ink lines for locked /
+## available, paper for basic, OK green for aced (brass is money / primary, cyan is focus only).
+@export var skill_locked_color: Color = UiTokens.LINE
+@export var skill_available_color: Color = UiTokens.LINE_STRONG
+@export var skill_basic_color: Color = UiTokens.PAPER_DIM
+@export var skill_aced_color: Color = UiTokens.OK
 ## How much an owned (basic / aced) skill's fill is tinted with its state color (focus keeps the border).
 @export var owned_tint: float = 0.22
 ## Details text: blocked-effect note and "can't take" reason.
-@export var note_color: Color = Color(0.6, 0.63, 0.68)
-@export var reason_color: Color = Color(1.0, 0.45, 0.35)
-## Perk card panel borders.
-@export var card_unlocked_color: Color = Color(1.0, 0.75, 0.25)
-@export var card_next_color: Color = Color(0.45, 0.5, 0.58)
-@export var card_locked_color: Color = Color(0.22, 0.23, 0.26)
+@export var note_color: Color = UiTokens.PAPER_DIM
+@export var reason_color: Color = UiTokens.ALERT
+## Perk card panel borders (unlocked = OK green, next = paper, locked = hairline).
+@export var card_unlocked_color: Color = UiTokens.OK
+@export var card_next_color: Color = UiTokens.PAPER_DIM
+@export var card_locked_color: Color = UiTokens.LINE
 
 ## Perk points (PD2 P4): read-only forward to PerkPointTweak (balance data, not UI; D-034 QB-45).
 var xp_per_perk_point: int:

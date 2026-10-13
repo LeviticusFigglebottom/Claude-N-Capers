@@ -94,7 +94,7 @@ func _apply_accent() -> void:
 
 
 ## PO-4 motion (style.md §8): the step just done reads "OBJECTIVE COMPLETE" in OK green for
-## FLASH_S, then the caption returns and the new line fades in over UiTokens.T_SLOW.
+## FLASH_S while the new line fades in over UiTokens.T_SLOW; then the caption returns.
 func _flash_complete() -> void:
 	if _flash_tween != null and _flash_tween.is_valid():
 		_flash_tween.kill()
@@ -103,10 +103,11 @@ func _flash_complete() -> void:
 	header_label.text = UiText.t(&"ui.hud.objective_complete")
 	header_label.add_theme_color_override(&"font_color", UiTokens.OK)
 	list_box.modulate.a = 0.0 if UiTokens.motion_ok() else 1.0
+	# The caption flashes for FLASH_S; the next step fades in at once (its marker is already up).
 	_flash_tween = create_tween()
-	_flash_tween.tween_interval(FLASH_S)
-	_flash_tween.tween_callback(_end_flash)
 	_flash_tween.tween_property(list_box, ^"modulate:a", 1.0, UiTokens.T_SLOW).set_ease(Tween.EASE_OUT)
+	_flash_tween.tween_interval(maxf(FLASH_S - UiTokens.T_SLOW, 0.0))
+	_flash_tween.tween_callback(_end_flash)
 
 
 func _end_flash() -> void:

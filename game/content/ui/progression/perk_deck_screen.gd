@@ -53,19 +53,20 @@ func build_ui() -> void:
 	PerkProgress.sync(profile, tweak)
 	_decks = PerkProgress.decks(tweak)
 	_build_card_styles()
-	var root: VBoxContainer = UiBuild.vbox(14)
-	UiBuild.screen_margin(self, root, 48)
-	var top: HBoxContainer = UiBuild.hbox(32)
-	top.add_child(UiBuild.label(&"ui.perks.title", UiBuild.HEADER))
-	var spacer: Control = Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top.add_child(spacer)
+	var root: VBoxContainer = UiBuild.vbox(UiTokens.S2)
+	UiBuild.screen_margin(self, root, UiTokens.S6)
+	var top: HBoxContainer = UiBuild.hbox(UiTokens.S5)
+	var titles: VBoxContainer = UiBuild.header(&"ui.perks.crumb", &"ui.perks.title")
+	titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(titles)
 	points_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	top.add_child(points_label)
+	var pts: VBoxContainer = UiBuild.field(&"ui.perks.points_caption", points_label)
+	pts.size_flags_vertical = Control.SIZE_SHRINK_END
+	top.add_child(pts)
 	root.add_child(top)
 	if tweak.dev_unlock_all_perks:
 		root.add_child(UiBuild.label(&"ui.perks.dev_unlocked", UiBuild.DIM))
-	var body: HBoxContainer = UiBuild.hbox(28)
+	var body: HBoxContainer = UiBuild.hbox(UiTokens.S4)
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(body)
 	var scroll: ScrollContainer = ScrollContainer.new()
@@ -73,30 +74,27 @@ func build_ui() -> void:
 	scroll.follow_focus = true
 	scroll.custom_minimum_size = Vector2(420, 0)
 	body.add_child(scroll)
-	var list: VBoxContainer = UiBuild.vbox(6)
+	var list: VBoxContainer = UiBuild.vbox(UiTokens.S1)
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
+	list.add_child(UiBuild.caption(&"ui.perks.decks"))
 	for d: PerkDeckDef in _decks:
 		var b: Button = UiBuild.button(&"ui.perks.title")
 		b.custom_minimum_size = Vector2(400, 0)
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		b.add_theme_font_size_override(&"font_size", 22)
+		b.toggle_mode = true  # PO-4: the previewed deck shows the pressed style (ink + cyan edge)
 		b.pressed.connect(equip.bind(d.id))
 		b.focus_entered.connect(preview.bind(d.id))
 		b.mouse_entered.connect(preview.bind(d.id))
 		list.add_child(b)
 		deck_buttons[d.id] = b
 	body.add_child(_build_deck_view())
-	var bottom: HBoxContainer = UiBuild.hbox(16)
+	# PO-4 footer: Back (ghost) left, a one-line rule, Equip Deck (the screen's primary) right.
 	back_button = UiBuild.button(&"ui.menu.back")
 	back_button.pressed.connect(back_requested.emit)
-	bottom.add_child(back_button)
 	var hint: Label = UiBuild.label(&"ui.perks.hint", UiBuild.DIM)
-	hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	bottom.add_child(hint)
-	root.add_child(bottom)
+	hint.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	root.add_child(UiBuild.footer(back_button, equip_button, [hint] as Array[Control]))
 	for d: PerkDeckDef in _decks:
 		focus_chain.append(deck_buttons[d.id] as Control)
 	focus_chain.append(equip_button)
@@ -107,58 +105,70 @@ func build_ui() -> void:
 
 
 func _build_deck_view() -> VBoxContainer:
-	var v: VBoxContainer = UiBuild.vbox(10)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var head: HBoxContainer = UiBuild.hbox(20)
+	var head: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	deck_name_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	deck_status_label = UiBuild.label(&"", UiBuild.DIM)
+	deck_status_label = UiBuild.caption()
 	deck_status_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	head.add_child(deck_name_label)
 	head.add_child(deck_status_label)
+	head.add_child(UiBuild.spacer())
 	v.add_child(head)
 	deck_desc_label = UiBuild.label()
 	deck_desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(deck_desc_label)
+	# The card grid scrolls so the footer stays on screen at 720p (long completion texts).
+	var grid_scroll: ScrollContainer = ScrollContainer.new()
+	grid_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	grid_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	grid_scroll.follow_focus = true  # pad focus on a card scrolls it into view
+	v.add_child(grid_scroll)
 	var grid: GridContainer = GridContainer.new()
 	grid.columns = CARD_COLUMNS
-	grid.add_theme_constant_override(&"h_separation", 12)
-	grid.add_theme_constant_override(&"v_separation", 12)
+	grid.add_theme_constant_override(&"h_separation", UiTokens.S2)
+	grid.add_theme_constant_override(&"v_separation", UiTokens.S2)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	v.add_child(grid)
+	grid_scroll.add_child(grid)
 	for i: int in range(_max_cards()):
-		var cv: VBoxContainer = UiBuild.vbox(4)
-		var title: Label = UiBuild.label(&"", UiBuild.DIM)
+		var cv: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+		var title: Label = UiBuild.caption()
 		var nm: Label = UiBuild.label()
-		nm.add_theme_font_size_override(&"font_size", 22)
+		nm.add_theme_font_override(&"font", UiTokens.font_heading())
 		nm.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		var desc: Label = UiBuild.label()
 		desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		desc.add_theme_font_size_override(&"font_size", 21)
+		desc.add_theme_font_size_override(&"font_size", UiTokens.FONT_SMALL)
 		desc.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		var st: Label = UiBuild.label(&"", UiBuild.DIM)
-		for c: Control in [title, nm, desc, st]:
+		var st: Label = UiBuild.caption()
+		# Caption row: "CARD 1 · 200 PTS" left, the state right (keeps 3 rows of cards on a 720p screen).
+		var head_row: HBoxContainer = UiBuild.hbox(UiTokens.S2)
+		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		head_row.add_child(title)
+		head_row.add_child(st)
+		for c: Control in [head_row, nm, desc]:
 			cv.add_child(c)
 		var p: PanelContainer = UiBuild.panel(cv)
 		p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		p.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		grid.add_child(p)
+		grid.add_child(UiBuild.focus_panel(p))  # readable with the pad (scrolls the grid)
 		card_panels.append(p)
 		card_title_labels.append(title)
 		card_name_labels.append(nm)
 		card_desc_labels.append(desc)
 		card_state_labels.append(st)
+	# Unlock (and why it is blocked) sit on the deck's title row, so three card rows fit at 720p.
 	reason_label = UiBuild.label()
 	reason_label.add_theme_color_override(&"font_color", tweak.reason_color)
-	v.add_child(reason_label)
-	var h: HBoxContainer = UiBuild.hbox(16)
-	equip_button = UiBuild.button(&"ui.perks.equip")
+	reason_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	equip_button = UiBuild.button(&"ui.perks.equip")  # placed in the footer by build_ui
 	unlock_button = UiBuild.button(&"ui.perks.all_unlocked")
-	unlock_button.custom_minimum_size = Vector2(420, 0)
+	unlock_button.custom_minimum_size = Vector2(360, 0)
 	equip_button.pressed.connect(func() -> void: equip(preview_deck))
 	unlock_button.pressed.connect(func() -> void: unlock_next(preview_deck))
-	h.add_child(equip_button)
-	h.add_child(unlock_button)
-	v.add_child(h)
+	head.add_child(reason_label)
+	head.add_child(unlock_button)
 	return v
 
 
@@ -188,12 +198,13 @@ func unlock_next(deck_id: StringName) -> Dictionary:
 
 
 func refresh() -> void:
-	points_label.text = UiText.t(&"ui.perks.points", {"points": UiText.group_digits(PerkProgress.available(profile, tweak))})
+	points_label.text = UiText.group_digits(PerkProgress.available(profile, tweak))
 	for d: PerkDeckDef in _decks:
 		var n: int = PerkProgress.cards_unlocked(profile, d.id, tweak)
 		var key: StringName = &"ui.perks.deck_entry_active" if d.id == profile.loadout.perk_deck else &"ui.perks.deck_entry"
 		(deck_buttons[d.id] as Button).text = UiText.t(key, {"name": UiText.t(StringName("%s.name" % d.id)),
 				"cards": n, "total": d.cards.size()})
+		(deck_buttons[d.id] as Button).set_pressed_no_signal(d.id == preview_deck)
 	var deck: PerkDeckDef = PerkProgress.deck(preview_deck)
 	if deck == null:
 		return
@@ -234,8 +245,7 @@ func _refresh_card(i: int, deck: PerkDeckDef, unlocked: int) -> void:
 	var state: StringName = &"unlocked" if i < unlocked else (&"next" if i == unlocked else &"locked")
 	card_state_labels[i].text = UiText.t(StringName("ui.perks.state.%s" % state))
 	p.add_theme_stylebox_override(&"panel", _card_styles[state] as StyleBox)
-	var dim: float = 1.0 if state != &"locked" else 0.7
-	p.modulate = Color(dim, dim, dim)
+	p.modulate = Color.WHITE if state != &"locked" else Color.WHITE.darkened(0.3)
 
 
 func _commit() -> void:
@@ -259,29 +269,32 @@ func _build_card_styles() -> void:
 	for state: Variant in colors:
 		var sb: StyleBoxFlat = base.duplicate() as StyleBoxFlat if base != null else StyleBoxFlat.new()
 		sb.border_color = colors[state] as Color
-		sb.content_margin_left = 14.0
-		sb.content_margin_right = 14.0
-		sb.content_margin_top = 10.0
-		sb.content_margin_bottom = 10.0
+		sb.content_margin_left = UiTokens.S3
+		sb.content_margin_right = UiTokens.S3
+		sb.content_margin_top = UiTokens.S1
+		sb.content_margin_bottom = UiTokens.S1
 		_card_styles[state] = sb
 
 
-## Deck list is a vertical chain; right from any deck -> Equip; Equip <-> Unlock; down -> Back.
+## Deck list is a vertical chain; right from any deck -> Equip (footer, bottom right); Unlock sits
+## above Equip; Back <-> Equip along the footer.
 func _wire_focus() -> void:
 	for d: PerkDeckDef in _decks:
 		var b: Button = deck_buttons[d.id] as Button
 		b.focus_neighbor_right = b.get_path_to(equip_button)
 		b.focus_neighbor_left = b.get_path_to(b)
-	UiNav.chain_horizontal([equip_button, unlock_button] as Array[Control], false)
+	UiNav.chain_horizontal([back_button, equip_button] as Array[Control], false)
+	_link_cards()
 	var first: Button = deck_buttons[_decks[0].id] as Button if not _decks.is_empty() else null
-	for c: Control in [equip_button, unlock_button]:
-		c.focus_neighbor_bottom = c.get_path_to(back_button)
-		c.focus_neighbor_top = c.get_path_to(c)
+	unlock_button.focus_neighbor_bottom = unlock_button.get_path_to(equip_button)
+	unlock_button.focus_neighbor_top = unlock_button.get_path_to(unlock_button)
+	unlock_button.focus_neighbor_right = unlock_button.get_path_to(equip_button)
+	equip_button.focus_neighbor_top = equip_button.get_path_to(unlock_button)
+	equip_button.focus_neighbor_bottom = equip_button.get_path_to(equip_button)
 	if first != null:
-		equip_button.focus_neighbor_left = equip_button.get_path_to(first)
+		unlock_button.focus_neighbor_left = unlock_button.get_path_to(first)
 		back_button.focus_neighbor_left = back_button.get_path_to(first)
-	back_button.focus_neighbor_top = back_button.get_path_to(equip_button)
-	back_button.focus_neighbor_right = back_button.get_path_to(equip_button)
+		back_button.focus_neighbor_top = back_button.get_path_to(first)
 
 
 func _focus_preview() -> void:
@@ -295,3 +308,31 @@ func focus_default() -> void:
 		_focus_preview.call_deferred()
 	else:
 		super()
+
+
+## Pad / arrows: right from any deck enters the card grid; the grid moves by rows and columns; left
+## from the first column returns to the decks.
+func _link_cards() -> void:
+	if card_panels.is_empty():
+		return
+	var first_deck: Control = null
+	for id: Variant in deck_buttons:
+		var b: Control = deck_buttons[id] as Control
+		b.focus_neighbor_right = b.get_path_to(card_panels[0])
+		if first_deck == null:
+			first_deck = b
+	for i: int in range(card_panels.size()):
+		var c: PanelContainer = card_panels[i]
+		var col: int = i % CARD_COLUMNS
+		if col > 0:
+			c.focus_neighbor_left = c.get_path_to(card_panels[i - 1])
+		elif first_deck != null:
+			c.focus_neighbor_left = c.get_path_to(first_deck)
+		if col < CARD_COLUMNS - 1 and i + 1 < card_panels.size():
+			c.focus_neighbor_right = c.get_path_to(card_panels[i + 1])
+		if i >= CARD_COLUMNS:
+			c.focus_neighbor_top = c.get_path_to(card_panels[i - CARD_COLUMNS])
+		if i + CARD_COLUMNS < card_panels.size():
+			c.focus_neighbor_bottom = c.get_path_to(card_panels[i + CARD_COLUMNS])
+		else:
+			c.focus_neighbor_bottom = c.get_path_to(equip_button)

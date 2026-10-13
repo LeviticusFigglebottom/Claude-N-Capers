@@ -66,32 +66,38 @@ func build_ui() -> void:
 				director.set(&"listen_to_event_bus", false)
 			director.name = "PreviewDirector"
 			add_child(director)
-	var root: VBoxContainer = UiBuild.vbox(18)
+	var root: VBoxContainer = UiBuild.vbox(UiTokens.S3)
 	UiBuild.screen_margin(self, root)
-	root.add_child(UiBuild.label(&"ui.jukebox.title", UiBuild.HEADER))
-	root.add_child(UiBuild.label(&"ui.jukebox.subtitle", UiBuild.DIM))
+	var header: HBoxContainer = UiBuild.hbox(UiTokens.S4)
+	var titles: VBoxContainer = UiBuild.header(&"ui.jukebox.crumb", &"ui.jukebox.title")
+	titles.add_child(UiBuild.label(&"ui.jukebox.subtitle", UiBuild.DIM))
+	titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(titles)
+	now_label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	now_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var now: VBoxContainer = UiBuild.field(&"ui.jukebox.now_caption", now_label)
+	now.size_flags_vertical = Control.SIZE_SHRINK_END
+	(now.get_child(0) as Label).horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	header.add_child(now)
+	root.add_child(header)
 	notice_label = UiBuild.label(&"ui.jukebox.preview_missing", UiBuild.SUBHEADER)
 	notice_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	notice_label.visible = director == null
 	root.add_child(notice_label)
-	now_label = UiBuild.label(&"", UiBuild.DIM)
-	root.add_child(now_label)
 	var scroll: ScrollContainer = ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
 	root.add_child(scroll)
-	list = UiBuild.vbox(10)
+	list = UiBuild.vbox(UiTokens.S2)
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
-	var footer: HBoxContainer = UiBuild.hbox(16)
+	# PO-4 footer: Back (ghost) left, Stop next to it; no primary (each row has its own Play).
 	stop_button = UiBuild.button(&"ui.jukebox.stop")
 	stop_button.pressed.connect(stop)
 	back_button = UiBuild.button(&"ui.menu.back")
 	back_button.pressed.connect(back_requested.emit)
-	footer.add_child(back_button)
-	footer.add_child(stop_button)
-	root.add_child(footer)
+	root.add_child(UiBuild.footer(back_button, null, [stop_button] as Array[Control]))
 	back_requested.connect(stop)
 	visibility_changed.connect(_on_hidden_check)
 	refresh()
@@ -147,25 +153,27 @@ func _exit_tree() -> void:
 
 func _row(id: StringName) -> PanelContainer:
 	var unlocked: bool = MusicCatalog.is_unlocked(profile, id)
-	var h: HBoxContainer = UiBuild.hbox(16)
+	var h: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	var title: Label = UiBuild.label(MusicCatalog.display_key(id), UiBuild.SUBHEADER)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	h.add_child(title)
-	var status: Label = UiBuild.label(&"", &"" if unlocked else UiBuild.DIM)
+	var status: Label = UiBuild.caption()
+	status.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	status.name = "Status"
 	status.text = status_text(id, unlocked)
 	h.add_child(status)
 	status_labels[id] = status
 	var b: Button = UiBuild.button(&"ui.jukebox.play")
 	b.name = "Play"
+	b.toggle_mode = true  # pressed = the track playing now
 	b.custom_minimum_size = Vector2(200, 0)
 	b.disabled = director == null or not unlocked
 	b.pressed.connect(play.bind(id))
 	h.add_child(b)
 	play_buttons[id] = b
 	var panel: PanelContainer = UiBuild.panel(h)
-	panel.modulate = Color.WHITE if unlocked else Color(1, 1, 1, 0.8)
+	panel.modulate.a = 1.0 if unlocked else 0.8
 	return panel
 
 
@@ -181,6 +189,10 @@ static func status_text(id: StringName, unlocked: bool) -> String:
 
 func _refresh_state() -> void:
 	stop_button.disabled = now_playing == &""
+	for id: Variant in play_buttons:
+		# PO-4: the playing track's Play button shows the pressed style (ink + cyan edge).
+		var b: Button = play_buttons[id] as Button
+		b.set_pressed_no_signal(StringName(id) == now_playing)
 	if now_playing == &"":
 		now_label.text = UiText.t(&"ui.jukebox.idle")
 	else:

@@ -36,7 +36,7 @@ func setup(p: PlayerProfile, p_heist_id: StringName = &"") -> void:
 
 func _init() -> void:
 	add_theme_constant_override(&"separation", 16)
-	title_label = UiBuild.label(&"ui.music.title")
+	title_label = UiBuild.caption(&"ui.music.title")
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	add_child(title_label)
 	option = UiBuild.option_button()

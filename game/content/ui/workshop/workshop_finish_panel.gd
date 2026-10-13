@@ -28,11 +28,11 @@ var _rows: Array[StringName] = []
 ## Build the panel around `item_list` (styled by the screen).
 func build(p: PlayerProfile, item_list: ItemList) -> void:
 	profile = p
-	add_theme_constant_override(&"separation", 8)
-	add_child(UiBuild.label(&"ui.workshop.finish.title", UiBuild.DIM))
+	add_theme_constant_override(&"separation", UiTokens.S2)
+	add_child(UiBuild.caption(&"ui.workshop.finish.title"))
 	list = item_list
 	list.name = "FinishList"
-	list.custom_minimum_size = Vector2(0, 200)
+	list.custom_minimum_size = Vector2(0, 160)
 	list.item_selected.connect(_on_row)
 	add_child(list)
 	status_label = UiBuild.label(&"", UiBuild.DIM)
@@ -137,7 +137,7 @@ func _add_row(id: StringName, text: String, owned: bool) -> void:
 	list.set_item_metadata(row, id)
 	list.set_item_tooltip(row, UiText.t(StringName("item.%s.desc" % id)) if id != &"" else text)
 	if not owned:
-		list.set_item_custom_fg_color(row, UiBuild.theme().get_color(&"font_color", &"DimLabel"))
+		list.set_item_custom_fg_color(row, UiTokens.PAPER_MUTE)
 	_rows.append(id)
 
 
