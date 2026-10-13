@@ -140,6 +140,11 @@ func test_board_take_contract_gamepad_only() -> void:
 	assert_eq(f.current, f.board_screen as Control, "A opens the Board")
 	await wait_frames(2)
 	assert_true(_focus() != null, "Board gives the pad a focused control")
+	# KR-6: pins sit where the time-rotating contracts put them, so a blind d-pad walk could miss Take.
+	# The designed pad path: A on the focused pin selects that contract and moves focus to Take.
+	assert_true(_focus() is BoardPin, "default focus on a pin")
+	await _pad(JOY_BUTTON_A)
+	assert_eq(_focus(), f.board_screen.take_button as Control, "A on a pin jumps to Take")
 	assert_true(await _nav_to(f.board_screen.take_button, "Take"))
 	assert_false(f.board_screen.take_button.disabled, "a contract is selected")
 	await _pad(JOY_BUTTON_A)

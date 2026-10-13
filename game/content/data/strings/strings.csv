@@ -80,6 +80,7 @@ ui.hud.pager,Pager {seconds}
 ui.hud.pagers_left,Pagers left: {count}
 ui.hud.ecm,Jammer {seconds}
 ui.hud.objectives,Objective
+ui.hud.objective_complete,Objective complete
 ui.hud.casing,Casing
 ui.hud.masked,Masked
 ui.hud.mask_up_hint,Hold {key} to mask up
@@ -2700,6 +2701,7 @@ voice.vo.reyes.dockside_burn_radio_loot_cash,"Co-op cash. Smells like fish, spen
 voice.vo.reyes.dockside_burn_radio_loot_product,Product's out. My buyer says thanks. I say burn the rest.
 ui.subtitle.speaker,{name}:
 ui.options.accessibility.subtitles_all_speakers,Subtitles for Guards and Crew
+ui.options.accessibility.reduce_motion,Reduce Motion
 ui.career.open,Career
 ui.career.title,CAREER
 ui.career.subtitle,"Every job on the record. Counting started with this version of the save, so older heists are not here."

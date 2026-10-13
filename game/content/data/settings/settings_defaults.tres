@@ -45,7 +45,8 @@ sections = {
 "palette": {"type": "choice", "default": "default", "options": ["default", "deuteranopia", "protanopia", "tritanopia", "high_contrast"]},
 "hud_scale": {"type": "float", "default": 1.0, "min": 0.75, "max": 1.5, "step": 0.05},
 "subtitle_size": {"type": "choice", "default": "medium", "options": ["small", "medium", "large"]},
-"subtitles_all_speakers": {"type": "bool", "default": false}
+"subtitles_all_speakers": {"type": "bool", "default": false},
+"reduce_motion": {"type": "bool", "default": false}
 }
 }
 action_order = Array[StringName]([&"move_forward", &"move_back", &"move_left", &"move_right", &"sprint", &"crouch", &"jump", &"look_up", &"look_down", &"look_left", &"look_right", &"fire", &"aim", &"reload", &"melee", &"slot_primary", &"slot_secondary", &"swap_weapon", &"interact", &"shout", &"mask_up", &"throw_item", &"deploy", &"drop_bag", &"order_menu", &"scoreboard", &"pause"])

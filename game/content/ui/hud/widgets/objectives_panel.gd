@@ -5,6 +5,9 @@
 class_name ObjectivesPanel
 extends HudWidget
 
+## Seconds the "complete" caption stays before the next step shows.
+const FLASH_S: float = 2.0
+
 var list_box: VBoxContainer
 var header_label: Label
 var panel: PanelContainer
@@ -12,6 +15,10 @@ var panel: PanelContainer
 var accent: Color = Color(0, 0, 0, 0)
 ## Bags secured this run (EventBus.loot_secured), the {count} of "Secure the bags ({count}/{total})".
 var secured_count: int = 0
+## Id of the objective on the line (&"" = none) and whether the "complete" flash is showing (tests).
+var shown_id: StringName = &""
+var flashing: bool = false
+var _flash_tween: Tween = null
 
 
 func build() -> void:
@@ -79,11 +86,35 @@ func _apply_accent() -> void:
 	header_label.add_theme_color_override(&"font_color", UiAccent.readable(accent, back, UiAccent.table().min_text_contrast))
 
 
+## PO-4 motion (style.md §8): the step just done reads "OBJECTIVE COMPLETE" in OK green for
+## FLASH_S, then the caption returns and the new line fades in over UiTokens.T_SLOW.
+func _flash_complete() -> void:
+	if _flash_tween != null and _flash_tween.is_valid():
+		_flash_tween.kill()
+	flashing = true
+	header_label.text = UiText.t(&"ui.hud.objective_complete")
+	header_label.add_theme_color_override(&"font_color", UiTokens.OK)
+	list_box.modulate.a = 0.0 if UiTokens.motion_ok() else 1.0
+	_flash_tween = create_tween()
+	_flash_tween.tween_interval(FLASH_S)
+	_flash_tween.tween_callback(_end_flash)
+	_flash_tween.tween_property(list_box, ^"modulate:a", 1.0, UiTokens.T_SLOW).set_ease(Tween.EASE_OUT)
+
+
+func _end_flash() -> void:
+	flashing = false
+	header_label.text = UiText.t(&"ui.hud.objectives")
+	header_label.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+	_apply_accent()
+	visible = list_box.get_child_count() > 0
+
+
 func watched_signals() -> Array[StringName]:
 	return [&"objectives_changed"]
 
 
 func refresh() -> void:
+	var new_id: StringName = &""
 	for c: Node in list_box.get_children():
 		list_box.remove_child(c)
 		c.queue_free()
@@ -97,8 +128,12 @@ func refresh() -> void:
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		l.custom_minimum_size = Vector2(380, 0)
 		list_box.add_child(l)
+		new_id = StringName(o.get("id", &""))
 		break
-	visible = list_box.get_child_count() > 0
+	if new_id != shown_id and shown_id != &"" and is_inside_tree():
+		_flash_complete()
+	shown_id = new_id
+	visible = list_box.get_child_count() > 0 or flashing
 
 
 static func _state_key(st: int) -> StringName:

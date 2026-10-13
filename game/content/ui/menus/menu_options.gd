@@ -20,7 +20,6 @@ var pause_menu: PauseMenu = null
 ## Set by MenuFlow while a heist UI layer exists (null otherwise).
 var heist_layer: CanvasLayer = null
 var heist_payday: Control = null
-var _mouse_mode: Input.MouseMode = Input.MOUSE_MODE_VISIBLE
 
 
 ## Shows the options (over the HUD while a heist layer exists).
@@ -105,15 +104,17 @@ func close_in_heist() -> void:
 	_hold(false)
 
 
+## Pauses the local crew's input and holds the cursor (input_focus.md 1.1: MouseCapture &"pause").
 func _hold(on: bool) -> void:
 	_set_local_input_paused(on)
-	if DisplayServer.get_name() == "headless":
-		return
 	if on:
-		_mouse_mode = Input.mouse_mode
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		MouseCapture.push_release(&"pause")
 	else:
-		Input.mouse_mode = _mouse_mode
+		MouseCapture.pop_release(&"pause")
+
+
+func _exit_tree() -> void:
+	MouseCapture.pop_release(&"pause")
 
 
 func _unhandled_input(event: InputEvent) -> void:

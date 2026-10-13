@@ -750,8 +750,7 @@ func _on_heist_ended(result: Dictionary) -> void:
 		consume_pro_contract()
 	if _hud != null and is_instance_valid(_hud):
 		_hud.visible = false
-	options_menu.close_pause()
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	options_menu.close_pause()  # the payday screen holds the cursor itself (MouseCapture &"payday")
 
 
 ## A failed pro job: its Board contract is gone for the rest of its rotation (QB-BRD1, no restart).

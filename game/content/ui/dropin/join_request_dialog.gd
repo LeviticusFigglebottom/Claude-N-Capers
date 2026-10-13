@@ -50,7 +50,6 @@ var queue: Array[Dictionary] = []
 ## Seconds until the shown request is auto-denied.
 var time_left: float = 0.0
 var _find_left: float = 0.0
-var _mouse_mode: Input.MouseMode = Input.MOUSE_MODE_VISIBLE
 
 
 func _ready() -> void:
@@ -225,13 +224,11 @@ func _set_paused(on: bool) -> void:
 	if not pause_gameplay:
 		return
 	CrewInput.set_paused(get_tree(), PAUSE_HOLDER, on, local_slot)
-	if DisplayServer.get_name() == "headless":
-		return
+	# input_focus.md 1.1: the cursor through MouseCapture only.
 	if on:
-		_mouse_mode = Input.mouse_mode
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		MouseCapture.push_release(&"dropin")
 	else:
-		Input.mouse_mode = _mouse_mode
+		MouseCapture.pop_release(&"dropin")
 
 
 func _process(delta: float) -> void:

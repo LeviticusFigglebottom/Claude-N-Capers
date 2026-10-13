@@ -4,8 +4,9 @@
 ##   2. casing (player_mode &"casing")        -> "Hold [G] to mask up";
 ##   3. carrying a bag while masked            -> "Press [key] to throw the bag".
 ## Nothing otherwise. The key caps follow the last device (InteractionPanel.action_key_text).
-## `capture_probe` returns whether the mouse counts as captured; the default reads Input.mouse_mode
-## (true on headless, where the mouse is never captured). Owner: ENV B.
+## `capture_probe` returns whether the mouse counts as captured; the default asks MouseCapture
+## (input_focus.md 1.1): "Click to resume" exactly when gameplay wants the cursor but does not hold it
+## (no menu release, OS refused or focus came back). Owner: ENV B.
 class_name HintStrip
 extends HudWidget
 
@@ -15,11 +16,8 @@ const THROW_ACTION: StringName = &"drop_bag"
 var prompt: KeyPrompt
 ## Current hint id: &"" / &"resume" / &"mask_up" / &"throw_bag" (tests).
 var hint: StringName = &""
-## An overlay that pauses crew input (pause menu, chat, drop-in: CrewInput) frees the cursor on
-## purpose, so it counts as captured then.
 var capture_probe: Callable = func() -> bool:
-	return DisplayServer.get_name() == "headless" or Input.mouse_mode == Input.MOUSE_MODE_CAPTURED \
-			or CrewInput.is_paused()
+	return MouseCapture.is_captured() or not MouseCapture.wants_capture()
 var _captured: bool = true
 
 
@@ -60,4 +58,8 @@ func refresh() -> void:
 		prompt.set_prompt(&"ui.prompt.throw_bag", {}, InteractionPanel.action_key_text(THROW_ACTION))
 	else:
 		hint = &""
+	var was: bool = visible
 	visible = hint != &""
+	if visible and not was and is_inside_tree() and UiTokens.motion_ok():
+		modulate.a = 0.0  # PO-4 motion: a new hint fades in
+		create_tween().tween_property(self, ^"modulate:a", 1.0, UiTokens.T_BASE).set_ease(Tween.EASE_OUT)
