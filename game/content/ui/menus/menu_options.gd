@@ -53,8 +53,41 @@ func open_pause() -> PauseMenu:
 		close_pause()
 		flow.call(&"_leave_heist"))
 	heist_layer.add_child(pause_menu)
+	pause_menu.set_job(job_snapshot())
 	_hold(true)
 	return pause_menu
+
+
+## Lead queue (a): what the pause menu's job card shows, read from the running HUD (heist, current
+## objective, the Tab sheet's loot tally) and MenuFlow (difficulty). {} when there is no HUD.
+func job_snapshot() -> Dictionary:
+	var hud: Hud = null
+	for c: Node in heist_layer.get_children():
+		if c is Hud:
+			hud = c as Hud
+	if hud == null:
+		return {}
+	var info: Dictionary = {"heist_id": hud.heist_id, "difficulty": int(flow.get(&"_difficulty")) if flow != null else 0}
+	if hud.objectives != null and hud.objectives.list_box.get_child_count() > 0:
+		info["objective"] = ObjectivesPanel.objective_text(_current_objective(hud), hud.objectives.secured_count)
+	var bags: int = 0
+	var value: int = 0
+	if hud.scoreboard != null:
+		for e: Variant in hud.scoreboard.loot_secured.values():
+			bags += int((e as Dictionary)["count"])
+			value += int((e as Dictionary)["value"])
+		value += hud.scoreboard.small_loot_value
+	info["bags"] = bags
+	info["loot_value"] = value
+	return info
+
+
+static func _current_objective(hud: Hud) -> Dictionary:
+	var id: StringName = hud.objectives.shown_id
+	for o: Dictionary in hud.objectives.prop(&"objectives", []) as Array:
+		if StringName(o.get("id", &"")) == id:
+			return o
+	return {}
 
 
 ## Closes the pause menu and any Options over it; input and cursor come back.

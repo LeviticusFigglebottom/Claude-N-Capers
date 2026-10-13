@@ -2,6 +2,20 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-13 23:50 ET: lanes done, capture sheets, PD2 data
+- Pushed through 338cea18 (trunk round 59 merged). Since 21:30: PP-P-12 door (9bea4dde, subagent: floor-height
+  doorway probe, back-off, jamb-gated reach), D-097 recovery timing (recoil_wait), ADS eye relief + enforced band
+  (96c142ef), ADS time from WeaponStats.ads_time_s + full-transition crossfade (dd03fe58), PD2 sprint->fire 0.4 s
+  (8ea19d09), crouch camera easing (be592ac2), head bob behind B's GameSettings.head_bob() (4f4cfa6d), framing
+  follows the playing set + melee_knife framing for B's knife (efe10f6f), d084 de-flakes.
+- PD2 data from the Lua decompile (scratchpad pd2src) sent: per-class table (B applied, D-096), vmid / mod steps /
+  ADS times (B), LMG drift as camera kick (A consumed, D-099).
+- Lane 3 capture sheets: game/tests/p/_review/captures/ (ND + Dockside through the real menu, knife, AR). Harness
+  lessons: `--heist=` is MenuFlow's direct-launch flag (use --po_heist); hold keys >= 1 tick (xdotool `key` at
+  ~0.1 fps is sub-tick); llvmpipe heists run ~0.1-1 fps, use --fixed-fps 60 and wait in ticks.
+- Pistol ADS hands: not fixable P-side (per-set FOV / depth only 27% -> 23% coverage); pose fix proposed for D.
+- Running: PO-3 snag probe re-run on all heists (scratchpad po3b/). Open proposals: melee hit feedback, bag carry feel.
+
 ## 2026-10-13 21:30 ET: lanes L1/L2/L4/L5, D-095, recoil, landing, d084
 - Pushed through 77e198ef (trunk round 50 merged). Done: all-class hip framing (f11b4df1, test_po4_viewmodel_classes),
   late ADS alignment modifier (42dfaf93), D-095 viewmodel_lit = layer 21 (1<<20; layer 20 is FIRST_PERSON_HIDDEN)

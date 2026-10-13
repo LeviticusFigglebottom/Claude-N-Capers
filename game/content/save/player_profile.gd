@@ -54,7 +54,7 @@ const LOADOUT_ID_FIELDS: Array[String] = [
 ]
 const LOADOUT_LIST_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 
-var version: int = 7
+var version: int = 8
 var profile_name: String = ""
 var cash: int = 0
 var stash: int = 0

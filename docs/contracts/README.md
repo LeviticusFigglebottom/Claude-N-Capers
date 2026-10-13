@@ -16,7 +16,7 @@ major version and comes with a `docs/decisions.md` entry and a migration note to
 | [audio_cues.md](audio_cues.md) | 1.6 | C (sounds) ← A/B (triggers) | `game/world/audio/cues.tres` (C) |
 | [preplanning.md](preplanning.md) | 1.0 | B (resolve, UI) / C (points, overrides) → A (apply) | — |
 | [damage.md](damage.md) | 1.0 | A ↔ B (hits, targets) | `game/contracts/damage.gd` |
-| [ui_hud.md](ui_hud.md) | 1.10 | A (state) → B (HUD widgets) | — |
+| [ui_hud.md](ui_hud.md) | 1.11 | A (state) → B (HUD widgets) | — |
 | [groups.md](groups.md) | 1.1 | all | `game/contracts/ids.gd` (`G`) |
 | [net.md](net.md) | 1.1 | LEAD → A, B | `game/core/net.gd` |
 | [hub_map.md](hub_map.md) | 1.1 | C/A → B (safehouse hub) | `SafehouseMap`, `hub_station` |

@@ -12,6 +12,8 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 02:00: **round 67 ON ORIGIN**: env/a-core (ui_hud 1.9-1.11 HUD-model fields live: local_net_id, revive_progress/reviver_slot, crew-row bleedout_s/revive_progress; qb_b6_02 gate red FIXED; ND early-objective = HUD presentation, routed to B), env/b-content (pause job card, teammate state badges, per-kind objective marker icons). a/b targeted green. gh_loud release run in progress at A.
+- 2026-10-14 01:45: **round 66 ON ORIGIN**: env/b-content (save v8: existing profiles get the starter AR equipped into an empty primary; pause menu job card), env/p-play (Dockside real-menu capture sheet: all PASS). Freeze-unlock still open: gh_loud payday→hub, gh_stealth win, ND loud win (A).
 - 2026-10-14 01:00: **round 65 ON ORIGIN**: env/b-content (radial interaction ring, hostage/trade strip, Tab loot-secured list), plus A/P merge commits. b targeted + p 83/0 green.
 - 2026-10-14 00:50: full gate on round 57 (adaae46b): 1854 tests, 3 failed (B: ui.action.dismiss_tip string ×2; qb_b6_02 crew stats shots/hits, likely PD2 spread vs test aim). **validate_level: all 4 maps PASS** (first time). Routed to B.
 - 2026-10-14 00:40: **round 64 ON ORIGIN**: env/b-content (hit/headshot/kill markers + damage arcs + low-health vignette/heartbeat, payday XP bar, downed-state screen, equipment icon chips, assault phase strip, loading screen with tips). ui_hud 1.9/1.10 (local_net_id, revive_progress/reviver_slot → A). b targeted + P1 slice green.
