@@ -14,6 +14,7 @@ signal carried_bag_changed()     ## carried_bag
 signal interaction_changed()     ## interaction
 signal detection_changed()       ## detection
 signal marked_targets_changed()  ## marked_targets
+signal objective_markers_changed(markers: Array)  ## objective_markers (v1.8)
 signal pagers_changed()          ## pagers, pagers_answered, pagers_max
 signal timers_changed()          ## ecm_time_left_s, camera_alarm_s
 signal objectives_changed()      ## objectives
@@ -113,6 +114,12 @@ var detection: Array[Dictionary] = []:
 		detection = v
 		detection_changed.emit()
 ## [{ "net_id": int, "world_pos": Vector3, "kind": StringName }]
+## v1.8 (D-089): [{id, text_key, position: Vector3, state}] for ACTIVE objectives.
+var objective_markers: Array[Dictionary] = []:
+	set(v):
+		objective_markers = v
+		objective_markers_changed.emit(v)
+
 var marked_targets: Array[Dictionary] = []:
 	set(v):
 		marked_targets = v

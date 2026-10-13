@@ -46,6 +46,8 @@ var tweak: HudTweak = null
 var model: Node = null
 var chevrons: DetectionChevrons
 var marks: MarkedTargets
+## v1.8 objective world markers (edge-clamped, distance).
+var objective_markers: ObjectiveMarkers
 var interaction: InteractionPanel
 ## PP-A-1: guard-domination prompt (above the interaction prompt).
 var dominate: DominatePrompt
@@ -104,12 +106,13 @@ func set_crew_heisters(map: Dictionary) -> void:
 
 
 func widgets() -> Array[HudWidget]:
-	return [chevrons, marks, interaction, dominate, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina,
+	return [chevrons, marks, objective_markers, interaction, dominate, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina,
 			scoreboard, hint, mask_ring]
 
 
 func _build() -> void:
 	marks = _place(MarkedTargets.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as MarkedTargets
+	objective_markers = _place(ObjectiveMarkers.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as ObjectiveMarkers
 	chevrons = _place(DetectionChevrons.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DetectionChevrons
 	var crosshair: Label = UiBuild.label(&"ui.hud.crosshair", UiBuild.HUD)
 	crosshair.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
