@@ -1,5 +1,6 @@
 ## A3-04 / L2.8: Taser and Phantom takedowns (CrewHealth.incapacitate) don't use bleedout and don't
-## count as downs; the victim is helpless until a teammate revives them.
+## count as downs; the victim is helpless until a teammate revives them (D-093: or custody after the
+## bleedout time).
 extends TestCase
 
 var _rt: HeistRuntime = null
@@ -105,3 +106,14 @@ func test_l2_8_rejects_other_states() -> void:
 	c.health.go_down()
 	assert_false(c.health.incapacitate(Enums.CrewState.TASED, 0), "a downed crew member cannot be tased")
 	assert_eq(c.crew_state, Enums.CrewState.DOWNED)
+
+
+## D-093: a helpless member nobody revives within bleedout_time_s goes to custody, without a down.
+func test_d093_helpless_not_revived_goes_to_custody() -> void:
+	var c: CrewController = _crew(0)
+	var h: CrewHealth = c.health
+	assert_true(h.incapacitate(Enums.CrewState.CLOAKER_DOWNED, 7), "kicked down")
+	assert_near(h.helpless_left, Tweak.crew().bleedout_time_s, 0.01, "helpless timer = bleedout time")
+	h.helpless_left = 0.3  # shorten the 30 s wait
+	assert_true(await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.CUSTODY, 2.0), "custody")
+	assert_eq(h.downs_used, 0, "no down counted")
