@@ -3,45 +3,44 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## 2026-10-13 18:30 UTC — PO-5 (D-086 windowed playthrough), team v3 dispatch
-### Done (local commits on env/a-core, not pushed yet)
-- 8732b3b7 PO-5 harness `game/tests/a/e2e/`: `po5_runner.tscn` boots the real game windowed (xvfb, NOT
-  --headless) and `po5_flow.gd` clicks the real menus with InputEventMouseButton at each button's screen
-  position: main menu → Safehouse → Planning Table → <heist> → <difficulty> → Briefing → Continue →
-  Confirm plan → Start Heist. In the heist `po5_pilot.gd` plays through PlayerInputDriver only (mouse
-  motion turns, WASD walks a navmesh route, F holds, G masks/throws), opens doors like a person, shoots
-  enemies in sight, logs every stuck spot (slide colliders + rays + screenshot). Screenshots at each step,
-  telemetry every 10 s of game time (crew states/positions, enemies, frame cost).
+## 2026-10-13 20:10 UTC — PO-5 (D-086 windowed playthrough), team v3
+### Done (pushed to env/a-core; last 097d8432)
+- Harness `game/tests/a/e2e/` (po5_runner.tscn, po5_flow.gd, po5_pilot.gd, po5_flow_gh_loud.gd): the real game runs
+  windowed (xvfb, NOT --headless). Real menu clicks (InputEventMouseButton at the button's screen position): main menu →
+  Safehouse → Planning Table → <heist> → <difficulty> → Briefing → Continue → Confirm plan → Start Heist. In the heist the
+  pilot plays through PlayerInputDriver only (mouse motion turns, WASD on a navmesh route, F holds, G masks/throws, opens
+  doors on its route, shoots enemies in sight). Every stuck spot is logged (slide colliders + rays + screenshot); telemetry
+  every 10 s of game time. llvmpipe draws ~1 fps, so between screenshots the harness sets
+  RenderingServer.render_loop_enabled=false (the window and input stay real; game time then runs at ~real time).
   Run: `xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 960x540
-  res://tests/a/e2e/po5_runner.tscn -- --po5-flow=gh_loud --po5-out=<dir>` (flows: smoke, dump, gh_loud).
-  llvmpipe renders at ~1 fps (which caps game time at 8 ticks/s), so between screenshots the harness sets
-  `RenderingServer.render_loop_enabled = false`; window, DisplayServer and input stay real.
-  KNOWN SHORTCUT: the harness sets `Input.mouse_mode = CAPTURED` itself (PO-5.1, ENV P).
-- (commit 2) PO-5.2 fix: CivilianBrain: cowering / down / tied civilians leave the NPC collision layer
-  (crew no longer pinned by a civilian on the floor); a flee that moves < 0.3 m in 2 s cowers
-  (StealthTweak.civilian_flee_stall_s/_m). test_po5_civilian_body_block 2/2, civilian suites 25/25.
-### PO-5 blocker rows (seeds are menu time seeds; the harness logs each)
-| Row | Owner | What | Where / repro |
+  res://tests/a/e2e/po5_runner.tscn -- --po5-flow=gh_loud --po5-out=<dir>` (flows: smoke, dump, gh_loud; gh_stealth WIP).
+  KNOWN SHORTCUT: the harness sets Input.mouse_mode=CAPTURED itself (PO-5.1; P's MouseCapture is now on trunk, so recheck).
+- Fixes (each has a test): PO-5.2 civilians on the floor don't body-block, and a stalled flee cowers. PO-5.3 the AI leash/cover
+  needs line of sight to the leader, and downed bots hold fire. PO-5.8 the Glasshouse drill finish really opens the safe
+  (it used to set `opened` only). PO-5.11 casing players can open unlocked doors. PO-5.12 a safe opened by its code completes
+  the objective. D-089 LocalHudModel.objective_markers + Glasshouse marker_tags (`loot_secure` tag on the van zones). The loud
+  transition skips the keycard step. PO-5.7 NPCs wear ENV D characters (NpcVisuals; specials keep their scene visuals).
+### PO-5 rows
+| Row | Owner | Status | What / where |
 |---|---|---|---|
-| PO-5.1 | P | Mouse never captured in the heist: no mouse look for a person. | harness works around it |
-| PO-5.2 | A | Fleeing civilian freezes in the workshop doorway; crew body-blocked. FIXED (local). | gh_loud seed 1791913478, Npc_civilian3 @ (7.5,0,4.0) |
-| PO-5.3 | A | Loud: AI teammates do not follow the player into the workshop, drift into the alley, get downed and go to custody within ~40 s; no AI revives; bleedout 8/17/30 s. | gh_loud seed 1791914030, t=128..169 |
-| PO-5.4 | A | Solo + bots on Routine: 31 enemies by t=180, player downed at the safe (drill 80 %). Re-check after PO-5.3. | same run |
-| PO-5.5 | B | Fresh profile: primary weapon "None", player enters with the pistol only. | loadout screen |
-| PO-5.6 | B | Objective HUD raw "{count}/{total}"; the keycard objective is still shown during lockdown. | in heist |
-| PO-5.7 | D | Police render as white placeholder capsules. | screenshots |
-| PO-5.8 | A | Drill: NOT reproduced as "never opens": 180 s run, jam at 56 % fixed by holding F, kept running. | gh_loud seed 1791914030 |
-| PO-5.9 | B | Heist select at level 0: Brutal unlocked while Tense/Hazardous are locked. | heist select |
-| PO-5.10 | A/C | Workshop door prompt hidden from 1.7 m diagonal (LOS to the wall-plane point hits G_Corridor_N_W_02). Minor; head-on works. | (6.9,1.1,4.6) |
+| PO-5.1 | P | trunk MouseCapture (round 36) | game never captured the mouse; harness still forces it, recheck |
+| PO-5.2 | A | fixed, verified windowed | fleeing civilian pinned the player in the workshop doorway (7.5,0,4.0) |
+| PO-5.3 | A | fixed, verified windowed | AI took "cover" in the alley through walls, custody by t=169; now they follow into the workshop |
+| PO-5.4 | A | open | solo+bots Routine: 31 enemies @t=180, 70 @t=520 (KR-1) |
+| PO-5.5/5.6/5.9 | B | routed | no primary (QB-1 yes), objective placeholders, difficulty lock order |
+| PO-5.7 | A | fixed, verified windowed | capsule NPCs: EnemyDefs had no visual (wiring) |
+| PO-5.8 | A | fixed, verified windowed | drill DONE but safe never opened (mission set opened, Safe ignored the drill) |
+| PO-5.10 | A/C | minor | workshop door prompt hidden from a 1.7 m diagonal (wall G_Corridor_N_W_02) |
+| PO-5.11 | A | fixed | casing players could not open any unlocked door |
+| PO-5.12 | A | fixed | safe opened by its keypad code didn't complete the objective |
+| PO-5.13 | A | QA-PO5-2 | all crew permanently TASED from t≈312 (long tase = helpless, no bleedout): soft-lock |
+| PO-5.14 | A | open | police stand off for minutes (23 enemies, nobody engages) while crew holds the workshop |
 ### In progress
-- PO-5.3 AI crew follow/revive/bleedout root cause; then the full loud run (bags, van, escape, payday → hub).
-- Stealth flow (masking out of sight, civilians, guards/pagers, cameras).
+- KR-1/KR-2 (test_p3_loud test_01/test_10) subagent; Glasshouse stealth flow subagent; loud run to payday → hub.
 ### Questions for lead
-- QA-PO5-1: objective guidance. Proposal: HeistMission objectives may carry `data.marker_tags` (map
-  objective_tags); LocalHudModel exposes `objective_markers: Array[Dictionary]` ({id, text_key,
-  position: Vector3, state}) for the active objectives, from the tagged nodes. Needs a ui_hud contract line.
+- QA-PO5-2: helpless (long tase / cloaker) not revived in bleedout_time_s → custody, no down counted? (proposed)
 ### Ready for integration
-- no (check_all not run yet)
+- yes for pushed lanes (targeted checks per D-088)
 
 ## 2026-10-12 ~18:30 ET: D-082 freeze, PP-A-1, D-085, hand-play attempt
 ### Done (pushed)
