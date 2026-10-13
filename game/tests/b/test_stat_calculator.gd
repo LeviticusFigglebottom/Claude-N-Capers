@@ -15,8 +15,8 @@ func _with(mods: Array[StringName]) -> WeaponStats:
 func test_display_stock_pistol() -> void:
 	var d: Dictionary = StatCalculator.display(_base())
 	assert_near(d["damage"], 35.0)
-	assert_eq(d["accuracy"], 60, "ADS 1.0 deg on a 0..2.5 deg scale")
-	assert_eq(d["stability"], 60, "kick 1.0 + 0.5 * 0.4 on a 0..3 deg scale")
+	assert_eq(d["accuracy"], 52, "ADS 2.3 deg on a 0..4.8 deg scale (PD2: s = ADS / 2.4, Accuracy = (2 - s) / 0.02)")
+	assert_eq(d["stability"], 78, "kick 2.25 + 0.5 * 0.75 on a 0..12 deg scale")
 	assert_eq(d["concealment"], 30)
 	assert_eq(d["threat"], 8)
 	assert_eq(d["mag"], 17)
@@ -46,7 +46,7 @@ func test_display_clamps() -> void:
 
 func test_reflex_sight_improves_accuracy_costs_concealment() -> void:
 	var d: Dictionary = StatCalculator.delta(_base(), _with([&"mod.p9_reflex_sight"] as Array[StringName]))
-	assert_eq(d["accuracy"]["modded"], 66)
+	assert_eq(d["accuracy"]["modded"], 55, "ADS 2.3 - 0.15 on the 0..4.8 deg scale")
 	assert_true(d["accuracy"]["better"])
 	assert_true(d["concealment"]["changed"])
 	assert_false(d["concealment"]["better"])
