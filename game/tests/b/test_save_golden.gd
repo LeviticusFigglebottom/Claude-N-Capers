@@ -262,7 +262,7 @@ func test_unknown_ids_never_crash_and_skill_sets_reset() -> void:
 	assert_eq(p.loadout.skills, {}, "illegal active set reset")
 	assert_eq(p.skill_sets[1], {&"skill.juggernaut.thick_skin": 1}, "legal set kept")
 	assert_false(p.owned_weapons.has(&"weapon.gone"))
-	assert_eq(p.loadout.primary, &"", "default primary")
+	assert_eq(p.loadout.primary, &"weapon.corsair_ar", "default primary (QB-1 starter)")
 	assert_eq(p.loadout.mask, &"mask.gilded_heron", "locked mask -> default mask")
 	assert_eq(notes.size(), 4)
 

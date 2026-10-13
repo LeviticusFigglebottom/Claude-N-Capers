@@ -91,7 +91,7 @@ func test_corrupt_without_bak_gives_default() -> void:
 	DirAccess.make_dir_recursive_absolute(BTestUtil.profile_root())
 	_write(SaveService.profile_path(SLOT), "garbage")
 	var q: PlayerProfile = SaveService.load_profile(SLOT)
-	assert_eq(q.owned_weapons, [&"weapon.kestrel_p9"] as Array[StringName])
+	assert_eq(q.owned_weapons, [&"weapon.corsair_ar", &"weapon.kestrel_p9"] as Array[StringName])
 	assert_eq(q.cash, 0)
 
 
@@ -232,8 +232,8 @@ func test_default_profile_from_data() -> void:
 	assert_eq(p.loadout.melee, &"melee.folding_knife")
 	assert_eq(p.loadout.armor, &"armor.tailored_suit")
 	assert_eq(p.loadout.deployable, &"deployable.doctor_bag")
-	assert_eq(p.loadout.primary, &"")
-	assert_eq(p.owned_weapons, [&"weapon.kestrel_p9"] as Array[StringName])
+	assert_eq(p.loadout.primary, &"weapon.corsair_ar", "QB-1 starter primary")
+	assert_eq(p.owned_weapons, [&"weapon.corsair_ar", &"weapon.kestrel_p9"] as Array[StringName])
 	assert_has(p.owned_mods, &"mod.p9_suppressor")
 	assert_has(p.owned_mods, &"mod.p9_reflex_sight")
 	assert_has(p.owned_mods, &"mod.p9_extended_mag")

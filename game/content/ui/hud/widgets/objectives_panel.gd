@@ -26,7 +26,7 @@ func build() -> void:
 	panel = UiBuild.panel(v, UiBuild.HUD_PANEL)
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	add_child(panel)
-	header_label = UiBuild.caption(&"ui.hud.objectives")
+	header_label = UiBuild.float_text(UiBuild.caption(&"ui.hud.objectives"))
 	header_label.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
 	v.add_child(header_label)
 	list_box = UiBuild.vbox(UiTokens.S1)
@@ -78,9 +78,16 @@ func _exit_tree() -> void:
 
 
 func _apply_accent() -> void:
-	if panel == null or accent.a <= 0.0:
+	if panel == null:
 		return
-	UiAccent.accent_panel(panel, accent, 4)
+	# PO-4: a hairline accent on the left edge only (frameless HUD); house brass without a heist accent.
+	var edge: StyleBoxFlat = (UiBuild.theme().get_stylebox(&"panel", UiBuild.HUD_PANEL) as StyleBoxFlat).duplicate() as StyleBoxFlat
+	edge.border_color = accent if accent.a > 0.0 else UiTokens.BRASS
+	edge.border_width_left = 3
+	edge.content_margin_left = UiTokens.S3
+	panel.add_theme_stylebox_override(&"panel", edge)
+	if accent.a <= 0.0:
+		return
 	var sb: StyleBoxFlat = panel.get_theme_stylebox(&"panel") as StyleBoxFlat
 	var back: Color = UiAccent.over(sb.bg_color, UiAccent.app_bg()) if sb != null else UiAccent.app_bg()
 	header_label.add_theme_color_override(&"font_color", UiAccent.readable(accent, back, UiAccent.table().min_text_contrast))
@@ -124,7 +131,6 @@ func refresh() -> void:
 		var l: Label = UiBuild.label(&"", UiBuild.HUD)
 		l.text = UiText.t(&"ui.hud.objective_active", {"text": objective_text(o, secured_count)})
 		l.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)
-		l.add_theme_constant_override(&"outline_size", 0)
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		l.custom_minimum_size = Vector2(380, 0)
 		list_box.add_child(l)
