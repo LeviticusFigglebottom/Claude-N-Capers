@@ -113,7 +113,7 @@ func build_ui() -> void:
 	back_button = UiBuild.button(&"ui.menu.back")
 	back_button.pressed.connect(back_requested.emit)
 	take_button = UiBuild.button(&"ui.board.take")
-	take_button.pressed.connect(take_selected)
+	take_button.pressed.connect(func() -> void: UiSfx.check(take_selected()))
 	root.add_child(UiBuild.footer(back_button, take_button))
 	map_view.exit_right = broker_heist
 	for c: Control in [broker_heist, broker_difficulty, buy_button, take_button, back_button]:
@@ -239,7 +239,7 @@ func _build_broker(side: VBoxContainer) -> void:
 	broker_reason_label.add_theme_color_override(&"font_color", UiTokens.ALERT)
 	box.add_child(broker_reason_label)
 	buy_button = UiBuild.button(&"ui.board.broker.buy")
-	buy_button.pressed.connect(broker_buy)
+	buy_button.pressed.connect(func() -> void: UiSfx.check(broker_buy() == BoardBroker.OK))
 	box.add_child(buy_button)
 
 

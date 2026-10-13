@@ -123,7 +123,7 @@ func _build_confirm() -> PanelContainer:
 	v.add_child(confirm_body)
 	# Cancel (ghost) left, Confirm (primary) right, like the screen footer.
 	confirm_button = UiBuild.button(&"ui.notoriety.confirm")
-	confirm_button.pressed.connect(confirm_rank_up)
+	confirm_button.pressed.connect(func() -> void: UiSfx.check(bool(confirm_rank_up()["ok"])))
 	cancel_button = UiBuild.button(&"ui.notoriety.cancel")
 	cancel_button.pressed.connect(cancel_confirm)
 	v.add_child(UiBuild.footer(cancel_button, confirm_button))
