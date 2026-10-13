@@ -70,6 +70,10 @@ Buses: `Master > Music, SFX (> Weapons, Enemies, World, UI), Voice, Ambience`.
 | cue.payday_total | payday hero total lands | register "cha-chunk" | PP (D-090) |
 | cue.card_flip | payday card reveal | card flip | PP (D-090) |
 
+UI cues (D-090) are built by `python3 tools/audiogen/ui/build_ui.py` (ENV B). `tools/audiogen/build.py` rewrites
+`cues.tres`: after it, run `python3 tools/audiogen/ui/build_ui.py --registry-only` (or have C's build call it) so the
+UI-bus entries are kept.
+
 Special-action cues have no dedicated EventBus signals: ENV A triggers them with `audio_cue_requested` or a
 `CueEmitter`. Looping tells stop on the matching end fact (`crew_tase_ended` for `stinger_arc`, D-049) or locally.
 
