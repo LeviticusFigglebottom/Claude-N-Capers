@@ -515,6 +515,7 @@ ui.mod_type.skin,Skin
 ui.hud.crosshair,+
 ui.hud.unmasked,Casing
 ui.hud.downed,Down
+ui.hud.downed_seconds,Down {seconds}s
 ui.hud.item_count,{item} x{count}
 ui.hud.camera_alarm,Camera alarm {seconds}
 ui.hud.objective_active,{text}

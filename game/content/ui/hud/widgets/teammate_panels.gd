@@ -8,6 +8,8 @@ const INFO_FONT_SIZE: int = 21
 var list_box: VBoxContainer
 ## slot -> name Label (tests).
 var name_labels: Dictionary = {}
+## slot -> CrewStateBadge (lead queue b; hidden while the teammate is fine) (tests).
+var badges: Dictionary = {}
 ## slot -> heister id (Hud.set_crew_heisters); unknown slots use the model's name.
 var heisters: Dictionary = {}
 
@@ -26,6 +28,7 @@ func refresh() -> void:
 		list_box.remove_child(c)
 		c.queue_free()
 	name_labels.clear()
+	badges.clear()
 	for m: Dictionary in prop(&"crew", []) as Array:
 		list_box.add_child(_panel(m))
 
@@ -61,7 +64,8 @@ func _panel(m: Dictionary) -> PanelContainer:
 	if st == Enums.CrewState.CUSTODY:
 		info.append(UiText.t(&"ui.hud.custody"))
 	elif st != Enums.CrewState.NORMAL:
-		info.append(UiText.t(&"ui.hud.downed"))
+		var bleed: float = float(m.get("bleedout_s", -1.0))
+		info.append(UiText.t(&"ui.hud.downed_seconds", {"seconds": ceili(bleed)}) if bleed > 0.0 else UiText.t(&"ui.hud.downed"))
 	elif downs <= 1:
 		info.append(UiText.t(&"ui.hud.downs_left", {"count": downs}))
 	if StringName(m.get("mode", &"")) == &"civilian":
@@ -78,6 +82,10 @@ func _panel(m: Dictionary) -> PanelContainer:
 		info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		info_label.custom_minimum_size = Vector2(200, 0)
 		v.add_child(info_label)
+	var badge: CrewStateBadge = CrewStateBadge.new()
+	badge.set_row(m)
+	row.add_child(badge)
+	badges[slot] = badge
 	var p: PanelContainer = UiBuild.panel(row, UiBuild.HUD_PANEL)
 	p.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	return p
