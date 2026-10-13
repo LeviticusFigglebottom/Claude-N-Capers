@@ -713,7 +713,7 @@ func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 	var hip: Vector3 = tw.set_hip_offset.get(anim_set, Vector3.ZERO)
 	off += hip.lerp(Vector3(0.0, 0.0, float(tw.set_ads_offset_z.get(anim_set, 0.0))), ads_weight)
 	_base_offset = off
-	position = off + _align
+	_late_align()  # first pass on the last applied pose (direct tick() callers / tests); AdsAlign refines it
 
 
 ## PO-4: light the muzzle for one shot (world layer + CrewView.VIEWMODEL_LIT_LAYER, D-094).

@@ -8,6 +8,8 @@ var _slot: String = ""
 var _heist: StringName = &""
 var _moves: bool = false
 var _fire: bool = false
+var _melee: bool = false
+var _melee_id: StringName = &""
 var _primary: StringName = &"weapon.corsair_ar"
 
 
@@ -19,6 +21,10 @@ func _ready() -> void:
 			_primary = StringName(a.trim_prefix("--primary="))
 		elif a.begins_with("--heist="):
 			_heist = StringName(a.trim_prefix("--heist="))
+		elif a.begins_with("--melee_id="):
+			_melee_id = StringName(a.trim_prefix("--melee_id="))
+		elif a == "--melee":
+			_melee = true
 		elif a == "--fire":
 			_fire = true
 		elif a == "--moves":
@@ -32,6 +38,8 @@ func _ready() -> void:
 	var l: Loadout = CrewWeapons.build_loadout(null).duplicate() as Loadout
 	l.primary = _primary
 	l.resolved_primary = LoadoutResolver.resolve_weapon(l.primary, l.primary_mods)
+	if _melee_id != &"":
+		l.melee = _melee_id
 	var rt: HeistRuntime = null
 	if _heist == &"":
 		rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
@@ -57,6 +65,25 @@ func _ready() -> void:
 		c.loadout.secondary])
 	await _shot("vm_hip")
 	_dump(c)
+	if _melee:
+		await inp.tap(&"melee")
+		for k: int in 4:
+			for _i: int in 6:
+				await get_tree().physics_frame
+			await _shot("vm_melee_tap_%d" % k)
+		for _i: int in 40:
+			await get_tree().physics_frame
+		inp.press(&"melee")
+		for _i: int in 50:
+			await get_tree().physics_frame
+		await _shot("vm_melee_charged")
+		inp.release(&"melee")
+		for k: int in 3:
+			for _i: int in 6:
+				await get_tree().physics_frame
+			await _shot("vm_melee_charge_swing_%d" % k)
+		for _i: int in 60:
+			await get_tree().physics_frame
 	if _fire:
 		inp.press(&"fire")
 		for k: int in 4:
