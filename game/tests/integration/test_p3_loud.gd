@@ -1193,8 +1193,20 @@ func _take_hostage(civ: NpcBase) -> bool:
 	assert_true(down, "%s intimidated by shouting (%d shouts, state %d)" % [civ.name, tries, civ.alert_state])
 	if not down:
 		return false
-	var tied: bool = await _hold_interact(0, civ.net_id, civ.global_position,
-		func() -> bool: return civ.alert_state == Enums.AlertState.TIED, Tweak.interaction().cable_tie_s + 2.0)
+	var tied: bool = false
+	for attempt: int in 4:  # LEAD (ENV A patch): a hit cancels the hold (S9.1); a civilian back up needs a re-shout
+		if civ.alert_state != Enums.AlertState.INTIMIDATED and civ.alert_state != Enums.AlertState.TIED:
+			var sh2: CrewIntent = BotUtil.look_at_intent(_crew(0).eye_position(), civ.global_position + Vector3.UP * 0.8)
+			sh2.shout = true
+			_rt.set_bot_intent(0, sh2)
+			await wait_physics_frames(RISE_FRAMES)
+			_rt.set_bot_intent(0, _still(0))
+			await wait_until(func() -> bool: return civ.alert_state == Enums.AlertState.INTIMIDATED,
+				Tweak.stealth().shout_cooldown_s + 0.2)
+		tied = await _hold_interact(0, civ.net_id, civ.global_position,
+			func() -> bool: return civ.alert_state == Enums.AlertState.TIED, Tweak.interaction().cable_tie_s + 2.0)
+		if tied:
+			break
 	assert_true(tied, "%s cable-tied" % civ.name)
 	return tied
 

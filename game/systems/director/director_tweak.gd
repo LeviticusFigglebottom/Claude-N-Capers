@@ -74,6 +74,11 @@ extends Resource
 ## crew member's LOS. Units still on the map when CONTROL starts are released to fight again.
 @export var fade_retreat: bool = true
 @export var retreat_arrive_m: float = 2.5
+## D-099: loud-phase body cleanup (PD2 removes corpses during assaults). A corpse (G.BODY, not bagged) dead for
+## body_despawn_delay_s and out of every crew member's sight is removed; checked every body_despawn_check_s.
+## Stealth bodies stay (they are detection stimuli). 0 delay = off.
+@export var body_despawn_delay_s: float = 30.0
+@export var body_despawn_check_s: float = 2.0
 
 @export_group("Drama (L1.2)")
 ## Drama 0..1 decays this much per second.

@@ -585,7 +585,9 @@ func _apply_recoil(s: WeaponState) -> void:
 	var rm: float = Modifiers.mult(_crew.slot, &"weapon.recoil_mult", s.qualifier)
 	var kick: float = deg_to_rad(s.stats.recoil_kick_deg * rm)
 	var h: float = s.stats.recoil_horizontal_deg * rm
-	var side: float = deg_to_rad(GameRng.stream(&"recoil").randf_range(-h, h))
+	# D-099: + bias = mean drift to the right; look yaw grows to the LEFT, hence the minus.
+	var bias: float = s.stats.recoil_horizontal_bias_deg * rm
+	var side: float = deg_to_rad(GameRng.stream(&"recoil").randf_range(-h, h) - bias)
 	if pin.has_method(&"add_recoil"):
 		pin.call(&"add_recoil", kick, side)
 		return
