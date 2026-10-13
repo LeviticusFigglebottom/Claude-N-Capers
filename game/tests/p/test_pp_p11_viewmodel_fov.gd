@@ -44,3 +44,18 @@ func test_viewmodel_fov_fixed_and_layers_split() -> void:
 	assert_true(cam.fov < 100.0 - 1.0 or c.weapons.stats(c.weapons.equipped_slot).magnification <= 1.0,
 		"ADS zooms the world (%.1f)" % cam.fov)
 	assert_near(view.viewmodel_fov(), want, 0.01, "ADS does not change the viewmodel FOV")
+
+
+## PO-4: the viewmodel gets its own key light, culled to the viewmodel layer (never lights the world).
+func test_viewmodel_key_light_only_lights_the_viewmodel() -> void:
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	var view: CrewView = CrewView.of(c)
+	var key: DirectionalLight3D = view.find_child("ViewmodelKeyLight", true, false) as DirectionalLight3D
+	var vt: FpViewmodelTweak = FpViewmodelTweak.data()
+	if vt.viewmodel_key_light_energy <= 0.0 or vt.viewmodel_fov_deg <= 0.0:
+		assert_true(key == null, "no key light when disabled")
+		return
+	assert_true(key != null, "key light exists")
+	assert_eq(key.light_cull_mask, CrewView.VIEWMODEL_LAYER, "culled to the viewmodel layer")
+	assert_false(key.shadow_enabled, "no shadows")
+	assert_near(key.light_energy, vt.viewmodel_key_light_energy, 1e-4, "energy from the tweak")

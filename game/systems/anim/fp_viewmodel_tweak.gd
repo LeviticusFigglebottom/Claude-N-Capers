@@ -99,6 +99,14 @@ static var _gen: int = 0
 ## PD2-style fixed vertical FOV (deg) the first-person arms/weapon render with, independent of the world FOV
 ## setting and ADS zoom (no stretched guns at wide FOV). 0 = draw them with the world camera.
 @export var viewmodel_fov_deg: float = 52.0
+## PO-4 (PD2 readability): a key light that lights ONLY the viewmodel layer (light_cull_mask), riding the viewmodel
+## camera, so the arms and gun stay readable when the world light is behind the player (night streets, backlit
+## doorways). 0 energy = off. Direction: euler degrees in camera space (x pitch down, y yaw), light shines along -Z.
+@export var viewmodel_key_light_energy: float = 0.7
+@export var viewmodel_key_light_color: Color = Color(1.0, 0.96, 0.9)
+@export var viewmodel_key_light_euler_deg: Vector3 = Vector3(-35.0, 25.0, 0.0)
+## Multiplier on the world Environment's ambient energy for the viewmodel camera only.
+@export var viewmodel_ambient_mult: float = 1.6
 
 @export_group("Motion")
 ## Horizontal speed (m/s) above which walk bob / sprint play.

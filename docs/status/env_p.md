@@ -35,8 +35,12 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   0.0025 -> 0.0016 rad/count. test_po4_feel.gd.
 - test_p3_loud:test_10_ai_orders_during_assault ("follow: the AI caught up") fails on the pre-PO-2 base 7a417116 too:
   pre-existing, A's (crew AI follow), not caused by P.
-- Feel-pass open: masked viewmodel pistol renders as a near-black silhouette and large in the 1280x720 frame
-  (opengl3 run; compare under Vulkan before acting). Next: that, ADS transitions, sprint/crouch/jump, door snag
+- Viewmodel lighting: the pure-black gun in opengl3 frames is a Compatibility-renderer artifact; under Vulkan
+  (Forward+, shipping) hip is lit but dark and ADS arms are near-black (night street, world light behind the player).
+  Fix (WIP, uncommitted until the windowed after-shot): CrewView adds a DirectionalLight3D `ViewmodelKeyLight` under
+  the viewmodel camera, light_cull_mask = VIEWMODEL_LAYER only, plus viewmodel_ambient_mult on the vm Environment
+  (FpViewmodelTweak viewmodel_key_light_*). Before frames: scratchpad vm_before/. Also seen: ADS forearms fill the
+  lower third (pose/FOV 52: D's anim + lead ruling PP-P-11), hip pistol sits low-right and reads canted. Next: that, ADS transitions, sprint/crouch/jump, door snag
   PP-P-12, brute_12 left hand, 1920x1080 review.
 
 ## 2026-10-12 20:25 ET: merge round 34, renders, loud run
