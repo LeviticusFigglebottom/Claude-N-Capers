@@ -95,7 +95,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func _handle_aim_event(event: InputEvent) -> bool:
 	var motion: InputEventMouseMotion = event as InputEventMouseMotion
 	if motion != null:
-		_look(-motion.relative.x * tweak.mouse_look_deg_per_px, -motion.relative.y * tweak.mouse_look_deg_per_px)
+		# screen_relative = raw mouse counts; `relative` is scaled by canvas_items stretch (1.5x at 720p, 30x headless).
+		var counts: Vector2 = motion.screen_relative
+		_look(-counts.x * tweak.mouse_look_deg_per_px, -counts.y * tweak.mouse_look_deg_per_px)
 		return true
 	var mb: InputEventMouseButton = event as InputEventMouseButton
 	if mb != null:

@@ -71,6 +71,10 @@ ui.hud.objectives,Objectives
 ui.hud.casing,Casing
 ui.hud.masked,Masked
 ui.hud.mask_up_hint,Hold {key} to mask up
+ui.hud.casing_blocked.sprint,Mask up to sprint ({key})
+ui.hud.casing_blocked.crouch,Mask up to crouch ({key})
+ui.hud.casing_blocked.jump,Mask up to jump ({key})
+ui.hud.casing_blocked.generic,Mask up first ({key})
 ui.hud.assault,Police assault in progress
 ui.hud.assault_anticipation,Police assault incoming
 ui.hud.assault_wave,Wave {wave}
@@ -87,6 +91,7 @@ ui.hud.captain_resistance,Aegis field: {pct}% damage resistance
 ui.hud.interaction_progress,{percent}%
 ui.prompt.interact,Hold {key} to interact
 ui.prompt.answer_pager,Hold {key} to answer the pager
+ui.hud.dominate_prompt,Press {key} to make the guard surrender ({seconds} s)
 ui.prompt.bag_body,Hold {key} to bag the body
 ui.prompt.tie_civilian,Hold {key} to tie up
 ui.prompt.intimidate,Press {key} to shout
@@ -1349,7 +1354,7 @@ objective.glasshouse.safe,Open the safe
 objective.glasshouse.safe_loot,Bag the consignment
 objective.glasshouse.secure,Secure the bags ({count}/{total})
 ui.payday_cards.title,Pick a card
-ui.payday_cards.hint,"One of three is yours. Mouse, Enter or the A button."
+ui.payday_cards.hint,"One of three is yours. Mouse, Enter, the A button or keys 1-3."
 ui.payday_cards.timer,Auto-pick in {seconds} s
 ui.payday_cards.auto_picked,Time ran out: a card was picked for you
 ui.payday_cards.you_got,You got: {reward}
@@ -2396,6 +2401,8 @@ ui.lobby.code.error.checksum,That code has a typo: check it with the host.
 ui.lobby.code.error.format,That is not a valid lobby code.
 ui.hub.station.notoriety,The Old Press
 ui.hub.station.notoriety.desc,"Notoriety: rank up, pick rewards and see what each rank unlocks."
+ui.hub.station.profile,The Record
+ui.hub.station.profile.desc,"Career: every job, kill and payout on the record, with your best times."
 ui.prompt.station.board,Press {key} to check the Board
 ui.prompt.station.planning,Press {key} to plan a job
 ui.prompt.station.armory,Press {key} to open the armory
@@ -2404,6 +2411,7 @@ ui.prompt.station.jukebox,Press {key} to choose the music
 ui.prompt.station.notoriety,Press {key} to check your Notoriety
 ui.prompt.station.range,Press {key} to enter the firing range
 ui.prompt.station.crew,Press {key} to call the crew
+ui.prompt.station.profile,Press {key} to read your record
 ui.hub.pause.title,Paused
 ui.hub.pause.resume,Resume
 ui.hub.pause.quick_stations,Quick Stations

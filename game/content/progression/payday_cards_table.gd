@@ -15,6 +15,11 @@ extends Resource
 @export var card_count: int = 3
 ## Seconds before a card is picked automatically (PD2: 30).
 @export var pick_time_s: float = 30.0
+## Seconds left at which the pick timer turns urgent (PQ-B-9).
+@export var urgent_time_s: float = 5.0
+## Cue requested once per whole second while urgent (ENV C's cue.payday_tick); skipped while the cue
+## registry does not have it yet, or when &"".
+@export var urgent_tick_cue: StringName = &""
 ## How many tiers `progression.card_drop_quality_add` can raise one card (one roll per step).
 @export var quality_max_steps: int = 1
 ## Type used when a type's item pool is empty (everything owned).

@@ -108,11 +108,13 @@ static func objective_lines(heist_id: StringName, ids: Array) -> Array[Dictionar
 
 
 ## One line per loot id with its unscaled LootDef value and the PayoutCalculator-scaled value.
-## Unknown ids are skipped (ContentDB logs them).
+## Ids without a LootDef (small loot such as loot.small_valuables, QB-52) are skipped silently.
 static func loot_lines(ids: Array, difficulty: int) -> Array[Dictionary]:
 	var known: Array[LootDef] = []
 	var probe_loot: Array = []
 	for raw: Variant in ids:
+		if not ContentDB.has(&"loot", StringName(raw)):
+			continue
 		var l: LootDef = ContentDB.loot(StringName(raw))
 		if l == null:
 			continue

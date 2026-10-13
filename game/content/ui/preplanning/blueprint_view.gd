@@ -103,7 +103,7 @@ func _build_markers() -> void:
 		markers[pid] = b
 		marker_numbers[pid] = n
 		var l: Label = UiBuild.label(StringName(p.get("label", &"")))
-		l.add_theme_font_size_override(&"font_size", 17)
+		l.add_theme_font_size_override(&"font_size", 21)
 		l.add_theme_color_override(&"font_color", tweak.label_color)
 		l.add_theme_color_override(&"font_outline_color", tweak.paper_color)
 		l.add_theme_constant_override(&"outline_size", 6)

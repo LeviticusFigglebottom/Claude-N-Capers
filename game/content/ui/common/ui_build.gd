@@ -14,10 +14,28 @@ const HUD_PANEL: StringName = &"HudPanel"
 const BANNER_PANEL: StringName = &"BannerPanel"
 ## The screen's main forward action (Launch, Continue, Confirm, Take): brass-edged button (B4-07).
 const PRIMARY: StringName = &"PrimaryButton"
+## PQ-B-23 floating HUD text style (see float_text).
+const FLOAT_OUTLINE_SIZE: int = 8
+const FLOAT_OUTLINE_COLOR: Color = Color(0, 0, 0, 1)
+const FLOAT_SHADOW_COLOR: Color = Color(0, 0, 0, 0.55)
+const FLOAT_SHADOW_OFFSET: Vector2i = Vector2i(2, 3)
+const FLOAT_SHADOW_SOFTNESS: int = 6
 
 
 static func theme() -> Theme:
 	return load(THEME_PATH) as Theme
+
+
+## PQ-B-23 (lead ruling): floating HUD text (world prompts, casing hint, domination prompt) gets an
+## outline of 8 plus a soft dark drop shadow, no backing panel.
+static func float_text(l: Label) -> Label:
+	l.add_theme_constant_override(&"outline_size", FLOAT_OUTLINE_SIZE)
+	l.add_theme_color_override(&"font_outline_color", FLOAT_OUTLINE_COLOR)
+	l.add_theme_color_override(&"font_shadow_color", FLOAT_SHADOW_COLOR)
+	l.add_theme_constant_override(&"shadow_offset_x", FLOAT_SHADOW_OFFSET.x)
+	l.add_theme_constant_override(&"shadow_offset_y", FLOAT_SHADOW_OFFSET.y)
+	l.add_theme_constant_override(&"shadow_outline_size", FLOAT_SHADOW_SOFTNESS)
+	return l
 
 
 static func label(key: StringName = &"", variation: StringName = &"", args: Dictionary = {}) -> Label:

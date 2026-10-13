@@ -2,6 +2,9 @@
 class_name TeammatePanels
 extends HudWidget
 
+## Info line (downs / state / bag) font size in canvas units: 21 = 14 px at 1280x720 (PQ-B-14).
+const INFO_FONT_SIZE: int = 21
+
 var list_box: VBoxContainer
 ## slot -> name Label (tests).
 var name_labels: Dictionary = {}
@@ -51,6 +54,9 @@ func _panel(m: Dictionary) -> PanelContainer:
 		info.append(UiText.t(&"ui.hud.carrying", {"loot": UiText.t(UiText.item_key(loot))}))
 	var info_label: Label = UiBuild.label(&"", UiBuild.HUD)
 	info_label.text = "  ".join(info)
-	info_label.add_theme_font_size_override(&"font_size", 18)
+	# PQ-B-14: 18 units rendered 12 px at 1280x720; INFO_FONT_SIZE keeps >= 14 px. Wraps instead of
+	# spilling out of the 260-unit panel when a bag is carried.
+	info_label.add_theme_font_size_override(&"font_size", INFO_FONT_SIZE)
+	info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(info_label)
 	return UiBuild.panel(v, UiBuild.HUD_PANEL)

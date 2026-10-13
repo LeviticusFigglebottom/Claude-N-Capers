@@ -63,8 +63,9 @@ const TARGET_RANGE: StringName = &"firing_range"
 const TARGET_LOBBY: StringName = &"lobby"
 const TARGET_JUKEBOX: StringName = &"jukebox"
 const TARGET_NOTORIETY: StringName = &"notoriety"
+const TARGET_CAREER: StringName = &"career"
 const TARGETS: Array[StringName] = [TARGET_BOARD, TARGET_HEIST_SELECT, TARGET_LOADOUT, TARGET_MASKS, TARGET_RANGE, TARGET_LOBBY,
-		TARGET_JUKEBOX, TARGET_NOTORIETY]
+		TARGET_JUKEBOX, TARGET_NOTORIETY, TARGET_CAREER]
 
 var main_menu: MainMenu
 ## Safehouse hub (B4-07).
@@ -226,7 +227,7 @@ func _on_hub_back() -> void:
 
 
 ## Opens safehouse station `station_id` (data/ui/hub_stations.tres; ids board, planning, armory,
-## masks, range, crew, jukebox, notoriety). The API for the 2D hub cards AND ENV C's 3D safehouse interactables. Leaving a
+## masks, range, crew, jukebox, notoriety, profile). The API for the 2D hub cards AND ENV C's 3D safehouse interactables. Leaving a
 ## contract path this way drops it (a confirmed plan's cash is refunded). Back on every station
 ## returns to the hub. Returns false (and logs an error) for an unknown id or target.
 func open_station(station_id: StringName) -> bool:
@@ -254,6 +255,8 @@ func open_station(station_id: StringName) -> bool:
 			_open_jukebox()
 		TARGET_NOTORIETY:
 			_open_notoriety()
+		TARGET_CAREER:
+			_open_career()
 	return true
 
 
@@ -300,7 +303,8 @@ func _open_notoriety() -> void:
 	show_screen(screen)
 
 
-## Career screen (B7-01) from the hub's profile panel (read-only); Back frees it and returns to the hub.
+## Career screen (B7-01) from the hub's profile panel or the `profile` station (hub_map v1.1; read-only).
+## Back frees it and returns to the hub.
 func _open_career() -> void:
 	var screen: CareerScreen = CAREER_SCENE.instantiate() as CareerScreen
 	screen.profile_slot = profile_slot

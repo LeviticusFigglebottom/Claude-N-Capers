@@ -26,6 +26,7 @@ signal custody_changed()         ## custody (v1.2)
 signal captain_changed()         ## captain_present, captain_resistance (v1.3)
 signal stamina_changed()         ## stamina, exhausted (v1.4)
 signal player_mode_changed()     ## player_mode (v1.6)
+signal dominate_prompt_changed()  ## dominate_target, dominate_window_s (PP-A-1, S5.8 / D-079)
 signal crew_stats_changed()      ## crew_stats (B6-02 proposal, QB to ENV A; content/docs/scoreboard.md)
 
 ## PD2 display units (health 0..max_health, armor 0..max_armor).
@@ -200,6 +201,15 @@ var captain_resistance: float = 0.0:
 	set(v):
 		captain_resistance = v
 		captain_changed.emit()
+## PP-A-1 (S5.8 / D-079): net id of the guard a shout would dominate now, 0 = none; seconds left.
+var dominate_target: int = 0:
+	set(v):
+		dominate_target = v
+		dominate_prompt_changed.emit()
+var dominate_window_s: float = 0.0:
+	set(v):
+		dominate_window_s = v
+		dominate_prompt_changed.emit()
 ## v1.4 (B4-19): sprint stamina 0..1 (1 = full) and the exhausted flag (no sprint until recovered).
 var stamina: float = 1.0:
 	set(v):
