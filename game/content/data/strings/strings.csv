@@ -27,6 +27,8 @@ ui.menu.spending,Spending: {amount}
 ui.heist_select.title,Select a Job
 ui.heist_select.contact,Contact: {name}
 ui.heist_select.difficulty,Difficulty
+ui.heist_select.jobs,Jobs
+ui.heist_select.pay_caption,Contract pay
 ui.heist_select.last_breath,Last Breath
 ui.heist_select.last_breath_desc,"One down before custody. Higher stakes, same pay."
 ui.heist_select.pro_job,Pro Job

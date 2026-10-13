@@ -630,6 +630,17 @@ corner_radius_bottom_right = 10
 corner_detail = 1
 anti_aliasing_size = 0.6
 
+[sub_resource type="StyleBoxFlat" id="sb_TabButton_disabled"]
+content_margin_left = 24.0
+content_margin_top = 8.0
+content_margin_right = 24.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0)
+border_width_bottom = 2
+border_color = Color(0.17254902, 0.20784314, 0.2509804, 0.5)
+corner_detail = 1
+anti_aliasing_size = 0.6
+
 [sub_resource type="StyleBoxFlat" id="sb_TabButton_focus"]
 content_margin_left = 0.0
 content_margin_top = 0.0
@@ -898,6 +909,7 @@ SubheaderLabel/fonts/font = SubResource("font_caper_heading")
 TabButton/base_type = &"Button"
 TabButton/colors/font_color = Color(0.65882355, 0.63529414, 0.5882353, 1)
 TabButton/fonts/font = SubResource("font_caper_caps")
+TabButton/styles/disabled = SubResource("sb_TabButton_disabled")
 TabButton/styles/focus = SubResource("sb_TabButton_focus")
 TabButton/styles/hover = SubResource("sb_TabButton_hover")
 TabButton/styles/hover_pressed = SubResource("sb_TabButton_hover_pressed")

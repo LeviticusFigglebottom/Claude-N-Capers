@@ -143,6 +143,9 @@ static func _buttons(th: Theme) -> void:
 	th.set_stylebox(&"pressed", &"TabButton", t_on)
 	th.set_stylebox(&"hover_pressed", &"TabButton", t_on)
 	th.set_stylebox(&"focus", &"TabButton", focus_ring(0))
+	var t_off: StyleBoxFlat = t_normal.duplicate() as StyleBoxFlat
+	t_off.border_color = Color(T.LINE, 0.5)
+	th.set_stylebox(&"disabled", &"TabButton", t_off)
 	th.set_font(&"font", &"TabButton", T.font_caps())
 	th.set_color(&"font_color", &"TabButton", T.PAPER_DIM)
 	# MenuItem: the main menu's big caps entries; a cyan bar on the left when focused / hovered.
