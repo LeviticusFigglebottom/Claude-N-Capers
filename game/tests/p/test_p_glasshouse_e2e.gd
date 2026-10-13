@@ -175,6 +175,7 @@ func _walk_to(goal: Vector3, label: String, tol: float = 0.6, sprint: bool = fal
 				print("[PT-02] %s: snag at (%.1f,%.1f) -> %s" % [label, c.global_position.x, c.global_position.z, side])
 				continue
 			_inp.release_all()
+			print("[PT-02] near snag: %s" % _near_colliders())
 			_find("%s: stuck (no progress 1.5 s x%d) heading to waypoint %d/%d (%.1f,%.1f,%.1f)%s%s" % [
 				label, unstick, idx, path.size(), wp.x, wp.y, wp.z,
 				" next to closed door %s (locked %s, aimed %s, prompt %s)" % [door.name, door.locked, _aimed_name(),
@@ -198,6 +199,20 @@ func _comp_diag(n: Node) -> String:
 		return "none"
 	return "enabled=%s dist=%.2f m pos=(%.1f,%.1f,%.1f)" % [ic.enabled, ic.global_position.distance_to(_c().eye_position()),
 		ic.global_position.x, ic.global_position.y, ic.global_position.z]
+
+
+func _near_colliders() -> String:
+	var sp: PhysicsShapeQueryParameters3D = PhysicsShapeQueryParameters3D.new()
+	var sph: SphereShape3D = SphereShape3D.new()
+	sph.radius = 0.6
+	sp.shape = sph
+	sp.transform = Transform3D(Basis.IDENTITY, _c().global_position + Vector3.UP * 0.9)
+	sp.exclude = [_c().get_rid()]
+	var names: Dictionary = {}
+	for r: Dictionary in _c().get_world_3d().direct_space_state.intersect_shape(sp, 12):
+		var n: Node = r["collider"]
+		names[String(_rt.map.get_path_to(n)) if _rt.map.is_ancestor_of(n) else n.name] = true
+	return str(names.keys())
 
 
 func _crowd() -> String:
@@ -398,9 +413,25 @@ func test_loud_run() -> void:
 			or (safe.get(&"runner") as DeviceRunner).state != 0, 8.0)
 		assert_true(placed_s, "drill placed on the safe")
 		drill = null
+		var runner: DeviceRunner = safe.get(&"runner") as DeviceRunner
+		var ok_s: bool = false
+		var jams: int = 0
+		var left: float = 400.0
 		Engine.time_scale = 4.0
-		var ok_s: bool = await wait_until(func() -> bool: return _rt.mission.objective_state(&"safe") == Enums.ObjectiveState.COMPLETED, 200.0)
+		while left > 0.0 and not ok_s:
+			ok_s = _rt.mission.objective_state(&"safe") == Enums.ObjectiveState.COMPLETED
+			if not ok_s and runner != null and runner.state == DeviceRunner.State.JAMMED:
+				Engine.time_scale = 1.0
+				jams += 1
+				await _use(safe, "fix safe drill", func() -> bool: return runner.state != DeviceRunner.State.JAMMED, 6.0)
+				Engine.time_scale = 4.0
+			await wait_seconds(0.5)
+			left -= 0.5
 		Engine.time_scale = 1.0
+		print("[PT-02] safe drill: open=%s after %d jam fixes" % [ok_s, jams])
+		if not ok_s:
+			_find("safe drill not done after 400 s game time: runner state %s, %d jam fixes, safe stage %s" % [
+				DeviceRunner.State.keys()[runner.state] if runner != null else "none", jams, safe.get(&"stage")])
 		assert_true(ok_s, "safe drilled open")
 	if drill != null:
 		var placed: bool = await _use(drill, "place drill", func() -> bool: return drill.runner != null, 8.0)

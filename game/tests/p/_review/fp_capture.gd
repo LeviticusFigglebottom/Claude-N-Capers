@@ -25,7 +25,7 @@ func _ready() -> void:
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	await _shot("01_spawn_casing")
 	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s * 0.5)
-	await _shot("02_mask_up_mid")
+	await _shot("02_mask_up_mid", false)
 	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)
 	await _frames(20)
 	await _inp.tap(&"slot_secondary")
@@ -43,14 +43,14 @@ func _ready() -> void:
 	await _shot("06_ads_primary")
 	_inp.press(&"fire")
 	await _frames(2)
-	await _shot("07_ads_primary_firing")
+	await _shot("07_ads_primary_firing", false)
 	print("[PT-03] after fire: mag %d/%d" % [c.weapons.mag(c.weapons.equipped_slot), c.weapons.mag_size(c.weapons.equipped_slot)])
 	_inp.release_all()
 	await _frames(20)
 	await _inp.tap(&"reload")
 	await _frames(12)
 	print("[PT-03] reloading=%s slot=%d" % [c.weapons.reloading, c.weapons.equipped_slot])
-	await _shot("08_reload_mid")
+	await _shot("08_reload_mid", false)
 	_inp.press(&"move_forward")
 	_inp.press(&"sprint")
 	await _frames(40)
@@ -70,7 +70,17 @@ func _frames(n: int) -> void:
 		await get_tree().process_frame
 
 
-func _shot(name: String) -> void:
+func _shot(name: String, settle: bool = true) -> void:
+	# Wait for swaps/draws to finish in game time (llvmpipe frames are slow and long), then 8 frames.
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	var vm: FpViewmodel = null
+	for n: Node in c.find_children("*", "", true, false):
+		if n is FpViewmodel:
+			vm = n
+	var t: int = 0
+	while settle and vm != null and vm.action == FpViewmodel.Action.SWAP and t < 600:
+		await get_tree().process_frame
+		t += 1
 	await _frames(8)
 	await RenderingServer.frame_post_draw
 	var img: Image = get_viewport().get_texture().get_image()
