@@ -102,3 +102,14 @@ func test_teammate_state_badge() -> void:
 	_model.crew = [{"slot": 1, "name": "Dutch", "state": Enums.CrewState.DOWNED, "bleedout_s": 15.0, "revive_progress": 0.3}]
 	b = _hud.teammates.badges[1] as CrewStateBadge
 	assert_eq(b.ring()[1], UiTokens.OK, "being revived")
+
+
+## Lead queue (c): objective markers carry a glyph per objective kind.
+func test_objective_marker_kinds() -> void:
+	assert_eq(ObjectiveMarkers.kind_for({"id": &"workshop_door"}), &"door")
+	assert_eq(ObjectiveMarkers.kind_for({"id": &"keycard"}), &"card")
+	assert_eq(ObjectiveMarkers.kind_for({"id": &"cage_code"}), &"card", "the longest match wins")
+	assert_eq(ObjectiveMarkers.kind_for({"id": &"secure"}), &"bag")
+	assert_eq(ObjectiveMarkers.kind_for({"id": &"escape"}), &"escape")
+	assert_eq(ObjectiveMarkers.kind_for({"id": &"", "text_key": &"objective.night_deposit.time_lock"}), &"drill")
+	assert_eq(ObjectiveMarkers.kind_for({"id": &"mystery"}), &"", "unknown: the plain diamond")
