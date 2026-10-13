@@ -86,20 +86,19 @@ func build_ui() -> void:
 	_tab_box = UiBuild.hbox(8)
 	tabs_row.add_child(_tab_box)
 	for tree: StringName in SkillPoints.tree_def().trees:
-		var b: Button = _small_button(StringName("ui.skills.tree.%s" % tree))
-		b.toggle_mode = true
-		b.custom_minimum_size = Vector2(190, 0)
+		var b: Button = UiBuild.tab(_small_button(StringName("ui.skills.tree.%s" % tree)))
+		b.text = b.text.to_upper()
+		b.custom_minimum_size = Vector2(170, 0)
 		b.pressed.connect(show_tree.bind(tree))
 		_tab_box.add_child(b)
 		tree_tabs[tree] = b
 	var spacer2: Control = Control.new()
 	spacer2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	tabs_row.add_child(spacer2)
-	tabs_row.add_child(UiBuild.label(&"ui.skills.sets", UiBuild.DIM))
+	tabs_row.add_child(UiBuild.caption(&"ui.skills.sets"))
 	for i: int in range(maxi(tweak.skill_set_count, 1)):
-		var sb: Button = _small_button(&"ui.skills.set", {"n": i + 1})
-		sb.toggle_mode = true
-		sb.custom_minimum_size = Vector2(110, 0)
+		var sb: Button = UiBuild.tab(_small_button(&"ui.skills.set", {"n": i + 1}))
+		sb.custom_minimum_size = Vector2(100, 0)
 		sb.pressed.connect(select_skill_set.bind(i))
 		tabs_row.add_child(sb)
 		set_buttons.append(sb)

@@ -23,7 +23,7 @@ func _shot(shot: String, frames: int = 12) -> void:
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	_n += 1
-	if _only != "" and _only != "heist" and _only != "menus" and not shot.begins_with(_only):
+	if _only != "" and _only != "heist" and _only != "menus" and _only != "screens" and not shot.begins_with(_only):
 		return
 	var img: Image = get_viewport().get_texture().get_image()
 	var path: String = "%s/%02d_%s_%dx%d.png" % [_out, _n, shot, img.get_width(), img.get_height()]
@@ -38,9 +38,11 @@ func _run() -> void:
 	SaveService.save_profile(p, SLOT)
 	_flow = (load("res://content/ui/menus/menu_flow.tscn") as PackedScene).instantiate() as MenuFlow
 	get_tree().root.add_child(_flow)
-	if _only != "heist":
+	if _only == "screens":
+		await _screens()
+	elif _only != "heist":
 		await _menus()
-	if _only != "menus":
+	if _only != "menus" and _only != "screens":
 		await _heist()
 	SaveService.delete_profile(SLOT)
 	get_tree().quit(0)
@@ -72,6 +74,30 @@ func _menus() -> void:
 	_flow.call(&"_show_sample_payday")
 	await _shot("payday_sample", 20)
 	_flow.show_hub()
+
+
+## Every other station / sub-screen (PO-4 rest of the restyle).
+func _screens() -> void:
+	for st: StringName in [&"masks", &"crew", &"jukebox", &"notoriety", &"profile"]:
+		_flow.show_hub()
+		_flow.open_station(st)
+		await _shot("st_" + String(st), 16)
+	_flow.show_hub()
+	_flow.call(&"_open_achievements")
+	await _shot("achievements", 16)
+	_flow.show_hub()
+	_flow.open_station(&"armory")
+	await _shot("armory", 8)
+	_flow.open_progression(_flow.SKILLS_SCENE)
+	await _shot("skills", 16)
+	_flow.close_progression()
+	_flow.open_progression(_flow.PERKS_SCENE)
+	await _shot("perks", 16)
+	_flow.close_progression()
+	var ls: LoadoutScreen = _flow.loadout_screen
+	if ls != null:
+		ls.open_workshop()
+		await _shot("workshop", 30)
 
 
 func _heist() -> void:

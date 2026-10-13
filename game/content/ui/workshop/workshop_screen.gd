@@ -355,8 +355,8 @@ func _item_list() -> ItemList:
 	focus.set_border_width_all(2)
 	l.add_theme_stylebox_override(&"focus", focus)
 	var sel: StyleBoxFlat = StyleBoxFlat.new()
-	sel.bg_color = Color(UiAccent.table().fallback, 0.28)
-	sel.border_color = UiAccent.table().fallback
+	sel.bg_color = UiTokens.INK_3  # PO-4: selection is ink + an edge, never a brass flood
+	sel.border_color = UiTokens.PAPER_DIM
 	sel.border_width_left = 4
 	l.add_theme_stylebox_override(&"selected", sel)
 	var sel_focus: StyleBoxFlat = sel.duplicate() as StyleBoxFlat
