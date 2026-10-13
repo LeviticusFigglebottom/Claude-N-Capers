@@ -29,6 +29,10 @@ const FIRST_PERSON_HIDDEN_LAYER: int = 1 << 19
 ## PP-P-11: render layer of everything under the local camera (arms, weapon, held items); drawn by the
 ## viewmodel camera at FpViewmodelTweak.viewmodel_fov_deg, culled from the world camera.
 const VIEWMODEL_LAYER: int = 1 << 18
+## D-094 (visual_slots 1.1, QP-3 layer number pending): set IN ADDITION to a Light3D's normal layers on lights that
+## should also light the viewmodel (lamps, muzzle flashes, flashlights). The viewmodel camera culls everything else,
+## lights included. Never used on geometry.
+const VIEWMODEL_LIT_LAYER: int = 1 << 20
 
 ## Compatibility alias of the crew member's `Loadout.mask_descriptor` (QA-25); setting it calls
 ## set_mask_descriptor().
@@ -236,7 +240,7 @@ func _build_viewmodel_camera(cam: Camera3D) -> void:
 	layer.add_child(vp)  # no own_world_3d: the parent viewport's World3D (same lights / GI)
 	_vm_cam = Camera3D.new()
 	_vm_cam.name = "ViewmodelCamera"
-	_vm_cam.cull_mask = VIEWMODEL_LAYER
+	_vm_cam.cull_mask = VIEWMODEL_LAYER | VIEWMODEL_LIT_LAYER
 	_vm_cam.far = 20.0
 	var we: Environment = cam.get_world_3d().environment if cam.get_world_3d() != null else null
 	if we != null:
