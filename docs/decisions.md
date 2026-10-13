@@ -725,3 +725,9 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - **Release e2e (ENV A, 2f7a8991):** `game/tests/a/e2e/run_po5.sh <flow> [seed] [budget_s] [out_dir] [heist] [difficulty]`,
   windowed, real menu clicks, input-only play. `gh_loud` (Glasshouse loud → payday → hub) is the release check the lead
   runs occasionally in the background (~45–90 min on llvmpipe); `gh_stealth` joins when ready; `auto_loud` for any heist.
+
+## D-098 — 2026-10-13 — Stretch aspect "expand"; mod deltas on the PD2 scale
+- `window/stretch/aspect = "expand"` (was the default "keep", which pillarboxed 21:9) — **approved, lands when ENV B's HUD + test_pp_hud_720p pass under it** (with "expand" today the loud-HUD bleedout/bag/hostages text measures 9 px at 720p); the lead flips the setting on B's signal. Menu screens cap to a centred 16:9
+  column (B's `UiScreen.fit_width`); the HUD anchors to the real window corners (B verifies 21:9 in-heist).
+- With PD2 base spread (D-097), weapon-mod accuracy/stability deltas move to PD2's point steps (+4..+12 per mod class);
+  ENV B rescales them with goldens. P4 goldens updated by the lead (test_p4_progression test_10/11/14).
