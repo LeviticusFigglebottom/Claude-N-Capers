@@ -684,3 +684,11 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Default mouse gain 0.0016 rad/count (≈0.092°/count; was 0.0025). ADS/scoped look divides by `CrewView.zoom_factor`
   (PD2 zoom sensitivity: 4× scope → ¼ turn rate). Both stay player-adjustable in Options (B5-01); defaults live in
   ENV P's tweak data. Verified windowed via the real menu flow (env/p-play c1b3c2ad).
+
+## D-092 — 2026-10-13 — Parallel lanes, no idling (product owner)
+- Every env runs **several lanes at once**: slow windowed runs go to the background, and independent items run as Agent
+  subagents in their own git worktrees (or on disjoint files). The env integrates, runs each lane's targeted tests (D-088)
+  and **pushes each lane as soon as it is green**; no batching, and nothing sits unpushed for more than ~1 h.
+- Limits on 4 cores: at most 2 windowed Godot processes at once (`--rendering-driver opengl3`, small windows for
+  non-visual runs, waits in physics ticks); code-only subagents run alongside.
+- Each env always keeps ≥ 2 h of queued lanes and proposes the next ones before the current ones run dry (D-027).
