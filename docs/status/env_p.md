@@ -29,7 +29,15 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   G6 CoffeeTable_1/Armchair_1). Likely the PO played a build before P1-01 step-up (round 35). Notes for C/D: every
   prop has two colliders (X/Collision box + X/Model/Collision convex); quay edges QuayE/QuayW (10.9,-0.47,32.9) and
   Pier9East (57.8,-0.64,41.4) are 0.47-0.69 m drops, check they are meant to be.
-- Feel-pass notes: masked viewmodel pistol renders nearly black and very large in the 1280x720 frame.
+- PO-3 windowed: po_playthrough now also turns 180 deg by real mouse, walks W off the glasshouse sidewalk kerb
+  (0.25 m, at ~(4.4, 0, 13.2)) and back up it: PASS (y 0.00 -> 0.23).
+- PO-4 (b9383a9d): look divides by CrewView.zoom_factor while aiming (PD2 zoom sensitivity); default mouse gain
+  0.0025 -> 0.0016 rad/count. test_po4_feel.gd.
+- test_p3_loud:test_10_ai_orders_during_assault ("follow: the AI caught up") fails on the pre-PO-2 base 7a417116 too:
+  pre-existing, A's (crew AI follow), not caused by P.
+- Feel-pass open: masked viewmodel pistol renders as a near-black silhouette and large in the 1280x720 frame
+  (opengl3 run; compare under Vulkan before acting). Next: that, ADS transitions, sprint/crouch/jump, door snag
+  PP-P-12, brute_12 left hand, 1920x1080 review.
 
 ## 2026-10-12 20:25 ET: merge round 34, renders, loud run
 - a2ddb786 merge trunk db22c24c (--no-ff). P suite 53 (only the opt-in E2E failed, now skipped by default),

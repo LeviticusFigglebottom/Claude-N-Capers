@@ -25,7 +25,12 @@ const RESUME_GATED: Array[StringName] = [&"fire", &"melee", &"throw_item", &"mas
 ## Never set by game code: the real capture is MouseCapture's (D-087).
 static var test_assume_captured: bool = false
 
-@export var mouse_sensitivity: float = 0.0025
+## Radians of look per mouse count at GameSettings sensitivity 1.0. Feel pass (PO-4): 0.0025 (0.143 deg/count,
+## 360 deg in ~3 in at 800 DPI) was twitchy; 0.0016 = 0.092 deg/count, 360 deg in ~4.9 in, close to PD2's default.
+@export var mouse_sensitivity: float = 0.0016
+## PD2 zoom sensitivity: while ADS / scoped, mouse and stick look slow down by the camera zoom (CrewView.zoom_factor,
+## D-084), so a 4x scope does not turn 4x faster on screen.
+@export var scale_look_by_zoom: bool = true
 ## Gamepad look: radians per second at full stick deflection (yaw; pitch uses the same rate).
 @export var gamepad_look_speed: float = 3.0
 ## Radial deadzone of the right stick (0..1).
@@ -101,8 +106,8 @@ func _input(event: InputEvent) -> void:
 		# P1-01 (mouse gain): screen_relative = raw device counts. `relative` is scaled by the canvas_items stretch
 		# (base 1920x1080 / window size), which made sensitivity depend on resolution (x0.75 at 1440p, x0.5 at 4K,
 		# x1.5 at 720p, x30 headless).
-		var d: Vector2 = mm.screen_relative
-		add_look(-d.x * mouse_sensitivity * ms.x, -d.y * mouse_sensitivity * ms.y * inv)
+		var d: Vector2 = mm.screen_relative * mouse_sensitivity / _zoom()
+		add_look(-d.x * ms.x, -d.y * ms.y * inv)
 
 
 ## QB-46: paused input stops building intents; resuming re-reads the crew's look direction.
@@ -133,6 +138,11 @@ func ui_has_focus() -> bool:
 	return f != null and f.is_visible_in_tree()
 
 
+## Look divisor while zoomed (1.0 at hip fire or with scale_look_by_zoom off).
+func _zoom() -> float:
+	return maxf(CrewView.local_zoom_factor(), 1.0) if scale_look_by_zoom else 1.0
+
+
 ## Add yaw/pitch (radians); pitch clamped to +-89 degrees.
 func add_look(d_yaw: float, d_pitch: float) -> void:
 	_yaw += d_yaw
@@ -160,7 +170,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if not gamepad_requires_capture or MouseCapture.is_captured():
 		var stick: Vector2 = Input.get_vector(&"look_left", &"look_right", &"look_up", &"look_down", 0.0)
-		var d: Vector2 = gamepad_look_delta(stick, delta)
+		var d: Vector2 = gamepad_look_delta(stick, delta) / _zoom()
 		if d != Vector2.ZERO:
 			add_look(d.x, d.y)
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
