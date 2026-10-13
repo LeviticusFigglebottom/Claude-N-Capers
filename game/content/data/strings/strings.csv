@@ -1534,6 +1534,7 @@ ui.hub.profile.perk_points,Perk points: {points} free
 ui.hub.station.crew,Crew Net
 ui.hub.station.crew.desc,"Host a co-op crew, or join a friend's lobby."
 ui.lobby.title,Co-op Lobby
+ui.lobby.crumb,Safehouse / Crew
 ui.lobby.status.offline,Not connected. Host a crew or join one.
 ui.lobby.status.joining,Connecting to the host...
 ui.lobby.status.hosting,Hosting: {crew} of {max} players
@@ -1554,7 +1555,7 @@ ui.lobby.error.host,Could not host on port {port}. Is it already in use?
 ui.lobby.error.join,Could not connect to {address}:{port}.
 ui.lobby.error.timeout,The host did not answer. Check the address and port.
 ui.lobby.error.host_lost,The host closed the lobby.
-ui.lobby.contract.title,CONTRACT
+ui.lobby.contract.title,Contract
 ui.lobby.contract.none,No contract yet
 ui.lobby.contract.none_host,Pick one from the Board or the planning table.
 ui.lobby.contract.none_client,Waiting for the host to pick a contract.
@@ -1577,18 +1578,18 @@ ui.lobby.block.not_ready,Waiting for everyone to be ready.
 ui.lobby.slot.open,Open seat
 ui.lobby.slot.ai,Crew AI
 ui.lobby.slot.ai_fill,AI fills this seat
-ui.lobby.slot.host,HOST
-ui.lobby.slot.you,YOU
+ui.lobby.slot.host,Host
+ui.lobby.slot.you,You
 ui.lobby.slot.ready,Ready
 ui.lobby.slot.not_ready,Not ready
 ui.lobby.slot.waiting,Waiting for loadout...
 ui.lobby.slot.none,None
-ui.lobby.slot.primary,Primary: {name}
-ui.lobby.slot.secondary,Secondary: {name}
-ui.lobby.slot.armor,Armor: {name}
-ui.lobby.slot.deployable,Deployable: {name}
-ui.lobby.slot.perk_deck,Perk deck: {name}
-ui.lobby.slot.mask,Mask: {name}
+ui.lobby.slot.primary,{name}
+ui.lobby.slot.secondary,{name}
+ui.lobby.slot.armor,{name}
+ui.lobby.slot.deployable,{name}
+ui.lobby.slot.perk_deck,{name}
+ui.lobby.slot.mask,{name}
 ui.lobby.slot.illegal,Illegal loadout: the host will not launch it.
 ui.lobby.custom_mask,Custom mask
 ui.lobby.client_launch_missing,"The host started the heist, but joining a running heist is not available in this build yet."
@@ -2414,7 +2415,7 @@ ui.kick.yes,Kick
 ui.kick.no,Cancel
 ui.lobby.error.kicked,The host removed you from the lobby.
 ui.lobby.code.title,Lobby code
-ui.lobby.code.value,Lobby code: {code}
+ui.lobby.code.value,{code}
 ui.lobby.code.copy,Copy
 ui.lobby.code.copied,Copied to the clipboard.
 ui.lobby.code.wan_hint,"Works on your local network. For internet play, forward the UDP port on your router and share your public address."
@@ -2456,8 +2457,8 @@ item.throwable.throwing_knife.desc,"Three balanced blades. Silent, and one clean
 ui.loadout.heister,Heister
 ui.heister.any,Any Free Heister
 ui.loadout.heister_taken,{name} (taken)
-ui.lobby.slot.heister,Heister: {name}
-ui.lobby.slot.heister_fallback,"Heister: {name} ({pick} was taken)"
+ui.lobby.slot.heister,{name}
+ui.lobby.slot.heister_fallback,{name} ({pick} was taken)
 ui.lobby.dropin.title,Drop-in
 ui.lobby.dropin.ask,Ask me first
 ui.lobby.dropin.auto,Allowed
