@@ -800,6 +800,19 @@ func consume_pro_contract() -> void:
 	_board_contract = {}
 
 
+## Lead failure pass: Leave Heist from the pause menu. Solo (the only human, with authority) ends the run
+## as a failure (HeistResult.fail_reason &"abort"), so the payday shows what was lost and Continue goes
+## home; a client, or a host with other humans, just leaves (it must not end the heist for everyone).
+func _request_leave_heist() -> void:
+	options_menu.close_pause()
+	var rt: Object = runtime
+	var running: bool = rt != null and is_instance_valid(rt) and int(rt.get(&"phase")) != Enums.HeistPhase.ENDED
+	if running and Net.is_authority() and Net.human_slots().size() <= 1 and rt.has_method(&"end_heist"):
+		rt.call(&"end_heist", false, [] as Array[int], &"abort")
+		return
+	_leave_heist()
+
+
 func _leave_heist() -> void:
 	if _heist_payday != null and is_instance_valid(_heist_payday):
 		_heist_payday.finish_card_pick()  # QB-PC1: leaving with an unpicked card auto-picks it
