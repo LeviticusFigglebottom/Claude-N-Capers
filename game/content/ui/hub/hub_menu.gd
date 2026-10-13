@@ -208,6 +208,10 @@ func _station_card(s: HubStation) -> Button:
 		start_here.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		start_here.visible = false
 		row.add_child(start_here)
+	# A Button does not grow with its children: follow the content so a two-line description stays
+	# inside the card (lane 13 16:10 capture: the second line spilled under the next card).
+	m.minimum_size_changed.connect(func() -> void:
+		b.custom_minimum_size.y = maxf(96.0, m.get_combined_minimum_size().y))
 	return b
 
 

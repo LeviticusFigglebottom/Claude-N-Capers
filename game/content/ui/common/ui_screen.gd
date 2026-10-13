@@ -7,6 +7,10 @@ extends Control
 
 signal back_requested()
 
+## Lane 13 (21:9): content is never wider than this aspect; on an ultrawide canvas the screen insets to
+## a centred 16:9 column (the backdrop behind it still fills the window).
+const MAX_ASPECT: float = 16.0 / 9.0
+
 ## PO-4 motion (style.md §6): a shown screen fades in over UiTokens.T_BASE. Off for captures / tests
 ## that read pixels right away.
 static var motion_enabled: bool = true
@@ -24,6 +28,8 @@ var _hints_pad: bool = false
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	fit_width()
+	get_viewport().size_changed.connect(fit_width)
 	if theme == null:
 		theme = UiBuild.theme()
 	UiNav.ensure_pad_ui_actions()
@@ -33,6 +39,14 @@ func _ready() -> void:
 	UiNav.chain_vertical(focus_chain)
 	visibility_changed.connect(_on_visibility_changed)
 	focus_default()
+
+
+## Insets the screen's left / right edges so it is at most MAX_ASPECT wide (no-op at 16:9 / 16:10).
+func fit_width() -> void:
+	var area: Vector2 = get_parent_area_size()
+	var inset: float = maxf((area.x - area.y * MAX_ASPECT) * 0.5, 0.0)
+	offset_left = inset
+	offset_right = -inset
 
 
 ## Override: create child controls and fill focus_chain.
