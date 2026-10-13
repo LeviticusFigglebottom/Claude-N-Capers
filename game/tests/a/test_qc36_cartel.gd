@@ -42,7 +42,8 @@ func test_spawned_as_cartel_not_police() -> void:
 	assert_true(_rt.npcs(&"guard").is_empty(), "no guard on that spawn")
 	var d: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
 	assert_false(d.alive_units().has(g[0]), "not a police unit")
-	assert_eq(d.police_budget(), d.enemy_cap() - 1, "alive gunmen take from the police budget (D-064)")
+	assert_eq(d.police_budget(), mini(d.force_cap(), d.enemy_cap() - 1),
+		"alive gunmen take from the police budget (D-064), within the crew-scaled force cap (PO-5.4)")
 
 
 func test_gunshot_wakes_and_spreads() -> void:
