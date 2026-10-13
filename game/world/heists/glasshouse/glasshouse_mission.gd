@@ -118,10 +118,13 @@ func _open_safe() -> void:
 		return
 	_safe_open = true
 	for s: Node in find_tagged(TAG_SAFE):
-		if s.has_method(&"unlock"):
+		# PO-5.8: swing the door AND enable the loot inside (Safe.swing_open). Setting `opened` directly
+		# left the door shut and the bags disabled; this handler runs before the drill's own
+		# finished -> open_by_device, which then saw `opened` and did nothing (the "drill never opens").
+		if s.has_method(&"swing_open"):
+			s.call(&"swing_open")
+		elif s.has_method(&"unlock"):
 			s.call(&"unlock")
-		elif &"opened" in s:
-			s.set(&"opened", true)
 	complete(&"safe")
 	activate(&"safe_loot")
 
