@@ -173,7 +173,7 @@ func test_summary_round_trip_and_names() -> void:
 	assert_eq(names["secondary"], UiText.t(&"item.weapon.kestrel_p9.name"))
 	assert_eq(names["armor"], UiText.t(&"item.armor.tailored_suit.name"))
 	assert_eq(names["deployable"], UiText.t(&"item.deployable.doctor_bag.name"))
-	assert_eq(names["primary"], "", "empty slot")
+	assert_eq(names["primary"], UiText.t(&"item.weapon.corsair_ar.name"), "QB-1 starter primary")
 	assert_eq(names["mask"], UiText.t(&"ui.lobby.custom_mask"))
 	var md: MaskDef = LobbyState.mask_def(clean["loadout"] as Dictionary)
 	assert_true(md != null, "other peers can compose the custom mask")

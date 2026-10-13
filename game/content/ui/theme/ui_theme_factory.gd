@@ -69,11 +69,21 @@ static func _labels(th: Theme) -> void:
 	_label(th, &"HudLabel", T.PAPER, T.FONT_HUD)
 	th.set_color(&"font_outline_color", &"HudLabel", Color(T.INK_0, 1.0))
 	th.set_constant(&"outline_size", &"HudLabel", 6)
+	_hud_shadow(th, &"HudLabel")
 	_label(th, &"HudBigLabel", T.PAPER, T.FONT_HUD_BIG, T.font_heading())
 	th.set_color(&"font_outline_color", &"HudBigLabel", Color(T.INK_0, 1.0))
 	th.set_constant(&"outline_size", &"HudBigLabel", 8)
+	_hud_shadow(th, &"HudBigLabel")
 	th.set_color(&"font_color", &"TooltipLabel", T.PAPER)
 	th.set_font_size(&"font_size", &"TooltipLabel", T.FONT_SMALL)
+
+
+## Soft dark drop shadow for text that floats over the 3D world (PQ-B-23 look, for every HUD label).
+static func _hud_shadow(th: Theme, type: StringName) -> void:
+	th.set_color(&"font_shadow_color", type, Color(0, 0, 0, 0.55))
+	th.set_constant(&"shadow_offset_x", type, 2)
+	th.set_constant(&"shadow_offset_y", type, 3)
+	th.set_constant(&"shadow_outline_size", type, 6)
 
 
 static func _label(th: Theme, type: StringName, color: Color, size: int, font: Font = null) -> void:
@@ -191,7 +201,8 @@ static func _panels(th: Theme) -> void:
 	th.set_type_variation(&"CardPanel", &"PanelContainer")
 	th.set_stylebox(&"panel", &"CardPanel", box(T.INK_2, T.LINE, 1, T.CUT, Vector2(T.S3, T.S3)))
 	th.set_type_variation(&"HudPanel", &"PanelContainer")
-	var hud: StyleBoxFlat = box(Color(T.INK_0, T.HUD_PANEL_ALPHA), Color(0, 0, 0, 0), 0, T.CUT_SMALL, Vector2(T.S3, T.S2 + 2))
+	# PO-4 lead note 1: frameless HUD; the world shows through, text carries outline + shadow.
+	var hud: StyleBoxFlat = box(Color(T.INK_0, 0.0), Color(0, 0, 0, 0), 0, 0, Vector2(T.S2, T.S1))
 	th.set_stylebox(&"panel", &"HudPanel", hud)
 	th.set_type_variation(&"BannerPanel", &"PanelContainer")
 	var banner: StyleBoxFlat = box(Color(T.ALERT_INK, 0.9), T.ALERT, 0, T.CUT_SMALL, Vector2(T.S5, T.S2))

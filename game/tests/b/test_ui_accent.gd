@@ -169,6 +169,6 @@ func test_board_card_and_hud_objectives_use_the_accent() -> void:
 	await wait_frames(1)
 	assert_eq(hud.objectives.accent, UiAccent.for_heist(&"night_deposit"))
 	var hsb: StyleBoxFlat = hud.objectives.panel.get_theme_stylebox(&"panel") as StyleBoxFlat
-	assert_eq(hsb.border_width_left, 4, "objective accent edge")
+	assert_eq(hsb.border_width_left, 3, "objective accent edge (PO-4 hairline, frameless HUD)")
 	hud.queue_free()
 	await wait_frames(1)

@@ -13,8 +13,9 @@ var warnings_label: Label
 
 func build() -> void:
 	var v: VBoxContainer = UiBuild.vbox(4)
-	v.alignment = BoxContainer.ALIGNMENT_END
+	v.alignment = BoxContainer.ALIGNMENT_BEGIN
 	add_child(v)
+	v.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)  # PO-4: flush with the right margin
 	mask_label = _add(v)
 	# PO-4: the mode reads as a tracked-caps chip (CASING / CIVILIAN); MASKED is the normal state and
 	# is not shown (its text is kept for tests and screen readers).

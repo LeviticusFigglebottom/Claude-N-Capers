@@ -662,6 +662,7 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 			MusicCatalog.resolve_choice(profile))
 	visible = false
 	_spawn_in_heist_ui()
+	_hand_heisters(options)
 	runtime = await launcher.call(&"launch", heist_id, run_seed, difficulty, null, options)
 	if runtime == null:
 		Log.error(&"ui", "HeistLauncher.launch(%s) returned null; back to the main menu" % heist_id)
@@ -699,6 +700,19 @@ static func build_launch_options(ai_teammates: int, local_slot: int, resolved: L
 ## Menu-side seed (not gameplay RNG): the run seed handed to HeistLauncher.
 static func _time_seed() -> int:
 	return int(Time.get_unix_time_from_system())
+
+
+## PO-4: the HUD names teammates by their heister (slot -> heister id from the launch loadouts).
+func _hand_heisters(options: Dictionary) -> void:
+	if not _hud is Hud:
+		return
+	var map: Dictionary = {}
+	var loadouts: Dictionary = options.get("loadouts", {}) as Dictionary
+	for slot: Variant in loadouts:
+		var l: Loadout = loadouts[slot] as Loadout
+		if l != null and l.heister != &"":
+			map[int(slot)] = l.heister
+	(_hud as Hud).set_crew_heisters(map)
 
 
 ## True while the HUD/payday layer of a launched heist exists.
@@ -986,6 +1000,7 @@ func launch_coop(info: Dictionary) -> void:
 	DropInFlow.apply_host_policy(get_tree(), lobby.state.dropin_policy)  # B6-04: A's service decides drop-ins
 	visible = false
 	_spawn_in_heist_ui()
+	_hand_heisters(options)
 	runtime = await launcher.call(&"launch", _heist_id, int(info["seed"]), _difficulty, null, options)
 	if runtime == null:
 		Log.error(&"ui", "HeistLauncher.launch(%s) returned null (co-op); leaving" % _heist_id)

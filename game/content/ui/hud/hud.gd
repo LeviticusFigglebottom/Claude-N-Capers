@@ -37,6 +37,8 @@ const CASING_HINT_KEYS: Dictionary = {
 ## (UiAccent.for_heist, B4-07). Empty = no accent.
 @export var heist_id: StringName = &""
 
+## PO-4: slot -> heister id (MenuFlow at launch); teammate rows show the heister's name and colour.
+var crew_heisters: Dictionary = {}
 ## Settings the HUD follows (null = GameSettings.current(); tests set their own before _ready).
 var settings: GameSettings = null
 ## HudTweak recoloured by the active palette (what every widget reads).
@@ -90,6 +92,13 @@ func bind(m: Node) -> void:
 		w.bind(m)
 	if m != null:
 		model_bound.emit(m)
+
+
+func set_crew_heisters(map: Dictionary) -> void:
+	crew_heisters = map.duplicate()
+	if teammates != null:
+		teammates.heisters = crew_heisters
+		teammates.refresh()
 
 
 func widgets() -> Array[HudWidget]:

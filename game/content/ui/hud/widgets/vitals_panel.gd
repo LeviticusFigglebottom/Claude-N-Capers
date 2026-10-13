@@ -12,23 +12,26 @@ var state_label: Label
 
 func build() -> void:
 	var v: VBoxContainer = UiBuild.vbox(4)
-	add_child(UiBuild.panel(v, UiBuild.HUD_PANEL))
+	var p: PanelContainer = UiBuild.panel(v, UiBuild.HUD_PANEL)
+	add_child(p)
+	p.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)  # PO-4: sits on the bottom margin
+	p.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	state_label = UiBuild.label(&"", UiBuild.HUD)
 	state_label.add_theme_color_override(&"font_color", tweak.low_health_color)
 	v.add_child(state_label)
 	armor_label = _row(v, &"ui.hud.armor")
-	armor_bar = UiBuild.bar(tweak.armor_color, Vector2(300, 12))
+	armor_bar = UiBuild.bar(tweak.armor_color, Vector2(300, 4))
 	v.add_child(armor_bar)
 	health_label = _row(v, &"ui.hud.health")
-	health_bar = UiBuild.bar(tweak.health_color, Vector2(300, 16))
+	health_bar = UiBuild.bar(tweak.health_color, Vector2(300, 6))
 	v.add_child(health_bar)
-	downs_label = UiBuild.label(&"", UiBuild.DIM)
+	downs_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.DIM))
 	v.add_child(downs_label)
 
 
 func _row(parent: Container, key: StringName) -> Label:
 	var h: HBoxContainer = UiBuild.hbox(8)
-	var cap: Label = UiBuild.caption(key)  # PO-4: label as caption, value as text
+	var cap: Label = UiBuild.float_text(UiBuild.caption(key))  # PO-4: label as caption, value as text
 	cap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(cap)
 	var val: Label = UiBuild.label(&"", UiBuild.HUD)
