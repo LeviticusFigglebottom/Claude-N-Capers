@@ -235,7 +235,7 @@ func _guards() -> String:
 func _workshop() -> String:
 	var wdoor: InteractableComponent = comp_tagged(&"workshop_door")
 	var door: Door = wdoor.owner_node() as Door
-	if not await p.goto(p.stand_point(Vector3(7.5, 0.0, 5.3)), 0.5, 90.0, false, false):
+	if not await p.goto(p.stand_point(Vector3(7.5, 0.0, 5.3)), 0.5, 90.0):
 		return "PO-5.stealth.workshop: could not reach the workshop door"
 	if not door.is_open:
 		await p.use(wdoor, 20.0, func() -> bool: return door.is_open)
@@ -289,6 +289,7 @@ func _bags() -> String:
 	f.note("secure zone %s at %s" % [zone.get_path(), Po5Pilot._v(zone.global_position)])
 	var c4: SecurityCamera = live_camera("C4")
 	if c4 != null and _variant(&"escape") == &"esc_alley_west":
+		await to_alley()
 		var err4: String = await smash_camera(c4)
 		if err4 != "":
 			return err4
@@ -303,6 +304,10 @@ func _bags() -> String:
 			continue
 		if alarm != &"":
 			return "PO-5.stealth.alarm: alarm raised (%s) while bagging" % alarm
+		if not inside(zone.global_position):
+			await via_fire_exit(true)
+			if zone.global_position.z < 0.0:
+				await p.goto(Vector3(17.5, 0.0, -2.8), 0.8, 60.0)
 		if await p.secure_carried_bag(zone):
 			bags += 1
 			f.note("bag %d secured t=%.0f" % [bags, rt.heist_time_s])
@@ -310,6 +315,10 @@ func _bags() -> String:
 				await f.shot("bag_1")
 		if alarm != &"":
 			return "PO-5.stealth.alarm: alarm raised (%s) while carrying" % alarm
+		if bags < 2 and not inside(crew.global_position):
+			if crew.global_position.z < 0.0:
+				await p.goto(Vector3(17.5, 0.0, -2.8), 0.8, 60.0)
+			await via_fire_exit(false)
 	if bags < 2:
 		return "PO-5.stealth.bags: only %d bags secured" % bags
 	return ""
@@ -389,6 +398,33 @@ func smash_camera(cam: SecurityCamera) -> String:
 	return ""
 
 
+# --- Routes -----------------------------------------------------------------------------------
+
+static func inside(v: Vector3) -> bool:
+	return v.x > 0.0 and v.x < 18.0 and v.z > 0.0 and v.z < 12.0
+
+
+## Leave or enter the building by the fire exit (G10 <-> Pell St): the back of house stays off the sales
+## floor cameras' sightline through the staff door, and the street / alley have no civilians.
+func via_fire_exit(to_outside: bool) -> bool:
+	if inside(crew.global_position) != to_outside:
+		return true
+	var pts: Array[Vector3] = [Vector3(17.0, 0.0, 2.6), Vector3(19.6, 0.0, 1.9)]
+	if not to_outside:
+		pts.reverse()
+	for wp: Vector3 in pts:
+		if not await p.goto(wp, 0.6, 60.0):
+			return false
+	return true
+
+
+## From wherever we are to the alley (outside, by the Pell St mouth).
+func to_alley() -> bool:
+	if not await via_fire_exit(true):
+		return false
+	return await p.goto(Vector3(17.5, 0.0, -2.8), 0.8, 60.0)
+
+
 # --- Guards -----------------------------------------------------------------------------------
 
 ## A guard matters when his patrol (or post) reaches where we work: back of house / upstairs, or the
@@ -414,6 +450,8 @@ func hunt(g: NpcBase, timeout_s: float) -> String:
 	var gb: GuardBrain = g.get_node_or_null(^"Brain") as GuardBrain
 	f.note("hunt %s at %s (state %s)" % [g.name, Po5Pilot._v(g.global_position), gb.state_name()])
 	var t0: float = rt.heist_time_s
+	if g.global_position.z < 0.0 and inside(crew.global_position):
+		await to_alley()
 	p.quiet = true
 	while g.is_alive():
 		if alarm != &"":
@@ -426,6 +464,9 @@ func hunt(g: NpcBase, timeout_s: float) -> String:
 				Po5Pilot._v(g.global_position), Po5Pilot._v(crew.global_position)]
 		if _arresting_us(g):
 			await _await_arrest(g)
+			continue
+		if inside(g.global_position) and g.global_position.z > 6.0 and g.global_position.y < 2.0:
+			await f.wait_s(0.5)  # on the sales floor (customers, cameras): wait for him in the back
 			continue
 		var d: float = p.flat_dist(g.global_position, crew.global_position)
 		if d <= 1.45 and absf(g.global_position.y - crew.global_position.y) < 1.0:
@@ -547,11 +588,21 @@ func subdue(c: NpcBase) -> String:
 		await p.inp.ticks(int(Tweak.stealth().shout_cooldown_s * Engine.physics_ticks_per_second) + 2)
 	if b.mode != CivilianBrain.Mode.DOWN:
 		return "" if b.mode == CivilianBrain.Mode.TIED else "PO-5.stealth.civilian: %s did not go down (mode %d)" % [c.name, b.mode]
-	if crew.cable_ties > 0:
+	var stationary: bool = [&"desk_work", &"sit", &"queue", &"phone"].has(StringName(c.spawn_info.get("idle_activity", &"")))
+	if crew.cable_ties > 0 and (stationary or crew.cable_ties > 1):
 		var tie: InteractableComponent = c.get_node_or_null(^"TieInteractable") as InteractableComponent
 		if tie != null:
 			await p.use(tie, 5.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED)
-	if b.mode != CivilianBrain.Mode.TIED and not downed.has(c):
+	if b.mode == CivilianBrain.Mode.DOWN:
+		# No tie to spare for a wanderer: it would get up panicked in 45 s. Knife it while it is down.
+		await p.goto(p.stand_point(c.global_position), 1.1, 6.0, false, false)
+		await p.face(c.global_position + Vector3(0.0, 0.3, 0.0), 0.05, 1.0)
+		await p.inp.tap(&"melee")
+		await p.inp.ticks(int(0.7 * Engine.physics_ticks_per_second))
+		if c.is_alive():
+			await knife(c, 0.0)
+		f.note("civilian %s knifed while down -> alive=%s" % [c.name, c.is_alive()])
+	if c.is_alive() and b.mode != CivilianBrain.Mode.TIED and not downed.has(c):
 		downed.append(c)
 	return ""
 

@@ -285,12 +285,13 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 		await tick()
 		t += dt()
 	inp.release(&"interact")
-	if comp.completed.is_connected(cb):
+	if is_instance_valid(comp) and comp.completed.is_connected(cb):
 		comp.completed.disconnect(cb)
 	await inp.ticks(3)
 	var ok: bool = completed[0] or (done.is_valid() and bool(done.call()))
-	d.note("pilot: use %s (%s) -> %s in %.1f s" % [comp.owner_node().name if comp.owner_node() else comp.name,
-		comp.kind, "OK" if ok else "FAILED", t])
+	if is_instance_valid(comp):
+		d.note("pilot: use %s (%s) -> %s in %.1f s" % [comp.owner_node().name if comp.owner_node() else comp.name,
+			comp.kind, "OK" if ok else "FAILED", t])
 	return ok
 
 
