@@ -38,7 +38,7 @@ var hud_model: Node = null
 var station_id: StringName = &""
 ## True while the walker's input is paused (station screen / pause menu).
 var input_paused: bool = false
-## True while the mouse is free for the UI (Input.mouse_mode follows outside headless runs).
+## True while the mouse is free for the UI (MouseCapture &"station" release held, input_focus.md 1.1).
 var mouse_released: bool = true
 ## Marker the next enter() spawns at (set by leave(marker)); &"" = tweak.entry_marker.
 var return_marker: StringName = &""
@@ -344,8 +344,11 @@ func _pause_walker(paused: bool) -> void:
 func _release_mouse(released: bool) -> void:
 	mouse_released = released
 	flow.mouse_filter = Control.MOUSE_FILTER_STOP if released else Control.MOUSE_FILTER_IGNORE
-	if DisplayServer.get_name() != "headless":
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if released else Input.MOUSE_MODE_CAPTURED
+	# input_focus.md 1.1: the walker's PlayerInput owns gameplay capture; a station / pause holds the cursor.
+	if released:
+		MouseCapture.push_release(&"station")
+	else:
+		MouseCapture.pop_release(&"station")
 
 
 ## MenuFlow's backdrop: opaque in the 2D menus; over the 3D view hidden while walking, dimmed behind screens.

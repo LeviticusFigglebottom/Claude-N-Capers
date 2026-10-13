@@ -64,8 +64,9 @@ func set_aim_active(on: bool) -> void:
 	_pad_trigger = false
 	_mouse_ads = false
 	_pad_ads = false
-	if DisplayServer.get_name() != "headless":
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if on else Input.MOUSE_MODE_VISIBLE
+	# input_focus.md 1.1: the spectator camera is live gameplay with no PlayerInput, so it registers
+	# itself as a MouseCapture owner while aiming (QB to the lead: the contract names PlayerInput).
+	MouseCapture.set_gameplay_active(self, on)
 
 
 ## Fire one shot on the next physics tick regardless of input (tests, tooling).
@@ -189,3 +190,7 @@ func _apply_look() -> void:
 	rotation = Vector3(0.0, _yaw, 0.0)
 	if camera != null:
 		camera.rotation = Vector3(_pitch, 0.0, 0.0)
+
+
+func _exit_tree() -> void:
+	MouseCapture.set_gameplay_active(self, false)

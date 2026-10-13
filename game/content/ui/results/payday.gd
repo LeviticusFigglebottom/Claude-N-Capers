@@ -79,6 +79,13 @@ var _applied: bool = false
 var _input_grace: float = 0.0
 
 
+func _sync_cursor() -> void:
+	if is_visible_in_tree():
+		MouseCapture.push_release(&"payday")
+	else:
+		MouseCapture.pop_release(&"payday")
+
+
 func setup(p: PlayerProfile) -> void:
 	profile = p
 
@@ -106,6 +113,11 @@ func build_ui() -> void:
 	root.add_child(continue_button)
 	focus_chain.append(continue_button)
 	back_requested.connect(_on_continue)
+	# input_focus.md 1.1: the payday screen holds the cursor while shown (MouseCapture &"payday"), so the
+	# heist's still-live PlayerInput neither captures it nor eats the first click as a capture click.
+	visibility_changed.connect(_sync_cursor)
+	tree_exiting.connect(MouseCapture.pop_release.bind(&"payday"))
+	_sync_cursor()
 	if listen_heist_ended and not EventBus.heist_ended.is_connected(_on_heist_ended):
 		EventBus.heist_ended.connect(_on_heist_ended)
 	if not result.is_empty():
