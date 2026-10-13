@@ -122,6 +122,7 @@ func _build_deck_view() -> VBoxContainer:
 	var grid_scroll: ScrollContainer = ScrollContainer.new()
 	grid_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	grid_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	grid_scroll.follow_focus = true  # pad focus on a card scrolls it into view
 	v.add_child(grid_scroll)
 	var grid: GridContainer = GridContainer.new()
 	grid.columns = CARD_COLUMNS
@@ -151,7 +152,7 @@ func _build_deck_view() -> VBoxContainer:
 		var p: PanelContainer = UiBuild.panel(cv)
 		p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		p.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		grid.add_child(p)
+		grid.add_child(UiBuild.focus_panel(p))  # readable with the pad (scrolls the grid)
 		card_panels.append(p)
 		card_title_labels.append(title)
 		card_name_labels.append(nm)
@@ -283,6 +284,7 @@ func _wire_focus() -> void:
 		b.focus_neighbor_right = b.get_path_to(equip_button)
 		b.focus_neighbor_left = b.get_path_to(b)
 	UiNav.chain_horizontal([back_button, equip_button] as Array[Control], false)
+	_link_cards()
 	var first: Button = deck_buttons[_decks[0].id] as Button if not _decks.is_empty() else null
 	unlock_button.focus_neighbor_bottom = unlock_button.get_path_to(equip_button)
 	unlock_button.focus_neighbor_top = unlock_button.get_path_to(unlock_button)
@@ -306,3 +308,31 @@ func focus_default() -> void:
 		_focus_preview.call_deferred()
 	else:
 		super()
+
+
+## Pad / arrows: right from any deck enters the card grid; the grid moves by rows and columns; left
+## from the first column returns to the decks.
+func _link_cards() -> void:
+	if card_panels.is_empty():
+		return
+	var first_deck: Control = null
+	for id: Variant in deck_buttons:
+		var b: Control = deck_buttons[id] as Control
+		b.focus_neighbor_right = b.get_path_to(card_panels[0])
+		if first_deck == null:
+			first_deck = b
+	for i: int in range(card_panels.size()):
+		var c: PanelContainer = card_panels[i]
+		var col: int = i % CARD_COLUMNS
+		if col > 0:
+			c.focus_neighbor_left = c.get_path_to(card_panels[i - 1])
+		elif first_deck != null:
+			c.focus_neighbor_left = c.get_path_to(first_deck)
+		if col < CARD_COLUMNS - 1 and i + 1 < card_panels.size():
+			c.focus_neighbor_right = c.get_path_to(card_panels[i + 1])
+		if i >= CARD_COLUMNS:
+			c.focus_neighbor_top = c.get_path_to(card_panels[i - CARD_COLUMNS])
+		if i + CARD_COLUMNS < card_panels.size():
+			c.focus_neighbor_bottom = c.get_path_to(card_panels[i + CARD_COLUMNS])
+		else:
+			c.focus_neighbor_bottom = c.get_path_to(equip_button)

@@ -61,7 +61,7 @@ func _build() -> void:
 	var v: VBoxContainer = UiBuild.vbox(6)
 	add_child(v)
 	if mode == Mode.LOBBY:
-		v.add_child(UiBuild.label(&"ui.chat.title", UiBuild.DIM))
+		v.add_child(UiBuild.caption(&"ui.chat.title"))  # PO-4 caption head
 	scroll = ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
