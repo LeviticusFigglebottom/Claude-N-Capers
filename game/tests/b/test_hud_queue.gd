@@ -87,3 +87,18 @@ func test_scoreboard_loot_secured() -> void:
 	assert_eq(sb.loot_box.get_child_count(), 3, "jewelry, small loot, total")
 	var total: HBoxContainer = sb.loot_box.get_child(2) as HBoxContainer
 	assert_eq((total.get_child(1) as Label).text, UiText.money(27800))
+
+
+## Lead queue (b): a downed teammate shows a badge with the bleedout ring (green while revived).
+func test_teammate_state_badge() -> void:
+	_model.crew = [{"slot": 1, "name": "Dutch", "state": Enums.CrewState.NORMAL, "health_frac": 1.0}]
+	var b: CrewStateBadge = _hud.teammates.badges[1] as CrewStateBadge
+	assert_false(b.visible, "fine: no badge")
+	_model.crew = [{"slot": 1, "name": "Dutch", "state": Enums.CrewState.DOWNED, "bleedout_s": 15.0}]
+	b = _hud.teammates.badges[1] as CrewStateBadge
+	assert_true(b.visible)
+	assert_near(float(b.ring()[0]), 0.5, 0.001, "15 of 30 s left")
+	assert_eq(b.ring()[1], UiTokens.ALERT)
+	_model.crew = [{"slot": 1, "name": "Dutch", "state": Enums.CrewState.DOWNED, "bleedout_s": 15.0, "revive_progress": 0.3}]
+	b = _hud.teammates.badges[1] as CrewStateBadge
+	assert_eq(b.ring()[1], UiTokens.OK, "being revived")
