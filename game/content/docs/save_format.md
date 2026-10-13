@@ -1,4 +1,4 @@
-# Profile save format (B4-16, save v7)
+# Profile save format (B4-16, save v8)
 
 Owner: ENV B. Code: `content/save/` (`SaveService`, `PlayerProfile`, `ProfileSchema`, `ProfileValidator`).
 Default profile: `content/data/save/default_profile.json`. Golden fixtures: `tests/b/fixtures/save/`.
@@ -126,6 +126,7 @@ that is not an int ≥ 0, a key over 64 characters, or a non-integer difficulty 
 | 4 → 5 | `unlocks = []`, `achievements = {}`, `pro_job_locks = {}`. |
 | 5 → 6 | `notoriety = 0`, `notoriety_xp = 0`, `notoriety_choices = {}`, `held_skill_sets = []`, `music_choice = ""`. |
 | 6 → 7 | `career` = 5 empty sections (nothing was counted before v7), `weapon_finishes = {}`. Fixtures `v6` (migration) and `v7_damaged`. |
+| 7 → 8 | No new field (lead, round 64): `owned_weapons` gains the starter `weapon.corsair_ar` (SaveService.STARTER_PRIMARY; new profiles have owned it since round 38) when missing, and an EMPTY `loadout.primary` gets it equipped (with no mods); an equipped primary is kept. Fixtures `v7` and `v7_own_primary`. |
 
 ### Adding a version
 1. Bump `SaveService.CURRENT_VERSION` and `PlayerProfile.version`.
