@@ -407,19 +407,20 @@ func _follow_goal() -> Vector3:
 	if leader == null:
 		mode = Mode.IDLE
 		return Vector3.INF
-	if target_enemy != null:
-		var cp: Node3D = _pick_cover(leader)
-		cover_point = cp
-		if cp != null:
-			mode = Mode.COVER
-			_following = false
-			if _flat_dist(_crew.global_position, cp.global_position) <= tweak.cover_arrive_m:
-				return Vector3.INF
-			return cp.global_position
-	else:
-		cover_point = null
+	cover_point = _pick_cover(leader) if target_enemy != null else null
+	if cover_point != null:
+		mode = Mode.COVER
+		_following = false
+		var at_cover: bool = _flat_dist(_crew.global_position, cover_point.global_position) <= tweak.cover_arrive_m
+		return Vector3.INF if at_cover else cover_point.global_position
 	mode = Mode.FOLLOW
 	var d: float = _flat_dist(_crew.global_position, leader.global_position)
+	# PO-5.3: the leash is "close AND in sight". A bot 3 m away through a wall walks to the leader
+	# (the nav path goes round), instead of counting as close and staying put.
+	var seen: bool = _has_los(_crew.eye_position(), leader.eye_position())
+	if not seen:
+		_following = true
+		return leader.global_position
 	if _following and d <= tweak.follow_stop_m:
 		_following = false
 	elif not _following and d > tweak.follow_max_m:
@@ -552,6 +553,9 @@ func _pick_cover(leader: CrewController) -> Node3D:
 
 func _cover_ok(p: Node3D, leader: CrewController) -> bool:
 	if _flat_dist(p.global_position, leader.global_position) > tweak.cover_search_radius_m:
+		return false
+	# PO-5.3: cover must see the leader (no cover through a wall, e.g. the alley behind the workshop).
+	if not _has_los(p.global_position + Vector3(0.0, tweak.cover_eye_height_m, 0.0), leader.eye_position()):
 		return false
 	for c: CrewController in _rt.crew_members():
 		if c == _crew:
@@ -708,7 +712,10 @@ func _weapon_controls(i: CrewIntent, eye: Vector3, delta: float, interacting: bo
 	var w: CrewWeapons = _crew.weapons
 	var fire: bool = false
 	var reload: bool = false
-	if w != null and not interacting and not w.reloading:
+	# PO-5.3 (L2.5): police leave a downed crew member alone unless it shoots; a downed bot holds fire
+	# so it keeps its whole bleedout for a revive.
+	var hold_fire: bool = _crew.crew_state == Enums.CrewState.DOWNED and tweak.downed_hold_fire
+	if w != null and not interacting and not w.reloading and not hold_fire:
 		var ws: int = w.equipped_slot
 		var mag: int = w.mag(ws)
 		if mag <= 0:

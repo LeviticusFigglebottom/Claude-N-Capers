@@ -94,6 +94,11 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 	elif _is_tagged(interactable_net_id, TAG_SAFE_READER):
 		if not _lockdown:
 			_open_safe()
+	elif _is_tagged(interactable_net_id, TAG_SAFE):
+		# PO-5: the safe's own keypad (code from a code note) opened it.
+		for sf: Node in find_tagged(TAG_SAFE):
+			if bool(sf.get(&"opened")):
+				_open_safe()
 	elif _is_tagged(interactable_net_id, TAG_SAFE_LOOT):
 		if objective_state(&"safe_loot") == Enums.ObjectiveState.ACTIVE:
 			complete(&"safe_loot")
@@ -119,10 +124,13 @@ func _open_safe() -> void:
 		return
 	_safe_open = true
 	for s: Node in find_tagged(TAG_SAFE):
-		if s.has_method(&"unlock"):
+		# PO-5.8: swing the door AND enable the loot inside (Safe.swing_open). Setting `opened` directly
+		# left the door shut and the bags disabled; this handler runs before the drill's own
+		# finished -> open_by_device, which then saw `opened` and did nothing (the "drill never opens").
+		if s.has_method(&"swing_open"):
+			s.call(&"swing_open")
+		elif s.has_method(&"unlock"):
 			s.call(&"unlock")
-		elif &"opened" in s:
-			s.set(&"opened", true)
 	complete(&"safe")
 	activate(&"safe_loot")
 
