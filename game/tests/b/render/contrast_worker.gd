@@ -207,6 +207,9 @@ func _loud() -> void:
 	model.crew_stats = [
 		{"slot": 0, "name": "Sable", "is_ai": false, "is_local": true, "kills": 7, "specials_killed": 1, "civilians_killed": 0, "downs": 1},
 		{"slot": 1, "name": "Dutch", "is_ai": true, "is_local": false, "kills": 4, "specials_killed": 0, "civilians_killed": 0, "downs": 0}]
+	EventBus.loot_secured.emit(11, &"loot.jewelry", 13000)  # lead round 64 loot list
+	EventBus.loot_secured.emit(12, &"loot.jewelry", 13000)
+	EventBus.small_loot_taken.emit(1800, 0)
 	hud.scoreboard.refresh()
 	await _shot("loud_scoreboard", hud.scoreboard)  # only the sheet: the HUD under it is covered on purpose
 

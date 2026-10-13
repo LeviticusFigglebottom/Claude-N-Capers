@@ -324,7 +324,7 @@ func _process(delta: float) -> void:
 		hint.note.visible = hint.hint == &"mask_up" and onboarding.shown == &""  # the card already says it
 	if _toast_t > 0.0:
 		_toast_t -= delta
-		toast_label.visible = _toast_t > 0.0
+		toast_label.visible = _toast_t > 0.0 and not (scoreboard != null and scoreboard.visible)  # not over the Tab sheet
 	if model != null and not is_instance_valid(model):
 		bind(null)
 	if auto_find_model and (model == null or _watched_crew == null or not is_instance_valid(_watched_crew)):
