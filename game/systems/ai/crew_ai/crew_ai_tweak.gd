@@ -17,6 +17,10 @@ extends Resource
 @export_group("Cover (L6.1)")
 ## Cover points (TacticalPoint COVER) considered must be within this distance of the leader (m) ◇.
 @export var cover_search_radius_m: float = 8.0
+## PO-5.3 ◇: eye height used for the cover point -> leader line-of-sight check (m).
+@export var cover_eye_height_m: float = 1.1
+## PO-5.3 ◇ (L2.5): a downed AI teammate does not shoot (police then ignore it for the full bleedout).
+@export var downed_hold_fire: bool = true
 ## A cover point is taken if another crew member stands within this distance of it (m).
 @export var cover_taken_m: float = 1.0
 ## Reached the cover point within this distance (m).

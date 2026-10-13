@@ -1,0 +1,280 @@
+## PO-5 driver node (lives on the root, survives scene changes). See po5_runner.gd.
+extends Node
+
+var runner_out: String = "user://po5"
+var runner_flow: String = "smoke"
+var heist_name: String = "Glasshouse"
+var difficulty_name: String = "Routine"
+var rt: HeistRuntime = null
+var crew: CrewController = null
+var pilot: Po5Pilot = null
+## llvmpipe renders at ~1 fps, which caps game time at 8 physics ticks per second. Between screenshots
+## the harness turns the render loop off (window, DisplayServer and input stay real); shot() renders.
+var fast: bool = false
+var _shot: int = 0
+var _log: PackedStringArray = PackedStringArray()
+var _worst_frame_ms: float = 0.0
+var _last_frame_us: int = 0
+
+
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	_run.call_deferred()
+
+
+func _run() -> void:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--po5-heist="):
+			heist_name = a.substr(12)
+		elif a.begins_with("--po5-difficulty="):
+			difficulty_name = a.substr(17)
+	if not await enter_heist():
+		return
+	match runner_flow:
+		"dump":
+			dump_map()
+		"smoke":
+			pass
+		_:
+			var script: GDScript = load("res://tests/a/e2e/po5_flow_%s.gd" % runner_flow) as GDScript
+			if script == null:
+				return _fail("unknown flow %s" % runner_flow)
+			var sc: Object = script.new()
+			var code: int = await sc.call(&"play", self)
+			await shot("end")
+			_finish(code)
+			return
+	_finish(0)
+
+
+## main menu -> Safehouse -> Planning Table -> heist -> difficulty -> Briefing -> Continue -> Confirm plan
+## -> Start Heist, by mouse clicks; then waits for the local crew to spawn.
+func enter_heist() -> bool:
+	var t0: int = Time.get_ticks_msec()
+	while find_button("Safehouse") == null and Time.get_ticks_msec() - t0 < 30000:
+		await get_tree().process_frame
+	await shot("main_menu")
+	for step: String in ["Safehouse", "Planning Table", heist_name, difficulty_name, "Briefing", "Continue",
+			"Confirm plan", "Start Heist"]:
+		if not await click_text(step):
+			await _fail("menu: no '%s'" % step)
+			return false
+		await seconds(1.0)
+		if step in ["Planning Table", "Briefing", "Continue", "Confirm plan"]:
+			await shot(step.to_snake_case())
+	set_fast(true)
+	var t: float = 0.0
+	while t < 60.0:
+		rt = HeistRuntime.current()
+		if rt != null and rt.crew_controller(0) != null:
+			break
+		await get_tree().physics_frame
+		t += 1.0 / Engine.physics_ticks_per_second
+	if rt == null or rt.crew_controller(0) == null:
+		await _fail("heist did not start within 60 s of Start Heist")
+		return false
+	crew = rt.crew_controller(0) as CrewController
+	await wait_s(1.0)
+	note("in heist %s seed %d diff %d phase %d crew at %s" % [rt.heist_id, rt.run_seed, rt.difficulty, rt.phase,
+		Po5Pilot._v(crew.global_position)])
+	await shot("heist_start")
+	pilot = Po5Pilot.new(self, crew)
+	for c: CrewController in rt.crew_members():
+		var slot: int = c.slot
+		c.crew_state_changed.connect(func(o: int, n: int) -> void:
+			note("EVENT crew %d state %d -> %d at %s (t=%.0f)" % [slot, o, n, Po5Pilot._v(c.global_position), rt.heist_time_s]))
+	_telemetry()
+	note("KNOWN SHORTCUT: harness sets Input.mouse_mode=CAPTURED itself (the game never captures it: ENV P)")
+	return true
+
+
+func _process(_delta: float) -> void:
+	var now: int = Time.get_ticks_usec()
+	if _last_frame_us != 0:
+		_worst_frame_ms = maxf(_worst_frame_ms, (now - _last_frame_us) / 1000.0)
+	_last_frame_us = now
+
+
+## Every 10 s of game time: frame cost, crew states/positions, enemy count.
+func _telemetry() -> void:
+	while rt != null and is_instance_valid(rt):
+		await wait_s(10.0)
+		if rt == null or not is_instance_valid(rt):
+			return
+		var cs: PackedStringArray = PackedStringArray()
+		for c: CrewController in rt.crew_members():
+			cs.append("%d:%d@%s" % [c.slot, c.crew_state, Po5Pilot._v(c.global_position)])
+		var near_m: float = INF
+		var en_close: int = 0
+		for e: Node in get_tree().get_nodes_in_group(G.ENEMY):
+			var ed: float = (e as Node3D).global_position.distance_to(crew.global_position)
+			near_m = minf(near_m, ed)
+			en_close += 1 if ed < 15.0 else 0
+		cs.append("nearest_enemy=%.1fm within15=%d" % [near_m, en_close])
+		var worst: float = _worst_frame_ms
+		_worst_frame_ms = 0.0
+		note("TEL worst_frame=%.0fms t=%.0f phase=%d phys=%.1fms proc=%.1fms nodes=%d enemies=%d civs=%d crew=[%s]" % [worst, rt.heist_time_s,
+			rt.phase, Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
+			Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
+			get_tree().get_nodes_in_group(G.ENEMY).size(), get_tree().get_nodes_in_group(G.CIVILIAN).size(), " ".join(cs)])
+
+
+## After heist_ended: screenshot the payday, click through it like a player until the hub shows.
+func payday_to_hub() -> int:
+	set_fast(false)
+	await seconds(3.0)
+	await shot("payday")
+	note("payday buttons: %s" % [visible_buttons()])
+	for i: int in 12:
+		if find_button("Planning Table") != null:
+			await shot("back_in_hub")
+			note("back in the hub")
+			return 0
+		var clicked: bool = false
+		for label: String in ["Continue", "Skip", "Next", "Collect", "Done", "Back to Safehouse", "Safehouse", "OK"]:
+			var b: Button = find_button(label)
+			if b != null:
+				await click_control(b)
+				clicked = true
+				break
+		if not clicked:
+			note("payday: nothing to click; buttons %s" % [visible_buttons()])
+		await seconds(2.0)
+		await shot("payday_%d" % i)
+	note("FAIL PO-5.payday: never got back to the hub; buttons %s" % [visible_buttons()])
+	return 1
+
+
+## Game-time wait (physics ticks).
+func wait_s(s: float) -> void:
+	for _i: int in int(s * Engine.physics_ticks_per_second):
+		await get_tree().physics_frame
+
+
+func dump_map() -> void:
+	note("variants: %s" % [rt.variants])
+	for n: Node in get_tree().get_nodes_in_group(G.INTERACTABLE):
+		var c: InteractableComponent = n as InteractableComponent
+		var o: Node = c.owner_node()
+		var tag: Variant = o.get(&"objective_tag") if o != null else null
+		note("IA %s kind=%s en=%s vis=%s pos=%s tag=%s item=%s owner=%s" % [c.get_path(), c.kind, c.enabled,
+			c.is_visible_in_tree(), Po5Pilot._v(c.global_position), tag, c.requires_item,
+			o.get_class() if o != null else "-"])
+	for n2: Node in get_tree().get_nodes_in_group(G.NPC):
+		note("NPC %s at %s" % [n2.name, Po5Pilot._v((n2 as Node3D).global_position)])
+	for o2: Dictionary in rt.mission.objectives():
+		note("OBJ %s" % [o2])
+
+
+## Finds a visible Button whose text contains `text` (case-insensitive) under the root.
+func find_button(text: String, root: Node = null) -> Button:
+	if root == null:
+		root = get_tree().root
+	for n: Node in root.find_children("*", "BaseButton", true, false):
+		var b: BaseButton = n as BaseButton
+		if b is Button and b.is_visible_in_tree() and not b.disabled \
+				and _button_label(b as Button).to_lower().contains(text.to_lower()):
+			return b as Button
+	return null
+
+
+## Clicks like a person: mouse motion to the control's centre, press, release (window coordinates).
+func click_control(c: Control) -> void:
+	var canvas_pos: Vector2 = c.get_global_rect().get_center()
+	var win_pos: Vector2 = c.get_viewport().get_final_transform() * canvas_pos
+	var mm: InputEventMouseMotion = InputEventMouseMotion.new()
+	mm.position = win_pos
+	mm.global_position = win_pos
+	Input.parse_input_event(mm)
+	await get_tree().process_frame
+	for pressed: bool in [true, false]:
+		var mb: InputEventMouseButton = InputEventMouseButton.new()
+		mb.button_index = MOUSE_BUTTON_LEFT
+		mb.pressed = pressed
+		mb.position = win_pos
+		mb.global_position = win_pos
+		Input.parse_input_event(mb)
+		await get_tree().process_frame
+	note("click '%s' at %s" % [c.name if not (c is Button) else (c as Button).text, win_pos])
+
+
+func click_text(text: String, timeout_s: float = 20.0) -> bool:
+	var b: Button = find_button(text)
+	var t0: int = Time.get_ticks_msec()
+	while b == null and Time.get_ticks_msec() - t0 < int(timeout_s * 1000.0):
+		await get_tree().process_frame
+		b = find_button(text)
+	if b == null:
+		note("NO BUTTON '%s'; visible: %s" % [text, visible_buttons()])
+		return false
+	await click_control(b)
+	return true
+
+
+## Button text, else its first descendant Label's text (card buttons draw their title in a Label).
+static func _button_label(b: Button) -> String:
+	if b.text != "":
+		return b.text
+	for l: Node in b.find_children("*", "Label", true, false):
+		if (l as Label).text != "":
+			return (l as Label).text
+	return ""
+
+
+func visible_buttons() -> PackedStringArray:
+	var out: PackedStringArray = PackedStringArray()
+	for n: Node in get_tree().root.find_children("*", "Button", true, false):
+		if (n as Button).is_visible_in_tree():
+			out.append(_button_label(n as Button))
+	return out
+
+
+func _scene_summary() -> String:
+	var parts: PackedStringArray = PackedStringArray()
+	for c: Node in get_tree().root.get_children():
+		parts.append("%s(%s)" % [c.name, c.get_class()])
+	return ", ".join(parts)
+
+
+func _fail(msg: String) -> void:
+	note("FAIL " + msg)
+	await shot("fail")
+	_finish(1)
+
+
+func seconds(s: float) -> void:
+	await get_tree().create_timer(s, true, false, true).timeout
+
+
+func set_fast(on: bool) -> void:
+	fast = on
+	RenderingServer.render_loop_enabled = not on
+
+
+func shot(label: String) -> void:
+	var was_fast: bool = fast
+	if was_fast:
+		RenderingServer.render_loop_enabled = true
+		await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var img: Image = get_viewport().get_texture().get_image()
+	_shot += 1
+	var path: String = "%s/%02d_%s.png" % [runner_out, _shot, label]
+	img.save_png(path)
+	if was_fast:
+		RenderingServer.render_loop_enabled = false
+	note("shot %s" % path)
+
+
+func note(msg: String) -> void:
+	var line: String = "[PO5 %.1fs] %s" % [Time.get_ticks_msec() / 1000.0, msg]
+	print(line)
+	_log.append(line)
+
+
+func _finish(code: int) -> void:
+	RenderingServer.render_loop_enabled = true
+	var f: FileAccess = FileAccess.open("%s/po5_log.txt" % runner_out, FileAccess.WRITE)
+	if f != null:
+		f.store_string("\n".join(_log))
+	get_tree().quit(code)
