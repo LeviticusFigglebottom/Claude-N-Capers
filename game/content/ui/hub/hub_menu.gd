@@ -197,6 +197,10 @@ func _station_card(s: HubStation) -> Button:
 		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		text.add_child(l)
+	# PO-4 audit: two lines of description instead of one cut off with "...".
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.max_lines_visible = 2
+	desc.add_theme_font_size_override(&"font_size", UiTokens.FONT_SMALL)
 	if s.id == START_STATION:
 		start_here = UiBuild.caption(&"ui.hub.start_here")
 		start_here.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)

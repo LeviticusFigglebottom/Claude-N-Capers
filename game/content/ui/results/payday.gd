@@ -559,13 +559,22 @@ func _build_stats() -> VBoxContainer:
 	grid.columns = 5
 	grid.add_theme_constant_override(&"h_separation", 36)
 	v.add_child(grid)
-	for key: StringName in [&"ui.results.crew", &"ui.results.kills", &"ui.results.specials_killed",
-			&"ui.results.downs", &"ui.results.civilians_killed"]:
-		grid.add_child(UiBuild.label(key, UiBuild.DIM))
-	for member: Dictionary in result.get("crew", []) as Array:
+	# PO-4 audit: a column that is 0 for the whole crew is noise (kills always show).
+	var crew: Array = result.get("crew", []) as Array
+	var cols: Array[String] = ["kills"]
+	for k: String in ["specials_killed", "downs", "civilians_killed"]:
+		for member: Dictionary in crew:
+			if int(member.get(k, 0)) != 0:
+				cols.append(k)
+				break
+	grid.columns = cols.size() + 1
+	grid.add_child(UiBuild.caption(&"ui.results.crew"))
+	for k: String in cols:
+		grid.add_child(UiBuild.caption(StringName("ui.results." + k)))
+	for member: Dictionary in crew:
 		var slot: int = int(member.get("slot", 0))
 		grid.add_child(UiBuild.label(StringName(_crew_name(slot, bool(member.get("is_ai", false))))))
-		for k: String in ["kills", "specials_killed", "downs", "civilians_killed"]:
+		for k: String in cols:
 			grid.add_child(UiBuild.label(StringName(str(int(member.get(k, 0))))))
 	return v
 
