@@ -226,6 +226,7 @@ func die(info: Dictionary = {}, killer_net_id: int = 0) -> void:
 	velocity = Vector3.ZERO
 	set_alert_state(Enums.AlertState.DEAD)
 	remove_from_group(G.OBSERVER)
+	remove_from_group(G.ENEMY)  # D-099: G.ENEMY holds live enemies only (corpses are G.BODY)
 	add_to_group(G.BODY)
 	collision_layer = 0
 	_set_hitboxes_enabled(false)
