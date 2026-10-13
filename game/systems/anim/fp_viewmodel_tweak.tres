@@ -38,7 +38,19 @@ feed_cover_deg = 78.0
 part_ramp_frames = 3.0
 left_hand_ik_skip_sets = Array[StringName]([&"bow", &"akimbo"])
 set_hip_offset = Dictionary[StringName, Vector3]({
-&"rifle": Vector3(0.02, -0.03, -0.16)
+&"rifle": Vector3(0.02, -0.03, -0.16),
+&"flamethrower": Vector3(0.02, -0.03, -0.2),
+&"saw": Vector3(0.02, -0.03, -0.1),
+&"sniper": Vector3(0.02, -0.03, -0.18),
+&"break_action": Vector3(0.02, -0.03, -0.16),
+&"smg": Vector3(0.02, -0.03, -0.13),
+&"shotgun": Vector3(0.02, -0.03, -0.17),
+&"shotgun_box": Vector3(0.02, -0.03, -0.16),
+&"lmg": Vector3(0.02, -0.03, -0.165),
+&"minigun": Vector3(0.02, -0.03, -0.14),
+&"launcher": Vector3(0.02, -0.03, -0.15),
+&"crossbow": Vector3(0.02, -0.03, -0.16),
+&"lever": Vector3(0.02, -0.03, -0.16)
 })
 set_ads_offset_z = Dictionary[StringName, float]({
 &"rifle": -0.06
