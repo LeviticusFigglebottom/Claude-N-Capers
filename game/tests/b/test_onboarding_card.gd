@@ -58,13 +58,15 @@ func test_each_situation_shows_its_card_once() -> void:
 	assert_eq(OnboardingTips.seen_ids(), ["casing", "stealth", "loud", "escape"])
 
 
-func test_a_later_situation_waits_for_the_current_card() -> void:
+func test_a_new_situation_replaces_the_open_card() -> void:
+	_model.player_mode = &"casing"
+	assert_eq(_card.shown, &"casing")
 	_model.player_mode = &"masked"
-	assert_eq(_card.shown, &"stealth")
+	assert_eq(_card.shown, &"stealth", "masking up ends casing: the stealth card takes over (h02)")
 	_model.assault_phase = Enums.AssaultPhase.BUILD
-	assert_eq(_card.shown, &"stealth", "the open card is not yanked away")
-	_card.dismiss()
-	assert_eq(_card.shown, &"loud", "the assault card follows")
+	assert_eq(_card.shown, &"loud", "the alarm ends stealth")
+	_model.player_mode = &"casing"
+	assert_eq(_card.shown, &"loud", "a seen situation never takes over")
 
 
 func test_card_times_out_and_dismiss_key_closes_it() -> void:
