@@ -29,6 +29,9 @@ const MENU_SCENE: String = "res://content/ui/menus/menu_flow.tscn"
 const URGENT_COLOR: Color = Color(1.0, 0.42, 0.32)
 ## PQ-B-5: player picks are ignored this long after the cards appear.
 const INPUT_GRACE_S: float = 0.6
+## Crew table column -> header strings key.
+const CREW_COLUMN_KEYS: Dictionary = {"kills": &"ui.results.kills", "specials_killed": &"ui.results.specials_killed",
+	"downs": &"ui.results.downs", "civilians_killed": &"ui.results.civilians_killed"}
 ## PO-4: seconds the payday total takes to count up.
 const COUNT_S: float = 1.2
 ## D-090: at most one count-up tick per this many ms.
@@ -559,13 +562,22 @@ func _build_stats() -> VBoxContainer:
 	grid.columns = 5
 	grid.add_theme_constant_override(&"h_separation", 36)
 	v.add_child(grid)
-	for key: StringName in [&"ui.results.crew", &"ui.results.kills", &"ui.results.specials_killed",
-			&"ui.results.downs", &"ui.results.civilians_killed"]:
-		grid.add_child(UiBuild.label(key, UiBuild.DIM))
-	for member: Dictionary in result.get("crew", []) as Array:
+	# PO-4 audit: a column that is 0 for the whole crew is noise (kills always show).
+	var crew: Array = result.get("crew", []) as Array
+	var cols: Array[String] = ["kills"]
+	for k: String in ["specials_killed", "downs", "civilians_killed"]:
+		for member: Dictionary in crew:
+			if int(member.get(k, 0)) != 0:
+				cols.append(k)
+				break
+	grid.columns = cols.size() + 1
+	grid.add_child(UiBuild.caption(&"ui.results.crew"))
+	for k: String in cols:
+		grid.add_child(UiBuild.caption(CREW_COLUMN_KEYS[k] as StringName))
+	for member: Dictionary in crew:
 		var slot: int = int(member.get("slot", 0))
 		grid.add_child(UiBuild.label(StringName(_crew_name(slot, bool(member.get("is_ai", false))))))
-		for k: String in ["kills", "specials_killed", "downs", "civilians_killed"]:
+		for k: String in cols:
 			grid.add_child(UiBuild.label(StringName(str(int(member.get(k, 0))))))
 	return v
 
