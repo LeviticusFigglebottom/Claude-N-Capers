@@ -23,10 +23,11 @@ static var _cached: CombatTweak = null
 @export_flags_3d_physics var hitscan_mask: int = (1 << 0) | (1 << 1) | (1 << 4)
 ## Rays that must be clear between shooter and hit point (server LOS check, NPC LOS).
 @export_flags_3d_physics var los_mask: int = (1 << 0) | (1 << 1)
-## Spread multipliers on the WeaponStats cone (PD2 standing/moving/crouching shape, ◇).
-@export var spread_mult_still: float = 0.5
+## Spread multipliers on the WeaponStats cone, PD2 (D-097): standing 1.0, moving 1.0, crouching 0.4 (crouched
+## wins over moving, as PD2's crouching row). WeaponDef spread values are PD2's own.
+@export var spread_mult_still: float = 1.0
 @export var spread_mult_moving: float = 1.0
-@export var spread_mult_crouched: float = 0.75
+@export var spread_mult_crouched: float = 0.4
 ## Horizontal speed (m/s) above which the shooter counts as moving.
 @export var moving_speed_threshold: float = 0.5
 
