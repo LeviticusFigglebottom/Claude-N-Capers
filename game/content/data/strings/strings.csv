@@ -1787,14 +1787,16 @@ achievement.seasoned.desc,Reach reputation level 25.
 ui.hud.stamina,STAMINA
 ui.hud.stamina_exhausted,WINDED
 ui.workshop.title,Workshop
+ui.workshop.crumb,Safehouse / Armory
 ui.workshop.open,Workshop
 ui.workshop.weapons,Weapons
 ui.workshop.primaries,PRIMARY WEAPONS
 ui.workshop.secondaries,SECONDARY WEAPONS
-ui.workshop.slots,Modification slots
+ui.workshop.slots,Mod slots
 ui.workshop.overview,Whole Weapon
-ui.workshop.hint,"Orbit: left drag, right stick or W/A/S/D · Pan: right drag, LB + right stick or Shift + W/A/S/D · Zoom: wheel, triggers or Q/E · Reset: R or R3"
-ui.workshop.cash,Spending cash {amount}
+ui.workshop.hint,"Orbit: drag, right stick, W/A/S/D  ·  Pan: right drag, LB + stick  ·  Zoom: wheel, triggers, Q/E  ·  Reset: R / R3"
+ui.workshop.cash_caption,Spending cash
+ui.workshop.loadout_concealment,Loadout concealment
 ui.workshop.entry,{name}  ·  {status}
 ui.workshop.tag.equipped,Equipped
 ui.workshop.tag.owned,Owned
@@ -1808,10 +1810,10 @@ ui.workshop.status.locked_level,Unlocks at level {level}
 ui.workshop.status.stock,Stock part
 ui.workshop.status.mod_source,Not owned. Drops from payday cards or buy it here for {price}.
 ui.workshop.status.mod_unlock,Locked. Unlocked by: {source}
-ui.workshop.vs_equipped,Compared with your equipped {slot}
-ui.workshop.vs_stock,Compared with the stock weapon
-ui.workshop.concealment,Concealment {value} (now {current})
-ui.workshop.dr_preview,Detection risk {value}% (now {current}%)
+ui.workshop.vs_equipped,vs. your equipped {slot}
+ui.workshop.vs_stock,vs. the stock weapon
+ui.workshop.concealment,{value}  (now {current})
+ui.workshop.dr_preview,{value}%  (now {current}%)
 ui.workshop.equip,Equip
 ui.workshop.equip_as,Equip as {slot}
 ui.workshop.equipped,Equipped

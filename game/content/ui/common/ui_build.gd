@@ -97,12 +97,19 @@ static func ghost(b: Button) -> Button:
 	return b
 
 
-## Marks `b` as a tab (caps, cyan underline when pressed). Returns `b`.
+## Marks `b` as a tab (caps, cyan underline when pressed). Returns `b`. Its current text is uppercased
+## (style.md §5); set later text through tab_text().
 static func tab(b: Button) -> Button:
 	b.theme_type_variation = TAB
+	b.text = b.text.to_upper()
 	b.toggle_mode = true
 	b.custom_minimum_size = Vector2(0, 0)
 	return b
+
+
+## Sets a tab's text (uppercased like tab()).
+static func tab_text(b: Button, text: String) -> void:
+	b.text = text.to_upper()
 
 
 ## Marks `b` as the screen's primary action (theme variation PrimaryButton). Returns `b`.
