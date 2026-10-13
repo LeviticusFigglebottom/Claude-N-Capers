@@ -715,3 +715,13 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Recoil/spread per weapon class: ENV P owns delivery (PD2-like eased kick, no auto-recovery, dff06548); the numbers stay
   in ENV B's WeaponDef data. ENV P sends B a PD2-reference table (first-shot kick, horizontal, hip/ADS spread per class);
   ENV B applies it and keeps the resolver goldens green.
+
+## D-097 — 2026-10-13 — Spread and recoil follow PD2; release e2e check
+- Spread/recoil numbers follow PD2 (the project's fidelity rule): ENV B applies ENV P's PD2 table (Lua cites) to WeaponDef
+  data, even where it is looser than today (AR ADS ≈ 2.5–3.1° vs 0.8–1.0°). ENV A fixes `combat_tweak` stance multipliers
+  to PD2 (standing 1.0, crouched 0.4; the current 0.5/0.75 is backwards). Camera recoil auto-recovers as in PD2 (vertical
+  ≈ 0.11 s, horizontal ≈ 0.2 s after one fire interval, vertical accumulation capped at 20°) — ENV P.
+  If playtests show it feels wrong, tune through skills/stats, not by departing from PD2 base values.
+- **Release e2e (ENV A, 2f7a8991):** `game/tests/a/e2e/run_po5.sh <flow> [seed] [budget_s] [out_dir] [heist] [difficulty]`,
+  windowed, real menu clicks, input-only play. `gh_loud` (Glasshouse loud → payday → hub) is the release check the lead
+  runs occasionally in the background (~45–90 min on llvmpipe); `gh_stealth` joins when ready; `auto_loud` for any heist.
