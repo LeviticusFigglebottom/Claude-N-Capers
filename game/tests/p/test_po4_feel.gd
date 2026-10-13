@@ -194,3 +194,27 @@ func test_sprint_to_fire_exit_delay() -> void:
 	await wait_physics_frames(2)
 	_inp.press(&"sprint")
 	assert_true(await wait_until(func() -> bool: return c.sprinting, 1.0), "re-pressed sprint runs again")
+
+
+## PO-4 (PD2 0.23 s stance transition): crouch / stand ease the camera instead of snapping it; gameplay eye height
+## switches at once. Real crouch input.
+func test_crouch_camera_eases() -> void:
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
+	await wait_physics_frames(20)
+	var tw: CrewTweak = Tweak.crew()
+	var head: Node3D = c.get_node(^"Head") as Node3D
+	var full: float = tw.eye_standing - tw.eye_crouched
+	_inp.press(&"crouch")
+	assert_true(await wait_until(func() -> bool: return c.crouched, 0.5), "crouched")
+	await wait_physics_frames(1)
+	assert_near(c.eye_height(), tw.eye_crouched, 1e-4, "gameplay eye switches at once")
+	assert_true(head.position.y > tw.eye_crouched + full * 0.4, "camera still easing down (%.3f)" % head.position.y)
+	await wait_seconds(0.4)
+	assert_near(head.position.y, tw.eye_crouched, 0.01, "camera arrived")
+	_inp.release(&"crouch")
+	assert_true(await wait_until(func() -> bool: return not c.crouched, 0.5), "stood up")
+	await wait_physics_frames(1)
+	assert_true(head.position.y < tw.eye_standing - full * 0.4, "camera easing up (%.3f)" % head.position.y)
+	await wait_seconds(0.4)
+	assert_near(head.position.y, tw.eye_standing, 0.01, "camera back at standing height")
