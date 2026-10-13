@@ -103,4 +103,23 @@ func test_hud_shows_only_the_current_objective() -> void:
 	assert_true((_hud.objectives.list_box.get_child(0) as Label).text.contains("0/2"))
 	_model.objectives = []
 	await wait_frames(1)
+	assert_true(_hud.objectives.flashing, "the last step done still flashes")
+	await wait_seconds(ObjectivesPanel.FLASH_S + 0.2)
 	assert_false(_hud.objectives.visible, "nothing active: hidden")
+
+
+func test_objective_complete_flash() -> void:
+	await _spawn_hud()
+	_model.objectives = [{"id": &"a", "text_key": &"objective.glasshouse.keycard", "args": {}, "state": Enums.ObjectiveState.ACTIVE}]
+	await wait_frames(1)
+	assert_false(_hud.objectives.flashing)
+	_model.objectives = [
+		{"id": &"a", "text_key": &"objective.glasshouse.keycard", "args": {}, "state": Enums.ObjectiveState.COMPLETED},
+		{"id": &"b", "text_key": &"objective.glasshouse.secure", "args": {"bags": 2}, "state": Enums.ObjectiveState.ACTIVE}]
+	await wait_frames(1)
+	assert_true(_hud.objectives.flashing, "next step: the complete flash runs")
+	assert_eq(_hud.objectives.header_label.text, UiText.t(&"ui.hud.objective_complete"))
+	assert_eq(_hud.objectives.shown_id, &"b")
+	await wait_seconds(ObjectivesPanel.FLASH_S + 0.2)
+	assert_false(_hud.objectives.flashing)
+	assert_eq(_hud.objectives.header_label.text, UiText.t(&"ui.hud.objectives"))

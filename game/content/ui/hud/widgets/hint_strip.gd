@@ -60,4 +60,8 @@ func refresh() -> void:
 		prompt.set_prompt(&"ui.prompt.throw_bag", {}, InteractionPanel.action_key_text(THROW_ACTION))
 	else:
 		hint = &""
+	var was: bool = visible
 	visible = hint != &""
+	if visible and not was and is_inside_tree():
+		modulate.a = 0.0  # PO-4 motion: a new hint fades in
+		create_tween().tween_property(self, ^"modulate:a", 1.0, UiTokens.T_BASE).set_ease(Tween.EASE_OUT)
