@@ -14,6 +14,10 @@ func _ready() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	_out = args[0] if args.size() > 0 else OS.get_user_data_dir() + "/ui_audit"
 	_only = args[1] if args.size() > 1 else ""
+	# Lane 13: `expand` previews window/stretch/aspect="expand" (21:9 / 16:10 get a wider / taller canvas
+	# instead of black bars); the project default ("keep") letterboxes to 1920x1080.
+	if args.size() > 2 and args[2] == "expand":
+		get_tree().root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_EXPAND
 	DirAccess.make_dir_recursive_absolute(_out)
 	_run.call_deferred()
 
