@@ -44,6 +44,17 @@ extends Resource
 ## PO-4 (PD2 stance TRANSITION_DURATION 0.23 s): camera-only easing of the crouch / stand eye-height change (1/s,
 ## exponential; 13 = ~95 % in 0.23 s). 0 = instant. Gameplay eye_height() switches at once.
 @export var crouch_smooth_rate: float = 13.0
+## PO-4 (PD2 use_headbob, default on; Options controls.head_bob, Reduce Motion forces it off): subtle camera-only
+## head bob of the local human while walking on the ground. One cycle (two steps) per head_bob_stride_m travelled;
+## vertical at twice the lateral frequency; amplitudes at head_bob_ref_mps, scaled by speed, x sprint mult, x ADS mult.
+@export var head_bob_stride_m: float = 1.6
+@export var head_bob_ref_mps: float = 3.5
+@export var head_bob_vertical_m: float = 0.006
+@export var head_bob_lateral_m: float = 0.004
+@export var head_bob_roll_deg: float = 0.25
+@export var head_bob_sprint_mult: float = 1.6
+@export var head_bob_ads_mult: float = 0.15
+@export var head_bob_rate: float = 6.0
 ## PO-4 (PD2): camera-only landing dip of the local human. A landing faster than land_dip_min_mps kicks the eye down
 ## by (impact - min) x land_dip_gain (m per m/s, capped at land_dip_max_m) through a critically damped spring of
 ## land_dip_hz, so it dips and recovers in ~0.3 s. 0 gain = off. Gameplay position is unaffected.

@@ -218,3 +218,36 @@ func test_crouch_camera_eases() -> void:
 	assert_true(head.position.y < tw.eye_standing - full * 0.4, "camera easing up (%.3f)" % head.position.y)
 	await wait_seconds(0.4)
 	assert_near(head.position.y, tw.eye_standing, 0.01, "camera back at standing height")
+
+
+## PO-4 (PD2 use_headbob): walking bobs the camera subtly (within the CrewTweak amplitudes), standing still does not,
+## and gameplay eye height is untouched. Real input.
+func test_head_bob_subtle_while_walking() -> void:
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
+	await wait_physics_frames(20)
+	var tw: CrewTweak = Tweak.crew()
+	var head: Node3D = c.get_node(^"Head") as Node3D
+	var gs: GameSettings = GameSettings.current()
+	if gs != null and gs.has_method(&"head_bob") and not bool(gs.call(&"head_bob")):
+		skip("head bob switched off in Options")
+		return
+	_inp.press(&"move_forward")
+	var max_x: float = 0.0
+	var dy_min: float = 0.0
+	var dy_max: float = 0.0
+	for _i: int in 90:
+		await wait_physics_frames(1)
+		max_x = maxf(max_x, absf(head.position.x))
+		var dy: float = head.position.y - c.eye_height()
+		dy_min = minf(dy_min, dy)
+		dy_max = maxf(dy_max, dy)
+		assert_near(c.eye_position().y - c.global_position.y, c.eye_height(), 1e-5, "gameplay eye untouched")
+	_inp.release(&"move_forward")
+	assert_true(max_x > tw.head_bob_lateral_m * 0.3, "lateral bob while walking (%.4f)" % max_x)
+	assert_true(max_x <= tw.head_bob_lateral_m * tw.head_bob_sprint_mult + 1e-4, "subtle lateral")
+	assert_true(dy_max - dy_min > tw.head_bob_vertical_m * 0.5, "vertical bob (%.4f)" % (dy_max - dy_min))
+	assert_true(dy_max <= tw.head_bob_vertical_m * tw.head_bob_sprint_mult + 0.002, "subtle vertical")
+	await wait_seconds(1.0)
+	assert_near(head.position.x, 0.0, 1e-5, "no bob standing still")
+	assert_near(head.rotation.z, 0.0, 1e-5, "no roll standing still")
