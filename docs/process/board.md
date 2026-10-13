@@ -14,6 +14,9 @@ Read it at the start of every work session.
 ## Trunk / merge rounds
 - 2026-10-13: round 35 = all five env branches (a, b, c, d, p) merged as left by the Grok team + D-086/D-087 docs. Gate running.
 
+## Rules in force
+- D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
+
 ## Open questions (id → answer)
 - (none)
 

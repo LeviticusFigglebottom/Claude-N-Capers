@@ -31,6 +31,6 @@ contractual (InputMap actions, project settings, contracts).
 ## Session loop
 1. `git fetch origin && git merge origin/claude/dreamy-hamilton-pc7vck` (merge, don't rebase). Read `docs/process/board.md`.
 2. Work. Commit every 20–30 min (D-077), `[PO-2] short summary`.
-3. `tools/ci/run_tests.sh p` while iterating; `tools/ci/check_all.sh --env p` before a push (≈40 min; run it in the background).
+3. `tools/ci/run_tests.sh p` while iterating; `tools/ci/check_all.sh --env p` before a push (≈40 min; run it in the background). **(D-088: superseded — run only targeted checks: gdlint on changed files, check_ownership, check_banned, the affected test files; the full gate is the lead's.)**
 4. Update `docs/status/env_p.md` (template communication.md §3), push `env/p-play`, then `send_message` the lead:
    `[ENV P] pushed <sha>; check: … PASS; verified windowed: …; ready: yes; questions: QP-n`.

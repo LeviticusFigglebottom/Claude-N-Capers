@@ -658,3 +658,12 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   active; every UI that needs a cursor holds a named release. Captured = gameplay active ∧ no release held ∧ window focused.
   Contract: `docs/contracts/input_focus.md`. ENV B migrates its four direct writers (menu_flow, menu_options,
   join_request_dialog, safehouse_host) once P's module is on trunk. The lead adds a banned-pattern check afterwards.
+
+## D-088 — 2026-10-13 — Targeted checks; the full suite runs only at the lead (product owner)
+- **Envs never run `check_all.sh` or a whole test dir as a routine pre-push step.** Before a push an env runs only what
+  its change touches: `gdlint` on changed files, `python3 tools/ci/check_ownership.py <env>`, `python3 tools/ci/check_banned.py`,
+  and the specific test files it changed or that exercise the changed code (single-file runs), plus its windowed
+  verification (D-086). Long runs (>~5 min) stay in the background so work continues meanwhile.
+- **The full gate (`check_all` / `lead_push.sh` with no args) runs only at the LEAD, occasionally**: per merge round, in
+  the background in a separate worktree, while everyone keeps working. A failure there goes back to the owning env as a
+  normal task. Supersedes the "check_all PASS before push" rule in communication.md §2–§5 and the env manuals.

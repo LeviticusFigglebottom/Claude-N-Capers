@@ -52,6 +52,6 @@ rooms, mission scripts), `validate_level`, and review screenshots.
 1. `git fetch origin && git merge origin/claude/dreamy-hamilton-pc7vck` (merge, don't rebase).
 2. Read new `docs/decisions.md` entries and your latest task message from the lead.
 3. Work. Commit small (`[C1-04] floating-prop check`). Push to `env/c-worlds` only.
-4. Run `tools/ci/check_all.sh --env c` (must PASS before "ready for integration").
+4. Run `tools/ci/check_all.sh --env c` (must PASS before "ready for integration"). **(D-088: superseded — run only targeted checks: gdlint on changed files, check_ownership, check_banned, the affected test files; the full gate is the lead's.)**
 5. Update `docs/status/env_c.md` (template: docs/process/communication.md §3), commit, push.
 6. Send the lead (`send_message`) `[ENV C] status @ <sha>; check_all: PASS/FAIL; ready: yes/no; questions: QC-n...`.

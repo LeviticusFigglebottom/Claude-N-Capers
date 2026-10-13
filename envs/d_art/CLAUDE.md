@@ -46,6 +46,6 @@ other than characters, maps, and `game/systems/**` (ENV A consumes your characte
 1. `git fetch origin && git merge origin/claude/dreamy-hamilton-pc7vck` (merge, don't rebase).
 2. Read new `docs/decisions.md` entries and the lead's latest task message.
 3. Work. Commit small (`[D1-02] rig_humanoid`). Push to `env/d-art` only.
-4. Run `tools/ci/check_all.sh --env d` (must PASS before "ready for integration").
+4. Run `tools/ci/check_all.sh --env d` (must PASS before "ready for integration"). **(D-088: superseded — run only targeted checks: gdlint on changed files, check_ownership, check_banned, the affected test files; the full gate is the lead's.)**
 5. Update `docs/status/env_d.md` (template in docs/process/communication.md §3), commit, push.
 6. Send the lead (`send_message`) `[ENV D] status @ <sha>; check_all: PASS/FAIL; ready: yes/no; questions: QD-n...`.

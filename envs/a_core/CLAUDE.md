@@ -40,6 +40,6 @@ envs' tests. If you need a change in any of those, write a question in your stat
 1. `git fetch origin && git merge origin/claude/dreamy-hamilton-pc7vck` (merge, don't rebase).
 2. Read `docs/decisions.md` (new entries) and your latest task message from the lead.
 3. Work. Commit small (`[A1-04] detection meter fill rate`). Push to `env/a-core` only.
-4. Run `tools/ci/check_all.sh --env a`. It must PASS before you claim "ready for integration".
+4. Run `tools/ci/check_all.sh --env a`. It must PASS before you claim "ready for integration". **(D-088: superseded — run only targeted checks: gdlint on changed files, check_ownership, check_banned, the affected test files; the full gate is the lead's.)**
 5. Update `docs/status/env_a.md` (template in docs/process/communication.md §3), commit, push.
 6. Send the lead (`send_message`) `[ENV A] status @ <sha>; check_all: PASS/FAIL; ready: yes/no; questions: QA-n...`.
