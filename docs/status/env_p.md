@@ -2,6 +2,16 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-12 20:25 ET: merge round 34, renders, loud run
+- a2ddb786 merge trunk db22c24c (--no-ff). P suite 53 (only the opt-in E2E failed, now skipped by default),
+  p4_progression 9/0, slice_b 6/0, b5_01 1 fail pending A's mask patch (ruling: ADS blocked unmasked).
+- Viewmodel: gun already rides the `weapon` bone (FpViewmodelTweak.weapon_bone); measured hip pose within ~5 deg
+  of camera axes, so the "tilt" is perspective. No P pose change made. New: brute_12 hip left hand floats at the
+  barrel tip (LeftHandIK marker ~0.52 m out) - B marker / P IK, open.
+- Loud run (CNC_E2E=1): MainEntrance+SalonDoor lockpicked by real input, drill placed on the Safe, 1 jam fixed by
+  real input, but the safe was not open after 400 s game time; police down/cuff the AI crew. Open.
+- Renders: /workspace/cnc-team/p/renders/01..10 (20:06-20:21 ET).
+
 ## 2026-10-12 19:50 ET: PT-02 Glasshouse E2E, PT-03 FP renders, PI-08, lead interrupt
 - PT-02 game/tests/p/test_p_glasshouse_e2e.gd (real input; setup: isolate_npc, cameras removed in stealth run).
   Stealth run reaches the escape (keycard, workshop lockpick, safe reader, 2 bags thrown into the van, escape);
