@@ -57,5 +57,6 @@ func test_viewmodel_key_light_only_lights_the_viewmodel() -> void:
 		return
 	assert_true(key != null, "key light exists")
 	assert_eq(key.light_cull_mask, CrewView.VIEWMODEL_LAYER, "culled to the viewmodel layer")
+	assert_eq(key.layers, CrewView.VIEWMODEL_LAYER, "on the viewmodel layer, else the vm camera culls the light itself")
 	assert_false(key.shadow_enabled, "no shadows")
 	assert_near(key.light_energy, vt.viewmodel_key_light_energy, 1e-4, "energy from the tweak")
