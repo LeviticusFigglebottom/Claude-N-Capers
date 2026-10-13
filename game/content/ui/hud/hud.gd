@@ -301,8 +301,10 @@ func _process(delta: float) -> void:
 	if objective_markers != null and scoreboard != null:
 		objective_markers.show_all = scoreboard.visible  # Tab shows every objective's marker
 		objective_markers.z_index = 1 if scoreboard.visible else 0  # drawn over the sheet, not under it
+	if onboarding != null and scoreboard != null:
+		onboarding.visible = onboarding.shown != &"" and not scoreboard.visible  # Tab sheet wins (h02 capture)
 	if hint != null and onboarding != null:
-		hint.note.visible = hint.hint == &"mask_up" and not onboarding.visible  # the card already says it
+		hint.note.visible = hint.hint == &"mask_up" and onboarding.shown == &""  # the card already says it
 	if _toast_t > 0.0:
 		_toast_t -= delta
 		toast_label.visible = _toast_t > 0.0

@@ -112,3 +112,15 @@ func _dismiss_event() -> InputEvent:
 	k.physical_keycode = OnboardingCard.DISMISS_KEY
 	k.pressed = true
 	return k
+
+
+func test_card_hides_while_the_scoreboard_is_up() -> void:
+	_model.player_mode = &"casing"
+	_hud.scoreboard.set_process(false)
+	_hud.scoreboard.set_shown(true)
+	await wait_frames(1)
+	assert_false(_card.visible, "the Tab sheet covers the card")
+	assert_eq(_card.shown, &"casing", "still open underneath")
+	_hud.scoreboard.set_shown(false)
+	await wait_frames(1)
+	assert_true(_card.visible)
