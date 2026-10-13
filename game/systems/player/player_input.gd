@@ -46,6 +46,10 @@ static var test_assume_captured: bool = false
 @export var gamepad_ramp_delay_s: float = 0.25
 @export var gamepad_ramp_time_s: float = 0.35
 @export var gamepad_ramp_max_mult: float = 1.8
+## PO-4 (PD2): a shot's camera kick (CrewWeapons -> add_recoil) is applied over this many seconds (ease-out) instead
+## of a one-frame snap; the full amount always lands and nothing recovers on its own (PD2: the player pulls down).
+## 0 = instant.
+@export var recoil_apply_s: float = 0.06
 @export var gamepad_requires_capture: bool = false
 
 var enabled: bool = true
@@ -62,6 +66,8 @@ var _last_slot: int = Enums.WeaponSlot.SECONDARY
 var _order: Dictionary = {}
 var _order_ticks: int = 0
 var _ai_stances: Dictionary = {}
+## PO-4: recoil impulses being applied: [{"total": Vector2(yaw, pitch), "done": applied share 0..1, "t": s in}].
+var _recoil: Array[Dictionary] = []
 ## Seconds the right stick has been past gamepad_ramp_threshold (L4 turn ramp).
 var _pad_ramp_s: float = 0.0
 
@@ -154,6 +160,34 @@ func _zoom() -> float:
 	return maxf(CrewView.local_zoom_factor(), 1.0) if scale_look_by_zoom else 1.0
 
 
+## Recoil kick of one shot (radians; CrewWeapons._apply_recoil): pitch up `kick`, yaw `side`, spread over
+## recoil_apply_s with an ease-out so the camera punches up instead of teleporting.
+func add_recoil(kick: float, side: float) -> void:
+	if recoil_apply_s <= 0.0:
+		add_look(side, kick)
+		return
+	_recoil.append({"total": Vector2(side, kick), "done": 0.0, "t": 0.0})
+
+
+## Advance the pending recoil impulses by `delta` (applies exactly their total in the end).
+func _tick_recoil(delta: float) -> void:
+	if _recoil.is_empty():
+		return
+	var keep: Array[Dictionary] = []
+	for r: Dictionary in _recoil:
+		var t: float = minf(float(r["t"]) + delta, recoil_apply_s)
+		var x: float = clampf(t / recoil_apply_s, 0.0, 1.0)
+		var frac: float = 1.0 - (1.0 - x) * (1.0 - x)  # ease-out
+		var d: float = frac - float(r["done"])
+		var total: Vector2 = r["total"]
+		add_look(total.x * d, total.y * d)
+		r["t"] = t
+		r["done"] = frac
+		if x < 1.0:
+			keep.append(r)
+	_recoil = keep
+
+
 ## Add yaw/pitch (radians); pitch clamped to +-89 degrees.
 func add_look(d_yaw: float, d_pitch: float) -> void:
 	_yaw += d_yaw
@@ -201,6 +235,7 @@ func gamepad_look_step(stick: Vector2, delta: float) -> Vector2:
 func _physics_process(delta: float) -> void:
 	if not enabled or _crew == null:
 		return
+	_tick_recoil(delta)
 	if not gamepad_requires_capture or MouseCapture.is_captured():
 		var stick: Vector2 = Input.get_vector(&"look_left", &"look_right", &"look_up", &"look_down", 0.0)
 		var d: Vector2 = gamepad_look_step(stick, delta) / _zoom()
