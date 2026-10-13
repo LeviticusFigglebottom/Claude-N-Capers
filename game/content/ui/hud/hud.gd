@@ -67,6 +67,10 @@ var crosshair: Label
 var mask_ring: MaskProgress
 ## PO-4 contextual control hint (bottom centre): click to resume / mask up / throw the bag.
 var hint: HintStrip
+## Lead round 62 gameplay feedback: hit marker, damage direction arcs, low-health vignette + heartbeat.
+var hit_feedback: HitFeedback
+var damage_direction: DamageDirection
+var low_health: LowHealthVignette
 ## PO-4 lane 11 first-time onboarding cards (right of centre).
 var onboarding: OnboardingCard
 ## B6-02 Tab scoreboard (hold / toggle the `scoreboard` action).
@@ -114,10 +118,12 @@ func set_crew_heisters(map: Dictionary) -> void:
 
 func widgets() -> Array[HudWidget]:
 	return [chevrons, marks, objective_markers, interaction, dominate, vitals, ammo, pager, objectives, assault,
-			teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring, onboarding]
+			teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring, onboarding, hit_feedback,
+			damage_direction, low_health]
 
 
 func _build() -> void:
+	low_health = _place(LowHealthVignette.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as LowHealthVignette
 	marks = _place(MarkedTargets.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as MarkedTargets
 	objective_markers = _place(ObjectiveMarkers.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as ObjectiveMarkers
 	chevrons = _place(DetectionChevrons.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DetectionChevrons
@@ -126,6 +132,8 @@ func _build() -> void:
 	crosshair.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	crosshair.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_place(crosshair, Control.PRESET_CENTER, Vector2(-20, -20), Vector2(40, 40))
+	damage_direction = _place(DamageDirection.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DamageDirection
+	hit_feedback = _place(HitFeedback.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as HitFeedback
 	interaction = _place(InteractionPanel.new(), Control.PRESET_CENTER, Vector2(-300, 60), Vector2(600, 110)) as InteractionPanel
 	dominate = _place(DominatePrompt.new(), Control.PRESET_CENTER, Vector2(-360, -130), Vector2(720, 56)) as DominatePrompt
 	stamina = _place(StaminaBar.new(), Control.PRESET_BOTTOM_LEFT, Vector2(48, -248), Vector2(340, 40)) as StaminaBar

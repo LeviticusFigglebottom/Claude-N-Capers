@@ -200,6 +200,11 @@ var mask_progress: float = 0.0:
 	set(v):
 		mask_progress = v
 		changed.emit(&"mask_progress")
+## LocalHudModel extra (asked of ENV A): the local player's crew net id (0 = unknown).
+var local_net_id: int = 0:
+	set(v):
+		local_net_id = v
+		changed.emit(&"local_net_id")
 ## LocalHudModel extra: Enums.HeistPhase (announced through `changed`; OnboardingCard).
 var heist_phase: int = Enums.HeistPhase.LOADING:
 	set(v):

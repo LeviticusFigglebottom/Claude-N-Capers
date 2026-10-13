@@ -57,6 +57,8 @@ func _run() -> void:
 		await _loud()
 	elif mode == "onboarding":
 		await _onboarding()
+	elif mode == "feedback":
+		await _feedback()
 	else:
 		await _hud()
 	print("CONTRAST %s (%d failures, min %.1f:1)" % ["PASS" if _fails == 0 else "FAIL", _fails, MIN_RATIO])
@@ -217,3 +219,35 @@ func _onboarding() -> void:
 	hud.onboarding.dismiss()
 	model.heist_phase = Enums.HeistPhase.ESCAPE
 	await _shot("card_escape", hud.onboarding)
+
+
+## Lead round 62: kill marker, two damage arcs (left = armor, behind-right = health) and the low-health
+## vignette over the backdrops (a Camera3D looking down -Z gives the arcs their screen angle).
+func _feedback() -> void:
+	var back: ColorRect = ColorRect.new()
+	back.size = Vector2(SIZE)
+	_vp.add_child(back)
+	var cam: Camera3D = Camera3D.new()
+	_vp.add_child(cam)
+	cam.make_current()
+	var model: MockHudModel = MockHudModel.new()
+	model.local_net_id = 501
+	_vp.add_child(model)
+	var hud: Hud = (load(HUD_PATH) as PackedScene).instantiate() as Hud
+	hud.auto_find_model = false
+	_vp.add_child(hud)
+	await get_tree().process_frame
+	hud.bind(model)
+	model.masked = true
+	model.casing = false
+	model.max_health = 100.0
+	model.health = 12.0
+	for bg: String in BACKDROPS:
+		back.color = BACKDROPS[bg] as Color
+		hud.damage_direction.add_arc(Vector3(-1, 0, 0), false)
+		hud.damage_direction.add_arc(Vector3(0.7, 0, 0.7).normalized(), true)
+		hud.hit_feedback.show_marker(&"kill")
+		hud.hit_feedback.set_process(false)  # hold the marker for the shot
+		hud.damage_direction.set_process(false)
+		await _shot("feedback_" + bg, hud.hit_feedback)
+		hud.damage_direction.arcs.clear()
