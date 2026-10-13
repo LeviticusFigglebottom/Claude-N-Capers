@@ -122,6 +122,9 @@ var _ads_lin: float = 0.0
 var _bob_weight: float = 0.0
 ## PO-4: hip/bob/step offset (_update_offset) and the ADS alignment (AdsAlign, late) that make up `position`.
 var _base_offset: Vector3 = Vector3.ZERO
+## PO-4: eased per-set framing offset (FpViewmodelTweak.set_hip_offset / set_ads_offset_z).
+var _set_off: Vector3 = Vector3.ZERO
+var _set_off_init: bool = true
 ## PO-4: per-shot muzzle light (FpViewmodelTweak.muzzle_light_*), seconds left of the current flash.
 var _muzzle_light: OmniLight3D = null
 var _flash_left: float = 0.0
@@ -716,8 +719,14 @@ func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 	var amp: float = _bob_weight * lerpf(1.0, tw.ads_bob_mult, ads_weight)
 	var off: Vector3 = Vector3(sin(_bob_phase) * tw.bob_amplitude.x, sin(_bob_phase * 2.0) * tw.bob_amplitude.y, 0.0) * amp
 	off.y += step_lag(tw)
-	var hip: Vector3 = tw.set_hip_offset.get(anim_set, Vector3.ZERO)
-	off += hip.lerp(Vector3(0.0, 0.0, float(tw.set_ads_offset_z.get(anim_set, 0.0))), ads_weight)
+	# PO-4: the offset of the set actually playing (a melee / throw / deploy item set rides the gun's arms but has its
+	# own framing), eased so switching sets does not jump.
+	var set_now: StringName = _playing_set()
+	var hip: Vector3 = tw.set_hip_offset.get(set_now, Vector3.ZERO)
+	var want: Vector3 = hip.lerp(Vector3(0.0, 0.0, float(tw.set_ads_offset_z.get(set_now, 0.0))), ads_weight)
+	_set_off = want if _set_off_init else _set_off.move_toward(want, tw.set_offset_rate * delta)
+	_set_off_init = false
+	off += _set_off
 	_base_offset = off
 	_late_align()  # first pass on the last applied pose (direct tick() callers / tests); AdsAlign refines it
 
@@ -756,6 +765,15 @@ func _update_flash(delta: float, tw: FpViewmodelTweak) -> void:
 		_muzzle_light.visible = false
 		return
 	_muzzle_light.light_energy = _flash_peak * _flash_left / maxf(tw.muzzle_light_s, 0.001)
+
+
+## The anim set of the segment playing now (an item set during melee / throw / deploy), else the weapon's set.
+func _playing_set() -> StringName:
+	if action != Action.NONE and _seg_i >= 0 and _seg_i < _segs.size():
+		var sid: StringName = StringName(_segs[_seg_i].get("set", &""))
+		if sid != &"":
+			return sid
+	return anim_set
 
 
 ## AdsAlign (skeleton modifier, this frame's pose): shift so the weapon's AimPoint sits on the camera axis while aimed.
