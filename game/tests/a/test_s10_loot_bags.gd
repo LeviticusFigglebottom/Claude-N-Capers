@@ -255,3 +255,23 @@ func test_loot_info_fallback_and_body_bag_weight() -> void:
 	var unknown: Dictionary = LootManager.loot_info(&"loot.does_not_exist")
 	assert_false(bool(unknown["known"]))
 	assert_eq(int(unknown["weight"]), int(LootTweak.get_default().unknown_weight))
+
+
+## PO-5 (ENV P, PD2): the throw follows the camera pitch: looking up lobs higher, looking down drops short.
+func test_s10_1_throw_follows_look_pitch() -> void:
+	var c: CrewController = _crew_at(Vector3(0, 0.05, 6))
+	await wait_physics_frames(2)
+	var lm: LootManager = _rt.service(G.SVC_LOOT) as LootManager
+	var fwd: Vector3 = Vector3(0, 0, -1)
+	c.look_pitch = 0.0
+	var level: Vector3 = lm.call(&"_throw_velocity", c, Enums.LootWeight.MEDIUM, fwd)
+	c.look_pitch = deg_to_rad(40.0)
+	var up: Vector3 = lm.call(&"_throw_velocity", c, Enums.LootWeight.MEDIUM, fwd)
+	c.look_pitch = deg_to_rad(-45.0)
+	var down: Vector3 = lm.call(&"_throw_velocity", c, Enums.LootWeight.MEDIUM, fwd)
+	assert_near(level.length(), up.length(), 0.001, "same launch speed")
+	assert_true(up.y > level.y * 1.5, "looking up lobs higher (%.2f vs %.2f)" % [up.y, level.y])
+	assert_true(down.y < 0.0 or down.y < level.y * 0.2, "looking down throws low (%.2f)" % down.y)
+	var lt: LootTweak = LootTweak.get_default()
+	assert_near(rad_to_deg(atan2(level.y, Vector2(level.x, level.z).length())), lt.throw_elevation_deg, 0.5,
+		"looking level keeps the tuned elevation")

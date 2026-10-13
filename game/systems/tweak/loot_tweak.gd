@@ -37,6 +37,11 @@ static var _instance: LootTweak = null
 ## Throw: released at this height above the carrier's feet with this elevation angle.
 @export var throw_release_height_m: float = 1.3
 @export var throw_elevation_deg: float = 25.0
+## PO-5 (ENV P, PD2): the throw follows the camera pitch (lob over a fence / onto a van, drop short looking
+## down). Launch elevation = clamp(look_pitch + bias, min, max); the speed stays the flat-ground speed above.
+@export var throw_pitch_bias_deg: float = 25.0  # = throw_elevation_deg: looking level throws as before
+@export var throw_min_elev_deg: float = -20.0
+@export var throw_max_elev_deg: float = 70.0
 ## Fraction of velocity kept when a thrown bag first touches something (stops long slides).
 @export var landing_velocity_keep: float = 0.15
 @export var friction: float = 1.0
