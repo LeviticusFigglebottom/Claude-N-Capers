@@ -36,6 +36,6 @@ Owner: LEAD. Goal: the game is practically playable start to finish, proven by a
 | PP-P-9 | A/C | Navmesh routes through locked closed doors (Glasshouse SalonDoor, LOCKPICK, loud) - player-facing paths/AI must lockpick or detour; confirm intended (heist_map.md §3) |
 | PP-P-10 | B | P1 default loadout has no primary and a suppressed pistol: a player cannot go loud by shooting (by design? confirm) |
 | PP-P-11 | P | FIXED (Lead ruling 20:23): separate PD2-style viewmodel camera, fixed 52 deg (FpViewmodelTweak.viewmodel_fov_deg), world FOV/ADS no longer stretch the gun. Shotgun left hand: marker is B-exact (-0.026,0.046,-0.33) in weapon space; the 0.52 m was camera depth (weapon bone 0.20 m + 0.33), IK reaches it (influence 1) - no reach error |
-| PP-P-12 | P | Nav radius 0.30 < capsule 0.35 is intended (D-085). SalonDoor passes 24/24 once open (C); not a real snag - SKIPPED by Lead. Note: a head-on approach from 0.55 m off the doorway (z 9.3/10.7) still stops (edge_assist_m 0.45); WIP test in /workspace/cnc-team/p/wip/ |
+| PP-P-12 | P | FIXED 26e4bbe0 (round 53): door edge assist probed only at step height (hit 2.10 m door heads) + 2 cm casing corner; now floor-height probe, 6 cm back-off, 0.65 m reach only next to a jamb. SalonDoor head-on at 0/±0.3/±0.55/±0.7 m passes; walls/pillars still stop (test_pp_p12_door_snag) |
 | PP-L-1 | LEAD | P2 ghost run: antechamber laser walk fails on Night Deposit seed 2001 |
 Envs append rows as they find issues while playing.

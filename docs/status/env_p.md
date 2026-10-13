@@ -2,6 +2,20 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-13 21:30 ET: lanes L1/L2/L4/L5, D-095, recoil, landing, d084
+- Pushed through 77e198ef (trunk round 50 merged). Done: all-class hip framing (f11b4df1, test_po4_viewmodel_classes),
+  late ADS alignment modifier (42dfaf93), D-095 viewmodel_lit = layer 21 (1<<20; layer 20 is FIRST_PERSON_HIDDEN)
+  + per-shot muzzle light (13da95e8), PD2 recoil punch (dff06548) + PD2 recovery (77e198ef: the whole burst kick
+  returns after release, v 9/s h 5/s, cap 20 deg), landing dip (d638fad3), d084 de-flake, L4 pad ramp (897c39aa).
+- PD2 recoil/spread reference table (from the PD2 Lua decompile) sent to B (D-096 data owner); design call to lead:
+  PD2 ADS spread is ~3x looser than ours; A's crouch spread mult is backwards (0.75 vs still 0.5; PD2 1.0 / 0.4).
+- A pushed bag throws following look pitch (02935de8, bias 25 deg).
+- WIP: ADS eye relief per set. res://tests/p/_review/ads_sweep.tscn (`--fixed-fps 60 ... -- --out=DIR
+  [--only=ids] [--ads_z=set:z,...]`) measures viewmodel coverage in ADS + thumbnails. Rifle: z -0.06 shows the
+  buttstock slab, 0.0..+0.05 shows rear aperture + receiver sliver (PD2). Sweep of 17 weapons x z {0, .03, .06}
+  running. L3 door subagent (worktree) still running.
+- Windowed tips: `--fixed-fps 60` for any transition capture (llvmpipe ~1 fps otherwise collapses transitions).
+
 ## 2026-10-13 20:30 ET: rounds 35-42 merged, viewmodel lanes
 - Merged trunk round 42 (892c64b9). Pushed 2c8cc473.
 - AR hip pose (61d9e075): measured with res://tests/p/_review/vm_probe.tscn (`-- --out=DIR --primary=weapon.corsair_ar

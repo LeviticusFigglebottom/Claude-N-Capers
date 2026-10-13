@@ -80,9 +80,9 @@ func test_rifle_hip_in_front_of_lens() -> void:
 	assert_true(rear < -0.02, "rifle rear %.3f m (camera space z) is in front of the lens" % rear)
 
 
-## PO-4 (PD2): a shot's kick punches the camera up over PlayerInput.recoil_apply_s (not a one-tick snap), the full
-## kick lands, and nothing recovers on its own. Real fire input.
-func test_recoil_punch_eases_in_and_holds() -> void:
+## PO-4 / D-097 (PD2): a semi shot's kick punches the camera up over PlayerInput.recoil_apply_s (not a one-tick snap)
+## and, a semi-default gun having no recoil_wait, the whole kick then eases back. Real fire input.
+func test_recoil_punch_eases_in_and_recovers() -> void:
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
 	await wait_physics_frames(30)
@@ -94,18 +94,49 @@ func test_recoil_punch_eases_in_and_holds() -> void:
 		await wait_physics_frames(1)
 		trace.append(c.look_pitch - p0)
 	_inp.release(&"fire")
-	var kick_ticks: int = 0
-	var total: float = trace.back()
-	if total <= 0.0001:
+	var peak: float = trace.max()
+	if peak <= 0.0001:
 		skip("equipped weapon has no vertical kick")
 		return
-	for d: float in trace:
-		if d > 0.0001 and d < total - 0.0001:
-			kick_ticks += 1
-	assert_true(kick_ticks >= 2, "kick spread over several ticks (%d), trace %s" % [kick_ticks, trace])
+	var rising: int = 0
+	for k: int in range(1, trace.size()):
+		if trace[k] > trace[k - 1] + 1e-6 and trace[k] < peak - 1e-6:
+			rising += 1
+	assert_true(rising >= 1, "kick spread over several ticks, trace %s" % [trace])
 	await wait_physics_frames(60)
-	assert_near(c.look_pitch - p0, total, 0.0005, "no auto-recovery (PD2)")
+	assert_near(c.look_pitch - p0, 0.0, peak * 0.05 + 1e-4, "PD2 recovery: the kick is put back")
 	assert_true(pin.recoil_apply_s > 0.0, "tunable on")
+
+
+## D-097 (PD2): an auto-default gun accumulates kick through a burst (no recovery while shots keep coming within one
+## fire interval), then puts the whole burst's kick back after the trigger is released.
+func test_auto_burst_accumulates_then_recovers() -> void:
+	_rt.teardown()
+	var l: Loadout = CrewWeapons.build_loadout(null).duplicate() as Loadout
+	l.primary = &"weapon.corsair_ar"
+	l.resolved_primary = LoadoutResolver.resolve_weapon(l.primary, l.primary_mods)
+	_rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(0, 0), "crew_ai": false, "loadouts": {0: l}})
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
+	await _inp.tap(&"slot_primary")
+	await wait_seconds(2.0)
+	var def: WeaponDef = ContentDB.weapon(&"weapon.corsair_ar")
+	if def.fire_modes.is_empty() or def.fire_modes[0] != &"auto":
+		skip("corsair_ar is not auto-default")
+		return
+	var p0: float = c.look_pitch
+	_inp.press(&"fire")
+	var mid: float = 0.0
+	for k: int in 30:
+		await wait_physics_frames(1)
+		if k == 14:
+			mid = c.look_pitch - p0
+	var end: float = c.look_pitch - p0
+	_inp.release(&"fire")
+	assert_true(mid > 0.0005 and end > mid + 0.0005, "kick builds through the burst (%.4f -> %.4f)" % [mid, end])
+	await wait_physics_frames(90)
+	assert_near(c.look_pitch - p0, 0.0, end * 0.05 + 1e-4, "whole burst kick put back after release")
 
 
 ## PO-4 (PD2): a real jump's landing dips the camera (camera only) and it recovers; a flat walk never dips.

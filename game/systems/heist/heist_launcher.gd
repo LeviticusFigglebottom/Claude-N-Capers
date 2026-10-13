@@ -17,6 +17,9 @@ const BUILTIN_MAPS: Dictionary = {
 }
 
 static var _registry: Dictionary = {}
+## TEST HOOK (PO-5 release e2e): the next launch() uses this run seed instead of the caller's (the menu
+## picks a time seed), then it resets to -1. Lets a windowed menu-driven playthrough be replayed exactly.
+static var next_seed_override: int = -1
 static var _auto_join: Dictionary = {}
 ## launch_client() calls waiting for a bring-up (auto_join stands aside while > 0).
 static var _client_pending: int = 0
@@ -48,6 +51,9 @@ static func map_path(heist_id: StringName, options: Dictionary = {}) -> String:
 static func launch(heist_id: StringName, seed: int, difficulty: Enums.Difficulty,
 		parent: Node = null, options: Dictionary = {}) -> HeistRuntime:
 	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if next_seed_override >= 0:
+		seed = next_seed_override
+		next_seed_override = -1
 	if parent == null:
 		parent = tree.root
 	var scene: PackedScene = options.get("map_packed") as PackedScene

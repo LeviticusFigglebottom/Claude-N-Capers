@@ -26,6 +26,7 @@
 ## LoadoutResolver's header / skills.md / perk_decks.md (derivations in the comments), never
 ## snapshotted from the resolver's output.
 extends TestCase
+# LEAD D-097: spread/recoil goldens follow ENV B's PD2 table (env/b-content b4b4697b).
 
 ## Keys uncovered when the gate landed (shrink-only allowlist, with owners).
 const RATCHET: GDScript = preload("res://tests/integration/p4_coverage_ratchet.gd")
