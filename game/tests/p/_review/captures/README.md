@@ -13,3 +13,6 @@ shipping look; lighting differs slightly).
   (top row), charge and charged swing (bottom). `vm_probe.tscn -- --melee --melee_id=melee.folding_knife`.
 - `ar_hip_glasshouse_vulkan.png`: corsair_ar hip in live Glasshouse (Vulkan) after the viewmodel lighting and
   framing fixes.
+- `db_real_menu_sheet_1280x720.png`: the same run on dockside_burn (loud start, so already masked). Every step passed,
+  reload included. The sprint frames show ~2.6 m/s because the player is pressed against a wall; open-field sprint
+  reaches 5.75 m/s in ~0.3 s (headless check).
