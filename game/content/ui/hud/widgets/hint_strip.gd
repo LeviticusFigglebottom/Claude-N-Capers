@@ -15,8 +15,11 @@ const THROW_ACTION: StringName = &"drop_bag"
 var prompt: KeyPrompt
 ## Current hint id: &"" / &"resume" / &"mask_up" / &"throw_bag" (tests).
 var hint: StringName = &""
+## An overlay that pauses crew input (pause menu, chat, drop-in: CrewInput) frees the cursor on
+## purpose, so it counts as captured then.
 var capture_probe: Callable = func() -> bool:
-	return DisplayServer.get_name() == "headless" or Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
+	return DisplayServer.get_name() == "headless" or Input.mouse_mode == Input.MOUSE_MODE_CAPTURED \
+			or CrewInput.is_paused()
 var _captured: bool = true
 
 

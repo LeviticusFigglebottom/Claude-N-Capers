@@ -25,6 +25,14 @@ func _ready() -> void:
 	if theme == null:
 		theme = UiBuild.theme()
 	UiNav.ensure_pad_ui_actions()
+	# A left-weighted scrim: near-opaque behind the menu column (the HUD's left widgets sit there),
+	# lighter over the rest so the heist stays visible.
+	var shade: ColorRect = ColorRect.new()
+	shade.color = Color(UiTokens.INK_0, 0.75)
+	shade.set_anchors_preset(Control.PRESET_LEFT_WIDE)
+	shade.offset_right = 760
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(shade)
 	var scrim: PanelContainer = PanelContainer.new()
 	scrim.theme_type_variation = UiBuild.SCRIM
 	scrim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
