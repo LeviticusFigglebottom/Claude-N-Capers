@@ -20,14 +20,14 @@ const EYE_H: float = 1.65
 const SIZE: Vector2i = Vector2i(1280, 720)
 
 
-func _initialize() -> void:
-	_run.call_deferred()
-
-
 ## User args (after --): [map] [tag]; map limits the run to one map, tag is appended to the file names.
 var _tag: String = ""
 var _only_10: bool = false
 var _dists: Array[float] = []
+
+
+func _initialize() -> void:
+	_run.call_deferred()
 
 
 func _run() -> void:

@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## Shared state + scene/physics/navigation helpers for all levelcheck modules. Owner: ENV C.
 ## The map must be inside the tree (physics + navigation registered) before setup().
 class_name LcContext

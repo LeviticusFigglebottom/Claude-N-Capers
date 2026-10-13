@@ -12,6 +12,11 @@ Owner: LEAD. Goal: the game is practically playable start to finish, proven by a
 ## Issue list (initial, team-built; ids PP-<env>-n)
 | id | owner | issue |
 |---|---|---|
+| PO-1 | P (+A) | **Product owner:** cannot leave casing mode. Reproduce windowed: hold G (mask_up). Suspects: a focused/visible Control blocking all polled gameplay input (8b770a5a rule), mask-up gated on something else, no on-screen prompt. Fix + windowed test + HUD prompt (B) |
+| PO-2 | P (+B) | **Product owner:** the game never captures the mouse, so you cannot turn. Root cause: nothing writes MOUSE_MODE_CAPTURED in a heist (only safehouse_host); tests fake it (test_assume_captured). Fix per input_focus.md (D-087) |
+| PO-3 | P (+A) | **Product owner:** cannot walk up a slight bump in the road. Step-up landed in round 35 (P1-01) but was only tested on test geometry: walk every road/curb/kerb/ramp/threshold on all 4 heists windowed; fix in controller (P) or collision (A, D-086) |
+| PO-4 | B | **Product owner:** UIs are cluttered, unintuitive, uninspired/unstyled. Full UI/UX overhaul: style spec `docs/design/ui/style.md` (GSR-consistent, heist-thriller identity), HUD declutter, menu/hub/loadout/payday flows, first-time guidance (control hints: hold G to mask up, click to capture, Esc pause) |
+| PO-5 | A | End-to-end windowed playthrough as a person: main menu → hub → loadout → Glasshouse stealth win and loud win → payday → hub, then Night Deposit / Shadow Ledger / Dockside. Every blocker becomes a row here (open items from round 35: loud safe drill never opens in 400 s, police cuff AI crew, brute_12 left hand) |
 | PP-B-1 | B | Duplicate Career / Notoriety buttons in the hub |
 | PP-B-2 | B | Hub cards off-screen at 1280×720 |
 | PP-B-3 | B | Payday card auto-picks after 30 s (PD2: player picks; review timer) |

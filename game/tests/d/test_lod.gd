@@ -5,6 +5,8 @@
 ##   mesh ends there; heisters, contacts and specials with toggled meshes / overrides have none.
 extends TestCase
 
+const CLUB_PATRON_SCENE: String = "res://world/characters/club_patron/club_patron.tscn"  # LEAD: gdlint duplicated-load
+
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
 const BIG_SURFACE: int = 1000
@@ -153,7 +155,7 @@ func test_zoom_scales_crowd_lod_switch() -> void:
 	view.zoom_factor = 0.5
 	assert_near(CrowdLod.zoom_factor_of(view), 1.0, 0.0001, "zoom < 1 clamps to 1")
 	view.free()
-	var root: Node3D = (load("res://world/characters/club_patron/club_patron.tscn") as PackedScene).instantiate() as Node3D
+	var root: Node3D = (load(CLUB_PATRON_SCENE) as PackedScene).instantiate() as Node3D
 	add_child(root)
 	var proxy: MeshInstance3D = root.get_node("Skeleton3D/" + CrowdLod.NODE_NAME) as MeshInstance3D
 	assert_true(proxy.is_in_group(CrowdLod.GROUP), "CrowdLod is in the crowd_lod group")
@@ -178,11 +180,11 @@ class _SignalView extends Node:
 ## D-084: a CrowdLod entering the tree creates the watcher; with no CrewView.local_view it is a no-op;
 ## a view's zoom_factor_changed drives the switch; the view leaving resets to 1x.
 func test_crowd_lod_subscribes_to_zoom() -> void:
-	var Zoom: GDScript = load("res://world/characters/_tools/crowd_lod_zoom.gd") as GDScript
-	var root: Node3D = (load("res://world/characters/club_patron/club_patron.tscn") as PackedScene).instantiate() as Node3D
+	var zoom_script: GDScript = load("res://world/characters/_tools/crowd_lod_zoom.gd") as GDScript
+	var root: Node3D = (load(CLUB_PATRON_SCENE) as PackedScene).instantiate() as Node3D
 	add_child(root)
 	await get_tree().process_frame
-	var w: Node = get_tree().root.get_node_or_null(NodePath(Zoom.NODE_NAME))
+	var w: Node = get_tree().root.get_node_or_null(NodePath(zoom_script.NODE_NAME))
 	assert_true(w != null, "watcher created by the CrowdLod proxy")
 	if w == null:
 		root.queue_free()

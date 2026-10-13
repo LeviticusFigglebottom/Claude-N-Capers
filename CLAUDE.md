@@ -1,7 +1,7 @@
 # CAPERWORKS: shared rules for every Claude session in this repo
 
-This is an original co-op heist game in **Godot 4.7.2** with Payday 2-faithful mechanics. Five
-sessions work here: the **LEAD** (orchestrator) and four implementation environments.
+This is an original co-op heist game in **Godot 4.7.2** with Payday 2-faithful mechanics. Team v3 (D-086):
+the **LEAD** (orchestrator) plus three Claude Code cloud sessions: ENV P, ENV B, ENV A (C and D are dormant).
 
 ## Who am I?
 Look at your git branch:
@@ -10,6 +10,8 @@ Look at your git branch:
 - `env/b-content`: you are **ENV B**. Read and follow `envs/b_content/CLAUDE.md` now.
 - `env/c-worlds`: you are **ENV C**. Read and follow `envs/c_worlds/CLAUDE.md` now.
 - `env/d-art`: you are **ENV D**. Read and follow `envs/d_art/CLAUDE.md` now.
+- `env/p-play`: you are **ENV P**. Read and follow `envs/p_play/CLAUDE.md` now.
+- Any other branch: your dispatch message says your role; if it doesn't, you are the LEAD's helper and touch nothing on trunk.
 
 ## Always
 - `docs/` is the knowledge base, and **nothing is agreed until it is written there on trunk**.
