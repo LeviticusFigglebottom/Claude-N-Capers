@@ -162,6 +162,24 @@ static func footer(back: Button, primary_button: Button = null, middle: Array[Co
 	return h
 
 
+## Makes a read-only panel focusable (keyboard / pad scroll a list through it) with a visible focus:
+## its edge turns cyan while it has focus (style.md §5, focus is always visible). Returns `p`.
+static func focus_panel(p: PanelContainer) -> PanelContainer:
+	p.focus_mode = Control.FOCUS_ALL
+	p.focus_entered.connect(func() -> void:
+		var base: StyleBox = p.get_theme_stylebox(&"panel")
+		var sb: StyleBoxFlat = (base as StyleBoxFlat).duplicate() as StyleBoxFlat if base is StyleBoxFlat else StyleBoxFlat.new()
+		sb.border_color = UiTokens.CYAN
+		sb.set_border_width_all(maxi(sb.border_width_left, 2))
+		p.set_meta(&"_unfocused_panel", base)
+		p.add_theme_stylebox_override(&"panel", sb))
+	p.focus_exited.connect(func() -> void:
+		p.remove_theme_stylebox_override(&"panel")
+		if p.has_meta(&"_unfocused_panel") and p.get_meta(&"_unfocused_panel") != p.get_theme_stylebox(&"panel"):
+			p.add_theme_stylebox_override(&"panel", p.get_meta(&"_unfocused_panel") as StyleBox))
+	return p
+
+
 static func option_button() -> OptionButton:
 	var o: OptionButton = OptionButton.new()
 	o.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED

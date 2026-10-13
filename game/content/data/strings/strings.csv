@@ -1766,13 +1766,16 @@ item.mod.sparrow_standard_mag.name,Twenty-Round Magazine
 item.mod.sparrow_extended_mag.name,Thirty-Two-Round Magazine
 item.mod.sparrow_extended_mag.desc,"Thirty-two rounds sticking well out of the grip. Slower to swap, harder to hide."
 ui.hub.achievements,Achievements
-ui.achievements.title,ACHIEVEMENTS
+ui.achievements.title,Achievements
+ui.achievements.crumb,Safehouse / Profile
 ui.achievements.subtitle,The jobs the crew will be remembered for.
-ui.achievements.count,{unlocked} of {total} unlocked
+ui.achievements.count,{unlocked} of {total}
+ui.achievements.count_caption,Unlocked
 ui.achievements.progress,{progress} / {target}
 ui.achievements.unlocked,Unlocked
 ui.achievements.locked,In progress
-ui.achievements.reward,Reward: {name}
+ui.achievements.reward,{name}
+ui.achievements.reward_caption,Reward
 ui.results.achievement_unlocked,Achievement unlocked: {name}
 achievement.first_score.name,First Score
 achievement.first_score.desc,Complete any heist.
@@ -2175,25 +2178,28 @@ ui.action.chat,Chat
 ui.action.pause,Options / Pause
 ui.results.xp.notoriety,Notoriety bonus
 ui.notoriety.open,Notoriety
-ui.notoriety.title,NOTORIETY
+ui.notoriety.title,Notoriety
+ui.notoriety.crumb,Safehouse / Profile
 ui.notoriety.subtitle,"Trade a maxed-out level for a rank the whole underworld knows. Level 100 and a fortune buy the next one."
-ui.notoriety.current,CURRENT RANK
+ui.notoriety.current,Current rank
 ui.notoriety.badge,Notoriety {rank}
 ui.notoriety.badge_none,No notoriety yet
 ui.notoriety.level_badge,{rank} · Level {level}
-ui.notoriety.xp_bonus,XP bonus: +{pct}%
-ui.notoriety.xp_bonus_max,XP bonus: +{pct}% (maximum)
+ui.notoriety.xp_bonus,+{pct}%
+ui.notoriety.xp_bonus_max,+{pct}% (maximum)
+ui.notoriety.xp_bonus_caption,XP bonus
 ui.notoriety.held_skills,Skill points waiting to come back as you level: {points}
 ui.notoriety.next,Next rank: {rank}
 ui.notoriety.max_reached,You hold the highest rank there is.
-ui.notoriety.requirements,REQUIREMENTS
+ui.notoriety.requirements,Requirements
 ui.notoriety.check.level,Reach level {need} (now {have})
 ui.notoriety.check.cash,Spending cash: {need} (you have {have})
 ui.notoriety.check.cap,Ranks stop at {need}
 ui.notoriety.check.met,Done
 ui.notoriety.check.unmet,Missing
-ui.notoriety.cost,Cost: {amount}
-ui.notoriety.rewards,REWARDS AT RANK {rank}
+ui.notoriety.cost,{amount}
+ui.notoriety.cost_caption,Cost
+ui.notoriety.rewards,Rewards at rank {rank}
 ui.notoriety.reward_line,{name}
 ui.notoriety.reward_choice,Pick one: {names}
 ui.notoriety.reward_xp,XP bonus rises to +{pct}%
@@ -2714,7 +2720,8 @@ ui.subtitle.speaker,{name}:
 ui.options.accessibility.subtitles_all_speakers,Subtitles for Guards and Crew
 ui.options.accessibility.reduce_motion,Reduce Motion
 ui.career.open,Career
-ui.career.title,CAREER
+ui.career.title,Career
+ui.career.crumb,Safehouse / Profile
 ui.career.subtitle,"Every job on the record. Counting started with this version of the save, so older heists are not here."
 ui.career.summary,Record
 ui.career.money,Money
