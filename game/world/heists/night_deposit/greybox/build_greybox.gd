@@ -12,6 +12,7 @@
 ## out of the tree, so their runtime _ready() never runs here.
 extends "res://world/heists/night_deposit/greybox/nd_gameplay.gd"
 
+const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 const GI_PATH: String = OUT_DIR + "night_deposit_voxelgi.res"
 
 
@@ -779,6 +780,7 @@ func _ceiling_light(parent: Node3D, nm: String, pivot: Vector3, color: Color, en
 	light.light_color = color
 	light.light_energy = energy
 	light.omni_range = rng
+	light.layers |= VIEWMODEL_LIT_LAYER  # D-095: also lights the FP viewmodel
 	add(r, light)
 
 
@@ -808,6 +810,7 @@ func _wall_light(parent: Node3D, nm: String, pivot: Vector3, yaw: float, color: 
 	light.light_color = color
 	light.light_energy = energy
 	light.omni_range = rng
+	light.layers |= VIEWMODEL_LIT_LAYER  # D-095: also lights the FP viewmodel
 	add(r, light)
 
 

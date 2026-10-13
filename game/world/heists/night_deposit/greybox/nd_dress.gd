@@ -6,6 +6,7 @@
 ## seated NPC owns. Fixtures keep the kit's lights; a few chosen ones cast shadows (<= 8 per view).
 extends RefCounted
 
+const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 const L: GDScript = preload("res://world/heists/night_deposit/greybox/night_deposit_layout.gd")
 const D: GDScript = preload("res://world/heists/night_deposit/greybox/night_deposit_dressing.gd")
 const CATALOG_PATH: String = "res://world/props/prop_catalog.json"
@@ -567,6 +568,7 @@ func fill_lights(parent: Node3D) -> void:
 			light.light_color = Color(1.0, 0.9, 0.78) if warm else Color(0.93, 0.95, 1.0)
 			light.light_energy = 0.25
 			light.omni_range = clampf(length / float(spots.size()) * 0.75 + 1.5, 3.0, 9.0)
+			light.layers |= VIEWMODEL_LIT_LAYER  # D-095: also lights the FP viewmodel
 			light.shadow_enabled = false
 			light.set_meta(&"fill", true)
 			parent.add_child(light)

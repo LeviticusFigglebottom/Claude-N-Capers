@@ -11404,6 +11404,7 @@ mesh = SubResource("nd_603")
 
 [node name="Light" type="OmniLight3D" parent="Lighting/Fixtures/LightStair" unique_id=102065]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+layers = 1048577
 light_color = Color(0.95, 0.95, 1, 1)
 light_energy = 0.9
 omni_range = 8.0
@@ -11421,6 +11422,7 @@ mesh = SubResource("nd_605")
 
 [node name="Light" type="OmniLight3D" parent="Lighting/Fixtures/LightG10" unique_id=102068]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+layers = 1048577
 light_color = Color(1, 0.82, 0.6, 1)
 light_energy = 0.5
 omni_range = 3.5
@@ -11438,6 +11440,7 @@ mesh = SubResource("nd_607")
 
 [node name="Light" type="OmniLight3D" parent="Lighting/Fixtures/AtmFascia" unique_id=102071]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -0.4)
+layers = 1048577
 light_color = Color(0.7, 1, 0.85, 1)
 light_energy = 1.2
 omni_range = 6.0
@@ -11455,6 +11458,7 @@ mesh = SubResource("nd_608")
 
 [node name="Light" type="OmniLight3D" parent="Lighting/Fixtures/StairLandingLight" unique_id=102074]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -0.4)
+layers = 1048577
 light_color = Color(0.95, 0.95, 1, 1)
 light_energy = 0.8
 omni_range = 6.0
@@ -11463,6 +11467,7 @@ omni_range = 6.0
 
 [node name="FillG1_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102076]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 2.4, 3)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.75
@@ -11470,6 +11475,7 @@ metadata/fill = true
 
 [node name="FillG3_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102077]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2.4, 3)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.0
@@ -11477,6 +11483,7 @@ metadata/fill = true
 
 [node name="FillG4_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102078]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 2.4, 3)
+layers = 1048577
 light_color = Color(1, 0.9, 0.78, 1)
 light_energy = 0.25
 omni_range = 6.0
@@ -11484,6 +11491,7 @@ metadata/fill = true
 
 [node name="FillG5_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102079]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.5, 2.4, 3)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.0
@@ -11491,6 +11499,7 @@ metadata/fill = true
 
 [node name="FillG6_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102080]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.5, 2.4, 3)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.0
@@ -11498,6 +11507,7 @@ metadata/fill = true
 
 [node name="FillG7_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102081]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.4, 6.75)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 9.0
@@ -11505,6 +11515,7 @@ metadata/fill = true
 
 [node name="FillG7_1" type="OmniLight3D" parent="Lighting/Fill" unique_id=102082]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.5, 2.4, 6.75)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 9.0
@@ -11512,6 +11523,7 @@ metadata/fill = true
 
 [node name="FillG8_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102083]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.25, 2.4, 8.75)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 9.0
@@ -11519,6 +11531,7 @@ metadata/fill = true
 
 [node name="FillG8_1" type="OmniLight3D" parent="Lighting/Fill" unique_id=102084]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2.4, 8.75)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 9.0
@@ -11526,6 +11539,7 @@ metadata/fill = true
 
 [node name="FillG9_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102085]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.25, 4.9, 14)
+layers = 1048577
 light_color = Color(1, 0.9, 0.78, 1)
 light_energy = 0.25
 omni_range = 9.0
@@ -11533,6 +11547,7 @@ metadata/fill = true
 
 [node name="FillG9_1" type="OmniLight3D" parent="Lighting/Fill" unique_id=102086]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 4.9, 14)
+layers = 1048577
 light_color = Color(1, 0.9, 0.78, 1)
 light_energy = 0.25
 omni_range = 9.0
@@ -11540,6 +11555,7 @@ metadata/fill = true
 
 [node name="FillG10_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102087]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 2.4, 19)
+layers = 1048577
 light_color = Color(1, 0.9, 0.78, 1)
 light_energy = 0.25
 omni_range = 4.5
@@ -11547,6 +11563,7 @@ metadata/fill = true
 
 [node name="FillG11_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102088]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.5, 2.4, 9.75)
+layers = 1048577
 light_color = Color(1, 0.9, 0.78, 1)
 light_energy = 0.25
 omni_range = 5.25
@@ -11554,6 +11571,7 @@ metadata/fill = true
 
 [node name="FillG12_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102089]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.5, 2.4, 14)
+layers = 1048577
 light_color = Color(1, 0.9, 0.78, 1)
 light_energy = 0.25
 omni_range = 5.25
@@ -11561,6 +11579,7 @@ metadata/fill = true
 
 [node name="FillG13_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102090]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.5, 2.4, 18)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 5.25
@@ -11568,6 +11587,7 @@ metadata/fill = true
 
 [node name="FillB1_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102091]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, -1.4, 3)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.75
@@ -11575,6 +11595,7 @@ metadata/fill = true
 
 [node name="FillB2_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102092]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, -1.4, 4.25)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.0
@@ -11582,6 +11603,7 @@ metadata/fill = true
 
 [node name="FillB13_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102093]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.75, -1.4, 1.25)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 3.375
@@ -11589,6 +11611,7 @@ metadata/fill = true
 
 [node name="FillB3_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102094]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.5, -1.4, 3)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.0
@@ -11596,6 +11619,7 @@ metadata/fill = true
 
 [node name="FillB4_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102095]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.5, -1.4, 3)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.0
@@ -11603,6 +11627,7 @@ metadata/fill = true
 
 [node name="FillB5_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102096]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, -1.4, 6.75)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 9.0
@@ -11610,6 +11635,7 @@ metadata/fill = true
 
 [node name="FillB5_1" type="OmniLight3D" parent="Lighting/Fill" unique_id=102097]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.5, -1.4, 6.75)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 9.0
@@ -11617,6 +11643,7 @@ metadata/fill = true
 
 [node name="FillB6_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102098]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, -1.4, 13.75)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 9.0
@@ -11624,6 +11651,7 @@ metadata/fill = true
 
 [node name="FillB7_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102099]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, -1.4, 10.625)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.1875
@@ -11631,6 +11659,7 @@ metadata/fill = true
 
 [node name="FillB7_1" type="OmniLight3D" parent="Lighting/Fill" unique_id=102100]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, -1.4, 16.875)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.1875
@@ -11638,6 +11667,7 @@ metadata/fill = true
 
 [node name="FillB8_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102101]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, -1.4, 8.75)
+layers = 1048577
 light_color = Color(1, 0.9, 0.78, 1)
 light_energy = 0.25
 omni_range = 5.25
@@ -11645,6 +11675,7 @@ metadata/fill = true
 
 [node name="FillB8_1" type="OmniLight3D" parent="Lighting/Fill" unique_id=102102]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, -1.4, 8.75)
+layers = 1048577
 light_color = Color(1, 0.9, 0.78, 1)
 light_energy = 0.25
 omni_range = 5.25
@@ -11652,6 +11683,7 @@ metadata/fill = true
 
 [node name="FillB9_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102103]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, -1.6, 15)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 9.0
@@ -11659,6 +11691,7 @@ metadata/fill = true
 
 [node name="FillB10_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102104]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -1.4, 10.625)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.1875
@@ -11666,6 +11699,7 @@ metadata/fill = true
 
 [node name="FillB10_1" type="OmniLight3D" parent="Lighting/Fill" unique_id=102105]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -1.4, 16.875)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.1875
@@ -11673,6 +11707,7 @@ metadata/fill = true
 
 [node name="FillB11_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102106]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.5, -1.4, 10.75)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.375
@@ -11680,6 +11715,7 @@ metadata/fill = true
 
 [node name="FillB12_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102107]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.5, -1.4, 17)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 6.0
@@ -11687,6 +11723,7 @@ metadata/fill = true
 
 [node name="FillB14_0" type="OmniLight3D" parent="Lighting/Fill" unique_id=102108]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.75, -1.4, 4.75)
+layers = 1048577
 light_color = Color(0.93, 0.95, 1, 1)
 light_energy = 0.25
 omni_range = 3.375
