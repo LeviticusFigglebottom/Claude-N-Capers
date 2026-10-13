@@ -2,7 +2,7 @@
 ## heist select -> briefing -> pre-planning -> loadout -> Launch, by REAL X input (xdotool clicks and keys), then
 ## checks the mouse capture, mouse look and holding G to mask up. Run as a scene, never --headless:
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
-##     --resolution 1280x720 --path game res://tests/p/_review/po_playthrough.tscn -- --out=/abs/dir [--heist=glasshouse]
+##     --resolution 1280x720 --path game res://tests/p/_review/po_playthrough.tscn -- --out=/abs/dir [--po_heist=glasshouse] [--no_kerb]
 ## Needs xdotool. Prints "[PO] ..." lines and "[PO] RESULT PASS|FAIL <reasons>"; saves NN_step.png into --out.
 ## Owner: ENV P.
 extends Node
@@ -21,7 +21,7 @@ func _ready() -> void:
 		var kv: PackedStringArray = a.trim_prefix("--").split("=", true, 1)
 		args[kv[0]] = kv[1] if kv.size() > 1 else "1"
 	_out = String(args.get("out", OS.get_user_data_dir() + "/po_playthrough"))
-	_heist = StringName(String(args.get("heist", "glasshouse")))
+	_heist = StringName(String(args.get("po_heist", "glasshouse")))  # not --heist: MenuFlow direct-launches on that (D-024)
 	_no_kerb = args.has("no_kerb")
 	DirAccess.make_dir_recursive_absolute(_out)
 	await _run()

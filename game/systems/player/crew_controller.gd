@@ -111,6 +111,9 @@ var _land_dip_v: float = 0.0
 ## PO-4: camera-only crouch / stand easing (m, eases to 0) and the stance it last saw.
 var _crouch_cam: float = 0.0
 var _cam_crouched: bool = false
+## PO-4: camera head-bob phase (rad) and eased weight 0..~1.6.
+var _bob_phase: float = 0.0
+var _bob_w: float = 0.0
 
 ## Combat components (A1-08); null only for a scene without them.
 @onready var health: CrewHealth = get_node_or_null("Health") as CrewHealth
@@ -474,6 +477,7 @@ func _simulate(delta: float) -> void:
 	_tick_crouch_cam(delta, tw)
 	if _head != null:
 		_head.position.y = eye_height() + _step_offset + _land_dip + _crouch_cam
+		_apply_head_bob(delta, tw)
 
 
 ## P1-01: move_and_slide with PD2-like ground handling. Walks up lips up to CrewTweak.step_height_m, follows
@@ -513,6 +517,29 @@ func _on_landed(impact_mps: float, tw: CrewTweak) -> void:
 	# Critically damped spring from rest: an initial velocity v0 peaks at v0 / (w e) after 1/w s.
 	var w: float = TAU * tw.land_dip_hz
 	_land_dip_v = minf(_land_dip_v, -depth * w * exp(1.0))
+
+
+## PO-4: subtle PD2 camera head bob (local human, grounded, moving; Options head_bob). Camera only.
+func _apply_head_bob(delta: float, tw: CrewTweak) -> void:
+	if is_ai or not is_local():
+		return
+	var gs: GameSettings = GameSettings.current()
+	var on: bool = gs == null or not gs.has_method(&"head_bob") or bool(gs.call(&"head_bob"))
+	var speed: float = Vector2(velocity.x, velocity.z).length()
+	var target: float = 0.0
+	if on and grounded and speed > 0.3:
+		target = clampf(speed / maxf(tw.head_bob_ref_mps, 0.01), 0.0, 1.0) * (tw.head_bob_sprint_mult if sprinting else 1.0)
+		if CrewView.is_aiming(self):
+			target *= tw.head_bob_ads_mult
+	_bob_w = move_toward(_bob_w, target, tw.head_bob_rate * delta)
+	if _bob_w <= 0.0:
+		_head.position.x = 0.0
+		_head.rotation.z = 0.0
+		return
+	_bob_phase = fmod(_bob_phase + speed * delta / maxf(tw.head_bob_stride_m, 0.01) * TAU, TAU)
+	_head.position.x = sin(_bob_phase) * tw.head_bob_lateral_m * _bob_w
+	_head.position.y += sin(_bob_phase * 2.0) * tw.head_bob_vertical_m * _bob_w
+	_head.rotation.z = sin(_bob_phase) * deg_to_rad(tw.head_bob_roll_deg) * _bob_w
 
 
 ## PO-4: ease the camera through a crouch / stand change instead of snapping the eye 0.6 m in one tick.
