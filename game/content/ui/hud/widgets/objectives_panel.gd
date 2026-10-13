@@ -99,6 +99,7 @@ func _flash_complete() -> void:
 	if _flash_tween != null and _flash_tween.is_valid():
 		_flash_tween.kill()
 	flashing = true
+	UiSfx.play(UiSfx.OBJECTIVE_DONE)  # D-090
 	header_label.text = UiText.t(&"ui.hud.objective_complete")
 	header_label.add_theme_color_override(&"font_color", UiTokens.OK)
 	list_box.modulate.a = 0.0 if UiTokens.motion_ok() else 1.0

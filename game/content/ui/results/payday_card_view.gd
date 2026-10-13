@@ -31,6 +31,7 @@ var _table: PaydayCardsTable
 func _init() -> void:
 	custom_minimum_size = CARD_SIZE
 	focus_mode = Control.FOCUS_ALL
+	UiSfx.wire(self, UiSfx.KIND_NONE)  # D-090 focus cue; the pick itself sounds as the flip
 	auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	flat = true
 	for s: StringName in [&"normal", &"hover", &"pressed", &"disabled", &"focus", &"hover_pressed"]:
@@ -67,6 +68,8 @@ func setup(card_index: int, t: PaydayCardsTable) -> void:
 
 ## Turn the card face up showing `c` (PaydayCards card dict). `is_picked` marks the player's card.
 func reveal(c: Dictionary, is_picked: bool) -> void:
+	if not face_up:
+		UiSfx.play(UiSfx.CARD_FLIP)  # D-090 (the three cards flip together: the cue's repeat guard keeps one)
 	card = c
 	face_up = true
 	picked = is_picked
