@@ -38,6 +38,14 @@ static var test_assume_captured: bool = false
 ## Response curve exponent (1 = linear; 2 = finer aim near the centre).
 @export var gamepad_curve: float = 1.5
 @export var gamepad_invert_y: bool = false
+## L4 (PD2 pad feel): turn acceleration. After the stick has been past gamepad_ramp_threshold (raw |stick|) for
+## gamepad_ramp_delay_s, yaw speed ramps from 1x up to gamepad_ramp_max_mult over gamepad_ramp_time_s; dropping below
+## the threshold resets it. Pitch is never ramped. Fine aim stays on the curve; only held full turns speed up.
+@export var gamepad_ramp_enabled: bool = true
+@export var gamepad_ramp_threshold: float = 0.9
+@export var gamepad_ramp_delay_s: float = 0.25
+@export var gamepad_ramp_time_s: float = 0.35
+@export var gamepad_ramp_max_mult: float = 1.8
 @export var gamepad_requires_capture: bool = false
 
 var enabled: bool = true
@@ -54,6 +62,8 @@ var _last_slot: int = Enums.WeaponSlot.SECONDARY
 var _order: Dictionary = {}
 var _order_ticks: int = 0
 var _ai_stances: Dictionary = {}
+## Seconds the right stick has been past gamepad_ramp_threshold (L4 turn ramp).
+var _pad_ramp_s: float = 0.0
 
 
 func _ready() -> void:
@@ -113,6 +123,7 @@ func _input(event: InputEvent) -> void:
 ## QB-46: paused input stops building intents; resuming re-reads the crew's look direction.
 func set_paused(paused: bool) -> void:
 	enabled = not paused
+	_pad_ramp_s = 0.0
 	if not paused and _crew != null:
 		_yaw = _crew.look_yaw
 		_pitch = _crew.look_pitch
@@ -165,14 +176,38 @@ func gamepad_look_delta(stick: Vector2, delta: float) -> Vector2:
 	return Vector2(-v.x, v.y if invert else -v.y)
 
 
+## Current yaw multiplier of the L4 turn ramp (1.0 when off, before the delay or below the threshold).
+func gamepad_ramp_multiplier() -> float:
+	if not gamepad_ramp_enabled:
+		return 1.0
+	var t: float = _pad_ramp_s - gamepad_ramp_delay_s
+	if t < 0.0:
+		return 1.0
+	var k: float = 1.0 if gamepad_ramp_time_s <= 0.0 else clampf(t / gamepad_ramp_time_s, 0.0, 1.0)
+	return lerpf(1.0, maxf(gamepad_ramp_max_mult, 1.0), k)
+
+
+## One tick of stick look: gamepad_look_delta with the turn ramp on yaw (advances the ramp timer by `delta`).
+func gamepad_look_step(stick: Vector2, delta: float) -> Vector2:
+	if gamepad_ramp_enabled and stick.length() > gamepad_ramp_threshold:
+		_pad_ramp_s += delta
+	else:
+		_pad_ramp_s = 0.0
+	var d: Vector2 = gamepad_look_delta(stick, delta)
+	d.x *= gamepad_ramp_multiplier()
+	return d
+
+
 func _physics_process(delta: float) -> void:
 	if not enabled or _crew == null:
 		return
 	if not gamepad_requires_capture or MouseCapture.is_captured():
 		var stick: Vector2 = Input.get_vector(&"look_left", &"look_right", &"look_up", &"look_down", 0.0)
-		var d: Vector2 = gamepad_look_delta(stick, delta) / _zoom()
+		var d: Vector2 = gamepad_look_step(stick, delta) / _zoom()
 		if d != Vector2.ZERO:
 			add_look(d.x, d.y)
+	else:
+		_pad_ramp_s = 0.0
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and rt.has_bot_intent(_crew.slot):
 		return

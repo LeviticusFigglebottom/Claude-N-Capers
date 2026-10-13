@@ -4,20 +4,51 @@
 extends Node
 
 var _out: String = "/tmp"
+var _slot: String = ""
+var _heist: StringName = &""
+var _primary: StringName = &"weapon.corsair_ar"
 
 
 func _ready() -> void:
 	for a: String in OS.get_cmdline_user_args():
 		if a.begins_with("--out="):
 			_out = a.trim_prefix("--out=")
+		elif a.begins_with("--primary="):
+			_primary = StringName(a.trim_prefix("--primary="))
+		elif a.begins_with("--heist="):
+			_heist = StringName(a.trim_prefix("--heist="))
+		elif a == "--no_ik":
+			FpViewmodelTweak.data().left_hand_ik_skip_sets.append(&"rifle")
+			FpViewmodelTweak.data().left_hand_ik_skip_sets.append(&"pistol")
+		elif a.begins_with("--slot="):
+			_slot = a.trim_prefix("--slot=")
 	DirAccess.make_dir_recursive_absolute(_out)
-	var rt: HeistRuntime = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
-		{"map_packed": ATestMaps.basic(0, 0), "crew_ai": false})
+	var l: Loadout = CrewWeapons.build_loadout(null).duplicate() as Loadout
+	l.primary = _primary
+	l.resolved_primary = LoadoutResolver.resolve_weapon(l.primary, l.primary_mods)
+	var rt: HeistRuntime = null
+	if _heist == &"":
+		rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
+			{"map_packed": ATestMaps.basic(0, 0), "crew_ai": false, "loadouts": {0: l}})
+	else:
+		rt = await HeistLauncher.launch(_heist, 1002, Enums.Difficulty.ROUTINE, self,
+			{"ai_teammates": 0, "loadouts": {0: l}})
+		rt.isolate_npc(null)
 	var inp: PInputDriver = PInputDriver.new(self)
 	var c: CrewController = rt.crew_controller(0) as CrewController
+	for _i: int in 30:
+		await get_tree().physics_frame
+	await _shot("vm_casing")
+	_dump(c)
 	await inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)
 	for _i: int in 90:
 		await get_tree().physics_frame
+	if _slot != "":
+		await inp.tap(&"slot_primary" if _slot == "primary" else &"slot_secondary")
+		for _i: int in 120:
+			await get_tree().physics_frame
+	print("[VM] equipped slot=%d primary=%s secondary=%s" % [c.weapons.equipped_slot, c.loadout.primary,
+		c.loadout.secondary])
 	await _shot("vm_hip")
 	_dump(c)
 	inp.press(&"aim")
@@ -37,6 +68,26 @@ func _ready() -> void:
 
 
 func _dump(c: CrewController) -> void:
+	var cam: Camera3D = CrewView.of(c).camera()
+	var inv: Transform3D = cam.global_transform.affine_inverse()
+	var vm: FpViewmodel = FpViewmodel.of(cam)
+	if vm != null and vm.weapon_visual != null:
+		var wv: Node3D = vm.weapon_visual
+		var wx: Transform3D = inv * wv.global_transform
+		print("[VM] set=%s weapon origin cam=%s fwd(-Z)=%s up=%s scale=%s" % [vm.anim_set, wx.origin,
+			-wx.basis.z.normalized(), wx.basis.y.normalized(), wx.basis.get_scale()])
+		for mk: StringName in [&"GripMount", &"LeftHandIK", &"Muzzle", &"AimPoint", &"Magwell"]:
+			var m: Node3D = wv.call(&"get_marker", mk) as Node3D if wv.has_method(&"get_marker") else null
+			if m != null:
+				print("[VM]   %s cam=%s" % [mk, (inv * m.global_transform).origin])
+		var ab: AABB = AABB()
+		var first: bool = true
+		for n: Node in wv.find_children("*", "MeshInstance3D", true, false):
+			var mi: MeshInstance3D = n as MeshInstance3D
+			var b: AABB = (inv * mi.global_transform) * mi.get_aabb()
+			ab = b if first else ab.merge(b)
+			first = false
+		print("[VM]   weapon AABB cam pos=%s size=%s" % [ab.position, ab.size])
 	for n: Node in c.find_children("*", "MeshInstance3D", true, false):
 		var m: MeshInstance3D = n as MeshInstance3D
 		if (m.layers & CrewView.VIEWMODEL_LAYER) == 0 or not m.is_visible_in_tree():
