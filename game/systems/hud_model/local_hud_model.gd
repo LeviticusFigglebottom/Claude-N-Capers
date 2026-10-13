@@ -87,6 +87,8 @@ signal weapon_spin_changed()
 signal player_mode_changed()
 ## PP-A-1 (S5.8): dominate_target / dominate_window_s changed.
 signal dominate_prompt_changed()
+## ui_hud v1.8 (D-089): objective_markers changed.
+signal objective_markers_changed(markers: Array[Dictionary])
 
 ## S1.1 "Suspicious actions not allowed" prompt (strings.csv key, ENV B).
 const SUSPICIOUS_PROMPT_KEY: StringName = &"ui.prompt.suspicious_not_allowed"
@@ -122,6 +124,7 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"weapon_charge": &"weapon_charge_changed", &"weapon_spin": &"weapon_spin_changed",
 	&"player_mode": &"player_mode_changed",
 	&"dominate_target": &"dominate_prompt_changed", &"dominate_window_s": &"dominate_prompt_changed",
+	&"objective_markers": &"objective_markers_changed",
 }
 ## Extra (non-contract) properties included in snapshot().
 const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase"]
@@ -203,6 +206,10 @@ var camera_alarm_s: float = -1.0
 # --- objectives_changed
 ## [{"id": StringName, "text_key": StringName, "args": Dictionary, "state": int (Enums.ObjectiveState)}]
 var objectives: Array[Dictionary] = []
+# --- objective_markers_changed (ui_hud v1.8, D-089)
+## [{"id": StringName, "text_key": StringName, "position": Vector3, "state": int}] for ACTIVE objectives
+## whose data carries `marker_tags` (map objective_tags); one entry per tagged node in the map.
+var objective_markers: Array[Dictionary] = []
 # --- assault_changed
 ## Enums.AssaultPhase
 var assault_phase: int = Enums.AssaultPhase.NONE
@@ -259,6 +266,11 @@ var _specials: Dictionary[int, StringName] = {}
 var _captain_present: bool = false
 ## Client objective cache from objective_updated [R]: id -> {id, text_key, args, state, order}
 var _event_objectives: Dictionary[StringName, Dictionary] = {}
+## ui_hud v1.8 marker cache: objective id -> tagged map nodes; key = active marked objectives + tags.
+var _marker_nodes: Dictionary[StringName, Array] = {}
+var _marker_key: String = ""
+var _marker_unresolved: bool = false
+var _marker_retry_left: int = 0
 var _connections: Array[Array] = []
 
 
@@ -493,6 +505,51 @@ func _poll_objectives() -> void:
 			"args": (o.get("args", {}) as Dictionary).duplicate(true), "state": int(o["state"]),
 		})
 	_assign(&"objectives", list)
+	_poll_markers(src)
+
+
+## ui_hud v1.8: markers for ACTIVE objectives with `marker_tags`. Tag lookups walk the map, so they are
+## cached per objective and redone only when the set of active marked objectives changes; positions are
+## read every poll (moving / freed nodes drop out).
+func _poll_markers(src: Array[Dictionary]) -> void:
+	if _runtime == null:
+		return  # objectives published before the runtime is bound: resolve on a later poll
+	var want: Dictionary[StringName, Array] = {}
+	var keys: PackedStringArray = PackedStringArray()
+	for o: Dictionary in src:
+		var tags: Variant = (o.get("args", {}) as Dictionary).get("marker_tags", [])
+		if int(o["state"]) != Enums.ObjectiveState.ACTIVE or not (tags is Array) or (tags as Array).is_empty():
+			continue
+		want[StringName(o["id"])] = tags as Array
+		keys.append("%s:%s" % [o["id"], tags])
+	var key: String = ",".join(keys)
+	_marker_retry_left -= 1
+	if key != _marker_key or (_marker_unresolved and _marker_retry_left <= 0):
+		_marker_key = key
+		_marker_unresolved = false
+		_marker_retry_left = int(maxf(poll_hz, 1.0))  # an unresolved tag (map not ready) retries ~1/s
+		_marker_nodes.clear()
+		for id: StringName in want:
+			var nodes: Array[Node3D] = []
+			for t: Variant in want[id]:
+				for n: Node in _runtime.find_by_tag(StringName(t)):
+					if n is Node3D:
+						nodes.append(n as Node3D)
+			_marker_nodes[id] = nodes
+			_marker_unresolved = _marker_unresolved or nodes.is_empty()
+	var out: Array[Dictionary] = []
+	for o2: Dictionary in src:
+		var oid: StringName = StringName(o2["id"])
+		if not _marker_nodes.has(oid):
+			continue
+		for v: Variant in _marker_nodes[oid]:
+			if not is_instance_valid(v):
+				continue  # freed (picked-up keycard, ...)
+			var n3: Node3D = v as Node3D
+			if n3.is_inside_tree() and n3.is_visible_in_tree():
+				out.append({"id": oid, "text_key": StringName(o2["text_key"]), "position": n3.global_position,
+					"state": int(o2["state"])})
+	_assign(&"objective_markers", out)
 
 
 func _poll_warnings(c: CrewController) -> void:
@@ -905,7 +962,10 @@ func _flush() -> void:
 	sigs.assign(_dirty.keys())
 	_dirty.clear()
 	for s: StringName in sigs:
-		emit_signal(s)
+		if s == &"objective_markers_changed":
+			objective_markers_changed.emit(objective_markers)
+		else:
+			emit_signal(s)
 
 
 static func _member_obj(obj: Object, member: StringName) -> Object:

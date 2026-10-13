@@ -31,7 +31,8 @@ func test_a1_05_guard_prefab_wiring() -> void:
 	var npc: NpcBase = _rt.npcs(&"guard")[0] as NpcBase
 	assert_true(npc.get_node_or_null("Brain") is GuardBrain, "Brain child")
 	assert_true(npc.get_node_or_null("Motor") is NpcMotor, "Motor child")
-	assert_true(npc.get_node_or_null("Collision") != null and npc.get_node_or_null("Visual/Placeholder") != null)
+	assert_true(npc.get_node_or_null("Collision") != null and npc.get_node_or_null("Visual") != null \
+		and npc.get_node("Visual").get_child_count() > 0, "Collision + a visual (PO-5.7: the character, not the capsule)")
 	assert_eq(npc.enemy_def.id, &"enemy.security_officer")
 	assert_near(npc.max_health, npc.enemy_def.health[Enums.Difficulty.HAZARDOUS], 0.001, "health from EnemyDef")
 	assert_eq((npc.get_node("Brain") as GuardBrain).state_name(), &"calm")
