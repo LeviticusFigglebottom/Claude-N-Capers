@@ -407,17 +407,12 @@ func _follow_goal() -> Vector3:
 	if leader == null:
 		mode = Mode.IDLE
 		return Vector3.INF
-	if target_enemy != null:
-		var cp: Node3D = _pick_cover(leader)
-		cover_point = cp
-		if cp != null:
-			mode = Mode.COVER
-			_following = false
-			if _flat_dist(_crew.global_position, cp.global_position) <= tweak.cover_arrive_m:
-				return Vector3.INF
-			return cp.global_position
-	else:
-		cover_point = null
+	cover_point = _pick_cover(leader) if target_enemy != null else null
+	if cover_point != null:
+		mode = Mode.COVER
+		_following = false
+		var at_cover: bool = _flat_dist(_crew.global_position, cover_point.global_position) <= tweak.cover_arrive_m
+		return Vector3.INF if at_cover else cover_point.global_position
 	mode = Mode.FOLLOW
 	var d: float = _flat_dist(_crew.global_position, leader.global_position)
 	# PO-5.3: the leash is "close AND in sight". A bot 3 m away through a wall walks to the leader

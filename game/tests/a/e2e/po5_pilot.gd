@@ -111,14 +111,6 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			if path.is_empty():
 				d.note("pilot: NO NAV PATH from %s to %s" % [_v(crew.global_position), _v(target)])
 				break
-		var door: Door = door_ahead() if doors else null
-		if door != null:
-			inp.release(&"move_forward")
-			await open_door(door)
-			repath_t = 0.0
-			hist_pos = crew.global_position
-			hist_t = 0.0
-			continue
 		if combat and t - _last_engage >= 2.5:
 			var foe: NpcBase = nearest_enemy(10.0)
 			if foe != null:
@@ -133,6 +125,14 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			if flat_dist(p, crew.global_position) > 0.45:
 				corner = p
 				break
+		var door: Door = door_ahead(corner) if doors else null
+		if door != null:
+			inp.release(&"move_forward")
+			await open_door(door)
+			repath_t = 0.0
+			hist_pos = crew.global_position
+			hist_t = 0.0
+			continue
 		var v: Vector3 = corner - crew.global_position
 		var ey: float = steer(atan2(-v.x, -v.z), 0.0)
 		var want_fwd: bool = absf(ey) < 0.6
@@ -255,7 +255,7 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 
 
 ## A closed door within 1.8 m in front of the crew (the pilot opens it like a player: aim + hold F).
-func door_ahead() -> Door:
+func door_ahead(corner: Vector3 = Vector3.INF) -> Door:
 	var fwd: Vector3 = Vector3(-sin(crew.look_yaw), 0.0, -cos(crew.look_yaw))
 	for n: Node in crew.get_tree().get_nodes_in_group(G.INTERACTABLE):
 		var c: InteractableComponent = n as InteractableComponent
@@ -267,6 +267,14 @@ func door_ahead() -> Door:
 			continue  # another floor
 		to.y = 0.0
 		if to.length() < 1.8 and fwd.dot(to.normalized()) > 0.4:
+			# Only a door the route goes through (near the segment to the next corner), not a side door.
+			if corner != Vector3.INF:
+				var seg: Vector3 = corner - crew.global_position
+				seg.y = 0.0
+				var along: float = clampf(to.dot(seg.normalized()), 0.0, seg.length() + 0.6) if seg.length() > 0.01 else 0.0
+				var off: float = (to - seg.normalized() * along).length() if seg.length() > 0.01 else to.length()
+				if off > 0.7:
+					continue
 			return door
 	return null
 

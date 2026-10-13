@@ -3,20 +3,23 @@ extends Node
 
 var runner_out: String = "user://po5"
 var runner_flow: String = "smoke"
-var _shot: int = 0
-var _log: PackedStringArray = PackedStringArray()
-
-
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
-	_run.call_deferred()
-
-
 var heist_name: String = "Glasshouse"
 var difficulty_name: String = "Routine"
 var rt: HeistRuntime = null
 var crew: CrewController = null
 var pilot: Po5Pilot = null
+## llvmpipe renders at ~1 fps, which caps game time at 8 physics ticks per second. Between screenshots
+## the harness turns the render loop off (window, DisplayServer and input stay real); shot() renders.
+var fast: bool = false
+var _shot: int = 0
+var _log: PackedStringArray = PackedStringArray()
+var _worst_frame_ms: float = 0.0
+var _last_frame_us: int = 0
+
+
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	_run.call_deferred()
 
 
 func _run() -> void:
@@ -85,11 +88,6 @@ func enter_heist() -> bool:
 	return true
 
 
-## Every 10 s of game time: frame cost, crew states/positions, enemy count.
-var _worst_frame_ms: float = 0.0
-var _last_frame_us: int = 0
-
-
 func _process(_delta: float) -> void:
 	var now: int = Time.get_ticks_usec()
 	if _last_frame_us != 0:
@@ -97,6 +95,7 @@ func _process(_delta: float) -> void:
 	_last_frame_us = now
 
 
+## Every 10 s of game time: frame cost, crew states/positions, enemy count.
 func _telemetry() -> void:
 	while rt != null and is_instance_valid(rt):
 		await wait_s(10.0)
@@ -105,6 +104,13 @@ func _telemetry() -> void:
 		var cs: PackedStringArray = PackedStringArray()
 		for c: CrewController in rt.crew_members():
 			cs.append("%d:%d@%s" % [c.slot, c.crew_state, Po5Pilot._v(c.global_position)])
+		var near_m: float = INF
+		var en_close: int = 0
+		for e: Node in get_tree().get_nodes_in_group(G.ENEMY):
+			var ed: float = (e as Node3D).global_position.distance_to(crew.global_position)
+			near_m = minf(near_m, ed)
+			en_close += 1 if ed < 15.0 else 0
+		cs.append("nearest_enemy=%.1fm within15=%d" % [near_m, en_close])
 		var worst: float = _worst_frame_ms
 		_worst_frame_ms = 0.0
 		note("TEL worst_frame=%.0fms t=%.0f phase=%d phys=%.1fms proc=%.1fms nodes=%d enemies=%d civs=%d crew=[%s]" % [worst, rt.heist_time_s,
@@ -238,11 +244,6 @@ func _fail(msg: String) -> void:
 
 func seconds(s: float) -> void:
 	await get_tree().create_timer(s, true, false, true).timeout
-
-
-## llvmpipe renders at ~1 fps, which caps game time at 8 physics ticks per second. Between screenshots
-## the harness turns the render loop off (window, DisplayServer and input stay real); shot() renders.
-var fast: bool = false
 
 
 func set_fast(on: bool) -> void:
