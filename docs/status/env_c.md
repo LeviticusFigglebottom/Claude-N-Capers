@@ -3,6 +3,18 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-12 20:25 ET: IN PROGRESS (ENV C)
+### Done
+- 4f4ee34a trunk db22c24c merged --no-ff. 811be4d6 public doors casing_allowed (GH MainEntrance, ND AtmStreetDoor)
+  + test_public_doors_casing. d97a7371 SalonDoor walk legs. ec180fd1 PP walk tests load P's driver at run time
+  (tests/c no longer fails to parse without env/p-play). 2f039639 test_validate_level 20 checks. b573cfa2 Dockside
+  fog thinner. tests/c all green, test_p3_loud 10/10, validate_level x3 PASS.
+- PP-C-1 rerun (A 488e7685 + P 5b863e1b): stalls are closed doors the harness does not open; see pp_c1.md.
+### Next
+- Walk harness: aim at the door leaf before interact, rerun. zoom_factor (D-084, low).
+### Blockers
+- None. LEAD pushes.
+
 ## 2026-10-12 19:45 ET: IN PROGRESS (ENV C)
 ### Done
 - 3c3a31c5 interact slots fixed: ND ATM1/ATM2 cash on the ATM front face, kc_break_locker on the G4 kitchen counter,
