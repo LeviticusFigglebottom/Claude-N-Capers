@@ -12,7 +12,7 @@
 ##   await inp.turn_to_yaw(crew, yaw)      # mouse-look until the crew faces `yaw`
 ##   inp.release_all()                     # ALWAYS in after_each
 ## Notes:
-## - Mouse look needs Input.MOUSE_MODE_CAPTURED. Headless cannot capture, so capture_mouse() sets the mode and
+## - Mouse look needs Input.MOUSE_MODE_CAPTURED (MouseCapture, D-087). Headless cannot capture, so
 ##   PlayerInput accepts mouse motion when PlayerInput.test_assume_captured is true (set only by this driver).
 ## - Waits are game-time (physics ticks), not wall clock.
 class_name PInputDriver
@@ -119,8 +119,9 @@ func walk_until(action: StringName, cond: Callable, timeout_s: float, on_tick: C
 
 
 ## Treat the mouse as captured (see header) and try the real capture too.
+## D-087: MouseCapture owns the real mode (it captures for a live PlayerInput in a windowed run); this only lets
+## headless runs, which cannot capture, accept the motion.
 func capture_mouse() -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	PlayerInput.test_assume_captured = true
 
 

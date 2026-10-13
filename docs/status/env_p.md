@@ -2,6 +2,22 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-13 ET: team v3 dispatch (D-086), PO-2 mouse capture
+- Queue: PO-2 mouse capture -> PO-1 casing exit -> PO-3 bump/step snags on all 4 heists -> feel pass.
+- PO-2: game/systems/player/mouse_capture.gd (`MouseCapture`, D-087, input_focus.md 1.0) is the only writer of
+  Input.mouse_mode. PlayerInput registers itself as the gameplay owner while `enabled` (paused / disabled /
+  freed = not active), reads mouse look in `_input` (a Control under the captured cursor can no longer swallow
+  it), and latches held buttons on capture (the click that captures never fires). Capture drops any stale GUI
+  focus. Test game/tests/p/test_po2_mouse_capture.gd (logic headless; capture + real XTest mouse turn +
+  release/focus windowed). PInputDriver.capture_mouse no longer writes the mode.
+- Windowed runs: `xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --audio-driver Dummy --path game
+  res://tests/framework/runner.tscn -- --dir=p --filter=po2`. Vulkan/llvmpipe deadlocks on exit after the runner
+  quits (WSI swapchain futex), so wrap in `timeout` and read the `== N tests` line, or use
+  `--rendering-driver opengl3`. xdotool (apt) gives real X pointer events.
+- Still writing the mode (ENV B migrates): menu_flow.gd:749, menu_options.gd:51/63, join_request_dialog.gd:232/234,
+  safehouse_host.gd:348, and range: range_spectator_input.gd:68, range_mode_input.gd:27/44.
+- PO-1 lead: the string ui.hud.mask_up_hint ("Hold {key} to mask up") exists but no code shows it.
+
 ## 2026-10-12 20:25 ET: merge round 34, renders, loud run
 - a2ddb786 merge trunk db22c24c (--no-ff). P suite 53 (only the opt-in E2E failed, now skipped by default),
   p4_progression 9/0, slice_b 6/0, b5_01 1 fail pending A's mask patch (ruling: ADS blocked unmasked).
