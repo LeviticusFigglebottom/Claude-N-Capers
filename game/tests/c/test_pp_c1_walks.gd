@@ -7,6 +7,10 @@
 ## setup teleport (logged). Setup shortcuts (outside movement, named): skip_casing, no AI teammates, every map
 ## NPC despawned (isolate_npc), so a guard cannot end the walk. Rows: docs/levels/pp_c1.md.
 extends TestCase
+@warning_ignore_start("unsafe_method_access", "unsafe_property_access", "unsafe_call_argument", "untyped_declaration")
+
+## ENV P's driver, loaded at run time so this file still parses where env/p-play is not merged (it is P-owned).
+const DRIVER_PATH: String = "res://tests/p/p_input_driver.gd"
 
 const HEISTS: Dictionary = {&"glasshouse": 1001, &"night_deposit": 1001, &"dockside_burn": 1001}
 const MAX_TARGETS: int = 14
@@ -16,7 +20,7 @@ const GOAL_M: float = 1.1
 const SPEED_MIN_MPS: float = 1.0
 
 var _rt: HeistRuntime = null
-var _inp: PInputDriver = null
+var _inp: Object = null
 var _rows: Array[String] = []
 
 
@@ -71,7 +75,10 @@ func test_salon_door_glasshouse() -> void:
 	if _rt == null:
 		fail("launch glasshouse")
 		return
-	_inp = PInputDriver.new(self)
+	if not ResourceLoader.exists(DRIVER_PATH):
+		skip("ENV P p_input_driver.gd not in this tree (merge env/p-play to walk)")
+		return
+	_inp = (load(DRIVER_PATH) as GDScript).new(self)
 	_inp.capture_mouse()
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	assert_true(await wait_until(func() -> bool: return BotUtil.nav_ready(c), 10.0), "nav ready")
@@ -113,7 +120,10 @@ func _walk_heist(heist: StringName, door_centres: bool = false) -> void:
 	if _rt == null:
 		fail("launch %s" % heist)
 		return
-	_inp = PInputDriver.new(self)
+	if not ResourceLoader.exists(DRIVER_PATH):
+		skip("ENV P p_input_driver.gd not in this tree (merge env/p-play to walk)")
+		return
+	_inp = (load(DRIVER_PATH) as GDScript).new(self)
 	_inp.capture_mouse()
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	assert_true(await wait_until(func() -> bool: return BotUtil.nav_ready(c), 10.0), "%s nav ready" % heist)
