@@ -559,7 +559,8 @@ func _snap_down(tw: CrewTweak) -> bool:
 
 ## D-085: the capsule (0.35 m) walks paths laid out for the 0.30 m nav agent. When a move is stopped head-on by a
 ## wall but an opening (door, gap between props) is within CrewTweak.edge_assist_m to one side, slide sideways
-## toward it (nearest side first) at up to the wish speed instead of stopping dead. Pure collision probes,
+## toward it (nearest side first) at up to the wish speed instead of stopping dead. PP-P-12: a framed opening
+## (door: far jamb in reach) is searched further, up to edge_assist_door_m. Pure collision probes,
 ## deterministic, same for server, prediction and AI.
 func _edge_assist(wish: Vector3, delta: float, tw: CrewTweak) -> void:
 	var w: Vector3 = Vector3(wish.x, 0.0, wish.z)
@@ -577,22 +578,55 @@ func _edge_assist(wish: Vector3, delta: float, tw: CrewTweak) -> void:
 	var side: Vector3 = dir.cross(Vector3.UP).normalized()
 	var lift: Vector3 = Vector3.UP * tw.step_height_m  # look past sills / lips the step-up takes anyway
 	var probe: Vector3 = dir * (tw.capsule_radius + 0.1)
-	var steps: int = int(ceil(tw.edge_assist_m / 0.05))
+	var reach: float = maxf(tw.edge_assist_m, tw.edge_assist_door_m)
+	# PP-P-12: search (and shift) a little off the wall, so a door casing / trim a few cm proud of the wall face
+	# (which the round capsule touches first) does not block the sideways shift.
+	var col: KinematicCollision3D = KinematicCollision3D.new()
+	var back: Vector3 = -dir * tw.edge_assist_backoff_m
+	if test_move(global_transform, back, col, safe_margin, false, 1):
+		back = col.get_travel()
+	var base: Transform3D = global_transform
+	base.origin += back
+	var steps: int = int(ceil(reach / 0.05))
 	for i: int in range(1, steps + 1):
 		for sgn: float in [1.0, -1.0]:
-			var off: Vector3 = side * sgn * minf(0.05 * i, tw.edge_assist_m)
-			if test_move(global_transform, off, null, safe_margin, false, 1):
+			var dist: float = minf(0.05 * i, reach)
+			var off: Vector3 = side * sgn * dist
+			if test_move(base, off, null, safe_margin, false, 1):
 				continue  # no room to shift that way
-			var xf: Transform3D = global_transform
-			xf.origin += off
-			if test_move(xf, lift, null, safe_margin, false, 1):
+			var fit: Variant = _edge_assist_opening(base, off, lift, probe - back)
+			if fit == null:
 				continue
-			xf.origin += lift
-			if test_move(xf, probe, null, safe_margin, false, 1):
-				continue
+			var xf: Transform3D = fit
+			# PP-P-12: past edge_assist_m only into a framed opening (far jamb within reach in the wall's plane);
+			# an open edge (pillar, wall end) there would be slipping round an obstacle hit nearly dead centre.
+			if dist > tw.edge_assist_m + 0.001:
+				if not test_move(xf, side * sgn * tw.edge_assist_frame_search_m, null, safe_margin, false, 1):
+					continue
 			var step: float = minf(off.length(), w.length() * delta)
+			move_and_collide(back)
 			move_and_collide(side * sgn * step)
+			move_and_collide(-back)  # back into contact: the next tick's head-on check still sees the wall
 			return
+
+
+## Probe transform (`base` shifted by `off`, advanced by `probe`) if the capsule fits forward through an opening
+## there: at floor height, or lifted by `lift` past a sill / lip (the step-up takes it). PP-P-12: the floor
+## height probe comes first, because the lifted capsule (step_height_m + 1.8 m = 2.15 m) does not fit under a
+## 2.1 m door head; probing only lifted rejected every such doorway. null when it does not fit.
+func _edge_assist_opening(base: Transform3D, off: Vector3, lift: Vector3, probe: Vector3) -> Variant:
+	var xf: Transform3D = base
+	xf.origin += off
+	if not test_move(xf, probe, null, safe_margin, false, 1):
+		xf.origin += probe
+		return xf
+	if test_move(xf, lift, null, safe_margin, false, 1):
+		return null
+	xf.origin += lift
+	if test_move(xf, probe, null, safe_margin, false, 1):
+		return null
+	xf.origin += probe
+	return xf
 
 
 ## Any contact steeper than the walkable slope.
