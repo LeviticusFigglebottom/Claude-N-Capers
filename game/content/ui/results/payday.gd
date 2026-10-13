@@ -31,6 +31,8 @@ const URGENT_COLOR: Color = Color(1.0, 0.42, 0.32)
 const INPUT_GRACE_S: float = 0.6
 ## PO-4: seconds the payday total takes to count up.
 const COUNT_S: float = 1.2
+## D-090: at most one count-up tick per this many ms.
+const COUNT_TICK_MS: int = 80
 
 @export var listen_heist_ended: bool = false
 @export var apply_to_profile: bool = true
@@ -72,6 +74,8 @@ var timer_label: Label
 var card_result_label: Label
 ## Urgent-window second ticks so far (PQ-B-9).
 var urgent_ticks: int = 0
+## Times the hero total landed (cue.payday_total requested; tests).
+var total_landed_count: int = 0
 var _content: VBoxContainer
 var _summary: ScrollContainer
 var _cards_root: VBoxContainer
@@ -80,6 +84,7 @@ var _cards_title: Label
 var _applied: bool = false
 var _input_grace: float = 0.0
 var _counter: Tween = null
+var _count_tick_ms: int = 0
 
 
 func _sync_cursor() -> void:
@@ -464,12 +469,32 @@ func _build_hero(success: bool) -> HBoxContainer:
 
 ## PO-4 motion: the hero total ticks up from 0 over COUNT_S (ease out); any accept / click skips to the
 ## end. Reduce Motion (or headless) shows the final number at once.
+## D-090: cue.payday_tick ticks along the count-up (every COUNT_TICK_MS at most) and cue.payday_total
+## lands with the final number (at once when there is no count-up).
 func _count_up(l: Label, amount: int) -> void:
-	if not UiTokens.motion_ok() or DisplayServer.get_name() == "headless" or amount <= 0 or not is_inside_tree():
+	if amount <= 0 or not is_inside_tree():
 		return
+	if not UiTokens.motion_ok() or DisplayServer.get_name() == "headless":
+		_total_landed()
+		return
+	_count_tick_ms = Time.get_ticks_msec()
 	_counter = create_tween()
-	_counter.tween_method(func(v: float) -> void: l.text = UiText.money(roundi(v)), 0.0, float(amount), COUNT_S) \
+	_counter.tween_method(_count_step.bind(l), 0.0, float(amount), COUNT_S) \
 			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	_counter.finished.connect(_total_landed)
+
+
+func _count_step(v: float, l: Label) -> void:
+	l.text = UiText.money(roundi(v))
+	var now: int = Time.get_ticks_msec()
+	if now - _count_tick_ms >= COUNT_TICK_MS:
+		_count_tick_ms = now
+		UiSfx.play(UiSfx.PAYDAY_TICK)
+
+
+func _total_landed() -> void:
+	total_landed_count += 1
+	UiSfx.play(UiSfx.PAYDAY_TOTAL)
 
 
 ## Jumps a running count-up to its end. Returns whether one was running.

@@ -415,8 +415,9 @@ func test_civilian_mode_hides_gear_and_shows_the_badge() -> void:
 			"state": Enums.CrewState.NORMAL, "downs_left": 3, "carried_loot_id": &"", "mode": &"civilian"}]
 	var info: Label = (_hud.teammates.list_box.get_child(0) as Control).find_children("*", "Label", true, false)[-1]
 	assert_true(info.text.contains(UiText.t(&"ui.hud.civilian")), "teammate panel shows civilian")
-	_model.player_mode = &"casing"  # gear picked up
-	assert_true(_hud.ammo.visible, "gear widgets back")
+	_model.player_mode = &"casing"  # gear picked up, no weapon out yet
+	assert_false(_hud.ammo.visible, "PO-1: weapon HUD hidden while casing")
 	assert_eq(_hud.status.mask_label.text, UiText.t(&"ui.hud.unmasked"))
 	_model.player_mode = &"masked"
 	assert_eq(_hud.status.mask_label.text, UiText.t(&"ui.hud.masked"))
+	assert_true(_hud.ammo.visible, "weapon HUD once masked")

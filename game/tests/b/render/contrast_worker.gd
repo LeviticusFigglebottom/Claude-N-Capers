@@ -111,6 +111,8 @@ func _hud() -> void:
 	model.assault_wave = 2
 	model.carried_bag = {"loot_id": &"loot.jewelry", "weight": Enums.LootWeight.LIGHT}
 	hud.toast(&"ui.hud.casing_blocked.sprint", {"key": "Shift"}, 30.0)
+	model.player_mode = &"casing"
+	model.mask_progress = 0.55  # PO-1 mask-up ring
 	for bg: String in BACKDROPS:
 		back.color = BACKDROPS[bg] as Color
 		await _shot("hud_" + bg, hud)

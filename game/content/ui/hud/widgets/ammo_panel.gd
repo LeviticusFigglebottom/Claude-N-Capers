@@ -1,5 +1,5 @@
 ## Ammo (mag / reserve of the equipped slot) and equipment counts (deployable, throwable, cable
-## ties, body bags). Hidden in civilian mode (S1.3: no gear until the gear pickup, D-065).
+## ties, body bags). Hidden until masked (civilian: no gear, S1.3 / D-065; casing: no weapon out).
 class_name AmmoPanel
 extends HudWidget
 
@@ -28,7 +28,10 @@ func watched_signals() -> Array[StringName]:
 
 
 func refresh() -> void:
-	visible = player_mode() != &"civilian"
+	# PO-1 (P): no weapon is drawn until you mask up, so the weapon HUD shows only when masked (PD2);
+	# models without a mode (pre-v1.6, loading) keep it visible.
+	var mode: StringName = player_mode()
+	visible = mode == &"masked" or mode == &""
 	var slots: Dictionary = prop(&"ammo", {}) as Dictionary
 	var slot: int = int(prop(&"equipped_slot", Enums.WeaponSlot.SECONDARY))
 	var a: Dictionary = slots.get(slot, {}) as Dictionary

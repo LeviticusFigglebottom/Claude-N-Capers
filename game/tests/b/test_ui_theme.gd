@@ -139,3 +139,58 @@ func test_crew_rows_named_by_heister_before_ready() -> void:
 			"state": Enums.CrewState.NORMAL, "downs_left": 3, "carried_loot_id": &""}]
 	await wait_frames(1)
 	assert_eq((_hud.teammates.name_labels[2] as Label).text, Heisters.display_name(hid))
+
+
+## PO-1: the mask-up ring shows while mask up is held (0 < progress < 1) and hides otherwise.
+func test_mask_up_ring() -> void:
+	await _spawn_hud()
+	_model.player_mode = &"casing"
+	assert_false(_hud.mask_ring.visible, "nothing held")
+	_model.mask_progress = 0.4
+	assert_true(_hud.mask_ring.visible, "held: ring shows")
+	assert_near(_hud.mask_ring.progress, 0.4, 0.001)
+	_model.mask_progress = 1.0
+	assert_false(_hud.mask_ring.visible, "done: ring hides")
+
+
+## PO-5.6: real mission data (Glasshouse) fills {count}/{total}; a disabled step (lockdown) is skipped.
+func test_objective_mission_data_and_disabled_step() -> void:
+	await _spawn_hud()
+	_model.objectives = [
+		{"id": &"keycard", "text_key": &"objective.glasshouse.keycard", "args": {"disabled": true, "reason": &"lockdown"},
+			"state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"secure", "text_key": &"objective.glasshouse.secure",
+			"args": {"bags": 2, "count": 0, "total": 2, "optional_more": true}, "state": Enums.ObjectiveState.ACTIVE}]
+	await wait_frames(1)
+	var l: Label = _hud.objectives.list_box.get_child(0) as Label
+	assert_eq(l.text, UiText.t(&"objective.glasshouse.secure", {"count": 0, "total": 2}), "disabled keycard skipped")
+	assert_false(l.text.contains("{"), l.text)
+
+
+## Lead lane 5 (ui_hud v1.8): objective markers project, clamp off-screen ones to the edge, and hide
+## while casing unless the objective is a casing one.
+func test_objective_markers() -> void:
+	await _spawn_hud()
+	var cam: Camera3D = Camera3D.new()
+	add_child(cam)
+	cam.current = true
+	_model.player_mode = &"masked"
+	_model.objective_markers = [
+		{"id": &"safe", "text_key": &"objective.glasshouse.safe", "position": Vector3(0, 0, -10), "state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"escape", "text_key": &"objective.glasshouse.escape", "position": Vector3(0, 0, 10), "state": Enums.ObjectiveState.ACTIVE}]
+	await wait_frames(1)
+	var d: Array[Dictionary] = _hud.objective_markers.drawn
+	assert_eq(d.size(), 2)
+	assert_false(bool(d[0]["clamped"]), "in front: on screen")
+	assert_near(float(d[0]["distance_m"]), 10.0, 0.01)
+	assert_true(bool(d[1]["clamped"]), "behind: clamped to an edge")
+	var r: Rect2 = Rect2(Vector2.ZERO, _hud.objective_markers.size).grow(-ObjectiveMarkers.EDGE_INSET + 1.0)
+	assert_true(r.has_point(d[1]["pos"] as Vector2), "clamped inside the screen")
+	_model.player_mode = &"casing"
+	await wait_frames(1)
+	assert_eq(_hud.objective_markers.drawn.size(), 0, "hidden while casing")
+	_model.objective_markers = [{"id": &"casing", "text_key": &"objective.glasshouse.casing",
+			"position": Vector3(0, 0, -5), "state": Enums.ObjectiveState.ACTIVE}]
+	await wait_frames(1)
+	assert_eq(_hud.objective_markers.drawn.size(), 1, "a casing objective shows while casing")
+	cam.queue_free()

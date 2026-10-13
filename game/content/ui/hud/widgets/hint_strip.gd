@@ -19,6 +19,7 @@ var hint: StringName = &""
 var capture_probe: Callable = func() -> bool:
 	return MouseCapture.is_captured() or not MouseCapture.wants_capture()
 var _captured: bool = true
+var _sounded_hint: StringName = &""
 
 
 func build() -> void:
@@ -60,6 +61,9 @@ func refresh() -> void:
 		hint = &""
 	var was: bool = visible
 	visible = hint != &""
+	if hint != &"" and hint != _sounded_hint:
+		UiSfx.play(UiSfx.HINT)  # D-090: a new hint appears
+	_sounded_hint = hint
 	if visible and not was and is_inside_tree() and UiTokens.motion_ok():
 		modulate.a = 0.0  # PO-4 motion: a new hint fades in
 		create_tween().tween_property(self, ^"modulate:a", 1.0, UiTokens.T_BASE).set_ease(Tween.EASE_OUT)

@@ -46,6 +46,8 @@ var tweak: HudTweak = null
 var model: Node = null
 var chevrons: DetectionChevrons
 var marks: MarkedTargets
+## v1.8 objective world markers (edge-clamped, distance).
+var objective_markers: ObjectiveMarkers
 var interaction: InteractionPanel
 ## PP-A-1: guard-domination prompt (above the interaction prompt).
 var dominate: DominatePrompt
@@ -59,6 +61,8 @@ var status: StatusPanel
 var custody: CustodyPanel
 var captain: CaptainPanel
 var stamina: StaminaBar
+## PO-1 mask-up progress ring around the crosshair while mask up is held.
+var mask_ring: MaskProgress
 ## PO-4 contextual control hint (bottom centre): click to resume / mask up / throw the bag.
 var hint: HintStrip
 ## B6-02 Tab scoreboard (hold / toggle the `scoreboard` action).
@@ -102,12 +106,13 @@ func set_crew_heisters(map: Dictionary) -> void:
 
 
 func widgets() -> Array[HudWidget]:
-	return [chevrons, marks, interaction, dominate, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina,
-			scoreboard, hint]
+	return [chevrons, marks, objective_markers, interaction, dominate, vitals, ammo, pager, objectives, assault,
+			teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring]
 
 
 func _build() -> void:
 	marks = _place(MarkedTargets.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as MarkedTargets
+	objective_markers = _place(ObjectiveMarkers.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as ObjectiveMarkers
 	chevrons = _place(DetectionChevrons.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DetectionChevrons
 	var crosshair: Label = UiBuild.label(&"ui.hud.crosshair", UiBuild.HUD)
 	crosshair.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -128,6 +133,7 @@ func _build() -> void:
 	status = _place(StatusPanel.new(), Control.PRESET_TOP_RIGHT, Vector2(-448, 48), Vector2(400, 180)) as StatusPanel
 	custody = _place(CustodyPanel.new(), Control.PRESET_CENTER, Vector2(-300, -200), Vector2(600, 130)) as CustodyPanel
 	captain = _place(CaptainPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-260, 104), Vector2(520, 84)) as CaptainPanel
+	mask_ring = _place(MaskProgress.new(), Control.PRESET_CENTER, Vector2(-120, -40), Vector2(240, 110)) as MaskProgress
 	# Below the interaction prompt, clear of the subtitles at the bottom (audit: they collided).
 	hint = _place(HintStrip.new(), Control.PRESET_CENTER, Vector2(-450, 190), Vector2(900, 64)) as HintStrip
 	var board: ScoreboardOverlay = ScoreboardOverlay.new()

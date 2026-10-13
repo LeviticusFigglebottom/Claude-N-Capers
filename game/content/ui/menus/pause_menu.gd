@@ -63,7 +63,7 @@ func _ready() -> void:
 	var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	confirm_box.add_child(row)
 	confirm_button = UiBuild.primary(UiBuild.button(&"ui.menu.confirm"))
-	cancel_button = UiBuild.button(&"ui.menu.cancel")
+	cancel_button = UiBuild.sfx(UiBuild.button(&"ui.menu.cancel"), UiSfx.KIND_BACK) as Button
 	for b: Button in [confirm_button, cancel_button]:
 		b.custom_minimum_size = Vector2(240, UiTokens.BUTTON_H)
 		row.add_child(b)
@@ -77,7 +77,7 @@ func _ready() -> void:
 
 
 func _item(parent: Container, key: StringName) -> Button:
-	var b: Button = UiBuild.button(key)
+	var b: Button = UiBuild.button(key)  # D-090: focus + confirm cues come with UiBuild.button
 	b.text = b.text.to_upper()
 	b.theme_type_variation = UiBuild.MENU_ITEM
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -116,6 +116,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed(&"ui_cancel"):
 		get_viewport().set_input_as_handled()
+		UiSfx.play(UiSfx.BACK)
 		if is_confirming():
 			close_confirm()
 		else:
