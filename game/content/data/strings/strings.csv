@@ -1288,8 +1288,9 @@ item.asset.vent_access.desc,A maintenance contact leaves the vent grille unscrew
 item.asset.escape_position.name,Van position
 item.asset.escape_position.desc,"The getaway van waits here. A plan: the crew votes, the host breaks ties."
 ui.masks.title,Masks
+ui.masks.crumb,Safehouse / Loadout
 ui.masks.open,Masks
-ui.masks.equipped,Equipped: {name}
+ui.masks.equipped_caption,Wearing
 ui.masks.none,No mask
 ui.masks.your_masks,Your masks
 ui.masks.custom_slot,Custom mask {n}
@@ -1309,8 +1310,8 @@ ui.masks.status.equipped,{name} is your mask for the next job.
 ui.masks.status.ready,{name}: press Equip to wear it.
 ui.masks.status.locked_parts,Some of these parts are locked. New parts drop from paydays.
 ui.masks.status.empty_slot,This slot is empty. Build a mask and save it here.
-ui.masks.preview_hint,Drag with the mouse or use the right stick to turn the mask.
-ui.masks.hint,"Pick a mask on the left, change its parts on the right, save it into a custom slot, then equip it."
+ui.masks.preview_hint,Drag or use the right stick to turn the mask.
+ui.masks.hint,"Edit the parts, save them into a custom slot, then equip."
 item.mask_base.heron.name,Heron
 item.mask_base.visage.name,Plain Visage
 item.mask_base.vulpine.name,Vulpine
