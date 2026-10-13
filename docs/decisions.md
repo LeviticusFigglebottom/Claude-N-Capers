@@ -667,3 +667,9 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - **The full gate (`check_all` / `lead_push.sh` with no args) runs only at the LEAD, occasionally**: per merge round, in
   the background in a separate worktree, while everyone keeps working. A failure there goes back to the owning env as a
   normal task. Supersedes the "check_all PASS before push" rule in communication.md §2–§5 and the env manuals.
+
+## D-089 — 2026-10-13 — Objective world markers (ui_hud 1.8); placeholder-capsule NPCs
+- ENV A's QA-PO5-1 approved: objectives carry `data.marker_tags`; `LocalHudModel.objective_markers` (ui_hud 1.8). ENV B draws them.
+- NPCs/police rendering as placeholder capsules (PO-5.7, B's captures) is a top playability issue. ENV A diagnoses
+  first: wiring (EnemyDef/NPC spawn pointing at placeholders, a failed scene load: A's domain) vs missing assets
+  (ENV D, dormant). If assets are missing, the lead decides whether to wake ENV D.
