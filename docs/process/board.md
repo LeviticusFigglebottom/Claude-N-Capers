@@ -12,6 +12,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-13 23:45: **round 60 ON ORIGIN**: env/a-core (D-095 key interior lights on viewmodel_lit across all 4 maps; A4-02 probe: real characters cost ≈ +0.02 ms/NPC CPU vs capsules). Map tests + d095 green. Pending: B's PD2 mod rescale (802ae2b1) lands with lead P4 goldens once ADS deltas are zeroed.
 - 2026-10-13 23:30: **round 59 ON ORIGIN**: env/p-play 4f4cfa6d (subtle PD2 head bob behind GameSettings.head_bob, d084 race fixed, ultrawide vm framing checked), env/a-core 0c7f0f66 (LMG drift consumed from WeaponStats bias), env/b-content (head_bob setting). p 83/0, a/b targeted green.
 - 2026-10-13 23:15: **round 58 ON ORIGIN**: env/a-core 7a6c25e0 (D-099: corpses leave G.ENEMY; loud director despawns unseen bodies after 30 s); lead applied A's condition-based tie patch to test_p3_loud test_09 (flake), p3_loud 10/0 ×2.
 - 2026-10-13 22:45: **round 57 ON ORIGIN**: env/p-play (ADS time from weapon data + clip crossfade, PD2 sprint→fire exit, crouch camera easing), env/b-content (folding-knife model, onboarding replace fix), env/a-core. D-099 WeaponStats.recoil_horizontal_bias_deg. p 82/0, b/a targeted green. Round 56 (A's director/specials/KR fixes) pushed before it. Full gate on round 57 running in background.
