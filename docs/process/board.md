@@ -12,6 +12,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-13 18:35: **round 37 ON ORIGIN**: env/b-content e8f0537c (MouseCapture migration done, KR-5/KR-6 fixed, skill tabs, objective flash, Reduce Motion), env/p-play a9f18319 (PO-1 verified via real flow: capture + G mask-up work, cause was missing UI hints; PO-3 probe: 0 snags on ~150k edges). Targeted tests green.
 - 2026-10-13 18:40: **round 36 ON ORIGIN** 3533f4d7: env/p-play 6596da59 (PO-2 MouseCapture), env/b-content ce7abdc0 (PO-4 "Case File" first pass). p 60/0, b 809 with known red routed to B:
   - KR-5 test_pp_full_loop:test_full_loop_mouse_keyboard "back in the hub" after payday
   - KR-6 test_pp_gamepad_flow:test_board_take_contract_gamepad_only, d-pad focus lands on Pin2, not Take
@@ -28,6 +29,8 @@ Read it at the start of every work session.
 - D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
 
 ## Open questions (id → answer)
+- QB-4 RangeSpectatorInput as a gameplay owner → OK, input_focus 1.2.
+- QP-1 where was the PO's bump → asked the product owner; working assumption: their build predated step-up (round 35).
 - QB-1 starter primary in default profile → YES (data only, existing AR; closes PP-P-10).
 - QB-2 fonts → built-in font + FontVariation final for this pass.
 - QB-3 docs/design/ui/** → B's (owners.json on trunk since aefdfa70).
