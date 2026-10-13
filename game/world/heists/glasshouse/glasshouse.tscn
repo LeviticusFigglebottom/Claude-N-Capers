@@ -11310,6 +11310,7 @@ params = {
 [node name="VanSecureE1" type="Node3D" parent="Variants/Group_escape/Slot_esc_alley_west" unique_id=102034 instance=ExtResource("201_gh")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -8.62, 0, -3.2)
 script = ExtResource("202_gh")
+objective_tag = &"loot_secure"
 visual_scene = ExtResource("203_gh")
 metadata/kind = "vehicle"
 
@@ -11332,6 +11333,7 @@ params = {
 [node name="VanSecureE2" type="Node3D" parent="Variants/Group_escape/Slot_esc_pell" unique_id=102037 instance=ExtResource("201_gh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.4, -0.15, 7.1)
 script = ExtResource("202_gh")
+objective_tag = &"loot_secure"
 zone_size_m = Vector3(6, 3, 8)
 visual_scene = ExtResource("203_gh")
 metadata/kind = "vehicle"
