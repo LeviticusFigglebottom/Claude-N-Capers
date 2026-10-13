@@ -6,7 +6,7 @@
 ##   escape  - heist_phase ESCAPE               (the getaway, unsecured bags, whole crew in the zone)
 ## A card shows SHOW_DELAY_S after its situation starts, stays DWELL_S (a thin bar drains) and closes
 ## early on the dismiss_tip action (D-096). Shown ids are stored in the profile (OnboardingTips), so each card appears
-## once per profile. A later situation replaces an earlier card. Owner: ENV B.
+## once per profile. A new unseen situation replaces the open card (its situation is over). Owner: ENV B.
 class_name OnboardingCard
 extends HudWidget
 
@@ -100,6 +100,8 @@ func refresh() -> void:
 	if shown != &"":
 		_update_footer()  # Hud refreshes every widget on a device switch
 	situation = current_situation()
+	if shown != &"" and situation != shown and situation != &"" and not OnboardingTips.is_seen(situation):
+		_close()  # h02 capture: the casing card outlived the mask-up; a card whose situation ended yields
 	if shown != &"" or situation == &"" or OnboardingTips.is_seen(situation):
 		return  # an open card stays until it times out or is dismissed; dismiss() looks again
 	if _pending != situation:
@@ -180,10 +182,14 @@ func _update_footer() -> void:
 
 ## Closes the card; a situation that started meanwhile (and is unseen) shows next.
 func dismiss() -> void:
+	_close()
+	refresh()
+
+
+func _close() -> void:
 	shown = &""
 	visible = false
 	modulate.a = 1.0
-	refresh()
 
 
 ## One card row: a key cap for `action` (or a brass bullet) and the wrapped text.
