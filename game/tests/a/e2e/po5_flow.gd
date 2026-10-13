@@ -79,12 +79,12 @@ func enter_heist() -> bool:
 		Po5Pilot._v(crew.global_position)])
 	await shot("heist_start")
 	pilot = Po5Pilot.new(self, crew)
+	await capture_like_player()
 	for c: CrewController in rt.crew_members():
 		var slot: int = c.slot
 		c.crew_state_changed.connect(func(o: int, n: int) -> void:
 			note("EVENT crew %d state %d -> %d at %s (t=%.0f)" % [slot, o, n, Po5Pilot._v(c.global_position), rt.heist_time_s]))
 	_telemetry()
-	note("KNOWN SHORTCUT: harness sets Input.mouse_mode=CAPTURED itself (the game never captures it: ENV P)")
 	return true
 
 
@@ -143,6 +143,30 @@ func payday_to_hub() -> int:
 		await shot("payday_%d" % i)
 	note("FAIL PO-5.payday: never got back to the hub; buttons %s" % [visible_buttons()])
 	return 1
+
+
+## PO-5.1: the game owns the mouse (MouseCapture, D-087). Like a player: wait for the capture, else click
+## the game view once. Only if that fails too does the harness force it (logged as a FINDING for ENV P).
+func capture_like_player() -> void:
+	await wait_s(1.0)
+	if not MouseCapture.is_captured():
+		var vp: Viewport = get_viewport()
+		var mid: Vector2 = vp.get_visible_rect().size * 0.5
+		for pressed: bool in [true, false]:
+			var mb: InputEventMouseButton = InputEventMouseButton.new()
+			mb.button_index = MOUSE_BUTTON_LEFT
+			mb.pressed = pressed
+			mb.position = vp.get_final_transform() * mid
+			mb.global_position = mb.position
+			Input.parse_input_event(mb)
+			await get_tree().process_frame
+		await wait_s(0.5)
+	if MouseCapture.is_captured():
+		note("mouse captured by the game (MouseCapture)")
+	else:
+		note("FINDING PO-5.1: mouse not captured after a click in the game view; harness forces it (mode %d)"
+			% Input.mouse_mode)
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
 ## Game-time wait (physics ticks).

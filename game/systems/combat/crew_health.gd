@@ -42,6 +42,8 @@ var max_armor: float = 20.0
 var downs_used: int = 0
 ## Seconds of bleedout left (0 when not downed).
 var bleedout_left: float = 0.0
+## D-093: seconds a helpless TASED / CLOAKER_DOWNED member has left to be revived before custody (no down).
+var helpless_left: float = 0.0
 ## Bleedout health pool while downed (L2.5).
 var bleedout_health: float = 0.0
 ## Seconds of post-gate invulnerability left.
@@ -315,7 +317,8 @@ func revive(by_slot: int) -> void:
 
 ## A3-04 (L2.8): Taser / Phantom takedown. `state` is CrewState.TASED or CLOAKER_DOWNED; only a
 ## NORMAL (or SWAN_SONG) crew member can be taken down. Not a down, no bleedout; helpless until a
-## teammate revives them (ReviveInteractable). Emits crew_tased / crew_cloaker_downed [R]. Server.
+## teammate revives them (ReviveInteractable); D-093: not revived within bleedout_time_s -> custody (no
+## down counted). Emits crew_tased / crew_cloaker_downed [R]. Server.
 func incapacitate(state: Enums.CrewState, by_net_id: int = 0) -> bool:
 	if _crew == null or not Net.is_authority():
 		return false
@@ -326,6 +329,7 @@ func incapacitate(state: Enums.CrewState, by_net_id: int = 0) -> bool:
 	if cur != Enums.CrewState.NORMAL and cur != Enums.CrewState.SWAN_SONG:
 		return false
 	_crew.set_crew_state(state)
+	helpless_left = Tweak.crew().bleedout_time_s + Modifiers.add(_slot(), &"defense.bleedout_time_add")  # D-093
 	if _revive != null:
 		_revive.enabled = true
 	var sig: StringName = &"crew_tased" if state == Enums.CrewState.TASED else &"crew_cloaker_downed"
@@ -376,23 +380,36 @@ func _disable_revive() -> void:
 
 # --- Tick -----------------------------------------------------------------------------------------
 
-## Authority: every physics tick (CrewController._tick_server_actions).
-func server_tick(delta: float) -> void:
-	if _crew == null:
-		return
-	_refresh_max()
+## Down / helpless timers. True when the member is not standing (nothing else ticks).
+func _tick_down_states(delta: float) -> bool:
 	match _crew.crew_state:
 		Enums.CrewState.DOWNED:
 			bleedout_left -= delta
 			if bleedout_left <= 0.0:
 				bleedout_left = 0.0
 				go_to_custody()
-			return
-		Enums.CrewState.CUSTODY, Enums.CrewState.TASED, Enums.CrewState.CLOAKER_DOWNED:
-			return
+			return true
+		Enums.CrewState.TASED, Enums.CrewState.CLOAKER_DOWNED:
+			# D-093: not revived within the bleedout time -> custody, as if bled out, no down counted.
+			helpless_left -= delta
+			if helpless_left <= 0.0:
+				helpless_left = 0.0
+				go_to_custody()
+			return true
+		Enums.CrewState.CUSTODY:
+			return true
 		Enums.CrewState.CUFFED:
-			if bleedout_left > 0.0:
-				return  # L2.12: police-cuffed while downed, bleedout paused
+			return bleedout_left > 0.0  # L2.12: police-cuffed while downed, bleedout paused
+	return false
+
+
+## Authority: every physics tick (CrewController._tick_server_actions).
+func server_tick(delta: float) -> void:
+	if _crew == null:
+		return
+	_refresh_max()
+	if _tick_down_states(delta):
+		return
 	_tick_health_regen(delta)  # L2.1
 	if invuln_left > 0.0:
 		invuln_left = maxf(invuln_left - delta, 0.0)

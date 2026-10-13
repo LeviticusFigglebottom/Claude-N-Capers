@@ -121,21 +121,24 @@ func escape() -> int:
 	EventBus.heist_ended.connect(func(r: Dictionary) -> void:
 		ended[0] = true
 		f.note("EVENT heist_ended %s" % [r]))
-	while p.active_escape() == null and rt.heist_time_s - t0 < 400.0:
+	var is_over: Callable = func() -> bool: return ended[0] or rt.phase == Enums.HeistPhase.ENDED
+	while p.active_escape() == null and rt.heist_time_s - t0 < 400.0 and not is_over.call():
 		await p.hold_position(5.0, func() -> bool: return p.active_escape() != null)
 	var ez: EscapeZone = p.active_escape()
-	if ez == null:
+	if ez == null and not is_over.call():
 		return fail("PO-5.escape: escape never activated (%.0f s after bags)" % (rt.heist_time_s - t0))
-	f.note("escape active at %s after %.0f s" % [Po5Pilot._v(ez.global_position), rt.heist_time_s - t0])
-	await p.goto(p.stand_point(ez.global_position), 1.0, 120.0)
+	if ez != null:
+		f.note("escape active at %s after %.0f s" % [Po5Pilot._v(ez.global_position), rt.heist_time_s - t0])
+	# Walk into the zone in short legs: the heist ends as soon as every human stands inside it.
 	var t1: float = rt.heist_time_s
-	while not ended[0] and rt.heist_time_s - t1 < 60.0:
-		await p.hold_position(2.0, func() -> bool: return ended[0])
-		if not ended[0] and p.flat_dist(p.crew.global_position, ez.global_position) > 1.5:
-			await p.goto(p.stand_point(ez.global_position), 0.8, 20.0)
-	if not ended[0]:
+	while not is_over.call() and rt.heist_time_s - t1 < 120.0:
+		await p.goto(p.stand_point(ez.global_position), 0.8, 3.0)
+		if not is_over.call():
+			await p.hold_position(1.0, is_over)
+	if not is_over.call():
 		await f.shot("escape_stuck")
 		return fail("PO-5.escape: standing in the escape zone did not end the heist")
+	f.note("heist over (phase %d) at t=%.0f" % [rt.phase, rt.heist_time_s])
 	return await f.payday_to_hub()
 
 
