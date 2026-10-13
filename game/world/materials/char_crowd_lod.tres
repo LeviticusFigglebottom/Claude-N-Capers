@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://cd4crowdlod01"]
+
+[resource]
+resource_name = "M_char_crowd_lod"
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
+roughness = 0.8
+metadata/doc = "D4-01 ENV D: shared material of every character's merged LOD2 (Skeleton3D/CrowdLod, world/characters/_tools/crowd_lod.gd); albedo = per-vertex mean albedo of the source materials."

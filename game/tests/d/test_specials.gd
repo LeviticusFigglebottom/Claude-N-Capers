@@ -81,7 +81,8 @@ func test_tri_budget_and_scale() -> void:
 			continue
 		var tris: int = 0
 		for n: Node in root.find_children("*", "MeshInstance3D", true, false):
-			tris += _tris((n as MeshInstance3D).mesh)
+			if String(n.name) != "CrowdLod":  # D4-01 LOD2 proxy (test_lod.gd)
+				tris += _tris((n as MeshInstance3D).mesh)
 		assert_true(tris <= TRI_BUDGET, "%s: %d triangles within %d" % [id, tris, TRI_BUDGET])
 		var box: AABB = _bounds(root)
 		heights[id] = box.end.y

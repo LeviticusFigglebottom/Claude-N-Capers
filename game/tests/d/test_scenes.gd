@@ -186,9 +186,12 @@ func test_no_null_materials() -> void:
 			assert_true(mi.mesh != null, "%s/%s has a mesh" % [e["id"], mi.name])
 			if mi.mesh == null:
 				continue
-			# D-067(b): the scene inherits the glb, so every mesh is the glb's own imported sub-resource.
+			# D-067(b): the scene inherits the glb, so every mesh is the glb's own imported sub-resource
+			# (D4-01: except the LOD2 proxy, which is <scene>_lod.res).
 			var glb: String = "res://assets/characters/%s/%s.glb" % [e["asset"], e["asset"]]
-			assert_true(mi.mesh.resource_path.begins_with(glb + "::"),
+			if String(mi.name) == "CrowdLod":
+				glb = String(e["scene"]).get_basename() + "_lod.res"
+			assert_true(mi.mesh.resource_path.begins_with(glb + "::") or mi.mesh.resource_path == glb,
 				"%s/%s mesh comes from %s (got '%s')" % [e["id"], mi.name, glb, mi.mesh.resource_path])
 			for s: int in range(mi.mesh.get_surface_count()):
 				var mat: Material = mi.get_active_material(s)
