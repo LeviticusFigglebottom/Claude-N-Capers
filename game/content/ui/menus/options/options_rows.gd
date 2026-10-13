@@ -4,7 +4,7 @@
 class_name OptionsRows
 extends RefCounted
 
-const LABEL_WIDTH: float = 420.0
+const LABEL_WIDTH: float = 480.0
 const CONTROL_WIDTH: float = 420.0
 
 
@@ -41,7 +41,7 @@ static func slider(parent: Container, s: GameSettings, section: StringName, key:
 	sl.step = float(sp.get("step", 0.01))
 	sl.value = float(s.get_value(section, key))
 	sl.focus_mode = Control.FOCUS_ALL
-	sl.custom_minimum_size = Vector2(CONTROL_WIDTH, 28)
+	sl.custom_minimum_size = Vector2(CONTROL_WIDTH, UiTokens.S5)
 	sl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(sl)
 	var val: Label = UiBuild.label(&"", UiBuild.DIM)
@@ -106,9 +106,9 @@ static func _option_text(section: StringName, key: StringName, o: Variant) -> St
 
 
 static func _row(parent: Container, section: StringName, key: StringName) -> HBoxContainer:
-	var row: HBoxContainer = UiBuild.hbox(16)
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	row.name = "Row_%s" % key
-	var l: Label = UiBuild.label(label_key(section, key))
+	var l: Label = UiBuild.caption(label_key(section, key))  # PO-4: field names are captions
 	l.custom_minimum_size = Vector2(LABEL_WIDTH, 0)
 	l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(l)

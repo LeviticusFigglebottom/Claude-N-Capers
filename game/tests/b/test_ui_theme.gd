@@ -211,3 +211,26 @@ func test_pad_face_buttons_are_round() -> void:
 	assert_eq(p.cap.theme_type_variation, UiBuild.KEYCAP, "a keyboard A is a key")
 	InteractionPanel.pad_active = was
 	p.queue_free()
+
+
+## Markers: labels use the objective's args (no raw placeholders); only the current step is "current".
+func test_objective_markers_label_and_current() -> void:
+	await _spawn_hud()
+	var cam: Camera3D = Camera3D.new()
+	add_child(cam)
+	cam.current = true
+	_model.player_mode = &"masked"
+	_model.objectives = [
+		{"id": &"safe", "text_key": &"objective.glasshouse.safe", "args": {}, "state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"secure", "text_key": &"objective.glasshouse.secure", "args": {"bags": 2, "count": 1, "total": 2},
+			"state": Enums.ObjectiveState.ACTIVE}]
+	_model.objective_markers = [
+		{"id": &"safe", "text_key": &"objective.glasshouse.safe", "position": Vector3(0, 0, -10), "state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"secure", "text_key": &"objective.glasshouse.secure", "position": Vector3(1, 0, -10), "state": Enums.ObjectiveState.ACTIVE}]
+	await wait_frames(1)
+	var d: Array[Dictionary] = _hud.objective_markers.drawn
+	assert_eq(d.size(), 2)
+	assert_true(bool(d[0]["current"]) and not bool(d[1]["current"]), "the panel's step is current")
+	assert_false(String(d[1]["label"]).contains("{"), String(d[1]["label"]))
+	assert_true(String(d[1]["label"]).contains("1/2"), String(d[1]["label"]))
+	cam.queue_free()

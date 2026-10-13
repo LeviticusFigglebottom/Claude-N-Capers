@@ -22,6 +22,7 @@ var back_button: Button
 var rows: Dictionary = {}
 ## Category id -> its header Label.
 var category_labels: Dictionary = {}
+var _scroll: ScrollContainer
 
 
 func setup(p: PlayerProfile) -> void:
@@ -31,24 +32,30 @@ func setup(p: PlayerProfile) -> void:
 
 
 func build_ui() -> void:
-	var root: VBoxContainer = UiBuild.vbox(18)
+	var root: VBoxContainer = UiBuild.vbox(UiTokens.S3)
 	UiBuild.screen_margin(self, root)
-	root.add_child(UiBuild.label(&"ui.achievements.title", UiBuild.HEADER))
-	root.add_child(UiBuild.label(&"ui.achievements.subtitle", UiBuild.DIM))
+	var header: HBoxContainer = UiBuild.hbox(UiTokens.S4)
+	var titles: VBoxContainer = UiBuild.header(&"ui.achievements.crumb", &"ui.achievements.title")
+	titles.add_child(UiBuild.label(&"ui.achievements.subtitle", UiBuild.DIM))
+	titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(titles)
 	count_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	root.add_child(count_label)
+	var count: VBoxContainer = UiBuild.field(&"ui.achievements.count_caption", count_label)
+	count.size_flags_vertical = Control.SIZE_SHRINK_END
+	header.add_child(count)
+	root.add_child(header)
 	var scroll: ScrollContainer = ScrollContainer.new()
+	_scroll = scroll
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
 	root.add_child(scroll)
-	list = UiBuild.vbox(10)
+	list = UiBuild.vbox(UiTokens.S2)
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
 	back_button = UiBuild.button(&"ui.menu.back")
-	back_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	back_button.pressed.connect(back_requested.emit)
-	root.add_child(back_button)
+	root.add_child(UiBuild.footer(back_button))  # PO-4: a read-only page, so no primary
 	refresh()
 
 
@@ -67,8 +74,15 @@ func refresh() -> void:
 	var defs: Array[AchievementDef] = Achievements.all()
 	var unlocked: int = 0
 	for cat: StringName in _categories(defs):
-		var header: Label = UiBuild.label(StringName("ui.achievements.category.%s" % cat), UiBuild.SUBHEADER)
-		list.add_child(header)
+		# Category head: a caption over a hairline (style.md §1, labels are captions).
+		var header: Label = UiBuild.caption(StringName("ui.achievements.category.%s" % cat))
+		var head_box: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+		var gap: Control = Control.new()
+		gap.custom_minimum_size = Vector2(0, UiTokens.S2)
+		head_box.add_child(gap)
+		head_box.add_child(header)
+		head_box.add_child(HSeparator.new())
+		list.add_child(head_box)
 		category_labels[cat] = header
 		for a: AchievementDef in defs:
 			if a.category != cat:
@@ -78,6 +92,9 @@ func refresh() -> void:
 			var row: PanelContainer = _row(a)
 			list.add_child(row)
 			rows[a.id] = row
+			if focus_chain.is_empty():
+				# The first row's focus shows the list from the top (its category head stays in view).
+				row.focus_entered.connect(func() -> void: _scroll.set_deferred(&"scroll_vertical", 0))
 			focus_chain.append(row)
 	focus_chain.append(back_button)
 	UiNav.chain_vertical(focus_chain)
@@ -86,21 +103,23 @@ func refresh() -> void:
 
 func _row(a: AchievementDef) -> PanelContainer:
 	var done: bool = Achievements.is_unlocked(profile, a.id)
-	var v: VBoxContainer = UiBuild.vbox(4)
-	var head: HBoxContainer = UiBuild.hbox(16)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+	var head: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	var title: Label = UiBuild.label(a.name_key, UiBuild.SUBHEADER)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(title)
-	var status: Label = UiBuild.label(&"ui.achievements.unlocked" if done else &"ui.achievements.locked",
-			&"" if done else UiBuild.DIM)
+	var status: Label = UiBuild.caption(&"ui.achievements.unlocked" if done else &"ui.achievements.locked")
 	status.name = "Status"
+	if done:
+		status.add_theme_color_override(&"font_color", UiTokens.OK)
 	head.add_child(status)
 	v.add_child(head)
 	var desc: Label = UiBuild.label(a.desc_key, UiBuild.DIM)
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(desc)
-	var bar_row: HBoxContainer = UiBuild.hbox(12)
-	var bar: ProgressBar = UiBuild.bar(UiAccent.table().fallback if done else Color(1, 1, 1, 1), Vector2(320, 10))
+	var bar_row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	var bar: ProgressBar = UiBuild.bar(UiTokens.OK if done else UiTokens.PAPER_DIM, Vector2(320, UiTokens.S2))
+	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	bar.name = "Progress"
 	var shown: int = Achievements.display_progress(profile, a)
 	var target: int = Achievements.target_of(a)
@@ -111,10 +130,15 @@ func _row(a: AchievementDef) -> PanelContainer:
 	v.add_child(bar_row)
 	var reward: String = reward_name(a)
 	if reward != "":
-		v.add_child(UiBuild.label(&"ui.achievements.reward", UiBuild.DIM, {"name": reward}))
+		var rrow: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+		var cap: Label = UiBuild.caption(&"ui.achievements.reward_caption")
+		cap.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		rrow.add_child(cap)
+		rrow.add_child(UiBuild.label(&"ui.achievements.reward", &"", {"name": reward}))
+		v.add_child(rrow)
 	var panel: PanelContainer = UiBuild.panel(v)
-	panel.focus_mode = Control.FOCUS_ALL
-	panel.modulate = Color.WHITE if done else Color(1, 1, 1, 0.8)
+	UiBuild.focus_panel(panel)
+	panel.modulate.a = 1.0 if done else 0.8
 	return panel
 
 

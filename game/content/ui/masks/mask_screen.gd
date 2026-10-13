@@ -52,33 +52,30 @@ func build_ui() -> void:
 	if profile == null:
 		profile = SaveService.load_profile(profile_slot)
 	draft = MaskComposer.normalized(tweak.default_composition)
-	var root: VBoxContainer = UiBuild.vbox(14)
-	UiBuild.screen_margin(self, root, 48)
-	var top: HBoxContainer = UiBuild.hbox(32)
-	top.add_child(UiBuild.label(&"ui.masks.title", UiBuild.HEADER))
-	var spacer: Control = Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top.add_child(spacer)
+	var root: VBoxContainer = UiBuild.vbox(UiTokens.S3)
+	UiBuild.screen_margin(self, root, UiTokens.S6)
+	var top: HBoxContainer = UiBuild.hbox(UiTokens.S5)
+	var titles: VBoxContainer = UiBuild.header(&"ui.masks.crumb", &"ui.masks.title")
+	titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(titles)
 	equipped_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	equipped_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	top.add_child(equipped_label)
+	var worn: VBoxContainer = UiBuild.field(&"ui.masks.equipped_caption", equipped_label)
+	worn.size_flags_vertical = Control.SIZE_SHRINK_END
+	top.add_child(worn)
 	root.add_child(top)
-	var body: HBoxContainer = UiBuild.hbox(28)
+	var body: HBoxContainer = UiBuild.hbox(UiTokens.S4)
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(body)
 	body.add_child(_build_list())
 	body.add_child(_build_preview())
 	body.add_child(_build_editor())
-	var bottom: HBoxContainer = UiBuild.hbox(16)
+	# PO-4 footer: Back (ghost) left, a one-line how-to, Equip (the screen's primary) right.
 	back_button = UiBuild.button(&"ui.menu.back")
 	back_button.pressed.connect(back_requested.emit)
-	bottom.add_child(back_button)
 	var hint: Label = UiBuild.label(&"ui.masks.hint", UiBuild.DIM)
-	hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	bottom.add_child(hint)
-	root.add_child(bottom)
+	hint.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	root.add_child(UiBuild.footer(back_button, equip_button, [hint] as Array[Control]))
+	UiNav.chain_horizontal([back_button, equip_button] as Array[Control], false)
 	for id: StringName in _list_ids():
 		focus_chain.append(list_buttons[id] as Control)
 	focus_chain.append(preview)
@@ -175,14 +172,15 @@ func _build_list() -> ScrollContainer:
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
 	scroll.custom_minimum_size = Vector2(LIST_WIDTH, 0)
-	var list: VBoxContainer = UiBuild.vbox(6)
+	var list: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
-	list.add_child(UiBuild.label(&"ui.masks.your_masks", UiBuild.SUBHEADER))
+	list.add_child(UiBuild.caption(&"ui.masks.your_masks"))
 	for id: StringName in _list_ids():
 		var b: Button = UiBuild.button(&"ui.masks.none")
 		b.custom_minimum_size = Vector2(LIST_WIDTH - 20.0, 0)
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b.toggle_mode = true  # PO-4: the shown mask uses the pressed style (ink + cyan edge)
 		b.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		b.pressed.connect(_on_list_pressed.bind(id))
 		list.add_child(b)
@@ -191,10 +189,11 @@ func _build_list() -> ScrollContainer:
 
 
 func _build_preview() -> PanelContainer:
-	var v: VBoxContainer = UiBuild.vbox(8)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	preview = MaskPreview.new()
 	v.add_child(preview)
-	var hint: Label = UiBuild.label(&"ui.masks.preview_hint", UiBuild.DIM)
+	var hint: Label = UiBuild.caption(&"ui.masks.preview_hint")
+	hint.uppercase = false
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(hint)
@@ -205,7 +204,7 @@ func _build_preview() -> PanelContainer:
 
 
 func _build_editor() -> VBoxContainer:
-	var v: VBoxContainer = UiBuild.vbox(10)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	v.custom_minimum_size = Vector2(EDITOR_WIDTH, 0)
 	name_label = UiBuild.label(&"", UiBuild.SUBHEADER)
 	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
@@ -215,7 +214,7 @@ func _build_editor() -> VBoxContainer:
 		MaskCatalog.COLORS: &"ui.masks.colors", MaskCatalog.PATTERN: &"ui.masks.pattern",
 	}
 	for k: String in MaskCatalog.KINDS:
-		v.add_child(UiBuild.label(keys[k] as StringName, UiBuild.DIM))
+		v.add_child(UiBuild.caption(keys[k] as StringName))
 		var o: OptionButton = UiBuild.option_button()
 		o.custom_minimum_size = Vector2(EDITOR_WIDTH, 0)
 		o.item_selected.connect(_on_part_selected.bind(k))
@@ -224,20 +223,17 @@ func _build_editor() -> VBoxContainer:
 		if k == MaskCatalog.COLORS:
 			v.add_child(_build_swatches())
 	_fill_part_options()
-	v.add_child(UiBuild.label(&"ui.masks.save_slot", UiBuild.DIM))
+	v.add_child(UiBuild.caption(&"ui.masks.save_slot"))
 	slot_option = UiBuild.option_button()
 	slot_option.custom_minimum_size = Vector2(EDITOR_WIDTH, 0)
 	slot_option.item_selected.connect(_on_slot_selected)
 	v.add_child(slot_option)
-	var buttons: HBoxContainer = UiBuild.hbox(12)
 	save_button = UiBuild.button(&"ui.masks.save")
-	equip_button = UiBuild.button(&"ui.masks.equip")
-	for b: Button in [save_button, equip_button]:
-		b.custom_minimum_size = Vector2((EDITOR_WIDTH - 12.0) * 0.5, 0)
-		buttons.add_child(b)
+	save_button.custom_minimum_size = Vector2(EDITOR_WIDTH, 0)
 	save_button.pressed.connect(save_to_slot.bind(-1))
+	v.add_child(save_button)
+	equip_button = UiBuild.button(&"ui.masks.equip")  # placed in the footer by build_ui
 	equip_button.pressed.connect(equip_selected)
-	v.add_child(buttons)
 	status_label = UiBuild.label()
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	status_label.custom_minimum_size = Vector2(EDITOR_WIDTH, 0)
@@ -281,8 +277,7 @@ func _sync_options() -> void:
 
 func _refresh() -> void:
 	var worn: StringName = profile.loadout.mask
-	equipped_label.text = UiText.t(&"ui.masks.equipped", {
-		"name": MaskCatalog.display_name(worn) if worn != &"" else UiText.t(&"ui.masks.none")})
+	equipped_label.text = MaskCatalog.display_name(worn) if worn != &"" else UiText.t(&"ui.masks.none")
 	for id: StringName in list_buttons:
 		var b: Button = list_buttons[id] as Button
 		var label: String = MaskCatalog.display_name(id)
@@ -291,8 +286,7 @@ func _refresh() -> void:
 		elif id == worn:
 			label = UiText.t(&"ui.masks.equipped_tag", {"name": label})
 		b.text = label
-		b.button_pressed = false
-		b.modulate = Color(1.0, 0.85, 0.45) if id == (selected_id if selected_id != &"" else MaskCatalog.custom_id(target_slot)) else Color.WHITE
+		b.set_pressed_no_signal(id == (selected_id if selected_id != &"" else MaskCatalog.custom_id(target_slot)))
 	_refresh_slots()
 	if dirty:
 		name_label.text = MaskCatalog.display_name(MaskCatalog.custom_id(target_slot)) + " *"

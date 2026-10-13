@@ -113,13 +113,20 @@ static func ghost(b: Button) -> Button:
 	return b
 
 
-## Marks `b` as a tab (caps, cyan underline when pressed). Returns `b`.
+## Marks `b` as a tab (caps, cyan underline when pressed). Returns `b`. Its current text is uppercased
+## (style.md §5); set later text through tab_text().
 static func tab(b: Button) -> Button:
 	b.theme_type_variation = TAB
+	b.text = b.text.to_upper()
 	b.toggle_mode = true
 	b.custom_minimum_size = Vector2(0, 0)
 	sfx(b, UiSfx.KIND_TAB)
 	return b
+
+
+## Sets a tab's text (uppercased like tab()).
+static func tab_text(b: Button, text: String) -> void:
+	b.text = text.to_upper()
 
 
 ## Marks `b` as the screen's primary action (theme variation PrimaryButton). Returns `b`.
@@ -127,6 +134,68 @@ static func primary(b: Button) -> Button:
 	b.theme_type_variation = PRIMARY
 	sfx(b, UiSfx.KIND_PRIMARY)
 	return b
+
+
+## PO-4 screen header (style.md §2): a caption breadcrumb ("SAFEHOUSE / CONTRACTS") over an H1 title.
+## The title label is the box's last child (`header_title()`).
+static func header(crumb_key: StringName, title_key: StringName, args: Dictionary = {}) -> VBoxContainer:
+	var v: VBoxContainer = vbox(UiTokens.S1)
+	v.add_child(caption(crumb_key))
+	v.add_child(label(title_key, HEADER, args))
+	return v
+
+
+## The H1 of a box made by header().
+static func header_title(h: VBoxContainer) -> Label:
+	return h.get_child(h.get_child_count() - 1) as Label
+
+
+## PO-4 field: a caption ("STASH") over its value control. Returns the box; the value is child 1.
+static func field(caption_key: StringName, value: Control, separation: int = 0) -> VBoxContainer:
+	var v: VBoxContainer = vbox(separation)
+	v.add_child(caption(caption_key))
+	v.add_child(value)
+	return v
+
+
+## An empty control that takes the free width of an HBox (pushes what follows to the right).
+static func spacer() -> Control:
+	var c: Control = Control.new()
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return c
+
+
+## PO-4 footer band (style.md §2): `back` (made ghost) on the left, `middle` controls after it, then
+## `primary_button` (made primary) pushed to the right. Either may be null.
+static func footer(back: Button, primary_button: Button = null, middle: Array[Control] = []) -> HBoxContainer:
+	var h: HBoxContainer = hbox(UiTokens.S3)
+	if back != null:
+		h.add_child(ghost(back))
+	for c: Control in middle:
+		h.add_child(c)
+	h.add_child(spacer())
+	if primary_button != null:
+		h.add_child(primary(primary_button))
+	return h
+
+
+## Makes a read-only panel focusable (keyboard / pad scroll a list through it) with a visible focus:
+## its edge turns cyan while it has focus (style.md §5, focus is always visible). Returns `p`.
+static func focus_panel(p: PanelContainer) -> PanelContainer:
+	p.focus_mode = Control.FOCUS_ALL
+	p.focus_entered.connect(func() -> void:
+		var base: StyleBox = p.get_theme_stylebox(&"panel")
+		var sb: StyleBoxFlat = (base as StyleBoxFlat).duplicate() as StyleBoxFlat if base is StyleBoxFlat else StyleBoxFlat.new()
+		sb.border_color = UiTokens.CYAN
+		sb.set_border_width_all(maxi(sb.border_width_left, 2))
+		p.set_meta(&"_unfocused_panel", base)
+		p.add_theme_stylebox_override(&"panel", sb))
+	p.focus_exited.connect(func() -> void:
+		p.remove_theme_stylebox_override(&"panel")
+		if p.has_meta(&"_unfocused_panel") and p.get_meta(&"_unfocused_panel") != p.get_theme_stylebox(&"panel"):
+			p.add_theme_stylebox_override(&"panel", p.get_meta(&"_unfocused_panel") as StyleBox))
+	return p
 
 
 static func option_button() -> OptionButton:
