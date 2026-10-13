@@ -190,8 +190,12 @@ func _feel(c: CrewController) -> void:
 		_fail("ADS click did not fire")
 	await _ticks(30)
 	# Reload (R).
-	_xdo(["key", "r"])
-	await _ticks(20)
+	# Hold R a few ticks: a press + release inside one rendered frame (xdotool `key` at ~0.1 fps) is shorter than a
+	# physics tick and never polled; a player's ~0.1 s tap at a real frame rate spans several ticks.
+	_xdo(["keydown", "r"])
+	await _ticks(4)
+	_xdo(["keyup", "r"])
+	await _ticks(16)
 	_log("reload: reloading=%s" % w.reloading)
 	await _shot("reload")
 	if not w.reloading:
