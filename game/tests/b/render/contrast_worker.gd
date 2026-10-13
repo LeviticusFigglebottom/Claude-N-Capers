@@ -111,6 +111,8 @@ func _hud() -> void:
 	model.assault_wave = 2
 	model.carried_bag = {"loot_id": &"loot.jewelry", "weight": Enums.LootWeight.LIGHT}
 	hud.toast(&"ui.hud.casing_blocked.sprint", {"key": "Shift"}, 30.0)
+	model.player_mode = &"casing"
+	model.mask_progress = 0.55  # PO-1 mask-up ring
 	for bg: String in BACKDROPS:
 		back.color = BACKDROPS[bg] as Color
 		await _shot("hud_" + bg, hud)
@@ -147,6 +149,8 @@ func _loud() -> void:
 	_vp.add_child(hud)
 	await get_tree().process_frame
 	hud.bind(model)
+	InteractionPanel.pad_active = true  # lane 8: pad glyphs in the loud shots
+	model.interaction = {"text_key": &"ui.prompt.revive", "args": {"name": "Dutch"}, "progress": 0.3, "blocked_reason": &""}
 	model.masked = true
 	model.casing = false
 	model.assault_phase = Enums.AssaultPhase.SUSTAIN

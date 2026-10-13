@@ -363,6 +363,24 @@ corner_radius_bottom_right = 4
 corner_detail = 1
 anti_aliasing_size = 0.6
 
+[sub_resource type="StyleBoxFlat" id="sb_KeyCapRound_panel"]
+content_margin_left = 8.0
+content_margin_top = 0.0
+content_margin_right = 8.0
+content_margin_bottom = 0.0
+bg_color = Color(0.043137256, 0.050980393, 0.0627451, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.9254902, 0.90588236, 0.8666667, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 12
+anti_aliasing_size = 0.6
+
 [sub_resource type="StyleBoxFlat" id="sb_LineEdit_focus"]
 content_margin_left = 16.0
 content_margin_top = 8.0
@@ -821,6 +839,8 @@ ItemList/styles/selected = SubResource("sb_ItemList_selected")
 ItemList/styles/selected_focus = SubResource("sb_ItemList_selected")
 KeyCap/base_type = &"PanelContainer"
 KeyCap/styles/panel = SubResource("sb_KeyCap_panel")
+KeyCapRound/base_type = &"PanelContainer"
+KeyCapRound/styles/panel = SubResource("sb_KeyCapRound_panel")
 Label/colors/font_color = Color(0.9254902, 0.90588236, 0.8666667, 1)
 Label/colors/font_shadow_color = Color(0, 0, 0, 0)
 LineEdit/colors/caret_color = Color(0.30980393, 0.81960785, 0.9098039, 1)

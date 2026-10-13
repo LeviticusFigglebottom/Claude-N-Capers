@@ -692,3 +692,15 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - Limits on 4 cores: at most 2 windowed Godot processes at once (`--rendering-driver opengl3`, small windows for
   non-visual runs, waits in physics ticks); code-only subagents run alongside.
 - Each env always keeps ≥ 2 h of queued lanes and proposes the next ones before the current ones run dry (D-027).
+
+## D-093 — 2026-10-13 — Helpless crew can't soft-lock a heist (QA-PO5-2)
+- A TASED / CLOAKER_DOWNED crew member who is not revived within `bleedout_time_s` (30 s, the bleedout tweak) goes to
+  **custody**, as if they bled out, **without counting a down** (keeps L2.8 "not a down"). Then L2.9 applies as usual
+  (all humans in custody → heist failed; solo with AI per L2.9). pd2_fidelity L2.8 gets a ◇ note. A windowed Glasshouse
+  loud run soft-locked with all four crew helpless for 260 s (env/a-core, PO-5).
+
+## D-094 — 2026-10-13 — Viewmodel lighting: key light + `viewmodel_lit` render layer (QP-2)
+- Root cause found by ENV P (0cb3e25f): the viewmodel camera's cull_mask also culled every world light, so arms/guns were
+  lit by sky ambient only (near-black at night). ENV P adds a viewmodel-only key light (FpViewmodelTweak).
+- Option (a) adopted for world lights: render layer 20 `viewmodel_lit` (visual_slots 1.1). ENV P adds it to the viewmodel
+  camera's cull_mask and to its own muzzle flash; ENV A tags heist-map key lights and NPC/crew flashlights/muzzle flashes.

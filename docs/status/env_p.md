@@ -2,6 +2,17 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-13 20:30 ET: rounds 35-42 merged, viewmodel lanes
+- Merged trunk round 42 (892c64b9). Pushed 2c8cc473.
+- AR hip pose (61d9e075): measured with res://tests/p/_review/vm_probe.tscn (`-- --out=DIR --primary=weapon.corsair_ar
+  --slot=primary [--heist=glasshouse] [--no_ik]`, Vulkan windowed, dumps markers/AABB in camera space): authored rifle
+  hip had the gun's rear 0.11 m behind the lens. FpViewmodelTweak.set_hip_offset / set_ads_offset_z per anim_set
+  (rifle (0.02,-0.03,-0.16), ADS -0.06). Rifle left hand fingers-up is the authored clip (same with IK off): D's pose.
+- L4 (897c39aa, subagent): PD2 pad yaw ramp (PlayerInput gamepad_ramp_*), test_p_l4_look_feel.gd; Options mouse
+  slider confirmed a pure multiplier on D-091's 0.0016 gain.
+- L3 PP-P-12 door head-on: subagent in a worktree (pending). Next: pistol hip cant / brute_12 left hand (L2),
+  movement/ADS transitions review (L5), glasshouse AR capture.
+
 ## 2026-10-13 ET: team v3 dispatch (D-086), PO-2 mouse capture
 - Queue: PO-2 mouse capture -> PO-1 casing exit -> PO-3 bump/step snags on all 4 heists -> feel pass.
 - PO-2: game/systems/player/mouse_capture.gd (`MouseCapture`, D-087, input_focus.md 1.0) is the only writer of
@@ -35,8 +46,15 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   0.0025 -> 0.0016 rad/count. test_po4_feel.gd.
 - test_p3_loud:test_10_ai_orders_during_assault ("follow: the AI caught up") fails on the pre-PO-2 base 7a417116 too:
   pre-existing, A's (crew AI follow), not caused by P.
-- Feel-pass open: masked viewmodel pistol renders as a near-black silhouette and large in the 1280x720 frame
-  (opengl3 run; compare under Vulkan before acting). Next: that, ADS transitions, sprint/crouch/jump, door snag
+- Viewmodel lighting ROOT CAUSE (06fd0301): Camera3D.cull_mask also culls LIGHTS by their `layers`. The PP-P-11
+  viewmodel camera sees only VIEWMODEL_LAYER, so no world light ever reached the arms/gun (ambient only: near-black
+  at night, pure black on maps without sky ambient). Fix: CrewView adds `ViewmodelKeyLight` (DirectionalLight3D,
+  layers = light_cull_mask = VIEWMODEL_LAYER, no shadows) + viewmodel_ambient_mult (FpViewmodelTweak). Verified
+  windowed with res://tests/p/_review/vm_probe.tscn (unit map: skin, sleeves, gun highlights now visible).
+  Open (QP-2 to lead): world lights (muzzle flash, flashlights, lamps) still never light the viewmodel; options: a
+  render-layer bit for lights (C/D set it, vm camera includes it) or P tagging Light3D layers at runtime.
+- Still seen: ADS forearms fill the lower third (pose + 52 deg vm FOV), hip pistol sits low-right and reads canted
+  (D's anim / lead PP-P-11 ruling). Next: that, ADS transitions, sprint/crouch/jump, door snag
   PP-P-12, brute_12 left hand, 1920x1080 review.
 
 ## 2026-10-12 20:25 ET: merge round 34, renders, loud run

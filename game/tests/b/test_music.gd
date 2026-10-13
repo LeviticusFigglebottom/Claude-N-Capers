@@ -251,7 +251,8 @@ func test_preplanning_screen_has_the_music_pick() -> void:
 	add_child(s)
 	await wait_frames(2)
 	assert_true(s.music_picker != null, "solo: music pick shown")
-	assert_eq(s.confirm_button.focus_neighbor_right, s.confirm_button.get_path_to(s.music_picker.option), "focus reaches it")
+	assert_eq(s.confirm_button.focus_neighbor_left, s.confirm_button.get_path_to(s.music_picker.option),
+			"focus reaches it (PO-4: Back, Music, Confirm)")
 	assert_true(s.music_picker.choose(&"shadow_ledger"))
 	assert_eq(s.profile.music_choice, &"shadow_ledger")
 	assert_eq(SaveService.load_profile(SLOT).music_choice, &"shadow_ledger")

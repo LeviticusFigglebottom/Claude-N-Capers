@@ -94,7 +94,9 @@ func test_focus_navigation() -> void:
 	assert_eq(_neighbor(first, SIDE_TOP), tab)
 	var rows: Array = o.page_focus[OptionsScreen.TAB_CONTROLS]
 	assert_eq(_neighbor(rows[rows.size() - 1] as Control, SIDE_BOTTOM), o.apply_button as Control, "last row -> footer")
-	assert_eq(_neighbor(o.apply_button, SIDE_RIGHT), o.revert_button as Control, "footer: left / right")
+	# PO-4 footer: Back .. Revert, Reset tab .. Apply (bottom right).
+	assert_eq(_neighbor(o.apply_button, SIDE_LEFT), o.reset_button as Control, "footer: left / right")
+	assert_eq(_neighbor(o.back_button, SIDE_RIGHT), o.revert_button as Control)
 	assert_eq(_neighbor(o.back_button, SIDE_TOP), rows[rows.size() - 1] as Control)
 	o.tab_buttons[OptionsScreen.TAB_AUDIO].pressed.emit()
 	await wait_frames(2)

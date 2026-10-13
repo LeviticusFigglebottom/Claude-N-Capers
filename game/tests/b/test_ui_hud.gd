@@ -136,7 +136,8 @@ func test_interaction_prompt_and_blocked_reason() -> void:
 	assert_false(_hud.interaction.blocked_label.visible)
 	_model.interaction = {"text_key": &"ui.prompt.pick_lock", "args": {"key": "F"}, "progress": 0.0,
 			"blocked_reason": &"ui.blocked.casing"}
-	assert_eq(_hud.interaction.blocked_label.text, UiText.t(&"ui.blocked.casing"))
+	assert_eq(_hud.interaction.blocked_label.text, UiText.t(&"ui.blocked.casing", {"mask_key": InteractionPanel.action_key_text(&"mask_up")}),
+			"PO-5.11: the casing block names the mask key")
 
 
 func test_detection_chevron_colors() -> void:
@@ -415,8 +416,9 @@ func test_civilian_mode_hides_gear_and_shows_the_badge() -> void:
 			"state": Enums.CrewState.NORMAL, "downs_left": 3, "carried_loot_id": &"", "mode": &"civilian"}]
 	var info: Label = (_hud.teammates.list_box.get_child(0) as Control).find_children("*", "Label", true, false)[-1]
 	assert_true(info.text.contains(UiText.t(&"ui.hud.civilian")), "teammate panel shows civilian")
-	_model.player_mode = &"casing"  # gear picked up
-	assert_true(_hud.ammo.visible, "gear widgets back")
+	_model.player_mode = &"casing"  # gear picked up, no weapon out yet
+	assert_false(_hud.ammo.visible, "PO-1: weapon HUD hidden while casing")
 	assert_eq(_hud.status.mask_label.text, UiText.t(&"ui.hud.unmasked"))
 	_model.player_mode = &"masked"
 	assert_eq(_hud.status.mask_label.text, UiText.t(&"ui.hud.masked"))
+	assert_true(_hud.ammo.visible, "weapon HUD once masked")

@@ -21,5 +21,5 @@ heists = {
 "solo_ai_teammates": 3
 }
 }
-unlocked_difficulties = Array[int]([0, 3])
+unlocked_difficulties = Array[int]([0, 1, 2, 3])
 solo_ai_teammates = 3

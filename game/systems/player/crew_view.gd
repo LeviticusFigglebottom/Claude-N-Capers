@@ -222,6 +222,7 @@ func viewmodel_fov() -> float:
 
 
 func _build_viewmodel_camera(cam: Camera3D) -> void:
+	var vt: FpViewmodelTweak = FpViewmodelTweak.data()
 	var layer: CanvasLayer = CanvasLayer.new()
 	layer.name = "ViewmodelLayer"
 	layer.layer = -1  # above the 3D world, below the HUD
@@ -245,8 +246,21 @@ func _build_viewmodel_camera(cam: Camera3D) -> void:
 		env.volumetric_fog_enabled = false
 		env.ssr_enabled = false
 		env.sdfgi_enabled = false
+		env.ambient_light_energy = we.ambient_light_energy * vt.viewmodel_ambient_mult
 		_vm_cam.environment = env
 	vp.add_child(_vm_cam)
+	if vt.viewmodel_key_light_energy > 0.0:
+		var key: DirectionalLight3D = DirectionalLight3D.new()
+		key.name = "ViewmodelKeyLight"
+		key.layers = VIEWMODEL_LAYER  # Camera3D.cull_mask culls lights by `layers` too: on layer 1 the vm camera drops it
+		key.light_cull_mask = VIEWMODEL_LAYER  # the world never sees it
+		key.light_energy = vt.viewmodel_key_light_energy
+		key.light_color = vt.viewmodel_key_light_color
+		key.shadow_enabled = false
+		key.light_volumetric_fog_energy = 0.0
+		key.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_ONLY
+		key.rotation_degrees = vt.viewmodel_key_light_euler_deg
+		_vm_cam.add_child(key)
 	_vm_cam.current = true
 	_vm_viewport = vp
 	var tr: TextureRect = TextureRect.new()

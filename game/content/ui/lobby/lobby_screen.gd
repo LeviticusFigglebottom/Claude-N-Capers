@@ -141,19 +141,17 @@ func _bind_session() -> void:
 
 
 func _build_header() -> HBoxContainer:
-	var header: HBoxContainer = UiBuild.hbox(20)
-	header.add_child(UiAccent.strip(UiAccent.table().fallback, 6.0))
-	var titles: VBoxContainer = UiBuild.vbox(2)
-	titles.add_child(UiBuild.label(&"ui.menu.title", UiBuild.DIM))
-	titles.add_child(UiBuild.label(&"ui.lobby.title", UiBuild.HEADER))
+	var header: HBoxContainer = UiBuild.hbox(UiTokens.S4)
+	var titles: VBoxContainer = UiBuild.header(&"ui.lobby.crumb", &"ui.lobby.title")
 	status_label = UiBuild.label(&"ui.lobby.status.offline", UiBuild.DIM)
 	titles.add_child(status_label)
+	titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(titles)
-	var spacer: Control = Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(spacer)
-	code_box = UiBuild.vbox(4)
-	var row: HBoxContainer = UiBuild.hbox(12)
+	# Host: the lobby code as a caption over the value, Copy beside it, the LAN / internet note under.
+	code_box = UiBuild.vbox(UiTokens.S1)
+	code_box.size_flags_vertical = Control.SIZE_SHRINK_END
+	code_box.add_child(UiBuild.caption(&"ui.lobby.code.title"))
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	code_label = UiBuild.label(&"", UiBuild.SUBHEADER)
 	row.add_child(code_label)
 	copy_button = UiBuild.button(&"ui.lobby.code.copy")
@@ -162,6 +160,8 @@ func _build_header() -> HBoxContainer:
 	row.add_child(copy_button)
 	code_box.add_child(row)
 	code_hint_label = UiBuild.label(&"ui.lobby.code.wan_hint", UiBuild.DIM)
+	code_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	code_hint_label.custom_minimum_size = Vector2(620, 0)
 	code_box.add_child(code_hint_label)
 	code_box.visible = false
 	header.add_child(code_box)
@@ -169,28 +169,28 @@ func _build_header() -> HBoxContainer:
 
 
 func _build_connect() -> VBoxContainer:
-	var box: VBoxContainer = UiBuild.vbox(18)
+	var box: VBoxContainer = UiBuild.vbox(UiTokens.S4)
 	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	var host_v: VBoxContainer = UiBuild.vbox(10)
+	var host_v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	host_v.add_child(UiBuild.label(&"ui.lobby.host.title", UiBuild.SUBHEADER))
 	host_v.add_child(UiBuild.label(&"ui.lobby.host.desc", UiBuild.DIM))
-	var host_row: HBoxContainer = UiBuild.hbox(16)
-	host_row.add_child(UiBuild.label(&"ui.lobby.port"))
+	var host_row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	host_row.add_child(_field_caption(&"ui.lobby.port"))
 	host_port_edit = _edit(str(tweak.default_port), &"ui.lobby.port", 160)
 	host_row.add_child(host_port_edit)
-	host_button = UiBuild.primary(UiBuild.button(&"ui.lobby.host"))
+	host_button = UiBuild.button(&"ui.lobby.host")
 	host_button.pressed.connect(_on_host)
 	host_row.add_child(host_button)
 	host_v.add_child(host_row)
 	box.add_child(UiBuild.panel(host_v))
-	var join_v: VBoxContainer = UiBuild.vbox(10)
+	var join_v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	join_v.add_child(UiBuild.label(&"ui.lobby.join.title", UiBuild.SUBHEADER))
 	join_v.add_child(UiBuild.label(&"ui.lobby.join.desc", UiBuild.DIM))
-	var join_row: HBoxContainer = UiBuild.hbox(16)
-	join_row.add_child(UiBuild.label(&"ui.lobby.address"))
+	var join_row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	join_row.add_child(_field_caption(&"ui.lobby.address"))
 	join_address_edit = _edit("", &"ui.lobby.address_hint", 360)
 	join_row.add_child(join_address_edit)
-	join_row.add_child(UiBuild.label(&"ui.lobby.port"))
+	join_row.add_child(_field_caption(&"ui.lobby.port"))
 	join_port_edit = _edit(str(tweak.default_port), &"ui.lobby.port", 160)
 	join_row.add_child(join_port_edit)
 	join_button = UiBuild.button(&"ui.lobby.join")
@@ -205,8 +205,8 @@ func _build_connect() -> VBoxContainer:
 	loopback_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	loopback_button.pressed.connect(join_loopback)
 	join_v.add_child(loopback_button)
-	var code_row: HBoxContainer = UiBuild.hbox(16)
-	code_row.add_child(UiBuild.label(&"ui.lobby.code.title"))
+	var code_row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	code_row.add_child(_field_caption(&"ui.lobby.code.title"))
 	code_edit = _edit("", &"ui.lobby.code.hint", 360)
 	code_edit.max_length = 24
 	code_edit.text_submitted.connect(_on_code_submitted)
@@ -223,11 +223,18 @@ func _build_connect() -> VBoxContainer:
 	var spacer: Control = Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(spacer)
+	# PO-4 footer: Back (ghost) bottom left. Host and Join are peer choices, so neither is the brass primary.
 	back_button = UiBuild.button(&"ui.menu.back")
-	back_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	back_button.pressed.connect(back_requested.emit)
-	box.add_child(back_button)
+	box.add_child(UiBuild.footer(back_button))
 	return box
+
+
+## A caption naming the field to its right ("PORT", "ADDRESS").
+func _field_caption(key: StringName) -> Label:
+	var l: Label = UiBuild.caption(key)
+	l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	return l
 
 
 func _edit(text: String, hint: StringName, width: float) -> LineEdit:
@@ -242,15 +249,15 @@ func _edit(text: String, hint: StringName, width: float) -> LineEdit:
 
 
 func _build_lobby() -> VBoxContainer:
-	var box: VBoxContainer = UiBuild.vbox(20)
+	var box: VBoxContainer = UiBuild.vbox(UiTokens.S3)
 	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	var cv: VBoxContainer = UiBuild.vbox(6)
-	cv.add_child(UiBuild.label(&"ui.lobby.contract.title", UiBuild.DIM))
+	var cv: VBoxContainer = UiBuild.vbox(UiTokens.S2)
+	cv.add_child(UiBuild.caption(&"ui.lobby.contract.title"))
 	contract_label = UiBuild.label(&"", UiBuild.SUBHEADER)
 	contract_detail_label = UiBuild.label(&"", UiBuild.DIM)
 	cv.add_child(contract_label)
 	cv.add_child(contract_detail_label)
-	var crow: HBoxContainer = UiBuild.hbox(14)
+	var crow: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	board_button = UiBuild.button(&"ui.lobby.contract.board")
 	planning_button = UiBuild.button(&"ui.lobby.contract.planning")
 	briefing_button = UiBuild.button(&"ui.lobby.briefing")
@@ -268,7 +275,7 @@ func _build_lobby() -> VBoxContainer:
 	music_picker.music_changed.connect(_on_music_changed)
 	cv.add_child(music_picker)
 	cv.add_child(_build_dropin_row())
-	var top: HBoxContainer = UiBuild.hbox(16)
+	var top: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	var contract_panel: PanelContainer = UiBuild.panel(cv)
 	contract_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(contract_panel)
@@ -283,27 +290,28 @@ func _build_lobby() -> VBoxContainer:
 	body_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	body_scroll.follow_focus = true
-	var body: VBoxContainer = UiBuild.vbox(20)
+	var body: VBoxContainer = UiBuild.vbox(UiTokens.S3)
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body_scroll.add_child(body)
 	box.add_child(body_scroll)
 	body.add_child(top)
-	var slots: HBoxContainer = UiBuild.hbox(16)
+	var slots: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	for _i: int in range(LobbyState.MAX_CREW):
 		slots.add_child(_slot_card())
 	body.add_child(slots)
-	var footer: HBoxContainer = UiBuild.hbox(16)
+	# PO-4 footer: Leave (ghost, the screen's Back) left, why Start is blocked, Ready, Start (primary) right.
 	leave_button = UiBuild.button(&"ui.lobby.leave")
 	ready_button = UiBuild.button(&"ui.lobby.ready")
 	ready_button.toggle_mode = true
-	start_button = UiBuild.primary(UiBuild.button(&"ui.lobby.start"))
+	start_button = UiBuild.button(&"ui.lobby.start")
 	for b: Button in [leave_button, ready_button, start_button]:
 		b.custom_minimum_size = Vector2(260, 0)
-		footer.add_child(b)
 	block_label = UiBuild.label(&"", UiBuild.DIM)
 	block_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	block_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	block_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	footer.add_child(block_label)
+	var footer: HBoxContainer = UiBuild.footer(leave_button, start_button, [block_label, ready_button] as Array[Control])
+	footer.get_child(footer.get_child_count() - 2).size_flags_horizontal = Control.SIZE_FILL  # spacer yields to block_label
 	leave_button.pressed.connect(leave)
 	ready_button.toggled.connect(_on_ready_toggled)
 	start_button.pressed.connect(start)
@@ -312,8 +320,8 @@ func _build_lobby() -> VBoxContainer:
 
 
 func _build_dropin_row() -> HBoxContainer:
-	var row: HBoxContainer = UiBuild.hbox(12)
-	row.add_child(UiBuild.label(&"ui.lobby.dropin.title"))
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	row.add_child(_field_caption(&"ui.lobby.dropin.title"))
 	dropin_option = UiBuild.option_button()
 	dropin_option.name = "DropInPolicy"
 	for policy: StringName in LobbyState.POLICIES:
@@ -327,36 +335,45 @@ func _build_dropin_row() -> HBoxContainer:
 
 
 func _slot_card() -> PanelContainer:
-	var v: VBoxContainer = UiBuild.vbox(6)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S1)
 	var w: Dictionary = {}
+	w["tags"] = UiBuild.caption()
 	w["name"] = UiBuild.label(&"", UiBuild.SUBHEADER)
-	w["tags"] = UiBuild.label(&"", UiBuild.DIM)
 	w["level"] = UiBuild.label(&"")
-	w["heister"] = UiBuild.label(&"")
-	w["ready"] = UiBuild.label(&"")
-	for k: String in ["name", "tags", "level", "heister", "ready"]:
+	w["ready"] = UiBuild.caption()
+	for k: String in ["tags", "name", "level", "ready"]:
 		var l: Label = w[k] as Label
 		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		v.add_child(l)
 	v.add_child(HSeparator.new())
+	# PO-4: loadout as caption / value rows ("PRIMARY  Corsair"), heister first.
+	var grid: GridContainer = GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override(&"h_separation", UiTokens.S3)
+	grid.add_theme_constant_override(&"v_separation", UiTokens.S1)
+	v.add_child(grid)
+	var captions: Dictionary = {}
+	w["heister"] = _slot_row(grid, &"ui.loadout.heister", captions, "heister")
 	var items: Dictionary = {}
 	for f: String in ["primary", "secondary", "armor", "deployable", "perk_deck"]:
-		var l: Label = UiBuild.label(&"", UiBuild.DIM)
-		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		v.add_child(l)
-		items[f] = l
+		items[f] = _slot_row(grid, StringName("ui.loadout.%s" % f), captions, f)
 	w["items"] = items
-	var mrow: HBoxContainer = UiBuild.hbox(8)
+	captions["mask"] = UiBuild.caption(&"ui.loadout.mask")
+	captions["mask"].size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	grid.add_child(captions["mask"] as Control)
+	var mrow: HBoxContainer = UiBuild.hbox(UiTokens.S2)
 	w["swatch_a"] = _swatch()
 	w["swatch_b"] = _swatch()
 	mrow.add_child(w["swatch_a"] as Control)
 	mrow.add_child(w["swatch_b"] as Control)
-	var mask: Label = UiBuild.label(&"", UiBuild.DIM)
+	var mask: Label = UiBuild.label()
 	mask.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	mask.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	mrow.add_child(mask)
+	mrow.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	w["mask"] = mask
-	v.add_child(mrow)
+	grid.add_child(mrow)
+	w["captions"] = captions
 	var flag: Label = UiBuild.label(&"ui.lobby.slot.illegal")
 	flag.add_theme_color_override(&"font_color", tweak.illegal_color)
 	flag.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -379,9 +396,23 @@ func _slot_card() -> PanelContainer:
 	return p
 
 
+## One caption / value row of a slot card's loadout grid; returns the value label.
+func _slot_row(grid: GridContainer, caption_key: StringName, captions: Dictionary, field: String) -> Label:
+	var c: Label = UiBuild.caption(caption_key)
+	c.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	grid.add_child(c)
+	captions[field] = c
+	var l: Label = UiBuild.label()
+	l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	l.custom_minimum_size = Vector2(120, 0)
+	grid.add_child(l)
+	return l
+
+
 func _swatch() -> ColorRect:
 	var r: ColorRect = ColorRect.new()
-	r.custom_minimum_size = Vector2(22, 22)
+	r.custom_minimum_size = Vector2(UiTokens.S4, UiTokens.S4)
 	r.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return r
@@ -630,7 +661,6 @@ func _refresh_contract(st: LobbyState) -> void:
 	if bool(st.contract["is_pro"]):
 		detail += "   " + UiText.t(&"ui.board.pro")
 	contract_detail_label.text = detail
-	contract_label.add_theme_color_override(&"font_color", UiAccent.text_color(heist, UiAccent.panel_bg()))
 
 
 func _refresh_music(st: LobbyState) -> void:
@@ -695,6 +725,10 @@ func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
 	var mdef: MaskDef = LobbyState.mask_def(view["loadout"] as Dictionary) if has_sum else null
 	var mask_n: String = String(names.get("mask", ""))
 	mask.text = UiText.t(&"ui.lobby.slot.mask", {"name": mask_n}) if mask_n != "" else ""
+	var captions: Dictionary = w["captions"] as Dictionary
+	for f: Variant in captions:
+		(captions[f] as Label).visible = has_sum
+	(captions["heister"] as Label).visible = occupied and (is_ai or has_sum) and StringName(view.get("heister", &"")) != &""
 	sa.visible = mdef != null
 	sb.visible = mdef != null
 	if mdef != null:
@@ -706,7 +740,7 @@ func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
 		level.text = UiText.t(&"ui.lobby.slot.waiting")
 	var panel: PanelContainer = w["panel"] as PanelContainer
 	if bool(view["is_local"]):
-		UiAccent.accent_panel(panel, UiBuild.theme().get_color(&"accent", &"Screen"))
+		UiAccent.accent_panel(panel, UiTokens.PAPER_DIM, 3)  # PO-4: your seat, a paper edge (brass is money / primary)
 	else:
 		panel.remove_theme_stylebox_override(&"panel")
 	panel.modulate.a = 1.0 if human else 0.7

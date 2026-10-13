@@ -255,19 +255,21 @@ func _rebuild() -> void:
 
 
 func _build_top() -> HBoxContainer:
-	var top: HBoxContainer = UiBuild.hbox(24)
-	accent_strip = UiAccent.strip(UiAccent.for_heist(heist_id))
+	# PO-4 Case File header: the heist and difficulty as the breadcrumb (heist accent) over the H1.
+	var top: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	accent_strip = UiAccent.strip(UiAccent.for_heist(heist_id), 3.0)
 	top.add_child(accent_strip)
-	top.add_child(UiBuild.label(&"ui.preplan.title", UiBuild.HEADER))
-	var sub: Label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	var head: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+	var sub: Label = UiBuild.caption()
 	sub.add_theme_color_override(&"font_color", UiAccent.text_color(heist_id, UiAccent.app_bg()))
-	sub.text = "%s  |  %s" % [UiText.t(StringName("heist.%s.name" % heist_id)), UiText.t(UiText.difficulty_key(difficulty))]
-	sub.size_flags_vertical = Control.SIZE_SHRINK_END
-	top.add_child(sub)
+	sub.text = "%s  ·  %s" % [UiText.t(StringName("heist.%s.name" % heist_id)), UiText.t(UiText.difficulty_key(difficulty))]
+	head.add_child(sub)
+	head.add_child(UiBuild.label(&"ui.preplan.title", UiBuild.HEADER))
+	top.add_child(head)
 	var spacer: Control = Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(spacer)
-	placeholder_label = UiBuild.label(&"ui.preplan.placeholder", UiBuild.SUBHEADER)
+	placeholder_label = UiBuild.caption(&"ui.preplan.placeholder")
 	placeholder_label.add_theme_color_override(&"font_color", tweak.placeholder_color)
 	placeholder_label.size_flags_vertical = Control.SIZE_SHRINK_END
 	placeholder_label.visible = board.blueprint.placeholder
@@ -279,14 +281,12 @@ func _build_map_column() -> VBoxContainer:
 	var col: VBoxContainer = UiBuild.vbox(10)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var bar: HBoxContainer = UiBuild.hbox(10)
-	crew_button = _small_button(&"ui.preplan.crew_assets")
-	crew_button.toggle_mode = true
+	crew_button = UiBuild.tab(_small_button(&"ui.preplan.crew_assets"))
 	crew_button.pressed.connect(_on_crew_pressed)
 	bar.add_child(crew_button)
 	if board.blueprint.floor_count() > 1:
 		for i: int in range(board.blueprint.floor_count()):
-			var fb: Button = _small_button(board.blueprint.floor_names[i])
-			fb.toggle_mode = true
+			var fb: Button = UiBuild.tab(_small_button(board.blueprint.floor_names[i]))
 			fb.set_pressed_no_signal(i == 0)
 			fb.pressed.connect(_on_floor.bind(i))
 			bar.add_child(fb)
@@ -347,13 +347,12 @@ func _build_panel() -> PanelContainer:
 
 
 func _build_bottom() -> HBoxContainer:
-	var bottom: HBoxContainer = UiBuild.hbox(16)
-	back_button = UiBuild.button(&"ui.menu.back")
+	var bottom: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
 	confirm_button = UiBuild.primary(UiBuild.button(&"ui.preplan.confirm"))
 	back_button.pressed.connect(back_requested.emit)
 	confirm_button.pressed.connect(confirm)
 	bottom.add_child(back_button)
-	bottom.add_child(confirm_button)
 	music_picker = null
 	if music_enabled and Net.is_authority():
 		music_picker = MusicPicker.new()
@@ -366,7 +365,9 @@ func _build_bottom() -> HBoxContainer:
 	hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	hint.add_theme_font_size_override(&"font_size", UiTokens.FONT_SMALL)
 	bottom.add_child(hint)
+	bottom.add_child(confirm_button)  # the one commit action, bottom right
 	return bottom
 
 
@@ -495,9 +496,11 @@ func _vote_text() -> String:
 
 
 func _wire_static_focus() -> void:
-	var bottom_row: Array[Control] = [back_button, confirm_button]
+	# Left to right as laid out: Back, Music, Confirm (bottom right).
+	var bottom_row: Array[Control] = [back_button]
 	if music_picker != null:
 		bottom_row.append(music_picker.option)
+	bottom_row.append(confirm_button)
 	UiNav.chain_horizontal(bottom_row, false)
 	var row: Array[Control] = [crew_button]
 	row.append_array(floor_buttons)

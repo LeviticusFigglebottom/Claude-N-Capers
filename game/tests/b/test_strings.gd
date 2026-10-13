@@ -39,7 +39,7 @@ func test_csv_parses_without_duplicates() -> void:
 func test_required_keys_present() -> void:
 	for k: String in REQUIRED_KEYS:
 		assert_has(_table, k)
-	assert_eq(_table.get("ui.blocked.casing", ""), "Suspicious actions not allowed")
+	assert_eq(_table.get("ui.blocked.casing", ""), "Mask up first (hold {mask_key})")  # PO-5.11: actionable
 
 
 func test_every_p1_item_has_name_and_desc() -> void:

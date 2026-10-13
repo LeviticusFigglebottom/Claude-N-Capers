@@ -42,7 +42,7 @@ func build_ui() -> void:
 	settings_button = UiBuild.button(&"ui.menu.options")
 	quit_button = UiBuild.button(&"ui.menu.quit")
 	for b: Button in [safehouse_button, range_button, settings_button, quit_button]:
-		b.theme_type_variation = UiBuild.MENU_ITEM
+		b.theme_type_variation = UiBuild.MENU_ITEM  # D-090: focus + confirm cues come with UiBuild.button
 		b.text = b.text.to_upper()
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.custom_minimum_size = Vector2(440, 0)

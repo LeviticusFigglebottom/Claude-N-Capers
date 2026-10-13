@@ -157,7 +157,7 @@ func _build_intel_column(body: HBoxContainer) -> void:
 	col.add_child(briefing_label)
 	col.add_child(_spacer(8))
 	col.add_child(_head(&"ui.briefing.objectives"))
-	objectives_box = UiBuild.vbox(6)
+	objectives_box = UiBuild.vbox(0)  # the timeline rail runs row to row
 	col.add_child(objectives_box)
 	col.add_child(_spacer(8))
 	col.add_child(_head(&"ui.briefing.escape"))
@@ -226,12 +226,22 @@ func _fill_objectives() -> void:
 	var objectives: Array = model["objectives"] as Array
 	if objectives.is_empty():
 		objectives_box.add_child(UiBuild.label(&"ui.briefing.objectives_none", UiBuild.DIM))
+	# PO-4: a timeline: a rail with a node per step (the first, where you start, filled brass).
 	for i: int in range(objectives.size()):
+		var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+		var node: TimelineNode = TimelineNode.new()
+		node.first = i == 0
+		node.last = i == objectives.size() - 1
+		row.add_child(node)
 		var l: Label = UiBuild.label(&"ui.briefing.objective_line", &"", {
 			"index": i + 1, "text": String((objectives[i] as Dictionary)["text"]),
 		})
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		objectives_box.add_child(l)
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if i == 0:
+			l.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+		row.add_child(l)
+		objectives_box.add_child(row)
 
 
 func _fill_loot() -> void:
@@ -250,8 +260,11 @@ func _fill_loot() -> void:
 func objective_texts() -> Array[String]:
 	var out: Array[String] = []
 	for c: Node in objectives_box.get_children():
-		if c is Label and not c.is_queued_for_deletion():
-			out.append((c as Label).text)
+		if c.is_queued_for_deletion():
+			continue
+		var l: Label = c as Label if c is Label else c.get_child(1) as Label if c.get_child_count() > 1 else null
+		if l != null:
+			out.append(l.text)
 	return out
 
 

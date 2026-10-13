@@ -11,8 +11,9 @@
 ## shared with MenuFlow) marks failed pro contracts; their pin is dimmed and Take is locked until the
 ## slot rotates to a new contract.
 ##
-## Navigation: pins move spatially (BoardMapView); right from the map's edge reaches Take; left from
-## the side panel returns to the selected pin. Focusing a pin selects it; pressing it jumps to Take.
+## Navigation: pins move spatially (BoardMapView); right from the map's edge reaches the broker; left
+## from the side panel returns to the selected pin. Focusing a pin selects it; pressing it jumps to Take
+## (the footer's primary, bottom right).
 class_name BoardScreen
 extends UiScreen
 
@@ -37,7 +38,9 @@ var clock: Callable = Callable()
 var build_gate: Callable = BoardContracts.build_gate()
 
 var map_view: BoardMapView
-var status_label: Label
+## PO-4 header: level and stash as caption + value pairs.
+var level_label: Label
+var stash_label: Label
 var empty_label: Label
 var card: VBoxContainer
 ## The contract card's panel; its edge takes the heist accent (UiAccent, B4-07).
@@ -62,6 +65,7 @@ var buy_button: Button
 var back_button: Button
 
 var _timer: Timer
+var _card_fields: Array[VBoxContainer] = []
 
 
 func setup(new_profile: PlayerProfile) -> void:
@@ -82,124 +86,131 @@ func build_ui() -> void:
 	_timer.timeout.connect(_on_tick)
 	add_child(_timer)
 	_timer.start()
-	var root: VBoxContainer = UiBuild.vbox(14)
-	UiBuild.screen_margin(self, root, 40)
+	var root: VBoxContainer = UiBuild.vbox(UiTokens.S3)
+	UiBuild.screen_margin(self, root, UiTokens.S6)
 	_build_header(root)
-	var body: HBoxContainer = UiBuild.hbox(24)
+	var body: HBoxContainer = UiBuild.hbox(UiTokens.S4)
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(body)
+	var map_col: VBoxContainer = UiBuild.vbox(UiTokens.S2)
+	map_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body.add_child(map_col)
 	map_view = BoardMapView.new()
 	map_view.city = city
 	map_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	map_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	map_view.custom_minimum_size = Vector2(640, 400)
 	map_view.pin_focused.connect(select_slot)
 	map_view.pin_pressed.connect(_on_pin_pressed)
-	body.add_child(map_view)
-	var side: VBoxContainer = UiBuild.vbox(14)
+	map_col.add_child(map_view)
+	_build_legend(map_col)
+	var side: VBoxContainer = UiBuild.vbox(UiTokens.S3)
 	side.custom_minimum_size = Vector2(560, 0)
 	body.add_child(side)
 	_build_card(side)
 	_build_broker(side)
-	var footer: HBoxContainer = UiBuild.hbox(16)
-	root.add_child(footer)
-	_build_legend(footer)
+	# PO-4 footer: Back (ghost) left, Take Contract (the screen's one primary) right.
 	back_button = UiBuild.button(&"ui.menu.back")
 	back_button.pressed.connect(back_requested.emit)
-	footer.add_child(back_button)
-	map_view.exit_right = take_button
-	focus_chain.append(take_button)
-	focus_chain.append(broker_heist)
-	focus_chain.append(broker_difficulty)
-	focus_chain.append(buy_button)
-	focus_chain.append(back_button)
+	take_button = UiBuild.button(&"ui.board.take")
+	take_button.pressed.connect(func() -> void: UiSfx.check(take_selected()))
+	root.add_child(UiBuild.footer(back_button, take_button))
+	map_view.exit_right = broker_heist
+	for c: Control in [broker_heist, broker_difficulty, buy_button, take_button, back_button]:
+		focus_chain.append(c)
+	UiNav.chain_horizontal([back_button, take_button] as Array[Control], false)
 	refresh_board()
 	_refresh_broker()
 
 
 func _build_header(root: VBoxContainer) -> void:
-	var header: HBoxContainer = UiBuild.hbox(24)
+	var header: HBoxContainer = UiBuild.hbox(UiTokens.S4)
 	root.add_child(header)
-	var left: VBoxContainer = UiBuild.vbox(2)
+	var left: VBoxContainer = UiBuild.header(&"ui.board.crumb", &"ui.board.title")
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(left)
-	left.add_child(UiBuild.label(&"ui.board.title", UiBuild.HEADER))
 	left.add_child(UiBuild.label(&"ui.board.subtitle", UiBuild.DIM, {"minutes": roundi(tweak.rotation_s / 60.0)}))
-	status_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	status_label.size_flags_vertical = Control.SIZE_SHRINK_END
-	header.add_child(status_label)
+	header.add_child(left)
+	level_label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	stash_label = UiBuild.label(&"", UiBuild.MONEY)
+	for pair: Array in [[&"ui.board.level_caption", level_label], [&"ui.board.stash_caption", stash_label]]:
+		var f: VBoxContainer = UiBuild.field(StringName(pair[0]), pair[1] as Control)
+		f.size_flags_vertical = Control.SIZE_SHRINK_END
+		header.add_child(f)
 
 
-func _build_legend(parent: HBoxContainer) -> void:
-	var row: HBoxContainer = UiBuild.hbox(22)
-	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+func _build_legend(parent: VBoxContainer) -> void:
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S4)
 	parent.add_child(row)
 	for c: ContactDef in ContactDef.all():
 		if c.is_handler:
 			continue
-		var item: HBoxContainer = UiBuild.hbox(8)
+		var item: HBoxContainer = UiBuild.hbox(UiTokens.S2)
 		var dot: ColorRect = ColorRect.new()
 		dot.color = c.accent_color
-		dot.custom_minimum_size = Vector2(16, 16)
+		dot.custom_minimum_size = Vector2(UiTokens.S3, UiTokens.S3)
 		dot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		item.add_child(dot)
 		item.add_child(UiBuild.label(c.display_name_key, UiBuild.DIM))
 		row.add_child(item)
 	var pro: Label = UiBuild.label(&"ui.board.legend_pro", UiBuild.DIM)
-	pro.add_theme_color_override(&"font_color", city.pro_color.lightened(0.35))
+	pro.add_theme_color_override(&"font_color", UiTokens.ALERT)
 	row.add_child(pro)
 
 
 func _build_card(side: VBoxContainer) -> void:
-	card = UiBuild.vbox(6)
+	card = UiBuild.vbox(UiTokens.S3)
 	card_panel = UiBuild.panel(card)
 	side.add_child(card_panel)
-	var top: HBoxContainer = UiBuild.hbox(16)
+	var top: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	card.add_child(top)
 	portrait = ContactPortrait.new()
 	portrait.custom_minimum_size = Vector2(128, 128)
 	top.add_child(portrait)
-	var who: VBoxContainer = UiBuild.vbox(2)
+	var who: VBoxContainer = UiBuild.vbox(UiTokens.S1)
 	who.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(who)
+	pro_label = UiBuild.caption(&"ui.board.pro")
+	pro_label.add_theme_color_override(&"font_color", UiTokens.ALERT)
 	heist_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	subtitle_label = UiBuild.label(&"", UiBuild.DIM)
-	var contact_row: HBoxContainer = UiBuild.hbox(10)
+	subtitle_label = UiBuild.label(&"", UiBuild.CAPTION)
+	subtitle_label.uppercase = true
+	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var contact_row: HBoxContainer = UiBuild.hbox(UiTokens.S2)
 	contact_label = UiBuild.label()
 	role_label = UiBuild.label(&"", UiBuild.DIM)
 	role_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	contact_row.add_child(contact_label)
 	contact_row.add_child(role_label)
-	pro_label = UiBuild.label(&"ui.board.pro")
-	pro_label.add_theme_color_override(&"font_color", city.pro_color.lightened(0.45))
-	for l: Control in [heist_label, subtitle_label, contact_row, pro_label]:
-		if l is Label:
+	for l: Control in [pro_label, heist_label, subtitle_label, contact_row]:
+		if l is Label and l != subtitle_label:
 			(l as Label).text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		who.add_child(l)
-	var row: HBoxContainer = UiBuild.hbox(12)
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S5)
 	card.add_child(row)
 	difficulty_label = UiBuild.label()
-	difficulty_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	time_label = UiBuild.label(&"", UiBuild.DIM)
-	time_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	row.add_child(difficulty_label)
-	row.add_child(time_label)
-	payout_label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	difficulty_label.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)
+	time_label = UiBuild.label()
+	time_label.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)
+	payout_label = UiBuild.label(&"", UiBuild.MONEY)
+	_card_fields.clear()
+	for pair: Array in [[&"ui.board.pay_caption", payout_label], [&"ui.board.difficulty_caption", difficulty_label],
+			[&"ui.board.expires_caption", time_label]]:
+		var f: VBoxContainer = UiBuild.field(StringName(pair[0]), pair[1] as Control)
+		f.size_flags_vertical = Control.SIZE_SHRINK_END
+		row.add_child(f)
+		_card_fields.append(f)
 	pro_desc_label = UiBuild.label(&"", UiBuild.DIM)
 	pro_desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	empty_label = UiBuild.label(&"ui.board.empty", UiBuild.DIM)
 	consumed_label = UiBuild.label(&"ui.board.consumed")
 	consumed_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	consumed_label.add_theme_color_override(&"font_color", city.pro_color.lightened(0.45))
-	for l: Label in [payout_label, pro_desc_label, consumed_label, empty_label]:
+	consumed_label.add_theme_color_override(&"font_color", UiTokens.ALERT)
+	for l: Label in [pro_desc_label, consumed_label, empty_label]:
 		card.add_child(l)
-	take_button = UiBuild.primary(UiBuild.button(&"ui.board.take"))
-	take_button.pressed.connect(take_selected)
-	card.add_child(take_button)
 
 
 func _build_broker(side: VBoxContainer) -> void:
-	var box: VBoxContainer = UiBuild.vbox(6)
+	var box: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	side.add_child(UiBuild.panel(box))
 	box.add_child(UiBuild.label(&"ui.board.broker.title", UiBuild.SUBHEADER))
 	var desc: Label = UiBuild.label(&"ui.board.broker.desc", UiBuild.DIM)
@@ -213,21 +224,22 @@ func _build_broker(side: VBoxContainer) -> void:
 	for d: int in range(Enums.Difficulty.size()):
 		broker_difficulty.add_item(UiText.t(UiText.difficulty_key(d)), d)
 	broker_difficulty.item_selected.connect(func(_i: int) -> void: _refresh_broker())
-	for pair: Array in [[&"ui.board.broker.heist", broker_heist], [&"ui.board.broker.difficulty", broker_difficulty]]:
-		var row: HBoxContainer = UiBuild.hbox(12)
-		var l: Label = UiBuild.label(StringName(pair[0]), UiBuild.DIM)
+	broker_cost_label = UiBuild.label(&"", UiBuild.MONEY)
+	broker_cost_label.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)
+	for pair: Array in [[&"ui.board.broker.heist", broker_heist], [&"ui.board.broker.difficulty", broker_difficulty],
+			[&"ui.board.broker.price", broker_cost_label]]:
+		var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+		var l: Label = UiBuild.caption(StringName(pair[0]))
 		l.custom_minimum_size = Vector2(150, 0)
 		row.add_child(l)
 		(pair[1] as Control).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(pair[1] as Control)
 		box.add_child(row)
-	broker_cost_label = UiBuild.label()
 	broker_reason_label = UiBuild.label(&"", UiBuild.DIM)
-	broker_reason_label.add_theme_color_override(&"font_color", city.pro_color.lightened(0.45))
-	box.add_child(broker_cost_label)
+	broker_reason_label.add_theme_color_override(&"font_color", UiTokens.ALERT)
 	box.add_child(broker_reason_label)
 	buy_button = UiBuild.button(&"ui.board.broker.buy")
-	buy_button.pressed.connect(broker_buy)
+	buy_button.pressed.connect(func() -> void: UiSfx.check(broker_buy() == BoardBroker.OK))
 	box.add_child(buy_button)
 
 
@@ -266,18 +278,20 @@ func select_slot(slot: int) -> void:
 	map_view.set_selected(selected_slot)
 	var c: Dictionary = selected_contract()
 	var has: bool = not c.is_empty()
-	for n: Control in [portrait, heist_label, subtitle_label, contact_label, role_label, difficulty_label,
-			payout_label, time_label, take_button]:
+	for n: Control in [portrait, heist_label, subtitle_label, contact_label, role_label]:
 		n.visible = has
+	for f: VBoxContainer in _card_fields:
+		f.visible = has
+	take_button.disabled = not has
 	empty_label.visible = not has
 	pro_label.visible = has and bool(c["is_pro"])
 	pro_desc_label.visible = pro_label.visible
 	consumed_label.visible = has and bool(c.get("consumed", false))
-	take_button.disabled = consumed_label.visible
+	take_button.disabled = take_button.disabled or consumed_label.visible
 	if has:
 		_fill_card(c)
 		var pin_path: NodePath = take_button.get_path_to(map_view.pins[selected_slot])
-		for n: Control in [take_button, broker_heist, broker_difficulty, buy_button, back_button]:
+		for n: Control in [broker_heist, broker_difficulty, buy_button, back_button]:
 			n.focus_neighbor_left = pin_path
 
 
@@ -343,14 +357,13 @@ func _fill_card(c: Dictionary) -> void:
 	var contact: ContactDef = ContactDef.find(cid) if cid != &"" else null
 	portrait.set_contact(contact)
 	UiAccent.accent_panel(card_panel, UiAccent.for_heist(heist_id))
-	heist_label.add_theme_color_override(&"font_color", UiAccent.text_color(heist_id))
 	heist_label.text = UiText.t(StringName("heist.%s.name" % heist_id))
 	subtitle_label.text = "%s  |  %s" % [UiText.t(StringName("heist.%s.subtitle" % heist_id)),
 			UiText.t(_mode_key(int(c["mode"])))]
 	contact_label.text = UiText.t(&"ui.board.contact", {"name": UiText.t(contact.display_name_key) if contact != null else "?"})
 	role_label.text = UiText.t(contact.role_key) if contact != null else ""
-	difficulty_label.text = UiText.t(&"ui.board.difficulty", {"name": UiText.t(UiText.difficulty_key(int(c["difficulty"])))})
-	payout_label.text = UiText.t(&"ui.board.payout", {"amount": UiText.money(int(c["payout"]))})
+	difficulty_label.text = UiText.t(UiText.difficulty_key(int(c["difficulty"])))
+	payout_label.text = UiText.money(int(c["payout"]))
 	var pay: PayoutTweak = ContentDB.tweak(&"payout") as PayoutTweak
 	var pct: int = roundi(((pay.pro_job_xp_mult if pay != null else 1.0) - 1.0) * 100.0)
 	pro_desc_label.text = UiText.t(&"ui.board.pro_desc", {"pct": pct})
@@ -361,12 +374,13 @@ func _update_time_label() -> void:
 	var c: Dictionary = selected_contract()
 	if c.is_empty():
 		return
-	time_label.text = UiText.t(&"ui.board.expires", {"time": UiText.clock(BoardContracts.time_left(c, now()))})
+	time_label.text = UiText.clock(BoardContracts.time_left(c, now()))
 
 
 func _refresh_status() -> void:
-	if status_label != null and profile != null:
-		status_label.text = UiText.t(&"ui.board.level_stash", {"level": profile.level, "amount": UiText.money(profile.stash)})
+	if level_label != null and profile != null:
+		level_label.text = str(profile.level)
+		stash_label.text = UiText.money(profile.stash)
 
 
 func _refresh_broker() -> void:
@@ -388,7 +402,7 @@ func _refresh_broker() -> void:
 		broker_difficulty.select(broker_difficulty.get_item_index(allowed[0] if not allowed.is_empty() else 0))
 	if broker_heist.selected < 0 and broker_heist.item_count > 0:
 		broker_heist.select(0)
-	broker_cost_label.text = UiText.t(&"ui.board.broker.cost", {"amount": UiText.money(broker_cost())})
+	broker_cost_label.text = UiText.money(broker_cost())
 	var sel: Dictionary = broker_selection()
 	var reason: StringName = BoardBroker.check(profile, StringName(sel["heist_id"]), int(sel["difficulty"]), heist_pool,
 			tweak, build_gate)
@@ -403,7 +417,7 @@ func _level() -> int:
 
 func _on_pin_pressed(slot: int) -> void:
 	select_slot(slot)
-	if take_button.visible:
+	if not take_button.disabled:
 		take_button.grab_focus()
 
 

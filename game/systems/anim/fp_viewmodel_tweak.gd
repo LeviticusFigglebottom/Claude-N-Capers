@@ -99,6 +99,14 @@ static var _gen: int = 0
 ## PD2-style fixed vertical FOV (deg) the first-person arms/weapon render with, independent of the world FOV
 ## setting and ADS zoom (no stretched guns at wide FOV). 0 = draw them with the world camera.
 @export var viewmodel_fov_deg: float = 52.0
+## PO-4 (PD2 readability): a key light that lights ONLY the viewmodel layer (light_cull_mask), riding the viewmodel
+## camera, so the arms and gun stay readable when the world light is behind the player (night streets, backlit
+## doorways). 0 energy = off. Direction: euler degrees in camera space (x pitch down, y yaw), light shines along -Z.
+@export var viewmodel_key_light_energy: float = 0.7
+@export var viewmodel_key_light_color: Color = Color(1.0, 0.96, 0.9)
+@export var viewmodel_key_light_euler_deg: Vector3 = Vector3(-35.0, 25.0, 0.0)
+## Multiplier on the world Environment's ambient energy for the viewmodel camera only.
+@export var viewmodel_ambient_mult: float = 1.6
 
 @export_group("Motion")
 ## Horizontal speed (m/s) above which walk bob / sprint play.
@@ -114,6 +122,13 @@ static var _gen: int = 0
 ## PI-21: share of the camera's step smoothing offset (CrewController.step_offset) the arms add on top, so they
 ## trail the camera on stairs and curbs instead of riding it rigidly. 0 = off; ADS scales it by `ads_bob_mult`.
 @export var step_lag_mult: float = 0.6
+## PO-4: camera-space offset (m) of the whole viewmodel per anim_set at hip fire (x right, y up, -z forward). The
+## authored rig puts the rifle's stock behind the lens (receiver fills the corner); PD2 shows the gun low-right with
+## the receiver in view. Sets not listed: no offset.
+@export var set_hip_offset: Dictionary[StringName, Vector3] = {}
+## PO-4: extra forward offset (m, negative = away from the eye) per anim_set when fully aimed (eye relief), on top
+## of the AimPoint alignment. Sets not listed: 0.
+@export var set_ads_offset_z: Dictionary[StringName, float] = {}
 ## While aimed, shift the arms so the weapon's `AimPoint` sits on the camera axis.
 @export var ads_align_aim_point: bool = true
 ## Viewmodel meshes cast no world shadows.

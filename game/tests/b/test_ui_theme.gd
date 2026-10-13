@@ -123,3 +123,114 @@ func test_objective_complete_flash() -> void:
 	await wait_seconds(ObjectivesPanel.FLASH_S + 0.2)
 	assert_false(_hud.objectives.flashing)
 	assert_eq(_hud.objectives.header_label.text, UiText.t(&"ui.hud.objectives"))
+
+
+func test_crew_rows_named_by_heister_before_ready() -> void:
+	_model = MockHudModel.new()
+	add_child(_model)
+	_hud = (load(HUD_PATH) as PackedScene).instantiate() as Hud
+	_hud.auto_find_model = false
+	var hid: StringName = Heisters.ids()[0]
+	_hud.set_crew_heisters({2: hid})  # MenuFlow hands them over before the HUD enters the tree
+	add_child(_hud)
+	await wait_frames(1)
+	_hud.bind(_model)
+	_model.crew = [{"slot": 2, "name": "AI 1", "is_ai": true, "health_frac": 1.0, "armor_frac": 1.0,
+			"state": Enums.CrewState.NORMAL, "downs_left": 3, "carried_loot_id": &""}]
+	await wait_frames(1)
+	assert_eq((_hud.teammates.name_labels[2] as Label).text, Heisters.display_name(hid))
+
+
+## PO-1: the mask-up ring shows while mask up is held (0 < progress < 1) and hides otherwise.
+func test_mask_up_ring() -> void:
+	await _spawn_hud()
+	_model.player_mode = &"casing"
+	assert_false(_hud.mask_ring.visible, "nothing held")
+	_model.mask_progress = 0.4
+	assert_true(_hud.mask_ring.visible, "held: ring shows")
+	assert_near(_hud.mask_ring.progress, 0.4, 0.001)
+	_model.mask_progress = 1.0
+	assert_false(_hud.mask_ring.visible, "done: ring hides")
+
+
+## PO-5.6: real mission data (Glasshouse) fills {count}/{total}; a disabled step (lockdown) is skipped.
+func test_objective_mission_data_and_disabled_step() -> void:
+	await _spawn_hud()
+	_model.objectives = [
+		{"id": &"keycard", "text_key": &"objective.glasshouse.keycard", "args": {"disabled": true, "reason": &"lockdown"},
+			"state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"secure", "text_key": &"objective.glasshouse.secure",
+			"args": {"bags": 2, "count": 0, "total": 2, "optional_more": true}, "state": Enums.ObjectiveState.ACTIVE}]
+	await wait_frames(1)
+	var l: Label = _hud.objectives.list_box.get_child(0) as Label
+	assert_eq(l.text, UiText.t(&"objective.glasshouse.secure", {"count": 0, "total": 2}), "disabled keycard skipped")
+	assert_false(l.text.contains("{"), l.text)
+
+
+## Lead lane 5 (ui_hud v1.8): objective markers project, clamp off-screen ones to the edge, and hide
+## while casing unless the objective is a casing one.
+func test_objective_markers() -> void:
+	await _spawn_hud()
+	var cam: Camera3D = Camera3D.new()
+	add_child(cam)
+	cam.current = true
+	_model.player_mode = &"masked"
+	_model.objective_markers = [
+		{"id": &"safe", "text_key": &"objective.glasshouse.safe", "position": Vector3(0, 0, -10), "state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"escape", "text_key": &"objective.glasshouse.escape", "position": Vector3(0, 0, 10), "state": Enums.ObjectiveState.ACTIVE}]
+	await wait_frames(1)
+	var d: Array[Dictionary] = _hud.objective_markers.drawn
+	assert_eq(d.size(), 2)
+	assert_false(bool(d[0]["clamped"]), "in front: on screen")
+	assert_near(float(d[0]["distance_m"]), 10.0, 0.01)
+	assert_true(bool(d[1]["clamped"]), "behind: clamped to an edge")
+	var r: Rect2 = Rect2(Vector2.ZERO, _hud.objective_markers.size).grow(-ObjectiveMarkers.EDGE_INSET + 1.0)
+	assert_true(r.has_point(d[1]["pos"] as Vector2), "clamped inside the screen")
+	_model.player_mode = &"casing"
+	await wait_frames(1)
+	assert_eq(_hud.objective_markers.drawn.size(), 0, "hidden while casing")
+	_model.objective_markers = [{"id": &"casing", "text_key": &"objective.glasshouse.casing",
+			"position": Vector3(0, 0, -5), "state": Enums.ObjectiveState.ACTIVE}]
+	await wait_frames(1)
+	assert_eq(_hud.objective_markers.drawn.size(), 1, "a casing objective shows while casing")
+	cam.queue_free()
+
+
+## Lane 8: pad face buttons draw as discs, keys and shoulder buttons as key caps.
+func test_pad_face_buttons_are_round() -> void:
+	var was: bool = InteractionPanel.pad_active
+	InteractionPanel.pad_active = true
+	var p: KeyPrompt = KeyPrompt.new()
+	add_child(p)
+	p.set_prompt(&"ui.prompt.pick_lock", {}, "A")
+	assert_eq(p.cap.theme_type_variation, UiBuild.KEYCAP_ROUND)
+	p.set_prompt(&"ui.prompt.pick_lock", {}, "RB")
+	assert_eq(p.cap.theme_type_variation, UiBuild.KEYCAP)
+	InteractionPanel.pad_active = false
+	p.set_prompt(&"ui.prompt.pick_lock", {}, "A")
+	assert_eq(p.cap.theme_type_variation, UiBuild.KEYCAP, "a keyboard A is a key")
+	InteractionPanel.pad_active = was
+	p.queue_free()
+
+
+## Markers: labels use the objective's args (no raw placeholders); only the current step is "current".
+func test_objective_markers_label_and_current() -> void:
+	await _spawn_hud()
+	var cam: Camera3D = Camera3D.new()
+	add_child(cam)
+	cam.current = true
+	_model.player_mode = &"masked"
+	_model.objectives = [
+		{"id": &"safe", "text_key": &"objective.glasshouse.safe", "args": {}, "state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"secure", "text_key": &"objective.glasshouse.secure", "args": {"bags": 2, "count": 1, "total": 2},
+			"state": Enums.ObjectiveState.ACTIVE}]
+	_model.objective_markers = [
+		{"id": &"safe", "text_key": &"objective.glasshouse.safe", "position": Vector3(0, 0, -10), "state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"secure", "text_key": &"objective.glasshouse.secure", "position": Vector3(1, 0, -10), "state": Enums.ObjectiveState.ACTIVE}]
+	await wait_frames(1)
+	var d: Array[Dictionary] = _hud.objective_markers.drawn
+	assert_eq(d.size(), 2)
+	assert_true(bool(d[0]["current"]) and not bool(d[1]["current"]), "the panel's step is current")
+	assert_false(String(d[1]["label"]).contains("{"), String(d[1]["label"]))
+	assert_true(String(d[1]["label"]).contains("1/2"), String(d[1]["label"]))
+	cam.queue_free()

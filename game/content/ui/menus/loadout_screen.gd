@@ -104,7 +104,7 @@ func build_ui() -> void:
 		profile = SaveService.load_profile(profile_slot)
 	var root: VBoxContainer = UiBuild.vbox(16)
 	_content = UiBuild.screen_margin(self, root)
-	root.add_child(UiBuild.label(&"ui.loadout.title", UiBuild.HEADER))
+	root.add_child(UiBuild.header(&"ui.workshop.crumb" if hub_mode else &"ui.loadout.crumb", &"ui.loadout.title"))
 	civilian_notice = UiBuild.label(&"ui.loadout.civilian_start", UiBuild.DIM)
 	civilian_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	civilian_notice.visible = start_mode == &"civilian" and not hub_mode
@@ -529,7 +529,18 @@ func _rebuild_focus() -> void:
 			focus_chain.append(c)
 	if is_inside_tree():
 		UiNav.chain_vertical(focus_chain)
-		UiNav.chain_horizontal([mask_option, masks_button] as Array[Control], false)
+		# PO-4 card grid: left / right pair the two cards of a row (the chain stays the down / up order).
+		UiNav.chain_horizontal([primary_slot, weapon_option] as Array[Control], false)
+		primary_slot.focus_neighbor_bottom = primary_slot.get_path_to(weapon_option)
+		UiNav.chain_horizontal([melee_option, armor_option] as Array[Control], false)
+		UiNav.chain_horizontal([deployable_option, throwable_option] as Array[Control], false)
+		UiNav.chain_horizontal([mask_option, masks_button, heister_option] as Array[Control], false)
+		var mods: Array[Control] = []
+		var mod_types: Array = mod_options.keys()
+		mod_types.sort()
+		for t: Variant in mod_types:
+			mods.append(mod_options[t] as Control)
+		UiNav.chain_horizontal(mods, false)
 		var nav: Array[Control] = [back_button]
 		if not compact_mode:
 			nav.append_array([skills_button, perks_button, workshop_button] as Array[Control])

@@ -8,7 +8,7 @@ class_name NpcVisuals
 extends RefCounted
 
 const TWEAK_PATH: String = "res://systems/ai/npc/npc_visual_tweak.tres"
-const CHAR_DIR: String = "res://world/characters/"
+const CHAR_DIR: String = G.CHARACTERS_DIR  # LEAD: contract path (characters.md), not a hard path into ENV D
 
 static var _tweak: NpcVisualTweak = null
 static var _cache: Dictionary[String, PackedScene] = {}

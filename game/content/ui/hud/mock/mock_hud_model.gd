@@ -14,6 +14,7 @@ signal carried_bag_changed()     ## carried_bag
 signal interaction_changed()     ## interaction
 signal detection_changed()       ## detection
 signal marked_targets_changed()  ## marked_targets
+signal objective_markers_changed(markers: Array)  ## objective_markers (v1.8)
 signal pagers_changed()          ## pagers, pagers_answered, pagers_max
 signal timers_changed()          ## ecm_time_left_s, camera_alarm_s
 signal objectives_changed()      ## objectives
@@ -26,6 +27,8 @@ signal custody_changed()         ## custody (v1.2)
 signal captain_changed()         ## captain_present, captain_resistance (v1.3)
 signal stamina_changed()         ## stamina, exhausted (v1.4)
 signal player_mode_changed()     ## player_mode (v1.6)
+## Extras without a contract signal (like LocalHudModel): mask_progress.
+signal changed(property: StringName)
 signal dominate_prompt_changed()  ## dominate_target, dominate_window_s (PP-A-1, S5.8 / D-079)
 signal crew_stats_changed()      ## crew_stats (B6-02 proposal, QB to ENV A; content/docs/scoreboard.md)
 
@@ -111,6 +114,12 @@ var detection: Array[Dictionary] = []:
 		detection = v
 		detection_changed.emit()
 ## [{ "net_id": int, "world_pos": Vector3, "kind": StringName }]
+## v1.8 (D-089): [{id, text_key, position: Vector3, state}] for ACTIVE objectives.
+var objective_markers: Array[Dictionary] = []:
+	set(v):
+		objective_markers = v
+		objective_markers_changed.emit(v)
+
 var marked_targets: Array[Dictionary] = []:
 	set(v):
 		marked_targets = v
@@ -185,6 +194,12 @@ var player_mode: StringName = &"":
 	set(v):
 		player_mode = v
 		player_mode_changed.emit()
+
+## LocalHudModel extra: mask-up hold progress 0..1 (announced through `changed`).
+var mask_progress: float = 0.0:
+	set(v):
+		mask_progress = v
+		changed.emit(&"mask_progress")
 
 ## v1.2 (D-043): {} or { "in_custody": bool, "negotiation_left_s": float, "auto_release_left_s": float
 ##   (< 0 = none), "highlighted_hostage_net_id": int }

@@ -14,11 +14,14 @@ const MASK_ACTION: StringName = &"mask_up"
 const THROW_ACTION: StringName = &"drop_bag"
 
 var prompt: KeyPrompt
+## PO-5.11 casing note under the mask-up hint (doors vs locks).
+var note: Label
 ## Current hint id: &"" / &"resume" / &"mask_up" / &"throw_bag" (tests).
 var hint: StringName = &""
 var capture_probe: Callable = func() -> bool:
 	return MouseCapture.is_captured() or not MouseCapture.wants_capture()
 var _captured: bool = true
+var _sounded_hint: StringName = &""
 
 
 func build() -> void:
@@ -29,6 +32,11 @@ func build() -> void:
 	add_child(p)
 	prompt = KeyPrompt.new(UiTokens.FONT_BODY)
 	p.get_child(0).add_child(prompt)
+	note = UiBuild.float_text(UiBuild.label(&"ui.hud.casing_note", UiBuild.HUD))
+	note.add_theme_font_size_override(&"font_size", UiTokens.FONT_SMALL)
+	note.add_theme_color_override(&"font_color", UiTokens.PAPER_DIM)
+	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	p.get_child(0).add_child(note)
 
 
 func watched_signals() -> Array[StringName]:
@@ -58,8 +66,12 @@ func refresh() -> void:
 		prompt.set_prompt(&"ui.prompt.throw_bag", {}, InteractionPanel.action_key_text(THROW_ACTION))
 	else:
 		hint = &""
+	note.visible = hint == &"mask_up"
 	var was: bool = visible
 	visible = hint != &""
+	if hint != &"" and hint != _sounded_hint:
+		UiSfx.play(UiSfx.HINT)  # D-090: a new hint appears
+	_sounded_hint = hint
 	if visible and not was and is_inside_tree() and UiTokens.motion_ok():
 		modulate.a = 0.0  # PO-4 motion: a new hint fades in
 		create_tween().tween_property(self, ^"modulate:a", 1.0, UiTokens.T_BASE).set_ease(Tween.EASE_OUT)

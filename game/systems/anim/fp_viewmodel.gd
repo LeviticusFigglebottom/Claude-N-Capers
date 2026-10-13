@@ -684,6 +684,8 @@ func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 	var amp: float = _bob_weight * lerpf(1.0, tw.ads_bob_mult, ads_weight)
 	var off: Vector3 = Vector3(sin(_bob_phase) * tw.bob_amplitude.x, sin(_bob_phase * 2.0) * tw.bob_amplitude.y, 0.0) * amp
 	off.y += step_lag(tw)
+	var hip: Vector3 = tw.set_hip_offset.get(anim_set, Vector3.ZERO)
+	off += hip.lerp(Vector3(0.0, 0.0, float(tw.set_ads_offset_z.get(anim_set, 0.0))), ads_weight)
 	if tw.ads_align_aim_point and ads_weight > 0.0 and weapon_visual != null and is_instance_valid(weapon_visual) \
 			and is_inside_tree():
 		var aim: Node3D = weapon_visual.get_marker(WeaponVisual.AIM_POINT)

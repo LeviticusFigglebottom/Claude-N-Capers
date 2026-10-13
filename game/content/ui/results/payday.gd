@@ -29,6 +29,13 @@ const MENU_SCENE: String = "res://content/ui/menus/menu_flow.tscn"
 const URGENT_COLOR: Color = Color(1.0, 0.42, 0.32)
 ## PQ-B-5: player picks are ignored this long after the cards appear.
 const INPUT_GRACE_S: float = 0.6
+## Crew table column -> header strings key.
+const CREW_COLUMN_KEYS: Dictionary = {"kills": &"ui.results.kills", "specials_killed": &"ui.results.specials_killed",
+	"downs": &"ui.results.downs", "civilians_killed": &"ui.results.civilians_killed"}
+## PO-4: seconds the payday total takes to count up.
+const COUNT_S: float = 1.2
+## D-090: at most one count-up tick per this many ms.
+const COUNT_TICK_MS: int = 80
 
 @export var listen_heist_ended: bool = false
 @export var apply_to_profile: bool = true
@@ -70,6 +77,8 @@ var timer_label: Label
 var card_result_label: Label
 ## Urgent-window second ticks so far (PQ-B-9).
 var urgent_ticks: int = 0
+## Times the hero total landed (cue.payday_total requested; tests).
+var total_landed_count: int = 0
 var _content: VBoxContainer
 var _summary: ScrollContainer
 var _cards_root: VBoxContainer
@@ -77,6 +86,8 @@ var _cards_row: HBoxContainer
 var _cards_title: Label
 var _applied: bool = false
 var _input_grace: float = 0.0
+var _counter: Tween = null
+var _count_tick_ms: int = 0
 
 
 func _sync_cursor() -> void:
@@ -442,6 +453,7 @@ func _build_hero(success: bool) -> HBoxContainer:
 	total.add_theme_color_override(&"font_color", UiTokens.BRASS_HI if success else UiTokens.PAPER_MUTE)
 	left.add_child(total)
 	value_labels[&"hero_total"] = total
+	_count_up(total, int(payout.get("total", 0)))
 	var split: Label = UiBuild.label(&"", UiBuild.DIM)
 	split.text = "%s   ·   %s" % [
 		UiText.t(&"ui.results.stash_line", {"amount": UiText.money(int(payout.get("stash", 0)))}),
@@ -456,6 +468,44 @@ func _build_hero(success: bool) -> HBoxContainer:
 	xp.text = "+" + UiText.group_digits(int(payout.get("xp_total", 0)))
 	right.add_child(xp)
 	return row
+
+
+## PO-4 motion: the hero total ticks up from 0 over COUNT_S (ease out); any accept / click skips to the
+## end. Reduce Motion (or headless) shows the final number at once.
+## D-090: cue.payday_tick ticks along the count-up (every COUNT_TICK_MS at most) and cue.payday_total
+## lands with the final number (at once when there is no count-up).
+func _count_up(l: Label, amount: int) -> void:
+	if amount <= 0 or not is_inside_tree():
+		return
+	if not UiTokens.motion_ok() or DisplayServer.get_name() == "headless":
+		_total_landed()
+		return
+	_count_tick_ms = Time.get_ticks_msec()
+	_counter = create_tween()
+	_counter.tween_method(_count_step.bind(l), 0.0, float(amount), COUNT_S) \
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	_counter.finished.connect(_total_landed)
+
+
+func _count_step(v: float, l: Label) -> void:
+	l.text = UiText.money(roundi(v))
+	var now: int = Time.get_ticks_msec()
+	if now - _count_tick_ms >= COUNT_TICK_MS:
+		_count_tick_ms = now
+		UiSfx.play(UiSfx.PAYDAY_TICK)
+
+
+func _total_landed() -> void:
+	total_landed_count += 1
+	UiSfx.play(UiSfx.PAYDAY_TOTAL)
+
+
+## Jumps a running count-up to its end. Returns whether one was running.
+func skip_count() -> bool:
+	if _counter != null and _counter.is_valid() and _counter.is_running():
+		_counter.custom_step(COUNT_S)
+		return true
+	return false
 
 
 func _build_cash() -> VBoxContainer:
@@ -512,13 +562,22 @@ func _build_stats() -> VBoxContainer:
 	grid.columns = 5
 	grid.add_theme_constant_override(&"h_separation", 36)
 	v.add_child(grid)
-	for key: StringName in [&"ui.results.crew", &"ui.results.kills", &"ui.results.specials_killed",
-			&"ui.results.downs", &"ui.results.civilians_killed"]:
-		grid.add_child(UiBuild.label(key, UiBuild.DIM))
-	for member: Dictionary in result.get("crew", []) as Array:
+	# PO-4 audit: a column that is 0 for the whole crew is noise (kills always show).
+	var crew: Array = result.get("crew", []) as Array
+	var cols: Array[String] = ["kills"]
+	for k: String in ["specials_killed", "downs", "civilians_killed"]:
+		for member: Dictionary in crew:
+			if int(member.get(k, 0)) != 0:
+				cols.append(k)
+				break
+	grid.columns = cols.size() + 1
+	grid.add_child(UiBuild.caption(&"ui.results.crew"))
+	for k: String in cols:
+		grid.add_child(UiBuild.caption(CREW_COLUMN_KEYS[k] as StringName))
+	for member: Dictionary in crew:
 		var slot: int = int(member.get("slot", 0))
 		grid.add_child(UiBuild.label(StringName(_crew_name(slot, bool(member.get("is_ai", false))))))
-		for k: String in ["kills", "specials_killed", "downs", "civilians_killed"]:
+		for k: String in cols:
 			grid.add_child(UiBuild.label(StringName(str(int(member.get(k, 0))))))
 	return v
 
@@ -613,6 +672,8 @@ func _on_heist_ended(heist_result: Dictionary) -> void:
 
 
 func _on_continue() -> void:
+	if skip_count():
+		return  # PO-4: the first press finishes the count-up
 	if not cards_stage and has_card_pick():
 		show_cards()
 		return

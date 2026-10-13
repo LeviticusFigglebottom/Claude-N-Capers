@@ -57,6 +57,7 @@ func set_line(line: String, key_text: String) -> void:
 		left.text = line.left(at).strip_edges()
 		right.text = line.substr(at + _MARK.length()).strip_edges()
 		cap_label.text = key_text
+		cap.theme_type_variation = UiBuild.keycap_variation(key_text)
 		cap.visible = true
 		text = line.replace(_MARK, key_text)
 	left.visible = left.text != ""

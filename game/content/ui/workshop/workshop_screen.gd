@@ -173,7 +173,7 @@ func equip_finish() -> bool:
 
 ## Recompute stats, detection risk, item statuses and the buttons from the model.
 func refresh() -> void:
-	cash_label.text = UiText.t(&"ui.workshop.cash", {"amount": UiText.money(profile.cash)})
+	cash_label.text = UiText.money(profile.cash)
 	var w: WeaponDef = model.weapon()
 	weapon_name_label.text = UiText.t(UiText.item_key(w.id)) if w != null else ""
 	weapon_status_label.text = _weapon_status(model.weapon_id)
@@ -187,23 +187,21 @@ func refresh() -> void:
 
 
 func _build_header() -> HBoxContainer:
-	var h: HBoxContainer = UiBuild.hbox(20)
-	h.add_child(UiAccent.strip(UiAccent.table().fallback, 6.0))
-	var titles: VBoxContainer = UiBuild.vbox(2)
-	titles.add_child(UiBuild.label(&"ui.hub.title", UiBuild.DIM))
-	titles.add_child(UiBuild.label(&"ui.workshop.title", UiBuild.HEADER))
+	var h: HBoxContainer = UiBuild.hbox(UiTokens.S4)
+	var titles: VBoxContainer = UiBuild.header(&"ui.workshop.crumb", &"ui.workshop.title")
 	titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(titles)
-	cash_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	cash_label.size_flags_vertical = Control.SIZE_SHRINK_END
-	h.add_child(cash_label)
+	cash_label = UiBuild.label(&"", UiBuild.MONEY)
+	var cash: VBoxContainer = UiBuild.field(&"ui.workshop.cash_caption", cash_label)
+	cash.size_flags_vertical = Control.SIZE_SHRINK_END
+	h.add_child(cash)
 	return h
 
 
 func _build_weapon_column() -> Control:
-	var v: VBoxContainer = UiBuild.vbox(10)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	v.custom_minimum_size = Vector2(400, 0)
-	v.add_child(UiBuild.label(&"ui.workshop.weapons", UiBuild.DIM))
+	v.add_child(UiBuild.caption(&"ui.workshop.weapons"))
 	weapon_list = _item_list()
 	weapon_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	weapon_list.item_selected.connect(_on_weapon_row)
@@ -212,11 +210,12 @@ func _build_weapon_column() -> Control:
 
 
 func _build_stage_column() -> Control:
-	var v: VBoxContainer = UiBuild.vbox(8)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var names: HBoxContainer = UiBuild.hbox(16)
+	var names: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	weapon_name_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	weapon_status_label = UiBuild.label(&"", UiBuild.DIM)
+	weapon_status_label = UiBuild.caption()
+	weapon_status_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	weapon_status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	weapon_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	names.add_child(weapon_name_label)
@@ -228,23 +227,21 @@ func _build_stage_column() -> Control:
 	stage.name = "Stage"
 	stage.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	box.add_child(stage)
-	var hint: Label = UiBuild.label(&"ui.workshop.hint", UiBuild.DIM)
+	var hint: Label = UiBuild.caption(&"ui.workshop.hint")
+	hint.uppercase = false
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hint.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	hint.offset_left = 16
-	hint.offset_right = -16
-	hint.offset_top = -64
-	hint.offset_bottom = -10
+	hint.offset_left = UiTokens.S3
+	hint.offset_right = -UiTokens.S3
+	hint.offset_top = -UiTokens.S7
+	hint.offset_bottom = -UiTokens.S2
 	hint.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	box.add_child(hint)
 	stage.view_changed.connect(func() -> void: hint.visible = stage.focused_slot < 0)
 	var frame: PanelContainer = UiBuild.panel(box)
-	var sb: StyleBoxFlat = StyleBoxFlat.new()
-	sb.bg_color = Color(0, 0, 0, 0)
-	sb.border_color = UiBuild.theme().get_stylebox(&"panel", &"PanelContainer").get(&"border_color")
-	sb.set_border_width_all(1)
-	sb.set_content_margin_all(1)
+	var sb: StyleBoxFlat = UiThemeFactory.box(Color.TRANSPARENT, UiTokens.LINE, 1, UiTokens.CUT, Vector2(1, 1))
+	sb.draw_center = false
 	frame.add_theme_stylebox_override(&"panel", sb)
 	frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(frame)
@@ -257,14 +254,14 @@ func _build_mod_column() -> Control:
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.custom_minimum_size = Vector2(560, 0)
 	scroll.follow_focus = true
-	var v: VBoxContainer = UiBuild.vbox(10)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	v.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.add_child(v)
-	v.add_child(UiBuild.label(&"ui.workshop.slots", UiBuild.DIM))
+	v.add_child(UiBuild.caption(&"ui.workshop.slots"))
 	_slot_flow = HFlowContainer.new()
-	_slot_flow.add_theme_constant_override(&"h_separation", 8)
-	_slot_flow.add_theme_constant_override(&"v_separation", 8)
+	_slot_flow.add_theme_constant_override(&"h_separation", UiTokens.S1)
+	_slot_flow.add_theme_constant_override(&"v_separation", UiTokens.S2)
 	v.add_child(_slot_flow)
 	parts_list = _item_list()
 	parts_list.custom_minimum_size = Vector2(0, LIST_ROW_PX * 3 + 12)
@@ -272,10 +269,10 @@ func _build_mod_column() -> Control:
 	parts_list.item_selected.connect(_on_part_row)
 	v.add_child(parts_list)
 	part_status_label = UiBuild.label()
+	part_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(part_status_label)
 	part_desc_label = UiBuild.label(&"", UiBuild.DIM)
 	part_desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	part_desc_label.custom_minimum_size = Vector2(0, 52)
 	v.add_child(part_desc_label)
 	finish_panel = WorkshopFinishPanel.new()
 	finish_panel.name = "FinishPanel"
@@ -283,27 +280,24 @@ func _build_mod_column() -> Control:
 	finish_panel.preview_changed.connect(_on_finish_preview)
 	finish_panel.finish_equipped.connect(_on_finish_equipped)
 	v.add_child(finish_panel)
-	var dr: VBoxContainer = UiBuild.vbox(6)
-	concealment_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	detection_risk_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	dr.add_child(concealment_label)
-	dr.add_child(detection_risk_label)
-	v.add_child(UiBuild.panel(dr))
 	return scroll
 
 
+## Stats against the equipped weapon (caption names, body values, green / red deltas) over the
+## concealment and Detection Risk the loadout would have.
 func _build_stats_panel() -> PanelContainer:
-	var v: VBoxContainer = UiBuild.vbox(6)
-	compare_label = UiBuild.label(&"", UiBuild.DIM)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
+	compare_label = UiBuild.caption()
 	v.add_child(compare_label)
 	var grid: GridContainer = GridContainer.new()
 	grid.columns = 6
-	grid.add_theme_constant_override(&"h_separation", 18)
+	grid.add_theme_constant_override(&"h_separation", UiTokens.S3)
 	grid.add_theme_constant_override(&"v_separation", 0)
 	v.add_child(grid)
 	for row: Array in STAT_ROWS:
-		var name_l: Label = UiBuild.label(StringName(row[1]))
+		var name_l: Label = UiBuild.caption(StringName(row[1]))
 		name_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name_l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		grid.add_child(name_l)
 		var val: Label = UiBuild.label()
 		val.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -314,29 +308,32 @@ func _build_stats_panel() -> PanelContainer:
 		grid.add_child(dl)
 		stat_value_labels[row[0]] = val
 		stat_delta_labels[row[0]] = dl
+	v.add_child(HSeparator.new())
+	var dr: HBoxContainer = UiBuild.hbox(UiTokens.S6)
+	concealment_label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	detection_risk_label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	dr.add_child(UiBuild.field(&"ui.workshop.loadout_concealment", concealment_label))
+	dr.add_child(UiBuild.field(&"ui.stat.detection_risk", detection_risk_label))
+	v.add_child(dr)
 	return UiBuild.panel(v)
 
 
+## PO-4 footer: Back (ghost) left, the last message, then Buy and Equip (the one primary) on the right.
 func _build_footer() -> HBoxContainer:
-	var h: HBoxContainer = UiBuild.hbox(16)
 	back_button = UiBuild.button(&"ui.menu.back")
 	back_button.custom_minimum_size = Vector2(220, 0)
 	back_button.pressed.connect(back_requested.emit)
 	buy_button = UiBuild.button(&"ui.workshop.buy_none")
 	buy_button.custom_minimum_size = Vector2(380, 0)
-	buy_button.pressed.connect(buy_selected)
-	equip_button = UiBuild.primary(UiBuild.button(&"ui.workshop.equip"))
+	buy_button.pressed.connect(func() -> void: UiSfx.check(buy_selected()))
+	equip_button = UiBuild.button(&"ui.workshop.equip")
 	equip_button.custom_minimum_size = Vector2(380, 0)
 	equip_button.pressed.connect(equip_selected)
 	message_label = UiBuild.label(&"", UiBuild.DIM)
 	message_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	message_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	h.add_child(back_button)
-	h.add_child(buy_button)
-	h.add_child(equip_button)
-	h.add_child(message_label)
-	return h
+	return UiBuild.footer(back_button, equip_button, [message_label, buy_button] as Array[Control])
 
 
 func _item_list() -> ItemList:
@@ -350,7 +347,7 @@ func _item_list() -> ItemList:
 	panel.set_content_margin_all(6)
 	l.add_theme_stylebox_override(&"panel", panel)
 	var focus: StyleBoxFlat = panel.duplicate() as StyleBoxFlat
-	focus.bg_color = Color(0, 0, 0, 0)
+	focus.draw_center = false
 	focus.border_color = UiBuild.theme().get_color(&"highlight", &"Screen")
 	focus.set_border_width_all(2)
 	l.add_theme_stylebox_override(&"focus", focus)
@@ -398,16 +395,14 @@ func _rebuild_slots() -> void:
 	slot_buttons.clear()
 	var group: ButtonGroup = ButtonGroup.new()
 	for t: int in model.slots():
-		var b: Button = UiBuild.button(_mod_type_key(t))
-		b.custom_minimum_size = Vector2(0, 0)
-		b.toggle_mode = true
+		var b: Button = UiBuild.tab(UiBuild.button(_mod_type_key(t)))
 		b.button_group = group
 		b.pressed.connect(select_slot.bind(t))
 		b.focus_entered.connect(_on_slot_focus.bind(t))
 		_slot_flow.add_child(b)
 		slot_buttons[t] = b
-	overview_button = UiBuild.button(&"ui.workshop.overview")
-	overview_button.custom_minimum_size = Vector2(0, 0)
+	overview_button = UiBuild.tab(UiBuild.button(&"ui.workshop.overview"))
+	overview_button.toggle_mode = false
 	overview_button.pressed.connect(_on_overview)
 	_slot_flow.add_child(overview_button)
 	if is_inside_tree():
