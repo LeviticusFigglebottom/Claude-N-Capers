@@ -194,7 +194,11 @@ static func state_of(node: Node) -> Dictionary:
 		return _crew_state(crew)
 	var npc: NpcBase = node as NpcBase
 	if npc != null:
-		return {"alive": npc.alive, "alert": int(npc.alert_state), "hp": npc.health, "stun": npc.stun_left > 0.0}
+		var st: Dictionary = {"alive": npc.alive, "alert": int(npc.alert_state), "hp": npc.health, "stun": npc.stun_left > 0.0}
+		var gb: GuardBrain = npc.get_node_or_null(^"Brain") as GuardBrain
+		if gb != null:
+			st["dom"] = gb.dominate_window_left > 0.0  # PP-A-1: the S5.8 window, for the client HUD cue
+		return st
 	var bag: LootBag = node as LootBag
 	if bag != null:
 		return {"carrier": NetIds.of(bag.carrier) if bag.is_carried() else 0, "secured": bag.secured,
@@ -320,6 +324,14 @@ static func _apply_npc_state(npc: NpcBase, d: Dictionary) -> void:
 		npc.set_alert_state(int(d["alert"]) as Enums.AlertState)
 	if d.has("alive") and not bool(d["alive"]) and npc.alive:
 		npc.die({}, 0)
+	if d.has("dom"):
+		var gb: GuardBrain = npc.get_node_or_null(^"Brain") as GuardBrain
+		if gb != null and not Net.is_authority():
+			var on: bool = bool(d["dom"])
+			if on and gb.dominate_window_left <= 0.0:
+				gb.dominate_window_left = Tweak.stealth().guard_dominate_window_s
+			elif not on:
+				gb.dominate_window_left = 0.0
 
 
 static func _apply_bag_state(bag: LootBag, d: Dictionary) -> void:

@@ -17,6 +17,10 @@
 ##   makes the guard raise the alarm and open fire (COMBAT). Otherwise P1: radio straight away.
 ## - S3.7 misfire: dying in stealth to a non-head, non-shotgun bullet hit makes the gun go off with
 ##   misfire_chance (GameRng &"misfire"): NPC gunshot noise (gunshot_npc_radius_m).
+## - S5.8 domination: for guard_dominate_window_s after "!" in stealth, a shout (ShoutSystem ->
+##   `on_shouted`) from crew with `stealth.can_dominate_guards` makes the guard kneel and cuff himself
+##   (DOMINATED, permanent, joins G.HOSTAGE, guard_dominated [R]). The PagerSystem starts his pager on
+##   the DOMINATED state change (S5.2), so the pager still fires.
 ## Numbers: GuardTweak (guard_tweak.tres), StealthTweak (S3 timings), EnemyDef (speeds).
 class_name GuardBrain
 extends Node
@@ -57,6 +61,10 @@ var cuff_phase: CuffPhase = CuffPhase.NONE
 var cuff_target: CrewController = null
 ## S3.7: this guard's gun went off when he died.
 var misfired: bool = false
+## S5.8: seconds left in the domination window after "!" (0 = closed).
+var dominate_window_left: float = 0.0
+## S5.8: crew slot that dominated this guard (-1 = none).
+var dominated_by_slot: int = -1
 
 var _npc: NpcBase = null
 var _motor: NpcMotor = null
@@ -168,6 +176,7 @@ func _build_route() -> void:
 func _physics_process(delta: float) -> void:
 	if not _started or _npc == null or not _npc.alive or not Net.is_authority():
 		return
+	dominate_window_left = maxf(dominate_window_left - delta, 0.0)  # S5.8
 	if _npc.is_stunned():  # A2-03 (S8.6): ECM feedback stun pauses everything (radio call too)
 		wants_to_fire = false
 		return
@@ -462,6 +471,40 @@ func _on_weapon_fired(shooter_net_id: int, _weapon_id: StringName, _suppressed: 
 		_cuff_violation()
 
 
+# --- Domination (S5.8) --------------------------------------------------------------------------
+
+## S5.8: a shout from `crew` would dominate this guard now.
+func can_be_dominated_by(crew: Node) -> bool:
+	var c: CrewController = crew as CrewController
+	return c != null and _started and _is_active() and dominate_window_left > 0.0 and _stealth_active() \
+		and Modifiers.flag(c.slot, &"stealth.can_dominate_guards")
+
+
+## ShoutSystem hook (S5.8). Returns true when the guard was dominated.
+func on_shouted(crew: Node) -> bool:
+	if not Net.is_authority() or not can_be_dominated_by(crew):
+		return false
+	dominate((crew as CrewController).slot)
+	return true
+
+
+## Server: kneel and cuff himself for crew `slot` (S5.8). Permanent; the pager follows (S5.2).
+func dominate(slot: int) -> void:
+	if not _is_active():
+		return
+	dominate_window_left = 0.0
+	dominated_by_slot = slot
+	_npc.set_alert_state(Enums.AlertState.DOMINATED)  # cancels the radio call / cuff flow
+	anim_hint = &"kneel_cuffed"
+	_npc.add_to_group(G.HOSTAGE)
+	var targets: CivilianTargets = CivilianTargets.ensure(_runtime if _runtime != null else HeistRuntime.of(_npc))
+	if targets != null:
+		targets.recount_hostages()
+	EventBus.guard_dominated.emit(_npc.net_id, slot)
+	Net.replicate_event(&"guard_dominated", [_npc.net_id, slot])
+	Log.info(&"ai", "guard %d dominated by slot %d" % [_npc.net_id, slot])
+
+
 # --- Misfire (S3.7) -----------------------------------------------------------------------------
 
 func _maybe_misfire(info: Dictionary) -> void:
@@ -570,6 +613,9 @@ func _can_see(c: CrewController) -> bool:
 # --- Signals --------------------------------------------------------------------------------
 
 func _on_crew_spotted(crew: Node) -> void:
+	if _started and _is_active() and _stealth_active() and dominate_window_left <= 0.0 \
+			and _npc.alert_state != Enums.AlertState.ALARMED and _npc.alert_state != Enums.AlertState.COMBAT:
+		dominate_window_left = Tweak.stealth().guard_dominate_window_s  # S5.8: window opens on "!"
 	if _cuffs_apply(crew):
 		_begin_cuff(crew as CrewController)  # S3.2 P2
 		return
@@ -619,12 +665,18 @@ func _on_alert_state_changed(_old_state: int, new_state: int) -> void:
 
 func _on_died(info: Dictionary, _killer_net_id: int) -> void:
 	radio_time_left = 0.0
+	dominate_window_left = 0.0
 	_clear_cuff()
 	_maybe_misfire(info)
 	wants_to_fire = false
 	combat_target = null
 	anim_hint = &""
 	set_physics_process(false)
+	if _npc.is_in_group(G.HOSTAGE):  # S5.8: a dominated guard killed stops counting as a hostage
+		_npc.remove_from_group(G.HOSTAGE)
+		var targets: CivilianTargets = CivilianTargets.ensure(_runtime if _runtime != null else HeistRuntime.of(_npc))
+		if targets != null:
+			targets.recount_hostages()
 
 
 # --- Helpers ----------------------------------------------------------------------------------

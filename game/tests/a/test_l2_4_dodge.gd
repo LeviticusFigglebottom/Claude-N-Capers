@@ -39,12 +39,12 @@ func test_l2_4_dodge_add_one_dodges_every_ranged_hit() -> void:
 	assert_near(c.health.health, health, 0.0001, "health untouched")
 
 
-func test_l2_4_melee_is_not_dodged_yet() -> void:
+func test_l2_4_melee_can_be_dodged() -> void:
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	Modifiers.set_source(0, &"test", {&"defense.dodge_add": 1.0})
 	var out: Dictionary = _hit(c, 5.0, Enums.DamageType.MELEE)
-	assert_false(bool(out.get("dodged", false)), "melee: dodge + knockback come later")
-	assert_true(float(out["amount"]) > 0.0)
+	assert_true(bool(out.get("dodged", false)), "L2.4: melee can be dodged (knockback is the caller's)")
+	assert_near(float(out["amount"]), 0.0, 0.001)
 
 
 func test_l2_4_negative_total_never_dodges() -> void:

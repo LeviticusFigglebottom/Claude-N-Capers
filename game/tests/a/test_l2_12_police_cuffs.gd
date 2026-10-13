@@ -100,3 +100,35 @@ func test_l2_12_teammate_uncuffs() -> void:
 	assert_has(_events, [&"uncuffed", 0, 1])
 	var rev: InteractableComponent = c.get_node("ReviveInteractable") as InteractableComponent
 	assert_true(rev.enabled, "still revivable")
+
+
+## Lead (D-082, PD2): police never cuff / arrest AI crew. A downed AI teammate with an officer next to it
+## is not cuffed; it bleeds out and goes into custody.
+func test_l2_12_police_never_cuff_downed_ai_crew() -> void:
+	var bot: CrewController = _crew(1)
+	assert_true(bot.is_ai, "slot 1 is an AI teammate")
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(-20, 0.05, 20)))
+	_rt.teleport_crew(1, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
+	_crew(0).set_masked()
+	bot.set_masked()
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(2)
+	bot.health.go_down()
+	bot.weapons.last_shot_age = INF
+	assert_false(CrewCuffs.can_police_cuff(bot), "a downed, non-shooting AI is not police-cuffable")
+	var cop: NpcBase = _rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -2)))
+	var closest: float = INF
+	for _i: int in 30:  # 3 s
+		await wait_physics_frames(6)
+		closest = minf(closest, Vector2(cop.global_position.x, cop.global_position.z).length())
+	assert_true(closest <= CustodyTweak.data().police_cuff_range_m + 0.5,
+		"the officer reached the downed bot (closest %.2f m)" % closest)
+	assert_eq(bot.crew_state, Enums.CrewState.DOWNED, "still downed, not cuffed")
+	assert_true(_events.filter(func(e: Array) -> bool: return e[0] == &"cuffed").is_empty(), "no crew_cuffed")
+	var bleed: float = bot.health.bleedout_left
+	await wait_seconds(0.5)
+	assert_true(bot.health.bleedout_left < bleed, "bleedout keeps running")
+	bot.health.bleedout_left = 0.3  # skip the rest of the bleedout timer
+	var gone: bool = await wait_until(func() -> bool: return bot.crew_state == Enums.CrewState.CUSTODY, 3.0)
+	assert_true(gone, "bled out into custody (%s)" % Enums.CrewState.keys()[bot.crew_state])
+	assert_true(_events.filter(func(e: Array) -> bool: return e[0] == &"cuffed").is_empty(), "never cuffed")

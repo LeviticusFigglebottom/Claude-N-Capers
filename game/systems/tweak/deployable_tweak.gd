@@ -22,10 +22,20 @@ static var _cached: DeployableTweak = null
 	&"deployable.body_bag_case": {"kind": &"body_bag_case", "count": 1, "uses": 3, "deploy_time_s": 2.0,
 		"params": {"bags": 3}},
 	&"deployable.armor_bag": {"kind": &"armor_bag", "count": 1, "uses": 1, "deploy_time_s": 2.0, "params": {}},
+	# S9.5: 3 base (deploy.extra.trip_mine adds); spent as shaped charges with interaction.shaped_charge.
+	&"deployable.trip_mine": {"kind": &"trip_mine", "count": 3, "uses": 1, "deploy_time_s": 1.0, "params": {}},
 }
 ## Deploy hold time when a def has none (s).
 @export var default_deploy_time_s: float = 2.0
 
+@export_group("Trip mine (S9.5)")
+## ◇ arming delay after placement, proximity trigger radius, blast radius (x deploy.trip_mine_radius_mult),
+## blast damage (L3.6 falloff) and explosion noise radius.
+@export var trip_mine_arm_s: float = 1.0
+@export var trip_mine_trigger_m: float = 1.5
+@export var trip_mine_radius_m: float = 3.0
+@export var trip_mine_damage: float = 600.0
+@export var trip_mine_noise_radius_m: float = 45.0
 @export_group("Placement")
 ## The deployable lands this far in front of the crew member's feet (m), on the floor below.
 @export var place_forward_m: float = 0.8

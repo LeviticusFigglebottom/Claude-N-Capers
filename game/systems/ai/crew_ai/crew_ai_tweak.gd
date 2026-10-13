@@ -60,6 +60,9 @@ extends Resource
 @export var repath_goal_move_m: float = 1.0
 ## Advance to the next path corner within this horizontal distance (m).
 @export var waypoint_reach_m: float = 0.45
+## D-085: interior path corners are pushed this far away from the inside of the turn (the wall corner the
+## navmesh path hugs), so the 0.35 m crew capsule clears a corner baked for a 0.30 m nav agent.
+@export var corner_margin_m: float = 0.1
 
 @export_group("Orders (L6.1, A3-05)")
 ## D-014 "P4 option": a follow / carry_bag / revive order in STEALTH un-hides the AI so it follows and

@@ -95,6 +95,14 @@ func _prefab_ready() -> void:
 	interactable.kind = &"place_drill"
 	interactable.extra_check = _availability
 	interactable.completed.connect(_on_completed)
+	_lock_target.call_deferred()
+
+
+## PP audit: a target that can be locked behind this device (SmallLoot) stays shut until it finishes.
+func _lock_target() -> void:
+	var t: Node = get_node_or_null(target) if not target.is_empty() else null
+	if t != null and t.has_method(&"lock_for_device") and Net.is_authority():
+		t.call(&"lock_for_device")
 
 
 func _physics_process(delta: float) -> void:
