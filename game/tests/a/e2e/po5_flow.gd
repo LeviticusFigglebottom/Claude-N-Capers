@@ -298,11 +298,23 @@ func seconds(s: float) -> void:
 func set_fast(on: bool) -> void:
 	fast = on
 	RenderingServer.render_loop_enabled = not on
+	_hud_redraw_widgets(not on)
+
+
+## Harness workaround (PO-5 stealth finding): with the render loop off, the HUD still does its per-frame
+## canvas work (markers, cards, prompts) and single process frames grow to 7-20 s under llvmpipe (game
+## time up to ~85x slower than wall time once masked). The HUD canvas layers are hidden while the loop is
+## off and shown again for every screenshot. Presentation only: gameplay is untouched.
+func _hud_redraw_widgets(show: bool) -> void:
+	for n: Node in get_tree().root.get_children():
+		if n is CanvasLayer:
+			(n as CanvasLayer).visible = show
 
 
 func shot(label: String) -> void:
 	var was_fast: bool = fast
 	if was_fast:
+		_hud_redraw_widgets(true)
 		RenderingServer.render_loop_enabled = true
 		await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
@@ -312,6 +324,7 @@ func shot(label: String) -> void:
 	img.save_png(path)
 	if was_fast:
 		RenderingServer.render_loop_enabled = false
+		_hud_redraw_widgets(false)
 	note("shot %s" % path)
 
 

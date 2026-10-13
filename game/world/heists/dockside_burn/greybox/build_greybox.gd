@@ -11,6 +11,8 @@
 ## this file holds no path into another environment's folder.
 extends "res://world/heists/dockside_burn/greybox/db_gameplay.gd"
 
+const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
+
 
 func _initialize() -> void:
 	_build.call_deferred()
@@ -617,6 +619,7 @@ func _mast(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
 	light.light_color = EMISSIVE_MATS["sodium"]
 	light.light_energy = 2.2
 	light.omni_range = 18.0
+	light.layers |= VIEWMODEL_LIT_LAYER  # D-095: also lights the FP viewmodel
 	add(body, light)
 	obstruct(body.transform, AABB(Vector3(-0.1, 0.0, -0.1), Vector3(0.2, 8.0, 0.2)))
 
@@ -702,6 +705,7 @@ func _ceiling_light(parent: Node3D, nm: String, pivot: Vector3, color: Color, en
 	light.light_color = color
 	light.light_energy = energy
 	light.omni_range = rng
+	light.layers |= VIEWMODEL_LIT_LAYER  # D-095: also lights the FP viewmodel
 	add(r, light)
 
 
@@ -725,6 +729,7 @@ func _wall_light(parent: Node3D, nm: String, pivot: Vector3, yaw: float, color: 
 	light.light_color = color
 	light.light_energy = energy
 	light.omni_range = rng
+	light.layers |= VIEWMODEL_LIT_LAYER  # D-095: also lights the FP viewmodel
 	add(r, light)
 
 

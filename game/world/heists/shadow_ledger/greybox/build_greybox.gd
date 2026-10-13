@@ -11,6 +11,7 @@
 ## their contract class names, so this file holds no path into another environment's folder.
 extends "res://world/heists/shadow_ledger/greybox/sl_gameplay.gd"
 
+const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 ## Storey tops for the curtain wall (next FFL).
 const STOREY_TOP: Dictionary = {"L41": 8.0, "L42": 11.6}
 const ROOM_LIGHT: Dictionary = {
@@ -913,6 +914,7 @@ func _ceiling_light(parent: Node3D, nm: String, pivot: Vector3, color: Color, en
 	light.light_color = color
 	light.light_energy = energy
 	light.omni_range = rng
+	light.layers |= VIEWMODEL_LIT_LAYER  # D-095: also lights the FP viewmodel
 	add(r, light)
 
 

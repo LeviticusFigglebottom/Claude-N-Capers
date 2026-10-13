@@ -10,6 +10,8 @@ extends RefCounted
 const TWEAK_PATH: String = "res://systems/ai/npc/npc_visual_tweak.tres"
 const CHAR_DIR: String = G.CHARACTERS_DIR  # LEAD: contract path (characters.md), not a hard path into ENV D
 
+## TEST / PERF HOOK (A4-02): true = never resolve (NPCs keep their scene's placeholder capsule).
+static var disabled: bool = false
 static var _tweak: NpcVisualTweak = null
 static var _cache: Dictionary[String, PackedScene] = {}
 
@@ -27,6 +29,8 @@ static func scene_path(char_id: String, variant: String = "") -> String:
 
 
 static func resolve(npc: NpcBase) -> PackedScene:
+	if disabled:
+		return null
 	var def: EnemyDef = npc.enemy_def
 	if def != null and String(def.id).begins_with("enemy."):
 		var cid: String = String(def.id).substr(6)

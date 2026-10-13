@@ -10,6 +10,7 @@
 ## out of the tree, so their runtime _ready() never runs here.
 extends SceneTree
 
+const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 const L: GDScript = preload("res://world/heists/glasshouse/greybox/glasshouse_layout.gd")
 const R: GDScript = preload("res://world/heists/glasshouse/greybox/glasshouse_resources.gd")
 const A: GDScript = preload("res://world/heists/glasshouse/greybox/gh_art.gd")
@@ -795,14 +796,7 @@ func _ceiling_light(parent: Node3D, nm: String, pivot: Vector3, color: Color, en
 	mi.position = Vector3(0.0, -size.y * 0.5 - 0.002, 0.0)
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_add(root, mi)
-	var light: OmniLight3D = OmniLight3D.new()
-	light.name = "Light"
-	light.position = Vector3(0.0, -0.25, 0.0)
-	light.light_color = color
-	light.light_energy = energy
-	light.omni_range = rng
-	light.shadow_enabled = nm in SHADOWED
-	_add(root, light)
+	_fixture_light(root, nm, Vector3(0.0, -0.25, 0.0), color, energy, rng)
 
 
 ## Wall-mounted fixture/sign: pivot on the wall face (back-centre), -Z out of the wall.
@@ -821,12 +815,18 @@ func _wall_light(parent: Node3D, nm: String, pivot: Vector3, yaw: float, color: 
 	mi.position = Vector3(0.0, 0.0, -size.z * 0.5 - 0.002)
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_add(root, mi)
+	_fixture_light(root, nm, Vector3(0.0, -0.1, -0.4), color, energy, rng)
+
+
+## The fixture's OmniLight3D "Light": world layer + viewmodel_lit (D-095).
+func _fixture_light(root: Node3D, nm: String, pos: Vector3, color: Color, energy: float, rng: float) -> void:
 	var light: OmniLight3D = OmniLight3D.new()
 	light.name = "Light"
-	light.position = Vector3(0.0, -0.1, -0.4)
+	light.position = pos
 	light.light_color = color
 	light.light_energy = energy
 	light.omni_range = rng
+	light.layers |= VIEWMODEL_LIT_LAYER  # D-095: also lights the FP viewmodel
 	light.shadow_enabled = nm in SHADOWED
 	_add(root, light)
 
