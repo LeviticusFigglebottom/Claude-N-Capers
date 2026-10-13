@@ -47,10 +47,16 @@ func _ready() -> void:
 func _run() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	var mode: String = args[0] if args.size() > 0 else "hud"
+	OnboardingTips.persist = false  # never touch the player's save from a capture
+	if mode != "onboarding":
+		for id: StringName in OnboardingTips.ALL:
+			OnboardingTips.mark_seen(id)  # the other shots stay as they were
 	if mode == "menus":
 		await _menus()
 	elif mode == "loud":
 		await _loud()
+	elif mode == "onboarding":
+		await _onboarding()
 	else:
 		await _hud()
 	print("CONTRAST %s (%d failures, min %.1f:1)" % ["PASS" if _fails == 0 else "FAIL", _fails, MIN_RATIO])
@@ -180,3 +186,34 @@ func _loud() -> void:
 		{"slot": 1, "name": "Dutch", "is_ai": true, "is_local": false, "kills": 4, "specials_killed": 0, "civilians_killed": 0, "downs": 0}]
 	hud.scoreboard.refresh()
 	await _shot("loud_scoreboard", hud.scoreboard)  # only the sheet: the HUD under it is covered on purpose
+
+
+## PO-4 lane 11: the casing and stealth onboarding cards over the backdrops.
+func _onboarding() -> void:
+	var back: ColorRect = ColorRect.new()
+	back.size = Vector2(SIZE)
+	_vp.add_child(back)
+	var model: MockHudModel = MockHudModel.new()
+	_vp.add_child(model)
+	var hud: Hud = (load(HUD_PATH) as PackedScene).instantiate() as Hud
+	hud.auto_find_model = false
+	_vp.add_child(hud)
+	await get_tree().process_frame
+	hud.onboarding.show_delay_s = 0.0
+	model.objectives = [{"id": &"casing", "text_key": &"objective.glasshouse.casing", "args": {},
+			"state": Enums.ObjectiveState.ACTIVE}]
+	hud.bind(model)
+	model.player_mode = &"casing"
+	for bg: String in BACKDROPS:
+		back.color = BACKDROPS[bg] as Color
+		await _shot("card_casing_" + bg, hud.onboarding)
+	hud.onboarding.dismiss()
+	model.player_mode = &"masked"
+	back.color = BACKDROPS["bright"] as Color
+	await _shot("card_stealth", hud)
+	hud.onboarding.dismiss()
+	model.heist_phase = Enums.HeistPhase.LOUD
+	await _shot("card_loud", hud.onboarding)
+	hud.onboarding.dismiss()
+	model.heist_phase = Enums.HeistPhase.ESCAPE
+	await _shot("card_escape", hud.onboarding)

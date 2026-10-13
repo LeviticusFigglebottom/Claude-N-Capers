@@ -200,6 +200,11 @@ var mask_progress: float = 0.0:
 	set(v):
 		mask_progress = v
 		changed.emit(&"mask_progress")
+## LocalHudModel extra: Enums.HeistPhase (announced through `changed`; OnboardingCard).
+var heist_phase: int = Enums.HeistPhase.LOADING:
+	set(v):
+		heist_phase = v
+		changed.emit(&"heist_phase")
 
 ## v1.2 (D-043): {} or { "in_custody": bool, "negotiation_left_s": float, "auto_release_left_s": float
 ##   (< 0 = none), "highlighted_hostage_net_id": int }

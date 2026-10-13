@@ -34,6 +34,7 @@ func _shot(shot: String, frames: int = 12) -> void:
 func _run() -> void:
 	UiScreen.motion_enabled = false
 	SaveService.root_dir = "user://ui_audit_profiles"
+	OnboardingTips.persist = false  # PO-4 lane 11: cards show, the save is never touched
 	var p: PlayerProfile = PlayerProfile.new_default()
 	SaveService.save_profile(p, SLOT)
 	_flow = (load("res://content/ui/menus/menu_flow.tscn") as PackedScene).instantiate() as MenuFlow

@@ -34,6 +34,8 @@ var local_slot: int = -1
 var grid: GridContainer
 ## PO-4: every visible objective with its state (the HUD shows only the current one).
 var objectives_box: VBoxContainer
+## slot -> heister id (Hud.set_crew_heisters): rows name the heister in their colour, like the crew rows.
+var heisters: Dictionary = {}
 
 
 func _init() -> void:
@@ -68,7 +70,7 @@ func build() -> void:
 	p.add_theme_stylebox_override(&"panel", UiThemeFactory.box(Color(UiTokens.INK_1, 0.94), UiTokens.LINE_STRONG, 1,
 			UiTokens.CUT, Vector2(UiTokens.S5, UiTokens.S4)))
 	p.add_child(row)
-	p.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	p.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)  # as tall as its rows, no empty sheet
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(p)
 
@@ -196,8 +198,13 @@ func _row(r: Dictionary) -> void:
 		local_slot = slot
 	var row_cells: Dictionary = {}
 	var name_label: Label = UiBuild.label(&"", UiBuild.HUD)
+	var heister: StringName = StringName(heisters.get(slot, &""))
+	if heister != &"":
+		r = r.duplicate()
+		r["name"] = Heisters.display_name(heister)
 	name_label.text = _display_name(r, mine)
-	name_label.add_theme_color_override(&"font_color", tweak.interaction_color if mine else tweak.ally_color)
+	var tint: Color = tweak.interaction_color if mine else tweak.ally_color
+	name_label.add_theme_color_override(&"font_color", Heisters.accent(heister) if heister != &"" else tint)
 	grid.add_child(name_label)
 	row_cells[NAME] = name_label
 	for col: StringName in COLUMNS:
