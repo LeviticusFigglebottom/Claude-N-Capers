@@ -327,8 +327,8 @@ func _assert_mods(got: Dictionary, expected: Dictionary, label: String) -> void:
 ## concealment qualifier, skill MULT merging, multi-qualifier runtime query).
 ## Corsair base (weapons/corsair_ar.tres) + suppressor + reflex (replaces default iron sights) +
 ## vertical grip + extended mag (replaces default standard mag):
-##   damage 55 - 4 = 51; spread_ads 2.7 - 0.1 = 2.6; recoil_kick 1.05 - 0.1 - 0.2 = 0.75;
-##   recoil_h 1.5 - 0.1 = 1.4 (D-097 PD2 base values); mag 30 + 10 = 40; total 150 + 30 = 180; reload 2.4 + 0.3 = 2.7,
+##   damage 55 - 4 = 51; spread_ads 0.8 - 0.1 = 0.7; recoil_kick 0.9 - 0.1 - 0.2 = 0.6;
+##   recoil_h 0.45 - 0.1 = 0.35; mag 30 + 10 = 40; total 150 + 30 = 180; reload 2.4 + 0.3 = 2.7,
 ##   empty 3.1 + 0.4 = 3.5; concealment 20 - 3 - 1 - 1 - 2 = 13; suppression 12 - 12 = 0;
 ##   ads_time 0.28 + 0.06 + 0.02 + 0.03 = 0.39; magnification max(1, 1.15); suppressed, noise
 ##   min(70, 1) = 1. Falloff and fire rate unchanged (deltas 0).
@@ -382,8 +382,8 @@ func test_10_golden_suppressed_ar_stealth_build() -> void:
 ## skill basic x aced MULT, skill x perk card MULT on one key, card gating, PARAMS last card wins,
 ## team.* split into TEAM sources).
 ## Plowman base + choke + pistol grip + extended tube (replaces default standard tube):
-##   spread_hip 3.6 - 0.5 - 0.3 = 2.8; spread_ads 2.9 - 0.5 + 0.5 = 2.9; recoil 4.3 + 0.8 = 5.1;
-##   recoil_h 0.45 + 0.3 = 0.75 (D-097 PD2 base values); mag 6 + 2 = 8; total 48 + 8 = 56; concealment 21 - 1 + 5 - 2 = 23;
+##   spread_hip 4.0 - 0.5 - 0.3 = 3.2; spread_ads 2.0 - 0.5 + 0.5 = 2.0; recoil 2.6 + 0.8 = 3.4;
+##   recoil_h 0.9 + 0.3 = 1.2; mag 6 + 2 = 8; total 48 + 8 = 56; concealment 21 - 1 + 5 - 2 = 23;
 ##   ads_time 0.3 + 0.02 = 0.32; D-045: reload = 0.4 + 8 x 0.4333 + 0.4 = 4.2664,
 ##   empty = 0.4 + 8 x 0.4333 + 1.2 = 5.0664.
 ## Concealment: 23 + 30 + 30 + light vest 26 + Foreman card 4 concealment_add.all 1 = 110 ->
