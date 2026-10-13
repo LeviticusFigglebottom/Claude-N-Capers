@@ -28,6 +28,13 @@ extends Resource
 @export var edge_assist_m: float = 0.45
 ## Camera-only smoothing of step-up / step-down height changes (1/s, exponential); gameplay position is exact.
 @export var step_smooth_rate: float = 14.0
+## PO-4 (PD2): camera-only landing dip of the local human. A landing faster than land_dip_min_mps kicks the eye down
+## by (impact - min) x land_dip_gain (m per m/s, capped at land_dip_max_m) through a critically damped spring of
+## land_dip_hz, so it dips and recovers in ~0.3 s. 0 gain = off. Gameplay position is unaffected.
+@export var land_dip_min_mps: float = 2.0
+@export var land_dip_gain: float = 0.012
+@export var land_dip_max_m: float = 0.09
+@export var land_dip_hz: float = 3.0
 
 @export_group("Stamina (QB-60, PD2 movement_state.stamina)")
 ## Pool before movement.stamina_mult x team.stamina_mult x ArmorDef.stamina_mult.

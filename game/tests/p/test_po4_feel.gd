@@ -106,3 +106,28 @@ func test_recoil_punch_eases_in_and_holds() -> void:
 	await wait_physics_frames(60)
 	assert_near(c.look_pitch - p0, total, 0.0005, "no auto-recovery (PD2)")
 	assert_true(pin.recoil_apply_s > 0.0, "tunable on")
+
+
+## PO-4 (PD2): a real jump's landing dips the camera (camera only) and it recovers; a flat walk never dips.
+func test_landing_dip_and_recovery() -> void:
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
+	await wait_physics_frames(20)
+	var walk_min: float = 0.0
+	_inp.press(&"move_forward")
+	for _i: int in 30:
+		await wait_physics_frames(1)
+		walk_min = minf(walk_min, c.land_dip)
+	_inp.release(&"move_forward")
+	assert_near(walk_min, 0.0, 1e-6, "walking does not dip")
+	await _inp.tap(&"jump")
+	var lowest: float = 0.0
+	var landed_tick: int = -1
+	for t: int in 120:
+		await wait_physics_frames(1)
+		lowest = minf(lowest, c.land_dip)
+		if landed_tick < 0 and c.land_dip < 0.0:
+			landed_tick = t
+	assert_true(lowest < -0.005, "landing dipped the camera (%.3f m)" % lowest)
+	assert_true(lowest >= -Tweak.crew().land_dip_max_m - 0.005, "dip capped")
+	assert_near(c.land_dip, 0.0, 0.002, "recovered")
