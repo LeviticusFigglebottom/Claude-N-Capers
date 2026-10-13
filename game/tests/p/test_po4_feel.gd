@@ -163,3 +163,34 @@ func test_landing_dip_and_recovery() -> void:
 	assert_true(lowest >= -Tweak.crew().land_dip_max_m - 0.005, "dip capped")
 	assert_near(c.land_dip, 0.0, 0.002, "recovered")
 
+
+
+## PO-4 (PD2 _end_action_running): fire pressed while sprinting ends the sprint at once (and it stays off while the
+## sprint key is still held), the shot waits CrewTweak.sprint_exit_fire_s for the gun to come up, then fires.
+func test_sprint_to_fire_exit_delay() -> void:
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
+	await wait_seconds(1.0)
+	var w: CrewWeapons = c.weapons
+	var ws: int = w.equipped_slot
+	var m0: int = w.mag(ws)
+	_inp.press(&"move_forward")
+	_inp.press(&"sprint")
+	assert_true(await wait_until(func() -> bool: return c.sprinting, 1.0), "sprinting")
+	_inp.press(&"fire")
+	var exit_s: float = Tweak.crew().sprint_exit_fire_s
+	var early_shot: bool = false
+	var t: float = 0.0
+	while t < exit_s - 0.08:
+		await wait_physics_frames(1)
+		t += 1.0 / Engine.physics_ticks_per_second
+		early_shot = early_shot or w.mag(ws) < m0
+	assert_false(c.sprinting, "sprint ended by the fire press (sprint still held)")
+	assert_false(early_shot, "no shot while the gun comes up")
+	assert_true(await wait_until(func() -> bool: return w.mag(ws) < m0, exit_s + 0.5), "then it fires")
+	_inp.release(&"fire")
+	assert_false(c.sprinting, "sprint stays off until re-pressed")
+	_inp.release(&"sprint")
+	await wait_physics_frames(2)
+	_inp.press(&"sprint")
+	assert_true(await wait_until(func() -> bool: return c.sprinting, 1.0), "re-pressed sprint runs again")

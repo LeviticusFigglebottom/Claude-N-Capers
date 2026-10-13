@@ -6,6 +6,9 @@ extends Resource
 @export_group("Movement")
 @export var walk_speed: float = 3.5
 @export var sprint_speed: float = 5.75
+## PO-4 (PD2 PlayerStandard:_end_action_running, 0.4 s / exit_run_speed_multiplier): pressing fire while sprinting ends
+## the sprint and the gun comes up over this long before it can shoot; sprint stays off until it is pressed again.
+@export var sprint_exit_fire_s: float = 0.4
 @export var crouch_speed: float = 2.25
 @export var jump_velocity: float = 4.6
 @export var gravity: float = 9.8

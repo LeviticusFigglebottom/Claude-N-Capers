@@ -76,6 +76,9 @@ var _ai_stances: Dictionary = {}
 var _recoil: Array[Dictionary] = []
 ## PD2 recovery: kick accumulated since shooting started (yaw, pitch; radians) and seconds since the last shot.
 var _recoil_acc: Vector2 = Vector2.ZERO
+## PO-4: seconds left of the sprint -> fire exit (CrewTweak.sprint_exit_fire_s); sprint cancelled until re-pressed.
+var _sprint_exit_left: float = 0.0
+var _sprint_cancelled: bool = false
 var _since_shot: float = 0.0
 ## Seconds the right stick has been past gamepad_ramp_threshold (L4 turn ramp).
 var _pad_ramp_s: float = 0.0
@@ -303,9 +306,15 @@ func build_intent(rt: HeistRuntime) -> CrewIntent:
 	i.look_yaw = _yaw
 	i.look_pitch = _pitch
 	i.sprint = _held_or_toggled(&"sprint")
+	if _sprint_cancelled:
+		if Input.is_action_pressed(&"sprint"):
+			i.sprint = false
+		else:
+			_sprint_cancelled = false
 	i.crouch = _held_or_toggled(&"crouch")
 	i.jump = Input.is_action_pressed(&"jump")
 	i.fire = Input.is_action_pressed(&"fire")
+	_sprint_to_fire(i)
 	i.aim = _held_or_toggled(&"aim")
 	if i.move.y <= 0.1:
 		_toggled.erase(&"sprint")  # a toggled sprint ends when the player stops running forward
@@ -356,6 +365,23 @@ func build_intent(rt: HeistRuntime) -> CrewIntent:
 			i.interact = false
 			i.shout = false
 	return i
+
+
+## PO-4 (PD2): fire pressed while sprinting ends the sprint (until sprint is pressed again) and holds the shot for
+## CrewTweak.sprint_exit_fire_s while the gun comes up. Ticks on intent builds (physics rate).
+func _sprint_to_fire(i: CrewIntent) -> void:
+	var dt: float = 1.0 / float(Engine.physics_ticks_per_second)
+	if _sprint_exit_left > 0.0:
+		_sprint_exit_left = maxf(_sprint_exit_left - dt, 0.0)
+		i.fire = false
+		i.sprint = false
+		return
+	if i.fire and _crew != null and _crew.sprinting:
+		_sprint_exit_left = Tweak.crew().sprint_exit_fire_s
+		_sprint_cancelled = true
+		_toggled.erase(&"sprint")
+		i.fire = false
+		i.sprint = false
 
 
 ## A3-05 `order_menu` tap -> CrewIntent order fields (see the header).
