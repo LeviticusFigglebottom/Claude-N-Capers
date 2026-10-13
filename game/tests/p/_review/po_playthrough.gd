@@ -9,6 +9,7 @@ extends Node
 
 var _out: String = ""
 var _heist: StringName = &"glasshouse"
+var _no_kerb: bool = false
 var _flow: MenuFlow = null
 var _fails: PackedStringArray = []
 var _n: int = 0
@@ -21,6 +22,7 @@ func _ready() -> void:
 		args[kv[0]] = kv[1] if kv.size() > 1 else "1"
 	_out = String(args.get("out", OS.get_user_data_dir() + "/po_playthrough"))
 	_heist = StringName(String(args.get("heist", "glasshouse")))
+	_no_kerb = args.has("no_kerb")
 	DirAccess.make_dir_recursive_absolute(_out)
 	await _run()
 	print("[PO] RESULT %s %s" % ["PASS" if _fails.is_empty() else "FAIL", "; ".join(_fails)])
@@ -148,7 +150,71 @@ func _in_heist() -> void:
 	if c.global_position.distance_to(p0) < 0.5:
 		_fail("W did not move the player")
 	await _shot("walked")
-	await _kerb(c)
+	if not _no_kerb:
+		await _kerb(c)
+	await _feel(c)
+
+
+## PO lane 3: the core verbs by real X input with a capture each (run with --fixed-fps 60 so game time = frames).
+func _feel(c: CrewController) -> void:
+	var w: CrewWeapons = c.weapons
+	# Sprint.
+	_xdo(["keydown", "w", "keydown", "shift"])
+	await _ticks(40)
+	_log("sprint: sprinting=%s speed=%.2f" % [c.sprinting, Vector2(c.velocity.x, c.velocity.z).length()])
+	if not c.sprinting:
+		_fail("Shift+W did not sprint")
+	await _shot("sprint")
+	# Fire from a sprint (PD2: ends the sprint, shoots after the gun comes up).
+	var m0: int = w.mag(w.equipped_slot)
+	_xdo(["mousedown", "1"])
+	await _ticks(45)
+	_xdo(["mouseup", "1"])
+	_xdo(["keyup", "shift", "keyup", "w"])
+	_log("sprint->fire: sprinting=%s mag %d -> %d" % [c.sprinting, m0, w.mag(w.equipped_slot)])
+	if w.mag(w.equipped_slot) >= m0:
+		_fail("fire from a sprint never shot")
+	await _ticks(30)
+	# ADS (right mouse) and fire.
+	_xdo(["mousedown", "3"])
+	await _ticks(30)
+	_log("ads: zoom=%.2f" % CrewView.local_zoom_factor())
+	await _shot("ads")
+	var m1: int = w.mag(w.equipped_slot)
+	_xdo(["click", "1"])
+	await _ticks(3)
+	await _shot("ads_fire")
+	await _ticks(20)
+	_xdo(["mouseup", "3"])
+	if w.mag(w.equipped_slot) >= m1:
+		_fail("ADS click did not fire")
+	await _ticks(30)
+	# Reload (R).
+	_xdo(["key", "r"])
+	await _ticks(20)
+	_log("reload: reloading=%s" % w.reloading)
+	await _shot("reload")
+	if not w.reloading:
+		_fail("R did not start a reload")
+	var t: int = 0
+	while w.reloading and t < 600:
+		await _ticks(1)
+		t += 1
+	_log("reload done after %d ticks, mag %d" % [t, w.mag(w.equipped_slot)])
+	# Crouch (C).
+	_xdo(["keydown", "c"])
+	await _ticks(30)
+	_log("crouch: crouched=%s" % c.crouched)
+	if not c.crouched:
+		_fail("C did not crouch")
+	await _shot("crouch")
+	_xdo(["keyup", "c"])
+	await _ticks(30)
+
+
+func _ticks(n: int) -> void:
+	for _i: int in n:
+		await get_tree().physics_frame
 
 
 ## PO-3: off the sidewalk kerb onto the street and back up it, by real mouse turns and W (the spawn faces the
