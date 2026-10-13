@@ -14,6 +14,8 @@ const MASK_ACTION: StringName = &"mask_up"
 const THROW_ACTION: StringName = &"drop_bag"
 
 var prompt: KeyPrompt
+## PO-5.11 casing note under the mask-up hint (doors vs locks).
+var note: Label
 ## Current hint id: &"" / &"resume" / &"mask_up" / &"throw_bag" (tests).
 var hint: StringName = &""
 var capture_probe: Callable = func() -> bool:
@@ -30,6 +32,11 @@ func build() -> void:
 	add_child(p)
 	prompt = KeyPrompt.new(UiTokens.FONT_BODY)
 	p.get_child(0).add_child(prompt)
+	note = UiBuild.float_text(UiBuild.label(&"ui.hud.casing_note", UiBuild.HUD))
+	note.add_theme_font_size_override(&"font_size", UiTokens.FONT_SMALL)
+	note.add_theme_color_override(&"font_color", UiTokens.PAPER_DIM)
+	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	p.get_child(0).add_child(note)
 
 
 func watched_signals() -> Array[StringName]:
@@ -59,6 +66,7 @@ func refresh() -> void:
 		prompt.set_prompt(&"ui.prompt.throw_bag", {}, InteractionPanel.action_key_text(THROW_ACTION))
 	else:
 		hint = &""
+	note.visible = hint == &"mask_up"
 	var was: bool = visible
 	visible = hint != &""
 	if hint != &"" and hint != _sounded_hint:

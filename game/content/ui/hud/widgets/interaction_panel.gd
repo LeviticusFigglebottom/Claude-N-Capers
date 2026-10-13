@@ -52,6 +52,8 @@ func refresh() -> void:
 	var args: Dictionary = (it.get("args", {}) as Dictionary).duplicate()
 	if not args.has("key"):
 		args["key"] = action_key_text(INTERACT_ACTION)
+	if not args.has("mask_key"):
+		args["mask_key"] = action_key_text(&"mask_up")  # PO-5.11: "Mask up first (hold G)"
 	prompt.set_prompt(key, args)
 	var p: float = float(it.get("progress", 0.0))
 	progress_bar.visible = p > 0.0

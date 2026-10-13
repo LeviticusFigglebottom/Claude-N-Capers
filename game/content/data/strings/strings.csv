@@ -86,6 +86,7 @@ ui.hud.marker_distance,{m} m
 ui.hud.casing,Casing
 ui.hud.masked,Masked
 ui.hud.mask_up_hint,Hold {key} to mask up
+ui.hud.casing_note,Unlocked doors open while casing. Locks and anything suspicious need the mask.
 ui.hud.hint.click_resume,Click to resume
 ui.hud.casing_blocked.sprint,Mask up to sprint ({key})
 ui.hud.casing_blocked.crouch,Mask up to crouch ({key})
@@ -151,7 +152,7 @@ ui.prompt.uncuff,Hold {key} to cut the cuffs
 ui.prompt.suspicious_not_allowed,Suspicious actions not allowed
 ui.prompt.break_glass,Press {key} to smash the glass
 ui.prompt.pick_bag,Hold {key} to pick up the bag
-ui.blocked.casing,Suspicious actions not allowed
+ui.blocked.casing,Mask up first (hold {mask_key})
 ui.blocked.need_keycard,Requires a keycard
 ui.blocked.need_body_bag,No body bags left
 ui.blocked.need_cable_tie,No cable ties left
