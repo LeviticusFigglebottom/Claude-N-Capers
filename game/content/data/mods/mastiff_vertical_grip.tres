@@ -15,8 +15,8 @@ magnification = 0.0
 equip_time_s = 0.0
 ads_time_s = 0.03
 noise_radius_m = 0.0
-recoil_kick_deg = -0.2
-recoil_horizontal_deg = -0.1
+recoil_kick_deg = -0.14
+recoil_horizontal_deg = -0.2
 concealment = -1
 
 [resource]

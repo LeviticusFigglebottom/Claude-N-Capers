@@ -14,8 +14,8 @@ headshot_mult = 0.0
 magnification = 0.0
 equip_time_s = 0.0
 noise_radius_m = 0.0
-recoil_kick_deg = -0.15
-recoil_horizontal_deg = -0.15
+recoil_kick_deg = 0.0
+recoil_horizontal_deg = -0.2
 ads_time_s = 0.05
 concealment = -2
 
