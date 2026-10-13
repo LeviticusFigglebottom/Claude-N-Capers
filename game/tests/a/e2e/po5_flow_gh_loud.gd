@@ -31,7 +31,7 @@ func play(flow: Node) -> int:
 	f.note("after shots: phase=%d went_loud=%s" % [rt.phase, rt.went_loud])
 	await f.shot("loud_start")
 	var wdoor: InteractableComponent = comp_tagged(&"workshop_door")
-	if not await p.goto(p.stand_point(wdoor.global_position), 0.6, 90.0):
+	if not await p.goto(p.stand_point(wdoor.global_position + Vector3(0, 0, 1.0)), 0.6, 90.0):
 		await f.shot("workshop_unreachable")
 		return await fail("PO-5.route: could not reach the workshop door")
 	var door: Door = wdoor.owner_node() as Door

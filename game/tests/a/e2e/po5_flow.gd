@@ -86,6 +86,17 @@ func enter_heist() -> bool:
 
 
 ## Every 10 s of game time: frame cost, crew states/positions, enemy count.
+var _worst_frame_ms: float = 0.0
+var _last_frame_us: int = 0
+
+
+func _process(_delta: float) -> void:
+	var now: int = Time.get_ticks_usec()
+	if _last_frame_us != 0:
+		_worst_frame_ms = maxf(_worst_frame_ms, (now - _last_frame_us) / 1000.0)
+	_last_frame_us = now
+
+
 func _telemetry() -> void:
 	while rt != null and is_instance_valid(rt):
 		await wait_s(10.0)
@@ -94,7 +105,9 @@ func _telemetry() -> void:
 		var cs: PackedStringArray = PackedStringArray()
 		for c: CrewController in rt.crew_members():
 			cs.append("%d:%d@%s" % [c.slot, c.crew_state, Po5Pilot._v(c.global_position)])
-		note("TEL t=%.0f phase=%d phys=%.1fms proc=%.1fms nodes=%d enemies=%d civs=%d crew=[%s]" % [rt.heist_time_s,
+		var worst: float = _worst_frame_ms
+		_worst_frame_ms = 0.0
+		note("TEL worst_frame=%.0fms t=%.0f phase=%d phys=%.1fms proc=%.1fms nodes=%d enemies=%d civs=%d crew=[%s]" % [worst, rt.heist_time_s,
 			rt.phase, Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
 			Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
 			get_tree().get_nodes_in_group(G.ENEMY).size(), get_tree().get_nodes_in_group(G.CIVILIAN).size(), " ".join(cs)])

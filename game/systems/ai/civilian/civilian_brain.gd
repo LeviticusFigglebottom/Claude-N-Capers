@@ -54,6 +54,8 @@ var _wander_timer: float = 0.0
 var _retarget_timer: float = 0.0
 var _alerted_stimulus_id: int = 0
 var _restrained_stimulus_id: int = 0
+var _flee_stall_t: float = 0.0
+var _flee_stall_pos: Vector3 = Vector3.ZERO
 
 
 func _ready() -> void:
@@ -349,6 +351,8 @@ func _alert_guard(g: NpcBase) -> void:
 func _flee() -> void:
 	mode = Mode.FLEE
 	anim_hint = &"run"
+	_flee_stall_t = 0.0
+	_flee_stall_pos = _npc.global_position
 	var away_from: Vector3 = _nearest_crew_position()
 	if away_from == Vector3.INF:
 		away_from = threat_position
@@ -361,6 +365,29 @@ func _flee() -> void:
 		return
 	_motor.go_to(_npc.global_position + dir.normalized() * Tweak.stealth().civilian_flee_distance_m,
 			Tweak.stealth().civilian_run_speed)
+
+
+## PO-5: FLEE that makes no progress (door blocked by the crew, unreachable point) ends in COWER.
+func _tick_flee_stall(delta: float) -> void:
+	var tw: StealthTweak = Tweak.stealth()
+	_flee_stall_t += delta
+	if _flee_stall_t < tw.civilian_flee_stall_s:
+		return
+	var moved: float = Vector2(_npc.global_position.x - _flee_stall_pos.x, _npc.global_position.z - _flee_stall_pos.z).length()
+	_flee_stall_t = 0.0
+	_flee_stall_pos = _npc.global_position
+	if moved < tw.civilian_flee_stall_m:
+		_cower()
+
+
+## PO-5 (D-086 playability): only a civilian on its feet blocks the crew (crew mask includes the NPC
+## layer). Cowering, intimidated (down) and tied civilians are on the floor: the crew walks past them
+## instead of being pinned in a doorway. Hitboxes are separate areas, so shooting is unaffected.
+func _update_body_block() -> void:
+	var blocking: bool = mode != Mode.COWER and mode != Mode.DOWN and mode != Mode.TIED and mode != Mode.DEAD
+	var layer: int = NpcBase.LAYER_NPCS if blocking else 0
+	if _npc.collision_layer != layer:
+		_npc.collision_layer = layer
 
 
 func _cower() -> void:
@@ -436,6 +463,7 @@ func _tick_wander() -> void:
 func _physics_process(delta: float) -> void:
 	if not Net.is_authority() or _npc == null or not _npc.alive:
 		return
+	_update_body_block()
 	match mode:
 		Mode.IDLE:
 			_tick_idle(delta)
@@ -448,6 +476,8 @@ func _physics_process(delta: float) -> void:
 		Mode.FLEE:
 			if _motor == null or _motor.arrived:
 				_cower()
+			else:
+				_tick_flee_stall(delta)
 		Mode.DOWN:
 			intimidate_left -= delta
 			if intimidate_left <= 0.0:

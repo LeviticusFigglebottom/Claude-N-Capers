@@ -61,6 +61,11 @@ func steer(yaw: float, pitch: float) -> float:
 	return ey
 
 
+func steer_at(point: Vector3) -> void:
+	var v: Vector3 = point - crew.eye_position()
+	steer(atan2(-v.x, -v.z), atan2(v.y, Vector2(v.x, v.z).length()))
+
+
 func face(point: Vector3, tol: float = 0.03, timeout_s: float = 3.0) -> bool:
 	var t: float = 0.0
 	while t < timeout_s:
@@ -85,7 +90,8 @@ func flat_dist(a: Vector3, b: Vector3) -> float:
 
 
 ## Walks to `target` along the navmesh until within `arrive_m` (horizontal). Returns success.
-func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprint: bool = false) -> bool:
+func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprint: bool = false,
+		doors: bool = true) -> bool:
 	var t: float = 0.0
 	var path: PackedVector3Array = PackedVector3Array()
 	var repath_t: float = 0.0
@@ -103,7 +109,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			if path.is_empty():
 				d.note("pilot: NO NAV PATH from %s to %s" % [_v(crew.global_position), _v(target)])
 				break
-		var door: Door = door_ahead()
+		var door: Door = door_ahead() if doors else null
 		if door != null:
 			inp.release(&"move_forward")
 			await open_door(door)
@@ -145,7 +151,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 		if hist_t >= stuck_window_s:
 			var moved: float = flat_dist(crew.global_position, hist_pos)
 			if moved < stuck_min_m and inp.is_held(&"move_forward"):
-				_log_stuck(corner)
+				await _log_stuck(corner)
 				recover += 1
 				await _unstick(recover)
 			hist_pos = crew.global_position
@@ -172,12 +178,27 @@ func _log_stuck(corner: Vector3) -> void:
 		if not r.is_empty():
 			var col: Object = r["collider"]
 			hits.append("h%.2f:%s@%s" % [h, (col as Node).get_path() if col is Node else str(col), _v(r["position"])])
+	for i: int in crew.get_slide_collision_count():
+		var kc: KinematicCollision3D = crew.get_slide_collision(i)
+		var cn: Node = kc.get_collider() as Node
+		hits.append("slide:%s@%s n=%s" % [cn.get_path() if cn != null else ^"?", _v(kc.get_position()), _v(kc.get_normal())])
+	hits.append("vel=%s floor=%s state=%d" % [_v(crew.velocity), crew.is_on_floor(), crew.crew_state])
 	var row: Dictionary = {"pos": crew.global_position, "toward": corner, "hits": hits}
 	stuck_spots.append(row)
 	d.note("pilot: STUCK at %s heading to %s; rays: %s" % [_v(crew.global_position), _v(corner), ", ".join(hits)])
+	if stuck_spots.size() <= 3:
+		await d.shot("stuck_%d" % stuck_spots.size())
 
 
 func _unstick(attempt: int) -> void:
+	for i: int in crew.get_slide_collision_count():
+		var blocker: NpcBase = crew.get_slide_collision(i).get_collider() as NpcBase
+		if blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():
+			d.note("pilot: civilian %s blocks the way: shout" % blocker.name)
+			await face(blocker.head_position() - Vector3(0, 0.4, 0), 0.05, 1.0)
+			await inp.tap(&"shout")
+			await inp.ticks(40)
+			return
 	if attempt % 2 == 1:
 		await inp.tap(&"jump")
 		await inp.ticks(20)
@@ -196,8 +217,15 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 	var isys: InteractionSystem = HeistRuntime.of(crew).interaction
 	var aimed: InteractableComponent = isys.aimed_component(crew)
 	if aimed != comp:
-		d.note("pilot: aimed %s, wanted %s (dist %.2f)" % [aimed.get_path() if aimed != null else ^"<none>",
-			comp.get_path(), crew.eye_position().distance_to(target)])
+		var space: PhysicsDirectSpaceState3D = crew.get_world_3d().direct_space_state
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(crew.eye_position(), target, 1)
+		q.exclude = [crew.get_rid()]
+		var hit: Dictionary = space.intersect_ray(q)
+		var ang: float = rad_to_deg(crew.aim_direction().angle_to(target - crew.eye_position()))
+		d.note("pilot: aimed %s, wanted %s (dist %.2f, angle %.1f deg, avail '%s', LOS ray hit %s at %s)" % [
+			aimed.get_path() if aimed != null else ^"<none>", comp.get_path(), crew.eye_position().distance_to(target),
+			ang, comp.availability(crew), (hit["collider"] as Node).get_path() if not hit.is_empty() else ^"-",
+			_v(hit["position"]) if not hit.is_empty() else "-"])
 	var completed: Array[bool] = [false]
 	var cb: Callable = func(_c: Node) -> void: completed[0] = true
 	comp.completed.connect(cb)
@@ -211,7 +239,8 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 			inp.release(&"interact")
 			await engage(foe, 2.0)
 			inp.press(&"interact")
-		await face(target, 0.03, dt())
+		steer_at(target)
+		await tick()
 		t += dt()
 	inp.release(&"interact")
 	if comp.completed.is_connected(cb):
@@ -245,6 +274,13 @@ func open_door(door: Door) -> bool:
 	var comp: InteractableComponent = door.get_node_or_null(^"Interactable") as InteractableComponent
 	if comp == null:
 		return false
+	# Square up in front of the door, 0.8 m out on the crew's side, like a person reaching for the handle.
+	var n: Vector3 = door.global_transform.basis.z
+	n.y = 0.0
+	n = n.normalized()
+	if n.dot(crew.global_position - door.global_position) < 0.0:
+		n = -n
+	await goto(stand_point(comp.global_position + n * 0.8), 0.25, 8.0, false, false)
 	var why: StringName = comp.availability(crew)
 	if why != InteractableComponent.BLOCK_NONE:
 		d.note("pilot: door %s (%s) blocked: %s" % [door.name, comp.kind, why])

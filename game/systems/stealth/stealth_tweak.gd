@@ -130,6 +130,10 @@ extends Resource
 @export var civilian_guard_reach_m: float = 1.5
 ## A1-06 ◇ loud (S11.2): panicked civilians run this far from the nearest crew member, then cower.
 @export var civilian_flee_distance_m: float = 10.0
+## PO-5 ◇: a fleeing civilian that moves less than civilian_flee_stall_m in civilian_flee_stall_s
+## (blocked doorway, unreachable point) cowers where it is instead of running in place forever.
+@export var civilian_flee_stall_s: float = 2.0
+@export var civilian_flee_stall_m: float = 0.3
 
 @export_group("Heist mode (S11.3)")
 ## STEALTH_ONLY heists: seconds between the alarm (Mercer abort line) and heist_ended(failed).
