@@ -415,3 +415,14 @@ Newest entry first, keep the last 10.
   - Test-writing note: setting crew.look_pitch directly gets overwritten by PlayerInput. Aim with PInputDriver.look() instead.
   - Apply with `git apply handoff/pq_b_1_19.patch` once P + A are on trunk.
 - Lead playability_pass.md B rows (PP-B-1..3) are all already fixed (PQ-B-2..4). No unblocked B row is left.
+
+### 2026-10-12 20:25 ET lead D-082 queue (fixes only)
+playability_pass.md is lead-owned (tools/ci/owners.json gives B game/content/**, game/tests/b/**, docs/status/env_b.md). Proposed PP-B rows are recorded here for the lead to copy:
+| PP-B-4 | B | Full loop real input (hub -> heist -> payday -> hub), pad-only and mouse + keyboard |
+| PP-B-5 | B | Weapon stats shown in the UI vs gameplay values |
+| PP-B-6 | B | Save / quit / reload after a completed and a failed heist |
+| PP-B-7 | B | HUD readability under loud play at 720p (software render) |
+| PP-B-8 | B | Pad players see keyboard keys in HUD prompts (found in PP-B-4) |
+
+- PP-B-4 DONE: test_pp_full_loop.gd covers main menu -> Safehouse -> Planning -> Night Deposit -> briefing -> pre-planning -> loadout -> Launch (real night_deposit run) -> end (setup) -> payday Continue -> card -> Continue -> hub with focus. Pad-only and keys + mouse clicks both pass (2/0). No dead end or wrong focus found. The co-op lobby legs stay covered by test_pp_lobby_720p.
+- PP-B-8 FIX: the HUD prompts (interact, shout/dominate, casing hint) always showed keyboard keys ("Hold F"). InteractionPanel.action_key_text now names the pad button (A/B/X/Y/LB/RB/LT/RT...) after a pad input and switches back on a key or mouse input. The HUD redraws on a switch. Test: test_pp_heist_ui::test_prompts_follow_last_device.

@@ -215,3 +215,29 @@ func test_floating_text_outline_and_shadow() -> void:
 		assert_true(l.get_theme_constant(&"shadow_offset_y") > 0, l.name)
 		assert_true(l.get_theme_constant(&"shadow_outline_size") > 0, "blurred shadow %s" % l.name)
 		assert_false(l.get_parent() is PanelContainer, "no backing panel %s" % l.name)
+
+
+## D-082 fix (full-loop walk): pad players saw keyboard keys in prompts. A pad press switches the
+## interaction / domination prompts to pad names; a key press switches back.
+func test_prompts_follow_last_device() -> void:
+	_model.interaction = {"text_key": &"ui.prompt.interact", "args": {}, "progress": 0.0, "blocked_reason": &""}
+	_model.dominate_window_s = 1.0
+	_model.dominate_target = 3
+	await wait_frames(1)
+	var key: String = InteractionPanel.action_key_text(&"interact")
+	assert_true(_hud.interaction.prompt_label.text.contains(key), _hud.interaction.prompt_label.text)
+	for down: bool in [true, false]:
+		var e: InputEventJoypadButton = InputEventJoypadButton.new()
+		e.button_index = JOY_BUTTON_Y
+		e.pressed = down
+		Input.parse_input_event(e)
+		await wait_frames(2)
+	var pad: String = InteractionPanel.pad_text(&"interact")
+	assert_ne(pad, "", "interact has a pad binding")
+	assert_true(_hud.interaction.prompt_label.text.contains(pad), "pad name: " + _hud.interaction.prompt_label.text)
+	assert_false(_hud.interaction.prompt_label.text.contains(" %s " % key), _hud.interaction.prompt_label.text)
+	assert_true(_hud.dominate.prompt_label.text.contains(InteractionPanel.pad_text(&"shout")), _hud.dominate.prompt_label.text)
+	await _key(KEY_ESCAPE, true)
+	await _key(KEY_ESCAPE, false)
+	assert_true(_hud.interaction.prompt_label.text.contains(key), "back to keys: " + _hud.interaction.prompt_label.text)
+	_model.dominate_target = 0

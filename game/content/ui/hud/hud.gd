@@ -257,6 +257,14 @@ func _find_local_crew() -> void:
 			return
 
 
+## Prompts name the device the player is using (pad buttons vs keys); redraw on a switch.
+func _input(event: InputEvent) -> void:
+	if InteractionPanel.note_input(event):
+		for w: HudWidget in widgets():
+			if w != null and is_instance_valid(w):
+				w.refresh()
+
+
 func _process(delta: float) -> void:
 	if _toast_t > 0.0:
 		_toast_t -= delta
