@@ -60,3 +60,28 @@ func test_viewmodel_key_light_only_lights_the_viewmodel() -> void:
 	assert_eq(key.layers, CrewView.VIEWMODEL_LAYER, "on the viewmodel layer, else the vm camera culls the light itself")
 	assert_false(key.shadow_enabled, "no shadows")
 	assert_near(key.light_energy, vt.viewmodel_key_light_energy, 1e-4, "energy from the tweak")
+
+
+## D-094 / PO-4: the viewmodel camera also sees lights tagged VIEWMODEL_LIT_LAYER; a shot (real input) lights the
+## muzzle on the world layer + that layer for FpViewmodelTweak.muzzle_light_s, then goes dark.
+func test_muzzle_light_flashes_on_lit_layer() -> void:
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	var view: CrewView = CrewView.of(c)
+	var vcam: Camera3D = view.find_child("ViewmodelCamera", true, false) as Camera3D
+	assert_true(vcam != null and (vcam.cull_mask & CrewView.VIEWMODEL_LIT_LAYER) != 0, "vm camera sees lit lights")
+	assert_eq(CrewView.VIEWMODEL_LIT_LAYER & CrewView.FIRST_PERSON_HIDDEN_LAYER, 0, "lit layer is not the own-body layer")
+	_inp.press(&"fire")
+	var seen: bool = false
+	var layers_ok: bool = false
+	for _i: int in 20:
+		await wait_physics_frames(1)
+		var l: OmniLight3D = c.find_child("MuzzleLight", true, false) as OmniLight3D
+		if l != null and l.visible:
+			seen = true
+			layers_ok = (l.layers & CrewView.VIEWMODEL_LIT_LAYER) != 0 and (l.layers & 1) != 0
+	_inp.release(&"fire")
+	assert_true(seen, "a shot lights the muzzle")
+	assert_true(layers_ok, "muzzle light on world + viewmodel_lit layers")
+	await wait_seconds(FpViewmodelTweak.data().muzzle_light_s + 0.5)
+	var l2: OmniLight3D = c.find_child("MuzzleLight", true, false) as OmniLight3D
+	assert_true(l2 == null or not l2.visible, "dark again after the flash")
