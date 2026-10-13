@@ -735,6 +735,7 @@ perk.overlord.card7.desc,Health bonus rises to 40%. Below half health the inject
 perk.overlord.card9.name,Top of the Heap
 perk.overlord.card9.desc,Health bonus rises to 80%. Every 50 health the injector heals while you are at full health cuts 1 s from its cooldown.
 ui.skills.title,Skills
+ui.skills.crumb,Safehouse / Loadout
 ui.skills.basic,Basic
 ui.skills.aced,Aced
 ui.skills.tier,Tier {tier}
@@ -1116,8 +1117,9 @@ ui.loadout.perk_deck,Perk Deck
 ui.loadout.skills_summary,Skill points spent: {spent} of {total}
 ui.loadout.perk_summary,Perk deck: {deck} ({cards}/9 cards)
 ui.loadout.perk_none,Perk deck: none
-ui.skills.level,Level {level}
-ui.skills.points_left,Skill points: {points} of {total}
+ui.skills.points_left,{points} of {total}
+ui.skills.level_caption,Level
+ui.skills.points_caption,Skill points
 ui.skills.sets,Skill set
 ui.skills.set,Set {n}
 ui.skills.state.locked,Locked
@@ -1137,11 +1139,13 @@ ui.skills.refund_points,Refund (+{points})
 ui.skills.respec_confirm,Press again to reset
 ui.skills.blocked_partial,Part of this effect is not active yet.
 ui.skills.unlocks,Unlocks: {item}
-ui.skills.hint,Click / A / Enter: invest. Right-click / X / Delete: refund. LB / RB or Page Up / Down: switch tree. Resetting skills is free.
+ui.skills.hint,"Refund: right-click, X or Del  ·  Trees: LB / RB, PgUp / PgDn"
 ui.skills.reason.not_owned,You have not taken this skill.
 ui.skills.reason.refund_breaks_tier,Can't refund: a higher-tier skill in this subtree needs these points. Refund it first.
 ui.perks.title,Perk Decks
-ui.perks.points,Perk points: {points}
+ui.perks.crumb,Safehouse / Loadout
+ui.perks.points_caption,Perk points
+ui.perks.decks,Decks
 ui.perks.equip,Equip Deck
 ui.perks.equipped,Equipped
 ui.perks.not_equipped,Not equipped
@@ -1153,9 +1157,9 @@ ui.perks.all_unlocked,All cards unlocked
 ui.perks.state.unlocked,Unlocked
 ui.perks.state.next,Next to unlock
 ui.perks.state.locked,Locked
-ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available). Perk points come from experience.
+ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available)
 ui.perks.dev_unlocked,Dev build: every perk card is unlocked.
-ui.perks.hint,"Select a deck to see its cards; press it to equip. Only the equipped deck is active, with every card unlocked in it."
+ui.perks.hint,Press a deck to equip it; only the equipped deck is active. Perk points come from experience.
 heist.glasshouse.briefing,"Vossberg Jewelers sits on the corner of Harlow Avenue and Pell Street and stays open late for its private viewing week. Tonight the estate consignment waits in the workshop safe. Case the floor as customers, find the manager's keycard and take the back route. If it goes loud, the safe locks down: drill it and hold until the van arrives. Odile wants at least two bags before Friday."
 contact.role.fence,Fence
 contact.role.fixer,Fixer

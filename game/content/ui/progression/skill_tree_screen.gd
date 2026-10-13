@@ -70,24 +70,24 @@ func build_ui() -> void:
 	if profile == null:
 		profile = SaveService.load_profile(profile_slot)
 	_build_styles()
-	var root: VBoxContainer = UiBuild.vbox(14)
-	UiBuild.screen_margin(self, root, 48)
-	var top: HBoxContainer = UiBuild.hbox(32)
-	top.add_child(UiBuild.label(&"ui.skills.title", UiBuild.HEADER))
-	var spacer: Control = Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top.add_child(spacer)
+	var root: VBoxContainer = UiBuild.vbox(UiTokens.S3)
+	UiBuild.screen_margin(self, root, UiTokens.S6)
+	var top: HBoxContainer = UiBuild.hbox(UiTokens.S6)
+	var titles: VBoxContainer = UiBuild.header(&"ui.skills.crumb", &"ui.skills.title")
+	titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(titles)
 	level_label = UiBuild.label(&"", UiBuild.SUBHEADER)
 	points_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	top.add_child(level_label)
-	top.add_child(points_label)
+	for pair: Array in [[&"ui.skills.level_caption", level_label], [&"ui.skills.points_caption", points_label]]:
+		var f: VBoxContainer = UiBuild.field(StringName(pair[0]), pair[1] as Control)
+		f.size_flags_vertical = Control.SIZE_SHRINK_END
+		top.add_child(f)
 	root.add_child(top)
-	var tabs_row: HBoxContainer = UiBuild.hbox(10)
-	_tab_box = UiBuild.hbox(8)
+	var tabs_row: HBoxContainer = UiBuild.hbox(UiTokens.S2)
+	_tab_box = UiBuild.hbox(UiTokens.S2)
 	tabs_row.add_child(_tab_box)
 	for tree: StringName in SkillPoints.tree_def().trees:
 		var b: Button = UiBuild.tab(_small_button(StringName("ui.skills.tree.%s" % tree)))
-		b.text = b.text.to_upper()
 		b.custom_minimum_size = Vector2(170, 0)
 		b.pressed.connect(show_tree.bind(tree))
 		_tab_box.add_child(b)
@@ -103,44 +103,47 @@ func build_ui() -> void:
 		tabs_row.add_child(sb)
 		set_buttons.append(sb)
 	root.add_child(tabs_row)
-	var body: HBoxContainer = UiBuild.hbox(24)
+	var body: HBoxContainer = UiBuild.hbox(UiTokens.S4)
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(body)
 	_grid = GridContainer.new()
-	_grid.add_theme_constant_override(&"h_separation", 18)
-	_grid.add_theme_constant_override(&"v_separation", 12)
+	_grid.add_theme_constant_override(&"h_separation", UiTokens.S3)
+	_grid.add_theme_constant_override(&"v_separation", UiTokens.S2)
 	_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(_grid)
 	body.add_child(_build_details())
-	var bottom: HBoxContainer = UiBuild.hbox(16)
-	back_button = UiBuild.button(&"ui.menu.back")
-	respec_button = UiBuild.button(&"ui.skills.respec")
+	# PO-4 footer: Back and Reset (ghost) left, the refund / tree keys, then Refund and the invest
+	# button (the screen's primary) bottom right.
+	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
+	respec_button = UiBuild.ghost(UiBuild.button(&"ui.skills.respec"))
 	back_button.pressed.connect(back_requested.emit)
 	respec_button.pressed.connect(_on_respec_pressed)
 	respec_button.focus_exited.connect(_disarm_respec)
-	bottom.add_child(back_button)
-	bottom.add_child(respec_button)
+	for b: Button in [back_button, respec_button]:
+		b.custom_minimum_size = Vector2(200, 0)
 	var hint: Label = UiBuild.label(&"ui.skills.hint", UiBuild.DIM)
 	hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hint.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	bottom.add_child(hint)
-	root.add_child(bottom)
+	var foot: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	for c: Control in [back_button, respec_button, hint, refund_button, UiBuild.primary(buy_button)]:
+		foot.add_child(c)
+	root.add_child(foot)
 	profile.switch_skill_set(profile.active_skill_set)  # pads skill_sets to the active index
 	show_tree(SkillPoints.tree_def().trees[0])
 
 
 func _build_details() -> PanelContainer:
-	var v: VBoxContainer = UiBuild.vbox(8)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	v.custom_minimum_size = Vector2(540, 0)
 	detail_name = UiBuild.label(&"", UiBuild.SUBHEADER)
-	detail_meta = UiBuild.label(&"", UiBuild.DIM)
+	detail_meta = UiBuild.caption()
 	detail_state = UiBuild.label()
 	detail_team = UiBuild.label(&"ui.skills.team", UiBuild.DIM)
-	detail_basic_header = UiBuild.label(&"", UiBuild.DIM)
+	detail_basic_header = UiBuild.caption()
 	detail_basic = _wrap_label()
 	detail_basic_note = _note_label()
-	detail_aced_header = UiBuild.label(&"", UiBuild.DIM)
+	detail_aced_header = UiBuild.caption()
 	detail_aced = _wrap_label()
 	detail_aced_note = _note_label()
 	detail_unlock = _wrap_label()
@@ -153,15 +156,11 @@ func _build_details() -> PanelContainer:
 	fill.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(fill)
 	v.add_child(detail_reason)
-	var h: HBoxContainer = UiBuild.hbox(12)
-	buy_button = _small_button(&"ui.skills.buy_basic", {"cost": 0})
-	refund_button = _small_button(&"ui.skills.refund")
-	for b: Button in [buy_button, refund_button]:
-		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		h.add_child(b)
+	# Buy / Refund act on the selected skill; build_ui puts them in the footer (bottom right).
+	buy_button = UiBuild.button(&"ui.skills.buy_basic", {"cost": 0})
+	refund_button = UiBuild.button(&"ui.skills.refund")
 	buy_button.pressed.connect(func() -> void: buy(selected_skill))
 	refund_button.pressed.connect(func() -> void: refund(selected_skill))
-	v.add_child(h)
 	return UiBuild.panel(v)
 
 
@@ -181,10 +180,10 @@ func show_tree(tree: StringName) -> void:
 	_grid.columns = 1 + subs.size()
 	_grid.add_child(Control.new())
 	for sub: StringName in subs:
-		var head: VBoxContainer = UiBuild.vbox(2)
+		var head: VBoxContainer = UiBuild.vbox(UiTokens.S1)
 		head.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		head.add_child(UiBuild.label(StringName("ui.skills.subtree.%s" % sub), UiBuild.SUBHEADER))
-		var spent: Label = UiBuild.label(&"", UiBuild.DIM)
+		var spent: Label = UiBuild.caption()
 		head.add_child(spent)
 		subtree_spent_labels[sub] = spent
 		_grid.add_child(head)
@@ -216,10 +215,10 @@ func show_tree(tree: StringName) -> void:
 
 
 func _tier_gutter(tier: int) -> VBoxContainer:
-	var g: VBoxContainer = UiBuild.vbox(2)
+	var g: VBoxContainer = UiBuild.vbox(UiTokens.S1)
 	g.alignment = BoxContainer.ALIGNMENT_CENTER
 	g.custom_minimum_size = Vector2(120, 0)
-	g.add_child(UiBuild.label(&"ui.skills.tier", UiBuild.DIM, {"tier": tier}))
+	g.add_child(UiBuild.caption(&"ui.skills.tier", {"tier": tier}))
 	var need: int = SkillPoints.tree_def().threshold_for_tier(tier)
 	if need <= 0:
 		g.add_child(UiBuild.label(&"ui.skills.tier_open", UiBuild.DIM))
@@ -236,7 +235,7 @@ func _skill_button(sid: StringName) -> Button:
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	b.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	b.custom_minimum_size = Vector2(0, 96)
-	b.add_theme_font_size_override(&"font_size", 21)
+	b.add_theme_font_size_override(&"font_size", UiTokens.FONT_SMALL)
 	b.pressed.connect(buy.bind(sid))
 	b.focus_entered.connect(select_skill.bind(sid))
 	b.mouse_entered.connect(select_skill.bind(sid))
@@ -249,7 +248,7 @@ func _skill_button(sid: StringName) -> Button:
 func refresh() -> void:
 	var skills: Dictionary = profile.loadout.skills
 	var total: int = SkillBuild.total_points(profile.level)
-	level_label.text = UiText.t(&"ui.skills.level", {"level": profile.level})
+	level_label.text = str(profile.level)
 	points_label.text = UiText.t(&"ui.skills.points_left",
 			{"points": total - SkillPoints.spent_total(skills), "total": total})
 	for i: int in range(set_buttons.size()):
@@ -274,8 +273,7 @@ func _refresh_button(sid: StringName, b: Button) -> void:
 	var style: StyleBox = _styles.get(state, null) as StyleBox
 	for slot: StringName in [&"normal", &"hover"]:
 		b.add_theme_stylebox_override(slot, style)
-	var dim: Color = Color(0.55, 0.57, 0.6) if state == SkillBuild.STATE_LOCKED else Color(0.92, 0.93, 0.95)
-	b.add_theme_color_override(&"font_color", dim)
+	b.add_theme_color_override(&"font_color", UiTokens.PAPER_MUTE if state == SkillBuild.STATE_LOCKED else UiTokens.PAPER)
 
 
 func select_skill(sid: StringName) -> void:
@@ -507,13 +505,13 @@ func _wire_focus() -> void:
 		_link(tab, SIDE_BOTTOM, first)
 		_link(tab, SIDE_TOP, tab)
 	var sel: Control = skill_buttons.get(selected_skill, first) as Control
-	_link(buy_button, SIDE_LEFT, sel)
-	_link(buy_button, SIDE_RIGHT, refund_button)
-	_link(refund_button, SIDE_LEFT, buy_button)
-	_link(refund_button, SIDE_RIGHT, refund_button)
+	_link(refund_button, SIDE_LEFT, respec_button)
+	_link(buy_button, SIDE_LEFT, refund_button)
+	_link(buy_button, SIDE_RIGHT, buy_button)
+	_link(refund_button, SIDE_RIGHT, buy_button)
 	for d: Control in [buy_button, refund_button]:
-		_link(d, SIDE_TOP, tree_tabs.get(current_tree, d) as Control)
-		_link(d, SIDE_BOTTOM, respec_button)
+		_link(d, SIDE_TOP, sel)
+		_link(d, SIDE_BOTTOM, d)
 	var bottom_left: Control = _nav[rows - 1][0] as Control
 	for d: Control in [back_button, respec_button]:
 		_link(d, SIDE_TOP, bottom_left)
@@ -521,7 +519,7 @@ func _wire_focus() -> void:
 	_link(back_button, SIDE_RIGHT, respec_button)
 	_link(back_button, SIDE_LEFT, back_button)
 	_link(respec_button, SIDE_LEFT, back_button)
-	_link(respec_button, SIDE_RIGHT, buy_button)
+	_link(respec_button, SIDE_RIGHT, refund_button)
 
 
 ## The next different button from (r, c) in direction (dr, dc), or null at the edge.
@@ -563,7 +561,7 @@ func _state_color(state: StringName) -> Color:
 		SkillBuild.STATE_BASIC:
 			return tweak.skill_basic_color
 		SkillBuild.STATE_AVAILABLE:
-			return Color(0.9, 0.91, 0.93)
+			return UiTokens.PAPER
 	return tweak.note_color
 
 
@@ -578,8 +576,8 @@ func _build_styles() -> void:
 		var c: Color = colors[state] as Color
 		sb.border_color = c
 		sb.set_border_width_all(3 if state == SkillBuild.STATE_ACED or state == SkillBuild.STATE_BASIC else 2)
-		sb.content_margin_left = 8.0
-		sb.content_margin_right = 8.0
+		sb.content_margin_left = UiTokens.S2
+		sb.content_margin_right = UiTokens.S2
 		if state == SkillBuild.STATE_LOCKED:
 			sb.bg_color = sb.bg_color.darkened(0.35)
 		elif state == SkillBuild.STATE_BASIC or state == SkillBuild.STATE_ACED:
@@ -603,5 +601,5 @@ static func _wrap_label() -> Label:
 func _note_label() -> Label:
 	var l: Label = _wrap_label()
 	l.add_theme_color_override(&"font_color", tweak.note_color)
-	l.add_theme_font_size_override(&"font_size", 21)
+	l.add_theme_font_size_override(&"font_size", UiTokens.FONT_SMALL)
 	return l
