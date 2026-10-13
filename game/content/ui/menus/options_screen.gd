@@ -69,9 +69,9 @@ func build_ui() -> void:
 	var tab_row: HBoxContainer = UiBuild.hbox(12)
 	var group: ButtonGroup = ButtonGroup.new()
 	for t: StringName in TABS:
-		var b: Button = UiBuild.button(StringName("ui.options.tab.%s" % t))
-		b.custom_minimum_size = Vector2(260, 0)
-		b.toggle_mode = true
+		var b: Button = UiBuild.tab(UiBuild.button(StringName("ui.options.tab.%s" % t)))
+		b.text = b.text.to_upper()
+		b.custom_minimum_size = Vector2(220, 0)
 		b.button_group = group
 		b.pressed.connect(show_tab.bind(t))
 		tab_row.add_child(b)

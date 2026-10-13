@@ -1499,6 +1499,7 @@ ui.preplan.point.pp_riser_l42,Riser panel: level 42
 ui.menu.safehouse,Safehouse
 ui.hub.title,The Safehouse
 ui.hub.subtitle,Every job starts at one of these stations.
+ui.hub.start_here,Start here
 ui.hub.main_menu,Main Menu
 ui.hub.station.board,The Board
 ui.hub.station.board.desc,"Live contracts from your contacts, pro jobs and the broker."

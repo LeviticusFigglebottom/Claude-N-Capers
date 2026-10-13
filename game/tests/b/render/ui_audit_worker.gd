@@ -88,9 +88,12 @@ func _heist() -> void:
 	if rt != null and rt.service(G.SVC_STEALTH) != null:
 		rt.service(G.SVC_STEALTH).call(&"raise_alarm", &"audit")
 	await _shot("hud_loud", 30)
-	_flow.options_menu.open()
+	var pm: PauseMenu = _flow.options_menu.open_pause()
 	await _shot("pause_in_heist")
-	_close_options()
+	if pm != null:
+		pm.options_button.pressed.emit()
+		await _shot("pause_options")
+	_flow.options_menu.close_pause()
 	await get_tree().process_frame
 	if rt != null:
 		rt.call(&"end_heist", true, [Net.local_slot()] as Array[int])

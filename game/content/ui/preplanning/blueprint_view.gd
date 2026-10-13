@@ -98,6 +98,10 @@ func _build_markers() -> void:
 		b.tooltip_text = UiText.t(StringName(p.get("label", &"")))
 		b.pressed.connect(point_pressed.emit.bind(pid))
 		b.focus_entered.connect(point_focused.emit.bind(pid))
+		b.focus_entered.connect(_peek_label.bind(pid, true))
+		b.focus_exited.connect(_peek_label.bind(pid, false))
+		b.mouse_entered.connect(_peek_label.bind(pid, true))
+		b.mouse_exited.connect(_peek_label.bind(pid, false))
 		_apply_style(b, &"free", false)
 		add_child(b)
 		markers[pid] = b
@@ -113,16 +117,56 @@ func _build_markers() -> void:
 	_layout_markers()
 
 
+## PO-4 (audit: point labels overlapped, "Alley … Van: alley west"): each label tries below, above,
+## right and left of its marker and takes the first spot that hits no marker and no placed label;
+## a label with no free spot is hidden and shows while its marker is focused or hovered.
 func _layout_markers() -> void:
+	var taken: Array[Rect2] = []
 	for pid: Variant in markers:
 		var p: Dictionary = board.blueprint.point(StringName(pid))
-		var c: Vector2 = world_to_view(p.get("pos", Vector2.ZERO) as Vector2)
 		var b: Button = markers[pid] as Button
-		b.position = c - b.size * 0.5
+		b.position = world_to_view(p.get("pos", Vector2.ZERO) as Vector2) - b.size * 0.5
+		taken.append(b.get_rect().grow(2.0))
+	for pid: Variant in markers:
+		var b: Button = markers[pid] as Button
 		var l: Label = marker_labels[pid] as Label
 		l.reset_size()
-		l.position = Vector2(c.x - l.size.x * 0.5, c.y + b.size.y * 0.5 + 2.0)
+		var c: Vector2 = b.position + b.size * 0.5
+		var half: Vector2 = b.size * 0.5
+		var spots: Array[Vector2] = [
+			Vector2(c.x - l.size.x * 0.5, c.y + half.y + 2.0),
+			Vector2(c.x - l.size.x * 0.5, c.y - half.y - 2.0 - l.size.y),
+			Vector2(c.x + half.x + 4.0, c.y - l.size.y * 0.5),
+			Vector2(c.x - half.x - 4.0 - l.size.x, c.y - l.size.y * 0.5)]
+		var placed: bool = false
+		for spot: Vector2 in spots:
+			var r: Rect2 = Rect2(spot, l.size)
+			if not Rect2(Vector2.ZERO, size).encloses(r) and size != Vector2.ZERO:
+				continue
+			var hit: bool = false
+			for t: Rect2 in taken:
+				if t.intersects(r):
+					hit = true
+					break
+			if not hit:
+				l.position = spot
+				taken.append(r)
+				placed = true
+				break
+		if not placed:
+			l.position = spots[0]
+		l.set_meta(&"crowded", not placed)
+		l.visible = placed
 	queue_redraw()
+
+
+func _peek_label(pid: StringName, on: bool) -> void:
+	var l: Label = marker_labels.get(pid) as Label
+	if l == null or not bool(l.get_meta(&"crowded", false)):
+		return
+	l.visible = on
+	if on:
+		move_child(l, -1)
 
 
 func _apply_style(b: Button, state: StringName, selected: bool) -> void:
