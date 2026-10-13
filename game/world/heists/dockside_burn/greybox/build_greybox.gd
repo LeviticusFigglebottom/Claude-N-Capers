@@ -647,9 +647,10 @@ func _build_lighting(lighting: Node3D) -> void:
 	env.tonemap_exposure = 1.3
 	env.fog_enabled = true
 	env.fog_light_color = Color(0.36, 0.36, 0.38)
-	env.fog_density = 0.006
-	env.fog_height = 4.0
-	env.fog_height_density = 0.05
+	# LEAD 2026-10-12 (D 20/40 m read): thinner; was density 0.006, height 4.0, height_density 0.05.
+	env.fog_density = 0.0035
+	env.fog_height = 2.0
+	env.fog_height_density = 0.015
 	env.fog_sky_affect = 0.6
 	env.glow_enabled = true
 	env.glow_intensity = 0.4
