@@ -26,6 +26,8 @@ signal custody_changed()         ## custody (v1.2)
 signal captain_changed()         ## captain_present, captain_resistance (v1.3)
 signal stamina_changed()         ## stamina, exhausted (v1.4)
 signal player_mode_changed()     ## player_mode (v1.6)
+## Extras without a contract signal (like LocalHudModel): mask_progress.
+signal changed(property: StringName)
 signal dominate_prompt_changed()  ## dominate_target, dominate_window_s (PP-A-1, S5.8 / D-079)
 signal crew_stats_changed()      ## crew_stats (B6-02 proposal, QB to ENV A; content/docs/scoreboard.md)
 
@@ -185,6 +187,12 @@ var player_mode: StringName = &"":
 	set(v):
 		player_mode = v
 		player_mode_changed.emit()
+
+## LocalHudModel extra: mask-up hold progress 0..1 (announced through `changed`).
+var mask_progress: float = 0.0:
+	set(v):
+		mask_progress = v
+		changed.emit(&"mask_progress")
 
 ## v1.2 (D-043): {} or { "in_custody": bool, "negotiation_left_s": float, "auto_release_left_s": float
 ##   (< 0 = none), "highlighted_hostage_net_id": int }

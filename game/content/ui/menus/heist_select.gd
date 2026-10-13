@@ -1,5 +1,5 @@
 ## Heist select: heist list (HeistCatalog) + difficulty picker + contract pay preview. Owner: ENV B.
-## Difficulties not in heist_list.tres `unlocked_difficulties` are visible but locked (C4, P1 = 2).
+## Difficulties not in heist_list.tres `unlocked_difficulties` are visible but locked (C4; PO-5.9: Routine..Brutal open, in order).
 ## The preview uses PayoutCalculator (same multipliers as the payday screen). Next -> briefing (MenuFlow).
 class_name HeistSelect
 extends UiScreen

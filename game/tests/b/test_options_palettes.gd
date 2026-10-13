@@ -30,9 +30,11 @@ func before_all() -> void:
 	_set = HudPaletteSet.load_default()
 
 
+## PO-4 frameless HUD: no panel behind the widgets; coloured HUD text reads against its own outline
+## (HudLabel outline, plus a soft shadow). The pixel-level check over real backdrops is the windowed
+## tests/b/render/hud_contrast_capture.gd.
 func _hud_bg() -> Color:
-	var sb: StyleBoxFlat = UiBuild.theme().get_stylebox(&"panel", &"HudPanel") as StyleBoxFlat
-	return UiAccent.over(sb.bg_color, Color(0.2, 0.2, 0.2))
+	return UiBuild.theme().get_color(&"font_outline_color", &"HudLabel")
 
 
 func test_one_palette_per_setting_option() -> void:

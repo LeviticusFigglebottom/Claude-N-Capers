@@ -128,6 +128,8 @@ func refresh() -> void:
 	for o: Dictionary in prop(&"objectives", []) as Array:
 		if int(o.get("state", Enums.ObjectiveState.ACTIVE)) != Enums.ObjectiveState.ACTIVE:
 			continue
+		if bool((o.get("args", {}) as Dictionary).get("disabled", false)):
+			continue  # PO-5.6: e.g. the keycard step in a lockdown; the next live step shows instead
 		var l: Label = UiBuild.label(&"", UiBuild.HUD)
 		l.text = UiText.t(&"ui.hud.objective_active", {"text": objective_text(o, secured_count)})
 		l.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)

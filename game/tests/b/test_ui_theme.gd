@@ -139,3 +139,29 @@ func test_crew_rows_named_by_heister_before_ready() -> void:
 			"state": Enums.CrewState.NORMAL, "downs_left": 3, "carried_loot_id": &""}]
 	await wait_frames(1)
 	assert_eq((_hud.teammates.name_labels[2] as Label).text, Heisters.display_name(hid))
+
+
+## PO-1: the mask-up ring shows while mask up is held (0 < progress < 1) and hides otherwise.
+func test_mask_up_ring() -> void:
+	await _spawn_hud()
+	_model.player_mode = &"casing"
+	assert_false(_hud.mask_ring.visible, "nothing held")
+	_model.mask_progress = 0.4
+	assert_true(_hud.mask_ring.visible, "held: ring shows")
+	assert_near(_hud.mask_ring.progress, 0.4, 0.001)
+	_model.mask_progress = 1.0
+	assert_false(_hud.mask_ring.visible, "done: ring hides")
+
+
+## PO-5.6: real mission data (Glasshouse) fills {count}/{total}; a disabled step (lockdown) is skipped.
+func test_objective_mission_data_and_disabled_step() -> void:
+	await _spawn_hud()
+	_model.objectives = [
+		{"id": &"keycard", "text_key": &"objective.glasshouse.keycard", "args": {"disabled": true, "reason": &"lockdown"},
+			"state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"secure", "text_key": &"objective.glasshouse.secure",
+			"args": {"bags": 2, "count": 0, "total": 2, "optional_more": true}, "state": Enums.ObjectiveState.ACTIVE}]
+	await wait_frames(1)
+	var l: Label = _hud.objectives.list_box.get_child(0) as Label
+	assert_eq(l.text, UiText.t(&"objective.glasshouse.secure", {"count": 0, "total": 2}), "disabled keycard skipped")
+	assert_false(l.text.contains("{"), l.text)

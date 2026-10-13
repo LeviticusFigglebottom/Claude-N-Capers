@@ -81,6 +81,7 @@ ui.hud.pagers_left,Pagers left: {count}
 ui.hud.ecm,Jammer {seconds}
 ui.hud.objectives,Objective
 ui.hud.objective_complete,Objective complete
+ui.hud.masking_up,Masking up
 ui.hud.casing,Casing
 ui.hud.masked,Masked
 ui.hud.mask_up_hint,Hold {key} to mask up
