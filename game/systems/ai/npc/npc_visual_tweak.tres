@@ -4,6 +4,13 @@
 
 [resource]
 script = ExtResource("1")
+enemy_characters = {
+&"enemy.aegis": &"bulwark_aegis",
+&"enemy.wrecker_b": &"wrecker",
+&"enemy.wrecker_g": &"wrecker",
+&"enemy.wrecker_m": &"wrecker",
+&"enemy.wrecker_s": &"wrecker"
+}
 tag_characters = {
 &"civ_cleaner": [&"npc_bank_cleaner"],
 &"civ_customer": [&"civilian_customer_a", &"civilian_customer_b"],

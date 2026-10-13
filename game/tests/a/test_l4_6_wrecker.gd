@@ -82,14 +82,16 @@ func test_l4_6_plates_break_in_order_head_after_visor() -> void:
 	assert_true(bool(r["plate_broken"]), "faceplate broken")
 	assert_eq(armor.current_plate(), &"Visor")
 	assert_false((w.get_node("Hitboxes/Faceplate") as Hitbox).collision_layer != 0, "faceplate hitbox disabled")
-	assert_false((w.get_node("Visual/Faceplate") as Node3D).visible, "Faceplate mesh hidden")
-	assert_true((w.get_node("Visual/Visor") as Node3D).visible, "Visor mesh still up")
+	assert_false(_mesh(w, "Faceplate").visible, "Faceplate mesh hidden")
+	assert_true(_mesh(w, "Visor").visible, "Visor mesh still up")
 	assert_eq(_cues.count(&"cue.wrecker_plate_crack"), 1, "crack cue")
 	r = ACombatSpecials.hit(w, 100.0, Enums.HitZone.HEAD)
 	assert_near(float(r["amount"]), 100.0, 0.001, "still x1 with the visor up")
 	r = _weak_hit(w, "Visor", 160.0)
 	assert_true(bool(r["plate_broken"]) and StringName(r["plate"]) == &"Visor", "visor broken (160 HP)")
-	assert_false((w.get_node("Visual/Visor") as Node3D).visible, "Visor mesh hidden")
+	assert_false(_mesh(w, "Visor").visible, "Visor mesh hidden")
+	var ha: Node3D = w.get_node("Visual").find_child("HeadArmored", true, false) as Node3D
+	assert_true(ha == null or not ha.visible, "HeadArmored hidden with the visor")
 	assert_eq(_cues.count(&"cue.wrecker_plate_crack"), 2, "second crack cue")
 	assert_false(armor.is_head_armored(), "head exposed")
 	r = ACombatSpecials.hit(w, 100.0, Enums.HitZone.HEAD)
@@ -211,3 +213,11 @@ func test_d052_crit_target_side() -> void:
 	var r: Dictionary = w.take_hit(info, 0)
 	assert_near(float(r["amount"]), 10.0, 0.001, "armored head: x1, no crit")
 	assert_false(bool(r["crit"]), "crit cleared on the armored head")
+
+
+## characters.md: the Wrecker's `Faceplate` / `Visor` meshes, anywhere under the visual (the character
+## puts them under Skeleton3D; the capsule placeholder directly under Visual).
+func _mesh(w: NpcBase, nm: String) -> Node3D:
+	var n: Node3D = w.get_node("Visual").find_child(nm, true, false) as Node3D
+	assert_true(n != null, "%s mesh (characters.md)" % nm)
+	return n if n != null else Node3D.new()

@@ -731,3 +731,14 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   column (B's `UiScreen.fit_width`); the HUD anchors to the real window corners (B verifies 21:9 in-heist).
 - With PD2 base spread (D-097), weapon-mod accuracy/stability deltas move to PD2's point steps (+4..+12 per mod class);
   ENV B rescales them with goldens. P4 goldens updated by the lead (test_p4_progression test_10/11/14).
+
+## D-099 — 2026-10-13 — Director force model (KR-1 / PO-5.4); specials by difficulty; LMG drift data
+- ENV A's director rework (49fd9fad) adopted and folded into pd2_fidelity L1.1/L1.3/L1.4: per-assault force pool → FADE with
+  retreat/despawn; alive cap = enemy_cap × crew balance mul (bots count half) × stage 50/75/100 %. Special units follow PD2
+  difficulty gating: Routine = regular SWAT + shields only; Stinger (taser) from Tense, Wrecker/Phantom from Brutal-equivalent,
+  Corpsman from the Overkill-equivalent tier (ENV A keeps the exact tier map in EnemyDef/difficulty data, cited to PD2).
+- Corpses still count in `G.ENEMY` (the "70 alive" was partly that): ENV A removes dead NPCs from the group and despawns
+  bodies out of sight in loud (stealth bodies stay, S5).
+- **LMG right drift**: a WeaponDef stat `recoil_horizontal_bias_deg` (signed mean of the horizontal kick, per shot; 0 = none),
+  data_schemas WeaponStats addition. ENV B adds the field + PD2 values (ENV P has the Lua cites); ENV A consumes it in
+  CrewWeapons. Default 0 keeps every other weapon unchanged.

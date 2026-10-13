@@ -452,7 +452,8 @@ func _variants_keycard(variants: Node3D) -> void:
 	var rows: Array = [
 		["kc_manager_desk", 1.0, Vector3(23.5, 0.74, 13.3), Vector3(23.6, 0.0, 12.6)],
 		["kc_teller_drawer", 1.0, Vector3(6.0, 1.05, 9.85), Vector3(6.0, 0.0, 9.1)],
-		["kc_break_locker", 1.0, Vector3(15.85, 0.9, 0.7), Vector3(15.85, 0.0, 1.45)],  # on the kitchen counter (locker face is flush, PP-C-2)
+		# on the kitchen worktop (top face y 0.908; locker face is flush, PP-C-2)
+		["kc_break_locker", 1.0, Vector3(15.85, 0.908, 0.7), Vector3(15.85, 0.0, 1.45)],
 		["kc_security", 0.75, Vector3(13.55, 0.75, 4.1), Vector3(12.95, 0.0, 4.1)],
 		["kc_records", 1.0, Vector3(0.5, L.BASE + 0.74, 15.1), Vector3(1.35, L.BASE, 14.75)],
 	]

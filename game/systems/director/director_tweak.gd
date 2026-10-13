@@ -49,6 +49,32 @@ extends Resource
 ## Spawning with no valid point is retried after this delay.
 @export var no_point_retry_s: float = 1.0
 
+@export_group("Assault force (L1.1/L1.3, PO-5.4)")
+## Alive police the director fills to (AssaultDirector.force_cap) = DifficultyDef.enemy_cap (the
+## full-crew number) x force_crew_mult[force crew - 1] x stage_force_mult[stage], at least force_min,
+## never above enemy_cap. PD2 besiege.assault.force_balance_mul {1, 2, 3, 4} (Normal..Overkill)
+## normalised to 4 crew; Mayhem+ scaling lives in the larger enemy_cap of those difficulties.
+@export var force_crew_mult: PackedFloat32Array = PackedFloat32Array([0.25, 0.5, 0.75, 1.0])
+## PD2 GroupAIStateBase:_get_balancing_multiplier: the force crew count is the humans plus
+## max(1, floor(bots / 2)) when any AI teammate is present (bots count half). Crew in custody
+## do not count (PD2: criminals with a status) (◇: downed crew still count, so the cap does not
+## flicker while a teammate is revived).
+@export var bots_count_half: bool = true
+## ◇ L1.3 "wave 1 = 50%, wave 2 = 75%, wave 3+ = 100%" applied to the alive force by stage index.
+@export var stage_force_mult: PackedFloat32Array = PackedFloat32Array([0.5, 0.75, 1.0])
+## ◇ Lower bound of force_cap (a solo crew still meets an assault).
+@export var force_min: int = 4
+## Per-assault spawn budget (PD2 besiege.assault.force_pool {150, 175, 225} at the 50/75/100% stage
+## points 175/200/225, divided by PD2's full-stage force 17): AssaultDirector._force_pool() =
+## ceil(full-stage force_cap x force_pool_per_force[stage]). Spending it ends BUILD/SUSTAIN in FADE
+## (PD2 task_spawn_allowance <= 0 -> "fade"). 0 or empty = unlimited.
+@export var force_pool_per_force: PackedFloat32Array = PackedFloat32Array([10.3, 11.8, 13.2])
+## FADE retreat (L1.1; PD2 "retire" objective): every alive police unit with a PoliceBrain is ordered
+## to the nearest spawn point and leaves the map once within retreat_arrive_m of it and out of every
+## crew member's LOS. Units still on the map when CONTROL starts are released to fight again.
+@export var fade_retreat: bool = true
+@export var retreat_arrive_m: float = 2.5
+
 @export_group("Drama (L1.2)")
 ## Drama 0..1 decays this much per second.
 @export var drama_decay_per_s: float = 0.05
