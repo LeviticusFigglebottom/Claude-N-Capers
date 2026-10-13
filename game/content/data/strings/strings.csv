@@ -210,6 +210,13 @@ ui.blocked.lift_full,The lift is full
 ui.results.title,Payday
 ui.results.success,Heist complete
 ui.results.failure,Heist failed
+ui.results.fail.all_custody,The whole crew ended up in custody.
+ui.results.fail.stealth_only_alarm,The alarm went off on a stealth-only job.
+ui.results.fail.abort,The crew walked away from the job.
+ui.results.loss_header,What you lost
+ui.results.lost_total,Payout if you had made it
+ui.results.lost_bags,Bags secured (pay nothing)
+ui.results.loss_note,A failed heist pays no cash. Experience earned along the way is kept.
 ui.results.stealth,Clean job. Nobody knew we were there.
 ui.results.loud,Went loud
 ui.results.time,Time: {time}

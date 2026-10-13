@@ -427,7 +427,7 @@ func _render() -> void:
 	var success: bool = bool(payout.get("success", false))
 	_content.add_child(_build_hero(success))
 	var summary: Array[String] = [
-		UiText.t(&"ui.results.stealth" if bool(result.get("stealth", false)) else &"ui.results.loud"),
+		UiText.t(_summary_key(success)),
 		UiText.t(&"ui.results.time", {"time": UiText.clock(float(result.get("time_s", 0.0)))}),
 		UiText.t(&"ui.results.pagers_answered", {"count": int(result.get("pagers_answered", 0))}),
 		UiText.t(UiText.difficulty_key(int(result.get("difficulty", 0)))),
@@ -437,7 +437,7 @@ func _render() -> void:
 	_content.add_child(chips)
 	var cols: HBoxContainer = UiBuild.hbox(40)
 	_content.add_child(cols)
-	cols.add_child(UiBuild.panel(_build_cash()))
+	cols.add_child(UiBuild.panel(_build_cash() if success else _build_loss()))
 	cols.add_child(UiBuild.panel(_build_xp()))
 	_content.add_child(UiBuild.panel(_build_stats()))
 	_content.add_child(UiBuild.panel(_build_awards()))
@@ -451,6 +451,44 @@ func _render() -> void:
 
 ## PO-4 hero row (style.md §8 payday): the outcome as a caption, the take-home total as the display
 ## number in brass, where it went (stash / spending) under it; XP total and the level bar on the right.
+## First summary chip: the failure, else how the job went (a failed job is never "clean").
+func _summary_key(success: bool) -> StringName:
+	if not success:
+		return &"ui.results.failure"
+	return &"ui.results.stealth" if bool(result.get("stealth", false)) else &"ui.results.loud"
+
+
+## Strings key explaining a failed heist's `fail_reason` (unknown / empty reads as an abort).
+static func fail_reason_key(reason: StringName) -> StringName:
+	match reason:
+		&"all_custody":
+			return &"ui.results.fail.all_custody"
+		&"stealth_only_alarm":
+			return &"ui.results.fail.stealth_only_alarm"
+	return &"ui.results.fail.abort"
+
+
+## Lead failure pass: instead of a cash table of zeros, what the job would have paid and the bags
+## that were secured but pay nothing (PayoutCalculator on the same result as a success).
+func _build_loss() -> VBoxContainer:
+	var v: VBoxContainer = UiBuild.vbox(6)
+	v.custom_minimum_size = Vector2(560, 0)
+	v.add_child(UiBuild.label(&"ui.results.loss_header", UiBuild.SUBHEADER))
+	var as_won: Dictionary = result.duplicate(true)
+	as_won["success"] = true
+	var would: Dictionary = compute_payout(as_won, profile, Net.local_slot(), is_pro)
+	var grid: GridContainer = _grid(v)
+	_line(grid, &"lost_total", UiText.t(&"ui.results.lost_total"), UiText.money(int(would.get("total", 0))))
+	var bags: int = (result.get("loot", []) as Array).size()
+	_line(grid, &"lost_bags", UiText.t(&"ui.results.lost_bags"), str(bags))
+	var note: Label = UiBuild.label(&"ui.results.loss_note", UiBuild.DIM)
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(note)
+	for l: Label in [value_labels[&"lost_total"] as Label]:
+		l.add_theme_color_override(&"font_color", UiTokens.ALERT)
+	return v
+
+
 func _build_hero(success: bool) -> HBoxContainer:
 	var row: HBoxContainer = UiBuild.hbox(UiTokens.S7)
 	var left: VBoxContainer = UiBuild.vbox(UiTokens.S1)
@@ -459,9 +497,15 @@ func _build_hero(success: bool) -> HBoxContainer:
 	var outcome: Label = UiBuild.caption(&"ui.results.success" if success else &"ui.results.failure")
 	outcome.add_theme_color_override(&"font_color", UiTokens.OK if success else UiTokens.ALERT)
 	left.add_child(outcome)
+	if not success:
+		# Lead failure pass: say WHY (HeistResult.fail_reason, D-038) right under the outcome.
+		var why: Label = UiBuild.label(fail_reason_key(StringName(result.get("fail_reason", &""))), UiBuild.SUBHEADER)
+		why.add_theme_color_override(&"font_color", UiTokens.PAPER)
+		value_labels[&"fail_reason"] = why
+		left.add_child(why)
 	var total: Label = UiBuild.label(&"", UiBuild.DISPLAY)
 	total.text = UiText.money(int(payout.get("total", 0)))
-	total.add_theme_color_override(&"font_color", UiTokens.BRASS_HI if success else UiTokens.PAPER_MUTE)
+	total.add_theme_color_override(&"font_color", UiTokens.BRASS_HI if success else UiTokens.PAPER_DIM)
 	left.add_child(total)
 	value_labels[&"hero_total"] = total
 	_count_up(total, int(payout.get("total", 0)))
