@@ -35,12 +35,15 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   0.0025 -> 0.0016 rad/count. test_po4_feel.gd.
 - test_p3_loud:test_10_ai_orders_during_assault ("follow: the AI caught up") fails on the pre-PO-2 base 7a417116 too:
   pre-existing, A's (crew AI follow), not caused by P.
-- Viewmodel lighting: the pure-black gun in opengl3 frames is a Compatibility-renderer artifact; under Vulkan
-  (Forward+, shipping) hip is lit but dark and ADS arms are near-black (night street, world light behind the player).
-  Fix (WIP, uncommitted until the windowed after-shot): CrewView adds a DirectionalLight3D `ViewmodelKeyLight` under
-  the viewmodel camera, light_cull_mask = VIEWMODEL_LAYER only, plus viewmodel_ambient_mult on the vm Environment
-  (FpViewmodelTweak viewmodel_key_light_*). Before frames: scratchpad vm_before/. Also seen: ADS forearms fill the
-  lower third (pose/FOV 52: D's anim + lead ruling PP-P-11), hip pistol sits low-right and reads canted. Next: that, ADS transitions, sprint/crouch/jump, door snag
+- Viewmodel lighting ROOT CAUSE (06fd0301): Camera3D.cull_mask also culls LIGHTS by their `layers`. The PP-P-11
+  viewmodel camera sees only VIEWMODEL_LAYER, so no world light ever reached the arms/gun (ambient only: near-black
+  at night, pure black on maps without sky ambient). Fix: CrewView adds `ViewmodelKeyLight` (DirectionalLight3D,
+  layers = light_cull_mask = VIEWMODEL_LAYER, no shadows) + viewmodel_ambient_mult (FpViewmodelTweak). Verified
+  windowed with res://tests/p/_review/vm_probe.tscn (unit map: skin, sleeves, gun highlights now visible).
+  Open (QP-2 to lead): world lights (muzzle flash, flashlights, lamps) still never light the viewmodel; options: a
+  render-layer bit for lights (C/D set it, vm camera includes it) or P tagging Light3D layers at runtime.
+- Still seen: ADS forearms fill the lower third (pose + 52 deg vm FOV), hip pistol sits low-right and reads canted
+  (D's anim / lead PP-P-11 ruling). Next: that, ADS transitions, sprint/crouch/jump, door snag
   PP-P-12, brute_12 left hand, 1920x1080 review.
 
 ## 2026-10-12 20:25 ET: merge round 34, renders, loud run
