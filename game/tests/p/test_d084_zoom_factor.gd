@@ -59,5 +59,6 @@ func test_scope_zoom_and_reset_at_hip() -> void:
 	_inp.release(&"aim")
 	assert_true(await wait_until(func() -> bool: return view.zoom_factor == 1.0, 6.0), "back to 1.0 at hip")
 	assert_eq(seen.back(), 1.0, "changed(1.0) emitted at hip")
-	assert_near(cam.fov, gs.fov(), 1e-3, "camera at base fov")
+	# zoom_factor snaps to 1.0 within 1e-4 while the ADS ease still has a sliver left: wait for the camera itself.
+	assert_true(await wait_until(func() -> bool: return absf(cam.fov - gs.fov()) < 1e-3, 2.0), "camera at base fov (%.4f)" % cam.fov)
 	st.magnification = mag0
