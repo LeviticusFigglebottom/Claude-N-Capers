@@ -2202,6 +2202,7 @@ ui.action.deploy,Deployable
 ui.action.drop_bag,Throw Bag
 ui.action.order_menu,Crew Order
 ui.action.scoreboard,Scoreboard
+ui.action.dismiss_tip,Close Tip
 ui.action.chat,Chat
 ui.action.pause,Options / Pause
 ui.results.xp.notoriety,Notoriety bonus
@@ -2750,6 +2751,7 @@ voice.vo.reyes.dockside_burn_radio_loot_product,Product's out. My buyer says tha
 ui.subtitle.speaker,{name}:
 ui.options.accessibility.subtitles_all_speakers,Subtitles for Guards and Crew
 ui.options.accessibility.reduce_motion,Reduce Motion
+ui.options.accessibility.head_bob,Head Bob
 ui.career.open,Career
 ui.career.title,Career
 ui.career.crumb,Safehouse / Profile
