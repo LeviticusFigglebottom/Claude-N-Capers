@@ -91,6 +91,18 @@ func player_mode() -> StringName:
 	return &"casing" if bool(prop(&"casing", false)) else &""
 
 
+## Net id of the local player the model follows (LocalHudModel `local_net_id`; tracked_crew mode falls back
+## to the tracked CrewController); 0 = unknown, so per-player feedback stays off.
+func local_net_id() -> int:
+	var id: int = int(prop(&"local_net_id", 0))
+	if id != 0:
+		return id
+	var c: Variant = prop(&"tracked_crew")
+	if c is Node and is_instance_valid(c) and (c as Node).get(&"net_id") != null:
+		return int((c as Node).get(&"net_id"))
+	return 0
+
+
 static func _arg_count(obj: Object, signal_name: StringName) -> int:
 	for sig: Dictionary in obj.get_signal_list():
 		if StringName(sig["name"]) == signal_name:

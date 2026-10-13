@@ -186,3 +186,25 @@ func _assert_granted(before: PlayerProfile, after: PlayerProfile, card: Dictiona
 		PaydayCards.MASK_PART:
 			assert_false(before.owned_mask_parts.has(card["item_id"]))
 			assert_has(after.owned_mask_parts, card["item_id"], "mask part card saved")
+
+
+## Lead round 62: each column's best crew value (kills / specials, > 0, ties shared) is marked.
+func test_crew_best_values_highlighted() -> void:
+	var result: Dictionary = HeistCatalog.sample_result()
+	result["crew"] = [
+		{"slot": 0, "is_ai": false, "kills": 7, "specials_killed": 1, "downs": 0, "civilians_killed": 0},
+		{"slot": 1, "is_ai": true, "kills": 7, "specials_killed": 0, "downs": 2, "civilians_killed": 0},
+		{"slot": 2, "is_ai": true, "kills": 3, "specials_killed": 0, "downs": 0, "civilians_killed": 0}]
+	_screen.show_result(result)
+	assert_eq(_screen.crew_best.get("kills", []), [0, 1], "tie shares the top kills")
+	assert_eq(_screen.crew_best.get("specials_killed", []), [0])
+	assert_false(_screen.crew_best.has("downs"), "downs are not an achievement")
+
+
+## The XP bar ends on the new progress, level and level-up line (the animation is skipped headless).
+func test_xp_bar_final_state() -> void:
+	_screen.show_result(HeistCatalog.sample_result())
+	_screen.finish_xp()
+	assert_near(_screen.level_bar.value, PaydayScreen._level_progress(_screen.xp_after), 0.0001)
+	var leveled: bool = XpCurve.level_for_xp(_screen.xp_after) > XpCurve.level_for_xp(_screen.xp_before)
+	assert_eq(_screen.level_up_label.visible, leveled)
