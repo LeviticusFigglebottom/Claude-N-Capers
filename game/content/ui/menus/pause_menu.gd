@@ -16,6 +16,9 @@ var leave_button: Button
 var confirm_box: VBoxContainer
 var confirm_button: Button
 var cancel_button: Button
+## The job card on the right (lead queue a): heist, difficulty, current objective, loot secured.
+var job_card: PanelContainer
+var job_labels: Dictionary = {}
 var _menu_box: VBoxContainer
 
 
@@ -73,7 +76,65 @@ func _ready() -> void:
 	leave_button.pressed.connect(open_confirm)
 	confirm_button.pressed.connect(leave_requested.emit)
 	cancel_button.pressed.connect(close_confirm)
+	_build_job_card()
 	resume_button.grab_focus.call_deferred()
+
+
+func _build_job_card() -> void:
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
+	job_card = UiBuild.panel(v, UiBuild.CARD)
+	job_card.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+	job_card.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	job_card.grow_vertical = Control.GROW_DIRECTION_BOTH
+	job_card.offset_right = -(UiTokens.MARGIN + UiTokens.S5)
+	job_card.custom_minimum_size = Vector2(520, 0)
+	job_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(job_card)
+	var cap: Label = UiBuild.caption(&"ui.pause.job_caption")
+	cap.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+	v.add_child(cap)
+	for key: StringName in [&"heist", &"difficulty", &"objective_cap", &"objective", &"loot_cap", &"loot"]:
+		var l: Label
+		match key:
+			&"heist":
+				l = UiBuild.label(&"", UiBuild.HEADER)
+			&"objective_cap", &"loot_cap":
+				l = UiBuild.caption(&"ui.scoreboard.objectives" if key == &"objective_cap" else &"ui.scoreboard.loot")
+			&"difficulty":
+				l = UiBuild.label(&"", UiBuild.DIM)
+			_:
+				l = UiBuild.label()
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		v.add_child(l)
+		job_labels[key] = l
+	job_card.visible = false
+
+
+## Fills the job card: {heist_id, difficulty, objective (text), bags (int), loot_value (int)}.
+## Missing keys hide their lines; an empty dict hides the card.
+func set_job(info: Dictionary) -> void:
+	if job_card == null:
+		return
+	job_card.visible = not info.is_empty()
+	var id: StringName = StringName(info.get("heist_id", &""))
+	(job_labels[&"heist"] as Label).text = UiText.t(StringName("heist.%s.name" % id)) if id != &"" else ""
+	job_card.add_theme_stylebox_override(&"panel", _accent_box(UiAccent.for_heist(id) if id != &"" else UiTokens.BRASS))
+	(job_labels[&"difficulty"] as Label).text = UiText.t(UiText.difficulty_key(int(info.get("difficulty", 0))))
+	var obj: String = String(info.get("objective", ""))
+	(job_labels[&"objective"] as Label).text = obj
+	(job_labels[&"objective"] as Label).visible = obj != ""
+	(job_labels[&"objective_cap"] as Label).visible = obj != ""
+	var bags: int = int(info.get("bags", 0))
+	var loot: Label = job_labels[&"loot"] as Label
+	loot.text = UiText.t(&"ui.pause.loot_line", {"bags": bags, "value": UiText.money(int(info.get("loot_value", 0)))})
+	loot.add_theme_color_override(&"font_color", UiTokens.BRASS_HI if bags > 0 else UiTokens.PAPER_DIM)
+
+
+func _accent_box(edge: Color) -> StyleBoxFlat:
+	var sb: StyleBoxFlat = (UiBuild.theme().get_stylebox(&"panel", UiBuild.CARD) as StyleBoxFlat).duplicate() as StyleBoxFlat
+	sb.border_color = edge
+	sb.border_width_left = 3
+	return sb
 
 
 func _item(parent: Container, key: StringName) -> Button:
