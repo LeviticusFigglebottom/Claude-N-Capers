@@ -50,7 +50,7 @@ func refresh() -> void:
 	bag_label.visible = loot != &""
 	bag_label.text = UiText.t(&"ui.hud.carrying", {"loot": UiText.t(UiText.item_key(loot))}) if loot != &"" else ""
 	var hostages: int = int(prop(&"hostages", 0))
-	hostages_label.visible = hostages > 0
+	hostages_label.visible = false  # lead round 64: HostageStrip (top centre) shows the count; text kept for tests
 	hostages_label.text = UiText.t(&"ui.hud.hostages", {"count": hostages})
 	var lines: Array[String] = []
 	var captain_widget: bool = prop(&"captain_present") != null  # v1.3: CaptainPanel shows Brandt

@@ -36,6 +36,11 @@ var grid: GridContainer
 var objectives_box: VBoxContainer
 ## slot -> heister id (Hud.set_crew_heisters): rows name the heister in their colour, like the crew rows.
 var heisters: Dictionary = {}
+## Lead round 64 (PD2 loot screen): bags secured this run, loot_id -> {count, value}, plus small loot
+## (EventBus.loot_secured / small_loot_taken since the HUD was built), listed under the objectives.
+var loot_secured: Dictionary = {}
+var small_loot_value: int = 0
+var loot_box: VBoxContainer
 
 
 func _init() -> void:
@@ -66,6 +71,14 @@ func build() -> void:
 	o.add_child(otitle)
 	objectives_box = UiBuild.vbox(UiTokens.S1)
 	o.add_child(objectives_box)
+	var gap: Control = Control.new()
+	gap.custom_minimum_size = Vector2(0, UiTokens.S3)
+	o.add_child(gap)
+	var ltitle: Label = UiBuild.caption(&"ui.scoreboard.loot")
+	ltitle.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+	o.add_child(ltitle)
+	loot_box = UiBuild.vbox(UiTokens.S1)
+	o.add_child(loot_box)
 	var p: PanelContainer = PanelContainer.new()
 	p.add_theme_stylebox_override(&"panel", UiThemeFactory.box(Color(UiTokens.INK_1, 0.94), UiTokens.LINE_STRONG, 1,
 			UiTokens.CUT, Vector2(UiTokens.S5, UiTokens.S4)))
@@ -95,6 +108,74 @@ func refresh() -> void:
 	for r: Dictionary in rows:
 		_row(r)
 	_fill_objectives()
+	_fill_loot()
+
+
+func _enter_tree() -> void:
+	if not EventBus.loot_secured.is_connected(_on_loot_secured):
+		EventBus.loot_secured.connect(_on_loot_secured)
+		EventBus.small_loot_taken.connect(_on_small_loot)
+
+
+func _exit_tree() -> void:
+	if EventBus.loot_secured.is_connected(_on_loot_secured):
+		EventBus.loot_secured.disconnect(_on_loot_secured)
+		EventBus.small_loot_taken.disconnect(_on_small_loot)
+
+
+func _on_loot_secured(_bag_net_id: int, loot_id: StringName, value: int) -> void:
+	var e: Dictionary = loot_secured.get(loot_id, {"count": 0, "value": 0}) as Dictionary
+	e["count"] = int(e["count"]) + 1
+	e["value"] = int(e["value"]) + value
+	loot_secured[loot_id] = e
+	if visible:
+		_fill_loot()
+
+
+func _on_small_loot(value: int, _crew_slot: int) -> void:
+	small_loot_value += value
+	if visible:
+		_fill_loot()
+
+
+## Bags by type ("Jewelry x2   $26,000"), small loot, then the total; "None yet" before the first bag.
+func _fill_loot() -> void:
+	if loot_box == null:
+		return
+	for c: Node in loot_box.get_children():
+		loot_box.remove_child(c)
+		c.queue_free()
+	var ids: Array = loot_secured.keys()
+	ids.sort()
+	var total: int = small_loot_value
+	for id: Variant in ids:
+		var e: Dictionary = loot_secured[id] as Dictionary
+		total += int(e["value"])
+		_loot_line(UiText.t(&"ui.scoreboard.loot_line", {"loot": UiText.t(UiText.item_key(StringName(id))),
+				"count": int(e["count"])}), int(e["value"]), UiTokens.PAPER)
+	if small_loot_value > 0:
+		_loot_line(UiText.t(&"ui.scoreboard.small_loot"), small_loot_value, UiTokens.PAPER)
+	if total > 0:
+		_loot_line(UiText.t(&"ui.scoreboard.loot_total"), total, UiTokens.BRASS_HI)
+	else:
+		var none: Label = UiBuild.label(&"ui.scoreboard.loot_none", UiBuild.HUD)
+		none.add_theme_constant_override(&"outline_size", 0)
+		none.add_theme_color_override(&"font_color", UiTokens.PAPER_DIM)
+		loot_box.add_child(none)
+
+
+func _loot_line(text: String, value: int, col: Color) -> void:
+	var h: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	var name_l: Label = UiBuild.label(&"", UiBuild.HUD)
+	name_l.text = text
+	name_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var val: Label = UiBuild.label(&"", UiBuild.HUD)
+	val.text = UiText.money(value)
+	for l: Label in [name_l, val]:
+		l.add_theme_constant_override(&"outline_size", 0)
+		l.add_theme_color_override(&"font_color", col)
+		h.add_child(l)
+	loot_box.add_child(h)
 
 
 ## Every objective but hidden ones: done in OK green, failed in red, the live ones in paper.

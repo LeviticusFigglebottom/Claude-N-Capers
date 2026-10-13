@@ -83,6 +83,9 @@ ui.hud.body_bags,Body bags: {count}
 ui.hud.cable_ties_name,Cable ties
 ui.hud.body_bags_name,Body bags
 ui.hud.hostages,Hostages: {count}
+ui.hud.trade_ready,Trade ready
+ui.hud.trade_wait,Trade after the assault
+ui.hud.trade_need,Take a hostage to trade
 ui.hud.carrying,Bag: {loot}
 ui.hud.pager,Pager {seconds}
 ui.hud.pagers_left,Pagers left: {count}
@@ -2404,6 +2407,11 @@ ui.jukebox.no_stems,{name} has no recording yet.
 ui.options.controls.scoreboard_mode,Scoreboard
 ui.scoreboard.title,Crew Tally
 ui.scoreboard.objectives,Objectives
+ui.scoreboard.loot,Loot secured
+ui.scoreboard.loot_line,{loot} x{count}
+ui.scoreboard.small_loot,Small loot
+ui.scoreboard.loot_total,Total
+ui.scoreboard.loot_none,Nothing secured yet
 ui.scoreboard.name,Crew
 ui.scoreboard.kills,Kills
 ui.scoreboard.specials,Specials

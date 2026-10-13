@@ -1,7 +1,7 @@
 ## HUD equipment glyph (lead queue d): a small line drawing in paper with a dark outline (frameless HUD,
 ## readable on any scene), drawn in code (no image assets). `kind` comes from kind_for(item id):
 ## doctor_bag, ammo_bag, armor_bag, body_bag_case, grenade, concussion, incendiary, knife, vial,
-## cable_tie, body_bag. Unknown kinds draw a dot. Owner: ENV B.
+## cable_tie, body_bag, hostage. Unknown kinds draw a dot. Owner: ENV B.
 class_name EquipmentIcon
 extends Control
 
@@ -84,6 +84,12 @@ func _glyph(c: Vector2, u: float, w: float, col: Color) -> void:
 			draw_arc(c + Vector2(0, -0.1) * u, 0.5 * u, PI * 0.6, PI * 2.4, 18, col, w)
 			draw_rect(Rect2(c + Vector2(-0.2, 0.3) * u, Vector2(0.4, 0.3) * u), col, false, w)  # lock head
 			draw_line(c + Vector2(0, 0.6) * u, c + Vector2(0, 0.85) * u, col, w)  # tail
+		&"hostage":  # a kneeling figure with tied wrists
+			draw_arc(c + Vector2(0, -0.55) * u, 0.22 * u, 0.0, TAU, 14, col, w)
+			draw_polyline(PackedVector2Array([c + Vector2(-0.35, 0.75) * u, c + Vector2(-0.3, -0.2) * u,
+					c + Vector2(0.3, -0.2) * u, c + Vector2(0.35, 0.75) * u]), col, w)
+			draw_line(c + Vector2(-0.2, 0.15) * u, c + Vector2(0.2, 0.45) * u, col, w)
+			draw_line(c + Vector2(0.2, 0.15) * u, c + Vector2(-0.2, 0.45) * u, col, w)
 		&"body_bag":
 			draw_rect(Rect2(c + Vector2(-0.4, -0.8) * u, Vector2(0.8, 1.6) * u), col, false, w)
 			draw_line(c + Vector2(0, -0.7) * u, c + Vector2(0, 0.7) * u, col, w * 0.7)  # zip

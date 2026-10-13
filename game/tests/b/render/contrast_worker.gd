@@ -84,8 +84,8 @@ func _shot(shot: String, under: Node) -> void:
 	var bad: int = 0
 	for n: Node in under.find_children("*", "Label", true, false):
 		var l: Label = n as Label
-		if not l.is_visible_in_tree() or l.text.strip_edges() == "":
-			continue
+		if not l.is_visible_in_tree() or l.text.strip_edges() == "" or _alpha(l) < 0.05:
+			continue  # faded-out labels (e.g. the crosshair while casing) are not on screen
 		var gr: Rect2 = _visible_rect(l)
 		if gr.size.x < 4.0 or gr.size.y < 4.0:
 			continue  # scrolled out of view / clipped
@@ -95,6 +95,16 @@ func _shot(shot: String, under: Node) -> void:
 			print("CONTRAST FAIL shot=%s %s '%s' ratio=%.2f" % [shot, l.get_path(), l.text.left(30), ratio])
 	print("SHOT %s: %d failures" % [shot, bad])
 	_fails += bad
+
+
+## Effective alpha of `c` (its modulate times every CanvasItem ancestor's).
+static func _alpha(c: CanvasItem) -> float:
+	var a: float = c.modulate.a * c.self_modulate.a
+	var p: Node = c.get_parent()
+	while p is CanvasItem:
+		a *= (p as CanvasItem).modulate.a
+		p = p.get_parent()
+	return a
 
 
 ## The label's rect cut to its clipping ancestors (ScrollContainer etc.) and the viewport.
@@ -176,6 +186,8 @@ func _loud() -> void:
 	model.equipped_slot = Enums.WeaponSlot.PRIMARY
 	model.carried_bag = {"loot_id": &"loot.jewelry", "weight": Enums.LootWeight.LIGHT}
 	model.hostages = 3
+	model.crew = [{"slot": 1, "name": "Dutch", "is_ai": true, "state": Enums.CrewState.CUSTODY, "health_frac": 0.0,
+			"armor_frac": 0.0, "downs_left": 0}]  # the hostage strip shows the trade line
 	model.health = 0.0
 	model.downs_left = 1
 	model.crew_state = Enums.CrewState.DOWNED
@@ -195,6 +207,9 @@ func _loud() -> void:
 	model.crew_stats = [
 		{"slot": 0, "name": "Sable", "is_ai": false, "is_local": true, "kills": 7, "specials_killed": 1, "civilians_killed": 0, "downs": 1},
 		{"slot": 1, "name": "Dutch", "is_ai": true, "is_local": false, "kills": 4, "specials_killed": 0, "civilians_killed": 0, "downs": 0}]
+	EventBus.loot_secured.emit(11, &"loot.jewelry", 13000)  # lead round 64 loot list
+	EventBus.loot_secured.emit(12, &"loot.jewelry", 13000)
+	EventBus.small_loot_taken.emit(1800, 0)
 	hud.scoreboard.refresh()
 	await _shot("loud_scoreboard", hud.scoreboard)  # only the sheet: the HUD under it is covered on purpose
 
