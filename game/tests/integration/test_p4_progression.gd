@@ -326,8 +326,8 @@ func _assert_mods(got: Dictionary, expected: Dictionary, label: String) -> void:
 ## concealment qualifier, skill MULT merging, multi-qualifier runtime query).
 ## Corsair base (weapons/corsair_ar.tres) + suppressor + reflex (replaces default iron sights) +
 ## vertical grip + extended mag (replaces default standard mag):
-##   damage 55 - 4 = 51; spread_ads 0.8 - 0.1 = 0.7; recoil_kick 0.9 - 0.1 - 0.2 = 0.6;
-##   recoil_h 0.45 - 0.1 = 0.35; mag 30 + 10 = 40; total 150 + 30 = 180; reload 2.4 + 0.3 = 2.7,
+##   damage 55 - 4 = 51; spread_ads 2.7 - 0.1 = 2.6; recoil_kick 1.05 - 0.1 - 0.2 = 0.75;
+##   recoil_h 1.5 - 0.1 = 1.4 (D-097 PD2 base values); mag 30 + 10 = 40; total 150 + 30 = 180; reload 2.4 + 0.3 = 2.7,
 ##   empty 3.1 + 0.4 = 3.5; concealment 20 - 3 - 1 - 1 - 2 = 13; suppression 12 - 12 = 0;
 ##   ads_time 0.28 + 0.06 + 0.02 + 0.03 = 0.39; magnification max(1, 1.15); suppressed, noise
 ##   min(70, 1) = 1. Falloff and fire rate unchanged (deltas 0).
@@ -344,8 +344,8 @@ func test_10_golden_suppressed_ar_stealth_build() -> void:
 	}
 	var r: Loadout = LoadoutResolver.resolve(l)
 	_assert_stats(r.resolved_primary, {
-		"damage": 51.0, "pellets": 1, "fire_rate_rpm": 700.0, "spread_deg_hip": 3.6, "spread_deg_ads": 0.7,
-		"recoil_kick_deg": 0.6, "recoil_horizontal_deg": 0.35, "falloff_start_m": 9999.0,
+		"damage": 51.0, "pellets": 1, "fire_rate_rpm": 700.0, "spread_deg_hip": 3.4, "spread_deg_ads": 2.6,
+		"recoil_kick_deg": 0.75, "recoil_horizontal_deg": 1.4, "falloff_start_m": 9999.0,
 		"falloff_end_m": 9999.0, "mag_size": 40, "total_ammo": 180, "reload_time_s": 2.7,
 		"reload_empty_time_s": 3.5, "equip_time_s": 0.55, "ads_time_s": 0.39, "concealment": 13,
 		"suppression": 0.0, "suppressed": true, "noise_radius_m": 1.0, "magnification": 1.15,
@@ -381,8 +381,8 @@ func test_10_golden_suppressed_ar_stealth_build() -> void:
 ## skill basic x aced MULT, skill x perk card MULT on one key, card gating, PARAMS last card wins,
 ## team.* split into TEAM sources).
 ## Plowman base + choke + pistol grip + extended tube (replaces default standard tube):
-##   spread_hip 4.0 - 0.5 - 0.3 = 3.2; spread_ads 2.0 - 0.5 + 0.5 = 2.0; recoil 2.6 + 0.8 = 3.4;
-##   recoil_h 0.9 + 0.3 = 1.2; mag 6 + 2 = 8; total 48 + 8 = 56; concealment 21 - 1 + 5 - 2 = 23;
+##   spread_hip 3.6 - 0.5 - 0.3 = 2.8; spread_ads 2.9 - 0.5 + 0.5 = 2.9; recoil 4.3 + 0.8 = 5.1;
+##   recoil_h 0.45 + 0.3 = 0.75 (D-097 PD2 base values); mag 6 + 2 = 8; total 48 + 8 = 56; concealment 21 - 1 + 5 - 2 = 23;
 ##   ads_time 0.3 + 0.02 = 0.32; D-045: reload = 0.4 + 8 x 0.4333 + 0.4 = 4.2664,
 ##   empty = 0.4 + 8 x 0.4333 + 1.2 = 5.0664.
 ## Concealment: 23 + 30 + 30 + light vest 26 + Foreman card 4 concealment_add.all 1 = 110 ->
@@ -398,8 +398,8 @@ func test_11_golden_shotgun_foreman_five_cards() -> void:
 	l.perk_deck_cards = 5
 	var r: Loadout = LoadoutResolver.resolve(l)
 	_assert_stats(r.resolved_primary, {
-		"damage": 16.0, "pellets": 10, "fire_rate_rpm": 70.0, "spread_deg_hip": 3.2, "spread_deg_ads": 2.0,
-		"recoil_kick_deg": 3.4, "recoil_horizontal_deg": 1.2, "falloff_start_m": 8.0, "falloff_end_m": 22.0,
+		"damage": 16.0, "pellets": 10, "fire_rate_rpm": 70.0, "spread_deg_hip": 2.8, "spread_deg_ads": 2.9,
+		"recoil_kick_deg": 5.1, "recoil_horizontal_deg": 0.75, "falloff_start_m": 8.0, "falloff_end_m": 22.0,
 		"falloff_min_mult": 0.15, "mag_size": 8, "total_ammo": 56, "reload_time_s": 4.2664,
 		"reload_empty_time_s": 5.0664, "ads_time_s": 0.32, "concealment": 23, "suppressed": false,
 		"noise_radius_m": 80.0,
@@ -543,7 +543,7 @@ func test_14_golden_illegal_mods_rejected_stock_stats_kept() -> void:
 	# plowman_choke: not in Corsair's slots -> rejected; extended mag taken, standard mag rejected
 	# (slot already filled): mag 40, total 180, concealment 18, reload 2.7 / 3.5, rest stock.
 	_assert_stats(s, {"damage": 55.0, "mag_size": 40, "total_ammo": 180, "concealment": 18,
-		"reload_time_s": 2.7, "reload_empty_time_s": 3.5, "spread_deg_hip": 3.6, "spread_deg_ads": 0.8,
+		"reload_time_s": 2.7, "reload_empty_time_s": 3.5, "spread_deg_hip": 3.4, "spread_deg_ads": 2.7,
 		"suppressed": false, "noise_radius_m": 70.0}, "corsair illegal mods")
 	_assert_stats(LoadoutResolver.resolve_weapon(CORSAIR, []), {"damage": 55.0, "mag_size": 30,
 		"total_ammo": 150, "concealment": 20, "reload_time_s": 2.4, "ads_time_s": 0.28}, "corsair stock")
