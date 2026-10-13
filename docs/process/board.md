@@ -12,6 +12,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 00:50: full gate on round 57 (adaae46b): 1854 tests, 3 failed (B: ui.action.dismiss_tip string ×2; qb_b6_02 crew stats shots/hits, likely PD2 spread vs test aim). **validate_level: all 4 maps PASS** (first time). Routed to B.
 - 2026-10-14 00:40: **round 64 ON ORIGIN**: env/b-content (hit/headshot/kill markers + damage arcs + low-health vignette/heartbeat, payday XP bar, downed-state screen, equipment icon chips, assault phase strip, loading screen with tips). ui_hud 1.9/1.10 (local_net_id, revive_progress/reviver_slot → A). b targeted + P1 slice green.
 - 2026-10-14 00:20: **round 63 ON ORIGIN**: env/p-play (knife melee framing eased per playing set), env/a-core (gh_stealth WIP harness). p + fp_viewmodel/d069 green.
 - 2026-10-14 00:10: **round 62 ON ORIGIN**: env/b-content (all 64 mods on PD2 accuracy/stability steps, mod ADS deltas zeroed, PD2 ADS times, LMG drift values, 21:9 in-heist HUD captures uw_*), lead P4 goldens to match (9/0). b/a/p targeted green.
