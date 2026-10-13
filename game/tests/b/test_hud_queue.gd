@@ -52,3 +52,22 @@ func test_assault_phase_strip() -> void:
 	assert_true(b.panel.modulate.a < 1.0, "regrouping is quieter")
 	_model.assault_phase = Enums.AssaultPhase.NONE
 	assert_false(b.visible)
+
+
+## Lead round 64: hostage count right of the banner; trade state while a crew member is in custody.
+func test_hostage_strip_and_trade() -> void:
+	var s: HostageStrip = _hud.hostages
+	assert_false(s.visible, "no hostages, nobody in custody")
+	_model.hostages = 2
+	assert_true(s.visible)
+	assert_eq(s.count_label.text, "2")
+	assert_eq(s.trade, &"")
+	_model.crew = [{"slot": 1, "name": "Dutch", "state": Enums.CrewState.CUSTODY}]
+	assert_eq(s.trade, &"ready", "hostage + custody + no assault")
+	_model.assault_phase = Enums.AssaultPhase.SUSTAIN
+	assert_eq(s.trade, &"wait")
+	_model.assault_phase = Enums.AssaultPhase.CONTROL
+	assert_eq(s.trade, &"ready", "regrouping is the trade window")
+	_model.hostages = 0
+	assert_eq(s.trade, &"need")
+	assert_true(s.visible, "the trade hint stays without hostages")

@@ -186,6 +186,8 @@ func _loud() -> void:
 	model.equipped_slot = Enums.WeaponSlot.PRIMARY
 	model.carried_bag = {"loot_id": &"loot.jewelry", "weight": Enums.LootWeight.LIGHT}
 	model.hostages = 3
+	model.crew = [{"slot": 1, "name": "Dutch", "is_ai": true, "state": Enums.CrewState.CUSTODY, "health_frac": 0.0,
+			"armor_frac": 0.0, "downs_left": 0}]  # the hostage strip shows the trade line
 	model.health = 0.0
 	model.downs_left = 1
 	model.crew_state = Enums.CrewState.DOWNED

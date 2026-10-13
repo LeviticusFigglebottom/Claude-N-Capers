@@ -96,7 +96,7 @@ func _loud(scale: float) -> void:
 	var px_per_unit: float = 720.0 / hud.get_viewport().get_visible_rect().size.y
 	var vis: Rect2 = hud.get_viewport().get_visible_rect().grow(1.0)
 	var reads: Dictionary = {"ammo": hud.ammo.ammo_label, "bleedout": hud.downed.timer_label,
-		"bag": hud.status.bag_label, "hostages": hud.status.hostages_label}
+		"bag": hud.status.bag_label, "hostages": hud.hostages.count_label}
 	var rects: Dictionary = {}
 	for k: String in reads:
 		var l: Label = reads[k] as Label

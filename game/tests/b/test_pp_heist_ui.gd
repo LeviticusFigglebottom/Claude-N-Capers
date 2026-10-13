@@ -207,7 +207,7 @@ func test_casing_blocked_hint() -> void:
 func test_floating_text_outline_and_shadow() -> void:
 	var labels: Array[Label] = [_hud.toast_label, _hud.dominate.prompt.left, _hud.interaction.prompt.left,
 			_hud.interaction.blocked_label, _hud.status.mask_label, _hud.status.bag_label,
-			_hud.status.hostages_label, _hud.status.warnings_label]
+			_hud.hostages.count_label, _hud.status.warnings_label]
 	for l: Label in labels:
 		assert_eq(l.get_theme_constant(&"outline_size"), 8, l.name)
 		assert_eq(l.get_theme_color(&"font_outline_color"), Color(0, 0, 0, 1), l.name)
