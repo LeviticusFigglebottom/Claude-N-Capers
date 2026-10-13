@@ -9,7 +9,7 @@
 ## that key's default.
 ##
 ## The game-wide instance is `GameSettings.current()` (loaded on first use; MenuFlow applies it at
-## start). ENV A reads `fov()`, `mouse_sensitivity()`, `invert_y()`, `pad_sensitivity()`,
+## start). ENV A reads `fov()`, ENV P `head_bob()`, `mouse_sensitivity()`, `invert_y()`, `pad_sensitivity()`,
 ## `pad_deadzone()`, `is_toggle(action)` and listens to `changed`. `apply()` pushes what ENV B
 ## applies itself (SettingsApplier: AudioServer, window / viewport, InputMap).
 class_name GameSettings
@@ -211,6 +211,11 @@ func mouse_sensitivity() -> Vector2:
 
 
 ## Invert vertical look (mouse and pad).
+## Camera head bob (ENV P, PD2's subtle walk bob); always off while Reduce Motion is on.
+func head_bob() -> bool:
+	return bool(get_value(ACCESSIBILITY, &"head_bob")) and not bool(get_value(ACCESSIBILITY, &"reduce_motion"))
+
+
 func invert_y() -> bool:
 	return bool(get_value(CONTROLS, &"invert_y"))
 

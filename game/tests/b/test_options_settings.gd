@@ -207,3 +207,14 @@ func test_current_is_shared_and_replaceable() -> void:
 	assert_eq(GameSettings.current(), mine)
 	GameSettings.set_current(prev)
 	assert_eq(GameSettings.current(), prev)
+
+
+## ENV P head bob: on by default, off when unticked, and always off under Reduce Motion.
+func test_head_bob_follows_reduce_motion() -> void:
+	var s: GameSettings = GameSettings.new()
+	assert_true(s.head_bob(), "default on")
+	s.set_value(GameSettings.ACCESSIBILITY, &"reduce_motion", true)
+	assert_false(s.head_bob(), "Reduce Motion forces it off")
+	s.set_value(GameSettings.ACCESSIBILITY, &"reduce_motion", false)
+	s.set_value(GameSettings.ACCESSIBILITY, &"head_bob", false)
+	assert_false(s.head_bob(), "player turned it off")
