@@ -46,7 +46,7 @@ var mask_descriptor: Dictionary:
 ## True once an external WeaponVisual owns the camera (ours is no longer attached).
 var external_viewmodel: bool = false
 ## P1-03 (read-only): eased 0 (hip) .. 1 (ADS) shared by the camera zoom and the FpViewmodel arms (one weight, one
-## rate: FpViewmodelTweak.ads_rate, smoothstep ease). Follows CrewController.is_aiming().
+## rate: CrewView.ads_rate(crew), smoothstep ease). Follows CrewController.is_aiming().
 var ads_blend: float:
 	get:
 		return smoothstep(0.0, 1.0, _ads_weight)
@@ -84,6 +84,17 @@ static func is_aiming(crew: CrewController) -> bool:
 	if crew.crew_state != Enums.CrewState.NORMAL and crew.crew_state != Enums.CrewState.SWAN_SONG:
 		return false
 	return crew.weapons == null or not crew.weapons.reloading
+
+
+## PO-4 (PD2 TRANSITION_DURATION 0.23 s + weapon transition_duration): ADS in/out rate (1/s) of the equipped weapon,
+## 1 / WeaponStats.ads_time_s (weapon data, incl. mods); FpViewmodelTweak.ads_rate when the weapon has none. Shared by
+## the camera zoom and the FpViewmodel arms so sights and zoom arrive together (P1-03).
+static func ads_rate(crew: CrewController) -> float:
+	var w: CrewWeapons = crew.weapons if crew != null else null
+	var st: WeaponStats = w.stats(w.equipped_slot) if w != null else null
+	if st != null and st.ads_time_s > 0.0:
+		return 1.0 / st.ads_time_s
+	return FpViewmodelTweak.data().ads_rate
 
 
 ## D-084: zoom_factor of the local player's view; 1.0 when there is none.
@@ -181,7 +192,7 @@ func refresh_camera() -> void:
 
 
 ## B5-01 options: the local camera FOV is GameSettings.fov() (re-read every frame, so a changed setting
-## applies at once); aiming zooms to fov / WeaponStats.magnification at FpViewmodelTweak.ads_rate (P1-03).
+## applies at once); aiming zooms to fov / WeaponStats.magnification at CrewView.ads_rate (P1-03).
 func _process(delta: float) -> void:
 	if _crew == null or not _is_local_human():
 		return
@@ -194,7 +205,7 @@ func _process(delta: float) -> void:
 	if w != null and w.stats(w.equipped_slot) != null:
 		mag = maxf(w.stats(w.equipped_slot).magnification, 1.0)
 	# P1-03: arms' rate
-	_ads_weight = move_toward(_ads_weight, 1.0 if CrewView.is_aiming(_crew) else 0.0, delta * FpViewmodelTweak.data().ads_rate)
+	_ads_weight = move_toward(_ads_weight, 1.0 if CrewView.is_aiming(_crew) else 0.0, delta * CrewView.ads_rate(_crew))
 	cam.fov = gs.fov() / lerpf(1.0, mag, ads_blend)
 	_update_viewmodel_camera(cam)
 	_local_view = self

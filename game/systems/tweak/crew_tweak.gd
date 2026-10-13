@@ -6,6 +6,9 @@ extends Resource
 @export_group("Movement")
 @export var walk_speed: float = 3.5
 @export var sprint_speed: float = 5.75
+## PO-4 (PD2 PlayerStandard:_end_action_running, 0.4 s / exit_run_speed_multiplier): pressing fire while sprinting ends
+## the sprint and the gun comes up over this long before it can shoot; sprint stays off until it is pressed again.
+@export var sprint_exit_fire_s: float = 0.4
 @export var crouch_speed: float = 2.25
 @export var jump_velocity: float = 4.6
 @export var gravity: float = 9.8
@@ -38,6 +41,9 @@ extends Resource
 @export var edge_assist_backoff_m: float = 0.06
 ## Camera-only smoothing of step-up / step-down height changes (1/s, exponential); gameplay position is exact.
 @export var step_smooth_rate: float = 14.0
+## PO-4 (PD2 stance TRANSITION_DURATION 0.23 s): camera-only easing of the crouch / stand eye-height change (1/s,
+## exponential; 13 = ~95 % in 0.23 s). 0 = instant. Gameplay eye_height() switches at once.
+@export var crouch_smooth_rate: float = 13.0
 ## PO-4 (PD2): camera-only landing dip of the local human. A landing faster than land_dip_min_mps kicks the eye down
 ## by (impact - min) x land_dip_gain (m per m/s, capped at land_dip_max_m) through a critically damped spring of
 ## land_dip_hz, so it dips and recovers in ~0.3 s. 0 gain = off. Gameplay position is unaffected.

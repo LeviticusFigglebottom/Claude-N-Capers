@@ -295,7 +295,7 @@ func tick(delta: float) -> void:
 	_update_deploy()
 	_update_pin()
 	_update_parts()
-	_update_ads(delta, tw)
+	_update_ads(delta)
 	if action == Action.NONE:
 		_play_base(tw)
 	_update_offset(delta, tw)
@@ -682,22 +682,28 @@ func _play_base(tw: FpViewmodelTweak) -> void:
 	if anim_set == &"":
 		return
 	var want: StringName = &"idle"
+	var aiming: bool = _aim_wanted() and action != Action.SWAP
 	if _sprinting(tw):
 		want = &"sprint"
-	elif ads_weight > 0.5:
+	elif aiming:
 		want = &"ads_idle"
 	var r: StringName = _resolve(anim_set, want)
 	if r == &"" or (r == clip and player.is_playing()):
 		return
-	player.play("%s/%s" % [anim_set, r], tw.blend_s)
+	# PO-4: idle <-> ads_idle switch on the aim press / release and crossfade over the whole ADS time, so the arms move
+	# with the zoom for the full transition (switching at weight 0.5 with blend_s left the first half static, then
+	# snapped once ads_time_s grew to PD2's ~0.23-0.3 s).
+	var ads_switch: bool = (want == &"ads_idle") != (clip == _resolve(anim_set, &"ads_idle"))
+	var blend: float = 1.0 / maxf(CrewView.ads_rate(_crew), 0.01) if ads_switch and not _sprinting(tw) else tw.blend_s
+	player.play("%s/%s" % [anim_set, r], blend)
 	clip = r
 
 
-func _update_ads(delta: float, tw: FpViewmodelTweak) -> void:
-	# P1-03: same target (CrewView.is_aiming), rate (FpViewmodelTweak.ads_rate) and smoothstep ease as the camera
+func _update_ads(delta: float) -> void:
+	# P1-03: same target (CrewView.is_aiming), rate (CrewView.ads_rate) and smoothstep ease as the camera
 	# zoom in CrewView, so sights and zoom arrive together. A swap also drops the sights (arms only).
 	var target: float = 1.0 if _aim_wanted() and action != Action.SWAP else 0.0
-	_ads_lin = move_toward(_ads_lin, target, tw.ads_rate * delta)
+	_ads_lin = move_toward(_ads_lin, target, CrewView.ads_rate(_crew) * delta)
 	ads_weight = smoothstep(0.0, 1.0, _ads_lin)
 
 

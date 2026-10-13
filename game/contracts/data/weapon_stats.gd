@@ -13,6 +13,8 @@ extends Resource
 @export var spread_deg_ads: float = 0.0
 @export var recoil_kick_deg: float = 0.0      ## stability: vertical kick per shot
 @export var recoil_horizontal_deg: float = 0.0
+## D-099: signed per-shot mean of the horizontal kick (deg; + = right). 0 = symmetric (every weapon but LMGs today).
+@export var recoil_horizontal_bias_deg: float = 0.0
 @export var falloff_start_m: float = 20.0
 @export var falloff_end_m: float = 40.0
 @export var falloff_min_mult: float = 0.5
@@ -66,6 +68,7 @@ func plus(d: WeaponStats) -> WeaponStats:
 	r.spread_deg_ads += d.spread_deg_ads
 	r.recoil_kick_deg += d.recoil_kick_deg
 	r.recoil_horizontal_deg += d.recoil_horizontal_deg
+	r.recoil_horizontal_bias_deg += d.recoil_horizontal_bias_deg
 	r.falloff_start_m += d.falloff_start_m
 	r.falloff_end_m += d.falloff_end_m
 	r.mag_size += d.mag_size

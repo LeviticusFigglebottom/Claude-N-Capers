@@ -9,6 +9,10 @@ const SKIP_SETS: Array[StringName] = [&"akimbo", &"bow"]
 
 const MAX_REAR_M: float = 0.10
 const MIN_GRIP_FORWARD_M: float = 0.30
+## PD2 ADS picture: long guns' sights a hand's width from the eye (further out the buttstock slab shows), pistols and
+## levers at arm's length; closer than MIN the rear sight fills the view.
+const MIN_RELIEF_M: float = 0.06
+const MAX_RELIEF_M: float = 0.45
 
 var _rt: HeistRuntime = null
 var _inp: PInputDriver = null
@@ -41,9 +45,11 @@ func _measure(id: StringName) -> Dictionary:
 	var primary: bool = def.slot == Enums.WeaponSlot.PRIMARY
 	if primary:
 		l.primary = id
+		l.primary_mods = Array([], TYPE_STRING_NAME, &"", null)
 		l.resolved_primary = LoadoutResolver.resolve_weapon(id, l.primary_mods)
 	else:
 		l.secondary = id
+		l.secondary_mods = Array([], TYPE_STRING_NAME, &"", null)  # the default pistol's mods (suppressor) do not fit other secondaries
 		l.resolved_secondary = LoadoutResolver.resolve_weapon(id, l.secondary_mods)
 	_rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.basic(0, 0), "crew_ai": false, "loadouts": {0: l}})
@@ -68,6 +74,13 @@ func _measure(id: StringName) -> Dictionary:
 		out["rear"] = ab.end.z
 		out["front"] = ab.position.z
 		out["set"] = vm.anim_set
+		# ADS eye relief: the AimPoint's distance in front of the eye once fully aimed.
+		_inp.press(&"aim")
+		await wait_seconds(1.0)
+		var aim: Node3D = vm.weapon_visual.get_marker(WeaponVisual.AIM_POINT)
+		if aim != null:
+			out["relief"] = -(inv * aim.global_position).z
+		_inp.release(&"aim")
 	_inp.release_all()
 	_rt.teardown()
 	_rt = null
@@ -82,8 +95,10 @@ func test_every_weapon_hip_in_front_of_lens() -> void:
 		if not m.has("rear"):
 			print("[PO4] %-24s set=%-12s no viewmodel" % [id, m["set"]])
 			continue
-		print("[PO4] %-24s set=%-12s grip=%s rear=%.3f front=%.3f" % [id, m["set"], m["grip"], m["rear"],
-			m["front"]])
+		print("[PO4] %-24s set=%-12s grip=%s rear=%.3f front=%.3f relief=%.3f" % [id, m["set"], m["grip"], m["rear"],
+			m["front"], float(m.get("relief", -1.0))])
+		if m.has("relief") and (float(m["relief"]) < MIN_RELIEF_M or float(m["relief"]) > MAX_RELIEF_M):
+			bad.append("%s (%s) ADS eye relief %.3f" % [id, m["set"], m["relief"]])
 		# PD2 framing: grip well forward of the eye; at most the butt pad of a long stock behind the lens.
 		if float(m["rear"]) > MAX_REAR_M or -(m["grip"] as Vector3).z < MIN_GRIP_FORWARD_M:
 			bad.append("%s (%s) rear %.3f grip z %.3f" % [id, m["set"], m["rear"], (m["grip"] as Vector3).z])
