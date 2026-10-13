@@ -113,7 +113,7 @@ func test_v0_migrates() -> void:
 	assert_eq(q.profile_name, "Old")
 	assert_eq(q.cash, 50)
 	assert_eq(q.xp, 10)
-	assert_eq(q.owned_weapons.size(), 0)
+	assert_eq(q.owned_weapons, [&"weapon.corsair_ar"] as Array[StringName], "v8: only the granted starter AR")
 	assert_near(q.banked_stealth_mult, 1.0)
 
 
