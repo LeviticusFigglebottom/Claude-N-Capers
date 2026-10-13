@@ -15,6 +15,7 @@ var _shot: int = 0
 var _log: PackedStringArray = PackedStringArray()
 var _worst_frame_ms: float = 0.0
 var _last_frame_us: int = 0
+var _budget_s: float = 0.0
 
 
 func _ready() -> void:
@@ -28,6 +29,12 @@ func _run() -> void:
 			heist_name = a.substr(12)
 		elif a.begins_with("--po5-difficulty="):
 			difficulty_name = a.substr(17)
+		elif a.begins_with("--po5-seed="):
+			HeistLauncher.next_seed_override = a.substr(11).to_int()  # replay a run (menus still clicked)
+		elif a.begins_with("--po5-budget="):
+			_budget_s = a.substr(13).to_float()
+	if _budget_s > 0.0:
+		_watchdog.call_deferred()
 	if not await enter_heist():
 		return
 	match runner_flow:
@@ -169,6 +176,14 @@ func capture_like_player() -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
+## Wall-clock budget (--po5-budget=<s>): screenshot + exit 2 when exceeded (release check never hangs).
+func _watchdog() -> void:
+	await get_tree().create_timer(_budget_s, true, false, true).timeout
+	note("FAIL budget %.0f s exceeded" % _budget_s)
+	await shot("budget_exceeded")
+	_finish(2)
+
+
 ## Game-time wait (physics ticks).
 func wait_s(s: float) -> void:
 	for _i: int in int(s * Engine.physics_ticks_per_second):
@@ -297,6 +312,8 @@ func note(msg: String) -> void:
 
 
 func _finish(code: int) -> void:
+	note("RESULT %s (code %d) flow=%s heist=%s seed=%d" % ["PASS" if code == 0 else "FAIL", code, runner_flow,
+		heist_name, rt.run_seed if rt != null and is_instance_valid(rt) else -1])
 	RenderingServer.render_loop_enabled = true
 	var f: FileAccess = FileAccess.open("%s/po5_log.txt" % runner_out, FileAccess.WRITE)
 	if f != null:
