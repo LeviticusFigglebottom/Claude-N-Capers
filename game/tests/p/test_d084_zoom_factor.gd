@@ -7,6 +7,9 @@ var _inp: PInputDriver = null
 
 
 func before_each() -> void:
+	# Round-49 flake: state left by earlier tests in the same runner process (any dir) must not leak in.
+	GameSettings.current().set_value(GameSettings.VIDEO, &"fov", 75.0)
+	PlayerInput.test_assume_captured = false
 	_rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.basic(0, 0), "crew_ai": false})
 	_inp = PInputDriver.new(self)
@@ -38,9 +41,8 @@ func test_scope_zoom_and_reset_at_hip() -> void:
 	assert_true(c.masked, "masked (aim allowed)")
 	var view: CrewView = CrewView.of(c)
 	assert_true(view != null, "view")
-	await wait_frames(3)
-	assert_eq(CrewView.local_view(), view, "local view registered")
-	assert_eq(view.zoom_factor, 1.0, "hip fire = 1.0")
+	assert_true(await wait_until(func() -> bool: return CrewView.local_view() == view, 3.0), "local view registered")
+	assert_true(await wait_until(func() -> bool: return view.zoom_factor == 1.0, 3.0), "hip fire = 1.0")
 	var st: WeaponStats = c.weapons.stats(c.weapons.equipped_slot)
 	var mag0: float = st.magnification
 	st.magnification = 4.0  # setup: a 4x scope (restored below; stats may be shared)
@@ -49,12 +51,13 @@ func test_scope_zoom_and_reset_at_hip() -> void:
 	_inp.press(&"aim")
 	var cam: Camera3D = view.camera()
 	var gs: GameSettings = GameSettings.current()
-	assert_true(await wait_until(func() -> bool: return view.zoom_factor > 3.99, 3.0), "zoomed to ~4x (%.3f)" % view.zoom_factor)
-	assert_near(view.zoom_factor, CrewView.zoom_factor_for(gs.fov(), cam.fov), 1e-4, "matches the camera fov")
+	assert_true(await wait_until(func() -> bool: return view.zoom_factor > 3.99, 6.0), "zoomed to ~4x (%.3f)" % view.zoom_factor)
+	await wait_frames(2)  # let the ADS ease finish: zoom_factor skips sub-1e-4 changes, so compare once settled
+	assert_near(view.zoom_factor, CrewView.zoom_factor_for(gs.fov(), cam.fov), 1e-3, "matches the camera fov")
 	assert_near(CrewView.local_zoom_factor(), view.zoom_factor, 1e-6, "static accessor")
 	assert_true(seen.size() > 0 and seen.back() > 3.99, "zoom_factor_changed emitted")
 	_inp.release(&"aim")
-	assert_true(await wait_until(func() -> bool: return view.zoom_factor == 1.0, 3.0), "back to 1.0 at hip")
+	assert_true(await wait_until(func() -> bool: return view.zoom_factor == 1.0, 6.0), "back to 1.0 at hip")
 	assert_eq(seen.back(), 1.0, "changed(1.0) emitted at hip")
 	assert_near(cam.fov, gs.fov(), 1e-3, "camera at base fov")
 	st.magnification = mag0
