@@ -49,10 +49,10 @@ static var test_assume_captured: bool = false
 ## PO-4 (PD2, playerstandard / fpcameraplayerbase): a shot's camera kick (CrewWeapons -> add_recoil) is applied over
 ## this many seconds (ease-out) instead of a one-frame snap. 0 = instant.
 @export var recoil_apply_s: float = 0.06
-## PD2 recovery: once fire is released and recoil_recover_wait_s has passed since the last shot, the camera puts back
-## the WHOLE kick accumulated since shooting started (whatever the player pulled down meanwhile), easing out at these
-## rates (1/s; PD2 lerp 9*dt vertical, 5*dt horizontal). Vertical accumulation caps at recoil_max_accum_deg.
-@export var recoil_recover_wait_s: float = 0.1
+## PD2 recovery (D-097): once shooting stops the camera puts back the WHOLE kick accumulated since shooting started
+## (whatever the player pulled down meanwhile), easing out at these rates (1/s; PD2 lerp 9*dt vertical, 5*dt
+## horizontal). "Stopped" = no shot for one fire interval for auto-default guns (WeaponDef.fire_modes[0] == auto),
+## at once for semi-default ones (PD2 recoil_wait). Vertical accumulation caps at recoil_max_accum_deg.
 @export var recoil_recover_rate_v: float = 9.0
 @export var recoil_recover_rate_h: float = 5.0
 @export var recoil_max_accum_deg: float = 20.0
@@ -184,11 +184,22 @@ func add_recoil(kick: float, side: float) -> void:
 	_recoil.append({"total": Vector2(side, kick), "done": 0.0, "t": 0.0})
 
 
+## PD2 recoil_wait: one fire interval for auto-default weapons, none for semi-default ones.
+func _recover_wait_s() -> float:
+	var w: CrewWeapons = _crew.weapons if _crew != null else null
+	if w == null:
+		return 0.0
+	var def: WeaponDef = ContentDB.weapon(w.weapon_id(w.equipped_slot))
+	var st: WeaponStats = w.stats(w.equipped_slot)
+	if def == null or st == null or def.fire_modes.is_empty() or def.fire_modes[0] != &"auto":
+		return 0.0
+	return 60.0 / maxf(st.fire_rate_rpm, 1.0)
+
+
 ## Advance the pending recoil impulses by `delta` (applies exactly their total in the end).
 func _tick_recoil(delta: float) -> void:
 	_since_shot += delta
-	if _recoil.is_empty() and _recoil_acc != Vector2.ZERO and _since_shot >= recoil_recover_wait_s \
-			and not (InputMap.has_action(&"fire") and Input.is_action_pressed(&"fire")):
+	if _recoil.is_empty() and _recoil_acc != Vector2.ZERO and _since_shot >= _recover_wait_s():
 		var back: Vector2 = Vector2(_recoil_acc.x * minf(recoil_recover_rate_h * delta, 1.0),
 			_recoil_acc.y * minf(recoil_recover_rate_v * delta, 1.0))
 		if _recoil_acc.length() < 1e-5:
