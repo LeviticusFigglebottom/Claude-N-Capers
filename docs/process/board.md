@@ -12,6 +12,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-13 21:20: **round 51 ON ORIGIN**: env/a-core (D-093 helpless→custody, PO-5.14 police push in, harness real capture + auto_loud; FIRST END-TO-END LOUD WIN windowed via real menus → payday), env/p-play (recoil eased kick, landing dip), env/b-content (first-time onboarding cards, Tab sheet fixes), D-096 dismiss_tip action. p 73/0, a/b targeted green, P1 slice 10/0.
 - 2026-10-13 21:15: **round 50 ON ORIGIN**: env/p-play 13da95e8 (viewmodel camera sees viewmodel_lit layer 21; new per-shot muzzle-flash light). p 72/0.
 - 2026-10-13 21:10: **round 49 ON ORIGIN**: env/p-play 42dfaf93 (ADS sights aligned on the current animated pose; centred from 0.1 s). Tip for all: windowed visual checks use `--fixed-fps 60`.
 - 2026-10-13 21:05: **round 48 ON ORIGIN**: env/p-play f11b4df1 (hip framing for all 34 FP guns, enforced by test_po4_viewmodel_classes; brute_12 hand on the fore-end).
