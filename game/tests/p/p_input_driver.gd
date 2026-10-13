@@ -22,6 +22,7 @@ var _t: Node = null
 var _held: Dictionary[StringName, bool] = {}
 var _keys: Dictionary[int, bool] = {}
 var _joy: Dictionary[int, bool] = {}
+var _axes: Dictionary[int, bool] = {}
 
 
 func _init(test: Node) -> void:
@@ -78,6 +79,21 @@ func joy_button(button: JoyButton, pressed: bool) -> void:
 		_joy.erase(button)
 
 
+## Gamepad axis (e.g. JOY_AXIS_RIGHT_X, -1..1), device 0: exercises the joypad InputMap bindings (look_*).
+## Held until set back to 0.0 (or release_all).
+func joy_axis(axis: JoyAxis, value: float) -> void:
+	var ev: InputEventJoypadMotion = InputEventJoypadMotion.new()
+	ev.device = 0
+	ev.axis = axis
+	ev.axis_value = value
+	Input.parse_input_event(ev)
+	Input.flush_buffered_events()
+	if value != 0.0:
+		_axes[axis] = true
+	else:
+		_axes.erase(axis)
+
+
 func is_held(action: StringName) -> bool:
 	return _held.has(action)
 
@@ -89,6 +105,8 @@ func release_all() -> void:
 		key(k as Key, false)
 	for b: int in _joy.keys():
 		joy_button(b as JoyButton, false)
+	for ax: int in _axes.keys():
+		joy_axis(ax as JoyAxis, 0.0)
 	PlayerInput.test_assume_captured = false
 
 
