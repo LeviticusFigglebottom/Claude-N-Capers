@@ -750,6 +750,7 @@ func _on_heist_ended(result: Dictionary) -> void:
 		consume_pro_contract()
 	if _hud != null and is_instance_valid(_hud):
 		_hud.visible = false
+	options_menu.close_pause()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
@@ -775,7 +776,7 @@ func _leave_heist() -> void:
 	runtime = null
 	if EventBus.heist_ended.is_connected(_on_heist_ended):
 		EventBus.heist_ended.disconnect(_on_heist_ended)
-	options_menu.close_in_heist()
+	options_menu.close_pause()
 	if heist_chat != null and is_instance_valid(heist_chat):
 		heist_chat.close()
 	heist_chat = null

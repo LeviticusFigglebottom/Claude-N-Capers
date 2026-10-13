@@ -13,6 +13,9 @@ ui.menu.back,Back
 ui.menu.confirm,Confirm
 ui.menu.cancel,Cancel
 ui.menu.resume,Resume
+ui.pause.title,Menu
+ui.pause.heading,Heist in progress
+ui.pause.live_note,The heist keeps running while this menu is open. You stand still until you resume.
 ui.menu.leave_heist,Leave Heist
 ui.menu.quit_confirm,Leave the game? Unsecured loot stays behind.
 ui.menu.profile,Profile {index}
