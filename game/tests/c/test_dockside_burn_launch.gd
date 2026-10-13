@@ -82,7 +82,7 @@ func test_launch_routine_seed_1001() -> void:
 	await _teardown(rt)
 
 
-## The burn finishing drops the burning room's fire shutters 5 s later (D-064 Q6); four secured bags
+## The burn point lighting (device_finished, after its 5 s telegraph) drops the fire shutters (D-064 Q6); four secured bags
 ## after the burn call the escape (D-064 Q2).
 func test_burn_shutters_and_escape_call() -> void:
 	if _launcher == null:
@@ -104,18 +104,24 @@ func test_burn_shutters_and_escape_call() -> void:
 	EventBus.device_finished.emit(int(bp.get(&"net_id")))
 	await wait_physics_frames(2)
 	assert_eq(mission.objective_state(&"burn"), Enums.ObjectiveState.COMPLETED, "burn objective")
-	Engine.time_scale = 4.0
-	await wait_until(func() -> bool: return mission.timer_left(&"fire_shutters") <= 0.0, 5.0)
 	await wait_physics_frames(3)
-	Engine.time_scale = 1.0
 	for dn: String in SHUTTERS[sid]:
 		var d: Door = map.get_node_or_null("Gameplay/Doors/" + dn) as Door
 		assert_true(d != null and not d.is_open, "fire shutter %s closed" % dn)
 		var it: Node = d.get_node_or_null(^"Interactable") if d != null else null
 		assert_true(it != null and not bool(it.get(&"enabled")), "fire shutter %s barred (interaction off)" % dn)
+	var secure_data: Array[Dictionary] = []
+	var on_obj: Callable = func(oid: StringName, _st: int, data: Dictionary) -> void:
+		if oid == &"secure":
+			secure_data.append(data.duplicate())
+	EventBus.objective_updated.connect(on_obj)
 	for i: int in range(4):
 		EventBus.loot_secured.emit(9000 + i, &"loot.cash_bricks", 1000)
 	await wait_physics_frames(2)
+	EventBus.objective_updated.disconnect(on_obj)
+	var counts: Array = secure_data.map(func(d: Dictionary) -> int: return int(d.get("count", -1)))
+	assert_true(counts.has(1) and counts.has(4), "secure objective sends count per bag (got %s)" % [counts])
+	assert_true(secure_data.all(func(d: Dictionary) -> bool: return int(d.get("total", -1)) == 4), "secure total = 4")
 	assert_eq(mission.objective_state(&"secure"), Enums.ObjectiveState.COMPLETED, "4 bags secured")
 	assert_eq(mission.objective_state(&"escape_wait"), Enums.ObjectiveState.ACTIVE, "escape called after burn + secure")
 	await _teardown(rt)

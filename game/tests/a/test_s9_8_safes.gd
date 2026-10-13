@@ -1,6 +1,9 @@
 ## A2-04 S9.8: safe methods (drill / saw / c4 / lockpick / code), time locks, size -> duration.
 extends TestCase
 
+const SMALL_LOOT: PackedScene = preload("res://systems/prefabs/small_loot/small_loot.tscn")
+const DRILL_POINT: PackedScene = preload("res://systems/prefabs/drill_point/drill_point.tscn")
+
 var _rt: HeistRuntime = null
 var _events: Array[Array] = []
 var _conns: Array[Array] = []
@@ -129,7 +132,7 @@ func test_time_lock_delays_opening() -> void:
 	var safe: Safe = _safe(Vector3(0, 0, -6), [&"code"], Safe.Size.LARGE, func(s: Safe) -> void:
 		s.code_group = &"vault"
 		s.time_lock_s = tl
-		var sl: SmallLoot = (load("res://systems/prefabs/small_loot/small_loot.tscn") as PackedScene).instantiate() as SmallLoot
+		var sl: SmallLoot = SMALL_LOOT.instantiate() as SmallLoot
 		sl.name = "Cash"
 		sl.position = Vector3(0, 0.5, 0)
 		s.add_child(sl))
@@ -186,3 +189,58 @@ func test_drill_finish_with_time_lock_and_size_durations() -> void:
 	assert_eq(l.stage, Safe.Stage.TIME_LOCK)
 	l.swing_open()
 	assert_true(l.opened, "missions can force it")
+
+
+## S9.5 / A5-03: charges_required C4 items, or trip mines as shaped charges with interaction.shaped_charge.
+func test_s9_5_charges_required_c4_or_shaped_charges() -> void:
+	var c: CrewController = _crew()
+	var safe: Safe = _safe(Vector3(3, 0, -6), [&"c4"], Safe.Size.MEDIUM, func(s: Safe) -> void: s.charges_required = 2)
+	await wait_physics_frames(2)
+	c.add_item(Safe.C4_ITEM, 1)
+	assert_eq(safe.interactable.availability(c), InteractableComponent.BLOCK_ITEM, "1 C4 < 2 required")
+	var dep: DeployableSystem = _rt.service(DeployableSystem.SERVICE) as DeployableSystem
+	dep.give(c.slot, &"deployable.trip_mine")
+	assert_eq(dep.count_of_kind(c.slot, &"trip_mine"), 3, "3 base trip mines")
+	assert_eq(safe.charge_source(c), &"", "trip mines need interaction.shaped_charge")
+	Modifiers.set_source(c.slot, &"test", {&"interaction.shaped_charge": true})
+	assert_eq(safe.charge_source(c), &"shaped")
+	assert_eq(safe.interactable.availability(c), InteractableComponent.BLOCK_NONE)
+	await _use(safe, Tweak.interaction().c4_place_s)
+	assert_eq(safe.stage, Safe.Stage.C4_ARMED, "shaped charges armed")
+	assert_eq(dep.count_of_kind(c.slot, &"trip_mine"), 1, "2 trip mines spent")
+	assert_eq(c.item_count(Safe.C4_ITEM), 1, "C4 untouched")
+
+
+## P bug (lead-allowed under D-082): a DrillPoint child of the safe (Glasshouse SafeDrill, target "..") is
+## not inner loot. It stays usable, the drill opens the safe, and the loot inside unlocks afterward.
+func test_child_drill_point_drills_safe_and_unlocks_loot() -> void:
+	var made: Array[Node] = []  # lambdas capture locals by value
+	var safe: Safe = _safe(Vector3(0, 0, -6), [] as Array[StringName], Safe.Size.MEDIUM, func(x: Safe) -> void:
+		var dp: DrillPoint = DRILL_POINT.instantiate() as DrillPoint
+		dp.name = "SafeDrill"
+		dp.device = DrillPoint.Device.DRILL
+		dp.target = NodePath("..")
+		dp.duration_s = 1.0
+		dp.position = Vector3(0.2, 1.0, -0.36)
+		x.add_child(dp)
+		made.append(dp)
+		var loot: GameplayPrefab = SMALL_LOOT.instantiate() as GameplayPrefab
+		loot.position = Vector3(0, 0.5, 0)
+		x.add_child(loot)
+		made.append(loot))
+	await wait_physics_frames(3)
+	var dp: DrillPoint = made[0] as DrillPoint
+	var loot: GameplayPrefab = made[1] as GameplayPrefab
+	assert_true(dp.interactable.enabled, "the safe's own drill point stays usable")
+	assert_false(loot.interactable.enabled, "loot inside is locked while the safe is shut")
+	await _use(dp, Tweak.interaction().drill_place_s)
+	assert_eq(_of(&"device_started").size(), 1, "drill placed on the safe")
+	var t: float = 0.0
+	while not safe.opened and t < 20.0:
+		if dp.device_state() == DeviceRunner.State.JAMMED:  # jams are fixed on the same drill point
+			await _use(dp, Tweak.interaction().drill_fix_s)
+		await wait_physics_frames(6)
+		t += 0.1
+	assert_true(safe.opened, "drill finished and opened the safe (%.1f s, runner %d, started %s, stage %d)" % [
+		t, dp.device_state(), str(_of(&"device_started")), safe.stage])
+	assert_true(loot.interactable.enabled, "loot unlocks after drilling")

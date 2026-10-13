@@ -62,6 +62,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"aim_pistol": &"idle_alert", &"aim_rifle": &"idle_alert", &"interact_low": &"interact_mid",
 	&"interact_high": &"interact_mid", &"flee": &"run", &"carry_bag_walk": &"walk", &"crouch_walk": &"walk",
 	&"crouch_idle": &"idle", &"strafe_l": &"walk", &"strafe_r": &"walk", &"walk_back": &"walk",
+	&"run_l": &"run", &"run_r": &"run", &"run_b": &"run",
 	&"sprint": &"run", &"pager_answer": &"phone_call", &"idle_alert": &"idle",
 	&"shield_walk": &"walk", &"dozer_walk": &"walk", &"kick_charge": &"idle_alert", &"kick_hit": &"melee",
 	&"shield_bang": &"idle_alert", &"heal_ally": &"interact_mid",
@@ -88,6 +89,8 @@ var player: AnimationPlayer = null
 var rig: Node3D = null
 ## Clip currently requested (without the library prefix), &"" before the first frame.
 var clip: StringName = &""
+## Crossfade (s) used for the last clip change (0 for the first clip).
+var last_blend_s: float = -1.0
 ## &"pistol" or &"rifle": aim/fire/reload clip family.
 var weapon_kind: StringName = &"pistol"
 ## Third-person WeaponVisual at HandR/Socket (null when there is no model).
@@ -353,10 +356,15 @@ func _locomotion_clip(speed: float, tw: AnimTweak) -> StringName:
 	var dir: Vector3 = Vector3(_vel.x, 0.0, _vel.z) / maxf(speed, 0.0001)
 	var out: StringName = &"sprint"
 	var side: float = dir.dot(right)
-	if speed <= tw.strafe_max_mps and dir.dot(fwd) < tw.walk_back_dot:
-		out = &"walk_back"
-	elif speed <= tw.strafe_max_mps and absf(side) > tw.strafe_side_dot:
-		out = &"strafe_r" if side > 0.0 else &"strafe_l"
+	var slow: bool = speed <= tw.strafe_max_mps
+	var running: bool = not slow and speed <= tw.run_sprint_split_mps
+	if dir.dot(fwd) < tw.walk_back_dot and (slow or running):
+		out = &"walk_back" if slow else &"run_b"
+	elif absf(side) > tw.strafe_side_dot and (slow or running):
+		if slow:
+			out = &"strafe_r" if side > 0.0 else &"strafe_l"
+		else:
+			out = &"run_r" if side > 0.0 else &"run_l"
 	elif speed <= tw.walk_run_split_mps:
 		out = &"walk"
 	elif speed <= tw.run_sprint_split_mps:
@@ -536,11 +544,14 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 	var restart: bool = _restart and want == _oneshot
 	if want != clip or restart:
 		var blend: float = tw.blend_s
-		if want == _death_clip:
+		if clip == &"":
+			blend = 0.0  # first clip: no fade in from the bind pose (spawn A-pose flash)
+		elif want == _death_clip:
 			blend = tw.death_blend_s
 		elif want == _oneshot:
 			blend = tw.oneshot_blend_s
 		player.play(full, blend)
+		last_blend_s = blend
 		if restart:
 			player.seek(0.0, true)
 		clip = want

@@ -365,7 +365,7 @@ func _try_fire(intent: CrewIntent) -> void:
 
 func _fire_shot(s: WeaponState, intent: CrewIntent) -> void:
 	var claim: Dictionary = _build_claim(s, intent)
-	var interval: float = 60.0 / maxf(s.stats.fire_rate_rpm, 1.0)
+	var interval: float = _shot_interval(s)
 	_cooldown = maxf(_cooldown, -get_physics_process_delta_time()) + interval
 	_apply_recoil(s)
 	fired.emit(claim)
@@ -454,7 +454,7 @@ func _involuntary_tick(intent: CrewIntent) -> void:
 	var keep_seq: int = _last_server_seq
 	_seq = maxi(_seq, _last_server_seq)
 	var claim: Dictionary = _build_claim(s, intent)
-	_cooldown = maxf(_cooldown, -get_physics_process_delta_time()) + 60.0 / maxf(s.stats.fire_rate_rpm, 1.0)
+	_cooldown = maxf(_cooldown, -get_physics_process_delta_time()) + _shot_interval(s)
 	fired.emit(claim)
 	CombatSystem.validate_and_apply(claim, _crew)
 	if _remote_owned():
@@ -610,10 +610,16 @@ func server_check_shot(claim: Dictionary) -> StringName:
 	return _check_timing_and_origin(s, claim)
 
 
+## Seconds between shots: 60 / rpm / weapon.fire_rate_mult (A4-04; higher mult = faster).
+func _shot_interval(s: WeaponState) -> float:
+	var m: float = Modifiers.mult(_crew.slot, &"weapon.fire_rate_mult", s.qualifier) if _crew != null else 1.0
+	return 60.0 / maxf(s.stats.fire_rate_rpm * maxf(m, 0.01), 1.0)
+
+
 func _check_timing_and_origin(s: WeaponState, claim: Dictionary) -> StringName:
 	var tw: CombatTweak = CombatTweak.data()
 	var remote: bool = _remote_owned()
-	var interval: float = 60.0 / maxf(s.stats.fire_rate_rpm, 1.0)
+	var interval: float = _shot_interval(s)
 	var origin: Variant = claim.get("origin")
 	var reason: StringName = &""
 	if reloading and not remote:

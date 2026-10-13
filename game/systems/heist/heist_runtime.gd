@@ -362,7 +362,9 @@ func _create_services() -> void:
 	net_sync.name = HeistNetSync.NODE_NAME
 	register_service(HeistNetSync.SERVICE, net_sync)
 	if Net.is_authority():
-		HeistDropIn.ensure(get_tree())  # QB-B6-DROPIN: the host answers drop-in requests while the heist runs
+		# QB-B6-DROPIN: the host answers drop-in requests while the heist runs. Deferred: the root is still
+		# setting up children at heist start ("parent busy" add_child error otherwise).
+		HeistDropIn.ensure.call_deferred(get_tree())
 	var factories: Array = options.get("extra_services", [])
 	for f: Variant in factories:
 		if f is Callable:
@@ -569,8 +571,13 @@ func _on_alarm_raised(reason: StringName, _source: int) -> void:
 
 
 
-func _on_crew_masked(_slot: int) -> void:
+func _on_crew_masked(slot: int) -> void:
 	# An alarm while casing masks everyone and goes CASING -> LOUD directly (no STEALTH hop, PD2 S1.2).
+	# P1-02 / PI-10: a forced mask (detection, combat) is not a mask-up choice: stay CASING until the alarm.
+	# Duck-typed: CrewController.mask_forced lands with ENV P 4860fdbc (absent = voluntary).
+	var c: Node = crew_controller(slot)
+	if c != null and c.get(&"mask_forced") == true:
+		return
 	if phase == Enums.HeistPhase.CASING and not went_loud:
 		_set_phase(Enums.HeistPhase.STEALTH)
 

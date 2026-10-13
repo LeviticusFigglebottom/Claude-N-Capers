@@ -593,8 +593,30 @@ func _plan(goal: Vector3) -> void:
 		_path = NavigationServer3D.map_get_path(nav_map, _crew.global_position, goal, true)
 	if _path.size() < 2:
 		_path = PackedVector3Array([goal])
-	elif _flat_dist(_path[_path.size() - 1], goal) > 0.5:
-		_path.append(goal)
+	else:
+		_path = offset_corners(_path, tweak.corner_margin_m)  # D-085
+		if _flat_dist(_path[_path.size() - 1], goal) > 0.5:
+			_path.append(goal)
+
+
+## D-085: copy of `path` with each interior corner moved `margin` m (horizontally) away from the inside of
+## its turn, i.e. away from the obstacle corner the navmesh path wraps around. End points stay put.
+static func offset_corners(path: PackedVector3Array, margin: float) -> PackedVector3Array:
+	var out: PackedVector3Array = path.duplicate()
+	if margin <= 0.0 or path.size() < 3:
+		return out
+	for i: int in range(1, path.size() - 1):
+		var a: Vector3 = path[i - 1] - path[i]
+		var b: Vector3 = path[i + 1] - path[i]
+		a.y = 0.0
+		b.y = 0.0
+		if a.length() < 0.01 or b.length() < 0.01:
+			continue
+		var inner: Vector3 = a.normalized() + b.normalized()
+		if inner.length() < 0.01:
+			continue  # straight through
+		out[i] = path[i] - inner.normalized() * margin
+	return out
 
 
 ## A2-01 (QA-11): a closed door within reach on the path: ask it to open (unlocked doors only) and

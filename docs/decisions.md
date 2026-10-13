@@ -635,3 +635,35 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   a 0.9 m door, 30° approach, walking and sprinting.
 - **ENV A:** AI followers keep ~0.1 m off path corners, with headroom in `path_desired_distance`.
 - Human real-input walk tests aim at door centres; corner-following is checked only for AI.
+
+## D-086 — 2026-10-13 — Team v3: lead + three Claude Code cloud sessions; product-owner playtest issues first
+- The Grok Bot team (D-078) is retired. A LEAD Claude Code session dispatches three cloud sessions: **ENV P** (Player &
+  Input, `env/p-play`), **ENV B** (Content & UI, `env/b-content`), **ENV A** (Core Systems & Heist Loop, `env/a-core`).
+  ENV C and ENV D are **dormant** (their branches were merged as-is in round 35; no new C/D work). Protocol:
+  communication.md §1/§4, live state in `docs/process/board.md`.
+- Ownership during the pass: ENV A also owns `game/world/heists/**` and `game/world/props/**` (heist-map collision,
+  nav, door and objective fixes that ENV C would otherwise do). ENV B owns `docs/design/ui/**` (UI style spec).
+- **Product-owner playtest (2026-10-13), top priority, rows PO-1..PO-5 in playability_pass.md:** the mouse is never
+  captured in a heist so you cannot turn; you cannot leave casing mode; a slight bump in the road stops the player; the
+  UI is cluttered, unintuitive and unstyled. Found by the lead: no game code sets `MOUSE_MODE_CAPTURED` outside the
+  safehouse, and every real-input test fakes capture (`PlayerInput.test_assume_captured`), so the suite never saw it.
+- **Verification rule:** a player-facing fix counts as verified only when seen in a **windowed** run (xvfb with a real
+  display server, not `--headless`): screenshot or windowed test. Fake-state tests stay as regressions only.
+- D-082 stands: end-to-end playability (main menu → hub → loadout → heist stealth and loud → payday → hub) before any
+  new heist or content. P5 stays frozen.
+
+## D-087 — 2026-10-13 — Mouse capture has one owner (`input_focus.md` 1.0)
+- One module, `MouseCapture` (ENV P, `game/systems/player/mouse_capture.gd`), is the only code that writes
+  `Input.mouse_mode`. Gameplay (PlayerInput of a local human crew in a heist or the walkable safehouse) declares itself
+  active; every UI that needs a cursor holds a named release. Captured = gameplay active ∧ no release held ∧ window focused.
+  Contract: `docs/contracts/input_focus.md`. ENV B migrates its four direct writers (menu_flow, menu_options,
+  join_request_dialog, safehouse_host) once P's module is on trunk. The lead adds a banned-pattern check afterwards.
+
+## D-088 — 2026-10-13 — Targeted checks; the full suite runs only at the lead (product owner)
+- **Envs never run `check_all.sh` or a whole test dir as a routine pre-push step.** Before a push an env runs only what
+  its change touches: `gdlint` on changed files, `python3 tools/ci/check_ownership.py <env>`, `python3 tools/ci/check_banned.py`,
+  and the specific test files it changed or that exercise the changed code (single-file runs), plus its windowed
+  verification (D-086). Long runs (>~5 min) stay in the background so work continues meanwhile.
+- **The full gate (`check_all` / `lead_push.sh` with no args) runs only at the LEAD, occasionally**: per merge round, in
+  the background in a separate worktree, while everyone keeps working. A failure there goes back to the owning env as a
+  normal task. Supersedes the "check_all PASS before push" rule in communication.md §2–§5 and the env manuals.

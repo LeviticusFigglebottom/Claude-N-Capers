@@ -132,7 +132,10 @@ def _head_scales(kit: mask.MaskKit) -> None:
         _scale(kit, loop)
     for loop in mask.mirrored([(0.003, -0.040), (0.016, -0.038), (0.014, -0.056), (0.003, -0.058)]):
         _scale(kit, loop)
-    _scale(kit, mask.superellipse(0.0, 0.0905, 0.0068, 0.0050, 0.0050, 2.0, n=10), 0.0030)
+    # sharp hood crest: a tall pointed chevron at the top of the crown, with a keel scale under it
+    _scale(kit, [(0.0, 0.1010), (0.0085, 0.0880), (0.0040, 0.0840), (0.0, 0.0870), (-0.0040, 0.0840),
+                 (-0.0085, 0.0880)], 0.0042)
+    _scale(kit, [(0.0, 0.0840), (0.0035, 0.0800), (0.0, 0.0720), (-0.0035, 0.0800)], 0.0034)
 
 
 def _cheek_scales(kit: mask.MaskKit) -> None:

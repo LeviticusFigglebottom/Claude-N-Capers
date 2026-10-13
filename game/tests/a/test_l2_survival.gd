@@ -108,6 +108,17 @@ func test_l2_1_no_health_regen() -> void:
 	assert_near(c.health.health, 200.0, 0.001, "health does not regenerate")
 
 
+func test_l2_1_health_regen_modifier() -> void:
+	var c: CrewController = _crew()
+	c.health.armor = 0.0
+	_hit(c, 30.0)
+	Modifiers.set_source(0, &"test", {&"defense.health_regen_per_sec": 0.02})
+	await wait_seconds(1.0)
+	assert_true(c.health.health > 200.5, "regen heals: %f" % c.health.health)
+	await wait_seconds(6.0)
+	assert_near(c.health.health, c.health.max_health, 0.001, "regen caps at max health")
+
+
 func test_l2_5_zero_health_downs_then_bleedout_custody() -> void:
 	var c: CrewController = _crew()
 	c.set_masked()

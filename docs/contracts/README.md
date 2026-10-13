@@ -20,6 +20,7 @@ major version and comes with a `docs/decisions.md` entry and a migration note to
 | [groups.md](groups.md) | 1.1 | all | `game/contracts/ids.gd` (`G`) |
 | [net.md](net.md) | 1.1 | LEAD → A, B | `game/core/net.gd` |
 | [hub_map.md](hub_map.md) | 1.1 | C/A → B (safehouse hub) | `SafehouseMap`, `hub_station` |
+| [input_focus.md](input_focus.md) | 1.1 | P → B, A (mouse capture, input focus) | `game/systems/player/mouse_capture.gd` |
 
 Rules shared by all contracts:
 * Producers ship **placeholders** first so consumers are never blocked (capsule NPCs, box props,

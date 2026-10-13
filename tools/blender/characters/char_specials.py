@@ -126,7 +126,8 @@ def _shoulder(kit, sx: float) -> Vector:
     return Vector(kit.fit.J["shoulder.R" if sx > 0 else "shoulder.L"])
 
 
-def pauldrons(kit, mat: str, trim: str, size: float = 1.0, lift: float = 1.0) -> None:
+def pauldrons(kit, mat: str, trim: str | None, size: float = 1.0, lift: float = 1.0, upper_arm: bool = True,
+              trim_scale: float = 0.78, arm_mat: str | None = None) -> None:
     """Two-layer shoulder plates plus an upper-arm plate per side (squares and widens the shoulders)."""
     k = kit.k
     m = Mesh()
@@ -137,11 +138,14 @@ def pauldrons(kit, mat: str, trim: str, size: float = 1.0, lift: float = 1.0) ->
         anchor = sh + Vector((sx * 0.04 * k, 0.0, 0.0))
         tgt = sh + Vector((sx * 0.055 * k, 0.0, 0.0))
         m.extend(sg.plate(kit, tgt, Vector((sx * 0.86, 0.0, 0.51)), 0.16 * size, 0.15 * size,
-                          [(1.0, 0.022 * lift, mat), (0.78, 0.018 * lift, trim)], up=Vector((0, 1, 0)), r=0.035,
+                          [(1.0, 0.022 * lift, mat)] + ([(trim_scale, 0.018 * lift, trim)] if trim else []),
+                          up=Vector((0, 1, 0)), r=0.035,
                           anchor=anchor))
+        if not upper_arm:
+            continue
         el = Vector(kit.fit.J["elbow.R" if sx > 0 else "elbow.L"])
         mid = sh.lerp(el, 0.42)
-        m.extend(sg.plate(kit, mid, Vector((sx, 0.0, 0.35)), 0.09 * size, 0.12 * size, [(1.0, 0.016 * lift, mat)],
+        m.extend(sg.plate(kit, mid, Vector((sx, 0.0, 0.35)), 0.09 * size, 0.12 * size, [(1.0, 0.016 * lift, arm_mat or mat)],
                           up=(sh - el).normalized(), r=0.02, anchor=mid))
     kit.add_gear(m)
 
@@ -273,7 +277,9 @@ def visor(kit, helm_hull: Hull, down: bool, frame: str, glass: str = LENS) -> No
 # =============================================================================================
 def tac_heavy(kit) -> None:
     heavy(kit, ARMOR, TAC_GEAR, TAC_GEAR, shoulder_plates=False)
-    pauldrons(kit, ARMOR, TAC_GEAR, size=1.3, lift=1.7)
+    # PP-D-1: matte white pauldron trim (metallic steel read too dark at 40 m) so the near-black heavy keeps a readable shoulder line at 30-40 m
+    accent = kit.opts.get("shoulder_accent", "char_glove_white")
+    pauldrons(kit, ARMOR, accent, size=1.3, lift=1.7, trim_scale=0.92, arm_mat=accent)
     _helm, hh = big_helmet(kit, ARMOR, gap=0.05, cup_r=0.048)
     visor(kit, hh, down=False, frame="polymer_black")
     kit.notes["hat"] = "heavy helmet, visor up (Headwear)"
@@ -461,6 +467,8 @@ def stinger(kit) -> None:
 
 def corpsman(kit) -> None:
     police.tac(kit)
+    # PP-D-1: small white shoulder caps (lighter shoulder line on the dark TAC kit)
+    pauldrons(kit, WHITE, None, size=0.75, lift=0.6, upper_arm=False)
     fit, k = kit.fit, kit.k
     kit.head.m = [WHITE if x == "char_tac_helmet" else x for x in kit.head.m]
     hh = Hull(fit, [kit.head], body_regions=set())

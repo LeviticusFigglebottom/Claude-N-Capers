@@ -152,7 +152,7 @@ const DOORS: Array = [
 	["StaffDoor", "prop_door_single_walnut_t20", Vector3(1.5, 0.0, 6.0), 0.0, "NONE", "INWARD", "staff_door", {}],
 	["SalonBackDoor", "prop_door_single_walnut_t20", Vector3(16.5, 0.0, 6.0), 0.0, "LOCKPICK", "INWARD", "", {}],
 	["SalonDoor", "prop_door_single_walnut_t20", Vector3(13.0, 0.0, 10.0), 90.0, "LOCKPICK", "INWARD", "salon_door", {}],
-	["MainEntrance", "prop_door_double_glass_t40", Vector3(11.25, 0.0, 12.0), 180.0, "NONE", "DOUBLE", "main_entrance", {}],
+	["MainEntrance", "prop_door_double_glass_t40", Vector3(11.25, 0.0, 12.0), 180.0, "NONE", "DOUBLE", "main_entrance", {"public": true}],
 	["BreakRoomDoor", "prop_door_single_ivory_t20", Vector3(3.0, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
 	["SecurityDoor", "prop_door_single_steel_t20", Vector3(8.0, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
 	["WCUpperDoor", "prop_door_single_ivory_t20", Vector3(11.5, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
@@ -308,7 +308,7 @@ const ANCHORS: Array = [
 	["G9", "MopBucket", "prop_mop_bucket", Vector3(15.47, 0.0, 3.292), 180.0, {}],
 	["G9", "LightSwitch", "prop_light_switch", Vector3(14.6, 1.2, 4.0), -90.0, {}],
 	["G7", "ITRack", "prop_it_rack", Vector3(0.55, 0.0, 0.612), 180.0, {}],
-	# U1 break room (kc_breakroom lies on the lockers: they carry it)
+	# U1 break room (kc_breakroom on the break table's locker end: the lockers' top was not aimable)
 	["U1", "BreakTable", "prop_table_break", Vector3(3.0, UPPER, 2.3), 0.0, {}],
 	["U1", "BreakLockers", "prop_lockers", Vector3(0.472, UPPER, 2.6), -90.0, {"support": true}],
 	["U1", "KitchenCounter", "prop_kitchen_counter", Vector3(5.063, UPPER, 1.42), 90.0, {}],

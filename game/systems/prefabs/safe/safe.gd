@@ -58,6 +58,8 @@ const METHOD_UI: Dictionary = {
 @export var code_group: StringName = &""
 ## S9.8: vault time lock in s (0 = none), see the header.
 @export var time_lock_s: float = 0.0
+## S9.5 / A5-03: charges the c4 method needs (C4 items, or trip mines with interaction.shaped_charge).
+@export var charges_required: int = 1
 ## A2-08: keycard_reader that opens this safe (`methods` must contain &"keycard"). Optional: the
 ## reader's own `targets` listing this safe works the same.
 @export var reader: NodePath = NodePath("")
@@ -269,7 +271,7 @@ func _method_block(m: StringName, crew: Node) -> StringName:
 		&"drill", &"saw":
 			ok = runner != null and runner.kind == m
 		&"c4":
-			if c != null and c.item_count(C4_ITEM) <= 0:
+			if c != null and charge_source(c) == &"":
 				return InteractableComponent.BLOCK_ITEM
 			ok = c != null
 	return InteractableComponent.BLOCK_NONE if ok else InteractableComponent.BLOCK_STATE
@@ -331,7 +333,7 @@ func _on_completed(crew: Node) -> void:
 		&"code", &"lockpick":
 			_lock_beaten(m)
 		&"c4":
-			if c != null and c.remove_item(C4_ITEM, 1):
+			if c != null and _consume_charges(c):
 				stage = Stage.C4_ARMED
 				_c4_by_net_id = NetIds.of(c)
 				timer_left = Tweak.interaction().c4_fuse_s
@@ -342,6 +344,46 @@ func _on_completed(crew: Node) -> void:
 			timer_left = maxf(time_lock_s, 0.01)
 			_emit_fact(&"device_started", [net_id, &"time_lock", timer_left])
 			_cue(&"cue.time_lock_start", global_position)
+
+
+## S9.5 / A5-03: what `c` would pay charges_required with: &"c4" (item.c4), &"shaped" (trip mines,
+## needs interaction.shaped_charge) or &"" (not enough). C4 first.
+func charge_source(c: CrewController) -> StringName:
+	return Safe.charge_source_for(c, charges_required, self)
+
+
+func _consume_charges(c: CrewController) -> bool:
+	return Safe.consume_charges_for(c, charges_required, self)
+
+
+## S9.5 / A5-03 (shared with Door): charge source for `need` charges, `ctx` = any node in the heist.
+static func charge_source_for(c: CrewController, need: int, ctx: Node) -> StringName:
+	need = maxi(need, 1)
+	if c == null:
+		return &""
+	if c.item_count(C4_ITEM) >= need:
+		return &"c4"
+	var dep: DeployableSystem = _deployables_of(ctx)
+	if dep != null and Modifiers.flag(c.slot, &"interaction.shaped_charge") \
+			and dep.count_of_kind(c.slot, &"trip_mine") >= need:
+		return &"shaped"
+	return &""
+
+
+## Server: take `need` charges from `c` (C4 first, else trip mines). False when not enough.
+static func consume_charges_for(c: CrewController, need: int, ctx: Node) -> bool:
+	need = maxi(need, 1)
+	match charge_source_for(c, need, ctx):
+		&"c4":
+			return c.remove_item(C4_ITEM, need)
+		&"shaped":
+			return _deployables_of(ctx).consume_kind(c.slot, &"trip_mine", need)
+	return false
+
+
+static func _deployables_of(ctx: Node) -> DeployableSystem:
+	var rt: HeistRuntime = HeistRuntime.of(ctx)
+	return rt.service(DeployableSystem.SERVICE) as DeployableSystem if rt != null else null
 
 
 func _explode() -> void:
@@ -391,6 +433,8 @@ func _inner_loot() -> Array[GameplayPrefab]:
 			stack.append(c)
 	while not stack.is_empty():
 		var n: Node = stack.pop_back()
+		if n is DrillPoint:
+			continue  # the safe's own drill point (e.g. Glasshouse SafeDrill) is how it opens, not loot
 		var p: GameplayPrefab = n as GameplayPrefab
 		if p != null and p.interactable != null:
 			out.append(p)

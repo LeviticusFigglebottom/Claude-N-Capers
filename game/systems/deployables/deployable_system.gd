@@ -185,6 +185,31 @@ func deployable_id(slot: int) -> StringName:
 	return StringName(r.get("id", &""))
 
 
+## S9.5: total carried count of deployables of `kind` for `slot` (all rows).
+func count_of_kind(slot: int, kind: StringName) -> int:
+	var n: int = 0
+	for r: Dictionary in _inv.get(slot, []):
+		var def: DeployableDef = def_for(StringName(r["id"]))
+		if def != null and def.kind == kind:
+			n += int(r["count"])
+	return n
+
+
+## S9.5: server, take `n` deployables of `kind` from `slot` (all or nothing).
+func consume_kind(slot: int, kind: StringName, n: int) -> bool:
+	if n <= 0 or count_of_kind(slot, kind) < n:
+		return false
+	var left: int = n
+	for r: Dictionary in _inv.get(slot, []):
+		var def: DeployableDef = def_for(StringName(r["id"]))
+		if left > 0 and def != null and def.kind == kind:
+			var take: int = mini(int(r["count"]), left)
+			r["count"] = int(r["count"]) - take
+			left -= take
+	_sync(slot)
+	return true
+
+
 func deployable_count(slot: int) -> int:
 	return int(_current_row(slot).get("count", 0))
 

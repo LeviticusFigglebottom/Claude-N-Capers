@@ -69,6 +69,9 @@ func shout(crew: CrewController) -> Array[Node]:
 		var brain: Node = npc.get_node_or_null(^"Brain")
 		if brain != null and brain.has_method(&"on_shouted") and bool(brain.call(&"on_shouted", crew)):
 			affected.append(npc)
+	var guard: NpcBase = guard_target_for(crew)  # S5.8
+	if guard != null and (guard.get_node(^"Brain") as GuardBrain).on_shouted(crew):
+		affected.append(guard)
 	var rt0: HeistRuntime = _runtime if _runtime != null else HeistRuntime.of(crew)
 	var cop: NpcBase = PoliceSurrender.shout_target(crew, rt0)  # L5.1 (A3-04)
 	if cop != null and PoliceSurrender.on_shouted(cop, crew):
@@ -132,6 +135,52 @@ static func _mark_point(n: Node3D) -> Vector3:
 		var npc: NpcBase = n as NpcBase
 		return npc.global_position + Vector3(0.0, 1.2, 0.0) if npc != null else n.call(&"eye_position")
 	return n.global_position
+
+
+## S5.8: the guard a shout from `crew` would dominate now (nearest the aim line within
+## guard_dominate_range_m / guard_dominate_cone_half_deg with LOS, inside his window), or null.
+func guard_target_for(crew: CrewController) -> NpcBase:
+	var rt: HeistRuntime = _runtime if _runtime != null else HeistRuntime.of(crew)
+	if rt == null or not Modifiers.flag(crew.slot, &"stealth.can_dominate_guards"):
+		return null
+	var tw: StealthTweak = Tweak.stealth()
+	var range_m: float = guard_dominate_range_for(crew)
+	var eye: Vector3 = crew.eye_position()
+	var aim: Vector3 = crew.aim_direction()
+	var st: StealthDirector = rt.stealth
+	var best: NpcBase = null
+	var best_ang: float = INF
+	for n: Node in rt.npcs(&"guard"):
+		var npc: NpcBase = n as NpcBase
+		var brain: GuardBrain = npc.get_node_or_null(^"Brain") as GuardBrain if npc != null else null
+		if brain == null or not brain.can_be_dominated_by(crew):
+			continue
+		var point: Vector3 = npc.global_position + Vector3(0.0, 1.2, 0.0)
+		var to: Vector3 = point - eye
+		var ang: float = aim.angle_to(to)
+		if to.length() > range_m or ang > deg_to_rad(guard_dominate_cone_half_deg(to.length())) or ang >= best_ang:
+			continue
+		if st != null and st.is_inside_tree() and not st.has_los(eye, point, [crew.get_rid(), npc.get_rid()]):
+			continue
+		best = npc
+		best_ang = ang
+	return best
+
+
+## D-079: guard domination range for `crew` (m): base x skill x Crew Chief (shout range), multiplicative.
+static func guard_dominate_range_for(crew: CrewController) -> float:
+	var tw: StealthTweak = Tweak.stealth()
+	var r: float = tw.guard_dominate_range_m * Modifiers.mult(crew.slot, &"ability.shout_range_mult")
+	if Modifiers.flag(crew.slot, &"ability.intimidate_cops"):
+		r *= tw.guard_dominate_skill_range_mult
+	return r
+
+
+## D-079: aim cone half-angle (deg) at distance `d` m: max(8, 90 -> 30 linear over 0..12 m, extrapolated).
+static func guard_dominate_cone_half_deg(d: float) -> float:
+	var tw: StealthTweak = Tweak.stealth()
+	var t: float = d / maxf(tw.guard_dominate_cone_far_m, 0.001)
+	return maxf(tw.guard_dominate_cone_min_deg, lerpf(tw.guard_dominate_cone_near_deg, tw.guard_dominate_cone_far_deg, t))
 
 
 ## Civilians a shout from `crew` reaches right now (before the D-016 roll).

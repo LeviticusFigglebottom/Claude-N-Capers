@@ -2,8 +2,8 @@
 ## Chain: db_builder_base.gd <- db_gameplay.gd <- build_greybox.gd. Design: docs/design/heists/
 ## dockside_burn.md (§Objectives, §Loot path, §Loud, §Variable table, §Rare events; APPROVED D-064);
 ## contracts: gameplay_prefabs.md (v1.3 SAW_TARGET), heist_map.md §5. Prefabs are found by contract
-## class name (no path into ENV A's folder). Placeholders for prefabs that are not on trunk yet are
-## marked TODO(QC-nn) and degrade gracefully (doc fallbacks).
+## class name (no path into ENV A's folder). G2: ENV A's padlock / burn_point prefabs replace the G1
+## placeholders (QC-37 / QC-38).
 extends "res://world/heists/dockside_burn/greybox/db_builder_base.gd"
 
 const SLIDE_VISUAL: String = "res://world/heists/dockside_burn/greybox/slide_door_visual.tscn"
@@ -19,8 +19,12 @@ const CONTAINERS: Dictionary = {
 	"k4": ["ContainerK4", 45.9, -1.0], "k5": ["ContainerK5", 45.9, -1.0], "k6": ["ContainerK6", 45.9, -1.0],
 }
 const CONTAINER_Z: Dictionary = {"k1": -26.82, "k2": -20.82, "k3": -14.82, "k4": -26.82, "k5": -20.82, "k6": -14.82}
-## Placed-saw seconds (doc: roller-door padlocks 30 s, container padlocks 45 s).
-const CONTAINER_SAW_S: float = 45.0
+## ENV A padlock prefab (QC-37): lockpick seconds (the hand-held saw cuts it in
+## InteractionTweak.hand_saw_padlock_s); the brass padlock visual (prefab_visuals.py).
+const PADLOCK_PICK_S: float = 8.0
+const PADLOCK_VISUAL: String = "res://assets/props/prop_padlock_brass/prop_padlock_brass.glb"
+## Container door latch: the padlock's target; the mission releases the crates on its `opened`.
+const LATCH_SCRIPT: String = "res://world/heists/dockside_burn/db_container_latch.gd"
 ## Product rooms (doc Loot path): slot -> [room, burn pallet base, product loot spawns, fire volume box].
 const PRODUCT: Dictionary = {
 	"prod_chamber_a": ["C1", Vector3(25.0, 0.0, 13.6), [Vector3(25.0, 0.0, 20.8), Vector3(19.5, 0.0, 18.0)],
@@ -30,9 +34,8 @@ const PRODUCT: Dictionary = {
 	"prod_packing": ["PK", Vector3(11.0, 0.0, 23.8), [Vector3(6.6, 0.0, 23.6), Vector3(13.6, 0.0, 30.4)],
 		[0.2, 0.0, 23.1, 17.8, 4.5, 31.8]],
 }
-## Doc: the burn runs 30 s (no jams); the fire volume deals fire DoT (ignores armour; D-064 Q6).
+## Doc: the burn runs 30 s (no jams); the burn_point's fire volume deals fire DoT (D-064 Q6).
 const BURN_S: float = 30.0
-const FIRE_DPS: float = 20.0
 
 # --- Prefab helpers ---------------------------------------------------------------------------
 
@@ -191,6 +194,8 @@ func _build_doors(gp: Node3D) -> void:
 		var metas: Dictionary = {"kind": "industrial_door" if dtype in ["slide", "roller"] else "door", "swing_side": "back"}
 		if bool(extra.get("service", false)):
 			metas["service"] = true
+		if bool(extra.get("public", false)):
+			props["casing_allowed"] = true  # public-facing: openable unmasked while casing (PD2); none at the closed yard
 		if bool(extra.get("fire_exit", false)):
 			metas["fire_exit"] = true
 		if extra.has("shutter"):
@@ -204,29 +209,19 @@ func _build_doors(gp: Node3D) -> void:
 			_padlock(door, d, float(extra["padlock"]))
 
 
-## Padlock on a chained roller door: a placed-saw drill_point (SAW) on the door's outside (front)
-## face, bound to the door (`target`), in group G.SAW_TARGET with saw metadata for the hand-held saw
-## (D-057). TODO(QC-37): ENV A's `saw_cut()` (and the small `padlock` prefab) replace this.
-func _padlock(door: Node3D, d: Array, seconds: float) -> void:
+## Padlock on a chained roller door: ENV A's `padlock` prefab (QC-37) on the door's outside (front)
+## face, its target the door. Lockpick (PADLOCK_PICK_S) or the hand-held saw (G.SAW_TARGET,
+## InteractionTweak.hand_saw_padlock_s) opens it; opening unlocks and raises the door.
+func _padlock(door: Node3D, d: Array, _seconds: float) -> void:
 	var o: Vector3 = d[2]
 	var yaw: float = float(d[3])
 	var b: Basis = yaw_basis(yaw)
-	var face: Vector3 = o + b * Vector3(0.45, 1.1, -0.28)
+	var face: Vector3 = o + b * Vector3(0.45, 1.1, -0.07)
 	var use: Vector3 = o + b * Vector3(0.45, 0.0, -1.0)
 	use.y = o.y
-	var dp: Node3D = prefab(door, "drill_point", "Padlock", face, yaw + 180.0,
-		{"device": "enum:SAW", "duration_s": seconds, "target": NodePath(".."), "objective_tag": &"padlock"}, use)
-	_saw_target(dp, seconds, "padlock")
-
-
-## D-057 / QC-37: saw-able things join G.SAW_TARGET now (persistent group) and carry the saw meta
-## ENV A's `saw_cut(seconds, attacker_net_id)` will read: total cut seconds and what it opens.
-func _saw_target(n: Node, seconds: float, what: String) -> void:
-	if n == null:
-		return
-	n.add_to_group(G.SAW_TARGET, true)
-	n.set_meta(&"saw_s", seconds)
-	n.set_meta(&"saw_opens", what)
+	prefab(door, "padlock", "Padlock", face, yaw + 180.0,
+		{"targets": [NodePath("..")] as Array[NodePath], "interaction_time_s": PADLOCK_PICK_S, "objective_tag": &"padlock",
+			"visual_scene": load(PADLOCK_VISUAL)}, use, {"mount": "door"})
 
 
 ## SR strongroom: the thermal drill on the vault door (doc 240 s, jams), AN side.
@@ -239,10 +234,10 @@ func _build_strongroom(_gp: Node3D) -> void:
 			"objective_tag": &"strongroom_drill"}, Vector3(27.2, 0.0, 28.6))
 
 
-## Yard containers K1-K6: every one has a padlock on its doors (placed saw 45 s, SAW_TARGET); two
-## (three with `extra_container`) hold 2 weapon crates each. The crate stacks stand at the doors and
-## the mission releases them when a weapons container's padlock is cut (G1: the containers are solid
-## props, G2 opens them).
+## Yard containers K1-K6: every one has ENV A's padlock prefab on its doors (lockpick or hand-held
+## saw, QC-37), its target the container's latch (Gameplay/Containers/LatchKn); two (three with
+## `extra_container`) hold 2 weapon crates each. The crate stacks stand at the doors and the mission
+## releases them when a weapons container's latch opens.
 func _build_containers(gp: Node3D) -> void:
 	var cg: Node3D = add(gp, node3d("Containers")) as Node3D
 	var keys: Array = CONTAINERS.keys()
@@ -257,10 +252,15 @@ func _build_containers(gp: Node3D) -> void:
 		var zc: float = float(CONTAINER_Z[k])
 		var face: Vector3 = Vector3(float(row[1]) + side * 0.06, 1.1, zc + 0.5)
 		var use: Vector3 = Vector3(float(row[1]) + side * 0.8, 0.0, zc + 0.5)
-		var dp: Node3D = prefab(body, "drill_point", "Padlock", face, 90.0 if side > 0.0 else -90.0,
-			{"device": "enum:SAW", "duration_s": CONTAINER_SAW_S, "objective_tag": StringName("padlock_" + String(k))}, use)
-		_saw_target(dp, CONTAINER_SAW_S, "container")
-		# TODO(QC-39): loot.weapon_crate (HEAVY) is ENV B's; LootManager defaults until it ships.
+		var latch: Node3D = node3d("Latch" + String(k).to_upper(), Vector3(float(row[1]), 1.1, zc + 0.5))
+		latch.set_script(load(LATCH_SCRIPT))
+		latch.set_meta(&"objective_tag", StringName("latch_" + String(k)))
+		add(cg, latch)
+		var pl: Node3D = prefab(body, "padlock", "Padlock", face, 90.0 if side > 0.0 else -90.0,
+			{"interaction_time_s": PADLOCK_PICK_S, "objective_tag": StringName("padlock_" + String(k)),
+				"visual_scene": load(PADLOCK_VISUAL)}, use, {"mount": "door"})
+		if pl != null:
+			pl.set(&"targets", [pl.get_path_to(latch)] as Array[NodePath])
 		prefab(cg, "loot_spawn", "Crates" + String(k).to_upper(), Vector3(float(row[1]) + side * 1.1, 0.0, zc - 0.7), 0.0,
 			{"loot_id": &"loot.weapon_crate", "count": 2, "objective_tag": StringName("crates_" + String(k))})
 
@@ -281,8 +281,7 @@ func _build_misc(gp: Node3D) -> void:
 			["DeskCashO2", Vector3(13.0, 0.75, 0.9), Vector3(13.2, 0.0, 1.8)],
 			["DeskCashM1", Vector3(10.8, L.MEZZ + 0.9, 2.6), Vector3(10.2, L.MEZZ, 3.5)]]:
 		prefab(misc, "small_loot", String(s[0]), s[1], 0.0, {"loot_id": &"loot.cash", "value": 750}, s[2])
-	# The thermite bag at the van (gate spawn). TODO(QC-38/QC-39): ENV A's burn_point consumes a carried
-	# loot.thermite; until it ships the burn uses the THERMAL drill_point fallback and the bag is spare.
+	# The thermite bag at the van (gate spawn): ENV A's burn_point consumes it (QC-38).
 	prefab(misc, "loot_spawn", "ThermiteBag", Vector3(30.2, 0.0, -38.0), 0.0,
 		{"loot_id": &"loot.thermite", "count": 1, "objective_tag": &"thermite"})
 
@@ -371,7 +370,7 @@ func _variants_cash(variants: Node3D) -> void:
 		Vector3(10.4, L.MEZZ, 4.4), {"kind": "safe"})
 	for c2: Array in [["CageCashA", Vector3(9.65, L.MEZZ, 2.4)], ["CageCashB", Vector3(9.65, L.MEZZ, 1.2)]]:
 		prefab(cr, "loot_spawn", String(c2[0]), c2[1], 90.0, {"loot_id": &"loot.cash_bricks", "count": 2,
-			"objective_tag": &"cash_bricks"})
+			"objective_tag": &"cash_bricks"}, Vector3(10.4, L.MEZZ, minf((c2[1] as Vector3).z, 2.1)))  # use inside the cage, not past M_X9
 	# The empty strongroom: fish blocks on the floor.
 	prop_box(cr, "FishBlocks", Vector3(21.0, 0.0, 28.6), Vector3(2.0, 1.2, 2.0), 0.0, "fish_blocks", false, "panel")
 
@@ -391,10 +390,10 @@ func _variants_containers(variants: Node3D) -> void:
 		m.set_meta(&"brass_padlock", true)
 
 
-## Product location: product stacks (contraband), the burn point and the room's fire volume.
-## TODO(QC-38): ENV A's `burn_point` (accepts a carried loot.thermite, 3 s place, 30 s burn, fire volume
-## child). G1 fallback (doc): a THERMAL drill_point (30 s, no bag) on the product pallet.
-## TODO(QC-39): loot.contraband is ENV B's LootDef.
+## Product location: product stacks (contraband), the product pallet and ENV A's `burn_point` on it
+## (QC-38: a carried / nearby loot.thermite bag, burn_place_s to place, a 30 s burn, the
+## cue.burn_warning telegraph, then the fire volume: FIRE damage over time, ignores armour, AI keeps
+## out). The prefab's `FireVolume` node is moved to the burning room's floor centre and sized to it.
 func _variants_product(variants: Node3D) -> void:
 	var g: Node3D = _group(variants, "product_location")
 	for sid: String in ["prod_chamber_a", "prod_chamber_b", "prod_packing"]:
@@ -402,31 +401,25 @@ func _variants_product(variants: Node3D) -> void:
 		var s: VariantSlot = _slot(g, "product_location", sid, 0.8 if sid == "prod_packing" else 1.0,
 			{"room": String(row[0]), "shutters": L.SHUTTERS[sid]})
 		var base: Vector3 = row[1]
-		var pallet: StaticBody3D = prop_box(s, "ProductPallet", base, Vector3(1.2, 1.2, 1.0), 0.0, "pallet_product", true, "prop")
-		prefab(pallet, "drill_point", "BurnPoint", base + Vector3(0.0, 1.21, 0.0), 0.0,
-			{"device": "enum:THERMAL", "duration_s": BURN_S, "loud_only": true, "objective_tag": &"burn"},
+		prop_box(s, "ProductPallet", base, Vector3(1.2, 1.2, 1.0), 0.0, "pallet_product", true, "prop")
+		var fb: Array = row[3]
+		var fmn: Vector3 = v3(fb, 0)
+		var fmx: Vector3 = v3(fb, 3)
+		var bp: Node3D = prefab(s, "burn_point", "BurnPoint", base + Vector3(0.0, 1.2, 0.0), 0.0,
+			{"duration_s": BURN_S, "loud_only": true, "objective_tag": &"burn", "fire_volume_size": fmx - fmn},
 			base + Vector3(0.0, 0.0, 1.3))
+		if bp != null:
+			var fv: Node3D = bp.get_node_or_null(^"FireVolume") as Node3D
+			if fv == null:
+				errors.append("burn_point has no FireVolume node")
+			else:
+				var floor_c: Vector3 = Vector3((fmn.x + fmx.x) * 0.5, fmn.y, (fmn.z + fmx.z) * 0.5)
+				fv.transform = global_xform(bp).affine_inverse() * Transform3D(Basis.IDENTITY, floor_c)
+				map_root.set_editable_instance(bp, true)
 		var loots: Array = row[2]
 		for i: int in range(loots.size()):
 			prefab(s, "loot_spawn", "Product%d" % (i + 1), loots[i], 0.0,
 				{"loot_id": &"loot.contraband", "count": 2, "objective_tag": &"product"})
-		_fire_volume(s, row[3])
-
-
-## Fire volume placeholder (D-064 Q6: fire damages players inside, ignores armour, DoT). An inert
-## Area3D the mission enables when the burn finishes. TODO(QC-38): ENV A's burn_point fire volume
-## applies the damage (DamageType.FIRE), the nav obstacle and AI avoidance.
-func _fire_volume(parent: Node3D, b: Array) -> void:
-	var fv: Area3D = Area3D.new()
-	fv.name = "FireVolume"
-	fv.collision_layer = 0
-	fv.collision_mask = 0
-	fv.monitoring = false
-	fv.monitorable = false
-	fv.set_meta(&"fire_dps", FIRE_DPS)
-	fv.set_meta(&"ignores_armor", true)
-	add(parent, fv)
-	area_boxes(fv, [b])
 
 
 ## The first way in without a lockpick or a padlock cut (doc `warehouse_entry`): the mission opens the

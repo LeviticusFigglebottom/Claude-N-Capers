@@ -18,6 +18,7 @@
 extends SceneTree
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
+const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
 const OUT_DIR: String = "res://assets/characters/_review/"
 const MASK: String = "res://assets/masks/mask_gilded_heron/mask_gilded_heron.glb"
 const SPACING: float = 1.35
@@ -101,6 +102,7 @@ func _place(vp: SubViewport, entries: Array[Dictionary], width: float) -> Array[
 			push_error("render_lineup: could not load %s" % entries[i]["scene"])
 			continue
 		var ch: Node3D = packed.instantiate() as Node3D
+		CrowdLod.force_level(ch, false)  # D4-01: the lineup camera is far away; show the full meshes
 		ch.position = Vector3(width * 0.5 - SPACING * (i + 0.5), 0.0, 0.0)
 		vp.add_child(ch)
 		out.append(ch)

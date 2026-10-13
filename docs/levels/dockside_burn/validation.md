@@ -15,6 +15,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | orientation | skipped | 0 | 0 |
 | scale | PASS | 0 | 0 |
 | navmesh | PASS | 0 | 0 |
+| barred_doors | PASS | 0 | 0 |
 | reachability | PASS | 0 | 0 |
 | walkthrough | PASS | 0 | 0 |
 | patrols | PASS | 0 | 0 |
@@ -42,12 +43,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 218 props checked
+- 223 props checked
 
 
 ## clipping: Nothing clips
 
-- 218 props, 49 doors checked
+- 223 props, 49 doors checked
 
 
 ## scale: Human scale
@@ -107,7 +108,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 2184 polygons, cell 0.10/0.10 m
+- navmesh: 2115 polygons, cell 0.10/0.10 m
 - 217 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -122,7 +123,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomLK` | 44 | 44 | 100% |
 | `Rooms/RoomJ` | 13 | 13 | 100% |
 | `Rooms/RoomPK` | 580 | 580 | 100% |
-| `Rooms/RoomH` | 682 | 682 | 100% |
+| `Rooms/RoomH` | 663 | 663 | 100% |
 | `Rooms/RoomC1` | 414 | 414 | 100% |
 | `Rooms/RoomSP` | 135 | 135 | 100% |
 | `Rooms/RoomC2` | 360 | 360 | 100% |
@@ -140,6 +141,11 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomX3` | 817 | 817 | 100% |
 | `Rooms/RoomX4` | 845 | 845 | 100% |
 | `Rooms/RoomX5` | 362 | 362 | 100% |
+
+
+## barred_doors: BARRED doorways are closed in the navmesh
+
+- 12 BARRED door(s) checked
 
 
 ## reachability: Reachability (per variant)
