@@ -268,7 +268,7 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 	comp.completed.connect(cb)
 	inp.press(&"interact")
 	var t: float = 0.0
-	while t < timeout_s and not completed[0] and not (done.is_valid() and bool(done.call())):
+	while t < timeout_s and not completed[0] and is_instance_valid(comp) and not (done.is_valid() and bool(done.call())):
 		if crew.crew_state != Enums.CrewState.NORMAL:
 			break
 		var foe: NpcBase = nearest_enemy(8.0) if combat else null
