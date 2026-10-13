@@ -431,3 +431,21 @@ func test_civilian_mode_hides_gear_and_shows_the_badge() -> void:
 	_model.player_mode = &"masked"
 	assert_eq(_hud.status.mask_label.text, UiText.t(&"ui.hud.masked"))
 	assert_true(_hud.ammo.visible, "weapon HUD once masked")
+
+
+## Lead queue (d): equipment as glyph + count chips; an item you don't carry is hidden, 0 is dimmed.
+func test_equipment_chips() -> void:
+	_model.masked = true
+	_model.casing = false
+	_model.deployable_id = &"deployable.doctor_bag"
+	_model.deployable_count = 2
+	_model.throwable_id = &""
+	_model.cable_ties = 0
+	_model.body_bags = 1
+	var c: Dictionary = _hud.ammo.chips
+	assert_eq((c[&"deployable"]["icon"] as EquipmentIcon).kind, &"doctor_bag")
+	assert_eq((c[&"deployable"]["count"] as Label).text, "2")
+	assert_false((c[&"throwable"]["box"] as Control).visible, "no throwable carried")
+	assert_eq((c[&"cable_ties"]["count"] as Label).get_theme_color(&"font_color"), UiTokens.PAPER_DIM, "0 is dimmed")
+	assert_eq(EquipmentIcon.kind_for(&"throwable.frag"), &"grenade")
+	assert_eq(EquipmentIcon.kind_for(&"throwable.steady_flask"), &"vial")
