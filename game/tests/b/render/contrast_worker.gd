@@ -149,6 +149,8 @@ func _loud() -> void:
 	_vp.add_child(hud)
 	await get_tree().process_frame
 	hud.bind(model)
+	InteractionPanel.pad_active = true  # lane 8: pad glyphs in the loud shots
+	model.interaction = {"text_key": &"ui.prompt.revive", "args": {"name": "Dutch"}, "progress": 0.3, "blocked_reason": &""}
 	model.masked = true
 	model.casing = false
 	model.assault_phase = Enums.AssaultPhase.SUSTAIN
