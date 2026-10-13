@@ -679,3 +679,8 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - ENV C is dormant, so **ENV B builds them** with ENV C's `tools/audiogen` synth core (read-only for B) via new scripts in
   `tools/audiogen/ui/**`, output in `game/assets/audio/sfx/ui/**`, and registers them in `game/world/audio/cues.tres`
   (co-owned by B for UI-bus entries only while C is dormant). Procedural only, no third-party audio. UI bus, 2D.
+
+## D-091 — 2026-10-13 — Look sensitivity defaults (ENV P, PO-4 feel)
+- Default mouse gain 0.0016 rad/count (≈0.092°/count; was 0.0025). ADS/scoped look divides by `CrewView.zoom_factor`
+  (PD2 zoom sensitivity: 4× scope → ¼ turn rate). Both stay player-adjustable in Options (B5-01); defaults live in
+  ENV P's tweak data. Verified windowed via the real menu flow (env/p-play c1b3c2ad).
