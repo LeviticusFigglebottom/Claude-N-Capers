@@ -125,6 +125,7 @@ func _build() -> void:
 		if line.begins_with("ERROR"):
 			_errors.append(line)
 	_build_art()
+	_close_barred_doorways()
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -314,6 +315,12 @@ func _prefab_scene(prefab: String) -> PackedScene:
 		_errors.append("gameplay prefab `%s` (class %s) not found" % [prefab, cls])
 	_scene_cache[prefab] = ps
 	return ps
+
+
+func _close_barred_doorways() -> void:
+	for d: Array in L.DOORS.filter(func(r: Array) -> bool: return String(r[4]) == "BARRED"):
+		var w: float = (1.8 if String(d[5]) == "DOUBLE" else 0.9) + 0.6  # leaf + jamb tolerance
+		_obstruct(Transform3D(_yaw_basis(float(d[3])), d[2]), AABB(Vector3(-w * 0.5, -0.2, -0.3), Vector3(w, 2.8, 0.6)))
 
 
 ## Records a projected navmesh obstruction for a box (local AABB under xform).
@@ -1110,8 +1117,8 @@ func _build_gameplay(gp: Node3D) -> void:
 			metas["service"] = true
 		if bool(extra.get("fire_exit", false)):
 			metas["fire_exit"] = true
-		if bool(extra.get("suspicious_when_open", false)):
-			props["suspicious_when_open"] = true
+		props["suspicious_when_open"] = bool(extra.get("suspicious_when_open", false))
+		props["casing_allowed"] = bool(extra.get("public", false))  # public door: opens unmasked while casing (PD2)
 		if String(d[1]).contains("service"):
 			props["width_m"] = 1.1
 		_prefab(doors, "door", String(d[0]), d[2], float(d[3]), props, null, metas)
@@ -1264,12 +1271,12 @@ func _variants_keycard(variants: Node3D) -> void:
 		["kc_counter", 1.0, Vector3(3.2, 0.9, 7.4), 0.0, Vector3(3.2, 0.0, 6.75)],
 		["kc_manager", 1.0, Vector3(9.2, L.UPPER + 0.75, 8.75), 0.0, Vector3(9.2, L.UPPER, 8.05)],
 		["kc_security", 1.0, Vector3(10.15, L.UPPER + 0.75, 3.4), 90.0, Vector3(9.45, L.UPPER, 3.4)],
-		["kc_breakroom", 1.0, Vector3(0.46, L.UPPER + 1.8, 2.6), -90.0, Vector3(1.2, L.UPPER, 2.6)],
+		["kc_breakroom", 1.0, Vector3(2.6, L.UPPER + 0.74, 2.3), -90.0, Vector3(1.8, L.UPPER, 2.3)],
 		["kc_jeweler", 0.75, Vector3(9.75, 0.92, 0.75), 0.0, Vector3(9.75, 0.0, 1.45)],
 	]
 	for r: Array in rows:
 		var s: VariantSlot = _slot(kc, "keycard", String(r[0]), float(r[1]))
-		_prefab(s, "keycard_pickup", "Keycard", r[2], float(r[3]), {"objective_tag": &"keycard"}, r[4])
+		_prefab(s, "keycard_pickup", "Keycard", r[2], float(r[3]), {"objective_tag": &"keycard"}, r[4], r[5] if r.size() > 5 else {})
 		if String(r[0]) == "kc_jeweler":
 			# The card on the bench implies the jeweler is working (doc: kc_jeweler requires jw_working).
 			_spawn(s, "Jeweler", "CIVILIAN", Vector3(8.5, 0.0, 1.45), 0.0, ["civ_staff_workshop"], "desk_work", "")
@@ -1384,10 +1391,7 @@ func _build_nav_links(nav: NavigationRegion3D) -> void:
 
 
 # --- Navigation bake --------------------------------------------------------------------------
-
-## Keeps only navmesh components that hold a gameplay marker (spawns, patrol points, UsePoints,
-## nav-link ends): no islands on neighbour roofs, garage decks or the shop roof, which would let
-## NPC queries snap there and make the bounds check cast from unreachable places.
+## Keeps only navmesh components with a gameplay marker (spawns, patrol/use points, link ends) inside or near a polygon.
 func _prune_islands(nm: NavigationMesh) -> void:
 	var anchors: PackedVector3Array = PackedVector3Array()
 	for n: Node in _root.find_children("*", "", true, false):
@@ -1421,10 +1425,13 @@ func _prune_islands(nm: NavigationMesh) -> void:
 		var best_d: float = 1.5
 		for pi2: int in range(polys.size()):
 			var c: Vector3 = Vector3.ZERO
+			var p2: PackedVector2Array = PackedVector2Array()
 			for vi2: int in polys[pi2]:
 				c += verts[vi2]
+				p2.append(Vector2(verts[vi2].x, verts[vi2].z))
 			c /= float(polys[pi2].size())
 			var d: float = Vector2(c.x - a.x, c.z - a.z).length() + absf(c.y - a.y) * 2.0
+			d = 0.0 if Geometry2D.is_point_in_polygon(Vector2(a.x, a.z), p2) and absf(c.y - a.y) < 1.0 else d
 			if d < best_d:
 				best_d = d
 				best = pi2
@@ -1464,9 +1471,7 @@ static func _union(parent: PackedInt32Array, a: int, b: int) -> void:
 		parent[maxi(ra, rb)] = mini(ra, rb)
 
 
-## Bakes the walkable navmesh (heist_map.md §3 v1.1: agent radius 0.3, height 1.8, climb 0.3,
-## slope 40, cell 0.1 / 0.1) from the Geometry colliders. Props and prefab bodies are projected
-## obstructions, so no navmesh is generated on top of furniture or vans. Doors stay open.
+## Navmesh (heist_map.md §3: r 0.3, h 1.8, climb 0.3, slope 40, cell 0.1); props + BARRED gates (D-073) obstruct.
 func _bake(nav: NavigationRegion3D) -> int:
 	var nm: NavigationMesh = NavigationMesh.new()
 	nm.agent_radius = 0.3

@@ -23,6 +23,7 @@ const PREFAB_CLASSES: Dictionary = {
 	"body_container": "BodyContainer", "ladder": "Ladder", "camera_station": "CameraStation",
 	"security_camera": "SecurityCamera", "code_note": "CodeNote", "keypad": "Keypad", "laser_grid": "LaserGrid",
 	"bag_lift": "BagLift", "hack_terminal": "HackTerminal", "zipline": "Zipline", "keycard_reader": "KeycardReader",
+	"padlock": "Padlock", "burn_point": "BurnPoint", "deposit_box": "DepositBox",
 }
 ## Building surface classes -> material library (greybox kit materials).
 const LIB_MATS: Dictionary = {

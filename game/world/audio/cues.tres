@@ -192,58 +192,61 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/zipline_attach/sfx_zipline_attach.ogg" id="s188"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/lockpick/sfx_lockpick.ogg" id="s189"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_click/sfx_ui_click.ogg" id="s190"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/phantom_hum/sfx_phantom_hum.ogg" id="s191"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/phantom_charge/sfx_phantom_charge.ogg" id="s192"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/stinger_windup/sfx_stinger_windup.ogg" id="s193"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/stinger_arc/sfx_stinger_arc.ogg" id="s194"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/longshot_report/sfx_longshot_report.ogg" id="s195"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/bulwark_bang/sfx_bulwark_bang_1.ogg" id="s196"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/bulwark_bang/sfx_bulwark_bang_2.ogg" id="s197"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/bulwark_bang/sfx_bulwark_bang_3.ogg" id="s198"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_roar/sfx_wrecker_roar_1.ogg" id="s199"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_roar/sfx_wrecker_roar_2.ogg" id="s200"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_step/sfx_wrecker_step_1.ogg" id="s201"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_step/sfx_wrecker_step_2.ogg" id="s202"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_step/sfx_wrecker_step_3.ogg" id="s203"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_plate_crack/sfx_wrecker_plate_crack_1.ogg" id="s204"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_plate_crack/sfx_wrecker_plate_crack_2.ogg" id="s205"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/corpsman_heal/sfx_corpsman_heal.ogg" id="s206"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/brandt_arrival/sfx_brandt_arrival.ogg" id="s207"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/aegis_pulse/sfx_aegis_pulse.ogg" id="s208"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/bag_lift_start/sfx_bag_lift_start.ogg" id="s209"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/bag_lift_arrive/sfx_bag_lift_arrive.ogg" id="s210"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hack_start/sfx_hack_start.ogg" id="s211"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hack_interrupt/sfx_hack_interrupt.ogg" id="s212"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hack_done/sfx_hack_done.ogg" id="s213"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/escape_arrive/sfx_escape_arrive_1.ogg" id="s214"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/escape_arrive/sfx_escape_arrive_2.ogg" id="s215"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/escape_arrive/sfx_escape_arrive_3.ogg" id="s216"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/escape_arrive_van/sfx_escape_arrive_van.ogg" id="s217"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/escape_arrive_boat/sfx_escape_arrive_boat.ogg" id="s218"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/escape_arrive_heli/sfx_escape_arrive_heli.ogg" id="s219"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/amb_glasshouse_interior/sfx_amb_glasshouse_interior.ogg" id="s220"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/amb_street_dusk/sfx_amb_street_dusk.ogg" id="s221"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/door_breach/sfx_door_breach_1.ogg" id="s222"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/door_breach/sfx_door_breach_2.ogg" id="s223"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/door_breach/sfx_door_breach_3.ogg" id="s224"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/burn_warning/sfx_burn_warning.ogg" id="s225"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_pin/sfx_throwable_pin_1.ogg" id="s226"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_pin/sfx_throwable_pin_2.ogg" id="s227"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_frag/sfx_throwable_frag_1.ogg" id="s228"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_frag/sfx_throwable_frag_2.ogg" id="s229"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_frag/sfx_throwable_frag_3.ogg" id="s230"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_concussion/sfx_throwable_concussion_1.ogg" id="s231"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_concussion/sfx_throwable_concussion_2.ogg" id="s232"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_incendiary/sfx_throwable_incendiary_1.ogg" id="s233"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_incendiary/sfx_throwable_incendiary_2.ogg" id="s234"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit/sfx_throwable_knife_hit_1.ogg" id="s235"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit/sfx_throwable_knife_hit_2.ogg" id="s236"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit/sfx_throwable_knife_hit_3.ogg" id="s237"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_1.ogg" id="s238"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_2.ogg" id="s239"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_3.ogg" id="s240"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_4.ogg" id="s241"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_incendiary_fire/sfx_throwable_incendiary_fire.ogg" id="s242"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/payday_tick/sfx_payday_tick.ogg" id="s191"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/phantom_hum/sfx_phantom_hum.ogg" id="s192"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/phantom_charge/sfx_phantom_charge.ogg" id="s193"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/stinger_windup/sfx_stinger_windup.ogg" id="s194"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/stinger_arc/sfx_stinger_arc.ogg" id="s195"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/longshot_report/sfx_longshot_report.ogg" id="s196"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/bulwark_bang/sfx_bulwark_bang_1.ogg" id="s197"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/bulwark_bang/sfx_bulwark_bang_2.ogg" id="s198"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/bulwark_bang/sfx_bulwark_bang_3.ogg" id="s199"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_roar/sfx_wrecker_roar_1.ogg" id="s200"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_roar/sfx_wrecker_roar_2.ogg" id="s201"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_step/sfx_wrecker_step_1.ogg" id="s202"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_step/sfx_wrecker_step_2.ogg" id="s203"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_step/sfx_wrecker_step_3.ogg" id="s204"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_plate_crack/sfx_wrecker_plate_crack_1.ogg" id="s205"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/wrecker_plate_crack/sfx_wrecker_plate_crack_2.ogg" id="s206"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/corpsman_heal/sfx_corpsman_heal.ogg" id="s207"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/brandt_arrival/sfx_brandt_arrival.ogg" id="s208"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/aegis_pulse/sfx_aegis_pulse.ogg" id="s209"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/bag_lift_start/sfx_bag_lift_start.ogg" id="s210"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/bag_lift_arrive/sfx_bag_lift_arrive.ogg" id="s211"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hack_start/sfx_hack_start.ogg" id="s212"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hack_interrupt/sfx_hack_interrupt.ogg" id="s213"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hack_done/sfx_hack_done.ogg" id="s214"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/escape_arrive/sfx_escape_arrive_1.ogg" id="s215"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/escape_arrive/sfx_escape_arrive_2.ogg" id="s216"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/escape_arrive/sfx_escape_arrive_3.ogg" id="s217"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/escape_arrive_van/sfx_escape_arrive_van.ogg" id="s218"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/escape_arrive_boat/sfx_escape_arrive_boat.ogg" id="s219"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/escape_arrive_heli/sfx_escape_arrive_heli.ogg" id="s220"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/amb_glasshouse_interior/sfx_amb_glasshouse_interior.ogg" id="s221"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/amb_street_dusk/sfx_amb_street_dusk.ogg" id="s222"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/door_breach/sfx_door_breach_1.ogg" id="s223"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/door_breach/sfx_door_breach_2.ogg" id="s224"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/door_breach/sfx_door_breach_3.ogg" id="s225"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/burn_warning/sfx_burn_warning_1.ogg" id="s226"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/burn_warning/sfx_burn_warning_2.ogg" id="s227"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/burn_warning/sfx_burn_warning_3.ogg" id="s228"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_pin/sfx_throwable_pin_1.ogg" id="s229"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_pin/sfx_throwable_pin_2.ogg" id="s230"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_frag/sfx_throwable_frag_1.ogg" id="s231"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_frag/sfx_throwable_frag_2.ogg" id="s232"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_frag/sfx_throwable_frag_3.ogg" id="s233"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_concussion/sfx_throwable_concussion_1.ogg" id="s234"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_concussion/sfx_throwable_concussion_2.ogg" id="s235"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_incendiary/sfx_throwable_incendiary_1.ogg" id="s236"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_incendiary/sfx_throwable_incendiary_2.ogg" id="s237"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit/sfx_throwable_knife_hit_1.ogg" id="s238"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit/sfx_throwable_knife_hit_2.ogg" id="s239"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit/sfx_throwable_knife_hit_3.ogg" id="s240"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_1.ogg" id="s241"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_2.ogg" id="s242"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_3.ogg" id="s243"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_knife_hit_hard/sfx_throwable_knife_hit_hard_4.ogg" id="s244"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/throwable_incendiary_fire/sfx_throwable_incendiary_fire.ogg" id="s245"]
 
 [sub_resource type="Resource" id="cue_1"]
 script = ExtResource("2_def")
@@ -1411,8 +1414,20 @@ loop = false
 
 [sub_resource type="Resource" id="cue_98"]
 script = ExtResource("2_def")
-id = &"cue.phantom_hum"
+id = &"cue.payday_tick"
 streams = Array[AudioStream]([ExtResource("s191")])
+volume_db = -8.0
+bus = &"UI"
+positional = false
+max_distance = 40.0
+pitch_jitter = 0.0
+cooldown_s = 0.2
+loop = false
+
+[sub_resource type="Resource" id="cue_99"]
+script = ExtResource("2_def")
+id = &"cue.phantom_hum"
+streams = Array[AudioStream]([ExtResource("s192")])
 volume_db = -2.0
 bus = &"Enemies"
 positional = true
@@ -1421,10 +1436,10 @@ pitch_jitter = 0.0
 cooldown_s = 0.0
 loop = true
 
-[sub_resource type="Resource" id="cue_99"]
+[sub_resource type="Resource" id="cue_100"]
 script = ExtResource("2_def")
 id = &"cue.phantom_charge"
-streams = Array[AudioStream]([ExtResource("s192")])
+streams = Array[AudioStream]([ExtResource("s193")])
 volume_db = 0.0
 bus = &"Enemies"
 positional = true
@@ -1433,10 +1448,10 @@ pitch_jitter = 0.0
 cooldown_s = 1.0
 loop = false
 
-[sub_resource type="Resource" id="cue_100"]
+[sub_resource type="Resource" id="cue_101"]
 script = ExtResource("2_def")
 id = &"cue.stinger_windup"
-streams = Array[AudioStream]([ExtResource("s193")])
+streams = Array[AudioStream]([ExtResource("s194")])
 volume_db = 0.0
 bus = &"Enemies"
 positional = true
@@ -1445,10 +1460,10 @@ pitch_jitter = 0.0
 cooldown_s = 0.5
 loop = false
 
-[sub_resource type="Resource" id="cue_101"]
+[sub_resource type="Resource" id="cue_102"]
 script = ExtResource("2_def")
 id = &"cue.stinger_arc"
-streams = Array[AudioStream]([ExtResource("s194")])
+streams = Array[AudioStream]([ExtResource("s195")])
 volume_db = 0.0
 bus = &"Enemies"
 positional = true
@@ -1457,10 +1472,10 @@ pitch_jitter = 0.0
 cooldown_s = 0.0
 loop = true
 
-[sub_resource type="Resource" id="cue_102"]
+[sub_resource type="Resource" id="cue_103"]
 script = ExtResource("2_def")
 id = &"cue.longshot_report"
-streams = Array[AudioStream]([ExtResource("s195")])
+streams = Array[AudioStream]([ExtResource("s196")])
 volume_db = 2.0
 bus = &"Enemies"
 positional = true
@@ -1469,10 +1484,10 @@ pitch_jitter = 0.03
 cooldown_s = 0.0
 loop = false
 
-[sub_resource type="Resource" id="cue_103"]
+[sub_resource type="Resource" id="cue_104"]
 script = ExtResource("2_def")
 id = &"cue.bulwark_bang"
-streams = Array[AudioStream]([ExtResource("s196"), ExtResource("s197"), ExtResource("s198")])
+streams = Array[AudioStream]([ExtResource("s197"), ExtResource("s198"), ExtResource("s199")])
 volume_db = 0.0
 bus = &"Enemies"
 positional = true
@@ -1481,10 +1496,10 @@ pitch_jitter = 0.03
 cooldown_s = 0.15
 loop = false
 
-[sub_resource type="Resource" id="cue_104"]
+[sub_resource type="Resource" id="cue_105"]
 script = ExtResource("2_def")
 id = &"cue.wrecker_roar"
-streams = Array[AudioStream]([ExtResource("s199"), ExtResource("s200")])
+streams = Array[AudioStream]([ExtResource("s200"), ExtResource("s201")])
 volume_db = 0.0
 bus = &"Enemies"
 positional = true
@@ -1493,10 +1508,10 @@ pitch_jitter = 0.0
 cooldown_s = 2.0
 loop = false
 
-[sub_resource type="Resource" id="cue_105"]
+[sub_resource type="Resource" id="cue_106"]
 script = ExtResource("2_def")
 id = &"cue.wrecker_step"
-streams = Array[AudioStream]([ExtResource("s201"), ExtResource("s202"), ExtResource("s203")])
+streams = Array[AudioStream]([ExtResource("s202"), ExtResource("s203"), ExtResource("s204")])
 volume_db = 0.0
 bus = &"Enemies"
 positional = true
@@ -1505,10 +1520,10 @@ pitch_jitter = 0.04
 cooldown_s = 0.0
 loop = false
 
-[sub_resource type="Resource" id="cue_106"]
+[sub_resource type="Resource" id="cue_107"]
 script = ExtResource("2_def")
 id = &"cue.wrecker_plate_crack"
-streams = Array[AudioStream]([ExtResource("s204"), ExtResource("s205")])
+streams = Array[AudioStream]([ExtResource("s205"), ExtResource("s206")])
 volume_db = 0.0
 bus = &"Enemies"
 positional = true
@@ -1517,10 +1532,10 @@ pitch_jitter = 0.0
 cooldown_s = 0.0
 loop = false
 
-[sub_resource type="Resource" id="cue_107"]
+[sub_resource type="Resource" id="cue_108"]
 script = ExtResource("2_def")
 id = &"cue.corpsman_heal"
-streams = Array[AudioStream]([ExtResource("s206")])
+streams = Array[AudioStream]([ExtResource("s207")])
 volume_db = 0.0
 bus = &"Enemies"
 positional = true
@@ -1529,10 +1544,10 @@ pitch_jitter = 0.0
 cooldown_s = 0.5
 loop = false
 
-[sub_resource type="Resource" id="cue_108"]
+[sub_resource type="Resource" id="cue_109"]
 script = ExtResource("2_def")
 id = &"cue.brandt_arrival"
-streams = Array[AudioStream]([ExtResource("s207")])
+streams = Array[AudioStream]([ExtResource("s208")])
 volume_db = -2.0
 bus = &"Enemies"
 positional = false
@@ -1541,10 +1556,10 @@ pitch_jitter = 0.0
 cooldown_s = 5.0
 loop = false
 
-[sub_resource type="Resource" id="cue_109"]
+[sub_resource type="Resource" id="cue_110"]
 script = ExtResource("2_def")
 id = &"cue.aegis_pulse"
-streams = Array[AudioStream]([ExtResource("s208")])
+streams = Array[AudioStream]([ExtResource("s209")])
 volume_db = -3.0
 bus = &"Enemies"
 positional = true
@@ -1553,21 +1568,9 @@ pitch_jitter = 0.0
 cooldown_s = 0.0
 loop = true
 
-[sub_resource type="Resource" id="cue_110"]
-script = ExtResource("2_def")
-id = &"cue.bag_lift_start"
-streams = Array[AudioStream]([ExtResource("s209")])
-volume_db = 0.0
-bus = &"World"
-positional = true
-max_distance = 40.0
-pitch_jitter = 0.0
-cooldown_s = 0.0
-loop = false
-
 [sub_resource type="Resource" id="cue_111"]
 script = ExtResource("2_def")
-id = &"cue.bag_lift_arrive"
+id = &"cue.bag_lift_start"
 streams = Array[AudioStream]([ExtResource("s210")])
 volume_db = 0.0
 bus = &"World"
@@ -1579,8 +1582,20 @@ loop = false
 
 [sub_resource type="Resource" id="cue_112"]
 script = ExtResource("2_def")
-id = &"cue.hack_start"
+id = &"cue.bag_lift_arrive"
 streams = Array[AudioStream]([ExtResource("s211")])
+volume_db = 0.0
+bus = &"World"
+positional = true
+max_distance = 40.0
+pitch_jitter = 0.0
+cooldown_s = 0.0
+loop = false
+
+[sub_resource type="Resource" id="cue_113"]
+script = ExtResource("2_def")
+id = &"cue.hack_start"
+streams = Array[AudioStream]([ExtResource("s212")])
 volume_db = -3.0
 bus = &"World"
 positional = true
@@ -1589,10 +1604,10 @@ pitch_jitter = 0.0
 cooldown_s = 0.0
 loop = false
 
-[sub_resource type="Resource" id="cue_113"]
+[sub_resource type="Resource" id="cue_114"]
 script = ExtResource("2_def")
 id = &"cue.hack_interrupt"
-streams = Array[AudioStream]([ExtResource("s212")])
+streams = Array[AudioStream]([ExtResource("s213")])
 volume_db = -2.0
 bus = &"World"
 positional = true
@@ -1601,10 +1616,10 @@ pitch_jitter = 0.0
 cooldown_s = 0.0
 loop = false
 
-[sub_resource type="Resource" id="cue_114"]
+[sub_resource type="Resource" id="cue_115"]
 script = ExtResource("2_def")
 id = &"cue.hack_done"
-streams = Array[AudioStream]([ExtResource("s213")])
+streams = Array[AudioStream]([ExtResource("s214")])
 volume_db = -3.0
 bus = &"World"
 positional = true
@@ -1613,22 +1628,10 @@ pitch_jitter = 0.0
 cooldown_s = 0.0
 loop = false
 
-[sub_resource type="Resource" id="cue_115"]
-script = ExtResource("2_def")
-id = &"cue.escape_arrive"
-streams = Array[AudioStream]([ExtResource("s214"), ExtResource("s215"), ExtResource("s216")])
-volume_db = 0.0
-bus = &"World"
-positional = true
-max_distance = 200.0
-pitch_jitter = 0.0
-cooldown_s = 0.0
-loop = false
-
 [sub_resource type="Resource" id="cue_116"]
 script = ExtResource("2_def")
-id = &"cue.escape_arrive_van"
-streams = Array[AudioStream]([ExtResource("s217")])
+id = &"cue.escape_arrive"
+streams = Array[AudioStream]([ExtResource("s215"), ExtResource("s216"), ExtResource("s217")])
 volume_db = 0.0
 bus = &"World"
 positional = true
@@ -1639,7 +1642,7 @@ loop = false
 
 [sub_resource type="Resource" id="cue_117"]
 script = ExtResource("2_def")
-id = &"cue.escape_arrive_boat"
+id = &"cue.escape_arrive_van"
 streams = Array[AudioStream]([ExtResource("s218")])
 volume_db = 0.0
 bus = &"World"
@@ -1651,7 +1654,7 @@ loop = false
 
 [sub_resource type="Resource" id="cue_118"]
 script = ExtResource("2_def")
-id = &"cue.escape_arrive_heli"
+id = &"cue.escape_arrive_boat"
 streams = Array[AudioStream]([ExtResource("s219")])
 volume_db = 0.0
 bus = &"World"
@@ -1663,21 +1666,21 @@ loop = false
 
 [sub_resource type="Resource" id="cue_119"]
 script = ExtResource("2_def")
-id = &"cue.amb_glasshouse_interior"
+id = &"cue.escape_arrive_heli"
 streams = Array[AudioStream]([ExtResource("s220")])
-volume_db = -14.0
-bus = &"Ambience"
-positional = false
-max_distance = 40.0
+volume_db = 0.0
+bus = &"World"
+positional = true
+max_distance = 200.0
 pitch_jitter = 0.0
 cooldown_s = 0.0
-loop = true
+loop = false
 
 [sub_resource type="Resource" id="cue_120"]
 script = ExtResource("2_def")
-id = &"cue.amb_street_dusk"
+id = &"cue.amb_glasshouse_interior"
 streams = Array[AudioStream]([ExtResource("s221")])
-volume_db = -12.0
+volume_db = -14.0
 bus = &"Ambience"
 positional = false
 max_distance = 40.0
@@ -1687,8 +1690,20 @@ loop = true
 
 [sub_resource type="Resource" id="cue_121"]
 script = ExtResource("2_def")
+id = &"cue.amb_street_dusk"
+streams = Array[AudioStream]([ExtResource("s222")])
+volume_db = -12.0
+bus = &"Ambience"
+positional = false
+max_distance = 40.0
+pitch_jitter = 0.0
+cooldown_s = 0.0
+loop = true
+
+[sub_resource type="Resource" id="cue_122"]
+script = ExtResource("2_def")
 id = &"cue.door_breach"
-streams = Array[AudioStream]([ExtResource("s222"), ExtResource("s223"), ExtResource("s224")])
+streams = Array[AudioStream]([ExtResource("s223"), ExtResource("s224"), ExtResource("s225")])
 volume_db = 0.0
 bus = &"World"
 positional = true
@@ -1697,10 +1712,10 @@ pitch_jitter = 0.04
 cooldown_s = 0.0
 loop = false
 
-[sub_resource type="Resource" id="cue_122"]
+[sub_resource type="Resource" id="cue_123"]
 script = ExtResource("2_def")
 id = &"cue.burn_warning"
-streams = Array[AudioStream]([ExtResource("s225")])
+streams = Array[AudioStream]([ExtResource("s226"), ExtResource("s227"), ExtResource("s228")])
 volume_db = 0.0
 bus = &"World"
 positional = true
@@ -1709,10 +1724,10 @@ pitch_jitter = 0.0
 cooldown_s = 0.0
 loop = false
 
-[sub_resource type="Resource" id="cue_123"]
+[sub_resource type="Resource" id="cue_124"]
 script = ExtResource("2_def")
 id = &"cue.throwable_pin"
-streams = Array[AudioStream]([ExtResource("s226"), ExtResource("s227")])
+streams = Array[AudioStream]([ExtResource("s229"), ExtResource("s230")])
 volume_db = -5.0
 bus = &"Weapons"
 positional = true
@@ -1721,10 +1736,10 @@ pitch_jitter = 0.04
 cooldown_s = 0.0
 loop = false
 
-[sub_resource type="Resource" id="cue_124"]
+[sub_resource type="Resource" id="cue_125"]
 script = ExtResource("2_def")
 id = &"cue.throwable_frag"
-streams = Array[AudioStream]([ExtResource("s228"), ExtResource("s229"), ExtResource("s230")])
+streams = Array[AudioStream]([ExtResource("s231"), ExtResource("s232"), ExtResource("s233")])
 volume_db = 0.0
 bus = &"World"
 positional = true
@@ -1733,10 +1748,10 @@ pitch_jitter = 0.03
 cooldown_s = 0.0
 loop = false
 
-[sub_resource type="Resource" id="cue_125"]
+[sub_resource type="Resource" id="cue_126"]
 script = ExtResource("2_def")
 id = &"cue.throwable_concussion"
-streams = Array[AudioStream]([ExtResource("s231"), ExtResource("s232")])
+streams = Array[AudioStream]([ExtResource("s234"), ExtResource("s235")])
 volume_db = 0.0
 bus = &"World"
 positional = true
@@ -1745,10 +1760,10 @@ pitch_jitter = 0.02
 cooldown_s = 0.0
 loop = false
 
-[sub_resource type="Resource" id="cue_126"]
+[sub_resource type="Resource" id="cue_127"]
 script = ExtResource("2_def")
 id = &"cue.throwable_incendiary"
-streams = Array[AudioStream]([ExtResource("s233"), ExtResource("s234")])
+streams = Array[AudioStream]([ExtResource("s236"), ExtResource("s237")])
 volume_db = 0.0
 bus = &"World"
 positional = true
@@ -1757,22 +1772,10 @@ pitch_jitter = 0.04
 cooldown_s = 0.0
 loop = false
 
-[sub_resource type="Resource" id="cue_127"]
-script = ExtResource("2_def")
-id = &"cue.throwable_knife_hit"
-streams = Array[AudioStream]([ExtResource("s235"), ExtResource("s236"), ExtResource("s237")])
-volume_db = -6.0
-bus = &"Weapons"
-positional = true
-max_distance = 15.0
-pitch_jitter = 0.05
-cooldown_s = 0.0
-loop = false
-
 [sub_resource type="Resource" id="cue_128"]
 script = ExtResource("2_def")
-id = &"cue.throwable_knife_hit_hard"
-streams = Array[AudioStream]([ExtResource("s238"), ExtResource("s239"), ExtResource("s240"), ExtResource("s241")])
+id = &"cue.throwable_knife_hit"
+streams = Array[AudioStream]([ExtResource("s238"), ExtResource("s239"), ExtResource("s240")])
 volume_db = -6.0
 bus = &"Weapons"
 positional = true
@@ -1783,8 +1786,20 @@ loop = false
 
 [sub_resource type="Resource" id="cue_129"]
 script = ExtResource("2_def")
+id = &"cue.throwable_knife_hit_hard"
+streams = Array[AudioStream]([ExtResource("s241"), ExtResource("s242"), ExtResource("s243"), ExtResource("s244")])
+volume_db = -6.0
+bus = &"Weapons"
+positional = true
+max_distance = 15.0
+pitch_jitter = 0.05
+cooldown_s = 0.0
+loop = false
+
+[sub_resource type="Resource" id="cue_130"]
+script = ExtResource("2_def")
 id = &"cue.throwable_incendiary_fire"
-streams = Array[AudioStream]([ExtResource("s242")])
+streams = Array[AudioStream]([ExtResource("s245")])
 volume_db = -4.0
 bus = &"World"
 positional = true
@@ -1795,4 +1810,4 @@ loop = true
 
 [resource]
 script = ExtResource("1_reg")
-cues = Array[ExtResource("2_def")]([SubResource("cue_1"), SubResource("cue_2"), SubResource("cue_3"), SubResource("cue_4"), SubResource("cue_5"), SubResource("cue_6"), SubResource("cue_7"), SubResource("cue_8"), SubResource("cue_9"), SubResource("cue_10"), SubResource("cue_11"), SubResource("cue_12"), SubResource("cue_13"), SubResource("cue_14"), SubResource("cue_15"), SubResource("cue_16"), SubResource("cue_17"), SubResource("cue_18"), SubResource("cue_19"), SubResource("cue_20"), SubResource("cue_21"), SubResource("cue_22"), SubResource("cue_23"), SubResource("cue_24"), SubResource("cue_25"), SubResource("cue_26"), SubResource("cue_27"), SubResource("cue_28"), SubResource("cue_29"), SubResource("cue_30"), SubResource("cue_31"), SubResource("cue_32"), SubResource("cue_33"), SubResource("cue_34"), SubResource("cue_35"), SubResource("cue_36"), SubResource("cue_37"), SubResource("cue_38"), SubResource("cue_39"), SubResource("cue_40"), SubResource("cue_41"), SubResource("cue_42"), SubResource("cue_43"), SubResource("cue_44"), SubResource("cue_45"), SubResource("cue_46"), SubResource("cue_47"), SubResource("cue_48"), SubResource("cue_49"), SubResource("cue_50"), SubResource("cue_51"), SubResource("cue_52"), SubResource("cue_53"), SubResource("cue_54"), SubResource("cue_55"), SubResource("cue_56"), SubResource("cue_57"), SubResource("cue_58"), SubResource("cue_59"), SubResource("cue_60"), SubResource("cue_61"), SubResource("cue_62"), SubResource("cue_63"), SubResource("cue_64"), SubResource("cue_65"), SubResource("cue_66"), SubResource("cue_67"), SubResource("cue_68"), SubResource("cue_69"), SubResource("cue_70"), SubResource("cue_71"), SubResource("cue_72"), SubResource("cue_73"), SubResource("cue_74"), SubResource("cue_75"), SubResource("cue_76"), SubResource("cue_77"), SubResource("cue_78"), SubResource("cue_79"), SubResource("cue_80"), SubResource("cue_81"), SubResource("cue_82"), SubResource("cue_83"), SubResource("cue_84"), SubResource("cue_85"), SubResource("cue_86"), SubResource("cue_87"), SubResource("cue_88"), SubResource("cue_89"), SubResource("cue_90"), SubResource("cue_91"), SubResource("cue_92"), SubResource("cue_93"), SubResource("cue_94"), SubResource("cue_95"), SubResource("cue_96"), SubResource("cue_97"), SubResource("cue_98"), SubResource("cue_99"), SubResource("cue_100"), SubResource("cue_101"), SubResource("cue_102"), SubResource("cue_103"), SubResource("cue_104"), SubResource("cue_105"), SubResource("cue_106"), SubResource("cue_107"), SubResource("cue_108"), SubResource("cue_109"), SubResource("cue_110"), SubResource("cue_111"), SubResource("cue_112"), SubResource("cue_113"), SubResource("cue_114"), SubResource("cue_115"), SubResource("cue_116"), SubResource("cue_117"), SubResource("cue_118"), SubResource("cue_119"), SubResource("cue_120"), SubResource("cue_121"), SubResource("cue_122"), SubResource("cue_123"), SubResource("cue_124"), SubResource("cue_125"), SubResource("cue_126"), SubResource("cue_127"), SubResource("cue_128"), SubResource("cue_129")])
+cues = Array[ExtResource("2_def")]([SubResource("cue_1"), SubResource("cue_2"), SubResource("cue_3"), SubResource("cue_4"), SubResource("cue_5"), SubResource("cue_6"), SubResource("cue_7"), SubResource("cue_8"), SubResource("cue_9"), SubResource("cue_10"), SubResource("cue_11"), SubResource("cue_12"), SubResource("cue_13"), SubResource("cue_14"), SubResource("cue_15"), SubResource("cue_16"), SubResource("cue_17"), SubResource("cue_18"), SubResource("cue_19"), SubResource("cue_20"), SubResource("cue_21"), SubResource("cue_22"), SubResource("cue_23"), SubResource("cue_24"), SubResource("cue_25"), SubResource("cue_26"), SubResource("cue_27"), SubResource("cue_28"), SubResource("cue_29"), SubResource("cue_30"), SubResource("cue_31"), SubResource("cue_32"), SubResource("cue_33"), SubResource("cue_34"), SubResource("cue_35"), SubResource("cue_36"), SubResource("cue_37"), SubResource("cue_38"), SubResource("cue_39"), SubResource("cue_40"), SubResource("cue_41"), SubResource("cue_42"), SubResource("cue_43"), SubResource("cue_44"), SubResource("cue_45"), SubResource("cue_46"), SubResource("cue_47"), SubResource("cue_48"), SubResource("cue_49"), SubResource("cue_50"), SubResource("cue_51"), SubResource("cue_52"), SubResource("cue_53"), SubResource("cue_54"), SubResource("cue_55"), SubResource("cue_56"), SubResource("cue_57"), SubResource("cue_58"), SubResource("cue_59"), SubResource("cue_60"), SubResource("cue_61"), SubResource("cue_62"), SubResource("cue_63"), SubResource("cue_64"), SubResource("cue_65"), SubResource("cue_66"), SubResource("cue_67"), SubResource("cue_68"), SubResource("cue_69"), SubResource("cue_70"), SubResource("cue_71"), SubResource("cue_72"), SubResource("cue_73"), SubResource("cue_74"), SubResource("cue_75"), SubResource("cue_76"), SubResource("cue_77"), SubResource("cue_78"), SubResource("cue_79"), SubResource("cue_80"), SubResource("cue_81"), SubResource("cue_82"), SubResource("cue_83"), SubResource("cue_84"), SubResource("cue_85"), SubResource("cue_86"), SubResource("cue_87"), SubResource("cue_88"), SubResource("cue_89"), SubResource("cue_90"), SubResource("cue_91"), SubResource("cue_92"), SubResource("cue_93"), SubResource("cue_94"), SubResource("cue_95"), SubResource("cue_96"), SubResource("cue_97"), SubResource("cue_98"), SubResource("cue_99"), SubResource("cue_100"), SubResource("cue_101"), SubResource("cue_102"), SubResource("cue_103"), SubResource("cue_104"), SubResource("cue_105"), SubResource("cue_106"), SubResource("cue_107"), SubResource("cue_108"), SubResource("cue_109"), SubResource("cue_110"), SubResource("cue_111"), SubResource("cue_112"), SubResource("cue_113"), SubResource("cue_114"), SubResource("cue_115"), SubResource("cue_116"), SubResource("cue_117"), SubResource("cue_118"), SubResource("cue_119"), SubResource("cue_120"), SubResource("cue_121"), SubResource("cue_122"), SubResource("cue_123"), SubResource("cue_124"), SubResource("cue_125"), SubResource("cue_126"), SubResource("cue_127"), SubResource("cue_128"), SubResource("cue_129"), SubResource("cue_130")])

@@ -71,7 +71,7 @@ func _on_mission_start() -> void:
 	add_objective(&"vault_loot", &"objective.night_deposit.vault_loot", Enums.ObjectiveState.HIDDEN)
 	add_objective(&"depository", &"objective.night_deposit.depository", Enums.ObjectiveState.ACTIVE, {"optional": true})
 	add_objective(&"secure", &"objective.night_deposit.secure", Enums.ObjectiveState.ACTIVE,
-		{"bags": MIN_BAGS, "optional_more": true})
+		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true})
 	require_loot(&"secure", MIN_BAGS)
 	add_objective(&"escape", &"objective.night_deposit.escape", Enums.ObjectiveState.HIDDEN)
 	on_event(&"interaction_completed", _on_interaction_completed)
@@ -288,6 +288,7 @@ func _on_device_jammed(device_net_id: int) -> void:
 
 
 func _on_bag_secured(_bag_net_id: int, _loot_id: StringName, _value: int) -> void:
+	update_objective_data(&"secure", {"count": bags_secured, "total": MIN_BAGS})  # HUD: count / total bags
 	_try_escape()
 
 

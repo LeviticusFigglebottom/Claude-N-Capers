@@ -223,7 +223,7 @@ const DOORS: Array = [
 	["AtmInnerDoor", "prop_door_single_glass_t20", Vector3(21.0, 0.0, 18.0), -90.0, "LOCKPICK", "INWARD", "atm_door", {}],
 	["VestibuleInnerDoors", "prop_door_double_glass_t20", Vector3(10.5, 0.0, 18.0), 180.0, "LOCKPICK", "DOUBLE", "", {}],
 	["MainEntrance", "prop_door_double_bronze_t40", Vector3(10.5, 0.0, 20.0), 180.0, "LOCKPICK", "DOUBLE", "main_entrance", {}],
-	["AtmStreetDoor", "prop_door_single_steel_t40", Vector3(24.25, 0.0, 20.0), 180.0, "NONE", "INWARD", "atm_street_door", {}],
+	["AtmStreetDoor", "prop_door_single_steel_t40", Vector3(24.25, 0.0, 20.0), 180.0, "NONE", "INWARD", "atm_street_door", {"public": true}],
 	# Basement.
 	["XferDoor", "prop_door_single_steel_t20", Vector3(3.5, BASE, 6.0), 180.0, "NONE", "INWARD", "", {}],
 	["JanitorDoor", "prop_door_single_ivory_t20", Vector3(7.75, BASE, 6.0), 180.0, "NONE", "INWARD", "", {}],
