@@ -109,6 +109,8 @@ var lobby: LobbySession = null
 var options_menu: MenuOptions
 ## Contact radio + subtitles of the running heist (B7-03; ContactRadio.spawn, every peer), else null.
 var heist_radio: ContactRadio = null
+## Lead queue (b): the loading screen while HeistLauncher.launch runs (null once the heist is up; tests).
+var loading_screen: LoadingScreen = null
 ## In-heist chat overlay over the HUD (B6-03; co-op sessions only), else null.
 var heist_chat: ChatPanel = null
 ## Host's drop-in request dialog over the HUD (B6-04; co-op host only; binds to the DropInService group), else null.
@@ -663,13 +665,29 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 	visible = false
 	_spawn_in_heist_ui()
 	_hand_heisters(options)
+	var loading: CanvasLayer = _show_loading(heist_id, difficulty)
 	runtime = await launcher.call(&"launch", heist_id, run_seed, difficulty, null, options)
+	if is_instance_valid(loading):
+		loading.queue_free()
+	loading_screen = null
 	if runtime == null:
 		Log.error(&"ui", "HeistLauncher.launch(%s) returned null; back to the main menu" % heist_id)
 		_leave_heist()
 		return
 	# The HUD binds HeistRuntime's LocalHudModel itself through group G.LOCAL_HUD_MODEL (ui_hud.md v1.1).
 	heist_launched.emit(runtime)
+
+
+## Lead queue (b): the loading screen (heist name + a tip) over everything while the launcher works.
+func _show_loading(heist_id: StringName, difficulty: int) -> CanvasLayer:
+	var layer: CanvasLayer = CanvasLayer.new()
+	layer.layer = 50
+	var screen: LoadingScreen = LoadingScreen.new()
+	screen.setup(heist_id, difficulty)
+	layer.add_child(screen)
+	get_tree().root.add_child(layer)
+	loading_screen = screen
+	return layer
 
 
 ## HeistLauncher.launch options (contracts/test_hooks.md): `ai_teammates`, `loadouts` = {slot: resolved

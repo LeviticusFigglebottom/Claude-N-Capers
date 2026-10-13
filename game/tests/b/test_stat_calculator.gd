@@ -46,7 +46,7 @@ func test_display_clamps() -> void:
 
 func test_reflex_sight_improves_accuracy_costs_concealment() -> void:
 	var d: Dictionary = StatCalculator.delta(_base(), _with([&"mod.p9_reflex_sight"] as Array[StringName]))
-	assert_eq(d["accuracy"]["modded"], 55, "ADS 2.3 - 0.15 on the 0..4.8 deg scale")
+	assert_eq(d["accuracy"]["modded"], 60, "ADS 2.3 - 0.384 (+2 PD2 accuracy steps) on the 0..4.8 deg scale")
 	assert_true(d["accuracy"]["better"])
 	assert_true(d["concealment"]["changed"])
 	assert_false(d["concealment"]["better"])

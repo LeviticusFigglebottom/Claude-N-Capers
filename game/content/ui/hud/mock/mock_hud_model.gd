@@ -200,6 +200,20 @@ var mask_progress: float = 0.0:
 	set(v):
 		mask_progress = v
 		changed.emit(&"mask_progress")
+## LocalHudModel extras (asked of ENV A): who is reviving the local player and how far (-1 = nobody).
+var revive_progress: float = -1.0:
+	set(v):
+		revive_progress = v
+		vitals_changed.emit()
+var reviver_slot: int = -1:
+	set(v):
+		reviver_slot = v
+		vitals_changed.emit()
+## LocalHudModel extra (asked of ENV A): the local player's crew net id (0 = unknown).
+var local_net_id: int = 0:
+	set(v):
+		local_net_id = v
+		changed.emit(&"local_net_id")
 ## LocalHudModel extra: Enums.HeistPhase (announced through `changed`; OnboardingCard).
 var heist_phase: int = Enums.HeistPhase.LOADING:
 	set(v):

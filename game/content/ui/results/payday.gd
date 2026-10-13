@@ -34,6 +34,8 @@ const CREW_COLUMN_KEYS: Dictionary = {"kills": &"ui.results.kills", "specials_ki
 	"downs": &"ui.results.downs", "civilians_killed": &"ui.results.civilians_killed"}
 ## PO-4: seconds the payday total takes to count up.
 const COUNT_S: float = 1.2
+## Lead round 62: seconds per level the XP bar takes to fill (a level-up wraps it and pops the line).
+const XP_FILL_S: float = 0.9
 ## D-090: at most one count-up tick per this many ms.
 const COUNT_TICK_MS: int = 80
 
@@ -81,6 +83,11 @@ var urgent_ticks: int = 0
 var total_landed_count: int = 0
 ## slot -> heister id (MenuFlow at launch); crew rows name the heister.
 var crew_heisters: Dictionary = {}
+## XP bar animation: the level-up line it reveals and how many wraps played (tests).
+var level_up_label: Label
+var xp_wraps: int = 0
+## Crew table: column -> slots holding that column's best value (> 0), drawn in brass (tests).
+var crew_best: Dictionary = {}
 var _content: VBoxContainer
 var _summary: ScrollContainer
 var _cards_root: VBoxContainer
@@ -89,6 +96,7 @@ var _cards_title: Label
 var _applied: bool = false
 var _input_grace: float = 0.0
 var _counter: Tween = null
+var _xp_tween: Tween = null  # XP bar animation (null = idle / done)
 var _count_tick_ms: int = 0
 
 
@@ -438,6 +446,7 @@ func _render() -> void:
 		if a != null:
 			_content.add_child(UiBuild.label(&"ui.results.achievement_unlocked", UiBuild.SUBHEADER, {"name": UiText.t(a.name_key)}))
 	focus_default()
+	animate_xp()
 
 
 ## PO-4 hero row (style.md §8 payday): the outcome as a caption, the take-home total as the display
@@ -504,10 +513,13 @@ func _total_landed() -> void:
 
 ## Jumps a running count-up to its end. Returns whether one was running.
 func skip_count() -> bool:
+	var xp_running: bool = _xp_tween != null and _xp_tween.is_valid() and _xp_tween.is_running()
+	if xp_running:
+		finish_xp()
 	if _counter != null and _counter.is_valid() and _counter.is_running():
 		_counter.custom_step(COUNT_S)
 		return true
-	return false
+	return xp_running
 
 
 func _build_cash() -> VBoxContainer:
@@ -553,9 +565,59 @@ func _build_xp() -> VBoxContainer:
 	level_bar = UiBuild.bar(UiAccent.table().fallback.lightened(0.15), Vector2(480, 16))
 	level_bar.value = _level_progress(xp_after)
 	v.add_child(level_bar)
-	if level_after > level_before:
-		v.add_child(UiBuild.label(&"ui.results.level_up", UiBuild.SUBHEADER, {"level": level_after}))
+	level_up_label = UiBuild.label(&"ui.results.level_up", UiBuild.SUBHEADER, {"level": level_after})
+	level_up_label.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+	level_up_label.visible = level_after > level_before
+	v.add_child(level_up_label)
 	return v
+
+
+## Lead round 62: the level bar fills from where the player was to where they are now, wrapping once per
+## level gained (the level number ticks up and the level-up line pops on the last wrap). Starts with the
+## cash count-up; skip_count() ends both. Off for Reduce Motion / headless (final state at once).
+func animate_xp() -> void:
+	if level_bar == null or not is_inside_tree() or not UiTokens.motion_ok() or DisplayServer.get_name() == "headless":
+		return
+	var lvl: Label = value_labels.get(&"level") as Label
+	var before: int = XpCurve.level_for_xp(xp_before)
+	var after: int = XpCurve.level_for_xp(xp_after)
+	if xp_after <= xp_before:
+		return
+	xp_wraps = 0
+	level_bar.value = _level_progress(xp_before)
+	lvl.text = UiText.t(&"ui.menu.level", {"level": before})
+	level_up_label.visible = false
+	_xp_tween = create_tween()
+	for level: int in range(before, after):
+		_xp_tween.tween_property(level_bar, ^"value", 1.0, XP_FILL_S * (1.0 - (level_bar.value if level == before else 0.0)))
+		_xp_tween.tween_callback(_xp_wrap.bind(level + 1, level + 1 == after))
+	_xp_tween.tween_property(level_bar, ^"value", _level_progress(xp_after), XP_FILL_S * maxf(_level_progress(xp_after), 0.1)) \
+			.set_ease(Tween.EASE_OUT)
+
+
+func _xp_wrap(level: int, last: bool) -> void:
+	xp_wraps += 1
+	level_bar.value = 0.0
+	(value_labels[&"level"] as Label).text = UiText.t(&"ui.menu.level", {"level": level})
+	UiSfx.play(UiSfx.OBJECTIVE_DONE)
+	if last:
+		level_up_label.visible = true
+		level_up_label.pivot_offset = level_up_label.size * 0.5
+		level_up_label.scale = Vector2(1.25, 1.25)
+		create_tween().tween_property(level_up_label, ^"scale", Vector2.ONE, UiTokens.T_SLOW).set_ease(Tween.EASE_OUT)
+
+
+## Ends the XP bar animation at its final state.
+func finish_xp() -> void:
+	if _xp_tween != null and _xp_tween.is_valid():
+		_xp_tween.kill()
+	_xp_tween = null
+	if level_bar == null:
+		return
+	level_bar.value = _level_progress(xp_after)
+	(value_labels[&"level"] as Label).text = UiText.t(&"ui.menu.level", {"level": XpCurve.level_for_xp(xp_after)})
+	level_up_label.visible = XpCurve.level_for_xp(xp_after) > XpCurve.level_for_xp(xp_before)
+	level_up_label.scale = Vector2.ONE
 
 
 func _build_stats() -> VBoxContainer:
@@ -576,11 +638,30 @@ func _build_stats() -> VBoxContainer:
 	grid.add_child(UiBuild.caption(&"ui.results.crew"))
 	for k: String in cols:
 		grid.add_child(UiBuild.caption(CREW_COLUMN_KEYS[k] as StringName))
+	# Lead round 62: the crew's best value in each column (> 0; ties share it) in brass. Downs and
+	# civilians are not achievements, so only kills and specials are highlighted.
+	crew_best.clear()
+	for k: String in cols:
+		if k != "kills" and k != "specials_killed":
+			continue
+		var best: int = 0
+		for member: Dictionary in crew:
+			best = maxi(best, int(member.get(k, 0)))
+		if best > 0:
+			var slots: Array[int] = []
+			for member: Dictionary in crew:
+				if int(member.get(k, 0)) == best:
+					slots.append(int(member.get("slot", 0)))
+			crew_best[k] = slots
 	for member: Dictionary in crew:
 		var slot: int = int(member.get("slot", 0))
 		grid.add_child(UiBuild.label(StringName(_crew_name(slot, bool(member.get("is_ai", false))))))
 		for k: String in cols:
-			grid.add_child(UiBuild.label(StringName(str(int(member.get(k, 0))))))
+			var cell: Label = UiBuild.label(StringName(str(int(member.get(k, 0)))))
+			if (crew_best.get(k, []) as Array).has(slot):
+				cell.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+				cell.add_theme_font_override(&"font", UiTokens.font_heading())
+			grid.add_child(cell)
 	return v
 
 

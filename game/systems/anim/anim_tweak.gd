@@ -51,6 +51,21 @@ static var _cached: AnimTweak = null
 ## Position-delta speeds above this (m/s) are teleports, not motion.
 @export var teleport_speed_mps: float = 15.0
 
+@export_group("Shield carry")
+## While the body carries a raised BulwarkShield (guard up, not dropped), these clips play the shield set
+## instead (characters.md: shield_idle* blends with shield_walk frame 0; the left hand stays on the grip,
+## so BulwarkShield's Visual follows HandL/Socket). Value = clip family: every library clip named
+## `<family>`, `<family>_*` or `<family><digit>*` is a variant (one per body, by net id). A family the rig
+## lacks keeps the original clip. Runs stay runs (lead ruling: no sped-up walk); death, stun, poses,
+## hit_react and melee are never remapped; shield_bang comes from the brain's anim_hint.
+@export var shield_clips: Dictionary = {
+	&"idle": &"shield_idle", &"idle_alert": &"shield_idle", &"aim_pistol": &"shield_idle",
+	&"aim_rifle": &"shield_idle", &"fire_pistol": &"shield_idle", &"fire_rifle": &"shield_idle",
+	&"turn_l": &"shield_idle", &"turn_r": &"shield_idle", &"investigate_look": &"shield_idle",
+	&"walk": &"shield_walk", &"strafe_l": &"shield_walk", &"strafe_r": &"shield_walk",
+	&"walk_back": &"shield_walk",
+}
+
 @export_group("Blending")
 @export var blend_s: float = 0.2
 @export var oneshot_blend_s: float = 0.08

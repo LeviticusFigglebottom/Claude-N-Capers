@@ -68,6 +68,10 @@ ui.hud.health,Health
 ui.hud.armor,Armor
 ui.hud.downs_left,Downs left: {count}
 ui.hud.bleedout,Bleeding out {seconds}
+ui.hud.downed_title,Downed
+ui.hud.bleedout_big,{seconds}
+ui.hud.being_revived,{name} is reviving you
+ui.hud.downed_hint,Hold on: your crew can revive you
 ui.hud.custody,In custody
 ui.hud.custody_release,Release in {seconds}
 ui.hud.custody_trade,Waiting for a hostage trade
@@ -76,6 +80,8 @@ ui.hud.custody_trade_hint,Trade the marked hostage to free your crew
 ui.hud.ammo,{mag} / {reserve}
 ui.hud.cable_ties,Cable ties: {count}
 ui.hud.body_bags,Body bags: {count}
+ui.hud.cable_ties_name,Cable ties
+ui.hud.body_bags_name,Body bags
 ui.hud.hostages,Hostages: {count}
 ui.hud.carrying,Bag: {loot}
 ui.hud.pager,Pager {seconds}
@@ -2892,3 +2898,20 @@ ui.achievements.category.wealth,Wealth
 ui.achievements.category.notoriety,Notoriety
 ui.achievements.reward_pending,{name} (arrives with the next mask delivery)
 ui.achievements.reward_finish,{name} weapon finish
+ui.loading.caption,Loading the job · {difficulty}
+ui.loading.loading,Loading
+ui.loading.tip_caption,Tip
+ui.loading.tip.1,"Unmasked, you can walk where civilians walk. Mask up only when you're ready to commit."
+ui.loading.tip.2,"Cameras see further than guards. Find the security room and the operator, or stay out of their view."
+ui.loading.tip.3,"Each guard you take down carries a pager. Your crew can answer four before the operator gets suspicious."
+ui.loading.tip.4,"Tie up civilians before they reach a phone. A panicked civilian is a raised alarm."
+ui.loading.tip.5,"Bodies left in the open get found. Bag them and stash them out of sight."
+ui.loading.tip.6,"Heavy bags slow you down. Throw them ahead of you through windows and over railings."
+ui.loading.tip.7,"In a loud heist the police come in waves. Use the lull between assaults to move loot."
+ui.loading.tip.8,"Hostages slow the next assault and can be traded to get a crewmate out of custody."
+ui.loading.tip.9,"Armor regenerates when you stop taking damage. Break line of sight before you push again."
+ui.loading.tip.10,"Headshots deal far more damage. Aim down sights for the accuracy bonus."
+ui.loading.tip.11,"Shout at guards who are reloading or surrounded: some will surrender."
+ui.loading.tip.12,"Drills jam. Keep someone near the drill to restart it."
+ui.loading.tip.13,"A doctor bag restores health and resets your downs. Place it where the crew falls back."
+ui.loading.tip.14,"Concealment decides how fast you are spotted. Lighter armor and smaller guns hide better."

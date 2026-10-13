@@ -21,9 +21,14 @@ const HINT: StringName = &"cue.hud_hint"
 const PAYDAY_TOTAL: StringName = &"cue.payday_total"
 const PAYDAY_TICK: StringName = &"cue.payday_tick"
 const CARD_FLIP: StringName = &"cue.card_flip"
+## Gameplay feedback (lead round 62): hit marker, headshot, kill confirm, low-health heartbeat beat.
+const HIT: StringName = &"cue.hud_hit"
+const HEADSHOT: StringName = &"cue.hud_headshot"
+const KILL: StringName = &"cue.hud_kill"
+const HEARTBEAT: StringName = &"cue.hud_heartbeat"
 ## Every UI cue id (tests check each one is in the registry).
 const ALL: Array[StringName] = [FOCUS, CONFIRM, BACK, PRIMARY, ERROR, TAB, OBJECTIVE_DONE, HINT,
-		PAYDAY_TOTAL, PAYDAY_TICK, CARD_FLIP]
+		PAYDAY_TOTAL, PAYDAY_TICK, CARD_FLIP, HIT, HEADSHOT, KILL, HEARTBEAT]
 
 ## Button kinds (UiBuild): which cue a press plays. &"none" = focus cue only.
 const KIND_CONFIRM: StringName = &"confirm"

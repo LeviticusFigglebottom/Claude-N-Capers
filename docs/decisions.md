@@ -742,3 +742,7 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - **LMG right drift**: a WeaponDef stat `recoil_horizontal_bias_deg` (signed mean of the horizontal kick, per shot; 0 = none),
   data_schemas WeaponStats addition. ENV B adds the field + PD2 values (ENV P has the Lua cites); ENV A consumes it in
   CrewWeapons. Default 0 keeps every other weapon unchanged.
+
+## D-100 — 2026-10-13 — Combat feedback (hit markers, damage direction, low health)
+- ENV B's hit/headshot/kill markers, damage-direction arcs and low-health vignette + heartbeat adopted (env/b-content f32eee36);
+  four UI cues added to audio_cues 1.6. ui_hud 1.9 adds `LocalHudModel.local_net_id` (ENV A) so markers work in normal play.

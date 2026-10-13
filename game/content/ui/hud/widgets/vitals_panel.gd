@@ -60,6 +60,6 @@ func refresh() -> void:
 	state_label.text = ""
 	if st == Enums.CrewState.CUSTODY:
 		state_label.text = UiText.t(&"ui.hud.custody")
-	elif st != Enums.CrewState.NORMAL and bleed >= 0.0:
+	elif st != Enums.CrewState.NORMAL and bleed >= 0.0 and not DownedOverlay.is_helpless(st):  # downed: the big timer
 		state_label.text = UiText.t(&"ui.hud.bleedout", {"seconds": ceili(bleed)})
 	state_label.visible = state_label.text != ""

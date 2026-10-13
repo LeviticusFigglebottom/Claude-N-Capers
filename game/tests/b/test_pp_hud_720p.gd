@@ -95,7 +95,7 @@ func _loud(scale: float) -> void:
 	await wait_frames(3)
 	var px_per_unit: float = 720.0 / hud.get_viewport().get_visible_rect().size.y
 	var vis: Rect2 = hud.get_viewport().get_visible_rect().grow(1.0)
-	var reads: Dictionary = {"ammo": hud.ammo.ammo_label, "bleedout": hud.vitals.state_label,
+	var reads: Dictionary = {"ammo": hud.ammo.ammo_label, "bleedout": hud.downed.timer_label,
 		"bag": hud.status.bag_label, "hostages": hud.status.hostages_label}
 	var rects: Dictionary = {}
 	for k: String in reads:
@@ -107,8 +107,8 @@ func _loud(scale: float) -> void:
 		assert_true(vis.encloses(r), "x%.1f %s on screen %s" % [scale, k, r])
 		var px: float = float(l.get_theme_font_size(&"font_size")) * xf.get_scale().y * px_per_unit
 		assert_true(px >= 14.0, "x%.1f %s %.1f px at 720p" % [scale, k, px])
-	assert_true(hud.vitals.state_label.text.contains("24") or hud.vitals.state_label.text.contains("23"),
-			"bleedout seconds shown: " + hud.vitals.state_label.text)
+	assert_true(hud.downed.timer_label.text.contains("24") or hud.downed.timer_label.text.contains("23"),
+			"bleedout seconds shown: " + hud.downed.timer_label.text)
 	assert_true(hud.ammo.ammo_label.text.contains("4") and hud.ammo.ammo_label.text.contains("87"), hud.ammo.ammo_label.text)
 	var keys: Array = rects.keys()
 	for i: int in range(keys.size()):

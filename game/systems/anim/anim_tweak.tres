@@ -45,6 +45,21 @@ npc_weapon_anim_by_role = {
 }
 aim_hold_s = 1.5
 teleport_speed_mps = 15.0
+shield_clips = {
+&"aim_pistol": &"shield_idle",
+&"aim_rifle": &"shield_idle",
+&"fire_pistol": &"shield_idle",
+&"fire_rifle": &"shield_idle",
+&"idle": &"shield_idle",
+&"idle_alert": &"shield_idle",
+&"investigate_look": &"shield_idle",
+&"strafe_l": &"shield_walk",
+&"strafe_r": &"shield_walk",
+&"turn_l": &"shield_idle",
+&"turn_r": &"shield_idle",
+&"walk": &"shield_walk",
+&"walk_back": &"shield_walk"
+}
 blend_s = 0.2
 oneshot_blend_s = 0.08
 death_blend_s = 0.1

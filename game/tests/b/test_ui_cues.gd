@@ -12,7 +12,7 @@ const SLOT: int = 0
 ## Cues synthesised by tools/audiogen/ui/build_ui.py (cue.payday_tick is ENV C's).
 const NEW_CUES: Array[StringName] = [&"cue.ui_focus", &"cue.ui_confirm", &"cue.ui_back", &"cue.ui_primary",
 		&"cue.ui_error", &"cue.ui_tab", &"cue.hud_objective_done", &"cue.hud_hint", &"cue.payday_total",
-		&"cue.card_flip"]
+		&"cue.card_flip", &"cue.hud_hit", &"cue.hud_headshot", &"cue.hud_kill", &"cue.hud_heartbeat"]
 
 
 func before_all() -> void:

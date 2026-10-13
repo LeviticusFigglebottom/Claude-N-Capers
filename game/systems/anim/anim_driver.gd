@@ -12,6 +12,11 @@
 ##   walking speed; speed_scale = v / clip speed) > aim_* >
 ##   the brain's `anim_hint` idles (phone_call, smoke, radio_call, investigate_look...) > idle / idle_alert /
 ##   crouch_idle. Clips crossfade (AnimTweak.blend_s).
+## Shield carry: while the NPC carries a raised BulwarkShield (guard up, not dropped), the clip picked
+## below the poses / actions is remapped through AnimTweak.shield_clips (idle / aim / fire / turn ->
+## shield_idle*, walk family -> shield_walk*), so the left hand stays on the grip and the shield Visual
+## follows HandL/Socket. Guard down (stagger: hit_react), dropped, dead or a rig without the clip: the normal
+## clips play.
 ## Turn in place: a standing body whose yaw moved more than AnimTweak.turn_threshold_deg plays turn_l/r while
 ## the rig root yaws toward the body at 90 deg / 0.8 s (the rig is counter-rotated; the body itself is untouched).
 ## Third-person weapon: WeaponVisual (ENV B, by class name) of WeaponDef.model at `HandR/Socket` (crew: the
@@ -116,6 +121,9 @@ var _death_clip: StringName = &""
 var _last_hint: StringName = &""
 var _interact_kind: StringName = &""
 var _interact_height: float = 1.0
+## Shield clip family -> its variants in the library (Array[StringName], sorted); variant -> family.
+var _family_variants: Dictionary = {}
+var _variant_family: Dictionary = {}
 
 
 ## The driver of `body` (null when it has none).
@@ -203,6 +211,8 @@ func bind() -> bool:
 	_visual_yaw = _body.global_rotation.y if _body.is_inside_tree() else _body.rotation.y
 	_prev_body_yaw = _visual_yaw
 	_last_pos = Vector3.INF
+	_family_variants.clear()
+	_variant_family.clear()
 	if _crew != null and _crew.weapons != null and not _crew.weapons.equipped_changed.is_connected(_on_equipped):
 		_crew.weapons.equipped_changed.connect(_on_equipped)
 		_crew.weapons.reload_started.connect(_on_reload_started)
@@ -265,7 +275,53 @@ func choose_clip() -> StringName:
 	var hint_clip: StringName = HINT_CLIPS.get(_hint(), &"")
 	if POSE_CLIPS.has(hint_clip) or ACTION_CLIPS.has(hint_clip):
 		return hint_clip
-	return _active_clip(hint_clip)
+	return _shield_clip(_active_clip(hint_clip))
+
+
+## The BulwarkShield this NPC carries (the brain's `shield`, else a `Shield` child), or null.
+func carried_shield() -> BulwarkShield:
+	if _npc == null:
+		return null
+	var b: Node = _body.get_node_or_null(^"Brain")
+	var s: BulwarkShield = b.get(&"shield") as BulwarkShield if b != null else null
+	if s == null:
+		s = _body.get_node_or_null(^"Shield") as BulwarkShield
+	return s if s != null and is_instance_valid(s) and s.carrier == _npc and s.get_parent() == _body else null
+
+
+## True while the NPC holds its shield up (carried, guard up, not dropped): the shield clip set plays.
+func shield_up() -> bool:
+	var s: BulwarkShield = carried_shield()
+	return s != null and not s.dropped and not s.guard_down
+
+
+## `c` remapped to its shield clip (AnimTweak.shield_clips) while the shield is up and the rig has that
+## family; otherwise `c`.
+func _shield_clip(c: StringName) -> StringName:
+	var fam: StringName = AnimTweak.data().shield_clips.get(c, &"")
+	if fam == &"" or not shield_up():
+		return c
+	var vs: Array = _variants_of(fam)
+	return c if vs.is_empty() else StringName(vs[absi(_net_id()) % vs.size()])
+
+
+## Library clips of family `fam` (`fam`, `fam_*`, `fam<digit>*`), sorted; cached per bind.
+func _variants_of(fam: StringName) -> Array:
+	if _family_variants.has(fam):
+		return _family_variants[fam] as Array
+	var out: Array[StringName] = []
+	var lib: AnimationLibrary = player.get_animation_library(LIBRARY) if player.has_animation_library(LIBRARY) \
+		else null
+	if lib != null:
+		var f: String = String(fam)
+		for n: StringName in lib.get_animation_list():
+			var rest: String = String(n).substr(f.length()) if String(n).begins_with(f) else "-"
+			if rest == "" or rest.begins_with("_") or (rest != "-" and rest[0].is_valid_int()):
+				out.append(n)
+				_variant_family[n] = fam
+		out.sort()
+	_family_variants[fam] = out
+	return out
 
 
 ## Below the poses: one-shot > interaction > locomotion > aim > hint idle > idle.
@@ -483,9 +539,12 @@ func _pick_death_clip(tw: AnimTweak) -> StringName:
 func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:
 	if p_clip == _oneshot and _oneshot_left > 0.0:
 		return _oneshot_speed
-	if not tw.clip_speeds.has(p_clip):
+	var key: StringName = p_clip
+	if not tw.clip_speeds.has(key):
+		key = StringName(_variant_family.get(p_clip, &""))
+	if not tw.clip_speeds.has(key):
 		return 1.0
-	var s: float = horizontal_speed() / maxf(float(tw.clip_speeds[p_clip]) * _motion_scale(), 0.01)
+	var s: float = horizontal_speed() / maxf(float(tw.clip_speeds[key]) * _motion_scale(), 0.01)
 	return clampf(s, tw.speed_scale_min, tw.speed_scale_max)
 
 
@@ -515,6 +574,10 @@ func _update_velocity(delta: float, tw: AnimTweak) -> void:
 
 func _update_turn(delta: float, tw: AnimTweak) -> void:
 	var body_yaw: float = _body.global_rotation.y if _body.is_inside_tree() else _body.rotation.y
+	if clip == &"":
+		# First frame: the spawner places the body after add_child (bind() saw yaw 0): no spawn spin.
+		_visual_yaw = body_yaw
+		_prev_body_yaw = body_yaw
 	var standing: bool = horizontal_speed() <= tw.move_threshold_mps
 	var held: bool = (_npc != null and not _npc.alive) or _interact_kind != &""
 	var now: StringName = choose_clip() if standing and not held else &""
