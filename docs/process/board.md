@@ -12,6 +12,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-13 19:40: **round 39 ON ORIGIN**: env/b-content 29112dd9 (loadout slot cards + picker grid + stat bars, main-menu mask hero, payday count-up, heister names fix). Targeted b files green. Routed: P, AR viewmodel canted/black in B's h03 capture (top priority).
 - 2026-10-13 19:05: **round 38 ON ORIGIN**: env/b-content a7be953b (frameless HUD, heister names, starter AR weapon.corsair_ar, main-menu mask hero), env/p-play c1b3c2ad (D-091 sensitivity, windowed kerb walk PASS). Targeted b files, p 62/0, P1 slice 10/0 green. D-092 parallel lanes dispatched to all envs.
 - 2026-10-13 18:35: **round 37 ON ORIGIN**: env/b-content e8f0537c (MouseCapture migration done, KR-5/KR-6 fixed, skill tabs, objective flash, Reduce Motion), env/p-play a9f18319 (PO-1 verified via real flow: capture + G mask-up work, cause was missing UI hints; PO-3 probe: 0 snags on ~150k edges). Targeted tests green.
 - 2026-10-13 18:40: **round 36 ON ORIGIN** 3533f4d7: env/p-play 6596da59 (PO-2 MouseCapture), env/b-content ce7abdc0 (PO-4 "Case File" first pass). p 60/0, b 809 with known red routed to B:
