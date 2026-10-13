@@ -2,6 +2,7 @@
 extends Node
 
 const MIN_RATIO: float = 4.5
+const HUD_PATH: String = "res://content/ui/hud/hud.tscn"
 const SIZE: Vector2i = Vector2i(1280, 720)
 const BACKDROPS: Dictionary = {"dark": Color(0.05, 0.05, 0.06), "mid": Color(0.45, 0.45, 0.45),
 		"bright": Color(0.92, 0.9, 0.85), "white": Color(1, 1, 1)}
@@ -96,7 +97,7 @@ func _hud() -> void:
 	_vp.add_child(back)
 	var model: MockHudModel = MockHudModel.new()
 	_vp.add_child(model)
-	var hud: Hud = (load("res://content/ui/hud/hud.tscn") as PackedScene).instantiate() as Hud
+	var hud: Hud = (load(HUD_PATH) as PackedScene).instantiate() as Hud
 	hud.auto_find_model = false
 	_vp.add_child(hud)
 	await get_tree().process_frame
@@ -141,7 +142,7 @@ func _loud() -> void:
 	_vp.add_child(back)
 	var model: MockHudModel = MockHudModel.new()
 	_vp.add_child(model)
-	var hud: Hud = (load("res://content/ui/hud/hud.tscn") as PackedScene).instantiate() as Hud
+	var hud: Hud = (load(HUD_PATH) as PackedScene).instantiate() as Hud
 	hud.auto_find_model = false
 	_vp.add_child(hud)
 	await get_tree().process_frame
