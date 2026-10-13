@@ -26,6 +26,12 @@ signal masks_requested()
 const WORKSHOP_SCENE_PATH: String = "res://content/ui/workshop/workshop_screen.tscn"
 
 ## [display key, strings key] in panel order (StatCalculator.display keys).
+## PO-4 stat bar full scale per stat (display units; UI scale only, not balance). Missing = 100.
+const STAT_BAR_MAX: Dictionary = {"damage": 200.0, "mag": 100.0, "total_ammo": 400.0, "rof": 1200.0, "reload": 6.0,
+	"concealment": 30.0, "threat": 50.0}
+## PO-4 Detection Risk colour bands (%): green up to DR_LOW, amber up to DR_HIGH, red above.
+const DR_LOW: int = 20
+const DR_HIGH: int = 45
 const STAT_ROWS: Array[Array] = [
 	["damage", &"ui.stat.damage"], ["accuracy", &"ui.stat.accuracy"], ["stability", &"ui.stat.stability"],
 	["concealment", &"ui.stat.concealment"], ["threat", &"ui.stat.threat"], ["mag", &"ui.stat.magazine"],
@@ -47,21 +53,23 @@ const STAT_ROWS: Array[Array] = [
 var profile: PlayerProfile
 ## S1.3 civilian-start notice (visible only for a civilian-start heist).
 var civilian_notice: Label
-var weapon_option: OptionButton
-var melee_option: OptionButton
-var armor_option: OptionButton
-var deployable_option: OptionButton
-var throwable_option: OptionButton
-var mask_option: OptionButton
+var weapon_option: ItemSlot
+var melee_option: ItemSlot
+var armor_option: ItemSlot
+var deployable_option: ItemSlot
+var throwable_option: ItemSlot
+var mask_option: ItemSlot
 ## D-073 heister picker: metadata = heister id (&"" = any free heister); accent strip + portrait beside it.
-var heister_option: OptionButton
+var heister_option: ItemSlot
 var heister_swatch: ColorRect
 var heister_portrait: TextureRect
 ## Heisters other crew members hold (co-op); shown taken and disabled in the picker.
 var taken_heisters: Array[StringName] = []
-## ModType (int) -> OptionButton for the current weapon.
+## ModType (int) -> ItemSlot for the current weapon.
 var mod_options: Dictionary = {}
 var concealment_label: Label
+## PO-4: the equipped primary (read-only here; equip / buy in the Workshop).
+var primary_slot: ItemSlot
 var detection_risk_label: Label
 var detection_risk: int = 0
 var concealment_total: int = 0
@@ -77,7 +85,10 @@ var skills_summary_label: Label
 var perk_summary_label: Label
 var _stat_value_labels: Dictionary = {}
 var _stat_delta_labels: Dictionary = {}
-var _mods_box: VBoxContainer
+var _stat_bars: Dictionary = {}
+var _mods_box: GridContainer
+## The picker item being previewed ({slot, index}; {} = none): current_loadout() swaps it in.
+var _preview: Dictionary = {}
 var _tweak: HudTweak
 var _content: Control
 
@@ -106,23 +117,32 @@ func build_ui() -> void:
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.follow_focus = true
 	cols.add_child(scroll)
-	var left: VBoxContainer = UiBuild.vbox(10)
+	var left: VBoxContainer = UiBuild.vbox(6)
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(left)
-	weapon_option = _row(left, &"ui.loadout.secondary")
-	_mods_box = UiBuild.vbox(10)
-	left.add_child(UiBuild.label(&"ui.loadout.mods", UiBuild.DIM))
-	left.add_child(_mods_box)
-	melee_option = _row(left, &"ui.loadout.melee")
-	armor_option = _row(left, &"ui.loadout.armor")
-	deployable_option = _row(left, &"ui.loadout.deployable")
-	throwable_option = _row(left, &"ui.loadout.throwable")
-	mask_option = _row(left, &"ui.loadout.mask")
+	# PO-4 (lead note 3): slot cards in two columns per section; each opens an item grid (ItemSlot /
+	# ItemPicker). The primary card opens the Workshop, where primaries are bought and equipped.
+	left.add_child(_section(&"ui.loadout.section.weapons"))
+	var weapons: GridContainer = _card_grid(left)
+	primary_slot = _row(weapons, &"ui.loadout.primary", &"armory")
+	primary_slot.pressed.disconnect(primary_slot.open_picker)
+	primary_slot.pressed.connect(open_workshop)
+	weapon_option = _row(weapons, &"ui.loadout.secondary", &"pistol")
+	_mods_box = _card_grid(left, 3)
+	left.add_child(_section(&"ui.loadout.section.gear"))
+	var gear: GridContainer = _card_grid(left)
+	melee_option = _row(gear, &"ui.loadout.melee", &"knife")
+	armor_option = _row(gear, &"ui.loadout.armor", &"vest")
+	deployable_option = _row(gear, &"ui.loadout.deployable", &"bag")
+	throwable_option = _row(gear, &"ui.loadout.throwable", &"grenade")
+	left.add_child(_section(&"ui.loadout.section.crew"))
+	var crew: GridContainer = _card_grid(left)
+	mask_option = _row(crew, &"ui.loadout.mask", &"masks")
 	masks_button = UiBuild.button(&"ui.masks.open")
-	masks_button.custom_minimum_size = Vector2(180, 0)
+	masks_button.custom_minimum_size = Vector2(150, 0)
 	masks_button.pressed.connect(_on_progression.bind(masks_requested))
 	mask_option.get_parent().add_child(masks_button)
-	heister_option = _row(left, &"ui.loadout.heister")
+	heister_option = _row(crew, &"ui.loadout.heister", &"crew")
 	heister_swatch = ColorRect.new()
 	heister_swatch.custom_minimum_size = Vector2(8, 0)
 	heister_swatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -136,7 +156,7 @@ func build_ui() -> void:
 	cols.add_child(_build_stats_panel())
 	var nav: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(nav)
-	back_button = UiBuild.button(&"ui.menu.back")
+	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
 	launch_button = UiBuild.primary(UiBuild.button(&"ui.heist_select.start"))
 	skills_button = UiBuild.button(&"ui.loadout.skills")
 	perks_button = UiBuild.button(&"ui.loadout.perk_deck")
@@ -152,6 +172,9 @@ func build_ui() -> void:
 	nav.add_child(skills_button)
 	nav.add_child(perks_button)
 	nav.add_child(workshop_button)
+	var push: Control = Control.new()
+	push.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	nav.add_child(push)
 	nav.add_child(launch_button)
 	launch_button.visible = not hub_mode
 	for b: Button in [skills_button, perks_button, workshop_button, masks_button]:
@@ -166,11 +189,16 @@ func _build_stats_panel() -> PanelContainer:
 	var v: VBoxContainer = UiBuild.vbox(8)
 	v.custom_minimum_size = Vector2(520, 0)
 	var grid: GridContainer = GridContainer.new()
-	grid.columns = 3
-	grid.add_theme_constant_override(&"h_separation", 24)
+	grid.columns = 4
+	grid.add_theme_constant_override(&"h_separation", 16)
+	grid.add_theme_constant_override(&"v_separation", 6)
 	v.add_child(grid)
 	for row: Array in STAT_ROWS:
-		grid.add_child(UiBuild.label(StringName(row[1])))
+		grid.add_child(UiBuild.caption(StringName(row[1])))
+		var bar: ProgressBar = UiBuild.bar(UiTokens.PAPER_DIM, Vector2(150, 6))
+		bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		grid.add_child(bar)
+		_stat_bars[row[0]] = bar
 		var val: Label = UiBuild.label()
 		val.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		var dl: Label = UiBuild.label()
@@ -179,13 +207,12 @@ func _build_stats_panel() -> PanelContainer:
 		grid.add_child(dl)
 		_stat_value_labels[row[0]] = val
 		_stat_delta_labels[row[0]] = dl
-	concealment_label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	v.add_child(HSeparator.new())
+	v.add_child(UiBuild.caption(&"ui.stat.detection_risk"))
+	detection_risk_label = UiBuild.label(&"", UiBuild.DISPLAY)  # PO-4: the stealth number is the hero
+	v.add_child(detection_risk_label)
+	concealment_label = UiBuild.label(&"", UiBuild.DIM)
 	v.add_child(concealment_label)
-	var dr_row: HBoxContainer = UiBuild.hbox(12)
-	dr_row.add_child(UiBuild.label(&"ui.stat.detection_risk", UiBuild.SUBHEADER))
-	detection_risk_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	dr_row.add_child(detection_risk_label)
-	v.add_child(dr_row)
 	skills_summary_label = UiBuild.label(&"", UiBuild.DIM)
 	perk_summary_label = UiBuild.label(&"", UiBuild.DIM)
 	v.add_child(skills_summary_label)
@@ -193,45 +220,86 @@ func _build_stats_panel() -> PanelContainer:
 	return UiBuild.panel(v)
 
 
-func _row(parent: Container, key: StringName) -> OptionButton:
-	var h: HBoxContainer = UiBuild.hbox(16)
-	var l: Label = UiBuild.label(key)
-	l.custom_minimum_size = Vector2(220, 0)
-	h.add_child(l)
-	var o: OptionButton = UiBuild.option_button()
+## A section head: caption over a hairline.
+func _section(key: StringName) -> VBoxContainer:
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+	var gap: Control = Control.new()
+	gap.custom_minimum_size = Vector2(0, UiTokens.S1)
+	v.add_child(gap)
+	var c: Label = UiBuild.caption(key)
+	c.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+	v.add_child(c)
+	v.add_child(HSeparator.new())
+	return v
+
+
+func _row(parent: Container, key: StringName, glyph: StringName = &"armory") -> ItemSlot:
+	var cell: HBoxContainer = UiBuild.hbox(UiTokens.S2)
+	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var o: ItemSlot = ItemSlot.new()
+	o.caption_key = key
+	o.glyph = glyph
 	o.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	h.add_child(o)
-	parent.add_child(h)
+	o.item_previewed.connect(_on_previewed.bind(o))
+	cell.add_child(o)
+	parent.add_child(cell)
 	return o
 
 
+func _card_grid(parent: Container, columns: int = 2) -> GridContainer:
+	var g: GridContainer = GridContainer.new()
+	g.columns = columns
+	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	g.add_theme_constant_override(&"h_separation", UiTokens.S3)
+	g.add_theme_constant_override(&"v_separation", UiTokens.S2)
+	parent.add_child(g)
+	return g
+
+
+## PO-4: the picker's focused item previews its stat changes against what is equipped (weapon and mod
+## slots; other slots show the concealment / Detection Risk change). -1 = picker closed, no preview.
+func _on_previewed(index: int, o: ItemSlot) -> void:
+	if index < 0 or o.is_item_disabled(index):
+		_preview = {}
+	else:
+		_preview = {"slot": o, "index": index}
+	refresh()
+
+
 ## Builds the current Loadout input from the widgets (unresolved; resolve with LoadoutResolver).
-func current_loadout() -> Loadout:
+func current_loadout(with_preview: bool = false) -> Loadout:
 	var l: Loadout = profile.loadout.duplicate(true) as Loadout
-	l.secondary = _selected_id(weapon_option)
+	var pick: Callable = _pick_id.bind(with_preview)
+	l.secondary = pick.call(weapon_option)
 	var mods: Array[StringName] = []
 	var types: Array = mod_options.keys()
 	types.sort()
 	for t: Variant in types:
-		var id: StringName = _selected_id(mod_options[t] as OptionButton)
+		var id: StringName = pick.call(mod_options[t] as ItemSlot)
 		if id != &"":
 			mods.append(id)
 	l.secondary_mods = mods
-	l.melee = _selected_id(melee_option)
-	l.armor = _selected_id(armor_option)
-	l.deployable = _selected_id(deployable_option)
-	l.throwable = _selected_id(throwable_option)
-	l.mask = _selected_id(mask_option)
-	l.heister = _selected_id(heister_option)
+	l.melee = pick.call(melee_option)
+	l.armor = pick.call(armor_option)
+	l.deployable = pick.call(deployable_option)
+	l.throwable = pick.call(throwable_option)
+	l.mask = pick.call(mask_option)
+	l.heister = pick.call(heister_option)
 	l.mask_descriptor = LoadoutResolver.mask_descriptor_for(l, profile)  # D-043 QA-25: travels with launch
 	return l
+
+
+func _pick_id(o: ItemSlot, with_preview: bool) -> StringName:
+	if with_preview and not _preview.is_empty() and _preview["slot"] == o:
+		return StringName(o.get_item_metadata(int(_preview["index"])))
+	return _selected_id(o)
 
 
 ## Select a mod (or &"" = stock) in a slot, as if picked in the UI. Returns false if unavailable.
 func select_mod(mod_type: int, mod_id: StringName) -> bool:
 	if not mod_options.has(mod_type):
 		return false
-	var ok: bool = _select_id(mod_options[mod_type] as OptionButton, mod_id)
+	var ok: bool = _select_id(mod_options[mod_type] as ItemSlot, mod_id)
 	if ok:
 		refresh()
 	return ok
@@ -255,7 +323,7 @@ func set_taken_heisters(ids: Array[StringName]) -> void:
 
 
 ## Ids the given picker lists, in order (&"" = none / any first): throwable_option, heister_option, ...
-func option_ids(o: OptionButton) -> Array[StringName]:
+func option_ids(o: ItemSlot) -> Array[StringName]:
 	var out: Array[StringName] = []
 	for i: int in range(o.item_count):
 		out.append(StringName(o.get_item_metadata(i)))
@@ -278,10 +346,22 @@ func refresh() -> void:
 	concealment_total = resolved.concealment_total
 	detection_risk = resolved.detection_risk
 	concealment_label.text = UiText.t(&"ui.loadout.concealment_total", {"value": concealment_total})
+	var pid: StringName = profile.loadout.primary
+	primary_slot.clear()
+	primary_slot.add_item(UiText.t(UiText.item_key(pid)) if pid != &"" else UiText.t(&"ui.loadout.primary_none"))
 	detection_risk_label.text = UiText.t(&"ui.common.percent", {"value": detection_risk})
+	detection_risk_label.add_theme_color_override(&"font_color", UiTokens.OK if detection_risk <= DR_LOW
+			else (UiTokens.WARN if detection_risk <= DR_HIGH else UiTokens.ALERT))
 	_refresh_progression_summary(l)
 	var stock: WeaponStats = LoadoutResolver.resolve_weapon(l.secondary, [] as Array[StringName])
 	var modded: WeaponStats = resolved.resolved_secondary
+	if not _preview.is_empty():
+		# PO-4: picker preview: the focused item's numbers, diffs against what is equipped now.
+		var pv: Loadout = LoadoutResolver.resolve(current_loadout(true))
+		stock = modded
+		modded = pv.resolved_secondary
+		detection_risk_label.text = UiText.t(&"ui.common.percent", {"value": pv.detection_risk})
+		concealment_label.text = UiText.t(&"ui.loadout.concealment_total", {"value": pv.concealment_total})
 	if stock == null or modded == null:
 		for k: Variant in _stat_value_labels:
 			(_stat_value_labels[k] as Label).text = "-"
@@ -291,6 +371,8 @@ func refresh() -> void:
 	var deltas: Dictionary = StatCalculator.delta(stock, modded)
 	for k: Variant in _stat_value_labels:
 		(_stat_value_labels[k] as Label).text = _fmt(shown.get(k, 0))
+		if _stat_bars.has(k):
+			(_stat_bars[k] as ProgressBar).value = clampf(float(shown.get(k, 0)) / _bar_max(String(k)), 0.0, 1.0)
 		var dl: Label = _stat_delta_labels[k] as Label
 		dl.text = ""
 		if deltas.has(k) and bool((deltas[k] as Dictionary)["changed"]):
@@ -338,7 +420,7 @@ func _fill_options() -> void:
 	_fill_from(throwable_option, ThrowableGate.pickable(), profile.loadout.throwable, true)
 	_fill_masks(profile.loadout.mask)
 	_fill_heisters(profile.loadout.heister)
-	for o: OptionButton in [melee_option, armor_option, deployable_option, throwable_option, mask_option]:
+	for o: ItemSlot in [melee_option, armor_option, deployable_option, throwable_option, mask_option]:
 		o.item_selected.connect(_on_item_changed)
 	heister_option.item_selected.connect(_on_heister_changed)
 
@@ -396,7 +478,7 @@ func _fill_masks(selected: StringName) -> void:
 		mask_option.select(0)
 
 
-func _fill_from(o: OptionButton, defs: Array, selected: StringName, allow_none: bool) -> void:
+func _fill_from(o: ItemSlot, defs: Array, selected: StringName, allow_none: bool) -> void:
 	o.clear()
 	if allow_none:
 		_add_item(o, UiText.t(&"ui.loadout.none"), &"")
@@ -420,7 +502,7 @@ func _rebuild_mod_rows() -> void:
 	for t: Variant in types:
 		var mod_type: int = int(t)
 		var stock_id: StringName = StringName(w.default_mods.get(mod_type, &""))
-		var o: OptionButton = _row(_mods_box, _mod_type_key(mod_type))
+		var o: ItemSlot = _row(_mods_box, _mod_type_key(mod_type), &"range")
 		_add_item(o, UiText.t(&"ui.loadout.stock" if stock_id != &"" else &"ui.loadout.none"), &"")
 		for mid: Variant in (w.mod_slots[t] as Array):
 			var id: StringName = StringName(mid)
@@ -447,7 +529,18 @@ func _rebuild_focus() -> void:
 			focus_chain.append(c)
 	if is_inside_tree():
 		UiNav.chain_vertical(focus_chain)
-		UiNav.chain_horizontal([mask_option, masks_button] as Array[Control], false)
+		# PO-4 card grid: left / right pair the two cards of a row (the chain stays the down / up order).
+		UiNav.chain_horizontal([primary_slot, weapon_option] as Array[Control], false)
+		primary_slot.focus_neighbor_bottom = primary_slot.get_path_to(weapon_option)
+		UiNav.chain_horizontal([melee_option, armor_option] as Array[Control], false)
+		UiNav.chain_horizontal([deployable_option, throwable_option] as Array[Control], false)
+		UiNav.chain_horizontal([mask_option, masks_button, heister_option] as Array[Control], false)
+		var mods: Array[Control] = []
+		var mod_types: Array = mod_options.keys()
+		mod_types.sort()
+		for t: Variant in mod_types:
+			mods.append(mod_options[t] as Control)
+		UiNav.chain_horizontal(mods, false)
 		var nav: Array[Control] = [back_button]
 		if not compact_mode:
 			nav.append_array([skills_button, perks_button, workshop_button] as Array[Control])
@@ -540,18 +633,22 @@ static func _swatch_icon(c: Color) -> ImageTexture:
 	return ImageTexture.create_from_image(img)
 
 
-static func _add_item(o: OptionButton, text: String, id: StringName) -> void:
+static func _bar_max(stat: String) -> float:
+	return float(STAT_BAR_MAX.get(stat, 100.0))
+
+
+static func _add_item(o: ItemSlot, text: String, id: StringName) -> void:
 	o.add_item(text)
 	o.set_item_metadata(o.item_count - 1, id)
 
 
-static func _selected_id(o: OptionButton) -> StringName:
+static func _selected_id(o: ItemSlot) -> StringName:
 	if o == null or o.selected < 0:
 		return &""
 	return StringName(o.get_item_metadata(o.selected))
 
 
-static func _select_id(o: OptionButton, id: StringName) -> bool:
+static func _select_id(o: ItemSlot, id: StringName) -> bool:
 	for i: int in range(o.item_count):
 		if StringName(o.get_item_metadata(i)) == id:
 			o.select(i)

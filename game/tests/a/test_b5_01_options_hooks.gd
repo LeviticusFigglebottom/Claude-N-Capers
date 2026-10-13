@@ -83,6 +83,7 @@ func test_camera_fov_ads_zoom_and_near_plane() -> void:
 	_gs.set_value(GameSettings.VIDEO, &"fov", 70.0)
 	await wait_frames(2)
 	assert_near(cam.fov, 70.0, 0.01, "a changed setting applies at once")
+	c.set_masked()  # S1.1 / P1-03: no ADS while casing (unmasked); skip_casing does not mask
 	c.weapons.stats(c.weapons.equipped_slot).magnification = 2.0
 	var aim: CrewIntent = CrewIntent.new()
 	aim.aim = true

@@ -5,6 +5,26 @@ class_name UiNav
 extends RefCounted
 
 
+## PQ-B-13: gamepad A / B for menus. project.godot's ui_accept / ui_cancel carry no joypad button
+## (only Enter / Space / Escape), so A and B did nothing in every menu. Adds JOY_BUTTON_A to ui_accept
+## and JOY_BUTTON_B to ui_cancel at runtime when the action has no joypad button yet (idempotent).
+## The lead can move this into project.godot; then this is a no-op.
+static func ensure_pad_ui_actions() -> void:
+	for pair: Array in [[&"ui_accept", JOY_BUTTON_A], [&"ui_cancel", JOY_BUTTON_B]]:
+		var action: StringName = pair[0] as StringName
+		if not InputMap.has_action(action):
+			continue
+		var has_pad: bool = false
+		for ev: InputEvent in InputMap.action_get_events(action):
+			if ev is InputEventJoypadButton:
+				has_pad = true
+		if not has_pad:
+			var jb: InputEventJoypadButton = InputEventJoypadButton.new()
+			jb.device = -1
+			jb.button_index = pair[1] as JoyButton
+			InputMap.action_add_event(action, jb)
+
+
 ## Link controls top-to-bottom (wraps). Disabled buttons stay in the chain so the order is stable;
 ## Godot skips controls whose focus_mode is NONE.
 static func chain_vertical(controls: Array[Control], wrap: bool = true) -> void:

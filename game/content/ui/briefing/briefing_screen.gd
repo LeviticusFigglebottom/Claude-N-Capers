@@ -76,13 +76,15 @@ func build_ui() -> void:
 	_build_intel_column(body)
 	_build_side_column(body)
 	var nav: HBoxContainer = UiBuild.hbox(16)
-	nav.alignment = BoxContainer.ALIGNMENT_END
 	root.add_child(nav)
-	back_button = UiBuild.button(&"ui.menu.back")
+	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
 	continue_button = UiBuild.primary(UiBuild.button(&"ui.briefing.continue"))
 	back_button.pressed.connect(_on_back)
 	continue_button.pressed.connect(_on_continue)
 	nav.add_child(back_button)
+	var push: Control = Control.new()
+	push.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	nav.add_child(push)
 	nav.add_child(continue_button)
 	focus_chain.append(continue_button)
 	focus_chain.append(play_button)
@@ -99,7 +101,7 @@ func _build_header(root: VBoxContainer) -> void:
 	var left: VBoxContainer = UiBuild.vbox(4)
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(left)
-	left.add_child(UiBuild.label(&"ui.briefing.title", UiBuild.DIM))
+	left.add_child(UiBuild.caption(&"ui.briefing.title"))
 	heist_label = UiBuild.label(&"", UiBuild.HEADER)
 	left.add_child(heist_label)
 	placeholder_label = UiBuild.label(&"ui.briefing.placeholder", UiBuild.DIM)
@@ -149,26 +151,33 @@ func _build_intel_column(body: HBoxContainer) -> void:
 	var col: VBoxContainer = UiBuild.vbox(12)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(col)
-	col.add_child(UiBuild.label(&"ui.briefing.intel", UiBuild.SUBHEADER))
+	col.add_child(_head(&"ui.briefing.intel"))
 	briefing_label = UiBuild.label()
 	briefing_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	col.add_child(briefing_label)
 	col.add_child(_spacer(8))
-	col.add_child(UiBuild.label(&"ui.briefing.objectives", UiBuild.SUBHEADER))
-	objectives_box = UiBuild.vbox(6)
+	col.add_child(_head(&"ui.briefing.objectives"))
+	objectives_box = UiBuild.vbox(0)  # the timeline rail runs row to row
 	col.add_child(objectives_box)
 	col.add_child(_spacer(8))
-	col.add_child(UiBuild.label(&"ui.briefing.escape", UiBuild.SUBHEADER))
+	col.add_child(_head(&"ui.briefing.escape"))
 	escape_label = UiBuild.label()
 	escape_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	col.add_child(escape_label)
+
+
+## PO-4 section head: a brass caption (style.md §4).
+func _head(key: StringName) -> Label:
+	var l: Label = UiBuild.caption(key)
+	l.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+	return l
 
 
 func _build_side_column(body: HBoxContainer) -> void:
 	var col: VBoxContainer = UiBuild.vbox(10)
 	col.custom_minimum_size = Vector2(data.right_column_width, 0)
 	body.add_child(col)
-	col.add_child(UiBuild.label(&"ui.briefing.blueprint", UiBuild.SUBHEADER))
+	col.add_child(_head(&"ui.briefing.blueprint"))
 	blueprint = BlueprintPlaceholder.new()
 	blueprint.custom_minimum_size = Vector2(0, data.blueprint_min_height)
 	blueprint.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -176,7 +185,7 @@ func _build_side_column(body: HBoxContainer) -> void:
 	blueprint.grid_color = data.blueprint_grid
 	blueprint.line_color = data.blueprint_line
 	col.add_child(blueprint)
-	col.add_child(UiBuild.label(&"ui.briefing.loot", UiBuild.SUBHEADER))
+	col.add_child(_head(&"ui.briefing.loot"))
 	loot_box = UiBuild.vbox(6)
 	col.add_child(loot_box)
 
@@ -217,12 +226,22 @@ func _fill_objectives() -> void:
 	var objectives: Array = model["objectives"] as Array
 	if objectives.is_empty():
 		objectives_box.add_child(UiBuild.label(&"ui.briefing.objectives_none", UiBuild.DIM))
+	# PO-4: a timeline: a rail with a node per step (the first, where you start, filled brass).
 	for i: int in range(objectives.size()):
+		var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+		var node: TimelineNode = TimelineNode.new()
+		node.first = i == 0
+		node.last = i == objectives.size() - 1
+		row.add_child(node)
 		var l: Label = UiBuild.label(&"ui.briefing.objective_line", &"", {
 			"index": i + 1, "text": String((objectives[i] as Dictionary)["text"]),
 		})
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		objectives_box.add_child(l)
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if i == 0:
+			l.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+		row.add_child(l)
+		objectives_box.add_child(row)
 
 
 func _fill_loot() -> void:
@@ -241,8 +260,11 @@ func _fill_loot() -> void:
 func objective_texts() -> Array[String]:
 	var out: Array[String] = []
 	for c: Node in objectives_box.get_children():
-		if c is Label and not c.is_queued_for_deletion():
-			out.append((c as Label).text)
+		if c.is_queued_for_deletion():
+			continue
+		var l: Label = c as Label if c is Label else c.get_child(1) as Label if c.get_child_count() > 1 else null
+		if l != null:
+			out.append(l.text)
 	return out
 
 

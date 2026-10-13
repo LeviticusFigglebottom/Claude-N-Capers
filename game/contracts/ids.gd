@@ -48,3 +48,6 @@ const SVC_OBJECTIVES: StringName = &"objectives"
 const SVC_VARIANTS: StringName = &"variants"
 const SVC_CREW: StringName = &"crew"
 const SVC_NAV: StringName = &"nav"
+
+# --- Contract paths (characters.md: `world/characters/<id>/<id>.tscn`, variants `<id>_<variant>`) ---
+const CHARACTERS_DIR: String = "res://world/characters/"

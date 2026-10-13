@@ -55,7 +55,7 @@ func test_armor_changes_concealment() -> void:
 func test_mod_slots_follow_weapon_and_ownership() -> void:
 	var w: WeaponDef = ContentDB.weapon(&"weapon.kestrel_p9")
 	assert_eq(_screen.mod_options.size(), w.mod_slots.size(), "one row per mod slot")
-	var sights: OptionButton = _screen.mod_options[Enums.ModType.SIGHT] as OptionButton
+	var sights: ItemSlot = _screen.mod_options[Enums.ModType.SIGHT] as ItemSlot
 	assert_eq(sights.item_count, 2, "stock + owned reflex sight (iron sights are the stock part)")
 
 
@@ -64,3 +64,26 @@ func test_save_writes_loadout() -> void:
 	assert_eq(_screen.save(), OK)
 	var p: PlayerProfile = SaveService.load_profile(0)
 	assert_true(p.loadout.secondary_mods.has(&"mod.p9_extended_mag"))
+
+
+## PO-4 (lead note 3): slot cards open an item grid; focusing a tile previews, picking equips.
+func test_slot_card_picker_grid() -> void:
+	var slot: ItemSlot = _screen.armor_option as ItemSlot
+	assert_true(slot != null, "armor is a slot card")
+	var before: int = _screen.detection_risk
+	var pk: ItemPicker = slot.open_picker()
+	await wait_frames(2)
+	assert_eq(pk.tiles.size(), slot.item_count, "one tile per item")
+	var target: int = -1
+	for i: int in range(slot.item_count):
+		if not slot.is_item_disabled(i) and StringName(slot.get_item_metadata(i)) == &"armor.patrol_vest":
+			target = i
+	assert_true(target >= 0, "patrol vest offered")
+	pk.tiles[target].focus_entered.emit()
+	assert_eq(_screen.detection_risk, before, "a preview does not change the loadout")
+	pk.tiles[target].pressed.emit()
+	await wait_frames(2)
+	assert_eq(LoadoutScreen._selected_id(slot), &"armor.patrol_vest", "the pick equips")
+	assert_false(is_instance_valid(pk), "the grid closes")
+	var bd: Dictionary = LoadoutResolver.concealment_breakdown(_screen.current_loadout())
+	assert_eq(_screen.detection_risk, int(bd["detection_risk"]), "refreshed after the pick")

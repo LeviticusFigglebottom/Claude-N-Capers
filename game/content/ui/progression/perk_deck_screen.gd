@@ -133,7 +133,7 @@ func _build_deck_view() -> VBoxContainer:
 		nm.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		var desc: Label = UiBuild.label()
 		desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		desc.add_theme_font_size_override(&"font_size", 19)
+		desc.add_theme_font_size_override(&"font_size", 21)
 		desc.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		var st: Label = UiBuild.label(&"", UiBuild.DIM)
 		for c: Control in [title, nm, desc, st]:

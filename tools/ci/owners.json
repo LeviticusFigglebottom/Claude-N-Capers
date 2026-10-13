@@ -8,7 +8,9 @@
     "game/systems/**",
     "game/tests/a/**",
     "docs/status/env_a.md",
-    "docs/status/env_a_fidelity.md"
+    "docs/status/env_a_fidelity.md",
+    "game/world/heists/**",
+    "game/world/props/**"
    ],
    "excludes": [
     "game/systems/player/**",
@@ -33,7 +35,11 @@
     "game/assets/weapons/**",
     "tools/blender/weapons/**",
     "game/tests/b/**",
-    "docs/status/env_b.md"
+    "docs/status/env_b.md",
+    "docs/design/ui/**",
+    "tools/audiogen/ui/**",
+    "game/assets/audio/sfx/ui/**",
+    "game/world/audio/cues.tres"
    ]
   },
   "c": {

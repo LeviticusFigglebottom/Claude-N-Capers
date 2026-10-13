@@ -66,6 +66,9 @@ const BLOCK_PUSH_BAR_OUTSIDE: StringName = &"ui.blocked.push_bar_outside"
 @export var npc_authorized_tags: Array[StringName] = []
 ## A2-08: one-way fire exit; while closed it opens only from the inside (-Z, UsePoint side).
 @export var push_bar: bool = false
+## S9.5 / A5-03: > 0 = a locked CODE / ELECTRONIC / BARRED door can be blown (loud) with this many charges
+## (item.c4, or trip mines with interaction.shaped_charge). 0 = no charge placement.
+@export var charges_required: int = 0
 @export_group("Interaction")
 ## -1 = default by lock (InteractionTweak.door_open_s / lockpick_door_s / keycard_s).
 @export var interaction_time_s: float = -1.0
@@ -77,6 +80,8 @@ const BLOCK_PUSH_BAR_OUTSIDE: StringName = &"ui.blocked.push_bar_outside"
 
 var is_open: bool = false
 var locked: bool = false
+## S9.5 / A5-03: charges placed, fuse running.
+var c4_armed: bool = false
 
 var _open_stim_id: int = 0
 var _leaf_bodies: Array[AnimatableBody3D] = []
@@ -108,7 +113,7 @@ func _default_interaction_time() -> float:
 		Lock.KEYCARD:
 			return tw.keycard_s
 		_:
-			return tw.door_open_s
+			return tw.c4_place_s if _charge_door() else tw.door_open_s
 
 
 func effective_width() -> float:
@@ -402,6 +407,7 @@ func _setup_interactable() -> void:
 	match lock:
 		Lock.NONE:
 			interactable.kind = &"open_door"
+			interactable.casing_allowed = true  # PO-5 (S1.1): opening an unlocked door is not suspicious
 		Lock.LOCKPICK:
 			interactable.kind = &"lockpick"
 			interactable.speed_modifier_key = &"interaction.lockpick_speed_mult"  # S9.2
@@ -411,7 +417,9 @@ func _setup_interactable() -> void:
 				interactable.requires_item = KEYCARD_ITEM
 			interactable.consumes_item = true
 		_:
-			interactable.kind = &"open_door"
+			interactable.kind = &"place_c4" if _charge_door() else &"open_door"
+			if _charge_door():
+				interactable.prompt_key = &"ui.prompt.place_c4"
 	interactable.extra_check = _availability
 	interactable.completed.connect(_on_completed)
 
@@ -425,6 +433,8 @@ func _availability(crew: Node) -> StringName:
 		Lock.LOCKPICK, Lock.KEYCARD:
 			return InteractableComponent.BLOCK_NONE
 		_:
+			if _charge_door():
+				return _charge_availability(crew)
 			# CODE / ELECTRONIC / BARRED / VAULT open through other prefabs (unlock()).
 			return InteractableComponent.BLOCK_STATE
 
@@ -433,6 +443,7 @@ func _apply_unlocked_interaction() -> void:
 	if interactable == null:
 		return
 	interactable.kind = &"open_door"
+	interactable.casing_allowed = true  # PO-5 (S1.1): a casing player opens/closes unlocked doors
 	interactable.interaction_time_s = Tweak.interaction().door_open_s
 	interactable.requires_item = &""
 	interactable.consumes_item = false
@@ -442,11 +453,56 @@ func _apply_unlocked_interaction() -> void:
 func _on_completed(_crew: Node) -> void:
 	if not Net.is_authority():
 		return
+	if locked and _charge_door():
+		var c: CrewController = _crew as CrewController
+		if not c4_armed and Safe.consume_charges_for(c, charges_required, self):
+			_arm_charges(NetIds.of(c))
+		return
 	if locked:
 		unlock()
 		set_open(true)
 		return
 	set_open(not is_open)
+
+
+# --- Shaped charges / C4 (S9.5 / A5-03) ------------------------------------------------------
+
+## True when this door is opened by placed charges (a lock no other interaction here opens).
+func _charge_door() -> bool:
+	return charges_required > 0 and lock != Lock.NONE and lock != Lock.LOCKPICK and lock != Lock.KEYCARD \
+		and lock != Lock.VAULT
+
+
+func _charge_availability(crew: Node) -> StringName:
+	if c4_armed:
+		return InteractableComponent.BLOCK_STATE
+	if Safe.charge_source_for(crew as CrewController, charges_required, self) == &"":
+		return InteractableComponent.BLOCK_ITEM
+	return InteractableComponent.BLOCK_NONE
+
+
+func _arm_charges(by_net_id: int) -> void:
+	c4_armed = true
+	var tw: InteractionTweak = Tweak.interaction()
+	EventBus.audio_cue_requested.emit(&"cue.c4_armed", global_position, by_net_id)
+	Net.replicate_event(&"audio_cue_requested", [&"cue.c4_armed", global_position, by_net_id])
+	get_tree().create_timer(tw.c4_fuse_s, false, true).timeout.connect(_blow_charges.bind(by_net_id))
+
+
+func _blow_charges(by_net_id: int) -> void:
+	if not is_inside_tree() or not c4_armed:
+		return
+	c4_armed = false
+	var tw: InteractionTweak = Tweak.interaction()
+	var pos: Vector3 = global_position + Vector3.UP * 1.0
+	EventBus.audio_cue_requested.emit(&"cue.c4_explode", pos, by_net_id)
+	Net.replicate_event(&"audio_cue_requested", [&"cue.c4_explode", pos, by_net_id])
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if rt != null:
+		rt.make_noise(pos, tw.c4_noise_radius_m, &"explosion", net_id)
+	Explosion.apply(self, pos, tw.c4_blast_radius_m, tw.c4_blast_damage, by_net_id, Safe.C4_ITEM)
+	unlock()
+	set_open(true)
 
 
 func _setup_leaf_bodies() -> void:

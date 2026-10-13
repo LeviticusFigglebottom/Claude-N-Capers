@@ -21,6 +21,9 @@ const TAG_BACK_DOOR: StringName = &"back_door"
 const TAG_SALON_DOOR: StringName = &"salon_door"
 const TAG_POLICE_GATE: StringName = &"police_gate"
 const TAG_ESCAPE: StringName = &"escape_van"
+const TAG_KEYCARD: StringName = &"keycard"
+## PO-5 (D-089 markers): the van's secure zones (VanSecureE1 / VanSecureE2).
+const TAG_LOOT_SECURE: StringName = &"loot_secure"
 
 var _safe_open: bool = false
 var _lockdown: bool = false
@@ -35,14 +38,18 @@ func _on_mission_start() -> void:
 	if _slot_active(&"safe_state", &"safe_open"):
 		add_objective(&"keycard", &"objective.glasshouse.keycard", Enums.ObjectiveState.COMPLETED, {"skipped": true})
 	else:
-		add_objective(&"keycard", &"objective.glasshouse.keycard")
+		add_objective(&"keycard", &"objective.glasshouse.keycard", Enums.ObjectiveState.ACTIVE, {"marker_tags": [TAG_KEYCARD]})
 		require_items(&"keycard", ITEM_KEYCARD)
-	add_objective(&"workshop_door", &"objective.glasshouse.workshop_door")
-	add_objective(&"safe", &"objective.glasshouse.safe", Enums.ObjectiveState.ACTIVE, {"methods": [&"keycard", &"drill"]})
-	add_objective(&"safe_loot", &"objective.glasshouse.safe_loot", Enums.ObjectiveState.HIDDEN)
-	add_objective(&"secure", &"objective.glasshouse.secure", Enums.ObjectiveState.ACTIVE, {"bags": MIN_BAGS, "optional_more": true})
+	add_objective(&"workshop_door", &"objective.glasshouse.workshop_door", Enums.ObjectiveState.ACTIVE,
+		{"marker_tags": [TAG_WORKSHOP_DOOR]})
+	add_objective(&"safe", &"objective.glasshouse.safe", Enums.ObjectiveState.ACTIVE,
+		{"methods": [&"keycard", &"drill"], "marker_tags": [TAG_SAFE]})
+	add_objective(&"safe_loot", &"objective.glasshouse.safe_loot", Enums.ObjectiveState.HIDDEN,
+		{"marker_tags": [TAG_SAFE_LOOT]})
+	add_objective(&"secure", &"objective.glasshouse.secure", Enums.ObjectiveState.ACTIVE,
+		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
 	require_loot(&"secure", MIN_BAGS)
-	add_objective(&"escape", &"objective.glasshouse.escape", Enums.ObjectiveState.HIDDEN)
+	add_objective(&"escape", &"objective.glasshouse.escape", Enums.ObjectiveState.HIDDEN, {"marker_tags": [TAG_ESCAPE]})
 	on_event(&"interaction_completed", _on_interaction_completed)
 	on_event(&"device_finished", _on_device_finished)
 	on_event(&"device_jammed", _on_device_jammed)
@@ -93,6 +100,11 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 	elif _is_tagged(interactable_net_id, TAG_SAFE_READER):
 		if not _lockdown:
 			_open_safe()
+	elif _is_tagged(interactable_net_id, TAG_SAFE):
+		# PO-5: the safe's own keypad (code from a code note) opened it.
+		for sf: Node in find_tagged(TAG_SAFE):
+			if bool(sf.get(&"opened")):
+				_open_safe()
 	elif _is_tagged(interactable_net_id, TAG_SAFE_LOOT):
 		if objective_state(&"safe_loot") == Enums.ObjectiveState.ACTIVE:
 			complete(&"safe_loot")
@@ -118,15 +130,19 @@ func _open_safe() -> void:
 		return
 	_safe_open = true
 	for s: Node in find_tagged(TAG_SAFE):
-		if s.has_method(&"unlock"):
+		# PO-5.8: swing the door AND enable the loot inside (Safe.swing_open). Setting `opened` directly
+		# left the door shut and the bags disabled; this handler runs before the drill's own
+		# finished -> open_by_device, which then saw `opened` and did nothing (the "drill never opens").
+		if s.has_method(&"swing_open"):
+			s.call(&"swing_open")
+		elif s.has_method(&"unlock"):
 			s.call(&"unlock")
-		elif &"opened" in s:
-			s.set(&"opened", true)
 	complete(&"safe")
 	activate(&"safe_loot")
 
 
 func _on_bag_secured(_bag_net_id: int, _loot_id: StringName, _value: int) -> void:
+	update_objective_data(&"secure", {"count": bags_secured, "total": MIN_BAGS})  # HUD: count / total bags
 	_try_escape()
 
 
@@ -144,7 +160,10 @@ func _go_loud() -> void:
 	if not _safe_open:
 		update_objective_data(&"safe", {"methods": [&"drill"], "lockdown": true})
 		if objective_state(&"keycard") == Enums.ObjectiveState.ACTIVE:
-			update_objective_data(&"keycard", {"disabled": true, "reason": &"lockdown"})
+			# Board finding: the loud transition must move the objective on. The reader is dead, so the
+			# keycard step is skipped (the drill is the way now); "skipped" as for safe_left_open.
+			update_objective_data(&"keycard", {"disabled": true, "reason": &"lockdown", "skipped": true})
+			complete(&"keycard")
 	for g: Node in find_tagged(TAG_POLICE_GATE):
 		g.call(&"unlock")
 		g.call(&"set_open", true)

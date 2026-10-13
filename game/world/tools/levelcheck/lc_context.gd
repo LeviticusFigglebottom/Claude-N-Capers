@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## Shared state + scene/physics/navigation helpers for all levelcheck modules. Owner: ENV C.
 ## The map must be inside the tree (physics + navigation registered) before setup().
 class_name LcContext
@@ -47,6 +48,28 @@ func setup(p_map: HeistMap) -> void:
 	rooms.clear()
 	for n: Node in map.find_children("*", "RoomVolume", true, false):
 		rooms.append(n as RoomVolume)
+	# Doors count as open (players can always breach them): the NavLinks of doorways baked closed
+	# (D-073 BARRED / VAULT) carry the reachability and walkthrough paths.
+	set_door_links(true)
+
+
+## Sets `enabled` on every NavigationLink3D under a Door prefab; returns [[link, previous], ...].
+func set_door_links(on: bool) -> Array[Array]:
+	var saved: Array[Array] = []
+	for n: Node in map.find_children("*", "NavigationLink3D", true, false):
+		var l: NavigationLink3D = n as NavigationLink3D
+		var cur: Node = l.get_parent()
+		while cur != null and cur != map and not (cur is Door):
+			cur = cur.get_parent()
+		if cur is Door:
+			saved.append([l, l.enabled])
+			l.enabled = on
+	return saved
+
+
+func restore_links(saved: Array[Array]) -> void:
+	for s: Array in saved:
+		(s[0] as NavigationLink3D).enabled = bool(s[1])
 
 
 func tree() -> SceneTree:

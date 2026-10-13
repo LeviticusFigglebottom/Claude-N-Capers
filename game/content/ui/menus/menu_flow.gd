@@ -63,8 +63,9 @@ const TARGET_RANGE: StringName = &"firing_range"
 const TARGET_LOBBY: StringName = &"lobby"
 const TARGET_JUKEBOX: StringName = &"jukebox"
 const TARGET_NOTORIETY: StringName = &"notoriety"
+const TARGET_CAREER: StringName = &"career"
 const TARGETS: Array[StringName] = [TARGET_BOARD, TARGET_HEIST_SELECT, TARGET_LOADOUT, TARGET_MASKS, TARGET_RANGE, TARGET_LOBBY,
-		TARGET_JUKEBOX, TARGET_NOTORIETY]
+		TARGET_JUKEBOX, TARGET_NOTORIETY, TARGET_CAREER]
 
 var main_menu: MainMenu
 ## Safehouse hub (B4-07).
@@ -119,7 +120,7 @@ var drop_in_screen: DropInJoinScreen = null
 ## 3D safehouse hub mode (B6-06): see SafehouseHost.
 var safehouse: SafehouseHost
 ## Full-screen backdrop behind every screen (dimmed / hidden over the 3D safehouse).
-var background: ColorRect
+var background: ColorRect  ## a CaseBackdrop (PO-4)
 var _heist_id: StringName = &""
 var _difficulty: int = Enums.Difficulty.ROUTINE
 var _in_heist: CanvasLayer = null
@@ -146,7 +147,7 @@ func _ready() -> void:
 	drop_in = DropInFlow.new()
 	drop_in.name = "DropIn"
 	add_child(drop_in)
-	background = ColorRect.new()
+	background = CaseBackdrop.new()
 	background.name = "Background"
 	background.color = UiAccent.app_bg()
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -226,7 +227,7 @@ func _on_hub_back() -> void:
 
 
 ## Opens safehouse station `station_id` (data/ui/hub_stations.tres; ids board, planning, armory,
-## masks, range, crew, jukebox, notoriety). The API for the 2D hub cards AND ENV C's 3D safehouse interactables. Leaving a
+## masks, range, crew, jukebox, notoriety, profile). The API for the 2D hub cards AND ENV C's 3D safehouse interactables. Leaving a
 ## contract path this way drops it (a confirmed plan's cash is refunded). Back on every station
 ## returns to the hub. Returns false (and logs an error) for an unknown id or target.
 func open_station(station_id: StringName) -> bool:
@@ -254,6 +255,8 @@ func open_station(station_id: StringName) -> bool:
 			_open_jukebox()
 		TARGET_NOTORIETY:
 			_open_notoriety()
+		TARGET_CAREER:
+			_open_career()
 	return true
 
 
@@ -300,7 +303,8 @@ func _open_notoriety() -> void:
 	show_screen(screen)
 
 
-## Career screen (B7-01) from the hub's profile panel (read-only); Back frees it and returns to the hub.
+## Career screen (B7-01) from the hub's profile panel or the `profile` station (hub_map v1.1; read-only).
+## Back frees it and returns to the hub.
 func _open_career() -> void:
 	var screen: CareerScreen = CAREER_SCENE.instantiate() as CareerScreen
 	screen.profile_slot = profile_slot
@@ -658,6 +662,7 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 			MusicCatalog.resolve_choice(profile))
 	visible = false
 	_spawn_in_heist_ui()
+	_hand_heisters(options)
 	runtime = await launcher.call(&"launch", heist_id, run_seed, difficulty, null, options)
 	if runtime == null:
 		Log.error(&"ui", "HeistLauncher.launch(%s) returned null; back to the main menu" % heist_id)
@@ -695,6 +700,19 @@ static func build_launch_options(ai_teammates: int, local_slot: int, resolved: L
 ## Menu-side seed (not gameplay RNG): the run seed handed to HeistLauncher.
 static func _time_seed() -> int:
 	return int(Time.get_unix_time_from_system())
+
+
+## PO-4: the HUD names teammates by their heister (slot -> heister id from the launch loadouts).
+func _hand_heisters(options: Dictionary) -> void:
+	if not _hud is Hud:
+		return
+	var map: Dictionary = {}
+	var loadouts: Dictionary = options.get("loadouts", {}) as Dictionary
+	for slot: Variant in loadouts:
+		var l: Loadout = loadouts[slot] as Loadout
+		if l != null and l.heister != &"":
+			map[int(slot)] = l.heister
+	(_hud as Hud).set_crew_heisters(map)
 
 
 ## True while the HUD/payday layer of a launched heist exists.
@@ -746,7 +764,7 @@ func _on_heist_ended(result: Dictionary) -> void:
 		consume_pro_contract()
 	if _hud != null and is_instance_valid(_hud):
 		_hud.visible = false
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	options_menu.close_pause()  # the payday screen holds the cursor itself (MouseCapture &"payday")
 
 
 ## A failed pro job: its Board contract is gone for the rest of its rotation (QB-BRD1, no restart).
@@ -771,7 +789,7 @@ func _leave_heist() -> void:
 	runtime = null
 	if EventBus.heist_ended.is_connected(_on_heist_ended):
 		EventBus.heist_ended.disconnect(_on_heist_ended)
-	options_menu.close_in_heist()
+	options_menu.close_pause()
 	if heist_chat != null and is_instance_valid(heist_chat):
 		heist_chat.close()
 	heist_chat = null
@@ -982,6 +1000,7 @@ func launch_coop(info: Dictionary) -> void:
 	DropInFlow.apply_host_policy(get_tree(), lobby.state.dropin_policy)  # B6-04: A's service decides drop-ins
 	visible = false
 	_spawn_in_heist_ui()
+	_hand_heisters(options)
 	runtime = await launcher.call(&"launch", _heist_id, int(info["seed"]), _difficulty, null, options)
 	if runtime == null:
 		Log.error(&"ui", "HeistLauncher.launch(%s) returned null (co-op); leaving" % _heist_id)

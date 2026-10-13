@@ -50,6 +50,9 @@ static var _cached: RadioTweak = null
 @export var width_px: float = 800.0
 @export var bottom_margin_px: float = 40.0
 @export var max_lines: int = 2
+## PQ-B-18: rows taller than this together (large text wraps) drop the oldest, so the box never reaches
+## the interaction / domination prompts above it (interaction bottom = 1040 - 314 at hud_scale 1.5).
+@export var max_height_px: float = 300.0
 ## Display time = clamp(base_s + per_char_s * characters, min_s, max_s); the last fade_s fade out.
 @export var base_s: float = 1.2
 @export var per_char_s: float = 0.055

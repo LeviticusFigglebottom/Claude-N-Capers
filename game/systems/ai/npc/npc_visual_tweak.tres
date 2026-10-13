@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="NpcVisualTweak" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/ai/npc/npc_visual_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+tag_characters = {
+&"civ_cleaner": [&"npc_bank_cleaner"],
+&"civ_customer": [&"civilian_customer_a", &"civilian_customer_b"],
+&"civ_it": [&"npc_it_contractor"],
+&"civ_kessler": [&"npc_kessler"],
+&"civ_manager": [&"civilian_manager"],
+&"civ_partner": [&"bank_officer"],
+&"civ_staff_admin": [&"civilian_sales"],
+&"civ_staff_counter": [&"civilian_sales"],
+&"civ_staff_floor": [&"civilian_sales"],
+&"civ_staff_manager": [&"civilian_manager"],
+&"civ_staff_workshop": [&"civilian_jeweler"],
+&"civ_worker": [&"npc_bank_teller", &"npc_bank_teller_b", &"bank_officer"],
+&"security_operator": [&"security_officer"]
+}
+role_characters = {
+&"civilian": [&"civilian_customer_a", &"civilian_customer_b", &"bank_customer", &"bank_customer_b"],
+&"guard": [&"security_officer", &"security_officer_b"]
+}

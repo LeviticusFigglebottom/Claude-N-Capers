@@ -62,6 +62,9 @@ var jam_left: float = 0.0
 var flashing: bool = false
 var feedback_used: bool = false
 var feedback_recharge_left: float = 0.0
+## Trip mine (S9.5 deployable): seconds before it arms; true once detonated.
+var _trip_arm_left: float = 0.0
+var _trip_fired: bool = false
 
 
 func _placeholder_scene() -> PackedScene:
@@ -103,6 +106,9 @@ func _prefab_ready() -> void:
 	interactable.completed.connect(_on_completed)
 	if kind == &"doctor_bag":
 		interactable.duration_override = _doctor_bag_duration
+	if kind == &"trip_mine":
+		interactable.enabled = false  # S9.5 trip mine: no use interaction, it arms and waits for an enemy
+		_trip_arm_left = DeployableTweak.data().trip_mine_arm_s
 
 
 ## QB-59: the user's interaction.doctor_bag_speed_mult (lower = faster).
@@ -184,6 +190,47 @@ func _spent() -> void:
 	if rt != null and rt.interaction != null:
 		rt.interaction.cancel_all_on(interactable)
 	queue_free()
+
+
+# --- Trip mine (S9.5 deployable) ------------------------------------------------------------------
+
+func _physics_process(delta: float) -> void:
+	if kind != &"trip_mine" or _trip_fired or not Net.is_authority() or not is_inside_tree():
+		return
+	if _trip_arm_left > 0.0:
+		_trip_arm_left -= delta
+		return
+	var tw: DeployableTweak = DeployableTweak.data()
+	var eye: Vector3 = global_position + Vector3.UP * 0.2
+	for n: Node in get_tree().get_nodes_in_group(G.ENEMY):
+		var npc: NpcBase = n as NpcBase
+		if npc == null or not npc.alive or HeistRuntime.of(npc) != HeistRuntime.of(self):
+			continue
+		if npc.global_position.distance_to(global_position) <= tw.trip_mine_trigger_m \
+				and CombatSystem.has_los(self, eye, npc.global_position + Vector3.UP * 0.9, [npc]):
+			trip_detonate()
+			return
+
+
+## Server: blow the trip mine (noise, cue, L3.6 blast x the owner's deploy.trip_mine_radius_mult), then free.
+func trip_detonate() -> void:
+	if _trip_fired:
+		return
+	_trip_fired = true
+	var tw: DeployableTweak = DeployableTweak.data()
+	var pos: Vector3 = global_position + Vector3.UP * 0.2
+	var radius: float = tw.trip_mine_radius_m * (Modifiers.mult(owner_slot, &"deploy.trip_mine_radius_mult")
+		if owner_slot >= 0 else 1.0)
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	var by: int = 0
+	if rt != null:
+		var c: Node = rt.crew_controller(owner_slot) if owner_slot >= 0 else null
+		by = NetIds.of(c) if c != null else 0
+		rt.make_noise(pos, tw.trip_mine_noise_radius_m, &"explosion", net_id)
+	EventBus.audio_cue_requested.emit(&"cue.trip_mine_explode", pos, by)
+	Net.replicate_event(&"audio_cue_requested", [&"cue.trip_mine_explode", pos, by])
+	Explosion.apply(self, pos, radius, tw.trip_mine_damage, by, &"deployable.trip_mine")
+	_spent()
 
 
 # --- Ammo bag (L2.11) -----------------------------------------------------------------------------

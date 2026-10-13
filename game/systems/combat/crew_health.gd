@@ -131,7 +131,7 @@ func dodge_chance() -> float:
 func heal(amount: float, reset_downs: bool = false) -> void:
 	if _crew == null or not Net.is_authority() or _crew.crew_state != Enums.CrewState.NORMAL:
 		return
-	health = minf(health + maxf(amount, 0.0), max_health)
+	health = minf(health + maxf(amount, 0.0) * Modifiers.mult(_slot(), &"defense.healing_received_mult"), max_health)
 	if reset_downs:
 		downs_used = 0
 
@@ -177,8 +177,10 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	if invuln_left > 0.0:
 		out["amount"] = 0.0
 		return out
-	# --- A2-06 dodge (L2.4): a ranged hit may do nothing; a dodge restarts the armor regen delay.
-	if int(info.get("type", Enums.DamageType.BULLET)) == Enums.DamageType.BULLET and _roll_dodge():
+	# --- A2-06 dodge (L2.4): a ranged or melee hit may do nothing (melee knockback still applies, the
+	# caller pushes the crew regardless); a dodge restarts the armor regen delay.
+	var dodge_type: int = int(info.get("type", Enums.DamageType.BULLET))
+	if (dodge_type == Enums.DamageType.BULLET or dodge_type == Enums.DamageType.MELEE) and _roll_dodge():
 		regen_delay_left = _regen_delay(tw)
 		out["amount"] = 0.0
 		out["dodged"] = true
@@ -249,7 +251,7 @@ func go_down() -> void:
 	armor = 0.0
 	invuln_left = 0.0
 	bleedout_left = tw.bleedout_time_s + Modifiers.add(_slot(), &"defense.bleedout_time_add")
-	bleedout_health = tw.bleedout_health
+	bleedout_health = tw.bleedout_health * Modifiers.mult(_slot(), &"defense.bleedout_health_mult")  # A4-04
 	_crew.set_crew_state(Enums.CrewState.DOWNED)
 	if _revive != null:
 		_revive.enabled = true
@@ -387,6 +389,7 @@ func server_tick(delta: float) -> void:
 		Enums.CrewState.CUFFED:
 			if bleedout_left > 0.0:
 				return  # L2.12: police-cuffed while downed, bleedout paused
+	_tick_health_regen(delta)  # L2.1
 	if invuln_left > 0.0:
 		invuln_left = maxf(invuln_left - delta, 0.0)
 	if PerkHooks.tick(self, delta):  # perk hook (QB-62); true = a perk replaces the armor regen
@@ -398,6 +401,15 @@ func server_tick(delta: float) -> void:
 		var tw: CrewTweak = Tweak.crew()
 		var rate: float = max_armor / maxf(tw.armor_regen_full_time_s, 0.001)
 		armor = minf(armor + rate * TeamModifiers.armor_regen_rate_mult(_slot()) * delta, max_armor)
+
+
+## L2.1: no base regen; defense.health_regen_per_sec (fraction of max health per second) heals while
+## up (never while downed / custody / incapacitated: server_tick returns before this for those).
+func _tick_health_regen(delta: float) -> void:
+	var r: float = Modifiers.add(_slot(), &"defense.health_regen_per_sec")
+	if r > 0.0 and health > 0.0 and health < max_health:
+		health = minf(health + max_health * r * delta * Modifiers.mult(_slot(), &"defense.healing_received_mult"),
+			max_health)
 
 
 ## Modifier changes mid-heist rescale the current values (keeps the fraction).

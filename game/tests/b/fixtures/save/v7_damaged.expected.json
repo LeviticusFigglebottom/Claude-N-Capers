@@ -37,7 +37,7 @@
 		"bags": {"loot.jewelry": 12},
 		"weapons": {"weapon.kestrel_p9": 9}
 	},
-	"weapon_finishes": {"weapon.kestrel_p9": "finish.gunmetal"},
+	"weapon_finishes": {"weapon.kestrel_p9": "finish.gunmetal_blue"},
 	"stats": {},
 	"settings": {}
 }

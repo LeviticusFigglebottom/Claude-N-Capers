@@ -3,6 +3,173 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-13 18:30 UTC — PO-5 (D-086 windowed playthrough), team v3 dispatch
+### Done (local commits on env/a-core, not pushed yet)
+- 8732b3b7 PO-5 harness `game/tests/a/e2e/`: `po5_runner.tscn` boots the real game windowed (xvfb, NOT
+  --headless) and `po5_flow.gd` clicks the real menus with InputEventMouseButton at each button's screen
+  position: main menu → Safehouse → Planning Table → <heist> → <difficulty> → Briefing → Continue →
+  Confirm plan → Start Heist. In the heist `po5_pilot.gd` plays through PlayerInputDriver only (mouse
+  motion turns, WASD walks a navmesh route, F holds, G masks/throws), opens doors like a person, shoots
+  enemies in sight, logs every stuck spot (slide colliders + rays + screenshot). Screenshots at each step,
+  telemetry every 10 s of game time (crew states/positions, enemies, frame cost).
+  Run: `xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 960x540
+  res://tests/a/e2e/po5_runner.tscn -- --po5-flow=gh_loud --po5-out=<dir>` (flows: smoke, dump, gh_loud).
+  llvmpipe renders at ~1 fps (which caps game time at 8 ticks/s), so between screenshots the harness sets
+  `RenderingServer.render_loop_enabled = false`; window, DisplayServer and input stay real.
+  KNOWN SHORTCUT: the harness sets `Input.mouse_mode = CAPTURED` itself (PO-5.1, ENV P).
+- (commit 2) PO-5.2 fix: CivilianBrain: cowering / down / tied civilians leave the NPC collision layer
+  (crew no longer pinned by a civilian on the floor); a flee that moves < 0.3 m in 2 s cowers
+  (StealthTweak.civilian_flee_stall_s/_m). test_po5_civilian_body_block 2/2, civilian suites 25/25.
+### PO-5 blocker rows (seeds are menu time seeds; the harness logs each)
+| Row | Owner | What | Where / repro |
+|---|---|---|---|
+| PO-5.1 | P | Mouse never captured in the heist: no mouse look for a person. | harness works around it |
+| PO-5.2 | A | Fleeing civilian freezes in the workshop doorway; crew body-blocked. FIXED (local). | gh_loud seed 1791913478, Npc_civilian3 @ (7.5,0,4.0) |
+| PO-5.3 | A | Loud: AI teammates do not follow the player into the workshop, drift into the alley, get downed and go to custody within ~40 s; no AI revives; bleedout 8/17/30 s. | gh_loud seed 1791914030, t=128..169 |
+| PO-5.4 | A | Solo + bots on Routine: 31 enemies by t=180, player downed at the safe (drill 80 %). Re-check after PO-5.3. | same run |
+| PO-5.5 | B | Fresh profile: primary weapon "None", player enters with the pistol only. | loadout screen |
+| PO-5.6 | B | Objective HUD raw "{count}/{total}"; the keycard objective is still shown during lockdown. | in heist |
+| PO-5.7 | D | Police render as white placeholder capsules. | screenshots |
+| PO-5.8 | A | Drill: NOT reproduced as "never opens": 180 s run, jam at 56 % fixed by holding F, kept running. | gh_loud seed 1791914030 |
+| PO-5.9 | B | Heist select at level 0: Brutal unlocked while Tense/Hazardous are locked. | heist select |
+| PO-5.10 | A/C | Workshop door prompt hidden from 1.7 m diagonal (LOS to the wall-plane point hits G_Corridor_N_W_02). Minor; head-on works. | (6.9,1.1,4.6) |
+### In progress
+- PO-5.3 AI crew follow/revive/bleedout root cause; then the full loud run (bags, van, escape, payday → hub).
+- Stealth flow (masking out of sight, civilians, guards/pagers, cameras).
+### Questions for lead
+- QA-PO5-1: objective guidance. Proposal: HeistMission objectives may carry `data.marker_tags` (map
+  objective_tags); LocalHudModel exposes `objective_markers: Array[Dictionary]` ({id, text_key,
+  position: Vector3, state}) for the active objectives, from the tagged nodes. Needs a ui_hud contract line.
+### Ready for integration
+- no (check_all not run yet)
+
+## 2026-10-12 ~18:30 ET: D-082 freeze, PP-A-1, D-085, hand-play attempt
+### Done (pushed)
+- 86757557 PP-A-1: LocalHudModel.dominate_target (guard net id) / dominate_window_s + dominate_prompt_changed;
+  NPC net state carries "dom" so clients see the window (test_s5_8 8/8, hud suites 38/38).
+  **Ask ENV B:** render a shout prompt / "!" telegraph while dominate_target != 0. LEAD: add the two
+  properties to the ui_hud contract.
+- 0dab334e S9.5 trip mine deployable (committed before the D-082 freeze; kept, no further work).
+- d57383b6 D-085: CrewAiBrain.offset_corners pushes interior nav corners 0.1 m (CrewAiTweak.corner_margin_m)
+  off the turn's inner side. test_d085 2/2, a2_01 10/10, crew_ai 4/4. NOTE: the 0.9 m angled-door test also
+  passes with margin 0, so it guards regressions but does not reproduce a stall.
+### Frozen (D-082)
+- Trip mines + remaining A4-04 keys. defense.interact_damage_taken_mult work is in `git stash` (not committed).
+- P4 allowlist (game/tests/integration/test_p4_progression.gd, LEAD-owned): hooked keys the lead may drop:
+  interaction.speed_mult, interaction.device_fix_speed_mult, defense.healing_received_mult,
+  weapon.fire_rate_mult, defense.bleedout_health_mult, loot.small_loot_value_mult, deploy.trip_mine_radius_mult.
+### Blocked
+- Round 34 not on trunk yet (origin trunk 64f10747, already merged); docs/process/playability_pass.md absent.
+- Hand play: launched `--heist=night_deposit --seed=7` on the box display (:3). Renderer is llvmpipe (software
+  Vulkan); after ~100 s in CASING the view never changed with mouse/W input and the HUD read Armor 0 / Health 0 /
+  Downs 0 / 0/0 ammo. That may just be a slow first frame, not a bug, so nothing is logged as a game issue.
+  The process used 2.8 GB RSS with other envs' tests running, so I stopped it. Real hand play needs a GPU
+  machine (Aaron's) or a lighter renderer (e.g. --rendering-driver opengl3 / compatibility) to try next.
+- Retry with `--rendering-method gl_compatibility --rendering-driver opengl3` at 960x540: the HUD now fills
+  in (Armor 20, Health 230, 3 downs, 17/136, AI 1-3 cards, "Unmasked: casing"), but the 3D world draws
+  black (llvmpipe + compatibility), so no AI or interaction play was possible. Things seen, not in A's area:
+  - [B] objective line shows the raw text "Secure the bags ({count}/{total})" (placeholders not filled in).
+  - [P] the FP weapon viewmodel is drawn while unmasked/casing (PD2: no weapon while casing; CrewView only
+    hides it for civilians). Could be intended, worth a P check.
+  No A issues logged: guards, civilians, pagers and interact timing still need a GPU session.
+
+## 2026-10-12 19:00 ET: S9.5 doors, phase-2/4 keys, L2.4, fidelity table, A4-04 start
+### Done (local; targeted tests PASS under timeout; gdlint clean on changed files)
+- ecfc2a9a S9.5/A5-03 doors: Door.charges_required (>0) on CODE/ELECTRONIC/BARRED: place_c4 hold, C4 first else
+  trip mines (interaction.shaped_charge), fuse, explosion noise/cue/blast, unlock + open (test_s9_ 26/26, door 23/23).
+  Shared Safe.charge_source_for / consume_charges_for.
+- d65c8ad5 interaction.speed_mult (all holds), interaction.device_fix_speed_mult (fix_drill), defense.healing_received_mult.
+- d5054a2c L2.4 melee hits can be dodged; knockback still applied by NpcGunner (test_l2_4 4/4, a3_13, l4_3, p4_perk).
+- a0ba851b docs/status/env_a_fidelity.md: 108 A rows, 90 with a referencing test (scan, not a completeness claim) +
+  unconsumed key list.
+- (next commit) A4-04: weapon.fire_rate_mult (client + server cadence), defense.bleedout_health_mult,
+  loot.small_loot_value_mult (test_a4_keys_phase24 5/5, l3_ 38/38, weapon 25/25).
+- Push: 403 until ~19:00 ET; then env/a-core pushed to origin (d65c8ad5..78a6fabd).
+### In progress / next
+- A4-04: remaining unconsumed keys (env_a_fidelity.md list); ENV P must mirror weapon.fire_rate_mult in fp_viewmodel.
+- Trip-mine placement runtime (deployable kind trip_mine); B strings for door place_c4 prompt reuse ui.prompt.place_c4.
+- PP-A-1 S5.8 HUD cue; confirm D-079 "domination skill" = ability.intimidate_cops.
+
+## 2026-10-12 18:15 ET: D-079 guard domination range / cone / hostages
+### Decisions
+- D-079 (lead ruling): dominated guards count as hostages (tradeable), PD2 exactly. Domination range 10 m base,
+  x1.5 with the domination skill, x1.25 with Crew Chief (multiplicative). Aim cone half-angle =
+  max(8°, linear 90° at 0 m -> 30° at 12 m). Replaces 15 m / 20°.
+  - Implementation: ShoutSystem.guard_dominate_range_for / guard_dominate_cone_half_deg; StealthTweak keys.
+  - Assumption to confirm: "domination skill" = `ability.intimidate_cops` (Turncoat, the PD2 Dominator analog);
+    Crew Chief = `ability.shout_range_mult` (foreman card 3 grants 1.25).
+  - Dominated guards were already in G.HOSTAGE, so CustodySystem.hostage_candidates includes them (test added).
+### Tests
+- test_s5_8 7/7, shout suites 16/16; gdlint clean on all changed files.
+
+## 2026-10-12 18:00 ET: A4-01 queue (L3.3 check, S2.7, S1.1, L2.1, S8.3, S9.5 safes)
+### Decisions (lead rulings 2026-10-12)
+- L3.3: the server checks a claimed HEAD zone: the point must be within CombatTweak.claim_head_tolerance_m (0.45 m)
+  of NpcBase.head_position(), else it is downgraded to BODY before the pellet rule (CombatSystem.validate_head_zones).
+- S8.3 / S9.5 follow pd2_fidelity.md + PD2 precedent; where spec and key text disagree the spec wins: camera loop 25 s
+  (InteractionTweak.camera_loop_active_s; camera_loop_s 5 s stays the station hold time). Domination stays 15 m / 20°.
+### Done (local commits, targeted tests PASS under timeout)
+- b33e4bdc L3.3 server head check (test_l3_3 3/3)
+- 118c516b S2.7 NpcGunner.target_range_for: lerp(80,180,(DR-3)/72) replaces npc_max_range_m (test_s2_7 1/1)
+- 7154507b L2.1 defense.health_regen_per_sec in CrewHealth.server_tick (test_l2_survival 14/14)
+- 1101d390 S1.1 InteractableComponent.casing_pickup_item (small_loot) + stealth.casing_can_pickup_items (s1_1 8/8)
+- d0969fc0 S8.3 CameraStation loops: nearest working camera, one per crew, 25 s (test_s8_3 1/1)
+- a952cc04 S9.5/A5-03 (safes): Safe.charges_required; C4 items first, else trip mines with interaction.shaped_charge;
+  DeployableSystem.count_of_kind/consume_kind; fallback deployable.trip_mine (count 3) (test_s9_8 4/4)
+- bb0e5905 HeistRuntime defers HeistDropIn.ensure at start ("parent busy" add_child gone; dropin 6/6)
+- dadb7b1b P1-02/PI-10 casing hop: _on_crew_masked ignores forced masks (duck-typed `mask_forced`, needs ENV P
+  4860fdbc on trunk to take effect). P's test_p1_02_casing_hop 3/3 PASS locally with 4860fdbc applied
+  temporarily (P files not committed here).
+- Regression: test_s1_2 2/2, test_s8_ 30/30, test_a3_13 4/4, test_s5_8 4/4, test_l3_ 38/38.
+- Push of env/a-core: 403 (token issue, lead fixing); commits are local.
+- Full check_all was started then stopped per the new lead rule (no result). gdlint is not installed on the box.
+- Tests still use set_bot_intent/hold_interact: p_input_driver.gd is not on trunk yet.
+### Next
+- S9.5 doors (charges_required per door type, place/detonate interaction), trip-mine placement runtime, B strings.
+- Phase 2/3/4 modifier keys, L2.4, env_a_fidelity.md, A4-04; Env P casing STEALTH-hop fix in heist_runtime.gd when sent.
+- Switch tests to p_input_driver.gd once it is on trunk.
+
+## 2026-10-12 17:50 ET: PLAYABILITY LIST (code reading only, Godot not installed)
+### State
+- env/a-core = fb517093 + this commit; backup (S5.8, L3.3 local work) and trunk merged. **NOT tested, NOT pushed.**
+- PP-A-1..13 in the appendix at the end of this file real-input issues + queue needs.
+### In progress
+- Nothing running. Exact next step: when Godot is ready run `tools/ci/check_all.sh --env a`; push on PASS
+  (D-077 flake waiver applies) once GitHub creds exist on the box.
+### Queue (>= 2 h)
+1. check_all --env a on the merged tree (S5.8 / L3.3 tests incl.) (~30 min)
+2. PP-A-1 S5.8 domination cue + real-input shout test (~1 h)
+3. L2.1 regen consumer (PP-A-8) (~45 min)
+4. S1.1 casing pickup (PP-A-3) (~1 h)
+5. S2.7 DR targeting range (PP-A-9) (~1 h)
+6. S8.3 camera loop (PP-A-5) (~1 h)
+7. HeistDropIn full/was_kicked verify (PP-A-12), GameRng client audit (PP-A-11)
+8. S9.5/A5-03 shaped charges + C4 after LEAD ruling
+### Questions for lead
+- S8.3 duration: tweak says 5 s, fidelity 25 s, modifier_keys text 20 s. Use 25 s?
+- S9.5 vs A5-03: shaped charges (trip mines) and C4 as separate paths?
+- PP-A-6: accept client-claimed head zone, or add a server check?
+
+## 2026-10-12: WIND DOWN (A4-01 redo, session stopped by the lead)
+### Done
+- d2ce45f PUSHED: breech parts test polls (wait_until) instead of wait_frames(20) (lead flake); 3/3 targeted runs pass.
+- LOCAL ONLY (not pushed: no full check_all has passed on them yet):
+  - S5.8 guard domination (GuardBrain.dominate_window_left / can_be_dominated_by / on_shouted / dominate,
+    ShoutSystem.guard_target_for, StealthTweak "Guard domination (S5.8)") + test_s5_8_guard_domination (4/4 pass);
+    related suites test_s3_3, test_s7_shout, test_s2_9, test_s5_pagers, test_l5_1 pass.
+  - L3.3 pellet headshot (CombatSystem.pellet_headshots, applied in validate_and_apply when pellets > 1)
+    + test_l3_3_pellet_headshot (2/2 pass).
+### Resume step
+- Merge origin trunk a2d82434, run `tools/ci/check_all.sh --env a` (ownership: if origin lags, use
+  `python3 tools/ci/check_ownership.py a --base claude/dreamy-hamilton-pc7vck`), push if PASS.
+### Next (queue order, per lead; S1.2 + fp_viewmodel finish moved to ENV P by D-076; then A4-04 key hooks)
+- S2.7 DR targeting range, S1.1 casing pickup, L2.1 regen, S8.3 camera loop, S9.5 shaped
+  charges / A5-03 C4, phase-2/3 keys, L2.4, phase-4 keys, docs/status/env_a_fidelity.md, HeistDropIn `full` +
+  Net.was_kicked, anim_driver apply_loadout_finish, escape_arrived [R], client GameRng seeding.
+### Notes
+- check_all ownership step fails while origin trunk lags the local trunk; use
+  `python3 tools/ci/check_ownership.py a --base claude/dreamy-hamilton-pc7vck` (D-076).
+
 ## 2026-10-11 14:30 UTC: HANDOFF (session shut down by the lead; account move)
 ### State
 - Pushed: env/a-core = 112c7f3 (round 28 content). Nothing newer is on origin.
@@ -259,3 +426,71 @@ Newest entry first, keep the last 10.
 - Not replicated yet (P3/P6 net hardening): placed deployables, known codes, pre-plan drops, interaction progress on remote clients.
 ### Ready for integration
 - yes; `check_all.sh --env a` result: PASS
+
+## Appendix: ENV A playability issue list (real input vs bot shortcuts)
+
+Owner: ENV A. Written 2026-10-12 ~17:50 ET by **code reading only** on env/a-core fb517093
+(Godot not installed on the box: nothing below has been run; every item is a hypothesis to confirm with a
+real-input test per D-076). Severity: **H** breaks play, **M** feels wrong / confusing, **L** polish.
+Scope: ENV A-owned paths (tools/ci/owners.json: game/systems/** minus player/, fp_viewmodel*, crew_tweak.*).
+
+### 1. Stealth / detection / guard AI
+| # | Sev | Issue | Evidence (code) | Needs |
+|---|-----|-------|-----------------|-------|
+| PP-A-1 | H | **S5.8 domination window is 1.5 s with no player-facing cue.** The window opens in `GuardBrain._on_crew_spotted` (the "!" moment), but nothing in hud_model/anim reads `dominate_window_left`; a human gets no prompt/telegraph and must also aim within a 20° half-cone at 15 m (`ShoutSystem.guard_target_for`, aim from `crew.aim_direction()`). Bots call the API directly; humans will almost always miss it. | guard_brain.gd:616-618, shout_system.gd:142-162, stealth_tweak.gd:179-183 | HUD hint (LocalHudModel field + B prompt string), check shout key path from PlayerInput → server uses the server-side aim; real-input test: walk into view, press shout. |
+| PP-A-2 | M | S5.8 window only opens when the guard was not ALARMED/COMBAT, and `_begin_alarm` runs right after on the same call; confirm the guard's radio/pager timeline leaves the 1.5 s usable (domination must cancel the radio call, `dominate()` sets DOMINATED). Also verify `dominate_window_left` is server-only (clients' shout goes via intent RPC; no replication needed if the check is server-side). | guard_brain.gd:479-500, 616-622 | Two-process test: client shouts at a spotting guard. |
+| PP-A-3 | H | **S1.1 casing pickups not implemented**: `stealth.casing_can_pickup_items` exists in modifier_keys and in B's plain_sight skill, but nothing in game/systems reads it, so a player with the skill still can't grab small loot while casing. | modifier_keys.gd:24; no consumer in game/systems | Gate in InteractionSystem/LootManager `casing_allowed` path + test. |
+| PP-A-4 | M | Casing detection (S1.1/S2.8) is tuned on bot positions; real players linger, strafe and peek. The "within 3 m outside PUBLIC" and ×0.35 fill need a hand-play check at doorways/zone edges (zone boundary flicker could pulse the meter). Casing → alarm STEALTH hop is ENV P's (P1-02) but the alarm side (StealthDirector state change) is mine; coordinate. | stealth/* | Joint test with P1-02. |
+| PP-A-5 | M | **S8.3 camera loop is only a hook**: `CameraStation.loop_requested` is emitted, nobody listens; `InteractionTweak.camera_loop_s = 5.0` vs spec 25 s (modifier_keys text says 20 s). A Light Fingers player sees a prompt that does nothing. | camera_station.gd:25,254-256; interaction_tweak.gd:31 | Implement per-camera loop (one at a time per crew) via `SecurityCamera.set_suppressed`, fix the 25 s value + key text (key text is LEAD's contracts file → ask). |
+
+### 2. Combat / damage
+| # | Sev | Issue | Evidence | Needs |
+|---|-----|-------|----------|-------|
+| PP-A-6 | M | **L3.3 pellet headshots trust the client's claimed `zone`.** `_apply_hit` checks distance/target tolerance/LOS but never re-validates HEAD vs BODY; `pellet_headshots` then upgrades every pellet on that target. Fine for honest co-op but a client with lag/misaligned hitboxes (remote NPC interpolation) will get or lose headshots inconsistently. | combat_system.gd:62,125-160 | Server-side head-zone sanity check (head bone/height tolerance) or accept & document. |
+| PP-A-7 | M | `claim_target_tolerance_m` / `claim_distance_tolerance_m` were tuned with bots that stand still. Real strafing + client interpolation of NPCs may reject legit hits ("my shots don't register"). | combat_system.gd:_apply_hit | Real-input loopback test with moving NPC; log rejection reasons in PerfStats/debug HUD. |
+| PP-A-8 | H | **L2.1 regen**: `defense.health_regen_per_sec` is declared but has no consumer in CrewHealth (base no-regen is tested by test_l2_1_no_health_regen). Skills/perks that grant regen silently do nothing. | modifier_keys.gd:80; no consumer | CrewHealth tick: regen fraction × max while not downed, server-side, replicated with existing health sync; test. |
+| PP-A-9 | M | **S2.7 DR loud targeting range not implemented** (no `ai_target_range` anywhere). Police engage at a fixed range regardless of DR, so low-DR players get sniped across maps / high-DR cannot be engaged far. | no symbol in game/systems | `ai_target_range = lerp(80,180,(DR−3)/72)` in NpcGunner/PoliceBrain target pick; test at both ends. |
+| PP-A-10 | L | Spread/recoil use shared GameRng streams (`&"spread"`, `&"recoil"`) consumed by the local client; harmless (claims carry results) but means GameRng streams diverge between peers by design. See §3. | crew_weapons.gd:524-587 | Document. |
+
+### 3. Net / drop-in / RNG
+| # | Sev | Issue | Evidence | Needs |
+|---|-----|-------|----------|-------|
+| PP-A-11 | M | **GameRng client seeding**: clients call `GameRng.begin_run(run_seed)` in `_start_replica`, which clears streams, so a client has the same seed but **not the same stream positions** as the host (especially drop-in). Anything a client rolls locally that should match the host (cosmetic or gameplay) will differ. | heist_runtime.gd:221, game_rng.gd:11-14 | Audit client-side `GameRng.stream()` callers; either keep all gameplay rolls server-only (assert) or ship stream positions in the bring-up. |
+| PP-A-12 | H | **HeistDropIn `full` + `Net.was_kicked`** policy: the handoff lists them as lost local work; Net.was_kicked exists in core, REASON_FULL in B's DropInService, but the host-side policy needs re-verifying on this tree with a real second client (two-process). | net.gd:217; drop_in_service.gd:42 | Redo/verify + loopback test. |
+| PP-A-13 | M | Not-replicated state from QA-20 notes: placed deployables, known codes, pre-plan drops and **interaction progress bars on remote clients** — a joining or remote human sees a teammate drilling with no bar. Re-check what A3-07 covered. | status 2026-10-10 notes | Audit + fix list. |
+
+### 4. Queue items and what each needs
+- **S2.7** DR targeting range: implement formula in police target acquisition; tweak keys; test DR 3 vs 75 (≈1 h).
+- **S1.1** casing pickup: consumer for `stealth.casing_can_pickup_items` on small loot/items; HUD "Suspicious actions not allowed" still for the rest; test with real walk-up + interact (≈1 h).
+- **L2.1** regen: CrewHealth consumer for `defense.health_regen_per_sec`, not while downed/custody; test (≈45 min).
+- **S8.3** camera loop: listen to `loop_requested`, loop one camera per crew for 25 s, fix tweak 5.0 → 25.0, ask LEAD about the 20 s key text (≈1 h).
+- **S9.5 / A5-03** shaped charges + C4: `interaction.shaped_charge` and trip-mine counts exist in B data, but no trip-mine-as-charge interaction or prefab `charges_required` consumer exists; Safe already has a `c4` method. Open question from the 2026-10-11 handoff (shaped charges vs C4 split) needs a LEAD ruling before coding (≈2 h after ruling).
+
+### 5. Not verified (needs Godot)
+Everything above. The local S5.8 and L3.3 tests (test_s5_8_guard_domination, test_l3_3_pellet_headshot) are present
+but have not been run on fb517093.
+
+## Headless playability audit (Glasshouse, Night Deposit), test_pp_audit_maps.gd
+
+| Row | Map | Finding | Owner | State |
+|---|---|---|---|---|
+| PP-A-AUD-1 | both | ATM (small_loot behind drill_point) cash could be taken before sawing/while casing | A | FIXED c9f6d186 (test_pp_small_loot_behind_device) |
+| PP-A-AUD-2 | Glasshouse | Slot_kc_breakroom Keycard sits ~0.29 m inside Props/U1/Lockers_1 collision, so you can't aim at it from its UsePoint | C | OPEN (map fix) |
+| PP-A-AUD-3 | Glasshouse | "Pager can't be aimed from 1.2 m": an audit artifact. The +Z teleport put the crew outside ExtSouthOut_40, with the wall blocking LOS. From the clear side it aims fine and gets answered (civilian brains frozen in that segment, since otherwise civilian 59 correctly calls it in). No A code change | A | CLOSED (audit fix) |
+| PP-A-AUD-4 | both | Detection at 6 m: Glasshouse 2.9 s, Night Deposit 1.8 s to ALARMED. Pager starts at 3.7 s, answered within the window, max=4 | A | OK |
+| PP-A-AUD-5 | both | Domination end to end (shout, cuff, hostage) | A | OK |
+| PP-A-AUD-6 | both | Civilian intimidate + tie OK. The first failure came from the audit itself (0.8 s shout cooldown and rising edge right after domination), not a game bug | A | OK |
+| PP-A-AUD-7 | both | All doors are 0.90 m, which the D-085 0.9 m angled-door follower test covers. No real-map follower run yet | A | OK (covered) |
+
+## Anim fixes (lead priority)
+* The first clip snaps in with blend 0, so spawns no longer fade in from the A-pose. Above strafe_max_mps (2.2), movement relative to facing picks run_l / run_r / run_b (falling back to run), so crew no longer moonwalk at 3.5 m/s. Tests: test_first_clip_has_no_fade_in, test_directional_run_above_strafe_speed (17/17 in test_anim_driver). Commit c9d4dd98.
+
+## P handoffs (lead-allowed under D-082)
+* B5-01: applied P's patch `test_b5_01_mask_before_ads.patch`. The test now masks before ADS, per the lead's ruling that ADS stays blocked while unmasked. test_b5_01_options_hooks 3/3. Commit 1b5eb843.
+* S9.8: `Safe._inner_loot()` counted the safe's own child DrillPoint (Glasshouse WorkshopSafe/SafeDrill) as loot and disabled it, so the safe could never be drilled. It now skips DrillPoint nodes. New test test_child_drill_point_drills_safe_and_unlocks_loot (place, fix jams, safe opens, inner loot enabled) fails before the fix and passes after. test_s9_8_safes 5/5. Commit ddda749e.
+
+## PP-A-1 / PP-A-2 (real input), 2026-10-12 ~19:55 ET
+* P's PInputDriver is NOT on trunk; trunk db22c24c was only the docs merge, merged --no-ff as 488e7685. So PP-A-1 is an A-owned driver, `game/tests/a/util/player_input_driver.gd` (PlayerInputDriver). Input goes only through Input.parse_input_event (actions, keys, mouse motion), with mouse-look aim (turn_to / aim_at), capture_mouse() + PlayerInput.test_assume_captured (probed, so it works once P's hook lands), and release_all() in after_each.
+* test_pp_a1_player_input_driver: on env/a-core 4 pass, 1 SKIP. mouse_look_aims skips because trunk PlayerInput has no test_assume_captured and headless ignores capture. In a scratch tree with env/p-play's game/systems/player overlaid (not committed): 5/5 pass.
+* test_pp_a2_real_domination (PP-A-2): the crew walks up by input, masks by input, waits for the guard's "!", then a real shout tap. The guard is DOMINATED, kneel_cuffed, guard_dominated(slot 0), in G.HOSTAGE, and the hostage count rises. D-079 range and cone are asserted. Control test: with no skill, the guard is not dominated. 2/2 on env/a-core (no mouse-look needed: the map's spawn poses face the guard) and 2/2 in scratch. No teleports or intents. Setup is only the map spawn poses and the domination skill modifier.
+* Post-merge targeted (488e7685): anim_driver 17/17, s9_8_safes 5/5, b5_01 3/3, pp_ 6/6, d085 2/2, s5_8 8/8, s7_shout_and_ties 9/9.

@@ -54,7 +54,7 @@ func test_success_stealth_accumulates() -> void:
 	assert_eq(Career.best_difficulty(p, &"glasshouse"), 2)
 	assert_near(Career.fastest_win_s(p, &"glasshouse"), 600.4, 0.001)
 	assert_eq(Career.section(p, "difficulties"), {"2": {"played": 1, "won": 1}})
-	assert_eq(Career.favourite_weapon(p), &"weapon.kestrel_p9", "the loadout's secondary")
+	assert_eq(Career.favourite_weapon(p), &"weapon.corsair_ar", "the loadout's primary (QB-1 starter)")
 
 
 func test_loud_fail_and_best_and_fastest() -> void:
@@ -183,8 +183,8 @@ func test_hub_opens_career_and_back_returns() -> void:
 	await wait_frames(1)
 	f.show_hub()
 	await wait_frames(1)
-	assert_has(f.hub.focus_chain, f.hub.career_button as Control)
-	f.hub.career_button.pressed.emit()
+	assert_has(f.hub.focus_chain, f.hub.station_button(&"profile") as Control)
+	f.hub.station_button(&"profile").pressed.emit()
 	await wait_frames(1)
 	assert_true(f.current is CareerScreen)
 	(f.current as CareerScreen).back_button.pressed.emit()

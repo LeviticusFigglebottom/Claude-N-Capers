@@ -18,6 +18,13 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/small_loot/small
 @export var noise: StringName = &"silent"
 
 var taken: bool = false
+## PP audit: small loot a DrillPoint targets (ATM cash behind a saw) stays locked until the device finishes
+## (open_by_device). Replicated (generic `locked`); the interactable is off while locked.
+var locked: bool = false:
+	set(v):
+		locked = v
+		if interactable != null:
+			interactable.enabled = not v and not taken
 
 
 func _placeholder_scene() -> PackedScene:
@@ -30,13 +37,27 @@ func _default_interaction_time() -> float:
 
 func _prefab_ready() -> void:
 	interactable.kind = &"take_loot"
+	interactable.casing_pickup_item = true  # S1.1
 	interactable.completed.connect(_on_completed)
+	if locked:
+		interactable.enabled = false
+
+
+## DrillPoint hook: this loot sits behind the device (called when the drill point is ready).
+func lock_for_device() -> void:
+	locked = true
+
+
+## DrillPoint.open_target: the device finished, the loot can be taken.
+func open_by_device() -> void:
+	locked = false
 
 
 func _on_completed(crew: Node) -> void:
-	if not Net.is_authority() or taken:
+	if not Net.is_authority() or taken or locked:
 		return
 	taken = true
 	var slot: int = int(crew.get(&"slot")) if crew != null else -1
-	_emit_fact(&"small_loot_taken", [value, slot])
+	var v: int = int(round(float(value) * Modifiers.mult(slot, &"loot.small_loot_value_mult"))) if slot >= 0 else value
+	_emit_fact(&"small_loot_taken", [v, slot])  # A4-04: loot.small_loot_value_mult
 	queue_free()

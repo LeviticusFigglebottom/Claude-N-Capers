@@ -102,6 +102,7 @@ func test_card_pick_flow_pick_reveal_continue() -> void:
 	_screen.continue_button.pressed.emit()
 	assert_false(emitted[0])
 	var before: PlayerProfile = SaveService.load_profile(0)
+	_screen.tick(PaydayScreen.INPUT_GRACE_S + 0.01)  # PQ-B-5 input grace
 	_screen.card_views[1].pressed.emit()  # mouse click / ui_accept on the second card
 	assert_eq(_screen.picked_index, 1)
 	assert_false(_screen.auto_picked)

@@ -1,4 +1,4 @@
-# Contract: audio cues (v1.4)
+# Contract: audio cues (v1.5)
 
 ENV C produces every sound (synthesized/procedural; see style guide §Audio) and the cue registry
 `game/world/audio/cues.tres` (`AudioCueDef` resources: streams[], volume_db, bus, 3D, max_distance,
@@ -59,6 +59,20 @@ Buses: `Master > Music, SFX (> Weapons, Enemies, World, UI), Voice, Ambience`.
 | cue.npc_melee_swing | NPC melee windup start (A3-13) [R], source = the NPC | short cloth/arm whoosh, 3D at the NPC, ~15 m | 3 |
 | cue.radio_squelch | contact radio line start/end (ENV B ContactRadio, B7-03), local | short squelch click on / off, 2D, Voice or UI bus | 5 |
 | cue.payday_tick | payday card-pick timer, each of the last 5 s (ENV B payday screen), local | 60 ms dry UI tick, 2D, UI bus (ENV C 51cfb287) | PP (D-082) |
+| cue.ui_focus | any focusable control gains focus (UiBuild), local | soft paper tick ~30 ms, 2D, UI bus | PP (D-090) |
+| cue.ui_confirm | button press / accept | brass "clack" ~80 ms | PP (D-090) |
+| cue.ui_back | back / cancel | lower, shorter tick | PP (D-090) |
+| cue.ui_primary | the screen's one primary action (Start Heist, Take, Continue) | two-tone commit | PP (D-090) |
+| cue.ui_error | blocked / invalid action | muted buzz | PP (D-090) |
+| cue.ui_tab | tab / page switch | paper slide | PP (D-090) |
+| cue.hud_objective_done | objective completed (HUD) | short rising two-note chime | PP (D-090) |
+| cue.hud_hint | contextual hint appears | very soft blip | PP (D-090) |
+| cue.payday_total | payday hero total lands | register "cha-chunk" | PP (D-090) |
+| cue.card_flip | payday card reveal | card flip | PP (D-090) |
+
+UI cues (D-090) are built by `python3 tools/audiogen/ui/build_ui.py` (ENV B). `tools/audiogen/build.py` rewrites
+`cues.tres`: after it, run `python3 tools/audiogen/ui/build_ui.py --registry-only` (or have C's build call it) so the
+UI-bus entries are kept.
 
 Special-action cues have no dedicated EventBus signals: ENV A triggers them with `audio_cue_requested` or a
 `CueEmitter`. Looping tells stop on the matching end fact (`crew_tase_ended` for `stinger_arc`, D-049) or locally.

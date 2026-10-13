@@ -17,6 +17,10 @@ extends Resource
 @export_group("Cover (L6.1)")
 ## Cover points (TacticalPoint COVER) considered must be within this distance of the leader (m) ◇.
 @export var cover_search_radius_m: float = 8.0
+## PO-5.3 ◇: eye height used for the cover point -> leader line-of-sight check (m).
+@export var cover_eye_height_m: float = 1.1
+## PO-5.3 ◇ (L2.5): a downed AI teammate does not shoot (police then ignore it for the full bleedout).
+@export var downed_hold_fire: bool = true
 ## A cover point is taken if another crew member stands within this distance of it (m).
 @export var cover_taken_m: float = 1.0
 ## Reached the cover point within this distance (m).
@@ -60,6 +64,9 @@ extends Resource
 @export var repath_goal_move_m: float = 1.0
 ## Advance to the next path corner within this horizontal distance (m).
 @export var waypoint_reach_m: float = 0.45
+## D-085: interior path corners are pushed this far away from the inside of the turn (the wall corner the
+## navmesh path hugs), so the 0.35 m crew capsule clears a corner baked for a 0.30 m nav agent.
+@export var corner_margin_m: float = 0.1
 
 @export_group("Orders (L6.1, A3-05)")
 ## D-014 "P4 option": a follow / carry_bag / revive order in STEALTH un-hides the AI so it follows and

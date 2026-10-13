@@ -13,13 +13,14 @@ major version and comes with a `docs/decisions.md` entry and a migration note to
 | [modifiers.md](modifiers.md) | 1.0 | B → A | `game/core/modifiers.gd`, `game/contracts/modifier_keys.gd` |
 | [data_schemas.md](data_schemas.md) | 1.0 | B (data) → A (runtime) | `game/contracts/data/*` |
 | [crew_intent.md](crew_intent.md) | 1.0 | A, LEAD tests | `game/contracts/crew_intent.gd` |
-| [audio_cues.md](audio_cues.md) | 1.4 | C (sounds) ← A/B (triggers) | `game/world/audio/cues.tres` (C) |
+| [audio_cues.md](audio_cues.md) | 1.5 | C (sounds) ← A/B (triggers) | `game/world/audio/cues.tres` (C) |
 | [preplanning.md](preplanning.md) | 1.0 | B (resolve, UI) / C (points, overrides) → A (apply) | — |
 | [damage.md](damage.md) | 1.0 | A ↔ B (hits, targets) | `game/contracts/damage.gd` |
-| [ui_hud.md](ui_hud.md) | 1.7 | A (state) → B (HUD widgets) | — |
+| [ui_hud.md](ui_hud.md) | 1.8 | A (state) → B (HUD widgets) | — |
 | [groups.md](groups.md) | 1.1 | all | `game/contracts/ids.gd` (`G`) |
 | [net.md](net.md) | 1.1 | LEAD → A, B | `game/core/net.gd` |
 | [hub_map.md](hub_map.md) | 1.1 | C/A → B (safehouse hub) | `SafehouseMap`, `hub_station` |
+| [input_focus.md](input_focus.md) | 1.2 | P → B, A (mouse capture, input focus) | `game/systems/player/mouse_capture.gd` |
 
 Rules shared by all contracts:
 * Producers ship **placeholders** first so consumers are never blocked (capsule NPCs, box props,

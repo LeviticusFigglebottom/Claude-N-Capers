@@ -130,6 +130,10 @@ extends Resource
 @export var civilian_guard_reach_m: float = 1.5
 ## A1-06 ◇ loud (S11.2): panicked civilians run this far from the nearest crew member, then cower.
 @export var civilian_flee_distance_m: float = 10.0
+## PO-5 ◇: a fleeing civilian that moves less than civilian_flee_stall_m in civilian_flee_stall_s
+## (blocked doorway, unreachable point) cowers where it is instead of running in place forever.
+@export var civilian_flee_stall_s: float = 2.0
+@export var civilian_flee_stall_m: float = 0.3
 
 @export_group("Heist mode (S11.3)")
 ## STEALTH_ONLY heists: seconds between the alarm (Mercer abort line) and heist_ended(failed).
@@ -172,3 +176,18 @@ extends Resource
 @export var sixth_sense_still_s: float = 3.5
 @export var sixth_sense_radius_m: float = 10.0
 @export var sixth_sense_still_speed: float = 0.1
+
+@export_group("Guard domination (S5.8)")
+## S5.8: a shout from crew with `stealth.can_dominate_guards` within this many seconds after a
+## guard's "!" makes him kneel and cuff himself (100% inside the window). His pager still fires.
+@export var guard_dominate_window_s: float = 1.5
+## S5.8 / D-079: the shout reaches the guard nearest the aim line within guard_dominate_range_m (10 m),
+## x guard_dominate_skill_range_mult (1.5) with the domination skill (`ability.intimidate_cops`, the
+## Dominator analog) x ability.shout_range_mult (Crew Chief 1.25), multiplicative, with line of sight.
+@export var guard_dominate_range_m: float = 10.0
+@export var guard_dominate_skill_range_mult: float = 1.5
+## D-079 aim cone half-angle (deg): max(min, linear from near_deg at 0 m to far_deg at far_m).
+@export var guard_dominate_cone_near_deg: float = 90.0
+@export var guard_dominate_cone_far_deg: float = 30.0
+@export var guard_dominate_cone_far_m: float = 12.0
+@export var guard_dominate_cone_min_deg: float = 8.0

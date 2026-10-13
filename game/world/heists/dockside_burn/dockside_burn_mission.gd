@@ -8,14 +8,13 @@
 ## (strongroom thermal drill or the count-room cage) and/or the weapons containers -> secure >= 4 bags
 ## (product and extra bags are a bonus, D-064 Q2) -> the escape is called when [burn] and [secure] are
 ## done, arrives after `escape_eta_s` -> escape.
-## Placeholders until ENV A / B ship their parts (each degrades gracefully):
-##   TODO(QC-35): hold_police() / start_police() director hook (called only if HeistMission has them).
-##   TODO(QC-36): cartel gunmen are ordinary guards until enemy.cartel_gunman exists.
-##   TODO(QC-38): burn_point + fire volume (G1: THERMAL drill_point, inert fire volume; door re-lock).
-##   TODO(QC-25): timed cartel reinforcements use spawn_guards (security-guard role until QC-36).
+## ENV A parts (G2): HeistMission.police_delay_s holds the director (QC-35); burn_point telegraphs
+## (cue.burn_warning) and lights its fire volume (QC-38); padlocks on the roller doors and the
+## container latches (QC-37). Timed cartel reinforcements use spawn_guards (QC-25).
 extends HeistMission
 
 const MIN_BAGS: int = 4
+## The burn_point's telegraph (InteractionTweak.burn_warning_s): the shutters drop when it lights.
 const SHUTTER_WARNING_S: float = 5.0
 const FOG_BOAT_DELAY_S: float = 30.0
 const REINFORCEMENTS_AT_S: float = 180.0
@@ -55,7 +54,6 @@ const SHUTTERS: Dictionary = {
 }
 const DOORS: NodePath = ^"../Gameplay/Doors"
 const CRATES: NodePath = ^"../Gameplay/Containers"
-const PRODUCT_GROUP: NodePath = ^"../Variants/Group_product_location"
 
 var _police_started: bool = false
 var _burn_started: bool = false
@@ -85,7 +83,7 @@ func _on_mission_start() -> void:
 		Enums.ObjectiveState.ACTIVE if countroom else Enums.ObjectiveState.HIDDEN, {"alternative": &"strongroom"})
 	add_objective(&"containers", &"objective.dockside_burn.containers")
 	add_objective(&"secure", &"objective.dockside_burn.secure", Enums.ObjectiveState.ACTIVE,
-		{"bags": MIN_BAGS, "optional_more": true})
+		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true})
 	require_loot(&"secure", MIN_BAGS)
 	add_objective(&"escape_wait", &"objective.dockside_burn.escape_wait", Enums.ObjectiveState.HIDDEN)
 	add_objective(&"escape", &"objective.dockside_burn.escape", Enums.ObjectiveState.HIDDEN)
@@ -102,6 +100,7 @@ func _on_mission_start() -> void:
 	_apply_containers()
 	_apply_lift()
 	_apply_entry_and_perch()
+	_watch_entry_doors()
 	_schedule_police()
 	_schedule_rare_events()
 
@@ -142,6 +141,10 @@ func _apply_containers() -> void:
 			continue
 		_set_enabled(crates, false)
 		crates.visible = false
+	for k4: String in CONTAINER_KEYS:
+		var latch: Node = get_node_or_null(NodePath(String(CRATES) + "/Latch" + k4.to_upper()))
+		if latch != null and latch.has_signal(&"opened"):
+			latch.connect(&"opened", _open_container.bind(k4))
 	update_objective_data(&"containers", {"count": _weapons.size()})
 	if _rare(RARE_INFORMANT):
 		update_objective_data(&"containers", {"revealed": _weapons.duplicate()})
@@ -172,13 +175,30 @@ func _apply_entry_and_perch() -> void:
 			rd.call(&"unlock")
 
 
-## Cartel phase, then the police (D-064 Q1). TODO(QC-35): until HeistMission offers the hold /
-## start hook, the director runs from the load (LOUD_ONLY) and this timer only drives the lines,
-## the police gates and the [cartel] objective.
+## A building entry door opening (lockpicked, its padlock picked or sawn, breached) is the breach.
+## Connected after _apply_entry_and_perch so the variant's open door does not count.
+func _watch_entry_doors() -> void:
+	for tag: StringName in ENTRY_TAGS:
+		for d: Node in find_tagged(tag):
+			if d.has_signal(&"open_changed") and not d.is_connected(&"open_changed", _on_entry_door):
+				d.connect(&"open_changed", _on_entry_door)
+
+
+func _on_entry_door(open: bool, _by_net_id: int) -> void:
+	if open:
+		_breach()
+
+
+## Cartel phase, then the police (D-064 Q1, QC-35): police_delay_s holds the assault director for the
+## rolled delay; the same timer opens the closure gates (baked closed, D-073), says the lines and
+## closes [cartel].
+## A compressed director (launch option `director_tweak`, e.g. test_p3_loud) compresses the cartel
+## hold by the same factor as its first CONTROL phase (first_control_s vs the shipped tweak); the
+## shipped tweak keeps the rolled 60 / 90 / 120 s.
 func _schedule_police() -> void:
-	if has_method(&"hold_police"):
-		call(&"hold_police")
 	var delay: float = 0.0 if _rare(RARE_POLICE_TIPPED) else float(_scalar(&"police_delay_s", 90.0))
+	delay *= _director_time_scale()
+	police_delay_s = delay
 	start_timer(&"police_delay", delay, _on_police_called)
 
 
@@ -193,8 +213,7 @@ func _on_police_called() -> void:
 	if _police_started:
 		return
 	_police_started = true
-	if has_method(&"start_police"):
-		call(&"start_police")
+	police_delay_s = 0.0
 	say(&"vo.mercer.dockside_burn_police_called")
 	if _slot_active(&"east_gangway", &"gangway_down"):
 		say(&"vo.mercer.dockside_burn_gangway")
@@ -255,12 +274,14 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 		_product_found()
 
 
-func _on_device_started(device_net_id: int, _kind: StringName, _duration: float) -> void:
+func _on_device_started(device_net_id: int, _kind: StringName, duration: float) -> void:
 	if _is_tagged(device_net_id, TAG_BURN):
 		_product_found()
 		if not _burn_started:
 			_burn_started = true
 			say(&"vo.mercer.dockside_burn_burn_started")
+			# The burn_point's telegraph starts when the burn ends: Mercer calls the shutters with it.
+			start_timer(&"burn_warning", maxf(duration, 0.0), _on_burn_warning)
 	elif _is_tagged(device_net_id, TAG_STRONGROOM_DRILL):
 		_breach()
 		say(&"vo.mercer.dockside_burn_strongroom_drill")
@@ -286,8 +307,6 @@ func _on_device_finished(device_net_id: int) -> void:
 		_set_lift_enabled(true)
 	elif _is_tagged(device_net_id, TAG_PADLOCK):
 		_breach()
-	else:
-		_check_container(device_net_id)
 
 
 func _on_device_jammed(device_net_id: int) -> void:
@@ -296,6 +315,7 @@ func _on_device_jammed(device_net_id: int) -> void:
 
 
 func _on_bag_secured(_bag_net_id: int, _loot_id: StringName, _value: int) -> void:
+	update_objective_data(&"secure", {"count": bags_secured, "total": MIN_BAGS})  # HUD: count / total bags
 	if bags_secured == MIN_BAGS:
 		say(&"vo.mercer.dockside_burn_required_secured")
 	_try_escape()
@@ -317,35 +337,38 @@ func _product_found() -> void:
 		say(&"vo.mercer.dockside_burn_thermite_reminder")
 
 
-## A container padlock was cut: crates for a weapons container, nothing for the others.
-func _check_container(device_net_id: int) -> void:
-	for k: String in CONTAINER_KEYS:
-		if not _is_tagged(device_net_id, StringName("padlock_" + k)):
-			continue
-		if not _weapons.has(k):
-			say(&"vo.mercer.dockside_burn_containers_hint")
-			return
-		var crates: Node3D = get_node_or_null(NodePath(String(CRATES) + "/Crates" + k.to_upper())) as Node3D
-		if crates != null:
-			crates.visible = true
-			_set_enabled(crates, true)
-		say(&"vo.mercer.dockside_burn_weapons_found")
-		if not _weapons_found:
-			_weapons_found = true
-			complete(&"containers")
+## A container's padlock came off (picked or sawn; its latch opened): crates for a weapons container,
+## nothing for the others.
+func _open_container(k: String) -> void:
+	if not _weapons.has(k):
+		say(&"vo.mercer.dockside_burn_containers_hint")
 		return
+	var crates: Node3D = get_node_or_null(NodePath(String(CRATES) + "/Crates" + k.to_upper())) as Node3D
+	if crates != null:
+		crates.visible = true
+		_set_enabled(crates, true)
+	say(&"vo.mercer.dockside_burn_weapons_found")
+	if not _weapons_found:
+		_weapons_found = true
+		complete(&"containers")
 
 
-## Burn done (D-064 Q6): warning, a 5 s countdown, then the shutters of the burning room drop and
-## its fire volume goes live. TODO(QC-38): the fire volume's damage (DoT, ignores armour) is ENV A's
-## burn_point; G1 marks it active only.
+## The burn ended and the burn_point's telegraph runs (cue.burn_warning, burn_warning_s): Mercer
+## calls the shutters.
+func _on_burn_warning() -> void:
+	if _burned:
+		return
+	say(&"vo.mercer.dockside_burn_burn_done", {"shutters_in_s": SHUTTER_WARNING_S})
+	update_objective_data(&"burn", {"shutters_in_s": SHUTTER_WARNING_S})
+
+
+## Burn done (D-064 Q6): the burn_point lit its fire volume (device_finished, after its telegraph):
+## the burning room's fire shutters drop and bar now.
 func _on_burn_done() -> void:
 	if _burned:
 		return
 	_burned = true
-	say(&"vo.mercer.dockside_burn_burn_done", {"shutters_in_s": SHUTTER_WARNING_S})
-	update_objective_data(&"burn", {"shutters_in_s": SHUTTER_WARNING_S})
-	start_timer(&"fire_shutters", SHUTTER_WARNING_S, _drop_shutters)
+	_drop_shutters()
 	complete(&"burn")
 	_try_escape()
 
@@ -359,13 +382,11 @@ func _drop_shutters() -> void:
 		var d: Node = get_node_or_null(NodePath(String(DOORS) + "/" + String(dn)))
 		if d == null:
 			continue
+		# Fire shutter: locked BARRED before it closes, so the close also drops its NavLink.
+		d.set(&"lock", Door.Lock.BARRED)
+		d.set(&"locked", true)
 		d.call(&"set_open", false)
 		_set_enabled(d, false)
-		if d.has_method(&"bar"):
-			d.call(&"bar")  # TODO(QC-38): door re-lock (BARRED) API; G1 disables the interaction.
-	var fv: Node = get_node_or_null(NodePath(String(PRODUCT_GROUP) + "/Slot_" + sid + "/FireVolume"))
-	if fv != null:
-		fv.set_meta(&"active", true)
 
 
 ## The escape is called when [burn] and [secure] are done; it arrives after `escape_eta_s` (+30 s
@@ -450,3 +471,13 @@ func _is_tagged(net_id: int, tag: StringName) -> bool:
 		if _net_id(n) == net_id:
 			return true
 	return false
+
+
+func _director_time_scale() -> float:
+	var d: AssaultDirector = _director()
+	if d == null or d.tweak == null:
+		return 1.0
+	var base: DirectorTweak = load(AssaultDirector.DEFAULT_TWEAK) as DirectorTweak
+	if base == null or base.first_control_s <= 0.0:
+		return 1.0
+	return clampf(d.tweak.first_control_s / base.first_control_s, 0.0, 1.0)

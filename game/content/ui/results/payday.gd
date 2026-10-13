@@ -26,6 +26,13 @@ extends UiScreen
 signal continue_pressed()
 
 const MENU_SCENE: String = "res://content/ui/menus/menu_flow.tscn"
+const URGENT_COLOR: Color = Color(1.0, 0.42, 0.32)
+## PQ-B-5: player picks are ignored this long after the cards appear.
+const INPUT_GRACE_S: float = 0.6
+## PO-4: seconds the payday total takes to count up.
+const COUNT_S: float = 1.2
+## D-090: at most one count-up tick per this many ms.
+const COUNT_TICK_MS: int = 80
 
 @export var listen_heist_ended: bool = false
 @export var apply_to_profile: bool = true
@@ -65,12 +72,26 @@ var cards_stage: bool = false
 var card_views: Array[PaydayCardView] = []
 var timer_label: Label
 var card_result_label: Label
+## Urgent-window second ticks so far (PQ-B-9).
+var urgent_ticks: int = 0
+## Times the hero total landed (cue.payday_total requested; tests).
+var total_landed_count: int = 0
 var _content: VBoxContainer
 var _summary: ScrollContainer
 var _cards_root: VBoxContainer
 var _cards_row: HBoxContainer
 var _cards_title: Label
 var _applied: bool = false
+var _input_grace: float = 0.0
+var _counter: Tween = null
+var _count_tick_ms: int = 0
+
+
+func _sync_cursor() -> void:
+	if is_visible_in_tree():
+		MouseCapture.push_release(&"payday")
+	else:
+		MouseCapture.pop_release(&"payday")
 
 
 func setup(p: PlayerProfile) -> void:
@@ -78,7 +99,7 @@ func setup(p: PlayerProfile) -> void:
 
 
 func build_ui() -> void:
-	var backdrop: ColorRect = ColorRect.new()  # opaque over the map when shown in-heist
+	var backdrop: ColorRect = CaseBackdrop.new()  # opaque over the map when shown in-heist
 	backdrop.color = Color(UiAccent.app_bg(), 0.97)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
@@ -100,6 +121,11 @@ func build_ui() -> void:
 	root.add_child(continue_button)
 	focus_chain.append(continue_button)
 	back_requested.connect(_on_continue)
+	# input_focus.md 1.1: the payday screen holds the cursor while shown (MouseCapture &"payday"), so the
+	# heist's still-live PlayerInput neither captures it nor eats the first click as a capture click.
+	visibility_changed.connect(_sync_cursor)
+	tree_exiting.connect(MouseCapture.pop_release.bind(&"payday"))
+	_sync_cursor()
 	if listen_heist_ended and not EventBus.heist_ended.is_connected(_on_heist_ended):
 		EventBus.heist_ended.connect(_on_heist_ended)
 	if not result.is_empty():
@@ -128,6 +154,7 @@ func show_result(heist_result: Dictionary) -> void:
 		card_roll = PaydayCards.roll(int(result.get("seed", 0)), Net.local_slot(), int(result.get("difficulty", 0)),
 				profile, PaydayCards.quality_add_for(profile))
 		time_left = PaydayCards.table().pick_time_s
+		urgent_ticks = 0
 	if _content != null:
 		_render()
 		_set_stage(false)
@@ -151,7 +178,7 @@ func show_cards() -> void:
 	for i: int in range(cards.size()):
 		var v: PaydayCardView = PaydayCardView.new()
 		v.setup(i, PaydayCards.table())
-		v.pressed.connect(pick.bind(i))
+		v.pressed.connect(_on_card_pressed.bind(i))
 		_cards_row.add_child(v)
 		card_views.append(v)
 	var chain: Array[Control] = []
@@ -167,6 +194,31 @@ func show_cards() -> void:
 	focus_chain = chain
 	focus_chain.append(continue_button)
 	focus_default()
+	_input_grace = INPUT_GRACE_S
+
+
+## PQ-B-5: player picks are ignored for INPUT_GRACE_S after the cards appear, so an accept held or
+## mashed through the summary cannot pick the default-focused card blind. The timer is unaffected.
+## True while player card picks are still being ignored.
+func in_input_grace() -> bool:
+	return _input_grace > 0.0
+
+
+func _on_card_pressed(index: int) -> void:
+	if in_input_grace():
+		return
+	pick(index)
+
+
+## PQ-B-4: number keys 1..3 pick a card directly (after the grace).
+func _unhandled_key_input(event: InputEvent) -> void:
+	var k: InputEventKey = event as InputEventKey
+	if k == null or not k.pressed or k.echo or not cards_stage or picked_index >= 0 or in_input_grace():
+		return
+	var idx: int = int(k.physical_keycode) - int(KEY_1)
+	if idx >= 0 and idx < card_views.size():
+		get_viewport().set_input_as_handled()
+		pick(idx)
 
 
 ## Pick card `index` (player or timer): reveals all cards, grants the reward and saves the profile.
@@ -208,7 +260,11 @@ func _exit_tree() -> void:
 func tick(delta: float) -> void:
 	if not cards_stage or picked_index >= 0:
 		return
+	_input_grace = maxf(_input_grace - delta, 0.0)
+	var before: int = ceili(time_left)
 	time_left = maxf(time_left - delta, 0.0)
+	if timer_is_urgent() and ceili(time_left) < before and time_left > 0.0:
+		_urgent_tick()
 	if time_left <= 0.0:
 		finish_card_pick()
 	_update_timer_label()
@@ -263,6 +319,53 @@ func _reveal() -> void:
 	_update_timer_label()
 
 
+## True while the card stage is waiting for a pick and PaydayCardsTable.urgent_time_s or less remain.
+## PQ-B-9: one cue request per whole second in the urgent window (PaydayCardsTable.urgent_tick_cue).
+func _urgent_tick() -> void:
+	urgent_ticks += 1
+	var cue: StringName = PaydayCards.table().urgent_tick_cue
+	if cue_registered(cue):
+		EventBus.audio_cue_requested.emit(cue, Vector3.ZERO, -1)
+
+
+## True when ENV C's cue registry has `cue_id` (no hard dependency on world/audio; false when absent).
+static func cue_registered(cue_id: StringName) -> bool:
+	if cue_id == &"":
+		return false
+	var reg_script: Script = UiNav.global_class(&"AudioCueRegistry")
+	if reg_script == null:
+		return false
+	var reg: Object = reg_script.call(&"load_default") as Object
+	return reg != null and bool(reg.call(&"has_cue", cue_id))
+
+
+## Gamepad LB / RB (ui_payday_prev / ui_payday_next, once the lead adds them): move along the cards.
+## LB / RB are shared with throw / melee, so this runs in _input (before gameplay's unhandled input),
+## only while focus is inside this screen, and consumes the event.
+func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree() or not cards_stage or picked_index >= 0 or card_views.is_empty():
+		return
+	var owner_ctl: Control = get_viewport().gui_get_focus_owner()
+	if owner_ctl == null or not is_ancestor_of(owner_ctl):
+		return
+	var step: int = 0
+	if InputMap.has_action(&"ui_payday_prev") and event.is_action_pressed(&"ui_payday_prev"):
+		step = -1
+	elif InputMap.has_action(&"ui_payday_next") and event.is_action_pressed(&"ui_payday_next"):
+		step = 1
+	if step == 0:
+		return
+	get_viewport().set_input_as_handled()
+	var cur: int = card_views.find(owner_ctl as PaydayCardView)
+	var n: int = card_views.size()
+	var nxt: int = (maxi(cur, 0) + step + n) % n if cur >= 0 else (0 if step > 0 else n - 1)
+	card_views[nxt].grab_focus()
+
+
+func timer_is_urgent() -> bool:
+	return cards_stage and picked_index < 0 and time_left <= PaydayCards.table().urgent_time_s
+
+
 func _update_timer_label() -> void:
 	if timer_label == null:
 		return
@@ -270,6 +373,12 @@ func _update_timer_label() -> void:
 		timer_label.text = UiText.t(&"ui.payday_cards.auto_picked") if auto_picked else ""
 	else:
 		timer_label.text = UiText.t(&"ui.payday_cards.timer", {"seconds": ceili(time_left)})
+	# B-PP-3: the PD2 30 s auto-pick stays (pd2_fidelity P9), but the last seconds are flagged so the
+	# timeout never silently picks for a player who is still deciding.
+	if timer_is_urgent():
+		timer_label.add_theme_color_override(&"font_color", URGENT_COLOR)
+	else:
+		timer_label.remove_theme_color_override(&"font_color")
 	timer_label.visible = timer_label.text != ""
 
 
@@ -303,14 +412,16 @@ func _render() -> void:
 		c.queue_free()
 	value_labels.clear()
 	var success: bool = bool(payout.get("success", false))
-	_content.add_child(UiBuild.label(&"ui.results.success" if success else &"ui.results.failure", UiBuild.SUBHEADER))
+	_content.add_child(_build_hero(success))
 	var summary: Array[String] = [
 		UiText.t(&"ui.results.stealth" if bool(result.get("stealth", false)) else &"ui.results.loud"),
 		UiText.t(&"ui.results.time", {"time": UiText.clock(float(result.get("time_s", 0.0)))}),
 		UiText.t(&"ui.results.pagers_answered", {"count": int(result.get("pagers_answered", 0))}),
 		UiText.t(UiText.difficulty_key(int(result.get("difficulty", 0)))),
 	]
-	_content.add_child(UiBuild.label(StringName("  |  ".join(summary))))
+	var chips: Label = UiBuild.caption()
+	chips.text = "   ·   ".join(summary)
+	_content.add_child(chips)
 	var cols: HBoxContainer = UiBuild.hbox(40)
 	_content.add_child(cols)
 	cols.add_child(UiBuild.panel(_build_cash()))
@@ -322,6 +433,76 @@ func _render() -> void:
 		if a != null:
 			_content.add_child(UiBuild.label(&"ui.results.achievement_unlocked", UiBuild.SUBHEADER, {"name": UiText.t(a.name_key)}))
 	focus_default()
+
+
+## PO-4 hero row (style.md §8 payday): the outcome as a caption, the take-home total as the display
+## number in brass, where it went (stash / spending) under it; XP total and the level bar on the right.
+func _build_hero(success: bool) -> HBoxContainer:
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S7)
+	var left: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(left)
+	var outcome: Label = UiBuild.caption(&"ui.results.success" if success else &"ui.results.failure")
+	outcome.add_theme_color_override(&"font_color", UiTokens.OK if success else UiTokens.ALERT)
+	left.add_child(outcome)
+	var total: Label = UiBuild.label(&"", UiBuild.DISPLAY)
+	total.text = UiText.money(int(payout.get("total", 0)))
+	total.add_theme_color_override(&"font_color", UiTokens.BRASS_HI if success else UiTokens.PAPER_MUTE)
+	left.add_child(total)
+	value_labels[&"hero_total"] = total
+	_count_up(total, int(payout.get("total", 0)))
+	var split: Label = UiBuild.label(&"", UiBuild.DIM)
+	split.text = "%s   ·   %s" % [
+		UiText.t(&"ui.results.stash_line", {"amount": UiText.money(int(payout.get("stash", 0)))}),
+		UiText.t(&"ui.results.spending_line", {"amount": UiText.money(int(payout.get("spending", 0)))})]
+	left.add_child(split)
+	var right: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+	right.custom_minimum_size = Vector2(520, 0)
+	right.alignment = BoxContainer.ALIGNMENT_END
+	row.add_child(right)
+	right.add_child(UiBuild.caption(&"ui.results.xp_header"))
+	var xp: Label = UiBuild.label(&"", UiBuild.HEADER)
+	xp.text = "+" + UiText.group_digits(int(payout.get("xp_total", 0)))
+	right.add_child(xp)
+	return row
+
+
+## PO-4 motion: the hero total ticks up from 0 over COUNT_S (ease out); any accept / click skips to the
+## end. Reduce Motion (or headless) shows the final number at once.
+## D-090: cue.payday_tick ticks along the count-up (every COUNT_TICK_MS at most) and cue.payday_total
+## lands with the final number (at once when there is no count-up).
+func _count_up(l: Label, amount: int) -> void:
+	if amount <= 0 or not is_inside_tree():
+		return
+	if not UiTokens.motion_ok() or DisplayServer.get_name() == "headless":
+		_total_landed()
+		return
+	_count_tick_ms = Time.get_ticks_msec()
+	_counter = create_tween()
+	_counter.tween_method(_count_step.bind(l), 0.0, float(amount), COUNT_S) \
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	_counter.finished.connect(_total_landed)
+
+
+func _count_step(v: float, l: Label) -> void:
+	l.text = UiText.money(roundi(v))
+	var now: int = Time.get_ticks_msec()
+	if now - _count_tick_ms >= COUNT_TICK_MS:
+		_count_tick_ms = now
+		UiSfx.play(UiSfx.PAYDAY_TICK)
+
+
+func _total_landed() -> void:
+	total_landed_count += 1
+	UiSfx.play(UiSfx.PAYDAY_TOTAL)
+
+
+## Jumps a running count-up to its end. Returns whether one was running.
+func skip_count() -> bool:
+	if _counter != null and _counter.is_valid() and _counter.is_running():
+		_counter.custom_step(COUNT_S)
+		return true
+	return false
 
 
 func _build_cash() -> VBoxContainer:
@@ -437,6 +618,11 @@ func _line(grid: GridContainer, id: StringName, caption: String, value: String) 
 	grid.add_child(c)
 	grid.add_child(v)
 	value_labels[id] = v
+	# PO-4: a line worth nothing is noise (pro bonus 0, custody 0, ...); totals always show.
+	var zero: bool = RegEx.create_from_string("[1-9]").search(value) == null
+	if zero and not id in [&"contract", &"total", &"stash", &"spending", &"xp_total"]:
+		c.visible = false
+		v.visible = false
 
 
 ## payout.loot_lines grouped by loot id in first-seen order: [{loot_id, count, value}].
@@ -474,6 +660,8 @@ func _on_heist_ended(heist_result: Dictionary) -> void:
 
 
 func _on_continue() -> void:
+	if skip_count():
+		return  # PO-4: the first press finishes the count-up
 	if not cards_stage and has_card_pick():
 		show_cards()
 		return

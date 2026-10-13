@@ -1,5 +1,5 @@
 ## Ammo (mag / reserve of the equipped slot) and equipment counts (deployable, throwable, cable
-## ties, body bags). Hidden in civilian mode (S1.3: no gear until the gear pickup, D-065).
+## ties, body bags). Hidden until masked (civilian: no gear, S1.3 / D-065; casing: no weapon out).
 class_name AmmoPanel
 extends HudWidget
 
@@ -9,11 +9,16 @@ var equipment_label: Label
 
 func build() -> void:
 	var v: VBoxContainer = UiBuild.vbox(2)
-	add_child(UiBuild.panel(v, UiBuild.HUD_PANEL))
+	var p: PanelContainer = UiBuild.panel(v, UiBuild.HUD_PANEL)
+	add_child(p)
+	# PO-4: hug the bottom-right corner (the frameless text must line up with the screen margin).
+	p.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	p.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	p.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	ammo_label = UiBuild.label(&"", UiBuild.HUD_BIG)
 	ammo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	v.add_child(ammo_label)
-	equipment_label = UiBuild.label(&"", UiBuild.HUD)
+	equipment_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.DIM))
 	equipment_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	v.add_child(equipment_label)
 
@@ -23,7 +28,10 @@ func watched_signals() -> Array[StringName]:
 
 
 func refresh() -> void:
-	visible = player_mode() != &"civilian"
+	# PO-1 (P): no weapon is drawn until you mask up, so the weapon HUD shows only when masked (PD2);
+	# models without a mode (pre-v1.6, loading) keep it visible.
+	var mode: StringName = player_mode()
+	visible = mode == &"masked" or mode == &""
 	var slots: Dictionary = prop(&"ammo", {}) as Dictionary
 	var slot: int = int(prop(&"equipped_slot", Enums.WeaponSlot.SECONDARY))
 	var a: Dictionary = slots.get(slot, {}) as Dictionary

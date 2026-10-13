@@ -12,6 +12,9 @@ signal point_focused(point_id: StringName)
 ## Pixels kept free around the drawn bounds.
 const PAD: float = 28.0
 
+## Zone name size (canvas units) in _draw(); _zone_label_rects() measures with it.
+const ZONE_FONT: int = 16
+
 var board: PreplanBoard
 var tweak: PreplanTweak
 var floor_index: int = 0
@@ -98,12 +101,16 @@ func _build_markers() -> void:
 		b.tooltip_text = UiText.t(StringName(p.get("label", &"")))
 		b.pressed.connect(point_pressed.emit.bind(pid))
 		b.focus_entered.connect(point_focused.emit.bind(pid))
+		b.focus_entered.connect(_peek_label.bind(pid, true))
+		b.focus_exited.connect(_peek_label.bind(pid, false))
+		b.mouse_entered.connect(_peek_label.bind(pid, true))
+		b.mouse_exited.connect(_peek_label.bind(pid, false))
 		_apply_style(b, &"free", false)
 		add_child(b)
 		markers[pid] = b
 		marker_numbers[pid] = n
 		var l: Label = UiBuild.label(StringName(p.get("label", &"")))
-		l.add_theme_font_size_override(&"font_size", 17)
+		l.add_theme_font_size_override(&"font_size", 21)
 		l.add_theme_color_override(&"font_color", tweak.label_color)
 		l.add_theme_color_override(&"font_outline_color", tweak.paper_color)
 		l.add_theme_constant_override(&"outline_size", 6)
@@ -113,16 +120,76 @@ func _build_markers() -> void:
 	_layout_markers()
 
 
+## PO-4 (audit: point labels overlapped, "Alley … Van: alley west"): each label tries below, above,
+## right and left of its marker and takes the first spot that hits no marker and no placed label;
+## a label with no free spot is hidden and shows while its marker is focused or hovered.
 func _layout_markers() -> void:
+	var taken: Array[Rect2] = _zone_label_rects()
 	for pid: Variant in markers:
 		var p: Dictionary = board.blueprint.point(StringName(pid))
-		var c: Vector2 = world_to_view(p.get("pos", Vector2.ZERO) as Vector2)
 		var b: Button = markers[pid] as Button
-		b.position = c - b.size * 0.5
+		b.position = world_to_view(p.get("pos", Vector2.ZERO) as Vector2) - b.size * 0.5
+		taken.append(b.get_rect().grow(2.0))
+	for pid: Variant in markers:
+		var b: Button = markers[pid] as Button
 		var l: Label = marker_labels[pid] as Label
 		l.reset_size()
-		l.position = Vector2(c.x - l.size.x * 0.5, c.y + b.size.y * 0.5 + 2.0)
+		var c: Vector2 = b.position + b.size * 0.5
+		var half: Vector2 = b.size * 0.5
+		var spots: Array[Vector2] = [
+			Vector2(c.x - l.size.x * 0.5, c.y + half.y + 2.0),
+			Vector2(c.x - l.size.x * 0.5, c.y - half.y - 2.0 - l.size.y),
+			Vector2(c.x + half.x + 4.0, c.y - l.size.y * 0.5),
+			Vector2(c.x - half.x - 4.0 - l.size.x, c.y - l.size.y * 0.5)]
+		var placed: bool = false
+		for spot: Vector2 in spots:
+			var r: Rect2 = Rect2(spot, l.size)
+			if not Rect2(Vector2.ZERO, size).encloses(r) and size != Vector2.ZERO:
+				continue
+			var hit: bool = false
+			for t: Rect2 in taken:
+				if t.intersects(r):
+					hit = true
+					break
+			if not hit:
+				l.position = spot
+				taken.append(r)
+				placed = true
+				break
+		if not placed:
+			l.position = spots[0]
+		l.set_meta(&"crowded", not placed)
+		l.visible = placed
 	queue_redraw()
+
+
+## Rects of the zone names _draw() prints (same rules: top-left of the zone, only when it fits).
+func _zone_label_rects() -> Array[Rect2]:
+	var out: Array[Rect2] = []
+	if board == null or size == Vector2.ZERO:
+		return out
+	var s: float = float(_transform()["scale"])
+	var font: Font = get_theme_default_font()
+	for sh: Dictionary in board.blueprint.shapes:
+		var key: StringName = StringName(sh.get("label", &""))
+		var fl: int = int(sh.get("floor", -1))
+		if key == &"" or (fl >= 0 and fl != floor_index):
+			continue
+		var r: Rect2 = sh.get("rect", Rect2()) as Rect2
+		var vr: Rect2 = Rect2(world_to_view(r.position), r.size * s)
+		var ts: Vector2 = font.get_string_size(UiText.t(key).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT)
+		if ts.x <= vr.size.x - 8.0:
+			out.append(Rect2(vr.position + Vector2(6, 4), ts))
+	return out
+
+
+func _peek_label(pid: StringName, on: bool) -> void:
+	var l: Label = marker_labels.get(pid) as Label
+	if l == null or not bool(l.get_meta(&"crowded", false)):
+		return
+	l.visible = on
+	if on:
+		move_child(l, -1)
 
 
 func _apply_style(b: Button, state: StringName, selected: bool) -> void:
@@ -193,7 +260,7 @@ func _draw() -> void:
 		var r2: Rect2 = sh.get("rect", Rect2()) as Rect2
 		var vr2: Rect2 = Rect2(world_to_view(r2.position), r2.size * s)
 		var text: String = UiText.t(key).to_upper()
-		var fs: int = 16
+		var fs: int = ZONE_FONT
 		var tw: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		if tw > vr2.size.x - 8.0:
 			continue
