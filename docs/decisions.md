@@ -704,3 +704,30 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   lit by sky ambient only (near-black at night). ENV P adds a viewmodel-only key light (FpViewmodelTweak).
 - Option (a) adopted for world lights: render layer 20 `viewmodel_lit` (visual_slots 1.1). ENV P adds it to the viewmodel
   camera's cull_mask and to its own muzzle flash; ENV A tags heist-map key lights and NPC/crew flashlights/muzzle flashes.
+
+## D-095 — 2026-10-13 — `viewmodel_lit` is render layer 21 (supersedes D-094's layer number, QP-3)
+- Layer 20 (`1 << 19`) is already the local player's hidden third-person body/mask (CrewView.FIRST_PERSON_HIDDEN_LAYER) and
+  levelcheck's PROXY_LAYER. `viewmodel_lit` = **layer 21 (`1 << 20`)**, `CrewView.VIEWMODEL_LIT_LAYER`. visual_slots 1.2.
+
+## D-096 — 2026-10-13 — `dismiss_tip` input action (QB-5); recoil numbers via ENV B data
+- New InputMap action `dismiss_tip`: key **H**, pad **D-pad right** (button 14, unused elsewhere). B's onboarding cards
+  and any future tip/hint dismissal use it (rebindable in Options).
+- Recoil/spread per weapon class: ENV P owns delivery (PD2-like eased kick, no auto-recovery, dff06548); the numbers stay
+  in ENV B's WeaponDef data. ENV P sends B a PD2-reference table (first-shot kick, horizontal, hip/ADS spread per class);
+  ENV B applies it and keeps the resolver goldens green.
+
+## D-097 — 2026-10-13 — Spread and recoil follow PD2; release e2e check
+- Spread/recoil numbers follow PD2 (the project's fidelity rule): ENV B applies ENV P's PD2 table (Lua cites) to WeaponDef
+  data, even where it is looser than today (AR ADS ≈ 2.5–3.1° vs 0.8–1.0°). ENV A fixes `combat_tweak` stance multipliers
+  to PD2 (standing 1.0, crouched 0.4; the current 0.5/0.75 is backwards). Camera recoil auto-recovers as in PD2 (vertical
+  ≈ 0.11 s, horizontal ≈ 0.2 s after one fire interval, vertical accumulation capped at 20°) — ENV P.
+  If playtests show it feels wrong, tune through skills/stats, not by departing from PD2 base values.
+- **Release e2e (ENV A, 2f7a8991):** `game/tests/a/e2e/run_po5.sh <flow> [seed] [budget_s] [out_dir] [heist] [difficulty]`,
+  windowed, real menu clicks, input-only play. `gh_loud` (Glasshouse loud → payday → hub) is the release check the lead
+  runs occasionally in the background (~45–90 min on llvmpipe); `gh_stealth` joins when ready; `auto_loud` for any heist.
+
+## D-098 — 2026-10-13 — Stretch aspect "expand"; mod deltas on the PD2 scale
+- `window/stretch/aspect = "expand"` (was the default "keep", which pillarboxed 21:9) — **approved, lands when ENV B's HUD + test_pp_hud_720p pass under it** (with "expand" today the loud-HUD bleedout/bag/hostages text measures 9 px at 720p); the lead flips the setting on B's signal. Menu screens cap to a centred 16:9
+  column (B's `UiScreen.fit_width`); the HUD anchors to the real window corners (B verifies 21:9 in-heist).
+- With PD2 base spread (D-097), weapon-mod accuracy/stability deltas move to PD2's point steps (+4..+12 per mod class);
+  ENV B rescales them with goldens. P4 goldens updated by the lead (test_p4_progression test_10/11/14).

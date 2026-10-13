@@ -228,9 +228,24 @@ func test_objective_markers_label_and_current() -> void:
 		{"id": &"safe", "text_key": &"objective.glasshouse.safe", "position": Vector3(0, 0, -10), "state": Enums.ObjectiveState.ACTIVE},
 		{"id": &"secure", "text_key": &"objective.glasshouse.secure", "position": Vector3(1, 0, -10), "state": Enums.ObjectiveState.ACTIVE}]
 	await wait_frames(1)
+	assert_eq(_hud.objective_markers.drawn.size(), 1, "lead h02: only the current step's marker by default")
+	_hud.scoreboard.set_process(false)  # Tab held: the scoreboard is up
+	_hud.scoreboard.set_shown(true)
+	await wait_frames(2)
 	var d: Array[Dictionary] = _hud.objective_markers.drawn
-	assert_eq(d.size(), 2)
+	assert_eq(d.size(), 2, "Tab shows every objective's marker")
 	assert_true(bool(d[0]["current"]) and not bool(d[1]["current"]), "the panel's step is current")
 	assert_false(String(d[1]["label"]).contains("{"), String(d[1]["label"]))
 	assert_true(String(d[1]["label"]).contains("1/2"), String(d[1]["label"]))
 	cam.queue_free()
+
+
+## Lead ruling: no crosshair while casing; it fades in once masked.
+func test_crosshair_only_when_masked() -> void:
+	await _spawn_hud()
+	_model.player_mode = &"casing"
+	await wait_seconds(0.5)
+	assert_near(_hud.crosshair.modulate.a, 0.0, 0.01, "hidden while casing")
+	_model.player_mode = &"masked"
+	await wait_seconds(0.6)
+	assert_near(_hud.crosshair.modulate.a, 1.0, 0.01, "shown once masked")

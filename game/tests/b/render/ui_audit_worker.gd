@@ -14,6 +14,10 @@ func _ready() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	_out = args[0] if args.size() > 0 else OS.get_user_data_dir() + "/ui_audit"
 	_only = args[1] if args.size() > 1 else ""
+	# Lane 13: `expand` previews window/stretch/aspect="expand" (21:9 / 16:10 get a wider / taller canvas
+	# instead of black bars); the project default ("keep") letterboxes to 1920x1080.
+	if args.size() > 2 and args[2] == "expand":
+		get_tree().root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_EXPAND
 	DirAccess.make_dir_recursive_absolute(_out)
 	_run.call_deferred()
 
@@ -34,6 +38,7 @@ func _shot(shot: String, frames: int = 12) -> void:
 func _run() -> void:
 	UiScreen.motion_enabled = false
 	SaveService.root_dir = "user://ui_audit_profiles"
+	OnboardingTips.persist = false  # PO-4 lane 11: cards show, the save is never touched
 	var p: PlayerProfile = PlayerProfile.new_default()
 	SaveService.save_profile(p, SLOT)
 	_flow = (load("res://content/ui/menus/menu_flow.tscn") as PackedScene).instantiate() as MenuFlow
@@ -117,6 +122,13 @@ func _heist() -> void:
 	if rt != null and rt.service(G.SVC_STEALTH) != null:
 		rt.service(G.SVC_STEALTH).call(&"raise_alarm", &"audit")
 	await _shot("hud_loud", 30)
+	var hud: Hud = _hud()
+	if hud != null:
+		hud.scoreboard.set_process(false)  # no Tab held in a capture
+		hud.scoreboard.set_shown(true)
+		await _shot("hud_scoreboard", 10)
+		hud.scoreboard.set_shown(false)
+		hud.scoreboard.set_process(true)
 	var pm: PauseMenu = _flow.options_menu.open_pause()
 	await _shot("pause_in_heist")
 	if pm != null:

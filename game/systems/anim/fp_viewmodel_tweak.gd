@@ -105,6 +105,13 @@ static var _gen: int = 0
 @export var viewmodel_key_light_energy: float = 0.7
 @export var viewmodel_key_light_color: Color = Color(1.0, 0.96, 0.9)
 @export var viewmodel_key_light_euler_deg: Vector3 = Vector3(-35.0, 25.0, 0.0)
+## PO-4 (PD2): per-shot muzzle light at the weapon's Muzzle, on the world layer + CrewView.VIEWMODEL_LIT_LAYER, so
+## it lights the arms, the gun and the surroundings. 0 energy = off. Suppressed guns use the multiplier.
+@export var muzzle_light_energy: float = 2.5
+@export var muzzle_light_range_m: float = 4.0
+@export var muzzle_light_s: float = 0.05
+@export var muzzle_light_color: Color = Color(1.0, 0.78, 0.45)
+@export var muzzle_light_suppressed_mult: float = 0.15
 ## Multiplier on the world Environment's ambient energy for the viewmodel camera only.
 @export var viewmodel_ambient_mult: float = 1.6
 

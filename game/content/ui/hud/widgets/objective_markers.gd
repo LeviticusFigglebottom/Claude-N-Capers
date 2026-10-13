@@ -13,6 +13,12 @@ const EDGE_INSET: float = 48.0
 
 ## Last drawn markers: [{id, pos: Vector2 (local), clamped: bool, distance_m: float, label: String}] (tests).
 var drawn: Array[Dictionary] = []
+## Lead h02 note: only the current step's marker unless this is on (Hud sets it while Tab is held).
+var show_all: bool = false:
+	set(v):
+		if v != show_all:
+			show_all = v
+			refresh()
 var _font: Font
 
 
@@ -92,6 +98,8 @@ func _layout(entries: Array) -> void:
 		var local: Vector2 = to_local * cam.unproject_position(world)
 		var placed: Array = clamp_to_edge(local, behind, area)
 		var id: StringName = StringName(m.get("id", &""))
+		if not show_all and current != &"" and id != current:
+			continue
 		var o: Dictionary = args_by_id.get(id, {"text_key": m.get("text_key", &""), "args": {}}) as Dictionary
 		drawn.append({"id": id, "pos": placed[0] as Vector2, "clamped": bool(placed[1]),
 				"distance_m": cam.global_position.distance_to(world), "current": current == &"" or id == current,

@@ -163,6 +163,11 @@ Minimal, in the corners; the centre is reserved for aim, the prompt and detectio
 * **Top centre**: assault banner (BannerPanel, red), pager prompt, captain panel. Toasts above the
   crosshair, max one at a time.
 * Floating HUD text keeps the PQ-B-23 outline + shadow; panels are HudPanel (ink 62%).
+* **Right of centre: first-time onboarding card** (lane 11), one per situation the first time it
+  arises (casing, stealth, loud, escape), never a wall of text. The card is opaque (INK_1 95%) with
+  a brass left edge, the caption "FIRST TIME", n/4, a title, 3-4 rows (brass dash or KeyCap +
+  one short line), a draining brass hairline (14 s) and "Press [H] to close". Seen ids are stored
+  in the profile (`settings.onboarding_seen`).
 
 ## 9. Sound hooks
 

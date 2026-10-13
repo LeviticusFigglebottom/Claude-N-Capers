@@ -26,8 +26,25 @@ extends Resource
 @export var max_slope_deg: float = 45.0
 ## D-085: max sideways search (m) for an opening when walking head-on into a wall / frame edge (0 = off).
 @export var edge_assist_m: float = 0.45
+## PP-P-12: longer reach (m) toward a framed opening (a door / gap with a far jamb within
+## edge_assist_frame_search_m), so walking head-on into a door's jamb wall slightly off-centre slides round it
+## (PD2). Open edges (pillars, wall ends) keep edge_assist_m: a centred bump into a column still stops.
+@export var edge_assist_door_m: float = 0.65
+## PP-P-12: how far past the shifted capsule the far jamb may be for the opening to count as framed (m).
+## Clear width up to this + capsule diameter (1.5 + 0.7 m covers a 1.8 m double door).
+@export var edge_assist_frame_search_m: float = 1.5
+## PP-P-12: the sideways search / shift runs this far back off the wall (m), so a door casing or trim proud of
+## the wall face (touched first by the round capsule) does not block it.
+@export var edge_assist_backoff_m: float = 0.06
 ## Camera-only smoothing of step-up / step-down height changes (1/s, exponential); gameplay position is exact.
 @export var step_smooth_rate: float = 14.0
+## PO-4 (PD2): camera-only landing dip of the local human. A landing faster than land_dip_min_mps kicks the eye down
+## by (impact - min) x land_dip_gain (m per m/s, capped at land_dip_max_m) through a critically damped spring of
+## land_dip_hz, so it dips and recovers in ~0.3 s. 0 gain = off. Gameplay position is unaffected.
+@export var land_dip_min_mps: float = 2.0
+@export var land_dip_gain: float = 0.012
+@export var land_dip_max_m: float = 0.09
+@export var land_dip_hz: float = 3.0
 
 @export_group("Stamina (QB-60, PD2 movement_state.stamina)")
 ## Pool before movement.stamina_mult x team.stamina_mult x ArmorDef.stamina_mult.

@@ -32,6 +32,10 @@ var cells: Dictionary = {}
 ## Slot of the row marked as the local player (-1 = none).
 var local_slot: int = -1
 var grid: GridContainer
+## PO-4: every visible objective with its state (the HUD shows only the current one).
+var objectives_box: VBoxContainer
+## slot -> heister id (Hud.set_crew_heisters): rows name the heister in their colour, like the crew rows.
+var heisters: Dictionary = {}
 
 
 func _init() -> void:
@@ -40,23 +44,39 @@ func _init() -> void:
 
 
 func build() -> void:
-	var v: VBoxContainer = UiBuild.vbox(10)
-	var title: Label = UiBuild.label(&"ui.scoreboard.title", UiBuild.HUD_BIG)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	# PO-4: an opaque Case File sheet (the HUD itself is frameless), crew table left, objectives right.
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S5)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
+	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(v)
+	var title: Label = UiBuild.caption(&"ui.scoreboard.title")
+	title.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
 	v.add_child(title)
 	grid = GridContainer.new()
 	grid.columns = 1 + COLUMNS.size()
-	grid.add_theme_constant_override(&"h_separation", 28)
-	grid.add_theme_constant_override(&"v_separation", 6)
+	grid.add_theme_constant_override(&"h_separation", UiTokens.S4)
+	grid.add_theme_constant_override(&"v_separation", UiTokens.S2)
 	v.add_child(grid)
-	var p: PanelContainer = UiBuild.panel(v, UiBuild.HUD_PANEL)
-	p.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var o: VBoxContainer = UiBuild.vbox(UiTokens.S2)
+	o.custom_minimum_size = Vector2(320, 0)
+	o.size_flags_horizontal = Control.SIZE_SHRINK_END
+	row.add_child(o)
+	var otitle: Label = UiBuild.caption(&"ui.scoreboard.objectives")
+	otitle.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+	o.add_child(otitle)
+	objectives_box = UiBuild.vbox(UiTokens.S1)
+	o.add_child(objectives_box)
+	var p: PanelContainer = PanelContainer.new()
+	p.add_theme_stylebox_override(&"panel", UiThemeFactory.box(Color(UiTokens.INK_1, 0.94), UiTokens.LINE_STRONG, 1,
+			UiTokens.CUT, Vector2(UiTokens.S5, UiTokens.S4)))
+	p.add_child(row)
+	p.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)  # as tall as its rows, no empty sheet
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(p)
 
 
 func watched_signals() -> Array[StringName]:
-	return [&"crew_stats_changed", &"crew_changed"]
+	return [&"crew_stats_changed", &"crew_changed", &"objectives_changed"]
 
 
 ## Rebuilds the table; skipped while hidden (crew_changed fires often), update_input() refreshes on show.
@@ -74,6 +94,32 @@ func refresh() -> void:
 		_header(col)
 	for r: Dictionary in rows:
 		_row(r)
+	_fill_objectives()
+
+
+## Every objective but hidden ones: done in OK green, failed in red, the live ones in paper.
+func _fill_objectives() -> void:
+	for c: Node in objectives_box.get_children():
+		objectives_box.remove_child(c)
+		c.queue_free()
+	for ob: Dictionary in prop(&"objectives", []) as Array:
+		var st: int = int(ob.get("state", Enums.ObjectiveState.ACTIVE))
+		if st == Enums.ObjectiveState.HIDDEN:
+			continue
+		var l: Label = UiBuild.label(&"", UiBuild.HUD)
+		l.add_theme_constant_override(&"outline_size", 0)
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		l.text = UiText.t(ObjectivesPanel._state_key(st), {"text": ObjectivesPanel.objective_text(ob)})
+		var disabled: bool = bool((ob.get("args", {}) as Dictionary).get("disabled", false))
+		var col: Color = UiTokens.PAPER
+		if st == Enums.ObjectiveState.COMPLETED:
+			col = UiTokens.OK
+		elif st == Enums.ObjectiveState.FAILED:
+			col = UiTokens.ALERT
+		elif disabled:
+			col = UiTokens.PAPER_MUTE
+		l.add_theme_color_override(&"font_color", col)
+		objectives_box.add_child(l)
 
 
 ## Feed the `scoreboard` action state (from _process; tests call it directly). Hold: visible while
@@ -139,8 +185,7 @@ func _process(_delta: float) -> void:
 
 
 func _header(col: StringName) -> void:
-	var l: Label = UiBuild.label(HEADER_KEYS[col] as StringName, UiBuild.HUD)
-	l.add_theme_font_size_override(&"font_size", 21)
+	var l: Label = UiBuild.caption(HEADER_KEYS[col] as StringName)
 	if col != NAME:
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	grid.add_child(l)
@@ -153,8 +198,13 @@ func _row(r: Dictionary) -> void:
 		local_slot = slot
 	var row_cells: Dictionary = {}
 	var name_label: Label = UiBuild.label(&"", UiBuild.HUD)
+	var heister: StringName = StringName(heisters.get(slot, &""))
+	if heister != &"":
+		r = r.duplicate()
+		r["name"] = Heisters.display_name(heister)
 	name_label.text = _display_name(r, mine)
-	name_label.add_theme_color_override(&"font_color", tweak.interaction_color if mine else tweak.ally_color)
+	var tint: Color = tweak.interaction_color if mine else tweak.ally_color
+	name_label.add_theme_color_override(&"font_color", Heisters.accent(heister) if heister != &"" else tint)
 	grid.add_child(name_label)
 	row_cells[NAME] = name_label
 	for col: StringName in COLUMNS:

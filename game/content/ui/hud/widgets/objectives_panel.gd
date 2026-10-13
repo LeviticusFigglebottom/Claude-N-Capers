@@ -6,7 +6,9 @@ class_name ObjectivesPanel
 extends HudWidget
 
 ## Seconds the "complete" caption stays before the next step shows.
-const FLASH_S: float = 2.0
+const FLASH_S: float = 2.4
+## Seconds the finished step stays struck through before the next one slides in.
+const STRIKE_S: float = 1.0
 
 var list_box: VBoxContainer
 var header_label: Label
@@ -18,7 +20,11 @@ var secured_count: int = 0
 ## Id of the objective on the line (&"" = none) and whether the "complete" flash is showing (tests).
 var shown_id: StringName = &""
 var flashing: bool = false
+## The finished step, struck through, shown during the flash (lead h02 note).
+var done_label: RichTextLabel
 var _flash_tween: Tween = null
+var _shown_text: String = ""
+var _done_text: String = ""
 
 
 func build() -> void:
@@ -29,6 +35,19 @@ func build() -> void:
 	header_label = UiBuild.float_text(UiBuild.caption(&"ui.hud.objectives"))
 	header_label.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
 	v.add_child(header_label)
+	done_label = RichTextLabel.new()
+	done_label.bbcode_enabled = true
+	done_label.fit_content = true
+	done_label.scroll_active = false
+	done_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	done_label.custom_minimum_size = Vector2(380, 0)
+	done_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	done_label.add_theme_font_size_override(&"normal_font_size", UiTokens.FONT_LEAD)
+	done_label.add_theme_color_override(&"default_color", UiTokens.OK)
+	done_label.add_theme_constant_override(&"outline_size", UiBuild.FLOAT_OUTLINE_SIZE)
+	done_label.add_theme_color_override(&"font_outline_color", UiBuild.FLOAT_OUTLINE_COLOR)
+	done_label.visible = false
+	v.add_child(done_label)
 	list_box = UiBuild.vbox(UiTokens.S1)
 	v.add_child(list_box)
 	_apply_accent()
@@ -102,16 +121,33 @@ func _flash_complete() -> void:
 	UiSfx.play(UiSfx.OBJECTIVE_DONE)  # D-090
 	header_label.text = UiText.t(&"ui.hud.objective_complete")
 	header_label.add_theme_color_override(&"font_color", UiTokens.OK)
-	list_box.modulate.a = 0.0 if UiTokens.motion_ok() else 1.0
-	# The caption flashes for FLASH_S; the next step fades in at once (its marker is already up).
+	# The finished step struck through for STRIKE_S, then the next step slides in under the caption.
+	done_label.text = "[s]%s[/s]" % _done_text
+	done_label.visible = _done_text != ""
+	done_label.modulate.a = 1.0
+	list_box.visible = false
 	_flash_tween = create_tween()
-	_flash_tween.tween_property(list_box, ^"modulate:a", 1.0, UiTokens.T_SLOW).set_ease(Tween.EASE_OUT)
-	_flash_tween.tween_interval(maxf(FLASH_S - UiTokens.T_SLOW, 0.0))
+	_flash_tween.tween_interval(STRIKE_S)
+	if UiTokens.motion_ok():
+		_flash_tween.tween_property(done_label, ^"modulate:a", 0.0, UiTokens.T_BASE)
+	_flash_tween.tween_callback(_show_next)
+	if UiTokens.motion_ok():
+		_flash_tween.tween_property(list_box, ^"modulate:a", 1.0, UiTokens.T_SLOW).set_ease(Tween.EASE_OUT)
+	_flash_tween.tween_interval(maxf(FLASH_S - STRIKE_S - UiTokens.T_BASE - UiTokens.T_SLOW, 0.0))
 	_flash_tween.tween_callback(_end_flash)
+
+
+func _show_next() -> void:
+	done_label.visible = false
+	list_box.visible = true
+	list_box.modulate.a = 0.0 if UiTokens.motion_ok() else 1.0
 
 
 func _end_flash() -> void:
 	flashing = false
+	done_label.visible = false
+	list_box.visible = true
+	list_box.modulate.a = 1.0
 	header_label.text = UiText.t(&"ui.hud.objectives")
 	header_label.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
 	_apply_accent()
@@ -141,8 +177,10 @@ func refresh() -> void:
 		new_id = StringName(o.get("id", &""))
 		break
 	if new_id != shown_id and shown_id != &"" and is_inside_tree():
+		_done_text = _shown_text
 		_flash_complete()
 	shown_id = new_id
+	_shown_text = (list_box.get_child(0) as Label).text if list_box.get_child_count() > 0 else ""
 	visible = list_box.get_child_count() > 0 or flashing
 
 

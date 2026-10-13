@@ -3,6 +3,14 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-13 night: PO-4 lanes 11 / 12 / h02 notes
+### Done
+- h02 notes (9e54061f): crosshair hidden until masked (fades in); only the current objective's marker unless Tab is held; the objective flash strikes the finished step through, then slides the next one in.
+- Lane 11: first-time onboarding cards (OnboardingCard, right of centre), one per situation and shown the first time it arises: casing, stealth (masked, no alarm), loud (LOUD phase or an assault), escape (ESCAPE phase). Each card has 3-4 short rows with key caps (mask up / interact / throw bag / shout), drains over 14 s, H closes it, and a later situation waits for the open card. Seen ids live in the profile's `settings.onboarding_seen` (OnboardingTips), so the save shape and version are unchanged. Writes are blocked inside the test runner and the captures. Windowed contrast `-- onboarding`: PASS.
+- Lane 12: the scoreboard names heisters in their colour, is as tall as its rows, is 1240 wide (x1.5 fits 1920; test_pp_hud_720p was red at x1.5), and the markers draw over it while Tab is held.
+### Next
+- Recapture h01/h02 after the trunk merge (P's AR hip pose); lane 13 (2560x1080 + 16:10); a pad dismiss for the card needs an input action (ask the lead).
+
 ## 2026-10-13 late (round 36 merged): PO-4 iteration 2
 ### Done (b4c291ab..HEAD)
 - Round 36 merged; style.md + audit.md committed (docs/design/ui/** is B's).

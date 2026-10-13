@@ -6,6 +6,10 @@ extends Node
 var _out: String = "/tmp"
 var _slot: String = ""
 var _heist: StringName = &""
+var _moves: bool = false
+var _fire: bool = false
+var _melee: bool = false
+var _melee_id: StringName = &""
 var _primary: StringName = &"weapon.corsair_ar"
 
 
@@ -17,6 +21,14 @@ func _ready() -> void:
 			_primary = StringName(a.trim_prefix("--primary="))
 		elif a.begins_with("--heist="):
 			_heist = StringName(a.trim_prefix("--heist="))
+		elif a.begins_with("--melee_id="):
+			_melee_id = StringName(a.trim_prefix("--melee_id="))
+		elif a == "--melee":
+			_melee = true
+		elif a == "--fire":
+			_fire = true
+		elif a == "--moves":
+			_moves = true
 		elif a == "--no_ik":
 			FpViewmodelTweak.data().left_hand_ik_skip_sets.append(&"rifle")
 			FpViewmodelTweak.data().left_hand_ik_skip_sets.append(&"pistol")
@@ -26,6 +38,8 @@ func _ready() -> void:
 	var l: Loadout = CrewWeapons.build_loadout(null).duplicate() as Loadout
 	l.primary = _primary
 	l.resolved_primary = LoadoutResolver.resolve_weapon(l.primary, l.primary_mods)
+	if _melee_id != &"":
+		l.melee = _melee_id
 	var rt: HeistRuntime = null
 	if _heist == &"":
 		rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
@@ -51,8 +65,70 @@ func _ready() -> void:
 		c.loadout.secondary])
 	await _shot("vm_hip")
 	_dump(c)
+	if _melee:
+		await inp.tap(&"melee")
+		for k: int in 4:
+			for _i: int in 6:
+				await get_tree().physics_frame
+			await _shot("vm_melee_tap_%d" % k)
+		for _i: int in 40:
+			await get_tree().physics_frame
+		inp.press(&"melee")
+		for _i: int in 50:
+			await get_tree().physics_frame
+		await _shot("vm_melee_charged")
+		inp.release(&"melee")
+		for k: int in 3:
+			for _i: int in 6:
+				await get_tree().physics_frame
+			await _shot("vm_melee_charge_swing_%d" % k)
+		for _i: int in 60:
+			await get_tree().physics_frame
+	if _fire:
+		inp.press(&"fire")
+		for k: int in 4:
+			await get_tree().physics_frame
+			var ml: OmniLight3D = c.find_child("MuzzleLight", true, false) as OmniLight3D
+			print("[VM] fire t%d light=%s" % [k, "none" if ml == null else "vis=%s e=%.2f at=%s" % [ml.visible,
+				ml.light_energy, ml.global_position]])
+			if ml != null and ml.visible:
+				await _shot("vm_fire_flash")
+				break
+		inp.release(&"fire")
+		for _i: int in 30:
+			await get_tree().physics_frame
+	if _moves:
+		inp.press(&"move_forward")
+		inp.press(&"sprint")
+		for _i: int in 60:
+			await get_tree().physics_frame
+		await _shot("vm_sprint")
+		inp.release(&"sprint")
+		inp.release(&"move_forward")
+		inp.press(&"crouch")
+		for _i: int in 40:
+			await get_tree().physics_frame
+		await _shot("vm_crouch")
+		inp.release(&"crouch")
+		for _i: int in 30:
+			await get_tree().physics_frame
+		inp.press(&"jump")
+		for _i: int in 12:
+			await get_tree().physics_frame
+		await _shot("vm_jump_air")
+		inp.release(&"jump")
+		for _i: int in 60:
+			await get_tree().physics_frame
 	inp.press(&"aim")
-	for _i: int in 60:
+	for k: int in 7:
+		for _i: int in 2:
+			await get_tree().physics_frame
+		await _shot("vm_ads_t%02d" % (k * 2 + 2))
+		var vmn: FpViewmodel = FpViewmodel.of(CrewView.of(c).camera())
+		if vmn != null:
+			print("[VM] t%02d ads_weight=%.2f anim=%s pos=%s" % [k * 2 + 2, vmn.ads_weight,
+				vmn.player.current_animation if vmn.player != null else "", vmn.position])
+	for _i: int in 46:
 		await get_tree().physics_frame
 	await _shot("vm_ads")
 	_dump(c)

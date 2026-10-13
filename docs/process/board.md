@@ -12,6 +12,12 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-13 22:00: **round 54 ON ORIGIN**: env/p-play 5cff3a32 (fp_viewmodel tick regression from 42dfaf93 fixed; a test_fp_viewmodel 15/0, p 79/0). Routed to B: folding knife has no model (empty-fist melee).
+- 2026-10-13 21:55: **round 53 ON ORIGIN**: env/p-play 9bea4dde (PP-P-12 door snag FIXED, PD2 recoil timing), env/b-content (PD2 recoil/spread on all 36 weapons, 16:10 hub card fix, dismiss_tip). Lead: P4 goldens updated to PD2 values (D-097), D-098. stretch aspect=expand held until B's HUD passes test_pp_hud_720p under it. p 79/0, b targeted, P4 9/0.
+- 2026-10-13 21:40: **round 52 ON ORIGIN**: env/a-core 2f7a8991 (release e2e run_po5.sh + seed hook, bag throws follow camera pitch), env/p-play 77e198ef (PD2 recoil recovery, d084 de-flaked), env/b-content (onboarding on dismiss_tip). p 74/0, a targeted, P1 slice 10/0.
+- 2026-10-13 21:20: **round 51 ON ORIGIN**: env/a-core (D-093 helpless→custody, PO-5.14 police push in, harness real capture + auto_loud; FIRST END-TO-END LOUD WIN windowed via real menus → payday), env/p-play (recoil eased kick, landing dip), env/b-content (first-time onboarding cards, Tab sheet fixes), D-096 dismiss_tip action. p 73/0, a/b targeted green, P1 slice 10/0.
+- 2026-10-13 21:15: **round 50 ON ORIGIN**: env/p-play 13da95e8 (viewmodel camera sees viewmodel_lit layer 21; new per-shot muzzle-flash light). p 72/0.
+- 2026-10-13 21:10: **round 49 ON ORIGIN**: env/p-play 42dfaf93 (ADS sights aligned on the current animated pose; centred from 0.1 s). Tip for all: windowed visual checks use `--fixed-fps 60`.
 - 2026-10-13 21:05: **round 48 ON ORIGIN**: env/p-play f11b4df1 (hip framing for all 34 FP guns, enforced by test_po4_viewmodel_classes; brute_12 hand on the fore-end).
 - 2026-10-13 21:00: **round 47 ON ORIGIN**: env/b-content 7d29463b (pre-planning restyled, 4K pass clean, breadcrumbs, hub/payday polish; h01-h04 live captures). Targeted b green.
 - 2026-10-13 20:50: full gate on round 40 (1916db6e): 1817 tests, 3 failed, all known: options_palettes (FIXED r41), p3_loud test_10 (FIXED r43), p3_loud test_01 (KR-1, A); validate_level KR-3 night_deposit zfight + KR-4 shadow_ledger barred_doors still open (A).
@@ -43,7 +49,7 @@ Read it at the start of every work session.
 - D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
 
 ## Open questions (id → answer)
-- QP-2 world lights on the viewmodel → render layer 20 `viewmodel_lit` (visual_slots 1.1, D-094).
+- QP-2/QP-3 world lights on the viewmodel → render layer **21** `viewmodel_lit` (visual_slots 1.2, D-095; 20 was taken).
 - QB-4 RangeSpectatorInput as a gameplay owner → OK, input_focus 1.2.
 - QP-1 where was the PO's bump → asked the product owner; working assumption: their build predated step-up (round 35).
 - QB-1 starter primary in default profile → YES (data only, existing AR; closes PP-P-10).

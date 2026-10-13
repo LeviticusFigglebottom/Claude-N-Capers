@@ -33,6 +33,19 @@
 class_name FpViewmodel
 extends Node3D
 
+
+## PO-4: the ADS AimPoint alignment runs as the skeleton's last modifier, on this frame's animated pose. Reading the
+## marker in _process used last frame's pose (FpViewmodel processes before its AnimationPlayer, the BoneAttachment
+## later still), so during the idle -> ads_idle crossfade the sights swung up to ~0.1 m around the crosshair.
+class AdsAlign:
+	extends SkeletonModifier3D
+	var vm: FpViewmodel = null
+
+	func _process_modification_with_delta(_delta: float) -> void:
+		if vm != null and is_instance_valid(vm):
+			vm._late_align()
+
+
 enum Action { NONE, FIRE, RELOAD, SWAP, MELEE, DEPLOY, THROW }
 
 const NODE_NAME: String = "FpViewmodel"
@@ -107,6 +120,13 @@ var _bob_phase: float = 0.0
 ## Linear ADS progress behind the eased ads_weight.
 var _ads_lin: float = 0.0
 var _bob_weight: float = 0.0
+## PO-4: hip/bob/step offset (_update_offset) and the ADS alignment (AdsAlign, late) that make up `position`.
+var _base_offset: Vector3 = Vector3.ZERO
+## PO-4: per-shot muzzle light (FpViewmodelTweak.muzzle_light_*), seconds left of the current flash.
+var _muzzle_light: OmniLight3D = null
+var _flash_left: float = 0.0
+var _flash_peak: float = 0.0
+var _align: Vector3 = Vector3.ZERO
 ## The item model on the weapon bone during a melee / deploy one-shot (null = none / gun bash).
 var _item: Node3D = null
 var _deploy_prev: bool = false
@@ -154,6 +174,10 @@ func _bind(inst: Node3D, crew: CrewController) -> bool:
 	weapon_attach.bone_name = String(tw.weapon_bone)
 	left_hand_ik = FpLeftHandIk.create(skeleton)  # D-069: hand.L onto the weapon's LeftHandIK
 	skeleton.add_child(weapon_attach)
+	var align: AdsAlign = AdsAlign.new()
+	align.name = "AdsAlign"
+	align.vm = self
+	skeleton.add_child(align)  # last: after the animation and the left-hand IK
 	_crew = crew
 	apply_sleeves(crew.heister if crew != null else &"")
 	_no_shadows(inst)
@@ -276,6 +300,7 @@ func tick(delta: float) -> void:
 		_play_base(tw)
 	_update_offset(delta, tw)
 	_update_magazine()
+	_update_flash(delta, tw)
 	if left_hand_ik != null:  # D-069: the clip owns the left hand while reloading / swapping
 		left_hand_ik.update(delta, action == Action.NONE or action == Action.FIRE)
 
@@ -285,6 +310,7 @@ func tick(delta: float) -> void:
 func _on_fired(_claim: Dictionary) -> void:
 	if anim_set == &"" or action == Action.SWAP:
 		return
+	_flash_muzzle()
 	var aimed: bool = _aim_wanted()
 	var fire: StringName = _resolve(anim_set, &"fire_ads" if aimed else &"fire")
 	if fire == &"":
@@ -686,13 +712,60 @@ func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 	off.y += step_lag(tw)
 	var hip: Vector3 = tw.set_hip_offset.get(anim_set, Vector3.ZERO)
 	off += hip.lerp(Vector3(0.0, 0.0, float(tw.set_ads_offset_z.get(anim_set, 0.0))), ads_weight)
+	_base_offset = off
+	_late_align()  # first pass on the last applied pose (direct tick() callers / tests); AdsAlign refines it
+
+
+## PO-4: light the muzzle for one shot (world layer + CrewView.VIEWMODEL_LIT_LAYER, D-094).
+func _flash_muzzle() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if tw.muzzle_light_energy <= 0.0 or weapon_visual == null or not is_instance_valid(weapon_visual):
+		return
+	var muzzle: Node3D = weapon_visual.get_marker(&"Muzzle")
+	if muzzle == null or not muzzle.is_inside_tree():
+		return
+	if _muzzle_light == null or not is_instance_valid(_muzzle_light):
+		_muzzle_light = OmniLight3D.new()
+		_muzzle_light.name = "MuzzleLight"
+		_muzzle_light.layers = 1 | CrewView.VIEWMODEL_LIT_LAYER
+		_muzzle_light.shadow_enabled = false
+		add_child(_muzzle_light)
+	var st: WeaponStats = _crew.weapons.stats(_crew.weapons.equipped_slot) \
+		if _crew != null and _crew.weapons != null else null
+	var mult: float = tw.muzzle_light_suppressed_mult if st != null and st.suppressed else 1.0
+	_muzzle_light.omni_range = tw.muzzle_light_range_m
+	_muzzle_light.light_color = tw.muzzle_light_color
+	_muzzle_light.global_position = muzzle.global_position
+	_flash_peak = tw.muzzle_light_energy * mult
+	_flash_left = tw.muzzle_light_s
+	_muzzle_light.light_energy = _flash_peak
+	_muzzle_light.visible = _flash_peak > 0.0
+
+
+func _update_flash(delta: float, tw: FpViewmodelTweak) -> void:
+	if _muzzle_light == null or not is_instance_valid(_muzzle_light) or not _muzzle_light.visible:
+		return
+	_flash_left -= delta
+	if _flash_left <= 0.0:
+		_muzzle_light.visible = false
+		return
+	_muzzle_light.light_energy = _flash_peak * _flash_left / maxf(tw.muzzle_light_s, 0.001)
+
+
+## AdsAlign (skeleton modifier, this frame's pose): shift so the weapon's AimPoint sits on the camera axis while aimed.
+func _late_align() -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	var a: Vector3 = Vector3.ZERO
 	if tw.ads_align_aim_point and ads_weight > 0.0 and weapon_visual != null and is_instance_valid(weapon_visual) \
-			and is_inside_tree():
+			and is_inside_tree() and skeleton != null and _weapon_bone >= 0:
 		var aim: Node3D = weapon_visual.get_marker(WeaponVisual.AIM_POINT)
 		if aim != null and aim.is_inside_tree():
-			var p: Vector3 = arms.global_transform.affine_inverse() * aim.global_position
-			off += Vector3(-p.x, -p.y, 0.0) * ads_weight
-	position = off
+			var rel: Vector3 = weapon_attach.global_transform.affine_inverse() * aim.global_position  # rigid
+			var in_skel: Vector3 = skeleton.get_bone_global_pose(_weapon_bone) * rel
+			var p: Vector3 = arms.global_transform.affine_inverse() * (skeleton.global_transform * in_skel)
+			a = Vector3(-p.x, -p.y, 0.0) * ads_weight
+	_align = a
+	position = _base_offset + a
 
 
 ## PI-21: vertical arms lag from the camera's step smoothing (m): the arms dip after a step up and float after
