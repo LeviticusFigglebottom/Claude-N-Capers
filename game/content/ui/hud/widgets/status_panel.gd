@@ -16,6 +16,12 @@ func build() -> void:
 	v.alignment = BoxContainer.ALIGNMENT_END
 	add_child(v)
 	mask_label = _add(v)
+	# PO-4: the mode reads as a tracked-caps chip (CASING / CIVILIAN); MASKED is the normal state and
+	# is not shown (its text is kept for tests and screen readers).
+	mask_label.uppercase = true
+	mask_label.add_theme_font_override(&"font", UiTokens.font_caps())
+	mask_label.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)
+	mask_label.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
 	bag_label = _add(v)
 	hostages_label = _add(v)
 	warnings_label = _add(v)
@@ -37,7 +43,7 @@ func watched_signals() -> Array[StringName]:
 func refresh() -> void:
 	var mode: StringName = player_mode()
 	mask_label.text = UiText.t(StringName("ui.hud.%s" % MODE_KEYS[mode])) if MODE_KEYS.has(mode) else ""
-	mask_label.visible = mask_label.text != ""
+	mask_label.visible = mask_label.text != "" and mode != &"masked"
 	var bag: Dictionary = prop(&"carried_bag", {}) as Dictionary
 	var loot: StringName = StringName(bag.get("loot_id", &""))
 	bag_label.visible = loot != &""

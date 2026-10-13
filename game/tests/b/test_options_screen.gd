@@ -273,22 +273,31 @@ func test_pause_in_a_heist_opens_options_over_the_hud() -> void:
 	pause.action = &"pause"
 	pause.pressed = true
 	f.options_menu._unhandled_input(pause)
-	assert_true(f.options_menu.heist_screen == null, "no heist layer: pause does nothing")
+	assert_true(f.options_menu.pause_menu == null, "no heist layer: pause does nothing")
 	f.options_menu.heist_layer = layer
 	f.options_menu._unhandled_input(pause)
+	var pm: PauseMenu = f.options_menu.pause_menu
+	assert_true(pm != null and pm.get_parent() == layer, "PO-4: pause menu over the HUD layer")
+	assert_true(crew.paused, "local crew input paused")
+	pm.options_button.pressed.emit()
 	var o: OptionsScreen = f.options_menu.heist_screen
 	assert_true(o != null and o.get_parent() == layer, "options over the HUD layer")
-	assert_true(crew.paused, "local crew input paused")
+	assert_false(pm.visible, "pause menu hidden under Options")
+	assert_true(o.leave_button == null, "Leave Heist lives in the pause menu, not the Options footer")
 	f.options_menu._unhandled_input(pause)
-	assert_eq(f.options_menu.heist_screen, o, "pause again does not stack screens")
+	assert_eq(f.options_menu.heist_screen, o, "pause while Options is up does not stack screens")
 	o.back_button.pressed.emit()
 	assert_true(f.options_menu.heist_screen == null)
+	assert_true(pm.visible, "Back returns to the pause menu")
+	assert_true(crew.paused, "still paused in the pause menu")
+	f.options_menu._unhandled_input(pause)
+	assert_true(f.options_menu.pause_menu == null, "pause again resumes")
 	assert_false(crew.paused, "input resumed")
 	var payday: Control = Control.new()
 	layer.add_child(payday)
 	f.options_menu.heist_payday = payday
 	f.options_menu._unhandled_input(pause)
-	assert_true(f.options_menu.heist_screen == null, "not over the payday screen")
+	assert_true(f.options_menu.pause_menu == null, "not over the payday screen")
 	f.options_menu.heist_layer = null
 	f.queue_free()
 	layer.queue_free()

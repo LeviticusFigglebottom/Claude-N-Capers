@@ -26,6 +26,9 @@ signal masks_requested()
 const WORKSHOP_SCENE_PATH: String = "res://content/ui/workshop/workshop_screen.tscn"
 
 ## [display key, strings key] in panel order (StatCalculator.display keys).
+## PO-4 Detection Risk colour bands (%): green up to DR_LOW, amber up to DR_HIGH, red above.
+const DR_LOW: int = 20
+const DR_HIGH: int = 45
 const STAT_ROWS: Array[Array] = [
 	["damage", &"ui.stat.damage"], ["accuracy", &"ui.stat.accuracy"], ["stability", &"ui.stat.stability"],
 	["concealment", &"ui.stat.concealment"], ["threat", &"ui.stat.threat"], ["mag", &"ui.stat.magazine"],
@@ -62,6 +65,8 @@ var taken_heisters: Array[StringName] = []
 ## ModType (int) -> OptionButton for the current weapon.
 var mod_options: Dictionary = {}
 var concealment_label: Label
+## PO-4: the equipped primary (read-only here; equip / buy in the Workshop).
+var primary_label: Label
 var detection_risk_label: Label
 var detection_risk: int = 0
 var concealment_total: int = 0
@@ -106,17 +111,28 @@ func build_ui() -> void:
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.follow_focus = true
 	cols.add_child(scroll)
-	var left: VBoxContainer = UiBuild.vbox(10)
+	var left: VBoxContainer = UiBuild.vbox(6)
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(left)
+	# PO-4: grouped sections with caption heads; the primary is shown (it is equipped in the Workshop).
+	left.add_child(_section(&"ui.loadout.section.weapons"))
+	var prow: HBoxContainer = UiBuild.hbox(16)
+	var pcap: Label = UiBuild.caption(&"ui.loadout.primary")
+	pcap.custom_minimum_size = Vector2(220, 0)
+	prow.add_child(pcap)
+	primary_label = UiBuild.label()
+	primary_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	prow.add_child(primary_label)
+	left.add_child(prow)
 	weapon_option = _row(left, &"ui.loadout.secondary")
-	_mods_box = UiBuild.vbox(10)
-	left.add_child(UiBuild.label(&"ui.loadout.mods", UiBuild.DIM))
+	_mods_box = UiBuild.vbox(6)
 	left.add_child(_mods_box)
+	left.add_child(_section(&"ui.loadout.section.gear"))
 	melee_option = _row(left, &"ui.loadout.melee")
 	armor_option = _row(left, &"ui.loadout.armor")
 	deployable_option = _row(left, &"ui.loadout.deployable")
 	throwable_option = _row(left, &"ui.loadout.throwable")
+	left.add_child(_section(&"ui.loadout.section.crew"))
 	mask_option = _row(left, &"ui.loadout.mask")
 	masks_button = UiBuild.button(&"ui.masks.open")
 	masks_button.custom_minimum_size = Vector2(180, 0)
@@ -136,7 +152,7 @@ func build_ui() -> void:
 	cols.add_child(_build_stats_panel())
 	var nav: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(nav)
-	back_button = UiBuild.button(&"ui.menu.back")
+	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
 	launch_button = UiBuild.primary(UiBuild.button(&"ui.heist_select.start"))
 	skills_button = UiBuild.button(&"ui.loadout.skills")
 	perks_button = UiBuild.button(&"ui.loadout.perk_deck")
@@ -152,6 +168,9 @@ func build_ui() -> void:
 	nav.add_child(skills_button)
 	nav.add_child(perks_button)
 	nav.add_child(workshop_button)
+	var push: Control = Control.new()
+	push.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	nav.add_child(push)
 	nav.add_child(launch_button)
 	launch_button.visible = not hub_mode
 	for b: Button in [skills_button, perks_button, workshop_button, masks_button]:
@@ -179,13 +198,12 @@ func _build_stats_panel() -> PanelContainer:
 		grid.add_child(dl)
 		_stat_value_labels[row[0]] = val
 		_stat_delta_labels[row[0]] = dl
-	concealment_label = UiBuild.label(&"", UiBuild.SUBHEADER)
+	v.add_child(HSeparator.new())
+	v.add_child(UiBuild.caption(&"ui.stat.detection_risk"))
+	detection_risk_label = UiBuild.label(&"", UiBuild.DISPLAY)  # PO-4: the stealth number is the hero
+	v.add_child(detection_risk_label)
+	concealment_label = UiBuild.label(&"", UiBuild.DIM)
 	v.add_child(concealment_label)
-	var dr_row: HBoxContainer = UiBuild.hbox(12)
-	dr_row.add_child(UiBuild.label(&"ui.stat.detection_risk", UiBuild.SUBHEADER))
-	detection_risk_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	dr_row.add_child(detection_risk_label)
-	v.add_child(dr_row)
 	skills_summary_label = UiBuild.label(&"", UiBuild.DIM)
 	perk_summary_label = UiBuild.label(&"", UiBuild.DIM)
 	v.add_child(skills_summary_label)
@@ -193,9 +211,22 @@ func _build_stats_panel() -> PanelContainer:
 	return UiBuild.panel(v)
 
 
+## A section head: caption over a hairline.
+func _section(key: StringName) -> VBoxContainer:
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+	var gap: Control = Control.new()
+	gap.custom_minimum_size = Vector2(0, UiTokens.S1)
+	v.add_child(gap)
+	var c: Label = UiBuild.caption(key)
+	c.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+	v.add_child(c)
+	v.add_child(HSeparator.new())
+	return v
+
+
 func _row(parent: Container, key: StringName) -> OptionButton:
 	var h: HBoxContainer = UiBuild.hbox(16)
-	var l: Label = UiBuild.label(key)
+	var l: Label = UiBuild.caption(key)
 	l.custom_minimum_size = Vector2(220, 0)
 	h.add_child(l)
 	var o: OptionButton = UiBuild.option_button()
@@ -278,7 +309,12 @@ func refresh() -> void:
 	concealment_total = resolved.concealment_total
 	detection_risk = resolved.detection_risk
 	concealment_label.text = UiText.t(&"ui.loadout.concealment_total", {"value": concealment_total})
+	var pid: StringName = profile.loadout.primary
+	primary_label.text = UiText.t(UiText.item_key(pid)) if pid != &"" else UiText.t(&"ui.loadout.primary_none")
+	primary_label.theme_type_variation = &"" if pid != &"" else UiBuild.DIM
 	detection_risk_label.text = UiText.t(&"ui.common.percent", {"value": detection_risk})
+	detection_risk_label.add_theme_color_override(&"font_color", UiTokens.OK if detection_risk <= DR_LOW
+			else (UiTokens.WARN if detection_risk <= DR_HIGH else UiTokens.ALERT))
 	_refresh_progression_summary(l)
 	var stock: WeaponStats = LoadoutResolver.resolve_weapon(l.secondary, [] as Array[StringName])
 	var modded: WeaponStats = resolved.resolved_secondary

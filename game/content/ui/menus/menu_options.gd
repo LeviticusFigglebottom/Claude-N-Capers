@@ -2,10 +2,11 @@
 ## (`MenuFlow.options`), split out to keep MenuFlow's API small.
 ## Menus: open() shows OptionsScreen as a MenuFlow screen (main menu Options, hub profile panel
 ## Options); Back frees it and returns to the screen it came from (the hub is refreshed).
-## Heist: MenuFlow sets `heist_layer` (the HUD / payday CanvasLayer) and `heist_payday`; the `pause`
-## action (or open_in_heist()) shows the screen over the HUD while the game keeps running (PD2 has no
-## pause); the local crew member's input is paused (CrewController.set_input_paused, found by group
-## G.CREW + slot == Net.local_slot()) and the mouse released; Back / Esc closes it and restores both.
+## Heist: MenuFlow sets `heist_layer` (the HUD / payday CanvasLayer) and `heist_payday`. PO-4: the
+## `pause` action opens the PauseMenu (Resume / Options / Leave Heist) over the HUD while the game keeps
+## running (PD2 has no pause); the local crew member's input is paused (CrewInput holder &"options")
+## and the mouse released. Options from the pause menu (open_in_heist()) shows the screen over it and
+## Back returns to the pause menu; Resume / Esc / pause again closes everything and restores both.
 class_name MenuOptions
 extends Node
 
@@ -14,6 +15,8 @@ var flow: MenuFlow
 var screen: OptionsScreen = null
 ## Options screen while open over the HUD, else null.
 var heist_screen: OptionsScreen = null
+## PO-4 in-heist pause menu while open, else null.
+var pause_menu: PauseMenu = null
 ## Set by MenuFlow while a heist UI layer exists (null otherwise).
 var heist_layer: CanvasLayer = null
 var heist_payday: Control = null
@@ -37,41 +40,94 @@ func open() -> OptionsScreen:
 	return s
 
 
+## The in-heist pause menu (pause action). Returns it, or null without a heist layer.
+func open_pause() -> PauseMenu:
+	if pause_menu != null and is_instance_valid(pause_menu):
+		return pause_menu
+	if heist_layer == null or not is_instance_valid(heist_layer):
+		return null
+	pause_menu = PauseMenu.new()
+	pause_menu.name = "PauseMenu"
+	pause_menu.resume_requested.connect(close_pause)
+	pause_menu.options_requested.connect(open_in_heist)
+	pause_menu.leave_requested.connect(func() -> void:
+		close_pause()
+		flow.call(&"_leave_heist"))
+	heist_layer.add_child(pause_menu)
+	_hold(true)
+	return pause_menu
+
+
+## Closes the pause menu and any Options over it; input and cursor come back.
+func close_pause() -> void:
+	if pause_menu == null:
+		close_in_heist()
+		return
+	if heist_screen != null and is_instance_valid(heist_screen):
+		heist_screen.queue_free()
+	heist_screen = null
+	if pause_menu != null and is_instance_valid(pause_menu):
+		pause_menu.queue_free()
+	pause_menu = null
+	_hold(false)
+
+
+## Options over the HUD (from the pause menu, which hides meanwhile; standalone when called directly).
 func open_in_heist() -> OptionsScreen:
 	if heist_screen != null and is_instance_valid(heist_screen):
 		return heist_screen
 	if heist_layer == null or not is_instance_valid(heist_layer):
 		return null
+	var from_pause: bool = pause_menu != null and is_instance_valid(pause_menu)
 	heist_screen = flow.OPTIONS_SCENE.instantiate() as OptionsScreen
-	heist_screen.in_heist = true
+	heist_screen.in_heist = not from_pause  # the pause menu has its own Leave Heist
 	heist_screen.back_requested.connect(close_in_heist)
 	heist_screen.leave_heist_requested.connect(flow.call.bind(&"_leave_heist"))
 	heist_layer.add_child(heist_screen)
-	_set_local_input_paused(true)
-	if DisplayServer.get_name() != "headless":
-		_mouse_mode = Input.mouse_mode
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if from_pause:
+		pause_menu.visible = false
+	else:
+		_hold(true)
 	return heist_screen
 
 
+## Back from Options: to the pause menu when it opened Options, else back to play.
 func close_in_heist() -> void:
 	if heist_screen == null:
 		return
 	if is_instance_valid(heist_screen):
 		heist_screen.queue_free()
 	heist_screen = null
-	_set_local_input_paused(false)
-	if DisplayServer.get_name() != "headless":
+	if pause_menu != null and is_instance_valid(pause_menu):
+		pause_menu.visible = true
+		pause_menu.focus_default()
+		return
+	_hold(false)
+
+
+func _hold(on: bool) -> void:
+	_set_local_input_paused(on)
+	if DisplayServer.get_name() == "headless":
+		return
+	if on:
+		_mouse_mode = Input.mouse_mode
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	else:
 		Input.mouse_mode = _mouse_mode
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if heist_layer == null or not event.is_action_pressed(&"pause"):
 		return
-	if heist_screen != null or (heist_payday != null and is_instance_valid(heist_payday) and heist_payday.visible):
+	if heist_payday != null and is_instance_valid(heist_payday) and heist_payday.visible:
 		return
+	if heist_screen != null:
+		return  # Options handles its own Back / Esc
 	get_viewport().set_input_as_handled()
-	open_in_heist()
+	if pause_menu != null:
+		close_pause()
+	else:
+		open_pause()
 
 
 func _close_menu(s: OptionsScreen, back_to: Control) -> void:

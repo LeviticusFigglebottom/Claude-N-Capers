@@ -101,8 +101,8 @@ func _pad(button: JoyButton) -> void:
 		await wait_frames(3)
 
 
-## PQ-B-20: in a live heist, pad Start opens Options over the HUD (crew input paused, 720p fit) and
-## pad B closes it and resumes input.
+## PQ-B-20 / PO-4: in a live heist, pad Start opens the pause menu (crew input paused, Resume focused);
+## d-pad + A opens Options over it (720p fit); B returns to the pause menu, B again resumes input.
 func test_live_heist_pause_with_pad() -> void:
 	if UiNav.global_class(&"HeistLauncher") == null:
 		skip("no HeistLauncher")
@@ -116,11 +116,20 @@ func test_live_heist_pause_with_pad() -> void:
 	assert_true(await wait_until(func() -> bool: return _find_hud() != null, 60.0), "live HUD")
 	await wait_frames(5)
 	await _pad(JOY_BUTTON_START)
+	var pm: PauseMenu = _flow.options_menu.pause_menu
+	assert_true(pm != null and pm.is_visible_in_tree(), "Start opens the pause menu")
+	if pm == null:
+		return
+	assert_true(CrewInput.is_held(&"options"), "local crew input paused while the pause menu is up")
+	await wait_frames(2)
+	assert_eq(pm.get_viewport().gui_get_focus_owner(), pm.resume_button as Control, "Resume focused")
+	await _pad(JOY_BUTTON_DPAD_DOWN)
+	assert_eq(pm.get_viewport().gui_get_focus_owner(), pm.options_button as Control)
+	await _pad(JOY_BUTTON_A)
 	var opts: OptionsScreen = _flow.options_menu.heist_screen
-	assert_true(opts != null and opts.is_visible_in_tree(), "Start opens Options in the heist")
+	assert_true(opts != null and opts.is_visible_in_tree(), "A opens Options over the pause menu")
 	if opts == null:
 		return
-	assert_true(CrewInput.is_held(&"options"), "local crew input paused while Options is up")
 	var vis: Rect2 = opts.get_viewport().get_visible_rect().grow(1.0)
 	for c: Control in opts.focus_chain:
 		if c.is_visible_in_tree():
@@ -137,6 +146,11 @@ func test_live_heist_pause_with_pad() -> void:
 	await wait_frames(3)
 	assert_true(_flow.options_menu.heist_screen == null or not _flow.options_menu.heist_screen.is_visible_in_tree(),
 			"B closes Options")
+	assert_true(pm.is_visible_in_tree(), "back in the pause menu")
+	assert_true(CrewInput.is_held(&"options"), "still paused")
+	await _pad(JOY_BUTTON_B)
+	await wait_frames(3)
+	assert_true(_flow.options_menu.pause_menu == null, "B resumes")
 	assert_false(CrewInput.is_held(&"options"), "input resumed")
 
 
@@ -212,35 +226,34 @@ func test_live_heist_leave_with_pad() -> void:
 	assert_true(await wait_until(func() -> bool: return _find_hud() != null and _flow.runtime != null, 60.0), "live")
 	await wait_frames(5)
 	await _pad(JOY_BUTTON_START)
-	var opts: OptionsScreen = _flow.options_menu.heist_screen
-	assert_true(opts != null and opts.leave_button != null, "in-heist Options has Leave Heist")
-	if opts == null or opts.leave_button == null:
+	var pm: PauseMenu = _flow.options_menu.pause_menu
+	assert_true(pm != null, "Start opens the pause menu (PO-4: Leave Heist lives there)")
+	if pm == null:
 		return
-	var vis: Rect2 = opts.get_viewport().get_visible_rect().grow(1.0)
-	assert_true(vis.encloses(opts.leave_button.get_global_rect()), "Leave Heist on screen at 720p")
+	var vis: Rect2 = pm.get_viewport().get_visible_rect().grow(1.0)
+	assert_true(vis.encloses(pm.leave_button.get_global_rect()), "Leave Heist on screen at 720p")
+	await wait_frames(2)
 	for _attempt: int in range(2):
 		var steps: int = 0
-		while opts.get_viewport().gui_get_focus_owner() != opts.leave_button and steps < 40:
-			var on_footer: bool = opts.get_viewport().gui_get_focus_owner() in [opts.apply_button,
-					opts.revert_button, opts.reset_button, opts.back_button]
-			await _pad(JOY_BUTTON_DPAD_RIGHT if on_footer else JOY_BUTTON_DPAD_UP)
+		while pm.get_viewport().gui_get_focus_owner() != pm.leave_button and steps < 6:
+			await _pad(JOY_BUTTON_DPAD_DOWN)
 			steps += 1
-		assert_eq(opts.get_viewport().gui_get_focus_owner(), opts.leave_button as Control, "d-pad reaches Leave Heist")
+		assert_eq(pm.get_viewport().gui_get_focus_owner(), pm.leave_button as Control, "d-pad reaches Leave Heist")
 		await _pad(JOY_BUTTON_A)
 		await wait_frames(2)
-		assert_true(opts.is_leave_confirming(), "A opens the confirm")
-		assert_eq(opts.get_viewport().gui_get_focus_owner(), opts.leave_cancel_button as Control, "focus on Cancel")
-		assert_true(vis.encloses(opts.leave_confirm_button.get_global_rect()), "Confirm on screen at 720p")
+		assert_true(pm.is_confirming(), "A opens the confirm")
+		assert_eq(pm.get_viewport().gui_get_focus_owner(), pm.cancel_button as Control, "focus on Cancel")
+		assert_true(vis.encloses(pm.confirm_button.get_global_rect()), "Confirm on screen at 720p")
 		if _attempt == 0:
 			await _pad(JOY_BUTTON_B)
 			await wait_frames(2)
-			assert_false(opts.is_leave_confirming(), "B cancels the confirm")
+			assert_false(pm.is_confirming(), "B cancels the confirm")
 			assert_true(_flow.runtime != null, "still in the heist")
-			assert_true(opts.is_visible_in_tree(), "Options stays open")
+			assert_true(pm.is_visible_in_tree(), "pause menu stays open")
 	await _pad(JOY_BUTTON_DPAD_DOWN)
-	assert_eq(opts.get_viewport().gui_get_focus_owner(), opts.leave_cancel_button as Control, "d-pad stays in the dialog")
+	assert_eq(pm.get_viewport().gui_get_focus_owner(), pm.cancel_button as Control, "d-pad stays in the dialog")
 	await _pad(JOY_BUTTON_DPAD_LEFT)
-	assert_eq(opts.get_viewport().gui_get_focus_owner(), opts.leave_confirm_button as Control)
+	assert_eq(pm.get_viewport().gui_get_focus_owner(), pm.confirm_button as Control)
 	await _pad(JOY_BUTTON_A)
 	assert_true(await wait_until(func() -> bool: return _flow.current == (_flow.hub as Control) and _flow.visible, 10.0),
 			"Confirm leaves the heist to the hub")

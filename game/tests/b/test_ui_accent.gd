@@ -51,7 +51,7 @@ func test_theme_text_contrast() -> void:
 	var app: Color = UiAccent.app_bg()
 	var panel: Color = UiAccent.panel_bg()
 	assert_true(UiAccent.relative_luminance(app) < 0.02, "dark app background")
-	assert_true(app.r >= app.b, "warm-neutral dark (red >= blue)")
+	assert_true(app.b >= app.r, "PO-4 Case File: cool ink dark (blue >= red)")
 	for t: StringName in [&"Label", &"HeaderLabel", &"SubheaderLabel", &"DimLabel"]:
 		_check(_font(t), app, BODY_TEXT, "%s on app background" % t)
 		_check(_font(t), panel, BODY_TEXT, "%s on panel" % t)
@@ -64,7 +64,7 @@ func test_theme_text_contrast() -> void:
 		_check(_font(&"Button", &"font_hover_pressed_color"), _bg(&"Button", &"hover_pressed", under), BODY_TEXT,
 				"Button hover+pressed")
 		_check(_font(&"PrimaryButton"), _bg(&"PrimaryButton", &"normal", under), BODY_TEXT, "Primary normal")
-		_check(_font(&"Button", &"font_hover_color"), _bg(&"PrimaryButton", &"hover", under), BODY_TEXT, "Primary hover")
+		_check(_font(&"PrimaryButton", &"font_hover_color"), _bg(&"PrimaryButton", &"hover", under), BODY_TEXT, "Primary hover")
 		_check(_font(&"SubheaderLabel"), _bg(&"StationButton", &"normal", under), BODY_TEXT, "station title")
 		_check(_font(&"DimLabel"), _bg(&"StationButton", &"hover", under), BODY_TEXT, "station desc (hover)")
 	_check(_font(&"PopupMenu"), _bg(&"PopupMenu", &"panel", app), BODY_TEXT, "dropdown items")

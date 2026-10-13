@@ -23,6 +23,8 @@ signal career_requested()
 
 ## Station cards per row (B-PP-2).
 const CARD_COLUMNS: int = 2
+## PO-4: where a new player is pointed (the Board: live contracts, the PD2 Crime.net equivalent).
+const START_STATION: StringName = &"board"
 
 @export var profile_slot: int = 0
 
@@ -47,6 +49,9 @@ var notoriety_label: Label
 var achievements_button: Button
 ## Profile panel button -> options_requested (B5-01).
 var options_button: Button
+## PO-4 first-time pointer: the "START HERE" chip on the Board card while the profile has never
+## played a heist (career "played" == 0).
+var start_here: Label
 
 
 func setup(p: PlayerProfile) -> void:
@@ -146,7 +151,7 @@ func _build_header() -> HBoxContainer:
 	var header: HBoxContainer = UiBuild.hbox(20)
 	header.add_child(UiAccent.strip(UiAccent.table().fallback, 6.0))
 	var titles: VBoxContainer = UiBuild.vbox(2)
-	titles.add_child(UiBuild.label(&"ui.menu.title", UiBuild.DIM))
+	titles.add_child(UiBuild.caption(&"ui.menu.title"))
 	titles.add_child(UiBuild.label(&"ui.hub.title", UiBuild.HEADER))
 	titles.add_child(UiBuild.label(&"ui.hub.subtitle", UiBuild.DIM))
 	header.add_child(titles)
@@ -192,6 +197,13 @@ func _station_card(s: HubStation) -> Button:
 		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		text.add_child(l)
+	if s.id == START_STATION:
+		start_here = UiBuild.caption(&"ui.hub.start_here")
+		start_here.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+		start_here.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		start_here.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		start_here.visible = false
+		row.add_child(start_here)
 	return b
 
 
@@ -228,6 +240,8 @@ func refresh_profile(p: PlayerProfile = null) -> void:
 		profile = SaveService.load_profile(profile_slot)
 	if level_label == null:
 		return
+	if start_here != null:
+		start_here.visible = int(profile.career.get(Career.PLAYED, 0)) == 0
 	name_label.text = profile.profile_name
 	name_label.visible = profile.profile_name != ""
 	level_label.text = NotorietyScreen.level_text(profile.level, profile.notoriety)

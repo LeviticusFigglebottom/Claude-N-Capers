@@ -84,7 +84,7 @@ func setup(p: PlayerProfile) -> void:
 
 
 func build_ui() -> void:
-	var backdrop: ColorRect = ColorRect.new()  # opaque over the map when shown in-heist
+	var backdrop: ColorRect = CaseBackdrop.new()  # opaque over the map when shown in-heist
 	backdrop.color = Color(UiAccent.app_bg(), 0.97)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
@@ -392,14 +392,16 @@ func _render() -> void:
 		c.queue_free()
 	value_labels.clear()
 	var success: bool = bool(payout.get("success", false))
-	_content.add_child(UiBuild.label(&"ui.results.success" if success else &"ui.results.failure", UiBuild.SUBHEADER))
+	_content.add_child(_build_hero(success))
 	var summary: Array[String] = [
 		UiText.t(&"ui.results.stealth" if bool(result.get("stealth", false)) else &"ui.results.loud"),
 		UiText.t(&"ui.results.time", {"time": UiText.clock(float(result.get("time_s", 0.0)))}),
 		UiText.t(&"ui.results.pagers_answered", {"count": int(result.get("pagers_answered", 0))}),
 		UiText.t(UiText.difficulty_key(int(result.get("difficulty", 0)))),
 	]
-	_content.add_child(UiBuild.label(StringName("  |  ".join(summary))))
+	var chips: Label = UiBuild.caption()
+	chips.text = "   ·   ".join(summary)
+	_content.add_child(chips)
 	var cols: HBoxContainer = UiBuild.hbox(40)
 	_content.add_child(cols)
 	cols.add_child(UiBuild.panel(_build_cash()))
@@ -411,6 +413,37 @@ func _render() -> void:
 		if a != null:
 			_content.add_child(UiBuild.label(&"ui.results.achievement_unlocked", UiBuild.SUBHEADER, {"name": UiText.t(a.name_key)}))
 	focus_default()
+
+
+## PO-4 hero row (style.md §8 payday): the outcome as a caption, the take-home total as the display
+## number in brass, where it went (stash / spending) under it; XP total and the level bar on the right.
+func _build_hero(success: bool) -> HBoxContainer:
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S7)
+	var left: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(left)
+	var outcome: Label = UiBuild.caption(&"ui.results.success" if success else &"ui.results.failure")
+	outcome.add_theme_color_override(&"font_color", UiTokens.OK if success else UiTokens.ALERT)
+	left.add_child(outcome)
+	var total: Label = UiBuild.label(&"", UiBuild.DISPLAY)
+	total.text = UiText.money(int(payout.get("total", 0)))
+	total.add_theme_color_override(&"font_color", UiTokens.BRASS_HI if success else UiTokens.PAPER_MUTE)
+	left.add_child(total)
+	value_labels[&"hero_total"] = total
+	var split: Label = UiBuild.label(&"", UiBuild.DIM)
+	split.text = "%s   ·   %s" % [
+		UiText.t(&"ui.results.stash_line", {"amount": UiText.money(int(payout.get("stash", 0)))}),
+		UiText.t(&"ui.results.spending_line", {"amount": UiText.money(int(payout.get("spending", 0)))})]
+	left.add_child(split)
+	var right: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+	right.custom_minimum_size = Vector2(520, 0)
+	right.alignment = BoxContainer.ALIGNMENT_END
+	row.add_child(right)
+	right.add_child(UiBuild.caption(&"ui.results.xp_header"))
+	var xp: Label = UiBuild.label(&"", UiBuild.HEADER)
+	xp.text = "+" + UiText.group_digits(int(payout.get("xp_total", 0)))
+	right.add_child(xp)
+	return row
 
 
 func _build_cash() -> VBoxContainer:
@@ -526,6 +559,11 @@ func _line(grid: GridContainer, id: StringName, caption: String, value: String) 
 	grid.add_child(c)
 	grid.add_child(v)
 	value_labels[id] = v
+	# PO-4: a line worth nothing is noise (pro bonus 0, custody 0, ...); totals always show.
+	var zero: bool = RegEx.create_from_string("[1-9]").search(value) == null
+	if zero and not id in [&"contract", &"total", &"stash", &"spending", &"xp_total"]:
+		c.visible = false
+		v.visible = false
 
 
 ## payout.loot_lines grouped by loot id in first-seen order: [{loot_id, count, value}].

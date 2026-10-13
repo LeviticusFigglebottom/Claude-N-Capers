@@ -48,7 +48,7 @@ func bind_model(m: Node) -> void:
 func prompt_text() -> String:
 	if prompt == null or not prompt.visible:
 		return ""
-	return prompt.prompt_label.text
+	return prompt.prompt.text
 
 
 func _draw_dot() -> void:
