@@ -738,6 +738,7 @@ perk.overlord.card7.desc,Health bonus rises to 40%. Below half health the inject
 perk.overlord.card9.name,Top of the Heap
 perk.overlord.card9.desc,Health bonus rises to 80%. Every 50 health the injector heals while you are at full health cuts 1 s from its cooldown.
 ui.skills.title,Skills
+ui.skills.crumb,Safehouse / Loadout
 ui.skills.basic,Basic
 ui.skills.aced,Aced
 ui.skills.tier,Tier {tier}
@@ -1119,8 +1120,9 @@ ui.loadout.perk_deck,Perk Deck
 ui.loadout.skills_summary,Skill points spent: {spent} of {total}
 ui.loadout.perk_summary,Perk deck: {deck} ({cards}/9 cards)
 ui.loadout.perk_none,Perk deck: none
-ui.skills.level,Level {level}
-ui.skills.points_left,Skill points: {points} of {total}
+ui.skills.points_left,{points} of {total}
+ui.skills.level_caption,Level
+ui.skills.points_caption,Skill points
 ui.skills.sets,Skill set
 ui.skills.set,Set {n}
 ui.skills.state.locked,Locked
@@ -1140,11 +1142,13 @@ ui.skills.refund_points,Refund (+{points})
 ui.skills.respec_confirm,Press again to reset
 ui.skills.blocked_partial,Part of this effect is not active yet.
 ui.skills.unlocks,Unlocks: {item}
-ui.skills.hint,Click / A / Enter: invest. Right-click / X / Delete: refund. LB / RB or Page Up / Down: switch tree. Resetting skills is free.
+ui.skills.hint,"Refund: right-click, X or Del  ·  Trees: LB / RB, PgUp / PgDn"
 ui.skills.reason.not_owned,You have not taken this skill.
 ui.skills.reason.refund_breaks_tier,Can't refund: a higher-tier skill in this subtree needs these points. Refund it first.
 ui.perks.title,Perk Decks
-ui.perks.points,Perk points: {points}
+ui.perks.crumb,Safehouse / Loadout
+ui.perks.points_caption,Perk points
+ui.perks.decks,Decks
 ui.perks.equip,Equip Deck
 ui.perks.equipped,Equipped
 ui.perks.not_equipped,Not equipped
@@ -1156,9 +1160,9 @@ ui.perks.all_unlocked,All cards unlocked
 ui.perks.state.unlocked,Unlocked
 ui.perks.state.next,Next to unlock
 ui.perks.state.locked,Locked
-ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available). Perk points come from experience.
+ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available)
 ui.perks.dev_unlocked,Dev build: every perk card is unlocked.
-ui.perks.hint,"Select a deck to see its cards; press it to equip. Only the equipped deck is active, with every card unlocked in it."
+ui.perks.hint,Press a deck to equip it; only the equipped deck is active. Perk points come from experience.
 heist.glasshouse.briefing,"Vossberg Jewelers sits on the corner of Harlow Avenue and Pell Street and stays open late for its private viewing week. Tonight the estate consignment waits in the workshop safe. Case the floor as customers, find the manager's keycard and take the back route. If it goes loud, the safe locks down: drill it and hold until the van arrives. Odile wants at least two bags before Friday."
 contact.role.fence,Fence
 contact.role.fixer,Fixer
@@ -1291,8 +1295,9 @@ item.asset.vent_access.desc,A maintenance contact leaves the vent grille unscrew
 item.asset.escape_position.name,Van position
 item.asset.escape_position.desc,"The getaway van waits here. A plan: the crew votes, the host breaks ties."
 ui.masks.title,Masks
+ui.masks.crumb,Safehouse / Loadout
 ui.masks.open,Masks
-ui.masks.equipped,Equipped: {name}
+ui.masks.equipped_caption,Wearing
 ui.masks.none,No mask
 ui.masks.your_masks,Your masks
 ui.masks.custom_slot,Custom mask {n}
@@ -1312,8 +1317,8 @@ ui.masks.status.equipped,{name} is your mask for the next job.
 ui.masks.status.ready,{name}: press Equip to wear it.
 ui.masks.status.locked_parts,Some of these parts are locked. New parts drop from paydays.
 ui.masks.status.empty_slot,This slot is empty. Build a mask and save it here.
-ui.masks.preview_hint,Drag with the mouse or use the right stick to turn the mask.
-ui.masks.hint,"Pick a mask on the left, change its parts on the right, save it into a custom slot, then equip it."
+ui.masks.preview_hint,Drag or use the right stick to turn the mask.
+ui.masks.hint,"Edit the parts, save them into a custom slot, then equip."
 item.mask_base.heron.name,Heron
 item.mask_base.visage.name,Plain Visage
 item.mask_base.vulpine.name,Vulpine
@@ -1394,13 +1399,16 @@ ui.payday_cards.mask_kind.colors,Mask colours
 ui.payday_cards.mask_kind.pattern,Mask pattern
 ui.payday_cards.mask_kind.preset,Complete mask
 ui.board.title,The Board
+ui.board.crumb,Safehouse / Contracts
 ui.board.subtitle,Contracts from your contacts. Each stays up for {minutes} minutes; new ones land all the time.
-ui.board.level_stash,Level {level}  |  Stash: {amount}
+ui.board.level_caption,Level
+ui.board.stash_caption,Stash
+ui.board.pay_caption,Contract pay
+ui.board.difficulty_caption,Difficulty
+ui.board.expires_caption,Expires in
 ui.board.empty,No contracts on the board right now.
 ui.board.contact,From {name}
 ui.board.difficulty,Difficulty: {name}
-ui.board.payout,Contract pay: {amount}
-ui.board.expires,Expires in {time}
 ui.board.pro,PRO JOB
 ui.board.pro_desc,No restarts: fail it and the contract is gone. +{pct}% XP.
 ui.board.consumed,Pro job failed: this contract is burned until the board rotates.
@@ -1411,7 +1419,7 @@ ui.board.broker.title,Contract Broker
 ui.board.broker.desc,"Buy any contract you have unlocked, paid from the stash. No refunds."
 ui.board.broker.heist,Heist
 ui.board.broker.difficulty,Difficulty
-ui.board.broker.cost,Price: {amount}
+ui.board.broker.price,Price
 ui.board.broker.buy,Buy Contract
 ui.board.broker.locked_level,{name} (level {level})
 ui.board.broker.reason.unknown_heist,Unknown heist.
@@ -1529,6 +1537,7 @@ ui.hub.profile.perk_points,Perk points: {points} free
 ui.hub.station.crew,Crew Net
 ui.hub.station.crew.desc,"Host a co-op crew, or join a friend's lobby."
 ui.lobby.title,Co-op Lobby
+ui.lobby.crumb,Safehouse / Crew
 ui.lobby.status.offline,Not connected. Host a crew or join one.
 ui.lobby.status.joining,Connecting to the host...
 ui.lobby.status.hosting,Hosting: {crew} of {max} players
@@ -1549,7 +1558,7 @@ ui.lobby.error.host,Could not host on port {port}. Is it already in use?
 ui.lobby.error.join,Could not connect to {address}:{port}.
 ui.lobby.error.timeout,The host did not answer. Check the address and port.
 ui.lobby.error.host_lost,The host closed the lobby.
-ui.lobby.contract.title,CONTRACT
+ui.lobby.contract.title,Contract
 ui.lobby.contract.none,No contract yet
 ui.lobby.contract.none_host,Pick one from the Board or the planning table.
 ui.lobby.contract.none_client,Waiting for the host to pick a contract.
@@ -1572,18 +1581,18 @@ ui.lobby.block.not_ready,Waiting for everyone to be ready.
 ui.lobby.slot.open,Open seat
 ui.lobby.slot.ai,Crew AI
 ui.lobby.slot.ai_fill,AI fills this seat
-ui.lobby.slot.host,HOST
-ui.lobby.slot.you,YOU
+ui.lobby.slot.host,Host
+ui.lobby.slot.you,You
 ui.lobby.slot.ready,Ready
 ui.lobby.slot.not_ready,Not ready
 ui.lobby.slot.waiting,Waiting for loadout...
 ui.lobby.slot.none,None
-ui.lobby.slot.primary,Primary: {name}
-ui.lobby.slot.secondary,Secondary: {name}
-ui.lobby.slot.armor,Armor: {name}
-ui.lobby.slot.deployable,Deployable: {name}
-ui.lobby.slot.perk_deck,Perk deck: {name}
-ui.lobby.slot.mask,Mask: {name}
+ui.lobby.slot.primary,{name}
+ui.lobby.slot.secondary,{name}
+ui.lobby.slot.armor,{name}
+ui.lobby.slot.deployable,{name}
+ui.lobby.slot.perk_deck,{name}
+ui.lobby.slot.mask,{name}
 ui.lobby.slot.illegal,Illegal loadout: the host will not launch it.
 ui.lobby.custom_mask,Custom mask
 ui.lobby.client_launch_missing,"The host started the heist, but joining a running heist is not available in this build yet."
@@ -1760,13 +1769,16 @@ item.mod.sparrow_standard_mag.name,Twenty-Round Magazine
 item.mod.sparrow_extended_mag.name,Thirty-Two-Round Magazine
 item.mod.sparrow_extended_mag.desc,"Thirty-two rounds sticking well out of the grip. Slower to swap, harder to hide."
 ui.hub.achievements,Achievements
-ui.achievements.title,ACHIEVEMENTS
+ui.achievements.title,Achievements
+ui.achievements.crumb,Safehouse / Profile
 ui.achievements.subtitle,The jobs the crew will be remembered for.
-ui.achievements.count,{unlocked} of {total} unlocked
+ui.achievements.count,{unlocked} of {total}
+ui.achievements.count_caption,Unlocked
 ui.achievements.progress,{progress} / {target}
 ui.achievements.unlocked,Unlocked
 ui.achievements.locked,In progress
-ui.achievements.reward,Reward: {name}
+ui.achievements.reward,{name}
+ui.achievements.reward_caption,Reward
 ui.results.achievement_unlocked,Achievement unlocked: {name}
 achievement.first_score.name,First Score
 achievement.first_score.desc,Complete any heist.
@@ -1787,14 +1799,16 @@ achievement.seasoned.desc,Reach reputation level 25.
 ui.hud.stamina,STAMINA
 ui.hud.stamina_exhausted,WINDED
 ui.workshop.title,Workshop
+ui.workshop.crumb,Safehouse / Armory
 ui.workshop.open,Workshop
 ui.workshop.weapons,Weapons
 ui.workshop.primaries,PRIMARY WEAPONS
 ui.workshop.secondaries,SECONDARY WEAPONS
-ui.workshop.slots,Modification slots
+ui.workshop.slots,Mod slots
 ui.workshop.overview,Whole Weapon
-ui.workshop.hint,"Orbit: left drag, right stick or W/A/S/D · Pan: right drag, LB + right stick or Shift + W/A/S/D · Zoom: wheel, triggers or Q/E · Reset: R or R3"
-ui.workshop.cash,Spending cash {amount}
+ui.workshop.hint,"Orbit: drag, right stick, W/A/S/D  ·  Pan: right drag, LB + stick  ·  Zoom: wheel, triggers, Q/E  ·  Reset: R / R3"
+ui.workshop.cash_caption,Spending cash
+ui.workshop.loadout_concealment,Loadout concealment
 ui.workshop.entry,{name}  ·  {status}
 ui.workshop.tag.equipped,Equipped
 ui.workshop.tag.owned,Owned
@@ -1808,10 +1822,10 @@ ui.workshop.status.locked_level,Unlocks at level {level}
 ui.workshop.status.stock,Stock part
 ui.workshop.status.mod_source,Not owned. Drops from payday cards or buy it here for {price}.
 ui.workshop.status.mod_unlock,Locked. Unlocked by: {source}
-ui.workshop.vs_equipped,Compared with your equipped {slot}
-ui.workshop.vs_stock,Compared with the stock weapon
-ui.workshop.concealment,Concealment {value} (now {current})
-ui.workshop.dr_preview,Detection risk {value}% (now {current}%)
+ui.workshop.vs_equipped,vs. your equipped {slot}
+ui.workshop.vs_stock,vs. the stock weapon
+ui.workshop.concealment,{value}  (now {current})
+ui.workshop.dr_preview,{value}%  (now {current}%)
 ui.workshop.equip,Equip
 ui.workshop.equip_as,Equip as {slot}
 ui.workshop.equipped,Equipped
@@ -2015,6 +2029,7 @@ ui.loadout.deployable_locked,"{item} (locked: perk card {card}, {name})"
 ui.prompt.pick_up_gear,Hold {key} to pick up your gear
 ui.blocked.civilian,You need your gear
 ui.options.title,Options
+ui.options.crumb,Caperworks / Settings
 ui.options.tab.controls,Controls
 ui.options.tab.audio,Audio
 ui.options.tab.video,Video
@@ -2167,25 +2182,28 @@ ui.action.chat,Chat
 ui.action.pause,Options / Pause
 ui.results.xp.notoriety,Notoriety bonus
 ui.notoriety.open,Notoriety
-ui.notoriety.title,NOTORIETY
+ui.notoriety.title,Notoriety
+ui.notoriety.crumb,Safehouse / Profile
 ui.notoriety.subtitle,"Trade a maxed-out level for a rank the whole underworld knows. Level 100 and a fortune buy the next one."
-ui.notoriety.current,CURRENT RANK
+ui.notoriety.current,Current rank
 ui.notoriety.badge,Notoriety {rank}
 ui.notoriety.badge_none,No notoriety yet
 ui.notoriety.level_badge,{rank} · Level {level}
-ui.notoriety.xp_bonus,XP bonus: +{pct}%
-ui.notoriety.xp_bonus_max,XP bonus: +{pct}% (maximum)
+ui.notoriety.xp_bonus,+{pct}%
+ui.notoriety.xp_bonus_max,+{pct}% (maximum)
+ui.notoriety.xp_bonus_caption,XP bonus
 ui.notoriety.held_skills,Skill points waiting to come back as you level: {points}
 ui.notoriety.next,Next rank: {rank}
 ui.notoriety.max_reached,You hold the highest rank there is.
-ui.notoriety.requirements,REQUIREMENTS
+ui.notoriety.requirements,Requirements
 ui.notoriety.check.level,Reach level {need} (now {have})
 ui.notoriety.check.cash,Spending cash: {need} (you have {have})
 ui.notoriety.check.cap,Ranks stop at {need}
 ui.notoriety.check.met,Done
 ui.notoriety.check.unmet,Missing
-ui.notoriety.cost,Cost: {amount}
-ui.notoriety.rewards,REWARDS AT RANK {rank}
+ui.notoriety.cost,{amount}
+ui.notoriety.cost_caption,Cost
+ui.notoriety.rewards,Rewards at rank {rank}
 ui.notoriety.reward_line,{name}
 ui.notoriety.reward_choice,Pick one: {names}
 ui.notoriety.reward_xp,XP bonus rises to +{pct}%
@@ -2312,6 +2330,8 @@ ui.music.locked_rank,{name} (Notoriety {rank})
 ui.hub.station.jukebox,Jukebox
 ui.hub.station.jukebox.desc,"Listen through the crew's heist tracks. New ones come with Notoriety."
 ui.jukebox.title,Jukebox
+ui.jukebox.crumb,Safehouse / Music
+ui.jukebox.now_caption,Now playing
 ui.jukebox.subtitle,"Every heist track the crew can play. Pick one for a job in pre-planning or the lobby."
 ui.jukebox.preview_missing,Track previews arrive with the music update.
 ui.jukebox.play,Play
@@ -2319,8 +2339,8 @@ ui.jukebox.stop,Stop
 ui.jukebox.unlocked,Unlocked
 ui.jukebox.locked,Locked
 ui.jukebox.locked_rank,Locked: Notoriety {rank}
-ui.jukebox.idle,Nothing playing.
-ui.jukebox.now_playing,Now playing: {name}
+ui.jukebox.idle,Nothing
+ui.jukebox.now_playing,{name}
 item.loot.gold.name,Gold Bars
 item.loot.gold.desc,"Twelve-kilo bars in a reinforced bag. The heaviest thing you will ever be glad to carry: no sprinting, no jumping, and worth it."
 item.loot.bearer_bonds.name,Bearer Bonds
@@ -2407,7 +2427,7 @@ ui.kick.yes,Kick
 ui.kick.no,Cancel
 ui.lobby.error.kicked,The host removed you from the lobby.
 ui.lobby.code.title,Lobby code
-ui.lobby.code.value,Lobby code: {code}
+ui.lobby.code.value,{code}
 ui.lobby.code.copy,Copy
 ui.lobby.code.copied,Copied to the clipboard.
 ui.lobby.code.wan_hint,"Works on your local network. For internet play, forward the UDP port on your router and share your public address."
@@ -2449,8 +2469,8 @@ item.throwable.throwing_knife.desc,"Three balanced blades. Silent, and one clean
 ui.loadout.heister,Heister
 ui.heister.any,Any Free Heister
 ui.loadout.heister_taken,{name} (taken)
-ui.lobby.slot.heister,Heister: {name}
-ui.lobby.slot.heister_fallback,"Heister: {name} ({pick} was taken)"
+ui.lobby.slot.heister,{name}
+ui.lobby.slot.heister_fallback,{name} ({pick} was taken)
 ui.lobby.dropin.title,Drop-in
 ui.lobby.dropin.ask,Ask me first
 ui.lobby.dropin.auto,Allowed
@@ -2706,7 +2726,8 @@ ui.subtitle.speaker,{name}:
 ui.options.accessibility.subtitles_all_speakers,Subtitles for Guards and Crew
 ui.options.accessibility.reduce_motion,Reduce Motion
 ui.career.open,Career
-ui.career.title,CAREER
+ui.career.title,Career
+ui.career.crumb,Safehouse / Profile
 ui.career.subtitle,"Every job on the record. Counting started with this version of the save, so older heists are not here."
 ui.career.summary,Record
 ui.career.money,Money

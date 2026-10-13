@@ -33,14 +33,14 @@ var _capture_t: float = 0.0
 
 func setup(s: GameSettings) -> void:
 	settings = s
-	add_theme_constant_override(&"separation", 6)
+	add_theme_constant_override(&"separation", UiTokens.S2)
 	capture_label = UiBuild.label(&"ui.options.controls.press_key", UiBuild.SUBHEADER)
 	capture_label.visible = false
 	add_child(capture_label)
 	_build_conflict_bar()
-	var head: HBoxContainer = UiBuild.hbox(16)
+	var head: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	for k: StringName in [&"ui.options.controls.action", &"ui.options.controls.kbm", &"ui.options.controls.pad"]:
-		var l: Label = UiBuild.label(k, UiBuild.DIM)
+		var l: Label = UiBuild.caption(k)
 		l.custom_minimum_size = Vector2(OptionsRows.LABEL_WIDTH if k == &"ui.options.controls.action" else 300.0, 0)
 		head.add_child(l)
 	add_child(head)
@@ -165,10 +165,11 @@ func _ready() -> void:
 
 
 func _row(action: StringName) -> HBoxContainer:
-	var row: HBoxContainer = UiBuild.hbox(16)
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	row.name = "Bind_%s" % action
-	var l: Label = UiBuild.label(InputBindings.name_key(action))
+	var l: Label = UiBuild.caption(InputBindings.name_key(action))
 	l.custom_minimum_size = Vector2(OptionsRows.LABEL_WIDTH, 0)
+	l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(l)
 	var r: Dictionary = {}
 	for col: StringName in InputEventCodec.COLUMNS:
@@ -190,11 +191,11 @@ func _row(action: StringName) -> HBoxContainer:
 
 
 func _build_conflict_bar() -> void:
-	var v: VBoxContainer = UiBuild.vbox(8)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	conflict_label = UiBuild.label()
 	conflict_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(conflict_label)
-	var h: HBoxContainer = UiBuild.hbox(12)
+	var h: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	swap_button = UiBuild.button(&"ui.options.controls.swap")
 	keep_button = UiBuild.button(&"ui.options.controls.keep_both")
 	cancel_button = UiBuild.button(&"ui.menu.cancel")
@@ -206,7 +207,7 @@ func _build_conflict_bar() -> void:
 	v.add_child(h)
 	var chain: Array[Control] = [swap_button, keep_button, cancel_button]
 	UiNav.chain_horizontal(chain)
-	conflict_bar = UiBuild.panel(v)
+	conflict_bar = UiBuild.panel(v, &"AlertPanel")  # PO-4: a binding clash is a warning box
 	conflict_bar.visible = false
 	add_child(conflict_bar)
 

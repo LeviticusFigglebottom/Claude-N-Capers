@@ -16,9 +16,9 @@ const DEFAULT_PATH: String = "res://content/data/lobby/lobby_tweak.tres"
 ## Longest crew name shown / accepted in a profile summary (longer names are cut).
 @export var max_name_length: int = 24
 ## Slot text colours: ready, not ready, illegal loadout.
-@export var ready_color: Color = Color(0.45, 0.85, 0.5)
-@export var not_ready_color: Color = Color(0.85, 0.78, 0.62)
-@export var illegal_color: Color = Color(1.0, 0.45, 0.4)
+@export var ready_color: Color = UiTokens.OK
+@export var not_ready_color: Color = UiTokens.PAPER_DIM
+@export var illegal_color: Color = UiTokens.ALERT
 ## Chat (B6-03, ChatLog / ChatPanel): longest message (characters, after cleaning).
 @export var chat_max_length: int = 160
 ## Rate limit per sender slot: at most chat_rate_count messages in any chat_rate_window_s seconds.

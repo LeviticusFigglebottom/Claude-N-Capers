@@ -21,7 +21,9 @@ const COMBAT_KEYS: Array[String] = ["kills", "specials_killed", "civilians_kille
 const MONEY_AMOUNTS: Array[String] = ["spending_earned", "stash_earned", "cash_spent", "offshore_spent", "small_loot"]
 ## Per-heist table columns (header key = `ui.career.col.<id>`).
 const COLUMNS: Array[String] = ["heist", "played", "won", "failed", "stealth", "loud", "best", "fastest"]
-const COLUMN_WIDTH: float = 150.0
+const COLUMN_WIDTH: float = 160.0
+## The two text columns (best difficulty, fastest win) are wider: their caption heads are longer.
+const WIDE_COLUMN_WIDTH: float = 240.0
 const HEIST_COLUMN_WIDTH: float = 300.0
 
 @export var profile_slot: int = 0
@@ -49,24 +51,20 @@ func setup(p: PlayerProfile) -> void:
 
 
 func build_ui() -> void:
-	var root: VBoxContainer = UiBuild.vbox(18)
+	var root: VBoxContainer = UiBuild.vbox(UiTokens.S3)
 	UiBuild.screen_margin(self, root)
-	var header: HBoxContainer = UiBuild.hbox(20)
-	header.add_child(UiAccent.strip(UiAccent.table().fallback, 6.0))
-	var titles: VBoxContainer = UiBuild.vbox(2)
-	titles.add_child(UiBuild.label(&"ui.career.title", UiBuild.HEADER))
+	var titles: VBoxContainer = UiBuild.header(&"ui.career.crumb", &"ui.career.title")
 	titles.add_child(UiBuild.label(&"ui.career.subtitle", UiBuild.DIM))
-	header.add_child(titles)
-	root.add_child(header)
+	root.add_child(titles)
 	var scroll: ScrollContainer = ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	scroll.follow_focus = true
 	root.add_child(scroll)
-	var page: VBoxContainer = UiBuild.vbox(18)
+	var page: VBoxContainer = UiBuild.vbox(UiTokens.S3)
 	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(page)
-	var cols: HBoxContainer = UiBuild.hbox(24)
+	var cols: HBoxContainer = UiBuild.hbox(UiTokens.S4)
 	page.add_child(cols)
 	_record_box = _panel_box(cols, &"ui.career.summary")
 	level_label = UiBuild.label(&"", UiBuild.SUBHEADER)
@@ -75,18 +73,17 @@ func build_ui() -> void:
 	_record_box.add_child(badge_label)
 	_money_box = _panel_box(cols, &"ui.career.money")
 	_combat_box = _panel_box(cols, &"ui.career.combat")
-	var heists: VBoxContainer = UiBuild.vbox(8)
+	var heists: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	heists.add_child(UiBuild.label(&"ui.career.heists", UiBuild.SUBHEADER))
 	heists.add_child(_header_row())
-	table = UiBuild.vbox(6)
+	table = UiBuild.vbox(UiTokens.S1)
 	heists.add_child(table)
 	empty_label = UiBuild.label(&"ui.career.empty", UiBuild.DIM)
 	heists.add_child(empty_label)
 	page.add_child(UiBuild.panel(heists))
 	back_button = UiBuild.button(&"ui.menu.back")
-	back_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	back_button.pressed.connect(back_requested.emit)
-	root.add_child(back_button)
+	root.add_child(UiBuild.footer(back_button))  # PO-4: a read-only page, so no primary
 	refresh()
 
 
@@ -160,11 +157,12 @@ static func _percent(v: float) -> String:
 
 
 func _panel_box(parent: Control, title: StringName) -> VBoxContainer:
-	var v: VBoxContainer = UiBuild.vbox(6)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	v.custom_minimum_size = Vector2(420, 0)
 	v.add_child(UiBuild.label(title, UiBuild.SUBHEADER))
 	var panel: PanelContainer = UiBuild.panel(v)
-	panel.focus_mode = Control.FOCUS_ALL
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	UiBuild.focus_panel(panel)
 	parent.add_child(panel)
 	_panels.append(panel)
 	return v
@@ -175,9 +173,10 @@ func _fill(box: VBoxContainer, keys: Array) -> void:
 		var key: String = String(k)
 		var l: Label = value_labels.get(key, null) as Label
 		if l == null:
-			var row: HBoxContainer = UiBuild.hbox(12)
-			var name_label: Label = UiBuild.label(StringName("ui.career.%s" % key), UiBuild.DIM)
+			var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+			var name_label: Label = UiBuild.caption(StringName("ui.career.%s" % key))
 			name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			name_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			row.add_child(name_label)
 			l = UiBuild.label()
 			l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -190,13 +189,16 @@ func _fill(box: VBoxContainer, keys: Array) -> void:
 		(acc_row as Control).visible = Career.accuracy(profile) >= 0.0
 
 
-func _header_row() -> HBoxContainer:
-	var row: HBoxContainer = UiBuild.hbox(8)
+func _header_row() -> MarginContainer:
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S2)
+	var pad: MarginContainer = MarginContainer.new()  # lines the column heads up with the row panels' padding
+	pad.add_theme_constant_override(&"margin_left", UiTokens.S4)
+	pad.add_child(row)
 	for c: String in COLUMNS:
-		var l: Label = UiBuild.label(StringName("ui.career.col.%s" % c), UiBuild.DIM)
-		l.custom_minimum_size = Vector2(HEIST_COLUMN_WIDTH if c == "heist" else COLUMN_WIDTH, 0)
+		var l: Label = UiBuild.caption(StringName("ui.career.col.%s" % c))
+		l.custom_minimum_size = Vector2(column_width(COLUMNS.find(c)), 0)
 		row.add_child(l)
-	return row
+	return pad
 
 
 func _fill_table() -> void:
@@ -206,18 +208,25 @@ func _fill_table() -> void:
 	heist_rows.clear()
 	var any: bool = false
 	for id: StringName in table_heists(profile):
-		var row: HBoxContainer = UiBuild.hbox(8)
+		var row: HBoxContainer = UiBuild.hbox(UiTokens.S2)
 		var cells: Array[String] = heist_cells(profile, id)
 		for i: int in range(cells.size()):
 			var l: Label = UiBuild.label()
 			l.text = cells[i]
-			l.custom_minimum_size = Vector2(HEIST_COLUMN_WIDTH if i == 0 else COLUMN_WIDTH, 0)
+			l.custom_minimum_size = Vector2(column_width(i), 0)
 			l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 			row.add_child(l)
 		var panel: PanelContainer = UiBuild.panel(row)
-		panel.focus_mode = Control.FOCUS_ALL
+		UiBuild.focus_panel(panel)
 		panel.name = "Heist_%s" % id
 		table.add_child(panel)
 		heist_rows[id] = panel
 		any = any or not Career.heist(profile, id).is_empty()
 	empty_label.visible = not any
+
+
+## Width of table column `i` (COLUMNS order).
+static func column_width(i: int) -> float:
+	if i == 0:
+		return HEIST_COLUMN_WIDTH
+	return WIDE_COLUMN_WIDTH if i >= COLUMNS.size() - 2 else COLUMN_WIDTH

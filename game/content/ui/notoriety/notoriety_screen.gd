@@ -39,6 +39,7 @@ var confirm_title: Label
 var confirm_body: Label
 var confirm_button: Button
 var cancel_button: Button
+var _cost_field: VBoxContainer
 
 
 func setup(p: PlayerProfile) -> void:
@@ -48,19 +49,14 @@ func setup(p: PlayerProfile) -> void:
 
 
 func build_ui() -> void:
-	var root: VBoxContainer = UiBuild.vbox(18)
+	var root: VBoxContainer = UiBuild.vbox(UiTokens.S3)
 	UiBuild.screen_margin(self, root)
-	var header: HBoxContainer = UiBuild.hbox(20)
-	header.add_child(UiAccent.strip(UiAccent.table().fallback, 6.0))
-	var titles: VBoxContainer = UiBuild.vbox(2)
-	titles.add_child(UiBuild.label(&"ui.notoriety.title", UiBuild.HEADER))
+	var titles: VBoxContainer = UiBuild.header(&"ui.notoriety.crumb", &"ui.notoriety.title")
 	var sub: Label = UiBuild.label(&"ui.notoriety.subtitle", UiBuild.DIM)
 	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	titles.add_child(sub)
-	titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(titles)
-	root.add_child(header)
-	var body: HBoxContainer = UiBuild.hbox(32)
+	root.add_child(titles)
+	var body: HBoxContainer = UiBuild.hbox(UiTokens.S4)
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(body)
 	body.add_child(_build_current())
@@ -69,25 +65,27 @@ func build_ui() -> void:
 	root.add_child(confirm_panel)
 	result_label = UiBuild.label(&"", UiBuild.SUBHEADER)
 	root.add_child(result_label)
-	var footer: HBoxContainer = UiBuild.hbox(16)
-	root.add_child(footer)
-	rank_up_button = UiBuild.primary(UiBuild.button(&"ui.notoriety.rank_up"))
+	# PO-4 footer: Back (ghost) left, Rank Up (the screen's primary) right.
+	rank_up_button = UiBuild.button(&"ui.notoriety.rank_up")
 	rank_up_button.pressed.connect(request_rank_up)
-	footer.add_child(rank_up_button)
 	back_button = UiBuild.button(&"ui.menu.back")
 	back_button.pressed.connect(back_requested.emit)
-	footer.add_child(back_button)
+	root.add_child(UiBuild.footer(back_button, rank_up_button))
 	refresh()
 
 
 func _build_current() -> PanelContainer:
-	var v: VBoxContainer = UiBuild.vbox(10)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	v.custom_minimum_size = Vector2(420, 0)
-	v.add_child(UiBuild.label(&"ui.notoriety.current", UiBuild.DIM))
+	v.add_child(UiBuild.caption(&"ui.notoriety.current"))
 	rank_label = UiBuild.label(&"", UiBuild.HEADER)
 	v.add_child(rank_label)
+	var gap: Control = Control.new()
+	gap.custom_minimum_size = Vector2(0, UiTokens.S2)
+	v.add_child(gap)
 	bonus_label = UiBuild.label()
-	v.add_child(bonus_label)
+	bonus_label.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)
+	v.add_child(UiBuild.field(&"ui.notoriety.xp_bonus_caption", bonus_label))
 	held_label = UiBuild.label(&"", UiBuild.DIM)
 	held_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(held_label)
@@ -95,19 +93,20 @@ func _build_current() -> PanelContainer:
 
 
 func _build_next() -> PanelContainer:
-	var v: VBoxContainer = UiBuild.vbox(10)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	next_label = UiBuild.label(&"", UiBuild.SUBHEADER)
 	v.add_child(next_label)
-	v.add_child(UiBuild.label(&"ui.notoriety.requirements", UiBuild.DIM))
-	checklist = UiBuild.vbox(6)
+	v.add_child(UiBuild.caption(&"ui.notoriety.requirements"))
+	checklist = UiBuild.vbox(UiTokens.S1)
 	v.add_child(checklist)
-	cost_label = UiBuild.label()
-	v.add_child(cost_label)
+	cost_label = UiBuild.label(&"", UiBuild.MONEY)
+	_cost_field = UiBuild.field(&"ui.notoriety.cost_caption", cost_label)
+	v.add_child(_cost_field)
 	v.add_child(HSeparator.new())
-	reward_list = UiBuild.vbox(4)
+	reward_list = UiBuild.vbox(UiTokens.S1)
 	v.add_child(reward_list)
-	choice_box = UiBuild.vbox(6)
+	choice_box = UiBuild.vbox(UiTokens.S2)
 	v.add_child(choice_box)
 	var panel: PanelContainer = UiBuild.panel(v)
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -115,22 +114,20 @@ func _build_next() -> PanelContainer:
 
 
 func _build_confirm() -> PanelContainer:
-	var v: VBoxContainer = UiBuild.vbox(10)
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	confirm_title = UiBuild.label(&"", UiBuild.SUBHEADER)
 	v.add_child(confirm_title)
 	confirm_body = UiBuild.label()
 	confirm_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	confirm_body.custom_minimum_size = Vector2(640, 0)
 	v.add_child(confirm_body)
-	var row: HBoxContainer = UiBuild.hbox(16)
-	confirm_button = UiBuild.primary(UiBuild.button(&"ui.notoriety.confirm"))
+	# Cancel (ghost) left, Confirm (primary) right, like the screen footer.
+	confirm_button = UiBuild.button(&"ui.notoriety.confirm")
 	confirm_button.pressed.connect(confirm_rank_up)
-	row.add_child(confirm_button)
 	cancel_button = UiBuild.button(&"ui.notoriety.cancel")
 	cancel_button.pressed.connect(cancel_confirm)
-	row.add_child(cancel_button)
-	v.add_child(row)
-	var panel: PanelContainer = UiBuild.panel(v)
+	v.add_child(UiBuild.footer(cancel_button, confirm_button))
+	var panel: PanelContainer = UiBuild.panel(v, &"AlertPanel")  # the reset warning reads as loud
 	panel.visible = false
 	return panel
 
@@ -154,6 +151,7 @@ func refresh() -> void:
 			UiText.t(&"ui.notoriety.next", {"rank": Notoriety.roman(rank + 1)})
 	_fill_checklist()
 	cost_label.visible = rank < cap
+	_cost_field.visible = rank < cap
 	cost_label.text = UiText.t(&"ui.notoriety.cost", {"amount": UiText.money(Notoriety.cost_for(rank + 1))})
 	_fill_rewards(rank + 1 if rank < cap else 0)
 	_fill_choices()
@@ -166,15 +164,17 @@ func _fill_checklist() -> void:
 	check_rows.clear()
 	for r: Dictionary in Notoriety.requirements(profile):
 		var code: StringName = r["code"] as StringName
-		var row: HBoxContainer = UiBuild.hbox(16)
+		var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 		var have: String = UiText.money(int(r["have"])) if code == Notoriety.REQ_CASH else str(int(r["have"]))
 		var need: String = UiText.money(int(r["need"])) if code == Notoriety.REQ_CASH else str(int(r["need"]))
 		var text: Label = UiBuild.label(StringName("ui.notoriety.check.%s" % code), &"", {"have": have, "need": need})
 		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(text)
 		var met: bool = bool(r["met"])
-		var status: Label = UiBuild.label(&"ui.notoriety.check.met" if met else &"ui.notoriety.check.unmet",
-				&"" if met else UiBuild.DIM)
+		var status: Label = UiBuild.caption(&"ui.notoriety.check.met" if met else &"ui.notoriety.check.unmet")
+		status.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		if met:
+			status.add_theme_color_override(&"font_color", UiTokens.OK)
 		row.add_child(status)
 		checklist.add_child(row)
 		check_rows[code] = status
@@ -185,7 +185,7 @@ func _fill_rewards(rank: int) -> void:
 	_clear(reward_list)
 	if rank <= 0:
 		return
-	reward_list.add_child(UiBuild.label(&"ui.notoriety.rewards", UiBuild.DIM, {"rank": Notoriety.roman(rank)}))
+	reward_list.add_child(UiBuild.caption(&"ui.notoriety.rewards", {"rank": Notoriety.roman(rank)}))
 	var ids: Array[StringName] = Notoriety.rewards_for(rank)
 	for id: StringName in ids:
 		reward_list.add_child(UiBuild.label(&"ui.notoriety.reward_line", &"", {"name": Notoriety.reward_name(id)}))
