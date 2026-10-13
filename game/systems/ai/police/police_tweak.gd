@@ -14,6 +14,11 @@ extends Resource
 @export var standoff_min_m: float = 8.0
 @export var standoff_pref_m: float = 11.0
 @export var standoff_max_m: float = 15.0
+## PO-5.14 ◇ (L1.1 assault push): while an assault is building/sustaining, units without cover close to
+## this band instead (PD2 cops rush the room), so they do not hover in the doorway (back off out of
+## sight, re-approach, repeat).
+@export var assault_standoff_min_m: float = 2.0
+@export var assault_standoff_pref_m: float = 4.0
 @export var fire_range_m: float = 40.0
 ## Flank-lite: chance a fresh unit first visits a FLANK point near the target.
 @export var flank_chance: float = 0.3
