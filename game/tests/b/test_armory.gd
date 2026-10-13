@@ -330,7 +330,9 @@ func test_every_mod_has_a_downside_on_its_weapon() -> void:
 				var m: WeaponModDef = ContentDB.mod(mid)
 				var modded: WeaponStats = LoadoutResolver.resolve_weapon(w.id, [mid] as Array[StringName])
 				var d: Dictionary = StatCalculator.delta(stock, modded)
-				var worse: bool = m.delta.ads_time_s > 0.0 or m.delta.equip_time_s > 0.0
+				# D-097: PD2 mods cost concealment, not ADS time; a concealment cost counts even when the
+				# weapon already sits at the 0 floor (Condor / Cyclone: the clamp hides it, PD2 lists it).
+				var worse: bool = m.delta.ads_time_s > 0.0 or m.delta.equip_time_s > 0.0 or m.delta.concealment < 0
 				var better: bool = m.delta.suppressed or modded.magnification > stock.magnification
 				for k: String in d:
 					if d[k]["changed"]:

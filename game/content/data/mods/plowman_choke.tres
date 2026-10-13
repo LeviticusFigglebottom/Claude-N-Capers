@@ -14,10 +14,10 @@ headshot_mult = 0.0
 noise_radius_m = 0.0
 magnification = 0.0
 equip_time_s = 0.0
-spread_deg_ads = -0.5
-spread_deg_hip = -0.5
+spread_deg_ads = -0.576
+spread_deg_hip = -0.72
 concealment = -1
-ads_time_s = 0.02
+ads_time_s = 0.0
 
 [resource]
 script = ExtResource("1")

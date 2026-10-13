@@ -15,7 +15,7 @@ noise_radius_m = 0.0
 magnification = 0.0
 equip_time_s = 0.0
 ads_time_s = 0.0
-recoil_kick_deg = -0.5
+recoil_kick_deg = -0.45
 recoil_horizontal_deg = -0.15
 concealment = -2
 

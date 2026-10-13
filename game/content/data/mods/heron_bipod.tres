@@ -6,6 +6,7 @@
 
 [sub_resource type="Resource" id="delta"]
 script = ExtResource("2")
+recoil_horizontal_deg = -0.09
 pellets = 0
 falloff_start_m = 0.0
 falloff_end_m = 0.0
@@ -14,9 +15,9 @@ headshot_mult = 0.0
 noise_radius_m = 0.0
 magnification = 0.0
 equip_time_s = 0.0
-recoil_kick_deg = -0.6
+recoil_kick_deg = -1.17
 concealment = -2
-ads_time_s = 0.05
+ads_time_s = 0.0
 
 [resource]
 script = ExtResource("1")
