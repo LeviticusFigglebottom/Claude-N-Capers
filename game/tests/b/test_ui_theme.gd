@@ -194,3 +194,20 @@ func test_objective_markers() -> void:
 	await wait_frames(1)
 	assert_eq(_hud.objective_markers.drawn.size(), 1, "a casing objective shows while casing")
 	cam.queue_free()
+
+
+## Lane 8: pad face buttons draw as discs, keys and shoulder buttons as key caps.
+func test_pad_face_buttons_are_round() -> void:
+	var was: bool = InteractionPanel.pad_active
+	InteractionPanel.pad_active = true
+	var p: KeyPrompt = KeyPrompt.new()
+	add_child(p)
+	p.set_prompt(&"ui.prompt.pick_lock", {}, "A")
+	assert_eq(p.cap.theme_type_variation, UiBuild.KEYCAP_ROUND)
+	p.set_prompt(&"ui.prompt.pick_lock", {}, "RB")
+	assert_eq(p.cap.theme_type_variation, UiBuild.KEYCAP)
+	InteractionPanel.pad_active = false
+	p.set_prompt(&"ui.prompt.pick_lock", {}, "A")
+	assert_eq(p.cap.theme_type_variation, UiBuild.KEYCAP, "a keyboard A is a key")
+	InteractionPanel.pad_active = was
+	p.queue_free()

@@ -136,7 +136,8 @@ func test_interaction_prompt_and_blocked_reason() -> void:
 	assert_false(_hud.interaction.blocked_label.visible)
 	_model.interaction = {"text_key": &"ui.prompt.pick_lock", "args": {"key": "F"}, "progress": 0.0,
 			"blocked_reason": &"ui.blocked.casing"}
-	assert_eq(_hud.interaction.blocked_label.text, UiText.t(&"ui.blocked.casing"))
+	assert_eq(_hud.interaction.blocked_label.text, UiText.t(&"ui.blocked.casing", {"mask_key": InteractionPanel.action_key_text(&"mask_up")}),
+			"PO-5.11: the casing block names the mask key")
 
 
 func test_detection_chevron_colors() -> void:

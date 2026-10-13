@@ -22,6 +22,9 @@ const GHOST: StringName = &"GhostButton"
 const TAB: StringName = &"TabButton"
 const CARD: StringName = &"CardPanel"
 const KEYCAP: StringName = &"KeyCap"
+const KEYCAP_ROUND: StringName = &"KeyCapRound"
+## Pad face buttons drawn as discs (KEYCAP_ROUND) instead of keyboard keys.
+const PAD_FACE: Array[String] = ["A", "B", "X", "Y"]
 const SCRIM: StringName = &"ScrimPanel"
 const MENU_ITEM: StringName = &"MenuItemButton"
 ## PQ-B-23 floating HUD text style (see float_text).
@@ -84,7 +87,7 @@ static func caption(key: StringName = &"", args: Dictionary = {}) -> Label:
 ## A key / pad button glyph ("F", "Space", "A") drawn as a key cap (prompts, hint strips).
 static func keycap(text: String, font_size: int = UiTokens.FONT_HUD) -> PanelContainer:
 	var p: PanelContainer = PanelContainer.new()
-	p.theme_type_variation = KEYCAP
+	p.theme_type_variation = keycap_variation(text)
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	var l: Label = label(&"", HUD)
@@ -96,6 +99,11 @@ static func keycap(text: String, font_size: int = UiTokens.FONT_HUD) -> PanelCon
 	l.custom_minimum_size = Vector2(font_size * 0.9, 0)
 	p.add_child(l)
 	return p
+
+
+## KEYCAP_ROUND for a pad face button while the pad is the active device, else KEYCAP.
+static func keycap_variation(text: String) -> StringName:
+	return KEYCAP_ROUND if InteractionPanel.pad_active and PAD_FACE.has(text) else KEYCAP
 
 
 ## Marks `b` as a tertiary action (Back, Reset): no fill until hovered. Returns `b`.

@@ -220,6 +220,12 @@ static func _panels(th: Theme) -> void:
 	var cap: StyleBoxFlat = box(Color(T.INK_0, 0.85), T.PAPER, 2, 4, Vector2(T.S2 + 2, 0))
 	cap.border_width_bottom = 3
 	th.set_stylebox(&"panel", &"KeyCap", cap)
+	# KeyCapRound: a pad face button (A / B / X / Y) drawn as a disc, not a keyboard key.
+	th.set_type_variation(&"KeyCapRound", &"PanelContainer")
+	var disc: StyleBoxFlat = box(Color(T.INK_0, 0.85), T.PAPER, 2, 0, Vector2(T.S2, 0))
+	disc.set_corner_radius_all(20)
+	disc.corner_detail = 12
+	th.set_stylebox(&"panel", &"KeyCapRound", disc)
 	th.set_stylebox(&"panel", &"TooltipPanel", box(T.INK_2, T.LINE_STRONG, 1, 0, Vector2(T.S2 + 2, T.S1 + 2)))
 	var sep: StyleBoxLine = StyleBoxLine.new()
 	sep.color = T.LINE
