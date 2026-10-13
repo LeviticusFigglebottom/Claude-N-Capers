@@ -27,6 +27,13 @@ Niches (all dry, all short, all 2D on the UI bus):
   payday_total        register "cha-chunk": drawer-bell ding + metal rattle, then a 95 Hz drawer thud
                       with a latch click, 650 ms
   card_flip           card flip: a snap of 3 kHz noise then a papery slap with a 320 Hz body, 120 ms
+  hud_hit             hit marker: dry 2.5-6 kHz "tk" with a 4.4 kHz click mode and a tiny 700 Hz body,
+                      35 ms (fires many times a second, so it is the quietest gameplay cue)
+  hud_headshot        the hit tick plus a bright pitched "tink": 3.5 / 7.8 kHz ring, 80 ms
+  hud_kill            kill confirm "thock": 280 Hz knock with a downward pitch drop, a 1.4 kHz wood
+                      click and a short 560 Hz tonal tail, 120 ms
+  hud_heartbeat       one low-health beat "lub-dub": two felt thumps (58 / 52 Hz with 120 Hz body),
+                      the second softer, 210 ms apart, 450 ms (played once per pulse, never looped)
 """
 from __future__ import annotations
 
@@ -235,10 +242,68 @@ def card_flip(rng: np.random.Generator) -> np.ndarray:
     return _fade_tail(y)
 
 
+def hud_hit(rng: np.random.Generator) -> np.ndarray:
+    """Hit-marker tick, 35 ms: a dry 2.5-6 kHz noise flick, a short 4.4 kHz click mode and a tiny
+    700 Hz body so it is a "tk", not a hiss. Quiet and non-fatiguing (automatic fire)."""
+    dur = 0.035
+    y = _tick(rng, dur, 2500.0, 6000.0, 0.008) * 0.6
+    y += _modes(rng, (4400.0, 6100.0), (0.35, 0.12), 0.012, dur)
+    t = tvec(dur)
+    y += osc.sine(700.0 * (1 + 0.3 * np.exp(-t / 0.003)), dur) * env.exp_decay(dur, 0.01, 0.0004) * 0.18
+    return _fade_tail(y, 3.0)
+
+
+def hud_headshot(rng: np.random.Generator) -> np.ndarray:
+    """Headshot "tink", 80 ms: the hit tick plus a pitched metallic ring (3.5 kHz with inharmonic
+    7.8 / 10.6 kHz partials, fast decay), so it reads brighter and more final than a body hit."""
+    dur = 0.08
+    y = np.zeros(nsamp(dur))
+    place(y, _tick(rng, 0.02, 2500.0, 7000.0, 0.006), 0, 0.5)
+    ring = _modes(rng, (3520.0, 7790.0, 10600.0), (0.7, 0.22, 0.08), 0.06, dur)
+    place(y, ring, nsamp(0.001), 0.8)
+    return _fade_tail(y, 6.0)
+
+
+def hud_kill(rng: np.random.Generator) -> np.ndarray:
+    """Kill confirm "thock", 120 ms: a muted 280 Hz knock with a quick downward pitch drop, a 1.4 kHz
+    wood click on top and a short 560 Hz tonal tail, all low-passed so it cuts through gunfire by
+    shape rather than by brightness."""
+    dur = 0.12
+    t = tvec(dur)
+    knock = osc.sine(280.0 * (1 + 0.45 * np.exp(-t / 0.008)), dur) * env.exp_decay(dur, 0.07, 0.0006)
+    body = filters.lp(noise.brown(dur, rng), 600.0) * env.exp_decay(dur, 0.025, 0.0005) * 0.6
+    tail = osc.sine(560.0, dur, 0.4) * env.exp_decay(dur, 0.1, 0.004) * 0.18
+    click = _modes(rng, (1400.0, 2350.0), (0.35, 0.15), 0.02, dur) + _tick(rng, dur, 1500.0, 5000.0, 0.004) * 0.3
+    y = filters.lp(knock + body + tail, 2500.0) + click
+    return _fade_tail(y, 8.0)
+
+
+def _thump(rng: np.random.Generator, f0: float, dur: float, t60: float) -> np.ndarray:
+    """Soft heart thump: a sine dropping onto f0 with a 2x-ish body partial and a low-passed brown
+    noise "felt" layer; rounded 8 ms attack, nothing above ~250 Hz."""
+    t = tvec(dur)
+    f = f0 * (1 + 0.35 * np.exp(-t / 0.02))
+    y = osc.sine(f, dur) + 0.35 * osc.sine(f * 2.1, dur, 0.5) * np.exp(-t / 0.03)
+    y += filters.lp(noise.brown(dur, rng), 180.0) * 0.4
+    return filters.lp(y * env.exp_decay(dur, t60, 0.008), 260.0)
+
+
+def hud_heartbeat(rng: np.random.Generator) -> np.ndarray:
+    """One low-health heartbeat "lub-dub", 450 ms: a 58 Hz thump, then 210 ms later a softer 52 Hz
+    one. Felt more than heard; the HUD plays it once per pulse (not a loop)."""
+    dur = 0.45
+    y = np.zeros(nsamp(dur))
+    place(y, _thump(rng, 58.0, 0.22, 0.16), 0, 1.0)
+    place(y, _thump(rng, 52.0, 0.22, 0.15), nsamp(0.21), 0.65)
+    return _fade_tail(y, 20.0)
+
+
 # volume_db = mix level in the registry. Files are normalised to -18 LUFS, but peak limiting leaves the
 # shortest clicks well under it (see the build printout), so the levels below aim at the *played*
 # loudness: focus / hint / tab ~ -36..-40 LUFS, confirm / error / flip ~ -32, primary / chime ~ -29,
-# payday total ~ -26 (ENV C's ui_click sits at -10 dB, payday_tick at -8 dB).
+# payday total ~ -26 (ENV C's ui_click sits at -10 dB, payday_tick at -8 dB). Gameplay feedback:
+# hit ~ -40 (ui_focus level: it repeats with automatic fire), headshot ~ -32, kill ~ -31, heartbeat
+# ~ -30 (K-weighting under-reads its 50-70 Hz energy; it peaks ~ -13 dBFS in the mix).
 UI_CUES: list[UiCue] = [
     UiCue("ui_focus", ui_focus, -11.0, 0.04, 0.04),
     UiCue("ui_confirm", ui_confirm, -9.0, 0.05),
@@ -250,6 +315,10 @@ UI_CUES: list[UiCue] = [
     UiCue("hud_hint", hud_hint, -16.0, 0.5),
     UiCue("payday_total", payday_total, -7.0, 0.5),
     UiCue("card_flip", card_flip, -7.0, 0.06, 0.04),
+    UiCue("hud_hit", hud_hit, -13.0, 0.04, 0.03),
+    UiCue("hud_headshot", hud_headshot, -12.0, 0.05, 0.02),
+    UiCue("hud_kill", hud_kill, -9.0, 0.06, 0.02),
+    UiCue("hud_heartbeat", hud_heartbeat, -12.0, 0.3),
 ]
 
 
