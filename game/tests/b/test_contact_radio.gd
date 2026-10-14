@@ -5,11 +5,11 @@ extends TestCase
 
 const HEISTS: Dictionary = {
 	&"glasshouse": &"vance", &"night_deposit": &"accountant", &"shadow_ledger": &"accountant",
-	&"dockside_burn": &"reyes",
+	&"dockside_burn": &"reyes", &"gallery_night": &"vance",
 }
-## Heists whose radio lines exist before their HeistDef is registered (GN-B1: Gallery Night's def waits in
-## content/_drafts for ENV A), so `contact_for` cannot resolve them yet. Move each into HEISTS when its def lands.
-const DRAFT_HEISTS: Dictionary = {&"gallery_night": &"vance"}
+## Heists whose radio lines exist before their HeistDef is registered (`contact_for` cannot resolve them yet).
+## Move each into HEISTS when its def lands (Gallery Night did with C's G1, trunk 55ce4d2a).
+const DRAFT_HEISTS: Dictionary = {}
 ## Strings key suffix for an objective's loud text variant (objective.gallery_night.hack_loud).
 const LOUD_TEXT_SUFFIX: String = "_loud"
 const RADIO_EVENTS: Array[StringName] = [

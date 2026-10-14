@@ -73,8 +73,10 @@ def tremble(pose: Pose, t: float, amount: float = 1.0) -> None:
 def pistol_aim_frame(sk: Skeleton, t: float = 0.0, sway: float = 1.0) -> tuple[np.ndarray, np.ndarray]:
     k = sk.scale
     sw = sway
-    o = v3(0.035 * k + 0.003 * k * sw * math.sin(TAU * t / 3.0), 0.47 * k,
-           1.475 * k + 0.004 * k * sw * math.sin(TAU * t / 1.5))
+    # Isosceles, arms near full reach (PO feedback "weapon hold looks unnatural"): the grip 0.60 m out with
+    # the sights just under the eye line; it used to sit 0.47 m out at chin height with the elbows folded.
+    o = v3(0.035 * k + 0.003 * k * sw * math.sin(TAU * t / 3.0), 0.60 * k,
+           1.545 * k + 0.004 * k * sw * math.sin(TAU * t / 1.5))
     return weapon_frame(o, yaw=0.6 * sw * math.sin(TAU * t / 3.0 + 0.7), pitch=0.5 * sw * math.sin(TAU * t / 1.5 + 1.2))
 
 
@@ -111,7 +113,7 @@ def aim_body(sk: Skeleton, pose: Pose, rifle: bool) -> None:
     else:
         pose.hip = v3(0.0, -0.01 * k, -0.03 * k)
         stand(sk, pose, spread=0.035, stagger_l=0.06, stagger_r=-0.05, yaw_l=8, yaw_r=14)
-        spine(pose, lean=4, twist=-3, chest_lean=4, neck=(2, 0, 2), head=(5, 2, 1), hips=(1, 0, -3))
+        spine(pose, lean=6, twist=-3, chest_lean=6, neck=(2, 0, 2), head=(-4, 2, 1), hips=(1, 0, -3))
 
 
 def hold_pistol(sk: Skeleton, pose: Pose, wf, one_hand: bool = False) -> None:

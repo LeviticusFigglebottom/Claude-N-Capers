@@ -1,7 +1,8 @@
 ## PO-5.7 (D-089): resolves an NPC's character visual when neither the NPC scene nor its EnemyDef sets one,
 ## so police, specials, guards and civilians wear ENV D's characters instead of placeholder capsules.
-## Order: EnemyDef id (`enemy.<id>` -> character <id>, or NpcVisualTweak.enemy_characters; faction variant
-## from params.visual_variant, characters.md v1.6) -> SpawnPoint tag (NpcVisualTweak.tag_characters) -> role (role_characters).
+## Order (D-103 §3b.1: the tag beats the EnemyDef): SpawnPoint tag (NpcVisualTweak.heist_tag_characters for this
+## heist, then tag_characters) -> EnemyDef id (`enemy.<id>` -> character <id>, or NpcVisualTweak.enemy_characters;
+## faction variant from params.visual_variant, characters.md v1.6) -> role (role_characters).
 ## The pick among several ids hashes the NPC's node name (replicated), so every peer shows the same look.
 ## Missing scenes fall through (the capsule stays). Owner: ENV A.
 class_name NpcVisuals
@@ -31,29 +32,41 @@ static func scene_path(char_id: String, variant: String = "") -> String:
 static func resolve(npc: NpcBase) -> PackedScene:
 	if disabled:
 		return null
+	var tw: NpcVisualTweak = tweak()
+	var by_tag: PackedScene = _by_tag(npc, tw)
+	if by_tag != null:
+		return by_tag
 	var def: EnemyDef = npc.enemy_def
 	if def != null and String(def.id).begins_with("enemy."):
 		var cid: String = String(def.id).substr(6)
-		var tw0: NpcVisualTweak = tweak()
-		if tw0 != null and tw0.enemy_characters.has(def.id):
-			cid = String(tw0.enemy_characters[def.id])
+		if tw != null and tw.enemy_characters.has(def.id):
+			cid = String(tw.enemy_characters[def.id])
 		var variant: String = String(def.params.get("visual_variant", ""))
 		for path: String in [scene_path(cid, variant), scene_path(cid)]:
 			var ps: PackedScene = _load(path)
 			if ps != null:
 				return ps
-	var tw: NpcVisualTweak = tweak()
-	if tw == null:
-		return null
-	var tags: Variant = npc.spawn_info.get("tags", [])
-	if tags is Array:
-		for t: Variant in tags as Array:
-			if tw.tag_characters.has(StringName(t)):
-				var ps2: PackedScene = _pick(npc, tw.tag_characters[StringName(t)])
-				if ps2 != null:
-					return ps2
-	if tw.role_characters.has(npc.role):
+	if tw != null and tw.role_characters.has(npc.role):
 		return _pick(npc, tw.role_characters[npc.role])
+	return null
+
+
+## The first SpawnPoint tag with a character: this heist's map (heist_tag_characters) before the shared one.
+static func _by_tag(npc: NpcBase, tw: NpcVisualTweak) -> PackedScene:
+	var tags: Variant = npc.spawn_info.get("tags", [])
+	if tw == null or not (tags is Array) or (tags as Array).is_empty():
+		return null
+	var maps: Array[Dictionary] = []
+	var rt: HeistRuntime = HeistRuntime.of(npc)
+	if rt != null and tw.heist_tag_characters.get(rt.heist_id) is Dictionary:
+		maps.append(tw.heist_tag_characters[rt.heist_id] as Dictionary)
+	maps.append(tw.tag_characters)
+	for m: Dictionary in maps:
+		for t: Variant in tags as Array:
+			if m.has(StringName(t)):
+				var ps: PackedScene = _pick(npc, m[StringName(t)])
+				if ps != null:
+					return ps
 	return null
 
 

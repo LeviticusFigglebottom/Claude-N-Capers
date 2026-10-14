@@ -107,12 +107,14 @@ const D304_GAITS: Dictionary = {"walk": [30, 1.6], "run": [21, 3.5]}
 const D304_ONESHOTS: Dictionary = {
 	"walk_start": 18, "walk_stop": 18, "run_start": 18, "run_stop": 20, "hit_react_back": 15, "hit_react_left": 15,
 	"hit_react_right": 15, "death_front_b": 60, "death_back_b": 60, "death_side": 60,
+	"death_seated_slump": 48, "death_seated_fall": 60,
 }
 const D304_LOOPS: Dictionary = {"downed_crawl": 60, "dozer_walk_heavy": 33}
 const D304_EVENTS: Dictionary = {
 	"walk_start": {"step_r": 15}, "walk_stop": {"step_l": 14}, "run_start": {"step_r": 14},
 	"run_stop": {"step_l": 6, "step_r": 17}, "death_front_b": {"knees": 16, "impact": 38},
 	"death_back_b": {"step_r": 12, "step_l": 21, "impact": 44}, "death_side": {"impact": 36},
+	"death_seated_slump": {"impact": 22}, "death_seated_fall": {"impact": 34},
 	"dozer_walk_heavy": {"step_r": 0, "step_l": 16},
 }
 ## Start / stop: the cycle frame each one hands over to / from (SOURCE.txt handoff_frame).
@@ -954,6 +956,7 @@ func test_d304_polish_set() -> void:
 	_check_d304_start_stop()
 	_check_d304_hit_reacts()
 	_check_d304_deaths_end_on_the_floor()
+	_check_seated_deaths()
 	_check_d304_crawl_and_heavy_gait()
 
 
@@ -1324,3 +1327,32 @@ func _check_d304_crawl_and_heavy_gait() -> void:
 		mean_h += _snapshot("dozer_walk_heavy", float(f) / 30.0)[hip].y / 33.0
 		mean_w += _snapshot("dozer_walk", float(f) / 30.0)[hip].y / 33.0
 	assert_true(mean_h < mean_w - 0.01, "dozer_walk_heavy: lower, heavier stance than dozer_walk (%f vs %f m)" % [mean_h, mean_w])
+
+
+## D-110 seated deaths (an NPC killed in its chair must not fall through the desk): both start from desk_work frame 0
+## and the root never moves. slump: the hips stay on the seat and the head ends low over the desk top (0.74 m) ahead of
+## the desk's near edge (0.22 m); fall: down on the floor at `impact`, nothing below it, ending to the left (−X) clear
+## of the chair, the head ~1 m out.
+func _check_seated_deaths() -> void:
+	var seat0: Array[Vector3] = _snapshot("desk_work", 0.0)
+	var hips: int = _skel.find_bone("hips")
+	var head: int = _skel.find_bone("head")
+	for clip: String in ["death_seated_slump", "death_seated_fall"]:
+		assert_true(_player.has_animation(StringName(clip)), "%s present" % clip)
+		if _anim(clip) == null:
+			continue
+		assert_true(_snap_dist(_snapshot(clip, 0.0), seat0) < 0.01, "%s: starts from desk_work frame 0" % clip)
+		var lowest: float = 1.0
+		for f: int in range(0, _d304_frames(clip) + 1, 2):
+			for p: Vector3 in _snapshot(clip, float(f) / 30.0):
+				lowest = minf(lowest, p.y)
+		assert_true(lowest > -0.01, "%s: no joint below the floor (%f)" % [clip, lowest])
+	var s_end: Array[Vector3] = _snapshot("death_seated_slump", 48.0 / 30.0)
+	assert_true(absf(s_end[hips].y - seat0[hips].y) < 0.04, "slump: hips stay on the seat (%f)" % s_end[hips].y)
+	assert_true(s_end[head].y > 0.74 and s_end[head].y < 0.92, "slump: head low over the desk top (%f)" % s_end[head].y)
+	assert_true(-s_end[head].z > 0.22, "slump: head over the desk, past its near edge (%f)" % -s_end[head].z)
+	var f_hit: Array[Vector3] = _snapshot("death_seated_fall", 34.0 / 30.0)
+	assert_true(f_hit[hips].y < 0.3, "fall: on the floor at the impact (hips %f)" % f_hit[hips].y)
+	var f_end: Array[Vector3] = _snapshot("death_seated_fall", 2.0)
+	assert_true(f_end[hips].x < -0.35, "fall: hips beside the chair, to the left (%f)" % f_end[hips].x)
+	assert_true(f_end[head].x < -0.8, "fall: head ~1 m to the left (%f)" % f_end[head].x)

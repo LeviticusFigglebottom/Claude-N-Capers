@@ -28,6 +28,12 @@ signal arrived_at(target: Vector3)
 ## A2-01: the path is blocked by a closed door this NPC may not open (it stopped in front of it).
 signal door_blocked(door: Node)
 
+## Alert states whose body holds a pose: no idle drift (cowering, on the floor, tied, hands up, dead).
+const DRIFT_FROZEN: Array[int] = [
+	Enums.AlertState.PANICKED, Enums.AlertState.INTIMIDATED, Enums.AlertState.TIED, Enums.AlertState.SURRENDERED,
+	Enums.AlertState.DOMINATED, Enums.AlertState.DEAD,
+]
+
 ## PO-10: every motor in the tree, and the neighbour grid rebuilt once per physics frame.
 static var _all: Array[NpcMotor] = []
 static var _grid: Dictionary = {}
@@ -327,10 +333,12 @@ func _separate(dir: Vector3) -> Vector3:
 	return steer.normalized() if steer.length() > 0.05 else Vector3.ZERO
 
 
-## Standing CALM NPC stacked on another: a slow drift apart (ZERO otherwise).
+## Standing NPC stacked on another: a slow drift apart (ZERO otherwise). Calm or fighting alike (P PO-pass: a GH
+## police pair stood 0.33 m apart for 20 s); never for a posed body (DRIFT_FROZEN states: cowering, on the floor,
+## tied, hands up).
 func _idle_drift(npc: NpcBase) -> Vector3:
 	var tw: StealthTweak = Tweak.stealth()
-	if npc == null or npc.alert_state != Enums.AlertState.CALM or waiting_door != null \
+	if npc == null or DRIFT_FROZEN.has(npc.alert_state) or waiting_door != null \
 			or tw.npc_separation_idle_m <= 0.0 or tw.npc_separation_idle_speed <= 0.0:
 		return Vector3.ZERO
 	var closest: Array[float] = [INF]
