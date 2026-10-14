@@ -38,6 +38,10 @@ var overview_button: Button
 var buy_button: Button
 var equip_button: Button
 var back_button: Button
+## D-106: stats with skills (default) or base values; boosted values are marked (SkillBoost).
+var stats_mode_button: Button
+## "* boosted by your skills" legend, shown when a value is marked.
+var boosted_legend: Label
 var cash_label: Label
 var weapon_name_label: Label
 var weapon_status_label: Label
@@ -90,7 +94,7 @@ func build_ui() -> void:
 	var start: StringName = profile.loadout.primary if profile.loadout.primary != &"" else profile.loadout.secondary
 	select_weapon(start if start != &"" else WorkshopModel.weapon_ids()[0])
 	focus_chain.append_array([weapon_list, parts_list, finish_panel.list, finish_panel.equip_button, equip_button, buy_button,
-			back_button] as Array[Control])
+			stats_mode_button, back_button] as Array[Control])
 	_wire_focus.call_deferred()
 
 
@@ -308,6 +312,9 @@ func _build_stats_panel() -> PanelContainer:
 		grid.add_child(dl)
 		stat_value_labels[row[0]] = val
 		stat_delta_labels[row[0]] = dl
+	boosted_legend = UiBuild.caption(&"ui.stats.boosted_legend")
+	boosted_legend.uppercase = false
+	v.add_child(boosted_legend)
 	v.add_child(HSeparator.new())
 	var dr: HBoxContainer = UiBuild.hbox(UiTokens.S6)
 	concealment_label = UiBuild.label(&"", UiBuild.SUBHEADER)
@@ -333,7 +340,16 @@ func _build_footer() -> HBoxContainer:
 	message_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	message_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	return UiBuild.footer(back_button, equip_button, [message_label, buy_button] as Array[Control])
+	stats_mode_button = UiBuild.ghost(UiBuild.button(&"ui.stats.with_skills"))
+	stats_mode_button.pressed.connect(toggle_skills)
+	return UiBuild.footer(back_button, equip_button, [stats_mode_button, message_label, buy_button] as Array[Control])
+
+
+## D-106: switch the stat panel between skill-boosted (default) and base values.
+func toggle_skills() -> void:
+	model.with_skills = not model.with_skills
+	stats_mode_button.text = UiText.t(&"ui.stats.with_skills" if model.with_skills else &"ui.stats.base")
+	_refresh_stats()
 
 
 func _item_list() -> ItemList:
@@ -464,6 +480,8 @@ func _refresh_stats() -> void:
 			val.text = "-"
 			continue
 		val.text = _fmt((rows["shown"] as Dictionary).get(k, 0))
+		if (rows.get("boosted", []) as Array).has(String(k)):
+			val.text = UiText.t(&"ui.stats.boosted_value", {"value": val.text})
 		var deltas: Dictionary = rows["delta"]
 		if deltas.has(k) and bool((deltas[k] as Dictionary)["changed"]):
 			var d: Dictionary = deltas[k]
@@ -471,6 +489,7 @@ func _refresh_stats() -> void:
 			dl.text = UiText.t(&"ui.loadout.stat_delta_up" if diff > 0.0 else &"ui.loadout.stat_delta_down",
 					{"value": _fmt(absf(diff))})
 			dl.add_theme_color_override(&"font_color", delta_color(bool(d["better"])))
+	boosted_legend.visible = not rows.is_empty() and not (rows.get("boosted", []) as Array).is_empty()
 	var dr: Dictionary = model.dr_preview()
 	var c_diff: int = int(dr["concealment"]) - int(dr["current_concealment"])
 	concealment_label.text = UiText.t(&"ui.workshop.concealment", {"value": dr["concealment"], "current": dr["current_concealment"]})
@@ -656,8 +675,8 @@ func _wire_focus() -> void:
 	fb.focus_neighbor_top = fb.get_path_to(fl)
 	fb.focus_neighbor_left = fb.get_path_to(weapon_list)
 	fb.focus_neighbor_bottom = fb.get_path_to(equip_button)
-	UiNav.chain_horizontal([back_button, buy_button, equip_button] as Array[Control], false)
-	for b: Control in [back_button, buy_button, equip_button]:
+	UiNav.chain_horizontal([back_button, stats_mode_button, buy_button, equip_button] as Array[Control], false)
+	for b: Control in [back_button, stats_mode_button, buy_button, equip_button]:
 		b.focus_neighbor_top = b.get_path_to(fb)
 		b.focus_neighbor_bottom = b.get_path_to(b)
 	back_button.focus_neighbor_left = back_button.get_path_to(back_button)

@@ -71,6 +71,11 @@ var concealment_label: Label
 ## PO-4: the equipped primary (read-only here; equip / buy in the Workshop).
 var primary_slot: ItemSlot
 var detection_risk_label: Label
+## D-106: stats with skills (default) or base values; boosted values are marked (SkillBoost).
+var with_skills: bool = true
+var stats_mode_button: Button
+## "* boosted by your skills" legend, shown when a value is marked.
+var boosted_legend: Label
 var detection_risk: int = 0
 var concealment_total: int = 0
 var launch_button: Button
@@ -192,6 +197,10 @@ func _build_stats_panel() -> PanelContainer:
 	grid.columns = 4
 	grid.add_theme_constant_override(&"h_separation", 16)
 	grid.add_theme_constant_override(&"v_separation", 6)
+	stats_mode_button = UiBuild.ghost(UiBuild.button(&"ui.stats.with_skills"))
+	stats_mode_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	stats_mode_button.pressed.connect(toggle_stats_mode)
+	v.add_child(stats_mode_button)
 	v.add_child(grid)
 	for row: Array in STAT_ROWS:
 		grid.add_child(UiBuild.caption(StringName(row[1])))
@@ -207,6 +216,9 @@ func _build_stats_panel() -> PanelContainer:
 		grid.add_child(dl)
 		_stat_value_labels[row[0]] = val
 		_stat_delta_labels[row[0]] = dl
+	boosted_legend = UiBuild.caption(&"ui.stats.boosted_legend")
+	boosted_legend.uppercase = false
+	v.add_child(boosted_legend)
 	v.add_child(HSeparator.new())
 	v.add_child(UiBuild.caption(&"ui.stat.detection_risk"))
 	detection_risk_label = UiBuild.label(&"", UiBuild.DISPLAY)  # PO-4: the stealth number is the hero
@@ -367,10 +379,21 @@ func refresh() -> void:
 			(_stat_value_labels[k] as Label).text = "-"
 			(_stat_delta_labels[k] as Label).text = ""
 		return
+	var boosted: Array[String] = []
+	if with_skills:  # D-106: the numbers as they play (skills + perk deck), boosted ones marked
+		var mods: Dictionary = LoadoutResolver.resolve_modifiers(l)
+		var def: WeaponDef = ContentDB.weapon(current_loadout(true).secondary if not _preview.is_empty() else l.secondary)
+		var mb: WeaponStats = SkillBoost.apply(modded, def, mods)
+		boosted = SkillBoost.boosted_keys(StatCalculator.display(modded), StatCalculator.display(mb))
+		modded = mb
+		stock = SkillBoost.apply(stock, ContentDB.weapon(l.secondary), mods)
+	boosted_legend.visible = not boosted.is_empty()
 	var shown: Dictionary = StatCalculator.display(modded)
 	var deltas: Dictionary = StatCalculator.delta(stock, modded)
 	for k: Variant in _stat_value_labels:
 		(_stat_value_labels[k] as Label).text = _fmt(shown.get(k, 0))
+		if boosted.has(String(k)):
+			(_stat_value_labels[k] as Label).text = UiText.t(&"ui.stats.boosted_value", {"value": _fmt(shown.get(k, 0))})
 		if _stat_bars.has(k):
 			(_stat_bars[k] as ProgressBar).value = clampf(float(shown.get(k, 0)) / _bar_max(String(k)), 0.0, 1.0)
 		var dl: Label = _stat_delta_labels[k] as Label
@@ -382,6 +405,13 @@ func refresh() -> void:
 			dl.text = UiText.t(key, {"value": _fmt(absf(diff))})
 			dl.add_theme_color_override(&"font_color",
 					_tweak.delta_better_color if bool(d["better"]) else _tweak.delta_worse_color)
+
+
+## D-106: switch the stat panel between skill-boosted (default) and base values.
+func toggle_stats_mode() -> void:
+	with_skills = not with_skills
+	stats_mode_button.text = UiText.t(&"ui.stats.with_skills" if with_skills else &"ui.stats.base")
+	refresh()
 
 
 ## Persist the current loadout (input fields only) to the profile.
@@ -523,7 +553,7 @@ func _rebuild_focus() -> void:
 	for t: Variant in types:
 		focus_chain.append(mod_options[t] as Control)
 	for c: Control in [melee_option, armor_option, deployable_option, throwable_option, mask_option, masks_button,
-			heister_option, launch_button,
+			heister_option, stats_mode_button, launch_button,
 			skills_button, perks_button, workshop_button, back_button]:
 		if (c != launch_button or not hub_mode) and (c.visible or not compact_mode):
 			focus_chain.append(c)

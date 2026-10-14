@@ -2955,3 +2955,7 @@ ui.loading.tip.11,"Shout at guards who are reloading or surrounded: some will su
 ui.loading.tip.12,"Drills jam. Keep someone near the drill to restart it."
 ui.loading.tip.13,"A doctor bag restores health and resets your downs. Place it where the crew falls back."
 ui.loading.tip.14,"Concealment decides how fast you are spotted. Lighter armor and smaller guns hide better."
+ui.stats.with_skills,Stats: With Skills
+ui.stats.base,Stats: Base
+ui.stats.boosted_value,{value}*
+ui.stats.boosted_legend,* Boosted by your skills and perk deck
