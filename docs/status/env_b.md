@@ -3,6 +3,23 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14: PO-4 lead queue (round 68): pad pass, safety net, firing range restyle
+### Done
+- Gamepad pass on the new widgets (d9cca06b): the hub's Continue is in the d-pad grid; test_pad_new_widgets.
+- Payday per-bag list: this already existed (cash panel, "Jewelry x2 $13,000").
+- First-heist safety net (edd28f35): a failed heist on a profile that never completed one (solo, with authority) offers "Try again at Routine" left of Continue, and Continue keeps the focus. MenuFlow relaunches the same job at Routine with the profile loadout. HUD toasts name heisters and hide under the scoreboard and the downed screen.
+- A's fields verified windowed (85432277 `feedback` audit mode, r68_*_real shots).
+- Firing range Case File restyle:
+  - Caption labels over values and a caption + rule for each section; rows at 21 (they were 18, below the floor).
+  - A crumb + H2 title; "every weapon is free" moved to a note line.
+  - A fixed footer: Leave (ghost) on the left, Reset on the right; d-pad left/right moves between them.
+  - Aim mode shows less: the loadout panel hides and the right panel shrinks to the readout + last shot.
+  - A key cap hint strip follows the last device: [Tab]/[Start] Aim, [Enter]/[A] Select, [Esc]/[B] Leave. In aim mode: [LMB]/[RT] Fire, [RMB]/[LT] Aim down sights, [R] Reload, [1/2]/[Y] Swap weapon, [Tab]/[Start] Panels.
+  - InteractionPanel.action_key_text now names mouse buttons (LMB / RMB / MMB) and falls back to the pad button when the keyboard has no binding.
+- Range real-input pass (test_range_real_input: real key / pad events): one bug found and fixed. The overlay never ran UiNav.ensure_pad_ui_actions, so pad A / B did nothing when the range was the first screen. Review shots: r69_range_panel / r69_range_aim.
+### Next
+- Windowed failure-flow capture (`fail` mode). Gallery Night content when the lead sends the list.
+
 ## 2026-10-13 night: PO-4 lanes 11 / 12 / h02 notes
 ### Done
 - h02 notes (9e54061f): crosshair hidden until masked (fades in); only the current objective's marker unless Tab is held; the objective flash strikes the finished step through, then slides the next one in.

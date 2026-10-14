@@ -539,7 +539,9 @@ ui.results.crew,Crew
 ui.results.crew_ai,Crew AI {slot}
 ui.results.crew_slot,Heister {slot}
 ui.range.title,Firing Range
-ui.range.weapon,Weapon (every weapon and mod is free here)
+ui.range.crumb,Safehouse / Warm-up
+ui.range.free_note,Every weapon and mod is free here.
+ui.range.weapon,Weapon
 ui.range.difficulty,Dummy difficulty
 ui.range.mod_none,None
 ui.range.stats,Weapon Stats
@@ -562,6 +564,18 @@ ui.range.hint_panels,Click the range or press Tab / Start to aim. Esc / B leaves
 ui.range.hint_aim_crew,WASD move · Shift sprint · Ctrl/C crouch · Space jump · Mouse look · LMB fire · RMB aim · R reload · 1/2 weapon · Tab / Esc menu
 ui.range.hint_aim,WASD move · Q/E down/up · Mouse look · LMB fire · RMB aim · R reload · Tab / Esc menu
 ui.range.temp_camera,Fallback range camera (crew controller unavailable)
+ui.range.key.aim,Aim
+ui.range.key.leave,Leave range
+ui.range.key.fire,Fire
+ui.range.key.ads,Aim down sights
+ui.range.key.reload,Reload
+ui.range.key.swap,Swap weapon
+ui.range.key.panels,Panels
+ui.key.mouse_left,LMB
+ui.key.mouse_right,RMB
+ui.key.mouse_middle,MMB
+ui.key.tab,Tab
+ui.key.start,Start
 ui.range.dummy.light,Light Tactical Dummy
 ui.range.zone.body,Body
 ui.range.zone.head,Head
