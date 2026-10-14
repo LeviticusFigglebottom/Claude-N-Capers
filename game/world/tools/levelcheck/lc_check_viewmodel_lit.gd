@@ -1,9 +1,10 @@
-## viewmodel_lit (all stages, WARN only): interior key lights carry render layer 21 `viewmodel_lit`
+## viewmodel_lit (all stages, FAIL since PO-8): interior key lights carry render layer 21 `viewmodel_lit`
 ## (CrewView.VIEWMODEL_LIT_LAYER, `1 << 20`; D-094 / D-095, visual_slots 1.2) in their `layers`, so
 ## they light the first-person arms and gun as well as the world (next_heist.md §7.11).
 ## A key light is a visible, active OmniLight3D / SpotLight3D inside a RoomVolume whose purpose is not
 ## `exterior` / `roof`, that is not a fill light (meta fill = true), and that either casts shadows,
-## has energy >= KEY_ENERGY, or is the brightest such light in its room. Never fails the run.
+## has energy >= KEY_ENERGY, or is the brightest such light in its room. PO-8: every prop light in the
+## library carries the layer (tools/blender/props/_scenes.py), so a miss is a real bug: FAIL.
 class_name LcCheckViewmodelLit
 extends LcCheck
 
@@ -46,7 +47,7 @@ func run(ctx: LcContext) -> void:
 			keys += 1
 			if (l3.layers & CrewView.VIEWMODEL_LIT_LAYER) == 0:
 				missing += 1
-				warn(ctx, l3, null, "key light in room `%s` (energy %.2f%s) lacks render layer 21 `viewmodel_lit` (layers |= %d)"
+				fail(ctx, l3, null, "key light in room `%s` (energy %.2f%s) lacks render layer 21 `viewmodel_lit` (layers |= %d)"
 					% [room.room_id, l3.light_energy, ", shadows" if l3.shadow_enabled else "",
 					CrewView.VIEWMODEL_LIT_LAYER])
-	note("%d interior key light(s) in %d room(s); %d lack `viewmodel_lit` (WARN)" % [keys, by_room.size(), missing])
+	note("%d interior key light(s) in %d room(s); %d lack `viewmodel_lit`" % [keys, by_room.size(), missing])

@@ -2,7 +2,7 @@
 ## make_lc_fixtures.gd bakes their navmesh and saves them as .tscn. Owner: ENV C (tests).
 ## Good: two 7.5 x 7.2 m offices joined by a door, everything per level_standards.
 ## Bad adds: FloatBox (0.1 m above floor), WallClipBox (0.1 m into the south wall), BareLight
-## (no fixture), NullMatMesh (null material), PlayerSpawn5 (sealed closet), LonelyPoint (no links).
+## (no fixture, no `viewmodel_lit` layer), NullMatMesh (null material), PlayerSpawn5 (sealed closet), LonelyPoint (no links).
 class_name LcFixtureBuilder
 extends RefCounted
 
@@ -425,6 +425,7 @@ static func _lamp(parent: Node, name: String, pos: Vector3, mat: Material, shado
 	l.light_energy = 1.6
 	l.light_color = Color(1.0, 0.88, 0.72)
 	l.shadow_enabled = shadow
+	l.layers |= 1 << 20  # render layer 21 `viewmodel_lit` (CrewView.VIEWMODEL_LIT_LAYER, D-095)
 	lamp.add_child(l)
 	return lamp
 

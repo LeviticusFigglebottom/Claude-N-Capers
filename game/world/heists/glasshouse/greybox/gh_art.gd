@@ -180,6 +180,47 @@ func tag_surfaces(root: Node) -> PackedStringArray:
 	return out
 
 
+## PO-5 stair ramp (Dockside `_ramp` style): one invisible StaticBody3D "Ramp" (layer 1) under a
+## flight, convex prisms each a (z, y) polygon extruded over x0..x1, tagged `surface` like the treads.
+## Walkers (players and NpcMotor's plain move_and_slide) slide up it instead of stepping each riser.
+static func ramp(flight: Node3D, owner_root: Node, x0: float, x1: float, polys: Array, surface: StringName) -> StaticBody3D:
+	var body: StaticBody3D = StaticBody3D.new()
+	body.name = "Ramp"
+	body.collision_layer = 1
+	body.collision_mask = 0
+	body.set_meta(&"surface", surface)
+	flight.add_child(body)
+	body.owner = owner_root
+	for i: int in range(polys.size()):
+		var pts: PackedVector3Array = PackedVector3Array()
+		for p: Vector2 in polys[i]:
+			pts.append(Vector3(x0, p.y, p.x))
+			pts.append(Vector3(x1, p.y, p.x))
+		var shp: ConvexPolygonShape3D = ConvexPolygonShape3D.new()
+		shp.points = pts
+		var col: CollisionShape3D = CollisionShape3D.new()
+		col.name = "Prism%d" % i
+		col.shape = shp
+		body.add_child(col)
+		col.owner = owner_root
+	return body
+
+
+## Union-find over navmesh polygons (build_greybox._prune_islands).
+static func uf_find(parent: PackedInt32Array, i: int) -> int:
+	var r: int = i
+	while parent[r] != r:
+		r = parent[r]
+	return r
+
+
+static func uf_union(parent: PackedInt32Array, a: int, b: int) -> void:
+	var ra: int = uf_find(parent, a)
+	var rb: int = uf_find(parent, b)
+	if ra != rb:
+		parent[maxi(ra, rb)] = mini(ra, rb)
+
+
 func vis_box(group: String, mn: Vector3, mx: Vector3, cls: String) -> void:
 	if cls == "" or cls == "none":
 		return
