@@ -75,7 +75,7 @@ class Kit:
             self.support = hand_at(sk, "L", "w", m.get("top_bar", m["left_ik"]), (0.20, 0.95, -0.25), (0.05, 0.10, -0.99),
                                    s.pole_l, hand_shape("grip", 0.85), share=0.55, off=0.017)
         else:
-            self.support = hand_at(sk, "L", "w", m["left_ik"], (0.50, 0.80, 0.30), (0.55, -0.05, 0.83),
+            self.support = hand_at(sk, "L", "w", m["left_ik"], (0.30, 0.45, 0.84), (0.75, 0.62, -0.10),
                                    s.pole_l, hand_shape("grip", 0.80), share=0.55, off=0.018)
         self.support_ads = self.support.copy()
         self.support_ads.pole = unit(np.asarray(s.pole_l_ads, float))
