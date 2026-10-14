@@ -10,6 +10,10 @@ const WAIT_S: float = 600.0
 var _out: String = ""
 var _role: String = "host"
 var _port: int = 24601
+## "leave" (default: the client leaves, then the host) or "success" (the host secures two bags through the
+## real loot path and ends the heist won; both peers must reach the success payday).
+var _mode: String = "leave"
+var _secured: int = 0
 var _n: int = 0
 var _flow: MenuFlow = null
 
@@ -19,6 +23,7 @@ func _ready() -> void:
 	_out = args[0] if args.size() > 0 else OS.get_user_data_dir() + "/coop"
 	_role = args[1] if args.size() > 1 else "host"
 	_port = int(args[2]) if args.size() > 2 else 24601
+	_mode = args[3] if args.size() > 3 else "leave"
 	DirAccess.make_dir_recursive_absolute(_out)
 	_run.call_deferred()
 
@@ -105,6 +110,9 @@ func _host() -> void:
 	await _shot("heist_host", 5)
 	await _seconds(30.0)
 	_diag()
+	if _mode == "success":
+		await _host_success()
+		return
 	await _wait(func() -> bool: return Net.human_slots().size() <= 1, "client left (Net)", 900.0)
 	_diag()
 	await _shot("host_after_client_left", 5)
@@ -112,6 +120,28 @@ func _host() -> void:
 	await _shot("host_pause")
 	if pm != null:
 		pm.leave_requested.emit()
+	await _end_on_payday()
+
+
+## Test hook (lead): two bags spawned inside the secure zone are secured by LootManager's own rest rule
+## (loot_secured [R] reaches the client), then the heist ends won for every human slot.
+func _host_success() -> void:
+	var rt: HeistRuntime = _flow.runtime as HeistRuntime
+	var loot: Node = rt.service(G.SVC_LOOT)
+	var zone: Node3D = null
+	for n: Node in get_tree().get_nodes_in_group(G.LOOT_SECURE_ZONE):
+		if n is Node3D and rt.is_ancestor_of(n):
+			zone = n as Node3D
+			break
+	if loot == null or zone == null:
+		_log("no loot service / secure zone")
+		return
+	EventBus.loot_secured.connect(func(_id: int, _loot: StringName, _value: int) -> void: _secured += 1)
+	for id: StringName in [&"loot.jewelry", &"loot.cash"]:
+		loot.call(&"spawn_bag", id, Transform3D(Basis(), zone.global_position + Vector3(0, 0.4, 0)))
+	await _wait(func() -> bool: return _secured >= 2, "two bags secured", 300.0)
+	await _shot("host_secured", 5)
+	_log("end_heist(true) -> %s" % str(rt.end_heist(true, Net.human_slots(), &"")).left(120))
 	await _end_on_payday()
 
 
@@ -136,6 +166,9 @@ func _client() -> void:
 	await _shot("heist_client", 5)
 	await _seconds(30.0)
 	_diag()
+	if _mode == "success":
+		await _end_on_payday(1800.0)
+		return
 	await _shot("heist_client_later", 5)
 	var pm: PauseMenu = _flow.options_menu.open_pause()
 	await _shot("client_pause")
@@ -145,11 +178,11 @@ func _client() -> void:
 
 
 ## After leaving: the payday (if any) and home.
-func _end_on_payday() -> void:
+func _end_on_payday(timeout_s: float = 120.0) -> void:
 	var payday: Callable = func() -> bool:
 		var pd: PaydayScreen = _flow.get(&"_heist_payday") as PaydayScreen
 		return pd != null and is_instance_valid(pd) and pd.visible
-	if await _wait(payday, "payday shown", 120.0):
+	if await _wait(payday, "payday shown", timeout_s):
 		await _shot("payday", 30)
 		var pd: PaydayScreen = _flow.get(&"_heist_payday") as PaydayScreen
 		_log("payday success=%s reason=%s" % [pd.payout.get("success"), pd.result.get("fail_reason", "")])
