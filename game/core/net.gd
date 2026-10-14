@@ -22,6 +22,11 @@ const DEFAULT_PORT: int = 27655
 const AI_PEER: int = 0
 ## Seconds between the kick notice and the disconnect (lets the reliable notice reach the client).
 const KICK_FLUSH_S: float = 0.25
+## ENet peer timeout (limit, min ms, max ms). Godot's default (32, 5000, 30000) drops a client while the host's
+## heist bring-up stalls its main thread for tens of seconds on slow machines (B co-op pass, A finding).
+const PEER_TIMEOUT_LIMIT: int = 32
+const PEER_TIMEOUT_MIN_MS: int = 15000
+const PEER_TIMEOUT_MAX_MS: int = 60000
 
 ## crew_slot -> CrewSlotInfo dictionary: { "peer_id": int, "is_ai": bool, "display_name": String }
 var crew: Dictionary[int, Dictionary] = {}
@@ -156,6 +161,7 @@ func _assign_slot(peer_id: int, is_ai: bool, display_name: String) -> int:
 
 
 func _on_peer_connected(peer_id: int) -> void:
+	_extend_timeout(peer_id)
 	# Replace an AI slot if the crew is full of AI, else take a free slot.
 	for slot: int in all_slots():
 		if crew[slot]["is_ai"]:
@@ -170,6 +176,8 @@ func _on_peer_connected(peer_id: int) -> void:
 func _on_peer_disconnected(peer_id: int) -> void:
 	var slot: int = slot_of_peer(peer_id)
 	if slot >= 0:
+		Log.warn(&"net", "peer %d (%s) disconnected; slot %d falls back to AI" % [
+			peer_id, crew[slot].get("display_name", "?"), slot])
 		crew[slot] = {"peer_id": AI_PEER, "is_ai": true, "display_name": "AI %d" % slot}
 		crew_changed.emit()
 		_sync_crew()
@@ -257,7 +265,18 @@ func _disconnect_handlers() -> void:
 			sig.disconnect(p[1])
 
 
+## Longer ENet timeout for `peer_id` (server: a client; client: 1 = the host). No-op off ENet.
+func _extend_timeout(peer_id: int) -> void:
+	var enet: ENetMultiplayerPeer = multiplayer.multiplayer_peer as ENetMultiplayerPeer
+	if enet == null:
+		return
+	var pc: ENetPacketPeer = enet.get_peer(peer_id)
+	if pc != null:
+		pc.set_timeout(PEER_TIMEOUT_LIMIT, PEER_TIMEOUT_MIN_MS, PEER_TIMEOUT_MAX_MS)
+
+
 func _on_connected_to_server() -> void:
+	_extend_timeout(1)
 	_rpc_hello.rpc_id(1, _join_name)
 	connected_to_host.emit()
 
