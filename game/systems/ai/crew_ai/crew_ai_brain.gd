@@ -32,6 +32,8 @@ extends Node
 
 enum Mode { INACTIVE, STEALTH_WAIT, IDLE, REVIVE, COVER, FOLLOW, HOLD, FETCH_BAG, SECURE_BAG }
 
+## Hip height probed by _sees_any (m).
+const SIGHT_HIPS_M: float = 0.9
 const NODE_NAME: String = "CrewAiBrain"
 const RNG_STREAM: StringName = &"crew_ai"
 const TWEAK_PATH: String = "res://systems/ai/crew_ai/crew_ai_tweak.tres"
@@ -418,7 +420,8 @@ func _follow_goal() -> Vector3:
 	if leader == null:
 		mode = Mode.IDLE
 		return Vector3.INF
-	cover_point = _pick_cover(leader) if target_enemy != null else null
+	# Lead (ND): take cover whenever enemies are known near the leader, not only while one is targeted.
+	cover_point = _pick_cover(leader) if target_enemy != null or _enemies_near(leader) else null
 	if cover_point != null:
 		mode = Mode.COVER
 		_following = false
@@ -753,7 +756,7 @@ func _tick_scan(delta: float) -> void:
 			var d: float = eye.distance_to(p)
 			# L4.4 / P3 gate: a Stinger tasing a crew member is shot first (killing it breaks the tase).
 			var score: float = d * (tweak.tasing_stinger_score_mult if _is_tasing_crew(npc) else 1.0)
-			if d > tweak.engage_range_m or score >= best_d or not _has_los(eye, p):
+			if d > tweak.engage_range_m or score >= best_d or not _sees_any(eye, npc):
 				continue
 			best = npc
 			best_d = score
@@ -774,6 +777,29 @@ func _is_hostile(npc: NpcBase) -> bool:
 	if npc.role == &"guard" or npc.role == CartelBrain.ROLE:  # QC-36: sleeping cartel posts are left alone
 		return npc.alert_state == Enums.AlertState.COMBAT or npc.alert_state == Enums.AlertState.ALARMED
 	return HOSTILE_ROLES.has(npc.role)
+
+
+## ND attempts 9-21: a cop behind the vault bars / a counter hides its chest from one ray; like a player, the bot
+## sees it when its chest, head or hips is in line of sight.
+func _sees_any(eye: Vector3, npc: NpcBase) -> bool:
+	var base: Vector3 = npc.global_position
+	for h: float in [tweak.chest_height_m, npc.head_height, SIGHT_HIPS_M]:
+		if _has_los(eye, base + Vector3(0.0, h, 0.0)):
+			return true
+	return false
+
+
+## Any hostile NPC in combat within cover_search_radius_m + engage range of the leader (enemies are known).
+func _enemies_near(leader: CrewController) -> bool:
+	var r: float = tweak.cover_search_radius_m + tweak.engage_range_m * 0.5
+	for role: StringName in HOSTILE_ROLES:
+		for n: Variant in _rt.npcs(role):
+			if not is_instance_valid(n):
+				continue  # freed this frame (the runtime list is refreshed lazily)
+			var npc: NpcBase = n as NpcBase
+			if npc != null and _is_hostile(npc) and _flat_dist(npc.global_position, leader.global_position) <= r:
+				return true
+	return false
 
 
 func _has_los(from: Vector3, to: Vector3) -> bool:
