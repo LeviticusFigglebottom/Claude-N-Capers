@@ -1243,7 +1243,7 @@ ui.briefing.if_loud,If it goes loud: {text}
 ui.briefing.optional,Optional
 ui.briefing.optional_line,• {text}
 ui.briefing.loot,Loot
-ui.briefing.loot_line,{loot}: {value} per bag
+ui.briefing.loot_line,{loot}: {value} each
 ui.briefing.loot_none,No bagged loot on this job.
 ui.briefing.escape,Escape
 ui.briefing.escape.van,Van
