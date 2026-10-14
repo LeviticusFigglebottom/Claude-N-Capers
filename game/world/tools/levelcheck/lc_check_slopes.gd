@@ -17,8 +17,9 @@
 ##     from the first PLAYER spawn reaches it, so unreachable baked islands such as a police-only
 ##     roof do not count);
 ##   * a crouched player fits on it (cylinder r 0.2, 1.1 m high, nothing in it).
-## One issue per collider (first sample by position). Severity: FAIL, except on the four pre-D-104
-## heists (LEGACY_WARN), where hits are reported as WARN and left to the next art pass of that map.
+## One issue per collider (first sample by position). Severity: FAIL on every map (GN-C1: the
+## pre-D-104 heists were fixed at the source, so the former LEGACY_WARN list is gone). Typical fixes:
+## copings >= 50°, ridged guard tops (game/world/kits/ridge_top.gd), out of reach, or play space.
 class_name LcCheckSlopes
 extends LcCheck
 
@@ -41,8 +42,6 @@ const PATH_V_TOL: float = 0.5
 
 ## Rooms whose volume is open play area outdoors: shell surfaces in them still count.
 const OUTDOOR_PURPOSES: Array[StringName] = [&"exterior", &"roof"]
-## Heists built before the rule (D-104): hits are WARN there. New maps (Gallery Night on) FAIL.
-const LEGACY_WARN: Array[String] = ["glasshouse", "night_deposit", "dockside_burn", "shadow_ledger"]
 
 var _spawn_nav: Variant = null
 var _reach_cache: Dictionary = {}
@@ -104,7 +103,6 @@ func run(ctx: LcContext) -> void:
 				info["deg"] = rad_to_deg(acos(clampf(n.y, -1.0, 1.0)))
 				info["n"] = 1
 				by_node[key] = info
-	var legacy: bool = ctx.heist_id in LEGACY_WARN
 	var keys: Array = by_node.keys()
 	keys.sort()
 	for k: String in keys:
@@ -112,14 +110,9 @@ func run(ctx: LcContext) -> void:
 		var msg: String = ("walkable %.0f° surface outside the play mesh, %.2f m above the play-mesh floor at %s (%d sample(s)); "
 			+ "make it >= %.0f° steep, block it, or bring it into play space") % [d["deg"], d["dy"],
 			LcCheck.fmt_v(d["nav"]), d["n"], MIN_STEEP_DEG]
-		if legacy:
-			warn(ctx, d["node"], d["pos"], msg + " [legacy map: WARN]")
-		else:
-			fail(ctx, d["node"], d["pos"], msg)
+		fail(ctx, d["node"], d["pos"], msg)
 	note("%d x %d columns (%.2f m), %d surface samples, %d collider(s) with reachable walkable surfaces outside play"
 		% [nx, nz, GRID, samples, by_node.size()])
-	if legacy:
-		note("pre-D-104 heist: hits are WARN, not FAIL (LEGACY_WARN)")
 
 
 ## Bounds of every enabled, active navmesh region (world space).

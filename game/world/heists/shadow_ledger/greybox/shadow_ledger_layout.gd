@@ -281,7 +281,7 @@ const GONDOLAS: Dictionary = {
 const TERRACE_LADDER: Dictionary = {"pos": Vector3(34.5, F42, 18.45), "yaw": 180.0, "h": 3.6,
 	"gap": ["x", 18.0, 34.0, 35.0], "link": [Vector3(34.5, F42, 19.1), Vector3(34.5, FRF, 17.3)]}
 
-## Roof parapet runs (1.1 m + 45 deg coping): [name, axis, fixed, from, to].
+## Roof parapet runs (1.1 m + 55 deg coping, RT.ANGLE_DEG): [name, axis, fixed, from, to].
 const PARAPETS: Array = [
 	["ParapetN", "x", 0.0, -0.2, 36.2], ["ParapetS", "x", 18.0, -0.2, 36.2],
 	["ParapetW", "z", 0.0, 0.2, 17.8], ["ParapetE", "z", 36.0, 0.2, 17.8],

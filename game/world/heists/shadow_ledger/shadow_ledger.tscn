@@ -1831,8 +1831,8 @@ points = PackedVector3Array(-0.59999996, 0, -0.28, 0.59999996, 0, -0.28, -0.5999
 [sub_resource type="ConvexPolygonShape3D" id="sl_500"]
 points = PackedVector3Array(-0.59999996, 0, -0.28, 0.59999996, 0, -0.28, -0.59999996, 1.8, 2.52, 0.59999996, 1.8, 2.52, -0.59999996, 1.5, 2.52, 0.59999996, 1.5, 2.52, -0.59999996, -0.3, -0.28, 0.59999996, -0.3, -0.28)
 
-[sub_resource type="BoxShape3D" id="sl_501"]
-size = Vector3(0.05, 0.05, 3.0968368)
+[sub_resource type="ConvexPolygonShape3D" id="sl_501"]
+points = PackedVector3Array(-0.025, -0.025, -1.5484184, 0.025, -0.025, -1.5484184, 0, 0.025, -1.5484184, 0.025, -0.010703701, -1.5484184, -0.025, -0.010703701, -1.5484184, -0.025, -0.025, 1.5484184, 0.025, -0.025, 1.5484184, 0, 0.025, 1.5484184, 0.025, -0.010703701, 1.5484184, -0.025, -0.010703701, 1.5484184)
 
 [sub_resource type="BoxMesh" id="sl_502"]
 material = ExtResource("11_sl")
@@ -1848,8 +1848,8 @@ points = PackedVector3Array(-0.59999996, 0, -0.28, 0.59999996, 0, -0.28, -0.5999
 [sub_resource type="ConvexPolygonShape3D" id="sl_505"]
 points = PackedVector3Array(-0.59999996, 0, -0.28, 0.59999996, 0, -0.28, -0.59999996, 2.2, 3.08, 0.59999996, 2.2, 3.08, -0.59999996, 1.9, 3.08, 0.59999996, 1.9, 3.08, -0.59999996, -0.3, -0.28, 0.59999996, -0.3, -0.28)
 
-[sub_resource type="BoxShape3D" id="sl_506"]
-size = Vector3(0.05, 0.05, 3.785023)
+[sub_resource type="ConvexPolygonShape3D" id="sl_506"]
+points = PackedVector3Array(-0.025, -0.025, -1.8925115, 0.025, -0.025, -1.8925115, 0, 0.025, -1.8925115, 0.025, -0.010703701, -1.8925115, -0.025, -0.010703701, -1.8925115, -0.025, -0.025, 1.8925115, 0.025, -0.025, 1.8925115, 0, 0.025, 1.8925115, 0.025, -0.010703701, 1.8925115, -0.025, -0.010703701, 1.8925115)
 
 [sub_resource type="BoxMesh" id="sl_507"]
 material = ExtResource("11_sl")
@@ -1882,8 +1882,8 @@ size = Vector3(0.20000076, 4.7, 2.5199995)
 material = ExtResource("4_sl")
 size = Vector3(0.20000076, 4.7, 2.5199995)
 
-[sub_resource type="BoxShape3D" id="sl_516"]
-size = Vector3(1.25, 1.0999994, 0.059999466)
+[sub_resource type="ConvexPolygonShape3D" id="sl_516"]
+points = PackedVector3Array(-0.625, -0.5499997, -0.029999733, -0.625, -0.5499997, 0.029999733, -0.625, 0.5499997, 0, -0.625, 0.50715566, 0.029999733, -0.625, 0.50715566, -0.029999733, 0.625, -0.5499997, -0.029999733, 0.625, -0.5499997, 0.029999733, 0.625, 0.5499997, 0, 0.625, 0.50715566, 0.029999733, 0.625, 0.50715566, -0.029999733)
 
 [sub_resource type="BoxMesh" id="sl_517"]
 material = ExtResource("11_sl")
@@ -1900,8 +1900,8 @@ size = Vector3(2.7000008, 0.3000002, 5.700001)
 material = ExtResource("10_sl")
 size = Vector3(2.7000008, 0.3000002, 5.700001)
 
-[sub_resource type="BoxShape3D" id="sl_521"]
-size = Vector3(1.25, 2.8999999, 0.09999943)
+[sub_resource type="ConvexPolygonShape3D" id="sl_521"]
+points = PackedVector3Array(-0.625, -1.4499999, -0.049999714, -0.625, -1.4499999, 0.049999714, -0.625, 1.4499999, 0, -0.625, 1.378593, 0.049999714, -0.625, 1.378593, -0.049999714, 0.625, -1.4499999, -0.049999714, 0.625, -1.4499999, 0.049999714, 0.625, 1.4499999, 0, 0.625, 1.378593, 0.049999714, 0.625, 1.378593, -0.049999714)
 
 [sub_resource type="BoxMesh" id="sl_522"]
 material = ExtResource("4_sl")
@@ -2075,8 +2075,8 @@ size = Vector3(1.4, 4.216667, 0.29999995)
 [sub_resource type="ConvexPolygonShape3D" id="sl_566"]
 points = PackedVector3Array(-0.7, 0, -0.28, 0.7, 0, -0.28, -0.7, 2.2, 3.08, 0.7, 2.2, 3.08, -0.7, 1.9, 3.08, 0.7, 1.9, 3.08, -0.7, -0.3, -0.28, 0.7, -0.3, -0.28)
 
-[sub_resource type="BoxShape3D" id="sl_567"]
-size = Vector3(3.3599997, 3.3000002, 0.060000002)
+[sub_resource type="ConvexPolygonShape3D" id="sl_567"]
+points = PackedVector3Array(-1.6799998, -1.6500001, -0.030000001, -1.6799998, -1.6500001, 0.030000001, -1.6799998, 1.6500001, 0, -1.6799998, 1.6071557, 0.030000001, -1.6799998, 1.6071557, -0.030000001, 1.6799998, -1.6500001, -0.030000001, 1.6799998, -1.6500001, 0.030000001, 1.6799998, 1.6500001, 0, 1.6799998, 1.6071557, 0.030000001, 1.6799998, 1.6071557, -0.030000001)
 
 [sub_resource type="StandardMaterial3D" id="sl_568"]
 resource_name = "sl_grey_teal_glass"
@@ -2088,22 +2088,22 @@ metadata/greybox = true
 material = SubResource("sl_568")
 size = Vector3(3.3599997, 3.3000002, 0.060000002)
 
-[sub_resource type="BoxShape3D" id="sl_570"]
-size = Vector3(1.5, 3.3000002, 0.060000002)
+[sub_resource type="ConvexPolygonShape3D" id="sl_570"]
+points = PackedVector3Array(-0.75, -1.6500001, -0.030000001, -0.75, -1.6500001, 0.030000001, -0.75, 1.6500001, 0, -0.75, 1.6071557, 0.030000001, -0.75, 1.6071557, -0.030000001, 0.75, -1.6500001, -0.030000001, 0.75, -1.6500001, 0.030000001, 0.75, 1.6500001, 0, 0.75, 1.6071557, 0.030000001, 0.75, 1.6071557, -0.030000001)
 
 [sub_resource type="BoxMesh" id="sl_571"]
 material = SubResource("sl_568")
 size = Vector3(1.5, 3.3000002, 0.060000002)
 
-[sub_resource type="BoxShape3D" id="sl_572"]
-size = Vector3(3.08, 5.5000005, 0.060000002)
+[sub_resource type="ConvexPolygonShape3D" id="sl_572"]
+points = PackedVector3Array(-1.54, -2.7500002, -0.030000001, -1.54, -2.7500002, 0.030000001, -1.54, 2.7500002, 0, -1.54, 2.7071557, 0.030000001, -1.54, 2.7071557, -0.030000001, 1.54, -2.7500002, -0.030000001, 1.54, -2.7500002, 0.030000001, 1.54, 2.7500002, 0, 1.54, 2.7071557, 0.030000001, 1.54, 2.7071557, -0.030000001)
 
 [sub_resource type="BoxMesh" id="sl_573"]
 material = SubResource("sl_568")
 size = Vector3(3.08, 5.5000005, 0.060000002)
 
-[sub_resource type="BoxShape3D" id="sl_574"]
-size = Vector3(0.05, 0.05, 1.5)
+[sub_resource type="ConvexPolygonShape3D" id="sl_574"]
+points = PackedVector3Array(-0.025, -0.025, -0.75, 0.025, -0.025, -0.75, 0, 0.025, -0.75, 0.025, -0.010703701, -0.75, -0.025, -0.010703701, -0.75, -0.025, -0.025, 0.75, 0.025, -0.025, 0.75, 0, 0.025, 0.75, 0.025, -0.010703701, 0.75, -0.025, -0.010703701, 0.75)
 
 [sub_resource type="BoxMesh" id="sl_575"]
 material = ExtResource("11_sl")
@@ -2186,8 +2186,8 @@ size = Vector3(2.7000008, 9, 2.7000003)
 material = ExtResource("11_sl")
 size = Vector3(2.7000008, 9, 2.7000003)
 
-[sub_resource type="BoxShape3D" id="sl_598"]
-size = Vector3(36.4, 1.1000004, 0.060001373)
+[sub_resource type="ConvexPolygonShape3D" id="sl_598"]
+points = PackedVector3Array(-18.2, -0.5500002, -0.030000687, -18.2, -0.5500002, 0.030000687, -18.2, 0.5500002, 0, -18.2, 0.50715476, 0.030000687, -18.2, 0.50715476, -0.030000687, 18.2, -0.5500002, -0.030000687, 18.2, -0.5500002, 0.030000687, 18.2, 0.5500002, 0, 18.2, 0.50715476, 0.030000687, 18.2, 0.50715476, -0.030000687)
 
 [sub_resource type="BoxMesh" id="sl_599"]
 material = ExtResource("11_sl")
@@ -2197,8 +2197,8 @@ size = Vector3(36.4, 0.05, 0.08000138)
 material = SubResource("sl_568")
 size = Vector3(36.4, 1.0000004, 0.060001373)
 
-[sub_resource type="BoxShape3D" id="sl_601"]
-size = Vector3(0.06, 1.1000004, 5.7699986)
+[sub_resource type="ConvexPolygonShape3D" id="sl_601"]
+points = PackedVector3Array(-0.03, -0.5500002, -2.8849993, 0.03, -0.5500002, -2.8849993, 0, 0.5500002, -2.8849993, 0.03, 0.5071558, -2.8849993, -0.03, 0.5071558, -2.8849993, -0.03, -0.5500002, 2.8849993, 0.03, -0.5500002, 2.8849993, 0, 0.5500002, 2.8849993, 0.03, 0.5071558, 2.8849993, -0.03, 0.5071558, 2.8849993)
 
 [sub_resource type="BoxMesh" id="sl_602"]
 material = ExtResource("11_sl")
@@ -2208,8 +2208,8 @@ size = Vector3(0.08, 0.05, 5.7699986)
 material = SubResource("sl_568")
 size = Vector3(0.06, 1.0000004, 5.7699986)
 
-[sub_resource type="BoxShape3D" id="sl_604"]
-size = Vector3(8.459999, 1.1000004, 0.059999943)
+[sub_resource type="ConvexPolygonShape3D" id="sl_604"]
+points = PackedVector3Array(-4.2299995, -0.5500002, -0.029999971, -4.2299995, -0.5500002, 0.029999971, -4.2299995, 0.5500002, 0, -4.2299995, 0.5071558, 0.029999971, -4.2299995, 0.5071558, -0.029999971, 4.2299995, -0.5500002, -0.029999971, 4.2299995, -0.5500002, 0.029999971, 4.2299995, 0.5500002, 0, 4.2299995, 0.5071558, 0.029999971, 4.2299995, 0.5071558, -0.029999971)
 
 [sub_resource type="BoxMesh" id="sl_605"]
 material = ExtResource("11_sl")
@@ -2219,8 +2219,8 @@ size = Vector3(8.459999, 0.05, 0.079999946)
 material = SubResource("sl_568")
 size = Vector3(8.459999, 1.0000004, 0.059999943)
 
-[sub_resource type="BoxShape3D" id="sl_607"]
-size = Vector3(0.059999466, 1.1000004, 2)
+[sub_resource type="ConvexPolygonShape3D" id="sl_607"]
+points = PackedVector3Array(-0.029999733, -0.5500002, -1, 0.029999733, -0.5500002, -1, 0, 0.5500002, -1, 0.029999733, 0.50715613, -1, -0.029999733, 0.50715613, -1, -0.029999733, -0.5500002, 1, 0.029999733, -0.5500002, 1, 0, 0.5500002, 1, 0.029999733, 0.50715613, 1, -0.029999733, 0.50715613, 1)
 
 [sub_resource type="BoxMesh" id="sl_608"]
 material = ExtResource("11_sl")
@@ -2230,8 +2230,8 @@ size = Vector3(0.07999947, 0.05, 2)
 material = SubResource("sl_568")
 size = Vector3(0.059999466, 1.0000004, 2)
 
-[sub_resource type="BoxShape3D" id="sl_610"]
-size = Vector3(0.059999466, 1.1000004, 0.40000004)
+[sub_resource type="ConvexPolygonShape3D" id="sl_610"]
+points = PackedVector3Array(-0.029999733, -0.5500002, -0.20000002, 0.029999733, -0.5500002, -0.20000002, 0, 0.5500002, -0.20000002, 0.029999733, 0.50715613, -0.20000002, -0.029999733, 0.50715613, -0.20000002, -0.029999733, -0.5500002, 0.20000002, 0.029999733, -0.5500002, 0.20000002, 0, 0.5500002, 0.20000002, 0.029999733, 0.50715613, 0.20000002, -0.029999733, 0.50715613, 0.20000002)
 
 [sub_resource type="BoxMesh" id="sl_611"]
 material = ExtResource("11_sl")
@@ -2256,18 +2256,18 @@ material = ExtResource("7_sl")
 size = Vector3(3.75, 1.0999994, 0.4)
 
 [sub_resource type="ConvexPolygonShape3D" id="sl_617"]
-points = PackedVector3Array(-0.2, 12.7, -0.2, -0.2, 12.7, 0.2, -0.2, 12.9, 0, 31.45, 12.7, -0.2, 31.45, 12.7, 0.2, 31.45, 12.9, 0)
+points = PackedVector3Array(-0.2, 12.7, -0.2, -0.2, 12.7, 0.2, -0.2, 12.98563, 0, 31.45, 12.7, -0.2, 31.45, 12.7, 0.2, 31.45, 12.98563, 0)
 
 [sub_resource type="PrismMesh" id="sl_618"]
 material = ExtResource("11_sl")
-size = Vector3(0.4, 0.2, 31.65)
+size = Vector3(0.4, 0.2856296, 31.65)
 
 [sub_resource type="ConvexPolygonShape3D" id="sl_619"]
-points = PackedVector3Array(32.45, 12.7, -0.2, 32.45, 12.7, 0.2, 32.45, 12.9, 0, 36.2, 12.7, -0.2, 36.2, 12.7, 0.2, 36.2, 12.9, 0)
+points = PackedVector3Array(32.45, 12.7, -0.2, 32.45, 12.7, 0.2, 32.45, 12.98563, 0, 36.2, 12.7, -0.2, 36.2, 12.7, 0.2, 36.2, 12.98563, 0)
 
 [sub_resource type="PrismMesh" id="sl_620"]
 material = ExtResource("11_sl")
-size = Vector3(0.4, 0.2, 3.75)
+size = Vector3(0.4, 0.2856296, 3.75)
 
 [sub_resource type="BoxShape3D" id="sl_621"]
 size = Vector3(34.2, 1.0999994, 0.40000153)
@@ -2284,18 +2284,18 @@ material = ExtResource("7_sl")
 size = Vector3(1.2000008, 1.0999994, 0.40000153)
 
 [sub_resource type="ConvexPolygonShape3D" id="sl_625"]
-points = PackedVector3Array(-0.2, 12.7, 17.8, -0.2, 12.7, 18.2, -0.2, 12.9, 18, 34, 12.7, 17.8, 34, 12.7, 18.2, 34, 12.9, 18)
+points = PackedVector3Array(-0.2, 12.7, 17.8, -0.2, 12.7, 18.2, -0.2, 12.98563, 18, 34, 12.7, 17.8, 34, 12.7, 18.2, 34, 12.98563, 18)
 
 [sub_resource type="PrismMesh" id="sl_626"]
 material = ExtResource("11_sl")
-size = Vector3(0.4, 0.2, 34.2)
+size = Vector3(0.4, 0.2856296, 34.2)
 
 [sub_resource type="ConvexPolygonShape3D" id="sl_627"]
-points = PackedVector3Array(35, 12.7, 17.8, 35, 12.7, 18.2, 35, 12.9, 18, 36.2, 12.7, 17.8, 36.2, 12.7, 18.2, 36.2, 12.9, 18)
+points = PackedVector3Array(35, 12.7, 17.8, 35, 12.7, 18.2, 35, 12.98563, 18, 36.2, 12.7, 17.8, 36.2, 12.7, 18.2, 36.2, 12.98563, 18)
 
 [sub_resource type="PrismMesh" id="sl_628"]
 material = ExtResource("11_sl")
-size = Vector3(0.4, 0.2, 1.2)
+size = Vector3(0.4, 0.2856296, 1.2)
 
 [sub_resource type="BoxShape3D" id="sl_629"]
 size = Vector3(0.4, 1.0999994, 1.0999999)
@@ -2312,18 +2312,18 @@ material = ExtResource("7_sl")
 size = Vector3(0.4, 1.0999994, 15.499999)
 
 [sub_resource type="ConvexPolygonShape3D" id="sl_633"]
-points = PackedVector3Array(-0.2, 12.7, 0.2, 0.2, 12.7, 0.2, 0, 12.9, 0.2, -0.2, 12.7, 1.3, 0.2, 12.7, 1.3, 0, 12.9, 1.3)
+points = PackedVector3Array(-0.2, 12.7, 0.2, 0.2, 12.7, 0.2, 0, 12.98563, 0.2, -0.2, 12.7, 1.3, 0.2, 12.7, 1.3, 0, 12.98563, 1.3)
 
 [sub_resource type="PrismMesh" id="sl_634"]
 material = ExtResource("11_sl")
-size = Vector3(0.4, 0.2, 1.1)
+size = Vector3(0.4, 0.2856296, 1.1)
 
 [sub_resource type="ConvexPolygonShape3D" id="sl_635"]
-points = PackedVector3Array(-0.2, 12.7, 2.3, 0.2, 12.7, 2.3, 0, 12.9, 2.3, -0.2, 12.7, 17.8, 0.2, 12.7, 17.8, 0, 12.9, 17.8)
+points = PackedVector3Array(-0.2, 12.7, 2.3, 0.2, 12.7, 2.3, 0, 12.98563, 2.3, -0.2, 12.7, 17.8, 0.2, 12.7, 17.8, 0, 12.98563, 17.8)
 
 [sub_resource type="PrismMesh" id="sl_636"]
 material = ExtResource("11_sl")
-size = Vector3(0.4, 0.2, 15.5)
+size = Vector3(0.4, 0.2856296, 15.5)
 
 [sub_resource type="BoxShape3D" id="sl_637"]
 size = Vector3(0.40000153, 1.0999994, 17.599998)
@@ -2333,11 +2333,11 @@ material = ExtResource("7_sl")
 size = Vector3(0.40000153, 1.0999994, 17.599998)
 
 [sub_resource type="ConvexPolygonShape3D" id="sl_639"]
-points = PackedVector3Array(35.8, 12.7, 0.2, 36.2, 12.7, 0.2, 36, 12.9, 0.2, 35.8, 12.7, 17.8, 36.2, 12.7, 17.8, 36, 12.9, 17.8)
+points = PackedVector3Array(35.8, 12.7, 0.2, 36.2, 12.7, 0.2, 36, 12.98563, 0.2, 35.8, 12.7, 17.8, 36.2, 12.7, 17.8, 36, 12.98563, 17.8)
 
 [sub_resource type="PrismMesh" id="sl_640"]
 material = ExtResource("11_sl")
-size = Vector3(0.4, 0.2, 17.6)
+size = Vector3(0.4, 0.2856296, 17.6)
 
 [sub_resource type="BoxShape3D" id="sl_641"]
 size = Vector3(3.5, 2.4, 0.06000042)
@@ -10341,7 +10341,7 @@ metadata/surface = &"metal"
 shape = SubResource("sl_617")
 
 [node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/Parapets/ParapetNCoping0" unique_id=101879]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15.625, 12.8, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15.625, 12.842814, 0)
 mesh = SubResource("sl_618")
 
 [node name="ParapetNCoping1" type="StaticBody3D" parent="Geometry/Building/Parapets" unique_id=101880]
@@ -10352,7 +10352,7 @@ metadata/surface = &"metal"
 shape = SubResource("sl_619")
 
 [node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/Parapets/ParapetNCoping1" unique_id=101882]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 34.325, 12.8, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 34.325, 12.842814, 0)
 mesh = SubResource("sl_620")
 
 [node name="ParapetS_00" type="StaticBody3D" parent="Geometry/Building/Parapets" unique_id=101883]
@@ -10385,7 +10385,7 @@ metadata/surface = &"metal"
 shape = SubResource("sl_625")
 
 [node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/Parapets/ParapetSCoping0" unique_id=101891]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 16.9, 12.8, 18)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 16.9, 12.842814, 18)
 mesh = SubResource("sl_626")
 
 [node name="ParapetSCoping1" type="StaticBody3D" parent="Geometry/Building/Parapets" unique_id=101892]
@@ -10396,7 +10396,7 @@ metadata/surface = &"metal"
 shape = SubResource("sl_627")
 
 [node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/Parapets/ParapetSCoping1" unique_id=101894]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 35.6, 12.8, 18)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 35.6, 12.842814, 18)
 mesh = SubResource("sl_628")
 
 [node name="ParapetW_00" type="StaticBody3D" parent="Geometry/Building/Parapets" unique_id=101895]
@@ -10429,7 +10429,7 @@ metadata/surface = &"metal"
 shape = SubResource("sl_633")
 
 [node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/Parapets/ParapetWCoping0" unique_id=101903]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.8, 0.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.842814, 0.75)
 mesh = SubResource("sl_634")
 
 [node name="ParapetWCoping1" type="StaticBody3D" parent="Geometry/Building/Parapets" unique_id=101904]
@@ -10440,7 +10440,7 @@ metadata/surface = &"metal"
 shape = SubResource("sl_635")
 
 [node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/Parapets/ParapetWCoping1" unique_id=101906]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.8, 10.05)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.842814, 10.05)
 mesh = SubResource("sl_636")
 
 [node name="ParapetE_00" type="StaticBody3D" parent="Geometry/Building/Parapets" unique_id=101907]
@@ -10462,7 +10462,7 @@ metadata/surface = &"metal"
 shape = SubResource("sl_639")
 
 [node name="Mesh" type="MeshInstance3D" parent="Geometry/Building/Parapets/ParapetECoping0" unique_id=101912]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 12.8, 9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 12.842814, 9)
 mesh = SubResource("sl_640")
 
 [node name="ServerCage" type="Node3D" parent="Geometry/Building" unique_id=101913]

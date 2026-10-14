@@ -262,11 +262,13 @@ func _roller_shutter() -> void:
 	art.acc.box("Shell", Vector3(1.85, 2.8, -0.55), Vector3(5.15, 3.2, -0.2), "metal_dark")
 
 
-## Railing: full-panel collision (blocks players and the navmesh) + top rail, mid rail and posts
-## (brushed steel indoors; the quay chain railing: dark posts and two chains).
+## Railing: full-panel collision (blocks players and the navmesh) with a ridged top (RT: nobody stands
+## on a rail, D-104 slopes) + top rail, mid rail and posts (brushed steel indoors; the quay chain
+## railing: dark posts and two chains).
 func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3) -> void:
 	var body: Node3D = box(parent, nm, mn, mx, "")
 	body.set_meta(&"kind", "railing")
+	RT.apply(body)
 	var size: Vector3 = mx - mn
 	var along_x: bool = size.x >= size.z
 	var length: float = size.x if along_x else size.z
@@ -592,7 +594,9 @@ func _build_site(geo: Node3D) -> void:
 	vis_group = "Neighbours"
 	for b: Array in L.BLOCKS:
 		var mat: String = String(b[2])
-		box_a(blocks, String(b[0]), b[1], mat)
+		var blk: Node3D = box_a(blocks, String(b[0]), b[1], mat)
+		if mat == "barrier":
+			RT.apply(blk)  # road / police barriers: a ridged top, not a perch over the closure (D-104)
 	_far_shore_lights()
 	vis_group = "Street"
 	var fences: Node3D = add(site, node3d("Closures")) as Node3D

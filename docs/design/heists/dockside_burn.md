@@ -113,7 +113,7 @@ Status: APPROVED (lead, 2026-10-11) (D-064). The lead's answers to the G0 open q
 | Quay edge (z 44) | Bollards and a 1.05 m railing, except at the **pontoon ramp** (x 23–25) and the **quay-steps recess** (x 55–59, z 40–44, with a 1.05 m guard around its open top edge). Water beyond is OUT_OF_BOUNDS. |
 | Pontoon + ramp | Ramp 2.0 m wide, from the quay (0.0) to the pontoon (−1.8) over 6.0 m (16.7°, under the 40° walkable slope), with 1.05 m rails. Pontoon 16 × 4 m with a 1.05 m rail except on the boat side. The boat's gunwale closes that side. |
 | Landing stage (−1.8) | x 52–62, z 44–48, rails 1.05 m on the water sides. The **P4 harbour shed** (x 56–62, closed on N/W/S, open E) is on it. The trawler (x 62–80) closes the east view. |
-| High-bay / hall roofs | Not reachable by the crew: the office-roof parapet has the **45° sloped coping** (as Shadow Ledger), so nobody stands on it, and the hall roof (+6.6) sits beyond it. The high-bay roof is a police-only navmesh island (P5) joined to the interior only by one-way rappel links (QC-41). |
+| High-bay / hall roofs | Not reachable by the crew: the office-roof parapet has the **55° sloped coping** (as Shadow Ledger; ≥ 50°, D-104 slopes), so nobody stands on it, and the hall roof (+6.6) sits beyond it. The high-bay roof is a police-only navmesh island (P5) joined to the interior only by one-way rappel links (QC-41). |
 | Up | Fog layer from 30 m with a dark-blue pre-dawn sky above. Every visible roof has a parapet and plant. |
 | Far | Harbor fog: far-shore lights at ~400 m; the Pier 10 stacks and crane close the east; the Bellweather buildings close the west; the Ferro Street facades close the north. Nothing reachable sees the void. |
 
@@ -205,7 +205,7 @@ door (3.6 × 4.5 m), `s` strip curtain (open 3 m opening), `V` strongroom vault 
 platform stair (flight, landing, flight; rising west), `vvv=vv` the same stair seen from the
 platform, `r` 1.05 m guard rail, `L` loot spawn, `S` cash cage (count room), `F` burn point
 (product location), `G` cartel post, `c` night-shift worker, `u` culvert floor grate (Phantom
-vent), `P` player spawn, `p` roof parapet (1.1 m, 45° coping), `HH` stair head house.
+vent), `P` player spawn, `p` roof parapet (1.1 m, 55° coping), `HH` stair head house.
 
 **Vertical data** (`HeistMap.floor_heights = [-1.8, 0.0, 3.6, 7.2]`, `floor_names = ["Landing",
 "Ground", "Mezzanine", "Roof"]`, D-054). The landing stage is listed because the quay steps arrive

@@ -2,6 +2,8 @@
 ## `viewmodel_lit` (D-095: interior key lights carry render layer 21; FAIL since PO-8).
 extends LcTestBase
 
+const RIDGE: GDScript = preload("res://world/kits/ridge_top.gd")
+
 
 ## A StaticBody3D wedge (collision only): footprint x0..x1, z0..z1; the top rises from `h0` at z0 to
 ## `h1` at z1 (h0 == h1 makes a flat block).
@@ -81,12 +83,55 @@ func test_ledge_inside_room_is_play_space() -> void:
 	_expect_only(res, [])
 
 
-func test_legacy_heist_warns_only() -> void:
-	var c: LcCheck = await _one("slopes", func(m: HeistMap) -> void:
+## GN-C1: no LEGACY_WARN list any more; the pre-D-104 heists FAIL like every other map.
+func test_existing_heists_fail_too() -> void:
+	for hid: String in ["glasshouse", "night_deposit", "dockside_burn", "shadow_ledger", "gallery_night"]:
+		var c: LcCheck = await _one("slopes", func(m: HeistMap) -> void:
+			_shrink_room_a(m)
+			_wedge(m, "Ledge", 1.0, 2.0, 2.0, 3.0, 0.8, 0.8), hid)
+		assert_false(c.passed(), "%s: a reachable ledge outside play fails" % hid)
+		assert_eq(c.warn_count(), 0, "%s: reported as FAIL, not WARN: %s" % [hid, c.issues])
+
+
+## An edge guard (0.3 m gunwale / barrier, top 1.0 m; wider than the 0.25 m sample grid) next to the
+## navmesh outside play: its flat box top fails; the same AABB with a RidgeTop collider (55° faces) passes.
+func _rail(m: HeistMap, nm: String, ridged: bool) -> void:
+	var sb: StaticBody3D = StaticBody3D.new()
+	sb.name = nm
+	sb.position = Vector3(2.0, 0.5, 3.0)
+	var cs: CollisionShape3D = CollisionShape3D.new()
+	cs.name = "Collision"
+	var bs: BoxShape3D = BoxShape3D.new()
+	bs.size = Vector3(2.0, 1.0, 0.3)
+	cs.shape = bs
+	sb.add_child(cs)
+	if ridged:
+		assert_true(RIDGE.apply(sb), "RidgeTop replaces the box collider")
+	m.get_node("Geometry").add_child(sb)
+	sb.owner = m
+	cs.owner = m
+
+
+func test_ridged_rail_top_passes_flat_rail_top_fails() -> void:
+	var flat: Dictionary = await _validate(GOOD, "greybox", func(m: HeistMap) -> void:
 		_shrink_room_a(m)
-		_wedge(m, "Ledge", 1.0, 2.0, 2.0, 3.0, 0.8, 0.8), "glasshouse")
-	assert_true(c.passed(), "legacy heists only warn")
-	assert_true(c.warn_count() >= 1, "ledge reported as WARN")
+		_rail(m, "RailFlat", false), false, ["slopes"])
+	_expect_fail(flat, "slopes", "Geometry/RailFlat")
+	var ridged: Dictionary = await _validate(GOOD, "greybox", func(m: HeistMap) -> void:
+		_shrink_room_a(m)
+		_rail(m, "RailRidged", true), false, ["slopes"])
+	_expect_only(ridged, [])
+
+
+func test_ridge_shape_keeps_the_box_aabb() -> void:
+	for size: Vector3 in [Vector3(2.0, 1.0, 0.06), Vector3(0.4, 0.8, 0.4), Vector3(0.05, 0.05, 3.0), Vector3(13.0, 0.05, 0.3)]:
+		var shp: ConvexPolygonShape3D = RIDGE.shape(size)
+		var lo: Vector3 = Vector3.INF
+		var hi: Vector3 = -Vector3.INF
+		for p: Vector3 in shp.points:
+			lo = lo.min(p)
+			hi = hi.max(p)
+		assert_true(lo.is_equal_approx(-size * 0.5) and hi.is_equal_approx(size * 0.5), "%s: AABB %s..%s" % [size, lo, hi])
 
 
 # --- viewmodel_lit -------------------------------------------------------------------------
