@@ -20,7 +20,7 @@
 ## (S4.2).
 ## A2-01 (D-032 QA-11) NPC doors: NpcMotor (guards, civilians, police) and CrewAiBrain look ahead
 ## on their path (`first_closed_on_path`) and call `npc_open(agent)` on a closed door they may open
-## (unlocked; or locked except BARRED/VAULT for a guard whose SpawnPoint tags meet
+## (unlocked; or locked except BARRED for a guard / staff civilian whose SpawnPoint tags meet
 ## `npc_authorized_tags`, the keycard post). It opens after InteractionTweak.npc_door_open_stealth_s
 ## in stealth (instantly in loud) through `set_open`, so the S4.2 `open_door` stimulus applies to
 ## NPC-opened doors too. Any other closed door blocks: the NPC stops at it (NpcMotor.door_blocked;
@@ -81,8 +81,8 @@ const LEAF_GLASS_KEYWORDS: PackedStringArray = ["glass"]
 @export var code_group: StringName = &""
 ## S4.2: guards ignore open doors unless this is set.
 @export var suspicious_when_open: bool = false
-## A2-01 (QA-11): a guard whose SpawnPoint tags contain one of these may open this door while it is
-## locked (keycard post); never for BARRED / VAULT. Empty = no NPC opens it while locked.
+## A2-01 (QA-11): a guard or staff civilian whose SpawnPoint tags contain one of these may open this door while
+## it is locked (keycard post); never for BARRED (VAULT only through these, opt-in). Empty = no NPC opens it locked.
 @export var npc_authorized_tags: Array[StringName] = []
 ## A2-08: one-way fire exit; while closed it opens only from the inside (-Z, UsePoint side).
 @export var push_bar: bool = false
@@ -381,8 +381,8 @@ func passable_for(agent: Node) -> bool:
 	return is_open or can_npc_open(agent)
 
 
-## Whether `agent` may open this door now: unlocked, or locked (not BARRED / VAULT) for a guard or a staff
-## civilian whose SpawnPoint tags meet `npc_authorized_tags`. Crew AI only opens unlocked doors.
+## Whether `agent` may open this door now: unlocked, or locked (not BARRED) for a guard or a staff civilian
+## whose SpawnPoint tags meet `npc_authorized_tags` (VAULT: only when listed). Crew AI only opens unlocked doors.
 func can_npc_open(agent: Node) -> bool:
 	if is_open:
 		return true
@@ -402,10 +402,11 @@ func _police_breach(agent: Node) -> bool:
 	return rt != null and rt.went_loud
 
 
-## Locked door (not BARRED / VAULT): `agent` is a guard, or staff (a civilian: curator, conservator, night
-## manager; D-103 §3b.6), whose SpawnPoint tags meet the post tags. Patrons carry no staff tag.
+## Locked door (not BARRED): `agent` is a guard, or staff (a civilian: curator, conservator, night manager;
+## D-103 §3b.6), whose SpawnPoint tags meet the post tags. Patrons carry no staff tag. A VAULT door authorises
+## nobody unless a tag is listed on it (opt-in, lead ruling round 164: GN's guard_vaultline couriers).
 func _staff_authorised(agent: Node) -> bool:
-	if lock == Lock.BARRED or lock == Lock.VAULT or npc_authorized_tags.is_empty():
+	if lock == Lock.BARRED or npc_authorized_tags.is_empty():
 		return false
 	var npc: NpcBase = agent as NpcBase
 	if npc == null or not npc.alive or not STAFF_ROLES.has(npc.role):
@@ -553,7 +554,7 @@ func _update_nav_link() -> void:
 	var rt: HeistRuntime = HeistRuntime.of(self) if is_inside_tree() else null
 	var breachable: bool = lock != Lock.BARRED and lock != Lock.VAULT and rt != null and rt.went_loud
 	_nav_link.enabled = is_open or not locked or breachable or (not npc_authorized_tags.is_empty() \
-		and lock != Lock.BARRED and lock != Lock.VAULT)
+		and lock != Lock.BARRED)
 	# A2-08: closed push-bar doors pass inside (-Z, start) -> outside (+Z, end) only.
 	_nav_link.bidirectional = is_open or not push_bar
 
