@@ -122,8 +122,9 @@ extends Resource
 ## A1-06 ◇ civilian locomotion (m/s).
 @export var civilian_walk_speed: float = 1.3
 @export var civilian_run_speed: float = 4.0
-## A1-06 ◇ S7.5 wander: CALM civilians walk to a random civilian/staff PatrolPoint within
-## `civilian_wander_radius_m` every [min, max] s.
+## A1-06 ◇ S7.5 wander: CALM civilians walk to a random PatrolPoint within `civilian_wander_radius_m`
+## every [min, max] s: customers to public `civilian` points, staff to `staff` points of their own area
+## (PO-5, CivilianTargets.wander_options).
 @export var civilian_wander_interval_s: Vector2 = Vector2(15.0, 40.0)
 @export var civilian_wander_radius_m: float = 15.0
 ## A1-06 ◇: distance at which a panicked civilian reaches a guard to alert them (m).
@@ -134,6 +135,36 @@ extends Resource
 ## (blocked doorway, unreachable point) cowers where it is instead of running in place forever.
 @export var civilian_flee_stall_s: float = 2.0
 @export var civilian_flee_stall_m: float = 0.3
+## PO-5 ◇ S7.5: wander points must be within civilian_wander_radius_m of navmesh path (no navmesh: straight
+## line and within this height difference, i.e. the same floor). Also the height window for a staff
+## civilian's home point (nearest `staff` point to its spawn, whose `staff_*` area tags it keeps to).
+@export var civilian_wander_floor_dy_m: float = 1.5
+## PO-5 ◇: a walking/running civilian (WANDER, RUN_TO_CALL) that moves less than civilian_walk_stall_m in
+## civilian_walk_stall_s re-paths to its target; stalling again it gives that target up (wander: picks
+## another point later; call: the next-cheapest call point or guard, else flees).
+@export var civilian_walk_stall_s: float = 2.5
+@export var civilian_walk_stall_m: float = 0.3
+## PO-5 ◇ S7.1: the all-round shout (shout_all_within_m) reaches only civilians on the shouter's floor
+## (height difference <= shout_floor_dy_m) that can hear it: clear line of sight, or a navmesh path no
+## longer than shout_all_within_m x shout_path_mult (around a counter or a doorway, not through a wall).
+@export var shout_floor_dy_m: float = 2.5
+@export var shout_path_mult: float = 1.3
+
+@export_group("Calm NPC yield (PO-5)")
+## PO-5 ◇: a CALM NPC (idle/wandering civilian, patrolling/posted guard) that a crew member keeps pressing
+## into (within npc_yield_reach_m, horizontal speed <= npc_yield_press_speed, move input held, facing it
+## within npc_yield_face_deg) for npc_yield_press_s steps npc_yield_step_m aside (lateral first, else
+## back) at npc_yield_speed. Once no crew is within npc_yield_clear_m for npc_yield_hold_s (or after
+## npc_yield_max_s) it resumes: an NPC that was standing returns to its spot. PD2 NPCs never wall you in.
+@export var npc_yield_reach_m: float = 0.8
+@export var npc_yield_press_s: float = 1.5
+@export var npc_yield_press_speed: float = 0.6
+@export var npc_yield_face_deg: float = 50.0
+@export var npc_yield_step_m: float = 1.0
+@export var npc_yield_speed: float = 1.4
+@export var npc_yield_clear_m: float = 1.3
+@export var npc_yield_hold_s: float = 1.5
+@export var npc_yield_max_s: float = 8.0
 
 @export_group("Heist mode (S11.3)")
 ## STEALTH_ONLY heists: seconds between the alarm (Mercer abort line) and heist_ended(failed).
