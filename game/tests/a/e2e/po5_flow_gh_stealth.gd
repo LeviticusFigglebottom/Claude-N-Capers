@@ -742,8 +742,9 @@ func _civ_threat() -> NpcBase:
 		var want: bool = false
 		match b.mode:
 			CivilianBrain.Mode.IDLE, CivilianBrain.Mode.WANDER:
-				# Noticing us, or about to: looking our way within shout range (a shout beats a 1.5 s spot).
-				want = st.detection_value(c, crew.slot) > 0.3 or (d < 10.0 and _civ_watchers(crew.global_position).has(c))
+				# Noticing us (a preemptive shout at every civilian looking our way put so many down, through
+				# walls, that renewing them all became the job).
+				want = st.detection_value(c, crew.slot) > 0.3
 			CivilianBrain.Mode.RUN_TO_CALL, CivilianBrain.Mode.CALLING:
 				want = true
 		if want and d < best_d and p.has_los(c.global_position + Vector3(0.0, 1.0, 0.0), c):
