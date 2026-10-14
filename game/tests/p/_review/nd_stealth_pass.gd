@@ -33,10 +33,12 @@ func _ready() -> void:
 	if runner_out == "":
 		runner_out = OS.get_user_data_dir() + "/nd_stealth"
 	DirAccess.make_dir_recursive_absolute(runner_out)
-	var obs: Node = Node.new()
-	obs.name = "POObserver"
-	obs.set_script(load("res://tests/p/_review/po_observer.gd"))
-	get_tree().root.add_child.call_deferred(obs)
+	for pair: Array in [["POObserver", "res://tests/p/_review/po_observer.gd"],
+			["AnimCoverage", "res://tests/p/_review/anim_coverage.gd"]]:  # D-111: --anim-out=DIR
+		var n: Node = Node.new()
+		n.name = pair[0]
+		n.set_script(load(pair[1]))
+		get_tree().root.add_child.call_deferred(n)
 	_run.call_deferred()
 
 

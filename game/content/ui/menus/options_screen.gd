@@ -16,13 +16,17 @@ signal applied()
 signal leave_heist_requested()
 
 const TAB_CONTROLS: StringName = &"controls"
+## D-111 (style.md §11): the rebind table has its own tab (it sat under twelve Controls rows and read as a
+## stray header over the footer).
+const TAB_KEYS: StringName = &"keys"
 const TAB_AUDIO: StringName = &"audio"
 const TAB_VIDEO: StringName = &"video"
 const TAB_ACCESSIBILITY: StringName = &"accessibility"
-const TABS: Array[StringName] = [TAB_CONTROLS, TAB_AUDIO, TAB_VIDEO, TAB_ACCESSIBILITY]
+const TABS: Array[StringName] = [TAB_CONTROLS, TAB_KEYS, TAB_AUDIO, TAB_VIDEO, TAB_ACCESSIBILITY]
 ## Settings sections each tab edits (Reset tab resets these).
 const TAB_SECTIONS: Dictionary = {
-	&"controls": [&"controls", &"gameplay", &"bindings"], &"audio": [&"audio"], &"video": [&"video"], &"accessibility": [&"accessibility"],
+	&"controls": [&"controls", &"gameplay"], &"keys": [&"bindings"], &"audio": [&"audio"], &"video": [&"video"],
+	&"accessibility": [&"accessibility"],
 }
 
 ## Write the file on Apply (tests turn it off).
@@ -242,7 +246,7 @@ func _fill_page(t: StringName, page: VBoxContainer) -> Array[Control]:
 		TAB_CONTROLS:
 			out = _rows(page, GameSettings.CONTROLS)
 			out.append_array(_rows(page, GameSettings.GAMEPLAY))
-			page.add_child(HSeparator.new())
+		TAB_KEYS:
 			controls_tab = OptionsControlsTab.new()
 			page.add_child(controls_tab)
 			controls_tab.setup(draft)

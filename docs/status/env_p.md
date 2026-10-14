@@ -2,6 +2,17 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-14 16:25 UTC: GN-P1 on trunk, custody hide, pistol left-hand IK
+- GN-P1 (trunk 55ce4d2a+): test_p_gn_traversal 8/8 (doors >= 1.0 m, balcony throws, Mews -> LD heavy bag, both
+  ladders, Treasury static/timed/sweep, pool with a heavy bag), PO-3 snag 0/0 (open/closed), menu path PASS. Feel
+  (gn_feel_capture.tscn, compatibility renderer): hall/balcony read well; Treasury/dock floors pitch black; pool and
+  Mews near black at night (viewmodel unreadable, §7.11); portico haze. Sent to C.
+- 69bfb6ba custody hides the viewmodel (downed keeps it); 3ee2bc79 pistol/revolver skip the runtime left-hand IK
+  (D's finding; captures/pistol_left_ik_skip_before_after.png). D's ADS depth question: no override, 52 deg
+  viewmodel FOV vs 75 deg review camera (D tapers sleeves next).
+- Closed: casing-follow (A could not reproduce). Open: ND stealth pass run (CPU-bound), coop_fx rerun after A's
+  ghost-round fix, LobbyDoor rerun after A's AI corner fix.
+
 ## 2026-10-14 15:30 UTC: po_observer rerun on r157/r158 (A crew AI, B prompt verbs) + GN-P1 step 1
 - GH loud (to t=244) + ND auto_loud (to t=110) + ND stealth (nd_stealth_pass.tscn, P script; A's runner has no ND
   stealth flow), observer flags:

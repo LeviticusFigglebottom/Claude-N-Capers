@@ -50,9 +50,9 @@ func _exit_tree() -> void:
 	if EventBus.shot_fx.is_connected(_on_shot_fx):
 		EventBus.shot_fx.disconnect(_on_shot_fx)
 	for t: Dictionary in _tracers:
-		var n: Node = t["node"]
+		var n: Variant = t["node"]  # untyped: a world-parented tracer may be freed already (between heists)
 		if is_instance_valid(n):
-			n.queue_free()
+			(n as Node).queue_free()
 	_tracers.clear()
 
 
@@ -63,7 +63,9 @@ func _process(delta: float) -> void:
 ## Advance one presentation frame (tests may call it directly).
 func tick(delta: float) -> void:
 	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
-	if _custom_flash and _flash != null and is_instance_valid(_flash):
+	if _flash != null and not is_instance_valid(_flash):
+		_flash = null  # freed with its old parent (heist teardown): re-acquired on the next flash()
+	if _custom_flash and _flash != null:
 		if Engine.get_process_frames() > _flash_frame:  # drawn at least once before C's 0.05 s timer runs
 			_flash.call(&"tick", delta)
 	elif _flash != null and _flash.visible:
@@ -75,8 +77,8 @@ func tick(delta: float) -> void:
 		p["t"] = float(p["t"]) - delta
 		if float(p["t"]) <= 0.0:
 			_pending.remove_at(k)
-			var port: Node3D = p["port"]
-			if is_instance_valid(port) and port.is_inside_tree():
+			var port: Node3D = _live(p["port"])
+			if port != null and port.is_inside_tree():
 				_spawn_shell(port, StringName(p["kind"]), tw)
 	_tick_shells(delta, tw)
 	_tick_tracers(delta, tw)
@@ -252,7 +254,7 @@ func _spawn_shell(port: Node3D, kind: StringName, tw: FpViewmodelTweak) -> void:
 	var s: Dictionary = {}
 	if _shells.size() >= SHELL_POOL:
 		s = _shells.pop_front()
-	else:
+	if s.is_empty() or _live(s["node"]) == null:
 		var mi: MeshInstance3D = MeshInstance3D.new()
 		mi.name = "Shell"
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -295,8 +297,8 @@ func _apply_shell_look(node: MeshInstance3D, kind: StringName, tw: FpViewmodelTw
 
 func _tick_shells(delta: float, tw: FpViewmodelTweak) -> void:
 	for s: Dictionary in _shells:
-		var node: MeshInstance3D = s["node"]
-		if not is_instance_valid(node) or not node.visible:
+		var node: MeshInstance3D = _live(s["node"]) as MeshInstance3D
+		if node == null or not node.visible:
 			continue
 		s["left"] = float(s["left"]) - delta
 		if float(s["left"]) <= 0.0:
@@ -358,7 +360,7 @@ func draw_tracer(from: Vector3, to: Vector3) -> void:
 	var t: Dictionary = {}
 	if _tracers.size() >= TRACER_POOL:
 		t = _tracers.pop_front()
-	else:
+	if t.is_empty() or _live(t["node"]) == null:
 		var node: Node3D = _make_tracer(tw)
 		world.add_child(node)
 		t = {"node": node}
@@ -393,8 +395,8 @@ func _make_tracer(tw: FpViewmodelTweak) -> Node3D:
 
 func _tick_tracers(delta: float, tw: FpViewmodelTweak) -> void:
 	for t: Dictionary in _tracers:
-		var n: Node3D = t["node"]
-		if not is_instance_valid(n) or not n.visible:
+		var n: Node3D = _live(t["node"])
+		if n == null or not n.visible:
 			continue
 		if Engine.get_process_frames() <= int(t["frame"]):
 			continue  # the shot's own frame draws the streak leaving the muzzle
@@ -424,6 +426,12 @@ func _world_parent() -> Node:
 	if crew != null and is_instance_valid(crew) and crew.get_parent() != null:
 		return crew.get_parent()
 	return get_tree().current_scene if is_inside_tree() else null
+
+
+## The node in `v` when still alive, else null (pool entries and pending casings can outlive a heist teardown;
+## assigning a freed instance to a typed variable is a script error).
+static func _live(v: Variant) -> Node3D:
+	return v as Node3D if is_instance_valid(v) else null
 
 
 static func _instance(path: String) -> Node3D:

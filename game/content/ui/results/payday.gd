@@ -446,16 +446,18 @@ func _render() -> void:
 	var chips: Label = UiBuild.caption()
 	chips.text = "   ·   ".join(summary)
 	_content.add_child(chips)
-	var cols: HBoxContainer = UiBuild.hbox(40)
+	# D-111: three columns, nothing under the fold at 720p: cash | experience | crew + awards.
+	var cols: HBoxContainer = UiBuild.hbox(UiTokens.S4)
 	_content.add_child(cols)
-	cols.add_child(UiBuild.panel(_build_cash() if success else _build_loss()))
-	# Lane 2 audit: the crew table sat under the fold at 720p beside an empty right third. It stacks under
-	# the experience panel now, next to the cash breakdown.
+	for p: PanelContainer in [UiBuild.panel(_build_cash() if success else _build_loss()), UiBuild.panel(_build_xp())]:
+		p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		p.size_flags_stretch_ratio = 1.0
+		cols.add_child(p)
 	var right: VBoxContainer = UiBuild.vbox(UiTokens.S2)
+	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	cols.add_child(right)
-	right.add_child(UiBuild.panel(_build_xp()))
 	right.add_child(UiBuild.panel(_build_stats()))
-	_content.add_child(UiBuild.panel(_build_awards()))
+	right.add_child(UiBuild.panel(_build_awards()))
 	for id: StringName in achievements_unlocked:
 		var a: AchievementDef = ContentDB.by_id(ContentDB.ACHIEVEMENTS, id) as AchievementDef
 		if a != null:
@@ -525,7 +527,6 @@ static func fail_reason_key(reason: StringName) -> StringName:
 ## that were secured but pay nothing (PayoutCalculator on the same result as a success).
 func _build_loss() -> VBoxContainer:
 	var v: VBoxContainer = UiBuild.vbox(6)
-	v.custom_minimum_size = Vector2(560, 0)
 	v.add_child(UiBuild.label(&"ui.results.loss_header", UiBuild.SUBHEADER))
 	var as_won: Dictionary = result.duplicate(true)
 	as_won["success"] = true
@@ -562,19 +563,15 @@ func _build_hero(success: bool) -> HBoxContainer:
 	left.add_child(total)
 	value_labels[&"hero_total"] = total
 	_count_up(total, int(payout.get("total", 0)))
-	var split: Label = UiBuild.label(&"", UiBuild.DIM)
-	split.text = "%s   ·   %s" % [
-		UiText.t(&"ui.results.stash_line", {"amount": UiText.money(int(payout.get("stash", 0)))}),
-		UiText.t(&"ui.results.spending_line", {"amount": UiText.money(int(payout.get("spending", 0)))})]
+	# D-111 (style.md §11): the stash / spending split is shown once, here (the cash card no longer repeats
+	# it), and the hero has no second XP figure (the experience card has the total).
+	var split: HBoxContainer = UiBuild.hbox(UiTokens.S5)
 	left.add_child(split)
-	var right: VBoxContainer = UiBuild.vbox(UiTokens.S1)
-	right.custom_minimum_size = Vector2(520, 0)
-	right.alignment = BoxContainer.ALIGNMENT_END
-	row.add_child(right)
-	right.add_child(UiBuild.caption(&"ui.results.xp_header"))
-	var xp: Label = UiBuild.label(&"", UiBuild.HEADER)
-	xp.text = "+" + UiText.group_digits(int(payout.get("xp_total", 0)))
-	right.add_child(xp)
+	for k: String in ["stash", "spending"]:
+		var l: Label = UiBuild.label(&"", UiBuild.DIM)
+		l.text = UiText.t(StringName("ui.results.%s_line" % k), {"amount": UiText.money(int(payout.get(k, 0)))})
+		value_labels[StringName(k)] = l
+		split.add_child(l)
 	return row
 
 
@@ -621,7 +618,6 @@ func skip_count() -> bool:
 
 func _build_cash() -> VBoxContainer:
 	var v: VBoxContainer = UiBuild.vbox(6)
-	v.custom_minimum_size = Vector2(560, 0)
 	v.add_child(UiBuild.label(&"ui.results.cash_header", UiBuild.SUBHEADER))
 	var grid: GridContainer = _grid(v)
 	_line(grid, &"contract", UiText.t(&"ui.results.contract"), UiText.money(int(payout.get("contract", 0))))
@@ -636,14 +632,11 @@ func _build_cash() -> VBoxContainer:
 	_line(grid, &"civilian_penalty", UiText.t(&"ui.results.civilian_penalty"),
 			UiText.money(-int(payout.get("civilian_penalty", 0))))
 	_line(grid, &"total", UiText.t(&"ui.results.total"), UiText.money(int(payout.get("total", 0))))
-	_line(grid, &"stash", UiText.t(&"ui.results.stash"), UiText.money(int(payout.get("stash", 0))))
-	_line(grid, &"spending", UiText.t(&"ui.results.spending"), UiText.money(int(payout.get("spending", 0))))
 	return v
 
 
 func _build_xp() -> VBoxContainer:
 	var v: VBoxContainer = UiBuild.vbox(6)
-	v.custom_minimum_size = Vector2(560, 0)
 	v.add_child(UiBuild.label(&"ui.results.xp_header", UiBuild.SUBHEADER))
 	var grid: GridContainer = _grid(v)
 	for line: Dictionary in payout.get("xp_lines", []) as Array:
@@ -721,7 +714,7 @@ func _build_stats() -> VBoxContainer:
 	var v: VBoxContainer = UiBuild.vbox(6)
 	var grid: GridContainer = GridContainer.new()
 	grid.columns = 5
-	grid.add_theme_constant_override(&"h_separation", 36)
+	grid.add_theme_constant_override(&"h_separation", UiTokens.S3)  # D-111: fits the third column at 720p
 	grid.add_theme_constant_override(&"v_separation", 0)
 	v.add_child(grid)
 	# PO-4 audit: a column that is 0 for the whole crew is noise (kills always show).
@@ -775,11 +768,14 @@ func _build_awards() -> VBoxContainer:
 	for member: Dictionary in result.get("crew", []) as Array:
 		by_slot[int(member.get("slot", -1))] = member
 	var grid: GridContainer = GridContainer.new()
-	grid.columns = 3
-	grid.add_theme_constant_override(&"h_separation", 36)
+	grid.columns = 2  # D-111: award, who; the description is the award name's tooltip
+	grid.add_theme_constant_override(&"h_separation", UiTokens.S4)
 	v.add_child(grid)
 	for a: Dictionary in awards:
-		grid.add_child(UiBuild.label(StringName(a["name_key"])))
+		var award: Label = UiBuild.label(StringName(a["name_key"]))
+		award.tooltip_text = UiText.t(StringName(a["desc_key"]), {"value": roundi(float(a["value"]))})
+		award.mouse_filter = Control.MOUSE_FILTER_STOP
+		grid.add_child(award)
 		var names: Array[String] = []
 		for slot: int in a["slots"] as Array:
 			var member: Dictionary = by_slot.get(slot, {}) as Dictionary
@@ -789,7 +785,6 @@ func _build_awards() -> VBoxContainer:
 		who.text = ", ".join(names)
 		grid.add_child(who)
 		award_labels[StringName(a["id"])] = who
-		grid.add_child(UiBuild.label(StringName(a["desc_key"]), UiBuild.DIM, {"value": roundi(float(a["value"]))}))
 	return v
 
 

@@ -28,6 +28,11 @@ const PREFAB_CLASSES: Dictionary = {
 }
 ## Prop catalog (tools/blender/props, PropCatalog): asset id -> scene.
 const CATALOG_DIR: String = "res://world/props/"
+## Visual tile edge (m) for the big horizontal slabs (floors, roofs, grade): the Compatibility renderer lights a mesh
+## instance with at most 8 omni / spot lights (rendering/limits/opengl/max_lights_per_object), so one 44 x 30 m floor
+## box overlapped by every key light on its floor kept 8 arbitrary ones and whole rooms' floors (TR, LD) rendered
+## black. The collider stays one box (navmesh and collision unchanged); only the mesh is tiled.
+const SLAB_TILE: float = 6.0
 ## Visual step boxes overlap their higher neighbour by this much (no ray-through seams).
 const SEAM: float = 0.02
 ## Building surface classes -> material library (greybox kit materials).
@@ -118,7 +123,9 @@ func box_shape(size: Vector3) -> BoxShape3D:
 
 ## Static box (world_static) from min/max corners: StaticBody3D + CollisionShape3D + MeshInstance3D. Every
 ## body gets a mesh (so SurfaceTags.tag_tree can tag it; the generator refuses untagged bodies).
-func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String) -> StaticBody3D:
+## tile > 0: the visual is split into an even grid of mesh tiles no wider than `tile` in x / z (one collider still;
+## see SLAB_TILE).
+func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, tile: float = 0.0) -> StaticBody3D:
 	var size: Vector3 = mx - mn
 	if size.x <= 0.001 or size.y <= 0.001 or size.z <= 0.001:
 		return null
@@ -132,10 +139,22 @@ func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String) -
 	col.name = "Collision"
 	col.shape = box_shape(size)
 	add(sb, col)
-	var mi: MeshInstance3D = MeshInstance3D.new()
-	mi.name = "Mesh"
-	mi.mesh = box_mesh(size, mat_id)
-	add(sb, mi)
+	var nx: int = maxi(1, ceili(size.x / tile - 0.001)) if tile > 0.0 else 1
+	var nz: int = maxi(1, ceili(size.z / tile - 0.001)) if tile > 0.0 else 1
+	if nx * nz == 1:
+		var mi: MeshInstance3D = MeshInstance3D.new()
+		mi.name = "Mesh"
+		mi.mesh = box_mesh(size, mat_id)
+		add(sb, mi)
+		return sb
+	var ts: Vector3 = Vector3(size.x / nx, size.y, size.z / nz)
+	for ix: int in range(nx):
+		for iz: int in range(nz):
+			var t: MeshInstance3D = MeshInstance3D.new()
+			t.name = "Mesh%02d_%02d" % [ix, iz]
+			t.mesh = box_mesh(ts, mat_id)
+			t.position = Vector3(-size.x * 0.5 + ts.x * (ix + 0.5), 0.0, -size.z * 0.5 + ts.z * (iz + 0.5))
+			add(sb, t)
 	return sb
 
 

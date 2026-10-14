@@ -65,7 +65,7 @@ func _neighbor(c: Control, side: Side) -> Control:
 func test_builds_every_tab() -> void:
 	var o: OptionsScreen = _screen(GameSettings.new())
 	await wait_frames(2)
-	assert_eq(o.tab_buttons.size(), 4)
+	assert_eq(o.tab_buttons.size(), 5)
 	assert_eq(o.current_tab, OptionsScreen.TAB_CONTROLS)
 	assert_eq(o.controls_tab.rows.size(), InputBindings.actions().size(), "one rebind row per action")
 	assert_eq(o.controls_tab.rows[&"interact"][InputEventCodec.KBM].text, "F")
@@ -74,8 +74,9 @@ func test_builds_every_tab() -> void:
 		assert_true((o.pages[t] as Control).visible, "%s page shown" % t)
 		var expected: int = o.draft.defaults.keys(StringName(t)).size()
 		if t == OptionsScreen.TAB_CONTROLS:
-			expected += InputBindings.actions().size() + 1
 			expected += o.draft.defaults.keys(GameSettings.GAMEPLAY).size()  # gameplay rows sit on Controls
+		if t == OptionsScreen.TAB_KEYS:
+			expected = InputBindings.actions().size() + 1  # D-111: the rebind table is its own tab
 		assert_eq((o.page_focus[t] as Array).size(), expected, "%s rows are focusable" % t)
 	assert_eq(o.palette_preview.get_child_count(), HudPalette.FIELDS.size(), "palette swatches")
 	assert_true(o.apply_button.disabled, "nothing to apply yet")
@@ -88,7 +89,7 @@ func test_focus_navigation() -> void:
 	await wait_frames(2)
 	var tab: Control = o.tab_buttons[OptionsScreen.TAB_CONTROLS] as Control
 	assert_eq(_focused(), tab, "first tab focused on open")
-	assert_eq(_neighbor(tab, SIDE_RIGHT), o.tab_buttons[OptionsScreen.TAB_AUDIO] as Control, "tabs: left / right")
+	assert_eq(_neighbor(tab, SIDE_RIGHT), o.tab_buttons[OptionsScreen.TAB_KEYS] as Control, "tabs: left / right")
 	var first: Control = (o.page_focus[OptionsScreen.TAB_CONTROLS] as Array)[0]
 	assert_eq(_neighbor(tab, SIDE_BOTTOM), first, "down from the tabs = first row")
 	assert_eq(_neighbor(first, SIDE_TOP), tab)
@@ -176,6 +177,7 @@ func test_rebind_capture_and_conflicts() -> void:
 	var s: GameSettings = GameSettings.new()
 	var o: OptionsScreen = _screen(s)
 	await wait_frames(2)
+	o.show_tab(OptionsScreen.TAB_KEYS)  # D-111: the rebind table's own tab
 	var ct: OptionsControlsTab = o.controls_tab
 	ct.rows[&"reload"][InputEventCodec.KBM].pressed.emit()
 	assert_true(ct.is_capturing())

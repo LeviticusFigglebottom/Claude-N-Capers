@@ -24,7 +24,10 @@ signal career_requested()
 signal continue_requested()
 
 ## Station cards per row (B-PP-2).
-const CARD_COLUMNS: int = 2
+## D-111 (style.md §11): a 3x3 grid of icon + title cards; the focused card's line shows in the side panel.
+const CARD_COLUMNS: int = 3
+const POINTS_STATION: StringName = &"armory"
+const CARD_HEIGHT: float = 196.0
 ## PO-4: where a new player is pointed (the Board: live contracts, the PD2 Crime.net equivalent).
 const START_STATION: StringName = &"board"
 
@@ -44,7 +47,6 @@ var xp_bar: ProgressBar
 var spending_label: Label
 var stash_label: Label
 var skill_points_label: Label
-var perk_points_label: Label
 ## Notoriety rank badge line (B5-02).
 var notoriety_label: Label
 ## Profile panel button -> achievements_requested (B4-20).
@@ -94,14 +96,14 @@ func build_ui() -> void:
 		station_buttons[s.id] = b
 		focus_chain.append(b)
 	var side: VBoxContainer = UiBuild.vbox(14)
-	side.custom_minimum_size = Vector2(520, 0)
+	side.custom_minimum_size = Vector2(440, 0)
 	body.add_child(side)
-	side.add_child(_build_profile_panel())
-	station_detail = UiBuild.label(&"", UiBuild.DIM)
+	station_detail = UiBuild.label(&"")
 	station_detail.name = "StationDetail"
 	station_detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	station_detail.custom_minimum_size = Vector2(0, 72)
 	side.add_child(station_detail)
+	side.add_child(_build_profile_panel())
 	achievements_button = UiBuild.button(&"ui.hub.achievements")
 	achievements_button.pressed.connect(achievements_requested.emit)
 	side.add_child(achievements_button)
@@ -112,7 +114,7 @@ func build_ui() -> void:
 	focus_chain.append(options_button)
 	var footer: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(footer)
-	back_button = UiBuild.button(&"ui.hub.main_menu")
+	back_button = UiBuild.ghost(UiBuild.button(&"ui.hub.main_menu"))
 	back_button.pressed.connect(back_requested.emit)
 	footer.add_child(back_button)
 	focus_chain.append(back_button)
@@ -197,7 +199,7 @@ func _station_card(s: HubStation) -> Button:
 	b.theme_type_variation = &"StationButton"
 	b.focus_mode = Control.FOCUS_ALL
 	b.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	b.custom_minimum_size = Vector2(0, 96)
+	b.custom_minimum_size = Vector2(0, CARD_HEIGHT)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	b.tooltip_text = UiText.t(s.desc_key)
 	b.pressed.connect(station_requested.emit.bind(s.id))
@@ -207,34 +209,39 @@ func _station_card(s: HubStation) -> Button:
 	m.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	m.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for side: String in ["left", "right"]:
-		m.add_theme_constant_override("margin_" + side, 22)
+		m.add_theme_constant_override("margin_" + side, UiTokens.S3)
 	for side: String in ["top", "bottom"]:
 		m.add_theme_constant_override("margin_" + side, 16)
 	b.add_child(m)
-	var row: HBoxContainer = UiBuild.hbox(22)
+	# D-111: a tile (icon top, title and state word at the bottom) so the 3x3 grid fills the body.
+	var row: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	m.add_child(row)
 	var icon: HubStationIcon = HubStationIcon.new()
 	icon.kind = s.icon_kind
 	icon.color = UiBuild.theme().get_color(&"font_color", &"HeaderLabel")
 	icon.tile_color = UiAccent.app_bg()
-	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	icon.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	icon.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	row.add_child(icon)
+	var gap: Control = Control.new()
+	gap.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(gap)
 	var text: VBoxContainer = UiBuild.vbox(2)
-	text.alignment = BoxContainer.ALIGNMENT_CENTER
 	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(text)
 	var title: Label = UiBuild.label(s.title_key, UiBuild.SUBHEADER)
-	var desc: Label = UiBuild.label(s.desc_key, UiBuild.DIM)
-	for l: Label in [title, desc]:
-		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		text.add_child(l)
-	# PO-4 audit: two lines of description instead of one cut off with "...".
-	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.max_lines_visible = 2
-	desc.add_theme_font_size_override(&"font_size", UiTokens.FONT_SMALL)
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text.add_child(title)
+	# D-111: no description on the card (it shows in the side panel on focus); at most one state word.
+	if s.id == POINTS_STATION:
+		skill_points_label = UiBuild.caption(&"")
+		skill_points_label.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+		skill_points_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		text.add_child(skill_points_label)
 	if s.id == START_STATION:
 		start_here = UiBuild.caption(&"ui.hub.start_here")
 		start_here.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
@@ -242,25 +249,20 @@ func _station_card(s: HubStation) -> Button:
 		start_here.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		start_here.visible = false
 		start_here.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		# AU-4 (lane 2 audit): as a third column it narrowed the description to "...". It shares the title's
-		# line now (no taller card), so the description wraps over the card's full width.
+		# Under the title, like the Armory's points word (one state word per card).
 		var head: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 		head.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		text.add_child(head)
-		text.move_child(head, 0)
-		title.reparent(head)
-		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		head.add_child(start_here)
 	# A Button does not grow with its children: follow the content so a two-line description stays
 	# inside the card (lane 13 16:10 capture: the second line spilled under the next card).
 	m.minimum_size_changed.connect(func() -> void:
-		b.custom_minimum_size.y = maxf(96.0, m.get_combined_minimum_size().y))
+		b.custom_minimum_size.y = maxf(CARD_HEIGHT, m.get_combined_minimum_size().y))
 	return b
 
 
 func _build_profile_panel() -> PanelContainer:
-	var v: VBoxContainer = UiBuild.vbox(10)
-	v.add_child(UiBuild.label(&"ui.hub.profile.title", UiBuild.DIM))
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	name_label = UiBuild.label(&"", UiBuild.SUBHEADER)
 	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	v.add_child(name_label)
@@ -273,13 +275,12 @@ func _build_profile_panel() -> PanelContainer:
 	v.add_child(xp_bar)
 	xp_label = UiBuild.label(&"", UiBuild.DIM)
 	v.add_child(xp_label)
-	v.add_child(HSeparator.new())
+	var money: HBoxContainer = UiBuild.hbox(UiTokens.S4)
+	v.add_child(money)
 	spending_label = UiBuild.label()
 	stash_label = UiBuild.label()
-	skill_points_label = UiBuild.label()
-	perk_points_label = UiBuild.label()
-	for l: Label in [spending_label, stash_label, skill_points_label, perk_points_label]:
-		v.add_child(l)
+	for l: Label in [spending_label, stash_label]:
+		money.add_child(l)
 	return UiBuild.panel(v)
 
 
@@ -298,6 +299,7 @@ func refresh_profile(p: PlayerProfile = null) -> void:
 	name_label.visible = profile.profile_name != ""
 	level_label.text = NotorietyScreen.level_text(profile.level, profile.notoriety)
 	notoriety_label.text = NotorietyScreen.badge_text(profile.notoriety)
+	notoriety_label.visible = profile.notoriety > 0  # D-111: "No notoriety yet" was noise
 	var lvl: int = XpCurve.level_for_xp(profile.xp)
 	if lvl >= XpCurve.max_level():
 		xp_bar.value = 1.0
@@ -309,11 +311,22 @@ func refresh_profile(p: PlayerProfile = null) -> void:
 		xp_label.text = UiText.t(&"ui.hub.profile.xp", {"xp": UiText.group_digits(into), "next": UiText.group_digits(step)})
 	spending_label.text = UiText.t(&"ui.menu.spending", {"amount": UiText.money(profile.cash)})
 	stash_label.text = UiText.t(&"ui.menu.stash", {"amount": UiText.money(profile.stash)})
-	var skill_total: int = SkillPoints.points_for_level(profile.level)
-	skill_points_label.text = UiText.t(&"ui.hub.profile.skill_points",
-			{"points": skill_total - SkillPoints.spent_total(profile.loadout.skills), "total": skill_total})
-	perk_points_label.text = UiText.t(&"ui.hub.profile.perk_points",
-			{"points": PerkProgress.available(profile, ProgressionUiTweak.load_default())})
+	_refresh_points()
+
+
+## D-111: free skill / perk points are the Armory card's one state word ("3 SKILL POINTS"), hidden at 0.
+func _refresh_points() -> void:
+	if skill_points_label == null:
+		return
+	var skills: int = SkillPoints.points_for_level(profile.level) - SkillPoints.spent_total(profile.loadout.skills)
+	var perks: int = PerkProgress.available(profile, ProgressionUiTweak.load_default())
+	var parts: PackedStringArray = PackedStringArray()
+	if skills > 0:
+		parts.append(UiText.t(&"ui.hub.points.skills", {"points": skills}))
+	if perks > 0:
+		parts.append(UiText.t(&"ui.hub.points.perks", {"points": perks}))
+	skill_points_label.text = "  ·  ".join(parts)
+	skill_points_label.visible = not parts.is_empty()
 
 
 ## Shows station `id`'s full description in the side panel (focus or hover, PQ-B-8).

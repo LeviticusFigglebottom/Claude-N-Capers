@@ -1228,6 +1228,7 @@ ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available)
 ui.perks.dev_unlocked,Dev build: every perk card is unlocked.
 ui.perks.hint,Press a deck to equip it; only the equipped deck is active. Perk points come from experience.
 heist.glasshouse.briefing,"Vossberg Jewelers sits on the corner of Harlow Avenue and Pell Street and stays open late for its private viewing week. Tonight the estate consignment waits in the workshop safe. Case the floor as customers, find the manager's keycard and take the back route. If it goes loud, the safe locks down: drill it and hold until the van arrives. Odile wants at least two bags before Friday."
+heist.glasshouse.briefing_loud,"The safe reader locks down: drill the safe, then hold until the van comes back."
 contact.role.fence,Fence
 contact.role.fixer,Fixer
 contact.role.insider,Insider
@@ -1246,10 +1247,12 @@ ui.briefing.loot,Loot
 ui.briefing.loot_line,{loot}: {value} each
 ui.briefing.loot_none,No bagged loot on this job.
 ui.briefing.escape,Escape
+ui.briefing.escape_line,Escape: {options}
 ui.briefing.escape.van,Van
 ui.briefing.escape.boat,Boat
 ui.briefing.escape.heli,Helicopter
 ui.briefing.escape.walk,On foot
+ui.briefing.escape.limo,Limo
 ui.briefing.escape_unknown,Mercer will improvise.
 ui.briefing.contract_pay,Contract pay: {amount}
 ui.briefing.blueprint,Blueprint
@@ -1506,7 +1509,7 @@ heist.night_deposit.name,Night Deposit
 heist.night_deposit.subtitle,Harbor Savings & Loan
 heist.night_deposit.brief,A cartel front drops its week of cash down a bank's night chute. The Accountant wants the chute and the vault cage.
 heist.night_deposit.briefing,"Harbor Savings & Loan, Pier District branch, stands on the corner of Harbor Street and Wharf Lane. Every Friday night the Ortega Fisheries Co-op drops its takings down the night depository chute, and the bags wait in the basement until the 06:00 armoured car. The Co-op's friends keep more cash in the vault cage. The bank is closed: case it from the ATM lobby, find the vault keycard and the time-lock code (or hack the lock from the server room), then hold the basement while the time lock runs. If it goes loud, the vault seals itself: drill the door and hold the basement. The Accountant wants at least four bags."
-heist.night_deposit.briefing_loud,"Skip the time lock: drill the vault door and hold the basement."
+heist.night_deposit.briefing_loud,Drill the vault door and hold the basement.
 objective.night_deposit.casing,Case the bank
 objective.night_deposit.keycard,Find the vault keycard
 objective.night_deposit.code,Find the time-lock code
@@ -1604,6 +1607,8 @@ ui.hub.profile.xp,{xp} / {next} XP to the next level
 ui.hub.profile.xp_max,Max level
 ui.hub.profile.skill_points,Skill points: {points} of {total} free
 ui.hub.profile.perk_points,Perk points: {points} free
+ui.hub.points.skills,{points} skill points
+ui.hub.points.perks,{points} perk points
 ui.hub.station.crew,Crew Net
 ui.hub.station.crew.desc,"Host a co-op crew, or join a friend's lobby."
 ui.lobby.title,Co-op Lobby
@@ -2101,6 +2106,7 @@ ui.blocked.civilian,You need your gear
 ui.options.title,Options
 ui.options.crumb,Caperworks / Settings
 ui.options.tab.controls,Controls
+ui.options.tab.keys,Key Bindings
 ui.options.tab.audio,Audio
 ui.options.tab.video,Video
 ui.options.tab.accessibility,Accessibility
@@ -2318,7 +2324,7 @@ ui.loadout.civilian_start,"This job starts in civilian clothes: no weapons or eq
 heist.dockside_burn.name,Dockside Burn
 heist.dockside_burn.subtitle,Ortega Cold Storage
 heist.dockside_burn.brief,"The Co-op's freezer warehouse on Pier 9 holds its cash, its guns and its product. Hollis wants the first two and the third on fire."
-heist.dockside_burn.briefing,"Ortega Cold Storage on Pier 9 is the freezer warehouse of the Ortega Fisheries Co-op, the same cartel front whose night drop you took at Harbor Savings. Its shipments land here: cash waiting for the laundering run, in the strongroom or the count room; rifles in two of the shipping containers in the yard; and product, boxed as frozen fish in a freezer chamber or the packing hall. The Co-op guards it with its own gunmen, who carry no pagers and will not surrender, and the gunfire brings the police within a couple of minutes. Breach the warehouse, carry the thermite to the product and burn it, and secure at least four bags of cash and weapons. Product you carry out before the burn is a bonus. Then hold until the van or the boat arrives."
+heist.dockside_burn.briefing,"Ortega Cold Storage on Pier 9, the Co-op's freezer warehouse. Cash for the laundering run sits in the strongroom, rifles in the yard containers, product boxed as frozen fish. Their gunmen carry no pagers and won't surrender; the police come within minutes. Burn the product with thermite, secure four bags of cash and weapons, hold for the van or the boat."
 item.loot.weapon_crate.name,Weapon Crate
 item.loot.weapon_crate.desc,"A crate of rifles out of a Co-op container, packed in grease paper. Heavy and slow, and worth every bruise."
 item.loot.contraband.name,Contraband
@@ -2974,7 +2980,7 @@ ui.stats.boosted_value,{value}*
 ui.stats.boosted_legend,* Boosted by your skills and perk deck
 ui.hud.player_left,{name} left the game. An AI plays {heister} now.
 ui.hud.player_joined,{name} joined as {heister}.
-heist.gallery_night.briefing,"The Halberd Gallery, Aldous Parade at Wexley Street. The Calloway Unveiling gala is in its last hour. Odile Vance's buyer wants four canvases off a list, and The Lantern Bearer above all. Walk in as guests, case the rooms before last call, then cut the Lantern Bearer and one more listed canvas. Rolled, not framed. Out by the van in the Mews or the limo at the kerb."
+heist.gallery_night.briefing,"The Halberd Gallery, Aldous Parade at Wexley Street, in the Calloway gala's last hour. Odile Vance's buyer wants four canvases off a list, The Lantern Bearer above all. Walk in as guests, case the rooms before last call, then cut the Lantern Bearer and one more. Rolled, not framed. Out by the van in the Mews or the limo at the kerb."
 music.gallery_night.name,Laylight
 heist.gallery_night.briefing_loud,"Argus locks the gallery down. Hack the server, drill the art-store vault, then hold until the escape arrives."
 objective.gallery_night.casing,Case the gala

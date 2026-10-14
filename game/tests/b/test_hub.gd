@@ -163,7 +163,7 @@ func test_armory_progression_round_trip() -> void:
 	f.progression_screen.back_requested.emit()
 	await wait_frames(1)
 	assert_eq(f.current, f.loadout_screen as Control, "skills Back -> armory")
-	f.loadout_screen.masks_button.pressed.emit()
+	f.loadout_screen.mask_option.pressed.emit()
 	await wait_frames(1)
 	f.mask_screen.back_button.pressed.emit()
 	await wait_frames(1)
@@ -389,9 +389,9 @@ static func _xp_line(payout: Dictionary, key: StringName) -> int:
 	return -1
 
 
-## AU-4 (lane 2 audit): every station description fits its two lines at 720p, START HERE showing (a new
-## profile), so no card ends in "...".
-func test_station_descriptions_fit_two_lines_at_720p() -> void:
+## D-111 (style.md §11): cards are icon + title (+ one state word); the description shows in the side panel.
+## At 720p every title fits on its card untrimmed.
+func test_station_titles_fit_at_720p() -> void:
 	var saved: Vector2i = get_window().size
 	get_window().size = Vector2i(1280, 720)
 	SaveService.save_profile(PlayerProfile.new_default(), 0)
@@ -400,14 +400,20 @@ func test_station_descriptions_fit_two_lines_at_720p() -> void:
 	f.show_hub()
 	await wait_frames(3)
 	assert_true(f.hub.start_here != null and f.hub.start_here.is_visible_in_tree(), "START HERE shows for a new profile")
+	assert_eq(HubMenu.CARD_COLUMNS, 3)
 	var checked: int = 0
 	for id: Variant in f.hub.station_buttons:
+		var st: HubStation = f.hub.stations.find(StringName(id))
+		var title_text: String = UiText.t(st.title_key)
 		for n: Node in (f.hub.station_buttons[id] as Control).find_children("*", "Label", true, false):
 			var l: Label = n as Label
-			if l.max_lines_visible == 2:
+			assert_ne(l.text, UiText.t(st.desc_key), "%s: no description on the card" % id)
+			if l.text == title_text:
 				checked += 1
-				assert_true(l.get_line_count() <= 2, "%s: %d lines for 2 (%s)" % [id, l.get_line_count(), l.text])
-	assert_true(checked >= 8, "descriptions checked: %d" % checked)
+				var w: float = l.get_theme_font(&"font").get_string_size(l.text, HORIZONTAL_ALIGNMENT_LEFT, -1,
+						l.get_theme_font_size(&"font_size")).x
+				assert_true(w <= l.size.x + 1.0, "%s title fits: %.0f > %.0f" % [id, w, l.size.x])
+	assert_eq(checked, f.hub.station_buttons.size(), "titles checked")
 	f.queue_free()
 	get_window().size = saved
 	await wait_frames(1)
