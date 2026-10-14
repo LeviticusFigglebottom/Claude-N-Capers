@@ -12,7 +12,8 @@ this file wins: the LEAD wrote it after checking trunk (see §0).
 | `claude/dreamy-hamilton-pc7vck` (trunk) | see `git log` | round 200: C's D-113 VFX + P's probe + all env status notes | — |
 | `env/a-core` | 768faba4 | all code on trunk | nothing to merge |
 | `env/b-content` | ec36e060 | **HELD**: 8 green commits (Jay roster, SMG fore-end grip, gore option, deployables + gating, throwables, GN string) | merge **together with D's SMG clip re-time**. f8f17c7a turns `d/test_arms` smg_idle/smg_ads_idle red until then |
-| `env/c-worlds` | 33048141 | merged as round 200 (D-113 blood + muzzle flash) | merge C's handoff note when pushed |
+| `env/c-worlds` | 8a725315 | all on trunk (r200 D-113 VFX, r201 GH/ND wall tiles + handoff) | nothing to merge |
+| `wip/c-sldb-props` | d257bc58 | **WIP, ~45%**: D-111 SL/DB prop art (item 1 validated but tests not re-run; items 2-4 not imported, regenerated or validated) | C finishes it per env_c.md HANDOFF step list; never merge it directly |
 | `env/d-art` | 07542fe7+ | skirt seated fix not yet merged; grip rework in progress | see §D |
 | `env/p-play` | d9b3e6c4 | probes + notes cherry-picked; **035eee7f held** (per-set long-gun grip offsets) | merge 035eee7f **together with D's new `char_arms_fp`** |
 
@@ -63,8 +64,14 @@ test_p_grip_offset test_p_finger_clip`, `d test_arms`, `a test_fp_viewmodel`, `b
    albedo ~0.2 sRGB); bare steel, brass and chrome stay metallic. Owner: C (`world/materials/*.tres` + texgen).
    Re-run P's `vm_light_probe.tscn` after the change. Target: the weapon's mean luminance near the arms' (~80/255),
    up from 8–11 now.
-3. **D-111 item 5:** SL/DB interactable wiring, doors and loot stacks (`docs/levels/_art/prop_art_inventory.md`).
-4. **Gallery Night G2 art pass** (`docs/process/next_heist.md` §6, GN-C2).
+3. **D-111 item 5: SL/DB prop art pass** on `wip/c-sldb-props`, ~45%. The 6-step finish list is in env_c.md HANDOFF:
+   import, regen twice, navmesh diff, validate with variants, tests, split commits, shots. Item 5 (secure-drop
+   visuals, SL lasers, zipline anchors) is not started. NOTE: C's own handoff does not list the black-gun material fix
+   (item 2 below). The new LEAD must queue it for C **first**: it is the PO's top complaint.
+3b. D-113 follow-ups: re-render the flash "after" set (the current one predates the final particle tweaks), re-run
+   the impact sheet, check the Forward+ Decal path.
+4. GN door data for A: `Door.shutter` on the three GN shutters (A b25c8dc5 is on trunk, so this is unblocked), door `objective_tags`,
+   ArgusTerminal `clears_alarm_groups`. Then the **Gallery Night G2 art pass** (`docs/process/next_heist.md` §6, GN-C2).
 5. `prop_saw_device` (the saw drill-point model, for A's DrillPoint Device.SAW).
 6. If A finds `Slot_orchard_calloway` unreachable: fix the nav/stairs to that gallery.
 
