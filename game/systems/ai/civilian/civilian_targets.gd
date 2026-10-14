@@ -8,6 +8,9 @@
 ##   `staff`-only home point) only `staff` points sharing its home point's `staff_*` area tags (home =
 ##   nearest staff point to its spawn on its floor); never NO_CIVILIAN. Reach is navmesh path length
 ##   (no navmesh: straight line on the same floor), so floors and walls do not count as "near".
+##   PO-10 reservation: a point is not offered while another live NPC of this heist is heading to it (its
+##   NpcMotor target; released when it arrives, re-targets or dies) or stands on it
+##   (StealthTweak.civilian_wander_taken_m), so two civilians never walk to the same point at once.
 ## - Hostage count (S7.2): civilians in G.HOSTAGE; emits hostage_count_changed [R] on change.
 ## Self-installed as the runtime service SERVICE by the first CivilianBrain (`ensure`), like
 ## ShoutSystem; HeistRuntime may create it directly later.
@@ -132,10 +135,14 @@ func wander_options(from: Vector3, profile: Dictionary, radius: float, min_m: fl
 	var areas: Array = profile.get("areas", [])
 	var dy_max: float = Tweak.stealth().civilian_wander_floor_dy_m
 	var nav: bool = has_navigation()
+	var taken: Array[Vector3] = taken_spots(from)
+	var taken_m: float = Tweak.stealth().civilian_wander_taken_m
 	for p: PatrolPoint in wander_points():
 		var pos: Vector3 = p.global_position
 		var flat: float = Vector2(pos.x - from.x, pos.z - from.z).length()
 		if flat <= min_m or from.distance_to(pos) > radius:
+			continue
+		if _is_taken(pos, taken, taken_m):
 			continue
 		if not _role_allows(p, staff, areas) or not _zones_allow(pos, staff):
 			continue
@@ -146,6 +153,32 @@ func wander_options(from: Vector3, profile: Dictionary, radius: float, min_m: fl
 			continue
 		out.append(p)
 	return out
+
+
+## PO-10: where live NPCs of this heist stand or are walking to (their NpcMotor target while not arrived),
+## except one standing at `exclude_at` (the asking civilian itself).
+func taken_spots(exclude_at: Vector3 = Vector3.INF) -> Array[Vector3]:
+	var out: Array[Vector3] = []
+	if not is_inside_tree():
+		return out
+	for n: Node in get_tree().get_nodes_in_group(G.NPC):
+		var npc: NpcBase = n as NpcBase
+		if npc == null or not npc.alive or (_runtime != null and not _runtime.is_ancestor_of(npc)):
+			continue
+		if exclude_at != Vector3.INF and npc.global_position.distance_to(exclude_at) < 0.05:
+			continue
+		out.append(npc.global_position)
+		var m: NpcMotor = npc.get_node_or_null(^"Motor") as NpcMotor
+		if m != null and not m.arrived and m.target != Vector3.INF:
+			out.append(m.target)
+	return out
+
+
+static func _is_taken(pos: Vector3, taken: Array[Vector3], taken_m: float) -> bool:
+	for t: Vector3 in taken:
+		if absf(t.y - pos.y) < 1.0 and Vector2(t.x - pos.x, t.z - pos.z).length() <= taken_m:
+			return true
+	return false
 
 
 static func _role_allows(p: PatrolPoint, staff: bool, areas: Array) -> bool:
