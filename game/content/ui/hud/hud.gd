@@ -345,10 +345,13 @@ func _process(delta: float) -> void:
 	if objective_markers != null and scoreboard != null:
 		objective_markers.show_all = scoreboard.visible  # Tab shows every objective's marker
 		objective_markers.z_index = 1 if scoreboard.visible else 0  # drawn over the sheet, not under it
+		var sheet: Control = scoreboard.sheet if scoreboard.visible else null
+		objective_markers.avoid = sheet.get_global_rect() if sheet != null else Rect2()  # badges only on it
 	if onboarding != null and scoreboard != null:
 		# The Tab sheet and the pause menu's job card sit on the card's spot and win (h02 / fail captures).
 		onboarding.visible = onboarding.shown != &"" and not scoreboard.visible and not MouseCapture.is_released(&"pause") \
-				and not (toast_label != null and toast_label.visible)  # a toast crosses the card's title (co-op pass)
+				and not (toast_label != null and toast_label.visible) \
+				and not (downed != null and downed.active)  # lane 2 audit: the card sat over the downed screen
 	if hint != null and onboarding != null:
 		hint.note.visible = hint.hint == &"mask_up" and onboarding.shown == &""  # the card already says it
 	if _toast_t > 0.0:
