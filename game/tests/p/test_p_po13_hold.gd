@@ -1,4 +1,6 @@
 ## PO-13: weapon hold feel (PD2 vel_overshot look sway + breathing). Real input (PInputDriver mouse look).
+## Windowed only (D-086): the sway follows look speed over real frame time, and headless runs process frames so fast
+## that a 20-frame mouse flick is a few ms of game time (the sway never builds). Skipped headless (KR-9).
 extends TestCase
 
 var _rt: HeistRuntime = null
@@ -26,6 +28,9 @@ func _vm(c: CrewController) -> FpViewmodel:
 
 ## Turning right swings the gun left (+yaw) within the PD2 hip max, then it settles; looking up dips it.
 func test_look_sway_lags_and_settles() -> void:
+	if DisplayServer.get_name() == "headless":
+		skip("windowed feel test (xvfb-run, not --headless)")
+		return
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
 	await wait_seconds(1.5)
@@ -51,6 +56,9 @@ func test_look_sway_lags_and_settles() -> void:
 
 ## Aimed: the sway is limited to the PD2 steelsight max and breathing almost stops.
 func test_ads_sway_is_small() -> void:
+	if DisplayServer.get_name() == "headless":
+		skip("windowed feel test (xvfb-run, not --headless)")
+		return
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
 	await wait_seconds(1.5)
