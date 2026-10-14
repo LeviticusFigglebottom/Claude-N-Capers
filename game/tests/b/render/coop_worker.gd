@@ -4,7 +4,7 @@
 extends Node
 
 const SLOT: int = 0
-const HEIST: StringName = &"glasshouse"
+const DEFAULT_HEIST: StringName = &"glasshouse"
 const WAIT_S: float = 600.0
 
 var _out: String = ""
@@ -13,6 +13,8 @@ var _port: int = 24601
 ## "leave" (default: the client leaves, then the host) or "success" (the host secures two bags through the
 ## real loot path and ends the heist won; both peers must reach the success payday).
 var _mode: String = "leave"
+## 5th argument: the heist (default Glasshouse).
+var _heist: StringName = DEFAULT_HEIST
 var _secured: int = 0
 var _n: int = 0
 var _flow: MenuFlow = null
@@ -24,6 +26,7 @@ func _ready() -> void:
 	_role = args[1] if args.size() > 1 else "host"
 	_port = int(args[2]) if args.size() > 2 else 24601
 	_mode = args[3] if args.size() > 3 else "leave"
+	_heist = StringName(args[4]) if args.size() > 4 else DEFAULT_HEIST
 	DirAccess.make_dir_recursive_absolute(_out)
 	_run.call_deferred()
 
@@ -78,6 +81,10 @@ func _run() -> void:
 		await _host()
 	else:
 		await _client()
+	if _role == "host" and _mode != "leave":
+		# Keep the session up until the client is back in the lobby too (a host that quits first hands the
+		# client a host_lost on its payday).
+		await _seconds(240.0)
 	_log("done")
 	SaveService.delete_profile(SLOT)
 	get_tree().quit()
@@ -95,7 +102,7 @@ func _host() -> void:
 	if not await _wait(func() -> bool: return _humans() >= 2, "client joined"):
 		return
 	await _shot("lobby_two_humans")
-	_log("set_contract -> %s" % _flow.lobby.set_contract(HEIST, Enums.Difficulty.ROUTINE, false))
+	_log("set_contract -> %s" % _flow.lobby.set_contract(_heist, Enums.Difficulty.ROUTINE, false))
 	_flow.lobby.set_ready(true)
 	if not await _wait(func() -> bool: return _flow.lobby.state.can_start(), "both ready", 180.0):
 		_log("start_block %s" % _flow.lobby.state.start_block())
@@ -113,6 +120,10 @@ func _host() -> void:
 	if _mode.begins_with("success"):
 		await _host_success()
 		await _host_more_rounds(ls)
+		return
+	if _mode == "fail":
+		await _host_fail()
+		await _back_in_lobby(2)
 		return
 	await _wait(func() -> bool: return Net.human_slots().size() <= 1, "client left (Net)", 900.0)
 	_diag()
@@ -191,6 +202,10 @@ func _client() -> void:
 	await _shot("heist_client", 5)
 	await _seconds(30.0)
 	_diag()
+	if _mode == "fail":
+		await _end_on_payday(1800.0)
+		await _back_in_lobby(2)
+		return
 	if _mode.begins_with("success"):
 		await _end_on_payday(1800.0)
 		for round_i: int in range(2, _heists() + 1):
@@ -207,6 +222,14 @@ func _client() -> void:
 	await _shot("client_pause")
 	if pm != null:
 		pm.leave_requested.emit()
+	await _end_on_payday()
+
+
+## End-of-heist sweep: the host ends the heist failed (all crew in custody) for every human slot; both peers
+## get the failure payday and, after Continue, the kept crew lobby (C11).
+func _host_fail() -> void:
+	var rt: HeistRuntime = _flow.runtime as HeistRuntime
+	_log("end_heist(false) -> %s" % str(rt.end_heist(false, Net.human_slots(), &"all_custody")).left(120))
 	await _end_on_payday()
 
 
