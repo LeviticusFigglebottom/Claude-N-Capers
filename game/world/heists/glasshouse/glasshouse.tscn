@@ -7134,6 +7134,7 @@ metadata/fixture = true
 
 [node name="Light" parent="Props/G2/LightFixture_4" index="1"]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, -0.05, 0)
+layers = 1048577
 light_color = Color(1, 0.8941, 0.8078, 1)
 light_energy = 1.4
 light_size = 0.05
@@ -7603,6 +7604,7 @@ metadata/fixture = true
 
 [node name="Light" parent="Props/G5/LightFixture_6" index="1"]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, -0.04, 0)
+layers = 1048577
 light_color = Color(1, 0.7059, 0.4196, 1)
 light_energy = 1.8
 light_size = 0.05
@@ -7855,6 +7857,7 @@ metadata/fixture = true
 
 [node name="Light" parent="Props/G6/LightFixture_4" index="1"]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, -0.04, 0)
+layers = 1048577
 light_color = Color(1, 0.7059, 0.4196, 1)
 light_energy = 1.8
 light_size = 0.05
@@ -9178,6 +9181,7 @@ metadata/fixture = true
 
 [node name="Light" parent="Props/X1/WallLamp_1" index="1"]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.03, -0.31)
+layers = 1048577
 light_color = Color(1, 0.7725, 0.5608, 1)
 light_energy = 3.0
 light_size = 0.05
@@ -9193,6 +9197,7 @@ metadata/fixture = true
 
 [node name="Light" parent="Props/X1/WallLamp_2" index="1"]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.03, -0.31)
+layers = 1048577
 light_color = Color(1, 0.7725, 0.5608, 1)
 light_energy = 3.0
 light_size = 0.05
@@ -9208,6 +9213,7 @@ metadata/fixture = true
 
 [node name="Light" parent="Props/X1/WallLamp_3" index="1"]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.03, -0.31)
+layers = 1048577
 light_color = Color(1, 0.7725, 0.5608, 1)
 light_energy = 3.0
 light_size = 0.05
@@ -9462,6 +9468,7 @@ metadata/fixture = true
 
 [node name="Light" parent="Props/X2H/NeonSign_1" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.6)
+layers = 1048577
 light_color = Color(1, 0.2431, 0.6471, 1)
 light_energy = 1.6
 light_size = 0.05
@@ -9601,6 +9608,7 @@ metadata/fixture = true
 
 [node name="Light" parent="Props/X2P/NeonSign_1" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.6)
+layers = 1048577
 light_color = Color(1, 0.2431, 0.6471, 1)
 light_energy = 1.6
 light_size = 0.05

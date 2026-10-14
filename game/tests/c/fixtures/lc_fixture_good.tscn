@@ -493,6 +493,7 @@ mesh = SubResource("BoxMesh_4bjgc")
 
 [node name="Light" type="OmniLight3D" parent="Props/LampA" unique_id=1080402026]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+layers = 1048577
 light_color = Color(1, 0.88, 0.72, 1)
 light_energy = 1.6
 omni_range = 9.0
@@ -576,6 +577,7 @@ mesh = SubResource("BoxMesh_vm1wh")
 
 [node name="Light" type="OmniLight3D" parent="Props/LampB" unique_id=42523265]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+layers = 1048577
 light_color = Color(1, 0.88, 0.72, 1)
 light_energy = 1.6
 shadow_enabled = true
