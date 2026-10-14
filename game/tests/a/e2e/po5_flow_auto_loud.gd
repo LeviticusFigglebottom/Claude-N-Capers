@@ -39,7 +39,7 @@ func play(flow: Node) -> int:
 		if p.crew.crew_state == Enums.CrewState.CUSTODY:
 			return fail("player in custody at %.0f s" % rt.heist_time_s)
 		if p.crew.crew_state != Enums.CrewState.NORMAL:
-			await f.wait_s(1.0)
+			await _act_while_down()  # shoot from the floor: police only cuff a downed player who isn't firing
 			continue
 		if rt.heist_time_s - last_shot > 90.0:
 			last_shot = rt.heist_time_s
@@ -172,3 +172,14 @@ func _marker_summary() -> String:
 func fail(msg: String) -> int:
 	f.note("FAIL " + msg)
 	return 1
+
+
+## While downed, keep shooting the nearest enemy in sight like a player (PD2 / L2.12: police only cuff a downed
+## crew member who is NOT shooting); any other helpless state just waits. About 1 s per call.
+func _act_while_down() -> void:
+	if p.crew.crew_state == Enums.CrewState.DOWNED:
+		var foe: NpcBase = p.nearest_enemy(25.0)
+		if foe != null:
+			await p.engage(foe, 1.0)
+			return
+	await f.wait_s(1.0)
