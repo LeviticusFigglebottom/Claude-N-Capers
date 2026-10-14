@@ -210,6 +210,30 @@ func test_current_is_shared_and_replaceable() -> void:
 
 
 ## ENV P head bob: on by default, off when unticked, and always off under Reduce Motion.
+## Options parity: aiming sensitivity, screen shake and subtitles exist with PD2-like defaults and clamp.
+func test_parity_settings() -> void:
+	var s: GameSettings = GameSettings.new()
+	assert_eq(s.ads_sensitivity(), 1.0)
+	assert_eq(s.screen_shake(), 1.0)
+	assert_true(s.subtitles(), "subtitles on by default")
+	s.set_value(GameSettings.CONTROLS, &"ads_sensitivity", 9.0)
+	assert_eq(s.ads_sensitivity(), 2.0, "clamped to the spec max")
+	s.set_value(GameSettings.ACCESSIBILITY, &"screen_shake", -1.0)
+	assert_eq(s.screen_shake(), 0.0)
+	s.set_value(GameSettings.ACCESSIBILITY, &"subtitles", false)
+	assert_false(s.subtitles())
+
+
+## Lead ruling: video/fov stays vertical; the Options row shows horizontal degrees at the screen's aspect.
+func test_fov_row_shows_horizontal_degrees() -> void:
+	assert_near(OptionsRows.horizontal_fov(75.0, 16.0 / 9.0), 107.51, 0.05, "75 vertical at 16:9")
+	assert_near(OptionsRows.horizontal_fov(75.0, 64.0 / 27.0), 122.40, 0.05, "75 vertical at 21:9")
+	assert_near(OptionsRows.horizontal_fov(60.0, 1.0), 60.0, 0.001, "square: unchanged")
+	var expected: int = roundi(OptionsRows.horizontal_fov(75.0, OptionsRows.screen_aspect()))
+	assert_eq(OptionsRows.value_text(GameSettings.VIDEO, &"fov", 75.0),
+			UiText.t(&"ui.options.value.degrees_horizontal", {"value": expected}))
+
+
 func test_head_bob_follows_reduce_motion() -> void:
 	var s: GameSettings = GameSettings.new()
 	assert_true(s.head_bob(), "default on")

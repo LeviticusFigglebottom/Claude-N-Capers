@@ -326,6 +326,18 @@ func _overlay() -> SubtitleOverlay:
 	return o
 
 
+## Options parity: Accessibility > Subtitles off hides every in-heist line; on again shows them.
+func test_subtitles_off_hides_lines() -> void:
+	var s: GameSettings = GameSettings.current()
+	var o: SubtitleOverlay = _overlay()
+	s.set_value(GameSettings.ACCESSIBILITY, &"subtitles", false)
+	assert_false(o.show_line(&"reyes", &"vo.reyes.radio_alarm_1", {"source": ContactRadio.SOURCE}), "off: no radio line")
+	assert_true(o.rows.is_empty())
+	s.set_value(GameSettings.ACCESSIBILITY, &"subtitles", true)
+	assert_true(o.show_line(&"reyes", &"vo.reyes.radio_alarm_1", {"source": ContactRadio.SOURCE}), "on again")
+	o.queue_free()
+
+
 func test_subtitle_size_follows_setting() -> void:
 	var s: GameSettings = GameSettings.current()
 	var o: SubtitleOverlay = _overlay()

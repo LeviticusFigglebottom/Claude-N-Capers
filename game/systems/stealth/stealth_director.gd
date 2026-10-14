@@ -225,6 +225,12 @@ func has_los(from: Vector3, to: Vector3, exclude: Array[RID] = []) -> bool:
 # --- Tick -----------------------------------------------------------------------------------
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"stealth_director", fp)
+
+
+func _physics_step(delta: float) -> void:
 	_time += delta
 	_frame += 1
 	_tick_camera_countdown(delta)

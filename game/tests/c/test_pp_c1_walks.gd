@@ -207,15 +207,19 @@ func _follow(c: CrewController, raw_path: PackedVector3Array, target: Node = nul
 				return {"ok": false, "at": c.global_position, "corner": corner, "why": "turn_to_yaw failed", "walked": walked}
 			var start: Vector3 = c.global_position
 			var dist: float = flat.length()
+			var bumped: Array[Door] = [null]  # a closed leaf the walker ran into (a player stops and opens it)
 			var reached: bool = await _inp.walk_until(&"move_forward", func() -> bool:
+				bumped[0] = _closed_leaf_contact(c)
+				if bumped[0] != null:
+					return true
 				var d: Vector3 = corner - c.global_position
 				d.y = 0.0
 				return d.length() < (GOAL_M if last else CORNER_M) or d.dot(flat) < 0.0, dist / SPEED_MIN_MPS + 1.0)
 			walked += start.distance_to(c.global_position)
-			if reached:
+			if reached and bumped[0] == null:
 				break
 			tries += 1
-			var door: Door = _blocking_door(c, path, i)
+			var door: Door = bumped[0] if bumped[0] != null else _blocking_door(c, path, i)
 			var ladder: Ladder = _ladder_near(c, corner) if door == null else null
 			var why: String = ""
 			if door != null:
@@ -260,6 +264,18 @@ func _blocking_door(c: CrewController, path: PackedVector3Array, from_i: int) ->
 			best = d
 			best_d = dist
 	return best
+
+
+## The closed Door whose leaf (a `LeafBody*` child) the crew is touching this frame, else null. Without it a walker
+## sliding along a closed leaf at an angle (DB PKChamberA, 2026-10-14) "passes" corners by the dot test and stalls
+## 2 m on, against the wall beside the doorway, where _blocking_door no longer sees the door.
+func _closed_leaf_contact(c: CrewController) -> Door:
+	for k: int in range(c.get_slide_collision_count()):
+		var hit: Node = c.get_slide_collision(k).get_collider() as Node
+		var d: Door = hit.get_parent() as Door if hit != null else null
+		if d != null and not d.is_open and d.interactable != null:
+			return d
+	return null
 
 
 ## A locked door a walk cannot open: not LOCKPICK, and not a KEYCARD door the walker holds a card for.

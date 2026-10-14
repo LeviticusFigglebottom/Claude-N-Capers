@@ -25,10 +25,26 @@ static func option_key(section: StringName, key: StringName, option: String) -> 
 ## Value text for slider rows: percent for 0..1-ish ranges, degrees for fov, multiplier for sensitivity.
 static func value_text(_section: StringName, key: StringName, v: float) -> String:
 	if key == &"fov":
-		return UiText.t(&"ui.options.value.degrees", {"value": roundi(v)})
+		# Lead ruling (options parity): video/fov stays the camera's vertical FOV; players compare horizontal
+		# degrees across games, so the row shows those at the screen's current aspect ratio.
+		return UiText.t(&"ui.options.value.degrees_horizontal", {"value": roundi(horizontal_fov(v, screen_aspect()))})
 	if String(key).contains("sensitivity"):
 		return UiText.t(&"ui.options.value.multiplier", {"value": "%.2f" % v})
 	return UiText.t(&"ui.options.value.percent", {"value": roundi(v * 100.0)})
+
+
+## Horizontal FOV (degrees) of a camera with vertical FOV `vertical_deg` at width / height `aspect`.
+static func horizontal_fov(vertical_deg: float, aspect: float) -> float:
+	return rad_to_deg(2.0 * atan(tan(deg_to_rad(vertical_deg) * 0.5) * aspect))
+
+
+## Width / height of what the 3D camera shows (the root viewport's visible rect; 16:9 without a tree).
+static func screen_aspect() -> float:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if tree == null or tree.root == null:
+		return 16.0 / 9.0
+	var r: Vector2 = tree.root.get_visible_rect().size
+	return r.x / r.y if r.y > 0.0 else 16.0 / 9.0
 
 
 static func slider(parent: Container, s: GameSettings, section: StringName, key: StringName) -> HSlider:

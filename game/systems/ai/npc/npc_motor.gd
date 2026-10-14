@@ -82,6 +82,10 @@ var _runtime: HeistRuntime = null
 var _corner: int = 1
 ## PO-10: HeistRuntime instance id (0 outside a heist): only NPCs of the same heist keep space.
 var _rt_key: int = -1
+var _own_nb: Array[NpcMotor] = []
+var _own_nb_frame: int = -1
+## Body position when the neighbour grid was last built (read by other motors' queries that frame).
+var _grid_pos: Vector3 = Vector3.ZERO
 
 
 func _ready() -> void:
@@ -100,6 +104,20 @@ func _ready() -> void:
 	if _agent != null:
 		_agent.link_reached.connect(_on_link_reached)
 		_agent.path_changed.connect(func() -> void: _corner = 1)
+	var npc: NpcBase = _body as NpcBase
+	if npc != null:
+		npc.died.connect(func(_i: Dictionary, _k: int) -> void: _retire())
+
+
+## The NPC died: a corpse keeps no navigation agent and no motor work (ND stall hunt: 30 corpses kept 30 agents
+## registered on the navigation map), and leaves the personal-space grid.
+func _retire() -> void:
+	stop()
+	set_physics_process(false)
+	_all.erase(self)
+	if _agent != null and is_instance_valid(_agent):
+		_agent.queue_free()
+	_agent = null
 
 
 func _enter_tree() -> void:
@@ -152,6 +170,12 @@ func distance_to_target() -> float:
 
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"npc_motor", fp)
+
+
+func _physics_step(delta: float) -> void:
 	if _body == null or not Net.is_authority():
 		return
 	var npc: NpcBase = _body as NpcBase
@@ -220,6 +244,15 @@ static func _cell_of(p: Vector3) -> Vector2i:
 	return Vector2i(floori(p.x / _grid_cell), floori(p.z / _grid_cell))
 
 
+## _neighbours(own position), cached for the physics frame (_separate and _idle_drift share one query).
+func _own_neighbours() -> Array[NpcMotor]:
+	var frame: int = Engine.get_physics_frames()
+	if _own_nb_frame != frame or frame != _grid_frame:
+		_own_nb = _neighbours(_body.global_position)
+		_own_nb_frame = frame
+	return _own_nb
+
+
 ## Live NPC motors of this heist around `center` (the grid's 3x3 cells: everything within one cell size, at
 ## least npc_separation_radius_m), from a grid built once per physics frame. Excludes this motor.
 func _neighbours(center: Vector3) -> Array[NpcMotor]:
@@ -235,7 +268,8 @@ func _neighbours(center: Vector3) -> Array[NpcMotor]:
 			var nb: NpcBase = m._body as NpcBase
 			if nb != null and not nb.alive:
 				continue
-			var c: Vector2i = _cell_of(m._body.global_position)
+			m._grid_pos = m._body.global_position
+			var c: Vector2i = _cell_of(m._grid_pos)
 			if _grid.has(c):
 				(_grid[c] as Array).append(m)
 			else:
@@ -256,17 +290,19 @@ func _neighbours(center: Vector3) -> Array[NpcMotor]:
 ## Closeness-weighted horizontal push away from neighbours within `radius` (ZERO when none). `closest`
 ## receives the nearest neighbour distance.
 func _push_from(neigh: Array[NpcMotor], radius: float, closest: Array[float]) -> Vector3:
-	var tw: StealthTweak = Tweak.stealth()
+	var dy_max: float = Tweak.stealth().npc_separation_dy_m
 	var p: Vector3 = _body.global_position
+	var r2_max: float = radius * radius
 	var push: Vector3 = Vector3.ZERO
 	for m: NpcMotor in neigh:
-		var q: Vector3 = m._body.global_position
-		if absf(q.y - p.y) >= tw.npc_separation_dy_m:
+		var q: Vector3 = m._grid_pos  # cached when the grid was built this physics frame
+		if absf(q.y - p.y) >= dy_max:
 			continue
 		var off: Vector3 = Vector3(p.x - q.x, 0.0, p.z - q.z)
-		var r: float = off.length()
-		if r >= radius:
+		var r2: float = off.length_squared()
+		if r2 >= r2_max:
 			continue
+		var r: float = sqrt(r2)
 		closest[0] = minf(closest[0], r)
 		if r < 0.001:  # exactly stacked: split by instance id so the two go opposite ways
 			off = Vector3.RIGHT if get_instance_id() > m.get_instance_id() else Vector3.LEFT
@@ -281,7 +317,7 @@ func _separate(dir: Vector3) -> Vector3:
 	if tw.npc_separation_gain <= 0.0 or tw.npc_separation_radius_m <= 0.0:
 		return dir
 	var closest: Array[float] = [INF]
-	var push: Vector3 = _push_from(_neighbours(_body.global_position), tw.npc_separation_radius_m, closest)
+	var push: Vector3 = _push_from(_own_neighbours(), tw.npc_separation_radius_m, closest)
 	if push == Vector3.ZERO:
 		return dir
 	var against: float = push.dot(dir)
@@ -298,7 +334,7 @@ func _idle_drift(npc: NpcBase) -> Vector3:
 			or tw.npc_separation_idle_m <= 0.0 or tw.npc_separation_idle_speed <= 0.0:
 		return Vector3.ZERO
 	var closest: Array[float] = [INF]
-	var push: Vector3 = _push_from(_neighbours(_body.global_position), tw.npc_separation_idle_m, closest)
+	var push: Vector3 = _push_from(_own_neighbours(), tw.npc_separation_idle_m, closest)
 	if push.length() < 0.001:
 		return Vector3.ZERO
 	return push.normalized() * tw.npc_separation_idle_speed
@@ -310,7 +346,7 @@ func _target_crowded() -> bool:
 	if tw.npc_crowd_occupied_m <= 0.0 or distance_to_target() > tw.npc_crowd_arrive_m:
 		return false
 	for m: NpcMotor in _neighbours(target):
-		var q: Vector3 = m._body.global_position
+		var q: Vector3 = m._grid_pos
 		if not m.arrived or absf(q.y - target.y) >= tw.npc_separation_dy_m:
 			continue
 		if Vector2(q.x - target.x, q.z - target.z).length() <= tw.npc_crowd_occupied_m:

@@ -95,6 +95,7 @@ func _ready() -> void:
 		theme = UiBuild.theme()
 	if settings == null:
 		settings = GameSettings.current()
+	UiSfx.warm()  # not on the first objective flash mid-heist (perf item, see UiSfx.warm)
 	tweak = HudPaletteSet.active_tweak(settings)
 	_build()
 	_connect_events()

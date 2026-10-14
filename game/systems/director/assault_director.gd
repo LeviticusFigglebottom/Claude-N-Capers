@@ -361,6 +361,12 @@ func is_spawn_valid(pos: Vector3, crew: Array[CrewController] = []) -> bool:
 # --- Phase machine ----------------------------------------------------------------------------
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"assault_director", fp)
+
+
+func _physics_step(delta: float) -> void:
 	if _start_held and Net.is_authority():
 		start_delay_s -= delta  # the setter begins at 0
 		return

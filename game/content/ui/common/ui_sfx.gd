@@ -164,6 +164,15 @@ static func cue_def(cue_id: StringName) -> Resource:
 	return def
 
 
+## Load the cue table now (Hud._ready, during heist loading). Its first use loads every cue resource
+## (~80 ms headless): a heist entered without the menus (launch args, harnesses, drop-in) paid that on the
+## first OBJECTIVE COMPLETE flash, mid-wave (A's FrameProf: a 44 ms hud_model frame in an ND loud wave).
+static func warm() -> void:
+	var lib: Script = _cue_lib()
+	if lib != null:
+		lib.call(&"registry")
+
+
 static func _cue_lib() -> Script:
 	if not _lib_checked:
 		_lib_checked = true

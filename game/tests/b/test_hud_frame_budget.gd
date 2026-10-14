@@ -115,3 +115,68 @@ func test_refresh_churn_per_frame_is_within_budget() -> void:
 	rows.sort_custom(func(a: String, b: String) -> bool: return float(a.get_slice(" ", 1)) > float(b.get_slice(" ", 1)))
 	print("HUD refresh profile (ms / frame): total %.3f | %s" % [total, " | ".join(rows.slice(0, 8))])
 	assert_true(total < CHURN_BUDGET_MS, "all refreshes in one frame %.3f ms < %.1f ms" % [total, CHURN_BUDGET_MS])
+
+
+## Lead perf item (A's FrameProf: one hud_model frame at 44 ms in an ND loud wave): in one frame all crew
+## change state (downed / back up, a carried bag) and the objective list swaps (the loud branch adds and
+## completes steps). Real data changes, so every widget's refresh does its full work. Alternates two states
+## so no frame is a no-op.
+func test_loud_wave_frame_is_within_budget() -> void:
+	_fill_model()
+	_hud = HUD_SCENE.instantiate() as Hud
+	_hud.auto_find_model = false
+	add_child(_hud)
+	await wait_frames(1)
+	_hud.bind(_model)
+	await wait_frames(5)
+	var states: Array = [_wave(false), _wave(true)]
+	var worst: float = 0.0
+	var total: float = 0.0
+	var times: Array[float] = []
+	var first: float = 0.0
+	for i: int in range(40):
+		var st: Dictionary = states[i % 2]
+		var t0: int = Time.get_ticks_usec()
+		var parts: Array[String] = []
+		var tp: int = t0
+		for k: String in ["crew", "crew_state", "objectives", "objective_markers", "assault_phase"]:
+			_model.set(k, st[{"crew": "crew", "crew_state": "local_state", "objectives": "objectives",
+					"objective_markers": "markers", "assault_phase": "assault"}[k]])
+			parts.append("%s %.1f" % [k, float(Time.get_ticks_usec() - tp) / 1000.0])
+			tp = Time.get_ticks_usec()
+		var ms: float = float(Time.get_ticks_usec() - t0) / 1000.0
+		if i == 0:
+			first = ms
+			print("HUD loud-wave first frame %.3f ms: %s" % [ms, ", ".join(parts)])
+		else:
+			worst = maxf(worst, ms)
+			total += ms
+			times.append(ms)
+	times.sort()
+	var p90: float = times[int(times.size() * 0.9)]
+	print("HUD loud-wave frame: p90 %.3f ms, worst %.3f ms, mean %.3f ms" % [p90, worst, total / times.size()])
+	# The first loud frame (first flash, first downed screen) was the 44 ms spike: 80+ ms here when the cue
+	# table loaded on it. Warm tables keep it near the others; 5 ms leaves room for a shared CPU.
+	assert_true(first < 5.0, "first loud-wave frame %.3f ms < 5 ms" % first)
+	assert_true(p90 < CHURN_BUDGET_MS, "loud-wave frame p90 %.3f ms < %.1f ms" % [p90, CHURN_BUDGET_MS])
+
+
+func _wave(down: bool) -> Dictionary:
+	var crew: Array[Dictionary] = []
+	for slot: int in [1, 2, 3]:
+		crew.append({"slot": slot, "name": "Mate %d" % slot, "is_ai": slot > 1, "health_frac": 0.0 if down else 0.8,
+			"armor_frac": 0.0 if down else 0.5, "state": Enums.CrewState.DOWNED if down else Enums.CrewState.NORMAL,
+			"downs_left": 2 if down else 3, "bleedout_s": 25.0 if down else -1.0,
+			"carried_loot_id": &"" if down else &"loot.gold", "mode": &"masked"})
+	var objs: Array[Dictionary] = []
+	var markers: Array[Dictionary] = []
+	var ids: Array[StringName] = [&"keycard", &"hack", &"secure", &"escape"]
+	if down:
+		ids = [&"lockdown", &"hack", &"vault_drill", &"secure", &"escape_wait"] as Array[StringName]
+	for i: int in range(ids.size()):
+		objs.append({"id": ids[i], "text_key": &"objective.glasshouse.secure", "args": {"bags": 4, "secured": i},
+			"state": Enums.ObjectiveState.COMPLETED if i == 0 and not down else Enums.ObjectiveState.ACTIVE})
+		markers.append({"id": ids[i], "text_key": &"objective.glasshouse.secure", "position": Vector3(i * 2.0 - 3.0, 0, -9.0),
+			"state": Enums.ObjectiveState.ACTIVE})
+	return {"crew": crew, "local_state": Enums.CrewState.DOWNED if down else Enums.CrewState.NORMAL, "objectives": objs,
+		"markers": markers, "assault": Enums.AssaultPhase.SUSTAIN if down else Enums.AssaultPhase.BUILD}

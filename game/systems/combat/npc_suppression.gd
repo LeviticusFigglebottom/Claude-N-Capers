@@ -120,6 +120,12 @@ func add(amount: float, from: Vector3) -> float:
 
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"npc_suppression", fp)
+
+
+func _physics_step(delta: float) -> void:
 	if _npc == null or not Net.is_authority():
 		return
 	var tw: CombatTweak = CombatTweak.data()

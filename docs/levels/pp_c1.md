@@ -227,3 +227,28 @@ flight only touch the walls tangentially (the nav corners sit at the agent radiu
 `test_doors_glasshouse`: before 7/13 legs ok (6 stuck), after 13/13 ok (0 stuck). SalonDoor crossings are still
 6/6 in all four modes. Night Deposit / Dockside door-mode rows with the same "no closed door" signature (for example
 ND SallyPersonnelDoor, AtmCash2, DB WSCorridor) probably have the same cause. They were not rerun here.
+
+## Dockside ChamberANorth corners-mode stall 2026-10-14 (harness, not a map snag)
+Row: `STUCK-AI ChamberANorth at (17.4, 0.0, 19.2), nearest door PKChamberA 2.0 m: stalled before corner
+(18.746, 0.2, 19.408) (0.0 m of 1.3 m): no closed door or ladder in the way`. The door-centre mode passed 14/14.
+
+Cause: PKChamberA (slide, x 18, z 21.2) is closed when the leg starts. The nav path runs diagonally through its
+doorway, so the walker met the closed leaf at an angle and slid along it. `_follow`'s "passed the corner" test
+(`d.dot(flat) < 0`) then accepted corners 19, 20 and 21 while the crew slid north and south along the leaf (traced
+positions (17.52, 21.65) -> (17.43, 20.00) -> (17.62, 21.86) -> (17.45, 19.30)). The walker then stalled against
+the X18Bay_00 wall face 0.7 m south of the jamb (contact (17.8, 0.35, 19.23), normal (-1, 0, 0)). From there no
+remaining path segment crosses the doorway, and the door centre is 2.0 m away, more than the 1.0 m fallback, so
+`_blocking_door` found no door. A capsule check (r 0.35, h 1.8, world mask) on a 0.1 m grid over x 16.8-18.8,
+z 18.8-19.6 shows only X18Bay_00 and the PKChamberA frame, both flush. There is no proud frame, ridge, rail, seam
+or threshold.
+Fix (test_pp_c1_walks.gd): while it walks, the walker checks its slide contacts. Touching the `LeafBody*` of a
+closed Door ends the walk step, and that door is opened like any other blocking door, as a player would.
+Result: `test_walk_dockside_burn` 13/14 (1 stuck) -> 14/14 (0 stuck).
+
+PO-3 snag probe clusters at x = 8.00 on Dockside (lead + ENV P runs): both are the D1Ladder (variant
+`perch_stack`, (8.0, 0, -5.38), yaw 180, height 5.2). Its Bottom grab marker is at (8.0, 0, -4.98), which is
+exactly cluster #1 (8.00, 0.53, -4.98): the probe's masked crew walked into the grab cone and was climbing, so it
+was lifted off the floor with no contact ahead. Cluster #2 (8.00, 3.01, -10.56) is on the same x line in mid-air,
+north of the D1 stack (z -8.04..-5.6). It is consistent with a crew that climbed the ladder, walked north off the
+stack roof and was caught mid-fall when the trial ended. The ladder has no physics collider. Neither cluster is a
+map snag.

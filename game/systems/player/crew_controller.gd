@@ -612,7 +612,7 @@ func _tick_punch(delta: float, tw: CrewTweak) -> void:
 		return
 	_punch_t += delta
 	var wt: float = TAU * maxf(tw.melee_punch_hz, 0.01) * _punch_t
-	_punch = _punch_amp * wt * exp(1.0 - wt)
+	_punch = _punch_amp * wt * exp(1.0 - wt) * CrewFpStates.shake_scale()  # Options screen shake
 	if wt > 12.0:
 		_punch = Vector2.ZERO
 		_punch_t = -1.0
