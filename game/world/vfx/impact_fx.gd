@@ -12,6 +12,8 @@ const SURFACES: Array[StringName] = [
 	&"flesh", &"armor", &"shield",
 ]
 const DEFAULT_SURFACE: StringName = &"concrete"
+## Impact profile used for flesh when the gore option is Off (D-113).
+const FLESH_DUST: StringName = &"flesh_dust"
 const META_SURFACE: StringName = &"surface"
 ## Parents walked above the collider for `metadata/surface` (contract: up to 3).
 const MAX_PARENT_WALK: int = 3
@@ -188,10 +190,17 @@ static func _build_profiles() -> void:
 		dust.call(Color(0.85, 0.9, 0.95, 0.22), 3, 0.45, 0.16),
 	]
 	_profiles[&"flesh"] = [
-		_layer(PUFF, 6, 0.4, Vector2(0.4, 1.1), 30.0, 2.5, Vector2(0.07, 0.15), Color(0.3, 0.025, 0.02, 0.6),
-			Color(0.16, 0.015, 0.01, 0.0)),
+		# Back-spatter toward the shooter: a short, dark, tight mist (D-113: gritty, not a red glow).
+		_layer(PUFF, 5, 0.25, Vector2(0.3, 0.9), 28.0, 2.5, Vector2(0.06, 0.13), Color(0.22, 0.014, 0.011, 0.55),
+			Color(0.12, 0.008, 0.006, 0.0)),
 		_layer(SOLID, 6, 0.55, Vector2(1.5, 3.5), 40.0, 9.8, Vector2(0.008, 0.016), Color(0.32, 0.02, 0.02),
 			Color(0.2, 0.01, 0.01), &"drop"),
+	]
+	# Gore Off (D-113): flesh hits show a cloth/dust puff and no blood. Not a surface id (never tagged).
+	_profiles[FLESH_DUST] = [
+		dust.call(Color(0.56, 0.54, 0.5, 0.5), 6, 0.8, 0.26),
+		_layer(SOLID, 5, 1.2, Vector2(0.6, 1.6), 55.0, 1.5, Vector2(0.006, 0.014), Color(0.5, 0.48, 0.45),
+			Color(0.4, 0.38, 0.36), &"fiber"),
 	]
 	var armor_sparks: Array = [
 		_layer(SPARK, 12, 0.25, Vector2(4.0, 8.0), 60.0, 6.0, Vector2(0.04, 0.1), Color(1.0, 0.88, 0.6),

@@ -1,19 +1,23 @@
 ## Third-person muzzle flash pool (impact_fx.md §3). Owner: ENV C. Child of VfxDirector.
-## Each set is a MuzzleFlash (star + flame + smoke puff, `muzzle_flash.gd`) placed at the shot origin
-## with -Z along the shot. The OmniLight (VfxLights, 0.05 s, D-094) is requested by the director.
+## Each set is a MuzzleFlash (`muzzle_flash.gd`: class-shaped core + cone + petals, sparks, wisp, smoke) placed at
+## the shot origin with -Z along the shot. The OmniLight (VfxLights: a fast hot pulse that cools from LIGHT_COLOR
+## to LIGHT_END_COLOR, D-094/D-113) is requested by the director.
 ## Suppressed: a small smoke puff only. First-person shots (flag bit1) never reach here.
 ## Pool: VfxSettings.MUZZLE_CAP sets, round-robin (oldest reused).
 class_name MuzzleFx
 extends Node3D
 
 const FLASH_S: float = MuzzleFlash.FLASH_S
-const LIGHT_S: float = 0.05
-const LIGHT_COLOR: Color = Color(1.0, 0.72, 0.38)
-const LIGHT_ENERGY: float = 3.0
+const LIGHT_S: float = 0.06
+const LIGHT_COLOR: Color = Color(1.0, 0.8, 0.52)
+const LIGHT_END_COLOR: Color = Color(1.0, 0.42, 0.12)
+const LIGHT_ENERGY: float = 4.5
 const LIGHT_RANGE_M: float = 5.0
-## Flash size (m) per weapon class (default 0.28).
+## Energy ~ (time left / LIGHT_S)^LIGHT_FALLOFF: bright for a frame, then gone.
+const LIGHT_FALLOFF: float = 2.0
+## Flash size (m) per weapon class (default 0.28); the class shape (MuzzleFlash.SHAPES) sets the proportions.
 const FLASH_SIZE: Dictionary[StringName, float] = {
-	&"pistol": 0.22, &"smg": 0.24, &"assault_rifle": 0.3, &"lmg": 0.34, &"shotgun": 0.42, &"sniper": 0.4,
+	&"pistol": 0.24, &"smg": 0.25, &"assault_rifle": 0.3, &"lmg": 0.32, &"shotgun": 0.34, &"sniper": 0.34,
 }
 
 ## Flashes fired (tests).
@@ -54,7 +58,7 @@ func fire(origin: Vector3, dir: Vector3, weapon_class: StringName, suppressed: b
 		s.global_transform = xf
 	else:
 		s.transform = xf
-	s.flash(float(FLASH_SIZE.get(weapon_class, 0.28)), suppressed)
+	s.flash(float(FLASH_SIZE.get(weapon_class, 0.28)), suppressed, weapon_class)
 	fired += 1
 	return s
 
@@ -66,7 +70,14 @@ func advance(delta: float) -> void:
 
 func clear() -> void:
 	for s: MuzzleFlash in _sets:
-		s.hide_flash()
+		s.reset_all()
+
+
+## Trailing wisps on every set that is flashing now (tools; third person starts per-shot wisps itself).
+func burst_end() -> void:
+	for s: MuzzleFlash in _sets:
+		if s.is_flashing():
+			s.burst_end()
 
 
 func _take() -> MuzzleFlash:

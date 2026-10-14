@@ -92,8 +92,14 @@ signal audio_cue_requested(cue_id: StringName, position: Vector3, source_net_id:
 signal shot_fx(origin: Vector3, end: Vector3, normal: Vector3, surface: StringName, weapon_class: StringName,
 		shooter_net_id: int, flags: int)
 signal explosion_fx(position: Vector3, radius: float, kind: StringName)
+## D-113 blood FX (FX-only, [R]): flesh hit after damage_applied (crew: health hits only, not armour).
+signal blood_hit(victim_net_id: int, point: Vector3, direction: Vector3, normal: Vector3, strength: float, headshot: bool,
+		exit_point: Vector3, victim_kind: StringName)
+## D-113 (FX-only, [R]): NPC death starts it (stops when bagged); crew down starts it (stops on revive / custody).
+signal bleed_changed(body_net_id: int, bleeding: bool, position: Vector3, rate: float)
 ## shot_fx flag bits (impact_fx.md §2).
 const SHOT_FX_SUPPRESSED: int = 1
 const SHOT_FX_FIRST_PERSON: int = 2
 const SHOT_FX_HEADSHOT: int = 4
 const SHOT_FX_PENETRATED: int = 8
+const SHOT_FX_STRONG: int = 16  ## flesh hit above the strong-hit rule (class or damage); VFX scales blood (D-113)

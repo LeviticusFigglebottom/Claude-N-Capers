@@ -4,7 +4,8 @@
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --rendering-driver opengl3 \
 ##     --fixed-fps 60 --resolution 1280x720 res://world/vfx/tools/vfx_capture.tscn -- --out=<dir> [--sheet=<png>]
 ## Options: --quality=<0..1> (VfxSettings.effects_quality), --cpu (CPUParticles3D), --bench (prints the
-## average frame / render time with a sustained firefight vs idle; add --gpu-timing for render-time queries).
+## average frame / render time with a sustained firefight vs idle; add --gpu-timing for render-time queries),
+## --d113=blood|flash (D-113 gore / muzzle flash evidence under glasshouse lighting: VfxGoreCapture).
 class_name VfxCaptureTool
 extends Node3D
 
@@ -50,8 +51,11 @@ var _bench_last_us: int = 0
 
 func _ready() -> void:
 	_rng.seed = 0xCAB7
+	var gore_scene: String = ""
 	for arg: String in OS.get_cmdline_user_args():
-		if arg.begins_with("--out="):
+		if arg.begins_with("--d113="):
+			gore_scene = arg.substr(7)
+		elif arg.begins_with("--out="):
 			_out_dir = arg.substr(6)
 		elif arg.begins_with("--sheet="):
 			_sheet_path = arg.substr(8)
@@ -63,6 +67,13 @@ func _ready() -> void:
 			_bench = true
 		elif arg == "--gpu-timing":
 			_gpu_timing = true
+	if gore_scene != "":
+		set_process(false)
+		var g: VfxGoreCapture = VfxGoreCapture.new()
+		g.scene_id = StringName(gore_scene)
+		g.out_dir = _out_dir
+		add_child(g)
+		return
 	DirAccess.make_dir_recursive_absolute(_out_dir)
 	_build_stage()
 	_director = (load("res://world/vfx/vfx_director.tscn") as PackedScene).instantiate() as VfxDirector
