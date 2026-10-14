@@ -32,6 +32,10 @@ var show_all: bool = false:
 var _font: Font
 var _pulse: float = 0.0
 var _last_current: StringName = &""
+## Perf (lead): marker labels per objective id (cleared on refresh, i.e. when objectives change) and
+## distance strings per whole metre, so a frame formats no text.
+var _labels: Dictionary = {}
+var _distances: Dictionary = {}
 
 
 func build() -> void:
@@ -44,6 +48,7 @@ func watched_signals() -> Array[StringName]:
 
 
 func refresh() -> void:
+	_labels.clear()
 	var entries: Array = prop(&"objective_markers", []) as Array
 	set_process(not entries.is_empty())
 	_layout(entries)
@@ -117,9 +122,6 @@ func _layout(entries: Array) -> void:
 	var to_local: Transform2D = get_global_transform_with_canvas().affine_inverse()
 	var area: Rect2 = Rect2(Vector2.ZERO, size)
 	var current: StringName = current_objective_id()
-	var args_by_id: Dictionary = {}
-	for o: Dictionary in prop(&"objectives", []) as Array:
-		args_by_id[StringName(o.get("id", &""))] = o
 	for m: Dictionary in entries:
 		if int(m.get("state", Enums.ObjectiveState.ACTIVE)) != Enums.ObjectiveState.ACTIVE or not shows(m):
 			continue
@@ -130,10 +132,16 @@ func _layout(entries: Array) -> void:
 		var id: StringName = StringName(m.get("id", &""))
 		if not show_all and current != &"" and id != current:
 			continue
-		var o: Dictionary = args_by_id.get(id, {"text_key": m.get("text_key", &""), "args": {}}) as Dictionary
+		if not _labels.has(id):
+			var o: Dictionary = {"text_key": m.get("text_key", &""), "args": {}}
+			for obj: Dictionary in prop(&"objectives", []) as Array:
+				if StringName(obj.get("id", &"")) == id:
+					o = obj
+					break
+			_labels[id] = ObjectivesPanel.objective_text(o)
 		drawn.append({"id": id, "pos": placed[0] as Vector2, "clamped": bool(placed[1]), "kind": kind_for(m),
 				"distance_m": cam.global_position.distance_to(world), "current": current == &"" or id == current,
-				"label": ObjectivesPanel.objective_text(o)})
+				"label": _labels[id]})
 
 
 func _draw() -> void:
@@ -145,18 +153,25 @@ func _draw() -> void:
 		if not cur:
 			draw_circle(c, SIZE * 0.45, Color(UiTokens.INK_0, 0.9))
 			draw_circle(c, SIZE * 0.35, Color(UiTokens.PAPER_DIM, 0.8))
-			_text(c + Vector2(0, SIZE + fs - 2), UiText.t(&"ui.hud.marker_distance", {"m": roundi(float(d["distance_m"]))}),
-					fs, UiTokens.PAPER_DIM)
+			_text(c + Vector2(0, SIZE + fs - 2), _distance_text(float(d["distance_m"])), fs, UiTokens.PAPER_DIM)
 			continue
 		var r: float = SIZE * 1.6
 		var grow: float = 1.0 + 0.35 * sin(clampf(_pulse / PULSE_S, 0.0, 1.0) * PI)  # pulse on a new step
 		draw_circle(c, r * grow, Color(UiTokens.INK_0, 0.85))
 		draw_arc(c, r * grow, 0.0, TAU, 28, tweak.objective_color, 2.5, true)
 		_glyph(StringName(d.get("kind", &"")), c, r * 0.55 * grow, tweak.objective_color)
-		var dist: String = UiText.t(&"ui.hud.marker_distance", {"m": roundi(float(d["distance_m"]))})
+		var dist: String = _distance_text(float(d["distance_m"]))
 		_text(c + Vector2(0, r * grow + fs + 2), dist, fs, UiTokens.PAPER)
 		if not bool(d["clamped"]):
 			_text(c + Vector2(0, -r * grow - 8), String(d["label"]), fs, UiTokens.PAPER)
+
+
+## "12 m" for a distance, formatted once per whole metre.
+func _distance_text(m: float) -> String:
+	var k: int = roundi(m)
+	if not _distances.has(k):
+		_distances[k] = UiText.t(&"ui.hud.marker_distance", {"m": k})
+	return _distances[k]
 
 
 ## Objective glyph of `kind` around `c` (half-size `u`), simple strokes in `col`.
