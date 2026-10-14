@@ -224,6 +224,16 @@ func test_parity_settings() -> void:
 	assert_false(s.subtitles())
 
 
+## Lead ruling: video/fov stays vertical; the Options row shows horizontal degrees at the screen's aspect.
+func test_fov_row_shows_horizontal_degrees() -> void:
+	assert_near(OptionsRows.horizontal_fov(75.0, 16.0 / 9.0), 107.51, 0.05, "75 vertical at 16:9")
+	assert_near(OptionsRows.horizontal_fov(75.0, 64.0 / 27.0), 122.40, 0.05, "75 vertical at 21:9")
+	assert_near(OptionsRows.horizontal_fov(60.0, 1.0), 60.0, 0.001, "square: unchanged")
+	var expected: int = roundi(OptionsRows.horizontal_fov(75.0, OptionsRows.screen_aspect()))
+	assert_eq(OptionsRows.value_text(GameSettings.VIDEO, &"fov", 75.0),
+			UiText.t(&"ui.options.value.degrees_horizontal", {"value": expected}))
+
+
 func test_head_bob_follows_reduce_motion() -> void:
 	var s: GameSettings = GameSettings.new()
 	assert_true(s.head_bob(), "default on")

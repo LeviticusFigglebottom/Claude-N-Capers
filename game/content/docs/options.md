@@ -26,7 +26,7 @@ it into `current()` on Apply). Generic access: `get_value(section, key)`; sectio
 |---|---|---|---|---|
 | Head bob | `head_bob()` / `accessibility/head_bob` | bool | true | ENV P's camera walk bob. Always false while `accessibility/reduce_motion` is on. Listen to `changed` for either key. |
 | Effects quality (D-105) | `effects_quality()` / `video/effects_quality` | int `EFFECTS_LOW` 0 / `EFFECTS_MEDIUM` 1 / `EFFECTS_HIGH` 2 (choice "low" / "medium" / "high") | high | ENV C's VfxDirector (impact_fx.md §3) scales pooled effect counts, e.g. `GameSettings.EFFECTS_SCALE[q]` (0.3 / 0.6 / 1.0). One step lower while `accessibility/reduce_motion` is on. Listen to `changed` for either key. |
-| Camera FOV | `fov()` / `video/fov` | float deg 60..100 | 75 | Vertical FOV of the local player's `Head/Camera` (CrewView). ADS zoom should scale from it. |
+| Camera FOV | `fov()` / `video/fov` | float deg 60..100 | 75 | Vertical FOV of the local player's `Head/Camera` (CrewView). ADS zoom should scale from it. The Options row shows it as horizontal degrees at the current aspect (75 ≈ 108° at 16:9, lead ruling). |
 | Mouse sensitivity | `mouse_sensitivity()` | Vector2 multipliers 0.1..5 | (1, 1) | Multiply `PlayerInput.mouse_sensitivity` (x for yaw, y for pitch). |
 | Aiming sensitivity (options parity) | `ads_sensitivity()` / `controls/ads_sensitivity` | float multiplier 0.1..2 | 1 | ENV P: while aiming / scoped, multiply mouse and stick look by it, on top of the D-091 zoom slow-down. |
 | Screen shake (options parity) | `screen_shake()` / `accessibility/screen_shake` | float 0..1 | 1 | ENV P: scale every camera shaker (melee punch, tase jitter, later ones) by it; Reduce Motion keeps its own cut on top. |
