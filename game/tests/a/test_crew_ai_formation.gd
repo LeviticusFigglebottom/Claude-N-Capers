@@ -86,3 +86,24 @@ func test_loud_bots_keep_close_and_apart_when_the_leader_moves() -> void:
 	Engine.time_scale = 1.0
 	assert_true(close, "loud: every bot back within %.1f m of the leader" % max_d)
 	assert_true(_min_spacing(bots) >= MIN_SPACING_M * 0.8, "and still apart (%.2f m)" % _min_spacing(bots))
+
+
+## P PO-pass: in transit (doors, corridors) a bot waits trail_gap_m behind a moving lower-slot teammate on its line;
+## the lower slot never waits on a higher one, and nobody waits behind a teammate standing still.
+func test_bots_trail_single_file_behind_a_moving_teammate() -> void:
+	await _launch()
+	var bots: Array[CrewController] = _bots()
+	bots.sort_custom(func(x: CrewController, y: CrewController) -> bool: return x.slot < y.slot)
+	var lead: CrewController = bots[0]
+	var back: CrewController = bots[1]
+	_rt.teleport_crew(lead.slot, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -5.3)))
+	_rt.teleport_crew(back.slot, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -4.6)))
+	await wait_physics_frames(1)
+	var fwd: Vector3 = Vector3(0, 0, -1)
+	lead.velocity = fwd * 2.0
+	assert_true(CrewAiBrain.of(back)._trailing(fwd), "behind a moving teammate 0.7 m ahead: wait")
+	assert_false(CrewAiBrain.of(lead)._trailing(-fwd), "the lower slot never waits on a higher one")
+	lead.velocity = Vector3.ZERO
+	assert_false(CrewAiBrain.of(back)._trailing(fwd), "a teammate standing still: no waiting (unstick handles it)")
+	lead.velocity = fwd * 2.0
+	assert_false(CrewAiBrain.of(back)._trailing(Vector3(1, 0, 0)), "not on our line: go")
