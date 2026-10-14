@@ -47,3 +47,20 @@ func test_po5_glasshouse_objective_markers() -> void:
 	assert_eq(_rt.mission.objective_state(&"keycard"), Enums.ObjectiveState.COMPLETED, "keycard step skipped when loud")
 	assert_false(_ids().has(&"keycard"), "no keycard marker when loud")
 	assert_true(_ids().has(&"safe"), "the safe stays marked")
+
+
+## QC-60: a node tagged at runtime (objective_tag set by the mission) gets a marker once the objective's data
+## is updated, on the same objective with the same marker_tags.
+func test_qc60_runtime_tag_resolves_on_data_update() -> void:
+	_rt = await HeistLauncher.launch(&"glasshouse", 7, Enums.Difficulty.ROUTINE, self, {"crew_ai": false})
+	_rt.mission.update_objective_data(&"safe", {"marker_tags": [&"qc60_found"]})
+	await _poll()
+	assert_false(_ids().has(&"safe"), "nothing carries the tag yet: no marker")
+	var kc: Node3D = _rt.mission.find_tagged(&"keycard")[0] as Node3D
+	kc.set(&"objective_tag", &"qc60_found")
+	_rt.mission.update_objective_data(&"safe", {"found": 1})
+	await _poll()
+	var sm: Array = _rt.hud_model.objective_markers.filter(func(m: Dictionary) -> bool: return m["id"] == &"safe")
+	assert_eq(sm.size(), 1, "runtime-tagged node marked after the data update")
+	if sm.size() == 1:
+		assert_true((sm[0]["position"] as Vector3).distance_to(kc.global_position) < 0.01, "marker on the tagged node")
