@@ -219,11 +219,11 @@ func _feedback() -> void:
 	_flow.call(&"_leave_heist")
 
 
-## Lead HUD readability pass `assault`: Glasshouse loud with a full assault wave (alarm through the real event,
+## Lead HUD readability pass `assault`: Glasshouse (Routine) loud with a full assault wave (alarm through the real event,
 ## the director pushed to BUILD then SUSTAIN), the Tab sheet, hits both ways, teammates hurt and down, the
 ## local player down (bleed-out) and in custody (custody timer).
 func _assault() -> void:
-	_flow.launch(HEIST, Enums.Difficulty.HAZARDOUS, SaveService.load_profile(SLOT).loadout, 45)
+	_flow.launch(HEIST, Enums.Difficulty.ROUTINE, SaveService.load_profile(SLOT).loadout, 45)
 	var t0: int = Time.get_ticks_msec()
 	while (_hud() == null or _flow.runtime == null) and Time.get_ticks_msec() - t0 < 60000:
 		await get_tree().process_frame
@@ -237,9 +237,9 @@ func _assault() -> void:
 	if dir != null:
 		dir.begin()
 		dir.call(&"_enter", Enums.AssaultPhase.BUILD, 600.0)
-		await _shot("as_build", 120)  # spawns arrive
+		await _shot("as_build", 50)  # spawns arrive (8 physics steps a frame on llvmpipe)
 		dir.call(&"_enter", Enums.AssaultPhase.SUSTAIN, 600.0)
-		await _shot("as_sustain", 240)
+		await _shot("as_sustain", 60)
 	var hud: Hud = _hud()
 	if hud != null and hud.scoreboard != null:
 		hud.scoreboard.set_process(false)

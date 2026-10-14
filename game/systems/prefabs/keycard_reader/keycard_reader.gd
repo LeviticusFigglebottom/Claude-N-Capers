@@ -4,6 +4,8 @@
 ## (`set_open(true)` / `open()`); `Led` turns green. Single use.
 ## A2-08: a target with `open_by_keycard()` (Safe with the &"keycard" method) gets that call instead.
 ## Targets may also bind themselves at runtime (`bind_target`, e.g. Safe.reader); each opens once.
+## D-103 §6 / QC-55: `set_disabled(true)` kills the reader for a lockdown ("Out of order", no ECM bypass, red Led);
+## `set_disabled(false)` restores it. Replicated (`used`, `disabled`).
 class_name KeycardReader
 extends GameplayPrefab
 
@@ -21,6 +23,8 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/keycard_reader/k
 @export var noise: StringName = &"silent"
 
 var used: bool = false
+## Mission-forced dead reader (lockdown, D-103 §6).
+var disabled: bool = false
 
 ## Runtime-bound targets (A2-08, `bind_target`).
 var _bound: Array[Node] = []
@@ -41,7 +45,30 @@ func _default_interaction_time() -> float:
 func _prefab_ready() -> void:
 	interactable.kind = &"keycard"
 	interactable.consumes_item = requires_item != &""
+	interactable.extra_check = func(_c: Node) -> StringName:
+		return InteractableComponent.BLOCK_DISABLED if disabled else InteractableComponent.BLOCK_NONE
 	interactable.completed.connect(_on_completed)
+
+
+## Server: force the reader dead (`on`) or alive again. A dead reader opens nothing, not even with an ECM.
+func set_disabled(on: bool) -> void:
+	if not Net.is_authority() or disabled == on:
+		return
+	disabled = on
+	_update_led()
+
+
+## A3-07: replicated state (HeistNetSync).
+func _net_state() -> Dictionary:
+	return {"used": used, "disabled": disabled, "ie": interactable.enabled if interactable != null else true}
+
+
+func _apply_net_state(st: Dictionary) -> void:
+	used = bool(st.get("used", used))
+	disabled = bool(st.get("disabled", disabled))
+	if interactable != null and st.has("ie"):
+		interactable.enabled = bool(st["ie"])
+	_update_led()
 
 
 ## A2-08: add `target` to the nodes opened on completion (no duplicates).
@@ -57,7 +84,7 @@ func open_by_ecm() -> void:
 
 
 func _on_completed(_crew: Node) -> void:
-	if not Net.is_authority() or used:
+	if not Net.is_authority() or used or disabled:
 		return
 	used = true
 	interactable.enabled = false
@@ -81,10 +108,20 @@ func _on_completed(_crew: Node) -> void:
 			t.call(&"set_open", true)
 		elif t.has_method(&"open"):
 			t.call(&"open")
+	_update_led()
+
+
+## Led: green once used, dark red while disabled, the scene's own colour otherwise.
+func _update_led() -> void:
 	var led: MeshInstance3D = visual_node("Led") as MeshInstance3D
-	if led != null:
-		var m: StandardMaterial3D = StandardMaterial3D.new()
-		m.albedo_color = Color(0.1, 0.9, 0.2)
-		m.emission_enabled = true
-		m.emission = Color(0.1, 0.9, 0.2)
-		led.material_override = m
+	if led == null:
+		return
+	if not used and not disabled:
+		led.material_override = null
+		return
+	var c: Color = Color(0.1, 0.9, 0.2) if used else Color(0.5, 0.02, 0.02)
+	var m: StandardMaterial3D = StandardMaterial3D.new()
+	m.albedo_color = c
+	m.emission_enabled = used
+	m.emission = c
+	led.material_override = m

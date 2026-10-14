@@ -2,6 +2,23 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-14 15:30 UTC: po_observer rerun on r157/r158 (A crew AI, B prompt verbs) + GN-P1 step 1
+- GH loud (to t=244) + ND auto_loud (to t=110) + ND stealth (nd_stealth_pass.tscn, P script; A's runner has no ND
+  stealth flow), observer flags:
+  1. Bot spacing while holding is good (mean 1.4-3.8 m, 2.4-5.4 m from the player, 0-14% in clear LOS of the
+     nearest enemy). In transit they still stack (0.13-0.49 m pairs: GH t=26/41, ND t=51-73). A bot also stands
+     INSIDE the player (GH workshop door t=30 on screen; ND stealth spawn, 0.34 m). A.
+  2. ND stealth: during casing the bots follow the unmasked player into the bank (3 m behind). D-014 says solo AI
+     waits at the van in stealth. A.
+  3. Police pair stuck 0.23-0.33 m apart (ND t=83; GH t=202-222, same spot 20+ s). A.
+  4. Prompts: break_glass has its verb. ui.prompt.interact is still on the GH WorkshopDoor (8 s open_door) and an ND
+     object at t=18. A/B. The cue.npc_melee_swing beep is fixed in r158 (C).
+  5. Positive: weapon-down during the 8 s workshop interaction confirmed on screen (55b5bba6).
+- GN-P1 (env/c-worlds 5050eca7, scratch merge): PO-3 snag 0/0 (doors open/closed). Balcony throws PASS (land x
+  22.2/22.7/23.9; C fixed the doc strip to x 22-28). Mews -> LD with a heavy bag PASS. §7.7 route doors FAIL (8 at
+  0.9 m), C fixing in step 2 with the pool, ladders and lasers. test_p_gn_traversal (skips until GN lands).
+- D split agreed: D owns _arms_* and char_arms_fp*; P keeps fp_viewmodel* and the viewmodel guards.
+
 ## 2026-10-14 13:55 UTC: product-owner fresh-eyes pass (trunk r146), ranked
 Runs: A's PO-5 flows played by input, windowed. GH stealth x2 (one PASS; one observed by po_observer.tscn, 58 rendered
 frames, went loud at t=200 when an intimidated, untied civilian pressed the alarm) and ND loud (auto_loud, stuck at the

@@ -13,6 +13,8 @@
 ## Visual (visual_slots.md, optional): `Beam<i>` nodes (Beam0, Beam1, ...). A drives their
 ## `visible` (beam on) and position (horizontal beams: y; sweeping: x); author horizontal beams
 ## for static/timed_off and vertical beams for sweeping. The placeholder is laid out by A.
+## D-103 §6 / QC-53: `set_enabled(bool)` (server, replicated as `active`) turns the whole grid on / off for the
+## mission (Gallery Night: the landing curtain switches on at last call); `enabled_at_start` false = starts off.
 class_name LaserGrid
 extends GameplayPrefab
 
@@ -34,8 +36,12 @@ const PATTERN_TIMED_OFF: StringName = &"timed_off"
 @export var phase_s: float = 0.0
 ## A2-04: vertical beams of the sweeping pattern.
 @export var sweep_beams: int = 1
+## D-103 §6: false = the grid starts switched off until the mission calls set_enabled(true).
+@export var enabled_at_start: bool = true
 
 var tripped: bool = false
+## Switched on (set_enabled; generic replicated prop `active`).
+var active: bool = true
 ## Seconds since the grid started (+ phase_s).
 var time_s: float = 0.0
 var beam_areas: Array[Area3D] = []
@@ -55,6 +61,7 @@ func _prefab_ready() -> void:
 	trigger.collision_layer = LAYER_TRIGGERS
 	trigger.collision_mask = LAYER_PLAYERS
 	time_s = phase_s
+	active = enabled_at_start
 	_build_beams()
 	_update_beams()
 
@@ -66,7 +73,7 @@ func beam_total() -> int:
 
 ## Beams on right now (timed_off: false during the off window).
 func beams_on() -> bool:
-	if tripped:
+	if tripped or not active:
 		return false
 	if pattern != PATTERN_TIMED_OFF or period_s <= 0.0:
 		return true
@@ -98,6 +105,14 @@ func _physics_process(delta: float) -> void:
 			if c != null:
 				_trip(c)
 				return
+
+
+## Server (mission): switch the grid on / off. Off = no beams, no trips; on again resumes its pattern.
+func set_enabled(on: bool) -> void:
+	if not Net.is_authority():
+		return
+	active = on
+	_update_beams()
 
 
 func _trip(by: CrewController) -> void:
