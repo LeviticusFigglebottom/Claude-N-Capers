@@ -27,6 +27,10 @@ Newest entry first, keep the last 10.
 | AU-4 | Hub: The Board card description ends in "..." (the side panel shows it whole) | Minor, kept |
 | AU-5 | Board map: contract markers sit on district names (HARBOR, DOCKS) | Minor, kept |
 | AU-6 | Workshop weapon list: long names end in "..." ("Thorn Compound Bow · Level ...") | Minor, kept |
+| AU-7 | Tab sheet: objective marker labels drew across its text (LOOT SECURED) | FIXED 08585cdd: badges only on the sheet (test_ui_theme) |
+| AU-8 | The first-time card sat over the downed screen and cut a marker label | FIXED: it gives way while downed (test_onboarding_card) |
+| AU-9 | `fail` mode "hang" after Leave | Not a bug: four llvmpipe processes at once; alone it runs to payday and home both ways |
+| AU-10 | Range: far lane distance labels are tiny; one is cut by the readout panel | Minor, kept |
 
 - **Lane 3, PO-B-C6** (30d3ffde): the lobby crew cards show whole without scrolling at 720p. Contract and difficulty
   share a row, as do music and drop-in. A card's level shares the ready row, and Kick sits beside the name
