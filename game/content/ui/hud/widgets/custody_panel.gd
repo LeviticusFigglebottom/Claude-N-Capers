@@ -14,6 +14,9 @@ var hostage_label: Label
 func build() -> void:
 	var v: VBoxContainer = UiBuild.vbox(4)
 	add_child(v)
+	# HUD readability pass: unanchored, the box sat at its natural width in the widget's top-left corner, so
+	# the centred lines read left of the screen centre. It spans the widget now.
+	v.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	title_label = UiBuild.label(&"ui.hud.custody", UiBuild.HUD_BIG)
 	negotiation_label = UiBuild.label(&"", UiBuild.HUD)
 	release_label = UiBuild.label(&"", UiBuild.HUD)

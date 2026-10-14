@@ -55,7 +55,7 @@ Unmarked events are server-only facts (clients learn the outcome through synced 
 
 ## Alarm reasons (`alarm_raised(reason, source_net_id)`, D-032)
 `&"guard_radio"`, `&"civilian_call"`, `&"phone_call"`, `&"alarm_button"`, `&"glass_alarm"`, `&"pager_failed"`,
-`&"pager_limit"`, `&"camera"`, `&"laser"`, `&"scripted"` (mission), `&"loud_action"` (e.g. C4 in view).
+`&"pager_limit"`, `&"camera"`, `&"laser"`, `&"scripted"` (mission), `&"loud_action"` (e.g. C4 in view), `&"sensor"` (frame sensors on alarmed loot taken while its AlarmGroups group is live; GN-A1, QC-54).
 When the heist goes loud, pending pagers end with `pager_failed(pager_id, &"cancelled")`. That is not an alarm,
 and audio/voice must ignore that reason.
 

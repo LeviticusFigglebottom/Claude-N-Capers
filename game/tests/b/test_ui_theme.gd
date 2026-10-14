@@ -319,6 +319,7 @@ func test_generic_prompt_names_the_action_from_its_kind() -> void:
 	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"lockpick"), &"ui.prompt.pick_lock")
 	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"keycard"), &"ui.prompt.use_keycard")
 	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"open_door"), &"ui.prompt.open_door")
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"cut_painting"), &"ui.prompt.cut_painting", "GN canvases")
 	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.place_c4", &"lockpick"), &"ui.prompt.place_c4", "specific wins")
 	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"no_such_kind"), &"ui.prompt.interact")
 	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &""), &"ui.prompt.interact")
@@ -327,3 +328,16 @@ func test_generic_prompt_names_the_action_from_its_kind() -> void:
 	await wait_frames(1)
 	assert_eq(_hud.interaction.prompt.text, UiText.t(&"ui.prompt.pick_lock",
 			{"key": InteractionPanel.action_key_text(&"interact")}).replace("[", "").replace("]", ""), "the HUD says pick the lock")
+
+
+## HUD readability pass: the custody lines sit on the screen's centre line (they read left of it).
+func test_custody_text_is_centred() -> void:
+	await _spawn_hud()
+	_model.custody = {"in_custody": true, "negotiation_left_s": 5.0, "auto_release_left_s": 114.0,
+		"highlighted_hostage_net_id": 0}
+	await wait_frames(2)
+	var vis: Rect2 = _hud.get_viewport().get_visible_rect()
+	for l: Label in [_hud.custody.title_label, _hud.custody.negotiation_label, _hud.custody.release_label]:
+		var r: Rect2 = l.get_global_rect()
+		assert_true(absf(r.get_center().x - vis.get_center().x) < 2.0,
+				"%s centred (%.0f vs %.0f)" % [l.text, r.get_center().x, vis.get_center().x])

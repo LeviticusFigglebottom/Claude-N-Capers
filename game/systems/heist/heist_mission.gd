@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## Base class for heist mission scripts (`world/heists/<id>/<id>_mission.gd`). Owner: ENV A.
 ## Contract: docs/contracts/heist_map.md §6. Mission scripts may use ONLY this API, EventBus,
 ## Services, and node paths inside their own map. Runs on the server; objective changes are
@@ -239,6 +240,49 @@ func find_tagged(tag: StringName) -> Array[Node]:
 
 func variant(group_or_scalar: StringName) -> Variant:
 	return _runtime.variants.get(group_or_scalar) if _runtime != null else null
+
+
+## D-103 §6 / QC-51: give the MapZone at `zone_path` (relative to the map root) the kind `kind` (MapZone.Kind)
+## for the rest of the run (Gallery Night last call: galleries -> RESTRICTED). Server, replicated.
+func set_zone_kind(zone_path: NodePath, kind: int) -> void:
+	if _runtime == null or _runtime.map == null:
+		return
+	var zone: MapZone = _runtime.map.get_node_or_null(zone_path) as MapZone
+	if zone == null:
+		Log.error(&"mission", "set_zone_kind: no MapZone at '%s'" % zone_path)
+		return
+	ZoneKinds.set_kind(_runtime, zone, kind)
+
+
+## D-103 §6 / QC-51 (gala clock): every calm civilian walks to the nearest PatrolPoint tagged `exit_tag` and
+## despawns there (no alarm). Refused while loud; alarmed / tied / fleeing civilians stay. Returns how many left.
+func civilians_leave(exit_tag: StringName = &"exit") -> int:
+	if _runtime == null or _runtime.map == null or _runtime.went_loud:
+		return 0
+	var exits: Array[Vector3] = []
+	var stack: Array[Node] = [_runtime.map]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		var pp: PatrolPoint = n as PatrolPoint
+		if pp != null and pp.tags.has(exit_tag):
+			exits.append(pp.global_position)
+		stack.append_array(n.get_children())
+	if exits.is_empty():
+		Log.error(&"mission", "civilians_leave: no PatrolPoint tagged '%s'" % exit_tag)
+		return 0
+	var count: int = 0
+	for n: Node in _runtime.npcs(&"civilian"):
+		var brain: CivilianBrain = n.get_node_or_null(^"Brain") as CivilianBrain
+		if brain == null:
+			continue
+		var pos: Vector3 = (n as Node3D).global_position
+		var best: Vector3 = exits[0]
+		for e: Vector3 in exits:
+			if pos.distance_squared_to(e) < pos.distance_squared_to(best):
+				best = e
+		if brain.leave_map(best):
+			count += 1
+	return count
 
 
 ## C10: make escape zones tagged `tag` (all escape zones if empty) available.
