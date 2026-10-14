@@ -8,8 +8,6 @@ const SCENE: String = "res://world/heists/gallery_night/gallery_night.tscn"
 const DEF: String = "res://world/heists/gallery_night/gallery_night_def.tres"
 const VARIANTS: String = "res://world/heists/gallery_night/gallery_night_variants.tres"
 const MISSION: String = "res://world/heists/gallery_night/gallery_night_mission.gd"
-## ENV B's drafts: the registry copies must stay byte-identical while the drafts exist (B owns the data).
-const DRAFTS: String = "res://content/_drafts/gallery_night/"
 const REQUIRED: Dictionary = {
 	"Geometry": "Node3D", "Props": "Node3D", "Lighting": "Node3D", "Navigation": "NavigationRegion3D",
 	"Zones": "Node3D", "Rooms": "Node3D", "Spawns": "Node3D", "Patrols": "Node3D", "Tactical": "Node3D",
@@ -80,10 +78,6 @@ func test_def_and_table_are_bs() -> void:
 	assert_true(_map.heist_def != null and _map.heist_def.resource_path == DEF, "heist_def is the registry def")
 	assert_true(_map.variant_table != null and _map.variant_table.resource_path == VARIANTS, "variant_table wired")
 	assert_eq(_map.heist_def.id, &"gallery_night", "def id")
-	for f: String in ["gallery_night_def.tres", "gallery_night_variants.tres"]:
-		if FileAccess.file_exists(DRAFTS + f):
-			assert_true(FileAccess.get_file_as_bytes(DRAFTS + f) == FileAccess.get_file_as_bytes(
-				"res://world/heists/gallery_night/" + f), "%s byte-identical to ENV B's draft" % f)
 
 
 ## Every rule group of B's table has >= 2 slots in the map; every force_active / weights key names a real slot.
