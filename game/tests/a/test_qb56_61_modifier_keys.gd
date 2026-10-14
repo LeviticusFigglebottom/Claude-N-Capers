@@ -108,7 +108,9 @@ func test_qb60_sprint_drains_blocks_at_zero_and_regenerates() -> void:
 	assert_false(c.stamina.exhausted, "sprint allowed again above the threshold")
 
 
-func test_qb60_jump_needs_and_costs_stamina() -> void:
+## D-107 (PD2; updated by ENV P under the D-107 carve-out): stamina never blocks a jump; only a run-jump (sprinting
+## longer than stamina_run_jump_min_s, moving) costs stamina_jump_cost.
+func test_qb60_jump_never_blocked_run_jump_costs() -> void:
 	var c: CrewController = await _launch()
 	var tw: CrewTweak = Tweak.crew()
 	c.stamina.value = tw.stamina_min_threshold * 0.5
@@ -119,17 +121,20 @@ func test_qb60_jump_needs_and_costs_stamina() -> void:
 	for k: int in range(20):
 		await wait_physics_frames(1)
 		max_y = maxf(max_y, c.global_position.y)
-	assert_true(max_y < 0.2, "no jump below the stamina threshold (max y %f)" % max_y)
+	assert_true(max_y > 0.3, "jumps below the stamina threshold (max y %f)" % max_y)
+	assert_true(c.stamina.value >= tw.stamina_min_threshold * 0.5 - 0.01, "a standing jump costs nothing")
 	_rt.set_bot_intent(0, CrewIntent.new())
-	await wait_physics_frames(2)
+	await wait_seconds(1.0)
 	c.stamina.value = 20.0
-	_rt.set_bot_intent(0, i)
-	max_y = 0.0
-	for k: int in range(20):
+	_move(true)
+	await wait_seconds(tw.stamina_run_jump_min_s + 0.3)
+	assert_true(c.sprinting, "sprinting")
+	var before: float = c.stamina.value
+	_move(true, true)
+	for k: int in range(6):
 		await wait_physics_frames(1)
-		max_y = maxf(max_y, c.global_position.y)
-	assert_true(max_y > 0.3, "jumps with stamina (max y %f)" % max_y)
-	assert_true(c.stamina.value <= 20.0 - tw.stamina_jump_cost + 0.01, "a jump costs stamina")
+	var run_drain: float = tw.stamina_drain_per_s * 6.0 / Engine.physics_ticks_per_second
+	assert_near(before - c.stamina.value, tw.stamina_jump_cost + run_drain, 0.12, "a run-jump costs stamina")
 
 
 func test_qb60_hud_stamina_and_replicated_state() -> void:

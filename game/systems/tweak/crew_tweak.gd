@@ -78,11 +78,16 @@ extends Resource
 @export var stamina_base: float = 50.0
 @export var stamina_drain_per_s: float = 2.0
 @export var stamina_regen_per_s: float = 3.0
-## Regeneration starts this long after the last drain (s).
-@export var stamina_regen_delay_s: float = 3.0
-## Needed to jump, and to sprint again after running dry.
+## D-107 (PD2 REGENERATE_TIME): regeneration starts this long after a sprint stops (or after a jump drain when no
+## timer runs) (s).
+@export var stamina_regen_delay_s: float = 1.0
+## D-107 (PD2 MIN_STAMINA_THRESHOLD): a sprint starts only above this; a run-jump costs only above it.
 @export var stamina_min_threshold: float = 4.0
+## D-107 (PD2 JUMP_STAMINA_DRAIN): cost of a run-jump (sprinting longer than stamina_run_jump_min_s, moving).
 @export var stamina_jump_cost: float = 2.0
+@export var stamina_run_jump_min_s: float = 0.4
+## D-107 (PD2 _jump_t + 0.55): minimum time between two jumps (s).
+@export var jump_cooldown_s: float = 0.55
 
 @export_group("Body")
 @export var capsule_radius: float = 0.35
