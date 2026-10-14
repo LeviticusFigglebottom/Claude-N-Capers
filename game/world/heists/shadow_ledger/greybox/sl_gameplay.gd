@@ -195,8 +195,9 @@ func _build_server(gp: Node3D) -> void:
 			"objective_tag": &"cage"}, null, {"kind": "safe"})
 	if cage == null:
 		return
-	# The ledger rack's drive-bay release (hack_terminal, a 0.6 x 2.0 x 1.0 rack, front south).
-	prefab(srv, "hack_terminal", "HackTerminal", Vector3(28.75, L.F41, 9.05), 180.0,
+	# The ledger rack's drive-bay release (hack_terminal, a 0.6 x 2.0 x 1.0 rack, front south), back to the
+	# cage's north panel and clear of the CageGate's 1 m door zone (PO-9).
+	prefab(srv, "hack_terminal", "HackTerminal", Vector3(28.75, L.F41, 8.95), 180.0,
 		{"duration_s": HACK_S, "interruptions": Vector2i(1, 2), "objective_tag": &"hack"}, null, {"kind": "hack_terminal"})
 	for i: int in range(3):
 		var x: float = [27.4, 29.45, 30.1][i]

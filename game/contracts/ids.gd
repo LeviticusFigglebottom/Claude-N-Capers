@@ -52,3 +52,4 @@ const SVC_NAV: StringName = &"nav"
 # --- Contract paths (characters.md: `world/characters/<id>/<id>.tscn`, variants `<id>_<variant>`) ---
 const CHARACTERS_DIR: String = "res://world/characters/"
 const VFX_DIR: String = "res://world/vfx/"
+const PROPS_DIR: String = "res://world/props/"

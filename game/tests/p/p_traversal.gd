@@ -3,6 +3,7 @@
 ## then report what happened. Gallery Night's G1 tests call these with the greybox's markers; the self-test
 ## (test_p_g1_traversal.gd) runs them on a synthetic course today.
 ##   gap(from, to, crouch)            walk (crouched) from -> to; ok / time / where it stalled
+##   route(points, weight, sprint)    walk a waypoint list (stairs, corridors), optionally carrying a bag
 ##   throw_bag(pos, yaw, pitch, w)    stand at pos carrying a bag of weight w, look (yaw, pitch), throw; landing point
 ##   ladder(ladder)                   climb up then down a Ladder prefab with real input; ok / times
 ##   carry(from, to, w)               carry a bag of weight w along the navmesh route from -> to; ok / time / stall
@@ -36,6 +37,23 @@ func gap(from: Vector3, to: Vector3, crouch: bool = false, timeout_s: float = 10
 		await _ticks(20)
 	var r: Dictionary = await _steer_to([to], timeout_s, false)
 	inp.release(&"crouch")
+	return r
+
+
+## Walk the waypoints in order from `points[0]` (W held, mouse steering), optionally carrying a bag of `weight`
+## (-1 = none) and holding sprint. Dictionary: as gap() plus {carrying}.
+func route(points: Array[Vector3], weight: int = -1, sprint: bool = false, timeout_s: float = 30.0) -> Dictionary:
+	await place(points[0], points[1])
+	var bag: LootBag = await give_bag(weight) if weight >= 0 else null
+	if sprint:
+		inp.press(&"sprint")
+	var r: Dictionary = await _steer_to(points.slice(1), timeout_s, sprint)
+	inp.release(&"sprint")
+	r["carrying"] = crew.is_carrying_bag()
+	if crew.is_carrying_bag():
+		(rt.service(G.SVC_LOOT) as LootManager).drop_bag(crew, false)
+	if bag != null and is_instance_valid(bag):
+		bag.queue_free()
 	return r
 
 
