@@ -49,6 +49,8 @@ const BLOCK_CIVILIAN: StringName = &"ui.blocked.civilian"
 ## Prefab root this action belongs to (net_id owner). Empty = parent.
 @export var owner_path: NodePath
 
+## Arguments for prompt_key's string ({name}, ...; LocalHudModel interaction "args"). {key} is filled by the HUD.
+var prompt_args: Dictionary = {}
 ## Optional extra availability check provided by the owning prefab: func(crew: Node) -> StringName.
 var extra_check: Callable = Callable()
 ## Optional duration override: func(crew: Node, base: float) -> float.
