@@ -1373,6 +1373,7 @@ ui.masks.equipped_caption,Wearing
 ui.masks.none,No mask
 ui.masks.your_masks,Your masks
 ui.masks.custom_slot,Custom mask {n}
+ui.masks.new_mask,+ New mask
 ui.masks.empty_slot,Empty slot {n}
 ui.masks.base,Base
 ui.masks.material,Material
@@ -1883,6 +1884,8 @@ ui.workshop.primaries,PRIMARY WEAPONS
 ui.workshop.secondaries,SECONDARY WEAPONS
 ui.workshop.slots,Mod slots
 ui.workshop.overview,Whole Weapon
+ui.workshop.hint_short,"Drag to turn  ·  wheel to zoom  ·  R to reset"
+ui.workshop.finish_tab,Finish
 ui.workshop.hint,"Orbit: drag, right stick, W/A/S/D  ·  Pan: right drag, LB + stick  ·  Zoom: wheel, triggers, Q/E  ·  Reset: R / R3"
 ui.workshop.cash_caption,Spending cash
 ui.workshop.loadout_concealment,Loadout concealment
@@ -2878,6 +2881,12 @@ item.mask_base.robot.name,Tin Sentinel
 item.mask_base.jester.name,Jester
 item.mask_base.lion.name,Lion
 item.mask_base.kraken.name,Kraken
+item.mask_base.shark.name,Shark
+item.mask_base.pierrot.name,Pierrot
+item.mask_base.welder.name,Welder
+item.mask_base.wicker.name,Wicker
+item.mask_base.lucha.name,Lucha
+item.mask_base.signal.name,Signal
 item.mask.silent_partner.name,Silent Partner
 item.mask.silent_partner.desc,"A pale owl in mint and graphite. Earned by crews who walk the Ledger out without a single alarm."
 item.mask.dock_boss.name,Dock Boss
@@ -2896,6 +2905,10 @@ achievement.career_criminal.name,Career Criminal
 achievement.career_criminal.desc,"Win 100 heists. Unlocks the Knight mask base."
 achievement.top_of_the_ladder.name,Top of the Ladder
 achievement.top_of_the_ladder.desc,"Reach reputation level 100. Unlocks the Chrome material."
+achievement.main_event.name,Main Event
+achievement.main_event.desc,"Take down 250 specials. Unlocks the Lucha mask."
+achievement.private_viewing.name,Private Viewing
+achievement.private_viewing.desc,"Complete Gallery Night. Unlocks the Signal mask."
 achievement.deep_water.name,Deep Water
 achievement.deep_water.desc,"Complete Dockside Burn. Unlocks the Kraken mask."
 achievement.dock_work.name,Dock Work
