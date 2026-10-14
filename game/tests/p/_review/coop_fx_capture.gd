@@ -80,6 +80,10 @@ func _run() -> void:
 	_face(guest, host, true, false)
 	await _seconds(2.5)
 	print("FXC host at %s, client at %s" % [host.global_position, guest.global_position])
+	for c: CrewController in [host, guest]:
+		var vis: Node = c.get_node_or_null(^"Visual")
+		print("FXC host crew slot=%d heister=%s local=%s visual=%s" % [c.slot, c.heister, c.is_local(),
+			vis.get_children().map(func(n: Node) -> String: return n.name) if vis != null else "none"])
 	EventBus.shot_fx.connect(_on_shot_fx)
 	print("FXC host at %s, client at %s" % [host.global_position, guest.global_position])
 	# Phase 1: the host fires past the client while the client watches it; phase 2 the reverse.
