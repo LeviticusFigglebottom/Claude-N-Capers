@@ -2,6 +2,45 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-14 13:55 UTC: product-owner fresh-eyes pass (trunk r146), ranked
+Runs: A's PO-5 flows played by input, windowed. GH stealth x2 (one PASS; one observed by po_observer.tscn, 58 rendered
+frames, went loud at t=200 when an intimidated, untied civilian pressed the alarm) and ND loud (auto_loud, stuck at the
+vault drill). CPU spikes: spike_probe.tscn, headless (llvmpipe frame times in the windowed runs are not usable).
+Ranked by what a player would hit, with owner and file:line guess.
+1. ND: 1 Hz stutter for the whole stealth phase: hud_model 45-87 ms every ~1.03 s (50-108 ms frames). The `code`
+   marker tag never resolves in the code_on_manager variant (world/heists/night_deposit/night_deposit_mission.gd:67,
+   :207) and LocalHudModel re-resolves every tag ~1/s through a full-tree find_by_tag
+   (systems/hud_model/local_hud_model.gd:567-580, heist_runtime.gd find_by_tag). Also: no marker for the code.
+   A (routed by the lead).
+2. ND loud: the vault drill never progresses. The pilot places it ("place_drill -> OK") again and again for 13+ min;
+   the prompt reads "Hold F to interact" + red "Can't do that right now" with no reason. A (ND loud blocker).
+3. AI teammates stack inside each other: slots 1-3 within 0.1-0.2 m (TEL crew positions), two heads merged on screen
+   in the ND antechamber. A (crew AI follow spacing).
+4. First loud frame: 243 ms on ND, 98 ms on GH. assault_director 22-24 ms; ~200 ms outside FrameProf's keys (alarm
+   cue/stream load? police spawn instancing?). A (lead routed the profiling). The HUD part of it IS gone (r144
+   UiSfx.warm confirmed: hud_model no longer in the first-loud top systems on GH or ND).
+5. FIXED (P, 55b5bba6): the weapon stayed up during timed interactions (rifle canted across the view mid-lockpick).
+   PD2 holsters it: now lowered after 0.12 s of an interaction, drawn on completion/cancel.
+6. GH U2: the knifed camera operator's body lies through the desk and under the chair. A/D (death pose placement).
+7. Sound: cue.npc_melee_swing has no definition, so every NPC melee windup plays the placeholder beep
+   (systems/combat/npc_gunner.gd:33; missing from the cue registry). Audio-registry owner.
+8. HUD: an off-screen objective marker clamps onto the bottom-right ammo / inventory cluster (its label overlaps
+   "27 / 120"; "3 m" sits on the item icons). B (content/ui/hud/widgets/objective_markers.gd edge inset, ~:10/:108).
+9. HUD: subtitles sit low and faint behind the bottom HUD band (GH "Workshop door's open..."). B.
+10. Text: "Your ride's 300.0 seconds out" (float in VO). strings.csv:1712 via night_deposit_mission.gd:332
+    (wait_s float; same pattern GH/DB van ETA :1697/:2387). A (mission) or B (format ints).
+11. Text: "Secured: 1 bags" (strings.csv:136, hud.gd:402: no singular). B.
+12. Payday: "Clean job. Nobody knew we were there." next to 1 civilian killed and a cleanup cost
+    (content/ui/results/payday.gd:475 keys only on stealth). B.
+13. Prompt: the workshop lockpick shows the generic "Hold F to interact" (ui.prompt.interact) instead of naming the
+    action. B/A (prompt_key on the door's InteractableComponent).
+14. ND heist start: the camera spawns facing a brown wall at point-blank. A (ND player spawn yaw).
+15. Heist start: a 72 ms frame at t~0.22 (hud_model first refresh 26-46 ms), both maps. A.
+16. Low: GH, an intimidated civilian who was never tied later pressed the alarm button. Likely PD2-faithful (untied
+    civilians recover); A to confirm the rule. Also GH a parked car body over the kerb line by a bollard (low
+    confidence, one frame). C/A.
+Tools: game/tests/p/_review/po_observer.tscn (frames + automatic flags), spike_probe.tscn (CPU spikes, unresolved markers).
+
 ## 2026-10-14 11:20 ET: lit PO-13 sheet, P-FP-STATES, Options hooks, sweeps
 - PO-13 lit sheet captures/po13_hold_before_after_lit.png (GH street, 6 classes; Corsair row predates 7a61cd7e).
   7a61cd7e fixed my round-2 regression: rifle hip z -0.135 (stock was inside the 2 cm near plane, test_po4_feel).
