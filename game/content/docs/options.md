@@ -28,6 +28,8 @@ it into `current()` on Apply). Generic access: `get_value(section, key)`; sectio
 | Effects quality (D-105) | `effects_quality()` / `video/effects_quality` | int `EFFECTS_LOW` 0 / `EFFECTS_MEDIUM` 1 / `EFFECTS_HIGH` 2 (choice "low" / "medium" / "high") | high | ENV C's VfxDirector (impact_fx.md §3) scales pooled effect counts, e.g. `GameSettings.EFFECTS_SCALE[q]` (0.3 / 0.6 / 1.0). One step lower while `accessibility/reduce_motion` is on. Listen to `changed` for either key. |
 | Camera FOV | `fov()` / `video/fov` | float deg 60..100 | 75 | Vertical FOV of the local player's `Head/Camera` (CrewView). ADS zoom should scale from it. |
 | Mouse sensitivity | `mouse_sensitivity()` | Vector2 multipliers 0.1..5 | (1, 1) | Multiply `PlayerInput.mouse_sensitivity` (x for yaw, y for pitch). |
+| Aiming sensitivity (options parity) | `ads_sensitivity()` / `controls/ads_sensitivity` | float multiplier 0.1..2 | 1 | ENV P: while aiming / scoped, multiply mouse and stick look by it, on top of the D-091 zoom slow-down. |
+| Screen shake (options parity) | `screen_shake()` / `accessibility/screen_shake` | float 0..1 | 1 | ENV P: scale every camera shaker (melee punch, tase jitter, later ones) by it; Reduce Motion keeps its own cut on top. |
 | Invert Y | `invert_y()` | bool | false | Applies to mouse and pad (`PlayerInput.gamepad_invert_y`). |
 | Pad look speed | `pad_sensitivity()` | float multiplier 0.1..5 | 1 | Multiply `PlayerInput.gamepad_look_speed`. |
 | Pad deadzone | `pad_deadzone()` | float 0.05..0.5 | 0.2 | `PlayerInput.gamepad_deadzone` (right stick). |
@@ -43,6 +45,7 @@ Suggested hook (ENV A, `systems/player/player_input.gd`): in `_ready()` read the
 | What | API | Notes |
 |---|---|---|
 | Brightness | `video/brightness` (0.5..1.5, default 1.0) | `SettingsApplier.apply_environment(env)` sets `adjustment_enabled` + `adjustment_brightness` on a map's `Environment`. Call it when a heist map's WorldEnvironment is ready (and on `changed` for `&"video"/&"brightness"`). |
+| Subtitles on / off (options parity) | `subtitles()` / `accessibility/subtitles` (bool, default true) | ENV B's `SubtitleOverlay` shows no in-heist line while off. The briefing screen's own subtitle panel is the briefing text and stays. |
 | Subtitle size | `accessibility/subtitle_size` (`small`/`medium`/`large`) | ENV B's in-heist `SubtitleOverlay` (B7-03, `content/docs/radio.md`) follows it live: font sizes in `data/tweak/radio.tres` `font_sizes` (22 / 28 / 36 px at 1080p). |
 | Drop-in (host) | `gameplay/dropin_policy` (`ask`/`auto`/`off`, default `ask`) | ENV B: copied into each hosted lobby session (`LobbySession.host`); the host's in-lobby change is remembered here. Shown on the Controls tab. |
 

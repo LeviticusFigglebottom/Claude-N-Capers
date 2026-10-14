@@ -2140,6 +2140,7 @@ ui.options.video.effects_quality.medium,Medium
 ui.options.video.effects_quality.high,High
 ui.options.controls.mouse_sensitivity_x,Mouse Sensitivity (Horizontal)
 ui.options.controls.mouse_sensitivity_y,Mouse Sensitivity (Vertical)
+ui.options.controls.ads_sensitivity,Aiming Sensitivity
 ui.options.controls.invert_y,Invert Vertical Look
 ui.options.controls.pad_sensitivity,Gamepad Look Sensitivity
 ui.options.controls.pad_deadzone,Gamepad Deadzone
@@ -2162,6 +2163,7 @@ ui.options.controls.swap,Swap
 ui.options.controls.keep_both,Keep Both
 ui.options.accessibility.palette,Colour Palette
 ui.options.accessibility.hud_scale,HUD Scale
+ui.options.accessibility.subtitles,Subtitles
 ui.options.accessibility.subtitle_size,Subtitle Size
 ui.options.accessibility.subtitle_size.small,Small
 ui.options.accessibility.subtitle_size.medium,Medium
@@ -2801,6 +2803,7 @@ voice.vo.reyes.dockside_burn_radio_loot_product,Product's out. My buyer says tha
 ui.subtitle.speaker,{name}:
 ui.options.accessibility.subtitles_all_speakers,Subtitles for Guards and Crew
 ui.options.accessibility.reduce_motion,Reduce Motion
+ui.options.accessibility.screen_shake,Screen Shake
 ui.options.accessibility.head_bob,Head Bob
 ui.career.open,Career
 ui.career.title,Career

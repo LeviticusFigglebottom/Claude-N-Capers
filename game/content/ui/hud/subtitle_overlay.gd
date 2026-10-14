@@ -85,6 +85,8 @@ func show_line(speaker: StringName, line_id: StringName, ctx: Dictionary = {}) -
 	var src: StringName = StringName(ctx.get("source", &""))
 	if src == SOURCE_BRIEFING or (src != ContactRadio.SOURCE and not _shows_speaker(speaker)):
 		return false
+	if settings != null and not settings.subtitles():
+		return false  # Options parity: Accessibility > Subtitles off
 	var key: StringName = StringName(table.line(line_id).get("text_key", StringName("voice.%s" % line_id)))
 	if not StringTable.has(key):
 		return false
