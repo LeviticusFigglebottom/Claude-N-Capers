@@ -51,7 +51,11 @@ func _run() -> void:
 	if mode != "onboarding":
 		for id: StringName in OnboardingTips.ALL:
 			OnboardingTips.mark_seen(id)  # the other shots stay as they were
-	if mode == "menus":
+	if mode == "menus_canvas":  # the menus on the game's 1920x1080 canvas (look only; see "loading")
+		_vp.size_2d_override = Vector2i(1920, 1080)
+		_vp.size_2d_override_stretch = true
+		await _menus()
+	elif mode == "menus":
 		await _menus()
 	elif mode == "loud":
 		await _loud()
@@ -148,6 +152,7 @@ func _hud() -> void:
 func _menus() -> void:
 	SaveService.root_dir = "user://contrast_profiles"
 	SaveService.save_profile(PlayerProfile.new_default(), 0)
+	QuickPlay.remember(0, &"glasshouse", Enums.Difficulty.ROUTINE)  # the hub shows Continue
 	var f: MenuFlow = (load("res://content/ui/menus/menu_flow.tscn") as PackedScene).instantiate() as MenuFlow
 	_vp.add_child(f)
 	await get_tree().process_frame

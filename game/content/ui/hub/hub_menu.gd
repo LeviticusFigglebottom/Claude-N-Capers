@@ -20,6 +20,8 @@ signal achievements_requested()
 signal options_requested()
 signal notoriety_requested()
 signal career_requested()
+## Lead: relaunch the last job (QuickPlay) from the hub.
+signal continue_requested()
 
 ## Station cards per row (B-PP-2).
 const CARD_COLUMNS: int = 2
@@ -49,6 +51,8 @@ var notoriety_label: Label
 var achievements_button: Button
 ## Profile panel button -> options_requested (B5-01).
 var options_button: Button
+## Quick Play: "Continue · <heist> · <difficulty>", hidden without a playable last job.
+var continue_button: Button
 ## PO-4 first-time pointer: the "START HERE" chip on the Board card while the profile has never
 ## played a heist (career "played" == 0).
 var start_here: Label
@@ -112,6 +116,14 @@ func build_ui() -> void:
 	back_button.pressed.connect(back_requested.emit)
 	footer.add_child(back_button)
 	focus_chain.append(back_button)
+	var push: Control = Control.new()
+	push.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	footer.add_child(push)
+	# Quick Play bottom right, like the forward action on the other screens.
+	continue_button = UiBuild.primary(UiBuild.button(&"ui.menu.continue"))
+	continue_button.pressed.connect(continue_requested.emit)
+	footer.add_child(continue_button)
+	focus_chain.append(continue_button)
 	refresh_profile(profile)
 
 
@@ -145,6 +157,15 @@ func chain_grid() -> void:
 		c.set_focus_neighbor(SIDE_LEFT, c.get_path_to(cards[0]))
 	back_button.set_focus_neighbor(SIDE_TOP, back_button.get_path_to(cards[n - 1]))
 	back_button.set_focus_neighbor(SIDE_BOTTOM, back_button.get_path_to(cards[0]))
+
+
+func _refresh_continue(p: PlayerProfile) -> void:
+	if continue_button == null:
+		return
+	var job: Dictionary = QuickPlay.last(p)
+	continue_button.visible = not job.is_empty()
+	if not job.is_empty():
+		continue_button.text = QuickPlay.label(job)
 
 
 func _build_header() -> HBoxContainer:
@@ -242,6 +263,7 @@ func _build_profile_panel() -> PanelContainer:
 
 ## Re-reads the summary from `p` (default: the setup profile, else profile_slot from disk).
 func refresh_profile(p: PlayerProfile = null) -> void:
+	_refresh_continue(p if p != null else SaveService.load_profile(profile_slot))
 	if p != null:
 		profile = p
 	if profile == null:

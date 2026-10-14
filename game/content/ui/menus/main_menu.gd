@@ -7,11 +7,15 @@ signal safehouse_requested()
 signal firing_range_requested()
 signal settings_requested()
 signal quit_requested()
+## Lead: relaunch the last job (QuickPlay).
+signal continue_requested()
 
 var safehouse_button: Button
 var range_button: Button
 var settings_button: Button
 var quit_button: Button
+## Quick Play: "CONTINUE · <heist> · <difficulty>" above Safehouse, hidden without a playable last job.
+var continue_button: Button
 var profile_label: Label
 ## PO-4 (lead note 4): the equipped mask turning slowly on the right half, the heist icon of the game.
 var hero: MaskPreview
@@ -37,11 +41,13 @@ func build_ui() -> void:
 	var spacer: Control = Control.new()
 	spacer.custom_minimum_size = Vector2(0, UiTokens.S6)
 	root.add_child(spacer)
+	continue_button = UiBuild.button(&"ui.menu.continue")
+	continue_button.pressed.connect(continue_requested.emit)
 	safehouse_button = UiBuild.button(&"ui.menu.safehouse")
 	range_button = UiBuild.button(&"ui.menu.firing_range")
 	settings_button = UiBuild.button(&"ui.menu.options")
 	quit_button = UiBuild.button(&"ui.menu.quit")
-	for b: Button in [safehouse_button, range_button, settings_button, quit_button]:
+	for b: Button in [continue_button, safehouse_button, range_button, settings_button, quit_button]:
 		b.theme_type_variation = UiBuild.MENU_ITEM  # D-090: focus + confirm cues come with UiBuild.button
 		b.text = b.text.to_upper()
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -50,6 +56,7 @@ func build_ui() -> void:
 		root.add_child(b)
 		focus_chain.append(b)
 	safehouse_button.add_theme_color_override(&"font_color", UiTokens.PAPER)
+	continue_button.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
 	var foot: Control = Control.new()
 	foot.custom_minimum_size = Vector2(0, UiTokens.S7)
 	root.add_child(foot)
@@ -97,6 +104,10 @@ func refresh_profile(profile: PlayerProfile = null) -> void:
 	if hero != null:
 		hero.show_def(MaskCatalog.resolve(p.loadout.mask, p))
 		hero_name.text = MaskCatalog.display_name(p.loadout.mask)
+	var job: Dictionary = QuickPlay.last(p)
+	continue_button.visible = not job.is_empty()
+	if not job.is_empty():
+		continue_button.text = QuickPlay.label(job).to_upper()
 	profile_label.text = "%s   ·   %s   ·   %s" % [
 		UiText.t(&"ui.menu.level", {"level": p.level}),
 		UiText.t(&"ui.menu.spending", {"amount": UiText.money(p.cash)}),

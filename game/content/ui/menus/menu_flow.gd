@@ -171,6 +171,8 @@ func _ready() -> void:
 	heist_select = _add(SELECT_SCENE) as HeistSelect
 	stub_screen = _add(STUB_SCENE) as StubScreen
 	main_menu.safehouse_requested.connect(show_hub)
+	main_menu.continue_requested.connect(_quick_play)
+	hub.continue_requested.connect(_quick_play)
 	hub.station_requested.connect(open_station)
 	hub.achievements_requested.connect(_open_achievements)
 	hub.options_requested.connect(options_menu.open)
@@ -655,6 +657,8 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 	_heist_id = heist_id
 	_difficulty = difficulty
 	is_pro = pro
+	if not pro and _board_contract.is_empty():
+		QuickPlay.remember(profile_slot, heist_id, difficulty)  # lead: Continue relaunches this job
 	var resolved: Loadout = LoadoutResolver.resolve(loadout)
 	var ai: int = HeistCatalog.heist_list().solo_ai_for(heist_id)
 	var profile: PlayerProfile = SaveService.load_profile()
@@ -798,6 +802,17 @@ func consume_pro_contract() -> void:
 		ProJobLocks.lock(profile, _board_contract)
 		Log.info(&"ui", "pro job failed: contract %s consumed" % BoardContracts.contract_key(_board_contract))
 	_board_contract = {}
+
+
+## Lead: Continue / Quick Play (main menu, hub) relaunches the last regular job with the current loadout.
+func _quick_play() -> void:
+	var p: PlayerProfile = SaveService.load_profile(profile_slot)
+	var job: Dictionary = QuickPlay.last(p)
+	if job.is_empty():
+		return
+	is_pro = false
+	_board_contract = {}
+	launch(StringName(job["heist_id"]), int(job["difficulty"]), p.loadout, _time_seed())
 
 
 ## Lead failure pass: Leave Heist from the pause menu. Solo (the only human, with authority) ends the run

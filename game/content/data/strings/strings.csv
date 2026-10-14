@@ -1558,6 +1558,8 @@ ui.preplan.point.pp_gondola_north,"Gondola: north facade, level 42"
 ui.preplan.point.pp_riser_l41,Riser panel: level 41
 ui.preplan.point.pp_riser_l42,Riser panel: level 42
 ui.menu.safehouse,Safehouse
+ui.menu.continue,Continue
+ui.menu.continue_job,Continue · {heist} · {difficulty}
 ui.hub.title,The Safehouse
 ui.hub.subtitle,Every job starts at one of these stations.
 ui.hub.start_here,Start here
