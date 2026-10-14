@@ -17,6 +17,8 @@ const WEAPON: Array[String] = [
 ]
 ## Untextured by design: a reticle is a tiny emissive mesh; textures would add nothing.
 const EMISSIVE: Array[String] = ["emissive_reticle_red", "emissive_pilot_flame"]
+## PO-13: animated water, a ShaderMaterial on shaders/water.gdshader with one world-space ripple texture.
+const WATER: Array[String] = ["water_harbour_night"]
 ## D-038: black polymers, rubber and black paint/anodize may sit at 0.02-0.04 linear albedo.
 const BLACKS: Array[String] = ["polymer_black", "polymer_stipple", "rubber_black", "alu_anodized_black"]
 const TRIM_TABLE: String = "res://assets/textures/trim_interior/trim_table.json"
@@ -34,7 +36,7 @@ func _library_ids() -> Array[String]:
 
 func test_expected_library_present() -> void:
 	var ids: Array[String] = _library_ids()
-	for id: String in EXPECTED + WEAPON + EMISSIVE:
+	for id: String in EXPECTED + WEAPON + EMISSIVE + WATER:
 		assert_has(ids, id, "library material missing")
 
 
@@ -43,7 +45,7 @@ func test_every_library_material_is_orm_pbr() -> void:
 	assert_true(ids.size() >= EXPECTED.size() + WEAPON.size(), "too few library materials")
 	for id: String in ids:
 		# LEAD round 35: char_crowd_lod (ENV D, D4-01) is a shared skinned crowd-LOD material, not a library PBR.
-		if id in EMISSIVE or id == "char_crowd_lod":
+		if id in EMISSIVE or id in WATER or id == "char_crowd_lod":
 			continue
 		var res: Resource = load(MATERIAL_DIR + id + ".tres")
 		assert_true(res is ORMMaterial3D, "%s is not ORMMaterial3D" % id)
@@ -76,6 +78,28 @@ func test_emissive_materials() -> void:
 	var flame: StandardMaterial3D = load(MATERIAL_DIR + "emissive_pilot_flame.tres") as StandardMaterial3D
 	if flame != null:
 		assert_true(flame.emission_texture is GradientTexture2D, "pilot flame has its blue-orange gradient")
+
+
+func test_water_material() -> void:
+	for id: String in WATER:
+		var mat: ShaderMaterial = load(MATERIAL_DIR + id + ".tres") as ShaderMaterial
+		assert_true(mat != null, "%s is not a ShaderMaterial" % id)
+		if mat == null:
+			continue
+		assert_eq(String(mat.resource_name), "M_" + id, "resource_name")
+		assert_true(mat.shader != null and mat.shader.resource_path == "res://world/materials/shaders/water.gdshader",
+			"%s uses the library water shader" % id)
+		var code: String = mat.shader.code if mat.shader != null else ""
+		# Compatibility (opengl3) parity: no screen / depth texture reads, opaque.
+		for banned: String in ["hint_screen_texture", "hint_depth_texture", "SCREEN_TEXTURE", "DEPTH_TEXTURE"]:
+			assert_false(code.contains(banned), "%s: water shader must not use %s" % [id, banned])
+		var tex: Texture2D = mat.get_shader_parameter(&"ripple_tex") as Texture2D
+		assert_true(tex != null, "%s ripple texture" % id)
+		if tex != null:
+			assert_eq(tex.get_width(), 512, "%s ripple size" % id)
+		for p: StringName in [&"tile_m", &"far_fade_m", &"ripple_strength", &"roughness_calm", &"specular_f0"]:
+			assert_true(mat.get_shader_parameter(p) is float, "%s: %s is a float (not null / int)" % [id, p])
+		assert_near(float(mat.get_meta(&"uv_tile_m", 0.0)), 8.0, 0.0001, "%s uv_tile_m" % id)
 
 
 func test_carbon_fibre_clearcoat() -> void:

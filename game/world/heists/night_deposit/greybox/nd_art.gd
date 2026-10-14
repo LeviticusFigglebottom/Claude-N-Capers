@@ -34,8 +34,7 @@ const TINTS: Dictionary = {
 	"glass_green": ["glass_clear", Color(0.55, 0.85, 0.68)],
 	"van_white": ["metal_painted", Color(1.0, 1.0, 0.98)],
 }
-## Untextured emissive / glass / water surfaces (meta untextured_ok): key -> [albedo, emission,
-## energy, roughness].
+## Untextured emissive / glass surfaces (meta untextured_ok): key -> [albedo, emission, energy, roughness].
 const EMISSIVE: Dictionary = {
 	"emit_warm": [Color(1.0, 0.86, 0.66), Color(1.0, 0.82, 0.58), 3.0, 0.6],
 	"emit_cool": [Color(0.9, 0.94, 1.0), Color(0.88, 0.93, 1.0), 2.5, 0.6],
@@ -44,10 +43,15 @@ const EMISSIVE: Dictionary = {
 	"window_lit": [Color(0.95, 0.8, 0.55), Color(0.95, 0.74, 0.48), 1.2, 0.35],
 	"window_dark": [Color(0.09, 0.1, 0.12), Color(0.0, 0.0, 0.0), 0.0, 0.35],
 	"far_lights": [Color(1.0, 0.85, 0.6), Color(1.0, 0.8, 0.5), 2.0, 0.6],
-	"water": [Color(0.04, 0.08, 0.09), Color(0.0, 0.0, 0.0), 0.0, 0.08],
 	"laser_red": [Color(1.0, 0.12, 0.08), Color(1.0, 0.08, 0.05), 4.0, 0.6],
 	"emit_screen": [Color(0.11, 0.13, 0.16), Color(0.47, 0.56, 0.65), 0.9, 0.4],
 }
+const WATER_MAT: String = "water_harbour_night"
+const SHORE_FADE_M: float = 2.5
+const GLINT_REACH: float = 14.0
+const MAX_GLINTS: int = 16
+## Far-shore glint brightness relative to a quay lamp (they are fogged at 300 m anyway).
+const FAR_GLINT: float = 0.5
 ## Door frame casing beyond the opening (prop door frames reach 0.125-0.175 m beyond the leaf).
 const DOOR_CASING: float = 0.18
 const WINDOW_CASING: float = 0.06
@@ -145,17 +149,67 @@ func setup() -> void:
 			em.emission_enabled = true
 			em.emission = row2[1]
 			em.emission_energy_multiplier = float(row2[2])
-		if String(k2) == "water":
-			em.metallic_specular = 0.9
 		em.set_meta(&"untextured_ok", true)
 		_mats[String(k2)] = em
 		acc.register_material(String(k2), em)
+	_add_water()
 	for w: Array in L.EXT_WALLS:
 		_walls.append([String(w[1]), float(w[2]), minf(float(w[3]), float(w[5])), maxf(float(w[4]), float(w[6])),
 			float(w[7]), float(w[8]), w[10], L.EXT_T, true])
 	for w2: Array in L.INT_WALLS:
 		var t: float = float(w2[8]) if w2.size() > 8 else L.INT_T
 		_walls.append([String(w2[1]), float(w2[2]), float(w2[3]), float(w2[4]), float(w2[5]), float(w2[6]), w2[7], t, false])
+
+
+## PO-13: the harbour uses the library night-water shader (texgen water_harbour_night), with the quay
+## wall line (z = WATER[2], water to +z) darkening the first metres of water under the wall.
+func _add_water() -> void:
+	var w: ShaderMaterial = (load(MAT_DIR + WATER_MAT + ".tres") as ShaderMaterial).duplicate() as ShaderMaterial
+	w.resource_name = "nd_water"
+	w.set_shader_parameter(&"shore_plane", Vector4(0.0, 0.0, 1.0, -float(L.WATER[2])))
+	w.set_shader_parameter(&"shore_fade_m", SHORE_FADE_M)
+	w.set_shader_parameter(&"shore_darken", 0.45)
+	_mats["water"] = w
+	acc.register_material("water", w)
+
+
+## PO-13: reflected glints on the harbour water (the shader's MAX_GLINTS = 16): every far-shore light
+## (`far`, emissive boxes across the water, the classic streaks toward a viewer on the quay), then the
+## lamps nearest the quay edge (heads within GLINT_REACH, nearest first). Call after the props exist.
+func water_glints(root: Node, far: PackedVector3Array) -> void:
+	var pos: PackedVector3Array = PackedVector3Array()
+	var col: PackedVector3Array = PackedVector3Array()
+	var fl: Color = (EMISSIVE["far_lights"][1] as Color).srgb_to_linear() * FAR_GLINT
+	for p: Vector3 in far:
+		pos.append(p)
+		col.append(Vector3(fl.r, fl.g, fl.b))
+	var edge: float = float(L.WATER[2])
+	var found: Array[Array] = []
+	for l: Node in root.find_children("*", "Light3D", true, false):
+		var light: Light3D = l as Light3D
+		var lp: Vector3 = _world_xf(light).origin
+		if lp.y > 1.5 and lp.z > edge - GLINT_REACH and lp.z < edge:
+			found.append([snappedf(edge - lp.z, 0.01), snappedf(lp.x, 0.01), lp, light.light_color, light.light_energy])
+	found.sort_custom(func(a: Array, b: Array) -> bool:
+		return a[0] < b[0] or (a[0] == b[0] and a[1] < b[1]))
+	for f: Array in found.slice(0, maxi(0, MAX_GLINTS - pos.size())):
+		var c: Color = (f[3] as Color).srgb_to_linear() * (float(f[4]) / 7.0)
+		pos.append((f[2] as Vector3).snapped(Vector3.ONE * 0.01))
+		col.append(Vector3(c.r, c.g, c.b))
+	var w: ShaderMaterial = _mats["water"]
+	w.set_shader_parameter(&"glint_count", pos.size())
+	w.set_shader_parameter(&"glint_pos", pos)
+	w.set_shader_parameter(&"glint_color", col)
+
+
+static func _world_xf(n: Node) -> Transform3D:
+	var xf: Transform3D = Transform3D.IDENTITY
+	var cur: Node = n
+	while cur != null:
+		if cur is Node3D:
+			xf = (cur as Node3D).transform * xf
+		cur = cur.get_parent()
+	return xf
 
 
 func mat(key: String) -> Material:
