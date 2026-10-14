@@ -4,7 +4,8 @@
 ##   canvas lands on the Great Hall floor in the east drop strip (x 24-28);
 ## - §7.3 Mews -> loading dock with a HEAVY bag along the navmesh (step-free, no snag);
 ## - §7.7 the route doors (staff, SV, CO, CS, AT, TR, head house) >= 1.0 m clear width.
-## Laser gaps (§7.1), the pool (§7.4) and ladders (§7.6) arrive with the contract nodes (step 2).
+## §7.6 ladders: every Ladder up and down (skips until step 2 adds them). Laser gaps (§7.1) and the pool (§7.4)
+## arrive with the contract nodes (step 2).
 extends TestCase
 
 const HEIST: StringName = &"gallery_night"
@@ -94,3 +95,24 @@ func test_route_doors_are_wide_enough() -> void:
 			narrow.append("%s %.2f m" % [d.name, w])
 	assert_eq(n, ROUTE_DOORS.size(), "every §7.7 route door is in the greybox")
 	assert_true(narrow.is_empty(), "route doors < 1.0 m: %s" % ", ".join(narrow))
+
+
+## §7.6 (step 2): every Ladder on the map climbed up and back down by real input (masked, no bag).
+func test_ladders_up_and_down() -> void:
+	if _rt == null:
+		skip("gallery_night not on this branch yet")
+		return
+	var ladders: Array[Ladder] = []
+	var stack: Array[Node] = [_rt]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		stack.append_array(n.get_children())
+		if n is Ladder and (n as Ladder).is_visible_in_tree():
+			ladders.append(n as Ladder)
+	if ladders.is_empty():
+		skip("no Ladder prefabs in the greybox yet (step 2)")
+		return
+	for l: Ladder in ladders:
+		var r: Dictionary = await _tr.ladder(l, true)
+		assert_true(bool(r.get("up", false)), "%s: climbed up (%s)" % [l.name, r])
+		assert_true(bool(r.get("down", false)), "%s: climbed back down (%s)" % [l.name, r])
