@@ -1,0 +1,8 @@
+asset: veh_limo_gala
+script: tools/blender/props/gallery_large.py
+params: {"cat": {"kind": "limo", "prefab": "secure_zone", "surface": "metal"}, "fn": "limo"}
+seed: 3354807843  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset veh_limo_gala
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

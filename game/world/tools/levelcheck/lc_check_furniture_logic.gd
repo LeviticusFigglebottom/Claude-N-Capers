@@ -55,7 +55,8 @@ const FURNITURE_BY_KIND: Dictionary = {
 const SEATS: Array[StringName] = [&"chair", &"desk_chair", &"visitor_chair", &"stool", &"lounge_seat"]
 const SURFACES: Array[StringName] = [&"desk", &"table", &"low_table", &"counter"]
 ## Kinds that never block a door or a UsePoint (they are the door / walk-on / pick-up items).
-const PASSIVE_KINDS: Array[StringName] = [&"door", &"vault_door", &"industrial_door", &"window", &"stairs",
+const PASSIVE_KINDS: Array[StringName] = [&"door", &"vault_door", &"industrial_door", &"shutter", &"hatch", &"window",
+	&"stairs",
 	&"loot_spawn", &"loot_bag", &"small_loot", &"rug", &"light_fixture", &"railing", &"handrail",
 	&"laser_grid", &"laser_emitter"]
 

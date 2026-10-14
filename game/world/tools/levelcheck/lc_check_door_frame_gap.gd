@@ -159,6 +159,9 @@ static func _box(it: Node3D, root: Node, skip: Array[Node3D]) -> Variant:
 
 
 func _check_item(ctx: LcContext, it: GameplayPrefab) -> void:
+	if LcUtil.meta_s(it, &"kind") == LcContext.SHUTTER_KIND:
+		_check_face(ctx, it)
+		return
 	var vis: Variant = _box(it, it.visual_root, [])
 	if not (vis is AABB):
 		return
@@ -204,6 +207,63 @@ func _check_item(ctx: LcContext, it: GameplayPrefab) -> void:
 				worst = s
 		fail(ctx, it, f.world(worst["at"]), "see-through gap %.3f m wide %s (%d slit run(s) > %.2f m)"
 			% [worst["w"], worst["where"], f.slits.size(), GAP_TOL_M])
+
+
+## GN-C2 face mode (meta kind `shutter`): a lockdown shutter on the front wall face over an opening that another door
+## fills. The opening comes from wall-collision rays on the wall line (that door's frame may stand in for the reveals);
+## the closed curtain (under `Leaf`) must cover both reveals and the head (short by > GAP_TOL_M fails) and reach the
+## floor; the frame (guides + hood) must sit on the front wall face (standing off > GAP_TOL_M or buried > CLIP_TOL_M
+## fails) and the curtain must not reach into the wall.
+func _check_face(ctx: LcContext, it: GameplayPrefab) -> void:
+	var leaf: Node3D = it.visual_node("Leaf") as Node3D
+	var skip: Array[Node3D] = []
+	if leaf != null:
+		skip.append(leaf)
+	var cur: Variant = _box(it, leaf, []) if leaf != null else null
+	var frm: Variant = _box(it, it.visual_root, skip)
+	if not (cur is AABB) or not (frm is AABB):
+		fail(ctx, it, null, "face-mounted shutter without a curtain (Leaf) or a frame")
+		return
+	_checked += 1
+	var c: AABB = cur
+	var f: AABB = frm
+	var xf: Transform3D = it.global_transform.orthonormalized()
+	var y: float = minf(1.0, c.end.y * 0.5)
+	var acc: Callable = func(h: Dictionary) -> bool:
+		var col: Node = h.get("collider") as Node
+		# door leaf bodies (AnimatableBody3D) of the door behind are not the opening's reveals
+		return col != null and not (col is AnimatableBody3D) and not it.is_ancestor_of(col) and ctx.accept_shell(h)
+	var dist: Callable = func(a: Vector3, b: Vector3) -> float:
+		var hit: Dictionary = ctx.ray(xf * a, xf * b, acc)
+		return INF if hit.is_empty() else (xf * a).distance_to(hit["position"])
+	var reach: float = maxf(absf(c.position.x), absf(c.end.x)) + WALL_REACH_M
+	var e0: float = dist.call(Vector3(0.0, y, 0.0), Vector3(-reach, y, 0.0))
+	var e1: float = dist.call(Vector3(0.0, y, 0.0), Vector3(reach, y, 0.0))
+	var head: float = dist.call(Vector3(0.0, y, 0.0), Vector3(0.0, c.end.y + WALL_REACH_M, 0.0))
+	if e0 == INF or e1 == INF or head == INF:
+		fail(ctx, it, null, "face-mounted shutter sits over no wall opening (reveals / head not found)")
+		return
+	if -c.position.x < e0 - GAP_TOL_M:
+		fail(ctx, it, xf * Vector3(-e0, y, 0.0), "shutter curtain short of the -X reveal by %.3f m" % (e0 + c.position.x))
+	if c.end.x < e1 - GAP_TOL_M:
+		fail(ctx, it, xf * Vector3(e1, y, 0.0), "shutter curtain short of the +X reveal by %.3f m" % (e1 - c.end.x))
+	if c.end.y < y + head - GAP_TOL_M:
+		fail(ctx, it, xf * Vector3(0.0, y + head, 0.0), "shutter curtain below the head by %.3f m" % (y + head - c.end.y))
+	if c.position.y > GAP_TOL_M:
+		fail(ctx, it, xf * Vector3(0.0, c.position.y, 0.0), "shutter curtain %.3f m above the floor" % c.position.y)
+	var fx: float = e1 + 0.25
+	var t: float = dist.call(Vector3(fx, y, -WALL_REACH_M), Vector3(fx, y, 0.0))
+	if t == INF:
+		fail(ctx, it, xf * Vector3(fx, y, 0.0), "no front wall face beside the shutter")
+		return
+	var face_z: float = -WALL_REACH_M + t
+	var off: float = face_z - f.end.z
+	if off > GAP_TOL_M:
+		fail(ctx, it, xf * Vector3(fx, y, face_z), "shutter frame stands %.3f m off the wall face" % off)
+	elif -off > CLIP_TOL_M:
+		fail(ctx, it, xf * Vector3(fx, y, face_z), "shutter frame buried %.3f m in the wall face" % -off)
+	if c.end.z > face_z + CLIP_TOL_M:
+		fail(ctx, it, xf * Vector3(0.0, y, face_z), "shutter curtain reaches %.3f m into the wall" % (c.end.z - face_z))
 
 
 ## All measurements of one door / window (prefab-local space).

@@ -1,0 +1,8 @@
+asset: prop_art_rack_screen
+script: tools/blender/props/gallery.py
+params: {"cat": {"group": "gallery", "kind": "art_rack", "place": "none", "support": true, "surface": "metal"}, "fn": "rack"}
+seed: 4038036694  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_art_rack_screen
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

@@ -111,6 +111,8 @@ static func shape_points(shape: Shape3D) -> PackedVector3Array:
 
 
 func _check_item(ctx: LcContext, it: GameplayPrefab) -> void:
+	if LcUtil.meta_s(it, &"kind") == LcContext.SHUTTER_KIND:
+		return  # face-mounted shutter: its only collider is the coil hood above the opening (door_frame_gap face mode)
 	_checked += 1
 	var leaves: Array[Node3D] = _leaves(it)
 	var shapes: Array[CollisionShape3D] = frame_shapes(it, leaves)

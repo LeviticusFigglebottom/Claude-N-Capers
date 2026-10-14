@@ -22,6 +22,8 @@ func run(ctx: LcContext) -> void:
 		if not p.has_geometry:
 			warn(ctx, p.node, null, "prop has no geometry or collision; skipped")
 			continue
+		if p.kind == &"hatch":
+			continue  # GN-C2: a floor hatch sits in its hole like a shell piece (door_frame_gap measures the fit)
 		n += 1
 		match p.mount:
 			&"":

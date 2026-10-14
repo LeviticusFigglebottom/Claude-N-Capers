@@ -13,7 +13,11 @@ const CONTAINERS: Array[StringName] = [&"Geometry", &"Props", &"Lighting", &"Gam
 const CONTENT_FOLDERS: Array[StringName] = [&"Lighting", &"Gameplay", &"Variants"]
 const PROP_METAS: Array[StringName] = [&"kind", &"mount", &"support", &"prop", &"fixture"]
 ## Kinds whose subtree is part of the building shell for ray classification.
-const SHELL_KINDS: Array[StringName] = [&"door", &"vault_door", &"industrial_door", &"window", &"stairs"]
+const SHELL_KINDS: Array[StringName] = [&"door", &"vault_door", &"industrial_door", &"window", &"stairs", &"hatch"]
+## GN-C2: a lockdown shutter mounted on a wall face over an opening another door fills (door prefab, meta kind
+## `shutter`). It is never building shell (rays through the door behind it ignore it); door_frame_gap measures it
+## in face mode, frame_proud skips it (its only collider is the coil hood above the opening).
+const SHUTTER_KIND: StringName = &"shutter"
 
 var map: HeistMap
 var heist_id: String = ""
@@ -157,7 +161,8 @@ func _add_prop(n: Node3D) -> void:
 	p.mount = LcUtil.meta_s(n, &"mount")
 	p.is_support = LcUtil.meta_b(n, &"support")
 	p.is_window = p.kind == &"window"
-	p.is_door = p.kind in [&"door", &"vault_door", &"industrial_door"] or n.find_child("Leaf", true, false) != null
+	p.is_door = p.kind in [&"door", &"vault_door", &"industrial_door", &"shutter", &"hatch"] \
+		or n.find_child("Leaf", true, false) != null
 	p.slot = LcUtil.slot_of(n)
 	var inv: Transform3D = p.xform.affine_inverse()
 	var first: bool = true
@@ -175,6 +180,10 @@ func _add_prop(n: Node3D) -> void:
 			p.bodies.append(co)
 			p.rids.append(co.get_rid())
 		var cs: CollisionShape3D = c as CollisionShape3D
+		# GN-C2: a bag_lift's CarBody (ENV A: the moving car floor slab, under the car origin) rests in the landing's
+		# floor by design; it is no clipping / support geometry of the prop
+		if cs != null and cs.get_parent().name == &"CarBody" and cs.get_parent() is AnimatableBody3D:
+			continue
 		if cs != null and not cs.disabled and cs.shape != null and cs.get_parent() is CollisionObject3D \
 				and not (cs.get_parent() is Area3D):
 			p.shapes.append({"shape": cs.shape, "xf": cs.global_transform})
@@ -274,7 +283,7 @@ func accept_shell(hit: Dictionary) -> bool:
 	if obj == null:
 		return true
 	var p: LcProp = prop_of(obj)
-	if p != null and not (p.kind in SHELL_KINDS or p.is_door):
+	if p != null and (p.kind == SHUTTER_KIND or not (p.kind in SHELL_KINDS or p.is_door)):
 		return false
 	return is_active(obj as Node)
 
