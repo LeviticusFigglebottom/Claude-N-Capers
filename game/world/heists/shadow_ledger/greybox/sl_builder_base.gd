@@ -4,6 +4,7 @@ extends SceneTree
 
 const L: GDScript = preload("res://world/heists/shadow_ledger/greybox/shadow_ledger_layout.gd")
 const R: GDScript = preload("res://world/heists/shadow_ledger/greybox/shadow_ledger_resources.gd")
+const RT: GDScript = preload("res://world/kits/ridge_top.gd")  # not-standable guard tops (slopes, D-104)
 const OUT_DIR: String = "res://world/heists/shadow_ledger/"
 const SCENE_PATH: String = OUT_DIR + "shadow_ledger.tscn"
 const DEF_PATH: String = OUT_DIR + "shadow_ledger_def.tres"

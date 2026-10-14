@@ -81,7 +81,7 @@ Status: APPROVED (lead, 2026-10-10) (D-042)
 
 | Edge | Closure |
 |---|---|
-| Roof parapets N/W/E (z 0, x 0, x 36) and S (z 18, over the terrace) | 1.1 m solid parapet with a **45° sloped coping** (steeper than the 40° walkable slope, so nobody can stand on it; the player's 1.08 m jump apex is below the top). Beyond it a **`MapZone.OUT_OF_BOUNDS`** curtain (0.5 m outside the outer face, from coping height down to −20 m) respawns crew at the roof `oob_respawn` spawns, never an alarm (D-040). |
+| Roof parapets N/W/E (z 0, x 0, x 36) and S (z 18, over the terrace) | 1.1 m solid parapet with a **55° sloped coping** (≥ 50°, D-104 slopes; steeper than the 45° walkable slope, so nobody can stand on it; the player's 1.08 m jump apex is below the top). Beyond it a **`MapZone.OUT_OF_BOUNDS`** curtain (0.5 m outside the outer face, from coping height down to −20 m) respawns crew at the roof `oob_respawn` spawns, never an alarm (D-040). |
 | Terrace balustrade S/E/W (z 24, x 0, x 36 at L42 level) | 1.1 m laminated glass balustrade with a round handrail (no standing surface), OOB curtain beyond. The terrace (exterior) is fully enclosed by the L42 facade on the north. |
 | BMU boarding gates | The two boarding ladders `h` start at hinged gates in the parapet on the BMU track. A gate is open only where the cradle hangs (`gondola` slot); otherwise it is a closed parapet section. |
 | Gondola cradles (when hung) | 1.1 m guard rails on three sides; the facade side gap is ≤ 0.15 m. OOB zone under the cradle deck. |

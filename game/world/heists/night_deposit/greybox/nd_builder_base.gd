@@ -10,6 +10,7 @@ const R: GDScript = preload("res://world/heists/night_deposit/greybox/night_depo
 const A: GDScript = preload("res://world/heists/night_deposit/greybox/nd_art.gd")
 const DR: GDScript = preload("res://world/heists/night_deposit/greybox/nd_dress.gd")
 const DD: GDScript = preload("res://world/heists/night_deposit/greybox/night_deposit_dressing.gd")
+const RT: GDScript = preload("res://world/kits/ridge_top.gd")  # not-standable guard tops (slopes, D-104)
 const ART_DIR: String = "res://world/heists/night_deposit/art/"
 const OUT_DIR: String = "res://world/heists/night_deposit/"
 const SCENE_PATH: String = OUT_DIR + "night_deposit.tscn"
