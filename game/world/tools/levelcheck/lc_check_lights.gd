@@ -25,7 +25,7 @@ func run(ctx: LcContext) -> void:
 	var fixtures: Array[Dictionary] = []
 	for n: Node in ctx.map.find_children("*", "GeometryInstance3D", true, false):
 		var gi: GeometryInstance3D = n
-		if not gi.is_visible_in_tree() or not ctx.is_active(gi):
+		if not gi.is_visible_in_tree() or not ctx.is_active(gi) or LcUtil.lc_ignored(gi):
 			continue
 		var cur: Node = gi
 		var fx: bool = false

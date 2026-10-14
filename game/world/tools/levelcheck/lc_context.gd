@@ -133,6 +133,8 @@ func _scan(n: Node, mode: int) -> void:
 		if n == map:
 			cm = 1 if c.name == &"Props" else (2 if c.name in CONTENT_FOLDERS else 0)
 		var c3: Node3D = c as Node3D
+		if LcUtil.lc_ignored(c):
+			continue
 		if c3 != null and _is_prop_root(c3, cm):
 			_add_prop(c3)
 			continue
@@ -169,6 +171,8 @@ func _add_prop(n: Node3D) -> void:
 	var nodes: Array[Node] = [n]
 	nodes.append_array(n.find_children("*", "", true, false))
 	for c: Node in nodes:
+		if LcUtil.lc_ignored(c):   # cable / FX-only meshes (meta lc_ignore): no prop extent, clipping or support
+			continue
 		var box: Variant = LcVisual.geometry_local_aabb(c)
 		if box is AABB:
 			var rel: AABB = (inv * (c as Node3D).global_transform) * (box as AABB)
