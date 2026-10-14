@@ -1,5 +1,5 @@
 ## validate_level `slopes` (next_heist §7.5: no walkable slope < 50° outside the play mesh) and
-## `viewmodel_lit` (D-095: interior key lights carry render layer 21, WARN only).
+## `viewmodel_lit` (D-095: interior key lights carry render layer 21; FAIL since PO-8).
 extends LcTestBase
 
 
@@ -91,24 +91,23 @@ func test_legacy_heist_warns_only() -> void:
 
 # --- viewmodel_lit -------------------------------------------------------------------------
 
-func test_viewmodel_lit_warns_on_untagged_key_lights() -> void:
-	var c: LcCheck = await _one("viewmodel_lit", func(_m: HeistMap) -> void: pass)
-	assert_true(c.passed(), "viewmodel_lit never fails")
-	assert_eq(c.warn_count(), 2, "LampA + LampB lack layer 21: %s" % [c.issues])
+func test_viewmodel_lit_fails_on_untagged_key_lights() -> void:
+	var c: LcCheck = await _one("viewmodel_lit", func(m: HeistMap) -> void:
+		for p: String in ["Props/LampA/Light", "Props/LampB/Light"]:
+			(m.get_node(p) as Light3D).layers &= ~CrewView.VIEWMODEL_LIT_LAYER)
+	assert_false(c.passed(), "PO-8: a key light without layer 21 fails")
+	assert_eq(c.fail_count(), 2, "LampA + LampB lack layer 21: %s" % [c.issues])
 	assert_true(LcCheck.issue_line(c.sorted_issues()[0]).contains("viewmodel_lit"))
 
 
 func test_viewmodel_lit_tagged_lights_pass() -> void:
-	var c: LcCheck = await _one("viewmodel_lit", func(m: HeistMap) -> void:
-		for p: String in ["Props/LampA/Light", "Props/LampB/Light"]:
-			(m.get_node(p) as Light3D).layers |= CrewView.VIEWMODEL_LIT_LAYER)
-	assert_eq(c.warn_count(), 0, "%s" % [c.issues])
+	var c: LcCheck = await _one("viewmodel_lit", func(_m: HeistMap) -> void: pass)
+	assert_true(c.passed(), "%s" % [c.issues])
+	assert_eq(c.issues.size(), 0, "the fixture lamps carry layer 21: %s" % [c.issues])
 
 
 func test_viewmodel_lit_ignores_fill_and_dim_lights() -> void:
 	var c: LcCheck = await _one("viewmodel_lit", func(m: HeistMap) -> void:
-		(m.get_node("Props/LampA/Light") as Light3D).layers |= CrewView.VIEWMODEL_LIT_LAYER
-		(m.get_node("Props/LampB/Light") as Light3D).layers |= CrewView.VIEWMODEL_LIT_LAYER
 		var fill: OmniLight3D = OmniLight3D.new()
 		fill.name = "FillA"
 		fill.light_energy = 2.0
@@ -120,4 +119,23 @@ func test_viewmodel_lit_ignores_fill_and_dim_lights() -> void:
 		dim.light_energy = 0.2
 		dim.position = Vector3(2.0, 2.2, 3.0)
 		m.get_node("Lighting").add_child(dim))
-	assert_eq(c.warn_count(), 0, "fill and dim non-key lights are not key lights: %s" % [c.issues])
+	assert_eq(c.issues.size(), 0, "untagged fill and dim non-key lights are not key lights: %s" % [c.issues])
+
+
+## PO-8: the source of the dressing lights. Every prop scene in the library that carries a light
+## (tools/blender/props/_scenes.py) has layer 21 on it, so every map dressed from it inherits it.
+func test_every_library_prop_light_carries_viewmodel_lit() -> void:
+	var cat: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://world/props/prop_catalog.json"))
+	assert_true(cat is Dictionary, "prop_catalog.json parses")
+	var n: int = 0
+	for aid: String in (cat as Dictionary).keys():
+		var e: Variant = cat[aid]
+		if not (e is Dictionary and bool((e as Dictionary).get("has_light", false))):
+			continue
+		var inst: Node = (load(String(e["scene"])) as PackedScene).instantiate()
+		for l: Node in inst.find_children("*", "Light3D", true, false):
+			n += 1
+			assert_true(((l as Light3D).layers & CrewView.VIEWMODEL_LIT_LAYER) != 0,
+				"%s/%s lacks layer 21 `viewmodel_lit`" % [aid, inst.get_path_to(l)])
+		inst.free()
+	assert_true(n >= 20, "library prop lights found: %d" % n)

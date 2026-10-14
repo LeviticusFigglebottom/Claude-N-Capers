@@ -192,6 +192,10 @@ def visibility_end(e: dict) -> float:
     return 0.0
 
 
+VIEWMODEL_LIT_LAYER = 1 << 20  # render layer 21 `viewmodel_lit` (visual_slots v1.2, D-095)
+LIGHT_LAYERS = 1 | VIEWMODEL_LIT_LAYER
+
+
 def _f(v: float) -> str:
     s = f"{v:.4f}".rstrip("0").rstrip(".")
     return "0" if s in ("-0", "") else s
@@ -219,6 +223,9 @@ def _light_node(light: dict) -> list[str]:
         lines.append(f"transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {_f(pos[0])}, {_f(pos[1])}, {_f(pos[2])})")
         lines.append(f"omni_range = {_f(light.get('range', 4.0))}")
         lines.append("omni_attenuation = 1.2")
+    # render layers 1 + 21 `viewmodel_lit` (1 << 20 = CrewView.VIEWMODEL_LIT_LAYER, D-095): every prop
+    # light also lights the first-person arms/gun, so any map dressed from the library inherits it
+    lines.append(f"layers = {LIGHT_LAYERS}")
     lines.append(f"light_color = {_color(light.get('color', '#FFD9B0'))}")
     lines.append(f"light_energy = {_f(light.get('energy', 1.0))}")
     lines.append("light_size = 0.05")
