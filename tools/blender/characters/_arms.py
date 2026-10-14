@@ -125,6 +125,10 @@ def build_arms_rig(height: float = rig.DEFAULT_HEIGHT):
 # -- mesh (pure part) --------------------------------------------------------------------------
 SLEEVE_RINGS = ("upper_arm", "elbow", "forearm", "wrist")
 SLEEVE_EASE = {"upper_arm": 0.012, "elbow": 0.011, "forearm": 0.009, "wrist": 0.008}
+#: First-person sleeve taper (PO "the forearms dominate the pistol ADS frame"): the body rings the sleeves loft through
+#: are pulled in about their centre at the elbow and mid-forearm (the wrist ring is kept, so cuffs still meet the hand;
+#: the upper arm is off screen). Not applied under a bare forearm (Wren), whose skin is the body's own forearm.
+FP_SLIM = {"upper_arm": 1.0, "elbow": 0.93, "forearm": 0.88, "wrist": 1.0}
 
 
 def _align_ring(ref: list, ring: list) -> list:
@@ -179,14 +183,20 @@ def hand_part(params: dict) -> dict:
             "height": float(p["height"])}
 
 
-def arm_loops(params: dict) -> dict:
-    """{side: [upper_arm, elbow, forearm, wrist] body rings, each rotated to match the previous one}."""
+def arm_loops(params: dict, slim: bool = True) -> dict:
+    """{side: [upper_arm, elbow, forearm, wrist] body rings, each rotated to match the previous one}; ``slim``
+    applies ``FP_SLIM``."""
     import _body as body  # noqa: PLC0415
 
     rings = body.body_rings(body.body_params(params, hide=frozenset()))
     out = {}
     for sfx, _sx in rig.SIDES:
         loops = [rings[f"{r}.{sfx}"] for r in SLEEVE_RINGS]
+        if slim:
+            for i, r in enumerate(SLEEVE_RINGS):
+                pts = np.array(loops[i], float)
+                c = pts.mean(axis=0)
+                loops[i] = [tuple(c + (q - c) * FP_SLIM[r]) for q in pts]
         for i in range(1, len(loops)):
             loops[i] = _align_ring(loops[i - 1], loops[i])
         out[sfx] = loops
