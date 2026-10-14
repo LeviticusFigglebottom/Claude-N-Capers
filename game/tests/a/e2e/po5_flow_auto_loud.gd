@@ -105,7 +105,7 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 	return markers[0]
 
 
-## Enabled interactables within `radius` of the marker the player can use now (not revive / tie / pager).
+## Enabled interactables within `radius` of the marker the player can use now (not revive / tie / pager / body bags).
 func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 	var best: InteractableComponent = null
 	var best_d: float = radius
@@ -113,7 +113,7 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 		var c: InteractableComponent = n as InteractableComponent
 		if c == null or not c.enabled or not rt.is_ancestor_of(c):
 			continue
-		if c.kind in [&"revive", &"cable_tie", &"answer_pager", &"uncuff", &"break_window", &"break_glass", &"take_loot"]:
+		if c.kind in [&"revive", &"cable_tie", &"answer_pager", &"uncuff", &"break_window", &"break_glass", &"take_loot", &"bag_body"]:
 			continue
 		if c.availability(p.crew) != &"":
 			continue
