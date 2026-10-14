@@ -455,3 +455,60 @@ func _rpc_xforms(xforms: Dictionary) -> void:
 		var n: Node = Ids.lookup(int(k))
 		if n != null:
 			NetEntityCodec.apply_xform(n, xforms[k])
+
+
+# --- PO-8 presentation facts (impact_fx.md 1.0, D-105): one per shot / strike / blast, never per pellet --
+# Reliable like the [R] EventBus facts: ENet throttles unreliable packets under load (the loopback test
+# lost whole shots on a busy machine), and a shot nobody sees (an enemy firing at you) is worse than the
+# few bytes of one ordered message per shot. They ride this node, whose RPC path every client caches early.
+
+## Server: may presentation facts go out now (a live session whose clients have the heist replica)?
+func _can_relay_fx() -> bool:
+	return _begun and _runtime != null and Net.is_authority() and is_live()
+
+
+## Server: an accepted crew gun shot (CrewWeapons.server_commit_shot) to every client except
+## `exclude_peer` (the owning client that already presented it). Clients replay the seeded pellets.
+func relay_crew_shot(crew_net_id: int, origin: Vector3, dir: Vector3, spread_deg: float, pellet_seed: int,
+		weapon_slot: int, exclude_peer: int = 0) -> void:
+	if not _can_relay_fx():
+		return
+	for p: int in multiplayer.get_peers():
+		if p != exclude_peer:
+			_rpc_crew_shot.rpc_id(p, crew_net_id, origin, dir, spread_deg, pellet_seed, weapon_slot)
+
+
+## Server: an NPC shot or a crew melee strike (ShotFx.MODE_*).
+func relay_impact_fx(shooter_id: int, from: Vector3, to: Vector3, target_id: int, mode: int) -> void:
+	if _can_relay_fx():
+		_rpc_impact_fx.rpc(shooter_id, from, to, target_id, mode)
+
+
+## Server: a blast (Explosion.apply, concussion grenades).
+func relay_explosion_fx(pos: Vector3, radius: float, kind: StringName) -> void:
+	if _can_relay_fx():
+		_rpc_explosion_fx.rpc(pos, radius, kind)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_crew_shot(crew_net_id: int, origin: Vector3, dir: Vector3, spread_deg: float, pellet_seed: int,
+		weapon_slot: int) -> void:
+	if Net.is_authority():
+		return
+	var crew: CrewController = Ids.lookup(crew_net_id) as CrewController
+	if crew != null and crew.weapons != null:  # net hook, like NetEntityCodec's _apply_net_state
+		crew.weapons.call(&"_fx_replay", origin, dir, spread_deg, pellet_seed, weapon_slot)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_impact_fx(shooter_id: int, from: Vector3, to: Vector3, target_id: int, mode: int) -> void:
+	if Net.is_authority():
+		return
+	ShotFx.play_impact(Ids.lookup(shooter_id), from, to, target_id, mode)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_explosion_fx(pos: Vector3, radius: float, kind: StringName) -> void:
+	if Net.is_authority():
+		return
+	EventBus.explosion_fx.emit(pos, radius, kind)

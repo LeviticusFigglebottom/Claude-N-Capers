@@ -23,6 +23,9 @@
 class_name SafehouseHost
 extends Node
 
+## True once the missing-scene note was logged (once per session).
+static var _missing_logged: bool = false
+
 var flow: MenuFlow
 var tweak: SafehouseHubTweak
 ## The instanced safehouse scene root (null while the 2D hub is used).
@@ -102,7 +105,9 @@ func enter() -> bool:
 	if is_active():
 		return true
 	if not scene_available():
-		Log.info(&"ui", "safehouse scene unavailable (%s); 2D hub" % tweak.scene_path)
+		if not _missing_logged:  # the expected path until a 3D safehouse exists: say it once per session
+			_missing_logged = true
+			Log.info(&"ui", "safehouse scene unavailable (%s); 2D hub" % tweak.scene_path)
 		return false
 	var ps: PackedScene = load(tweak.scene_path) as PackedScene
 	var root: Node = ps.instantiate() if ps != null else null

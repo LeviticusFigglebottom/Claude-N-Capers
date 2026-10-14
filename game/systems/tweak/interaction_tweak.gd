@@ -45,6 +45,12 @@ extends Resource
 @export_group("Doors")
 ## Leaf rotation when open (degrees).
 @export var door_open_angle_deg: float = 90.0
+## PO-6 (D-105, impact_fx.md §5): leaf swing time, closed -> open (s, ease-out). 0 = snap.
+@export var door_swing_open_s: float = 0.35
+## PO-6: leaf swing time, open -> closed (s, ease-out). 0 = snap.
+@export var door_swing_close_s: float = 0.45
+## PO-6: leaf swing time of a forced open: police kick, C4, drill / saw (s, ease-out). 0 = snap.
+@export var door_swing_breach_s: float = 0.15
 
 @export_group("Noise radii (S4.3)")
 ## noise profile id -> radius in m. "silent" = 0.

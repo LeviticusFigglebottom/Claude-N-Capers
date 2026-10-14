@@ -182,3 +182,31 @@ func test_l4_5_dies_while_staggered_drops_a_blocking_shield() -> void:
 	await wait_physics_frames(3)
 	assert_true(b.shield.dropped and not b.shield.guard_down, "dropped with the guard up")
 	assert_eq(b.shield.collision_layer, 1 << 1, "the dropped shield blocks")
+
+
+## Lead gate70 bug: a shield-piercing round between two stacked shields ping-ponged (B's trace starts 5 cm
+## back and re-hit A) until the stack overflowed. Each shield is passed once, at most MAX_PIERCES in total.
+func test_l4_5_stacked_shields_pierce_once_each() -> void:
+	var shields: Array[BulwarkShield] = []
+	for x: float in [-3.0, 3.0]:
+		var bw: NpcBase = ACombatSpecials.spawn(_rt, "bulwark", Vector3(x, 0.05, -8), Vector3(0, 0, 1))
+		await wait_physics_frames(3)
+		shields.append((bw.get_node("Brain") as BulwarkBrain).shield)
+		bw.die({}, 0)
+	await wait_physics_frames(3)
+	var a: BulwarkShield = shields[0]
+	var b: BulwarkShield = shields[1]
+	a.global_transform = Transform3D(Basis.IDENTITY, Vector3(0, 1.0, -6))
+	b.global_transform = Transform3D(Basis.IDENTITY, Vector3(0, 1.0, -6.03))
+	await wait_physics_frames(2)
+	var info: Dictionary = Damage.info(40.0, Enums.DamageType.BULLET, Enums.HitZone.BODY, &"weapon.test",
+		a.global_position, Vector3(0, 0, -1), 0)
+	info["shield_pierce"] = true
+	var out: Dictionary = a.take_hit(info, 0)
+	assert_true(out is Dictionary, "the hit resolves (no infinite pierce recursion)")
+	assert_true(a.pierced_hits <= 1 and b.pierced_hits <= 1, "each shield passed at most once (a %d, b %d)" % [
+		a.pierced_hits, b.pierced_hits])
+	var deep: Dictionary = info.duplicate()
+	deep[BulwarkShield.PIERCED_KEY] = [1, 2, 3]
+	a.take_hit(deep, 0)
+	assert_true(a.pierced_hits <= 1, "no pierce past MAX_PIERCES")

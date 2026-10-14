@@ -28,6 +28,11 @@ static var _cached: CombatTweak = null
 @export var spread_mult_still: float = 1.0
 @export var spread_mult_moving: float = 1.0
 @export var spread_mult_crouched: float = 0.4
+## PO-8 (impact_fx.md, presentation only): an NPC miss lands this far (m) to the side of its aim point, and
+## a replayed crew shot's (client-supplied) spread is clamped to this cone half-angle (deg).
+@export var fx_npc_miss_offset_min_m: float = 0.6
+@export var fx_npc_miss_offset_max_m: float = 1.6
+@export var fx_max_replay_spread_deg: float = 45.0
 ## Horizontal speed (m/s) above which the shooter counts as moving.
 @export var moving_speed_threshold: float = 0.5
 

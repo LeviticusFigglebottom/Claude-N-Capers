@@ -5,6 +5,14 @@
 ## INWARD opens away from the front (leaf swings toward +Z), OUTWARD toward -Z, DOUBLE = two leaves
 ## opening inward. Leaf collision: `LeafBody` AnimatableBody3D (world_dynamic) following `Leaf`, only while
 ## closed (an open leaf blocks nobody, P3 gate).
+## PO-6 (D-105, impact_fx.md §5): the leaves swing (ease-out) over InteractionTweak.door_swing_open_s /
+## door_swing_close_s, or door_swing_breach_s for a forced open (police kick, C4, drill / saw: `set_open(true,
+## false, true)`). The swing runs in _physics_process and the leaf bodies follow the leaves every tick. A
+## crew member / NPC (CharacterBody3D, players / npcs layers) inside the next step of the sweep holds the
+## leaf where it is (`swing_blocked`); it resumes once the body is clear. `is_open` is the logical, replicated
+## state and changes at once: logic never reads the leaf angle. A state set in the physics frame the door
+## became ready (starts_open, mission variants at heist start, a client's bring-up snapshot) or with
+## `instant` snaps. Clients swing locally when the replicated `is_open` changes (`sw` = forced open).
 ## Locks: NONE opens instantly; LOCKPICK = S9.2 lockpick (`interaction.lockpick_speed_mult`);
 ## KEYCARD = S9.6 consumes `item.keycard`; CODE / ELECTRONIC / BARRED / VAULT are opened by other
 ## prefabs (keypad, keycard_reader, drill_point) through `unlock()`. Once unlocked, the door
@@ -47,10 +55,20 @@ const HEIGHT_M: float = 2.1
 const KEYCARD_ITEM: StringName = &"item.keycard"
 ## Runtime group of every door (A2-01 path checks).
 const GROUP: StringName = &"door"
+## PO-6: bodies that stop a swinging leaf (crew, NPCs).
+const SWING_BLOCK_MASK: int = GameplayPrefab.LAYER_PLAYERS | NpcBase.LAYER_NPCS
 ## Doorway margin beyond the opening's half width that still counts as crossing it (m).
 const CROSS_MARGIN_M: float = 0.25
 ## A2-08: push-bar door used from its outside while closed.
 const BLOCK_PUSH_BAR_OUTSIDE: StringName = &"ui.blocked.push_bar_outside"
+## D-105 (impact_fx.md §1) leaf bullet surfaces. `leaf_surface` empty = by style: a BARRED (security gate)
+## or VAULT lock, or a `visual_scene` whose file name names a metal style (LEAF_METAL_KEYWORDS) -> metal, a
+## glass style -> glass, else wood (ENV C's surface_map.json reads painted / veneer door leaves as wood).
+const SURFACE_WOOD: StringName = &"wood"
+const SURFACE_METAL: StringName = &"metal"
+const SURFACE_GLASS: StringName = &"glass"
+const LEAF_METAL_KEYWORDS: PackedStringArray = ["steel", "bronze", "grille", "vault", "metal", "iron", "brass"]
+const LEAF_GLASS_KEYWORDS: PackedStringArray = ["glass"]
 
 @export var lock: Lock = Lock.NONE
 @export var swing: Swing = Swing.INWARD
@@ -69,6 +87,8 @@ const BLOCK_PUSH_BAR_OUTSIDE: StringName = &"ui.blocked.push_bar_outside"
 ## S9.5 / A5-03: > 0 = a locked CODE / ELECTRONIC / BARRED door can be blown (loud) with this many charges
 ## (item.c4, or trip mines with interaction.shaped_charge). 0 = no charge placement.
 @export var charges_required: int = 0
+## D-105: bullet surface id of the leaves (impact_fx.md §1). Empty = by style (see LEAF_METAL_KEYWORDS).
+@export var leaf_surface: StringName = &""
 @export_group("Interaction")
 ## -1 = default by lock (InteractionTweak.door_open_s / lockpick_door_s / keycard_s).
 @export var interaction_time_s: float = -1.0
@@ -82,6 +102,8 @@ var is_open: bool = false
 var locked: bool = false
 ## S9.5 / A5-03: charges placed, fuse running.
 var c4_armed: bool = false
+## PO-6: a crew member / NPC is in the way of the swinging leaf (it holds its angle).
+var swing_blocked: bool = false
 
 var _open_stim_id: int = 0
 var _leaf_bodies: Array[AnimatableBody3D] = []
@@ -90,6 +112,18 @@ var _nav_link: NavigationLink3D = null
 ## NPC open requested and not yet applied (stealth animation delay).
 var _npc_open_pending: bool = false
 var _opened_by_net_id: int = 0
+## PO-6 swing: open fraction of the leaves now (0 closed .. 1 at door_open_angle_deg), the swing's start /
+## target fractions, its linear progress (0..1, eased into the fraction) and duration (s).
+var _swing_frac: float = 0.0
+var _swing_from: float = 0.0
+var _swing_to: float = 0.0
+var _swing_u: float = 1.0
+var _swing_dur_s: float = 0.0
+## PO-6: the last state change was a forced open (fast swing; replicated as `sw`).
+var _swing_breach: bool = false
+## PO-6: physics frame of _prefab_ready (a state change within it snaps).
+var _ready_physics_frame: int = -1
+var _sweep_query: PhysicsShapeQueryParameters3D = null
 
 @onready var _leaf_body: AnimatableBody3D = $LeafBody as AnimatableBody3D
 
@@ -123,6 +157,8 @@ func effective_width() -> float:
 
 
 func _prefab_ready() -> void:
+	set_physics_process(false)
+	_ready_physics_frame = Engine.get_physics_frames()
 	locked = lock != Lock.NONE
 	if using_placeholder and not is_equal_approx(effective_width(), _nominal_width()):
 		Log.warn(LOG_CHANNEL, "%s: placeholder door is %.2f m wide, width_m is %.2f" % [name, _nominal_width(), effective_width()])
@@ -151,11 +187,13 @@ func open() -> void:
 	set_open(true)
 
 
-## Server: open or close (instant in A1-03; animation is M2).
-func set_open(open: bool) -> void:
+## Server: open or close. PO-6: the leaves swing (`breach` = forced open: the fast breach swing);
+## `instant` snaps them (load-time state; also any change in the physics frame the door became ready).
+func set_open(open: bool, instant: bool = false, breach: bool = false) -> void:
 	if not Net.is_authority():
 		return
-	_apply_open(open)
+	_swing_breach = breach and open
+	_apply_open(open, instant)
 	_update_open_stimulus()
 	var by: int = _opened_by_net_id if open else 0
 	_opened_by_net_id = 0
@@ -163,8 +201,19 @@ func set_open(open: bool) -> void:
 	# A3-07: clients get is_open / locked through HeistNetSync -> _apply_net_state().
 
 
+## Server (A3-07, NetEntityCodec.state_of): the generic door state plus PO-6 `sw` (forced-open swing).
+func _net_state() -> Dictionary:
+	var out: Dictionary = {"is_open": is_open, "locked": locked, "sw": _swing_breach}
+	if interactable != null and is_instance_valid(interactable):
+		out["ie"] = interactable.enabled
+	return out
+
+
 ## Client (A3-07, HeistNetSync): mirror the server's `is_open` / `locked` (leaves, collision, nav).
+## PO-6: the leaves swing locally (snap in the bring-up snapshot, the frame the door became ready).
 func _apply_net_state(state: Dictionary) -> void:
+	if state.has("sw"):
+		_swing_breach = bool(state["sw"])
 	if state.has("locked") and not bool(state["locked"]) and locked:
 		locked = false
 		_apply_unlocked_interaction()
@@ -176,16 +225,125 @@ func _apply_net_state(state: Dictionary) -> void:
 	_update_nav_link()
 
 
-func _apply_open(open: bool) -> void:
+func _apply_open(open: bool, instant: bool = false) -> void:
 	is_open = open
-	var angle: float = deg_to_rad(Tweak.interaction().door_open_angle_deg) if open else 0.0
-	for i: int in range(_leaves.size()):
-		# Leaf extends +X from its hinge, Leaf2 extends -X: opposite signs swing both the same way.
-		var sign_inward: float = -1.0 if i == 0 else 1.0
-		var outward: bool = swing == Swing.OUTWARD
-		_leaves[i].rotation.y = angle * (-sign_inward if outward else sign_inward)
+	_start_swing(1.0 if open else 0.0, instant or not _swing_live())
 	_sync_leaf_bodies()
 	_update_nav_link()
+
+
+# --- Leaf swing (PO-6, D-105, impact_fx.md §5) ----------------------------------------------
+
+## Open fraction of the leaves now (0 closed .. 1 fully open), for tests and presentation only.
+func leaf_open_fraction() -> float:
+	return _swing_frac
+
+
+## True while the leaves are still moving toward the current state (blocked or not).
+func is_swinging() -> bool:
+	return _swing_u < 1.0
+
+
+## Snap the leaves to the current state (tests, presentation; no logical change).
+func finish_swing() -> void:
+	_swing_u = 1.0
+	swing_blocked = false
+	set_physics_process(false)
+	_set_leaf_frac(_swing_to)
+	_sync_leaf_bodies()
+
+
+## A state change may animate once the door has been ready for a physics frame (else: load-time state).
+func _swing_live() -> bool:
+	return is_inside_tree() and _ready_physics_frame >= 0 and Engine.get_physics_frames() != _ready_physics_frame
+
+
+func _start_swing(target: float, instant: bool) -> void:
+	var tw: InteractionTweak = Tweak.interaction()
+	var full_s: float = tw.door_swing_close_s
+	if _swing_breach:
+		full_s = tw.door_swing_breach_s
+	elif target > _swing_frac:
+		full_s = tw.door_swing_open_s
+	_swing_from = _swing_frac
+	_swing_to = target
+	_swing_u = 0.0
+	# A reversal mid-swing covers only the remaining arc, in proportion.
+	_swing_dur_s = full_s * absf(target - _swing_frac)
+	if instant or _swing_dur_s <= 0.0:
+		finish_swing()
+		return
+	swing_blocked = false
+	set_physics_process(true)
+
+
+func _physics_process(delta: float) -> void:
+	if _swing_u >= 1.0:
+		set_physics_process(false)
+		return
+	var u: float = minf(1.0, _swing_u + delta / _swing_dur_s)
+	var f: float = lerpf(_swing_from, _swing_to, 1.0 - (1.0 - u) * (1.0 - u))  # ease-out
+	swing_blocked = _sweep_blocked(f)
+	if swing_blocked:
+		return  # hold; retried every tick, resumes once the body is clear
+	_swing_u = u
+	_set_leaf_frac(f)
+	_sync_leaf_bodies()
+	if u >= 1.0:
+		set_physics_process(false)
+
+
+func _set_leaf_frac(f: float) -> void:
+	_swing_frac = f
+	var angle: float = deg_to_rad(Tweak.interaction().door_open_angle_deg) * f
+	for i: int in range(_leaves.size()):
+		_leaves[i].rotation.y = _leaf_angle(i, angle)
+
+
+## Leaf extends +X from its hinge, Leaf2 extends -X: opposite signs swing both the same way.
+func _leaf_angle(i: int, angle: float) -> float:
+	var sign_inward: float = -1.0 if i == 0 else 1.0
+	return angle * (sign_inward if swing != Swing.OUTWARD else -sign_inward)
+
+
+## True when a crew member / NPC overlaps a leaf posed at open fraction `f` that it does not already
+## overlap at the current pose (so a leaf touching a body can still move away from it).
+func _sweep_blocked(f: float) -> bool:
+	if not is_inside_tree():
+		return false
+	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
+	var angle: float = deg_to_rad(Tweak.interaction().door_open_angle_deg) * f
+	for i: int in range(mini(_leaves.size(), _leaf_bodies.size())):
+		var leaf: Node3D = _leaves[i]
+		var cs: CollisionShape3D = _leaf_bodies[i].get_node_or_null(^"Collision") as CollisionShape3D
+		var parent: Node3D = leaf.get_parent() as Node3D
+		if cs == null or cs.shape == null or parent == null:
+			continue
+		var rot: Vector3 = Vector3(leaf.rotation.x, _leaf_angle(i, angle), leaf.rotation.z)
+		var b: Basis = Basis.from_euler(rot, leaf.rotation_order) * Basis.from_scale(leaf.scale)
+		var next_xf: Transform3D = parent.global_transform * Transform3D(b, leaf.position) * cs.transform
+		var hits: Array[RID] = _sweep_rids(space, cs.shape, next_xf)
+		if hits.is_empty():
+			continue
+		var now: Array[RID] = _sweep_rids(space, cs.shape, cs.global_transform)
+		for r: RID in hits:
+			if not now.has(r):
+				return true
+	return false
+
+
+func _sweep_rids(space: PhysicsDirectSpaceState3D, shape: Shape3D, xf: Transform3D) -> Array[RID]:
+	if _sweep_query == null:
+		_sweep_query = PhysicsShapeQueryParameters3D.new()
+		_sweep_query.collision_mask = SWING_BLOCK_MASK
+		_sweep_query.collide_with_areas = false
+		_sweep_query.collide_with_bodies = true
+	_sweep_query.shape = shape
+	_sweep_query.transform = xf
+	var out: Array[RID] = []
+	for hit: Dictionary in space.intersect_shape(_sweep_query, 8):
+		out.append(hit["rid"] as RID)
+	return out
 
 
 # --- NPC doors (A2-01, QA-11) -------------------------------------------------------------
@@ -267,12 +425,12 @@ func npc_open(agent: Node) -> bool:
 	return true
 
 
-func _npc_apply_open(by_net_id: int, was_locked: bool) -> void:
+func _npc_apply_open(by_net_id: int, was_locked: bool, breach: bool = false) -> void:
 	_npc_open_pending = false
 	if not is_inside_tree() or is_open:
 		return
 	_opened_by_net_id = by_net_id
-	set_open(true)
+	set_open(true, false, breach)  # PO-6: a police breach kicks it open (fast swing)
 	var close_s: float = Tweak.interaction().npc_locked_door_close_s
 	if was_locked and locked and close_s > 0.0:
 		get_tree().create_timer(close_s, false, true).timeout.connect(_npc_auto_close)
@@ -287,7 +445,7 @@ func _npc_apply_breach(by_net_id: int) -> void:
 	if not is_inside_tree() or is_open:
 		return
 	unlock()
-	_npc_apply_open(by_net_id, false)
+	_npc_apply_open(by_net_id, false, true)
 	var p: Vector3 = global_position + Vector3(0.0, 1.0, 0.0)
 	EventBus.audio_cue_requested.emit(&"cue.door_breach", p, by_net_id)
 	Net.replicate_event(&"audio_cue_requested", [&"cue.door_breach", p, by_net_id])
@@ -502,7 +660,7 @@ func _blow_charges(by_net_id: int) -> void:
 		rt.make_noise(pos, tw.c4_noise_radius_m, &"explosion", net_id)
 	Explosion.apply(self, pos, tw.c4_blast_radius_m, tw.c4_blast_damage, by_net_id, Safe.C4_ITEM)
 	unlock()
-	set_open(true)
+	set_open(true, false, true)  # PO-6: blown open (fast swing)
 
 
 func _setup_leaf_bodies() -> void:
@@ -511,6 +669,7 @@ func _setup_leaf_bodies() -> void:
 		return
 	var w: float = effective_width()
 	var leaf_w: float = w * 0.5 if swing == Swing.DOUBLE else w
+	var surface: StringName = leaf_surface_id()
 	var leaf_names: PackedStringArray = PackedStringArray(["Leaf"])
 	if swing == Swing.DOUBLE:
 		leaf_names.append("Leaf2")
@@ -530,9 +689,27 @@ func _setup_leaf_bodies() -> void:
 		cs.position.x = leaf_w * 0.5 * (1.0 if i == 0 else -1.0)
 		body.collision_layer = LAYER_WORLD_DYNAMIC
 		body.collision_mask = 0
+		body.set_meta(ShotFx.SURFACE_META, surface)
 		_leaves.append(leaf)
 		_leaf_bodies.append(body)
 	_sync_leaf_bodies()
+
+
+## D-105: the leaves' bullet surface: `leaf_surface`, else metal for a BARRED / VAULT lock or a metal-style visual,
+## glass for a glass-style visual, else wood.
+func leaf_surface_id() -> StringName:
+	if leaf_surface != &"":
+		return leaf_surface
+	if lock == Lock.VAULT or lock == Lock.BARRED:
+		return SURFACE_METAL
+	var style: String = visual_scene.resource_path.get_file().to_lower() if visual_scene != null else ""
+	for k: String in LEAF_METAL_KEYWORDS:
+		if k in style:
+			return SURFACE_METAL
+	for k: String in LEAF_GLASS_KEYWORDS:
+		if k in style:
+			return SURFACE_GLASS
+	return SURFACE_WOOD
 
 
 func _sync_leaf_bodies() -> void:

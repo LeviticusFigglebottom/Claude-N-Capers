@@ -212,6 +212,7 @@ func _fit_collision() -> void:
 		vis.collision_layer = own.collision_layer
 		vis.collision_mask = own.collision_mask
 		_route_hits(vis)
+		inherit_surface(own, vis)
 		_disable_body(own)
 		visual_collision = vis
 		return
@@ -227,6 +228,14 @@ func _fit_collision() -> void:
 	shape.size = box.size
 	cs.shape = shape
 	cs.transform = xform_to_self(own).affine_inverse() * Transform3D(Basis.IDENTITY, box.get_center())
+
+
+## D-105 (impact_fx.md §1): give `dst` the bullet surface tag (`metadata/surface`) of `src` unless the
+## art already tags it (a visual's own `Collision` replacing the prefab's box keeps the prefab's material).
+static func inherit_surface(src: Node, dst: Node) -> void:
+	if src == null or dst == null or dst.has_meta(ShotFx.SURFACE_META) or not src.has_meta(ShotFx.SURFACE_META):
+		return
+	dst.set_meta(ShotFx.SURFACE_META, src.get_meta(ShotFx.SURFACE_META))
 
 
 ## Turn a collision body fully off (layers, mask and shapes).

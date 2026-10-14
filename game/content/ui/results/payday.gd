@@ -24,6 +24,8 @@ class_name PaydayScreen
 extends UiScreen
 
 signal continue_pressed()
+## Lead (first-heist safety net): "Try again at Routine" after a new player's failed first heist.
+signal retry_requested()
 
 const MENU_SCENE: String = "res://content/ui/menus/menu_flow.tscn"
 const URGENT_COLOR: Color = Color(1.0, 0.42, 0.32)
@@ -57,6 +59,8 @@ var result: Dictionary = {}
 var value_labels: Dictionary = {}
 var level_bar: ProgressBar
 var continue_button: Button
+## Shown only when offer_retry() (a failed heist, no heist completed yet, solo).
+var retry_button: Button
 var xp_before: int = 0
 var xp_after: int = 0
 ## PaydayCards.roll output for the shown result ({} = no card pick).
@@ -129,10 +133,19 @@ func build_ui() -> void:
 	_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(_content)
 	continue_button = UiBuild.primary(UiBuild.button(&"ui.results.continue"))
-	continue_button.size_flags_horizontal = Control.SIZE_SHRINK_END
 	continue_button.pressed.connect(_on_continue)
-	root.add_child(continue_button)
-	focus_chain.append(continue_button)
+	var foot: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	foot.alignment = BoxContainer.ALIGNMENT_END
+	root.add_child(foot)
+	retry_button = UiBuild.button(&"ui.results.retry_routine")
+	retry_button.pressed.connect(retry_requested.emit)
+	retry_button.visible = false
+	foot.add_child(retry_button)
+	foot.add_child(continue_button)
+	focus_chain.append(continue_button)  # Continue keeps the default focus; Retry is one step left
+	focus_chain.append(retry_button)
+	continue_button.focus_neighbor_left = continue_button.get_path_to(retry_button)
+	retry_button.focus_neighbor_right = retry_button.get_path_to(continue_button)
 	back_requested.connect(_on_continue)
 	# input_focus.md 1.1: the payday screen holds the cursor while shown (MouseCapture &"payday"), so the
 	# heist's still-live PlayerInput neither captures it nor eats the first click as a capture click.
@@ -319,6 +332,7 @@ func _set_stage(cards: bool) -> void:
 		continue_button.disabled = false
 		focus_chain.clear()
 		focus_chain.append(continue_button)
+		focus_chain.append(retry_button)
 		card_result_label.text = ""
 
 
@@ -445,6 +459,7 @@ func _render() -> void:
 		var a: AchievementDef = ContentDB.by_id(ContentDB.ACHIEVEMENTS, id) as AchievementDef
 		if a != null:
 			_content.add_child(UiBuild.label(&"ui.results.achievement_unlocked", UiBuild.SUBHEADER, {"name": UiText.t(a.name_key)}))
+	retry_button.visible = offer_retry()
 	focus_default()
 	animate_xp()
 
@@ -456,6 +471,16 @@ func _summary_key(success: bool) -> StringName:
 	if not success:
 		return &"ui.results.failure"
 	return &"ui.results.stealth" if bool(result.get("stealth", false)) else &"ui.results.loud"
+
+
+## First-heist safety net: a failed heist while the profile has never completed one, solo (the only
+## human, with authority): the payday offers to replay the job at Routine.
+func offer_retry() -> bool:
+	if result.is_empty() or bool(payout.get("success", true)) or profile == null:
+		return false
+	if int(profile.stats.get("heists_completed", 0)) > 0:
+		return false
+	return Net.is_authority() and Net.human_slots().size() <= 1
 
 
 ## Strings key explaining a failed heist's `fail_reason` (unknown / empty reads as an abort).
