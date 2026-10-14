@@ -252,3 +252,16 @@ func test_loot_line_prices_each_not_per_bag() -> void:
 	var t: String = UiText.t(&"ui.briefing.loot_line", {"loot": "Calloway's Study", "value": "$700"})
 	assert_eq(t, "Calloway's Study: $700 each")
 	assert_false(t.contains("bag"))
+
+
+## D-109 windowed pass: Escape sat below the fold of the job column (ND, SL at 720p and 1080p); it is one line
+## in the header now, under Approach.
+func test_escape_line_sits_in_the_header() -> void:
+	var s: BriefingScreen = (load(SCENE) as PackedScene).instantiate() as BriefingScreen
+	s.setup(&"night_deposit", Enums.Difficulty.HAZARDOUS)
+	add_child(s)
+	await wait_frames(2)
+	assert_eq(s.escape_label.get_parent(), s.mode_label.get_parent(), "escape beside approach")
+	var opts: String = "%s, %s" % [UiText.t(&"ui.briefing.escape.van"), UiText.t(&"ui.briefing.escape.boat")]
+	assert_eq(s.escape_label.text, UiText.t(&"ui.briefing.escape_line", {"options": opts}))
+	s.queue_free()

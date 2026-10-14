@@ -115,8 +115,10 @@ func _build_header(root: VBoxContainer) -> void:
 	header.add_child(right)
 	difficulty_label = UiBuild.label(&"", UiBuild.SUBHEADER)
 	mode_label = UiBuild.label(&"", UiBuild.DIM)
+	# D-109 pass: the Escape section sat below the fold of the job column (ND/SL); one line under Approach.
+	escape_label = UiBuild.label(&"", UiBuild.DIM)
 	pay_label = UiBuild.label(&"", UiBuild.SUBHEADER)
-	for l: Label in [difficulty_label, mode_label, pay_label]:
+	for l: Label in [difficulty_label, mode_label, escape_label, pay_label]:
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		right.add_child(l)
 
@@ -171,11 +173,6 @@ func _build_intel_column(body: HBoxContainer) -> void:
 	col.add_child(objectives_box)
 	extras_box = UiBuild.vbox(UiTokens.S1)  # D-109: "If it goes loud: ..." and the Optional list
 	col.add_child(extras_box)
-	col.add_child(_spacer(8))
-	col.add_child(_head(&"ui.briefing.escape"))
-	escape_label = UiBuild.label()
-	escape_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	col.add_child(escape_label)
 
 
 ## PO-4 section head: a brass caption (style.md §4).
@@ -225,7 +222,8 @@ func refresh() -> void:
 	var escapes: PackedStringArray = PackedStringArray()
 	for e: Dictionary in model["escape_options"] as Array:
 		escapes.append(String(e["text"]))
-	escape_label.text = ", ".join(escapes) if not escapes.is_empty() else UiText.t(&"ui.briefing.escape_unknown")
+	escape_label.text = UiText.t(&"ui.briefing.escape_line", {"options": ", ".join(escapes)}) if not escapes.is_empty() \
+			else UiText.t(&"ui.briefing.escape_unknown")
 	_speaker_names.clear()
 	for c: ContactDef in ContactDef.all():
 		_speaker_names[c.voice_speaker] = UiText.t(c.display_name_key)
