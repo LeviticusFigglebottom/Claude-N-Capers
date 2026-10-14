@@ -124,6 +124,31 @@ def ceiling_tile(ctx: AssetContext, size: float) -> None:
 
 # ------------------------------------------------------------------------------------ doors
 
+# PO-7 frame_proud: greybox door frames are placed in walls of any thickness (0.04 m glazing,
+# 0.06 m cages and fences, 0.3 m stair cores), so their collision is a 4 cm bullnose fin on the
+# wall line (never proud of a wall face, never inside the leaf's span): the wall reveal behind the
+# lining already blocks, the fin only keeps a capsule off the lining and slides it round the jamb.
+DOOR_FIN = 0.04
+
+
+def door_fin_collision(hw: float, jamb: float) -> geo.MeshBuilder:
+    """Frame collision: per jamb a DOOR_FIN thick fin from the reveal (|x| = hw) to the lining's
+    inner face (|x| = hw - jamb) with a round nose there, plus the head over the full width."""
+    f = DOOR_FIN / 2
+    col = geo.MeshBuilder()
+    for side in (-1.0, 1.0):
+        xi = hw - jamb
+        pts = [(hw, -f)]
+        for i in range(9):
+            ang = -math.pi / 2 - math.pi * i / 8
+            pts.append((xi + f + f * math.cos(ang), f * math.sin(ang)))
+        pts.append((hw, f))
+        prof = [(side * x, y) for x, y in pts]
+        col.prism(prof if side > 0 else list(reversed(prof)), axis="Z", start=0.0, end=OPENING_H)
+    col.box((-hw, -f, LEAF_H), (hw, f, OPENING_H))
+    return col
+
+
 def door(ctx: AssetContext, kind: str, wall_t: float, with_leaf: bool) -> None:
     d = DOORS[kind]
     w_open = door_opening_w(kind)
@@ -136,13 +161,12 @@ def door(ctx: AssetContext, kind: str, wall_t: float, with_leaf: bool) -> None:
     assert head > 0
     mb = geo.MeshBuilder()
     mb.prism(outer, axis="Y", start=-depth / 2, end=depth / 2, mat=mb.material(mat(ctx, "grey_frame")))
-    col = mb.copy()
     mb.bevel(BEVEL * 0.6)
     uv.box_project(mb.bm, density=uv.DENSITY_NEAR)
     frame = mb.to_object("Frame")
     geo.finish_hard_surface(frame)
     # visual_slots.md: the door prefab looks up `Frame/Collision` (StaticBody3D under the Frame mesh).
-    geo.collision_from_builder(col, "trimesh", parent=frame)
+    geo.collision_from_builder(door_fin_collision(hw, jamb), "trimesh", parent=frame)
     if not with_leaf:
         return
     leaf_w = d["leaf"]
