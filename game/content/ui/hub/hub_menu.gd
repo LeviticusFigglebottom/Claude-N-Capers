@@ -157,6 +157,11 @@ func chain_grid() -> void:
 		c.set_focus_neighbor(SIDE_LEFT, c.get_path_to(cards[0]))
 	back_button.set_focus_neighbor(SIDE_TOP, back_button.get_path_to(cards[n - 1]))
 	back_button.set_focus_neighbor(SIDE_BOTTOM, back_button.get_path_to(cards[0]))
+	# Quick Play sits bottom right: Main Menu <-> Continue, Options above it.
+	back_button.set_focus_neighbor(SIDE_RIGHT, back_button.get_path_to(continue_button))
+	continue_button.set_focus_neighbor(SIDE_LEFT, continue_button.get_path_to(back_button))
+	continue_button.set_focus_neighbor(SIDE_TOP, continue_button.get_path_to(options_button))
+	options_button.set_focus_neighbor(SIDE_BOTTOM, options_button.get_path_to(continue_button))
 
 
 func _refresh_continue(p: PlayerProfile) -> void:
