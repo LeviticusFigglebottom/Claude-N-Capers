@@ -4,7 +4,7 @@
 extends TestCase
 
 ## Characters ENV D has announced but not shipped yet (NpcVisuals falls through to the next rule meanwhile).
-const PENDING_CHARACTERS: Array[String] = ["gallery_admin"]
+const PENDING_CHARACTERS: Array[String] = []
 const GUARD_DEF: String = "res://systems/ai/data/enemies/security_officer.tres"
 
 var _rt: HeistRuntime = null
