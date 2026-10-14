@@ -2961,3 +2961,4 @@ ui.stats.boosted_value,{value}*
 ui.stats.boosted_legend,* Boosted by your skills and perk deck
 ui.hud.player_left,{name} left the game. An AI plays {heister} now.
 ui.hud.player_joined,{name} joined as {heister}.
+ui.lobby.host_closed,The host ended the heist. You are back in the crew lobby.
