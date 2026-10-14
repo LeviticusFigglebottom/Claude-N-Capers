@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 21:55: **round 147 ON ORIGIN**: env/a-core 7e4f007c (harness root cause for ND 15-18: pilot re-pressed interact after engaging without re-aiming, so F hit cop 114 (shout/surrender) instead of the lock; now re-aims and only presses on the lock, and skips surrendered cops). Game correct throughout. ND loud attempt 19 running (A).
 - 2026-10-14 21:40: **round 146 ON ORIGIN**: env/a-core d5bea862 (harness: pilot use() on a door >1.8 m away walks there with door handling first, then open_door; attempt 17 stopped at t≈111, pilot jammed behind TellerDoor). ND loud attempt 18 running (A).
 - 2026-10-14 21:20: **round 145 ON ORIGIN**: env/a-core aaeb1284 (ND TellerDoor lockpick real-input tests 2/2 green: aimed hold picks the lock and a cop beside the door is NOT dominated, so the F-resolver is PD2-correct; attempt 15/16 failure was pilot routing (generic use() missed the lock), harness now routes door use() via open_door; pilot clears the way before carrying bags; lockpick ranked after open/drill/keycard). Harness/tests only. ND loud gate attempt 17 running (A).
 - 2026-10-14 21:00: **round 144 ON ORIGIN**: env/b-content 2ff51c2f (HUD first-loud-frame spike 82-90 ms → 2.3 ms: UiSfx.warm() preloads the cue registry at HUD ready; test_hud_frame_budget loud-wave case) + env/p-play. b frame_budget/ui_cues/ui_theme/pp_heist_ui/onboarding/ui_hud, p po4_feel/fp_states green.
