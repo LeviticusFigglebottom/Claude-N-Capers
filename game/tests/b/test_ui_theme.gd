@@ -120,9 +120,16 @@ func test_objective_complete_flash() -> void:
 	assert_true(_hud.objectives.flashing, "next step: the complete flash runs")
 	assert_eq(_hud.objectives.header_label.text, UiText.t(&"ui.hud.objective_complete"))
 	assert_eq(_hud.objectives.shown_id, &"b")
-	await wait_seconds(ObjectivesPanel.FLASH_S + 0.2)
+	# Lead (A's ND note): under "OBJECTIVE COMPLETE" only the FINISHED step shows, struck through.
+	assert_true(_hud.objectives.done_label.visible and _hud.objectives.done_label.text.contains("[s]"))
+	assert_true(_hud.objectives.done_label.text.contains(UiText.t(&"objective.glasshouse.keycard")))
+	assert_false(_hud.objectives.list_box.visible, "the next step waits for the flash")
+	await wait_seconds(ObjectivesPanel.FLASH_S * 0.8)
+	assert_false(_hud.objectives.list_box.visible, "still waiting while the caption says complete")
+	await wait_seconds(ObjectivesPanel.FLASH_S * 0.2 + UiTokens.T_BASE + 0.2)
 	assert_false(_hud.objectives.flashing)
 	assert_eq(_hud.objectives.header_label.text, UiText.t(&"ui.hud.objectives"))
+	assert_true(_hud.objectives.list_box.visible, "then the next step")
 
 
 func test_crew_rows_named_by_heister_before_ready() -> void:
