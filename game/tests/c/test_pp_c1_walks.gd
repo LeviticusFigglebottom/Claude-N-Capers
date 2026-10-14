@@ -58,8 +58,8 @@ func test_walk_dockside_burn() -> void:
 	await _walk_heist(&"dockside_burn")
 
 
-## D-085 human mode: the same legs, but a path corner next to a doorway is replaced by the door's centre line
-## (1 m in front of the leaf, then 1 m behind it), the way a player lines up a door.
+## D-085 human mode: the same legs, but a path corner next to a doorway the path goes through is replaced by the
+## door's centre line (1 m in front of the leaf, then 1 m behind it), the way a player lines up a door.
 func test_doors_glasshouse() -> void:
 	await _walk_heist(&"glasshouse", true)
 
@@ -424,9 +424,17 @@ func _row(heist: StringName, kind: String, target: String, at: Vector3, note: St
 	print("[PP-C-1] " + s)
 
 
-## Corners within 1.5 m (flat) of a Door become [1 m before the leaf centre, 1 m past it] on the walker's side.
+## Corners within 1.5 m (flat) of a Door the path goes through become [1 m before the leaf centre, 1 m past it] on
+## the walker's side. Only doors whose doorway a path segment crosses (Door.doorway_crossing): a corridor path that
+## merely passes a side door (e.g. the Glasshouse upper corridor past StockDoor / UpperLobbyDoor to the stair head)
+## must not be sent through that door into the room, where the next corner is behind a wall.
 func _door_centred(path: PackedVector3Array) -> PackedVector3Array:
-	var doors: Array[Node] = _rt.map.find_children("*", "Door", true, false)
+	var doors: Array[Node] = []
+	for n: Node in _rt.map.find_children("*", "Door", true, false):
+		for k: int in range(1, path.size()):
+			if (n as Door).doorway_crossing(path[k - 1], path[k]) != Vector3.INF:
+				doors.append(n)
+				break
 	var out: PackedVector3Array = PackedVector3Array([path[0]])
 	var used: Dictionary = {}
 	for i: int in range(1, path.size()):

@@ -8,7 +8,8 @@
 ##     (PO-5: walls and floors block the all-round shout; PD2 intimidates who can hear/see you)
 ## receives `CivilianBrain.on_shouted(crew)` (the brain applies the D-016 roll for panicked ones
 ## and emits civilian_intimidated [R]). Shouting is allowed while casing (S1.1) and is not a
-## NoiseEvent (no make_noise).
+## NoiseEvent (no make_noise), but PO-11 (S1.1): an unmasked (casing or civilian-mode) crew member's
+## shout never reaches a civilian (PD2: civilians ignore you until you mask up); it can only mark.
 ## S2.9 (A2-05): a shout that affects no civilian marks the markable target (guard, special, camera:
 ## StealthDirector.mark_kind_of) nearest the aim line within mark_cone_half_deg / mark_range_m with
 ## line of sight, for the whole crew. Unmasked (casing) crew mark only with `stealth.casing_can_mark`.
@@ -189,7 +190,7 @@ static func guard_dominate_cone_half_deg(d: float) -> float:
 func targets_for(crew: CrewController) -> Array[NpcBase]:
 	var out: Array[NpcBase] = []
 	var rt: HeistRuntime = _runtime if _runtime != null else HeistRuntime.of(crew)
-	if rt == null:
+	if rt == null or crew.is_casing():  # PO-11 (S1.1): an unmasked shout intimidates no civilian
 		return out
 	var tw: StealthTweak = Tweak.stealth()
 	var range_m: float = tw.shout_range_m * Modifiers.mult(crew.slot, &"stealth.civilian_intimidate_range_mult") \

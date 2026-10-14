@@ -35,6 +35,7 @@ func test_po5_shout_blocked_by_wall_and_floor_open_crowd_drops() -> void:
 	await wait_physics_frames(3)
 	var shout: ShoutSystem = ShoutSystem.ensure(_rt)
 	var crew: CrewController = _rt.crew_controller(0) as CrewController
+	crew.set_masked()  # PO-11 (S1.1): only a masked shout reaches civilians
 	var got: Array[NpcBase] = shout.targets_for(crew)
 	assert_false(got.has(below), "a civilian on the floor below within 6 m is not reached")
 	assert_has(got, open_civ, "a civilian next to the crew in the open is reached (no cone needed)")
@@ -51,6 +52,7 @@ func test_po5_shout_blocked_by_wall_same_floor() -> void:
 	var crowd: Array[NpcBase] = [beside, _civ_at(Vector3(-2.5, 0.05, -1.0)), _civ_at(Vector3(1.0, 0.05, -3.0))]
 	await wait_physics_frames(3)
 	var crew: CrewController = _rt.crew_controller(0) as CrewController
+	crew.set_masked()  # PO-11 (S1.1): only a masked shout reaches civilians
 	var got: Array[NpcBase] = ShoutSystem.ensure(_rt).targets_for(crew)
 	assert_false(got.has(behind_wall), "a civilian behind a wall within 6 m is not reached")
 	for c: NpcBase in crowd:
@@ -81,6 +83,7 @@ func test_po5_glasshouse_shout_does_not_cross_corridor_wall() -> void:
 	var upstairs: NpcBase = _civ_at(Vector3(9.0, 4.25, 7.6))
 	await wait_physics_frames(3)
 	var crew: CrewController = _rt.crew_controller(0) as CrewController
+	crew.set_masked()  # PO-11 (S1.1): only a masked shout reaches civilians
 	var got: Array[NpcBase] = ShoutSystem.ensure(_rt).targets_for(crew)
 	assert_false(got.has(corridor), "no shout through the corridor wall")
 	assert_false(got.has(upstairs), "no shout through the ceiling")

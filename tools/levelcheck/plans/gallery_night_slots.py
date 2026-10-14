@@ -2,7 +2,7 @@
 # cross-checked against the design doc and ENV B's draft data (GN-C1). Owner: ENV C.
 # Run: python3 tools/levelcheck/plans/gallery_night_slots.py              (the slot list)
 #      python3 tools/levelcheck/plans/gallery_night_slots.py --check      (consistency report, exit 0/1)
-#      python3 tools/levelcheck/plans/gallery_night_slots.py --check --b-live[=<git ref>]
+#      python3 tools/levelcheck/plans/gallery_night_slots.py --check --b-live[=<git ref>] [--root=<checkout>]
 #          (re-read ENV B's draft from git, default origin/env/b-gallery-night, instead of the snapshot below,
 #           and report where the snapshot is stale)
 #
@@ -31,10 +31,13 @@ import subprocess
 import sys
 from typing import Dict, List, Optional, Tuple
 
+ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+for _a in sys.argv:  # --root=<repo checkout> when the script runs from a copy (ENV B)
+    if _a.startswith("--root="):
+        ROOT = os.path.abspath(_a.split("=", 1)[1])
+sys.path.insert(0, os.path.join(ROOT, "tools", "levelcheck", "plans"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import gallery_night_floors_ascii as P  # noqa: E402
-
-ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 DOC = os.path.join(ROOT, "docs", "design", "heists", "gallery_night.md")
 B_REF = "origin/env/b-gallery-night"
 B_FILES = {
@@ -309,10 +312,10 @@ def parse_doc(text: str) -> Dict:
 
 
 # ------------------------------------------------------------------------------------------- ENV B draft
-# Snapshot of ENV B's draft at origin/env/b-gallery-night f2063f84 (parse_b() of the five files), so --check
+# Snapshot of ENV B's draft at origin/env/b-gallery-night f2063f84 + 2302f353 (QC-62 siblings) (parse_b() of the five files), so --check
 # runs without git. `--b-live` re-reads the branch and reports drift.
 B_SNAPSHOT = {
-    "ref": "f2063f84",
+    "ref": "2302f353",
     "rules": [
         ["centrepiece", [1, 1], None, {}, {}],
         ["canvas_orchard", [1, 1], None, {}, {}],
@@ -361,8 +364,8 @@ B_SNAPSHOT = {
         "court_doors": [["court_doors_open", 1.0], ["court_doors_locked", 1.0]],
         "areaway": [["grate_loose", 1.0], ["grate_padlocked", 1.0]],
         "escape": [["esc_mews", 0.55], ["esc_parade", 0.45]],
-        "xl_crate": [["xl_loan", None]],
-        "admin_pa": [["pa_late", None]],
+        "xl_crate": [["xl_loan", 1.0], ["xl_none", 1.0]],
+        "admin_pa": [["pa_late", 1.0], ["pa_none", 1.0]],
     },
     "scalars": {"last_call_s": [480, 600, 720], "patrons": [3, 5, 7, 9], "stragglers": [0, 1, 2],
                 "store_paintings": [4, 6, 8], "consignment_lockers": [4, 6, 8], "escape_eta_s": [90, 120, 150]},

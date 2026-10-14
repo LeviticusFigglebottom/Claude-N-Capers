@@ -208,6 +208,7 @@ func test_coop_payday_continue_returns_to_the_lobby() -> void:
 	assert_eq(f.lobby_screen.host(), OK)
 	await wait_frames(2)
 	f.lobby.set_ready(true)
+	f.lobby.state.started = {"heist": &"glasshouse", "difficulty": 0, "is_pro": false, "seed": 1}  # as MSG_START leaves it
 	f.call(&"_begin_client_heist", {"heist": &"glasshouse", "difficulty": 0, "is_pro": false})
 	await wait_frames(1)
 	assert_true(f.in_heist_ui_spawned())
@@ -217,6 +218,7 @@ func test_coop_payday_continue_returns_to_the_lobby() -> void:
 	assert_true(f.is_coop(), "the session is kept")
 	assert_eq(f.current, f.lobby_screen as Control, "back in the crew lobby")
 	assert_false(f.lobby.state.is_ready(f.lobby.state.local_slot), "ready cleared for the next job")
+	assert_true(f.lobby.state.started.is_empty(), "the spent launch order is cleared: the host can Start again")
 
 
 ## Stand-ins for a client HeistRuntime and its HeistNetSync (only the C11 host_closed hook is exercised).

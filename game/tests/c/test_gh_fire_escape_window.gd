@@ -3,7 +3,8 @@
 ## Per variant: the committed map's Geometry + Navigation + that slot's BreakRoomWindow go live; shut,
 ## a crew capsule is blocked and there is no layer-1 path landing -> break room; open / broken, the
 ## capsule (r 0.35, h 1.8) and a thrown bag pass the opening and a layer-1 nav path exists, through
-## the opening (the landing's only other way out is the climbers-only ladder link, layer 8).
+## the opening (the landing's only other way out is the climbers-only ladder link, layer 8). The open sash
+## (`sash_travel_m`) clears the frame head and stays inside the wall under the parapet.
 ## Also (PO-5 stair ramps): a plain move_and_slide body (NpcMotor-like, r 0.3, no step-up) walks up both
 ## flights of the G8 U-stair, and the navmesh joins the stair feet (G4 corridor, U4).
 ## Owner: ENV C.
@@ -13,6 +14,9 @@ const SCENE: String = "res://world/heists/glasshouse/glasshouse.tscn"
 const SLOT_ROOT: String = "Variants/Group_open_window/"
 const OPENING_X: Vector2 = Vector2(1.65, 2.85)
 const FLOOR_Y: float = 4.2
+## Open sash: all of it (bottom rail, lift handles) above the 2.1 m opening head, inside the wall.
+const SASH_CLEAR_MIN_Y: float = 2.1
+const PARAPET_TOP: float = 8.8
 const LANDING_PT: Vector3 = Vector3(2.25, 4.2, -0.9)
 const ROOM_PT: Vector3 = Vector3(2.25, 4.2, 1.6)
 
@@ -35,6 +39,13 @@ func test_open_variant_walkable_once_opened() -> void:
 	w.set_open(true)
 	await wait_physics_frames(3)
 	_assert_passable(w, "open slot, sash up")
+	# The sash visual has no collision: check it clears the opening (>= 1.0 x 1.9 m clear, PO-5) and stays
+	# inside the wall under the parapet (sash_travel_m, not a scaled track).
+	var sash: AABB = w.merged_mesh_aabb(w.visual_node("Sash"))
+	assert_true(sash.position.y >= SASH_CLEAR_MIN_Y and sash.end.y <= PARAPET_TOP - FLOOR_Y,
+		"open slot: sash up, bottom %.3f >= %.2f, top %.3f <= %.2f (window space)"
+			% [sash.position.y, SASH_CLEAR_MIN_Y, sash.end.y, PARAPET_TOP - FLOOR_Y])
+	assert_true(absf(sash.position.z) < 0.2 and absf(sash.end.z) < 0.2, "open slot: sash inside the 0.4 m wall (%s)" % sash)
 	w.set_open(false)
 	await wait_physics_frames(3)
 	_assert_shut(w, "open slot, sash closed again")

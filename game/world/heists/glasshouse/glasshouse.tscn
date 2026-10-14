@@ -11643,6 +11643,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 4.2, 0)
 script = ExtResource("157_gh")
 openable = true
 walkable = true
+sash_travel_m = 2.15
 visual_scene = ExtResource("197_gh")
 objective_tag = &"breakroom_window"
 metadata/kind = "window"
