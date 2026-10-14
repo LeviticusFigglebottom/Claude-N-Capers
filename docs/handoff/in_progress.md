@@ -21,6 +21,9 @@ Dependent merges: **B + D (SMG)** and **P 035eee7f + D (long-gun clip)**. Mergin
 `d/test_arms` or `p/test_p_finger_clip` red. Run the FP set after each: `p test_po4_feel test_p1_01 test_p1_03
 test_p_grip_offset test_p_finger_clip`, `d test_arms`, `a test_fp_viewmodel`, `b left_hand_ik`.
 
+**ENV D wrote no `## HANDOFF 2026-10-14` section** in `docs/status/env_d.md` before the stop. §D below is the
+authoritative list for D, written from D's last message. It was asked to add the section; merge it if it lands on env/d-art.
+
 **Corrections to the env notes:**
 * A's status lists three items waiting on the LEAD: the `&"sensor"` alarm reason, the GN camera-operator spawn tag
   and AS vault courier authorisation. All three are **done** on trunk (events.md, characters.md v1.11, board).
