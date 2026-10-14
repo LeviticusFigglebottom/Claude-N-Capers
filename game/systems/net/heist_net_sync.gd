@@ -51,6 +51,8 @@ const SVC_RUNTIME: String = "rt"
 const SVC_STATS: String = "stats"
 ## ui_hud v1.3: {"present": bool, "resistance": float 0..1} of the director's AegisCaptain.
 const SVC_CAPTAIN: String = "captain"
+## D-103 §6: runtime MapZone kind changes (ZoneKinds).
+const SVC_ZONES: String = "zones"
 ## C11 Net.lobby_message kinds, both {"token": int}: host -> clients / client -> host.
 const KIND_CLOSED: StringName = &"heist_closed"
 const KIND_LEFT: StringName = &"heist_left"
@@ -335,6 +337,9 @@ func services_state() -> Dictionary:
 	if _runtime.stats != null:
 		out[SVC_STATS] = _runtime.stats.net_state()
 	out[SVC_CAPTAIN] = captain_state()
+	var zones: ZoneKinds = _runtime.service(ZoneKinds.SERVICE) as ZoneKinds
+	if zones != null and not zones.overrides.is_empty():
+		out[SVC_ZONES] = zones.net_state()
 	return out
 
 
@@ -500,6 +505,8 @@ func apply_services(svc: Dictionary) -> void:
 		custody.apply_net_state(svc[SVC_CUSTODY] as Dictionary)
 	if svc.has(SVC_STATS) and _runtime.stats != null:
 		_runtime.stats.apply_net_state(svc[SVC_STATS] as Dictionary)
+	if svc.has(SVC_ZONES):
+		ZoneKinds.ensure(_runtime).apply_net_state(svc[SVC_ZONES] as Dictionary)
 	if svc.has(SVC_RUNTIME):
 		var r: Dictionary = svc[SVC_RUNTIME] as Dictionary
 		phase_replicated.emit(int(r.get("phase", _runtime.phase)), bool(r.get("loud", _runtime.went_loud)))
