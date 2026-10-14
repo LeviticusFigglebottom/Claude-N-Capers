@@ -553,6 +553,8 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 		var tags: Variant = (o.get("args", {}) as Dictionary).get("marker_tags", [])
 		if int(o["state"]) != Enums.ObjectiveState.ACTIVE or not (tags is Array) or (tags as Array).is_empty():
 			continue
+		if bool((o.get("args", {}) as Dictionary).get("disabled", false)):
+			continue  # e.g. Night Deposit's code / server steps in a lockdown (the panel hides them too)
 		want[StringName(o["id"])] = tags as Array
 		keys.append("%s:%s" % [o["id"], o.get("args", {})])  # any data update re-resolves (QC-60: runtime tags)
 	var key: String = ",".join(keys)
