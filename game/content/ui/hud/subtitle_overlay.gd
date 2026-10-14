@@ -197,6 +197,8 @@ static func _args(ctx: Dictionary) -> Dictionary:
 		var v: Variant = ctx[k]
 		if (v is String or v is StringName) and String(v).contains(".") and StringTable.has(StringName(v)):
 			out[k] = StringTable.text(StringName(v))
+		elif v is float:
+			out[k] = roundi(v)  # HUD readability pass: "Van's 240.0 seconds out" -> "240 seconds"
 		else:
 			out[k] = v
 	return out

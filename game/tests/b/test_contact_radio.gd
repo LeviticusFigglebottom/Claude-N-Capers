@@ -431,3 +431,4 @@ func test_subtitles_clear_the_bottom_band_on_a_solid_backing() -> void:
 	assert_true(o.tweak.panel_color.a >= 0.8, "backing alpha %.2f" % o.tweak.panel_color.a)
 	assert_true(o.tweak.bottom_margin_px + o.tweak.max_height_px <= 354.0, "stays under the interaction prompt (hud_scale 1.5)")
 	o.queue_free()
+
