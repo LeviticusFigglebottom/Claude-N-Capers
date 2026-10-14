@@ -60,6 +60,8 @@ var _columns: Dictionary[Vector2i, PackedFloat32Array] = {}
 var _clean: Dictionary[Vector3i, bool] = {}
 var _edges: Array[Dictionary] = []
 var _reject: Dictionary[String, int] = {}
+var _ladder_pts: PackedVector3Array = PackedVector3Array()
+var _ladders_cached: bool = false
 var _samples: int = 0
 var _seen: Dictionary[Vector3i, bool] = {}
 var _seed_keys: Array[Vector3i] = []
@@ -428,12 +430,40 @@ func _flood(seeds: Array[Vector3i], max_samples: int) -> void:
 				interest.append("seam")
 			if bool(prof["low_touch"]):
 				interest.append("low_touch")
+			if _near_ladder(a) or _near_ladder(b):  # a masked crew in a ladder's grab cone climbs it: not a snag (C)
+				_reject["ladder_grab"] = _reject.get("ladder_grab", 0) + 1
+				continue
 			var tier: int = 1 if not interest.is_empty() else (2 if bool(prof["trimesh"]) else 3)
 			_edges.append({"a": a, "b": b, "a_key": key, "tier": tier, "interest": interest, "max_dy": prof["max_dy"],
 				"trimesh": bool(prof["trimesh"])})
 	_samples = mini(queue.size(), max_samples)
 	print("[PO3] %s: bounds %s, %d samples reached (%d queued), %d walkable edges, rejected %s, %.1fs" % [
 		_heist, _bounds, _samples, queue.size(), _edges.size(), _reject, _elapsed()])
+
+
+## Ladder grab points (Bottom / Top) in the heist, cached on first use.
+func _ladder_points() -> PackedVector3Array:
+	if _ladders_cached:
+		return _ladder_pts
+	_ladders_cached = true
+	var stack: Array[Node] = [get_tree().root]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		var l: Ladder = n as Ladder
+		if l != null:
+			_ladder_pts.append(l.bottom_position())
+			_ladder_pts.append(l.top_position())
+		stack.append_array(n.get_children())
+	return _ladder_pts
+
+
+## Within a ladder's grab radius (+ the capsule and a margin) of a grab point, at about its height.
+func _near_ladder(p: Vector3) -> bool:
+	var r: float = Tweak.interaction().ladder_grab_radius_m + 0.6
+	for q: Vector3 in _ladder_points():
+		if Vector2(p.x - q.x, p.z - q.z).length() <= r and absf(p.y - q.y) <= 1.0:
+			return true
+	return false
 
 
 func _pick_trials(budget: int) -> void:
