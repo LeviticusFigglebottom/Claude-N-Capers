@@ -8,7 +8,8 @@
 ## - BUNCH: two live NPCs closer than 0.35 m (overlap / bunching);
 ## - PROMPT_AIM: an interaction prompt is up for a component that is far (> 3.5 m) or off the aim (> 35 deg);
 ## - FLICKER: the interaction prompt toggles on/off more than 6 times in a second;
-## - CREW_STACK: two AI teammates closer than 0.5 m; CREW (every 10 s while enemies are near): AI teammates' mean
+## - CREW_STACK: two AI teammates closer than 0.5 m, or one inside the player (< 0.6 m);
+## - CREW (every 10 s while enemies are near): AI teammates' mean
 ##   spacing, distance to the player and the share in clear line of sight of the nearest enemy (exposed);
 ## - PROMPT: every distinct interaction prompt key shown (verb check);
 ## - SFX_PLACEHOLDER: a cue with no definition played (the placeholder beep); SFX_SPAM: one cue > 8 times / s;
@@ -157,7 +158,7 @@ func _check_flicker() -> void:
 		var key: StringName = StringName(_rt.hud_model.interaction.get("text_key", &""))
 		if key != &"" and not _prompt_keys.has(key):
 			_prompt_keys[key] = true
-			_note("PROMPT", "%s" % key)
+			_note("PROMPT", "%s on %s" % [key, _aimed_name()])
 	if up == _prompt_up:
 		return
 	_prompt_up = up
@@ -228,6 +229,13 @@ func _check_crew() -> void:
 					_stack_seen[key] = _rt.heist_time_s
 					_note("CREW_STACK", "AI %d and %d %.2f m apart at %s" % [bots[i].slot, bots[j].slot, d,
 						bots[i].global_position.snappedf(0.1)])
+	for b: CrewController in bots:
+		var dp: float = Vector2(b.global_position.x - me.global_position.x, b.global_position.z - me.global_position.z).length()
+		if dp < 0.6 and absf(b.global_position.y - me.global_position.y) < 1.0:
+			var pk: String = "p|%d" % b.slot
+			if _rt.heist_time_s - float(_stack_seen.get(pk, -99.0)) > 10.0:
+				_stack_seen[pk] = _rt.heist_time_s
+				_note("CREW_STACK", "AI %d inside the player (%.2f m) at %s" % [b.slot, dp, me.global_position.snappedf(0.1)])
 	var enemy: Node3D = null
 	var best: float = 30.0
 	for n: Node in get_tree().get_nodes_in_group(G.ENEMY):
@@ -260,3 +268,14 @@ func _check_crew() -> void:
 		_crew_exposed = 0
 		_crew_spacing = 0.0
 		_crew_dist = 0.0
+
+
+## Name of the interactable the local crew aims at (prompt source), "?" when unknown.
+func _aimed_name() -> String:
+	var c: CrewController = _rt.crew_controller(Net.local_slot()) as CrewController
+	if c == null or _rt.interaction == null or not _rt.interaction.has_method(&"aimed_component"):
+		return "?"
+	var comp: Node = _rt.interaction.call(&"aimed_component", c) as Node
+	if comp == null:
+		return "?"
+	return "%s/%s" % [comp.get_parent().name if comp.get_parent() != null else "", comp.name]
