@@ -176,7 +176,7 @@ func _enter_boh() -> String:
 		await f.shot("fire_exit")
 		return "PO-5.stealth.fire_exit: could not get through the fire exit into G10"
 	await _close_door(_door_named(&"FireExit"))
-	if not await p.goto(Vector3(15.3, UPPER_Y, 5.25), 0.6, 60.0):
+	if not await p.goto(Vector3(14.5, 2.1, 0.8), 0.6, 60.0):
 		await f.shot("stair")
 		return "PO-5.stealth.stair: could not reach the upper corridor"
 	return ""
@@ -187,6 +187,7 @@ func _keycard_upstairs() -> String:
 	var v: StringName = _variant(&"keycard")
 	if v != &"kc_manager" and v != &"kc_breakroom" and not (v == &"kc_security" and _operator_npc() == null):
 		return ""
+	await _wait_u4_clear()
 	return await _take_keycard()
 
 
@@ -196,6 +197,9 @@ func _operator() -> String:
 	if op == null:
 		f.note("no camera operator (security room empty): cameras stay live")
 		return ""
+	# The upper corridor is 1.5 m wide: a rover standing in it blocks the way (and C6 watches it). Wait on
+	# the stair landing, out of every view, until it is clear.
+	await _wait_u4_clear()
 	var behind: Vector3 = op.global_position - _flat(op.look_forward()) * 1.3
 	if not await p.goto(behind, 0.35, 60.0):
 		await f.shot("operator_unreached")
@@ -205,6 +209,24 @@ func _operator() -> String:
 	if not await _knife(op):
 		return "PO-5.stealth.knife: the operator survived the knife"
 	return await _answer_pager(op)
+
+
+func _wait_u4_clear() -> void:
+	var t0: float = rt.heist_time_s
+	while rt.heist_time_s - t0 < 90.0 and _u4_blocked():
+		if p.flat_dist(crew.global_position, Vector3(14.5, 0.0, 0.8)) > 0.8:
+			f.note("upper corridor blocked by a guard: waiting on the stair landing")
+			await p.goto(Vector3(14.5, 2.1, 0.8), 0.6, 20.0)
+		await f.wait_s(0.5)
+
+
+func _u4_blocked() -> bool:
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		var v: Vector3 = g.global_position
+		if g != _operator_npc() and v.y > 3.0 and v.z > 4.3 and v.z < 6.2 and v.x > 7.0 and v.x < 16.0:
+			return true
+	return false
 
 
 func _keycard_masked() -> String:
