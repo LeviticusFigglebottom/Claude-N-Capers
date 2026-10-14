@@ -15,7 +15,7 @@ const P5_LOOT: Array = [
 	[&"loot.painting_widow_in_blue", Enums.LootWeight.LIGHT, 1500],
 	[&"loot.painting_salt_orchard", Enums.LootWeight.LIGHT, 1700],
 	[&"loot.painting_lantern_bearer", Enums.LootWeight.LIGHT, 2000],
-	[&"loot.painting_study", Enums.LootWeight.LIGHT, 1100],  # D-075
+	[&"loot.painting_study", Enums.LootWeight.LIGHT, 700],  # D-075; $700 per D-081 / D-103.5
 ]
 ## Gallery Night's rolled canvases (PD2 carries cut paintings as a light bag).
 const PAINTINGS: Array[StringName] = [
@@ -23,8 +23,11 @@ const PAINTINGS: Array[StringName] = [
 	&"loot.painting_lantern_bearer", &"loot.painting_study",
 ]
 ## Value band per weight class, from the loot already shipped (jewelry $1,000 .. weapon crate $2,000)
-## stretched one step for gold: [min, max] by Enums.LootWeight.
-const BANDS: Array = [[1000, 2000], [1400, 2400], [2000, 3000]]
+## stretched one step for gold: [min, max] by Enums.LootWeight. LIGHT starts at $700: the painting study
+## (D-081 / D-103.5).
+const BANDS: Array = [[700, 2000], [1400, 2400], [2000, 3000]]
+## Stubs whose G0 doc is approved and whose objective strings are drafted (GN-B1, D-103).
+const OBJECTIVES_DRAFTED: Array[StringName] = [&"gallery_night"]
 ## heist id -> [contact, district, placeholder base payout ◇ (unscaled)].
 const STUBS: Dictionary = {
 	&"gallery_night": [&"contact.vance", &"uptown", 105000],
@@ -121,6 +124,9 @@ func test_p5_strings_exist() -> void:
 		for k: String in ["name", "subtitle", "brief"]:
 			assert_has(_table, "heist.%s.%s" % [id, k])
 		var prefix: String = "objective.%s." % id
+		if OBJECTIVES_DRAFTED.has(id):
+			assert_has(_table, prefix + "casing", "drafted objectives present")
+			continue
 		for key: String in _table.keys():
 			assert_false(key.begins_with(prefix), "objective strings wait for ENV C's G0 doc: %s" % key)
 

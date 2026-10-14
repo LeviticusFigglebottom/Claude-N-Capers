@@ -2961,3 +2961,110 @@ ui.stats.boosted_value,{value}*
 ui.stats.boosted_legend,* Boosted by your skills and perk deck
 ui.hud.player_left,{name} left the game. An AI plays {heister} now.
 ui.hud.player_joined,{name} joined as {heister}.
+heist.gallery_night.briefing,"The Halberd Gallery, Aldous Parade at Wexley Street. The Calloway Unveiling gala is in its last hour. Odile Vance's buyer wants four canvases off a list, and The Lantern Bearer above all. Walk in as guests, case the rooms before last call, then cut the Lantern Bearer and one more listed canvas. Rolled, not framed. Out by the van in the Mews or the limo at the kerb."
+music.gallery_night.name,Laylight
+objective.gallery_night.casing,Case the gala
+objective.gallery_night.find_canvases,Find the listed canvases ({found}/4)
+objective.gallery_night.keycard,Get a keycard
+objective.gallery_night.server_code,Find the Argus code
+objective.gallery_night.hack,Take the frame sensors offline
+objective.gallery_night.hack_loud,Hack the Argus server to lift the lockdown
+objective.gallery_night.treasury,Open the Treasury
+objective.gallery_night.art_store,Open the art store
+objective.gallery_night.centrepiece,Cut The Lantern Bearer
+objective.gallery_night.canvases,Cut one more listed canvas
+objective.gallery_night.secure,Secure the canvases ({count}/{total})
+objective.gallery_night.extras,Take the rest of the list and the studies
+objective.gallery_night.lockers,Saw open the consignment lockers
+objective.gallery_night.curator_safe,Open the curator's safe
+objective.gallery_night.lockdown,Argus has locked the gallery down
+objective.gallery_night.server_door,Get into the server room
+objective.gallery_night.vault_drill,Drill the art-store vault
+objective.gallery_night.escape_wait,Hold until the escape arrives
+objective.gallery_night.escape,Get to the escape
+item.asset.intel_list.name,Insider: the list
+item.asset.intel_list.desc,You know where all four listed canvases hang tonight before you walk in.
+item.asset.intel_sensors.name,Insider: frame sensors
+item.asset.intel_sensors.desc,You know which frames the Argus sensors are wired to tonight.
+ui.preplan.floor.basement,Basement
+ui.preplan.floor.roof,Roof
+ui.preplan.point.gallery_night.pp_spawn_portico,Portico: red carpet
+ui.preplan.point.gallery_night.pp_spawn_mews,Pelham Mews: caterers' van
+ui.preplan.point.gallery_night.pp_spawn_roof,Roof deck
+ui.preplan.point.gallery_night.pp_drop_court,Sculpture Court: behind the pool kiosk
+ui.preplan.point.gallery_night.pp_drop_mews,Pelham Mews: by the bins
+ui.preplan.point.gallery_night.pp_drop_roof,Roof deck: behind the air handlers
+ui.preplan.point.gallery_night.pp_escape_mews,Van: Pelham Mews
+ui.preplan.point.gallery_night.pp_escape_parade,Limo: portico kerb
+ui.preplan.point.gallery_night.pp_insider_registrar,Insider: registrar's keycard
+ui.preplan.point.gallery_night.pp_grate,Insider: areaway grate
+ui.preplan.point.gallery_night.pp_court_doors,Insider: court French doors
+ui.preplan.bp.gallery_night.mews_houses,Mews houses
+ui.preplan.bp.gallery_night.mews,Pelham Mews
+ui.preplan.bp.gallery_night.wexley,Wexley Street
+ui.preplan.bp.gallery_night.hotel,Grand Wexley Hotel
+ui.preplan.bp.gallery_night.ostrander,Ostrander Conservatory
+ui.preplan.bp.gallery_night.court,Sculpture Court
+ui.preplan.bp.gallery_night.portico,Portico
+ui.preplan.bp.gallery_night.parade,Aldous Parade
+ui.preplan.bp.gallery_night.park,Linden Park
+ui.preplan.bp.gallery_night.gallery,Halberd Gallery
+ui.preplan.bp.gallery_night.art_store,Art store
+ui.preplan.bp.gallery_night.plant,Plant room
+ui.preplan.bp.gallery_night.quarantine,Quarantine store
+ui.preplan.bp.gallery_night.great_hall,Great Hall
+ui.preplan.bp.gallery_night.founders,Founders' Gallery
+ui.preplan.bp.gallery_night.drawings,Drawings Cabinet
+ui.preplan.bp.gallery_night.harbour,Harbour Gallery
+ui.preplan.bp.gallery_night.benefactors,Benefactors' Room
+ui.preplan.bp.gallery_night.loading,Loading dock
+ui.preplan.bp.gallery_night.security,Security
+ui.preplan.bp.gallery_night.vestibule,Vestibule
+ui.preplan.bp.gallery_night.calloway,Calloway Room
+ui.preplan.bp.gallery_night.sallow,Sallow Room
+ui.preplan.bp.gallery_night.maritime,Maritime Room
+ui.preplan.bp.gallery_night.treasury,Treasury
+ui.preplan.bp.gallery_night.conservation,Conservation Studio
+ui.preplan.bp.gallery_night.server,Argus server
+ui.preplan.bp.gallery_night.curator,Curator
+ui.preplan.bp.gallery_night.hall_void,Open to the hall
+ui.preplan.bp.gallery_night.roof_deck,Roof deck
+ui.preplan.bp.gallery_night.glass_roofs,Glass roofs
+voice.vo.vance.briefing_gallery_night_1,"The Halberd Gallery, darling. Aldous Parade. Tonight they unveil The Lantern Bearer with champagne and a string trio, and tomorrow I'd like it gone."
+voice.vo.vance.briefing_gallery_night_2,"My buyer has a list of four. The Lantern Bearer above all, and at least one more. Rolled, not framed. Frames are for people who want to be caught."
+voice.vo.vance.briefing_gallery_night_3,"Go in as guests. Drink nothing, admire everything, and remember where it hangs. The studies I'll take too, at a fence's price."
+voice.vo.vance.gallery_night_contact_intro,Four canvases and one of them by name. The Halberd owes me a little excitement.
+voice.vo.vance.gallery_night_centrepiece,"The Lantern Bearer. Hold it like you'd hold me, if you ever got the chance."
+voice.vo.vance.gallery_night_payday,"The Lantern Bearer is on its way to a man who will never show it to anyone. Sad, really. Your share is less sad."
+voice.vo.mercer.briefing_gallery_night_1,I'll be on comms. You arrive as guests at the gala. Masks stay in your pockets until the guests are gone or nobody's looking.
+voice.vo.mercer.briefing_gallery_night_2,"Argus runs the cameras, the frame sensors and the Treasury lasers. If it goes loud, steel shutters come down. The server upstairs lifts them."
+voice.vo.mercer.gallery_night_intro,"Gala's in its last hour. Walk the rooms, read the plaques, find the list. Last call's coming and the hall empties after it."
+voice.vo.mercer.gallery_night_canvas_found_lantern,That's The Lantern Bearer. The one the buyer asked for by name.
+voice.vo.mercer.gallery_night_canvas_found_orchard,The Salt Orchard. That's on the list.
+voice.vo.mercer.gallery_night_canvas_found_widow,Widow in Blue. On the list. Mark it.
+voice.vo.mercer.gallery_night_canvas_found_saint,The Tidewater Saint. That one's on the list too.
+voice.vo.mercer.gallery_night_last_call_soon,Bar's calling last orders. A minute or so before they walk the guests out.
+voice.vo.mercer.gallery_night_last_call,Last call. Guests are heading for the doors. Everything inside is off limits now.
+voice.vo.mercer.gallery_night_guests_gone,Doors are locked and the gala's over. It's just you and the guards.
+voice.vo.mercer.gallery_night_keycard,That's a keycard. Two readers want one each and you won't have enough for all three. Choose.
+voice.vo.mercer.gallery_night_code_found,That's the Argus code. The server room's on the upper corridor.
+voice.vo.mercer.gallery_night_sensors_warning,That frame's wired. Cut it with the sensors live and the whole building hears it.
+voice.vo.mercer.gallery_night_hack_started,Hack's running. Stay with it.
+voice.vo.mercer.gallery_night_hack_interrupted,Hack stalled. Someone get back on that terminal.
+voice.vo.mercer.gallery_night_sensors_off,Frame sensors are down. Cut what you like.
+voice.vo.mercer.gallery_night_lasers,Lasers across the Treasury. Watch the pattern before you move.
+voice.vo.mercer.gallery_night_treasury_open,Treasury's open. Mind the grid.
+voice.vo.mercer.gallery_night_art_store_open,Art store's open. Camera in the corner never sleeps.
+voice.vo.mercer.gallery_night_curator_keycard,The curator wears her keycard on her lanyard. You'll have to get close.
+voice.vo.mercer.gallery_night_inspectors,"Insurance inspectors at the loading dock, with escorts. They're heading for the centrepiece."
+voice.vo.mercer.gallery_night_vaultline,Vaultline truck in the Mews. They've come to move The Lantern Bearer. Get to it first.
+voice.vo.mercer.gallery_night_last_pager,That's {answered}. They won't buy another one.
+voice.vo.mercer.gallery_night_lockdown,"That's Argus. Shutters are coming down, the vault's sealed."
+voice.vo.mercer.gallery_night_shutters_up,Lockdown's lifted. Shutters are up and the vault reader's open.
+voice.vo.mercer.gallery_night_vault_drill,Drill's on the vault door. Four minutes. Hold the basement.
+voice.vo.mercer.gallery_night_drill_jam,Drill's jammed. Somebody give it a hand.
+voice.vo.mercer.gallery_night_required_secured,The Lantern Bearer and one more are secured. Anything else is a bonus.
+voice.vo.mercer.gallery_night_van_eta,Van's {seconds} seconds out. Hold the dock.
+voice.vo.mercer.gallery_night_limo_eta,Limo's {seconds} seconds out. Hold the hall.
+voice.vo.mercer.gallery_night_sniper_hotel,Sniper on the hotel roof. Stay out of the Mews mouth.
+voice.vo.mercer.gallery_night_escape,"Your ride's here. Canvases in, then you."
