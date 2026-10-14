@@ -357,19 +357,8 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 	while t < timeout_s and not completed[0] and is_instance_valid(comp) and not (done.is_valid() and bool(done.call())):
 		if crew.crew_state != Enums.CrewState.NORMAL:
 			break
-		var foe: NpcBase = nearest_enemy(HOLD_THREAT_M) if combat else null
-		if foe != null:
-			inp.release(&"interact")
-			d.note("pilot: use %s interrupted by %s at %.1f m (progress %.2f)" % [comp.kind, foe.name,
-				crew.global_position.distance_to(foe.global_position), isys.progress(crew.slot)])
-			await _clear_threats()
-			# Re-aim before pressing again: an F press with the crosshair still on the cop is a shout (ND attempts
-			# 15-18: the cop surrendered and the lockpick never progressed).
-			await face(target, 0.03, 1.0)
-			if no_blind_press and not await _aim_on(comp, target):
-				break
-			if isys.aimed_component(crew) == comp:
-				inp.press(&"interact")  # else the re-press below retries (it re-aims first)
+		# A player keeps holding while nothing cancels the hold (ND attempt 20: letting go at 94 % to shoot a
+		# visible cop threw the pick away); threats are cleared only once a hit has dropped it (below).
 		if comp.kind != &"answer_pager" and _hook_wanted():
 			inp.release(&"interact")
 			if await _run_hook():
@@ -387,6 +376,9 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 			idle_ticks = 0
 			inp.release(&"interact")
 			await inp.ticks(2)
+			if combat and await _clear_threats():  # S9.1: a hit dropped the hold, so clear the shooters first
+				d.note("pilot: use %s hold dropped, cleared threats before re-pressing" % comp.kind)
+			# Re-aim before pressing again: an F press with the crosshair on a cop is a shout (ND attempts 15-18).
 			await face(target, 0.03, 1.0)
 			if no_blind_press and not await _aim_on(comp, target):
 				break
