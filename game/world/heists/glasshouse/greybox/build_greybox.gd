@@ -18,6 +18,8 @@ const D: GDScript = preload("res://world/heists/glasshouse/greybox/gh_dress.gd")
 ## Map-built lights that cast shadows (<= 8 per room / per review shot, level_standards §3.7, §5).
 ## Kit fixtures: SHADOW_FIXTURES in the layout; the neon signs: gh_dress.
 const SHADOWED: Array[String] = []
+## PO-5: sash travel (m) of the break-room door-window (window.gd `sash_travel_m`), see _variants_doors_windows.
+const BREAKROOM_SASH_TRAVEL_M: float = 2.15
 ## Generated visuals for gameplay items without catalog art (library materials only).
 const ART_DIR: String = "res://world/heists/glasshouse/art/"
 const VIS_KEYCARD: String = ART_DIR + "gh_keycard.tscn"
@@ -1255,10 +1257,14 @@ func _variants_doors_windows(variants: Node3D) -> void:
 	var wpos: Vector3 = bw["pos"]
 	var kit: PackedScene = _dress.scene(String(bw["kit"]).replace("arch_", "prop_") + "_sash")
 	# PO-5 walk-through door-window: `walkable` = own layer-1 NavLink, live while open / broken.
+	# `sash_travel_m`: the full-height sash (bottom rail 0.008 m above the sill, lift handles to 0.068 m) slides
+	# past the 2.1 m opening head into the wall (pocket sash, nothing left in view), top at sill + 4.2 m, under
+	# the parapet (8.8).
 	var use: Vector3 = wpos + Vector3(0.0, 0.0, -0.7)
 	var open: VariantSlot = _slot(ow, "open_window", "ow_breakroom_open", 0.45)
 	_prefab(open, "window", "BreakRoomWindow", wpos, float(bw["yaw"]),
-		{"breakable": true, "openable": true, "walkable": true, "visual_scene": kit, "objective_tag": &"breakroom_window"},
+		{"breakable": true, "openable": true, "walkable": true, "sash_travel_m": BREAKROOM_SASH_TRAVEL_M,
+			"visual_scene": kit, "objective_tag": &"breakroom_window"},
 		use, {"kind": "window"})
 	var latched: VariantSlot = _slot(ow, "open_window", "ow_breakroom_latched", 0.55)
 	_prefab(latched, "window", "BreakRoomWindow", wpos, float(bw["yaw"]),
