@@ -20,6 +20,7 @@ Shared clips (all sets): ``idle*``, ``ads_idle*``, ``sprint*`` (loops), ``draw``
 
 from __future__ import annotations
 
+import dataclasses
 import math
 
 import numpy as np
@@ -56,6 +57,15 @@ def ads_frame(s: FPSet) -> tuple[np.ndarray, np.ndarray]:
 TWIST = 0.35
 
 
+#: Godot (weapon / marker axes) offset from LeftHandIK to the wrist of the long-gun support grip below.
+LONG_GUN_GRIP_OFFSET = (-0.0401, -0.0036, 0.0359)
+
+
+def cup_shape() -> HandShape:
+    """The long-gun support hand: fingers closed round the fore-end, the thumb open and lying along its side."""
+    return dataclasses.replace(hand_shape("grip", 0.60), thumb=(4.0, 6.0, 4.0), thumb_opp=-30.0)
+
+
 def long_gun(s: FPSet) -> bool:
     return s.support != "pistol"
 
@@ -78,11 +88,12 @@ class Kit:
             self.support = hand_at(sk, "L", "w", m.get("top_bar", m["left_ik"]), (0.20, 0.95, -0.25), (0.05, 0.10, -0.99),
                                    s.pole_l, hand_shape("grip", 0.85), share=0.55, off=0.017)
         elif abs(float(m["left_ik"][0])) < 0.005:  # LeftHandIK under the fore-end (B, e18011f4): PD2 support grip,
-            # palm up under the fore-end, thumb along its left side, fingers angled forward-right and curling up
-            # round its right side. The wrist sits at LONG_GUN_GRIP_OFFSET from the marker: FpViewmodel's runtime
-            # left-hand IK must use that offset for these sets (FpViewmodelTweak) so the game shows this grip.
-            self.support = hand_at(sk, "L", "w", m["left_ik"], (0.70, 0.70, 0.10), (0.30, -0.05, 1.0),
-                                   s.pole_l, hand_shape("grip", 0.60), share=0.45, off=0.014, twist=0.0)
+            # palm up under the fore-end, fingers wrapping its far (right) side with the tips at ~3/4 of its height
+            # (never over the top), the thumb lying forward along its near (left) side. The wrist sits at
+            # LONG_GUN_GRIP_OFFSET from the marker (FpViewmodelTweak.set_left_hand_grip_offset, ENV P), so the
+            # runtime left-hand IK target IS this wrist and the game shows the grip unchanged.
+            self.support = hand_at(sk, "L", "w", m["left_ik"], (0.75, 0.80, -0.20), (0.30, -0.20, 1.0),
+                                   s.pole_l, cup_shape(), share=0.55, off=0.014, twist=0.0)
         else:
             self.support = hand_at(sk, "L", "w", m["left_ik"], (0.30, 0.45, 0.84), (0.75, 0.62, -0.10),
                                    s.pole_l, hand_shape("grip", 0.80), share=0.55, off=0.018)
