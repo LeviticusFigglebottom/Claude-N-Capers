@@ -117,6 +117,8 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	if EventBus.damage_applied.is_connected(_on_damage_applied):
 		EventBus.damage_applied.disconnect(_on_damage_applied)
+	if GameSettings.current().changed.is_connected(_on_settings_changed):
+		GameSettings.current().changed.disconnect(_on_settings_changed)
 	if spectator != null:
 		spectator.set_aim_active(false)
 
@@ -465,6 +467,9 @@ static func _put_weapon(l: Loadout, def: WeaponDef) -> void:
 ## supplies the indoor Environment (RangeDressing.environment()); an indoor range has no sun. A no-op until
 ## the class exists.
 func _dress(parent: Node3D) -> void:
+	_apply_brightness.call_deferred()
+	if not GameSettings.current().changed.is_connected(_on_settings_changed):
+		GameSettings.current().changed.connect(_on_settings_changed)
 	var dressing: Script = UiNav.global_class(DRESSING_CLASS)
 	if dressing == null:
 		return
@@ -477,3 +482,15 @@ func _dress(parent: Node3D) -> void:
 		var sun: DirectionalLight3D = get_node_or_null(^"Sun") as DirectionalLight3D
 		if sun != null:
 			sun.visible = false
+
+
+## The Options brightness applies in the range too (as HeistWorldEnvironment does on heist maps; ENV C's tip).
+func _apply_brightness() -> void:
+	var we: WorldEnvironment = get_node_or_null(^"WorldEnvironment") as WorldEnvironment
+	if we != null:
+		SettingsApplier.apply_environment(we.environment)
+
+
+func _on_settings_changed(section: StringName, key: StringName) -> void:
+	if section == GameSettings.VIDEO and key == &"brightness":
+		_apply_brightness()

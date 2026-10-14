@@ -26,7 +26,7 @@ extends TestCase
 const GLB: String = "res://assets/characters/char_arms_fp/char_arms_fp.glb"
 const SOURCE: String = "res://assets/characters/char_arms_fp/SOURCE.txt"
 ## D2-03 follow-up: crew heisters with a first-person sleeve variant char_arms_fp_<heister>.
-const HEISTERS: Array[String] = ["rook", "sable", "dutch", "wren", "marten"]
+const HEISTERS: Array[String] = ["rook", "sable", "dutch", "wren", "marten", "jay"]
 const WEAPONS_DIR: String = "res://content/data/weapons"
 const FPS: float = 30.0
 const FINGERS: Array[String] = ["thumb", "index", "middle", "ring", "pinky"]
@@ -1082,6 +1082,73 @@ func test_hands_and_sights_on_the_real_models() -> void:
 						set_name, top, NEAR_HALF_H])
 		root.queue_free()
 	_player.stop()
+
+
+## PO feedback (long-gun hold): on every set whose LeftHandIK sits centred under the fore-end (B e18011f4) the support
+## hand cups it PD2-style in hip and ADS: the palm faces the gun's up axis (within 30 deg) and no finger joint is inside
+## the gun's cross-section at that point (the AABB of the model's vertices within 15 mm along the barrel, inset 2 mm).
+func _check_long_gun_support_grip() -> void:
+	for set_name: String in REF_WEAPON:
+		var w: Dictionary = _weapon_model(String(REF_WEAPON[set_name]))
+		if w.is_empty():
+			continue
+		var marks: Dictionary = w["marks"]
+		var root: Node3D = w["root"]
+		if not marks.has("LeftHandIK") or absf((marks["LeftHandIK"] as Transform3D).origin.x) > 0.005:
+			root.queue_free()
+			continue
+		var verts: PackedVector3Array = _model_verts(root)
+		for clip: String in ["idle", "ads_idle"]:
+			_player.play(StringName("%s_%s" % [set_name, clip]))
+			_player.seek(0.0, true)
+			_player.stop()
+			var wt: Transform3D = _skel.get_bone_global_pose(_skel.find_bone("weapon"))
+			var hand: Vector3 = _bone_pos("hand.L")
+			var along: Vector3 = _bone_pos("middle_01.L") - hand
+			var across: Vector3 = _bone_pos("index_01.L") - _bone_pos("pinky_01.L")
+			var palm: Vector3 = along.cross(across).normalized()
+			var up: Vector3 = (wt.basis * Vector3.UP).normalized()
+			var ang: float = rad_to_deg(palm.angle_to(up))
+			assert_true(ang <= 30.0, "%s_%s: support palm %.0f deg from the gun's up axis (<= 30)" % [set_name, clip, ang])
+			var inv: Transform3D = wt.affine_inverse()
+			for f: String in ["thumb", "index", "middle", "ring", "pinky"]:
+				for j: int in [1, 2, 3]:
+					var bone: String = "%s_0%d.L" % [f, j]
+					if _skel.find_bone(bone) < 0:
+						continue
+					var q: Vector3 = inv * _bone_pos(bone)
+					assert_false(_inside_section(verts, q), "%s_%s: %s inside %s" % [set_name, clip, bone, REF_WEAPON[set_name]])
+		root.queue_free()
+	_player.stop()
+
+
+func _bone_pos(bone: String) -> Vector3:
+	return _skel.get_bone_global_pose(_skel.find_bone(bone)).origin
+
+
+## Every vertex of the weapon model in its root (weapon) space.
+func _model_verts(root: Node3D) -> PackedVector3Array:
+	var out: PackedVector3Array = PackedVector3Array()
+	var inv: Transform3D = root.global_transform.affine_inverse()
+	for mi_node: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = mi_node as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		var xf: Transform3D = inv * mi.global_transform
+		for v: Vector3 in mi.mesh.get_faces():
+			out.append(xf * v)
+	return out
+
+
+## True when `q` (weapon space) is inside the AABB of the vertices within 15 mm of it along the barrel, inset 2 mm.
+func _inside_section(verts: PackedVector3Array, q: Vector3) -> bool:
+	var lo: Vector2 = Vector2(INF, INF)
+	var hi: Vector2 = Vector2(-INF, -INF)
+	for v: Vector3 in verts:
+		if absf(v.z - q.z) < 0.015:
+			lo = Vector2(minf(lo.x, v.x), minf(lo.y, v.y))
+			hi = Vector2(maxf(hi.x, v.x), maxf(hi.y, v.y))
+	return lo.x < INF and q.x > lo.x + 0.002 and q.x < hi.x - 0.002 and q.y > lo.y + 0.002 and q.y < hi.y - 0.002
 
 
 ## D2-03 follow-up: the per-heister sleeve variants `char_arms_fp_<heister>` (mesh only, the clips stay in

@@ -12,7 +12,8 @@ PRESET = {
     # style_guide.md §3. Luminance is linear; saturation is HSV S of the sRGB-encoded value.
     "rules": {
         "lum_min": 0.04,
-        # D-038: black polymers, rubber and black paint/anodize may set a per-material "lum_min"
+        # D-038 (weapon blacks lifted to ~60-85 sRGB, lead r188): black polymers, rubber and black paint/anodize
+        # may set a per-material "lum_min"
         # down to this value; every other material keeps lum_min.
         "lum_min_black": 0.02,
         "lum_max": 0.85,
@@ -72,7 +73,7 @@ PRESET = {
             "rough": (0.03, 0.08), "dirt_rough": 0.5, "wear": 0.0, "grime": 0.5,
         },
         "rubber_black": {
-            "base": "#2C2C2C", "rough": (0.84, 0.92), "wear": 0.25, "grime": 0.2, "relief_ref_mm": 0.2,
+            "base": "#3C3C3C", "rough": (0.84, 0.92), "wear": 0.25, "grime": 0.2, "relief_ref_mm": 0.2,
             "specular": 0.35, "lum_min": 0.02,
         },
         "fabric_upholstery": {
@@ -109,19 +110,19 @@ PRESET = {
         },
         # ---- First-person weapon materials (D-026; 1 m tiles at 1024 px/m) ----
         "polymer_black": {
-            "base": "#2D2E30", "rough": (0.55, 0.66), "grain_cells_per_m": 300, "wear": 0.25,
+            "base": "#45464A", "rough": (0.64, 0.76), "grain_cells_per_m": 300, "wear": 0.25,
             "grime": 0.2, "relief_ref_mm": 0.1, "specular": 0.4, "lum_min": 0.02,
         },
         "polymer_stipple": {
-            "base": "#2B2C2E", "rough": (0.62, 0.78), "stipple_cells_per_m": 220, "stipple_mm": 0.35,
+            "base": "#3F4042", "rough": (0.66, 0.8), "stipple_cells_per_m": 220, "stipple_mm": 0.35,
             "wear": 0.35, "grime": 0.3, "relief_ref_mm": 0.1, "specular": 0.4, "lum_min": 0.02,
         },
         "steel_blued": {
-            "base": "#4C525C", "worn": "#ACAFB3", "rough": (0.3, 0.4), "worn_rough": 0.28,
+            "base": "#6A717C", "worn": "#ACAFB3", "rough": (0.3, 0.4), "worn_rough": 0.28,
             "holster_wear": 0.35, "wear": 0.3, "grime": 0.1,
         },
         "steel_bare": {"base": "#B7B9BC", "rough": (0.22, 0.32), "streak": 0.05, "wear": 0.0, "grime": 0.05},
-        "metal_matte": {"base": "#575A5E", "rough": (0.5, 0.6), "wear": 0.2, "grime": 0.2},
+        "metal_matte": {"base": "#76797D", "rough": (0.5, 0.6), "wear": 0.2, "grime": 0.2},
         # Armory batch 3.
         "paint_safety_orange": {
             # #E8641E pulled to the 0.75 saturation cap and a little darker so it stays rich under AgX.
@@ -141,7 +142,7 @@ PRESET = {
         },
         # D-034 additions.
         "alu_anodized_black": {
-            "base": "#2D2F33", "worn": "#BEC1C5", "rough": (0.34, 0.44), "worn_rough": 0.3,
+            "base": "#53565B", "worn": "#BEC1C5", "rough": (0.34, 0.44), "worn_rough": 0.3,
             "edge_wear": 0.3, "wear": 0.3, "grime": 0.1, "lum_min": 0.02,
         },
         "polymer_tan": {
