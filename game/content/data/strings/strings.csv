@@ -341,6 +341,7 @@ crew.rook,Rook
 crew.sable,Sable
 crew.dutch,Dutch
 crew.wren,Wren
+crew.marten,Marten
 enemy.security_officer,Security Officer
 enemy.camera_operator,Camera Operator
 enemy.civilian,Civilian
@@ -502,6 +503,28 @@ voice.vo.wren.guard_down_1,Guard down!
 voice.vo.wren.guard_down_2,"Got him, guard's out."
 voice.vo.wren.civilian_killed_1,"Whoa, civilian down!"
 voice.vo.wren.civilian_killed_2,"Careful, that was a civilian!"
+voice.vo.marten.pager_started_1,"Pager. I've got it, keep moving."
+voice.vo.marten.pager_started_2,Leave that one to me. I'll talk to his dispatcher.
+voice.vo.marten.reloading_1,Changing magazines.
+voice.vo.marten.reloading_2,Reloading. Cover the door.
+voice.vo.marten.device_jammed_1,The drill's stalled. Somebody nurse it.
+voice.vo.marten.device_jammed_2,Drill's sulking again. Give it a hand.
+voice.vo.marten.bagging_body_1,Bagging him. Keep an eye out.
+voice.vo.marten.bagging_body_2,Body's going in the bag. Nobody saw a thing.
+voice.vo.marten.going_loud_1,Right. Loud it is. Stick to the backup plan.
+voice.vo.marten.going_loud_2,"There goes the quiet version. Plan B, people."
+voice.vo.marten.crew_downed_1,I'm down. Not as young as I was.
+voice.vo.marten.crew_downed_2,"Down here. A hand, if you please."
+voice.vo.marten.reviving_1,Up you get. We're not done.
+voice.vo.marten.reviving_2,I've got you. Breathe.
+voice.vo.marten.cops_incoming_1,Police on approach. Find cover.
+voice.vo.marten.cops_incoming_2,More of them. Use the corners.
+voice.vo.marten.loot_secured_1,That's one in the van.
+voice.vo.marten.loot_secured_2,Secured. On schedule.
+voice.vo.marten.guard_down_1,Guard's down.
+voice.vo.marten.guard_down_2,One less pair of eyes.
+voice.vo.marten.civilian_killed_1,That wasn't in the plan.
+voice.vo.marten.civilian_killed_2,We don't shoot the help. Ever.
 ui.common.money,${amount}
 ui.common.percent,{value}%
 ui.menu.coming_soon,Coming soon
@@ -2564,6 +2587,7 @@ item.throwable.throwing_knife.desc,"Three balanced blades. Silent, and one clean
 ui.loadout.heister,Heister
 ui.heister.any,Any Free Heister
 ui.loadout.heister_taken,{name} (taken)
+ui.loadout.heister_locked,{name} (locked)
 ui.lobby.slot.heister,{name}
 ui.lobby.slot.heister_fallback,{name} ({pick} was taken)
 ui.lobby.dropin.title,Drop-in
@@ -2909,6 +2933,8 @@ achievement.main_event.name,Main Event
 achievement.main_event.desc,"Take down 250 specials. Unlocks the Lucha mask."
 achievement.private_viewing.name,Private Viewing
 achievement.private_viewing.desc,"Complete Gallery Night. Unlocks the Signal mask."
+achievement.the_planner.name,The Planner
+achievement.the_planner.desc,"Finish three heists without raising the alarm. Unlocks Marten."
 achievement.deep_water.name,Deep Water
 achievement.deep_water.desc,"Complete Dockside Burn. Unlocks the Kraken mask."
 achievement.dock_work.name,Dock Work
@@ -2975,6 +3001,7 @@ ui.achievements.category.combat,Combat
 ui.achievements.category.wealth,Wealth
 ui.achievements.category.notoriety,Notoriety
 ui.achievements.reward_pending,{name} (arrives with the next mask delivery)
+ui.achievements.reward_heister,Heister: {name}
 ui.achievements.reward_finish,{name} weapon finish
 ui.loading.caption,Loading the job · {difficulty}
 ui.loading.loading,Loading

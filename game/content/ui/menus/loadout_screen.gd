@@ -459,13 +459,16 @@ func _fill_heisters(selected: StringName) -> void:
 	heister_option.set_item_icon(0, _swatch_icon(Heisters.accent(&"")))
 	for id: StringName in Heisters.ids():
 		var taken: bool = taken_heisters.has(id)
+		var locked: bool = not Heisters.is_unlocked(profile, id)  # D-111: earned heisters (Marten)
 		var text: String = Heisters.display_name(id)
-		if taken:
+		if locked:
+			text = UiText.t(&"ui.loadout.heister_locked", {"name": text})
+		elif taken:
 			text = UiText.t(&"ui.loadout.heister_taken", {"name": text})
 		_add_item(heister_option, text, id)
 		var i: int = heister_option.item_count - 1
 		heister_option.set_item_icon(i, _swatch_icon(Heisters.accent(id)))
-		heister_option.set_item_disabled(i, taken)
+		heister_option.set_item_disabled(i, taken or locked)
 	if not _select_id(heister_option, selected):
 		heister_option.select(0)
 	_show_heister(_selected_id(heister_option))

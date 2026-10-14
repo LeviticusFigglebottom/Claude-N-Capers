@@ -227,6 +227,9 @@ static func reward_name(a: AchievementDef) -> String:
 			for part: MaskPartDef in MaskCatalog.all_parts(kind):
 				if part.unlock == a.unlock:
 					names.append(_part_text(part))
+		for hid: StringName in Heisters.ids():  # D-111: earned heisters (Marten)
+			if Heisters.unlock_of(hid) == a.unlock:
+				names.append(UiText.t(&"ui.achievements.reward_heister", {"name": Heisters.display_name(hid)}))
 	for id: StringName in a.rewards:
 		names.append(MaskCatalog.part_name(id))
 	for id: StringName in [a.unlock] + a.unlocks:

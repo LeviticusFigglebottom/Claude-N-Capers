@@ -53,6 +53,10 @@ const PATHS_ART_DOOR: Array[String] = ["Gameplay/Doors/ArtDoorEG"]
 const PATHS_VAULT_DOOR: Array[String] = ["Gameplay/Doors/ArtStoreVaultDoor"]
 const PATHS_TREASURY_DOOR: Array[String] = ["Gameplay/Doors/TreasuryDoor"]
 const COURT_OPEN_SLOT: String = "Variants/Group_court_doors/Slot_court_doors_open"
+## C bff4dd40: the areaway ladder is climbable only while the rolled areaway grate (a Door laid flat) is open.
+const AREAWAY_GROUP: String = "Variants/Group_areaway"
+const AREAWAY_GRATE: String = "AreawayGrate"
+const AREAWAY_LADDER: String = "Gameplay/Ladders/AreawayLadder"
 ## Last call: guests out by the portico (stragglers stay), waitstaff by the dock at +WAITSTAFF_OUT_S.
 const EXIT_GUESTS: StringName = &"exit_guests"
 const EXIT_STAFF: StringName = &"exit_staff"
@@ -121,6 +125,7 @@ func _on_mission_start() -> void:
 	_watch_canvases()
 	_apply_intel_list()
 	_watch_sweep_lasers()
+	_tie_areaway_ladder()
 	_schedule_last_call()
 	_schedule_rare_events()
 
@@ -213,6 +218,28 @@ func _apply_intel_list() -> void:
 	_found.assign([TAG_LANTERN] + LIST_TAGS)
 	update_objective_data(&"find_canvases", {"marker_tags": _found.duplicate(), "found": _found.size()})
 	complete(&"find_canvases")
+
+
+## The areaway ladder follows its grate: usable only while the grate is open (C bff4dd40).
+func _tie_areaway_ladder() -> void:
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if rt == null or rt.map == null:
+		return
+	var ladder: Ladder = rt.map.get_node_or_null(NodePath(AREAWAY_LADDER)) as Ladder
+	var group: Node = rt.map.get_node_or_null(NodePath(AREAWAY_GROUP))
+	if ladder == null or group == null:
+		return
+	var grates: Array[Door] = []
+	for n: Node in group.find_children(AREAWAY_GRATE, "", true, false):
+		if n is Door:
+			grates.append(n as Door)
+	if grates.is_empty():
+		return
+	var update: Callable = func(_open: bool = false, _by: int = 0) -> void:
+		ladder.usable = grates.any(func(g: Door) -> bool: return is_instance_valid(g) and g.is_open)
+	for g: Door in grates:
+		g.open_changed.connect(update)
+	update.call()
 
 
 ## Mercer's sweep-laser hint (B): an approach Area3D on the active lz_sweep Treasury grid.

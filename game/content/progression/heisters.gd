@@ -40,6 +40,17 @@ static func display_name(id: StringName) -> String:
 	return UiText.t(name_key(id))
 
 
+## D-111: the unlock id that earns heister `id` (&"" = free from the start).
+static func unlock_of(id: StringName) -> StringName:
+	return StringName(roster().unlocks.get(id, &""))
+
+
+## Whether `profile` may pick heister `id` (&"" = "any free heister" is always allowed).
+static func is_unlocked(profile: PlayerProfile, id: StringName) -> bool:
+	var u: StringName = unlock_of(id)
+	return u == &"" or (profile != null and profile.unlocks.has(u))
+
+
 static func accent(id: StringName) -> Color:
 	var r: HeisterRoster = roster()
 	return r.accents.get(id, r.generic_accent) as Color if is_known(id) else r.generic_accent
