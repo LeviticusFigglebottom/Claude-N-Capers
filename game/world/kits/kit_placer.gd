@@ -499,7 +499,10 @@ static func _try_seat(st: _State, asset: String, near: int) -> bool:
 		# the two ends face each other); around a table any side is a place setting.
 		var sides: Array[int] = [0]
 		if side_pref == "back":
-			sides = [1, 2, 3] if around else [1]
+			if around:
+				sides = [1, 2, 3]
+			else:
+				sides = [1]
 		elif around:
 			sides = [0, 1, 2, 3]
 		var side: int = sides[st.rng.randi_range(0, sides.size() - 1)]
