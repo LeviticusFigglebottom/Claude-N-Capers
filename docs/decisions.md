@@ -794,3 +794,17 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - ui_hud 1.12: `reloading` / `reload_progress` (A provides, B draws).
 - Armory/loadout stats show values **with the player's skills and perk deck applied** by default (PD2 shows skill-boosted
   stats), with a toggle to compare base values; boosted numbers are marked (B, through LoadoutResolver, no new rules).
+
+## D-107: stamina and jumping follow PD2 (2026-10-14, LEAD; ENV P proposal)
+PD2 reference: playertweakdata.lua L341-354, playermovement.lua L238-258/L1092-1107, playerstandard.lua
+L1531/L4133-4166/L4670. Faithful, items 1-5 of P's audit:
+- Pool 50, drain 2/s running, regen 3/s (unchanged).
+- Regen starts **1.0 s** after the sprint ends (`CrewTweak.stamina_regen_delay_s` 3.0 → 1.0); the timer restarts on
+  sprint start/stop only, jump drains do not restart it.
+- Sprint **start** needs stamina > 4 (MIN_STAMINA_THRESHOLD); a sprint continues until 0. `exhausted` (HUD/net) =
+  stamina ≤ threshold and not sprinting (ui_hud field meaning unchanged for B).
+- Jumps are **never** blocked by stamina; a jump costs 2 only as a run-jump (running > 0.4 s, above the threshold,
+  with a move direction).
+- 0.55 s cooldown between jumps; jump pressed while crouched stands the player up instead of jumping.
+Owner: ENV P (crew_stamina.gd, crew_controller). One-time carve-out: P updates the two QB-60 tests in A's
+`test_qb56_61_modifier_keys.gd` to the new rules (tell A the diff); A reviews on its next merge.

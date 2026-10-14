@@ -77,7 +77,7 @@ func tick(delta: float) -> void:
 
 # --- Muzzle --------------------------------------------------------------------------------------------
 
-func flash(muzzle: Node3D, suppressed: bool) -> void:
+func flash(muzzle: Node3D, suppressed: bool, size_mult: float = 1.0) -> void:
 	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
 	if muzzle == null or not muzzle.is_inside_tree():
 		return
@@ -89,7 +89,7 @@ func flash(muzzle: Node3D, suppressed: bool) -> void:
 			add_child(_flash)
 		_flash.global_transform = _muzzle_frame(muzzle)
 		_flash.rotate_object_local(Vector3.FORWARD, rng.randf_range(0.0, TAU))
-		_flash.scale = Vector3.ONE * tw.muzzle_flash_size_m * rng.randf_range(0.8, 1.2)
+		_flash.scale = Vector3.ONE * tw.muzzle_flash_size_m * size_mult * rng.randf_range(0.8, 1.2)
 		_flash.visible = true
 		_flash_left = tw.muzzle_flash_s
 		_flash_frame = Engine.get_process_frames()
@@ -119,7 +119,9 @@ func _make_flash(tw: FpViewmodelTweak) -> Node3D:
 	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	# MIX, not ADD: the viewmodel draws into a transparent SubViewport, and additive leaves its alpha at 0, so an
+	# additive burst vanishes when the layer is composited over the world.
+	mat.blend_mode = BaseMaterial3D.BLEND_MODE_MIX
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	mat.albedo_color = tw.muzzle_flash_color
 	mat.albedo_texture = _radial_texture()
@@ -133,7 +135,7 @@ func _make_flash(tw: FpViewmodelTweak) -> Node3D:
 		petal.material_override = mat
 		petal.rotation = Vector3(-PI * 0.5, 0.0, 0.0)  # quad +Y along -Z (down the barrel)
 		petal.rotate_object_local(Vector3.UP, float(k) * PI / 3.0)
-		petal.position = Vector3(0.0, 0.0, -0.6)
+		petal.position = Vector3(0.0, 0.0, -0.75)
 		petal.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root.add_child(petal)
 	var disc: MeshInstance3D = MeshInstance3D.new()
@@ -141,9 +143,19 @@ func _make_flash(tw: FpViewmodelTweak) -> Node3D:
 	dq.size = Vector2(1.0, 1.0)
 	disc.mesh = dq
 	disc.material_override = mat
-	disc.position = Vector3(0.0, 0.0, -0.1)
+	disc.position = Vector3(0.0, 0.0, -0.35)
 	disc.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(disc)
+	var core_mat: StandardMaterial3D = mat.duplicate() as StandardMaterial3D
+	core_mat.albedo_color = tw.muzzle_flash_core_color
+	var core: MeshInstance3D = MeshInstance3D.new()
+	var cq: QuadMesh = QuadMesh.new()
+	cq.size = Vector2(0.45, 0.45)
+	core.mesh = cq
+	core.material_override = core_mat
+	core.position = Vector3(0.0, 0.0, -0.3)
+	core.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	root.add_child(core)
 	root.visible = false
 	return root
 
@@ -189,7 +201,8 @@ static func _radial_texture() -> GradientTexture2D:
 	var g: Gradient = Gradient.new()
 	g.set_color(0, Color(1, 1, 1, 1))
 	g.set_color(1, Color(1, 1, 1, 0))
-	g.add_point(0.35, Color(1, 1, 1, 0.8))
+	g.add_point(0.25, Color(1, 1, 1, 0.9))
+	g.add_point(0.6, Color(1, 1, 1, 0.25))
 	var t: GradientTexture2D = GradientTexture2D.new()
 	t.gradient = g
 	t.fill = GradientTexture2D.FILL_RADIAL
@@ -349,8 +362,10 @@ func _tick_tracers(delta: float, tw: FpViewmodelTweak) -> void:
 		var n: Node3D = t["node"]
 		if not is_instance_valid(n) or not n.visible:
 			continue
+		if Engine.get_process_frames() <= int(t["frame"]):
+			continue  # the shot's own frame draws the streak leaving the muzzle
 		t["head"] = float(t["head"]) + tw.tracer_speed_mps * delta
-		if float(t["head"]) - tw.tracer_length_m >= float(t["dist"]) and Engine.get_process_frames() > int(t["frame"]):
+		if float(t["head"]) - tw.tracer_length_m >= float(t["dist"]):
 			n.visible = false
 			continue
 		_place_tracer(t, tw)
