@@ -221,6 +221,12 @@ func bind() -> bool:
 
 
 func _process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_process_step(delta)
+	FrameProf.end(&"anim_driver", fp)
+
+
+func _process_step(delta: float) -> void:
 	tick(delta)
 
 

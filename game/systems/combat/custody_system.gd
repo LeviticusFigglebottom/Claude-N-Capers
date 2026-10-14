@@ -152,6 +152,12 @@ func apply_net_state(d: Dictionary) -> void:
 # --- Tick -------------------------------------------------------------------------------------------
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"custody_system", fp)
+
+
+func _physics_step(delta: float) -> void:
 	if Net.is_authority() and _runtime != null and _runtime.phase != Enums.HeistPhase.ENDED:
 		tick(delta)
 

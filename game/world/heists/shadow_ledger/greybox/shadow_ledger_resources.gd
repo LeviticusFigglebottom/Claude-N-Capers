@@ -34,6 +34,9 @@ static func make_def() -> HeistDef:
 	# Objective ids = the design doc's Objectives `[tag]`s (D-039 rule: ENV B reads them there).
 	d.objectives = [&"casing", &"laptop", &"keycard", &"server_door", &"cage_code", &"cage", &"hack",
 		&"drives", &"secure", &"study_safe", &"paintings", &"archive_safe", &"escape"] as Array[StringName]
+	# D-109 (ENV B): briefing subset, loud line and optional objectives shown on the briefing screen.
+	d.briefing_objectives = [&"casing", &"laptop", &"keycard", &"cage", &"hack", &"drives", &"secure", &"escape"]
+	d.briefing_optional = [&"study_safe", &"paintings", &"archive_safe"]
 	# Pre-planning (contracts/preplanning.md, D-046 final): {"favors", "disable", "assets": {asset_id:
 	# overrides}}. Doc §Pre-planning: favors 6, no loud drops. Location assets are limited to this map's
 	# points; the gondola / riser assets take their forced slot from the chosen point's params

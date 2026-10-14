@@ -33,6 +33,10 @@ static func make_def() -> HeistDef:
 	d.objectives = [&"casing", &"keycard", &"code", &"server", &"vault_gate", &"time_lock",
 		&"time_lock_wait", &"vault_loot", &"depository", &"vault_drill", &"secure", &"escape"] \
 		as Array[StringName]
+	# D-109 (ENV B): briefing subset, loud line and optional objectives shown on the briefing screen.
+	d.briefing_objectives = [&"casing", &"keycard", &"code", &"server", &"vault_gate", &"time_lock", &"vault_loot", &"secure", &"escape"]
+	d.briefing_loud_key = &"heist.night_deposit.briefing_loud"
+	d.briefing_optional = [&"depository"]
 	# Pre-planning (contracts/preplanning.md, D-046 final): {"favors", "disable",
 	# "assets": {asset_id: overrides}}. Doc §Pre-planning: favors 4; generic drops/entry/escape
 	# keep their library data; the insider points carry reveals and the vent. Costs of the

@@ -318,6 +318,12 @@ func _exit_tree() -> void:
 
 
 func _process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_process_step(delta)
+	FrameProf.end(&"hud_model", fp)
+
+
+func _process_step(delta: float) -> void:
 	_tick_timers(delta)
 	_accum += delta
 	if _accum < 1.0 / maxf(poll_hz, 0.1):

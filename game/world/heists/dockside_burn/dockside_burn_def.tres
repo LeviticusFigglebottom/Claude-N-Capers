@@ -14,6 +14,8 @@ base_payout = 95000
 stealth_bonus_mult = 1.0
 loot = Array[StringName]([&"loot.cash_bricks", &"loot.weapon_crate", &"loot.contraband"])
 objectives = Array[StringName]([&"cartel", &"breach", &"product", &"burn", &"strongroom", &"count_cage", &"containers", &"secure", &"escape_wait", &"escape"])
+briefing_objectives = Array[StringName]([&"cartel", &"breach", &"product", &"burn", &"strongroom", &"secure", &"escape_wait", &"escape"])
+briefing_optional = Array[StringName]([&"count_cage", &"containers"])
 preplanning = {
 "assets": {
 &"asset.alternate_entry": {
