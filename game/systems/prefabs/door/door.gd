@@ -182,6 +182,22 @@ func unlock() -> void:
 	_update_nav_link()
 
 
+## Server (D-103 §6 / GN lockdown, last call): lock the door again, as `new_lock` (-1 = its current lock type;
+## BARRED = the crew cannot operate it, e.g. a lockdown shutter), closing it first when `close`. Replicated
+## (`locked`, `lk`).
+## Relocking to NONE just closes it.
+func relock(new_lock: int = -1, close: bool = true) -> void:
+	if not Net.is_authority():
+		return
+	if new_lock >= 0:
+		lock = new_lock as Lock
+	if close and is_open:
+		set_open(false)
+	locked = lock != Lock.NONE
+	_apply_lock_interaction()
+	_update_nav_link()
+
+
 ## Server: open (keycard readers, devices, missions).
 func open() -> void:
 	set_open(true)
@@ -203,7 +219,7 @@ func set_open(open: bool, instant: bool = false, breach: bool = false) -> void:
 
 ## Server (A3-07, NetEntityCodec.state_of): the generic door state plus PO-6 `sw` (forced-open swing).
 func _net_state() -> Dictionary:
-	var out: Dictionary = {"is_open": is_open, "locked": locked, "sw": _swing_breach}
+	var out: Dictionary = {"is_open": is_open, "locked": locked, "sw": _swing_breach, "lk": int(lock)}
 	if interactable != null and is_instance_valid(interactable):
 		out["ie"] = interactable.enabled
 	return out
@@ -217,6 +233,10 @@ func _apply_net_state(state: Dictionary) -> void:
 	if state.has("locked") and not bool(state["locked"]) and locked:
 		locked = false
 		_apply_unlocked_interaction()
+	elif state.has("locked") and bool(state["locked"]) and (not locked or int(state.get("lk", lock)) != int(lock)):
+		lock = int(state.get("lk", lock)) as Lock  # relock() on the server (D-103 §6)
+		locked = true
+		_apply_lock_interaction()
 	if state.has("ie") and interactable != null:
 		interactable.enabled = bool(state["ie"])
 	if state.has("is_open") and bool(state["is_open"]) != is_open:
@@ -568,6 +588,19 @@ func _setup_interactable() -> void:
 	var handle: Node3D = visual_node("Handle") as Node3D
 	if handle != null:
 		interactable.global_position = handle.global_position
+	_apply_lock_interaction()
+	interactable.extra_check = _availability
+	interactable.completed.connect(_on_completed)
+
+
+## The interaction for the current `lock` (setup and relock()). BARRED: blocked (other prefabs / the mission open it).
+func _apply_lock_interaction() -> void:
+	if interactable == null:
+		return
+	interactable.casing_allowed = casing_allowed
+	interactable.speed_modifier_key = &""
+	interactable.consumes_item = false
+	interactable.interaction_time_s = _default_interaction_time() if interaction_time_s < 0.0 else interaction_time_s
 	match lock:
 		Lock.NONE:
 			interactable.kind = &"open_door"
@@ -584,8 +617,6 @@ func _setup_interactable() -> void:
 			interactable.kind = &"place_c4" if _charge_door() else &"open_door"
 			if _charge_door():
 				interactable.prompt_key = &"ui.prompt.place_c4"
-	interactable.extra_check = _availability
-	interactable.completed.connect(_on_completed)
 
 
 func _availability(crew: Node) -> StringName:
