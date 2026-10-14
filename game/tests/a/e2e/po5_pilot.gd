@@ -11,6 +11,10 @@ extends RefCounted
 const REPRESS_TICKS: int = 20
 ## use() on a door walks (opening doors on the way) to within this of it before open_door() squares up (m).
 const DOOR_NEAR_M: float = 1.8
+## Loud: a visible enemy within this range is fought before / during a hold (S9.1: damage cancels holds) (m).
+const HOLD_THREAT_M: float = 20.0
+## Longest clearing fight before holding anyway (s).
+const CLEAR_MAX_S: float = 15.0
 ## Eye-ray probe drops below the head for visibility / aim: head, chest, hips (m).
 const AIM_DROPS: Array[float] = [0.0, 0.45, 0.8]
 
@@ -345,16 +349,20 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 	var completed: Array[bool] = [false]
 	var cb: Callable = func(_c: Node) -> void: completed[0] = true
 	comp.completed.connect(cb)
+	if combat and await _clear_threats():  # S9.1: damage cancels a hold, so clear the area first like a player
+		await face(target, 0.03, 1.0)
 	inp.press(&"interact")
 	var t: float = 0.0
 	var idle_ticks: int = 0
 	while t < timeout_s and not completed[0] and is_instance_valid(comp) and not (done.is_valid() and bool(done.call())):
 		if crew.crew_state != Enums.CrewState.NORMAL:
 			break
-		var foe: NpcBase = nearest_enemy(8.0) if combat else null
+		var foe: NpcBase = nearest_enemy(HOLD_THREAT_M) if combat else null
 		if foe != null:
 			inp.release(&"interact")
-			await engage(foe, 2.0)
+			d.note("pilot: use %s interrupted by %s at %.1f m (progress %.2f)" % [comp.kind, foe.name,
+				crew.global_position.distance_to(foe.global_position), isys.progress(crew.slot)])
+			await _clear_threats()
 			# Re-aim before pressing again: an F press with the crosshair still on the cop is a shout (ND attempts
 			# 15-18: the cop surrendered and the lockpick never progressed).
 			await face(target, 0.03, 1.0)
@@ -383,7 +391,13 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 			if no_blind_press and not await _aim_on(comp, target):
 				break
 			if isys.aimed_component(crew) == comp:
+				d.note("pilot: use %s hold dropped (hit or blocked), re-pressing" % comp.kind)
 				inp.press(&"interact")  # never re-press off target: F with nothing aimed is a shout
+			else:
+				var am: InteractableComponent = isys.aimed_component(crew)
+				d.note("pilot: use %s re-press skipped: aimed %s (dist %.2f, angle %.1f deg)" % [comp.kind,
+					am.get_path() if am != null else ^"<none>", crew.eye_position().distance_to(target),
+					rad_to_deg(crew.aim_direction().angle_to(target - crew.eye_position()))])
 	inp.release(&"interact")
 	if is_instance_valid(comp) and comp.completed.is_connected(cb):
 		comp.completed.disconnect(cb)
@@ -393,6 +407,19 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 		d.note("pilot: use %s (%s) -> %s in %.1f s" % [comp.owner_node().name if comp.owner_node() else comp.name,
 			comp.kind, "OK" if ok else "FAILED", t])
 	return ok
+
+
+## Loud: fight every visible enemy within HOLD_THREAT_M until none is left (or CLEAR_MAX_S). True when it fought.
+func _clear_threats() -> bool:
+	var fought: bool = false
+	var t0: float = HeistRuntime.of(crew).heist_time_s
+	while HeistRuntime.of(crew).heist_time_s - t0 < CLEAR_MAX_S and crew.crew_state == Enums.CrewState.NORMAL:
+		var foe: NpcBase = nearest_enemy(HOLD_THREAT_M)
+		if foe == null:
+			break
+		fought = true
+		await engage(foe, 2.0)
+	return fought
 
 
 ## True once `comp` is the aimed interactable (re-aims for up to ~1.5 s). Usable components only.
