@@ -92,3 +92,8 @@ signal audio_cue_requested(cue_id: StringName, position: Vector3, source_net_id:
 signal shot_fx(origin: Vector3, end: Vector3, normal: Vector3, surface: StringName, weapon_class: StringName,
 		shooter_net_id: int, flags: int)
 signal explosion_fx(position: Vector3, radius: float, kind: StringName)
+## shot_fx flag bits (impact_fx.md §2).
+const SHOT_FX_SUPPRESSED: int = 1
+const SHOT_FX_FIRST_PERSON: int = 2
+const SHOT_FX_HEADSHOT: int = 4
+const SHOT_FX_PENETRATED: int = 8

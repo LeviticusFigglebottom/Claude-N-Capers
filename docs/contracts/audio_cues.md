@@ -1,4 +1,4 @@
-# Contract: audio cues (v1.6)
+# Contract: audio cues (v1.7)
 
 ENV C produces every sound (synthesized/procedural; see style guide §Audio) and the cue registry
 `game/world/audio/cues.tres` (`AudioCueDef` resources: streams[], volume_db, bus, 3D, max_distance,
@@ -73,6 +73,7 @@ Buses: `Master > Music, SFX (> Weapons, Enemies, World, UI), Voice, Ambience`.
 | cue.hud_headshot | local player's headshot/crit | 80 ms 3.5 kHz tink, -12 dB, cooldown 0.05 | PP (D-100) |
 | cue.hud_kill | local player's kill | 120 ms 280 Hz thock + click, -9 dB, cooldown 0.06 | PP (D-100) |
 | cue.hud_heartbeat | one pulse of the low-health vignette (< 25 % health, standing) | lub-dub 450 ms, -12 dB, cooldown 0.3, never looped | PP (D-100) |
+| cue.impact_<surface> (concrete, brick, plaster, tile, wood, metal, glass, fabric, dirt, water, flesh, armor, shield) | every shot_fx / melee hit with a surface (C VfxDirector, impact_fx.md §3, D-105), local on every peer, 3D at the hit point | short material impact (≤0.4 s, 4 variations, World bus, 20–45 m, cooldown 0.03, jitter 0.06); built by tools/audiogen/cues_impact.py | PO (D-105) |
 
 UI cues (D-090) are built by `python3 tools/audiogen/ui/build_ui.py` (ENV B). `tools/audiogen/build.py` rewrites
 `cues.tres`: after it, run `python3 tools/audiogen/ui/build_ui.py --registry-only` (or have C's build call it) so the

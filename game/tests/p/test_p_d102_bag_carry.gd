@@ -125,3 +125,43 @@ func test_head_bob_scales_with_carry() -> void:
 	assert_near(amp[0], tw.head_bob_lateral_m, tw.head_bob_lateral_m * 0.15, "light bag: full walk bob %.4f" % amp[0])
 	assert_near(amp[1], amp[0] * tw.bag_speed_mult[Enums.LootWeight.HEAVY], tw.head_bob_lateral_m * 0.12,
 		"heavy bag bob %.4f = light %.4f x 0.5" % [amp[1], amp[0]])
+
+
+## PD2 PlayerCarry.target_tilt: carrying rolls the camera carry_tilt_deg (150 deg/s), back to level on drop; the
+## gameplay look is untouched.
+func test_carry_tilts_camera() -> void:
+	var c: CrewController = _crew()
+	var tw: CrewTweak = Tweak.crew()
+	var head: Node3D = c.get_node(^"Head") as Node3D
+	await wait_physics_frames(10)
+	assert_near(c.carry_tilt, 0.0, 1e-4, "level without a bag")
+	var yaw0: float = c.look_yaw
+	var bag: LootBag = await _carry(c, Enums.LootWeight.MEDIUM)
+	await wait_seconds(absf(tw.carry_tilt_deg) / tw.carry_tilt_rate_dps + 0.1)
+	assert_near(c.carry_tilt, tw.carry_tilt_deg, 1e-3, "carrying: %.1f deg roll" % tw.carry_tilt_deg)
+	assert_near(rad_to_deg(head.rotation.z), tw.carry_tilt_deg, 0.05, "camera rolled")
+	assert_near(c.look_yaw, yaw0, 1e-4, "gameplay yaw untouched")
+	await _drop(c, bag)
+	await wait_seconds(absf(tw.carry_tilt_deg) / tw.carry_tilt_rate_dps + 0.1)
+	assert_near(c.carry_tilt, 0.0, 1e-4, "level after the drop")
+	assert_near(head.rotation.z, 0.0, 1e-4, "camera level")
+
+
+## PD2 PlayerCarry:_enter -> _start_action_equip: a pickup re-plays the weapon's draw over its equip time; a drop
+## does not.
+func test_pickup_replays_draw() -> void:
+	var c: CrewController = _crew()
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
+	await wait_seconds(2.0)
+	var vm: FpViewmodel = FpViewmodel.of(CrewView.of(c).camera())
+	assert_true(vm != null and vm.anim_set != &"", "animated viewmodel")
+	if vm == null or vm.anim_set == &"":
+		return
+	assert_eq(vm.action, FpViewmodel.Action.NONE, "idle before the pickup")
+	var bag: LootBag = await _carry(c, Enums.LootWeight.LIGHT)
+	assert_eq(vm.action, FpViewmodel.Action.SWAP, "pickup plays the draw")
+	var st: WeaponStats = c.weapons.stats(c.weapons.equipped_slot)
+	await wait_seconds(st.equip_time_s + 0.3)
+	assert_eq(vm.action, FpViewmodel.Action.NONE, "draw done after the equip time (%.2f s)" % st.equip_time_s)
+	await _drop(c, bag)
+	assert_eq(vm.action, FpViewmodel.Action.NONE, "no draw on the drop")
