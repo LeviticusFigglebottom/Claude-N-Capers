@@ -245,3 +245,10 @@ func test_briefing_strings_exist() -> void:
 	for o: Variant in _expected_objectives():
 		if not String(o).contains("."):
 			assert_has(_strings, "objective.glasshouse.%s" % o)
+
+
+## C (GN-B1): canvases are carried rolled, not bagged; the briefing's loot price line must not say "per bag".
+func test_loot_line_prices_each_not_per_bag() -> void:
+	var t: String = UiText.t(&"ui.briefing.loot_line", {"loot": "Calloway's Study", "value": "$700"})
+	assert_eq(t, "Calloway's Study: $700 each")
+	assert_false(t.contains("bag"))

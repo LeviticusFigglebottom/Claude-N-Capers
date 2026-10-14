@@ -132,7 +132,7 @@ SMG = FPSet(
 # -- rifle (Corsair AR: 700 rpm = 2.6 frames per shot) ------------------------------------------
 RIFLE = FPSet(
     name="rifle", weapon="wpn_corsair_ar",
-    markers={"left_ik": v3(-0.0315, 0.330, 0.067), "aim": v3(0.0, -0.060, 0.1212),
+    markers={"left_ik": v3(0.0, 0.260, 0.038), "aim": v3(0.0, -0.060, 0.1212),
              "magwell": v3(0.0, 0.1235, -0.012), "magwell_axis": rxd(8.0) @ v3(0.0, 0.0, 1.0),
              "catch": v3(-0.017, 0.098, 0.042), "butt": v3(0.0, -0.300, 0.030)},
     hip=((0.13, 0.20, -0.18), 7.0, 1.0, -6.0),
@@ -174,7 +174,7 @@ def _shell_events(empty: bool) -> dict:
 
 SHOTGUN = FPSet(
     name="shotgun", weapon="wpn_plowman_12",
-    markers={"left_ik": v3(-0.026, 0.390, 0.0285), "aim": v3(0.0, 0.100, 0.1032),
+    markers={"left_ik": v3(0.0, 0.360, -0.002), "aim": v3(0.0, 0.100, 0.1032),
              "magwell": v3(0.0, 0.172, 0.008), "magwell_axis": v3(0.0, -0.20, 0.98),
              "butt": v3(0.0, -0.360, -0.010)},
     hip=((0.13, 0.19, -0.18), 7.0, 1.5, -6.0),
@@ -198,7 +198,7 @@ SHOTGUN = FPSet(
 # -- lmg (Rampart: 750 rpm = 2.4 frames per shot; belt box) -------------------------------------
 LMG = FPSet(
     name="lmg", weapon="wpn_rampart_lmg",
-    markers={"left_ik": v3(-0.0385, 0.360, 0.066), "aim": v3(0.0, -0.005, 0.1542),
+    markers={"left_ik": v3(0.0, 0.293, 0.029), "aim": v3(0.0, -0.005, 0.1542),
              "magwell": v3(0.0, 0.150, 0.020), "magwell_axis": v3(0.0, 0.0, 1.0),
              "cover_rear": v3(0.0, -0.022, 0.134), "cover_hinge": v3(0.0, 0.160, 0.124),
              "feed": v3(-0.027, 0.062, 0.100), "charge": v3(0.040, 0.205, 0.090),
@@ -226,7 +226,7 @@ BOLT_LIFT_DEG = 62.0
 BOLT_TRAVEL = 0.075
 SNIPER = FPSet(
     name="sniper", weapon="wpn_heron_308",
-    markers={"left_ik": v3(-0.032, 0.400, 0.040), "aim": v3(0.0, -0.010, 0.1422),
+    markers={"left_ik": v3(0.0, 0.333, 0.024), "aim": v3(0.0, -0.010, 0.1422),
              "magwell": v3(0.0, 0.135, 0.022), "magwell_axis": v3(0.0, 0.0, 1.0),
              "knob": v3(0.047, 0.016, 0.044), "bore": v3(0.0, 0.0, 0.078),
              "butt": v3(0.0, -0.380, 0.020)},
@@ -455,7 +455,7 @@ BREAK_ACTION = FPSet(
     name="break_action", weapon="wpn_reaper_db",
     # D2-04: ENV B's wpn_reaper_db (LeftHandIK on the Breech fore-end, AimPoint = the tang sight, Breech
     # pivot = the hinge pin, the shells' bases at the breech face)
-    markers={"left_ik": v3(-0.022, 0.200, 0.034), "aim": v3(0.0, -0.016, 0.086),
+    markers={"left_ik": v3(0.0, 0.148, 0.005), "aim": v3(0.0, -0.016, 0.086),
              "hinge": v3(0.0, 0.066, 0.028), "chambers": (v3(-0.012, 0.071, 0.054), v3(0.012, 0.071, 0.054)),
              "lever": v3(0.0, 0.020, 0.078), "butt": v3(0.0, -0.346, 0.0),
              "magwell": v3(0.0, 0.071, 0.054), "magwell_axis": v3(0.0, -1.0, 0.0)},
@@ -590,7 +590,7 @@ LEVER = FPSet(
     name="lever", weapon="wpn_shrike_44",
     # D2-04: ENV B's wpn_shrike_44 (LeftHandIK on the Forend, AimPoint = the buckhorn rear sight on the
     # barrel, Lever pivot at its front end); the loading gate on the receiver's right side
-    markers={"left_ik": v3(-0.022, 0.250, 0.0275), "aim": v3(0.0, 0.270, 0.074),
+    markers={"left_ik": v3(0.0, 0.210, 0.004), "aim": v3(0.0, 0.270, 0.074),
              "lever_pivot": v3(0.0, 0.124, 0.010), "magwell": v3(0.017, 0.095, 0.028),
              "magwell_axis": v3(-0.10, 0.99, 0.0), "butt": v3(0.0, -0.320, -0.010)},
     hip=((0.13, 0.20, -0.18), 7.0, 1.5, -6.0),
@@ -815,7 +815,7 @@ SHOTGUN_BOX_DATA = _b3_row("shotgun_box", SHOTGUN_BOX_DEFAULTS)
 #: drum centred 94 mm below it, 30 mm half width + side plates).
 SHOTGUN_BOX = FPSet(
     name="shotgun_box", weapon="wpn_brute_12",
-    markers={"left_ik": v3(-0.026, 0.330, 0.046), "aim": v3(0.0, -0.040, 0.1482),
+    markers={"left_ik": v3(0.0, 0.307, 0.026), "aim": v3(0.0, -0.040, 0.1482),
              "magwell": v3(0.0, 0.150, 0.022), "magwell_axis": v3(0.0, 0.0, 1.0),
              "cock": v3(-0.034, 0.200, 0.084), "butt": v3(0.0, -0.330, 0.060)},
     hip=((0.13, 0.20, -0.185), 7.0, 1.5, -6.0),

@@ -160,7 +160,8 @@ def build(ctx) -> None:
     ctx.marker("SideRail", (a.GAS_R + 0.0072, a.SIDE_Y, a.GAS_Z))
     ctx.marker("StockMount", a.STOCK_MOUNT)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
-    ctx.marker("LeftHandIK", (-(a.GAS_R + 0.012), 0.300, a.GAS_Z - 0.006))
+    # Lead (ENV D, FP left-hand cup): under the GasCylinder (y 0.215-0.459, bottom z 0.044), x 0, 12 mm low, a third of the way forward.
+    ctx.marker("LeftHandIK", (0.0, 0.296, 0.032))
 
     stock_sight = ctx.marker("StockSight", (0.0, 0.0, 0.0), parent=sight_rail)
     a.build_rear_leaf(ctx, mats, parent=stock_sight)

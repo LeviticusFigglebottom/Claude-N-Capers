@@ -166,7 +166,8 @@ def build(ctx) -> None:
     ctx.marker("SideRail", (k.STOCK_HW + 0.0057, 0.445, 0.050))
     ctx.marker("StockMount", (0.0, -0.012, 0.074))
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
-    ctx.marker("LeftHandIK", (-(k.STOCK_HW + 0.008), 0.400, 0.040))
+    # Lead (ENV D, FP left-hand cup): under the stock fore-end (y 0.240-0.520, bottom z 0.036), x 0, 12 mm low, a third of the way forward.
+    ctx.marker("LeftHandIK", (0.0, 0.333, 0.024))
 
     stock_sight = ctx.marker("StockSight", (0.0, 0.0, 0.0), parent=sight_rail)
     k.build_scope(ctx, mats, ten=False, parent=stock_sight)
