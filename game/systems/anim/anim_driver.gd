@@ -68,6 +68,15 @@ const ONESHOT_HINTS: Array[StringName] = [&"melee", &"kick_hit", &"hit_react"]
 const SEATED_CLIPS: Array[StringName] = [&"desk_work", &"phone_seated", &"sit_chair_watch", &"cower_seated"]
 const DEATH_SEATED_SLUMP: StringName = &"death_seated_slump"
 const DEATH_SEATED_FALL: StringName = &"death_seated_fall"
+## characters.md v1.10 8-way locomotion by 45 deg sector clockwise from forward (index 0 = forward).
+const WALK_8: Array[StringName] = [
+	&"walk", &"walk_fr", &"strafe_r", &"walk_br", &"walk_back", &"walk_bl", &"strafe_l", &"walk_fl"]
+const RUN_8: Array[StringName] = [&"run", &"run_fr", &"run_r", &"run_br", &"run_b", &"run_bl", &"run_l", &"run_fl"]
+## Hit reacts by where the bullet came from (characters.md v1.10), and the spacing between two of them.
+const HIT_FRONT: StringName = &"hit_react"
+const HIT_BACK: StringName = &"hit_react_back"
+const HIT_LEFT: StringName = &"hit_react_left"
+const HIT_RIGHT: StringName = &"hit_react_right"
 ## One-shot hints that are not held as an idle once played (the hint may linger in the brain).
 const ONCE_ONLY_HINTS: Array[StringName] = [&"kick_hit", &"hit_react"]
 ## Clip -> substitute when the library lacks it (then idle).
@@ -82,6 +91,11 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"desk_work": &"desk_type", &"phone_seated": &"phone_call", &"sit_chair_watch": &"sit_chair", &"mop": &"browse",
 	&"sit_bed_read": &"sit_chair", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
 	&"rappel": &"climb_ladder", &"climb_ladder": &"idle",
+	# v1.10: 8-way, hit reacts, death variety (each falls back to the v1.3 set).
+	&"walk_fl": &"walk", &"walk_fr": &"walk", &"walk_bl": &"walk_back", &"walk_br": &"walk_back",
+	&"run_fl": &"run", &"run_fr": &"run", &"run_bl": &"run_b", &"run_br": &"run_b",
+	&"hit_react_back": &"hit_react", &"hit_react_left": &"hit_react", &"hit_react_right": &"hit_react",
+	&"death_front_b": &"death_front", &"death_back_b": &"death_back", &"death_side": &"death_back",
 	&"curator_inspect": &"browse", &"cower_stand": &"cower", &"cower_seated": &"cower", &"walk_text": &"walk",
 }
 ## EnemyDef.params key: the unit's own walk clip (Bulwark shield_walk, Wrecker dozer_walk), played instead
@@ -127,6 +141,7 @@ var _turning_left: float = 0.0
 var _aim_hold_left: float = 0.0
 var _hit_dir: Vector3 = Vector3.ZERO
 var _death_clip: StringName = &""
+var _last_hit_react_t: float = -100.0
 ## The NPC's last clip while alive was a seated one (SEATED_CLIPS): it dies in the chair.
 var _seated: bool = false
 var _last_hint: StringName = &""
@@ -435,17 +450,14 @@ func _locomotion_clip(speed: float, tw: AnimTweak) -> StringName:
 	var side: float = dir.dot(right)
 	var slow: bool = speed <= tw.strafe_max_mps
 	var running: bool = not slow and speed <= tw.run_sprint_split_mps
-	if dir.dot(fwd) < tw.walk_back_dot and (slow or running):
-		out = &"walk_back" if slow else &"run_b"
-	elif absf(side) > tw.strafe_side_dot and (slow or running):
-		if slow:
-			out = &"strafe_r" if side > 0.0 else &"strafe_l"
-		else:
-			out = &"run_r" if side > 0.0 else &"run_l"
-	elif speed <= tw.walk_run_split_mps:
-		out = &"walk"
-	elif speed <= tw.run_sprint_split_mps:
-		out = &"run"
+	if slow or running:
+		# characters.md v1.10 8-way: 45 deg sectors clockwise from forward (diagonals fall back to the 4-way set).
+		var a: float = rad_to_deg(atan2(side, dir.dot(fwd)))
+		var i: int = posmod(roundi(a / 45.0), 8)
+		var clips: Array[StringName] = WALK_8 if slow else RUN_8
+		out = clips[i]
+		if i == 0:  # straight ahead: walk / run by the usual split
+			out = &"walk" if speed <= tw.walk_run_split_mps else &"run"
 	return out
 
 
@@ -562,7 +574,15 @@ func _pick_death_clip(tw: AnimTweak) -> StringName:
 			return seated_clip
 	if dir.length() < 0.001:
 		return &"death_back"
-	return &"death_front" if from_behind else &"death_back"
+	# v1.10 variety: a strong side hit falls sideways; otherwise front / back, half of the bodies with the _b
+	# variant. Picked from the replicated node name, so every peer shows the same death.
+	var right: Vector3 = _body.global_transform.basis.x
+	if absf(dir.normalized().dot(right)) > tw.death_side_dot:
+		return &"death_side"
+	var b: bool = absi(hash(String(_body.name) + "death")) % 2 == 1
+	if from_behind:
+		return &"death_front_b" if b else &"death_front"
+	return &"death_back_b" if b else &"death_back"
 
 
 func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:
@@ -571,6 +591,8 @@ func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:
 	var key: StringName = p_clip
 	if not tw.clip_speeds.has(key):
 		key = StringName(_variant_family.get(p_clip, &""))
+	if not tw.clip_speeds.has(key):  # v1.10 8-way: the diagonals run at their family's speed
+		key = &"walk" if String(p_clip).begins_with("walk_") else (&"run" if String(p_clip).begins_with("run_") else key)
 	if not tw.clip_speeds.has(key):
 		return 1.0
 	var s: float = horizontal_speed() / maxf(float(tw.clip_speeds[key]) * _motion_scale(), 0.01)
@@ -693,8 +715,34 @@ func _net_id() -> int:
 # --- Events ---------------------------------------------------------------------------------
 
 func _on_damage_applied(victim_net_id: int, _attacker: int, info: Dictionary) -> void:
-	if victim_net_id != 0 and victim_net_id == _net_id():
-		_hit_dir = info.get("direction", Vector3.ZERO)
+	if victim_net_id == 0 or victim_net_id != _net_id():
+		return
+	_hit_dir = info.get("direction", Vector3.ZERO)
+	if player == null or bool(info.get("killed", false)) or float(info.get("amount", 0.0)) <= 0.0:
+		return
+	if _npc != null and not _npc.alive:
+		return
+	if _crew != null and _crew.crew_state != Enums.CrewState.NORMAL:
+		return
+	var now: float = Time.get_ticks_msec() / 1000.0
+	if now - _last_hit_react_t < AnimTweak.data().hit_react_min_gap_s:
+		return
+	_last_hit_react_t = now
+	play_oneshot(hit_react_clip(_hit_dir), -1.0, true)
+
+
+## v1.10: the hit react for a bullet travelling along world direction `dir` (body frame: from the front, back,
+## left or right).
+func hit_react_clip(dir: Vector3) -> StringName:
+	var d: Vector3 = _body.global_transform.basis.inverse() * Vector3(dir.x, 0.0, dir.z)
+	if d.length() < 0.001:
+		return HIT_FRONT
+	d = d.normalized()
+	if d.z > 0.5:
+		return HIT_FRONT
+	if d.z < -0.5:
+		return HIT_BACK
+	return HIT_LEFT if d.x > 0.5 else HIT_RIGHT
 
 
 func _on_weapon_fired(shooter_net_id: int, _weapon_id: StringName, _suppressed: bool, _pos: Vector3) -> void:
