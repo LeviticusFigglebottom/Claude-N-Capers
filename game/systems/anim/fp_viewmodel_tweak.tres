@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://car31lsjj31ff" path="res://assets/characters/char_arms_fp_sable/char_arms_fp_sable.glb" id="s_sable"]
 [ext_resource type="PackedScene" uid="uid://yngqj36fwqfg" path="res://assets/characters/char_arms_fp_dutch/char_arms_fp_dutch.glb" id="s_dutch"]
 [ext_resource type="PackedScene" uid="uid://dc75nwt7p1abq" path="res://assets/characters/char_arms_fp_wren/char_arms_fp_wren.glb" id="s_wren"]
+[ext_resource type="PackedScene" uid="uid://d20wd3fv3i87i" path="res://assets/characters/char_arms_fp_marten/char_arms_fp_marten.glb" id="s_marten"]
 
 [resource]
 script = ExtResource("1")
@@ -14,7 +15,8 @@ sleeve_scenes = Dictionary[StringName, PackedScene]({
 &"rook": ExtResource("s_rook"),
 &"sable": ExtResource("s_sable"),
 &"dutch": ExtResource("s_dutch"),
-&"wren": ExtResource("s_wren")
+&"wren": ExtResource("s_wren"),
+&"marten": ExtResource("s_marten")
 })
 weapon_bone = &"weapon"
 magazine_bone = &"magazine"
