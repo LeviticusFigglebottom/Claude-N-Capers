@@ -8,11 +8,11 @@ id = &"glasshouse"
 display_name = "Glasshouse"
 contact = &"contact.vance"
 briefing = "Vossberg Jewelers, corner of Harlow Avenue and Pell Street. Thursday's consignment of loose stones and estate pieces sits in the workshop safe overnight. Odile Vance has buyers. Keycard or drill, two bags minimum, out by the van."
-briefing_loud_key = &"heist.glasshouse.briefing_loud"
 map_scene = "res://world/heists/glasshouse/glasshouse.tscn"
 base_payout = 40000
 loot = Array[StringName]([&"loot.jewelry", &"loot.cash"])
 objectives = Array[StringName]([&"casing", &"keycard", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"])
+briefing_loud_key = &"heist.glasshouse.briefing_loud"
 preplanning = {
 "assets": {
 &"asset.alternate_entry": {
