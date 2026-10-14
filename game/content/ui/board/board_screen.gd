@@ -57,6 +57,9 @@ var pro_desc_label: Label
 var consumed_label: Label
 var time_label: Label
 var take_button: Button
+## D-111 (style.md §11): the broker form is folded behind this toggle; the contract card stays the focus.
+var broker_toggle: Button
+var broker_box: PanelContainer
 var broker_heist: OptionButton
 var broker_difficulty: OptionButton
 var broker_cost_label: Label
@@ -124,9 +127,8 @@ func build_ui() -> void:
 	take_button = UiBuild.button(&"ui.board.take")
 	take_button.pressed.connect(func() -> void: UiSfx.check(take_selected()))
 	root.add_child(UiBuild.footer(back_button, take_button))
-	map_view.exit_right = broker_heist
-	for c: Control in [broker_heist, broker_difficulty, buy_button, take_button, back_button]:
-		focus_chain.append(c)
+	map_view.exit_right = broker_toggle
+	_rebuild_chain()
 	UiNav.chain_horizontal([back_button, take_button] as Array[Control], false)
 	refresh_board()
 	_refresh_broker()
@@ -219,9 +221,14 @@ func _build_card(side: VBoxContainer) -> void:
 
 
 func _build_broker(side: VBoxContainer) -> void:
+	broker_toggle = UiBuild.ghost(UiBuild.button(&"ui.board.broker.title"))
+	broker_toggle.toggle_mode = true
+	broker_toggle.toggled.connect(set_broker_open)
+	side.add_child(broker_toggle)
 	var box: VBoxContainer = UiBuild.vbox(UiTokens.S2)
-	side.add_child(UiBuild.panel(box))
-	box.add_child(UiBuild.label(&"ui.board.broker.title", UiBuild.SUBHEADER))
+	broker_box = UiBuild.panel(box)
+	broker_box.visible = false
+	side.add_child(broker_box)
 	var desc: Label = UiBuild.label(&"ui.board.broker.desc", UiBuild.DIM)
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(desc)
@@ -250,6 +257,26 @@ func _build_broker(side: VBoxContainer) -> void:
 	buy_button = UiBuild.button(&"ui.board.broker.buy")
 	buy_button.pressed.connect(func() -> void: UiSfx.check(broker_buy() == BoardBroker.OK))
 	box.add_child(buy_button)
+
+
+## Opens / folds the broker form under its toggle (focus moves into it when opened from the keys / pad).
+func set_broker_open(on: bool) -> void:
+	broker_box.visible = on
+	broker_toggle.set_pressed_no_signal(on)
+	_rebuild_chain()
+	if on and broker_toggle.has_focus():
+		broker_heist.grab_focus.call_deferred()
+
+
+func _rebuild_chain() -> void:
+	focus_chain.clear()
+	focus_chain.append(broker_toggle)
+	if broker_box.visible:
+		focus_chain.append_array([broker_heist, broker_difficulty, buy_button] as Array[Control])
+	focus_chain.append_array([take_button, back_button] as Array[Control])
+	if is_inside_tree():
+		UiNav.chain_vertical(focus_chain)
+		UiNav.chain_horizontal([back_button, take_button] as Array[Control], false)
 
 
 ## Unix seconds from `clock`, else the system clock.
@@ -300,7 +327,7 @@ func select_slot(slot: int) -> void:
 	if has:
 		_fill_card(c)
 		var pin: Control = map_view.pins[selected_slot]
-		for n: Control in [broker_heist, broker_difficulty, buy_button, back_button]:
+		for n: Control in [broker_toggle, broker_heist, broker_difficulty, buy_button, back_button]:
 			n.focus_neighbor_left = n.get_path_to(pin)  # relative to each control (one shared path went stale)
 
 

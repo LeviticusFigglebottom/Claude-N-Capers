@@ -126,3 +126,19 @@ func test_board_district_names_clear_of_pins() -> void:
 				assert_false((labels[id] as Rect2).intersects(pin.get_rect()), "%s under a pin" % id)
 	s.queue_free()
 	await wait_frames(1)
+
+
+## D-111 (style.md §11): the broker form is folded behind its toggle; the map's right edge reaches the toggle,
+## opening it puts the form in the focus chain.
+func test_broker_folds_behind_toggle() -> void:
+	var s: BoardScreen = _screen(1000000, 10)
+	await wait_frames(2)
+	assert_false(s.broker_box.visible, "folded by default")
+	assert_eq(s.map_view.exit_right, s.broker_toggle as Control)
+	assert_false(s.focus_chain.has(s.broker_heist))
+	s.set_broker_open(true)
+	assert_true(s.broker_heist.is_visible_in_tree())
+	assert_true(s.focus_chain.has(s.buy_button), "open form joins the chain")
+	s.set_broker_open(false)
+	assert_false(s.focus_chain.has(s.broker_heist))
+	s.queue_free()

@@ -2106,6 +2106,7 @@ ui.blocked.civilian,You need your gear
 ui.options.title,Options
 ui.options.crumb,Caperworks / Settings
 ui.options.tab.controls,Controls
+ui.options.tab.keys,Key Bindings
 ui.options.tab.audio,Audio
 ui.options.tab.video,Video
 ui.options.tab.accessibility,Accessibility
