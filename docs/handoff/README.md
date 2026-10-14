@@ -33,7 +33,7 @@ Start with `CLAUDE.md`, then `docs/architecture.md`, `docs/roadmap.md`, `docs/de
 | Shadow Ledger | `shadow_ledger` | greybox + full material pass | skins + tiling done |
 | **Gallery Night** | `gallery_night` | **G1 greybox + full mission logic + props + lighting** | the heist being built (D-110); G2 art pass next |
 
-### Where the project stands (trunk round 199, `9938fe24`)
+### Where the project stands (trunk round 200, handoff)
 * **The freeze is lifted for new content** (D-110). Gallery Night is playable end to end in greybox:
   mission script (last call, lockdown, loud hack, rare spawns, intel), props, lighting, validated on all variants.
 * **D-111 polish gate** (must hold before the *next* heist after Gallery Night starts), from the product owner:
@@ -47,7 +47,8 @@ Start with `CLAUDE.md`, then `docs/architecture.md`, `docs/roadmap.md`, `docs/de
      interactable wiring are IN PROGRESS (C, `docs/levels/_art/prop_art_inventory.md`).
 * **D-112:** `max_renderable_lights` 256; D-038 amended (library "black" albedo lifted).
 * **D-113 (product owner): more blood/gore + gritty muzzle flash.** Plumbing DONE (EventBus `blood_hit` / `bleed_changed`,
-  `SHOT_FX_STRONG`, A's BloodFx emits, B's gore option `gameplay/gore`); C's VFX and P's FP flash are IN PROGRESS.
+  `SHOT_FX_STRONG`, A's BloodFx emits); C's VFX DONE (round 200: spray, splatter, pools, drips, gritty class-shaped flash;
+  sheets in `docs/levels/_art/vfx_d113/`). B's gore option is on B's held branch; P's FP flash wiring is IN PROGRESS.
 * **Product owner's most visible open complaints** (top priority for the next session):
   1. **FP weapons render near-black** ("untextured"). P proved it's the weapon *material* (not lights/layers): swapping
      the arms' material onto the gun lights it fully. Bisecting which texture (ORM/normal/albedo) is the culprit; the fix
