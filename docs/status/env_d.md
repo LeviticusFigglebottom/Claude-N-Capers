@@ -3,6 +3,17 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14: skirt fix, FP pistol left hand
+- Skirt (`_npc.skirt`; bank_officer, npc_bank_teller, npc_bank_night_manager): the thigh weighting ramps in by
+  mid-skirt (0.97 at the hem, was 0.85 reached only at the hem), centre mix 0.03, clearance 15 mm. No more thigh
+  poke-through in walk/run/cower_stand (`_review/skirt_fix_windowed.png`). Open, and already there before this fix:
+  in seated poses the back hem shows as a thin band between the knees.
+- FP pistol: the runtime left-hand IK (FpLeftHandIk onto the Kestrel's LeftHandIK) leaves the support fingers
+  sticking out flat beside the slide. With pistol skipped, the clip's grip wraps cleanly
+  (`_review/pistol_ads_d/left_ik_on_vs_off.png`). Asked ENV P to add pistol/revolver to left_hand_ik_skip_sets.
+- Correction: the FP ADS depth change (423c453b) does reach the game (slide 27→22 px); the forearms still fill the
+  frame at the 52° viewmodel FOV.
+
 ## 2026-10-14: weapon hold / ADS (PO feedback), skin tone fold
 - TP `aim_pistol` (+ fire/reload_pistol via gun_pose): isosceles at near-full reach, grip 0.60 m out (was 0.47) with the
   sights just under the eye line (was chin height), torso lean 6/6, head up. Windowed Godot check with weapons at
