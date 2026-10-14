@@ -24,9 +24,9 @@ Owner: LEAD. Goal: the game is practically playable start to finish, proven by a
 | PP-B-1 | B | Duplicate Career / Notoriety buttons in the hub |
 | PP-B-2 | B | Hub cards off-screen at 1280×720 |
 | PP-B-3 | B | Payday card auto-picks after 30 s (PD2: player picks; review timer) |
-| PP-P-1 | P | Step-up / snap-down on 5–40 cm steps, ramps, stairs untested (P1-01) |
-| PP-P-2 | P | Spurious STEALTH hop when the alarm fires while casing (P1-02) |
-| PP-P-3 | P | ADS audit: sway, FOV, sensitivity, transitions (P1-03) |
+| PP-P-1 | P | Step-up / snap-down on 5–40 cm steps, ramps, stairs untested (P1-01) | **FIXED** (P, 2026-10-13)
+| PP-P-2 | P | Spurious STEALTH hop when the alarm fires while casing (P1-02) | **FIXED** (P, 2026-10-13)
+| PP-P-3 | P | ADS audit: sway, FOV, sensitivity, transitions (P1-03) | **FIXED** (P, 2026-10-13; PO-13 follow-ups)
 | PP-A-1 | A | Real-input driver + mouse-look aim that a test can use (blocks the suite) |
 | PP-A-2 | A | Domination per D-079 (range/cone/hostage count) verified by real shouting |
 | PP-C-1 | C | Walk every heist by real input: stuck spots, nav holes, doors, ladders, objective reachability |

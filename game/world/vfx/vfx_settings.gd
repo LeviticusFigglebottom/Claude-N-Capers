@@ -128,3 +128,9 @@ static func use_decal_nodes() -> bool:
 	if force_decal_nodes != null:
 		return bool(force_decal_nodes)
 	return not is_compatibility()
+
+
+## True once at least one frame has been drawn since `drawn_at` (Engine.get_frames_drawn()), so a short flash
+## survives a hitch longer than its life (< 20 fps). Headless never draws, so it never waits there.
+static func frame_drawn_since(drawn_at: int) -> bool:
+	return drawn_at < 0 or is_headless() or Engine.get_frames_drawn() > drawn_at

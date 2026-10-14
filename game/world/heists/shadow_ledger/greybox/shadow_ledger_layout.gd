@@ -527,6 +527,48 @@ const CHAIRS: Array = [
 	["BoardChairE3", Vector3(34.65, F42, 12.55), 90.0, "BoardroomTable"],
 	["BoardChairE4", Vector3(34.65, F42, 13.65), 90.0, "BoardroomTable"],
 	["BoardChairHead", Vector3(33.5, F42, 9.15), 180.0, "BoardroomTable"],
+	# PO-9 (remaining tables). K5 Moor's meeting table: north, west and east (the south side is 0.2 m off the
+	# wall); the phone / bracelet / code-note UsePoints stay clear at z 3.05.
+	["MoorMeetChairN", Vector3(33.8, F41, 3.55), 180.0, "MoorMeetingTable"],
+	["MoorMeetChairW", Vector3(32.75, F41, 4.6), -90.0, "MoorMeetingTable"],
+	["MoorMeetChairE", Vector3(34.85, F41, 4.6), 90.0, "MoorMeetingTable"],
+	# K24 interview room: the interviewee on the door side, two interviewers across the table (the K24Interview
+	# patrol spot inside the door stays clear).
+	["InterviewChairN", Vector3(33.0, F41, 20.45), 180.0, "InterviewTable"],
+	["InterviewChairS1", Vector3(32.7, F41, 22.55), 0.0, "InterviewTable"],
+	["InterviewChairS2", Vector3(33.3, F41, 22.55), 0.0, "InterviewTable"],
+	# M11 pantry: west, east and south (the M11Pantry patrol spot and the phone are north; the west seat is
+	# outside the PantryDoor clear zone).
+	["PantryChairW", Vector3(26.95, F42, 10.3), -90.0, "PantryTable"],
+	["PantryChairE", Vector3(29.05, F42, 10.3), 90.0, "PantryTable"],
+	["PantryChairS", Vector3(28.0, F42, 11.35), 0.0, "PantryTable"],
+	# K4 assistants: behind each desk, back to the window (the phone UsePoint is on the room side).
+	["AssistantChairA", Vector3(25.6, F41, 1.2), 180.0, "AssistantDeskA"],
+	["AssistantChairB", Vector3(27.6, F41, 1.2), 180.0, "AssistantDeskB"],
+	# K8 open office: four seats per 2.4 x 1.6 pod (two desks a side). Pod A's north pair sits 0.3 / 0.1 m east,
+	# clear of the K8North patrol spot by the north door.
+	["PodAChairN1", Vector3(2.7, F41, 8.75), 180.0, "WorkstationsA"],
+	["PodAChairN2", Vector3(3.7, F41, 8.75), 180.0, "WorkstationsA"],
+	["PodAChairS1", Vector3(2.4, F41, 11.25), 0.0, "WorkstationsA"],
+	["PodAChairS2", Vector3(3.6, F41, 11.25), 0.0, "WorkstationsA"],
+	["PodBChairN1", Vector3(6.4, F41, 8.75), 180.0, "WorkstationsB"],
+	["PodBChairN2", Vector3(7.6, F41, 8.75), 180.0, "WorkstationsB"],
+	["PodBChairS1", Vector3(6.4, F41, 11.25), 0.0, "WorkstationsB"],
+	["PodBChairS2", Vector3(7.6, F41, 11.25), 0.0, "WorkstationsB"],
+	["PodCChairN1", Vector3(4.4, F41, 12.55), 180.0, "WorkstationsC"],
+	["PodCChairN2", Vector3(5.6, F41, 12.55), 180.0, "WorkstationsC"],
+	["PodCChairS1", Vector3(4.4, F41, 15.05), 0.0, "WorkstationsC"],
+	["PodCChairS2", Vector3(5.6, F41, 15.05), 0.0, "WorkstationsC"],
+	# K12 IT: both desks are worked from the north side, facing south. Desk A's seat is rolled
+	# to the west end, out of the ITDoor swing; desk B's sits between the desks, east of the K12IT patrol spot,
+	# leaving the kc_it / PhoneIT / code-note UsePoints on the south sides clear.
+	["ITChairA", Vector3(32.6, F41, 8.2), 180.0, "ITDeskA"],
+	["ITChairB", Vector3(33.4, F41, 10.4), 180.0, "ITDeskB"],
+	# K20-K23 associates: the desk is 0.65 m off the window, so the seat is on the room side, facing it.
+	["K20Chair", Vector3(19.5, F41, 22.0), 180.0, "K20Desk"],
+	["K21Chair", Vector3(22.5, F41, 22.0), 180.0, "K21Desk"],
+	["K22Chair", Vector3(25.5, F41, 22.0), 180.0, "K22Desk"],
+	["K23Chair", Vector3(28.5, F41, 22.0), 180.0, "K23Desk"],
 ]
 ## Logo wall ("K&M", glass teal, landmark 2) on K3's east wall: visual box.
 const LOGO_WALL: Array = [23.87, F41 + 1.2, 2.6, 23.9, F41 + 2.6, 4.6]

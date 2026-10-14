@@ -498,6 +498,53 @@ static func u_stair(parent: Node3D, o: Vector3, ramp: bool, rail_h: float = 1.05
 	root.owner = parent.owner if parent.owner != null else parent
 
 
+## Imperial stair (Gallery Night type), local frame at `o`: a central flight (x 5.8-8.2, 15 risers
+## of 0.18 m) rising +Z to a 14 m half landing (x 0-14, z 3.92-5.92, +2.7 m), then two return flights
+## (x 0-1.6 and 12.4-14, 15 risers each) rising -Z to an upper slab at +5.4 (z < 0). The return
+## flights' first risers are 6.2 m in x from the central flight's top riser. `landing`:
+## "full" one landing; "pads" three separate pads with voids between them; "wall" / "rail" the full
+## landing cut at x = 4 by a 3 m wall / a 1.05 m solid balustrade (west return flight cut off).
+static func imperial_stair(parent: Node3D, o: Vector3, landing: String = "full") -> void:
+	var m: StandardMaterial3D = tri_mat("fx_stair", Color(0.6, 0.6, 0.6), 512.0)
+	var r: float = 0.18
+	var t: float = 0.28
+	var z_l: float = 14 * t
+	var root: Node3D = Node3D.new()
+	root.name = "ImperialStair"
+	root.position = o
+	parent.add_child(root)
+	solid(root, "Ground", Vector3(5.3, -0.2, -2.0), Vector3(8.7, 0.0, 0.0), m)
+	solid(root, "UpperSlab", Vector3(-0.5, 30 * r - 0.2, -2.0), Vector3(14.5, 30 * r, 0.0), m)
+	if landing == "pads":
+		for pad: Vector2 in [Vector2(0.0, 1.6), Vector2(5.8, 8.2), Vector2(12.4, 14.0)]:
+			solid(root, "Pad%d" % int(pad.x), Vector3(pad.x, 15 * r - 0.2, z_l), Vector3(pad.y, 15 * r, z_l + 2.0), m)
+	else:
+		solid(root, "Landing", Vector3(0.0, 15 * r - 0.2, z_l), Vector3(14.0, 15 * r, z_l + 2.0), m)
+	if landing == "wall":
+		solid(root, "LandingWall", Vector3(3.9, 15 * r, z_l), Vector3(4.1, 15 * r + 3.0, z_l + 2.0), m)
+	elif landing == "rail":
+		solid(root, "LandingRail", Vector3(3.97, 15 * r, z_l), Vector3(4.03, 15 * r + 1.05, z_l + 2.0), m)
+	# [name, x0, x1, rising +Z]
+	for fl: Array in [["FlightC", 5.8, 8.2, true], ["FlightW", 0.0, 1.6, false], ["FlightE", 12.4, 14.0, false]]:
+		var f: Node3D = Node3D.new()
+		f.name = String(fl[0])
+		f.set_meta(&"kind", "stairs")
+		root.add_child(f)
+		var x0: float = float(fl[1])
+		var x1: float = float(fl[2])
+		var up_z: bool = bool(fl[3])
+		var base: int = 0 if up_z else 15
+		for k: int in range(1, 15):
+			var z0: float = (k - 1) * t if up_z else z_l - k * t
+			solid(f, "Step%d" % k, Vector3(x0, 0.0 if up_z else 15 * r, z0), Vector3(x1, (base + k) * r, z0 + t), m)
+		var za: float = 0.0 if up_z else z_l
+		var zb: float = z_l - za
+		for xs: float in [x0 - 0.05, x1 + 0.05]:
+			_rail(root, Vector3(xs, (base + 1) * r, za), Vector3(xs, (base + 15) * r, zb), 1.05, m)
+	_own(root, parent.owner if parent.owner != null else parent)
+	root.owner = parent.owner if parent.owner != null else parent
+
+
 ## Sloped handrail prop (0.05 x 0.05 box) whose top runs `h` above the line a -> b (nosing line,
 ## flight-local coordinates of `parent`).
 static func _rail(parent: Node3D, a: Vector3, b: Vector3, h: float, m: Material) -> void:

@@ -3,6 +3,32 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## Art gaps on the existing maps (brief for ENV D at the freeze lift; ENV C survey 2026-10-14)
+Owner key: [D] characters/animation (ENV D), [C] props/maps/materials (ENV C, or D if the lead reassigns art), [A] wiring.
+1. [C] **Placeholder prefab visuals still shown in play:**
+   - every **escape_zone** on all 4 maps (10: van, boat, heli, zipline, lift); `veh_van_secure`/`veh_boat_launch` props exist
+     but aren't wired;
+   - **saw** drill points (drill_point.gd: "saws have no default"); no **thermal drill** model (reuses the drill);
+   - **ECM + all deployables** (no DeployableDef `model`); **carried loot bags** (no LootDef `bag_model`; the
+     prop_loot_bag_light/medium/heavy props exist, so wiring is [A]/B);
+   - no catalog visual for burn_point, zipline, bag_lift (map-local only), laser_grid emitters (ND-local only).
+2. [C] **Shadow Ledger (greybox):** every non-door prefab shows its placeholder (18 cameras, 12 loot spawns, 9 phones, 7
+   keycards, 7 small loot, 5 ladders, 4 code notes, 3 alarm buttons, 3 laser grids, 3 safes, …); 1169 untextured box
+   meshes, 17 flat `sl_grey_*` materials, 0 props, ~25 missing room kits (exec offices, boardroom, art hall, bedrooms,
+   bar/wine room, terrace…); a non-building G2 attempt is on origin/backup/2026-10-12/env-c-sl (19 tower props, 26 kits).
+3. [C] **Dockside Burn (greybox):** placeholders for 17 loot spawns, 6 small loot, 3 burn points, 2 safes, drill, hack
+   terminal, ladder; 1183 box meshes, 23 flat `db_grey_*` materials, 0 props, 16 missing kits (cold store, marshalling
+   hall, net store, packing hall, quay, yard…); no crane/gantry/forklift/cold-store racking props; G2 WIP on
+   origin/backup/2026-10-12/env-c-db-wip.
+4. [C] **Weak materials on final maps:** `nd_water` (flat dark, non-emissive: weakest surface in a final map); greybox
+   `arch_door_*` frames remain on DB/SL (final maps use prop_door_*).
+5. [D] **Characters:** admin PA office-wear look (QC-58c; Gallery Night `late_paperwork`), any missing gala ambient clips
+   (`curator_inspect`, `cower_stand`, `cower_seated`, `walk_text`, `smoke`, `desk_work`), parked FP left-hand cup
+   (needs B's LeftHandIK move on ~20 weapons), SKIN_TONE_FIX fold into `_body.SKIN_TONES[4]`
+   (tools/blender/characters/_outfit_palette.py:194); DB cartel gunmen (QC-36) delivered but not wired in the map [A/C].
+6. [C] **Roller-door kit** (Gallery Night LD roller is a baked-closed placeholder; DB rollers are greybox visuals).
+7. [C] **ND G3 backlog:** lit "Harbor Savings & Loan" sign, cash-brick pallet in the vault cage, teller personal touches.
+
 ## 2026-10-14 06:40 ET: IN PROGRESS (ENV C)
 ### Done since 02:40 (all pushed; most on trunk)
 - Gate 2/3 map side: ladder nav links climbers-only (f5eb9b42); GH WindowLink → walkable fire-escape door-window with

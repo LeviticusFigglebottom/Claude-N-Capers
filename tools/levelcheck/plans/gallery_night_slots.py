@@ -65,60 +65,71 @@ GROUP_ORDER = ["centrepiece", "canvas_orchard", "canvas_widow", "canvas_saint", 
                "code_note", "guard_post", "security_room_staffed", "camera", "laser_pattern", "curator_route",
                "court_doors", "areaway", "escape", "xl_crate", "admin_pa"]
 
-# SLOTS: (group, slot_id, base weight, floor, room, x, z, y, note). The VariantSlot sits at (x, FFL + y, z); its
-# content (prefabs, spawns, cameras) is placed by the generator as children. Base weights go on VariantSlot.weight
-# (per-difficulty rows live in the variant table).
-SLOTS: List[Tuple[str, str, float, str, str, float, float, float, str]] = [
-    ("centrepiece", "cp_landing", 0.4, "G", "GH", 21.0, 8.4, 2.7, "landing wall easel-frame (centre +2.7 +1.55); laser curtain after last call"),
-    ("centrepiece", "cp_treasury", 0.35, "U", "TR", 40.0, 29.6, 0.0, "centred on the TR south wall, behind the laser grid"),
-    ("centrepiece", "cp_store", 0.25, "B", "AS", 20.0, 18.0, 0.0, "AS rack screen (plan L (20, 18))"),
-    ("canvas_orchard", "orchard_calloway", 1.0, "U", "UG1", 0.3, 14.0, 0.0, "UG1 W wall behind the partition screen (6, 12-16)"),
-    ("canvas_orchard", "orchard_benefactors", 1.0, "G", "EB", 34.0, 28.0, 0.0, "EB (plan L (34, 28))"),
-    ("canvas_orchard", "orchard_quarantine", 0.7, "B", "QR", 22.0, 3.0, 0.0, "opened travel crate in QR"),
-    ("canvas_widow", "widow_sallow", 1.0, "U", "UG2", 1.0, 25.0, 0.0, "UG2 (plan L (1, 25))"),
-    ("canvas_widow", "widow_founders", 1.0, "G", "WG", 1.0, 16.0, 0.0, "WG (plan L (1, 16))"),
-    ("canvas_widow", "widow_conservation", 0.7, "U", "CS", 36.0, 8.0, 0.0, "CS main easel, frame off"),
-    ("canvas_saint", "saint_maritime", 1.0, "U", "UG3", 42.0, 15.0, 0.0, "UG3 (plan L (42, 15))"),
-    ("canvas_saint", "saint_harbour", 1.0, "G", "EG", 43.0, 18.0, 0.0, "EG (plan L (43, 18))"),
-    ("canvas_saint", "saint_store", 0.7, "B", "AS", 26.0, 16.0, 0.0, "AS rack screen (plan L (26, 16))"),
-    ("sensor_net", "sensors_treasury", 0.5, "U", "SV", 25.0, 2.0, 0.0, "logic slot: Argus alarm group = the TR frame"),
-    ("sensor_net", "sensors_upper", 0.35, "U", "SV", 25.0, 2.0, 0.0, "logic slot: upper frames + TR + the landing"),
-    ("sensor_net", "sensors_all", 0.15, "U", "SV", 25.0, 2.0, 0.0, "logic slot: every hung frame"),
-    ("conservator", "cons_late", 1.0, "U", "CS", 37.5, 9.0, 0.0, "civ_conservator spawn at the main easel"),
-    ("conservator", "cons_gone", 1.0, "U", "CS", 37.5, 9.0, 0.0, "empty"),
-    ("keycard", "kc_curator", 1.0, "G", "GH", 15.0, 18.6, 1.1, "carried by civ_curator (QC-52); curator_tipsy: on the GH bar here"),
-    ("keycard", "kc_security", 0.75, "G", "SC", 17.6, 3.0, 1.2, "SC key cabinet, E wall"),
-    ("keycard", "kc_registrar", 1.0, "G", "RG", 21.0, 3.0, 0.75, "RG desk drawer (pp_insider_registrar)"),
-    ("keycard", "kc_conservator", 1.0, "U", "CS", 40.0, 10.0, 0.9, "CS bench drawer (plan K (40, 10)); requires cons_late"),
-    ("code_note", "code_security_log", 1.0, "G", "SC", 17.4, 0.6, 1.0, "guard log, SC NE counter"),
-    ("code_note", "code_curator_planner", 1.0, "U", "CO", 6.0, 2.0, 0.75, "planner on the curator's desk"),
-    ("code_note", "code_admin_postit", 1.0, "U", "AO", 14.0, 4.0, 1.0, "post-it on an AO monitor"),
-    ("guard_post", "rover_ground", 1.0, "G", "BC", 10.0, 7.0, 0.0, "guard_rover_ground spawn (BC)"),
-    ("guard_post", "rover_upper", 1.0, "U", "UC", 10.0, 7.0, 0.0, "guard_rover_upper spawn (UC)"),
-    ("guard_post", "rover_basement", 1.0, "B", "BB", 10.0, 7.0, 0.0, "guard_rover_basement spawn (BB)"),
-    ("guard_post", "dock_smoker", 1.0, "G", "X2", 40.0, -2.0, 0.0, "guard_mews spawn, Mews by the LD personnel door"),
-    ("guard_post", "rover_none", 1.0, "G", "GH", 22.0, 17.0, 0.0, "empty slot (encodes counts; weight 0 from Hazardous)"),
-    ("security_room_staffed", "sec_staffed", 0.6, "G", "SC", 13.5, 3.5, 0.0, "CAMERA_OPERATOR at the console, facing W"),
-    ("security_room_staffed", "sec_empty", 0.4, "G", "SC", 13.5, 3.5, 0.0, "empty"),
-    ("camera", "cam_a", 1.0, "G", "SC", 12.6, 3.0, 0.0, "layout cameras C1 C3 C6 C7 C9 C13 (children)"),
-    ("camera", "cam_b", 1.0, "G", "SC", 12.6, 3.0, 0.0, "layout cameras C2 C4 C6 C8 C10 C12 (children)"),
-    ("camera", "cam_c", 1.0, "G", "SC", 12.6, 3.0, 0.0, "layout cameras C1 C4 C5 C8 C10 C12 (children)"),
-    ("laser_pattern", "lz_static", 0.5, "U", "TR", 40.0, 26.5, 0.0, "TR grid z 26.5: 3 beams 1.30/1.8/2.33"),
-    ("laser_pattern", "lz_sweep", 0.2, "U", "TR", 40.0, 26.5, 0.0, "TR grid: 3 vertical, 6 s sweep"),
-    ("laser_pattern", "lz_timed", 0.3, "U", "TR", 40.0, 26.5, 0.0, "TR grid: 4 beams, off 4 s of 16 s"),
-    ("curator_route", "curator_hall", 1.0, "G", "GH", 17.0, 16.0, 0.0, "civ_curator spawn + staff_curator points in GH"),
-    ("curator_route", "curator_office", 1.0, "U", "CO", 6.0, 4.0, 0.0, "civ_curator spawn + staff_curator points CO/UG1/CS"),
-    ("court_doors", "court_doors_open", 1.0, "G", "WG", 0.6, 12.5, 0.0, "French doors NONE until last call"),
-    ("court_doors", "court_doors_locked", 1.0, "G", "WG", 0.6, 12.5, 0.0, "French doors LOCKPICK"),
-    ("areaway", "grate_loose", 1.0, "G", "X3", -4.0, 14.0, 0.0, "court grate: lift 3 s"),
-    ("areaway", "grate_padlocked", 1.0, "G", "X3", -4.0, 14.0, 0.0, "court grate: padlock (lockpick 8 s or saw)"),
-    ("escape", "esc_mews", 0.55, "G", "X2", 37.0, -4.0, 0.0, "E1 van at the LD roller door"),
-    ("escape", "esc_parade", 0.45, "G", "X1", 22.0, 34.0, 0.0, "E2 limo at the portico kerb"),
-    ("xl_crate", "xl_none", 1.0, "G", "LD", 38.0, 9.0, 0.0, "empty sibling (QC-62): no crate unless late_loan"),
-    ("xl_crate", "xl_loan", 1.0, "G", "LD", 38.0, 9.0, 0.0, "late_loan crate (2 studies); pick 0, only the rare event"),
-    ("admin_pa", "pa_none", 1.0, "U", "AO", 15.0, 4.0, 0.0, "empty sibling (QC-62): no PA unless late_paperwork"),
-    ("admin_pa", "pa_late", 1.0, "U", "AO", 15.0, 4.0, 0.0, "civ_admin at an AO desk; pick 0, only late_paperwork"),
+# SLOTS: (group, slot_id, base weight, floor, room, x, z, y, yaw, note). The VariantSlot sits at (x, FFL + y, z),
+# turned by `yaw` (degrees about +y; the content's front, -Z, faces 0 north (-z), 90 west (-x), 180 south (+z),
+# -90 east (+x)); its content (prefabs, spawns, cameras) is placed by the generator as children, and an interactive
+# slot's UsePoint stands USE_POINT_M in front of the anchor (rehearsal F2/F3). Wall-hung slots (WALL_HUNG) face away
+# from the wall they hang on. Base weights go on VariantSlot.weight (per-difficulty rows live in the variant table).
+SLOTS: List[Tuple[str, str, float, str, str, float, float, float, float, str]] = [
+    ("centrepiece", "cp_landing", 0.4, "G", "GH", 21.0, 8.25, 2.7, 180.0, "landing wall easel-frame (centre +2.7 +1.55); laser curtain after last call"),
+    ("centrepiece", "cp_treasury", 0.35, "U", "TR", 40.0, 29.6, 0.0, 0.0, "centred on the TR south wall, behind the laser grid"),
+    ("centrepiece", "cp_store", 0.25, "B", "AS", 20.0, 18.0, 0.0, 0.0, "AS rack screen (plan L (20, 18))"),
+    ("canvas_orchard", "orchard_calloway", 1.0, "U", "UG1", 0.3, 14.0, 0.0, -90.0, "UG1 W wall behind the partition screen (6, 12-16)"),
+    ("canvas_orchard", "orchard_benefactors", 1.0, "G", "EB", 32.25, 28.0, 0.0, -90.0, "EB W (donor) wall by plan L (34, 28)"),
+    ("canvas_orchard", "orchard_quarantine", 0.7, "B", "QR", 22.0, 3.0, 0.0, 180.0, "opened travel crate in QR"),
+    ("canvas_widow", "widow_sallow", 1.0, "U", "UG2", 0.3, 25.0, 0.0, -90.0, "UG2 W wall (plan L (1, 25))"),
+    ("canvas_widow", "widow_founders", 1.0, "G", "WG", 0.3, 16.0, 0.0, -90.0, "WG W wall (plan L (1, 16))"),
+    ("canvas_widow", "widow_conservation", 0.7, "U", "CS", 36.0, 8.0, 0.0, -90.0, "CS main easel, frame off"),
+    ("canvas_saint", "saint_maritime", 1.0, "U", "UG3", 43.7, 16.0, 0.0, 90.0, "UG3 E wall, z 16 so the partition screen hides it from C10 (lead r127)"),
+    ("canvas_saint", "saint_harbour", 1.0, "G", "EG", 43.7, 18.0, 0.0, 90.0, "EG E wall (plan L (43, 18))"),
+    ("canvas_saint", "saint_store", 0.7, "B", "AS", 26.0, 16.0, 0.0, 0.0, "AS rack screen (plan L (26, 16))"),
+    ("sensor_net", "sensors_treasury", 0.5, "U", "SV", 25.0, 2.0, 0.0, 0.0, "logic slot: Argus alarm group = the TR frame"),
+    ("sensor_net", "sensors_upper", 0.35, "U", "SV", 25.0, 2.0, 0.0, 0.0, "logic slot: upper frames + TR + the landing"),
+    ("sensor_net", "sensors_all", 0.15, "U", "SV", 25.0, 2.0, 0.0, 0.0, "logic slot: every hung frame"),
+    ("conservator", "cons_late", 1.0, "U", "CS", 37.5, 9.0, 0.0, 90.0, "civ_conservator spawn at the main easel"),
+    ("conservator", "cons_gone", 1.0, "U", "CS", 37.5, 9.0, 0.0, 90.0, "empty"),
+    ("keycard", "kc_curator", 1.0, "G", "GH", 15.0, 18.6, 1.1, -90.0, "carried by civ_curator (QC-52); curator_tipsy: on the GH bar here"),
+    ("keycard", "kc_security", 0.75, "G", "SC", 17.6, 3.0, 1.2, 90.0, "SC key cabinet, E wall"),
+    ("keycard", "kc_registrar", 1.0, "G", "RG", 21.0, 3.0, 0.75, 180.0, "RG desk drawer (pp_insider_registrar)"),
+    ("keycard", "kc_conservator", 1.0, "U", "CS", 40.0, 10.0, 0.9, 0.0, "CS bench drawer (plan K (40, 10)); requires cons_late"),
+    ("code_note", "code_security_log", 1.0, "G", "SC", 17.4, 0.6, 1.0, 180.0, "guard log, SC NE counter"),
+    ("code_note", "code_curator_planner", 1.0, "U", "CO", 6.0, 2.0, 0.75, 180.0, "planner on the curator's desk"),
+    ("code_note", "code_admin_postit", 1.0, "U", "AO", 14.0, 4.0, 1.0, 180.0, "post-it on an AO monitor"),
+    ("guard_post", "rover_ground", 1.0, "G", "BC", 10.0, 7.0, 0.0, -90.0, "guard_rover_ground spawn (BC)"),
+    ("guard_post", "rover_upper", 1.0, "U", "UC", 10.0, 7.0, 0.0, -90.0, "guard_rover_upper spawn (UC)"),
+    ("guard_post", "rover_basement", 1.0, "B", "BB", 10.0, 7.0, 0.0, -90.0, "guard_rover_basement spawn (BB)"),
+    ("guard_post", "dock_smoker", 1.0, "G", "X2", 40.0, -2.0, 0.0, 0.0, "guard_mews spawn, Mews by the LD personnel door"),
+    ("guard_post", "rover_none", 1.0, "G", "GH", 22.0, 17.0, 0.0, 180.0, "empty slot (encodes counts; weight 0 from Hazardous)"),
+    ("security_room_staffed", "sec_staffed", 0.6, "G", "SC", 13.5, 3.5, 0.0, 90.0, "CAMERA_OPERATOR at the console, facing W"),
+    ("security_room_staffed", "sec_empty", 0.4, "G", "SC", 13.5, 3.5, 0.0, 90.0, "empty"),
+    ("camera", "cam_a", 1.0, "G", "SC", 12.6, 3.0, 0.0, 0.0, "layout cameras C1 C3 C6 C7 C9 C13 (children)"),
+    ("camera", "cam_b", 1.0, "G", "SC", 12.6, 3.0, 0.0, 0.0, "layout cameras C2 C4 C6 C8 C10 C12 (children)"),
+    ("camera", "cam_c", 1.0, "G", "SC", 12.6, 3.0, 0.0, 0.0, "layout cameras C1 C4 C5 C8 C10 C12 (children)"),
+    ("laser_pattern", "lz_static", 0.5, "U", "TR", 40.0, 26.5, 0.0, 0.0, "TR grid z 26.5: 3 beams 1.30/1.8/2.33"),
+    ("laser_pattern", "lz_sweep", 0.2, "U", "TR", 40.0, 26.5, 0.0, 0.0, "TR grid: 3 vertical, 6 s sweep"),
+    ("laser_pattern", "lz_timed", 0.3, "U", "TR", 40.0, 26.5, 0.0, 0.0, "TR grid: 4 beams, off 4 s of 16 s"),
+    ("curator_route", "curator_hall", 1.0, "G", "GH", 17.0, 16.0, 0.0, -90.0, "civ_curator spawn + staff_curator points in GH"),
+    ("curator_route", "curator_office", 1.0, "U", "CO", 6.0, 4.0, 0.0, 0.0, "civ_curator spawn + staff_curator points CO/UG1/CS"),
+    ("court_doors", "court_doors_open", 1.0, "G", "WG", 0.6, 12.5, 0.0, 90.0, "French doors NONE until last call"),
+    ("court_doors", "court_doors_locked", 1.0, "G", "WG", 0.6, 12.5, 0.0, 90.0, "French doors LOCKPICK"),
+    ("areaway", "grate_loose", 1.0, "G", "X3", -4.0, 14.0, 0.0, 90.0, "court grate: lift 3 s"),
+    ("areaway", "grate_padlocked", 1.0, "G", "X3", -4.0, 14.0, 0.0, 90.0, "court grate: padlock (lockpick 8 s or saw)"),
+    ("escape", "esc_mews", 0.55, "G", "X2", 37.0, -4.0, 0.0, 90.0, "E1 van at the LD roller door"),
+    ("escape", "esc_parade", 0.45, "G", "X1", 22.0, 34.0, 0.0, 90.0, "E2 limo at the portico kerb"),
+    ("xl_crate", "xl_none", 1.0, "G", "LD", 38.0, 9.0, 0.0, 0.0, "empty sibling (QC-62): no crate unless late_loan"),
+    ("xl_crate", "xl_loan", 1.0, "G", "LD", 38.0, 9.0, 0.0, 0.0, "late_loan crate (2 studies); pick 0, only the rare event"),
+    ("admin_pa", "pa_none", 1.0, "U", "AO", 15.0, 4.0, 0.0, 0.0, "empty sibling (QC-62): no PA unless late_paperwork"),
+    ("admin_pa", "pa_late", 1.0, "U", "AO", 15.0, 4.0, 0.0, 0.0, "civ_admin at an AO desk; pick 0, only late_paperwork"),
 ]
+# Slots hung on (or fixed to) a wall: --check wants the anchor <= WALL_HUNG_MAX_M from that wall's room face and the
+# yaw facing away from it (into the room), so the prefab clears the wall and its UsePoint lands on the floor.
+WALL_HUNG = ("cp_landing", "cp_treasury", "orchard_calloway", "orchard_benefactors", "widow_sallow", "widow_founders",
+             "saint_maritime", "saint_harbour", "kc_security")
+WALL_HUNG_MAX_M = 0.3
+USE_POINT_M = 0.9          # the gameplay prefabs' default UsePoint distance in front of the object
+# Groups whose content the crew walks up to and uses (a UsePoint in front of the anchor).
+USE_POINT_GROUPS = ("centrepiece", "canvas_orchard", "canvas_widow", "canvas_saint", "keycard", "code_note", "areaway")
+EXT_T, INT_T = 0.4, 0.2    # facade / interior wall thickness (gallery_night_emit_layout.py)
 SCALARS = {"last_call_s": [480, 600, 720], "patrons": [3, 5, 7, 9], "stragglers": [0, 1, 2],
            "store_paintings": [4, 6, 8], "consignment_lockers": [4, 6, 8], "escape_eta_s": [90, 120, 150]}
 RARE = {"curator_tipsy": ("keycard", "kc_curator"), "late_loan": ("xl_crate", "xl_loan"), "insurance_inspection": None,
@@ -234,6 +245,31 @@ def inside(floor: str, rid: str, x: float, z: float, margin: float = 0.0) -> boo
 
 def room_exists(floor: str, rid: str) -> bool:
     return bool(room_rects(floor, rid))
+
+
+def use_point(x: float, z: float, yaw: float) -> Tuple[float, float]:
+    """The point USE_POINT_M in front of an anchor turned by `yaw` (front = -Z turned about +y)."""
+    a = math.radians(yaw)
+    return x - math.sin(a) * USE_POINT_M, z - math.cos(a) * USE_POINT_M
+
+
+def hung_wall(floor: str, rid: str, x: float, z: float) -> Optional[Tuple[float, float, str]]:
+    """The nearest wall of the room rectangle holding (x, z): (distance from its room face, the yaw facing away from
+    it, its side), or None when that edge has no wall there (an open edge, a balustrade)."""
+    rect = [r for r in room_rects(floor, rid) if r[0] <= x <= r[2] and r[1] <= z <= r[3]][0]
+    foot = P.FOOT[floor]
+    sides = [("W", rect[0], x - rect[0], -90.0, "x"), ("E", rect[2], rect[2] - x, 90.0, "x"),
+             ("N", rect[1], z - rect[1], 180.0, "z"), ("S", rect[3], rect[3] - z, 0.0, "z")]
+    best = None
+    for side, edge, d, away, axis in sides:
+        ext = edge in ((foot[0], foot[2]) if axis == "x" else (foot[1], foot[3]))
+        face = d - (EXT_T if ext else INT_T) / 2.0
+        if best is None or face < best[0]:
+            best = (face, away, side, edge, axis)
+    face, away, side, edge, axis = best
+    k = int(math.floor(z if axis == "x" else x))
+    unit = (int(edge), k, int(edge), k + 1) if axis == "x" else (k, int(edge), k + 1, int(edge))
+    return (face, away, side) if unit in P.walls(floor) else None
 
 
 def slot_index() -> Dict[str, List[str]]:
@@ -643,12 +679,35 @@ def check(b: Dict, b_snapshot_diff: List[str]) -> bool:
     # --- rooms and positions ---
     print("Rooms and positions (every anchor inside its room's rectangle):")
     n = 0
-    for g, s, _, fl, rid, x, z, _, _ in SLOTS:
+    hung = 0
+    for g, s, _, fl, rid, x, z, _, yaw, _ in SLOTS:
         n += 1
         if not room_exists(fl, rid):
             fail("slot %s/%s: room %s %s does not exist" % (g, s, fl, rid))
-        elif not inside(fl, rid, x, z):
+            continue
+        if not inside(fl, rid, x, z):
             fail("slot %s/%s at (%g, %g) is outside room %s %s %s" % (g, s, x, z, fl, rid, room_rects(fl, rid)))
+            continue
+        if not -180.0 < yaw <= 180.0:
+            fail("slot %s/%s: yaw %g is not in (-180, 180]" % (g, s, yaw))
+        if g in USE_POINT_GROUPS:
+            ux, uz = use_point(x, z, yaw)
+            if not inside(fl, rid, ux, uz, 0.3):
+                fail("slot %s/%s: its UsePoint (%.2f, %.2f) (yaw %g, %g m in front) is not >= 0.3 m inside room %s %s"
+                     % (g, s, ux, uz, yaw, USE_POINT_M, fl, rid))
+        if s in WALL_HUNG:
+            hung += 1
+            w = hung_wall(fl, rid, x, z)
+            if w is None:
+                fail("wall-hung slot %s/%s at (%g, %g): no wall of room %s %s on its nearest edge" % (g, s, x, z, fl, rid))
+            elif w[0] > WALL_HUNG_MAX_M + 1e-6 or w[0] < 0.0:
+                fail("wall-hung slot %s/%s is %.2f m from the %s wall's face (wants 0..%g m)" % (g, s, w[0], w[2],
+                                                                                              WALL_HUNG_MAX_M))
+            elif abs(((yaw - w[1]) + 180.0) % 360.0 - 180.0) > 1.0:
+                fail("wall-hung slot %s/%s on the %s wall faces yaw %g; away from the wall is yaw %g" % (g, s, w[2], yaw,
+                                                                                                      w[1]))
+    print("  %d wall-hung slots on their wall (<= %g m, facing away); interactive slots' UsePoints inside their rooms"
+          % (hung, WALL_HUNG_MAX_M))
     for cid, (fl, rid, x, z, _, lay) in CAMERAS.items():
         n += 1
         if not inside(fl, rid, x, z):
@@ -850,8 +909,8 @@ def main() -> int:
         return 0 if check(b, drift) else 1
     for g in GROUP_ORDER:
         for row in [r for r in SLOTS if r[0] == g]:
-            print("%-22s %-22s w %-5g %s %-4s (%6.1f, %5.1f)  %s" % (row[0], row[1], row[2], row[3], row[4], row[5], row[6],
-                                                                     row[8]))
+            print("%-22s %-22s w %-5g %s %-4s (%6.1f, %5.1f) yaw %4g  %s" % (row[0], row[1], row[2], row[3], row[4],
+                                                                              row[5], row[6], row[8], row[9]))
     return 0
 
 

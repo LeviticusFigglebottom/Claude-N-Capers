@@ -63,8 +63,19 @@ const STAIR_SAMPLE: float = 0.01
 const STAIR_STEP_MATCH: float = 0.02
 ## Ramp collision must stay within [visual - this, visual + max riser + this] everywhere.
 const STAIR_RAMP_TOL: float = 0.02
-## Max horizontal gap between one flight's top and the next flight's bottom (shared landing).
-const STAIR_CHAIN_GAP: float = 4.0
+## Flight chaining (lead ruling, GN-C1): a level walkable landing at the shared height must join
+## the lower flight's top riser line and the upper flight's bottom riser line. Path search grid
+## step, start points this far out from each riser midpoint onto the landing, landing height
+## tolerance, min normal.y of a level surface, clearance cylinder (radius, from/to above the
+## landing), search box margin around the two start points, and a cap on the search box.
+const CHAIN_STEP: float = 0.1
+const CHAIN_OUT: float = 0.4
+const CHAIN_Y_TOL: float = 0.05
+const CHAIN_LEVEL_NY: float = 0.99
+const CHAIN_CLEAR_R: float = 0.25
+const CHAIN_CLEAR_Y: Vector2 = Vector2(0.35, 1.6)
+const CHAIN_MARGIN: float = 2.0
+const CHAIN_MAX_CELLS: int = 60000
 ## kind -> [measure, range]. measure: "height" (top above floor), "centre" (centre above floor),
 ## "bottom" (base above floor).
 const PROP_RULES: Dictionary = {
@@ -360,8 +371,11 @@ func _check_flight(ctx: LcContext, st: Node3D) -> Dictionary:
 		fail(ctx, st, null, msg)
 	for ln: String in rails.notes:
 		note(ln)
+	# Horizontal direction leaving the flight across its top riser (onto the upper landing).
+	var up_dir: Vector3 = xf.basis.z * (1.0 if lo_end == first else -1.0)
+	up_dir = Vector3(up_dir.x, 0.0, up_dir.z).normalized()
 	return {"node": st, "bottom": bottom, "top": top, "bottom_pt": Vector3(bw.x, bottom, bw.z),
-		"top_pt": Vector3(tw.x, top, tw.z)}
+		"top_pt": Vector3(tw.x, top, tw.z), "up_dir": up_dir}
 
 
 ## Flats of a height profile separated by jumps > 2 cm: [{ y, len, start, n }].
@@ -417,15 +431,16 @@ func _check_steps(ctx: LcContext, st: Node3D, flats: Array[Dictionary]) -> void:
 			run_risers = 0
 
 
-## Flights chain when one's top equals the next one's bottom (+-0.01 m) within STAIR_CHAIN_GAP
-## horizontally (a shared landing). Every flight must lie on a chain that starts at one
-## floor height and ends at a higher one (level_standards §2.7).
+## Flights chain when one's top equals the next one's bottom (+-0.01 m) and a level walkable
+## landing at that height joins the two riser lines (`_landing_joins`). Every flight must lie on a
+## chain that starts at one floor height and ends at a higher one (level_standards §2.7).
 func _check_chains(ctx: LcContext, flights: Array[Dictionary]) -> void:
 	var fh: PackedFloat32Array = ctx.map.floor_heights
 	var ok: Dictionary = {}
+	var links: Dictionary = {}
 	for i: int in range(flights.size()):
 		if _floor_index(fh, float(flights[i]["bottom"])) >= 0:
-			_chain_dfs(flights, [i], fh, ok)
+			_chain_dfs(ctx, flights, [i], fh, ok, links)
 	for j: int in range(flights.size()):
 		var f: Dictionary = flights[j]
 		if not ok.has(j):
@@ -440,8 +455,10 @@ static func _floor_index(fh: PackedFloat32Array, y: float) -> int:
 	return -1
 
 
-static func _chain_dfs(flights: Array[Dictionary], path: Array, fh: PackedFloat32Array, ok: Dictionary) -> void:
-	var last: Dictionary = flights[int(path[path.size() - 1])]
+func _chain_dfs(ctx: LcContext, flights: Array[Dictionary], path: Array, fh: PackedFloat32Array, ok: Dictionary,
+		links: Dictionary) -> void:
+	var li: int = int(path[path.size() - 1])
+	var last: Dictionary = flights[li]
 	var start_floor: int = _floor_index(fh, float(flights[int(path[0])]["bottom"]))
 	var end_floor: int = _floor_index(fh, float(last["top"]))
 	if end_floor > start_floor:
@@ -453,8 +470,82 @@ static func _chain_dfs(flights: Array[Dictionary], path: Array, fh: PackedFloat3
 		if j in path:
 			continue
 		var nx: Dictionary = flights[j]
-		var gap: Vector3 = (nx["bottom_pt"] as Vector3) - (last["top_pt"] as Vector3)
-		if absf(float(nx["bottom"]) - float(last["top"])) <= 0.01 and Vector2(gap.x, gap.z).length() <= STAIR_CHAIN_GAP:
+		if absf(float(nx["bottom"]) - float(last["top"])) > 0.01:
+			continue
+		var key: Vector2i = Vector2i(li, j)
+		if not links.has(key):
+			links[key] = _landing_joins(ctx, last, nx)
+		if bool(links[key]):
 			var p2: Array = path.duplicate()
 			p2.append(j)
-			_chain_dfs(flights, p2, fh, ok)
+			_chain_dfs(ctx, flights, p2, fh, ok, links)
+
+
+## True when a level walkable landing at `lower.top` joins the top riser of `lower` and the bottom
+## riser of `upper`: an 8-connected grid search (CHAIN_STEP) from CHAIN_OUT beyond one riser
+## midpoint (onto the landing) to CHAIN_OUT beyond the other, within their bounding box +
+## CHAIN_MARGIN. A cell is walkable when the first hit of a ray down from 0.4 m above the landing
+## is a level surface (normal.y >= CHAIN_LEVEL_NY) within CHAIN_Y_TOL of the landing height, and a
+## CHAIN_CLEAR_R cylinder from 0.35 to 1.6 m above it hits nothing (walls, rails, guards; door
+## leaves do not block). Voids, rails and walls therefore break the chain.
+func _landing_joins(ctx: LcContext, lower: Dictionary, upper: Dictionary) -> bool:
+	var y: float = float(lower["top"])
+	var a: Vector3 = (lower["top_pt"] as Vector3) + (lower["up_dir"] as Vector3) * CHAIN_OUT
+	var b: Vector3 = (upper["bottom_pt"] as Vector3) - (upper["up_dir"] as Vector3) * CHAIN_OUT
+	a.y = y
+	b.y = y
+	var lo: Vector2 = Vector2(minf(a.x, b.x), minf(a.z, b.z)) - Vector2.ONE * CHAIN_MARGIN
+	var hi: Vector2 = Vector2(maxf(a.x, b.x), maxf(a.z, b.z)) + Vector2.ONE * CHAIN_MARGIN
+	var nx: int = int(ceil((hi.x - lo.x) / CHAIN_STEP)) + 1
+	var nz: int = int(ceil((hi.y - lo.y) / CHAIN_STEP)) + 1
+	if nx * nz > CHAIN_MAX_CELLS:
+		return false
+	var cyl: CylinderShape3D = CylinderShape3D.new()
+	cyl.radius = CHAIN_CLEAR_R
+	cyl.height = CHAIN_CLEAR_Y.y - CHAIN_CLEAR_Y.x
+	var q: PhysicsShapeQueryParameters3D = PhysicsShapeQueryParameters3D.new()
+	q.shape = cyl
+	q.collision_mask = LcContext.QUERY_MASK
+	# Grid anchored on a; b is reached when a walkable cell lies within one step of it.
+	var o: Vector2 = Vector2(a.x, a.z)
+	var i0: Vector2i = Vector2i(roundi((lo.x - o.x) / CHAIN_STEP), roundi((lo.y - o.y) / CHAIN_STEP))
+	var i1: Vector2i = Vector2i(roundi((hi.x - o.x) / CHAIN_STEP), roundi((hi.y - o.y) / CHAIN_STEP))
+	if not _landing_cell_ok(ctx, q, a) or not _landing_cell_ok(ctx, q, b):
+		return false
+	var seen: Dictionary = {Vector2i.ZERO: true}
+	var queue: Array[Vector2i] = [Vector2i.ZERO]
+	var head: int = 0
+	while head < queue.size():
+		var c: Vector2i = queue[head]
+		head += 1
+		var cp: Vector3 = Vector3(o.x + c.x * CHAIN_STEP, y, o.y + c.y * CHAIN_STEP)
+		if Vector2(cp.x - b.x, cp.z - b.z).length() <= CHAIN_STEP * 1.01:
+			note("stair chain: `%s` -> `%s` joined by a landing at %.3f m"
+				% [ctx.node_path(lower["node"]), ctx.node_path(upper["node"]), y])
+			return true
+		for dx: int in [-1, 0, 1]:
+			for dz: int in [-1, 0, 1]:
+				var n: Vector2i = c + Vector2i(dx, dz)
+				if seen.has(n) or n.x < i0.x or n.x > i1.x or n.y < i0.y or n.y > i1.y:
+					continue
+				seen[n] = true
+				if _landing_cell_ok(ctx, q, Vector3(o.x + n.x * CHAIN_STEP, y, o.y + n.y * CHAIN_STEP)):
+					queue.append(n)
+	return false
+
+
+func _landing_cell_ok(ctx: LcContext, q: PhysicsShapeQueryParameters3D, p: Vector3) -> bool:
+	var hit: Dictionary = ctx.ray(p + Vector3.UP * 0.4, p + Vector3.DOWN * 0.3, ctx.accept_any_active)
+	if hit.is_empty() or (hit["normal"] as Vector3).y < CHAIN_LEVEL_NY:
+		return false
+	if absf((hit["position"] as Vector3).y - p.y) > CHAIN_Y_TOL:
+		return false
+	q.transform = Transform3D(Basis(), p + Vector3.UP * (CHAIN_CLEAR_Y.x + CHAIN_CLEAR_Y.y) * 0.5)
+	for h: Dictionary in ctx.space().intersect_shape(q, 32):
+		if not ctx.accept_any_active(h):
+			continue
+		var pr: LcProp = ctx.prop_of(h.get("collider"))
+		if pr != null and pr.is_door:
+			continue
+		return false
+	return true
