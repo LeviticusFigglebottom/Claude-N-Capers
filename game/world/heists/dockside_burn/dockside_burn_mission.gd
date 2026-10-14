@@ -32,6 +32,12 @@ const TAG_BREAKER: StringName = &"lift_breaker"
 const TAG_POLICE_GATE: StringName = &"police_gate"
 const TAG_ESCAPE_VAN: StringName = &"escape_van"
 const TAG_ESCAPE_BOAT: StringName = &"escape_boat"
+## PO-5 (D-089 markers): the rolled escape's secure zone (VanSecureE1 / VanSecureE2 / BoatSecureE3).
+const TAG_LOOT_SECURE: StringName = &"loot_secure"
+## A yard container's padlock (Props/Exterior/ContainerKn/Padlock): `padlock_k1` .. `padlock_k6`.
+const TAG_CONTAINER_PADLOCK: String = "padlock_%s"
+## warehouse_entry slot -> the door it opens (its objective_tag is the slot id).
+const ENTRY_DOORS: Dictionary = {&"door_office": "O1Front", &"door_quay": "ANQuay", &"door_dock": "DockRoller"}
 ## Building doors whose first use is the breach (doc `[breach]`).
 const ENTRY_TAGS: Array[StringName] = [&"door_office", &"door_quay", &"oc_west_door", &"pl_west_door", &"pk_quay_door",
 	&"an_east_door", &"mc_west_door", &"padlock", &"hall_roller", &"an_roller", &"pk_roller", &"door_dock"]
@@ -71,22 +77,29 @@ func _on_mission_start() -> void:
 		say(StringName(b[1]), {}, StringName(b[0]))
 	say(&"vo.mercer.dockside_burn_intro")
 	say(&"vo.reyes.dockside_burn_contact_intro", {}, &"reyes")
+	# [cartel] covers the whole yard (thin out the gunmen): no marker, like casing.
 	add_objective(&"cartel", &"objective.dockside_burn.cartel", Enums.ObjectiveState.ACTIVE, {"optional": true})
-	add_objective(&"breach", &"objective.dockside_burn.breach")
+	add_objective(&"breach", &"objective.dockside_burn.breach", Enums.ObjectiveState.ACTIVE, {"marker_tags": _entry_tags()})
 	add_objective(&"product", &"objective.dockside_burn.product", Enums.ObjectiveState.ACTIVE,
-		{"location": variant(&"product_location")})
-	add_objective(&"burn", &"objective.dockside_burn.burn", Enums.ObjectiveState.HIDDEN)
+		{"location": variant(&"product_location"), "marker_tags": [TAG_PRODUCT]})
+	add_objective(&"burn", &"objective.dockside_burn.burn", Enums.ObjectiveState.HIDDEN, {"marker_tags": [TAG_BURN]})
 	var countroom: bool = _slot_active(&"cash_location", &"cash_countroom")
 	add_objective(&"strongroom", &"objective.dockside_burn.strongroom",
-		Enums.ObjectiveState.HIDDEN if countroom else Enums.ObjectiveState.ACTIVE, {"alternative": &"count_cage"})
+		Enums.ObjectiveState.HIDDEN if countroom else Enums.ObjectiveState.ACTIVE,
+		{"alternative": &"count_cage", "marker_tags": [TAG_STRONGROOM_DRILL]})
+	# The cage and the cash stacks of the active location (the cage exists only with cash_countroom).
 	add_objective(&"count_cage", &"objective.dockside_burn.count_cage",
-		Enums.ObjectiveState.ACTIVE if countroom else Enums.ObjectiveState.HIDDEN, {"alternative": &"strongroom"})
-	add_objective(&"containers", &"objective.dockside_burn.containers")
+		Enums.ObjectiveState.ACTIVE if countroom else Enums.ObjectiveState.HIDDEN,
+		{"alternative": &"strongroom", "marker_tags": [TAG_COUNT_CAGE, TAG_CASH]})
+	add_objective(&"containers", &"objective.dockside_burn.containers", Enums.ObjectiveState.ACTIVE,
+		{"marker_tags": _container_tags(CONTAINER_KEYS)})
 	add_objective(&"secure", &"objective.dockside_burn.secure", Enums.ObjectiveState.ACTIVE,
-		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true})
+		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
 	require_loot(&"secure", MIN_BAGS)
-	add_objective(&"escape_wait", &"objective.dockside_burn.escape_wait", Enums.ObjectiveState.HIDDEN)
-	add_objective(&"escape", &"objective.dockside_burn.escape", Enums.ObjectiveState.HIDDEN)
+	add_objective(&"escape_wait", &"objective.dockside_burn.escape_wait", Enums.ObjectiveState.HIDDEN,
+		{"marker_tags": [_escape_tag()]})
+	add_objective(&"escape", &"objective.dockside_burn.escape", Enums.ObjectiveState.HIDDEN,
+		{"marker_tags": [_escape_tag()]})
 	on_event(&"interaction_completed", _on_interaction_completed)
 	on_event(&"device_started", _on_device_started)
 	on_event(&"device_finished", _on_device_finished)
@@ -147,7 +160,7 @@ func _apply_containers() -> void:
 			latch.connect(&"opened", _open_container.bind(k4))
 	update_objective_data(&"containers", {"count": _weapons.size()})
 	if _rare(RARE_INFORMANT):
-		update_objective_data(&"containers", {"revealed": _weapons.duplicate()})
+		update_objective_data(&"containers", {"revealed": _weapons.duplicate(), "marker_tags": _container_tags(_weapons)})
 		say(&"vo.mercer.dockside_burn_containers_hint", {"informant": true})
 
 
@@ -159,10 +172,9 @@ func _apply_lift() -> void:
 
 ## Warehouse entry: the variant's door is unlocked and open; the roof perch opens the head-house door.
 func _apply_entry_and_perch() -> void:
-	var names: Dictionary = {&"door_office": "O1Front", &"door_quay": "ANQuay", &"door_dock": "DockRoller"}
-	for sid: StringName in names:
+	for sid: StringName in ENTRY_DOORS:
 		if _slot_active(&"warehouse_entry", sid):
-			var d: Node = get_node_or_null(NodePath(String(DOORS) + "/" + String(names[sid])))
+			var d: Node = get_node_or_null(NodePath(String(DOORS) + "/" + String(ENTRY_DOORS[sid])))
 			if d != null:
 				d.call(&"unlock")
 				d.call(&"set_open", true)
@@ -395,7 +407,7 @@ func _try_escape() -> void:
 	if _escape_open or not _burned or bags_secured < MIN_BAGS:
 		return
 	_escape_open = true
-	var tag: StringName = TAG_ESCAPE_BOAT if _slot_active(&"escape", &"esc_boat") else TAG_ESCAPE_VAN
+	var tag: StringName = _escape_tag()
 	var eta: float = float(_scalar(&"escape_eta_s", 120.0))
 	if tag == TAG_ESCAPE_BOAT and _rare(RARE_FOG):
 		eta += FOG_BOAT_DELAY_S
@@ -414,6 +426,31 @@ func _try_escape() -> void:
 
 
 # --- Helpers ----------------------------------------------------------------------------------
+
+## The rolled escape (E3 is the Co-op launch, E1 / E2 the van).
+func _escape_tag() -> StringName:
+	return TAG_ESCAPE_BOAT if _slot_active(&"escape", &"esc_boat") else TAG_ESCAPE_VAN
+
+
+## [breach] markers: the rolled warehouse entry's door (opened by _apply_entry_and_perch); every
+## variant entry door when none rolled.
+func _entry_tags() -> Array[StringName]:
+	var out: Array[StringName] = []
+	for sid: StringName in ENTRY_DOORS:
+		if _slot_active(&"warehouse_entry", sid):
+			out.append(sid)
+	if out.is_empty():
+		out.assign(ENTRY_DOORS.keys())
+	return out
+
+
+## [containers] markers: the padlocks of the given yard containers (k1 .. k6).
+func _container_tags(keys: Array) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for k: Variant in keys:
+		out.append(StringName(TAG_CONTAINER_PADLOCK % String(k)))
+	return out
+
 
 func _set_lift_enabled(on: bool) -> void:
 	for lift: Node in find_tagged(TAG_LIFT):

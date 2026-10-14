@@ -293,21 +293,28 @@ func _handle_controls(intent: CrewIntent) -> void:
 		start_reload()
 
 
-## Switch to `ws` if that slot holds a weapon (cancels a reload; equip_time_s before firing).
-func equip(ws: int) -> bool:
-	if not _states.has(ws) or ws == equipped_slot:
+## Switch to `ws` if that slot holds a weapon (cancels a reload; equip_time_s before firing). `redraw` with
+## ws == equipped_slot re-draws the same weapon without a slot change or equipped_changed: PD2
+## PlayerCarry:_enter -> _start_action_equip on a bag pickup (the viewmodel draws on carried_bag_changed).
+func equip(ws: int, redraw: bool = false) -> bool:
+	if not _states.has(ws) or (ws == equipped_slot and not redraw):
 		return false
 	var mobile: bool = _crew.crew_state == Enums.CrewState.NORMAL or _crew.crew_state == Enums.CrewState.SWAN_SONG
 	if not mobile and _crew.crew_state != Enums.CrewState.DOWNED:
 		return false
+	var changed: bool = ws != equipped_slot
 	equipped_slot = ws
 	reloading = false
 	reload_left = 0.0
 	_reset_special()
-	var s: WeaponState = _states[ws]
-	_equip_left = s.stats.equip_time_s / maxf(Modifiers.mult(_crew.slot, &"weapon.swap_speed_mult", s.qualifier), 0.01)
-	equipped_changed.emit(ws)
+	_equip_left = _equip_time(_states[ws])
+	if changed:
+		equipped_changed.emit(ws)
 	return true
+
+
+func _equip_time(s: WeaponState) -> float:
+	return s.stats.equip_time_s / maxf(Modifiers.mult(_crew.slot, &"weapon.swap_speed_mult", s.qualifier), 0.01)
 
 
 ## Start reloading the equipped weapon (tactical or empty time). Returns false if not possible.

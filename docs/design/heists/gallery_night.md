@@ -45,7 +45,7 @@ Cross-env requests are QC-51..QC-59.
   it for the crew (Mercer callout; `[find_canvases]`). Upper galleries, BOH, basement and roof are
   RESTRICTED from the start (slow ×0.35 fill, S1.1). Ladders need the mask.
 - **Paintings are LIGHT** (lead ruling D-070, ENV B's rolled-canvas defs): cut from the stretcher in
-  4 s (`loot_spawn`, `interaction_time_s 4.0`, silent), carried rolled (×0.95 speed, sprint and
+  4 s (`loot_spawn`, `interaction_time_s 4.0`, silent), carried rolled (×1.0 speed (D-102), sprint and
   jump allowed, throw 4 m).
 - **Frame sensors (the hack):** the **Argus** hanging-wire sensors alarm some frames (variable
   `sensor_net`). Cutting an alarmed canvas while the sensors are live raises the alarm. The Argus
@@ -429,7 +429,7 @@ and Wexley St with closed blinds. Vestibule, cloakroom and shop have shop-front 
 | TR | vault (Treasury) | 8 × 6 | 4.0 | `treasury_cabinet` | Strong-room cabinet for the most valuable works on show: KEYCARD door + shutter, the **laser grid** across the room, one wall for one painting (`cp_treasury`, centred on the south wall) and 2 vitrines (`display_case`, `glass_breaks_alarm`, Calloway's sketchbooks as small loot). C11 (always live). |
 | X1 | exterior (Aldous Parade + portico) | 98 × 22 | — | `exterior_boulevard` | Red carpet, rope lines, lilac uplights, sodium-white street lamps, the median trees, parked limousines, the gala coach. |
 | X2 | exterior (Wexley St + Mews) | — | — | `exterior_mews` | Cobbles, the Mews bins (`body_container` ×2, BODY_HIDE), the fire-escape ladder, the caterers' van, the hotel canopy across Wexley St. |
-| X3 | exterior (Sculpture Court) | 14 × 30 | — | `exterior_court` | Gravel, 5 bronzes on plinths, a reflecting pool (0.4 m deep, not OOB), benches, standing heaters and the smokers' ashtray stand (gala), the areaway grate, the gate. |
+| X3 | exterior (Sculpture Court) | 14 × 30 | — | `exterior_court` | Gravel, 5 bronzes on plinths, a reflecting pool (rim + depth ≤ 0.35 m, a step, not OOB; Build rulings B4), benches, standing heaters and the smokers' ashtray stand (gala), the areaway grate, the gate. |
 | X4 | exterior (roof deck) | 25 × 8 | — | `exterior_roof` | AHUs, condensers, cable trays, the ladder top, the head house. |
 
 Support-space check (level_standards §2.2):
@@ -592,8 +592,8 @@ Spawns: the portico (default, unmasked guests), the Mews (`pp_spawn_mews`, unmas
 LD), the roof deck (`pp_spawn_roof`, unmasked on a RESTRICTED roof, masked to move freely).
 
 1. **The gala (front).** Walk in, case the ground galleries and the bar, mark canvases, find which
-   ones are on show. The staff door under the stair (LOCKPICK 8 s, masked: or a keycard-less
-   **casing-allowed** walk-through when an attendant holds it open, QC-56) leads into BC → SC (keycard,
+   ones are on show. The staff door under the stair (LOCKPICK 8 s, masked; QC-56 dropped,
+   Build rulings B2) leads into BC → SC (keycard,
    log) / RG / SS. Risk: the hall guard faces the hall; patrons see everything masked in public.
 2. **The Sculpture Court.** Public until last call. The French doors into WG are either on the latch
    for the smokers (`court_doors_open`, until last call) or locked (LOCKPICK 8 s, C8). The **areaway
@@ -613,7 +613,7 @@ keycard) → cut (4 s) → carry out.
 
 | Slot | Room | Barrier |
 |---|---|---|
-| `cp_landing` | GH stair landing | Public view until last call (patrons, hall guard, C1/C2); after last call a **static laser curtain** across the landing (QC-53) with a 0.8 m bypass gap at the west return flight (D-048 QC-24); sensors in `sensors_upper`/`sensors_all`. |
+| `cp_landing` | GH stair landing | Public view until last call (patrons, hall guard, C1/C2); after last call a **static laser curtain** across the landing (QC-53) with a 1.0 m bypass gap at the west return flight (Build rulings B4); sensors in `sensors_upper`/`sensors_all`. |
 | `cp_treasury` | TR | Keycard (TR reader) + laser grid (`laser_pattern`) + C11 + frame sensors in every `sensor_net` option. |
 | `cp_store`, `saint_store` | AS | Keycard (vault reader) + C14; no sensors (store frames are bare). |
 | `orchard_calloway`, `widow_sallow`, `saint_maritime` | UG1/UG2/UG3 | RESTRICTED from the start; upper rover; sensors in `sensors_upper`/`sensors_all`. |
@@ -658,7 +658,7 @@ Worked for `cam_a`:
    checked by `camera_screen`: **every upper list slot has a screen between it and its room's camera**).
    Cut it after the rover's loop (a) pause ends and he leaves through UG2: that is the second required
    canvas (D-075: the Lantern Bearer + 1). UG2 (no camera) → `widow_sallow` is a bonus.
-6. Drop the canvases from BE over the balustrade into the hall's east strip (x 29–32, out of
+6. Drop the canvases from BE over the balustrade into the hall's east strip (x 24–28, Build rulings B4; out of
    C1's cone: ≥ 70° off its axis, behind the bar straggler), take the stairs down, and carry them along
    the hall's south wall
    (C1's blind band below and behind its mount) into VE and out of the bronze doors (push bar from
@@ -831,7 +831,7 @@ weights use A2-08.
 | `guard_post` | `rover_ground`, `rover_upper`, `rover_basement`, `dock_smoker`, `rover_none` (encodes counts as Night Deposit) | Routine/Tense pick 1 (`rover_none` 1 vs 1 each: P(none) = 0.2); Hazardous pick 2; Brutal 3; Lethal+ 4 (`difficulty_add`) | **Which floor and which entry has a walker**: the smoker shuts the Mews; the basement rover makes the grate and the vault slow. |
 | `security_room_staffed` | `sec_staffed`, `sec_empty` | Routine 0.6/0.4; Hazardous 0.65/0.35; Brutal+ 0.75/0.25 | Live cameras or not; SC's cabinet and log are free when empty. |
 | `camera` | `cam_a`, `cam_b`, `cam_c` (table in Sightlines) | 1, 1, 1 | Which corridor and which entry needs ECM or timing. |
-| `laser_pattern` (TR grid) | `lz_static` (3 beams 1.27/1.8/2.33 m with a 0.8 m crouch-under gap per QC-24), `lz_sweep` (3 vertical, 6 s), `lz_timed` (4 beams, off 4 s of 16 s) | Routine 0.5/0.2/0.3; Brutal+ 0.2/0.4/0.4 | Crouch, time the sweep or wait, in C11's cone. |
+| `laser_pattern` (TR grid) | `lz_static` (3 beams 1.30/1.8/2.33 m: crouch under the 1.30 m beam, Build rulings B4), `lz_sweep` (3 vertical, 6 s), `lz_timed` (4 beams, off 4 s of 16 s) | Routine 0.5/0.2/0.3; Brutal+ 0.2/0.4/0.4 | Crouch, time the sweep or wait, in C11's cone. |
 | `curator_route` (`civilian_cluster`) | `curator_hall`, `curator_office` | 0.5, 0.5 | **Where the keycard walks:** in the public hall among guests (tie her and every patron sees) or upstairs near CO/SV (quiet tie, near the upper rover). |
 | `conservator` (`civilian_cluster`) | `cons_late`, `cons_gone` | 0.5, 0.5 | A civilian in CS (by `widow_conservation` and `kc_conservator`). |
 | `court_doors` (`locked_door`) | `court_doors_open` (on the latch until last call), `court_doors_locked` | 0.5, 0.5 | **A free way from the court into WG** while the court is public. |
@@ -1058,7 +1058,7 @@ lesser studies valued below the list; D-075 Q6: the new id is approved).
 - **QC-55 (ENV A):** `hack_terminal` runtime reconfiguration by the mission (duration and the
   interruption range change at the alarm: 60 s / 1–2 stealth → 120 s / 2–3 loud) and a reader
   method to force a `keycard_reader` dead (`set_disabled(true)`) for the lockdown.
-- **QC-56 (ENV A, optional):** a door "held open by staff": an NPC-authorised door that stays open
+- **QC-56 (ENV A, optional; DROPPED by D-103, Build rulings B2):** a door "held open by staff": an NPC-authorised door that stays open
   for 4 s after an attendant uses it, walkable by an unmasked crew member as a casing-allowed action
   (RESTRICTED beyond). If declined, route 1 uses the lockpick.
 - **QC-57 (ENV B, ENV A):** ENV B: `loot.painting_study` (LIGHT ◇ $700, string "A study"), the
@@ -1107,3 +1107,118 @@ lesser studies valued below the list; D-075 Q6: the new id is approved).
 9. **Vaultline (`vaultline_early`):** not covered by the D-075 rulings relayed to ENV C; the rare event
    stays as drafted, with the NPC-carried bag behind QC-57 (until it ships, the G1 greybox falls back
    to the crew raising the alarm on an empty slot, marked `TODO(QC-57)`).
+
+## Build rulings (D-103 / D-104; next_heist.md §3b, §4, §7) — approved (lead, D-103/D-104)
+Folded in by ENV C on 2026-10-14. Where this section and an older line above disagree, **this section wins** (the
+inline lines touched are marked "Build rulings Bn"). Lock names are `door.gd` `Lock` values.
+
+### B1. Rules every G1/G2 build must meet (next_heist §4)
+- Every objective carries `data.marker_tags` (ui_hud 1.8, table B5), casing objectives too.
+- Every NPC spawn tag maps to a real character in `NpcVisualTweak.tag_characters` (§3b.1: the tag beats the EnemyDef
+  default). Map: `guard_hall`, `guard_rover_ground`, `guard_rover_basement`, `guard_inspection` → `gallery_guard`;
+  `guard_rover_upper`, `guard_mews`, the SC `CAMERA_OPERATOR` → `gallery_guard_b`; `guard_vaultline` → `armored_car_crew`
+  (`_b` alternating); `civ_curator` → `gallery_curator`; `civ_attendant` → `gallery_attendant`; `civ_conservator` →
+  `gallery_attendant_b`; `civ_waitstaff` → `npc_penthouse_staff`; `civ_patron` → `gallery_patron` / `_b` /
+  `npc_penthouse_guest_a` / `_b`; `civ_admin` → `npc_penthouse_guest_a` (QC-58c, until D casts a PA). No capsules.
+- Key interior lights carry render layer 21 `viewmodel_lit` (`1 << 20`, D-095) on top of their normal layers: the GH
+  chandeliers and landing spot, one key per gallery (WG, DC, EG, EB, UG1–3), the TR spot, the CS task lamps, and the
+  main panel per BOH room (BC, UC, BB, LD, SC, SV, AS, PL, offices). DC is lit for ADS fights (§7.11), not 50 lux in
+  play terms. `validate_level` `viewmodel_lit` warns on misses.
+- Director caps per D-099: the Specials list above is gated by difficulty (Routine = regular SWAT + shields only;
+  Stinger from Tense; Wrecker/Phantom from Brutal; Corpsman from Overkill-equivalent). H1–H4 are re-checked per
+  difficulty at G1 with `auto_loud`.
+- Bag weights per D-102: every painting (list canvases and studies) is LIGHT (×1.0, sprint, jump, 4 m throw); body bags
+  MEDIUM (×0.75, no sprint, 4 m throw). Throw spots are designed for 4 m.
+- Done = `validate_level` PASS (incl. `camera_spine`, `camera_screen`, `slopes`) + PO-3 snag probe 0 + PP-C walk with no
+  STUCK rows before G2; windowed `auto_loud` and a stealth flow pass; `test_heist_readiness` lists Gallery Night green.
+
+### B2. Door lock table (§3b.2; QC-56 dropped)
+Principle: **public doors NONE** (casing-allowed by default, PO-5.11); **the boundary into BOH LOCKPICK** (masked, 8 s);
+**interior BOH doors NONE** (the zone is RESTRICTED, so only masked players use them freely); the three Argus readers
+KEYCARD; the server CODE; the art store VAULT. Staff that must pass a locked door are listed in `npc_authorized_tags`
+(the §3b.6 staff-role authorisation; guards are authorised today). Doors on routes are ≥ 1.0 m wide (§7.7).
+
+| Door (plan position) | Lock | Notes |
+|---|---|---|
+| VE bronze outer doors ×4 leaves (x 20–23, z 30) | NONE, `starts_open` | Public. At last call the hall guard closes them and the mission relocks them LOCKPICK from outside (§3b.6 relock API); `push_bar` inside, so the parade escape always walks out. |
+| VE inner glass screen, CK (16, 26), PWW/PWM (12, 22 / 12, 25), DC (3, 20), GH↔WG/EG arches | NONE / no leaf | Public; stay unlocked after last call (the zone flip makes them RESTRICTED). |
+| Court French doors (0, 12–13) | `court_doors_open`: NONE until last call, then relock LOCKPICK; `court_doors_locked`: LOCKPICK 8 s | `pp_court_doors` (`asset.propped_door`) forces NONE all night. |
+| Court gate (exterior) | NONE (open) until last call, then LOCKPICK | Police ENTRY `breach_only`. |
+| Areaway grate | `grate_loose`: lift 3 s; `grate_padlocked`: `padlock` (lockpick 8 s or saw) | Grate opening ≥ 1.0 × 1.0 m, ladder on one side (§7.6). |
+| GS shop door (from VE) | LOCKPICK 8 s | Closed for the gala. |
+| Staff door under the stair (19, 8), GH ↔ BC | LOCKPICK 8 s | `npc_authorized_tags` [`guard`, `staff`]. The route-1 "held open" walk-through is gone (QC-56 dropped). |
+| WG art-handling double door (5–6, 8), WG ↔ BC | LOCKPICK 8 s | Staff authorised. |
+| LD personnel door (Mews) | LOCKPICK 8 s outside, `push_bar` inside | Police ENTRY. ≥ 1.0 m, step-free to the Mews (§7.3). |
+| LD roller door (Mews) | BARRED (crew cannot operate) | Police ENTRY `breach_only` (breach opens it); the S1 lane when open. |
+| LD → EG art door DD (37–38, 12) | KEYCARD (reader on the LD side) | Lockdown: BARRED; `[hack]` done in loud → NONE (plain open). |
+| Roof head-house door (3, 7, roof) | LOCKPICK 8 s from the deck, `push_bar` inside | Police ENTRY `breach_only`. |
+| Lift motor room LM | BARRED, no interaction | Dressing. |
+| Interior BOH, ground: SS, BR, WC, SC, RG, J, E1, LD ↔ BC double door, LF landing doors | NONE | SC: the operator's FOV, not a lock, protects it. |
+| Interior BOH, upper: SS, CO, AO, UW, FS, CS (from UC), BW → UC, BE → UC, AT (N and W) | NONE | |
+| UG3 → CS door (36, 12) | LOCKPICK 8 s | Staff authorised (conservator, curator). |
+| SV server door (25, 6) | CODE (`code_group argus`, keypad on the UC side) | Loud: drill 60 s (`[server_door]`). |
+| TR door (39, 24) | KEYCARD (TR reader) | Lockdown: shutter BARRED; `[hack]` done in loud → shutter up **and** door NONE. |
+| Calloway arch shutter (12, 12–14) | `industrial_door`, `starts_open`, NONE | Lockdown: BARRED; `[hack]` lifts it. |
+| AS vault door VV (21–22, 8) | VAULT + `keycard_reader` (stealth) | Lockdown: reader dead; `[hack]` done → plain open; thermal drill 240 s as the loud fallback. Couriers (`guard_vaultline`) authorised. |
+| Interior BOH, basement: SS, LK, FR, QR, PL, LF landing doors | NONE | |
+
+### B3. No stealth-only fail (§3b.3)
+- `fail_reason` on Gallery Night is **custody** (all humans in custody, L2.9) or **abort** only. Nothing in stealth fails
+  the heist: a spotted crew, a sensor alarm, inspectors finding an empty slot or a phone call all raise the alarm and
+  the heist **goes loud**.
+- **Required canvases always stay reachable.** In loud, `[hack]` lifts every shutter and opens the TR door, the LD art
+  door and the AS vault door with no card (B2), and the vault drill is the fallback, so every slot is reachable after
+  any stealth mistake (cards spent, curator killed, code note never found).
+- **Vaultline (`vaultline_early`) moves, never destroys:** if the couriers reach the centrepiece slot they carry the
+  canvas to AS (QC-57 NPC bag). G1 fallback until QC-57 ships (replaces Lead ruling 9's empty-slot alarm): when they
+  reach the slot, the slot's `loot_spawn` moves to the `cp_store` rack position (the canvas is "in the vault") and they
+  walk back to LD; killing or intimidating them early is a pager event, not a fail. `TODO(QC-57)` stays in the script.
+- Insurance inspectors finding the slot empty raise the alarm (loud), never a fail.
+
+### B4. G1 traversal requirements (ENV P review, next_heist §7, adopted D-104)
+Player: capsule r 0.35, stand 1.8 / crouch 1.2, step 0.35, max slope 45°, jump apex 1.08 m (heavy 0.27, very heavy
+0.07), ladders 2 m/s masked only, no bags, no mantle.
+
+| # | Requirement | Where in this doc | Check |
+|---|---|---|---|
+| 1 | Laser bypass gaps ≥ 1.0 m; crouch-under beam centres ≥ 1.30 m (lower face ≥ 1.215 m) | `cp_landing` curtain gap 0.8 → **1.0 m**; `lz_static` low beam 1.27 → **1.30 m** | `lasers` + P's walk |
+| 2 | Balcony throws land on the hall floor **x 24–28** (east) and the mirrored **x 16–20** (west); balustrade and handrail colliders thin and true to the visual | stealth line step 6 | P: 3 pitches |
+| 3 | Mews ↔ LD step-free: Mews grade = LD floor (dock leveller ≤ 0.35 m, dressing) or a ramp ≤ 45° at both doors | LD, X2 | `slopes`, walkthrough |
+| 4 | Reflecting pool rim + depth ≤ 0.35 m (or one shallow step), else a raised solid | X3 | P: heavy-bag in/out |
+| 5 | Parapet copings ≥ 50°; a 1.2 m parapet / invisible wall between the roof deck and the north-light sawtooth; no walkable slope < 50° outside the play mesh | Roof notes, CS glazing | `slopes` |
+| 6 | Ladders: ≥ 1.0 m level landing at each top through the parapet; the areaway grate ≥ 1.0 × 1.0 m with the ladder on one side; the Mews drop section stays down (raises for police only) | Vertical data | P: both ladders |
+| 7 | Route doors ≥ 1.0 m (staff door, SV, CO, CS, AT, TR, head house); NPC idle points ≥ 1 m off door centrelines; Stair SS single-file accepted | B2, roster | `doors` |
+| 8 | Stairs collide as ramps, not per-tread boxes (SS and the imperial stair) | Vertical data | `stairs` |
+| 9 | Velvet-rope runs: one box collider per run (or none), never the posts | GH `rope` | snag probe |
+| 10 | Broken windows (EB, SL): frames keep a crew-only collision plane unless a route is intended | Room list | `clipping` |
+| 11 | DC lit readable for ADS fights; key lights `viewmodel_lit` | Audio/lighting | `viewmodel_lit` |
+
+**G1 tests (ENV P, windowed real input):** every laser gap walked/crouched; balcony throws at 3 pitches land on the hall
+floor; Mews → LD with a heavy bag; pool in/out with a heavy bag; both ladders up and down; PO-3 snag probe = 0.
+
+### B5. Objective `marker_tags` (ui_hud 1.8, D-089)
+Map nodes carry these `objective_tags` (only the active variant slot's node exists, so a marker never points at an
+inactive slot). The mission passes them as `data.marker_tags`.
+
+| Objective | marker_tags | Tagged nodes |
+|---|---|---|
+| `casing` | `casing_hall` | a Marker3D at the GH stair foot (the casing objective shows while casing) |
+| `find_canvases` | starts `[]`; grows per found slot | no spoiler markers before a find. When the crew marks a slot (or at start with `asset.intel_list`) the mission calls `update_objective_data(&"find_canvases", {"marker_tags": [<found slots' own tags>], "found": n})`; the HUD re-resolves on any data update and the data replicates (QC-60, ENV A 18cc33d0) |
+| `keycard` | `keycard` | the active `keycard_pickup`s (`kc_*`), the curator's carried card (QC-52) |
+| `server_code` | `code_note` | the active code note |
+| `hack`, loud `hack` | `hack` | the SV `hack_terminal` |
+| `server_door` (loud) | `server_door` | the SV door's drill point |
+| `treasury` | `treasury_door` | the TR `keycard_reader` |
+| `art_store` | `vault_reader` | the AS `keycard_reader` |
+| `vault_drill` (loud) | `vault_drill` | the AS thermal-drill point |
+| `lockdown` (loud) | `shutter` | the three shutters (completes at once) |
+| `centrepiece` | `canvas_lantern` | the active centrepiece `loot_spawn` |
+| `canvases` | `canvas_orchard`, `canvas_widow`, `canvas_saint` | the active slot of each group |
+| `secure` | `secure_mews` / `secure_parade` | the active escape's SECURE_LOOT zone |
+| `extras`, `lockers`, `curator_safe` | `lockers`, `curator_safe` | the `deposit_box`es, the CO safe |
+| `escape_wait`, `escape` | `escape_mews` / `escape_parade` | the active ESCAPE zone |
+
+### B6. Validator hooks this map sets (D-075, built 2026-10-14)
+`camera_spine` (BC and UC, per `camera` layout) and `camera_screen` (`orchard_calloway`, `widow_sallow`,
+`saint_maritime`, each behind a `partition_screen`) read HeistMap data documented in `tools/levelcheck/README.md`; the
+plans and `--check` live in `tools/levelcheck/plans/gallery_night_floors_ascii.py`.

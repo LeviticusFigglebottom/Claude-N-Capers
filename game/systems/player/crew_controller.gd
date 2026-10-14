@@ -90,10 +90,18 @@ var step_offset: float:
 var crouch_cam_offset: float:
 	get:
 		return _crouch_cam
+## PO-4 (read-only): the camera's melee-hit punch (pitch, roll; radians).
+var melee_punch: Vector2:
+	get:
+		return _punch
 ## PO-4 (read-only): the camera landing dip (m, negative while dipping).
 var land_dip: float:
 	get:
 		return _land_dip
+## D-102 lane, read only: the current carry camera roll (degrees).
+var carry_tilt: float:
+	get:
+		return _carry_tilt
 var _runtime: HeistRuntime = null
 var _jump_latch: bool = false
 ## PI-13: last tick's crouch / sprint / jump intent (press edges for casing_blocked).
@@ -105,15 +113,25 @@ var _teleport_seq: int = 0
 var _send_accum: float = 0.0
 ## P1-01: camera-only vertical lag after step-ups / step-downs (m, decays at CrewTweak.step_smooth_rate).
 var _step_offset: float = 0.0
-## PO-4: landing dip spring (camera only, local human): offset (m) and its velocity (m/s).
+## PO-4: landing dip (camera only, local human): offset (m), depth, seconds since landing (-1 = idle).
 var _land_dip: float = 0.0
-var _land_dip_v: float = 0.0
+var _land_amp: float = 0.0
+var _land_t: float = -1.0
 ## PO-4: camera-only crouch / stand easing (m, eases to 0) and the stance it last saw.
 var _crouch_cam: float = 0.0
 var _cam_crouched: bool = false
 ## PO-4: camera head-bob phase (rad) and eased weight 0..~1.6.
 var _bob_phase: float = 0.0
 var _bob_w: float = 0.0
+## D-102: effective carry speed mult this tick (after perks) and the raw PD2 move_speed_modifier for the bob.
+var _carry_mult: float = 1.0
+var _carry_bob_mult: float = 1.0
+## PO-4: melee-hit camera punch (pitch, roll; radians): current value, peak amplitude, seconds since the hit.
+var _punch: Vector2 = Vector2.ZERO
+var _punch_amp: Vector2 = Vector2.ZERO
+var _punch_t: float = -1.0
+## D-102 lane: camera roll while carrying a bag (degrees, eased toward CrewTweak.carry_tilt_deg).
+var _carry_tilt: float = 0.0
 
 ## Combat components (A1-08); null only for a scene without them.
 @onready var health: CrewHealth = get_node_or_null("Health") as CrewHealth
@@ -131,6 +149,8 @@ func _ready() -> void:
 	collision_layer = COLLISION_LAYER_PLAYERS
 	collision_mask = COLLISION_MASK_WORLD
 	_runtime = HeistRuntime.of(self)
+	if melee != null and not melee.hit_landed.is_connected(_on_melee_hit):
+		melee.hit_landed.connect(_on_melee_hit)
 	var gtw: CrewTweak = Tweak.crew()  # P1-01 ground handling (see _move_grounded)
 	floor_max_angle = deg_to_rad(gtw.max_slope_deg)
 	floor_snap_length = gtw.step_height_m
@@ -362,7 +382,7 @@ func teleport(xform: Transform3D) -> void:
 	velocity = Vector3.ZERO
 	_step_offset = 0.0  # P1-01: a hard move is not a step to smooth; airborne until it lands
 	_land_dip = 0.0
-	_land_dip_v = 0.0
+	_land_t = -1.0
 	_crouch_cam = 0.0
 	_cam_crouched = crouched
 	grounded = false
@@ -437,9 +457,14 @@ func _simulate(delta: float) -> void:
 		speed *= weapons.move_speed_mult
 	if armor_def != null:  # QB-56: armor move-speed penalty x movement.armor_penalty_mult
 		speed *= clampf(1.0 - (1.0 - armor_def.move_speed_mult) * Modifiers.mult(slot, &"movement.armor_penalty_mult"), 0.1, 1.0)
-	if bag_w >= 0 and not Modifiers.flag(slot, &"stealth.body_bag_concealed_carry"):
-		var pen: float = (1.0 - tw.bag_speed_mult[bag_w]) * Modifiers.mult(slot, &"loot.carry_speed_penalty_mult")
-		speed *= clampf(1.0 - pen, 0.1, 1.0)
+	_carry_mult = 1.0
+	_carry_bob_mult = 1.0
+	if bag_w >= 0:
+		_carry_bob_mult = tw.bag_speed_mult[bag_w]  # D-102: PD2 bob x the raw move_speed_modifier
+		if not Modifiers.flag(slot, &"stealth.body_bag_concealed_carry"):
+			var pen: float = (1.0 - tw.bag_speed_mult[bag_w]) * Modifiers.mult(slot, &"loot.carry_speed_penalty_mult")
+			_carry_mult = clampf(1.0 - pen, 0.1, 1.0)
+			speed *= _carry_mult
 	if not mobile:
 		speed = 0.0
 	var mv: Vector2 = i.move.limit_length(1.0)
@@ -457,11 +482,12 @@ func _simulate(delta: float) -> void:
 	if not grounded:
 		velocity.y -= tw.gravity * delta
 	var can_jump: bool = not casing and mobile and not crouched
+	var jump_v: float = tw.jump_velocity
 	if bag_w >= 0:
-		can_jump = can_jump and tw.bag_can_jump[bag_w]
+		jump_v *= tw.bag_jump_mult[bag_w]  # D-102: a bag lowers the jump, never blocks it
 	var jumped: bool = false
 	if i.jump and not _jump_latch and grounded and can_jump and stamina.can_jump():
-		velocity.y = tw.jump_velocity
+		velocity.y = jump_v
 		stamina.on_jump()
 		jumped = true
 	stamina.tick(sprinting, delta)
@@ -478,6 +504,8 @@ func _simulate(delta: float) -> void:
 	if _head != null:
 		_head.position.y = eye_height() + _step_offset + _land_dip + _crouch_cam
 		_apply_head_bob(delta, tw)
+		_tick_punch(delta, tw)
+		_tick_carry_tilt(delta, tw)
 
 
 ## P1-01: move_and_slide with PD2-like ground handling. Walks up lips up to CrewTweak.step_height_m, follows
@@ -514,9 +542,51 @@ func _on_landed(impact_mps: float, tw: CrewTweak) -> void:
 	if is_ai or not is_local() or tw.land_dip_gain <= 0.0 or impact_mps <= tw.land_dip_min_mps:
 		return
 	var depth: float = minf((impact_mps - tw.land_dip_min_mps) * tw.land_dip_gain, tw.land_dip_max_m)
-	# Critically damped spring from rest: an initial velocity v0 peaks at v0 / (w e) after 1/w s.
-	var w: float = TAU * tw.land_dip_hz
-	_land_dip_v = minf(_land_dip_v, -depth * w * exp(1.0))
+	if _land_t >= 0.0 and -_land_dip >= depth:
+		return  # a harder dip is still playing
+	_land_amp = -depth
+	_land_t = 0.0
+
+
+## PO-4: the local human's melee hit landed: kick the camera (presentation only; aim / look are untouched).
+func _on_melee_hit(_target: Object) -> void:
+	if is_ai or not is_local():
+		return
+	var tw: CrewTweak = Tweak.crew()
+	var side: float = -1.0 if (melee.swings % 2) == 0 else 1.0  # alternate the roll per swing
+	_punch_amp = Vector2(-deg_to_rad(tw.melee_punch_pitch_deg), side * deg_to_rad(tw.melee_punch_roll_deg))
+	_punch_t = 0.0
+
+
+## D-102 lane (PD2 PlayerCarry.target_tilt): the local human's camera rolls carry_tilt_deg while a bag is carried,
+## stepping at carry_tilt_rate_dps (PD2 math.step 150 deg/s). Camera only; off with Reduce Motion.
+func _tick_carry_tilt(delta: float, tw: CrewTweak) -> void:
+	var target: float = 0.0
+	if not is_ai and is_local() and is_carrying_bag() and not _reduce_motion():
+		target = tw.carry_tilt_deg
+	_carry_tilt = move_toward(_carry_tilt, target, tw.carry_tilt_rate_dps * delta)
+	if _carry_tilt != 0.0:
+		_head.rotation.z += deg_to_rad(_carry_tilt)
+
+
+func _reduce_motion() -> bool:
+	var gs: GameSettings = GameSettings.current()
+	return gs != null and bool(gs.get_value(GameSettings.ACCESSIBILITY, &"reduce_motion"))
+
+
+## Critically damped impulse response in closed form, x(t) = A * wt * e^(1 - wt): peaks at A after 1/w s (explicit
+## integration at 60 Hz lost most of the 4 Hz peak).
+func _tick_punch(delta: float, tw: CrewTweak) -> void:
+	if _punch_t < 0.0:
+		return
+	_punch_t += delta
+	var wt: float = TAU * maxf(tw.melee_punch_hz, 0.01) * _punch_t
+	_punch = _punch_amp * wt * exp(1.0 - wt)
+	if wt > 12.0:
+		_punch = Vector2.ZERO
+		_punch_t = -1.0
+	_head.rotation.x += _punch.x
+	_head.rotation.z += _punch.y
 
 
 ## PO-4: subtle PD2 camera head bob (local human, grounded, moving; Options head_bob). Camera only.
@@ -528,7 +598,10 @@ func _apply_head_bob(delta: float, tw: CrewTweak) -> void:
 	var speed: float = Vector2(velocity.x, velocity.z).length()
 	var target: float = 0.0
 	if on and grounded and speed > 0.3:
-		target = clampf(speed / maxf(tw.head_bob_ref_mps, 0.01), 0.0, 1.0) * (tw.head_bob_sprint_mult if sprinting else 1.0)
+		# D-102: PD2's bob is per state, not per m/s; with a bag it is x move_speed_modifier, so the speed term is
+		# normalised to the carried walk speed and the carry factor applied once.
+		var ref: float = maxf(tw.head_bob_ref_mps * _carry_mult, 0.01)
+		target = clampf(speed / ref, 0.0, 1.0) * (tw.head_bob_sprint_mult if sprinting else 1.0) * _carry_bob_mult
 		if CrewView.is_aiming(self):
 			target *= tw.head_bob_ads_mult
 	_bob_w = move_toward(_bob_w, target, tw.head_bob_rate * delta)
@@ -557,15 +630,16 @@ func _tick_crouch_cam(delta: float, tw: CrewTweak) -> void:
 			_crouch_cam = 0.0
 
 
+## Closed-form critically damped dip, x(t) = A * wt * e^(1 - wt): the full depth A after 1/w s, settled by ~12/w.
 func _tick_land_dip(delta: float, tw: CrewTweak) -> void:
-	if _land_dip == 0.0 and _land_dip_v == 0.0:
+	if _land_t < 0.0:
 		return
-	var w: float = TAU * tw.land_dip_hz
-	_land_dip_v += (-w * w * _land_dip - 2.0 * w * _land_dip_v) * delta
-	_land_dip += _land_dip_v * delta
-	if absf(_land_dip) < 0.0002 and absf(_land_dip_v) < 0.002:
+	_land_t += delta
+	var wt: float = TAU * maxf(tw.land_dip_hz, 0.01) * _land_t
+	_land_dip = _land_amp * wt * exp(1.0 - wt)
+	if wt > 12.0:
 		_land_dip = 0.0
-		_land_dip_v = 0.0
+		_land_t = -1.0
 
 
 ## How far to raise the body onto a lip ahead (<= step_height_m, walkable top) before the horizontal move;

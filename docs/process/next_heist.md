@@ -17,8 +17,42 @@ The build starts only when all three pass windowed through the real menus (ENV A
 `gh_loud` (Glasshouse loud → payday → hub), `gh_stealth` (Glasshouse stealth win), `auto_loud` on Night Deposit.
 A product-owner playthrough of Glasshouse that holds up also counts.
 
-## 3. Audit of the G0 doc against today's code
-(filled from the lead's audit, see §3 below once complete)
+## 3. Audit of the G0 doc against today's code (lead, 2026-10-14)
+**Exists and reusable:** cameras + camera_station operator, ECM, keycard pickup, keypad/code notes, display cases,
+small loot, deposit boxes (saw), safe SMALL (drill/lockpick/saw), thermal drill point, windows (+ rappel links), padlocks,
+ladders, bag_lift, secure/escape zones, body containers, alarm buttons/phones, pagers/cuffs/civilian flee, HeistMission
+timers + timed guard spawns, VariantResolver (pick-N, requires, min_difficulty), `gallery`/`atrium` scale bands.
+**Cast: delivered** (game/world/characters: gallery_curator, gallery_attendant(_b), gallery_guard(_b), gallery_patron(_b),
+penthouse guests/staff, armored_car_crew(_b); p5_cast.json). Content stubs exist: 4 painting loot defs, painting_study,
+heist name/brief strings, Board entry (contact.vance), heist_list entry, accent.
+
+**Partial:** keycard_reader (no off/on), hack_terminal (no runtime reconfigure API / alarm-group clear), laser_grid
+(no `set_enabled`), loot_spawn (no `alarm_on_take`, no cut-canvas prompt), door (no relock/BAR + replication; NPC
+door authorisation is guards-only; no NPC through VAULT doors), ambient clips `curator_inspect`, `cower_stand`,
+`cower_seated`, `walk_text` exist in anim_humanoid but are unmapped in anim_driver / civilian activities.
+
+**Missing:** QC-51..QC-59 (no code at all): runtime replicated MapZone kind flip + calm civilian exit/despawn (gala clock),
+NPC-carried keycard, NPC bag carry (Vaultline), sensor alarm groups, intel pre-planning assets; the map (no
+game/world/heists/gallery_night/), floor-plan script, validators `camera_spine`/`camera_screen`; HeistDef, variant table,
+mission script, objective/VO/music strings, music track, blueprint; NpcVisualTweak gallery tags.
+**Wrong:** `loot.painting_study` is $1,100 (D-081 says $700; test_p5_catalogue pins 1100).
+
+## 3b. Lead rulings for the build (D-103)
+1. **NPC visuals:** a SpawnPoint tag that maps in `NpcVisualTweak.tag_characters` takes priority over the EnemyDef's default
+   character (so `guard_hall` etc. wear `gallery_guard`, and Shadow Ledger's Northgate guards can be fixed the same way).
+   ENV A changes NpcVisuals' resolution order; EnemyDef stays the fallback.
+2. **QC-56 dropped:** PO-5.11 (unlocked doors open while casing) covers it; staff doors that should be walkable while
+   casing are simply NONE-locked. The doc gains a door lock table (public NONE / BOH lockpick / keycard / code / vault).
+3. **No stealth-only fail** on Gallery Night; fail reasons are custody and abort only; required canvases must always stay
+   reachable (a Vaultline delivery to the art store moves the canvas, it never destroys it).
+4. **Every objective gets `marker_tags`**; key lights get `viewmodel_lit`; loud holdouts are re-checked per difficulty under
+   D-099 (Routine = SWAT + shields only); paintings are LIGHT under D-102 (×1.0, sprint, 4 m throw), body bags MEDIUM.
+5. **`painting_study` → $700** when the freeze lifts (B + its test).
+6. **System groundwork first (general, reused by Ostrander/Afterhours):** ENV A builds the engine APIs before the map:
+   door relock/BAR (replicated), keycard_reader set_disabled, laser_grid set_enabled, loot alarm groups + `&"sensor"`
+   reason, hack reconfigure, runtime MapZone kind flip (replicated) + calm civilian exit/despawn, NPC-carried keycard,
+   NPC door authorisation for staff roles, ambient clip mapping. Each with a unit test. This can start right after the
+   freeze-lift runs, before the map exists.
 
 ## 4. Rules the build must satisfy (lessons from the playability pass)
 - Every objective carries `marker_tags` (ui_hud 1.8, D-089); casing objectives too.
@@ -30,6 +64,8 @@ A product-owner playthrough of Glasshouse that holds up also counts.
 - Stealth-only failure rules and fail_reason surfaced on the results screen (B's failure-path lane).
 - `validate_level` PASS + PO-3 snag probe 0 + PP-C walk with no STUCK rows before G2.
 - A windowed e2e flow for the heist (`auto_loud` + a stealth flow) is part of "done", not an afterthought.
+- Automated: `game/tests/integration/test_heist_readiness.gd` (lead) checks marker_tags resolve on the real map and that
+  no NPC is a capsule, for every delivered heist; Gallery Night is in its list and must pass once its map lands.
 
 ## 5. Staffing (proposal, needs the product owner's OK)
 Building a map and its cast is ENV C / ENV D work (both dormant). Options:
@@ -49,3 +85,23 @@ Recommendation: (a) for the map and cast; A/B/P keep their current lanes plus th
 | GN-A1 | A | Missing prefabs/systems from §3; mission script; objective marker_tags; e2e flows (stealth + loud) |
 | GN-B1 | B | HeistDef, contract/briefing/strings, loot defs (painting, painting_study $700 LIGHT), variant table data, pre-planning assets |
 | GN-P1 | P | Real-menu windowed feel pass + snag probe on the greybox, then on G2 |
+
+## 7. G1 traversal requirements (ENV P review 2026-10-14, adopted D-104)
+Player numbers: capsule r 0.35 (0.70 m), stand 1.8 / crouch 1.2, step 0.35, max slope 45°, jump apex 1.08 m
+(heavy bag 0.27, very heavy 0.07; D-102), ladders 2 m/s masked only, no bags, no mantle.
+1. Laser gaps: bypass gaps ≥ 1.0 m; crouch-under beams with centre ≥ 1.30 m (A confirmed: beams test only the gameplay capsule, r 0.35, 1.2 m crouched; 0.03 m thick beam → lower face must clear 1.2 m, 1.215 m minimum).
+2. Balcony throws: fix the doc's drop strip to hall x 24–28; balustrade/handrail colliders thin and true to the visual.
+3. Mews ↔ loading dock: step-free (Mews grade = LD floor, leveller ≤ 0.35 m dressing) or ramp ≤ 45° at both doors.
+4. Reflecting pool: rim + depth ≤ 0.35 m (or one shallow step), else a raised solid.
+5. Roofs: parapet coping ≥ 50°; 1.2 m parapet / invisible wall between roof deck and the north-light sawtooth;
+   levelcheck rule "no walkable slope < 50° outside the play mesh" (ENV C).
+6. Ladders: ≥ 1.0 m level landing at each top through the parapet; areaway grate ≥ 1.0 × 1.0 m with the ladder on one side;
+   the counterweighted drop section stays down (or raises for police only).
+7. Doors on routes ≥ 1.0 m (staff door, SV, CO, CS, AT, TR, head house); NPC idle points ≥ 1 m off door centrelines;
+   Stair SS single-file accepted.
+8. Stairs collide as ramps, not per-tread boxes.
+9. Velvet-rope runs: one simple box collider per run (or none), never posts.
+10. Broken windows: EB/SL frames keep a crew-only collision plane unless a route is intended.
+11. DC lighting ≥ readable for ADS fights (tag key lights `viewmodel_lit`, D-095).
+**G1 tests (ENV P owns, windowed real input):** every laser gap walked/crouched; balcony throws at 3 pitches land on the hall
+floor; Mews → LD with a heavy bag; pool in/out with a heavy bag; both ladders up/down; PO-3 snag probe = 0.

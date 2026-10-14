@@ -2,6 +2,15 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-14 00:30 ET: D-102 bag carry, melee feel
+- 2862fde1: melee-hit camera punch + closed-form landing dip. Pistol ADS closed (matches PD2); left-hand cup PARKED
+  (D backlog). PO-3 snag re-run: 0 snags on all 4 heists.
+- a890055b D-102: CrewTweak bag_speed_mult 1/0.75/0.5/0.25, bag_can_sprint light only, new bag_jump_mult
+  1/1/0.5/0.25 (jump velocity; bags never block a jump), throw 4/4/2/1.2 m, head bob x raw move_speed_modifier
+  (speed term normalised to the carried walk speed). bag_can_jump kept all-true (deprecated) until A moves
+  test_s10_1_sprint_and_jump_limits_per_weight; test_s10_1_throw_distance_ordering needs <= (light == medium).
+  Windowed real-input tests: test_p_d102_bag_carry (4/4).
+
 ## 2026-10-13 23:50 ET: lanes done, capture sheets, PD2 data
 - Pushed through 338cea18 (trunk round 59 merged). Since 21:30: PP-P-12 door (9bea4dde, subagent: floor-height
   doorway probe, back-off, jamb-gated reach), D-097 recovery timing (recoil_wait), ADS eye relief + enforced band

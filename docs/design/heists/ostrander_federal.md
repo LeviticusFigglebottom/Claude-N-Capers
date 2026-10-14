@@ -916,7 +916,7 @@ rare event. **Player perches:** the main roof (S2, S3) and GA (the lantern rappe
   hoist cannot be bypassed: the rope ladder is crew-only (S10.1b).
 - **Throw spots:** GA → the hall floor (5.0 m); the terrace east parapet → the Tannery bay (E2);
   the LD personnel door → the E1 van.
-- **Optional:** the bullion cage (padlock; gold is HEAVY: ×0.75 speed, no sprint), the bond safe,
+- **Optional:** the bullion cage (padlock; gold is HEAVY: ×0.5 speed, no sprint, D-102), the bond safe,
   the vault boxes and the SD hall boxes (saw: noise 15 m, next to the vault post), the president's
   safe (Executive, drill/saw), the server drives (SV, 2 bags, MEDIUM), the teller drawers (`small_loot`
   × 6), the CP strapped cash (`small_loot` × 4).

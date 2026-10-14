@@ -600,7 +600,7 @@ Burning early trades the remaining product bags (greed) for a smaller map.
     `lift_dead`, reset the breaker in E1 (5 s) or carry the bags down ST.
   - **Throw spot:** the PF guard rail → the hall floor (3.6 m drop). It saves the stair; it lands bags in
     the hall's crossfire.
-- **Weapon crates (HEAVY: ×0.75 speed, no sprint, 3 m throw) →**
+- **Weapon crates (HEAVY: ×0.5 speed, no sprint, jump ×0.5, 2 m throw (D-102)) →**
   - from K1–K3: E1 ≈ 26 m, E2 ≈ 30 m, E3 ≈ 106 m (the lane and the quay);
   - from K4–K6: E1 ≈ 18 m, E3 ≈ 102 m (the apron and the quay; S1 covers the apron).
 - **Product →** from its room to the escape, then burn the rest (or burn first and lose it).

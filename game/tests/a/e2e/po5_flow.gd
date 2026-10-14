@@ -6,6 +6,8 @@ var runner_flow: String = "smoke"
 var heist_name: String = "Glasshouse"
 var difficulty_name: String = "Routine"
 var rt: HeistRuntime = null
+## The run seed, kept for the RESULT line after the runtime is freed (back in the hub).
+var run_seed: int = -1
 var crew: CrewController = null
 var pilot: Po5Pilot = null
 ## llvmpipe renders at ~1 fps, which caps game time at 8 physics ticks per second. Between screenshots
@@ -82,6 +84,7 @@ func enter_heist() -> bool:
 		return false
 	crew = rt.crew_controller(0) as CrewController
 	await wait_s(1.0)
+	run_seed = rt.run_seed
 	note("in heist %s seed %d diff %d phase %d crew at %s" % [rt.heist_id, rt.run_seed, rt.difficulty, rt.phase,
 		Po5Pilot._v(crew.global_position)])
 	await shot("heist_start")
@@ -151,11 +154,25 @@ func payday_to_hub() -> int:
 				clicked = true
 				break
 		if not clicked:
+			clicked = await _pick_payday_card()
+		if not clicked:
 			note("payday: nothing to click; buttons %s" % [visible_buttons()])
 		await seconds(2.0)
 		await shot("payday_%d" % i)
 	note("FAIL PO-5.payday: never got back to the hub; buttons %s" % [visible_buttons()])
 	return 1
+
+
+## The Payday card pick: three unlabelled card buttons and a disabled Continue. Click the first card like
+## a player would; the reveal then enables Continue.
+func _pick_payday_card() -> bool:
+	for n: Node in get_tree().root.find_children("*", "Button", true, false):
+		var b: Button = n as Button
+		if b.is_visible_in_tree() and not b.disabled and _button_label(b).strip_edges() == "":
+			note("payday: picking a card")
+			await click_control(b)
+			return true
+	return false
 
 
 ## PO-5.1: the game owns the mouse (MouseCapture, D-087). Like a player: wait for the capture, else click
@@ -233,6 +250,7 @@ func find_button(text: String, root: Node = null) -> Button:
 
 ## Clicks like a person: mouse motion to the control's centre, press, release (window coordinates).
 func click_control(c: Control) -> void:
+	var label: String = (c as Button).text if c is Button else String(c.name)  # c may be freed by the click
 	var canvas_pos: Vector2 = c.get_global_rect().get_center()
 	var win_pos: Vector2 = c.get_viewport().get_final_transform() * canvas_pos
 	var mm: InputEventMouseMotion = InputEventMouseMotion.new()
@@ -248,7 +266,7 @@ func click_control(c: Control) -> void:
 		mb.global_position = win_pos
 		Input.parse_input_event(mb)
 		await get_tree().process_frame
-	note("click '%s' at %s" % [c.name if not (c is Button) else (c as Button).text, win_pos])
+	note("click '%s' at %s" % [label, win_pos])
 
 
 func click_text(text: String, timeout_s: float = 20.0) -> bool:
@@ -340,7 +358,7 @@ func note(msg: String) -> void:
 
 func _finish(code: int) -> void:
 	note("RESULT %s (code %d) flow=%s heist=%s seed=%d" % ["PASS" if code == 0 else "FAIL", code, runner_flow,
-		heist_name, rt.run_seed if rt != null and is_instance_valid(rt) else -1])
+		heist_name, run_seed])
 	RenderingServer.render_loop_enabled = true
 	var f: FileAccess = FileAccess.open("%s/po5_log.txt" % runner_out, FileAccess.WRITE)
 	if f != null:

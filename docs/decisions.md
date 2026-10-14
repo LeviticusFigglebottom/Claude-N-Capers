@@ -761,3 +761,36 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   jump-velocity mult 1 / 1 / 0.5 / 0.25; throw distance 4 / 4 / 2 / 1.2 m; head-bob scales with the carry speed mult.
 - ENV P: CrewTweak + jump mult + head-bob; ENV A: S10 tests and any heist pacing that assumed the old speeds (escape timers,
   objective time budgets in e2e flows). Skills that override carry speed (PD2 does this) stay data-driven.
+
+## D-103 — 2026-10-14 — Next heist: Gallery Night; build plan and rulings
+- After the freeze-lift gates (next_heist.md §2), the next heist built is **Gallery Night** (G0 approved, D-075). Build plan,
+  audit and rulings: `docs/process/next_heist.md` §3–§6 (NpcVisuals tag priority over EnemyDef, QC-56 dropped, no
+  stealth-only fail, marker_tags/viewmodel_lit/D-099/D-102 apply, painting_study $700, ENV A system groundwork first).
+
+## D-104 — 2026-10-14 — ENV C re-activated; ENV D at freeze-lift (product owner approved the lead's recommendation)
+- **ENV C (Worlds & Art)** runs again as a cloud session now. Until the freeze-lift gates pass it does non-content groundwork
+  for Gallery Night: the floor-plan generator, validate_level `camera_spine` / `camera_screen` (D-075), a slope/parapet rule
+  (no walkable slope < 50° outside the play mesh, P's review), a `viewmodel_lit` light check (D-095), and fixing the PP-C-1
+  walk test (unmasked LOCKPICK doors, 0 m legs after teleports). Then the Gallery Night greybox (G1) → G2 when the freeze
+  lifts. ENV A keeps co-ownership of existing heists' mission scripts / marker_tags / small fixes (D-086).
+- **ENV D (Characters)** is dispatched when the freeze lifts and there is cast/animation work (Gallery Night cast is already
+  delivered; remaining: admin PA look, any gala ambient clips missing, parked FP left-hand cup).
+- P's Gallery Night traversal review (laser gaps, balcony throws, Mews dock height, pool exit, roof slopes, ladders, door
+  widths, stair ramps, stanchions, broken windows) is adopted as G1 build requirements (next_heist.md §7).
+
+## D-105 — 2026-10-14 — Product-owner polish pass: impact, effects, doors, dressing (cross-heist)
+- Product owner: doors snap (confirmed: door.gd sets leaf rotation instantly), gaps between doors and walls and other small
+  clipping / empty-space gaps, gunplay lacks impact (no muzzle flash/tracers; the game has **no particle effects at all**),
+  no material debris, and odd prop placement (two chairs facing each other in front of a desk).
+- New contract `impact_fx.md` 1.0: surface ids (C), `EventBus.shot_fx` / `explosion_fx` local presentation events on every
+  peer (A), VFX library — impact debris + decals + audio per surface, tracers, muzzle flash, shells (C), first-person
+  muzzle/tracer/shells (P), effects-quality option (B), door swing animation (A), `door_frame_gap` validate_level check (C).
+- Dressing: C audits all four maps for implausible prop arrangements (furniture facing, chairs vs desks/tables, blocked
+  doors, floating/clipping) with a levelcheck `furniture_logic` rule where it can be automated, plus screenshot review.
+- This polish is cross-heist (lives in kits/systems), so Gallery Night inherits it. It runs in parallel with the
+  freeze-lift gates; it does not lift the freeze.
+
+## D-106 — 2026-10-14 — HUD reload indicator; armory stats with skills
+- ui_hud 1.12: `reloading` / `reload_progress` (A provides, B draws).
+- Armory/loadout stats show values **with the player's skills and perk deck applied** by default (PD2 shows skill-boosted
+  stats), with a toggle to compare base values; boosted numbers are marked (B, through LoadoutResolver, no new rules).

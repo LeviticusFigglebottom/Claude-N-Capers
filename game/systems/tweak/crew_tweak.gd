@@ -55,6 +55,16 @@ extends Resource
 @export var head_bob_sprint_mult: float = 1.6
 @export var head_bob_ads_mult: float = 0.15
 @export var head_bob_rate: float = 6.0
+## PO-4 (PD2 melee hit shaker): camera-only punch when the local human's melee hit lands: pitch down / roll kick
+## through a critically damped spring of melee_punch_hz (peak at 1/w s). 0 = off.
+@export var melee_punch_pitch_deg: float = 1.6
+@export var melee_punch_roll_deg: float = 1.0
+@export var melee_punch_hz: float = 4.0
+## D-102 lane (PD2 playercarry.lua target_tilt -5, fpcameraplayerbase.lua math.step 150 deg/s): carrying a bag
+## rolls the local human's camera by carry_tilt_deg, easing at carry_tilt_rate_dps, and back on drop. Camera only;
+## off with Reduce Motion. 0 = off.
+@export var carry_tilt_deg: float = -5.0
+@export var carry_tilt_rate_dps: float = 150.0
 ## PO-4 (PD2): camera-only landing dip of the local human. A landing faster than land_dip_min_mps kicks the eye down
 ## by (impact - min) x land_dip_gain (m per m/s, capped at land_dip_max_m) through a critically damped spring of
 ## land_dip_hz, so it dips and recovers in ~0.3 s. 0 gain = off. Gameplay position is unaffected.
@@ -106,11 +116,15 @@ extends Resource
 @export var cable_ties_base: int = 2
 
 @export_group("Bags (S10.1)")
-## Index by Enums.LootWeight.
-@export var bag_speed_mult: PackedFloat32Array = PackedFloat32Array([0.95, 0.85, 0.75, 0.6])
-@export var bag_can_sprint: Array[bool] = [true, true, false, false]
-@export var bag_can_jump: Array[bool] = [true, false, false, false]
-@export var bag_throw_distance_m: PackedFloat32Array = PackedFloat32Array([4.0, 3.5, 3.0, 2.0])
+## Index by Enums.LootWeight. D-102: PD2 carrytweakdata.lua types light / medium / heavy / very_heavy.
+## move_speed_modifier (also scales the head bob, playercarry.lua _get_walk_headbob).
+@export var bag_speed_mult: PackedFloat32Array = PackedFloat32Array([1.0, 0.75, 0.5, 0.25])
+## can_run.
+@export var bag_can_sprint: Array[bool] = [true, false, false, false]
+## jump_modifier: jump velocity x this (playercarry.lua _perform_jump); jumping is never blocked by a bag.
+@export var bag_jump_mult: PackedFloat32Array = PackedFloat32Array([1.0, 1.0, 0.5, 0.25])
+## throw_distance_multiplier 1 / 1 / 0.5 / 0.3 of a 4 m base.
+@export var bag_throw_distance_m: PackedFloat32Array = PackedFloat32Array([4.0, 4.0, 2.0, 1.2])
 
 @export_group("Net")
 @export var intent_send_hz: float = 30.0
