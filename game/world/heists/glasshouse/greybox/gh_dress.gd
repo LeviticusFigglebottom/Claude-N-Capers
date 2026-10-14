@@ -288,9 +288,38 @@ func _interior_room(r: Array) -> Array:
 		_room_door(room, boxes, u, d)
 	for w: Array in L.WINDOWS:
 		_room_window(room, u, String(w[1]), w[2], float(w[3]))
+	# The break-room door-window is walked through: dress it like a door (1.2 m clear in front).
 	var bw: Dictionary = L.BREAKROOM_WINDOW
-	_room_window(room, u, String(bw["kit"]), bw["pos"], float(bw["yaw"]))
+	var bpos: Vector3 = bw["pos"]
+	if absf(bpos.y - u.position.y) < 0.5 and _on_edge(u, bpos, absf(sin(deg_to_rad(float(bw["yaw"])))) < 0.5):
+		var bsz: Vector2 = _window_size(String(bw["kit"]))
+		room.add_door(bpos, bsz.x, 1.2, bsz.y, 0.06)
+	_room_gaps(room, u)
 	return [room, clear]
+
+
+## Interior sides with no wall over a stretch (the stair void off the upper corridor) are full-height
+## openings, so nothing is hung on or backed against thin air (PO-9: U4 picture over the stair).
+func _room_gaps(room: KitRoom, u: AABB) -> void:
+	for axis: String in ["x", "z"]:
+		var lo: float = u.position.x if axis == "x" else u.position.z
+		var hi: float = u.end.x if axis == "x" else u.end.z
+		for fixed: float in ([u.position.z, u.end.z] if axis == "x" else [u.position.x, u.end.x]):
+			if (OUTLINE_Z if axis == "x" else OUTLINE_X).any(func(o: float) -> bool: return absf(o - fixed) < 0.01):
+				continue
+			var segs: Array[Vector2] = []
+			for w: Array in L.INT_WALLS:
+				if String(w[1]) == axis and absf(float(w[2]) - fixed) < 0.06 \
+						and float(w[5]) <= u.position.y + 0.1 and float(w[6]) >= u.position.y + 2.0:
+					segs.append(Vector2(float(w[3]), float(w[4])))
+			segs.sort_custom(func(a: Vector2, b: Vector2) -> bool: return a.x < b.x)
+			var cur: float = lo
+			for s: Vector2 in segs + [Vector2(hi, hi)]:
+				if s.x - cur >= 0.3:
+					var c: float = (cur + minf(s.x, hi)) * 0.5
+					var pos: Vector3 = Vector3(c, u.position.y, fixed) if axis == "x" else Vector3(fixed, u.position.y, c)
+					room.add_window(pos, minf(s.x, hi) - cur, 0.0, u.size.y)
+				cur = maxf(cur, s.y)
 
 
 func _inset_x(x: float) -> float:
@@ -353,8 +382,8 @@ func _door_width(asset: String) -> float:
 
 
 func _window_size(piece: String) -> Vector2:
-	var w: float = 3.0 if piece.contains("w300") else 1.0
-	var h: float = 2.4 if piece.contains("h240") else (0.6 if piece.contains("h60") else 1.2)
+	var w: float = 3.0 if piece.contains("w300") else (1.2 if piece.contains("w120") else 1.0)
+	var h: float = 2.4 if piece.contains("h240") else (0.6 if piece.contains("h60") else (2.1 if piece.contains("h210") else 1.2))
 	return Vector2(w, h)
 
 

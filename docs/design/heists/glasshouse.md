@@ -287,7 +287,10 @@ and the salon door. The window to move behind the counter opens when both are at
    or picked (8 s, in view of the U2 window if a guard is pausing there). Then G1 → G4 → G2. When
    `xl_delivery` rolls, 2 extra bags sit right by the door. Risk: the `alley_smoker` guard.
 3. **Upper (fire escape):** climb the fire-escape ladder (alley) → break-room window (only when
-   `ow_breakroom_open`; latched means glass breaks, noise 15 m) → U1 → keycard upstairs (U2/U6/U1) →
+   `ow_breakroom_open`; latched means glass breaks, noise 15 m) → U1. The window is a walk-through
+   door-window (PO-5): sill flush with the landing and the U1 floor, clear opening 1.09 × 2.05 m,
+   full-height sash; crew, bags and pathing agents pass once it is open or broken (prefab `walkable`
+   NavLink), never while it is shut. From U1 → keycard upstairs (U2/U6/U1) →
    stair → G4 → G2. Risk: `rover_upper` and the admin clerk.
 
 Pager budget: Routine 2 guards → ≤ 2 pagers if you kill every guard. Brutal 3 → ≤ 3. In P2 the

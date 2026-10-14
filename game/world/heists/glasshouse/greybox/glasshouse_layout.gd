@@ -23,7 +23,7 @@ const EXT_WALLS: Array = [
 	["ExtNorth", "x", 0.0, -0.2, 18.2, [
 		[2.9, 4.1, 0.0, 2.2],        # back door (service 1.1 m leaf) G1 -> alley
 		[7.75, 8.75, 1.8, 3.0],      # G2 workshop high barred window
-		[1.75, 2.75, 5.1, 6.3],      # U1 break-room window (fire-escape landing)
+		[1.65, 2.85, UPPER, 6.3],    # U1 break-room door-window (fire-escape landing, walk-through)
 		[7.25, 8.25, 5.1, 6.3],      # U2 security office window (alley + back door)
 		[11.5, 12.5, 5.7, 6.9],      # U3 high frosted window
 	]],
@@ -132,8 +132,10 @@ const WINDOWS: Array = [
 	["StockEastA", "arch_window_w100_h120", Vector3(18.0, 5.1, 8.4), -90.0, false],
 	["StockEastB", "arch_window_w100_h120", Vector3(18.0, 5.1, 9.6), -90.0, false],
 ]
-## Break-room window (U1, variable `open_window`): built inside the variant slots.
-const BREAKROOM_WINDOW: Dictionary = {"kit": "arch_window_w100_h120", "pos": Vector3(2.25, 5.1, 0.0), "yaw": 0.0}
+## Break-room window (U1, variable `open_window`): built inside the variant slots. A walk-through
+## door-window (PO-5): sill flush with the U1 floor and the landing (both UPPER), clear opening
+## 1.09 x 2.05 m; the prefab is `walkable` (its own NavLink, live while open or broken).
+const BREAKROOM_WINDOW: Dictionary = {"kit": "arch_window_w120_h210", "pos": Vector3(2.25, UPPER, 0.0), "yaw": 0.0}
 
 ## Doors: [name, visual asset (world/props/door), origin (bottom-centre of the opening on the wall line), yaw_deg, lock,
 ## swing, objective_tag, metas]. Front (-Z, UsePoint side) is the corridor / outside side; INWARD
@@ -323,13 +325,22 @@ const ANCHORS: Array = [
 	# one task chair per desk (G2 review: the kit seated both chairs at the bookkeeping desk, so the
 	# sales-admin monitor had no chair to face)
 	["U5", "ChairBookkeeping", "prop_chair_office", Vector3(1.6, UPPER, 8.3), 180.0, {"faces_anchor": "DeskBookkeeping"}],
-	["U5", "ChairSalesAdmin", "prop_chair_office", Vector3(4.2, UPPER, 8.3), 180.0, {"faces_anchor": "DeskSalesAdmin"}],
+	# PO-9: pushed back from the desk (as if just stood up), out of the user spots of PhoneAdmin and the
+	# code_admin note (UsePoints x 4.6 / 3.7, z 8.15); it stood in the phone's
+	["U5", "ChairSalesAdmin", "prop_chair_office", Vector3(4.15, UPPER, 7.65), 180.0, {"faces_anchor": "DeskSalesAdmin"}],
 	["U5", "AppraisalBench", "prop_workbench", Vector3(5.8, UPPER, 11.39), 0.0, {}],
 	["U5", "FileCabinets", "prop_file_cabinet", Vector3(6.563, UPPER, 7.8), 90.0, {}],
 	# U6 manager
-	["U6", "ManagerDesk", "prop_desk_exec", Vector3(9.5, UPPER, 9.0), 0.0, {}],
+	# PO-9: turned 180 so the manager (knee hole = the drawer side) faces ManagerDoor (z 6.0), back to the windows
+	["U6", "ManagerDesk", "prop_desk_exec", Vector3(9.5, UPPER, 9.0), 180.0, {}],
 	["U6", "Credenza", "prop_credenza", Vector3(7.347, UPPER, 9.5), -90.0, {}],
-	["U6", "VisitorChair", "prop_chair_visitor", Vector3(10.15, UPPER, 8.0), 147.0, {"faces_anchor": "ManagerDesk"}],
+	# PO-9: the manager's chair on the knee-hole side, rolled out to the east end (the Manager NPC stands at
+	# the desk on the phone, 9.5 / 9.85); two visitor chairs across the desk (the modesty panel side,
+	# between desk and door) facing it, clear of the kc_manager UsePoint (9.2, 8.05). It was one visitor
+	# chair on the user side, facing the drawers.
+	["U6", "ManagerChair", "prop_chair_office", Vector3(10.15, UPPER, 9.95), 34.0, {"faces_anchor": "ManagerDesk"}],
+	["U6", "VisitorChairA", "prop_chair_visitor", Vector3(8.65, UPPER, 8.2), -150.0, {"faces_anchor": "ManagerDesk"}],
+	["U6", "VisitorChairB", "prop_chair_visitor", Vector3(10.35, UPPER, 8.2), 150.0, {"faces_anchor": "ManagerDesk"}],
 	["U6", "Bookshelf", "prop_bookshelf", Vector3(11.713, UPPER, 9.0), 90.0, {}],
 	# U7 stock / archive: two free-standing shelf rows (aisle between them)
 	["U7", "PackingBench", "prop_packing_bench", Vector3(15.4, UPPER, 6.492), 180.0, {}],

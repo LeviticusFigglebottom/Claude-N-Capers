@@ -157,11 +157,17 @@ func chain_grid() -> void:
 		c.set_focus_neighbor(SIDE_LEFT, c.get_path_to(cards[0]))
 	back_button.set_focus_neighbor(SIDE_TOP, back_button.get_path_to(cards[n - 1]))
 	back_button.set_focus_neighbor(SIDE_BOTTOM, back_button.get_path_to(cards[0]))
-	# Quick Play sits bottom right: Main Menu <-> Continue, Options above it.
-	back_button.set_focus_neighbor(SIDE_RIGHT, back_button.get_path_to(continue_button))
+	_wire_continue()
+
+
+## Quick Play sits bottom right: Main Menu <-> Continue, Options above it. Linked only while Continue shows:
+## a hidden explicit neighbour traps the d-pad (gate82 class, test_menu_reach).
+func _wire_continue() -> void:
+	var on: bool = continue_button.visible
+	back_button.set_focus_neighbor(SIDE_RIGHT, back_button.get_path_to(continue_button) if on else NodePath())
 	continue_button.set_focus_neighbor(SIDE_LEFT, continue_button.get_path_to(back_button))
 	continue_button.set_focus_neighbor(SIDE_TOP, continue_button.get_path_to(options_button))
-	options_button.set_focus_neighbor(SIDE_BOTTOM, options_button.get_path_to(continue_button))
+	options_button.set_focus_neighbor(SIDE_BOTTOM, options_button.get_path_to(continue_button) if on else NodePath())
 
 
 func _refresh_continue(p: PlayerProfile) -> void:
@@ -171,6 +177,8 @@ func _refresh_continue(p: PlayerProfile) -> void:
 	continue_button.visible = not job.is_empty()
 	if not job.is_empty():
 		continue_button.text = QuickPlay.label(job)
+	if back_button != null and options_button != null:
+		_wire_continue()
 
 
 func _build_header() -> HBoxContainer:

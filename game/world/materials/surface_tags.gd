@@ -180,7 +180,8 @@ static func _best(votes: Dictionary) -> StringName:
 	var best: StringName = &""
 	var best_w: int = 0
 	var keys: Array = votes.keys()
-	keys.sort()
+	# alphabetical: sort() orders StringNames by pointer, so ties broke differently between runs (PO-9)
+	keys.sort_custom(func(a: Variant, b: Variant) -> bool: return str(a) < str(b))
 	for k: Variant in keys:
 		if int(votes[k]) > best_w:
 			best_w = int(votes[k])

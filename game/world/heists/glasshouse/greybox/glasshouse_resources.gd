@@ -212,3 +212,12 @@ static func replace_refs(line: String, rx: RegEx, ids: Dictionary, prefix: Strin
 		out += line.substr(last, m.get_start() - last) + rep
 		last = m.get_end()
 	return out + line.substr(last)
+
+
+## Output scene: `default_path`, or `-- --out=<path>` (game/tests/c/test_generator_determinism.gd builds
+## the map twice into scratch files and compares them byte for byte; def / variants still go to their paths).
+static func scene_out(default_path: String) -> String:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--out="):
+			return a.trim_prefix("--out=")
+	return default_path

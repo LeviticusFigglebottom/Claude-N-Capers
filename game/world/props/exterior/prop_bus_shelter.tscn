@@ -15,6 +15,7 @@ metadata/surface = &"glass"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
 omni_range = 4
 omni_attenuation = 1.2
+layers = 1048577
 light_color = Color(1, 0.851, 0.6902, 1)
 light_energy = 1
 light_size = 0.05
