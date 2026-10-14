@@ -7527,8 +7527,7 @@
   "nodes": [
    "Frame",
    "Glass",
-   "Sash",
-   "SashTrack"
+   "Sash"
   ],
   "place": "none",
   "prefab": "window",
@@ -7564,8 +7563,7 @@
    "Frame",
    "Glass",
    "Sash",
-   "SashFrame",
-   "SashTrack"
+   "SashFrame"
   ],
   "place": "none",
   "prefab": "window",
