@@ -46,3 +46,22 @@ func test_gn_staff_civilian_walks_through_an_authorised_lockpick_door() -> void:
 	door.relock(Door.Lock.BARRED)
 	await wait_physics_frames(1)
 	assert_false(door.can_npc_open(curator), "BARRED: staff cannot open it")
+
+
+func test_gn_vault_door_authorises_only_listed_tags() -> void:
+	await _launch()
+	var plain: Door = ATestMaps.add_prefab(_rt, "door", Vector3(8, 0, 0), func(p: GameplayPrefab) -> void:
+		(p as Door).lock = Door.Lock.VAULT) as Door
+	var courier_door: Door = ATestMaps.add_prefab(_rt, "door", Vector3(-8, 0, 0), func(p: GameplayPrefab) -> void:
+		(p as Door).lock = Door.Lock.VAULT
+		(p as Door).npc_authorized_tags = [&"guard_vaultline"] as Array[StringName]) as Door
+	await wait_physics_frames(2)
+	var courier: NpcBase = _rt.spawn_npc(&"guard", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -4)),
+		{"tags": [&"guard_vaultline"]})
+	var guard: NpcBase = _rt.spawn_npc(&"guard", Transform3D(Basis.IDENTITY, Vector3(2, 0.05, -4)), {"tags": [&"guard_hall"]})
+	await wait_physics_frames(2)
+	assert_false(plain.can_npc_open(courier), "VAULT without tags: nobody (default)")
+	assert_false((plain.get_node("NavLink") as NavigationLink3D).enabled, "and no nav link")
+	assert_true(courier_door.can_npc_open(courier), "VAULT with guard_vaultline listed: the courier")
+	assert_false(courier_door.can_npc_open(guard), "but not another guard")
+	assert_true((courier_door.get_node("NavLink") as NavigationLink3D).enabled, "linked for the courier")
