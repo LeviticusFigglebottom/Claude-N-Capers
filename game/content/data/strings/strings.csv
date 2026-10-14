@@ -3030,6 +3030,7 @@ heist.gallery_night.briefing,"The Halberd Gallery, Aldous Parade at Wexley Stree
 music.gallery_night.name,Laylight
 heist.gallery_night.briefing_loud,"Argus locks the gallery down. Hack the server, drill the art-store vault, then hold until the escape arrives."
 objective.gallery_night.casing,Case the gala
+objective.gallery_night.casing_last_call,Gala's over. Stay out of sight
 objective.gallery_night.find_canvases,Find the listed canvases ({found}/4)
 objective.gallery_night.keycard,Get a keycard
 objective.gallery_night.server_code,Find the Argus code
