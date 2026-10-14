@@ -4,10 +4,10 @@
 ## (`loot_spawn`, B5 objective_tags canvas_*), studies, keycards, code notes, the Argus hack terminal, keypad and
 ## readers (TR, AS vault, LD art door), the drill points, cameras C1-C14 (layouts under cam_a/b/c; C11 and C14 always
 ## live, B6) with the partition screens, the TR laser grid, the CO safe, the consignment lockers, small loot, phones,
-## alarm buttons, the Mews bins, both ladders and the escape / secure zones. Visuals come from the prop catalog where it
-## has one (camera, reader, keypad, phone, alarm button, safe-less items, the van, ladders); everything else keeps the
-## prefab's placeholder (the ENV D / prop brief lists them: canvases, studies, wall safe, deposit boxes, the 9 m caged
-## ladder, the limo, the shutters, the vitrines' sketchbooks). Greybox support boxes (desks, counters, the bar, the
+## alarm buttons, the Mews bins, both ladders, the art lift, the lockdown shutters and the escape / secure zones. Visuals
+## come from the prop catalog (GN-C2: the canvases and studies, the wall safe, the consignment boxes, the caged ladder,
+## the limo, the shutters, the areaway grate, the art-lift car; the AS rack screens are catalog dressing under Props);
+## the vitrines' sketchbooks keep the prefab placeholder. Greybox support boxes (desks, counters, the bar, the
 ## key cabinet, the partition screens) live under Props with meta kind / support. Design: gallery_night.md (B2, B5,
 ## B6; Loot path; Sightlines; Escape).
 extends "res://world/heists/gallery_night/greybox/gn_gameplay.gd"
@@ -37,8 +37,28 @@ const CANVAS_LOOT: Dictionary = {
 }
 const STUDY_LOOT: StringName = &"loot.painting_study"
 const SMALL_LOOT: StringName = &"loot.small_valuables"
-## Wall-hung loot stands off its slot anchor by half the placeholder's depth (rehearsal F2).
-const HUNG_OFFSET: float = 0.2
+## Slot-style anchors stand this far off the wall face; a wall-hung canvas (GN-C2 visual, back-centre pivot) is mounted
+## on the face with its centre HANG_Y above the floor (studies STUDY_HANG_Y).
+const ANCHOR_OFF: float = 0.1
+const HANG_Y: float = 1.55
+const STUDY_HANG_Y: float = 1.5
+## Canvas visual per list group (prop_canvas_<pid>); studies cycle prop_canvas_study1..8.
+const CANVAS_PID: Dictionary = {"centrepiece": "lantern", "canvas_orchard": "orchard", "canvas_widow": "widow",
+	"canvas_saint": "saint"}
+const STUDY_VISUALS: int = 8
+## Floor-standing slot visuals (the rest hang on a wall or a rack screen).
+const SLOT_VISUAL: Dictionary = {"widow_conservation": "prop_canvas_widow_easel",
+	"orchard_quarantine": "prop_canvas_orchard_crate"}
+## AS pull-out painting screens (plan [==], 12): 3 m screens along X, columns x / rows z (prop_art_rack_screen, 8 cm
+## thick, 2.7 m); canvases hang on a screen face (back-centre pivot RACK_HANG_Y over the floor).
+const RACK_COLS: Array[float] = [15.5, 21.5, 27.5]
+const RACK_ROWS: Array[float] = [11.0, 13.0, 15.0, 17.0]
+const RACK_HALF_T: float = 0.04
+const RACK_HANG_Y: float = 1.45
+## Rack spots [column index, row index, face (+1 south / -1 north), x offset along the screen] for the slot canvases.
+const SLOT_RACK: Dictionary = {"cp_store": [1, 3, 1, -0.6], "saint_store": [2, 2, 1, -1.0]}
+## Hung slots whose anchor is not ANCHOR_OFF off the wall face (the landing wall, the EB donor wall, the TR south wall).
+const SLOT_ANCHOR_OFF: Dictionary = {"cp_landing": 0.15, "orchard_benefactors": 0.15, "cp_treasury": 0.2}
 ## Cameras (Sightlines table; B6): id -> [mount point (pivot on the wall face / ceiling), yaw (front -Z), mount].
 const CAMERA_MOUNTS: Dictionary = {
 	"C1": [Vector3(22.0, 3.2, 29.8), 0.0, "wall"],
@@ -47,7 +67,7 @@ const CAMERA_MOUNTS: Dictionary = {
 	"C4": [Vector3(43.8, 3.2, 23.0), 90.0, "wall"],
 	"C5": [Vector3(3.25, 2.8, 7.0), -90.0, "wall"],
 	"C6": [Vector3(32.1, 3.2, 0.8), -90.0, "wall"],
-	"C7": [Vector3(35.925, 3.2, -1.0), 90.0, "wall"],
+	"C7": [Vector3(35.925, 3.2, -1.15), 90.0, "wall"],
 	"C8": [Vector3(-0.2, 3.0, 9.0), 90.0, "wall"],
 	"C9": [Vector3(11.9, 8.6, 17.5), 90.0, "wall"],
 	"C10": [Vector3(32.6, 8.6, 12.1), 180.0, "wall"],
@@ -56,8 +76,9 @@ const CAMERA_MOUNTS: Dictionary = {
 	"C13": [Vector3(3.25, 8.2, 7.0), -90.0, "wall"],
 	"C14": [Vector3(31.8, -1.0, 8.8), 90.0, "wall"],
 }
-## C7's pole on the Mews at the LD roller door (the camera's wall).
-const C7_POLE: Vector3 = Vector3(36.0, 0.0, -1.0)
+## C7's pole on the Mews at the LD roller door (the camera's wall); z -1.15 keeps it out of the roller door's 1 m clear
+## zone (GN-C2: the roller is a door prefab now).
+const C7_POLE: Vector3 = Vector3(36.0, 0.0, -1.15)
 ## Studies (`loot.painting_study`, objective_tag study; doc Loot path: 1-2 per gallery): [name, slot-style anchor
 ## (0.1 m off the wall face), yaw (front -Z away from the wall)].
 const STUDIES: Array = [
@@ -69,10 +90,11 @@ const STUDIES: Array = [
 	["StudyUG2a", Vector3(4.0, 5.4, 29.7), 0.0], ["StudyUG2b", Vector3(8.0, 5.4, 29.7), 0.0],
 	["StudyUG3a", Vector3(35.5, 5.4, 23.8), 0.0], ["StudyUG3b", Vector3(42.5, 5.4, 23.8), 0.0],
 ]
-## AS rack studies (`store_paintings` 4/6/8: the mission keeps the first N, objective_tag store_study).
+## AS rack studies (`store_paintings` 4/6/8: the mission keeps the first N, objective_tag store_study): rack spots
+## (see SLOT_RACK).
 const STORE_STUDIES: Array = [
-	Vector3(14.5, -4.2, 11.0), Vector3(28.5, -4.2, 14.0), Vector3(23.5, -4.2, 11.0), Vector3(17.5, -4.2, 14.0),
-	Vector3(17.5, -4.2, 11.0), Vector3(23.5, -4.2, 14.0), Vector3(28.5, -4.2, 11.0), Vector3(14.5, -4.2, 14.0),
+	[0, 0, 1, -0.6], [2, 1, -1, 0.6], [1, 0, 1, 0.5], [0, 2, -1, 0.0],
+	[0, 1, 1, 0.7], [1, 2, 1, 0.6], [2, 0, 1, 0.0], [1, 1, -1, 0.8],
 ]
 ## Consignment lockers (`deposit_box`, saw; `consignment_lockers` 4/6/8: the mission keeps the first N) on the AS
 ## east wall face (x 31.8): [z, y].
@@ -91,15 +113,26 @@ const ALARMS: Array = [
 	["AlarmSecurity", Vector3(12.1, 1.1, 4.6), -90.0], ["AlarmAttendants", Vector3(35.9, 6.5, 26.0), 90.0],
 	["AlarmVestibule", Vector3(18.1, 1.1, 28.0), -90.0],
 ]
-## The three lockdown shutters (B2: the Calloway arch, the TR door, the LD art door). No shutter kit / 1 m industrial
-## door exists yet (D brief; ENV A relock API, QC-55): tagged markers so `lockdown` resolves (B5 `shutter`).
+## The three lockdown shutters (B2, B5 `shutter`): `door` prefabs, lock NONE and `starts_open` (rolled up); the mission
+## BARs them at the lockdown (relock) and lifts them after the loud hack. The Calloway arch has an in-reveal shutter
+## (industrial_door, 3.0 x 3.6); the TR door and the LD art door keep their own doors and get a face-mounted shutter on
+## the front face (meta kind `shutter`). [name, door row (gn_gameplay DOORS) or "", world origin, yaw, visual, width_m,
+## kind]. GN-C2.
 const SHUTTERS: Array = [
-	["ShutterCalloway", Vector3(12.0, 5.4, 13.0)], ["ShutterTreasury", Vector3(39.0, 5.4, 24.0)],
-	["ShutterArtDoor", Vector3(38.0, 0.0, 12.0)],
+	["ShutterCalloway", "", Vector3(12.0, 5.4, 13.0), 90.0, "prop_door_shutter_steel_arch_w300_h360", 3.0,
+		"industrial_door"],
+	["ShutterTreasury", "TreasuryDoor", Vector3.ZERO, 0.0, "prop_door_shutter_steel_face_w120", 1.3, "shutter"],
+	["ShutterArtDoor", "ArtDoorEG", Vector3.ZERO, 0.0, "prop_door_shutter_steel_face_w200", 2.1, "shutter"],
 ]
+## Areaway grate (B2, B4.6; GN-C2): a `door` prefab laid flat over the 2 x 2 m light well, hinged on the east edge,
+## opening up (OUTWARD); origin = the middle of the well's south edge at the grade's mid-depth.
+const GRATE_ORIGIN: Vector3 = Vector3(-3.0, -0.15, 15.0)
+const GRATE_USE: Vector3 = Vector3(-4.7, 0.0, 14.0)
+## Art lift (bag_lift, 4 bags, 10 s; landing 0 = ground): the 2.6 x 5.6 car centred in LF, front (gates) south.
+const ART_LIFT: Vector3 = Vector3(30.0, 0.0, 3.05)
 ## Escape / secure zones (Escape section; Build ruling B5 tags): slot -> [secure pos, secure yaw, escape pos, escape size].
-## E1 van in the Mews at the LD roller door (rear doors east, toward the personnel door); E2 the limo at the portico
-## kerb (the catalog van stands in for the limo until ENV D's limo visual: brief), its boot to the west.
+## E1 van in the Mews at the LD roller door (rear doors east, toward the personnel door); E2 the gala limo at the
+## portico kerb (veh_limo_gala, GN-C2), its open boot to the west.
 const ESCAPES: Dictionary = {
 	"esc_mews": [Vector3(36.5, 0.0, -4.2), -90.0, Vector3(39.0, 0.0, -1.4), Vector3(4.0, 3.0, 2.0)],
 	"esc_parade": [Vector3(26.5, 0.0, 37.6), 90.0, Vector3(21.0, 0.0, 37.6), Vector3(3.6, 3.0, 2.4)],
@@ -142,15 +175,48 @@ func tagged_marker(parent: Node3D, nm: String, pos: Vector3, tag: String, todo: 
 	return placeholder(parent, nm, pos, todo, tag)
 
 
-## A list canvas / study `loot_spawn` at a slot-style anchor: wall-hung ones stand off the wall by HUNG_OFFSET; the
-## UsePoint is USE_POINT_M in front on the anchor's floor.
-func canvas(parent: Node3D, nm: String, anchor: Vector3, yaw: float, loot: StringName, tag: String, hung: bool) -> Node3D:
+## A list canvas / study `loot_spawn` at a slot-style anchor with its GN-C2 visual `vis`: wall-hung ones are mounted on
+## the wall face (ANCHOR_OFF behind the anchor) with their centre `hang` over the floor (meta mount wall); floor ones
+## (easel, crate) stand on the anchor. The UsePoint is USE_POINT_M in front on the anchor's floor.
+func canvas(parent: Node3D, nm: String, anchor: Vector3, yaw: float, loot: StringName, tag: String, hung: bool,
+		vis: String = "", hang: float = HANG_Y, off: float = ANCHOR_OFF) -> Node3D:
 	var f: Vector3 = front_of(yaw)
-	var pos: Vector3 = anchor + f * HUNG_OFFSET if hung else anchor
+	var pos: Vector3 = anchor - f * off + Vector3.UP * hang if hung else anchor
 	var props: Dictionary = {"loot_id": loot, "count": 1, "interaction_time_s": CUT_S}
 	if tag != "":
 		props["objective_tag"] = StringName(tag)
-	return cprefab(parent, "loot_spawn", nm, pos, yaw, "", props, anchor + f * L.USE_POINT_M, {"kind": "loot_spawn"})
+	var metas: Dictionary = {"kind": "loot_spawn"}
+	if hung:
+		metas["mount"] = "wall"
+	return cprefab(parent, "loot_spawn", nm, pos, yaw, vis, props, anchor + f * L.USE_POINT_M, metas)
+
+
+## A canvas hung on an AS rack screen face: spot = [column, row, face (+1 south / -1 north), x offset].
+func rack_canvas(parent: Node3D, nm: String, spot: Array, loot: StringName, tag: String, vis: String) -> Node3D:
+	var side: float = float(spot[2])
+	var face: Vector3 = Vector3(RACK_COLS[int(spot[0])] + float(spot[3]), -4.2, RACK_ROWS[int(spot[1])] + side * RACK_HALF_T)
+	var yaw: float = 180.0 if side > 0.0 else 0.0
+	var props: Dictionary = {"loot_id": loot, "count": 1, "interaction_time_s": CUT_S}
+	if tag != "":
+		props["objective_tag"] = StringName(tag)
+	return cprefab(parent, "loot_spawn", nm, face + Vector3.UP * RACK_HANG_Y, yaw, vis, props,
+		face + front_of(yaw) * L.USE_POINT_M, {"kind": "loot_spawn", "mount": "wall"})
+
+
+static func study_visual(i: int) -> String:
+	return "prop_canvas_study%d" % (i % STUDY_VISUALS + 1)
+
+
+## A catalog dressing prop (wrapper scene: metas kind / support from the catalog) at a world position / yaw.
+func catalog_prop(parent: Node3D, asset_id: String, nm: String, pos: Vector3, yaw: float) -> Node3D:
+	var ps: PackedScene = _catalog_scene(asset_id)
+	if ps == null:
+		return null
+	var inst: Node3D = ps.instantiate() as Node3D
+	inst.name = nm
+	inst.transform = global_xform(parent).affine_inverse() * Transform3D(yaw_basis(yaw), pos)
+	add(parent, inst)
+	return inst
 
 
 ## Pickup / note resting on a greybox support box: the box (Props) and the prefab on its top.
@@ -194,9 +260,53 @@ func build_devices(gp: Node3D) -> void:
 		var scr: StaticBody3D = _prop_box(n("Props/Greybox"), "PartitionScreen" + String(s[0]), (a + b) * 0.5,
 			Vector3(0.1, 2.4, len_m), 0.0 if along_z else 90.0, "partition_screen", false, "wall")
 		scr.set_meta(&"room", String(s[0]))
+	_build_shutters(n("Gameplay/Doors"))
+	_build_racks(n("Props"))
+
+
+## The B5 `shutter` doors (SHUTTERS): NONE + starts_open, the mission's relock(BARRED) closes them.
+func _build_shutters(parent: Node3D) -> void:
 	for sh: Array in SHUTTERS:
-		tagged_marker(n("Gameplay/Markers"), String(sh[0]), sh[1] as Vector3, "shutter",
-			"lockdown shutter (industrial_door BARRED on alarm; [hack] lifts it): ENV A relock API + ENV D shutter kit")
+		var pos: Vector3 = sh[2] as Vector3
+		var yaw: float = float(sh[3])
+		if String(sh[1]) != "":
+			for d: Array in DOORS:
+				if String(d[0]) == String(sh[1]):
+					var pl: Array = door_place(d)
+					pos = pl[0] as Vector3
+					yaw = float(pl[1])
+		cprefab(parent, "door", String(sh[0]), pos, yaw, String(sh[4]),
+			{"lock": "enum:NONE", "swing": "enum:INWARD", "starts_open": true, "width_m": float(sh[5]),
+				"leaf_surface": &"metal", "objective_tag": &"shutter"}, null, {"kind": String(sh[6]), "swing_side": "back"})
+
+
+## AS painting racks (plan [==]): 12 pull-out mesh screens, static dressing with collision + nav obstruction.
+func _build_racks(parent: Node3D) -> void:
+	var racks: Node3D = add(parent, node3d("ArtRacks")) as Node3D
+	var k: int = 0
+	for z: float in RACK_ROWS:
+		for x: float in RACK_COLS:
+			k += 1
+			catalog_prop(racks, "prop_art_rack_screen", "ArtRack%02d" % k, Vector3(x, -4.2, z), 0.0)
+			obstruct_catalog("prop_art_rack_screen", Vector3(x, -4.2, z), 0.0)
+
+
+## The art lift (bag_lift): landing 0 = ground (the prefab), then the basement and the upper landing (markers at the
+## car floor). Front (the car gates) south toward the BC landing door; the UsePoint inside the car by its panel.
+func build_lift(parent: Node3D) -> void:
+	var lift: Node3D = cprefab(parent, "bag_lift", "ArtLift", ART_LIFT, 180.0, "prop_art_lift_car",
+		{"travel_s": 10.0, "capacity": 4, "car_size_m": Vector3(2.4, 2.4, 5.4), "door_fold": true,
+			"objective_tag": &"art_lift"}, ART_LIFT + Vector3(-0.7, 0.0, 2.2), {"kind": "bag_lift", "walkable": true})
+	if lift == null:
+		return
+	var targets: Array[NodePath] = []
+	for f: String in ["B", "U"]:
+		var m: Marker3D = Marker3D.new()
+		m.name = "ArtLiftLanding" + f
+		m.position = Vector3(0.0, float(L.FFL[f]), 0.0)
+		add(lift, m)
+		targets.append(lift.get_path_to(m))
+	lift.set(&"targets", targets)
 
 
 ## SC: the camera station on the west (WC) wall, the operator's seat (CAMERA_OPERATOR spawn, read by the station and
@@ -266,24 +376,26 @@ func _drill(parent: Node3D, nm: String, pos: Vector3, yaw: float, use: Vector3, 
 ## and the GS till (doc Loot path; small_valuables values on the prefabs, B README "Not data here").
 func _build_loot(_gp: Node3D) -> void:
 	var lt: Node3D = n("Gameplay/Loot")
-	for s: Array in STUDIES:
-		canvas(lt, String(s[0]), s[1] as Vector3, float(s[2]), STUDY_LOOT, "study", true)
+	for i: int in range(STUDIES.size()):
+		var s: Array = STUDIES[i]
+		canvas(lt, String(s[0]), s[1] as Vector3, float(s[2]), STUDY_LOOT, "study", true, study_visual(i), STUDY_HANG_Y)
 	for i: int in range(STORE_STUDIES.size()):
-		canvas(lt, "StoreStudy%d" % (i + 1), STORE_STUDIES[i] as Vector3, 0.0, STUDY_LOOT, "store_study", false)
+		rack_canvas(lt, "StoreStudy%d" % (i + 1), STORE_STUDIES[i], STUDY_LOOT, "store_study", study_visual(i + 3))
 	for j: int in range(LOCKERS.size()):
 		var row: Array = LOCKERS[j]
 		wall_prefab(lt, "deposit_box", "Locker%d" % (j + 1), Vector3(LOCKER_FACE_X, float(row[1]), float(row[0])), 90.0,
-			-4.2, "", {"loot_id": SMALL_LOOT, "value": 900, "objective_tag": &"lockers"}, 0.8)
-	var sp: Vector3 = Vector3(9.54, 5.4, 2.0)
-	var safe: Node3D = cprefab(lt, "safe", "CuratorSafe", sp, 90.0, "",
+			-4.2, "prop_deposit_box_consign", {"loot_id": SMALL_LOOT, "value": 900, "objective_tag": &"lockers"}, 0.8)
+	# CO wall safe (doc room list: `safe` SMALL): bolted to the east wall face (x 9.9), bottom 0.85 m over the floor;
+	# its three valuables stacked on the inside floor
+	var sp: Vector3 = Vector3(9.9, 6.25, 2.0)
+	var safe: Node3D = cprefab(lt, "safe", "CuratorSafe", sp, 90.0, "prop_safe_wall_small",
 		{"size": "enum:SMALL", "methods": [&"drill", &"lockpick", &"saw"] as Array[StringName],
-			"objective_tag": &"curator_safe"}, Vector3(8.6, 5.4, 2.0))
-	obstruct(Transform3D(yaw_basis(90.0), sp), AABB(Vector3(-0.4, 0.0, -0.35), Vector3(0.8, 1.2, 0.7)))
+			"objective_tag": &"curator_safe"}, Vector3(9.0, 5.4, 2.0), {"kind": "safe", "mount": "wall"})
+	obstruct(Transform3D(yaw_basis(90.0), Vector3(sp.x, 5.4, sp.z)), AABB(Vector3(-0.3, 0.0, -0.42), Vector3(0.6, 1.4, 0.42)))
 	if safe != null:
 		for k: int in range(3):
-			var z: float = 1.8 + 0.2 * float(k)
-			cprefab(safe, "small_loot", "CuratorValuables%d" % (k + 1), Vector3(9.54, 5.7, z), 90.0, "prop_cash_stack",
-				{"loot_id": SMALL_LOOT, "value": 1500}, Vector3(8.6, 5.4, z))
+			cprefab(safe, "small_loot", "CuratorValuables%d" % (k + 1), Vector3(9.69, 6.302 + 0.065 * float(k), 2.0), 90.0,
+				"prop_cash_stack", {"loot_id": SMALL_LOOT, "value": 1500}, Vector3(9.0, 5.4, 2.0))
 	for v: Array in [["VitrineW", 37.6], ["VitrineE", 42.3]]:
 		var vp: Vector3 = Vector3(float(v[1]), 5.4, 28.6)
 		cprefab(lt, "display_case", "Treasury" + String(v[0]), vp, 0.0, "prop_display_case_vitrine",
@@ -323,12 +435,14 @@ static func _floor_y(y: float) -> float:
 
 ## Ladders (B4.6, masked only, no bags): the areaway ladder (catalog 4.2 m) on the light well's west wall, PL floor ->
 ## court grade; the caged fire-escape ladder (9.0 m, prefab placeholder until ENV D's caged ladder with the drop section)
-## on the north facade at x 10, Mews -> the roof deck through the parapet opening. Each builds its own NavLink (A3-10).
+## on the north facade at x 10, Mews -> the roof deck through the parapet opening (prop_ladder_caged_h900, stiles 0.2 m
+## off the wall face; the areaway one on the well's west wall face, prop_ladder_wall_h420_flush, stops under the grate).
+## Each builds its own NavLink (A3-10).
 func _build_ladders(_gp: Node3D) -> void:
 	var lad: Node3D = n("Gameplay/Ladders")
-	cprefab(lad, "ladder", "AreawayLadder", Vector3(-3.64, -4.2, 14.0), -90.0, "prop_ladder_fire_escape_h420",
+	cprefab(lad, "ladder", "AreawayLadder", Vector3(-4.0, -4.2, 14.0), -90.0, "prop_ladder_wall_h420_flush",
 		{"height_m": 4.2})
-	cprefab(lad, "ladder", "FireEscapeLadder", Vector3(10.0, 0.0, -0.25), 0.0, "", {"height_m": 9.0})
+	cprefab(lad, "ladder", "FireEscapeLadder", Vector3(10.0, 0.0, -0.4), 0.0, "prop_ladder_caged_h900", {"height_m": 9.0})
 
 
 func security_camera(parent: Node3D, cid: String) -> Node3D:
@@ -346,7 +460,13 @@ func slot_content(vs: VariantSlot, group: String, slot_id: String, row: Array) -
 	var yaw: float = float(row[8])
 	match group:
 		"centrepiece", "canvas_orchard", "canvas_widow", "canvas_saint":
-			canvas(vs, "Canvas", at, yaw, CANVAS_LOOT[group], String(SLOT_TAGS[group]), bool(row[9]))
+			var tag: String = String(SLOT_TAGS[group])
+			if SLOT_RACK.has(slot_id):
+				rack_canvas(vs, "Canvas", SLOT_RACK[slot_id], CANVAS_LOOT[group], tag, "prop_canvas_" + String(CANVAS_PID[group]))
+			else:
+				canvas(vs, "Canvas", at, yaw, CANVAS_LOOT[group], tag, bool(row[9]),
+					String(SLOT_VISUAL.get(slot_id, "prop_canvas_" + String(CANVAS_PID[group]))), HANG_Y,
+					float(SLOT_ANCHOR_OFF.get(slot_id, ANCHOR_OFF)))
 			if slot_id == "cp_landing":
 				_curtain(vs, at.y)
 		"keycard":
@@ -361,6 +481,8 @@ func slot_content(vs: VariantSlot, group: String, slot_id: String, row: Array) -
 			_lasers(vs, slot_id)
 		"escape":
 			_escape(vs, slot_id)
+		"areaway":
+			_grate(vs, slot_id)
 		"security_room_staffed":
 			if slot_id == "sec_staffed":
 				vs.params = {"operator_spawn": "Spawns/CameraOperatorSeat", "station": "Gameplay/Devices/CameraStation"}
@@ -368,7 +490,7 @@ func slot_content(vs: VariantSlot, group: String, slot_id: String, row: Array) -
 			if slot_id == "xl_loan":   # late_loan: the loan crate's 2 extra studies (B README extra_studies)
 				for i: int in range(2):
 					canvas(vs, "LoanStudy%d" % (i + 1), Vector3(37.3 + 1.4 * float(i), 0.0, 9.0), 180.0, STUDY_LOOT,
-						"study", false)
+						"study", false, "prop_canvas_study3_crate")
 		_:
 			return npc_slot(vs, group, slot_id, at, yaw)
 	return true
@@ -470,14 +592,37 @@ func _emitters(parent: Node3D, base: Vector3, span: float) -> StaticBody3D:
 	return em
 
 
+## The areaway grate (`door` prefab laid flat, kind hatch): local X across the well (hinge east), local Y along the
+## ground to the north edge, front -Z up; OUTWARD lifts it. grate_loose: NONE, 3 s lift; grate_padlocked: BARRED, opened
+## by its padlock prefab (lockpick 8 s or saw) on the curb hasp at the west (latch) edge.
+func _grate(vs: VariantSlot, slot_id: String) -> void:
+	var locked: bool = slot_id == "grate_padlocked"
+	var props: Dictionary = {"lock": "enum:" + ("BARRED" if locked else "NONE"), "swing": "enum:OUTWARD", "width_m": 1.92,
+		"leaf_surface": &"metal", "objective_tag": &"areaway_grate"}
+	if not locked:
+		props["interaction_time_s"] = 3.0
+	var g: Node3D = cprefab(vs, "door", "AreawayGrate", GRATE_ORIGIN, 0.0, "prop_door_grate_steel_areaway_w200", props, null,
+		{"kind": "hatch"})
+	if g == null:
+		return
+	var flat: Basis = Basis(Vector3(-1.0, 0.0, 0.0), Vector3(0.0, 0.0, -1.0), Vector3(0.0, -1.0, 0.0))
+	g.transform = global_xform(vs).affine_inverse() * Transform3D(flat, GRATE_ORIGIN)
+	place_use_point(g, GRATE_USE)
+	if locked:
+		prefab(g, "padlock", "Padlock", Vector3(-4.025, 0.012, 14.0), 90.0,
+			{"targets": [NodePath("..")] as Array[NodePath], "interaction_time_s": LOCKPICK_S, "objective_tag": &"padlock",
+				"visual_scene": _catalog_scene("prop_padlock_brass")}, GRATE_USE + Vector3(-0.1, 0.0, 0.0), {"mount": "door"})
+
+
 ## The active escape's SECURE_LOOT (secure_<short>, the vehicle visual) and ESCAPE (escape_<short>, van-type) zones.
 func _escape(vs: VariantSlot, slot_id: String) -> void:
 	var e: Array = ESCAPES[slot_id]
 	var short: String = slot_id.trim_prefix("esc_")
 	var sp: Vector3 = e[0] as Vector3
-	cprefab(vs, "secure_zone", "Secure" + short.capitalize(), sp, float(e[1]), "veh_van_secure",
+	var veh: String = "veh_van_secure" if short == "mews" else "veh_limo_gala"
+	cprefab(vs, "secure_zone", "Secure" + short.capitalize(), sp, float(e[1]), veh,
 		{"objective_tag": StringName("secure_" + short)}, null, {"kind": "vehicle"})
-	obstruct_catalog("veh_van_secure", sp, float(e[1]))
+	obstruct_catalog(veh, sp, float(e[1]))
 	cprefab(vs, "escape_zone", "Escape" + short.capitalize(), e[2] as Vector3, 0.0, ESCAPE_VAN_MARKER,
 		{"objective_tag": StringName("escape_" + short), "escape_type": &"van", "zone_size_m": e[3] as Vector3})
 	vs.params = {"label": "E1" if short == "mews" else "E2", "vehicle": "van" if short == "mews" else "limo"}

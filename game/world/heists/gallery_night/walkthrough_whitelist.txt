@@ -1061,3 +1061,54 @@ PlayerPortico1 Gameplay/Windows/LoggiaWindow4/UsePoint
 PlayerPortico2 Gameplay/Windows/LoggiaWindow4/UsePoint
 PlayerPortico3 Gameplay/Windows/LoggiaWindow4/UsePoint
 PlayerPortico4 Gameplay/Windows/LoggiaWindow4/UsePoint
+
+# GN-C2 (props): the three lockdown shutters (B5 `shutter`, door prefabs since GN-C2: the Calloway arch, the TR door,
+# the LD art door) and the art lift (bag_lift, UsePoint in the car) are walk-to objectives now; the AS rack studies
+# hang on the rack screens (plan [==]). Same plan reasons as above: one service stair (SS, far west) for the basement
+# and the roof deck, one Mews entry at the dock's east end.
+PlayerPortico1 Gameplay/Loot/StoreStudy1
+PlayerPortico1 Gameplay/Loot/StoreStudy1/UsePoint
+PlayerPortico1 Gameplay/Loot/StoreStudy3
+PlayerPortico1 Gameplay/Loot/StoreStudy3/UsePoint
+PlayerPortico1 Gameplay/Loot/StoreStudy5
+PlayerPortico1 Gameplay/Loot/StoreStudy5/UsePoint
+PlayerPortico1 Gameplay/Loot/StoreStudy7
+PlayerPortico1 Gameplay/Loot/StoreStudy7/UsePoint
+PlayerPortico2 Gameplay/Loot/StoreStudy1
+PlayerPortico2 Gameplay/Loot/StoreStudy1/UsePoint
+PlayerPortico2 Gameplay/Loot/StoreStudy3
+PlayerPortico2 Gameplay/Loot/StoreStudy3/UsePoint
+PlayerPortico2 Gameplay/Loot/StoreStudy5
+PlayerPortico2 Gameplay/Loot/StoreStudy5/UsePoint
+PlayerPortico2 Gameplay/Loot/StoreStudy7
+PlayerPortico2 Gameplay/Loot/StoreStudy7/UsePoint
+PlayerPortico3 Gameplay/Loot/StoreStudy3
+PlayerPortico3 Gameplay/Loot/StoreStudy3/UsePoint
+PlayerPortico3 Gameplay/Loot/StoreStudy5
+PlayerPortico3 Gameplay/Loot/StoreStudy5/UsePoint
+PlayerPortico3 Gameplay/Loot/StoreStudy7
+PlayerPortico3 Gameplay/Loot/StoreStudy7/UsePoint
+PlayerPortico4 Gameplay/Loot/StoreStudy3
+PlayerPortico4 Gameplay/Loot/StoreStudy3/UsePoint
+PlayerPortico4 Gameplay/Loot/StoreStudy5
+PlayerPortico4 Gameplay/Loot/StoreStudy5/UsePoint
+PlayerPortico4 Gameplay/Loot/StoreStudy7
+PlayerPortico4 Gameplay/Loot/StoreStudy7/UsePoint
+PlayerRoof1 Gameplay/Doors/ShutterCalloway
+PlayerRoof1 Gameplay/Doors/ShutterCalloway/UsePoint
+PlayerRoof2 Gameplay/Doors/ShutterCalloway
+PlayerRoof2 Gameplay/Doors/ShutterCalloway/UsePoint
+PlayerRoof2 Gameplay/Lifts/ArtLift
+PlayerRoof2 Gameplay/Lifts/ArtLift/UsePoint
+PlayerRoof3 Gameplay/Doors/ShutterCalloway
+PlayerRoof3 Gameplay/Doors/ShutterCalloway/UsePoint
+PlayerRoof3 Gameplay/Lifts/ArtLift
+PlayerRoof3 Gameplay/Lifts/ArtLift/UsePoint
+PlayerRoof4 Gameplay/Doors/ShutterArtDoor
+PlayerRoof4 Gameplay/Doors/ShutterArtDoor/UsePoint
+PlayerRoof4 Gameplay/Doors/ShutterCalloway
+PlayerRoof4 Gameplay/Doors/ShutterCalloway/UsePoint
+PlayerRoof4 Gameplay/Doors/ShutterTreasury
+PlayerRoof4 Gameplay/Doors/ShutterTreasury/UsePoint
+PlayerRoof4 Gameplay/Lifts/ArtLift
+PlayerRoof4 Gameplay/Lifts/ArtLift/UsePoint
