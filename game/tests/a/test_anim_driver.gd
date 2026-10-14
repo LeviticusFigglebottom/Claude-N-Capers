@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## D-041 / characters.md v1.3: AnimDriver picks humanoid clips from NPC / crew state (presentation only).
 ## Uses a small rig built in code (Node3D root + Skeleton3D with HandR/Socket + AnimationPlayer with a
 ## "humanoid" library of empty clips carrying the contract names).
@@ -8,13 +9,17 @@ const LOOPED: Array[StringName] = [
 	&"walk_back", &"aim_rifle", &"aim_pistol", &"kneel_cuffed", &"hands_up", &"cower", &"lie_down", &"tied",
 	&"flee", &"phone_call", &"pager_answer", &"investigate_look", &"smoke", &"lean_wall", &"sit_chair",
 	&"desk_type", &"browse", &"downed", &"tased", &"carry_bag_walk", &"interact_low", &"interact_mid",
-	&"interact_high", &"shield_walk", &"dozer_walk",
+	&"interact_high", &"shield_walk", &"dozer_walk", &"walk_fl", &"walk_fr", &"walk_bl", &"walk_br", &"run_fl",
+	&"run_fr", &"run_bl", &"run_br",
 ]
 const ONCE: Array[StringName] = [
 	&"turn_l", &"turn_r", &"fire_rifle", &"fire_pistol", &"reload_rifle", &"reload_pistol", &"melee",
 	&"death_front", &"death_back", &"hit_react", &"surrender", &"radio_call", &"throw_bag",
 	&"kick_charge", &"kick_hit", &"shield_bang", &"heal_ally", &"death_seated_slump", &"death_seated_fall",
+	&"hit_react_back", &"hit_react_left", &"hit_react_right", &"death_side", &"death_front_b", &"death_back_b",
 ]
+## v1.10 starts / stops: only the start/stop test's rig carries them (the other tests read the plain locomotion).
+const START_STOP: Array[StringName] = [&"walk_start", &"walk_stop", &"run_start", &"run_stop"]
 ## HandL/Socket local transform of the test rig (shield grip).
 const HANDL_SOCKET: Transform3D = Transform3D(Basis(Vector3.UP, 0.3), Vector3(-0.25, 1.1, -0.45))
 const HINT_SCRIPT: String = "extends Node\nvar anim_hint: StringName = &\"idle\"\n"
@@ -222,6 +227,116 @@ func test_seated_deaths() -> void:
 	assert_eq(_drv(old).clip, &"death_front", "no seated clip in the library: the standing death")
 
 
+## v1.10 (D-111 "almost zero animations play"): non-lethal damage plays a hit react picked by where the bullet
+## came from (front / back / left / right), spaced hit_react_min_gap_s apart; a dead body never flinches.
+func test_hit_reacts_from_damage_direction() -> void:
+	var npc: NpcBase = _npc()
+	npc.net_id = 70001
+	var d: AnimDriver = _drv(npc)
+	# Facing -Z. Bullet travel: +Z came from the front, -Z from behind, +X from the left, -X from the right.
+	var cases: Array = [[Vector3(0, 0, 1), &"hit_react"], [Vector3(0, 0, -1), &"hit_react_back"],
+		[Vector3(1, 0, 0), &"hit_react_left"], [Vector3(-1, 0, 0), &"hit_react_right"]]
+	for c: Array in cases:
+		d._last_hit_react_t = -100.0
+		EventBus.damage_applied.emit(npc.net_id, 0, {"direction": c[0], "amount": 12.0, "killed": false})
+		d.tick(0.016)
+		assert_eq(d.clip, c[1], "hit from travel %s" % c[0])
+	d._last_hit_react_t = -100.0
+	EventBus.damage_applied.emit(npc.net_id, 0, {"direction": Vector3(0, 0, 1), "amount": 12.0, "killed": false})
+	var first: float = d._last_hit_react_t
+	EventBus.damage_applied.emit(npc.net_id, 0, {"direction": Vector3(0, 0, -1), "amount": 12.0, "killed": false})
+	assert_eq(d._last_hit_react_t, first, "a second hit inside the gap does not restart the react")
+	EventBus.damage_applied.emit(npc.net_id + 1, 0, {"direction": Vector3(1, 0, 0), "amount": 12.0, "killed": false})
+	assert_eq(d._last_hit_react_t, first, "someone else's damage is ignored")
+
+
+## The server path: NpcBase.take_hit (non-lethal) reaches the driver through damage_applied.
+func test_take_hit_triggers_a_hit_react() -> void:
+	var npc: NpcBase = _npc()
+	npc.net_id = 70011
+	npc.max_health = 200.0
+	npc.health = 200.0
+	var d: AnimDriver = _drv(npc)
+	npc.take_hit({"amount": 10.0, "direction": Vector3(0, 0, -1), "type": Enums.DamageType.BULLET})
+	d.tick(0.016)
+	assert_true(npc.alive, "non-lethal")
+	assert_eq(d.clip, &"hit_react_back", "hit from behind")
+
+
+## v1.10 death variety: a strong side hit falls sideways; front / back deaths use the _b variant for half of the
+## bodies (stable per node name, so every peer agrees).
+func test_death_variety() -> void:
+	var side: NpcBase = _npc()
+	side.last_damage = {"direction": Vector3(1, 0, 0)}
+	side.die({"direction": Vector3(1, 0, 0)})
+	_drv(side).tick(0.016)
+	assert_eq(_drv(side).clip, &"death_side", "side hit")
+	var seen: Dictionary = {}
+	for i: int in range(12):
+		var n: NpcBase = _npc()
+		n.name = "Npc_variety_%d" % i
+		n.last_damage = {"direction": Vector3(0, 0, -1)}
+		n.die({"direction": Vector3(0, 0, -1)})
+		_drv(n).tick(0.016)
+		seen[_drv(n).clip] = true
+	assert_true(seen.has(&"death_front") and seen.has(&"death_front_b"), "both front deaths appear (%s)" % [seen.keys()])
+
+
+## v1.10 starts / stops: setting off straight ahead plays walk_start / run_start over the locomotion, stopping out of
+## a straight walk / run plays walk_stop / run_stop; sideways moves and libraries without the clips get neither.
+func test_walk_run_start_and_stop() -> void:
+	var npc: NpcBase = _npc()
+	var d: AnimDriver = _drv(npc)
+	var lib: AnimationLibrary = d.player.get_animation_library(AnimDriver.LIBRARY)
+	for n: StringName in START_STOP:
+		var a: Animation = Animation.new()
+		a.length = 0.4
+		lib.add_animation(n, a)
+	d.tick(0.016)
+	assert_eq(d.clip, &"idle", "standing")
+	npc.velocity = Vector3(0, 0, -1.6)
+	d.tick(0.016)
+	assert_eq(d.clip, &"walk_start", "sets off: walk_start")
+	d.tick(0.5)
+	assert_eq(d.clip, &"walk", "then the walk cycle")
+	npc.velocity = Vector3.ZERO
+	d.tick(0.016)
+	assert_eq(d.clip, &"walk_stop", "stops: walk_stop")
+	d.tick(0.5)
+	assert_eq(d.clip, &"idle", "then idle")
+	npc.velocity = Vector3(0, 0, -3.5)
+	d.tick(0.016)
+	assert_eq(d.clip, &"run_start", "sets off running: run_start")
+	d.tick(0.5)
+	npc.velocity = Vector3.ZERO
+	d.tick(0.016)
+	assert_eq(d.clip, &"run_stop", "stops running: run_stop")
+	d.tick(0.5)
+	npc.velocity = Vector3(1.2, 0, 0)
+	d.tick(0.016)
+	assert_eq(d.clip, &"strafe_r", "a sideways move gets no start")
+
+
+## v1.10 8-way locomotion: the four diagonals at walk and run speed (straight lines keep the 4-way clips).
+func test_eight_way_locomotion() -> void:
+	var npc: NpcBase = _npc()
+	var d: AnimDriver = _drv(npc)
+	var k: float = sqrt(0.5)
+	var cases: Array = [
+		[Vector3(k, 0, -k) * 1.6, &"walk_fr"], [Vector3(-k, 0, -k) * 1.6, &"walk_fl"],
+		[Vector3(k, 0, k) * 1.3, &"walk_br"], [Vector3(-k, 0, k) * 1.3, &"walk_bl"],
+		[Vector3(k, 0, -k) * 3.5, &"run_fr"], [Vector3(-k, 0, k) * 3.5, &"run_bl"],
+		[Vector3(3.5, 0, 0), &"run_r"], [Vector3(0, 0, -1.6), &"walk"], [Vector3(0, 0, -3.5), &"run"],
+	]
+	for c: Array in cases:
+		npc.velocity = c[0]
+		d.tick(0.016)
+		assert_eq(d.clip, c[1], "v=%s" % c[0])
+	npc.velocity = Vector3(k, 0, -k) * 1.6
+	d.tick(0.016)
+	assert_near(d.player.speed_scale, 1.0, 0.01, "walk_fr runs at walk speed (1.6 m/s)")
+
+
 func test_noop_on_capsule_visual() -> void:
 	var npc: NpcBase = _npc(&"special", false)  # no EnemyDef / role character (NpcVisuals): the capsule stays
 	assert_true(AnimDriver.of(npc) == null, "no driver for the capsule placeholder")
@@ -322,6 +437,7 @@ func test_assembled_fixture_when_present() -> void:
 		return
 	npc.velocity = Vector3(0, 0, -1.6)
 	d.tick(0.016)
+	d.tick(1.0)  # past walk_start (v1.10)
 	assert_eq(String(d.player.current_animation), "humanoid/walk", "real contract visual plays humanoid/walk")
 
 

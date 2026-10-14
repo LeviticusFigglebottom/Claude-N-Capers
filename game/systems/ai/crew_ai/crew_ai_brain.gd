@@ -70,6 +70,8 @@ var _rt: HeistRuntime = null
 var _yaw: float = 0.0
 var _pitch: float = 0.0
 var _following: bool = false
+## Settled at `cover_point` this tick (crouches there).
+var _in_cover: bool = false
 var _path: PackedVector3Array = PackedVector3Array()
 var _path_idx: int = 0
 var _path_goal: Vector3 = Vector3.INF
@@ -259,6 +261,10 @@ func _physics_step(delta: float) -> void:
 			_crew.stealth_hidden = true
 			var wi: CrewIntent = _idle_intent()
 			_move_intent(wi, _personal_space_dir())
+			var wl: CrewController = _pick_leader()
+			if wl != null and wl.masked and not _crew.masked:
+				_crew.set_masked()  # still hidden (stealth_hidden); masked so it can crouch with the leader
+			wi.crouch = wl != null and wl.crouched  # D-111: mirror the leader's crouch while waiting
 			_crew.apply_intent(wi)
 			return
 		# D-014 P4 option: ordered out of the van; detectable like a player, mirrors the leader.
@@ -296,6 +302,7 @@ func _think(delta: float) -> CrewIntent:
 		_interact_ticks = 0
 		return _idle_intent()
 	var i: CrewIntent = CrewIntent.new()
+	_in_cover = false
 	if task == &"revive" and ordered_revive_target() == null:
 		task = &""
 	_tick_scan(delta)
@@ -349,6 +356,8 @@ func _think(delta: float) -> CrewIntent:
 		var local: Vector3 = Basis(Vector3.UP, _yaw).inverse() * wish
 		i.move = Vector2(local.x, -local.z).limit_length(1.0)
 		i.sprint = target_enemy == null and goal_dist > tweak.sprint_beyond_m
+	# D-111 (PD2 bots crouch behind cover): settled at the cover point while loud.
+	i.crouch = _in_cover and mobile and wish.length() <= 0.01 and _rt.went_loud
 	_weapon_controls(i, eye, delta, interacting)
 	return i
 
@@ -432,6 +441,7 @@ func _follow_goal() -> Vector3:
 		mode = Mode.COVER
 		_following = false
 		var at_cover: bool = _flat_dist(_crew.global_position, cover_point.global_position) <= tweak.cover_arrive_m
+		_in_cover = at_cover
 		return Vector3.INF if at_cover else cover_point.global_position
 	mode = Mode.FOLLOW
 	var d: float = _flat_dist(_crew.global_position, leader.global_position)
