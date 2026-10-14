@@ -12,6 +12,10 @@ Owner: LEAD. Goal: the game is practically playable start to finish, proven by a
 ## Issue list (initial, team-built; ids PP-<env>-n)
 | id | owner | issue |
 |---|---|---|
+| PO-6 | A (+C) | **Product owner:** door animations snap (door.gd sets rotation instantly) → swing animation, impact_fx.md §5 |
+| PO-7 | C (+A) | **Product owner:** gaps between doors and walls, small clipping / empty-space gaps → door_frame_gap check + map fixes |
+| PO-8 | C, A, P, B | **Product owner:** gunplay not impactful (no muzzle flash, tracers, debris; no particles in the game) → impact_fx.md |
+| PO-9 | C | **Product owner:** unnatural prop placement (two chairs facing each other in front of a desk) → dressing audit + furniture_logic rule |
 | PO-1 | P (+A) | **Product owner:** cannot leave casing mode. Reproduce windowed: hold G (mask_up). Suspects: a focused/visible Control blocking all polled gameplay input (8b770a5a rule), mask-up gated on something else, no on-screen prompt. Fix + windowed test + HUD prompt (B) |
 | PO-2 | P (+B) | **Product owner:** the game never captures the mouse, so you cannot turn. Root cause: nothing writes MOUSE_MODE_CAPTURED in a heist (only safehouse_host); tests fake it (test_assume_captured). Fix per input_focus.md (D-087) |
 | PO-3 | P (+A) | **Product owner:** cannot walk up a slight bump in the road. Step-up landed in round 35 (P1-01) but was only tested on test geometry: walk every road/curb/kerb/ramp/threshold on all 4 heists windowed; fix in controller (P) or collision (A, D-086) |

@@ -9,9 +9,11 @@ Read it at the start of every work session.
 | LEAD | session_014E3p2DmSYTneJjytGwKKfc | claude/dreamy-hamilton-pc7vck | merges, rulings, contracts, gates |
 | ENV P | session_01FYVVhNtxKAoQmyfnZ9rb3t | env/p-play | PO-2 mouse capture, PO-1 casing exit, PO-3 bumps |
 | ENV B | session_0159qCTRV9CsDQs465nGSW28 | env/b-content | PO-4 UI/UX overhaul (style spec first) |
+| ENV C | session_013uMHd1Npqkx1reY1pJMaye | env/c-worlds | D-104: levelcheck groundwork, PP-C-1 walk test fix, Gallery Night plan/doc; greybox at freeze-lift |
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 02:40: **round 69 ON ORIGIN**: env/p-play (D-102 PD2 bag carry), env/a-core (s10 tests for D-102, SL/DB marker lane in progress), env/b-content. a carry tests 43/0, p 88/0, P1 slice 10/0 (slice_b still running at push). D-104 ENV C re-activated; Gallery Night §7 requirements.
 - 2026-10-14 02:20: **round 68 ON ORIGIN**: env/b-content (failure paths with fail reasons + "what you lost", Quick Play Continue, colour-blind palette roles for all new widgets), env/p-play (melee punch, spring fix), env/a-core (stealth harness WIP). b targeted + p 84/0 green.
 - 2026-10-14 02:05: P PO-3 snag probe re-run on current maps: 0 snags on all 4 heists.
 - 2026-10-14 02:00: **round 67 ON ORIGIN**: env/a-core (ui_hud 1.9-1.11 HUD-model fields live: local_net_id, revive_progress/reviver_slot, crew-row bleedout_s/revive_progress; qb_b6_02 gate red FIXED; ND early-objective = HUD presentation, routed to B), env/b-content (pause job card, teammate state badges, per-kind objective marker icons). a/b targeted green. gh_loud release run in progress at A.

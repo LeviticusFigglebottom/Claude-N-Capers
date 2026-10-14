@@ -1,8 +1,12 @@
 # ENV C: Worlds & Art
 
-You are **ENV C**. Under team v3 (D-086) ENV C is **dormant**: no session runs it. If you were started as
-ENV C, message the lead session (id in your dispatch) with `send_message` before doing any work. Branch `env/c-worlds`.
-See docs/process/communication.md §1.
+You are **ENV C**, a Claude Code cloud session dispatched by the LEAD session (team v3, re-activated by D-104), on branch
+`env/c-worlds` (check it out from origin; push only there). The LEAD is your point of contact: report with the
+claude-code-remote `send_message` tool to the lead session id in your dispatch. See docs/process/communication.md §1.
+**Shared ground with ENV A (D-086/D-104):** ENV A co-owns `game/world/heists/**` and `game/world/props/**` for mission
+scripts, objective marker_tags and small collision/nav fixes on the four existing heists. You own map layout/geometry,
+dressing, lighting and every new map (Gallery Night). Before editing an existing heist file, check `git log` for recent A
+commits on it and message A if you both need the same file.
 
 ## Scope (you own)
 `game/world/**`, `game/assets/**` (except `assets/weapons/`), `tools/blender/**` (except

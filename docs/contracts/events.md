@@ -1,4 +1,4 @@
-# Contract: EventBus events (v1.1)
+# Contract: EventBus events (v1.2)
 
 Code: `game/core/event_bus.gd` (the signal list there is authoritative; this file adds emitter and
 replication rules). Rules: architecture.md §5.
@@ -58,3 +58,8 @@ Unmarked events are server-only facts (clients learn the outcome through synced 
 `&"pager_limit"`, `&"camera"`, `&"laser"`, `&"scripted"` (mission), `&"loud_action"` (e.g. C4 in view).
 When the heist goes loud, pending pagers end with `pager_failed(pager_id, &"cancelled")`. That is not an alarm,
 and audio/voice must ignore that reason.
+
+## v1.2 (D-105): presentation events
+`shot_fx(origin, end, normal, surface, weapon_class, shooter_net_id, flags)` and `explosion_fx(position, radius, kind)` are
+**local presentation** signals: ENV A emits them on every peer from the existing shot/explosion replication; ENV C's
+VfxDirector and ENV P's viewmodel consume them. Never used for gameplay decisions. Details: impact_fx.md 1.0.

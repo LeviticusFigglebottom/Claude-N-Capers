@@ -112,8 +112,8 @@ func _apply_accent() -> void:
 	header_label.add_theme_color_override(&"font_color", UiAccent.readable(accent, back, UiAccent.table().min_text_contrast))
 
 
-## PO-4 motion (style.md §8): the step just done reads "OBJECTIVE COMPLETE" in OK green for
-## FLASH_S while the new line fades in over UiTokens.T_SLOW; then the caption returns.
+## PO-4 motion (style.md §8): "OBJECTIVE COMPLETE" in OK green over the finished step, struck through,
+## for FLASH_S; then the caption returns to OBJECTIVE and only then the next step fades in (T_SLOW).
 func _flash_complete() -> void:
 	if _flash_tween != null and _flash_tween.is_valid():
 		_flash_tween.kill()
@@ -121,20 +121,23 @@ func _flash_complete() -> void:
 	UiSfx.play(UiSfx.OBJECTIVE_DONE)  # D-090
 	header_label.text = UiText.t(&"ui.hud.objective_complete")
 	header_label.add_theme_color_override(&"font_color", UiTokens.OK)
-	# The finished step struck through for STRIKE_S, then the next step slides in under the caption.
+	# The finished step, struck through, under the caption (the next step waits for the flash to end).
 	done_label.text = "[s]%s[/s]" % _done_text
 	done_label.visible = _done_text != ""
 	done_label.modulate.a = 1.0
 	list_box.visible = false
 	_flash_tween = create_tween()
-	_flash_tween.tween_interval(STRIKE_S)
+	# Lead (A's ND analysis): "OBJECTIVE COMPLETE" must only ever sit over the FINISHED step. The struck
+	# line stays for the whole flash; the caption returns to OBJECTIVE first, then the next step fades in.
+	_flash_tween.tween_interval(FLASH_S)
 	if UiTokens.motion_ok():
 		_flash_tween.tween_property(done_label, ^"modulate:a", 0.0, UiTokens.T_BASE)
+	_flash_tween.tween_callback(_end_flash)
 	_flash_tween.tween_callback(_show_next)
 	if UiTokens.motion_ok():
 		_flash_tween.tween_property(list_box, ^"modulate:a", 1.0, UiTokens.T_SLOW).set_ease(Tween.EASE_OUT)
-	_flash_tween.tween_interval(maxf(FLASH_S - STRIKE_S - UiTokens.T_BASE - UiTokens.T_SLOW, 0.0))
-	_flash_tween.tween_callback(_end_flash)
+	else:
+		_flash_tween.tween_callback(func() -> void: list_box.modulate.a = 1.0)
 
 
 func _show_next() -> void:
@@ -146,8 +149,6 @@ func _show_next() -> void:
 func _end_flash() -> void:
 	flashing = false
 	done_label.visible = false
-	list_box.visible = true
-	list_box.modulate.a = 1.0
 	header_label.text = UiText.t(&"ui.hud.objectives")
 	header_label.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
 	_apply_accent()
