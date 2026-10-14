@@ -544,6 +544,8 @@ ui.hud.assault_phase.control,Police regrouping
 ui.results.crew,Crew
 ui.results.crew_ai,Crew AI {slot}
 ui.results.crew_slot,Heister {slot}
+ui.range.details_show,Show weapon details
+ui.range.details_hide,Hide weapon details
 ui.range.title,Firing Range
 ui.range.crumb,Safehouse / Warm-up
 ui.range.free_note,Every weapon and mod is free here.

@@ -39,6 +39,10 @@ signal loadout_applied(stats: WeaponStats)
 const LAYOUT_PATH: String = "res://content/data/range/range_layout.tres"
 const DUMMIES_PATH: String = "res://content/data/range/range_dummies.tres"
 const TWEAK_PATH: String = "res://content/data/range/range_tweak.tres"
+## D-111: ENV C's range dressing (lights, surfaces, props) and indoor Environment. Optional: until they exist
+## the range keeps its greybox look and the sun.
+const DRESSING_PATH: String = "res://world/range/range_dressing.gd"
+const ENVIRONMENT_PATH: String = "res://world/range/range_environment.tres"
 ## Re-run the readout when the shooter moved this far (m).
 const READOUT_MOVE_EPS_M: float = 0.1
 
@@ -89,6 +93,7 @@ func _ready() -> void:
 	level.name = "Level"
 	add_child(level)
 	RangeBuilder.build_level(layout, tweak, level)
+	_dress(level)
 	markers = RangeBuilder.build_markers(layout, tweak, level)
 	targets = RangeBuilder.build_targets(layout, dummy, difficulty, tweak, level)
 	targets.append_array(RangeBuilder.build_extra_lanes(layout, dummy_table, difficulty, tweak, level))
@@ -454,3 +459,20 @@ static func _put_weapon(l: Loadout, def: WeaponDef) -> void:
 		l.primary = def.id
 	else:
 		l.secondary = def.id
+
+
+## D-111: ENV C dresses the space on top of the builder's level (RangeDressing.build(layout, parent)) and
+## supplies the indoor Environment; an indoor range has no sun. A no-op until C's files exist.
+func _dress(parent: Node3D) -> void:
+	if ResourceLoader.exists(DRESSING_PATH):
+		var dressing: Script = load(DRESSING_PATH) as Script
+		if dressing != null and dressing.has_method(&"build"):
+			dressing.call(&"build", layout, parent)
+	if ResourceLoader.exists(ENVIRONMENT_PATH):
+		var we: WorldEnvironment = get_node_or_null(^"WorldEnvironment") as WorldEnvironment
+		var env: Environment = load(ENVIRONMENT_PATH) as Environment
+		if we != null and env != null:
+			we.environment = env
+			var sun: DirectionalLight3D = get_node_or_null(^"Sun") as DirectionalLight3D
+			if sun != null:
+				sun.visible = false

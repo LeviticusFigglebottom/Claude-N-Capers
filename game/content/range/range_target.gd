@@ -295,6 +295,7 @@ func _build_visual() -> void:
 	_hp_label.outline_size = 10
 	_hp_label.position = Vector3(0.0, head_c.y + STAND_TOP + 0.3, 0.0)
 	_hp_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	RangeBuilder.fade_far(_hp_label)
 	add_child(_hp_label)
 
 
