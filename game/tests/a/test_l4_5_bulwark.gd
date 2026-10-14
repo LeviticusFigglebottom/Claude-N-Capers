@@ -1,6 +1,6 @@
 ## A3-01b L4.5 Bulwark: scene + shield contract (separate world_dynamic body with `Collision`),
 ## special_spawned, fixation on one player, SHIELD_ANCHOR doorway holding, shield bangs (cue), the
-## dropped shield stays and still blocks, and other specials taking the spot behind it.
+## dropped shield falls flat and blocks nothing (L4.5, lead 2026-10-14), and other specials taking the spot behind it.
 extends TestCase
 
 var _rt: HeistRuntime = null
@@ -87,7 +87,7 @@ func test_l4_5_holds_shield_anchor_and_bangs() -> void:
 	assert_true(_cues.has(&"cue.bulwark_bang"), "cue.bulwark_bang requested")
 
 
-func test_l4_5_dropped_shield_stays_and_blocks() -> void:
+func test_l4_5_dropped_shield_falls_flat_and_blocks_nothing() -> void:
 	var bw: NpcBase = ACombatSpecials.spawn(_rt, "bulwark", Vector3(0, 0.05, -8), Vector3(0, 0, 1))
 	await wait_physics_frames(3)
 	var s: BulwarkShield = (bw.get_node("Brain") as BulwarkBrain).shield
@@ -96,11 +96,38 @@ func test_l4_5_dropped_shield_stays_and_blocks() -> void:
 	await wait_physics_frames(3)
 	assert_true(is_instance_valid(s) and s.dropped, "shield dropped")
 	assert_true(s.get_parent() == _rt.dynamic_root, "no longer carried")
-	assert_true(s.global_position.distance_to(where) < 0.01, "stays where it was dropped")
+	assert_true(Vector2(s.global_position.x - where.x, s.global_position.z - where.z).length() < 0.01,
+		"falls where it stood")
+	assert_true(s.global_position.y < 0.2, "lies on the floor (y %.2f)" % s.global_position.y)
+	assert_true((-s.global_basis.z).normalized().dot(Vector3.UP) > 0.95, "flat, face up")
+	assert_eq(s.collision_layer, 0, "blocks nothing")
 	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
 		where + Vector3(0, 0, 3), where - Vector3(0, 0, 3), CombatTweak.data().hitscan_mask)
 	var hit: Dictionary = s.get_world_3d().direct_space_state.intersect_ray(q)
-	assert_true(not hit.is_empty() and hit.get("collider") == s, "a dropped shield still blocks bullets")
+	assert_true(hit.is_empty() or hit.get("collider") != s, "bullets at body height pass over it")
+
+
+## ND attempt 13: a dead Bulwark's upright shield walled off the 1 m vault corridor for a bag carrier. A crew
+## member carrying a bag walks straight through the spot where the shield stood, without detour.
+func test_l4_5_bag_carrier_walks_over_a_dropped_shield() -> void:
+	var bw: NpcBase = ACombatSpecials.spawn(_rt, "bulwark", Vector3(0, 0.05, -4), Vector3(0, 0, 1))
+	await wait_physics_frames(3)
+	var s: BulwarkShield = (bw.get_node("Brain") as BulwarkBrain).shield
+	var line_z: float = s.global_position.z
+	bw.die({}, 0)
+	await wait_physics_frames(3)
+	var c: CrewController = await ACombatSpecials.place_crew(_rt, 0, Vector3(s.global_position.x, 0.05, line_z + 2.0))
+	var loot: LootManager = _rt.service(G.SVC_LOOT) as LootManager
+	assert_true(loot.carry(loot.spawn_bag(&"loot.gold", Transform3D(Basis.IDENTITY, c.global_position)), c),
+		"carrying a heavy bag")
+	var i: CrewIntent = CrewIntent.new()
+	i.move = Vector2(0, 1)
+	i.look_yaw = 0.0
+	_rt.set_bot_intent(0, i)
+	var crossed: bool = await wait_until(func() -> bool: return c.global_position.z < line_z - 1.0, 6.0)
+	_rt.clear_bot_intent(0)
+	assert_true(crossed, "walked across the dropped shield's spot (z %.2f, line %.2f)" % [c.global_position.z, line_z])
+	assert_near(c.global_position.x, s.global_position.x, 0.2, "straight over it, no detour")
 
 
 func test_l4_5_specials_take_position_behind_bulwark() -> void:
@@ -173,15 +200,15 @@ func test_l4_5_heavy_hit_and_explosion_stagger() -> void:
 	assert_eq(b.staggers, 2, "Aegis (no flinch) shields never stagger")
 
 
-func test_l4_5_dies_while_staggered_drops_a_blocking_shield() -> void:
+func test_l4_5_dies_while_staggered_drops_a_flat_shield() -> void:
 	var bw: NpcBase = ACombatSpecials.spawn(_rt, "bulwark", Vector3(0, 0.05, -8), Vector3(0, 0, 1))
 	await wait_physics_frames(3)
 	var b: BulwarkBrain = bw.get_node("Brain") as BulwarkBrain
 	assert_true(b.stagger(), "staggered")
 	bw.die({}, 0)
 	await wait_physics_frames(3)
-	assert_true(b.shield.dropped and not b.shield.guard_down, "dropped with the guard up")
-	assert_eq(b.shield.collision_layer, 1 << 1, "the dropped shield blocks")
+	assert_true(b.shield.dropped, "dropped")
+	assert_eq(b.shield.collision_layer, 0, "the dropped shield blocks nothing (L4.5: falls flat)")
 
 
 ## Lead gate70 bug: a shield-piercing round between two stacked shields ping-ponged (B's trace starts 5 cm

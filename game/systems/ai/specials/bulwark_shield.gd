@@ -2,8 +2,8 @@
 ## (characters.md: separate scene with a `Collision` child). A separate static body on physics layer 2
 ## `world_dynamic`, so it blocks bullets (CombatTweak.hitscan_mask), crew and NPC movement (doorways),
 ## and also LOS of crew shots behind it (the server LOS check). NPC LOS ignores shields
-## (CombatSystem.has_npc_los). It is carried as a child of its Bulwark and is reparented in place to
-## the heist's dynamic root when the Bulwark dies: a dropped shield still blocks (L4.5).
+## (CombatSystem.has_npc_los). It is carried as a child of its Bulwark and is reparented to the heist's
+## dynamic root when the Bulwark dies, where it falls flat and blocks nothing (L4.5, see drop()).
 ## Hits (docs/contracts/damage.md v1.1: the shield is a hit target): BULLET without `info.shield_pierce`,
 ## MELEE and anything else are BLOCKED: damage_applied [R] with amount 0 and `blocked = true` (victim =
 ## the carrier's net id, 0 for a dropped shield) so hit markers can show the block. A shield-piercing
@@ -31,6 +31,12 @@ signal struck(info: Dictionary)
 
 const GROUP: StringName = &"bulwark_shield"
 const LAYER_WORLD_DYNAMIC: int = 1 << 1
+## World static (layer 1): the floor a dropped shield lands on.
+const FLOOR_MASK: int = 1 << 0
+## A dropped shield lies this high above the floor (m; L4.5: flat, walked over).
+const DROPPED_LIFT_M: float = 0.03
+## How far below its carried position a dropped shield looks for the floor (m).
+const DROPPED_FLOOR_PROBE_M: float = 2.5
 ## BoneAttachment3D marker whose `Socket` is the shield grip.
 const GRIP_MARKER: String = "HandL"
 ## Seconds between socket lookups while the carrier has no animated visual (placeholder).
@@ -75,6 +81,10 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	var npc: NpcBase = carrier as NpcBase
+	if not dropped and npc != null and is_instance_valid(npc) and not npc.alive:
+		drop(null)  # every peer: the dead carrier's shield falls (the server reparents it via BulwarkBrain too)
+		return
 	follow_grip(delta)
 
 
@@ -181,23 +191,45 @@ func set_guard(up: bool, local_pos: Vector3) -> void:
 	follow_grip()
 
 
-## The Bulwark died: the shield stays where it is (reparented under `new_parent`, transform kept).
+## The Bulwark died (pd2_fidelity L4.5, lead 2026-10-14: a dead Shield's shield falls to the floor and can be
+## walked over): reparented under `new_parent` (null = keep the parent), it lies flat, face up, on the floor
+## under where it stood, and leaves every collision layer, so crew, NPCs and bags pass over it (ND attempt 13:
+## an upright dropped shield walled off the 1 m vault corridor). Every peer lays its own copy down
+## (_physics_process sees the dead carrier), so a client's crew never collides with it either.
 func drop(new_parent: Node) -> void:
-	if dropped:
-		return
-	dropped = true
-	_rest_visual()  # the dropped shield looks where it blocks
-	var xf: Transform3D = global_transform
-	if carrier != null and is_instance_valid(carrier):
-		carrier.remove_collision_exception_with(self)
-	carrier = null
-	if new_parent != null and get_parent() != new_parent:
+	var xf: Transform3D = global_transform if is_inside_tree() else transform
+	if new_parent != null and get_parent() != new_parent:  # also after a local lay-down (server: brain's deferred call)
 		var was_in_tree: bool = is_inside_tree()
 		if get_parent() != null:
 			get_parent().remove_child(self)
 		new_parent.add_child(self)
 		if was_in_tree:
 			global_transform = xf
+	if dropped:
+		return
+	dropped = true
+	if carrier != null and is_instance_valid(carrier):
+		carrier.remove_collision_exception_with(self)
+	carrier = null
+	collision_layer = 0
+	if is_inside_tree():
+		global_transform = _flat_on_floor(xf)
+	_rest_visual()
+
+
+## `xf` laid face up (-Z pointing up, keeping its yaw) at DROPPED_LIFT_M above the floor below its origin.
+func _flat_on_floor(xf: Transform3D) -> Transform3D:
+	var fwd: Vector3 = Vector3(xf.basis.z.x, 0.0, xf.basis.z.z)
+	var yaw: float = atan2(fwd.x, fwd.z) if fwd.length() > 0.01 else 0.0
+	var basis_flat: Basis = Basis(Vector3.UP, yaw) * Basis(Vector3.RIGHT, PI * 0.5)  # -Z (shield face) -> +Y
+	var floor_y: float = xf.origin.y - DROPPED_FLOOR_PROBE_M
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(xf.origin + Vector3.UP * 0.2,
+		xf.origin + Vector3.DOWN * DROPPED_FLOOR_PROBE_M, FLOOR_MASK)
+	q.exclude = [get_rid()]
+	var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(q)
+	if not hit.is_empty():
+		floor_y = (hit["position"] as Vector3).y
+	return Transform3D(basis_flat, Vector3(xf.origin.x, floor_y + DROPPED_LIFT_M, xf.origin.z))
 
 
 func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
