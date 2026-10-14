@@ -3,6 +3,21 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14 06:40 ET: IN PROGRESS (ENV C)
+### Done since 02:40 (all pushed; most on trunk)
+- Gate 2/3 map side: ladder nav links climbers-only (f5eb9b42); GH WindowLink → walkable fire-escape door-window with
+  A's `walkable` + `sash_travel_m` (c0b5a639, 1596c78a); GH stair ramps; GH LobbyDoor snag → `frame_proud` + flush door
+  frame colliders, 37 door GLBs rebuilt (bedc56ee). PP-C-1 door mode now 0 stuck on GH/ND/DB.
+- PO-7 door_frame_gap + seam_gaps (ac7331ad); PO-9 furniture_logic + generator determinism (9c519042), GH console seat,
+  SL table chairs, SL hack terminal (a70db148); KR-7 (c3549344); viewmodel_lit on all prop lights, check FAIL (0177dfad).
+- GN prep: gallery_night_slots.py --check vs doc + B's draft; QC-62..65 applied; skeleton as inert patch
+  docs/levels/gallery_night/g1_skeleton.patch (98e2f8e0). GH blueprint refreshed (22a2c6ac).
+### Next (proposed)
+- Legacy slope spots (21 WARN on ND/DB/SL); refresh g1_skeleton.patch with G1 to-dos (stair rails, light well,
+  parapet copings, police street islands, rappel links); SL remaining tables (G2); VFX perf probe (quiet machine).
+### Blockers
+- None. Blueprint renders need LC_DRIVER=opengl3 here (lavapipe Vulkan stalls).
+
 ## 2026-10-14 02:40 ET: IN PROGRESS (ENV C)
 ### Done (all pushed to env/c-worlds; most on trunk via rounds 72–77)
 - GN groundwork: gallery_night.md Build rulings (approved), floor-plan generator + --check, validate_level camera_spine/
