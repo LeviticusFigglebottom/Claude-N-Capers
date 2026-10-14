@@ -45,7 +45,7 @@ Cross-env requests are QC-51..QC-59.
   it for the crew (Mercer callout; `[find_canvases]`). Upper galleries, BOH, basement and roof are
   RESTRICTED from the start (slow ×0.35 fill, S1.1). Ladders need the mask.
 - **Paintings are LIGHT** (lead ruling D-070, ENV B's rolled-canvas defs): cut from the stretcher in
-  4 s (`loot_spawn`, `interaction_time_s 4.0`, silent), carried rolled (×0.95 speed, sprint and
+  4 s (`loot_spawn`, `interaction_time_s 4.0`, silent), carried rolled (×1.0 speed (D-102), sprint and
   jump allowed, throw 4 m).
 - **Frame sensors (the hack):** the **Argus** hanging-wire sensors alarm some frames (variable
   `sensor_net`). Cutting an alarmed canvas while the sensors are live raises the alarm. The Argus
