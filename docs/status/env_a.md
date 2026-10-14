@@ -3,6 +3,23 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14 01:50 UTC — freeze gate 1 (gh_loud PASS), PO-8 shot_fx, ND loud, D-102/D-106
+### Done (pushed; last bcebbad9)
+- GATE 1: gh_loud PASS end to end, windowed, real menus (seed 1791914030): drill jam fixed by the pilot, safe 182 s
+  after placing, bags t=250/293, Pell escape, Payday card pick ($40,000) → Continue → Safehouse hub (4f391c1e, fa09ae00).
+- ec27e45c PO-8 (D-105): EventBus.shot_fx per pellet/ray on every peer (crew, bots, NPCs, melee) + explosion_fx; 3 new
+  reliable [R] facts on HeistNetSync (crew shot replay by seed, NPC/melee impact, explosion); 3P muzzle origins.
+- 41025a1a HUD: no markers for disabled objectives (ND lockdown pointed at the server room); 18cc33d0 QC-60 markers
+  re-resolve on objective data updates; D-102 equip(slot, redraw) for bag pickup; 68fd1268 ui_hud 1.12 reload progress.
+- 5930a66a SL/DB marker_tags (readiness gate); 582b8c5c/e2d5cf6f S10 tests for D-102 carry.
+- 1c578b4f pilot stands at the prefab UsePoint (ND keycard behind the teller glass).
+### In progress
+- ND loud via auto_loud (seed 1791938638): keycard t=65, vault gate t=99, drill next. Stealth win lane (subagent).
+- PO-6 door swing: implemented + tests green, HELD: integration test_p3_loud test_01 (crew wipe) A/B vs snap running.
+- Prefab metadata/surface lane (subagent).
+### Queued
+- Gallery Night (D-103) groundwork after the freeze gates; CrewMelee.hit_landed to the attacker's owner (P backlog).
+
 ## 2026-10-13 21:05 UTC — PO-5 loud win, D-093, PO-5.14
 ### Done (pushed; last b9f4b9ef)
 - FIRST END-TO-END LOUD WIN, windowed, through the real menus: Glasshouse Routine. The drill opened the safe at 188 s,
