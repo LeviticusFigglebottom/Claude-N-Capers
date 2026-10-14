@@ -100,7 +100,7 @@ const WARNING_CAPTAIN: StringName = &"captain"
 const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"health": &"vitals_changed", &"max_health": &"vitals_changed", &"armor": &"vitals_changed",
 	&"max_armor": &"vitals_changed", &"downs_left": &"vitals_changed", &"crew_state": &"vitals_changed",
-	&"bleedout_s": &"vitals_changed",
+	&"bleedout_s": &"vitals_changed", &"revive_progress": &"vitals_changed", &"reviver_slot": &"vitals_changed",
 	&"ammo": &"ammo_changed", &"equipped_slot": &"ammo_changed",
 	&"deployable_id": &"inventory_changed", &"throwable_id": &"inventory_changed",
 	&"deployable_count": &"inventory_changed", &"throwable_count": &"inventory_changed",
@@ -127,7 +127,7 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"objective_markers": &"objective_markers_changed",
 }
 ## Extra (non-contract) properties included in snapshot().
-const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase"]
+const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase", &"local_net_id"]
 
 ## Poll rate of the runtime (presentation only).
 @export var poll_hz: float = 10.0
@@ -150,6 +150,10 @@ var downs_left: int = 0
 var crew_state: Enums.CrewState = Enums.CrewState.NORMAL
 ## Seconds until custody while bleeding out (L2.5); < 0 = not bleeding out.
 var bleedout_s: float = -1.0
+## ui_hud v1.10: 0..1 while the HUD's crew member is downed/helpless and someone holds revive on them, else 0.
+var revive_progress: float = 0.0
+## ui_hud v1.10: crew slot holding that revive (-1 = none).
+var reviver_slot: int = -1
 # --- stamina_changed (ui_hud v1.4, QB-60)
 ## Stamina current / max, 0..1 (CrewStamina).
 var stamina: float = 1.0
@@ -246,6 +250,9 @@ var captain_present: bool = false
 # --- extras (no contract signal; `changed` only)
 ## Slot actually tracked this poll (-1 = none).
 var tracked_slot_resolved: int = -1
+## ui_hud v1.9 (D-100): net id of the crew member this HUD belongs to (0 = unknown); matches the attacker /
+## victim ids of damage_applied / npc_killed for hit markers and damage arcs. Announced via `changed`.
+var local_net_id: int = 0
 ## Mask-up hold progress 0..1.
 var mask_progress: float = 0.0
 ## Enums.HeistPhase
@@ -376,6 +383,10 @@ func _poll_vitals(c: CrewController, slot: int) -> void:
 	_assign(&"downs_left", int(_read(hp, &"downs_left", tw.downs_before_custody + extra_downs)))
 	var bleed: float = float(_read(hp, &"bleedout_left", -1.0))
 	_assign(&"bleedout_s", bleed if bleed > 0.0 else -1.0)
+	_assign(&"local_net_id", c.net_id if c != null else 0)
+	var rv: Vector2 = _revive_of(c)
+	_assign(&"revive_progress", maxf(rv.x, 0.0))
+	_assign(&"reviver_slot", int(rv.y))
 	if c != null:
 		_assign(&"crew_state", c.crew_state)
 		_assign(&"masked", c.masked)
@@ -623,8 +634,32 @@ func _poll_crew(slot: int) -> void:
 				"armor_frac": clampf(float(_read(hp, &"armor", ma)) / ma, 0.0, 1.0),
 				"state": int(c.crew_state), "downs_left": int(_read(hp, &"downs_left", downs_default)),
 				"carried_loot_id": bag, "mode": c.player_mode,
+				# B (teammate badges): seconds of bleedout left (-1 = not bleeding out); revive 0..1 (-1 = none)
+				"bleedout_s": _bleed_of(hp), "revive_progress": _revive_of(c).x,
 			})
 	_assign(&"crew", list)
+
+
+static func _bleed_of(hp: Object) -> float:
+	var b: float = float(_read(hp, &"bleedout_left", -1.0))
+	return b if b > 0.0 else -1.0
+
+
+## (progress 0..1, reviver slot) of the revive someone holds on `c` (its ReviveInteractable), else (-1, -1).
+## Uses InteractionSystem.session(), which is replicated to clients (A3-07).
+func _revive_of(c: CrewController) -> Vector2:
+	if c == null or _runtime == null or _runtime.interaction == null:
+		return Vector2(-1.0, -1.0)
+	var rev: Node = c.get_node_or_null(^"ReviveInteractable")
+	if rev == null:
+		return Vector2(-1.0, -1.0)
+	for m: CrewController in _runtime.crew_members():
+		if m == c:
+			continue
+		var sess: Dictionary = _runtime.interaction.session(m.slot)
+		if not sess.is_empty() and sess.get("comp") == rev:
+			return Vector2(_runtime.interaction.progress(m.slot), float(m.slot))
+	return Vector2(-1.0, -1.0)
 
 
 func _poll_crew_stats() -> void:

@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.10)
+# Contract: HUD data (v1.11)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -98,3 +98,4 @@ are counted the same way.
 ## v1.9 (D-100): local player id
 * `LocalHudModel.local_net_id: int`: the net id of the crew member this HUD belongs to (valid in normal play, not only tracked_crew), so the HUD can match `damage_applied` / `npc_killed` attacker ids for hit markers and damage-direction arcs. ENV A provides; ENV B consumes.
 * v1.10: `LocalHudModel.revive_progress: float` (0..1, while the local crew member is downed and someone holds revive on them, else 0) and `reviver_slot: int` (-1 = none), for B's downed-state "<name> is reviving you" bar. ENV A provides.
+* v1.11: each `crew` row also carries `bleedout_s: float` (seconds left while DOWNED, else -1) and `revive_progress: float` (0..1 while being revived, else -1), for B's teammate state badge rings (env/a-core bbdc5784).

@@ -18,6 +18,8 @@ ui.menu.resume,Resume
 ui.pause.title,Menu
 ui.pause.heading,Heist in progress
 ui.pause.live_note,The heist keeps running while this menu is open. You stand still until you resume.
+ui.pause.job_caption,Job file
+ui.pause.loot_line,"{bags} bags secured, {value} total"
 ui.menu.leave_heist,Leave Heist
 ui.menu.quit_confirm,Leave the game? Unsecured loot stays behind.
 ui.menu.profile,Profile {index}
@@ -513,6 +515,7 @@ ui.mod_type.skin,Skin
 ui.hud.crosshair,+
 ui.hud.unmasked,Casing
 ui.hud.downed,Down
+ui.hud.downed_seconds,Down {seconds}s
 ui.hud.item_count,{item} x{count}
 ui.hud.camera_alarm,Camera alarm {seconds}
 ui.hud.objective_active,{text}

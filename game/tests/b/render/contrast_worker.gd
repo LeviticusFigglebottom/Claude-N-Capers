@@ -266,6 +266,13 @@ func _feedback() -> void:
 	model.casing = false
 	model.max_health = 100.0
 	model.health = 12.0
+	model.objectives = [  # lead queue (c): the current marker's glyph + a dim second marker
+		{"id": &"safe", "text_key": &"objective.glasshouse.safe", "args": {}, "state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"secure", "text_key": &"objective.glasshouse.secure", "args": {"bags": 2}, "state": Enums.ObjectiveState.ACTIVE}]
+	model.objective_markers = [
+		{"id": &"safe", "text_key": &"objective.glasshouse.safe", "position": Vector3(-2.5, 0.5, -8), "state": Enums.ObjectiveState.ACTIVE},
+		{"id": &"secure", "text_key": &"objective.glasshouse.secure", "position": Vector3(3, 0, -10), "state": Enums.ObjectiveState.ACTIVE}]
+	hud.objective_markers.show_all = true
 	for bg: String in BACKDROPS:
 		back.color = BACKDROPS[bg] as Color
 		hud.damage_direction.add_arc(Vector3(-1, 0, 0), false)

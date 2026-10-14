@@ -12,7 +12,8 @@
 ## 5 = adds `unlocks`, `achievements` (B4-20) and `pro_job_locks` (persisted pro-job locks, QB-BRD1);
 ## 6 = adds `notoriety`, `notoriety_xp`, `notoriety_choices`, `held_skill_sets` (Notoriety ranks, B5-02)
 ## and `music_choice` (B5-03); 7 = adds `career` (lifetime career stats, B7-01) and `weapon_finishes`
-## (weapon id -> finish id, reserved for B7-04).
+## (weapon id -> finish id, reserved for B7-04); 8 = no new field: every profile owns the starter AR
+## (STARTER_PRIMARY, new profiles since round 38) and an empty primary slot gets it equipped.
 ## Field reference: content/docs/save_format.md. Golden migration fixtures: tests/b/fixtures/save/.
 ## Load pipeline (profile_from_save): migrate -> ProfileSchema.sanitize (types; wrong type -> default +
 ## Log.warn) -> PlayerProfile.from_dict -> ProfileValidator.validate (unknown ids pruned, illegal skill
@@ -20,8 +21,10 @@
 class_name SaveService
 extends RefCounted
 
-const CURRENT_VERSION: int = 7
+const CURRENT_VERSION: int = 8
 const DEFAULT_ROOT_DIR: String = "user://profiles"
+## v8: the starter primary granted to (and, into an empty primary slot, equipped on) older profiles.
+const STARTER_PRIMARY: String = "weapon.corsair_ar"
 
 ## Tests point this at e.g. `user://test_profiles`.
 static var root_dir: String = DEFAULT_ROOT_DIR
@@ -126,6 +129,8 @@ static func migrate(data: Dictionary) -> Dictionary:
 				d = _migrate_5_to_6(d)
 			6:
 				d = _migrate_6_to_7(d)
+			7:
+				d = _migrate_7_to_8(d)
 			_:
 				Log.error(&"save", "no migration from version %d" % v)
 				return d
@@ -235,6 +240,21 @@ static func _migrate_5_to_6(d: Dictionary) -> Dictionary:
 
 ## v6 -> v7: an empty career (nothing counted before v7) and no weapon finishes (every weapon on its
 ## default finish). Everything else is unchanged.
+## v8 (lead): saves from before round 38 own no primary ("None yet" in the loadout). Grant the starter AR
+## and equip it when the primary slot is empty; an owned / equipped primary is left as it is.
+static func _migrate_7_to_8(d: Dictionary) -> Dictionary:
+	var owned: Array = d.get("owned_weapons", []) as Array if d.get("owned_weapons") is Array else []
+	if not owned.has(STARTER_PRIMARY):
+		owned.append(STARTER_PRIMARY)
+	d["owned_weapons"] = owned
+	if d.get("loadout") is Dictionary:
+		var l: Dictionary = d["loadout"] as Dictionary
+		if String(l.get("primary", "")) == "":
+			l["primary"] = STARTER_PRIMARY
+			l["primary_mods"] = []
+	return d
+
+
 static func _migrate_6_to_7(d: Dictionary) -> Dictionary:
 	if not d.get("career") is Dictionary:
 		d["career"] = Career.empty()

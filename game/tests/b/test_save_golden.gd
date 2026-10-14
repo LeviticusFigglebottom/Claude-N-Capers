@@ -1,10 +1,11 @@
-## B4-16 save v5 -> B5-02 save v6 -> B7-01 save v7 (P4 gate "save v2"): golden migration fixtures (tests/b/fixtures/save/<name>.json ->
+## Save golden migration fixtures v0..v8 (v8: the starter AR for old saves; P4 gate "save v2"; tests/b/fixtures/save/<name>.json ->
 ## <name>.expected.json, hand-written), round trip, future-version refusal, truncated / corrupt files,
 ## wrong types sanitized with a warning, unknown ids pruned, illegal skill sets reset.
 extends TestCase
 
 const FIXTURES: String = "res://tests/b/fixtures/save"
-const GOLDEN: Array[String] = ["v0", "v1", "v2", "v3", "v4", "v5", "v5_damaged", "v6_damaged", "v6_heister", "v6", "v7_damaged"]
+const GOLDEN: Array[String] = ["v0", "v1", "v2", "v3", "v4", "v5", "v5_damaged", "v6_damaged", "v6_heister", "v6", "v7_damaged",
+		"v7", "v7_own_primary"]
 const SLOT: int = 5
 
 
@@ -24,8 +25,8 @@ func after_all() -> void:
 	SaveService.root_dir = SaveService.DEFAULT_ROOT_DIR
 
 
-func test_current_version_is_7() -> void:
-	assert_eq(SaveService.CURRENT_VERSION, 7)
+func test_current_version_is_8() -> void:
+	assert_eq(SaveService.CURRENT_VERSION, 8)
 	assert_eq(PlayerProfile.new().version, SaveService.CURRENT_VERSION)
 	assert_eq(ProfileSchema.FIELDS.size(), PlayerProfile.new_default().to_dict().size(), "schema covers every saved field")
 	for f: String in PlayerProfile.new_default().to_dict():
@@ -51,7 +52,7 @@ func test_golden_fixtures_through_the_file() -> void:
 func test_each_migration_step_kept() -> void:
 	var v0: Dictionary = _fixture("v0")
 	var m: Dictionary = SaveService.migrate(v0)
-	assert_eq(int(m["version"]), 7)
+	assert_eq(int(m["version"]), SaveService.CURRENT_VERSION)
 	assert_eq(int(m["cash"]), 5000)
 	assert_false(m.has("money"))
 	for k: String in ["banked_stealth_mult", "skill_sets", "perk_cards", "owned_mask_parts", "custom_masks",
@@ -67,7 +68,7 @@ func test_each_migration_step_kept() -> void:
 	assert_false(v4.has("unlocks"), "input not mutated")
 	var v5: Dictionary = _fixture("v5")
 	var m5: Dictionary = SaveService.migrate(v5)
-	assert_eq(int(m5["version"]), 7)
+	assert_eq(int(m5["version"]), SaveService.CURRENT_VERSION)
 	assert_eq(m5["notoriety"], 0)
 	assert_eq(m5["notoriety_xp"], 0)
 	assert_eq(m5["notoriety_choices"], {})
@@ -77,7 +78,7 @@ func test_each_migration_step_kept() -> void:
 	assert_false(v5.has("notoriety"), "input not mutated")
 	var v6: Dictionary = _fixture("v6")
 	var m6: Dictionary = SaveService.migrate(v6)
-	assert_eq(int(m6["version"]), 7)
+	assert_eq(int(m6["version"]), SaveService.CURRENT_VERSION)
 	assert_eq(m6["career"], Career.empty(), "6 -> 7: nothing counted yet")
 	assert_eq(m6["weapon_finishes"], {}, "6 -> 7: every weapon on its default finish")
 	assert_eq(m6["stats"], v6["stats"], "6 -> 7 keeps the v6 fields")
@@ -299,3 +300,15 @@ func _write(path: String, text: String) -> void:
 	var f: FileAccess = FileAccess.open(path, FileAccess.WRITE)
 	f.store_string(text)
 	f.close()
+
+
+## v8 (lead): a pre-round-38 save gets the starter AR, and it is equipped only into an EMPTY primary.
+func test_v8_grants_the_starter_primary() -> void:
+	var m: Dictionary = SaveService.migrate(_fixture("v7"))
+	assert_true((m["owned_weapons"] as Array).has(SaveService.STARTER_PRIMARY), "granted")
+	assert_eq(String((m["loadout"] as Dictionary)["primary"]), SaveService.STARTER_PRIMARY, "empty slot filled")
+	var own: Dictionary = SaveService.migrate(_fixture("v7_own_primary"))
+	assert_eq(String((own["loadout"] as Dictionary)["primary"]), "weapon.mule_12", "an equipped primary is kept")
+	assert_eq((own["owned_weapons"] as Array).count(SaveService.STARTER_PRIMARY), 1, "granted once")
+	var again: Dictionary = SaveService.migrate(m)
+	assert_eq((again["owned_weapons"] as Array).count(SaveService.STARTER_PRIMARY), 1, "v8 is not migrated twice")

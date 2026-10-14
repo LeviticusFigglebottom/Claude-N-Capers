@@ -19,6 +19,13 @@ func _launch() -> CrewController:
 	await wait_physics_frames(2)
 	var c: CrewController = await ACombatSpecials.place_crew(_rt, 0, Vector3(0, 0.05, 0))
 	c.set_masked()
+	# D-097: PD2 base spread (e.g. 2.9-3.4 deg hip) can miss a head at 6 m; these counters need exact hits, so the
+	# equipped weapon gets a zero cone (copy of its stats; the shared WeaponStats resource is untouched).
+	var ws: Variant = c.weapons.get(&"_states").get(c.weapons.equipped_slot)
+	var stats: WeaponStats = (ws.get(&"stats") as WeaponStats).duplicate() as WeaponStats
+	stats.spread_deg_hip = 0.0
+	stats.spread_deg_ads = 0.0
+	ws.set(&"stats", stats)
 	return c
 
 
