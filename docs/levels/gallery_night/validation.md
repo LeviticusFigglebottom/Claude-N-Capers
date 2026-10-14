@@ -51,7 +51,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 165 props checked
+- 166 props checked
 
 - WARN `Gameplay/Devices/ServerDoorDrill` @ (25.00, 6.40, 6.15): prop has no geometry or collision; skipped
 - WARN `Gameplay/Devices/VaultDrill` @ (21.50, -3.20, 7.75): prop has no geometry or collision; skipped
@@ -60,7 +60,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## clipping: Nothing clips
 
-- 165 props, 42 doors checked
+- 166 props, 42 doors checked
 
 
 ## scale: Human scale
@@ -152,7 +152,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## navmesh: Navmesh
 
 - navmesh: 1144 polygons, cell 0.10/0.10 m
-- 327 markers checked
+- 330 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomSS` | 12 | 12 | 100% |
@@ -211,7 +211,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 50 variant configuration(s), 179316 spawn->target path queries
+- 50 variant configuration(s), 180540 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -223,8 +223,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 - graph `halberd`: 49 points, 8 guard(s)
 - graph `mews`: 6 points, 1 guard(s)
-- graph `gala`: 16 points, 0 guard(s)
-- graph `staff`: 16 points, 0 guard(s)
+- graph `gala`: 17 points, 0 guard(s)
+- graph `staff`: 17 points, 0 guard(s)
 - 4 patrol graph(s)
 
 

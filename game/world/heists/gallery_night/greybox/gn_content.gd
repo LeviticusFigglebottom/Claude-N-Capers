@@ -26,7 +26,7 @@ const LASER_Z: float = 26.5
 const LASER_X: Vector2 = Vector2(36.1, 43.8)
 const LASER_STATIC_Y: float = 1.0
 const LASER_STATIC_H: float = 1.8
-## cp_landing laser curtain (B4.1, enabled at last call by the mission, QC-53): across the half landing at z 9.6
+## cp_landing laser curtain (B4.1; `enabled_at_start` false, LaserGrid.set_enabled at last call, QC-53): across the half landing at z 9.6
 ## (between the canvas's UsePoint z 9.15 and the flights' arrival z 10.2) from x 17.6 to the east rail; its bypass is
 ## the >= 1.0 m gap west of it, at the west return flight. 5 beams to 2.4 m (no crouch-under).
 const CURTAIN: Array = [17.6, 28.8, 9.6, 2.4, 5]
@@ -36,6 +36,26 @@ const CANVAS_LOOT: Dictionary = {
 	"canvas_widow": &"loot.painting_widow_in_blue", "canvas_saint": &"loot.painting_tidewater_saint",
 }
 const STUDY_LOOT: StringName = &"loot.painting_study"
+## Frame sensors (QC-54, G1 step 2d; doc sensor_net + Barrier per slot): one AlarmGroups group per sensor zone. Every
+## hung frame (list canvases and wall studies) is `alarm_on_take` in its zone's group; the store racks, the QR crate,
+## the CS easel and the loan crate never are. The mission disables the zones the active `sensor_net` slot leaves off
+## (its params `alarm_groups_off`) at start; the Argus hack takes them all offline (the terminal clears ARGUS_TR, the
+## mission the rest: the terminal's meta `alarm_groups`).
+const ARGUS_TR: StringName = &"argus_treasury"
+const ARGUS_UPPER: StringName = &"argus_upper"
+const ARGUS_GROUND: StringName = &"argus_ground"
+const ARGUS_GROUPS: Array[StringName] = [ARGUS_TR, ARGUS_UPPER, ARGUS_GROUND]
+## Alarmed list slots -> zone (the landing counts with the upper floor: sensors_upper = upper frames + TR + landing).
+const SLOT_SENSOR: Dictionary = {
+	"cp_treasury": ARGUS_TR, "cp_landing": ARGUS_UPPER, "orchard_calloway": ARGUS_UPPER, "widow_sallow": ARGUS_UPPER,
+	"saint_maritime": ARGUS_UPPER, "orchard_benefactors": ARGUS_GROUND, "widow_founders": ARGUS_GROUND,
+	"saint_harbour": ARGUS_GROUND,
+}
+## sensor_net slot -> the live zones (TR in every option).
+const SENSOR_NET: Dictionary = {
+	"sensors_treasury": [ARGUS_TR], "sensors_upper": [ARGUS_TR, ARGUS_UPPER],
+	"sensors_all": [ARGUS_TR, ARGUS_UPPER, ARGUS_GROUND],
+}
 const SMALL_LOOT: StringName = &"loot.small_valuables"
 ## Wall-hung loot stands off its slot anchor by half the placeholder's depth (rehearsal F2).
 const HUNG_OFFSET: float = 0.2
@@ -144,12 +164,17 @@ func tagged_marker(parent: Node3D, nm: String, pos: Vector3, tag: String, todo: 
 
 ## A list canvas / study `loot_spawn` at a slot-style anchor: wall-hung ones stand off the wall by HUNG_OFFSET; the
 ## UsePoint is USE_POINT_M in front on the anchor's floor.
-func canvas(parent: Node3D, nm: String, anchor: Vector3, yaw: float, loot: StringName, tag: String, hung: bool) -> Node3D:
+## `sensor`: the frame's AlarmGroups zone (&"" = no frame sensor).
+func canvas(parent: Node3D, nm: String, anchor: Vector3, yaw: float, loot: StringName, tag: String, hung: bool,
+		sensor: StringName = &"") -> Node3D:
 	var f: Vector3 = front_of(yaw)
 	var pos: Vector3 = anchor + f * HUNG_OFFSET if hung else anchor
 	var props: Dictionary = {"loot_id": loot, "count": 1, "interaction_time_s": CUT_S}
 	if tag != "":
 		props["objective_tag"] = StringName(tag)
+	if sensor != &"":
+		props["alarm_on_take"] = true
+		props["alarm_group"] = sensor
 	return cprefab(parent, "loot_spawn", nm, pos, yaw, "", props, anchor + f * L.USE_POINT_M, {"kind": "loot_spawn"})
 
 
@@ -221,7 +246,9 @@ func _build_argus(_gp: Node3D) -> void:
 	var dev: Node3D = n("Gameplay/Devices")
 	var rack: Vector3 = Vector3(26.5, 5.4, 0.75)
 	cprefab(dev, "hack_terminal", "ArgusTerminal", rack, 180.0, "prop_server_rack_terminal",
-		{"duration_s": HACK_STEALTH_S, "interruptions": Vector2i(1, 2), "objective_tag": &"hack"}, Vector3(26.5, 5.4, 2.2))
+		{"duration_s": HACK_STEALTH_S, "interruptions": Vector2i(1, 2), "objective_tag": &"hack",
+			"clears_alarm_group": ARGUS_TR}, Vector3(26.5, 5.4, 2.2),
+		{"kind": "hack_terminal", "alarm_groups": PackedStringArray(ARGUS_GROUPS)})
 	obstruct_catalog("prop_server_rack_terminal", rack, 180.0)
 	var doors: Node3D = n("Gameplay/Doors")
 	var sv: Node3D = doors.get_node_or_null("ServerDoor") as Node3D
@@ -266,8 +293,9 @@ func _drill(parent: Node3D, nm: String, pos: Vector3, yaw: float, use: Vector3, 
 ## and the GS till (doc Loot path; small_valuables values on the prefabs, B README "Not data here").
 func _build_loot(_gp: Node3D) -> void:
 	var lt: Node3D = n("Gameplay/Loot")
-	for s: Array in STUDIES:
-		canvas(lt, String(s[0]), s[1] as Vector3, float(s[2]), STUDY_LOOT, "study", true)
+	for s: Array in STUDIES:   # wall studies are hung frames: the upper floor's zone or the ground floor's
+		var sa: Vector3 = s[1] as Vector3
+		canvas(lt, String(s[0]), sa, float(s[2]), STUDY_LOOT, "study", true, ARGUS_UPPER if sa.y > 1.0 else ARGUS_GROUND)
 	for i: int in range(STORE_STUDIES.size()):
 		canvas(lt, "StoreStudy%d" % (i + 1), STORE_STUDIES[i] as Vector3, 0.0, STUDY_LOOT, "store_study", false)
 	for j: int in range(LOCKERS.size()):
@@ -346,7 +374,8 @@ func slot_content(vs: VariantSlot, group: String, slot_id: String, row: Array) -
 	var yaw: float = float(row[8])
 	match group:
 		"centrepiece", "canvas_orchard", "canvas_widow", "canvas_saint":
-			canvas(vs, "Canvas", at, yaw, CANVAS_LOOT[group], String(SLOT_TAGS[group]), bool(row[9]))
+			canvas(vs, "Canvas", at, yaw, CANVAS_LOOT[group], String(SLOT_TAGS[group]), bool(row[9]),
+				SLOT_SENSOR.get(slot_id, &""))
 			if slot_id == "cp_landing":
 				_curtain(vs, at.y)
 		"keycard":
@@ -359,6 +388,8 @@ func slot_content(vs: VariantSlot, group: String, slot_id: String, row: Array) -
 					security_camera(vs, String(c[0]))
 		"laser_pattern":
 			_lasers(vs, slot_id)
+		"sensor_net":
+			_sensor_net(vs, slot_id)
 		"escape":
 			_escape(vs, slot_id)
 		"security_room_staffed":
@@ -379,15 +410,30 @@ func npc_slot(_vs: VariantSlot, _group: String, _slot_id: String, _at: Vector3, 
 	return false
 
 
-## kc_* pickups (B5 `keycard`): the bar (kc_curator: the mission keeps it hidden unless curator_tipsy, QC-52 carries the
-## real card on her lanyard), the SC key cabinet, the RG desk, the CS bench.
+## sensor_net (logic slot): params `alarm_groups_live` / `alarm_groups_off` (the zones this option leaves off).
+func _sensor_net(vs: VariantSlot, slot_id: String) -> void:
+	var live: Array = SENSOR_NET[slot_id]
+	var off: Array[StringName] = []
+	for g: StringName in ARGUS_GROUPS:
+		if not live.has(g):
+			off.append(g)
+	vs.params = {"alarm_groups_live": PackedStringArray(live), "alarm_groups_off": PackedStringArray(off)}
+
+
+## kc_* pickups (B5 `keycard`): kc_curator is on Sorell's lanyard (QC-52: `carrier_tag` civ_curator, placed at the bar
+## as its no-carrier fallback) plus `KeycardBar` (tag keycard_bar), the curator_tipsy lanyard the mission keeps hidden
+## until last call; the SC key cabinet, the RG desk, the CS bench.
 func _keycard(vs: VariantSlot, slot_id: String, at: Vector3, yaw: float) -> void:
 	var vis: String = "prop_keycard_bank"
 	var props: Dictionary = {"objective_tag": &"keycard"}
 	match slot_id:
 		"kc_curator":
-			cprefab(vs, "keycard_pickup", "Keycard", Vector3(14.95, 1.1, 18.6), yaw, vis, props,
-				Vector3(at.x, 0.0, at.z) + front_of(yaw) * L.USE_POINT_M)
+			var up: Vector3 = Vector3(at.x, 0.0, at.z) + front_of(yaw) * L.USE_POINT_M
+			var carried: Dictionary = props.duplicate()
+			carried["carrier_tag"] = &"civ_curator"
+			cprefab(vs, "keycard_pickup", "Keycard", Vector3(14.95, 1.1, 18.6), yaw, vis, carried, up)
+			cprefab(vs, "keycard_pickup", "KeycardBar", Vector3(14.95, 1.1, 18.95), yaw, vis,
+				{"objective_tag": &"keycard_bar"}, up + Vector3(0.0, 0.0, 0.35))
 		"kc_security":
 			on_box(vs, "keycard_pickup", "Keycard", Vector3(17.725, 1.2, 3.0), yaw, vis, props, ["KeyCabinetSC",
 				Vector3(17.725, 0.0, 3.0), Vector3(0.6, 1.2, 0.35), 90.0, "key_cabinet"])
@@ -437,6 +483,7 @@ func _lasers(vs: VariantSlot, slot_id: String) -> void:
 	if slot_id == "lz_static":
 		metas["bypass"] = false
 		metas["crouch_under"] = true
+	props["enabled_at_start"] = true   # live all night (QC-53)
 	prefab(em, "laser_grid", "TreasuryLasers", Vector3(mid, 5.4 + y, LASER_Z), 0.0, props, null, metas)
 
 
@@ -445,7 +492,7 @@ func _curtain(vs: VariantSlot, floor_y: float) -> void:
 	var x1: float = float(CURTAIN[1])
 	prefab(vs, "laser_grid", "LandingCurtain", Vector3((x0 + x1) * 0.5, floor_y, float(CURTAIN[2])), 0.0,
 		{"pattern": &"static", "size_m": Vector3(x1 - x0, float(CURTAIN[3]), 0.1), "beam_count": int(CURTAIN[4]),
-			"objective_tag": &"landing_curtain"}, null, {"kind": "laser_grid"})
+			"objective_tag": &"landing_curtain", "enabled_at_start": false}, null, {"kind": "laser_grid"})
 
 
 func _emitters(parent: Node3D, base: Vector3, span: float) -> StaticBody3D:

@@ -1154,7 +1154,7 @@ KEYCARD; the server CODE; the art store VAULT. Staff that must pass a locked doo
 | GS shop door (from VE) | LOCKPICK 8 s | Closed for the gala. |
 | Staff door under the stair (19, 8), GH ↔ BC | LOCKPICK 8 s | `npc_authorized_tags` [`guard`, `staff`]. The route-1 "held open" walk-through is gone (QC-56 dropped). |
 | WG art-handling double door (5–6, 8), WG ↔ BC | LOCKPICK 8 s | Staff authorised. |
-| LD personnel door (Mews) | LOCKPICK 8 s outside, `push_bar` inside | Police ENTRY. ≥ 1.0 m, step-free to the Mews (§7.3). |
+| LD personnel door (Mews) | LOCKPICK 8 s outside, `push_bar` inside | Police ENTRY. ≥ 1.0 m, step-free to the Mews (§7.3). `npc_authorized_tags` [`guard_mews`, `civ_waitstaff`] (the smoker; the waitstaff leave by it, Circulation). |
 | LD roller door (Mews) | BARRED (crew cannot operate) | Police ENTRY `breach_only` (breach opens it); the S1 lane when open. |
 | LD → EG art door DD (37–38, 12) | KEYCARD (reader on the LD side) | Lockdown: BARRED; `[hack]` done in loud → NONE (plain open). |
 | Roof head-house door (3, 7, roof) | LOCKPICK 8 s from the deck, `push_bar` inside | Police ENTRY `breach_only`. |
@@ -1163,7 +1163,7 @@ KEYCARD; the server CODE; the art store VAULT. Staff that must pass a locked doo
 | Interior BOH, upper: SS, CO, AO, UW, FS, CS (from UC), BW → UC, BE → UC, AT (N and W) | NONE | |
 | UG3 → CS door (36, 12) | LOCKPICK 8 s | Staff authorised (conservator, curator). |
 | SV server door (25, 6) | CODE (`code_group argus`, keypad on the UC side) | Loud: drill 60 s (`[server_door]`). |
-| TR door (39, 24) | KEYCARD (TR reader) | Lockdown: shutter BARRED; `[hack]` done in loud → shutter up **and** door NONE. |
+| TR door (39, 24) | KEYCARD (TR reader) | Lockdown: shutter BARRED; `[hack]` done in loud → shutter up **and** door NONE. Inspectors and couriers (`guard_inspection`, `guard_vaultline`) authorised (they walk to `cp_treasury`). |
 | Calloway arch shutter (12, 12–14) | `industrial_door`, `starts_open`, NONE | Lockdown: BARRED; `[hack]` lifts it. |
 | AS vault door VV (21–22, 8) | VAULT + `keycard_reader` (stealth) | Lockdown: reader dead; `[hack]` done → plain open; thermal drill 240 s as the loud fallback. Couriers (`guard_vaultline`) authorised. |
 | Interior BOH, basement: SS, LK, FR, QR, PL, LF landing doors | NONE | |
