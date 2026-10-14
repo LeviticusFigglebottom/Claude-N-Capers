@@ -279,6 +279,14 @@ static func settings_data(policy: StringName) -> Dictionary:
 	return {"dropin": String(policy)}
 
 
+## C11: the crew is back in the kept lobby after a heist. Start is "once per heist", not once per session:
+## clears the launch order and the previous job's plan votes; the contract, crew and summaries stay
+## (ready flags are cleared by each peer's own set_ready(false)).
+func end_round() -> void:
+	started = {}
+	vote_log = []
+
+
 ## Why the host cannot Start right now (OK = it can): host only, once, with a contract, and every human
 ## slot has sent a legal profile summary and is ready.
 func start_block() -> StringName:
