@@ -119,6 +119,9 @@ var _cam_crouched: bool = false
 ## PO-4: camera head-bob phase (rad) and eased weight 0..~1.6.
 var _bob_phase: float = 0.0
 var _bob_w: float = 0.0
+## D-102: effective carry speed mult this tick (after perks) and the raw PD2 move_speed_modifier for the bob.
+var _carry_mult: float = 1.0
+var _carry_bob_mult: float = 1.0
 ## PO-4: melee-hit camera punch (pitch, roll; radians): current value, peak amplitude, seconds since the hit.
 var _punch: Vector2 = Vector2.ZERO
 var _punch_amp: Vector2 = Vector2.ZERO
@@ -448,9 +451,14 @@ func _simulate(delta: float) -> void:
 		speed *= weapons.move_speed_mult
 	if armor_def != null:  # QB-56: armor move-speed penalty x movement.armor_penalty_mult
 		speed *= clampf(1.0 - (1.0 - armor_def.move_speed_mult) * Modifiers.mult(slot, &"movement.armor_penalty_mult"), 0.1, 1.0)
-	if bag_w >= 0 and not Modifiers.flag(slot, &"stealth.body_bag_concealed_carry"):
-		var pen: float = (1.0 - tw.bag_speed_mult[bag_w]) * Modifiers.mult(slot, &"loot.carry_speed_penalty_mult")
-		speed *= clampf(1.0 - pen, 0.1, 1.0)
+	_carry_mult = 1.0
+	_carry_bob_mult = 1.0
+	if bag_w >= 0:
+		_carry_bob_mult = tw.bag_speed_mult[bag_w]  # D-102: PD2 bob x the raw move_speed_modifier
+		if not Modifiers.flag(slot, &"stealth.body_bag_concealed_carry"):
+			var pen: float = (1.0 - tw.bag_speed_mult[bag_w]) * Modifiers.mult(slot, &"loot.carry_speed_penalty_mult")
+			_carry_mult = clampf(1.0 - pen, 0.1, 1.0)
+			speed *= _carry_mult
 	if not mobile:
 		speed = 0.0
 	var mv: Vector2 = i.move.limit_length(1.0)
@@ -468,11 +476,12 @@ func _simulate(delta: float) -> void:
 	if not grounded:
 		velocity.y -= tw.gravity * delta
 	var can_jump: bool = not casing and mobile and not crouched
+	var jump_v: float = tw.jump_velocity
 	if bag_w >= 0:
-		can_jump = can_jump and tw.bag_can_jump[bag_w]
+		jump_v *= tw.bag_jump_mult[bag_w]  # D-102: a bag lowers the jump, never blocks it
 	var jumped: bool = false
 	if i.jump and not _jump_latch and grounded and can_jump and stamina.can_jump():
-		velocity.y = tw.jump_velocity
+		velocity.y = jump_v
 		stamina.on_jump()
 		jumped = true
 	stamina.tick(sprinting, delta)
@@ -566,7 +575,10 @@ func _apply_head_bob(delta: float, tw: CrewTweak) -> void:
 	var speed: float = Vector2(velocity.x, velocity.z).length()
 	var target: float = 0.0
 	if on and grounded and speed > 0.3:
-		target = clampf(speed / maxf(tw.head_bob_ref_mps, 0.01), 0.0, 1.0) * (tw.head_bob_sprint_mult if sprinting else 1.0)
+		# D-102: PD2's bob is per state, not per m/s; with a bag it is x move_speed_modifier, so the speed term is
+		# normalised to the carried walk speed and the carry factor applied once.
+		var ref: float = maxf(tw.head_bob_ref_mps * _carry_mult, 0.01)
+		target = clampf(speed / ref, 0.0, 1.0) * (tw.head_bob_sprint_mult if sprinting else 1.0) * _carry_bob_mult
 		if CrewView.is_aiming(self):
 			target *= tw.head_bob_ads_mult
 	_bob_w = move_toward(_bob_w, target, tw.head_bob_rate * delta)
