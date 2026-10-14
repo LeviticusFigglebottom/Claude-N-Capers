@@ -299,3 +299,15 @@ func test_secured_toast_singular() -> void:
 	EventBus.loot_secured.emit(2, &"loot.cash", 100)
 	await wait_frames(1)
 	assert_eq(_hud.toast_label.text, UiText.t(&"ui.hud.secured", {"count": 2}))
+
+
+## P fresh-eyes #8: an off-screen marker clamps clear of the HUD's top and bottom bands (it sat on the
+## bottom-right ammo cluster).
+func test_clamped_marker_keeps_out_of_the_hud_bands() -> void:
+	var area: Rect2 = Rect2(0, 0, 1920, 1080)
+	for p: Vector2 in [Vector2(5000, 5000), Vector2(1900, 1070), Vector2(960, 4000), Vector2(-3000, -3000), Vector2(960, -500)]:
+		for behind: bool in [false, true]:
+			var placed: Array = ObjectiveMarkers.clamp_to_edge(p, behind, area)
+			var at: Vector2 = placed[0] as Vector2
+			assert_true(at.y <= 1080.0 - ObjectiveMarkers.EDGE_INSET_BOTTOM + 0.01, "%s: y %.0f above the bottom band" % [p, at.y])
+			assert_true(at.y >= ObjectiveMarkers.EDGE_INSET_TOP - 0.01, "%s: y %.0f under the top band" % [p, at.y])
