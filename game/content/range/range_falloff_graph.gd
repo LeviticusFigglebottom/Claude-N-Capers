@@ -89,7 +89,10 @@ func _draw() -> void:
 		var x: float = r.position.x + r.size.x * float(i) / float(steps)
 		draw_line(Vector2(x, r.end.y), Vector2(x, r.end.y + 4.0), tweak.graph_axis_color, 1.0)
 		var txt: String = UiText.t(&"ui.range.fmt.m", {"value": roundi(d)})
-		draw_string(font, Vector2(x - 12.0, r.end.y + 4.0 + float(fs)), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, tweak.graph_axis_color)
+		# The first label starts at its tick, the last ends at it (it was clipped at the panel edge), others centre.
+		var tw: float = font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var tx: float = x if i == 0 else (x - tw if i == steps else x - tw * 0.5)
+		draw_string(font, Vector2(tx, r.end.y + 4.0 + float(fs)), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, tweak.graph_axis_color)
 	if _samples.size() < 2:
 		return
 	var top: float = _max_damage() / 1.1
