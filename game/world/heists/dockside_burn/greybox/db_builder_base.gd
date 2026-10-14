@@ -51,6 +51,8 @@ var map_root: HeistMap = null
 var errors: PackedStringArray = PackedStringArray()
 ## Projected nav obstructions for props and prefabs: [corners (PackedVector3Array), elevation, height].
 var obstructions: Array[Array] = []
+## Mesh tile edge for the pieces wall() builds (0 = whole); the builders set SLAB_TILE around building walls.
+var wall_tile: float = 0.0
 var _mat_cache: Dictionary = {}
 var _box_mesh_cache: Dictionary = {}
 var _box_shape_cache: Dictionary = {}
@@ -186,12 +188,57 @@ func box_shape(size: Vector3) -> BoxShape3D:
 	return _box_shape_cache[key]
 
 
+## Box mesh of `size` without the faces flagged open: [-x, +x, -z, +z] (seamless wall tiles). An open side
+## reaches 1 mm into its neighbour tile (same material: coplanar overlap is not a zfight) so no ray slips
+## through the seam. Cached.
+func _tile_mesh(size: Vector3, mat_id: String, open: Array) -> Mesh:
+	var key: String = "tile|%s|%.3f|%.3f|%.3f|%s" % [mat_id, size.x, size.y, size.z, str(open)]
+	if _box_mesh_cache.has(key):
+		return _box_mesh_cache[key]
+	var lo: Vector3 = -size * 0.5
+	var hi: Vector3 = size * 0.5
+	lo.x -= 0.001 if bool(open[0]) else 0.0
+	hi.x += 0.001 if bool(open[1]) else 0.0
+	lo.z -= 0.001 if bool(open[2]) else 0.0
+	hi.z += 0.001 if bool(open[3]) else 0.0
+	var mid: Vector3 = (lo + hi) * 0.5
+	var h: Vector3 = (hi - lo) * 0.5
+	# [normal, u, v] with u x v = -normal (Godot front faces wind clockwise).
+	var faces: Array = [[Vector3.LEFT, Vector3.UP, Vector3.BACK], [Vector3.RIGHT, Vector3.BACK, Vector3.UP],
+		[Vector3.FORWARD, Vector3.RIGHT, Vector3.UP], [Vector3.BACK, Vector3.UP, Vector3.RIGHT],
+		[Vector3.DOWN, Vector3.BACK, Vector3.RIGHT], [Vector3.UP, Vector3.RIGHT, Vector3.BACK]]
+	var st: SurfaceTool = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for fi: int in range(faces.size()):
+		if fi < 4 and bool(open[fi]):
+			continue
+		var n: Vector3 = faces[fi][0]
+		var u: Vector3 = faces[fi][1]
+		var v: Vector3 = faces[fi][2]
+		var c: Vector3 = mid + n * h
+		var hu: Vector3 = u * absf(u.dot(h))
+		var hv: Vector3 = v * absf(v.dot(h))
+		var q: Array = [c - hu - hv, c + hu - hv, c + hu + hv, c - hu + hv]
+		for k: int in [0, 1, 2, 0, 2, 3]:
+			var p: Vector3 = q[k]
+			st.set_normal(n)
+			st.set_uv(Vector2(p.dot(u), p.dot(v)))
+			st.add_vertex(p)
+	st.generate_tangents()
+	st.set_material(lib_mat(mat_id))
+	var m: ArrayMesh = st.commit()
+	_box_mesh_cache[key] = m
+	return m
+
+
 ## Static box (world_static) from min/max corners: StaticBody3D + CollisionShape3D + MeshInstance3D.
 ## mat_id "" or "none" = collision only.
 ## tile > 0: the visual is an even grid of mesh tiles no wider than `tile` in x / z (SLAB_TILE) under the one
 ## unchanged collider; one tile keeps the single `Mesh` child.
+## seamless: the tiles leave out their faces on the internal seams (walls: a seam face on a crossing wall's face
+## line would be a coplanar pair).
 func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, collide: bool = true,
-		tile: float = 0.0) -> Node3D:
+		tile: float = 0.0, seamless: bool = false) -> Node3D:
 	var size: Vector3 = mx - mn
 	if size.x <= 0.001 or size.y <= 0.001 or size.z <= 0.001:
 		return null
@@ -221,7 +268,10 @@ func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, c
 		for iz: int in range(nz):
 			var mi: MeshInstance3D = MeshInstance3D.new()
 			mi.name = "Mesh" if nx * nz == 1 else "Mesh%02d_%02d" % [ix, iz]
-			mi.mesh = box_mesh(ts, key)
+			if seamless and nx * nz > 1:
+				mi.mesh = _tile_mesh(ts, key, [ix > 0, ix < nx - 1, iz > 0, iz < nz - 1])
+			else:
+				mi.mesh = box_mesh(ts, key)
 			if nx * nz > 1:
 				mi.position = Vector3(-size.x * 0.5 + ts.x * (ix + 0.5), 0.0, -size.z * 0.5 + ts.z * (iz + 0.5))
 			add(body, mi)
@@ -375,7 +425,7 @@ func wall(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a1:
 			else:
 				mn = Vector3(fixed - thick * 0.5, s.x, p)
 				mx = Vector3(fixed + thick * 0.5, s.y, q)
-			box(parent, "%s_%02d" % [nm, part], mn, mx, mat_id)
+			box(parent, "%s_%02d" % [nm, part], mn, mx, mat_id, true, wall_tile, true)
 			part += 1
 
 

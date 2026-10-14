@@ -142,6 +142,7 @@ func _portals(wall_name: String) -> Array:
 func _build_shell(geo: Node3D) -> void:
 	var bld: Node3D = add(geo, node3d("Building")) as Node3D
 	var walls: Node3D = add(bld, node3d("ExteriorWalls")) as Node3D
+	wall_tile = SLAB_TILE  # building walls draw as <= 6 m seamless mesh tiles (one collider each)
 	var q: float = L.EXT_T * 0.25
 	var h: float = L.EXT_T * 0.5
 	for w: Array in L.EXT_WALLS:
@@ -162,6 +163,7 @@ func _build_shell(geo: Node3D) -> void:
 		ops2.append_array(_portals(String(w2[0])))
 		ops2.append_array(_openings(String(w2[1]), float(w2[2]), float(w2[3]), float(w2[4]), yr2.x, yr2.y, t))
 		wall(iw, String(w2[0]), String(w2[1]), float(w2[2]), float(w2[3]), float(w2[4]), t, yr2, ops2, String(w2[8]))
+	wall_tile = 0.0
 	var slabs: Node3D = add(bld, node3d("Slabs")) as Node3D
 	for s: Array in L.SLABS:
 		box_a(slabs, String(s[0]), s[1], String(s[2]), true, SLAB_TILE)
@@ -301,6 +303,7 @@ func _coping(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, 
 ## Small buildings: four walls (door / window openings from the layout), the roof slab.
 func _build_sheds(bld: Node3D) -> void:
 	var sh: Node3D = add(bld, node3d("Sheds")) as Node3D
+	wall_tile = SLAB_TILE
 	for s: Array in L.SHEDS:
 		var g: Node3D = add(sh, node3d(String(s[0]))) as Node3D
 		var x0: float = float(s[1])
@@ -323,6 +326,7 @@ func _build_sheds(bld: Node3D) -> void:
 			wall(g, "Wall" + String(sd[0]), String(sd[1]), float(sd[2]), float(sd[3]), float(sd[4]), t, Vector2(y0, top), ops,
 				"wall_ext")
 		box(g, "Roof", Vector3(x0 - h, ceil_y, z0 - h), Vector3(x1 + h, top, z1 + h), "roof", true, SLAB_TILE)
+	wall_tile = 0.0
 
 
 # --- Stairs -----------------------------------------------------------------------------------

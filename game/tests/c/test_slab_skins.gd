@@ -1,7 +1,8 @@
 ## PO-13 slab skins and slab tiles (Shadow Ledger, Dockside Burn): the per-room floor / ceiling finish quads
 ## laid over slab boxes that span several rooms, and the 6 m mesh tiles of those slab boxes (Compatibility
 ## renderer: <= 8 lights per mesh instance), are visual only. Owner: ENV C.
-## - Slab / ceiling / grade bodies keep one box collider; their mesh tiles are <= SLAB_TILE wide and tile it.
+## - Slab / ceiling / grade / building-wall bodies keep one box collider; their mesh tiles are <= SLAB_TILE wide
+##   and tile it (walls: seamless tiles, no faces on the internal seams).
 ## - Every skin is a MeshInstance3D under Geometry/Building/Skins (one per room) with no CollisionObject3D above or
 ##   below it, casts no shadow, and each quad sits 3-5 mm off a slab collider face (zfight: < 2 mm is
 ##   coplanar; feet: a 4 mm visual lift is far below the capsule's step tolerance).
@@ -26,8 +27,10 @@ const OFFSET_MAX: float = 0.005
 const SLAB_TILE: float = 6.0
 ## Tiled groups per map (the big horizontal boxes).
 const TILED: Dictionary = {
-	"shadow_ledger": ["Geometry/Building/Slabs"],  # room ceilings stay whole (seams on wall lines z-fight)
-	"dockside_burn": ["Geometry/Building/Slabs", "Geometry/Building/Ceilings", "Geometry/Site/Ground"],
+	"shadow_ledger": ["Geometry/Building/Slabs", "Geometry/Building/InteriorWalls", "Geometry/Building/Facade",
+		"Geometry/Building/Riser"],  # room ceilings stay whole (seams on wall lines z-fight)
+	"dockside_burn": ["Geometry/Building/Slabs", "Geometry/Building/Ceilings", "Geometry/Site/Ground",
+		"Geometry/Building/ExteriorWalls", "Geometry/Building/InteriorWalls", "Geometry/Building/Sheds"],
 }
 
 
@@ -108,15 +111,17 @@ func test_slab_tiles_cover_one_collider() -> void:
 				var meshes: Array[Node] = body.find_children("Mesh*", "MeshInstance3D", false, false)
 				if meshes.size() > 1:
 					assert_eq(shapes.size(), 1, "%s: tiled %s keeps one collider" % [heist, body.name])
-				# Box bodies only (box(): one BoxShape3D + BoxMesh tiles); quay steps / ramps are built otherwise.
-				if shapes.size() != 1 or meshes.is_empty() or not ((shapes[0] as CollisionShape3D).shape is BoxShape3D) \
-						or not ((meshes[0] as MeshInstance3D).mesh is BoxMesh):
+				# Box bodies only (box(): one BoxShape3D + box / seamless wall tiles); quay steps / ramps are built otherwise.
+				if shapes.size() != 1 or meshes.is_empty() or not ((shapes[0] as CollisionShape3D).shape is BoxShape3D):
 					continue
+				var bm: BaseMaterial3D = (meshes[0] as MeshInstance3D).mesh.surface_get_material(0) as BaseMaterial3D
+				if bm != null and bm.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
+					continue  # curtain-wall glass panes stay whole (see-through, not lit walls)
 				var sz: Vector3 = ((shapes[0] as CollisionShape3D).shape as BoxShape3D).size
 				var area: float = 0.0
 				for m: Node in meshes:
-					var ms: Vector3 = ((m as MeshInstance3D).mesh as BoxMesh).size
-					assert_true(ms.x <= SLAB_TILE + 0.001 and ms.z <= SLAB_TILE + 0.001,
+					var ms: Vector3 = (m as MeshInstance3D).mesh.get_aabb().size
+					assert_true(ms.x <= SLAB_TILE + 0.005 and ms.z <= SLAB_TILE + 0.005,
 						"%s: %s/%s is a <= %.0f m tile" % [heist, body.name, m.name, SLAB_TILE])
 					area += ms.x * ms.z
 				assert_near(area, sz.x * sz.z, 0.01, "%s: %s tiles cover its collider" % [heist, body.name])

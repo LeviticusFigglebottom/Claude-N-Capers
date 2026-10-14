@@ -250,15 +250,19 @@ static func _rects_minus(outer: Array, holes: Array) -> Array:
 
 func _build_shell(geo: Node3D) -> void:
 	var bld: Node3D = add(geo, node3d("Building")) as Node3D
+	wall_tile = SLAB_TILE  # building walls draw as <= 6 m seamless mesh tiles (one collider each)
 	_build_interior_walls(add(bld, node3d("InteriorWalls")) as Node3D)
 	_build_facade(add(bld, node3d("Facade")) as Node3D)
+	wall_tile = 0.0
 	_build_slabs(add(bld, node3d("Slabs")) as Node3D)
 	_build_ceilings(add(bld, node3d("Ceilings")) as Node3D)
 	var stairs: Node3D = add(bld, node3d("Stairs")) as Node3D
 	for cid: String in L.STAIR_CORES:
 		_build_core(stairs, cid, L.STAIR_CORES[cid])
 	_build_feature_stair(stairs)
+	wall_tile = SLAB_TILE
 	_build_riser(add(bld, node3d("Riser")) as Node3D)
+	wall_tile = 0.0
 	var fills: Node3D = add(bld, node3d("ShaftFills")) as Node3D
 	box(fills, "LiftShaft1", Vector3(15.15, L.TOP40, 7.65), Vector3(17.85, L.FRF, 9.85), "trim")
 	box(fills, "LiftShaft2", Vector3(18.15, L.TOP40, 7.65), Vector3(20.85, L.FRF, 9.85), "trim")
@@ -405,10 +409,10 @@ func _build_facade(parent: Node3D) -> void:
 				_glass(lvl, "%sPane%02d" % [nm, i], axis, fixed, float(pn[0]), float(pn[1]), float(pn[2]), float(pn[3]))
 	# L40 (service level; the rest of the floor is sealed): solid facade from below the slab.
 	var l40: Node3D = add(parent, node3d("L40")) as Node3D
-	box(l40, "FacadeL40N", Vector3(-0.2, -0.6, -0.2), Vector3(36.2, L.F41, 0.2), "wall_ext")
-	box(l40, "FacadeL40S", Vector3(-0.2, -0.6, 23.8), Vector3(36.2, L.F41, 24.2), "wall_ext")
-	box(l40, "FacadeL40W", Vector3(-0.2, -0.6, 0.2), Vector3(0.2, L.F41, 23.8), "wall_ext")
-	box(l40, "FacadeL40E", Vector3(35.8, -0.6, 0.2), Vector3(36.2, L.F41, 23.8), "wall_ext")
+	box(l40, "FacadeL40N", Vector3(-0.2, -0.6, -0.2), Vector3(36.2, L.F41, 0.2), "wall_ext", true, SLAB_TILE, true)
+	box(l40, "FacadeL40S", Vector3(-0.2, -0.6, 23.8), Vector3(36.2, L.F41, 24.2), "wall_ext", true, SLAB_TILE, true)
+	box(l40, "FacadeL40W", Vector3(-0.2, -0.6, 0.2), Vector3(0.2, L.F41, 23.8), "wall_ext", true, SLAB_TILE, true)
+	box(l40, "FacadeL40E", Vector3(35.8, -0.6, 0.2), Vector3(36.2, L.F41, 23.8), "wall_ext", true, SLAB_TILE, true)
 
 
 func _build_slabs(parent: Node3D) -> void:
