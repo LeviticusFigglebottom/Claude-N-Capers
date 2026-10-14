@@ -95,12 +95,8 @@ func _stealth_to_last_call() -> void:
 			warned = true
 			note("LAST CALL WARNING t=%.0f at %s" % [rt.heist_time_s, Po5Pilot._v(crew.global_position)])
 			await shot("last_call_warning")
-		if not called and _public_zones().size() < zones.size():
+		if not called and await _check_last_call(zones.size()):
 			called = true
-			note("LAST CALL t=%.0f: PUBLIC zones now %d, patrons leaving %d, player at %s, detection max %.2f" % [
-				rt.heist_time_s, _public_zones().size(), _leaving_patrons(), Po5Pilot._v(crew.global_position),
-				_max_detection()])
-			await shot("last_call")
 		if rt.heist_time_s - last_shot > 60.0:
 			last_shot = rt.heist_time_s
 			note("casing t=%.0f at %s detection max %.2f leaving %d" % [rt.heist_time_s,
@@ -114,9 +110,22 @@ func _stealth_to_last_call() -> void:
 		if not await pilot.goto(pilot.stand_point(pt), 2.0, 40.0):
 			note("tour point %s not reached" % Po5Pilot._v(pt))
 		await pilot.hold_position(4.0, func() -> bool: return rt.went_loud)
+		if not called and await _check_last_call(zones.size()):
+			called = true
 	note("STEALTH END t=%.0f went_loud=%s last_call=%s patrons leaving %d detection max %.2f" % [rt.heist_time_s,
 		rt.went_loud, called, _leaving_patrons(), _max_detection()])
 	await shot("after_last_call")
+
+
+## Last call happened (a PUBLIC zone turned RESTRICTED): note what it did to the player and take a shot.
+func _check_last_call(n_public: int) -> bool:
+	if _public_zones().size() >= n_public:
+		return false
+	note("LAST CALL seen by t=%.0f: PUBLIC zones now %d, patrons leaving %d, player at %s masked %s, detection max %.2f"
+		% [rt.heist_time_s, _public_zones().size(), _leaving_patrons(), Po5Pilot._v(crew.global_position),
+		crew.masked, _max_detection()])
+	await shot("last_call")
+	return true
 
 
 ## Highest detection of the local player across living guards / cameras' NPCs (0..1).
