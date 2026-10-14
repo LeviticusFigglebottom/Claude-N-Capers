@@ -352,6 +352,12 @@ func captain_state() -> Dictionary:
 
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"heist_net_sync", fp)
+
+
+func _physics_step(delta: float) -> void:
 	if not _begun or _runtime == null or not Net.is_authority() or not is_live():
 		return
 	_scan_spawns()

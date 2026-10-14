@@ -278,6 +278,12 @@ func _start_swing(target: float, instant: bool) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"door", fp)
+
+
+func _physics_step(delta: float) -> void:
 	if _swing_u >= 1.0:
 		set_physics_process(false)
 		return
