@@ -161,10 +161,10 @@ const DOORS: Array = [
 	["ManagerDoor", "prop_door_single_walnut_t20", Vector3(10.5, UPPER, 6.0), 0.0, "NONE", "INWARD", "", {}],
 	["StockDoor", "prop_door_single_ivory_t20", Vector3(13.0, UPPER, 6.0), 0.0, "NONE", "INWARD", "", {}],
 	# Play-space closures: chained/barred gates the police open in loud (mission unlocks them).
-	["AlleyGate", "prop_door_double_steel_t20", Vector3(-14.0, 0.0, -3.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["HarlowWestGate", "prop_door_double_steel_t20", Vector3(-14.0, ROAD_Y, 23.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["HarlowEastGate", "prop_door_double_steel_t20", Vector3(32.5, ROAD_Y, 23.2), 90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["PellNorthGate", "prop_door_double_steel_t20", Vector3(23.2, ROAD_Y, -8.0), 180.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["AlleyGate", "prop_door_double_steel_t10", Vector3(-14.0, 0.0, -3.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["HarlowWestGate", "prop_door_double_steel_t10", Vector3(-14.0, ROAD_Y, 23.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["HarlowEastGate", "prop_door_double_steel_t10", Vector3(32.5, ROAD_Y, 23.2), 90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["PellNorthGate", "prop_door_double_steel_t10", Vector3(23.2, ROAD_Y, -8.0), 180.0, "BARRED", "DOUBLE", "police_gate", {}],
 ]
 
 # --- Site -----------------------------------------------------------------------------------

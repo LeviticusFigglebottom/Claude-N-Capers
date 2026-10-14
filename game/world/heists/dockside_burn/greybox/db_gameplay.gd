@@ -204,6 +204,8 @@ func _build_doors(gp: Node3D) -> void:
 			props["width_m"] = 1.1
 		elif CUSTOM_WIDTH.has(dtype):
 			props["width_m"] = float(CUSTOM_WIDTH[dtype])
+		if dtype in ["slide", "roller"]:
+			props["leaf_surface"] = &"metal"  # D-105: steel roller / insulated sliding leaves (visual name reads as wood)
 		var door: Node3D = prefab(doors, "door", String(d[0]), d[2], float(d[3]), props, null, metas)
 		if door != null and extra.has("padlock"):
 			_padlock(door, d, float(extra["padlock"]))
