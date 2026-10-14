@@ -761,6 +761,7 @@ func _spawn_in_heist_ui() -> void:
 	pd.profile_slot = profile_slot
 	pd.visible = false
 	pd.continue_pressed.connect(_leave_heist)
+	pd.retry_requested.connect(_retry_at_routine)
 	_in_heist.add_child(pd)
 	_heist_payday = pd
 	options_menu.heist_layer = _in_heist
@@ -802,6 +803,15 @@ func consume_pro_contract() -> void:
 		ProJobLocks.lock(profile, _board_contract)
 		Log.info(&"ui", "pro job failed: contract %s consumed" % BoardContracts.contract_key(_board_contract))
 	_board_contract = {}
+
+
+## First-heist safety net: back out of the failed heist and relaunch it at Routine, current loadout.
+func _retry_at_routine() -> void:
+	var heist: StringName = _heist_id
+	_leave_heist()
+	is_pro = false
+	_board_contract = {}
+	launch(heist, Enums.Difficulty.ROUTINE, SaveService.load_profile(profile_slot).loadout, _time_seed())
 
 
 ## Lead: Continue / Quick Play (main menu, hub) relaunches the last regular job with the current loadout.
