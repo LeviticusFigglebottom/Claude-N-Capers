@@ -33,6 +33,7 @@ var runner: DeviceRunner = null
 var saw_progress: float = 0.0
 
 var _place_time: float = 0.0
+var _place_prompt: StringName = &""
 
 
 func _placeholder_scene() -> PackedScene:
@@ -92,6 +93,7 @@ func _prefab_ready() -> void:
 	runner.state_changed.connect(_on_device_state)
 	runner.finished.connect(_on_device_finished)
 	_place_time = interactable.interaction_time_s
+	_place_prompt = interactable.prompt_key
 	interactable.kind = &"place_drill"
 	interactable.extra_check = _availability
 	interactable.completed.connect(_on_completed)
@@ -143,6 +145,7 @@ func _on_device_state(s: int) -> void:
 		_:
 			interactable.kind = &"place_drill"
 			interactable.interaction_time_s = _place_time
+			interactable.prompt_key = _place_prompt  # not "fix the drill" while it runs again after a fix
 
 
 func _on_device_finished() -> void:
