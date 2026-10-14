@@ -46,6 +46,27 @@ class AdsAlign:
 			vm._late_align()
 
 
+## PO-13: the left-hand IK (TwoBoneIK3D) only places the wrist, and the hand inherits the forearm's new rotation
+## (fingers pointing up off the handguard). HandCapture (before the IK) records hand.L's orientation relative to the
+## weapon bone as the clip authored it; HandRestore (after the IK) puts it back, blended by the IK's influence.
+class HandCapture:
+	extends SkeletonModifier3D
+	var vm: FpViewmodel = null
+
+	func _process_modification_with_delta(_delta: float) -> void:
+		if vm != null and is_instance_valid(vm):
+			vm._capture_hand()
+
+
+class HandRestore:
+	extends SkeletonModifier3D
+	var vm: FpViewmodel = null
+
+	func _process_modification_with_delta(_delta: float) -> void:
+		if vm != null and is_instance_valid(vm):
+			vm._restore_hand()
+
+
 enum Action { NONE, FIRE, RELOAD, SWAP, MELEE, DEPLOY, THROW }
 
 const NODE_NAME: String = "FpViewmodel"
@@ -117,6 +138,9 @@ var _part_nodes: Dictionary = {}
 var _magwell: Node3D = null
 var _magwell_rest: Transform3D = Transform3D.IDENTITY
 var _weapon_bone: int = -1
+## PO-13: hand.L bone and its clip orientation relative to the weapon bone (HandCapture -> HandRestore).
+var _hand_bone: int = -1
+var _hand_rel: Basis = Basis.IDENTITY
 var _mag_bone: int = -1
 var _bob_phase: float = 0.0
 ## Linear ADS progress behind the eased ads_weight.
@@ -188,6 +212,17 @@ func _bind(inst: Node3D, crew: CrewController) -> bool:
 	weapon_attach.bone_name = String(tw.weapon_bone)
 	left_hand_ik = FpLeftHandIk.create(skeleton)  # D-069: hand.L onto the weapon's LeftHandIK
 	skeleton.add_child(weapon_attach)
+	_hand_bone = skeleton.find_bone(FpLeftHandIk.END_BONE)
+	if left_hand_ik != null and _hand_bone >= 0 and tw.left_hand_keep_orientation:
+		var cap: HandCapture = HandCapture.new()
+		cap.name = "HandCapture"
+		cap.vm = self
+		skeleton.add_child(cap)
+		skeleton.move_child(cap, left_hand_ik.ik.get_index())  # before the IK
+		var res: HandRestore = HandRestore.new()
+		res.name = "HandRestore"
+		res.vm = self
+		skeleton.add_child(res)  # after the IK, before AdsAlign
 	var align: AdsAlign = AdsAlign.new()
 	align.name = "AdsAlign"
 	align.vm = self
@@ -442,6 +477,26 @@ func _breathing() -> Vector2:
 	amp = lerpf(amp, tw.breathing_ads_amp_deg, ads_weight)
 	var w: float = TAU * tw.breathing_hz
 	return Vector2(sin(_breath_t * w * 0.63) * amp * 0.6, sin(_breath_t * w) * amp)
+
+
+func _capture_hand() -> void:
+	if skeleton == null or _hand_bone < 0 or _weapon_bone < 0:
+		return
+	_hand_rel = skeleton.get_bone_global_pose(_weapon_bone).basis.orthonormalized().inverse() \
+		* skeleton.get_bone_global_pose(_hand_bone).basis.orthonormalized()
+
+
+func _restore_hand() -> void:
+	if skeleton == null or _hand_bone < 0 or _weapon_bone < 0 or left_hand_ik == null or left_hand_ik.ik == null:
+		return
+	var w: float = left_hand_ik.ik.influence
+	if w <= 0.0:
+		return
+	var pose: Transform3D = skeleton.get_bone_global_pose(_hand_bone)
+	var want: Basis = skeleton.get_bone_global_pose(_weapon_bone).basis.orthonormalized() * _hand_rel
+	var scale_v: Vector3 = pose.basis.get_scale()
+	var q: Quaternion = pose.basis.orthonormalized().get_rotation_quaternion().slerp(want.get_rotation_quaternion(), w)
+	skeleton.set_bone_global_pose(_hand_bone, Transform3D(Basis(q).scaled(scale_v), pose.origin))
 
 
 ## Read only (tests): the current look-lag sway (yaw, pitch; deg).

@@ -56,6 +56,9 @@ static var _gen: int = 0
 @export var left_hand_grip_offset: Vector3 = Vector3(-0.035, -0.02, 0.0)
 ## IK influence blend rate (1/s) when the hand leaves / returns to the grip.
 @export var left_hand_ik_rate: float = 8.0
+## PO-13: keep the clip's left-hand orientation relative to the gun while the IK moves the wrist (else the hand
+## inherits the IK'd forearm's rotation: fingers up off the handguard).
+@export var left_hand_keep_orientation: bool = true
 
 @export_group("Shared reload clips (D-063)")
 ## A set's single reload / reload_empty clip plays at clip time / the weapon's reload_time_s (reload_empty_time_s).
