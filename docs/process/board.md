@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 06:00: **round 79 ON ORIGIN**: env/c-worlds 5dd69ef3 (PO-8 VFX library game/world/vfx: ImpactFx/VfxDirector/decals/TracerFx/MuzzleFx/ShellFx/explosions, EFFECTS_SCALE caps; PP-C-1 walk fix). vfx_surface_of 7 + vfx_pools 13 + surface_tags + validate_level green; capture sheet reviewed. A next: instance vfx_director.tscn per heist + shot_fx emission. Open: GH BreakRoomWindowBlocker blocks the fire-escape window (C fixes); 1.5 ms perf probe needs a quiet machine.
 - 2026-10-14 05:45: **round 78 ON ORIGIN**: env/a-core A3-10 (Ladder prefab owns a bidirectional NavLink on nav layer 4 'ladder'; layer-1 agents never path over ladders); project.godot names nav layer_4. a3_10/ladder/a2_01 + c validate_level green. C next: remove hand-built ladder links (ND AreawayLadderLink, GH FireEscapeLadderLink).
 - 2026-10-14 05:30: **round 77 ON ORIGIN**: env/c-worlds 5676a8ce (water-surface bullet collider on ND + DB, layer 5 hitboxes only, navmesh identical). c water/ND/DB/surface_tags + int test_p3_loud green.
 - 2026-10-14 05:15: **round 76 ON ORIGIN**: env/p-play bacd6541 (D-105 FP muzzle burst/smoke/casings/tracer/per-shot kick; D-102 redraw on bag pickup). p d105/d102 + a fp_viewmodel green. D-107 (stamina/jump PD2) ruled.
