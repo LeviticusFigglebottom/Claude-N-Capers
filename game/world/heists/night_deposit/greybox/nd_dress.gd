@@ -18,6 +18,8 @@ const OUTLINE_X: Array[float] = [0.0, 26.0]
 const OUTLINE_Z: Array[float] = [0.0, 20.0]
 ## Exit signs go above the frame head.
 const EXIT_SIGN_Z: float = 2.36
+## Granite plinth depth beyond the facade face (nd_art.facade bands: 0.05 m).
+const PLINTH_RELIEF: float = 0.05
 ## Seats an NPC sits in (no collider / obstruction: the spawn marker stays on the navmesh).
 const NPC_SEATS: Array[String] = ["prop_chair_task"]
 
@@ -410,6 +412,9 @@ func _exterior_room(e: Array) -> Array:
 		(float(b[2]) + float(b[5])) * 0.5))
 	room.size = Vector3(sz, h, sx) if absf(sin(yaw)) > 0.5 else Vector3(sx, h, sz)
 	room.walls = [true, false, false, false]
+	# the granite plinth (nd_art.facade, 0.05 m proud up to 0.6 m) along the facade: crates and bins stand
+	# in front of it, not in it (PO-9: X1 crate z-fought the plinth)
+	room.relief = [PLINTH_RELIEF, 0.0, 0.0, 0.0]
 	var world: AABB = AABB(Vector3(float(b[0]), floor_y - 0.5, float(b[2])), Vector3(sx, h + 0.5, sz))
 	for d: Array in L.DOORS:
 		var pos: Vector3 = d[2]

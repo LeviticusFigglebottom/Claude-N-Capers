@@ -28,6 +28,15 @@ func _initialize() -> void:
 	_build.call_deferred()
 
 
+## Output scene: SCENE_PATH, or `-- --out=<path>` (game/tests/c/test_generator_determinism.gd builds each
+## map twice into scratch files and compares them byte for byte; def / variants still go to their paths).
+static func _scene_out() -> String:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--out="):
+			return a.trim_prefix("--out=")
+	return SCENE_PATH
+
+
 func _build() -> void:
 	art = A.new()
 	art.setup()
@@ -103,14 +112,14 @@ func _build() -> void:
 	var ps: PackedScene = PackedScene.new()
 	err = ps.pack(map_root)
 	if err == OK:
-		err = ResourceSaver.save(ps, SCENE_PATH)
+		err = ResourceSaver.save(ps, _scene_out())
 	map_root.free()
 	if err != OK:
-		_fail("cannot save %s (%d)" % [SCENE_PATH, err])
+		_fail("cannot save %s (%d)" % [_scene_out(), err])
 		return
-	R.strip_nested_overrides(SCENE_PATH)
-	R.normalize_scene(SCENE_PATH, old_scene_uid)
-	print("night_deposit: saved %s (navmesh polygons: %d)" % [SCENE_PATH, polys])
+	R.strip_nested_overrides(_scene_out())
+	R.normalize_scene(_scene_out(), old_scene_uid)
+	print("night_deposit: saved %s (navmesh polygons: %d)" % [_scene_out(), polys])
 	quit(0)
 
 
