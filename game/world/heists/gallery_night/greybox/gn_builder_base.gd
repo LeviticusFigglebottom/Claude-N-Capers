@@ -6,10 +6,9 @@ extends SceneTree
 
 const L: GDScript = preload("res://world/heists/gallery_night/greybox/gallery_night_layout.gd")
 const OUT_DIR: String = "res://world/heists/gallery_night/"
-## The map's final path. Content freeze (D-082): the skeleton never writes here (validate_all and HeistRegistry
-## would pick it up); it writes DEFAULT_OUT or `-- --out=<path>` until the freeze lifts.
+## The map's final path (D-110: written by default; `-- --out=<path>` for scratch / determinism checks).
 const SCENE_PATH: String = OUT_DIR + "gallery_night.tscn"
-const DEFAULT_OUT: String = "user://gn_skeleton/gallery_night.tscn"
+const DEFAULT_OUT: String = SCENE_PATH
 const DEF_PATH: String = OUT_DIR + "gallery_night_def.tres"
 const VARIANTS_PATH: String = OUT_DIR + "gallery_night_variants.tres"
 const MAT_DIR: String = "res://world/materials/"

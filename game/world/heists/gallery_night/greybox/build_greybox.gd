@@ -1,9 +1,8 @@
-## Gallery Night G1 greybox generator: SKELETON (GN-C1). Owner: ENV C.
-## Content freeze (D-082): this generator is unmerged until the freeze lifts, and it never writes the map's final
-## path (res://world/heists/gallery_night/gallery_night.tscn, which validate_all and HeistRegistry would pick up).
+## Gallery Night G1 greybox generator (GN-C1). Owner: ENV C. Freeze lifted (D-110): writes the map's final path
+## res://world/heists/gallery_night/gallery_night.tscn by default.
 ## Regenerate (deterministic; never hand-edit the output):
 ##   /opt/godot/godot --headless --path game --script res://world/heists/gallery_night/greybox/build_greybox.gd \
-##     -- --out=<path>            (default user://gn_skeleton/gallery_night.tscn)
+##     -- --out=<path>            (default res://world/heists/gallery_night/gallery_night.tscn)
 ## Data: gallery_night_layout.gd, emitted by tools/levelcheck/plans/gallery_night_emit_layout.py from the floor
 ## plans (gallery_night_floors_ascii.py) and the slot list (gallery_night_slots.py --check). Design:
 ## docs/design/heists/gallery_night.md (APPROVED D-075; Build rulings B1-B6). Contracts: heist_map.md v1.2.
@@ -55,9 +54,6 @@ static func _scene_out() -> String:
 
 func _build() -> void:
 	var out: String = _scene_out()
-	if ProjectSettings.globalize_path(out) == ProjectSettings.globalize_path(SCENE_PATH):
-		_fail("content freeze (D-082): the skeleton does not write %s; pass --out=<scratch path>" % SCENE_PATH)
-		return
 	var old_scene_uid: String = read_uid(out)
 	map_root = HeistMap.new()
 	map_root.name = "GalleryNight"
