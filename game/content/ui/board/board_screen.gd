@@ -290,9 +290,9 @@ func select_slot(slot: int) -> void:
 	take_button.disabled = take_button.disabled or consumed_label.visible
 	if has:
 		_fill_card(c)
-		var pin_path: NodePath = take_button.get_path_to(map_view.pins[selected_slot])
+		var pin: Control = map_view.pins[selected_slot]
 		for n: Control in [broker_heist, broker_difficulty, buy_button, back_button]:
-			n.focus_neighbor_left = pin_path
+			n.focus_neighbor_left = n.get_path_to(pin)  # relative to each control (one shared path went stale)
 
 
 func selected_contract() -> Dictionary:
