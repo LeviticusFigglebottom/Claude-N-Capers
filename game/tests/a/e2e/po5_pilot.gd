@@ -308,6 +308,9 @@ func _unstick(attempt: int) -> void:
 
 ## Walks within reach of `comp`, aims at it and holds interact until it completes (or `done` returns true).
 func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = Callable(), walk: bool = true) -> bool:
+	var door: Door = comp.owner_node() as Door
+	if walk and door != null:
+		return await open_door(door)  # ND attempts 15/16: the generic stand spot missed the lock and F became a shout
 	var target: Vector3 = comp.global_position
 	var stand: Vector3 = _use_stand(comp)
 	if walk and not await goto(stand, 0.5, 60.0) and is_instance_valid(comp):
