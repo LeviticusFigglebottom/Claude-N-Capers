@@ -3,6 +3,35 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14 evening: round 118 lanes (GN capture, audit refresh, C6)
+### Done
+- **Lane 1, Gallery Night windowed capture.** Harness gn_capture on env/b-gallery-night (094bef25). It runs on a scratch
+  copy with the draft def at the registry path and covers the planning table, briefing, every pre-planning floor,
+  loadout and the HUD (casing, masked, loud, radio). Findings, fixed for every heist on env/b-content:
+
+| Row | Finding | Status |
+|---|---|---|
+| GN-U1 | A long briefing VO line grew the contact column and pushed Back / Continue off the screen (720p and 1080p) | FIXED 3d0249fc (test_briefing) |
+| GN-U2 | The HUD flashed OBJECTIVE COMPLETE for a step that a new step (Argus lockdown) or a disable pushed back | FIXED 3d0249fc (test_ui_theme) |
+| GN-U3 | Pre-planning map hint cut to "Pick" with four floor tabs | FIXED 3d0249fc: shows whole or not at all |
+| GN-U4 | Pre-planning markers of points 2 m apart stacked (portico entry under the limo escape) | FIXED 6597b236 (test_preplan_screen) |
+| GN-U5 | The briefing lists all 18 objectives, including the loud branch and extras | Asked the lead (keep, or a briefing subset) |
+
+- **Lane 2, audit refresh** (ui_audit_capture, every mode, 720p and 1080p):
+
+| Row | Finding | Status |
+|---|---|---|
+| AU-1 | Payday crew table under the fold at 720p while the right third was empty | FIXED 8ad4bd90: stacked under the XP panel (test_ui_payday, 4 crew with every column) |
+| AU-2 | Loadout item picker sheet started inside the screen title | FIXED f46bfdf7 (test_ui_loadout) |
+| AU-3 | Achievements: 4 of 41 cards per screen | FIXED 47b2e636: two columns with a d-pad grid; test_menu_reach now covers it |
+| AU-4 | Hub: The Board card description ends in "..." (the side panel shows it whole) | Minor, kept |
+| AU-5 | Board map: contract markers sit on district names (HARBOR, DOCKS) | Minor, kept |
+| AU-6 | Workshop weapon list: long names end in "..." ("Thorn Compound Bow · Level ...") | Minor, kept |
+
+- **Lane 3, PO-B-C6** (30d3ffde): the lobby crew cards show whole without scrolling at 720p. Contract and difficulty
+  share a row, as do music and drop-in. A card's level shares the ready row, and Kick sits beside the name
+  (test_pp_lobby_720p).
+
 ## 2026-10-14 later: rounds 69/70, D-105 / D-106, co-op windowed pass
 ### Done
 - Rounds 69/70 merged (62cec2c5). D-102 text: the gold bag says "barely a jump". The missing 3D safehouse is logged once per session.

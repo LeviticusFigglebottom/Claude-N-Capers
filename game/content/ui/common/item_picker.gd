@@ -34,7 +34,9 @@ func _ready() -> void:
 	sheet.anchor_right = SHEET_WIDTH_FRAC
 	sheet.anchor_bottom = 1.0
 	sheet.offset_left = UiTokens.MARGIN - UiTokens.S3
-	sheet.offset_top = UiTokens.MARGIN + UiTokens.S6
+	# Lane 2 audit: the sheet started inside the screen title ("Lo..dout" peeked over it); it starts where
+	# the screen's content does, under the header.
+	sheet.offset_top = UiTokens.MARGIN + UiTokens.S7 + UiTokens.S6
 	sheet.offset_bottom = -(UiTokens.MARGIN + UiTokens.S6)
 	var sb: StyleBoxFlat = UiThemeFactory.box(UiTokens.INK_1, UiTokens.LINE_STRONG, 1, UiTokens.CUT,
 			Vector2(UiTokens.S4, UiTokens.S4))
