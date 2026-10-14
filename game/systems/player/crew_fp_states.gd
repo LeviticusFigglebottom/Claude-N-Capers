@@ -8,7 +8,8 @@
 ##   side and the viewmodel drops out of view;
 ## - a hit (EventBus.damage_applied, victim = this crew, amount > 0): a critically damped camera punch, health
 ##   hits larger than armor hits, rolled away from the side the hit came from.
-## Reduce Motion: no hit punch or roll, the tase jitter at CrewTweak.fp_reduce_motion_mult; heights stay.
+## Reduce Motion: no hit punch or roll, the tase jitter at CrewTweak.fp_reduce_motion_mult; heights stay. Options
+## screen shake (shake_scale) scales the jitter and the punches on top.
 ## Owner: ENV P.
 class_name CrewFpStates
 extends RefCounted
@@ -82,13 +83,14 @@ func tick(delta: float, tw: CrewTweak, reduce_motion: bool) -> void:
 	var down_e: float = _ease(w_down)
 	# camera height: the knee buckle under a tase, the floor after a kick (DOWNED is in eye_height())
 	cam_dy = -tw.fp_tase_buckle_m * _ease(w_tase) - maxf(tw.eye_standing - tw.fp_kick_eye_m, 0.0) * kick_e
-	var jit: Vector3 = _jitter(tw) * w_tase * (tw.fp_reduce_motion_mult if reduce_motion else 1.0)
+	var shake: float = shake_scale()
+	var jit: Vector3 = _jitter(tw) * w_tase * (tw.fp_reduce_motion_mult if reduce_motion else 1.0) * shake
 	cam_rot = Vector3(
 		jit.x + deg_to_rad(tw.fp_kick_pitch_deg) * kick_e,
 		jit.y,
 		jit.z + (deg_to_rad(tw.fp_down_roll_deg) * down_e + deg_to_rad(tw.fp_kick_roll_deg) * kick_e) * motion)
-	cam_rot += _tick_hit(delta, tw) * motion
-	cam_rot.x += _tick_kick_punch(delta, tw) * motion
+	cam_rot += _tick_hit(delta, tw) * motion * shake
+	cam_rot.x += _tick_kick_punch(delta, tw) * motion * shake
 	vm_offset = tw.fp_down_vm_offset * down_e + Vector3(0.0, -tw.fp_kick_vm_drop_m, 0.0) * kick_e
 	vm_rot_deg = tw.fp_down_vm_rot_deg * down_e + Vector3(rad_to_deg(jit.x), rad_to_deg(jit.y), rad_to_deg(jit.z)) \
 		* tw.fp_tase_vm_mult
@@ -128,6 +130,15 @@ func _tick_kick_punch(delta: float, tw: CrewTweak) -> float:
 		_kick_t = -1.0
 		return 0.0
 	return deg_to_rad(tw.fp_kick_punch_deg) * wt * exp(1.0 - wt)
+
+
+## Options "screen shake" (B, options.md: GameSettings.screen_shake, 0..1, default 1) for every camera shaker
+## (tase jitter, hit / kick / melee punches); 1.0 when the settings build has no such option.
+static func shake_scale() -> float:
+	var gs: GameSettings = GameSettings.current()
+	if gs == null or not gs.has_method(&"screen_shake"):
+		return 1.0
+	return clampf(float(gs.call(&"screen_shake")), 0.0, 1.0)
 
 
 static func _ease(w: float) -> float:
