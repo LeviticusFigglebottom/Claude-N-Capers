@@ -11,6 +11,8 @@ class_name AchievementsScreen
 extends UiScreen
 
 const FINISH_PREFIX: String = "unlock.finish."
+## Cards per line in each category grid.
+const COLUMNS: int = 2
 
 @export var profile_slot: int = 0
 
@@ -22,6 +24,8 @@ var back_button: Button
 var rows: Dictionary = {}
 ## Category id -> its header Label.
 var category_labels: Dictionary = {}
+## Each category's cards in grid order (Array[Control] per category), for the d-pad wiring.
+var grids: Array = []
 var _scroll: ScrollContainer
 
 
@@ -29,6 +33,11 @@ func setup(p: PlayerProfile) -> void:
 	profile = p
 	if is_node_ready():
 		refresh()
+
+
+func _ready() -> void:
+	super()
+	_wire_grid_focus()  # UiScreen._ready chains focus_chain as one column; the cards sit in a grid
 
 
 func build_ui() -> void:
@@ -71,6 +80,7 @@ func refresh() -> void:
 	rows.clear()
 	category_labels.clear()
 	focus_chain.clear()
+	grids.clear()
 	var defs: Array[AchievementDef] = Achievements.all()
 	var unlocked: int = 0
 	for cat: StringName in _categories(defs):
@@ -84,21 +94,83 @@ func refresh() -> void:
 		head_box.add_child(HSeparator.new())
 		list.add_child(head_box)
 		category_labels[cat] = header
+		# Lane 2 audit: one card per line showed 4 of 41 at a time; two columns show twice as many.
+		var grid: GridContainer = GridContainer.new()
+		grid.columns = COLUMNS
+		grid.add_theme_constant_override(&"h_separation", UiTokens.S3)
+		grid.add_theme_constant_override(&"v_separation", UiTokens.S2)
+		list.add_child(grid)
+		var cat_rows: Array[Control] = []
 		for a: AchievementDef in defs:
 			if a.category != cat:
 				continue
 			if Achievements.is_unlocked(profile, a.id):
 				unlocked += 1
 			var row: PanelContainer = _row(a)
-			list.add_child(row)
+			row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			grid.add_child(row)
 			rows[a.id] = row
 			if focus_chain.is_empty():
 				# The first row's focus shows the list from the top (its category head stays in view).
 				row.focus_entered.connect(func() -> void: _scroll.set_deferred(&"scroll_vertical", 0))
 			focus_chain.append(row)
+			cat_rows.append(row)
+		grids.append(cat_rows)
 	focus_chain.append(back_button)
-	UiNav.chain_vertical(focus_chain)
+	_wire_grid_focus()
 	count_label.text = UiText.t(&"ui.achievements.count", {"unlocked": unlocked, "total": defs.size()})
+
+
+## D-pad over the category grids: left / right within a line, up / down within a column (across a category
+## break to the same column of the next / previous category, else its last / first card), Back below all.
+func _wire_grid_focus() -> void:
+	var cells: Array[Control] = []
+	var col_of: Dictionary = {}
+	var cat_of: Dictionary = {}
+	for ci: int in range(grids.size()):
+		var g: Array[Control] = grids[ci]
+		for i: int in range(g.size()):
+			cells.append(g[i])
+			col_of[g[i]] = i % COLUMNS
+			cat_of[g[i]] = ci
+	for c: Control in cells:
+		var g: Array[Control] = grids[int(cat_of[c])]
+		var i: int = g.find(c)
+		var line: int = i - i % COLUMNS
+		c.focus_neighbor_left = c.get_path_to(g[i - 1]) if i > line else NodePath()
+		c.focus_neighbor_right = c.get_path_to(g[i + 1]) if i + 1 < mini(line + COLUMNS, g.size()) else NodePath()
+		c.focus_neighbor_bottom = c.get_path_to(_vertical(int(cat_of[c]), i, 1))
+		var up: Control = _vertical(int(cat_of[c]), i, -1)
+		c.focus_neighbor_top = c.get_path_to(up) if up != null else NodePath()
+		c.focus_next = c.focus_neighbor_bottom
+		c.focus_previous = c.focus_neighbor_top
+	if not cells.is_empty():
+		back_button.focus_neighbor_top = back_button.get_path_to(cells[cells.size() - 1])
+		back_button.focus_previous = back_button.focus_neighbor_top
+
+
+## The card `step` lines below (+1) / above (-1) card `i` of category `ci` in its column; Back below the
+## last line, null above the first.
+func _vertical(ci: int, i: int, step: int) -> Control:
+	var g: Array[Control] = grids[ci]
+	var j: int = i + step * COLUMNS
+	if j >= 0 and j < g.size():
+		return g[j]
+	if step > 0 and i < (g.size() - 1) - (g.size() - 1) % COLUMNS:
+		return g[g.size() - 1]  # nothing under it in the short last line: that line's card
+	var nci: int = ci + step
+	while nci >= 0 and nci < grids.size() and (grids[nci] as Array).is_empty():
+		nci += step
+	if nci < 0:
+		return null
+	if nci >= grids.size():
+		return back_button
+	var n: Array[Control] = grids[nci]
+	var col: int = i % COLUMNS
+	if step > 0:
+		return n[mini(col, n.size() - 1)]
+	var last_line: int = (n.size() - 1) - (n.size() - 1) % COLUMNS
+	return n[mini(last_line + col, n.size() - 1)]
 
 
 func _row(a: AchievementDef) -> PanelContainer:

@@ -135,6 +135,26 @@ func test_screen_instantiates_with_progress() -> void:
 	await wait_frames(1)
 
 
+## Lane 2 audit: two cards per line; the d-pad moves along a line and down a column, Back below the last.
+func test_two_column_grid_pad_neighbours() -> void:
+	var s: AchievementsScreen = SCREEN_SCENE.instantiate() as AchievementsScreen
+	s.setup(PlayerProfile.new_default())
+	add_child(s)
+	await wait_frames(2)
+	var g: Array[Control] = s.grids[0]
+	assert_true(g.size() >= 3, "the first category has a second line")
+	assert_eq(g[0].get_node(g[0].focus_neighbor_right), g[1])
+	assert_eq(g[1].get_node(g[1].focus_neighbor_left), g[0])
+	assert_eq(g[0].get_node(g[0].focus_neighbor_bottom), g[2], "down stays in the column")
+	assert_eq(g[2].get_node(g[2].focus_neighbor_top), g[0])
+	assert_eq(g[0].get_global_rect().position.y, g[1].get_global_rect().position.y, "one line")
+	var last: Array[Control] = s.grids[s.grids.size() - 1]
+	var tail: Control = last[last.size() - 1]
+	assert_eq(tail.get_node(tail.focus_neighbor_bottom), s.back_button)
+	s.queue_free()
+	await wait_frames(1)
+
+
 func test_hub_opens_achievements_and_back_returns() -> void:
 	SaveService.save_profile(PlayerProfile.new_default(), SLOT)
 	var f: MenuFlow = (load("res://content/ui/menus/menu_flow.tscn") as PackedScene).instantiate() as MenuFlow
