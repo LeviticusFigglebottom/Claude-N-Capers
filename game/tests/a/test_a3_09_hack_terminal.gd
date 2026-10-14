@@ -215,3 +215,41 @@ func test_pause_on_alarm_and_events() -> void:
 	hack.resume(HackTerminal.REASON_ALARM)
 	await wait_seconds(0.2)
 	assert_true(hack.progress > p0, "a mission script lifts the lockdown")
+
+
+## D-103 §6 / QC-55: reconfigure() from the mission. Idle: the next run uses the new values. Running: the progress
+## fraction is kept, the remaining time follows the new duration and the interruptions still ahead re-roll into the
+## new range (Gallery Night: 60 s / 1-2 -> 120 s / 2-3 at the alarm).
+func test_gn_reconfigure_idle_and_running_hack() -> void:
+	var hack: HackTerminal = ATestMaps.add_prefab(_rt, "hack_terminal", Vector3(0, 0, -6), func(n: Node) -> void:
+		(n as HackTerminal).duration_s = 60.0
+		(n as HackTerminal).interruptions = Vector2i(0, 0)) as HackTerminal
+	await wait_physics_frames(2)
+	hack.reconfigure(30.0, Vector2i(1, 1))
+	assert_near(hack.effective_duration(), 30.0, 0.001, "idle: the next run uses the new duration")
+	hack.start_hack(0)
+	assert_eq(hack.rolled_interruptions, 1, "idle: the new interruption range")
+	hack.progress = 0.6
+	hack.pending_interruptions.clear()  # its one interruption already happened
+	hack.reconfigure(120.0, Vector2i(3, 3))
+	assert_near(hack.duration, 120.0, 0.001, "running: the new duration")
+	assert_near(hack.progress, 0.6, 0.0001, "running: progress kept")
+	assert_near(hack.time_left(), 48.0, 0.01, "remaining = 40 % of 120 s")
+	assert_eq(hack.rolled_interruptions, 3, "total in the new range")
+	assert_eq(hack.pending_interruptions.size(), 2, "only the ones still ahead (1 used)")
+	for at: float in hack.pending_interruptions:
+		assert_true(at > 0.6 and at < 1.0, "ahead of the current progress (%.3f)" % at)
+
+
+## D-103 §6 / QC-54: a hack with clears_alarm_group takes that alarm group offline when it finishes.
+func test_gn_finished_hack_disables_its_alarm_group() -> void:
+	var hack: HackTerminal = ATestMaps.add_prefab(_rt, "hack_terminal", Vector3(0, 0, -6), func(n: Node) -> void:
+		(n as HackTerminal).duration_s = 0.2
+		(n as HackTerminal).interruptions = Vector2i(0, 0)
+		(n as HackTerminal).clears_alarm_group = &"argus") as HackTerminal
+	await wait_physics_frames(2)
+	assert_true(AlarmGroups.is_live(_rt, &"argus"), "sensors live before the hack")
+	hack.start_hack(0)
+	var done: bool = await wait_until(func() -> bool: return hack.state == HackTerminal.State.DONE, 2.0)
+	assert_true(done, "hack finished")
+	assert_false(AlarmGroups.is_live(_rt, &"argus"), "the finished hack took the group offline")

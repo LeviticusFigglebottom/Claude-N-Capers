@@ -5,6 +5,8 @@
 		"gallery_night": {
 			"gallery_curator": ["gallery_curator"],
 			"gallery_attendant": ["gallery_attendant", "gallery_attendant_b"],
+			"gallery_conservator": ["gallery_attendant_b"],
+			"gallery_admin": ["gallery_admin"],
 			"gallery_waitstaff": ["npc_penthouse_staff"],
 			"gallery_guard": ["gallery_guard", "gallery_guard_b"],
 			"gallery_patron": ["gallery_patron", "gallery_patron_b", "npc_penthouse_guest_a", "npc_penthouse_guest_b"]

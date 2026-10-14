@@ -319,6 +319,7 @@ func test_generic_prompt_names_the_action_from_its_kind() -> void:
 	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"lockpick"), &"ui.prompt.pick_lock")
 	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"keycard"), &"ui.prompt.use_keycard")
 	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"open_door"), &"ui.prompt.open_door")
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"cut_painting"), &"ui.prompt.cut_painting", "GN canvases")
 	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.place_c4", &"lockpick"), &"ui.prompt.place_c4", "specific wins")
 	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"no_such_kind"), &"ui.prompt.interact")
 	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &""), &"ui.prompt.interact")
