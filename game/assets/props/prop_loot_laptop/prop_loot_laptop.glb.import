@@ -1,0 +1,35 @@
+[remap]
+
+importer="scene"
+type="PackedScene"
+
+[params]
+
+import_script/path="res://world/tools/import/glb_post_import.gd"
+meshes/create_shadow_meshes=true
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+_subresources={
+"materials": {
+"M_pr_bag_black": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_bag_black.tres",
+"use_external/path": "res://world/props/materials/pr_bag_black.tres"
+},
+"M_pr_emit_cool": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_emit_cool.tres",
+"use_external/path": "res://world/props/materials/pr_emit_cool.tres"
+},
+"M_pr_metal_grey": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_metal_grey.tres",
+"use_external/path": "res://world/props/materials/pr_metal_grey.tres"
+},
+"M_pr_plastic_black": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_plastic_black.tres",
+"use_external/path": "res://world/props/materials/pr_plastic_black.tres"
+}
+}
+}

@@ -1,0 +1,30 @@
+[remap]
+
+importer="scene"
+type="PackedScene"
+
+[params]
+
+import_script/path="res://world/tools/import/glb_post_import.gd"
+meshes/create_shadow_meshes=true
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+_subresources={
+"materials": {
+"M_pr_leather_cognac": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_leather_cognac.tres",
+"use_external/path": "res://world/props/materials/pr_leather_cognac.tres"
+},
+"M_pr_plastic_white": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_plastic_white.tres",
+"use_external/path": "res://world/props/materials/pr_plastic_white.tres"
+},
+"M_pr_suede": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_suede.tres",
+"use_external/path": "res://world/props/materials/pr_suede.tres"
+}
+}
+}

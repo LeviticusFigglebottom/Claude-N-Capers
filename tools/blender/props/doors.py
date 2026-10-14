@@ -10,6 +10,17 @@ Finishes: walnut (raised panels + brass inlay, brass lever: sales/salon/manager)
 (shaker panels, satin lever: offices, WC), steel (flush painted steel, kick plate, push bar on
 single/service: back of house, fire exit), glass (double only: brass-framed glass leaves, the
 shop entry).
+
+Dockside Burn industrial doors (D-111, `fn`): the frame boxes, leaf planes and leaf widths of the G1 greybox visuals
+they replace (`Frame/Collision` = the same jamb + head boxes as a trimesh), so door logic, sizes and collision stay:
+
+* `prop_door_roller_twin_w360_h400` (t40): two 1.8 m roller curtains on a removable centre post line, steel guides
+  in the jambs, the coil box in the head. Each `Leaf` / `Leaf2` carries `world/props/shutter_leaf.gd` (wrapper
+  `leaf_script` + `leaf2`): the curtain rolls up when the DOUBLE leaf opens.
+* `prop_door_slide_coldstore_w240_h360` (t20): insulated cold-store leaves (white skin, steel edge channel,
+  rubber seals, pull bar), `world/props/slide_leaf.gd`: opening slides each leaf into the wall pocket.
+* `prop_door_vault_strongroom_w200_h220` (t40): a 0.12 m steel strongroom door, locking wheel, dial, hinge
+  barrels, bolt heads; the frame a heavy steel lining.
 """
 
 import math
@@ -46,6 +57,19 @@ VARIANTS = {
     # the ATM vestibule's interior glass door to the banking hall (casing view, doc §Sightlines)
     "prop_door_single_glass_t20": {"kind": "single", "finish": "glass", "wall_t": 0.2,
                                    "cat": {"prefab": "door", "kind": "door", "service": False}},
+    # D-111: Shadow Ledger terrace sliders (glass leaves in the 0.4 m facade)
+    "prop_door_single_glass_t40": {"kind": "single", "finish": "glass", "wall_t": 0.4,
+                                   "cat": {"prefab": "door", "kind": "door", "service": False}},
+    # D-111 Dockside Burn industrial doors (module docstring)
+    "prop_door_roller_twin_w360_h400": {"fn": "roller_twin", "w": 3.6, "h": 4.0, "jamb": 0.1, "wall_t": 0.4,
+                                        "cat": {"prefab": "door", "kind": "industrial_door", "surface": "metal",
+                                                "leaf_script": "shutter", "leaf2": True}},
+    "prop_door_slide_coldstore_w240_h360": {"fn": "slide", "w": 2.4, "h": 3.6, "jamb": 0.1, "wall_t": 0.2,
+                                            "frame_t": 0.3,
+                                            "cat": {"prefab": "door", "kind": "industrial_door", "surface": "metal",
+                                                    "leaf_script": "slide", "leaf2": True}},
+    "prop_door_vault_strongroom_w200_h220": {"fn": "vault", "w": 2.0, "h": 2.2, "jamb": 0.1, "wall_t": 0.4,
+                                             "cat": {"prefab": "door", "kind": "vault_door", "surface": "metal"}},
 }
 
 LEAF_H = 2.1
@@ -267,9 +291,208 @@ def _leaf(k: Kit, name: str, hinge_x: float, sign: float, leaf_w: float, finish:
     k.empty("Handle" + suffix, (hx, 0.0, 1.0), parent=pivot)
 
 
+# ------------------------------------------------------------------------- Dockside Burn industrial
+
+def _box_frame(k: Kit, hw: float, jamb: float, h: float, wall_t: float, key: str, frame_t: float = 0.0):
+    """Jambs (x hw - jamb .. hw) and head (z h .. h + jamb) across the wall; trimesh collision = the same boxes over
+    `wall_t` (the G1 greybox visual's collision). `frame_t` > wall_t: the visual lining stands proud by half the
+    difference on each face (the greybox mesh depth). Returns (Frame object, its main Part, its trim Part)."""
+    fr = k.obj("Frame")
+    body = fr.part(bevel=0.004)
+    trim = fr.part(bevel=0.0015)
+    d = max(wall_t, frame_t) / 2
+    for sx in (-1, 1):
+        x0, x1 = sorted((sx * hw, sx * (hw + jamb)))
+        body.bx((x0, -d, 0.0), (x1, d, h + jamb), key)
+    body.bx((-hw - jamb, -d, h), (hw + jamb, d, h + jamb), key)
+    return fr, body, trim
+
+
+def _box_frame_collision(obj, hw: float, jamb: float, h: float, wall_t: float) -> None:
+    mb = geo.MeshBuilder()
+    t = wall_t / 2
+    mb.box((-hw - jamb, -t, 0.0), (-hw, t, h + jamb))
+    mb.box((hw, -t, 0.0), (hw + jamb, t, h + jamb))
+    mb.box((-hw, -t, h), (hw, t, h + jamb))
+    geo.collision_from_builder(mb, "trimesh", parent=obj)
+
+
+def _roller_curtain(k: Kit, leaf, suffix: str, x0: float, x1: float, top: float) -> None:
+    """Slatted curtain under `leaf` from leaf-local x0..x1: `Curtain<suffix>` (origin at the top, slats hanging to
+    the bar), `BottomBar<suffix>` (origin on the floor line) and `BarFittings<suffix>` (pull handles both faces)."""
+    bar_h = 0.07
+    depth = 0.012
+    cur = k.obj("Curtain" + suffix, parent=leaf, location=(0.0, 0.0, top))
+    sp = cur.part(bevel=0.0)
+    rib = cur.part(bevel=0.0)
+    span = top - bar_h
+    n = max(1, int(math.ceil(span / 0.09)))
+    step = span / n
+    for i in range(n):
+        z1 = -i * step
+        z0 = z1 - step - 0.004
+        sp.bx((x0, -depth / 2, z0), (x1, depth / 2, z1), "steel_galv")
+        zm = (z0 + z1) / 2
+        rib.bx((x0, depth / 2, zm - 0.01), (x1, depth / 2 + 0.008, zm + 0.01), "steel_galv")
+        rib.bx((x0, -depth / 2 - 0.008, zm - 0.01), (x1, -depth / 2, zm + 0.01), "steel_galv")
+    cur.build()
+    bar = k.obj("BottomBar" + suffix, parent=leaf)
+    bp = bar.part(bevel=0.004)
+    bp.bx((x0, -0.025, 0.012), (x1, 0.025, bar_h + 0.004), "metal_dark")
+    bp.bx((x0, -0.026, bar_h - 0.02), (x1, 0.026, bar_h), "safety_orange")
+    bar.part(bevel=0.0).bx((x0, -0.016, 0.004), (x1, 0.016, 0.012), "rubber")
+    bar.build()
+    fit = k.obj("BarFittings" + suffix, parent=leaf)
+    hp = fit.part(bevel=0.0)
+    xm = (x0 + x1) / 2
+    for sy in (-1, 1):
+        hp.rod((xm - 0.12, sy * 0.06, 0.05), (xm + 0.12, sy * 0.06, 0.05), 0.011, "steel", segs=8)
+        y0, y1 = sorted((sy * 0.026, sy * 0.06))
+        hp.bx((xm - 0.13, y0, 0.04), (xm - 0.11, y1, 0.06), "steel")
+        hp.bx((xm + 0.11, y0, 0.04), (xm + 0.13, y1, 0.06), "steel")
+    fit.build()
+
+
+def _roller_twin(k: Kit, p: dict) -> None:
+    w, h, jamb, t = p["w"], p["h"], p["jamb"], p["wall_t"]
+    hw = w / 2
+    fr, body, trim = _box_frame(k, hw, jamb, h, t, "metal_dark")
+    # guide channel lips (the curtains run in the slot), the coil box cover plates with bolt heads, a hazard band
+    for sx in (-1, 1):
+        xi = sx * hw
+        xa, xb = sorted((xi, xi - sx * 0.006))
+        for sy in (-1, 1):
+            y0, y1 = sorted((sy * 0.014, sy * t / 2))
+            trim.bx((xa, y0, 0.0), (xb, y1, h), "steel")
+        for z in (0.4, 1.6, 2.8):
+            x0, x1 = sorted((sx * (hw + 0.02), sx * (hw + 0.08)))
+            for sy in (-1, 1):
+                y0, y1 = sorted((sy * t / 2, sy * (t / 2 + 0.004)))
+                trim.bx((x0, y0, z), (x1, y1, z + 0.12), "safety_orange")
+    for sy in (-1, 1):
+        y0, y1 = sorted((sy * t / 2, sy * (t / 2 + 0.004)))
+        trim.bx((-hw - jamb + 0.03, y0, h + 0.015), (hw + jamb - 0.03, y1, h + jamb - 0.015), "steel_galv")
+        for x in (-hw + 0.2, -hw / 2, 0.0, hw / 2, hw - 0.2):
+            trim.cyl(0.011, 0.008, (x, sy * (t / 2 + 0.006), h + jamb / 2), "steel", axis="Y", segs=8)
+    obj = fr.build()
+    _box_frame_collision(obj, hw, jamb, h, t)
+    for name, sx in (("Leaf", -1.0), ("Leaf2", 1.0)):
+        leaf = k.empty(name, (sx * hw, 0.0, 0.0))
+        x0, x1 = (0.0, hw) if sx < 0 else (-hw, 0.0)
+        _roller_curtain(k, leaf, name[4:], x0, x1, h)
+        if name == "Leaf":
+            k.empty("Handle", (hw - 0.15, 0.06, 1.0), parent=leaf)
+
+
+def _slide(k: Kit, p: dict) -> None:
+    w, h, jamb, t, ft = p["w"], p["h"], p["jamb"], p["wall_t"], p["frame_t"]
+    hw = w / 2
+    fr, body, trim = _box_frame(k, hw, jamb, h, t, "metal_grey", frame_t=ft)
+    for sy in (-1, 1):   # head track cover and a thermometer box on the front
+        y0, y1 = sorted((sy * ft / 2, sy * (ft / 2 + 0.005)))
+        trim.bx((-hw - jamb, y0, h + 0.02), (hw + jamb, y1, h + jamb - 0.02), "steel")
+    obj = fr.build()
+    _box_frame_collision(obj, hw, jamb, h, t)
+    lt = 0.08
+    lw = hw
+    for name, sx in (("Leaf", -1.0), ("Leaf2", 1.0)):
+        leaf = k.empty(name, (sx * hw, 0.0, 0.0))
+        x0, x1 = (0.003, lw - 0.003) if sx < 0 else (-(lw - 0.003), -0.003)
+        lf = k.obj("LeafMesh" + name[4:], parent=leaf)
+        core = lf.part(bevel=0.006, segments=2)
+        edge = lf.part(bevel=0.002)
+        soft = lf.part(bevel=0.0)
+        core.bx((x0 + 0.03, -lt / 2 + 0.004, 0.03), (x1 - 0.03, lt / 2 - 0.004, h - 0.03), "plastic_white")
+        # steel edge channel all round
+        edge.bx((x0, -lt / 2, 0.02), (x0 + 0.03, lt / 2, h - 0.003), "steel")
+        edge.bx((x1 - 0.03, -lt / 2, 0.02), (x1, lt / 2, h - 0.003), "steel")
+        edge.bx((x0, -lt / 2, h - 0.03), (x1, lt / 2, h - 0.003), "steel")
+        edge.bx((x0, -lt / 2, 0.02), (x1, lt / 2, 0.05), "steel")
+        # floor seal and the meeting-edge rubber seal
+        soft.bx((x0 + 0.01, -0.02, 0.003), (x1 - 0.01, 0.02, 0.02), "rubber")
+        xm0, xm1 = (x1 - 0.002, x1) if sx < 0 else (x0, x0 + 0.002)
+        soft.bx((xm0, -0.025, 0.05), (xm1, 0.025, h - 0.03), "rubber")
+        # kick plate and stiffening ribs both faces, a pull bar near the meeting edge, a hazard stripe at eye level
+        hx = x1 - 0.12 if sx < 0 else x0 + 0.12
+        for sy in (-1, 1):
+            y0, y1 = sorted((sy * (lt / 2 - 0.004), sy * (lt / 2 + 0.002)))
+            edge.bx((x0 + 0.04, y0, 0.06), (x1 - 0.04, y1, 0.36), "steel")
+            for z in (1.2, 2.4):
+                edge.bx((x0 + 0.04, y0, z), (x1 - 0.04, y1, z + 0.04), "steel")
+            edge.bx((x0 + 0.04, y0, 1.62), (x1 - 0.04, y1, 1.7), "safety_orange")
+            yb = sy * (lt / 2 + 0.06)
+            edge.rod((hx, yb, 0.85), (hx, yb, 1.45), 0.016, "steel", segs=10)
+            for z in (0.9, 1.4):
+                edge.rod((hx, sy * lt / 2, z), (hx, yb, z), 0.01, "steel", segs=8)
+        lf.build()
+        k.empty("Handle" + name[4:], (hx, 0.0, 1.0), parent=leaf)
+
+
+def _vault(k: Kit, p: dict) -> None:
+    w, h, jamb, t = p["w"], p["h"], p["jamb"], p["wall_t"]
+    hw = w / 2
+    fr, body, trim = _box_frame(k, hw, jamb, h, t, "metal_dark")
+    for sy in (-1, 1):   # a steel face plate ring around the reveal, bolt heads
+        y0, y1 = sorted((sy * t / 2, sy * (t / 2 + 0.006)))
+        for sx in (-1, 1):
+            x0, x1 = sorted((sx * (hw + 0.012), sx * (hw + jamb - 0.012)))
+            trim.bx((x0, y0, 0.0), (x1, y1, h + jamb - 0.012), "steel")
+            for z in (0.3, 1.0, 1.7):
+                trim.cyl(0.012, 0.008, ((x0 + x1) / 2, sy * (t / 2 + 0.008), z), "steel_bare", axis="Y", segs=8)
+        trim.bx((-hw - jamb + 0.012, y0, h + 0.012), (hw + jamb - 0.012, y1, h + jamb - 0.012), "steel")
+    obj = fr.build()
+    _box_frame_collision(obj, hw, jamb, h, t)
+    leaf = k.empty("Leaf", (-hw, 0.0, 0.0))
+    lt = 0.12
+    x0, x1 = 0.003, w - 0.003
+    lf = k.obj("LeafMesh", parent=leaf)
+    slab = lf.part(bevel=0.01, segments=2)
+    det = lf.part(bevel=0.002)
+    slab.bx((x0, -lt / 2, 0.006), (x1, lt / 2, h - 0.003), "metal_dark")
+    yf = lt / 2   # front face (Blender +Y = Godot -Z, the antechamber side)
+    det.bx((x0 + 0.08, yf, 0.08), (x1 - 0.08, yf + 0.01, h - 0.08), "metal_grey")
+    det.bx((x0 + 0.14, yf + 0.01, 0.14), (x1 - 0.14, yf + 0.016, h - 0.14), "metal_dark")
+    # locking wheel (hub, rim, 4 spokes), the combination dial and a key escutcheon
+    cx, cz = w / 2, 1.15
+    det.cyl(0.07, 0.06, (cx, yf + 0.046, cz), "steel_bare", axis="Y", segs=16)
+    rim = lf.part(bevel=0.0)
+    n = 16
+    r = 0.26
+    for i in range(n):
+        a0 = 2 * math.pi * i / n
+        a1 = 2 * math.pi * (i + 1) / n
+        rim.rod((cx + r * math.cos(a0), yf + 0.07, cz + r * math.sin(a0)),
+                (cx + r * math.cos(a1), yf + 0.07, cz + r * math.sin(a1)), 0.018, "steel_bare", segs=8)
+    for i in range(4):
+        a = math.pi / 4 + math.pi / 2 * i
+        rim.rod((cx, yf + 0.06, cz), (cx + r * math.cos(a), yf + 0.07, cz + r * math.sin(a)), 0.014, "steel_bare",
+                segs=8)
+    det.cyl(0.06, 0.03, (cx, yf + 0.031, cz + 0.5), "chrome", axis="Y", segs=20)
+    det.cyl(0.035, 0.02, (cx, yf + 0.055, cz + 0.5), "metal_dark", axis="Y", segs=16)
+    det.bx((cx - 0.03, yf + 0.016, cz - 0.52), (cx + 0.03, yf + 0.024, cz - 0.4), "brass")
+    # hinge barrels on the hinge edge (front) and locking bolt heads along the latch edge
+    for z in (0.35, h / 2, h - 0.35):
+        det.cyl(0.045, 0.32, (x0 + 0.05, yf + 0.04, z), "steel", segs=14)
+    for z in (0.4, 0.8, 1.2, 1.6, 2.0):
+        det.cyl(0.03, 0.03, (x1 - 0.07, yf + 0.018, z), "steel_bare", axis="Y", segs=12)
+    det.bx((x1 - 0.2, yf, h - 0.32), (x1 - 0.1, yf + 0.004, h - 0.2), "safety_orange")
+    # back face: the bolt-work cover plate
+    det.bx((x0 + 0.12, -lt / 2 - 0.008, 0.3), (x1 - 0.12, -lt / 2, h - 0.3), "metal_grey")
+    lf.build()
+    k.empty("Handle", (w - 0.15, 0.0, 1.0), parent=leaf)
+
+
+def _industrial(fn: str):
+    return {"roller_twin": _roller_twin, "slide": _slide, "vault": _vault}.get(fn)
+
+
 def build(ctx) -> None:
     k = Kit(ctx)
     p = ctx.params
+    fn = _industrial(p.get("fn", ""))
+    if fn is not None:
+        fn(k, p)
+        return
     leaf_w, jamb, leaves = _KINDS[p["kind"]]
     hw = leaf_w * leaves / 2 + jamb
     _frame(k, hw, jamb, p["wall_t"], p["finish"])

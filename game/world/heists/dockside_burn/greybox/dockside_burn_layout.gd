@@ -278,6 +278,8 @@ const LIFT: Dictionary = {
 ## Yaw: 0 = front north (-z), 180 = south (+z), 90 = west (-x), -90 = east (+x).
 ## extra: service / fire_exit (meta), width_m, padlock (seconds: a placed-saw drill_point on the lock,
 ## SAW_TARGET, D-057 / QC-37), shutter (fire shutter of a product room), entry (police ENTRY tag).
+## D-111: the moored launch visual (catalog veh_boat_launch, pivot = keel bottom, deck 1.0 m above): [asset, pivot, yaw].
+const LAUNCH: Array = ["veh_boat_launch", Vector3(23.5, -2.6, 55.7), 0.0]
 const DOORS: Array = [
 	# Office block, ground.
 	["O1Front", "single_t40", Vector3(6.0, 0.0, 0.0), 0.0, "LOCKPICK", "INWARD", "door_office", {}],
@@ -425,11 +427,12 @@ const BLOCKS: Array = [
 	["TrawlerWheelhouse", [68.0, 0.5, 49.6, 72.0, 4.0, 52.0], "vehicle"],
 	["TrawlerMast", [74.8, 0.5, 50.6, 75.2, 9.0, 51.0], "trim"],
 	["FarShore", [-200.0, WATER_Y, 400.0, 250.0, 8.0, 410.0], "facade_c"],
-	# The Co-op launch (escape E3) moored along the pontoon: walkable deck at -1.6.
-	["LaunchHull", [17.0, -3.2, 54.0, 30.0, -1.6, 57.4], "vehicle"],
-	# The gunwale (harbour side, 0.5 m) is an edge guard: ridged collider top (`ridge`, D-104 slopes).
-	["LaunchGunwale", [17.0, -1.6, 57.1, 30.0, -1.1, 57.4], "vehicle", "ridge"],
-	["LaunchCabin", [26.4, -1.6, 54.6, 29.6, 0.6, 56.8], "vehicle"],
+	# The Co-op launch (escape E3) moored along the pontoon: walkable deck at -1.6. D-111: the catalog `veh_boat_launch`
+	# (LAUNCH, 9 x 3 m, deck 1.0 m over its keel) is the visual; these are its hidden colliders (ND pattern): the hull
+	# block under the deck, the cabin block, and the harbour-side gunwale cap (ridged, D-104 slopes).
+	["LaunchHull", [19.0, -3.2, 54.2, 28.0, -1.6, 57.2], "none"],
+	["LaunchGunwale", [19.1, -1.6, 57.09, 25.8, -1.48, 57.19], "none", "ridge"],
+	["LaunchCabin", [25.0, -1.6, 55.0, 27.6, 0.4, 56.8], "none"],
 	# High-bay roof plant: evaporator condensers (vapour plumes, landmark 3) and the skylights.
 	["CondenserA", [24.0, BAY_ROOF, 27.0, 30.0, BAY_ROOF + 2.2, 30.0], "trim"],
 	["CondenserB", [36.0, BAY_ROOF, 27.0, 42.0, BAY_ROOF + 2.2, 30.0], "trim"],

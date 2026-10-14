@@ -1,0 +1,35 @@
+[remap]
+
+importer="scene"
+type="PackedScene"
+
+[params]
+
+import_script/path="res://world/tools/import/glb_post_import.gd"
+meshes/create_shadow_meshes=true
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+_subresources={
+"materials": {
+"M_pr_metal_dark": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_metal_dark.tres",
+"use_external/path": "res://world/props/materials/pr_metal_dark.tres"
+},
+"M_pr_metal_green_worn": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_metal_green_worn.tres",
+"use_external/path": "res://world/props/materials/pr_metal_green_worn.tres"
+},
+"M_pr_paint_ivory": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_paint_ivory.tres",
+"use_external/path": "res://world/props/materials/pr_paint_ivory.tres"
+},
+"M_pr_wood_pine": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_wood_pine.tres",
+"use_external/path": "res://world/props/materials/pr_wood_pine.tres"
+}
+}
+}

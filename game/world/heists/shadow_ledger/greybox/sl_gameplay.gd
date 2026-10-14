@@ -25,6 +25,29 @@ const PREFAB_VISUALS: Dictionary = {
 	"body_container": "prop_dumpster", "camera_station": "prop_camera_station_bank",
 	"security_camera": "prop_security_camera_wall", "hack_terminal": "prop_server_rack_terminal",
 }
+## D-111 doors: the layout's greybox kit piece (arch_door_<kind>_t<20|40>) maps to the catalog door of the same kind
+## and wall thickness (tools/blender/props/doors.py) in the room's finish: glass (leaf_surface glass), steel (back of
+## house, stairs, plant, facade and security doors), walnut (the partners' and the residence's rooms), else ivory.
+const DOOR_STEEL: Array[String] = [
+	"RefuseDoor", "StairBL40", "StairAGate", "StairBGate", "K1FacadeDoor", "JanitorL41", "StairAL41", "StairBL41",
+	"ServerDoor", "SecurityDoor", "ElectricalL41", "CageGate", "StudyFacadeDoor", "LinenL42", "StairAL42", "StairBL42",
+	"ElectricalL42", "RoofDoor", "RiserBayDoor", "HeadHousePlantDoor", "PlantDoor",
+]
+const DOOR_WALNUT: Array[String] = [
+	"K1Door", "K5Door", "LibraryDoor", "ArtHallDoors", "StudyDoor", "SuiteDoor", "DiningDoor", "WineRoomDoor",
+	"BoardroomDoor",
+]
+## D-111 loot: catalog stacks per loot id (tools/blender/props/loot.py; the cash bags) and the small valuables; the
+## art-hall paintings hang on the M3 south wall (map-local wrappers of the GN study canvases, 1.6 m centre, back on
+## the wall face 0.5 m behind the spawn).
+const LOOT_VISUALS: Dictionary = {
+	"loot.ledger_laptop": "prop_loot_laptop", "loot.ledger_drives": "prop_loot_ledger_drives",
+	"loot.ledger_books": "prop_loot_ledger_books", "loot.cash": "prop_cash_bags",
+}
+const PAINTING_VISUALS: Array[String] = [
+	"res://world/heists/shadow_ledger/greybox/sl_painting_hung_study3.tscn",
+	"res://world/heists/shadow_ledger/greybox/sl_painting_hung_study6.tscn",
+]
 ## Ladder visuals by height and wall gap (prefab_visuals.py `prop_ladder_steel_*`: Top / Bottom exactly where the
 ## placeholder had them, stand-offs reaching the wall behind; g00 = free-standing in the riser hole).
 const LADDER_RISER_LOWER: String = "prop_ladder_steel_h440_g00"
@@ -53,6 +76,8 @@ func prefab(parent: Node3D, kind: String, nm: String, pos: Vector3, yaw: float, 
 		_set_prop(inst, String(k), props[k])
 	if not props.has("visual_scene") and PREFAB_VISUALS.has(kind):
 		inst.set(&"visual_scene", _catalog_scene(String(PREFAB_VISUALS[kind])))
+	elif not props.has("visual_scene") and kind == "loot_spawn" and LOOT_VISUALS.has(String(props.get("loot_id", ""))):
+		inst.set(&"visual_scene", _catalog_scene(String(LOOT_VISUALS[String(props["loot_id"])])))
 	for mk: Variant in metas:
 		inst.set_meta(StringName(String(mk)), metas[mk])
 	parent.add_child(inst)
@@ -181,7 +206,7 @@ func _build_doors(gp: Node3D) -> void:
 	var doors: Node3D = add(gp, node3d("Doors")) as Node3D
 	for d: Array in L.DOORS:
 		var props: Dictionary = {"lock": "enum:" + String(d[4]), "swing": "enum:" + String(d[5]),
-			"visual_scene": kit_scene(String(d[1]))}
+			"visual_scene": _catalog_scene(door_visual(d))}
 		if String(d[6]) != "":
 			props["objective_tag"] = StringName(String(d[6]))
 		var metas: Dictionary = {"kind": "door", "swing_side": "front" if String(d[5]) == "OUTWARD" else "back"}
@@ -199,6 +224,21 @@ func _build_doors(gp: Node3D) -> void:
 		if String(d[1]).contains("double"):
 			props["width_m"] = 1.8
 		prefab(doors, "door", String(d[0]), d[2], float(d[3]), props, null, metas)
+
+
+## Catalog door for a layout row (DOOR_STEEL / DOOR_WALNUT; glass by leaf_surface): arch_door_single_t20 ->
+## prop_door_single_<finish>_t20.
+static func door_visual(d: Array) -> String:
+	var piece: String = String(d[1]).trim_prefix("arch_door_")
+	var nm: String = String(d[0])
+	var fin: String = "ivory"
+	if String((d[7] as Dictionary).get("leaf_surface", "")) == "glass":
+		fin = "glass"
+	elif nm in DOOR_STEEL:
+		fin = "steel"
+	elif nm in DOOR_WALNUT:
+		fin = "walnut"
+	return "prop_door_%s_%s_%s" % [piece.get_slice("_", 0), fin, piece.get_slice("_", 1)]
 
 
 ## K11 server room: the keycard reader on K10 (opens the server door), the cage lock (safe LARGE,
@@ -245,7 +285,9 @@ func _build_study(gp: Node3D) -> void:
 	for i: int in range(3):
 		var x: float = 32.76 + 0.24 * float(i)
 		prefab(safe, "small_loot", "StudyValuables%d" % (i + 1), Vector3(x, L.F42 + 0.3, 7.04), 0.0,
-			{"loot_id": &"loot.small_valuables", "value": 1500}, Vector3(x, L.F42, 6.2))
+			{"loot_id": &"loot.small_valuables", "value": 1500,
+				"visual_scene": _catalog_scene("prop_valuables_watch_box" if i == 1 else "prop_valuables_jewelry_case")},
+			Vector3(x, L.F42, 6.2))
 	prefab(safe, "loot_spawn", "LedgerBooks", Vector3(34.2, L.F42, 6.4), 0.0,
 		{"loot_id": &"loot.ledger_books", "count": 1, "objective_tag": &"study_safe_loot"}, Vector3(34.2, L.F42, 5.8))
 
@@ -292,20 +334,24 @@ func _build_misc(gp: Node3D) -> void:
 	for i: int in range(2):
 		var x: float = 27.3 + 1.0 * float(i)
 		prefab(misc, "loot_spawn", "Painting%d" % (i + 1), Vector3(x, L.F42, 6.9), 180.0,
-			{"loot_id": &"loot.painting", "count": 1, "interaction_time_s": 4.0, "objective_tag": &"paintings"},
+			{"loot_id": &"loot.painting", "count": 1, "interaction_time_s": 4.0, "objective_tag": &"paintings",
+				"visual_scene": load(PAINTING_VISUALS[i])},
 			Vector3(x, L.F42, 6.4))
 	# Rare `ledger_printout`: a working copy of the books on the K1 desk side (mission enables it).
 	prefab(misc, "loot_spawn", "PrintoutBooks", Vector3(4.4, L.F41, 3.2), 0.0,
 		{"loot_id": &"loot.ledger_books", "count": 1, "objective_tag": &"printout"}, Vector3(4.4, L.F41, 3.8))
 	# Small loot: the partners' desks and the wine-room humidor.
 	prefab(misc, "small_loot", "KesslerWatch", Vector3(3.5, L.F41 + 0.75, 2.0), 0.0,
-		{"loot_id": &"loot.small_valuables", "value": 1200}, Vector3(3.5, L.F41, 3.05))
+		{"loot_id": &"loot.small_valuables", "value": 1200, "visual_scene": _catalog_scene("prop_valuables_watch_box")},
+		Vector3(3.5, L.F41, 3.05))
 	prefab(misc, "small_loot", "MoorBracelet", Vector3(33.0, L.F41 + 0.75, 2.0), 0.0,
-		{"loot_id": &"loot.small_valuables", "value": 1200}, Vector3(33.0, L.F41, 3.05))
+		{"loot_id": &"loot.small_valuables", "value": 1200, "visual_scene": _catalog_scene("prop_valuables_jewelry_case")},
+		Vector3(33.0, L.F41, 3.05))
 	for i2: int in range(2):
 		var z: float = 14.35 + 0.3 * float(i2)
 		prefab(misc, "small_loot", "HumidorCigars%d" % (i2 + 1), Vector3(30.64, L.F42 + 1.0, z), 0.0,
-			{"loot_id": &"loot.small_valuables", "value": 800}, Vector3(29.9, L.F42, z))
+			{"loot_id": &"loot.small_valuables", "value": 800, "visual_scene": _catalog_scene("prop_valuables_cigar_box")},
+			Vector3(29.9, L.F42, z))
 
 
 ## Ladders (S9.11; unmasked crew cannot climb): the services riser (L41 -> L42 grating -> R1) and the
