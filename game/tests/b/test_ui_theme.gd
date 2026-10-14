@@ -288,3 +288,42 @@ func test_crosshair_only_when_masked() -> void:
 	_model.player_mode = &"masked"
 	await wait_seconds(0.6)
 	assert_near(_hud.crosshair.modulate.a, 1.0, 0.01, "shown once masked")
+
+
+## P fresh-eyes #11: "Secured: 1 bag", then "Secured: 2 bags".
+func test_secured_toast_singular() -> void:
+	await _spawn_hud()
+	EventBus.loot_secured.emit(1, &"loot.cash", 100)
+	await wait_frames(1)
+	assert_eq(_hud.toast_label.text, UiText.t(&"ui.hud.secured_one"))
+	EventBus.loot_secured.emit(2, &"loot.cash", 100)
+	await wait_frames(1)
+	assert_eq(_hud.toast_label.text, UiText.t(&"ui.hud.secured", {"count": 2}))
+
+
+## P fresh-eyes #8: an off-screen marker clamps clear of the HUD's top and bottom bands (it sat on the
+## bottom-right ammo cluster).
+func test_clamped_marker_keeps_out_of_the_hud_bands() -> void:
+	var area: Rect2 = Rect2(0, 0, 1920, 1080)
+	for p: Vector2 in [Vector2(5000, 5000), Vector2(1900, 1070), Vector2(960, 4000), Vector2(-3000, -3000), Vector2(960, -500)]:
+		for behind: bool in [false, true]:
+			var placed: Array = ObjectiveMarkers.clamp_to_edge(p, behind, area)
+			var at: Vector2 = placed[0] as Vector2
+			assert_true(at.y <= 1080.0 - ObjectiveMarkers.EDGE_INSET_BOTTOM + 0.01, "%s: y %.0f above the bottom band" % [p, at.y])
+			assert_true(at.y >= ObjectiveMarkers.EDGE_INSET_TOP - 0.01, "%s: y %.0f under the top band" % [p, at.y])
+
+
+## P fresh-eyes #13: a generic prompt names its action from the interactable's kind ("pick the lock");
+## a specific prompt_key wins; unknown kinds keep the generic line.
+func test_generic_prompt_names_the_action_from_its_kind() -> void:
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"lockpick"), &"ui.prompt.pick_lock")
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"keycard"), &"ui.prompt.use_keycard")
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"open_door"), &"ui.prompt.open_door")
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.place_c4", &"lockpick"), &"ui.prompt.place_c4", "specific wins")
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"no_such_kind"), &"ui.prompt.interact")
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &""), &"ui.prompt.interact")
+	await _spawn_hud()
+	_model.interaction = {"text_key": &"ui.prompt.interact", "kind": &"lockpick", "args": {}, "progress": 0.0, "blocked_reason": &""}
+	await wait_frames(1)
+	assert_eq(_hud.interaction.prompt.text, UiText.t(&"ui.prompt.pick_lock",
+			{"key": InteractionPanel.action_key_text(&"interact")}).replace("[", "").replace("]", ""), "the HUD says pick the lock")

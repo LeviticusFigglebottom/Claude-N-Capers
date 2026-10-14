@@ -67,7 +67,7 @@ class HandRestore:
 			vm._restore_hand()
 
 
-enum Action { NONE, FIRE, RELOAD, SWAP, MELEE, DEPLOY, THROW }
+enum Action { NONE, FIRE, RELOAD, SWAP, MELEE, DEPLOY, THROW, INTERACT }
 
 const NODE_NAME: String = "FpViewmodel"
 const ATTACH_NAME: String = "WeaponBone"
@@ -158,6 +158,8 @@ var _flash_peak: float = 0.0
 var _align: Vector3 = Vector3.ZERO
 ## D-105: the per-shot kick (x = back m, y = pitch deg) as an exact critically damped spring (position, velocity).
 var _kick: Vector2 = Vector2.ZERO
+## PO pass: seconds left before a running interaction lowers the weapon (-1 = none pending).
+var _interact_wait: float = -1.0
 var _kick_v: Vector2 = Vector2.ZERO
 ## PO-13 (PD2 vel_overshot): look-lag sway target and applied value (x = yaw, y = pitch; deg), the last look angles,
 ## and the breathing clock.
@@ -251,9 +253,16 @@ func _ready() -> void:
 		_crew.throwables.released.connect(_on_throw_released)
 	if _crew != null:
 		_crew.carried_bag_changed.connect(_on_bag_changed)
+	EventBus.interaction_started.connect(_on_interaction_started)
+	EventBus.interaction_cancelled.connect(_on_interaction_ended)
+	EventBus.interaction_completed.connect(_on_interaction_ended)
 
 
 func _exit_tree() -> void:
+	for pair: Array in [[EventBus.interaction_started, _on_interaction_started],
+			[EventBus.interaction_cancelled, _on_interaction_ended], [EventBus.interaction_completed, _on_interaction_ended]]:
+		if (pair[0] as Signal).is_connected(pair[1]):
+			(pair[0] as Signal).disconnect(pair[1])
 	if _crew != null and is_instance_valid(_crew) and _crew.carried_bag_changed.is_connected(_on_bag_changed):
 		_crew.carried_bag_changed.disconnect(_on_bag_changed)
 	if _crew == null or not is_instance_valid(_crew) or _crew.weapons == null:
@@ -343,6 +352,10 @@ func tick(delta: float) -> void:
 	if action == Action.RELOAD and not _reload_done and _crew != null and _crew.weapons != null \
 			and not _crew.weapons.reloading:
 		_end_action()  # cancelled (swap, crew state)
+	if _interact_wait >= 0.0:
+		_interact_wait -= delta
+		if _interact_wait < 0.0:
+			_lower_for_interaction()
 	if action != Action.NONE:
 		_seq_t += delta
 		while action != Action.NONE and _seg_i >= 0 and _seg_i < _segs.size() \
@@ -366,7 +379,7 @@ func tick(delta: float) -> void:
 # --- Gameplay signal handlers (presentation only) ---------------------------------------------
 
 func _on_fired(_claim: Dictionary) -> void:
-	if anim_set == &"" or action == Action.SWAP:
+	if anim_set == &"" or action == Action.SWAP or action == Action.INTERACT:
 		return
 	_flash_muzzle()
 	var aimed: bool = _aim_wanted()
@@ -406,6 +419,53 @@ func _on_bag_changed(bag: Node) -> void:
 	var segs: Array[Dictionary] = []
 	_add_timed(segs, anim_set, &"draw", &"ready", equip_s)
 	_start(Action.SWAP, segs)
+
+
+## PO pass: a timed interaction by this crew lowers the weapon after interact_lower_delay_s (instant ones end first).
+func _on_interaction_started(_interactable_net_id: int, crew_slot: int, _kind: StringName) -> void:
+	if _crew == null or crew_slot != _crew.slot or not FpViewmodelTweak.data().interact_lower:
+		return
+	_interact_wait = FpViewmodelTweak.data().interact_lower_delay_s
+
+
+func _on_interaction_ended(_interactable_net_id: int, crew_slot: int, _kind: StringName = &"") -> void:
+	if _crew == null or crew_slot != _crew.slot:
+		return
+	_interact_wait = -1.0
+	if action == Action.INTERACT:
+		_draw_weapon()
+
+
+func _lower_for_interaction() -> void:
+	var equip_s: float = _equip_time()
+	if anim_set == &"" or equip_s <= 0.0 or (action != Action.NONE and action != Action.FIRE) \
+			or _resolve(anim_set, &"holster") == &"":
+		return
+	_end_action()
+	var segs: Array[Dictionary] = []
+	_add_timed(segs, anim_set, &"holster", &"gone", equip_s * clampf(FpViewmodelTweak.data().holster_share, 0.0, 1.0))
+	_start(Action.INTERACT, segs)
+
+
+## The equipped weapon's draw over its gameplay equip time (bag pickup, end of an interaction).
+func _draw_weapon() -> void:
+	var equip_s: float = _equip_time()
+	_end_action()
+	if anim_set == &"" or equip_s <= 0.0 or _resolve(anim_set, &"draw") == &"":
+		return
+	var segs: Array[Dictionary] = []
+	_add_timed(segs, anim_set, &"draw", &"ready", equip_s)
+	_start(Action.SWAP, segs)
+
+
+## Gameplay equip time of the equipped weapon (x weapon.swap_speed_mult), -1 without one.
+func _equip_time() -> float:
+	if _crew == null or _crew.weapons == null:
+		return -1.0
+	var st: WeaponStats = _crew.weapons.stats(_crew.weapons.equipped_slot)
+	if st == null or st.equip_time_s <= 0.0:
+		return -1.0
+	return st.equip_time_s / maxf(Modifiers.mult(_crew.slot, &"weapon.swap_speed_mult"), 0.01)
 
 
 ## D-105: muzzle burst + smoke, the casing (on the bolt / pump / lever cycle when the set has one: `eject_delay`),
@@ -780,7 +840,8 @@ func _start(kind: int, segs: Array[Dictionary]) -> void:
 func _play_segment(i: int) -> void:
 	_seg_i = i
 	if i >= _segs.size():
-		_end_action()
+		if action != Action.INTERACT:  # an interaction holds the holstered pose until it ends
+			_end_action()
 		return
 	var s: Dictionary = _segs[i]
 	var set_id: StringName = s["set"]

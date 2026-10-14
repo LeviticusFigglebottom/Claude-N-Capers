@@ -472,7 +472,20 @@ func _render() -> void:
 func _summary_key(success: bool) -> StringName:
 	if not success:
 		return &"ui.results.failure"
-	return &"ui.results.stealth" if bool(result.get("stealth", false)) else &"ui.results.loud"
+	if not bool(result.get("stealth", false)):
+		return &"ui.results.loud"
+	# P fresh-eyes #12: "Clean job. Nobody knew we were there." only with no alarm (stealth = never went loud)
+	# and no civilian killed (the cleanup cost line); a quiet job with a body is not clean.
+	if int(payout.get("civilian_penalty", 0)) > 0 or _civilians_killed() > 0:
+		return &"ui.results.stealth_messy"
+	return &"ui.results.stealth"
+
+
+func _civilians_killed() -> int:
+	var n: int = 0
+	for member: Dictionary in result.get("crew", []) as Array:
+		n += int(member.get("civilians_killed", 0))
+	return n
 
 
 ## Retry is one step left of Continue while it is offered. A hidden explicit neighbour traps d-pad focus

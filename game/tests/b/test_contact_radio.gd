@@ -439,3 +439,13 @@ func test_guard_and_crew_subtitles_behind_the_toggle() -> void:
 	s.set_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers", true)
 	assert_true(o.show_line(&"guard", &"vo.guard.cuff_warning", {}), "shown once the toggle is on")
 	s.set_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers", false)
+
+
+## P fresh-eyes #9: subtitles sit above the bottom HUD band on a readable backing.
+func test_subtitles_clear_the_bottom_band_on_a_solid_backing() -> void:
+	var o: SubtitleOverlay = _overlay()
+	await wait_frames(1)
+	assert_true(o.tweak.bottom_margin_px >= 90.0, "lifted out of the vitals / ammo band")
+	assert_true(o.tweak.panel_color.a >= 0.8, "backing alpha %.2f" % o.tweak.panel_color.a)
+	assert_true(o.tweak.bottom_margin_px + o.tweak.max_height_px <= 354.0, "stays under the interaction prompt (hud_scale 1.5)")
+	o.queue_free()

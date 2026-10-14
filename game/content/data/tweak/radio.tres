@@ -46,12 +46,13 @@ font_sizes = {
 }
 default_size = "medium"
 width_px = 800.0
-bottom_margin_px = 40.0
+bottom_margin_px = 90.0
+max_height_px = 264.0
 max_lines = 2
 base_s = 1.2
 per_char_s = 0.055
 min_s = 2.5
 max_s = 9.0
 fade_s = 0.4
-panel_color = Color(0.04, 0.04, 0.05, 0.62)
+panel_color = Color(0.04, 0.04, 0.05, 0.85)
 min_contrast = 4.5

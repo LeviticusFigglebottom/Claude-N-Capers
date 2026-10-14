@@ -5,6 +5,13 @@
 class_name InteractionPanel
 extends HudWidget
 
+## The default InteractableComponent.prompt_key, and kinds whose verb string is not `ui.prompt.<kind>`.
+const GENERIC_PROMPT: StringName = &"ui.prompt.interact"
+const KIND_PROMPTS: Dictionary = {
+	&"lockpick": &"ui.prompt.pick_lock", &"keycard": &"ui.prompt.use_keycard", &"use_keycard": &"ui.prompt.use_keycard",
+	&"pick_up_keycard": &"ui.prompt.take_keycard", &"small_loot": &"ui.prompt.take_small_loot",
+	&"drill": &"ui.prompt.place_drill", &"hack": &"ui.prompt.start_hack",
+}
 const INTERACT_ACTION: StringName = &"interact"
 
 ## D-082 fix: pad players saw keyboard keys ("Hold F") in prompts. Xbox-style names for the pad.
@@ -52,7 +59,7 @@ func watched_signals() -> Array[StringName]:
 
 func refresh() -> void:
 	var it: Dictionary = prop(&"interaction", {}) as Dictionary
-	var key: StringName = StringName(it.get("text_key", &""))
+	var key: StringName = prompt_key_for(StringName(it.get("text_key", &"")), StringName(it.get("kind", &"")))
 	visible = key != &""
 	if not visible:
 		return
@@ -68,6 +75,16 @@ func refresh() -> void:
 	var blocked: StringName = StringName(it.get("blocked_reason", &""))
 	blocked_label.visible = blocked != &""
 	blocked_label.text = UiText.t(blocked, args) if blocked != &"" else ""
+
+
+## P fresh-eyes #13: an interactable left on the generic "Hold {key} to interact" names its action from its
+## kind (InteractableComponent.kind, carried in the model's interaction dict): the workshop door's lockpick
+## reads "Hold F to pick the lock". A specific prompt_key always wins.
+static func prompt_key_for(text_key: StringName, kind: StringName) -> StringName:
+	if text_key != GENERIC_PROMPT or kind == &"":
+		return text_key
+	var k: StringName = StringName(KIND_PROMPTS.get(kind, StringName("ui.prompt.%s" % kind)))
+	return k if StringTable.has(k) else text_key
 
 
 ## Name of the first binding of `action` for the device the player used last (pad button names while

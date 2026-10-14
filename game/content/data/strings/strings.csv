@@ -134,6 +134,7 @@ ui.hud.assault_wave,Wave {wave}
 ui.hud.alarm,Alarm raised
 ui.hud.escape_available,Escape available
 ui.hud.secured,Secured: {count} bags
+ui.hud.secured_one,Secured: 1 bag
 ui.hud.teammate_downed,{name} is down
 ui.hud.teammate_custody,{name} is in custody
 ui.hud.phantom_warning,Phantom nearby
@@ -220,6 +221,7 @@ ui.results.lost_bags,Bags secured (pay nothing)
 ui.results.loss_note,A failed heist pays no cash. Experience earned along the way is kept.
 ui.results.retry_routine,Try again at Routine
 ui.results.stealth,Clean job. Nobody knew we were there.
+ui.results.stealth_messy,Quiet job. Not a clean one.
 ui.results.loud,Went loud
 ui.results.time,Time: {time}
 ui.results.kills,Kills

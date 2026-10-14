@@ -98,6 +98,11 @@ static var _gen: int = 0
 ## D-102 lane (PD2 PlayerCarry:_enter -> _start_action_equip): picking up a bag re-plays the weapon's `draw` over
 ## its equip time (not on drop: PD2 exits the carry state with skip_equip).
 @export var carry_reequip: bool = true
+## PO pass (PD2 PlayerStandard:_start_action_interact -> _play_unequip_animation): a timed interaction (lockpick,
+## bagging, drill placement...) holsters the weapon and holds it out of view; completing or cancelling it draws the
+## weapon again. Lowered only once the interaction has run interact_lower_delay_s, so instant ones never holster.
+@export var interact_lower: bool = true
+@export var interact_lower_delay_s: float = 0.12
 ## ADS weight rate (1/s toward the target).
 @export var ads_rate: float = 10.0
 

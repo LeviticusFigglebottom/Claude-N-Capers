@@ -10,6 +10,11 @@ extends HudWidget
 ## Diamond half-size and the inset from the screen edge for clamped markers (canvas units).
 const SIZE: float = 11.0
 const EDGE_INSET: float = 48.0
+## P fresh-eyes #8: a marker clamped to the bottom edge sat on the ammo / inventory cluster ("27 / 120")
+## and at the top on the objective / assault band. Clamped markers keep out of the HUD's bands: top and
+## bottom insets clear them (with the marker's distance line under it), the sides keep EDGE_INSET.
+const EDGE_INSET_TOP: float = 150.0
+const EDGE_INSET_BOTTOM: float = 200.0
 ## Lead queue (c): marker glyph per objective kind (kind_for); the current marker pulses for PULSE_S
 ## when the current objective changes.
 const PULSE_S: float = 0.8
@@ -107,7 +112,7 @@ static func is_casing_objective(m: Dictionary) -> bool:
 ## Clamps `p` (local canvas position) into `area` shrunk by EDGE_INSET. A point behind the camera is
 ## mirrored first so it lands on the edge it is "behind". Returns [position: Vector2, clamped: bool].
 static func clamp_to_edge(p: Vector2, behind: bool, area: Rect2) -> Array:
-	var inner: Rect2 = area.grow(-EDGE_INSET)
+	var inner: Rect2 = area.grow_individual(-EDGE_INSET, -EDGE_INSET_TOP, -EDGE_INSET, -EDGE_INSET_BOTTOM)
 	var c: Vector2 = inner.get_center()
 	var q: Vector2 = c - (p - c) if behind else p
 	if not behind and inner.has_point(q):
