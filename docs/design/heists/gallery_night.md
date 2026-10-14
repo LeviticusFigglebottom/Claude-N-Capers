@@ -1108,7 +1108,7 @@ lesser studies valued below the list; D-075 Q6: the new id is approved).
    stays as drafted, with the NPC-carried bag behind QC-57 (until it ships, the G1 greybox falls back
    to the crew raising the alarm on an empty slot, marked `TODO(QC-57)`).
 
-## Build rulings (D-103 / D-104; next_heist.md §3b, §4, §7) — DRAFT for lead approval
+## Build rulings (D-103 / D-104; next_heist.md §3b, §4, §7) — approved (lead, D-103/D-104)
 Folded in by ENV C on 2026-10-14. Where this section and an older line above disagree, **this section wins** (the
 inline lines touched are marked "Build rulings Bn"). Lock names are `door.gd` `Lock` values.
 
