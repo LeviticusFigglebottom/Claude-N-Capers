@@ -12,6 +12,13 @@ const REVIVE_RANGE_M: float = 20.0
 const REVIVE_THREAT_M: float = 25.0
 ## A loud player opens, drills or uses a keycard before picking a lock: lockpick ranks this much farther (m).
 const LOCKPICK_PENALTY_M: float = 2.0
+## Carrying a bag: an enemy in sight within this range makes the pilot put it down and clear the way (m).
+const CLEAR_RANGE_M: float = 20.0
+## Longest fight before picking the bag back up anyway, and the walk leg between threat checks (s).
+const CLEAR_LIMIT_S: float = 40.0
+const CARRY_LEG_S: float = 4.0
+## Give up carrying one bag to the van after this long (s).
+const CARRY_LIMIT_S: float = 300.0
 
 var f: Node = null
 var p: Po5Pilot = null
@@ -210,7 +217,34 @@ func _secure_bag() -> void:
 		_note_once(&"_nozone", "carrying a bag but no secure zone")
 		await p.hold_position(3.0)
 		return
-	await p.secure_carried_bag(zone)
+	# Lead (ND attempt 14): a real player clears a held landing before carrying a heavy bag through it. Walk in
+	# short legs; whenever an enemy is in sight, put the bag down, fight until the way is clear, pick it up again.
+	var stand: Vector3 = p.stand_point(zone.global_position)
+	var t0: float = rt.heist_time_s
+	while p.crew.is_carrying_bag() and p.flat_dist(p.crew.global_position, stand) > 3.0 \
+			and rt.heist_time_s - t0 < CARRY_LIMIT_S and p.crew.crew_state == Enums.CrewState.NORMAL:
+		if p.nearest_enemy(CLEAR_RANGE_M) != null:
+			await _clear_then_pick_up()
+			continue
+		await p.goto(stand, 3.0, CARRY_LEG_S)
+	if p.crew.is_carrying_bag() and p.crew.crew_state == Enums.CrewState.NORMAL:
+		await p.secure_carried_bag(zone)
+
+
+## Drop the carried bag, fight until no enemy is in sight within CLEAR_RANGE_M (or CLEAR_LIMIT_S), pick it back up.
+func _clear_then_pick_up() -> void:
+	var bag: LootBag = p.crew.carried_bag as LootBag
+	await p.inp.tap(&"drop_bag")
+	await p.inp.ticks(10)
+	f.note("carry: enemy in sight, bag down to clear the way (t=%.0f)" % rt.heist_time_s)
+	var t0: float = rt.heist_time_s
+	while rt.heist_time_s - t0 < CLEAR_LIMIT_S and p.crew.crew_state == Enums.CrewState.NORMAL:
+		var foe: NpcBase = p.nearest_enemy(CLEAR_RANGE_M)
+		if foe == null:
+			break
+		await p.engage(foe, 2.0)
+	if bag != null and is_instance_valid(bag) and not bag.is_carried() and p.crew.crew_state == Enums.CrewState.NORMAL:
+		await p.use(bag.interactable, 15.0, func() -> bool: return p.crew.is_carrying_bag())
 
 
 func _note_once(key: StringName, msg: String) -> void:
