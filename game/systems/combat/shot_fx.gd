@@ -19,6 +19,12 @@ const FLAG_SUPPRESSED: int = EventBus.SHOT_FX_SUPPRESSED
 const FLAG_FIRST_PERSON: int = EventBus.SHOT_FX_FIRST_PERSON
 const FLAG_HEADSHOT: int = EventBus.SHOT_FX_HEADSHOT
 const FLAG_PENETRATED: int = EventBus.SHOT_FX_PENETRATED
+## D-113 (ENV C's VfxDirector): a heavy flesh hit (shotgun / sniper / LMG class, or a round of at least
+## CombatTweak.fx_strong_damage).
+const FLAG_STRONG: int = EventBus.SHOT_FX_STRONG
+## D-113: weapon classes whose flesh hits are STRONG, and those whose rounds exit the body (PENETRATED).
+const STRONG_CLASSES: Array[StringName] = [&"shotgun", &"sniper", &"lmg"]
+const EXIT_CLASSES: Array[StringName] = [&"sniper"]
 
 const CLASS_MELEE: StringName = &"melee"
 const SURFACE_FLESH: StringName = &"flesh"
@@ -120,8 +126,20 @@ static func emit_ray(origin: Vector3, hit: Dictionary, max_end: Vector3, weapon_
 	var col: Object = hit.get("collider") as Object
 	if col != null and Damage.zone_of(col) == Enums.HitZone.HEAD:
 		flags |= FLAG_HEADSHOT
+	var surface: StringName = surface_of(col)
 	EventBus.shot_fx.emit(origin, hit.get("position", max_end) as Vector3, hit.get("normal", Vector3.ZERO) as Vector3,
-		surface_of(col), weapon_class, shooter_net_id, flags)
+		surface, weapon_class, shooter_net_id, flesh_flags(flags, surface, weapon_class))
+
+
+## D-113: STRONG / PENETRATED only mean something on flesh (cleared elsewhere); the class rules add them.
+static func flesh_flags(flags: int, surface: StringName, weapon_class: StringName) -> int:
+	if surface != SURFACE_FLESH:
+		return flags & ~(FLAG_STRONG | FLAG_PENETRATED)
+	if STRONG_CLASSES.has(weapon_class):
+		flags |= FLAG_STRONG
+	if EXIT_CLASSES.has(weapon_class):
+		flags |= FLAG_PENETRATED
+	return flags
 
 
 # --- NPC shots and melee (server emits + relays; peers replay) ------------------------------------
@@ -177,7 +195,7 @@ static func play_impact(shooter: Node, from: Vector3, to: Vector3, target_id: in
 	if mode != MODE_SHOT_MISS:
 		var target: Object = Ids.lookup(target_id) if target_id != 0 else null
 		var surface: StringName = surface_of(target) if target != null else SURFACE_FLESH
-		EventBus.shot_fx.emit(origin, to, -dir, surface, cls, sid, flags)
+		EventBus.shot_fx.emit(origin, to, -dir, surface, cls, sid, flesh_flags(flags, surface, cls))
 		return
 	var tw: CombatTweak = CombatTweak.data()
 	var max_end: Vector3 = from + dir * tw.hitscan_max_range_m

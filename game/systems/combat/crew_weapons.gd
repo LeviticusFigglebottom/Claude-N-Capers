@@ -525,6 +525,10 @@ func _fx_flags(s: WeaponState) -> int:
 	var f: int = ShotFx.FLAG_SUPPRESSED if s.stats != null and s.stats.suppressed else 0
 	if _crew.is_local():
 		f |= ShotFx.FLAG_FIRST_PERSON
+	if s.stats != null and s.stats.damage >= CombatTweak.data().fx_strong_damage:
+		f |= ShotFx.FLAG_STRONG  # D-113 (kept only on flesh hits by ShotFx.flesh_flags)
+	if s.stats != null and s.stats.wall_pierce:
+		f |= ShotFx.FLAG_PENETRATED  # AP rounds exit the body (flesh only, as above)
 	return f
 
 

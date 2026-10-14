@@ -234,6 +234,7 @@ func _publish(out: Dictionary, attacker_net_id: int) -> void:
 	damaged.emit(out, attacker_net_id)
 	EventBus.damage_applied.emit(_crew.net_id, attacker_net_id, out)
 	Net.replicate_event(&"damage_applied", [_crew.net_id, attacker_net_id, out])
+	BloodFx.hit(_crew, _crew.net_id, out, max_health, BloodFx.KIND_CREW)  # D-113
 
 
 func _gate_invuln(tw: CrewTweak) -> float:
@@ -270,6 +271,7 @@ func go_down() -> void:
 	downed.emit(downs_used)
 	EventBus.crew_downed.emit(_crew.slot, downs_used)
 	Net.replicate_event(&"crew_downed", [_crew.slot, downs_used])
+	BloodFx.bleed(_crew.net_id, true, _crew.global_position, BloodFx.RATE_DOWNED)  # D-113
 	Log.info(&"combat", "slot %d downed (%d/%d)" % [_crew.slot, downs_used, max_downs()])
 
 
@@ -283,6 +285,7 @@ func go_to_custody() -> void:
 	_disable_revive()
 	_crew.set_crew_state(Enums.CrewState.CUSTODY)
 	custody.emit()
+	BloodFx.bleed(_crew.net_id, false, _crew.global_position, 0.0)  # D-113
 	EventBus.crew_custody.emit(_crew.slot)
 	Net.replicate_event(&"crew_custody", [_crew.slot])
 	Log.info(&"combat", "slot %d in custody" % _crew.slot)
@@ -316,6 +319,7 @@ func revive(by_slot: int) -> void:
 	regen_delay_left = 0.0
 	_disable_revive()
 	_crew.set_crew_state(Enums.CrewState.NORMAL)
+	BloodFx.bleed(_crew.net_id, false, _crew.global_position, 0.0)  # D-113
 	revived.emit(by_slot)
 	EventBus.crew_revived.emit(_crew.slot, by_slot)
 	Net.replicate_event(&"crew_revived", [_crew.slot, by_slot])

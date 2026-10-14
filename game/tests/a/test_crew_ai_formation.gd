@@ -140,3 +140,32 @@ func test_bots_crouch_in_cover_and_mirror_the_leader() -> void:
 	var b0: CrewAiBrain = CrewAiBrain.of(bots[0])
 	assert_true(await wait_until(func() -> bool: return b0.cover_point == cover and bots[0].crouched, 4.0),
 		"loud, enemy near: the bot takes the cover point and crouches (mode %d)" % b0.mode)
+
+
+## PD2 bot warp (P's GN pass: bots stacked at the relocked bronze doors): a bot held at a door it may not open,
+## with the leader far beyond it, teleports to its slot by the leader after warp_after_blocked_s.
+func test_bot_warps_past_a_door_it_cannot_open() -> void:
+	_rt = await HeistLauncher.launch(&"unit_map", 4344, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.with_doorway_wall(0, 0)})
+	await wait_physics_frames(2)
+	assert_true(await ATestMaps.await_nav_synced(_rt), "nav synced")
+	for s: int in range(4):
+		Modifiers.set_source(s, &"test.immune", {&"defense.damage_taken_mult": 0.0})
+	var door: Door = ATestMaps.add_prefab(_rt, "door", Vector3.ZERO, func(p: GameplayPrefab) -> void:
+		(p as Door).lock = Door.Lock.LOCKPICK) as Door
+	await wait_physics_frames(2)
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(2)
+	var bot: CrewController = _bots()[0]
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 12)))  # leader beyond the locked door
+	for c: CrewController in _bots():
+		_rt.teleport_crew(c.slot, Transform3D(Basis.IDENTITY, Vector3(float(c.slot) - 2.0, 0.05, -4)))
+	var leader: CrewController = _rt.crew_controller(0) as CrewController
+	var max_s: float = CrewAiBrain.of(bot).tweak.warp_after_blocked_s + 8.0
+	Engine.time_scale = TIME_SCALE
+	var warped: bool = await wait_until(func() -> bool:
+		return bot.global_position.z > 2.0 and Vector2(bot.global_position.x - leader.global_position.x,
+			bot.global_position.z - leader.global_position.z).length() < 6.0, max_s * TIME_SCALE)
+	Engine.time_scale = 1.0
+	assert_true(warped, "the bot reached the leader past the locked door (at %s)" % bot.global_position)
+	assert_true(door.locked and not door.is_open, "the door stayed locked (no bot lockpicking)")
