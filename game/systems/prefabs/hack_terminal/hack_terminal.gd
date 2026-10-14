@@ -44,6 +44,8 @@ const SCREEN_COLORS: Array[Color] = [
 @export var targets: Array[NodePath] = []
 ## D-103 §6: the alarm group (AlarmGroups) this hack takes offline when it finishes (&"" = none).
 @export var clears_alarm_group: StringName = &""
+## GN (C's gap 6): more AlarmGroups disabled on finish, besides `clears_alarm_group`.
+@export var clears_alarm_groups: Array[StringName] = []
 ## Collision box size (m), placed on the pivot; ZERO = fit to the visual (or use the visual's own
 ## `Collision`), see GameplayPrefab "Collision fitting".
 @export var collision_size_override: Vector3 = Vector3.ZERO
@@ -224,6 +226,8 @@ func _physics_process(delta: float) -> void:
 			DrillPoint.open_target(get_node_or_null(p) if not p.is_empty() else null)
 		if clears_alarm_group != &"":
 			AlarmGroups.disable(HeistRuntime.of(self), clears_alarm_group)
+		for g: StringName in clears_alarm_groups:
+			AlarmGroups.disable(HeistRuntime.of(self), g)
 
 
 ## Server (mission): new run time (s; -1 = the tweak) and interruption range ([min, max]; negative = the tweak).

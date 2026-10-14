@@ -64,6 +64,10 @@ const POSE_CLIPS: Array[StringName] = [
 const ACTION_CLIPS: Array[StringName] = [&"kick_charge", &"shield_bang", &"heal_ally"]
 ## Hints played once when the hint changes to them.
 const ONESHOT_HINTS: Array[StringName] = [&"melee", &"kick_hit", &"hit_react"]
+## characters.md v1.11: clips that mean "seated at a desk / chair" for the seated deaths.
+const SEATED_CLIPS: Array[StringName] = [&"desk_work", &"phone_seated", &"sit_chair_watch", &"cower_seated"]
+const DEATH_SEATED_SLUMP: StringName = &"death_seated_slump"
+const DEATH_SEATED_FALL: StringName = &"death_seated_fall"
 ## One-shot hints that are not held as an idle once played (the hint may linger in the brain).
 const ONCE_ONLY_HINTS: Array[StringName] = [&"kick_hit", &"hit_react"]
 ## Clip -> substitute when the library lacks it (then idle).
@@ -123,6 +127,8 @@ var _turning_left: float = 0.0
 var _aim_hold_left: float = 0.0
 var _hit_dir: Vector3 = Vector3.ZERO
 var _death_clip: StringName = &""
+## The NPC's last clip while alive was a seated one (SEATED_CLIPS): it dies in the chair.
+var _seated: bool = false
 var _last_hint: StringName = &""
 var _interact_kind: StringName = &""
 var _interact_height: float = 1.0
@@ -252,6 +258,8 @@ func tick(delta: float) -> void:
 			play_oneshot(hint, -1.0, true)
 	_update_turn(delta, tw)
 	var want: StringName = choose_clip()
+	if _npc != null and _npc.alive:
+		_seated = SEATED_CLIPS.has(want)
 	_apply(want, _speed_scale_for(want, tw), tw)
 	if weapon_visual != null and is_instance_valid(weapon_visual):
 		weapon_visual.visible = not POSE_CLIPS.has(want) and _death_clip == &""
@@ -543,12 +551,18 @@ func _pick_death_clip(tw: AnimTweak) -> StringName:
 	if dir == Vector3.ZERO and _npc != null:
 		dir = _npc.last_damage.get("direction", Vector3.ZERO)
 	dir.y = 0.0
-	if dir.length() < 0.001:
-		return &"death_back"
 	var facing: Vector3 = -_body.global_transform.basis.z
 	facing.y = 0.0
-	# Bullet travelling along the facing = hit from behind = pitched forward, face down.
-	return &"death_front" if dir.normalized().dot(facing.normalized()) > tw.death_front_dot else &"death_back"
+	# Bullet travelling along the facing = hit from behind (pitched forward, face down); against it = frontal.
+	var from_behind: bool = dir.length() >= 0.001 and dir.normalized().dot(facing.normalized()) > tw.death_front_dot
+	if _seated:  # characters.md v1.11: slump on the desk from a frontal or melee kill, else off the chair
+		var melee: bool = _npc != null and int(_npc.last_damage.get("type", -1)) == Enums.DamageType.MELEE
+		var seated_clip: StringName = DEATH_SEATED_SLUMP if melee or not from_behind else DEATH_SEATED_FALL
+		if player == null or player.has_animation("%s/%s" % [LIBRARY, seated_clip]):
+			return seated_clip
+	if dir.length() < 0.001:
+		return &"death_back"
+	return &"death_front" if from_behind else &"death_back"
 
 
 func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:

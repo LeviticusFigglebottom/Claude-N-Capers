@@ -255,8 +255,10 @@ func set_zone_kind(zone_path: NodePath, kind: int) -> void:
 
 
 ## D-103 §6 / QC-51 (gala clock): every calm civilian walks to the nearest PatrolPoint tagged `exit_tag` and
-## despawns there (no alarm). Refused while loud; alarmed / tied / fleeing civilians stay. Returns how many left.
-func civilians_leave(exit_tag: StringName = &"exit") -> int:
+## despawns there (no alarm). Refused while loud; alarmed / tied / fleeing civilians stay. `only_spawn_tags` (C's
+## gap 1): when set, only civilians whose SpawnPoint tags include one of them leave (waitstaff, not the curator).
+## The first `keep` matching calm civilians stay on (Gallery Night's stragglers). Returns how many left.
+func civilians_leave(exit_tag: StringName = &"exit", only_spawn_tags: Array[StringName] = [], keep: int = 0) -> int:
 	if _runtime == null or _runtime.map == null or _runtime.went_loud:
 		return 0
 	var exits: Array[Vector3] = []
@@ -273,7 +275,10 @@ func civilians_leave(exit_tag: StringName = &"exit") -> int:
 	var count: int = 0
 	for n: Node in _runtime.npcs(&"civilian"):
 		var brain: CivilianBrain = n.get_node_or_null(^"Brain") as CivilianBrain
-		if brain == null:
+		if brain == null or not _has_spawn_tag(n as NpcBase, only_spawn_tags):
+			continue
+		if keep > 0 and brain.mode in [CivilianBrain.Mode.IDLE, CivilianBrain.Mode.WANDER]:
+			keep -= 1  # a straggler: stays on
 			continue
 		var pos: Vector3 = (n as Node3D).global_position
 		var best: Vector3 = exits[0]
@@ -283,6 +288,75 @@ func civilians_leave(exit_tag: StringName = &"exit") -> int:
 		if brain.leave_map(best):
 			count += 1
 	return count
+
+
+## QC-51: every MapZone of kind `from_kind` in this map becomes `to_kind` (replicated; Gallery Night last call:
+## PUBLIC -> RESTRICTED). Returns how many zones changed.
+func set_zone_kinds(from_kind: int, to_kind: int) -> int:
+	if _runtime == null or _runtime.map == null:
+		return 0
+	var zones: Array[MapZone] = []
+	for n: Node in _runtime.map.find_children("*", "Area3D", true, false):
+		var z: MapZone = n as MapZone
+		if z != null and z.kind == from_kind:
+			zones.append(z)
+	for z: MapZone in zones:
+		ZoneKinds.set_kind(_runtime, z, to_kind)
+	return zones.size()
+
+
+## Server: keep the first `keep` civilians spawned with SpawnPoint tag `spawn_tag` (spawn order) and remove the rest
+## (variant scalars such as Gallery Night's `patrons`; call at mission start). Returns how many were removed.
+func thin_civilians(spawn_tag: StringName, keep: int) -> int:
+	if _runtime == null or not Net.is_authority():
+		return 0
+	var seen: int = 0
+	var removed: int = 0
+	for n: Node in _runtime.npcs(&"civilian"):
+		if not _has_spawn_tag(n as NpcBase, [spawn_tag]):
+			continue
+		seen += 1
+		if seen > keep:
+			n.queue_free()  # leaves the tree at frame end: HeistNetSync replicates the despawn
+			removed += 1
+	return removed
+
+
+## QC-54 (C's stub review): take an AlarmGroups zone offline for the rest of the run (sensor_net slot, a hack).
+func disable_alarm_group(group: StringName) -> void:
+	if _runtime != null:
+		AlarmGroups.disable(_runtime, group)
+
+
+## True when the crew bought pre-planning asset `asset_id` for this run (e.g. &"asset.intel_list").
+func has_asset(asset_id: StringName) -> bool:
+	return _runtime != null and _runtime.preplan != null and _runtime.preplan.has_asset(asset_id)
+
+
+## The effects of this run's rolled rare events: {event id: effects Dictionary} (HeistVariantTable.rare_events).
+func rare_effects() -> Dictionary:
+	var out: Dictionary = {}
+	if _runtime == null or _runtime.map == null or _runtime.map.variant_table == null:
+		return out
+	var rolled: Variant = _runtime.variants.get(VariantResolver.RARE_KEY, [])
+	for ev: Dictionary in _runtime.map.variant_table.rare_events:
+		var id: StringName = StringName(ev.get("id", &""))
+		if rolled is Array and (rolled as Array).has(id):
+			out[id] = ev.get("effects", {})
+	return out
+
+
+static func _has_spawn_tag(npc: NpcBase, tags: Array[StringName]) -> bool:
+	if tags.is_empty():
+		return true
+	if npc == null:
+		return false
+	var have: Variant = npc.spawn_info.get("tags", [])
+	if have is Array:
+		for t: StringName in tags:
+			if (have as Array).has(t):
+				return true
+	return false
 
 
 ## C10: make escape zones tagged `tag` (all escape zones if empty) available.
