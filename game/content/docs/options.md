@@ -9,6 +9,7 @@ Owner: ENV B. API brief for every environment that must read a player option. Co
 ```gdscript
 var s: GameSettings = GameSettings.current()   # game-wide instance, loaded from user://settings.cfg on first use
 s.fov()                                         # float, degrees, 60..100, default 75
+s.effects_quality()                             # int: video/effects_quality low 0 / medium 1 / high 2, one lower with reduce_motion
 s.head_bob()                                    # bool: accessibility/head_bob (default true) AND NOT reduce_motion
 s.changed.connect(_on_settings_changed)         # changed(section: StringName, key: StringName)
 ```
@@ -24,6 +25,7 @@ it into `current()` on Apply). Generic access: `get_value(section, key)`; sectio
 | What | API | Type / range | Default | Notes |
 |---|---|---|---|---|
 | Head bob | `head_bob()` / `accessibility/head_bob` | bool | true | ENV P's camera walk bob. Always false while `accessibility/reduce_motion` is on. Listen to `changed` for either key. |
+| Effects quality (D-105) | `effects_quality()` / `video/effects_quality` | int `EFFECTS_LOW` 0 / `EFFECTS_MEDIUM` 1 / `EFFECTS_HIGH` 2 (choice "low" / "medium" / "high") | high | ENV C's VfxDirector (impact_fx.md §3) scales pooled effect counts, e.g. `GameSettings.EFFECTS_SCALE[q]` (0.3 / 0.6 / 1.0). One step lower while `accessibility/reduce_motion` is on. Listen to `changed` for either key. |
 | Camera FOV | `fov()` / `video/fov` | float deg 60..100 | 75 | Vertical FOV of the local player's `Head/Camera` (CrewView). ADS zoom should scale from it. |
 | Mouse sensitivity | `mouse_sensitivity()` | Vector2 multipliers 0.1..5 | (1, 1) | Multiply `PlayerInput.mouse_sensitivity` (x for yaw, y for pitch). |
 | Invert Y | `invert_y()` | bool | false | Applies to mouse and pad (`PlayerInput.gamepad_invert_y`). |
@@ -96,6 +98,7 @@ msaa="4x"
 fxaa=false
 brightness=1.0
 fov=75.0
+effects_quality="high"
 
 [controls]
 mouse_sensitivity_x=1.0

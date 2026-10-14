@@ -9,7 +9,7 @@
 ## that key's default.
 ##
 ## The game-wide instance is `GameSettings.current()` (loaded on first use; MenuFlow applies it at
-## start). ENV A reads `fov()`, ENV P `head_bob()`, `mouse_sensitivity()`, `invert_y()`, `pad_sensitivity()`,
+## start). ENV A reads `fov()`, ENV C `effects_quality()`, ENV P `head_bob()`, `mouse_sensitivity()`, `invert_y()`, `pad_sensitivity()`,
 ## `pad_deadzone()`, `is_toggle(action)` and listens to `changed`. `apply()` pushes what ENV B
 ## applies itself (SettingsApplier: AudioServer, window / viewport, InputMap).
 class_name GameSettings
@@ -30,6 +30,14 @@ const BINDINGS: StringName = &"bindings"
 ## Sections validated by SettingsDefaults (BINDINGS is validated by InputBindings).
 const VALUE_SECTIONS: Array[StringName] = [AUDIO, VIDEO, CONTROLS, ACCESSIBILITY, GAMEPLAY]
 const META: String = "meta"
+## effects_quality() levels and their choice ids in video/effects_quality.
+const EFFECTS_LOW: int = 0
+const EFFECTS_MEDIUM: int = 1
+const EFFECTS_HIGH: int = 2
+const EFFECTS_QUALITY_IDS: Array[StringName] = [&"low", &"medium", &"high"]
+## Suggested count multiplier per level for pooled effects (debris, decals, shells, tracers):
+## `GameSettings.EFFECTS_SCALE[s.effects_quality()]`.
+const EFFECTS_SCALE: Array[float] = [0.3, 0.6, 1.0]
 ## Actions with a hold / toggle choice -> their controls key.
 const MODE_KEYS: Dictionary = {
 	&"aim": &"aim_mode", &"crouch": &"crouch_mode", &"sprint": &"sprint_mode", &"scoreboard": &"scoreboard_mode",
@@ -210,14 +218,24 @@ func mouse_sensitivity() -> Vector2:
 	return Vector2(float(get_value(CONTROLS, &"mouse_sensitivity_x")), float(get_value(CONTROLS, &"mouse_sensitivity_y")))
 
 
-## Invert vertical look (mouse and pad).
 ## Camera head bob (ENV P, PD2's subtle walk bob); always off while Reduce Motion is on.
 func head_bob() -> bool:
 	return bool(get_value(ACCESSIBILITY, &"head_bob")) and not bool(get_value(ACCESSIBILITY, &"reduce_motion"))
 
 
+## Invert vertical look (mouse and pad).
 func invert_y() -> bool:
 	return bool(get_value(CONTROLS, &"invert_y"))
+
+
+## D-105 effects quality (impact_fx.md §3, ENV C's VfxDirector): EFFECTS_LOW / MEDIUM / HIGH from
+## video/effects_quality (default high), one step lower while Reduce Motion is on (never below low).
+func effects_quality() -> int:
+	var q: int = maxi(EFFECTS_QUALITY_IDS.find(StringName(String(get_value(VIDEO, &"effects_quality")))), EFFECTS_LOW)
+	if bool(get_value(ACCESSIBILITY, &"reduce_motion")):
+		q = maxi(q - 1, EFFECTS_LOW)
+	return q
+
 
 
 ## Gamepad look-speed multiplier (1.0 = unchanged).

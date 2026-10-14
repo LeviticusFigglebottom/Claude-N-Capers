@@ -2129,6 +2129,10 @@ ui.options.video.msaa.8x,8x
 ui.options.video.fxaa,FXAA
 ui.options.video.brightness,Brightness
 ui.options.video.fov,Field of View
+ui.options.video.effects_quality,Effects Quality
+ui.options.video.effects_quality.low,Low
+ui.options.video.effects_quality.medium,Medium
+ui.options.video.effects_quality.high,High
 ui.options.controls.mouse_sensitivity_x,Mouse Sensitivity (Horizontal)
 ui.options.controls.mouse_sensitivity_y,Mouse Sensitivity (Vertical)
 ui.options.controls.invert_y,Invert Vertical Look
