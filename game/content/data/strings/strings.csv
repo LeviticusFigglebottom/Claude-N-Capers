@@ -1234,6 +1234,9 @@ ui.briefing.intel,The Job
 ui.briefing.objectives,Objectives
 ui.briefing.objective_line,{index}. {text}
 ui.briefing.objectives_none,Your contact will brief you on site.
+ui.briefing.if_loud,If it goes loud: {text}
+ui.briefing.optional,Optional
+ui.briefing.optional_line,• {text}
 ui.briefing.loot,Loot
 ui.briefing.loot_line,{loot}: {value} per bag
 ui.briefing.loot_none,No bagged loot on this job.
@@ -1498,6 +1501,7 @@ heist.night_deposit.name,Night Deposit
 heist.night_deposit.subtitle,Harbor Savings & Loan
 heist.night_deposit.brief,A cartel front drops its week of cash down a bank's night chute. The Accountant wants the chute and the vault cage.
 heist.night_deposit.briefing,"Harbor Savings & Loan, Pier District branch, stands on the corner of Harbor Street and Wharf Lane. Every Friday night the Ortega Fisheries Co-op drops its takings down the night depository chute, and the bags wait in the basement until the 06:00 armoured car. The Co-op's friends keep more cash in the vault cage. The bank is closed: case it from the ATM lobby, find the vault keycard and the time-lock code (or hack the lock from the server room), then hold the basement while the time lock runs. If it goes loud, the vault seals itself: drill the door and hold the basement. The Accountant wants at least four bags."
+heist.night_deposit.briefing_loud,"Skip the time lock: drill the vault door and hold the basement."
 objective.night_deposit.casing,Case the bank
 objective.night_deposit.keycard,Find the vault keycard
 objective.night_deposit.code,Find the time-lock code

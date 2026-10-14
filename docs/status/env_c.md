@@ -3,6 +3,47 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## Art gaps on the existing maps (brief for ENV D at the freeze lift; ENV C survey 2026-10-14)
+Owner key: [D] characters/animation (ENV D), [C] props/maps/materials (ENV C, or D if the lead reassigns art), [A] wiring.
+1. [C] **Placeholder prefab visuals still shown in play:**
+   - every **escape_zone** on all 4 maps (10: van, boat, heli, zipline, lift); `veh_van_secure`/`veh_boat_launch` props exist
+     but aren't wired;
+   - **saw** drill points (drill_point.gd: "saws have no default"); no **thermal drill** model (reuses the drill);
+   - **ECM + all deployables** (no DeployableDef `model`); **carried loot bags** (no LootDef `bag_model`; the
+     prop_loot_bag_light/medium/heavy props exist, so wiring is [A]/B);
+   - no catalog visual for burn_point, zipline, bag_lift (map-local only), laser_grid emitters (ND-local only).
+2. [C] **Shadow Ledger (greybox):** every non-door prefab shows its placeholder (18 cameras, 12 loot spawns, 9 phones, 7
+   keycards, 7 small loot, 5 ladders, 4 code notes, 3 alarm buttons, 3 laser grids, 3 safes, …); 1169 untextured box
+   meshes, 17 flat `sl_grey_*` materials, 0 props, ~25 missing room kits (exec offices, boardroom, art hall, bedrooms,
+   bar/wine room, terrace…); a non-building G2 attempt is on origin/backup/2026-10-12/env-c-sl (19 tower props, 26 kits).
+3. [C] **Dockside Burn (greybox):** placeholders for 17 loot spawns, 6 small loot, 3 burn points, 2 safes, drill, hack
+   terminal, ladder; 1183 box meshes, 23 flat `db_grey_*` materials, 0 props, 16 missing kits (cold store, marshalling
+   hall, net store, packing hall, quay, yard…); no crane/gantry/forklift/cold-store racking props; G2 WIP on
+   origin/backup/2026-10-12/env-c-db-wip.
+4. [C] **Weak materials on final maps:** `nd_water` (flat dark, non-emissive: weakest surface in a final map); greybox
+   `arch_door_*` frames remain on DB/SL (final maps use prop_door_*).
+5. [D] **Characters:** admin PA office-wear look (QC-58c; Gallery Night `late_paperwork`), any missing gala ambient clips
+   (`curator_inspect`, `cower_stand`, `cower_seated`, `walk_text`, `smoke`, `desk_work`), parked FP left-hand cup
+   (needs B's LeftHandIK move on ~20 weapons), SKIN_TONE_FIX fold into `_body.SKIN_TONES[4]`
+   (tools/blender/characters/_outfit_palette.py:194); DB cartel gunmen (QC-36) delivered but not wired in the map [A/C].
+6. [C] **Roller-door kit** (Gallery Night LD roller is a baked-closed placeholder; DB rollers are greybox visuals).
+7. [C] **ND G3 backlog:** lit "Harbor Savings & Loan" sign, cash-brick pallet in the vault cage, teller personal touches.
+
+## 2026-10-14 06:40 ET: IN PROGRESS (ENV C)
+### Done since 02:40 (all pushed; most on trunk)
+- Gate 2/3 map side: ladder nav links climbers-only (f5eb9b42); GH WindowLink → walkable fire-escape door-window with
+  A's `walkable` + `sash_travel_m` (c0b5a639, 1596c78a); GH stair ramps; GH LobbyDoor snag → `frame_proud` + flush door
+  frame colliders, 37 door GLBs rebuilt (bedc56ee). PP-C-1 door mode now 0 stuck on GH/ND/DB.
+- PO-7 door_frame_gap + seam_gaps (ac7331ad); PO-9 furniture_logic + generator determinism (9c519042), GH console seat,
+  SL table chairs, SL hack terminal (a70db148); KR-7 (c3549344); viewmodel_lit on all prop lights, check FAIL (0177dfad).
+- GN prep: gallery_night_slots.py --check vs doc + B's draft; QC-62..65 applied; skeleton as inert patch
+  docs/levels/gallery_night/g1_skeleton.patch (98e2f8e0). GH blueprint refreshed (22a2c6ac).
+### Next (proposed)
+- Legacy slope spots (21 WARN on ND/DB/SL); refresh g1_skeleton.patch with G1 to-dos (stair rails, light well,
+  parapet copings, police street islands, rappel links); SL remaining tables (G2); VFX perf probe (quiet machine).
+### Blockers
+- None. Blueprint renders need LC_DRIVER=opengl3 here (lavapipe Vulkan stalls).
+
 ## 2026-10-14 02:40 ET: IN PROGRESS (ENV C)
 ### Done (all pushed to env/c-worlds; most on trunk via rounds 72–77)
 - GN groundwork: gallery_night.md Build rulings (approved), floor-plan generator + --check, validate_level camera_spine/

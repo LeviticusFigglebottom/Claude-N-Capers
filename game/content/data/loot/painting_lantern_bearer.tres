@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="LootDef" format=3]
 
 [ext_resource type="Script" path="res://contracts/data/loot_def.gd" id="1"]
+[ext_resource type="PackedScene" path="res://world/props/loot_bag/prop_loot_bag_light.tscn" id="2_bag"]
 
 [resource]
 script = ExtResource("1")
+bag_model = ExtResource("2_bag")
 id = &"loot.painting_lantern_bearer"
 display_name = "The Lantern Bearer"
 weight = 0

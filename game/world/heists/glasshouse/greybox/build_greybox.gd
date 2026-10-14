@@ -48,14 +48,14 @@ const PREFAB_CLASSES: Dictionary = {
 	"code_note": "CodeNote",
 }
 ## Default visual per prefab type (catalog asset id or a generated scene); display cases, doors,
-## windows and loot bags choose theirs where they are built.
+## windows and loot bags choose theirs where they are built. PO-13: escape zones get a node-only marker (the van is the secure_zone's).
 const PREFAB_VISUALS: Dictionary = {
 	"safe": "prop_safe_large", "keycard_reader": "prop_keycard_reader", "keypad": "prop_keypad",
 	"alarm_button": "prop_alarm_button", "phone": "prop_phone_desk", "body_container": "prop_dumpster",
-	"ladder": "prop_ladder_fire_escape_h420", "camera_station": "prop_camera_station",
+	"ladder": "prop_ladder_fire_escape_h420", "camera_station": "prop_camera_station", "drill_point": VIS_EMPTY,
 	"secure_zone": "veh_van_secure", "code_note": "prop_papers", "keycard_pickup": VIS_KEYCARD,
 	"small_loot": VIS_CASH, "loot_spawn": VIS_JEWELRY, "display_case": "prop_display_case_island",
-	"drill_point": VIS_EMPTY, "security_camera": "prop_security_camera_wall",
+	"security_camera": "prop_security_camera_wall", "escape_zone": "res://world/heists/shared/escape_van_marker.tscn",
 }
 var _root: HeistMap = null
 var _art: RefCounted = null

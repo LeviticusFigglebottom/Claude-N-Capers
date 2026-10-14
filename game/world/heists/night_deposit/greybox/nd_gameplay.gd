@@ -10,6 +10,10 @@ const CODE_GROUP: StringName = &"nd_time_lock"
 const VIS_EMPTY: String = ART_DIR + "nd_empty.tscn"
 const VIS_CASH_LIFT: String = ART_DIR + "nd_cash_lift.tscn"
 const VIS_BOAT_HATCH: String = ART_DIR + "nd_boat_hatch.tscn"
+## PO-13: escape_zone visuals. Van / boat escapes show the vehicle already parked or moored there (the slot's
+## secure_zone van, the moored launch), so their visual only carries the contract nodes (no second vehicle).
+const ESCAPE_VAN_MARKER: String = "res://world/heists/shared/escape_van_marker.tscn"
+const ESCAPE_BOAT_MARKER: String = "res://world/heists/shared/escape_boat_marker.tscn"
 const VIS_LASER: Dictionary = {
 	"laser_static": ART_DIR + "nd_laser_static.tscn", "laser_sweep": ART_DIR + "nd_laser_sweep.tscn",
 	"laser_timed": ART_DIR + "nd_laser_timed.tscn",
@@ -544,7 +548,8 @@ func _variants_loot_escape(variants: Node3D) -> void:
 	prefab(e1, "secure_zone", "VanSecureE1", Vector3(2.5, 0.0, -5.4), 180.0, {"objective_tag": &"loot_secure"}, null,
 		{"kind": "vehicle"})
 	prefab(e1, "escape_zone", "VanEscapeE1", Vector3(3.5, 0.0, -1.5), 0.0,
-		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(5.0, 3.0, 2.2)})
+		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(5.0, 3.0, 2.2),
+			"visual_scene": load(ESCAPE_VAN_MARKER)})
 	var e2: VariantSlot = _slot(esc, "escape", "esc_boat_quay", 0.4, {"label": "E2"})
 	# Boat: SECURE_LOOT on the deck (deck-hatch visual, no van body), ESCAPE on the landing beside it.
 	prefab(e2, "secure_zone", "BoatSecureE2", Vector3(7.0, -1.0, 36.9), 0.0,
@@ -552,7 +557,8 @@ func _variants_loot_escape(variants: Node3D) -> void:
 			"visual_scene": load(VIS_BOAT_HATCH)},
 		null, {"kind": "boat_hatch"}, false)
 	prefab(e2, "escape_zone", "BoatEscapeE2", Vector3(8.5, -1.2, 34.7), 0.0,
-		{"objective_tag": &"escape_boat", "escape_type": &"boat", "zone_size_m": Vector3(5.6, 3.0, 1.2)})
+		{"objective_tag": &"escape_boat", "escape_type": &"boat", "zone_size_m": Vector3(5.6, 3.0, 1.2),
+			"visual_scene": load(ESCAPE_BOAT_MARKER)})
 
 
 ## Rare `armored_car_early` (Brutal+): group `armored_car` rolls no slot (pick 0); the rare event's

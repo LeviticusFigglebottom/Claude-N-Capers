@@ -112,6 +112,15 @@ func test_host_only_start_needs_contract_ready_and_legal_summaries() -> void:
 	assert_eq(s.receive(0, LobbyState.MSG_START, LobbyState.start_data(s.contract, 4242)), LobbyState.OK)
 	assert_eq(int(s.started["seed"]), 4242)
 	assert_eq(s.start_block(), LobbyState.BLOCK_STARTED)
+	# C11 (kept session): the Start spent every ready flag, so a peer still on its payday cannot be started into
+	# the next heist; back in the lobby (end_round) the host waits for a fresh Ready Up from everyone.
+	assert_false(s.is_ready(0) or s.is_ready(1), "a Start spends the ready flags")
+	s.end_round()
+	assert_true(s.started.is_empty(), "the next Start is a new heist")
+	assert_eq(s.start_block(), LobbyState.BLOCK_NOT_READY, "nobody is ready after a heist")
+	s.receive(0, LobbyState.MSG_READY, {"ready": true})
+	s.receive(1, LobbyState.MSG_READY, {"ready": true})
+	assert_eq(s.start_block(), LobbyState.OK, "both ready again: the host can Start the next heist")
 
 
 func test_contract_change_clears_ready_and_votes() -> void:

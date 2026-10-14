@@ -162,3 +162,36 @@ func test_host_ready_and_start_gamepad_only() -> void:
 	assert_true(await wait_until(func() -> bool: return started[0], 5.0), "A on Start started the run")
 	hs.queue_free()
 	await wait_frames(1)
+
+
+## PO-B-C6: a crew card shows whole (down to the mask row) without scrolling the lobby body, on the host
+## (contract set, a Kick on the client's card) and on the client.
+func test_crew_cards_whole_without_scrolling() -> void:
+	var saved: Vector2i = get_window().size
+	get_window().size = Vector2i(1280, 720)
+	var pair: Array[LobbySession] = await _pair()
+	var host: LobbySession = pair[0]
+	assert_true(host.set_contract(&"glasshouse", Enums.Difficulty.HAZARDOUS, true))
+	var hs: LobbyScreen = await _screen(host)
+	var cs: LobbyScreen = await _screen(pair[1])
+	await wait_frames(3)
+	for screen: LobbyScreen in [hs, cs]:
+		var scroll: ScrollContainer = screen.find_child("LobbyBodyScroll", true, false) as ScrollContainer
+		scroll.scroll_vertical = 0
+		await wait_frames(2)
+		var view: Rect2 = scroll.get_global_rect().intersection(screen.get_viewport().get_visible_rect()).grow(1.0)
+		for w: Dictionary in screen.slot_widgets:
+			var p: Control = w["panel"] as Control
+			if not p.is_visible_in_tree():
+				continue
+			var last: Control = (w["mask"] as Control).get_parent() as Control
+			var bottom: float = last.get_global_rect().end.y
+			var kick: Control = w["kick"] as Control
+			if kick.is_visible_in_tree():
+				bottom = maxf(bottom, kick.get_global_rect().end.y)
+			assert_true(bottom <= view.end.y, "%s card ends at %.0f, view at %.0f" % [
+				"host" if screen == hs else "client", bottom, view.end.y])
+	hs.queue_free()
+	cs.queue_free()
+	get_window().size = saved
+	await wait_frames(1)

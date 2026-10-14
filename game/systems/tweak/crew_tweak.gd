@@ -65,6 +65,33 @@ extends Resource
 ## off with Reduce Motion. 0 = off.
 @export var carry_tilt_deg: float = -5.0
 @export var carry_tilt_rate_dps: float = 150.0
+## P-FP-STATES (CrewFpStates; PD2 L2.5 / L4.3 / L4.4): first-person presentation of the crew states, local human only.
+## DOWNED: the eye (and the shot origin) at eye_downed, the camera eased there like a crouch; a small roll; the
+## viewmodel lower and canted in. TASED: convulsion jitter (deg, Hz) and a knee buckle (m). CLOAKER_DOWNED: a kick
+## punch, then the camera falls to fp_kick_eye_m rolled fp_kick_roll_deg and the viewmodel drops away. Hit punch:
+## per hit, pitch (deg; health > armor), roll = pitch x ratio away from the hit's side. ◇ design values.
+@export var eye_downed: float = 0.8
+@export var fp_down_ease_s: float = 0.35
+@export var fp_down_roll_deg: float = 4.0
+@export var fp_down_vm_offset: Vector3 = Vector3(-0.02, -0.035, 0.02)
+@export var fp_down_vm_rot_deg: Vector3 = Vector3(-4.0, 3.0, 12.0)
+@export var fp_tase_ease_s: float = 0.15
+@export var fp_tase_shake_deg: float = 1.5
+@export var fp_tase_shake_hz: float = 13.0
+@export var fp_tase_buckle_m: float = 0.15
+@export var fp_tase_vm_mult: float = 1.6
+@export var fp_kick_fall_s: float = 0.45
+@export var fp_kick_eye_m: float = 0.35
+@export var fp_kick_roll_deg: float = 70.0
+@export var fp_kick_pitch_deg: float = 15.0
+@export var fp_kick_punch_deg: float = 6.0
+@export var fp_kick_vm_drop_m: float = 0.45
+@export var fp_hit_punch_armor_deg: float = 0.5
+@export var fp_hit_punch_health_deg: float = 1.2
+@export var fp_hit_roll_ratio: float = 0.6
+@export var fp_hit_punch_hz: float = 6.0
+## Reduce Motion: the tase jitter is scaled by this (rolls and hit punches are off, heights stay).
+@export var fp_reduce_motion_mult: float = 0.25
 ## PO-4 (PD2): camera-only landing dip of the local human. A landing faster than land_dip_min_mps kicks the eye down
 ## by (impact - min) x land_dip_gain (m per m/s, capped at land_dip_max_m) through a critically damped spring of
 ## land_dip_hz, so it dips and recovers in ~0.3 s. 0 gain = off. Gameplay position is unaffected.

@@ -3,6 +3,39 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14 evening: round 118 lanes (GN capture, audit refresh, C6)
+### Done
+- **Lane 1, Gallery Night windowed capture.** Harness gn_capture on env/b-gallery-night (094bef25). It runs on a scratch
+  copy with the draft def at the registry path and covers the planning table, briefing, every pre-planning floor,
+  loadout and the HUD (casing, masked, loud, radio). Findings, fixed for every heist on env/b-content:
+
+| Row | Finding | Status |
+|---|---|---|
+| GN-U1 | A long briefing VO line grew the contact column and pushed Back / Continue off the screen (720p and 1080p) | FIXED 3d0249fc (test_briefing) |
+| GN-U2 | The HUD flashed OBJECTIVE COMPLETE for a step that a new step (Argus lockdown) or a disable pushed back | FIXED 3d0249fc (test_ui_theme) |
+| GN-U3 | Pre-planning map hint cut to "Pick" with four floor tabs | FIXED 3d0249fc: shows whole or not at all |
+| GN-U4 | Pre-planning markers of points 2 m apart stacked (portico entry under the limo escape) | FIXED 6597b236 (test_preplan_screen) |
+| GN-U5 | The briefing lists all 18 objectives, including the loud branch and extras | Asked the lead (keep, or a briefing subset) |
+
+- **Lane 2, audit refresh** (ui_audit_capture, every mode, 720p and 1080p):
+
+| Row | Finding | Status |
+|---|---|---|
+| AU-1 | Payday crew table under the fold at 720p while the right third was empty | FIXED 8ad4bd90: stacked under the XP panel (test_ui_payday, 4 crew with every column) |
+| AU-2 | Loadout item picker sheet started inside the screen title | FIXED f46bfdf7 (test_ui_loadout) |
+| AU-3 | Achievements: 4 of 41 cards per screen | FIXED 47b2e636: two columns with a d-pad grid; test_menu_reach now covers it |
+| AU-4 | Hub: The Board card description ends in "..." (the side panel shows it whole) | Minor, kept |
+| AU-5 | Board map: contract markers sit on district names (HARBOR, DOCKS) | Minor, kept |
+| AU-6 | Workshop weapon list: long names end in "..." ("Thorn Compound Bow · Level ...") | Minor, kept |
+| AU-7 | Tab sheet: objective marker labels drew across its text (LOOT SECURED) | FIXED 08585cdd: badges only on the sheet (test_ui_theme) |
+| AU-8 | The first-time card sat over the downed screen and cut a marker label | FIXED: it gives way while downed (test_onboarding_card) |
+| AU-9 | `fail` mode "hang" after Leave | Not a bug: four llvmpipe processes at once; alone it runs to payday and home both ways |
+| AU-10 | Range: far lane distance labels are tiny; one is cut by the readout panel | Minor, kept |
+
+- **Lane 3, PO-B-C6** (30d3ffde): the lobby crew cards show whole without scrolling at 720p. Contract and difficulty
+  share a row, as do music and drop-in. A card's level shares the ready row, and Kick sits beside the name
+  (test_pp_lobby_720p).
+
 ## 2026-10-14 later: rounds 69/70, D-105 / D-106, co-op windowed pass
 ### Done
 - Rounds 69/70 merged (62cec2c5). D-102 text: the gold bag says "barely a jump". The missing 3D safehouse is logged once per session.
@@ -28,7 +61,8 @@ Newest entry first, keep the last 10.
 | PO-B-C7 | A | The client's LocalHudModel has 0 objectives for the whole run (host: 5). The HUD hides the objective panel and the pause job card has no OBJECTIVES. objective_updated [R] fires at the host's start, before the client's model listens; there is no catch-up. | Sent to A |
 | PO-B-C8 | B | Client crew rows read "Host / AI 2 / AI 3" (the heister map was only handed over on the host's launch). | FIXED ebe242ff (lobby assignment; test_lobby_flow) |
 | PO-B-C9 | B | The "left the game" toast crossed the onboarding card's title. | FIXED: the card gives way while a toast shows (test_onboarding_card) |
-| PO-B-C10 | LEAD (design) | A client who leaves mid-heist goes straight home, with no payday (PD2 does the same). The lead's pass said "payday on both". | Ruling needed: keep PD2 behaviour, or show the failure payday ("What you lost") to the leaver too |
+| PO-B-C10 | LEAD (design) | A client who leaves mid-heist goes straight home, with no payday (PD2 does the same). The lead's pass said "payday on both". | RULED: PD2 behaviour (the leaver goes home, no payday) |
+| PO-B-C11 | B | A co-op payday's Continue dropped the session (Net.leave, home). | FIXED 2986bcd2 + 8fbe5e76: Continue goes back to the kept crew lobby; end_round clears `started`; a Start spends every ready flag. Windowed proof (coop_worker `success2`): two Glasshouse wins back to back on one session; host and client each get a success payday, a card, then the lobby, twice. Crew {0 human, 1 human, 2 ai, 3 ai} and 5 objectives on both in heist 2 |
 
 ### Next
 - Gallery Night content when the lead sends the list; C7 re-check when A lands it.

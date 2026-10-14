@@ -46,6 +46,27 @@ class AdsAlign:
 			vm._late_align()
 
 
+## PO-13: the left-hand IK (TwoBoneIK3D) only places the wrist, and the hand inherits the forearm's new rotation
+## (fingers pointing up off the handguard). HandCapture (before the IK) records hand.L's orientation relative to the
+## weapon bone as the clip authored it; HandRestore (after the IK) puts it back, blended by the IK's influence.
+class HandCapture:
+	extends SkeletonModifier3D
+	var vm: FpViewmodel = null
+
+	func _process_modification_with_delta(_delta: float) -> void:
+		if vm != null and is_instance_valid(vm):
+			vm._capture_hand()
+
+
+class HandRestore:
+	extends SkeletonModifier3D
+	var vm: FpViewmodel = null
+
+	func _process_modification_with_delta(_delta: float) -> void:
+		if vm != null and is_instance_valid(vm):
+			vm._restore_hand()
+
+
 enum Action { NONE, FIRE, RELOAD, SWAP, MELEE, DEPLOY, THROW }
 
 const NODE_NAME: String = "FpViewmodel"
@@ -117,6 +138,9 @@ var _part_nodes: Dictionary = {}
 var _magwell: Node3D = null
 var _magwell_rest: Transform3D = Transform3D.IDENTITY
 var _weapon_bone: int = -1
+## PO-13: hand.L bone and its clip orientation relative to the weapon bone (HandCapture -> HandRestore).
+var _hand_bone: int = -1
+var _hand_rel: Basis = Basis.IDENTITY
 var _mag_bone: int = -1
 var _bob_phase: float = 0.0
 ## Linear ADS progress behind the eased ads_weight.
@@ -135,6 +159,12 @@ var _align: Vector3 = Vector3.ZERO
 ## D-105: the per-shot kick (x = back m, y = pitch deg) as an exact critically damped spring (position, velocity).
 var _kick: Vector2 = Vector2.ZERO
 var _kick_v: Vector2 = Vector2.ZERO
+## PO-13 (PD2 vel_overshot): look-lag sway target and applied value (x = yaw, y = pitch; deg), the last look angles,
+## and the breathing clock.
+var _sway_target: Vector2 = Vector2.ZERO
+var _sway: Vector2 = Vector2.ZERO
+var _last_look: Vector2 = Vector2.INF
+var _breath_t: float = 0.0
 ## The item model on the weapon bone during a melee / deploy one-shot (null = none / gun bash).
 var _item: Node3D = null
 var _deploy_prev: bool = false
@@ -182,6 +212,17 @@ func _bind(inst: Node3D, crew: CrewController) -> bool:
 	weapon_attach.bone_name = String(tw.weapon_bone)
 	left_hand_ik = FpLeftHandIk.create(skeleton)  # D-069: hand.L onto the weapon's LeftHandIK
 	skeleton.add_child(weapon_attach)
+	_hand_bone = skeleton.find_bone(FpLeftHandIk.END_BONE)
+	if left_hand_ik != null and _hand_bone >= 0 and tw.left_hand_keep_orientation:
+		var cap: HandCapture = HandCapture.new()
+		cap.name = "HandCapture"
+		cap.vm = self
+		skeleton.add_child(cap)
+		skeleton.move_child(cap, left_hand_ik.ik.get_index())  # before the IK
+		var res: HandRestore = HandRestore.new()
+		res.name = "HandRestore"
+		res.vm = self
+		skeleton.add_child(res)  # after the IK, before AdsAlign
 	var align: AdsAlign = AdsAlign.new()
 	align.name = "AdsAlign"
 	align.vm = self
@@ -314,6 +355,7 @@ func tick(delta: float) -> void:
 	if action == Action.NONE:
 		_play_base(tw)
 	_tick_kick(delta, tw)
+	_tick_sway(delta, tw)
 	_update_offset(delta, tw)
 	_update_magazine()
 	_update_flash(delta, tw)
@@ -400,6 +442,66 @@ func _eject_delay(fire: StringName, bolt: StringName, cycle: float, speed: float
 	if t < 0.0:
 		return 0.0
 	return (cycle + t if on_bolt else t) / maxf(speed, 0.01)
+
+
+## PO-13 (PD2 _calculate_soft_velocity_overshot): the weapon lags the look. Turning right swings it left (and rolls
+## it), looking up dips it; it catches up as the look slows, faster the further behind it is.
+func _tick_sway(delta: float, tw: FpViewmodelTweak) -> void:
+	if _crew == null or not is_instance_valid(_crew) or delta <= 0.0:
+		return
+	var look: Vector2 = Vector2(_crew.look_yaw, _crew.look_pitch)
+	if _last_look == Vector2.INF:
+		_last_look = look
+	var rate: Vector2 = Vector2(wrapf(look.x - _last_look.x, -PI, PI), look.y - _last_look.y) / delta
+	_last_look = look
+	var max_deg: Vector2 = Vector2(lerpf(tw.sway_yaw_max_deg, tw.sway_ads_yaw_max_deg, ads_weight),
+		lerpf(tw.sway_pitch_max_deg, tw.sway_ads_pitch_max_deg, ads_weight))
+	var full: float = deg_to_rad(maxf(tw.sway_full_dps, 1.0))
+	# Godot yaw grows turning left: turning right (rate.x < 0) swings the gun left (+yaw); looking up dips it (-pitch).
+	var input: Vector2 = Vector2(
+		-signf(rate.x) * pow(clampf(absf(rate.x) / full, 0.0, 1.0), 1.5) * max_deg.x,
+		-signf(rate.y) * pow(clampf(absf(rate.y) / full, 0.0, 1.0), 1.5) * max_deg.y)
+	_sway_target.x = move_toward(_sway_target.x, input.x, tw.sway_target_rate_dps * delta)
+	_sway_target.y = move_toward(_sway_target.y, input.y, tw.sway_target_rate_dps * delta)
+	for k: int in 2:
+		var diff: float = absf(_sway_target[k] - _sway[k])
+		_sway[k] = move_toward(_sway[k], _sway_target[k], lerpf(3.0, 180.0, clampf(diff / 40.0, 0.0, 1.0)) * delta)
+	_breath_t += delta
+
+
+## PO-13 (PD2 breathing shaker): a slow idle drift, x = yaw, y = pitch (deg); smaller crouched, almost none aimed.
+func _breathing() -> Vector2:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	var amp: float = tw.breathing_crouched_amp_deg if _crew != null and is_instance_valid(_crew) and _crew.crouched \
+		else tw.breathing_amp_deg
+	amp = lerpf(amp, tw.breathing_ads_amp_deg, ads_weight)
+	var w: float = TAU * tw.breathing_hz
+	return Vector2(sin(_breath_t * w * 0.63) * amp * 0.6, sin(_breath_t * w) * amp)
+
+
+func _capture_hand() -> void:
+	if skeleton == null or _hand_bone < 0 or _weapon_bone < 0:
+		return
+	_hand_rel = skeleton.get_bone_global_pose(_weapon_bone).basis.orthonormalized().inverse() \
+		* skeleton.get_bone_global_pose(_hand_bone).basis.orthonormalized()
+
+
+func _restore_hand() -> void:
+	if skeleton == null or _hand_bone < 0 or _weapon_bone < 0 or left_hand_ik == null or left_hand_ik.ik == null:
+		return
+	var w: float = left_hand_ik.ik.influence
+	if w <= 0.0:
+		return
+	var pose: Transform3D = skeleton.get_bone_global_pose(_hand_bone)
+	var want: Basis = skeleton.get_bone_global_pose(_weapon_bone).basis.orthonormalized() * _hand_rel
+	var scale_v: Vector3 = pose.basis.get_scale()
+	var q: Quaternion = pose.basis.orthonormalized().get_rotation_quaternion().slerp(want.get_rotation_quaternion(), w)
+	skeleton.set_bone_global_pose(_hand_bone, Transform3D(Basis(q).scaled(scale_v), pose.origin))
+
+
+## Read only (tests): the current look-lag sway (yaw, pitch; deg).
+func sway() -> Vector2:
+	return _sway
 
 
 ## Exact critically damped step (no amplitude loss at 60 Hz, see the PO-4 landing dip). The step is capped at 1/30 s
@@ -846,6 +948,7 @@ func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 	_set_off = want if _set_off_init else _set_off.move_toward(want, tw.set_offset_rate * delta)
 	_set_off_init = false
 	off += _set_off
+	off.y -= sin(PI * clampf(ads_weight, 0.0, 1.0)) * tw.ads_dip_m  # PO-13: the arc into / out of the sights
 	_base_offset = off
 	_late_align()  # first pass on the last applied pose (direct tick() callers / tests); AdsAlign refines it
 
@@ -908,8 +1011,13 @@ func _late_align() -> void:
 			var p: Vector3 = arms.global_transform.affine_inverse() * (skeleton.global_transform * in_skel)
 			a = Vector3(-p.x, -p.y, 0.0) * ads_weight
 	_align = a
-	position = _base_offset + a + Vector3(0.0, 0.0, _kick.x)
-	rotation = Vector3(deg_to_rad(_kick.y), 0.0, 0.0)
+	var fs: CrewFpStates = _crew.fp_states if _crew != null and is_instance_valid(_crew) else null
+	var s_off: Vector3 = fs.vm_offset if fs != null else Vector3.ZERO  # P-FP-STATES: downed / tased / kicked hold
+	var s_rot: Vector3 = fs.vm_rot_deg if fs != null else Vector3.ZERO
+	position = _base_offset + a + Vector3(0.0, 0.0, _kick.x) + s_off
+	var breath: Vector2 = _breathing()
+	rotation = Vector3(deg_to_rad(_kick.y + _sway.y + breath.y + s_rot.x), deg_to_rad(_sway.x + breath.x + s_rot.y),
+		deg_to_rad(-_sway.x + s_rot.z))
 
 
 ## PI-21: vertical arms lag from the camera's step smoothing (m): the arms dip after a step up and float after

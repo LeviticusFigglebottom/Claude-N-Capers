@@ -146,6 +146,23 @@ func test_stop_and_continue_signals() -> void:
 	s.queue_free()
 
 
+## GN-B1 capture: a long playback line grew the contact column and pushed Back / Continue off the screen.
+func test_long_subtitle_keeps_the_nav_on_screen() -> void:
+	var saved: Vector2i = get_window().size
+	for size: Vector2i in [Vector2i(1280, 720), Vector2i(1920, 1080)]:
+		get_window().size = size
+		var s: BriefingScreen = _screen(Enums.Difficulty.ROUTINE)
+		await wait_frames(2)
+		s.subtitle_label.text = "The Halberd Gallery, darling. Aldous Parade. ".repeat(12)
+		await wait_frames(3)
+		var vis: Rect2 = get_viewport().get_visible_rect().grow(1.0)
+		for b: Button in [s.back_button, s.continue_button, s.play_button]:
+			assert_true(vis.encloses(b.get_global_rect()), "%s %s on screen at %s" % [b.text, b.get_global_rect(), size])
+		s.queue_free()
+		await wait_frames(1)
+	get_window().size = saved
+
+
 func test_model_from_a_heist_def() -> void:
 	var def: HeistDef = HeistDef.new()
 	def.id = HEIST
@@ -172,6 +189,42 @@ func test_model_from_a_heist_def() -> void:
 	var lines: Array = m["voice_lines"] as Array
 	assert_true(lines.size() >= 2)
 	assert_eq(StringName((lines[0] as Dictionary)["speaker"]), &"reyes")
+
+
+## D-109 (lead ruling): briefing_objectives replaces the list, the loud branch is one line, extras sit under
+## "Optional"; an empty briefing_objectives keeps every objective (the other heists stay as they are).
+func test_briefing_subset_loud_line_and_optional() -> void:
+	var def: HeistDef = HeistDef.new()
+	def.id = HEIST
+	def.objectives = [&"casing", &"keycard", &"secure", &"escape"] as Array[StringName]
+	var full: Dictionary = BriefingModel.build(HEIST, Enums.Difficulty.ROUTINE, def)
+	assert_eq((full["objectives"] as Array).size(), 4, "no subset: every objective")
+	assert_eq(String(full["loud_text"]), "")
+	assert_true((full["optional"] as Array).is_empty())
+	def.briefing_objectives = [&"casing", &"secure"] as Array[StringName]
+	def.briefing_loud_key = &"objective.glasshouse.keycard"
+	def.briefing_optional = [&"escape"] as Array[StringName]
+	var m: Dictionary = BriefingModel.build(HEIST, Enums.Difficulty.ROUTINE, def)
+	var obj: Array = m["objectives"] as Array
+	assert_eq(obj.size(), 2)
+	assert_eq(StringName((obj[1] as Dictionary)["id"]), &"secure")
+	assert_eq(String(m["loud_text"]), String(_strings["objective.glasshouse.keycard"]))
+	assert_eq(StringName(((m["optional"] as Array)[0] as Dictionary)["id"]), &"escape")
+	var s: BriefingScreen = _screen(Enums.Difficulty.ROUTINE)
+	await wait_frames(1)
+	s.model = m
+	s.call(&"_fill_objectives")
+	await wait_frames(1)
+	assert_eq(s.objective_texts().size(), 2, "the timeline is the subset")
+	var shown: Array[String] = []
+	for c: Node in s.extras_box.get_children():
+		if c is Label and not c.is_queued_for_deletion():
+			shown.append((c as Label).text)
+	assert_has(shown, UiText.t(&"ui.briefing.if_loud", {"text": String(m["loud_text"])}))
+	assert_has(shown, UiText.t(&"ui.briefing.optional"))
+	assert_has(shown, UiText.t(&"ui.briefing.optional_line", {"text": String(((m["optional"] as Array)[0] as Dictionary)["text"])}))
+	s.queue_free()
+	await wait_frames(1)
 
 
 func test_briefing_text_key_or_literal() -> void:

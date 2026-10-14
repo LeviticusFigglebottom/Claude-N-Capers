@@ -74,6 +74,16 @@ func test_slot_card_picker_grid() -> void:
 	var pk: ItemPicker = slot.open_picker()
 	await wait_frames(2)
 	assert_eq(pk.tiles.size(), slot.item_count, "one tile per item")
+	# Lane 2 audit: the sheet starts under the screen's header, not across its title.
+	var sheet: Control = pk.get_child(0) as Control
+	var title: Label = null
+	for l: Node in _screen.find_children("*", "Label", true, false):
+		if (l as Label).text == UiText.t(&"ui.loadout.title") and (l as Label).is_visible_in_tree():
+			title = l as Label
+	assert_true(title != null, "the screen title")
+	if title != null:
+		assert_true(sheet.get_global_rect().position.y >= title.get_global_rect().end.y,
+				"picker sheet %s clear of the title %s" % [sheet.get_global_rect(), title.get_global_rect()])
 	var target: int = -1
 	for i: int in range(slot.item_count):
 		if not slot.is_item_disabled(i) and StringName(slot.get_item_metadata(i)) == &"armor.patrol_vest":

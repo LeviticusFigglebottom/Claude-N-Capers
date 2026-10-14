@@ -3497,6 +3497,73 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_escape_lift_fitout": {
+  "aabb": [
+   -1.346,
+   0.0,
+   -1.346,
+   2.692,
+   2.596,
+   2.692
+  ],
+  "clear": 0.0,
+  "fixture": true,
+  "glb": "res://assets/props/prop_escape_lift_fitout/prop_escape_lift_fitout.glb",
+  "group": "escape_zone",
+  "has_light": true,
+  "hosts": [],
+  "keepout": [],
+  "kind": "lift",
+  "mount": "",
+  "nodes": [
+   "Fitout"
+  ],
+  "place": "none",
+  "prefab": "escape_zone",
+  "scene": "res://world/props/escape_zone/prop_escape_lift_fitout.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_escape_zipline_rig": {
+  "aabb": [
+   -0.73,
+   0.0,
+   0.75,
+   1.92,
+   1.7451,
+   0.4
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_escape_zipline_rig/prop_escape_zipline_rig.glb",
+  "group": "escape_zone",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "zipline",
+  "mount": "",
+  "nodes": [
+   "Rig",
+   "RopeBag"
+  ],
+  "place": "none",
+  "prefab": "escape_zone",
+  "scene": "res://world/props/escape_zone/prop_escape_zipline_rig.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_exit_sign": {
   "aabb": [
    -0.18,
@@ -7777,6 +7844,43 @@
   "scene": "res://world/props/exterior/veh_car_sedan_wine.tscn",
   "seat_side": "front",
   "standoff": 5.2,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "veh_heli_escape": {
+  "aabb": [
+   -1.1476,
+   -0.0,
+   -4.804,
+   2.2951,
+   2.874,
+   11.5834
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/veh_heli_escape/veh_heli_escape.glb",
+  "group": "escape_zone",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "heli",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Rotor",
+   "RotorBlades",
+   "TailRotor",
+   "TailRotorBlades"
+  ],
+  "place": "none",
+  "prefab": "escape_zone",
+  "scene": "res://world/props/escape_zone/veh_heli_escape.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
   "support": false,
   "surface": "metal",
   "top": 0.0,

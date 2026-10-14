@@ -27,6 +27,12 @@ IMPORT_PARAMS = {
     "normal": {**TEXTURE_PARAMS_COMMON, "compress/normal_map": "1"},
 }
 
+# Water ripple map (RG normal + B slick mask): lossless, so the slopes keep 8-bit precision and the
+# mask channel survives (a normal-map import would drop B).
+WATER_IMPORT_PARAMS = {**TEXTURE_PARAMS_COMMON, "compress/mode": "0", "compress/normal_map": "2",
+                       "detect_3d/compress_to": "0"}
+WATER_SHADER = "world/materials/shaders/water.gdshader"
+
 LUT_IMPORT_PARAMS = {
     "compress/mode": "0",   # lossless: a LUT must not be block-compressed
     "mipmaps/generate": "false",
@@ -149,6 +155,50 @@ def write_emissive_material(path: Path, lib_id: str, p: dict) -> None:
         # gradient with the emission colour and wash it out to white.
         *(['emission_operator = 1', 'emission_texture = SubResource("GradientTexture2D_emit")'] if grad else []),
         "metadata/uv_tile_m = 1.0",
+    ]
+    tio.write_text(path, "\n".join(lines) + "\n")
+
+
+def write_water_material(path: Path, lib_id: str, ripple_res: str, tile_m: float, p: dict) -> None:
+    """ShaderMaterial on ``WATER_SHADER``; colours are sRGB hex (``source_color`` uniforms)."""
+    def num(x) -> str:
+        # Always a float literal: Godot stores an int literal ("8") in a float uniform as null.
+        t = f"{float(x):g}"
+        return t if any(c in t for c in ".einf") else t + ".0"
+
+    def vec2(t) -> str:
+        return f"Vector2({num(t[0])}, {num(t[1])})"
+
+    lines = [
+        '[gd_resource type="ShaderMaterial" load_steps=3 format=3]',
+        "",
+        f'[ext_resource type="Shader" path="res://{WATER_SHADER}" id="1_shader"]',
+        f'[ext_resource type="Texture2D" path="{ripple_res}" id="2_ripple"]',
+        "",
+        "[resource]",
+        f'resource_name = "M_{lib_id}"',
+        'shader = ExtResource("1_shader")',
+        f"shader_parameter/deep_color = {_hex_color(p['deep_color'])}",
+        f"shader_parameter/sheen_color = {_hex_color(p['sheen_color'])}",
+        f"shader_parameter/sheen = {num(p['sheen'])}",
+        'shader_parameter/ripple_tex = ExtResource("2_ripple")',
+        f"shader_parameter/tile_m = {num(tile_m)}",
+        f"shader_parameter/ripple_scale_b = {num(p['ripple_scale_b'])}",
+        f"shader_parameter/slick_scale = {num(p['slick_scale'])}",
+        f"shader_parameter/flow_a = {vec2(p['flow_a'])}",
+        f"shader_parameter/flow_b = {vec2(p['flow_b'])}",
+        f"shader_parameter/flow_slick = {vec2(p['flow_slick'])}",
+        f"shader_parameter/ripple_strength = {num(p['ripple_strength'])}",
+        f"shader_parameter/slick_calm = {num(p['slick_calm'])}",
+        f"shader_parameter/far_fade_m = {num(p['far_fade_m'])}",
+        f"shader_parameter/roughness_calm = {num(p['roughness_calm'])}",
+        f"shader_parameter/roughness_rippled = {num(p['roughness_rippled'])}",
+        f"shader_parameter/specular_f0 = {num(p['specular'])}",
+        f"shader_parameter/glint_strength = {num(p['glint_strength'])}",
+        f"shader_parameter/glint_sharpness = {num(p['glint_sharpness'])}",
+        f"shader_parameter/glint_spread = {num(p['glint_spread'])}",
+        f"shader_parameter/glint_fog = {num(p['glint_fog'])}",
+        f"metadata/uv_tile_m = {float(tile_m)}",
     ]
     tio.write_text(path, "\n".join(lines) + "\n")
 

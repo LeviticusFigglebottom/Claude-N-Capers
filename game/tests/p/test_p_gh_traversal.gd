@@ -67,3 +67,46 @@ func test_fire_escape_ladder() -> void:
 	print("[GH-TRAV] fire-escape ladder: %s" % r)
 	assert_true(r["up"], "up the fire-escape ladder (%s)" % r)
 	assert_true(r["down"], "back down (%s)" % r)
+
+
+## Gate 3 (C 0177dfad): fire-escape ladder -> landing -> the break-room door-window (opened by holding F, or its glass
+## broken when the variant is latched) -> U1; then a bag thrown back out through it to the landing / alley.
+func test_fire_escape_window_route() -> void:
+	var l: Ladder = null
+	for n: Node in _rt.map.find_children("FireEscapeLadder", "Ladder", true, false):
+		l = n as Ladder
+	var win: WindowPrefab = null
+	for n: Node in _rt.map.find_children("BreakRoomWindow", "Node3D", true, false):
+		if n is WindowPrefab and n.is_inside_tree():
+			win = n as WindowPrefab
+	assert_true(l != null and win != null, "fire-escape ladder and break-room window")
+	if l == null or win == null:
+		return
+	var up: Dictionary = await _tr.ladder(l, false)
+	assert_true(up["up"], "up the ladder to the landing (%s)" % up)
+	if win.openable:
+		var use: Vector3 = win.use_point.global_position if win.get(&"use_point") != null else win.global_position + \
+			Vector3(0, 0, -0.7)
+		var latch: Vector3 = win.interactable.global_position if win.interactable != null else \
+			win.global_position + Vector3.UP * 0.6
+		await _tr.place(use, latch)
+		var to: Vector3 = latch - _tr.crew.eye_position()
+		await _tr.turn_to_pitch(atan2(to.y, Vector2(to.x, to.z).length()))  # look at the latch like a player
+		_tr.inp.press(&"interact")
+		var opened: bool = await wait_until(func() -> bool: return win.is_open, 6.0)
+		_tr.inp.release(&"interact")
+		assert_true(opened, "opened the door-window by holding F")
+	else:
+		win.break_glass()  # setup: the latched variant is passable once its glass is broken
+		await wait_physics_frames(3)
+	var inside: Vector3 = win.global_position + Vector3(0, 0, 1.6)
+	var through: Dictionary = await _tr.route([win.global_position + Vector3(0, 0, -0.8), win.global_position +
+		Vector3(0, 0, -0.3), inside] as Array[Vector3], -1, false, 12.0)
+	print("[GH-TRAV] window route (%s): %s" % ["open" if win.openable else "broken", through])
+	assert_true(through["ok"], "landing -> through the door-window -> U1 (%s)" % through)
+	assert_true(_tr.crew.global_position.z > win.global_position.z + 0.5, "inside U1")
+	var thrown: Dictionary = await _tr.throw_bag(win.global_position + Vector3(0, 0, 1.3), 0.0, deg_to_rad(8.0),
+		Enums.LootWeight.MEDIUM)
+	var land: Vector3 = thrown["landing"]
+	print("[GH-TRAV] bag out of the window lands at %s" % land)
+	assert_true(thrown["thrown"] and land.z < win.global_position.z - 0.2, "bag thrown back out (lands %s)" % land)

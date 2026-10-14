@@ -384,7 +384,7 @@ const WATER: Array = [
 	["SlipWater", [62.0, WATER_Y - 0.05, -32.0, 72.0, WATER_Y, 44.0]],
 ]
 
-## Neighbour / dressing blocks (solid massing): [name, box, material].
+## Neighbour / dressing blocks (solid massing): [name, box, material(, "ridge": ridged collider top)].
 const BLOCKS: Array = [
 	# Bellweather Ice Co. (west): north shed, main building (roof +8.0, parapet 9.0), west block.
 	["BellweatherShed", [-30.0, -0.3, -32.0, -10.0, 6.0, -18.0], "facade_a"],
@@ -427,7 +427,8 @@ const BLOCKS: Array = [
 	["FarShore", [-200.0, WATER_Y, 400.0, 250.0, 8.0, 410.0], "facade_c"],
 	# The Co-op launch (escape E3) moored along the pontoon: walkable deck at -1.6.
 	["LaunchHull", [17.0, -3.2, 54.0, 30.0, -1.6, 57.4], "vehicle"],
-	["LaunchGunwale", [17.0, -1.6, 57.1, 30.0, -1.1, 57.4], "vehicle"],
+	# The gunwale (harbour side, 0.5 m) is an edge guard: ridged collider top (`ridge`, D-104 slopes).
+	["LaunchGunwale", [17.0, -1.6, 57.1, 30.0, -1.1, 57.4], "vehicle", "ridge"],
 	["LaunchCabin", [26.4, -1.6, 54.6, 29.6, 0.6, 56.8], "vehicle"],
 	# High-bay roof plant: evaporator condensers (vapour plumes, landmark 3) and the skylights.
 	["CondenserA", [24.0, BAY_ROOF, 27.0, 30.0, BAY_ROOF + 2.2, 30.0], "trim"],
@@ -582,6 +583,10 @@ const CHAIRS: Array = [
 	["BreakChairE", Vector3(7.25, MEZZ, 2.8), 90.0],
 	["CountChair", Vector3(11.85, MEZZ, 3.55), 0.0],
 	["ForemanChair", Vector3(19.4, MEZZ, 1.75), 0.0],
+	# PO-9: the receptionist's seat on the staff side of the O1 counter (the DeskCashO1 UsePoint is on the
+	# front-door side) and the gate man's seat at the gatehouse console, clear of both door zones.
+	["ReceptionChair", Vector3(6.0, 0.0, 3.95), 0.0],
+	["GateChair", Vector3(28.6, 0.0, -30.0), -90.0],
 ]
 
 ## Sodium yard masts / quay lamps: [name, base, arm yaw_deg].

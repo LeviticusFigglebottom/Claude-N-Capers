@@ -132,6 +132,32 @@ func test_objective_complete_flash() -> void:
 	assert_true(_hud.objectives.list_box.visible, "then the next step")
 
 
+## GN-B1 capture: a step that jumps ahead (Argus lockdown) or disables the shown one is no "complete".
+func test_objective_pushed_back_does_not_flash_complete() -> void:
+	await _spawn_hud()
+	var hack: Dictionary = {"id": &"hack", "text_key": &"objective.glasshouse.keycard", "args": {}, "state": Enums.ObjectiveState.ACTIVE}
+	_model.objectives = [hack]
+	await wait_frames(1)
+	_model.objectives = [
+		{"id": &"lockdown", "text_key": &"objective.glasshouse.secure", "args": {"bags": 2}, "state": Enums.ObjectiveState.ACTIVE},
+		hack]
+	await wait_frames(1)
+	assert_false(_hud.objectives.flashing, "the displaced step is still to do")
+	assert_eq(_hud.objectives.shown_id, &"lockdown")
+	assert_true(_hud.objectives.list_box.visible)
+	var off: Dictionary = {"id": &"lockdown", "text_key": &"objective.glasshouse.secure", "args": {"bags": 2, "disabled": true},
+		"state": Enums.ObjectiveState.ACTIVE}
+	_model.objectives = [off, hack]
+	await wait_frames(1)
+	assert_false(_hud.objectives.flashing, "a disabled step is not done either")
+	assert_eq(_hud.objectives.shown_id, &"hack")
+	var done: Dictionary = hack.duplicate()
+	done["state"] = Enums.ObjectiveState.COMPLETED
+	_model.objectives = [off, done]
+	await wait_frames(1)
+	assert_true(_hud.objectives.flashing, "a finished step still flashes")
+
+
 func test_crew_rows_named_by_heister_before_ready() -> void:
 	_model = MockHudModel.new()
 	add_child(_model)
@@ -244,6 +270,12 @@ func test_objective_markers_label_and_current() -> void:
 	assert_true(bool(d[0]["current"]) and not bool(d[1]["current"]), "the panel's step is current")
 	assert_false(String(d[1]["label"]).contains("{"), String(d[1]["label"]))
 	assert_true(String(d[1]["label"]).contains("1/2"), String(d[1]["label"]))
+	# Lane 2 audit: marker text stays off the sheet (a label crossed LOOT SECURED); off again once it closes.
+	assert_true(_hud.objective_markers.avoid.has_area(), "the sheet is avoided")
+	assert_eq(_hud.objective_markers.avoid, _hud.scoreboard.sheet.get_global_rect())
+	_hud.scoreboard.set_shown(false)
+	await wait_frames(2)
+	assert_false(_hud.objective_markers.avoid.has_area(), "nothing avoided without the sheet")
 	cam.queue_free()
 
 

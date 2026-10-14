@@ -6,6 +6,7 @@ extends SceneTree
 
 const L: GDScript = preload("res://world/heists/dockside_burn/greybox/dockside_burn_layout.gd")
 const R: GDScript = preload("res://world/heists/dockside_burn/greybox/dockside_burn_resources.gd")
+const RT: GDScript = preload("res://world/kits/ridge_top.gd")  # not-standable guard tops (slopes, D-104)
 const OUT_DIR: String = "res://world/heists/dockside_burn/"
 const SCENE_PATH: String = OUT_DIR + "dockside_burn.tscn"
 const DEF_PATH: String = OUT_DIR + "dockside_burn_def.tres"
@@ -297,7 +298,8 @@ func prop_box(parent: Node3D, nm: String, base: Vector3, size: Vector3, yaw: flo
 	add(parent, body)
 	var col: CollisionShape3D = CollisionShape3D.new()
 	col.name = "Collision"
-	col.shape = box_shape(size)
+	# Mooring bollards: a ridged collider top (a domed head in the art pass), not a perch (D-104 slopes).
+	col.shape = RT.shape(size) if kind == "bollard" else box_shape(size)
 	col.position = Vector3(0.0, size.y * 0.5, 0.0)
 	add(body, col)
 	var mi: MeshInstance3D = MeshInstance3D.new()

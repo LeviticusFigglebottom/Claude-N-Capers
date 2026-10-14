@@ -2,6 +2,27 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-14 09:00 ET: PO-13 round 2, (e) co-op FX, (d) C-grip clips
+- Round 2 (a0b07f70): all-class hip framing (+3 cm right, +2 up, 4 closer; lens guard kept), pistol/revolver sprint
+  lowered + canted on screen, pistol ADS shoulders lower/forward (reach ok). D arms/anims 18/18, viewmodel tests green.
+- (e) coop_fx_capture.tscn (windowed host + client loopback, dev_sandbox, real heister bodies): own shots FP on both
+  peers, the other crew TP, no doubling; captures/e_coop_fx_sheet.png. Sent: A, client full-auto ghost rounds
+  (2 client shot_fx per tap vs 1 host replay); C, TP MuzzleFlash never drawn on frames > 50 ms.
+- (d) C-grip in draw / reload / reload_empty verified, no change (captures/po13_cgrip_rifle_reload_draw.png).
+- Resume: lit before/after sheet (scratchpad hold_lit / hold_lit_before renders) ->
+  captures/po13_hold_before_after_lit.png; LobbyDoor rerun after A's AI fix; GN G1 when C's greybox lands.
+
+## 2026-10-14 07:15 ET: D-105 sheets, gate-3 traversal, LobbyDoor, PO-13 round 1
+- D-105: six-class gunplay sheet (captures/d105_gunplay_sheet.png; Glasshouse loud, 0 bit1 doubling); C's
+  MuzzleFlash/TracerFx in FP (alpha-blended, FP smoke), drop-in mask rpc via net_sync.replicates_to (A confirmed).
+- Gate 3: test_p_gh_traversal 3/3 (G8 stairs on C's ramps with/without heavy bag, fire-escape ladder, door-window
+  route + bag thrown out). LobbyDoor snag: test_p_gh_lobby_door, player input passes all 15 diagonals; the stall is
+  AI steering (A fixing: door-opening corners to the centre line + stall repath). No controller change.
+- PO-13: PD2 look sway + breathing (310b4c19), long-gun support hand C-grip (72498a0f), pistol ADS 0.35 m + elbow
+  spread (f7fce321), pistol hip framing (56255bb3); before/after sheet captures/po13_hold_before_after.png.
+  Open: pistol ADS forearms still dominate (rig arm length caps ads_dist ~0.35: sh / forearm / sleeve rig work).
+- KR-9: po13 skips headless. check_ownership char_arms_fp*/** patch applied by the lead.
+
 ## 2026-10-14 03:00 ET: D-107 stamina, D-105 in real heists, G1 harness
 - D-107 (a6e67fc6, round 81): stamina/jump faithful to PD2 (sprint start > 4, run to 0; regen 1 s after the sprint;
   jumps never blocked, run-jump costs 2; 0.55 s jump cooldown; crouch + jump stands). test_p_d107_stamina 5/5; A's

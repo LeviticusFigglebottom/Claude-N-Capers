@@ -36,9 +36,13 @@ var contact_name_label: Label
 var contact_role_label: Label
 var briefing_label: Label
 var objectives_box: VBoxContainer
+## Under the timeline: the loud-branch line and the optional extras (D-109).
+var extras_box: VBoxContainer
 var loot_box: VBoxContainer
 var escape_label: Label
 var subtitle_label: Label
+## Holds subtitle_label: a long line scrolls here instead of growing the page.
+var subtitle_scroll: ScrollContainer
 var play_button: Button
 var continue_button: Button
 var back_button: Button
@@ -136,8 +140,14 @@ func _build_contact_column(body: HBoxContainer) -> void:
 	col.add_child(play_button)
 	subtitle_label = UiBuild.label(&"ui.briefing.subtitle_idle")
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	var sub_panel: PanelContainer = UiBuild.panel(subtitle_label)
+	subtitle_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# GN-B1 capture: a long line (Gallery Night's run to ~190 characters) grew the column and pushed Back /
+	# Continue off the screen at 720p and 1080p. The line scrolls inside the panel instead.
+	subtitle_scroll = ScrollContainer.new()
+	subtitle_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	subtitle_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	subtitle_scroll.add_child(subtitle_label)
+	var sub_panel: PanelContainer = UiBuild.panel(subtitle_scroll)
 	sub_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	col.add_child(sub_panel)
 
@@ -159,6 +169,8 @@ func _build_intel_column(body: HBoxContainer) -> void:
 	col.add_child(_head(&"ui.briefing.objectives"))
 	objectives_box = UiBuild.vbox(0)  # the timeline rail runs row to row
 	col.add_child(objectives_box)
+	extras_box = UiBuild.vbox(UiTokens.S1)  # D-109: "If it goes loud: ..." and the Optional list
+	col.add_child(extras_box)
 	col.add_child(_spacer(8))
 	col.add_child(_head(&"ui.briefing.escape"))
 	escape_label = UiBuild.label()
@@ -242,6 +254,22 @@ func _fill_objectives() -> void:
 			l.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
 		row.add_child(l)
 		objectives_box.add_child(row)
+	for c: Node in extras_box.get_children():
+		c.queue_free()
+	var loud: String = String(model.get("loud_text", ""))
+	if loud != "":
+		var ll: Label = UiBuild.label(&"ui.briefing.if_loud", UiBuild.DIM, {"text": loud})
+		ll.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		extras_box.add_child(_spacer(4))
+		extras_box.add_child(ll)
+	var optional: Array = model.get("optional", []) as Array
+	if not optional.is_empty():
+		extras_box.add_child(_spacer(4))
+		extras_box.add_child(UiBuild.caption(&"ui.briefing.optional"))
+		for o: Dictionary in optional:
+			var ol: Label = UiBuild.label(&"ui.briefing.optional_line", UiBuild.DIM, {"text": String(o["text"])})
+			ol.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			extras_box.add_child(ol)
 
 
 func _fill_loot() -> void:
@@ -318,6 +346,7 @@ func _play_current() -> void:
 	subtitle_label.text = UiText.t(&"ui.briefing.subtitle", {
 		"speaker": String(_speaker_names.get(speaker, String(speaker))), "text": text,
 	})
+	subtitle_scroll.scroll_vertical = 0
 	var ctx: Dictionary = {
 		"source": SOURCE, "local": true, "heist_id": heist_id, "index": _line_index,
 		"count": lines.size(), "priority": int(line.get("priority", 0)),

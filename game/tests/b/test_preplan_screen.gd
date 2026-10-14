@@ -143,3 +143,28 @@ func _points_on_floor(s: PreplanningScreen, floor_index: int) -> int:
 		if int(s.board.blueprint.point(pid).get("floor", 0)) == floor_index:
 			n += 1
 	return n
+
+
+## GN-B1 capture: two points a couple of meters apart drew one marker over the other.
+func test_close_points_do_not_stack_markers() -> void:
+	var s: PreplanningScreen = _screen(50000)
+	await wait_frames(2)
+	var v: BlueprintView = s.blueprint_view
+	var bp: PreplanBlueprint = s.board.blueprint.duplicate(true) as PreplanBlueprint
+	s.board.blueprint = bp
+	var ids: Array[StringName] = v.marker_ids()
+	assert_true(ids.size() >= 3)
+	var at: Vector2 = bp.point(ids[0]).get("pos", Vector2.ZERO) as Vector2
+	bp.point(ids[1])["pos"] = at  # the same spot
+	bp.point(ids[2])["pos"] = at + Vector2(0.5, 0.0)  # half a meter off
+	v.set_floor(v.floor_index)
+	await wait_frames(2)
+	var r: Rect2 = Rect2(Vector2.ZERO, v.size)
+	for i: int in range(3):
+		var a: Button = v.markers[ids[i]] as Button
+		assert_true(r.encloses(a.get_rect()), "marker %d inside the view" % i)
+		for j: int in range(i):
+			var b: Button = v.markers[ids[j]] as Button
+			assert_false(a.get_rect().intersects(b.get_rect()), "markers %d and %d overlap" % [j, i])
+	s.queue_free()
+	await wait_frames(1)
