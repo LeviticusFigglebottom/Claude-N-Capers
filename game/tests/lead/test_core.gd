@@ -110,3 +110,16 @@ func test_net_host_twice_after_leave() -> void:
 	assert_eq(String(Net.crew[0]["display_name"]), "B")
 	Net.leave()
 	Net.start_solo("Tester", 3)
+
+
+## C11: a kept co-op lobby drops its AI seats so newcomers can join; the host's own slot stays.
+func test_net_clear_ai_keeps_humans() -> void:
+	var port: int = 30000 + GameRng.stream(&"test_net_clear_ai").randi_range(0, 9999)
+	assert_eq(Net.host(port, "Host"), OK, "host")
+	Net.fill_with_ai()
+	assert_eq(Net.crew.size(), Net.MAX_CREW, "filled with AI")
+	Net.clear_ai()
+	assert_eq(Net.crew.size(), 1, "only the host's slot is left")
+	assert_false(bool(Net.crew[0]["is_ai"]), "the host is human")
+	Net.leave()
+	Net.start_solo("Tester", 3)
