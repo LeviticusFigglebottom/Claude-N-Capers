@@ -19,6 +19,10 @@ const GLASS_MIN_DEPTH_M: float = 0.05
 
 @export var breakable: bool = true
 @export var openable: bool = false
+## QC-61 walk-through window (sill <= 0.35 m, e.g. the Glasshouse fire-escape door-window): a layer-1
+## NavLink through the opening, enabled while it is passable (sash open or glass broken), so every
+## agent may path through it then and none while it is shut.
+@export var walkable: bool = false
 @export_group("Interaction")
 ## -1 = InteractionTweak.window_open_s.
 @export var interaction_time_s: float = -1.0
@@ -32,6 +36,7 @@ var is_open: bool = false
 var broken: bool = false
 
 var _glass_stim_id: int = 0
+var _nav_link: NavigationLink3D = null
 var _sash_closed_y: float = 0.0
 
 
@@ -54,7 +59,17 @@ func _prefab_ready() -> void:
 	if sash != null:
 		_sash_closed_y = sash.position.y
 	interactable.completed.connect(_on_completed)
+	if walkable:
+		_nav_link = NavigationLink3D.new()
+		_nav_link.name = "NavLink"
+		var half: float = Tweak.interaction().door_nav_link_half_m
+		_nav_link.start_position = Vector3(0.0, 0.0, -half)
+		_nav_link.end_position = Vector3(0.0, 0.0, half)
+		_nav_link.bidirectional = true
+		_nav_link.navigation_layers = 1
+		add_child(_nav_link)
 	_apply_state()
+	_set_glass_collision(not is_open and not broken)
 	# A1-03 behaviour (M2): police ENTRY use.
 
 
@@ -154,6 +169,13 @@ func _set_glass_collision(on: bool) -> void:
 	var body: StaticBody3D = get_node_or_null(^"GlassBody") as StaticBody3D
 	if body != null:
 		body.collision_layer = LAYER_WORLD_STATIC if on else 0
+	if _nav_link != null:
+		_nav_link.enabled = not on  # QC-61: passable exactly when the glass no longer blocks
+
+
+## The walk-through NavLink (`walkable`), else null.
+func nav_link() -> NavigationLink3D:
+	return _nav_link
 
 
 func _on_completed(crew: Node) -> void:
