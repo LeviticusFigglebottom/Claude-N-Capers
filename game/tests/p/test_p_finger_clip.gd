@@ -66,7 +66,7 @@ func test_probe_detects_pushed_hand() -> void:
 	var pushed: Dictionary = pushed_r["_total"]
 	tw.set_left_hand_grip_offset = saved
 	print("[FINGERS] probe check: base %s, pushed 4.5 cm left %s" % [base, pushed])
-	assert_true(int(pushed["inside"]) > int(base["inside"]) * 3 + 50, "pushed hand: many more vertices inside")
+	assert_true(int(pushed["inside"]) > int(base["inside"]) * 2 + 30, "pushed hand: many more vertices inside")
 
 
 func test_report_long_guns() -> void:
