@@ -319,12 +319,15 @@ func _process(delta: float) -> void:
 		objective_markers.show_all = scoreboard.visible  # Tab shows every objective's marker
 		objective_markers.z_index = 1 if scoreboard.visible else 0  # drawn over the sheet, not under it
 	if onboarding != null and scoreboard != null:
-		onboarding.visible = onboarding.shown != &"" and not scoreboard.visible  # Tab sheet wins (h02 capture)
+		# The Tab sheet and the pause menu's job card sit on the card's spot and win (h02 / fail captures).
+		onboarding.visible = onboarding.shown != &"" and not scoreboard.visible and not MouseCapture.is_released(&"pause")
 	if hint != null and onboarding != null:
 		hint.note.visible = hint.hint == &"mask_up" and onboarding.shown == &""  # the card already says it
 	if _toast_t > 0.0:
 		_toast_t -= delta
-		toast_label.visible = _toast_t > 0.0 and not (scoreboard != null and scoreboard.visible)  # not over the Tab sheet
+		# Not over the Tab sheet, nor over the downed screen (its block sits where toasts do).
+		toast_label.visible = _toast_t > 0.0 and not (scoreboard != null and scoreboard.visible) \
+				and not (downed != null and downed.active)
 	if model != null and not is_instance_valid(model):
 		bind(null)
 	if auto_find_model and (model == null or _watched_crew == null or not is_instance_valid(_watched_crew)):
@@ -378,6 +381,8 @@ func _on_crew_custody(crew_slot: int) -> void:
 
 
 func _crew_name(slot: int) -> String:
+	if crew_heisters.has(slot):  # the heister the slot plays, like the crew rows (windowed: "AI 1 is down")
+		return Heisters.display_name(StringName(crew_heisters[slot]))
 	if Net.crew.has(slot):
 		return String(Net.crew[slot].get("display_name", ""))
 	return UiText.t(&"ui.results.crew_slot", {"slot": slot + 1})

@@ -218,3 +218,17 @@ func test_head_bob_follows_reduce_motion() -> void:
 	s.set_value(GameSettings.ACCESSIBILITY, &"reduce_motion", false)
 	s.set_value(GameSettings.ACCESSIBILITY, &"head_bob", false)
 	assert_false(s.head_bob(), "player turned it off")
+
+
+## D-105 effects quality: high by default, the chosen level, one step lower under Reduce Motion.
+func test_effects_quality_follows_reduce_motion() -> void:
+	var s: GameSettings = GameSettings.new()
+	assert_eq(s.effects_quality(), GameSettings.EFFECTS_HIGH, "default high")
+	s.set_value(GameSettings.VIDEO, &"effects_quality", "medium")
+	assert_eq(s.effects_quality(), GameSettings.EFFECTS_MEDIUM)
+	s.set_value(GameSettings.ACCESSIBILITY, &"reduce_motion", true)
+	assert_eq(s.effects_quality(), GameSettings.EFFECTS_LOW, "Reduce Motion lowers it one step")
+	s.set_value(GameSettings.VIDEO, &"effects_quality", "low")
+	assert_eq(s.effects_quality(), GameSettings.EFFECTS_LOW, "never below low")
+	for id: StringName in GameSettings.EFFECTS_QUALITY_IDS:
+		assert_true(UiText.t(StringName("ui.options.video.effects_quality.%s" % id)) != "", "option label %s" % id)

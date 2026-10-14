@@ -8,7 +8,7 @@ class_name MockHudModel
 extends Node
 
 signal vitals_changed()          ## health, max_health, armor, max_armor, downs_left, crew_state, bleedout_s
-signal ammo_changed()            ## ammo, equipped_slot
+signal ammo_changed()            ## ammo, equipped_slot, reloading, reload_progress (v1.12)
 signal inventory_changed()       ## deployable_*, throwable_*, cable_ties, body_bags
 signal carried_bag_changed()     ## carried_bag
 signal interaction_changed()     ## interaction
@@ -72,6 +72,15 @@ var ammo: Dictionary = {}:
 var equipped_slot: int = Enums.WeaponSlot.SECONDARY:
 	set(v):
 		equipped_slot = v
+		ammo_changed.emit()
+## v1.12 (D-106): the equipped weapon is reloading; progress 0..1 (-1 when not reloading).
+var reloading: bool = false:
+	set(v):
+		reloading = v
+		ammo_changed.emit()
+var reload_progress: float = -1.0:
+	set(v):
+		reload_progress = v
 		ammo_changed.emit()
 var deployable_id: StringName = &"":
 	set(v):

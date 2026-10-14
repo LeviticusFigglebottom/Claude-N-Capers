@@ -1,5 +1,7 @@
 ## Ammo (mag / reserve of the equipped slot) and equipment counts (deployable, throwable, cable
 ## ties, body bags) as glyph + count chips. Hidden until masked (civilian: no gear, S1.3 / D-065; casing: no weapon out).
+## D-106 (ui_hud 1.12): while `reloading`, a RELOADING caption and a thin bar under the ammo line fill
+## with `reload_progress` (read every frame while it runs; -1 / missing = an indeterminate full bar).
 class_name AmmoPanel
 extends HudWidget
 
@@ -8,6 +10,9 @@ var ammo_label: Label
 ## bags) instead of four text lines. chips: key -> {icon: EquipmentIcon, count: Label} (tests).
 var equipment_row: HBoxContainer
 var chips: Dictionary = {}
+## Reload indicator row (caption + bar), shown only while reloading (tests).
+var reload_row: HBoxContainer
+var reload_bar: ProgressBar
 
 
 func build() -> void:
@@ -21,6 +26,17 @@ func build() -> void:
 	ammo_label = UiBuild.label(&"", UiBuild.HUD_BIG)
 	ammo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	v.add_child(ammo_label)
+	reload_row = UiBuild.hbox(UiTokens.S2)
+	reload_row.alignment = BoxContainer.ALIGNMENT_END
+	reload_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	reload_row.add_child(UiBuild.float_text(UiBuild.caption(&"ui.hud.reloading")))
+	reload_bar = UiBuild.bar(UiTokens.PAPER, Vector2(160, 6))
+	reload_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	reload_bar.max_value = 1.0
+	reload_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	reload_row.add_child(reload_bar)
+	reload_row.visible = false
+	v.add_child(reload_row)
 	equipment_row = UiBuild.hbox(UiTokens.S4)
 	equipment_row.alignment = BoxContainer.ALIGNMENT_END
 	equipment_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -42,6 +58,9 @@ func refresh() -> void:
 	var slot: int = int(prop(&"equipped_slot", Enums.WeaponSlot.SECONDARY))
 	var a: Dictionary = slots.get(slot, {}) as Dictionary
 	ammo_label.text = UiText.t(&"ui.hud.ammo", {"mag": int(a.get("mag", 0)), "reserve": int(a.get("reserve", 0))})
+	reload_row.visible = bool(prop(&"reloading", false))
+	set_process(reload_row.visible)
+	_update_reload()
 	var dep: StringName = StringName(prop(&"deployable_id", &""))
 	_set_chip(&"deployable", EquipmentIcon.kind_for(dep), int(prop(&"deployable_count", 0)), dep != &"",
 			UiText.t(UiText.item_key(dep)) if dep != &"" else "")
@@ -79,3 +98,14 @@ func _set_chip(key: StringName, kind: StringName, n: int, shown: bool, name: Str
 	var col: Color = UiTokens.PAPER if n > 0 else UiTokens.PAPER_DIM
 	count.add_theme_color_override(&"font_color", col)
 	icon.color = col
+
+
+func _process(_delta: float) -> void:
+	_update_reload()
+
+
+func _update_reload() -> void:
+	if not reload_row.visible:
+		return
+	var p: float = float(prop(&"reload_progress", -1.0))
+	reload_bar.value = clampf(p, 0.0, 1.0) if p >= 0.0 else 1.0
