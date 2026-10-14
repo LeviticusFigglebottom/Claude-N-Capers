@@ -135,6 +135,11 @@ and positions):
 | variety | same-kit rooms have different layout hashes | final |
 | bounds | no reachable point sees the void (sample camera rays from navmesh points at eye height hit geometry or sky within 500 m) | final |
 | perf | draw calls / triangles / lights in each review camera within budget | final |
+| camera_spine / camera_screen | D-075: camera layouts cover the spine rooms (`camera_spine_rooms`) and screen the listed loot slots (`camera_screen_slots`); runtime cone + LOS through walls/closed doors | all (maps with the meta) |
+| slopes | D-104: no walkable slope < 50° outside the play mesh (roofs, copings, parapets) | all |
+| viewmodel_lit | D-095: key interior lights near play spaces carry render layer 21 (warn first, then fail) | final |
+| door_frame_gap | D-105 / PO-7: no visible gap > 2 cm between frame, leaf and the wall opening | all |
+| furniture_logic | D-105 / PO-9: chairs face their desk/table, no chair pairs facing each other across nothing, nothing blocks a door swing or doorway, no duplicate stacked props, seating backs to walls where the kit says so. Extends `orientation` to props without `faces` meta | final |
 
 Validation must be **deterministic** and run in < 5 min per heist in CI.
 
