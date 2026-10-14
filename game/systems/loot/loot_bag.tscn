@@ -11,6 +11,7 @@ size = Vector3(0.6, 0.35, 0.35)
 collision_layer = 64
 collision_mask = 3
 script = ExtResource("1_bag")
+metadata/surface = &"fabric"
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.175, 0)

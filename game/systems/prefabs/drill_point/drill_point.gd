@@ -146,15 +146,21 @@ func _on_device_state(s: int) -> void:
 
 
 func _on_device_finished() -> void:
-	open_target(get_node_or_null(target) if not target.is_empty() else null)
+	open_target(get_node_or_null(target) if not target.is_empty() else null, true)
 
 
 ## Open what a finished device was drilling (Safe/vault `open_by_device()`, else door unlock + open).
-static func open_target(t: Node) -> void:
+## PO-6: `forced` (drill / saw) swings a Door open with the fast breach swing.
+static func open_target(t: Node, forced: bool = false) -> void:
 	if t == null:
 		return
 	if t.has_method(&"open_by_device"):
 		t.call(&"open_by_device")
+		return
+	var door: Door = t as Door
+	if forced and door != null:
+		door.unlock()
+		door.set_open(true, false, true)
 		return
 	if t.has_method(&"unlock"):
 		t.call(&"unlock")

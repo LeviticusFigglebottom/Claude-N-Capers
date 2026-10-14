@@ -43,11 +43,12 @@ func saw_cut(seconds: float, _attacker_net_id: int) -> void:
 		return
 	saw_progress = minf(saw_progress + seconds / maxf(Tweak.interaction().hand_saw_padlock_s, 0.01), 1.0)
 	if saw_progress >= 1.0 - 0.0001:
-		open_lock()
+		open_lock(true)
 
 
 ## Server: the padlock is off (lockpicked, sawn, or forced by the mission): open every target.
-func open_lock() -> void:
+## PO-6: `forced` (sawn) swings target doors with the fast breach swing.
+func open_lock(forced: bool = false) -> void:
 	if not Net.is_authority() or opened:
 		return
 	opened = true
@@ -60,4 +61,4 @@ func open_lock() -> void:
 		if t == null:
 			Log.warn(&"prefab", "%s: padlock target %s not found" % [name, path])
 		else:
-			DrillPoint.open_target(t)
+			DrillPoint.open_target(t, forced)
