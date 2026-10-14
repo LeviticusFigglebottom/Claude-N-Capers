@@ -26,6 +26,11 @@ API: `game/core/net.gd`. Architecture: architecture.md §3.
 * Returns null (never throws) on the authority, a rejected bring-up, timeout, host lost / session ended, or
   `HeistLauncher.cancel_launch_client()`. Clients receive `heist_ended` [R]; the app flow then calls `rt.teardown()`
   and `Net.leave()`. Full details: game/systems/heist/README.md "Client heist launch".
+* Bring-up (and drop-in `late_bring_up`) carries `"objectives"`: the host's `[id, state, data]` list at send time; the
+  replica's HUD model seeds from it, because mission-start `objective_updated` [R] arrives before the replica exists
+  (PO-B-C7). Additive key: `BRING_UP_VERSION` unchanged, older clients ignore it.
+* ENet peer timeout (lead, round 80): `Net` sets (32, 15 000 ms, 60 000 ms) on every peer, both sides, so a host's
+  bring-up stall does not drop clients. A human slot falling back to AI is logged (`Log.warn`, channel `net`).
 
 ## v1.1: kick, lobby message kinds, drop-in policy (D-072)
 * `Net.kick(peer_id) -> bool` (host only): disconnects the peer, frees its crew slot (an AI may fill it per lobby

@@ -126,6 +126,8 @@ func snapshot(args: Dictionary = {}) -> Dictionary:
 		"hud_captain_resistance": rt.hud_model.captain_resistance if rt.hud_model != null else -1.0,
 		"shot_fx": fx_shots.duplicate(), "explosion_fx": fx_blasts.duplicate(),
 		"vfx_shots": rt.vfx.shots - vfx_base if rt.vfx != null else -1,
+		"hud_objectives": rt.hud_model.objectives.map(func(o: Dictionary) -> String:
+			return "%s:%d" % [o["id"], int(o["state"])]) if rt.hud_model != null else [],
 	}
 
 
