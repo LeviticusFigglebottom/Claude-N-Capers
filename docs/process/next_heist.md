@@ -64,6 +64,8 @@ mission script, objective/VO/music strings, music track, blueprint; NpcVisualTwe
 - Stealth-only failure rules and fail_reason surfaced on the results screen (B's failure-path lane).
 - `validate_level` PASS + PO-3 snag probe 0 + PP-C walk with no STUCK rows before G2.
 - A windowed e2e flow for the heist (`auto_loud` + a stealth flow) is part of "done", not an afterthought.
+- Automated: `game/tests/integration/test_heist_readiness.gd` (lead) checks marker_tags resolve on the real map and that
+  no NPC is a capsule, for every delivered heist; Gallery Night is in its list and must pass once its map lands.
 
 ## 5. Staffing (proposal, needs the product owner's OK)
 Building a map and its cast is ENV C / ENV D work (both dormant). Options:

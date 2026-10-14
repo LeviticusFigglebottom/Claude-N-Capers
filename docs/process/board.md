@@ -81,6 +81,7 @@ Read it at the start of every work session.
 - D (parked after P's D-101 attempt 00:55): rifle-family left-hand cup needs B to move LeftHandIK below the fore-end on ~20 weapons + re-timed lever clip; cosmetic. Pistol ADS forearm size: closed, matches PD2 within the rig's proportions.
 
 ## Routed findings
+- A: shadow_ledger and dockside_burn missions have NO objective marker_tags (test_heist_readiness test_01; remove them from MARKERS_PENDING when done). No capsule NPCs on any of the 4 heists (test_02 PASS).
 - A: loud transition doesn't advance the Glasshouse objective (still "Find the manager's keycard"); NPCs render as grey capsules while casing.
 - A (PO-5.x, interim 18:19): civilians no longer body-block (5.2), AI crew leash/cover need LOS + downed bots hold fire (5.3), solo Routine 31 enemies by t=180 (5.4), drill works but 180 s (5.8), police as white capsules (5.7, A diagnosing). B: PO-5.5 no primary (QB-1 yes), 5.6 "{count}/{total}" placeholder + keycard objective in lockdown, 5.9 Brutal unlocked while Tense/Hazardous locked.
 - P: FP pistol visible while casing → FIXED (no weapon while casing). B: crosshair hidden while casing (ruling 20:35).
