@@ -1234,6 +1234,9 @@ ui.briefing.intel,The Job
 ui.briefing.objectives,Objectives
 ui.briefing.objective_line,{index}. {text}
 ui.briefing.objectives_none,Your contact will brief you on site.
+ui.briefing.if_loud,If it goes loud: {text}
+ui.briefing.optional,Optional
+ui.briefing.optional_line,• {text}
 ui.briefing.loot,Loot
 ui.briefing.loot_line,{loot}: {value} per bag
 ui.briefing.loot_none,No bagged loot on this job.

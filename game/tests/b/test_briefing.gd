@@ -191,6 +191,42 @@ func test_model_from_a_heist_def() -> void:
 	assert_eq(StringName((lines[0] as Dictionary)["speaker"]), &"reyes")
 
 
+## D-109 (lead ruling): briefing_objectives replaces the list, the loud branch is one line, extras sit under
+## "Optional"; an empty briefing_objectives keeps every objective (the other heists stay as they are).
+func test_briefing_subset_loud_line_and_optional() -> void:
+	var def: HeistDef = HeistDef.new()
+	def.id = HEIST
+	def.objectives = [&"casing", &"keycard", &"secure", &"escape"] as Array[StringName]
+	var full: Dictionary = BriefingModel.build(HEIST, Enums.Difficulty.ROUTINE, def)
+	assert_eq((full["objectives"] as Array).size(), 4, "no subset: every objective")
+	assert_eq(String(full["loud_text"]), "")
+	assert_true((full["optional"] as Array).is_empty())
+	def.briefing_objectives = [&"casing", &"secure"] as Array[StringName]
+	def.briefing_loud_key = &"objective.glasshouse.keycard"
+	def.briefing_optional = [&"escape"] as Array[StringName]
+	var m: Dictionary = BriefingModel.build(HEIST, Enums.Difficulty.ROUTINE, def)
+	var obj: Array = m["objectives"] as Array
+	assert_eq(obj.size(), 2)
+	assert_eq(StringName((obj[1] as Dictionary)["id"]), &"secure")
+	assert_eq(String(m["loud_text"]), String(_strings["objective.glasshouse.keycard"]))
+	assert_eq(StringName(((m["optional"] as Array)[0] as Dictionary)["id"]), &"escape")
+	var s: BriefingScreen = _screen(Enums.Difficulty.ROUTINE)
+	await wait_frames(1)
+	s.model = m
+	s.call(&"_fill_objectives")
+	await wait_frames(1)
+	assert_eq(s.objective_texts().size(), 2, "the timeline is the subset")
+	var shown: Array[String] = []
+	for c: Node in s.extras_box.get_children():
+		if c is Label and not c.is_queued_for_deletion():
+			shown.append((c as Label).text)
+	assert_has(shown, UiText.t(&"ui.briefing.if_loud", {"text": String(m["loud_text"])}))
+	assert_has(shown, UiText.t(&"ui.briefing.optional"))
+	assert_has(shown, UiText.t(&"ui.briefing.optional_line", {"text": String(((m["optional"] as Array)[0] as Dictionary)["text"])}))
+	s.queue_free()
+	await wait_frames(1)
+
+
 func test_briefing_text_key_or_literal() -> void:
 	assert_eq(BriefingModel.briefing_text(HEIST, "heist.glasshouse.briefing"), String(_strings["heist.glasshouse.briefing"]))
 	assert_eq(BriefingModel.briefing_text(HEIST, "Plain words."), "Plain words.")
