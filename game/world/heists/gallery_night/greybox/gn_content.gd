@@ -57,6 +57,8 @@ const SENSOR_NET: Dictionary = {
 	"sensors_all": [ARGUS_TR, ARGUS_UPPER, ARGUS_GROUND],
 }
 const SMALL_LOOT: StringName = &"loot.small_valuables"
+## drill_point device -> catalog device art (drill_point.device_scene; DRILL keeps the prefab default).
+const DEVICE_VISUALS: Dictionary = {"THERMAL": "prop_thermal_drill_device", "SAW": "prop_saw_device"}
 ## Slot-style anchors stand this far off the wall face; a wall-hung canvas (GN-C2 visual, back-centre pivot) is mounted
 ## on the face with its centre HANG_Y above the floor (studies STUDY_HANG_Y).
 const ANCHOR_OFF: float = 0.1
@@ -393,8 +395,11 @@ func _bind_targets(src: Node3D, targets: Array) -> void:
 
 func _drill(parent: Node3D, nm: String, pos: Vector3, yaw: float, use: Vector3, secs: float, device: String, tag: String,
 		target: Node3D) -> void:
-	var d: Node3D = cprefab(parent, "drill_point", nm, pos, yaw, VIS_EMPTY,
-		{"device": "enum:" + device, "duration_s": secs, "loud_only": true, "objective_tag": StringName(tag)}, use)
+	var props: Dictionary = {"device": "enum:" + device, "duration_s": secs, "loud_only": true,
+		"objective_tag": StringName(tag)}
+	if DEVICE_VISUALS.has(device):   # the device art on the target while it runs (PO-C equipment batch)
+		props["device_scene"] = _catalog_scene(String(DEVICE_VISUALS[device]))
+	var d: Node3D = cprefab(parent, "drill_point", nm, pos, yaw, VIS_EMPTY, props, use)
 	if d != null and target != null:
 		d.set(&"target", d.get_path_to(target))
 

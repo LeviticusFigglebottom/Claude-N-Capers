@@ -861,3 +861,18 @@ A and C stay on Gallery Night until it is complete.
   near-black albedo band (linear 0.018–0.035) to 0.04–0.10 (polymer_black sRGB ~70, steel_blued ~110, metal_matte ~120),
   because weapons and props read as untextured black silhouettes wherever environment reflection is weak (PO feedback,
   round 188 ruling; ENV C 3de44573).
+
+## D-113: more impactful blood/gore and gritty muzzle flash (2026-10-14, LEAD; product owner)
+PO: "add some more blood/impactful gore as well as better more realistic/gritty muzzle flash". Part of the D-111 gate.
+Today blood is only a mist billboard on flesh impacts, and the muzzle flash is a star + flame + smoke card.
+1. **Blood (ENV C, world/vfx; procedural textures only, no third-party assets):** directional spray cone on flesh hits
+   (exit-side spurt on penetrating/strong hits, larger on headshots); wall and floor splatter decals projected behind the
+   target along the shot (range-limited, pooled, fade over minutes); a growing blood pool under corpses and downed
+   bodies; drag smears when bodies are carried/bagged (if cheap); body-bag and corpse decals persist for the heist.
+   Caps in VfxSettings so co-op and Compatibility stay in budget.
+2. **Muzzle flash (C third-person / world; P first-person viewmodel):** randomized multi-petal flash (3–4 texture variants,
+   random roll/scale per shot), a hot core + longer side petals per weapon class (shotgun wide, rifle long, pistol short),
+   brief spark streaks, a lingering smoke wisp that drifts, short heat-coloured light pulse (existing 0.05 s light).
+   Suppressed weapons keep a tiny puff. FP and TP should match.
+3. **Hooks (ENV A):** hit events must carry headshot / penetration / strength so C can scale gore; a corpse/downed
+   "bleed" hook for the pool. 4. **Option (ENV B):** Options → Gameplay "Blood & gore: Full / Reduced / Off".

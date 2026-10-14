@@ -26,6 +26,11 @@ extends Resource
 ## P PO-pass: in transit a bot keeps this gap (m) behind a moving teammate ahead on its line (single file
 ## through doors and corridors) ◇. Lower slots lead, so two bots never wait on each other.
 @export var trail_gap_m: float = 1.0
+## PD2 bots warp: a bot held this long (s) at a closed door it may not open (relocked, BARRED) while the leader
+## is beyond warp_min_dist_m teleports to its formation slot by the leader (P's GN pass: three bots stacked at the
+## relocked bronze doors) ◇.
+@export var warp_after_blocked_s: float = 4.0
+@export var warp_min_dist_m: float = 8.0
 ## A following AI stops within this of its own formation slot (m) ◇.
 @export var follow_slot_arrive_m: float = 0.8
 

@@ -63,3 +63,9 @@ and audio/voice must ignore that reason.
 `shot_fx(origin, end, normal, surface, weapon_class, shooter_net_id, flags)` and `explosion_fx(position, radius, kind)` are
 **local presentation** signals: ENV A emits them on every peer from the existing shot/explosion replication; ENV C's
 VfxDirector and ENV P's viewmodel consume them. Never used for gameplay decisions. Details: impact_fx.md 1.0.
+
+**v1.3 (D-113): blood presentation events** (FX-only, ENV A emits on every peer, ENV C's BloodFx consumes; never gameplay):
+`blood_hit(victim_net_id, point, direction, normal, strength, headshot, exit_point, victim_kind)`: a flesh hit after
+`damage_applied` (crew: health hits only, not armour); `exit_point` is `Vector3.INF` when the bullet did not exit.
+`bleed_changed(body_net_id, bleeding, position, rate)`: NPC death starts (stops when bagged); crew down starts (stops on
+revive or custody). Both respect the `gameplay/gore` option (Full / Reduced / Off) on the consuming side.

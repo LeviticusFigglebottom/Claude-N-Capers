@@ -18,6 +18,12 @@ const PREFAB_NODES: Dictionary = {
 	"body_container": ["Lid", "Inside"],
 	"loot_bag": ["Bag"],
 	"drill": ["Bit"],
+	# D-111 equipment: deployable visuals (held-form Handle, visual_slots.md D-069), burn point Fire, zipline Line
+	"deployable": ["Handle"],
+	"burn_point": ["Fire"],
+	"zipline": ["Line"],
+	# PO-C throwables (ThrowableDef.model, visual_slots.md Items): body-centre origin, `Pin` hidden at pin_pull
+	"throwable": ["Body"],
 	"alarm_button": [],
 	"phone": [],
 }
@@ -144,7 +150,7 @@ func test_pivots_follow_the_contract() -> void:
 		var bb: AABB = PropCatalog.aabb(StringName(String(id)))
 		var mount: String = String(e["mount"])
 		var prefab: String = String(e["prefab"])
-		if prefab in ["door", "window", "drill", "ladder"]:
+		if prefab in ["door", "window", "drill", "ladder", "throwable"]:
 			continue
 		if mount == "wall":
 			assert_near(bb.end.z, 0.0, EPS, "%s: wall item back at the pivot" % id)
@@ -195,3 +201,27 @@ func test_triangle_budgets() -> void:
 		var hero: bool = String(id).begins_with("prop_display_case") or String(id).begins_with("veh_") or String(id) == "prop_chandelier_ring"
 		assert_true(tris >= 12 and tris <= (20000 if hero else 8000), "%s: %d triangles within style guide §5" % [id, tris])
 		n.free()
+
+
+## PO-C: throwables are held in the hand and fly as ThrownItem's Visual: origin at the body centre (inside the
+## AABB, near its middle), +Y up the fuse (taller than wide), hand-sized, and every grenade has its `Pin`.
+func test_throwables_follow_the_items_contract() -> void:
+	var kinds: Dictionary = {}
+	for id: Variant in _catalog.keys():
+		var e: Dictionary = _catalog[id]
+		if String(e["prefab"]) != "throwable":
+			continue
+		kinds[String(e["kind"])] = true
+		var bb: AABB = PropCatalog.aabb(StringName(String(id)))
+		assert_true(bb.has_point(Vector3.ZERO), "%s: origin inside the body" % id)
+		var c: Vector3 = bb.get_center()
+		assert_true(absf(c.x) < bb.size.x * 0.3 and absf(c.y) < bb.size.y * 0.3 and absf(c.z) < bb.size.z * 0.3,
+			"%s: origin near the body centre (%s)" % [id, c])
+		assert_true(bb.size.y >= bb.size.x and bb.size.y >= bb.size.z, "%s: +Y up the fuse / blade" % id)
+		assert_true(bb.size.y >= 0.06 and bb.size.y <= 0.3, "%s: hand-sized (%.3f m tall)" % [id, bb.size.y])
+		if String(e["kind"]) in ["frag", "concussion", "incendiary"]:
+			var n: Node3D = _inst(String(id))
+			assert_true(n.find_child("Pin", true, false) is Node3D, "%s: `Pin` node" % id)
+			n.free()
+	for k: String in ["frag", "concussion", "incendiary", "throwing_knife", "injector", "flask"]:
+		assert_true(kinds.has(k), "a throwable visual for kind `%s`" % k)

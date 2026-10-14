@@ -14,6 +14,9 @@ enum Device { DRILL, THERMAL, SAW }
 
 ## PO-12: catalog drill device under G.PROPS_DIR.
 const DEFAULT_DEVICE: String = "drill/prop_drill_device.tscn"
+## ENV C equipment art (4993f31d): per-device defaults under G.PROPS_DIR (the drill when one is missing).
+const DEFAULT_THERMAL: String = "drill/prop_thermal_drill_device.tscn"
+const DEFAULT_SAW: String = "drill/prop_saw_device.tscn"
 ## Block reasons shown under the prompt (strings.csv, ENV B).
 const BLOCK_RUNNING: StringName = &"ui.blocked.device_running"
 const BLOCK_DONE: StringName = &"ui.blocked.device_done"
@@ -25,7 +28,7 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/drill_point/dril
 ## What this opens (Door, Safe, ...).
 @export var target: NodePath
 ## PO-12: the device shown at this spot while it runs (needs a `Bit` node, spun while RUNNING). null = the
-## catalog drill (G.PROPS_DIR + DEFAULT_DEVICE) for drills and thermal drills; saws have no default yet.
+## catalog device per kind (DEFAULT_DEVICE / DEFAULT_THERMAL / DEFAULT_SAW under G.PROPS_DIR; thermal falls back to the drill).
 @export var device_scene: PackedScene
 @export_group("Interaction")
 ## -1 = InteractionTweak.drill_place_s.
@@ -218,8 +221,11 @@ func _update_device_visual(s: int) -> void:
 func _device_scene() -> PackedScene:
 	if device_scene != null:
 		return device_scene
+	var own: String = DEFAULT_SAW if device == Device.SAW else (DEFAULT_THERMAL if device == Device.THERMAL else "")
+	if own != "" and ResourceLoader.exists(G.PROPS_DIR + own):
+		return load(G.PROPS_DIR + own) as PackedScene
 	if device == Device.SAW:
-		return null
+		return null  # never a drill on a saw point
 	var path: String = G.PROPS_DIR + DEFAULT_DEVICE
 	return load(path) as PackedScene if ResourceLoader.exists(path) else null
 

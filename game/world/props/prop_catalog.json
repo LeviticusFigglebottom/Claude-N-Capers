@@ -66,6 +66,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_ammo_pickup": {
+  "aabb": [
+   -0.114,
+   -0.0,
+   -0.091,
+   0.232,
+   0.127,
+   0.19
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_ammo_pickup/prop_ammo_pickup.glb",
+  "group": "pickup",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "ammo_pickup",
+  "mount": "",
+  "nodes": [
+   "Body"
+  ],
+  "place": "none",
+  "prefab": "pickup",
+  "scene": "res://world/props/pickup/prop_ammo_pickup.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_archive_boxes": {
   "aabb": [
    -0.33,
@@ -944,6 +977,40 @@
   "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 1.5
+ },
+ "prop_burn_barrel": {
+  "aabb": [
+   -0.305,
+   0.0,
+   -0.305,
+   0.61,
+   1.4986,
+   0.61
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_burn_barrel/prop_burn_barrel.glb",
+  "group": "burn_point",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "burn_barrel",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Fire"
+  ],
+  "place": "none",
+  "prefab": "burn_point",
+  "scene": "res://world/props/burn_point/prop_burn_barrel.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
  },
  "prop_bus_shelter": {
   "aabb": [
@@ -2645,6 +2712,247 @@
   "surface": "wood",
   "top": 0.0,
   "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_deploy_ammo_bag": {
+  "aabb": [
+   -0.285,
+   0.0,
+   -0.2106,
+   0.57,
+   0.3498,
+   0.5782
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_deploy_ammo_bag/prop_deploy_ammo_bag.glb",
+  "group": "deployable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "ammo_bag",
+  "mount": "",
+  "nodes": [
+   "Bag",
+   "Handle"
+  ],
+  "place": "none",
+  "prefab": "deployable",
+  "scene": "res://world/props/deployable/prop_deploy_ammo_bag.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "fabric",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_deploy_armor_bag": {
+  "aabb": [
+   -0.34,
+   0.0,
+   -0.191,
+   0.68,
+   0.3962,
+   0.377
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_deploy_armor_bag/prop_deploy_armor_bag.glb",
+  "group": "deployable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "armor_bag",
+  "mount": "",
+  "nodes": [
+   "Bag",
+   "Handle"
+  ],
+  "place": "none",
+  "prefab": "deployable",
+  "scene": "res://world/props/deployable/prop_deploy_armor_bag.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "fabric",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_deploy_body_bag_case": {
+  "aabb": [
+   -0.286,
+   0.0,
+   -0.2302,
+   0.572,
+   0.215,
+   0.4262
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_deploy_body_bag_case/prop_deploy_body_bag_case.glb",
+  "group": "deployable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "body_bag_case",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Handle"
+  ],
+  "place": "none",
+  "prefab": "deployable",
+  "scene": "res://world/props/deployable/prop_deploy_body_bag_case.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_deploy_doctor_bag": {
+  "aabb": [
+   -0.26,
+   0.0,
+   -0.158,
+   0.52,
+   0.35,
+   0.316
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_deploy_doctor_bag/prop_deploy_doctor_bag.glb",
+  "group": "deployable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "doctor_bag",
+  "mount": "",
+  "nodes": [
+   "Bag",
+   "Handle"
+  ],
+  "place": "none",
+  "prefab": "deployable",
+  "scene": "res://world/props/deployable/prop_deploy_doctor_bag.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "fabric",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_deploy_ecm": {
+  "aabb": [
+   -0.1718,
+   0.0,
+   -0.1037,
+   0.3437,
+   0.3537,
+   0.2075
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_deploy_ecm/prop_deploy_ecm.glb",
+  "group": "deployable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "ecm",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Handle",
+   "Led"
+  ],
+  "place": "none",
+  "prefab": "deployable",
+  "scene": "res://world/props/deployable/prop_deploy_ecm.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_deploy_fak": {
+  "aabb": [
+   -0.153,
+   0.0,
+   -0.1314,
+   0.306,
+   0.094,
+   0.2344
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_deploy_fak/prop_deploy_fak.glb",
+  "group": "deployable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "fak",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Handle"
+  ],
+  "place": "none",
+  "prefab": "deployable",
+  "scene": "res://world/props/deployable/prop_deploy_fak.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_deploy_trip_mine": {
+  "aabb": [
+   -0.075,
+   0.0,
+   -0.0595,
+   0.15,
+   0.06,
+   0.1095
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_deploy_trip_mine/prop_deploy_trip_mine.glb",
+  "group": "deployable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "trip_mine",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Handle",
+   "Laser",
+   "Led"
+  ],
+  "place": "none",
+  "prefab": "deployable",
+  "scene": "res://world/props/deployable/prop_deploy_trip_mine.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -6987,6 +7295,41 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_saw_device": {
+  "aabb": [
+   -0.29,
+   -0.3026,
+   -0.0349,
+   0.56,
+   0.5224,
+   0.5818
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_saw_device/prop_saw_device.glb",
+  "group": "drill",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "saw",
+  "mount": "",
+  "nodes": [
+   "Bit",
+   "BladeAxle",
+   "Body"
+  ],
+  "place": "none",
+  "prefab": "drill",
+  "scene": "res://world/props/drill/prop_saw_device.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_security_camera_ceiling": {
   "aabb": [
    -0.07,
@@ -7669,6 +8012,40 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_thermal_drill_device": {
+  "aabb": [
+   -0.455,
+   -1.0,
+   -0.0144,
+   0.91,
+   1.234,
+   1.4294
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_thermal_drill_device/prop_thermal_drill_device.glb",
+  "group": "drill",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "thermal_drill",
+  "mount": "",
+  "nodes": [
+   "Bit",
+   "Body"
+  ],
+  "place": "none",
+  "prefab": "drill",
+  "scene": "res://world/props/drill/prop_thermal_drill_device.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_thermostat": {
   "aabb": [
    -0.05,
@@ -7701,6 +8078,209 @@
   "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 1.5
+ },
+ "prop_throwable_boss_injector": {
+  "aabb": [
+   -0.0134,
+   -0.0798,
+   -0.0134,
+   0.0268,
+   0.1578,
+   0.0268
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_throwable_boss_injector/prop_throwable_boss_injector.glb",
+  "group": "throwable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "injector",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Pin"
+  ],
+  "place": "none",
+  "prefab": "throwable",
+  "scene": "res://world/props/throwable/prop_throwable_boss_injector.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_throwable_concussion": {
+  "aabb": [
+   -0.0232,
+   -0.052,
+   -0.0245,
+   0.0616,
+   0.1304,
+   0.0477
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_throwable_concussion/prop_throwable_concussion.glb",
+  "group": "throwable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "concussion",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Pin"
+  ],
+  "place": "none",
+  "prefab": "throwable",
+  "scene": "res://world/props/throwable/prop_throwable_concussion.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_throwable_frag": {
+  "aabb": [
+   -0.032,
+   -0.032,
+   -0.0345,
+   0.0704,
+   0.0914,
+   0.0662
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_throwable_frag/prop_throwable_frag.glb",
+  "group": "throwable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "frag",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Pin"
+  ],
+  "place": "none",
+  "prefab": "throwable",
+  "scene": "res://world/props/throwable/prop_throwable_frag.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_throwable_incendiary": {
+  "aabb": [
+   -0.0328,
+   -0.0575,
+   -0.0335,
+   0.0712,
+   0.1444,
+   0.0663
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_throwable_incendiary/prop_throwable_incendiary.glb",
+  "group": "throwable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "incendiary",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Pin"
+  ],
+  "place": "none",
+  "prefab": "throwable",
+  "scene": "res://world/props/throwable/prop_throwable_incendiary.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_throwable_knife": {
+  "aabb": [
+   -0.0045,
+   -0.1264,
+   -0.0125,
+   0.009,
+   0.2464,
+   0.025
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_throwable_knife/prop_throwable_knife.glb",
+  "group": "throwable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "throwing_knife",
+  "mount": "",
+  "nodes": [
+   "Body"
+  ],
+  "place": "none",
+  "prefab": "throwable",
+  "scene": "res://world/props/throwable/prop_throwable_knife.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_throwable_steady_flask": {
+  "aabb": [
+   -0.0483,
+   -0.062,
+   -0.0177,
+   0.0966,
+   0.139,
+   0.0357
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_throwable_steady_flask/prop_throwable_steady_flask.glb",
+  "group": "throwable",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "flask",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Pin"
+  ],
+  "place": "none",
+  "prefab": "throwable",
+  "scene": "res://world/props/throwable/prop_throwable_steady_flask.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
  },
  "prop_toilet": {
   "aabb": [
@@ -8662,6 +9242,40 @@
   "surface": "metal",
   "top": 0.9,
   "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_zipline_anchor": {
+  "aabb": [
+   -0.15,
+   -0.2,
+   -0.7408,
+   0.3,
+   0.4,
+   0.7408
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_zipline_anchor/prop_zipline_anchor.glb",
+  "group": "zipline",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "zipline_anchor",
+  "mount": "wall",
+  "nodes": [
+   "Body",
+   "Line"
+  ],
+  "place": "none",
+  "prefab": "zipline",
+  "scene": "res://world/props/zipline/prop_zipline_anchor.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },

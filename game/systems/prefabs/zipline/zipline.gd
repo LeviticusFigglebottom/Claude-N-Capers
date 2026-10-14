@@ -12,7 +12,13 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/zipline/zipline_
 const BLOCK_REQUIRES_BAG: StringName = &"ui.blocked.requires_bag"
 
 ## Node3D (Marker3D) where the line ends.
+const CABLE_RADIUS_M: float = 0.01
+
 @export var end: NodePath
+## Cable ends (ENV C's prop_zipline_anchor `Line` markers). The cable is drawn only when both are set: the
+## line's own start / end are interaction points, not the rope (SL's escape line clipped its building).
+@export var cable_start: NodePath
+@export var cable_end: NodePath
 @export_group("Interaction")
 ## -1 = InteractionTweak.zipline_attach_s.
 @export var interaction_time_s: float = -1.0
@@ -35,10 +41,46 @@ func _default_interaction_time() -> float:
 
 
 func _prefab_ready() -> void:
+	_build_cable.call_deferred()
 	interactable.kind = &"attach_bag"
 	interactable.prompt_key = &"ui.prompt.zipline_bag"
 	interactable.extra_check = _availability
 	interactable.completed.connect(_on_completed)
+
+
+## The cable: a thin dark cylinder between the anchors' cable ends (no art asset needed); nothing without them.
+func _build_cable() -> void:
+	if not is_inside_tree() or get_node_or_null(^"Cable") != null:
+		return
+	var a: Node3D = get_node_or_null(cable_start) as Node3D if not cable_start.is_empty() else null
+	var b: Node3D = get_node_or_null(cable_end) as Node3D if not cable_end.is_empty() else null
+	if a == null or b == null:
+		return
+	var from: Vector3 = a.global_position
+	var to: Vector3 = b.global_position
+	var length: float = from.distance_to(to)
+	if length < 0.1:
+		return
+	var mesh: CylinderMesh = CylinderMesh.new()
+	mesh.top_radius = CABLE_RADIUS_M
+	mesh.bottom_radius = CABLE_RADIUS_M
+	mesh.height = length
+	mesh.radial_segments = 6
+	var mat: StandardMaterial3D = StandardMaterial3D.new()
+	mat.albedo_color = Color(0.12, 0.12, 0.13)
+	mat.metallic = 0.6
+	mesh.material = mat
+	var cable: MeshInstance3D = MeshInstance3D.new()
+	cable.name = "Cable"
+	cable.mesh = mesh
+	cable.set_meta(&"lc_ignore", true)  # runtime dressing between the anchors, not a placed prop (levelcheck)
+	cable.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(cable)
+	cable.top_level = true
+	var dir: Vector3 = (to - from) / length
+	var side: Vector3 = Vector3.FORWARD if absf(dir.dot(Vector3.UP)) > 0.99 else Vector3.UP
+	var x: Vector3 = dir.cross(side).normalized()
+	cable.global_transform = Transform3D(Basis(x, dir, x.cross(dir)), (from + to) * 0.5)
 
 
 ## Line start / end in world space.

@@ -118,8 +118,9 @@ Abbreviations: Hook = how C can supply the art without touching A files. SC = sc
 
 ### Below the top 10
 11. **Throwables** (frag, concussion, incendiary, throwing_knife, steady_flask, boss_injector). All maps, Med (loud).
-    **State:** a 4 cm dark sphere (`thrown_item.gd _make_visual`); no ThrowableDef sets `model`. **Hook:** `ThrowableDef.model`
-    (B data). Eff M (6 small glbs). These are weapon-adjacent and B-owned data, so confirm the art owner with the lead before taking them.
+    **State:** art done (PO-C, `tools/blender/props/throwables.py`): `res://world/props/throwable/prop_throwable_{frag,
+    concussion,incendiary,knife,boss_injector,steady_flask}.tscn` (body-centre origin, +Y up the fuse, `Pin`; shots in
+    `_art/throwables/`). Until B sets `ThrowableDef.model` to them the game still shows the 4 cm sphere (`_make_visual`).
 12. **DB/SL world dressing (G2).** DB has 1187 MeshInstance3D / 509 BoxMesh / 6 PrismMesh and 1 catalog prop. SL has
     1227 / 481 / 7 and 3 catalog props (all escape art). The surfaces are textured, but every object is a box: on DB
     about 13 container blocks (`prop_container_{20,40}_{blue,green,rust}` exist), about 14 crane parts, 2 forklifts, 4 reefers,

@@ -304,6 +304,13 @@ func test_qb58_armor_bag_needs_flag() -> void:
 	assert_eq(c.loadout.armor, &"armor.heavy_vest", "armor unchanged")
 
 
+func test_deployable_gate_checked_at_runtime() -> void:
+	assert_true(DeployableSystem._gate_ok(0, &"deployable.doctor_bag"), "ungated: always allowed")
+	assert_true(not DeployableSystem._gate_ok(0, &"deployable.armor_bag"), "gated, no flag: refused")
+	Modifiers.set_source(0, &"test", {DeployableGate.required_flag(&"deployable.armor_bag"): true})
+	assert_true(DeployableSystem._gate_ok(0, &"deployable.armor_bag"), "gated, flag granted")
+
+
 # --- QB-59 doctor bag use time ----------------------------------------------------------------------
 
 func test_qb59_doctor_bag_speed_mult() -> void:
