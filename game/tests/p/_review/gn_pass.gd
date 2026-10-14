@@ -57,6 +57,15 @@ func _public_zones() -> Array[MapZone]:
 	return out
 
 
+## Walk targets: the centres of the PUBLIC zones' shapes (the Area3D itself sits at the map origin).
+func _tour_points(zones: Array[MapZone]) -> Array[Vector3]:
+	var out: Array[Vector3] = []
+	for z: MapZone in zones:
+		for cs: Node in z.find_children("*", "CollisionShape3D", true, false):
+			out.append((cs as Node3D).global_position)
+	return out
+
+
 func _leaving_patrons() -> int:
 	var n: int = 0
 	for c: Node in rt.npcs(&"civilian"):
@@ -68,8 +77,10 @@ func _leaving_patrons() -> int:
 
 func _stealth_to_last_call() -> void:
 	var zones: Array[MapZone] = _public_zones()
+	var points: Array[Vector3] = _tour_points(zones)
 	var last_call_t: float = float(rt.mission.call(&"_scalar", &"last_call_s", 600))
-	note("STEALTH: %d PUBLIC zones, last call at t=%.0f; casing tour unmasked" % [zones.size(), last_call_t])
+	note("STEALTH: %d PUBLIC zones (%d shapes), last call at t=%.0f; casing tour unmasked" % [zones.size(),
+		points.size(), last_call_t])
 	await shot("gala")
 	var i: int = 0
 	var warned: bool = false
@@ -84,7 +95,7 @@ func _stealth_to_last_call() -> void:
 			warned = true
 			note("LAST CALL WARNING t=%.0f at %s" % [rt.heist_time_s, Po5Pilot._v(crew.global_position)])
 			await shot("last_call_warning")
-		if not called and bool(rt.mission.get(&"_last_call")):
+		if not called and _public_zones().size() < zones.size():
 			called = true
 			note("LAST CALL t=%.0f: PUBLIC zones now %d, patrons leaving %d, player at %s, detection max %.2f" % [
 				rt.heist_time_s, _public_zones().size(), _leaving_patrons(), Po5Pilot._v(crew.global_position),
@@ -92,16 +103,16 @@ func _stealth_to_last_call() -> void:
 			await shot("last_call")
 		if rt.heist_time_s - last_shot > 60.0:
 			last_shot = rt.heist_time_s
-			note("casing t=%.0f zone %s detection max %.2f leaving %d" % [rt.heist_time_s,
-				zones[i % zones.size()].name if not zones.is_empty() else "-", _max_detection(), _leaving_patrons()])
+			note("casing t=%.0f at %s detection max %.2f leaving %d" % [rt.heist_time_s,
+				Po5Pilot._v(crew.global_position), _max_detection(), _leaving_patrons()])
 			await shot("casing_t%03d" % int(rt.heist_time_s))
-		if zones.is_empty():
+		if points.is_empty():
 			await pilot.hold_position(3.0)
 			continue
-		var z: MapZone = zones[i % zones.size()]
+		var pt: Vector3 = points[i % points.size()]
 		i += 1
-		if not await pilot.goto(pilot.stand_point(z.global_position), 2.0, 40.0):
-			note("zone %s at %s not reached" % [z.name, Po5Pilot._v(z.global_position)])
+		if not await pilot.goto(pilot.stand_point(pt), 2.0, 40.0):
+			note("tour point %s not reached" % Po5Pilot._v(pt))
 		await pilot.hold_position(4.0, func() -> bool: return rt.went_loud)
 	note("STEALTH END t=%.0f went_loud=%s last_call=%s patrons leaving %d detection max %.2f" % [rt.heist_time_s,
 		rt.went_loud, called, _leaving_patrons(), _max_detection()])
