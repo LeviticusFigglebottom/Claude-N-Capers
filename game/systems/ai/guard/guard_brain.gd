@@ -526,6 +526,8 @@ func _maybe_misfire(info: Dictionary) -> void:
 	var pos: Vector3 = _npc.global_position + Vector3(0.0, 1.0, 0.0)
 	var weapon: StringName = _npc.enemy_def.weapon if _npc.enemy_def != null else &""
 	EventBus.weapon_fired.emit(_npc.net_id, weapon, false, pos)
+	# PO-8: the stray round goes wide ahead of the guard (shot_fx here + relayed).
+	ShotFx.npc_shot(_npc, pos, pos + _npc.look_forward() * 8.0 + Vector3.DOWN * 1.0, false)
 	rt.make_noise(pos, tw.gunshot_npc_radius_m, &"gunshot", _npc.net_id)
 
 

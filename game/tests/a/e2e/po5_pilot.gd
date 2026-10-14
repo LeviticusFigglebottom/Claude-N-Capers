@@ -298,9 +298,11 @@ func _unstick(attempt: int) -> void:
 ## Walks within reach of `comp`, aims at it and holds interact until it completes (or `done` returns true).
 func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = Callable(), walk: bool = true) -> bool:
 	var target: Vector3 = comp.global_position
-	var stand: Vector3 = stand_point(target)
-	if walk and not await goto(stand, 0.5, 60.0):
+	var stand: Vector3 = _use_stand(comp)
+	if walk and not await goto(stand, 0.5, 60.0) and is_instance_valid(comp):
 		d.note("pilot: could not reach %s (%s)" % [comp.get_path(), comp.kind])
+	if not is_instance_valid(comp):
+		return false
 	await face(target)
 	var isys: InteractionSystem = HeistRuntime.of(crew).interaction
 	var aimed: InteractableComponent = isys.aimed_component(crew)
@@ -507,6 +509,36 @@ func active_escape() -> EscapeZone:
 func stand_point(target: Vector3) -> Vector3:
 	var map: RID = crew.get_world_3d().navigation_map
 	return NavigationServer3D.map_get_closest_point(map, target)
+
+
+## Where a player stands to use `comp`: the prefab's UsePoint if it has one (map-authored, the right side of
+## counters / glass; not doors, usable from either side), else the nearest navmesh point with a clear line of
+## sight to it (ring search).
+func _use_stand(comp: InteractableComponent) -> Vector3:
+	var owner_n: Node = comp.owner_node()
+	var up: Node3D = null
+	if owner_n != null and not (owner_n is Door):
+		up = owner_n.get_node_or_null(^"UsePoint") as Node3D
+	if up != null:
+		return stand_point(up.global_position)
+	var target: Vector3 = comp.global_position
+	var near: Vector3 = stand_point(target)
+	if _clear_to(near, target):
+		return near
+	for r: float in [0.7, 1.1, 1.5]:
+		for k: int in 12:
+			var a: float = TAU * float(k) / 12.0
+			var cand: Vector3 = stand_point(target + Vector3(cos(a), 0.0, sin(a)) * r)
+			if flat_dist(cand, target) <= 1.6 and _clear_to(cand, target):
+				return cand
+	return near
+
+
+func _clear_to(stand: Vector3, target: Vector3) -> bool:
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(stand + Vector3.UP * 1.5, target, 1)
+	q.exclude = [crew.get_rid()]
+	var hit: Dictionary = crew.get_world_3d().direct_space_state.intersect_ray(q)
+	return hit.is_empty() or (hit["position"] as Vector3).distance_to(target) < 0.25
 
 
 static func _v(p: Vector3) -> String:

@@ -178,6 +178,7 @@ func _tick_melee(delta: float) -> void:
 		if not tw.npc_melee_damage.is_empty() else tw.npc_fallback_damage
 	c.take_hit(Damage.info(dmg, Enums.DamageType.MELEE, Enums.HitZone.BODY, &"npc_melee",
 		c.global_position + Vector3(0.0, 1.2, 0.0), dir, _npc.net_id), _npc.net_id)
+	ShotFx.melee_hit(_npc, _npc.eye_position(), c.global_position + Vector3(0.0, 1.2, 0.0), c)  # PO-8
 	c.velocity += dir * tw.npc_melee_knockback_mps  # the shove
 	if c.weapons != null and c.weapons.reloading:
 		c.weapons.reloading = false
@@ -245,6 +246,7 @@ func _fire(c: CrewController) -> void:
 		rt.make_noise(from, Tweak.stealth().gunshot_npc_radius_m, &"gunshot", _npc.net_id)
 	var chance: float = tw.npc_hit_chance(dist, _npc.difficulty) * NpcSuppression.hit_chance_mult(_npc)  # A3-06 (L3.5)
 	var hit: bool = GameRng.stream(&"npc_fire").randf() < chance
+	ShotFx.npc_shot(_npc, from, aim, hit, c)  # PO-8: shot_fx here + relayed (impact_fx.md)
 	if hit:
 		var info: Dictionary = Damage.info(shot_damage(), Enums.DamageType.BULLET,
 			Enums.HitZone.BODY, weapon_id, aim, (aim - from).normalized(), _npc.net_id)

@@ -8,6 +8,9 @@ metadata/fixture = true
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
 
+[node name="Collision" parent="Model"]
+metadata/surface = &"glass"
+
 [node name="Light" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
 omni_range = 4
@@ -16,3 +19,5 @@ light_color = Color(1, 0.851, 0.6902, 1)
 light_energy = 1
 light_size = 0.05
 shadow_enabled = false
+
+[editable path="Model"]

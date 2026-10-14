@@ -80,3 +80,38 @@ func test_stealth_only_alarm() -> void:
 		return
 	_flow.runtime.call(&"end_heist", false, [] as Array[int], &"stealth_only_alarm")
 	await _check_failure(&"stealth_only_alarm")
+
+
+## First-heist safety net: a new profile's failed heist offers "Try again at Routine", which relaunches it.
+func test_first_failure_offers_a_routine_retry() -> void:
+	if not await _launch():
+		return
+	_flow.runtime.call(&"end_heist", false, [] as Array[int], &"all_custody")
+	var pd: PaydayScreen = _flow.get(&"_heist_payday") as PaydayScreen
+	assert_true(await wait_until(func() -> bool: return pd != null and pd.visible, 10.0))
+	if pd == null:
+		return
+	assert_true(pd.retry_button.visible, "a first heist that failed: offer the retry")
+	await wait_frames(2)  # UiScreen focuses its default control deferred
+	assert_eq(get_viewport().gui_get_focus_owner(), pd.continue_button as Control, "Continue keeps the focus")
+	pd.retry_button.pressed.emit()
+	var relaunched: Callable = func() -> bool:
+		return _flow.runtime != null and _flow.get(&"_heist_id") == &"glasshouse" \
+				and int(_flow.get(&"_difficulty")) == Enums.Difficulty.ROUTINE
+	assert_true(await wait_until(relaunched, 60.0), "relaunched at Routine")
+
+
+func test_no_retry_once_a_heist_was_completed() -> void:
+	var p: PlayerProfile = PlayerProfile.new_default()
+	p.add_stat("heists_completed")
+	var pd: PaydayScreen = (load("res://content/ui/results/payday.tscn") as PackedScene).instantiate() as PaydayScreen
+	pd.apply_to_profile = false
+	pd.setup(p)
+	add_child(pd)
+	await wait_frames(1)
+	var fail: Dictionary = HeistCatalog.sample_result()
+	fail["success"] = false
+	pd.show_result(fail)
+	assert_false(pd.retry_button.visible, "experienced players just continue")
+	pd.queue_free()
+	await wait_frames(1)

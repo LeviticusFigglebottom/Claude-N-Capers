@@ -50,6 +50,7 @@ mesh = SubResource("box_header_4")
 [node name="Collision" type="StaticBody3D" parent="Frame"]
 collision_layer = 1
 collision_mask = 0
+metadata/surface = &"metal"
 
 [node name="JambL" type="CollisionShape3D" parent="Frame/Collision"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.1, 0)

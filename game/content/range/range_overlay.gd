@@ -1,6 +1,9 @@
 ## Firing range overlay (B1-05): loadout swap panel (left), live stat panel (left, below), readout
 ## and last shot (right), ammo/hints (bottom), crosshair. Owner: ENV B. Shared theme
 ## (UiBuild/caper_theme), every string from strings.csv, keyboard/mouse and gamepad focus chain.
+## PO-4 Case File restyle (style.md): case-file panels, caption labels over values, 21-unit rows, a fixed
+## footer (Leave ghost left, Reset right) and a key cap hint strip that follows the last device. Aim
+## mode shows less: the loadout panel hides and the right panel shrinks to the readout and last shot.
 ##
 ## The overlay holds no game state: FiringRange pushes values in (show_*) and listens to the
 ## signals. Panel mode = interactive (mouse visible, focus chain active); aim mode = read-only.
@@ -16,10 +19,12 @@ signal reset_requested()
 signal exit_requested()
 signal aim_requested(on: bool)
 
-const ROW_FONT_SIZE: int = 18
-const PANEL_MARGIN: int = 24
-const LEFT_WIDTH: int = 440
-const RIGHT_WIDTH: int = 420
+const ROW_FONT_SIZE: int = UiTokens.FONT_SMALL
+const PANEL_MARGIN: int = UiTokens.S4
+## Space kept free under the side panels for the ammo line and the hint strip.
+const BOTTOM_RESERVE: int = 150
+const LEFT_WIDTH: int = 460
+const RIGHT_WIDTH: int = 440
 ## [row id, label key]: StatCalculator.display keys first, then physical values.
 const DISPLAY_ROWS: Array[Array] = [
 	["damage", &"ui.stat.damage"], ["accuracy", &"ui.stat.accuracy"], ["stability", &"ui.stat.stability"],
@@ -57,12 +62,19 @@ var focus_chain: Array[Control] = []
 var interactive: bool = true
 ## B4-13 falloff graph (right panel).
 var falloff_graph: RangeFalloffGraph
+## Key cap hint strip (bottom): [key cap, caption] pairs for the current mode and device.
+var hints: HBoxContainer
 
 var _values: Dictionary = {}   # row id -> Label
 var _mods_box: VBoxContainer
 var _ammo_label: Label
-var _hint_label: Label
+var _hints_pad: bool = false
 var _crosshair: Label
+var _left_panel: PanelContainer
+var _right_panel: PanelContainer
+var _right_box: VBoxContainer
+## Right-panel parts hidden in aim mode (target picker, falloff graph, per-dummy table).
+var _right_extras: Array[Control] = []
 var _weapon_ids: Array[StringName] = []
 var _lane_labels: PackedStringArray = PackedStringArray()
 ## B4-13: the per-dummy-type TTK table (dummy id -> value Label).
@@ -92,6 +104,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if theme == null:
 		theme = UiBuild.theme()
+	UiNav.ensure_pad_ui_actions()  # pad A / B work here even when the range is the first screen
 	_build_left()
 	_build_right()
 	_build_bottom()
@@ -115,7 +128,6 @@ func show_weapon(def: WeaponDef, mods: Dictionary) -> void:
 	for slot: Variant in slots:
 		var mod_type: int = int(slot)
 		var type_name: String = String(Enums.ModType.keys()[mod_type]).to_lower()
-		_mods_box.add_child(_small(UiBuild.label(StringName("ui.mod_type.%s" % type_name), UiBuild.DIM)))
 		var opt: OptionButton = UiBuild.option_button()
 		var ids: Array[StringName] = []
 		if not def.default_mods.has(slot):
@@ -127,7 +139,7 @@ func show_weapon(def: WeaponDef, mods: Dictionary) -> void:
 		opt.set_meta(&"ids", ids)
 		opt.select(maxi(ids.find(StringName(mods.get(mod_type, &""))), 0))
 		opt.item_selected.connect(_on_mod_selected.bind(mod_type, opt))
-		_mods_box.add_child(opt)
+		_mods_box.add_child(UiBuild.field(StringName("ui.mod_type.%s" % type_name), opt, UiTokens.S1))
 		mod_options[mod_type] = opt
 	_rechain()
 
@@ -262,11 +274,14 @@ func ammo_text() -> String:
 ## Panel mode (true) or aim mode (false).
 func set_interactive(on: bool) -> void:
 	interactive = on
-	if _hint_label == null:
+	if hints == null:
 		return
-	var aim_key: StringName = &"ui.range.hint_aim" if _fallback_camera else &"ui.range.hint_aim_crew"
-	_hint_label.text = UiText.t(&"ui.range.hint_panels" if on else aim_key)
 	_crosshair.visible = not on
+	_left_panel.visible = on
+	for c: Control in _right_extras:
+		c.visible = on
+	_fit_right.call_deferred()
+	refresh_hints()
 	for c: Control in focus_chain:
 		c.focus_mode = Control.FOCUS_ALL if on else Control.FOCUS_NONE
 		c.mouse_filter = Control.MOUSE_FILTER_STOP if on else Control.MOUSE_FILTER_IGNORE
@@ -274,6 +289,47 @@ func set_interactive(on: bool) -> void:
 		UiNav.focus_first(focus_chain)
 	elif is_inside_tree():
 		get_viewport().gui_release_focus()
+
+
+## [key cap text, caption key] pairs of the hint strip for the current mode and last device.
+func hint_pairs() -> Array[Array]:
+	var panels_key: String = UiText.t(&"ui.key.start" if InteractionPanel.pad_active else &"ui.key.tab")
+	if interactive:
+		return [[panels_key, &"ui.range.key.aim"], [InteractionPanel.action_key_text(&"ui_accept"), &"ui.hint.select"],
+			[InteractionPanel.action_key_text(&"ui_cancel"), &"ui.range.key.leave"]]
+	if _fallback_camera:
+		return []  # the fallback camera's own controls are spelled out (ui.range.hint_aim)
+	var pairs: Array[Array] = []
+	for a: Array in [[&"fire", &"ui.range.key.fire"], [&"aim", &"ui.range.key.ads"], [&"reload", &"ui.range.key.reload"]]:
+		pairs.append([InteractionPanel.action_key_text(a[0] as StringName), a[1]])
+	var swap: String = InteractionPanel.action_key_text(&"swap_weapon")
+	if not InteractionPanel.pad_active:  # the keyboard swaps with the slot keys (swap_weapon is the wheel)
+		swap = "%s/%s" % [InteractionPanel.action_key_text(&"slot_secondary"),
+			InteractionPanel.action_key_text(&"slot_primary")]
+	pairs.append([swap, &"ui.range.key.swap"])
+	pairs.append([panels_key, &"ui.range.key.panels"])
+	return pairs
+
+
+## Rebuilds the hint strip (mode change or device switch).
+func refresh_hints() -> void:
+	if hints == null:
+		return
+	_hints_pad = InteractionPanel.pad_active
+	for c: Node in hints.get_children():
+		hints.remove_child(c)
+		c.queue_free()
+	if not interactive and _fallback_camera:
+		var l: Label = UiBuild.caption(&"ui.range.hint_aim")
+		l.uppercase = false
+		hints.add_child(UiBuild.float_text(l))
+		return
+	for pair: Array in hint_pairs():
+		var h: HBoxContainer = UiBuild.hbox(UiTokens.S2)
+		h.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		h.add_child(UiBuild.keycap(String(pair[0]), UiTokens.FONT_SMALL))
+		h.add_child(UiBuild.float_text(UiBuild.caption(StringName(pair[1]))))
+		hints.add_child(h)
 
 
 ## Current text of a value row (tests).
@@ -288,6 +344,9 @@ static func zone_key(zone: int) -> StringName:
 
 
 func _input(event: InputEvent) -> void:
+	InteractionPanel.note_input(event)
+	if hints != null and InteractionPanel.pad_active != _hints_pad:
+		refresh_hints()
 	if not interactive or not is_visible_in_tree():
 		return
 	var key: InputEventKey = event as InputEventKey
@@ -306,72 +365,76 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _build_left() -> void:
-	var box: VBoxContainer = _side_panel(true, LEFT_WIDTH)
-	box.add_child(UiBuild.label(&"ui.range.title", UiBuild.SUBHEADER))
-	box.add_child(_small(UiBuild.label(&"ui.range.weapon", UiBuild.DIM)))
+	var outer: VBoxContainer = _side_panel(true, LEFT_WIDTH)
+	_left_panel = outer.get_parent() as PanelContainer
+	var head: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+	head.add_child(UiBuild.caption(&"ui.range.crumb"))
+	head.add_child(UiBuild.label(&"ui.range.title", UiBuild.SUBHEADER))
+	head.add_child(_small(UiBuild.label(&"ui.range.free_note", UiBuild.DIM)))
+	outer.add_child(head)
+	var box: VBoxContainer = _scroll(outer)
 	weapon_option = UiBuild.option_button()
 	weapon_option.item_selected.connect(_on_weapon_selected)
-	box.add_child(weapon_option)
-	_mods_box = UiBuild.vbox(6)
+	box.add_child(UiBuild.field(&"ui.range.weapon", weapon_option, UiTokens.S1))
+	_mods_box = UiBuild.vbox(UiTokens.S3)
 	box.add_child(_mods_box)
-	box.add_child(_small(UiBuild.label(&"ui.range.difficulty", UiBuild.DIM)))
 	difficulty_option = UiBuild.option_button()
 	for d: int in range(Enums.Difficulty.size()):
 		difficulty_option.add_item(UiText.t(UiText.difficulty_key(d)))
 	difficulty_option.select(_difficulty)
 	difficulty_option.item_selected.connect(func(i: int) -> void: difficulty_selected.emit(i))
-	box.add_child(difficulty_option)
+	box.add_child(UiBuild.field(&"ui.range.difficulty", difficulty_option, UiTokens.S1))
 	box.add_child(_section(&"ui.range.stats", DISPLAY_ROWS))
 	box.add_child(_section(&"ui.range.physical", PHYSICAL_ROWS))
+	# Footer outside the scroll, always in view: Leave (ghost, left), Reset (right).
+	exit_button = UiBuild.button(&"ui.range.exit")
+	reset_button = UiBuild.button(&"ui.range.reset_targets")
+	var foot: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	foot.add_child(UiBuild.ghost(exit_button))
+	foot.add_child(UiBuild.spacer())
+	foot.add_child(reset_button)
+	for b: Button in [reset_button, exit_button]:
+		b.custom_minimum_size = Vector2(0, 0)
+	outer.add_child(foot)
+	reset_button.pressed.connect(func() -> void: reset_requested.emit())
+	exit_button.pressed.connect(func() -> void: exit_requested.emit())
 
 
 func _build_right() -> void:
-	var box: VBoxContainer = _side_panel(false, RIGHT_WIDTH)
-	box.add_child(_small(UiBuild.label(&"ui.range.readout_lane", UiBuild.DIM)))
+	var outer: VBoxContainer = _side_panel(false, RIGHT_WIDTH)
+	_right_panel = outer.get_parent() as PanelContainer
+	var box: VBoxContainer = _scroll(outer)
+	_right_box = box
 	readout_option = UiBuild.option_button()
 	for label: String in _lane_labels:
 		readout_option.add_item(label)
 	if _lane_labels.size() > 0:
 		readout_option.select(clampi(_readout_lane, 0, _lane_labels.size() - 1))
 	readout_option.item_selected.connect(func(i: int) -> void: readout_lane_selected.emit(i))
-	box.add_child(readout_option)
-	var buttons: HBoxContainer = UiBuild.hbox(12)
-	box.add_child(buttons)
+	var lane_field: VBoxContainer = UiBuild.field(&"ui.range.readout_lane", readout_option, UiTokens.S1)
+	box.add_child(lane_field)
 	box.add_child(_section(&"ui.range.readout", READOUT_ROWS))
 	box.add_child(_section(&"ui.range.last_shot", LAST_SHOT_ROWS))
-	var graph_box: VBoxContainer = UiBuild.vbox(2)
-	var graph_title: Label = UiBuild.label(&"ui.range.falloff_graph", UiBuild.HEADER)
-	graph_title.add_theme_font_size_override(&"font_size", 24)
-	graph_box.add_child(graph_title)
+	var graph_box: VBoxContainer = _section_box(&"ui.range.falloff_graph")
 	falloff_graph = RangeFalloffGraph.new()
 	falloff_graph.name = "FalloffGraph"
 	falloff_graph.setup(_tweak if _tweak != null else RangeTweak.new())
 	graph_box.add_child(falloff_graph)
 	box.add_child(graph_box)
-	var dummies: VBoxContainer = UiBuild.vbox(2)
-	var dummies_title: Label = UiBuild.label(&"ui.range.per_dummy", UiBuild.HEADER)
-	dummies_title.add_theme_font_size_override(&"font_size", 24)
-	dummies.add_child(dummies_title)
+	var dummies: VBoxContainer = _section_box(&"ui.range.per_dummy")
 	dummies.add_child(_small(UiBuild.label(&"ui.range.per_dummy_hint", UiBuild.DIM)))
 	_dummy_grid = GridContainer.new()
 	_dummy_grid.columns = 2
-	_dummy_grid.add_theme_constant_override(&"h_separation", 16)
+	_dummy_grid.add_theme_constant_override(&"h_separation", UiTokens.S3)
 	_dummy_grid.add_theme_constant_override(&"v_separation", 2)
 	dummies.add_child(_dummy_grid)
 	box.add_child(dummies)
-	reset_button = UiBuild.button(&"ui.range.reset_targets")
-	exit_button = UiBuild.button(&"ui.range.exit")
-	for b: Button in [reset_button, exit_button]:
-		b.custom_minimum_size = Vector2(0, 0)
-		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		buttons.add_child(b)
-	reset_button.pressed.connect(func() -> void: reset_requested.emit())
-	exit_button.pressed.connect(func() -> void: exit_requested.emit())
+	_right_extras = [lane_field, graph_box, dummies]
 	show_last_shot({})
 
 
 func _build_bottom() -> void:
-	var bottom: VBoxContainer = UiBuild.vbox(4)
+	var bottom: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	bottom.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	bottom.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	bottom.grow_horizontal = Control.GROW_DIRECTION_BOTH
@@ -379,14 +442,16 @@ func _build_bottom() -> void:
 	bottom.offset_bottom = -PANEL_MARGIN
 	bottom.alignment = BoxContainer.ALIGNMENT_END
 	add_child(bottom)
-	_ammo_label = UiBuild.label(&"", UiBuild.HUD_BIG)
+	_ammo_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD_BIG))
 	_ammo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	bottom.add_child(_ammo_label)
-	_hint_label = UiBuild.label(&"", UiBuild.HUD)
-	_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	bottom.add_child(_hint_label)
+	hints = UiBuild.hbox(UiTokens.S5)
+	hints.name = "Hints"
+	hints.alignment = BoxContainer.ALIGNMENT_CENTER
+	hints.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bottom.add_child(hints)
 	if _fallback_camera:
-		var temp: Label = _small(UiBuild.label(&"ui.range.temp_camera", UiBuild.HUD))
+		var temp: Label = UiBuild.float_text(UiBuild.caption(&"ui.range.temp_camera"))
 		temp.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		bottom.add_child(temp)
 	_crosshair = UiBuild.label(&"ui.range.crosshair", UiBuild.HUD_BIG)
@@ -400,6 +465,8 @@ func _build_bottom() -> void:
 
 
 ## A full-height scrolling HUD panel on the left or right edge; returns its content box.
+## A full-height HUD panel on the left or right edge; returns its outer box (fixed parts go here,
+## the scrolling part comes from _scroll()).
 func _side_panel(left: bool, width: int) -> VBoxContainer:
 	var panel: PanelContainer = PanelContainer.new()
 	panel.anchor_left = 0.0 if left else 1.0
@@ -409,28 +476,54 @@ func _side_panel(left: bool, width: int) -> VBoxContainer:
 	panel.offset_left = PANEL_MARGIN if left else -PANEL_MARGIN - width
 	panel.offset_right = PANEL_MARGIN + width if left else -PANEL_MARGIN
 	panel.offset_top = PANEL_MARGIN
-	panel.offset_bottom = -PANEL_MARGIN * 6
+	panel.offset_bottom = -BOTTOM_RESERVE
 	panel.grow_horizontal = Control.GROW_DIRECTION_END if left else Control.GROW_DIRECTION_BEGIN
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(panel)
+	var outer: VBoxContainer = UiBuild.vbox(UiTokens.S3)
+	panel.add_child(outer)
+	return outer
+
+
+## The scrolling content box of a side panel (fills the panel's free height).
+func _scroll(outer: VBoxContainer) -> VBoxContainer:
 	var scroll: ScrollContainer = ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
-	panel.add_child(scroll)
-	var box: VBoxContainer = UiBuild.vbox(6)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	outer.add_child(scroll)
+	var box: VBoxContainer = UiBuild.vbox(UiTokens.S4)
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(box)
 	return box
 
 
+## Aim mode: the right panel shrinks to its visible content (readout + last shot); panel mode: full height.
+func _fit_right() -> void:
+	if _right_panel == null:
+		return
+	if interactive:
+		_right_panel.anchor_bottom = 1.0
+		_right_panel.offset_bottom = -BOTTOM_RESERVE
+		return
+	var pad: float = _right_panel.get_theme_stylebox(&"panel").get_minimum_size().y
+	_right_panel.anchor_bottom = 0.0
+	_right_panel.offset_bottom = PANEL_MARGIN + _right_box.get_combined_minimum_size().y + pad
+
+
+## A section: caption title over a hairline rule; returns the box to add the body to.
+func _section_box(title_key: StringName) -> VBoxContainer:
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+	v.add_child(UiBuild.caption(title_key))
+	v.add_child(HSeparator.new())
+	return v
+
+
 func _section(title_key: StringName, rows: Array[Array]) -> VBoxContainer:
-	var v: VBoxContainer = UiBuild.vbox(2)
-	var title: Label = UiBuild.label(title_key, UiBuild.HEADER)
-	title.add_theme_font_size_override(&"font_size", 24)
-	v.add_child(title)
+	var v: VBoxContainer = _section_box(title_key)
 	var grid: GridContainer = GridContainer.new()
 	grid.columns = 2
-	grid.add_theme_constant_override(&"h_separation", 16)
+	grid.add_theme_constant_override(&"h_separation", UiTokens.S3)
 	grid.add_theme_constant_override(&"v_separation", 2)
 	v.add_child(grid)
 	for row: Array in rows:
@@ -458,6 +551,8 @@ func _rechain() -> void:
 	focus_chain.append(reset_button)
 	focus_chain.append(exit_button)
 	UiNav.chain_vertical(focus_chain)
+	exit_button.focus_neighbor_right = exit_button.get_path_to(reset_button)  # footer row: Leave <-> Reset
+	reset_button.focus_neighbor_left = reset_button.get_path_to(exit_button)
 	if is_inside_tree():
 		set_interactive(interactive)
 

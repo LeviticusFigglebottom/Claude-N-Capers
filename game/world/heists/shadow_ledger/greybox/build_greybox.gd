@@ -77,6 +77,8 @@ func _build() -> void:
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
 		return
+	for untagged: String in SurfaceTags.tag_tree(map_root):  # PO-8 bullet surface ids
+		errors.append("no surface id for %s" % untagged)
 	if not errors.is_empty():
 		_fail("\n".join(errors))
 		return

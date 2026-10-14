@@ -196,6 +196,8 @@ func test_unlocked_door_opens_instantly() -> void:
 	assert_false(door.is_open, "starts closed")
 	await _use(rt, door, 0.0)
 	assert_true(door.is_open, "opened")
+	# PO-6: the leaf swings over door_swing_open_s.
+	assert_true(await wait_until(func() -> bool: return not door.is_swinging(), 2.0), "swing done")
 	var leaf: Node3D = door.visual_node("Leaf") as Node3D
 	assert_near(leaf.rotation.y, -deg_to_rad(Tweak.interaction().door_open_angle_deg), 0.001, "INWARD swing")
 	var body: AnimatableBody3D = door.get_node(^"LeafBody") as AnimatableBody3D

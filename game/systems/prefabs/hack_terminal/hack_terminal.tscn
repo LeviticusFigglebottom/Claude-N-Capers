@@ -23,6 +23,7 @@ kind = &"start_hack"
 [node name="Collision" type="StaticBody3D" parent="."]
 collision_layer = 1
 collision_mask = 0
+metadata/surface = &"metal"
 
 [node name="Shape" type="CollisionShape3D" parent="Collision"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

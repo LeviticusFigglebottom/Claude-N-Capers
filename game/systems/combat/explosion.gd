@@ -21,6 +21,7 @@ static func apply(ctx: Node3D, position: Vector3, radius: float, damage: float, 
 	var out: Array[Dictionary] = []
 	if ctx == null or not ctx.is_inside_tree() or not Net.is_authority() or radius <= 0.0:
 		return out
+	ShotFx.explosion(ctx, position, radius, ShotFx.explosion_kind(weapon_id))  # PO-8: explosion_fx + relayed
 	var tw: CombatTweak = CombatTweak.data()
 	var crew_attack: bool = Ids.lookup(attacker_net_id) is CrewController
 	for target: Object in targets_in_sphere(ctx, position, radius, tw):
