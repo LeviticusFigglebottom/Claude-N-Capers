@@ -26,7 +26,7 @@
 class_name CivilianBrain
 extends Node
 
-enum Mode { IDLE, WANDER, RUN_TO_CALL, CALLING, FLEE, COWER, DOWN, TIED, DEAD }
+enum Mode { IDLE, WANDER, RUN_TO_CALL, CALLING, FLEE, COWER, DOWN, TIED, DEAD, LEAVE }
 
 ## Idle activities that may wander (seated / queued / desk civilians stay put).
 const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone", &"mug"]
@@ -36,6 +36,8 @@ const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", 
 const KIND_GUARD: StringName = &"guard"
 const KIND_POINT: StringName = &"point"
 const RETARGET_S: float = 0.5
+## leave_map: despawn within this of the exit point (m).
+const LEAVE_ARRIVE_M: float = 1.0
 
 var mode: Mode = Mode.IDLE
 ## Animation hint for the visual (&"browse", &"walk", &"run", &"call", &"down", &"tied", &"cower"...).
@@ -47,6 +49,8 @@ var intimidate_left: float = 0.0
 var intimidated_by_slot: int = -1
 var threat_position: Vector3 = Vector3.INF
 var fled_reported: bool = false
+## True once it walked out of the map (leave_map).
+var left_map: bool = false
 
 var _npc: NpcBase = null
 var _motor: NpcMotor = null
@@ -68,6 +72,7 @@ var _walk_stalls: int = 0
 var _wander_profile: Dictionary = {}
 ## PO-5: the wander point / call target given up after a stall (skipped by the next pick).
 var _failed_target: Node = null
+var _leave_target: Vector3 = Vector3.INF
 
 
 func _ready() -> void:
@@ -221,7 +226,7 @@ func _on_phase_changed(_old: int, new_phase: int) -> void:
 	if new_phase != Enums.HeistPhase.LOUD:
 		return
 	match mode:
-		Mode.IDLE, Mode.WANDER:
+		Mode.IDLE, Mode.WANDER, Mode.LEAVE:
 			_panic(Vector3.INF)
 		Mode.RUN_TO_CALL, Mode.CALLING:
 			call_target = {}
@@ -549,6 +554,8 @@ func _physics_step(delta: float) -> void:
 			intimidate_left -= delta
 			if intimidate_left <= 0.0:
 				_get_up()
+		Mode.LEAVE:
+			_tick_leave(delta)
 
 
 func _on_died(_info: Dictionary, _killer_net_id: int) -> void:
@@ -571,6 +578,39 @@ func _on_died(_info: Dictionary, _killer_net_id: int) -> void:
 		_npc.remove_from_group(G.HOSTAGE)
 		if _targets != null:
 			_targets.recount_hostages()
+
+
+# --- Leaving the map (D-103 §6 / QC-51) ---------------------------------------------------------
+
+## Server (mission order, Gallery Night last call): a calm civilian walks to `exit_pos` and despawns there (no
+## alarm, never a kill). Refused (false) once loud or unless calm and idle / wandering; anything that alarms it on the
+## way (panic, intimidation) overrides the walk as usual.
+func leave_map(exit_pos: Vector3) -> bool:
+	if not Net.is_authority() or _npc == null or not _npc.alive or _is_loud():
+		return false
+	if not (mode == Mode.IDLE or mode == Mode.WANDER) or _npc.alert_state != Enums.AlertState.CALM:
+		return false
+	mode = Mode.LEAVE
+	anim_hint = &"walk"
+	_leave_target = exit_pos
+	_reset_walk_stall()
+	if _motor != null:
+		_motor.go_to(exit_pos, Tweak.stealth().civilian_walk_speed)
+	return true
+
+
+func _tick_leave(delta: float) -> void:
+	if _motor == null or left_map:
+		return
+	var near: bool = _npc.global_position.distance_to(_leave_target) <= LEAVE_ARRIVE_M
+	if _motor.arrived or near:
+		Log.info(&"ai", "%s left the map" % _npc.name)
+		left_map = true
+		_motor.stop()
+		_npc.queue_free()  # leaves the tree at frame end: HeistNetSync replicates the despawn
+		return
+	if _tick_walk_stall(delta, Tweak.stealth().civilian_walk_speed):
+		_motor.go_to(_leave_target, Tweak.stealth().civilian_walk_speed)
 
 
 # --- Helpers -------------------------------------------------------------------------------

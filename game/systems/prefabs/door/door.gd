@@ -53,6 +53,8 @@ const SINGLE_WIDTH_M: float = 0.9
 const DOUBLE_WIDTH_M: float = 1.8
 const HEIGHT_M: float = 2.1
 const KEYCARD_ITEM: StringName = &"item.keycard"
+## NPC roles a door's `npc_authorized_tags` can authorise (staff civilians carry tags like civ_curator).
+const STAFF_ROLES: Array[StringName] = [&"guard", &"civilian"]
 ## Runtime group of every door (A2-01 path checks).
 const GROUP: StringName = &"door"
 ## PO-6: bodies that stop a swinging leaf (crew, NPCs).
@@ -379,14 +381,14 @@ func passable_for(agent: Node) -> bool:
 	return is_open or can_npc_open(agent)
 
 
-## Whether `agent` may open this door now: unlocked, or locked (not BARRED / VAULT) for a guard
-## whose SpawnPoint tags meet `npc_authorized_tags`. Crew AI only opens unlocked doors.
+## Whether `agent` may open this door now: unlocked, or locked (not BARRED / VAULT) for a guard or a staff
+## civilian whose SpawnPoint tags meet `npc_authorized_tags`. Crew AI only opens unlocked doors.
 func can_npc_open(agent: Node) -> bool:
 	if is_open:
 		return true
 	if push_bar and not is_inside(agent):
 		return false
-	return not locked or _guard_authorised(agent) or _police_breach(agent)
+	return not locked or _staff_authorised(agent) or _police_breach(agent)
 
 
 ## P3 gate: `agent` is loud-phase police and this lock can be breached (not BARRED / VAULT).
@@ -400,12 +402,13 @@ func _police_breach(agent: Node) -> bool:
 	return rt != null and rt.went_loud
 
 
-## Locked door (not BARRED / VAULT): `agent` is a guard whose SpawnPoint tags meet the post tags.
-func _guard_authorised(agent: Node) -> bool:
+## Locked door (not BARRED / VAULT): `agent` is a guard, or staff (a civilian: curator, conservator, night
+## manager; D-103 §3b.6), whose SpawnPoint tags meet the post tags. Patrons carry no staff tag.
+func _staff_authorised(agent: Node) -> bool:
 	if lock == Lock.BARRED or lock == Lock.VAULT or npc_authorized_tags.is_empty():
 		return false
 	var npc: NpcBase = agent as NpcBase
-	if npc == null or npc.role != &"guard":
+	if npc == null or not npc.alive or not STAFF_ROLES.has(npc.role):
 		return false
 	var tags: Variant = npc.spawn_info.get("tags", [])
 	if tags is Array:
@@ -437,7 +440,7 @@ func npc_open(agent: Node) -> bool:
 	var delay: float = tw.npc_door_open_stealth_s if stealth else tw.npc_door_open_loud_s
 	var by: int = NetIds.of(agent)
 	var was_locked: bool = locked
-	if locked and not _guard_authorised(agent):  # P3 gate: a police breach
+	if locked and not _staff_authorised(agent):  # P3 gate: a police breach
 		delay = tw.npc_door_breach_s
 		was_locked = false
 		_npc_open_pending = true
