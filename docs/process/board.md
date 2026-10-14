@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 21:10: **round 200 ON ORIGIN** (handoff): env/c-worlds 33048141 (D-113 blood spray/splatter/pools/drips/bag smear, gore levels, class-shaped gritty muzzle flash + evidence sheets); P cherry-picks b5703ddb 69211232 d9b3e6c4 (vm_light_probe, handoff notes). HELD: B ec36e060 + D SMG re-time; P 035eee7f + D char_arms_fp. Lead: c test_vfx 39, a d113 4, p po4_feel 10, integration p3_loud 10; banned/gdlint clean. docs/handoff/in_progress.md written.
 - 2026-10-15 08:25: **round 199 ON ORIGIN**: env/a-core 4f11fb91 (BloodFx emits real EventBus.blood_hit/bleed_changed; DeployableSystem runtime skill gate via DeployableGate.required_flag). Lead: a d113 4, qb56_61 14, deploy 9, l2_ 54, s6_ 12, po8 10; b deploy 5; integration p3_loud 10; banned/gdlint clean.
 - 2026-10-15 08:15: **round 198 ON ORIGIN**: env/p-play 29ce4101 (PFingerClip finger-skin vs gun probe + test_p_finger_clip (report-only until D is green); test_p_grip_offset; hold_capture render-loop fix). Lead: p grip_offset 2, finger_clip 3, po4_feel 10, p1_01 12, p1_03 5. Open: FP weapon unlit (P), support-grip rework (D, nudged 20:17), B branch held behind D SMG re-time.
 - 2026-10-15 08:05: **round 197 ON ORIGIN**: env/c-worlds 67d38666 (levelcheck honours meta lc_ignore on render/prop/fixture scans, never collision; test). Lead: c validate* 108/108; validate SL + GH PASS.
