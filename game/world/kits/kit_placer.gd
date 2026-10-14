@@ -494,15 +494,19 @@ static func _try_seat(st: _State, asset: String, near: int) -> bool:
 		var hl: Transform3D = h["local"]
 		var hb: AABB = PropCatalog.aabb(StringName(String(h["asset"])))
 		var around: bool = StringName(String(h["kind"])) in SEAT_KINDS_AROUND
-		var sides: Array[int] = [0]                   # 0 front (-Z), 1 back (+Z), 2 left (-X), 3 right (+X)
+		# 0 front (-Z, the user's knee hole), 1 back (+Z), 2 left (-X), 3 right (+X). Visitor chairs
+		# (seat_side "back") sit across a desk facing its user, never at its ends (PO-9: two visitors at
+		# the two ends face each other); around a table any side is a place setting.
+		var sides: Array[int] = [0]
 		if side_pref == "back":
-			sides = [1, 2, 3]
+			sides = [1, 2, 3] if around else [1]
 		elif around:
 			sides = [0, 1, 2, 3]
 		var side: int = sides[st.rng.randi_range(0, sides.size() - 1)]
 		var along: float = (hb.size.x if side < 2 else hb.size.z) * 0.5 - 0.3
 		if not around:
-			along = minf(along, 0.15)
+			# the desk chair stays at the knee hole; visitors spread along the far side
+			along = minf(along, 0.3 if side_pref == "back" else 0.15)
 		var off: float = st.rng.randf_range(-maxf(along, 0.0), maxf(along, 0.0))
 		var push: float = st.rng.randf_range(0.06, 0.18 + 0.012 * float(t))
 		var depth: float = -bb.position.z            # chair front half-depth from its pivot
