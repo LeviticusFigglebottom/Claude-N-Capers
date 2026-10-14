@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 07:15: **round 84 ON ORIGIN**: env/c-worlds f5eb9b42 (ND AreawayLadderLink + GH FireEscapeLadderLink moved to nav layer 'ladder'; layer-1 agents no longer path over them). ND/GH maps + validate_level + a3_10/ladder green. Unblocks gate 2 (ND loud attempt 5). Open (C): GH/ND generators are NOT deterministic (dressing order/navmesh drift between regens) → violates level_standards §6b; C lane to fix.
 - 2026-10-14 07:05: **round 83 ON ORIGIN**: env/b-content a08dbc44 (PO-B-C2 MenuFlow handles host_lost → lobby + message; C3 joining focus; C4 join/leave HUD toasts; coop_capture harness) + LEAD log.gd (PO-B-C5: peer id only from a connected peer). PO-B-C1 already fixed r80. b coop_host_lost/hud_queue/lobby/ui_hud/menu, a3_07, coop green.
 - 2026-10-14 06:50: **round 82 ON ORIGIN**: env/a-core (HeistRuntime creates a VfxDirector on host + replicas, cleared on teardown; ShotFx.surface_of delegates to ImpactFx). Gunplay FX now end-to-end in heists (shot_fx emitted on every peer since r72). a po8/d105/a1_01/a3_07, c vfx 20, P1 slice green. Next: P windowed in-heist FX check.
 - 2026-10-14 06:35: **round 81 ON ORIGIN**: env/p-play b7026a82 (D-107 stamina/jump per PD2; QB-60 jump test rewritten under carve-out, A to review). p d107 5/5, a qb56_61 13/13, a1_02 8/8, b ui_hud 17/17 green.
