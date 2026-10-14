@@ -1,6 +1,6 @@
-## Roster wiring (lead round 186, Marten): every playable heister has both a third-person body
-## (CrewTweak.body_scenes) and first-person sleeves (FpViewmodelTweak.sleeve_scenes), and a teammate playing
-## each one spawns that body, animated. Owner: ENV P.
+## Roster wiring (lead round 186, Marten): every playable heister (B's roster, Heisters.ids()) has both a
+## third-person body (CrewTweak.body_scenes) and first-person sleeves (FpViewmodelTweak.sleeve_scenes), and a
+## teammate playing Marten spawns her body, animated. Owner: ENV P.
 extends TestCase
 
 var _rt: HeistRuntime = null
@@ -23,6 +23,8 @@ func test_bodies_and_sleeves_match() -> void:
 	var bodies: Dictionary[StringName, PackedScene] = Tweak.crew().body_scenes
 	var sleeves: Dictionary[StringName, PackedScene] = FpViewmodelTweak.data().sleeve_scenes
 	assert_true(bodies.has(&"marten") and sleeves.has(&"marten"), "Marten wired (body + sleeves)")
+	for h: StringName in Heisters.ids():
+		assert_true(bodies.has(h) and sleeves.has(h), "roster heister %s has a body and sleeves" % h)
 	for h: StringName in bodies:
 		assert_true(sleeves.has(h), "%s has sleeves" % h)
 	for h: StringName in sleeves:

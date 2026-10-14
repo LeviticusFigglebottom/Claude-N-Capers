@@ -3,7 +3,9 @@
 ## (mouse look, WASD, F, G, melee); this script is its driver (note / shot / wait_s, like po5_flow). Plan:
 ## case for a few seconds, mask, then follow the HUD objective markers and use what is usable at each (doors,
 ## keycards, keypads, hack, bags); a guard within 2.5 m who is noticing us gets the knife; a pager within 15 m
-## is answered; it ends at the alarm (went loud), the heist end or --budget heist seconds. A partial run is fine.
+## is answered; D-111 coverage: a civilian within 6 m is shouted down (F tap) and tied (up to 3), and the weapon
+## is swapped every 45 s (draw / holster, the secondary's set); it ends at the alarm (went loud), the heist end or
+## --budget heist seconds. A partial run is fine.
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 960x540 \
 ##     res://tests/p/_review/nd_stealth_pass.tscn -- --obs-out=/abs/dir [--budget=600] [--seed=1002]
 ## Prints "[NDS ...]" lines; the observer (po_observer.gd) logs its flags under --obs-out. Owner: ENV P.
@@ -20,6 +22,9 @@ var _shot: int = 0
 var _ended: bool = false
 var _knifed: int = 0
 var _pagers: int = 0
+var _tied: int = 0
+var _swaps: int = 0
+var _shouted: Dictionary = {}
 
 
 func _ready() -> void:
@@ -97,6 +102,7 @@ func _run() -> void:
 	note("masked")
 	var t0: float = rt.heist_time_s
 	var last_shot: float = -100.0
+	var last_swap: float = rt.heist_time_s
 	while not _ended and not rt.went_loud and rt.heist_time_s - t0 < _budget:
 		if c.crew_state != Enums.CrewState.NORMAL:
 			note("crew state %d: stopping" % c.crew_state)
@@ -104,11 +110,17 @@ func _run() -> void:
 		if rt.heist_time_s - last_shot > 30.0:
 			last_shot = rt.heist_time_s
 			await shot("t%03d" % int(rt.heist_time_s))
-		if await _answer_pager(c) or await _knife_noticer(c):
+		if rt.heist_time_s - last_swap > 45.0:
+			last_swap = rt.heist_time_s
+			await pilot.inp.tap(&"swap_weapon")
+			await wait_s(1.5)
+			_swaps += 1
+		if await _answer_pager(c) or await _knife_noticer(c) or await _intimidate(c):
 			continue
 		await _step()
 	var how: String = "ended" if _ended else ("went loud" if rt.went_loud else "budget")
-	note("RESULT %s at t=%.0f, knifed %d, pagers %d, objectives %s" % [how, rt.heist_time_s, _knifed, _pagers,
+	note("RESULT %s at t=%.0f, knifed %d, pagers %d, tied %d, swaps %d, objectives %s" % [how, rt.heist_time_s,
+		_knifed, _pagers, _tied, _swaps,
 		rt.hud_model.objectives.map(func(o: Dictionary) -> String: return "%s:%d" % [o["id"], o["state"]])])
 	await shot("end")
 	RenderingServer.render_loop_enabled = true
@@ -164,6 +176,41 @@ func _answer_pager(c: CrewController) -> bool:
 			if await pilot.use(comp, 20.0, func() -> bool: return not comp.enabled):
 				_pagers += 1
 			return true
+	return false
+
+
+## D-111: shout a civilian within 6 m (in sight) to the floor and tie them (PD2: F at a civilian, then hold F).
+func _intimidate(c: CrewController) -> bool:
+	if _tied >= 3:
+		return false
+	for n: Node in rt.npcs(&"civilian"):
+		var civ: NpcBase = n as NpcBase
+		var b: CivilianBrain = civ.get_node_or_null(^"Brain") as CivilianBrain if civ != null else null
+		if b == null or b.mode in [CivilianBrain.Mode.TIED, CivilianBrain.Mode.DEAD, CivilianBrain.Mode.LEAVE]:
+			continue
+		if pilot.flat_dist(civ.global_position, c.global_position) > 6.0:
+			continue
+		var head: Vector3 = civ.global_position + Vector3(0, 1.5, 0)
+		if not pilot.has_los(head, civ):
+			continue
+		var id: int = civ.get_instance_id()
+		if int(_shouted.get(id, 0)) >= 4:
+			continue
+		_shouted[id] = int(_shouted.get(id, 0)) + 1
+		if b.mode != CivilianBrain.Mode.DOWN:
+			note("shouting %s (mode %d)" % [civ.name, b.mode])
+			await pilot.face(head, 0.05, 1.0)
+			await pilot.inp.tap(&"shout")
+			await wait_s(1.2)
+		if b.mode == CivilianBrain.Mode.DOWN:
+			for comp: Node in civ.find_children("*", "InteractableComponent", true, false):
+				var ic: InteractableComponent = comp as InteractableComponent
+				if ic.kind == &"tie" and ic.enabled and ic.availability(pilot.crew) == &"":
+					note("tying %s" % civ.name)
+					if await pilot.use(ic, 15.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED):
+						_tied += 1
+					break
+		return true
 	return false
 
 
