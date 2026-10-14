@@ -21,6 +21,10 @@ func _ready() -> void:
 			_out = a.trim_prefix("--out=")
 		elif a.begins_with("--weapons="):
 			_weapons = a.trim_prefix("--weapons=").split(",")
+		elif a.begins_with("--flash_s="):  # debug: hold the burst up
+			FpViewmodelTweak.data().muzzle_flash_s = float(a.trim_prefix("--flash_s="))
+		elif a.begins_with("--flash_size="):  # debug
+			FpViewmodelTweak.data().muzzle_flash_size_m = float(a.trim_prefix("--flash_size="))
 		elif a.begins_with("--frames="):
 			_frames = PackedInt32Array(Array(a.trim_prefix("--frames=").split(",")).map(func(x: String) -> int:
 				return int(x)))
@@ -40,22 +44,25 @@ func _capture(wid: StringName) -> Array:
 	var secondary: bool = def != null and def.slot == Enums.WeaponSlot.SECONDARY
 	if secondary:
 		l.secondary = wid
-		l.secondary_mods = {}
-		l.resolved_secondary = LoadoutResolver.resolve_weapon(wid, {})
+		l.secondary_mods = [] as Array[StringName]
+		l.resolved_secondary = LoadoutResolver.resolve_weapon(wid, l.secondary_mods)
 	else:
 		l.primary = wid
-		l.primary_mods = {}
-		l.resolved_primary = LoadoutResolver.resolve_weapon(wid, {})
+		l.primary_mods = [] as Array[StringName]
+		l.resolved_primary = LoadoutResolver.resolve_weapon(wid, l.primary_mods)
 	var rt: HeistRuntime = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.basic(0, 0), "crew_ai": false, "loadouts": {0: l}})
 	_crew = rt.crew_controller(0) as CrewController
 	_crew.weapons.fired.connect(_stand_in)
 	var inp: PInputDriver = PInputDriver.new(self)
+	print("[FXCAP] %s launched" % wid)
 	await inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)
+	print("[FXCAP] masked %s" % _crew.masked)
 	await inp.tap(&"slot_secondary" if secondary else &"slot_primary")
 	for _i: int in 150:
 		await get_tree().physics_frame
 	var shots: Array[Image] = []
+	print("[FXCAP] firing")
 	inp.press(&"fire")
 	await get_tree().physics_frame
 	await get_tree().physics_frame
@@ -64,6 +71,23 @@ func _capture(wid: StringName) -> Array:
 	var want: int = 0
 	while want < _frames.size():
 		await get_tree().process_frame
+		if f == 0:
+			var vmd: FpViewmodel = FpViewmodel.of(CrewView.of(_crew).camera())
+			var fl: Node3D = vmd.fx.get_node_or_null(^"MuzzleFlash") as Node3D if vmd != null else null
+			if fl != null:
+				var cam: Camera3D = CrewView.of(_crew).camera()
+				print("[FXCAP] flash vis=%s local=%s scale=%s layers=%s" % [fl.visible,
+					cam.global_transform.affine_inverse() * fl.global_position, fl.scale,
+					(fl.get_child(0) as VisualInstance3D).layers])
+			else:
+				print("[FXCAP] no flash node")
+			for n: Node in _crew.get_parent().get_children():
+				if n.name.begins_with("FpTracer"):
+					var cam2: Camera3D = CrewView.of(_crew).camera()
+					var t3: Node3D = n as Node3D
+					print("[FXCAP] tracer vis=%s local=%s basis_z=%s layers=%d" % [t3.visible,
+						cam2.global_transform.affine_inverse() * t3.global_position, t3.global_basis.z,
+						(t3 as VisualInstance3D).layers])
 		if f == _frames[want]:
 			await RenderingServer.frame_post_draw
 			var img: Image = get_viewport().get_texture().get_image()

@@ -13,6 +13,8 @@ const META: StringName = &"surface"
 ## The hitboxes layer is left out of the bullet layers: characters resolve from the hit zone.
 const HITBOXES_LAYER: int = 1 << 4
 const MAX_PARENTS: int = 3
+## Bullet-only layer for water_surface(): hit by hitscan rays, ignored by movement, sight and nav.
+const WATER_SURFACE_LAYER: int = HITBOXES_LAYER
 
 static var _table: Dictionary = {}
 
@@ -71,6 +73,31 @@ static func for_material(m: Material) -> StringName:
 static func tag(body: Node, surface: StringName) -> void:
 	if body is CollisionObject3D and surface != &"":
 		body.set_meta(META, surface)
+
+
+## Collision-only water surface (box `mn`..`mx`, top face = water level) tagged `water`, so shots into
+## a harbour splash at the surface instead of the bed below. It sits on the hitboxes layer only: that
+## bit is in CombatTweak.hitscan_mask (crew / NPC / shot_fx rays, projectiles) but in no
+## CharacterBody3D mask (crew, NPCs, loot), no LOS / vision mask and not in the navmesh bake
+## (geometry_collision_mask 1), so movement, sight lines, OOB volumes and nav stay as they were.
+## `parent` must sit at the origin (map Site groups do); children are owned by `root`.
+static func water_surface(parent: Node, root: Node, nm: String, mn: Vector3, mx: Vector3) -> StaticBody3D:
+	var sb: StaticBody3D = StaticBody3D.new()
+	sb.name = nm
+	sb.collision_layer = WATER_SURFACE_LAYER
+	sb.collision_mask = 0
+	sb.position = (mn + mx) * 0.5
+	tag(sb, &"water")
+	parent.add_child(sb)
+	sb.owner = root
+	var col: CollisionShape3D = CollisionShape3D.new()
+	col.name = "Collision"
+	var shape: BoxShape3D = BoxShape3D.new()
+	shape.size = mx - mn
+	col.shape = shape
+	sb.add_child(col)
+	col.owner = root
+	return sb
 
 
 ## Explicit tag on `body` (or a parent CollisionObject3D within MAX_PARENTS), mirroring the lookup.

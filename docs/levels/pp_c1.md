@@ -142,3 +142,69 @@ driven. Next harness fix: aim at the door leaf before the interact hold.
 | dockside_burn | STUCK-DOOR | `Gameplay/Doors/PKRoller` | at (9.1, 0.0, 20.1), nearest door `PKPlant` 2.1 m: stalled before corner (9.0, 0.200001, 17.0) (no progress after interact (0.0 m of 3.1 m)) |
 | dockside_burn | STUCK-DOOR | `Gameplay/Doors/ChamberANorth` | at (7.8, 0.0, 32.7), nearest door `PKRoller` 0.7 m: stalled before corner (12.0, 0.200001, 33.0) (no progress after interact (0.0 m of 4.2 m)) |
 | dockside_burn | STUCK-DOOR | `Gameplay/Doors/HallRoller3` | at (24.2, 0.0, 9.3), nearest door `ChamberANorth` 0.7 m: stalled before corner (24.2, 0.200001, 11.0) (no progress after interact (0.0 m of 1.7 m)) |
+
+
+## Harness fix + rerun 2026-10-14 (trunk 8e02b62c, ENV P driver res://tests/p/p_input_driver.gd)
+ENV A confirmed the earlier door rows were harness bugs, not map bugs. The walker now acts like a player:
+- **Closed door on the path:** it aims at the door's handle (mouse-look yaw + pitch), masks up first with a G hold
+  when the door's interaction is blocked while casing (LOCKPICK), then holds F for the door's own time (lockpick
+  8 s), and walks on. A door a walk cannot open (VAULT / CODE / ELECTRONIC / BARRED, KEYCARD without a card) is a
+  `LOCKED-*` row, not `STUCK-*`. When that door is the leg's own target, the leg counts as ok and logs an
+  `AT-LOCKED-DOOR` row.
+- **Ladder on the path:** it masks up, steps onto the ladder's end, faces the ladder and holds forward.
+- **0 m legs:** consecutive duplicate path points are removed, and a leg already within reach of its use point
+  (for example right after the setup teleport) is dropped and counted, not walked.
+- **New setup shortcuts:** security cameras are removed and the assault director is stopped. A masked walker
+  that does not dodge cameras raised the alarm, and police then downed it. In the old run the same thing
+  happened on Night Deposit and on loud-only Dockside Burn, so `ui.blocked.state` rows were really the walker
+  lying downed.
+
+Run: `godot --headless --path game res://tests/framework/runner.tscn -- --dir=c --filter=test_pp_c1_walks.gd:test_`
+(7 tests, 0 failed, about 22 min wall).
+
+| heist | corners: ok / walked (stuck, locked, 0 m dropped) before -> after | doors: before -> after |
+|---|---|---|
+| glasshouse | 4/14 (10 stuck) -> 12/13 (1 stuck, 0, 1) | 1/14 (13) -> 7/13 (6 stuck, 0, 1) |
+| night_deposit | 5/14 (9 stuck) -> 11/13 (1 stuck, 1 locked, 1) | 3/14 (11) -> 7/14 (6 stuck, 1 locked, 0) |
+| dockside_burn | 2/14 (12 stuck) -> 13/14 (1 stuck, 0, 0) | 2/14 (12) -> 12/14 (2 stuck, 0, 0) |
+| Glasshouse SalonDoor crossings | 6/6 in all four modes (unchanged) | |
+
+No row now comes from a LOCKPICK or unlocked door that the walker failed to open. The remaining rows:
+- **Glasshouse PhoneAdmin (both modes), real map issue:** the walker climbs FireEscapeLadder and then stops on the
+  landing at (3.1, 4.2, -0.6), short of the break-room window (WindowLink (2.25, 4.2, -0.8) -> (2.25, 4.2, 0.9),
+  variant `ow_breakroom_open`). `Geometry/Building/Glazing/BreakRoomWindowBlocker` (build_greybox `_glass_blocker`,
+  a 1 x 1.2 m static box on layer 1 at sill (2.25, 5.1, 0)) sits in the opening on top of the openable Window
+  prefab, so the fire-escape route is closed even when the window is open. The walker does not open windows yet
+  either.
+- **Night Deposit VaultGate (LOCKED):** VaultGate is behind VaultDoor (VAULT), which a walk cannot open (it needs
+  the drill). This is heist progression, not a snag.
+- **Other `no closed door or ladder in the way` rows:** stalls with 0.0 m of progress and no door or ladder within
+  reach. Most are in the D-085 door-centre mode, where the corners-mode run of the same leg passes. Only
+  night_deposit Box3 (8.3, -4.0, 7.1) and dockside_burn PKPlant (6.4, 0.0, 7.5) also stall in corners mode. These
+  need a look in the editor; the rows below give the position, the corner and the nearest door.
+- **`handle not aimed` rows (Glasshouse JanitorDoor 1.7 m, Dockside E1Corridor 1.9 m):** the stall is about 2 m
+  from a door's handle. The aim check did not land on that handle (not investigated further). These are door-centre mode only.
+
+| heist | kind | target | detail |
+|---|---|---|---|
+| glasshouse | STUCK-AI | `Gameplay/Misc/PhoneAdmin` | at (3.1, 4.2, -0.6), nearest door `BackDoor` 4.3 m: stalled before corner (2.25, 4.4, 0.9) (no progress (1.9 m of 2.4 m): no closed door or ladder in the way) |
+| night_deposit | STUCK-AI | `Gameplay/Vault/Box3` | at (8.3, -4.0, 7.1), nearest door `InspectionWestDoor` 0.5 m: stalled before corner (11.93208, -3.8, 12.77736) (no progress (0.0 m of 6.7 m): no closed door or ladder in the way) |
+| night_deposit | AT-LOCKED-DOOR | `Gameplay/Doors/VaultDoor` | at (14.0, -4.0, 10.4), nearest door `VaultDoor` 0.4 m: door `VaultDoor` (VAULT, locked) not usable: ui.blocked.state |
+| night_deposit | LOCKED-AI | `Gameplay/Doors/VaultGate` | at (14.0, -4.0, 10.4), nearest door `VaultDoor` 0.4 m: stalled before corner (13.99526, -3.8, 9.504766) (no progress (0.0 m of 0.9 m): door `VaultDoor` (VAULT, locked) not usable: ui.blocked.state) |
+| dockside_burn | STUCK-AI | `Gameplay/Doors/PKPlant` | at (6.4, 0.0, 7.5), nearest door `PLCorridor` 2.5 m: stalled before corner (5.900009, 0.200001, 9.400002) (no progress (0.0 m of 2.0 m): no closed door or ladder in the way) |
+| glasshouse | STUCK-DOOR | `Gameplay/Misc/PhoneAdmin` | at (3.1, 4.2, -0.6), nearest door `BackDoor` 4.3 m: stalled before corner (2.25, 4.4, 0.9) (no progress (1.9 m of 2.4 m): no closed door or ladder in the way) |
+| glasshouse | STUCK-DOOR | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | at (12.2, 4.2, 4.0), nearest door `WCUpperDoor` 0.9 m: stalled before corner (14.9, 4.4, 4.800001) (no progress (0.0 m of 2.8 m): no closed door or ladder in the way) |
+| glasshouse | STUCK-DOOR | `Gameplay/DisplayCases/IslandCaseB` | at (7.2, 0.0, 4.1), nearest door `WorkshopDoor` 0.5 m: stalled before corner (4.973558, 0.2, 5.26839) (no progress (0.0 m of 2.5 m): no closed door or ladder in the way) |
+| glasshouse | STUCK-DOOR | `Gameplay/Doors/StockDoor` | at (16.5, 0.0, 4.0), nearest door `LobbyDoor` 0.7 m: stalled before corner (15.3, 0.2, 3.5) (no progress (2.9 m of 2.6 m): door `JanitorDoor` (NONE, unlocked) handle not aimed (1.7 m from the eye)) |
+| glasshouse | STUCK-DOOR | `Gameplay/Doors/UpperLobbyDoor` | at (13.5, 4.2, 6.5), nearest door `StockDoor` 0.7 m: stalled before corner (14.9, 4.4, 5.2525) (no progress (0.0 m of 1.9 m): no closed door or ladder in the way) |
+| glasshouse | STUCK-DOOR | `Gameplay/Doors/LobbyDoor` | at (16.5, 4.2, 4.0), nearest door `UpperLobbyDoor` 0.7 m: stalled before corner (15.5, 4.4, 4.6) (no progress (0.0 m of 1.1 m): no closed door or ladder in the way) |
+| night_deposit | STUCK-DOOR | `Gameplay/Vault/Box3` | at (6.5, 0.0, 5.5), nearest door `LoadingDoor` 0.7 m: stalled before corner (7.5, 0.2, 6.299999) (no progress (0.0 m of 1.2 m): no closed door or ladder in the way) |
+| night_deposit | AT-LOCKED-DOOR | `Gameplay/Doors/VaultDoor` | at (14.0, -4.0, 10.4), nearest door `VaultDoor` 0.4 m: door `VaultDoor` (VAULT, locked) not usable: ui.blocked.state |
+| night_deposit | LOCKED-DOOR | `Gameplay/Doors/VaultGate` | at (14.0, -4.0, 10.4), nearest door `VaultDoor` 0.4 m: stalled before corner (14.0, -3.8, 9.0) (no progress (0.1 m of 1.4 m): door `VaultDoor` (VAULT, locked) not usable: ui.blocked.state) |
+| night_deposit | STUCK-DOOR | `Gameplay/Doors/ElectricalDoor` | at (10.9, -4.0, 5.5), nearest door `LockerRoomDoor` 1.2 m: stalled before corner (9.800003, -3.8, 6.5) (no progress (0.0 m of 1.5 m): no closed door or ladder in the way) |
+| night_deposit | STUCK-DOOR | `Gameplay/Doors/FireExit` | at (23.8, 0.0, 5.6), nearest door `StorageDoor` 0.5 m: stalled before corner (25.0, 0.2, 6.75) (no progress (0.0 m of 1.7 m): no closed door or ladder in the way) |
+| night_deposit | STUCK-DOOR | `Gameplay/Atms/AtmCash2` | at (21.5, 0.0, 14.8), nearest door `ManagerHallDoor` 1.0 m: stalled before corner (20.46046, 0.2, 16.5) (no progress (0.0 m of 1.9 m): no closed door or ladder in the way) |
+| night_deposit | STUCK-DOOR | `Gameplay/Misc/AlarmSecurity` | at (21.5, 0.0, 12.5), nearest door `ManagerHallDoor` 1.6 m: stalled before corner (20.1, 0.2, 11.8) (no progress (0.0 m of 1.5 m): no closed door or ladder in the way) |
+| night_deposit | STUCK-DOOR | `Gameplay/Doors/SallyPersonnelDoor` | at (5.4, 0.0, 0.6), nearest door `SallyPersonnelDoor` 0.8 m: stalled before corner (6.0, 0.2, -1.0) (no progress (0.0 m of 1.7 m): no closed door or ladder in the way) |
+| dockside_burn | STUCK-DOOR | `Gameplay/Misc/GoodsLift` | at (14.5, 0.0, 5.1), nearest door `E1Corridor` 2.1 m: stalled before corner (16.5, 0.200001, 5.0) (no progress (2.5 m of 4.5 m): door `E1Corridor` (NONE, unlocked) handle not aimed (1.9 m from the eye)) |
+| dockside_burn | STUCK-DOOR | `Gameplay/Doors/WSCorridor` | at (15.5, 0.0, 5.5), nearest door `E1Corridor` 1.1 m: stalled before corner (14.0, 0.200001, 7.0) (no progress (0.0 m of 2.1 m): no closed door or ladder in the way) |

@@ -27,6 +27,8 @@ var profile: PlayerProfile
 var weapon_id: StringName = &""
 ## ModType (int) -> picked mod id (&"" = stock / none) for the previewed weapon.
 var picks: Dictionary = {}
+## D-106: stat rows include the player's skills and perk deck (SkillBoost); false = base weapon values.
+var with_skills: bool = true
 
 
 func _init(p: PlayerProfile) -> void:
@@ -205,14 +207,31 @@ func _baseline_stats() -> WeaponStats:
 	return LoadoutResolver.resolve_weapon(weapon_id, [] as Array[StringName])
 
 
-## {"shown": StatCalculator.display(preview), "delta": StatCalculator.delta(baseline, preview)}; {} when
-## nothing is previewed.
+## {"shown": StatCalculator.display(preview), "delta": StatCalculator.delta(baseline, preview),
+## "boosted": [display keys the skills change]}; {} when nothing is previewed. With `with_skills` both
+## preview and baseline carry the skills (deltas compare like with like); "boosted" is empty without.
 func stat_rows() -> Dictionary:
 	var p: WeaponStats = _preview_stats()
 	var b: WeaponStats = _baseline_stats()
 	if p == null or b == null:
 		return {}
-	return {"shown": StatCalculator.display(p), "delta": StatCalculator.delta(b, p)}
+	var boosted: Array[String] = []
+	if with_skills:
+		var mods: Dictionary = LoadoutResolver.resolve_modifiers(profile.loadout)
+		var pb: WeaponStats = SkillBoost.apply(p, weapon(), mods)
+		boosted = SkillBoost.boosted_keys(StatCalculator.display(p), StatCalculator.display(pb))
+		p = pb
+		b = SkillBoost.apply(b, ContentDB.weapon(_baseline_id()), mods)
+	return {"shown": StatCalculator.display(p), "delta": StatCalculator.delta(b, p), "boosted": boosted}
+
+
+## The weapon the baseline stats belong to (the equipped one of this slot, else this weapon).
+func _baseline_id() -> StringName:
+	var w: WeaponDef = weapon()
+	if w == null:
+		return &""
+	var cur: StringName = profile.loadout.primary if w.slot == Enums.WeaponSlot.PRIMARY else profile.loadout.secondary
+	return cur if cur != &"" else weapon_id
 
 
 ## {"concealment", "detection_risk"} of the preview loadout and {"current_concealment",

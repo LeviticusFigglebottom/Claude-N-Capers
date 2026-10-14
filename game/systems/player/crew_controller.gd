@@ -339,7 +339,10 @@ func use_cable_tie() -> bool:
 
 
 func set_carried_bag(bag: Node) -> void:
+	var picked: bool = bag != null and carried_bag == null
 	carried_bag = bag
+	if picked and weapons != null:  # D-102 (PD2 PlayerCarry:_enter): the pickup re-draws the weapon, fire waits
+		weapons.equip(weapons.equipped_slot, true)
 	carried_bag_changed.emit(bag)
 
 
