@@ -169,3 +169,21 @@ func _peak(c: CrewController) -> Vector3:
 			best = c.fp_states.cam_rot
 	await wait_seconds(0.5)
 	return best
+
+
+## PD2: the downed player still holds the secondary on screen; in custody (spectating) no viewmodel is drawn.
+func test_custody_hides_the_viewmodel_downed_keeps_it() -> void:
+	var c: CrewController = _crew()
+	await wait_seconds(1.0)
+	var view: CrewView = CrewView.of(c)
+	assert_true(view.viewmodel_visible(), "masked: the weapon is on screen")
+	c.health.go_down()
+	await wait_seconds(0.5)
+	assert_true(view.viewmodel_visible(), "downed: the secondary stays on screen")
+	c.health.go_to_custody()
+	await wait_frames(3)
+	assert_eq(c.crew_state, Enums.CrewState.CUSTODY)
+	assert_false(view.viewmodel_visible(), "custody: no first-person weapon")
+	c.health.release_from_custody()
+	await wait_seconds(0.5)
+	assert_true(view.viewmodel_visible(), "released: the weapon is back")

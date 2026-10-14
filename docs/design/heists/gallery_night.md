@@ -653,7 +653,7 @@ Worked for `cam_a`:
    → into SV, door closed → **hack 60 s** (+1 interruption from `argus_upgrade`), silent, off camera.
    Time the keypad and the exit to the upper rover's loop (c) (CS → UG3 side). No ECM used.
 4. BE → UG3 (C10 off in `cam_a`) → TR door. **ECM #1** (C11): swipe `kc_security` (3 s) → 1.5 m to
-   the grid → wait for the sweep gap (≤ 6 s) → cross (2 s) → cut the Lantern Bearer (4 s) → cross back
+   the grid → hug the side wall and wait for the paired-beam gap (~1.4 s at the wall, ~0.7 s mid-room; P r165) → cross → cut the Lantern Bearer (4 s) → cross back
    in the next gap → out (≈ 18–20 s in all; the jam is 20 s). The Lantern Bearer is LIGHT: carry it
    through BE.
 5. BW → UG1: C9 (SE corner, looking NW) is live; the `orchard_calloway` slot is on the W wall behind a
@@ -836,7 +836,7 @@ Hazardous (`sensor_net`, `laser_pattern`, `patrons`, `escape_eta_s`).
 | `guard_post` | `rover_ground`, `rover_upper`, `rover_basement`, `dock_smoker`, `rover_none` (encodes counts as Night Deposit) | Routine/Tense pick 1 (`rover_none` 1 vs 1 each: P(none) = 0.2); Hazardous pick 2; Brutal 3; Lethal+ 4 (`difficulty_add`) | **Which floor and which entry has a walker**: the smoker shuts the Mews; the basement rover makes the grate and the vault slow. |
 | `security_room_staffed` | `sec_staffed`, `sec_empty` | Routine 0.6/0.4; Hazardous 0.65/0.35; Brutal+ 0.75/0.25 | Live cameras or not; SC's cabinet and log are free when empty. |
 | `camera` | `cam_a`, `cam_b`, `cam_c` (table in Sightlines) | 1, 1, 1 | Which corridor and which entry needs ECM or timing. |
-| `laser_pattern` (TR grid) | `lz_static` (3 beams 1.30/1.90/2.50 m, evenly spaced by the prefab: crouch under the 1.30 m beam, Build rulings B4), `lz_sweep` (3 vertical, 6 s, ~2.4 m apart, full room width), `lz_timed` (4 beams, off 4 s of 16 s, full width) (G1, lead r165) | Routine 0.5/0.2/0.3; Brutal+ 0.2/0.4/0.4 | Crouch, time the sweep or wait, in C11's cone. |
+| `laser_pattern` (TR grid) | `lz_static` (3 beams 1.30/1.90/2.50 m, evenly spaced by the prefab: crouch under the 1.30 m beam, Build rulings B4), `lz_sweep` (3 vertical, 6 s, ~2.4 m apart, full room width; beams pair up at the side walls, ~1.4 s gap, ~0.7 s mid-room: timing kept, lead r165 option a, Mercer hint by B), `lz_timed` (4 beams, off 4 s of 16 s, full width) (G1, lead r165) | Routine 0.5/0.2/0.3; Brutal+ 0.2/0.4/0.4 | Crouch, time the sweep or wait, in C11's cone. |
 | `curator_route` (`civilian_cluster`) | `curator_hall`, `curator_office` | 0.5, 0.5 | **Where the keycard walks:** in the public hall among guests (tie her and every patron sees) or upstairs near CO/SV (quiet tie, near the upper rover). |
 | `court_doors` (`locked_door`) | `court_doors_open` (on the latch until last call), `court_doors_locked` | 0.5, 0.5 | **A free way from the court into WG** while the court is public. |
 | `areaway` (`vent_open`) | `grate_loose`, `grate_padlocked` (`padlock`: lockpick 8 s or saw) | 0.5, 0.5 | The cost of the basement route (in C8's cone in `cam_b`/`cam_c`). |
@@ -1154,7 +1154,7 @@ KEYCARD; the server CODE; the art store VAULT. Staff that must pass a locked doo
 | GS shop door (from VE) | LOCKPICK 8 s | Closed for the gala. |
 | Staff door under the stair (19, 8), GH ↔ BC | LOCKPICK 8 s | `npc_authorized_tags` [`guard`, `staff`]. The route-1 "held open" walk-through is gone (QC-56 dropped). |
 | WG art-handling double door (5–6, 8), WG ↔ BC | LOCKPICK 8 s | Staff authorised. |
-| LD personnel door (Mews) | LOCKPICK 8 s outside, `push_bar` inside | Police ENTRY. ≥ 1.0 m, step-free to the Mews (§7.3). |
+| LD personnel door (Mews) | LOCKPICK 8 s outside, `push_bar` inside | Police ENTRY. ≥ 1.0 m, step-free to the Mews (§7.3). `npc_authorized_tags` [`guard_mews`, `civ_waitstaff`] (the smoker; the waitstaff leave by it, Circulation). |
 | LD roller door (Mews) | BARRED (crew cannot operate) | Police ENTRY `breach_only` (breach opens it); the S1 lane when open. |
 | LD → EG art door DD (37–38, 12) | KEYCARD (reader on the LD side) | Lockdown: BARRED; `[hack]` done in loud → NONE (plain open). |
 | Roof head-house door (3, 7, roof) | LOCKPICK 8 s from the deck, `push_bar` inside | Police ENTRY `breach_only`. |
@@ -1163,7 +1163,7 @@ KEYCARD; the server CODE; the art store VAULT. Staff that must pass a locked doo
 | Interior BOH, upper: SS, CO, AO, UW, FS, CS (from UC), BW → UC, BE → UC, AT (N and W) | NONE | |
 | UG3 → CS door (36, 12) | LOCKPICK 8 s | Staff authorised (conservator, curator). |
 | SV server door (25, 6) | CODE (`code_group argus`, keypad on the UC side) | Loud: drill 60 s (`[server_door]`). |
-| TR door (39, 24) | KEYCARD (TR reader) | Lockdown: shutter BARRED; `[hack]` done in loud → shutter up **and** door NONE. |
+| TR door (39, 24) | KEYCARD (TR reader) | Lockdown: shutter BARRED; `[hack]` done in loud → shutter up **and** door NONE. Inspectors and couriers (`guard_inspection`, `guard_vaultline`) authorised (they walk to `cp_treasury`). |
 | Calloway arch shutter (12, 12–14) | `industrial_door`, `starts_open`, NONE | Lockdown: BARRED; `[hack]` lifts it. |
 | AS vault door VV (21–22, 8) | VAULT + `keycard_reader` (stealth) | Lockdown: reader dead; `[hack]` done → plain open; thermal drill 240 s as the loud fallback. Couriers (`guard_vaultline`) authorised. |
 | Interior BOH, basement: SS, LK, FR, QR, PL, LF landing doors | NONE | |

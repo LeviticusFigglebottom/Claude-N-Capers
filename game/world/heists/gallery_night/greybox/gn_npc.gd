@@ -4,6 +4,10 @@
 ## Patrol graphs (heist_map.md §4): `halberd` (guards, every floor, linked through Stair SS and the staff door; >= 3
 ## loops through each guard post's start point), `mews` (the dock smoker), `gala` (patrons: tag civilian; cower
 ## points tag cower) and `staff` (curator, attendants, waitstaff, conservator, PA: tag staff + the role tag).
+## Calm exits (QC-51, HeistMission.civilians_leave(exit_tag); G1 step 2d): `ExitPortico` (tags exit, exit_guests) on
+## the portico kerb west of the limo, the guests' way out at last call; `ExitDock` (exit_staff) in the Mews outside the
+## LD personnel door, the waitstaff's at last call + 120 s (Circulation). Neither carries civilian / staff, so nobody
+## wanders to them.
 ## NPC visuals resolve by spawn tag (NpcVisualTweak.tag_characters, ENV A; B1 map) and fall back to the role's.
 extends "res://world/heists/gallery_night/greybox/gn_content.gd"
 
@@ -105,6 +109,7 @@ const GALA: Dictionary = {
 	"CowerGH2": [Vector3(22.0, 0.0, 8.31), Vector2.ZERO, "idle", ["cower"], 180.0],
 	"CowerWG": [Vector3(11.69, 0.0, 18.5), Vector2.ZERO, "idle", ["cower"], 90.0],
 	"CowerEG": [Vector3(32.31, 0.0, 22.0), Vector2.ZERO, "idle", ["cower"], -90.0],
+	"ExitPortico": [Vector3(18.0, 0.0, 34.5), Vector2.ZERO, "idle", ["exit", "exit_guests"], 180.0],
 }
 const GALA_EDGES: Array = [
 	["GalaHallW", "GalaHallE"], ["GalaHallE", "GalaHallSE"], ["GalaHallSE", "GalaHallSW"], ["GalaHallSW", "GalaHallW"],
@@ -112,6 +117,7 @@ const GALA_EDGES: Array = [
 	["GalaEB", "GalaEB2"], ["GalaEB2", "GalaEG"], ["GalaHallSE", "GalaVE"], ["GalaVE", "GalaHallSW"], ["GalaWG2", "GalaCourt1"],
 	["GalaCourt1", "GalaCourt2"], ["GalaCourt2", "GalaVE"], ["CowerGH1", "GalaHallW"], ["CowerGH1", "CowerGH2"],
 	["CowerGH2", "GalaHallE"], ["CowerWG", "GalaWG"], ["CowerWG", "GalaHallW"], ["CowerEG", "GalaEG"], ["CowerEG", "GalaHallE"],
+	["GalaVE", "ExitPortico"],
 ]
 const STAFF: Dictionary = {
 	"StaffBar": [Vector3(13.7, 0.0, 18.6), Vector2(10, 30), "browse", ["staff", "staff_bar"], -90.0],
@@ -130,12 +136,14 @@ const STAFF: Dictionary = {
 	"StaffAT": [Vector3(34.8, 5.4, 29.2), Vector2(15, 30), "browse", ["staff", "staff_attendant"], null],
 	"CowerAT": [Vector3(35.69, 5.4, 29.0), Vector2.ZERO, "idle", ["cower"], 90.0],
 	"StaffAO": [Vector3(12.0, 5.4, 3.5), Vector2(15, 30), "desk_work", ["staff", "staff_admin"], null],
+	"ExitDock": [Vector3(41.5, 0.0, -3.0), Vector2.ZERO, "idle", ["exit_staff"], 0.0],
 }
 const STAFF_EDGES: Array = [
 	["StaffBar", "StaffTable"], ["StaffTable", "StaffWG"], ["StaffWG", "StaffBar"], ["StaffTable", "StaffEG"],
 	["StaffWG", "StaffBC"], ["StaffBC", "StaffBR"], ["StaffBR", "CowerBR"], ["CowerBR", "StaffBC"], ["StaffBC", "StaffSSG"],
 	["StaffSSG", "StaffSSU"], ["StaffSSU", "StaffUC"], ["StaffUC", "StaffCO"], ["StaffUC", "StaffUG1"], ["StaffUC", "StaffCS"],
 	["StaffUC", "StaffAT"], ["StaffAT", "CowerAT"], ["StaffUC", "StaffAO"], ["StaffCO", "StaffUG1"],
+	["StaffBC", "ExitDock"],
 ]
 ## Fixed spawns (roster): [name, kind, position, yaw, tags, idle, graph].
 const FIXED_SPAWNS: Array = [

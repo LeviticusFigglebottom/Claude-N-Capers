@@ -14,6 +14,14 @@ extends "res://world/heists/gallery_night/greybox/gn_builder_base.gd"
 
 ## Argus code group for the SV keypad and the code notes (B2).
 const CODE_GROUP: StringName = &"argus"
+## Spawn tags a locked door's `npc_authorized_tags` lists (Door._staff_authorised matches SpawnPoint tags; G1 step 2d):
+## "@guards" in a DOORS `npc` list expands to every Halberd guard post, "@staff" to every staff civilian (B2: the
+## curator, attendants, waitstaff, conservator, PA; patrons carry none of these). The rare-event inspectors and
+## Vaultline couriers walk to the centrepiece slot, so they also pass the TR door (cp_treasury); the LD personnel door
+## (push_bar) lets the dock smoker and the waitstaff (Circulation: they leave by it at last call + 120 s) out.
+const GUARD_TAGS: Array = ["guard_hall", "guard_rover_ground", "guard_rover_upper", "guard_rover_basement",
+	"guard_inspection", "guard_vaultline"]
+const STAFF_TAGS: Array = ["civ_curator", "civ_attendant", "civ_waitstaff", "civ_conservator", "civ_admin"]
 ## B2: boundary doors into BOH are LOCKPICK 8 s.
 const LOCKPICK_S: float = 8.0
 ## Door kit (tools/blender/greybox/_kit.py DOORS): opening width per kind; every opening head is 2.2 m.
@@ -53,9 +61,10 @@ const DOORS: Array = [
 	["LiftLandingDoorGS", "G", "x", 6.0, 28.6, "double", "NONE", "S", {}],
 	["LiftLandingDoorGE", "G", "z", 32.0, 1.5, "double", "NONE", "E", {}],
 	["DockCorridorDoor", "G", "z", 32.0, 6.1, "service", "NONE", "E", {}],
-	["ArtHandlingDoor", "G", "x", 8.0, 4.6, "double", "LOCKPICK", "S", {"npc": ["guard", "staff"]}],
-	["StaffDoor", "G", "x", 8.0, 18.5, "service", "LOCKPICK", "S", {"npc": ["guard", "staff"]}],
-	["DockPersonnelDoor", "G", "x", 0.0, 40.5, "single", "LOCKPICK", "S", {"push_bar": true, "leaf": "metal"}],
+	["ArtHandlingDoor", "G", "x", 8.0, 4.6, "double", "LOCKPICK", "S", {"npc": ["@guards", "@staff"]}],
+	["StaffDoor", "G", "x", 8.0, 18.5, "service", "LOCKPICK", "S", {"npc": ["@guards", "@staff"]}],
+	["DockPersonnelDoor", "G", "x", 0.0, 40.5, "single", "LOCKPICK", "S",
+		{"push_bar": true, "leaf": "metal", "npc": ["guard_mews", "civ_waitstaff"]}],
 	["ArtDoorEG", "G", "x", 12.0, 37.0, "double", "KEYCARD", "N", {}],
 	["CourtDoors", "G", "z", 0.0, 11.6, "double", "", "W", {"slot": "court_doors", "leaf": "glass"}],
 	["BronzeDoorsW", "G", "x", 30.0, 18.5, "double", "NONE", "N",
@@ -74,9 +83,10 @@ const DOORS: Array = [
 	["StudioDoor", "U", "z", 32.0, 6.5, "service", "NONE", "W", {}],
 	["BalconyDoorW", "U", "x", 8.0, 12.5, "single", "NONE", "N", {}],
 	["BalconyDoorE", "U", "x", 8.0, 29.5, "single", "NONE", "N", {}],
-	["StudioGalleryDoor", "U", "x", 12.0, 35.5, "single", "LOCKPICK", "S", {"npc": ["civ_conservator", "civ_curator"]}],
+	["StudioGalleryDoor", "U", "x", 12.0, 35.5, "single", "LOCKPICK", "S",
+		{"npc": ["@guards", "civ_conservator", "civ_curator"]}],
 	["AttendantDoorN", "U", "x", 24.0, 32.5, "service", "NONE", "N", {}],
-	["TreasuryDoor", "U", "x", 24.0, 38.5, "service", "KEYCARD", "N", {}],
+	["TreasuryDoor", "U", "x", 24.0, 38.5, "service", "KEYCARD", "N", {"npc": ["guard_inspection", "guard_vaultline"]}],
 	["AttendantDoorW", "U", "z", 32.0, 27.5, "service", "NONE", "W", {}],
 	["HeadHouseDoor", "R", "z", 3.0, 6.5, "service", "LOCKPICK", "W", {"push_bar": true, "leaf": "metal"}],
 ]
@@ -113,7 +123,7 @@ const SLOT_TODO: Dictionary = {
 	"canvas_orchard": "loot_spawn loot.painting_salt_orchard, objective_tag canvas_orchard",
 	"canvas_widow": "loot_spawn loot.painting_widow_in_blue, objective_tag canvas_widow",
 	"canvas_saint": "loot_spawn loot.painting_tidewater_saint, objective_tag canvas_saint",
-	"sensor_net": "logic slot: params alarm_group / alarmed slot list for the mission (QC-54)",
+	"sensor_net": "logic slot: params alarm_groups_live / alarm_groups_off for the mission (QC-54)",
 	"conservator": "CIVILIAN SpawnPoint civ_conservator (cons_late) / empty (cons_gone)",
 	"keycard": "keycard_pickup objective_tag keycard (kc_curator: NPC-carried, QC-52)",
 	"code_note": "code_note code_group argus, objective_tag code_note",
@@ -334,7 +344,7 @@ func door(parent: Node3D, d: Array, nm: String, lock: String) -> Node3D:
 	if extra.has("leaf"):  # D-105: metal / glass leaves on a greybox kit visual (reads as wood)
 		props["leaf_surface"] = StringName(String(extra["leaf"]))
 	if extra.has("npc"):
-		props["npc_authorized_tags"] = _names(extra["npc"])
+		props["npc_authorized_tags"] = _names(_npc_tags(extra["npc"]))
 	if extra.has("code"):
 		props["code_group"] = StringName(String(extra["code"]))
 	if extra.has("tag"):
@@ -345,6 +355,17 @@ func door(parent: Node3D, d: Array, nm: String, lock: String) -> Node3D:
 	if kind == "service":   # `scale`: a 1.0-1.2 m service leaf
 		metas["service"] = true
 	return prefab(parent, "door", nm, pl[0] as Vector3, float(pl[1]), props, null, metas)
+
+
+## A DOORS `npc` list with "@guards" / "@staff" expanded (GUARD_TAGS / STAFF_TAGS), in order, no duplicates.
+static func _npc_tags(src: Array) -> Array:
+	var out: Array = []
+	for t: Variant in src:
+		var add_tags: Array = GUARD_TAGS if t == "@guards" else (STAFF_TAGS if t == "@staff" else [t])
+		for a: Variant in add_tags:
+			if not out.has(a):
+				out.append(a)
+	return out
 
 
 ## D-073: BARRED doorways are baked CLOSED (a projected obstruction fills the opening, +0.15 m into each jamb, 0.3 m

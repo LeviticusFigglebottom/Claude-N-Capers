@@ -3,6 +3,28 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14: skirt fix, FP pistol left hand
+- Skirt (`_npc.skirt`; bank_officer, npc_bank_teller, npc_bank_night_manager): the thigh weighting ramps in by
+  mid-skirt (0.97 at the hem, was 0.85 reached only at the hem), centre mix 0.03, clearance 15 mm. No more thigh
+  poke-through in walk/run/cower_stand (`_review/skirt_fix_windowed.png`). Open, and already there before this fix:
+  in seated poses the back hem shows as a thin band between the knees.
+- FP pistol: the runtime left-hand IK (FpLeftHandIk onto the Kestrel's LeftHandIK) leaves the support fingers
+  sticking out flat beside the slide. With pistol skipped, the clip's grip wraps cleanly
+  (`_review/pistol_ads_d/left_ik_on_vs_off.png`). Asked ENV P to add pistol/revolver to left_hand_ik_skip_sets.
+- Correction: the FP ADS depth change (423c453b) does reach the game (slide 27→22 px); the forearms still fill the
+  frame at the 52° viewmodel FOV.
+
+## 2026-10-14: weapon hold / ADS (PO feedback), skin tone fold
+- TP `aim_pistol` (+ fire/reload_pistol via gun_pose): isosceles at near-full reach, grip 0.60 m out (was 0.47) with the
+  sights just under the eye line (was chin height), torso lean 6/6, head up. Windowed Godot check with weapons at
+  HandR/Socket: `_review/tp_aim_pistol_windowed.png`. aim_rifle unchanged (reads correctly).
+- FP pistol/revolver ADS (423c453b): shoulders raised/forward, ads_dist 0.42, IK 0 mm. Clear in Blender, but in game
+  the ADS frame barely changes (`_review/pistol_ads_d/before_after_ads.png`): something keeps the pistol's depth fixed.
+  Asked ENV P (who owns fp_viewmodel).
+- SKIN_TONE_FIX folded into `_body.SKIN_TONES[4]` (cf84264c). Library materials unchanged; the 13 skin-5 glbs still embed
+  the old placeholder colour until they are next rebuilt (no in-game effect, the import remaps to library materials).
+- Proposed to the lead: seated deaths (`death_seated_slump`, `death_seated_fall`) for the corpse that falls through the desk.
+
 ## 2026-10-14: GN-D1 (Gallery Night cast; D-110 re-activation)
 - Gala ambient clips: `curator_inspect`, `cower_stand`, `cower_seated`, `walk_text`, `smoke`, `desk_work` all exist in
   char_anim_humanoid and are listed in characters.md (v1.7, v1.9, base list). Review sheet

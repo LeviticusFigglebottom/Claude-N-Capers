@@ -107,9 +107,19 @@ func ladder(l: Ladder, and_down: bool = true) -> Dictionary:
 func carry(from: Vector3, to: Vector3, weight: int, timeout_s: float = 120.0) -> Dictionary:
 	var nav: RID = crew.get_world_3d().navigation_map
 	var has_nav: bool = not NavigationServer3D.map_get_regions(nav).is_empty()
-	var a: Vector3 = NavigationServer3D.map_get_closest_point(nav, from) if has_nav else from
-	var b: Vector3 = NavigationServer3D.map_get_closest_point(nav, to) if has_nav else to
-	var path: PackedVector3Array = NavigationServer3D.map_get_path(nav, a, b, true) if has_nav else PackedVector3Array()
+	var a: Vector3 = from
+	var b: Vector3 = to
+	var path: PackedVector3Array = PackedVector3Array()
+	# A freshly launched heist's regions sync a few frames after the map's iteration counter (global across launches)
+	# already moved on: poll for a real path before calling it "no nav path".
+	var waited: float = 0.0
+	while has_nav and path.size() < 2 and waited < 3.0:
+		a = NavigationServer3D.map_get_closest_point(nav, from)
+		b = NavigationServer3D.map_get_closest_point(nav, to)
+		path = NavigationServer3D.map_get_path(nav, a, b, true)
+		if path.size() < 2:
+			await _ticks(6)
+			waited += 0.1
 	if path.size() < 2:
 		if has_nav:
 			return {"ok": false, "time_s": 0.0, "path_m": 0.0, "stalled_at": a, "carrying": false, "why": "no nav path"}

@@ -11,7 +11,7 @@ book_grip: basis x=(0.0000,0.9997,-0.0227) y=(-0.0000,-0.0227,-0.9997) z=(-1.000
 bottle_grip: basis x=(1.0000,-0.0000,0.0000) y=(0.0000,0.9511,-0.3090) z=(0.0000,0.3090,0.9511) origin=(-0.0270,-0.1479,0.0690) relative to HandR/Socket; liquor bottle r 0.04 m, 0.30 m tall (mouth at +Y 0.30): origin at the base centre, +Y = up the axis; the right hand round the body 0.15 m up from its +X side (thumb up); bartender_pour stands it on the bar at frame 0 and from `set_down` on
 bouncer_stance: bouncer_idle: in place, ankles 0.40 m apart, arms crossed high on the chest; slow head turns left (~2-3 s) and right (~5-6 s); watch@222 = mid wristwatch glance (the left forearm up across the chest, 6.6..8.4 s)
 cash_grip: basis x=(0.0000,-0.3090,-0.9511) y=(1.0000,0.0000,-0.0000) z=(0.0000,-0.9511,0.3090) origin=(-0.0105,-0.0038,0.0271) relative to HandL/Socket; banknote stack 0.156 x 0.015 x 0.066 m (+X = the long edge, +Y = the face normal, Z = the short edge): origin at its centre; lying in the LEFT palm (palm on the -Y face, fingers along +X) in teller_count
-check.00: aim_pistol: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.1deg
+check.00: aim_pistol: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
 check.01: aim_rifle: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.1deg
 check.02: bartender_pour: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=10.1deg contact_slide=0.000mm/f
 check.03: bartender_wipe: 180f 6.00s loop speed=0.0 reach_err=0.0mm step=4.1deg contact_slide=0.000mm/f
@@ -40,7 +40,7 @@ check.25: downed_crawl: 60f 2.00s loop speed=0.3 reach_err=0.0mm step=20.6deg pa
 check.26: dozer_walk: 33f 1.10s loop speed=1.6 reach_err=0.0mm step=19.0deg slide=0.000mm/f
 check.27: dozer_walk_heavy: 33f 1.10s loop speed=1.7 reach_err=0.0mm step=22.6deg slide=0.000mm/f
 check.28: drill_place: 45f 1.50s speed=0.0 reach_err=0.0mm step=26.6deg
-check.29: fire_pistol: 9f 0.30s speed=0.0 reach_err=0.0mm step=8.0deg
+check.29: fire_pistol: 9f 0.30s speed=0.0 reach_err=0.0mm step=13.0deg
 check.30: fire_rifle: 6f 0.20s speed=0.0 reach_err=0.0mm step=4.3deg
 check.31: flee: 20f 0.67s loop speed=4.0 reach_err=0.0mm step=23.1deg slide=0.039mm/f
 check.32: hands_up: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=1.4deg
