@@ -299,8 +299,10 @@ func _unstick(attempt: int) -> void:
 func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = Callable(), walk: bool = true) -> bool:
 	var target: Vector3 = comp.global_position
 	var stand: Vector3 = _use_stand(comp)
-	if walk and not await goto(stand, 0.5, 60.0):
+	if walk and not await goto(stand, 0.5, 60.0) and is_instance_valid(comp):
 		d.note("pilot: could not reach %s (%s)" % [comp.get_path(), comp.kind])
+	if not is_instance_valid(comp):
+		return false
 	await face(target)
 	var isys: InteractionSystem = HeistRuntime.of(crew).interaction
 	var aimed: InteractableComponent = isys.aimed_component(crew)
