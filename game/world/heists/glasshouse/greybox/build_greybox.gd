@@ -1245,13 +1245,8 @@ func _variants_doors_windows(variants: Node3D) -> void:
 	_prefab(open, "window", "BreakRoomWindow", wpos, float(bw["yaw"]),
 		{"breakable": true, "openable": true, "visual_scene": kit, "objective_tag": &"breakroom_window"},
 		null, {"kind": "window"})
-	var link: NavigationLink3D = NavigationLink3D.new()
-	link.name = "WindowLink"
-	link.bidirectional = true
-	link.navigation_layers = 1
-	link.start_position = Vector3(wpos.x, L.UPPER, -0.8)
-	link.end_position = Vector3(wpos.x, L.UPPER, 0.9)
-	_add(open, link)
+	# No WindowLink: the sill is 0.9 m and the opening 1.2 m (no mantle), so nobody can walk through;
+	# a layer-1 link sent pathing players/AI to the window and stuck them (freeze gate 3, gh_stealth).
 	var latched: VariantSlot = _slot(ow, "open_window", "ow_breakroom_latched", 0.55)
 	_prefab(latched, "window", "BreakRoomWindow", wpos, float(bw["yaw"]),
 		{"breakable": true, "openable": false, "visual_scene": _dress.scene(String(bw["kit"]).replace("arch_", "prop_")),
