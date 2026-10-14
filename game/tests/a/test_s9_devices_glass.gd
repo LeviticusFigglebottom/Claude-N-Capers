@@ -123,12 +123,11 @@ func test_po12_drill_device_visible_spins_and_jams() -> void:
 	assert_eq(dp.device_state(), DeviceRunner.State.DONE, "done")
 	await wait_frames(2)
 	assert_true(dp.device_node == null, "device removed when done")
-	if (G as Script).get_script_constant_map().has("PROPS_DIR"):
-		var plain: DrillPoint = _drill(Vector3(3, 1, -4), 30.0)
-		await wait_physics_frames(1)
-		plain.runner.place(0, plain.effective_duration())
-		await wait_frames(2)
-		assert_true(plain.device_node != null, "default device from G.PROPS_DIR")
+	var plain: DrillPoint = _drill(Vector3(3, 1, -4), 30.0)
+	await wait_physics_frames(1)
+	plain.runner.place(0, plain.effective_duration())
+	await wait_frames(2)
+	assert_true(plain.device_node != null, "default device from G.PROPS_DIR")
 
 
 func test_s9_3_jams_deterministic_per_seed() -> void:
