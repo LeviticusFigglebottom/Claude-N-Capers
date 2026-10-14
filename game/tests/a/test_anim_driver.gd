@@ -18,6 +18,8 @@ const ONCE: Array[StringName] = [
 	&"kick_charge", &"kick_hit", &"shield_bang", &"heal_ally", &"death_seated_slump", &"death_seated_fall",
 	&"hit_react_back", &"hit_react_left", &"hit_react_right", &"death_side", &"death_front_b", &"death_back_b",
 ]
+## v1.10 starts / stops: only the start/stop test's rig carries them (the other tests read the plain locomotion).
+const START_STOP: Array[StringName] = [&"walk_start", &"walk_stop", &"run_start", &"run_stop"]
 ## HandL/Socket local transform of the test rig (shield grip).
 const HANDL_SOCKET: Transform3D = Transform3D(Basis(Vector3.UP, 0.3), Vector3(-0.25, 1.1, -0.45))
 const HINT_SCRIPT: String = "extends Node\nvar anim_hint: StringName = &\"idle\"\n"
@@ -280,6 +282,41 @@ func test_death_variety() -> void:
 	assert_true(seen.has(&"death_front") and seen.has(&"death_front_b"), "both front deaths appear (%s)" % [seen.keys()])
 
 
+## v1.10 starts / stops: setting off straight ahead plays walk_start / run_start over the locomotion, stopping out of
+## a straight walk / run plays walk_stop / run_stop; sideways moves and libraries without the clips get neither.
+func test_walk_run_start_and_stop() -> void:
+	var npc: NpcBase = _npc()
+	var d: AnimDriver = _drv(npc)
+	var lib: AnimationLibrary = d.player.get_animation_library(AnimDriver.LIBRARY)
+	for n: StringName in START_STOP:
+		var a: Animation = Animation.new()
+		a.length = 0.4
+		lib.add_animation(n, a)
+	d.tick(0.016)
+	assert_eq(d.clip, &"idle", "standing")
+	npc.velocity = Vector3(0, 0, -1.6)
+	d.tick(0.016)
+	assert_eq(d.clip, &"walk_start", "sets off: walk_start")
+	d.tick(0.5)
+	assert_eq(d.clip, &"walk", "then the walk cycle")
+	npc.velocity = Vector3.ZERO
+	d.tick(0.016)
+	assert_eq(d.clip, &"walk_stop", "stops: walk_stop")
+	d.tick(0.5)
+	assert_eq(d.clip, &"idle", "then idle")
+	npc.velocity = Vector3(0, 0, -3.5)
+	d.tick(0.016)
+	assert_eq(d.clip, &"run_start", "sets off running: run_start")
+	d.tick(0.5)
+	npc.velocity = Vector3.ZERO
+	d.tick(0.016)
+	assert_eq(d.clip, &"run_stop", "stops running: run_stop")
+	d.tick(0.5)
+	npc.velocity = Vector3(1.2, 0, 0)
+	d.tick(0.016)
+	assert_eq(d.clip, &"strafe_r", "a sideways move gets no start")
+
+
 ## v1.10 8-way locomotion: the four diagonals at walk and run speed (straight lines keep the 4-way clips).
 func test_eight_way_locomotion() -> void:
 	var npc: NpcBase = _npc()
@@ -400,6 +437,7 @@ func test_assembled_fixture_when_present() -> void:
 		return
 	npc.velocity = Vector3(0, 0, -1.6)
 	d.tick(0.016)
+	d.tick(1.0)  # past walk_start (v1.10)
 	assert_eq(String(d.player.current_animation), "humanoid/walk", "real contract visual plays humanoid/walk")
 
 

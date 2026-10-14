@@ -77,6 +77,8 @@ const HIT_FRONT: StringName = &"hit_react"
 const HIT_BACK: StringName = &"hit_react_back"
 const HIT_LEFT: StringName = &"hit_react_left"
 const HIT_RIGHT: StringName = &"hit_react_right"
+## Starts / stops only for straight-ahead motion (|dir . forward| at least this).
+const START_STOP_DOT: float = 0.7
 ## One-shot hints that are not held as an idle once played (the hint may linger in the brain).
 const ONCE_ONLY_HINTS: Array[StringName] = [&"kick_hit", &"hit_react"]
 ## Clip -> substitute when the library lacks it (then idle).
@@ -142,6 +144,8 @@ var _aim_hold_left: float = 0.0
 var _hit_dir: Vector3 = Vector3.ZERO
 var _death_clip: StringName = &""
 var _last_hit_react_t: float = -100.0
+## Moving (above move_threshold_mps) last tick, for the v1.10 starts / stops.
+var _was_moving: bool = false
 ## The NPC's last clip while alive was a seated one (SEATED_CLIPS): it dies in the chair.
 var _seated: bool = false
 var _last_hint: StringName = &""
@@ -264,6 +268,7 @@ func tick(delta: float) -> void:
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
 	_oneshot_left = maxf(_oneshot_left - delta, 0.0)
+	_update_start_stop(tw)
 	_aim_hold_left = maxf(_aim_hold_left - delta, 0.0)
 	_turning_left = maxf(_turning_left - delta, 0.0)
 	var hint: StringName = _hint()
@@ -606,6 +611,31 @@ func _motion_scale() -> float:
 
 
 # --- Frame update helpers ---------------------------------------------------------------------
+
+## v1.10 starts / stops: setting off straight ahead from a standstill plays walk_start / run_start, stopping out
+## of a straight walk / run plays walk_stop / run_stop (one-shots; never over another one-shot, a pose or a death).
+func _update_start_stop(tw: AnimTweak) -> void:
+	var speed: float = horizontal_speed()
+	var moving: bool = speed > tw.move_threshold_mps
+	var was: bool = _was_moving
+	_was_moving = moving
+	if moving == was or _oneshot_left > 0.0 or (_npc != null and not _npc.alive):
+		return
+	if POSE_CLIPS.has(clip) or (_crew != null and _crew.crouched):
+		return
+	if moving:
+		var fwd: Vector3 = -_body.global_transform.basis.z
+		var dir: Vector3 = Vector3(_vel.x, 0.0, _vel.z).normalized()
+		if dir.dot(fwd) >= START_STOP_DOT and (clip == &"idle" or clip == &"idle_alert" or clip == &""):
+			_play_if_present(&"walk_start" if speed <= tw.walk_run_split_mps else &"run_start", true)
+	elif clip == &"walk" or clip == &"run":
+		_play_if_present(&"walk_stop" if clip == &"walk" else &"run_stop", false)
+
+
+## A one-shot only when the library has exactly that clip (the fallback chain would play idle / walk instead).
+func _play_if_present(p_clip: StringName, while_moving: bool) -> void:
+	if player != null and player.has_animation("%s/%s" % [LIBRARY, p_clip]):
+		play_oneshot(p_clip, -1.0, while_moving)
 
 func _update_velocity(delta: float, tw: AnimTweak) -> void:
 	var pos: Vector3 = _body.global_position if _body.is_inside_tree() else _body.position
