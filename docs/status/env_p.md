@@ -2,6 +2,18 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-14 01:30 ET: Dockside pacing, carry presentation, D-105 FP weapon FX (WIP)
+- Round 69 merged D-102. 33407473 removes bag_can_jump (A dropped its fallback, e2d5cf6f).
+- Lane (c) Dockside pacing: game/tests/p/_review/bag_run_probe.tscn (real input, nav routes, --old compares).
+  36 routes x 2 value sets (seeds 1/1002/2 -> E1/E2/E3): 0 stalls. Heavy x1.5 time, medium x1.75; worst case
+  4 crates -> E3 4.2 min solo (was 3.1). Verdict accepted: no tuning; heist docs fixed by lead.
+- Lane (a) re-scoped from the decompile (PD2 does not holster on carry): f27019c1 -5 deg camera roll while carrying
+  (150 deg/s, Reduce Motion off) + weapon draw on pickup. Asked A for CrewWeapons.re_equip() (fire block).
+- Gallery Night traversal review adopted as next_heist.md §7 (D-104); I own the G1 traversal tests.
+- D-105 WIP: FpViewmodelFx (muzzle burst + smoke, casings incl. pump/lever/bolt timing, FP tracer from the apparent
+  muzzle on EventBus.shot_fx bit1), per-shot viewmodel kick (exact critically damped). test_p_d105_fp_fx 3/3.
+  fx_capture.tscn sheet (stand-in shot_fx until A emits). C told to skip bit1 tracers/muzzle.
+
 ## 2026-10-14 00:30 ET: D-102 bag carry, melee feel
 - 2862fde1: melee-hit camera punch + closed-form landing dip. Pistol ADS closed (matches PD2); left-hand cup PARKED
   (D backlog). PO-3 snag re-run: 0 snags on all 4 heists.
