@@ -3,6 +3,79 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## HANDOFF 2026-10-14
+**Branch head:** code head 4f11fb91 (`[QB-58]` runtime deployable skill gate), plus this handoff commit on top.
+Everything up to 4f11fb91 is on trunk (round 199, 95f6b5bc); env/a-core has no unmerged code.
+
+**Done since last trunk merge (not yet on trunk):** nothing beyond this status file. Last rounds (196/199, all on trunk):
+- 74aa7d36 [PO-12]: the zipline cable is drawn only when both `cable_start` and `cable_end` are set (meta lc_ignore,
+  honoured by C's levelcheck 67d38666). Also FLAG_STRONG = EventBus.SHOT_FX_STRONG.
+- 70208a8b [D-113]: BloodFx emits the real EventBus.blood_hit / bleed_changed (events.md v1.3); the test shim is gone.
+- 4f11fb91 [QB-58]: `DeployableSystem._gate_ok` checks DeployableGate.required_flag at spawn, so a stale save gets
+  no gated unit.
+- Green before push: validate_all PASS on all 5 maps. Unit tests 0 failed: l2_ 51, l2_11 6, a1_08 9, s5_ 27,
+  s6_ 12, po8_shot_fx 10, c_equipment_hooks 2, anim_driver 26, crew_ai 5, gn_ 36, d113 2, qb56_61 14.
+  Integration test_p3_loud 10, 0 failed.
+
+**In progress:**
+- **GN loud e2e (GN-A1, D-103):** ~60%. No code pending. Probe 3 (seed 1792002290, auto_loud, windowed) ran to
+  t≈640 and was stopped for this handoff. From t≈491 the pilot retries
+  `Variants/Group_canvas_orchard/Slot_orchard_calloway/Canvas` (bag_loot), which it cannot path to (13.5 m away,
+  "could not reach", FAILED after 30 s, repeated). The crew stands still at (13.9, 5.4, 14.4) with 8 enemies within
+  15 m.
+  - Next step: in game/tests/a/e2e/po5_flow_auto_loud.gd `_pick`, apply the STALL_SKIP_S skip to bag_loot targets
+    that fail "could not reach" (blacklist the target node for the run, not the objective). Then check whether
+    Slot_orchard_calloway is reachable at all in nav (if not, it is ENV C's: nav/stairs to that gallery).
+  - Log: scratchpad gn_loud_probe3.log, lost with the container. Re-run with
+    `game/tests/a/e2e/run_po5.sh auto_loud 1792002290 900 <out> "Gallery Night"`.
+- **GN stealth e2e:** not started (needs a gn_stealth flow; po5_flow_auto_stealth plus GN objectives).
+
+**Queued next (ordered):**
+1. GN loud probe fix above, then gn_stealth flow (D-103 GN-A1, docs/levels/gallery_night/*).
+2. P's GN finding (c): crew stacking recheck in GN corridors (seed 1792002290). Also P's re-run list: transit
+   single-file ≥1 m, ≥0.6 m personal radius around humans, ND police overlap 0.23 m.
+3. ND loud gate attempt 24 (attempt 23 reached t=710, budget-limited). NOT started, per the handoff order; run only
+   on an otherwise empty box.
+4. Backlog: co-op full-auto "ghost rounds" (P PO-13(e)); escape vehicles (van drive / heli rotors); split
+   HeistRuntime.start() across frames; GH G2 jeweler bench marker shift (po9_dressing_audit.md); Stinger cap /
+   tase cooldown check vs PD2.
+
+**Cross-env dependencies:**
+- I wait on the lead for:
+  - the `&"sensor"` alarm reason in events.md;
+  - GN camera operator spawn tag (B1 wants gallery_guard_b);
+  - whether AS vault doors allow courier NPC authorisation.
+- I wait on ENV D: `prop_saw_device` (DrillPoint uses it for Device.SAW when present).
+- Others wait on me for:
+  - ENV C: nothing open (D-113 done; C uses blood_hit first, flags as the fallback);
+  - ENV B: nothing open (gate done).
+  - ENV C also places SL zipline anchors so the cable clears geometry.
+
+**How to validate your area:**
+- `gdlint <changed files>`; `python3 tools/ci/check_ownership.py a`; `python3 tools/ci/check_banned.py` (no
+  `res://world/` in systems: use G.PROPS_DIR).
+- `tools/ci/run_tests.sh a <filter>` (l2_, a1_08, s5_, s6_, po8_shot_fx, anim_driver, crew_ai, gn_, d113,
+  qb56_61, ...), `tools/ci/run_tests.sh integration test_p3_loud`.
+- Level-affecting changes: `bash tools/levelcheck/validate_all.sh` (5 maps, ~5 min). It rewrites
+  docs/levels/*/validation.md + walkthrough.md, so run `git checkout -- docs/` before committing.
+- Windowed: `game/tests/a/e2e/run_po5.sh <flow> <seed> <budget_s> <out_dir> "<Heist>"` (flows: stealth, auto_loud,
+  ...); run.log in out_dir has TEL lines + pilot decisions; captures are PNGs. Max 2 windowed Godot at once.
+
+**Gotchas:**
+- New `class_name` scripts need `/opt/godot/godot --headless --path game --import` before tests see them.
+- The test framework has no assert_null: use `assert_true(x == null)`.
+- Never `pkill -f` / `pgrep -f` with a pattern that matches your own shell (it kills the tool shell, exit 144).
+  Kill only exact PIDs from `pgrep -x godot` after checking `ps -o args=`.
+- The S3.6 one-shot-unalerted rule kills guards in tests: `set_alert_state(COMBAT)` first when testing damage.
+- llvmpipe windowed runs: 2 s hitches on first scene/material use (assault_director, npc_gunner). TEL
+  worst_frame spikes are not game logic.
+- Leaked ObjectDB / RID warnings at test exit are noise; check the `== N tests, 0 failed` line and SCRIPT ERROR.
+- `CrewWeapons` `stats.wall_pierce` is a bool.
+- EventBus signals must exist before `Net.replicate_event` (lead-owned core/).
+
+**Session id:** session_015kTjrZsUFn7gLqNVwAXdkh (ENV A). Helper lanes running: none. Worktrees: none. Background
+runs: none (GN probe 3 stopped, ND attempt 24 not started).
+
 ## 2026-10-14 15:45 UTC — GN-A1 groundwork APIs (D-103 §6), ND loud gate attempts 9–22
 ### Done (pushed; last 5a67111e)
 - GN-A1 APIs, each with a unit test (test_gn_*):
