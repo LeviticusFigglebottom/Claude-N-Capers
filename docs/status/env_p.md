@@ -7,13 +7,13 @@ Runs: A's PO-5 flows played by input, windowed. GH stealth x2 (one PASS; one obs
 frames, went loud at t=200 when an intimidated, untied civilian pressed the alarm) and ND loud (auto_loud, stuck at the
 vault drill). CPU spikes: spike_probe.tscn, headless (llvmpipe frame times in the windowed runs are not usable).
 Ranked by what a player would hit, with owner and file:line guess.
-1. ND: 1 Hz stutter for the whole stealth phase: hud_model 45-87 ms every ~1.03 s (50-108 ms frames). The `code`
+1. FIXED by A (cae0d9c6, confirmed with spike_probe): ND 1 Hz stutter for the whole stealth phase: hud_model 45-87 ms every ~1.03 s (50-108 ms frames). The `code`
    marker tag never resolves in the code_on_manager variant (world/heists/night_deposit/night_deposit_mission.gd:67,
    :207) and LocalHudModel re-resolves every tag ~1/s through a full-tree find_by_tag
    (systems/hud_model/local_hud_model.gd:567-580, heist_runtime.gd find_by_tag). Also: no marker for the code.
    A (routed by the lead).
-2. ND loud: the vault drill never progresses. The pilot places it ("place_drill -> OK") again and again for 13+ min;
-   the prompt reads "Hold F to interact" + red "Can't do that right now" with no reason. A (ND loud blocker).
+2. RETRACTED: the ND vault drill did finish (objective -> 2 at t=477; the pilot's "waiting N s" is wall time on
+   llvmpipe). Left over, minor: a running drill shows "Hold F to interact" + red "Can't do that right now" (no reason). A/B.
 3. AI teammates stack inside each other: slots 1-3 within 0.1-0.2 m (TEL crew positions), two heads merged on screen
    in the ND antechamber. A (crew AI follow spacing).
 4. First loud frame: 243 ms on ND, 98 ms on GH. assault_director 22-24 ms; ~200 ms outside FrameProf's keys (alarm
