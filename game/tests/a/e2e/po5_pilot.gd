@@ -355,7 +355,13 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 		if foe != null:
 			inp.release(&"interact")
 			await engage(foe, 2.0)
-			inp.press(&"interact")
+			# Re-aim before pressing again: an F press with the crosshair still on the cop is a shout (ND attempts
+			# 15-18: the cop surrendered and the lockpick never progressed).
+			await face(target, 0.03, 1.0)
+			if no_blind_press and not await _aim_on(comp, target):
+				break
+			if isys.aimed_component(crew) == comp:
+				inp.press(&"interact")  # else the re-press below retries (it re-aims first)
 		if comp.kind != &"answer_pager" and _hook_wanted():
 			inp.release(&"interact")
 			if await _run_hook():
@@ -373,9 +379,11 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 			idle_ticks = 0
 			inp.release(&"interact")
 			await inp.ticks(2)
+			await face(target, 0.03, 1.0)
 			if no_blind_press and not await _aim_on(comp, target):
 				break
-			inp.press(&"interact")
+			if isys.aimed_component(crew) == comp:
+				inp.press(&"interact")  # never re-press off target: F with nothing aimed is a shout
 	inp.release(&"interact")
 	if is_instance_valid(comp) and comp.completed.is_connected(cb):
 		comp.completed.disconnect(cb)
@@ -455,6 +463,9 @@ func nearest_enemy(range_m: float) -> NpcBase:
 		var npc: NpcBase = n as NpcBase
 		if npc == null or not npc.is_alive():
 			continue
+		var sur: PoliceSurrender = PoliceSurrender.of(npc)
+		if sur != null and sur.is_surrendered():
+			continue  # hands up / tied: not a threat (shooting or shouting at it wastes the hold)
 		var dd: float = crew.eye_position().distance_to(npc.head_position())
 		if dd < best_d and _aim_point(npc) != Vector3.INF:
 			best = npc
