@@ -39,6 +39,8 @@ func _run() -> void:
 		_watchdog.call_deferred()
 	if not await enter_heist():
 		return
+	var outcome: Array[int] = [-1]  # heist_ended success: -1 not ended, 0 failed, 1 succeeded
+	EventBus.heist_ended.connect(func(r: Dictionary) -> void: outcome[0] = 1 if bool(r.get("success", false)) else 0)
 	match runner_flow:
 		"dump":
 			dump_map()
@@ -50,6 +52,9 @@ func _run() -> void:
 				return _fail("unknown flow %s" % runner_flow)
 			var sc: Object = script.new()
 			var code: int = await sc.call(&"play", self)
+			if code == 0 and outcome[0] == 0:  # ND attempt 11: a custody wipe ended the heist and still read PASS
+				note("FAIL the heist ended in failure (success=false)")
+				code = 1
 			await shot("end")
 			_finish(code)
 			return
