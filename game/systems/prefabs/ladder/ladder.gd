@@ -10,6 +10,12 @@
 ## After a climb the crew member must release interact / forward before grabbing again.
 ## Runs from a HeistRuntime crew tick handler (after the crew's own movement each tick), so it needs
 ## no CrewController state. P2 limitation: remote humans (client-predicted movement) are not moved.
+## Navigation (A3-10): the ladder builds its own bidirectional NavigationLink3D child `NavLink` from
+## the Bottom grab point to the Top grab point (the marker positions a climber stands at: Bottom is off
+## the climb face on -Z on the floor, Top is on the landing), on navigation layer NAV_LAYER only. Every
+## default agent / path query (NPCs, police, CrewAiBrain bots, civilians) uses layer 1 (`walkable`), so
+## they never route over a ladder they cannot climb; a climber's query uses `1 | Ladder.NAV_LAYER`.
+## The link is enabled while `usable`.
 class_name Ladder
 extends GameplayPrefab
 
@@ -20,13 +26,26 @@ const PLACEHOLDER_HEIGHT_M: float = 3.0
 const META_CLIMBING: StringName = &"climbing_ladder"
 ## Max height difference to a marker for a grab (m).
 const GRAB_HEIGHT_M: float = 0.6
+## Navigation layer bitmask value of ladder links: layer 4 (project name "ladder"; layer 2 is "npc_only").
+## queries on layer 1 never use them; a climber (unburdened masked human crew) queries
+## `1 | Ladder.NAV_LAYER`. NavigationLink3D ends connect to navmesh polygons within the map's
+## link_connection_radius (Godot default 1.0 m), and the grab markers stand on the floor / landing.
+const NAV_LAYER: int = 8
+const NAV_LINK_NAME: String = "NavLink"
 
 @export var height_m: float = 3.0
+## False: nobody can climb and the NavLink is disabled.
+@export var usable: bool = true:
+	set(v):
+		usable = v
+		if _nav_link != null:
+			_nav_link.enabled = v
 
 ## slot -> { "path": PackedVector3Array, "length": float, "d": float (m travelled), "up": bool }
 var _climbs: Dictionary[int, Dictionary] = {}
 ## slot -> true until interact / forward is released after a climb.
 var _latch: Dictionary[int, bool] = {}
+var _nav_link: NavigationLink3D = null
 
 
 func _placeholder_scene() -> PackedScene:
@@ -45,9 +64,32 @@ func _prefab_ready() -> void:
 		var top: Node3D = visual_node("Top") as Node3D
 		if top != null:
 			top.position.y = height_m
+	_setup_nav_link()
 	var rt: HeistRuntime = HeistRuntime.of(self)
 	if rt != null:
 		rt.add_crew_tick_handler(_on_crew_tick)
+
+
+## The ladder's NavigationLink3D (layer NAV_LAYER), or null before ready.
+func nav_link() -> NavigationLink3D:
+	return _nav_link
+
+
+## Link ends at the grab points (ladder-local): Bottom on the floor at the foot (-Z side), Top on the
+## landing. Both are where `_near` lets a climber grab, so an agent arriving at an end can climb.
+func _setup_nav_link() -> void:
+	_nav_link = NavigationLink3D.new()
+	_nav_link.name = NAV_LINK_NAME
+	_nav_link.bidirectional = true
+	_nav_link.navigation_layers = NAV_LAYER
+	_nav_link.start_position = _local_of(bottom_position())
+	_nav_link.end_position = _local_of(top_position())
+	_nav_link.enabled = usable
+	add_child(_nav_link)
+
+
+func _local_of(world: Vector3) -> Vector3:
+	return to_local(world) if is_inside_tree() else world - position
 
 
 func is_climbing(slot: int) -> bool:
@@ -91,6 +133,8 @@ func start_climb(crew: CrewController, up: bool) -> bool:
 
 
 func _can_climb(crew: CrewController) -> bool:
+	if not usable:
+		return false
 	if crew.crew_state != Enums.CrewState.NORMAL or crew.is_casing():  # S1.1
 		return false
 	if crew.is_carrying_bag():  # S10.1b (QC-17): no ladders with a bag; throw it or use a lift/zipline
