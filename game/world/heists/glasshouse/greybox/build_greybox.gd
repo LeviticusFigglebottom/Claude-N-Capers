@@ -425,8 +425,8 @@ func _railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3) -> void:
 
 
 ## U-stair: two straight flights (each its own `stairs` node, steps along local Z, solid stepped
-## collision) and the half landing (plain geometry). Each step box reaches SEAM under its higher
-## neighbour so no downward ray can slip through a seam between two boxes.
+## collision under an invisible ramp through the nosings, PO-5) and the half landing (plain geometry).
+## Each step box reaches SEAM under its higher neighbour so no downward ray slips through a seam.
 func _build_stair(bld: Node3D) -> void:
 	var st: Dictionary = L.STAIR
 	var rise: float = float(st["riser"])
@@ -453,6 +453,10 @@ func _build_stair(bld: Node3D) -> void:
 	# z [z_land + (k - 13) * tread, z_land + (k - 12) * tread] at height k * rise; over the janitor
 	# closet (z >= g9_z) the steps stop at the closet ceiling.
 	_art.acc.flush(up, _root, {}, ["StairUp"])
+	# Ramp: from one tread out over the corridor floor (y 0) to the landing nosing (validator convention (b)).
+	var z_low: float = z_land + float(n - 1) * tread
+	A.ramp(up, _root, float(ux[0]), float(ux[1]), [[Vector2(z_low + tread, 0.0), Vector2(z_land, rise * n), Vector2(z_land, 0.0)]],
+		up.get_child(0).get_meta(&"surface", &"tile"))
 	var ret: Node3D = _add(core, _node3d("FlightReturn")) as Node3D
 	_vis_group = "StairReturn"
 	ret.set_meta(&"kind", "stairs")
@@ -471,6 +475,11 @@ func _build_stair(bld: Node3D) -> void:
 			_box(ret, "Step%02dA" % k2, Vector3(float(rx[0]), 0.0, za), Vector3(float(rx[1]), top, g9_z), "stair")
 			_box(ret, "Step%02dB" % k2, Vector3(float(rx[0]), g9_top, g9_z), Vector3(float(rx[1]), top, zb), "stair")
 	_art.acc.flush(ret, _root, {}, ["StairReturn"])
+	# Ramp: one tread back over the half landing to the upper-floor nosing, 0.3 m thick (its underside
+	# stays above the janitor closet's ceiling top g9_top over z >= g9_z).
+	var y0: float = rise * n
+	A.ramp(ret, _root, float(rx[0]), float(rx[1]), [[Vector2(z_land - tread, y0), Vector2(z_low, y0 * 2.0),
+		Vector2(z_low, y0 * 2.0 - 0.3), Vector2(z_land - tread, y0 - 0.3)]], ret.get_child(0).get_meta(&"surface", &"tile"))
 	_vis_group = "Interior"
 	_stair_rails(core, rise, tread, z_land, n)
 
@@ -1415,7 +1424,7 @@ func _prune_islands(nm: NavigationMesh) -> void:
 			var v: Vector3 = verts[vi]
 			var key: Vector3i = Vector3i(roundi(v.x * 20.0), roundi(v.y * 20.0), roundi(v.z * 20.0))
 			if owner_of.has(key):
-				_union(parent, pi, int(owner_of[key]))
+				A.uf_union(parent, pi, int(owner_of[key]))
 			else:
 				owner_of[key] = pi
 	var keep_roots: Dictionary = {}
@@ -1435,12 +1444,12 @@ func _prune_islands(nm: NavigationMesh) -> void:
 				best_d = d
 				best = pi2
 		if best >= 0:
-			keep_roots[_find(parent, best)] = true
+			keep_roots[A.uf_find(parent, best)] = true
 	var new_verts: PackedVector3Array = PackedVector3Array()
 	var remap: Dictionary = {}
 	var kept: Array[PackedInt32Array] = []
 	for pi3: int in range(polys.size()):
-		if not keep_roots.has(_find(parent, pi3)):
+		if not keep_roots.has(A.uf_find(parent, pi3)):
 			continue
 		var np: PackedInt32Array = PackedInt32Array()
 		for vi3: int in polys[pi3]:
@@ -1454,20 +1463,6 @@ func _prune_islands(nm: NavigationMesh) -> void:
 	for np2: PackedInt32Array in kept:
 		nm.add_polygon(np2)
 	print("glasshouse: navmesh %d -> %d polygons after island pruning" % [polys.size(), kept.size()])
-
-
-static func _find(parent: PackedInt32Array, i: int) -> int:
-	var r: int = i
-	while parent[r] != r:
-		r = parent[r]
-	return r
-
-
-static func _union(parent: PackedInt32Array, a: int, b: int) -> void:
-	var ra: int = _find(parent, a)
-	var rb: int = _find(parent, b)
-	if ra != rb:
-		parent[maxi(ra, rb)] = mini(ra, rb)
 
 
 ## Navmesh (heist_map.md §3: r 0.3, h 1.8, climb 0.3, slope 40, cell 0.1); props + BARRED gates (D-073) obstruct.
