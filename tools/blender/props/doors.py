@@ -40,6 +40,9 @@ VARIANTS = {
                                    "cat": {"prefab": "door", "kind": "door", "service": False}},
     "prop_door_single_steel_t10": {"kind": "single", "finish": "steel", "wall_t": 0.1,
                                    "cat": {"prefab": "door", "kind": "door", "service": False}},
+    # Gallery Night (GN-C2): the art-lift landing gates (steel frame, diagonal lattice, kick plate; double, t20)
+    "prop_door_double_liftgate_t20": {"kind": "double", "finish": "liftgate", "wall_t": 0.2,
+                                      "cat": {"prefab": "door", "kind": "door", "service": False, "surface": "metal"}},
     # the ATM vestibule's interior glass door to the banking hall (casing view, doc §Sightlines)
     "prop_door_single_glass_t20": {"kind": "single", "finish": "glass", "wall_t": 0.2,
                                    "cat": {"prefab": "door", "kind": "door", "service": False}},
@@ -66,7 +69,7 @@ def _frame(k: Kit, hw: float, jamb: float, wall_t: float, finish: str):
     Glasshouse LobbyDoor), and the wall behind them already blocks."""
     fr = k.obj("Frame")
     key = {"walnut": "walnut", "ivory": "paint_ivory", "steel": "metal_dark", "glass": "brass", "grille": "metal_dark",
-           "bronze": "brass"}[finish]
+           "bronze": "brass", "liftgate": "metal_dark"}[finish]
     lin = fr.part(bevel=0.003)
     arch = fr.part(bevel=0.004, segments=2)
     lining = jamb
@@ -142,7 +145,8 @@ def _leaf(k: Kit, name: str, hinge_x: float, sign: float, leaf_w: float, finish:
     lf = k.obj("LeafMesh" + suffix, parent=pivot)
     body = lf.part(bevel=0.003, segments=1)
     trim = lf.part(bevel=0.0015)
-    hw_key = {"walnut": "brass", "ivory": "steel", "steel": "steel", "glass": "brass", "grille": "steel", "bronze": "brass"}[finish]
+    hw_key = {"walnut": "brass", "ivory": "steel", "steel": "steel", "glass": "brass", "grille": "steel", "bronze": "brass",
+              "liftgate": "steel"}[finish]
     if finish == "grille":
         # vault gate: flat-bar frame, vertical round bars, two rails and a lock box at the meeting stile
         stile = 0.06
@@ -161,6 +165,35 @@ def _leaf(k: Kit, name: str, hinge_x: float, sign: float, leaf_w: float, finish:
         trim.bx((hx - 0.03 - 0.06 * (sign > 0), -0.05, 0.9), (hx + 0.03 + 0.06 * (sign < 0), 0.05, 1.12), "metal_dark")
         for z in (0.25, 1.05, 1.85):
             trim.cyl(0.012, 0.12, (lo - 0.004 if sign > 0 else hi + 0.004, 0.0, z), hw_key, segs=10)
+        lf.build()
+        k.empty("Handle" + suffix, (hx, 0.0, 1.0), parent=pivot)
+        return
+    if finish == "liftgate":
+        # art-lift landing gate: steel tube frame, a diagonal lattice of flats, a kick plate, a vision band
+        stile = 0.05
+        body.bx((lo, -0.022, 0.008), (hi, 0.022, 0.3), "steel")
+        body.bx((lo, -0.022, LEAF_H - stile - 0.003), (hi, 0.022, LEAF_H - 0.003), "metal_dark")
+        body.bx((lo, -0.022, 0.008), (lo + stile, 0.022, LEAF_H - 0.003), "metal_dark")
+        body.bx((hi - stile, -0.022, 0.008), (hi, 0.022, LEAF_H - 0.003), "metal_dark")
+        body.bx((lo + stile, -0.018, 1.0), (hi - stile, 0.018, 1.06), "metal_dark")
+        g = lf.part(bevel=0.0)
+        x0, x1 = lo + stile, hi - stile
+        for zb, zt in ((0.3, 1.0), (1.06, LEAF_H - stile - 0.003)):
+            n = 4
+            for i in range(n):
+                xa = x0 + (x1 - x0) * i / n
+                xb = x0 + (x1 - x0) * (i + 1) / n
+                g.rod((xa, -0.006, zb), (xb, -0.006, zt), 0.005, "steel", segs=4, square=True)
+                g.rod((xb, 0.006, zb), (xa, 0.006, zt), 0.005, "steel", segs=4, square=True)
+        hx = hi - 0.07 if sign > 0 else lo + 0.07
+        for side in (1, -1):
+            yf = side * 0.022
+            trim.rod((hx, yf + side * 0.045, 0.85), (hx, yf + side * 0.045, 1.25), 0.012, "steel", segs=10)
+            trim.rod((hx, yf, 0.9), (hx, yf + side * 0.045, 0.9), 0.008, "steel", segs=8)
+            trim.rod((hx, yf, 1.2), (hx, yf + side * 0.045, 1.2), 0.008, "steel", segs=8)
+        hx_h = lo - 0.002 if sign > 0 else hi + 0.002
+        for z in (0.25, 1.05, 1.85):
+            trim.cyl(0.01, 0.1, (hx_h, -0.026, z), "steel", segs=10)
         lf.build()
         k.empty("Handle" + suffix, (hx, 0.0, 1.0), parent=pivot)
         return

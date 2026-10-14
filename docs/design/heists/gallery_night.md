@@ -564,7 +564,7 @@ tie (her keycard, QC-52). Solo means **waiting for last call and avoiding** civi
 | C4 | EG, SE corner (43.6, 23.6) | NW: the room, the LD art door | The EB opening is behind it. |
 | C5 | BC, W end (3.4, 7) | E along BC (to x ≈ 23) | SC and RG doors in view; LF/E1/J beyond 20 m. |
 | C6 | LD, NW corner (32.4, 0.4) | SE: the roller door, the art door, the crates | The BC double door and the lift door are beside it (blind). |
-| C7 | Mews pole (36, −1), 3.2 m | W along the Mews | Ladder foot in view; the Mews mouth (E) is behind it. |
+| C7 | Mews pole (36, −1.15), 3.2 m (GN-C2: clear of the roller door) | W along the Mews | Ladder foot in view; the Mews mouth (E) is behind it. |
 | C8 | Court, WG west wall (−0.4, 9) (QC-65) | S over the court: the French doors, the grate | The gate corner is occluded by the pool kiosk. |
 | C9 | UG1, SE corner (11.6, 17.5) (G1, lead r165: z 17.5 so the UG1 screen hides `orchard_calloway`) | NW over the Calloway hang | The shuttered arch is beside it (blind). |
 | C10 | UG3, NW corner (32.4, 12.4) | SE: the room, the TR and AT doors | The CS door is beside it (blind). |

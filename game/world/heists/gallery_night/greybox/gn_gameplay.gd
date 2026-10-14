@@ -37,6 +37,8 @@ const CORE_DOOR_WALL: Array = ["z", 3.0, 0.3]
 const CORE_FIT: Array = [3.05, 0.4]
 ## Doors (B2 lock table): [name, floor, axis, plan fixed, plan opening a0 (matches L.OPENINGS), kit kind, lock, front,
 ## extra]. extra: c (opening centre when it is not the plan opening's), starts_open, push_bar, leaf (leaf_surface),
+## vis (a catalog visual instead of the greybox kit door; GN-C2 the art-lift landing gates, which open out of LF so
+## their leaves never sweep the car),
 ## npc (npc_authorized_tags), code (code_group), tag (objective_tag), slot (built by that variant group instead).
 ## The wall hole is cut to the kit opening (DOOR_OPENING_W x 2.2) on the door's centre, not the plan's 2.1 m hole.
 ## Public interior openings with no leaf in B2 (CK, PWW, PWM, DC, the arches) stay plain openings.
@@ -47,7 +49,7 @@ const DOORS: Array = [
 	["LockerDoor", "B", "x", 6.0, 5.5, "single", "NONE", "S", {}],
 	["FrameStoreDoor", "B", "x", 6.0, 14.5, "single", "NONE", "S", {}],
 	["QuarantineDoor", "B", "x", 6.0, 23.5, "single", "NONE", "S", {}],
-	["LiftLandingDoorB", "B", "x", 6.0, 28.6, "double", "NONE", "S", {}],
+	["LiftLandingDoorB", "B", "x", 6.0, 28.6, "double", "NONE", "N", {"vis": "prop_door_double_liftgate_t20", "leaf": "metal"}],
 	["PlantDoor", "B", "x", 8.0, 4.5, "single", "NONE", "N", {}],
 	["ArtStoreVaultDoor", "B", "x", 8.0, 20.5, "double", "VAULT", "N",
 		{"leaf": "metal", "npc": ["guard_vaultline"]}],
@@ -58,8 +60,8 @@ const DOORS: Array = [
 	["RegistrarDoor", "G", "x", 6.0, 19.5, "single", "NONE", "S", {}],
 	["JanitorDoor", "G", "x", 6.0, 24.5, "single", "NONE", "S", {}],
 	["ElectricalDoor", "G", "x", 6.0, 26.5, "single", "NONE", "S", {}],
-	["LiftLandingDoorGS", "G", "x", 6.0, 28.6, "double", "NONE", "S", {}],
-	["LiftLandingDoorGE", "G", "z", 32.0, 1.5, "double", "NONE", "E", {}],
+	["LiftLandingDoorGS", "G", "x", 6.0, 28.6, "double", "NONE", "N", {"vis": "prop_door_double_liftgate_t20", "leaf": "metal"}],
+	["LiftLandingDoorGE", "G", "z", 32.0, 1.5, "double", "NONE", "W", {"vis": "prop_door_double_liftgate_t20", "leaf": "metal"}],
 	["DockCorridorDoor", "G", "z", 32.0, 6.1, "service", "NONE", "E", {}],
 	["ArtHandlingDoor", "G", "x", 8.0, 4.6, "double", "LOCKPICK", "S", {"npc": ["@guards", "@staff"]}],
 	["StaffDoor", "G", "x", 8.0, 18.5, "service", "LOCKPICK", "S", {"npc": ["@guards", "@staff"]}],
@@ -78,8 +80,8 @@ const DOORS: Array = [
 	["UpperWCDoor", "U", "x", 6.0, 17.5, "single", "NONE", "S", {}],
 	["FrameStoreUDoor", "U", "x", 6.0, 20.5, "single", "NONE", "S", {}],
 	["ServerDoor", "U", "x", 6.0, 24.5, "service", "CODE", "S", {"code": "argus", "leaf": "metal"}],
-	["LiftLandingDoorUS", "U", "x", 6.0, 28.6, "double", "NONE", "S", {}],
-	["LiftLandingDoorUE", "U", "z", 32.0, 1.5, "double", "NONE", "E", {}],
+	["LiftLandingDoorUS", "U", "x", 6.0, 28.6, "double", "NONE", "N", {"vis": "prop_door_double_liftgate_t20", "leaf": "metal"}],
+	["LiftLandingDoorUE", "U", "z", 32.0, 1.5, "double", "NONE", "W", {"vis": "prop_door_double_liftgate_t20", "leaf": "metal"}],
 	["StudioDoor", "U", "z", 32.0, 6.5, "service", "NONE", "W", {}],
 	["BalconyDoorW", "U", "x", 8.0, 12.5, "single", "NONE", "N", {}],
 	["BalconyDoorE", "U", "x", 8.0, 29.5, "single", "NONE", "N", {}],
@@ -107,9 +109,11 @@ const WINDOWS: Array = [
 const WINDOW_VISUAL: String = "res://assets/props/prop_window_w120_h210/prop_window_w120_h210.glb"
 const WINDOW_W: float = 1.2
 const WINDOW_H: float = 2.1
-## LD roller door (BARRED, crew cannot operate): no kit visual for a 3.6 m roller yet (G1: `industrial_door`); baked
-## closed (D-073) so the Mews reaches LD through the personnel door only. [floor, axis, plan fixed, a0, a1].
+## LD roller door (B2: BARRED, crew cannot operate): a `door` prefab with the GN-C2 roller visual (industrial_door,
+## 3.6 x 4.5, the curtain rolls up when the leaf opens), front N (the Mews), baked closed (D-073, B7) so the Mews
+## reaches LD through the personnel door only. [floor, axis, plan fixed, a0, a1].
 const ROLLER: Array = ["G", "x", 0.0, 34.7, 38.3]
+const ROLLER_VISUAL: String = "prop_door_roller_steel_w360_h450"
 ## B5 objective_tag of each group's placeholder (the active slot's node only; no spoiler markers).
 const SLOT_TAGS: Dictionary = {
 	"centrepiece": "canvas_lantern", "canvas_orchard": "canvas_orchard", "canvas_widow": "canvas_widow",
@@ -290,8 +294,8 @@ static func door_place(d: Array) -> Array:
 
 # --- Gameplay ---------------------------------------------------------------------------------
 
-## Gameplay: doors (B2), gameplay windows, the casing marker, the art-lift landing placeholders (bag_lift: G1 to-do), the
-## LD roller placeholder, then build_devices (gn_content: the always-present prefabs, C11 / C14, ladders...).
+## Gameplay: doors (B2), gameplay windows, the casing marker, the art lift (gn_content), the LD roller door, then
+## build_devices (gn_content: the always-present prefabs, C11 / C14, ladders...).
 func build_gameplay(gp: Node3D) -> void:
 	_build_doors(add(gp, node3d("Doors")) as Node3D)
 	_build_windows(add(gp, node3d("Windows")) as Node3D)
@@ -299,13 +303,18 @@ func build_gameplay(gp: Node3D) -> void:
 		add(gp, node3d(nm))
 	placeholder(n("Gameplay/Markers"), "CasingHall", CASING_HALL,
 		"casing objective marker (B5 casing_hall), the Great Hall stair foot", "casing_hall", 180.0)
-	for f: String in ["B", "G", "U"]:
-		placeholder(n("Gameplay/Lifts"), "ArtLiftLanding" + f, Vector3(30.0, float(L.FFL[f]), 3.0),
-			"bag_lift landing (4 bags, 10 s): car + landing doors (art lift, every floor)")
+	build_lift(n("Gameplay/Lifts"))
 	var rc: float = (float(ROLLER[3]) + float(ROLLER[4])) * 0.5
-	placeholder(n("Gameplay/Doors"), "DockRollerDoor", Vector3(rc, float(L.FFL[String(ROLLER[0])]), float(ROLLER[2])),
-		"LD roller door N: industrial_door BARRED (crew cannot operate; police ENTRY breach_only), baked closed")
+	prefab(n("Gameplay/Doors"), "door", "DockRollerDoor", Vector3(rc, float(L.FFL[String(ROLLER[0])]), float(ROLLER[2])),
+		0.0, {"lock": "enum:BARRED", "swing": "enum:INWARD", "width_m": float(ROLLER[4]) - float(ROLLER[3]),
+			"leaf_surface": &"metal", "visual_scene": _catalog_scene(ROLLER_VISUAL)}, null,
+		{"kind": "industrial_door", "swing_side": "back"})
 	build_devices(gp)
+
+
+## Hook (gn_content): the art lift (bag_lift, landings on every floor).
+func build_lift(_parent: Node3D) -> void:
+	pass
 
 
 ## Hook (gn_content): every always-present gameplay prefab outside the variant slots.
@@ -335,6 +344,8 @@ func door(parent: Node3D, d: Array, nm: String, lock: String) -> Node3D:
 	var t: String = "t40" if float(pl[2]) > 0.3 else "t20"
 	var props: Dictionary = {"lock": "enum:" + lock, "swing": "enum:" + ("DOUBLE" if kind == "double" else "INWARD"),
 		"visual_scene": kit_scene("arch_door_%s_%s" % [kind, t]), "width_m": float(DOOR_LEAF_W[kind])}
+	if extra.has("vis"):
+		props["visual_scene"] = _catalog_scene(String(extra["vis"]))
 	if lock == "LOCKPICK":
 		props["interaction_time_s"] = LOCKPICK_S
 	if bool(extra.get("starts_open", false)):
@@ -370,7 +381,7 @@ static func _npc_tags(src: Array) -> Array:
 
 ## D-073: BARRED doorways are baked CLOSED (a projected obstruction fills the opening, +0.15 m into each jamb, 0.3 m
 ## each side of the door line); the door's NavLink bridges it while passable (validate_level `barred_doors`). The LD
-## roller (BARRED, no prefab yet) is closed the same way. VAULT doors stay open in the bake (the art store has no
+## roller (BARRED door prefab, GN-C2 roller visual) is closed the same way. VAULT doors stay open in the bake (the art store has no
 ## other way in; reachability), as SL's vault-less map never had to decide.
 func _close_barred(_parent: Node3D) -> void:
 	for d: Array in DOORS:

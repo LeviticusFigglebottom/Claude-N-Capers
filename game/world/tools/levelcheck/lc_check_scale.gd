@@ -138,6 +138,10 @@ static func is_industrial_door(d: Node) -> bool:
 
 
 func _check_door(ctx: LcContext, d: Node3D) -> void:
+	# GN-C2: face-mounted shutters and floor hatches are not doorways of the scale table (door_frame_gap measures
+	# how they cover their opening)
+	if LcUtil.meta_s(d, &"kind") in [LcContext.SHUTTER_KIND, &"hatch"]:
+		return
 	var total_w: float = 0.0
 	var leaves: int = 0
 	var vault: bool = is_vault_door(d)
@@ -146,7 +150,10 @@ func _check_door(ctx: LcContext, d: Node3D) -> void:
 		var leaf: Node3D = d.find_child(leaf_name, true, false) as Node3D
 		if leaf == null:
 			continue
+		var rot: Vector3 = leaf.rotation
+		leaf.rotation = Vector3(rot.x, 0.0, rot.z)   # measure closed (an open roll-up shutter's curtain is rolled away)
 		var box: Variant = LcCheckClipping._leaf_box(leaf)
+		leaf.rotation = rot
 		if box == null:
 			warn(ctx, leaf, null, "door leaf without mesh; size not checked")
 			return
