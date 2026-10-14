@@ -85,7 +85,7 @@ D304_CELLS = ["walk_l:0:-58", "walk_l:8:-58", "walk_r:0:-58", "walk_r:8:-58", "w
 PROP_CLIPS = {"phone_call": "phone", "phone_seated": "phone", "mug_idle": "mug", "mug_carry_walk": "mug", "mop": "mop",
               "sit_bed_read": "book", "walk_text": "phone", "bartender_wipe": "rag", "bartender_pour": ("bottle", "glass"),
               "teller_count": "cash"}
-DESK_CLIPS = ("desk_work", "phone_seated", "sit_chair_watch", "desk_type")
+DESK_CLIPS = ("desk_work", "phone_seated", "sit_chair_watch", "desk_type", "death_seated_slump", "death_seated_fall")
 CHAIR_CLIPS = DESK_CLIPS + ("sit_chair", "cower_seated")
 P5_FURNITURE = ("bartender_wipe", "bartender_pour", "teller_count", "curator_inspect", "cower_stand")
 
