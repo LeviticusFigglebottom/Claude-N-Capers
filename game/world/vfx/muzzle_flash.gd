@@ -81,6 +81,7 @@ func _build() -> void:
 	q.size = Vector2.ONE
 	var star_mat: StandardMaterial3D = VfxTextures.additive_material(VfxTextures.flash(), false)
 	star_mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	star_mat.billboard_keep_scale = true  # the star follows _star.scale and the root scale (ENV P FP note)
 	star_mat.albedo_color = FLASH_COLOR
 	star_mat.vertex_color_use_as_albedo = false
 	q.material = star_mat
