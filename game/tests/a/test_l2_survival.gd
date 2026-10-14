@@ -184,6 +184,10 @@ func test_l2_7_revive_by_teammate_via_interaction() -> void:
 	_rt.teleport_crew(1, Transform3D(Basis.IDENTITY, Vector3(1.0, 0.05, 0)))
 	await wait_physics_frames(2)
 	_down(c)
+	var rev: InteractableComponent = c.get_node(^"ReviveInteractable") as InteractableComponent
+	assert_eq(rev.prompt_args.get("name", ""), c.display_name, "ND attempt 13: the revive prompt names the downed crew")
+	assert_false(StringTable.text(rev.prompt_key, rev.prompt_args.merged({"key": "F"})).contains("{name}"),
+		"no raw {name} in \"Hold F to revive ...\"")
 	var revived: Array[int] = []
 	var cb: Callable = func(s: int, by: int) -> void: revived.append(s * 10 + by)
 	EventBus.crew_revived.connect(cb)

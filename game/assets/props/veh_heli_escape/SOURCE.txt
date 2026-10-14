@@ -1,0 +1,8 @@
+asset: veh_heli_escape
+script: tools/blender/props/escape.py
+params: {"cat": {"kind": "heli", "prefab": "escape_zone", "surface": "metal"}, "fn": "heli"}
+seed: 143251881  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset veh_heli_escape
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

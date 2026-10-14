@@ -12,6 +12,11 @@ const HELI_DELAY_S: float = 45.0
 const SECURE_NET_VISUAL: String = "res://world/heists/shadow_ledger/greybox/secure_net_visual.tscn"
 const SECURE_CART_VISUAL: String = "res://world/heists/shadow_ledger/greybox/secure_cart_visual.tscn"
 const SECURE_DROP_MARKER: String = "res://world/heists/shadow_ledger/greybox/secure_drop_marker.tscn"
+## PO-13 escape_zone visuals (tools/blender/props/escape.py): the landed heli, the crew's clip-on rig at the
+## E2 anchor, the service-lift car fit-out.
+const ESCAPE_HELI_VISUAL: String = "res://world/props/escape_zone/veh_heli_escape.tscn"
+const ESCAPE_LINE_VISUAL: String = "res://world/props/escape_zone/prop_escape_zipline_rig.tscn"
+const ESCAPE_LIFT_VISUAL: String = "res://world/props/escape_zone/prop_escape_lift_fitout.tscn"
 
 
 # --- Prefab helpers ---------------------------------------------------------------------------
@@ -589,7 +594,7 @@ func _variants_escape(variants: Node3D) -> void:
 		null, {"kind": "cargo_net"}, false)
 	prefab(e1, "escape_zone", "HeliEscapeE1", Vector3(33.0, L.FRF, 8.0), 0.0,
 		{"objective_tag": &"escape_heli", "escape_type": &"heli", "zone_size_m": Vector3(3.6, 3.0, 6.0),
-			"arrival_delay_s": HELI_DELAY_S})
+			"arrival_delay_s": HELI_DELAY_S, "visual_scene": load(ESCAPE_HELI_VISUAL)})
 	var e2: VariantSlot = _slot(esc, "escape", "esc_line", 0.35, {"label": "E2"})
 	var zl: Node3D = prefab(e2, "zipline", "BagLineE2", Vector3(34.9, L.FRF, 16.5), 90.0,
 		{"objective_tag": &"bag_line"}, Vector3(34.2, L.FRF, 16.5), {"kind": "zipline_anchor"})
@@ -601,7 +606,8 @@ func _variants_escape(variants: Node3D) -> void:
 			"zone_size_m": Vector3(2.0, 2.5, 2.0), "visual_scene": load(SECURE_CART_VISUAL)},
 		null, {"kind": "bag_cart"}, false)
 	prefab(e2, "escape_zone", "LineEscapeE2", Vector3(31.3, L.FRF, 16.6), 0.0,
-		{"objective_tag": &"escape_line", "escape_type": &"zipline", "zone_size_m": Vector3(2.8, 3.0, 2.0)})
+		{"objective_tag": &"escape_line", "escape_type": &"zipline", "zone_size_m": Vector3(2.8, 3.0, 2.0),
+			"visual_scene": load(ESCAPE_LINE_VISUAL)})
 	var e3: VariantSlot = _slot(esc, "escape", "esc_service", 0.25, {"label": "E3"})
 	# The car itself is the drop (no cart visual); ESCAPE covers the car floor.
 	prefab(e3, "secure_zone", "LiftSecureE3", Vector3(22.5, L.F40, 9.0), 0.0,
@@ -609,4 +615,5 @@ func _variants_escape(variants: Node3D) -> void:
 			"zone_size_m": Vector3(2.4, 2.4, 2.4), "visual_scene": load(SECURE_DROP_MARKER)},
 		null, {}, false)
 	prefab(e3, "escape_zone", "LiftEscapeE3", Vector3(22.5, L.F40, 9.0), 0.0,
-		{"objective_tag": &"escape_service", "escape_type": &"lift", "zone_size_m": Vector3(2.6, 2.4, 2.6)})
+		{"objective_tag": &"escape_service", "escape_type": &"lift", "zone_size_m": Vector3(2.6, 2.4, 2.6),
+			"visual_scene": load(ESCAPE_LIFT_VISUAL)})

@@ -9,10 +9,11 @@ extends TestCase
 
 const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night"]
 const SEED: int = 4242
-## Objectives that cover the whole map, so they carry no marker (the HUD shows none while casing anyway).
+## Objectives that cover the whole map, so they carry no marker (casing; GN find_canvases: paintings spread across
+## the building, no single location; PD2 shows no waypoint until one is found).
 ## Known gap (lead board, ENV A): these missions have no marker_tags yet; test_01 skips them until they do.
 const MARKERS_PENDING: Array[StringName] = []
-const AREA_OBJECTIVES: Array[StringName] = [&"casing", &"cartel"]
+const AREA_OBJECTIVES: Array[StringName] = [&"casing", &"cartel", &"find_canvases"]
 
 var _launcher: Script = null
 

@@ -815,3 +815,10 @@ once the player has been downed AND not fired for `CustodyTweak.police_cuff_grac
 `police_cuff_time_s` (1.5 s ◇) hold, interrupted if the player fires or the cop is hurt or staggered; (c) both values
 in CustodyTweak with tests. ENV A implements; blocking freeze gate 2 (ND loud), where an adjacent cop cuffed the
 pilot the same second it went down.
+
+## D-109: briefings show a short objective list (2026-10-14, LEAD; ENV B question)
+PD2 briefings stay short and the product owner's first complaint was UI clutter. HeistDef gains
+`briefing_objectives` (ordered ids: the main stealth path ending in secure / escape; empty = every objective, today's
+behaviour), `briefing_loud_key` (one "If it goes loud: …" line) and `briefing_optional` (listed under an "Optional"
+sub-head). B builds the briefing side and sets Gallery Night's values; existing heists opt in where their lists are
+long (values sent to whoever owns each def).

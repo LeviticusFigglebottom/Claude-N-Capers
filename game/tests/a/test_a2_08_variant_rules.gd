@@ -206,3 +206,51 @@ func test_forward_references_are_logged_and_not_active() -> void:
 	assert_true(force_logged, "force_if forward ref logged")
 	assert_true(slot_logged, "slot_requires forward ref logged")
 	assert_eq(r[&"b"], [&"x1"], "forward refs count as not active: x1 not forced but rolled, x2 ineligible")
+
+
+## GN (C's G1 rehearsal): a rare event's `requires` is honoured: it fires (and pins its slot) only when an
+## earlier-resolved group has a listed slot active; the chance draw is made either way.
+func test_gn_rare_requires_gates_event_and_its_pin() -> void:
+	_make_slots({&"centrepiece": [&"cp_landing", &"cp_store"], &"couriers": [&"vaultline"]})
+	var rare_ev: Dictionary = {"id": &"vaultline_early", "chance": 1.0,
+		"requires": {&"centrepiece": [&"cp_landing"]},
+		"effects": {"force_active": {"group": &"couriers", "slot": &"vaultline"}}}
+	for cp: StringName in [&"cp_landing", &"cp_store"]:
+		var t: HeistVariantTable = _table([
+			{"group": &"centrepiece", "pick": Vector2i(1, 1), "weights_by_difficulty": {
+				Enums.Difficulty.ROUTINE: {String(&"cp_landing" if cp == &"cp_store" else &"cp_store"): 0.0}}},
+			{"group": &"couriers", "pick": Vector2i(0, 0)},
+		], [rare_ev])
+		var r: Dictionary = _roll(t, 7, Enums.Difficulty.ROUTINE)
+		assert_eq(r[&"centrepiece"], [cp], "setup: centrepiece %s" % cp)
+		var fires: bool = cp == &"cp_landing"
+		assert_eq((r[VariantResolver.RARE_KEY] as Array).has(&"vaultline_early"), fires,
+			"vaultline_early fires only with cp_landing (centrepiece %s)" % cp)
+		assert_eq(r[&"couriers"], [&"vaultline"] if fires else [], "its force_active pin follows the condition")
+
+
+## A conditional rare event without force_active is decided after all rules; `excludes` works the same way.
+func test_gn_rare_excludes_and_late_decision() -> void:
+	_make_slots({&"alarm": [&"armed"]})
+	var t: HeistVariantTable = _table([{"group": &"alarm", "pick": Vector2i(1, 1)}], [
+		{"id": &"needs_alarm", "chance": 1.0, "requires": {&"alarm": []}},
+		{"id": &"no_alarm", "chance": 1.0, "excludes": {&"alarm": [&"armed"]}},
+	])
+	var r: Dictionary = _roll(t, 3, Enums.Difficulty.ROUTINE)
+	assert_eq(r[VariantResolver.RARE_KEY], [&"needs_alarm"], "requires holds, excludes blocks")
+
+
+## Adding `requires` to one event never shifts the other events' or rules' draws (same seed, same results).
+func test_gn_rare_requires_keeps_draws() -> void:
+	_make_slots({&"g": [&"a", &"b", &"c", &"d"]})
+	var base: Array[Dictionary] = [{"id": &"e1", "chance": 0.5}, {"id": &"e2", "chance": 0.5}]
+	var gated: Array[Dictionary] = [{"id": &"e1", "chance": 0.5, "requires": {&"g": [&"zz"]}}, {"id": &"e2", "chance": 0.5}]
+	for s: int in range(20):
+		var r1: Dictionary = _roll(_table([{"group": &"g", "pick": Vector2i(1, 3)}], base), 500 + s,
+			Enums.Difficulty.ROUTINE)
+		var r2: Dictionary = _roll(_table([{"group": &"g", "pick": Vector2i(1, 3)}], gated), 500 + s,
+			Enums.Difficulty.ROUTINE)
+		assert_eq(r2[&"g"], r1[&"g"], "same group roll (seed %d)" % s)
+		assert_eq((r2[VariantResolver.RARE_KEY] as Array).has(&"e2"), (r1[VariantResolver.RARE_KEY] as Array).has(&"e2"),
+			"e2 unaffected (seed %d)" % s)
+		assert_false((r2[VariantResolver.RARE_KEY] as Array).has(&"e1"), "e1 never fires (no slot zz)")

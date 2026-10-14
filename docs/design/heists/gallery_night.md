@@ -1231,3 +1231,15 @@ inactive slot). The mission passes them as `data.marker_tags`.
 under their `cam_a/b/c` VariantSlot; C11 and C14 sit outside any slot (live in every layout); screens carry meta
 `kind = "partition_screen"` and a wall on the line does not count; the
 plans and `--check` live in `tools/levelcheck/plans/gallery_night_floors_ascii.py`.
+
+### B7. G1 skeleton choices (lead, round 127)
+- **Bronze doors (VE, x 20–23, z 30):** two double doors with a 0.2 m pier between them (no single kit spans 4 m).
+- **BC → LD door:** a 1.2 m service door (a 2 m double does not fit the 1.8 m corridor).
+- **Stair SS / head-house wall:** 0.4 m thick at x 3.05 where it carries a door (the kit has no 0.3 m frame); the stair-side
+  face is unchanged.
+- **LD roller door:** a placeholder baked closed in the navmesh until a roller-door kit exists (art brief for ENV D); the
+  Mews enters LD by the personnel door only.
+- **Art-store vault door:** left open in the nav bake (closed, AS would be unreachable for the validator).
+- **`saint_maritime`:** z 16 on the UG3 east wall (was 15) so the UG3 partition screen hides it from C10 (`camera_screen`).
+- **Walkthrough whitelist at G1:** Mews → upper floors and roof → the rooms below it (long by plan: one Mews entry at the
+  LD east end, one service stair at the far west).
