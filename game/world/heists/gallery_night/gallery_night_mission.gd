@@ -26,6 +26,8 @@ const TAG_SERVER_DOOR: StringName = &"server_door"
 const TAG_VAULT_DRILL: StringName = &"vault_drill"
 const TAG_STORE_STUDY: StringName = &"store_study"
 const TAG_CURTAIN: StringName = &"landing_curtain"
+## GN-C1 step 2d: the curator_tipsy lanyard on the bar (kc_curator's carried card is the `keycard` one, QC-52).
+const TAG_KEYCARD_BAR: StringName = &"keycard_bar"
 const ITEM_KEYCARD: StringName = &"item.keycard"
 const LOOT_LANTERN: StringName = &"loot.painting_lantern_bearer"
 const LIST_LOOT: Array[StringName] = [&"loot.painting_salt_orchard", &"loot.painting_widow_in_blue",
@@ -81,6 +83,7 @@ func _on_mission_start() -> void:
 	on_event(&"loot_secured", _on_canvas_secured)
 	_apply_scalars()
 	_apply_curator_card()
+	_apply_sensor_net()
 	_set_curtain(false)
 	_watch_canvases()
 	_schedule_last_call()
@@ -112,13 +115,28 @@ func _apply_scalars() -> void:
 	_keep_first(find_tagged(TAG_LOCKERS), int(_scalar(&"consignment_lockers", 8)))
 
 
-## kc_curator is on Sorell's lanyard (QC-52, NPC-carried keycard: TODO(A §3b.6)). The map's bar pickup stands for the
-## curator_tipsy case (her lanyard left on the bar at last call); until last call it is hidden.
+## kc_curator is on Sorell's lanyard (QC-52: the map's `keycard` pickup carries `carrier_tag` civ_curator). The bar
+## pickup (`keycard_bar`, GN-C1 step 2d) stands for the curator_tipsy case (her lanyard left on the bar at last call);
+## until last call it is hidden.
 func _apply_curator_card() -> void:
-	for k: Node in find_tagged(TAG_KEYCARD):
-		if String(k.get_parent().name) == "Slot_kc_curator":
-			_set_enabled(k, false)
-			(k as Node3D).visible = false
+	for k: Node in find_tagged(TAG_KEYCARD_BAR):
+		_set_enabled(k, false)
+		(k as Node3D).visible = false
+
+
+## GN-C1 step 2d (frame sensors, QC-54; A to review): the hung frames are LootSpawn `alarm_on_take` in one AlarmGroups
+## zone each (argus_treasury / argus_upper / argus_ground); the active sensor_net slot's params name the zones this
+## option leaves off, taken offline here. The prefab raises alarm_raised(&"sensor") on a live take.
+func _apply_sensor_net() -> void:
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	var picked: Variant = variant(&"sensor_net")
+	var group: Node = rt.map.get_node_or_null(^"Variants/Group_sensor_net") if rt != null and rt.map != null else null
+	if group == null or not picked is Array:
+		return
+	for vs: Node in group.get_children():
+		if vs is VariantSlot and (picked as Array).has((vs as VariantSlot).slot_id):
+			for g: String in PackedStringArray((vs as VariantSlot).params.get("alarm_groups_off", [])):
+				AlarmGroups.disable(rt, StringName(g))
 
 
 ## find_canvases: an Area3D (FIND_RADIUS_M) per active list canvas; the first crew entry reveals the slot's own tag.
@@ -170,10 +188,11 @@ func _on_last_call() -> void:
 	# court_doors_open relocks LOCKPICK; waitstaff leave by the LD personnel door at +120 s.
 	_set_curtain(true)
 	if _rare(RARE_CURATOR_TIPSY):
-		for k: Node in find_tagged(TAG_KEYCARD):
-			if String(k.get_parent().name) == "Slot_kc_curator":
-				_set_enabled(k, true)
-				(k as Node3D).visible = true
+		# TODO(A §3b.6): free kc_curator's carried card (the lanyard is on the bar now, one card in all).
+		for k: Node in find_tagged(TAG_KEYCARD_BAR):
+			_set_enabled(k, true)
+			(k as Node3D).visible = true
+		update_objective_data(&"keycard", {"marker_tags": [TAG_KEYCARD, TAG_KEYCARD_BAR]})
 	start_timer(&"guests_gone", GUESTS_GONE_S, func() -> void:
 		if not went_loud:
 			say(&"vo.mercer.gallery_night_guests_gone"))
@@ -205,7 +224,7 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 		for tag: StringName in LIST_TAGS:
 			if _is_tagged(interactable_net_id, tag):
 				_complete_once(&"canvases")
-	# TODO(A §3b.6, QC-54): an alarmed slot's canvas cut while the sensor_net is live -> raise_alarm(&"scripted").
+	# QC-54: an alarmed frame's LootSpawn raises alarm_raised(&"sensor") itself (alarm_on_take, map; GN-C1 step 2d).
 
 
 ## The Argus hack: stealth -> the frame sensors go offline (QC-54); loud -> every shutter up, the TR / LD art / AS vault
@@ -213,6 +232,7 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 func _on_device_finished(device_net_id: int) -> void:
 	if _is_tagged(device_net_id, TAG_HACK):
 		_complete_once(&"hack")
+		_sensors_offline(device_net_id)
 		say(&"vo.mercer.gallery_night_sensors_off")
 	elif _is_tagged(device_net_id, TAG_VAULT_DRILL):
 		_complete_once(&"vault_drill")
@@ -290,12 +310,24 @@ func _complete_once(id: StringName) -> void:
 		complete(id)
 
 
-## The cp_landing laser curtain is off during the gala and on from last call (doc §Mission script notes).
-## TODO(A §3b.6, QC-53): replace the process / visibility toggle with LaserGrid.set_enabled.
+## The cp_landing laser curtain is off during the gala (map: enabled_at_start false) and on from last call (doc
+## §Mission script notes; QC-53, GN-C1 step 2d: LaserGrid.set_enabled).
 func _set_curtain(on: bool) -> void:
 	for g: Node in find_tagged(TAG_CURTAIN):
-		g.set_physics_process(on)
-		(g as Node3D).visible = on
+		var grid: LaserGrid = g as LaserGrid
+		if grid != null:
+			grid.set_enabled(on)
+
+
+## GN-C1 step 2d: the Argus hack clears its own `clears_alarm_group` (argus_treasury); the other zones it lists in its
+## meta `alarm_groups` go offline here (A to review; TODO(A §3b.6, QC-55): the loud reconfigure lives with A).
+func _sensors_offline(device_net_id: int) -> void:
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	for n: Node in find_tagged(TAG_HACK):
+		var nid: Variant = n.get(&"net_id")
+		if rt != null and nid != null and int(nid) == device_net_id:
+			for g: String in PackedStringArray(n.get_meta(&"alarm_groups", PackedStringArray())):
+				AlarmGroups.disable(rt, StringName(g))
 
 
 func _keep_first(nodes: Array[Node], count: int) -> void:

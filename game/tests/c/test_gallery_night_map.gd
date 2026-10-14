@@ -189,6 +189,104 @@ func test_mission_fail_reasons_b3() -> void:
 	assert_false(src.contains("end_heist(false"), "the mission never ends the heist as failed")
 
 
+## G1 step 2d (A's GN APIs): kc_curator on Sorell's lanyard (QC-52) + the curator_tipsy bar card.
+func test_curator_keycard_carried() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	var slot: Node = _map.get_node("Variants/Group_keycard/Slot_kc_curator")
+	var carried: KeycardPickup = slot.get_node_or_null("Keycard") as KeycardPickup
+	assert_true(carried != null and carried.carrier_tag == &"civ_curator", "kc_curator carried by civ_curator")
+	assert_eq(carried.objective_tag if carried != null else &"", &"keycard", "the carried card is the keycard marker")
+	var bar: KeycardPickup = slot.get_node_or_null("KeycardBar") as KeycardPickup
+	assert_true(bar != null and bar.carrier_tag == &"" and bar.objective_tag == &"keycard_bar", "curator_tipsy bar card")
+	for sid: String in ["kc_security", "kc_registrar", "kc_conservator"]:
+		var k: KeycardPickup = _map.get_node("Variants/Group_keycard/Slot_%s/Keycard" % sid) as KeycardPickup
+		assert_eq(k.carrier_tag, &"", "%s lies in the map" % sid)
+
+
+## QC-51: civilians_leave(&"exit") walks the guests to the portico; the waitstaff's exit (exit_staff) is the Mews.
+func test_calm_exits() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	var exits: Dictionary = {}
+	for n: Node in _map.get_node("Patrols").find_children("*", "PatrolPoint", true, false):
+		var pp: PatrolPoint = n as PatrolPoint
+		for t: StringName in [&"exit", &"exit_staff"]:
+			if pp.tags.has(t):
+				exits[t] = pp
+		assert_false((pp.tags.has(&"exit") or pp.tags.has(&"exit_staff")) and (pp.tags.has(&"civilian")
+			or pp.tags.has(&"staff")), "%s: an exit is never a wander point" % pp.name)
+	assert_true(exits.has(&"exit") and (exits[&"exit"] as PatrolPoint).position.z > 32.0, "portico exit (exit)")
+	assert_true(exits.has(&"exit_staff") and (exits[&"exit_staff"] as PatrolPoint).position.z < 0.0,
+		"Mews exit outside the LD personnel door (exit_staff)")
+
+
+## QC-54 frame sensors: one AlarmGroups zone per sensor area; each sensor_net slot names the zones it leaves off.
+func test_frame_sensor_groups() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	var want: Dictionary = {
+		"cp_treasury": &"argus_treasury", "cp_landing": &"argus_upper", "orchard_calloway": &"argus_upper",
+		"widow_sallow": &"argus_upper", "saint_maritime": &"argus_upper", "orchard_benefactors": &"argus_ground",
+		"widow_founders": &"argus_ground", "saint_harbour": &"argus_ground", "cp_store": &"", "saint_store": &"",
+		"orchard_quarantine": &"", "widow_conservation": &"",
+	}
+	for vs: Node in _map.get_node("Variants").find_children("*", "VariantSlot", true, false):
+		var sid: String = String((vs as VariantSlot).slot_id)
+		if want.has(sid):
+			var c: LootSpawn = vs.get_node("Canvas") as LootSpawn
+			assert_eq(c.alarm_on_take, want[sid] != &"", "%s alarm_on_take" % sid)
+			assert_eq(c.alarm_group, want[sid], "%s alarm_group" % sid)
+	var off: Dictionary = {"sensors_treasury": PackedStringArray(["argus_upper", "argus_ground"]),
+		"sensors_upper": PackedStringArray(["argus_ground"]), "sensors_all": PackedStringArray()}
+	for sid2: String in off:
+		var sn: VariantSlot = _map.get_node("Variants/Group_sensor_net/Slot_" + sid2) as VariantSlot
+		assert_eq(PackedStringArray(sn.params.get("alarm_groups_off", [])), off[sid2], "%s zones off" % sid2)
+	for st: Node in _map.get_node("Gameplay/Loot").get_children():
+		var ls: LootSpawn = st as LootSpawn
+		if ls != null and ls.objective_tag == &"store_study":
+			assert_false(ls.alarm_on_take, "%s: store frames are bare" % ls.name)
+		elif ls != null and ls.objective_tag == &"study":
+			assert_true(ls.alarm_on_take and ls.alarm_group != &"", "%s: a hung study has a sensor" % ls.name)
+	var hack: HackTerminal = _map.get_node("Gameplay/Devices/ArgusTerminal") as HackTerminal
+	assert_eq(hack.clears_alarm_group, &"argus_treasury", "the hack clears the TR zone")
+	assert_eq(PackedStringArray(hack.get_meta(&"alarm_groups", PackedStringArray())),
+		PackedStringArray(["argus_treasury", "argus_upper", "argus_ground"]), "and lists every zone for the mission")
+
+
+## QC-53: the landing curtain starts off (on at last call); the TR grid is live all night.
+func test_laser_start_states() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	var curtain: LaserGrid = _map.get_node("Variants/Group_centrepiece/Slot_cp_landing/LandingCurtain") as LaserGrid
+	assert_true(curtain != null and not curtain.enabled_at_start, "landing curtain off at start")
+	for g: Node in _map.get_node("Variants/Group_laser_pattern").find_children("*", "LaserGrid", true, false):
+		assert_true((g as LaserGrid).enabled_at_start, "%s live from the start" % g.get_parent().get_parent().name)
+
+
+## B2 / §3b.6: who may open the locked doors (spawn tags; VAULT stays shut for NPCs until A's opt-in).
+func test_staff_door_authorisation() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	var doors: Node = _map.get_node("Gameplay/Doors")
+	for nm: String in ["StaffDoor", "ArtHandlingDoor"]:
+		var tags: Array = doors.get_node(nm).get(&"npc_authorized_tags")
+		for t: StringName in [&"guard_hall", &"guard_rover_ground", &"civ_curator", &"civ_attendant", &"civ_waitstaff",
+				&"civ_conservator"]:
+			assert_has(tags, t, "%s authorises %s" % [nm, t])
+		assert_false(tags.has(&"civ_patron"), "%s: patrons are not staff" % nm)
+	var cs: Array = doors.get_node("StudioGalleryDoor").get(&"npc_authorized_tags")
+	assert_has(cs, &"civ_conservator", "UG3 -> CS: conservator")
+	assert_has(cs, &"civ_curator", "UG3 -> CS: curator")
+	assert_has(doors.get_node("DockPersonnelDoor").get(&"npc_authorized_tags"), &"civ_waitstaff",
+		"the waitstaff leave by the LD personnel door")
+
+
 func _has_tag(root: Node, tag: StringName) -> bool:
 	for n: Node in root.find_children("*", "", true, false):
 		var t: Variant = n.get(&"objective_tag")
