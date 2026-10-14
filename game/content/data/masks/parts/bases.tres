@@ -300,6 +300,52 @@ id = &"mask_base.kraken"
 display_name = "Kraken"
 unlock = &"unlock.achievement.deep_water"
 
+[sub_resource type="Resource" id="Resource_d111_shark"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_shark/mask_base_shark.glb"
+requires_model = true
+id = &"mask_base.shark"
+display_name = "Shark"
+
+[sub_resource type="Resource" id="Resource_d111_pierrot"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_pierrot/mask_base_pierrot.glb"
+requires_model = true
+id = &"mask_base.pierrot"
+display_name = "Pierrot"
+unlock = &"unlock.notoriety.rank_10"
+
+[sub_resource type="Resource" id="Resource_d111_welder"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_welder/mask_base_welder.glb"
+requires_model = true
+id = &"mask_base.welder"
+display_name = "Welder"
+
+[sub_resource type="Resource" id="Resource_d111_wicker"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_wicker/mask_base_wicker.glb"
+requires_model = true
+id = &"mask_base.wicker"
+display_name = "Wicker"
+unlock = &"unlock.notoriety.rank_12"
+
+[sub_resource type="Resource" id="Resource_d111_lucha"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_lucha/mask_base_lucha.glb"
+requires_model = true
+id = &"mask_base.lucha"
+display_name = "Lucha"
+unlock = &"unlock.achievement.main_event"
+
+[sub_resource type="Resource" id="Resource_d111_signal"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_signal/mask_base_signal.glb"
+requires_model = true
+id = &"mask_base.signal"
+display_name = "Signal"
+unlock = &"unlock.achievement.private_viewing"
+
 [resource]
 script = ExtResource("3_7i1nk")
-entries = Array[ExtResource("1_p6irn")]([SubResource("Resource_atdi0"), SubResource("Resource_g7e7x"), SubResource("Resource_kf764"), SubResource("Resource_nl776"), SubResource("Resource_w3ipx"), SubResource("Resource_req_skull"), SubResource("Resource_req_theatre"), SubResource("Resource_req_gasmask"), SubResource("Resource_req_demon"), SubResource("Resource_req_goalie"), SubResource("Resource_d3_ram"), SubResource("Resource_d3_stag"), SubResource("Resource_d3_cat"), SubResource("Resource_d3_boar"), SubResource("Resource_d3_serpent"), SubResource("Resource_d3_moth"), SubResource("Resource_d3_knight"), SubResource("Resource_d3_doll"), SubResource("Resource_d3_sunburst"), SubResource("Resource_d3_geo"), SubResource("Resource_d3_robot"), SubResource("Resource_d3_jester"), SubResource("Resource_d111_lion"), SubResource("Resource_d111_kraken")])
+entries = Array[ExtResource("1_p6irn")]([SubResource("Resource_atdi0"), SubResource("Resource_g7e7x"), SubResource("Resource_kf764"), SubResource("Resource_nl776"), SubResource("Resource_w3ipx"), SubResource("Resource_req_skull"), SubResource("Resource_req_theatre"), SubResource("Resource_req_gasmask"), SubResource("Resource_req_demon"), SubResource("Resource_req_goalie"), SubResource("Resource_d3_ram"), SubResource("Resource_d3_stag"), SubResource("Resource_d3_cat"), SubResource("Resource_d3_boar"), SubResource("Resource_d3_serpent"), SubResource("Resource_d3_moth"), SubResource("Resource_d3_knight"), SubResource("Resource_d3_doll"), SubResource("Resource_d3_sunburst"), SubResource("Resource_d3_geo"), SubResource("Resource_d3_robot"), SubResource("Resource_d3_jester"), SubResource("Resource_d111_lion"), SubResource("Resource_d111_kraken"), SubResource("Resource_d111_shark"), SubResource("Resource_d111_pierrot"), SubResource("Resource_d111_welder"), SubResource("Resource_d111_wicker"), SubResource("Resource_d111_lucha"), SubResource("Resource_d111_signal")])
