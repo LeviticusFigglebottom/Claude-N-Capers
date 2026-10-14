@@ -520,8 +520,9 @@ func _poll_objectives() -> void:
 
 
 ## ui_hud v1.8: markers for ACTIVE objectives with `marker_tags`. Tag lookups walk the map, so they are
-## cached per objective and redone only when the set of active marked objectives changes; positions are
-## read every poll (moving / freed nodes drop out).
+## cached per objective and redone when an active marked objective appears, goes or has its data updated
+## (update_objective_data: new marker_tags, or a node given a matching objective_tag at runtime, QC-60);
+## positions are read every poll (moving / freed nodes drop out).
 func _poll_markers(src: Array[Dictionary]) -> void:
 	if _runtime == null:
 		return  # objectives published before the runtime is bound: resolve on a later poll
@@ -532,7 +533,7 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 		if int(o["state"]) != Enums.ObjectiveState.ACTIVE or not (tags is Array) or (tags as Array).is_empty():
 			continue
 		want[StringName(o["id"])] = tags as Array
-		keys.append("%s:%s" % [o["id"], tags])
+		keys.append("%s:%s" % [o["id"], o.get("args", {})])  # any data update re-resolves (QC-60: runtime tags)
 	var key: String = ",".join(keys)
 	_marker_retry_left -= 1
 	if key != _marker_key or (_marker_unresolved and _marker_retry_left <= 0):
