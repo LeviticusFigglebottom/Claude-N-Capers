@@ -51,12 +51,17 @@ func test_gn_last_call() -> void:
 	assert_true(leaving >= 1, "patrons walk out (%d)" % leaving)
 	for g: Node in m.find_tagged(&"landing_curtain"):
 		assert_true((g as LaserGrid).active, "landing curtain on")
+	var casing: Array = m.objectives().filter(func(o: Dictionary) -> bool: return o.get("id") == &"casing")
+	assert_true(not casing.is_empty() and StringName(casing[0].get("text_key", &"")) == &"objective.gallery_night.casing_last_call",
+		"the casing objective now says the gala is over (%s)" % [casing])
 
 
 func test_gn_lockdown_and_loud_hack() -> void:
 	await _launch()
 	_rt.stealth.raise_alarm(&"test", 0)
 	await wait_physics_frames(3)
+	assert_eq(_rt.mission.objective_state(&"find_canvases"), Enums.ObjectiveState.COMPLETED,
+		"loud: no finding (doc §Objectives Loud)")
 	var art: Door = _door("Gameplay/Doors/ArtDoorEG")
 	assert_true(art != null and art.lock == Door.Lock.BARRED and not art.is_open, "LD art door BARRED")
 	for r: Node in _rt.mission.find_tagged(&"vault_reader"):
