@@ -558,7 +558,7 @@ tie (her keycard, QC-52). Solo means **waiting for last call and avoiding** civi
 
 | Cam | Mount | Looks at | Notes |
 |---|---|---|---|
-| C1 | VE, over the inner glass screen (22, 26.2), 3.2 m | N into GH: the hall floor, the stair foot | Public until last call (watches masked players only). |
+| C1 | VE south wall above the bronze doors, 3.2 m (G1, lead r165: the arch spot is 4 m up and fails `scale`) | N into GH: the hall floor, the stair foot | Public until last call (watches masked players only). |
 | C2 | GH, ceiling under the E balcony soffit (31, 22), 5.1 m | NW: the bar, the staff-door strip, the WG arch | The stair landing is above its cone. |
 | C3 | WG, NE corner (11.6, 8.4) | SW: the room, the French doors | The BC art door beside it is blind. |
 | C4 | EG, SE corner (43.6, 23.6) | NW: the room, the LD art door | The EB opening is behind it. |
@@ -566,7 +566,7 @@ tie (her keycard, QC-52). Solo means **waiting for last call and avoiding** civi
 | C6 | LD, NW corner (32.4, 0.4) | SE: the roller door, the art door, the crates | The BC double door and the lift door are beside it (blind). |
 | C7 | Mews pole (36, −1), 3.2 m | W along the Mews | Ladder foot in view; the Mews mouth (E) is behind it. |
 | C8 | Court, WG west wall (−0.4, 9) (QC-65) | S over the court: the French doors, the grate | The gate corner is occluded by the pool kiosk. |
-| C9 | UG1, SE corner (11.6, 19.6) | NW over the Calloway hang | The shuttered arch is beside it (blind). |
+| C9 | UG1, SE corner (11.6, 17.5) (G1, lead r165: z 17.5 so the UG1 screen hides `orchard_calloway`) | NW over the Calloway hang | The shuttered arch is beside it (blind). |
 | C10 | UG3, NW corner (32.4, 12.4) | SE: the room, the TR and AT doors | The CS door is beside it (blind). |
 | C11 | TR, NE corner (43.6, 24.4), 2.6 m | W/SW: the door, the grid, the painting | **Always live** (`treasury`). |
 | C12 | BB, E end (31.6, 7) | W along BB: the vault door, the lift | The SS door at the W end is 29 m away (outside range). |
@@ -836,7 +836,7 @@ Hazardous (`sensor_net`, `laser_pattern`, `patrons`, `escape_eta_s`).
 | `guard_post` | `rover_ground`, `rover_upper`, `rover_basement`, `dock_smoker`, `rover_none` (encodes counts as Night Deposit) | Routine/Tense pick 1 (`rover_none` 1 vs 1 each: P(none) = 0.2); Hazardous pick 2; Brutal 3; Lethal+ 4 (`difficulty_add`) | **Which floor and which entry has a walker**: the smoker shuts the Mews; the basement rover makes the grate and the vault slow. |
 | `security_room_staffed` | `sec_staffed`, `sec_empty` | Routine 0.6/0.4; Hazardous 0.65/0.35; Brutal+ 0.75/0.25 | Live cameras or not; SC's cabinet and log are free when empty. |
 | `camera` | `cam_a`, `cam_b`, `cam_c` (table in Sightlines) | 1, 1, 1 | Which corridor and which entry needs ECM or timing. |
-| `laser_pattern` (TR grid) | `lz_static` (3 beams 1.30/1.8/2.33 m: crouch under the 1.30 m beam, Build rulings B4), `lz_sweep` (3 vertical, 6 s), `lz_timed` (4 beams, off 4 s of 16 s) | Routine 0.5/0.2/0.3; Brutal+ 0.2/0.4/0.4 | Crouch, time the sweep or wait, in C11's cone. |
+| `laser_pattern` (TR grid) | `lz_static` (3 beams 1.30/1.90/2.50 m, evenly spaced by the prefab: crouch under the 1.30 m beam, Build rulings B4), `lz_sweep` (3 vertical, 6 s, ~2.4 m apart, full room width), `lz_timed` (4 beams, off 4 s of 16 s, full width) (G1, lead r165) | Routine 0.5/0.2/0.3; Brutal+ 0.2/0.4/0.4 | Crouch, time the sweep or wait, in C11's cone. |
 | `curator_route` (`civilian_cluster`) | `curator_hall`, `curator_office` | 0.5, 0.5 | **Where the keycard walks:** in the public hall among guests (tie her and every patron sees) or upstairs near CO/SV (quiet tie, near the upper rover). |
 | `court_doors` (`locked_door`) | `court_doors_open` (on the latch until last call), `court_doors_locked` | 0.5, 0.5 | **A free way from the court into WG** while the court is public. |
 | `areaway` (`vent_open`) | `grate_loose`, `grate_padlocked` (`padlock`: lockpick 8 s or saw) | 0.5, 0.5 | The cost of the basement route (in C8's cone in `cam_b`/`cam_c`). |
