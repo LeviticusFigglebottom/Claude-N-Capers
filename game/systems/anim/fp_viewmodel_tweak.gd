@@ -119,8 +119,12 @@ static var _gen: int = 0
 @export_group("Weapon FX (D-105)")
 ## impact_fx.md §4 (ENV P): first-person muzzle burst, smoke, shells, tracer origin, per-shot viewmodel kick.
 ## ENV C's library scenes (game/world/vfx/) replace the built-in placeholders when set.
-@export var vfx_muzzle_scene: PackedScene = null
-@export var vfx_tracer_scene: PackedScene = null
+## ENV C's scenes (impact_fx.md §3; "" or a missing file = the built-in placeholder). The muzzle scene's root has
+## `flash(size, suppressed)` / `tick(delta)` / `auto_tick`; the tracer scene's root has `spawn(from, to)`.
+@export var vfx_muzzle_scene_path: String = G.VFX_DIR + "muzzle_flash.tscn"
+@export var vfx_tracer_scene_path: String = G.VFX_DIR + "tracer.tscn"
+## `size` passed to the library flash (its star / flame scale relative to the root's FP scale).
+@export var vfx_muzzle_size: float = 3.0
 ## Burst visible this long (one or two frames at 60 fps); 0 = no burst.
 @export var muzzle_flash_s: float = 0.035
 ## The muzzle sits ~1 m out through the viewmodel camera, so the burst is sized for that depth.

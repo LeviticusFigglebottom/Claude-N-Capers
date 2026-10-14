@@ -29,7 +29,9 @@ func _write(level: Level, channel: StringName, msg: String) -> void:
 	if level < min_level:
 		return
 	var peer: int = 0
-	if is_inside_tree() and multiplayer.has_multiplayer_peer():
+	# A closed peer (mid-disconnect) errors on get_unique_id(), so only ask a connected one (PO-B-C5).
+	if is_inside_tree() and multiplayer.has_multiplayer_peer() \
+			and multiplayer.multiplayer_peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED:
 		peer = multiplayer.get_unique_id()
 	var line: String = "[%s][%s][p%d] %s" % [Level.keys()[level], channel, peer, msg]
 	if capture:

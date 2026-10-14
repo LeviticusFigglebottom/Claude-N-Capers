@@ -10168,6 +10168,7 @@ navigation_mesh = SubResource("gh_462")
 [node name="FireEscapeLadderLink" type="NavigationLink3D" parent="Navigation" unique_id=101769]
 start_position = Vector3(1.45, 0, -2.4)
 end_position = Vector3(1.45, 4.2, -0.9)
+navigation_layers = 8
 
 [node name="Zones" type="Node3D" parent="." unique_id=101770]
 
@@ -11663,10 +11664,6 @@ openable = true
 visual_scene = ExtResource("196_gh")
 objective_tag = &"breakroom_window"
 metadata/kind = "window"
-
-[node name="WindowLink" type="NavigationLink3D" parent="Variants/Group_open_window/Slot_ow_breakroom_open" unique_id=101994]
-start_position = Vector3(2.25, 4.2, -0.8)
-end_position = Vector3(2.25, 4.2, 0.9)
 
 [node name="Slot_ow_breakroom_latched" type="Node3D" parent="Variants/Group_open_window" unique_id=101995]
 script = ExtResource("195_gh")
