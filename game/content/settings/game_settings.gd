@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## Player options: audio, video, controls, accessibility and input bindings (roadmap B5-01). Owner: ENV B.
 ## API brief for other environments: content/docs/options.md.
 ##
@@ -216,6 +217,23 @@ func fov() -> float:
 ## Mouse look multipliers (x, y) on top of the controller's base sensitivity (1.0 = unchanged).
 func mouse_sensitivity() -> Vector2:
 	return Vector2(float(get_value(CONTROLS, &"mouse_sensitivity_x")), float(get_value(CONTROLS, &"mouse_sensitivity_y")))
+
+
+## Options parity (PD2 "aim sensitivity"): look multiplier while aiming down sights / scoped, on top of the
+## zoom slow-down (D-091 divides by CrewView.zoom_factor). 1.0 = unchanged.
+func ads_sensitivity() -> float:
+	return float(get_value(CONTROLS, &"ads_sensitivity"))
+
+
+## Options parity: camera shake scale 0..1 (melee punch, tase jitter and any later camera shaker; ENV P).
+## Reduce Motion still applies its own cut on top.
+func screen_shake() -> float:
+	return clampf(float(get_value(ACCESSIBILITY, &"screen_shake")), 0.0, 1.0)
+
+
+## Options parity: in-heist subtitles (contact radio and, with subtitles_all_speakers, everyone) on or off.
+func subtitles() -> bool:
+	return bool(get_value(ACCESSIBILITY, &"subtitles"))
 
 
 ## Camera head bob (ENV P, PD2's subtle walk bob); always off while Reduce Motion is on.

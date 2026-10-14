@@ -210,6 +210,20 @@ func test_current_is_shared_and_replaceable() -> void:
 
 
 ## ENV P head bob: on by default, off when unticked, and always off under Reduce Motion.
+## Options parity: aiming sensitivity, screen shake and subtitles exist with PD2-like defaults and clamp.
+func test_parity_settings() -> void:
+	var s: GameSettings = GameSettings.new()
+	assert_eq(s.ads_sensitivity(), 1.0)
+	assert_eq(s.screen_shake(), 1.0)
+	assert_true(s.subtitles(), "subtitles on by default")
+	s.set_value(GameSettings.CONTROLS, &"ads_sensitivity", 9.0)
+	assert_eq(s.ads_sensitivity(), 2.0, "clamped to the spec max")
+	s.set_value(GameSettings.ACCESSIBILITY, &"screen_shake", -1.0)
+	assert_eq(s.screen_shake(), 0.0)
+	s.set_value(GameSettings.ACCESSIBILITY, &"subtitles", false)
+	assert_false(s.subtitles())
+
+
 func test_head_bob_follows_reduce_motion() -> void:
 	var s: GameSettings = GameSettings.new()
 	assert_true(s.head_bob(), "default on")
