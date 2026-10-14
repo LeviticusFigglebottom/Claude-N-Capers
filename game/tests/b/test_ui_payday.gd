@@ -258,3 +258,24 @@ func test_full_crew_table_on_screen_at_720p() -> void:
 		assert_true(view.encloses(row.get_global_rect()), "crew table %s inside %s" % [row.get_global_rect(), view])
 	assert_true(vis.encloses(_screen.continue_button.get_global_rect()), "Continue on screen")
 	get_window().size = saved
+
+
+## P fresh-eyes #12: "Clean job" only for a stealth win with no civilian killed; a body makes it "Quiet job.
+## Not a clean one."; an alarm is "Went loud".
+func test_clean_job_line_needs_no_alarm_and_no_civilians() -> void:
+	_screen.apply_to_profile = false
+	var r: Dictionary = HeistCatalog.sample_result()
+	var clean: Dictionary = r.duplicate(true)
+	clean["stealth"] = true
+	for m: Dictionary in clean.get("crew", []) as Array:
+		m["civilians_killed"] = 0
+	_screen.show_result(clean)
+	assert_eq(_screen.call(&"_summary_key", true), &"ui.results.stealth", "no alarm, no civilians: clean")
+	var messy: Dictionary = clean.duplicate(true)
+	(messy["crew"] as Array)[0]["civilians_killed"] = 1
+	_screen.show_result(messy)
+	assert_eq(_screen.call(&"_summary_key", true), &"ui.results.stealth_messy", "a civilian killed: not clean")
+	var loud: Dictionary = clean.duplicate(true)
+	loud["stealth"] = false
+	_screen.show_result(loud)
+	assert_eq(_screen.call(&"_summary_key", true), &"ui.results.loud")

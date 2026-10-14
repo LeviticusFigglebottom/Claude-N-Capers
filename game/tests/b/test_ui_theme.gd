@@ -288,3 +288,14 @@ func test_crosshair_only_when_masked() -> void:
 	_model.player_mode = &"masked"
 	await wait_seconds(0.6)
 	assert_near(_hud.crosshair.modulate.a, 1.0, 0.01, "shown once masked")
+
+
+## P fresh-eyes #11: "Secured: 1 bag", then "Secured: 2 bags".
+func test_secured_toast_singular() -> void:
+	await _spawn_hud()
+	EventBus.loot_secured.emit(1, &"loot.cash", 100)
+	await wait_frames(1)
+	assert_eq(_hud.toast_label.text, UiText.t(&"ui.hud.secured_one"))
+	EventBus.loot_secured.emit(2, &"loot.cash", 100)
+	await wait_frames(1)
+	assert_eq(_hud.toast_label.text, UiText.t(&"ui.hud.secured", {"count": 2}))
