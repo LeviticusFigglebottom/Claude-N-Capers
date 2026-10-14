@@ -2966,6 +2966,7 @@ ui.hud.player_left,{name} left the game. An AI plays {heister} now.
 ui.hud.player_joined,{name} joined as {heister}.
 heist.gallery_night.briefing,"The Halberd Gallery, Aldous Parade at Wexley Street. The Calloway Unveiling gala is in its last hour. Odile Vance's buyer wants four canvases off a list, and The Lantern Bearer above all. Walk in as guests, case the rooms before last call, then cut the Lantern Bearer and one more listed canvas. Rolled, not framed. Out by the van in the Mews or the limo at the kerb."
 music.gallery_night.name,Laylight
+heist.gallery_night.briefing_loud,"Argus locks the gallery down. Hack the server, drill the art-store vault, then hold until the escape arrives."
 objective.gallery_night.casing,Case the gala
 objective.gallery_night.find_canvases,Find the listed canvases ({found}/4)
 objective.gallery_night.keycard,Get a keycard

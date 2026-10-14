@@ -178,9 +178,6 @@ rare_events = Array[Dictionary]([{
 }, {
 "chance": 0.06,
 "effects": {
-"requires": {
-&"centrepiece": [&"cp_landing", &"cp_treasury"]
-},
 "timed_spawn": {
 "at_s": 720.0,
 "spawn_tag": &"guard_vaultline"
@@ -188,7 +185,10 @@ rare_events = Array[Dictionary]([{
 },
 "good": false,
 "id": &"vaultline_early",
-"min_difficulty": 2
+"min_difficulty": 2,
+"requires": {
+&"centrepiece": [&"cp_landing", &"cp_treasury"]
+}
 }, {
 "chance": 0.06,
 "effects": {

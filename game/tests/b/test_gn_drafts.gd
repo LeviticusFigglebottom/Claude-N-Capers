@@ -152,6 +152,36 @@ func test_keycards_and_rare_event_gates() -> void:
 		if gates.has(id):
 			assert_eq(int(ev.get("min_difficulty", -1)), int(gates[id]), "%s min_difficulty (top level)" % id)
 		assert_false((ev.get("effects", {}) as Dictionary).has("min_difficulty"), "%s: min_difficulty is top level" % id)
+		# Round 125: a rare event's condition is top level (VariantResolver ignores it inside effects).
+		for key: String in ["requires", "excludes"]:
+			assert_false((ev.get("effects", {}) as Dictionary).has(key), "%s: %s is top level" % [id, key])
+	var vl: Dictionary = {}
+	for ev: Dictionary in _table.rare_events:
+		if StringName(ev["id"]) == &"vaultline_early":
+			vl = ev
+	assert_eq(vl.get("requires", {}), {&"centrepiece": [&"cp_landing", &"cp_treasury"]}, "vaultline_early condition")
+	var fired: int = 0
+	for s: int in range(400):
+		var r: Dictionary = _roll(Enums.Difficulty.BRUTAL, s)
+		if (r.get("rare", []) as Array).has(&"vaultline_early"):
+			fired += 1
+			var cp: Array = r.get(&"centrepiece", [])
+			assert_true(cp.has(&"cp_landing") or cp.has(&"cp_treasury"), "vaultline_early only with a far centrepiece: %s" % [cp])
+	assert_true(fired > 0, "vaultline_early fires on some seeds")
+
+
+## D-109: the briefing names the main path, one loud line and the optional extras, all from the def.
+func test_briefing_subset() -> void:
+	var all: Array = Array(_def.objectives)
+	assert_true(_def.briefing_objectives.size() >= 5 and _def.briefing_objectives.size() < all.size())
+	for id: StringName in _def.briefing_objectives + _def.briefing_optional:
+		assert_has(all, id, "%s is a def objective" % id)
+	assert_eq(_def.briefing_objectives[_def.briefing_objectives.size() - 1], &"escape")
+	assert_true(StringTable.has(_def.briefing_loud_key), "loud line string")
+	var m: Dictionary = BriefingModel.build(HEIST, Enums.Difficulty.HAZARDOUS, _def)
+	assert_eq((m["objectives"] as Array).size(), _def.briefing_objectives.size())
+	assert_ne(String(m["loud_text"]), "")
+	assert_eq((m["optional"] as Array).size(), _def.briefing_optional.size())
 
 
 # --- helpers ------------------------------------------------------------------------------
