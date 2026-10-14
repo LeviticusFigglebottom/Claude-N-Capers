@@ -25,6 +25,13 @@ const PREFAB_CLASSES: Dictionary = {
 }
 ## PO-13 surface pass: greybox class / room purpose -> library finish (sl_finishes.gd).
 const F: GDScript = preload("res://world/heists/shadow_ledger/greybox/sl_finishes.gd")
+## Visual tile edge (m) for the big horizontal boxes (slabs, roofs, ceilings, grade): the Compatibility renderer
+## lights a mesh instance with at most 8 omni / spot lights (rendering/limits/opengl/max_lights_per_object), so one
+## floor-wide box overlapped by every room light keeps 8 arbitrary ones and whole rooms render black (Gallery Night
+## GN-C1, 1639ea1c). The collider stays one box (navmesh, collision, LOS unchanged); only the mesh is tiled.
+const SLAB_TILE: float = 6.0
+## PO-13 slab skins: offset of a skin quad off its slab face (zfight treats < 2 mm as coplanar).
+const SKIN_OFFSET: float = 0.004
 ## Emissive (fixtures, lamps, beacons, distant lit windows): untextured_ok.
 const EMISSIVE_MATS: Dictionary = {
 	"fixture": Color(1.0, 0.95, 0.88), "led_white": Color(0.85, 0.92, 1.0), "heli_green": Color(0.2, 1.0, 0.35),
@@ -36,6 +43,8 @@ var map_root: HeistMap = null
 var errors: PackedStringArray = PackedStringArray()
 ## Projected nav obstructions for props and prefabs: [corners (PackedVector3Array), elevation, height].
 var obstructions: Array[Array] = []
+## Mesh tile edge for the pieces wall() builds (0 = whole); the builders set SLAB_TILE around building walls.
+var wall_tile: float = 0.0
 var _mat_cache: Dictionary = {}
 var _box_mesh_cache: Dictionary = {}
 var _box_shape_cache: Dictionary = {}
@@ -162,9 +171,57 @@ func box_shape(size: Vector3) -> BoxShape3D:
 	return _box_shape_cache[key]
 
 
+## Box mesh of `size` without the faces flagged open: [-x, +x, -z, +z] (seamless wall tiles). An open side
+## reaches 1 mm into its neighbour tile (same material: coplanar overlap is not a zfight) so no ray slips
+## through the seam. Cached.
+func _tile_mesh(size: Vector3, mat_id: String, open: Array) -> Mesh:
+	var key: String = "tile|%s|%.3f|%.3f|%.3f|%s" % [mat_id, size.x, size.y, size.z, str(open)]
+	if _box_mesh_cache.has(key):
+		return _box_mesh_cache[key]
+	var lo: Vector3 = -size * 0.5
+	var hi: Vector3 = size * 0.5
+	lo.x -= 0.001 if bool(open[0]) else 0.0
+	hi.x += 0.001 if bool(open[1]) else 0.0
+	lo.z -= 0.001 if bool(open[2]) else 0.0
+	hi.z += 0.001 if bool(open[3]) else 0.0
+	var mid: Vector3 = (lo + hi) * 0.5
+	var h: Vector3 = (hi - lo) * 0.5
+	# [normal, u, v] with u x v = -normal (Godot front faces wind clockwise).
+	var faces: Array = [[Vector3.LEFT, Vector3.UP, Vector3.BACK], [Vector3.RIGHT, Vector3.BACK, Vector3.UP],
+		[Vector3.FORWARD, Vector3.RIGHT, Vector3.UP], [Vector3.BACK, Vector3.UP, Vector3.RIGHT],
+		[Vector3.DOWN, Vector3.BACK, Vector3.RIGHT], [Vector3.UP, Vector3.RIGHT, Vector3.BACK]]
+	var st: SurfaceTool = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for fi: int in range(faces.size()):
+		if fi < 4 and bool(open[fi]):
+			continue
+		var n: Vector3 = faces[fi][0]
+		var u: Vector3 = faces[fi][1]
+		var v: Vector3 = faces[fi][2]
+		var c: Vector3 = mid + n * h
+		var hu: Vector3 = u * absf(u.dot(h))
+		var hv: Vector3 = v * absf(v.dot(h))
+		var q: Array = [c - hu - hv, c + hu - hv, c + hu + hv, c - hu + hv]
+		for k: int in [0, 1, 2, 0, 2, 3]:
+			var p: Vector3 = q[k]
+			st.set_normal(n)
+			st.set_uv(Vector2(p.dot(u), p.dot(v)))
+			st.add_vertex(p)
+	st.generate_tangents()
+	st.set_material(lib_mat(mat_id))
+	var m: ArrayMesh = st.commit()
+	_box_mesh_cache[key] = m
+	return m
+
+
 ## Static box (world_static) from min/max corners: StaticBody3D + CollisionShape3D + MeshInstance3D.
 ## mat_id "" or "none" = collision only.
-func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, collide: bool = true) -> Node3D:
+## tile > 0: the visual is an even grid of mesh tiles no wider than `tile` in x / z (SLAB_TILE) under the one
+## unchanged collider; one tile keeps the single `Mesh` child.
+## seamless: the tiles leave out their faces on the internal seams (walls: a seam face on a crossing wall's face
+## line would be a coplanar pair).
+func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, collide: bool = true,
+		tile: float = 0.0, seamless: bool = false) -> Node3D:
 	var size: Vector3 = mx - mn
 	if size.x <= 0.001 or size.y <= 0.001 or size.z <= 0.001:
 		return null
@@ -184,16 +241,28 @@ func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, c
 		col.name = "Collision"
 		col.shape = box_shape(size)
 		add(body, col)
-	if mat_id != "" and mat_id != "none":
-		var mi: MeshInstance3D = MeshInstance3D.new()
-		mi.name = "Mesh"
-		mi.mesh = box_mesh(size, finish(parent, mat_id, nm, mn, mx))
-		add(body, mi)
+	if mat_id == "" or mat_id == "none":
+		return body
+	var key: String = finish(parent, mat_id, nm, mn, mx)
+	var nx: int = maxi(1, ceili(size.x / tile - 0.001)) if tile > 0.0 else 1
+	var nz: int = maxi(1, ceili(size.z / tile - 0.001)) if tile > 0.0 else 1
+	var ts: Vector3 = Vector3(size.x / nx, size.y, size.z / nz)
+	for ix: int in range(nx):
+		for iz: int in range(nz):
+			var mi: MeshInstance3D = MeshInstance3D.new()
+			mi.name = "Mesh" if nx * nz == 1 else "Mesh%02d_%02d" % [ix, iz]
+			if seamless and nx * nz > 1:
+				mi.mesh = _tile_mesh(ts, key, [ix > 0, ix < nx - 1, iz > 0, iz < nz - 1])
+			else:
+				mi.mesh = box_mesh(ts, key)
+			if nx * nz > 1:
+				mi.position = Vector3(-size.x * 0.5 + ts.x * (ix + 0.5), 0.0, -size.z * 0.5 + ts.z * (iz + 0.5))
+			add(body, mi)
 	return body
 
 
-func box_a(parent: Node3D, nm: String, b: Array, mat_id: String, collide: bool = true) -> Node3D:
-	return box(parent, nm, v3(b, 0), v3(b, 3), mat_id, collide)
+func box_a(parent: Node3D, nm: String, b: Array, mat_id: String, collide: bool = true, tile: float = 0.0) -> Node3D:
+	return box(parent, nm, v3(b, 0), v3(b, 3), mat_id, collide, tile)
 
 
 ## Visual-only box mesh child (no collision) at local min/max corners.
@@ -204,6 +273,90 @@ func mesh_box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: Stri
 	mi.position = (mn + mx) * 0.5
 	add(parent, mi)
 	return mi
+
+
+## PO-13 slab skins: a slab box spans several rooms and carries one finish, so where a room's floor
+## (ceiling) finish differs from the slab box it stands on (sits under), a single upward (downward) quad
+## of the room's finish covers that part, SKIN_OFFSET off the slab face (zfight tolerance 2 mm). Visual
+## only: MeshInstance3D, no body (no collision, nav bake, vision ray or surface tag sees it), no shadow
+## casting. One mesh per room under `parent` (Skin<room>; room-sized so per-object light limits of the
+## Compatibility renderer pick that room's lights), one surface per finish. Returns the surfaces (draw calls).
+## rooms: [room id, x0, z0, x1, z1, floor y, ceiling y, floor key, ceiling key] ("" key: no skin); a room
+## with several rectangles has several rows.
+## sources: box bodies or groups of them (axis-aligned slabs / ceilings; finish = material name).
+func slab_skins(parent: Node3D, sources: Array, rooms: Array, prefix: String) -> int:
+	var boxes: Array = []
+	for src: Node in sources:
+		var bodies: Array[Node] = src.find_children("*", "StaticBody3D", true, false)
+		if src is StaticBody3D:
+			bodies.push_front(src)
+		for c: Node in bodies:
+			var cs: CollisionShape3D = c.get_node_or_null("Collision") as CollisionShape3D
+			var meshes: Array[Node] = c.find_children("Mesh*", "MeshInstance3D", false, false)
+			var xf: Transform3D = _world_xf(c)
+			if cs == null or not (cs.shape is BoxShape3D) or meshes.is_empty() or not xf.basis.is_equal_approx(Basis.IDENTITY):
+				continue
+			var sz: Vector3 = (cs.shape as BoxShape3D).size
+			var mat: Material = ((meshes[0] as MeshInstance3D).mesh as BoxMesh).material
+			boxes.append([xf * AABB(cs.position - sz * 0.5, sz), String(mat.resource_name).trim_prefix(prefix)])
+	var per_room: Dictionary = {}  # room id -> {finish key -> [[x0, z0, x1, z1, y, up], ...]} (insertion order)
+	for r: Array in rooms:
+		for face: int in [0, 1]:
+			var key: String = String(r[7 + face])
+			if key == "":
+				continue
+			for b: Array in boxes:
+				var ab: AABB = b[0]
+				var fy: float = ab.end.y if face == 0 else ab.position.y
+				if absf(fy - float(r[5 + face])) > 0.005 or String(b[1]) == key:
+					continue
+				var q: Array = [maxf(float(r[1]), ab.position.x), maxf(float(r[2]), ab.position.z),
+					minf(float(r[3]), ab.end.x), minf(float(r[4]), ab.end.z)]
+				if float(q[2]) - float(q[0]) < 0.01 or float(q[3]) - float(q[1]) < 0.01:
+					continue
+				var fl: Dictionary = per_room.get(String(r[0]), {})
+				per_room[String(r[0])] = fl
+				if not fl.has(key):
+					fl[key] = []
+				q.append_array([fy + (SKIN_OFFSET if face == 0 else -SKIN_OFFSET), face == 0])
+				(fl[key] as Array).append(q)
+	var surfaces: int = 0
+	for room: String in per_room:
+		var fl2: Dictionary = per_room[room]
+		var keys: Array = fl2.keys()
+		keys.sort()
+		var mesh: ArrayMesh = ArrayMesh.new()
+		for k: String in keys:
+			var st: SurfaceTool = SurfaceTool.new()
+			st.begin(Mesh.PRIMITIVE_TRIANGLES)
+			for q2: Array in fl2[k]:
+				_skin_quad(st, q2)
+			st.generate_tangents()
+			st.set_material(lib_mat(k))
+			st.commit(mesh)
+			surfaces += 1
+		var mi2: MeshInstance3D = MeshInstance3D.new()
+		mi2.name = "Skin" + room
+		mi2.mesh = mesh
+		mi2.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mi2.set_meta(&"slab_skin", true)
+		add(parent, mi2)
+	return surfaces
+
+
+## One skin rectangle [x0, z0, x1, z1, y, up]: two triangles, clockwise seen from the side it faces.
+static func _skin_quad(st: SurfaceTool, q: Array) -> void:
+	var y: float = float(q[4])
+	var a: Vector3 = Vector3(float(q[0]), y, float(q[1]))
+	var b: Vector3 = Vector3(float(q[2]), y, float(q[1]))
+	var c: Vector3 = Vector3(float(q[2]), y, float(q[3]))
+	var d: Vector3 = Vector3(float(q[0]), y, float(q[3]))
+	var up: bool = bool(q[5])
+	var order: Array = [a, b, c, a, c, d] if up else [a, c, b, a, d, c]
+	for v: Vector3 in order:
+		st.set_normal(Vector3.UP if up else Vector3.DOWN)
+		st.set_uv(Vector2(v.x, v.z))
+		st.add_vertex(v)
 
 
 ## Straight wall with rectangular openings. axis "x": runs along x at z = fixed; "z": along z at x = fixed.
@@ -255,7 +408,7 @@ func wall(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a1:
 			else:
 				mn = Vector3(fixed - thick * 0.5, s.x, p)
 				mx = Vector3(fixed + thick * 0.5, s.y, q)
-			box(parent, "%s_%02d" % [nm, part], mn, mx, mat_id)
+			box(parent, "%s_%02d" % [nm, part], mn, mx, mat_id, true, wall_tile, true)
 			part += 1
 
 

@@ -97,3 +97,4 @@ const SHOT_FX_SUPPRESSED: int = 1
 const SHOT_FX_FIRST_PERSON: int = 2
 const SHOT_FX_HEADSHOT: int = 4
 const SHOT_FX_PENETRATED: int = 8
+const SHOT_FX_STRONG: int = 16  ## flesh hit above the strong-hit rule (class or damage); VFX scales blood (D-113)

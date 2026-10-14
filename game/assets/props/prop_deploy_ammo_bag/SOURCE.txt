@@ -1,0 +1,8 @@
+asset: prop_deploy_ammo_bag
+script: tools/blender/props/equipment.py
+params: {"cat": {"kind": "ammo_bag", "prefab": "deployable", "surface": "fabric"}, "fn": "ammo_bag"}
+seed: 3807406874  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_deploy_ammo_bag
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

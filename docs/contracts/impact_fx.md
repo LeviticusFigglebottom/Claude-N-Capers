@@ -21,7 +21,7 @@ Ids: `concrete`, `brick`, `plaster`, `tile`, `wood`, `metal`, `glass`, `fabric`,
 shooter_net_id: int, flags: int)`, **local presentation only**, emitted on EVERY peer for every hitscan ray/pellet
 (crew and NPC): shots replicate through three RELIABLE [R] facts on HeistNetSync (1.1, env/a-core ec27e45c): `_rpc_crew_shot(crew_net_id, origin, dir, spread_deg, pellet_seed, weapon_slot)` (each peer replays the seeded pellets), `_rpc_impact_fx(shooter_id, from, to, target_id, mode)` (NPC shots, melee), `_rpc_explosion_fx(pos, radius, kind)`; each peer emits the local signals from them. `end` = impact point, or max range if nothing was hit (`normal` = ZERO,
 `surface` = &""). `flags`: bit0 = suppressed, bit1 = first-person shooter on this peer (P draws its own muzzle/tracer
-origin), bit2 = headshot, bit3 = penetrated. Melee impacts use the same event with `weapon_class = &"melee"`. Flag constants: `EventBus.SHOT_FX_SUPPRESSED/FIRST_PERSON/HEADSHOT/PENETRATED`. `weapon_class` = the WeaponDef class id (`ar`, `smg`, `lmg`, `pistol`, `shotgun`, `sniper`, `melee`; NPC weapons map to the nearest class).
+origin), bit2 = headshot, bit3 = penetrated (on flesh: the bullet exited the body; VFX draws an exit spurt), bit4 = strong (flesh hit by a high-damage class or above the damage rule; VFX scales the blood spray, D-113). Melee impacts use the same event with `weapon_class = &"melee"`. Flag constants: `EventBus.SHOT_FX_SUPPRESSED/FIRST_PERSON/HEADSHOT/PENETRATED/STRONG`. `weapon_class` = the WeaponDef class id (`ar`, `smg`, `lmg`, `pistol`, `shotgun`, `sniper`, `melee`; NPC weapons map to the nearest class).
 Explosions: `EventBus.explosion_fx(pos, radius, kind)`.
 
 ## 3. Effects (ENV C library, `game/world/vfx/`)
