@@ -311,3 +311,19 @@ func test_clamped_marker_keeps_out_of_the_hud_bands() -> void:
 			var at: Vector2 = placed[0] as Vector2
 			assert_true(at.y <= 1080.0 - ObjectiveMarkers.EDGE_INSET_BOTTOM + 0.01, "%s: y %.0f above the bottom band" % [p, at.y])
 			assert_true(at.y >= ObjectiveMarkers.EDGE_INSET_TOP - 0.01, "%s: y %.0f under the top band" % [p, at.y])
+
+
+## P fresh-eyes #13: a generic prompt names its action from the interactable's kind ("pick the lock");
+## a specific prompt_key wins; unknown kinds keep the generic line.
+func test_generic_prompt_names_the_action_from_its_kind() -> void:
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"lockpick"), &"ui.prompt.pick_lock")
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"keycard"), &"ui.prompt.use_keycard")
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"open_door"), &"ui.prompt.open_door")
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.place_c4", &"lockpick"), &"ui.prompt.place_c4", "specific wins")
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &"no_such_kind"), &"ui.prompt.interact")
+	assert_eq(InteractionPanel.prompt_key_for(&"ui.prompt.interact", &""), &"ui.prompt.interact")
+	await _spawn_hud()
+	_model.interaction = {"text_key": &"ui.prompt.interact", "kind": &"lockpick", "args": {}, "progress": 0.0, "blocked_reason": &""}
+	await wait_frames(1)
+	assert_eq(_hud.interaction.prompt.text, UiText.t(&"ui.prompt.pick_lock",
+			{"key": InteractionPanel.action_key_text(&"interact")}).replace("[", "").replace("]", ""), "the HUD says pick the lock")
