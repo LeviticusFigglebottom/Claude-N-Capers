@@ -9,6 +9,7 @@ Read it at the start of every work session.
 | LEAD | session_014E3p2DmSYTneJjytGwKKfc | claude/dreamy-hamilton-pc7vck | merges, rulings, contracts, gates |
 | ENV P | session_01FYVVhNtxKAoQmyfnZ9rb3t | env/p-play | PO-2 mouse capture, PO-1 casing exit, PO-3 bumps |
 | ENV B | session_0159qCTRV9CsDQs465nGSW28 | env/b-content | PO-4 UI/UX overhaul (style spec first) |
+| ENV C | session_013uMHd1Npqkx1reY1pJMaye | env/c-worlds | D-104: levelcheck groundwork, PP-C-1 walk test fix, Gallery Night plan/doc; greybox at freeze-lift |
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
