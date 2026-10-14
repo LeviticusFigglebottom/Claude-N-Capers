@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ThrowableDef" format=3]
+[gd_resource type="Resource" script_class="ThrowableDef" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://contracts/data/throwable_def.gd" id="1"]
+[ext_resource type="PackedScene" path="res://world/props/throwable/prop_throwable_frag.tscn" id="2_model"]
 
 [resource]
 script = ExtResource("1")
@@ -12,3 +13,4 @@ damage = 1600.0
 radius_m = 5.0
 fuse_s = 2.5
 anim_set = &"throwable"
+model = ExtResource("2_model")
