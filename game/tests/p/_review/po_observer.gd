@@ -9,7 +9,7 @@
 ## - PROMPT_AIM: an interaction prompt is up for a component that is far (> 3.5 m) or off the aim (> 35 deg);
 ## - FLICKER: the interaction prompt toggles on/off more than 6 times in a second;
 ## - SFX_PLACEHOLDER: a cue with no definition played (the placeholder beep); SFX_SPAM: one cue > 8 times / s;
-## - HITCH: a non-rendered frame whose process time exceeds 100 ms, with FrameProf's top systems.
+## Hitches: read the runner's own HITCH lines (FrameProf); Performance.TIME_PROCESS only updates on drawn frames.
 ## Owner: ENV P.
 extends Node
 
@@ -18,7 +18,6 @@ const PROMPT_FAR_M: float = 3.5
 const PROMPT_ANGLE_DEG: float = 35.0
 const FLICKER_TOGGLES: int = 6
 const SPAM_PER_S: int = 8
-const HITCH_S: float = 0.1
 
 var _out: String = ""
 var _every: float = 4.0
@@ -71,7 +70,6 @@ func _process(delta: float) -> void:
 			_note("HEIST", "runtime up (%s)" % rt.heist_id)
 	if _rt == null or not is_instance_valid(_rt):
 		return
-	_check_hitch()
 	_check_sfx()
 	_check_flicker()
 	_check_t += delta
@@ -104,14 +102,6 @@ func _capture() -> void:
 	if not was_on:
 		RenderingServer.render_loop_enabled = not _driver_fast()  # the driver may have switched meanwhile
 	_capturing = false
-
-
-func _check_hitch() -> void:
-	if not RenderingServer.render_loop_enabled and not _capturing:
-		var p: float = Performance.get_monitor(Performance.TIME_PROCESS)
-		var ph: float = Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS)
-		if p > HITCH_S or ph > HITCH_S:
-			_note("HITCH", "process %.0f ms physics %.0f ms top: %s" % [p * 1000.0, ph * 1000.0, FrameProf.top(6)])
 
 
 func _check_sfx() -> void:
