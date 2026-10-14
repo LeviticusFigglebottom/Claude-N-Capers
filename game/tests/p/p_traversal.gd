@@ -5,7 +5,7 @@
 ##   gap(from, to, crouch)            walk (crouched) from -> to; ok / time / where it stalled
 ##   route(points, weight, sprint)    walk a waypoint list (stairs, corridors), optionally carrying a bag
 ##   throw_bag(pos, yaw, pitch, w)    stand at pos carrying a bag of weight w, look (yaw, pitch), throw; landing point
-##   ladder(ladder)                   climb up then down a Ladder prefab with real input; ok / times
+##   ladder(ladder, and_down)         climb up (then down) a Ladder prefab with real input; ok / times
 ##   carry(from, to, w)               carry a bag of weight w along the navmesh route from -> to; ok / time / stall
 ## Every call teleports the crew first, so calls are independent. Owner: ENV P.
 class_name PTraversal
@@ -74,7 +74,7 @@ func throw_bag(pos: Vector3, yaw: float, pitch: float, weight: int, loot_id: Str
 
 ## Climb `ladder` up from its bottom with real input (walk into it), then back down from the top.
 ## Dictionary: {up, down, up_s, down_s}.
-func ladder(l: Ladder) -> Dictionary:
+func ladder(l: Ladder, and_down: bool = true) -> Dictionary:
 	var out: Dictionary = {"up": false, "down": false, "up_s": 0.0, "down_s": 0.0}
 	var bottom: Vector3 = l.bottom_position()
 	var top: Vector3 = l.top_position()
@@ -88,7 +88,7 @@ func ladder(l: Ladder) -> Dictionary:
 		l.climb_time() + 6.0)
 	inp.release(&"move_forward")
 	out["up_s"] = float(Engine.get_physics_frames() - t0) / Engine.physics_ticks_per_second
-	if not out["up"]:
+	if not out["up"] or not and_down:
 		return out
 	await _ticks(10)
 	await inp.turn_to_yaw(crew, _yaw_to(crew.global_position, l.global_position))

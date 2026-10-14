@@ -56,6 +56,9 @@ static var _gen: int = 0
 @export var left_hand_grip_offset: Vector3 = Vector3(-0.035, -0.02, 0.0)
 ## IK influence blend rate (1/s) when the hand leaves / returns to the grip.
 @export var left_hand_ik_rate: float = 8.0
+## PO-13: keep the clip's left-hand orientation relative to the gun while the IK moves the wrist (else the hand
+## inherits the IK'd forearm's rotation: fingers up off the handguard).
+@export var left_hand_keep_orientation: bool = true
 
 @export_group("Shared reload clips (D-063)")
 ## A set's single reload / reload_empty clip plays at clip time / the weapon's reload_time_s (reload_empty_time_s).
@@ -115,6 +118,24 @@ static var _gen: int = 0
 @export var muzzle_light_s: float = 0.05
 @export var muzzle_light_color: Color = Color(1.0, 0.78, 0.45)
 @export var muzzle_light_suppressed_mult: float = 0.15
+
+@export_group("Sway / breathing (PO-13)")
+## PD2 vel_overshot (fpcameraplayerbase.lua _calculate_soft_velocity_overshot, playertweakdata stances.default):
+## the weapon lags behind look motion. Target = sign x (|look speed| / sway_full_dps)^1.5 x max (deg); the target
+## steps toward it at sway_target_rate_dps; the applied sway follows at lerp(3, 180, |diff| / 40) deg/s. Roll = -yaw.
+## Hip (standard) max yaw 6 / pitch 10, ADS (steelsight) 4 / 2. 0 max = off.
+@export var sway_yaw_max_deg: float = 6.0
+@export var sway_pitch_max_deg: float = 10.0
+@export var sway_ads_yaw_max_deg: float = 4.0
+@export var sway_ads_pitch_max_deg: float = 2.0
+## Look speed (deg/s) that reaches the full sway.
+@export var sway_full_dps: float = 300.0
+@export var sway_target_rate_dps: float = 120.0
+## PD2 stances.default shakers.breathing amplitude: hip 0.3, crouched 0.25, ADS 0.025 (deg); slow idle sway.
+@export var breathing_amp_deg: float = 0.3
+@export var breathing_crouched_amp_deg: float = 0.25
+@export var breathing_ads_amp_deg: float = 0.025
+@export var breathing_hz: float = 0.22
 
 @export_group("Weapon FX (D-105)")
 ## impact_fx.md §4 (ENV P): first-person muzzle burst, smoke, shells, tracer origin, per-shot viewmodel kick.
