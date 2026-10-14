@@ -7,9 +7,6 @@
 class_name Po5Pilot
 extends RefCounted
 
-## Ticks without an interaction session before use() presses interact again (interrupted hold).
-const REPRESS_TICKS: int = 20
-
 var d: Node = null  # po5_flow driver (note(), shot())
 var inp: PlayerInputDriver = null
 var crew: CrewController = null
@@ -324,7 +321,6 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 	comp.completed.connect(cb)
 	inp.press(&"interact")
 	var t: float = 0.0
-	var idle_ticks: int = 0
 	while t < timeout_s and not completed[0] and is_instance_valid(comp) and not (done.is_valid() and bool(done.call())):
 		if crew.crew_state != Enums.CrewState.NORMAL:
 			break
@@ -341,14 +337,6 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 		steer_at(target)
 		await tick()
 		t += dt()
-		# Interrupted (a hit, S9.1, or a block needing a release): press again like a player would, but only
-		# once no session has existed for REPRESS_TICKS (a fresh press needs a few ticks to start one).
-		idle_ticks = idle_ticks + 1 if isys.session(crew.slot).is_empty() else 0
-		if idle_ticks >= REPRESS_TICKS and not completed[0] and is_instance_valid(comp):
-			idle_ticks = 0
-			inp.release(&"interact")
-			await inp.ticks(2)
-			inp.press(&"interact")
 	inp.release(&"interact")
 	if is_instance_valid(comp) and comp.completed.is_connected(cb):
 		comp.completed.disconnect(cb)

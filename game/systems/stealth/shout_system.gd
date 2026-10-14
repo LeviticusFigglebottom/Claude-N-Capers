@@ -3,9 +3,7 @@
 ## every civilian
 ##   - within shout_range_m x `stealth.civilian_intimidate_range_mult` inside the aim cone
 ##     (shout_cone_deg, full angle) with line of sight, or
-##   - within shout_all_within_m in any direction, on the shouter's floor (|dy| <= shout_floor_dy_m) and
-##     able to hear it: clear line of sight, or a navmesh path <= shout_all_within_m x shout_path_mult
-##     (PO-5: walls and floors block the all-round shout; PD2 intimidates who can hear/see you)
+##   - within shout_all_within_m in any direction
 ## receives `CivilianBrain.on_shouted(crew)` (the brain applies the D-016 roll for panicked ones
 ## and emits civilian_intimidated [R]). Shouting is allowed while casing (S1.1) and is not a
 ## NoiseEvent (no make_noise).
@@ -205,7 +203,7 @@ func targets_for(crew: CrewController) -> Array[NpcBase]:
 		var point: Vector3 = _aim_point(npc)
 		var flat: float = Vector2(npc.global_position.x - crew.global_position.x,
 				npc.global_position.z - crew.global_position.z).length()
-		if flat <= tw.shout_all_within_m and _hears_nearby(crew, npc, eye, point, st, rt):
+		if flat <= tw.shout_all_within_m:
 			out.append(npc)
 			continue
 		var to: Vector3 = point - eye
@@ -215,21 +213,6 @@ func targets_for(crew: CrewController) -> Array[NpcBase]:
 			continue
 		out.append(npc)
 	return out
-
-
-## PO-5 (S7.1): the all-round shout reaches a nearby civilian on the same floor that has line of sight
-## to the shouter or a short walk to them (around a counter, through an open doorway).
-static func _hears_nearby(crew: CrewController, npc: NpcBase, eye: Vector3, point: Vector3,
-		st: StealthDirector, rt: HeistRuntime) -> bool:
-	var tw: StealthTweak = Tweak.stealth()
-	if absf(npc.global_position.y - crew.global_position.y) > tw.shout_floor_dy_m:
-		return false
-	if st == null or not st.is_inside_tree() or st.has_los(eye, point, [crew.get_rid(), npc.get_rid()]):
-		return true
-	var targets: CivilianTargets = CivilianTargets.ensure(rt)
-	if targets == null or not targets.is_inside_tree():
-		return false
-	return targets.nav_path_length(crew.global_position, npc.global_position) <= tw.shout_all_within_m * tw.shout_path_mult
 
 
 static func _aim_point(npc: NpcBase) -> Vector3:
