@@ -258,7 +258,8 @@ Basement notes:
   `consignment_lockers` (4/6/8), saw targets, small loot.
 - The racks hold **studies** (`loot.painting_study`, `store_paintings` 4/6/8) and the list canvases
   when their slot is `*_store`.
-- `H^` (2, 14) is the areaway ladder up to the grate `a` in the Sculpture Court.
+- `H^` (2, 14) marks where PL meets the areaway (QC-64): the ladder stands in a 2 × 2 m **light well** at x −4…−2,
+  z 13–15 under the court grate `a` (−4, 14), with a short passage / opening through the basement wall at x 0 into PL.
 
 ### Ground floor (FFL 0.0)
 ```
@@ -564,7 +565,7 @@ tie (her keycard, QC-52). Solo means **waiting for last call and avoiding** civi
 | C5 | BC, W end (3.4, 7) | E along BC (to x ≈ 23) | SC and RG doors in view; LF/E1/J beyond 20 m. |
 | C6 | LD, NW corner (32.4, 0.4) | SE: the roller door, the art door, the crates | The BC double door and the lift door are beside it (blind). |
 | C7 | Mews pole (36, −1), 3.2 m | W along the Mews | Ladder foot in view; the Mews mouth (E) is behind it. |
-| C8 | Court, WG west wall (−0.4, 4) | S over the court: the French doors, the grate | The gate corner is occluded by the pool kiosk. |
+| C8 | Court, WG west wall (−0.4, 9) (QC-65) | S over the court: the French doors, the grate | The gate corner is occluded by the pool kiosk. |
 | C9 | UG1, SE corner (11.6, 19.6) | NW over the Calloway hang | The shuttered arch is beside it (blind). |
 | C10 | UG3, NW corner (32.4, 12.4) | SE: the room, the TR and AT doors | The CS door is beside it (blind). |
 | C11 | TR, NE corner (43.6, 24.4), 2.6 m | W/SW: the door, the grid, the painting | **Always live** (`treasury`). |
@@ -816,7 +817,8 @@ holdout centroid.
 
 ## Variable table
 Each variable changes a decision. Rules resolve in table order (heist_map.md §5); per-difficulty
-weights use A2-08.
+weights use A2-08. **Difficulty rows (QC-63):** a "Routine" row also applies at Tense; a "Brutal+" row also applies at
+Hazardous (`sensor_net`, `laser_pattern`, `patrons`, `escape_eta_s`).
 
 | variable | options (slot ids) | weights | gameplay effect (the decision it changes) |
 |---|---|---|---|
@@ -838,6 +840,8 @@ weights use A2-08.
 | `curator_route` (`civilian_cluster`) | `curator_hall`, `curator_office` | 0.5, 0.5 | **Where the keycard walks:** in the public hall among guests (tie her and every patron sees) or upstairs near CO/SV (quiet tie, near the upper rover). |
 | `court_doors` (`locked_door`) | `court_doors_open` (on the latch until last call), `court_doors_locked` | 0.5, 0.5 | **A free way from the court into WG** while the court is public. |
 | `areaway` (`vent_open`) | `grate_loose`, `grate_padlocked` (`padlock`: lockpick 8 s or saw) | 0.5, 0.5 | The cost of the basement route (in C8's cone in `cam_b`/`cam_c`). |
+| `xl_crate` (`loot_spot`; rare `late_loan` forces it) | `xl_none`, `xl_loan` | 1, 0 (picks `xl_none` unless forced; QC-62) | A loan crate in LD with 2 extra studies. |
+| `admin_pa` (`civilian_cluster`; rare `late_paperwork` forces it) | `pa_none`, `pa_late` | 1, 0 (picks `pa_none` unless forced; QC-62) | The admin PA works late in AO beside `code_admin_postit` and C13's corridor. |
 | `store_paintings` (scalar) | 4, 6, 8 studies on the AS racks | uniform | Greed in the vault. |
 | `consignment_lockers` (scalar) | 4, 6, 8 `deposit_box` | uniform | Small-loot greed against saw noise next to the vault (camera C14). |
 | `escape` | `esc_mews` (E1 van), `esc_parade` (E2 limo) | 0.55, 0.45 | **The loot path:** the art lift and LD (BOH), or the grand stair, the hall and the portico (front, throw spots, after last call). In loud: H4 or H1 for the wait. |
