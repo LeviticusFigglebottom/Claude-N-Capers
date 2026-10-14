@@ -21,13 +21,9 @@ const FLAG_HEADSHOT: int = EventBus.SHOT_FX_HEADSHOT
 const FLAG_PENETRATED: int = EventBus.SHOT_FX_PENETRATED
 
 const CLASS_MELEE: StringName = &"melee"
-const SURFACE_DEFAULT: StringName = &"concrete"
 const SURFACE_FLESH: StringName = &"flesh"
 const SURFACE_ARMOR: StringName = &"armor"
-const SURFACE_SHIELD: StringName = &"shield"
 const SURFACE_META: StringName = &"surface"
-## impact_fx.md §1: the surface tag may sit on the collider or up to 3 parents.
-const SURFACE_PARENT_DEPTH: int = 3
 
 ## _rpc_impact_fx modes.
 const MODE_SHOT_MISS: int = 0
@@ -45,30 +41,15 @@ static func enabled() -> bool:
 	return true
 
 
-## impact_fx.md §1 surface lookup (ImpactFx.surface_of is ENV C's; delegate to it once it ships):
-## `metadata/surface` on the collider or up to 3 parents; Wrecker plates -> armor; Bulwark shields ->
-## shield; crew / NPC bodies and their hitboxes -> flesh; anything else -> concrete. Null -> &"".
+## impact_fx.md §1 surface of a hit collider: ENV C's ImpactFx.surface_of (metadata / shield / hitbox /
+## character / concrete), plus Wrecker armour plates -> armor. Null (a miss) -> &"".
 static func surface_of(collider: Object) -> StringName:
 	if collider == null or not is_instance_valid(collider):
 		return &""
 	var hb: Hitbox = collider as Hitbox
-	if hb != null:
-		if hb.hit_zone == Enums.HitZone.WEAKPOINT or hb.get_damage_target() is WreckerArmor:
-			return SURFACE_ARMOR
-	var n: Node = collider as Node
-	var depth: int = 0
-	while n != null and depth <= SURFACE_PARENT_DEPTH:
-		if n.has_meta(SURFACE_META):
-			return StringName(n.get_meta(SURFACE_META))
-		if n is BulwarkShield:
-			return SURFACE_SHIELD
-		if n is CrewController or n is NpcBase:
-			return SURFACE_FLESH
-		n = n.get_parent()
-		depth += 1
-	if hb != null:
-		return SURFACE_FLESH  # a hitbox deep inside a character rig
-	return SURFACE_DEFAULT
+	if hb != null and hb.get_damage_target() is WreckerArmor:
+		return SURFACE_ARMOR  # Wrecker armour plates that are not WEAKPOINT zones
+	return ImpactFx.surface_of(collider)  # ENV C's impact_fx.md §1 lookup (metadata, shield, hitbox, character)
 
 
 ## shot_fx weapon class of a crew weapon (Enums.WeaponClass -> &"pistol", &"smg", &"ar", &"shotgun",

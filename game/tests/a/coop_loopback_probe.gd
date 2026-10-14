@@ -13,6 +13,8 @@ var hud_max_progress: float = 0.0
 var hud_prompt: StringName = &""
 ## Client: the HeistRuntime returned by `await HeistLauncher.launch_client()` (null with --join=auto).
 var launched_rt: HeistRuntime = null
+## D-105: VfxDirector.shots on this peer at the last "clear_fx" (snapshot reports the difference).
+var vfx_base: int = 0
 ## PO-8: shot_fx / explosion_fx seen on this peer since the last "clear_fx" (compact dicts).
 var fx_shots: Array = []
 var fx_blasts: Array = []
@@ -71,6 +73,8 @@ func _rpc_command(cmd: String, args: Dictionary) -> void:
 		"clear_fx":
 			fx_shots.clear()
 			fx_blasts.clear()
+			var crt: HeistRuntime = HeistRuntime.current()
+			vfx_base = crt.vfx.shots if crt != null and crt.vfx != null else 0
 			_rpc_report.rpc_id(1, "ack", {"cmd": cmd})
 		"quit":
 			get_tree().quit(0)
@@ -121,6 +125,7 @@ func snapshot(args: Dictionary = {}) -> Dictionary:
 		"hud_captain_present": rt.hud_model.captain_present if rt.hud_model != null else false,
 		"hud_captain_resistance": rt.hud_model.captain_resistance if rt.hud_model != null else -1.0,
 		"shot_fx": fx_shots.duplicate(), "explosion_fx": fx_blasts.duplicate(),
+		"vfx_shots": rt.vfx.shots - vfx_base if rt.vfx != null else -1,
 	}
 
 

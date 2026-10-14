@@ -56,6 +56,8 @@ var interaction: InteractionSystem = null
 var stealth: StealthDirector = null
 var mission: HeistMission = null
 var hud_model: LocalHudModel = null
+## D-105: ENV C's VfxDirector (shot_fx / explosion_fx effects), one per runtime on every peer.
+var vfx: VfxDirector = null
 ## D-071 per-crew counters (service CrewStatsService.SERVICE).
 var stats: CrewStatsService = null
 ## Container for runtime-spawned entities (NPCs, crew, bags).
@@ -358,6 +360,9 @@ func _create_services() -> void:
 	hud_model = LocalHudModel.new()
 	hud_model.name = "LocalHudModel"
 	add_child(hud_model)
+	vfx = VfxDirector.new()  # D-105: ENV C's combat VFX, presentation only, on every peer (host and replica)
+	vfx.name = "VfxDirector"
+	add_child(vfx)
 	net_sync = HeistNetSync.new()  # A3-07: idle in solo
 	net_sync.name = HeistNetSync.NODE_NAME
 	register_service(HeistNetSync.SERVICE, net_sync)
@@ -725,6 +730,8 @@ func detection_value(observer: Node, slot: int) -> float:
 ## Frees everything: Services.clear(), Ids.reset().
 func teardown() -> void:
 	_disconnect_events()
+	if vfx != null and is_instance_valid(vfx):
+		vfx.clear()
 	if mission != null and is_instance_valid(mission):
 		mission._unbind()
 	_bot_intents.clear()
