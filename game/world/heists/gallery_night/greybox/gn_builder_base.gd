@@ -11,12 +11,23 @@ const SCENE_PATH: String = OUT_DIR + "gallery_night.tscn"
 const DEFAULT_OUT: String = SCENE_PATH
 const DEF_PATH: String = OUT_DIR + "gallery_night_def.tres"
 const VARIANTS_PATH: String = OUT_DIR + "gallery_night_variants.tres"
+## Mission script (attached to the Mission node; GN-C1 G1 stub, ENV A fleshes it out, GN-A1).
+const MISSION_PATH: String = OUT_DIR + "gallery_night_mission.gd"
 const MAT_DIR: String = "res://world/materials/"
 const KIT_DIR: String = "res://assets/arch/"
 ## Tagged marker (rehearsal F5): a Marker3D with an `objective_tag` property, which find_by_tag / the HUD resolve.
 const OBJECTIVE_MARKER: GDScript = preload("res://world/kits/objective_marker.gd")
 ## Prefab id -> contract class_name (gameplay_prefabs.md). Scene = the class script's .tscn sibling (sl_builder_base).
-const PREFAB_CLASSES: Dictionary = {"door": "Door", "window": "WindowPrefab"}
+const PREFAB_CLASSES: Dictionary = {
+	"door": "Door", "window": "WindowPrefab", "loot_spawn": "LootSpawn", "keycard_pickup": "KeycardPickup",
+	"keycard_reader": "KeycardReader", "keypad": "Keypad", "code_note": "CodeNote", "hack_terminal": "HackTerminal",
+	"security_camera": "SecurityCamera", "camera_station": "CameraStation", "laser_grid": "LaserGrid", "safe": "Safe",
+	"deposit_box": "DepositBox", "small_loot": "SmallLoot", "display_case": "DisplayCase", "drill_point": "DrillPoint",
+	"alarm_button": "AlarmButton", "phone": "Phone", "body_container": "BodyContainer", "ladder": "Ladder",
+	"secure_zone": "SecureZone", "escape_zone": "EscapeZone",
+}
+## Prop catalog (tools/blender/props, PropCatalog): asset id -> scene.
+const CATALOG_DIR: String = "res://world/props/"
 ## Visual step boxes overlap their higher neighbour by this much (no ray-through seams).
 const SEAM: float = 0.02
 ## Building surface classes -> material library (greybox kit materials).
@@ -336,6 +347,45 @@ func prefab_scene(prefab: String) -> PackedScene:
 		errors.append("gameplay prefab `%s` (class %s) not found" % [prefab, cls])
 	_scene_cache[prefab] = ps
 	return ps
+
+
+## Catalog prop scene by asset id (PropCatalog `scene`), cached; null + error if absent.
+func _catalog_scene(asset_id: String) -> PackedScene:
+	var e: Dictionary = PropCatalog.entry(StringName(asset_id))
+	var path: String = String(e.get("scene", ""))
+	if path == "":
+		errors.append("catalog asset %s not found" % asset_id)
+		return null
+	if not _scene_cache.has(path):
+		_scene_cache[path] = load(path) as PackedScene
+	return _scene_cache[path]
+
+
+## Greybox support / furniture box (Props): a static body, bottom-centre `base`, `size`, turned by `yaw`, meta
+## `kind` (+ `support` when other props rest on it), and its projected nav obstruction.
+func _prop_box(parent: Node3D, nm: String, base: Vector3, size: Vector3, yaw: float, kind: String, support: bool,
+		mat_id: String = "prop") -> StaticBody3D:
+	var body: StaticBody3D = StaticBody3D.new()
+	body.name = nm
+	body.collision_layer = 1
+	body.collision_mask = 0
+	body.transform = global_xform(parent).affine_inverse() * Transform3D(yaw_basis(yaw), base)
+	body.set_meta(&"kind", kind)
+	if support:
+		body.set_meta(&"support", true)
+	add(parent, body)
+	var col: CollisionShape3D = CollisionShape3D.new()
+	col.name = "Collision"
+	col.shape = box_shape(size)
+	col.position = Vector3(0.0, size.y * 0.5, 0.0)
+	add(body, col)
+	var mi: MeshInstance3D = MeshInstance3D.new()
+	mi.name = "Mesh"
+	mi.mesh = box_mesh(size, mat_id)
+	mi.position = col.position
+	add(body, mi)
+	obstruct(Transform3D(yaw_basis(yaw), base), AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5), size))
+	return body
 
 
 ## Records a projected navmesh obstruction for a box (local AABB under xform).

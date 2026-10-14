@@ -32,6 +32,8 @@ const CORE_FIT: Array = [3.05, 0.4]
 ## npc (npc_authorized_tags), code (code_group), tag (objective_tag), slot (built by that variant group instead).
 ## The wall hole is cut to the kit opening (DOOR_OPENING_W x 2.2) on the door's centre, not the plan's 2.1 m hole.
 ## Public interior openings with no leaf in B2 (CK, PWW, PWM, DC, the arches) stay plain openings.
+## B4.7 / next_heist §7.7 (ENV P traversal review): the route doors (staff door, CO, SV, CS from UC, AT N / W, TR, the
+## head house) are 1.1 m service leaves in the 1.2 m kit opening (meta service), not the 0.9 m single default.
 const DOORS: Array = [
 	["StairDoorB", "B", "z", 3.0, 6.5, "single", "NONE", "E", {}],
 	["LockerDoor", "B", "x", 6.0, 5.5, "single", "NONE", "S", {}],
@@ -52,7 +54,7 @@ const DOORS: Array = [
 	["LiftLandingDoorGE", "G", "z", 32.0, 1.5, "double", "NONE", "E", {}],
 	["DockCorridorDoor", "G", "z", 32.0, 6.1, "service", "NONE", "E", {}],
 	["ArtHandlingDoor", "G", "x", 8.0, 4.6, "double", "LOCKPICK", "S", {"npc": ["guard", "staff"]}],
-	["StaffDoor", "G", "x", 8.0, 18.5, "single", "LOCKPICK", "S", {"npc": ["guard", "staff"]}],
+	["StaffDoor", "G", "x", 8.0, 18.5, "service", "LOCKPICK", "S", {"npc": ["guard", "staff"]}],
 	["DockPersonnelDoor", "G", "x", 0.0, 40.5, "single", "LOCKPICK", "S", {"push_bar": true, "leaf": "metal"}],
 	["ArtDoorEG", "G", "x", 12.0, 37.0, "double", "KEYCARD", "N", {}],
 	["CourtDoors", "G", "z", 0.0, 11.6, "double", "", "W", {"slot": "court_doors", "leaf": "glass"}],
@@ -62,21 +64,21 @@ const DOORS: Array = [
 		{"c": 21.6, "starts_open": true, "push_bar": true, "leaf": "metal"}],
 	["GiftShopDoor", "G", "x", 26.0, 27.5, "single", "LOCKPICK", "N", {}],
 	["StairDoorU", "U", "z", 3.0, 6.5, "single", "NONE", "E", {}],
-	["CuratorDoor", "U", "x", 6.0, 5.5, "single", "NONE", "S", {}],
+	["CuratorDoor", "U", "x", 6.0, 5.5, "service", "NONE", "S", {}],
 	["AdminDoor", "U", "x", 6.0, 13.5, "single", "NONE", "S", {}],
 	["UpperWCDoor", "U", "x", 6.0, 17.5, "single", "NONE", "S", {}],
 	["FrameStoreUDoor", "U", "x", 6.0, 20.5, "single", "NONE", "S", {}],
-	["ServerDoor", "U", "x", 6.0, 24.5, "single", "CODE", "S", {"code": "argus", "leaf": "metal"}],
+	["ServerDoor", "U", "x", 6.0, 24.5, "service", "CODE", "S", {"code": "argus", "leaf": "metal"}],
 	["LiftLandingDoorUS", "U", "x", 6.0, 28.6, "double", "NONE", "S", {}],
 	["LiftLandingDoorUE", "U", "z", 32.0, 1.5, "double", "NONE", "E", {}],
-	["StudioDoor", "U", "z", 32.0, 6.5, "single", "NONE", "W", {}],
+	["StudioDoor", "U", "z", 32.0, 6.5, "service", "NONE", "W", {}],
 	["BalconyDoorW", "U", "x", 8.0, 12.5, "single", "NONE", "N", {}],
 	["BalconyDoorE", "U", "x", 8.0, 29.5, "single", "NONE", "N", {}],
 	["StudioGalleryDoor", "U", "x", 12.0, 35.5, "single", "LOCKPICK", "S", {"npc": ["civ_conservator", "civ_curator"]}],
-	["AttendantDoorN", "U", "x", 24.0, 32.5, "single", "NONE", "N", {}],
-	["TreasuryDoor", "U", "x", 24.0, 38.5, "single", "KEYCARD", "N", {}],
-	["AttendantDoorW", "U", "z", 32.0, 27.5, "single", "NONE", "W", {}],
-	["HeadHouseDoor", "R", "z", 3.0, 6.5, "single", "LOCKPICK", "W", {"push_bar": true, "leaf": "metal"}],
+	["AttendantDoorN", "U", "x", 24.0, 32.5, "service", "NONE", "N", {}],
+	["TreasuryDoor", "U", "x", 24.0, 38.5, "service", "KEYCARD", "N", {}],
+	["AttendantDoorW", "U", "z", 32.0, 27.5, "service", "NONE", "W", {}],
+	["HeadHouseDoor", "R", "z", 3.0, 6.5, "service", "LOCKPICK", "W", {"push_bar": true, "leaf": "metal"}],
 ]
 ## Gameplay windows (doc: EB windows S/E are a police ENTRY, glass; SL's tall windows face the Parade): breakable
 ## WindowPrefab with the 1.2 x 2.1 tall-window visual. [name, floor, axis, plan fixed, plan opening a0, room-side
@@ -247,13 +249,13 @@ static func _is_opening(o: Array, f: String, axis: String, fixed: float, a0: flo
 static func opening_holes(o: Array) -> Array:
 	var f: String = String(o[0])
 	var holes: Array = []
-	for d: Array in DOORS:
-		if _is_opening(o, f, String(d[2]), float(d[3]), float(d[4])):
+	for d: Array in DOORS:   # the door's own floor: openings on the same line repeat floor to floor
+		if String(d[1]) == f and _is_opening(o, f, String(d[2]), float(d[3]), float(d[4])):
 			var c: float = door_centre(d)
 			var hw: float = float(DOOR_OPENING_W[String(d[5])]) * 0.5
 			holes.append([c - hw, c + hw, float(o[6]), float(o[6]) + DOOR_OPENING_H])
 	for w: Array in WINDOWS:
-		if _is_opening(o, f, String(w[2]), float(w[3]), float(w[4])):
+		if String(w[1]) == f and _is_opening(o, f, String(w[2]), float(w[3]), float(w[4])):
 			var cw: float = (float(o[4]) + float(o[5])) * 0.5
 			holes.append([cw - WINDOW_W * 0.5, cw + WINDOW_W * 0.5, float(o[6]), float(o[6]) + WINDOW_H])
 	if holes.is_empty():
@@ -278,8 +280,8 @@ static func door_place(d: Array) -> Array:
 
 # --- Gameplay ---------------------------------------------------------------------------------
 
-## Gameplay: doors (B2), gameplay windows, the casing marker, and the always-present prefabs' groups. C11 and C14 are
-## live in every layout (B6), so they sit here, outside any slot. Everything else is a G1 to-do.
+## Gameplay: doors (B2), gameplay windows, the casing marker, the art-lift landing placeholders (bag_lift: G1 to-do), the
+## LD roller placeholder, then build_devices (gn_content: the always-present prefabs, C11 / C14, ladders...).
 func build_gameplay(gp: Node3D) -> void:
 	_build_doors(add(gp, node3d("Doors")) as Node3D)
 	_build_windows(add(gp, node3d("Windows")) as Node3D)
@@ -287,21 +289,23 @@ func build_gameplay(gp: Node3D) -> void:
 		add(gp, node3d(nm))
 	placeholder(n("Gameplay/Markers"), "CasingHall", CASING_HALL,
 		"casing objective marker (B5 casing_hall), the Great Hall stair foot", "casing_hall", 180.0)
-	var lad: Array = L.AREAWAY["ladder"]
-	placeholder(n("Gameplay/Ladders"), "AreawayLadder", Vector3(float(lad[0]), float(lad[1]), float(lad[2])),
-		"ladder prefab height_m 4.2, the light well's west wall, PL FFL -> the court grate (masked only, no bags; QC-64)")
-	placeholder(n("Gameplay/Ladders"), "FireEscapeLadder", Vector3(10.0, 0.0, -0.45),
-		"ladder prefab height_m 9.0, caged, Mews -> roof deck through the parapet opening; drop section down (B4.6)")
 	for f: String in ["B", "G", "U"]:
 		placeholder(n("Gameplay/Lifts"), "ArtLiftLanding" + f, Vector3(30.0, float(L.FFL[f]), 3.0),
 			"bag_lift landing (4 bags, 10 s): car + landing doors (art lift, every floor)")
 	var rc: float = (float(ROLLER[3]) + float(ROLLER[4])) * 0.5
 	placeholder(n("Gameplay/Doors"), "DockRollerDoor", Vector3(rc, float(L.FFL[String(ROLLER[0])]), float(ROLLER[2])),
 		"LD roller door N: industrial_door BARRED (crew cannot operate; police ENTRY breach_only), baked closed")
-	for c: Array in L.CAMERAS:
-		if (c[6] as Array).has("always"):
-			placeholder(n("Gameplay/Cameras"), String(c[0]), Vector3(float(c[3]), float(c[4]), float(c[5])),
-				"security_camera %s (%s), live in every layout" % [c[0], c[2]])
+	build_devices(gp)
+
+
+## Hook (gn_content): every always-present gameplay prefab outside the variant slots.
+func build_devices(_gp: Node3D) -> void:
+	pass
+
+
+## Hook (gn_content): builds a slot's real content; false keeps the placeholder.
+func slot_content(_vs: VariantSlot, _group: String, _slot_id: String, _row: Array) -> bool:
+	return false
 
 
 ## B2 doors with the greybox kit visual (arch_door_<kind>_t20 / t40 by the wall they sit in: a flush frame,
@@ -409,19 +413,12 @@ func build_variants(variants: Node3D) -> void:
 		if g2 == "court_doors":
 			_court_doors(vs, sid)
 			continue
+		if slot_content(vs, g2, sid, row):
+			continue
 		var ph: Marker3D = placeholder(vs, "Placeholder", at, "%s (%s)" % [SLOT_TODO.get(g2, "?"), String(row[11])],
 			String(SLOT_TAGS.get(g2, "")), yaw)
 		if bool(row[10]):
 			_slot_use_point(ph, at, yaw, String(row[3]))
-		if g2 == "camera":
-			_layout_cameras(vs, sid)
-		if g2 == "escape":
-			for z: Array in L.ESCAPE_ZONES:
-				if String(z[0]) == sid:
-					var short: String = sid.trim_prefix("esc_")
-					var ztag: String = ("escape_" if String(z[1]) == "ESCAPE" else "secure_") + short
-					placeholder(vs, "%sZone" % String(z[1]).capitalize().replace(" ", ""),
-						Vector3(float(z[4]), float(z[5]), float(z[6])), "%s MapZone of %s" % [z[1], sid], ztag)
 
 
 ## The UsePoint of an interactive slot's content: USE_POINT_M in front of the anchor, on the floor it stands on (the
@@ -455,10 +452,3 @@ func _slot(parent: Node3D, group: String, slot_id: String, weight: float, at: Ve
 	vs.transform = Transform3D(yaw_basis(yaw), at)
 	add(parent, vs)
 	return vs
-
-
-func _layout_cameras(vs: VariantSlot, layout: String) -> void:
-	for c: Array in L.CAMERAS:
-		if (c[6] as Array).has(layout):
-			placeholder(vs, String(c[0]), Vector3(float(c[3]), float(c[4]), float(c[5])),
-				"security_camera %s (%s)" % [c[0], c[2]])
