@@ -99,7 +99,7 @@ func test_s10_1_sprint_and_jump_limits_per_weight() -> void:
 			max_y = maxf(max_y, c.global_position.y)
 		_rt.clear_bot_intent(0)
 		# D-102: bags never block a jump; the jump velocity is scaled by bag_jump_mult[w].
-		var v: float = tw.jump_velocity * _jump_mult(tw, w)
+		var v: float = tw.jump_velocity * tw.bag_jump_mult[w]
 		var apex: float = v * v / (2.0 * tw.gravity)
 		assert_true(absf(max_y - apex) <= maxf(apex * 0.15, 0.03),
 				"weight %d jump apex %.2f m (expected %.2f)" % [w, max_y, apex])
@@ -279,10 +279,3 @@ func test_s10_1_throw_follows_look_pitch() -> void:
 	var lt: LootTweak = LootTweak.get_default()
 	assert_near(rad_to_deg(atan2(level.y, Vector2(level.x, level.z).length())), lt.throw_elevation_deg, 0.5,
 		"looking level keeps the tuned elevation")
-
-
-## D-102 bag_jump_mult; until trunk carries it, the old bag_can_jump (blocked = no jump at all).
-static func _jump_mult(tw: CrewTweak, w: int) -> float:
-	if &"bag_jump_mult" in tw:
-		return float((tw.get(&"bag_jump_mult") as PackedFloat32Array)[w])
-	return 1.0 if tw.bag_can_jump[w] else 0.0

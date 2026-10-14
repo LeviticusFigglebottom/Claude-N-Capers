@@ -32,6 +32,10 @@ const TAG_PRINTOUT: StringName = &"printout"
 const TAG_ESCAPE_HELI: StringName = &"escape_heli"
 const TAG_ESCAPE_LINE: StringName = &"escape_line"
 const TAG_ESCAPE_SERVICE: StringName = &"escape_service"
+const TAG_KEYCARD: StringName = &"keycard"
+const TAG_CAGE_CODE: StringName = &"cage_code"
+## PO-5 (D-089 markers): the rolled escape's secure zone (HeliNetE1 / LineSecureE2 / LiftSecureE3).
+const TAG_LOOT_SECURE: StringName = &"loot_secure"
 const RARE_PRINTOUT: StringName = &"ledger_printout"
 const RARE_CAGE_OPEN: StringName = &"cage_left_open"
 const RARE_TIMELOCK: StringName = &"timelock_extended"
@@ -53,21 +57,27 @@ func _on_mission_start() -> void:
 	say(&"vo.mercer.shadow_ledger_intro")
 	say(&"vo.accountant.shadow_ledger_contact_intro", {}, &"accountant")
 	add_objective(&"casing", &"objective.shadow_ledger.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
-	add_objective(&"laptop", &"objective.shadow_ledger.laptop", Enums.ObjectiveState.ACTIVE, {"location": variant(&"laptop")})
-	add_objective(&"keycard", &"objective.shadow_ledger.keycard")
+	add_objective(&"laptop", &"objective.shadow_ledger.laptop", Enums.ObjectiveState.ACTIVE,
+		{"location": variant(&"laptop"), "marker_tags": [TAG_LAPTOP]})
+	add_objective(&"keycard", &"objective.shadow_ledger.keycard", Enums.ObjectiveState.ACTIVE, {"marker_tags": [TAG_KEYCARD]})
 	require_items(&"keycard", ITEM_KEYCARD)
-	add_objective(&"server_door", &"objective.shadow_ledger.server_door")
+	add_objective(&"server_door", &"objective.shadow_ledger.server_door", Enums.ObjectiveState.ACTIVE,
+		{"marker_tags": [TAG_SERVER_READER]})
 	add_objective(&"cage_code", &"objective.shadow_ledger.cage_code", Enums.ObjectiveState.ACTIVE,
-		{"optional": true, "alternative": &"saw"})
-	add_objective(&"cage", &"objective.shadow_ledger.cage")
-	add_objective(&"hack", &"objective.shadow_ledger.hack", Enums.ObjectiveState.HIDDEN)
-	add_objective(&"drives", &"objective.shadow_ledger.drives", Enums.ObjectiveState.HIDDEN)
+		{"optional": true, "alternative": &"saw", "marker_tags": [TAG_CAGE_CODE]})
+	add_objective(&"cage", &"objective.shadow_ledger.cage", Enums.ObjectiveState.ACTIVE, {"marker_tags": [TAG_CAGE]})
+	add_objective(&"hack", &"objective.shadow_ledger.hack", Enums.ObjectiveState.HIDDEN, {"marker_tags": [TAG_HACK]})
+	add_objective(&"drives", &"objective.shadow_ledger.drives", Enums.ObjectiveState.HIDDEN, {"marker_tags": [TAG_DRIVES]})
 	add_objective(&"secure", &"objective.shadow_ledger.secure", Enums.ObjectiveState.ACTIVE,
-		{"laptop": 1, "drives": MIN_DRIVES, "optional_more": true})
-	add_objective(&"study_safe", &"objective.shadow_ledger.study_safe", Enums.ObjectiveState.ACTIVE, {"optional": true})
-	add_objective(&"paintings", &"objective.shadow_ledger.paintings", Enums.ObjectiveState.ACTIVE, {"optional": true})
-	add_objective(&"archive_safe", &"objective.shadow_ledger.archive_safe", Enums.ObjectiveState.ACTIVE, {"optional": true})
-	add_objective(&"escape", &"objective.shadow_ledger.escape", Enums.ObjectiveState.HIDDEN)
+		{"laptop": 1, "drives": MIN_DRIVES, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
+	add_objective(&"study_safe", &"objective.shadow_ledger.study_safe", Enums.ObjectiveState.ACTIVE,
+		{"optional": true, "marker_tags": [TAG_STUDY_SAFE]})
+	add_objective(&"paintings", &"objective.shadow_ledger.paintings", Enums.ObjectiveState.ACTIVE,
+		{"optional": true, "marker_tags": [TAG_PAINTINGS]})
+	add_objective(&"archive_safe", &"objective.shadow_ledger.archive_safe", Enums.ObjectiveState.ACTIVE,
+		{"optional": true, "marker_tags": [TAG_ARCHIVE_SAFE]})
+	add_objective(&"escape", &"objective.shadow_ledger.escape", Enums.ObjectiveState.HIDDEN,
+		{"marker_tags": [_escape_tag()]})
 	on_event(&"interaction_completed", _on_interaction_completed)
 	on_event(&"device_started", _on_device_started)
 	on_event(&"device_finished", _on_device_finished)

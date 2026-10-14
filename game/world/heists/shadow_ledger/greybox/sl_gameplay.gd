@@ -581,7 +581,8 @@ func _variants_escape(variants: Node3D) -> void:
 	var esc: Node3D = _group(variants, "escape")
 	var e1: VariantSlot = _slot(esc, "escape", "esc_heli", 0.4, {"label": "E1"})
 	prefab(e1, "secure_zone", "HeliNetE1", Vector3(28.0, L.FRF, 9.8), 0.0,
-		{"vehicle_collision": false, "zone_size_m": Vector3(5.6, 2.5, 5.6), "visual_scene": load(SECURE_NET_VISUAL)},
+		{"objective_tag": &"loot_secure", "vehicle_collision": false,
+			"zone_size_m": Vector3(5.6, 2.5, 5.6), "visual_scene": load(SECURE_NET_VISUAL)},
 		null, {"kind": "cargo_net"}, false)
 	prefab(e1, "escape_zone", "HeliEscapeE1", Vector3(33.0, L.FRF, 8.0), 0.0,
 		{"objective_tag": &"escape_heli", "escape_type": &"heli", "zone_size_m": Vector3(3.6, 3.0, 6.0),
@@ -593,14 +594,16 @@ func _variants_escape(variants: Node3D) -> void:
 	if zl != null:
 		zl.set(&"end", zl.get_path_to(far))
 	prefab(e2, "secure_zone", "LineSecureE2", Vector3(33.9, L.FRF, 16.6), 0.0,
-		{"vehicle_collision": false, "zone_size_m": Vector3(2.0, 2.5, 2.0), "visual_scene": load(SECURE_CART_VISUAL)},
+		{"objective_tag": &"loot_secure", "vehicle_collision": false,
+			"zone_size_m": Vector3(2.0, 2.5, 2.0), "visual_scene": load(SECURE_CART_VISUAL)},
 		null, {"kind": "bag_cart"}, false)
 	prefab(e2, "escape_zone", "LineEscapeE2", Vector3(31.3, L.FRF, 16.6), 0.0,
 		{"objective_tag": &"escape_line", "escape_type": &"zipline", "zone_size_m": Vector3(2.8, 3.0, 2.0)})
 	var e3: VariantSlot = _slot(esc, "escape", "esc_service", 0.25, {"label": "E3"})
 	# The car itself is the drop (no cart visual); ESCAPE covers the car floor.
 	prefab(e3, "secure_zone", "LiftSecureE3", Vector3(22.5, L.F40, 9.0), 0.0,
-		{"vehicle_collision": false, "zone_size_m": Vector3(2.4, 2.4, 2.4), "visual_scene": load(SECURE_DROP_MARKER)},
+		{"objective_tag": &"loot_secure", "vehicle_collision": false,
+			"zone_size_m": Vector3(2.4, 2.4, 2.4), "visual_scene": load(SECURE_DROP_MARKER)},
 		null, {}, false)
 	prefab(e3, "escape_zone", "LiftEscapeE3", Vector3(22.5, L.F40, 9.0), 0.0,
 		{"objective_tag": &"escape_service", "escape_type": &"lift", "zone_size_m": Vector3(2.6, 2.4, 2.6)})
