@@ -257,8 +257,13 @@ func _build_lobby() -> VBoxContainer:
 	cv.add_child(UiBuild.caption(&"ui.lobby.contract.title"))
 	contract_label = UiBuild.label(&"", UiBuild.SUBHEADER)
 	contract_detail_label = UiBuild.label(&"", UiBuild.DIM)
-	cv.add_child(contract_label)
-	cv.add_child(contract_detail_label)
+	# PO-B-C6: the crew cards were cut under the fold at 720p. The contract, its difficulty, music and drop-in
+	# share rows now (two rows shorter).
+	var name_row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	contract_detail_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	name_row.add_child(contract_label)
+	name_row.add_child(contract_detail_label)
+	cv.add_child(name_row)
 	var crow: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	board_button = UiBuild.button(&"ui.lobby.contract.board")
 	planning_button = UiBuild.button(&"ui.lobby.contract.planning")
@@ -275,8 +280,10 @@ func _build_lobby() -> VBoxContainer:
 	music_picker = MusicPicker.new()
 	music_picker.name = "MusicPicker"
 	music_picker.music_changed.connect(_on_music_changed)
-	cv.add_child(music_picker)
-	cv.add_child(_build_dropin_row())
+	var opt_row: HBoxContainer = UiBuild.hbox(UiTokens.S5)
+	opt_row.add_child(music_picker)
+	opt_row.add_child(_build_dropin_row())
+	cv.add_child(opt_row)
 	var top: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	var contract_panel: PanelContainer = UiBuild.panel(cv)
 	contract_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -344,9 +351,19 @@ func _slot_card() -> PanelContainer:
 	w["level"] = UiBuild.label(&"")
 	w["ready"] = UiBuild.caption()
 	for k: String in ["tags", "name", "level", "ready"]:
-		var l: Label = w[k] as Label
-		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		v.add_child(l)
+		(w[k] as Label).text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	# PO-B-C6: Kick sits beside the name and the level shares a row with the ready state (the mask row was
+	# under the fold at 720p).
+	v.add_child(w["tags"] as Label)
+	var name_row: HBoxContainer = UiBuild.hbox(UiTokens.S2)
+	(w["name"] as Label).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_row.add_child(w["name"] as Label)
+	v.add_child(name_row)
+	var state_row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	(w["ready"] as Label).size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	state_row.add_child(w["level"] as Label)
+	state_row.add_child(w["ready"] as Label)
+	v.add_child(state_row)
 	v.add_child(HSeparator.new())
 	# PO-4: loadout as caption / value rows ("PRIMARY  Corsair"), heister first.
 	var grid: GridContainer = GridContainer.new()
@@ -381,14 +398,11 @@ func _slot_card() -> PanelContainer:
 	flag.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(flag)
 	w["flag"] = flag
-	var spacer: Control = Control.new()
-	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	v.add_child(spacer)
 	var kick: Button = UiBuild.button(&"ui.kick.button")
-	kick.custom_minimum_size = Vector2(160, 0)
-	kick.size_flags_horizontal = Control.SIZE_SHRINK_END
+	kick.custom_minimum_size = Vector2(140, 0)
+	kick.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	kick.pressed.connect(ask_kick.bind(slot_widgets.size()))
-	v.add_child(kick)
+	name_row.add_child(kick)
 	w["kick"] = kick
 	var p: PanelContainer = UiBuild.panel(v)
 	p.custom_minimum_size = SLOT_CARD_MIN

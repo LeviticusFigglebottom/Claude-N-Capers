@@ -9,6 +9,9 @@
 ##     "contact": ContactDef or null,
 ##     "briefing_text": String,
 ##     "objectives": [{ "id": StringName, "key": StringName, "text": String }]   HeistDef order
+##                                        (HeistDef.briefing_objectives when set, D-109)
+##     "loud_text": String                HeistDef.briefing_loud_key's text ("" = no loud line)
+##     "optional": [same as objectives]   HeistDef.briefing_optional
 ##     "loot": [{ "loot_id": StringName, "base": int, "value": int, "text": String }]
 ##                                        value = PayoutCalculator loot line (base x payout_mult)
 ##     "contract_pay": int,               HeistCatalog.contract_preview(base_payout, difficulty)
@@ -60,6 +63,12 @@ static func build(heist_id: StringName, difficulty: int, def: HeistDef = null,
 	var contact_id: StringName = h.contact if h != null else StringName(ph.get("contact", &""))
 	var briefing_src: String = h.briefing if h != null else String(ph.get("briefing", ""))
 	var objectives: Array = Array(h.objectives) if h != null else Array(ph.get("objectives", []))
+	# D-109 (lead ruling): a def may name a short briefing list; the loud branch collapses to one line and
+	# the optional extras go under their own sub-head. Empty briefing_objectives = every objective.
+	if h != null and not h.briefing_objectives.is_empty():
+		objectives = Array(h.briefing_objectives)
+	var loud_key: StringName = h.briefing_loud_key if h != null else &""
+	var optional: Array = Array(h.briefing_optional) if h != null else []
 	var loot: Array = Array(h.loot) if h != null else Array(ph.get("loot", []))
 	var escapes: Array = Array(h.escape_options) if h != null else Array(ph.get("escape_options", []))
 	var contact: ContactDef = _contact(contact_id, d)
@@ -72,6 +81,8 @@ static func build(heist_id: StringName, difficulty: int, def: HeistDef = null,
 		"contact": contact,
 		"briefing_text": briefing_text(heist_id, briefing_src),
 		"objectives": objective_lines(heist_id, objectives),
+		"loud_text": UiText.t(loud_key) if loud_key != &"" and is_key(String(loud_key)) else "",
+		"optional": objective_lines(heist_id, optional),
 		"loot": loot_lines(loot, difficulty),
 		"contract_pay": HeistCatalog.contract_preview(base_payout, difficulty),
 		"mode": mode,

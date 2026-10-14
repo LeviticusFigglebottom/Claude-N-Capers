@@ -13,6 +13,12 @@ extends Resource
 @export var stealth_bonus_mult: float = 1.15
 @export var loot: Array[StringName] = []
 @export var objectives: Array[StringName] = []
+## Briefing list (ordered objective ids, the main path ending in secure / escape); empty = every id in `objectives`.
+@export var briefing_objectives: Array[StringName] = []
+## One line for the loud branch, "If it goes loud: <text>" (a strings key; &"" = no line).
+@export var briefing_loud_key: StringName = &""
+## Optional extras listed under a small "Optional" sub-head (objective ids).
+@export var briefing_optional: Array[StringName] = []
 ## Pre-planning: available assets/plans: { id: { "cost": int, "favors": int, "slot": NodePath/StringName, "grants": Dictionary } }
 @export var preplanning: Dictionary = {}
 @export var escape_options: Array[StringName] = []    ## &"van", &"boat", &"heli", &"walk"

@@ -38,19 +38,20 @@ feed_cover_deg = 78.0
 part_ramp_frames = 3.0
 left_hand_ik_skip_sets = Array[StringName]([&"bow", &"akimbo"])
 set_hip_offset = Dictionary[StringName, Vector3]({
-&"rifle": Vector3(0.02, -0.03, -0.16),
-&"flamethrower": Vector3(0.02, -0.03, -0.2),
-&"saw": Vector3(0.02, -0.03, -0.1),
-&"sniper": Vector3(0.02, -0.03, -0.18),
-&"break_action": Vector3(0.02, -0.03, -0.16),
-&"smg": Vector3(0.02, -0.03, -0.13),
-&"shotgun": Vector3(0.02, -0.03, -0.17),
-&"shotgun_box": Vector3(0.02, -0.03, -0.16),
-&"lmg": Vector3(0.02, -0.03, -0.165),
-&"minigun": Vector3(0.02, -0.03, -0.14),
-&"launcher": Vector3(0.02, -0.03, -0.15),
-&"crossbow": Vector3(0.02, -0.03, -0.16),
-&"lever": Vector3(0.02, -0.03, -0.16),
+&"pistol": Vector3(0.02, 0.025, 0.05),
+&"rifle": Vector3(0.05, -0.01, -0.12),
+&"flamethrower": Vector3(0.05, -0.01, -0.16),
+&"saw": Vector3(0.05, -0.01, -0.06),
+&"sniper": Vector3(0.05, -0.01, -0.17),
+&"break_action": Vector3(0.05, -0.01, -0.12),
+&"smg": Vector3(0.05, -0.01, -0.09),
+&"shotgun": Vector3(0.05, -0.01, -0.13),
+&"shotgun_box": Vector3(0.05, -0.01, -0.12),
+&"lmg": Vector3(0.05, -0.01, -0.125),
+&"minigun": Vector3(0.05, -0.01, -0.1),
+&"launcher": Vector3(0.05, -0.01, -0.11),
+&"crossbow": Vector3(0.05, -0.01, -0.12),
+&"lever": Vector3(0.05, -0.01, -0.12),
 &"melee_knife": Vector3(-0.1, 0.06, -0.18)
 })
 set_ads_offset_z = Dictionary[StringName, float]({

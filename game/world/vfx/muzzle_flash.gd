@@ -19,6 +19,8 @@ const SMOKE_LAYER: Dictionary = {
 @export var auto_tick: bool = true
 
 var _left: float = 0.0
+## Engine.get_frames_drawn() when the flash started: it stays up for at least one drawn frame (hitch-proof).
+var _drawn_at: int = -1
 var _smoke_left: float = 0.0
 var _star: MeshInstance3D
 var _flame: Node3D
@@ -46,6 +48,7 @@ func flash(size: float = 1.0, suppressed: bool = false) -> void:
 		_flame.scale = Vector3(size * 0.6, size * 0.6, size * _rng.randf_range(1.4, 2.0))
 		_flame.rotation = Vector3(0.0, 0.0, _rng.randf_range(-PI, PI))
 		_left = FLASH_S
+		_drawn_at = Engine.get_frames_drawn()
 	_smoke.scale = Vector3.ONE * (0.6 if suppressed else 1.0)
 	_smoke.visible = true
 	ImpactFx.restart_emitter(_smoke)
@@ -64,7 +67,7 @@ func tick(delta: float) -> void:
 	if _left <= 0.0:
 		return
 	_left -= delta
-	if _left <= 0.0:
+	if _left <= 0.0 and VfxSettings.frame_drawn_since(_drawn_at):
 		hide_flash()
 
 

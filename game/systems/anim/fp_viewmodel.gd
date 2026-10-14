@@ -948,6 +948,7 @@ func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 	_set_off = want if _set_off_init else _set_off.move_toward(want, tw.set_offset_rate * delta)
 	_set_off_init = false
 	off += _set_off
+	off.y -= sin(PI * clampf(ads_weight, 0.0, 1.0)) * tw.ads_dip_m  # PO-13: the arc into / out of the sights
 	_base_offset = off
 	_late_align()  # first pass on the last applied pose (direct tick() callers / tests); AdsAlign refines it
 

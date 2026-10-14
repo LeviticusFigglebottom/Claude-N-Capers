@@ -112,6 +112,9 @@ func _open_all(size: Vector2i) -> Array[String]:
 		out.append_array(await _at(opts, "%s options/%s" % [tag, t]))
 	opts.back_requested.emit()
 	await wait_frames(2)
+	_flow.show_hub()
+	_flow.call(&"_open_achievements")
+	out.append_array(await _at(_flow.current, tag + " achievements"))
 	for st: StringName in [&"board", &"planning", &"armory", &"masks", &"crew", &"jukebox", &"notoriety", &"profile"]:
 		_flow.show_hub()
 		await wait_frames(1)
