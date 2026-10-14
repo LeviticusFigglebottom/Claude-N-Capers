@@ -14,6 +14,8 @@ const PAD: float = 28.0
 
 ## Zone name size (canvas units) in _draw(); _zone_label_rects() measures with it.
 const ZONE_FONT: int = 16
+## Clear pixels kept between two markers (_separate_markers).
+const MARKER_GAP: float = 4.0
 
 var board: PreplanBoard
 var tweak: PreplanTweak
@@ -129,7 +131,9 @@ func _layout_markers() -> void:
 		var p: Dictionary = board.blueprint.point(StringName(pid))
 		var b: Button = markers[pid] as Button
 		b.position = world_to_view(p.get("pos", Vector2.ZERO) as Vector2) - b.size * 0.5
-		taken.append(b.get_rect().grow(2.0))
+	_separate_markers()
+	for pid: Variant in markers:
+		taken.append((markers[pid] as Button).get_rect().grow(2.0))
 	for pid: Variant in markers:
 		var b: Button = markers[pid] as Button
 		var l: Label = marker_labels[pid] as Label
@@ -161,6 +165,30 @@ func _layout_markers() -> void:
 		l.set_meta(&"crowded", not placed)
 		l.visible = placed
 	queue_redraw()
+
+
+## GN-B1 capture: two points a couple of meters apart (Gallery Night's portico entry and limo escape) drew
+## one marker over the other. A later marker that overlaps an earlier one moves straight away from it (down
+## when they coincide) until MARKER_GAP px clear, inside the view.
+func _separate_markers() -> void:
+	var placed: Array[Button] = []
+	for pid: Variant in markers:
+		var b: Button = markers[pid] as Button
+		for _pass: int in range(4):
+			var moved: bool = false
+			for o: Button in placed:
+				var d: Vector2 = (b.position + b.size * 0.5) - (o.position + o.size * 0.5)
+				var need: float = (b.size.x + o.size.x) * 0.5 + MARKER_GAP
+				if d.length() >= need:
+					continue
+				var dir: Vector2 = d.normalized() if d.length() > 0.5 else Vector2.DOWN
+				b.position += dir * (need - d.length())
+				moved = true
+			if size != Vector2.ZERO:
+				b.position = b.position.clamp(Vector2.ZERO, (size - b.size).max(Vector2.ZERO))
+			if not moved:
+				break
+		placed.append(b)
 
 
 ## Rects of the zone names _draw() prints (same rules: top-left of the zone, only when it fits).

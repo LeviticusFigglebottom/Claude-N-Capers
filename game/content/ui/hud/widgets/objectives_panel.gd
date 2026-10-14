@@ -169,6 +169,7 @@ func watched_signals() -> Array[StringName]:
 
 func refresh() -> void:
 	var new_id: StringName = &""
+	var still_active: bool = false  # the shown step is still ACTIVE (another step went ahead of it)
 	if _active == null:  # one line, reused (perf: no node churn per objectives_changed)
 		_active = UiBuild.label(&"", UiBuild.HUD)
 		_active.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)
@@ -177,18 +178,23 @@ func refresh() -> void:
 	for o: Dictionary in prop(&"objectives", []) as Array:
 		if int(o.get("state", Enums.ObjectiveState.ACTIVE)) != Enums.ObjectiveState.ACTIVE:
 			continue
+		if StringName(o.get("id", &"")) == shown_id:
+			still_active = true
+		if new_id != &"":
+			continue
 		if bool((o.get("args", {}) as Dictionary).get("disabled", false)):
 			continue  # PO-5.6: e.g. the keycard step in a lockdown; the next live step shows instead
 		var t: String = UiText.t(&"ui.hud.objective_active", {"text": objective_text(o, secured_count)})
 		if _active.text != t:
 			_active.text = t
 		new_id = StringName(o.get("id", &""))
-		break
 	if new_id != &"" and _active.get_parent() == null:
 		list_box.add_child(_active)
 	elif new_id == &"" and _active.get_parent() == list_box:
 		list_box.remove_child(_active)
-	if new_id != shown_id and shown_id != &"" and is_inside_tree():
+	# GN-B1 capture: a step that jumps ahead (Gallery Night's Argus lockdown) used to flash the step it
+	# displaced as "OBJECTIVE COMPLETE" while that step was still to do. Only a finished step flashes.
+	if new_id != shown_id and shown_id != &"" and not still_active and is_inside_tree():
 		_done_text = _shown_text
 		_flash_complete()
 	shown_id = new_id

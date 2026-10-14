@@ -39,6 +39,8 @@ var objectives_box: VBoxContainer
 var loot_box: VBoxContainer
 var escape_label: Label
 var subtitle_label: Label
+## Holds subtitle_label: a long line scrolls here instead of growing the page.
+var subtitle_scroll: ScrollContainer
 var play_button: Button
 var continue_button: Button
 var back_button: Button
@@ -136,8 +138,14 @@ func _build_contact_column(body: HBoxContainer) -> void:
 	col.add_child(play_button)
 	subtitle_label = UiBuild.label(&"ui.briefing.subtitle_idle")
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	var sub_panel: PanelContainer = UiBuild.panel(subtitle_label)
+	subtitle_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# GN-B1 capture: a long line (Gallery Night's run to ~190 characters) grew the column and pushed Back /
+	# Continue off the screen at 720p and 1080p. The line scrolls inside the panel instead.
+	subtitle_scroll = ScrollContainer.new()
+	subtitle_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	subtitle_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	subtitle_scroll.add_child(subtitle_label)
+	var sub_panel: PanelContainer = UiBuild.panel(subtitle_scroll)
 	sub_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	col.add_child(sub_panel)
 
@@ -318,6 +326,7 @@ func _play_current() -> void:
 	subtitle_label.text = UiText.t(&"ui.briefing.subtitle", {
 		"speaker": String(_speaker_names.get(speaker, String(speaker))), "text": text,
 	})
+	subtitle_scroll.scroll_vertical = 0
 	var ctx: Dictionary = {
 		"source": SOURCE, "local": true, "heist_id": heist_id, "index": _line_index,
 		"count": lines.size(), "priority": int(line.get("priority", 0)),
