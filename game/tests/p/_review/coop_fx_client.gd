@@ -54,6 +54,8 @@ func _grab(kind: String) -> void:
 	await RenderingServer.frame_post_draw
 	_n[kind] = int(_n[kind]) + 1
 	get_viewport().get_texture().get_image().save_png("%s/client_%s_%02d.png" % [_out, kind, int(_n[kind])])
+	await RenderingServer.frame_post_draw  # the next frame too: a third-person flash may spawn a frame late
+	get_viewport().get_texture().get_image().save_png("%s/client_%s_%02d_next.png" % [_out, kind, int(_n[kind])])
 	_busy = false
 
 
