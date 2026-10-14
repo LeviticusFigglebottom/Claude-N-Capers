@@ -17,6 +17,11 @@ const VAN_VISUAL: String = "res://world/props/secure_zone/veh_van_secure.tscn"
 ## secure_zone van, the moored launch), so their visual only carries the contract nodes (no second vehicle).
 const ESCAPE_VAN_MARKER: String = "res://world/heists/shared/escape_van_marker.tscn"
 const ESCAPE_BOAT_MARKER: String = "res://world/heists/shared/escape_boat_marker.tscn"
+## D-111 prop art pass: catalog visual (tools/blender/props) per prefab type, as on Night Deposit
+## (nd_gameplay.PREFAB_VISUALS). Doors, ladders, drills, burn points and loot choose theirs where they are built.
+const PREFAB_VISUALS: Dictionary = {"safe": "prop_safe_large", "hack_terminal": "prop_server_rack_terminal"}
+## D1 stack ladder: 5.2 m rise, the container doors 0.22 m behind the stiles (prefab_visuals.py).
+const LADDER_D1: String = "prop_ladder_steel_h520_g22"
 ## Leaf widths per custom door type (width_m must equal the visual leaf width; validator scale check).
 const CUSTOM_WIDTH: Dictionary = {"slide": 2.4, "roller": 3.6, "vault": 2.0}
 ## Containers K1-K6: [prop name, door x (the door end face), door side (+1 = doors face +x)].
@@ -59,6 +64,8 @@ func prefab(parent: Node3D, kind: String, nm: String, pos: Vector3, yaw: float, 
 	inst.transform = global_xform(parent).affine_inverse() * world if parent != map_root else world
 	for k: Variant in props:
 		_set_prop(inst, String(k), props[k])
+	if not props.has("visual_scene") and PREFAB_VISUALS.has(kind):
+		inst.set(&"visual_scene", _catalog_scene(String(PREFAB_VISUALS[kind])))
 	for mk: Variant in metas:
 		inst.set_meta(StringName(String(mk)), metas[mk])
 	parent.add_child(inst)
@@ -484,7 +491,8 @@ func _variants_perch(variants: Node3D) -> void:
 	var roof: VariantSlot = _slot(g, "player_perch", "perch_roof", 0.3, {"door": "RoofDoor"})
 	marker(roof, "PerchRoof", Vector3(10.0, L.ROOF, 5.0))
 	var stack: VariantSlot = _slot(g, "player_perch", "perch_stack", 0.3)
-	prefab(stack, "ladder", "D1Ladder", Vector3(8.0, 0.0, -5.38), 180.0, {"height_m": 5.2}, null, {"kind": "ladder"})
+	prefab(stack, "ladder", "D1Ladder", Vector3(8.0, 0.0, -5.38), 180.0, {"height_m": 5.2,
+		"visual_scene": _catalog_scene(LADDER_D1)}, null, {"kind": "ladder"})
 	_slot(g, "player_perch", "perch_none", 0.4)
 
 
