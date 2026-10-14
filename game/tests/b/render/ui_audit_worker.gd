@@ -28,7 +28,7 @@ func _shot(shot: String, frames: int = 12) -> void:
 	await RenderingServer.frame_post_draw
 	_n += 1
 	if _only != "" and _only != "heist" and _only != "menus" and _only != "screens" and _only != "fail" \
-			and _only != "range" and not shot.begins_with(_only):
+			and _only != "range" and _only != "feedback" and not shot.begins_with(_only):
 		return
 	var img: Image = get_viewport().get_texture().get_image()
 	var path: String = "%s/%02d_%s_%dx%d.png" % [_out, _n, shot, img.get_width(), img.get_height()]
@@ -50,9 +50,12 @@ func _run() -> void:
 		await _fail()
 	elif _only == "range":
 		await _range()
+	elif _only == "feedback":
+		await _feedback()
 	elif _only != "heist":
 		await _menus()
-	if _only != "menus" and _only != "screens" and _only != "fail" and _only != "range":
+	if _only != "menus" and _only != "screens" and _only != "fail" and _only != "range" \
+			and _only != "feedback":
 		await _heist()
 	SaveService.delete_profile(SLOT)
 	get_tree().quit(0)
@@ -174,6 +177,44 @@ func _fail() -> void:
 		if pd != null and is_instance_valid(pd):
 			pd.continue_button.pressed.emit()
 		await _shot("fail_home_" + String(reason), 20)
+
+
+## Lead round 67 `feedback`: the round-62/64 widgets driven by the REAL systems (A's local_net_id,
+## revive_progress / reviver_slot, crew-row bleedout_s): the local crew hits a guard (hit marker; the
+## head for a headshot), a guard hits the local crew (damage arc), an AI teammate goes down (badge ring),
+## then the local player goes down (grey screen + bleedout).
+func _feedback() -> void:
+	_flow.launch(HEIST, Enums.Difficulty.ROUTINE, SaveService.load_profile(SLOT).loadout, 44)
+	var t0: int = Time.get_ticks_msec()
+	while (_hud() == null or _flow.runtime == null) and Time.get_ticks_msec() - t0 < 60000:
+		await get_tree().process_frame
+	await _shot("fb_live", 20)
+	var rt: HeistRuntime = _flow.runtime as HeistRuntime
+	var me: CrewController = _local_crew()
+	if me != null:
+		me.set_masked()
+	await _shot("fb_masked", 10)
+	var guard: NpcBase = null
+	for n: Node in rt.npcs():
+		if n is NpcBase:
+			guard = n as NpcBase
+			break
+	if me != null and guard != null:
+		guard.take_hit({"amount": 1.0, "zone": Enums.HitZone.HEAD, "type": Enums.DamageType.BULLET,
+			"direction": (guard.global_position - me.global_position).normalized(), "position": guard.global_position}, me.net_id)
+		await _shot("fb_headshot_marker", 2)
+		var dir: Vector3 = (me.global_position - guard.global_position).normalized()
+		me.take_hit({"amount": 15.0, "zone": Enums.HitZone.BODY, "type": Enums.DamageType.BULLET, "direction": dir,
+			"position": me.global_position}, guard.net_id)
+		await _shot("fb_damage_arc", 4)
+	var mate: CrewController = rt.crew_controller(1) as CrewController if rt != null else null
+	if mate != null and mate.get(&"health") != null:
+		(mate.get(&"health") as Object).call(&"go_down")
+		await _shot("fb_teammate_down", 20)
+	if me != null and me.get(&"health") != null:
+		(me.get(&"health") as Object).call(&"go_down")
+		await _shot("fb_local_down", 30)
+	_flow.call(&"_leave_heist")
 
 
 ## Lead queue (3) `range`: the firing range from the main menu, panel mode then aim mode.
