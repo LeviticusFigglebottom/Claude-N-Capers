@@ -26,6 +26,25 @@ tag_characters = {
 &"civ_worker": [&"npc_bank_teller", &"npc_bank_teller_b", &"bank_officer"],
 &"security_operator": [&"security_officer"]
 }
+heist_tag_characters = {
+&"gallery_night": {
+&"civ_admin": [&"npc_penthouse_guest_a"],
+&"civ_attendant": [&"gallery_attendant"],
+&"civ_conservator": [&"gallery_attendant_b"],
+&"civ_curator": [&"gallery_curator"],
+&"civ_patron": [&"gallery_patron", &"gallery_patron_b", &"npc_penthouse_guest_a", &"npc_penthouse_guest_b"],
+&"civ_waitstaff": [&"npc_penthouse_staff"],
+&"guard_hall": [&"gallery_guard"],
+&"guard_inspection": [&"gallery_guard"],
+&"guard_mews": [&"gallery_guard_b"],
+&"guard_rover_basement": [&"gallery_guard"],
+&"guard_rover_ground": [&"gallery_guard"],
+&"guard_rover_upper": [&"gallery_guard_b"],
+&"guard_vaultline": [&"armored_car_crew", &"armored_car_crew_b"],
+&"staff_admin": [&"gallery_admin"],
+&"staff_cs": [&"gallery_attendant_b"]
+}
+}
 role_characters = {
 &"civilian": [&"civilian_customer_a", &"civilian_customer_b", &"bank_customer", &"bank_customer_b"],
 &"guard": [&"security_officer", &"security_officer_b"]
