@@ -87,8 +87,11 @@ func test_fire_escape_window_route() -> void:
 	if win.openable:
 		var use: Vector3 = win.use_point.global_position if win.get(&"use_point") != null else win.global_position + \
 			Vector3(0, 0, -0.7)
-		await _tr.place(use, win.global_position + Vector3.UP * 0.6)
-		await _tr.turn_to_pitch(deg_to_rad(-10.0))
+		var latch: Vector3 = win.interactable.global_position if win.interactable != null else \
+			win.global_position + Vector3.UP * 0.6
+		await _tr.place(use, latch)
+		var to: Vector3 = latch - _tr.crew.eye_position()
+		await _tr.turn_to_pitch(atan2(to.y, Vector2(to.x, to.z).length()))  # look at the latch like a player
 		_tr.inp.press(&"interact")
 		var opened: bool = await wait_until(func() -> bool: return win.is_open, 6.0)
 		_tr.inp.release(&"interact")
