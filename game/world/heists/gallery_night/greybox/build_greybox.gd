@@ -101,6 +101,7 @@ func _build() -> void:
 	build_npcs()
 	build_tactical(n("Tactical"))
 	build_lights(n("Lighting"))
+	_build_environment(n("Lighting"))
 	build_gameplay(n("Gameplay"))
 	build_variants(n("Variants"))
 	_build_nav_links(nav)
@@ -187,7 +188,8 @@ func _slab(parent: Node3D, nm: String, outer: Array, holes: Array, y0: float, y1
 	var rects: Array = rects_minus(outer, holes)
 	for i: int in range(rects.size()):
 		var r: Array = rects[i]
-		box(parent, "%s_%02d" % [nm, i], Vector3(float(r[0]), y0, float(r[1])), Vector3(float(r[2]), y1, float(r[3])), mat)
+		box(parent, "%s_%02d" % [nm, i], Vector3(float(r[0]), y0, float(r[1])), Vector3(float(r[2]), y1, float(r[3])), mat,
+			SLAB_TILE)
 
 
 static func _inset(r: Array, d: float) -> Array:
@@ -622,11 +624,11 @@ func _build_site(geo: Node3D) -> void:
 	for g: Array in L.GRADE_EXTRA:
 		var q: Array = g[2]
 		box(site, "Grade" + String(g[0]), Vector3(float(q[0]), -0.3, float(q[1])), Vector3(float(q[2]), 0.0, float(q[3])),
-			String(g[1]))
+			String(g[1]), SLAB_TILE)
 	for p: Array in L.POLICE_ISLANDS:
 		var r: Array = p[1]
 		box(site, "PoliceIsland" + String(p[0]), Vector3(float(r[0]), -0.3, float(r[1])), Vector3(float(r[2]), 0.0, float(r[3])),
-			"asphalt")
+			"asphalt", SLAB_TILE)
 	_build_pool(add(site, node3d("Pool")) as Node3D)
 	var cl: Node3D = add(site, node3d("Closures")) as Node3D
 	for c: Array in L.CLOSURES:
@@ -818,6 +820,44 @@ func _build_review_cameras(cams: Node3D) -> void:
 		add(cams, m)
 		paths.append(NodePath("ReviewCameras/" + nm))
 	map_root.review_cameras = paths
+
+
+# --- Environment ------------------------------------------------------------------------------
+
+## Night, no sun, no moon (a shadowless directional would light every interior through the roofs): a dark procedural
+## sky behind the facades, a cool moonlit ambient so unlit floor / corners and the exterior read at night instead of
+## black (the key lights carry the rest), AgX tonemap. No fog (the city is clear; the portico looks into the hall),
+## no SSAO / SSIL (the Compatibility renderer ignores them). Same pattern as Night Deposit's _build_lighting.
+func _build_environment(lighting: Node3D) -> void:
+	var we: WorldEnvironment = WorldEnvironment.new()
+	we.set_script(load("res://world/lighting/heist_world_environment.gd"))  # brightness option (B5-01)
+	we.name = "WorldEnvironment"
+	var env: Environment = Environment.new()
+	env.resource_name = "env_gallery_night"
+	var sky_mat: ProceduralSkyMaterial = ProceduralSkyMaterial.new()
+	sky_mat.sky_top_color = Color(0.02, 0.03, 0.06)
+	sky_mat.sky_horizon_color = Color(0.13, 0.13, 0.16)
+	sky_mat.ground_bottom_color = Color(0.01, 0.015, 0.02)
+	sky_mat.ground_horizon_color = Color(0.1, 0.1, 0.12)
+	sky_mat.sky_energy_multiplier = 0.6
+	var sky: Sky = Sky.new()
+	sky.sky_material = sky_mat
+	env.background_mode = Environment.BG_SKY
+	env.sky = sky
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = Color(0.36, 0.42, 0.55)
+	env.ambient_light_energy = 0.5
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
+	env.tonemap_mode = Environment.TONE_MAPPER_AGX
+	env.tonemap_exposure = 1.25
+	env.fog_enabled = false
+	env.glow_enabled = true
+	env.glow_intensity = 0.4
+	env.glow_bloom = 0.04
+	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT
+	env.glow_hdr_threshold = 1.1
+	we.environment = env
+	add(lighting, we)
 
 
 # --- Navigation bake --------------------------------------------------------------------------

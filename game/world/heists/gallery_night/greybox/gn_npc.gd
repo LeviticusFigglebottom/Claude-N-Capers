@@ -206,6 +206,19 @@ const TACTICAL: Array = [
 ]
 ## Rooms without a greybox key light (shafts; exterior / roof are not key-light rooms).
 const UNLIT_ROOMS: Array[String] = ["SS", "LF", "HH", "LM"]
+## Exterior key lights at grade (street / wall lamps, 4.5 m up; fixtures are the G2 art pass): [name, x, z]. The Mews
+## (spawn + E1 escape) every ~20 m from the gate to the LD roller and up Wexley St, the reflecting pool and the court
+## gate, the portico pair either side of the bronze doors, the Parade at the police islands. pd2_fidelity §7.11: the
+## viewmodel reads in ADS fights outside, so they carry viewmodel_lit like the interior keys.
+const EXT_LAMPS: Array = [
+	["LampMewsW", -30.0, -4.0], ["LampMewsGate", -10.0, -4.0], ["LampMewsMid", 10.0, -4.0],
+	["LampMewsDock", 30.0, -4.0], ["LampMewsCorner", 47.0, -3.0], ["LampWexleyN", 51.0, -16.0],
+	["LampWexleyS", 51.0, 14.0], ["LampPool", -3.0, 18.0], ["LampCourtN", -8.0, 5.0], ["LampCourtS", -8.0, 27.0],
+	["LampPorticoW", 18.0, 34.5], ["LampPorticoE", 26.0, 34.5], ["LampParadeW", -30.0, 46.0],
+	["LampParadeMid", 4.0, 46.0], ["LampParadeE", 52.0, 46.0],
+]
+const EXT_LAMP_Y: float = 4.5
+const EXT_LAMP_COLOR: Color = Color(1.0, 0.86, 0.66)
 
 
 # --- NPC spawns ----------------------------------------------------------------------------------
@@ -281,7 +294,8 @@ func build_tactical(tac: Node3D) -> void:
 # --- Greybox lights (B1: key lights carry viewmodel_lit; the art pass is G2) -----------------------
 
 ## One key OmniLight3D per interior room (layers 1 | viewmodel_lit), centred in its first plan rect, 0.4 m under
-## its ceiling (the Great Hall: the chandelier height 6 m; open-top rooms 4 m).
+## its ceiling (the Great Hall: the chandelier height 6 m; open-top rooms 4 m); its range reaches the room's far
+## floor corners (the floor read black past ~0.8 x the long side). Then the exterior lamps (EXT_LAMPS).
 func build_lights(lit: Node3D) -> void:
 	var done: Dictionary = {}
 	for r: Array in L.ROOMS:
@@ -294,12 +308,26 @@ func build_lights(lit: Node3D) -> void:
 		var h: float = 6.0 if rid == "GH" else minf(ceil, 5.0) - 0.4
 		var w: float = float(r[5]) - float(r[3])
 		var d: float = float(r[6]) - float(r[4])
+		var corner: float = Vector3(w * 0.5, h, d * 0.5).length() * 1.1
 		var light: OmniLight3D = OmniLight3D.new()
 		light.name = "Key%s%s" % [f, rid]
 		light.position = Vector3((float(r[3]) + float(r[5])) * 0.5, float(L.FFL[f]) + h, (float(r[4]) + float(r[6])) * 0.5)
-		light.omni_range = clampf(maxf(w, d) * 0.8, 4.0, 16.0)
+		light.omni_range = clampf(maxf(maxf(w, d) * 0.8, corner), 4.0, 16.0)
 		light.light_energy = 1.0
 		light.shadow_enabled = false
 		light.layers = 1 | VIEWMODEL_LIT_LAYER
 		light.set_meta(&"key_light", true)
 		add(lit, light)
+	var ext: Node3D = add(lit, node3d("Exterior")) as Node3D
+	for e: Array in EXT_LAMPS:
+		var lamp: OmniLight3D = OmniLight3D.new()
+		lamp.name = String(e[0])
+		lamp.position = Vector3(float(e[1]), EXT_LAMP_Y, float(e[2]))
+		lamp.light_color = EXT_LAMP_COLOR
+		lamp.light_energy = 1.5
+		lamp.omni_range = 16.0
+		lamp.omni_attenuation = 0.7
+		lamp.shadow_enabled = false
+		lamp.layers = 1 | VIEWMODEL_LIT_LAYER
+		lamp.set_meta(&"key_light", true)
+		add(ext, lamp)

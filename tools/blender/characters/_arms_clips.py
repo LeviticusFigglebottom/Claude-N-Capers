@@ -74,6 +74,10 @@ class Kit:
         elif s.support == "top":                   # a transverse top handle, palm down (saw)
             self.support = hand_at(sk, "L", "w", m.get("top_bar", m["left_ik"]), (0.20, 0.95, -0.25), (0.05, 0.10, -0.99),
                                    s.pole_l, hand_shape("grip", 0.85), share=0.55, off=0.017)
+        elif abs(float(m["left_ik"][0])) < 0.005:  # LeftHandIK under the fore-end (B, e18011f4): a cup from below,
+            # palm up and a little in, fingers along the fore-end and curling up round its left side
+            self.support = hand_at(sk, "L", "w", m["left_ik"], (0.30, 0.94, 0.15), (0.30, -0.05, 0.95),
+                                   s.pole_l, hand_shape("grip", 0.70), share=0.55, off=0.018)
         else:
             self.support = hand_at(sk, "L", "w", m["left_ik"], (0.30, 0.45, 0.84), (0.75, 0.62, -0.10),
                                    s.pole_l, hand_shape("grip", 0.80), share=0.55, off=0.018)
