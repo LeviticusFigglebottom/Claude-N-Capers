@@ -94,6 +94,7 @@ func _check_host_crew_shot() -> void:
 	await wait_seconds(0.3)
 	await _clear_fx()
 	_shots.clear()
+	var vfx0: int = _rt.vfx.shots if _rt.vfx != null else 0
 	var i: CrewIntent = CrewIntent.new()
 	i.look_yaw = c.look_yaw
 	i.look_pitch = deg_to_rad(-20.0)  # into the floor a few metres ahead: a surface on both peers
@@ -109,10 +110,13 @@ func _check_host_crew_shot() -> void:
 	var pellets: int = maxi(c.weapons.stats(c.weapons.equipped_slot).pellets, 1)
 	var host_fx: Array = _of(_shots, c.net_id)
 	assert_eq(c.weapons.shots_fired, 1, "the host fired once")
+	assert_true(_rt.vfx != null and _rt.vfx.shots - vfx0 >= pellets, "host VfxDirector received the shot")
 	assert_eq(host_fx.size(), pellets, "host: one shot_fx per pellet, no double emission")
 	var snap: Dictionary = await _wait_client_fx(c.net_id, pellets)
 	var client_fx: Array = _of(snap.get("shot_fx", []), c.net_id)
 	assert_eq(client_fx.size(), pellets, "client: the host's shot replayed once per pellet")
+	assert_true(int(snap.get("vfx_shots", -1)) >= pellets, "client VfxDirector received the host's crew shot (%s)" % [
+		snap.get("vfx_shots", -1)])
 	if host_fx.size() == 1 and client_fx.size() == 1:
 		var h: Dictionary = host_fx[0]
 		var k: Dictionary = client_fx[0]
