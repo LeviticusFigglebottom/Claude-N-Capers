@@ -49,6 +49,23 @@ Newest entry first, keep the last 10.
    - textures `VfxTextures.muzzle_atlas()`.
    P was to send a windowed FP sequence; nothing received yet.
 
+4. **FP "black gun" finding (P, 2026-10-14, env/p-play 69211232 `tests/p/_review/vm_light_probe.tscn`): NOT STARTED.**
+   - **Cause:** the library ORM sets metal = 1.0 on coated finishes (`alu_anodized_black`, `steel_blued`). With no reflection
+     probe or bright sky, a fully metallic surface reflects ~nothing, so receivers, rails and barrels read near-black.
+   - **P's bisect** (mean viewmodel luminance, 0-255): gun 8 vs arms 106; the gun is 87 unshaded. Adding ORM alone drops it to 23,
+     albedo alone to 39; the normal map is harmless. The r188 albedo lift (3de44573) helped, but ORM is the main loss.
+   - **Proposed** (C-owned: `tools/texgen/materials/{alu_anodized_black,steel_blued}.py` + `presets/gsr.py`):
+     - make coated finishes dielectric: metal 0.0-0.15, rough 0.45-0.55, anodized-black albedo ~0.18-0.22 sRGB;
+     - keep metal 1.0 only for bare steel, brass and chrome. Also check `metal_matte`: if it's parkerized or cerakote, make it
+       dielectric too;
+     - expected FP gun ~35-40.
+   - **Next step:**
+     - the generators pass metal via `Maps(albedo, rough, np.ones(...))`: make the metal value a preset param (`"metal": 0.1`);
+     - rebuild with `--only ... --check-determinism`;
+     - re-run `c test_texgen_materials`. The black band may need revisiting: these become dielectric, so albedo can go lower;
+     - ask P to re-run vm_light_probe. Also ask B for the 6-weapon sheet (props using these lighten too).
+   - P is separately testing a viewmodel reflection source (BG_COLOR + REFLECTION_SOURCE_BG). The two fixes are compatible.
+
 **Queued next (ordered):**
 1. Finish `wip/c-sldb-props` items 2-5 (D-111 inventory `docs/levels/_art/prop_art_inventory.md` #2, #3, #7-#10).
 2. ND map wiring: VaultDrill device_scene (A's defaults already cover THERMAL/SAW), ND burn/zipline if any (D-111 #6).
