@@ -138,14 +138,14 @@ func _build() -> void:
 	var ps: PackedScene = PackedScene.new()
 	err = ps.pack(_root)
 	if err == OK:
-		err = ResourceSaver.save(ps, SCENE_PATH)
+		err = ResourceSaver.save(ps, R.scene_out(SCENE_PATH))
 	_root.free()
 	if err != OK:
-		_fail("cannot save %s (%d)" % [SCENE_PATH, err])
+		_fail("cannot save %s (%d)" % [R.scene_out(SCENE_PATH), err])
 		return
-	R.strip_nested_overrides(SCENE_PATH)
-	R.normalize_scene(SCENE_PATH, old_scene_uid)
-	print("glasshouse: saved %s (navmesh polygons: %d)" % [SCENE_PATH, polys])
+	R.strip_nested_overrides(R.scene_out(SCENE_PATH))
+	R.normalize_scene(R.scene_out(SCENE_PATH), old_scene_uid)
+	print("glasshouse: saved %s (navmesh polygons: %d)" % [R.scene_out(SCENE_PATH), polys])
 	quit(0)
 
 

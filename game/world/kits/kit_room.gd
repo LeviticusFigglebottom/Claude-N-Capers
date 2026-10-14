@@ -19,6 +19,9 @@ var openings: Array[Dictionary] = []
 var keep_out: Array[AABB] = []
 ## Walls that exist (false = open side, e.g. a room open to a corridor). Index = wall id.
 var walls: Array[bool] = [true, true, true, true]
+## Depth (m) a wall's base relief (a facade plinth) stands proud of the wall face. Floor props backed
+## against the wall keep clear of it; wall-mounted items still sit on the face. Index = wall id.
+var relief: Array[float] = [0.0, 0.0, 0.0, 0.0]
 ## Designer overrides placed first: { "asset": StringName or "kind": StringName,
 ## "transform": Transform3D (room-local, pivot) }.
 var anchors: Array[Dictionary] = []

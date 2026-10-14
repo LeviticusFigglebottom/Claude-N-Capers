@@ -16904,6 +16904,7 @@ kind = &"place_drill"
 
 [node name="Collision" parent="Gameplay/Misc/DispatchSafe" index="3"]
 collision_mask = 0
+metadata/surface = &"metal"
 
 [node name="Shape" parent="Gameplay/Misc/DispatchSafe/Collision" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
@@ -17020,6 +17021,7 @@ kind = &"send_lift"
 collision_layer = 2
 collision_mask = 0
 sync_to_physics = false
+metadata/surface = &"metal"
 
 [node name="Shape" parent="Gameplay/Misc/GoodsLift/CarBody" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.025, 0)
@@ -17223,6 +17225,7 @@ kind = &"place_drill"
 
 [node name="Collision" parent="Variants/Group_cash_location/Slot_cash_countroom/CountCage" index="3"]
 collision_mask = 0
+metadata/surface = &"metal"
 
 [node name="Shape" parent="Variants/Group_cash_location/Slot_cash_countroom/CountCage/Collision" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
@@ -17673,6 +17676,7 @@ kind = &"start_hack"
 
 [node name="Collision" parent="Variants/Group_goods_lift/Slot_lift_dead/LiftBreaker" index="3"]
 collision_mask = 0
+metadata/surface = &"metal"
 
 [node name="Shape" parent="Variants/Group_goods_lift/Slot_lift_dead/LiftBreaker/Collision" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
