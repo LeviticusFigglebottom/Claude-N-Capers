@@ -51,6 +51,8 @@ var player_mode: StringName:
 			return &"masked"
 		return &"civilian" if civilian else &"casing"
 var crew_state: Enums.CrewState = Enums.CrewState.NORMAL
+## P-FP-STATES: first-person state presentation (local human only, built on its first tick).
+var fp_states: CrewFpStates = null
 var crouched: bool = false
 var sprinting: bool = false
 var look_yaw: float = 0.0
@@ -122,7 +124,7 @@ var _land_amp: float = 0.0
 var _land_t: float = -1.0
 ## PO-4: camera-only crouch / stand easing (m, eases to 0) and the stance it last saw.
 var _crouch_cam: float = 0.0
-var _cam_crouched: bool = false
+var _cam_eye: float = -1.0
 ## PO-4: camera head-bob phase (rad) and eased weight 0..~1.6.
 var _bob_phase: float = 0.0
 var _bob_w: float = 0.0
@@ -290,6 +292,8 @@ func is_casing() -> bool:
 
 func eye_height() -> float:
 	var tw: CrewTweak = Tweak.crew()
+	if crew_state == Enums.CrewState.DOWNED:  # P-FP-STATES (L2.5): sat on the floor, the shot origin with the camera
+		return tw.eye_downed
 	return tw.eye_crouched if crouched else tw.eye_standing
 
 
@@ -390,7 +394,7 @@ func teleport(xform: Transform3D) -> void:
 	_land_dip = 0.0
 	_land_t = -1.0
 	_crouch_cam = 0.0
-	_cam_crouched = crouched
+	_cam_eye = eye_height()
 	grounded = false
 	_remote_pos = Vector3.INF
 	intent.look_yaw = look_yaw  # PI-06: the held intent must not turn the body back this tick
@@ -521,6 +525,7 @@ func _simulate(delta: float) -> void:
 		_apply_head_bob(delta, tw)
 		_tick_punch(delta, tw)
 		_tick_carry_tilt(delta, tw)
+		_tick_fp_states(delta, tw)
 
 
 ## P1-01: move_and_slide with PD2-like ground handling. Walks up lips up to CrewTweak.step_height_m, follows
@@ -584,6 +589,17 @@ func _tick_carry_tilt(delta: float, tw: CrewTweak) -> void:
 		_head.rotation.z += deg_to_rad(_carry_tilt)
 
 
+## P-FP-STATES: the local human's camera through DOWNED / TASED / CLOAKER_DOWNED and hits (CrewFpStates).
+func _tick_fp_states(delta: float, tw: CrewTweak) -> void:
+	if is_ai or not is_local():
+		return
+	if fp_states == null:
+		fp_states = CrewFpStates.new(self)
+	fp_states.tick(delta, tw, _reduce_motion())
+	_head.position.y += fp_states.cam_dy
+	_head.rotation += fp_states.cam_rot
+
+
 func _reduce_motion() -> bool:
 	var gs: GameSettings = GameSettings.current()
 	return gs != null and bool(gs.get_value(GameSettings.ACCESSIBILITY, &"reduce_motion"))
@@ -630,13 +646,16 @@ func _apply_head_bob(delta: float, tw: CrewTweak) -> void:
 	_head.rotation.z = sin(_bob_phase) * deg_to_rad(tw.head_bob_roll_deg) * _bob_w
 
 
-## PO-4: ease the camera through a crouch / stand change instead of snapping the eye 0.6 m in one tick.
+## PO-4: ease the camera through a crouch / stand change instead of snapping the eye 0.6 m in one tick
+## (P-FP-STATES: any eye change, so going down and being revived ease the same way).
 func _tick_crouch_cam(delta: float, tw: CrewTweak) -> void:
-	if crouched != _cam_crouched:
-		var from: float = tw.eye_crouched if _cam_crouched else tw.eye_standing
-		_crouch_cam = clampf(_crouch_cam + from - eye_height(), -absf(tw.eye_standing - tw.eye_crouched),
-			absf(tw.eye_standing - tw.eye_crouched))
-		_cam_crouched = crouched
+	var eye: float = eye_height()
+	if _cam_eye < 0.0:
+		_cam_eye = eye
+	if not is_equal_approx(eye, _cam_eye):
+		var cap: float = absf(tw.eye_standing - minf(tw.eye_crouched, tw.eye_downed))
+		_crouch_cam = clampf(_crouch_cam + _cam_eye - eye, -cap, cap)
+		_cam_eye = eye
 		if tw.crouch_smooth_rate <= 0.0:
 			_crouch_cam = 0.0
 	if _crouch_cam != 0.0:
