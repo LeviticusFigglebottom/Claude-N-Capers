@@ -55,6 +55,9 @@ VEST = "char_crew_wren_vest"
 PARKA = "char_crew_marten_parka"
 FUR = "char_crew_marten_fur"
 ORANGE = "char_crew_glove_orange"
+COBALT = "char_crew_jay_jacket"
+STRIPE = "char_crew_jay_stripe"
+DRIVING = "char_crew_glove_driving"
 
 #: What the first-person arms should wear per heister (sleeve, cuff/under-sleeve, glove). Recorded in
 #: SOURCE.txt (``fp_sleeve``) for the per-heister FP arm variants (a later task).
@@ -65,6 +68,7 @@ FP_SLEEVES = {
     "wren": {"sleeve": "char_shirt_blue", "cuff": "bare forearm (skin), sleeve rolled to the elbow",
              "glove": "char_tac_glove"},
     "marten": {"sleeve": PARKA, "cuff": PARKA, "glove": ORANGE},
+    "jay": {"sleeve": COBALT + " with two " + STRIPE + " stripes", "cuff": COBALT, "glove": DRIVING},
 }
 
 
@@ -601,4 +605,84 @@ def _fur_trim(kit: Kit) -> None:
     kit.add_soft(m)
 
 
-LOOKS = {"rook": rook, "sable": sable, "dutch": dutch, "wren": wren, "marten": marten}
+# =============================================================================================
+# Jay (D-111): the racing jacket
+# =============================================================================================
+#: Rest-pose arm line (humanoid space at 1.78 m, |x|): shoulder joint, elbow, wrist.
+_ARM = ((0.175, -0.018, 1.432), (0.380, -0.018, 1.227), (0.559, 0.009, 1.048))
+#: The two sleeve stripes: bands of angle (deg) round the arm, measured from its outer-top direction.
+_STRIPES = ((-26.0, -12.0), (12.0, 26.0))
+
+
+def _stripe_mat(k: float):
+    import numpy as np  # noqa: PLC0415
+
+    sh, el, wr = (np.array(p, float) * k for p in _ARM)
+
+    def mat(p: Vector, r: str) -> str:
+        if r not in ("arms", "upper_arms", "forearms", "hands") and abs(p.x) < sh[0] + 0.02 * k:
+            return COBALT
+        q = np.array((abs(p.x), p.y, p.z), float)
+        a, b = (sh, el) if q[0] < el[0] else (el, wr)
+        axis = (b - a) / np.linalg.norm(b - a)
+        d = q - a - axis * float(np.dot(q - a, axis))
+        if np.linalg.norm(d) < 1e-6:
+            return COBALT
+        d /= np.linalg.norm(d)
+        up_out = np.cross(axis, np.array((0.0, 1.0, 0.0)))   # perpendicular to the arm, in the frontal plane
+        if up_out[2] < 0:
+            up_out = -up_out
+        fwd = np.cross(up_out, axis)
+        ang = math.degrees(math.atan2(float(np.dot(d, fwd)), float(np.dot(d, up_out))))
+        return STRIPE if any(lo <= ang <= hi for lo, hi in _STRIPES) else COBALT
+    return mat
+
+
+def racing_jacket(kit: Kit, bottom_z: float) -> Mesh:
+    """A slim, short nylon racing jacket: a fitted shell to the waist with a ribbed hem and cuffs in the
+    shell colour, a high band collar, a full-length zip, and two white stripes down the outside of each
+    sleeve from the shoulder to the cuff."""
+    fit, k = kit.fit, kit.k
+    hull = kit.hull()
+    sh = g.upper_shell(fit, _stripe_mat(k), bottom_z=bottom_z, sleeve=1.92, base=0.008, waist_blouse=0.004,
+                       hull=hull, iters=6, min_off=0.004 * k)
+    m = sh.mesh
+    loops = g.classify_loops(m)
+    g.bottom_tuck(m, loops["hem"], bottom_z)
+    for key in ("cuff.L", "cuff.R"):
+        o.straighten_loop(m, loops[key], iters=2)
+    mh = Hull(fit, [m])
+    g.cuff_band(m, loops["hem"], mh, 0.040 * k, 0.003 * k, COBALT)
+    for key in ("cuff.L", "cuff.R"):
+        g.cuff_band(m, loops[key], mh, 0.035 * k, 0.003 * k, COBALT)
+    g.band_collar(m, fit, sh.ring("neck"), COBALT, height=0.85, rad=0.010)
+    o.hem_all(m, thick=0.004 * k, depth=0.014 * k)
+    kit.add_soft(m)
+    jh = Hull(fit, [m])
+    nk = g.Neck(fit)
+    zp = Mesh()
+    path = g.front_path(jh, 0.0, nk.point(0.0, 0.6).z, bottom_z - 0.03 * k, step=0.02 * k)
+    o.strip(zp, jh, path, 0.005 * k, 0.0022 * k, "chrome", segs_across=1, chamfer=0.001 * k)
+    kit.add_gear(zp)
+    return m
+
+
+def jay(kit: Kit) -> None:
+    """Slim cobalt racing jacket with white sleeve stripes over a white tee, black jeans, white sneakers,
+    cognac driving gloves."""
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z, _tuck = _z(kit)
+    shoes = g.shoes(fit, "char_sneaker_white", "char_button_pale", top_z=0.085, base=0.007, toe=0.016)
+    kit.add_soft(shoes)
+    tee = g.knit_top(fit, kit.hull(), "char_shirt_white", belt_z - 0.01 * k, neck="crew", base=0.004)
+    kit.add_soft(tee)
+    n.trousers(kit, "char_trousers_black", shoes, belt_z + 0.022 * k, hem_r=0.058)
+    _gloves(kit, DRIVING, cuff_len=0.030, cuff_off=0.004)
+    n0 = len(kit.soft.f)
+    jk = racing_jacket(kit, hips_z + 0.02 * k)
+    _cull_under(kit, n0, jk, "faces_hidden_by_racing_jacket")
+    kit.notes["look"] = ("Jay: slim, short cobalt racing jacket, high band collar, full zip, two white stripes down "
+                         "each sleeve; white tee, black jeans, white sneakers, cognac driving gloves")
+
+
+LOOKS = {"rook": rook, "sable": sable, "dutch": dutch, "wren": wren, "marten": marten, "jay": jay}

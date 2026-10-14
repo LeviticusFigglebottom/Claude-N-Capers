@@ -31,6 +31,9 @@ signal melee_resolved(target: Node, result: StringName)
 
 ## A3-13 windup cue [R]: the whoosh, and the replicated trigger for the `melee` clip (AnimDriver).
 const CUE_MELEE_SWING: StringName = &"cue.npc_melee_swing"
+## D-111: an NPC reload plays the crew reload sounds, replicated; AnimDriver plays reload_rifle / reload_pistol.
+const CUE_RELOAD_RIFLE: StringName = &"cue.reload_rifle"
+const CUE_RELOAD_PISTOL: StringName = &"cue.reload_pistol"
 
 ## Path of the brain node exposing wants_to_fire / combat_target.
 @export var brain_path: NodePath = NodePath("../Brain")
@@ -47,6 +50,9 @@ var spun_up: bool = false
 ## A3-13: seconds left in the melee windup (< 0 = none) and until the next strike may start.
 var melee_windup_left: float = -1.0
 var melee_cooldown: float = 0.0
+## D-111: rounds left in the magazine (-1 = not loaded yet) and seconds left in a reload (0 = not reloading).
+var rounds_left: int = -1
+var reload_left: float = 0.0
 
 var _spin_idle: float = 0.0
 
@@ -76,6 +82,23 @@ func fire_interval() -> float:
 	if def != null and def.params.has("fire_interval_s"):
 		return float(def.params["fire_interval_s"])
 	return CombatTweak.data().npc_fire_interval_s
+
+
+## D-111: magazine size (0 = never reloads: specials without params.mag_size).
+func mag_size() -> int:
+	var def: EnemyDef = _npc.enemy_def if _npc != null else null
+	if def != null and def.params.has("mag_size"):
+		return int(def.params["mag_size"])
+	if def != null and def.is_special:
+		return 0
+	return CombatTweak.data().npc_mag_size
+
+
+func reload_time() -> float:
+	var def: EnemyDef = _npc.enemy_def if _npc != null else null
+	if def != null and def.params.has("reload_s"):
+		return float(def.params["reload_s"])
+	return CombatTweak.data().npc_reload_s
 
 
 func aim_delay() -> float:
@@ -117,6 +140,11 @@ func _physics_step(delta: float) -> void:
 	melee_cooldown = maxf(melee_cooldown - delta, 0.0)
 	if melee_windup_left >= 0.0:
 		_tick_melee(delta)
+		return
+	if reload_left > 0.0:
+		reload_left = maxf(reload_left - delta, 0.0)
+		if reload_left <= 0.0:
+			rounds_left = mag_size()
 		return
 	var t: CrewController = _wanted_target()
 	if t == null or not _can_engage(t):
@@ -258,3 +286,20 @@ func _fire(c: CrewController) -> void:
 			Enums.HitZone.BODY, weapon_id, aim, (aim - from).normalized(), _npc.net_id)
 		c.take_hit(info, _npc.net_id)
 	shot.emit(c, hit)
+	_use_round(weapon_id)
+
+
+## D-111: one round spent; an empty magazine starts a reload (no fire until it ends), heard and seen on every peer.
+func _use_round(weapon_id: StringName) -> void:
+	var mag: int = mag_size()
+	if mag <= 0:
+		return
+	if rounds_left < 0:
+		rounds_left = mag
+	rounds_left -= 1
+	if rounds_left > 0:
+		return
+	reload_left = reload_time()
+	var cue: StringName = CUE_RELOAD_PISTOL if ShotFx.npc_weapon_class(weapon_id) == &"pistol" else CUE_RELOAD_RIFLE
+	EventBus.audio_cue_requested.emit(cue, _npc.global_position, _npc.net_id)
+	Net.replicate_event(&"audio_cue_requested", [cue, _npc.global_position, _npc.net_id])

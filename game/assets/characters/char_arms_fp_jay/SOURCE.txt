@@ -1,0 +1,14 @@
+asset: char_arms_fp_jay
+script: tools/blender/characters/arms_fp_heisters.py
+params: {"heister": "jay", "skin": 4}
+seed: 1777738462  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_arms_fp_jay
+edit policy: generated file, never edit by hand; change the script and rebuild
+fp.variant: mesh-only sleeve variant of char_arms_fp (no AnimationPlayer): <root>/rig_arms/Skeleton3D/Arms, same rig_arms bones / rest / bind poses; ENV A puts this Arms' mesh + skin on char_arms_fp's Arms (the clips stay in char_arms_fp); the hands are glove-material hands (no skin under the glove)
+heister: jay
+layers: char_crew_glove_driving u=-0.034..0.000 m; char_crew_jay_jacket u=-0.046..-0.012 m ribs=24; char_crew_jay_jacket u=-0.389..-0.048 m pleats=4
+look: slim cobalt racing-jacket sleeve (white stripes on the body only: they run down the outside of the upper arm, off screen in first person) into a ribbed cuff, cognac driving gloves
+materials: char_crew_glove_driving,char_crew_jay_jacket
+tri_budget: 12000
+tris: 9560

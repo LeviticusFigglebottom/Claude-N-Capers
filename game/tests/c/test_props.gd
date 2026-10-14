@@ -18,6 +18,10 @@ const PREFAB_NODES: Dictionary = {
 	"body_container": ["Lid", "Inside"],
 	"loot_bag": ["Bag"],
 	"drill": ["Bit"],
+	# D-111 equipment: deployable visuals (held-form Handle, visual_slots.md D-069), burn point Fire, zipline Line
+	"deployable": ["Handle"],
+	"burn_point": ["Fire"],
+	"zipline": ["Line"],
 	"alarm_button": [],
 	"phone": [],
 }

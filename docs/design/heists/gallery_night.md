@@ -1155,7 +1155,7 @@ KEYCARD; the server CODE; the art store VAULT. Staff that must pass a locked doo
 | Staff door under the stair (19, 8), GH ↔ BC | LOCKPICK 8 s | `npc_authorized_tags` [`guard`, `staff`]. The route-1 "held open" walk-through is gone (QC-56 dropped). |
 | WG art-handling double door (5–6, 8), WG ↔ BC | LOCKPICK 8 s | Staff authorised. |
 | LD personnel door (Mews) | LOCKPICK 8 s outside, `push_bar` inside | Police ENTRY. ≥ 1.0 m, step-free to the Mews (§7.3). `npc_authorized_tags` [`guard_mews`, `civ_waitstaff`] (the smoker; the waitstaff leave by it, Circulation). |
-| LD roller door (Mews) | BARRED (crew cannot operate) | Police ENTRY `breach_only` (breach opens it); the S1 lane when open. |
+| LD roller door (Mews) | ELECTRONIC (crew cannot operate without a hack; A r185: BARRED is never breached) | Police ENTRY `breach_only` (breach opens it); the S1 lane when open. |
 | LD → EG art door DD (37–38, 12) | KEYCARD (reader on the LD side) | Lockdown: BARRED; `[hack]` done in loud → NONE (plain open). |
 | Roof head-house door (3, 7, roof) | LOCKPICK 8 s from the deck, `push_bar` inside | Police ENTRY `breach_only`. |
 | Lift motor room LM | BARRED, no interaction | Dressing. |
@@ -1237,8 +1237,8 @@ plans and `--check` live in `tools/levelcheck/plans/gallery_night_floors_ascii.p
 - **BC → LD door:** a 1.2 m service door (a 2 m double does not fit the 1.8 m corridor).
 - **Stair SS / head-house wall:** 0.4 m thick at x 3.05 where it carries a door (the kit has no 0.3 m frame); the stair-side
   face is unchanged.
-- **LD roller door:** a placeholder baked closed in the navmesh until a roller-door kit exists (art brief for ENV D); the
-  Mews enters LD by the personnel door only.
+- **LD roller door:** the GN-C2 roller prefab, ELECTRONIC (A r185: police breach it loud; the crew cannot open it
+  without a hack), baked closed in the navmesh; the Mews enters LD by the personnel door only.
 - **Art-store vault door:** left open in the nav bake (closed, AS would be unreachable for the validator).
 - **`saint_maritime`:** z 16 on the UG3 east wall (was 15) so the UG3 partition screen hides it from C10 (`camera_screen`).
 - **Walkthrough whitelist at G1:** Mews → upper floors and roof → the rooms below it (long by plan: one Mews entry at the

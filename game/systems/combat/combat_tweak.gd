@@ -57,6 +57,10 @@ static var _cached: CombatTweak = null
 @export_group("NPC gunfire")
 ## Seconds between NPC shots unless EnemyDef.params.fire_interval_s is set (◇).
 @export var npc_fire_interval_s: float = 0.8
+## D-111 (PD2 enemies reload): rounds per magazine and the reload time (s) when the EnemyDef has no
+## params.mag_size / params.reload_s ◇. Specials reload only when their EnemyDef sets mag_size.
+@export var npc_mag_size: int = 30
+@export var npc_reload_s: float = 2.2
 ## Delay before the first shot after acquiring a target (EnemyDef.params.aim_delay_s overrides, ◇).
 @export var npc_aim_delay_s: float = 0.6
 @export var npc_max_range_m: float = 60.0

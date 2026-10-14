@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "M_pr_emit_fire"
+albedo_color = Color(0.4157, 0.1647, 0.0392, 1)
+roughness = 0.45
+emission_enabled = true
+emission = Color(1.0000, 0.4784, 0.1333, 1)
+emission_energy_multiplier = 5.00
+metadata/uv_tile_m = 2.0
+metadata/untextured_ok = true

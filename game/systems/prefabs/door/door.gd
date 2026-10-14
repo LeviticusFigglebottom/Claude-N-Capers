@@ -34,8 +34,9 @@
 ## the front (-Z, UsePoint) side: a crew member / NPC whose position in the door's local space has
 ## z < 0. From outside (z >= 0) the interaction is blocked (BLOCK_PUSH_BAR_OUTSIDE) and NPC doors
 ## logic treats it as locked from that side (`can_npc_open` false; the NavLink is one-way -Z -> +Z
-## while closed). Opening from inside still follows `lock`. Once open it is a normal door (either
-## side may close it); closed again, it is one-way again. Pair it with swing INWARD (opens away from
+## while closed), except for an NPC its `npc_authorized_tags` authorise (staff with the key; two-way link).
+## Opening from inside still follows `lock`. Once open it is a normal door (either side may close it);
+## closed again, it is one-way again. Pair it with swing INWARD (opens away from
 ## the pusher, toward +Z / outside).
 class_name Door
 extends GameplayPrefab
@@ -86,6 +87,10 @@ const LEAF_GLASS_KEYWORDS: PackedStringArray = ["glass"]
 @export var npc_authorized_tags: Array[StringName] = []
 ## A2-08: one-way fire exit; while closed it opens only from the inside (-Z, UsePoint side).
 @export var push_bar: bool = false
+## GN (ENV C's shutters / grates): a lift-up shutter, not a swinging door. The crew never operates it (no
+## interaction; missions and devices relock / unlock / set_open it), the leaves do not rotate (the visual rolls
+## itself from `is_open`, e.g. world/props/shutter_leaf.gd) and closing never sweeps or blocks on bodies.
+@export var shutter: bool = false
 ## S9.5 / A5-03: > 0 = a locked CODE / ELECTRONIC / BARRED door can be blown (loud) with this many charges
 ## (item.c4, or trip mines with interaction.shaped_charge). 0 = no charge placement.
 @export var charges_required: int = 0
@@ -165,6 +170,8 @@ func _prefab_ready() -> void:
 	if using_placeholder and not is_equal_approx(effective_width(), _nominal_width()):
 		Log.warn(LOG_CHANNEL, "%s: placeholder door is %.2f m wide, width_m is %.2f" % [name, _nominal_width(), effective_width()])
 	_setup_interactable()
+	if shutter and interactable != null:
+		interactable.enabled = false
 	_setup_leaf_bodies()
 	add_to_group(GROUP)
 	EventBus.heist_phase_changed.connect(_on_phase_for_breach)
@@ -323,6 +330,8 @@ func _physics_step(delta: float) -> void:
 
 func _set_leaf_frac(f: float) -> void:
 	_swing_frac = f
+	if shutter:
+		return  # no swing: the shutter visual rolls itself
 	var angle: float = deg_to_rad(Tweak.interaction().door_open_angle_deg) * f
 	for i: int in range(_leaves.size()):
 		_leaves[i].rotation.y = _leaf_angle(i, angle)
@@ -337,7 +346,7 @@ func _leaf_angle(i: int, angle: float) -> float:
 ## True when a crew member / NPC overlaps a leaf posed at open fraction `f` that it does not already
 ## overlap at the current pose (so a leaf touching a body can still move away from it).
 func _sweep_blocked(f: float) -> bool:
-	if not is_inside_tree():
+	if shutter or not is_inside_tree():
 		return false
 	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
 	var angle: float = deg_to_rad(Tweak.interaction().door_open_angle_deg) * f
@@ -386,8 +395,10 @@ func passable_for(agent: Node) -> bool:
 func can_npc_open(agent: Node) -> bool:
 	if is_open:
 		return true
-	if push_bar and not is_inside(agent):
-		return false
+	if shutter:
+		return false  # only the mission / devices raise a shutter
+	if push_bar and not is_inside(agent) and not _staff_authorised(agent):
+		return false  # A2-08; an authorised NPC has the key side too (GN dock smoker back into LD, C's gap 2)
 	return not locked or _staff_authorised(agent) or _police_breach(agent)
 
 
@@ -556,7 +567,7 @@ func _update_nav_link() -> void:
 	_nav_link.enabled = is_open or not locked or breachable or (not npc_authorized_tags.is_empty() \
 		and lock != Lock.BARRED)
 	# A2-08: closed push-bar doors pass inside (-Z, start) -> outside (+Z, end) only.
-	_nav_link.bidirectional = is_open or not push_bar
+	_nav_link.bidirectional = is_open or not push_bar or not npc_authorized_tags.is_empty()
 
 
 ## S4.2: an open `suspicious_when_open` door is an `open_door` stimulus.
