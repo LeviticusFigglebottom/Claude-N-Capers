@@ -41,6 +41,8 @@ var heisters: Dictionary = {}
 var loot_secured: Dictionary = {}
 var small_loot_value: int = 0
 var loot_box: VBoxContainer
+## The sheet panel (Hud keeps objective marker text off it).
+var sheet: PanelContainer
 
 
 func _init() -> void:
@@ -86,6 +88,7 @@ func build() -> void:
 	p.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)  # as tall as its rows, no empty sheet
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(p)
+	sheet = p
 
 
 func watched_signals() -> Array[StringName]:
