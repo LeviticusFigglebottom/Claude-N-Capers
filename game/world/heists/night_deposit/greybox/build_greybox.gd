@@ -14,6 +14,14 @@ extends "res://world/heists/night_deposit/greybox/nd_gameplay.gd"
 
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 const GI_PATH: String = OUT_DIR + "night_deposit_voxelgi.res"
+## PO-8: collision-only boxes whose visuals are drawn elsewhere (panes, cage mesh, ceiling finish,
+## palisades, the quay steps, the harbour bed under the water) -> bullet surface id.
+const SURFACE_GROUPS: Array = [
+	["Geometry/Building/Glazing", &"glass"], ["Geometry/Building/VaultCage", &"metal"],
+	["Geometry/Building/Areaway", &"metal"], ["Geometry/Building/Ceilings", &"plaster"],
+	["Geometry/Building/ExteriorWalls/SallyRollerShutter", &"metal"], ["Geometry/Site/Closures", &"metal"],
+	["Geometry/Site/Ground/QuaySteps", &"concrete"], ["Geometry/Site/Ground/Seabed", &"water"],
+]
 
 
 func _initialize() -> void:
@@ -85,6 +93,10 @@ func _build() -> void:
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
 		return
+	for g: Array in SURFACE_GROUPS:
+		SurfaceTags.tag_untagged(map_root, NodePath(String(g[0])), g[1])
+	for untagged: String in SurfaceTags.tag_tree(map_root):  # PO-8 bullet surface ids
+		errors.append("no surface id for %s" % untagged)
 	if not errors.is_empty():
 		_fail("\n".join(errors))
 		return

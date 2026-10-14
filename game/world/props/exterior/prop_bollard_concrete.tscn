@@ -6,3 +6,8 @@
 metadata/kind = &"bollard"
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"concrete"
+
+[editable path="Model"]

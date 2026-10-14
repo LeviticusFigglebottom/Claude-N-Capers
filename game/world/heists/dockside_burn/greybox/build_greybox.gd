@@ -67,6 +67,8 @@ func _build() -> void:
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
 		return
+	for untagged: String in SurfaceTags.tag_tree(map_root):  # PO-8 bullet surface ids
+		errors.append("no surface id for %s" % untagged)
 	if not errors.is_empty():
 		_fail("\n".join(errors))
 		return
@@ -479,8 +481,9 @@ func _build_site(geo: Node3D) -> void:
 	var site: Node3D = add(geo, node3d("Site")) as Node3D
 	var ground: Node3D = add(site, node3d("Ground")) as Node3D
 	for g: Array in L.GROUND:
-		box_a(ground, String(g[0]), g[1], String(g[2]))
+		var gb: Node3D = box_a(ground, String(g[0]), g[1], String(g[2]))
 		if String(g[2]) == "none":
+			SurfaceTags.tag(gb, &"water")  # shots into the harbour stop on the bed below the water
 			# Seabed / slip bed (collision only) must not grow a navmesh island under the water.
 			var bb: Array = g[1]
 			obstruct(Transform3D.IDENTITY, AABB(v3(bb, 0) + Vector3(0.0, -0.5, 0.0), v3(bb, 3) - v3(bb, 0) + Vector3(0.0, 2.0, 0.0)))
