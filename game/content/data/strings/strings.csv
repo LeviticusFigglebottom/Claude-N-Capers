@@ -2959,3 +2959,5 @@ ui.stats.with_skills,Stats: With Skills
 ui.stats.base,Stats: Base
 ui.stats.boosted_value,{value}*
 ui.stats.boosted_legend,* Boosted by your skills and perk deck
+ui.hud.player_left,{name} left the game. An AI plays {heister} now.
+ui.hud.player_joined,{name} joined as {heister}.
