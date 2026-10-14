@@ -86,3 +86,9 @@ signal captain_retreated(npc_net_id: int)
 # --- Presentation hooks (consumed by audio/UI/voice) ---------------------------
 signal voice_line_requested(speaker: StringName, line_id: StringName, context: Dictionary)
 signal audio_cue_requested(cue_id: StringName, position: Vector3, source_net_id: int)
+# --- Presentation-only, emitted locally on EVERY peer (impact_fx.md 1.0, D-105); never replicated themselves.
+## One per hitscan ray/pellet/melee hit. `end` = impact or max range (normal ZERO, surface &"" on a miss).
+## flags: bit0 suppressed, bit1 first-person shooter on this peer, bit2 headshot, bit3 penetrated.
+signal shot_fx(origin: Vector3, end: Vector3, normal: Vector3, surface: StringName, weapon_class: StringName,
+		shooter_net_id: int, flags: int)
+signal explosion_fx(position: Vector3, radius: float, kind: StringName)
