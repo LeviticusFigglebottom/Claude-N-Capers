@@ -766,3 +766,14 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
 - After the freeze-lift gates (next_heist.md §2), the next heist built is **Gallery Night** (G0 approved, D-075). Build plan,
   audit and rulings: `docs/process/next_heist.md` §3–§6 (NpcVisuals tag priority over EnemyDef, QC-56 dropped, no
   stealth-only fail, marker_tags/viewmodel_lit/D-099/D-102 apply, painting_study $700, ENV A system groundwork first).
+
+## D-104 — 2026-10-14 — ENV C re-activated; ENV D at freeze-lift (product owner approved the lead's recommendation)
+- **ENV C (Worlds & Art)** runs again as a cloud session now. Until the freeze-lift gates pass it does non-content groundwork
+  for Gallery Night: the floor-plan generator, validate_level `camera_spine` / `camera_screen` (D-075), a slope/parapet rule
+  (no walkable slope < 50° outside the play mesh, P's review), a `viewmodel_lit` light check (D-095), and fixing the PP-C-1
+  walk test (unmasked LOCKPICK doors, 0 m legs after teleports). Then the Gallery Night greybox (G1) → G2 when the freeze
+  lifts. ENV A keeps co-ownership of existing heists' mission scripts / marker_tags / small fixes (D-086).
+- **ENV D (Characters)** is dispatched when the freeze lifts and there is cast/animation work (Gallery Night cast is already
+  delivered; remaining: admin PA look, any gala ambient clips missing, parked FP left-hand cup).
+- P's Gallery Night traversal review (laser gaps, balcony throws, Mews dock height, pool exit, roof slopes, ladders, door
+  widths, stair ramps, stanchions, broken windows) is adopted as G1 build requirements (next_heist.md §7).

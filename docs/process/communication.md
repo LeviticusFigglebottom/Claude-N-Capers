@@ -4,7 +4,7 @@ Owner: **LEAD**.
 
 ## 1. The team (team v3: Claude Code cloud sessions, D-086)
 
-Since 2026-10-13 the team is a **LEAD Claude Code session plus three dispatched Claude Code cloud sessions**, each in
+Since 2026-10-13 the team is a **LEAD Claude Code session plus dispatched Claude Code cloud sessions (P, B, A; C from D-104)**, each in
 its own container with its own clone, tools and subagents. The Grok Bot box (D-078: BOARD.md, SendToAgent,
 `/workspace/cnc-team/*`) is retired; ignore any reference to it. Session ids are in `docs/process/board.md`.
 
@@ -14,7 +14,7 @@ its own container with its own clone, tools and subagents. The Grok Bot box (D-0
 | **ENV P — Player & Input** | active | `env/p-play` | `game/systems/player/**`, `fp_viewmodel*`, `crew_tweak.*`, `game/tests/p/**` |
 | **ENV B — Content & UI** | active | `env/b-content` | `game/content/**` (all UI), weapons, `docs/design/ui/**`, `game/tests/b/**` |
 | **ENV A — Core Systems & Heist Loop** | active | `env/a-core` | `game/systems/**` (minus P's), `game/world/heists/**` + `game/world/props/**` during the pass (D-086), `game/tests/a/**` |
-| ENV C — Worlds & Art | dormant | `env/c-worlds` | (owners.json; A covers heist-map playability fixes meanwhile) |
+| **ENV C — Worlds & Art** | active (D-104) | `env/c-worlds` | `game/world/**`, assets, tools/blender, texgen, audiogen, levelcheck, `docs/levels/**`, heist design docs (A co-owns existing heists' missions/markers, D-104) |
 | ENV D — Characters & Art | dormant | `env/d-art` | (owners.json) |
 
 Toolchain per container: Godot 4.7.2 at `/opt/godot/godot` (SessionStart hook, or `bash tools/setup/install_godot.sh`),
