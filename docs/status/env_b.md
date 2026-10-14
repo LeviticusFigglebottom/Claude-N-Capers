@@ -3,6 +3,27 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14 later: rounds 69/70, D-105 / D-106, co-op windowed pass
+### Done
+- Rounds 69/70 merged (62cec2c5). D-102 text: the gold bag says "barely a jump". The missing 3D safehouse is logged once per session.
+- D-105 Effects Quality (68f28ac2): Options > Video Low / Medium / High (default High); `GameSettings.effects_quality()`, one step lower under Reduce Motion; `EFFECTS_SCALE` for C's VfxDirector; options.md.
+- D-106 reload indicator (3ced00ed): RELOADING caption + bar under the ammo line (ui_hud 1.12 `reloading` / `reload_progress`).
+- D-106 skill-boosted stats (053b10fa): armory and loadout stats with skills + perk deck by default (SkillBoost, read like CrewWeapons reads Modifiers), a "Stats: With Skills / Base" toggle, boosted values marked with * and a legend.
+- Co-op windowed pass (coop_capture / coop_worker: two windows over loopback, host + client, real MenuFlow and Net):
+
+| Row | Owner | Finding | Status |
+|---|---|---|---|
+| PO-B-C1 | A | At heist start the client's ENet connection drops (the host's ~40 s blocking map build here; core/net.gd sets no peer timeouts). The host's Net.crew turns the client's slot into AI; the client is left in a solo replica with Net.crew {} (no objectives, no teammates on its HUD). | Sent to A with the diag lines and a timeout proposal |
+| PO-B-C2 | B | The client stayed in that dead replica: MenuFlow did not handle HeistNetSync.host_lost (the contract says the app flow does). | FIXED cce16081: teardown + Net.leave, back to the lobby with "Lost the connection to the host" (test_coop_host_lost) |
+| PO-B-C3 | B | The client's lobby focus parked on Leave (it was the only enabled control while joining); one stray Enter / A left the lobby. | FIXED 4fa1fc97 (test_lobby_loopback) |
+| PO-B-C4 | B | A human dropping mid-heist was silent on the other peers (the heister just turned AI). | FIXED df4d0dc5: "<name> left the game. An AI plays <heister> now." / "<name> joined as <heister>." toasts |
+| PO-B-C5 | LEAD | core/log.gd `_write` calls multiplayer.get_unique_id() after the peer closed: an engine ERROR on every log line during a disconnect. | Reported |
+| PO-B-C6 | B | The lobby's crew cards scroll below the contract / chat block at 720p (mask row under the fold). | By design (PQ-B-11b scroll); can compact if wanted |
+
+- Not yet verified end to end: both peers in the same heist and payday on both. That needs PO-B-C1 first; the harness re-runs it.
+### Next
+- Re-run the co-op pass once A's timeout fix lands. Gallery Night content when the lead sends the list.
+
 ## 2026-10-14: PO-4 lead queue (round 68): pad pass, safety net, firing range restyle
 ### Done
 - Gamepad pass on the new widgets (d9cca06b): the hub's Continue is in the d-pad grid; test_pad_new_widgets.
