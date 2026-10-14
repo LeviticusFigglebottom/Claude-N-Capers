@@ -200,9 +200,13 @@ func _ready() -> void:
 	if _crew != null and _crew.throwables != null:
 		_crew.throwables.pin_pulled.connect(_on_pin_pulled)
 		_crew.throwables.released.connect(_on_throw_released)
+	if _crew != null:
+		_crew.carried_bag_changed.connect(_on_bag_changed)
 
 
 func _exit_tree() -> void:
+	if _crew != null and is_instance_valid(_crew) and _crew.carried_bag_changed.is_connected(_on_bag_changed):
+		_crew.carried_bag_changed.disconnect(_on_bag_changed)
 	if _crew == null or not is_instance_valid(_crew) or _crew.weapons == null:
 		return
 	var pairs: Array = [
@@ -333,6 +337,23 @@ func _on_fired(_claim: Dictionary) -> void:
 	_start(Action.FIRE, segs)
 	if _last_round():
 		_drop_keys(&"slide", 0.0)  # pistol slide lock on the last round
+
+
+## D-102 lane (PD2 PlayerCarry:_enter): a bag pickup re-plays the weapon's draw over its equip time, unless a
+## swap, reload, melee, throw or deploy is already playing (PD2 skips it while changing weapon).
+func _on_bag_changed(bag: Node) -> void:
+	if bag == null or not FpViewmodelTweak.data().carry_reequip or anim_set == &"" or _crew == null \
+			or _crew.weapons == null or (action != Action.NONE and action != Action.FIRE):
+		return
+	var w: CrewWeapons = _crew.weapons
+	var st: WeaponStats = w.stats(w.equipped_slot)
+	if st == null or st.equip_time_s <= 0.0 or _resolve(anim_set, &"draw") == &"":
+		return
+	var equip_s: float = st.equip_time_s / maxf(Modifiers.mult(_crew.slot, &"weapon.swap_speed_mult"), 0.01)
+	_end_action()
+	var segs: Array[Dictionary] = []
+	_add_timed(segs, anim_set, &"draw", &"ready", equip_s)
+	_start(Action.SWAP, segs)
 
 
 func _on_reload_started(ws: int, duration: float) -> void:
