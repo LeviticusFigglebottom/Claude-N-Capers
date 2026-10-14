@@ -2,6 +2,18 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-14 11:20 ET: lit PO-13 sheet, P-FP-STATES, Options hooks, sweeps
+- PO-13 lit sheet captures/po13_hold_before_after_lit.png (GH street, 6 classes; Corsair row predates 7a61cd7e).
+  7a61cd7e fixed my round-2 regression: rifle hip z -0.135 (stock was inside the 2 cm near plane, test_po4_feel).
+- P-FP-STATES (9b915b3d, b4912280): CrewFpStates + eye_downed 0.8 m (eye_position follows; A told), tase jitter /
+  buckle, kick fall + roll, hit punch; Reduce Motion; sheet captures/p_fp_states_sheet.png. test_p_fp_states 6/6.
+- Options hooks (7babb171): ads_sensitivity on aimed look, screen_shake on camera shakers (duck-typed);
+  test_p_options_hooks 2/2. FOV stays vertical (lead ruling, B relabels).
+- (e) co-op FX: coop_fx_capture.tscn; A has the full-auto ghost-round bug, C fixed the TP flash (frame guard).
+- PO-3 probe skips ladder grab cones (effe1d06); closed-door sweep on trunk r134 + c-worlds: 0 snags x 4 heists.
+- Pre-push batch rule (lead): anything touching fp_viewmodel* also runs test_po4_feel and test_p1_01.
+- Resume: LobbyDoor rerun after A's AI corner fix; coop_fx rerun after A's ghost-round fix; GN G1 at the freeze lift.
+
 ## 2026-10-14 09:00 ET: PO-13 round 2, (e) co-op FX, (d) C-grip clips
 - Round 2 (a0b07f70): all-class hip framing (+3 cm right, +2 up, 4 closer; lens guard kept), pistol/revolver sprint
   lowered + canted on screen, pistol ADS shoulders lower/forward (reach ok). D arms/anims 18/18, viewmodel tests green.
