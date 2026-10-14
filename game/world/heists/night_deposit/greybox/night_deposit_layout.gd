@@ -248,10 +248,10 @@ const DOORS: Array = [
 		{"width_m": 2.2}],
 	["AreawayDoor", "prop_door_single_steel_t40", Vector3(18.2, BASE, 0.0), 0.0, "NONE", "INWARD", "areaway_door", {}],
 	# Play-space closures: chained/barred gates the police open in loud (mission unlocks them).
-	["AlleyGate", "prop_door_double_steel_t20", Vector3(-14.0, 0.0, -12.5), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["HarborWestGate", "prop_door_double_steel_t20", Vector3(-14.0, ROAD_Y, 26.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["HarborEastGate", "prop_door_double_steel_t20", Vector3(40.0, ROAD_Y, 26.2), 90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["WharfNorthGate", "prop_door_double_steel_t20", Vector3(27.6, 0.0, -14.0), 180.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["AlleyGate", "prop_door_double_steel_t10", Vector3(-14.0, 0.0, -12.5), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["HarborWestGate", "prop_door_double_steel_t10", Vector3(-14.0, ROAD_Y, 26.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["HarborEastGate", "prop_door_double_steel_t10", Vector3(40.0, ROAD_Y, 26.2), 90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["WharfNorthGate", "prop_door_double_steel_t10", Vector3(27.6, 0.0, -14.0), 180.0, "BARRED", "DOUBLE", "police_gate", {}],
 ]
 
 ## Areaway (vent route): pit outside the north wall (floor -4.0), ladder on the ledge face, caged
@@ -350,7 +350,8 @@ const BLOCKS: Array = [
 	# Vista dressing beyond the closures.
 	["UtilityVanWest", [-20.0, ROAD_Y, 23.4, -15.2, 2.3, 25.4], "van_hidden"],
 	["PoliceBarrierWest", [-14.6, ROAD_Y, 22.4, -14.4, 1.1, 25.0], "barrier"],
-	["ContainerTrailerChassis", [28.65, ROAD_Y, -15.2, 37.15, 1.31, -12.8], "trim"],
+	# PO-7: the chassis butts the WharfNorthGate frame (x 28.6); 28.65 left a 5 cm slit beside the gate.
+	["ContainerTrailerChassis", [28.6, ROAD_Y, -15.2, 37.15, 1.31, -12.8], "trim"],
 	["ContainerTrailer", [29.85, 1.31, -15.2, 35.95, 3.9, -12.8], "container_hidden"],
 	["RoadBarrierEast", [44.0, ROAD_Y, 22.4, 44.2, 1.1, 25.0], "barrier"],
 ]

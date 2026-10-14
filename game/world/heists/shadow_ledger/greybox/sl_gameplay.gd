@@ -171,6 +171,8 @@ func _build_doors(gp: Node3D) -> void:
 			props["starts_open"] = true
 		if extra.has("interaction_time_s"):
 			props["interaction_time_s"] = float(extra["interaction_time_s"])
+		if extra.has("leaf_surface"):  # D-105: glass / metal leaves on a greybox kit visual (reads as wood)
+			props["leaf_surface"] = StringName(String(extra["leaf_surface"]))
 		if String(d[1]).contains("double"):
 			props["width_m"] = 1.8
 		prefab(doors, "door", String(d[0]), d[2], float(d[3]), props, null, metas)
