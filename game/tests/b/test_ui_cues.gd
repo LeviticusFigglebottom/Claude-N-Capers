@@ -195,3 +195,22 @@ func test_refusals_play_the_error_cue() -> void:
 	assert_eq(UiSfx.played.back(), UiSfx.ERROR, "a failed action buzzes")
 	assert_true(UiSfx.check(true))
 	b.queue_free()
+
+
+## Impact mix check (impact_fx §4): ENV C's impacts sit ~ -25 LUFS at the source and gunshots -14..-18, so the
+## hit markers must not fall back to the old -40 tick (masked by the shot it confirms). Levels come from
+## build_ui.py's measured mix; hit < headshot <= kill in importance, all non-positional on the UI bus.
+func test_hit_markers_sit_above_the_impact_bed() -> void:
+	var reg: AudioCueRegistry = _registry()
+	var vols: Dictionary = {}
+	for id: StringName in [&"cue.hud_hit", &"cue.hud_headshot", &"cue.hud_kill"]:
+		var c: AudioCueDef = reg.get_cue(id)
+		assert_true(c != null, String(id))
+		if c == null:
+			return
+		assert_eq(c.bus, &"UI", "%s on the UI bus" % id)
+		assert_false(c.positional, "%s is not spatial (feedback, not a world sound)" % id)
+		vols[id] = c.volume_db
+	assert_true(float(vols[&"cue.hud_hit"]) >= -6.0, "hit tick level %s dB (was -13: masked)" % vols[&"cue.hud_hit"])
+	assert_true(float(vols[&"cue.hud_kill"]) >= -6.0, "kill confirm level")
+	assert_true(float(vols[&"cue.hud_headshot"]) >= -9.0, "headshot level")
