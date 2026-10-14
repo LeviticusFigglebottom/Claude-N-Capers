@@ -104,9 +104,18 @@ func build_ui() -> void:
 	map_view.pin_pressed.connect(_on_pin_pressed)
 	map_col.add_child(map_view)
 	_build_legend(map_col)
+	# KR-8: a contract with a long subtitle / pro text grew the card + broker column past the screen and
+	# pushed the footer (Take Contract, Back) off it. The column scrolls; the footer stays pinned.
+	var side_scroll: ScrollContainer = ScrollContainer.new()
+	side_scroll.name = "SideScroll"
+	side_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	side_scroll.follow_focus = true
+	side_scroll.custom_minimum_size = Vector2(560, 0)
+	side_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(side_scroll)
 	var side: VBoxContainer = UiBuild.vbox(UiTokens.S3)
-	side.custom_minimum_size = Vector2(560, 0)
-	body.add_child(side)
+	side.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	side_scroll.add_child(side)
 	_build_card(side)
 	_build_broker(side)
 	# PO-4 footer: Back (ghost) left, Take Contract (the screen's one primary) right.
