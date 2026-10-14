@@ -81,6 +81,10 @@ func _run() -> void:
 		await _host()
 	else:
 		await _client()
+	if _role == "host" and _mode != "leave":
+		# Keep the session up until the client is back in the lobby too (a host that quits first hands the
+		# client a host_lost on its payday).
+		await _seconds(240.0)
 	_log("done")
 	SaveService.delete_profile(SLOT)
 	get_tree().quit()

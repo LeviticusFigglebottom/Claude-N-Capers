@@ -212,9 +212,16 @@ func test_coop_payday_continue_returns_to_the_lobby() -> void:
 	f.call(&"_begin_client_heist", {"heist": &"glasshouse", "difficulty": 0, "is_pro": false})
 	await wait_frames(1)
 	assert_true(f.in_heist_ui_spawned())
+	# The payday saved a new level (end-of-heist sweep: the kept lobby still advertised the old one).
+	var saved: PlayerProfile = SaveService.load_profile(f.profile_slot)
+	saved.level = 7
+	SaveService.save_profile(saved, f.profile_slot)
 	f.call(&"_on_heist_payday_continue")
 	await wait_frames(2)
 	assert_false(f.in_heist_ui_spawned(), "heist UI gone")
+	assert_eq(f.lobby.profile.level, 7, "the kept lobby advertises the profile the payday saved")
+	assert_eq(int((f.lobby.state.summaries.get(f.lobby.state.local_slot, {}) as Dictionary).get("level", -1)), 7,
+			"and its summary carries the new level")
 	assert_true(f.is_coop(), "the session is kept")
 	assert_eq(f.current, f.lobby_screen as Control, "back in the crew lobby")
 	assert_false(f.lobby.state.is_ready(f.lobby.state.local_slot), "ready cleared for the next job")

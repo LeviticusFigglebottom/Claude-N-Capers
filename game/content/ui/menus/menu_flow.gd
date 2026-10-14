@@ -936,6 +936,9 @@ func show_lobby() -> void:
 		lobby_screen.loadout_requested.connect(_open_armory)  # not open_station: that refunds the plan
 		lobby_screen.dropin_requested.connect(_open_drop_in)
 	drop_in.lobby = lobby
+	# End-of-heist sweep: back from a payday (C11) the cached profile predates the payout and level-up the payday
+	# saved; reload it like show_hub does, so the crew card advertises the new level and loadout.
+	profile = SaveService.load_profile(profile_slot)
 	lobby.profile = _menu_profile()
 	lobby_screen.profile = lobby.profile
 	if is_coop():
