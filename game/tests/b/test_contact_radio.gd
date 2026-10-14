@@ -7,6 +7,11 @@ const HEISTS: Dictionary = {
 	&"glasshouse": &"vance", &"night_deposit": &"accountant", &"shadow_ledger": &"accountant",
 	&"dockside_burn": &"reyes",
 }
+## Heists whose radio lines exist before their HeistDef is registered (GN-B1: Gallery Night's def waits in
+## content/_drafts for ENV A), so `contact_for` cannot resolve them yet. Move each into HEISTS when its def lands.
+const DRAFT_HEISTS: Dictionary = {&"gallery_night": &"vance"}
+## Strings key suffix for an objective's loud text variant (objective.gallery_night.hack_loud).
+const LOUD_TEXT_SUFFIX: String = "_loud"
 const RADIO_EVENTS: Array[StringName] = [
 	&"radio.objective_done", &"radio.objective_new", &"radio.objective_failed", &"radio.alarm",
 	&"radio.assault_build", &"radio.assault_sustain", &"radio.assault_fade", &"radio.escape_available",
@@ -90,8 +95,9 @@ func test_generic_lines_per_contact_and_fact() -> void:
 ## from that heist's contact; escape and loot have heist lines too.
 func test_every_heist_objective_has_a_radio_line() -> void:
 	var p: RadioLinePicker = RadioLinePicker.new(_table)
-	for heist: StringName in HEISTS:
-		var sp: StringName = HEISTS[heist]
+	var heists: Dictionary = _radio_heists()
+	for heist: StringName in heists:
+		var sp: StringName = heists[heist]
 		var tags: Array[String] = _objective_tags(heist)
 		assert_true(tags.size() >= 7, "%s objective tags found (%d)" % [heist, tags.size()])
 		for tag: String in tags:
@@ -106,6 +112,7 @@ func test_every_heist_objective_has_a_radio_line() -> void:
 ## Every radio line is well formed and every vo.* id the radio data or B code uses has its voice.<id> text.
 func test_every_vo_id_used_has_strings() -> void:
 	var radio: int = 0
+	var heists: Dictionary = _radio_heists()
 	for l: Dictionary in _table.lines:
 		var ev: String = String(l.get("event", &""))
 		if not ev.begins_with("radio."):
@@ -116,8 +123,8 @@ func test_every_vo_id_used_has_strings() -> void:
 		assert_true(String(_strings.get("voice.%s" % id, "")).length() > 3, "non-empty text for %s" % id)
 		assert_eq(int(l["priority"]), RadioTweak.load_default().priority_of(StringName(ev)), "priority of %s" % id)
 		if l.has("heist"):
-			assert_true(HEISTS.has(StringName(l["heist"])), "heist of %s" % id)
-			assert_eq(StringName(l["speaker"]), HEISTS[StringName(l["heist"])], "%s is spoken by the heist's contact" % id)
+			assert_true(heists.has(StringName(l["heist"])), "heist of %s" % id)
+			assert_eq(StringName(l["speaker"]), heists.get(StringName(l["heist"]), &""), "%s is spoken by the heist's contact" % id)
 		if l.has("objective"):
 			assert_has(_objective_tags(StringName(l["heist"])), String(l["objective"]), "objective of %s is a doc tag" % id)
 		if l.has("loot"):
@@ -407,9 +414,20 @@ func _objective_tags(heist: StringName) -> Array[String]:
 				tags.append(m.get_string(1))
 	var prefix: String = "objective.%s." % heist
 	for k: Variant in _strings:
-		if String(k).begins_with(prefix) and not tags.has(String(k).trim_prefix(prefix)):
-			tags.append(String(k).trim_prefix(prefix))
+		var tag: String = String(k).trim_prefix(prefix)
+		# `<tag>_loud` is the loud text of objective <tag> (the mission swaps it), not an objective of its own.
+		if tag.ends_with(LOUD_TEXT_SUFFIX) and tags.has(tag.trim_suffix(LOUD_TEXT_SUFFIX)):
+			continue
+		if String(k).begins_with(prefix) and not tags.has(tag):
+			tags.append(tag)
 	return tags
+
+
+## Registered heists plus DRAFT_HEISTS: the heists whose radio lines are checked.
+func _radio_heists() -> Dictionary:
+	var out: Dictionary = HEISTS.duplicate()
+	out.merge(DRAFT_HEISTS)
+	return out
 
 
 ## Lead ruling: guard barks / crew acks get subtitles only with Options › Accessibility › subtitles_all_speakers.

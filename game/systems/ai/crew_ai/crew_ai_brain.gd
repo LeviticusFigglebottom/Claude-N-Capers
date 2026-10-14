@@ -32,6 +32,8 @@ extends Node
 
 enum Mode { INACTIVE, STEALTH_WAIT, IDLE, REVIVE, COVER, FOLLOW, HOLD, FETCH_BAG, SECURE_BAG }
 
+## Hip height probed by _sees_any (m).
+const SIGHT_HIPS_M: float = 0.9
 const NODE_NAME: String = "CrewAiBrain"
 const RNG_STREAM: StringName = &"crew_ai"
 const TWEAK_PATH: String = "res://systems/ai/crew_ai/crew_ai_tweak.tres"
@@ -418,7 +420,8 @@ func _follow_goal() -> Vector3:
 	if leader == null:
 		mode = Mode.IDLE
 		return Vector3.INF
-	cover_point = _pick_cover(leader) if target_enemy != null else null
+	# Lead (ND): take cover whenever enemies are known near the leader, not only while one is targeted.
+	cover_point = _pick_cover(leader) if target_enemy != null or _enemies_near(leader) else null
 	if cover_point != null:
 		mode = Mode.COVER
 		_following = false
@@ -432,18 +435,51 @@ func _follow_goal() -> Vector3:
 	if not seen:
 		_following = true
 		return leader.global_position
-	if _following and d <= tweak.follow_stop_m:
+	var loud: bool = _rt.went_loud
+	var stop_m: float = tweak.follow_stop_loud_m if loud else tweak.follow_stop_m
+	var max_m: float = tweak.follow_max_loud_m if loud else tweak.follow_max_m
+	var slot_pos: Vector3 = _formation_slot(leader)
+	if _following and d <= stop_m and _flat_dist(_crew.global_position, slot_pos) <= tweak.follow_slot_arrive_m:
 		_following = false
-	elif not _following and d > tweak.follow_max_m:
-		_following = true
+	elif not _following and (d > max_m or _stacked()):
+		_following = true  # too far, or standing inside another crew member (P PO-pass #3)
 	if not _following:
 		return Vector3.INF
-	# Aim for a point follow_min_m short of the leader, on our side, so AI never crowd the human.
-	var to_me: Vector3 = _crew.global_position - leader.global_position
-	to_me.y = 0.0
-	if to_me.length() < 0.01:
-		return Vector3.INF
-	return leader.global_position + to_me.normalized() * tweak.follow_min_m
+	return slot_pos
+
+
+## This AI's own spot near the leader: follow_min_m out on our side, fanned by its rank among the AI crew
+## (follow_spread_deg apart), so bots following the same leader never share a point.
+func _formation_slot(leader: CrewController) -> Vector3:
+	# One shared base direction (leader -> the AI group's centroid) so every bot's slot is stable and distinct.
+	var ais: Array[int] = []
+	var centroid: Vector3 = Vector3.ZERO
+	for c: CrewController in _rt.crew_members():
+		if c.is_ai and c.crew_state == Enums.CrewState.NORMAL:
+			ais.append(c.slot)
+			centroid += c.global_position
+	ais.sort()
+	var base: Vector3 = (centroid / float(maxi(ais.size(), 1))) - leader.global_position
+	base.y = 0.0
+	if base.length() < 0.01:
+		base = leader.global_basis.z  # behind the leader
+		base.y = 0.0
+	var rank: int = maxi(ais.find(_crew.slot), 0)
+	var centre: float = float(ais.size() - 1) * 0.5
+	var angle: float = deg_to_rad(tweak.follow_spread_deg) * (float(rank) - centre)
+	var dir: Vector3 = base.normalized().rotated(Vector3.UP, angle)
+	return leader.global_position + dir * tweak.follow_min_m
+
+
+## True while another crew member stands within unstack_m of this AI (horizontal, same floor).
+func _stacked() -> bool:
+	for c: CrewController in _rt.crew_members():
+		if c == _crew or c.crew_state == Enums.CrewState.CUSTODY:
+			continue
+		if absf(c.global_position.y - _crew.global_position.y) < 1.0 \
+				and _flat_dist(c.global_position, _crew.global_position) < tweak.unstack_m:
+			return true
+	return false
 
 
 ## The human who gave the last order (when not in custody), else the nearest alive human, else slot 0.
@@ -720,7 +756,7 @@ func _tick_scan(delta: float) -> void:
 			var d: float = eye.distance_to(p)
 			# L4.4 / P3 gate: a Stinger tasing a crew member is shot first (killing it breaks the tase).
 			var score: float = d * (tweak.tasing_stinger_score_mult if _is_tasing_crew(npc) else 1.0)
-			if d > tweak.engage_range_m or score >= best_d or not _has_los(eye, p):
+			if d > tweak.engage_range_m or score >= best_d or not _sees_any(eye, npc):
 				continue
 			best = npc
 			best_d = score
@@ -741,6 +777,29 @@ func _is_hostile(npc: NpcBase) -> bool:
 	if npc.role == &"guard" or npc.role == CartelBrain.ROLE:  # QC-36: sleeping cartel posts are left alone
 		return npc.alert_state == Enums.AlertState.COMBAT or npc.alert_state == Enums.AlertState.ALARMED
 	return HOSTILE_ROLES.has(npc.role)
+
+
+## ND attempts 9-21: a cop behind the vault bars / a counter hides its chest from one ray; like a player, the bot
+## sees it when its chest, head or hips is in line of sight.
+func _sees_any(eye: Vector3, npc: NpcBase) -> bool:
+	var base: Vector3 = npc.global_position
+	for h: float in [tweak.chest_height_m, npc.head_height, SIGHT_HIPS_M]:
+		if _has_los(eye, base + Vector3(0.0, h, 0.0)):
+			return true
+	return false
+
+
+## Any hostile NPC in combat within cover_search_radius_m + engage range of the leader (enemies are known).
+func _enemies_near(leader: CrewController) -> bool:
+	var r: float = tweak.cover_search_radius_m + tweak.engage_range_m * 0.5
+	for role: StringName in HOSTILE_ROLES:
+		for n: Variant in _rt.npcs(role):
+			if not is_instance_valid(n):
+				continue  # freed this frame (the runtime list is refreshed lazily)
+			var npc: NpcBase = n as NpcBase
+			if npc != null and _is_hostile(npc) and _flat_dist(npc.global_position, leader.global_position) <= r:
+				return true
+	return false
 
 
 func _has_los(from: Vector3, to: Vector3) -> bool:

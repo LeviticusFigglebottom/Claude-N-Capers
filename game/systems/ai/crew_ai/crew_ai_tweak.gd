@@ -13,6 +13,16 @@ extends Resource
 @export var follow_min_m: float = 3.0
 ## Sprint when the movement goal is farther than this (m) ◇.
 @export var sprint_beyond_m: float = 6.0
+## Loud (PD2 bots stick close in a fight): start following beyond / stop within these distances (m) ◇.
+@export var follow_max_loud_m: float = 5.5
+@export var follow_stop_loud_m: float = 3.5
+## P PO-pass #3 / ND attempt 21: each AI follows to its own formation slot, fanned this far apart around the
+## leader-to-me direction (deg) ◇, so bots never stack.
+@export var follow_spread_deg: float = 55.0
+## An idle AI closer than this to another crew member (horizontal, m) steps to its own slot ◇.
+@export var unstack_m: float = 0.7
+## A following AI stops within this of its own formation slot (m) ◇.
+@export var follow_slot_arrive_m: float = 0.8
 
 @export_group("Cover (L6.1)")
 ## Cover points (TacticalPoint COVER) considered must be within this distance of the leader (m) ◇.

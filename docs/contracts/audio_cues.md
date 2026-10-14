@@ -27,7 +27,9 @@ Buses: `Master > Music, SFX (> Weapons, Enemies, World, UI), Voice, Ambience`.
 | cue.assault_start | ANTICIPATION→BUILD | stinger + radio chatter | 1 |
 | cue.crew_downed / revive | — | — | 1 |
 | cue.camera_alert_tone | camera "!" | continuous high tone 7 s | 2 |
-| cue.ecm_active / ecm_feedback | ECM | dense digital noise bed / phasing burst | 2 |
+| cue.ecm_active | ECM jam starts (ecm_system, audio_cue_requested) | dense bit-crushed digital noise burst 1.8 s (one-shot), 3D at the ECM, 20 m | 2 |
+| cue.ecm_feedback | ECM feedback | phasing digital burst 1.4 s | 2 |
+| cue.trip_mine_explode | trip mine detonation (deployable, audio_cue_requested [R]) | tight high-explosive crack + steel ping, World bus, ~150 m, 3 variations | 3 |
 | cue.phantom_hum / phantom_charge | Phantom | see pd2_fidelity L4.3 | 3 |
 | cue.stinger_windup / stinger_arc | Stinger | 1 s ramp / crackle loop | 3 |
 | cue.bulwark_bang | Bulwark | metal shield bang | 3 |
@@ -56,7 +58,7 @@ Buses: `Master > Music, SFX (> Weapons, Enemies, World, UI), Voice, Ambience`.
 | cue.throwable_incendiary_fire (loop) | the incendiary fire pool burns (stop when it ends) | fire crackle loop, 3D at the pool | 3 |
 | cue.throwable_knife_hit | throwing knife hits a body (ENV A picks by target) | flesh thunk | 3 |
 | cue.throwable_knife_hit_hard | throwing knife hits world geometry | metallic ting / wood thunk | 3 |
-| cue.npc_melee_swing | NPC melee windup start (A3-13) [R], source = the NPC | short cloth/arm whoosh, 3D at the NPC, ~15 m | 3 |
+| cue.npc_melee_swing | NPC melee windup start (A3-13) [R], source = the NPC | short cloth/arm whoosh, 3D at the NPC, ~15 m; World bus, 3 var, −8 dB, cooldown 0.25 | 3 |
 | cue.radio_squelch | contact radio line start/end (ENV B ContactRadio, B7-03), local | short squelch click on / off, 2D, Voice or UI bus | 5 |
 | cue.payday_tick | payday card-pick timer, each of the last 5 s (ENV B payday screen), local | 60 ms dry UI tick, 2D, UI bus (ENV C 51cfb287) | PP (D-082) |
 | cue.ui_focus | any focusable control gains focus (UiBuild), local | soft paper tick ~30 ms, 2D, UI bus | PP (D-090) |
