@@ -575,6 +575,7 @@ func _build_site(geo: Node3D) -> void:
 	_quay_steps(ground)
 	var water: Array = L.WATER
 	box_a(site, "HarborWater", water, "", false)
+	SurfaceTags.water_surface(site, map_root, "HarborWaterSurface", v3(water, 0), v3(water, 3))  # PO-8 bullets
 	art.acc.quad("Water", "water", Vector3(float(water[0]), float(water[4]), float(water[2])),
 		Vector3(float(water[3]), float(water[4]), float(water[2])), Vector3(float(water[3]), float(water[4]), float(water[5])),
 		Vector3(float(water[0]), float(water[4]), float(water[5])), Vector3.UP)

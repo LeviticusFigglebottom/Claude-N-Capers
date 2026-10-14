@@ -491,6 +491,7 @@ func _build_site(geo: Node3D) -> void:
 	_pontoon_ramp(ground)
 	for w: Array in L.WATER:
 		box_a(site, String(w[0]), w[1], "water", false)
+		SurfaceTags.water_surface(site, map_root, String(w[0]) + "Surface", v3(w[1], 0), v3(w[1], 3))  # PO-8 bullets
 	var blocks: Node3D = add(site, node3d("Blocks")) as Node3D
 	for b: Array in L.BLOCKS:
 		box_a(blocks, String(b[0]), b[1], String(b[2]))
