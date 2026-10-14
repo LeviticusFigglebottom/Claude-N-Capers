@@ -18,7 +18,8 @@ isolation). Trunk merged at r198; nothing red. No wip branches.
 - FP "black gun" (lead priority, PO "untextured gun"), 90%. Cause found: the gun's MATERIAL. Proof (Glasshouse,
   Corsair, mean luminance 0-255 of weapon-only viewmodel pixels; Compatibility and Forward+ agree): shipped 8
   (Forward+ 11); unshaded 87; the arms' skin material on the gun 83-87 (so lights / layers / shadows / normals / env
-  are fine); skin material + ONE gun texture: ORM 23, albedo 39, normal 80. C's library ORMs give anodized
+  are fine); skin material + ONE gun texture: ORM 23, albedo 39, normal 80 (Forward+ on lavapipe, full run: shipped 11, arms
+  material 87, +ORM 34, +albedo 41, +normal 85, no ORM 22, env colour 8.7: same picture). C's library ORMs give anodized
   aluminium / blued steel / bare steel / brass metal = 1.0 (rough 0.35-0.39); a metal only reflects, and the FP
   viewmodel (and dim interiors) give it almost nothing to reflect. Sent to C (owner of world/materials + texgen):
   coated finishes (anodize, bluing, cerakote) as dielectric (metal 0-0.15, rough 0.45-0.55, anodized black albedo
