@@ -85,6 +85,12 @@ func _start() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"police_brain", fp)
+
+
+func _physics_step(delta: float) -> void:
 	if not _started or _npc == null or not _npc.alive or not Net.is_authority():
 		return
 	if _npc.is_stunned():  # A2-03 (S8.6): ECM feedback stun

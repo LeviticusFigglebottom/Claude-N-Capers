@@ -1,7 +1,7 @@
 ## PO-5 driver node (lives on the root, survives scene changes). See po5_runner.gd.
 extends Node
 
-## A frame whose physics + process time exceeds this prints a HITCH line with engine monitors (ms).
+## A fast-mode (not rendered) frame longer than this prints a HITCH line with FrameProf's top systems (ms).
 const HITCH_MS: float = 1000.0
 
 var runner_out: String = "user://po5"
@@ -20,6 +20,7 @@ var _shot: int = 0
 var _log: PackedStringArray = PackedStringArray()
 var _worst_frame_ms: float = 0.0
 var _last_frame_us: int = 0
+var _was_rendering: bool = true
 var _budget_s: float = 0.0
 
 
@@ -80,6 +81,7 @@ func enter_heist() -> bool:
 		if step in ["Planning Table", "Briefing", "Continue", "Confirm plan"]:
 			await shot(step.to_snake_case())
 	set_fast(true)
+	FrameProf.enabled = true  # per-system cost for HITCH lines (ND t=322 stall hunt)
 	var t: float = 0.0
 	while t < 60.0:
 		rt = HeistRuntime.current()
@@ -109,29 +111,17 @@ func enter_heist() -> bool:
 
 func _process(_delta: float) -> void:
 	var now: int = Time.get_ticks_usec()
+	var rendering: bool = RenderingServer.render_loop_enabled
 	if _last_frame_us != 0:
 		var frame_ms: float = (now - _last_frame_us) / 1000.0
 		_worst_frame_ms = maxf(_worst_frame_ms, frame_ms)
-		# Screenshot frames are slow by design (render loop back on): only physics / process time counts.
-		var sim_ms: float = (Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS)
-			+ Performance.get_monitor(Performance.TIME_PROCESS)) * 1000.0
-		if sim_ms > HITCH_MS and rt != null and is_instance_valid(rt):
-			note("HITCH " + _hitch_snapshot(frame_ms))
+		# Rendered frames (llvmpipe screenshots, menus) are slow by design: only fast-mode frames count.
+		if frame_ms > HITCH_MS and not rendering and not _was_rendering and rt != null and is_instance_valid(rt):
+			note("HITCH frame=%.0fms t=%.1f nodes=%d enemies=%d top: %s" % [frame_ms, rt.heist_time_s,
+				Performance.get_monitor(Performance.OBJECT_NODE_COUNT), _alive_in(G.ENEMY), FrameProf.top(10)])
+	FrameProf.reset_frame()
+	_was_rendering = rendering
 	_last_frame_us = now
-
-
-## Engine monitors for a frame over HITCH_MS of simulation (ND t=322 stall): which subsystem blew up.
-func _hitch_snapshot(frame_ms: float) -> String:
-	var m: Callable = func(id: Performance.Monitor) -> float: return Performance.get_monitor(id)
-	return ("frame=%.0fms t=%.1f phys=%.1fms proc=%.1fms nav=%.1fms nodes=%d active=%d pairs=%d islands=%d "
-		+ "nav_agents=%d nav_links=%d nav_obst=%d nav_regions=%d nav_polys=%d enemies=%d bags=%d") % [frame_ms,
-		rt.heist_time_s, m.call(Performance.TIME_PHYSICS_PROCESS) * 1000.0, m.call(Performance.TIME_PROCESS) * 1000.0,
-		m.call(Performance.TIME_NAVIGATION_PROCESS) * 1000.0, m.call(Performance.OBJECT_NODE_COUNT),
-		m.call(Performance.PHYSICS_3D_ACTIVE_OBJECTS), m.call(Performance.PHYSICS_3D_COLLISION_PAIRS),
-		m.call(Performance.PHYSICS_3D_ISLAND_COUNT), m.call(Performance.NAVIGATION_3D_AGENT_COUNT),
-		m.call(Performance.NAVIGATION_3D_LINK_COUNT), m.call(Performance.NAVIGATION_3D_OBSTACLE_COUNT),
-		m.call(Performance.NAVIGATION_3D_REGION_COUNT), m.call(Performance.NAVIGATION_3D_POLYGON_COUNT),
-		_alive_in(G.ENEMY), get_tree().get_nodes_in_group(G.LOOT_BAG).size()]
 
 
 ## Every 10 s of game time: frame cost, crew states/positions, enemy count.

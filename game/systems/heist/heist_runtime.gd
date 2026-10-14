@@ -757,6 +757,12 @@ func teardown() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"heist_runtime", fp)
+
+
+func _physics_step(delta: float) -> void:
 	if not _ended:
 		heist_time_s += delta
 	if stealth_abort_left >= 0.0 and not _ended:

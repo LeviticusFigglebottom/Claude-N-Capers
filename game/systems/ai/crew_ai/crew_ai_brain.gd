@@ -232,6 +232,12 @@ func may_auto_revive(t: CrewController) -> bool:
 
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"crew_ai_brain", fp)
+
+
+func _physics_step(delta: float) -> void:
 	if not is_active():
 		if mode != Mode.INACTIVE and _crew != null:
 			_crew.stealth_hidden = false
