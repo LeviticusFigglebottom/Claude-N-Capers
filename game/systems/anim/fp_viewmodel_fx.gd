@@ -25,6 +25,10 @@ var _flash: Node3D = null
 var _flash_left: float = 0.0
 ## Process frame the burst was shown on: it stays up through that frame's draw even on a slow frame.
 var _flash_frame: int = 0
+## The burst is ENV C's MuzzleFlash scene (flash/tick API) rather than the placeholder.
+var _custom_flash: bool = false
+## ENV C's TracerFx (one per world) when its scene exists.
+var _c_tracer: Node3D = null
 var _smoke: CPUParticles3D = null
 var _shells: Array[Dictionary] = []
 var _tracers: Array[Dictionary] = []
@@ -59,7 +63,10 @@ func _process(delta: float) -> void:
 ## Advance one presentation frame (tests may call it directly).
 func tick(delta: float) -> void:
 	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
-	if _flash != null and _flash.visible:
+	if _custom_flash and _flash != null and is_instance_valid(_flash):
+		if Engine.get_process_frames() > _flash_frame:  # drawn at least once before C's 0.05 s timer runs
+			_flash.call(&"tick", delta)
+	elif _flash != null and _flash.visible:
 		_flash_left -= delta
 		if _flash_left <= 0.0 and Engine.get_process_frames() > _flash_frame:  # drawn at least once
 			_flash.visible = false
@@ -93,6 +100,9 @@ func flash(muzzle: Node3D, suppressed: bool, size_mult: float = 1.0) -> void:
 		_flash.visible = true
 		_flash_left = tw.muzzle_flash_s
 		_flash_frame = Engine.get_process_frames()
+		if _custom_flash:
+			_flash.call(&"flash", tw.vfx_muzzle_size, false)
+			_hide_library_smoke()
 	if tw.muzzle_smoke_amount > 0:
 		if _smoke == null or not is_instance_valid(_smoke):
 			_smoke = _make_smoke(tw)
@@ -103,6 +113,14 @@ func flash(muzzle: Node3D, suppressed: bool, size_mult: float = 1.0) -> void:
 		_smoke.emitting = true
 
 
+## ENV C's flash carries a world-space smoke emitter whose particle size ignores the root scale (metres at the
+## viewmodel's ~0.5 m depth fill the screen); the FP smoke is ours (sized for the viewmodel), so C's stays hidden.
+func _hide_library_smoke() -> void:
+	var sm: Node3D = _flash.get_node_or_null(^"Smoke") as Node3D
+	if sm != null:
+		sm.visible = false
+
+
 ## The flash faces down the barrel: -Z along the camera forward (the Muzzle marker's own axes vary per model).
 func _muzzle_frame(muzzle: Node3D) -> Transform3D:
 	var cam: Node3D = get_parent_node_3d().get_parent_node_3d() if get_parent_node_3d() != null else null
@@ -111,9 +129,14 @@ func _muzzle_frame(muzzle: Node3D) -> Transform3D:
 
 
 func _make_flash(tw: FpViewmodelTweak) -> Node3D:
-	var custom: Node3D = _instance(tw.vfx_muzzle_scene)
-	if custom != null:
+	var custom: Node3D = _instance(tw.vfx_muzzle_scene_path)
+	if custom != null and custom.has_method(&"flash") and custom.has_method(&"tick"):
+		custom.set(&"auto_tick", false)  # ticked from here so the burst survives one drawn frame
+		custom.ready.connect(_alpha_blend.bind(custom), CONNECT_ONE_SHOT)
+		_custom_flash = true
 		return custom
+	if custom != null:
+		custom.free()
 	var root: Node3D = Node3D.new()
 	root.name = "MuzzleFlash"
 	var mat: StandardMaterial3D = StandardMaterial3D.new()
@@ -310,7 +333,8 @@ func _on_shot_fx(origin: Vector3, end: Vector3, _normal: Vector3, _surface: Stri
 	draw_tracer(from, end)
 
 
-## A streak from `from` to `to` (world layer, world space), travelling at FpViewmodelTweak.tracer_speed_mps.
+## A streak from `from` to `to` (world layer, world space): ENV C's TracerFx when present (one per world, it
+## advances itself), else the placeholder travelling at FpViewmodelTweak.tracer_speed_mps.
 func draw_tracer(from: Vector3, to: Vector3) -> void:
 	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
 	var dist: float = from.distance_to(to)
@@ -319,13 +343,23 @@ func draw_tracer(from: Vector3, to: Vector3) -> void:
 	var world: Node = _world_parent()
 	if world == null:
 		return
+	if _c_tracer == null or not is_instance_valid(_c_tracer):
+		_c_tracer = _instance(tw.vfx_tracer_scene_path)
+		if _c_tracer != null and not _c_tracer.has_method(&"spawn"):
+			_c_tracer.free()
+			_c_tracer = null
+		if _c_tracer != null:
+			_c_tracer.name = "FpTracerFx"
+			world.add_child(_c_tracer)
+	if _c_tracer != null:
+		_c_tracer.call(&"spawn", from, to)
+		tracers_drawn += 1
+		return
 	var t: Dictionary = {}
 	if _tracers.size() >= TRACER_POOL:
 		t = _tracers.pop_front()
 	else:
-		var node: Node3D = _instance(tw.vfx_tracer_scene)
-		if node == null:
-			node = _make_tracer(tw)
+		var node: Node3D = _make_tracer(tw)
 		world.add_child(node)
 		t = {"node": node}
 	var n: Node3D = t["node"]
@@ -392,7 +426,34 @@ func _world_parent() -> Node:
 	return get_tree().current_scene if is_inside_tree() else null
 
 
-static func _instance(ps: PackedScene) -> Node3D:
-	if ps == null:
+static func _instance(path: String) -> Node3D:
+	if path == "" or not ResourceLoader.exists(path):
 		return null
-	return ps.instantiate() as Node3D
+	var ps: PackedScene = load(path) as PackedScene
+	return ps.instantiate() as Node3D if ps != null else null
+
+
+## The viewmodel draws into a transparent SubViewport: an additive material leaves alpha at 0 there and vanishes
+## when the layer is composited, so every additive / billboard material of a library scene used on the viewmodel is
+## re-made as MIX (and billboards keep the root's scale).
+static func _alpha_blend(root: Node) -> void:
+	for n: Node in root.find_children("*", "GeometryInstance3D", true, false):
+		var g: GeometryInstance3D = n as GeometryInstance3D
+		var src: Material = g.material_override
+		if src == null:
+			var mesh: Mesh = null
+			if g is MeshInstance3D:
+				mesh = (g as MeshInstance3D).mesh
+			elif g is CPUParticles3D:
+				mesh = (g as CPUParticles3D).mesh
+			elif g is GPUParticles3D:
+				mesh = (g as GPUParticles3D).draw_pass_1
+			if mesh != null and mesh.get_surface_count() > 0:
+				src = mesh.surface_get_material(0)
+		var bm: BaseMaterial3D = src as BaseMaterial3D
+		if bm != null and (bm.blend_mode == BaseMaterial3D.BLEND_MODE_ADD
+				or bm.billboard_mode != BaseMaterial3D.BILLBOARD_DISABLED):
+			var mix: BaseMaterial3D = bm.duplicate() as BaseMaterial3D
+			mix.blend_mode = BaseMaterial3D.BLEND_MODE_MIX
+			mix.billboard_keep_scale = true  # a billboard ignores the root's FP scale otherwise (1 m at 0.5 m)
+			g.material_override = mix

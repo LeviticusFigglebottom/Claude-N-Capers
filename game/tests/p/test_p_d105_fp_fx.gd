@@ -57,8 +57,7 @@ func test_shot_flashes_ejects_and_kicks() -> void:
 	for _k: int in 12:
 		await wait_physics_frames(1)
 		peak = maxf(peak, vm.kick().x)
-		var f: Node3D = vm.fx.get_node_or_null(^"MuzzleFlash") as Node3D
-		saw_flash = saw_flash or (f != null and f.visible)
+		saw_flash = saw_flash or _flash_showing(vm)
 	_inp.release(&"fire")
 	var shots: int = c.weapons.shots_fired - shots0
 	assert_true(shots >= 1, "fired (%d)" % shots)
@@ -69,8 +68,7 @@ func test_shot_flashes_ejects_and_kicks() -> void:
 	assert_true(peak > amp * 0.6 and peak < amp * 1.05 * shots, "kick back %.4f m (set %s %.4f, %d shots stack)" % [
 		peak, vm.anim_set, amp, shots])
 	assert_true(await wait_until(func() -> bool: return vm.kick() == Vector2.ZERO, 3.0), "kick settles (%s)" % vm.kick())
-	var f2: Node3D = vm.fx.get_node_or_null(^"MuzzleFlash") as Node3D
-	assert_true(f2 == null or not f2.visible, "burst gone")
+	assert_false(_flash_showing(vm), "burst gone")
 
 
 func test_pump_shotgun_ejects_on_the_cycle() -> void:
@@ -104,16 +102,25 @@ func test_tracer_cadence_and_filters() -> void:
 	for _k: int in every * 2:
 		EventBus.shot_fx.emit(o, end, Vector3.ZERO, &"", &"assault_rifle", c.net_id, fp)
 	assert_eq(vm.fx.tracers_drawn, 2, "1 in %d (%s)" % [every, vm.weapon_class_key()])
-	var tracer: MeshInstance3D = null
+	var tracer: GeometryInstance3D = null
 	for n: Node in c.get_parent().get_children():
 		if n.name.begins_with("FpTracer"):
-			tracer = n as MeshInstance3D
-	assert_true(tracer != null and tracer.layers == 1, "the streak lives in the world on layer 1")
+			tracer = n as GeometryInstance3D
+	assert_true(tracer != null and tracer.layers == 1, "the streak lives in the world on layer 1 (%s)" % [
+		tracer.get_class() if tracer != null else "none"])
 	var from: Vector3 = vm.muzzle_world_apparent()
 	assert_true(from != Vector3.INF, "apparent muzzle")
 	var cam: Camera3D = CrewView.of(c).camera()
 	var local: Vector3 = cam.global_transform.affine_inverse() * from
 	assert_true(local.z < -0.05 and local.x > 0.0 and local.y < 0.0, "apparent muzzle ahead, right, low: %s" % local)
-	await wait_seconds(0.3)
-	assert_false(tracer.visible, "the streak is gone after %.0f m at %.0f m/s" % [30.0,
-		FpViewmodelTweak.data().tracer_speed_mps])
+	await wait_seconds(0.4)
+	var gone: bool = int(tracer.get(&"live")) == 0 if tracer.get(&"live") != null else not tracer.visible
+	assert_true(gone, "the streaks are gone after 30 m")
+
+
+## The burst is up: ENV C's MuzzleFlash (is_flashing) or the placeholder node's visibility.
+func _flash_showing(vm: FpViewmodel) -> bool:
+	var f: Node3D = vm.fx.get_node_or_null(^"MuzzleFlash") as Node3D
+	if f == null:
+		return false
+	return bool(f.call(&"is_flashing")) if f.has_method(&"is_flashing") else f.visible
