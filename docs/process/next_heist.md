@@ -85,3 +85,23 @@ Recommendation: (a) for the map and cast; A/B/P keep their current lanes plus th
 | GN-A1 | A | Missing prefabs/systems from §3; mission script; objective marker_tags; e2e flows (stealth + loud) |
 | GN-B1 | B | HeistDef, contract/briefing/strings, loot defs (painting, painting_study $700 LIGHT), variant table data, pre-planning assets |
 | GN-P1 | P | Real-menu windowed feel pass + snag probe on the greybox, then on G2 |
+
+## 7. G1 traversal requirements (ENV P review 2026-10-14, adopted D-104)
+Player numbers: capsule r 0.35 (0.70 m), stand 1.8 / crouch 1.2, step 0.35, max slope 45°, jump apex 1.08 m
+(heavy bag 0.27, very heavy 0.07; D-102), ladders 2 m/s masked only, no bags, no mantle.
+1. Laser gaps: bypass gaps ≥ 1.0 m; crouch gaps ≥ 1.30 m clear; ENV A confirms lasers test the gameplay capsule.
+2. Balcony throws: fix the doc's drop strip to hall x 24–28; balustrade/handrail colliders thin and true to the visual.
+3. Mews ↔ loading dock: step-free (Mews grade = LD floor, leveller ≤ 0.35 m dressing) or ramp ≤ 45° at both doors.
+4. Reflecting pool: rim + depth ≤ 0.35 m (or one shallow step), else a raised solid.
+5. Roofs: parapet coping ≥ 50°; 1.2 m parapet / invisible wall between roof deck and the north-light sawtooth;
+   levelcheck rule "no walkable slope < 50° outside the play mesh" (ENV C).
+6. Ladders: ≥ 1.0 m level landing at each top through the parapet; areaway grate ≥ 1.0 × 1.0 m with the ladder on one side;
+   the counterweighted drop section stays down (or raises for police only).
+7. Doors on routes ≥ 1.0 m (staff door, SV, CO, CS, AT, TR, head house); NPC idle points ≥ 1 m off door centrelines;
+   Stair SS single-file accepted.
+8. Stairs collide as ramps, not per-tread boxes.
+9. Velvet-rope runs: one simple box collider per run (or none), never posts.
+10. Broken windows: EB/SL frames keep a crew-only collision plane unless a route is intended.
+11. DC lighting ≥ readable for ADS fights (tag key lights `viewmodel_lit`, D-095).
+**G1 tests (ENV P owns, windowed real input):** every laser gap walked/crouched; balcony throws at 3 pitches land on the hall
+floor; Mews → LD with a heavy bag; pool in/out with a heavy bag; both ladders up/down; PO-3 snag probe = 0.
