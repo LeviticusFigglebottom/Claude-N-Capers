@@ -216,9 +216,8 @@ func _device_scene() -> PackedScene:
 		return device_scene
 	if device == Device.SAW:
 		return null
-	var dir: Variant = (G as Script).get_script_constant_map().get("PROPS_DIR")
-	var path: String = String(dir) + DEFAULT_DEVICE if dir != null else ""
-	return load(path) as PackedScene if path != "" and ResourceLoader.exists(path) else null
+	var path: String = G.PROPS_DIR + DEFAULT_DEVICE
+	return load(path) as PackedScene if ResourceLoader.exists(path) else null
 
 
 ## A small emissive red mark above the device while jammed (procedural: no art asset).
