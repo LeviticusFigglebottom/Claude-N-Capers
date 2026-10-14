@@ -3,7 +3,7 @@
 ## - Shield: HeavySpecialTweak.bulwark_shield_scene (BulwarkShield, `Shield` + `Collision`) carried in
 ##   front (bulwark_shield_offset). It blocks all but shield-piercing rounds (x0.25), fire and
 ##   explosions (which go around it). Flanks and the back are unprotected (weak to flanks). On death the
-##   shield is dropped in place and keeps blocking.
+##   shield falls flat to the floor and can be walked over (L4.5, BulwarkShield.drop).
 ## - Movement (PD2, lead ruling): walks while advancing at EnemyDef.params.advance_speed (1.8 m/s;
 ##   shield_walk), EnemyDef.move_speed only for director orders (PoliceSpecialKit.heavy_move_speed).
 ## - Shield: the character's own `<char>_shield.tscn` geometry when it wears an ENV D character
@@ -212,7 +212,5 @@ func _on_died(info: Dictionary, killer_net_id: int) -> void:
 	super._on_died(info, killer_net_id)
 	_npc.remove_from_group(PoliceSpecialKit.BULWARK_GROUP)
 	if shield != null and is_instance_valid(shield):
-		if shield.guard_down:
-			_raise_guard()  # a dropped shield still blocks
 		var parent: Node = _runtime.dynamic_root if _runtime != null else _npc.get_parent()
 		shield.drop.call_deferred(parent)  # not inside the hit/physics callback that killed us
