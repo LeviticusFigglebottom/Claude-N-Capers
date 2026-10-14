@@ -1222,5 +1222,8 @@ inactive slot). The mission passes them as `data.marker_tags`.
 
 ### B6. Validator hooks this map sets (D-075, built 2026-10-14)
 `camera_spine` (BC and UC, per `camera` layout) and `camera_screen` (`orchard_calloway`, `widow_sallow`,
-`saint_maritime`, each behind a `partition_screen`) read HeistMap data documented in `tools/levelcheck/README.md`; the
+`saint_maritime`, each behind a `partition_screen`) read HeistMap root meta (`tools/levelcheck/README.md`): `camera_spine_rooms = ["bc", "uc"]`, `camera_screen_slots =
+["orchard_calloway", "widow_sallow", "saint_maritime"]`, `camera_layout_group = "camera"` (default). Layout cameras sit
+under their `cam_a/b/c` VariantSlot; C11 and C14 sit outside any slot (live in every layout); screens carry meta
+`kind = "partition_screen"` and a wall on the line does not count; the
 plans and `--check` live in `tools/levelcheck/plans/gallery_night_floors_ascii.py`.
