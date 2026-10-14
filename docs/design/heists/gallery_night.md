@@ -57,7 +57,7 @@ Cross-env requests are QC-51..QC-59.
   dead). **The same hack lifts the lockdown** (now 120 s, 2–3 interruptions, in the upper BOH
   holdout). The art-store vault door also takes a **thermal drill** (240 s) as the fallback.
 - **Difficulty notes:**
-  - Routine/Tense: 2 guards (hall post + 1 rover) + operator (60%), 3–5 patrons, `sensors_treasury`
+  - Routine/Tense: 1–2 guards (hall post + 0–1 rover; `rover_none` 20%) + operator (60%), 3–5 patrons, `sensors_treasury`
     likely.
   - Hazardous/Brutal: 3–4 guards, 5–7 patrons, sweeping/timed lasers favoured, `sensors_all`
     possible, `insurance_inspection` and `vaultline_early` events enabled. **From Brutal the guard
@@ -521,8 +521,8 @@ Support-space check (level_standards §2.2):
 
 | Difficulty | Guards (hall + rovers/smoker) | Operator | Pagers to clear every guard | Civilians before / after last call | Notes |
 |---|---|---|---|---|---|
-| Routine | 1 + 1 = **2** | 60% | 2–3 | 7–10 / 4–7 | |
-| Tense | 1 + 1–2 = **2–3** | 60% | 2–4 | 8–12 / 4–8 | At the cap at worst. |
+| Routine | 1 + 0–1 = **1–2** | 60% | 1–3 | 7–10 / 4–7 | |
+| Tense | 1 + 0–1 = **1–2** | 60% | 1–3 | 8–12 / 4–8 | Same guard_post pick as Routine (GN-B1 Q2: the Variable table rules). |
 | Hazardous | 1 + 2 = **3** | 65% | 3–4 | 9–14 / 5–8 | |
 | Brutal | 1 + 3 = **4** | 75% | 4–5 | 10–15 / 5–9 | Exceeds the cap with the operator. |
 | Lethal / Cataclysm | 1 + 4 = **5** | 75% | 5–6 | 10–15 / 5–9 | Ghost 1–2 guards; Titan cameras. |
