@@ -120,6 +120,9 @@ static var _gen: int = 0
 @export var muzzle_light_suppressed_mult: float = 0.15
 
 @export_group("Sway / breathing (PO-13)")
+## PO-13: the gun dips this far (m) mid-way through the ADS transition (sin(pi x ads_weight)): a small arc into and
+## out of the sights instead of a straight slide. 0 at hip and at full ADS, so the sight alignment is untouched.
+@export var ads_dip_m: float = 0.012
 ## PD2 vel_overshot (fpcameraplayerbase.lua _calculate_soft_velocity_overshot, playertweakdata stances.default):
 ## the weapon lags behind look motion. Target = sign x (|look speed| / sway_full_dps)^1.5 x max (deg); the target
 ## steps toward it at sway_target_rate_dps; the applied sway follows at lerp(3, 180, |diff| / 40) deg/s. Roll = -yaw.
