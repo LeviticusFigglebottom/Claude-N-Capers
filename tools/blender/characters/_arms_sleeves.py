@@ -291,7 +291,7 @@ def variant_data(params: dict) -> dict:
         mats.extend([skin] * len(fp["faces"]))
         uvs.extend(fp["uvs"])
         weights.extend(fp["weights"])
-    arms = F.arm_loops(params)
+    arms = F.arm_loops(params, slim=not v.forearm_skin)
     for sfx, _sx in rig.SIDES:
         arm = Arm(arms[sfx])
         if abs(arm.us[0] - U_SHOULDER) > 0.01:
