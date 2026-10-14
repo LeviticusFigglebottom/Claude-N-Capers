@@ -102,6 +102,7 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"max_armor": &"vitals_changed", &"downs_left": &"vitals_changed", &"crew_state": &"vitals_changed",
 	&"bleedout_s": &"vitals_changed", &"revive_progress": &"vitals_changed", &"reviver_slot": &"vitals_changed",
 	&"ammo": &"ammo_changed", &"equipped_slot": &"ammo_changed",
+	&"reloading": &"ammo_changed", &"reload_progress": &"ammo_changed",
 	&"deployable_id": &"inventory_changed", &"throwable_id": &"inventory_changed",
 	&"deployable_count": &"inventory_changed", &"throwable_count": &"inventory_changed",
 	&"cable_ties": &"inventory_changed", &"body_bags": &"inventory_changed",
@@ -177,6 +178,9 @@ var dominate_window_s: float = 0.0
 var ammo: Dictionary = {}
 ## Enums.WeaponSlot
 var equipped_slot: int = Enums.WeaponSlot.PRIMARY
+## ui_hud v1.12 (D-106): the equipped weapon is reloading, and how far (0..1; -1 when not reloading).
+var reloading: bool = false
+var reload_progress: float = -1.0
 # --- inventory_changed
 var deployable_id: StringName = &""
 var throwable_id: StringName = &""
@@ -275,6 +279,7 @@ var _captain_present: bool = false
 var _event_objectives: Dictionary[StringName, Dictionary] = {}
 ## ui_hud v1.8 marker cache: objective id -> tagged map nodes; key = active marked objectives + tags.
 var _marker_nodes: Dictionary[StringName, Array] = {}
+var _reload_total: float = 0.0
 var _marker_key: String = ""
 var _marker_unresolved: bool = false
 var _marker_retry_left: int = 0
@@ -397,6 +402,21 @@ func _poll_vitals(c: CrewController, slot: int) -> void:
 		_assign(&"exhausted", c.stamina.exhausted)
 
 
+## v1.12: progress from reload_left against the longest reload_left seen since this reload began (covers
+## whole-magazine and shell-by-shell reloads alike).
+func _poll_reload(w: Object) -> void:
+	var on: bool = bool(_read(w, &"reloading", false))
+	var left: float = float(_read(w, &"reload_left", 0.0))
+	if not on:
+		_reload_total = 0.0
+		_assign(&"reloading", false)
+		_assign(&"reload_progress", -1.0)
+		return
+	_reload_total = maxf(_reload_total, left)
+	_assign(&"reloading", true)
+	_assign(&"reload_progress", snappedf(clampf(1.0 - left / _reload_total, 0.0, 1.0) if _reload_total > 0.0 else 0.0, 0.01))
+
+
 func _poll_weapons(c: CrewController) -> void:
 	var w: Object = _member_obj(c, &"weapons")
 	var out: Dictionary = {}
@@ -404,6 +424,7 @@ func _poll_weapons(c: CrewController) -> void:
 		out[ws] = {"mag": int(_read_slot(w, &"mag", ws)), "reserve": int(_read_slot(w, &"reserve", ws))}
 	_assign(&"ammo", out)
 	_assign(&"equipped_slot", int(_read(w, &"equipped_slot", Enums.WeaponSlot.PRIMARY)))
+	_poll_reload(w)
 	var lo: Loadout = c.loadout if c != null else null
 	_assign(&"deployable_id", StringName(_read(w, &"deployable_id", lo.deployable if lo != null else &"")))
 	_assign(&"throwable_id", StringName(_read(w, &"throwable_id", lo.throwable if lo != null else &"")))
