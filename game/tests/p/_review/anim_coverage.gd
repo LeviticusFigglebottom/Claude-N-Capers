@@ -146,8 +146,8 @@ func _check_pose(body: Node3D) -> void:
 	if body == null or not is_instance_valid(body):
 		return
 	var drv: AnimDriver = body.get_node_or_null(AnimDriver.NODE_NAME) as AnimDriver
-	if drv == null or drv.player == null or drv.clip == &"":
-		return
+	if drv == null or drv.player == null or drv.clip == &"" or String(drv.clip).begins_with("death"):
+		return  # a finished death one-shot holds its last frame: stopped and still by design
 	var cls: String = _class_of(body)
 	var key: String = "%s|%s" % [cls, drv.clip]
 	var ap: AnimationPlayer = drv.player
