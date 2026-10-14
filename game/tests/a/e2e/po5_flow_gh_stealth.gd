@@ -742,9 +742,63 @@ func _down_soon() -> NpcBase:
 	var best: NpcBase = null
 	for c: NpcBase in _civilians():
 		var b: CivilianBrain = _civ_brain(c)
-		if b.mode == CivilianBrain.Mode.DOWN and b.intimidate_left < 14.0 \
-				and (best == null or b.intimidate_left < _civ_brain(best).intimidate_left):
+		if b.mode != CivilianBrain.Mode.DOWN or b.intimidate_left > 40.0:
+			continue
+		# Leave in time: walking there (3.5 m/s) plus a margin.
+		var need: float = 8.0
+		if p.flat_dist(c.global_position, crew.global_position) > _shout_reach():
+			need += _path_len(_reshout_spot(c)) / 3.5
+		if b.intimidate_left < need and (best == null or b.intimidate_left < _civ_brain(best).intimidate_left):
 			best = c
+	return best
+
+
+func _shout_reach() -> float:
+	return Tweak.stealth().shout_all_within_m - 0.7
+
+
+## The nav path to `to` crosses the sales floor / the staff-door end of G4 (masked there = seen).
+func _path_exposed(to: Vector3) -> bool:
+	if not crew.masked:
+		return false
+	var path: PackedVector3Array = p.nav_path(to)
+	for i: int in range(1, path.size()):
+		for k: int in 4:
+			if _exposed(path[i - 1].lerp(path[i], float(k) / 4.0)):
+				return true
+	return false
+
+
+func _path_len(to: Vector3) -> float:
+	var path: PackedVector3Array = p.nav_path(to)
+	var n: float = 0.0
+	var prev: Vector3 = crew.global_position
+	for q: Vector3 in path:
+		n += prev.distance_to(q)
+		prev = q
+	return n if not path.is_empty() else 999.0
+
+
+## Where to stand to renew a shout on `c`: within the all-around radius (flat: it reaches through walls and
+## floors), off the sales floor, the nearest by path among the corridor below/above, the street and the alley.
+func _reshout_spot(c: NpcBase) -> Vector3:
+	var cp: Vector3 = c.global_position
+	var cands: Array[Vector3] = [
+		p.stand_point(Vector3(cp.x, crew.global_position.y, cp.z)),
+		p.stand_point(Vector3(clampf(cp.x, 1.0, 17.0), 0.0, minf(cp.z, 5.2))),
+		p.stand_point(Vector3(clampf(cp.x, 1.0, 17.0), UPPER_Y, 5.2)),
+		p.stand_point(Vector3(clampf(cp.x, -2.0, 18.0), 0.0, 12.8)),
+		p.stand_point(Vector3(clampf(cp.x, -2.0, 16.0), 0.0, -1.0)),
+	]
+	var best: Vector3 = cands[1]
+	var best_len: float = INF
+	for q: Vector3 in cands:
+		if p.flat_dist(q, cp) > _shout_reach() or _exposed(q) or _path_exposed(q):
+			continue
+		var l: float = _path_len(q)
+		if l < best_len:
+			best_len = l
+			best = q
 	return best
 
 
@@ -809,12 +863,8 @@ func _refresh_downs(min_left: float) -> void:
 ## reaches through walls and floors) and shout with nothing interactable in the aim.
 func _reshout(c: NpcBase) -> void:
 	var b: CivilianBrain = _civ_brain(c)
-	var reach: float = Tweak.stealth().shout_all_within_m - 0.7
-	if p.flat_dist(c.global_position, crew.global_position) > reach:
-		var cp: Vector3 = c.global_position
-		var spot: Vector3 = p.stand_point(Vector3(cp.x, crew.global_position.y, cp.z))
-		if p.flat_dist(spot, cp) > reach or _exposed(spot):
-			spot = p.stand_point(Vector3(clampf(cp.x, 1.0, 17.0), crew.global_position.y, minf(cp.z, 5.2)))
+	if p.flat_dist(c.global_position, crew.global_position) > _shout_reach():
+		var spot: Vector3 = _reshout_spot(c)
 		f.note("re-shout %s (%.0f s left) from %s" % [c.name, b.intimidate_left, Po5Pilot._v(spot)])
 		await p.goto(spot, 0.5, maxf(b.intimidate_left - 1.0, 2.0))
 	await p.face(crew.eye_position() + Vector3(0.0, 4.0, -0.5).rotated(Vector3.UP, crew.look_yaw), 0.1, 0.5)
