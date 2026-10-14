@@ -465,6 +465,7 @@ func _build_ceilings(parent: Node3D) -> void:
 func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, glass: bool = false) -> void:
 	var body: Node3D = box(parent, nm, mn, mx, "")
 	body.set_meta(&"kind", "railing")
+	RT.apply(body)  # ridged collider top: nobody stands on a rail (D-104 slopes)
 	var size: Vector3 = mx - mn
 	var along_x: bool = size.x >= size.z
 	var length: float = size.x if along_x else size.z
@@ -570,7 +571,8 @@ func _build_core(parent: Node3D, cid: String, core: Dictionary) -> void:
 	# Below L40: dark shaft, landing floor, the closure over the missing flight, core walls.
 	var yb: float = L.F40 - 3.6
 	box(c, "BelowFloor", Vector3(x0 + L.STAIR_CLEAR.x, yb - 0.3, L.STAIR_Z_N), Vector3(x0 + L.STAIR_CLEAR.y, yb, L.STAIR_Z_S), "stair")
-	box(c, "BelowClosure", Vector3(x0 + L.STAIR_CLEAR.x, yb, 12.51), Vector3(x0 + L.STAIR_WELL.x, L.F40 - 0.7, 12.61), "wall")
+	# The closure is a guard at the half-landing edge (1.1 m): ridged collider top, not a perch (D-104 slopes).
+	RT.apply(box(c, "BelowClosure", Vector3(x0 + L.STAIR_CLEAR.x, yb, 12.51), Vector3(x0 + L.STAIR_WELL.x, L.F40 - 0.7, 12.61), "wall"))
 	box(c, "BelowWallW", Vector3(x0 - 0.15, yb, 10.5), Vector3(x0 + 0.15, L.F40, 16.5), "wall")
 	box(c, "BelowWallE", Vector3(x0 + 2.85, yb, 10.5), Vector3(x0 + 3.15, L.F40, 16.5), "wall")
 	box(c, "BelowWallN", Vector3(x0 + 0.15, yb, 10.35), Vector3(x0 + 2.85, L.F40, 10.65), "wall")
@@ -604,10 +606,14 @@ func _build_feature_stair(parent: Node3D) -> void:
 	box(fst, "Landing", Vector3(xl, y0, float(zs[0])), Vector3(xb, ym, float(zs[1])), "stair")
 	_flight(fst, "Flight2", Vector3(xb, ym, zc), 90.0, w, nr, r, t, y0, true)
 	var xe: float = xb + run
+	# Glass balustrades: ridged collider tops, not a perch over the void (D-104 slopes).
 	for side: Array in [["N", float(zs[0]) - 0.03, float(zs[0]) + 0.03], ["S", float(zs[1]) - 0.03, float(zs[1]) + 0.03]]:
-		box(fst, "Balustrade%s1" % side[0], Vector3(xa - t, y0, float(side[1])), Vector3(xl, ym + 1.1, float(side[2])), "teal_glass")
-		box(fst, "Balustrade%sL" % side[0], Vector3(xl, y0, float(side[1])), Vector3(xb, ym + 1.1, float(side[2])), "teal_glass")
-		box(fst, "Balustrade%s2" % side[0], Vector3(xb, y0, float(side[1])), Vector3(xe, y1 + 1.1, float(side[2])), "teal_glass")
+		RT.apply(box(fst, "Balustrade%s1" % side[0], Vector3(xa - t, y0, float(side[1])), Vector3(xl, ym + 1.1, float(side[2])),
+			"teal_glass"))
+		RT.apply(box(fst, "Balustrade%sL" % side[0], Vector3(xl, y0, float(side[1])), Vector3(xb, ym + 1.1, float(side[2])),
+			"teal_glass"))
+		RT.apply(box(fst, "Balustrade%s2" % side[0], Vector3(xb, y0, float(side[1])), Vector3(xe, y1 + 1.1, float(side[2])),
+			"teal_glass"))
 	# Handrails on both balustrades (flights and landing).
 	for k: int in range(2):
 		var zr: float = float(zs[0]) + L.HANDRAIL_OFF if k == 0 else float(zs[1]) - L.HANDRAIL_OFF
@@ -652,7 +658,7 @@ func _build_parapets(parent: Node3D) -> void:
 			_coping(parent, "%sCoping%d" % [pp[0], i], axis, fixed, float(runs[i][0]), float(runs[i][1]))
 
 
-## 45 deg sloped coping (0.2 rise over 0.2 run each side): not standable (> 40 deg).
+## RT.ANGLE_DEG (55 deg) sloped coping: not standable (D-104 slopes: >= 50 deg).
 func _coping(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a1: float) -> void:
 	var body: StaticBody3D = StaticBody3D.new()
 	body.name = nm
@@ -660,10 +666,11 @@ func _coping(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, 
 	body.collision_mask = 0
 	add(parent, body)
 	var h: float = L.EXT_T * 0.5
+	var rise: float = h * tan(deg_to_rad(RT.ANGLE_DEG))
 	var y: float = L.PARAPET_TOP
 	var pts: PackedVector3Array = PackedVector3Array()
 	for a: float in [a0, a1]:
-		for q: Vector2 in [Vector2(-h, 0.0), Vector2(h, 0.0), Vector2(0.0, h)]:
+		for q: Vector2 in [Vector2(-h, 0.0), Vector2(h, 0.0), Vector2(0.0, rise)]:
 			pts.append(Vector3(a, y + q.y, fixed + q.x) if axis == "x" else Vector3(fixed + q.x, y + q.y, a))
 	var shp: ConvexPolygonShape3D = ConvexPolygonShape3D.new()
 	shp.points = pts
@@ -672,13 +679,13 @@ func _coping(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, 
 	col.shape = shp
 	add(body, col)
 	var pm: PrismMesh = PrismMesh.new()
-	pm.size = Vector3(L.EXT_T, h, a1 - a0)
+	pm.size = Vector3(L.EXT_T, rise, a1 - a0)
 	pm.material = lib_mat("trim")
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Mesh"
 	mi.mesh = pm
 	var mid: float = (a0 + a1) * 0.5
-	mi.position = Vector3(mid, y + h * 0.5, fixed) if axis == "x" else Vector3(fixed, y + h * 0.5, mid)
+	mi.position = Vector3(mid, y + rise * 0.5, fixed) if axis == "x" else Vector3(fixed, y + rise * 0.5, mid)
 	mi.basis = Basis(Vector3.UP, PI * 0.5) if axis == "x" else Basis.IDENTITY
 	add(body, mi)
 
@@ -720,7 +727,7 @@ func _handrail(parent: Node3D, nm: String, a: Vector3, b: Vector3) -> void:
 	var size: Vector3 = Vector3(0.05, 0.05, a.distance_to(b))
 	var col: CollisionShape3D = CollisionShape3D.new()
 	col.name = "Collision"
-	col.shape = box_shape(size)
+	col.shape = RT.shape(size, 2)  # ridged along the bar: a handrail is not a foothold (D-104 slopes)
 	add(body, col)
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Mesh"

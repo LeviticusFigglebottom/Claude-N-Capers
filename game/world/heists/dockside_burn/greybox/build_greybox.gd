@@ -186,10 +186,12 @@ func _build_shell(geo: Node3D) -> void:
 	_build_sheds(bld)
 
 
-## Railing: full-panel collision (blocks players and the navmesh) + top rail, mid rail and posts.
+## Railing: full-panel collision (blocks players and the navmesh) with a ridged top (RT: nobody stands
+## on a rail, D-104 slopes) + top rail, mid rail and posts.
 func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3) -> void:
 	var body: Node3D = box(parent, nm, mn, mx, "")
 	body.set_meta(&"kind", "railing")
+	RT.apply(body)
 	var size: Vector3 = mx - mn
 	var along_x: bool = size.x >= size.z
 	var length: float = size.x if along_x else size.z
@@ -232,7 +234,7 @@ func _build_glazing(bld: Node3D) -> void:
 		add(body, head)
 
 
-## Office-roof parapet: 45 deg sloped coping (0.2 rise over 0.2 run each side), not standable (doc
+## Office-roof parapet: RT.ANGLE_DEG (55 deg) sloped coping, not standable (D-104 slopes: >= 50; doc
 ## play-space closure: nobody stands on it; the hall and high-bay roofs beyond stay out of reach).
 func _build_parapet_coping(bld: Node3D) -> void:
 	var cp: Node3D = add(bld, node3d("Coping")) as Node3D
@@ -252,9 +254,10 @@ func _coping(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, 
 	body.collision_mask = 0
 	add(parent, body)
 	var h: float = L.EXT_T * 0.5
+	var rise: float = h * tan(deg_to_rad(RT.ANGLE_DEG))
 	var pts: PackedVector3Array = PackedVector3Array()
 	for a: float in [a0, a1]:
-		for q: Vector2 in [Vector2(-h, 0.0), Vector2(h, 0.0), Vector2(0.0, h)]:
+		for q: Vector2 in [Vector2(-h, 0.0), Vector2(h, 0.0), Vector2(0.0, rise)]:
 			pts.append(Vector3(a, y + q.y, fixed + q.x) if axis == "x" else Vector3(fixed + q.x, y + q.y, a))
 	var shp: ConvexPolygonShape3D = ConvexPolygonShape3D.new()
 	shp.points = pts
@@ -263,13 +266,13 @@ func _coping(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, 
 	col.shape = shp
 	add(body, col)
 	var pm: PrismMesh = PrismMesh.new()
-	pm.size = Vector3(L.EXT_T, h, a1 - a0)
+	pm.size = Vector3(L.EXT_T, rise, a1 - a0)
 	pm.material = lib_mat("trim")
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Mesh"
 	mi.mesh = pm
 	var mid: float = (a0 + a1) * 0.5
-	mi.position = Vector3(mid, y + h * 0.5, fixed) if axis == "x" else Vector3(fixed, y + h * 0.5, mid)
+	mi.position = Vector3(mid, y + rise * 0.5, fixed) if axis == "x" else Vector3(fixed, y + rise * 0.5, mid)
 	mi.basis = Basis(Vector3.UP, PI * 0.5) if axis == "x" else Basis.IDENTITY
 	add(body, mi)
 
@@ -363,7 +366,7 @@ func _handrail(parent: Node3D, nm: String, a: Vector3, b: Vector3) -> void:
 	var size: Vector3 = Vector3(0.05, 0.05, a.distance_to(b))
 	var col: CollisionShape3D = CollisionShape3D.new()
 	col.name = "Collision"
-	col.shape = box_shape(size)
+	col.shape = RT.shape(size, 2)  # ridged along the bar: a handrail is not a foothold (D-104 slopes)
 	add(body, col)
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Mesh"
@@ -503,7 +506,9 @@ func _build_site(geo: Node3D) -> void:
 		SurfaceTags.water_surface(site, map_root, String(w[0]) + "Surface", v3(w[1], 0), v3(w[1], 3))  # PO-8 bullets
 	var blocks: Node3D = add(site, node3d("Blocks")) as Node3D
 	for b: Array in L.BLOCKS:
-		box_a(blocks, String(b[0]), b[1], String(b[2]))
+		var blk: Node3D = box_a(blocks, String(b[0]), b[1], String(b[2]))
+		if b.size() > 3 and String(b[3]) == "ridge":
+			RT.apply(blk)  # an edge guard (gunwale), not a perch (D-104 slopes)
 	_far_shore_lights(blocks)
 	var fences: Node3D = add(site, node3d("Closures")) as Node3D
 	for f: Array in L.FENCES:

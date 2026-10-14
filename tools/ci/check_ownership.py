@@ -16,7 +16,10 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 def match(path: str, pattern: str) -> bool:
     if pattern.endswith("/**"):
-        return path.startswith(pattern[:-3] + "/") or path == pattern[:-3]
+        # The head may contain globs (e.g. "char_arms_fp*/**"): match it against every leading directory prefix.
+        head = pattern[:-3]
+        parts = path.split("/")
+        return any(fnmatch.fnmatch("/".join(parts[:k]), head) for k in range(1, len(parts) + 1))
     return fnmatch.fnmatch(path, pattern)
 
 
