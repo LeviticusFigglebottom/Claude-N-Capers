@@ -73,8 +73,8 @@ func _run() -> void:
 	host.set_masked(true)
 	guest.set_masked(true)
 	await _seconds(1.0)
-	# 6 m apart, side by side across the yard: each sees the other whole, shots fly past, not into the lens.
-	_rt.teleport_crew(guest.slot, Transform3D(Basis.IDENTITY, host.global_position + Vector3(6.0, 0.0, 0.0)))
+	# 7 m apart across the open yard (clear of the spawn line, where the AI crew stand): each sees the other whole.
+	_rt.teleport_crew(guest.slot, Transform3D(Basis.IDENTITY, host.global_position + Vector3(0.0, 0.0, -7.0)))
 	await _seconds(1.0)
 	_face(host, guest, false, true)
 	_face(guest, host, true, false)
