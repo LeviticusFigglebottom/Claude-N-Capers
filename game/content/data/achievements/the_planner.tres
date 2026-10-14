@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.the_planner"
+name_key = &"achievement.the_planner.name"
+desc_key = &"achievement.the_planner.desc"
+condition = {"event": &"career_stat", "stat": "stealth_wins", "count": 3}
+unlock = &"unlock.achievement.the_planner"
+order = 205
+category = &"stealth"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
