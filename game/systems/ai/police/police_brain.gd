@@ -52,6 +52,10 @@ var _retarget_left: float = 0.0
 var _target_visible: bool = false
 var _flank_point: Node3D = null
 var _flank_left: float = 0.0
+## D-108: the arrest hold on a downed crew member (s), and the physics frame it last advanced.
+var _cuff_hold: float = 0.0
+var _cuff_frame: int = -1
+var _cuff_target: CrewController = null
 
 
 func _ready() -> void:
@@ -64,6 +68,7 @@ func _ready() -> void:
 		return
 	_npc.alert_state_changed.connect(_on_alert_state_changed)
 	_npc.died.connect(_on_died)
+	_npc.damaged.connect(func(_i: Dictionary, _a: int) -> void: _cuff_hold = 0.0)  # D-108: hurt cop restarts
 	_start.call_deferred()  # spawn_npc sets the transform after add_child
 
 
@@ -255,10 +260,21 @@ func _tick_cuff(t: Node3D) -> bool:
 	if d <= ct.police_cuff_range_m:
 		_motor.stop()
 		_motor.face_point(tc.global_position)
+		mode = &"cuff"
+		anim_hint = &"melee"
+		# D-108: the arrest takes police_cuff_time_s of uninterrupted hold (a skipped frame, i.e. stunned /
+		# diving / retargeting, a new target or a hit on this cop restarts it).
+		var frame: int = Engine.get_physics_frames()
+		if _cuff_target != tc or _cuff_frame != frame - 1:
+			_cuff_hold = 0.0
+		_cuff_target = tc
+		_cuff_frame = frame
+		_cuff_hold += 1.0 / float(Engine.physics_ticks_per_second)
+		if _cuff_hold < ct.police_cuff_time_s:
+			return true
+		_cuff_hold = 0.0
 		var cuffs: CrewCuffs = CrewCuffs.of(tc, true)
 		if cuffs != null and cuffs.cuff_downed(_npc.net_id):
-			mode = &"cuff"
-			anim_hint = &"melee"
 			_retarget_left = 0.0
 		return true
 	_move_to(tc.global_position, &"cuff")
