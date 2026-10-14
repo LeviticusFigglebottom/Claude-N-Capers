@@ -131,6 +131,7 @@ func _build() -> void:
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
 		return
+	_errors.append_array(_art.tag_surfaces(_root))  # PO-8 bullet surface ids
 	if not _errors.is_empty():
 		_fail("\n".join(_errors))
 		return
@@ -227,7 +228,6 @@ func _box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, 
 	var root: Node3D
 	if collide:
 		var body: StaticBody3D = StaticBody3D.new()
-		body.collision_layer = 1
 		body.collision_mask = 0
 		root = body
 	else:
@@ -240,6 +240,7 @@ func _box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, 
 		col.name = "Collision"
 		col.shape = _box_shape(size)
 		_add(root, col)
+		SurfaceTags.tag(root, SurfaceTags.from_faces(mn, mx, Callable(_art, &"surface_face").bind(mat_id), mat_id))
 	if mat_id != "":
 		_art.vis_box(_vis_group, mn, mx, mat_id)
 	return root
@@ -536,7 +537,6 @@ func _bar(parent: Node3D, nm: String, a: Vector3, b: Vector3, size: Vector2, key
 	var root: Node3D
 	if collide:
 		var body: StaticBody3D = StaticBody3D.new()
-		body.collision_layer = 1
 		body.collision_mask = 0
 		root = body
 	else:
@@ -1308,14 +1308,14 @@ func _variants_loot_escape(variants: Node3D) -> void:
 	var esc: Node3D = _group(variants, "escape")
 	var e1: VariantSlot = _slot(esc, "escape", "esc_alley_west", 0.65, {"label": "E1"})
 	# On the alley ground (ROAD_Y): a zone floor above it misses resting bags (D-066).
-	_prefab(e1, "secure_zone", "VanSecureE1", Vector3(-8.62, 0.0, -3.2), -90.0, {},
+	_prefab(e1, "secure_zone", "VanSecureE1", Vector3(-8.62, 0.0, -3.2), -90.0, {"objective_tag": &"loot_secure"},
 		null, {"kind": "vehicle"})
 	# Escape area: the alley behind the van, rear bumper to the fire-escape ladder (5.8 x 7 m).
 	_prefab(e1, "escape_zone", "VanEscapeE1", Vector3(-2.4, 0.0, -3.2), -90.0,
 		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(5.8, 3.0, 7.0)})
 	var e2: VariantSlot = _slot(esc, "escape", "esc_pell", 0.35, {"label": "E2"})
-	_prefab(e2, "secure_zone", "VanSecureE2", Vector3(22.4, L.ROAD_Y, 7.1), 0.0, {"zone_size_m": Vector3(6.0, 3.0, 8.0)},
-		null, {"kind": "vehicle"})
+	_prefab(e2, "secure_zone", "VanSecureE2", Vector3(22.4, L.ROAD_Y, 7.1), 0.0,
+		{"objective_tag": &"loot_secure", "zone_size_m": Vector3(6.0, 3.0, 8.0)}, null, {"kind": "vehicle"})
 	# Escape area: Pell St carriageway behind the van (7.8 x 4 m, kerb to kerb).
 	_prefab(e2, "escape_zone", "VanEscapeE2", Vector3(25.2, L.ROAD_Y, 2.3), 0.0,
 		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(7.8, 3.0, 4.0)})

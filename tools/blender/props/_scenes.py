@@ -12,7 +12,11 @@ Reads the ``cat`` dict of every asset in ``tools/blender/props/*.py`` (VARIANTS 
   fixture. Prefab visuals (``cat.prefab``) go to ``game/world/props/<prefab>/`` and carry no metas
   (the prefab instance in the map gets them).
 * ``game/world/props/prop_catalog.json``: per asset the scene path, metas, placement hints for
-  ``KitPlacer`` and the model AABB in Godot space (from the glb accessor bounds, collision excluded).
+  ``KitPlacer``, the model AABB in Godot space (from the glb accessor bounds, collision excluded) and
+  the bullet ``surface`` id (PO-8).
+* PO-8 (impact_fx.md §1): every imported collision body (``Collision-colonly`` / ``-convcolonly``)
+  gets ``metadata/surface`` in the wrapper: ``game/world/materials/surface_map.json`` ``props``
+  override, else ``cat.surface``, else the surface of the glb material covering the most area.
 
 Catalog ``cat`` keys (all optional): ``kind``, ``prefab``, ``group``, ``place`` (``wall`` floor item
 backed to a wall | ``corner`` | ``floor`` free-standing | ``center`` | ``on`` on a host's top |
@@ -38,6 +42,33 @@ from lib import meta  # noqa: E402
 GAME = REPO / "game"
 PROPS_RES = "res://world/props"
 CATALOG = GAME / "world" / "props" / "prop_catalog.json"
+SURFACE_MAP = GAME / "world" / "materials" / "surface_map.json"
+COLLISION_SUFFIXES = ("-convcolonly", "-colonly", "-convcol", "-col")
+_SURFACES: dict = {}
+
+
+def surface_map() -> dict:
+    if not _SURFACES:
+        _SURFACES.update(json.loads(SURFACE_MAP.read_text(encoding="utf-8")))
+    return _SURFACES
+
+
+def surface_for(mat_id: str) -> str:
+    """Same rule as SurfaceTags.for_id (game/world/materials/surface_tags.gd)."""
+    mats = surface_map()["materials"]
+    key = mat_id[2:] if mat_id.startswith("M_") else mat_id
+    probe = key
+    while probe:
+        if probe in mats:
+            return mats[probe]
+        cut = probe.find("_")
+        if cut < 0:
+            break
+        probe = probe[cut + 1:]
+    for kw, sid in surface_map()["keywords"]:
+        if kw in key:
+            return sid
+    return ""
 
 
 def pascal(asset_id: str) -> str:
@@ -75,10 +106,45 @@ def glb_info(glb: pathlib.Path) -> dict:
     names: list[str] = []
     mesh_paths: list[str] = []
 
+    collisions: list[str] = []
+    areas: dict[str, float] = {}
+    blob = data[20 + length + 8:]
+
+    def accessor(i: int) -> list:
+        acc = doc["accessors"][i]
+        bv = doc["bufferViews"][acc["bufferView"]]
+        fmt = {5121: "B", 5123: "H", 5125: "I", 5126: "f"}[acc["componentType"]]
+        ncomp = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4}[acc["type"]]
+        size = struct.calcsize(fmt)
+        stride = bv.get("byteStride", size * ncomp)
+        base = bv.get("byteOffset", 0) + acc.get("byteOffset", 0)
+        return [struct.unpack_from("<" + fmt * ncomp, blob, base + k * stride) for k in range(acc["count"])]
+
+    def add_area(prim: dict, m: list[list[float]]) -> None:
+        mat = prim.get("material")
+        mname = doc["materials"][mat].get("name", "") if mat is not None else ""
+        pos = [[m[i][0] * p[0] + m[i][1] * p[1] + m[i][2] * p[2] + m[i][3] for i in range(3)]
+               for p in accessor(prim["attributes"]["POSITION"])]
+        idx = [t[0] for t in accessor(prim["indices"])] if "indices" in prim else list(range(len(pos)))
+        total = 0.0
+        for k in range(0, len(idx) - 2, 3):
+            a, b, c = pos[idx[k]], pos[idx[k + 1]], pos[idx[k + 2]]
+            u = [b[i] - a[i] for i in range(3)]
+            v = [c[i] - a[i] for i in range(3)]
+            x = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]
+            total += 0.5 * math.sqrt(x[0] * x[0] + x[1] * x[1] + x[2] * x[2])
+        areas[mname] = areas.get(mname, 0.0) + total
+
     def visit(idx: int, parent: list[list[float]], path: str = "") -> None:
         node = nodes[idx]
         name = node.get("name", "")
         if "-col" in name or "-convcol" in name:
+            stripped = name
+            for suf in COLLISION_SUFFIXES:
+                if stripped.endswith(suf):
+                    stripped = stripped[:-len(suf)]
+                    break
+            collisions.append(f"{path}/{stripped}" if path else stripped)
             return
         names.append(name)
         if "mesh" in node:
@@ -86,6 +152,7 @@ def glb_info(glb: pathlib.Path) -> dict:
         m = _mat_mul(parent, _node_matrix(node))
         if "mesh" in node:
             for prim in doc["meshes"][node["mesh"]]["primitives"]:
+                add_area(prim, m)
                 acc = doc["accessors"][prim["attributes"]["POSITION"]]
                 amin, amax = acc["min"], acc["max"]
                 for cx in (amin[0], amax[0]):
@@ -101,8 +168,14 @@ def glb_info(glb: pathlib.Path) -> dict:
     ident = [[1.0 if i == j else 0.0 for j in range(4)] for i in range(4)]
     for root in doc["scenes"][doc.get("scene", 0)]["nodes"]:
         visit(root, ident)
+    votes: dict[str, float] = {}
+    for mname, area in areas.items():
+        sid = surface_for(mname)
+        if sid:
+            votes[sid] = votes.get(sid, 0.0) + area
+    surface = max(sorted(votes), key=lambda k: votes[k]) if votes else ""
     return {"aabb": [round(v, 4) for v in lo] + [round(hi[i] - lo[i], 4) for i in range(3)], "nodes": sorted(names),
-            "meshes": mesh_paths}
+            "meshes": mesh_paths, "collisions": collisions, "surface": surface}
 
 
 def visibility_end(e: dict) -> float:
@@ -188,6 +261,7 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
         "keepout": [list(z) for z in cat.get("keepout", [])],
         "seat_side": cat.get("seat_side", "front"),
         "standoff": float(cat.get("standoff", 0.0)),
+        "surface": surface_map()["props"].get(aid, cat.get("surface", info["surface"])) or "concrete",
     }
     if cat.get("pin_only"):
         # only used where a kit pins it (or a map anchors it): unpinned kit picks of its kind (and
@@ -220,9 +294,12 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
             parent, _, leaf = ("Model/" + mp).rpartition("/")
             lines += ["", f'[node name="{leaf}" parent="{parent}"]', f"visibility_range_end = {_f(vis)}",
                       f"visibility_range_end_margin = {_f(vis * 0.1)}", "visibility_range_fade_mode = 1"]
+    for cp in info["collisions"]:
+        parent, _, leaf = ("Model/" + cp).rpartition("/")
+        lines += ["", f'[node name="{leaf}" parent="{parent}"]', f'metadata/surface = &"{e["surface"]}"']
     if "light" in cat:
         lines += [""] + _light_node(cat["light"])
-    if vis > 0.0:
+    if vis > 0.0 or info["collisions"]:
         lines += ["", '[editable path="Model"]']
     return e, "\n".join(lines) + "\n"
 

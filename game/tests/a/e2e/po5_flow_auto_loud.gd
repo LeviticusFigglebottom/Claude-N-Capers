@@ -111,6 +111,9 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 			continue
 		if c.availability(p.crew) != &"":
 			continue
+		var door: Door = c.owner_node() as Door
+		if door != null and door.is_open:
+			continue  # using an open door closes it (ND: the pilot toggled the vault gate while drilling)
 		var dd: float = c.global_position.distance_to(pos)
 		if dd < best_d:
 			best = c

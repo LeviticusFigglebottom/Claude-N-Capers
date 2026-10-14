@@ -104,6 +104,9 @@ var carry_tilt: float:
 		return _carry_tilt
 var _runtime: HeistRuntime = null
 var _jump_latch: bool = false
+## D-107: seconds until the next jump is allowed (PD2 0.55 s), and a crouch cancelled by a jump press.
+var _jump_cd: float = 0.0
+var _crouch_cancel: bool = false
 ## PI-13: last tick's crouch / sprint / jump intent (press edges for casing_blocked).
 var _blocked_prev: Dictionary[StringName, bool] = {}
 var _remote_pos: Vector3 = Vector3.INF
@@ -339,7 +342,10 @@ func use_cable_tie() -> bool:
 
 
 func set_carried_bag(bag: Node) -> void:
+	var picked: bool = bag != null and carried_bag == null
 	carried_bag = bag
+	if picked and weapons != null:  # D-102 (PD2 PlayerCarry:_enter): the pickup re-draws the weapon, fire waits
+		weapons.equip(weapons.equipped_slot, true)
 	carried_bag_changed.emit(bag)
 
 
@@ -435,7 +441,14 @@ func _simulate(delta: float) -> void:
 		_report_casing_blocked(&"crouch", i.crouch)
 		_report_casing_blocked(&"sprint", i.sprint and i.move.y > 0.1)
 		_report_casing_blocked(&"jump", i.jump)
-	var want_crouch: bool = i.crouch and not casing and mobile
+	# D-107 (PD2 _check_action_jump): jump pressed while crouched stands up instead of jumping; a held / toggled
+	# crouch stays cancelled until it is released.
+	if i.jump and not _jump_latch and crouched and mobile and not casing:
+		_crouch_cancel = true
+		_jump_latch = true
+	if not i.crouch:
+		_crouch_cancel = false
+	var want_crouch: bool = i.crouch and not casing and mobile and not _crouch_cancel
 	if crouched and not want_crouch and not _has_stand_headroom(tw):
 		want_crouch = true  # PI-04: stay crouched under a low ceiling until there is room to stand
 	if want_crouch != crouched:
@@ -446,7 +459,7 @@ func _simulate(delta: float) -> void:
 		can_sprint = can_sprint and (tw.bag_can_sprint[bag_w] or Modifiers.flag(slot, &"loot.can_sprint_with_heavy"))
 	var armor_def: ArmorDef = _armor_def()
 	stamina.refresh_max(self, armor_def)
-	sprinting = i.sprint and can_sprint and stamina.can_sprint()  # QB-60: no sprint at 0 stamina
+	sprinting = i.sprint and can_sprint and stamina.can_sprint(sprinting)  # D-107: start > threshold, run to 0
 	var speed: float = tw.walk_speed
 	if crouched:
 		speed = tw.crouch_speed * Modifiers.mult(slot, &"movement.crouch_speed_mult")
@@ -486,9 +499,11 @@ func _simulate(delta: float) -> void:
 	if bag_w >= 0:
 		jump_v *= tw.bag_jump_mult[bag_w]  # D-102: a bag lowers the jump, never blocks it
 	var jumped: bool = false
-	if i.jump and not _jump_latch and grounded and can_jump and stamina.can_jump():
+	_jump_cd = maxf(_jump_cd - delta, 0.0)
+	if i.jump and not _jump_latch and grounded and can_jump and _jump_cd <= 0.0:
 		velocity.y = jump_v
-		stamina.on_jump()
+		stamina.on_jump(i.move.length() > 0.1)  # D-107: only a run-jump costs stamina, nothing blocks a jump
+		_jump_cd = tw.jump_cooldown_s
 		jumped = true
 	stamina.tick(sprinting, delta)
 	# PI-05: a held jump fires once; the next jump needs a release. PI-25: the latch arms only on a jump that

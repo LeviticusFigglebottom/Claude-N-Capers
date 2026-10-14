@@ -36,6 +36,8 @@ const SEED: int = 3007
 const DIFF: Enums.Difficulty = Enums.Difficulty.HAZARDOUS
 const DIRECTOR_TWEAK: String = "res://systems/director/director_tweak.tres"
 const TIME_SCALE: float = 2.0
+## Crew states that count as "on its feet" for the no-wipe check (test_01).
+const ON_FEET: Array[Enums.CrewState] = [Enums.CrewState.NORMAL, Enums.CrewState.TASED, Enums.CrewState.SWAN_SONG]
 const WAVE_TIME_SCALE: float = 3.0
 const RISE_FRAMES: int = 3
 const ARENA_DIST_M: float = 12.0
@@ -86,7 +88,7 @@ func after_each() -> void:
 ## point (L1.4, D-064 QC-42: building entries are breach targets, never spawns), alive specials never
 ## exceed DifficultyDef.special_limits (per limit key) nor alive police the enemy cap, the faction
 ## matches the difficulty, and the crew survives: the heist still runs, the human bot never reaches
-## custody and at least one crew member is on its feet at every tick (AI teammates may be down / in
+## custody and at least one crew member is on its feet (normal, tased or swan song) at every tick (AI teammates may be down / in
 ## custody).
 func test_01_scripted_waves_escalation_and_caps() -> void:
 	var tw: DirectorTweak = _wave_tweak()
@@ -134,7 +136,8 @@ func test_01_scripted_waves_escalation_and_caps() -> void:
 		stats["drama"] = maxf(float(stats["drama"]), d.drama)
 		var standing: int = 0
 		for c: CrewController in _rt.crew_members():
-			standing += 1 if c.crew_state == Enums.CrewState.NORMAL else 0
+			# PD2: a tased or swan-song player is still on their feet (the tase ends by itself).
+			standing += 1 if c.crew_state in ON_FEET else 0
 		stats["min_standing"] = mini(int(stats["min_standing"]), standing)
 		return d.wave_index >= 3 and d.assault_phase == Enums.AssaultPhase.SUSTAIN and d.phase_time >= 4.0
 	var ok: bool = await wait_until(watch, 240.0)

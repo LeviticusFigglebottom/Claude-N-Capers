@@ -160,6 +160,9 @@ func test_pickup_replays_draw() -> void:
 	assert_eq(vm.action, FpViewmodel.Action.NONE, "idle before the pickup")
 	var bag: LootBag = await _carry(c, Enums.LootWeight.LIGHT)
 	assert_eq(vm.action, FpViewmodel.Action.SWAP, "pickup plays the draw")
+	var shots0: int = c.weapons.shots_fired
+	await _inp.tap(&"fire")
+	assert_eq(c.weapons.shots_fired, shots0, "no shot during the re-draw (PD2 equip time)")
 	var st: WeaponStats = c.weapons.stats(c.weapons.equipped_slot)
 	await wait_seconds(st.equip_time_s + 0.3)
 	assert_eq(vm.action, FpViewmodel.Action.NONE, "draw done after the equip time (%.2f s)" % st.equip_time_s)

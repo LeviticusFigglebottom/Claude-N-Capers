@@ -62,7 +62,7 @@ static func launch(heist_id: StringName, seed: int, difficulty: Enums.Difficulty
 		if path == "" or not ResourceLoader.exists(path):
 			Log.error(&"heist", "unknown heist '%s' (map path '%s')" % [heist_id, path])
 			return null
-		scene = load(path) as PackedScene
+		scene = await _load_map(path)
 	var live_session: bool = tree.root.multiplayer.has_multiplayer_peer() \
 		and not (tree.root.multiplayer.multiplayer_peer is OfflineMultiplayerPeer) and not Net.crew.is_empty()
 	if live_session:
@@ -85,6 +85,20 @@ static func launch(heist_id: StringName, seed: int, difficulty: Enums.Difficulty
 	await tree.physics_frame
 	await tree.physics_frame
 	return rt
+
+
+## The map scene, loaded on a worker thread while the main loop keeps running (one frame per poll),
+## so ENet stays serviced and co-op clients do not time out during a slow host bring-up (ENV B co-op
+## finding). An already cached map returns at once.
+static func _load_map(path: String) -> PackedScene:
+	if ResourceLoader.has_cached(path):
+		return load(path) as PackedScene
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if ResourceLoader.load_threaded_request(path, "PackedScene", true) != OK:
+		return load(path) as PackedScene
+	while ResourceLoader.load_threaded_get_status(path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+		await tree.process_frame
+	return ResourceLoader.load_threaded_get(path) as PackedScene
 
 
 ## Client (A3-07): build the replica of the host's running heist from its bring-up data

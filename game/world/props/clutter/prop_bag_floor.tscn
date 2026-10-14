@@ -12,4 +12,7 @@ visibility_range_end = 25
 visibility_range_end_margin = 2.5
 visibility_range_fade_mode = 1
 
+[node name="Collision" parent="Model"]
+metadata/surface = &"fabric"
+
 [editable path="Model"]

@@ -99,9 +99,21 @@ func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, c
 		col.name = "Collision"
 		col.shape = box_shape(size)
 		add(body, col)
+		SurfaceTags.tag(body, SurfaceTags.from_faces(mn, mx, surface_face.bind(mat_id), mat_id))
 	if mat_id != "" and mat_id != "none":
 		art.vis_box(vis_group, mn, mx, mat_id, skip)
 	return body
+
+
+## PO-8: material key a bullet meets on face f of a class `cls` box: the art pass's face, or the
+## room's floor finish on a floor's top (drawn separately by nd_art.room_surfaces).
+func surface_face(f: int, n: Vector3, c: Vector3, cls: String) -> String:
+	if cls == "" or cls == "none":
+		return ""
+	if f == 3 and cls == "floor":
+		var r: String = A.room_at(c + n * 0.3)
+		return String((A.FINISH[r] as Array)[0]) if A.FINISH.has(r) else "concrete"
+	return String(art.face_key(cls, f, n, c))
 
 
 func box_a(parent: Node3D, nm: String, b: Array, mat_id: String, collide: bool = true) -> Node3D:

@@ -1,21 +1,26 @@
-## Crew stamina (QB-60, PD2 movement_state.stamina): sprinting and jumping drain it, it regenerates
-## after a pause, and a crew member at 0 cannot sprint until it is back above the threshold. Owner: ENV A.
+## Crew stamina (QB-60; D-107: PD2 movement_state.stamina / playermovement.lua). Owner: ENV P (D-076 path).
 ## Held by CrewController (`stamina`) and ticked from its movement simulation (server, and the owning
 ## client's prediction). Numbers: CrewTweak "Stamina" group.
 ## Max = CrewTweak.stamina_base x movement.stamina_mult x team.stamina_mult x ArmorDef.stamina_mult
 ## x PerkHooks.stamina_mult (Foreman hostages); regeneration x the same perk multiplier.
-## Rules: sprinting drains stamina_drain_per_s; a jump costs stamina_jump_cost and needs at least
-## stamina_min_threshold; after any drain, regeneration (stamina_regen_per_s) waits
-## stamina_regen_delay_s. Reaching 0 exhausts: no sprint until stamina >= stamina_min_threshold.
+## Rules (D-107, PD2): sprinting drains stamina_drain_per_s. A sprint STARTS only above stamina_min_threshold
+## and continues until 0. Regeneration (stamina_regen_per_s) waits stamina_regen_delay_s, a timer that restarts
+## when a sprint starts or stops (PD2 set_running) and, when idle below max with no timer, starts then; it is
+## cleared at full. Jumps are never blocked; only a run-jump costs stamina_jump_cost (and does not restart the
+## timer). `exhausted` (HUD / net) = at or below the threshold and not sprinting.
 class_name CrewStamina
 extends RefCounted
 
 var value: float = -1.0  ## -1 = full on the first tick
 var max_value: float = 0.0
-## True after reaching 0, until back above CrewTweak.stamina_min_threshold.
+## D-107: at or below CrewTweak.stamina_min_threshold and not sprinting (a sprint cannot start).
 var exhausted: bool = false
-## Seconds until regeneration starts.
+## PD2 _regenerate_timer: seconds until regeneration starts (<= 0 while regenerating); meaningful only while
+## `regen_timer` is on (off = PD2 nil: full, or nothing has started it yet).
 var regen_wait: float = 0.0
+var regen_timer: bool = false
+## Seconds the current sprint has lasted (0 when not sprinting); a run-jump needs > run_jump_min_s.
+var sprint_time: float = 0.0
 ## PerkHooks.stamina_mult at the last refresh_max (scales regeneration too).
 var perk_mult: float = 1.0
 
@@ -40,29 +45,46 @@ func refresh_max(crew: CrewController, armor: ArmorDef) -> void:
 	value = clampf(value, 0.0, max_value)
 
 
-func can_sprint() -> bool:
-	return value > 0.0 and not exhausted
+## D-107 (PD2 _start_action_running / _interupt_action_running): a sprint starts above the threshold and, once
+## running, continues until stamina runs out.
+func can_sprint(continuing: bool = false) -> bool:
+	return value > 0.0 if continuing else value > Tweak.crew().stamina_min_threshold
 
 
+## D-107: stamina never blocks a jump (PD2 _check_action_jump).
 func can_jump() -> bool:
-	return value >= Tweak.crew().stamina_min_threshold
+	return true
 
 
-func on_jump() -> void:
-	_drain(Tweak.crew().stamina_jump_cost)
+## D-107 (PD2 playerstandard L4156-4163): a jump while sprinting for over run_jump_min_s above the threshold with a
+## move direction costs stamina_jump_cost; it does not restart the regeneration timer. True when it was a run-jump.
+func on_jump(moving: bool) -> bool:
+	var tw: CrewTweak = Tweak.crew()
+	if not moving or sprint_time <= tw.stamina_run_jump_min_s or value <= tw.stamina_min_threshold:
+		return false
+	value = maxf(value - tw.stamina_jump_cost, 0.0)
+	return true
 
 
 ## One movement tick. `sprinting` = the crew member sprinted this tick.
 func tick(sprinting: bool, delta: float) -> void:
 	var tw: CrewTweak = Tweak.crew()
+	if sprinting != (sprint_time > 0.0):
+		_restart_timer(tw)  # PD2 set_running restarts the timer on start and stop
 	if sprinting:
-		_drain(tw.stamina_drain_per_s * delta)
-	elif regen_wait > 0.0:
-		regen_wait = maxf(regen_wait - delta, 0.0)
+		sprint_time += delta
+		value = maxf(value - tw.stamina_drain_per_s * delta, 0.0)
 	else:
-		value = minf(value + tw.stamina_regen_per_s * perk_mult * delta, max_value)
-	if exhausted and value >= tw.stamina_min_threshold:
-		exhausted = false
+		sprint_time = 0.0
+		if regen_timer:
+			regen_wait -= delta
+			if regen_wait < 0.0:
+				value = minf(value + tw.stamina_regen_per_s * perk_mult * delta, max_value)
+				if value >= max_value:
+					regen_timer = false
+		elif value < max_value:
+			_restart_timer(tw)
+	exhausted = value <= tw.stamina_min_threshold and not sprinting
 
 
 ## 0..1 for presentation (1 when the max is 0).
@@ -78,8 +100,6 @@ func apply_replicated(frac: float, p_exhausted: bool) -> void:
 	exhausted = p_exhausted
 
 
-func _drain(amount: float) -> void:
-	value = maxf(value - amount, 0.0)
-	regen_wait = Tweak.crew().stamina_regen_delay_s
-	if value <= 0.0:
-		exhausted = true
+func _restart_timer(tw: CrewTweak) -> void:
+	regen_wait = tw.stamina_regen_delay_s
+	regen_timer = true

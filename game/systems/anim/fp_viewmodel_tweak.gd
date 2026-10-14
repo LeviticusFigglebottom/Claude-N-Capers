@@ -115,6 +115,67 @@ static var _gen: int = 0
 @export var muzzle_light_s: float = 0.05
 @export var muzzle_light_color: Color = Color(1.0, 0.78, 0.45)
 @export var muzzle_light_suppressed_mult: float = 0.15
+
+@export_group("Weapon FX (D-105)")
+## impact_fx.md §4 (ENV P): first-person muzzle burst, smoke, shells, tracer origin, per-shot viewmodel kick.
+## ENV C's library scenes (game/world/vfx/) replace the built-in placeholders when set.
+@export var vfx_muzzle_scene: PackedScene = null
+@export var vfx_tracer_scene: PackedScene = null
+## Burst visible this long (one or two frames at 60 fps); 0 = no burst.
+@export var muzzle_flash_s: float = 0.035
+## The muzzle sits ~1 m out through the viewmodel camera, so the burst is sized for that depth.
+@export var muzzle_flash_size_m: float = 0.3
+## Burst size multiplier by anim set (long guns sit further out and behind the support hand).
+@export var muzzle_flash_set_mult: Dictionary[StringName, float] = {
+	&"rifle": 1.6, &"lmg": 1.8, &"sniper": 1.7, &"shotgun": 1.8, &"shotgun_box": 1.7, &"smg": 1.3, &"minigun": 1.6,
+	&"lever": 1.5, &"break_action": 1.8,
+}
+@export var muzzle_flash_color: Color = Color(1.0, 0.62, 0.22, 0.95)
+@export var muzzle_flash_core_color: Color = Color(1.0, 0.95, 0.8, 1.0)
+## Anim sets that never flash (no propellant at the muzzle).
+@export var no_flash_sets: Array[StringName] = [&"bow", &"crossbow", &"flamethrower", &"saw"]
+## Smoke puff particles per shot (x suppressed mult when suppressed); 0 = none.
+@export var muzzle_smoke_amount: int = 6
+@export var muzzle_smoke_suppressed_mult: float = 0.5
+@export var muzzle_smoke_life_s: float = 0.6
+## Casing per anim set: pistol / rifle / shotgun look; sets not listed eject nothing (revolver, break action, bow...).
+@export var shell_kind: Dictionary[StringName, StringName] = {
+	&"pistol": &"pistol", &"akimbo": &"pistol", &"smg": &"pistol", &"rifle": &"rifle", &"lmg": &"rifle",
+	&"sniper": &"rifle", &"minigun": &"rifle", &"lever": &"rifle", &"shotgun": &"shotgun", &"shotgun_box": &"shotgun",
+}
+## Sets that eject on the cycle, not the shot: set -> [clip (fire / bolt), event] (SOURCE.txt clip events).
+@export var shell_eject_event: Dictionary[StringName, Array] = {
+	&"shotgun": [&"fire", &"pump_back"], &"lever": [&"fire", &"lever_open"], &"sniper": [&"bolt", &"bolt_back"],
+}
+@export var shell_life_s: float = 0.7
+@export var shell_gravity: float = 9.8
+@export var shell_speed_mult: float = 1.0
+@export var shell_color: Color = Color(0.78, 0.6, 0.25)
+@export var shell_color_shotgun: Color = Color(0.62, 0.1, 0.08)
+## Tracer cadence by Enums.WeaponClass key (impact_fx.md §3: AR/SMG/LMG 1 in 2, pistol/shotgun 1 in 3, sniper all).
+@export var tracer_every: Dictionary[StringName, int] = {
+	&"PISTOL": 3, &"SMG": 2, &"ASSAULT_RIFLE": 2, &"SHOTGUN": 3, &"LMG": 2, &"SNIPER": 1, &"SPECIAL": 2,
+}
+@export var tracer_when_suppressed: bool = false
+@export var tracer_speed_mps: float = 400.0
+@export var tracer_length_m: float = 3.0
+@export var tracer_width_m: float = 0.02
+## The head starts this far out on the first frame (a streak shows on the shot's frame, not one frame late).
+@export var tracer_first_frame_m: float = 2.0
+@export var tracer_color: Color = Color(1.0, 0.8, 0.45, 0.85)
+## Per-shot viewmodel kick (the visual punch on top of the camera recoil): back (m) and pitch up (deg) by anim set,
+## as a critically damped impulse peaking after 1 / (TAU * kick_hz) s; x kick_ads_mult when aimed.
+@export var kick_back_m: Dictionary[StringName, float] = {
+	&"pistol": 0.014, &"akimbo": 0.012, &"revolver": 0.022, &"smg": 0.010, &"rifle": 0.016, &"lmg": 0.014,
+	&"sniper": 0.035, &"lever": 0.03, &"shotgun": 0.035, &"shotgun_box": 0.03, &"break_action": 0.04,
+	&"launcher": 0.03, &"minigun": 0.006,
+}
+@export var kick_pitch_deg: Dictionary[StringName, float] = {
+	&"pistol": 2.2, &"akimbo": 1.6, &"revolver": 3.5, &"smg": 1.0, &"rifle": 1.4, &"lmg": 1.0, &"sniper": 3.0,
+	&"lever": 3.0, &"shotgun": 3.5, &"shotgun_box": 3.0, &"break_action": 4.0, &"launcher": 2.5, &"minigun": 0.4,
+}
+@export var kick_hz: float = 9.0
+@export var kick_ads_mult: float = 0.45
 ## Multiplier on the world Environment's ambient energy for the viewmodel camera only.
 @export var viewmodel_ambient_mult: float = 1.6
 

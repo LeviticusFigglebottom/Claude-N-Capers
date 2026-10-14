@@ -29,10 +29,16 @@ class CueSpec:
     cooldown_s: float = 0.0
     norm: str = "sfx"               # loudness class (see build.py TARGETS)
     note: str = ""
+    subdir: str = ""                # group folder under sfx/ (e.g. "impact"); "" = sfx/<name>/
 
     @property
     def cue_id(self) -> str:
         return "cue." + self.name
+
+    @property
+    def folder(self) -> str:
+        """Folder of the cue's files relative to game/assets/audio/sfx/."""
+        return f"{self.subdir}/{self.name}" if self.subdir else self.name
 
 
 # ============================================================ helpers

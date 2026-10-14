@@ -3,6 +3,23 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14 02:40 ET: IN PROGRESS (ENV C)
+### Done (all pushed to env/c-worlds; most on trunk via rounds 72–77)
+- GN groundwork: gallery_night.md Build rulings (approved), floor-plan generator + --check, validate_level camera_spine/
+  camera_screen, slopes (legacy WARN list), viewmodel_lit (WARN), PP-C-1 walk fix (5dd69ef3).
+- D-105 PO-8: surface ids on kits/props/maps (generators refuse untagged bodies), impact cues ×13, water-surface bullet
+  collider (ND/DB), VFX library game/world/vfx (VfxDirector, ImpactFx, tracers, muzzle, shells, decals; 20 tests; capture
+  sheet docs/levels/vfx/impact_sheet.png).
+### In progress
+- PO-7 door_frame_gap (+ Door.leaf_surface on glass/metal doors, WARN); PO-9 furniture_logic + dressing audit; PP-C-1
+  merged-tree rerun.
+### Next
+- viewmodel_lit on dressing LightFixtures (4 dress scripts) → flip check to FAIL; GH BreakRoomWindowBlocker over the
+  openable window; ladder nav links → prefab link (after A's 3a24afe7 reaches trunk); legacy slope spots (low);
+  VFX perf probe on a quiet machine; Gallery Night G1 at FREEZE LIFTED.
+### Blockers
+- None.
+
 ## 2026-10-14 ET: IN PROGRESS (ENV C, re-activated D-104)
 ### Done
 - Merged trunk 8e02b62c into env/c-worlds (no conflicts), pushed.
