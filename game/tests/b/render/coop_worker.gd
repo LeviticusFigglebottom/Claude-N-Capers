@@ -193,6 +193,12 @@ func _end_on_payday(timeout_s: float = 120.0) -> void:
 		var pd: PaydayScreen = _flow.get(&"_heist_payday") as PaydayScreen
 		_log("payday success=%s reason=%s" % [pd.payout.get("success"), pd.result.get("fail_reason", "")])
 		pd.continue_button.pressed.emit()
+		if pd.has_card_pick():  # a success payday: Continue opens the cards; pick one, then Continue home
+			await _seconds(1.0)
+			pd.tick(PaydayScreen.INPUT_GRACE_S + 0.01)
+			pd.pick(0)
+			await _shot("payday_card", 5)
+			pd.continue_button.pressed.emit()
 	await _seconds(3.0)
 	await _shot("after_leave")
 	_log("home visible=%s runtime=%s coop=%s" % [_flow.visible, _flow.runtime, _flow.is_coop()])
