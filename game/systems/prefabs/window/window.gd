@@ -23,6 +23,9 @@ const GLASS_MIN_DEPTH_M: float = 0.05
 ## NavLink through the opening, enabled while it is passable (sash open or glass broken), so every
 ## agent may path through it then and none while it is shut.
 @export var walkable: bool = false
+## How far the sash slides up when opened (m); -1 = InteractionTweak.window_sash_open_m. Tall door-windows
+## (e.g. the Glasshouse fire-escape one) set their own travel.
+@export var sash_travel_m: float = -1.0
 @export_group("Interaction")
 ## -1 = InteractionTweak.window_open_s.
 @export var interaction_time_s: float = -1.0
@@ -80,7 +83,7 @@ func set_open(open: bool) -> void:
 	is_open = open
 	var sash: Node3D = visual_node("Sash") as Node3D
 	if sash != null:
-		sash.position.y = _sash_closed_y + (Tweak.interaction().window_sash_open_m if open else 0.0)
+		sash.position.y = _sash_closed_y + (_sash_travel() if open else 0.0)
 	_set_glass_collision(not open and not broken)
 
 
@@ -96,7 +99,7 @@ func _apply_net_state(state: Dictionary) -> void:
 		is_open = bool(state["is_open"])
 		var sash: Node3D = visual_node("Sash") as Node3D
 		if sash != null:
-			sash.position.y = _sash_closed_y + (Tweak.interaction().window_sash_open_m if is_open else 0.0)
+			sash.position.y = _sash_closed_y + (_sash_travel() if is_open else 0.0)
 	_set_glass_collision(not is_open and not broken)
 
 
@@ -171,6 +174,10 @@ func _set_glass_collision(on: bool) -> void:
 		body.collision_layer = LAYER_WORLD_STATIC if on else 0
 	if _nav_link != null:
 		_nav_link.enabled = not on  # QC-61: passable exactly when the glass no longer blocks
+
+
+func _sash_travel() -> float:
+	return sash_travel_m if sash_travel_m >= 0.0 else Tweak.interaction().window_sash_open_m
 
 
 ## The walk-through NavLink (`walkable`), else null.
