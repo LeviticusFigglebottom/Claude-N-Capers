@@ -48,6 +48,7 @@ func _run() -> void:
 		FrameProf.reset_frame()
 		if frames == 30 and c != null:
 			c.set_masked(true)
+			_report_unresolved_markers(rt)
 		if not alarmed and rt.heist_time_s >= _alarm_at and rt.stealth != null:
 			alarmed = true
 			print("[SPIKE] raising the alarm at t=%.2f" % rt.heist_time_s)
@@ -55,3 +56,16 @@ func _run() -> void:
 	print("[SPIKE] RESULT %s frames=%d worst=%.0f ms" % [_heist, frames, worst])
 	rt.teardown()
 	get_tree().quit(0)
+
+
+## Active objectives whose HUD marker tags find no node (LocalHudModel re-resolves every tag ~1/s while any is unresolved).
+func _report_unresolved_markers(rt: HeistRuntime) -> void:
+	if rt.hud_model == null:
+		return
+	for o: Dictionary in rt.hud_model.objectives:
+		var tags: Variant = (o.get("args", {}) as Dictionary).get("marker_tags", [])
+		if not (tags is Array):
+			continue
+		for t: Variant in tags:
+			var n: int = rt.find_by_tag(StringName(t)).size()
+			print("[SPIKE] marker %s tag %s -> %d node(s)%s" % [o.get("id", &""), t, n, "  UNRESOLVED" if n == 0 else ""])
