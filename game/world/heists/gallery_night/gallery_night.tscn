@@ -12959,7 +12959,7 @@ metadata/service = true
 [node name="DockRollerDoor" type="Node3D" parent="Gameplay/Doors" unique_id=102422 instance=ExtResource("22_gn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.5, 0, 0)
 script = ExtResource("23_gn")
-lock = 5
+lock = 4
 width_m = 3.5999999999999943
 leaf_surface = &"metal"
 visual_scene = ExtResource("31_gn")

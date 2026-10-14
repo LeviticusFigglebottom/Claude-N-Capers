@@ -306,7 +306,7 @@ func build_gameplay(gp: Node3D) -> void:
 	build_lift(n("Gameplay/Lifts"))
 	var rc: float = (float(ROLLER[3]) + float(ROLLER[4])) * 0.5
 	prefab(n("Gameplay/Doors"), "door", "DockRollerDoor", Vector3(rc, float(L.FFL[String(ROLLER[0])]), float(ROLLER[2])),
-		0.0, {"lock": "enum:BARRED", "swing": "enum:INWARD", "width_m": float(ROLLER[4]) - float(ROLLER[3]),
+		0.0, {"lock": "enum:ELECTRONIC", "swing": "enum:INWARD", "width_m": float(ROLLER[4]) - float(ROLLER[3]),
 			"leaf_surface": &"metal", "visual_scene": _catalog_scene(ROLLER_VISUAL)}, null,
 		{"kind": "industrial_door", "swing_side": "back"})
 	build_devices(gp)
