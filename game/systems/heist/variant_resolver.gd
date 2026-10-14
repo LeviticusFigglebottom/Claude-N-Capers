@@ -13,6 +13,10 @@
 ## unknown reference is a contract violation (Log.error) and counts as "not active".
 ## Slots whose group has no rule stay active (logged as a warning).
 ## Rare events are rolled first; `force_active` effects pin a slot active in its group.
+## Rare `requires` / `excludes` (GN, same semantics as a rule's): the chance draw is still made first (same
+## seed = same draws), but the event only fires when its condition holds. It is decided when its
+## `force_active` group is resolved (referenced groups must come earlier in `rules`), or after all rules when it
+## has no `force_active`; an event that does not hold is not in "rare" and pins nothing.
 ## A2-08 fields (all optional; a table without them rolls exactly as before, same seed = same result):
 ##   force_if        [{"if": {other_group: [slot_ids]}, "then": [slot_ids of this group]}]: when every
 ##                   group of `if` has any listed slot active (empty list = any), the `then` slots are
@@ -65,6 +69,7 @@ static func resolve(table: HeistVariantTable, slots_by_group: Dictionary, diffic
 	var forced: Dictionary = {}  # group -> Array[StringName]
 	for fg0: Variant in forced_extra:
 		forced[StringName(fg0)] = (forced_extra[fg0] as Array).duplicate()
+	var hits: Array[Dictionary] = []  # rare events whose draw hit, table order: {ev, ok: -1 undecided / 0 / 1}
 	if table != null:
 		for ev: Dictionary in table.rare_events:
 			var chance: float = float(ev.get("chance", 0.0))
@@ -72,21 +77,18 @@ static func resolve(table: HeistVariantTable, slots_by_group: Dictionary, diffic
 			var hit: bool = rng.randf() < chance
 			if hit and ev.has("min_difficulty") and difficulty < int(ev["min_difficulty"]):
 				hit = false
-			if hit:
-				var ev_id: StringName = StringName(ev.get("id", &""))
-				rare.append(ev_id)
-				var fx: Dictionary = ev.get("effects", {})
-				if fx.has("force_active"):
-					var fa: Dictionary = fx["force_active"]
-					var fg: StringName = StringName(fa.get("group", &""))
-					if not forced.has(fg):
-						forced[fg] = []
-					(forced[fg] as Array).append(StringName(fa.get("slot", &"")))
+			if not hit:
+				continue
+			var conditional: bool = ev.has("requires") or ev.has("excludes")
+			hits.append({"ev": ev, "ok": -1 if conditional else 1})
+			if not conditional:
+				_pin_rare(ev, forced)
 	var ruled: Dictionary = {}
 	if table != null:
 		for rule: Dictionary in table.rules:
 			var group: StringName = StringName(rule.get("group", &""))
 			ruled[group] = true
+			_decide_rare_for(hits, group, result, forced)  # GN: conditional rare events pinning this group
 			var slots: Array = slots_by_group.get(group, [])
 			if slots.is_empty():
 				Log.warn(&"variants", "rule for group '%s' has no VariantSlots in the map" % group)
@@ -148,8 +150,55 @@ static func resolve(table: HeistVariantTable, slots_by_group: Dictionary, diffic
 			for s: VariantSlot in slots_by_group[group]:
 				all_ids.append(s.slot_id)
 			result[group] = all_ids
+	for h: Dictionary in hits:
+		if int(h["ok"]) < 0:
+			h["ok"] = 1 if _rare_conditions_ok(h["ev"], result) else 0
+		if int(h["ok"]) == 1:
+			rare.append(StringName((h["ev"] as Dictionary).get("id", &"")))
 	result[RARE_KEY] = rare
 	return result
+
+
+## A rare event's `force_active` slot, pinned active in its group.
+static func _pin_rare(ev: Dictionary, forced: Dictionary) -> void:
+	var fx: Dictionary = ev.get("effects", {})
+	if not fx.has("force_active"):
+		return
+	var fa: Dictionary = fx["force_active"]
+	var fg: StringName = StringName(fa.get("group", &""))
+	if not forced.has(fg):
+		forced[fg] = []
+	(forced[fg] as Array).append(StringName(fa.get("slot", &"")))
+
+
+## GN (C's G1 rehearsal): a conditional rare event (`requires` / `excludes`) whose `force_active` targets `group`
+## is decided now, against the groups resolved so far, and pins its slot only when it holds.
+static func _decide_rare_for(hits: Array[Dictionary], group: StringName, so_far: Dictionary,
+		forced: Dictionary) -> void:
+	for h: Dictionary in hits:
+		if int(h["ok"]) >= 0:
+			continue
+		var ev: Dictionary = h["ev"]
+		var fa: Variant = (ev.get("effects", {}) as Dictionary).get("force_active")
+		if not fa is Dictionary or StringName((fa as Dictionary).get("group", &"")) != group:
+			continue
+		h["ok"] = 1 if _rare_conditions_ok(ev, so_far) else 0
+		if int(h["ok"]) == 1:
+			_pin_rare(ev, forced)
+
+
+## A rare event's `requires` / `excludes` (same semantics as a rule's) against `so_far`; every referenced
+## group must already be resolved (else Log.error and the event does not fire).
+static func _rare_conditions_ok(ev: Dictionary, so_far: Dictionary) -> bool:
+	var label: StringName = StringName("rare:%s" % ev.get("id", ""))
+	for key: String in ["requires", "excludes"]:
+		var refs: Variant = ev.get(key, {})
+		_check_refs(refs, so_far, label, key)
+		if refs is Dictionary:
+			for og: Variant in refs:
+				if not so_far.has(StringName(og)):
+					return false
+	return _conditions_ok(ev, so_far)
 
 
 ## Remove inactive slots' children and instantiate active slots' prefabs. Call before the map
