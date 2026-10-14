@@ -288,8 +288,12 @@ func _interior_room(r: Array) -> Array:
 		_room_door(room, boxes, u, d)
 	for w: Array in L.WINDOWS:
 		_room_window(room, u, String(w[1]), w[2], float(w[3]))
+	# The break-room door-window is walked through: dress it like a door (1.2 m clear in front).
 	var bw: Dictionary = L.BREAKROOM_WINDOW
-	_room_window(room, u, String(bw["kit"]), bw["pos"], float(bw["yaw"]))
+	var bpos: Vector3 = bw["pos"]
+	if absf(bpos.y - u.position.y) < 0.5 and _on_edge(u, bpos, absf(sin(deg_to_rad(float(bw["yaw"])))) < 0.5):
+		var bsz: Vector2 = _window_size(String(bw["kit"]))
+		room.add_door(bpos, bsz.x, 1.2, bsz.y, 0.06)
 	_room_gaps(room, u)
 	return [room, clear]
 
@@ -378,8 +382,8 @@ func _door_width(asset: String) -> float:
 
 
 func _window_size(piece: String) -> Vector2:
-	var w: float = 3.0 if piece.contains("w300") else 1.0
-	var h: float = 2.4 if piece.contains("h240") else (0.6 if piece.contains("h60") else 1.2)
+	var w: float = 3.0 if piece.contains("w300") else (1.2 if piece.contains("w120") else 1.0)
+	var h: float = 2.4 if piece.contains("h240") else (0.6 if piece.contains("h60") else (2.1 if piece.contains("h210") else 1.2))
 	return Vector2(w, h)
 
 
