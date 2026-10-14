@@ -2,6 +2,17 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-14 07:15 ET: D-105 sheets, gate-3 traversal, LobbyDoor, PO-13 round 1
+- D-105: six-class gunplay sheet (captures/d105_gunplay_sheet.png; Glasshouse loud, 0 bit1 doubling); C's
+  MuzzleFlash/TracerFx in FP (alpha-blended, FP smoke), drop-in mask rpc via net_sync.replicates_to (A confirmed).
+- Gate 3: test_p_gh_traversal 3/3 (G8 stairs on C's ramps with/without heavy bag, fire-escape ladder, door-window
+  route + bag thrown out). LobbyDoor snag: test_p_gh_lobby_door, player input passes all 15 diagonals; the stall is
+  AI steering (A fixing: door-opening corners to the centre line + stall repath). No controller change.
+- PO-13: PD2 look sway + breathing (310b4c19), long-gun support hand C-grip (72498a0f), pistol ADS 0.35 m + elbow
+  spread (f7fce321), pistol hip framing (56255bb3); before/after sheet captures/po13_hold_before_after.png.
+  Open: pistol ADS forearms still dominate (rig arm length caps ads_dist ~0.35: sh / forearm / sleeve rig work).
+- KR-9: po13 skips headless. check_ownership char_arms_fp*/** patch applied by the lead.
+
 ## 2026-10-14 03:00 ET: D-107 stamina, D-105 in real heists, G1 harness
 - D-107 (a6e67fc6, round 81): stamina/jump faithful to PD2 (sprint start > 4, run to 0; regen 1 s after the sprint;
   jumps never blocked, run-jump costs 2; 0.55 s jump cooldown; crouch + jump stands). test_p_d107_stamina 5/5; A's
