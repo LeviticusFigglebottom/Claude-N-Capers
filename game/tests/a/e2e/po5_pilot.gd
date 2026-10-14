@@ -459,7 +459,10 @@ func _aim_point(npc: NpcBase) -> Vector3:
 
 func has_los(point: Vector3, target: Node = null) -> bool:
 	var space: PhysicsDirectSpaceState3D = crew.get_world_3d().direct_space_state
-	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(crew.eye_position(), point)
+	# The player's own bullet mask (CombatTweak.hitscan_mask): teammates never block it (ND attempts 10/12: bots
+	# bunched at the pilot's side read as "no line of sight" while the cops shot them).
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(crew.eye_position(), point,
+		CombatTweak.data().hitscan_mask)
 	q.exclude = [crew.get_rid()]
 	var r: Dictionary = space.intersect_ray(q)
 	if r.is_empty():
