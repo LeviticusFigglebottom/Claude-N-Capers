@@ -1,5 +1,7 @@
 # Lead handoff: rebuilding the lead + 4 environments in a new Claude account
 
+> **Superseded:** this is the round-32 handoff. Start with `docs/handoff/README.md` (2026-10-14).
+
 Owner: LEAD. Written 2026-10-11 at trunk round 32 (`5fdfa27`). A new lead session reads this file after
 `CLAUDE.md` and `docs/process/communication.md`; it holds everything that isn't already in the repo.
 
