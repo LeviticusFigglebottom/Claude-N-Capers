@@ -43,17 +43,30 @@ func test_ammo_pickup_visual_and_zipline_cable_and_fire_light() -> void:
 	var ap: AmmoPickup = AmmoPickup.new()
 	_rt.dynamic_root.add_child(ap)
 	assert_true(ap.get_node_or_null(^"Visual") != null, "ammo pickup has a visual (prop or placeholder)")
-	var zl: Node3D = ATestMaps.add_prefab(_rt, "zipline", Vector3(0, 0, -6), func(p: GameplayPrefab) -> void:
+	var bare: Node3D = ATestMaps.add_prefab(_rt, "zipline", Vector3(4, 0, -6), func(p: GameplayPrefab) -> void:
 		var e: Marker3D = Marker3D.new()
 		e.name = "End"
 		e.position = Vector3(0, -2, -10)
 		p.add_child(e)
 		p.set(&"end", NodePath("End")))
+	var zl: Node3D = ATestMaps.add_prefab(_rt, "zipline", Vector3(0, 0, -6), func(p: GameplayPrefab) -> void:
+		for nm: String in ["End", "LineA", "LineB"]:
+			var m: Marker3D = Marker3D.new()
+			m.name = nm
+			p.add_child(m)
+		(p.get_node("End") as Node3D).position = Vector3(0, -2, -10)
+		(p.get_node("LineA") as Node3D).position = Vector3(0, 2.5, 0)
+		(p.get_node("LineB") as Node3D).position = Vector3(0, 0.5, -10)
+		p.set(&"end", NodePath("End"))
+		p.set(&"cable_start", NodePath("LineA"))
+		p.set(&"cable_end", NodePath("LineB")))
 	await wait_physics_frames(2)
+	assert_true(bare.get_node_or_null(^"Cable") == null, "no anchors: no cable (SL clipped its building)")
 	var cable: MeshInstance3D = zl.get_node_or_null(^"Cable") as MeshInstance3D
-	assert_true(cable != null, "the zipline draws its cable")
-	var z: Zipline = zl as Zipline
-	assert_near((cable.mesh as CylinderMesh).height, z.start_position().distance_to(z.end_position()), 0.01, "cable spans the line")
+	assert_true(cable != null, "anchors: the zipline draws its cable")
+	var span: float = (zl.get_node("LineA") as Node3D).global_position.distance_to((zl.get_node("LineB") as Node3D).global_position)
+	assert_near((cable.mesh as CylinderMesh).height, span, 0.01, "cable spans the anchors")
+	assert_true(bool(cable.get_meta(&"lc_ignore", false)), "levelcheck ignores the runtime cable")
 	var bp: Node = ATestMaps.add_prefab(_rt, "burn_point", Vector3(6, 0, -6))
 	await wait_physics_frames(1)
 	bp.call(&"_show_fire", true)

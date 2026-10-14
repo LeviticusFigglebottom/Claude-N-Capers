@@ -20,8 +20,8 @@ const FLAG_FIRST_PERSON: int = EventBus.SHOT_FX_FIRST_PERSON
 const FLAG_HEADSHOT: int = EventBus.SHOT_FX_HEADSHOT
 const FLAG_PENETRATED: int = EventBus.SHOT_FX_PENETRATED
 ## D-113 (ENV C's VfxDirector): a heavy flesh hit (shotgun / sniper / LMG class, or a round of at least
-## CombatTweak.fx_strong_damage). Bit 16; EventBus.SHOT_FX_STRONG once the lead adds it to the contract.
-const FLAG_STRONG: int = 16
+## CombatTweak.fx_strong_damage).
+const FLAG_STRONG: int = EventBus.SHOT_FX_STRONG
 ## D-113: weapon classes whose flesh hits are STRONG, and those whose rounds exit the body (PENETRATED).
 const STRONG_CLASSES: Array[StringName] = [&"shotgun", &"sniper", &"lmg"]
 const EXIT_CLASSES: Array[StringName] = [&"sniper"]

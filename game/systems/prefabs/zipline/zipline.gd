@@ -15,7 +15,8 @@ const BLOCK_REQUIRES_BAG: StringName = &"ui.blocked.requires_bag"
 const CABLE_RADIUS_M: float = 0.01
 
 @export var end: NodePath
-## Cable ends (ENV C's prop_zipline_anchor `Line` markers); empty = the line start (UsePoint) / `end`.
+## Cable ends (ENV C's prop_zipline_anchor `Line` markers). The cable is drawn only when both are set: the
+## line's own start / end are interaction points, not the rope (SL's escape line clipped its building).
 @export var cable_start: NodePath
 @export var cable_end: NodePath
 @export_group("Interaction")
@@ -47,14 +48,16 @@ func _prefab_ready() -> void:
 	interactable.completed.connect(_on_completed)
 
 
-## The cable: a thin dark cylinder between the cable ends (the prefab draws it; no art asset needed).
+## The cable: a thin dark cylinder between the anchors' cable ends (no art asset needed); nothing without them.
 func _build_cable() -> void:
 	if not is_inside_tree() or get_node_or_null(^"Cable") != null:
 		return
 	var a: Node3D = get_node_or_null(cable_start) as Node3D if not cable_start.is_empty() else null
 	var b: Node3D = get_node_or_null(cable_end) as Node3D if not cable_end.is_empty() else null
-	var from: Vector3 = a.global_position if a != null else start_position()
-	var to: Vector3 = b.global_position if b != null else end_position()
+	if a == null or b == null:
+		return
+	var from: Vector3 = a.global_position
+	var to: Vector3 = b.global_position
 	var length: float = from.distance_to(to)
 	if length < 0.1:
 		return
@@ -70,6 +73,7 @@ func _build_cable() -> void:
 	var cable: MeshInstance3D = MeshInstance3D.new()
 	cable.name = "Cable"
 	cable.mesh = mesh
+	cable.set_meta(&"lc_ignore", true)  # runtime dressing between the anchors, not a placed prop (levelcheck)
 	cable.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(cable)
 	cable.top_level = true
