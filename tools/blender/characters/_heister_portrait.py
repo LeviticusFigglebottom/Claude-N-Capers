@@ -12,7 +12,7 @@ and the contacts read as one family. Unmasked, so the face reads (``Heisters.por
 
 written to ``game/assets/characters/portraits/<id>.png``. Each heister has a dark gradient
 backdrop with a glow in their signature colour (Rook oxblood, Sable aubergine, Dutch warm tan,
-Wren mustard against teal, Marten burnt orange against olive), and a pose that carries the personality.
+Wren mustard against teal, Marten burnt orange against olive, Jay cobalt with a cognac rim), and a pose that carries the personality.
 """
 
 from __future__ import annotations
@@ -134,6 +134,27 @@ HEISTERS: dict[str, dict] = {
         ],
         "ambient": (0.018, 0.020, 0.014),
     },
+    # Jay (D-111): the driver, loose and easy, a lean and a half-turn back to the camera; cobalt backdrop, cognac rim
+    "jay": {
+        "asset": "char_crew_jay",
+        "pose": _ARMS_DOWN + [
+            ("chest", (0, 0, 1), -18.0),          # body turned away, the driver's slouch
+            ("chest", (0, 1, 0), -3.0),
+            ("neck", (1, 0, 0), 1.0),
+            ("head", (0, 0, 1), 22.0),            # looking back over the shoulder
+            ("head", (0, 1, 0), -4.0),
+        ],
+        "camera": {"target_dz": -0.12, "dist": 1.50, "yaw": -26.0, "cam_dz": 0.03, "lens": 85.0},
+        "bg": {"top": (0.008, 0.012, 0.026), "glow": (0.024, 0.050, 0.110), "glow_xy": (0.66, 0.58), "glow_r": 0.58},
+        "lights": [
+            ("key", "AREA", (-0.25, 1.45, 1.95), (0.0, 0.0, 1.58), (0.94, 0.95, 1.00), 56.0, 1.3, 0.9),
+            ("fill", "AREA", (-1.25, 1.00, 1.50), (0.0, 0.0, 1.52), (0.80, 0.86, 0.98), 13.0, 1.6, 0.3),
+            ("rim", "AREA", (0.85, -1.10, 1.70), (0.0, 0.0, 1.52), (1.00, 0.66, 0.40), 125.0, 0.5, 2.0),
+            ("rim_far", "AREA", (-0.80, -1.15, 1.62), (0.0, 0.0, 1.52), (0.45, 0.62, 1.00), 60.0, 0.5, 1.4),
+            ("hair", "AREA", (-0.2, -0.9, 2.3), (0.0, 0.0, 1.62), (0.90, 0.92, 1.00), 12.0, 0.4, 0.5),
+        ],
+        "ambient": (0.014, 0.016, 0.026),
+    },
 }
 
 
@@ -146,6 +167,7 @@ GRADE: dict[str, dict] = {
     "dutch": {"exposure": -0.6, "hair_mul": 1.0, "look": "AgX - High Contrast"},
     "wren": {"exposure": -0.5, "hair_mul": 0.85, "look": "AgX - High Contrast"},
     "marten": {"exposure": -0.5, "hair_mul": 0.9, "look": "AgX - High Contrast"},
+    "jay": {"exposure": -0.5, "hair_mul": 0.55, "look": "AgX - High Contrast"},
 }
 
 

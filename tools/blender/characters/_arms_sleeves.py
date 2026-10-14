@@ -120,6 +120,21 @@ VARIANTS: dict[str, Variant] = {
                   hems=("end",), hem=0.003, pleats=6),
         ),
         note="roomy olive parka sleeve gathered (6 pleats) into a plain parka cuff band, burnt-orange gloves"),
+    "jay": Variant(
+        "jay", "char_crew_glove_driving",
+        (
+            Layer("char_crew_glove_driving", ((-0.034, 0.0034), (-0.020, 0.0032), (-0.008, 0.0030), (0.0, 0.0028)),
+                  hems=("start",), hem=0.0016, glove=True),
+            Layer("char_crew_jay_jacket", ((-0.046, 0.0080), (-0.036, 0.0084), (-0.026, 0.0084), (-0.018, 0.0080),
+                                           (-0.012, 0.0076)),
+                  hems=("end",), hem=0.003, ribs=(48, 0.0018)),
+            Layer("char_crew_jay_jacket", ((U_SHOULDER, 0.013, 0.0), (-0.30, 0.012, 0.0), (-0.22, 0.011, 0.0),
+                                           (-0.15, 0.0105, 0.0), (-0.090, 0.0105, 0.0004), (-0.060, 0.0100, 0.0008),
+                                           (-0.048, 0.0090, 0.0006)),
+                  hems=("end",), hem=0.0025, pleats=4),
+        ),
+        note="slim cobalt racing-jacket sleeve (white stripes on the body only: they run down the outside of the "
+             "upper arm, off screen in first person) into a ribbed cuff, cognac driving gloves"),
     "wren": Variant(
         "wren", "char_tac_glove",
         (
