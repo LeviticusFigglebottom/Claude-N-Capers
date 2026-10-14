@@ -737,8 +737,8 @@ func detection_value(observer: Node, slot: int) -> float:
 
 ## Frees everything: Services.clear(), Ids.reset(). Never ends the Net session (ruling C11: after a co-op
 ## payday every peer returns to the crew lobby on the same session; only Net.leave() ends it). On a live
-## session it tells the other side first (HeistNetSync.notify_teardown), and the host frees the
-## AI seats Net.fill_with_ai() took at launch so a newcomer can join the kept lobby (Net.clear_ai).
+## session it tells the other side first (HeistNetSync.notify_teardown). AI seats stay: the kept lobby shows
+## them as Crew AI and a joining peer takes one over (Net._on_peer_connected).
 func teardown() -> void:
 	if net_sync != null and is_instance_valid(net_sync):
 		net_sync.notify_teardown()
@@ -754,9 +754,6 @@ func teardown() -> void:
 		get_parent().remove_child(self)
 	queue_free()
 	Ids.reset()
-	if not is_replica and Net.is_authority() and Net.multiplayer.has_multiplayer_peer() \
-			and not (Net.multiplayer.multiplayer_peer is OfflineMultiplayerPeer) and Net.has_method(&"clear_ai"):
-		Net.call(&"clear_ai")  # C11 (core/net.gd, LEAD): drop the AI seats; humans keep theirs
 
 
 func _physics_process(delta: float) -> void:

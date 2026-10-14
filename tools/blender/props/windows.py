@@ -9,10 +9,8 @@ high 1.0 x 0.6 windows (barred: workshop; frosted: WC). No collision (the prefab
 Door-height 1.2 x 2.1 walk-through windows (PO-5, the Glasshouse fire-escape door-window; the prefab's
 `walkable`): no bottom rail and no sills, a flush threshold plate across the wall instead, so nothing
 is left across the opening once the sash is up or the glass is broken. `door` is fixed glazing;
-`door_sash` is one full-height sash. window.gd lifts `Sash` by InteractionTweak.window_sash_open_m
-(0.6 m) in its parent's space, so `Sash` hangs under a `SashTrack` scaled SASH_TRACK_SCALE in height
-(Sash counter-scaled, net identity): the 0.6 m lift becomes 2.16 m and the sash slides into the wall
-above the head (pocket sash), clearing the full opening.
+`door_sash` is one full-height sash (`Sash` at the sill, unscaled); the map sets the window prefab's
+`sash_travel_m` so the sash slides into the wall above the head (pocket sash), clearing the full opening.
 """
 
 from _pb import Kit
@@ -33,7 +31,6 @@ WALL_T = 0.4
 FW = 0.055          # frame face width
 FD = 0.08           # frame depth
 Y0 = -0.13          # frame outside face (towards Blender -Y)
-SASH_TRACK_SCALE = 3.6  # door_sash: 0.6 m tweak lift x 3.6 = 2.16 m >= the 2.1 m opening
 
 
 def build(ctx) -> None:
@@ -116,12 +113,8 @@ def _build_door_window(k: Kit, w: float, h: float, style: str) -> None:
     alu.bx((-hw, Y0, h - FW), (hw, y1, h), "metal_dark")
     # threshold plate over the wall top (the walking surface stays the wall at the sill line)
     alu.bx((-hw + FW, -WALL_T / 2, 0.0), (hw - FW, WALL_T / 2, 0.008), "steel")
-    track = k.empty("SashTrack", (0.0, 0.0, 0.0))
+    sash = k.empty("Sash", (0.0, 0.0, 0.0))
     if style == "door_sash":
-        track.scale = (1.0, 1.0, SASH_TRACK_SCALE)
-    sash = k.empty("Sash", (0.0, 0.0, 0.0), parent=track)
-    if style == "door_sash":
-        sash.scale = (1.0, 1.0, 1.0 / SASH_TRACK_SCALE)
         sf = k.obj("SashFrame", parent=sash)
         sp = sf.part(bevel=0.002)
         ys0, ys1 = Y0 + FD * 0.5, Y0 + FD * 0.95

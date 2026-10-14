@@ -110,8 +110,9 @@ func _host() -> void:
 	await _shot("heist_host", 5)
 	await _seconds(30.0)
 	_diag()
-	if _mode == "success":
+	if _mode.begins_with("success"):
 		await _host_success()
+		await _host_more_rounds(ls)
 		return
 	await _wait(func() -> bool: return Net.human_slots().size() <= 1, "client left (Net)", 900.0)
 	_diag()
@@ -121,6 +122,22 @@ func _host() -> void:
 	if pm != null:
 		pm.leave_requested.emit()
 	await _end_on_payday()
+
+
+## C11: the next heists on the same kept session (success2): lobby -> ready -> Start -> win -> payday.
+func _host_more_rounds(ls: LobbyScreen) -> void:
+	for round_i: int in range(2, _heists() + 1):
+		if not await _back_in_lobby(round_i):
+			return
+		_flow.lobby.set_ready(true)
+		if not await _wait(func() -> bool: return _flow.lobby.state.can_start(), "both ready again", 300.0):
+			_log("start_block %s" % _flow.lobby.state.start_block())
+			return
+		_log("start() round %d -> %s" % [round_i, ls.start()])
+		if not await _wait(func() -> bool: return _flow.runtime != null and _hud() != null, "host in heist %d" % round_i):
+			return
+		_diag()
+		await _host_success()
 
 
 ## Test hook (lead): two bags spawned inside the secure zone are secured by LootManager's own rest rule
@@ -136,7 +153,9 @@ func _host_success() -> void:
 	if loot == null or zone == null:
 		_log("no loot service / secure zone")
 		return
-	EventBus.loot_secured.connect(func(_id: int, _loot: StringName, _value: int) -> void: _secured += 1)
+	_secured = 0
+	if not EventBus.loot_secured.is_connected(_on_loot_secured):
+		EventBus.loot_secured.connect(_on_loot_secured)
 	var at: Vector3 = zone.global_position
 	for c: Node in zone.get_children():
 		if c is CollisionShape3D:
@@ -172,8 +191,16 @@ func _client() -> void:
 	await _shot("heist_client", 5)
 	await _seconds(30.0)
 	_diag()
-	if _mode == "success":
+	if _mode.begins_with("success"):
 		await _end_on_payday(1800.0)
+		for round_i: int in range(2, _heists() + 1):
+			if not await _back_in_lobby(round_i):
+				return
+			_flow.lobby.set_ready(true)
+			if not await _wait(func() -> bool: return _flow.runtime != null and _hud() != null, "client in heist %d" % round_i):
+				return
+			_diag()
+			await _end_on_payday(1800.0)
 		return
 	await _shot("heist_client_later", 5)
 	var pm: PauseMenu = _flow.options_menu.open_pause()
@@ -181,6 +208,25 @@ func _client() -> void:
 	if pm != null:
 		pm.leave_requested.emit()
 	await _end_on_payday()
+
+
+func _on_loot_secured(_id: int, _loot: StringName, _value: int) -> void:
+	_secured += 1
+
+
+## Heists per run: `success2` = two back to back on one kept session (C11), else one.
+func _heists() -> int:
+	return 2 if _mode == "success2" else 1
+
+
+## After a co-op payday's Continue: the crew lobby with the session kept (C11). Logs and shoots it.
+func _back_in_lobby(round_i: int) -> bool:
+	var ok: bool = await _wait(func() -> bool:
+		return _flow.runtime == null and _flow.is_coop() and _flow.current == _flow.lobby_screen,
+		"back in the kept lobby before heist %d" % round_i, 120.0)
+	_diag()
+	await _shot("lobby_before_heist_%d" % round_i, 5)
+	return ok
 
 
 ## After leaving: the payday (if any) and home.

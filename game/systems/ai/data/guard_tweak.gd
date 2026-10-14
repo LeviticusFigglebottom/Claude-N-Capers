@@ -20,6 +20,11 @@ extends Resource
 @export var route_tag: StringName = &"guard"
 ## Without a SpawnPoint.patrol_graph, use the nearest graph whose closest point is within this (m).
 @export var nearest_graph_max_m: float = 25.0
+## PO-10 ◇: guards sharing a patrol graph start staggered, not in lockstep: the k-th guard to start on a
+## graph waits k x patrol_stagger_s plus a random [0, patrol_stagger_jitter_s] (GameRng &"patrol_stagger")
+## before its first leg; the first guard leaves at once.
+@export var patrol_stagger_s: float = 3.0
+@export var patrol_stagger_jitter_s: float = 1.5
 
 @export_group("Post / look-around (S5.1)")
 ## Guards without a graph stand at their post; seconds between look-arounds, random in [x, y] ◇.

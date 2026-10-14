@@ -208,3 +208,22 @@ No row now comes from a LOCKPICK or unlocked door that the walker failed to open
 | night_deposit | STUCK-DOOR | `Gameplay/Doors/SallyPersonnelDoor` | at (5.4, 0.0, 0.6), nearest door `SallyPersonnelDoor` 0.8 m: stalled before corner (6.0, 0.2, -1.0) (no progress (0.0 m of 1.7 m): no closed door or ladder in the way) |
 | dockside_burn | STUCK-DOOR | `Gameplay/Misc/GoodsLift` | at (14.5, 0.0, 5.1), nearest door `E1Corridor` 2.1 m: stalled before corner (16.5, 0.200001, 5.0) (no progress (2.5 m of 4.5 m): door `E1Corridor` (NONE, unlocked) handle not aimed (1.9 m from the eye)) |
 | dockside_burn | STUCK-DOOR | `Gameplay/Doors/WSCorridor` | at (15.5, 0.0, 5.5), nearest door `E1Corridor` 1.1 m: stalled before corner (14.0, 0.200001, 7.0) (no progress (0.0 m of 2.1 m): no closed door or ladder in the way) |
+
+## Door-centre mode fix 2026-10-14 (Glasshouse stair-head stalls)
+The door-centre (D-085) stalls with "no closed door or ladder in the way" (Glasshouse SafeLoot before (14.9, 4.4, 4.8),
+UpperLobbyDoor before (14.9, 4.4, 5.25), LobbyDoor before (15.5, 4.4, 4.6), plus PhoneAdmin, IslandCaseB, StockDoor)
+were a harness bug, not a map snag. `_door_centred` replaced every path corner within 1.5 m of any Door with that
+door's centre line, including doors the path only walks past. A corridor path from just outside StockDoor,
+UpperLobbyDoor, WCUpperDoor, ReceivingDoor, WorkshopDoor or JanitorDoor was sent through that side door into the
+room, and the next real corner (the stair head) was then behind a wall, with 0.0 m of progress. Now only doors
+whose doorway a path segment crosses (`Door.doorway_crossing`) are centred.
+
+Capsule check at the stair head (r 0.35, h 1.8, world_static): the corners (14.9, 4.2, 4.8), (14.9, 4.2, 5.25),
+(15.1, 4.2, 4.6), (15.9, 4.2, 5.0) and (14.0, 4.2, 5.27) are clear. Sweeps along the corridor and onto the return
+flight only touch the walls tangentially (the nav corners sit at the agent radius). Nav corner (15.5, 4.2, 4.6),
+0.4 m from the Core_X16 face, overlaps the return flight's WallRailReturn end by about 3 cm (the rail stands about
+0.085 m off the wall). Corners mode walks it without a stall, so it is left as is.
+
+`test_doors_glasshouse`: before 7/13 legs ok (6 stuck), after 13/13 ok (0 stuck). SalonDoor crossings are still
+6/6 in all four modes. Night Deposit / Dockside door-mode rows with the same "no closed door" signature (for example
+ND SallyPersonnelDoor, AtmCash2, DB WSCorridor) probably have the same cause. They were not rerun here.

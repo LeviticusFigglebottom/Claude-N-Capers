@@ -28,7 +28,8 @@ Newest entry first, keep the last 10.
 | PO-B-C7 | A | The client's LocalHudModel has 0 objectives for the whole run (host: 5). The HUD hides the objective panel and the pause job card has no OBJECTIVES. objective_updated [R] fires at the host's start, before the client's model listens; there is no catch-up. | Sent to A |
 | PO-B-C8 | B | Client crew rows read "Host / AI 2 / AI 3" (the heister map was only handed over on the host's launch). | FIXED ebe242ff (lobby assignment; test_lobby_flow) |
 | PO-B-C9 | B | The "left the game" toast crossed the onboarding card's title. | FIXED: the card gives way while a toast shows (test_onboarding_card) |
-| PO-B-C10 | LEAD (design) | A client who leaves mid-heist goes straight home, with no payday (PD2 does the same). The lead's pass said "payday on both". | Ruling needed: keep PD2 behaviour, or show the failure payday ("What you lost") to the leaver too |
+| PO-B-C10 | LEAD (design) | A client who leaves mid-heist goes straight home, with no payday (PD2 does the same). The lead's pass said "payday on both". | RULED: PD2 behaviour (the leaver goes home, no payday) |
+| PO-B-C11 | B | A co-op payday's Continue dropped the session (Net.leave, home). | FIXED 2986bcd2 + 8fbe5e76: Continue goes back to the kept crew lobby; end_round clears `started`; a Start spends every ready flag. Windowed proof (coop_worker `success2`): two Glasshouse wins back to back on one session; host and client each get a success payday, a card, then the lobby, twice. Crew {0 human, 1 human, 2 ai, 3 ai} and 5 objectives on both in heist 2 |
 
 ### Next
 - Gallery Night content when the lead sends the list; C7 re-check when A lands it.

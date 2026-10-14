@@ -44,6 +44,8 @@ const MISFIRE_STREAM: StringName = &"misfire"
 var route: Array[Vector3] = []
 var route_points: Array[PatrolPoint] = []
 var route_loops: bool = false
+## PO-10: the PatrolGraph this guard's route came from (null when it holds a post).
+var patrol_graph: PatrolGraph = null
 ## Seconds left on the S3.3 radio call (0 when not calling).
 var radio_time_left: float = 0.0
 ## Animation hint for the visual layer (characters.md names: idle, walk, run, radio_call, ...).
@@ -140,6 +142,7 @@ func _start() -> void:
 	_post_pos = _npc.global_position
 	_post_fwd = _npc.look_forward()
 	_build_route()
+	_stagger_patrol_start()
 	_look_left = _roll(tweak.post_look_interval_s)
 	_started = true
 	if _runtime != null and _runtime.went_loud and _is_active():
@@ -168,9 +171,25 @@ func _build_route() -> void:
 				_post_fwd = _flat(-pts[0].global_basis.z)
 		return
 	route_loops = bool(res["loop"])
+	patrol_graph = graph
 	route_points = PatrolRouteGenerator.visit_order(pts, route_loops)
 	for p: PatrolPoint in route_points:
 		route.append(p.global_position)
+
+
+## PO-10: the k-th guard of this heist to start patrolling `patrol_graph` waits k x patrol_stagger_s (+ jitter)
+## before its first leg, so guards sharing a route are not in lockstep.
+func _stagger_patrol_start() -> void:
+	if route.is_empty() or patrol_graph == null or _runtime == null:
+		return
+	var k: int = 0
+	for n: Node in _runtime.npcs(&"guard"):
+		var b: GuardBrain = n.get_node_or_null(^"Brain") as GuardBrain
+		if b != null and b != self and b._started and b.patrol_graph == patrol_graph:
+			k += 1
+	if k > 0:
+		_pause_left = float(k) * tweak.patrol_stagger_s \
+			+ GameRng.stream(&"patrol_stagger").randf_range(0.0, maxf(tweak.patrol_stagger_jitter_s, 0.0))
 
 
 func _physics_process(delta: float) -> void:

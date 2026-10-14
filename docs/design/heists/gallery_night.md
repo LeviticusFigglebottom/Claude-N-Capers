@@ -80,7 +80,7 @@ Cross-env requests are QC-51..QC-59.
     roof terrace +22).
   - **North: Pelham Mews**, an 8 m cobbled service lane. The gallery's loading dock and the
     fire-escape ladder to the roof deck open onto it. Mews house backs (2 storeys, dressing) opposite.
-  - **West: the Sculpture Court** (x −16…−2, z 0…30), a gravel court with bronzes, a reflecting
+  - **West: the Sculpture Court** (x −16…0, z 0…30), a gravel court with bronzes, a reflecting
     pool and benches, walled 3.0 m (rusticated stone) with a wrought-iron gate onto Aldous Parade
     (x −10…−6). Beyond: the **Ostrander Conservatory** of music (party wall, roof +14).
 - **Exterior landmarks:**
@@ -258,7 +258,8 @@ Basement notes:
   `consignment_lockers` (4/6/8), saw targets, small loot.
 - The racks hold **studies** (`loot.painting_study`, `store_paintings` 4/6/8) and the list canvases
   when their slot is `*_store`.
-- `H^` (2, 14) is the areaway ladder up to the grate `a` in the Sculpture Court.
+- `H^` (2, 14) marks where PL meets the areaway (QC-64): the ladder stands in a 2 × 2 m **light well** at x −4…−2,
+  z 13–15 under the court grate `a` (−4, 14), with a short passage / opening through the basement wall at x 0 into PL.
 
 ### Ground floor (FFL 0.0)
 ```
@@ -564,10 +565,10 @@ tie (her keycard, QC-52). Solo means **waiting for last call and avoiding** civi
 | C5 | BC, W end (3.4, 7) | E along BC (to x ≈ 23) | SC and RG doors in view; LF/E1/J beyond 20 m. |
 | C6 | LD, NW corner (32.4, 0.4) | SE: the roller door, the art door, the crates | The BC double door and the lift door are beside it (blind). |
 | C7 | Mews pole (36, −1), 3.2 m | W along the Mews | Ladder foot in view; the Mews mouth (E) is behind it. |
-| C8 | Court, WG west wall (−0.4, 4) | S over the court: the French doors, the grate | The gate corner is occluded by the pool kiosk. |
+| C8 | Court, WG west wall (−0.4, 9) (QC-65) | S over the court: the French doors, the grate | The gate corner is occluded by the pool kiosk. |
 | C9 | UG1, SE corner (11.6, 19.6) | NW over the Calloway hang | The shuttered arch is beside it (blind). |
 | C10 | UG3, NW corner (32.4, 12.4) | SE: the room, the TR and AT doors | The CS door is beside it (blind). |
-| C11 | TR, SE corner (43.6, 24.4), 2.6 m | W/SW: the door, the grid, the painting | **Always live** (`treasury`). |
+| C11 | TR, NE corner (43.6, 24.4), 2.6 m | W/SW: the door, the grid, the painting | **Always live** (`treasury`). |
 | C12 | BB, E end (31.6, 7) | W along BB: the vault door, the lift | The SS door at the W end is 29 m away (outside range). |
 | C13 | UC, W end (3.4, 7) | E along UC: CO, AO, UW, FS doors, the BW door | SS is behind it; the SV, LF, BE and CS doors are beyond 20 m. |
 | C14 | AS, NE corner (31.6, 8.4) | SW over the racks | **Always live**. |
@@ -699,7 +700,7 @@ see it, but P1/P2 units can shoot up through the tall windows).
 ### Police spawns (≥ 3 directions required; 5 designed) and the spawn rule
 `SpawnPoint` POLICE; the director spawns at POLICE spawns only (QC-42/D-064: never inside the
 building). Interior ENTRY points carry the tag **`breach_only`**. Spawns need no LOS to any crew
-member and ≥ 15 m flat distance (DirectorTweak `min_crew_distance_m`); all are ≥ 19 m from every
+member and ≥ 15 m flat distance (DirectorTweak `min_crew_distance_m`); all are ≥ 17 m from every
 holdout centroid.
 
 | Spawn (tag) | Position (x, z, y) | Occluder | → H1 | → H2 | → H3 | → H4 |
@@ -816,7 +817,8 @@ holdout centroid.
 
 ## Variable table
 Each variable changes a decision. Rules resolve in table order (heist_map.md §5); per-difficulty
-weights use A2-08.
+weights use A2-08. **Difficulty rows (QC-63):** a "Routine" row also applies at Tense; a "Brutal+" row also applies at
+Hazardous (`sensor_net`, `laser_pattern`, `patrons`, `escape_eta_s`).
 
 | variable | options (slot ids) | weights | gameplay effect (the decision it changes) |
 |---|---|---|---|
@@ -828,6 +830,7 @@ weights use A2-08.
 | `canvas_widow` (`loot_spot`) | `widow_sallow` (UG2), `widow_founders` (WG), `widow_conservation` (CS easel) | 1, 1, 0.7 | As above; CS puts a civilian (conservator) and a keycard slot beside it. |
 | `canvas_saint` (`loot_spot`) | `saint_maritime` (UG3), `saint_harbour` (EG), `saint_store` (AS) | 1, 1, 0.7 | As above; `saint_store` makes the art store worth one of the two keycards. |
 | `sensor_net` | `sensors_treasury` (TR only), `sensors_upper` (all upper frames + TR + the landing), `sensors_all` (every hung frame) | Routine 0.5/0.35/0.15; Brutal+ 0.2/0.4/0.4 | **Whether the hack is needed in stealth**, and for which canvases. |
+| `conservator` (`civilian_cluster`) | `cons_late`, `cons_gone` | 0.5, 0.5 | A civilian in CS (by `widow_conservation` and `kc_conservator`). |
 | `keycard` | `kc_curator` (on her lanyard: tie or kill her, QC-52), `kc_security` (SC cabinet), `kc_registrar` (RG desk), `kc_conservator` (CS bench; requires `cons_late`) | 1, 0.75, 1, 1; **pick 2** | **2 cards for 3 readers (TR, AS vault, LD art door):** which door you give up, and whether you must deal with the operator or the curator. |
 | `code_note` | `code_security_log` (SC), `code_curator_planner` (CO), `code_admin_postit` (AO) | 1, 1, 1; pick 1 | **The SV door:** behind the operator, in the curator's office, or in the open office (C13's corridor). |
 | `guard_post` | `rover_ground`, `rover_upper`, `rover_basement`, `dock_smoker`, `rover_none` (encodes counts as Night Deposit) | Routine/Tense pick 1 (`rover_none` 1 vs 1 each: P(none) = 0.2); Hazardous pick 2; Brutal 3; Lethal+ 4 (`difficulty_add`) | **Which floor and which entry has a walker**: the smoker shuts the Mews; the basement rover makes the grate and the vault slow. |
@@ -835,9 +838,10 @@ weights use A2-08.
 | `camera` | `cam_a`, `cam_b`, `cam_c` (table in Sightlines) | 1, 1, 1 | Which corridor and which entry needs ECM or timing. |
 | `laser_pattern` (TR grid) | `lz_static` (3 beams 1.30/1.8/2.33 m: crouch under the 1.30 m beam, Build rulings B4), `lz_sweep` (3 vertical, 6 s), `lz_timed` (4 beams, off 4 s of 16 s) | Routine 0.5/0.2/0.3; Brutal+ 0.2/0.4/0.4 | Crouch, time the sweep or wait, in C11's cone. |
 | `curator_route` (`civilian_cluster`) | `curator_hall`, `curator_office` | 0.5, 0.5 | **Where the keycard walks:** in the public hall among guests (tie her and every patron sees) or upstairs near CO/SV (quiet tie, near the upper rover). |
-| `conservator` (`civilian_cluster`) | `cons_late`, `cons_gone` | 0.5, 0.5 | A civilian in CS (by `widow_conservation` and `kc_conservator`). |
 | `court_doors` (`locked_door`) | `court_doors_open` (on the latch until last call), `court_doors_locked` | 0.5, 0.5 | **A free way from the court into WG** while the court is public. |
 | `areaway` (`vent_open`) | `grate_loose`, `grate_padlocked` (`padlock`: lockpick 8 s or saw) | 0.5, 0.5 | The cost of the basement route (in C8's cone in `cam_b`/`cam_c`). |
+| `xl_crate` (`loot_spot`; rare `late_loan` forces it) | `xl_none`, `xl_loan` | 1, 0 (picks `xl_none` unless forced; QC-62) | A loan crate in LD with 2 extra studies. |
+| `admin_pa` (`civilian_cluster`; rare `late_paperwork` forces it) | `pa_none`, `pa_late` | 1, 0 (picks `pa_none` unless forced; QC-62) | The admin PA works late in AO beside `code_admin_postit` and C13's corridor. |
 | `store_paintings` (scalar) | 4, 6, 8 studies on the AS racks | uniform | Greed in the vault. |
 | `consignment_lockers` (scalar) | 4, 6, 8 `deposit_box` | uniform | Small-loot greed against saw noise next to the vault (camera C14). |
 | `escape` | `esc_mews` (E1 van), `esc_parade` (E2 limo) | 0.55, 0.45 | **The loot path:** the art lift and LD (BOH), or the grand stair, the hall and the portico (front, throw spots, after last call). In loud: H4 or H1 for the wait. |
@@ -1222,7 +1226,7 @@ inactive slot). The mission passes them as `data.marker_tags`.
 
 ### B6. Validator hooks this map sets (D-075, built 2026-10-14)
 `camera_spine` (BC and UC, per `camera` layout) and `camera_screen` (`orchard_calloway`, `widow_sallow`,
-`saint_maritime`, each behind a `partition_screen`) read HeistMap root meta (`tools/levelcheck/README.md`): `camera_spine_rooms = ["bc", "uc"]`, `camera_screen_slots =
+`saint_maritime`, each behind a `partition_screen`) read HeistMap root meta (`tools/levelcheck/README.md`): `camera_spine_rooms = ["BC", "UC"]`, `camera_screen_slots =
 ["orchard_calloway", "widow_sallow", "saint_maritime"]`, `camera_layout_group = "camera"` (default). Layout cameras sit
 under their `cam_a/b/c` VariantSlot; C11 and C14 sit outside any slot (live in every layout); screens carry meta
 `kind = "partition_screen"` and a wall on the line does not count; the

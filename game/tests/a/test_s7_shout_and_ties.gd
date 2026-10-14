@@ -1,4 +1,5 @@
-## A1-06 / S7.1 shout-intimidate, S7.2 cable ties, S1.1 (shout while casing, no tie while casing).
+## A1-06 / S7.1 shout-intimidate, S7.2 cable ties, S1.1 (no tie while casing; PO-11: a casing shout
+## intimidates no civilian, so the shout tests mask the crew first).
 extends TestCase
 
 var _rt: HeistRuntime = null
@@ -49,10 +50,13 @@ func _crew() -> CrewController:
 	return _rt.crew_controller(0) as CrewController
 
 
-## Civilian at the origin; crew at `crew_pos` looking along `yaw`.
-func _place(crew_pos: Vector3, yaw: float) -> NpcBase:
+## Civilian at the origin; crew at `crew_pos` looking along `yaw`, masked unless `masked` is false
+## (PO-11 / S1.1: only a masked shout intimidates).
+func _place(crew_pos: Vector3, yaw: float, masked: bool = true) -> NpcBase:
 	var civ: NpcBase = _civ()
 	civ.global_position = Vector3(0, 0.05, 0)
+	if masked:
+		_crew().set_masked()
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, crew_pos))
 	var i: CrewIntent = CrewIntent.new()
 	i.look_yaw = yaw
@@ -81,14 +85,28 @@ func _count(kind: StringName) -> int:
 	return n
 
 
-func test_s7_1_shout_in_cone_at_10m_intimidates_while_casing() -> void:
+func test_s7_1_shout_in_cone_at_10m_intimidates() -> void:
 	var civ: NpcBase = await _place(Vector3(0, 0.05, 10), 0.0)  # looking -Z at the civilian
-	assert_true(_crew().is_casing(), "S1.1: casing crew can shout")
+	assert_false(_crew().is_casing(), "masked")
 	await _shout(0.0)
 	assert_eq(civ.alert_state, Enums.AlertState.INTIMIDATED, "in cone at 10 m")
 	assert_eq(_count(&"intimidated"), 1, "civilian_intimidated emitted")
 	assert_eq(_events[0][1], civ.net_id)
 	assert_eq(_events[0][2], 0, "slot 0")
+
+
+## PO-11 (S1.1): a casing (unmasked) shout reaches no civilian, in the cone or within 6 m.
+func test_po11_casing_shout_does_not_intimidate() -> void:
+	var civ: NpcBase = await _place(Vector3(0, 0.05, 10), 0.0, false)
+	assert_true(_crew().is_casing(), "casing")
+	await _shout(0.0)
+	assert_eq(civ.alert_state, Enums.AlertState.CALM, "casing shout in cone at 10 m: calm")
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 2)))
+	await wait_seconds(Tweak.stealth().shout_cooldown_s + 0.1)
+	await _shout(0.0)
+	assert_eq(civ.alert_state, Enums.AlertState.CALM, "casing shout at 2 m: calm")
+	assert_eq(_count(&"intimidated"), 0, "no civilian_intimidated")
+	assert_true(_crew().is_casing(), "the shout does not unmask")
 
 
 func test_s7_1_shout_outside_cone_at_10m_does_nothing() -> void:
@@ -171,8 +189,9 @@ func test_s7_2_tie_intimidated_civilian() -> void:
 
 
 func test_s7_2_casing_crew_cannot_tie() -> void:
-	var civ: NpcBase = await _place(Vector3(0, 0.05, 1.0), 0.0)
-	await _shout(0.0)
+	var civ: NpcBase = await _place(Vector3(0, 0.05, 1.0), 0.0, false)
+	# A casing shout intimidates nobody (PO-11), so the civilian is put down at the brain level.
+	assert_true((civ.get_node(^"Brain") as CivilianBrain).on_shouted(_crew()))
 	assert_eq(civ.alert_state, Enums.AlertState.INTIMIDATED)
 	var c: CrewController = _crew()
 	assert_true(c.is_casing())

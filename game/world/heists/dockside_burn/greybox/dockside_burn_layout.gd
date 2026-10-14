@@ -384,7 +384,7 @@ const WATER: Array = [
 	["SlipWater", [62.0, WATER_Y - 0.05, -32.0, 72.0, WATER_Y, 44.0]],
 ]
 
-## Neighbour / dressing blocks (solid massing): [name, box, material].
+## Neighbour / dressing blocks (solid massing): [name, box, material(, "ridge": ridged collider top)].
 const BLOCKS: Array = [
 	# Bellweather Ice Co. (west): north shed, main building (roof +8.0, parapet 9.0), west block.
 	["BellweatherShed", [-30.0, -0.3, -32.0, -10.0, 6.0, -18.0], "facade_a"],
@@ -427,7 +427,8 @@ const BLOCKS: Array = [
 	["FarShore", [-200.0, WATER_Y, 400.0, 250.0, 8.0, 410.0], "facade_c"],
 	# The Co-op launch (escape E3) moored along the pontoon: walkable deck at -1.6.
 	["LaunchHull", [17.0, -3.2, 54.0, 30.0, -1.6, 57.4], "vehicle"],
-	["LaunchGunwale", [17.0, -1.6, 57.1, 30.0, -1.1, 57.4], "vehicle"],
+	# The gunwale (harbour side, 0.5 m) is an edge guard: ridged collider top (`ridge`, D-104 slopes).
+	["LaunchGunwale", [17.0, -1.6, 57.1, 30.0, -1.1, 57.4], "vehicle", "ridge"],
 	["LaunchCabin", [26.4, -1.6, 54.6, 29.6, 0.6, 56.8], "vehicle"],
 	# High-bay roof plant: evaporator condensers (vapour plumes, landmark 3) and the skylights.
 	["CondenserA", [24.0, BAY_ROOF, 27.0, 30.0, BAY_ROOF + 2.2, 30.0], "trim"],

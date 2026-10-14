@@ -1,0 +1,2308 @@
+From d380309e4f05b5ec335bb633811de596007ca9b7 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 14 Oct 2026 06:41:08 +0000
+Subject: [PATCH] [GN-C1] gallery_night generator skeleton (deterministic;
+ unmerged until FREEZE LIFTED)
+
+game/world/heists/gallery_night/greybox/: build_greybox.gd (+ gn_builder_base.gd,
+gn_gameplay.gd stub, gallery_night_layout.gd emitted by
+tools/levelcheck/plans/gallery_night_emit_layout.py from the floor-plan and slot
+data). Builds the 4 floors' shell from the plan rooms/openings (walls, glass,
+slabs with the SS / Great Hall holes, ceilings, roofs, parapets), Stair SS and
+the imperial stair with ramp colliders, balustrades, grade, RoomVolumes with
+Room-list purposes/kits, PUBLIC/RESTRICTED zones, player + police spawns,
+preplan points, 27 review cameras, every VariantSlot (placeholder content,
+QC-62 empty siblings xl_none / pa_none) and the navmesh; SurfaceTags on every
+body (untagged = build fails); --out=<path>.
+G1 to-dos (round 2): Stair SS wall handrails both sides of every flight (+ the
+top divider as the roof-landing guard); imperial-stair stone balustrades on all
+three flights + half-landing end guards; roof-deck parapet copings 56 deg
+(B4.5, slopes); the areaway light well 2 x 2 m (x -4..-2, z 13..15) with a
+passage and a 1.0 m opening into PL, ladder placeholder, vent nav link (QC-64);
+the glazed oculus (22, 17) through laylight and roof; police street islands
+P1-P4 behind barriers / coach / press van / catering truck / Mews gate with
+one-way links, P5 rappel through the oculus + roof drop onto the deck
+(D-064 / QC-41, police_only metas); play-space closures and neighbour massing
+(court walls with the gate gap, Mews houses, hotel, Ostrander, park railings);
+fire-escape ladder and art-lift landing placeholders.
+Never writes gallery_night.tscn (content freeze): default user://gn_skeleton/.
+tools/levelcheck/gn_regen_twice.sh: layout current + two regens byte-identical.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_013uMHd1Npqkx1reY1pJMaye
+---
+ .../gallery_night/greybox/build_greybox.gd    | 769 ++++++++++++++++++
+ .../greybox/build_greybox.gd.uid              |   1 +
+ .../greybox/gallery_night_layout.gd           | 575 +++++++++++++
+ .../greybox/gallery_night_layout.gd.uid       |   1 +
+ .../gallery_night/greybox/gn_builder_base.gd  | 363 +++++++++
+ .../greybox/gn_builder_base.gd.uid            |   1 +
+ .../gallery_night/greybox/gn_gameplay.gd      |  94 +++
+ .../gallery_night/greybox/gn_gameplay.gd.uid  |   1 +
+ tools/levelcheck/gn_regen_twice.sh            |  42 +
+ .../plans/gallery_night_emit_layout.py        | 343 ++++++++
+ 10 files changed, 2190 insertions(+)
+ create mode 100644 game/world/heists/gallery_night/greybox/build_greybox.gd
+ create mode 100644 game/world/heists/gallery_night/greybox/build_greybox.gd.uid
+ create mode 100644 game/world/heists/gallery_night/greybox/gallery_night_layout.gd
+ create mode 100644 game/world/heists/gallery_night/greybox/gallery_night_layout.gd.uid
+ create mode 100644 game/world/heists/gallery_night/greybox/gn_builder_base.gd
+ create mode 100644 game/world/heists/gallery_night/greybox/gn_builder_base.gd.uid
+ create mode 100644 game/world/heists/gallery_night/greybox/gn_gameplay.gd
+ create mode 100644 game/world/heists/gallery_night/greybox/gn_gameplay.gd.uid
+ create mode 100755 tools/levelcheck/gn_regen_twice.sh
+ create mode 100644 tools/levelcheck/plans/gallery_night_emit_layout.py
+
+diff --git a/game/world/heists/gallery_night/greybox/build_greybox.gd b/game/world/heists/gallery_night/greybox/build_greybox.gd
+new file mode 100644
+index 00000000..6fb0d3f1
+--- /dev/null
++++ b/game/world/heists/gallery_night/greybox/build_greybox.gd
+@@ -0,0 +1,769 @@
++## Gallery Night G1 greybox generator: SKELETON (GN-C1). Owner: ENV C.
++## Content freeze (D-082): this generator is unmerged until the freeze lifts, and it never writes the map's final
++## path (res://world/heists/gallery_night/gallery_night.tscn, which validate_all and HeistRegistry would pick up).
++## Regenerate (deterministic; never hand-edit the output):
++##   /opt/godot/godot --headless --path game --script res://world/heists/gallery_night/greybox/build_greybox.gd \
++##     -- --out=<path>            (default user://gn_skeleton/gallery_night.tscn)
++## Data: gallery_night_layout.gd, emitted by tools/levelcheck/plans/gallery_night_emit_layout.py from the floor
++## plans (gallery_night_floors_ascii.py) and the slot list (gallery_night_slots.py --check). Design:
++## docs/design/heists/gallery_night.md (APPROVED D-075; Build rulings B1-B6). Contracts: heist_map.md v1.2.
++## Built: the four floors' shell (walls from the room edges with every plan opening, glass, slabs with the stair /
++## Great Hall holes, ceilings, roofs, parapets), Stair SS (U-stair, ramp colliders) and the imperial stair, the
++## balcony balustrades, the grade around the building, RoomVolumes (Room list purposes / kits), PUBLIC /
++## RESTRICTED zones, player and police spawns, preplan points, review cameras, every VariantSlot (placeholder
++## content), the navmesh. Every collision body carries a surface id (SurfaceTags); an untagged body fails the
++## build. No RNG anywhere yet (dressing will use per-room seeded streams, KitPlacer.str_less ordering).
++## G1 to-dos done here (GN-C1): Stair SS wall handrails, imperial-stair balustrades and landing guards, deck parapet
++## copings >= 50 deg, the areaway light well + passage into PL (QC-64), the oculus, the street police islands and
++## closures, P5's rappel / roof-drop links (QC-41), neighbour massing. Doors and windows: the skeleton cuts openings
++## and glazes windows only; the G1 build places ENV A's `door` prefab with the catalog door GLBs
++## (prop_door_* leaves, arch_door_frame_* frames: flush frame colliders, `frame_proud` / `door_frame_gap`, PO-7) and
++## window frames from the arch_window_* / arch_wall_*_window_* kit, never a hand-built frame.
++extends "res://world/heists/gallery_night/greybox/gn_gameplay.gd"
++
++const FLOOR_INDEX: Dictionary = {"B": 0, "G": 1, "U": 2, "R": 3}
++## Slab underside above each floor's rooms (where the ceiling plane must stay below).
++const SLAB_ABOVE: Dictionary = {"B": -0.3, "G": 5.1, "R": 11.7}
++const SS_HOLE_Z: float = 6.35
++## Guards and balustrades: 1.1 m (level_standards §2 railing 1.0-1.1). Handrail bar centre above the nosing line
++## (5 cm bar: top 1.05 m) and its offset from the wall / guard face (lc_stair_rails: >= 0.03 m proud).
++const RAIL_H: float = 1.1
++const HANDRAIL_H: float = 1.025
++const HANDRAIL_OFF: float = 0.07
++## Stair SS: inner face of the facade wall on the core's west side (EXT_T / 2).
++const CORE_FACE_W: float = 0.2
++## Grand stair stone balustrade: thickness, top above the nosing line, depth below it (into the steps).
++const BAL_T: float = 0.15
++const BAL_TOP: float = 1.05
++const BAL_BELOW: float = 0.25
++## Parapet coping (B4.5: >= 50 deg): a ridge 0.3 m above the wall top over the half thickness (0.2 m) = 56 deg.
++const COPING_RISE: float = 0.3
++
++
++func _initialize() -> void:
++	_build.call_deferred()
++
++
++## Output scene: DEFAULT_OUT, or `-- --out=<path>` (the regen-twice determinism check writes scratch files).
++static func _scene_out() -> String:
++	for a: String in OS.get_cmdline_user_args():
++		if a.begins_with("--out="):
++			return a.trim_prefix("--out=")
++	return DEFAULT_OUT
++
++
++func _build() -> void:
++	var out: String = _scene_out()
++	if ProjectSettings.globalize_path(out) == ProjectSettings.globalize_path(SCENE_PATH):
++		_fail("content freeze (D-082): the skeleton does not write %s; pass --out=<scratch path>" % SCENE_PATH)
++		return
++	var old_scene_uid: String = read_uid(out)
++	map_root = HeistMap.new()
++	map_root.name = "GalleryNight"
++	# HeistDef / variant table: ENV B's drafts land here via ENV A after the freeze; until then the root has none.
++	if ResourceLoader.exists(DEF_PATH):
++		map_root.heist_def = load(DEF_PATH) as HeistDef
++	if ResourceLoader.exists(VARIANTS_PATH):
++		map_root.variant_table = load(VARIANTS_PATH) as HeistVariantTable
++	map_root.floor_heights = PackedFloat32Array(L.FLOOR_HEIGHTS)
++	map_root.floor_names = PackedStringArray(L.FLOOR_NAMES)
++	map_root.set_meta(&"camera_spine_rooms", PackedStringArray(L.CAMERA_SPINE_ROOMS))
++	map_root.set_meta(&"camera_screen_slots", PackedStringArray(L.CAMERA_SCREEN_SLOTS))
++	map_root.set_meta(&"camera_layout_group", "camera")
++	for nm: String in ["Geometry", "Props", "Lighting"]:
++		add(map_root, node3d(nm))
++	var nav: NavigationRegion3D = NavigationRegion3D.new()
++	nav.name = "Navigation"
++	nav.navigation_layers = 1
++	add(map_root, nav)
++	for nm2: String in ["Zones", "Rooms", "Spawns", "Patrols", "Tactical", "Gameplay", "Variants"]:
++		add(map_root, node3d(nm2))
++	var mission: Node = Node.new()
++	mission.name = "Mission"   # gallery_night_mission.gd (ENV A, GN-A1) is attached once it exists
++	add(map_root, mission)
++	add(map_root, node3d("Preplan"))
++	add(map_root, node3d("ReviewCameras"))
++
++	_build_shell(n("Geometry"))
++	_build_site(n("Geometry"))
++	_build_rooms(n("Rooms"))
++	_build_zones(n("Zones"))
++	_build_spawns(n("Spawns"))
++	_build_preplan(n("Preplan"))
++	_build_review_cameras(n("ReviewCameras"))
++	build_gameplay(n("Gameplay"))
++	build_variants(n("Variants"))
++	_build_nav_links(nav)
++	var polys: int = await _bake(nav)
++	if polys <= 0:
++		_fail("navmesh bake produced no polygons")
++		return
++	for untagged: String in SurfaceTags.tag_tree(map_root):  # PO-8 / D-105: refuse untagged bodies
++		errors.append("no surface id for %s" % untagged)
++	if not errors.is_empty():
++		_fail("\n".join(errors))
++		return
++	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out).get_base_dir())
++	var ps: PackedScene = PackedScene.new()
++	var err: int = ps.pack(map_root)
++	if err == OK:
++		err = ResourceSaver.save(ps, out)
++	map_root.free()
++	if err != OK:
++		_fail("cannot save %s (%d)" % [out, err])
++		return
++	normalize_scene(out, old_scene_uid)
++	print("gallery_night: saved %s (navmesh polygons: %d)" % [out, polys])
++	quit(0)
++
++
++func _fail(msg: String) -> void:
++	push_error("gallery_night: " + msg)
++	if map_root != null and is_instance_valid(map_root):
++		map_root.free()
++	quit(1)
++
++
++# --- Plan helpers -----------------------------------------------------------------------------
++
++## Rectangle [x0, z0, x1, z1] minus holes -> merged rectangles (deterministic; as the SL generator).
++static func rects_minus(outer: Array, holes: Array) -> Array:
++	var xs: Array[float] = [float(outer[0]), float(outer[2])]
++	var zs: Array[float] = [float(outer[1]), float(outer[3])]
++	for h: Array in holes:
++		for v: float in [float(h[0]), float(h[2])]:
++			if v > xs[0] and v < xs[1] and not xs.has(v):
++				xs.append(v)
++		for w: float in [float(h[1]), float(h[3])]:
++			if w > zs[0] and w < zs[1] and not zs.has(w):
++				zs.append(w)
++	xs.sort()
++	zs.sort()
++	var out: Array = []
++	var open: Dictionary = {}
++	for j: int in range(zs.size() - 1):
++		var runs: Array = []
++		var start: float = NAN
++		for i: int in range(xs.size() - 1):
++			var cx: float = (xs[i] + xs[i + 1]) * 0.5
++			var cz: float = (zs[j] + zs[j + 1]) * 0.5
++			var inside: bool = false
++			for h2: Array in holes:
++				if cx > float(h2[0]) and cx < float(h2[2]) and cz > float(h2[1]) and cz < float(h2[3]):
++					inside = true
++					break
++			if not inside and is_nan(start):
++				start = xs[i]
++			if inside and not is_nan(start):
++				runs.append([start, xs[i]])
++				start = NAN
++		if not is_nan(start):
++			runs.append([start, xs[xs.size() - 1]])
++		var nxt: Dictionary = {}
++		for run: Array in runs:
++			var key: String = "%.4f|%.4f" % [float(run[0]), float(run[1])]
++			nxt[key] = [float(run[0]), open[key][1] if open.has(key) else zs[j], float(run[1]), zs[j + 1]]
++		for k: String in open:
++			if not nxt.has(k):
++				out.append(open[k])
++		open = nxt
++	for k2: String in open:
++		out.append(open[k2])
++	out.sort_custom(func(a: Array, b: Array) -> bool: return a[1] < b[1] or (a[1] == b[1] and a[0] < b[0]))
++	return out
++
++
++func _slab(parent: Node3D, nm: String, outer: Array, holes: Array, y0: float, y1: float, mat: String) -> void:
++	var rects: Array = rects_minus(outer, holes)
++	for i: int in range(rects.size()):
++		var r: Array = rects[i]
++		box(parent, "%s_%02d" % [nm, i], Vector3(float(r[0]), y0, float(r[1])), Vector3(float(r[2]), y1, float(r[3])), mat)
++
++
++static func _inset(r: Array, d: float) -> Array:
++	return [float(r[0]) + d, float(r[1]) + d, float(r[2]) - d, float(r[3]) - d]
++
++
++# --- Building shell ---------------------------------------------------------------------------
++
++func _build_shell(geo: Node3D) -> void:
++	var bld: Node3D = add(geo, node3d("Building")) as Node3D
++	_build_walls(add(bld, node3d("Walls")) as Node3D)
++	_build_slabs(add(bld, node3d("Slabs")) as Node3D)
++	_build_ceilings(add(bld, node3d("Ceilings")) as Node3D)
++	var stairs: Node3D = add(bld, node3d("Stairs")) as Node3D
++	_build_stair_ss(stairs)
++	_build_grand_stair(stairs)
++	_build_rails(add(bld, node3d("Balustrades")) as Node3D)
++	_build_copings(add(bld, node3d("Coping")) as Node3D)
++	_build_areaway(add(bld, node3d("Areaway")) as Node3D)
++
++
++## Walls from the emitted runs; every plan opening on the run's line is a hole (doors and arches full height,
++## windows sill..head with a glass pane).
++func _build_walls(parent: Node3D) -> void:
++	var lv: Dictionary = {}
++	for f: String in L.FLOORS:
++		lv[f] = add(parent, node3d("Floor" + f))
++	var counts: Dictionary = {}
++	for w: Array in L.WALLS:
++		var f2: String = String(w[0])
++		var axis: String = String(w[1])
++		var fixed: float = float(w[2])
++		var holes: Array = []
++		for o: Array in L.OPENINGS:
++			if String(o[0]) == f2 and String(o[2]) == axis and absf(float(o[3]) - fixed) < 0.001 \
++					and float(o[5]) > float(w[3]) and float(o[4]) < float(w[4]):
++				holes.append([float(o[4]), float(o[5]), float(o[6]), float(o[7])])
++		var thick: float = float(w[5])
++		var mat: String = "wall_ext" if thick >= L.EXT_T - 0.001 and _on_foot(f2, axis, fixed) else "wall"
++		var key: String = "%s%s%04d" % [f2, axis.to_upper(), int(round(fixed * 10.0))]
++		counts[key] = int(counts.get(key, -1)) + 1
++		wall(lv[f2], "%s_%d" % [key, counts[key]], axis, fixed, float(w[3]), float(w[4]), thick, Vector2(float(w[6]),
++			float(w[7])), holes, mat)
++	var glass: Node3D = add(parent, node3d("Glass")) as Node3D
++	for i: int in range(L.OPENINGS.size()):
++		var o2: Array = L.OPENINGS[i]
++		if String(o2[1]) != "W":
++			continue
++		var fx: float = float(o2[3])
++		var mn: Vector3 = Vector3(float(o2[4]), float(o2[6]), fx - 0.02) if String(o2[2]) == "x" \
++			else Vector3(fx - 0.02, float(o2[6]), float(o2[4]))
++		var mx: Vector3 = Vector3(float(o2[5]), float(o2[7]), fx + 0.02) if String(o2[2]) == "x" \
++			else Vector3(fx + 0.02, float(o2[7]), float(o2[5]))
++		box(glass, "Pane%02d_%s" % [i, String(o2[8]).get_slice(" ", 0)], mn, mx, "glass")
++
++
++func _on_foot(f: String, axis: String, fixed: float) -> bool:
++	var ft: Array = L.FOOT[f]
++	if axis == "x":
++		return absf(fixed - float(ft[1])) < 0.001 or absf(fixed - float(ft[3])) < 0.001
++	return absf(fixed - float(ft[0])) < 0.001 or absf(fixed - float(ft[2])) < 0.001
++
++
++## Floor slabs (top at FFL; inside the facade's inner face), the Stair SS flight hole on every floor above the
++## basement, the Great Hall void on the upper floor; the roof deck; the roofs over the upper rooms and the head
++## house / lift motor room. The Great Hall roof has the glazed oculus (P5's rappel, QC-41). TODO(G1): the art-lift
++## landings are solid floor (the bag_lift prefab's car serves each landing; markers in Gameplay/Lifts).
++func _build_slabs(parent: Node3D) -> void:
++	var half: float = L.EXT_T * 0.5
++	var ss_hole: Array = [half, half, float(L.SS_CLEAR[2]), SS_HOLE_Z]
++	for f: String in ["B", "G", "U", "R"]:
++		var y: float = float(L.FFL[f])
++		var holes: Array = [] if f == "B" else [ss_hole]
++		for v: Array in L.VOIDS:
++			if String(v[0]) == f:
++				holes.append(v[2])
++		_slab(parent, "Slab" + f, _inset(L.FOOT[f], half), holes, y - L.SLAB_T, y, "roof" if f == "R" else "floor")
++	for r: Array in L.ROOMS:
++		if String(r[0]) != "U" or L.ROOF_DECK_ROOMS.has(String(r[1])):
++			continue
++		var top: float = float(L.U_TOP[String(r[1])])
++		var rr: Array = _clip_foot("U", [r[3], r[4], r[5], r[6]])
++		box(parent, "Roof" + String(r[1]), Vector3(rr[0], top - L.SLAB_T, rr[1]), Vector3(rr[2], top, rr[3]), "roof")
++	for v2: Array in L.VOIDS:
++		var top2: float = float(L.U_TOP[String(v2[1])])
++		_slab(parent, "Roof" + String(v2[1]), v2[2], [L.OCULUS] if String(v2[1]) == "GH_VOID" else [], top2 - L.SLAB_T, top2,
++			"roof")
++	_build_oculus(parent)
++	for r2: Array in L.ROOMS:
++		if String(r2[0]) == "R" and float(r2[7]) > 0.0:
++			var yt: float = float(L.FFL["R"]) + float(r2[7]) + L.SLAB_T
++			var c: Array = _clip_foot("R", [r2[3], r2[4], r2[5], r2[6]])
++			box(parent, "Roof" + String(r2[1]), Vector3(c[0], yt - L.SLAB_T, c[1]), Vector3(c[2], yt, c[3]), "roof")
++
++
++func _clip_foot(f: String, r: Array) -> Array:
++	var half: float = L.EXT_T * 0.5
++	var ft: Array = L.FOOT[f]
++	return [maxf(float(r[0]), float(ft[0]) + half), maxf(float(r[1]), float(ft[1]) + half),
++		minf(float(r[2]), float(ft[2]) - half), minf(float(r[3]), float(ft[3]) - half)]
++
++
++## Ceiling planes (0.05 m) where a room's ceiling is below the slab / roof above it. The Great Hall's covers the
++## balconies and the loggia (same plane, 9.8); the galleries, CS and TR reach their roof (no plane).
++func _build_ceilings(parent: Node3D) -> void:
++	for r: Array in L.ROOMS:
++		var f: String = String(r[0])
++		var rid: String = String(r[1])
++		var ceil: float = float(r[7])
++		if ceil <= 0.0 or rid in ["BW", "BE", "SL"]:
++			continue
++		var cy: float = float(L.FFL[f]) + ceil
++		var above: float = float(SLAB_ABOVE.get(f, 0.0))
++		if f == "U":
++			above = float(L.U_TOP[rid]) - L.SLAB_T
++		if rid == "GH":
++			above = float(L.U_TOP["GH_VOID"]) - L.SLAB_T
++		if cy >= above - 0.01:
++			continue
++		if rid == "GH":   # the coffered laylight, open at the oculus
++			_slab(parent, "Ceil%s%s" % [f, rid], [r[3], r[4], r[5], r[6]], [L.OCULUS], cy, cy + 0.05, "ceiling")
++			continue
++		box(parent, "Ceil%s%s" % [f, rid], Vector3(float(r[3]), cy, float(r[4])), Vector3(float(r[5]), cy + 0.05, float(r[6])),
++			"ceiling")
++
++
++## The oculus (22, 17): a lined shaft from the laylight (+9.8) to the roof (+11.0) and a flush glass pane in the roof
++## (breakable at G1 via the window prefab; the rappel link starts on it, QC-41).
++func _build_oculus(parent: Node3D) -> void:
++	var oc: Node3D = add(parent, node3d("Oculus")) as Node3D
++	var o: Array = L.OCULUS
++	var x0: float = float(o[0])
++	var z0: float = float(o[1])
++	var x1: float = float(o[2])
++	var z1: float = float(o[3])
++	var gh: Array = L.ROOMS.filter(func(r: Array) -> bool: return String(r[1]) == "GH")[0]
++	var y0: float = float(gh[7]) + 0.05
++	var y2: float = float(L.U_TOP["GH_VOID"])
++	var y1: float = y2 - L.SLAB_T
++	var t: float = 0.1
++	box(oc, "LiningN", Vector3(x0 - t, y0, z0 - t), Vector3(x1 + t, y1, z0), "wall")
++	box(oc, "LiningS", Vector3(x0 - t, y0, z1), Vector3(x1 + t, y1, z1 + t), "wall")
++	box(oc, "LiningW", Vector3(x0 - t, y0, z0), Vector3(x0, y1, z1), "wall")
++	box(oc, "LiningE", Vector3(x1, y0, z0), Vector3(x1 + t, y1, z1), "wall")
++	box(oc, "Glass", Vector3(x0, y2 - 0.04, z0), Vector3(x1, y2, z1), "glass")
++
++
++## Stair SS: per storey a west up-flight (north from z 6.35), the half landing, an east return flight (south to
++## the next floor landing) and the well divider; a guard rail over the last flight at the roof landing.
++func _build_stair_ss(parent: Node3D) -> void:
++	var c: Node3D = add(parent, node3d("StairSS")) as Node3D
++	var xw: float = (float(L.SS_WEST[0]) + float(L.SS_WEST[1])) * 0.5
++	var xe: float = (float(L.SS_EAST[0]) + float(L.SS_EAST[1])) * 0.5
++	var w: float = float(L.SS_WEST[1]) - float(L.SS_WEST[0])
++	var t: float = L.SS_TREAD
++	var cl: Array = L.SS_CLEAR
++	for i: int in range(L.SS_STOREYS.size()):
++		var st: Array = L.SS_STOREYS[i]
++		var y0: float = float(st[0])
++		var y1: float = float(st[1])
++		var m: int = int(st[2])
++		var r: float = float(st[3])
++		var zh: float = L.SS_Z_START - float(m - 1) * t
++		var yh: float = y0 + float(m) * r
++		flight(c, "Flight%dW" % i, Vector3(xw, y0, L.SS_Z_START), 180.0, w, m, r, t, null)
++		flight(c, "Flight%dE" % i, Vector3(xe, yh, zh), 0.0, w, m, r, t, null)
++		box(c, "HalfLanding%d" % i, Vector3(float(cl[0]), yh - 0.3, float(cl[1])), Vector3(float(cl[2]), yh, zh), "stair")
++		# The top storey's divider rises a guard height above the roof landing (the flight below is open there).
++		var dtop: float = y1 + (RAIL_H if i == L.SS_STOREYS.size() - 1 else 0.0)
++		box(c, "Divider%d" % i, Vector3(float(L.SS_WELL[0]), y0, zh), Vector3(float(L.SS_WELL[1]), dtop, L.SS_Z_START), "wall")
++		# Wall handrails both sides of both flights, HANDRAIL_H above the nosing line (lc_stair_rails: wall side
++		# 0.85-1.1 m, >= 0.03 m proud of the wall). Nosing line: riser k top (k r) at k-1 treads from the first riser.
++		var sides_w: Array = [CORE_FACE_W + HANDRAIL_OFF, float(L.SS_WELL[0]) - HANDRAIL_OFF]
++		var sides_e: Array = [float(L.SS_WELL[1]) + HANDRAIL_OFF, float(cl[2]) - HANDRAIL_OFF]
++		var run: float = float(m - 1) * t
++		for k: int in range(2):
++			_handrail(c, "Flight%dWRail%d" % [i, k], Vector3(float(sides_w[k]), y0 + r + HANDRAIL_H, L.SS_Z_START),
++				Vector3(float(sides_w[k]), yh + HANDRAIL_H, L.SS_Z_START - run))
++			_handrail(c, "Flight%dERail%d" % [i, k], Vector3(float(sides_e[k]), yh + r + HANDRAIL_H, zh),
++				Vector3(float(sides_e[k]), y1 + HANDRAIL_H, zh + run))
++	var ytop: float = float(L.FFL["R"])
++	railing(c, "TopRail", Vector3(float(cl[0]), ytop, L.SS_Z_START - 0.06), Vector3(float(L.SS_WELL[0]), ytop + 1.1, L.SS_Z_START))
++
++
++## Imperial stair (Great Hall, landmark 3): the central flight (solid base) to the half landing, the two return
++## flights to the balcony landings, guard rails on the landings' open edges, stone balustrades on every flight.
++## Chain note: the returns' first risers sit 6.2 m (x) from the central flight's last riser across the 14 m half
++## landing, past `scale`'s 4 m shared-landing reach; see the GN-C1 report (lead / validator question).
++func _build_grand_stair(parent: Node3D) -> void:
++	var g: Dictionary = L.GRAND
++	var gs: Node3D = add(parent, node3d("GrandStair")) as Node3D
++	var nr: int = int(g["risers"])
++	var r: float = float(g["riser"])
++	var t: float = float(g["tread"])
++	var cx: Array = g["central"]
++	var hl: Array = g["half_landing"]
++	var y_half: float = float(nr) * r
++	var y_top: float = 2.0 * y_half
++	flight(gs, "Central", Vector3((float(cx[0]) + float(cx[1])) * 0.5, 0.0, float(g["z_foot"])), 180.0,
++		float(cx[1]) - float(cx[0]), nr, r, t, 0.0)
++	box(gs, "HalfLanding", Vector3(float(hl[0]), y_half - 0.3, float(hl[1]) - 0.1), Vector3(float(hl[2]), y_half, float(hl[3])),
++		"stair")
++	var lz: Array = g["upper_landing_z"]
++	var sides: Array = ["W", "E"]
++	for k: int in range(2):
++		var xs: Array = (g["returns"] as Array)[k]
++		var x0: float = float(xs[0])
++		var x1: float = float(xs[1])
++		flight(gs, "Return" + String(sides[k]), Vector3((x0 + x1) * 0.5, y_half, float(g["z_land"])), 0.0, x1 - x0, nr, r, t,
++			null)
++		box(gs, "UpperLanding" + String(sides[k]), Vector3(x0, y_top - 0.3, float(lz[0])), Vector3(x1, y_top, float(lz[1])), "stair")
++		railing(gs, "UpperLandingRailS" + String(sides[k]), Vector3(x0, y_top, float(lz[1]) - 0.05),
++			Vector3(x1, y_top + 1.1, float(lz[1]) + 0.05))
++		var xo: float = x1 if k == 0 else x0
++		railing(gs, "UpperLandingRailIn" + String(sides[k]), Vector3(xo - 0.05, y_top, float(lz[0])),
++			Vector3(xo + 0.05, y_top + 1.1, float(lz[1]) - 0.05))
++	# The half landing's open south edge between the flights.
++	var r0: Array = (g["returns"] as Array)[0]
++	var r1: Array = (g["returns"] as Array)[1]
++	for seg: Array in [[float(r0[1]), float(cx[0])], [float(cx[1]), float(r1[0])]]:
++		railing(gs, "HalfLandingRail%d" % int(seg[0]), Vector3(float(seg[0]), y_half, float(hl[3]) - 0.1),
++			Vector3(float(seg[1]), y_half + 1.1, float(hl[3])))
++	# Stone balustrades, 1.1 m (vertical data), on both sides of every flight: sloped panels inside the flight width,
++	# their top BAL_TOP above the nosing line (open side 1.0-1.1, lc_stair_rails), from one tread before the first
++	# riser to the last riser. The return flights' outer panels clear the balcony balustrade (x 15 / 29 +- 0.05).
++	var run: float = float(nr - 1) * t
++	var zf: float = float(g["z_foot"])
++	var zl: float = float(g["z_land"])
++	for xs2: Array in [[float(cx[0]), float(cx[0]) + BAL_T], [float(cx[1]) - BAL_T, float(cx[1])]]:
++		_balustrade(gs, "CentralBalustrade%d" % int(round(xs2[0] * 10.0)), xs2[0], xs2[1], Vector2(zf + t, BAL_TOP),
++			Vector2(zf - run, y_half + BAL_TOP))
++	var ret_x: Array = [
++		[float(r0[0]) + 0.05, float(r0[0]) + 0.05 + BAL_T], [float(r0[1]) - BAL_T, float(r0[1])],
++		[float(r1[0]), float(r1[0]) + BAL_T], [float(r1[1]) - 0.05 - BAL_T, float(r1[1]) - 0.05],
++	]
++	for xs3: Array in ret_x:
++		_balustrade(gs, "ReturnBalustrade%d" % int(round(xs3[0] * 10.0)), xs3[0], xs3[1], Vector2(zl - t, y_half + BAL_TOP),
++			Vector2(zl + run, y_top + BAL_TOP))
++	# The half landing's open west / east ends (over the colonnade under the balconies), up to the return flights.
++	railing(gs, "HalfLandingRailW", Vector3(float(r0[0]) + 0.05, y_half, float(hl[1])),
++		Vector3(float(r0[0]) + 0.05 + 0.1, y_half + RAIL_H, zl - t))
++	railing(gs, "HalfLandingRailE", Vector3(float(r1[1]) - 0.15, y_half, float(hl[1])),
++		Vector3(float(r1[1]) - 0.05, y_half + RAIL_H, zl - t))
++
++
++func _build_rails(parent: Node3D) -> void:
++	for i: int in range(L.RAILS.size()):
++		var rl: Array = L.RAILS[i]
++		var fx: float = float(rl[2])
++		var mn: Vector3 = Vector3(float(rl[3]), float(rl[5]), fx - 0.05) if String(rl[1]) == "x" \
++			else Vector3(fx - 0.05, float(rl[5]), float(rl[3]))
++		var mx: Vector3 = Vector3(float(rl[4]), float(rl[6]), fx + 0.05) if String(rl[1]) == "x" \
++			else Vector3(fx + 0.05, float(rl[6]), float(rl[4]))
++		railing(parent, "Balustrade%02d" % i, mn, mx)
++
++
++## Handrail (5 cm bar, world a -> b) with collision and meta kind handrail (lc_stair_rails reads its box).
++func _handrail(parent: Node3D, nm: String, a: Vector3, b: Vector3) -> void:
++	var body: StaticBody3D = StaticBody3D.new()
++	body.name = nm
++	body.collision_layer = 1
++	body.collision_mask = 0
++	body.position = (a + b) * 0.5
++	body.basis = Basis.looking_at(b - a, Vector3.UP)
++	body.set_meta(&"kind", "handrail")
++	add(parent, body)
++	var size: Vector3 = Vector3(0.05, 0.05, a.distance_to(b))
++	var col: CollisionShape3D = CollisionShape3D.new()
++	col.name = "Collision"
++	col.shape = box_shape(size)
++	add(body, col)
++	var mi: MeshInstance3D = MeshInstance3D.new()
++	mi.name = "Mesh"
++	mi.mesh = box_mesh(size, "trim")
++	add(body, mi)
++
++
++## Sloped stone balustrade over a flight: x0..x1 wide, its top edge from a to b ((z, y) pairs), its bottom edge
++## BAL_TOP + BAL_BELOW below (vertical ends). Convex collision (true to the visual, next_heist §7.2) and a mesh.
++func _balustrade(parent: Node3D, nm: String, x0: float, x1: float, a: Vector2, b: Vector2) -> void:
++	var d: float = BAL_TOP + BAL_BELOW
++	var c: Array[Vector3] = []
++	for x: float in [x0, x1]:
++		c.append_array([Vector3(x, a.y - d, a.x), Vector3(x, a.y, a.x), Vector3(x, b.y, b.x), Vector3(x, b.y - d, b.x)])
++	_hexahedron(parent, nm, c, "trim")
++
++
++## Static convex hexahedron from 8 corners (0-3 one face, 4-7 the opposite face, same order): collision + mesh.
++func _hexahedron(parent: Node3D, nm: String, c: Array[Vector3], mat_id: String) -> StaticBody3D:
++	var body: StaticBody3D = StaticBody3D.new()
++	body.name = nm
++	body.collision_layer = 1
++	body.collision_mask = 0
++	add(parent, body)
++	var shp: ConvexPolygonShape3D = ConvexPolygonShape3D.new()
++	shp.points = PackedVector3Array(c)
++	var col: CollisionShape3D = CollisionShape3D.new()
++	col.name = "Collision"
++	col.shape = shp
++	add(body, col)
++	var centre: Vector3 = Vector3.ZERO
++	for p: Vector3 in c:
++		centre += p / 8.0
++	var st: SurfaceTool = SurfaceTool.new()
++	st.begin(Mesh.PRIMITIVE_TRIANGLES)
++	for q: Array in [[0, 1, 2, 3], [4, 5, 6, 7], [0, 1, 5, 4], [3, 2, 6, 7], [1, 2, 6, 5], [0, 3, 7, 4]]:
++		var p0: Vector3 = c[int(q[0])]
++		var p1: Vector3 = c[int(q[1])]
++		var p2: Vector3 = c[int(q[2])]
++		var p3: Vector3 = c[int(q[3])]
++		var nrm: Vector3 = (p1 - p0).cross(p2 - p0).normalized()
++		var fc: Vector3 = (p0 + p1 + p2 + p3) * 0.25
++		if nrm.dot(fc - centre) > 0.0:   # Godot front faces wind clockwise seen from outside
++			var tmp: Vector3 = p1
++			p1 = p3
++			p3 = tmp
++			nrm = -nrm
++		st.set_normal(-nrm)
++		for v: Vector3 in [p0, p1, p2, p0, p2, p3]:
++			st.add_vertex(v)
++	st.set_material(lib_mat(mat_id))
++	var mi: MeshInstance3D = MeshInstance3D.new()
++	mi.name = "Mesh"
++	mi.mesh = st.commit()
++	add(body, mi)
++	return body
++
++
++## Roof-deck parapet copings (B4.5 / next_heist §7.5: >= 50 deg, `slopes`): a 56 deg ridge on every deck parapet a
++## player can reach (the north parapet either side of the fire-escape ladder opening, the 1.2 m wall by the
++## sawtooth). The Great Hall roof parapets are police-only (P5) and keep their flat tops for G2.
++func _build_copings(parent: Node3D) -> void:
++	for w: Array in L.WALLS:
++		if String(w[0]) != "R" or float(w[7]) > float(L.FFL["R"]) + 1.3:
++			continue
++		var axis: String = String(w[1])
++		var fixed: float = float(w[2])
++		var cuts: Array = [[float(w[3]), float(w[4])]]
++		for u: Array in L.WALLS:   # under a taller upper-floor wall on the same line (the deck's south edge): no top
++			if String(u[0]) == "U" and String(u[1]) == axis and absf(float(u[2]) - fixed) < 0.001 and float(u[7]) > float(w[7]):
++				var rest: Array = []
++				for sp0: Array in cuts:
++					if float(u[3]) > float(sp0[0]):
++						rest.append([float(sp0[0]), minf(float(sp0[1]), float(u[3]))])
++					if float(u[4]) < float(sp0[1]):
++						rest.append([maxf(float(sp0[0]), float(u[4])), float(sp0[1])])
++				cuts = rest
++		for o: Array in L.OPENINGS:
++			if String(o[0]) == "R" and String(o[2]) == axis and absf(float(o[3]) - fixed) < 0.001:
++				var nxt: Array = []
++				for sp: Array in cuts:
++					if float(o[4]) > float(sp[0]) and float(o[5]) < float(sp[1]):
++						nxt.append([float(sp[0]), float(o[4])])
++						nxt.append([float(o[5]), float(sp[1])])
++					else:
++						nxt.append(sp)
++				cuts = nxt
++		for sp2: Array in cuts:
++			if float(sp2[1]) - float(sp2[0]) < 0.01:
++				continue
++			_coping(parent, "Coping%s%04d_%04d" % [axis.to_upper(), int(round(fixed * 10.0)), int(round(float(sp2[0]) * 10.0))],
++				axis, fixed, float(sp2[0]), float(sp2[1]), float(w[7]), float(w[5]))
++
++
++func _coping(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a1: float, y: float, thick: float) -> void:
++	var h: float = thick * 0.5
++	var c: Array[Vector3] = []
++	for a: float in [a0, a1]:
++		for q: Vector2 in [Vector2(-h, 0.0), Vector2(-0.001, COPING_RISE), Vector2(0.001, COPING_RISE), Vector2(h, 0.0)]:
++			c.append(Vector3(a, y + q.y, fixed + q.x) if axis == "x" else Vector3(fixed + q.x, y + q.y, a))
++	_hexahedron(parent, nm, c, "trim")
++
++
++## Grade around the building: the Parade (+ portico, + its east end to the barriers), the Mews and Wexley St, the
++## Sculpture Court (open over the areaway light well); the police street islands behind the closures; the play-space
++## closures and neighbour massing (Site table: barriers + the gala coach, the press van, the catering truck, the Mews
++## gate, the Mews houses, the hotel, the Ostrander, the court walls and gate gap, the park railings). TODO(G1): kerbs,
++## the portico ramp, the pool, the court gate leaf (padlock prefab), facades / vistas (G2).
++func _build_site(geo: Node3D) -> void:
++	var site: Node3D = add(geo, node3d("Site")) as Node3D
++	var mats: Dictionary = {"X1": "asphalt", "X2": "paving", "X3": "court_stone"}
++	var k: int = 0
++	for e: Array in L.EXTERIOR:
++		_slab(site, "Grade%s_%d" % [e[0], k], e[2], L.SITE_HOLES.get(String(e[0]), []), -0.3, 0.0, String(mats[String(e[0])]))
++		k += 1
++	for g: Array in L.GRADE_EXTRA:
++		var q: Array = g[2]
++		box(site, "Grade" + String(g[0]), Vector3(float(q[0]), -0.3, float(q[1])), Vector3(float(q[2]), 0.0, float(q[3])),
++			String(g[1]))
++	for p: Array in L.POLICE_ISLANDS:
++		var r: Array = p[1]
++		box(site, "PoliceIsland" + String(p[0]), Vector3(float(r[0]), -0.3, float(r[1])), Vector3(float(r[2]), 0.0, float(r[3])),
++			"asphalt")
++	var cl: Node3D = add(site, node3d("Closures")) as Node3D
++	for c: Array in L.CLOSURES:
++		var b: Array = c[1]
++		box(cl, String(c[0]), Vector3(float(b[0]), float(b[1]), float(b[2])), Vector3(float(b[3]), float(b[4]), float(b[5])),
++			String(c[2]))
++
++
++## Areaway (QC-64, B2 / B4.6): the 2 x 2 m light well under the court grate and the passage to the 1.0 m opening in
++## the basement wall into PL: floor at the PL FFL, retaining walls up to grade, the court grade roofs the passage.
++## The fixed ladder (ENV A `ladder` prefab, 4.2 m, masked only, no bags) stands against the well's west wall:
++## Gameplay/Ladders/AreawayLadder. The grate is the `areaway` slot's content (lift 3 s / padlock).
++func _build_areaway(parent: Node3D) -> void:
++	var a: Dictionary = L.AREAWAY
++	var p: Array = a["pit"]
++	var t: float = float(a["wall_t"])
++	var y0: float = float(a["floor_y"])
++	var x0: float = float(p[0])
++	var z0: float = float(p[1])
++	var x1: float = float(p[2])
++	var z1: float = float(p[3])
++	box(parent, "Floor", Vector3(x0 - t, y0 - L.SLAB_T, z0 - t), Vector3(x1, y0, z1 + t), "floor")
++	box(parent, "WallN", Vector3(x0 - t, y0, z0 - t), Vector3(x1, -0.3, z0), "wall")
++	box(parent, "WallS", Vector3(x0 - t, y0, z1), Vector3(x1, -0.3, z1 + t), "wall")
++	box(parent, "WallW", Vector3(x0 - t, y0, z0), Vector3(x0, -0.3, z1), "wall")
++
++
++# --- Rooms, zones, spawns, preplan, review cameras --------------------------------------------
++
++func _build_rooms(rooms: Node3D) -> void:
++	var done: Dictionary = {}
++	for r: Array in L.ROOMS:
++		var f: String = String(r[0])
++		var rid: String = String(r[1])
++		if done.has(rid):
++			continue
++		done[rid] = true
++		var boxes: Array = []
++		var ffl: float = float(L.FFL[f])
++		for r2: Array in L.ROOMS:   # every rect of this id on this floor (X4 is two)
++			if String(r2[1]) == rid and String(r2[0]) == f:
++				var y1: float = ffl + float(r2[7]) if float(r2[7]) > 0.0 else ffl + 3.0
++				if rid in ["SS", "LF"]:
++					y1 = float(L.FFL["R"])   # the shafts are one room from the basement to the roof deck
++				boxes.append([r2[3], ffl, r2[4], r2[5], y1, r2[6]])
++		if rid == "GH":
++			var v: Array = (L.VOIDS[0] as Array)[2]
++			boxes.append([v[0], float(L.FFL["U"]), v[1], v[2], ffl + float(r[7]), v[3]])
++		_room(rooms, rid, String(r[2]), String(r[8]), int(FLOOR_INDEX[f]), boxes)
++	for e: Array in L.EXTERIOR:
++		if done.has(String(e[0])):
++			continue
++		done[String(e[0])] = true
++		var xb: Array = []
++		for e2: Array in L.EXTERIOR:
++			if String(e2[0]) == String(e[0]):
++				var q: Array = e2[2]
++				xb.append([q[0], 0.0, q[1], q[2], 6.0, q[3]])
++		_room(rooms, String(e[0]), String(e[1]), String(e[3]), 1, xb)
++
++
++func _room(rooms: Node3D, uid: String, purpose: String, kit: String, fidx: int, boxes: Array) -> void:
++	var rv: RoomVolume = RoomVolume.new()
++	rv.name = "Room" + uid
++	rv.room_id = StringName(uid)
++	rv.purpose = StringName(purpose)
++	rv.dressing_kit = StringName(kit)
++	rv.floor_index = fidx
++	rv.collision_layer = 1 << 9
++	rv.collision_mask = 0
++	rv.monitoring = false
++	add(rooms, rv)
++	area_boxes(rv, boxes)
++
++
++## PUBLIC: the gala rooms, the Parade and the court (until last call; the mission flips them, QC-51) and the
++## Mews; RESTRICTED: every other building room and the roof deck.
++func _build_zones(zones: Node3D) -> void:
++	var pub: Array = []
++	var res: Array = []
++	for r: Array in L.ROOMS:
++		var f: String = String(r[0])
++		var y0: float = float(L.FFL[f])
++		var y1: float = y0 + (float(r[7]) if float(r[7]) > 0.0 else 3.0)
++		var b: Array = [r[3], y0, r[4], r[5], y1, r[6]]
++		if L.PUBLIC_ROOMS.has(String(r[1])):
++			pub.append(b)
++		else:
++			res.append(b)
++	for e: Array in L.EXTERIOR:
++		var q: Array = e[2]
++		pub.append([q[0], -0.3, q[1], q[2], 4.0, q[3]])
++	zone(zones, "Public", "PUBLIC", "gala_public", pub)
++	zone(zones, "Restricted", "RESTRICTED", "halberd_restricted", res)
++
++
++func _build_spawns(spawns: Node3D) -> void:
++	for p: Array in L.PLAYER_SPAWNS:
++		var tags: Array = [] if String(p[1]) == "" else [String(p[1])]
++		spawn(spawns, String(p[0]), "PLAYER", Vector3(float(p[4]), float(p[5]), float(p[6])), float(p[7]), tags, "")
++	for c: Array in L.POLICE_SPAWNS:
++		var pos: Vector3 = Vector3(float(c[2]), float(c[3]), float(c[4]))
++		var yaw: float = rad_to_deg(atan2(pos.x - 22.0, pos.z - 15.0))   # -Z faces the building centre
++		var sp: SpawnPoint = spawn(spawns, String(c[0]), "POLICE", pos, yaw, [String(c[1])], "")
++		# Every police spawn sits on a police-only navmesh island (P1-P4 behind the street closures, P5 on the Great
++		# Hall roof) joined to play by one-way links only (D-064 / QC-41): validated spawn -> crew.
++		sp.set_meta(&"police_only", true)
++
++
++## Always-present nav links (D-064 / QC-41): the street islands' one-way links through their closures, P5's rappel
++## through the oculus and the roof drop onto the deck, and the areaway (nav layer `vent`, Phantom only).
++func _build_nav_links(nav: NavigationRegion3D) -> void:
++	var rows: Array = []
++	for p: Array in L.POLICE_ISLANDS:
++		rows.append(["IslandLink" + String(p[0]), p[2], p[3], false, 1])
++	rows.append_array(L.NAV_LINKS)
++	for l: Array in rows:
++		var link: NavigationLink3D = NavigationLink3D.new()
++		link.name = String(l[0])
++		var s: Array = l[1]
++		var e: Array = l[2]
++		link.start_position = Vector3(float(s[0]), float(s[1]), float(s[2]))
++		link.end_position = Vector3(float(e[0]), float(e[1]), float(e[2]))
++		link.bidirectional = bool(l[3])
++		link.navigation_layers = int(l[4])
++		add(nav, link)
++
++
++## PREPLAN_POINT markers (preplanning.md): node name = point id; metas category / label / floor / params.
++func _build_preplan(pre: Node3D) -> void:
++	for p: Array in L.PREPLAN:
++		var m: Marker3D = Marker3D.new()
++		m.name = String(p[0])
++		m.position = Vector3(float(p[5]), float(p[6]), float(p[7]))
++		m.set_meta(&"category", StringName(String(p[1])))
++		m.set_meta(&"label", StringName("ui.preplan.point.gallery_night." + String(p[0])))
++		m.set_meta(&"floor", int(p[2]))
++		var params: Dictionary = {}
++		for k: String in (p[8] as Dictionary):
++			params[k] = StringName(String(p[8][k]))
++		m.set_meta(&"params", params)
++		m.add_to_group(G.PREPLAN_POINT, true)
++		add(pre, m)
++
++
++func _build_review_cameras(cams: Node3D) -> void:
++	var paths: Array[NodePath] = []
++	for c: Array in L.REVIEW_CAMERAS:
++		var m: Marker3D = Marker3D.new()
++		var nm: String = String(c[0])
++		m.name = nm
++		var pos: Vector3 = Vector3(float(c[3]), float(c[4]), float(c[5]))
++		var target: Vector3 = Vector3(float(c[6]), float(c[7]), float(c[8]))
++		m.position = pos
++		var dir: Vector3 = target - pos
++		var up: Vector3 = Vector3.FORWARD if absf(dir.normalized().dot(Vector3.UP)) > 0.99 else Vector3.UP
++		m.basis = Basis.looking_at(dir, up)
++		if nm == "rc_top_down":
++			m.set_meta(&"size", 110.0)
++		else:
++			m.set_meta(&"fov", 70.0)
++		m.set_meta(&"caption", "%s (%s)" % [nm, String(c[2])])
++		add(cams, m)
++		paths.append(NodePath("ReviewCameras/" + nm))
++	map_root.review_cameras = paths
++
++
++# --- Navigation bake --------------------------------------------------------------------------
++
++## Bakes the walkable navmesh (heist_map.md §3: agent radius 0.3, height 1.8, climb 0.3, slope 40, cell 0.1 / 0.1)
++## from the Geometry colliders. TODO(G1): props / prefab obstructions, BARRED / VAULT doorways baked closed (D-073),
++## ladder and rappel links.
++func _bake(nav: NavigationRegion3D) -> int:
++	var nm: NavigationMesh = NavigationMesh.new()
++	nm.agent_radius = 0.3
++	nm.agent_height = 1.8
++	nm.agent_max_climb = 0.3
++	nm.agent_max_slope = 40.0
++	nm.cell_size = 0.1
++	nm.cell_height = 0.1
++	nm.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
++	nm.geometry_collision_mask = 1
++	nm.geometry_source_geometry_mode = NavigationMesh.SOURCE_GEOMETRY_ROOT_NODE_CHILDREN
++	var holder: Node3D = Node3D.new()
++	holder.name = "BakeSource"
++	holder.add_child(map_root.get_node("Geometry").duplicate())
++	get_root().add_child(holder)
++	await physics_frame
++	var src: NavigationMeshSourceGeometryData3D = NavigationMeshSourceGeometryData3D.new()
++	NavigationServer3D.parse_source_geometry_data(nm, src, holder)
++	for o: Array in obstructions:
++		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), false)
++	NavigationServer3D.bake_from_source_geometry_data(nm, src)
++	holder.queue_free()
++	await process_frame
++	nav.navigation_mesh = nm
++	return nm.get_polygon_count()
+diff --git a/game/world/heists/gallery_night/greybox/build_greybox.gd.uid b/game/world/heists/gallery_night/greybox/build_greybox.gd.uid
+new file mode 100644
+index 00000000..c4e86a33
+--- /dev/null
++++ b/game/world/heists/gallery_night/greybox/build_greybox.gd.uid
+@@ -0,0 +1 @@
++uid://dxe8660w5armd
+diff --git a/game/world/heists/gallery_night/greybox/gallery_night_layout.gd b/game/world/heists/gallery_night/greybox/gallery_night_layout.gd
+new file mode 100644
+index 00000000..c0c46d84
+--- /dev/null
++++ b/game/world/heists/gallery_night/greybox/gallery_night_layout.gd
+@@ -0,0 +1,575 @@
++## Gallery Night greybox layout data. GENERATED by tools/levelcheck/plans/gallery_night_emit_layout.py from
++## gallery_night_floors_ascii.py (rooms, openings) and gallery_night_slots.py (slots, cameras, spawns, zones,
++## preplan points, review cameras). Do not edit: change the plan data and re-emit. Owner: ENV C (GN-C1).
++## Coordinates: metres, world x = plan x (east), world z = plan z (south), +y up; origin = the gallery's NW
++## corner on the wall centre lines. Heights are absolute (FFL B -4.2, G 0.0, U 5.4, R 9.0).
++extends RefCounted
++
++const FLOORS: Array[String] = ["B", "G", "U", "R"]
++const FLOOR_HEIGHTS: Array[float] = [-4.2, 0.0, 5.4, 9.0]
++## HeistMap.floor_names (D-054), parallel to FLOOR_HEIGHTS.
++const FLOOR_NAMES: Array[String] = ["Basement", "Ground", "Upper", "Roof"]
++const FFL: Dictionary = {"B": -4.2, "G": 0.0, "U": 5.4, "R": 9.0}
++const SLAB_T: float = 0.3
++const EXT_T: float = 0.4
++const INT_T: float = 0.2
++const FOOT: Dictionary = {
++	"B": [0.0, 0.0, 32.0, 20.0],
++	"G": [0.0, 0.0, 44.0, 30.0],
++	"U": [0.0, 0.0, 44.0, 30.0],
++	"R": [0.0, 0.0, 32.0, 8.0],
++}
++
++## [floor, id, RoomVolume.purpose, x0, z0, x1, z1, ceiling above FFL (0 = open), kit].
++const ROOMS: Array = [
++	["B", "SS", "stair", 0.0, 0.0, 3.0, 8.0, 0.0, ""],
++	["B", "LK", "locker_room", 3.0, 0.0, 10.0, 6.0, 3.0, "locker_room"],
++	["B", "FR", "storage", 10.0, 0.0, 20.0, 6.0, 3.0, "storage_frames"],
++	["B", "QR", "storage", 20.0, 0.0, 28.0, 6.0, 3.0, "storage_quarantine"],
++	["B", "LF", "elevator", 28.0, 0.0, 32.0, 6.0, 0.0, ""],
++	["B", "BB", "corridor", 3.0, 6.0, 32.0, 8.0, 3.0, "corridor_service"],
++	["B", "PL", "plant", 0.0, 8.0, 12.0, 20.0, 3.4, "plant_climate"],
++	["B", "AS", "vault", 12.0, 8.0, 32.0, 20.0, 3.4, "art_store"],
++	["G", "SS", "stair", 0.0, 0.0, 3.0, 8.0, 0.0, ""],
++	["G", "BR", "break_room", 3.0, 0.0, 9.0, 6.0, 3.0, "break_room"],
++	["G", "WC", "restroom", 9.0, 0.0, 12.0, 6.0, 3.0, "restroom_multi"],
++	["G", "SC", "security_room", 12.0, 0.0, 18.0, 6.0, 3.0, "security_office"],
++	["G", "RG", "office", 18.0, 0.0, 24.0, 6.0, 3.0, "office_registrar"],
++	["G", "J", "janitor", 24.0, 0.0, 26.0, 6.0, 3.0, "janitor_closet"],
++	["G", "E1", "electrical", 26.0, 0.0, 28.0, 6.0, 3.0, "electrical_closet"],
++	["G", "LF", "elevator", 28.0, 0.0, 32.0, 6.0, 0.0, ""],
++	["G", "LD", "loading", 32.0, 0.0, 44.0, 12.0, 4.5, "loading_dock_gallery"],
++	["G", "BC", "corridor", 3.0, 6.0, 32.0, 8.0, 3.0, "corridor_service"],
++	["G", "WG", "gallery", 0.0, 8.0, 12.0, 20.0, 4.5, "gallery_hang"],
++	["G", "GH", "atrium", 12.0, 8.0, 32.0, 26.0, 9.8, "great_hall_gala"],
++	["G", "EG", "gallery", 32.0, 12.0, 44.0, 24.0, 4.5, "gallery_hang"],
++	["G", "DC", "gallery", 0.0, 20.0, 7.0, 30.0, 4.5, "gallery_cabinet"],
++	["G", "PWW", "restroom", 7.0, 20.0, 12.0, 25.0, 3.0, "restroom_public"],
++	["G", "PWM", "restroom", 7.0, 25.0, 12.0, 30.0, 3.0, "restroom_public"],
++	["G", "CK", "reception", 12.0, 26.0, 18.0, 30.0, 4.5, "cloakroom"],
++	["G", "VE", "lobby", 18.0, 26.0, 26.0, 30.0, 4.5, "vestibule_bronze"],
++	["G", "GS", "retail", 26.0, 26.0, 32.0, 30.0, 4.5, "gift_shop"],
++	["G", "EB", "gallery", 32.0, 24.0, 44.0, 30.0, 4.5, "gallery_hang"],
++	["U", "SS", "stair", 0.0, 0.0, 3.0, 8.0, 0.0, ""],
++	["U", "CO", "office", 3.0, 0.0, 10.0, 6.0, 3.0, "office_curator"],
++	["U", "AO", "office", 10.0, 0.0, 17.0, 6.0, 3.0, "office_open"],
++	["U", "UW", "restroom", 17.0, 0.0, 20.0, 6.0, 3.0, "restroom_single"],
++	["U", "FS", "storage", 20.0, 0.0, 22.0, 6.0, 3.0, "storage_frames"],
++	["U", "SV", "server_room", 22.0, 0.0, 28.0, 6.0, 3.0, "server_room"],
++	["U", "LF", "elevator", 28.0, 0.0, 32.0, 6.0, 0.0, ""],
++	["U", "CS", "workshop", 32.0, 0.0, 44.0, 12.0, 4.0, "conservation_studio"],
++	["U", "UC", "corridor", 3.0, 6.0, 32.0, 8.0, 3.0, "corridor_office"],
++	["U", "UG1", "gallery", 0.0, 8.0, 12.0, 20.0, 6.0, "gallery_toplit"],
++	["U", "BW", "atrium", 12.0, 8.0, 15.0, 26.0, 4.4, "gallery_balcony"],
++	["U", "BE", "atrium", 29.0, 8.0, 32.0, 26.0, 4.4, "gallery_balcony"],
++	["U", "UG3", "gallery", 32.0, 12.0, 44.0, 24.0, 6.0, "gallery_toplit"],
++	["U", "UG2", "gallery", 0.0, 20.0, 12.0, 30.0, 6.0, "gallery_toplit"],
++	["U", "SL", "atrium", 12.0, 26.0, 32.0, 30.0, 4.4, "gallery_balcony"],
++	["U", "AT", "staff_room", 32.0, 24.0, 36.0, 30.0, 3.0, "attendant_station"],
++	["U", "TR", "vault", 36.0, 24.0, 44.0, 30.0, 4.0, "treasury_cabinet"],
++	["R", "HH", "stair", 0.0, 0.0, 3.0, 8.0, 2.7, ""],
++	["R", "X4", "exterior", 3.0, 0.0, 28.0, 8.0, 0.0, "exterior_roof"],
++	["R", "X4", "exterior", 28.0, 6.0, 32.0, 8.0, 0.0, "exterior_roof"],
++	["R", "LM", "elevator_machine", 28.0, 0.0, 32.0, 6.0, 2.7, ""],
++]
++## Exterior rooms at grade: [id, purpose, [x0, z0, x1, z1], kit].
++const EXTERIOR: Array = [
++	["X1", "exterior", [-40.0, 30.0, 58.0, 50.0], "exterior_boulevard"],
++	["X2", "exterior", [-40.0, -8.0, 44.0, 0.0], "exterior_mews"],
++	["X2", "exterior", [44.0, -22.0, 58.0, 30.0], "exterior_mews"],
++	["X3", "exterior", [-16.0, 0.0, 0.0, 30.0], "exterior_court"],
++]
++## No floor on this level: [floor, id, [x0, z0, x1, z1]].
++const VOIDS: Array = [["U", "GH_VOID", [15.0, 8.0, 29.0, 26.0]]]
++const PUBLIC_ROOMS: Array[String] = ["GH", "VE", "CK", "WG", "DC", "PWW", "PWM", "EG", "EB"]
++const ROOF_DECK_ROOMS: Array[String] = ["AO", "CO", "FS", "LF", "SS", "SV", "UC", "UW"]
++## Roof slab top per upper room (absolute; the slab is SLAB_T thick).
++const U_TOP: Dictionary = {
++	"CO": 9.0,
++	"AO": 9.0,
++	"UW": 9.0,
++	"FS": 9.0,
++	"SV": 9.0,
++	"LF": 9.0,
++	"UC": 9.0,
++	"SS": 9.0,
++	"BW": 11.0,
++	"BE": 11.0,
++	"SL": 11.0,
++	"GH_VOID": 11.0,
++	"UG1": 11.7,
++	"UG2": 11.7,
++	"UG3": 11.7,
++	"CS": 9.7,
++	"AT": 9.7,
++	"TR": 9.7,
++}
++
++## Wall runs from the room edges: [floor, axis (x: along x at z = fixed; z: along z at x = fixed), fixed, a0, a1, thickness,
++## y0, y1].
++const WALLS: Array = [
++	["B", "x", 0.0, 0.0, 32.0, 0.4, -4.2, 0.0],
++	["B", "x", 6.0, 3.0, 32.0, 0.2, -4.2, -0.3],
++	["B", "x", 8.0, 0.0, 3.0, 0.3, -4.2, -0.3],
++	["B", "x", 8.0, 3.0, 12.0, 0.2, -4.2, -0.3],
++	["B", "x", 8.0, 12.0, 31.0, 0.4, -4.2, -0.3],
++	["B", "x", 8.0, 31.0, 32.0, 0.2, -4.2, -0.3],
++	["B", "x", 20.0, 0.0, 32.0, 0.4, -4.2, 0.0],
++	["B", "z", 0.0, 0.0, 20.0, 0.4, -4.2, 0.0],
++	["B", "z", 3.0, 0.0, 8.0, 0.3, -4.2, -0.3],
++	["B", "z", 10.0, 0.0, 6.0, 0.2, -4.2, -0.3],
++	["B", "z", 12.0, 8.0, 20.0, 0.4, -4.2, -0.3],
++	["B", "z", 20.0, 0.0, 6.0, 0.2, -4.2, -0.3],
++	["B", "z", 28.0, 0.0, 6.0, 0.2, -4.2, -0.3],
++	["B", "z", 32.0, 0.0, 20.0, 0.4, -4.2, 0.0],
++	["G", "x", 0.0, 0.0, 44.0, 0.4, 0.0, 5.4],
++	["G", "x", 6.0, 3.0, 32.0, 0.2, 0.0, 5.1],
++	["G", "x", 8.0, 0.0, 3.0, 0.3, 0.0, 5.1],
++	["G", "x", 8.0, 3.0, 12.0, 0.2, 0.0, 5.1],
++	["G", "x", 8.0, 12.0, 32.0, 0.2, 0.0, 5.4],
++	["G", "x", 12.0, 32.0, 44.0, 0.2, 0.0, 5.1],
++	["G", "x", 20.0, 0.0, 12.0, 0.2, 0.0, 5.1],
++	["G", "x", 24.0, 32.0, 44.0, 0.2, 0.0, 5.1],
++	["G", "x", 25.0, 7.0, 12.0, 0.2, 0.0, 5.1],
++	["G", "x", 26.0, 12.0, 32.0, 0.2, 0.0, 5.4],
++	["G", "x", 30.0, 0.0, 44.0, 0.4, 0.0, 5.4],
++	["G", "z", 0.0, 0.0, 30.0, 0.4, 0.0, 5.4],
++	["G", "z", 3.0, 0.0, 8.0, 0.3, 0.0, 5.1],
++	["G", "z", 7.0, 20.0, 30.0, 0.2, 0.0, 5.1],
++	["G", "z", 9.0, 0.0, 6.0, 0.2, 0.0, 5.1],
++	["G", "z", 12.0, 0.0, 6.0, 0.2, 0.0, 5.1],
++	["G", "z", 12.0, 8.0, 26.0, 0.2, 0.0, 5.4],
++	["G", "z", 12.0, 26.0, 30.0, 0.2, 0.0, 5.1],
++	["G", "z", 18.0, 0.0, 6.0, 0.2, 0.0, 5.1],
++	["G", "z", 18.0, 26.0, 30.0, 0.2, 0.0, 5.1],
++	["G", "z", 24.0, 0.0, 6.0, 0.2, 0.0, 5.1],
++	["G", "z", 26.0, 0.0, 6.0, 0.2, 0.0, 5.1],
++	["G", "z", 26.0, 26.0, 30.0, 0.2, 0.0, 5.1],
++	["G", "z", 28.0, 0.0, 6.0, 0.2, 0.0, 5.1],
++	["G", "z", 32.0, 0.0, 8.0, 0.2, 0.0, 5.1],
++	["G", "z", 32.0, 8.0, 26.0, 0.2, 0.0, 5.4],
++	["G", "z", 32.0, 26.0, 30.0, 0.2, 0.0, 5.1],
++	["G", "z", 44.0, 0.0, 30.0, 0.4, 0.0, 5.4],
++	["U", "x", 0.0, 0.0, 32.0, 0.4, 5.4, 9.0],
++	["U", "x", 0.0, 32.0, 44.0, 0.4, 5.4, 10.8],
++	["U", "x", 6.0, 3.0, 32.0, 0.2, 5.4, 9.0],
++	["U", "x", 8.0, 0.0, 3.0, 0.3, 5.4, 11.7],
++	["U", "x", 8.0, 3.0, 12.0, 0.2, 5.4, 11.7],
++	["U", "x", 8.0, 12.0, 32.0, 0.2, 5.4, 11.0],
++	["U", "x", 12.0, 32.0, 44.0, 0.2, 5.4, 11.7],
++	["U", "x", 20.0, 0.0, 12.0, 0.2, 5.4, 11.7],
++	["U", "x", 24.0, 32.0, 44.0, 0.2, 5.4, 11.7],
++	["U", "x", 26.0, 12.0, 15.0, 0.2, 5.4, 11.0],
++	["U", "x", 26.0, 29.0, 32.0, 0.2, 5.4, 11.0],
++	["U", "x", 30.0, 0.0, 12.0, 0.4, 5.4, 12.8],
++	["U", "x", 30.0, 12.0, 32.0, 0.4, 5.4, 12.1],
++	["U", "x", 30.0, 32.0, 44.0, 0.4, 5.4, 10.8],
++	["U", "z", 0.0, 0.0, 8.0, 0.4, 5.4, 9.0],
++	["U", "z", 0.0, 8.0, 30.0, 0.4, 5.4, 12.8],
++	["U", "z", 3.0, 0.0, 8.0, 0.3, 5.4, 9.0],
++	["U", "z", 10.0, 0.0, 6.0, 0.2, 5.4, 9.0],
++	["U", "z", 12.0, 8.0, 30.0, 0.2, 5.4, 11.7],
++	["U", "z", 17.0, 0.0, 6.0, 0.2, 5.4, 9.0],
++	["U", "z", 20.0, 0.0, 6.0, 0.2, 5.4, 9.0],
++	["U", "z", 22.0, 0.0, 6.0, 0.2, 5.4, 9.0],
++	["U", "z", 28.0, 0.0, 6.0, 0.2, 5.4, 9.0],
++	["U", "z", 32.0, 0.0, 8.0, 0.2, 5.4, 9.7],
++	["U", "z", 32.0, 8.0, 12.0, 0.2, 5.4, 11.0],
++	["U", "z", 32.0, 12.0, 24.0, 0.2, 5.4, 11.7],
++	["U", "z", 32.0, 24.0, 30.0, 0.2, 5.4, 11.0],
++	["U", "z", 36.0, 24.0, 30.0, 0.2, 5.4, 9.7],
++	["U", "z", 44.0, 0.0, 12.0, 0.4, 5.4, 10.8],
++	["U", "z", 44.0, 12.0, 24.0, 0.4, 5.4, 12.8],
++	["U", "z", 44.0, 24.0, 30.0, 0.4, 5.4, 10.8],
++	["R", "x", 0.0, 0.0, 3.0, 0.4, 9.0, 12.0],
++	["R", "x", 0.0, 3.0, 28.0, 0.4, 9.0, 10.1],
++	["R", "x", 0.0, 28.0, 32.0, 0.4, 9.0, 12.0],
++	["R", "x", 6.0, 28.0, 32.0, 0.2, 9.0, 12.0],
++	["R", "x", 8.0, 0.0, 3.0, 0.4, 9.0, 12.0],
++	["R", "x", 8.0, 3.0, 32.0, 0.4, 9.0, 10.1],
++	["R", "z", 0.0, 0.0, 8.0, 0.4, 9.0, 12.0],
++	["R", "z", 3.0, 0.0, 8.0, 0.3, 9.0, 12.0],
++	["R", "z", 28.0, 0.0, 6.0, 0.2, 9.0, 12.0],
++	["R", "z", 32.0, 0.0, 6.0, 0.4, 9.0, 12.0],
++	["R", "z", 32.0, 6.0, 8.0, 0.4, 9.0, 10.2],
++]
++## Openings: [floor, kind (D door, A arch, S shuttered arch, R roller, V vault, W window, h ladder top), axis, fixed, a0,
++## a1, y0, y1, note]. Glass in W.
++const OPENINGS: Array = [
++	["B", "D", "z", 3.0, 6.5, 7.5, -4.2, -2.1, "SS stair door"],
++	["B", "D", "x", 6.0, 5.5, 6.5, -4.2, -2.1, "LK"],
++	["B", "D", "x", 6.0, 14.5, 15.5, -4.2, -2.1, "FR"],
++	["B", "D", "x", 6.0, 23.5, 24.5, -4.2, -2.1, "QR"],
++	["B", "D", "x", 6.0, 28.6, 30.4, -4.2, -2.1, "LF art-lift landing door"],
++	["B", "D", "x", 8.0, 4.5, 5.5, -4.2, -2.1, "PL"],
++	["B", "V", "x", 8.0, 20.5, 22.5, -4.2, -2.0, "AS vault door"],
++	["G", "D", "z", 3.0, 6.5, 7.5, 0.0, 2.1, "SS stair door"],
++	["G", "D", "x", 6.0, 4.5, 5.5, 0.0, 2.1, "BR"],
++	["G", "D", "x", 6.0, 9.5, 10.5, 0.0, 2.1, "WC"],
++	["G", "D", "x", 6.0, 15.5, 16.5, 0.0, 2.1, "SC"],
++	["G", "D", "x", 6.0, 19.5, 20.5, 0.0, 2.1, "RG"],
++	["G", "D", "x", 6.0, 24.5, 25.5, 0.0, 2.1, "J"],
++	["G", "D", "x", 6.0, 26.5, 27.5, 0.0, 2.1, "E1"],
++	["G", "D", "x", 6.0, 28.6, 30.4, 0.0, 2.1, "LF art-lift landing door"],
++	["G", "D", "z", 32.0, 1.5, 4.5, 0.0, 2.1, "LF art-lift landing door"],
++	["G", "D", "z", 32.0, 6.1, 7.9, 0.0, 2.1, "BC -> LD double door, 1.8 m"],
++	["G", "D", "x", 8.0, 4.6, 6.4, 0.0, 2.1, "BC -> WG art-handling door DD, 1.8 m, LOCKPICK"],
++	["G", "D", "x", 8.0, 18.5, 19.5, 0.0, 2.1, "staff door under the stair"],
++	["G", "R", "x", 0.0, 34.7, 38.3, 0.0, 4.5, "LD roller door N"],
++	["G", "D", "x", 0.0, 40.5, 41.5, 0.0, 2.1, "LD personnel door N"],
++	["G", "D", "x", 12.0, 37.0, 39.0, 0.0, 2.1, "LD -> EG art door DD"],
++	["G", "D", "z", 0.0, 11.6, 13.4, 0.0, 2.1, "WG Sculpture Court French doors"],
++	["G", "A", "z", 12.0, 12.0, 16.0, 0.0, 3.6, "WG <-> GH arch, 4.0 m"],
++	["G", "D", "x", 20.0, 2.5, 3.5, 0.0, 2.1, "WG -> DC"],
++	["G", "D", "z", 12.0, 21.5, 22.5, 0.0, 2.1, "GH -> PWW"],
++	["G", "D", "z", 12.0, 25.0, 26.0, 0.0, 2.1, "GH -> PWM"],
++	["G", "A", "z", 32.0, 16.0, 20.0, 0.0, 3.6, "GH <-> EG arch, 4.0 m"],
++	["G", "A", "x", 24.0, 36.0, 40.0, 0.0, 3.6, "EG <-> EB opening, 4.0 m"],
++	["G", "D", "x", 26.0, 14.5, 15.5, 0.0, 2.1, "GH -> CK"],
++	["G", "A", "x", 26.0, 20.5, 23.5, 0.0, 3.6, "VE <-> GH"],
++	["G", "D", "x", 26.0, 27.5, 28.5, 0.0, 2.1, "GS"],
++	["G", "D", "x", 30.0, 18.5, 22.5, 0.0, 2.1, "VE bronze outer doors, 4 leaves"],
++	["G", "W", "x", 0.0, 4.5, 5.5, 0.9, 2.4, "BR window N"],
++	["G", "W", "x", 0.0, 14.5, 15.5, 0.9, 2.4, "SC window N"],
++	["G", "W", "x", 0.0, 20.5, 21.5, 0.9, 2.4, "RG window N"],
++	["G", "W", "x", 30.0, 12.5, 13.5, 0.3, 3.6, "CK shop-front glazing"],
++	["G", "W", "x", 30.0, 15.5, 16.5, 0.3, 3.6, "CK shop-front glazing"],
++	["G", "W", "x", 30.0, 27.5, 28.5, 0.3, 3.6, "GS shop-front glazing"],
++	["G", "W", "x", 30.0, 30.5, 31.5, 0.3, 3.6, "GS shop-front glazing"],
++	["G", "W", "x", 30.0, 33.5, 34.5, 0.9, 3.6, "EB tall window S"],
++	["G", "W", "x", 30.0, 37.5, 38.5, 0.9, 3.6, "EB tall window S"],
++	["G", "W", "x", 30.0, 41.5, 42.5, 0.9, 3.6, "EB tall window S"],
++	["G", "W", "z", 44.0, 25.5, 26.5, 0.9, 3.6, "EB tall window E"],
++	["G", "W", "z", 44.0, 27.5, 28.5, 0.9, 3.6, "EB tall window E"],
++	["U", "D", "z", 3.0, 6.5, 7.5, 5.4, 7.5, "SS stair door"],
++	["U", "D", "x", 6.0, 5.5, 6.5, 5.4, 7.5, "CO"],
++	["U", "D", "x", 6.0, 13.5, 14.5, 5.4, 7.5, "AO"],
++	["U", "D", "x", 6.0, 17.5, 18.5, 5.4, 7.5, "UW"],
++	["U", "D", "x", 6.0, 20.5, 21.5, 5.4, 7.5, "FS"],
++	["U", "D", "x", 6.0, 24.5, 25.5, 5.4, 7.5, "SV"],
++	["U", "D", "x", 6.0, 28.6, 30.4, 5.4, 7.5, "LF art-lift landing door"],
++	["U", "D", "z", 32.0, 1.5, 4.5, 5.4, 7.5, "LF art-lift landing door"],
++	["U", "D", "z", 32.0, 6.5, 7.5, 5.4, 7.5, "UC -> CS"],
++	["U", "D", "x", 8.0, 12.5, 13.5, 5.4, 7.5, "UC -> BW"],
++	["U", "D", "x", 8.0, 29.5, 30.5, 5.4, 7.5, "UC -> BE"],
++	["U", "S", "z", 12.0, 11.5, 14.5, 5.4, 9.0, "Calloway arch UG1 <-> BW, 3 m"],
++	["U", "A", "x", 20.0, 3.5, 6.5, 5.4, 9.0, "UG1 <-> UG2 arch, 3 m"],
++	["U", "D", "x", 12.0, 35.5, 36.5, 5.4, 7.5, "UG3 -> CS, LOCKPICK"],
++	["U", "A", "z", 32.0, 15.5, 18.5, 5.4, 9.0, "BE <-> UG3 arch, 3 m"],
++	["U", "D", "x", 24.0, 32.5, 33.5, 5.4, 7.5, "UG3 -> AT"],
++	["U", "D", "x", 24.0, 38.5, 39.5, 5.4, 7.5, "UG3 -> TR"],
++	["U", "A", "z", 12.0, 26.6, 29.0, 5.4, 9.0, "UG2 <-> SL arch, 2.4 m"],
++	["U", "D", "z", 32.0, 27.5, 28.5, 5.4, 7.5, "SL -> AT"],
++	["U", "W", "x", 0.0, 4.5, 5.5, 6.3, 7.8, "CO window N"],
++	["U", "W", "x", 0.0, 13.5, 14.5, 6.3, 7.8, "AO window N"],
++	["U", "W", "x", 0.0, 20.0, 21.0, 6.3, 7.8, "FS window N"],
++	["U", "W", "z", 44.0, 1.5, 2.5, 6.3, 8.8, "CS window E"],
++	["U", "W", "z", 44.0, 3.5, 4.5, 6.3, 8.8, "CS window E"],
++	["U", "W", "z", 44.0, 5.5, 6.5, 6.3, 8.8, "CS window E"],
++	["U", "W", "z", 44.0, 7.5, 8.5, 6.3, 8.8, "CS window E"],
++	["U", "W", "z", 44.0, 9.5, 10.5, 6.3, 8.8, "CS window E"],
++	["U", "W", "x", 30.0, 15.5, 16.5, 6.3, 9.0, "SL tall window S"],
++	["U", "W", "x", 30.0, 19.5, 20.5, 6.3, 9.0, "SL tall window S"],
++	["U", "W", "x", 30.0, 23.5, 24.5, 6.3, 9.0, "SL tall window S"],
++	["U", "W", "x", 30.0, 27.5, 28.5, 6.3, 9.0, "SL tall window S"],
++	["R", "D", "z", 3.0, 6.5, 7.5, 9.0, 11.1, "HH roof door"],
++	["R", "h", "x", 0.0, 9.5, 10.5, 9.0, 10.6, "fire-escape ladder top"],
++	["B", "D", "z", 0.0, 13.5, 14.5, -4.2, -2.1, "areaway passage into PL"],
++]
++## Balustrades (1.1 m): [floor, axis, fixed, a0, a1, y0, y1].
++const RAILS: Array = [
++	["U", "z", 15.0, 8.0, 14.4, 5.4, 6.5],
++	["U", "z", 15.0, 16.4, 26.0, 5.4, 6.5],
++	["U", "z", 29.0, 8.0, 14.4, 5.4, 6.5],
++	["U", "z", 29.0, 16.4, 26.0, 5.4, 6.5],
++	["U", "x", 26.0, 15.0, 29.0, 5.4, 6.5],
++]
++## Stair SS (service U-stair) in the core (0, 0, 3, 8): per storey [y0, y1, risers per flight, riser]; tread 0.28, flights
++## 1.2 wide (west up-flight x 0.15-1.35 rising north, well 1.35-1.55, east return flight 1.55-2.75 rising south),
++## first riser line z 6.35 (the floor landing z 6.35-7.85 takes the 1.0 m stair door at z 6.5-7.5).
++const SS_RECT: Array = [0.0, 0.0, 3.0, 8.0]
++const SS_STOREYS: Array = [[-4.2, 0.0, 12, 0.175], [0.0, 5.4, 15, 0.18], [5.4, 9.0, 10, 0.18]]
++const SS_TREAD: float = 0.28
++const SS_Z_START: float = 6.35
++const SS_CLEAR: Array = [0.15, 0.15, 2.85, 7.85]
++const SS_WEST: Array = [0.15, 1.35]
++const SS_EAST: Array = [1.55, 2.75]
++const SS_WELL: Array = [1.35, 1.55]
++
++## Grand (imperial) stair (vertical data): central flight x 20.8-23.2 rising north from z 14.4 to the half
++## landing (z 8.2-10.2, x 15.0-29.0, +2.7); return flights x 15.0-16.6 / x 27.4-29.0 rising south to z 14.4 onto
++## the balcony landings (z 14.4-16.4, +5.4). 15 risers @ 0.18, tread 0.30 per flight.
++const GRAND: Dictionary = {
++	"risers": 15,
++	"riser": 0.18,
++	"tread": 0.3,
++	"z_foot": 14.4,
++	"z_land": 10.2,
++	"half_landing": [15.0, 8.2, 29.0, 10.2],
++	"central": [20.8, 23.2],
++	"returns": [[15.0, 16.6], [27.4, 29.0]],
++	"upper_landing_z": [14.4, 16.4],
++}
++
++## Areaway light well + passage into PL (QC-64); rects [x0, z0, x1, z1].
++const AREAWAY: Dictionary = {
++	"well": [-4.0, 13.0, -2.0, 15.0],
++	"pit": [-4.0, 13.0, -0.2, 15.0],
++	"wall_t": 0.2,
++	"floor_y": -4.2,
++	"ladder": [-3.85, -4.2, 14.0],
++}
++## No grade over these rects (per exterior room).
++const SITE_HOLES: Dictionary = {"X3": [[-4.0, 13.0, -2.0, 15.0]]}
++## Grade in play outside the exterior rooms: [name, surface, [x0, z0, x1, z1]].
++const GRADE_EXTRA: Array = [["ParadeEast", "asphalt", [58.0, 30.0, 70.0, 50.0]]]
++## Police street islands: [spawn, grade [x0, z0, x1, z1], one-way link from (island), to (play)].
++const POLICE_ISLANDS: Array = [
++	["P1", [-54.0, 30.0, -40.4, 50.0], [-42.0, 0.0, 33.0], [-38.8, 0.0, 33.0]],
++	["P2", [70.4, 30.0, 84.0, 50.0], [72.0, 0.0, 34.0], [68.5, 0.0, 34.0]],
++	["P3", [44.0, -34.0, 58.0, -22.4], [46.0, 0.0, -23.5], [46.0, 0.0, -20.5]],
++	["P4", [-54.0, -8.0, -40.4, 0.0], [-42.0, 0.0, -2.0], [-38.8, 0.0, -2.0]],
++]
++## Play-space closures / neighbour massing: [name, [x0, y0, z0, x1, y1, z1], surface].
++const CLOSURES: Array = [
++	["ParadeWBarriers", [-40.4, 0.0, 30.0, -40.0, 2.2, 50.0], "trim"],
++	["GalaCoach", [-43.4, 0.0, 36.0, -40.8, 3.2, 48.0], "prop"],
++	["ParadeEBarriers", [70.0, 0.0, 30.0, 70.4, 2.2, 50.0], "trim"],
++	["PressVan", [70.8, 0.0, 40.0, 73.2, 2.8, 46.0], "prop"],
++	["WexleyNBarriers", [44.0, 0.0, -22.4, 58.0, 2.2, -22.0], "trim"],
++	["CateringTruck", [50.0, 0.0, -26.0, 56.0, 3.4, -23.2], "prop"],
++	["MewsGate", [-40.4, 0.0, -8.0, -40.0, 2.4, 0.0], "door"],
++	["MewsHouses", [-40.0, 0.0, -16.0, 43.8, 7.0, -8.0], "wall_ext"],
++	["GrandWexleyHotel", [58.4, 0.0, -34.0, 70.0, 22.0, 30.0], "wall_ext"],
++	["OstranderConservatory", [-40.0, 0.0, 0.4, -16.4, 14.0, 30.0], "wall_ext"],
++	["CourtWallW", [-16.4, 0.0, 0.0, -16.0, 3.0, 30.0], "wall_ext"],
++	["CourtWallN", [-16.0, 0.0, 0.0, -0.2, 3.0, 0.4], "wall_ext"],
++	["CourtWallSW", [-16.0, 0.0, 29.6, -10.0, 3.0, 30.0], "wall_ext"],
++	["CourtWallSE", [-6.0, 0.0, 29.6, -0.2, 3.0, 30.0], "wall_ext"],
++	["ParkRailings", [-40.0, 0.0, 50.0, 70.0, 1.8, 50.1], "trim"],
++]
++const OCULUS: Array = [20.5, 15.5, 23.5, 18.5]
++## Always-present nav links: [name, from, to, bidirectional, navigation_layers] (1 walkable, 4 vent).
++const NAV_LINKS: Array = [
++	["RappelLinkOculus", [22.0, 11.0, 17.0], [22.0, 0.0, 17.0], false, 1],
++	["RoofDropLinkDeck", [30.5, 11.0, 8.8], [30.5, 9.0, 7.0], false, 1],
++	["AreawayLink", [-5.0, 0.0, 14.0], [-3.0, -4.2, 14.0], true, 4],
++]
++
++## VariantSlots (resolver order): [group, slot_id, weight, floor, room, x, y, z, note].
++const SLOTS: Array = [
++	[
++		"centrepiece",
++		"cp_landing",
++		0.4,
++		"G",
++		"GH",
++		21.0,
++		2.7,
++		8.4,
++		"landing wall easel-frame (centre +2.7 +1.55); laser curtain after last call",
++	],
++	["centrepiece", "cp_treasury", 0.35, "U", "TR", 40.0, 5.4, 29.6, "centred on the TR south wall, behind the laser grid"],
++	["centrepiece", "cp_store", 0.25, "B", "AS", 20.0, -4.2, 18.0, "AS rack screen (plan L (20, 18))"],
++	[
++		"canvas_orchard",
++		"orchard_calloway",
++		1.0,
++		"U",
++		"UG1",
++		0.3,
++		5.4,
++		14.0,
++		"UG1 W wall behind the partition screen (6, 12-16)",
++	],
++	["canvas_orchard", "orchard_benefactors", 1.0, "G", "EB", 34.0, 0.0, 28.0, "EB (plan L (34, 28))"],
++	["canvas_orchard", "orchard_quarantine", 0.7, "B", "QR", 22.0, -4.2, 3.0, "opened travel crate in QR"],
++	["canvas_widow", "widow_sallow", 1.0, "U", "UG2", 1.0, 5.4, 25.0, "UG2 (plan L (1, 25))"],
++	["canvas_widow", "widow_founders", 1.0, "G", "WG", 1.0, 0.0, 16.0, "WG (plan L (1, 16))"],
++	["canvas_widow", "widow_conservation", 0.7, "U", "CS", 36.0, 5.4, 8.0, "CS main easel, frame off"],
++	["canvas_saint", "saint_maritime", 1.0, "U", "UG3", 42.0, 5.4, 15.0, "UG3 (plan L (42, 15))"],
++	["canvas_saint", "saint_harbour", 1.0, "G", "EG", 43.0, 0.0, 18.0, "EG (plan L (43, 18))"],
++	["canvas_saint", "saint_store", 0.7, "B", "AS", 26.0, -4.2, 16.0, "AS rack screen (plan L (26, 16))"],
++	["sensor_net", "sensors_treasury", 0.5, "U", "SV", 25.0, 5.4, 2.0, "logic slot: Argus alarm group = the TR frame"],
++	["sensor_net", "sensors_upper", 0.35, "U", "SV", 25.0, 5.4, 2.0, "logic slot: upper frames + TR + the landing"],
++	["sensor_net", "sensors_all", 0.15, "U", "SV", 25.0, 5.4, 2.0, "logic slot: every hung frame"],
++	["conservator", "cons_late", 1.0, "U", "CS", 37.5, 5.4, 9.0, "civ_conservator spawn at the main easel"],
++	["conservator", "cons_gone", 1.0, "U", "CS", 37.5, 5.4, 9.0, "empty"],
++	[
++		"keycard",
++		"kc_curator",
++		1.0,
++		"G",
++		"GH",
++		15.0,
++		1.1,
++		18.6,
++		"carried by civ_curator (QC-52); curator_tipsy: on the GH bar here",
++	],
++	["keycard", "kc_security", 0.75, "G", "SC", 17.6, 1.2, 3.0, "SC key cabinet, E wall"],
++	["keycard", "kc_registrar", 1.0, "G", "RG", 21.0, 0.75, 3.0, "RG desk drawer (pp_insider_registrar)"],
++	["keycard", "kc_conservator", 1.0, "U", "CS", 40.0, 6.3, 10.0, "CS bench drawer (plan K (40, 10)); requires cons_late"],
++	["code_note", "code_security_log", 1.0, "G", "SC", 17.4, 1.0, 0.6, "guard log, SC NE counter"],
++	["code_note", "code_curator_planner", 1.0, "U", "CO", 6.0, 6.15, 2.0, "planner on the curator's desk"],
++	["code_note", "code_admin_postit", 1.0, "U", "AO", 14.0, 6.4, 4.0, "post-it on an AO monitor"],
++	["guard_post", "rover_ground", 1.0, "G", "BC", 10.0, 0.0, 7.0, "guard_rover_ground spawn (BC)"],
++	["guard_post", "rover_upper", 1.0, "U", "UC", 10.0, 5.4, 7.0, "guard_rover_upper spawn (UC)"],
++	["guard_post", "rover_basement", 1.0, "B", "BB", 10.0, -4.2, 7.0, "guard_rover_basement spawn (BB)"],
++	["guard_post", "dock_smoker", 1.0, "G", "X2", 40.0, 0.0, -2.0, "guard_mews spawn, Mews by the LD personnel door"],
++	["guard_post", "rover_none", 1.0, "G", "GH", 22.0, 0.0, 17.0, "empty slot (encodes counts; weight 0 from Hazardous)"],
++	["security_room_staffed", "sec_staffed", 0.6, "G", "SC", 13.5, 0.0, 3.5, "CAMERA_OPERATOR at the console, facing W"],
++	["security_room_staffed", "sec_empty", 0.4, "G", "SC", 13.5, 0.0, 3.5, "empty"],
++	["camera", "cam_a", 1.0, "G", "SC", 12.6, 0.0, 3.0, "layout cameras C1 C3 C6 C7 C9 C13 (children)"],
++	["camera", "cam_b", 1.0, "G", "SC", 12.6, 0.0, 3.0, "layout cameras C2 C4 C6 C8 C10 C12 (children)"],
++	["camera", "cam_c", 1.0, "G", "SC", 12.6, 0.0, 3.0, "layout cameras C1 C4 C5 C8 C10 C12 (children)"],
++	["laser_pattern", "lz_static", 0.5, "U", "TR", 40.0, 5.4, 26.5, "TR grid z 26.5: 3 beams 1.30/1.8/2.33"],
++	["laser_pattern", "lz_sweep", 0.2, "U", "TR", 40.0, 5.4, 26.5, "TR grid: 3 vertical, 6 s sweep"],
++	["laser_pattern", "lz_timed", 0.3, "U", "TR", 40.0, 5.4, 26.5, "TR grid: 4 beams, off 4 s of 16 s"],
++	["curator_route", "curator_hall", 1.0, "G", "GH", 17.0, 0.0, 16.0, "civ_curator spawn + staff_curator points in GH"],
++	["curator_route", "curator_office", 1.0, "U", "CO", 6.0, 5.4, 4.0, "civ_curator spawn + staff_curator points CO/UG1/CS"],
++	["court_doors", "court_doors_open", 1.0, "G", "WG", 0.6, 0.0, 12.5, "French doors NONE until last call"],
++	["court_doors", "court_doors_locked", 1.0, "G", "WG", 0.6, 0.0, 12.5, "French doors LOCKPICK"],
++	["areaway", "grate_loose", 1.0, "G", "X3", -4.0, 0.0, 14.0, "court grate: lift 3 s"],
++	["areaway", "grate_padlocked", 1.0, "G", "X3", -4.0, 0.0, 14.0, "court grate: padlock (lockpick 8 s or saw)"],
++	["escape", "esc_mews", 0.55, "G", "X2", 37.0, 0.0, -4.0, "E1 van at the LD roller door"],
++	["escape", "esc_parade", 0.45, "G", "X1", 22.0, 0.0, 34.0, "E2 limo at the portico kerb"],
++	["xl_crate", "xl_none", 1.0, "G", "LD", 38.0, 0.0, 9.0, "empty sibling (QC-62): no crate unless late_loan"],
++	["xl_crate", "xl_loan", 1.0, "G", "LD", 38.0, 0.0, 9.0, "late_loan crate (2 studies); pick 0, only the rare event"],
++	["admin_pa", "pa_none", 1.0, "U", "AO", 15.0, 5.4, 4.0, "empty sibling (QC-62): no PA unless late_paperwork"],
++	["admin_pa", "pa_late", 1.0, "U", "AO", 15.0, 5.4, 4.0, "civ_admin at an AO desk; pick 0, only late_paperwork"],
++]
++const GROUP_ORDER: Array[String] = [
++	"centrepiece",
++	"canvas_orchard",
++	"canvas_widow",
++	"canvas_saint",
++	"sensor_net",
++	"conservator",
++	"keycard",
++	"code_note",
++	"guard_post",
++	"security_room_staffed",
++	"camera",
++	"laser_pattern",
++	"curator_route",
++	"court_doors",
++	"areaway",
++	"escape",
++	"xl_crate",
++	"admin_pa",
++]
++## Security cameras: [id, floor, room, x, mount y, z, layouts (cam_* slots or always)].
++const CAMERAS: Array = [
++	["C1", "G", "VE", 22.0, 3.2, 26.2, ["cam_a", "cam_c"]],
++	["C2", "G", "GH", 31.0, 5.1, 22.0, ["cam_b"]],
++	["C3", "G", "WG", 11.6, 3.2, 8.4, ["cam_a"]],
++	["C4", "G", "EG", 43.6, 3.2, 23.6, ["cam_b", "cam_c"]],
++	["C5", "G", "BC", 3.4, 2.8, 7.0, ["cam_c"]],
++	["C6", "G", "LD", 32.4, 3.2, 0.4, ["cam_a", "cam_b"]],
++	["C7", "G", "X2", 36.0, 3.2, -1.0, ["cam_a"]],
++	["C8", "G", "X3", -0.4, 3.0, 4.0, ["cam_b", "cam_c"]],
++	["C9", "U", "UG1", 11.6, 8.6, 19.6, ["cam_a"]],
++	["C10", "U", "UG3", 32.4, 8.6, 12.4, ["cam_b", "cam_c"]],
++	["C11", "U", "TR", 43.6, 8.0, 24.4, ["always"]],
++	["C12", "B", "BB", 31.6, -1.4, 7.0, ["cam_b", "cam_c"]],
++	["C13", "U", "UC", 3.4, 8.2, 7.0, ["cam_a"]],
++	["C14", "B", "AS", 31.6, -1.0, 8.4, ["always"]],
++]
++const CAMERA_SPINE_ROOMS: Array[String] = ["BC", "UC"]
++const CAMERA_SCREEN_SLOTS: Array[String] = ["orchard_calloway", "widow_sallow", "saint_maritime"]
++## Partition screens (2.4 m, meta kind partition_screen): [room, x0, z0, x1, z1] on the upper floor.
++const SCREENS: Array = [["UG1", 6.0, 12.0, 6.0, 16.0], ["UG3", 38.0, 14.0, 38.0, 17.0]]
++## PLAYER spawns: [name, spawn_tag ("" = default), floor, room, x, y, z, yaw].
++const PLAYER_SPAWNS: Array = [
++	["PlayerPortico1", "", "G", "X1", 20.5, 0.0, 35.0, 0.0],
++	["PlayerPortico2", "", "G", "X1", 21.5, 0.0, 35.0, 0.0],
++	["PlayerPortico3", "", "G", "X1", 22.5, 0.0, 35.0, 0.0],
++	["PlayerPortico4", "", "G", "X1", 23.5, 0.0, 35.0, 0.0],
++	["PlayerMews1", "preplan_spawn_mews", "G", "X2", 24.5, 0.0, -5.0, 90.0],
++	["PlayerMews2", "preplan_spawn_mews", "G", "X2", 25.5, 0.0, -5.0, 90.0],
++	["PlayerMews3", "preplan_spawn_mews", "G", "X2", 26.5, 0.0, -5.0, 90.0],
++	["PlayerMews4", "preplan_spawn_mews", "G", "X2", 27.5, 0.0, -5.0, 90.0],
++	["PlayerRoof1", "preplan_spawn_roof", "R", "X4", 12.0, 9.0, 6.0, 0.0],
++	["PlayerRoof2", "preplan_spawn_roof", "R", "X4", 15.0, 9.0, 6.0, 0.0],
++	["PlayerRoof3", "preplan_spawn_roof", "R", "X4", 18.0, 9.0, 6.0, 0.0],
++	["PlayerRoof4", "preplan_spawn_roof", "R", "X4", 21.0, 9.0, 6.0, 0.0],
++]
++## POLICE spawns: [name, tag, x, y, z] (outside the play space; P5 on the Great Hall roof).
++const POLICE_SPAWNS: Array = [
++	["P1", "police_w", -46.0, 0.0, 44.0],
++	["P2", "police_e", 76.0, 0.0, 44.0],
++	["P3", "police_n", 52.0, 0.0, -28.0],
++	["P4", "police_mews", -46.0, 0.0, -4.0],
++	["P5", "police_roof", 22.0, 11.0, 29.0],
++]
++## Escape / secure zones (children of their escape slot): [slot, kind, floor, room, x, y, z].
++const ESCAPE_ZONES: Array = [
++	["esc_mews", "ESCAPE", "G", "X2", 37.0, 0.0, -4.0],
++	["esc_mews", "SECURE_LOOT", "G", "X2", 34.5, 0.0, -4.0],
++	["esc_parade", "ESCAPE", "G", "X1", 22.0, 0.0, 34.0],
++	["esc_parade", "SECURE_LOOT", "G", "X1", 25.0, 0.0, 34.0],
++]
++## PREPLAN_POINT markers: [id, category, floor index, floor, room, x, y, z, params].
++const PREPLAN: Array = [
++	["pp_spawn_portico", "spawn", 1, "G", "X1", 22.0, 0.0, 36.0, {}],
++	["pp_spawn_mews", "spawn", 1, "G", "X2", 26.0, 0.0, -5.0, {"spawn_tag": "preplan_spawn_mews"}],
++	["pp_spawn_roof", "spawn", 3, "R", "X4", 17.0, 9.0, 6.0, {"spawn_tag": "preplan_spawn_roof"}],
++	["pp_drop_court", "drop_zone", 1, "G", "X3", -12.0, 0.0, 24.0, {}],
++	["pp_drop_mews", "drop_zone", 1, "G", "X2", 16.0, 0.0, -2.0, {}],
++	["pp_drop_roof", "drop_zone", 3, "R", "X4", 8.0, 9.0, 3.0, {}],
++	["pp_escape_mews", "escape", 1, "G", "X2", 37.0, 0.0, -4.0, {"variant_group": "escape", "variant_slot": "esc_mews"}],
++	["pp_escape_parade", "escape", 1, "G", "X1", 22.0, 0.0, 34.0, {"variant_group": "escape", "variant_slot": "esc_parade"}],
++	[
++		"pp_insider_registrar",
++		"insider",
++		1,
++		"G",
++		"RG",
++		21.0,
++		0.0,
++		3.0,
++		{"variant_group": "keycard", "variant_slot": "kc_registrar"},
++	],
++	["pp_grate", "insider", 1, "G", "X3", -4.0, 0.0, 14.0, {"variant_group": "areaway", "variant_slot": "grate_loose"}],
++	[
++		"pp_court_doors",
++		"insider",
++		1,
++		"G",
++		"X3",
++		-1.0,
++		0.0,
++		12.5,
++		{"variant_group": "court_doors", "variant_slot": "court_doors_open"},
++	],
++]
++## Review cameras: [id, floor, room, x, y, z, look-at x, y, z].
++const REVIEW_CAMERAS: Array = [
++	["rc_top_down", "G", "", 9.0, 120.0, 20.0, 9.0, 0.0, 20.0],
++	["rc_ext_parade", "G", "X1", 22.0, 1.7, 41.0, 22.0, 6.0, 30.0],
++	["rc_ext_wexley", "G", "X2", 56.0, 1.7, 10.0, 44.0, 4.0, 6.0],
++	["rc_ext_mews", "G", "X2", -30.0, 1.7, -4.0, 40.0, 3.0, -2.0],
++	["rc_ext_court", "G", "X3", -8.0, 1.7, 29.0, -6.0, 2.0, 8.0],
++	["rc_hall_entry", "G", "VE", 22.0, 1.7, 29.0, 22.0, 4.0, 9.0],
++	["rc_hall_landing", "G", "GH", 22.0, 4.3, 9.4, 22.0, 1.0, 24.0],
++	["rc_balcony", "U", "BW", 13.5, 7.1, 17.0, 30.5, 6.4, 17.0],
++	["rc_founders", "G", "WG", 11.0, 1.7, 19.0, 1.0, 1.5, 9.0],
++	["rc_drawings", "G", "DC", 6.0, 1.7, 29.0, 1.0, 1.5, 21.0],
++	["rc_harbour", "G", "EG", 43.0, 1.7, 23.0, 37.0, 1.5, 12.5],
++	["rc_benefactors", "G", "EB", 43.0, 1.7, 29.0, 33.0, 1.5, 25.0],
++	["rc_cloakroom", "G", "CK", 17.0, 1.7, 29.0, 12.5, 1.2, 26.5],
++	["rc_back_corridor", "G", "BC", 3.6, 1.7, 7.0, 31.0, 1.5, 7.0],
++	["rc_security", "G", "SC", 16.5, 1.7, 3.5, 12.5, 1.3, 3.5],
++	["rc_loading", "G", "LD", 43.0, 1.7, 11.0, 33.0, 2.0, 2.0],
++	["rc_break", "G", "BR", 8.0, 1.7, 5.0, 4.0, 1.0, 1.0],
++	["rc_calloway", "U", "UG1", 11.0, 7.1, 19.0, 1.0, 7.9, 9.0],
++	["rc_sallow", "U", "UG2", 11.0, 7.1, 29.0, 1.0, 7.9, 21.0],
++	["rc_maritime", "U", "UG3", 43.0, 7.1, 13.0, 39.0, 6.9, 24.0],
++	["rc_treasury", "U", "TR", 39.0, 7.1, 25.0, 40.0, 6.9, 29.6],
++	["rc_upper_corridor", "U", "UC", 31.0, 7.1, 7.0, 4.0, 6.9, 7.0],
++	["rc_curator", "U", "CO", 9.0, 7.1, 5.0, 4.0, 6.4, 1.0],
++	["rc_conservation", "U", "CS", 43.0, 7.1, 11.0, 34.0, 6.9, 2.0],
++	["rc_art_store", "B", "AS", 31.0, -2.5, 19.0, 21.5, -3.0, 8.5],
++	["rc_plant", "B", "PL", 11.0, -2.5, 19.0, 2.0, -2.7, 14.0],
++	["rc_roof_deck", "R", "X4", 10.0, 10.7, 1.0, 22.0, 9.5, 6.0],
++]
+diff --git a/game/world/heists/gallery_night/greybox/gallery_night_layout.gd.uid b/game/world/heists/gallery_night/greybox/gallery_night_layout.gd.uid
+new file mode 100644
+index 00000000..7239d45d
+--- /dev/null
++++ b/game/world/heists/gallery_night/greybox/gallery_night_layout.gd.uid
+@@ -0,0 +1 @@
++uid://cc8n1p72l286l
+diff --git a/game/world/heists/gallery_night/greybox/gn_builder_base.gd b/game/world/heists/gallery_night/greybox/gn_builder_base.gd
+new file mode 100644
+index 00000000..24c351e9
+--- /dev/null
++++ b/game/world/heists/gallery_night/greybox/gn_builder_base.gd
+@@ -0,0 +1,363 @@
++## Gallery Night generator base: shared constants, state and generic helpers. Owner: ENV C (GN-C1).
++## Chain: gn_builder_base.gd <- gn_gameplay.gd <- build_greybox.gd (the --script entry point).
++## Helpers follow the Shadow Ledger / Dockside Burn generators (box walls with holes, ramp-collision stairs,
++## sequential-id scene normalisation) so the four existing heists and this one regenerate the same way.
++extends SceneTree
++
++const L: GDScript = preload("res://world/heists/gallery_night/greybox/gallery_night_layout.gd")
++const OUT_DIR: String = "res://world/heists/gallery_night/"
++## The map's final path. Content freeze (D-082): the skeleton never writes here (validate_all and HeistRegistry
++## would pick it up); it writes DEFAULT_OUT or `-- --out=<path>` until the freeze lifts.
++const SCENE_PATH: String = OUT_DIR + "gallery_night.tscn"
++const DEFAULT_OUT: String = "user://gn_skeleton/gallery_night.tscn"
++const DEF_PATH: String = OUT_DIR + "gallery_night_def.tres"
++const VARIANTS_PATH: String = OUT_DIR + "gallery_night_variants.tres"
++const MAT_DIR: String = "res://world/materials/"
++## Visual step boxes overlap their higher neighbour by this much (no ray-through seams).
++const SEAM: float = 0.02
++## Building surface classes -> material library (greybox kit materials).
++const LIB_MATS: Dictionary = {
++	"wall": "grey_wall", "wall_ext": "grey_wall_ext", "floor": "grey_floor", "ceiling": "grey_ceiling",
++	"roof": "grey_ceiling", "stair": "grey_stair", "counter": "grey_counter", "prop": "grey_prop",
++	"trim": "grey_trim", "glass": "grey_glass", "frame": "grey_frame", "door": "grey_door",
++}
++## Site surface classes (greybox flat colours, one per class; meta greybox = true). Ids resolve to a bullet
++## surface through surface_map.json (asphalt / paving by name, court_stone by the `stone` keyword).
++const SITE_MATS: Dictionary = {
++	"asphalt": Color(0.1, 0.1, 0.11), "paving": Color(0.52, 0.5, 0.47), "court_stone": Color(0.6, 0.57, 0.5),
++}
++
++var map_root: HeistMap = null
++var errors: PackedStringArray = PackedStringArray()
++## Projected nav obstructions for props and prefabs: [corners (PackedVector3Array), elevation, height].
++var obstructions: Array[Array] = []
++var _lib_cache: Dictionary = {}
++var _site_cache: Dictionary = {}
++var _box_mesh_cache: Dictionary = {}
++var _box_shape_cache: Dictionary = {}
++
++
++# --- Generic helpers ---------------------------------------------------------------------------
++
++func add(parent: Node, c: Node) -> Node:
++	parent.add_child(c)
++	c.owner = map_root
++	return c
++
++
++func node3d(nm: String, pos: Vector3 = Vector3.ZERO) -> Node3D:
++	var c: Node3D = Node3D.new()
++	c.name = nm
++	c.position = pos
++	return c
++
++
++static func yaw_basis(yaw_deg: float) -> Basis:
++	return Basis(Vector3.UP, deg_to_rad(yaw_deg))
++
++
++func lib_mat(id: String) -> Material:
++	var lib: String = String(LIB_MATS.get(id, ""))
++	if lib == "":
++		return _site_mat(id)
++	if not _lib_cache.has(lib):
++		_lib_cache[lib] = load(MAT_DIR + lib + ".tres") as Material
++	return _lib_cache[lib]
++
++
++func _site_mat(id: String) -> Material:
++	if _site_cache.has(id):
++		return _site_cache[id]
++	var m: StandardMaterial3D = StandardMaterial3D.new()
++	m.resource_name = "gn_grey_" + id
++	m.set_meta(&"greybox", true)
++	if SITE_MATS.has(id):
++		m.albedo_color = SITE_MATS[id]
++		m.roughness = 0.9
++	else:
++		errors.append("unknown material class `%s`" % id)
++		m.albedo_color = Color(1.0, 0.0, 1.0)
++	_site_cache[id] = m
++	return m
++
++
++func box_mesh(size: Vector3, mat_id: String) -> BoxMesh:
++	var key: String = "%s|%.3f|%.3f|%.3f" % [mat_id, size.x, size.y, size.z]
++	if not _box_mesh_cache.has(key):
++		var bm: BoxMesh = BoxMesh.new()
++		bm.size = size
++		bm.material = lib_mat(mat_id)
++		_box_mesh_cache[key] = bm
++	return _box_mesh_cache[key]
++
++
++func box_shape(size: Vector3) -> BoxShape3D:
++	var key: String = "%.3f|%.3f|%.3f" % [size.x, size.y, size.z]
++	if not _box_shape_cache.has(key):
++		var bs: BoxShape3D = BoxShape3D.new()
++		bs.size = size
++		_box_shape_cache[key] = bs
++	return _box_shape_cache[key]
++
++
++## Static box (world_static) from min/max corners: StaticBody3D + CollisionShape3D + MeshInstance3D. Every
++## body gets a mesh (so SurfaceTags.tag_tree can tag it; the generator refuses untagged bodies).
++func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String) -> StaticBody3D:
++	var size: Vector3 = mx - mn
++	if size.x <= 0.001 or size.y <= 0.001 or size.z <= 0.001:
++		return null
++	var sb: StaticBody3D = StaticBody3D.new()
++	sb.collision_layer = 1
++	sb.collision_mask = 0
++	sb.name = nm
++	sb.position = (mn + mx) * 0.5
++	add(parent, sb)
++	var col: CollisionShape3D = CollisionShape3D.new()
++	col.name = "Collision"
++	col.shape = box_shape(size)
++	add(sb, col)
++	var mi: MeshInstance3D = MeshInstance3D.new()
++	mi.name = "Mesh"
++	mi.mesh = box_mesh(size, mat_id)
++	add(sb, mi)
++	return sb
++
++
++## Visual-only box mesh child (no collision) at local min/max corners.
++func mesh_box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String) -> MeshInstance3D:
++	var mi: MeshInstance3D = MeshInstance3D.new()
++	mi.name = nm
++	mi.mesh = box_mesh(mx - mn, mat_id)
++	mi.position = (mn + mx) * 0.5
++	add(parent, mi)
++	return mi
++
++
++## Straight wall with rectangular openings. axis "x": runs along x at z = fixed; "z": along z at x = fixed.
++## openings: [[along0, along1, y0, y1], ...] (absolute heights). Pieces are split at every floor level so the
++## per-floor plan render cuts every wall.
++func wall(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a1: float, thick: float,
++		yr: Vector2, openings: Array, mat_id: String) -> void:
++	var cuts: Array[float] = [a0, a1]
++	for o: Array in openings:
++		for v: float in [float(o[0]), float(o[1])]:
++			if v > a0 and v < a1 and not cuts.has(v):
++				cuts.append(v)
++	cuts.sort()
++	var part: int = 0
++	for i: int in range(cuts.size() - 1):
++		var p: float = cuts[i]
++		var q: float = cuts[i + 1]
++		if q - p < 0.001:
++			continue
++		var holes: Array[Vector2] = []
++		for o2: Array in openings:
++			if float(o2[0]) <= p + 0.0001 and float(o2[1]) >= q - 0.0001:
++				holes.append(Vector2(maxf(float(o2[2]), yr.x), minf(float(o2[3]), yr.y)))
++		holes.sort_custom(func(a: Vector2, b: Vector2) -> bool: return a.x < b.x)
++		var cur: float = yr.x
++		var spans: Array[Vector2] = []
++		for h: Vector2 in holes:
++			if h.x > cur + 0.0001:
++				spans.append(Vector2(cur, h.x))
++			cur = maxf(cur, h.y)
++		if yr.y > cur + 0.0001:
++			spans.append(Vector2(cur, yr.y))
++		for sp: Vector2 in spans:
++			var lo: float = sp.x
++			var split: Array[Vector2] = []
++			for fh: float in L.FLOOR_HEIGHTS:
++				if fh > lo + 0.0001 and fh < sp.y - 0.0001:
++					split.append(Vector2(lo, fh))
++					lo = fh
++			split.append(Vector2(lo, sp.y))
++			for s: Vector2 in split:
++				var mn: Vector3
++				var mx: Vector3
++				if axis == "x":
++					mn = Vector3(p, s.x, fixed - thick * 0.5)
++					mx = Vector3(q, s.y, fixed + thick * 0.5)
++				else:
++					mn = Vector3(fixed - thick * 0.5, s.x, p)
++					mx = Vector3(fixed + thick * 0.5, s.y, q)
++				box(parent, "%s_%02d" % [nm, part], mn, mx, mat_id)
++				part += 1
++
++
++## Ramp collision: one StaticBody3D with convex prisms, each a (z, y) polygon extruded over x0..x1 (Dockside
++## Burn / Shadow Ledger `_ramp`; stairs collide as ramps, next_heist §7.8).
++func ramp(flight: Node3D, x0: float, x1: float, polys: Array) -> void:
++	var body: StaticBody3D = StaticBody3D.new()
++	body.name = "Ramp"
++	body.collision_layer = 1
++	body.collision_mask = 0
++	add(flight, body)
++	for i: int in range(polys.size()):
++		var pts: PackedVector3Array = PackedVector3Array()
++		for pt: Vector2 in polys[i]:
++			pts.append(Vector3(x0, pt.y, pt.x))
++			pts.append(Vector3(x1, pt.y, pt.x))
++		var shp: ConvexPolygonShape3D = ConvexPolygonShape3D.new()
++		shp.points = pts
++		var col: CollisionShape3D = CollisionShape3D.new()
++		col.name = "Prism%d" % i
++		col.shape = shp
++		add(body, col)
++
++
++## One straight flight along its local +Z from `origin` (first riser line, lower floor level): nr risers of r,
++## (nr - 1) treads of t, width w. Steps are visual meshes (soffit 0.15 m below, or solid down to `solid_y`); the
++## collision is a smooth ramp through the nosings, extended one tread back over the lower floor (validator
++## convention (b)).
++func flight(parent: Node3D, nm: String, origin: Vector3, yaw: float, w: float, nr: int, r: float, t: float,
++		solid_y: Variant) -> Node3D:
++	var f: Node3D = node3d(nm, origin)
++	f.basis = yaw_basis(yaw)
++	f.set_meta(&"kind", "stairs")
++	add(parent, f)
++	for k: int in range(1, nr):
++		var top: float = float(k) * r
++		var lo: float = (float(solid_y) - origin.y) if solid_y != null else top - r - 0.15
++		mesh_box(f, "Step%02d" % k, Vector3(-w * 0.5, lo, float(k - 1) * t), Vector3(w * 0.5, top, float(k) * t + SEAM), "stair")
++	var ramp_t: float = 0.3
++	var end_z: float = float(nr - 1) * t
++	if solid_y == null:
++		ramp(f, -w * 0.5, w * 0.5, [[Vector2(-t, 0.0), Vector2(end_z, float(nr) * r), Vector2(end_z, float(nr) * r - ramp_t),
++			Vector2(-t, -ramp_t)]])
++	else:
++		var lo2: float = minf(float(solid_y) - origin.y, -ramp_t)
++		ramp(f, -w * 0.5, w * 0.5, [[Vector2(-t, 0.0), Vector2(end_z, float(nr) * r), Vector2(end_z, lo2), Vector2(-t, lo2)]])
++	return f
++
++
++## Balustrade: a thin full-height collider (true to the visual, next_heist §7.2) with a top-rail mesh.
++func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3) -> void:
++	var body: StaticBody3D = box(parent, nm, mn, mx, "trim")
++	if body == null:
++		return
++	body.set_meta(&"kind", "railing")
++
++
++func area_boxes(area: Area3D, boxes: Array) -> void:
++	for i: int in range(boxes.size()):
++		var b: Array = boxes[i]
++		var mn: Vector3 = Vector3(float(b[0]), float(b[1]), float(b[2]))
++		var mx: Vector3 = Vector3(float(b[3]), float(b[4]), float(b[5]))
++		var col: CollisionShape3D = CollisionShape3D.new()
++		col.name = "Shape" if i == 0 else "Shape%d" % i
++		col.shape = box_shape(mx - mn)
++		col.position = (mn + mx) * 0.5
++		add(area, col)
++
++
++func zone(parent: Node3D, nm: String, kind: String, zone_id: String, boxes: Array) -> MapZone:
++	var z: MapZone = MapZone.new()
++	z.name = nm
++	z.kind = MapZone.Kind[kind]
++	z.zone_id = StringName(zone_id)
++	z.collision_layer = 1 << 9
++	z.collision_mask = 0
++	add(parent, z)
++	area_boxes(z, boxes)
++	return z
++
++
++func spawn(parent: Node3D, nm: String, kind: String, pos: Vector3, yaw: float, tags: Array, idle: String) -> SpawnPoint:
++	var sp: SpawnPoint = SpawnPoint.new()
++	sp.name = nm
++	sp.kind = SpawnPoint.Kind[kind]
++	var tg: Array[StringName] = []
++	for t: Variant in tags:
++		tg.append(StringName(String(t)))
++	sp.tags = tg
++	sp.idle_activity = StringName(idle)
++	sp.position = pos
++	sp.basis = yaw_basis(yaw)
++	add(parent, sp)
++	return sp
++
++
++## Placeholder for content that a later G1 step builds (a prefab, NPC spawn or prop): a Marker3D with meta
++## `todo` (what goes here). Never a collision body, so validators see nothing half-built.
++func placeholder(parent: Node3D, nm: String, world_pos: Vector3, todo: String) -> Marker3D:
++	var m: Marker3D = Marker3D.new()
++	m.name = nm
++	m.position = world_pos - parent.position
++	m.set_meta(&"todo", todo)
++	add(parent, m)
++	return m
++
++
++func n(path: String) -> Node3D:
++	return map_root.get_node(path) as Node3D
++
++
++# --- Scene normalisation (byte-stable regens; as shadow_ledger_resources.gd) --------------------
++
++static func read_uid(path: String) -> String:
++	var abs_path: String = ProjectSettings.globalize_path(path)
++	if not FileAccess.file_exists(abs_path):
++		return ""
++	var f: FileAccess = FileAccess.open(abs_path, FileAccess.READ)
++	var first: String = f.get_line()
++	f.close()
++	var rx: RegEx = RegEx.create_from_string("uid=\"(uid://[a-z0-9]+)\"")
++	var m: RegExMatch = rx.search(first)
++	return m.get_string(1) if m != null else ""
++
++
++## Rewrites the random parts of a saved .tscn (ext/sub resource ids, node unique_ids) as sequential values so
++## reruns are byte-identical, and keeps the scene's previous uid.
++static func normalize_scene(path: String, old_uid: String) -> void:
++	var abs_path: String = ProjectSettings.globalize_path(path)
++	var f: FileAccess = FileAccess.open(abs_path, FileAccess.READ)
++	var text: String = f.get_as_text()
++	f.close()
++	var ids: Dictionary = {}
++	var ext_n: int = 0
++	var sub_n: int = 0
++	var decl: RegEx = RegEx.create_from_string("^\\[(ext_resource|sub_resource) [^\\n]*id=\"([^\"]+)\"")
++	for line: String in text.split("\n"):
++		var m: RegExMatch = decl.search(line)
++		if m == null:
++			continue
++		if m.get_string(1) == "ext_resource":
++			ext_n += 1
++			ids["E|" + m.get_string(2)] = "%d_gn" % ext_n
++		else:
++			sub_n += 1
++			ids["S|" + m.get_string(2)] = "gn_%d" % sub_n
++	var out: PackedStringArray = PackedStringArray()
++	var ref_ext: RegEx = RegEx.create_from_string("ExtResource\\(\"([^\"]+)\"\\)")
++	var ref_sub: RegEx = RegEx.create_from_string("SubResource\\(\"([^\"]+)\"\\)")
++	var uid_rx: RegEx = RegEx.create_from_string(" unique_id=[0-9]+")
++	var node_n: int = 0
++	for line2: String in text.split("\n"):
++		var l: String = line2
++		var m2: RegExMatch = decl.search(l)
++		if m2 != null:
++			var key: String = ("E|" if m2.get_string(1) == "ext_resource" else "S|") + m2.get_string(2)
++			l = l.replace("id=\"%s\"" % m2.get_string(2), "id=\"%s\"" % ids[key])
++		l = _replace_refs(l, ref_ext, ids, "E|", "ExtResource")
++		l = _replace_refs(l, ref_sub, ids, "S|", "SubResource")
++		if l.begins_with("[node ") and uid_rx.search(l) != null:
++			node_n += 1
++			l = uid_rx.sub(l, " unique_id=%d" % (100000 + node_n))
++		if l.begins_with("[gd_scene") and old_uid != "":
++			var hdr: RegEx = RegEx.create_from_string("uid=\"uid://[a-z0-9]+\"")
++			l = hdr.sub(l, "uid=\"%s\"" % old_uid)
++		out.append(l)
++	var w: FileAccess = FileAccess.open(abs_path, FileAccess.WRITE)
++	w.store_string("\n".join(out))
++	w.close()
++
++
++static func _replace_refs(line: String, rx: RegEx, ids: Dictionary, prefix: String, fn: String) -> String:
++	var out: String = ""
++	var last: int = 0
++	for m: RegExMatch in rx.search_all(line):
++		var key: String = prefix + m.get_string(1)
++		var rep: String = "%s(\"%s\")" % [fn, ids[key]] if ids.has(key) else m.get_string(0)
++		out += line.substr(last, m.get_start() - last) + rep
++		last = m.get_end()
++	return out + line.substr(last)
+diff --git a/game/world/heists/gallery_night/greybox/gn_builder_base.gd.uid b/game/world/heists/gallery_night/greybox/gn_builder_base.gd.uid
+new file mode 100644
+index 00000000..2e53d24b
+--- /dev/null
++++ b/game/world/heists/gallery_night/greybox/gn_builder_base.gd.uid
+@@ -0,0 +1 @@
++uid://c7my37mxbkksv
+diff --git a/game/world/heists/gallery_night/greybox/gn_gameplay.gd b/game/world/heists/gallery_night/greybox/gn_gameplay.gd
+new file mode 100644
+index 00000000..8cfa0cd4
+--- /dev/null
++++ b/game/world/heists/gallery_night/greybox/gn_gameplay.gd
+@@ -0,0 +1,94 @@
++## Gallery Night gameplay layer (STUB, GN-C1 skeleton). Owner: ENV C.
++## Builds every VariantSlot of the map (groups in resolver order, ids and base weights from the layout data, which
++## tools/levelcheck/plans/gallery_night_slots.py --check keeps in step with the doc and ENV B's variant table)
++## with placeholder content, and the empty Gameplay groups. The G1 build replaces each placeholder with ENV A's
++## prefab instances (loot_spawn, keycard_pickup, code_note, security_camera, laser_grid, padlock, door, NPC
++## SpawnPoints...), located by contract class name as in sl_gameplay.gd, never by a path into game/systems.
++extends "res://world/heists/gallery_night/greybox/gn_builder_base.gd"
++
++## Argus code group for the SV keypad and the code notes (B2).
++const CODE_GROUP: StringName = &"argus"
++## What each group's slot content will be (the placeholder's `todo`).
++const SLOT_TODO: Dictionary = {
++	"centrepiece": "loot_spawn loot.painting_lantern_bearer, objective_tag canvas_lantern, alarm group (sensor_net)",
++	"canvas_orchard": "loot_spawn loot.painting_salt_orchard, objective_tag canvas_orchard",
++	"canvas_widow": "loot_spawn loot.painting_widow_in_blue, objective_tag canvas_widow",
++	"canvas_saint": "loot_spawn loot.painting_tidewater_saint, objective_tag canvas_saint",
++	"sensor_net": "logic slot: params alarm_group / alarmed slot list for the mission (QC-54)",
++	"conservator": "CIVILIAN SpawnPoint civ_conservator (cons_late) / empty (cons_gone)",
++	"keycard": "keycard_pickup objective_tag keycard (kc_curator: NPC-carried, QC-52)",
++	"code_note": "code_note code_group argus, objective_tag code_note",
++	"guard_post": "GUARD SpawnPoint + PatrolGraph post (rover_none: empty)",
++	"security_room_staffed": "CAMERA_OPERATOR SpawnPoint at the SC console (sec_staffed) / empty",
++	"camera": "security_camera instances of this layout (C* placeholders below)",
++	"laser_pattern": "laser_grid TR z 26.5 with this pattern (B4: low beam centre >= 1.30 m)",
++	"curator_route": "civ_curator SpawnPoint + staff_curator PatrolPoints",
++	"court_doors": "door prefab at the WG French doors (NONE until last call / LOCKPICK; catalog glass leaves, flush frame)",
++	"areaway": "grate (lift 3 s) / padlock prefab (lockpick 8 s or saw); ladder to PL",
++	"escape": "escape_zone + secure_zone + vehicle visual (van / limo)",
++	"xl_crate": "loan crate with extra loot.painting_study (late_loan)",
++	"admin_pa": "CIVILIAN SpawnPoint civ_admin at an AO desk (late_paperwork)",
++}
++
++
++## Variants: Group_<group> / Slot_<slot_id> (VariantSlot) at the slot's anchor, one placeholder child each; the
++## layout cameras under their cam_* slot; escape/secure zone placeholders under their escape slot.
++func build_variants(variants: Node3D) -> void:
++	var groups: Dictionary = {}
++	for g: String in L.GROUP_ORDER:
++		groups[g] = add(variants, node3d("Group_" + g))
++	for row: Array in L.SLOTS:
++		var g2: String = String(row[0])
++		var sid: String = String(row[1])
++		var at: Vector3 = Vector3(float(row[5]), float(row[6]), float(row[7]))
++		var params: Dictionary = {}
++		if g2 == "code_note":
++			params = {"code_group": CODE_GROUP}
++		var vs: VariantSlot = _slot(groups[g2], g2, sid, float(row[2]), at, params)
++		vs.set_meta(&"room", String(row[4]))
++		placeholder(vs, "Placeholder", at, "%s (%s)" % [SLOT_TODO.get(g2, "?"), String(row[8])])
++		if g2 == "camera":
++			_layout_cameras(vs, sid)
++		if g2 == "escape":
++			for z: Array in L.ESCAPE_ZONES:
++				if String(z[0]) == sid:
++					placeholder(vs, "%sZone" % String(z[1]).capitalize().replace(" ", ""),
++						Vector3(float(z[4]), float(z[5]), float(z[6])), "%s MapZone of %s" % [z[1], sid])
++
++
++func _slot(parent: Node3D, group: String, slot_id: String, weight: float, at: Vector3, params: Dictionary) -> VariantSlot:
++	var vs: VariantSlot = VariantSlot.new()
++	vs.name = "Slot_" + slot_id
++	vs.slot_group = StringName(group)
++	vs.slot_id = StringName(slot_id)
++	vs.weight = weight
++	vs.params = params
++	vs.position = at
++	add(parent, vs)
++	return vs
++
++
++func _layout_cameras(vs: VariantSlot, layout: String) -> void:
++	for c: Array in L.CAMERAS:
++		if (c[6] as Array).has(layout):
++			placeholder(vs, String(c[0]), Vector3(float(c[3]), float(c[4]), float(c[5])),
++				"security_camera %s (%s)" % [c[0], c[2]])
++
++
++## Gameplay: the always-present prefabs' groups. C11 and C14 are live in every layout (B6), so they sit here,
++## outside any slot. Everything else is a G1 to-do.
++func build_gameplay(gp: Node3D) -> void:
++	for nm: String in ["Doors", "Cameras", "Loot", "Devices", "Ladders", "Lifts", "Civilian"]:
++		add(gp, node3d(nm))
++	var lad: Array = L.AREAWAY["ladder"]
++	placeholder(n("Gameplay/Ladders"), "AreawayLadder", Vector3(float(lad[0]), float(lad[1]), float(lad[2])),
++		"ladder prefab height_m 4.2, the light well's west wall, PL FFL -> the court grate (masked only, no bags; QC-64)")
++	placeholder(n("Gameplay/Ladders"), "FireEscapeLadder", Vector3(10.0, 0.0, -0.45),
++		"ladder prefab height_m 9.0, caged, Mews -> roof deck through the parapet opening; drop section down (B4.6)")
++	for f: String in ["B", "G", "U"]:
++		placeholder(n("Gameplay/Lifts"), "ArtLiftLanding" + f, Vector3(30.0, float(L.FFL[f]), 3.0),
++			"bag_lift landing (4 bags, 10 s): car + landing doors (art lift, every floor)")
++	for c: Array in L.CAMERAS:
++		if (c[6] as Array).has("always"):
++			placeholder(n("Gameplay/Cameras"), String(c[0]), Vector3(float(c[3]), float(c[4]), float(c[5])),
++				"security_camera %s (%s), live in every layout" % [c[0], c[2]])
+diff --git a/game/world/heists/gallery_night/greybox/gn_gameplay.gd.uid b/game/world/heists/gallery_night/greybox/gn_gameplay.gd.uid
+new file mode 100644
+index 00000000..c8549ba8
+--- /dev/null
++++ b/game/world/heists/gallery_night/greybox/gn_gameplay.gd.uid
+@@ -0,0 +1 @@
++uid://dyfqkejja7dxb
+diff --git a/tools/levelcheck/gn_regen_twice.sh b/tools/levelcheck/gn_regen_twice.sh
+new file mode 100755
+index 00000000..a7cb6843
+--- /dev/null
++++ b/tools/levelcheck/gn_regen_twice.sh
+@@ -0,0 +1,42 @@
++#!/usr/bin/env bash
++# Gallery Night skeleton determinism check (scratch; moves into game/tests/c/test_generator_determinism.gd when the
++# map lands after the content freeze). Owner: ENV C (GN-C1).
++# 1. the emitted layout data is current (tools/levelcheck/plans/gallery_night_emit_layout.py --stdout == the .gd);
++# 2. the generator runs twice into a temp dir (-- --out=<path>) and the two scenes are byte-identical.
++# usage: tools/levelcheck/gn_regen_twice.sh [--keep]     (--keep leaves the temp dir and prints it)
++set -uo pipefail
++source "$(dirname "$0")/_common.sh"
++LAYOUT="$ROOT/game/world/heists/gallery_night/greybox/gallery_night_layout.gd"
++GEN="res://world/heists/gallery_night/greybox/build_greybox.gd"
++rc=0
++if ! diff -q <(python3 "$ROOT/tools/levelcheck/plans/gallery_night_emit_layout.py" --stdout) "$LAYOUT" >/dev/null; then
++	echo "FAIL layout: $LAYOUT is stale (re-run tools/levelcheck/plans/gallery_night_emit_layout.py)"
++	rc=1
++else
++	echo "OK   layout data is current"
++fi
++tmp="$(mktemp -d)"
++for run in a b; do
++	log="$tmp/gen_$run.log"
++	if ! "$GODOT" --headless --path "$ROOT/game" --script "$GEN" -- --out="$tmp/gallery_night_$run.tscn" >"$log" 2>&1 \
++		|| [[ ! -f "$tmp/gallery_night_$run.tscn" ]]; then
++		echo "FAIL run $run: generator failed"
++		lc_show "$log"
++		rm -rf "$tmp"
++		exit 1
++	fi
++	grep -E "^gallery_night: saved" "$log" || true
++done
++if cmp -s "$tmp/gallery_night_a.tscn" "$tmp/gallery_night_b.tscn"; then
++	echo "OK   two regens are byte-identical ($(sha256sum "$tmp/gallery_night_a.tscn" | cut -c1-16), $(wc -c <"$tmp/gallery_night_a.tscn") bytes)"
++else
++	echo "FAIL two regens differ:"
++	diff "$tmp/gallery_night_a.tscn" "$tmp/gallery_night_b.tscn" | head -20
++	rc=1
++fi
++if [[ "${1:-}" == "--keep" ]]; then
++	echo "kept: $tmp"
++else
++	rm -rf "$tmp"
++fi
++exit $rc
+diff --git a/tools/levelcheck/plans/gallery_night_emit_layout.py b/tools/levelcheck/plans/gallery_night_emit_layout.py
+new file mode 100644
+index 00000000..605b7e49
+--- /dev/null
++++ b/tools/levelcheck/plans/gallery_night_emit_layout.py
+@@ -0,0 +1,343 @@
++# Emits game/world/heists/gallery_night/greybox/gallery_night_layout.gd (the generator's data) from the floor-plan
++# data (gallery_night_floors_ascii.py) and the slot / contract-node list (gallery_night_slots.py). Owner: ENV C.
++# Run: python3 tools/levelcheck/plans/gallery_night_emit_layout.py            (writes the .gd)
++#      python3 tools/levelcheck/plans/gallery_night_emit_layout.py --stdout   (prints it)
++# Deterministic: plain lists in source order, sorted wall lines, fixed float formatting. Never hand-edit the
++# output; change the plan / slot data (or this file) and re-emit.
++import os
++import sys
++from typing import Dict, List, Optional, Tuple
++
++sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
++import gallery_night_floors_ascii as P  # noqa: E402
++import gallery_night_slots as S  # noqa: E402
++
++OUT = os.path.join(S.ROOT, "game", "world", "heists", "gallery_night", "greybox", "gallery_night_layout.gd")
++FFL = P.FLOOR_HEIGHTS
++SLAB_T = 0.3
++EXT_T = 0.4     # outer face 0.2 m out of the centre line (Site: outer face 44.4 x 30.4)
++INT_T = 0.2
++VAULT_T = 0.4
++CORE_T = 0.3    # Stair SS / head house
++PARAPET = 1.1
++
++# Room list: id -> (ceiling above FFL (0 = open / shaft), kit). Ceiling heights from the Room list / vertical data.
++ROOM_META: Dict[str, Tuple[float, str]] = {
++    "SS": (0.0, ""), "LF": (0.0, ""), "HH": (2.7, ""), "LM": (2.7, ""), "X4": (0.0, "exterior_roof"),
++    "LK": (3.0, "locker_room"), "FR": (3.0, "storage_frames"), "QR": (3.0, "storage_quarantine"),
++    "BB": (3.0, "corridor_service"), "PL": (3.4, "plant_climate"), "AS": (3.4, "art_store"),
++    "BR": (3.0, "break_room"), "WC": (3.0, "restroom_multi"), "SC": (3.0, "security_office"),
++    "RG": (3.0, "office_registrar"), "J": (3.0, "janitor_closet"), "E1": (3.0, "electrical_closet"),
++    "BC": (3.0, "corridor_service"), "LD": (4.5, "loading_dock_gallery"), "GH": (9.8, "great_hall_gala"),
++    "VE": (4.5, "vestibule_bronze"), "CK": (4.5, "cloakroom"), "GS": (4.5, "gift_shop"), "WG": (4.5, "gallery_hang"),
++    "DC": (4.5, "gallery_cabinet"), "PWW": (3.0, "restroom_public"), "PWM": (3.0, "restroom_public"),
++    "EG": (4.5, "gallery_hang"), "EB": (4.5, "gallery_hang"), "UC": (3.0, "corridor_office"),
++    "CO": (3.0, "office_curator"), "AO": (3.0, "office_open"), "SV": (3.0, "server_room"),
++    "UW": (3.0, "restroom_single"), "FS": (3.0, "storage_frames"), "CS": (4.0, "conservation_studio"),
++    "BW": (4.4, "gallery_balcony"), "BE": (4.4, "gallery_balcony"), "SL": (4.4, "gallery_balcony"),
++    "UG1": (6.0, "gallery_toplit"), "UG2": (6.0, "gallery_toplit"), "UG3": (6.0, "gallery_toplit"),
++    "AT": (3.0, "attendant_station"), "TR": (4.0, "treasury_cabinet"),
++}
++# Roof / slab-above top (absolute) per upper room: the north strip under the roof deck slab (8.7-9.0), the Great
++# Hall group under its roof (10.7-11.0), the galleries under the laylight attic (placeholder flat roof 11.4-11.7),
++# CS / AT / TR under their own roofs.
++U_TOP = {"CO": 9.0, "AO": 9.0, "UW": 9.0, "FS": 9.0, "SV": 9.0, "LF": 9.0, "UC": 9.0, "SS": 9.0,
++         "BW": 11.0, "BE": 11.0, "SL": 11.0, "GH_VOID": 11.0, "UG1": 11.7, "UG2": 11.7, "UG3": 11.7,
++         "CS": 9.7, "AT": 9.7, "TR": 9.7}
++ROOF_DECK_ROOMS = {"CO", "AO", "UW", "FS", "SV", "LF", "UC", "SS"}
++PUBLIC_ROOMS = ["GH", "VE", "CK", "WG", "DC", "PWW", "PWM", "EG", "EB"]   # until last call (+ X1, X3)
++
++# --- G1 to-dos (GN-C1): site, closures, police islands, the areaway, the oculus. Doc: Site, Play-space closure,
++# Police spawns (D-064 / QC-41), Basement notes (QC-64). Rects [x0, z0, x1, z1]; boxes [x0, y0, z0, x1, y1, z1].
++# Openings the plan grid cannot carry (the areaway passage is outside the basement footprint, QC-64).
++EXTRA_OPENINGS = [("B", "D", 0.0, 13.5, 0.0, 14.5, "areaway passage into PL (QC-64)")]
++# Areaway light well (QC-64): a 2 x 2 m well at x -4..-2, z 13..15 under the court grate, its floor at the PL FFL,
++# and a passage (x -2..-0.2, roofed by the court grade) to the 1.0 m opening in the basement wall at x 0.
++AREAWAY = {"well": [-4.0, 13.0, -2.0, 15.0], "pit": [-4.0, 13.0, -0.2, 15.0], "wall_t": 0.2, "floor_y": -4.2,
++           "ladder": [-3.85, -4.2, 14.0]}
++# No grade over these rects (per exterior room): the light well (the grate is the `areaway` slot's prefab).
++SITE_HOLES = {"X3": [[-4.0, 13.0, -2.0, 15.0]]}
++# Grade in play outside the exterior rooms: the Parade east end (x 58..70) to the press-van barriers (Play-space
++# closure).
++GRADE_EXTRA = [["ParadeEast", "asphalt", [58.0, 30.0, 70.0, 50.0]]]
++# Police street islands behind the closures (QC-42 / D-064: never inside the building): [spawn, island grade, link
++# from (island), link to (play side)]. An island joins play only through its one-way link (the police open the
++# barrier / gate); its spawn carries meta police_only, so reachability is checked spawn -> crew.
++POLICE_ISLANDS = [
++    ["P1", [-54.0, 30.0, -40.4, 50.0], [-42.0, 0.0, 33.0], [-38.8, 0.0, 33.0]],
++    ["P2", [70.4, 30.0, 84.0, 50.0], [72.0, 0.0, 34.0], [68.5, 0.0, 34.0]],
++    ["P3", [44.0, -34.0, 58.0, -22.4], [46.0, 0.0, -23.5], [46.0, 0.0, -20.5]],
++    ["P4", [-54.0, -8.0, -40.4, 0.0], [-42.0, 0.0, -2.0], [-38.8, 0.0, -2.0]],
++]
++# Play-space closures and neighbour massing (greybox): [name, box, surface class]. Every top is out of jump reach
++# (> 1.18 m above the play mesh), so the `slopes` rule holds without copings.
++CLOSURES = [
++    ["ParadeWBarriers", [-40.4, 0.0, 30.0, -40.0, 2.2, 50.0], "trim"],
++    ["GalaCoach", [-43.4, 0.0, 36.0, -40.8, 3.2, 48.0], "prop"],
++    ["ParadeEBarriers", [70.0, 0.0, 30.0, 70.4, 2.2, 50.0], "trim"],
++    ["PressVan", [70.8, 0.0, 40.0, 73.2, 2.8, 46.0], "prop"],
++    ["WexleyNBarriers", [44.0, 0.0, -22.4, 58.0, 2.2, -22.0], "trim"],
++    ["CateringTruck", [50.0, 0.0, -26.0, 56.0, 3.4, -23.2], "prop"],
++    ["MewsGate", [-40.4, 0.0, -8.0, -40.0, 2.4, 0.0], "door"],
++    ["MewsHouses", [-40.0, 0.0, -16.0, 43.8, 7.0, -8.0], "wall_ext"],
++    ["GrandWexleyHotel", [58.4, 0.0, -34.0, 70.0, 22.0, 30.0], "wall_ext"],
++    ["OstranderConservatory", [-40.0, 0.0, 0.4, -16.4, 14.0, 30.0], "wall_ext"],
++    ["CourtWallW", [-16.4, 0.0, 0.0, -16.0, 3.0, 30.0], "wall_ext"],
++    ["CourtWallN", [-16.0, 0.0, 0.0, -0.2, 3.0, 0.4], "wall_ext"],
++    ["CourtWallSW", [-16.0, 0.0, 29.6, -10.0, 3.0, 30.0], "wall_ext"],
++    ["CourtWallSE", [-6.0, 0.0, 29.6, -0.2, 3.0, 30.0], "wall_ext"],
++    ["ParkRailings", [-40.0, 0.0, 50.0, 70.0, 1.8, 50.1], "trim"],
++]
++# Great Hall oculus (22, 17): a 3 x 3 m glazed opening through the laylight (+9.8) and the roof (+11.0). P5's one-way
++# rappel link drops through it to the hall floor (QC-41); a second one-way link drops from the hall roof's north-east
++# edge onto the roof deck (doc Police spawns); the areaway link is the Phantom flank (nav layer `vent`).
++OCULUS = [20.5, 15.5, 23.5, 18.5]
++NAV_LINKS = [
++    ["RappelLinkOculus", [22.0, 11.0, 17.0], [22.0, 0.0, 17.0], False, 1],
++    ["RoofDropLinkDeck", [30.5, 11.0, 8.8], [30.5, 9.0, 7.0], False, 1],
++    ["AreawayLink", [-5.0, 0.0, 14.0], [-3.0, -4.2, 14.0], True, 4],
++]
++
++
++def room_top(fl: str, rid: Optional[str]) -> float:
++    if rid is None:
++        return -1e9
++    if fl == "B":
++        return FFL["G"] - SLAB_T
++    if fl == "G":
++        return FFL["U"] if rid == "GH" else FFL["U"] - SLAB_T
++    if fl == "U":
++        return U_TOP[rid]
++    return FFL["R"] + 2.7 + SLAB_T if rid in ("HH", "LM") else FFL["R"]
++
++
++def on_vault(fl: str, e: Tuple[int, int, int, int]) -> bool:
++    for (x0, z0, x1, z1) in P.VAULT.get(fl, []):
++        if x0 == x1 == e[0] == e[2] and z0 <= e[1] and e[3] <= z1:
++            return True
++        if z0 == z1 == e[1] == e[3] and x0 <= e[0] and e[2] <= x1:
++            return True
++    return False
++
++
++def wall_runs(fl: str) -> List[list]:
++    """Merged straight wall runs: [axis, fixed, a0, a1, thickness, y0, y1] (absolute heights)."""
++    c = P.cells(fl)
++    rows = []
++    for e in sorted(P.walls(fl)):
++        s0, s1 = P.sides(c, e)
++        ext = s0 is None or s1 is None
++        t = EXT_T if ext else VAULT_T if on_vault(fl, e) else CORE_T if {s0, s1} & {"SS", "HH"} else INT_T
++        top = max(room_top(fl, s0), room_top(fl, s1))
++        if ext and fl in ("B", "G"):   # the facade runs past the slab edge to the next FFL (no slot at the slab)
++            top = FFL["G"] if fl == "B" else FFL["U"]
++        if ext and fl == "U":
++            inner = s0 or s1
++            top = top if inner in ROOF_DECK_ROOMS else top + PARAPET
++        if ext and fl == "R" and (s0 or s1) == "X4":
++            top = FFL["R"] + (1.2 if e[0] == e[2] == 32 else PARAPET)   # 1.2 m by the sawtooth (B4.5)
++        axis, fixed, a = ("z", e[0], e[1]) if e[0] == e[2] else ("x", e[1], e[0])
++        rows.append([axis, float(fixed), float(a), float(a + 1), t, FFL[fl], round(top, 3)])
++    rows.sort(key=lambda r: (r[0], r[1], r[2]))
++    out: List[list] = []
++    for r in rows:
++        if out and out[-1][0] == r[0] and out[-1][1] == r[1] and out[-1][3] == r[2] and out[-1][4:] == r[4:]:
++            out[-1][3] = r[3]
++        else:
++            out.append(list(r))
++    return out
++
++
++def opening_heights(fl: str, k: str, note: str) -> Tuple[float, float]:
++    if k == "D":
++        return 0.0, 2.1
++    if k in ("A", "S"):
++        return 0.0, 3.6
++    if k == "R":
++        return 0.0, 4.5
++    if k == "V":
++        return 0.0, 2.2
++    if k == "h":
++        return 0.0, PARAPET + 0.5
++    if "shop-front" in note:
++        return 0.3, 3.6
++    if "tall window" in note:
++        return 0.9, 3.6
++    if fl == "U" and note.startswith("CS"):
++        return 0.9, 3.4
++    return 0.9, 2.4
++
++
++def fmt(v: object) -> str:
++    if isinstance(v, bool):
++        return "true" if v else "false"
++    if isinstance(v, float):
++        s = "%.3f" % v
++        s = s.rstrip("0")
++        return s + "0" if s.endswith(".") else s
++    if isinstance(v, int):
++        return str(v)
++    if isinstance(v, str):
++        return '"%s"' % v.replace('"', '\\"')
++    if isinstance(v, (list, tuple)):
++        return "[" + ", ".join(fmt(x) for x in v) + "]"
++    if isinstance(v, dict):
++        return "{" + ", ".join("%s: %s" % (fmt(k), fmt(x)) for k, x in v.items()) + "}"
++    raise TypeError(v)
++
++
++WIDTH = 124   # gdlint max-line-length 140 (a tab counts as one column)
++
++
++def pp(v: object, depth: int) -> str:
++    """fmt(), broken over lines (one element per line) where a line would pass WIDTH."""
++    one = fmt(v)
++    if depth + len(one) <= WIDTH or not isinstance(v, (list, tuple, dict)):
++        return one
++    tabs = "\t" * (depth + 1)
++    if isinstance(v, dict):
++        items = ["%s: %s" % (fmt(k), pp(x, depth + 1)) for k, x in v.items()]
++        return "{\n" + "".join(tabs + it + ",\n" for it in items) + "\t" * depth + "}"
++    return "[\n" + "".join(tabs + pp(x, depth + 1) + ",\n" for x in v) + "\t" * depth + "]"
++
++
++def wrap_doc(doc: str) -> str:
++    out, line = "", "##"
++    for w in doc.split():
++        if len(line) + 1 + len(w) > WIDTH:
++            out += line + "\n"
++            line = "##"
++        line += " " + w
++    return out + line + "\n"
++
++
++def const(name: str, rows: object, typ: str = "Array", doc: str = "") -> str:
++    out = wrap_doc(doc) if doc else ""
++    head = "const %s: %s = " % (name, typ)
++    if isinstance(rows, list) and len(head) + len(fmt(rows)) > WIDTH:
++        out += head + "[\n"
++        for r in rows:
++            out += "\t%s,\n" % pp(r, 1)
++        return out + "]\n"
++    if isinstance(rows, dict) and len(head) + len(fmt(rows)) > WIDTH:
++        return out + head + "{\n" + "".join("\t%s: %s,\n" % (fmt(k), pp(x, 1)) for k, x in rows.items()) + "}\n"
++    return out + head + pp(rows, 0) + "\n"
++
++
++def emit() -> str:
++    fl_idx = {f: i for i, f in enumerate(P.FLOORS)}
++    hdr = (
++        "## Gallery Night greybox layout data. GENERATED by tools/levelcheck/plans/gallery_night_emit_layout.py from\n"
++        "## gallery_night_floors_ascii.py (rooms, openings) and gallery_night_slots.py (slots, cameras, spawns, zones,\n"
++        "## preplan points, review cameras). Do not edit: change the plan data and re-emit. Owner: ENV C (GN-C1).\n"
++        "## Coordinates: metres, world x = plan x (east), world z = plan z (south), +y up; origin = the gallery's NW\n"
++        "## corner on the wall centre lines. Heights are absolute (FFL B -4.2, G 0.0, U 5.4, R 9.0).\n"
++        "extends RefCounted\n\n"
++    )
++    s = hdr
++    s += "const FLOORS: Array[String] = %s\n" % fmt(list(P.FLOORS))
++    s += "const FLOOR_HEIGHTS: Array[float] = %s\n" % fmt([float(FFL[f]) for f in P.FLOORS])
++    s += "## HeistMap.floor_names (D-054), parallel to FLOOR_HEIGHTS.\n"
++    s += 'const FLOOR_NAMES: Array[String] = ["Basement", "Ground", "Upper", "Roof"]\n'
++    s += "const FFL: Dictionary = %s\n" % fmt({f: float(FFL[f]) for f in P.FLOORS})
++    s += "const SLAB_T: float = %s\nconst EXT_T: float = %s\nconst INT_T: float = %s\n" % (fmt(SLAB_T), fmt(EXT_T),
++                                                                                        fmt(INT_T))
++    s += const("FOOT", {f: [float(v) for v in P.FOOT[f]] for f in P.FLOORS}, "Dictionary") + "\n"
++    rooms = []
++    for f in P.FLOORS:
++        for rid, purpose, r in P.ROOMS[f]:
++            ceil, kit = ROOM_META[rid]
++            rooms.append([f, rid, purpose, float(r[0]), float(r[1]), float(r[2]), float(r[3]), float(ceil), kit])
++    s += const("ROOMS", rooms, doc="[floor, id, RoomVolume.purpose, x0, z0, x1, z1, ceiling above FFL (0 = open), kit].")
++    ext = []
++    for rid, rects in S.EXTERIOR.items():
++        for r in rects:
++            ext.append([rid, S.EXTERIOR_PURPOSE[rid], [float(v) for v in r], S.EXTERIOR_KIT[rid]])
++    s += const("EXTERIOR", ext, doc="Exterior rooms at grade: [id, purpose, [x0, z0, x1, z1], kit].")
++    s += const("VOIDS", [[f, v[0], [float(x) for x in v[1]]] for f in P.FLOORS for v in P.VOID.get(f, [])],
++               doc="No floor on this level: [floor, id, [x0, z0, x1, z1]].")
++    s += "const PUBLIC_ROOMS: Array[String] = %s\n" % fmt(PUBLIC_ROOMS)
++    s += "const ROOF_DECK_ROOMS: Array[String] = %s\n" % fmt(sorted(ROOF_DECK_ROOMS))
++    s += const("U_TOP", {k: float(v) for k, v in U_TOP.items()}, "Dictionary",
++               "Roof slab top per upper room (absolute; the slab is SLAB_T thick).") + "\n"
++    walls = [[f] + r for f in P.FLOORS for r in wall_runs(f)]
++    s += const("WALLS", walls, doc="Wall runs from the room edges: [floor, axis (x: along x at z = fixed; z: along z at "
++               "x = fixed), fixed, a0, a1, thickness, y0, y1].")
++    ops = []
++    for (f, k, x0, z0, x1, z1, note) in list(P.OPEN) + EXTRA_OPENINGS:
++        sill, head = opening_heights(f, k, note)
++        axis, fixed, a0, a1 = ("z", x0, z0, z1) if x0 == x1 else ("x", z0, x0, x1)
++        ops.append([f, k, axis, float(fixed), float(a0), float(a1), round(FFL[f] + sill, 3), round(FFL[f] + head, 3),
++                    note.split(":")[0].split(" (")[0][:60]])
++    s += const("OPENINGS", ops, doc="Openings: [floor, kind (D door, A arch, S shuttered arch, R roller, V vault, W "
++               "window, h ladder top), axis, fixed, a0, a1, y0, y1, note]. Glass in W.")
++    rails = []
++    for f in P.FLOORS:
++        for (x0, z0, x1, z1) in P.RAIL.get(f, []):
++            axis, fixed, a0, a1 = ("z", x0, z0, z1) if x0 == x1 else ("x", z0, x0, x1)
++            spans = [[float(a0), float(a1)]]
++            if axis == "z":   # the return-flight landings (z 14.4-16.4) join the balconies through the rail
++                spans = [[float(a0), 14.4], [16.4, float(a1)]]
++            for sp in spans:
++                rails.append([f, axis, float(fixed), sp[0], sp[1], FFL[f], FFL[f] + PARAPET])
++    s += const("RAILS", rails, doc="Balustrades (1.1 m): [floor, axis, fixed, a0, a1, y0, y1].")
++    ss = [[st[1], st[2], st[4], st[5]] for st in P.STAIRS if st[0] == "SS"]
++    s += "## Stair SS (service U-stair) in the core %s: per storey [y0, y1, risers per flight, riser]; tread 0.28, flights\n" \
++         "## 1.2 wide (west up-flight x 0.15-1.35 rising north, well 1.35-1.55, east return flight 1.55-2.75 rising south),\n" \
++         "## first riser line z 6.35 (the floor landing z 6.35-7.85 takes the 1.0 m stair door at z 6.5-7.5).\n" % (P.SS,)
++    s += "const SS_RECT: Array = %s\n" % fmt([float(v) for v in P.SS])
++    s += "const SS_STOREYS: Array = %s\n" % fmt([[float(a), float(b), int(m), float(r)] for a, b, m, r in ss])
++    s += "const SS_TREAD: float = 0.28\nconst SS_Z_START: float = 6.35\nconst SS_CLEAR: Array = [0.15, 0.15, 2.85, 7.85]\n"
++    s += "const SS_WEST: Array = [0.15, 1.35]\nconst SS_EAST: Array = [1.55, 2.75]\nconst SS_WELL: Array = [1.35, 1.55]\n\n"
++    s += ("## Grand (imperial) stair (vertical data): central flight x 20.8-23.2 rising north from z 14.4 to the half\n"
++          "## landing (z 8.2-10.2, x 15.0-29.0, +2.7); return flights x 15.0-16.6 / x 27.4-29.0 rising south to z 14.4 onto\n"
++          "## the balcony landings (z 14.4-16.4, +5.4). 15 risers @ 0.18, tread 0.30 per flight.\n")
++    s += const("GRAND", {
++        "risers": 15, "riser": 0.18, "tread": 0.30, "z_foot": 14.4, "z_land": 10.2, "half_landing": [15.0, 8.2, 29.0, 10.2],
++        "central": [20.8, 23.2], "returns": [[15.0, 16.6], [27.4, 29.0]], "upper_landing_z": [14.4, 16.4]}, "Dictionary") + "\n"
++    s += const("AREAWAY", AREAWAY, "Dictionary", "Areaway light well + passage into PL (QC-64); rects [x0, z0, x1, z1].")
++    s += const("SITE_HOLES", SITE_HOLES, "Dictionary", "No grade over these rects (per exterior room).")
++    s += const("GRADE_EXTRA", GRADE_EXTRA, doc="Grade in play outside the exterior rooms: [name, surface, [x0, z0, x1, z1]].")
++    s += const("POLICE_ISLANDS", POLICE_ISLANDS, doc="Police street islands: [spawn, grade [x0, z0, x1, z1], one-way link "
++               "from (island), to (play)].")
++    s += const("CLOSURES", CLOSURES, doc="Play-space closures / neighbour massing: [name, [x0, y0, z0, x1, y1, z1], surface].")
++    s += "const OCULUS: Array = %s\n" % fmt(OCULUS)
++    s += const("NAV_LINKS", NAV_LINKS, doc="Always-present nav links: [name, from, to, bidirectional, navigation_layers] "
++               "(1 walkable, 4 vent).") + "\n"
++    slots = []
++    for g, sid, w, f, rid, x, z, y, note in S.SLOTS:
++        slots.append([g, sid, float(w), f, rid, float(x), round(FFL[f] + y, 3), float(z), note])
++    s += const("SLOTS", slots, doc="VariantSlots (resolver order): [group, slot_id, weight, floor, room, x, y, z, note].")
++    s += const("GROUP_ORDER", S.GROUP_ORDER, "Array[String]")
++    cams = [[cid, r[0], r[1], float(r[2]), round(FFL[r[0]] + r[4], 3), float(r[3]), list(r[5])] for cid, r in S.CAMERAS.items()]
++    s += const("CAMERAS", cams, doc="Security cameras: [id, floor, room, x, mount y, z, layouts (cam_* slots or always)].")
++    s += "const CAMERA_SPINE_ROOMS: Array[String] = %s\n" % fmt(list(S.CAMERA_SPINE_ROOMS))
++    s += "const CAMERA_SCREEN_SLOTS: Array[String] = %s\n" % fmt(list(S.CAMERA_SCREEN_SLOTS))
++    s += const("SCREENS", [[r, float(a), float(b), float(c), float(d)] for r, a, b, c, d in S.SCREENS],
++               doc="Partition screens (2.4 m, meta kind partition_screen): [room, x0, z0, x1, z1] on the upper floor.")
++    s += const("PLAYER_SPAWNS", [[nm, tag, f, rid, float(x), FFL[f], float(z), float(yaw)]
++                                 for nm, tag, f, rid, x, z, yaw in S.PLAYER_SPAWNS],
++               doc="PLAYER spawns: [name, spawn_tag (\"\" = default), floor, room, x, y, z, yaw].")
++    s += const("POLICE_SPAWNS", [[nm, tag, float(x), float(y), float(z)] for nm, tag, x, z, y in S.POLICE_SPAWNS],
++               doc="POLICE spawns: [name, tag, x, y, z] (outside the play space; P5 on the Great Hall roof).")
++    s += const("ESCAPE_ZONES", [[sl, k, f, rid, float(x), FFL[f], float(z)] for sl, k, f, rid, x, z in S.ESCAPE_ZONES],
++               doc="Escape / secure zones (children of their escape slot): [slot, kind, floor, room, x, y, z].")
++    s += const("PREPLAN", [[pid, cat, fi, f, rid, float(x), FFL[f], float(z), params]
++                           for pid, cat, fi, f, rid, x, z, params in S.PREPLAN],
++               doc="PREPLAN_POINT markers: [id, category, floor index, floor, room, x, y, z, params].")
++    s += const("REVIEW_CAMERAS", [[rc[0], rc[1], rc[2], float(rc[3]), round(FFL[rc[1]] + rc[5], 3), float(rc[4]),
++                                   float(rc[6]), round(FFL[rc[1]] + rc[8], 3), float(rc[7])] for rc in S.REVIEW_CAMERAS],
++               doc="Review cameras: [id, floor, room, x, y, z, look-at x, y, z].")
++    _ = fl_idx
++    return s
++
++
++if __name__ == "__main__":
++    text = emit()
++    if "--stdout" in sys.argv:
++        sys.stdout.write(text)
++    else:
++        os.makedirs(os.path.dirname(OUT), exist_ok=True)
++        with open(OUT, "w", encoding="utf-8", newline="\n") as f:
++            f.write(text)
++        print("wrote %s (%d lines)" % (os.path.relpath(OUT, S.ROOT), text.count("\n")))
+-- 
+2.43.0
+

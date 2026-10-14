@@ -12,7 +12,10 @@ single/service: back of house, fire exit), glass (double only: brass-framed glas
 shop entry).
 """
 
+import math
+
 from _pb import Kit, panel_door
+from lib import geo
 
 TRI_BUDGET = 8000
 _KINDS = {"single": (0.9, 0.05, 1), "double": (0.9, 0.1, 2), "service": (1.1, 0.05, 1)}
@@ -46,13 +49,21 @@ LEAF_H = 2.1
 OPEN_H = 2.2
 ARCH_W = 0.07     # architrave width
 ARCH_T = 0.018    # architrave projection
+JAMB_ROUND = 0.04  # PO-7 frame_proud: radius of the rounded room-side edges of the jamb colliders
 
 
 def _frame(k: Kit, hw: float, jamb: float, wall_t: float, finish: str):
     """Jamb lining (in the opening) and architraves on both wall faces; trimesh collision.
 
     The lining fills the whole jamb allowance, so the leaf closes 3 mm off it (PO-7: a 0.03 m
-    lining in the 0.05 / 0.10 m jamb left 2.3 / 7.3 cm slits beside the leaves)."""
+    lining in the 0.05 / 0.10 m jamb left 2.3 / 7.3 cm slits beside the leaves).
+
+    Collision (PO-7 frame_proud): only the jamb linings and the head, exactly flush with the wall
+    faces (+-wall_t / 2), the jambs' room-side edges rounded (JAMB_ROUND quarter arcs) so a crew
+    capsule cutting the corner slides round the jamb. The architraves and plinth blocks stand
+    proud of the wall as visual trim only: their old box colliders stood 1.8 cm off both wall
+    faces with sharp corners 7 cm beside the reveal (a bag-carrying capsule stalled on them at
+    Glasshouse LobbyDoor), and the wall behind them already blocks."""
     fr = k.obj("Frame")
     key = {"walnut": "walnut", "ivory": "paint_ivory", "steel": "metal_dark", "glass": "brass", "grille": "metal_dark",
            "bronze": "brass"}[finish]
@@ -68,7 +79,6 @@ def _frame(k: Kit, hw: float, jamb: float, wall_t: float, finish: str):
     lin.bx((-hw + lining, 0.024, 0.0), (-hw + lining + 0.012, 0.035, head), key)
     lin.bx((hw - lining - 0.012, 0.024, 0.0), (hw - lining, 0.035, head), key)
     lin.bx((-hw + lining, 0.024, head - 0.012), (hw - lining, 0.035, head), key)
-    cols = []
     for side in (-1, 1):
         y0, y1 = sorted((side * wall_t / 2, side * (wall_t / 2 + ARCH_T)))
         arch.bx((-hw - ARCH_W, y0, 0.0), (-hw, y1, OPEN_H + ARCH_W), key)
@@ -78,14 +88,37 @@ def _frame(k: Kit, hw: float, jamb: float, wall_t: float, finish: str):
         y2, y3 = sorted((side * wall_t / 2, side * (wall_t / 2 + ARCH_T + 0.006)))
         arch.bx((-hw - ARCH_W - 0.004, y2, 0.0), (-hw + 0.004, y3, 0.16), key)
         arch.bx((hw - 0.004, y2, 0.0), (hw + ARCH_W + 0.004, y3, 0.16), key)
-        cols += [((-hw - ARCH_W, y0, 0.0), (-hw, y1, OPEN_H + ARCH_W)),
-                 ((hw, y0, 0.0), (hw + ARCH_W, y1, OPEN_H + ARCH_W)),
-                 ((-hw, y0, OPEN_H), (hw, y1, OPEN_H + ARCH_W))]
     obj = fr.build()
-    cols += [((-hw, -d, 0.0), (-hw + lining, d, OPEN_H)), ((hw - lining, -d, 0.0), (hw, d, OPEN_H)),
-             ((-hw + lining, -d, head), (hw - lining, d, OPEN_H))]
-    k.collision(cols, kind="trimesh", parent=obj)
+    _frame_collision(obj, hw, lining, wall_t, head)
     return obj
+
+
+def _jamb_profile(hw: float, lining: float, wall_t: float, side: float) -> list[tuple[float, float]]:
+    """Plan profile (x, y) of one jamb collider: the lining across the full wall thickness, outer
+    face on the reveal (|x| = hw), inner face at |x| = hw - lining, both room-side edges of the
+    inner face rounded with radius JAMB_ROUND (4 segments). side -1 = -X jamb, +1 = +X jamb."""
+    h = wall_t / 2
+    r = min(JAMB_ROUND, lining - 0.005, h - 0.01)
+    xi = hw - lining  # |x| of the inner face
+    pts: list[tuple[float, float]] = [(hw, -h)]
+    for i in range(5):  # -Y edge: from the wall face (|x| = xi + r) round to the inner face
+        a = math.pi / 2 * i / 4
+        pts.append((xi + r - r * math.sin(a), -h + r - r * math.cos(a)))
+    for i in range(5):  # +Y edge: from the inner face round to the wall face
+        a = math.pi / 2 * i / 4
+        pts.append((xi + r - r * math.cos(a), h - r + r * math.sin(a)))
+    pts.append((hw, h))
+    out = [(side * x, y) for x, y in pts]
+    return out if side > 0 else list(reversed(out))
+
+
+def _frame_collision(parent, hw: float, lining: float, wall_t: float, head: float) -> None:
+    """Flush trimesh collision of the frame: two rounded jambs + the head (see _frame)."""
+    mb = geo.MeshBuilder()
+    for side in (-1.0, 1.0):
+        mb.prism(_jamb_profile(hw, lining, wall_t, side), axis="Z", start=0.0, end=OPEN_H)
+    mb.box((-hw + lining, -wall_t / 2, head), (hw - lining, wall_t / 2, OPEN_H))
+    geo.collision_from_builder(mb, "trimesh", parent=parent)
 
 
 def _lever(p, x: float, sign: float, t: float, key: str) -> None:
