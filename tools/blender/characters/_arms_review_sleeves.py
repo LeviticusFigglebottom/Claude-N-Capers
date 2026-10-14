@@ -24,7 +24,7 @@ import _arms_review as R  # noqa: E402
 import _arms_sleeves as SL  # noqa: E402
 
 CELLS = ["pistol_idle:0", "rifle_ads_idle:0"]
-ROWS = [("generic", {"skin": 2})] + [(h, {"heister": h, "skin": {"rook": 3, "sable": 5, "dutch": 1, "wren": 2}[h]})
+ROWS = [("generic", {"skin": 2})] + [(h, {"heister": h, "skin": {"rook": 3, "sable": 5, "dutch": 1, "wren": 2, "marten": 3}[h]})
                                      for h in SL.VARIANTS]
 
 

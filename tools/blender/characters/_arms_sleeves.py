@@ -106,6 +106,20 @@ VARIANTS: dict[str, Variant] = {
         ),
         note="brown leather bomber sleeve gathered (7 pleats) into a ribbed graphite knit cuff (32 ribs), tan "
              "work gloves"),
+    "marten": Variant(
+        "marten", "char_crew_glove_orange",
+        (
+            Layer("char_crew_glove_orange", ((-0.042, 0.0040), (-0.026, 0.0038), (-0.010, 0.0035), (0.0, 0.0032)),
+                  hems=("start",), hem=0.0018, glove=True),
+            Layer("char_crew_marten_parka", ((-0.050, 0.0120), (-0.040, 0.0125), (-0.030, 0.0125), (-0.022, 0.0120),
+                                             (-0.016, 0.0115)),
+                  hems=("end",), hem=0.004),
+            Layer("char_crew_marten_parka", ((U_SHOULDER, 0.026, 0.0), (-0.30, 0.025, 0.0), (-0.22, 0.024, 0.0),
+                                             (-0.15, 0.023, 0.0008), (-0.095, 0.0235, 0.0018), (-0.068, 0.0225, 0.0024),
+                                             (-0.056, 0.019, 0.002), (-0.048, 0.016, 0.001)),
+                  hems=("end",), hem=0.003, pleats=6),
+        ),
+        note="roomy olive parka sleeve gathered (6 pleats) into a plain parka cuff band, burnt-orange gloves"),
     "wren": Variant(
         "wren", "char_tac_glove",
         (

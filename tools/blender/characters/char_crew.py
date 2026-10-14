@@ -40,6 +40,8 @@ VARIANTS = {
                         "hair_color": "grey", "beard_shadow": 0.95, "heister": "dutch"},
     "char_crew_wren": {"height": 1.68, "build": 0.3, "gender": 1.0, "age": 0.08, "skin": 2, "hair": "short",
                        "hair_color": "brown", "heister": "wren"},
+    "char_crew_marten": {"height": 1.70, "build": 0.70, "gender": 1.0, "age": 0.62, "skin": 3, "hair": "short",
+                         "hair_color": "grey", "heister": "marten"},
 }
 
 
