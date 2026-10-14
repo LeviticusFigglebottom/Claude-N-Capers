@@ -487,7 +487,7 @@ func _variants_vent(variants: Node3D) -> void:
 		var s: VariantSlot = _slot(vg, "vent_open", String(r[0]), 0.5)
 		var gate: Node3D = prefab(s, "door", "AreawayGrate", a["gate_pos"], float(a["gate_yaw"]),
 			{"lock": "enum:" + String(r[1]), "swing": "enum:INWARD", "interaction_time_s": float(r[2]),
-				"visual_scene": catalog_scene("prop_door_single_steel_t20"), "objective_tag": &"areaway_grate"},
+				"visual_scene": catalog_scene("prop_door_single_steel_t10"), "objective_tag": &"areaway_grate"},
 			null, {"kind": "door", "swing_side": "back"})
 		if gate != null and String(r[0]) == "vent_locked":
 			_padlock(gate)

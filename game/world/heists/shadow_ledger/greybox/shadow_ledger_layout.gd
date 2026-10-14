@@ -163,8 +163,8 @@ const DOORS: Array = [
 	# L41 north band.
 	["K1Door", "arch_door_single_t20", Vector3(5.5, F41, 6.0), 180.0, "NONE", "INWARD", "", {}],
 	["K2Door", "arch_door_single_t20", Vector3(9.5, F41, 6.0), 180.0, "NONE", "INWARD", "", {}],
-	["ReceptionGlassW", "arch_door_single_t20", Vector3(12.0, F41, 6.75), 90.0, "NONE", "INWARD", "", {}],
-	["ReceptionGlassE", "arch_door_single_t20", Vector3(24.0, F41, 6.75), -90.0, "NONE", "INWARD", "", {}],
+	["ReceptionGlassW", "arch_door_single_t20", Vector3(12.0, F41, 6.75), 90.0, "NONE", "INWARD", "", {"leaf_surface": "glass"}],
+	["ReceptionGlassE", "arch_door_single_t20", Vector3(24.0, F41, 6.75), -90.0, "NONE", "INWARD", "", {"leaf_surface": "glass"}],
 	["K4Door", "arch_door_single_t20", Vector3(26.5, F41, 6.0), 180.0, "NONE", "INWARD", "", {}],
 	["K5Door", "arch_door_single_t20", Vector3(30.5, F41, 6.0), 180.0, "NONE", "INWARD", "", {}],
 	["K1FacadeDoor", "arch_door_single_t40", Vector3(0.0, F41, 3.0), -90.0, "LOCKPICK", "OUTWARD", "gondola_west",
@@ -188,7 +188,7 @@ const DOORS: Array = [
 	["ElectricalL41", "arch_door_single_t20", Vector3(31.5, F41, 16.5), 180.0, "NONE", "INWARD", "", {}],
 	["CopyRoomDoor", "arch_door_single_t20", Vector3(34.0, F41, 16.5), 180.0, "NONE", "INWARD", "", {}],
 	["CageGate", "arch_door_single_t20", Vector3(28.6, F41, 10.5), 180.0, "ELECTRONIC", "OUTWARD", "cage_gate",
-		{"no_wall": true}],
+		{"no_wall": true, "leaf_surface": "metal"}],
 	# L41 south band (K16 -> rooms).
 	["ArchiveDoor", "arch_door_single_t20", Vector3(3.0, F41, 18.0), 0.0, "NONE", "INWARD", "", {}],
 	["BreakRoomDoor", "arch_door_single_t20", Vector3(9.0, F41, 18.0), 0.0, "NONE", "INWARD", "", {}],
@@ -200,7 +200,8 @@ const DOORS: Array = [
 	["InterviewDoor", "arch_door_single_t20", Vector3(33.0, F41, 18.0), 0.0, "NONE", "INWARD", "", {}],
 	# L42.
 	["ArtHallDoors", "arch_door_double_t20", Vector3(24.0, F42, 3.0), 90.0, "NONE", "DOUBLE", "", {"starts_open": true}],
-	["ArtHallStaffDoor", "arch_door_single_t20", Vector3(25.0, F42, 7.5), 180.0, "NONE", "INWARD", "", {}],
+	# PO-7: centred in the M10 corridor mouth (x 24.15-25.4); at x 25.0 its frame ran 0.1 m into the x 25.5 wall.
+	["ArtHallStaffDoor", "arch_door_single_t20", Vector3(24.8, F42, 7.5), 180.0, "NONE", "INWARD", "", {}],
 	["StudyDoor", "arch_door_single_t20", Vector3(29.0, F42, 3.5), 90.0, "LOCKPICK", "INWARD", "study_door",
 		{"npc_auth": true, "interaction_time_s": 8.0}],
 	["StudyFacadeDoor", "arch_door_single_t40", Vector3(33.0, F42, 0.0), 180.0, "LOCKPICK", "OUTWARD", "gondola_north",
@@ -222,11 +223,11 @@ const DOORS: Array = [
 	["BoardroomDoor", "arch_door_single_t20", Vector3(33.5, F42, 16.5), 180.0, "NONE", "INWARD", "", {}],
 	# Terrace sliders (lockpick 8 s from outside; the leaf opens onto the terrace).
 	["SliderDining", "arch_door_single_t40", Vector3(4.5, F42, 18.0), 180.0, "LOCKPICK", "OUTWARD", "terrace_slider",
-		{"npc_auth": true, "interaction_time_s": 8.0}],
+		{"npc_auth": true, "interaction_time_s": 8.0, "leaf_surface": "glass"}],
 	["SliderWest", "arch_door_single_t40", Vector3(14.5, F42, 18.0), 180.0, "LOCKPICK", "OUTWARD", "terrace_slider",
-		{"npc_auth": true, "interaction_time_s": 8.0}],
+		{"npc_auth": true, "interaction_time_s": 8.0, "leaf_surface": "glass"}],
 	["SliderEast", "arch_door_single_t40", Vector3(30.5, F42, 18.0), 180.0, "LOCKPICK", "OUTWARD", "terrace_slider",
-		{"npc_auth": true, "interaction_time_s": 8.0}],
+		{"npc_auth": true, "interaction_time_s": 8.0, "leaf_surface": "glass"}],
 	# Roof: head house (Stair A), riser bay, plant. The head house -> plant door sits on the floor
 	# landing (z 15.75) instead of the plan's z 12, which is over the stair void (G1 report).
 	["RoofDoor", "arch_door_single_t40", Vector3(12.0, FRF, 15.75), 90.0, "LOCKPICK", "INWARD", "roof_door",
