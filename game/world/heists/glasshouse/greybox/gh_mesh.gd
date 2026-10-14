@@ -6,7 +6,19 @@
 extends RefCounted
 
 const TILE_M: float = 2.0
+## tile_groups: height band (m) of a cell group.
+const TILE_BAND_Y: float = 2.0
+## tile_groups: narrower quads (sills, copings, curbs, trim tops, markings) stay in the group's merged mesh.
+const TILE_MIN_SPAN: float = 1.0
 
+## Opt-in slab tiling, group -> tile edge (m); empty (the default) = no tiling. The Compatibility renderer lights a
+## mesh instance with at most 8 omni / spot lights (rendering/limits/opengl/max_lights_per_object), so one merged
+## floor / ceiling / grade mesh overlapped by every key light kept 8 arbitrary ones and other rooms' floors rendered
+## black (Gallery Night 1639ea1c). An axis-aligned horizontal quad of a listed group is cut at the world grid lines
+## x, z = k * tile and each piece goes to the cell group "<group>_T<ix>_<iy>_<iz>" (its own MeshInstance3D at flush;
+## iy = 2 m height band, so a floor, the ceiling under it and the roof above never share an instance's 8 lights).
+## Visual only: colliders and the navmesh never see these meshes.
+var tile_groups: Dictionary = {}
 ## group -> { material key -> PackedVector3Array/normals/uvs }
 var _groups: Dictionary = {}
 ## material key -> Material
@@ -49,6 +61,8 @@ static func world_uv(p: Vector3, n: Vector3) -> Vector2:
 func quad(group: String, key: String, a: Vector3, b: Vector3, c: Vector3, d: Vector3, n: Vector3) -> void:
 	if key == "":
 		return
+	if tile_groups.has(group) and absf(n.y) > 0.999 and _tile_quad(group, key, [a, b, c, d], n):
+		return
 	var pts: Array[Vector3] = [a, b, c, d]
 	if (b - a).cross(d - a).dot(n) < 0.0:
 		pts = [a, d, c, b]
@@ -75,6 +89,53 @@ func quad(group: String, key: String, a: Vector3, b: Vector3, c: Vector3, d: Vec
 	bk["v"] = vs
 	bk["n"] = ns
 	bk["uv"] = us
+
+
+## tile_groups: splits an axis-aligned horizontal rectangle (both sides >= TILE_MIN_SPAN) at the world tile grid
+## into cell groups. Returns false (caller emits the quad as is) for any other shape.
+func _tile_quad(group: String, key: String, q: Array[Vector3], n: Vector3) -> bool:
+	var tile: float = float(tile_groups[group])
+	var lo: Vector3 = q[0]
+	var hi: Vector3 = q[0]
+	for p: Vector3 in q:
+		lo = lo.min(p)
+		hi = hi.max(p)
+	if hi.y - lo.y > 1e-6 or minf(hi.x - lo.x, hi.z - lo.z) < TILE_MIN_SPAN:
+		return false
+	var corners: Dictionary = {}
+	for p2: Vector3 in q:
+		var cx: int = 0 if absf(p2.x - lo.x) < 1e-6 else (1 if absf(p2.x - hi.x) < 1e-6 else -1)
+		var cz: int = 0 if absf(p2.z - lo.z) < 1e-6 else (1 if absf(p2.z - hi.z) < 1e-6 else -1)
+		if cx < 0 or cz < 0:
+			return false
+		corners[cx * 2 + cz] = true
+	if corners.size() != 4:
+		return false
+	var xs: Array[float] = _cuts(lo.x, hi.x, tile)
+	var zs: Array[float] = _cuts(lo.z, hi.z, tile)
+	var y: float = lo.y
+	for i: int in range(xs.size() - 1):
+		for j: int in range(zs.size() - 1):
+			var x0: float = xs[i]
+			var x1: float = xs[i + 1]
+			var z0: float = zs[j]
+			var z1: float = zs[j + 1]
+			var cell: String = "%s_T%d_%d_%d" % [group, floori((x0 + x1) * 0.5 / tile), floori(y / TILE_BAND_Y),
+				floori((z0 + z1) * 0.5 / tile)]
+			quad(cell, key, Vector3(x0, y, z0), Vector3(x1, y, z0), Vector3(x1, y, z1), Vector3(x0, y, z1), n)
+	return true
+
+
+## [a0, the tile grid lines strictly inside (a0, a1), a1].
+static func _cuts(a0: float, a1: float, tile: float) -> Array[float]:
+	var out: Array[float] = [a0]
+	var k: int = floori(a0 / tile) + 1
+	while float(k) * tile < a1 - 1e-4:
+		if float(k) * tile > a0 + 1e-4:
+			out.append(float(k) * tile)
+		k += 1
+	out.append(a1)
+	return out
 
 
 ## Axis-aligned box. face_key: Callable(face_index, normal, centre) -> String (material key, "" =

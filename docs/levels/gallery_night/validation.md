@@ -34,7 +34,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
-| furniture_logic | PASS | 0 | 0 |
+| furniture_logic | PASS | 0 | 6 |
 
 ## contract_nodes: Contract nodes
 
@@ -51,7 +51,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 166 props checked
+- 183 props checked
 
 - WARN `Gameplay/Devices/ServerDoorDrill` @ (25.00, 6.40, 6.15): prop has no geometry or collision; skipped
 - WARN `Gameplay/Devices/VaultDrill` @ (21.50, -3.20, 7.75): prop has no geometry or collision; skipped
@@ -60,7 +60,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## clipping: Nothing clips
 
-- 166 props, 42 doors checked
+- 185 props, 48 doors checked
 
 
 ## scale: Human scale
@@ -146,13 +146,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 345 columns (0.25 m), 213736 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 345 columns (0.25 m), 213924 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1144 polygons, cell 0.10/0.10 m
-- 330 markers checked
+- navmesh: 1285 polygons, cell 0.10/0.10 m
+- 270 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomSS` | 12 | 12 | 100% |
@@ -162,7 +162,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomLF` | 77 | 77 | 100% |
 | `Rooms/RoomBB` | 135 | 135 | 100% |
 | `Rooms/RoomPL` | 529 | 529 | 100% |
-| `Rooms/RoomAS` | 814 | 814 | 100% |
+| `Rooms/RoomAS` | 630 | 630 | 100% |
 | `Rooms/RoomBR` | 110 | 110 | 100% |
 | `Rooms/RoomWC` | 55 | 55 | 100% |
 | `Rooms/RoomSC` | 102 | 102 | 100% |
@@ -181,7 +181,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomVE` | 105 | 105 | 100% |
 | `Rooms/RoomGS` | 58 | 58 | 100% |
 | `Rooms/RoomEB` | 253 | 253 | 100% |
-| `Rooms/RoomCO` | 107 | 107 | 100% |
+| `Rooms/RoomCO` | 111 | 111 | 100% |
 | `Rooms/RoomAO` | 125 | 125 | 100% |
 | `Rooms/RoomUW` | 55 | 55 | 100% |
 | `Rooms/RoomFS` | 33 | 33 | 100% |
@@ -199,24 +199,25 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomHH` | 6 | 6 | 100% |
 | `Rooms/RoomX4` | 736 | 736 | 100% |
 | `Rooms/RoomLM` | 77 | 77 | 100% |
-| `Rooms/RoomX1` | 850 | 850 | 100% |
+| `Rooms/RoomX1` | 846 | 846 | 100% |
 | `Rooms/RoomX2` | 833 | 833 | 100% |
-| `Rooms/RoomX3` | 794 | 794 | 100% |
+| `Rooms/RoomX3` | 803 | 794 | 99% |
 
 
 ## barred_doors: BARRED doorways are closed in the navmesh
 
-- 0 BARRED door(s) checked
+- 1 BARRED door(s) checked
+- variant-slot BARRED doors not checked (one bake for every variant): `Variants/Group_areaway/Slot_grate_padlocked/AreawayGrate`
 
 
 ## reachability: Reachability (per variant)
 
-- 50 variant configuration(s), 180540 spawn->target path queries
+- 50 variant configuration(s), 170388 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 2268 / 2268 spawn->target walks ok
+- 2064 / 2064 spawn->target walks ok
 
 
 ## patrols: Patrol graphs
@@ -260,13 +261,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
 
-- 51 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
-- leaf bullet surfaces (D-105, Door.leaf_surface_id): glass 2, metal 6, wood 34; 0 look glass / metal but resolve to wood (WARN)
+- 57 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
+- leaf bullet surfaces (D-105, Door.leaf_surface_id): glass 2, metal 17, wood 29; 0 look glass / metal but resolve to wood (WARN)
 
 
 ## frame_proud: Door / window frame colliders are flush with the wall (no proud or narrowing collision)
 
-- 51 door / window prefab(s), 42 with frame colliders; proud > 0.01 m and narrowing > 0.01 m fail; worst proud 0.000 m, narrowing 0.000 m
+- 55 door / window prefab(s), 46 with frame colliders; proud > 0.01 m and narrowing > 0.01 m fail; worst proud 0.000 m, narrowing 0.001 m
 
 
 ## seam_gaps: No see-through slits at wall corners, junctions, floors and ceilings
@@ -277,5 +278,11 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## furniture_logic: Furniture arranged plausibly
 
 - classified: desk 1, wall_unit 1
-- 0 seats, 1 tables/desks/counters, 42 doors checked
+- 0 seats, 1 tables/desks/counters, 48 doors checked
 
+- WARN `Gameplay/Ladders/AreawayLadder` @ (-4.00, -4.20, 14.00): door_clear: in the clear zone of door `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` (1.0 / 1.0 m each side, leaf width 1.99 m) by 0.18 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Ladders/AreawayLadder` @ (-4.00, -4.20, 14.00): door_clear: in the clear zone of door `Variants/Group_areaway/Slot_grate_padlocked/AreawayGrate` (1.0 / 1.0 m each side, leaf width 1.99 m) by 0.18 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Lifts/ArtLift` @ (30.00, 0.00, 3.05): door_clear: in the clear zone of door `Gameplay/Doors/LiftLandingDoorGE` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.34 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Lifts/ArtLift` @ (30.00, 0.00, 3.05): door_clear: in the clear zone of door `Gameplay/Doors/LiftLandingDoorGS` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.89 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Lifts/ArtLift` @ (30.00, 0.00, 3.05): use_point: stands in the user's spot of `Gameplay/Doors/LiftLandingDoorGE` (UsePoint @ (31.30, 0.00, 3.00)) by 0.24 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Lifts/ArtLift` @ (30.00, 0.00, 3.05): use_point: stands in the user's spot of `Gameplay/Doors/LiftLandingDoorGS` (UsePoint @ (29.50, 0.00, 5.30)) by 0.79 m (gameplay prefab / variant content: review)

@@ -1,0 +1,15 @@
+Gallery Night painting canvases (GN-C2): original abstract-figurative compositions, no third-party imagery.
+Generator: tools/texgen/paintings.py (python3 tools/texgen/paintings.py). 1024 x 1024 albedo, seed = crc32('painting_<id>').
+
+tex_painting_lantern_albedo.png  seed 3716657499  The Lantern Bearer (Ines Calloway)
+tex_painting_orchard_albedo.png  seed 1823389351  The Salt Orchard (Teodor Wilk)
+tex_painting_widow_albedo.png  seed 1210334846  Widow in Blue (Henrike Sallow)
+tex_painting_saint_albedo.png  seed 4040836089  The Tidewater Saint (Aurel Maske)
+tex_painting_study1_albedo.png  seed 1304130562  study: still life with jars
+tex_painting_study2_albedo.png  seed 3568444856  study: head of a woman
+tex_painting_study3_albedo.png  seed 2746553646  study: harbour boats
+tex_painting_study4_albedo.png  seed 1037140109  study: interior with an open door
+tex_painting_study5_albedo.png  seed 1255583771  study: two walkers
+tex_painting_study6_albedo.png  seed 3554664865  study: downs at dusk
+tex_painting_study7_albedo.png  seed 2765672759  study: colour fields
+tex_painting_study8_albedo.png  seed 879217830  study: reclining figure

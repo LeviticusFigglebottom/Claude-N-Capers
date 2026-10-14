@@ -2,6 +2,47 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-14 18:30 UTC: D-111 animation coverage, long-gun hold diagnosis
+Probe: tests/p/_review/anim_coverage.tscn (rides A's PO-5 flows) + nd_stealth_pass.tscn, `--anim-out=DIR`. Runs:
+GH stealth (676 s), GH loud (partial, to bag 1), ND loud (partial, ~390 s heist), ND stealth (direct launch). Bodies:
+civ 14, guard 8, patrol 39, tac_light 61, tac_heavy 2, bulwark 6, longshot 2, AI crew 9.
+**Verdict on "almost zero animations play": not true for the pipeline, true for what the PO sees.** No STATIC body
+(real launches), 0 SLIDE, 0 interaction without a clip, and in GH loud (the run with the pose probe) 0 PLAYER_MISMATCH,
+1 FROZEN sample (crew_ai fire_pistol, 1 s) vs 1000+ moving samples; 30 of 102 authored clips seen. Why it reads as "nothing": (1) the AI crew stands in
+`idle` 675/676 s in stealth (correct per D-014, but PD2 bots follow/crouch/shuffle); (2) the variety is in
+clips nobody gets close to (desk_work, browse, cower...), while the moments in your face (getting hit, guard
+noticing, start/stop, turns at walk) have no clip or no trigger; (3) the local body is FP only and the pilot never
+switched weapons (fp:rifle only). Direct-launch crew are capsules (STATIC, dev-only launch artifact, low priority).
+
+Ranked (PD2 shows it often, never fired here; "trigger should live"):
+| # | clip(s) | authored | trigger in code | seen | owner / where |
+|---|---|---|---|---|---|
+| 1 | hit_react_back/_left/_right | yes | no (only `hit_react`, which also never fired) | 0 | A: AnimDriver one-shot from the damage direction (like _pick_death_clip); check NpcHealth emits the hit for non-lethal damage |
+| 2 | walk_start/stop, run_start/stop | yes | no | 0 | A: AnimDriver locomotion, on speed crossing 0 |
+| 3 | walk_fl/fr/bl/br, run_fl/fr/bl/br | yes | no (4-way only) | 0 | A: AnimDriver _locomotion (8-way by angle) |
+| 4 | death_side, death_back_b, death_front_b | yes | no (front/back only, no variant) | 0 | A: _pick_death_clip (side by dot, variant via GameRng) |
+| 5 | crouch_idle / crouch_walk (AI crew + guards) | yes | yes | 0 | A: crew AI brain never crouches (PD2 bots crouch in cover) |
+| 6 | surrender, hands_up, tied, kneel_cuffed, cower_stand | yes | yes | 0 | flow coverage: the PO-5 flows never intimidate; my ND pass skips `tie`. Not a bug yet: P adds an intimidate step |
+| 7 | pager_answer (guard side) | yes | yes | 0 | flow: no pager fired in these runs |
+| 8 | interact_mid/high, drill_place, throw_bag, carry_bag_walk (AI crew) | yes | partial (drill_place none) | 0 | A: AI crew never interacts/carries in these flows; drill_place has no trigger (map to drill kind) |
+| 9 | reload_rifle (enemies) | yes | yes | 0 | A: police reload never seen (police aim+fire only 25 s in total; cause not yet checked) |
+| 10 | downed, downed_crawl, tased (crew) | yes | downed/tased yes, crawl no | 0 | flow (no one went down) / A for crawl (downed + move input) |
+| 11 | shield_bang, kick_charge/kick_hit, dozer_walk(_heavy) | yes | yes/no(heavy) | 0 | flow (no dozer/kicker spawned at Routine) |
+| - | bartender_*, bouncer_idle, dance_a-c, teller_count, death_seated_* | yes | no | 0 | A: ambient hints not mapped (needs C's GN/club placements), seated deaths need a seated flag |
+| - | walk_l/walk_r | yes | no (strafe_l/r used instead) | 0 | D/A: duplicate, pick one |
+Not missing (my first table was wrong): fire_ads, fire_auto(_ads), fire_hold, reload_start/loop/end, melee_knife/
+blunt/blade, throw/throw_low/throwable are FP-set clips (separate libraries), phone_grip is a grip pose,
+death_end_poses a SOURCE name. FP side seen: draw, holster, idle, fire, reload, reload_empty, swing, charge_start.
+**Top asks: A rows 1-4 (direction + start/stop + 8-way + death variety are what the player sees at close range);
+P extends the flows (intimidate/tie, pager, weapon switch) and reruns.**
+
+Long-gun hold (Corsair, weapon-bone space): palm (-0.011, 0.021, -0.261) on the fore-end; middle fingertip
+(+0.017, 0.090, -0.302) inside the fore-end (y 0.056..0.104). IK on vs off within 1 mm: the clip's hand shape is the
+cause (D). Black guns: B's ORM materials are metallic 1.0 (polymer too) with near-black albedo, so on a map with
+no environment/reflections they render black: a material issue (B), not lighting. D arms 7b59e713 + my branch:
+po4_feel, po4_viewmodel, p1_01, p1_03, interact_lower, A fp_viewmodel/real_arms, B pp_left_hand_ik, D arms all
+green; hold sheet re-rendered (6 weapons). Waiting on D's finger fix to re-render.
+
 ## 2026-10-14 16:25 UTC: GN-P1 on trunk, custody hide, pistol left-hand IK
 - GN-P1 (trunk 55ce4d2a+): test_p_gn_traversal 8/8 (doors >= 1.0 m, balcony throws, Mews -> LD heavy bag, both
   ladders, Treasury static/timed/sweep, pool with a heavy bag), PO-3 snag 0/0 (open/closed), menu path PASS. Feel

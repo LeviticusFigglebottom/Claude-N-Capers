@@ -24,7 +24,7 @@ const PREFAB_CLASSES: Dictionary = {
 	"security_camera": "SecurityCamera", "camera_station": "CameraStation", "laser_grid": "LaserGrid", "safe": "Safe",
 	"deposit_box": "DepositBox", "small_loot": "SmallLoot", "display_case": "DisplayCase", "drill_point": "DrillPoint",
 	"alarm_button": "AlarmButton", "phone": "Phone", "body_container": "BodyContainer", "ladder": "Ladder",
-	"secure_zone": "SecureZone", "escape_zone": "EscapeZone",
+	"secure_zone": "SecureZone", "escape_zone": "EscapeZone", "bag_lift": "BagLift", "padlock": "Padlock",
 }
 ## Prop catalog (tools/blender/props, PropCatalog): asset id -> scene.
 const CATALOG_DIR: String = "res://world/props/"

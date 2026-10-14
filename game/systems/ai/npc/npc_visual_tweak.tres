@@ -37,6 +37,7 @@ heist_tag_characters = {
 &"guard_hall": [&"gallery_guard"],
 &"guard_inspection": [&"gallery_guard"],
 &"guard_mews": [&"gallery_guard_b"],
+&"guard_operator": [&"gallery_guard_b"],
 &"guard_rover_basement": [&"gallery_guard"],
 &"guard_rover_ground": [&"gallery_guard"],
 &"guard_rover_upper": [&"gallery_guard_b"],

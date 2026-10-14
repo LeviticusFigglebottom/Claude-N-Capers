@@ -51,6 +51,22 @@ static func resolve(npc: NpcBase) -> PackedScene:
 	return null
 
 
+## Character scene paths an NPC with EnemyDef `def` may wear (faction variant first), existing ones only. For warm-up.
+static func def_scene_paths(def: EnemyDef) -> PackedStringArray:
+	var out: PackedStringArray = PackedStringArray()
+	if def == null or not String(def.id).begins_with("enemy."):
+		return out
+	var cid: String = String(def.id).substr(6)
+	var tw: NpcVisualTweak = tweak()
+	if tw != null and tw.enemy_characters.has(def.id):
+		cid = String(tw.enemy_characters[def.id])
+	var variant: String = String(def.params.get("visual_variant", ""))
+	for path: String in [scene_path(cid, variant), scene_path(cid)]:
+		if not out.has(path) and ResourceLoader.exists(path):
+			out.append(path)
+	return out
+
+
 ## The first SpawnPoint tag with a character: this heist's map (heist_tag_characters) before the shared one.
 static func _by_tag(npc: NpcBase, tw: NpcVisualTweak) -> PackedScene:
 	var tags: Variant = npc.spawn_info.get("tags", [])
