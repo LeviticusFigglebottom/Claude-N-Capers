@@ -23,8 +23,8 @@ isolation). Trunk merged at r198; nothing red. No wip branches.
   aluminium / blued steel / bare steel / brass metal = 1.0 (rough 0.35-0.39); a metal only reflects, and the FP
   viewmodel (and dim interiors) give it almost nothing to reflect. Sent to C (owner of world/materials + texgen):
   coated finishes (anodize, bluing, cerakote) as dielectric (metal 0-0.15, rough 0.45-0.55, anodized black albedo
-  ~0.2 sRGB), bare steel / brass / chrome stay metallic. C agreed and recorded it as In progress #4 in docs/status/env_c.md (env/c-worlds 6b533f0b) for the next C session. Next: (1) read the env_bgcolor / env_bgcol_amb lines of
-  scratch run vml_gl2 = rerun `vm_light_probe.tscn` (opengl3, ~15 min): a transparent BG_COLOR (alpha 0) with
+  ~0.2 sRGB), bare steel / brass / chrome stay metallic. C agreed and recorded it as In progress #4 in docs/status/env_c.md (env/c-worlds 6b533f0b) for the next C session. Next: (1) the env_bgcolor / env_bgcol_amb variants are NOT measured yet (my run timed out sharing the CPU):
+  rerun `vm_light_probe.tscn` ALONE (opengl3, ~15-20 min, timeout >= 2400 s) and read those lines: a transparent BG_COLOR (alpha 0) with
   REFLECTION_SOURCE_BG in the viewmodel environment (crew_view.gd _build_viewmodel_camera) gives metals a
   reflection while the overlay stays transparent: if it lifts the gun without changing the coverage px, add it
   there (P owns crew_view.gd) as a viewmodel_reflection_color tweak; (2) after C's material change, rerun the probe
