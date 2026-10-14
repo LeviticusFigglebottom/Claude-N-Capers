@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 10:20: **round 96 ON ORIGIN**: env/b-content 0d4a0ae0 (menu reach pass: hidden-Continue links on main menu/hub, Board shared pin NodePath; new test_menu_reach). b board/hub/quick_play/pad widgets/pad_walks/gamepad_flow green. KNOWN RED KR-8 (B): test_menu_reach on trunk: station/board 'Take Contract' off screen at (1552, 1052) size (320, 54) at 720p AND 1080p (green on B's branch). Co-op success rerun fully green (both cards → home). C11 ruled: co-op payday Continue returns the crew to the lobby with the session kept (PD2).
 - 2026-10-14 10:05: **round 95 ON ORIGIN**: env/c-worlds c3549344 (KR-7 fixed: kit_placer typed if/else; 4 maps regenerate byte-identical). c kits (no SCRIPT ERROR) + generator_determinism green. No known reds on trunk except the reverted civilian lane awaiting A's fix.
 - 2026-10-14 09:55: **round 94 ON ORIGIN**: env/c-worlds 9c519042 (PO-9 furniture_logic validate check + GH U6/U5, ND G8, DB M1 fixes; generator determinism: KitPlacer text sort, test_generator_determinism byte-identical) + env/a-core (GH drill_relock min_difficulty Brutal; civilian lane stays reverted). c determinism/furniture/validate_level/4 maps/kits/interact_slots, a drill_relock/director_caps/a1_03, readiness green. KNOWN RED KR-7 (C): kit_placer.gd:502 runtime error 'Array to Array[int]' (ternary literal) aborts _try_seat in test_kits.
 - 2026-10-14 09:35: round 93 (env/a-core civilian lane 844a4c20) merged then REVERTED on trunk: test_po5_director_caps test_po5_waves_capped_fade_stops_and_retreats fails 3/3 (FADE retreat: units left the map 18 -> 18) after NpcMotor step-up/corner_reach changes. Rest green (civilian/shout/l1/l4/a4_02, c GH, P1 slice, p3_loud, readiness). A fixes; LEAD reverts the revert + merges the fix.
@@ -97,6 +98,7 @@ Read it at the start of every work session.
 - D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
 
 ## Open questions (id → answer)
+- C11 (B): after a co-op payday, does the crew stay together? → YES (PD2): Continue returns every peer to the crew lobby with the Net session kept; only Leave ends it. A (HeistRuntime/Net teardown keeps the lobby peer) + B (MenuFlow). Not a freeze gate.
 - QC-61 (C): is the GH fire escape a real stealth entry? → YES (glasshouse.md route 3, open_window variable). PD2 has no mantle: make the break-room window a walkable fire-escape door-window (sill ≤ 0.35 m, opening ≥ 1.0 × 1.9 m), restore a layer-1 link only through the opening when ow_breakroom_open; latched = glass breaks (noise 15 m) then passable. C builds map; A checks the glass/noise interaction. Stairs (NPC wedge at 0.175 m riser): invisible ramp colliders through the nosings on GH + ND flights (C), now, ahead of determinism.
 - QP-2/QP-3 world lights on the viewmodel → render layer **21** `viewmodel_lit` (visual_slots 1.2, D-095; 20 was taken).
 - QB-4 RangeSpectatorInput as a gameplay owner → OK, input_focus 1.2.
