@@ -75,3 +75,20 @@ func test_gn_disabled_group_makes_its_loot_safe() -> void:
 	assert_eq(_alarms, [] as Array[StringName], "a disabled group's frame is safe")
 	await _take(other, c)
 	assert_has(_alarms, AlarmGroups.REASON_SENSOR, "a live group still alarms")
+
+
+## GN: a canvas loot_spawn reads "Hold F to cut the painting" (ui.prompt.cut_painting, ENV B), any other loot keeps
+## its own prompt; an explicit prompt_key wins.
+func test_gn_canvas_spawns_prompt_cut_the_painting() -> void:
+	await _launch()
+	var canvas: LootSpawn = ATestMaps.add_prefab(_rt, "loot_spawn", Vector3(2, 0, -4), func(p: GameplayPrefab) -> void:
+		(p as LootSpawn).loot_id = &"loot.painting_widow_in_blue") as LootSpawn
+	var cash: LootSpawn = _spawn(Vector3(-2, 0, -4), false, &"")
+	var custom: LootSpawn = ATestMaps.add_prefab(_rt, "loot_spawn", Vector3(0, 0, -8), func(p: GameplayPrefab) -> void:
+		(p as LootSpawn).loot_id = &"loot.painting_study"
+		(p as LootSpawn).prompt_key = &"ui.prompt.take_loot") as LootSpawn
+	await wait_physics_frames(2)
+	assert_eq(canvas.interactable.prompt_key, LootSpawn.PROMPT_CUT, "a painting is cut")
+	assert_eq(canvas.interactable.kind, &"bag_loot", "still a bag_loot interaction (bots, pilot, LootManager)")
+	assert_ne(cash.interactable.prompt_key, LootSpawn.PROMPT_CUT, "cash is not cut")
+	assert_eq(custom.interactable.prompt_key, &"ui.prompt.take_loot", "explicit prompt_key wins")

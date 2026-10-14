@@ -10,6 +10,7 @@ class_name LootSpawn
 extends GameplayPrefab
 
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/loot_spawn/loot_spawn_placeholder.tscn")
+const PROMPT_CUT: StringName = &"ui.prompt.cut_painting"
 
 ## LootDef id of the bags this spawn produces.
 @export var loot_id: StringName = &""
@@ -17,6 +18,8 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/loot_spawn/loot_
 ## D-103 §6: taking from this spawn trips its sensor (alarm &"sensor") while `alarm_group` is live.
 @export var alarm_on_take: bool = false
 @export var alarm_group: StringName = &""
+## Prompt for the take (&"" = the interaction's own; a painting loot_id defaults to PROMPT_CUT: "cut the painting").
+@export var prompt_key: StringName = &""
 @export_group("Interaction")
 ## -1 = InteractionTweak.bag_loot_s.
 @export var interaction_time_s: float = -1.0
@@ -40,6 +43,11 @@ func _default_interaction_time() -> float:
 func _prefab_ready() -> void:
 	remaining = count
 	interactable.kind = &"bag_loot"
+	var pk: StringName = prompt_key
+	if pk == &"" and String(loot_id).begins_with("loot.painting"):
+		pk = PROMPT_CUT  # GN canvases: "Hold F to cut the painting" (ENV B string)
+	if pk != &"":
+		interactable.prompt_key = pk
 	interactable.allowed_with_bag = false
 	interactable.enabled = remaining > 0
 	interactable.completed.connect(_on_completed)
