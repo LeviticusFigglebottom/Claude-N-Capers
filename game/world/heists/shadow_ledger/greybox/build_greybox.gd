@@ -680,7 +680,7 @@ func _coping(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, 
 	add(body, col)
 	var pm: PrismMesh = PrismMesh.new()
 	pm.size = Vector3(L.EXT_T, rise, a1 - a0)
-	pm.material = lib_mat("trim")
+	pm.material = lib_mat("coping")
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Mesh"
 	mi.mesh = pm
