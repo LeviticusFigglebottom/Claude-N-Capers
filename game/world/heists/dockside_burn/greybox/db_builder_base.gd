@@ -13,6 +13,8 @@ const DEF_PATH: String = OUT_DIR + "dockside_burn_def.tres"
 const VARIANTS_PATH: String = OUT_DIR + "dockside_burn_variants.tres"
 const MISSION_PATH: String = OUT_DIR + "dockside_burn_mission.gd"
 const MAT_DIR: String = "res://world/materials/"
+## PO-13: harbour and slip use the library night water (texgen water_harbour_night), duplicated per body.
+const WATER_MAT: String = "water_harbour_night"
 const KIT_DIR: String = "res://assets/arch/"
 ## Visual step boxes overlap their higher neighbour by this much (no ray-through seams).
 const SEAM: float = 0.02
@@ -95,6 +97,9 @@ func lib_mat(id: String) -> Material:
 func _site_mat(id: String) -> Material:
 	if _site_cache.has(id):
 		return _site_cache[id]
+	if id in ["water", "water_slip"]:
+		_site_cache[id] = _water_mat(id)
+		return _site_cache[id]
 	var m: StandardMaterial3D = StandardMaterial3D.new()
 	m.resource_name = "db_grey_" + id
 	m.set_meta(&"greybox", true)
@@ -107,22 +112,28 @@ func _site_mat(id: String) -> Material:
 	elif SITE_MATS.has(id):
 		m.albedo_color = SITE_MATS[id]
 		m.roughness = 0.9
-		if id == "water":
-			m.roughness = 0.15
-			m.metallic_specular = 0.8
-		elif id in ["strip_curtain", "fire_volume"]:
+		if id in ["strip_curtain", "fire_volume"]:
 			# PVC strip curtains / the fire-volume marker: see-through, both faces drawn.
 			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			m.cull_mode = BaseMaterial3D.CULL_DISABLED
 			m.set_meta(&"untextured_ok", true)
-		if id == "water":
-			m.roughness = 0.15
-			m.metallic_specular = 0.8
 	else:
 		errors.append("unknown material class `%s`" % id)
 		m.albedo_color = Color(1.0, 0.0, 1.0)
 	_site_cache[id] = m
 	return m
+
+
+## PO-13: `water` (harbour; the quay wall line, its min z = 44, darkens the first metres, water to +z) and
+## `water_slip` (no shore darkening: walls on both sides). Glints are set later (_water_glints).
+func _water_mat(id: String) -> ShaderMaterial:
+	var w: ShaderMaterial = (load(MAT_DIR + WATER_MAT + ".tres") as ShaderMaterial).duplicate() as ShaderMaterial
+	w.resource_name = "db_" + id
+	if id == "water":
+		w.set_shader_parameter(&"shore_plane", Vector4(0.0, 0.0, 1.0, -float((L.WATER[0][1] as Array)[2])))
+		w.set_shader_parameter(&"shore_fade_m", 2.5)
+		w.set_shader_parameter(&"shore_darken", 0.45)
+	return w
 
 
 func box_mesh(size: Vector3, mat_id: String) -> BoxMesh:
