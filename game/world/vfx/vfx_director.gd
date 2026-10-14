@@ -2,7 +2,13 @@
 ## Instance `res://world/vfx/vfx_director.tscn` once per heist scene (or `VfxDirector.new()`); it listens
 ## to `EventBus.shot_fx` / `EventBus.explosion_fx` and drives the pooled effect layers:
 ##   Impacts (per-surface debris bursts), Decals (bullet holes / scorch, cap 128, 60 s), Tracers,
-##   Muzzles (third-person flash + smoke), Lights (0.05 s flash lights, layer 1 + 21), Shells, Explosions.
+##   Muzzles (third-person flash + smoke), Lights (0.05 s flash lights, layer 1 + 21), Shells, Explosions,
+##   Blood (D-113: spray, splatter, drips, pools, smears; gore option via VfxSettings.gore).
+## Blood sources (no doubles): when EventBus has `blood_hit` (events.md v1.3) every blood effect comes from
+## blood_hit / bleed_changed and flesh shot_fx only draws the small impact puff. Otherwise (older trunk) the
+## fallback drives it from shot_fx flags on flesh (headshot 4, penetrated 8 = exit spurt, strong 16 = bigger),
+## npc_killed info {position, hit_dir}, crew_downed (crew controller position) until crew_revived / crew_custody.
+## body_bagged adds a small smear at that body's pool either way. Gore Off: flesh shows a dust puff, no blood.
 ## The same entry points are public (`on_shot_fx`, `on_explosion_fx`) for tests and tools.
 ## Caps / quality: VfxSettings, synced from ENV B's GameSettings (effects_quality, reduce_motion).
 ## Per-shot rules (flags: bit0 suppressed, bit1 first-person shooter on this peer, bit2 headshot):
@@ -17,6 +23,19 @@ extends Node3D
 const FLAG_SUPPRESSED: int = 1
 const FLAG_FIRST_PERSON: int = 2
 const FLAG_HEADSHOT: int = 4
+## ENV A (D-113): on flesh, the round exits the body / a strong round (shotgun, sniper, LMG, crew >= 50 damage).
+const FLAG_PENETRATED: int = 8
+const FLAG_STRONG: int = 16
+## Fallback exit spurt distance past the hit point (m).
+const EXIT_SPURT_M: float = 0.3
+## Fallback bleed rates (events.md: NPC 0.6, 1.0 after a headshot / explosion; crew 0.35).
+const NPC_BLEED_RATE: float = 0.6
+const NPC_BLEED_RATE_HEAVY: float = 1.0
+const CREW_BLEED_RATE: float = 0.35
+## Pool keys for downed crew (net ids are positive).
+const CREW_BODY_KEY: int = -1000
+## Death-shot splatter starts this high above the body position (chest height).
+const DEATH_SPLATTER_Y_M: float = 1.1
 const MELEE: StringName = &"melee"
 ## Same pellet group when the next ray starts within this distance (m) in the same frame.
 const GROUP_ORIGIN_EPS_M: float = 0.05
@@ -37,6 +56,8 @@ const MAX_IMPACT_CUES_PER_FRAME: int = 4
 @export var use_game_settings: bool = true
 ## Request `cue.impact_<surface>` through EventBus.audio_cue_requested when the cue exists.
 @export var play_impact_cues: bool = true
+## Blood from EventBus.blood_hit / bleed_changed (true when the signals exist) or the shot_fx-flag fallback.
+var blood_from_signals: bool = EventBus.has_signal(&"blood_hit")
 
 ## Counters (tests/bench).
 var shots: int = 0
@@ -49,6 +70,7 @@ var muzzles: MuzzleFx
 var lights: VfxLights
 var shells: ShellFx
 var explosions: ExplosionFx
+var blood: VfxBlood
 
 var _rev: int = -1
 var _tick: int = 0
@@ -75,7 +97,8 @@ func _init() -> void:
 	lights = VfxLights.new()
 	shells = ShellFx.new()
 	explosions = ExplosionFx.new()
-	for n: Node in [impacts, decals, tracers, muzzles, lights, shells, explosions]:
+	blood = VfxBlood.new()
+	for n: Node in [impacts, decals, tracers, muzzles, lights, shells, explosions, blood]:
 		add_child(n)
 	apply_settings()
 
@@ -91,6 +114,9 @@ func _ready() -> void:
 			EventBus.shot_fx.connect(on_shot_fx)
 		if not EventBus.explosion_fx.is_connected(on_explosion_fx):
 			EventBus.explosion_fx.connect(on_explosion_fx)
+		for pair: Array in _blood_handlers():
+			if EventBus.has_signal(pair[0]) and not EventBus.is_connected(pair[0], pair[1]):
+				EventBus.connect(pair[0], pair[1])
 
 
 func _exit_tree() -> void:
@@ -102,6 +128,23 @@ func _exit_tree() -> void:
 		EventBus.shot_fx.disconnect(on_shot_fx)
 	if EventBus.explosion_fx.is_connected(on_explosion_fx):
 		EventBus.explosion_fx.disconnect(on_explosion_fx)
+	for pair: Array in _blood_handlers(true):
+		if EventBus.has_signal(pair[0]) and EventBus.is_connected(pair[0], pair[1]):
+			EventBus.disconnect(pair[0], pair[1])
+
+
+## [signal, handler] for the blood path in use (`all` = both paths, for disconnecting).
+func _blood_handlers(all: bool = false) -> Array[Array]:
+	var out: Array[Array] = [[&"body_bagged", on_body_bagged]]
+	if blood_from_signals or all:
+		out.append([&"blood_hit", on_blood_hit])
+		out.append([&"bleed_changed", on_bleed_changed])
+	if not blood_from_signals or all:
+		out.append([&"npc_killed", on_npc_killed])
+		out.append([&"crew_downed", on_crew_downed])
+		out.append([&"crew_revived", on_crew_revived])
+		out.append([&"crew_custody", on_crew_custody])
+	return out
 
 
 func _on_game_settings_changed(_section: StringName, _key: StringName) -> void:
@@ -124,6 +167,11 @@ func apply_settings() -> void:
 	lights.set_cap(VfxSettings.scaled_cap(VfxSettings.LIGHT_CAP, 2))
 	shells.set_cap(VfxSettings.scaled_cap(VfxSettings.SHELL_CAP, 16))
 	explosions.set_cap(VfxSettings.scaled_cap(VfxSettings.EXPLOSION_CAP, 2))
+	blood.set_caps(VfxSettings.scaled_cap(VfxSettings.BLOOD_SPRAY_CAP),
+		VfxSettings.scaled_cap(VfxSettings.BLOOD_DECAL_CAP, VfxSettings.MIN_BLOOD_DECALS),
+		VfxSettings.scaled_cap(VfxSettings.BLOOD_POOL_CAP, 4))
+	if not VfxSettings.blood_enabled():
+		blood.clear()  # gore switched Off: no blood stays on screen
 
 
 ## Step every effect by `delta` seconds (called from _process when auto_advance).
@@ -141,6 +189,7 @@ func advance(delta: float) -> void:
 	lights.advance(delta)
 	shells.advance(delta)
 	explosions.advance(delta)
+	blood.advance(delta)
 
 
 ## EventBus.shot_fx handler (events.md 1.2).
@@ -157,7 +206,7 @@ func on_shot_fx(origin: Vector3, end: Vector3, normal: Vector3, surface: StringN
 			muzzles.fire(origin, dir, weapon_class, suppressed)
 			if not suppressed:
 				lights.flash(origin + dir.normalized() * 0.1, MuzzleFx.LIGHT_COLOR, MuzzleFx.LIGHT_ENERGY,
-					MuzzleFx.LIGHT_RANGE_M, MuzzleFx.LIGHT_S)
+					MuzzleFx.LIGHT_RANGE_M, MuzzleFx.LIGHT_S, MuzzleFx.LIGHT_END_COLOR, MuzzleFx.LIGHT_FALLOFF)
 			shells.eject(weapon_class, origin, dir)
 		if not suppressed and (not fp or draw_fp_tracers) and _tracer_due(weapon_class, shooter_net_id, pellet):
 			tracers.spawn(origin, end)
@@ -169,7 +218,10 @@ func on_shot_fx(origin: Vector3, end: Vector3, normal: Vector3, surface: StringN
 		k = 1.5
 	elif melee:
 		k = 0.6
-	impacts.fire(s, end, normal, k)
+	if s == &"flesh":
+		_flesh_hit(end, dir, normal, flags, k, melee)
+	else:
+		impacts.fire(s, end, normal, k)
 	if not melee and ImpactFx.has_decal(s):
 		decals.place(s, end, normal, ImpactFx.decal_size(s) * _rng.randf_range(0.85, 1.15),
 			VfxSettings.DECAL_HOLD_S, _rng.randf_range(-PI, PI))
@@ -189,6 +241,68 @@ func on_explosion_fx(pos: Vector3, radius: float, kind: StringName) -> void:
 		_rng.randf_range(-PI, PI))
 
 
+## Flesh impact: the small puff (or a dust puff with gore Off) and, on the fallback path, the blood itself.
+func _flesh_hit(end: Vector3, dir: Vector3, normal: Vector3, flags: int, k: float, melee: bool) -> void:
+	if not VfxSettings.blood_enabled():
+		impacts.fire(ImpactFx.FLESH_DUST, end, normal, k)
+		return
+	impacts.fire(&"flesh", end, normal, k)
+	if blood_from_signals:
+		return
+	var d: Vector3 = dir.normalized()
+	var strength: float = 0.9 if flags & FLAG_STRONG != 0 else (0.3 if melee else 0.55)
+	var exit_point: Vector3 = end + d * EXIT_SPURT_M if flags & FLAG_PENETRATED != 0 else Vector3.ZERO
+	blood.hit(end, d, strength, flags & FLAG_HEADSHOT != 0, exit_point)
+
+
+## EventBus.blood_hit (events.md v1.3). `normal` is unused (ZERO from ENV A); the splatter ray finds the surface.
+func on_blood_hit(_victim_net_id: int, point: Vector3, direction: Vector3, _normal: Vector3, strength: float,
+		headshot: bool, exit_point: Vector3, _victim_kind: StringName) -> void:
+	blood.hit(point, direction, strength, headshot, exit_point)
+
+
+## EventBus.bleed_changed (events.md v1.3): start / stop a growing pool.
+func on_bleed_changed(body_net_id: int, bleeding: bool, position: Vector3, rate: float) -> void:
+	blood.bleed(body_net_id, bleeding, position, rate)
+
+
+## Fallback: EventBus.npc_killed with info {position, hit_dir} (absent keys = skip).
+func on_npc_killed(npc_net_id: int, _killer_net_id: int, info: Dictionary) -> void:
+	var pos: Variant = info.get("position")
+	if blood_from_signals or not pos is Vector3:
+		return
+	var hit_dir: Variant = info.get("hit_dir", Vector3.ZERO)
+	if hit_dir is Vector3 and (hit_dir as Vector3).length_squared() > 1e-4:
+		blood.splatter(pos + Vector3.UP * DEATH_SPLATTER_Y_M, (hit_dir as Vector3).normalized(), 1.0)
+	var heavy: bool = bool(info.get("headshot", false)) or StringName(str(info.get("damage_type", ""))) == &"explosive"
+	blood.bleed(npc_net_id, true, pos, NPC_BLEED_RATE_HEAVY if heavy else NPC_BLEED_RATE)
+
+
+## Fallback: a downed crew member bleeds where their controller lies (every peer has the controllers).
+func on_crew_downed(crew_slot: int, _downs_used: int) -> void:
+	var rt: HeistRuntime = HeistRuntime.current()
+	if blood_from_signals or rt == null:
+		return
+	var c: Node3D = rt.crew_controller(crew_slot) as Node3D
+	if c == null or not c.is_inside_tree():
+		return
+	blood.bleed(CREW_BODY_KEY - crew_slot, true, c.global_position, CREW_BLEED_RATE)
+
+
+func on_crew_revived(crew_slot: int, _by_crew_slot: int) -> void:
+	blood.bleed(CREW_BODY_KEY - crew_slot, false, Vector3.ZERO, 0.0)
+
+
+func on_crew_custody(crew_slot: int) -> void:
+	blood.bleed(CREW_BODY_KEY - crew_slot, false, Vector3.ZERO, 0.0)
+
+
+## EventBus.body_bagged: the pool stops and a small smear marks where the body was lifted.
+func on_body_bagged(body_net_id: int, _bag_net_id: int, _crew_slot: int) -> void:
+	blood.bleed(body_net_id, false, Vector3.ZERO, 0.0)
+	blood.smear(body_net_id)
+
+
 ## Remove every live effect (map reset).
 func clear() -> void:
 	decals.clear()
@@ -197,6 +311,7 @@ func clear() -> void:
 	lights.clear()
 	shells.clear()
 	explosions.clear()
+	blood.clear()
 	_groups.clear()
 	_cadence.clear()
 	_cue_pending.clear()
@@ -212,6 +327,9 @@ func stats() -> Dictionary:
 		"shells": shells.live, "shell_cap": shells.cap(),
 		"impact_sets": impacts.set_count(), "impact_caps": impacts.caps(),
 		"explosion_sets": explosions.set_count(), "explosion_cap": explosions.cap(),
+		"blood_sprays": blood.spray_count(), "blood_spray_cap": blood.spray_cap(),
+		"blood_decals": blood.splats.live, "blood_decal_cap": blood.splats.cap(),
+		"blood_pools": blood.pools.live, "blood_pool_cap": blood.pools.cap(),
 	}
 
 

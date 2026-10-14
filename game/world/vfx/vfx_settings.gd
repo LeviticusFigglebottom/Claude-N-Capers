@@ -38,6 +38,34 @@ const EXPLOSION_CAP: int = 4
 ## VfxDirector.MAX_IMPACT_CUES_PER_FRAME (4) per frame, nearest to the camera first.
 const IMPACT_CUES_PER_S: float = 24.0
 
+## --- Blood (D-113). Every cap is the HIGH value (quality-scaled). Gore Reduced: no pools / drips, fainter. ---
+## Blood spray sets (mist + droplets) alive at once, round-robin.
+const BLOOD_SPRAY_CAP: int = 12
+## Splatter / drip / smear decals (own pool: blood never evicts bullet holes). Oldest recycled.
+const BLOOD_DECAL_CAP: int = 64
+const MIN_BLOOD_DECALS: int = 16
+## Growing pools under bodies (own pool). Oldest recycled.
+const BLOOD_POOL_CAP: int = 10
+## Splatter ray from the hit (or exit) point along the shot, world layers only (no characters).
+const BLOOD_SPLATTER_RANGE_M: float = 2.5
+const BLOOD_DRIP_RANGE_M: float = 3.0
+## world_static | world_dynamic (project.godot physics layers 1-2).
+const BLOOD_WORLD_MASK: int = 1 | 2
+const BLOOD_HOLD_S: float = 90.0
+const BLOOD_FADE_S: float = 6.0
+## A pool grows over POOL_GROW_S (at bleed rate 1; slower at lower rates) up to POOL_MAX_M across.
+const POOL_GROW_S: float = 8.0
+const POOL_MAX_M: float = 1.5
+const POOL_HOLD_S: float = 240.0
+const POOL_FADE_S: float = 12.0
+
+## --- Gore option (ENV B: gameplay/gore, GameSettings.current().gore() -> &"full" / &"reduced" / &"off"). ---
+const GORE_FULL: StringName = &"full"
+const GORE_REDUCED: StringName = &"reduced"
+const GORE_OFF: StringName = &"off"
+## The single seam into GameSettings for the gore option (method name; read defensively, default Full).
+const GORE_METHOD: StringName = &"gore"
+
 ## Pools never drop below these at LOW.
 const MIN_DECALS: int = 32
 const MIN_SETS: int = 2
@@ -55,6 +83,13 @@ static var reduce_motion: bool = false:
 	set(v):
 		if v != reduce_motion:
 			reduce_motion = v
+			_revision += 1
+## Gore level (GORE_FULL / GORE_REDUCED / GORE_OFF), mirrored from GameSettings by sync_from_game_settings().
+static var gore: StringName = GORE_FULL:
+	set(v):
+		var g: StringName = v if v in [GORE_FULL, GORE_REDUCED, GORE_OFF] else GORE_FULL
+		if g != gore:
+			gore = g
 			_revision += 1
 ## Tests/tools: force CPUParticles3D (true), GPUParticles3D (false) or auto (null = renderer default).
 static var force_cpu_particles: Variant = null
@@ -76,6 +111,29 @@ static func sync_from_game_settings(s: GameSettings = null) -> void:
 	var level: int = clampi(gs.effects_quality(), 0, GameSettings.EFFECTS_SCALE.size() - 1)
 	effects_quality = GameSettings.EFFECTS_SCALE[level]
 	reduce_motion = bool(gs.get_value(GameSettings.ACCESSIBILITY, &"reduce_motion"))
+	gore = gore_from(gs)
+
+
+## Gore level of a settings object: `gore()` when it has one (ENV B), else Full. Unknown values -> Full.
+static func gore_from(gs: Object) -> StringName:
+	if gs == null or not gs.has_method(GORE_METHOD):
+		return GORE_FULL
+	var g: StringName = StringName(str(gs.call(GORE_METHOD)))
+	return g if g in [GORE_FULL, GORE_REDUCED, GORE_OFF] else GORE_FULL
+
+
+static func blood_enabled() -> bool:
+	return gore != GORE_OFF
+
+
+## Pools, drips and smears: Full only.
+static func blood_pools_enabled() -> bool:
+	return gore == GORE_FULL
+
+
+## Spray / splatter size multiplier for the gore level.
+static func blood_scale() -> float:
+	return 1.0 if gore == GORE_FULL else 0.6
 
 
 static func revision() -> int:
@@ -86,6 +144,7 @@ static func revision() -> int:
 static func reset() -> void:
 	effects_quality = 1.0
 	reduce_motion = false
+	gore = GORE_FULL
 	force_cpu_particles = null
 	force_decal_nodes = null
 
