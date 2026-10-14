@@ -10,6 +10,8 @@ const LOOP_LIMIT_S: float = 1500.0
 const REVIVE_RANGE_M: float = 20.0
 ## An enemy the pilot can see within this range makes it fight before reviving (unless last stand) (m).
 const REVIVE_THREAT_M: float = 25.0
+## A loud player opens, drills or uses a keycard before picking a lock: lockpick ranks this much farther (m).
+const LOCKPICK_PENALTY_M: float = 2.0
 
 var f: Node = null
 var p: Po5Pilot = null
@@ -108,7 +110,7 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 ## Enabled interactables within `radius` of the marker the player can use now (not revive / tie / pager / body bags).
 func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 	var best: InteractableComponent = null
-	var best_d: float = radius
+	var best_d: float = INF
 	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
 		var c: InteractableComponent = n as InteractableComponent
 		if c == null or not c.enabled or not rt.is_ancestor_of(c):
@@ -123,6 +125,10 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 		if door != null and door.is_open:
 			continue  # using an open door closes it (ND: the pilot toggled the vault gate while drilling)
 		var dd: float = c.global_position.distance_to(pos)
+		if dd > radius:
+			continue
+		if c.kind == &"lockpick":
+			dd += LOCKPICK_PENALTY_M  # ND attempt 15: two 30 s lockpick timeouts on a door it could simply open
 		if dd < best_d:
 			best = c
 			best_d = dd
