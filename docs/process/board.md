@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 12:35: **round 106 ON ORIGIN**: env/c-worlds da89427a (gallery_night_slots.py --check: 18 groups / 47 slots cross-checked vs doc + B's draft, PASS; floors --check PASS; GN doc factual fixes; cues.py mirrors B's device-loop values). No game content.
 - 2026-10-14 12:25: **round 105 ON ORIGIN**: env/b-content de4b1915 (PO-12 audio: drill_loop -3→-8 dB, 10 dB under median gunshot, max 25 m; saw -6 dB; test_device_loops_sit_under_gunfire) + net.md correction (lobby keeps AI seats by design; never clear_ai from crew_changed). b ui_cues/lobby/lobby_flow, c audio_registry green. PO-12 DONE (visual r102 + audio r105). C mirrors values in tools/audiogen/cues.py.
 - 2026-10-14 12:10: **GATE 3 PASSED: gh_stealth** (A, windowed, real menus, input only, seed 1791952236, Routine): HEIST COMPLETE $46,200, CLEAN JOB, 13:41, 2 pagers; no civilian intimidated or alarm. Gates 1 + 3 passed; gate 2 (ND loud, attempt 8 in the loot stretch) remains. Finding → C+P: crew capsule snags on the GH LobbyDoor frame collision + wall corner (16.3-16.4, 4.6) approaching a path corner.
 - 2026-10-14 12:00: **round 103 ON ORIGIN**: env/a-core 0f1bf19c (drill default device read via G.PROPS_DIR directly; test asserts it). a po12/s9 devices/qb_b6 (0 drop-in node errors, was 5) green.
@@ -107,6 +108,7 @@ Read it at the start of every work session.
 - D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
 
 ## Open questions (id → answer)
+- QC-62..65 (C, Gallery Night G1) → 62: B adds empty siblings xl_none / pa_none (no validator exemption); 63: Hazardous uses Brutal+ weights, Tense uses Routine (copy into Variable table); 64: 2 × 2 m light well under the areaway grate (x −4…−2), ladder in the well, opening into PL at x 0; 65: C8 at (−0.4, 9), WG west wall facing the court. C's generator skeleton goes to side branch env/c-gallery-night until the freeze lift.
 - C11 (B): after a co-op payday, does the crew stay together? → YES (PD2): Continue returns every peer to the crew lobby with the Net session kept; only Leave ends it. A (HeistRuntime/Net teardown keeps the lobby peer) + B (MenuFlow). Not a freeze gate.
 - QC-61 (C): is the GH fire escape a real stealth entry? → YES (glasshouse.md route 3, open_window variable). PD2 has no mantle: make the break-room window a walkable fire-escape door-window (sill ≤ 0.35 m, opening ≥ 1.0 × 1.9 m), restore a layer-1 link only through the opening when ow_breakroom_open; latched = glass breaks (noise 15 m) then passable. C builds map; A checks the glass/noise interaction. Stairs (NPC wedge at 0.175 m riser): invisible ramp colliders through the nosings on GH + ND flights (C), now, ahead of determinism.
 - QP-2/QP-3 world lights on the viewmodel → render layer **21** `viewmodel_lit` (visual_slots 1.2, D-095; 20 was taken).
