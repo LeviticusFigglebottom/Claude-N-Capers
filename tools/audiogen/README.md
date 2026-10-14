@@ -6,6 +6,7 @@ are no samples, recordings or third-party audio anywhere in the pipeline (style 
 ```
 python3 tools/audiogen/build.py                      # everything + metrics + spectrogram sheets
 python3 tools/audiogen/build.py --only glass_break   # one cue (name or cue.id)
+python3 tools/audiogen/build.py --only impact        # a cue group (all cue.impact_<surface>)
 python3 tools/audiogen/build.py --only music         # all Glasshouse stems + stingers
 python3 tools/audiogen/build.py --check-determinism  # build, rebuild into a temp tree, compare sha256
 ```
@@ -18,6 +19,7 @@ Needs Python 3 with numpy, scipy, Pillow and `ffmpeg` with libvorbis. A full bui
 | Path | What |
 |---|---|
 | `game/assets/audio/sfx/<name>/sfx_<name>[_<n>].ogg` | cue streams (variations `_1.._n`), `SOURCE.txt` per folder |
+| `game/assets/audio/sfx/impact/impact_<surface>/sfx_impact_<surface>_<n>.ogg` | bullet/melee impact cues `cue.impact_<surface>` (impact_fx.md, D-105), 4 variations each |
 | `game/assets/audio/music/glasshouse/mus_glasshouse_<stem>.ogg` | stems `stealth control anticipation assault fade`, stingers `win lose` |
 | `game/world/audio/cues.tres` | `AudioCueRegistry` generated from the `CUES` table in `cues.py` |
 | `game/world/audio/music/glasshouse/glasshouse.tres` | `MusicTrack` (bpm, bar length, stems, gains) |
@@ -40,6 +42,7 @@ Never hand-edit the generated `.tres`; change `cues.py` / `music_glasshouse.py` 
 | `synth/wavio.py` | WAV 48 kHz / 24-bit writer, deterministic OGG export, decode for verification |
 | `synth/seq.py` | `Song` grid (bpm, bars, step patterns, stereo buses), chord helper, drum synths (kick, snare, clap, hats, tom, rim, shaker, impact, riser) and instruments (bass, pad, FM bell, pluck, stab, drone) |
 | `cues.py` | one recipe function per cue + the `CUES` registry table (bus, 3D, loop, distance, jitter, cooldown) |
+| `cues_impact.py` | the 13 surface impact recipes (impact_fx.md §1 surface ids) + their `CUES` rows (`subdir="impact"`); build.py appends them to `cues.CUES` |
 | `music_glasshouse.py` | Glasshouse track (A minor, 140 BPM grid) |
 | `analysis.py` | metrics (duration, LUFS, true peak, spectral centroid) and the spectrogram contact sheet (numpy + Pillow) |
 | `registry.py` | deterministic `.tres` text writers |

@@ -61,6 +61,11 @@ const THROWABLE_CUES: Array[StringName] = [
 	&"cue.throwable_knife_hit", &"cue.throwable_knife_hit_hard", &"cue.throwable_incendiary_fire",
 ]
 const THROWABLE_LOOPS: Array[StringName] = [&"cue.throwable_incendiary_fire"]
+## impact_fx.md 1.0 §1/§3 (D-105, PO-8): one impact cue per surface id, cue.impact_<surface>.
+const IMPACT_SURFACES: Array[StringName] = [
+	&"concrete", &"brick", &"plaster", &"tile", &"wood", &"metal", &"glass", &"fabric", &"dirt", &"water",
+	&"flesh", &"armor", &"shield",
+]
 const LOOPS: Array[StringName] = [
 	&"cue.pager_beep", &"cue.pager_radio", &"cue.alarm_bell", &"cue.drill_loop", &"cue.police_siren_far",
 ]
@@ -234,6 +239,34 @@ func test_breach_burn_and_throwable_cues() -> void:
 		assert_true(absf(len_s - 5.0) < 0.1, "burn_warning is 5 s (got %.2f)" % len_s)
 	if burn != null:
 		assert_eq(burn.streams.size(), 3, "cue.burn_warning has 3 variations (audio_cues v1.2)")
+
+
+## cue.impact_<surface>: 3D one-shots on the World bus, >= 3 variations, short (<= 0.4 s), shorter
+## range than gunfire, never louder than a gunshot in the mix.
+func test_impact_cues() -> void:
+	if _reg == null:
+		skip("no registry")
+		return
+	for surface: StringName in IMPACT_SURFACES:
+		var id: StringName = StringName("cue.impact_%s" % surface)
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c != null, "registry has %s" % id)
+		if c == null:
+			continue
+		assert_eq(c.bus, &"World", "%s bus" % id)
+		assert_true(c.positional, "%s positional (3D)" % id)
+		assert_false(c.loop, "%s one-shot" % id)
+		assert_true(c.streams.size() >= 3, "%s has >= 3 variations" % id)
+		assert_true(c.max_distance >= 15.0 and c.max_distance <= 60.0, "%s range %.0f m" % [id, c.max_distance])
+		assert_true(c.volume_db <= 0.0, "%s sits under gunfire" % id)
+		for s: AudioStream in c.streams:
+			if s != null:
+				assert_true(s.get_length() <= 0.401, "%s stream is short (%.3f s)" % [id, s.get_length()])
+	var player: CuePlayer = _make_player()
+	player.play_cue(&"cue.impact_concrete", Vector3(1, 0, 2))
+	assert_eq(player.last_cue, &"cue.impact_concrete", "impact plays at a world position")
+	player.queue_free()
+
 
 func test_every_stream_loads_with_length() -> void:
 	if _reg == null:

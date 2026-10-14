@@ -1,0 +1,336 @@
+{
+ "_doc": "PO-8 / impact_fx.md \u00a71 (D-105): material id -> bullet surface id. One table for the map generators (SurfaceTags, game/world/materials/surface_tags.gd) and the prop wrapper scenes (tools/blender/props/_scenes.py). Lookup: exact `materials` key (library id, prop material id, greybox class id; a leading `M_` and any `<prefix>_` are stripped one segment at a time), then the first `keywords` substring. `props` = per prop asset overrides (asset id -> surface) where the dominant material reads wrong. Ids: concrete brick plaster tile wood metal glass fabric dirt water flesh armor shield. No plastic/paper/stone ids: plastic and cardboard read as wood (dull chip, no sparks), paper and leather as fabric, stone as concrete, vinyl flooring over slab as concrete.",
+ "ids": [
+  "concrete",
+  "brick",
+  "plaster",
+  "tile",
+  "wood",
+  "metal",
+  "glass",
+  "fabric",
+  "dirt",
+  "water",
+  "flesh",
+  "armor",
+  "shield"
+ ],
+ "materials": {
+  "alu_anodized_black": "metal",
+  "asphalt": "concrete",
+  "brass": "metal",
+  "brass_cartridge": "metal",
+  "brick_red": "brick",
+  "brushed_steel": "metal",
+  "carbon_fibre": "metal",
+  "carpet_commercial": "fabric",
+  "ceiling_tile": "plaster",
+  "chrome": "metal",
+  "concrete": "concrete",
+  "drywall_painted": "plaster",
+  "fabric_upholstery": "fabric",
+  "glass_clear": "glass",
+  "grey_ceiling": "plaster",
+  "grey_counter": "wood",
+  "grey_door": "wood",
+  "grey_floor": "concrete",
+  "grey_frame": "metal",
+  "grey_glass": "glass",
+  "grey_prop": "wood",
+  "grey_stair": "concrete",
+  "grey_trim": "metal",
+  "grey_wall": "plaster",
+  "grey_wall_ext": "concrete",
+  "leather_dark": "fabric",
+  "marble_cream": "tile",
+  "metal_matte": "metal",
+  "metal_painted": "metal",
+  "paint_safety_orange": "metal",
+  "paint_white": "plaster",
+  "plaster_painted": "plaster",
+  "plastic_matte": "wood",
+  "rubber_black": "fabric",
+  "steel_bare": "metal",
+  "steel_blued": "metal",
+  "terrazzo": "tile",
+  "tile_ceramic_white": "tile",
+  "trim_interior": "wood",
+  "vinyl_floor": "concrete",
+  "wood_veneer_walnut": "wood",
+  "pr_art_blue": "fabric",
+  "pr_art_ochre": "fabric",
+  "pr_art_rust": "fabric",
+  "pr_cardboard": "wood",
+  "pr_cash_green": "fabric",
+  "pr_ceramic": "tile",
+  "pr_concrete_light": "concrete",
+  "pr_cork": "wood",
+  "pr_leaf": "dirt",
+  "pr_leaf_dark": "dirt",
+  "pr_paper": "fabric",
+  "pr_powder_charcoal": "metal",
+  "pr_soil": "dirt",
+  "pr_stone_dark": "concrete",
+  "wall": "plaster",
+  "wall_ext": "concrete",
+  "floor": "concrete",
+  "ceiling": "plaster",
+  "roof": "concrete",
+  "slab": "concrete",
+  "stair": "concrete",
+  "counter": "wood",
+  "counter_service": "wood",
+  "prop": "wood",
+  "trim": "metal",
+  "frame": "metal",
+  "door": "wood",
+  "handrail": "metal",
+  "railing": "metal",
+  "paving": "concrete",
+  "sidewalk": "concrete",
+  "kerb": "concrete",
+  "deck": "wood",
+  "quay": "concrete",
+  "quay_stone": "concrete",
+  "facade_a": "plaster",
+  "facade_b": "concrete",
+  "facade_c": "brick",
+  "stone_facade": "concrete",
+  "granite": "concrete",
+  "tower": "concrete",
+  "tower_dark": "concrete",
+  "fence": "metal",
+  "fence_post": "metal",
+  "barrier": "metal",
+  "bollard": "metal",
+  "container": "metal",
+  "crane": "metal",
+  "vehicle": "metal",
+  "panel": "metal",
+  "partition": "plaster",
+  "mural": "concrete",
+  "grate": "metal",
+  "cage_mesh": "metal",
+  "ironwork": "metal",
+  "shutter": "metal",
+  "strip_curtain": "fabric",
+  "water": "water",
+  "planter": "dirt",
+  "plinth": "wood",
+  "skylight": "glass",
+  "teal_glass": "glass",
+  "glass_green": "glass",
+  "carpet_red": "fabric",
+  "window_lit": "glass",
+  "window_dark": "glass",
+  "pr_paint_greige": "wood",
+  "pr_paint_ivory": "wood",
+  "pr_paint_sage": "wood",
+  "pr_paint_slate": "wood"
+ },
+ "keywords": [
+  [
+   "render",
+   "plaster"
+  ],
+  [
+   "van_",
+   "metal"
+  ],
+  [
+   "far_lights",
+   "glass"
+  ],
+  [
+   "boat",
+   "metal"
+  ],
+  [
+   "glass",
+   "glass"
+  ],
+  [
+   "window",
+   "glass"
+  ],
+  [
+   "mirror",
+   "glass"
+  ],
+  [
+   "emit",
+   "glass"
+  ],
+  [
+   "screen",
+   "glass"
+  ],
+  [
+   "water",
+   "water"
+  ],
+  [
+   "soil",
+   "dirt"
+  ],
+  [
+   "leaf",
+   "dirt"
+  ],
+  [
+   "grass",
+   "dirt"
+  ],
+  [
+   "brick",
+   "brick"
+  ],
+  [
+   "tile",
+   "tile"
+  ],
+  [
+   "ceramic",
+   "tile"
+  ],
+  [
+   "marble",
+   "tile"
+  ],
+  [
+   "terrazzo",
+   "tile"
+  ],
+  [
+   "wood",
+   "wood"
+  ],
+  [
+   "veneer",
+   "wood"
+  ],
+  [
+   "plastic",
+   "wood"
+  ],
+  [
+   "polymer",
+   "wood"
+  ],
+  [
+   "cardboard",
+   "wood"
+  ],
+  [
+   "steel",
+   "metal"
+  ],
+  [
+   "metal",
+   "metal"
+  ],
+  [
+   "chrome",
+   "metal"
+  ],
+  [
+   "brass",
+   "metal"
+  ],
+  [
+   "alu",
+   "metal"
+  ],
+  [
+   "iron",
+   "metal"
+  ],
+  [
+   "hull",
+   "metal"
+  ],
+  [
+   "container",
+   "metal"
+  ],
+  [
+   "car_",
+   "metal"
+  ],
+  [
+   "fabric",
+   "fabric"
+  ],
+  [
+   "carpet",
+   "fabric"
+  ],
+  [
+   "rug",
+   "fabric"
+  ],
+  [
+   "velvet",
+   "fabric"
+  ],
+  [
+   "felt",
+   "fabric"
+  ],
+  [
+   "canvas",
+   "fabric"
+  ],
+  [
+   "suede",
+   "fabric"
+  ],
+  [
+   "leather",
+   "fabric"
+  ],
+  [
+   "bag",
+   "fabric"
+  ],
+  [
+   "rubber",
+   "fabric"
+  ],
+  [
+   "plaster",
+   "plaster"
+  ],
+  [
+   "drywall",
+   "plaster"
+  ],
+  [
+   "paint",
+   "plaster"
+  ],
+  [
+   "concrete",
+   "concrete"
+  ],
+  [
+   "asphalt",
+   "concrete"
+  ],
+  [
+   "stone",
+   "concrete"
+  ]
+ ],
+ "props": {
+  "prop_archive_boxes": "wood",
+  "prop_shelving_archive": "metal",
+  "prop_server_rack": "metal",
+  "prop_ups_cabinet": "metal",
+  "prop_vitrine_decor": "glass",
+  "prop_window_display_box": "glass",
+  "prop_door_double_glass_t20": "glass",
+  "prop_door_double_glass_t40": "glass",
+  "prop_door_single_glass_t20": "glass"
+ }
+}
