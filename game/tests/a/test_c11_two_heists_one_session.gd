@@ -3,8 +3,8 @@
 ## test_a3_07_coop_loopback.gd: the host (this process) and a client (coop_loopback_client.tscn) connect ONCE;
 ## heist 1 is launched (host HeistLauncher.launch, client HeistLauncher.launch_client) and ended; the host tears
 ## down FIRST while the client is still on its payday screen (its replica alive), then the client tears down, both
-## WITHOUT Net.leave(); the session must still be up (peer connected, the client's human slot in Net.crew, no AI
-## seat left behind once Net.clear_ai exists); heist 2 is launched on the same session with another seed and the
+## WITHOUT Net.leave(); the session must still be up (peer connected, the client's human slot in Net.crew; AI seats
+## stay for the lobby's Crew AI and a joiner takes one over); heist 2 is launched on the same session with another seed and the
 ## client gets a fresh replica of it: new seed, every map id resolved, objectives seeded, same NPC and crew ids.
 ## SCRIPT ERRORs on either side (the client's stdout is inherited) fail the run (run_tests.sh, D-047).
 extends TestCase
@@ -106,8 +106,6 @@ func _payday_host_first(client_peer: int, client_slot: int) -> void:
 	assert_true(not snap.is_empty() and not bool(snap.get("has_rt", true)), "no runtime left on the client")
 	_check_lobby(client_peer, client_slot, "after payday 1")
 	assert_true(HeistRuntime.current() == null, "no runtime left on the host")
-	if Net.has_method(&"clear_ai"):
-		assert_eq(Net.all_slots().size(), Net.human_slots().size(), "C11: no AI seat left in the kept lobby")
 
 
 ## Payday 2: the client Continues first while the host is still on its payday screen, then the host.
