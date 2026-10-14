@@ -210,6 +210,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	damaged.emit(out, attacker_net_id)
 	EventBus.damage_applied.emit(net_id, attacker_net_id, out)
 	Net.replicate_event(&"damage_applied", [net_id, attacker_net_id, out])
+	BloodFx.hit(self, net_id, out, max_health, BloodFx.KIND_NPC)  # D-113
 	if health <= 0.0:
 		die(out, attacker_net_id)
 	return out
@@ -246,6 +247,7 @@ func die(info: Dictionary = {}, killer_net_id: int = 0) -> void:
 	info["hit_dir"] = hd.normalized() if hd.length() > 0.0001 else Vector3.ZERO
 	died.emit(info, killer_net_id)
 	if Net.is_authority():
+		BloodFx.bleed(net_id, true, global_position, BloodFx.death_rate(info))  # D-113: the corpse pools
 		EventBus.npc_killed.emit(net_id, killer_net_id, info)
 		Net.replicate_event(&"npc_killed", [net_id, killer_net_id, info])
 		if role == &"civilian":

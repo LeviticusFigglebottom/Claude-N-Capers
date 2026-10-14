@@ -305,6 +305,7 @@ func bag_body(crew: CrewController, npc: NpcBase) -> LootBag:
 	var pos: Vector3 = npc.global_position + Vector3.UP * 0.05
 	var yaw: float = npc.global_rotation.y
 	npc.set_meta(&"bagged", true)
+	BloodFx.bleed(npc.net_id, false, pos, 0.0)  # D-113: bagged, the pool stops growing
 	npc.clear_corpse()
 	var comp: Node = npc.get_node_or_null(NodePath(String(BAG_BODY_NODE)))
 	if comp != null:
