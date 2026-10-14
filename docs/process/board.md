@@ -86,6 +86,7 @@ Read it at the start of every work session.
 - D (parked after P's D-101 attempt 00:55): rifle-family left-hand cup needs B to move LeftHandIK below the fore-end on ~20 weapons + re-timed lever clip; cosmetic. Pistol ADS forearm size: closed, matches PD2 within the rig's proportions.
 
 ## Routed findings
+- A (gate70, 04:xx): CHECK_ALL FAIL on GDScript runtime errors only (1897 tests 0 failed, 4 levels PASS): bulwark_shield.gd take_hit↔deliver_hit infinite pierce recursion (overlapping shields ping-pong; _trace_behind excludes only its own RID). Routed to A ahead of door swing.
 - (DONE r70) SL/DB marker_tags; test_heist_readiness green on all 4 heists.
 - A: loud transition doesn't advance the Glasshouse objective (still "Find the manager's keycard"); NPCs render as grey capsules while casing.
 - A (PO-5.x, interim 18:19): civilians no longer body-block (5.2), AI crew leash/cover need LOS + downed bots hold fire (5.3), solo Routine 31 enemies by t=180 (5.4), drill works but 180 s (5.8), police as white capsules (5.7, A diagnosing). B: PO-5.5 no primary (QB-1 yes), 5.6 "{count}/{total}" placeholder + keycard objective in lockdown, 5.9 Brutal unlocked while Tense/Hazardous locked.
