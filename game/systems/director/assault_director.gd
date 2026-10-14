@@ -100,6 +100,8 @@ var _control_special_left: float = 0.0
 var _body_died_at: Dictionary = {}
 var _body_clock: float = 0.0
 var _body_check_left: float = 0.0
+## _prewarm(): scene paths queued for a background load (kept for tests / logs).
+var _warm_paths: PackedStringArray = PackedStringArray()
 
 
 func _ready() -> void:
@@ -118,6 +120,8 @@ func _ready() -> void:
 		_runtime.phase_changed.connect(_on_heist_phase_changed)
 		if _runtime.went_loud or _runtime.phase == Enums.HeistPhase.LOUD:
 			begin.call_deferred()
+		if Net.is_authority():
+			_prewarm.call_deferred()
 	EventBus.hostage_count_changed.connect(_on_hostage_count_changed)
 	EventBus.damage_applied.connect(_on_damage_applied)
 	EventBus.crew_downed.connect(_on_crew_downed)
@@ -125,7 +129,53 @@ func _ready() -> void:
 	EventBus.npc_killed.connect(_on_npc_killed)
 
 
+## ND loud FrameProf: the first spawn of each unit type loaded its NPC scene and character on the main thread
+## (3-10 s frames on llvmpipe). Server, at director start: queue a background load of every scene the spawn
+## tables can use, so spawning only instantiates. Returns how many paths were queued.
+func _prewarm() -> int:
+	var groups: Array[SpawnGroupDef] = []
+	if tweak.first_responder_group != null:
+		groups.append(tweak.first_responder_group)
+	groups.append_array(tweak.assault_groups)
+	groups.append_array(tweak.control_special_groups)
+	var ids: Array[StringName] = []
+	for g: SpawnGroupDef in groups:
+		if g != null:
+			for id: StringName in g.unit_ids:
+				if not ids.has(id):
+					ids.append(id)
+	var defs: Array[EnemyDef] = []
+	for id: StringName in ids:
+		defs.append(_enemy_def(id))
+	if captain != null:
+		defs.append_array([captain.captain_def(), captain.shield_def()])
+	var paths: PackedStringArray = PackedStringArray()
+	for def: EnemyDef in defs:
+		if def == null:
+			continue
+		var scene: Variant = def.params.get("scene", "")
+		var sp: String = String(scene) if scene is String and String(scene) != "" \
+			else String(HeistRuntime.NPC_SCENES.get(_spawn_role(def), ""))
+		for p: String in [sp] + Array(NpcVisuals.def_scene_paths(def)):
+			if p != "" and not paths.has(p):
+				paths.append(p)
+	var queued: int = 0
+	for p: String in paths:
+		if ResourceLoader.has_cached(p) or not ResourceLoader.exists(p):
+			continue
+		if ResourceLoader.load_threaded_request(p, "", false) == OK:
+			queued += 1
+			_warm_paths.append(p)
+	Log.info(&"director", "prewarm: %d of %d scenes queued" % [queued, paths.size()])
+	return queued
+
+
 func _exit_tree() -> void:
+	# Collect the background loads (ResourceLoader holds an uncollected threaded load until load_threaded_get).
+	for p: String in _warm_paths:
+		if ResourceLoader.load_threaded_get_status(p) != ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+			ResourceLoader.load_threaded_get(p)
+	_warm_paths.clear()
 	if EventBus.hostage_count_changed.is_connected(_on_hostage_count_changed):
 		EventBus.hostage_count_changed.disconnect(_on_hostage_count_changed)
 	for pair: Array in [[EventBus.damage_applied, _on_damage_applied], [EventBus.crew_downed, _on_crew_downed],

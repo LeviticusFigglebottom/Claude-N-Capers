@@ -1,0 +1,251 @@
+[gd_resource type="Resource" script_class="HeistVariantTable" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_variant_table.gd" id="1_gnvar"]
+
+[resource]
+script = ExtResource("1_gnvar")
+rules = Array[Dictionary]([{
+"group": &"centrepiece",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"canvas_orchard",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"canvas_widow",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"canvas_saint",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"sensor_net",
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+2: {
+&"sensors_all": 0.4,
+&"sensors_treasury": 0.2,
+&"sensors_upper": 0.4
+},
+3: {
+&"sensors_all": 0.4,
+&"sensors_treasury": 0.2,
+&"sensors_upper": 0.4
+},
+4: {
+&"sensors_all": 0.4,
+&"sensors_treasury": 0.2,
+&"sensors_upper": 0.4
+},
+5: {
+&"sensors_all": 0.4,
+&"sensors_treasury": 0.2,
+&"sensors_upper": 0.4
+}
+}
+}, {
+"group": &"conservator",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"keycard",
+"pick": Vector2i(2, 2),
+"slot_requires": {
+&"kc_conservator": {
+&"conservator": [&"cons_late"]
+}
+}
+}, {
+"group": &"code_note",
+"pick": Vector2i(1, 1)
+}, {
+"difficulty_add": Array[int]([0, 0, 1, 2, 3, 3]),
+"group": &"guard_post",
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+2: {
+&"rover_none": 0.0
+},
+3: {
+&"rover_none": 0.0
+},
+4: {
+&"rover_none": 0.0
+},
+5: {
+&"rover_none": 0.0
+}
+}
+}, {
+"group": &"security_room_staffed",
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+2: {
+&"sec_empty": 0.35,
+&"sec_staffed": 0.65
+},
+3: {
+&"sec_empty": 0.25,
+&"sec_staffed": 0.75
+},
+4: {
+&"sec_empty": 0.25,
+&"sec_staffed": 0.75
+},
+5: {
+&"sec_empty": 0.25,
+&"sec_staffed": 0.75
+}
+}
+}, {
+"group": &"camera",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"laser_pattern",
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+2: {
+&"lz_static": 0.2,
+&"lz_sweep": 0.4,
+&"lz_timed": 0.4
+},
+3: {
+&"lz_static": 0.2,
+&"lz_sweep": 0.4,
+&"lz_timed": 0.4
+},
+4: {
+&"lz_static": 0.2,
+&"lz_sweep": 0.4,
+&"lz_timed": 0.4
+},
+5: {
+&"lz_static": 0.2,
+&"lz_sweep": 0.4,
+&"lz_timed": 0.4
+}
+}
+}, {
+"group": &"curator_route",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"court_doors",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"areaway",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"escape",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"xl_crate",
+"pick": Vector2i(0, 0)
+}, {
+"group": &"admin_pa",
+"pick": Vector2i(0, 0)
+}])
+rare_events = Array[Dictionary]([{
+"chance": 0.05,
+"effects": {
+"curator_card_on_bar": true,
+"force_active": {
+"group": &"keycard",
+"slot": &"kc_curator"
+}
+},
+"good": true,
+"id": &"curator_tipsy"
+}, {
+"chance": 0.05,
+"effects": {
+"extra_studies": 2,
+"force_active": {
+"group": &"xl_crate",
+"slot": &"xl_loan"
+}
+},
+"good": true,
+"id": &"late_loan"
+}, {
+"chance": 0.08,
+"effects": {
+"timed_spawn": {
+"after": &"last_call",
+"delay_s": 180.0,
+"spawn_tag": &"guard_inspection"
+}
+},
+"good": false,
+"id": &"insurance_inspection",
+"min_difficulty": 2
+}, {
+"chance": 0.06,
+"effects": {
+"timed_spawn": {
+"at_s": 720.0,
+"spawn_tag": &"guard_vaultline"
+}
+},
+"good": false,
+"id": &"vaultline_early",
+"min_difficulty": 2,
+"requires": {
+&"centrepiece": [&"cp_landing", &"cp_treasury"]
+}
+}, {
+"chance": 0.06,
+"effects": {
+"extra_hack_interruptions": 1,
+"force_active": {
+"group": &"sensor_net",
+"slot": &"sensors_all"
+}
+},
+"good": false,
+"id": &"argus_upgrade",
+"min_difficulty": 4
+}, {
+"chance": 0.05,
+"effects": {
+"force_active": {
+"group": &"admin_pa",
+"slot": &"pa_late"
+}
+},
+"good": false,
+"id": &"late_paperwork"
+}])
+scalars = Array[Dictionary]([{
+"id": &"last_call_s",
+"values": [480.0, 600.0, 720.0],
+"weights": PackedFloat32Array(1, 1, 1)
+}, {
+"id": &"patrons",
+"values": [3, 5, 7, 9],
+"weights": PackedFloat32Array(0.4, 0.4, 0.2, 0),
+"weights_by_difficulty": {
+2: PackedFloat32Array(0, 0.3, 0.4, 0.3),
+3: PackedFloat32Array(0, 0.3, 0.4, 0.3),
+4: PackedFloat32Array(0, 0.3, 0.4, 0.3),
+5: PackedFloat32Array(0, 0.3, 0.4, 0.3)
+}
+}, {
+"id": &"stragglers",
+"values": [0, 1, 2],
+"weights": PackedFloat32Array(0.4, 0.4, 0.2)
+}, {
+"id": &"store_paintings",
+"values": [4, 6, 8],
+"weights": PackedFloat32Array(1, 1, 1)
+}, {
+"id": &"consignment_lockers",
+"values": [4, 6, 8],
+"weights": PackedFloat32Array(1, 1, 1)
+}, {
+"id": &"escape_eta_s",
+"values": [90.0, 120.0, 150.0],
+"weights": PackedFloat32Array(0.4, 0.4, 0.2),
+"weights_by_difficulty": {
+2: PackedFloat32Array(0.2, 0.4, 0.4),
+3: PackedFloat32Array(0.2, 0.4, 0.4),
+4: PackedFloat32Array(0.2, 0.4, 0.4),
+5: PackedFloat32Array(0.2, 0.4, 0.4)
+}
+}])

@@ -26,6 +26,11 @@ back spike) on wine enamel; staff wear it as a small round pin, security as a br
   belt, gold earrings, heels, dark bob.
 * ``char_gallery_patron_b``: gala guest (man, older): a midnight-blue velvet dinner jacket with
   black satin shawl lapels, white shirt, black bow tie, black trousers, wine pocket square.
+* ``char_gallery_admin``: the development office's admin PA (QC-58c, rare ``late_paperwork``),
+  the one office worker in the building after hours: a teal knit cardigan (open, one button) over a
+  pale-blue shirt, charcoal trousers, low heels, silver glasses, a wristwatch and the
+  gallery staff lanyard (wine strap, gold band, white card). Day office wear, so it never reads as a
+  gala guest (black tie) or front-of-house staff (black and white).
 * Reused (listed in ``world/characters/p5_cast.json``, not rebuilt; D-063 reserved them for this
   heist): ``npc_penthouse_guest_a`` / ``_b`` (more gala guests) and ``npc_penthouse_staff`` (the
   waitress).
@@ -63,6 +68,8 @@ VARIANTS = {
                             "hair_color": "dark", "lip": "char_lip_rose", "look": "patron"},
     "char_gallery_patron_b": {"height": 1.79, "build": 0.55, "gender": 0.0, "age": 0.7, "skin": 2,
                               "beard_shadow": 0.3, "hair": "side_part", "hair_color": "grey", "look": "patron_b"},
+    "char_gallery_admin": {"height": 1.68, "build": 0.45, "gender": 1.0, "age": 0.35, "skin": 3, "hair": "bob",
+                           "hair_color": "brown", "look": "admin"},
 }
 
 BONE = "char_gallery_bone"
@@ -194,7 +201,26 @@ def patron_b(kit: Kit) -> None:
                          "black bow tie, satin-striped trousers, wine pocket square")
 
 
-_looks = {"curator": curator, "attendant": attendant, "attendant_b": attendant_b, "guard": guard,
+def admin(kit: Kit) -> None:
+    """Admin PA (QC-58c): office wear, the cardigan is a knit jacket without contrast lapels."""
+    fit, k = kit.fit, kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit, heel=True)
+    n.shirt(kit, "char_shirt_blue", tuck, point_len=0.05, spread=0.32)
+    # Trousers, not a skirt: the shared skirt loft lets the thighs poke through in walk/cower/seated.
+    n.trousers(kit, "char_suit_dark", sh, belt_z + 0.022 * k, hem_r=0.056)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, "char_knit_teal", 0.76 * k, 1.02 * k, button_mat="char_button_dark", lapel_w=0.03,
+                         neck_w=0.09, flare=0.05, chest_welt=False)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    n.lanyard(kit, WINE, "char_medic_white", card_z=1.16, band_mat="brass")
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    kit.add_head(gk.glasses(fit, "char_metal_silver"))
+    kit.notes["look"] = ("Admin PA (development office): teal knit cardigan over a pale-blue shirt, charcoal "
+                         "trousers, low heels, silver glasses, watch, gallery staff lanyard (wine, gold)")
+
+
+_looks = {"admin": admin, "curator": curator, "attendant": attendant, "attendant_b": attendant_b, "guard": guard,
           "patron": patron, "patron_b": patron_b}
 
 

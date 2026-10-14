@@ -5,10 +5,10 @@
 class_name RangeFalloffGraph
 extends Control
 
-const PAD_LEFT: float = 44.0
+const PAD_LEFT: float = 56.0
 const PAD_RIGHT: float = 10.0
 const PAD_TOP: float = 10.0
-const PAD_BOTTOM: float = 22.0
+const PAD_BOTTOM: float = 28.0
 
 var stats: WeaponStats = null
 var marker_distance_m: float = -1.0
@@ -89,7 +89,10 @@ func _draw() -> void:
 		var x: float = r.position.x + r.size.x * float(i) / float(steps)
 		draw_line(Vector2(x, r.end.y), Vector2(x, r.end.y + 4.0), tweak.graph_axis_color, 1.0)
 		var txt: String = UiText.t(&"ui.range.fmt.m", {"value": roundi(d)})
-		draw_string(font, Vector2(x - 12.0, r.end.y + 4.0 + float(fs)), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, tweak.graph_axis_color)
+		# The first label starts at its tick, the last ends at it (it was clipped at the panel edge), others centre.
+		var tw: float = font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var tx: float = x if i == 0 else (x - tw if i == steps else x - tw * 0.5)
+		draw_string(font, Vector2(tx, r.end.y + 4.0 + float(fs)), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, tweak.graph_axis_color)
 	if _samples.size() < 2:
 		return
 	var top: float = _max_damage() / 1.1
@@ -99,7 +102,16 @@ func _draw() -> void:
 	var pts: PackedVector2Array = PackedVector2Array()
 	for p: Vector2 in _samples:
 		pts.append(to_canvas(p))
-	draw_polyline(pts, tweak.graph_line_color, 2.0, true)
+	# D-111: where falloff starts and ends (dashed guides), and a mid-damage tick, so the curve reads at a glance.
+	for d: float in [stats.falloff_start_m, stats.falloff_end_m] if stats != null else []:
+		if d > 0.0 and d < tweak.graph_max_distance_m:
+			var gx: float = to_canvas(Vector2(d, 0.0)).x
+			draw_dashed_line(Vector2(gx, r.position.y), Vector2(gx, r.end.y), tweak.graph_axis_color, 1.0, 4.0)
+	var mid_y: float = to_canvas(Vector2(0.0, top * 0.5)).y
+	draw_line(Vector2(r.position.x - 4.0, mid_y), Vector2(r.position.x, mid_y), tweak.graph_axis_color, 1.0)
+	draw_string(font, Vector2(2.0, mid_y + float(fs) * 0.4), String.num(top * 0.5, 0), HORIZONTAL_ALIGNMENT_LEFT,
+			PAD_LEFT - 4.0, fs, tweak.graph_axis_color)
+	draw_polyline(pts, tweak.graph_line_color, 3.0, true)
 	if marker_distance_m >= 0.0 and stats != null:
 		var dmg: float = RangeMath.shot_damage(stats, minf(marker_distance_m, tweak.graph_max_distance_m))
 		var c: Vector2 = to_canvas(Vector2(marker_distance_m, dmg))

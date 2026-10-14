@@ -6,6 +6,7 @@
 ## B4-15: five more bases (skull, theatre, gasmask, demon, goalie) under the same contract.
 ## D3-03: twelve more bases (ram, stag, cat, boar, serpent, moth, knight, doll, sunburst, geo, robot,
 ## jester) under the same contract.
+## D-111: eight more bases (kraken, lion, shark, pierrot, welder, wicker, lucha, signal), same contract.
 ## D-073: every mask is fitted over the crew face envelope (tools/blender/masks/_face_envelope.py);
 ## the envelope must have been generated from the current crew heads.
 ## Run after `godot --import`.
@@ -18,6 +19,7 @@ const LIBRARY_PREFIX: String = "res://world/materials/char_mask_"
 const BASE_NAMES: Array[String] = [
 	"heron", "visage", "vulpine", "bruiser", "owl", "skull", "theatre", "gasmask", "demon", "goalie",
 	"ram", "stag", "cat", "boar", "serpent", "moth", "knight", "doll", "sunburst", "geo", "robot", "jester",
+	"kraken", "lion", "shark", "pierrot", "welder", "wicker", "lucha", "signal",
 ]
 const BASE_MATERIAL: String = "M_char_mask_base"
 const BASE_LIBRARY: String = "res://world/materials/char_mask_base.tres"
@@ -29,6 +31,8 @@ const CENTRED_FRONT: Array[String] = [
 ]
 ## The respirator pushes well forward of the face (its filter canister); the boar's snout disc too.
 const PROTRUDING_FRONT: Dictionary[String, float] = {"gasmask": -0.09, "boar": -0.08}
+## Deliberately lopsided bases (D-111 signal: dish on one temple, aerial on the other): wider centring tolerance (m).
+const OFF_CENTRE: Dictionary[String, float] = {"signal": 0.03}
 ## D-073 mask fit: the crew face envelope the mask generator pushes every shell out of.
 const ENVELOPE_REL: String = "../tools/blender/masks/_crew_face_envelope.json"
 const CHARACTERS_DIR: String = "res://assets/characters"
@@ -176,7 +180,8 @@ func test_base_masks_are_head_sized_and_symmetric() -> void:
 		assert_true(box.size.x >= 0.14 and box.size.x <= 0.30, "%s width %.3f m in 0.14..0.30" % [base_name, box.size.x])
 		assert_true(box.size.y >= 0.18 and box.size.y <= 0.32, "%s height %.3f m in 0.18..0.32" % [base_name, box.size.y])
 		assert_true(box.size.z >= 0.04 and box.size.z <= 0.30, "%s depth %.3f m in 0.04..0.30" % [base_name, box.size.z])
-		assert_near(box.get_center().x, 0.0, 0.002, "%s is symmetric about x = 0" % base_name)
+		var tol: float = OFF_CENTRE.get(base_name, 0.002)
+		assert_near(box.get_center().x, 0.0, tol, "%s is centred about x = 0 (tolerance %.3f)" % [base_name, tol])
 		root.queue_free()
 
 
@@ -231,7 +236,11 @@ func test_base_masks_uv0_is_front_projected() -> void:
 					worst = maxf(worst, maxf(absf(uv.x - ex), absf(uv.y - ey)))
 		assert_true(uv_min.x > -0.001 and uv_min.y > -0.001, "%s UV0 min %s >= 0" % [base_name, uv_min])
 		assert_true(uv_max.x < 1.001 and uv_max.y < 1.001, "%s UV0 max %s <= 1" % [base_name, uv_max])
-		assert_true(uv_min.x < 0.01 and uv_min.y < 0.01 and uv_max.x > 0.99 and uv_max.y > 0.99,
+		# x = 0 maps to u 0.5 exactly (patterns stay centred on the face), so a lopsided base reaches only
+		# one end of the U range
+		var u_span: bool = (uv_min.x < 0.01 or uv_max.x > 0.99) if OFF_CENTRE.has(base_name) \
+			else (uv_min.x < 0.01 and uv_max.x > 0.99)
+		assert_true(u_span and uv_min.y < 0.01 and uv_max.y > 0.99,
 			"%s UV0 spans 0..1 (%s..%s)" % [base_name, uv_min, uv_max])
 		assert_true(worst < 0.005, "%s UV0 = front projection (x 0 at +X, y 0 at top); max error %.4f" % [base_name, worst])
 		root.queue_free()

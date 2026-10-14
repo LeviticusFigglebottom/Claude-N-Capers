@@ -103,3 +103,25 @@ func test_sweeping_beam_reaches_the_crew() -> void:
 	var ok: bool = await wait_until(func() -> bool: return g.tripped, 3.0)
 	assert_true(ok, "sweeping beam reaches the crew")
 	assert_eq(_trips.size(), 1)
+
+
+## D-103 §6 / QC-53: a grid can start off (enabled_at_start false) and the mission switches it with set_enabled
+## (Gallery Night's landing curtain at last call). Off = no beams, the crew walks through; on = it trips.
+func test_gn_set_enabled_switches_a_grid_off_and_on() -> void:
+	var g: LaserGrid = _grid(Vector3(0, 0, -6), &"static", func(n: Node) -> void:
+		(n as LaserGrid).enabled_at_start = false)
+	await wait_physics_frames(2)
+	assert_false(g.active or g.beams_on(), "starts switched off")
+	_put(Vector3(0, 0.05, -6))
+	await wait_physics_frames(6)
+	assert_false(g.tripped, "walking through a switched-off grid trips nothing")
+	_put(Vector3(0, 0.05, -2))
+	await wait_physics_frames(2)
+	g.set_enabled(true)
+	assert_true(g.active and g.beams_on(), "switched on")
+	var state: Dictionary = NetEntityCodec.state_of(g)
+	assert_true(bool(state.get("active", false)), "replicated as `active`")
+	_put(Vector3(0, 0.05, -6))
+	var ok: bool = await wait_until(func() -> bool: return g.tripped, 1.0)
+	assert_true(ok, "the switched-on grid trips")
+	assert_has(_alarms, &"laser", "alarm_raised(&\"laser\")")

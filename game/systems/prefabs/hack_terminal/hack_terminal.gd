@@ -17,6 +17,10 @@
 ## EventBus.alarm_raised; `pause_on_event` / `resume_on_event` name EventBus signals that pause /
 ## resume it (reason = the signal name).
 ## Visual: `Screen` (MeshInstance3D; its material_override follows the state) and `Panel`.
+## D-103 §6 / QC-55: `reconfigure(duration_s, interruptions)` (server) changes the run for the mission (Gallery Night's
+## Argus hack: 60 s / 1-2 in stealth -> 120 s / 2-3 once loud); a running hack keeps its progress fraction, takes
+## the new duration and re-rolls the interruptions still ahead. `clears_alarm_group` is disabled on finish
+## (AlarmGroups: the frame sensors go offline).
 class_name HackTerminal
 extends GameplayPrefab
 
@@ -38,6 +42,10 @@ const SCREEN_COLORS: Array[Color] = [
 @export var interruptions: Vector2i = Vector2i(-1, -1)
 ## What the hack opens (Door, Safe, ...).
 @export var targets: Array[NodePath] = []
+## D-103 §6: the alarm group (AlarmGroups) this hack takes offline when it finishes (&"" = none).
+@export var clears_alarm_group: StringName = &""
+## GN (C's gap 6): more AlarmGroups disabled on finish, besides `clears_alarm_group`.
+@export var clears_alarm_groups: Array[StringName] = []
 ## Collision box size (m), placed on the pivot; ZERO = fit to the visual (or use the visual's own
 ## `Collision`), see GameplayPrefab "Collision fitting".
 @export var collision_size_override: Vector3 = Vector3.ZERO
@@ -216,6 +224,35 @@ func _physics_process(delta: float) -> void:
 		_set_state(State.DONE)
 		for p: NodePath in targets:
 			DrillPoint.open_target(get_node_or_null(p) if not p.is_empty() else null)
+		if clears_alarm_group != &"":
+			AlarmGroups.disable(HeistRuntime.of(self), clears_alarm_group)
+		for g: StringName in clears_alarm_groups:
+			AlarmGroups.disable(HeistRuntime.of(self), g)
+
+
+## Server (mission): new run time (s; -1 = the tweak) and interruption range ([min, max]; negative = the tweak).
+## IDLE: used by the next start. RUNNING / INTERRUPTED: the progress fraction is kept, the remaining time follows
+## the new duration, and the interruptions still ahead are re-rolled so the total lands in the new range.
+func reconfigure(new_duration_s: float, new_interruptions: Vector2i) -> void:
+	if not Net.is_authority():
+		return
+	duration_s = new_duration_s
+	interruptions = new_interruptions
+	if state != State.RUNNING and state != State.INTERRUPTED:
+		return
+	duration = maxf(effective_duration(), 0.01)
+	var used: int = rolled_interruptions - pending_interruptions.size()
+	var r: Vector2i = interruption_range()
+	var rng: RandomNumberGenerator = GameRng.stream(&"devices")
+	var total: int = maxi(rng.randi_range(maxi(r.x, 0), maxi(r.y, 0)), used)
+	var left: int = total - used
+	rolled_interruptions = total
+	pending_interruptions.clear()
+	var span: float = 1.0 - progress
+	for k: int in range(left):
+		var at: float = progress + span * float(k + 1) / float(left + 1)
+		pending_interruptions.append(clampf(at, progress + 0.005, 0.99))
+	Log.info(LOG_CHANNEL, "%s: reconfigured (%.1f s, %d interruptions, %d ahead)" % [name, duration, total, left])
 
 
 func _roll_interruptions() -> void:

@@ -49,7 +49,7 @@ func _distinct(heisters: Array) -> bool:
 
 
 func test_roster_data_and_names() -> void:
-	assert_eq(Heisters.ids(), [&"rook", &"sable", &"dutch", &"wren"] as Array[StringName], "roster order")
+	assert_eq(Heisters.ids(), [&"rook", &"sable", &"dutch", &"wren", &"marten"] as Array[StringName], "roster order")
 	for id: StringName in Heisters.ids():
 		assert_eq(Heisters.name_key(id), StringName("crew.%s" % id))
 		assert_ne(Heisters.display_name(id), String(Heisters.name_key(id)), "%s has a name string" % id)
@@ -68,16 +68,19 @@ func test_assign_rule() -> void:
 	assert_eq(c[1], &"sable", "first claim keeps")
 	assert_eq(c[0], &"dutch", "next after sable in roster order")
 	assert_true(_distinct(c.values()))
-	# wrap-around: wren taken -> rook
+	# next after wren is marten (D-111); wrap-around: marten taken -> rook
 	var w: Dictionary = Heisters.assign([0, 1] as Array[int], {0: &"wren", 1: &"wren"}, [] as Array[int])
-	assert_eq(w[1], &"rook")
+	assert_eq(w[1], &"marten")
+	var m: Dictionary = Heisters.assign([0, 1] as Array[int], {0: &"marten", 1: &"marten"}, [] as Array[int])
+	assert_eq(m[1], &"rook")
 	# no preference = first free; conflicts are served after every uncontested pick
 	var g: Dictionary = Heisters.assign([0, 1, 2] as Array[int], {0: &"", 1: &"rook", 2: &"rook"}, [3] as Array[int])
 	assert_eq(g[1], &"rook")
 	assert_eq(g[0], &"sable", "no preference after the uncontested picks")
 	assert_eq(g[2], &"dutch")
 	assert_eq(g[3], &"wren", "AI last")
-	assert_eq(Heisters.next_free(&"rook", [&"rook", &"sable", &"dutch", &"wren"] as Array[StringName]), &"")
+	assert_eq(Heisters.next_free(&"rook", [&"rook", &"sable", &"dutch", &"wren"] as Array[StringName]), &"marten")
+	assert_eq(Heisters.next_free(&"rook", Heisters.ids()), &"")
 
 
 func test_profile_round_trip_and_repair() -> void:
@@ -110,7 +113,9 @@ func test_picker_lists_roster_and_saves() -> void:
 	ls.setup(p)
 	add_child(ls)
 	await wait_frames(1)
-	assert_eq(ls.option_ids(ls.heister_option), [&"", &"rook", &"sable", &"dutch", &"wren"] as Array[StringName])
+	assert_eq(ls.option_ids(ls.heister_option), [&"", &"rook", &"sable", &"dutch", &"wren", &"marten"] as Array[StringName])
+	assert_false(ls.select_heister(&"marten"), "D-111: Marten is earned (The Planner)")
+	assert_eq(ls.heister_option.get_item_text(5), UiText.t(&"ui.loadout.heister_locked", {"name": Heisters.display_name(&"marten")}))
 	assert_eq(ls.current_loadout().heister, &"dutch", "starts on the profile's pick")
 	assert_eq(ls.heister_swatch.color, Heisters.accent(&"dutch"))
 	assert_eq(ls.heister_portrait.visible, Heisters.portrait(&"dutch") != null, "portrait only when ENV D ships one")
@@ -209,3 +214,16 @@ func test_solo_launch_loadouts_distinct() -> void:
 	assert_true(two.has(0) and two.has(2) and not two.has(3))
 	var none: Dictionary = MenuFlow.build_launch_options(0, 0, Loadout.new())["loadouts"] as Dictionary
 	assert_eq(none.size(), 1, "no AI, no AI loadouts")
+
+
+## D-111: Marten is earned (achievement The Planner grants unlock.achievement.the_planner); the others are free.
+func test_marten_unlock() -> void:
+	var p: PlayerProfile = PlayerProfile.new_default()
+	assert_eq(Heisters.unlock_of(&"marten"), &"unlock.achievement.the_planner")
+	assert_false(Heisters.is_unlocked(p, &"marten"))
+	for id: StringName in [&"rook", &"sable", &"dutch", &"wren", &""]:
+		assert_true(Heisters.is_unlocked(p, id), "%s free" % id)
+	MaskLocker.grant_unlock(p, &"unlock.achievement.the_planner")
+	assert_true(Heisters.is_unlocked(p, &"marten"))
+	var a: AchievementDef = ContentDB.by_id(ContentDB.ACHIEVEMENTS, &"achievement.the_planner") as AchievementDef
+	assert_true(a != null and a.unlock == &"unlock.achievement.the_planner")

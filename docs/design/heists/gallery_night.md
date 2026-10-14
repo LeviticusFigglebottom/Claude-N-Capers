@@ -515,7 +515,7 @@ Support-space check (level_standards §2.2):
 | Attendant (`gallery_attendant`) | 2 | always | `civ_attendant` | `curator_inspect` / `browse` | `staff`, `staff_attendant` |
 | Waitstaff (`gallery_waitstaff`) | 1–2 | until last call + 120 s | `civ_waitstaff` | `walk_text` / `browse` (bar) | `staff`, `staff_bar` |
 | Conservator (`gallery_attendant_b`, QC-58) | 0–1 | `conservator` = `cons_late` | `civ_conservator` | `desk_work` (easel) | `staff`, `staff_cs` |
-| Admin PA (cast TBD, QC-58) | 0–1 | rare `late_paperwork` | `civ_admin` | `desk_work` | `staff`, `staff_admin` |
+| Admin PA (cast `gallery_admin`, QC-58c, ENV D 50265303) | 0–1 | rare `late_paperwork` | `civ_admin` | `desk_work` | `staff`, `staff_admin` |
 | Patrons (`gallery_patron`) | 3–9 | `patrons` scalar; `stragglers` after last call | `civ_patron` (GH ×4, WG ×2, EG ×2, EB ×2, court ×2) | `browse` / `sit` / `smoke` (court) | `civilian`, `civilian_court` |
 
 **Totals per difficulty** (guards from `guard_post` picks with `difficulty_add`):
@@ -558,15 +558,15 @@ tie (her keycard, QC-52). Solo means **waiting for last call and avoiding** civi
 
 | Cam | Mount | Looks at | Notes |
 |---|---|---|---|
-| C1 | VE, over the inner glass screen (22, 26.2), 3.2 m | N into GH: the hall floor, the stair foot | Public until last call (watches masked players only). |
+| C1 | VE south wall above the bronze doors, 3.2 m (G1, lead r165: the arch spot is 4 m up and fails `scale`) | N into GH: the hall floor, the stair foot | Public until last call (watches masked players only). |
 | C2 | GH, ceiling under the E balcony soffit (31, 22), 5.1 m | NW: the bar, the staff-door strip, the WG arch | The stair landing is above its cone. |
 | C3 | WG, NE corner (11.6, 8.4) | SW: the room, the French doors | The BC art door beside it is blind. |
 | C4 | EG, SE corner (43.6, 23.6) | NW: the room, the LD art door | The EB opening is behind it. |
 | C5 | BC, W end (3.4, 7) | E along BC (to x ≈ 23) | SC and RG doors in view; LF/E1/J beyond 20 m. |
 | C6 | LD, NW corner (32.4, 0.4) | SE: the roller door, the art door, the crates | The BC double door and the lift door are beside it (blind). |
-| C7 | Mews pole (36, −1), 3.2 m | W along the Mews | Ladder foot in view; the Mews mouth (E) is behind it. |
+| C7 | Mews pole (36, −1.15), 3.2 m (GN-C2: clear of the roller door) | W along the Mews | Ladder foot in view; the Mews mouth (E) is behind it. |
 | C8 | Court, WG west wall (−0.4, 9) (QC-65) | S over the court: the French doors, the grate | The gate corner is occluded by the pool kiosk. |
-| C9 | UG1, SE corner (11.6, 19.6) | NW over the Calloway hang | The shuttered arch is beside it (blind). |
+| C9 | UG1, SE corner (11.6, 17.5) (G1, lead r165: z 17.5 so the UG1 screen hides `orchard_calloway`) | NW over the Calloway hang | The shuttered arch is beside it (blind). |
 | C10 | UG3, NW corner (32.4, 12.4) | SE: the room, the TR and AT doors | The CS door is beside it (blind). |
 | C11 | TR, NE corner (43.6, 24.4), 2.6 m | W/SW: the door, the grid, the painting | **Always live** (`treasury`). |
 | C12 | BB, E end (31.6, 7) | W along BB: the vault door, the lift | The SS door at the W end is 29 m away (outside range). |
@@ -653,7 +653,7 @@ Worked for `cam_a`:
    → into SV, door closed → **hack 60 s** (+1 interruption from `argus_upgrade`), silent, off camera.
    Time the keypad and the exit to the upper rover's loop (c) (CS → UG3 side). No ECM used.
 4. BE → UG3 (C10 off in `cam_a`) → TR door. **ECM #1** (C11): swipe `kc_security` (3 s) → 1.5 m to
-   the grid → wait for the sweep gap (≤ 6 s) → cross (2 s) → cut the Lantern Bearer (4 s) → cross back
+   the grid → hug the side wall and wait for the paired-beam gap (~1.4 s at the wall, ~0.7 s mid-room; P r165) → cross → cut the Lantern Bearer (4 s) → cross back
    in the next gap → out (≈ 18–20 s in all; the jam is 20 s). The Lantern Bearer is LIGHT: carry it
    through BE.
 5. BW → UG1: C9 (SE corner, looking NW) is live; the `orchard_calloway` slot is on the W wall behind a
@@ -661,7 +661,7 @@ Worked for `cam_a`:
    checked by `camera_screen`: **every upper list slot has a screen between it and its room's camera**).
    Cut it after the rover's loop (a) pause ends and he leaves through UG2: that is the second required
    canvas (D-075: the Lantern Bearer + 1). UG2 (no camera) → `widow_sallow` is a bonus.
-6. Drop the canvases from BE over the balustrade into the hall's east strip (x 24–28, Build rulings B4; out of
+6. Drop the canvases from BE over the balustrade into the hall's east strip (x 22–28, Build rulings B4 / P GN-P1; out of
    C1's cone: ≥ 70° off its axis, behind the bar straggler), take the stairs down, and carry them along
    the hall's south wall
    (C1's blind band below and behind its mount) into VE and out of the bronze doors (push bar from
@@ -836,7 +836,7 @@ Hazardous (`sensor_net`, `laser_pattern`, `patrons`, `escape_eta_s`).
 | `guard_post` | `rover_ground`, `rover_upper`, `rover_basement`, `dock_smoker`, `rover_none` (encodes counts as Night Deposit) | Routine/Tense pick 1 (`rover_none` 1 vs 1 each: P(none) = 0.2); Hazardous pick 2; Brutal 3; Lethal+ 4 (`difficulty_add`) | **Which floor and which entry has a walker**: the smoker shuts the Mews; the basement rover makes the grate and the vault slow. |
 | `security_room_staffed` | `sec_staffed`, `sec_empty` | Routine 0.6/0.4; Hazardous 0.65/0.35; Brutal+ 0.75/0.25 | Live cameras or not; SC's cabinet and log are free when empty. |
 | `camera` | `cam_a`, `cam_b`, `cam_c` (table in Sightlines) | 1, 1, 1 | Which corridor and which entry needs ECM or timing. |
-| `laser_pattern` (TR grid) | `lz_static` (3 beams 1.30/1.8/2.33 m: crouch under the 1.30 m beam, Build rulings B4), `lz_sweep` (3 vertical, 6 s), `lz_timed` (4 beams, off 4 s of 16 s) | Routine 0.5/0.2/0.3; Brutal+ 0.2/0.4/0.4 | Crouch, time the sweep or wait, in C11's cone. |
+| `laser_pattern` (TR grid) | `lz_static` (3 beams 1.30/1.90/2.50 m, evenly spaced by the prefab: crouch under the 1.30 m beam, Build rulings B4), `lz_sweep` (3 vertical, 6 s, ~2.4 m apart, full room width; beams pair up at the side walls, ~1.4 s gap, ~0.7 s mid-room: timing kept, lead r165 option a, Mercer hint by B), `lz_timed` (4 beams, off 4 s of 16 s, full width) (G1, lead r165) | Routine 0.5/0.2/0.3; Brutal+ 0.2/0.4/0.4 | Crouch, time the sweep or wait, in C11's cone. |
 | `curator_route` (`civilian_cluster`) | `curator_hall`, `curator_office` | 0.5, 0.5 | **Where the keycard walks:** in the public hall among guests (tie her and every patron sees) or upstairs near CO/SV (quiet tie, near the upper rover). |
 | `court_doors` (`locked_door`) | `court_doors_open` (on the latch until last call), `court_doors_locked` | 0.5, 0.5 | **A free way from the court into WG** while the court is public. |
 | `areaway` (`vent_open`) | `grate_loose`, `grate_padlocked` (`padlock`: lockpick 8 s or saw) | 0.5, 0.5 | The cost of the basement route (in C8's cone in `cam_b`/`cam_c`). |
@@ -1154,8 +1154,8 @@ KEYCARD; the server CODE; the art store VAULT. Staff that must pass a locked doo
 | GS shop door (from VE) | LOCKPICK 8 s | Closed for the gala. |
 | Staff door under the stair (19, 8), GH ↔ BC | LOCKPICK 8 s | `npc_authorized_tags` [`guard`, `staff`]. The route-1 "held open" walk-through is gone (QC-56 dropped). |
 | WG art-handling double door (5–6, 8), WG ↔ BC | LOCKPICK 8 s | Staff authorised. |
-| LD personnel door (Mews) | LOCKPICK 8 s outside, `push_bar` inside | Police ENTRY. ≥ 1.0 m, step-free to the Mews (§7.3). |
-| LD roller door (Mews) | BARRED (crew cannot operate) | Police ENTRY `breach_only` (breach opens it); the S1 lane when open. |
+| LD personnel door (Mews) | LOCKPICK 8 s outside, `push_bar` inside | Police ENTRY. ≥ 1.0 m, step-free to the Mews (§7.3). `npc_authorized_tags` [`guard_mews`, `civ_waitstaff`] (the smoker; the waitstaff leave by it, Circulation). |
+| LD roller door (Mews) | ELECTRONIC (crew cannot operate without a hack; A r185: BARRED is never breached) | Police ENTRY `breach_only` (breach opens it); the S1 lane when open. |
 | LD → EG art door DD (37–38, 12) | KEYCARD (reader on the LD side) | Lockdown: BARRED; `[hack]` done in loud → NONE (plain open). |
 | Roof head-house door (3, 7, roof) | LOCKPICK 8 s from the deck, `push_bar` inside | Police ENTRY `breach_only`. |
 | Lift motor room LM | BARRED, no interaction | Dressing. |
@@ -1163,7 +1163,7 @@ KEYCARD; the server CODE; the art store VAULT. Staff that must pass a locked doo
 | Interior BOH, upper: SS, CO, AO, UW, FS, CS (from UC), BW → UC, BE → UC, AT (N and W) | NONE | |
 | UG3 → CS door (36, 12) | LOCKPICK 8 s | Staff authorised (conservator, curator). |
 | SV server door (25, 6) | CODE (`code_group argus`, keypad on the UC side) | Loud: drill 60 s (`[server_door]`). |
-| TR door (39, 24) | KEYCARD (TR reader) | Lockdown: shutter BARRED; `[hack]` done in loud → shutter up **and** door NONE. |
+| TR door (39, 24) | KEYCARD (TR reader) | Lockdown: shutter BARRED; `[hack]` done in loud → shutter up **and** door NONE. Inspectors and couriers (`guard_inspection`, `guard_vaultline`) authorised (they walk to `cp_treasury`). |
 | Calloway arch shutter (12, 12–14) | `industrial_door`, `starts_open`, NONE | Lockdown: BARRED; `[hack]` lifts it. |
 | AS vault door VV (21–22, 8) | VAULT + `keycard_reader` (stealth) | Lockdown: reader dead; `[hack]` done → plain open; thermal drill 240 s as the loud fallback. Couriers (`guard_vaultline`) authorised. |
 | Interior BOH, basement: SS, LK, FR, QR, PL, LF landing doors | NONE | |
@@ -1188,7 +1188,7 @@ Player: capsule r 0.35, stand 1.8 / crouch 1.2, step 0.35, max slope 45°, jump 
 | # | Requirement | Where in this doc | Check |
 |---|---|---|---|
 | 1 | Laser bypass gaps ≥ 1.0 m; crouch-under beam centres ≥ 1.30 m (lower face ≥ 1.215 m) | `cp_landing` curtain gap 0.8 → **1.0 m**; `lz_static` low beam 1.27 → **1.30 m** | `lasers` + P's walk |
-| 2 | Balcony throws land on the hall floor **x 24–28** (east) and the mirrored **x 16–20** (west); balustrade and handrail colliders thin and true to the visual | stealth line step 6 | P: 3 pitches |
+| 2 | Balcony throws land on the hall floor **x 22–28** (east) and the mirrored **x 16–22** (west) (P measured flat throws landing at x 22.2–23.9); balustrade and handrail colliders thin and true to the visual | stealth line step 6 | P: 3 pitches |
 | 3 | Mews ↔ LD step-free: Mews grade = LD floor (dock leveller ≤ 0.35 m, dressing) or a ramp ≤ 45° at both doors | LD, X2 | `slopes`, walkthrough |
 | 4 | Reflecting pool rim + depth ≤ 0.35 m (or one shallow step), else a raised solid | X3 | P: heavy-bag in/out |
 | 5 | Parapet copings ≥ 50°; a 1.2 m parapet / invisible wall between the roof deck and the north-light sawtooth; no walkable slope < 50° outside the play mesh | Roof notes, CS glazing | `slopes` |
@@ -1237,8 +1237,8 @@ plans and `--check` live in `tools/levelcheck/plans/gallery_night_floors_ascii.p
 - **BC → LD door:** a 1.2 m service door (a 2 m double does not fit the 1.8 m corridor).
 - **Stair SS / head-house wall:** 0.4 m thick at x 3.05 where it carries a door (the kit has no 0.3 m frame); the stair-side
   face is unchanged.
-- **LD roller door:** a placeholder baked closed in the navmesh until a roller-door kit exists (art brief for ENV D); the
-  Mews enters LD by the personnel door only.
+- **LD roller door:** the GN-C2 roller prefab, ELECTRONIC (A r185: police breach it loud; the crew cannot open it
+  without a hack), baked closed in the navmesh; the Mews enters LD by the personnel door only.
 - **Art-store vault door:** left open in the nav bake (closed, AS would be unreachable for the validator).
 - **`saint_maritime`:** z 16 on the UG3 east wall (was 15) so the UG3 partition screen hides it from C10 (`camera_screen`).
 - **Walkthrough whitelist at G1:** Mews → upper floors and roof → the rooms below it (long by plan: one Mews entry at the

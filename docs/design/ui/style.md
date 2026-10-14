@@ -182,3 +182,44 @@ UiBuild wires focus / press on every Button it makes, so screens get them for fr
   screen touched; review PNGs under `game/content/ui/_review/`.
 * `test_ui_theme` keeps `caper_theme.tres` equal to `UiThemeFactory.build()`.
 * Contrast (`hud_contrast_capture.gd`) ≥ 4.5:1 for all text; 720p size floor 14 px.
+
+## 11. Menu rules (D-111: "menus look bad and cluttered")
+
+The one-page sheet for the menu declutter pass. §1–§5 still hold. These rules decide what each screen *removes*.
+
+**Budget.** A menu screen shows at most **7 interactive things** in its body, plus Back and one primary action.
+A uniform grid of like items (stations, armor, swatches) counts as one.
+It shows at most **3 text sizes** (H1, one of Lead/H2, and Body/Caption) and **one accent**: brass for money and
+the commit button, cyan only for focus. A per-heist accent is allowed only on that heist's strip.
+
+**Spacing.** Gaps come only from S1–S7. Inside a card use S2 (8). Between cards use S4 (24). Between a section
+and its head use S3 (16). Sections are separated by a 48 gap (S6), never by a rule *and* a gap.
+
+**Text.** Every value is shown once per screen. A description sits **either** on the card **or** in the context
+panel for the focused card, never both. A card is an icon, a title and at most one state word (`EQUIPPED`, `NEW`,
+`LOCKED`). Longer copy appears on focus.
+
+**Secondary info goes behind a tab, a hover, or a second level.** Examples: stat breakdowns, mod slots on the
+loadout, skill/perk point counts, the contract broker, key-binding tables, payday line items beyond the totals.
+
+**Footer.** `[Esc] Back` appears only where Back exists; the root main menu has none. Only the primary action is
+brass.
+
+### Per-screen layouts (PD2 reference in brackets)
+
+| Screen | Body after the pass | Moves out of the body |
+|---|---|---|
+| Main menu [PD2 title] | Wordmark, tagline, 4 entries, mask render, one status line | Footer `Esc` hint |
+| Hub [PD2 safehouse menu] | 3×3 station grid (icon and title); context panel: focused station's line, then level, XP bar, money | Two-line blurbs on every card; skill/perk point counts (they move to Armory) |
+| Board [crime.net] | Map (60%); focused contract card; primary Take Contract | Broker form → a `Contract Broker` button that opens it in the context panel |
+| Loadout / Armory [PD2 inventory] | Primary, Secondary, Melee, Throwable, Deployable, Armor, Mask, Heister tiles; stats: 6 key bars + detection | Mod row (Workshop owns mods), the `Masks` button (the mask tile opens the bench), Threat/Total ammo (on hover), the skill/perk lines |
+| Workshop | 3D weapon, slot list, stat diff on focus | — |
+| Mask bench | Mask render, 3 layer tabs, swatch grid | — |
+| Options [PD2 options] | Tab bar, one column of rows, Apply/Back | Floating key-binding header (it belongs inside the Controls tab's scroll) |
+| Briefing [PD2 briefing] | Job, short objectives (D-109), loot; header: approach and escape | — (D-109 pass done) |
+| Payday [PD2 payday] | Total, the stash/spending split, Cash card (contract + loot + total), XP card with bar, crew table | Duplicate XP figure in the header, half-visible third panel |
+
+### Process
+For each screen: take a **before** capture (`ui_audit_capture.gd`, 1280×720 and 1920×1080), apply the table row,
+take an **after** capture, and keep the 720p tests green. Push one screen (or a pair) per commit. P runs the
+windowed feel pass on each.

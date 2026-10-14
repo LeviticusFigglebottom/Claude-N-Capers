@@ -1,0 +1,14 @@
+asset: char_arms_fp_marten
+script: tools/blender/characters/arms_fp_heisters.py
+params: {"heister": "marten", "skin": 3}
+seed: 2688971968  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_arms_fp_marten
+edit policy: generated file, never edit by hand; change the script and rebuild
+fp.variant: mesh-only sleeve variant of char_arms_fp (no AnimationPlayer): <root>/rig_arms/Skeleton3D/Arms, same rig_arms bones / rest / bind poses; ENV A puts this Arms' mesh + skin on char_arms_fp's Arms (the clips stay in char_arms_fp); the hands are glove-material hands (no skin under the glove)
+heister: marten
+layers: char_crew_glove_orange u=-0.042..0.000 m; char_crew_marten_parka u=-0.050..-0.016 m; char_crew_marten_parka u=-0.389..-0.048 m pleats=6
+look: roomy olive parka sleeve gathered (6 pleats) into a plain parka cuff band, burnt-orange gloves
+materials: char_crew_glove_orange,char_crew_marten_parka
+tri_budget: 12000
+tris: 9688

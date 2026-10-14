@@ -23,6 +23,7 @@ const NEW: Array[String] = [
 	"char_gallery_guard_b",
 	"char_gallery_patron",
 	"char_gallery_patron_b",
+	"char_gallery_admin",
 	"char_bank_manager",
 	"char_bank_officer",
 	"char_bank_officer_b",
@@ -43,7 +44,8 @@ const NEW: Array[String] = [
 ## heist -> roles the index must carry (D3-01 brief; D-075 renamed meridian_federal and added
 ## bank_officer).
 const ROLES: Dictionary = {
-	"gallery_night": ["gallery_curator", "gallery_attendant", "gallery_guard", "gallery_patron"],
+	"gallery_night": ["gallery_curator", "gallery_attendant", "gallery_conservator", "gallery_admin", "gallery_guard",
+		"gallery_patron"],
 	"ostrander_federal": ["bank_teller", "bank_manager", "bank_officer", "bank_guard", "bank_customer"],
 	"rolling_thunder": ["armored_car_crew", "convoy_escort"],
 	"afterhours": ["club_bouncer", "club_bartender", "club_dj", "club_patron"],
@@ -74,6 +76,10 @@ const RADIO_MIN_VERTS: int = 8
 ## Other companies' and the police's liveries: the gallery and Vaultline must not wear them.
 const OTHER_LIVERY: Array[String] = ["char_sec_", "char_ng_", "char_police_", "char_hivis", "char_tac_", "char_bank_"]
 const CURATOR_SUIT: String = "char_gallery_bone"
+## QC-58c: the admin PA wears day office wear (the teal cardigan), never black tie or front-of-house kit.
+const ADMIN_OFFICE: String = "char_knit_teal"
+const GALA_KIT: Array[String] = ["char_tux_black", "char_satin_black", "char_velvet_midnight", "char_gallery_green",
+	"char_glove_white", "char_gallery_bone"]
 
 var _index: Dictionary = {}
 var _cast: Dictionary = {}
@@ -329,3 +335,11 @@ func test_bank_officers() -> void:
 			assert_has(mats, need, "%s: wears %s" % [id, need])
 		for bad: String in ["char_suit_navy", "char_blazer_grey"]:
 			assert_false(mats.has(bad), "%s: not %s" % [id, bad])
+
+
+## QC-58c (gallery_night.md, `late_paperwork`): the admin PA reads as an office worker after hours.
+func test_admin_pa_office_wear() -> void:
+	var mats: Array[String] = _materials("char_gallery_admin")
+	assert_has(mats, ADMIN_OFFICE, "admin PA wears the teal cardigan")
+	for m: String in GALA_KIT:
+		assert_false(mats.has(m), "admin PA must not wear gala/front-of-house %s" % m)

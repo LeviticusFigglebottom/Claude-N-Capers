@@ -132,7 +132,8 @@ func _check_door_arc(ctx: LcContext, door: Node3D, active: Array[LcProp]) -> voi
 		warn(ctx, door, null, "door has no Leaf node; swing arc not checked")
 		return
 	var side: String = String(LcUtil.meta_s(door, &"swing_side"))
-	if "swing" in door and int(door.get("swing")) == 2:
+	# DOUBLE (swing 2) opens both leaves toward the back (door.gd); without a swing_side meta, check both sides
+	if "swing" in door and int(door.get("swing")) == 2 and not door.has_meta(&"swing_side"):
 		side = "both"
 	if side == "":
 		side = "front"

@@ -14,7 +14,7 @@ static var _cached: AnimTweak = null
 @export var clip_speeds: Dictionary = {
 	&"walk": 1.6, &"run": 3.5, &"sprint": 5.75, &"crouch_walk": 1.5, &"strafe_l": 1.2, &"strafe_r": 1.2,
 	&"walk_back": 1.3, &"flee": 4.0, &"carry_bag_walk": 2.4, &"shield_walk": 1.6, &"dozer_walk": 1.6,
-	&"mug_carry_walk": 1.3, &"run_l": 3.5, &"run_r": 3.5, &"run_b": 3.5,
+	&"mug_carry_walk": 1.3, &"walk_text": 1.2, &"run_l": 3.5, &"run_r": 3.5, &"run_b": 3.5,
 }
 ## Seconds from clip start to the reload `done` event (SOURCE.txt: pistol done@34, rifle done@58, 30 fps).
 ## The reload clip is sped up/slowed so `done` lands when the gameplay reload finishes.
@@ -44,6 +44,10 @@ static var _cached: AnimTweak = null
 @export var interact_high_min_m: float = 1.5
 ## dot(hit direction, facing) above this = shot from behind = death_front (falls face down).
 @export var death_front_dot: float = 0.0
+## v1.10: a death hit this far to the side (|dir . right|) plays death_side.
+@export var death_side_dot: float = 0.8
+## v1.10: two hit reacts on one body at least this far apart (s); in between the current one plays on.
+@export var hit_react_min_gap_s: float = 0.35
 ## Aim pose for NPCs whose weapon has no WeaponDef, by role (&"pistol" / &"rifle"); default pistol.
 @export var npc_weapon_anim_by_role: Dictionary = {&"police": &"rifle", &"special": &"rifle"}
 ## Seconds a standing crew member keeps the aim pose after its last shot.

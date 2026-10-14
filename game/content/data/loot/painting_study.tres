@@ -9,5 +9,5 @@ bag_model = ExtResource("2_bag")
 id = &"loot.painting_study"
 display_name = "Calloway's Study"
 weight = 0
-value = 1100
+value = 700
 conceals = false

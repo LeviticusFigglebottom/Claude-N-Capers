@@ -49,7 +49,8 @@ Vec = tuple[float, float, float]
 REGIONS = ("head", "neck", "torso", "pelvis", "upper_arms", "forearms", "hands", "thighs", "shins", "feet")
 
 #: Skin tones (sRGB, albedo 8-bit values 30..240 per style guide §3). Library ids char_skin_1..6.
-SKIN_TONES = ("#E3BFA3", "#D2A283", "#B7835F", "#956446", "#704630", "#4C3022")
+#: Tone 5 was ``#704630`` (the reddest step, read orange under a warm key) until the SKIN_TONE_FIX fold.
+SKIN_TONES = ("#E3BFA3", "#D2A283", "#B7835F", "#956446", "#704D3A", "#4C3022")
 #: Hair colours, library ids ``char_hair_<name>``.
 HAIR_COLORS = {"dark": "#2B2420", "brown": "#5B3B26", "blond": "#B3925C", "grey": "#9A9690"}
 EYE_COLOR = "#D9D3C8"          # char_eye (sclera)

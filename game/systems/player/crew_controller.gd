@@ -32,7 +32,7 @@ var net_id: int = 0
 var peer_id: int = 0
 var is_ai: bool = false
 var display_name: String = ""
-## Playable heister (&"rook", &"sable", &"dutch", &"wren"; &"" = generic crew): the slot's Loadout.heister
+## Playable heister (one of Heisters.ids(); &"" = generic crew): the slot's Loadout.heister
 ## (D-073). Presentation only (FP sleeves, characters.md v1.8).
 var heister: StringName = &""
 var masked: bool = false

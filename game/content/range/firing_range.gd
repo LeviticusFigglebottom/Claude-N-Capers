@@ -39,6 +39,10 @@ signal loadout_applied(stats: WeaponStats)
 const LAYOUT_PATH: String = "res://content/data/range/range_layout.tres"
 const DUMMIES_PATH: String = "res://content/data/range/range_dummies.tres"
 const TWEAK_PATH: String = "res://content/data/range/range_tweak.tres"
+## D-111: ENV C's range dressing class (lights, surfaces, props; `static build(layout, parent)` and
+## `static environment() -> Environment`), found by its global class name, not a path into C's folder.
+## Optional: until it exists the range keeps its greybox look and the sun.
+const DRESSING_CLASS: StringName = &"RangeDressing"
 ## Re-run the readout when the shooter moved this far (m).
 const READOUT_MOVE_EPS_M: float = 0.1
 
@@ -89,6 +93,7 @@ func _ready() -> void:
 	level.name = "Level"
 	add_child(level)
 	RangeBuilder.build_level(layout, tweak, level)
+	_dress(level)
 	markers = RangeBuilder.build_markers(layout, tweak, level)
 	targets = RangeBuilder.build_targets(layout, dummy, difficulty, tweak, level)
 	targets.append_array(RangeBuilder.build_extra_lanes(layout, dummy_table, difficulty, tweak, level))
@@ -112,6 +117,8 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	if EventBus.damage_applied.is_connected(_on_damage_applied):
 		EventBus.damage_applied.disconnect(_on_damage_applied)
+	if GameSettings.current().changed.is_connected(_on_settings_changed):
+		GameSettings.current().changed.disconnect(_on_settings_changed)
 	if spectator != null:
 		spectator.set_aim_active(false)
 
@@ -454,3 +461,36 @@ static func _put_weapon(l: Loadout, def: WeaponDef) -> void:
 		l.primary = def.id
 	else:
 		l.secondary = def.id
+
+
+## D-111: ENV C dresses the space on top of the builder's level (RangeDressing.build(layout, parent)) and
+## supplies the indoor Environment (RangeDressing.environment()); an indoor range has no sun. A no-op until
+## the class exists.
+func _dress(parent: Node3D) -> void:
+	_apply_brightness.call_deferred()
+	if not GameSettings.current().changed.is_connected(_on_settings_changed):
+		GameSettings.current().changed.connect(_on_settings_changed)
+	var dressing: Script = UiNav.global_class(DRESSING_CLASS)
+	if dressing == null:
+		return
+	if dressing.has_method(&"build"):
+		dressing.call(&"build", layout, parent)
+	var env: Environment = dressing.call(&"environment") as Environment if dressing.has_method(&"environment") else null
+	var we: WorldEnvironment = get_node_or_null(^"WorldEnvironment") as WorldEnvironment
+	if we != null and env != null:
+		we.environment = env
+		var sun: DirectionalLight3D = get_node_or_null(^"Sun") as DirectionalLight3D
+		if sun != null:
+			sun.visible = false
+
+
+## The Options brightness applies in the range too (as HeistWorldEnvironment does on heist maps; ENV C's tip).
+func _apply_brightness() -> void:
+	var we: WorldEnvironment = get_node_or_null(^"WorldEnvironment") as WorldEnvironment
+	if we != null:
+		SettingsApplier.apply_environment(we.environment)
+
+
+func _on_settings_changed(section: StringName, key: StringName) -> void:
+	if section == GameSettings.VIDEO and key == &"brightness":
+		_apply_brightness()

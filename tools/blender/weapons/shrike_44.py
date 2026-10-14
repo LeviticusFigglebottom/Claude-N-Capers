@@ -104,7 +104,8 @@ def build(ctx) -> None:
     ctx.marker("SideRail", (0.0180, 0.250, s.BORE_Z - 0.010))
     ctx.marker("StockMount", s.STOCK_MOUNT)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
-    ctx.marker("LeftHandIK", (-0.022, 0.250, s.TUBE_Z - 0.006))
+    # Lead (ENV D, FP left-hand cup): under the Forend (y 0.150-0.330, bottom z 0.016), x 0, 12 mm low, a third of the way forward.
+    ctx.marker("LeftHandIK", (0.0, 0.210, 0.004))
 
     sb = ctx.marker("StockBarrel", (0.0, 0.0, 0.0), parent=bmount)
     s.build_barrel(ctx, mats, s.BARREL_END_Y, parent=sb)

@@ -6,6 +6,11 @@ extends RefCounted
 
 ## Group of distance-marker nodes (meta `distance_m`); range-local.
 const MARKER_GROUP: StringName = &"range_marker"
+## D-111: the per-target labels (distance, dummy name, HP) fade out past this distance from the camera;
+## far away they were unreadable specks that cluttered the view. Area titles and lane markers stay.
+const LABEL_FADE_M: float = 30.0
+## Lane line segment length (m): short enough that each piece gets its nearest lights.
+const LANE_SEGMENT_M: float = 8.0
 
 
 ## Floors, walls, lane lines and the bench under `parent`. Returns {"floors": int, "walls": int}.
@@ -116,10 +121,12 @@ static func build_extra_lanes(layout: RangeLayout, table: RangeDummyTable, diffi
 		var s: Label3D = sign_label(UiText.t(&"ui.range.marker", {"m": roundi(def.distance_m)}), tweak)
 		s.font_size = tweak.hp_font_size
 		s.position = base + Vector3(0.0, layout.target_sign_height_m, 0.0)
+		fade_far(s)
 		root.add_child(s)
 		if dummy != null:
 			var n: Label3D = sign_label(UiText.t(dummy.name_key), tweak)
 			n.font_size = tweak.dummy_sign_font_size
+			fade_far(n)
 			n.position = base + Vector3(0.0, layout.dummy_sign_height_m, 0.0)
 			if def.is_moving():
 				n.text = UiText.t(&"ui.range.moving_sign", {"name": n.text, "speed": snappedf(def.speed_mps, 0.1)})
@@ -134,6 +141,13 @@ static func build_extra_lanes(layout: RangeLayout, table: RangeDummyTable, diffi
 		title.position = Vector3((float(a[0]) + float(a[1])) * 0.5, layout.area_sign_height_m, -float(a[2]) + 2.0)
 		root.add_child(title)
 	return out
+
+
+## Fades `l` out between LABEL_FADE_M and LABEL_FADE_M + 5 m (GPU visibility range, no script per frame).
+static func fade_far(l: Label3D) -> void:
+	l.visibility_range_end = LABEL_FADE_M + 5.0
+	l.visibility_range_end_margin = 5.0
+	l.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
 
 
 static func sign_label(text: String, tweak: RangeTweak) -> Label3D:
@@ -152,9 +166,15 @@ static func _build_lane_lines(layout: RangeLayout, tweak: RangeTweak, root: Node
 	var mat: StandardMaterial3D = _flat_mat(tweak.lane_line_color)
 	var n: int = layout.lane_count()
 	var len_m: float = -layout.far_z_m
+	# ENV C (range dressing): one 100 m+ strip is lit by at most 8 lights in Compatibility, so it lit unevenly
+	# under the per-lane strip lights; LANE_SEGMENT_M pieces each take their nearest lights.
+	var segs: int = maxi(ceili(len_m / LANE_SEGMENT_M), 1)
+	var seg_len: float = len_m / float(segs)
 	for i: int in range(n + 1):
 		var x: float = layout.lane_x(0) - layout.lane_width_m * 0.5 + float(i) * layout.lane_width_m
-		root.add_child(_strip(Vector3(layout.lane_line_width_m, 0.01, len_m), Vector3(x, 0.005, -len_m * 0.5), mat))
+		for k: int in range(segs):
+			var zc: float = -seg_len * (float(k) + 0.5)
+			root.add_child(_strip(Vector3(layout.lane_line_width_m, 0.01, seg_len), Vector3(x, 0.005, zc), mat))
 
 
 static func _build_bench(layout: RangeLayout, tweak: RangeTweak, parent: Node3D) -> void:

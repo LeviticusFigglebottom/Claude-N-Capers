@@ -25,7 +25,7 @@ static func collect(ctx: LcContext) -> Array[Dictionary]:
 			out.append({"name": ctx.node_path(n), "node": n, "pos": (n as Node3D).global_position,
 				"kind": "use_point", "zone": null})
 		elif n is Node3D and is_loot_spawn(n):
-			out.append({"name": ctx.node_path(n), "node": n, "pos": (n as Node3D).global_position,
+			out.append({"name": ctx.node_path(n), "node": n, "pos": loot_target(n as Node3D),
 				"kind": "loot_spawn", "zone": null})
 		elif n is Node3D and is_walk_objective(n):
 			var up: Node3D = n.get_node_or_null("UsePoint") as Node3D
@@ -47,7 +47,7 @@ static func nav_markers(ctx: LcContext) -> Array[Node3D]:
 			out.append(n as Node3D)
 		elif n.name == &"UsePoint" and n is Node3D:
 			out.append(n as Node3D)
-		elif n is Node3D and is_loot_spawn(n):
+		elif n is Node3D and is_loot_spawn(n) and not is_wall_loot(n):
 			out.append(n as Node3D)
 	return out
 
@@ -59,6 +59,18 @@ static func player_spawns(ctx: LcContext) -> Array[SpawnPoint]:
 		if s.kind == SpawnPoint.Kind.PLAYER and ctx.is_active(s):
 			out.append(s)
 	return out
+
+
+## GN-C2: a wall-mounted loot spawn (meta mount wall: a hung canvas, pivot on the wall face at hanging height) is
+## reached at its UsePoint (itself a nav marker), not at its origin.
+static func is_wall_loot(n: Node) -> bool:
+	return LcUtil.meta_s(n, &"mount") == &"wall" and n.get_node_or_null("UsePoint") != null
+
+
+static func loot_target(n: Node3D) -> Vector3:
+	if is_wall_loot(n):
+		return (n.get_node("UsePoint") as Node3D).global_position
+	return n.global_position
 
 
 static func is_loot_spawn(n: Node) -> bool:

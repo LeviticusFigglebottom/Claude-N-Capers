@@ -106,6 +106,19 @@ TINTED: dict[str, dict] = {
     "container_rust": {"source": "metal_painted", "color": "#8A4630", "roughness": 1.0},
     "container_blue": {"source": "metal_painted", "color": "#3A5470", "roughness": 1.0},
     "container_green": {"source": "metal_painted", "color": "#4E6B4A", "roughness": 1.0},
+    # Gallery Night (docs/design/heists/gallery_night.md palette: bone, halberd green, gilt; GN-C2)
+    "car_black": {"source": "plastic_matte", "color": "#1F2023", "roughness": 0.4},
+    "paint_halberd": {"source": "drywall_painted", "color": "#24463A", "roughness": 0.8},
+    "steel_galv": {"source": "drywall_painted", "color": "#8E9497", "roughness": 0.7},
+}
+
+# Painted canvases (GN-C2): key -> albedo PNG from tools/texgen/paintings.py. The prop material is a plain
+# albedo-textured StandardMaterial3D (meta untextured_ok: no ORM/normal, the image is the detail); the Blender
+# scripts map the painted face 0..1 onto the image (cover fit), not world-scaled.
+PAINTINGS: dict[str, str] = {
+    f"painting_{pid}": f"res://assets/textures/paintings/tex_painting_{pid}_albedo.png"
+    for pid in ("lantern", "orchard", "widow", "saint", "study1", "study2", "study3", "study4", "study5", "study6",
+                "study7", "study8")
 }
 
 # Untextured materials (validator meta untextured_ok): emissives and LEDs. color/emission sRGB.
@@ -151,11 +164,13 @@ def slot(key: str) -> tuple[str, str, float, float, float]:
     if key in EMISSIVE:
         e = EMISSIVE[key]
         return (prop_id(key), e["emission"], 0.5, 0.0, 1.0)
+    if key in PAINTINGS:
+        return (prop_id(key), "#8A7A62", 0.75, 0.0, 1.0)
     raise KeyError(f"unknown prop material key {key!r}")
 
 
 def all_keys() -> list[str]:
-    return sorted(set(LIBRARY) | set(TINTED) | set(EMISSIVE) | set(GLASS))
+    return sorted(set(LIBRARY) | set(TINTED) | set(EMISSIVE) | set(GLASS) | set(PAINTINGS))
 
 
 # Texture width (px) of every library id whose tile is 512 px over 2 m (style: low-detail surfaces).

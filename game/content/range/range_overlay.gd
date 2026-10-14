@@ -46,6 +46,10 @@ const READOUT_ROWS: Array[Array] = [
 	["ro_sustained", &"ui.range.ro.sustained_dps"], ["ro_ttk_body", &"ui.range.ro.ttk_body"],
 	["ro_ttk_head", &"ui.range.ro.ttk_head"],
 ]
+## D-111 ("the range still feels experimental"): aim mode keeps a small target card, these rows only; the
+## full readout, falloff graph and per-dummy table are in panel mode (Tab).
+const AIM_ROWS: Array[String] = ["ro_target", "ro_distance", "ro_dps", "ro_ttk_body", "ro_ttk_head", "ls_damage",
+	"ls_result"]
 const LAST_SHOT_ROWS: Array[Array] = [
 	["ls_distance", &"ui.range.ls.distance"], ["ls_damage", &"ui.range.ls.damage"],
 	["ls_zone", &"ui.range.ls.zone"], ["ls_result", &"ui.range.ls.result"],
@@ -64,6 +68,9 @@ var interactive: bool = true
 var falloff_graph: RangeFalloffGraph
 ## Key cap hint strip (bottom): [key cap, caption] pairs for the current mode and device.
 var hints: HBoxContainer
+## D-111: the physical-values section folds behind this toggle (closed by default).
+var details_toggle: Button
+var _physical_section: VBoxContainer
 
 var _values: Dictionary = {}   # row id -> Label
 var _mods_box: VBoxContainer
@@ -139,7 +146,7 @@ func show_weapon(def: WeaponDef, mods: Dictionary) -> void:
 		opt.set_meta(&"ids", ids)
 		opt.select(maxi(ids.find(StringName(mods.get(mod_type, &""))), 0))
 		opt.item_selected.connect(_on_mod_selected.bind(mod_type, opt))
-		_mods_box.add_child(UiBuild.field(StringName("ui.mod_type.%s" % type_name), opt, UiTokens.S1))
+		_mods_box.add_child(_inline_field(StringName("ui.mod_type.%s" % type_name), opt))
 		mod_options[mod_type] = opt
 	_rechain()
 
@@ -280,6 +287,7 @@ func set_interactive(on: bool) -> void:
 	_left_panel.visible = on
 	for c: Control in _right_extras:
 		c.visible = on
+	_apply_row_filter()
 	_fit_right.call_deferred()
 	refresh_hints()
 	for c: Control in focus_chain:
@@ -375,17 +383,23 @@ func _build_left() -> void:
 	var box: VBoxContainer = _scroll(outer)
 	weapon_option = UiBuild.option_button()
 	weapon_option.item_selected.connect(_on_weapon_selected)
-	box.add_child(UiBuild.field(&"ui.range.weapon", weapon_option, UiTokens.S1))
-	_mods_box = UiBuild.vbox(UiTokens.S3)
+	box.add_child(_inline_field(&"ui.range.weapon", weapon_option))
+	_mods_box = UiBuild.vbox(UiTokens.S2)
 	box.add_child(_mods_box)
 	difficulty_option = UiBuild.option_button()
 	for d: int in range(Enums.Difficulty.size()):
 		difficulty_option.add_item(UiText.t(UiText.difficulty_key(d)))
 	difficulty_option.select(_difficulty)
 	difficulty_option.item_selected.connect(func(i: int) -> void: difficulty_selected.emit(i))
-	box.add_child(UiBuild.field(&"ui.range.difficulty", difficulty_option, UiTokens.S1))
+	box.add_child(_inline_field(&"ui.range.difficulty", difficulty_option))
 	box.add_child(_section(&"ui.range.stats", DISPLAY_ROWS))
-	box.add_child(_section(&"ui.range.physical", PHYSICAL_ROWS))
+	details_toggle = UiBuild.ghost(UiBuild.button(&"ui.range.details_show"))
+	details_toggle.toggle_mode = true
+	details_toggle.toggled.connect(set_details_open)
+	box.add_child(details_toggle)
+	_physical_section = _section(&"ui.range.physical", PHYSICAL_ROWS)
+	_physical_section.visible = false
+	box.add_child(_physical_section)
 	# Footer outside the scroll, always in view: Leave (ghost, left), Reset (right).
 	exit_button = UiBuild.button(&"ui.range.exit")
 	reset_button = UiBuild.button(&"ui.range.reset_targets")
@@ -411,16 +425,17 @@ func _build_right() -> void:
 	if _lane_labels.size() > 0:
 		readout_option.select(clampi(_readout_lane, 0, _lane_labels.size() - 1))
 	readout_option.item_selected.connect(func(i: int) -> void: readout_lane_selected.emit(i))
-	var lane_field: VBoxContainer = UiBuild.field(&"ui.range.readout_lane", readout_option, UiTokens.S1)
+	var lane_field: HBoxContainer = _inline_field(&"ui.range.readout_lane", readout_option)
 	box.add_child(lane_field)
-	box.add_child(_section(&"ui.range.readout", READOUT_ROWS))
-	box.add_child(_section(&"ui.range.last_shot", LAST_SHOT_ROWS))
+	# D-111: the falloff graph is the panel's picture; it sits under the target picker, above the numbers.
 	var graph_box: VBoxContainer = _section_box(&"ui.range.falloff_graph")
 	falloff_graph = RangeFalloffGraph.new()
 	falloff_graph.name = "FalloffGraph"
 	falloff_graph.setup(_tweak if _tweak != null else RangeTweak.new())
 	graph_box.add_child(falloff_graph)
 	box.add_child(graph_box)
+	box.add_child(_section(&"ui.range.readout", READOUT_ROWS))
+	box.add_child(_section(&"ui.range.last_shot", LAST_SHOT_ROWS))
 	var dummies: VBoxContainer = _section_box(&"ui.range.per_dummy")
 	dummies.add_child(_small(UiBuild.label(&"ui.range.per_dummy_hint", UiBuild.DIM)))
 	_dummy_grid = GridContainer.new()
@@ -511,6 +526,19 @@ func _fit_right() -> void:
 	_right_panel.offset_bottom = PANEL_MARGIN + _right_box.get_combined_minimum_size().y + pad
 
 
+## D-111: caption left, control right on one row (the stacked caption-over-dropdown form doubled the panel).
+func _inline_field(caption_key: StringName, value: Control) -> HBoxContainer:
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	var cap: Label = UiBuild.caption(caption_key)
+	cap.custom_minimum_size = Vector2(150, 0)
+	cap.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	cap.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	row.add_child(cap)
+	value.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(value)
+	return row
+
+
 ## A section: caption title over a hairline rule; returns the box to add the body to.
 func _section_box(title_key: StringName) -> VBoxContainer:
 	var v: VBoxContainer = UiBuild.vbox(UiTokens.S1)
@@ -533,8 +561,29 @@ func _section(title_key: StringName, rows: Array[Array]) -> VBoxContainer:
 		var value: Label = _small(UiBuild.label(&"ui.range.none"))
 		value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		grid.add_child(value)
+		value.set_meta(&"name_label", name_label)
 		_values[String(row[0])] = value
 	return v
+
+
+## Opens / folds the physical-values section (D-111).
+func set_details_open(on: bool) -> void:
+	_physical_section.visible = on
+	details_toggle.set_pressed_no_signal(on)
+	details_toggle.text = UiText.t(&"ui.range.details_hide" if on else &"ui.range.details_show")
+	_rechain()
+
+
+## Aim mode shows only AIM_ROWS of the readout and last shot; panel mode shows every row.
+func _apply_row_filter() -> void:
+	for row: Array in READOUT_ROWS + LAST_SHOT_ROWS:
+		var id: String = String(row[0])
+		var value: Label = _values.get(id) as Label
+		if value == null:
+			continue
+		var show: bool = interactive or AIM_ROWS.has(id)
+		value.visible = show
+		(value.get_meta(&"name_label") as Label).visible = show
 
 
 func _rechain() -> void:
@@ -547,6 +596,8 @@ func _rechain() -> void:
 	for s: Variant in slots:
 		focus_chain.append(mod_options[s] as Control)
 	focus_chain.append(difficulty_option)
+	if details_toggle != null:
+		focus_chain.append(details_toggle)
 	focus_chain.append(readout_option)
 	focus_chain.append(reset_button)
 	focus_chain.append(exit_button)

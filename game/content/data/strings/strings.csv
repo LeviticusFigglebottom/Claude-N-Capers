@@ -154,6 +154,7 @@ ui.prompt.use_keycard,Hold {key} to use the keycard
 ui.prompt.place_drill,Hold {key} to place the drill
 ui.prompt.fix_drill,Hold {key} to fix the drill
 ui.prompt.take_loot,Hold {key} to take the loot
+ui.prompt.cut_painting,Hold {key} to cut the painting
 ui.prompt.pick_up_bag,Hold {key} to pick up the bag
 ui.prompt.secure_bag,Hold {key} to secure the bag
 ui.prompt.throw_bag,Press {key} to throw the bag
@@ -340,6 +341,7 @@ crew.rook,Rook
 crew.sable,Sable
 crew.dutch,Dutch
 crew.wren,Wren
+crew.marten,Marten
 enemy.security_officer,Security Officer
 enemy.camera_operator,Camera Operator
 enemy.civilian,Civilian
@@ -501,6 +503,28 @@ voice.vo.wren.guard_down_1,Guard down!
 voice.vo.wren.guard_down_2,"Got him, guard's out."
 voice.vo.wren.civilian_killed_1,"Whoa, civilian down!"
 voice.vo.wren.civilian_killed_2,"Careful, that was a civilian!"
+voice.vo.marten.pager_started_1,"Pager. I've got it, keep moving."
+voice.vo.marten.pager_started_2,Leave that one to me. I'll talk to his dispatcher.
+voice.vo.marten.reloading_1,Changing magazines.
+voice.vo.marten.reloading_2,Reloading. Cover the door.
+voice.vo.marten.device_jammed_1,The drill's stalled. Somebody nurse it.
+voice.vo.marten.device_jammed_2,Drill's sulking again. Give it a hand.
+voice.vo.marten.bagging_body_1,Bagging him. Keep an eye out.
+voice.vo.marten.bagging_body_2,Body's going in the bag. Nobody saw a thing.
+voice.vo.marten.going_loud_1,Right. Loud it is. Stick to the backup plan.
+voice.vo.marten.going_loud_2,"There goes the quiet version. Plan B, people."
+voice.vo.marten.crew_downed_1,I'm down. Not as young as I was.
+voice.vo.marten.crew_downed_2,"Down here. A hand, if you please."
+voice.vo.marten.reviving_1,Up you get. We're not done.
+voice.vo.marten.reviving_2,I've got you. Breathe.
+voice.vo.marten.cops_incoming_1,Police on approach. Find cover.
+voice.vo.marten.cops_incoming_2,More of them. Use the corners.
+voice.vo.marten.loot_secured_1,That's one in the van.
+voice.vo.marten.loot_secured_2,Secured. On schedule.
+voice.vo.marten.guard_down_1,Guard's down.
+voice.vo.marten.guard_down_2,One less pair of eyes.
+voice.vo.marten.civilian_killed_1,That wasn't in the plan.
+voice.vo.marten.civilian_killed_2,We don't shoot the help. Ever.
 ui.common.money,${amount}
 ui.common.percent,{value}%
 ui.menu.coming_soon,Coming soon
@@ -543,6 +567,8 @@ ui.hud.assault_phase.control,Police regrouping
 ui.results.crew,Crew
 ui.results.crew_ai,Crew AI {slot}
 ui.results.crew_slot,Heister {slot}
+ui.range.details_show,Show weapon details
+ui.range.details_hide,Hide weapon details
 ui.range.title,Firing Range
 ui.range.crumb,Safehouse / Warm-up
 ui.range.free_note,Every weapon and mod is free here.
@@ -1227,6 +1253,7 @@ ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available)
 ui.perks.dev_unlocked,Dev build: every perk card is unlocked.
 ui.perks.hint,Press a deck to equip it; only the equipped deck is active. Perk points come from experience.
 heist.glasshouse.briefing,"Vossberg Jewelers sits on the corner of Harlow Avenue and Pell Street and stays open late for its private viewing week. Tonight the estate consignment waits in the workshop safe. Case the floor as customers, find the manager's keycard and take the back route. If it goes loud, the safe locks down: drill it and hold until the van arrives. Odile wants at least two bags before Friday."
+heist.glasshouse.briefing_loud,"The safe reader locks down: drill the safe, then hold until the van comes back."
 contact.role.fence,Fence
 contact.role.fixer,Fixer
 contact.role.insider,Insider
@@ -1242,13 +1269,15 @@ ui.briefing.if_loud,If it goes loud: {text}
 ui.briefing.optional,Optional
 ui.briefing.optional_line,• {text}
 ui.briefing.loot,Loot
-ui.briefing.loot_line,{loot}: {value} per bag
+ui.briefing.loot_line,{loot}: {value} each
 ui.briefing.loot_none,No bagged loot on this job.
 ui.briefing.escape,Escape
+ui.briefing.escape_line,Escape: {options}
 ui.briefing.escape.van,Van
 ui.briefing.escape.boat,Boat
 ui.briefing.escape.heli,Helicopter
 ui.briefing.escape.walk,On foot
+ui.briefing.escape.limo,Limo
 ui.briefing.escape_unknown,Mercer will improvise.
 ui.briefing.contract_pay,Contract pay: {amount}
 ui.briefing.blueprint,Blueprint
@@ -1367,6 +1396,7 @@ ui.masks.equipped_caption,Wearing
 ui.masks.none,No mask
 ui.masks.your_masks,Your masks
 ui.masks.custom_slot,Custom mask {n}
+ui.masks.new_mask,+ New mask
 ui.masks.empty_slot,Empty slot {n}
 ui.masks.base,Base
 ui.masks.material,Material
@@ -1505,7 +1535,7 @@ heist.night_deposit.name,Night Deposit
 heist.night_deposit.subtitle,Harbor Savings & Loan
 heist.night_deposit.brief,A cartel front drops its week of cash down a bank's night chute. The Accountant wants the chute and the vault cage.
 heist.night_deposit.briefing,"Harbor Savings & Loan, Pier District branch, stands on the corner of Harbor Street and Wharf Lane. Every Friday night the Ortega Fisheries Co-op drops its takings down the night depository chute, and the bags wait in the basement until the 06:00 armoured car. The Co-op's friends keep more cash in the vault cage. The bank is closed: case it from the ATM lobby, find the vault keycard and the time-lock code (or hack the lock from the server room), then hold the basement while the time lock runs. If it goes loud, the vault seals itself: drill the door and hold the basement. The Accountant wants at least four bags."
-heist.night_deposit.briefing_loud,"Skip the time lock: drill the vault door and hold the basement."
+heist.night_deposit.briefing_loud,Drill the vault door and hold the basement.
 objective.night_deposit.casing,Case the bank
 objective.night_deposit.keycard,Find the vault keycard
 objective.night_deposit.code,Find the time-lock code
@@ -1603,6 +1633,8 @@ ui.hub.profile.xp,{xp} / {next} XP to the next level
 ui.hub.profile.xp_max,Max level
 ui.hub.profile.skill_points,Skill points: {points} of {total} free
 ui.hub.profile.perk_points,Perk points: {points} free
+ui.hub.points.skills,{points} skill points
+ui.hub.points.perks,{points} perk points
 ui.hub.station.crew,Crew Net
 ui.hub.station.crew.desc,"Host a co-op crew, or join a friend's lobby."
 ui.lobby.title,Co-op Lobby
@@ -1875,6 +1907,8 @@ ui.workshop.primaries,PRIMARY WEAPONS
 ui.workshop.secondaries,SECONDARY WEAPONS
 ui.workshop.slots,Mod slots
 ui.workshop.overview,Whole Weapon
+ui.workshop.hint_short,"Drag to turn  ·  wheel to zoom  ·  R to reset"
+ui.workshop.finish_tab,Finish
 ui.workshop.hint,"Orbit: drag, right stick, W/A/S/D  ·  Pan: right drag, LB + stick  ·  Zoom: wheel, triggers, Q/E  ·  Reset: R / R3"
 ui.workshop.cash_caption,Spending cash
 ui.workshop.loadout_concealment,Loadout concealment
@@ -2100,6 +2134,7 @@ ui.blocked.civilian,You need your gear
 ui.options.title,Options
 ui.options.crumb,Caperworks / Settings
 ui.options.tab.controls,Controls
+ui.options.tab.keys,Key Bindings
 ui.options.tab.audio,Audio
 ui.options.tab.video,Video
 ui.options.tab.accessibility,Accessibility
@@ -2317,7 +2352,7 @@ ui.loadout.civilian_start,"This job starts in civilian clothes: no weapons or eq
 heist.dockside_burn.name,Dockside Burn
 heist.dockside_burn.subtitle,Ortega Cold Storage
 heist.dockside_burn.brief,"The Co-op's freezer warehouse on Pier 9 holds its cash, its guns and its product. Hollis wants the first two and the third on fire."
-heist.dockside_burn.briefing,"Ortega Cold Storage on Pier 9 is the freezer warehouse of the Ortega Fisheries Co-op, the same cartel front whose night drop you took at Harbor Savings. Its shipments land here: cash waiting for the laundering run, in the strongroom or the count room; rifles in two of the shipping containers in the yard; and product, boxed as frozen fish in a freezer chamber or the packing hall. The Co-op guards it with its own gunmen, who carry no pagers and will not surrender, and the gunfire brings the police within a couple of minutes. Breach the warehouse, carry the thermite to the product and burn it, and secure at least four bags of cash and weapons. Product you carry out before the burn is a bonus. Then hold until the van or the boat arrives."
+heist.dockside_burn.briefing,"Ortega Cold Storage on Pier 9, the Co-op's freezer warehouse. Cash for the laundering run sits in the strongroom, rifles in the yard containers, product boxed as frozen fish. Their gunmen carry no pagers and won't surrender; the police come within minutes. Burn the product with thermite, secure four bags of cash and weapons, hold for the van or the boat."
 item.loot.weapon_crate.name,Weapon Crate
 item.loot.weapon_crate.desc,"A crate of rifles out of a Co-op container, packed in grease paper. Heavy and slow, and worth every bruise."
 item.loot.contraband.name,Contraband
@@ -2552,6 +2587,7 @@ item.throwable.throwing_knife.desc,"Three balanced blades. Silent, and one clean
 ui.loadout.heister,Heister
 ui.heister.any,Any Free Heister
 ui.loadout.heister_taken,{name} (taken)
+ui.loadout.heister_locked,{name} (locked)
 ui.lobby.slot.heister,{name}
 ui.lobby.slot.heister_fallback,{name} ({pick} was taken)
 ui.lobby.dropin.title,Drop-in
@@ -2867,6 +2903,14 @@ item.mask_base.sunburst.name,Sunburst
 item.mask_base.geo.name,Facet
 item.mask_base.robot.name,Tin Sentinel
 item.mask_base.jester.name,Jester
+item.mask_base.lion.name,Lion
+item.mask_base.kraken.name,Kraken
+item.mask_base.shark.name,Shark
+item.mask_base.pierrot.name,Pierrot
+item.mask_base.welder.name,Welder
+item.mask_base.wicker.name,Wicker
+item.mask_base.lucha.name,Lucha
+item.mask_base.signal.name,Signal
 item.mask.silent_partner.name,Silent Partner
 item.mask.silent_partner.desc,"A pale owl in mint and graphite. Earned by crews who walk the Ledger out without a single alarm."
 item.mask.dock_boss.name,Dock Boss
@@ -2885,6 +2929,14 @@ achievement.career_criminal.name,Career Criminal
 achievement.career_criminal.desc,"Win 100 heists. Unlocks the Knight mask base."
 achievement.top_of_the_ladder.name,Top of the Ladder
 achievement.top_of_the_ladder.desc,"Reach reputation level 100. Unlocks the Chrome material."
+achievement.main_event.name,Main Event
+achievement.main_event.desc,"Take down 250 specials. Unlocks the Lucha mask."
+achievement.private_viewing.name,Private Viewing
+achievement.private_viewing.desc,"Complete Gallery Night. Unlocks the Signal mask."
+achievement.the_planner.name,The Planner
+achievement.the_planner.desc,"Finish three heists without raising the alarm. Unlocks Marten."
+achievement.deep_water.name,Deep Water
+achievement.deep_water.desc,"Complete Dockside Burn. Unlocks the Kraken mask."
 achievement.dock_work.name,Dock Work
 achievement.dock_work.desc,"Complete Dockside Burn five times. Unlocks the Urban Camo weapon finish."
 achievement.harbour_master.name,Harbour Master
@@ -2949,6 +3001,7 @@ ui.achievements.category.combat,Combat
 ui.achievements.category.wealth,Wealth
 ui.achievements.category.notoriety,Notoriety
 ui.achievements.reward_pending,{name} (arrives with the next mask delivery)
+ui.achievements.reward_heister,Heister: {name}
 ui.achievements.reward_finish,{name} weapon finish
 ui.loading.caption,Loading the job · {difficulty}
 ui.loading.loading,Loading
@@ -2973,4 +3026,139 @@ ui.stats.boosted_value,{value}*
 ui.stats.boosted_legend,* Boosted by your skills and perk deck
 ui.hud.player_left,{name} left the game. An AI plays {heister} now.
 ui.hud.player_joined,{name} joined as {heister}.
+heist.gallery_night.briefing,"The Halberd Gallery, Aldous Parade at Wexley Street, in the Calloway gala's last hour. Odile Vance's buyer wants four canvases off a list, The Lantern Bearer above all. Walk in as guests, case the rooms before last call, then cut the Lantern Bearer and one more. Rolled, not framed. Out by the van in the Mews or the limo at the kerb."
+music.gallery_night.name,Laylight
+heist.gallery_night.briefing_loud,"Argus locks the gallery down. Hack the server, drill the art-store vault, then hold until the escape arrives."
+objective.gallery_night.casing,Case the gala
+objective.gallery_night.find_canvases,Find the listed canvases ({found}/4)
+objective.gallery_night.keycard,Get a keycard
+objective.gallery_night.server_code,Find the Argus code
+objective.gallery_night.hack,Take the frame sensors offline
+objective.gallery_night.hack_loud,Hack the Argus server to lift the lockdown
+objective.gallery_night.treasury,Open the Treasury
+objective.gallery_night.art_store,Open the art store
+objective.gallery_night.centrepiece,Cut The Lantern Bearer
+objective.gallery_night.canvases,Cut one more listed canvas
+objective.gallery_night.secure,Secure the canvases ({count}/{total})
+objective.gallery_night.extras,Take the rest of the list and the studies
+objective.gallery_night.lockers,Saw open the consignment lockers
+objective.gallery_night.curator_safe,Open the curator's safe
+objective.gallery_night.lockdown,Argus has locked the gallery down
+objective.gallery_night.server_door,Get into the server room
+objective.gallery_night.vault_drill,Drill the art-store vault
+objective.gallery_night.escape_wait,Hold until the escape arrives
+objective.gallery_night.escape,Get to the escape
+item.asset.intel_list.name,Insider: the list
+item.asset.intel_list.desc,You know where all four listed canvases hang tonight before you walk in.
+item.asset.intel_sensors.name,Insider: frame sensors
+item.asset.intel_sensors.desc,You know which frames the Argus sensors are wired to tonight.
+ui.preplan.floor.basement,Basement
+ui.preplan.floor.roof,Roof
+ui.preplan.point.gallery_night.pp_spawn_portico,Portico: red carpet
+ui.preplan.point.gallery_night.pp_spawn_mews,Pelham Mews: caterers' van
+ui.preplan.point.gallery_night.pp_spawn_roof,Roof deck
+ui.preplan.point.gallery_night.pp_drop_court,Sculpture Court: behind the pool kiosk
+ui.preplan.point.gallery_night.pp_drop_mews,Pelham Mews: by the bins
+ui.preplan.point.gallery_night.pp_drop_roof,Roof deck: behind the air handlers
+ui.preplan.point.gallery_night.pp_escape_mews,Van: Pelham Mews
+ui.preplan.point.gallery_night.pp_escape_parade,Limo: portico kerb
+ui.preplan.point.gallery_night.pp_insider_registrar,Insider: registrar's keycard
+ui.preplan.point.gallery_night.pp_grate,Insider: areaway grate
+ui.preplan.point.gallery_night.pp_court_doors,Insider: court French doors
+ui.preplan.bp.gallery_night.mews_houses,Mews houses
+ui.preplan.bp.gallery_night.mews,Pelham Mews
+ui.preplan.bp.gallery_night.wexley,Wexley Street
+ui.preplan.bp.gallery_night.hotel,Grand Wexley Hotel
+ui.preplan.bp.gallery_night.ostrander,Ostrander Conservatory
+ui.preplan.bp.gallery_night.court,Sculpture Court
+ui.preplan.bp.gallery_night.portico,Portico
+ui.preplan.bp.gallery_night.parade,Aldous Parade
+ui.preplan.bp.gallery_night.park,Linden Park
+ui.preplan.bp.gallery_night.gallery,Halberd Gallery
+ui.preplan.bp.gallery_night.art_store,Art store
+ui.preplan.bp.gallery_night.plant,Plant room
+ui.preplan.bp.gallery_night.quarantine,Quarantine store
+ui.preplan.bp.gallery_night.great_hall,Great Hall
+ui.preplan.bp.gallery_night.founders,Founders' Gallery
+ui.preplan.bp.gallery_night.drawings,Drawings Cabinet
+ui.preplan.bp.gallery_night.harbour,Harbour Gallery
+ui.preplan.bp.gallery_night.benefactors,Benefactors' Room
+ui.preplan.bp.gallery_night.loading,Loading dock
+ui.preplan.bp.gallery_night.security,Security
+ui.preplan.bp.gallery_night.vestibule,Vestibule
+ui.preplan.bp.gallery_night.calloway,Calloway Room
+ui.preplan.bp.gallery_night.sallow,Sallow Room
+ui.preplan.bp.gallery_night.maritime,Maritime Room
+ui.preplan.bp.gallery_night.treasury,Treasury
+ui.preplan.bp.gallery_night.conservation,Conservation Studio
+ui.preplan.bp.gallery_night.server,Argus server
+ui.preplan.bp.gallery_night.curator,Curator
+ui.preplan.bp.gallery_night.hall_void,Open to the hall
+ui.preplan.bp.gallery_night.roof_deck,Roof deck
+ui.preplan.bp.gallery_night.glass_roofs,Glass roofs
+voice.vo.vance.briefing_gallery_night_1,"The Halberd Gallery, darling. Aldous Parade. Tonight they unveil The Lantern Bearer with champagne and a string trio, and tomorrow I'd like it gone."
+voice.vo.vance.briefing_gallery_night_2,"My buyer has a list of four. The Lantern Bearer above all, and at least one more. Rolled, not framed. Frames are for people who want to be caught."
+voice.vo.vance.briefing_gallery_night_3,"Go in as guests. Drink nothing, admire everything, and remember where it hangs. The studies I'll take too, at a fence's price."
+voice.vo.vance.gallery_night_contact_intro,Four canvases and one of them by name. The Halberd owes me a little excitement.
+voice.vo.vance.gallery_night_centrepiece,"The Lantern Bearer. Hold it like you'd hold me, if you ever got the chance."
+voice.vo.vance.gallery_night_payday,"The Lantern Bearer is on its way to a man who will never show it to anyone. Sad, really. Your share is less sad."
+voice.vo.mercer.briefing_gallery_night_1,I'll be on comms. You arrive as guests at the gala. Masks stay in your pockets until the guests are gone or nobody's looking.
+voice.vo.mercer.briefing_gallery_night_2,"Argus runs the cameras, the frame sensors and the Treasury lasers. If it goes loud, steel shutters come down. The server upstairs lifts them."
+voice.vo.mercer.gallery_night_intro,"Gala's in its last hour. Walk the rooms, read the plaques, find the list. Last call's coming and the hall empties after it."
+voice.vo.mercer.gallery_night_canvas_found_lantern,That's The Lantern Bearer. The one the buyer asked for by name.
+voice.vo.mercer.gallery_night_canvas_found_orchard,The Salt Orchard. That's on the list.
+voice.vo.mercer.gallery_night_canvas_found_widow,Widow in Blue. On the list. Mark it.
+voice.vo.mercer.gallery_night_canvas_found_saint,The Tidewater Saint. That one's on the list too.
+voice.vo.mercer.gallery_night_last_call_soon,Bar's calling last orders. A minute or so before they walk the guests out.
+voice.vo.mercer.gallery_night_last_call,Last call. Guests are heading for the doors. Everything inside is off limits now.
+voice.vo.mercer.gallery_night_lasers_sweep,Beams pair up at the walls; go along the edge.
+voice.vo.mercer.gallery_night_guests_gone,Doors are locked and the gala's over. It's just you and the guards.
+voice.vo.mercer.gallery_night_keycard,That's a keycard. Two readers want one each and you won't have enough for all three. Choose.
+voice.vo.mercer.gallery_night_code_found,That's the Argus code. The server room's on the upper corridor.
+voice.vo.mercer.gallery_night_sensors_warning,That frame's wired. Cut it with the sensors live and the whole building hears it.
+voice.vo.mercer.gallery_night_hack_started,Hack's running. Stay with it.
+voice.vo.mercer.gallery_night_hack_interrupted,Hack stalled. Someone get back on that terminal.
+voice.vo.mercer.gallery_night_sensors_off,Frame sensors are down. Cut what you like.
+voice.vo.mercer.gallery_night_lasers,Lasers across the Treasury. Watch the pattern before you move.
+voice.vo.mercer.gallery_night_treasury_open,Treasury's open. Mind the grid.
+voice.vo.mercer.gallery_night_art_store_open,Art store's open. Camera in the corner never sleeps.
+voice.vo.mercer.gallery_night_curator_keycard,The curator wears her keycard on her lanyard. You'll have to get close.
+voice.vo.mercer.gallery_night_inspectors,"Insurance inspectors at the loading dock, with escorts. They're heading for the centrepiece."
+voice.vo.mercer.gallery_night_vaultline,Vaultline truck in the Mews. They've come to move The Lantern Bearer. Get to it first.
+voice.vo.mercer.gallery_night_last_pager,That's {answered}. They won't buy another one.
+voice.vo.mercer.gallery_night_lockdown,"That's Argus. Shutters are coming down, the vault's sealed."
+voice.vo.mercer.gallery_night_shutters_up,Lockdown's lifted. Shutters are up and the vault reader's open.
+voice.vo.mercer.gallery_night_vault_drill,Drill's on the vault door. Four minutes. Hold the basement.
+voice.vo.mercer.gallery_night_drill_jam,Drill's jammed. Somebody give it a hand.
+voice.vo.mercer.gallery_night_required_secured,The Lantern Bearer and one more are secured. Anything else is a bonus.
+voice.vo.mercer.gallery_night_van_eta,Van's {seconds} seconds out. Hold the dock.
+voice.vo.mercer.gallery_night_limo_eta,Limo's {seconds} seconds out. Hold the hall.
+voice.vo.mercer.gallery_night_sniper_hotel,Sniper on the hotel roof. Stay out of the Mews mouth.
+voice.vo.mercer.gallery_night_escape,"Your ride's here. Canvases in, then you."
+voice.vo.vance.gallery_night_radio_casing,You've seen the rooms. Now forget the champagne and remember the walls.
+voice.vo.vance.gallery_night_radio_find_canvases,"All four on the list, found. My buyer will be thrilled, in his quiet way."
+voice.vo.vance.gallery_night_radio_keycard,"A keycard. Spend it wisely, darling, there aren't enough to go round."
+voice.vo.vance.gallery_night_radio_server_code,The Argus code. Someone at the Halberd writes things down. Bless them.
+voice.vo.vance.gallery_night_radio_hack,Argus is blind. The frames are just frames now.
+voice.vo.vance.gallery_night_radio_treasury,The Treasury is open. Mind the pretty red lines.
+voice.vo.vance.gallery_night_radio_art_store,"The art store. Everything they didn't think worth showing, which is rarely true."
+voice.vo.vance.gallery_night_radio_centrepiece,"The Lantern Bearer, off its stretcher. Now I can breathe."
+voice.vo.vance.gallery_night_radio_canvases_new,"One more from the list. Any of them, but do pick a nice one."
+voice.vo.vance.gallery_night_radio_canvases,"That's two from the list. The buyer's minimum, and mine."
+voice.vo.vance.gallery_night_radio_secure,"The Lantern Bearer and a companion, safely away. Anything more is a gift."
+voice.vo.vance.gallery_night_radio_extras,The whole list and the studies too. You spoil me.
+voice.vo.vance.gallery_night_radio_lockers,The consignment lockers. Friday's auction will be very short.
+voice.vo.vance.gallery_night_radio_curator_safe,Madame Sorell's safe. She'll blame the caterers.
+voice.vo.vance.gallery_night_radio_lockdown,"Shutters. How dramatic. Get them up again, darling."
+voice.vo.vance.gallery_night_radio_server_door,You're in with the machines. Make them behave.
+voice.vo.vance.gallery_night_radio_vault_drill_new,"Drill the vault door. Loudly, since we're past manners."
+voice.vo.vance.gallery_night_radio_vault_drill,The vault is through. Take what's on the racks.
+voice.vo.vance.gallery_night_radio_escape_wait_new,Your ride is coming. Hold the room and keep the canvases dry.
+voice.vo.vance.gallery_night_radio_escape_wait,Your ride has arrived. Do stop shooting and start leaving.
+voice.vo.vance.gallery_night_radio_escape_new,The Halberd has had enough of you. Find your way out.
+voice.vo.vance.gallery_night_radio_escape_available,"The exit is yours. Rolled canvases first, then you."
+voice.vo.vance.gallery_night_radio_escape,"Your car is waiting, darling. Don't crease anything."
+voice.vo.vance.gallery_night_radio_loot_lantern_bearer,The Lantern Bearer is mine. Ours. Mostly mine.
+voice.vo.vance.gallery_night_radio_loot_study,"A study. Not on the list, but I never refuse a sketch."
+voice.vo.vance.gallery_night_radio_loot,Another canvas off the Halberd's walls. Lovely.
 ui.lobby.host_closed,The host ended the heist. You are back in the crew lobby.

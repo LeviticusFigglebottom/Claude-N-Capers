@@ -212,7 +212,8 @@ def build(ctx) -> None:
     ctx.marker("SideRail", (k.HG_HALF_WIDTH + 0.0057, k.SIDE_Y, k.HG_CENTRE_Z))
     ctx.marker("StockMount", (0.0, k.RECEIVER_REAR_Y, k.HG_CENTRE_Z))
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
-    ctx.marker("LeftHandIK", (-(k.HG_HALF_WIDTH + 0.008), 0.330, k.HG_CENTRE_Z - 0.010))
+    # Lead (ENV D, FP left-hand cup): under the Handguard (y 0.170-0.440, bottom z 0.050), x 0, 12 mm low, a third of the way forward.
+    ctx.marker("LeftHandIK", (0.0, 0.260, 0.038))
 
     stock_sight = ctx.marker("StockSight", (0.0, 0.0, 0.0), parent=sight_rail)
     _body, aim = k.build_irons(ctx, mats, parent=stock_sight)

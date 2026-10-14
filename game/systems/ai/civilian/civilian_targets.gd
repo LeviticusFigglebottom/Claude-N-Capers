@@ -25,6 +25,8 @@ const REASON_BUTTON: StringName = &"alarm_button"
 const TAG_CIVILIAN: StringName = &"civilian"
 const TAG_STAFF: StringName = &"staff"
 const WANDER_TAGS: Array[StringName] = [TAG_CIVILIAN, TAG_STAFF]
+## D-103: PatrolPoints civilians cower at (cower_stand, back to the wall).
+const COWER_TAG: StringName = &"cower"
 ## PatrolPoint tags naming a staff area (`staff_floor`, `staff_boh`, `staff_upper`...).
 const STAFF_AREA_PREFIX: String = "staff_"
 ## Script class names of the prefabs civilians use, and the alarm reason each one raises.
@@ -38,6 +40,10 @@ var _runtime: HeistRuntime = null
 var _scanned: bool = false
 var _prefabs: Array[Node3D] = []
 var _wander_points: Array[PatrolPoint] = []
+## D-103 (Gallery Night `cower_stand`): PatrolPoints tagged COWER_TAG, 0.21 m off a wall, -Z facing out.
+var _cower_points: Array[PatrolPoint] = []
+## Cower point -> instance id of the civilian that claimed it.
+var _cower_claims: Dictionary[PatrolPoint, int] = {}
 
 
 ## The runtime's CivilianTargets service, created on first use.
@@ -254,6 +260,37 @@ func recount_hostages() -> int:
 	return count
 
 
+## Server: claim the nearest free cower point within `radius` m of `from` that lies away from `away_from`
+## (its side of the civilian), or null. Release with release_cower(npc).
+func claim_cower_point(npc: Node, from: Vector3, away_from: Vector3, radius: float) -> PatrolPoint:
+	_scan()
+	var best: PatrolPoint = null
+	var best_d: float = radius * radius
+	var away: Vector3 = from - away_from if away_from != Vector3.INF else Vector3.ZERO
+	away.y = 0.0
+	for p: PatrolPoint in _cower_points:
+		if not is_instance_valid(p) or _cower_claims.has(p):
+			continue
+		var to: Vector3 = p.global_position - from
+		to.y = 0.0
+		if away != Vector3.ZERO and to.dot(away) < 0.0:
+			continue
+		var d: float = to.length_squared()
+		if d < best_d:
+			best_d = d
+			best = p
+	if best != null:
+		_cower_claims[best] = npc.get_instance_id()
+	return best
+
+
+func release_cower(npc: Node) -> void:
+	var id: int = npc.get_instance_id()
+	for p: PatrolPoint in _cower_claims.keys():
+		if _cower_claims[p] == id:
+			_cower_claims.erase(p)
+
+
 func _scan() -> void:
 	if _scanned or _runtime == null:
 		return
@@ -264,6 +301,8 @@ func _scan() -> void:
 		var n: Node = stack.pop_back()
 		var pp: PatrolPoint = n as PatrolPoint
 		if pp != null:
+			if pp.tags.has(COWER_TAG):
+				_cower_points.append(pp)
 			for t: StringName in pp.tags:
 				if WANDER_TAGS.has(t):
 					_wander_points.append(pp)
