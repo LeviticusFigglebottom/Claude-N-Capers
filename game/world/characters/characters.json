@@ -299,6 +299,12 @@
 			"variant_of": "frd_agent"
 		},
 		{
+			"asset": "char_gallery_admin",
+			"id": "gallery_admin",
+			"scene": "res://world/characters/gallery_admin/gallery_admin.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_gallery_attendant",
 			"id": "gallery_attendant",
 			"scene": "res://world/characters/gallery_attendant/gallery_attendant.tscn",
