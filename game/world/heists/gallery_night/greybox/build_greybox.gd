@@ -19,7 +19,7 @@
 ## casing_hall marker (F5); ENV A's `door` prefab on every B2 door with the greybox kit visual (arch_door_*_t20/t40:
 ## flush frame colliders, `frame_proud` / `door_frame_gap`, PO-7), holes cut to the kit opening, and breakable
 ## `window` prefabs on the EB / SL gameplay windows (F7); other windows stay greybox glass panes.
-extends "res://world/heists/gallery_night/greybox/gn_gameplay.gd"
+extends "res://world/heists/gallery_night/greybox/gn_npc.gd"
 
 const FLOOR_INDEX: Dictionary = {"B": 0, "G": 1, "U": 2, "R": 3}
 ## Slab underside above each floor's rooms (where the ceiling plane must stay below).
@@ -36,6 +36,13 @@ const CORE_FACE_W: float = 0.2
 const BAL_T: float = 0.15
 const BAL_TOP: float = 1.05
 const BAL_BELOW: float = 0.25
+## Sculpture Court reflecting pool (B4.4 / next_heist §7.4, ENV P review): [x0, z0, x1, z1] outer rim, rim width, rim
+## height (= the basin's depth: the pool floor is the court grade), water level. 0.3 m stays under the 0.35 m step.
+const POOL: Array = [-12.0, 15.0, -7.0, 21.0]
+const POOL_RIM_W: float = 0.3
+const POOL_RIM_H: float = 0.3
+const POOL_WATER_Y: float = 0.2
+const WATER_MAT: String = "res://world/materials/water_harbour_night.tres"
 ## Parapet coping (B4.5: >= 50 deg): a ridge 0.3 m above the wall top over the half thickness (0.2 m) = 56 deg.
 const COPING_RISE: float = 0.3
 
@@ -57,11 +64,13 @@ func _build() -> void:
 	var old_scene_uid: String = read_uid(out)
 	map_root = HeistMap.new()
 	map_root.name = "GalleryNight"
-	# HeistDef / variant table: ENV B's drafts land here via ENV A after the freeze; until then the root has none.
-	if ResourceLoader.exists(DEF_PATH):
-		map_root.heist_def = load(DEF_PATH) as HeistDef
-	if ResourceLoader.exists(VARIANTS_PATH):
-		map_root.variant_table = load(VARIANTS_PATH) as HeistVariantTable
+	# HeistDef / variant table: ENV B's data, copied verbatim from its drafts to the registry path (heist_map.md §1);
+	# the generator only references them (DEF_PATH / VARIANTS_PATH), it never writes them.
+	map_root.heist_def = load(DEF_PATH) as HeistDef
+	map_root.variant_table = load(VARIANTS_PATH) as HeistVariantTable
+	if map_root.heist_def == null or map_root.variant_table == null:
+		_fail("missing %s or %s" % [DEF_PATH, VARIANTS_PATH])
+		return
 	map_root.floor_heights = PackedFloat32Array(L.FLOOR_HEIGHTS)
 	map_root.floor_names = PackedStringArray(L.FLOOR_NAMES)
 	map_root.set_meta(&"camera_spine_rooms", PackedStringArray(L.CAMERA_SPINE_ROOMS))
@@ -76,7 +85,8 @@ func _build() -> void:
 	for nm2: String in ["Zones", "Rooms", "Spawns", "Patrols", "Tactical", "Gameplay", "Variants"]:
 		add(map_root, node3d(nm2))
 	var mission: Node = Node.new()
-	mission.name = "Mission"   # gallery_night_mission.gd (ENV A, GN-A1) is attached once it exists
+	mission.name = "Mission"
+	mission.set_script(load(MISSION_PATH))   # G1 stub (GN-C1); ENV A completes it (GN-A1)
 	add(map_root, mission)
 	add(map_root, node3d("Preplan"))
 	add(map_root, node3d("ReviewCameras"))
@@ -88,6 +98,9 @@ func _build() -> void:
 	_build_spawns(n("Spawns"))
 	_build_preplan(n("Preplan"))
 	_build_review_cameras(n("ReviewCameras"))
+	build_npcs()
+	build_tactical(n("Tactical"))
+	build_lights(n("Lighting"))
 	build_gameplay(n("Gameplay"))
 	build_variants(n("Variants"))
 	_build_nav_links(nav)
@@ -614,11 +627,38 @@ func _build_site(geo: Node3D) -> void:
 		var r: Array = p[1]
 		box(site, "PoliceIsland" + String(p[0]), Vector3(float(r[0]), -0.3, float(r[1])), Vector3(float(r[2]), 0.0, float(r[3])),
 			"asphalt")
+	_build_pool(add(site, node3d("Pool")) as Node3D)
 	var cl: Node3D = add(site, node3d("Closures")) as Node3D
 	for c: Array in L.CLOSURES:
 		var b: Array = c[1]
 		box(cl, String(c[0]), Vector3(float(b[0]), float(b[1]), float(b[2])), Vector3(float(b[3]), float(b[4]), float(b[5])),
 			String(c[2]))
+
+
+## Reflecting pool (B4.4): a stone rim 0.3 m high (a step in and out, heavy bag included) around a basin whose floor
+## is the court grade; a still water sheet at POOL_WATER_Y (library night water, visual only) and the bullet-only water
+## surface collider (SurfaceTags.water_surface: shots splash, nothing else collides).
+func _build_pool(pool: Node3D) -> void:
+	var x0: float = float(POOL[0])
+	var z0: float = float(POOL[1])
+	var x1: float = float(POOL[2])
+	var z1: float = float(POOL[3])
+	var w: float = POOL_RIM_W
+	box(pool, "RimN", Vector3(x0, 0.0, z0), Vector3(x1, POOL_RIM_H, z0 + w), "court_stone")
+	box(pool, "RimS", Vector3(x0, 0.0, z1 - w), Vector3(x1, POOL_RIM_H, z1), "court_stone")
+	box(pool, "RimW", Vector3(x0, 0.0, z0 + w), Vector3(x0 + w, POOL_RIM_H, z1 - w), "court_stone")
+	box(pool, "RimE", Vector3(x1 - w, 0.0, z0 + w), Vector3(x1, POOL_RIM_H, z1 - w), "court_stone")
+	var mn: Vector3 = Vector3(x0 + w, 0.0, z0 + w)
+	var mx: Vector3 = Vector3(x1 - w, POOL_WATER_Y, z1 - w)
+	var sheet: MeshInstance3D = MeshInstance3D.new()
+	sheet.name = "Water"
+	var pm: PlaneMesh = PlaneMesh.new()
+	pm.size = Vector2(mx.x - mn.x, mx.z - mn.z)
+	sheet.mesh = pm
+	sheet.material_override = load(WATER_MAT) as Material
+	sheet.position = Vector3((mn.x + mx.x) * 0.5, POOL_WATER_Y, (mn.z + mx.z) * 0.5)
+	add(pool, sheet)
+	SurfaceTags.water_surface(pool, map_root, "PoolWaterSurface", mn, mx)
 
 
 ## Areaway (QC-64, B2 / B4.6): the 2 x 2 m light well under the court grate and the passage to the 1.0 m opening in
