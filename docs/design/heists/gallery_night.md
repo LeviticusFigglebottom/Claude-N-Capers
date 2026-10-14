@@ -515,7 +515,7 @@ Support-space check (level_standards §2.2):
 | Attendant (`gallery_attendant`) | 2 | always | `civ_attendant` | `curator_inspect` / `browse` | `staff`, `staff_attendant` |
 | Waitstaff (`gallery_waitstaff`) | 1–2 | until last call + 120 s | `civ_waitstaff` | `walk_text` / `browse` (bar) | `staff`, `staff_bar` |
 | Conservator (`gallery_attendant_b`, QC-58) | 0–1 | `conservator` = `cons_late` | `civ_conservator` | `desk_work` (easel) | `staff`, `staff_cs` |
-| Admin PA (cast TBD, QC-58) | 0–1 | rare `late_paperwork` | `civ_admin` | `desk_work` | `staff`, `staff_admin` |
+| Admin PA (cast `gallery_admin`, QC-58c, ENV D 50265303) | 0–1 | rare `late_paperwork` | `civ_admin` | `desk_work` | `staff`, `staff_admin` |
 | Patrons (`gallery_patron`) | 3–9 | `patrons` scalar; `stragglers` after last call | `civ_patron` (GH ×4, WG ×2, EG ×2, EB ×2, court ×2) | `browse` / `sit` / `smoke` (court) | `civilian`, `civilian_court` |
 
 **Totals per difficulty** (guards from `guard_post` picks with `difficulty_add`):
@@ -661,7 +661,7 @@ Worked for `cam_a`:
    checked by `camera_screen`: **every upper list slot has a screen between it and its room's camera**).
    Cut it after the rover's loop (a) pause ends and he leaves through UG2: that is the second required
    canvas (D-075: the Lantern Bearer + 1). UG2 (no camera) → `widow_sallow` is a bonus.
-6. Drop the canvases from BE over the balustrade into the hall's east strip (x 24–28, Build rulings B4; out of
+6. Drop the canvases from BE over the balustrade into the hall's east strip (x 22–28, Build rulings B4 / P GN-P1; out of
    C1's cone: ≥ 70° off its axis, behind the bar straggler), take the stairs down, and carry them along
    the hall's south wall
    (C1's blind band below and behind its mount) into VE and out of the bronze doors (push bar from
@@ -1188,7 +1188,7 @@ Player: capsule r 0.35, stand 1.8 / crouch 1.2, step 0.35, max slope 45°, jump 
 | # | Requirement | Where in this doc | Check |
 |---|---|---|---|
 | 1 | Laser bypass gaps ≥ 1.0 m; crouch-under beam centres ≥ 1.30 m (lower face ≥ 1.215 m) | `cp_landing` curtain gap 0.8 → **1.0 m**; `lz_static` low beam 1.27 → **1.30 m** | `lasers` + P's walk |
-| 2 | Balcony throws land on the hall floor **x 24–28** (east) and the mirrored **x 16–20** (west); balustrade and handrail colliders thin and true to the visual | stealth line step 6 | P: 3 pitches |
+| 2 | Balcony throws land on the hall floor **x 22–28** (east) and the mirrored **x 16–22** (west) (P measured flat throws landing at x 22.2–23.9); balustrade and handrail colliders thin and true to the visual | stealth line step 6 | P: 3 pitches |
 | 3 | Mews ↔ LD step-free: Mews grade = LD floor (dock leveller ≤ 0.35 m, dressing) or a ramp ≤ 45° at both doors | LD, X2 | `slopes`, walkthrough |
 | 4 | Reflecting pool rim + depth ≤ 0.35 m (or one shallow step), else a raised solid | X3 | P: heavy-bag in/out |
 | 5 | Parapet copings ≥ 50°; a 1.2 m parapet / invisible wall between the roof deck and the north-light sawtooth; no walkable slope < 50° outside the play mesh | Roof notes, CS glazing | `slopes` |

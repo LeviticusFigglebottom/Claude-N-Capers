@@ -23,6 +23,8 @@ extends Resource
 @export var bag_loot_s: float = 1.0
 @export var pager_answer_s: float = 10.0
 @export var item_pickup_s: float = 0.5
+## QC-52: taking a card off a tied / dead keyholder (Gallery Night curator), D-103 ◇.
+@export var carried_item_s: float = 1.0
 @export var door_open_s: float = 0.0
 @export var revive_s: float = 6.0
 ## A1-03 prefab defaults (◇ unless cited).

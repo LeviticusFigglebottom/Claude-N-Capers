@@ -3,6 +3,21 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14: GN-D1 (Gallery Night cast; D-110 re-activation)
+- Gala ambient clips: `curator_inspect`, `cower_stand`, `cower_seated`, `walk_text`, `smoke`, `desk_work` all exist in
+  char_anim_humanoid and are listed in characters.md (v1.7, v1.9, base list). Review sheet
+  `_review/gn_d1_gala_clips.png`: all read correctly. Mapping them is ENV A's job (anim_driver / civilian activities).
+- QC-58c admin PA: new `char_gallery_admin` → `world/characters/gallery_admin` (teal knit cardigan, pale-blue shirt,
+  charcoal trousers, silver glasses, watch, wine gallery staff lanyard). p5_cast.json gains the roles `gallery_admin`
+  [gallery_admin] and `gallery_conservator` [gallery_attendant_b] (QC-58b). test_p5_cast checks it
+  (`test_admin_pa_office_wear`). Windowed Godot check `_review/gn_d1_admin_windowed.png` (idle, walk_text, desk_work,
+  cower_stand, cower_seated).
+- Found: the shared `_npc.skirt` loft lets the thighs poke through in walk/cower (bank_officer_b shows it), so the PA
+  wears trousers. Fixing the skirt weights is a follow-up.
+- Cast check against gallery_night.md: curator, attendants (+_b as conservator), guards (+_b for operator, upper rover
+  and smoker), patrons (+ penthouse guests), waitstaff (npc_penthouse_staff), Vaultline (armored_car_crew) all exist
+  and are cast. Inspectors reuse gallery_guard (QC-58d).
+
 ## 2026-10-12: session 3g (WIP: TAC Light accent, unverified)
 - TAC Light (+ frd/sentinel/zero): matte cream (`char_bank_cream`, albedo ~215) placard bars across the front and back
   plates (`char_police.tac_placard`, TAC Light only; Corpsman not affected). A chest/back bar, distinct from TAC
