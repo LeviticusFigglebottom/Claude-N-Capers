@@ -1,5 +1,5 @@
-## GN-B1: Gallery Night content data (HeistDef + variant table drafted in content/_drafts/gallery_night until ENV A
-## moves them to world/heists/gallery_night). Pins the lead's rulings on the drafts:
+## GN-B1: Gallery Night content data (HeistDef + variant table at world/heists/gallery_night since C's G1, trunk
+## 55ce4d2a; B owns their content values, C the node paths). Pins the lead's rulings on them:
 ## one source of truth for pre-planning assets (the library holds the values, the def only references or re-points
 ## them), guard counts per difficulty, Hazardous on the Brutal+ weights, kc_conservator only with cons_late.
 extends TestCase
@@ -186,7 +186,7 @@ func test_briefing_subset() -> void:
 
 # --- helpers ------------------------------------------------------------------------------
 
-## The registered def's folder once ENV A moves the files, else the drafts folder.
+## The registered def's folder (the drafts folder only on a branch from before G1).
 func _path(file: String) -> String:
 	var world: String = HeistRegistry.def_path(HEIST).get_base_dir().path_join(file)
 	return world if ResourceLoader.exists(world) else DRAFT_DIR + file
