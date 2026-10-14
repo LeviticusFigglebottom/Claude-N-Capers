@@ -44,6 +44,7 @@ LIBRARY: dict[str, tuple[str, str, float, float, float]] = {
     "brass_case": ("brass_cartridge", "#B8913A", 0.3, 1.0, 1.0),
     "alu_black": ("alu_anodized_black", "#2C2D30", 0.4, 1.0, 1.0),
     "safety_orange": ("paint_safety_orange", "#D2611E", 0.6, 0.0, 1.0),
+    "metal_matte": ("metal_matte", "#6E7073", 0.6, 1.0, 1.0),
 }
 
 # Detail sources: neutral luminance textures derived from these library albedos.
@@ -122,6 +123,10 @@ TINTED: dict[str, dict] = {
     "bag_red": {"source": "fabric_upholstery", "color": "#8A2C27", "roughness": 1.0},
     "bag_coyote": {"source": "fabric_upholstery", "color": "#7A6A4E", "roughness": 1.0},
     "metal_rust": {"source": "metal_painted", "color": "#5E3A2A", "roughness": 1.0},
+    # throwables (PO-C): olive-drab frag body, grey incendiary canister, the injector's green serum
+    "grenade_olive": {"source": "metal_painted", "color": "#4F5638", "roughness": 0.9},
+    "canister_grey": {"source": "drywall_painted", "color": "#5A5E58", "roughness": 0.9},
+    "serum_green": {"source": "plastic_matte", "color": "#5E9A3A", "roughness": 0.4},
 }
 
 # Painted canvases (GN-C2): key -> albedo PNG from tools/texgen/paintings.py. The prop material is a plain
@@ -193,7 +198,7 @@ LIB_512 = {"chrome", "rubber_black", "plastic_matte", "glass_clear", "ceiling_ti
 # Weapon/gear library ids whose 1024 px texture tiles every 1 m (metadata/uv_tile_m = 1.0): at the prop
 # density (512 px/m) they need the same one-repeat-per-metre UVs as the 512 px tiles.
 TILE_1M = {"polymer_black", "polymer_olive", "steel_bare", "brass_cartridge", "alu_anodized_black",
-           "paint_safety_orange"}
+           "paint_safety_orange", "metal_matte"}
 
 
 def texture_px(mat_id: str) -> float:
