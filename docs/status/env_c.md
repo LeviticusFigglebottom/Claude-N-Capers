@@ -3,6 +3,110 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+
+## HANDOFF 2026-10-14
+
+**Branch head:** `34362123` + this handoff doc commit on `env/c-worlds`: trunk r~196 merged, all green (GH/ND wall tiles + SL/DB shots pending trunk).
+
+**Done since last trunk merge (not yet on trunk):**
+- `bbe51f41` (merged at `3c669d32`): GH + ND **wall tiling**. Opt-in `wall_tile_groups` in `world/heists/glasshouse/greybox/gh_mesh.gd`
+  splits wall faces into 6 m x 2 m MeshInstances, one per wall plane, for Compatibility's 8-lights-per-mesh limit (lead r188).
+  - GH tiles every wall run > 1 m (MeshInstances 237 -> 644). ND only runs > 6 m (304 -> 632); `WALL_TILE_MIN_RUN` in
+    `gh_art.gd` / `nd_art.gd`.
+  - Navmesh, collision and light counts byte-identical; two regens identical.
+  - Green: validate_level GH/ND final with all variants, `c glasshouse` 14, `c night_deposit` 19, determinism 1, heist_readiness 2.
+  - Wall-band luminance: GH g4 north wall 0.10 -> 0.21, ND b10 corridor 0.22 -> 0.40.
+- `b5908df5` (merged at `34362123`): SL + DB slab-skin before/after shots on the 256-light cap (docs only).
+  - SL K3 0.137 -> 0.137, M14 0.178 -> 0.179, M8 0.136 -> 0.143, DB O1 0.17 -> 0.42.
+
+**In progress:**
+1. **D-111 SL/DB prop art pass**, branch `wip/c-sldb-props` (2 commits on 5c22ef30). About 45% done.
+   - `fd701863` item 1 (#4, interactables -> catalog art via `PREFAB_VISUALS`, 6 new ladder variants, `prop_dumpster_d094`):
+     - Navmesh identical, regen identical, validate SL/DB PASS (1 new WARN: SL HackTerminal 0.05 m in the CageGate clear zone).
+     - **The test files were NOT re-run after the change.**
+   - `d257bc58` WIP items 2-4 (doors -> `prop_door_*` + new twin roller / cold-store slider / strongroom door; DB launch ->
+     `veh_boat_launch`, burn barrels, thermal device; loot props in `tools/blender/props/loot.py`):
+     - **Not imported, regenerated or validated.**
+   - **Next steps, in order:**
+     1. Merge the WIP branch into env/c-worlds in a scratch branch, then `godot --headless --path game --import`.
+     2. Regenerate SL and DB twice and check they're byte-identical.
+     3. Diff the navmesh: SL should be unchanged; on DB only the launch area may change (the hull went from 13 m to 9 m).
+     4. Run validate_level greybox with all variants. Expect `door_frame_gap`/`scale` on the cage and police gates, clipping on
+        cage pallets and the K1 laptop, the launch gunwale and the E3 secure zone.
+     5. Run the tests, then split into item 2, 3 and 4 commits.
+     6. Take shots: shot lists are in the old lane scratchpad (gone); use review_shots per room.
+   - Item 5 (SL/DB secure drop visuals, SL lasers into the catalog, SL zipline anchors with A's `cable_start`/`cable_end`) is
+     not started.
+2. **D-113 VFX follow-ups.** Blood + muzzle are ON TRUNK.
+   - Re-render the flash "after" set; the current set predates the final particle-size tweaks:
+     `LC_DRIVER=opengl3 xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --rendering-driver opengl3
+     --fixed-fps 60 --resolution 1280x720 res://world/vfx/tools/vfx_capture.tscn -- --d113=flash --out=$PWD/docs/levels/_art/vfx_d113/after`
+   - Re-run the impact sheet (`--sheet`) now that `billboard_keep_scale` fixed the 1 m puff bug.
+   - Forward+ Decal path not checked.
+3. **P's FP muzzle wiring** uses `muzzle_flash.tscn`:
+   - `flash(size, suppressed, weapon_class, variant)`, `burst_end()`, `fp_scale(bool)`;
+   - children Star / Flame / Petals / Sparks / Wisp / Smoke;
+   - textures `VfxTextures.muzzle_atlas()`.
+   P was to send a windowed FP sequence; nothing received yet.
+
+**Queued next (ordered):**
+1. Finish `wip/c-sldb-props` items 2-5 (D-111 inventory `docs/levels/_art/prop_art_inventory.md` #2, #3, #7-#10).
+2. ND map wiring: VaultDrill device_scene (A's defaults already cover THERMAL/SAW), ND burn/zipline if any (D-111 #6).
+3. Gallery Night G2 prep (GN design doc `docs/design/heists/gallery_night.md`). Also:
+   - set `Door.shutter = true` on GN ShutterCalloway / ShutterTreasury / ShutterArtDoor once A b25c8dc5 is on trunk; the
+     AreawayGrate stays a normal door;
+   - door `objective_tags` bronze_doors / court_doors / art_door / art_store_vault_door / treasury_door_leaf (A's ask);
+   - ArgusTerminal -> `clears_alarm_groups`.
+4. D-111 #12: DB/SL world dressing (G2), from origin/backup/2026-10-12/env-c-{sl,db-wip}.
+5. Optional perf: light distance-fade on map lights (D-112 option b).
+
+**Cross-env dependencies:**
+- **B:**
+  - waits on trunk carrying `world/props/deployable/*` and `world/props/throwable/*` before pushing the DeployableDef /
+    ThrowableDef `model` lines and the new ECM / FAK / trip-mine defs (both on trunk now, so B can push);
+  - owns HeistDef content values. GH / ND / SL defs are **generator output**, so value edits go into the generator rows.
+- **A:**
+  - `Door.shutter` (b25c8dc5);
+  - zipline `cable_start` / `cable_end`;
+  - `lc_ignore` on Cable (levelcheck honours it, 67d38666);
+  - mission files `*_mission.gd` are A's; maps / generators are C's.
+- **P:** the FP flash sequence with the new API; re-capture GN feel after the props / lighting changes if wanted.
+- **Others waiting on me:** B (nothing now); A (GN door objective_tags, the shutter flag).
+
+**How to validate your area** (D-088 targeted checks):
+- `gdlint <changed .gd>` (140 chars, 1500 lines per file).
+- `python3 tools/ci/check_ownership.py c --base origin/claude/dreamy-hamilton-pc7vck`.
+  - Against `origin/env/c-worlds` it will flag other envs' files after a trunk merge; use trunk as the base.
+- `python3 tools/ci/check_banned.py`.
+- Tests via `tools/ci/run_tests.sh <dir> <filter>`; dir is `c`, not `tests/c`. Common filters:
+  - maps: `c test_gallery_night_map`, `c glasshouse`, `c night_deposit`, `c shadow_ledger`, `c dockside_burn`,
+    `c test_generator_determinism`, `"" test_heist_readiness`;
+  - props / materials: `c test_props`, `c test_surface_tags`, `c test_slab_skins`, `c test_texgen_materials`;
+  - levelcheck and VFX: `c test_validate` (108), `c vfx`, `c impact`, `c test_range_dressing`.
+- Level validation: `tools/levelcheck/validate_all.sh <heist>` (stage from stage.txt). GN: `tools/levelcheck/gn_regen_twice.sh`.
+- Regenerate a map: `/opt/godot/godot --headless --path game --script res://world/heists/<id>/greybox/build_greybox.gd`.
+- Props: `tools/blender/props/build.py --check-determinism`. Materials: `python3 tools/texgen/build.py --only <ids> --check-determinism`.
+- Windowed: `LC_DRIVER=opengl3 xvfb-run ...`; material preview `res://world/tools/material_preview.tscn -- --only=<ids>`.
+
+**Gotchas:**
+- After a pull or a fresh worktree run `godot --headless --path game --import`. A stale class cache gives "X not found" and
+  0-trial results. New worktrees: `cp -al game/.godot`.
+- llvmpipe renders are SLOW: ~5-20 min per shot on a loaded box. Max 1-2 render processes. Use LC_DRIVER=opengl3 (Vulkan hangs).
+- Compatibility limits:
+  - 8 lights per MESH (kept by the lead): tile big slabs and walls;
+  - 256 per view (D-112; it was 32, which made SL rooms go dark).
+- GH / ND / SL `build_greybox` re-save the heist def and variants from their rows on every regen, including during the
+  determinism test.
+- `heists/**` is listed for both A and C in owners.json. Lead ruling: maps / generators / level data are C's,
+  `*_mission.gd` and mission wiring are A's, def values are B's.
+- `test_texgen_materials` black band is 0.04-0.10 (D-038 amended in D-112 for the weapon-black fix).
+- Door `lock`: BARRED is never breached (P3 contract); use ELECTRONIC for police-breach doors (GN LD roller).
+- validate warnings for GN: 6 `furniture_logic` WARNs (areaway ladder / art lift in door clear zones), accepted at r185.
+- DB `barred_doors` is flaky under heavy load; rerun alone.
+
+**Session id:** session_013uMHd1Npqkx1reY1pJMaye. **Helper lanes still running:** none; all stopped, merged or parked on
+`wip/c-sldb-props`.
+
 ## Art gaps on the existing maps (brief for ENV D at the freeze lift; ENV C survey 2026-10-14)
 Owner key: [D] characters/animation (ENV D), [C] props/maps/materials (ENV C, or D if the lead reassigns art), [A] wiring.
 1. [C] **Placeholder prefab visuals still shown in play:**
