@@ -67,6 +67,8 @@ def build_material(lib_id: str, preset_name: str, out_root: str, with_godot: boo
             godot.write_emissive_material(root / library.MAT_ROOT / f"{lib_id}.tres", lib_id,
                                           preset["materials"][lib_id])
         return {"lib_id": lib_id, "stats": None}
+    if entry.get("kind") == "water":
+        return build_water(lib_id, preset_name, preset, root, with_godot)
     ctx = make_ctx(lib_id, preset)
     extra: dict = {}
     if entry.get("trim"):
@@ -109,6 +111,32 @@ def build_material(lib_id: str, preset_name: str, out_root: str, with_godot: boo
                              f"res://assets/textures/{lib_id}", entry.get("kind", "opaque"), ctx.tile_m,
                              ctx.params.get("specular"), ctx.params.get("clearcoat"))
     return {"lib_id": lib_id, "stats": enc.stats}
+
+
+def build_water(lib_id: str, preset_name: str, preset: dict, root: Path, with_godot: bool) -> dict:
+    """Ripple texture (RG normal, B slick mask) + ShaderMaterial on shaders/water.gdshader."""
+    ctx = make_ctx(lib_id, preset)
+    img, stats = importlib.import_module(f"texgen.materials.{lib_id}").generate(ctx)
+    tex_dir = root / library.TEX_ROOT / lib_id
+    png = tex_dir / f"tex_{lib_id}_ripple.png"
+    tio.write_png(png, img)
+    tio.write_text(tex_dir / "SOURCE.txt", "\n".join([
+        f"generator: {SCRIPT} --only {lib_id} --preset {preset_name}",
+        f"module: tools/texgen/materials/{lib_id}.py",
+        f"preset: tools/texgen/presets/{preset_name}.py",
+        f"seed: {ctx.seed} (zlib.crc32('{lib_id}'))",
+        f"size_px: {ctx.size}",
+        f"tile_m: {ctx.tile_m} (world-space: the shader samples world XZ / tile_m, mesh UVs unused)",
+        "ripple: linear RGB, R/G = tangent normal X/Y (OpenGL Y+, 0.5 flat, +-slope_range), B = slick mask",
+        f"shader: res://{godot.WATER_SHADER}",
+        "stats: " + json.dumps(stats, sort_keys=True),
+        "",
+    ]))
+    if with_godot:
+        godot.ensure_import(png, "texture", "CompressedTexture2D", godot.WATER_IMPORT_PARAMS)
+        godot.write_water_material(root / library.MAT_ROOT / f"{lib_id}.tres", lib_id,
+                                   f"res://assets/textures/{lib_id}/{png.name}", ctx.tile_m, ctx.params["shader"])
+    return {"lib_id": lib_id, "stats": None, "water": stats}
 
 
 def build_luts_and_envs(preset_name: str, out_root: Path, with_godot: bool) -> None:
@@ -183,6 +211,9 @@ def main() -> int:
         results = [build_material(i, args.preset, str(out_root), with_godot) for i in ids]
     for r in results:
         s = r["stats"]
+        if "water" in r:
+            print(f"  {r['lib_id']:22s} water ripple {r['water']}")
+            continue
         if s is None:
             print(f"  {r['lib_id']:22s} (emissive, no textures)")
             continue

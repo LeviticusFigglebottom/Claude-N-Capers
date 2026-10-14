@@ -14,7 +14,9 @@ TILE_M = 2.0
 TEX_ROOT = "game/assets/textures"
 MAT_ROOT = "game/world/materials"
 
-# kind: "opaque" (ORMMaterial3D) or "glass" (ORMMaterial3D with alpha transparency).
+# kind: "opaque" (ORMMaterial3D) or "glass" (ORMMaterial3D with alpha transparency); "water" is a
+# ShaderMaterial on game/world/materials/shaders/water.gdshader with one ripple texture (RG normal,
+# B slick mask; materials/<id>.py returns the image, the preset holds the shader parameters).
 LIBRARY: dict[str, dict] = {
     "plaster_painted": {"size": 1024},
     "drywall_painted": {"size": 1024},
@@ -59,6 +61,8 @@ LIBRARY: dict[str, dict] = {
     "emissive_pilot_flame": {"kind": "emissive"},
     # Trim sheet (trim.py). Strip UV ranges: game/assets/textures/trim_interior/trim_table.json
     "trim_interior": {"size": 1024, "trim": True},
+    # Animated night-harbour water (PO-13): 512 px over 8 m (sampled at several scales by the shader).
+    "water_harbour_night": {"size": 512, "tile_m": 8.0, "kind": "water"},
 }
 
 

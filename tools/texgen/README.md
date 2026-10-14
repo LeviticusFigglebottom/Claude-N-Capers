@@ -66,6 +66,15 @@ writes them.
   `StandardMaterial3D` with an embedded `GradientTexture2D`, blue at mesh V = 1 (burner) to orange at
   V = 0 (tip); `emission_operator = multiply` so the gradient is not washed to white). Map the
   flame mesh's V from tip (0) to base (1).
+* **Water (PO-13):** `water_harbour_night` (kind `water`) is not ORM PBR: a `ShaderMaterial` on
+  `game/world/materials/shaders/water.gdshader` plus one 512 px lossless ripple texture over 8 m
+  (`tex_water_harbour_night_ripple.png`: R/G tangent normal, B slick mask; `materials/water_harbour_night.py`).
+  The shader samples it three times in world XZ (two crossing ripple layers + a slow slick layer; mesh
+  UVs unused), so it works on any flat or boxed water mesh. Colours and shader parameters live in the
+  preset (`["shader"]`). Opaque, no screen/depth texture: same look in Forward+ and Compatibility.
+  Maps may set `shore_plane`/`shore_fade_m` (darkening under a quay wall) and up to 16 reflected glints
+  (`glint_count`, `glint_pos`, `glint_color`: lamp heads, far-shore lights) on a duplicate; Night
+  Deposit does this in `nd_art.gd` (`_add_water`, `water_glints`).
 * Every textured library material stores its tile size as `metadata/uv_tile_m` (2.0 or 1.0);
   `material.get_meta(&"uv_tile_m")` tells tools which scale to use.
 * Godot materials use mesh `UV1` (triplanar OFF). The preview tool alone uses world triplanar at

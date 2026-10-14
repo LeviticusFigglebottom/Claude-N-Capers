@@ -23,6 +23,9 @@ const SURFACE_GROUPS: Array = [
 	["Geometry/Site/Ground/QuaySteps", &"concrete"], ["Geometry/Site/Ground/Seabed", &"water"],
 ]
 
+## Far-shore light positions (_far_shore_lights), reflected as glints on the harbour water (PO-13).
+var far_glints: PackedVector3Array = PackedVector3Array()
+
 
 func _initialize() -> void:
 	_build.call_deferred()
@@ -97,6 +100,7 @@ func _build() -> void:
 			errors.append(line)
 	_build_art()
 	_tune_street_light(n("Props"))
+	art.water_glints(n("Props"), far_glints)
 	_close_barred_doorways()
 	var polys: int = await _bake(nav)
 	if polys <= 0:
@@ -671,11 +675,13 @@ func _quay_steps(parent: Node3D) -> void:
 
 
 ## Far-shore lights in the fog (emissive dressing, 300 m out).
+## The far-shore light boxes double as reflected glints on the harbour water (nd_art.water_glints).
 func _far_shore_lights() -> void:
 	for i: int in range(12):
 		var x: float = -150.0 + 32.0 * float(i)
 		var y: float = 2.0 + float((i * 7) % 5)
 		art.vis_box("Neighbours", Vector3(x, y, 299.0), Vector3(x + 1.5, y + 0.6, 299.5), "far_lights")
+		far_glints.append(Vector3(x + 0.75, y + 0.3, 299.0))
 
 
 # --- Props ------------------------------------------------------------------------------------
