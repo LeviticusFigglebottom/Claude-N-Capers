@@ -36,8 +36,6 @@ var _in_hook: bool = false
 var _last_engage: float = -1.0
 var _door_tries: Dictionary[Door, int] = {}
 var _rad_px: Vector2 = Vector2.ONE
-var _look_pending: int = 0
-var _look_seen: Vector2 = Vector2.ZERO
 
 
 func _init(driver: Node, p_crew: CrewController) -> void:
@@ -57,23 +55,59 @@ func tick() -> void:
 
 
 ## One mouse correction toward (yaw, pitch); returns the remaining yaw error (rad).
+## The error is measured against PlayerInput's own look (read-only peek): injected mouse events are flushed into
+## it synchronously, while crew.look_yaw follows a physics tick later (several ticks bunch up under load).
+## Steering from the lagging crew value made corrections stack and limit-cycle across +-PI.
 func steer(yaw: float, pitch: float) -> float:
-	var ey: float = wrapf(yaw - crew.look_yaw, -PI, PI)
-	var ep: float = pitch - crew.look_pitch
-	# A look event reaches crew.look_yaw one physics tick later: wait for it before correcting again.
-	var seen: Vector2 = Vector2(crew.look_yaw, crew.look_pitch)
-	if _look_pending > 0 and seen == _look_seen:
-		_look_pending -= 1
-		return ey
-	_look_pending = 0
+	var cur: Vector2 = _view()
+	var ey: float = wrapf(yaw - cur.x, -PI, PI)
+	var ep: float = pitch - cur.y
 	var px: Vector2 = Vector2(-ey / _rad_px.x, -ep / _rad_px.y)
 	if px.length() > max_px_per_tick:
 		px = px.normalized() * max_px_per_tick
 	if px.length() > 0.05:
 		inp.look(px.x, px.y)
-		_look_seen = seen
-		_look_pending = 4
 	return ey
+
+
+## (yaw, pitch) the player is steering: PlayerInput's accumulators, else the crew's look.
+func _view() -> Vector2:
+	var pin: Node = crew.get_node_or_null(^"PlayerInput")
+	var y: Variant = pin.get(&"_yaw") if pin != null else null
+	var p: Variant = pin.get(&"_pitch") if pin != null else null
+	if y is float and p is float:
+		return Vector2(float(y), float(p))
+	return Vector2(crew.look_yaw, crew.look_pitch)
+
+
+## Measure the live mouse -> look mapping like a player getting used to the sensitivity: nudge the mouse,
+## see how far (and which way) the view moved. Sets _rad_px (radians per px; the sign included), so the
+## steering does not depend on settings / sensitivity formulas staying as the harness assumes.
+func calibrate() -> void:
+	for axis: int in 2:
+		var px: Vector2 = Vector2(40.0, 0.0) if axis == 0 else Vector2(0.0, 30.0)
+		var before: float = _view().x if axis == 0 else _view().y
+		inp.look(px.x, px.y)
+		var moved: float = 0.0
+		for _f: int in 12:
+			await d.get_tree().process_frame
+			await tick()
+			moved = (_view().x if axis == 0 else _view().y) - before
+			if absf(moved) > 1e-5:
+				break
+		if absf(moved) <= 1e-5:
+			d.note("FINDING calibrate: mouse %s motion did not move the view" % ["X" if axis == 0 else "Y"])
+			continue
+		var per_px: float = -moved / (px.x if axis == 0 else px.y)  # steer: look delta = -px * rad_px
+		if axis == 0:
+			_rad_px.x = per_px
+		else:
+			_rad_px.y = per_px
+		inp.look(-px.x, -px.y)  # put the view back
+		for _g: int in 3:
+			await d.get_tree().process_frame
+	d.note("pilot: calibrated %.6f rad/px yaw, %.6f rad/px pitch (settings formula said %s)" % [_rad_px.x, _rad_px.y,
+		PlayerInputDriver.mouse_radians_per_px()])
 
 
 func steer_at(point: Vector3) -> void:
@@ -88,7 +122,9 @@ func face(point: Vector3, tol: float = 0.03, timeout_s: float = 3.0) -> bool:
 		var yaw: float = atan2(-v.x, -v.z)
 		var pitch: float = atan2(v.y, Vector2(v.x, v.z).length())
 		var ey: float = steer(yaw, pitch)
-		if absf(ey) <= tol and absf(pitch - crew.look_pitch) <= tol:
+		if absf(ey) <= tol and absf(pitch - _view().y) <= tol:
+			await tick()  # the crew applies the look a physics tick later
+			await tick()
 			return true
 		await tick()
 		t += dt()
@@ -165,7 +201,8 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 		if int(t / 5.0) != int((t - dt()) / 5.0):
 			d.note("pilot: t=%.0f at %s corner %s yaw_err %.2f fwd=%s path=%d" % [t, _v(crew.global_position),
 				_v(corner), ey, inp.is_held(&"move_forward"), path.size()]
-				+ " mouse_mode=%d state=%d look=(%.2f,%.2f)" % [Input.mouse_mode, crew.crew_state, crew.look_yaw, crew.look_pitch])
+				+ " mouse_mode=%d state=%d look=(%.2f,%.2f) pin_yaw=%s bot=%s" % [Input.mouse_mode, crew.crew_state, crew.look_yaw,
+					crew.look_pitch, crew.get_node(^"PlayerInput").get(&"_yaw"), HeistRuntime.of(crew).has_bot_intent(crew.slot)])
 		repath_t -= dt()
 		hist_t += dt()
 		if hist_t >= stuck_window_s:
@@ -230,6 +267,17 @@ func _log_stuck(corner: Vector3) -> void:
 func _unstick(attempt: int) -> void:
 	for i: int in crew.get_slide_collision_count():
 		var blocker: NpcBase = crew.get_slide_collision(i).get_collider() as NpcBase
+		if not shout_blockers and blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():
+			# Stealth: step back and sidestep away from the civilian instead of shouting.
+			var to_b: Vector3 = blocker.global_position - crew.global_position
+			var right: Vector3 = Vector3(cos(crew.look_yaw), 0.0, -sin(crew.look_yaw))
+			var cb: Node = blocker.get_node_or_null(^"Brain")
+			d.note("pilot: civilian %s (mode %s) blocks the way: back off and let them pass" % [blocker.name,
+				cb.get(&"mode") if cb != null else "?"])
+			await inp.hold(&"move_back", 0.3 + 0.3 * float(mini(attempt, 3)))
+			await inp.hold(&"move_left" if right.dot(to_b) > 0.0 else &"move_right", 0.5)
+			await inp.ticks(int(2.5 * Engine.physics_ticks_per_second))
+			return
 		if shout_blockers and blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():
 			d.note("pilot: civilian %s blocks the way: shout" % blocker.name)
 			await face(blocker.head_position() - Vector3(0, 0.4, 0), 0.05, 1.0)
