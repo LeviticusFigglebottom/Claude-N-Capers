@@ -323,6 +323,12 @@ item.deployable.ammo_bag.name,Ammo Bag
 item.deployable.ammo_bag.desc,A heavy bag of spare magazines for the whole crew.
 item.deployable.body_bag_case.name,Body Bag Case
 item.deployable.body_bag_case.desc,Holds three body bags for a tidy crew.
+item.deployable.ecm.name,ECM Jammer
+item.deployable.ecm.desc,"Jams cameras, pagers and phones for 20 seconds. One unit."
+item.deployable.fak.name,First Aid Kit
+item.deployable.fak.desc,"Four small kits; each heals one heister once."
+item.deployable.trip_mine.name,Trip Mine
+item.deployable.trip_mine.desc,"Three mines that blow when someone crosses the beam."
 item.loot.jewelry.name,Jewelry
 item.loot.jewelry.desc,"Rings, necklaces and watches in a padded bag."
 item.loot.cash.name,Cash
