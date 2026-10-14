@@ -68,6 +68,13 @@ func _ready() -> void:
 	restore.append(_metal0(false, "no_orm"))
 	await _measure("no_orm")
 	restore.pop_back().call()
+	restore.append(_metal0(false, "no_orm_normal"))
+	await _measure("no_orm_nrm")
+	restore.pop_back().call()
+	for tex: String in ["orm", "normal", "albedo"]:
+		restore.append(_skin_with_gun_texture(tex))
+		await _measure("skin+gun_" + tex)
+		restore.pop_back().call()
 	restore.append(_metal0(false, "no_normal"))
 	await _measure("no_normal")
 	restore.pop_back().call()
@@ -90,6 +97,19 @@ func _ready() -> void:
 		env.ambient_light_source = keep[0]
 		env.reflected_light_source = keep[1]
 		env.ambient_light_color = keep[2]
+	if env != null:
+		var k2: Array = [env.background_mode, env.background_color, env.ambient_light_source,
+			env.reflected_light_source]
+		env.background_mode = Environment.BG_COLOR
+		env.background_color = Color(0.42, 0.42, 0.45, 0.0)  # alpha 0: the overlay stays transparent
+		env.reflected_light_source = Environment.REFLECTION_SOURCE_BG
+		await _measure("env_bgcolor")
+		env.ambient_light_source = Environment.AMBIENT_SOURCE_BG
+		await _measure("env_bgcol_amb")
+		env.background_mode = k2[0]
+		env.background_color = k2[1]
+		env.ambient_light_source = k2[2]
+		env.reflected_light_source = k2[3]
 	var vcam: Camera3D = view.viewmodel_camera()
 	var mask: int = vcam.cull_mask
 	vcam.cull_mask = mask | 1
@@ -152,8 +172,39 @@ func _metal0(unshaded: bool = false, strip: String = "", arms: bool = false) -> 
 				(d as ORMMaterial3D).orm_texture = null
 				d.ao_enabled = false
 				d.roughness = 0.6
-			if strip == "no_normal":
+			if strip == "no_normal" or strip == "no_orm_normal":
 				d.normal_enabled = false
+			if strip == "no_orm_normal" and d is ORMMaterial3D:
+				(d as ORMMaterial3D).orm_texture = null
+				d.ao_enabled = false
+				d.roughness = 0.6
+			saved.append([mi, s, mi.get_surface_override_material(s)])
+			mi.set_surface_override_material(s, d)
+	return func() -> void:
+		for e: Array in saved:
+			if is_instance_valid(e[0]):
+				(e[0] as MeshInstance3D).set_surface_override_material(int(e[1]), e[2])
+
+
+## Every weapon surface gets the skin material with ONE of the gun surface's own textures (orm / normal / albedo).
+func _skin_with_gun_texture(which: String) -> Callable:
+	var arms: MeshInstance3D = _fp.skeleton.get_node_or_null(^"Arms") as MeshInstance3D
+	var skin: ORMMaterial3D = arms.get_active_material(0) as ORMMaterial3D if arms != null else null
+	var saved: Array[Array] = []
+	for g: GeometryInstance3D in _weapon_meshes():
+		var mi: MeshInstance3D = g as MeshInstance3D
+		if mi == null or mi.mesh == null or skin == null:
+			continue
+		for s: int in mi.mesh.get_surface_count():
+			var own: ORMMaterial3D = mi.get_active_material(s) as ORMMaterial3D
+			if own == null:
+				continue
+			var d: ORMMaterial3D = skin.duplicate() as ORMMaterial3D
+			d.subsurf_scatter_enabled = false
+			match which:
+				"orm": d.orm_texture = own.orm_texture
+				"normal": d.normal_texture = own.normal_texture
+				"albedo": d.albedo_texture = own.albedo_texture
 			saved.append([mi, s, mi.get_surface_override_material(s)])
 			mi.set_surface_override_material(s, d)
 	return func() -> void:
