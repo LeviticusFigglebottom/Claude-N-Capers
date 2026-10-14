@@ -91,6 +91,8 @@ var block_label: Label
 ## "items": {field: Label}, "mask", "swatch_a",
 ## "swatch_b", "flag", "kick"}.
 var slot_widgets: Array[Dictionary] = []
+## True while the default focus had to fall back to Leave (nothing else enabled yet).
+var _focus_parked: bool = false
 
 
 ## MenuFlow: the shared session and the profile being advertised (before or after entering the tree).
@@ -623,8 +625,13 @@ func refresh() -> void:
 	if not st.is_host and in_slot:
 		block_label.text = UiText.t(&"ui.lobby.wait_host")
 	_rebuild_focus()
-	if was_lobby != active:
-		focus_default()
+	# A client lands here before its slot and the host's contract arrive: everything but Leave is still
+	# disabled, so the default focus parks on Leave (one stray Enter / A left the lobby: co-op pass).
+	# Re-place it once something else is enabled, unless the player moved it.
+	var parked: bool = _focus_parked and is_inside_tree() and get_viewport().gui_get_focus_owner() == leave_button
+	if was_lobby != active or parked:
+		var target: Control = UiNav.focus_first(focus_chain) if is_visible_in_tree() else null  # grabs deferred
+		_focus_parked = active and target == leave_button
 
 
 func _refresh_code(hosting: bool) -> void:

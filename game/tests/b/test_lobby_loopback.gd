@@ -6,6 +6,7 @@ extends TestCase
 
 const NET_SCRIPT: Script = preload("res://core/net.gd")
 const TRIAGE: StringName = &"skill.field_medic.triage"
+const LOBBY_SCENE: PackedScene = preload("res://content/ui/lobby/lobby_screen.tscn")
 
 var _branches: Array[Node] = []
 var _port: int = 0
@@ -166,7 +167,7 @@ func test_client_leave_frees_the_seat() -> void:
 func test_lobby_screen_draws_the_crew() -> void:
 	var pair: Array[LobbySession] = await _connected_pair()
 	var host: LobbySession = pair[0]
-	var screen: LobbyScreen = (load("res://content/ui/lobby/lobby_screen.tscn") as PackedScene).instantiate() as LobbyScreen
+	var screen: LobbyScreen = LOBBY_SCENE.instantiate() as LobbyScreen
 	screen.setup(host, host.profile)
 	add_child(screen)
 	await wait_frames(2)
@@ -211,3 +212,24 @@ func test_unreachable_join_fails() -> void:
 	assert_true(client.is_active(), "the session waits for Net's own leave()")
 	client.net.call(&"leave")
 	assert_false(client.is_active())
+
+
+## Co-op windowed pass: a client's lobby view opened while it joins first focuses Leave (nothing else is
+## enabled yet); once its slot and the host's contract arrive the focus moves off Leave.
+func test_client_focus_leaves_the_leave_button() -> void:
+	var host: LobbySession = _session(_branch("HostBranch"), "Host Hana", 20)
+	var client: LobbySession = _session(_branch("ClientBranch"), "Client Cole", 8)
+	assert_eq(host.host(_port), OK)
+	var screen: LobbyScreen = LOBBY_SCENE.instantiate() as LobbyScreen
+	screen.setup(client, client.profile)
+	add_child(screen)
+	await wait_frames(1)
+	assert_eq(client.join("127.0.0.1", _port), OK)
+	assert_true(await wait_until(func() -> bool: return client.state.local_slot >= 0, 10.0), "joined")
+	assert_true(host.set_contract(&"glasshouse", Enums.Difficulty.ROUTINE, false))
+	assert_true(await wait_until(func() -> bool: return not client.state.contract.is_empty(), 10.0), "contract arrived")
+	await wait_frames(3)
+	var owner: Control = get_viewport().gui_get_focus_owner()
+	assert_true(owner != null and owner != screen.leave_button, "focus is not parked on Leave (%s)" % owner)
+	screen.queue_free()
+	await wait_frames(1)

@@ -84,6 +84,8 @@ var secured_bags: int = 0
 var _lookup_t: float = 0.0
 var _toast_t: float = 0.0
 var _watched_crew: Node = null
+## Other humans in the crew (slot -> display name), to tell the crew when one leaves or joins (PD2).
+var _human_names: Dictionary = {}
 
 
 func _ready() -> void:
@@ -267,6 +269,31 @@ func _connect_events() -> void:
 	EventBus.loot_secured.connect(_on_loot_secured)
 	EventBus.crew_downed.connect(_on_crew_downed)
 	EventBus.crew_custody.connect(_on_crew_custody)
+	Net.crew_changed.connect(_on_net_crew_changed)
+	_human_names = _other_humans()
+
+
+## Co-op windowed pass: a human who drops is replaced by an AI without a word (the host just saw the
+## heister turn AI). Toast who left / joined, PD2 style.
+func _on_net_crew_changed() -> void:
+	var now: Dictionary = _other_humans()
+	for slot: int in _human_names:
+		if not now.has(slot):
+			toast(&"ui.hud.player_left", {"name": _human_names[slot], "heister": _crew_name(slot)})
+	for slot: int in now:
+		if not _human_names.has(slot):
+			toast(&"ui.hud.player_joined", {"name": now[slot], "heister": _crew_name(slot)})
+	_human_names = now
+
+
+func _other_humans() -> Dictionary:
+	var out: Dictionary = {}
+	var me: int = Net.local_slot()
+	for slot: int in Net.crew:
+		var c: Dictionary = Net.crew[slot] as Dictionary
+		if slot != me and not bool(c.get("is_ai", true)):
+			out[slot] = String(c.get("display_name", ""))
+	return out
 
 
 ## Toast a strings key for `seconds` (default TOAST_S).
