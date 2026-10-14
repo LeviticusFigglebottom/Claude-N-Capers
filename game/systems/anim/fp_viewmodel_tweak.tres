@@ -38,6 +38,7 @@ feed_cover_deg = 78.0
 part_ramp_frames = 3.0
 left_hand_ik_skip_sets = Array[StringName]([&"bow", &"akimbo"])
 set_hip_offset = Dictionary[StringName, Vector3]({
+&"pistol": Vector3(0, 0.025, 0.05),
 &"rifle": Vector3(0.02, -0.03, -0.16),
 &"flamethrower": Vector3(0.02, -0.03, -0.2),
 &"saw": Vector3(0.02, -0.03, -0.1),
