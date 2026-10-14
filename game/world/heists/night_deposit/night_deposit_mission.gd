@@ -19,6 +19,8 @@ const LAST_PAGER: int = 4
 const CODE_GROUP: StringName = &"nd_time_lock"
 const ITEM_KEYCARD: StringName = &"item.keycard"
 const ITEM_CODE_NOTE: StringName = &"item.code_note"
+## code_on_manager: the code objective's marker tag, set on the night manager.
+const TAG_CODE_MANAGER: StringName = &"code_manager"
 const SVC_CODES: StringName = &"codes"
 const TAG_VAULT_GATE: StringName = &"vault_gate"
 const TAG_VAULT_DOOR: StringName = &"vault_door"
@@ -55,6 +57,7 @@ var _code_known: bool = false
 var _escape_open: bool = false
 var _fades: int = 0
 var _escape_timer_done: bool = false
+var _manager_tag_tries: int = 0
 
 
 func _on_mission_start() -> void:
@@ -63,8 +66,12 @@ func _on_mission_start() -> void:
 	add_objective(&"casing", &"objective.night_deposit.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
 	add_objective(&"keycard", &"objective.night_deposit.keycard", Enums.ObjectiveState.ACTIVE, {"marker_tags": [&"keycard"]})
 	require_items(&"keycard", ITEM_KEYCARD)
+	# code_on_manager: no CodeNote survives the variant, so the marker points at the night manager (lead / P).
+	var on_manager: bool = _slot_active(&"code_note", &"code_on_manager")
 	add_objective(&"code", &"objective.night_deposit.code", Enums.ObjectiveState.ACTIVE,
-		{"alternative": &"server", "marker_tags": [&"code_note"]})
+		{"alternative": &"server", "marker_tags": [TAG_CODE_MANAGER if on_manager else &"code_note"]})
+	if on_manager:
+		_tag_code_manager()
 	add_objective(&"server", &"objective.night_deposit.server", Enums.ObjectiveState.ACTIVE,
 		{"alternative": &"code", "optional": true, "location": variant(&"server_room"),
 			"marker_tags": [TAG_SERVER_HACK]})
@@ -210,6 +217,21 @@ func _on_nd_civilian_dominated(_npc_net_id: int, crew_slot: int) -> void:
 	if codes != null and codes.has_method(&"reveal"):
 		codes.call(&"reveal", CODE_GROUP, crew_slot)
 	_code_found()
+
+
+## code_on_manager: the night manager (spawn tag civ_manager) carries the code, so he is the code marker.
+func _tag_code_manager() -> void:
+	var found: bool = false
+	if _runtime != null:
+		for n: Node in _runtime.npcs(&"civilian"):
+			var npc: NpcBase = n as NpcBase
+			var tags: Variant = npc.spawn_info.get("tags", []) if npc != null else []
+			if tags is Array and ((tags as Array).has(&"civ_manager") or (tags as Array).has("civ_manager")):
+				npc.objective_tag = TAG_CODE_MANAGER
+				found = true
+	_manager_tag_tries += 1
+	if not found and _manager_tag_tries < 10:
+		start_timer(&"tag_code_manager", 0.5, _tag_code_manager)  # NPCs may spawn after the mission starts
 
 
 func _code_found() -> void:
