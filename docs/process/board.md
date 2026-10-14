@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 08:35: **round 90 ON ORIGIN**: env/b-content 8a868b37 (HUD perf: crew rows update in place 0.617→0.020 ms, cached marker strings, regex compiled once; test_hud_frame_budget 1 ms/2 ms; hud_profile tool). HUD ≈0.15 ms/frame in a real masked GH run; A's 7-20 s stall is NOT the HUD → A to profile runtime/AI/stealth with B's tool.
 - 2026-10-14 08:20: **round 89 ON ORIGIN**: env/a-core (QC-61 WindowPrefab.walkable: layer-1 NavLink through the opening while open/broken; PO-B-C7 bring-up/late_bring_up carry objectives, client HUD seeds them). a3_07/qb_b6/s9 glass/a1_01/po8, coop, b ui_hud green. net.md: bring-up objectives + ENet timeouts.
 - 2026-10-14 08:10: **round 88 ON ORIGIN**: env/b-content 32193a3d (co-op C8 client heister names, C9 toast vs onboarding card). b ui_hud/hud_queue/lobby/coop_host_lost/onboarding green. Co-op 2-window: both peers in the same GH, connection holds (r80 fix verified). Open: C7 (A) client HUD has 0 objectives (no catch-up of objective_updated). C10 ruled: PD2 (leaver goes home, no payday).
 - 2026-10-14 08:00: **round 87 ON ORIGIN**: env/p-play 11d47b5f (G1 traversal harness PTraversal: gap/throw_bag/ladder/carry, real input). p g1_traversal 5/5 green. Open (P): re-verify test_pp_p12_door_snag after door swing.
