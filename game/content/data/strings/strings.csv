@@ -1884,7 +1884,7 @@ ui.workshop.primaries,PRIMARY WEAPONS
 ui.workshop.secondaries,SECONDARY WEAPONS
 ui.workshop.slots,Mod slots
 ui.workshop.overview,Whole Weapon
-ui.workshop.hint_short,"Drag to turn  ·  wheel to zoom  ·  R to reset (hover for every control)"
+ui.workshop.hint_short,"Drag to turn  ·  wheel to zoom  ·  R to reset"
 ui.workshop.finish_tab,Finish
 ui.workshop.hint,"Orbit: drag, right stick, W/A/S/D  ·  Pan: right drag, LB + stick  ·  Zoom: wheel, triggers, Q/E  ·  Reset: R / R3"
 ui.workshop.cash_caption,Spending cash
