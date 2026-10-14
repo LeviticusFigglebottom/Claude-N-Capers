@@ -79,16 +79,16 @@ func _stage() -> void:
 	var shot_cam: Camera3D = Camera3D.new()
 	shot_cam.fov = cam.fov
 	get_tree().root.add_child(shot_cam)
-	shot_cam.global_position = base + Vector3.UP * 1.7 - fwd * 0.5
-	shot_cam.look_at(base + fwd * 3.0 + Vector3.UP * 0.8, Vector3.UP)
+	me.visible = false  # the local body (hidden in first person) would fill the frame
 	shot_cam.make_current()
 	mate.process_mode = Node.PROCESS_MODE_DISABLED  # stands still for the photo; the bag is its child
-	mate.global_position = base + fwd * 3.0
+	mate.global_position = base + fwd * 3.6
 	mate.look_at(mate.global_position + fwd, Vector3.UP)
 	var gold: LootBag = loot.spawn_bag(&"loot.gold", Transform3D(Basis(), mate.global_position + Vector3.UP))
 	_log("carry gold -> %s" % loot.carry(gold, mate))
 	loot.spawn_bag(&"loot.jewelry", Transform3D(Basis(), base + fwd * 2.2 - right * 1.2 + Vector3.UP * 0.3))
 	loot.spawn_bag(&"loot.cash_bricks", Transform3D(Basis(), base + fwd * 2.4 + right * 1.2 + Vector3.UP * 0.3))
+	_aim_clear(shot_cam, base, fwd, right, mate)
 	for b: LootBag in loot.bags():
 		var vis: Node = b.find_child("Bag", true, false)
 		_log("bag %s weight %d visual Bag=%s" % [b.loot_id, b.weight, vis != null])
@@ -96,3 +96,23 @@ func _stage() -> void:
 	mate.process_mode = Node.PROCESS_MODE_INHERIT
 	_log("throw -> %s" % loot.drop_bag(mate, true))
 	await _shot("thrown", 20)
+
+
+## The first camera spot (behind / beside the player, eye or head height) with a clear ray to the teammate's
+## back; a lamp post at the spawn hid it from straight behind.
+func _aim_clear(c: Camera3D, base: Vector3, fwd: Vector3, right: Vector3, mate: Node3D) -> void:
+	var target: Vector3 = mate.global_position + Vector3.UP * 1.1
+	var space: PhysicsDirectSpaceState3D = c.get_world_3d().direct_space_state
+	for side: float in [0.0, 1.4, -1.4, 2.4, -2.4]:
+		for h: float in [1.6, 2.3]:
+			var at: Vector3 = base + fwd * 0.6 + right * side + Vector3.UP * h
+			var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(at, target)
+			var hit: Dictionary = space.intersect_ray(q)
+			if hit.is_empty() or (hit["collider"] as Node) == mate or mate.is_ancestor_of(hit["collider"] as Node):
+				c.global_position = at
+				c.look_at(target - Vector3.UP * 0.4, Vector3.UP)
+				_log("camera side %.1f height %.1f" % [side, h])
+				return
+	c.global_position = base + fwd * 0.6 + Vector3.UP * 1.6
+	c.look_at(target, Vector3.UP)
+	_log("camera: no clear spot, straight behind")
