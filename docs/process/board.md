@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 07:40: gate 1 re-confirmed: gh_loud PASS on the door-swing build (seed 1791914030; PO-6 swing, PO-8 shot_fx+VfxDirector, surfaces, ladder layer, pierce fix; safe 182 s, bags 253/295, Payday → hub). ND loud attempt 5 started.
 - 2026-10-14 07:35: **round 85 ON ORIGIN**: env/p-play d1f6f732 (FP uses C's MuzzleFlash/tracer scenes with MIX materials; gunplay_capture tool: in-heist windowed check, no bit1 doubling) + LEAD G.VFX_DIR hotfix (banned hard paths). p d105, c vfx 20, a fp_viewmodel green. Six-class sheet pending (P). Real-GPU perf probe for impact_fx §3 1.5 ms still open.
 - 2026-10-14 07:15: **round 84 ON ORIGIN**: env/c-worlds f5eb9b42 (ND AreawayLadderLink + GH FireEscapeLadderLink moved to nav layer 'ladder'; layer-1 agents no longer path over them). ND/GH maps + validate_level + a3_10/ladder green. Unblocks gate 2 (ND loud attempt 5). Open (C): GH/ND generators are NOT deterministic (dressing order/navmesh drift between regens) → violates level_standards §6b; C lane to fix.
 - 2026-10-14 07:05: **round 83 ON ORIGIN**: env/b-content a08dbc44 (PO-B-C2 MenuFlow handles host_lost → lobby + message; C3 joining focus; C4 join/leave HUD toasts; coop_capture harness) + LEAD log.gd (PO-B-C5: peer id only from a connected peer). PO-B-C1 already fixed r80. b coop_host_lost/hud_queue/lobby/ui_hud/menu, a3_07, coop green.
