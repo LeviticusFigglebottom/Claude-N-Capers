@@ -3,6 +3,19 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14 05:00 UTC — PO-12 drills visible, C11, director retreat, ND/stealth gates in progress
+### Done (pushed; last 0f1bf19c)
+- PO-12: DrillPoint shows the catalog drill (G.PROPS_DIR + drill/prop_drill_device.tscn) while placed; Bit spins,
+  red jam mark, removed when done; per-point `device_scene` override.
+- C11: two co-op heists on one kept session (teardown notices, heist token, replication member set, Net.clear_ai).
+- PO-5: FADE retreat to unseen points; PO-B-C7 client objectives; QC-61 walkable windows + sash_travel_m;
+  Glasshouse drill_relock min difficulty; loud flows shoot while downed.
+### Needs (for the board / ENV D)
+- SAW device prop: saw DrillPoints have no default device visual yet (only the drill exists); ENV D to model
+  `prop_saw_device` with a spinning `Bit`/blade node, then DrillPoint uses it for Device.SAW.
+### In progress
+- ND loud attempt 8 (windowed); gh_stealth iteration (helper); PO-10 NPC separation + PO-11 casing civilians (helpers).
+
 ## 2026-10-14 04:05 UTC — civilian fixes for the stealth gate (wander, stairs, shout, yield)
 ### Done (pushed)
 - Civilian wander (PO-5 stealth finding 1): customers pick only public `civilian` PatrolPoints outside
