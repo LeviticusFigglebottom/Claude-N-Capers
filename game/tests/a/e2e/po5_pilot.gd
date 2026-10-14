@@ -337,6 +337,11 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 		steer_at(target)
 		await tick()
 		t += dt()
+		if isys.session(crew.slot).is_empty() and not completed[0] and is_instance_valid(comp):
+			# Interrupted (a hit, S9.1, or a nudge): press again like a player would.
+			inp.release(&"interact")
+			await inp.ticks(2)
+			inp.press(&"interact")
 	inp.release(&"interact")
 	if is_instance_valid(comp) and comp.completed.is_connected(cb):
 		comp.completed.disconnect(cb)
