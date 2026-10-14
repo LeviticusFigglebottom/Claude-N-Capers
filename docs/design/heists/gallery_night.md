@@ -1108,7 +1108,7 @@ lesser studies valued below the list; D-075 Q6: the new id is approved).
    stays as drafted, with the NPC-carried bag behind QC-57 (until it ships, the G1 greybox falls back
    to the crew raising the alarm on an empty slot, marked `TODO(QC-57)`).
 
-## Build rulings (D-103 / D-104; next_heist.md §3b, §4, §7) — DRAFT for lead approval
+## Build rulings (D-103 / D-104; next_heist.md §3b, §4, §7) — approved (lead, D-103/D-104)
 Folded in by ENV C on 2026-10-14. Where this section and an older line above disagree, **this section wins** (the
 inline lines touched are marked "Build rulings Bn"). Lock names are `door.gd` `Lock` values.
 
@@ -1203,7 +1203,7 @@ inactive slot). The mission passes them as `data.marker_tags`.
 | Objective | marker_tags | Tagged nodes |
 |---|---|---|
 | `casing` | `casing_hall` | a Marker3D at the GH stair foot (the casing objective shows while casing) |
-| `find_canvases` | `canvas_found` | the mission adds `canvas_found` to a slot's `loot_spawn` when the crew marks it (or at start with `asset.intel_list`); no spoiler markers before. ENV A to confirm runtime tag adds refresh the markers; fallback: `casing_hall` |
+| `find_canvases` | starts `[]`; grows per found slot | no spoiler markers before a find. When the crew marks a slot (or at start with `asset.intel_list`) the mission calls `update_objective_data(&"find_canvases", {"marker_tags": [<found slots' own tags>], "found": n})`; the HUD re-resolves on any data update and the data replicates (QC-60, ENV A 18cc33d0) |
 | `keycard` | `keycard` | the active `keycard_pickup`s (`kc_*`), the curator's carried card (QC-52) |
 | `server_code` | `code_note` | the active code note |
 | `hack`, loud `hack` | `hack` | the SV `hack_terminal` |
