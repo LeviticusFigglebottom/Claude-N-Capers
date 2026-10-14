@@ -789,3 +789,8 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   doors, floating/clipping) with a levelcheck `furniture_logic` rule where it can be automated, plus screenshot review.
 - This polish is cross-heist (lives in kits/systems), so Gallery Night inherits it. It runs in parallel with the
   freeze-lift gates; it does not lift the freeze.
+
+## D-106 — 2026-10-14 — HUD reload indicator; armory stats with skills
+- ui_hud 1.12: `reloading` / `reload_progress` (A provides, B draws).
+- Armory/loadout stats show values **with the player's skills and perk deck applied** by default (PD2 shows skill-boosted
+  stats), with a toggle to compare base values; boosted numbers are marked (B, through LoadoutResolver, no new rules).

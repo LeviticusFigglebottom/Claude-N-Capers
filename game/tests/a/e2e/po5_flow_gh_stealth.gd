@@ -554,7 +554,7 @@ func _hunt(g: NpcBase, timeout_s: float) -> String:
 		if d <= 1.45 and absf(g.global_position.y - crew.global_position.y) < 1.0:
 			await _knife(g, 0.0)
 			continue
-		var goal: Vector3 = g.global_position - _flat(g.look_forward()) * 0.9
+		var goal: Vector3 = _via_stair(g.global_position - _flat(g.look_forward()) * 0.9)
 		if not _civ_watchers(crew.global_position).is_empty():
 			if safe_spot != Vector3.INF and p.flat_dist(safe_spot, crew.global_position) > 0.5:
 				f.note("seen by civilians %s at %s: back to %s" % [_civ_watchers(crew.global_position).map(func(c: NpcBase) -> String: return c.name),
@@ -611,9 +611,21 @@ func _sneak_to(goal: Vector3, arrive_m: float = 0.6, timeout_s: float = 120.0) -
 		if not _civ_watchers(_path_step(goal, 1.5)).is_empty():
 			await f.wait_s(0.4)
 			continue
-		await p.goto(goal, arrive_m, 0.8)
+		await p.goto(_via_stair(goal), arrive_m, 0.8)
 	p.quiet = false
 	return p.flat_dist(crew.global_position, goal) <= arrive_m
+
+
+## Between floors the navmesh may route through the break-room window and the fire-escape ladder, which
+## a walking player cannot use: go by the stair landing instead.
+func _via_stair(goal: Vector3) -> Vector3:
+	var cy: float = crew.global_position.y
+	if absf(cy - goal.y) < 1.5:
+		return goal
+	var landing: Vector3 = Vector3(14.5, 2.1, 0.8)
+	if cy > 0.4 and cy < 3.8:  # on the stair already: the nav path is the stair
+		return Vector3(13.9, 0.0, 4.6) if goal.y < cy else Vector3(15.3, UPPER_Y, 4.6)
+	return landing
 
 
 ## The point `ahead_m` along the nav path to `goal`.

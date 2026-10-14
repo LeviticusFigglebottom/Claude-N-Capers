@@ -92,6 +92,9 @@ static var _gen: int = 0
 @export var oneshot_blend_s: float = 0.04
 ## Share of the gameplay equip time spent on the old weapon's holster (the rest is the draw).
 @export var holster_share: float = 0.4
+## D-102 lane (PD2 PlayerCarry:_enter -> _start_action_equip): picking up a bag re-plays the weapon's `draw` over
+## its equip time (not on drop: PD2 exits the carry state with skip_equip).
+@export var carry_reequip: bool = true
 ## ADS weight rate (1/s toward the target).
 @export var ads_rate: float = 10.0
 

@@ -98,6 +98,10 @@ var melee_punch: Vector2:
 var land_dip: float:
 	get:
 		return _land_dip
+## D-102 lane, read only: the current carry camera roll (degrees).
+var carry_tilt: float:
+	get:
+		return _carry_tilt
 var _runtime: HeistRuntime = null
 var _jump_latch: bool = false
 ## PI-13: last tick's crouch / sprint / jump intent (press edges for casing_blocked).
@@ -126,6 +130,8 @@ var _carry_bob_mult: float = 1.0
 var _punch: Vector2 = Vector2.ZERO
 var _punch_amp: Vector2 = Vector2.ZERO
 var _punch_t: float = -1.0
+## D-102 lane: camera roll while carrying a bag (degrees, eased toward CrewTweak.carry_tilt_deg).
+var _carry_tilt: float = 0.0
 
 ## Combat components (A1-08); null only for a scene without them.
 @onready var health: CrewHealth = get_node_or_null("Health") as CrewHealth
@@ -499,6 +505,7 @@ func _simulate(delta: float) -> void:
 		_head.position.y = eye_height() + _step_offset + _land_dip + _crouch_cam
 		_apply_head_bob(delta, tw)
 		_tick_punch(delta, tw)
+		_tick_carry_tilt(delta, tw)
 
 
 ## P1-01: move_and_slide with PD2-like ground handling. Walks up lips up to CrewTweak.step_height_m, follows
@@ -549,6 +556,22 @@ func _on_melee_hit(_target: Object) -> void:
 	var side: float = -1.0 if (melee.swings % 2) == 0 else 1.0  # alternate the roll per swing
 	_punch_amp = Vector2(-deg_to_rad(tw.melee_punch_pitch_deg), side * deg_to_rad(tw.melee_punch_roll_deg))
 	_punch_t = 0.0
+
+
+## D-102 lane (PD2 PlayerCarry.target_tilt): the local human's camera rolls carry_tilt_deg while a bag is carried,
+## stepping at carry_tilt_rate_dps (PD2 math.step 150 deg/s). Camera only; off with Reduce Motion.
+func _tick_carry_tilt(delta: float, tw: CrewTweak) -> void:
+	var target: float = 0.0
+	if not is_ai and is_local() and is_carrying_bag() and not _reduce_motion():
+		target = tw.carry_tilt_deg
+	_carry_tilt = move_toward(_carry_tilt, target, tw.carry_tilt_rate_dps * delta)
+	if _carry_tilt != 0.0:
+		_head.rotation.z += deg_to_rad(_carry_tilt)
+
+
+func _reduce_motion() -> bool:
+	var gs: GameSettings = GameSettings.current()
+	return gs != null and bool(gs.get_value(GameSettings.ACCESSIBILITY, &"reduce_motion"))
 
 
 ## Critically damped impulse response in closed form, x(t) = A * wt * e^(1 - wt): peaks at A after 1/w s (explicit

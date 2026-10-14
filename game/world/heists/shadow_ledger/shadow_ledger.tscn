@@ -17522,6 +17522,7 @@ params = {
 [node name="HeliNetE1" type="Node3D" parent="Variants/Group_escape/Slot_esc_heli" unique_id=103166 instance=ExtResource("56_sl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 11.6, 9.8)
 script = ExtResource("57_sl")
+objective_tag = &"loot_secure"
 zone_size_m = Vector3(5.6, 2.5, 5.6)
 vehicle_collision = false
 visual_scene = ExtResource("58_sl")
@@ -17565,6 +17566,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 68, 0, 15)
 [node name="LineSecureE2" type="Node3D" parent="Variants/Group_escape/Slot_esc_line" unique_id=103171 instance=ExtResource("56_sl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.9, 11.6, 16.6)
 script = ExtResource("57_sl")
+objective_tag = &"loot_secure"
 zone_size_m = Vector3(2, 2.5, 2)
 vehicle_collision = false
 visual_scene = ExtResource("63_sl")
@@ -17589,6 +17591,7 @@ params = {
 [node name="LiftSecureE3" type="Node3D" parent="Variants/Group_escape/Slot_esc_service" unique_id=103174 instance=ExtResource("56_sl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 9)
 script = ExtResource("57_sl")
+objective_tag = &"loot_secure"
 zone_size_m = Vector3(2.4, 2.4, 2.4)
 vehicle_collision = false
 visual_scene = ExtResource("64_sl")
