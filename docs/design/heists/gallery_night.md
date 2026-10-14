@@ -515,7 +515,7 @@ Support-space check (level_standards §2.2):
 | Attendant (`gallery_attendant`) | 2 | always | `civ_attendant` | `curator_inspect` / `browse` | `staff`, `staff_attendant` |
 | Waitstaff (`gallery_waitstaff`) | 1–2 | until last call + 120 s | `civ_waitstaff` | `walk_text` / `browse` (bar) | `staff`, `staff_bar` |
 | Conservator (`gallery_attendant_b`, QC-58) | 0–1 | `conservator` = `cons_late` | `civ_conservator` | `desk_work` (easel) | `staff`, `staff_cs` |
-| Admin PA (cast TBD, QC-58) | 0–1 | rare `late_paperwork` | `civ_admin` | `desk_work` | `staff`, `staff_admin` |
+| Admin PA (cast `gallery_admin`, QC-58c, ENV D 50265303) | 0–1 | rare `late_paperwork` | `civ_admin` | `desk_work` | `staff`, `staff_admin` |
 | Patrons (`gallery_patron`) | 3–9 | `patrons` scalar; `stragglers` after last call | `civ_patron` (GH ×4, WG ×2, EG ×2, EB ×2, court ×2) | `browse` / `sit` / `smoke` (court) | `civilian`, `civilian_court` |
 
 **Totals per difficulty** (guards from `guard_post` picks with `difficulty_add`):
