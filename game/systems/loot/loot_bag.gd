@@ -136,6 +136,12 @@ func mark_secured() -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(_delta)
+	FrameProf.end(&"loot_bag", fp)
+
+
+func _physics_step(_delta: float) -> void:
 	if carrier == null:
 		return
 	if not is_instance_valid(carrier) or not carrier.is_inside_tree():

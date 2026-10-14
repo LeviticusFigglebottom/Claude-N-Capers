@@ -193,6 +193,12 @@ func _stagger_patrol_start() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"guard_brain", fp)
+
+
+func _physics_step(delta: float) -> void:
 	if not _started or _npc == null or not _npc.alive or not Net.is_authority():
 		return
 	dominate_window_left = maxf(dominate_window_left - delta, 0.0)  # S5.8

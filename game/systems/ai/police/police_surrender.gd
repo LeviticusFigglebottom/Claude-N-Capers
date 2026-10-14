@@ -248,6 +248,12 @@ func release_as_hostage() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"police_surrender", fp)
+
+
+func _physics_step(delta: float) -> void:
 	if not Net.is_authority() or not is_surrendered():
 		return
 	surrender_left -= delta

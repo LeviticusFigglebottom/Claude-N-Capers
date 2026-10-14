@@ -522,6 +522,12 @@ func _tick_wander(delta: float) -> void:
 # --- Tick ---------------------------------------------------------------------------------
 
 func _physics_process(delta: float) -> void:
+	var fp: int = FrameProf.begin()
+	_physics_step(delta)
+	FrameProf.end(&"civilian_brain", fp)
+
+
+func _physics_step(delta: float) -> void:
 	if not Net.is_authority() or _npc == null or not _npc.alive:
 		return
 	_update_body_block()

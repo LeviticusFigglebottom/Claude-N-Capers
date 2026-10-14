@@ -12,6 +12,9 @@ map_scene = "res://world/heists/night_deposit/night_deposit.tscn"
 base_payout = 90000
 loot = Array[StringName]([&"loot.cash", &"loot.cash_bricks", &"loot.small_valuables"])
 objectives = Array[StringName]([&"casing", &"keycard", &"code", &"server", &"vault_gate", &"time_lock", &"time_lock_wait", &"vault_loot", &"depository", &"vault_drill", &"secure", &"escape"])
+briefing_objectives = Array[StringName]([&"casing", &"keycard", &"code", &"server", &"vault_gate", &"time_lock", &"vault_loot", &"secure", &"escape"])
+briefing_loud_key = &"heist.night_deposit.briefing_loud"
+briefing_optional = Array[StringName]([&"depository"])
 preplanning = {
 "assets": {
 &"asset.alternate_entry": {
