@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 13:00: **round 110 ON ORIGIN**: env/a-core 98ea3379 (D-108 police cuff grace 2.0 s + 1.5 s arrest hold). a l2_12 8 / l2_ 51 / s3_ 36, int p3_loud green. pd2_fidelity L2.12 + S1.1 updated. ND loud attempt 9 (seed 1791938638) running on D-108 + PO-10/11.
 - 2026-10-14 12:50: **round 108-109 ON ORIGIN**: env/c-worlds 98e2f8e0 (inert GN G1 skeleton patch, applies clean) + env/b-content (C11 client: host_closed mid-heist → crew lobby with message; payday clients use their own Continue). b lobby_flow/lobby_loopback/coop_host_lost/dropin_wiring/failure_paths/strings green. C11 complete (A r100 + B r99/r109 + LEAD clear_ai).
 - 2026-10-14 12:40: **round 107 ON ORIGIN**: env/c-worlds (QC-62..65 applied in gallery_night.md + slot plan; lc_check_scale elevator_machine 2.6-6.0). slots --check PASS, c validate_level green. C's G1 skeleton will live as inert docs/levels/gallery_night/g1_skeleton.patch on env/c-worlds until the freeze lift (C may push only env/c-worlds).
 - 2026-10-14 12:35: **round 106 ON ORIGIN**: env/c-worlds da89427a (gallery_night_slots.py --check: 18 groups / 47 slots cross-checked vs doc + B's draft, PASS; floors --check PASS; GN doc factual fixes; cues.py mirrors B's device-loop values). No game content.
