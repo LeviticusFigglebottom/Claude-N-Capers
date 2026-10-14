@@ -1607,6 +1607,8 @@ ui.hub.profile.xp,{xp} / {next} XP to the next level
 ui.hub.profile.xp_max,Max level
 ui.hub.profile.skill_points,Skill points: {points} of {total} free
 ui.hub.profile.perk_points,Perk points: {points} free
+ui.hub.points.skills,{points} skill points
+ui.hub.points.perks,{points} perk points
 ui.hub.station.crew,Crew Net
 ui.hub.station.crew.desc,"Host a co-op crew, or join a friend's lobby."
 ui.lobby.title,Co-op Lobby
@@ -2104,6 +2106,7 @@ ui.blocked.civilian,You need your gear
 ui.options.title,Options
 ui.options.crumb,Caperworks / Settings
 ui.options.tab.controls,Controls
+ui.options.tab.keys,Key Bindings
 ui.options.tab.audio,Audio
 ui.options.tab.video,Video
 ui.options.tab.accessibility,Accessibility

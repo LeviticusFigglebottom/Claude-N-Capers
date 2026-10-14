@@ -119,3 +119,8 @@ func refresh_profile(profile: PlayerProfile = null) -> void:
 		UiText.t(&"ui.menu.spending", {"amount": UiText.money(p.cash)}),
 		UiText.t(&"ui.menu.stash", {"amount": UiText.money(p.stash)}),
 	]
+
+
+## D-111 (style.md §11): the root menu has no Back, so its hint strip shows only Select.
+func control_hint_pairs() -> Array:
+	return [[&"ui_accept", &"ui.hint.select"]]

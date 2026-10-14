@@ -104,7 +104,7 @@ func test_loadout_subscreens_gamepad_only() -> void:
 	var subs: Array[Array] = [
 		[ls.skills_button, "skills", func() -> bool: return f.current is SkillTreeScreen],
 		[ls.perks_button, "perk deck", func() -> bool: return f.current is PerkDeckScreen],
-		[ls.masks_button, "masks", func() -> bool: return f.current is MaskScreen],
+		[ls.mask_option, "masks", func() -> bool: return f.current is MaskScreen],
 		[ls.workshop_button, "workshop", func() -> bool:
 			return ls.workshop != null and is_instance_valid(ls.workshop) and ls.workshop.is_visible_in_tree()],
 	]
