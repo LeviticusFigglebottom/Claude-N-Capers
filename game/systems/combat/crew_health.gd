@@ -77,6 +77,9 @@ func _ready() -> void:
 		_revive.enabled = false
 		_revive.extra_check = _revive_check
 		_revive.completed.connect(_on_revive_completed)
+		# "Hold {key} to revive {name}" on every peer (the name is set after _ready; states replicate).
+		_crew.crew_state_changed.connect(func(_o: int, _n: int) -> void:
+			_revive.prompt_args = {"name": _crew.display_name})
 	reset_full()
 
 
