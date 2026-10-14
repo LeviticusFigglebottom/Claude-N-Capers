@@ -23,7 +23,7 @@ const EXT_WALLS: Array = [
 	["ExtNorth", "x", 0.0, -0.2, 18.2, [
 		[2.9, 4.1, 0.0, 2.2],        # back door (service 1.1 m leaf) G1 -> alley
 		[7.75, 8.75, 1.8, 3.0],      # G2 workshop high barred window
-		[1.75, 2.75, 5.1, 6.3],      # U1 break-room window (fire-escape landing)
+		[1.65, 2.85, UPPER, 6.3],    # U1 break-room door-window (fire-escape landing, walk-through)
 		[7.25, 8.25, 5.1, 6.3],      # U2 security office window (alley + back door)
 		[11.5, 12.5, 5.7, 6.9],      # U3 high frosted window
 	]],
@@ -132,8 +132,10 @@ const WINDOWS: Array = [
 	["StockEastA", "arch_window_w100_h120", Vector3(18.0, 5.1, 8.4), -90.0, false],
 	["StockEastB", "arch_window_w100_h120", Vector3(18.0, 5.1, 9.6), -90.0, false],
 ]
-## Break-room window (U1, variable `open_window`): built inside the variant slots.
-const BREAKROOM_WINDOW: Dictionary = {"kit": "arch_window_w100_h120", "pos": Vector3(2.25, 5.1, 0.0), "yaw": 0.0}
+## Break-room window (U1, variable `open_window`): built inside the variant slots. A walk-through
+## door-window (PO-5): sill flush with the U1 floor and the landing (both UPPER), clear opening
+## 1.09 x 2.05 m; the prefab is `walkable` (its own NavLink, live while open or broken).
+const BREAKROOM_WINDOW: Dictionary = {"kit": "arch_window_w120_h210", "pos": Vector3(2.25, UPPER, 0.0), "yaw": 0.0}
 
 ## Doors: [name, visual asset (world/props/door), origin (bottom-centre of the opening on the wall line), yaw_deg, lock,
 ## swing, objective_tag, metas]. Front (-Z, UsePoint side) is the corridor / outside side; INWARD

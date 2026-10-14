@@ -325,8 +325,9 @@ func _close_barred_doorways() -> void:
 		_obstruct(Transform3D(_yaw_basis(float(d[3])), d[2]), AABB(Vector3(-w * 0.5, -0.2, -0.3), Vector3(w, 2.8, 0.6)))
 
 
-## Records a projected navmesh obstruction for a box (local AABB under xform).
-func _obstruct(xform: Transform3D, box: AABB) -> void:
+## Records a projected navmesh obstruction for a box (local AABB under xform). `carve`: cut the
+## box exactly (no agent-radius growth).
+func _obstruct(xform: Transform3D, box: AABB, carve: bool = false) -> void:
 	var pts: PackedVector3Array = PackedVector3Array()
 	var lo: float = INF
 	var hi: float = -INF
@@ -337,7 +338,7 @@ func _obstruct(xform: Transform3D, box: AABB) -> void:
 		var w: Vector3 = xform * Vector3(box.position.x, cy, box.position.z)
 		lo = minf(lo, w.y)
 		hi = maxf(hi, w.y)
-	_obstructions.append([pts, lo, hi - lo])
+	_obstructions.append([pts, lo, hi - lo, carve])
 
 
 func _obstruct_circle(center: Vector3, radius: float, height: float) -> void:
@@ -600,8 +601,10 @@ func _build_garage(parent: Node3D) -> void:
 
 
 ## Static (non-interactive) glazing: kit window visual + a glass blocker filling the opening.
-## Gameplay windows get the same blocker (see _build_windows) because the window prefab's
-## GlassBody is a fixed 1.0 x 1.2 m panel.
+## Gameplay windows get the same blocker (see _build_windows): the window prefab's GlassBody only
+## covers the visual's `Glass` (A2-08). Not the break-room door-window (its Glass fills the opening;
+## open / broken it passes crew and bags): a carved nav obstruction keeps the bake from joining landing
+## and room through it; the prefab's `walkable` NavLink does that while it is passable.
 func _build_static_windows(bld: Node3D) -> void:
 	var gl: Node3D = _add(bld, _node3d("Glazing")) as Node3D
 	for w: Array in L.WINDOWS:
@@ -620,7 +623,8 @@ func _build_static_windows(bld: Node3D) -> void:
 			vis.basis = _yaw_basis(yaw)
 			_add(gl, vis)
 	var bw: Dictionary = L.BREAKROOM_WINDOW
-	_glass_blocker(gl, "BreakRoomWindow", String(bw["kit"]), bw["pos"], float(bw["yaw"]))
+	_obstruct(Transform3D(_yaw_basis(float(bw["yaw"])), bw["pos"]), AABB(Vector3(-0.7, -0.1, -0.25), Vector3(1.4, 2.3, 0.5)),
+		true)
 
 
 func _glass_blocker(parent: Node3D, nm: String, piece: String, pos: Vector3, yaw: float) -> void:
@@ -1241,17 +1245,17 @@ func _variants_doors_windows(variants: Node3D) -> void:
 	var bw: Dictionary = L.BREAKROOM_WINDOW
 	var wpos: Vector3 = bw["pos"]
 	var kit: PackedScene = _dress.scene(String(bw["kit"]).replace("arch_", "prop_") + "_sash")
+	# PO-5 walk-through door-window: `walkable` = own layer-1 NavLink, live while open / broken.
+	var use: Vector3 = wpos + Vector3(0.0, 0.0, -0.7)
 	var open: VariantSlot = _slot(ow, "open_window", "ow_breakroom_open", 0.45)
 	_prefab(open, "window", "BreakRoomWindow", wpos, float(bw["yaw"]),
-		{"breakable": true, "openable": true, "visual_scene": kit, "objective_tag": &"breakroom_window"},
-		null, {"kind": "window"})
-	# No WindowLink: the sill is 0.9 m and the opening 1.2 m (no mantle), so nobody can walk through;
-	# a layer-1 link sent pathing players/AI to the window and stuck them (freeze gate 3, gh_stealth).
+		{"breakable": true, "openable": true, "walkable": true, "visual_scene": kit, "objective_tag": &"breakroom_window"},
+		use, {"kind": "window"})
 	var latched: VariantSlot = _slot(ow, "open_window", "ow_breakroom_latched", 0.55)
 	_prefab(latched, "window", "BreakRoomWindow", wpos, float(bw["yaw"]),
-		{"breakable": true, "openable": false, "visual_scene": _dress.scene(String(bw["kit"]).replace("arch_", "prop_")),
-			"objective_tag": &"breakroom_window"},
-		null, {"kind": "window"})
+		{"breakable": true, "openable": false, "walkable": true,
+			"visual_scene": _dress.scene(String(bw["kit"]).replace("arch_", "prop_")), "objective_tag": &"breakroom_window"},
+		use, {"kind": "window"})
 	var sal: Node3D = _group(variants, "salon")
 	var box: Array = [[13.1, -0.2, 6.1, 17.9, 3.2, 11.9]]
 	var so: VariantSlot = _slot(sal, "salon", "salon_open", 0.5, {"door": "Gameplay/Doors/SalonDoor", "locked": false})
@@ -1486,7 +1490,7 @@ func _bake(nav: NavigationRegion3D) -> int:
 	var src: NavigationMeshSourceGeometryData3D = NavigationMeshSourceGeometryData3D.new()
 	NavigationServer3D.parse_source_geometry_data(nm, src, holder)
 	for o: Array in _obstructions:
-		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), false)
+		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), o.size() > 3 and bool(o[3]))
 	NavigationServer3D.bake_from_source_geometry_data(nm, src)
 	_prune_islands(nm)
 	holder.queue_free()
