@@ -350,8 +350,9 @@ const BLOCKS: Array = [
 	# Vista dressing beyond the closures.
 	["UtilityVanWest", [-20.0, ROAD_Y, 23.4, -15.2, 2.3, 25.4], "van_hidden"],
 	["PoliceBarrierWest", [-14.6, ROAD_Y, 22.4, -14.4, 1.1, 25.0], "barrier"],
-	# PO-7: the chassis butts the WharfNorthGate frame (x 28.6); 28.65 left a 5 cm slit beside the gate.
-	["ContainerTrailerChassis", [28.6, ROAD_Y, -15.2, 37.15, 1.31, -12.8], "trim"],
+	# PO-7: the chassis stands 5 mm off the WharfNorthGate frame (x 28.6): 28.65 left a 5 cm slit beside the
+	# gate; flush (28.6) or tucked in, its end face z-fights the architrave / plinth faces.
+	["ContainerTrailerChassis", [28.605, ROAD_Y, -15.2, 37.15, 1.31, -12.8], "trim"],
 	["ContainerTrailer", [29.85, 1.31, -15.2, 35.95, 3.9, -12.8], "container_hidden"],
 	["RoadBarrierEast", [44.0, ROAD_Y, 22.4, 44.2, 1.1, 25.0], "barrier"],
 ]
