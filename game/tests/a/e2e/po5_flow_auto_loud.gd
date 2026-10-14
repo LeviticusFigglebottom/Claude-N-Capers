@@ -6,6 +6,10 @@
 extends RefCounted
 
 const LOOP_LIMIT_S: float = 1500.0
+## Downed teammates within this flat distance get revived first (m).
+const REVIVE_RANGE_M: float = 20.0
+## An enemy the pilot can see within this range makes it fight before reviving (unless last stand) (m).
+const REVIVE_THREAT_M: float = 25.0
 
 var f: Node = null
 var p: Po5Pilot = null
@@ -56,6 +60,8 @@ func step() -> void:
 	if markers.is_empty():
 		_note_once(&"_none", "no objective markers (HUD shows %s)" % [_objective_ids()])
 		await p.hold_position(2.0)
+		return
+	if await _revive_teammate():
 		return
 	var m: Dictionary = _pick(markers)
 	var id: StringName = StringName(m["id"])
@@ -119,6 +125,45 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 			best = c
 			best_d = dd
 	return best
+
+
+## Like a PD2 player (L2.7): pick up a downed teammate within REVIVE_RANGE_M before anything else, but only when no
+## enemy in sight of the pilot (else it fights first) or when it is the last one standing. True when it acted.
+func _revive_teammate() -> bool:
+	var best: InteractableComponent = null
+	var best_d: float = REVIVE_RANGE_M
+	for c: CrewController in rt.crew_members():
+		if c == p.crew or c.crew_state != Enums.CrewState.DOWNED:
+			continue
+		var rev: InteractableComponent = c.get_node_or_null(^"ReviveInteractable") as InteractableComponent
+		if rev == null or not rev.enabled or rev.availability(p.crew) != &"":
+			continue
+		var dd: float = p.flat_dist(p.crew.global_position, c.global_position)
+		if dd < best_d:
+			best = rev
+			best_d = dd
+	if best == null:
+		return false
+	var mate: CrewController = best.get_parent() as CrewController
+	var last_stand: bool = _last_standing()
+	var foe: NpcBase = p.nearest_enemy(REVIVE_THREAT_M)
+	if foe != null and not last_stand:
+		await p.engage(foe, 1.5)  # clear the line of fire before kneeling
+		return true
+	f.note("revive slot %d at %.0f s (%.1f m%s)" % [mate.slot, rt.heist_time_s, best_d, ", last stand" if last_stand else ""])
+	p.watch_point = Vector3.INF
+	await p.use(best, 20.0, func() -> bool:
+		return not is_instance_valid(mate) or mate.crew_state != Enums.CrewState.DOWNED \
+			or (not last_stand and p.nearest_enemy(REVIVE_THREAT_M) != null))
+	return true
+
+
+## True when no other crew member is still up (everyone else downed or worse).
+func _last_standing() -> bool:
+	for c: CrewController in rt.crew_members():
+		if c != p.crew and c.crew_state == Enums.CrewState.NORMAL:
+			return false
+	return true
 
 
 ## A bag source: a loose bag on the floor, else an enabled bag_loot spawn (closest).
