@@ -3,7 +3,7 @@
 ##     a bullet / melee flesh hit (crew: only when it reaches health, not armour); after damage_applied.
 ##   bleed_changed(body_net_id, bleeding, position, rate)
 ##     a corpse (NPC death) or a downed crew member starts bleeding; bagging, revive or custody stops it.
-## The EventBus signals are a LEAD contract edit; until they exist these calls do nothing. Owner: ENV A.
+## EventBus.blood_hit / bleed_changed (events.md v1.3). Owner: ENV A.
 class_name BloodFx
 extends RefCounted
 
@@ -60,7 +60,7 @@ static func death_rate(info: Dictionary) -> float:
 
 
 static func _emit(sig: StringName, args: Array) -> void:
-	if not Net.is_authority() or not EventBus.has_signal(sig):
+	if not Net.is_authority():
 		return
 	EventBus.emit_signal.callv([sig] + args)
 	Net.replicate_event(sig, args)

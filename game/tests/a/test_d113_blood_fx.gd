@@ -1,32 +1,23 @@
 ## D-113 (ENV C's gore VFX): blood_hit on bullet / melee flesh hits (strength, headshot, exit point on lethal hits,
 ## victim kind; crew only when health is hit) and bleed_changed for corpses (start at death, stop when bagged) and
-## downed crew (start, stop on revive). The EventBus signals are a pending LEAD contract edit: this test adds them as
-## user signals when they are missing.
+## downed crew (start, stop on revive). EventBus.blood_hit / bleed_changed (events.md v1.3).
 extends TestCase
 
 var _rt: HeistRuntime = null
 var _hits: Array[Array] = []
 var _bleeds: Array[Array] = []
-var _added: Array[StringName] = []
 
 
 func before_each() -> void:
 	_hits = []
 	_bleeds = []
-	_added = []
-	for sig: StringName in [BloodFx.SIG_HIT, BloodFx.SIG_BLEED]:
-		if not EventBus.has_signal(sig):
-			EventBus.add_user_signal(sig)
-			_added.append(sig)
-	EventBus.connect(BloodFx.SIG_HIT, _on_hit)
-	EventBus.connect(BloodFx.SIG_BLEED, _on_bleed)
+	EventBus.blood_hit.connect(_on_hit)
+	EventBus.bleed_changed.connect(_on_bleed)
 
 
 func after_each() -> void:
-	EventBus.disconnect(BloodFx.SIG_HIT, _on_hit)
-	EventBus.disconnect(BloodFx.SIG_BLEED, _on_bleed)
-	for sig: StringName in _added:
-		EventBus.remove_user_signal(sig)
+	EventBus.blood_hit.disconnect(_on_hit)
+	EventBus.bleed_changed.disconnect(_on_bleed)
 	if _rt != null and is_instance_valid(_rt):
 		_rt.teardown()
 	_rt = null
