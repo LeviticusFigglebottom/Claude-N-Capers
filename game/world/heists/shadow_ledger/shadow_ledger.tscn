@@ -4604,7 +4604,7 @@ mesh = SubResource("sl_90")
 [node name="GlassZ3100_0" type="StaticBody3D" parent="Geometry/Building/InteriorWalls/L41" unique_id=100337]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 5.1, 10)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/InteriorWalls/L41/GlassZ3100_0" unique_id=100338]
 shape = SubResource("sl_95")
@@ -5028,7 +5028,7 @@ mesh = SubResource("sl_145")
 [node name="GlassZ1200_0" type="StaticBody3D" parent="Geometry/Building/InteriorWalls/L42" unique_id=100453]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 9.5, 2)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/InteriorWalls/L42/GlassZ1200_0" unique_id=100454]
 shape = SubResource("sl_146")
@@ -5588,7 +5588,7 @@ mesh = SubResource("sl_186")
 [node name="FacadeX0000Pane00" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100607]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 5.55, 0)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX0000Pane00" unique_id=100608]
 shape = SubResource("sl_201")
@@ -5603,7 +5603,7 @@ mesh = SubResource("sl_203")
 [node name="FacadeX0000Pane01" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100611]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 5.55, 0)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX0000Pane01" unique_id=100612]
 shape = SubResource("sl_204")
@@ -5618,7 +5618,7 @@ mesh = SubResource("sl_206")
 [node name="FacadeX0000Pane02" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100615]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 5.55, 0)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX0000Pane02" unique_id=100616]
 shape = SubResource("sl_207")
@@ -5633,7 +5633,7 @@ mesh = SubResource("sl_209")
 [node name="FacadeX0000Pane03" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100619]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.5, 5.55, 0)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX0000Pane03" unique_id=100620]
 shape = SubResource("sl_204")
@@ -5648,7 +5648,7 @@ mesh = SubResource("sl_206")
 [node name="FacadeX0000Pane04" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100623]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.5, 5.55, 0)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX0000Pane04" unique_id=100624]
 shape = SubResource("sl_201")
@@ -5938,7 +5938,7 @@ mesh = SubResource("sl_186")
 [node name="FacadeX2400Pane00" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100702]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 5.55, 24)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX2400Pane00" unique_id=100703]
 shape = SubResource("sl_218")
@@ -5953,7 +5953,7 @@ mesh = SubResource("sl_220")
 [node name="FacadeX2400Pane01" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100706]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 5.55, 24)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX2400Pane01" unique_id=100707]
 shape = SubResource("sl_218")
@@ -5968,7 +5968,7 @@ mesh = SubResource("sl_220")
 [node name="FacadeX2400Pane02" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100710]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 5.55, 24)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX2400Pane02" unique_id=100711]
 shape = SubResource("sl_218")
@@ -5983,7 +5983,7 @@ mesh = SubResource("sl_220")
 [node name="FacadeX2400Pane03" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100714]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.5, 5.55, 24)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX2400Pane03" unique_id=100715]
 shape = SubResource("sl_221")
@@ -5998,7 +5998,7 @@ mesh = SubResource("sl_223")
 [node name="FacadeX2400Pane04" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100718]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 5.55, 24)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX2400Pane04" unique_id=100719]
 shape = SubResource("sl_221")
@@ -6013,7 +6013,7 @@ mesh = SubResource("sl_223")
 [node name="FacadeX2400Pane05" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100722]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.5, 5.55, 24)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX2400Pane05" unique_id=100723]
 shape = SubResource("sl_221")
@@ -6028,7 +6028,7 @@ mesh = SubResource("sl_223")
 [node name="FacadeX2400Pane06" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100726]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.5, 5.55, 24)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX2400Pane06" unique_id=100727]
 shape = SubResource("sl_221")
@@ -6043,7 +6043,7 @@ mesh = SubResource("sl_223")
 [node name="FacadeX2400Pane07" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100730]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 5.55, 24)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeX2400Pane07" unique_id=100731]
 shape = SubResource("sl_218")
@@ -6245,7 +6245,7 @@ mesh = SubResource("sl_247")
 [node name="FacadeZ0000Pane00" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100785]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.2, 3)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ0000Pane00" unique_id=100786]
 shape = SubResource("sl_248")
@@ -6260,7 +6260,7 @@ mesh = SubResource("sl_250")
 [node name="FacadeZ0000Pane01" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100789]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.55, 1.35)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ0000Pane01" unique_id=100790]
 shape = SubResource("sl_251")
@@ -6275,7 +6275,7 @@ mesh = SubResource("sl_253")
 [node name="FacadeZ0000Pane02" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100793]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.55, 4.725)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ0000Pane02" unique_id=100794]
 shape = SubResource("sl_254")
@@ -6290,7 +6290,7 @@ mesh = SubResource("sl_256")
 [node name="FacadeZ0000Pane03" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100797]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.4, 6.75)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ0000Pane03" unique_id=100798]
 shape = SubResource("sl_257")
@@ -6305,7 +6305,7 @@ mesh = SubResource("sl_259")
 [node name="FacadeZ0000Pane04" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100801]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.55, 12)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ0000Pane04" unique_id=100802]
 shape = SubResource("sl_260")
@@ -6320,7 +6320,7 @@ mesh = SubResource("sl_262")
 [node name="FacadeZ0000Pane05" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100805]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.4, 17.25)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ0000Pane05" unique_id=100806]
 shape = SubResource("sl_257")
@@ -6335,7 +6335,7 @@ mesh = SubResource("sl_259")
 [node name="FacadeZ0000Pane06" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100809]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.55, 20.925)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ0000Pane06" unique_id=100810]
 shape = SubResource("sl_263")
@@ -6537,7 +6537,7 @@ mesh = SubResource("sl_247")
 [node name="FacadeZ3600Pane00" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100864]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 5.55, 3.0749998)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ3600Pane00" unique_id=100865]
 shape = SubResource("sl_263")
@@ -6552,7 +6552,7 @@ mesh = SubResource("sl_265")
 [node name="FacadeZ3600Pane01" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100868]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 5.4, 6.75)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ3600Pane01" unique_id=100869]
 shape = SubResource("sl_257")
@@ -6567,7 +6567,7 @@ mesh = SubResource("sl_259")
 [node name="FacadeZ3600Pane02" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100872]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 5.55, 10)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ3600Pane02" unique_id=100873]
 shape = SubResource("sl_274")
@@ -6582,7 +6582,7 @@ mesh = SubResource("sl_276")
 [node name="FacadeZ3600Pane03" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100876]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 5.55, 14.5)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ3600Pane03" unique_id=100877]
 shape = SubResource("sl_277")
@@ -6597,7 +6597,7 @@ mesh = SubResource("sl_279")
 [node name="FacadeZ3600Pane04" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100880]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 5.4, 17.25)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ3600Pane04" unique_id=100881]
 shape = SubResource("sl_257")
@@ -6612,7 +6612,7 @@ mesh = SubResource("sl_259")
 [node name="FacadeZ3600Pane05" type="StaticBody3D" parent="Geometry/Building/Facade/L41" unique_id=100884]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 5.55, 20.925)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L41/FacadeZ3600Pane05" unique_id=100885]
 shape = SubResource("sl_263")
@@ -6805,7 +6805,7 @@ mesh = SubResource("sl_281")
 [node name="FacadeX0000Pane00" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=100937]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 9.65, 0)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX0000Pane00" unique_id=100938]
 shape = SubResource("sl_298")
@@ -6820,7 +6820,7 @@ mesh = SubResource("sl_209")
 [node name="FacadeX0000Pane01" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=100941]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 9.65, 0)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX0000Pane01" unique_id=100942]
 shape = SubResource("sl_298")
@@ -6835,7 +6835,7 @@ mesh = SubResource("sl_209")
 [node name="FacadeX0000Pane02" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=100945]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.5, 9.95, 0)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX0000Pane02" unique_id=100946]
 shape = SubResource("sl_204")
@@ -6850,7 +6850,7 @@ mesh = SubResource("sl_206")
 [node name="FacadeX0000Pane03" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=100949]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 10.6, 0)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX0000Pane03" unique_id=100950]
 shape = SubResource("sl_300")
@@ -6865,7 +6865,7 @@ mesh = SubResource("sl_302")
 [node name="FacadeX0000Pane04" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=100953]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.775, 9.65, 0)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX0000Pane04" unique_id=100954]
 shape = SubResource("sl_303")
@@ -6880,7 +6880,7 @@ mesh = SubResource("sl_305")
 [node name="FacadeX0000Pane05" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=100957]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.725, 9.65, 0)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX0000Pane05" unique_id=100958]
 shape = SubResource("sl_306")
@@ -7137,7 +7137,7 @@ mesh = SubResource("sl_281")
 [node name="FacadeX1800Pane00" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101027]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 10.6, 18)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX1800Pane00" unique_id=101028]
 shape = SubResource("sl_300")
@@ -7152,7 +7152,7 @@ mesh = SubResource("sl_302")
 [node name="FacadeX1800Pane01" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101031]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.025, 9.65, 18)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX1800Pane01" unique_id=101032]
 shape = SubResource("sl_335")
@@ -7167,7 +7167,7 @@ mesh = SubResource("sl_337")
 [node name="FacadeX1800Pane02" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101035]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.25, 9.65, 18)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX1800Pane02" unique_id=101036]
 shape = SubResource("sl_338")
@@ -7182,7 +7182,7 @@ mesh = SubResource("sl_340")
 [node name="FacadeX1800Pane03" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101039]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.475, 9.65, 18)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX1800Pane03" unique_id=101040]
 shape = SubResource("sl_335")
@@ -7197,7 +7197,7 @@ mesh = SubResource("sl_337")
 [node name="FacadeX1800Pane04" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101043]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.5, 10.45, 18)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX1800Pane04" unique_id=101044]
 shape = SubResource("sl_341")
@@ -7212,7 +7212,7 @@ mesh = SubResource("sl_302")
 [node name="FacadeX1800Pane05" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101047]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.5, 10.45, 18)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX1800Pane05" unique_id=101048]
 shape = SubResource("sl_341")
@@ -7227,7 +7227,7 @@ mesh = SubResource("sl_302")
 [node name="FacadeX1800Pane06" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101051]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.275, 9.5, 18)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX1800Pane06" unique_id=101052]
 shape = SubResource("sl_343")
@@ -7242,7 +7242,7 @@ mesh = SubResource("sl_305")
 [node name="FacadeX1800Pane07" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101055]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 9.5, 18)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX1800Pane07" unique_id=101056]
 shape = SubResource("sl_345")
@@ -7257,7 +7257,7 @@ mesh = SubResource("sl_347")
 [node name="FacadeX1800Pane08" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101059]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.5, 9.5, 18)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX1800Pane08" unique_id=101060]
 shape = SubResource("sl_348")
@@ -7272,7 +7272,7 @@ mesh = SubResource("sl_350")
 [node name="FacadeX1800Pane09" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101063]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.475, 9.5, 18)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeX1800Pane09" unique_id=101064]
 shape = SubResource("sl_351")
@@ -7375,7 +7375,7 @@ mesh = SubResource("sl_367")
 [node name="FacadeZ0000Pane00" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101091]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.65, 3.8249998)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeZ0000Pane00" unique_id=101092]
 shape = SubResource("sl_368")
@@ -7390,7 +7390,7 @@ mesh = SubResource("sl_370")
 [node name="FacadeZ0000Pane01" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101095]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.95, 10.25)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeZ0000Pane01" unique_id=101096]
 shape = SubResource("sl_371")
@@ -7405,7 +7405,7 @@ mesh = SubResource("sl_373")
 [node name="FacadeZ0000Pane02" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101099]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.65, 15.424999)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeZ0000Pane02" unique_id=101100]
 shape = SubResource("sl_374")
@@ -7508,7 +7508,7 @@ mesh = SubResource("sl_382")
 [node name="FacadeZ3600Pane00" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101127]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 9.65, 3.8249998)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeZ3600Pane00" unique_id=101128]
 shape = SubResource("sl_368")
@@ -7523,7 +7523,7 @@ mesh = SubResource("sl_370")
 [node name="FacadeZ3600Pane01" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101131]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 9.95, 12)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeZ3600Pane01" unique_id=101132]
 shape = SubResource("sl_260")
@@ -7538,7 +7538,7 @@ mesh = SubResource("sl_262")
 [node name="FacadeZ3600Pane02" type="StaticBody3D" parent="Geometry/Building/Facade/L42" unique_id=101135]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 9.5, 17.175)
 collision_mask = 0
-metadata/surface = &"metal"
+metadata/surface = &"glass"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Facade/L42/FacadeZ3600Pane02" unique_id=101136]
 shape = SubResource("sl_383")

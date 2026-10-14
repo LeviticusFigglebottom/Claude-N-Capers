@@ -10,6 +10,10 @@ const FLASH_S: float = 2.4
 ## Seconds the finished step stays struck through before the next one slides in.
 const STRIKE_S: float = 1.0
 
+## objective_text()'s cleanup patterns for unfilled "{arg}" placeholders (compiled on first use).
+static var _unfilled_group: RegEx = null
+static var _unfilled: RegEx = null
+
 var list_box: VBoxContainer
 var header_label: Label
 var panel: PanelContainer
@@ -25,6 +29,8 @@ var done_label: RichTextLabel
 var _flash_tween: Tween = null
 var _shown_text: String = ""
 var _done_text: String = ""
+## The one active-objective line (reused across refreshes).
+var _active: Label = null
 
 
 func build() -> void:
@@ -74,9 +80,11 @@ static func objective_text(o: Dictionary, secured: int = 0) -> String:
 		args["count"] = args.get("secured", args.get("bags_secured", secured))
 	var text: String = UiText.t(StringName(o.get("text_key", &"")), args)
 	if text.contains("{"):
-		var group: RegEx = RegEx.create_from_string("\\s*\\([^()]*\\{[A-Za-z_]+\\}[^()]*\\)")
-		text = group.sub(text, "", true)
-		text = RegEx.create_from_string("\\{[A-Za-z_]+\\}").sub(text, "", true).strip_edges()
+		if _unfilled_group == null:  # compiled once (objective_text runs for markers too)
+			_unfilled_group = RegEx.create_from_string("\\s*\\([^()]*\\{[A-Za-z_]+\\}[^()]*\\)")
+			_unfilled = RegEx.create_from_string("\\{[A-Za-z_]+\\}")
+		text = _unfilled_group.sub(text, "", true)
+		text = _unfilled.sub(text, "", true).strip_edges()
 	return text
 
 
@@ -161,22 +169,25 @@ func watched_signals() -> Array[StringName]:
 
 func refresh() -> void:
 	var new_id: StringName = &""
-	for c: Node in list_box.get_children():
-		list_box.remove_child(c)
-		c.queue_free()
+	if _active == null:  # one line, reused (perf: no node churn per objectives_changed)
+		_active = UiBuild.label(&"", UiBuild.HUD)
+		_active.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)
+		_active.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_active.custom_minimum_size = Vector2(380, 0)
 	for o: Dictionary in prop(&"objectives", []) as Array:
 		if int(o.get("state", Enums.ObjectiveState.ACTIVE)) != Enums.ObjectiveState.ACTIVE:
 			continue
 		if bool((o.get("args", {}) as Dictionary).get("disabled", false)):
 			continue  # PO-5.6: e.g. the keycard step in a lockdown; the next live step shows instead
-		var l: Label = UiBuild.label(&"", UiBuild.HUD)
-		l.text = UiText.t(&"ui.hud.objective_active", {"text": objective_text(o, secured_count)})
-		l.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.custom_minimum_size = Vector2(380, 0)
-		list_box.add_child(l)
+		var t: String = UiText.t(&"ui.hud.objective_active", {"text": objective_text(o, secured_count)})
+		if _active.text != t:
+			_active.text = t
 		new_id = StringName(o.get("id", &""))
 		break
+	if new_id != &"" and _active.get_parent() == null:
+		list_box.add_child(_active)
+	elif new_id == &"" and _active.get_parent() == list_box:
+		list_box.remove_child(_active)
 	if new_id != shown_id and shown_id != &"" and is_inside_tree():
 		_done_text = _shown_text
 		_flash_complete()

@@ -157,6 +157,7 @@ func bring_up() -> Dictionary:
 		"map_ids": map_ids, "crew_ids": crew_ids, "phase": int(rt.phase), "went_loud": rt.went_loud,
 		"heist_time_s": rt.heist_time_s, "preplan": rt.preplan.result.duplicate(true) if rt.preplan.is_active() else {},
 		"runtime_path": String(rt.get_path()), "snapshot": snap, "launch_options": public_options(rt.launch_options),
+		"objectives": objectives_state(),
 	}
 
 
@@ -181,8 +182,23 @@ func late_bring_up(peer_id: int) -> Dictionary:
 		"map_ids": map_ids, "crew_ids": crew_ids, "phase": int(rt.phase), "went_loud": rt.went_loud,
 		"heist_time_s": rt.heist_time_s, "preplan": rt.preplan.result.duplicate(true) if rt.preplan.is_active() else {},
 		"runtime_path": String(rt.get_path()), "launch_options": public_options(rt.launch_options),
+		"objectives": objectives_state(),
 		"snapshot": {"spawns": spawns, "states": states, "services": services_state()}, "for_peer": peer_id,
 	}
+
+
+## PO-B-C7: the mission's objectives as [id, state, data (with "text_key")] in creation order, for the
+## bring-up: objective_updated [R] facts sent during the host's mission start reach no replica yet.
+func objectives_state() -> Array:
+	var out: Array = []
+	var m: HeistMission = _runtime.mission if _runtime != null else null
+	if m == null:
+		return out
+	for o: Dictionary in m.objectives():
+		var data: Dictionary = (o.get("data", {}) as Dictionary).duplicate(true)
+		data["text_key"] = o["text_key"]
+		out.append([StringName(o["id"]), int(o["state"]), data])
+	return out
 
 
 ## D-062: the network-safe part of launch options (String/StringName/number/bool values; no resources,

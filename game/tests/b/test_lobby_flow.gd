@@ -175,3 +175,23 @@ func test_client_sees_host_contract_and_its_seat() -> void:
 	assert_true(await wait_until(func() -> bool: return host.state.summaries.has(1), 5.0), "host got the client's summary")
 	assert_eq(String(host.state.slot_view(1)["name"]), "Hana")
 	host.queue_free()
+
+
+## Co-op windowed pass: a client's HUD named its crew "Host / AI 2" (the heister map was only handed over
+## on the host's launch). The client heist UI now takes the lobby's heister assignment.
+func test_client_heist_ui_names_heisters_from_the_lobby() -> void:
+	var f: MenuFlow = _flow(_branch("HostBranch"))
+	await wait_frames(2)
+	f.open_station(&"crew")
+	await wait_frames(2)
+	f.lobby_screen.host_port_edit.text = str(_port)
+	assert_eq(f.lobby_screen.host(), OK)
+	await wait_frames(2)
+	var expected: Dictionary = f.lobby.state.heister_assignment()
+	assert_false(expected.is_empty(), "the lobby assigns heisters")
+	f.call(&"_begin_client_heist", {"heist": &"glasshouse", "difficulty": 0, "is_pro": false})
+	await wait_frames(1)
+	var hud: Hud = f.get(&"_hud") as Hud
+	assert_true(hud != null, "heist HUD up")
+	assert_eq(hud.crew_heisters, expected, "rows name the heisters")
+	f.call(&"_leave_heist")

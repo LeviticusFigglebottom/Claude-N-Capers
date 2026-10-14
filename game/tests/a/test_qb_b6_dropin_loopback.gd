@@ -72,6 +72,10 @@ func test_drop_in_mid_heist() -> void:
 	await wait_until(func() -> bool: return _reports.has("snapshot"), _budget(10.0))
 	var snap: Dictionary = _reports.get("snapshot", {}) as Dictionary
 	assert_true(bool(snap.get("has_rt", false)) and bool(snap.get("replica", false)), "client replica (%s)" % snap)
+	var host_obj: Array = _rt.hud_model.objectives.map(func(o: Dictionary) -> String:
+		return "%s:%d" % [o["id"], int(o["state"])])
+	assert_true(not host_obj.is_empty(), "the host mission has objectives")
+	assert_eq(snap.get("hud_objectives", []), host_obj, "PO-B-C7: the client HUD has the host's objectives (bring-up)")
 	if not bool(snap.get("has_rt", false)):
 		return
 	assert_eq(int(snap["local_slot"]), slot, "the client plays the slot it took")
