@@ -277,6 +277,13 @@ func _build_top() -> HBoxContainer:
 	return top
 
 
+## True when `l`'s whole text fits its width on one line.
+static func hint_fits(l: Label) -> bool:
+	var font: Font = l.get_theme_font(&"font")
+	var fs: int = l.get_theme_font_size(&"font_size")
+	return font == null or font.get_string_size(l.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x <= l.size.x + 0.5
+
+
 func _build_map_column() -> VBoxContainer:
 	var col: VBoxContainer = UiBuild.vbox(10)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -296,6 +303,9 @@ func _build_map_column() -> VBoxContainer:
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	hint.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	# GN-B1 capture: with four floor tabs the hint was cut to "Pick" at 720p and 1080p. It shows whole or not
+	# at all (alpha, so the row's layout does not change).
+	hint.resized.connect(func() -> void: hint.self_modulate.a = 1.0 if hint_fits(hint) else 0.0)
 	bar.add_child(hint)
 	col.add_child(bar)
 	blueprint_view = BlueprintView.new()

@@ -583,6 +583,10 @@ const CHAIRS: Array = [
 	["BreakChairE", Vector3(7.25, MEZZ, 2.8), 90.0],
 	["CountChair", Vector3(11.85, MEZZ, 3.55), 0.0],
 	["ForemanChair", Vector3(19.4, MEZZ, 1.75), 0.0],
+	# PO-9: the receptionist's seat on the staff side of the O1 counter (the DeskCashO1 UsePoint is on the
+	# front-door side) and the gate man's seat at the gatehouse console, clear of both door zones.
+	["ReceptionChair", Vector3(6.0, 0.0, 3.95), 0.0],
+	["GateChair", Vector3(28.6, 0.0, -30.0), -90.0],
 ]
 
 ## Sodium yard masts / quay lamps: [name, base, arm yaw_deg].
