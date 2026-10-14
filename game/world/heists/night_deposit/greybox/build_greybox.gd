@@ -971,7 +971,10 @@ func _build_nav_links(nav: NavigationRegion3D) -> void:
 	var link: NavigationLink3D = NavigationLink3D.new()
 	link.name = "AreawayLadderLink"
 	link.bidirectional = true
-	link.navigation_layers = 1
+	# Ladder.NAV_LAYER ("ladder", climbers only): on layer 1 bag carriers, AI crew and police routed into
+	# the ladder and stalled at its foot (freeze gate 2). The prefab adds its own identical link; this one
+	# stays so the bake anchors the island beyond the ladder (and the generated scene keeps its layout).
+	link.navigation_layers = 8  # = Ladder.NAV_LAYER (literal: --script builds have no autoloads)
 	link.start_position = Vector3(16.3, 0.0, -1.4)
 	link.end_position = Vector3(18.2, L.BASE, -0.9)
 	add(nav, link)

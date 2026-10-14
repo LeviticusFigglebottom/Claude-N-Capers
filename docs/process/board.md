@@ -13,6 +13,8 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 07:15: **round 84 ON ORIGIN**: env/c-worlds f5eb9b42 (ND AreawayLadderLink + GH FireEscapeLadderLink moved to nav layer 'ladder'; layer-1 agents no longer path over them). ND/GH maps + validate_level + a3_10/ladder green. Unblocks gate 2 (ND loud attempt 5). Open (C): GH/ND generators are NOT deterministic (dressing order/navmesh drift between regens) → violates level_standards §6b; C lane to fix.
+- 2026-10-14 07:05: **round 83 ON ORIGIN**: env/b-content a08dbc44 (PO-B-C2 MenuFlow handles host_lost → lobby + message; C3 joining focus; C4 join/leave HUD toasts; coop_capture harness) + LEAD log.gd (PO-B-C5: peer id only from a connected peer). PO-B-C1 already fixed r80. b coop_host_lost/hud_queue/lobby/ui_hud/menu, a3_07, coop green.
 - 2026-10-14 06:50: **round 82 ON ORIGIN**: env/a-core (HeistRuntime creates a VfxDirector on host + replicas, cleared on teardown; ShotFx.surface_of delegates to ImpactFx). Gunplay FX now end-to-end in heists (shot_fx emitted on every peer since r72). a po8/d105/a1_01/a3_07, c vfx 20, P1 slice green. Next: P windowed in-heist FX check.
 - 2026-10-14 06:35: **round 81 ON ORIGIN**: env/p-play b7026a82 (D-107 stamina/jump per PD2; QB-60 jump test rewritten under carve-out, A to review). p d107 5/5, a qb56_61 13/13, a1_02 8/8, b ui_hud 17/17 green.
 - 2026-10-14 06:20: **round 80 ON ORIGIN**: LEAD net.gd (ENet peer timeout 32/15 s/60 s on both sides; Log.warn when a human slot falls back to AI) + env/a-core (HeistLauncher loads the map on a worker thread). Fixes B's co-op finding: host bring-up stall (~40 s llvmpipe) dropped the client. a1_01/a3_07/coop/b lobby green. Remaining: HeistRuntime.start() one-frame stall (not split before freeze gates); B fixes MenuFlow host_lost.
@@ -97,6 +99,7 @@ Read it at the start of every work session.
 - D (parked after P's D-101 attempt 00:55): rifle-family left-hand cup needs B to move LeftHandIK below the fore-end on ~20 weapons + re-timed lever clip; cosmetic. Pistol ADS forearm size: closed, matches PD2 within the rig's proportions.
 
 ## Routed findings
+- gh_stealth lane (A, ~20 runs; best: bag 1 secured undetected at t=243; all failures civilians): A fixes civilian wander scope, stair-foot pin, shout LOS/same floor, calm NPCs yield. C: GH break-room WindowLink + BreakRoomWindowBlocker (walker stuck at U1 window, ow_breakroom_open, seed 1791937091) + stair-foot corner (13.4-13.8,0,4.8). B: HUD per-frame cost (7-20 s process frames masked on llvmpipe; onboarding card) profile + budget test.
 - A (gate70, 04:xx): CHECK_ALL FAIL on GDScript runtime errors only (1897 tests 0 failed, 4 levels PASS): bulwark_shield.gd take_hit↔deliver_hit infinite pierce recursion (overlapping shields ping-pong; _trace_behind excludes only its own RID). Routed to A ahead of door swing. → FIXED r73 (A 35baf6dd).
 - (DONE r70) SL/DB marker_tags; test_heist_readiness green on all 4 heists.
 - A: loud transition doesn't advance the Glasshouse objective (still "Find the manager's keycard"); NPCs render as grey capsules while casing.
