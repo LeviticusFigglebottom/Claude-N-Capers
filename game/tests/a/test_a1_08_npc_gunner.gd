@@ -103,3 +103,37 @@ func test_l2_5_police_hold_fire_on_downed_non_shooter() -> void:
 	assert_false(shots.is_empty(), "police fire at a downed shooter")
 	if shots.has(true):
 		assert_true(c.health.bleedout_health < bleed0 or c.crew_state == Enums.CrewState.CUSTODY, "bleedout health drops")
+
+
+## D-111 (PD2 enemies reload; P: reload_rifle never showed): the magazine runs dry, the NPC reloads for
+## reload_time() without firing, the reload cue goes out (replicated; AnimDriver plays reload_rifle / _pistol), then it
+## fires on.
+func test_d111_police_reload_when_the_magazine_is_empty() -> void:
+	var c: CrewController = _crew()
+	c.set_masked()
+	Modifiers.set_source(0, &"test.immune", {&"defense.damage_taken_mult": 0.0})
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
+	var p: NpcBase = _rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -6)))
+	await wait_physics_frames(2)
+	var gun: NpcGunner = p.get_node("Gunner") as NpcGunner
+	assert_true(gun.mag_size() > 0, "police carry a magazine")
+	gun.rounds_left = 2
+	var shots: Array[bool] = []
+	gun.shot.connect(func(_t: Node, hit: bool) -> void: shots.append(hit))
+	var cues: Array[StringName] = []
+	var on_cue: Callable = func(id: StringName, _pos: Vector3, src: int) -> void:
+		if src == p.net_id:
+			cues.append(id)
+	EventBus.audio_cue_requested.connect(on_cue)
+	gun.fire_at(c)
+	assert_true(await wait_until(func() -> bool: return gun.reload_left > 0.0, 6.0), "the magazine ran dry: reloading")
+	assert_eq(shots.size(), 2, "two rounds, then the reload")
+	assert_true(cues.has(NpcGunner.CUE_RELOAD_RIFLE) or cues.has(NpcGunner.CUE_RELOAD_PISTOL),
+		"reload cue for the animation / sound (%s)" % [cues])
+	var during: int = shots.size()
+	await wait_seconds(gun.reload_time() * 0.8)
+	assert_eq(shots.size(), during, "no fire while reloading")
+	assert_true(await wait_until(func() -> bool: return shots.size() > during, gun.reload_time() + 3.0), "fires again after")
+	assert_eq(gun.rounds_left, gun.mag_size() - (shots.size() - during), "a full magazine")
+	EventBus.audio_cue_requested.disconnect(on_cue)
+	Modifiers.clear_all()

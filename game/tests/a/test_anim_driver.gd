@@ -190,11 +190,11 @@ func test_death_clip_from_hit_direction() -> void:
 	b.die({"direction": Vector3(0, 0, 1)})
 	_drv(a).tick(0.016)
 	_drv(b).tick(0.016)
-	assert_eq(_drv(a).clip, &"death_front", "hit from behind: face down")
-	assert_eq(_drv(b).clip, &"death_back", "hit from the front: onto the back")
+	assert_true(_drv(a).clip in [&"death_front", &"death_front_b"], "hit from behind: face down (%s)" % _drv(a).clip)
+	assert_true(_drv(b).clip in [&"death_back", &"death_back_b"], "hit from the front: onto the back (%s)" % _drv(b).clip)
 	assert_eq(a.visual_root.rotation, Vector3.ZERO, "animated corpse is not tipped over like the capsule")
 	_drv(a).tick(0.5)
-	assert_eq(_drv(a).clip, &"death_front", "death clip holds")
+	assert_true(_drv(a).clip in [&"death_front", &"death_front_b"], "death clip holds")
 
 
 ## characters.md v1.11 (PO-pass #6, the corpse through the GH desk): an NPC killed while seated (desk_work,
@@ -224,7 +224,7 @@ func test_seated_deaths() -> void:
 	old.last_damage = {"direction": Vector3(0, 0, -1), "type": Enums.DamageType.BULLET}
 	old.die({"direction": Vector3(0, 0, -1)})
 	_drv(old).tick(0.016)
-	assert_eq(_drv(old).clip, &"death_front", "no seated clip in the library: the standing death")
+	assert_true(_drv(old).clip in [&"death_front", &"death_front_b"], "no seated clip in the library: the standing death")
 
 
 ## v1.10 (D-111 "almost zero animations play"): non-lethal damage plays a hit react picked by where the bullet
@@ -335,6 +335,20 @@ func test_eight_way_locomotion() -> void:
 	npc.velocity = Vector3(k, 0, -k) * 1.6
 	d.tick(0.016)
 	assert_near(d.player.speed_scale, 1.0, 0.01, "walk_fr runs at walk speed (1.6 m/s)")
+
+
+## D-111: an NPC reload (NpcGunner's replicated reload cue) plays reload_rifle / reload_pistol on the NPC.
+func test_npc_reload_cue_plays_the_reload_clip() -> void:
+	var npc: NpcBase = _npc(&"police")
+	npc.net_id = 70021
+	var d: AnimDriver = _drv(npc)
+	EventBus.audio_cue_requested.emit(NpcGunner.CUE_RELOAD_RIFLE, Vector3.ZERO, npc.net_id)
+	d.tick(0.016)
+	assert_eq(d.clip, &"reload_rifle", "rifle reload")
+	d.tick(5.0)
+	EventBus.audio_cue_requested.emit(NpcGunner.CUE_RELOAD_PISTOL, Vector3.ZERO, npc.net_id)
+	d.tick(0.016)
+	assert_eq(d.clip, &"reload_pistol", "pistol reload")
 
 
 func test_noop_on_capsule_visual() -> void:

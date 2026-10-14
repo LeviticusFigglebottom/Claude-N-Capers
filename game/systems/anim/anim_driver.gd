@@ -785,9 +785,17 @@ func _on_weapon_fired(shooter_net_id: int, _weapon_id: StringName, _suppressed: 
 ## A3-13: an NPC melee windup (`cue.npc_melee_swing` [R], source = this NPC) plays `melee` on every peer, so
 ## a client sees the windup in time to counter (defense.melee_counter).
 func _on_audio_cue(cue_id: StringName, _pos: Vector3, source_net_id: int) -> void:
-	if cue_id != NpcGunner.CUE_MELEE_SWING or player == null or source_net_id == 0 or source_net_id != _net_id():
+	if player == null or source_net_id == 0 or source_net_id != _net_id():
 		return
-	play_oneshot(&"melee", CombatTweak.data().npc_melee_windup_s + 0.3)
+	if cue_id == NpcGunner.CUE_MELEE_SWING:
+		play_oneshot(&"melee", CombatTweak.data().npc_melee_windup_s + 0.3)
+	elif _npc != null and (cue_id == NpcGunner.CUE_RELOAD_RIFLE or cue_id == NpcGunner.CUE_RELOAD_PISTOL):
+		# D-111: an NPC reload (the crew's own come from CrewWeapons.reload_started)
+		var g: NpcGunner = _npc.get_node_or_null(^"Gunner") as NpcGunner
+		var dur: float = g.reload_time() if g != null else CombatTweak.data().npc_reload_s
+		var clip_id: StringName = &"reload_pistol" if cue_id == NpcGunner.CUE_RELOAD_PISTOL else &"reload_rifle"
+		var done_s: float = float(AnimTweak.data().reload_done_s.get(&"pistol" if clip_id == &"reload_pistol" else &"rifle", 1.0))
+		play_oneshot(clip_id, dur, false, done_s / maxf(dur, 0.05))
 
 
 func _on_reload_started(_ws: int, duration: float) -> void:
