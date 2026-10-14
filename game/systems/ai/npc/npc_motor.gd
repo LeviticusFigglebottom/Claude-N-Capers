@@ -17,12 +17,22 @@
 ## PO-5 yield: a CALM NPC that a crew member keeps walking into steps aside (StealthTweak npc_yield_*),
 ## then resumes (`yielding` while it does). The brain's go_to/stop still apply and take over afterwards;
 ## any alert state other than CALM cancels the yield at once.
+## PO-10 personal space: NPC bodies do not collide with each other (MASK_WORLD), so the motor steers a moving
+## NPC away from live NPCs of its heist within StealthTweak.npc_separation_radius_m (veering right when the push
+## opposes its heading), lets stacked standing CALM NPCs drift apart, and stops short of a target another
+## NPC already stands on (npc_crowd_*). Neighbours come from a per-physics-frame grid shared by all motors.
 class_name NpcMotor
 extends Node
 
 signal arrived_at(target: Vector3)
 ## A2-01: the path is blocked by a closed door this NPC may not open (it stopped in front of it).
 signal door_blocked(door: Node)
+
+## PO-10: every motor in the tree, and the neighbour grid rebuilt once per physics frame.
+static var _all: Array[NpcMotor] = []
+static var _grid: Dictionary = {}
+static var _grid_frame: int = -1
+static var _grid_cell: float = 1.0
 
 @export var arrive_distance: float = 0.4
 @export var turn_speed_deg: float = 360.0
@@ -70,6 +80,8 @@ var _yield_home: Vector3 = Vector3.INF
 var _runtime: HeistRuntime = null
 ## PO-5: index of the nav path corner the motor steers at (reset when the agent's path changes).
 var _corner: int = 1
+## PO-10: HeistRuntime instance id (0 outside a heist): only NPCs of the same heist keep space.
+var _rt_key: int = -1
 
 
 func _ready() -> void:
@@ -88,6 +100,16 @@ func _ready() -> void:
 	if _agent != null:
 		_agent.link_reached.connect(_on_link_reached)
 		_agent.path_changed.connect(func() -> void: _corner = 1)
+
+
+func _enter_tree() -> void:
+	if not _all.has(self):
+		_all.append(self)
+
+
+func _exit_tree() -> void:
+	_all.erase(self)
+	_rt_key = -1
 
 
 func go_to(pos: Vector3, move_speed: float) -> void:
@@ -147,7 +169,7 @@ func _physics_process(delta: float) -> void:
 			horiz = dy.normalized() * Tweak.stealth().npc_yield_speed
 			_turn_toward(dy, delta)
 	elif not arrived and target != Vector3.INF:
-		if distance_to_target() <= arrive_distance:
+		if distance_to_target() <= arrive_distance or _target_crowded():
 			var t: Vector3 = target
 			stop()
 			arrived_at.emit(t)
@@ -165,10 +187,12 @@ func _physics_process(delta: float) -> void:
 				if _door_point != Vector3.INF:
 					_turn_toward(_door_point - _body.global_position, delta)
 			elif d.length() > 0.001:
-				horiz = d.normalized() * speed
+				horiz = _separate(d.normalized()) * speed
 				_turn_toward(d, delta)
-	elif face_dir != Vector3.ZERO:
-		_turn_toward(face_dir, delta)
+	else:
+		horiz = _idle_drift(npc)
+		if face_dir != Vector3.ZERO:
+			_turn_toward(face_dir, delta)
 	_body.velocity.x = horiz.x
 	_body.velocity.z = horiz.z
 	if horiz != Vector3.ZERO and _body.is_on_wall():
@@ -181,6 +205,117 @@ func _physics_process(delta: float) -> void:
 	else:
 		_body.velocity.y = minf(_body.velocity.y, 0.0)
 	_body.move_and_slide()
+
+
+# --- Personal space (PO-10) -----------------------------------------------------------------
+
+func _heist_key() -> int:
+	if _rt_key < 0:
+		var rt: HeistRuntime = HeistRuntime.of(_body)
+		_rt_key = rt.get_instance_id() if rt != null else 0
+	return _rt_key
+
+
+static func _cell_of(p: Vector3) -> Vector2i:
+	return Vector2i(floori(p.x / _grid_cell), floori(p.z / _grid_cell))
+
+
+## Live NPC motors of this heist around `center` (the grid's 3x3 cells: everything within one cell size, at
+## least npc_separation_radius_m), from a grid built once per physics frame. Excludes this motor.
+func _neighbours(center: Vector3) -> Array[NpcMotor]:
+	var out: Array[NpcMotor] = []
+	var frame: int = Engine.get_physics_frames()
+	if frame != _grid_frame:
+		_grid_frame = frame
+		_grid.clear()
+		_grid_cell = maxf(Tweak.stealth().npc_separation_radius_m, 0.5)
+		for m: NpcMotor in _all:
+			if not is_instance_valid(m) or m._body == null or not m._body.is_inside_tree():
+				continue
+			var nb: NpcBase = m._body as NpcBase
+			if nb != null and not nb.alive:
+				continue
+			var c: Vector2i = _cell_of(m._body.global_position)
+			if _grid.has(c):
+				(_grid[c] as Array).append(m)
+			else:
+				_grid[c] = [m]
+	var me: Vector2i = _cell_of(center)
+	var key: int = _heist_key()
+	for dx: int in range(-1, 2):
+		for dz: int in range(-1, 2):
+			var cell: Variant = _grid.get(Vector2i(me.x + dx, me.y + dz))
+			if cell == null:
+				continue
+			for m: NpcMotor in cell as Array:
+				if m != self and is_instance_valid(m) and m._heist_key() == key:
+					out.append(m)
+	return out
+
+
+## Closeness-weighted horizontal push away from neighbours within `radius` (ZERO when none). `closest`
+## receives the nearest neighbour distance.
+func _push_from(neigh: Array[NpcMotor], radius: float, closest: Array[float]) -> Vector3:
+	var tw: StealthTweak = Tweak.stealth()
+	var p: Vector3 = _body.global_position
+	var push: Vector3 = Vector3.ZERO
+	for m: NpcMotor in neigh:
+		var q: Vector3 = m._body.global_position
+		if absf(q.y - p.y) >= tw.npc_separation_dy_m:
+			continue
+		var off: Vector3 = Vector3(p.x - q.x, 0.0, p.z - q.z)
+		var r: float = off.length()
+		if r >= radius:
+			continue
+		closest[0] = minf(closest[0], r)
+		if r < 0.001:  # exactly stacked: split by instance id so the two go opposite ways
+			off = Vector3.RIGHT if get_instance_id() > m.get_instance_id() else Vector3.LEFT
+			r = 0.001
+		push += off / r * (1.0 - r / radius)
+	return push
+
+
+## Heading `dir` (unit, horizontal) bent away from nearby NPCs; unit length or ZERO.
+func _separate(dir: Vector3) -> Vector3:
+	var tw: StealthTweak = Tweak.stealth()
+	if tw.npc_separation_gain <= 0.0 or tw.npc_separation_radius_m <= 0.0:
+		return dir
+	var closest: Array[float] = [INF]
+	var push: Vector3 = _push_from(_neighbours(_body.global_position), tw.npc_separation_radius_m, closest)
+	if push == Vector3.ZERO:
+		return dir
+	var against: float = push.dot(dir)
+	if against < 0.0:  # coming at us: keep right so both sides pass
+		push += Vector3(-dir.z, 0.0, dir.x) * -against
+	var steer: Vector3 = dir + push * tw.npc_separation_gain
+	return steer.normalized() if steer.length() > 0.05 else Vector3.ZERO
+
+
+## Standing CALM NPC stacked on another: a slow drift apart (ZERO otherwise).
+func _idle_drift(npc: NpcBase) -> Vector3:
+	var tw: StealthTweak = Tweak.stealth()
+	if npc == null or npc.alert_state != Enums.AlertState.CALM or waiting_door != null \
+			or tw.npc_separation_idle_m <= 0.0 or tw.npc_separation_idle_speed <= 0.0:
+		return Vector3.ZERO
+	var closest: Array[float] = [INF]
+	var push: Vector3 = _push_from(_neighbours(_body.global_position), tw.npc_separation_idle_m, closest)
+	if push.length() < 0.001:
+		return Vector3.ZERO
+	return push.normalized() * tw.npc_separation_idle_speed
+
+
+## True when another (standing) NPC already holds this motor's target and we are within npc_crowd_arrive_m.
+func _target_crowded() -> bool:
+	var tw: StealthTweak = Tweak.stealth()
+	if tw.npc_crowd_occupied_m <= 0.0 or distance_to_target() > tw.npc_crowd_arrive_m:
+		return false
+	for m: NpcMotor in _neighbours(target):
+		var q: Vector3 = m._body.global_position
+		if not m.arrived or absf(q.y - target.y) >= tw.npc_separation_dy_m:
+			continue
+		if Vector2(q.x - target.x, q.z - target.z).length() <= tw.npc_crowd_occupied_m:
+			return true
+	return false
 
 
 # --- Yield (PO-5) -----------------------------------------------------------------------------
