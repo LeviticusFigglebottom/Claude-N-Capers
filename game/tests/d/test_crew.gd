@@ -15,6 +15,7 @@ const CREW: Array[String] = [
 	"char_crew_sable",
 	"char_crew_dutch",
 	"char_crew_wren",
+	"char_crew_marten",
 ]
 ## Each heister's signature garment material: only that heister wears it.
 const SIGNATURE: Dictionary = {
@@ -22,6 +23,7 @@ const SIGNATURE: Dictionary = {
 	"char_crew_sable": "res://world/materials/char_crew_sable_blazer.tres",
 	"char_crew_dutch": "res://world/materials/char_crew_dutch_bomber.tres",
 	"char_crew_wren": "res://world/materials/char_crew_wren_vest.tres",
+	"char_crew_marten": "res://world/materials/char_crew_marten_parka.tres",
 }
 const MASKS: Array[String] = [
 	"res://assets/masks/mask_gilded_heron/mask_gilded_heron.glb",

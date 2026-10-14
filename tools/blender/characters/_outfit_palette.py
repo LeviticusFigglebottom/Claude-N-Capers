@@ -128,6 +128,9 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_crew_shearling": ("#C9B696", 0.97, 0.0, "cloth"),  # D2-03 Dutch: cream shearling collar
     "char_crew_glove_tan": ("#7A5A3E", 0.55, 0.0, "leather"),  # D2-03 Dutch: tan work gloves
     "char_crew_wren_vest": ("#8A6A30", 0.82, 0.0, "cloth"),  # D2-03 Wren: mustard tweed waistcoat
+    "char_crew_marten_parka": ("#4C5233", 0.88, 0.0, "cloth"),  # D-111 Marten: olive field parka
+    "char_crew_marten_fur": ("#6E6152", 0.98, 0.0, "cloth"),  # D-111 Marten: grey-brown fur hood trim
+    "char_crew_glove_orange": ("#A85A2C", 0.60, 0.0, "leather"),  # D-111 Marten: burnt-orange gloves
     "char_sec_knit": ("#2C2F35", 0.95, 0.0, "cloth"),  # npcs (D-063): Halden night-shift guard's V-neck sweater vest
     "char_cleaner_teal": ("#4F7F82", 0.80, 0.0, "cloth"),  # npcs: shadow_ledger cleaner tabard (glass teal #5D8C8F, toned)
     "char_hoodie_rust": ("#7A4C34", 0.95, 0.0, "cloth"),  # npcs: IT contractor's hoodie

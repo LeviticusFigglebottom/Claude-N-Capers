@@ -12,7 +12,7 @@ and the contacts read as one family. Unmasked, so the face reads (``Heisters.por
 
 written to ``game/assets/characters/portraits/<id>.png``. Each heister has a dark gradient
 backdrop with a glow in their signature colour (Rook oxblood, Sable aubergine, Dutch warm tan,
-Wren mustard against teal), and a pose that carries the personality.
+Wren mustard against teal, Marten burnt orange against olive), and a pose that carries the personality.
 """
 
 from __future__ import annotations
@@ -114,6 +114,26 @@ HEISTERS: dict[str, dict] = {
         ],
         "ambient": (0.016, 0.022, 0.024),
     },
+    # Marten (D-111): the planner, square-on and appraising, a small chin-down look; olive backdrop,
+    # burnt-orange glow and rims
+    "marten": {
+        "asset": "char_crew_marten",
+        "pose": _ARMS_DOWN + [
+            ("chest", (0, 0, 1), 6.0),
+            ("neck", (1, 0, 0), -3.0),            # chin down: weighing you up
+            ("head", (0, 0, 1), -8.0),
+        ],
+        "camera": {"target_dz": -0.11, "dist": 1.40, "yaw": 20.0, "cam_dz": 0.02, "lens": 85.0},
+        "bg": {"top": (0.014, 0.017, 0.010), "glow": (0.090, 0.040, 0.012), "glow_xy": (0.34, 0.60), "glow_r": 0.58},
+        "lights": [
+            ("key", "AREA", (0.25, 1.45, 1.95), (0.0, 0.0, 1.58), (0.98, 0.95, 0.88), 56.0, 1.3, 0.9),
+            ("fill", "AREA", (1.25, 1.00, 1.50), (0.0, 0.0, 1.52), (0.85, 0.90, 0.82), 13.0, 1.6, 0.3),
+            ("rim", "AREA", (-0.85, -1.10, 1.70), (0.0, 0.0, 1.52), (1.00, 0.52, 0.22), 130.0, 0.5, 2.0),
+            ("rim_far", "AREA", (0.80, -1.15, 1.62), (0.0, 0.0, 1.52), (0.70, 0.80, 0.45), 55.0, 0.5, 1.4),
+            ("hair", "AREA", (0.2, -0.9, 2.3), (0.0, 0.0, 1.62), (0.92, 0.94, 0.90), 12.0, 0.4, 0.5),
+        ],
+        "ambient": (0.018, 0.020, 0.014),
+    },
 }
 
 
@@ -125,6 +145,7 @@ GRADE: dict[str, dict] = {
     "sable": {"exposure": -0.5, "hair_mul": 0.45, "eye_mul": 0.7, "look": "AgX - High Contrast"},
     "dutch": {"exposure": -0.6, "hair_mul": 1.0, "look": "AgX - High Contrast"},
     "wren": {"exposure": -0.5, "hair_mul": 0.85, "look": "AgX - High Contrast"},
+    "marten": {"exposure": -0.5, "hair_mul": 0.9, "look": "AgX - High Contrast"},
 }
 
 
