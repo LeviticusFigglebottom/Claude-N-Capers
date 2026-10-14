@@ -231,6 +231,11 @@ func _update_viewmodel_camera(cam: Camera3D) -> void:
 	_vm_cam.near = cam.near
 
 
+## The camera that draws the viewmodel layer (null when the arms draw with the world camera).
+func viewmodel_camera() -> Camera3D:
+	return _vm_cam if _vm_cam != null and is_instance_valid(_vm_cam) else null
+
+
 ## Viewmodel camera FOV in degrees (0 when the arms draw with the world camera).
 func viewmodel_fov() -> float:
 	return _vm_cam.fov if _vm_cam != null and is_instance_valid(_vm_cam) else 0.0

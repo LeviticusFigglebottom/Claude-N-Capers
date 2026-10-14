@@ -95,6 +95,8 @@ var clip: StringName = &""
 ## Current one-shot (Action), and its playback speed scale (re-timing).
 var action: int = Action.NONE
 var action_speed: float = 1.0
+## D-105: first-person weapon FX (muzzle burst, smoke, shells, tracers).
+var fx: FpViewmodelFx = null
 ## 0 = hip, 1 = aimed down sights.
 var ads_weight: float = 0.0
 ## Part channel -> position 0..1 (slide, pump, bolt_lift, bolt_slide, cover).
@@ -130,6 +132,9 @@ var _muzzle_light: OmniLight3D = null
 var _flash_left: float = 0.0
 var _flash_peak: float = 0.0
 var _align: Vector3 = Vector3.ZERO
+## D-105: the per-shot kick (x = back m, y = pitch deg) as an exact critically damped spring (position, velocity).
+var _kick: Vector2 = Vector2.ZERO
+var _kick_v: Vector2 = Vector2.ZERO
 ## The item model on the weapon bone during a melee / deploy one-shot (null = none / gun bash).
 var _item: Node3D = null
 var _deploy_prev: bool = false
@@ -182,6 +187,9 @@ func _bind(inst: Node3D, crew: CrewController) -> bool:
 	align.vm = self
 	skeleton.add_child(align)  # last: after the animation and the left-hand IK
 	_crew = crew
+	fx = FpViewmodelFx.new()
+	fx.setup(self)
+	add_child(fx)
 	apply_sleeves(crew.heister if crew != null else &"")
 	_no_shadows(inst)
 	for ch: StringName in CHANNELS:
@@ -305,6 +313,7 @@ func tick(delta: float) -> void:
 	_update_ads(delta)
 	if action == Action.NONE:
 		_play_base(tw)
+	_tick_kick(delta, tw)
 	_update_offset(delta, tw)
 	_update_magazine()
 	_update_flash(delta, tw)
@@ -320,16 +329,17 @@ func _on_fired(_claim: Dictionary) -> void:
 	_flash_muzzle()
 	var aimed: bool = _aim_wanted()
 	var fire: StringName = _resolve(anim_set, &"fire_ads" if aimed else &"fire")
-	if fire == &"":
-		return
-	var cycle: float = _length(anim_set, fire)
-	var done: float = _event(anim_set, fire, &"done")
 	var bolt: StringName = _resolve(anim_set, &"bolt_ads" if aimed else &"bolt")
+	var cycle: float = _length(anim_set, fire) if fire != &"" else 0.0
+	var done: float = _event(anim_set, fire, &"done") if fire != &"" else -1.0
 	if bolt != &"":
 		done = cycle + maxf(_event(anim_set, bolt, &"done"), 0.0)
 	elif done < 0.0:
 		done = cycle
 	var speed: float = maxf(1.0, done / maxf(_shot_interval(), 0.01))
+	_shot_fx(aimed, _eject_delay(fire, bolt, cycle, speed))
+	if fire == &"":
+		return
 	var segs: Array[Dictionary] = []
 	_add_seg(segs, anim_set, fire, cycle / speed, speed)
 	if bolt != &"":
@@ -354,6 +364,93 @@ func _on_bag_changed(bag: Node) -> void:
 	var segs: Array[Dictionary] = []
 	_add_timed(segs, anim_set, &"draw", &"ready", equip_s)
 	_start(Action.SWAP, segs)
+
+
+## D-105: muzzle burst + smoke, the casing (on the bolt / pump / lever cycle when the set has one: `eject_delay`),
+## and the per-shot kick.
+func _shot_fx(aimed: bool, eject_delay: float) -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if weapon_visual != null and is_instance_valid(weapon_visual) and fx != null:
+		var st: WeaponStats = _crew.weapons.stats(_crew.weapons.equipped_slot) \
+			if _crew != null and _crew.weapons != null else null
+		if not tw.no_flash_sets.has(anim_set):
+			fx.flash(weapon_visual.get_marker(&"Muzzle"), st != null and st.suppressed)
+		var kind: StringName = tw.shell_kind.get(anim_set, &"")
+		if kind != &"":
+			fx.eject(weapon_visual.get_marker(&"Eject"), kind, eject_delay)
+	var amp: Vector2 = Vector2(float(tw.kick_back_m.get(anim_set, 0.0)), float(tw.kick_pitch_deg.get(anim_set, 0.0)))
+	if aimed:
+		amp *= tw.kick_ads_mult
+	var w: float = TAU * maxf(tw.kick_hz, 0.1)
+	_kick_v += amp * w * exp(1.0)  # x(t) = v0 t e^(-wt) peaks at amp after 1/w s
+
+
+## Seconds after the shot when the case leaves the port: the set's cycle event (pump back, lever open, bolt back;
+## FpViewmodelTweak.shell_eject_event) at the playing speed, else 0 (on the shot).
+func _eject_delay(fire: StringName, bolt: StringName, cycle: float, speed: float) -> float:
+	var spec: Array = FpViewmodelTweak.data().shell_eject_event.get(anim_set, [])
+	if spec.size() < 2:
+		return 0.0
+	var on_bolt: bool = StringName(spec[0]) == &"bolt"
+	var clip: StringName = bolt if on_bolt else fire
+	if clip == &"":
+		return 0.0
+	var t: float = _event(anim_set, clip, StringName(spec[1]))
+	if t < 0.0:
+		return 0.0
+	return (cycle + t if on_bolt else t) / maxf(speed, 0.01)
+
+
+## Exact critically damped step (no amplitude loss at 60 Hz, see the PO-4 landing dip). The step is capped at 1/30 s
+## so a slow frame still shows the punch instead of skipping past its 18 ms peak.
+func _tick_kick(delta: float, tw: FpViewmodelTweak) -> void:
+	if _kick == Vector2.ZERO and _kick_v == Vector2.ZERO:
+		return
+	var w: float = TAU * maxf(tw.kick_hz, 0.1)
+	delta = minf(delta, 1.0 / 30.0)
+	var e: float = exp(-w * delta)
+	var b: Vector2 = _kick_v + w * _kick
+	_kick = (_kick + b * delta) * e
+	_kick_v = (_kick_v - w * b * delta) * e
+	if _kick.length() < 1e-5 and _kick_v.length() < 1e-4:
+		_kick = Vector2.ZERO
+		_kick_v = Vector2.ZERO
+
+
+## Read only (tests): the current per-shot kick (back m, pitch deg).
+func kick() -> Vector2:
+	return _kick
+
+
+## The crew this viewmodel belongs to.
+func crew() -> CrewController:
+	return _crew
+
+
+## Enums.WeaponClass key of the equipped weapon (FpViewmodelTweak.tracer_every), &"" when unknown.
+func weapon_class_key() -> StringName:
+	if _crew == null or _crew.weapons == null:
+		return &""
+	var def: WeaponDef = ContentDB.weapon(_crew.weapons.weapon_id(_crew.weapons.equipped_slot))
+	return StringName(Enums.WeaponClass.keys()[def.weapon_class]) if def != null else &""
+
+
+## Where the muzzle APPEARS in the world: the viewmodel draws through its own camera (other FOV), so the Muzzle
+## marker's world position is not where the player sees it. Projected through the viewmodel camera to the screen,
+## then back out of the world camera at the same depth. Vector3.INF without a muzzle.
+func muzzle_world_apparent() -> Vector3:
+	if weapon_visual == null or not is_instance_valid(weapon_visual):
+		return Vector3.INF
+	var m: Node3D = weapon_visual.get_marker(&"Muzzle")
+	var cam: Camera3D = get_parent() as Camera3D
+	if m == null or not m.is_inside_tree() or cam == null:
+		return Vector3.INF
+	var view: CrewView = CrewView.of(_crew) if _crew != null else null
+	var vcam: Camera3D = view.viewmodel_camera() if view != null else null
+	if vcam == null:
+		return m.global_position
+	var depth: float = -(cam.global_transform.affine_inverse() * m.global_position).z
+	return cam.project_position(vcam.unproject_position(m.global_position), maxf(depth, cam.near + 0.01))
 
 
 func _on_reload_started(ws: int, duration: float) -> void:
@@ -810,7 +907,8 @@ func _late_align() -> void:
 			var p: Vector3 = arms.global_transform.affine_inverse() * (skeleton.global_transform * in_skel)
 			a = Vector3(-p.x, -p.y, 0.0) * ads_weight
 	_align = a
-	position = _base_offset + a
+	position = _base_offset + a + Vector3(0.0, 0.0, _kick.x)
+	rotation = Vector3(deg_to_rad(_kick.y), 0.0, 0.0)
 
 
 ## PI-21: vertical arms lag from the camera's step smoothing (m): the arms dip after a step up and float after
