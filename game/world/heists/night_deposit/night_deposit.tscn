@@ -12650,6 +12650,7 @@ navigation_mesh = SubResource("nd_609")
 [node name="AreawayLadderLink" type="NavigationLink3D" parent="Navigation" unique_id=102138]
 start_position = Vector3(16.3, 0, -1.4)
 end_position = Vector3(18.2, -4, -0.9)
+navigation_layers = 8
 
 [node name="Zones" type="Node3D" parent="." unique_id=102139]
 
