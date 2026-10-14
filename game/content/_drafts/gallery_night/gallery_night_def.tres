@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="HeistDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_def.gd" id="1_gn7df"]
+
+[resource]
+script = ExtResource("1_gn7df")
+id = &"gallery_night"
+display_name = "Gallery Night"
+contact = &"contact.vance"
+briefing = "The Halberd Gallery, Aldous Parade at Wexley Street. The Calloway Unveiling gala is in its last hour. Odile Vance's buyer wants four canvases off a list, and The Lantern Bearer above all. Walk in as guests, case the rooms before last call, then cut the Lantern Bearer and one more listed canvas. Rolled, not framed. Out by the van in the Mews or the limo at the kerb."
+map_scene = "res://world/heists/gallery_night/gallery_night.tscn"
+base_payout = 105000
+loot = Array[StringName]([&"loot.painting_lantern_bearer", &"loot.painting_salt_orchard", &"loot.painting_widow_in_blue", &"loot.painting_tidewater_saint", &"loot.painting_study"])
+objectives = Array[StringName]([&"casing", &"find_canvases", &"keycard", &"server_code", &"hack", &"treasury", &"art_store", &"centrepiece", &"canvases", &"secure", &"extras", &"lockers", &"curator_safe", &"lockdown", &"server_door", &"vault_drill", &"escape_wait", &"escape"])
+briefing_objectives = Array[StringName]([&"casing", &"find_canvases", &"keycard", &"hack", &"centrepiece", &"canvases", &"secure", &"escape"])
+briefing_loud_key = &"heist.gallery_night.briefing_loud"
+briefing_optional = Array[StringName]([&"extras", &"lockers", &"curator_safe"])
+preplanning = {
+"assets": {
+&"asset.ammo_bag_drop": {
+"point_ids": [&"pp_drop_mews", &"pp_drop_roof"]
+},
+&"asset.body_bag_case_drop": {
+"point_ids": [&"pp_drop_court", &"pp_drop_mews", &"pp_drop_roof"]
+},
+&"asset.doctor_bag_drop": {
+"point_ids": [&"pp_drop_mews", &"pp_drop_roof"]
+},
+&"asset.inside_keycard": {
+"point_ids": [&"pp_insider_registrar"]
+},
+&"asset.intel_list": {},
+&"asset.intel_sensors": {},
+&"asset.propped_door": {
+"max_count": 2,
+"point_ids": [&"pp_grate", &"pp_court_doors"]
+}
+},
+"disable": Array[StringName]([]),
+"favors": 5
+}
+escape_options = Array[StringName]([&"van"])
+music_track = &"gallery_night"
+start_mode = &"casing"
