@@ -1011,9 +1011,13 @@ func _late_align() -> void:
 			var p: Vector3 = arms.global_transform.affine_inverse() * (skeleton.global_transform * in_skel)
 			a = Vector3(-p.x, -p.y, 0.0) * ads_weight
 	_align = a
-	position = _base_offset + a + Vector3(0.0, 0.0, _kick.x)
+	var fs: CrewFpStates = _crew.fp_states if _crew != null and is_instance_valid(_crew) else null
+	var s_off: Vector3 = fs.vm_offset if fs != null else Vector3.ZERO  # P-FP-STATES: downed / tased / kicked hold
+	var s_rot: Vector3 = fs.vm_rot_deg if fs != null else Vector3.ZERO
+	position = _base_offset + a + Vector3(0.0, 0.0, _kick.x) + s_off
 	var breath: Vector2 = _breathing()
-	rotation = Vector3(deg_to_rad(_kick.y + _sway.y + breath.y), deg_to_rad(_sway.x + breath.x), deg_to_rad(-_sway.x))
+	rotation = Vector3(deg_to_rad(_kick.y + _sway.y + breath.y + s_rot.x), deg_to_rad(_sway.x + breath.x + s_rot.y),
+		deg_to_rad(-_sway.x + s_rot.z))
 
 
 ## PI-21: vertical arms lag from the camera's step smoothing (m): the arms dip after a step up and float after
