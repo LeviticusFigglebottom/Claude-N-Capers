@@ -20,6 +20,7 @@ Shared clips (all sets): ``idle*``, ``ads_idle*``, ``sprint*`` (loops), ``draw``
 
 from __future__ import annotations
 
+import dataclasses
 import math
 
 import numpy as np
@@ -56,6 +57,50 @@ def ads_frame(s: FPSet) -> tuple[np.ndarray, np.ndarray]:
 TWIST = 0.35
 
 
+@dataclasses.dataclass(frozen=True)
+class SupportGrip:
+    """One long-gun set's support grip under its fore-end (weapon axes; tuned against its reference model's skin)."""
+    along: tuple[float, float, float]     # palm direction toward the fingers
+    palm: tuple[float, float, float]      # palm normal (up into the fore-end)
+    shift: tuple[float, float, float]     # target point from LeftHandIK (m)
+    thumb_opp: float                      # thumb opposition (deg; less negative = lying further round the near side)
+    ring_pinky: float                     # ring / pinky closed further than the grip curl (deg; pinky x 1.3): they
+                                          # sit further out round the fore-end's far side
+    offset: tuple[float, float, float]    # the resulting wrist from LeftHandIK, Godot marker axes (ENV P's per-set
+                                          # FpViewmodelTweak.set_left_hand_grip_offset: must match)
+
+
+#: PO review 2026-10-14 (lead): the gun rests in the support hand, fingers wrapping the far side with only the tips
+#: showing below the handguard top, the thumb forward along the near side, 2-5 mm clear of the skin. One grip per set
+#: because the fore-ends differ (round tube, slab handguard, wide shroud); test_arms checks the skin.
+LONG_GUN_GRIPS: dict[str, SupportGrip] = {
+    "rifle": SupportGrip((0.60, 0.80, -0.35), (0.30, -0.20, 1.0), (-0.001, 0.0, 0.005), -30.0, 13.0,
+                         (-0.0371, 0.0099, 0.0398)),
+    "shotgun": SupportGrip((1.0125, 0.95, -0.35), (0.15, -0.20, 1.0), (-0.004, 0.0, 0.008), -30.0, 15.0,
+                           (-0.0457, 0.0076, 0.0343)),
+    "lmg": SupportGrip((0.7125, 0.875, -0.275), (0.225, -0.20, 1.0), (0.008, 0.0, -0.006), -35.0, 11.0,
+                       (-0.0292, -0.0066, 0.0391)),
+    "sniper": SupportGrip((0.60, 0.65, -0.20), (0.075, -0.2375, 1.0), (0.0, 0.0, 0.0), -32.5, 15.0,
+                          (-0.0388, -0.0018, 0.0375)),
+    "break_action": SupportGrip((0.825, 0.80, -0.35), (0.0, -0.05, 1.0), (0.004, 0.0, 0.004), -20.0, 17.0,
+                                (-0.0351, 0.0058, 0.0372)),
+    "lever": SupportGrip((0.7875, 0.80, -0.3125), (0.15, -0.05, 1.0), (-0.004, 0.0, -0.001), -20.0, 15.0,
+                         (-0.0433, -0.0004, 0.0370)),
+    "shotgun_box": SupportGrip((0.825, 0.725, -0.425), (0.075, -0.125, 1.0), (-0.002, 0.0, 0.004), -30.0, 15.0,
+                               (-0.0437, 0.0099, 0.0338)),
+}
+
+
+def cup_shape(g: SupportGrip) -> HandShape:
+    """The long-gun support hand: fingers closed round the fore-end (ring and pinky more), the thumb open along it."""
+    shape = hand_shape("grip", 0.60)
+    curl = dict(shape.curl)
+    for f, extra in (("ring", g.ring_pinky), ("pinky", g.ring_pinky * 1.3)):
+        b, m, t = curl[f]
+        curl[f] = (b + extra, m + extra * 0.8, t + extra * 0.4)
+    return dataclasses.replace(shape, curl=curl, thumb=(4.0, 6.0, 4.0), thumb_opp=g.thumb_opp)
+
+
 def long_gun(s: FPSet) -> bool:
     return s.support != "pistol"
 
@@ -78,11 +123,13 @@ class Kit:
             self.support = hand_at(sk, "L", "w", m.get("top_bar", m["left_ik"]), (0.20, 0.95, -0.25), (0.05, 0.10, -0.99),
                                    s.pole_l, hand_shape("grip", 0.85), share=0.55, off=0.017)
         elif abs(float(m["left_ik"][0])) < 0.005:  # LeftHandIK under the fore-end (B, e18011f4): PD2 support grip,
-            # palm up under the fore-end, thumb along its left side, fingers angled forward-right and curling up
-            # round its right side. The wrist sits at LONG_GUN_GRIP_OFFSET from the marker: FpViewmodel's runtime
-            # left-hand IK must use that offset for these sets (FpViewmodelTweak) so the game shows this grip.
-            self.support = hand_at(sk, "L", "w", m["left_ik"], (0.70, 0.70, 0.10), (0.30, -0.05, 1.0),
-                                   s.pole_l, hand_shape("grip", 0.60), share=0.45, off=0.014, twist=0.0)
+            # the fore-end resting in the palm, fingers wrapping its far (right) side with the tips below its top,
+            # the thumb lying forward along its near (left) side. The wrist sits at the set's SupportGrip.offset from
+            # the marker (FpViewmodelTweak.set_left_hand_grip_offset, ENV P), so the runtime left-hand IK target IS
+            # this wrist and the game shows the grip unchanged.
+            g = LONG_GUN_GRIPS[s.name]
+            self.support = hand_at(sk, "L", "w", np.asarray(m["left_ik"], float) + np.asarray(g.shift), g.along,
+                                   g.palm, s.pole_l, cup_shape(g), share=0.55, off=0.014, twist=0.0)
         else:
             self.support = hand_at(sk, "L", "w", m["left_ik"], (0.30, 0.45, 0.84), (0.75, 0.62, -0.10),
                                    s.pole_l, hand_shape("grip", 0.80), share=0.55, off=0.018)

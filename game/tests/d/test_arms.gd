@@ -1082,6 +1082,8 @@ func test_hands_and_sights_on_the_real_models() -> void:
 						set_name, top, NEAR_HALF_H])
 		root.queue_free()
 	_player.stop()
+	_check_long_gun_support_grip()
+	_check_support_skin_clear()
 
 
 ## PO feedback (long-gun hold): on every set whose LeftHandIK sits centred under the fore-end (B e18011f4) the support
@@ -1120,6 +1122,114 @@ func _check_long_gun_support_grip() -> void:
 					assert_false(_inside_section(verts, q), "%s_%s: %s inside %s" % [set_name, clip, bone, REF_WEAPON[set_name]])
 		root.queue_free()
 	_player.stop()
+
+
+## PO review (lead 2026-10-14): finger / thumb SKIN, not only joints, must stay out of the gun. Every Arms vertex whose
+## main bind is a left finger or thumb bone, CPU-skinned at idle 0, idle middle, ads_idle 0 and fire 2, must lie outside
+## the convex hull of the reference gun's cross-section (sliced from its triangles every 4 mm along the barrel round
+## LeftHandIK), 2 mm tolerance. Walking is `idle` under a whole-viewmodel bob (fp_viewmodel.gd), so idle covers it.
+func _check_support_skin_clear() -> void:
+	var arms_mi: MeshInstance3D = _skel.get_node_or_null("Arms") as MeshInstance3D
+	if arms_mi == null or arms_mi.skin == null:
+		return
+	var verts: Array[Vector3] = []
+	var bones: Array[PackedInt32Array] = []
+	var weights: Array[PackedFloat32Array] = []
+	var skin: Skin = arms_mi.skin
+	var finger_binds: Dictionary = {}
+	for i: int in skin.get_bind_count():
+		var bname: String = String(skin.get_bind_name(i))
+		if bname.ends_with(".L") and (bname.begins_with("thumb_") or bname.begins_with("index_") or bname.begins_with("middle_")
+				or bname.begins_with("ring_") or bname.begins_with("pinky_")):
+			finger_binds[i] = true
+	for si: int in arms_mi.mesh.get_surface_count():
+		var arr: Array = arms_mi.mesh.surface_get_arrays(si)
+		var vv: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+		var bb: PackedInt32Array = arr[Mesh.ARRAY_BONES]
+		var ww: PackedFloat32Array = arr[Mesh.ARRAY_WEIGHTS]
+		var n: int = bb.size() / vv.size()
+		for vi: int in vv.size():
+			var best: int = 0
+			for k: int in n:
+				if ww[vi * n + k] > ww[vi * n + best]:
+					best = k
+			if finger_binds.has(bb[vi * n + best]) and ww[vi * n + best] > 0.5:
+				verts.append(vv[vi])
+				bones.append(bb.slice(vi * n, vi * n + n))
+				weights.append(ww.slice(vi * n, vi * n + n))
+	assert_true(verts.size() > 100, "support skin: %d finger / thumb vertices found" % verts.size())
+	for set_name: String in REF_WEAPON:
+		var w: Dictionary = _weapon_model(String(REF_WEAPON[set_name]))
+		if w.is_empty():
+			continue
+		var marks: Dictionary = w["marks"]
+		var root: Node3D = w["root"]
+		if not marks.has("LeftHandIK") or absf((marks["LeftHandIK"] as Transform3D).origin.x) > 0.005:
+			root.queue_free()
+			continue
+		var mz: float = (marks["LeftHandIK"] as Transform3D).origin.z
+		var sections: Dictionary = _sections(root, mz)
+		for pose: Array in [["idle", 0.0], ["idle", 0.5], ["ads_idle", 0.0], ["fire", 2.0 / FPS]]:
+			var clip: String = "%s_%s" % [set_name, pose[0]]
+			_player.play(StringName(clip))
+			var t: float = float(pose[1])
+			if t == 0.5:
+				t = _player.current_animation_length * 0.5
+			_player.seek(t, true)
+			_player.stop()
+			var inv: Transform3D = _skel.get_bone_global_pose(_skel.find_bone("weapon")).affine_inverse()
+			var bind_xf: Array[Transform3D] = []
+			for i: int in skin.get_bind_count():
+				var bi: int = _skel.find_bone(String(skin.get_bind_name(i)))
+				bind_xf.append(_skel.get_bone_global_pose(bi) * skin.get_bind_pose(i) if bi >= 0 else Transform3D.IDENTITY)
+			var inside: int = 0
+			for vi: int in verts.size():
+				var p: Vector3 = Vector3.ZERO
+				for k: int in bones[vi].size():
+					var wk: float = weights[vi][k]
+					if wk > 0.0:
+						p += (bind_xf[bones[vi][k]] * verts[vi]) * wk
+				var q: Vector3 = inv * p
+				var key: int = roundi((q.z - mz) / 0.004)
+				if not sections.has(key):
+					continue
+				if _inside_hull(sections[key], Vector2(q.x, q.y), 0.002):
+					inside += 1
+			assert_eq(inside, 0, "%s: %d finger / thumb skin vertices inside %s" % [clip, inside, REF_WEAPON[set_name]])
+		root.queue_free()
+	_player.stop()
+
+
+## Cross-section convex hulls (x, y in weapon space) of the gun every 4 mm along the barrel within 8 cm of z = `mz`, from
+## its triangle edges cut by each plane; only parts within 6 cm of the centre line (the fore-end, not a sling or bipod).
+func _sections(root: Node3D, mz: float) -> Dictionary:
+	var out: Dictionary = {}
+	var tris: PackedVector3Array = _model_verts(root)
+	for key: int in range(-20, 21):
+		var z: float = mz + key * 0.004
+		var pts: PackedVector2Array = PackedVector2Array()
+		for i: int in range(0, tris.size(), 3):
+			for e: int in 3:
+				var a: Vector3 = tris[i + e]
+				var b: Vector3 = tris[i + (e + 1) % 3]
+				if (a.z - z) * (b.z - z) > 0.0 or a.z == b.z:
+					continue
+				var c: Vector3 = a.lerp(b, (z - a.z) / (b.z - a.z))
+				if absf(c.x) < 0.06 and absf(c.y - 0.05) < 0.12:
+					pts.append(Vector2(c.x, c.y))
+		if pts.size() >= 3:
+			out[key] = Geometry2D.convex_hull(pts)
+	return out
+
+
+## True when `p` lies inside the closed convex polygon `hull` by more than `tol`.
+func _inside_hull(hull: PackedVector2Array, p: Vector2, tol: float) -> bool:
+	if not Geometry2D.is_point_in_polygon(p, hull):
+		return false
+	for i: int in hull.size() - 1:
+		if Geometry2D.get_closest_point_to_segment(p, hull[i], hull[i + 1]).distance_to(p) <= tol:
+			return false
+	return true
 
 
 func _bone_pos(bone: String) -> Vector3:

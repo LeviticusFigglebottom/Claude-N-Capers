@@ -111,7 +111,8 @@ def skirt(kit: Kit, mat: str, top_z: float, hem_z: float, flare: float = 0.08, b
     # A closed skirt follows the thighs early (ramp) and fully at the hem, else a striding thigh pokes through the
     # front (walk / cower / seated); the cloth between the legs stretching is the right read.
     o.loft_down(m, bottom, lambda th: hem_z, kit.hull(), rows, clearance=0.015 * k, flare=flare, centre=hips,
-                weights=o.skirt_weights(fit, z0, hem_z, thigh_max=0.97, centre_w=0.03, ramp=0.55), keep_shape=0.35)
+                weights=o.skirt_weights(fit, z0, hem_z, thigh_max=0.97, centre_w=0.03, ramp=0.55, back_relax=0.6),
+                keep_shape=0.35)
     top = g.classify_loops(m)["top"]
     g.cuff_band(m, top, Hull(fit, [m]), 0.03 * k, 0.002 * k, mat, rows=1)
     o.hem_all(m, thick=0.003 * k, depth=0.012 * k)
