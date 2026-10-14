@@ -185,3 +185,73 @@ bash tools/levelcheck/gn_regen_twice.sh
 ```
 The resolver probe ran as a scene, not with `--script`: autoloads (`GameRng`) are not compile-time identifiers in
 `--script` mode, and `VariantResolver` fails to compile there.
+
+## 5. F1–F7 status (GN-C1 round 3, 2026-10-14)
+
+The C-owned findings are fixed **in the skeleton**. `docs/levels/gallery_night/g1_skeleton.patch` was re-exported as
+one format-patch commit on top of this tree (12 files, +2905 lines; patch 146 445 bytes, sha256 `9eff548c5e2a…`). It
+still adds files only: the four greybox scripts (+ .uid), `game/world/kits/objective_marker.gd` (+ .uid),
+`tools/levelcheck/gn_regen_twice.sh` and `tools/levelcheck/plans/gallery_night_emit_layout.py`. The slot list it
+emits from is on trunk: `tools/levelcheck/plans/gallery_night_slots.py` now has the yaw column and the extended
+`--check`. Checklist step 2 is unchanged (`git apply`). Steps 6 and part of 7 are now done in the patch.
+
+| Id | Status | What changed |
+|---|---|---|
+| F1 | **Fixed** | `build_greybox._build_sills`: a sill box goes under every walk-through facade opening (doors, arches, the LD roller, the areaway passage, the roof ladder top). It spans the opening's fitted width. On G it fills the inner half of the wall, because the grade starts at the centre line. On B and R it fills the full thickness. The court French doors are skipped: they already stand on the basement wall, which tops out at FFL 0.0. |
+| F2 | **Fixed** | `orchard_calloway` / `widow_sallow` / `widow_founders` sit at x 0.3 (0.1 m off the 0.2 m face) facing east. `saint_maritime` / `saint_harbour` sit at x 43.7 facing west. `orchard_benefactors` moves to the EB west (donor) wall at x 32.25. `cp_landing` is at z 8.25 facing south, `cp_treasury` faces north, and `kc_security` faces west. The VariantSlot carries the yaw, and the prefab that replaces the placeholder inherits it. G1 still has to offset the `loot_spawn` origin by its own depth (F2's last line), using the slot's −Z. |
+| F3 | **Fixed** | `gallery_night_slots.py`: yaw column (front = −Z, 0 N / 90 W / 180 S / −90 E), `WALL_HUNG`, `USE_POINT_GROUPS`. `--check` now fails a wall-hung slot that is more than 0.3 m from its room wall's face, has no wall on that edge, or does not face away from it. It also fails an interactive slot whose UsePoint (0.9 m in front) is not ≥ 0.3 m inside its room. `gn_gameplay._slot_use_point` puts a `UsePoint` on each interactive placeholder, on the floor it stands on (the GH half landing for `cp_landing`). `validate_level` `navmesh`: every UsePoint is on the navmesh. |
+| F4 | **Mostly fixed** (walk numbers below) | `orchard_benefactors` / `saint_harbour` are ≤ 2.5× from the Portico and Mews. The roof spawns are 2.2–3.25× (via Stair SS, BC and the arches). `widow_conservation` is 1.6× from the Portico, but 4.2–4.5× from the Mews and up to 3.8× from the roof. The cause is the plan: one Mews entry at LD's east end and the only stair at the far west. Whitelist those routes in checklist 12, or add the fire-escape ladder's nav link (Mews ↔ roof). |
+| F5 | **Fixed (C side)** | `game/world/kits/objective_marker.gd` (no `class_name`) is a `Marker3D` with an exported `objective_tag`. `HeistRuntime.find_by_tag` and `LocalHudModel` read that property. Placeholders of tagged content carry the B5 tags: `canvas_lantern|orchard|widow|saint`, `keycard`, `code_note`, `escape_<short>` / `secure_<short>` on the zone placeholders. `Gameplay/Markers/CasingHall` is `casing_hall` at the GH stair foot (22, 0, 15.4). ENV A may still promote this to a contract node; the property name is the same. |
+| F6 | Open (LEAD) | Not C's. |
+| F7 | **Fixed** | Ported from `sl_gameplay` / `sl_builder_base`: `prefab()`, `place_use_point()`, `_set_prop()` / `_enum_value()`, `prefab_scene()` (by class name), `kit_scene()`, `obstruct()`. Every B2 door is a `door` prefab, 42 in all (the `court_doors` slots build theirs: NONE / LOCKPICK). Each takes the B2 lock, swing (INWARD; DOUBLE for doubles), `push_bar` (LD personnel, head house, bronze), `starts_open` (bronze), `npc_authorized_tags`, `code_group argus` (SV), LOCKPICK 8 s and `leaf_surface` metal / glass. Visual: `arch_door_<single|double|service>_<t20|t40>` by wall thickness. Wall holes are cut to the kit opening (1.0 / 2.0 / 1.2 × 2.2 m) on the door centre. The bronze doors are two doubles with a 0.2 m pier, and the BC → LD door is a 1.2 m service door, since the corridor is 1.8 m clear. Where the 0.3 m Stair SS / head-house wall carries a door, it is built 0.4 m thick on x 3.05, with its stair face kept at 2.85. Public openings with no leaf in B2 (CK, PWW/PWM, DC, the arches) stay open. The 9 gameplay windows (EB S ×3 + E ×2, SL S ×4) are breakable `window` prefabs with `prop_window_w120_h210`; their holes are 1.2 × 2.1 m from the plan sill. The LD roller has no kit visual yet (placeholder `DockRollerDoor`, `industrial_door` at G1); it is baked closed (D-073), so the Mews enters through the personnel door. VAULT doors stay open in the bake: the art store has no other way in (reachability). |
+
+**validate_level** (`--stage=greybox --variants=all`, scene generated to `user://gn_scratch/after.tscn`; 888 navmesh
+polygons, previously 851):
+- FAIL only `contract_nodes` (5: the freeze items `heist_def`, `variant_table`, ESCAPE / SECURE_LOOT MapZone, mission
+  script) and `walkthrough`.
+- PASS: floating, clipping, scale, slopes, navmesh, barred_doors, reachability (50 variant configurations, 40 800
+  queries; rehearsal: 48 fails), patrols, lasers, camera_spine, camera_screen, viewmodel_lit, seam_gaps,
+  furniture_logic, and door_frame_gap / frame_proud on **51 measured prefabs** (rehearsal: vacuous). Leaf surfaces:
+  glass 2, metal 6, wood 34, no mismatch WARN.
+- walkthrough: **514 / 756 walks ok, 242 DETOUR, 0 UNREACHABLE**. The rehearsal's wired scene had 48 / 168 ok,
+  108 DETOUR and 12 UNREACHABLE. On the slot UsePoints alone (14 per spawn):
+
+  | Spawns | Slot walks ok | Remaining DETOURs |
+  |---|---|---|
+  | Portico | 56 / 56 | none |
+  | Mews | 24 / 56 | anything upstairs or west |
+  | Roof | 30 / 56 | the rooms straight below |
+
+  The remaining DETOURs are the stair-core / single-entry routes above (whitelist candidates, checklist 12); the
+  Portico's are the SL windows and AT (via the grand stair).
+
+Nav probe (same pairs as §3.1; rehearsal skeleton → now):
+
+| Pair | Straight (m) | Path before (m) | Path now (m) |
+|---|---|---|---|
+| VE doorway | 2 | 74.3 | 2.2 |
+| LD personnel doorway | 2 | 148.3 | 2.0 |
+| Areaway passage → PL | 2.5 | unreached | 2.5 |
+| Portico → EB | 13.5 | 91.2 | 30.8 |
+| Portico → GH | 15 | 70.9 | 15.0 |
+| Mews → EB | 34 | 162.7 | 45.0 |
+| Mews → LD | 16.3 | 159.7 | 22.6 |
+| Roof → Mews escape | 28.4 | 150.2 | 77.8 |
+
+**Other checks:**
+- `gn_regen_twice.sh`: layout current; two regens byte-identical (`2322d9de478f7d71`, 518 955 bytes). The patch
+  applied to this tree reproduces it.
+- `gallery_night_slots.py --check` and `--check --b-live`: PASS.
+- `gallery_night_floors_ascii.py --check`: PASS.
+- `gdlint` on every .gd in the patch: clean.
+
+**Still open for G1 (checklist 7–8):**
+- the readers / keypad / hack terminal / drill points that carry `treasury_door`, `vault_reader`, `server_door`,
+  `vault_drill`, `hack`
+- the shutters and the roller (`industrial_door`)
+- the lift landings (`bag_lift`)
+- the ladders' nav links
+- NPC spawns, patrols and tactical points
+- `saint_maritime`: on the UG3 east wall at z 15 it is not in the UG3 screen's shadow from C10 (32.4, 12.4); the
+  canvas would need z ≥ 15.7. `camera_screen` passes today only because the cameras are placeholders. Decide at G1:
+  move the slot or the screen.

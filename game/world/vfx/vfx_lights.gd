@@ -17,6 +17,7 @@ var _lights: Array[OmniLight3D] = []
 var _left: PackedFloat32Array = PackedFloat32Array()
 var _dur: PackedFloat32Array = PackedFloat32Array()
 var _energy: PackedFloat32Array = PackedFloat32Array()
+var _drawn_at: PackedInt64Array = PackedInt64Array()
 var _cap: int = VfxSettings.LIGHT_CAP
 
 
@@ -31,6 +32,7 @@ func set_cap(c: int) -> void:
 		_left.remove_at(_left.size() - 1)
 		_dur.remove_at(_dur.size() - 1)
 		_energy.remove_at(_energy.size() - 1)
+		_drawn_at.remove_at(_drawn_at.size() - 1)
 
 
 func live() -> int:
@@ -67,6 +69,7 @@ func flash(pos: Vector3, color: Color, energy: float, light_range: float, durati
 		_left.append(0.0)
 		_dur.append(0.0)
 		_energy.append(0.0)
+		_drawn_at.append(-1)
 		i = _lights.size() - 1
 	var light: OmniLight3D = _lights[i]
 	if light.is_inside_tree():
@@ -81,6 +84,7 @@ func flash(pos: Vector3, color: Color, energy: float, light_range: float, durati
 	_left[i] = duration
 	_dur[i] = duration
 	_energy[i] = e
+	_drawn_at[i] = Engine.get_frames_drawn()
 	started += 1
 	return true
 
@@ -91,6 +95,9 @@ func advance(delta: float) -> void:
 			continue
 		_left[i] -= delta
 		if _left[i] <= 0.0:
+			if not VfxSettings.frame_drawn_since(_drawn_at[i]):
+				_left[i] = 0.0001  # keep it up until one frame shows it (hitch-proof, ENV P)
+				continue
 			_lights[i].visible = false
 		else:
 			_lights[i].light_energy = _energy[i] * (_left[i] / _dur[i])
