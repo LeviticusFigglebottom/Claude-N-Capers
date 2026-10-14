@@ -567,6 +567,15 @@ func _hunt(g: NpcBase, timeout_s: float) -> String:
 		if d <= 1.45 and absf(g.global_position.y - crew.global_position.y) < 1.0:
 			await _knife(g, 0.0)
 			continue
+		if absf(g.global_position.y - crew.global_position.y) < 1.5 and not _civ_watchers(g.global_position).is_empty():
+			# A civilian can see him: the kill (or his arrest of us) would happen in their view. Wait unseen.
+			if _hook_need():
+				await _hook()
+			elif not _civ_watchers(crew.global_position).is_empty() and safe_spot != Vector3.INF:
+				await p.goto(safe_spot, 0.4, 2.0)
+			else:
+				await f.wait_s(0.4)
+			continue
 		var goal: Vector3 = _via_stair(g.global_position - _flat(g.look_forward()) * 0.9)
 		await _stealth_step(p.stand_point(goal), 0.6)
 	p.quiet = false
