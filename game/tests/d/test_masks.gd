@@ -6,6 +6,7 @@
 ## B4-15: five more bases (skull, theatre, gasmask, demon, goalie) under the same contract.
 ## D3-03: twelve more bases (ram, stag, cat, boar, serpent, moth, knight, doll, sunburst, geo, robot,
 ## jester) under the same contract.
+## D-111: eight more bases (kraken, lion, shark, pierrot, welder, wicker, lucha, signal), same contract.
 ## D-073: every mask is fitted over the crew face envelope (tools/blender/masks/_face_envelope.py);
 ## the envelope must have been generated from the current crew heads.
 ## Run after `godot --import`.
@@ -18,6 +19,7 @@ const LIBRARY_PREFIX: String = "res://world/materials/char_mask_"
 const BASE_NAMES: Array[String] = [
 	"heron", "visage", "vulpine", "bruiser", "owl", "skull", "theatre", "gasmask", "demon", "goalie",
 	"ram", "stag", "cat", "boar", "serpent", "moth", "knight", "doll", "sunburst", "geo", "robot", "jester",
+	"kraken", "lion",
 ]
 const BASE_MATERIAL: String = "M_char_mask_base"
 const BASE_LIBRARY: String = "res://world/materials/char_mask_base.tres"
