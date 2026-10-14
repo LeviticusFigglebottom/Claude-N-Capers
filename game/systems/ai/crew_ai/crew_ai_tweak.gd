@@ -21,6 +21,11 @@ extends Resource
 @export var follow_spread_deg: float = 55.0
 ## An idle AI closer than this to another crew member (horizontal, m) steps to its own slot ◇.
 @export var unstack_m: float = 0.7
+## P PO-pass: a bot (waiting at the van or idle) steps out of a human's personal radius (m) ◇.
+@export var personal_radius_m: float = 0.6
+## P PO-pass: in transit a bot keeps this gap (m) behind a moving teammate ahead on its line (single file
+## through doors and corridors) ◇. Lower slots lead, so two bots never wait on each other.
+@export var trail_gap_m: float = 1.0
 ## A following AI stops within this of its own formation slot (m) ◇.
 @export var follow_slot_arrive_m: float = 0.8
 

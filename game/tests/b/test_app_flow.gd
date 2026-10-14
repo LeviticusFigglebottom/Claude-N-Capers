@@ -210,10 +210,10 @@ func test_masks_button_round_trip() -> void:
 	await wait_frames(1)
 	await _to_loadout(f)
 	var ls: LoadoutScreen = f.loadout_screen
-	assert_eq(ls.masks_button.text, UiText.t(&"ui.masks.open"))
+	assert_true(ls.mask_option.is_visible_in_tree(), "D-111: the mask tile opens the bench")
 	assert_false(ls.mask_ids().has(&"mask.custom.0"))
 	ls.select_armor(&"armor.patrol_vest")
-	ls.masks_button.pressed.emit()
+	ls.mask_option.pressed.emit()
 	await wait_frames(2)
 	var ms: MaskScreen = f.mask_screen
 	assert_true(ms != null)

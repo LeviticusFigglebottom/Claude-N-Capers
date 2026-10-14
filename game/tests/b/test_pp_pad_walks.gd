@@ -63,7 +63,7 @@ func test_options_and_keybinds_gamepad_only() -> void:
 	if s == null:
 		return
 	for t: StringName in [OptionsScreen.TAB_AUDIO, OptionsScreen.TAB_VIDEO, OptionsScreen.TAB_ACCESSIBILITY,
-			OptionsScreen.TAB_CONTROLS]:
+			OptionsScreen.TAB_CONTROLS, OptionsScreen.TAB_KEYS]:
 		assert_true(await _nav_to(s.tab_buttons[t] as Control, "tab %s" % t))
 		await _pad(JOY_BUTTON_A)
 		assert_eq(s.current_tab, t, "A shows tab %s" % t)

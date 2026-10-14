@@ -1,9 +1,7 @@
 ## GN-B1 windowed check (lead lane, round 118): Gallery Night's UI before its map exists. Walks the real
 ## MenuFlow (planning table -> briefing at Routine and Hazardous -> pre-planning, every floor, a point and
 ## bought assets -> loadout) and stages the HUD with Gallery Night's objectives, loot and contact radio
-## (MockHudModel, casing and loud). The draft def must be where HeistRegistry looks, so run it on a scratch
-## copy of game/ with content/_drafts/gallery_night/*.tres copied to world/heists/gallery_night/ (never
-## commit that copy: world/heists is ENV A's):
+## (MockHudModel, casing and loud). Since C's G1 (trunk 55ce4d2a) the def is registered; run it on the clone:
 ##   xvfb-run -a -s "-screen 0 1920x1080x24" /opt/godot/godot --audio-driver Dummy --path <copy>/game \
 ##     --resolution 1280x720 --script res://tests/b/render/gn_capture.gd -- <out_dir>
 ## PNGs: <out_dir>/<NN>_<shot>_<w>x<h>.png; "GN ..." lines on stdout.

@@ -51,7 +51,7 @@ func _run() -> void:
 	l.primary_mods = [] as Array[StringName]
 	l.resolved_primary = LoadoutResolver.resolve_weapon(l.primary, l.primary_mods)
 	var loadouts: Dictionary = {}
-	var heisters: Array[StringName] = [&"rook", &"sable", &"dutch", &"wren"]
+	var heisters: Array[StringName] = Heisters.ids()  # B's roster order
 	for s: int in Net.human_slots():  # a real third-person body (D-073), not the capsule placeholder
 		var ls: Loadout = l.duplicate() as Loadout
 		ls.heister = heisters[s % heisters.size()]

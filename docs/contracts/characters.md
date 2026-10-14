@@ -167,3 +167,13 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
   step_r@0 step_l@16; Wrecker via `params.anim_walk_clip`, clip_speeds 1.7).
 * Recommended blend (ENV A): two BlendSpace2D (walk, run) with the 8 directions, sync on,
   speed_scale = v / (1.6 or 3.5 × motion_scale), crossfade walk↔run at the existing split (SOURCE `locomotion_blend`).
+
+## v1.11: seated deaths + gallery admin (GN-D1, D-110)
+* `death_seated_slump` (48 f, impact@22): jolted back, folds forward; head and right forearm on the desk top, hips stay
+  on the seat. `death_seated_fall` (60 f, impact@34): off the chair's left side onto the floor, hips ~0.5 m and head
+  ~1.1 m to the left, knees under the desk front, clear of the desk top. Both start from `desk_work` frame 0 on the npc
+  chair (seat 0.47 m, desk top 0.74 m), root fixed (SOURCE `seated_deaths`, `death_end_poses`).
+* ENV A plays them for an NPC killed while seated (`desk_work`, `phone_seated`, `sit_chair_watch`, `cower_seated`):
+  slump on a frontal or melee kill, fall otherwise; falls back to `death_front`/`death_back` if absent.
+* New character `gallery_admin` (Gallery Night admin PA, QC-58c); p5_cast roles `gallery_admin` and
+  `gallery_conservator` (= `gallery_attendant_b`).

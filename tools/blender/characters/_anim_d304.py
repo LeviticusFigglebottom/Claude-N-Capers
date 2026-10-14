@@ -792,6 +792,105 @@ def death_side(sk: Skeleton, solver: Solver, N: int, impact: int) -> Keys:
 
 
 # =============================================================================================
+# seated deaths (GN / D-110: an NPC killed in its chair must not fall through the desk)
+# =============================================================================================
+def _seat0(sk: Skeleton) -> Pose:
+    """desk_work frame 0 (seated at the npc desk, hands on the keyboard): what the seated deaths start from."""
+    import _anim_humanoid as H  # noqa: PLC0415
+
+    return H.desk_work(sk, 0, 360)
+
+
+LEAN, CHEST, NECK = 40.0, 24.0, 14.0
+
+
+def death_seated_slump(sk: Skeleton, solver: Solver, N: int, impact: int) -> Keys:
+    """Killed in the chair (frontal shot or a melee kill from behind): a jolt back against the chair, then the trunk
+    folds forward and the head and right forearm land on the desk top (``impact``); the left arm hangs beside the
+    chair. The hips stay on the seat and the root never moves (desk_work's chair and desk, H.SEAT_H / H.DESK_Z)."""
+    import _anim_humanoid as H  # noqa: PLC0415
+
+    k = sk.scale
+    desk = H.DESK_Z * k
+    jolt = Pose()
+    H.seated(sk, jolt, recline=14.0)
+    spine(jolt, hips=(-86.0 + 14.0, 0, 0), lean=80.0 - 14.0 * 0.6 - 6.0, chest_lean=-6.0, neck=(-10, 0, 4),
+          head=(-14, 4, 6))
+    arm_fk(sk, jolt, "R", add=30.0, swing=34.0, flex=56.0, out=8.0)
+    arm_fk(sk, jolt, "L", add=28.0, swing=30.0, flex=50.0, out=10.0)
+    for sfx in ("L", "R"):
+        jolt.hands[sfx] = hand_shape("claw", 0.7)
+
+    def slumped(fold: float, head_down: float) -> Pose:
+        p = Pose()
+        H.seated(sk, p, recline=-6.0)
+        p.hip = p.hip + v3(0.0, 0.06 * k * fold, -0.01 * k * fold)          # the hips slide forward on the seat
+        spine(p, hips=(-86.0 - 6.0, 0, 0), lean=80.0 + 3.6 + LEAN * fold, chest_lean=4.0 + CHEST * fold,
+              side=4.0 * fold, neck=(NECK * fold, 0, 0), head=(head_down, -18.0 * fold, 62.0 * fold))
+        hand_on(sk, p, "R", v3(0.10 * k, (0.30 + 0.12 * fold) * k, desk + 0.012 * k), v3(-0.55, 0.8, 0.0),
+                v3(0.0, 0.0, -1.0), pole=v3(0.9, -0.3, -0.4), along_share=0.5)
+        p.hands["R"] = hand_shape("relaxed", 0.9)
+        arm_fk(sk, p, "L", add=12.0 + 6.0 * fold, swing=8.0 * fold, flex=10.0, out=6.0)
+        p.hands["L"] = hand_shape("relaxed", 0.8)
+        return p
+    sag = slumped(0.45, 6.0)
+    down = slumped(1.0, 18.0)
+    hit = down.copy()
+    add_rot(hit, "head", rxd(-4.0))
+    settle = slumped(0.96, 16.0)
+    return Keys(solver, [(0, _seat0(sk), "inout"), (4, jolt, "snap"), (impact - 9, sag, "inout"),
+                         (impact, hit, "heavy"), (impact + 6, settle, "out"), (N, down, "inout")])
+
+
+def death_seated_fall(sk: Skeleton, solver: Solver, N: int, impact: int) -> Keys:
+    """Killed in the chair (any other hit): jolted, the body tips to its left over the chair's side, slides off the
+    seat and lands on the floor on its left side (``impact``), knees bent, beside the chair and clear of the desk
+    (hips ~0.5 m, head ~1.0 m to the left of the root; the desk is ahead, the chair at the root)."""
+    import _anim_humanoid as H  # noqa: PLC0415
+
+    k = sk.scale
+    hips_rest = sk.head["hips"]
+    jolt = Pose()
+    H.seated(sk, jolt, recline=10.0)
+    spine(jolt, hips=(-86.0 + 10.0, 0, 0), lean=74.0, chest_lean=-4.0, side=-6.0, neck=(-8, -4, 0), head=(-10, -6, 4))
+    arm_fk(sk, jolt, "R", add=26.0, swing=30.0, flex=50.0, out=12.0)
+    arm_fk(sk, jolt, "L", add=30.0, swing=20.0, flex=40.0, out=14.0)
+    for sfx in ("L", "R"):
+        jolt.hands[sfx] = hand_shape("claw", 0.7)
+    tip = Pose()
+    tip.hip = v3(-0.16 * k, -0.04 * k, (H.SEAT_H + 0.02) * k - hips_rest[2])
+    spine(tip, hips=(-80.0, -34.0, 0), lean=60.0, chest_lean=6.0, side=-14.0, neck=(4, -8, 0), head=(6, -10, 4))
+    # the hips' -80 deg pitch already swings the thighs forward (level, as on the seat): no extra swing
+    A.leg_fk(tip, "L", swing=10.0, out=4.0, knee=86.0, ankle=-10.0)
+    A.leg_fk(tip, "R", swing=6.0, out=-10.0, knee=82.0, ankle=-10.0)
+    _limp_arms(sk, tip, swing=10.0, flex=24.0, add=18.0, out=18.0)
+    drop = Pose()
+    drop.hip = v3(-0.40 * k, 0.0, 0.30 * k - hips_rest[2])
+    spine(drop, hips=(-40.0, -76.0, 0), lean=30.0, chest_lean=6.0, side=-10.0, neck=(4, -6, 0), head=(6, -8, 4))
+    A.leg_fk(drop, "L", swing=70.0, out=4.0, knee=80.0, ankle=-20.0)
+    A.leg_fk(drop, "R", swing=64.0, out=-4.0, knee=72.0, ankle=-20.0)
+    arm_fk(sk, drop, "L", add=40.0, swing=60.0, flex=20.0)
+    arm_fk(sk, drop, "R", add=50.0, swing=40.0, flex=30.0)
+    for sfx in ("L", "R"):
+        drop.hands[sfx] = hand_shape("relaxed", 0.8)
+    ground = Pose()
+    ground.hip = v3(-0.50 * k, 0.02 * k, 0.17 * k - hips_rest[2])
+    spine(ground, hips=(-20.0, -90.0, 0), lean=14.0, chest_lean=6.0, side=8.0, chest_side=5.0, neck=(-6, 4, 0),
+          head=(-4, 2, 6))
+    A.leg_fk(ground, "L", swing=56.0, out=4.0, knee=86.0, ankle=-28.0)
+    A.leg_fk(ground, "R", swing=66.0, out=-6.0, knee=74.0, ankle=-30.0)
+    arm_fk(sk, ground, "L", add=36.0, swing=78.0, flex=28.0, twist=-10.0)
+    arm_fk(sk, ground, "R", add=78.0, swing=50.0, flex=34.0, twist=10.0)
+    for sfx in ("L", "R"):
+        ground.hands[sfx] = hand_shape("relaxed", 0.9)
+    impact_p = ground.copy()
+    impact_p.hip = impact_p.hip + v3(0.0, 0.0, -0.012 * k)
+    add_rot(impact_p, "head", ryd(-6.0))
+    return Keys(solver, [(0, _seat0(sk), "inout"), (4, jolt, "snap"), (14, tip, "inout"), (impact - 6, drop, "in"),
+                         (impact, impact_p, "heavy"), (impact + 8, ground, "out"), (N, ground, "inout")])
+
+
+# =============================================================================================
 # downed crawl
 # =============================================================================================
 CRAWL_HIPS_Y = -0.30          # hips joint, m ahead of the root (the body lies along +Y, head forward)
@@ -875,8 +974,9 @@ LOCO8 = tuple(f"{g}_{s}" for g in ("walk", "run") for s in DIRS)
 TRANSITIONS = ("walk_start", "walk_stop", "run_start", "run_stop")
 HITS = ("hit_react_back", "hit_react_left", "hit_react_right")
 DEATHS = ("death_front_b", "death_back_b", "death_side")
+SEATED_DEATHS = ("death_seated_slump", "death_seated_fall")
 #: Start / stop shape: (hand-off cycle frame, right-foot lift frame or braking-step frame, ...), see ``clips``.
-NAMES = LOCO8 + TRANSITIONS + HITS + DEATHS + ("downed_crawl", "dozer_walk_heavy")
+NAMES = LOCO8 + TRANSITIONS + HITS + DEATHS + SEATED_DEATHS + ("downed_crawl", "dozer_walk_heavy")
 
 
 def clips(sk: Skeleton, solver: Solver, table: dict, G: dict, idle_frames: int) -> dict[str, Clip]:
@@ -910,6 +1010,13 @@ def clips(sk: Skeleton, solver: Solver, table: dict, G: dict, idle_frames: int) 
             else:
                 fn = death_side(sk, solver, N, ev["impact"])
             out[name] = Clip(name, N, False, fn, speed, None, ev, reach_fix=False, floor=int(ev["impact"]), no_sink=True)
+        elif name in SEATED_DEATHS:
+            if name == "death_seated_slump":
+                out[name] = Clip(name, N, False, death_seated_slump(sk, solver, N, ev["impact"]), speed, None, ev,
+                                 reach_fix=False)
+            else:
+                out[name] = Clip(name, N, False, death_seated_fall(sk, solver, N, ev["impact"]), speed, None, ev,
+                                 reach_fix=False, floor=int(ev["impact"]), no_sink=True)
         elif name in TRANSITIONS:
             base = name.split("_")[0]
             g = G[base]
@@ -941,7 +1048,7 @@ def root_curve(clip: Clip) -> list[float]:
 # checks and SOURCE.txt notes
 # =============================================================================================
 #: Clips whose solved frames ``anim_humanoid.build`` keeps for the checks / notes below.
-KEEP = ("idle", "walk", "run") + TRANSITIONS + ("downed_crawl", "death_front_b", "death_back_b", "death_side")
+KEEP = ("idle", "walk", "run") + TRANSITIONS + ("downed_crawl", "death_front_b", "death_back_b", "death_side") + SEATED_DEATHS
 
 
 def transition_slide(sk: Skeleton, clip: Clip, frames: list) -> float:
@@ -1031,8 +1138,16 @@ def source_notes(sk: Skeleton, table: dict, clips_: dict, keep: dict) -> dict[st
         "back, sits down and falls; the body ends ~1.0-1.9 m behind the root); death_side = spun ~100 deg to the left "
         "and dropped onto the left side (pick it for side hits or at random). `impact` = the body hits the floor. "
         "From the impact on the body rests on the floor (lowest skin vertex at the root plane, nothing below it).")
+    out["seated_deaths"] = (
+        "seated deaths (D-110), for an NPC killed while seated (desk_work, phone_seated, sit_chair_watch, cower_seated): "
+        "both start from desk_work frame 0 on the npc chair (seat top 0.47 m, root on the floor under the seat centre, "
+        "desk top 0.74 m with its near edge 0.22 m ahead); the root never moves. death_seated_slump: jolted back, then "
+        "folds forward, head and right forearm on the desk top at `impact`, the left arm hanging; the hips stay on the "
+        "seat (use it for a frontal hit or a melee kill). death_seated_fall: tips over the chair's left side and lands "
+        "on the floor on its left side at `impact` (hips ~0.5 m, head ~1.1 m to the left, knees under the desk front), "
+        "lowest skin vertex on the root plane from `impact` on (any other hit).")
     ds = []
-    for name in ("death_front_b", "death_back_b", "death_side"):
+    for name in ("death_front_b", "death_back_b", "death_side") + SEATED_DEATHS:
         b = keep.get(name)
         if b is None:
             continue

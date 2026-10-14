@@ -46,6 +46,9 @@ const HINT_CLIPS: Dictionary = {
 	&"desk_work": &"desk_work", &"phone_seated": &"phone_seated", &"sit_chair_watch": &"sit_chair_watch",
 	&"mop": &"mop", &"sit_bed_read": &"sit_bed_read", &"mug": &"mug_idle", &"idle_thug": &"idle_thug",
 	&"mug_walk": &"mug_idle",
+	# characters.md v1.9 (D-103, Gallery Night): inspect a hung work, cower standing / seated, walk texting.
+	&"curator_inspect": &"curator_inspect", &"inspect": &"curator_inspect", &"cower_stand": &"cower_stand",
+	&"cower_seated": &"cower_seated", &"text": &"phone_call", &"walk_text": &"phone_call",
 	# Brain / patrol-point aliases.
 	&"phone": &"phone_call", &"call": &"phone_call", &"sit": &"sit_chair",
 	&"queue": &"idle", &"lean": &"lean_wall", &"check_door": &"investigate_look", &"down": &"lie_down",
@@ -54,12 +57,17 @@ const HINT_CLIPS: Dictionary = {
 ## Clips that win over locomotion (the body holds a pose).
 const POSE_CLIPS: Array[StringName] = [
 	&"tied", &"kneel_cuffed", &"lie_down", &"cower", &"hands_up", &"surrender", &"downed", &"tased",
+	&"cower_stand", &"cower_seated",
 ]
 ## Special actions held while the hint lasts: they win over one-shots, locomotion and aim (the brain
 ## stands the body still for them).
 const ACTION_CLIPS: Array[StringName] = [&"kick_charge", &"shield_bang", &"heal_ally"]
 ## Hints played once when the hint changes to them.
 const ONESHOT_HINTS: Array[StringName] = [&"melee", &"kick_hit", &"hit_react"]
+## characters.md v1.11: clips that mean "seated at a desk / chair" for the seated deaths.
+const SEATED_CLIPS: Array[StringName] = [&"desk_work", &"phone_seated", &"sit_chair_watch", &"cower_seated"]
+const DEATH_SEATED_SLUMP: StringName = &"death_seated_slump"
+const DEATH_SEATED_FALL: StringName = &"death_seated_fall"
 ## One-shot hints that are not held as an idle once played (the hint may linger in the brain).
 const ONCE_ONLY_HINTS: Array[StringName] = [&"kick_hit", &"hit_react"]
 ## Clip -> substitute when the library lacks it (then idle).
@@ -74,6 +82,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"desk_work": &"desk_type", &"phone_seated": &"phone_call", &"sit_chair_watch": &"sit_chair", &"mop": &"browse",
 	&"sit_bed_read": &"sit_chair", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
 	&"rappel": &"climb_ladder", &"climb_ladder": &"idle",
+	&"curator_inspect": &"browse", &"cower_stand": &"cower", &"cower_seated": &"cower", &"walk_text": &"walk",
 }
 ## EnemyDef.params key: the unit's own walk clip (Bulwark shield_walk, Wrecker dozer_walk), played instead
 ## of walk while moving at walking speed (above it: run / sprint).
@@ -118,6 +127,8 @@ var _turning_left: float = 0.0
 var _aim_hold_left: float = 0.0
 var _hit_dir: Vector3 = Vector3.ZERO
 var _death_clip: StringName = &""
+## The NPC's last clip while alive was a seated one (SEATED_CLIPS): it dies in the chair.
+var _seated: bool = false
 var _last_hint: StringName = &""
 var _interact_kind: StringName = &""
 var _interact_height: float = 1.0
@@ -247,6 +258,8 @@ func tick(delta: float) -> void:
 			play_oneshot(hint, -1.0, true)
 	_update_turn(delta, tw)
 	var want: StringName = choose_clip()
+	if _npc != null and _npc.alive:
+		_seated = SEATED_CLIPS.has(want)
 	_apply(want, _speed_scale_for(want, tw), tw)
 	if weapon_visual != null and is_instance_valid(weapon_visual):
 		weapon_visual.visible = not POSE_CLIPS.has(want) and _death_clip == &""
@@ -406,6 +419,8 @@ func _state_clip() -> StringName:
 			out = &"lie_down" if _npc.role == &"civilian" else &"hands_up"
 		Enums.AlertState.PANICKED:
 			out = &"cower" if horizontal_speed() <= AnimTweak.data().move_threshold_mps else &""
+			if out == &"cower" and CivilianBrain.SEATED_ACTIVITIES.has(StringName(_npc.spawn_info.get("idle_activity", ""))):
+				out = &"cower_seated"  # client approximation: a seated civilian that has not run
 	return out
 
 
@@ -447,6 +462,8 @@ func _special_locomotion(speed: float, tw: AnimTweak) -> StringName:
 			out = &"sprint"
 	elif _npc != null and _hint() == &"mug_walk":
 		out = &"mug_carry_walk"  # D-069: walking with a mug, speed_scale = v / 1.3
+	elif _npc != null and _hint() == &"walk_text":
+		out = &"walk_text"  # D-103: walking while texting (characters.md v1.9, 1.2 m/s)
 	elif _npc != null and _npc.role == &"civilian" and (
 			_npc.alert_state == Enums.AlertState.PANICKED or _hint() == &"run" or _hint() == &"flee"):
 		out = &"flee"
@@ -534,12 +551,18 @@ func _pick_death_clip(tw: AnimTweak) -> StringName:
 	if dir == Vector3.ZERO and _npc != null:
 		dir = _npc.last_damage.get("direction", Vector3.ZERO)
 	dir.y = 0.0
-	if dir.length() < 0.001:
-		return &"death_back"
 	var facing: Vector3 = -_body.global_transform.basis.z
 	facing.y = 0.0
-	# Bullet travelling along the facing = hit from behind = pitched forward, face down.
-	return &"death_front" if dir.normalized().dot(facing.normalized()) > tw.death_front_dot else &"death_back"
+	# Bullet travelling along the facing = hit from behind (pitched forward, face down); against it = frontal.
+	var from_behind: bool = dir.length() >= 0.001 and dir.normalized().dot(facing.normalized()) > tw.death_front_dot
+	if _seated:  # characters.md v1.11: slump on the desk from a frontal or melee kill, else off the chair
+		var melee: bool = _npc != null and int(_npc.last_damage.get("type", -1)) == Enums.DamageType.MELEE
+		var seated_clip: StringName = DEATH_SEATED_SLUMP if melee or not from_behind else DEATH_SEATED_FALL
+		if player == null or player.has_animation("%s/%s" % [LIBRARY, seated_clip]):
+			return seated_clip
+	if dir.length() < 0.001:
+		return &"death_back"
+	return &"death_front" if from_behind else &"death_back"
 
 
 func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:

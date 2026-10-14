@@ -1,0 +1,13 @@
+asset: mask_base_shark
+script: tools/blender/masks/base_shark.py
+params: {"bottom": -0.112, "brow": 0.5, "cheek": 0.4, "chin_point": 0.0, "coverage": "full", "edge_res": 0.005, "eye_height": 0.018, "eye_shape": "round", "eye_spacing": 0.1, "eye_tilt_deg": 0.0, "eye_width": 0.022, "jaw": 0.6, "jaw_taper": 0.42, "mouth": "none", "nose": 0.0, "res": 0.009, "res_back": 0.016, "side_arc": 0.1, "top": 0.1}
+seed: 2610356736  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category masks --asset mask_base_shark
+edit policy: generated file, never edit by hand; change the script and rebuild
+coverage: full
+fit: crew face envelope (_crew_face_envelope.json), clearance 3.0 mm, max lift 52.7 mm
+pivot: face centre: midway between the eye centres at eye (cornea) depth; Blender +Y = Godot -Z = forward, +Z = up
+tri_budget: 8000
+tris_lod0: 4334
+uv0: front planar along -Z (Godot), x 0..1 = +X..-X (viewer's left to right), y 0..1 = top..bottom; bounds x +-0.0826 m, z -0.1118..0.1800 m

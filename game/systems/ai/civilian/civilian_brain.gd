@@ -29,10 +29,17 @@ extends Node
 enum Mode { IDLE, WANDER, RUN_TO_CALL, CALLING, FLEE, COWER, DOWN, TIED, DEAD, LEAVE }
 
 ## Idle activities that may wander (seated / queued / desk civilians stay put).
-const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone", &"mug"]
+const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone", &"mug", &"text"]
 ## D-069 adds mug (walks with it: mug_walk), mop, phone_seated (characters.md v1.7 ambient clips).
+## D-103 (characters.md v1.9) adds inspect (curator_inspect at a hung work), text (walks texting: walk_text).
 const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", &"queue", &"sit", &"mug", &"mop",
-	&"phone_seated"]
+	&"phone_seated", &"inspect", &"text"]
+## Seated activities: a panicked civilian still in its seat cowers there (cower_seated) instead of running.
+const SEATED_ACTIVITIES: Array[StringName] = [&"sit", &"phone_seated"]
+## Within this of its seat (m) a seated civilian counts as still seated.
+const SEAT_M: float = 0.4
+## Within this of its claimed cower point (m) a cowering civilian plays cower_stand, back to the wall.
+const COWER_POINT_M: float = 0.6
 const KIND_GUARD: StringName = &"guard"
 const KIND_POINT: StringName = &"point"
 const RETARGET_S: float = 0.5
@@ -73,6 +80,8 @@ var _wander_profile: Dictionary = {}
 ## PO-5: the wander point / call target given up after a stall (skipped by the next pick).
 var _failed_target: Node = null
 var _leave_target: Vector3 = Vector3.INF
+var _seat_pos: Vector3 = Vector3.INF
+var _cower_point: PatrolPoint = null
 
 
 func _ready() -> void:
@@ -377,6 +386,9 @@ func _alert_guard(g: NpcBase) -> void:
 
 ## Run away from the nearest crew member (or the threat), then cower.
 func _flee() -> void:
+	if _in_seat():
+		_cower()
+		return
 	mode = Mode.FLEE
 	anim_hint = &"run"
 	_flee_stall_t = 0.0
@@ -390,6 +402,12 @@ func _flee() -> void:
 		dir.y = 0.0
 	if dir.length() < 0.01 or _motor == null:
 		_cower()
+		return
+	if _cower_point == null and _targets != null:
+		_cower_point = _targets.claim_cower_point(_npc, _npc.global_position, away_from,
+			Tweak.stealth().civilian_flee_distance_m)
+	if _cower_point != null:
+		_motor.go_to(_cower_point.global_position, Tweak.stealth().civilian_run_speed)
 		return
 	_motor.go_to(_npc.global_position + dir.normalized() * Tweak.stealth().civilian_flee_distance_m,
 			Tweak.stealth().civilian_run_speed)
@@ -454,6 +472,22 @@ func _cower() -> void:
 	anim_hint = &"cower"
 	if _motor != null:
 		_motor.stop()
+	if _in_seat():
+		anim_hint = &"cower_seated"
+	elif _cower_point != null and is_instance_valid(_cower_point) \
+			and _flat_dist(_npc.global_position, _cower_point.global_position) <= COWER_POINT_M:
+		anim_hint = &"cower_stand"  # characters.md v1.9: back to the wall, facing out (the point's -Z)
+		if _motor != null:
+			_motor.face(-_cower_point.global_transform.basis.z)
+
+
+## Still in the seat it spawned in (a seated activity, not moved off it).
+func _in_seat() -> bool:
+	return _seat_pos != Vector3.INF and _npc != null and _flat_dist(_npc.global_position, _seat_pos) <= SEAT_M
+
+
+static func _flat_dist(a: Vector3, b: Vector3) -> float:
+	return Vector2(a.x - b.x, a.z - b.z).length()
 
 
 func _get_up() -> void:
@@ -499,7 +533,7 @@ func _tick_idle(delta: float) -> void:
 	var pick: PatrolPoint = options[GameRng.weighted_index(&"civilians", weights)]
 	call_target = {"kind": KIND_POINT, "node": pick, "position": pick.global_position, "reason": &""}
 	mode = Mode.WANDER
-	anim_hint = &"mug_walk" if _idle_activity == &"mug" else &"walk"
+	anim_hint = &"mug_walk" if _idle_activity == &"mug" else (&"walk_text" if _idle_activity == &"text" else &"walk")
 	_reset_walk_stall()
 	_motor.go_to(pick.global_position, Tweak.stealth().civilian_walk_speed)
 
@@ -535,6 +569,8 @@ func _physics_process(delta: float) -> void:
 func _physics_step(delta: float) -> void:
 	if not Net.is_authority() or _npc == null or not _npc.alive:
 		return
+	if _seat_pos == Vector3.INF and mode == Mode.IDLE and SEATED_ACTIVITIES.has(_idle_activity):
+		_seat_pos = _npc.global_position  # the spawn transform is applied after _ready
 	_update_body_block()
 	match mode:
 		Mode.IDLE:
@@ -560,6 +596,8 @@ func _physics_step(delta: float) -> void:
 
 func _on_died(_info: Dictionary, _killer_net_id: int) -> void:
 	var was_hostage: bool = _npc.is_in_group(G.HOSTAGE)
+	if _targets != null:
+		_targets.release_cower(_npc)
 	mode = Mode.DEAD
 	anim_hint = &"dead"
 	call_target = {}

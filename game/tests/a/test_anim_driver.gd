@@ -13,7 +13,7 @@ const LOOPED: Array[StringName] = [
 const ONCE: Array[StringName] = [
 	&"turn_l", &"turn_r", &"fire_rifle", &"fire_pistol", &"reload_rifle", &"reload_pistol", &"melee",
 	&"death_front", &"death_back", &"hit_react", &"surrender", &"radio_call", &"throw_bag",
-	&"kick_charge", &"kick_hit", &"shield_bang", &"heal_ally",
+	&"kick_charge", &"kick_hit", &"shield_bang", &"heal_ally", &"death_seated_slump", &"death_seated_fall",
 ]
 ## HandL/Socket local transform of the test rig (shield grip).
 const HANDL_SOCKET: Transform3D = Transform3D(Basis(Vector3.UP, 0.3), Vector3(-0.25, 1.1, -0.45))
@@ -190,6 +190,36 @@ func test_death_clip_from_hit_direction() -> void:
 	assert_eq(a.visual_root.rotation, Vector3.ZERO, "animated corpse is not tipped over like the capsule")
 	_drv(a).tick(0.5)
 	assert_eq(_drv(a).clip, &"death_front", "death clip holds")
+
+
+## characters.md v1.11 (PO-pass #6, the corpse through the GH desk): an NPC killed while seated (desk_work,
+## phone_seated, sit_chair_watch, cower_seated) slumps on the desk from a frontal or melee kill and falls off the chair
+## otherwise; without the clips it falls back to death_front / death_back.
+func test_seated_deaths() -> void:
+	var cases: Array = [
+		# [hint, direction, damage type, expected]
+		[&"desk_work", Vector3(0, 0, 1), Enums.DamageType.BULLET, &"death_seated_slump"],
+		[&"phone_seated", Vector3(0, 0, -1), Enums.DamageType.BULLET, &"death_seated_fall"],
+		[&"cower_seated", Vector3(0, 0, -1), Enums.DamageType.MELEE, &"death_seated_slump"],
+		[&"browse", Vector3(0, 0, 1), Enums.DamageType.BULLET, &"death_back"],
+	]
+	for c: Array in cases:
+		var npc: NpcBase = _npc(&"civilian")
+		npc.get_node("Brain").set(&"anim_hint", c[0])
+		_drv(npc).tick(0.016)
+		npc.last_damage = {"direction": c[1], "type": c[2]}
+		npc.die({"direction": c[1]})
+		_drv(npc).tick(0.016)
+		assert_eq(_drv(npc).clip, c[3], "%s, hit %s, type %d" % [c[0], c[1], c[2]])
+	var old: NpcBase = _npc(&"civilian")
+	var lib: AnimationLibrary = _drv(old).player.get_animation_library(AnimDriver.LIBRARY)
+	lib.remove_animation(&"death_seated_fall")
+	old.get_node("Brain").set(&"anim_hint", &"desk_work")
+	_drv(old).tick(0.016)
+	old.last_damage = {"direction": Vector3(0, 0, -1), "type": Enums.DamageType.BULLET}
+	old.die({"direction": Vector3(0, 0, -1)})
+	_drv(old).tick(0.016)
+	assert_eq(_drv(old).clip, &"death_front", "no seated clip in the library: the standing death")
 
 
 func test_noop_on_capsule_visual() -> void:

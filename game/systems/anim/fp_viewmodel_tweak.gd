@@ -48,12 +48,17 @@ static var _gen: int = 0
 @export_group("Left hand IK (D-069, characters.md v1.7)")
 ## The FP left hand IKs (TwoBoneIK3D upper_arm.L -> forearm.L -> hand.L) to the weapon model's `LeftHandIK`
 ## marker while the clip leaves the left hand on the gun (not during reload / swap, nor for these sets).
-@export var left_hand_ik_skip_sets: Array[StringName] = [&"bow", &"akimbo"]
+## Pistol / revolver (ENV D 2026-10-14): the clip's authored support grip wraps the gun; the IK onto the side point left
+## the fingers sticking out flat beside the slide.
+@export var left_hand_ik_skip_sets: Array[StringName] = [&"bow", &"akimbo", &"pistol", &"revolver"]
 ## Elbow pole in skeleton space, relative to upper_arm.L (outward / down) ◇.
 @export var left_hand_pole_offset: Vector3 = Vector3(-0.35, -0.45, 0.15)
 ## hand.L origin (wrist) relative to the LeftHandIK marker (palm contact), in marker space: measured from
 ## ENV D's baked rifle clip on its four guns (x -0.033..-0.038 constant; y -0.03..+0.017, z = per-gun fore-end).
 @export var left_hand_grip_offset: Vector3 = Vector3(-0.035, -0.02, 0.0)
+## Per-set override of left_hand_grip_offset (ENV D 2026-10-14): the long-gun sets' PD2 support grip (palm up under
+## B's centred under-fore-end markers, thumb along the left side) puts the wrist here; side-grip sets keep the global.
+@export var set_left_hand_grip_offset: Dictionary[StringName, Vector3] = {}
 ## IK influence blend rate (1/s) when the hand leaves / returns to the grip.
 @export var left_hand_ik_rate: float = 8.0
 ## PO-13: keep the clip's left-hand orientation relative to the gun while the IK moves the wrist (else the hand
@@ -252,6 +257,11 @@ static func data() -> FpViewmodelTweak:
 		if _cached == null:
 			_cached = FpViewmodelTweak.new()
 	return _cached
+
+
+## The LeftHandGrip offset (wrist from the LeftHandIK marker, marker space) for FP set `set_id`.
+func grip_offset(set_id: StringName) -> Vector3:
+	return set_left_hand_grip_offset.get(set_id, left_hand_grip_offset)
 
 
 ## Path of the SOURCE.txt the clip events come from ("" when none is known).

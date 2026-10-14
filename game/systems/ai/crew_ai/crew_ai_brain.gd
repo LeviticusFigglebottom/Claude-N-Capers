@@ -254,10 +254,12 @@ func _physics_step(delta: float) -> void:
 		receive_order(o["order"], o["target"], o["position"], o["issuer"])
 	if not _rt.went_loud:
 		if not stealth_engaged:
-			# D-014: wait at the van, undetectable.
+			# D-014: wait at the van, undetectable (stepping out of a human's way only).
 			mode = Mode.STEALTH_WAIT
 			_crew.stealth_hidden = true
-			_crew.apply_intent(_idle_intent())
+			var wi: CrewIntent = _idle_intent()
+			_move_intent(wi, _personal_space_dir())
+			_crew.apply_intent(wi)
 			return
 		# D-014 P4 option: ordered out of the van; detectable like a player, mirrors the leader.
 		_crew.stealth_hidden = false
@@ -324,6 +326,8 @@ func _think(delta: float) -> CrewIntent:
 		if goal != Vector3.INF:
 			goal_dist = _flat_dist(_crew.global_position, goal)
 			wish = _steer(goal, delta)
+			if _trailing(wish):
+				wish = Vector3.ZERO  # single file: wait for the teammate ahead to move on
 		_interact_ticks = 0
 	if _drop_pending:
 		_drop_pending = false
@@ -332,6 +336,8 @@ func _think(delta: float) -> CrewIntent:
 			task = &"" if task == &"carry_bag" else task
 	if not mobile:
 		wish = Vector3.ZERO
+	elif wish.length() <= 0.01 and not interacting:
+		wish = _personal_space_dir()  # idle: step out of a human's way
 	if look_point == Vector3.INF and target_enemy != null and not interacting:
 		look_point = _aim_point(target_enemy)
 	if look_point == Vector3.INF and wish.length() > 0.01:
@@ -469,6 +475,55 @@ func _formation_slot(leader: CrewController) -> Vector3:
 	var angle: float = deg_to_rad(tweak.follow_spread_deg) * (float(rank) - centre)
 	var dir: Vector3 = base.normalized().rotated(Vector3.UP, angle)
 	return leader.global_position + dir * tweak.follow_min_m
+
+
+## Away from every human crew member within personal_radius_m (horizontal, same floor), or ZERO.
+func _personal_space_dir() -> Vector3:
+	var away: Vector3 = Vector3.ZERO
+	for c: CrewController in _rt.crew_members():
+		if c == _crew or c.is_ai or c.crew_state == Enums.CrewState.CUSTODY:
+			continue
+		if absf(c.global_position.y - _crew.global_position.y) >= 1.0:
+			continue
+		var d: Vector3 = _crew.global_position - c.global_position
+		d.y = 0.0
+		var dist: float = d.length()
+		if dist >= tweak.personal_radius_m:
+			continue
+		if dist < 0.01:  # exactly on top: step to our right
+			d = _crew.global_basis.x
+			dist = 0.01
+		away += d.normalized() * (tweak.personal_radius_m - dist)
+	return away.normalized() if away.length() > 0.0001 else Vector3.ZERO
+
+
+## True when a lower-slot AI teammate is moving ahead on our line within trail_gap_m (same floor).
+func _trailing(p_wish: Vector3) -> bool:
+	if p_wish.length() <= 0.01 or target_enemy != null:
+		return false
+	var wish: Vector3 = Vector3(p_wish.x, 0.0, p_wish.z).normalized()
+	for c: CrewController in _rt.crew_members():
+		if c == _crew or not c.is_ai or c.slot > _crew.slot or c.crew_state != Enums.CrewState.NORMAL:
+			continue
+		var to: Vector3 = c.global_position - _crew.global_position
+		if absf(to.y) >= 1.0:
+			continue
+		to.y = 0.0
+		var ahead: float = to.dot(wish)
+		if ahead <= 0.0 or ahead >= tweak.trail_gap_m or (to - wish * ahead).length() > tweak.personal_radius_m:
+			continue
+		if Vector2(c.velocity.x, c.velocity.z).length() > 0.3 and Vector2(c.velocity.x, c.velocity.z).dot(
+				Vector2(wish.x, wish.z)) > 0.0:
+			return true
+	return false
+
+
+## Walk intent toward world direction `wish` (unit or zero) at the current look yaw.
+func _move_intent(i: CrewIntent, wish: Vector3) -> void:
+	if wish.length() <= 0.01:
+		return
+	var local: Vector3 = Basis(Vector3.UP, _yaw).inverse() * wish
+	i.move = Vector2(local.x, -local.z).limit_length(1.0)
 
 
 ## True while another crew member stands within unstack_m of this AI (horizontal, same floor).

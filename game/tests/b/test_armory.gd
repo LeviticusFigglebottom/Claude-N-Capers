@@ -20,6 +20,9 @@ const CUE_FAMILY_BY_WEAPON: Dictionary = {
 	&"weapon.harrow_12": &"shotgun", &"weapon.brute_12": &"shotgun", &"weapon.reaper_db": &"shotgun",
 	&"weapon.osprey_762": &"sniper", &"weapon.shrike_44": &"sniper",
 }
+## Weapons whose fire cue is a shared registered cue outside the `cue.weapon_<family>_fire` pattern (ENV C's
+## registry has no saw "fire"; the rotor saw cuts). test_weapon_cues guards that each one is registered.
+const SHARED_FIRE_CUE: Dictionary = {&"weapon.rotor_saw": &"cue.weapon_saw_cut"}
 ## B4-18: silent without a suppressor slot (integral can, bow, crossbow): suppressed, noise <= 1 m, threat 0.
 const INHERENTLY_SILENT: Array[StringName] = [&"weapon.hush_9", &"weapon.thorn_bow", &"weapon.vise_crossbow"]
 ## B4-18: PD2 specials are primaries except the portable saw (OVE9000: secondary).
@@ -221,7 +224,8 @@ func test_cues_and_anim_sets_follow_the_contract_pattern() -> void:
 	for w: WeaponDef in ContentDB.all_weapons():
 		assert_has(ANIM_SETS, w.anim_set, "%s anim set" % w.id)
 		var family: StringName = CUE_FAMILY_BY_WEAPON.get(w.id, CUE_FAMILY.get(w.anim_set, w.anim_set))
-		assert_eq(w.fire_cue, StringName("cue.weapon_%s_fire" % family), "%s fire cue" % w.id)
+		var want_fire: StringName = SHARED_FIRE_CUE.get(w.id, StringName("cue.weapon_%s_fire" % family))
+		assert_eq(w.fire_cue, want_fire, "%s fire cue" % w.id)
 		# A suppressed cue only where a suppressor can be fitted (ENV C: no orphan _suppressed cues).
 		var want_sup: StringName = &""
 		if w.mod_slots.has(Enums.ModType.SUPPRESSOR):

@@ -30,7 +30,8 @@ ASSETS = __import__("pathlib").Path(HERE).resolve().parents[2] / "game" / "asset
 ROOT = os.environ.get("CHAR_ROOT") or str(ASSETS / "characters")
 MASKS = str(ASSETS / "masks")
 CREW = [("char_crew_rook", 1.84, "mask_gilded_heron"), ("char_crew_sable", 1.75, "mask_base_vulpine"),
-        ("char_crew_dutch", 1.86, "mask_base_bruiser"), ("char_crew_wren", 1.68, "mask_base_owl")]
+        ("char_crew_dutch", 1.86, "mask_base_bruiser"), ("char_crew_wren", 1.68, "mask_base_owl"),
+        ("char_crew_marten", 1.70, "mask_base_signal"), ("char_crew_jay", 1.83, "mask_base_lucha")]
 HEAD_SOCKET = Vector((0.0, 0.0767, 1.666))   # Godot (0, 1.666, -0.0767) at 1.78 m, in Blender axes
 mode, out = sys.argv[sys.argv.index("--") + 1:][:2]
 

@@ -114,6 +114,7 @@ func _ready() -> void:
 	if _crew == null:
 		return
 	_crew.masked_changed.connect(_on_masked_changed)
+	_crew.crew_state_changed.connect(func(_o: int, _n: int) -> void: _apply_casing_visibility())
 	_crew.civilian_changed.connect(func(_c: bool) -> void: refresh_weapon())
 	if _crew.weapons != null:
 		_crew.weapons.equipped_changed.connect(func(_ws: int) -> void: refresh_weapon(true))
@@ -356,10 +357,11 @@ func refresh_weapon(animated: bool = false) -> void:
 	_apply_casing_visibility()
 
 
-## PD2: casing (unmasked) shows no first-person weapon or arms; masking up draws it (P, lead request).
-## Visibility only: the WeaponVisual stays attached (its Muzzle marker is gameplay's tracer origin).
+## PD2: casing (unmasked) shows no first-person weapon or arms; masking up draws it (P, lead request). Nor does
+## custody (PD2 spectates; the downed secondary still shows). Visibility only: the WeaponVisual stays attached (its
+## Muzzle marker is gameplay's tracer origin).
 func _apply_casing_visibility() -> void:
-	var show: bool = not _crew.is_casing()
+	var show: bool = not _crew.is_casing() and _crew.crew_state != Enums.CrewState.CUSTODY
 	if _fp != null and is_instance_valid(_fp):
 		_fp.visible = show
 	if _viewmodel != null and is_instance_valid(_viewmodel) and (_fp == null or not is_instance_valid(_fp)):

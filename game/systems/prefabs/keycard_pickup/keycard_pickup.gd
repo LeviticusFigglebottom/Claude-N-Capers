@@ -70,6 +70,15 @@ func _physics_process(_delta: float) -> void:
 		_release()
 
 
+## Server (mission): remove this card for the rest of the run (Gallery Night curator_tipsy: her lanyard is on the
+## bar instead, one card in all). The despawn replicates.
+func discard() -> void:
+	if not Net.is_authority() or taken:
+		return
+	taken = true
+	queue_free()
+
+
 ## True when `npc` (alive) can be relieved of what it carries: tied, intimidated to the floor, dominated, surrendered.
 static func subdued(npc: NpcBase) -> bool:
 	if npc == null or not npc.alive:

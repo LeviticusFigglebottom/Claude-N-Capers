@@ -835,3 +835,29 @@ From now on:
   pre-merge targeted tests and must not regress p3_loud / PO-5 flows; ND gate 2 result is still reported and any real
   game bug it finds outranks GN work.
 - ENV A runs gate 2 in the background while starting the D-103 §6 system groundwork (each API with a unit test).
+
+## D-111: polish gate before the heist after Gallery Night (2026-10-14, LEAD; product owner)
+The product owner: before starting the next heist, the game needs more non-heist content and polish. Gallery Night
+finishes first (GN-A1/C1/C2/D1/P1), then these must hold before the next heist's build starts:
+1. **Firing range out of "experimental"** (B4-13 full + polish): moving and armoured targets, damage-falloff graph,
+   DPS readout, clean layout and lighting, reached from the hub like a real place. Owner B (content/range), map/lighting C.
+2. **Menus: clean, uncluttered, consistent** (PO complaint): main menu, hub/stations, Board, loadout/armory, mask bench,
+   options, briefing, payday. Owner B; P runs the windowed feel pass; target fewer elements per screen, one visual language.
+3. **Animations actually play** (PO: "almost zero animations play"): an audit of which authored clips play in game
+   (NPC ambient/activities, reactions, interactions, crew TP, FP actions) versus fall back to idle/T-pose/static. P builds
+   the clip-coverage probe; A wires AnimDriver gaps; D authors missing clips. Exit: every clip in characters.md has a
+   trigger that fires in a shipped heist, or is marked unused.
+4. **More masks and heisters:** D builds new masks and heister characters; B adds their defs, unlocks and bench/selection UI.
+   Target set by D's capacity, at least +6 masks and +2 heisters this pass.
+Envs with spare capacity start these now (B: menus + range; P: animation audit; D: after the current FP queue);
+A and C stay on Gallery Night until it is complete.
+
+## D-112: render light cap raised; weapon/library albedo lifted (2026-10-14, LEAD)
+- `rendering/limits/opengl/max_renderable_lights` 32 → 256 (Compatibility, per view). SL has 58 omni lights and GN ~61;
+  with 32, the lights that render depend on cull order, so splitting slabs into 6 m tiles (D-111) darkened some rooms.
+  The per-object cap (`max_lights_per_object`, 8) stays at the default; maps keep ≤ 8 lights per 6 m tile. Perf is to be
+  re-checked on the real-GPU probe; distance-fade on map lights (ENV C) is the follow-up if needed.
+- **D-038 amendment:** the shared library's "black" materials (polymer, rubber, anodised/blued metal) move from a
+  near-black albedo band (linear 0.018–0.035) to 0.04–0.10 (polymer_black sRGB ~70, steel_blued ~110, metal_matte ~120),
+  because weapons and props read as untextured black silhouettes wherever environment reflection is weak (PO feedback,
+  round 188 ruling; ENV C 3de44573).
