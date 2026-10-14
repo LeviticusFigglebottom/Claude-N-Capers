@@ -24,8 +24,8 @@ Newest entry first, keep the last 10.
 | AU-1 | Payday crew table under the fold at 720p while the right third was empty | FIXED 8ad4bd90: stacked under the XP panel (test_ui_payday, 4 crew with every column) |
 | AU-2 | Loadout item picker sheet started inside the screen title | FIXED f46bfdf7 (test_ui_loadout) |
 | AU-3 | Achievements: 4 of 41 cards per screen | FIXED 47b2e636: two columns with a d-pad grid; test_menu_reach now covers it |
-| AU-4 | Hub: The Board card description ends in "..." (the side panel shows it whole) | Minor, kept |
-| AU-5 | Board map: contract markers sit on district names (HARBOR, DOCKS) | Minor, kept |
+| AU-4 | Hub: The Board card description ends in "..." (the side panel shows it whole) | FIXED 9fc56594 + follow-up: START HERE on the title line (test_hub) |
+| AU-5 | Board map: contract markers sit on district names (HARBOR, DOCKS) | FIXED 7dbbee13 + follow-up: names step clear of pins (test_board_screen) |
 | AU-6 | Workshop weapon list: long names end in "..." ("Thorn Compound Bow · Level ...") | Minor, kept |
 | AU-7 | Tab sheet: objective marker labels drew across its text (LOOT SECURED) | FIXED 08585cdd: badges only on the sheet (test_ui_theme) |
 | AU-8 | The first-time card sat over the downed screen and cut a marker label | FIXED: it gives way while downed (test_onboarding_card) |

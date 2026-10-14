@@ -102,3 +102,27 @@ func test_map_spread_keeps_distance() -> void:
 	for i: int in range(out.size()):
 		for j: int in range(i + 1, out.size()):
 			assert_true(out[i].distance_to(out[j]) >= 49.0, "%s %s" % [out[i], out[j]])
+
+
+## AU-5 (lane 2 audit): district names keep their centre when clear, else step off the pins.
+func test_district_label_box_steps_off_pins() -> void:
+	var size: Vector2 = Vector2(100, 20)
+	var clear: Rect2 = BoardMapView.label_box(Vector2(200, 200), size, [] as Array[Rect2])
+	assert_eq(clear.get_center(), Vector2(200, 200), "no pin: centred")
+	var pin: Rect2 = Rect2(180, 185, 50, 50)
+	var moved: Rect2 = BoardMapView.label_box(Vector2(200, 200), size, [pin] as Array[Rect2])
+	assert_false(moved.intersects(pin), "off the pin: %s" % moved)
+	assert_eq(moved.position.x, clear.position.x, "only moves up or down")
+
+
+func test_board_district_names_clear_of_pins() -> void:
+	var s: BoardScreen = _screen(0)
+	await wait_frames(3)
+	var labels: Dictionary = s.map_view.label_rects
+	assert_true(labels.size() >= 5, "district names drawn")
+	for id: Variant in labels:
+		for pin: BoardPin in s.map_view.pins:
+			if pin.visible:
+				assert_false((labels[id] as Rect2).intersects(pin.get_rect()), "%s under a pin" % id)
+	s.queue_free()
+	await wait_frames(1)
