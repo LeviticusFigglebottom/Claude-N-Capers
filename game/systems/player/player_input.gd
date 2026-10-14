@@ -136,7 +136,7 @@ func _input(event: InputEvent) -> void:
 		# P1-01 (mouse gain): screen_relative = raw device counts. `relative` is scaled by the canvas_items stretch
 		# (base 1920x1080 / window size), which made sensitivity depend on resolution (x0.75 at 1440p, x0.5 at 4K,
 		# x1.5 at 720p, x30 headless).
-		var d: Vector2 = mm.screen_relative * mouse_sensitivity / _zoom()
+		var d: Vector2 = mm.screen_relative * mouse_sensitivity / _zoom() * _ads_mult()
 		add_look(-d.x * ms.x, -d.y * ms.y * inv)
 
 
@@ -172,6 +172,16 @@ func ui_has_focus() -> bool:
 ## Look divisor while zoomed (1.0 at hip fire or with scale_look_by_zoom off).
 func _zoom() -> float:
 	return maxf(CrewView.local_zoom_factor(), 1.0) if scale_look_by_zoom else 1.0
+
+
+## Options "aiming sensitivity" (B, options.md: GameSettings.ads_sensitivity, 0.1..2, default 1) while aimed /
+## scoped, on top of the zoom divisor; 1.0 at hip fire, or when the settings build has no such option.
+func _ads_mult() -> float:
+	var gs: GameSettings = GameSettings.current()
+	if gs == null or not gs.has_method(&"ads_sensitivity"):
+		return 1.0
+	var aimed: bool = _zoom() > 1.001 or (_crew != null and CrewView.is_aiming(_crew))
+	return float(gs.call(&"ads_sensitivity")) if aimed else 1.0
 
 
 ## Recoil kick of one shot (radians; CrewWeapons._apply_recoil): pitch up `kick`, yaw `side`, spread over
@@ -276,7 +286,7 @@ func _physics_process(delta: float) -> void:
 	_tick_recoil(delta)
 	if not gamepad_requires_capture or MouseCapture.is_captured():
 		var stick: Vector2 = Input.get_vector(&"look_left", &"look_right", &"look_up", &"look_down", 0.0)
-		var d: Vector2 = gamepad_look_step(stick, delta) / _zoom()
+		var d: Vector2 = gamepad_look_step(stick, delta) / _zoom() * _ads_mult()
 		if d != Vector2.ZERO:
 			add_look(d.x, d.y)
 	else:
