@@ -117,6 +117,8 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 			continue
 		if c.availability(p.crew) != &"":
 			continue
+		if _is_body_bag(c):
+			continue  # ND attempt 11: a body bag by the drill marker sent the pilot up the stairs mid-wave
 		var door: Door = c.owner_node() as Door
 		if door != null and door.is_open:
 			continue  # using an open door closes it (ND: the pilot toggled the vault gate while drilling)
@@ -174,7 +176,7 @@ func _fetch_bag() -> bool:
 		var c: InteractableComponent = n as InteractableComponent
 		if c == null or not c.enabled or not rt.is_ancestor_of(c) or not (c.kind in [&"bag_loot", &"carry_bag", &"pickup_bag"]):
 			continue
-		if c.availability(p.crew) != &"":
+		if c.availability(p.crew) != &"" or _is_body_bag(c):
 			continue
 		var o: Node = c.owner_node()
 		if o is Node3D and p.secure_zone() != null and (o as Node3D).global_position.distance_to(p.secure_zone().global_position) < 4.0:
@@ -188,6 +190,12 @@ func _fetch_bag() -> bool:
 		return false
 	await p.use(best, 20.0, func() -> bool: return p.crew.is_carrying_bag())
 	return p.crew.is_carrying_bag()
+
+
+## Body bags are not loot (S6.2): the loud pilot never picks them up.
+static func _is_body_bag(c: InteractableComponent) -> bool:
+	var bag: LootBag = c.owner_node() as LootBag
+	return bag != null and bag.is_body_bag()
 
 
 func _secure_bag() -> void:
