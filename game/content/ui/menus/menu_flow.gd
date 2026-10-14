@@ -734,6 +734,13 @@ func _hand_heisters(options: Dictionary) -> void:
 		var l: Loadout = loadouts[slot] as Loadout
 		if l != null and l.heister != &"":
 			map[int(slot)] = l.heister
+	_set_heister_map(map)
+
+
+## The HUD crew rows / toasts and the payday name heisters from `map` (slot -> heister id).
+func _set_heister_map(map: Dictionary) -> void:
+	if not _hud is Hud:
+		return
 	(_hud as Hud).set_crew_heisters(map)
 	if _heist_payday != null and is_instance_valid(_heist_payday):
 		_heist_payday.crew_heisters = map
@@ -1006,6 +1013,9 @@ func _begin_client_heist(info: Dictionary) -> void:
 	is_pro = bool(info["is_pro"])
 	visible = false
 	_spawn_in_heist_ui()
+	# Co-op pass: the client's rows read "Host / AI 2"; the lobby's assignment is the host's (same summaries).
+	if lobby != null and lobby.is_active():
+		_set_heister_map(lobby.state.heister_assignment())
 	if not Net.host_lost.is_connected(_on_client_host_lost):
 		Net.host_lost.connect(_on_client_host_lost)
 

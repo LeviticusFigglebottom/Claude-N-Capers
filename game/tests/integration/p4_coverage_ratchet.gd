@@ -89,11 +89,9 @@ const UNTESTED: Dictionary = {
 	&"stealth.civilian_stay_down_mult": "A",  # systems/ai/civilian/civilian_brain.gd
 	&"stealth.ecm_feedback_duration_mult": "A",  # systems/deployables/ecm_system.gd
 	&"weapon.ammo_total_mult": "A",  # systems/combat/crew_weapons.gd, ...
-	&"weapon.mag_extra": "A",  # systems/combat/crew_weapons.gd
 	&"weapon.melee_bloodthirst": "A",  # systems/combat/crew_melee.gd
 	&"weapon.melee_charge_speed_mult": "A",  # systems/anim/fp_viewmodel.gd, ...
 	&"weapon.recoil_mult": "A",  # systems/combat/crew_weapons.gd
-	&"weapon.reload_speed_mult": "A",  # systems/combat/crew_weapons.gd
 	&"weapon.saw_damage_mult": "A",  # systems/combat/special_weapons.gd
 	&"weapon.saw_shield_pierce": "A",  # systems/combat/special_weapons.gd
 	&"weapon.saw_wear_mult": "A",  # systems/combat/special_weapons.gd

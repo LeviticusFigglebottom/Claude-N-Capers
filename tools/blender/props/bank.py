@@ -460,11 +460,12 @@ def _vault_door(k: Kit, p: dict) -> None:
         cols.append(((x0, -wall_t / 2, oh - c * 0.6), (x1, wall_t / 2, oh)))
     k.collision(cols, kind="trimesh", parent=obj)
     # leaf: hinge on the -X edge of the bore, front face at the antechamber side (+Y)
-    hinge_x = -r_bore + 0.02  # leaf spans hinge_x .. hinge_x + 2 * rr: width 2.2 m (door width_m)
+    # PO-7: the plug fits the bore with 8 mm clearance (2 cm left a see-through crescent at the sill).
+    rr = r_bore - 0.008
+    hinge_x = -rr  # leaf spans hinge_x .. hinge_x + 2 * rr: width 2.22 m (door width_m 2.2)
     pivot = k.empty("Leaf", (hinge_x, 0.0, 0.0))
     lf = k.obj("LeafMesh", parent=pivot)
     body = lf.part(bevel=0.0)
-    rr = r_bore - 0.02
     ox = -hinge_x  # leaf-local x of the bore centre
     body.cyl(rr, 0.22, (ox, wall_t / 2 - 0.11 + 0.03, cz), "steel", axis="Y", segs=48)
     body.cyl(rr - 0.12, wall_t - 0.16, (ox, -0.05, cz), "steel", axis="Y", segs=40)

@@ -2,6 +2,19 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-14 03:00 ET: D-107 stamina, D-105 in real heists, G1 harness
+- D-107 (a6e67fc6, round 81): stamina/jump faithful to PD2 (sprint start > 4, run to 0; regen 1 s after the sprint;
+  jumps never blocked, run-jump costs 2; 0.55 s jump cooldown; crouch + jump stands). test_p_d107_stamina 5/5; A's
+  QB-60 jump test rewritten under the carve-out (13/13), B HUD green.
+- D-102 follow-up 05f65d09: pickup calls CrewWeapons.equip(slot, true) (fire waits the equip time).
+- D-105: C's MuzzleFlash / TracerFx used in FP (0c093371): MIX materials (additive is invisible in the viewmodel
+  SubViewport), FP-sized smoke (C's world-space smoke fills the screen), C fixed billboard_keep_scale at source.
+  gunplay_capture.tscn: Glasshouse loud, real-input fire at distinct surfaces, bit1 doubling check (0 doubled),
+  corsair sheet in captures/d105_gunplay_corsair_gh.png; all-classes run in progress (llvmpipe ~17 min/weapon).
+- G1 harness (D-104): game/tests/p/p_traversal.gd (PTraversal: gap, crouch bar, balcony throw, ladder, carry) +
+  test_p_g1_traversal 5/5 on a synthetic course. Ready for Gallery Night's greybox.
+- TODO: re-run test_pp_p12_door_snag alone (glasshouse; interrupted, A's door swing landed in r75).
+
 ## 2026-10-14 01:30 ET: Dockside pacing, carry presentation, D-105 FP weapon FX (WIP)
 - Round 69 merged D-102. 33407473 removes bag_can_jump (A dropped its fallback, e2d5cf6f).
 - Lane (c) Dockside pacing: game/tests/p/_review/bag_run_probe.tscn (real input, nav routes, --old compares).
