@@ -120,6 +120,7 @@ func _hud() -> void:
 		_obj(&"extras", &"objective.gallery_night.extras", {}),
 	]
 	model.carried_bag = {"loot_id": &"loot.painting_lantern_bearer", "weight": Enums.LootWeight.MEDIUM}
+	await _flash_out()
 	await _shot("hud_stealth_masked", 20)
 	model.objectives = [
 		_obj(&"lockdown", &"objective.gallery_night.lockdown", {}),
@@ -135,7 +136,14 @@ func _hud() -> void:
 	model.carried_bag = {"loot_id": &"loot.painting_study", "weight": Enums.LootWeight.LIGHT}
 	for id: StringName in RADIO:
 		EventBus.voice_line_requested.emit(&"vance", id, {"source": ContactRadio.SOURCE})
+	await _flash_out()
 	await _shot("hud_loud_radio", 20)
+
+
+## The objective panel holds "OBJECTIVE COMPLETE" for FLASH_S before the next step shows; 20 frames of a
+## light scene end well inside it, so the masked/loud shots froze on the finished casing step.
+func _flash_out() -> void:
+	await get_tree().create_timer(ObjectivesPanel.FLASH_S + 0.5).timeout
 
 
 static func _obj(id: StringName, key: StringName, args: Dictionary, state: int = Enums.ObjectiveState.ACTIVE) -> Dictionary:
