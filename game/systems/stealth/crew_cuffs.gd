@@ -60,7 +60,16 @@ static func can_cuff(crew: CrewController) -> bool:
 static func can_police_cuff(crew: CrewController) -> bool:
 	if crew == null or crew.is_ai or crew.crew_state != Enums.CrewState.DOWNED:
 		return false
-	return crew.weapons == null or not crew.weapons.is_shooting()
+	if crew.weapons != null and crew.weapons.is_shooting():
+		return false
+	return down_quiet_s(crew) >= CustodyTweak.data().police_cuff_grace_s  # D-108
+
+
+## D-108: seconds `crew` has been down without firing (since going down, or since its last downed shot).
+static func down_quiet_s(crew: CrewController) -> float:
+	var down: float = crew.health.down_s if crew.health != null else INF
+	var shot: float = crew.weapons.last_shot_age if crew.weapons != null else INF
+	return minf(down, shot)
 
 
 func _ready() -> void:

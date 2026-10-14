@@ -33,7 +33,9 @@ API: `game/core/net.gd`. Architecture: architecture.md §3.
   to its member set (peers at `begin()`, drop-ins after their late bring-up, minus leavers). Lobby kinds `heist_closed`
   (host → clients: the replica freezes, `HeistNetSync.host_closed` fires) and `heist_left` (client → host). `launch()` on
   a live session tears down any leftover runtime first. After teardown the host calls `Net.clear_ai()` (drops AI seats
-  so newcomers can join); the crew lobby also calls it when a human leaves while no heist runs.
+  so newcomers can join). In the lobby, empty seats are filled with AI by design (`fill_with_ai()`), a leaver's seat
+  becomes AI and a newcomer replaces an AI seat (`_on_peer_connected`); never call `clear_ai()` from a `crew_changed`
+  handler (fill_with_ai re-emits it per seat and would loop).
 * ENet peer timeout (lead, round 80): `Net` sets (32, 15 000 ms, 60 000 ms) on every peer, both sides, so a host's
   bring-up stall does not drop clients. A human slot falling back to AI is logged (`Log.warn`, channel `net`).
 

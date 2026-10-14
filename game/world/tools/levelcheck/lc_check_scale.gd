@@ -39,6 +39,7 @@ const CEILING: Dictionary = {
 	&"vault": Vector2(2.6, 6.0),
 	# plant / mechanical rooms are not in §2.6 either: like warehouse/industrial (lead to confirm).
 	&"plant": Vector2(2.6, 6.0),
+	&"elevator_machine": Vector2(2.6, 6.0),  # lift motor room, same band as plant (lead, GN)
 	# D-075 (lead): purposes the P5 heists need instead of per-room overrides.
 	# gallery: a top-lit exhibition room (clerestory or lantern roof over the hang).
 	&"gallery": Vector2(4.5, 6.5),

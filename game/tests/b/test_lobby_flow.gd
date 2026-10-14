@@ -217,3 +217,38 @@ func test_coop_payday_continue_returns_to_the_lobby() -> void:
 	assert_true(f.is_coop(), "the session is kept")
 	assert_eq(f.current, f.lobby_screen as Control, "back in the crew lobby")
 	assert_false(f.lobby.state.is_ready(f.lobby.state.local_slot), "ready cleared for the next job")
+
+
+## Stand-ins for a client HeistRuntime and its HeistNetSync (only the C11 host_closed hook is exercised).
+class FakeSync extends Node:
+	signal host_closed()
+
+
+class FakeRuntime extends Node:
+	var net_sync: Node = null
+
+
+## C11 (A's round 100): the host tore its heist down while this client was still mid-heist (no payday reached
+## it). HeistNetSync.host_closed takes the client back to the crew lobby with the session kept and says why.
+func test_client_mid_heist_returns_to_the_lobby_on_host_closed() -> void:
+	var f: MenuFlow = _flow(_branch("HostBranch"))
+	await wait_frames(2)
+	f.open_station(&"crew")
+	await wait_frames(2)
+	f.lobby_screen.host_port_edit.text = str(_port)
+	assert_eq(f.lobby_screen.host(), OK)
+	await wait_frames(2)
+	f.call(&"_begin_client_heist", {"heist": &"glasshouse", "difficulty": 0, "is_pro": false})
+	var rt: FakeRuntime = FakeRuntime.new()
+	rt.net_sync = FakeSync.new()
+	rt.add_child(rt.net_sync)
+	f.runtime = rt
+	f.call(&"_watch_host_closed")
+	(rt.net_sync as FakeSync).host_closed.emit()
+	await wait_frames(2)
+	assert_false(f.in_heist_ui_spawned(), "the frozen replica's UI is gone")
+	assert_true(f.is_coop(), "session kept")
+	assert_eq(f.current, f.lobby_screen as Control, "back in the crew lobby")
+	assert_eq(f.lobby_screen.error_label.text, UiText.t(&"ui.lobby.host_closed"), "says why")
+
+	rt.free()

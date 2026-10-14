@@ -160,6 +160,8 @@ relevant.
 | `lc_check_*.gd`, `walkthrough.gd` | one module per check (`class_name LcCheck<Name>`, base `LcCheck`) |
 | `game/world/kits/dressing_kit.gd` | `DressingKit` schema |
 | `game/tests/c/test_validate_level.gd` | tests (`test_validate_slopes.gd`: slopes + viewmodel_lit, incl. every library prop light carries layer 21) |
+| `tools/levelcheck/plans/<id>_floors_ascii.py` | floor-plan data per heist (rooms, openings); `--check` verifies tiling, doors, stairs |
+| `tools/levelcheck/plans/gallery_night_slots.py` | Gallery Night variant groups / slot ids, cameras, spawns, zones, preplan points and review cameras with rooms and positions; `--check` cross-checks them against the design doc and ENV B's draft (embedded snapshot, `--b-live[=<ref>]` re-reads the branch); B-vs-doc differences print as NOTE lines |
 | `game/tests/c/fixtures/` | `lc_fixture_builder.gd` (programmatic maps), `make_lc_fixtures.gd` (bakes navmesh, writes `lc_fixture_good.tscn` / `lc_fixture_bad.tscn`), fixture kit and stub scripts |
 
 Regenerate fixtures: `/opt/godot/godot --headless --path game --script res://tests/c/fixtures/make_lc_fixtures.gd`.

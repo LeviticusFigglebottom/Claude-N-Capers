@@ -37,6 +37,11 @@ static var _cached: CustodyTweak = null
 @export var police_cuff_approach_m: float = 15.0
 ## Seconds until a cuffed crew member frees themselves (PD2: 60 s ◇).
 @export var police_cuff_self_free_s: float = 60.0
+## D-108: a downed crew member is cuffable only after this long down without firing (s ◇).
+@export var police_cuff_grace_s: float = 2.0
+## D-108: the cop's arrest hold at police_cuff_range_m (s ◇); the player firing or the cop being hurt / stunned
+## interrupts it (restarts from zero).
+@export var police_cuff_time_s: float = 1.5
 
 @export_group("Cop surrender (L5.1)")
 ## false: any crew member's shout can make low-tier cops surrender (PD2 base game); true: only with
