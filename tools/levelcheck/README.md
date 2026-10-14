@@ -31,7 +31,8 @@ tools/levelcheck/render_shots.sh <heist_id> <g1|g2|g3> [--plan] [--cameras=a,b] 
   HeistMap scene, such as the test fixtures, and writes a report only when `--report` is given.
   `--only` skips the default report so a partial run never overwrites `validation.md`.
 * Review shots (Vulkan Forward+ through lavapipe; `LC_DRIVER=opengl3` switches to the
-  compatibility renderer):
+  compatibility renderer). **In the cloud containers use `LC_DRIVER=opengl3`:** the lavapipe Vulkan path made no
+  progress in 90 min on a blueprint render, while opengl3 finishes (e.g. `LC_DRIVER=opengl3 tools/levelcheck/render_shots.sh <id> blueprint`):
 
 ```bash
 xvfb-run -a -s "-screen 0 1920x1080x24" /opt/godot/godot --path game --resolution 1920x1080 \
