@@ -184,6 +184,13 @@ func test_crew_cards_whole_without_scrolling() -> void:
 			var p: Control = w["panel"] as Control
 			if not p.is_visible_in_tree():
 				continue
+			# End-of-heist sweep: the level / ready line was laid out at width 0 (blank) after C6.
+			for k: String in ["level", "ready"]:
+				var l: Label = w[k] as Label
+				if l.is_visible_in_tree() and l.text != "":
+					var need: float = l.get_theme_font(&"font").get_string_size(l.text, HORIZONTAL_ALIGNMENT_LEFT, -1,
+							l.get_theme_font_size(&"font_size")).x
+					assert_true(l.size.x + 1.0 >= need, "%s '%s' shown whole (%.0f of %.0f px)" % [k, l.text, l.size.x, need])
 			var last: Control = (w["mask"] as Control).get_parent() as Control
 			var bottom: float = last.get_global_rect().end.y
 			var kick: Control = w["kick"] as Control
