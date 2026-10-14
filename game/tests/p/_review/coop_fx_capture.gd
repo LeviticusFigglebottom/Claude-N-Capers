@@ -51,8 +51,11 @@ func _run() -> void:
 	l.primary_mods = [] as Array[StringName]
 	l.resolved_primary = LoadoutResolver.resolve_weapon(l.primary, l.primary_mods)
 	var loadouts: Dictionary = {}
-	for s: int in Net.human_slots():
-		loadouts[s] = l
+	var heisters: Array[StringName] = [&"rook", &"sable", &"dutch", &"wren"]
+	for s: int in Net.human_slots():  # a real third-person body (D-073), not the capsule placeholder
+		var ls: Loadout = l.duplicate() as Loadout
+		ls.heister = heisters[s % heisters.size()]
+		loadouts[s] = ls
 	_rt = await HeistLauncher.launch(&"dev_sandbox", 8108, Enums.Difficulty.ROUTINE, get_tree().root,
 		{"skip_casing": true, "crew_ai": false, "ai_teammates": 0, "loadouts": loadouts})
 	if not await _until(func() -> bool: return bool((await _snapshot()).get("launch_client", false)), 300.0):
@@ -103,11 +106,11 @@ func _run() -> void:
 	_finish("host own=%d remote=%d" % [_n["own"], _n["remote"]])
 
 
-## Turn `c` toward `target` (`away`: 30 degrees past it, so its shots fly by the watcher's side, not into it).
+## Turn `c` toward `target` (`away`: 60 degrees past it, so its shots fly by the watcher's side, not into it).
 func _face(c: CrewController, target: CrewController, remote: bool, away: bool, fire: bool = false) -> void:
 	var d: Vector3 = target.global_position - c.global_position
 	var i: CrewIntent = CrewIntent.new()
-	i.look_yaw = atan2(-d.x, -d.z) + (deg_to_rad(35.0) if away else 0.0)
+	i.look_yaw = atan2(-d.x, -d.z) + (deg_to_rad(60.0) if away else 0.0)
 	i.look_pitch = deg_to_rad(-6.0)
 	i.fire = fire
 	i.weapon_slot = Enums.WeaponSlot.PRIMARY

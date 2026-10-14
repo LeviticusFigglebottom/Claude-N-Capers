@@ -40,10 +40,11 @@ func _ready() -> void:
 	print("FXC client replica=%s" % (rt != null))
 
 
-func _on_shot_fx(_origin: Vector3, _end: Vector3, _normal: Vector3, _surface: StringName, _weapon_class: StringName,
+func _on_shot_fx(_origin: Vector3, end: Vector3, _normal: Vector3, _surface: StringName, _weapon_class: StringName,
 		shooter: int, flags: int) -> void:
 	var kind: String = "own" if flags & FpViewmodelFx.FLAG_FIRST_PERSON != 0 else "remote"
-	print("FXC client shot_fx shooter=%d flags=%d %s" % [shooter, flags, kind])
+	print("FXC client shot_fx shooter=%d flags=%d %s end=%s t=%d" % [shooter, flags, kind, end.snappedf(0.01),
+		Time.get_ticks_msec()])
 	if not _busy:
 		_grab(kind)
 
