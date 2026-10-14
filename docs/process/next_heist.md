@@ -89,7 +89,7 @@ Recommendation: (a) for the map and cast; A/B/P keep their current lanes plus th
 ## 7. G1 traversal requirements (ENV P review 2026-10-14, adopted D-104)
 Player numbers: capsule r 0.35 (0.70 m), stand 1.8 / crouch 1.2, step 0.35, max slope 45°, jump apex 1.08 m
 (heavy bag 0.27, very heavy 0.07; D-102), ladders 2 m/s masked only, no bags, no mantle.
-1. Laser gaps: bypass gaps ≥ 1.0 m; crouch gaps ≥ 1.30 m clear; ENV A confirms lasers test the gameplay capsule.
+1. Laser gaps: bypass gaps ≥ 1.0 m; crouch-under beams with centre ≥ 1.30 m (A confirmed: beams test only the gameplay capsule, r 0.35, 1.2 m crouched; 0.03 m thick beam → lower face must clear 1.2 m, 1.215 m minimum).
 2. Balcony throws: fix the doc's drop strip to hall x 24–28; balustrade/handrail colliders thin and true to the visual.
 3. Mews ↔ loading dock: step-free (Mews grade = LD floor, leveller ≤ 0.35 m dressing) or ramp ≤ 45° at both doors.
 4. Reflecting pool: rim + depth ≤ 0.35 m (or one shallow step), else a raised solid.
