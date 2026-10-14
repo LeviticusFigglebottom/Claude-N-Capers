@@ -46,6 +46,7 @@ func _setup() -> NpcBase:
 	_rt.dynamic_root.add_child(phone)
 	phone.global_position = Vector3(0, 0.05, -6)
 	CivilianTargets.add_call_point(phone, CivilianTargets.REASON_PHONE)
+	(_rt.crew_controller(0) as CrewController).set_masked(true)  # S1.2: being spotted force-masks (PO-11: only masked shouts intimidate)
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 15)))
 	await wait_physics_frames(2)
 	return civ

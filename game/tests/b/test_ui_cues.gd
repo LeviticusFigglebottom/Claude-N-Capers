@@ -214,3 +214,22 @@ func test_hit_markers_sit_above_the_impact_bed() -> void:
 	assert_true(float(vols[&"cue.hud_hit"]) >= -6.0, "hit tick level %s dB (was -13: masked)" % vols[&"cue.hud_hit"])
 	assert_true(float(vols[&"cue.hud_kill"]) >= -6.0, "kill confirm level")
 	assert_true(float(vols[&"cue.hud_headshot"]) >= -9.0, "headshot level")
+
+
+## PO-12 "drills are loud" (mix_check.py): the looping device cues sit 8-10 dB under a gunshot at the source
+## (gunshots ~ -16 LUFS-M median; drill_loop measured -17.8 LUFS before its volume_db) and the drill fades out a
+## room or two away, so guards and callouts stay audible. jam / done stay punchy one-shots.
+func test_device_loops_sit_under_gunfire() -> void:
+	var reg: AudioCueRegistry = _registry()
+	var drill: AudioCueDef = reg.get_cue(&"cue.drill_loop")
+	assert_true(drill != null and drill.loop, "drill loop")
+	if drill == null:
+		return
+	assert_true(drill.volume_db <= -8.0, "drill_loop %s dB (was -3: the loudest sustained sound)" % drill.volume_db)
+	assert_true(drill.max_distance <= 25.0, "drill falls off within ~25 m (was 35)")
+	for id: StringName in [&"cue.weapon_saw_cut", &"cue.weapon_saw_rev"]:
+		var c: AudioCueDef = reg.get_cue(id)
+		assert_true(c != null and c.volume_db <= -6.0, "%s under gunfire" % id)
+	for id: StringName in [&"cue.drill_jam", &"cue.drill_done"]:
+		var c: AudioCueDef = reg.get_cue(id)
+		assert_true(c != null and c.volume_db >= -3.0, "%s stays punchy" % id)

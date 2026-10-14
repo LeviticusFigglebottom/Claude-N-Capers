@@ -690,6 +690,10 @@ static func _flat_dist(a: Vector3, b: Vector3) -> float:
 
 func _tick_scan(delta: float) -> void:
 	_since_acquire += delta
+	if _crew.is_casing():  # PO-11 (S1.1): an unmasked bot stays passive (no aiming at NPCs while casing)
+		target_enemy = null
+		_scan_left = 0.0
+		return
 	if target_enemy != null and (not is_instance_valid(target_enemy) or not target_enemy.is_inside_tree()
 			or not _is_hostile(target_enemy)):  # D-070: an NPC taken out of the tree is no target
 		target_enemy = null

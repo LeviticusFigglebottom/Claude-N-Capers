@@ -166,6 +166,27 @@ extends Resource
 @export var npc_yield_hold_s: float = 1.5
 @export var npc_yield_max_s: float = 8.0
 
+@export_group("NPC personal space (PO-10)")
+## PO-10 ◇ (PD2: NPCs keep personal space, never stack): NPC bodies do not collide with each other
+## (NpcBase MASK_WORLD), so NpcMotor steers. A moving NPC is pushed away from every other live NPC of its
+## heist within npc_separation_radius_m (horizontal; |dy| < npc_separation_dy_m), weighted by closeness and
+## scaled by npc_separation_gain; when the push opposes its heading it veers to its own right so two NPCs
+## meeting head-on pass instead of stalling. Speed never exceeds the brain's.
+@export var npc_separation_radius_m: float = 1.0
+@export var npc_separation_gain: float = 1.5
+@export var npc_separation_dy_m: float = 1.0
+## PO-10 ◇: a standing CALM NPC closer than npc_separation_idle_m to another (spawned stacked, pushed in)
+## drifts apart at npc_separation_idle_speed (m/s).
+@export var npc_separation_idle_m: float = 0.6
+@export var npc_separation_idle_speed: float = 0.6
+## PO-10 ◇: a moving NPC whose target is already held by a standing NPC (within npc_crowd_occupied_m of it)
+## counts as arrived once within npc_crowd_arrive_m of the target (it waits beside it, not inside it).
+@export var npc_crowd_arrive_m: float = 1.2
+@export var npc_crowd_occupied_m: float = 0.6
+## PO-10 ◇ S7.5: a wander point is not offered to a civilian while another NPC is heading to it (its
+## motor's target, until it arrives or goes elsewhere) or stands within civilian_wander_taken_m of it.
+@export var civilian_wander_taken_m: float = 0.8
+
 @export_group("Heist mode (S11.3)")
 ## STEALTH_ONLY heists: seconds between the alarm (Mercer abort line) and heist_ended(failed).
 @export var stealth_only_abort_s: float = 5.0

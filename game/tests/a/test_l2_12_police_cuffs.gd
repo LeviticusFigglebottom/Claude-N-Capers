@@ -5,6 +5,7 @@ extends TestCase
 
 var _rt: HeistRuntime = null
 var _events: Array[Array] = []
+var _d108_cop: NpcBase = null
 
 
 func before_each() -> void:
@@ -83,7 +84,9 @@ func test_l2_12_shooting_downed_player_not_cuffed() -> void:
 	c.weapons.last_shot_age = 0.0
 	assert_false(CrewCuffs.can_police_cuff(c), "a downed player who is shooting cannot be cuffed")
 	c.weapons.last_shot_age = INF
-	assert_true(CrewCuffs.can_police_cuff(c), "not shooting: can be cuffed")
+	assert_false(CrewCuffs.can_police_cuff(c), "D-108: not within police_cuff_grace_s of going down")
+	c.health.down_s = CustodyTweak.data().police_cuff_grace_s
+	assert_true(CrewCuffs.can_police_cuff(c), "down and quiet for the grace: can be cuffed")
 	c.health.revive(1)
 	assert_false(CrewCuffs.can_police_cuff(c), "standing players are not police-cuffed")
 
@@ -92,6 +95,7 @@ func test_l2_12_teammate_uncuffs() -> void:
 	var c: CrewController = _crew(0)
 	c.health.go_down()
 	var cuffs: CrewCuffs = CrewCuffs.of(c, true)
+	c.health.down_s = CustodyTweak.data().police_cuff_grace_s  # D-108 grace elapsed
 	assert_true(cuffs.cuff_downed(777), "cuff_downed")
 	await wait_physics_frames(2)
 	assert_eq(c.crew_state, Enums.CrewState.CUFFED)
@@ -132,3 +136,69 @@ func test_l2_12_police_never_cuff_downed_ai_crew() -> void:
 	var gone: bool = await wait_until(func() -> bool: return bot.crew_state == Enums.CrewState.CUSTODY, 3.0)
 	assert_true(gone, "bled out into custody (%s)" % Enums.CrewState.keys()[bot.crew_state])
 	assert_true(_events.filter(func(e: Array) -> bool: return e[0] == &"cuffed").is_empty(), "never cuffed")
+
+
+## D-108: going down right next to a cop is not an instant arrest. The cop may start only after
+## police_cuff_grace_s down without firing, then needs police_cuff_time_s of uninterrupted hold.
+func test_d108_cuff_grace_and_hold_when_down_next_to_cop() -> void:
+	var c: CrewController = _crew(0)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
+	_rt.teleport_crew(1, Transform3D(Basis.IDENTITY, Vector3(-20, 0.05, 20)))
+	c.set_masked()
+	_crew(1).set_masked()
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(2)
+	var cop: NpcBase = _rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -0.8)))
+	await wait_physics_frames(2)
+	c.health.go_down()
+	var ct: CustodyTweak = CustodyTweak.data()
+	var t0: int = Time.get_ticks_msec()
+	await wait_seconds(ct.police_cuff_grace_s * 0.8)
+	assert_eq(c.crew_state, Enums.CrewState.DOWNED, "not cuffed within the grace")
+	var ok: bool = await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.CUFFED, 6.0)
+	assert_true(ok, "cuffed after the grace + hold")
+	var took: float = float(Time.get_ticks_msec() - t0) / 1000.0
+	assert_true(took >= ct.police_cuff_grace_s + ct.police_cuff_time_s - 0.1,
+		"arrest took grace + hold (%.2f s)" % took)
+	assert_has(_events, [&"cuffed", 0, cop.net_id])
+
+
+## D-108: a downed player who keeps firing from the floor is never arrested.
+func test_d108_firing_from_the_floor_prevents_arrest() -> void:
+	var c: CrewController = await _d108_setup()
+	var ct: CustodyTweak = CustodyTweak.data()
+	var t: float = 0.0
+	while t < ct.police_cuff_grace_s + ct.police_cuff_time_s + 1.0:
+		c.weapons.last_shot_age = 0.0  # firing from the floor
+		await wait_physics_frames(6)
+		t += 0.1
+	assert_eq(c.crew_state, Enums.CrewState.DOWNED, "a downed player who keeps firing is never cuffed")
+
+
+## D-108: a hit on the arresting cop restarts the hold.
+func test_d108_hurting_the_cop_restarts_the_hold() -> void:
+	var c: CrewController = await _d108_setup()
+	var cop: NpcBase = _d108_cop
+	var ct: CustodyTweak = CustodyTweak.data()
+	await wait_seconds(ct.police_cuff_grace_s + ct.police_cuff_time_s * 0.6)
+	assert_eq(c.crew_state, Enums.CrewState.DOWNED, "mid-hold")
+	var info: Dictionary = Damage.info(1.0, Enums.DamageType.BULLET, Enums.HitZone.BODY, &"weapon.test",
+		cop.global_position, Vector3.FORWARD, 0)
+	cop.take_hit(info, c.net_id)
+	await wait_seconds(ct.police_cuff_time_s * 0.6)
+	assert_eq(c.crew_state, Enums.CrewState.DOWNED, "the hit restarted the hold (would have finished by now)")
+
+
+
+func _d108_setup() -> CrewController:
+	var c: CrewController = _crew(0)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
+	_rt.teleport_crew(1, Transform3D(Basis.IDENTITY, Vector3(-20, 0.05, 20)))
+	c.set_masked()
+	_crew(1).set_masked()
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(2)
+	_d108_cop = _rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -0.8)))
+	await wait_physics_frames(2)
+	c.health.go_down()
+	return c
