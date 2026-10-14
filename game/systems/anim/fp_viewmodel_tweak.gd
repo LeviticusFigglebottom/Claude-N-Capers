@@ -123,8 +123,15 @@ static var _gen: int = 0
 @export var vfx_tracer_scene: PackedScene = null
 ## Burst visible this long (one or two frames at 60 fps); 0 = no burst.
 @export var muzzle_flash_s: float = 0.035
-@export var muzzle_flash_size_m: float = 0.12
-@export var muzzle_flash_color: Color = Color(1.0, 0.72, 0.35, 0.9)
+## The muzzle sits ~1 m out through the viewmodel camera, so the burst is sized for that depth.
+@export var muzzle_flash_size_m: float = 0.3
+## Burst size multiplier by anim set (long guns sit further out and behind the support hand).
+@export var muzzle_flash_set_mult: Dictionary[StringName, float] = {
+	&"rifle": 1.6, &"lmg": 1.8, &"sniper": 1.7, &"shotgun": 1.8, &"shotgun_box": 1.7, &"smg": 1.3, &"minigun": 1.6,
+	&"lever": 1.5, &"break_action": 1.8,
+}
+@export var muzzle_flash_color: Color = Color(1.0, 0.62, 0.22, 0.95)
+@export var muzzle_flash_core_color: Color = Color(1.0, 0.95, 0.8, 1.0)
 ## Anim sets that never flash (no propellant at the muzzle).
 @export var no_flash_sets: Array[StringName] = [&"bow", &"crossbow", &"flamethrower", &"saw"]
 ## Smoke puff particles per shot (x suppressed mult when suppressed); 0 = none.
@@ -152,7 +159,7 @@ static var _gen: int = 0
 @export var tracer_when_suppressed: bool = false
 @export var tracer_speed_mps: float = 400.0
 @export var tracer_length_m: float = 3.0
-@export var tracer_width_m: float = 0.012
+@export var tracer_width_m: float = 0.02
 ## The head starts this far out on the first frame (a streak shows on the shot's frame, not one frame late).
 @export var tracer_first_frame_m: float = 2.0
 @export var tracer_color: Color = Color(1.0, 0.8, 0.45, 0.85)

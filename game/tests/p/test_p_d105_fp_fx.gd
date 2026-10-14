@@ -66,7 +66,8 @@ func test_shot_flashes_ejects_and_kicks() -> void:
 	assert_true(saw_flash, "the burst showed")
 	assert_eq(vm.fx.shells_ejected, shots, "a casing per shot")
 	# Peaks at amp after 18 ms; a slow (llvmpipe) frame samples it later on the curve (>= 0.78 amp at 1/30 s).
-	assert_true(peak > amp * 0.6 and peak < amp * 1.05, "kick back %.4f m (set %s %.4f)" % [peak, vm.anim_set, amp])
+	assert_true(peak > amp * 0.6 and peak < amp * 1.05 * shots, "kick back %.4f m (set %s %.4f, %d shots stack)" % [
+		peak, vm.anim_set, amp, shots])
 	assert_true(await wait_until(func() -> bool: return vm.kick() == Vector2.ZERO, 3.0), "kick settles (%s)" % vm.kick())
 	var f2: Node3D = vm.fx.get_node_or_null(^"MuzzleFlash") as Node3D
 	assert_true(f2 == null or not f2.visible, "burst gone")
