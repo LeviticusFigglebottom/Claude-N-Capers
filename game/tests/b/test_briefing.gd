@@ -146,6 +146,23 @@ func test_stop_and_continue_signals() -> void:
 	s.queue_free()
 
 
+## GN-B1 capture: a long playback line grew the contact column and pushed Back / Continue off the screen.
+func test_long_subtitle_keeps_the_nav_on_screen() -> void:
+	var saved: Vector2i = get_window().size
+	for size: Vector2i in [Vector2i(1280, 720), Vector2i(1920, 1080)]:
+		get_window().size = size
+		var s: BriefingScreen = _screen(Enums.Difficulty.ROUTINE)
+		await wait_frames(2)
+		s.subtitle_label.text = "The Halberd Gallery, darling. Aldous Parade. ".repeat(12)
+		await wait_frames(3)
+		var vis: Rect2 = get_viewport().get_visible_rect().grow(1.0)
+		for b: Button in [s.back_button, s.continue_button, s.play_button]:
+			assert_true(vis.encloses(b.get_global_rect()), "%s %s on screen at %s" % [b.text, b.get_global_rect(), size])
+		s.queue_free()
+		await wait_frames(1)
+	get_window().size = saved
+
+
 func test_model_from_a_heist_def() -> void:
 	var def: HeistDef = HeistDef.new()
 	def.id = HEIST
