@@ -777,3 +777,15 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   delivered; remaining: admin PA look, any gala ambient clips missing, parked FP left-hand cup).
 - P's Gallery Night traversal review (laser gaps, balcony throws, Mews dock height, pool exit, roof slopes, ladders, door
   widths, stair ramps, stanchions, broken windows) is adopted as G1 build requirements (next_heist.md §7).
+
+## D-105 — 2026-10-14 — Product-owner polish pass: impact, effects, doors, dressing (cross-heist)
+- Product owner: doors snap (confirmed: door.gd sets leaf rotation instantly), gaps between doors and walls and other small
+  clipping / empty-space gaps, gunplay lacks impact (no muzzle flash/tracers; the game has **no particle effects at all**),
+  no material debris, and odd prop placement (two chairs facing each other in front of a desk).
+- New contract `impact_fx.md` 1.0: surface ids (C), `EventBus.shot_fx` / `explosion_fx` local presentation events on every
+  peer (A), VFX library — impact debris + decals + audio per surface, tracers, muzzle flash, shells (C), first-person
+  muzzle/tracer/shells (P), effects-quality option (B), door swing animation (A), `door_frame_gap` validate_level check (C).
+- Dressing: C audits all four maps for implausible prop arrangements (furniture facing, chairs vs desks/tables, blocked
+  doors, floating/clipping) with a levelcheck `furniture_logic` rule where it can be automated, plus screenshot review.
+- This polish is cross-heist (lives in kits/systems), so Gallery Night inherits it. It runs in parallel with the
+  freeze-lift gates; it does not lift the freeze.
