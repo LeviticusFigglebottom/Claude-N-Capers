@@ -48,18 +48,21 @@ static var _cached: RadioTweak = null
 ## Box width at the base resolution; it sits bottom-centre between the vitals and ammo panels
 ## (clear of both up to hud_scale 1.5).
 @export var width_px: float = 800.0
-@export var bottom_margin_px: float = 40.0
+## P fresh-eyes #9: 90 (was 40) lifts the box out of the bottom HUD band (vitals / ammo / hint row).
+@export var bottom_margin_px: float = 90.0
 @export var max_lines: int = 2
 ## PQ-B-18: rows taller than this together (large text wraps) drop the oldest, so the box never reaches
-## the interaction / domination prompts above it (interaction bottom = 1040 - 314 at hud_scale 1.5).
-@export var max_height_px: float = 300.0
+## the interaction / domination prompts above it (interaction bottom = 1040 - 314 at hud_scale 1.5;
+## box bottom 1080 - bottom_margin_px, so bottom_margin_px + max_height_px stays under 354).
+@export var max_height_px: float = 264.0
 ## Display time = clamp(base_s + per_char_s * characters, min_s, max_s); the last fade_s fade out.
 @export var base_s: float = 1.2
 @export var per_char_s: float = 0.055
 @export var min_s: float = 2.5
 @export var max_s: float = 9.0
 @export var fade_s: float = 0.4
-@export var panel_color: Color = Color(0.04, 0.04, 0.05, 0.62)
+## P fresh-eyes #9: a readable backing (0.85, was 0.62) over bright scenes and the HUD band.
+@export var panel_color: Color = Color(0.04, 0.04, 0.05, 0.85)
 ## Speaker accents are lifted to this contrast against the panel (UiAccent.readable).
 @export var min_contrast: float = 4.5
 

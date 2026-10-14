@@ -399,7 +399,7 @@ func _on_alarm_raised(_reason: StringName, _source_net_id: int) -> void:
 
 func _on_loot_secured(_bag_net_id: int, _loot_id: StringName, _value: int) -> void:
 	secured_bags += 1
-	toast(&"ui.hud.secured", {"count": secured_bags})
+	toast(&"ui.hud.secured_one" if secured_bags == 1 else &"ui.hud.secured", {"count": secured_bags})  # P #11
 
 
 func _on_crew_downed(crew_slot: int, _downs_used: int) -> void:
