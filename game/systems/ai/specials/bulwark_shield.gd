@@ -39,6 +39,10 @@ const GRIP_LOOKUP_S: float = 0.5
 const GRIP_MAX_TILT_DEG: float = 40.0
 ## ...and it is at least this far in front of the carrier (carrier-local -Z, m).
 const GRIP_MIN_FRONT_M: float = 0.15
+## Forwarded hit info key: instance ids of the shields a shield-piercing round already passed (A3-08 fix).
+const PIERCED_KEY: String = "pierced_shields"
+## Most shields one round may pass (no ping-pong between stacked Bulwarks).
+const MAX_PIERCES: int = 3
 
 ## The carrying Bulwark (null once dropped).
 var carrier: NpcBase = null
@@ -215,6 +219,10 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		EventBus.damage_applied.emit(victim, attacker_net_id, out)
 		Net.replicate_event(&"damage_applied", [victim, attacker_net_id, out])
 		return out
+	# A round passes each shield once and at most MAX_PIERCES shields (stacked Bulwarks must not ping-pong it).
+	var passed: Array = _pierced_ids(info)
+	if passed.size() >= MAX_PIERCES or passed.has(get_instance_id()):
+		return out
 	var behind: Dictionary = _trace_behind(info, tw)
 	if behind.is_empty():
 		return out
@@ -224,7 +232,14 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	fwd["zone"] = int(behind["zone"])
 	fwd["position"] = behind["position"]
 	fwd["shield_pierced"] = true
+	fwd[PIERCED_KEY] = _pierced_ids(info) + [get_instance_id()]
 	return CombatSystem.deliver_hit(behind["target"] as Object, fwd, attacker_net_id)
+
+
+## Instance ids of the shields this round already passed (forwarded hit info), oldest first.
+static func _pierced_ids(info: Dictionary) -> Array:
+	var v: Variant = info.get(PIERCED_KEY, [])
+	return (v as Array).duplicate() if v is Array else []
 
 
 ## damage_applied victim of a blocked hit: the carrier's net id, 0 for a dropped shield.
@@ -256,7 +271,12 @@ func _trace_behind(info: Dictionary, tw: CombatTweak) -> Dictionary:
 		from, from + dir * tw.shield_pierce_reach_m, tw.hitscan_mask)
 	q.collide_with_areas = true
 	q.collide_with_bodies = true
-	q.exclude = [get_rid()]
+	var ex: Array[RID] = [get_rid()]
+	for id: Variant in _pierced_ids(info):
+		var sh: CollisionObject3D = instance_from_id(int(id)) as CollisionObject3D
+		if sh != null:
+			ex.append(sh.get_rid())
+	q.exclude = ex
 	var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(q)
 	if hit.is_empty():
 		return {}
