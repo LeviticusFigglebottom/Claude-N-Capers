@@ -2695,6 +2695,45 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_door_double_steel_t10": {
+  "aabb": [
+   -1.074,
+   0.0,
+   -0.0921,
+   2.148,
+   2.27,
+   0.1841
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_door_double_steel_t10/prop_door_double_steel_t10.glb",
+  "group": "door",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "door",
+  "mount": "",
+  "nodes": [
+   "Frame",
+   "Handle",
+   "Handle2",
+   "Leaf",
+   "Leaf2",
+   "LeafMesh",
+   "LeafMesh2"
+  ],
+  "place": "none",
+  "prefab": "door",
+  "scene": "res://world/props/door/prop_door_double_steel_t10.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_door_double_steel_t20": {
   "aabb": [
    -1.074,
@@ -3170,6 +3209,42 @@
   "standoff": 0.0,
   "support": false,
   "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_door_single_steel_t10": {
+  "aabb": [
+   -0.574,
+   0.0,
+   -0.1083,
+   1.148,
+   2.27,
+   0.2004
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_door_single_steel_t10/prop_door_single_steel_t10.glb",
+  "group": "door",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "door",
+  "mount": "",
+  "nodes": [
+   "Frame",
+   "Handle",
+   "Leaf",
+   "LeafMesh"
+  ],
+  "place": "none",
+  "prefab": "door",
+  "scene": "res://world/props/door/prop_door_single_steel_t10.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
   "top": 0.0,
   "visibility_range_end": 0.0,
   "weight": 1.0,

@@ -98,15 +98,16 @@ const INT_WALLS: Array = [
 	# Stair core ST (0.3 m) up to the head-house roof.
 	["CoreX3", "z", 3.0, 0.2, 6.15, 0.0, HH_TOP, CORE_T, "wall", []],
 	["CoreZ6", "x", 6.0, 0.2, 2.85, 0.0, HH_TOP, CORE_T, "wall", []],
-	# Office ground floor.
-	["G_X9", "z", 9.0, 0.2, 5.85, 0.0, OFFICE_CEIL, INT_T, "wall", []],
+	# Office ground floor. PO-7: G_X9 / M_X9 run to the z 6 wall's face (5.9); 5.85 left a 5 cm
+	# see-through corner slit.
+	["G_X9", "z", 9.0, 0.2, 5.9, 0.0, OFFICE_CEIL, INT_T, "wall", []],
 	["G_Z6", "x", 6.0, 3.15, 17.85, 0.0, OFFICE_CEIL, INT_T, "wall", []],
 	# Goods lift shaft LF (x 15-18, z 0-3) to the mezzanine ceiling; west hatch at the mezzanine.
 	["ShaftX15", "z", 15.0, 0.2, 2.9, 0.0, MEZZ_CEIL, INT_T, "wall", [[0.9, 2.1, MEZZ + 0.45, MEZZ + 1.25]]],
 	["ShaftZ3", "x", 3.0, 14.9, 17.85, 0.0, MEZZ_CEIL, INT_T, "wall", []],
 	["G_X15S", "z", 15.0, 3.1, 5.9, 0.0, OFFICE_CEIL, INT_T, "wall", []],
 	# Mezzanine.
-	["M_X9", "z", 9.0, 0.2, 5.85, MEZZ, MEZZ_CEIL, INT_T, "wall", []],
+	["M_X9", "z", 9.0, 0.2, 5.9, MEZZ, MEZZ_CEIL, INT_T, "wall", []],
 	["M_X15S", "z", 15.0, 3.1, 5.9, MEZZ, MEZZ_CEIL, INT_T, "wall", []],
 	["M_Z6", "x", 6.0, 3.15, 17.85, MEZZ, MEZZ_CEIL, INT_T, "wall", []],
 	# West wing (walls up to the wing roof slab, 5.5).
