@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 17:20: **round 126 ON ORIGIN**: env/p-play 114a4018 (PO-13 round 2: all-class hip framing +3 cm right/+2 up/4 closer, pistol sprint on screen, pistol ADS shoulders; co-op FP/TP FX capture: own shots FP, others TP, no doubling; reload/draw C-grip verified). p/a/d viewmodel+arms green. Routed: A client 'ghost rounds' on full auto (2 FX per tap vs 1 accepted); C third-person MuzzleFlash invisible on >50 ms frames. Lit before/after sheet pending.
 - 2026-10-14 17:10: LEAD D-109: HeistDef briefing fields (briefing_objectives, briefing_loud_key, briefing_optional). b briefing/p2_heist_content + lead core green.
 - 2026-10-14 17:00: **round 125 ON ORIGIN**: env/a-core 87fd9552 (VariantResolver honours rare-event top-level requires/excludes; draws unchanged; no existing heist uses it) + pilot harness commits. a a2_08 19/19, a3_10, drill_relock, b preplan_variants/p2_heist_content, readiness green.
 - 2026-10-14 16:45: **round 124 ON ORIGIN**: env/c-worlds ac4c3a3f (docs/levels/gallery_night/g1_rehearsal.md: skeleton + B drafts launch, contract_nodes pass when wired, resolver 0 mismatches over 300 seeds × 6 difficulties; C fixing F1/F2/F3/F5/F7 in the patch) + LEAD readiness exempts find_canvases (F6). Post-lift estimate: B ~0.5, C ~4-4.5, A ~4.5-6 sessions. Rare-event `requires` ignored by the resolver → A GN groundwork.
