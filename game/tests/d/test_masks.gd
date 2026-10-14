@@ -19,7 +19,7 @@ const LIBRARY_PREFIX: String = "res://world/materials/char_mask_"
 const BASE_NAMES: Array[String] = [
 	"heron", "visage", "vulpine", "bruiser", "owl", "skull", "theatre", "gasmask", "demon", "goalie",
 	"ram", "stag", "cat", "boar", "serpent", "moth", "knight", "doll", "sunburst", "geo", "robot", "jester",
-	"kraken", "lion",
+	"kraken", "lion", "shark", "pierrot",
 ]
 const BASE_MATERIAL: String = "M_char_mask_base"
 const BASE_LIBRARY: String = "res://world/materials/char_mask_base.tres"
