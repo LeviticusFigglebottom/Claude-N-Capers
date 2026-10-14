@@ -99,6 +99,7 @@ Read it at the start of every work session.
 - D (parked after P's D-101 attempt 00:55): rifle-family left-hand cup needs B to move LeftHandIK below the fore-end on ~20 weapons + re-timed lever clip; cosmetic. Pistol ADS forearm size: closed, matches PD2 within the rig's proportions.
 
 ## Routed findings
+- gh_stealth lane (A, ~20 runs; best: bag 1 secured undetected at t=243; all failures civilians): A fixes civilian wander scope, stair-foot pin, shout LOS/same floor, calm NPCs yield. C: GH break-room WindowLink + BreakRoomWindowBlocker (walker stuck at U1 window, ow_breakroom_open, seed 1791937091) + stair-foot corner (13.4-13.8,0,4.8). B: HUD per-frame cost (7-20 s process frames masked on llvmpipe; onboarding card) profile + budget test.
 - A (gate70, 04:xx): CHECK_ALL FAIL on GDScript runtime errors only (1897 tests 0 failed, 4 levels PASS): bulwark_shield.gd take_hit↔deliver_hit infinite pierce recursion (overlapping shields ping-pong; _trace_behind excludes only its own RID). Routed to A ahead of door swing. → FIXED r73 (A 35baf6dd).
 - (DONE r70) SL/DB marker_tags; test_heist_readiness green on all 4 heists.
 - A: loud transition doesn't advance the Glasshouse objective (still "Find the manager's keycard"); NPCs render as grey capsules while casing.
