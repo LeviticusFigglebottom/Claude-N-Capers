@@ -13,6 +13,8 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 03:00: **FREEZE GATE 1/3 PASSED: gh_loud** (A, windowed, real menus, seed 1791914030: Glasshouse loud → payday card → Continue → Safehouse hub, RESULT PASS). Gates left: gh_stealth win, ND loud (auto_loud running).
+- 2026-10-14 03:00: **round 70 ON ORIGIN**: env/a-core (SL/DB objective marker_tags; release-run harness fixes), env/c-worlds (gallery_night.md Build rulings, approved), EventBus SHOT_FX_* flag constants. test_heist_readiness: all 4 heists PASS (no pending). a/c targeted green.
 - 2026-10-14 02:40: **round 69 ON ORIGIN**: env/p-play (D-102 PD2 bag carry), env/a-core (s10 tests for D-102, SL/DB marker lane in progress), env/b-content. a carry tests 43/0, p 88/0, P1 slice 10/0 (slice_b still running at push). D-104 ENV C re-activated; Gallery Night §7 requirements.
 - 2026-10-14 02:20: **round 68 ON ORIGIN**: env/b-content (failure paths with fail reasons + "what you lost", Quick Play Continue, colour-blind palette roles for all new widgets), env/p-play (melee punch, spring fix), env/a-core (stealth harness WIP). b targeted + p 84/0 green.
 - 2026-10-14 02:05: P PO-3 snag probe re-run on current maps: 0 snags on all 4 heists.
@@ -83,7 +85,7 @@ Read it at the start of every work session.
 - D (parked after P's D-101 attempt 00:55): rifle-family left-hand cup needs B to move LeftHandIK below the fore-end on ~20 weapons + re-timed lever clip; cosmetic. Pistol ADS forearm size: closed, matches PD2 within the rig's proportions.
 
 ## Routed findings
-- A: shadow_ledger and dockside_burn missions have NO objective marker_tags (test_heist_readiness test_01; remove them from MARKERS_PENDING when done). No capsule NPCs on any of the 4 heists (test_02 PASS).
+- (DONE r70) SL/DB marker_tags; test_heist_readiness green on all 4 heists.
 - A: loud transition doesn't advance the Glasshouse objective (still "Find the manager's keycard"); NPCs render as grey capsules while casing.
 - A (PO-5.x, interim 18:19): civilians no longer body-block (5.2), AI crew leash/cover need LOS + downed bots hold fire (5.3), solo Routine 31 enemies by t=180 (5.4), drill works but 180 s (5.8), police as white capsules (5.7, A diagnosing). B: PO-5.5 no primary (QB-1 yes), 5.6 "{count}/{total}" placeholder + keycard objective in lockdown, 5.9 Brutal unlocked while Tense/Hazardous locked.
 - P: FP pistol visible while casing → FIXED (no weapon while casing). B: crosshair hidden while casing (ruling 20:35).

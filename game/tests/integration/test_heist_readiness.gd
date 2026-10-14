@@ -11,8 +11,8 @@ const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_led
 const SEED: int = 4242
 ## Objectives that cover the whole map, so they carry no marker (the HUD shows none while casing anyway).
 ## Known gap (lead board, ENV A): these missions have no marker_tags yet; test_01 skips them until they do.
-const MARKERS_PENDING: Array[StringName] = [&"shadow_ledger", &"dockside_burn"]
-const AREA_OBJECTIVES: Array[StringName] = [&"casing"]
+const MARKERS_PENDING: Array[StringName] = []
+const AREA_OBJECTIVES: Array[StringName] = [&"casing", &"cartel"]
 
 var _launcher: Script = null
 

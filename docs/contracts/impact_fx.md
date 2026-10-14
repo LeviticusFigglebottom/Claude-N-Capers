@@ -22,7 +22,7 @@ shooter_net_id: int, flags: int)`, **local presentation only**, emitted on EVERY
 (crew and NPC): the server's shot replication already reaches clients, so each peer emits it locally from that (no new
 per-pellet net traffic beyond what exists). `end` = impact point, or max range if nothing was hit (`normal` = ZERO,
 `surface` = &""). `flags`: bit0 = suppressed, bit1 = first-person shooter on this peer (P draws its own muzzle/tracer
-origin), bit2 = headshot, bit3 = penetrated. Melee impacts use the same event with `weapon_class = &"melee"`.
+origin), bit2 = headshot, bit3 = penetrated. Melee impacts use the same event with `weapon_class = &"melee"`. Flag constants: `EventBus.SHOT_FX_SUPPRESSED/FIRST_PERSON/HEADSHOT/PENETRATED`. `weapon_class` = the WeaponDef class id (`ar`, `smg`, `lmg`, `pistol`, `shotgun`, `sniper`, `melee`; NPC weapons map to the nearest class).
 Explosions: `EventBus.explosion_fx(pos, radius, kind)`.
 
 ## 3. Effects (ENV C library, `game/world/vfx/`)
