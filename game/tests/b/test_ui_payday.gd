@@ -34,8 +34,10 @@ func test_routine_totals_match_calculator() -> void:
 	var expected: Dictionary = PayoutCalculator.compute(result, null, null, false, Net.local_slot(), 1.0)
 	_screen.show_result(result)
 	assert_eq(_screen.payout, expected, "screen uses PayoutCalculator output as-is")
-	for key: String in ["contract", "small_loot", "total", "stash", "spending"]:
+	for key: String in ["contract", "small_loot", "total"]:
 		assert_eq((_screen.value_labels[StringName(key)] as Label).text, UiText.money(int(expected[key])), key)
+	for key: String in ["stash", "spending"]:  # D-111: shown once, in the hero line
+		assert_true((_screen.value_labels[StringName(key)] as Label).text.contains(UiText.money(int(expected[key]))), key)
 	assert_eq((_screen.value_labels[&"civilian_penalty"] as Label).text, UiText.money(-int(expected["civilian_penalty"])))
 	assert_eq((_screen.value_labels[&"xp_total"] as Label).text, UiText.group_digits(int(expected["xp_total"])))
 	for line: Dictionary in expected["xp_lines"] as Array:
