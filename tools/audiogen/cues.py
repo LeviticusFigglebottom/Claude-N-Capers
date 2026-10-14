@@ -1889,6 +1889,97 @@ def throwable_incendiary_fire(rng: np.random.Generator, v: int) -> np.ndarray:
 
 # ============================================================ table
 
+def npc_melee_swing(rng: np.random.Generator, v: int) -> np.ndarray:
+    """NPC melee windup (A3-13, the 0.4 s `melee` clip): a fast arm/cloth swish with a breathy effort
+    "hff" body, 0.28-0.32 s. Niche: band-pass pink-noise sweep 520 -> 2.1 kHz -> 700 Hz with a tight
+    ~0.17 s swell (bag_throw is a slower, lower 0.55 s 300 -> 1.4 kHz arc), a 3.5 kHz cloth flick at
+    the peak, and under it a quiet formant-filtered glottal buzz (~100 Hz, "uh" -> "o", no voice
+    sample) plus a 75 Hz shoulder thump at the start. Variations change sweep peak, length and the
+    effort level."""
+    dur = (0.28, 0.30, 0.32)[v % 3] + rng.uniform(-0.005, 0.005)
+    n = nsamp(dur)
+    t = np.arange(n) / SR
+    peak_t = dur * rng.uniform(0.52, 0.6)
+    k = nsamp(peak_t)
+    fpk = (2100.0, 1850.0, 2350.0)[v % 3] * rng.uniform(0.95, 1.05)
+    f = np.concatenate([np.geomspace(520.0, fpk, k), np.geomspace(fpk, 700.0, n - k)])
+    swish = filters.biquad_tv(noise.pink(dur, rng), "bp", f, 1.8)
+    # asymmetric swell: slow-ish rise to the peak, quicker fall (the arm passes the ear)
+    e = np.where(t < peak_t, (t / peak_t) ** 2.2, np.exp(-(t - peak_t) / (0.045 + 0.01 * (v % 3))))
+    out = swish * e * 1.3
+    cloth = filters.bp(noise.white(dur, rng), 3500.0 * rng.uniform(0.9, 1.1), 0.9)
+    out += cloth * np.exp(-((t - peak_t) / 0.025) ** 2) * 0.25
+    # effort "hff": breathy glottal buzz through a gliding vowel bank, starting just before the swing
+    gd = min(dur, 0.2)
+    gt = tvec(gd)
+    pitch = (105.0, 96.0, 112.0)[v % 3] * (1.0 - 0.12 * gt / gd)
+    glot = osc.saw(pitch, gd) * 0.5 + noise.white(gd, rng) * 0.6
+    grunt = filters.lp(filters.formant(glot, "uh", "o", 5.0), 1800.0)
+    grunt *= np.sin(np.linspace(0, np.pi, gt.size)) ** 1.5
+    place(out, grunt, nsamp(0.01), (0.32, 0.26, 0.38)[v % 3])
+    # shoulder thump: a short low sine knock at the start of the motion
+    place(out, thud(rng, 75.0 * rng.uniform(0.95, 1.05), 0.12, 0.3), 0, 0.35)
+    return fade(out, 0.002, 0.02)
+
+
+def ecm_active(rng: np.random.Generator, v: int) -> np.ndarray:
+    """ECM jammer engages (ecm_system: one-shot `audio_cue_requested` when a jam starts; nothing
+    stops it, so it is a 1.8 s one-shot, not a loop). Niche: dense *digital* noise: white noise
+    bit-crushed to 4 bits with a 12x sample hold, gated by a 22-38 Hz data stutter, over a 2.4 kHz
+    carrier FM chirp rising an octave, plus a 60 Hz mains hum swell. No other cue is bit-crushed."""
+    dur = 1.8
+    t = tvec(dur)
+    swell = env.segments([(0.0, 0.0), (0.05, 1.0), (1.3, 0.85), (dur, 0.0)], dur)
+    crushed = fx.bitcrush(filters.hp(noise.white(dur, rng), 400) * 0.6, 4, 12)
+    rate = rng.uniform(22.0, 38.0)
+    gate = 0.55 + 0.45 * (env.lfo(rate, dur, 1.0, rng.uniform(0, 1), "square") > 0)
+    y = filters.lp(crushed, 7000) * gate * 0.8
+    chirp = osc.fm(2400.0 * np.geomspace(1.0, 2.0, t.size), 1.5, 2.5 * swell, dur) * 0.18
+    y += chirp * (0.5 + 0.5 * env.lfo(rate * 0.5, dur, 1.0, 0.0, "square"))
+    y += osc.sine(60.0, dur) * 0.25 + osc.sine(120.0, dur) * 0.12
+    return fade(y * swell, 0.004, 0.08)
+
+
+def ecm_feedback(rng: np.random.Generator, v: int) -> np.ndarray:
+    """ECM feedback burst (stun pulse, 15 m). Niche: a phasing scream: pink + white noise through a
+    swept notch pair (phaser, 0.4 -> 6 kHz) under a descending FM screech 3.2 -> 0.9 kHz, a
+    hard 0.15 s onset spike, then a 1.2 s decaying wobble. 1.4 s."""
+    dur = 1.4
+    t = tvec(dur)
+    src = noise.pink(dur, rng) * 0.7 + noise.white(dur, rng) * 0.3
+    sweep = 400.0 * (15.0 ** (0.5 + 0.5 * env.lfo(3.0, dur, 1.0, 0.75, "tri")))
+    ph = filters.biquad_tv(src, "notch", sweep, 2.0)
+    ph = filters.biquad_tv(ph, "notch", sweep * 1.9, 2.0)
+    e = env.exp_decay(dur, 1.0, 0.002)
+    y = (ph + src * 0.4) * e
+    scream = osc.fm(3200.0 * np.geomspace(1.0, 0.28, t.size), 1.414, 3.0 * e, dur)
+    y += scream * e * (0.45 + 0.15 * env.lfo(11.0, dur)) * 0.6
+    y += filters.hp(noise.white(dur, rng), 2500) * env.exp_decay(dur, 0.15, 0.0) * 0.9
+    return fade(fx.drive(y, 1.8), 0.001, 0.1)
+
+
+def trip_mine_explode(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Trip mine detonation (deployable prefab, `audio_cue_requested` at the mine). Niche: a tight
+    shaped-charge snap: very hard 2.5 kHz+ crack with a steel casing ping (1.7/4.3 kHz modes), a
+    62 Hz punch, a short 900 Hz roar and only a few debris clicks (no frag zips, no c4 debris rain,
+    shorter tail than both). 2.2 s."""
+    dur = 2.2
+    t = tvec(dur)
+    vr = 1 + 0.05 * (v - 1) + rng.uniform(-0.03, 0.03)
+    crack = filters.hp(noise.white(dur, rng), 2500) * env.exp_decay(dur, 0.03, 0.0) * 2.4
+    sub = osc.sine(62 * vr * (1 + 1.6 * np.exp(-t / 0.035)), dur) * env.exp_decay(dur, 0.5, 0.001) * 1.5
+    roar = filters.bp(noise.brown(dur, rng), 900 * vr, 0.8) * env.exp_decay(dur, 0.4, 0.002) * 1.8
+    y = fx.drive(crack + sub + roar, 2.8)
+    y += fit(click(rng, (1700 * vr, 4300 * vr, 6100 * vr), 0.4, 18.0, 0.03, 0.9), t.size)
+
+    def debris(i: int, r: np.random.Generator) -> np.ndarray:
+        return click(r, (r.uniform(1100, 2600), r.uniform(3200, 6500)), 0.05, 8, 0.006, r.uniform(0.15, 0.4))
+
+    y += granular.cloud(dur, np.sort(0.2 + rng.uniform(0, 1, 12) ** 1.5 * 0.9), debris, rng) * 0.35
+    y = fx.reverb(y, "alley", 0.28, stereo_out=False, tail=False, lowcut=70)
+    return fade(y, 0, 0.4)
+
+
 CUES: list[CueSpec] = [
     CueSpec("detect_tick", detect_tick, bus="UI", positional=False, volume_db=-8.0, cooldown_s=0.12),
     CueSpec("detect_full", detect_full, bus="UI", positional=False, volume_db=-2.0, cooldown_s=1.0),
@@ -2070,4 +2161,13 @@ CUES: list[CueSpec] = [
             note="audio_cues v1.3 throwables: world geometry; _1/_3 metal ting, _2/_4 wood thunk"),
     CueSpec("throwable_incendiary_fire", throwable_incendiary_fire, loop=True, max_distance=25.0, volume_db=-4.0,
             note="audio_cues v1.3 throwables: burning-pool crackle loop (ENV A starts/stops it with the pool)"),
+    CueSpec("npc_melee_swing", npc_melee_swing, variations=3, max_distance=15.0, pitch_jitter=0.06,
+            volume_db=-8.0, cooldown_s=0.25,
+            note="PO-14 / A3-13 NPC melee windup [R], 3D at the NPC; World bus, well under gunfire"),
+    CueSpec("ecm_active", ecm_active, max_distance=20.0, volume_db=-6.0, cooldown_s=0.5,
+            note="PO-14 registry coverage: ecm_system jam start (one-shot; audio_cues P2 'ECM')"),
+    CueSpec("ecm_feedback", ecm_feedback, max_distance=30.0, volume_db=-3.0, cooldown_s=0.5,
+            note="PO-14 registry coverage: ecm_system feedback stun burst (audio_cues P2 'ECM')"),
+    CueSpec("trip_mine_explode", trip_mine_explode, variations=3, max_distance=150.0, pitch_jitter=0.03,
+            note="PO-14 registry coverage: deployable trip mine detonation (World bus, like throwable_frag)"),
 ]

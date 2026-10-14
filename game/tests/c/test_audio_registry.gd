@@ -70,6 +70,9 @@ const LOOPS: Array[StringName] = [
 	&"cue.pager_beep", &"cue.pager_radio", &"cue.alarm_bell", &"cue.drill_loop", &"cue.police_siren_far",
 ]
 const BUSES: Array[StringName] = [&"Music", &"SFX", &"Weapons", &"Enemies", &"World", &"UI", &"Voice", &"Ambience"]
+## PO-14 registry coverage scan (test_every_cue_referenced_in_code_is_registered).
+const CODE_ROOTS: Array[String] = ["res://systems", "res://world", "res://content", "res://core"]
+const CUE_LITERAL: String = "\"(cue\\.[a-z0-9_]*[a-z0-9])\""
 
 var _reg: AudioCueRegistry = null
 
@@ -445,3 +448,63 @@ func test_payday_tick_cue() -> void:
 	assert_eq(c.streams.size(), 1, "one tick stream")
 	if c.streams.size() > 0:
 		assert_true(c.streams[0].get_length() < 0.2, "a short tick (%.3f s)" % c.streams[0].get_length())
+
+
+## PO-14 registry coverage: every cue id written as a literal in game code (`const CUE_X := &"cue.x"`,
+## `StringName("cue.x")`, plain `"cue.x"` in tables) must exist in cues.tres, so no trigger silently
+## falls back to the placeholder beep. Prefix literals (`"cue.impact_" + surface`) end in `_` and are
+## skipped; ids built at runtime are covered by the family tests above.
+func test_every_cue_referenced_in_code_is_registered() -> void:
+	if _reg == null:
+		skip("no registry")
+		return
+	var re: RegEx = RegEx.create_from_string(CUE_LITERAL)
+	var refs: Dictionary[String, String] = {}
+	var files: PackedStringArray = []
+	for root: String in CODE_ROOTS:
+		_collect_gd(root, files)
+	assert_true(files.size() > 50, "scanned %d .gd files" % files.size())
+	for path: String in files:
+		for m: RegExMatch in re.search_all(FileAccess.get_file_as_string(path)):
+			if not refs.has(m.get_string(1)):
+				refs[m.get_string(1)] = path
+	assert_true(refs.size() > 20, "found %d cue literals" % refs.size())
+	var missing: PackedStringArray = []
+	for id: String in refs:
+		if not _reg.has_cue(StringName(id)):
+			missing.append("%s (%s)" % [id, refs[id]])
+	assert_true(missing.is_empty(), "cues referenced in code but not registered: %s" % ", ".join(missing))
+	assert_true(refs.has("cue.npc_melee_swing"), "the A3-13 melee windup cue is seen by the scan")
+
+
+func _collect_gd(dir_path: String, out: PackedStringArray) -> void:
+	var d: DirAccess = DirAccess.open(dir_path)
+	if d == null:
+		return
+	for f: String in d.get_files():
+		if f.ends_with(".gd"):
+			out.append(dir_path.path_join(f))
+	for sub: String in d.get_directories():
+		if not sub.begins_with("."):
+			_collect_gd(dir_path.path_join(sub), out)
+
+
+## cue.npc_melee_swing (A3-13 NPC melee windup [R]): a short 3D whoosh on the World bus, under gunfire,
+## that fits inside the 0.4 s windup.
+func test_npc_melee_swing_cue() -> void:
+	if _reg == null:
+		skip("no registry")
+		return
+	var c: AudioCueDef = _reg.get_cue(&"cue.npc_melee_swing")
+	assert_true(c != null, "registry has cue.npc_melee_swing")
+	if c == null:
+		return
+	assert_eq(c.bus, &"World", "melee swing bus")
+	assert_true(c.positional, "melee swing is 3D at the NPC")
+	assert_false(c.loop, "melee swing is a one-shot")
+	assert_eq(c.streams.size(), 3, "3 variations")
+	assert_true(c.max_distance >= 10.0 and c.max_distance <= 25.0, "range %.0f m" % c.max_distance)
+	assert_true(c.volume_db < _reg.get_cue(&"cue.weapon_rifle_fire").volume_db, "sits under gunfire")
+	for s: AudioStream in c.streams:
+		if s != null:
+			assert_true(s.get_length() <= 0.351, "swing stream <= 0.35 s (%.3f s)" % s.get_length())
