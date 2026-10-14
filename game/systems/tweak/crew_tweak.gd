@@ -73,8 +73,8 @@ extends Resource
 @export var eye_downed: float = 0.8
 @export var fp_down_ease_s: float = 0.35
 @export var fp_down_roll_deg: float = 4.0
-@export var fp_down_vm_offset: Vector3 = Vector3(-0.02, -0.035, 0.02)
-@export var fp_down_vm_rot_deg: Vector3 = Vector3(-4.0, 3.0, 12.0)
+@export var fp_down_vm_offset: Vector3 = Vector3(-0.03, -0.008, 0.0)
+@export var fp_down_vm_rot_deg: Vector3 = Vector3(-2.0, 2.0, 7.0)
 @export var fp_tase_ease_s: float = 0.15
 @export var fp_tase_shake_deg: float = 1.5
 @export var fp_tase_shake_hz: float = 13.0
