@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 17:50: **rounds 127-129 ON ORIGIN**: C hitch-proof VFX flashes; GN skeleton F1-F7 + Build rulings B7; escape-zone visuals on all 4 maps (veh_heli_escape, zipline rig, lift fit-out; van/boat zones use node-only markers next to the existing vehicles). All c map tests, validate_level, escape_zone_visuals 4/4, readiness, P1 slice green. A follow-ups: van zones drive the secure_zone van, heli rotor spin on arrival.
 - 2026-10-14 17:20: **round 126 ON ORIGIN**: env/p-play 114a4018 (PO-13 round 2: all-class hip framing +3 cm right/+2 up/4 closer, pistol sprint on screen, pistol ADS shoulders; co-op FP/TP FX capture: own shots FP, others TP, no doubling; reload/draw C-grip verified). p/a/d viewmodel+arms green. Routed: A client 'ghost rounds' on full auto (2 FX per tap vs 1 accepted); C third-person MuzzleFlash invisible on >50 ms frames. Lit before/after sheet pending.
 - 2026-10-14 17:10: LEAD D-109: HeistDef briefing fields (briefing_objectives, briefing_loud_key, briefing_optional). b briefing/p2_heist_content + lead core green.
 - 2026-10-14 17:00: **round 125 ON ORIGIN**: env/a-core 87fd9552 (VariantResolver honours rare-event top-level requires/excludes; draws unchanged; no existing heist uses it) + pilot harness commits. a a2_08 19/19, a3_10, drill_relock, b preplan_variants/p2_heist_content, readiness green.
