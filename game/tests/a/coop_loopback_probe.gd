@@ -76,8 +76,25 @@ func _rpc_command(cmd: String, args: Dictionary) -> void:
 			var crt: HeistRuntime = HeistRuntime.current()
 			vfx_base = crt.vfx.shots if crt != null and crt.vfx != null else 0
 			_rpc_report.rpc_id(1, "ack", {"cmd": cmd})
+		"teardown":  # C11: payday Continue on the client (the Net session stays up)
+			var had: bool = rt != null
+			if rt != null:
+				rt.teardown()
+			_rpc_report.rpc_id(1, "ack", {"cmd": cmd, "had_rt": had, "session": multiplayer.get_peers().has(1)})
+		"launch_client":  # C11: wait for the host's next bring-up (back in the lobby, same session)
+			_relaunch(float(args.get("timeout", 30.0)))
+			_rpc_report.rpc_id(1, "ack", {"cmd": cmd})
 		"quit":
 			get_tree().quit(0)
+
+
+## Client (C11): `await HeistLauncher.launch_client()` again. Its listener is connected before the first
+## await, so the "launch_client" ack the host waits for always precedes the bring-up.
+func _relaunch(timeout_s: float) -> void:
+	launched_rt = null
+	var rt: HeistRuntime = await HeistLauncher.launch_client(null, {}, timeout_s)
+	launched_rt = rt
+	Log.info(&"loopback", "client: launch_client() again -> %s" % ("replica" if rt != null else "null"))
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -121,7 +138,7 @@ func snapshot(args: Dictionary = {}) -> Dictionary:
 		"hud_max_progress": hud_max_progress, "hud_prompt": hud_prompt,
 		"stealth_alarm": rt.stealth != null and rt.stealth.alarm_raised,
 		"launch_client": is_instance_valid(launched_rt) and launched_rt == rt,
-		"captain": rt.net_sync.captain_state(),
+		"captain": rt.net_sync.captain_state(), "host_closed": rt.net_sync.host_closed_heist,
 		"hud_captain_present": rt.hud_model.captain_present if rt.hud_model != null else false,
 		"hud_captain_resistance": rt.hud_model.captain_resistance if rt.hud_model != null else -1.0,
 		"shot_fx": fx_shots.duplicate(), "explosion_fx": fx_blasts.duplicate(),

@@ -295,6 +295,14 @@ func test_qc61_walkable_window_nav_link() -> void:
 	sash.set_open(false)
 	await wait_physics_frames(1)
 	assert_false(sash.nav_link().enabled, "closed again: link off")
+	var tall: WindowPrefab = ATestMaps.add_prefab(_rt, "window", Vector3(8, 0.0, -4), func(n: Node) -> void:
+		(n as WindowPrefab).openable = true
+		(n as WindowPrefab).sash_travel_m = 1.8) as WindowPrefab
+	await wait_physics_frames(2)
+	var tsash: Node3D = tall.visual_node("Sash") as Node3D
+	var ty0: float = tsash.position.y
+	tall.set_open(true)
+	assert_near(tsash.position.y - ty0, 1.8, 0.001, "per-window sash_travel_m")
 
 
 func test_s9_6_keycard_reader_opens_targets() -> void:
