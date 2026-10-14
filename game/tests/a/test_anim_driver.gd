@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## D-041 / characters.md v1.3: AnimDriver picks humanoid clips from NPC / crew state (presentation only).
 ## Uses a small rig built in code (Node3D root + Skeleton3D with HandR/Socket + AnimationPlayer with a
 ## "humanoid" library of empty clips carrying the contract names).
@@ -8,13 +9,17 @@ const LOOPED: Array[StringName] = [
 	&"walk_back", &"aim_rifle", &"aim_pistol", &"kneel_cuffed", &"hands_up", &"cower", &"lie_down", &"tied",
 	&"flee", &"phone_call", &"pager_answer", &"investigate_look", &"smoke", &"lean_wall", &"sit_chair",
 	&"desk_type", &"browse", &"downed", &"tased", &"carry_bag_walk", &"interact_low", &"interact_mid",
-	&"interact_high", &"shield_walk", &"dozer_walk",
+	&"interact_high", &"shield_walk", &"dozer_walk", &"walk_fl", &"walk_fr", &"walk_bl", &"walk_br", &"run_fl",
+	&"run_fr", &"run_bl", &"run_br",
 ]
 const ONCE: Array[StringName] = [
 	&"turn_l", &"turn_r", &"fire_rifle", &"fire_pistol", &"reload_rifle", &"reload_pistol", &"melee",
 	&"death_front", &"death_back", &"hit_react", &"surrender", &"radio_call", &"throw_bag",
 	&"kick_charge", &"kick_hit", &"shield_bang", &"heal_ally", &"death_seated_slump", &"death_seated_fall",
+	&"hit_react_back", &"hit_react_left", &"hit_react_right", &"death_side", &"death_front_b", &"death_back_b",
 ]
+## v1.10 starts / stops: only the start/stop test's rig carries them (the other tests read the plain locomotion).
+const START_STOP: Array[StringName] = [&"walk_start", &"walk_stop", &"run_start", &"run_stop"]
 ## HandL/Socket local transform of the test rig (shield grip).
 const HANDL_SOCKET: Transform3D = Transform3D(Basis(Vector3.UP, 0.3), Vector3(-0.25, 1.1, -0.45))
 const HINT_SCRIPT: String = "extends Node\nvar anim_hint: StringName = &\"idle\"\n"
@@ -185,11 +190,11 @@ func test_death_clip_from_hit_direction() -> void:
 	b.die({"direction": Vector3(0, 0, 1)})
 	_drv(a).tick(0.016)
 	_drv(b).tick(0.016)
-	assert_eq(_drv(a).clip, &"death_front", "hit from behind: face down")
-	assert_eq(_drv(b).clip, &"death_back", "hit from the front: onto the back")
+	assert_true(_drv(a).clip in [&"death_front", &"death_front_b"], "hit from behind: face down (%s)" % _drv(a).clip)
+	assert_true(_drv(b).clip in [&"death_back", &"death_back_b"], "hit from the front: onto the back (%s)" % _drv(b).clip)
 	assert_eq(a.visual_root.rotation, Vector3.ZERO, "animated corpse is not tipped over like the capsule")
 	_drv(a).tick(0.5)
-	assert_eq(_drv(a).clip, &"death_front", "death clip holds")
+	assert_true(_drv(a).clip in [&"death_front", &"death_front_b"], "death clip holds")
 
 
 ## characters.md v1.11 (PO-pass #6, the corpse through the GH desk): an NPC killed while seated (desk_work,
@@ -219,7 +224,178 @@ func test_seated_deaths() -> void:
 	old.last_damage = {"direction": Vector3(0, 0, -1), "type": Enums.DamageType.BULLET}
 	old.die({"direction": Vector3(0, 0, -1)})
 	_drv(old).tick(0.016)
-	assert_eq(_drv(old).clip, &"death_front", "no seated clip in the library: the standing death")
+	assert_true(_drv(old).clip in [&"death_front", &"death_front_b"], "no seated clip in the library: the standing death")
+
+
+## v1.10 (D-111 "almost zero animations play"): non-lethal damage plays a hit react picked by where the bullet
+## came from (front / back / left / right), spaced hit_react_min_gap_s apart; a dead body never flinches.
+func test_hit_reacts_from_damage_direction() -> void:
+	var npc: NpcBase = _npc()
+	npc.net_id = 70001
+	var d: AnimDriver = _drv(npc)
+	# Facing -Z. Bullet travel: +Z came from the front, -Z from behind, +X from the left, -X from the right.
+	var cases: Array = [[Vector3(0, 0, 1), &"hit_react"], [Vector3(0, 0, -1), &"hit_react_back"],
+		[Vector3(1, 0, 0), &"hit_react_left"], [Vector3(-1, 0, 0), &"hit_react_right"]]
+	for c: Array in cases:
+		d._last_hit_react_t = -100.0
+		EventBus.damage_applied.emit(npc.net_id, 0, {"direction": c[0], "amount": 12.0, "killed": false})
+		d.tick(0.016)
+		assert_eq(d.clip, c[1], "hit from travel %s" % c[0])
+	d._last_hit_react_t = -100.0
+	EventBus.damage_applied.emit(npc.net_id, 0, {"direction": Vector3(0, 0, 1), "amount": 12.0, "killed": false})
+	var first: float = d._last_hit_react_t
+	EventBus.damage_applied.emit(npc.net_id, 0, {"direction": Vector3(0, 0, -1), "amount": 12.0, "killed": false})
+	assert_eq(d._last_hit_react_t, first, "a second hit inside the gap does not restart the react")
+	EventBus.damage_applied.emit(npc.net_id + 1, 0, {"direction": Vector3(1, 0, 0), "amount": 12.0, "killed": false})
+	assert_eq(d._last_hit_react_t, first, "someone else's damage is ignored")
+
+
+## The server path: NpcBase.take_hit (non-lethal) reaches the driver through damage_applied.
+func test_take_hit_triggers_a_hit_react() -> void:
+	var npc: NpcBase = _npc()
+	npc.net_id = 70011
+	npc.max_health = 200.0
+	npc.health = 200.0
+	var d: AnimDriver = _drv(npc)
+	npc.take_hit({"amount": 10.0, "direction": Vector3(0, 0, -1), "type": Enums.DamageType.BULLET})
+	d.tick(0.016)
+	assert_true(npc.alive, "non-lethal")
+	assert_eq(d.clip, &"hit_react_back", "hit from behind")
+
+
+## v1.10 death variety: a strong side hit falls sideways; front / back deaths use the _b variant for half of the
+## bodies (stable per node name, so every peer agrees).
+func test_death_variety() -> void:
+	var side: NpcBase = _npc()
+	side.last_damage = {"direction": Vector3(1, 0, 0)}
+	side.die({"direction": Vector3(1, 0, 0)})
+	_drv(side).tick(0.016)
+	assert_eq(_drv(side).clip, &"death_side", "side hit")
+	var seen: Dictionary = {}
+	for i: int in range(12):
+		var n: NpcBase = _npc()
+		n.name = "Npc_variety_%d" % i
+		n.last_damage = {"direction": Vector3(0, 0, -1)}
+		n.die({"direction": Vector3(0, 0, -1)})
+		_drv(n).tick(0.016)
+		seen[_drv(n).clip] = true
+	assert_true(seen.has(&"death_front") and seen.has(&"death_front_b"), "both front deaths appear (%s)" % [seen.keys()])
+
+
+## v1.10 starts / stops: setting off straight ahead plays walk_start / run_start over the locomotion, stopping out of
+## a straight walk / run plays walk_stop / run_stop; sideways moves and libraries without the clips get neither.
+func test_walk_run_start_and_stop() -> void:
+	var npc: NpcBase = _npc()
+	var d: AnimDriver = _drv(npc)
+	var lib: AnimationLibrary = d.player.get_animation_library(AnimDriver.LIBRARY)
+	for n: StringName in START_STOP:
+		var a: Animation = Animation.new()
+		a.length = 0.4
+		lib.add_animation(n, a)
+	d.tick(0.016)
+	assert_eq(d.clip, &"idle", "standing")
+	npc.velocity = Vector3(0, 0, -1.6)
+	d.tick(0.016)
+	assert_eq(d.clip, &"walk_start", "sets off: walk_start")
+	d.tick(0.5)
+	assert_eq(d.clip, &"walk", "then the walk cycle")
+	npc.velocity = Vector3.ZERO
+	d.tick(0.016)
+	assert_eq(d.clip, &"walk_stop", "stops: walk_stop")
+	d.tick(0.5)
+	assert_eq(d.clip, &"idle", "then idle")
+	npc.velocity = Vector3(0, 0, -3.5)
+	d.tick(0.016)
+	assert_eq(d.clip, &"run_start", "sets off running: run_start")
+	d.tick(0.5)
+	npc.velocity = Vector3.ZERO
+	d.tick(0.016)
+	assert_eq(d.clip, &"run_stop", "stops running: run_stop")
+	d.tick(0.5)
+	npc.velocity = Vector3(1.2, 0, 0)
+	d.tick(0.016)
+	assert_eq(d.clip, &"strafe_r", "a sideways move gets no start")
+
+
+## v1.10 8-way locomotion: the four diagonals at walk and run speed (straight lines keep the 4-way clips).
+func test_eight_way_locomotion() -> void:
+	var npc: NpcBase = _npc()
+	var d: AnimDriver = _drv(npc)
+	var k: float = sqrt(0.5)
+	var cases: Array = [
+		[Vector3(k, 0, -k) * 1.6, &"walk_fr"], [Vector3(-k, 0, -k) * 1.6, &"walk_fl"],
+		[Vector3(k, 0, k) * 1.3, &"walk_br"], [Vector3(-k, 0, k) * 1.3, &"walk_bl"],
+		[Vector3(k, 0, -k) * 3.5, &"run_fr"], [Vector3(-k, 0, k) * 3.5, &"run_bl"],
+		[Vector3(3.5, 0, 0), &"run_r"], [Vector3(0, 0, -1.6), &"walk"], [Vector3(0, 0, -3.5), &"run"],
+	]
+	for c: Array in cases:
+		npc.velocity = c[0]
+		d.tick(0.016)
+		assert_eq(d.clip, c[1], "v=%s" % c[0])
+	npc.velocity = Vector3(k, 0, -k) * 1.6
+	d.tick(0.016)
+	assert_near(d.player.speed_scale, 1.0, 0.01, "walk_fr runs at walk speed (1.6 m/s)")
+
+
+## D-111: an NPC reload (NpcGunner's replicated reload cue) plays reload_rifle / reload_pistol on the NPC.
+func test_npc_reload_cue_plays_the_reload_clip() -> void:
+	var npc: NpcBase = _npc(&"police")
+	npc.net_id = 70021
+	var d: AnimDriver = _drv(npc)
+	EventBus.audio_cue_requested.emit(NpcGunner.CUE_RELOAD_RIFLE, Vector3.ZERO, npc.net_id)
+	d.tick(0.016)
+	assert_eq(d.clip, &"reload_rifle", "rifle reload")
+	d.tick(5.0)
+	EventBus.audio_cue_requested.emit(NpcGunner.CUE_RELOAD_PISTOL, Vector3.ZERO, npc.net_id)
+	d.tick(0.016)
+	assert_eq(d.clip, &"reload_pistol", "pistol reload")
+
+
+## D-111: a crew member placing / fixing a drill plays drill_place; a downed body that moves plays downed_crawl.
+func test_drill_place_and_downed_crawl() -> void:
+	var crew: CrewController = (load(CrewController.SCENE_PATH) as PackedScene).instantiate() as CrewController
+	crew.setup(0, {"peer_id": 0, "is_ai": true, "display_name": "Bot"}, null)
+	var visual: Node3D = crew.get_node(^"Visual") as Node3D
+	for c: Node in visual.get_children():
+		c.free()
+	visual.add_child(_test_rig())
+	add_child(crew)
+	_nodes.append(crew)
+	await wait_frames(2)
+	var d: AnimDriver = _drv(crew)
+	EventBus.interaction_started.emit(0, crew.slot, &"place_drill")
+	d.tick(0.016)
+	assert_eq(d.clip, &"drill_place", "placing a drill")
+	EventBus.interaction_cancelled.emit(0, crew.slot)
+	crew.crew_state = Enums.CrewState.DOWNED
+	d.tick(0.016)
+	assert_eq(d.clip, &"downed", "downed and still")
+	crew.velocity = Vector3(0.3, 0, 0)
+	d.tick(0.016)
+	assert_eq(d.clip, &"downed_crawl", "downed and moved: crawl")
+
+
+## D-111 ambient loops: bartender / bouncer / teller activities and `dance` (a / b / c, stable per NPC name).
+func test_bar_club_bank_ambient_clips() -> void:
+	var cases: Array = [[&"bartender", &"bartender_wipe"], [&"bartender_pour", &"bartender_pour"],
+		[&"bouncer", &"bouncer_idle"], [&"teller", &"teller_count"]]
+	for c: Array in cases:
+		var npc: NpcBase = _npc(&"civilian")
+		npc.get_node("Brain").set(&"anim_hint", c[0])
+		_drv(npc).tick(0.016)
+		assert_eq(_drv(npc).clip, c[1], "%s -> %s" % [c[0], c[1]])
+	var dances: Dictionary = {}
+	for i: int in range(9):
+		var n: NpcBase = _npc(&"civilian")
+		n.name = "Dancer_%d" % i
+		n.get_node("Brain").set(&"anim_hint", &"dance")
+		_drv(n).tick(0.016)
+		dances[_drv(n).clip] = true
+	assert_true(dances.size() >= 2, "dancers vary (%s)" % [dances.keys()])
+	for k: Variant in dances:
+		assert_true(k in [&"dance_a", &"dance_b", &"dance_c"], "a dance loop: %s" % k)
+	assert_true(CivilianBrain.KNOWN_ACTIVITIES.has(&"dance") and CivilianBrain.KNOWN_ACTIVITIES.has(&"bartender"),
+		"civilian activities")
 
 
 func test_noop_on_capsule_visual() -> void:
@@ -322,6 +498,7 @@ func test_assembled_fixture_when_present() -> void:
 		return
 	npc.velocity = Vector3(0, 0, -1.6)
 	d.tick(0.016)
+	d.tick(1.0)  # past walk_start (v1.10)
 	assert_eq(String(d.player.current_animation), "humanoid/walk", "real contract visual plays humanoid/walk")
 
 

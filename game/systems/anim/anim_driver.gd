@@ -49,6 +49,10 @@ const HINT_CLIPS: Dictionary = {
 	# characters.md v1.9 (D-103, Gallery Night): inspect a hung work, cower standing / seated, walk texting.
 	&"curator_inspect": &"curator_inspect", &"inspect": &"curator_inspect", &"cower_stand": &"cower_stand",
 	&"cower_seated": &"cower_seated", &"text": &"phone_call", &"walk_text": &"phone_call",
+	# D-111 ambient activities: bar staff, club door, dancers (dance_a/b/c picked per NPC), bank tellers.
+	&"bartender": &"bartender_wipe", &"bartender_wipe": &"bartender_wipe", &"bartender_pour": &"bartender_pour",
+	&"bouncer": &"bouncer_idle", &"teller": &"teller_count", &"dance_a": &"dance_a", &"dance_b": &"dance_b",
+	&"dance_c": &"dance_c",
 	# Brain / patrol-point aliases.
 	&"phone": &"phone_call", &"call": &"phone_call", &"sit": &"sit_chair",
 	&"queue": &"idle", &"lean": &"lean_wall", &"check_door": &"investigate_look", &"down": &"lie_down",
@@ -68,6 +72,17 @@ const ONESHOT_HINTS: Array[StringName] = [&"melee", &"kick_hit", &"hit_react"]
 const SEATED_CLIPS: Array[StringName] = [&"desk_work", &"phone_seated", &"sit_chair_watch", &"cower_seated"]
 const DEATH_SEATED_SLUMP: StringName = &"death_seated_slump"
 const DEATH_SEATED_FALL: StringName = &"death_seated_fall"
+## characters.md v1.10 8-way locomotion by 45 deg sector clockwise from forward (index 0 = forward).
+const WALK_8: Array[StringName] = [
+	&"walk", &"walk_fr", &"strafe_r", &"walk_br", &"walk_back", &"walk_bl", &"strafe_l", &"walk_fl"]
+const RUN_8: Array[StringName] = [&"run", &"run_fr", &"run_r", &"run_br", &"run_b", &"run_bl", &"run_l", &"run_fl"]
+## Hit reacts by where the bullet came from (characters.md v1.10), and the spacing between two of them.
+const HIT_FRONT: StringName = &"hit_react"
+const HIT_BACK: StringName = &"hit_react_back"
+const HIT_LEFT: StringName = &"hit_react_left"
+const HIT_RIGHT: StringName = &"hit_react_right"
+## Starts / stops only for straight-ahead motion (|dir . forward| at least this).
+const START_STOP_DOT: float = 0.7
 ## One-shot hints that are not held as an idle once played (the hint may linger in the brain).
 const ONCE_ONLY_HINTS: Array[StringName] = [&"kick_hit", &"hit_react"]
 ## Clip -> substitute when the library lacks it (then idle).
@@ -82,6 +97,15 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"desk_work": &"desk_type", &"phone_seated": &"phone_call", &"sit_chair_watch": &"sit_chair", &"mop": &"browse",
 	&"sit_bed_read": &"sit_chair", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
 	&"rappel": &"climb_ladder", &"climb_ladder": &"idle",
+	# D-111: drill / crawl / gala and club ambient clips (characters.md v1.9-v1.10).
+	&"drill_place": &"interact_mid", &"downed_crawl": &"downed", &"bartender_wipe": &"browse",
+	&"bartender_pour": &"browse", &"bouncer_idle": &"idle", &"teller_count": &"desk_type", &"dance_a": &"idle",
+	&"dance_b": &"idle", &"dance_c": &"idle",
+	# v1.10: 8-way, hit reacts, death variety (each falls back to the v1.3 set).
+	&"walk_fl": &"walk", &"walk_fr": &"walk", &"walk_bl": &"walk_back", &"walk_br": &"walk_back",
+	&"run_fl": &"run", &"run_fr": &"run", &"run_bl": &"run_b", &"run_br": &"run_b",
+	&"hit_react_back": &"hit_react", &"hit_react_left": &"hit_react", &"hit_react_right": &"hit_react",
+	&"death_front_b": &"death_front", &"death_back_b": &"death_back", &"death_side": &"death_back",
 	&"curator_inspect": &"browse", &"cower_stand": &"cower", &"cower_seated": &"cower", &"walk_text": &"walk",
 }
 ## EnemyDef.params key: the unit's own walk clip (Bulwark shield_walk, Wrecker dozer_walk), played instead
@@ -127,6 +151,9 @@ var _turning_left: float = 0.0
 var _aim_hold_left: float = 0.0
 var _hit_dir: Vector3 = Vector3.ZERO
 var _death_clip: StringName = &""
+var _last_hit_react_t: float = -100.0
+## Moving (above move_threshold_mps) last tick, for the v1.10 starts / stops.
+var _was_moving: bool = false
 ## The NPC's last clip while alive was a seated one (SEATED_CLIPS): it dies in the chair.
 var _seated: bool = false
 var _last_hint: StringName = &""
@@ -249,6 +276,7 @@ func tick(delta: float) -> void:
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
 	_oneshot_left = maxf(_oneshot_left - delta, 0.0)
+	_update_start_stop(tw)
 	_aim_hold_left = maxf(_aim_hold_left - delta, 0.0)
 	_turning_left = maxf(_turning_left - delta, 0.0)
 	var hint: StringName = _hint()
@@ -397,9 +425,16 @@ func refresh_weapon() -> void:
 
 # --- Selection helpers ---------------------------------------------------------------------
 
+func _crew_state_clip() -> StringName:
+	var sc: StringName = CREW_STATE_CLIPS.get(_crew.crew_state, &"")
+	if sc == &"downed" and horizontal_speed() > AnimTweak.data().move_threshold_mps:
+		return &"downed_crawl"  # v1.10: a downed body being moved (bleed-out drag)
+	return sc
+
+
 func _state_clip() -> StringName:
 	if _crew != null:
-		return CREW_STATE_CLIPS.get(_crew.crew_state, &"")
+		return _crew_state_clip()
 	if _npc == null:
 		return &""
 	if _npc.is_stunned():
@@ -435,17 +470,14 @@ func _locomotion_clip(speed: float, tw: AnimTweak) -> StringName:
 	var side: float = dir.dot(right)
 	var slow: bool = speed <= tw.strafe_max_mps
 	var running: bool = not slow and speed <= tw.run_sprint_split_mps
-	if dir.dot(fwd) < tw.walk_back_dot and (slow or running):
-		out = &"walk_back" if slow else &"run_b"
-	elif absf(side) > tw.strafe_side_dot and (slow or running):
-		if slow:
-			out = &"strafe_r" if side > 0.0 else &"strafe_l"
-		else:
-			out = &"run_r" if side > 0.0 else &"run_l"
-	elif speed <= tw.walk_run_split_mps:
-		out = &"walk"
-	elif speed <= tw.run_sprint_split_mps:
-		out = &"run"
+	if slow or running:
+		# characters.md v1.10 8-way: 45 deg sectors clockwise from forward (diagonals fall back to the 4-way set).
+		var a: float = rad_to_deg(atan2(side, dir.dot(fwd)))
+		var i: int = posmod(roundi(a / 45.0), 8)
+		var clips: Array[StringName] = WALK_8 if slow else RUN_8
+		out = clips[i]
+		if i == 0:  # straight ahead: walk / run by the usual split
+			out = &"walk" if speed <= tw.walk_run_split_mps else &"run"
 	return out
 
 
@@ -487,6 +519,8 @@ func _unit_walk_clip(speed: float, tw: AnimTweak) -> StringName:
 func _interact_clip(tw: AnimTweak) -> StringName:
 	if _interact_kind == &"answer_pager":
 		return &"pager_answer"
+	if _interact_kind == &"place_drill" or _interact_kind == &"fix_drill":
+		return &"drill_place"  # D-111: setting / fixing a drill
 	if _interact_height < tw.interact_low_max_m:
 		return &"interact_low"
 	return &"interact_high" if _interact_height > tw.interact_high_min_m else &"interact_mid"
@@ -525,7 +559,14 @@ func _hint() -> StringName:
 	if b == null:
 		return &""
 	var h: Variant = b.get(&"anim_hint")
-	return _ambient_hint(h if h is StringName else &"")
+	return _ambient_hint(_dance_pick(h if h is StringName else &""))
+
+
+## D-111: `dance` is one of the three dance loops, stable per NPC name (every peer agrees).
+func _dance_pick(h: StringName) -> StringName:
+	if h != &"dance" or _npc == null:
+		return h
+	return [&"dance_a", &"dance_b", &"dance_c"][absi(hash(String(_npc.name))) % 3]
 
 
 ## D-069 per-NPC ambient substitutions: cleaners mop instead of browsing, Kessler reads in bed instead of
@@ -562,7 +603,15 @@ func _pick_death_clip(tw: AnimTweak) -> StringName:
 			return seated_clip
 	if dir.length() < 0.001:
 		return &"death_back"
-	return &"death_front" if from_behind else &"death_back"
+	# v1.10 variety: a strong side hit falls sideways; otherwise front / back, half of the bodies with the _b
+	# variant. Picked from the replicated node name, so every peer shows the same death.
+	var right: Vector3 = _body.global_transform.basis.x
+	if absf(dir.normalized().dot(right)) > tw.death_side_dot:
+		return &"death_side"
+	var b: bool = absi(hash(String(_body.name) + "death")) % 2 == 1
+	if from_behind:
+		return &"death_front_b" if b else &"death_front"
+	return &"death_back_b" if b else &"death_back"
 
 
 func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:
@@ -571,6 +620,8 @@ func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:
 	var key: StringName = p_clip
 	if not tw.clip_speeds.has(key):
 		key = StringName(_variant_family.get(p_clip, &""))
+	if not tw.clip_speeds.has(key):  # v1.10 8-way: the diagonals run at their family's speed
+		key = &"walk" if String(p_clip).begins_with("walk_") else (&"run" if String(p_clip).begins_with("run_") else key)
 	if not tw.clip_speeds.has(key):
 		return 1.0
 	var s: float = horizontal_speed() / maxf(float(tw.clip_speeds[key]) * _motion_scale(), 0.01)
@@ -584,6 +635,31 @@ func _motion_scale() -> float:
 
 
 # --- Frame update helpers ---------------------------------------------------------------------
+
+## v1.10 starts / stops: setting off straight ahead from a standstill plays walk_start / run_start, stopping out
+## of a straight walk / run plays walk_stop / run_stop (one-shots; never over another one-shot, a pose or a death).
+func _update_start_stop(tw: AnimTweak) -> void:
+	var speed: float = horizontal_speed()
+	var moving: bool = speed > tw.move_threshold_mps
+	var was: bool = _was_moving
+	_was_moving = moving
+	if moving == was or _oneshot_left > 0.0 or (_npc != null and not _npc.alive):
+		return
+	if POSE_CLIPS.has(clip) or (_crew != null and _crew.crouched):
+		return
+	if moving:
+		var fwd: Vector3 = -_body.global_transform.basis.z
+		var dir: Vector3 = Vector3(_vel.x, 0.0, _vel.z).normalized()
+		if dir.dot(fwd) >= START_STOP_DOT and (clip == &"idle" or clip == &"idle_alert" or clip == &""):
+			_play_if_present(&"walk_start" if speed <= tw.walk_run_split_mps else &"run_start", true)
+	elif clip == &"walk" or clip == &"run":
+		_play_if_present(&"walk_stop" if clip == &"walk" else &"run_stop", false)
+
+
+## A one-shot only when the library has exactly that clip (the fallback chain would play idle / walk instead).
+func _play_if_present(p_clip: StringName, while_moving: bool) -> void:
+	if player != null and player.has_animation("%s/%s" % [LIBRARY, p_clip]):
+		play_oneshot(p_clip, -1.0, while_moving)
 
 func _update_velocity(delta: float, tw: AnimTweak) -> void:
 	var pos: Vector3 = _body.global_position if _body.is_inside_tree() else _body.position
@@ -693,8 +769,34 @@ func _net_id() -> int:
 # --- Events ---------------------------------------------------------------------------------
 
 func _on_damage_applied(victim_net_id: int, _attacker: int, info: Dictionary) -> void:
-	if victim_net_id != 0 and victim_net_id == _net_id():
-		_hit_dir = info.get("direction", Vector3.ZERO)
+	if victim_net_id == 0 or victim_net_id != _net_id():
+		return
+	_hit_dir = info.get("direction", Vector3.ZERO)
+	if player == null or bool(info.get("killed", false)) or float(info.get("amount", 0.0)) <= 0.0:
+		return
+	if _npc != null and not _npc.alive:
+		return
+	if _crew != null and _crew.crew_state != Enums.CrewState.NORMAL:
+		return
+	var now: float = Time.get_ticks_msec() / 1000.0
+	if now - _last_hit_react_t < AnimTweak.data().hit_react_min_gap_s:
+		return
+	_last_hit_react_t = now
+	play_oneshot(hit_react_clip(_hit_dir), -1.0, true)
+
+
+## v1.10: the hit react for a bullet travelling along world direction `dir` (body frame: from the front, back,
+## left or right).
+func hit_react_clip(dir: Vector3) -> StringName:
+	var d: Vector3 = _body.global_transform.basis.inverse() * Vector3(dir.x, 0.0, dir.z)
+	if d.length() < 0.001:
+		return HIT_FRONT
+	d = d.normalized()
+	if d.z > 0.5:
+		return HIT_FRONT
+	if d.z < -0.5:
+		return HIT_BACK
+	return HIT_LEFT if d.x > 0.5 else HIT_RIGHT
 
 
 func _on_weapon_fired(shooter_net_id: int, _weapon_id: StringName, _suppressed: bool, _pos: Vector3) -> void:
@@ -707,9 +809,17 @@ func _on_weapon_fired(shooter_net_id: int, _weapon_id: StringName, _suppressed: 
 ## A3-13: an NPC melee windup (`cue.npc_melee_swing` [R], source = this NPC) plays `melee` on every peer, so
 ## a client sees the windup in time to counter (defense.melee_counter).
 func _on_audio_cue(cue_id: StringName, _pos: Vector3, source_net_id: int) -> void:
-	if cue_id != NpcGunner.CUE_MELEE_SWING or player == null or source_net_id == 0 or source_net_id != _net_id():
+	if player == null or source_net_id == 0 or source_net_id != _net_id():
 		return
-	play_oneshot(&"melee", CombatTweak.data().npc_melee_windup_s + 0.3)
+	if cue_id == NpcGunner.CUE_MELEE_SWING:
+		play_oneshot(&"melee", CombatTweak.data().npc_melee_windup_s + 0.3)
+	elif _npc != null and (cue_id == NpcGunner.CUE_RELOAD_RIFLE or cue_id == NpcGunner.CUE_RELOAD_PISTOL):
+		# D-111: an NPC reload (the crew's own come from CrewWeapons.reload_started)
+		var g: NpcGunner = _npc.get_node_or_null(^"Gunner") as NpcGunner
+		var dur: float = g.reload_time() if g != null else CombatTweak.data().npc_reload_s
+		var clip_id: StringName = &"reload_pistol" if cue_id == NpcGunner.CUE_RELOAD_PISTOL else &"reload_rifle"
+		var done_s: float = float(AnimTweak.data().reload_done_s.get(&"pistol" if clip_id == &"reload_pistol" else &"rifle", 1.0))
+		play_oneshot(clip_id, dur, false, done_s / maxf(dur, 0.05))
 
 
 func _on_reload_started(_ws: int, duration: float) -> void:
