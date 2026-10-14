@@ -208,3 +208,17 @@ func test_xp_bar_final_state() -> void:
 	assert_near(_screen.level_bar.value, PaydayScreen._level_progress(_screen.xp_after), 0.0001)
 	var leveled: bool = XpCurve.level_for_xp(_screen.xp_after) > XpCurve.level_for_xp(_screen.xp_before)
 	assert_eq(_screen.level_up_label.visible, leveled)
+
+
+## Lead failure pass: a failed heist says why (fail_reason) and what was lost, not a table of zeros.
+func test_failure_reason_and_loss() -> void:
+	var result: Dictionary = HeistCatalog.sample_result()
+	result["success"] = false
+	result["fail_reason"] = &"all_custody"
+	_screen.show_result(result)
+	assert_eq((_screen.value_labels[&"fail_reason"] as Label).text, UiText.t(&"ui.results.fail.all_custody"))
+	assert_true(_screen.value_labels.has(&"lost_total"), "the loss panel replaces the cash table")
+	assert_false(_screen.value_labels.has(&"contract"), "no zeroed cash lines")
+	var would: Dictionary = PaydayScreen.compute_payout(HeistCatalog.sample_result(), null, Net.local_slot())
+	assert_eq((_screen.value_labels[&"lost_total"] as Label).text, UiText.money(int(would["total"])))
+	assert_eq(PaydayScreen.fail_reason_key(&""), &"ui.results.fail.abort", "no reason reads as walking away")

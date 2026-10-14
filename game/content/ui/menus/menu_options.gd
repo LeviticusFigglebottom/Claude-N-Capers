@@ -49,9 +49,7 @@ func open_pause() -> PauseMenu:
 	pause_menu.name = "PauseMenu"
 	pause_menu.resume_requested.connect(close_pause)
 	pause_menu.options_requested.connect(open_in_heist)
-	pause_menu.leave_requested.connect(func() -> void:
-		close_pause()
-		flow.call(&"_leave_heist"))
+	pause_menu.leave_requested.connect(func() -> void: flow.call(&"_request_leave_heist"))
 	heist_layer.add_child(pause_menu)
 	pause_menu.set_job(job_snapshot())
 	_hold(true)

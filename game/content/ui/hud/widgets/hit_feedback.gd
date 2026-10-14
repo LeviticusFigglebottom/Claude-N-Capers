@@ -1,8 +1,8 @@
 ## Hit marker (lead round 62, PD2): an X around the crosshair when the LOCAL player's damage lands on
 ## an NPC (EventBus.damage_applied, attacker = local_net_id()), with a cue per kind:
 ##   hit       paper-white X, T_HIT                     cue.hud_hit
-##   headshot  brass X, a little larger, T_HIT          cue.hud_headshot  (zone HEAD, or a crit)
-##   kill      red X that pops out, T_KILL              cue.hud_kill      (info.killed / npc_killed)
+##   headshot  armor-role X (palette), larger, T_HIT  cue.hud_headshot  (zone HEAD, or a crit)
+##   kill      danger-role X that pops out, T_KILL    cue.hud_kill      (info.killed / npc_killed)
 ## Zero-damage hits (shield, plate) show nothing. damage_applied replicates to clients
 ## (Net.replicate_event), so every peer gets its own markers. Owner: ENV B.
 class_name HitFeedback
@@ -85,11 +85,11 @@ func _draw() -> void:
 	var width: float = 2.0
 	match kind:
 		&"headshot":
-			col = UiTokens.BRASS_HI
+			col = tweak.armor_color  # palette: armor role (stays apart from the danger red under every CVD palette)
 			arm += 3.0
 			width = 2.5
 		&"kill":
-			col = UiTokens.ALERT
+			col = tweak.low_health_color  # palette: danger role
 			arm += 5.0
 			width = 3.0
 			if UiTokens.motion_ok():

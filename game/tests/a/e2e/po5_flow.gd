@@ -151,11 +151,25 @@ func payday_to_hub() -> int:
 				clicked = true
 				break
 		if not clicked:
+			clicked = await _pick_payday_card()
+		if not clicked:
 			note("payday: nothing to click; buttons %s" % [visible_buttons()])
 		await seconds(2.0)
 		await shot("payday_%d" % i)
 	note("FAIL PO-5.payday: never got back to the hub; buttons %s" % [visible_buttons()])
 	return 1
+
+
+## The Payday card pick: three unlabelled card buttons and a disabled Continue. Click the first card like
+## a player would; the reveal then enables Continue.
+func _pick_payday_card() -> bool:
+	for n: Node in get_tree().root.find_children("*", "Button", true, false):
+		var b: Button = n as Button
+		if b.is_visible_in_tree() and not b.disabled and _button_label(b).strip_edges() == "":
+			note("payday: picking a card")
+			await click_control(b)
+			return true
+	return false
 
 
 ## PO-5.1: the game owns the mouse (MouseCapture, D-087). Like a player: wait for the capture, else click

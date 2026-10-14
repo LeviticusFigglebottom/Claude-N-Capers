@@ -27,7 +27,8 @@ func _shot(shot: String, frames: int = 12) -> void:
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	_n += 1
-	if _only != "" and _only != "heist" and _only != "menus" and _only != "screens" and not shot.begins_with(_only):
+	if _only != "" and _only != "heist" and _only != "menus" and _only != "screens" and _only != "fail" \
+			and _only != "range" and not shot.begins_with(_only):
 		return
 	var img: Image = get_viewport().get_texture().get_image()
 	var path: String = "%s/%02d_%s_%dx%d.png" % [_out, _n, shot, img.get_width(), img.get_height()]
@@ -45,9 +46,13 @@ func _run() -> void:
 	get_tree().root.add_child(_flow)
 	if _only == "screens":
 		await _screens()
+	elif _only == "fail":
+		await _fail()
+	elif _only == "range":
+		await _range()
 	elif _only != "heist":
 		await _menus()
-	if _only != "menus" and _only != "screens":
+	if _only != "menus" and _only != "screens" and _only != "fail" and _only != "range":
 		await _heist()
 	SaveService.delete_profile(SLOT)
 	get_tree().quit(0)
@@ -145,6 +150,44 @@ func _heist() -> void:
 		await _shot("payday_cards", 12)
 	_flow.call(&"_leave_heist")
 	await _shot("after_heist", 12)
+
+
+## Lead failure pass (`fail`): launch, pause -> Leave Heist -> Confirm (the solo abort), the failure
+## payday, Continue, then the hub; then a second run ended as all-custody.
+func _fail() -> void:
+	for reason: StringName in [&"abort", &"all_custody"]:
+		_flow.launch(HEIST, Enums.Difficulty.ROUTINE, SaveService.load_profile(SLOT).loadout, 43)
+		var t0: int = Time.get_ticks_msec()
+		while (_hud() == null or _flow.runtime == null) and Time.get_ticks_msec() - t0 < 60000:
+			await get_tree().process_frame
+		await _shot("fail_live_" + String(reason), 20)
+		if reason == &"abort":
+			var pm: PauseMenu = _flow.options_menu.open_pause()
+			if pm != null:
+				pm.open_confirm()
+				await _shot("fail_leave_confirm", 8)
+				pm.confirm_button.pressed.emit()
+		else:
+			(_flow.runtime as HeistRuntime).call(&"end_heist", false, [] as Array[int], reason)
+		await _shot("fail_payday_" + String(reason), 30)
+		var pd: PaydayScreen = _flow.get(&"_heist_payday") as PaydayScreen
+		if pd != null and is_instance_valid(pd):
+			pd.continue_button.pressed.emit()
+		await _shot("fail_home_" + String(reason), 20)
+
+
+## Lead queue (3) `range`: the firing range from the main menu, panel mode then aim mode.
+func _range() -> void:
+	_flow.show_home()
+	await _shot("range_main", 10)
+	_flow.main_menu.firing_range_requested.emit()
+	await _shot("range_panel", 90)
+	var ov: RangeOverlay = null
+	for n: Node in get_tree().root.find_children("*", "RangeOverlay", true, false):
+		ov = n as RangeOverlay
+	if ov != null:
+		ov.set_interactive(false)
+		await _shot("range_aim", 30)
 
 
 func _close_options() -> void:

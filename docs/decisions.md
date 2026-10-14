@@ -761,3 +761,8 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   jump-velocity mult 1 / 1 / 0.5 / 0.25; throw distance 4 / 4 / 2 / 1.2 m; head-bob scales with the carry speed mult.
 - ENV P: CrewTweak + jump mult + head-bob; ENV A: S10 tests and any heist pacing that assumed the old speeds (escape timers,
   objective time budgets in e2e flows). Skills that override carry speed (PD2 does this) stay data-driven.
+
+## D-103 — 2026-10-14 — Next heist: Gallery Night; build plan and rulings
+- After the freeze-lift gates (next_heist.md §2), the next heist built is **Gallery Night** (G0 approved, D-075). Build plan,
+  audit and rulings: `docs/process/next_heist.md` §3–§6 (NpcVisuals tag priority over EnemyDef, QC-56 dropped, no
+  stealth-only fail, marker_tags/viewmodel_lit/D-099/D-102 apply, painting_study $700, ENV A system groundwork first).

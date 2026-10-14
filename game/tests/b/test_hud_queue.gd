@@ -98,10 +98,10 @@ func test_teammate_state_badge() -> void:
 	b = _hud.teammates.badges[1] as CrewStateBadge
 	assert_true(b.visible)
 	assert_near(float(b.ring()[0]), 0.5, 0.001, "15 of 30 s left")
-	assert_eq(b.ring()[1], UiTokens.ALERT)
+	assert_eq(b.ring()[1], _hud.tweak.low_health_color, "palette danger role")
 	_model.crew = [{"slot": 1, "name": "Dutch", "state": Enums.CrewState.DOWNED, "bleedout_s": 15.0, "revive_progress": 0.3}]
 	b = _hud.teammates.badges[1] as CrewStateBadge
-	assert_eq(b.ring()[1], UiTokens.OK, "being revived")
+	assert_eq(b.ring()[1], _hud.tweak.ally_color, "being revived (palette ally role)")
 
 
 ## Lead queue (c): objective markers carry a glyph per objective kind.

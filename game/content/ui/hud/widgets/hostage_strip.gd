@@ -61,11 +61,11 @@ func refresh() -> void:
 	match trade:
 		&"ready":
 			trade_label.text = UiText.t(&"ui.hud.trade_ready")
-			trade_label.add_theme_color_override(&"font_color", UiTokens.OK)
+			trade_label.add_theme_color_override(&"font_color", tweak.ally_color)
 		&"wait":
 			trade_label.text = UiText.t(&"ui.hud.trade_wait")
-			trade_label.add_theme_color_override(&"font_color", UiTokens.WARN)
+			trade_label.add_theme_color_override(&"font_color", tweak.pager_color)
 		&"need":
 			trade_label.text = UiText.t(&"ui.hud.trade_need")
-			trade_label.add_theme_color_override(&"font_color", UiTokens.ALERT)
+			trade_label.add_theme_color_override(&"font_color", tweak.low_health_color)
 	visible = n > 0 or trade != &""

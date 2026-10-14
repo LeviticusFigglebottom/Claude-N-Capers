@@ -51,7 +51,11 @@ func _run() -> void:
 	if mode != "onboarding":
 		for id: StringName in OnboardingTips.ALL:
 			OnboardingTips.mark_seen(id)  # the other shots stay as they were
-	if mode == "menus":
+	if mode == "menus_canvas":  # the menus on the game's 1920x1080 canvas (look only; see "loading")
+		_vp.size_2d_override = Vector2i(1920, 1080)
+		_vp.size_2d_override_stretch = true
+		await _menus()
+	elif mode == "menus":
 		await _menus()
 	elif mode == "loud":
 		await _loud()
@@ -148,6 +152,7 @@ func _hud() -> void:
 func _menus() -> void:
 	SaveService.root_dir = "user://contrast_profiles"
 	SaveService.save_profile(PlayerProfile.new_default(), 0)
+	QuickPlay.remember(0, &"glasshouse", Enums.Difficulty.ROUTINE)  # the hub shows Continue
 	var f: MenuFlow = (load("res://content/ui/menus/menu_flow.tscn") as PackedScene).instantiate() as MenuFlow
 	_vp.add_child(f)
 	await get_tree().process_frame
@@ -155,12 +160,23 @@ func _menus() -> void:
 	await _shot("menu_hub", f)
 	f.open_station(&"armory")
 	await _shot("menu_loadout", f)
-	var pd: PaydayScreen = (load("res://content/ui/results/payday.tscn") as PackedScene).instantiate() as PaydayScreen
+	var payday_scene: PackedScene = load("res://content/ui/results/payday.tscn") as PackedScene
+	var pd: PaydayScreen = payday_scene.instantiate() as PaydayScreen
 	pd.setup(PlayerProfile.new_default())
 	_vp.add_child(pd)
 	await get_tree().process_frame
 	pd.show_cards()
 	await _shot("menu_payday", pd)
+	var fail: Dictionary = HeistCatalog.sample_result()  # lead failure pass: reason + loss panel
+	fail["success"] = false
+	fail["fail_reason"] = &"stealth_only_alarm"
+	pd.queue_free()
+	var pf: PaydayScreen = payday_scene.instantiate() as PaydayScreen
+	pf.setup(PlayerProfile.new_default())
+	_vp.add_child(pf)
+	await get_tree().process_frame
+	pf.show_result(fail)
+	await _shot("menu_payday_failed", pf)
 	SaveService.delete_profile(0)
 
 
