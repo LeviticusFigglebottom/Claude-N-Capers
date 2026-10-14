@@ -657,7 +657,8 @@ func _await_arrest(g: NpcBase) -> void:
 	while g.is_alive() and t < 30.0 and alarm == &"":
 		var d: float = p.flat_dist(g.global_position, crew.global_position)
 		if d <= 1.7:
-			await _knife(g, 0.0)
+			if not await _knife(g, 0.0) and g.is_alive():
+				await p.inp.hold(&"move_left", 0.15)  # a downed civilian in the swing: shift a step (< 1.7 m)
 			t += 0.5
 			continue
 		await p.face(g.head_position() - Vector3(0.0, 0.5, 0.0), 0.05, 0.25)
@@ -832,8 +833,10 @@ func _knife(npc: NpcBase, charge_s: float = 1.05) -> bool:
 	await p.face(npc.global_position + Vector3(0.0, 1.1, 0.0), 0.04, 1.0)
 	var nd: float = p.flat_dist(npc.global_position, crew.global_position)
 	for c: NpcBase in _civilians():
-		if c != npc and absf(c.global_position.y - crew.global_position.y) < 1.2 \
-				and p.flat_dist(c.global_position, crew.global_position) < minf(nd + 0.2, 2.2):
+		var to_c: Vector3 = c.global_position - crew.global_position
+		var to_n: Vector3 = npc.global_position - crew.global_position
+		var in_cone: bool = Vector2(to_c.x, to_c.z).angle_to(Vector2(to_n.x, to_n.z)) < deg_to_rad(30.0)
+		if c != npc and in_cone and absf(to_c.y) < 1.2 and p.flat_dist(c.global_position, crew.global_position) < minf(nd + 0.2, 2.2):
 			f.note("knife held: civilian %s is in the way of %s" % [c.name, npc.name])
 			await f.wait_s(0.3)
 			return false
