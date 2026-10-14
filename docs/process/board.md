@@ -13,6 +13,9 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 07:50: **round 86 ON ORIGIN**: env/c-worlds c3b64dc0 (GH break-room WindowLink removed: unpassable 0.9 m sill caused the U1 window stall). glasshouse map + validate_level green. QC-61 ruled (see Open questions).
+- 2026-10-14 07:40: gate 1 re-confirmed: gh_loud PASS on the door-swing build (seed 1791914030; PO-6 swing, PO-8 shot_fx+VfxDirector, surfaces, ladder layer, pierce fix; safe 182 s, bags 253/295, Payday → hub). ND loud attempt 5 started.
+- 2026-10-14 07:35: **round 85 ON ORIGIN**: env/p-play d1f6f732 (FP uses C's MuzzleFlash/tracer scenes with MIX materials; gunplay_capture tool: in-heist windowed check, no bit1 doubling) + LEAD G.VFX_DIR hotfix (banned hard paths). p d105, c vfx 20, a fp_viewmodel green. Six-class sheet pending (P). Real-GPU perf probe for impact_fx §3 1.5 ms still open.
 - 2026-10-14 07:15: **round 84 ON ORIGIN**: env/c-worlds f5eb9b42 (ND AreawayLadderLink + GH FireEscapeLadderLink moved to nav layer 'ladder'; layer-1 agents no longer path over them). ND/GH maps + validate_level + a3_10/ladder green. Unblocks gate 2 (ND loud attempt 5). Open (C): GH/ND generators are NOT deterministic (dressing order/navmesh drift between regens) → violates level_standards §6b; C lane to fix.
 - 2026-10-14 07:05: **round 83 ON ORIGIN**: env/b-content a08dbc44 (PO-B-C2 MenuFlow handles host_lost → lobby + message; C3 joining focus; C4 join/leave HUD toasts; coop_capture harness) + LEAD log.gd (PO-B-C5: peer id only from a connected peer). PO-B-C1 already fixed r80. b coop_host_lost/hud_queue/lobby/ui_hud/menu, a3_07, coop green.
 - 2026-10-14 06:50: **round 82 ON ORIGIN**: env/a-core (HeistRuntime creates a VfxDirector on host + replicas, cleared on teardown; ShotFx.surface_of delegates to ImpactFx). Gunplay FX now end-to-end in heists (shot_fx emitted on every peer since r72). a po8/d105/a1_01/a3_07, c vfx 20, P1 slice green. Next: P windowed in-heist FX check.
@@ -83,6 +86,7 @@ Read it at the start of every work session.
 - D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
 
 ## Open questions (id → answer)
+- QC-61 (C): is the GH fire escape a real stealth entry? → YES (glasshouse.md route 3, open_window variable). PD2 has no mantle: make the break-room window a walkable fire-escape door-window (sill ≤ 0.35 m, opening ≥ 1.0 × 1.9 m), restore a layer-1 link only through the opening when ow_breakroom_open; latched = glass breaks (noise 15 m) then passable. C builds map; A checks the glass/noise interaction. Stairs (NPC wedge at 0.175 m riser): invisible ramp colliders through the nosings on GH + ND flights (C), now, ahead of determinism.
 - QP-2/QP-3 world lights on the viewmodel → render layer **21** `viewmodel_lit` (visual_slots 1.2, D-095; 20 was taken).
 - QB-4 RangeSpectatorInput as a gameplay owner → OK, input_focus 1.2.
 - QP-1 where was the PO's bump → asked the product owner; working assumption: their build predated step-up (round 35).
@@ -99,6 +103,7 @@ Read it at the start of every work session.
 - D (parked after P's D-101 attempt 00:55): rifle-family left-hand cup needs B to move LeftHandIK below the fore-end on ~20 weapons + re-timed lever clip; cosmetic. Pistol ADS forearm size: closed, matches PD2 within the rig's proportions.
 
 ## Routed findings
+- gh_stealth lane (A, ~20 runs; best: bag 1 secured undetected at t=243; all failures civilians): A fixes civilian wander scope, stair-foot pin, shout LOS/same floor, calm NPCs yield. C: GH break-room WindowLink + BreakRoomWindowBlocker (walker stuck at U1 window, ow_breakroom_open, seed 1791937091) + stair-foot corner (13.4-13.8,0,4.8). B: HUD per-frame cost (7-20 s process frames masked on llvmpipe; onboarding card) profile + budget test.
 - A (gate70, 04:xx): CHECK_ALL FAIL on GDScript runtime errors only (1897 tests 0 failed, 4 levels PASS): bulwark_shield.gd take_hit↔deliver_hit infinite pierce recursion (overlapping shields ping-pong; _trace_behind excludes only its own RID). Routed to A ahead of door swing. → FIXED r73 (A 35baf6dd).
 - (DONE r70) SL/DB marker_tags; test_heist_readiness green on all 4 heists.
 - A: loud transition doesn't advance the Glasshouse objective (still "Find the manager's keycard"); NPCs render as grey capsules while casing.
