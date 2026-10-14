@@ -808,3 +808,10 @@ L1531/L4133-4166/L4670. Faithful, items 1-5 of P's audit:
 - 0.55 s cooldown between jumps; jump pressed while crouched stands the player up instead of jumping.
 Owner: ENV P (crew_stamina.gd, crew_controller). One-time carve-out: P updates the two QB-60 tests in A's
 `test_qb56_61_modifier_keys.gd` to the new rules (tell A the diff); A reviews on its next merge.
+
+## D-108: police cuffing a downed player has a grace and an arrest time (2026-10-14, LEAD; ENV A proposal)
+pd2_fidelity L2.12 kept, with the PD2 feel of a cop walking up and taking a moment: (a) a cop may only start cuffing
+once the player has been downed AND not fired for `CustodyTweak.police_cuff_grace_s` (2.0 s ◇); (b) cuffing is a
+`police_cuff_time_s` (1.5 s ◇) hold, interrupted if the player fires or the cop is hurt or staggered; (c) both values
+in CustodyTweak with tests. ENV A implements; blocking freeze gate 2 (ND loud), where an adjacent cop cuffed the
+pilot the same second it went down.
