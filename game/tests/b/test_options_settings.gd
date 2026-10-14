@@ -256,3 +256,17 @@ func test_effects_quality_follows_reduce_motion() -> void:
 	assert_eq(s.effects_quality(), GameSettings.EFFECTS_LOW, "never below low")
 	for id: StringName in GameSettings.EFFECTS_QUALITY_IDS:
 		assert_true(UiText.t(StringName("ui.options.video.effects_quality.%s" % id)) != "", "option label %s" % id)
+
+
+## D-113: Options > Gameplay "Blood & gore" (Full / Reduced / Off, default Full), persisted like the rest.
+func test_gore_option() -> void:
+	var s: GameSettings = GameSettings.new()
+	assert_eq(s.gore(), GameSettings.GORE_FULL, "default Full")
+	assert_eq(s.defaults.spec(GameSettings.GAMEPLAY, &"gore")["options"], ["full", "reduced", "off"])
+	s.set_value(GameSettings.GAMEPLAY, &"gore", "reduced")
+	assert_eq(s.gore(), GameSettings.GORE_REDUCED)
+	var round_trip: GameSettings = GameSettings.new()
+	round_trip.from_config(s.to_config())
+	assert_eq(round_trip.gore(), GameSettings.GORE_REDUCED, "persisted")
+	for v: String in ["gore", "gore.full", "gore.reduced", "gore.off"]:
+		assert_ne(UiText.t(StringName("ui.options.gameplay." + v)), "ui.options.gameplay." + v)
