@@ -9,6 +9,8 @@ extends RefCounted
 
 ## Ticks without an interaction session before use() presses interact again (interrupted hold).
 const REPRESS_TICKS: int = 20
+## Eye-ray probe drops below the head for visibility / aim: head, chest, hips (m).
+const AIM_DROPS: Array[float] = [0.0, 0.45, 0.8]
 
 var d: Node = null  # po5_flow driver (note(), shot())
 var inp: PlayerInputDriver = null
@@ -429,7 +431,8 @@ func open_door(door: Door) -> bool:
 	return ok
 
 
-## Nearest live enemy within `range_m` the crew can see (eye -> head ray hits nothing static first).
+## Nearest live enemy within `range_m` the crew can see (an eye ray to its head, chest or hips hits it first:
+## a cop behind bars or a counter still shows some of its body, like it does to a player).
 func nearest_enemy(range_m: float) -> NpcBase:
 	var best: NpcBase = null
 	var best_d: float = range_m
@@ -438,10 +441,20 @@ func nearest_enemy(range_m: float) -> NpcBase:
 		if npc == null or not npc.is_alive():
 			continue
 		var dd: float = crew.eye_position().distance_to(npc.head_position())
-		if dd < best_d and has_los(npc.head_position(), npc):
+		if dd < best_d and _aim_point(npc) != Vector3.INF:
 			best = npc
 			best_d = dd
 	return best
+
+
+## The first visible point of `npc` (head, chest, hips), or Vector3.INF when none is.
+func _aim_point(npc: NpcBase) -> Vector3:
+	var head: Vector3 = npc.head_position()
+	for drop: float in AIM_DROPS:
+		var pt: Vector3 = head + Vector3.DOWN * drop
+		if has_los(pt, npc):
+			return pt
+	return Vector3.INF
 
 
 func has_los(point: Vector3, target: Node = null) -> bool:
@@ -459,7 +472,9 @@ func has_los(point: Vector3, target: Node = null) -> bool:
 func engage(npc: NpcBase, max_s: float) -> void:
 	var t: float = 0.0
 	while t < max_s and npc.is_alive():
-		var aim_pt: Vector3 = npc.head_position()
+		var aim_pt: Vector3 = _aim_point(npc)
+		if aim_pt == Vector3.INF:
+			break
 		await face(aim_pt, 0.03, 0.25)
 		if not has_los(aim_pt, npc):
 			break
