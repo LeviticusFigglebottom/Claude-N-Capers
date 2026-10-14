@@ -9,6 +9,8 @@ extends RefCounted
 
 ## Ticks without an interaction session before use() presses interact again (interrupted hold).
 const REPRESS_TICKS: int = 20
+## use() on a door walks (opening doors on the way) to within this of it before open_door() squares up (m).
+const DOOR_NEAR_M: float = 1.8
 ## Eye-ray probe drops below the head for visibility / aim: head, chest, hips (m).
 const AIM_DROPS: Array[float] = [0.0, 0.45, 0.8]
 
@@ -310,7 +312,14 @@ func _unstick(attempt: int) -> void:
 func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = Callable(), walk: bool = true) -> bool:
 	var door: Door = comp.owner_node() as Door
 	if walk and door != null:
-		return await open_door(door)  # ND attempts 15/16: the generic stand spot missed the lock and F became a shout
+		# ND attempts 15/16: the generic stand spot missed the lock and F became a shout. Walk there with normal
+		# routing first (it opens the doors on the way: attempt 17 stuck at the TellerDoor heading for the
+		# VaultGate), then square up with open_door().
+		if flat_dist(crew.global_position, door.global_position) > DOOR_NEAR_M:
+			await goto(stand_point(door.global_position), DOOR_NEAR_M, 60.0)
+		if door.is_open:
+			return true  # the walk's own door handling already opened it (a second use would close it)
+		return await open_door(door)
 	var target: Vector3 = comp.global_position
 	var stand: Vector3 = _use_stand(comp)
 	if walk and not await goto(stand, 0.5, 60.0) and is_instance_valid(comp):
