@@ -154,6 +154,7 @@ ui.prompt.use_keycard,Hold {key} to use the keycard
 ui.prompt.place_drill,Hold {key} to place the drill
 ui.prompt.fix_drill,Hold {key} to fix the drill
 ui.prompt.take_loot,Hold {key} to take the loot
+ui.prompt.cut_painting,Hold {key} to cut the painting
 ui.prompt.pick_up_bag,Hold {key} to pick up the bag
 ui.prompt.secure_bag,Hold {key} to secure the bag
 ui.prompt.throw_bag,Press {key} to throw the bag
