@@ -111,11 +111,17 @@ extends Resource
 @export var cable_ties_base: int = 2
 
 @export_group("Bags (S10.1)")
-## Index by Enums.LootWeight.
-@export var bag_speed_mult: PackedFloat32Array = PackedFloat32Array([0.95, 0.85, 0.75, 0.6])
-@export var bag_can_sprint: Array[bool] = [true, true, false, false]
-@export var bag_can_jump: Array[bool] = [true, false, false, false]
-@export var bag_throw_distance_m: PackedFloat32Array = PackedFloat32Array([4.0, 3.5, 3.0, 2.0])
+## Index by Enums.LootWeight. D-102: PD2 carrytweakdata.lua types light / medium / heavy / very_heavy.
+## move_speed_modifier (also scales the head bob, playercarry.lua _get_walk_headbob).
+@export var bag_speed_mult: PackedFloat32Array = PackedFloat32Array([1.0, 0.75, 0.5, 0.25])
+## can_run.
+@export var bag_can_sprint: Array[bool] = [true, false, false, false]
+## jump_modifier: jump velocity x this (playercarry.lua _perform_jump); jumping is never blocked by a bag.
+@export var bag_jump_mult: PackedFloat32Array = PackedFloat32Array([1.0, 1.0, 0.5, 0.25])
+## Deprecated by D-102 (bags never block a jump; see bag_jump_mult). Kept all-true until ENV A's S10 tests move.
+@export var bag_can_jump: Array[bool] = [true, true, true, true]
+## throw_distance_multiplier 1 / 1 / 0.5 / 0.3 of a 4 m base.
+@export var bag_throw_distance_m: PackedFloat32Array = PackedFloat32Array([4.0, 4.0, 2.0, 1.2])
 
 @export_group("Net")
 @export var intent_send_hz: float = 30.0
