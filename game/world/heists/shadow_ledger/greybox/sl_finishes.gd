@@ -59,7 +59,7 @@ const TEXEL_PX_M: float = 512.0
 
 ## Room id (unique, as the builder's _level_rooms: core rooms carry the level, J41 / WCW42 ...) ->
 ## [walls, ceiling] finish keys, by purpose / dressing kit. Floors come from FLOOR_FINISH (the slabs
-## span several rooms).
+## span several rooms) plus ROOM_FLOOR skins; a ceiling on a slab underside gets a ceiling skin.
 const ROOM_FINISH: Dictionary = {
 	"S1": ["blockwork", "ceiling_tile"],  # L40 service lobby
 	"S2": ["blockwork", "concrete"],  # refuse room
@@ -144,6 +144,26 @@ const FLOOR_FINISH: Dictionary = {
 	"SlabL42_08": "tile_graphite",  # washrooms
 	"SlabL42_09": "wood_veneer_walnut",
 	"SlabL42_10": "paving",  # X1 terrace and the M15 glazed corridor that opens onto it
+}
+## Room id -> floor finish key (PO-13 slab skins). A slab box carries one finish (FLOOR_FINISH) but runs
+## under several rooms; where a room's floor differs from the slab it stands on, the builder lays a
+## visual-only floor skin over that part (sl_builder_base.slab_skins). Rooms not listed get no floor skin
+## (stairs, lift car and shafts). FOH zones keep the slab zone finishes; BOH rooms take vinyl / concrete,
+## washrooms graphite tile, the ensuite marble, the wine room honed stone.
+const ROOM_FLOOR: Dictionary = {
+	"S1": "vinyl_floor", "S2": "concrete", "S3": "vinyl_floor",
+	"J41": "vinyl_floor", "J42": "vinyl_floor", "WCW41": "tile_graphite", "WCM41": "tile_graphite",
+	"WCW42": "tile_graphite", "WCM42": "tile_graphite",
+	"K1": "terrazzo", "K2": "terrazzo", "K3": "terrazzo", "K4": "terrazzo", "K5": "terrazzo", "K6": "terrazzo",
+	"K7": "terrazzo", "K8": "carpet_graphite", "K9": "carpet_graphite", "K10": "vinyl_floor", "K11": "vinyl_floor",
+	"K12": "vinyl_floor", "K13": "vinyl_floor", "K14": "concrete", "K15": "vinyl_floor", "K16": "carpet_graphite",
+	"K17": "carpet_graphite", "K18": "vinyl_floor", "K19": "carpet_graphite", "K20": "carpet_graphite",
+	"K21": "carpet_graphite", "K22": "carpet_graphite", "K23": "carpet_graphite", "K24": "carpet_graphite",
+	"M1": "terrazzo", "M2": "terrazzo", "M3": "terrazzo", "M4": "terrazzo", "M5": "wood_veneer_walnut",
+	"M6": "marble_cream", "M7": "wood_veneer_walnut", "M8": "wood_veneer_walnut", "M9": "wood_veneer_walnut",
+	"M10": "vinyl_floor", "M11": "vinyl_floor", "M12": "concrete", "M13": "stone_graphite",
+	"M14": "wood_veneer_walnut", "M15": "paving",
+	"R1": "concrete", "R2": "concrete", "R3": "concrete",
 }
 ## Feature stair (K3 -> M2, honed stone treads) and its landing [x0, z0, x1, z1]; other stairs concrete.
 const FEATURE_STAIR_ZONE: Array = [12.0, 0.5, 24.0, 2.1]
