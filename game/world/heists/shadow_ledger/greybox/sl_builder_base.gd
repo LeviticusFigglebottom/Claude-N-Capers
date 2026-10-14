@@ -23,20 +23,9 @@ const PREFAB_CLASSES: Dictionary = {
 	"security_camera": "SecurityCamera", "code_note": "CodeNote", "keypad": "Keypad", "laser_grid": "LaserGrid",
 	"bag_lift": "BagLift", "hack_terminal": "HackTerminal", "zipline": "Zipline", "keycard_reader": "KeycardReader",
 }
-## Building surface classes -> material library (greybox kit materials).
-const LIB_MATS: Dictionary = {
-	"wall": "grey_wall", "wall_ext": "grey_wall_ext", "floor": "grey_floor", "ceiling": "grey_ceiling",
-	"roof": "grey_ceiling", "stair": "grey_stair", "counter": "grey_counter", "prop": "grey_prop",
-	"trim": "grey_trim", "glass": "grey_glass", "frame": "grey_frame", "door": "grey_door",
-}
-## Site surface classes (greybox flat colours, one per class; meta greybox = true).
-const SITE_MATS: Dictionary = {
-	"graphite": Color(0.18, 0.19, 0.21), "concrete": Color(0.5, 0.5, 0.5), "roof_membrane": Color(0.3, 0.31, 0.32),
-	"fence": Color(0.62, 0.62, 0.58), "teal_glass": Color(0.36, 0.55, 0.56), "tower": Color(0.33, 0.36, 0.4),
-	"tower_dark": Color(0.16, 0.17, 0.2), "street": Color(0.08, 0.08, 0.09), "river": Color(0.04, 0.07, 0.09),
-	"steel": Color(0.45, 0.46, 0.48), "planter": Color(0.32, 0.27, 0.2), "helipad": Color(0.22, 0.24, 0.24),
-	"cage_mesh": Color(0.62, 0.64, 0.68, 0.3),
-}
+## PO-13 surface pass: greybox class / room purpose -> library finish (sl_finishes.gd).
+const F: GDScript = preload("res://world/heists/shadow_ledger/greybox/sl_finishes.gd")
+## Emissive (fixtures, lamps, beacons, distant lit windows): untextured_ok.
 const EMISSIVE_MATS: Dictionary = {
 	"fixture": Color(1.0, 0.95, 0.88), "led_white": Color(0.85, 0.92, 1.0), "heli_green": Color(0.2, 1.0, 0.35),
 	"beacon_red": Color(1.0, 0.1, 0.05), "city_lights": Color(1.0, 0.75, 0.45), "monitor": Color(0.55, 0.75, 1.0),
@@ -47,8 +36,7 @@ var map_root: HeistMap = null
 var errors: PackedStringArray = PackedStringArray()
 ## Projected nav obstructions for props and prefabs: [corners (PackedVector3Array), elevation, height].
 var obstructions: Array[Array] = []
-var _lib_cache: Dictionary = {}
-var _site_cache: Dictionary = {}
+var _mat_cache: Dictionary = {}
 var _box_mesh_cache: Dictionary = {}
 var _box_shape_cache: Dictionary = {}
 var _scene_cache: Dictionary = {}
@@ -77,52 +65,82 @@ static func v3(a: Array, i: int) -> Vector3:
 	return Vector3(float(a[i]), float(a[i + 1]), float(a[i + 2]))
 
 
+## Material for a finish key (sl_finishes FINISHES) or a greybox class (its position-free default),
+## the river and the emissives. Cached: one material per key.
 func lib_mat(id: String) -> Material:
-	var lib: String = String(LIB_MATS.get(id, ""))
-	if lib == "":
-		return _site_mat(id)
-	if not _lib_cache.has(lib):
-		_lib_cache[lib] = load(MAT_DIR + lib + ".tres") as Material
-	return _lib_cache[lib]
-
-
-func _site_mat(id: String) -> Material:
-	if _site_cache.has(id):
-		return _site_cache[id]
+	if _mat_cache.has(id):
+		return _mat_cache[id]
+	var m: Material
 	if id == "river":
 		# PO-13: the Kestrel (160 m below, visual only) uses the library night water, duplicated per map.
 		# No glints: the river sits in the fog far below every viewpoint; the sheen and sky reflection carry it.
 		var w: ShaderMaterial = (load(MAT_DIR + "water_harbour_night.tres") as ShaderMaterial).duplicate() as ShaderMaterial
 		w.resource_name = "sl_river_water"
-		_site_cache[id] = w
-		return w
-	var m: StandardMaterial3D = StandardMaterial3D.new()
-	m.resource_name = "sl_grey_" + id
-	m.set_meta(&"greybox", true)
-	if EMISSIVE_MATS.has(id):
-		m.albedo_color = EMISSIVE_MATS[id]
-		m.emission_enabled = true
-		m.emission = EMISSIVE_MATS[id]
-		# Distant lit windows stay dim (bright bands read as floating bars through the fog).
-		m.emission_energy_multiplier = 0.35 if id == "city_lights" else 3.0
-		m.set_meta(&"untextured_ok", true)
-	elif SITE_MATS.has(id):
-		m.albedo_color = SITE_MATS[id]
-		m.roughness = 0.9
-		if id == "cage_mesh":
-			# Wire-mesh panels: see-through (alpha), both faces drawn.
+		m = w
+	elif EMISSIVE_MATS.has(id):
+		m = _emissive_mat(id)
+	else:
+		var key: String = id if F.FINISHES.has(id) else F.resolve(id, "", AABB())
+		if not F.FINISHES.has(key):
+			errors.append("unknown material class `%s`" % id)
+			key = "concrete"
+		if not _mat_cache.has(key):
+			_mat_cache[key] = _finish_mat(key)
+		m = _mat_cache[key]
+	_mat_cache[id] = m
+	return m
+
+
+## A library finish: the texgen material duplicated (textures shared) as world triplanar at the style
+## guide density, optionally tinted (a tint alpha < 1: see-through, both faces). resource_name sl_<key>
+## (surface_map.json gives its bullet surface).
+func _finish_mat(key: String) -> Material:
+	var row: Array = F.FINISHES[key]
+	var lib: String = String(row[0])
+	var base: BaseMaterial3D = load(MAT_DIR + lib + ".tres") as BaseMaterial3D
+	var m: BaseMaterial3D = base.duplicate() as BaseMaterial3D
+	m.resource_name = "sl_" + key
+	if row[1] != null:
+		var tint: Color = row[1]
+		m.albedo_color = base.albedo_color * tint
+		if tint.a < 1.0:
 			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			m.cull_mode = BaseMaterial3D.CULL_DISABLED
-			m.metallic = 0.6
-			m.set_meta(&"untextured_ok", true)
-		if id == "water":
-			m.roughness = 0.15
-			m.metallic_specular = 0.8
-	else:
-		errors.append("unknown material class `%s`" % id)
-		m.albedo_color = Color(1.0, 0.0, 1.0)
-	_site_cache[id] = m
+	var uv: float = F.uv_per_m(lib, float(base.albedo_texture.get_width()), float(base.get_meta(&"uv_tile_m", 2.0)))
+	m.uv1_triplanar = true
+	m.uv1_world_triplanar = true
+	m.uv1_scale = Vector3(uv, uv, uv)
 	return m
+
+
+func _emissive_mat(id: String) -> StandardMaterial3D:
+	var m: StandardMaterial3D = StandardMaterial3D.new()
+	m.resource_name = "sl_" + id
+	m.set_meta(&"untextured_ok", true)
+	m.albedo_color = EMISSIVE_MATS[id]
+	m.emission_enabled = true
+	m.emission = EMISSIVE_MATS[id]
+	# Distant lit windows stay dim (bright bands read as floating bars through the fog).
+	m.emission_energy_multiplier = 0.35 if id == "city_lights" else 3.0
+	return m
+
+
+## Finish key for a box of class `cls` named `nm` with local corners mn / mx under `parent`.
+func finish(parent: Node, cls: String, nm: String, mn: Vector3, mx: Vector3, kind: String = "") -> String:
+	if cls == "river" or EMISSIVE_MATS.has(cls):
+		return cls
+	return F.resolve(cls, nm, _world_xf(parent) * AABB(mn, mx - mn), kind)
+
+
+## Transform of `nd` relative to the map root (nodes are built before the map enters a tree).
+func _world_xf(nd: Node) -> Transform3D:
+	var xf: Transform3D = Transform3D.IDENTITY
+	var cur: Node = nd
+	while cur != null and cur != map_root:
+		if cur is Node3D:
+			xf = (cur as Node3D).transform * xf
+		cur = cur.get_parent()
+	return xf
 
 
 func box_mesh(size: Vector3, mat_id: String) -> BoxMesh:
@@ -169,7 +187,7 @@ func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, c
 	if mat_id != "" and mat_id != "none":
 		var mi: MeshInstance3D = MeshInstance3D.new()
 		mi.name = "Mesh"
-		mi.mesh = box_mesh(size, mat_id)
+		mi.mesh = box_mesh(size, finish(parent, mat_id, nm, mn, mx))
 		add(body, mi)
 	return body
 
@@ -182,7 +200,7 @@ func box_a(parent: Node3D, nm: String, b: Array, mat_id: String, collide: bool =
 func mesh_box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String) -> MeshInstance3D:
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = nm
-	mi.mesh = box_mesh(mx - mn, mat_id)
+	mi.mesh = box_mesh(mx - mn, finish(parent, mat_id, nm, mn, mx))
 	mi.position = (mn + mx) * 0.5
 	add(parent, mi)
 	return mi
@@ -303,7 +321,8 @@ func prop_box(parent: Node3D, nm: String, base: Vector3, size: Vector3, yaw: flo
 	add(body, col)
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Mesh"
-	mi.mesh = box_mesh(size, mat_id)
+	mi.mesh = box_mesh(size, finish(parent, mat_id, nm, base - Vector3(size.x, 0.0, size.z) * 0.5,
+		base + Vector3(size.x, size.y * 2.0, size.z) * 0.5, kind))
 	mi.position = col.position
 	add(body, mi)
 	obstruct(body.transform, AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5), size))
@@ -325,8 +344,8 @@ func chair(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
 	col.shape = box_shape(size)
 	col.position = Vector3(0.0, size.y * 0.5, 0.0)
 	add(body, col)
-	mesh_box(body, "SeatMesh", Vector3(-0.225, 0.0, -0.225), Vector3(0.225, 0.45, 0.225), "prop")
-	mesh_box(body, "BackMesh", Vector3(-0.225, 0.45, 0.165), Vector3(0.225, 0.85, 0.225), "prop")
+	mesh_box(body, "SeatMesh", Vector3(-0.225, 0.0, -0.225), Vector3(0.225, 0.45, 0.225), "chair")
+	mesh_box(body, "BackMesh", Vector3(-0.225, 0.45, 0.165), Vector3(0.225, 0.85, 0.225), "chair")
 	var m: Marker3D = Marker3D.new()
 	m.name = "Seat"
 	m.position = Vector3(0.0, 0.45, 0.0)
