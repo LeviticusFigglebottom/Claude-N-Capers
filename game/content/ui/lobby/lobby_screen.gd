@@ -360,6 +360,10 @@ func _slot_card() -> PanelContainer:
 	name_row.add_child(w["name"] as Label)
 	v.add_child(name_row)
 	var state_row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	# A trimming label in a box shrinks to nothing (the sweep caught "Level 4 / NOT READY" blank): these
+	# short texts keep their width.
+	for k: String in ["level", "ready"]:
+		(w[k] as Label).text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	(w["ready"] as Label).size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	state_row.add_child(w["level"] as Label)
 	state_row.add_child(w["ready"] as Label)
