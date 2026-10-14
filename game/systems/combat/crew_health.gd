@@ -42,6 +42,8 @@ var max_armor: float = 20.0
 var downs_used: int = 0
 ## Seconds of bleedout left (0 when not downed).
 var bleedout_left: float = 0.0
+## D-108: seconds since this crew member last went down (advances with the bleedout).
+var down_s: float = 0.0
 ## D-093: seconds a helpless TASED / CLOAKER_DOWNED member has left to be revived before custody (no down).
 var helpless_left: float = 0.0
 ## Bleedout health pool while downed (L2.5).
@@ -253,6 +255,7 @@ func go_down() -> void:
 	armor = 0.0
 	invuln_left = 0.0
 	bleedout_left = tw.bleedout_time_s + Modifiers.add(_slot(), &"defense.bleedout_time_add")
+	down_s = 0.0
 	bleedout_health = tw.bleedout_health * Modifiers.mult(_slot(), &"defense.bleedout_health_mult")  # A4-04
 	if _crew.weapons != null:
 		# L2.5: only shots fired from the down make a downed crew member a target; the shots that were
@@ -385,6 +388,7 @@ func _tick_down_states(delta: float) -> bool:
 	match _crew.crew_state:
 		Enums.CrewState.DOWNED:
 			bleedout_left -= delta
+			down_s += delta
 			if bleedout_left <= 0.0:
 				bleedout_left = 0.0
 				go_to_custody()
