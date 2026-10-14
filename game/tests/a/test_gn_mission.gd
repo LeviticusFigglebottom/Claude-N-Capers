@@ -77,3 +77,24 @@ func test_gn_intel_list_seeds_find_canvases() -> void:
 	await _launch({"preplanning": [&"asset.intel_list"]})
 	assert_true(_rt.mission.has_asset(&"asset.intel_list"), "asset bought")
 	assert_eq(_rt.mission.objective_state(&"find_canvases"), Enums.ObjectiveState.COMPLETED, "all four canvases known")
+
+
+## C bff4dd40: the areaway ladder is usable only while the rolled areaway grate is open (skipped until the map has
+## them).
+func test_gn_areaway_ladder_follows_the_grate() -> void:
+	await _launch()
+	var ladder: Ladder = _rt.map.get_node_or_null(^"Gameplay/Ladders/AreawayLadder") as Ladder
+	var group: Node = _rt.map.get_node_or_null(^"Variants/Group_areaway")
+	var grates: Array[Node] = group.find_children("AreawayGrate", "", true, false) if group != null else []
+	if ladder == null or grates.is_empty():
+		skip("map has no areaway ladder / grate yet (ENV C bff4dd40)")
+		return
+	var grate: Door = grates[0] as Door
+	assert_eq(ladder.usable, grate.is_open, "ladder follows the grate at start")
+	grate.unlock()
+	grate.set_open(true)
+	await wait_physics_frames(2)
+	assert_true(ladder.usable, "grate open: climbable")
+	grate.set_open(false)
+	await wait_physics_frames(2)
+	assert_false(ladder.usable, "grate closed: not climbable")

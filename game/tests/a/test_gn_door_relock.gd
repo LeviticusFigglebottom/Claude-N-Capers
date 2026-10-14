@@ -73,3 +73,30 @@ func test_gn_relock_replicates_to_a_client_copy() -> void:
 	client._apply_net_state(server._net_state())
 	assert_false(client.locked, "client mirrors the unlock")
 	assert_eq(client.interactable.availability(null), InteractableComponent.BLOCK_NONE, "client: openable again")
+
+
+## ENV C's shutters (bff4dd40): Door.shutter = a lift-up shutter. No crew interaction, no leaf rotation, closing never
+## blocks on a body in the arc, NPCs never open it; the mission bars it and lifts it.
+func test_gn_shutter_mode() -> void:
+	await _launch()
+	var sh: Door = ATestMaps.add_prefab(_rt, "door", Vector3(0, 0, -6), func(p: GameplayPrefab) -> void:
+		(p as Door).shutter = true
+		(p as Door).width_m = 2.0
+		(p as Door).starts_open = true) as Door
+	await wait_physics_frames(3)
+	assert_false(sh.interactable.enabled, "no crew interaction on a shutter")
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0.3, 0.05, -6.6)))  # standing under it
+	await wait_physics_frames(2)
+	sh.relock(Door.Lock.BARRED)
+	assert_true(await wait_until(func() -> bool: return not sh.swing_blocked and sh._swing_frac <= 0.001, 3.0),
+		"closes without blocking on the player")
+	for leaf: Node3D in sh._leaves:
+		assert_near(leaf.rotation.y, 0.0, 0.001, "leaves never rotate")
+	var guard: NpcBase = _rt.spawn_npc(&"guard", Transform3D(Basis.IDENTITY, Vector3(2, 0.05, -4)), {})
+	await wait_physics_frames(1)
+	assert_false(sh.can_npc_open(guard), "NPCs never raise a shutter")
+	sh.unlock()
+	sh.set_open(true)
+	await wait_physics_frames(2)
+	assert_true(sh.is_open and not sh.locked, "the mission lifts it")
+	assert_false(sh.interactable.enabled, "still no interaction once open")
