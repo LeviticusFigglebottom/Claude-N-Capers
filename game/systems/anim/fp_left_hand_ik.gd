@@ -52,7 +52,7 @@ func set_target(marker: Node3D, set_id: StringName) -> void:
 			grip = Node3D.new()
 			grip.name = GRIP_NAME
 			marker.add_child(grip)
-		grip.position = FpViewmodelTweak.data().left_hand_grip_offset
+		grip.position = FpViewmodelTweak.data().grip_offset(set_id)  # per-set grip (P, round 191)
 		target = grip
 	set_allowed = not FpViewmodelTweak.data().left_hand_ik_skip_sets.has(set_id)
 	if ik != null and is_instance_valid(ik):
