@@ -26,7 +26,11 @@ geometry and prop ids.
 | glasshouse (final) | 2 FAIL | 0 | PASS |
 | night_deposit (final) | 4 FAIL | 0 | PASS |
 | dockside_burn (greybox) | 1 FAIL | 0 | PASS |
-| shadow_ledger (greybox) | 0 FAIL, 3 WARN | 0 FAIL, 3 WARN (gameplay prefabs, for review) | PASS |
+| shadow_ledger (greybox) | 0 FAIL, 3 WARN | 0 FAIL, 2 WARN after follow-up #10 (the gondola cradles, by design) | PASS |
+
+Follow-ups #8–#10 (lead-assigned) re-ran validate_level on glasshouse (final) and shadow_ledger (greybox)
+with `--variants=all`. Both PASS. Glasshouse furniture_logic has 0 FAIL / 0 WARN. Shadow Ledger
+furniture_logic has 0 FAIL and only the 2 cradle WARNs.
 
 ## Findings and fixes
 
@@ -39,21 +43,18 @@ geometry and prop ids.
 | 5 | KitPlacer rule (every kit room) | Visitor chairs (`seat_side: "back"`) could be placed on either end of a desk, where two of them face each other across it. That is the product owner's arrangement. | code review | `kit_placer.gd` `_try_seat`: at a desk, visitors sit only on the far side and spread along it; the ends stay legal only around tables. No current room changed, because the existing offices anchor their chairs, but every future kit room (Gallery Night) gets it right. | – |
 | 6 | Glasshouse U4 upper corridor (drift, determinism commit) | After the determinism regen, a kit picture hung over the stair void, where the wall has a gap the kit room did not know about (`floating`). | validate_level | `gh_dress.gd` `_room_gaps`: interior wall gaps become full-height openings in the KitRoom. | – |
 | 7 | Night Deposit X1 lot (drift, determinism commit) | A facade-backed crate sat inside the 0.05 m granite plinth (`zfight`). | validate_level | `KitRoom.relief` plus `nd_dress.gd` `PLINTH_RELIEF`: floor props backed against the facade stand in front of the plinth. | – |
+| 8 | Glasshouse U2 security office (follow-up) | The camera-station console had no seat. The CameraOperatorSeat NPC stood at it, and the only office chair belonged to the kit's guard desk beside it. | audit | Done the D-063 way, as at Night Deposit. A `prop_chair_task` NPC seat (OperatorChair) now stands on the CameraOperatorSeat spawn (6.85, 4.2, 2.0), facing the console (yaw 90, `faces` → CameraStation). It has no collider and no navmesh obstruction, so the seated operator owns it (`gh_dress.gd` `NPC_SEATS`, the `faces_node` meta). The NPC seat fills the kit's required chair, so the guard desk and its office chair are now anchored where the kit had put them (`glasshouse_layout.gd` ANCHORS). | `glasshouse/po9/gh_u2_operator_seat_{before,after}.jpg`, `gh_u2_operator_seat_side_{before,after}.jpg` |
+| 9 | Shadow Ledger tables (follow-up) | The conference room, break room, dining room and boardroom had tables with no chairs. | audit | 25 greybox chairs, each 0.225 m off its table edge and facing it (`shadow_ledger_layout.gd` CHAIRS). K2 conference: 3 a side; the south end is the door zone. K18 break room: 2 on the counter side and 1 at each end; the K18Break patrol spot is north. M8 dining: 2 a side and 1 at each end; the M8Dining patrol spot is south of the middle. M14 boardroom: 4 a side and the head at the north end; the south end is the door and patrol spot. seat_pair passes because a table lies between every pair of facing seats. | `shadow_ledger/po9/sl_{k2_conference,k18_break,m8_dining,m14_boardroom}_chairs_{before,after}.jpg` |
+| 10 | Shadow Ledger K11 server cage (follow-up) | `Gameplay/Server/HackTerminal` stood 0.09 m into the CageGate's door zone (WARN). Its back already touched the cage's north panel, so it could not move north on its own. | rule | The cage's north panel moves 0.1 m north (`CAGE` box z 8.5 → 8.4, `shadow_ledger_layout.gd`). The terminal moves from z 9.05 to 8.95 (`sl_gameplay.gd`). It is now clear of the door zone and clear of the panel (clipping PASS). Its UsePoint moves with it and stays reachable: walkthrough ok, test_interact_slots_clear passes. | – (the closed gate blocks the view from the corridor) |
 
 ## Reported, not changed
 
-- **WARN door_clear (Shadow Ledger).** Gameplay content inside a door's clear zone:
-  - `Gameplay/Server/HackTerminal` is 0.09 m into the CageGate zone.
-  - Both gondola `CradleDeck`s sit outside their facade doors. This is by design: you step from the cradle into the door.
-
-  They are mission placements (sl_gameplay.gd, shared with ENV A), so the check only warns on them.
-- **Shadow Ledger greybox has very few seats** (4 chairs in the whole building). The dining room, the
-  boardroom, the conference room and the break room have tables without chairs. This is expected at
-  greybox stage and belongs to SL's G2 dressing pass; furniture_logic will check it then.
-- **Glasshouse U2 security office.** The camera-station console has no seat. The CameraOperatorSeat NPC
-  stands there and the only office chair belongs to the kit desk beside it. Night Deposit solves this
-  with an NPC seat without a collider (D-063, `nd_dress.NPC_SEATS`). Porting that to gh_dress needs a
-  check of the operator's animation, so it is left for the lead / ENV A.
+- **WARN door_clear (Shadow Ledger).** Both gondola `CradleDeck`s sit outside their facade doors. This
+  is by design: you step from the cradle into the door. They are variant content, so the check only
+  warns on them. The HackTerminal WARN is fixed (#10).
+- The Shadow Ledger table chairs and the Glasshouse U2 operator seat were first reported here. They are
+  now fixed (#8, #9). The other Shadow Ledger tables (pantry, interview room, Moor's meeting table)
+  wait for SL's G2 dressing pass.
 - **Glasshouse G9 janitor closet.** The mop sink is 0.21 m into the 1 m door zone. A 1.3 × 1.3 m
   step-in closet cannot keep 1 m clear, so the rule keeps only 0.6 m on the side of rooms under
   2.5 m². With that, the sink passes.

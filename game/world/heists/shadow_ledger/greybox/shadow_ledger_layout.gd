@@ -299,8 +299,9 @@ const BALUSTRADES: Array = [
 
 # --- Gameplay placements (used by sl_gameplay.gd) ----------------------------------------------
 
-## Server cage K11 (mesh enclosure 2.4 m, gate on its south side at x 28.15-29.05).
-const CAGE: Dictionary = {"box": [27.0, 8.5, 30.5, 10.5], "h": 2.4, "gate": [28.1, 29.1]}
+## Server cage K11 (mesh enclosure 2.4 m, gate on its south side at x 28.15-29.05). PO-9: the north panel at
+## z 8.4 leaves the hack terminal room to stand clear of the gate's 1 m door zone.
+const CAGE: Dictionary = {"box": [27.0, 8.4, 30.5, 10.5], "h": 2.4, "gate": [28.1, 29.1]}
 ## Art hall laser plane (M3, x 26.5, full width between the curtain wall and the M3/M10 wall).
 const LASER_X: float = 26.5
 const LASER_Z: Vector2 = Vector2(0.2, 7.4)
@@ -495,6 +496,37 @@ const CHAIRS: Array = [
 	["KesslerChair", Vector3(3.0, F41, 1.3), 180.0, "KesslerDesk"],
 	["MoorChair", Vector3(32.5, F41, 1.3), 180.0, "MoorDesk"],
 	["StudyChair", Vector3(32.0, F42, 1.7), 180.0, "StudyDesk"],
+	# PO-9: seats round the tables, 0.225 m off the table edge, each facing its table. Door zones, patrol
+	# spots and the credenzas / sideboard behind them stay clear.
+	# K2 conference: three a side (the south end is the door's clear zone).
+	["ConfChairW1", Vector3(8.35, F41, 1.8), -90.0, "ConferenceTable"],
+	["ConfChairW2", Vector3(8.35, F41, 3.0), -90.0, "ConferenceTable"],
+	["ConfChairW3", Vector3(8.35, F41, 4.2), -90.0, "ConferenceTable"],
+	["ConfChairE1", Vector3(10.65, F41, 1.8), 90.0, "ConferenceTable"],
+	["ConfChairE2", Vector3(10.65, F41, 3.0), 90.0, "ConferenceTable"],
+	["ConfChairE3", Vector3(10.65, F41, 4.2), 90.0, "ConferenceTable"],
+	# K18 break room: two on the counter side and one at each end (the K18Break patrol spot is north).
+	["BreakChairS1", Vector3(8.6, F41, 21.95), 0.0, "BreakTable"],
+	["BreakChairS2", Vector3(9.4, F41, 21.95), 0.0, "BreakTable"],
+	["BreakChairW", Vector3(7.75, F41, 21.0), -90.0, "BreakTable"],
+	["BreakChairE", Vector3(10.25, F41, 21.0), 90.0, "BreakTable"],
+	# M8 dining: two a side and one at each end (the M8Dining patrol spot is south of the middle).
+	["DiningChairN1", Vector3(3.9, F42, 14.25), 180.0, "DiningTable"],
+	["DiningChairN2", Vector3(6.1, F42, 14.25), 180.0, "DiningTable"],
+	["DiningChairS1", Vector3(3.9, F42, 16.35), 0.0, "DiningTable"],
+	["DiningChairS2", Vector3(6.1, F42, 16.35), 0.0, "DiningTable"],
+	["DiningChairW", Vector3(2.75, F42, 15.3), -90.0, "DiningTable"],
+	["DiningChairE", Vector3(7.25, F42, 15.3), 90.0, "DiningTable"],
+	# M14 boardroom: four a side and the head at the north end (the south end is the door and patrol spot).
+	["BoardChairW1", Vector3(32.35, F42, 10.35), -90.0, "BoardroomTable"],
+	["BoardChairW2", Vector3(32.35, F42, 11.45), -90.0, "BoardroomTable"],
+	["BoardChairW3", Vector3(32.35, F42, 12.55), -90.0, "BoardroomTable"],
+	["BoardChairW4", Vector3(32.35, F42, 13.65), -90.0, "BoardroomTable"],
+	["BoardChairE1", Vector3(34.65, F42, 10.35), 90.0, "BoardroomTable"],
+	["BoardChairE2", Vector3(34.65, F42, 11.45), 90.0, "BoardroomTable"],
+	["BoardChairE3", Vector3(34.65, F42, 12.55), 90.0, "BoardroomTable"],
+	["BoardChairE4", Vector3(34.65, F42, 13.65), 90.0, "BoardroomTable"],
+	["BoardChairHead", Vector3(33.5, F42, 9.15), 180.0, "BoardroomTable"],
 ]
 ## Logo wall ("K&M", glass teal, landmark 2) on K3's east wall: visual box.
 const LOGO_WALL: Array = [23.87, F41 + 1.2, 2.6, 23.9, F41 + 2.6, 4.6]
