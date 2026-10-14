@@ -14,15 +14,16 @@ this file wins: the LEAD wrote it after checking trunk (see §0).
 | `env/b-content` | ec36e060 | **HELD**: 8 green commits (Jay roster, SMG fore-end grip, gore option, deployables + gating, throwables, GN string) | merge **together with D's SMG clip re-time**. f8f17c7a turns `d/test_arms` smg_idle/smg_ads_idle red until then |
 | `env/c-worlds` | 8a725315 | all on trunk (r200 D-113 VFX, r201 GH/ND wall tiles + handoff) | nothing to merge |
 | `wip/c-sldb-props` | d257bc58 | **WIP, ~45%**: D-111 SL/DB prop art (item 1 validated but tests not re-run; items 2-4 not imported, regenerated or validated) | C finishes it per env_c.md HANDOFF step list; never merge it directly |
-| `env/d-art` | 8ac1e97e | on trunk (r202: per-set long-gun grip + vertex clip test, skirt fix) | D still owes the SMG re-time (unblocks B) and shotgun/LMG/sniper grip captures |
+| `env/d-art` | a6802365 | on trunk (r203 handoff) (r202: per-set long-gun grip + vertex clip test, skirt fix) | D still owes the SMG re-time (unblocks B) and shotgun/LMG/sniper grip captures |
 | `env/p-play` | fc0a3494 | on trunk (r202, merged with D's arms) | nothing to merge |
 
 Dependent merges: **B + D (SMG)** and **P 035eee7f + D (long-gun clip)**. Merging either half alone turns
 `d/test_arms` or `p/test_p_finger_clip` red. Run the FP set after each: `p test_po4_feel test_p1_01 test_p1_03
 test_p_grip_offset test_p_finger_clip`, `d test_arms`, `a test_fp_viewmodel`, `b left_hand_ik`.
 
-**ENV D wrote no `## HANDOFF 2026-10-14` section** in `docs/status/env_d.md` before the stop. §D below is the
-authoritative list for D, written from D's last message. It was asked to add the section; merge it if it lands on env/d-art.
+**All five env HANDOFF sections are on trunk** (D's arrived last, round 203). D: SMG re-time is **0%** (exact steps in
+env_d.md HANDOFF), so env/b-content stays held. Grip captures for Corsair, Plowman and Rampart are in
+`game/assets/characters/_review/grip_glasshouse_*`; the sniper capture is queued.
 
 **Corrections to the env notes:**
 * A's status lists three items waiting on the LEAD: the `&"sensor"` alarm reason, the GN camera-operator spawn tag
