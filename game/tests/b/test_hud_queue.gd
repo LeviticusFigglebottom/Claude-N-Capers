@@ -113,3 +113,22 @@ func test_objective_marker_kinds() -> void:
 	assert_eq(ObjectiveMarkers.kind_for({"id": &"escape"}), &"escape")
 	assert_eq(ObjectiveMarkers.kind_for({"id": &"", "text_key": &"objective.night_deposit.time_lock"}), &"drill")
 	assert_eq(ObjectiveMarkers.kind_for({"id": &"mystery"}), &"", "unknown: the plain diamond")
+
+
+## Co-op windowed pass: the crew hears when another human leaves (an AI takes the heister) or joins.
+func test_toasts_when_a_human_leaves_or_joins() -> void:
+	var saved: Dictionary = Net.crew.duplicate(true)
+	var me: int = Net.local_peer_id()
+	Net.crew = {0: {"peer_id": me, "is_ai": false, "display_name": "Hana"}}
+	Net.crew_changed.emit()
+	_hud.crew_heisters = {0: &"rook", 1: &"sable"}
+	Net.crew = {0: {"peer_id": me, "is_ai": false, "display_name": "Hana"},
+		1: {"peer_id": 4242, "is_ai": false, "display_name": "Cole"}}
+	Net.crew_changed.emit()
+	assert_eq(_hud.toast_label.text, UiText.t(&"ui.hud.player_joined", {"name": "Cole", "heister": Heisters.display_name(&"sable")}))
+	Net.crew = {0: {"peer_id": me, "is_ai": false, "display_name": "Hana"},
+		1: {"peer_id": -1, "is_ai": true, "display_name": "AI 1"}}
+	Net.crew_changed.emit()
+	assert_eq(_hud.toast_label.text, UiText.t(&"ui.hud.player_left", {"name": "Cole", "heister": Heisters.display_name(&"sable")}))
+	Net.crew = saved
+	Net.crew_changed.emit()

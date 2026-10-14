@@ -123,6 +123,7 @@ func _build_set() -> Node3D:
 	q.size = Vector2.ONE
 	var mat: StandardMaterial3D = VfxTextures.additive_material(VfxTextures.flash(), false)
 	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	mat.billboard_keep_scale = true  # star.scale (3–4 m, growing) applies
 	mat.vertex_color_use_as_albedo = false
 	q.material = mat
 	star.mesh = q
