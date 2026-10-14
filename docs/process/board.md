@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 12:25: **round 105 ON ORIGIN**: env/b-content de4b1915 (PO-12 audio: drill_loop -3→-8 dB, 10 dB under median gunshot, max 25 m; saw -6 dB; test_device_loops_sit_under_gunfire) + net.md correction (lobby keeps AI seats by design; never clear_ai from crew_changed). b ui_cues/lobby/lobby_flow, c audio_registry green. PO-12 DONE (visual r102 + audio r105). C mirrors values in tools/audiogen/cues.py.
 - 2026-10-14 12:10: **GATE 3 PASSED: gh_stealth** (A, windowed, real menus, input only, seed 1791952236, Routine): HEIST COMPLETE $46,200, CLEAN JOB, 13:41, 2 pagers; no civilian intimidated or alarm. Gates 1 + 3 passed; gate 2 (ND loud, attempt 8 in the loot stretch) remains. Finding → C+P: crew capsule snags on the GH LobbyDoor frame collision + wall corner (16.3-16.4, 4.6) approaching a path corner.
 - 2026-10-14 12:00: **round 103 ON ORIGIN**: env/a-core 0f1bf19c (drill default device read via G.PROPS_DIR directly; test asserts it). a po12/s9 devices/qb_b6 (0 drop-in node errors, was 5) green.
 - 2026-10-14 11:50: **round 102 ON ORIGIN**: env/a-core 9949ebdc (PO-12 drills visible: default device G.PROPS_DIR drill prop, Bit spins 900°/s, red jam mark, removed when done; replicated). a po12/s9/qc37/d105/director_caps/civilian, c GH map green. PO-12 visual DONE; drill loudness with B.
