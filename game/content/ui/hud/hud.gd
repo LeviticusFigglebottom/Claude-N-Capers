@@ -319,7 +319,8 @@ func _process(delta: float) -> void:
 		objective_markers.show_all = scoreboard.visible  # Tab shows every objective's marker
 		objective_markers.z_index = 1 if scoreboard.visible else 0  # drawn over the sheet, not under it
 	if onboarding != null and scoreboard != null:
-		onboarding.visible = onboarding.shown != &"" and not scoreboard.visible  # Tab sheet wins (h02 capture)
+		# The Tab sheet and the pause menu's job card sit on the card's spot and win (h02 / fail captures).
+		onboarding.visible = onboarding.shown != &"" and not scoreboard.visible and not MouseCapture.is_released(&"pause")
 	if hint != null and onboarding != null:
 		hint.note.visible = hint.hint == &"mask_up" and onboarding.shown == &""  # the card already says it
 	if _toast_t > 0.0:

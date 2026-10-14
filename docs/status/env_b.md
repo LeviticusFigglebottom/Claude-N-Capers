@@ -17,8 +17,9 @@ Newest entry first, keep the last 10.
   - A key cap hint strip follows the last device: [Tab]/[Start] Aim, [Enter]/[A] Select, [Esc]/[B] Leave. In aim mode: [LMB]/[RT] Fire, [RMB]/[LT] Aim down sights, [R] Reload, [1/2]/[Y] Swap weapon, [Tab]/[Start] Panels.
   - InteractionPanel.action_key_text now names mouse buttons (LMB / RMB / MMB) and falls back to the pad button when the keyboard has no binding.
 - Range real-input pass (test_range_real_input: real key / pad events): one bug found and fixed. The overlay never ran UiNav.ensure_pad_ui_actions, so pad A / B did nothing when the range was the first screen. Review shots: r69_range_panel / r69_range_aim.
+- Windowed failure-flow capture (`fail` mode, 720p): abort and all-custody both end on the failure payday (reason, what was lost, Retry offered, Continue focused), then home with Continue. One fix: the onboarding card now hides while the pause menu is open, because the job card sits on its spot (test_onboarding_card::test_card_hides_while_paused). Shots: r69_fail_*.
 ### Next
-- Windowed failure-flow capture (`fail` mode). Gallery Night content when the lead sends the list.
+- Gallery Night content when the lead sends the list.
 
 ## 2026-10-13 night: PO-4 lanes 11 / 12 / h02 notes
 ### Done
