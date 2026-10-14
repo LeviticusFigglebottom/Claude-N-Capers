@@ -137,8 +137,14 @@ func _host_success() -> void:
 		_log("no loot service / secure zone")
 		return
 	EventBus.loot_secured.connect(func(_id: int, _loot: StringName, _value: int) -> void: _secured += 1)
+	var at: Vector3 = zone.global_position
+	for c: Node in zone.get_children():
+		if c is CollisionShape3D:
+			at = (c as CollisionShape3D).global_position  # the zone's volume, not its origin (ZoneUtil.contains)
+			break
+	_log("secure zone %s at %s" % [zone.name, at])
 	for id: StringName in [&"loot.jewelry", &"loot.cash"]:
-		loot.call(&"spawn_bag", id, Transform3D(Basis(), zone.global_position + Vector3(0, 0.4, 0)))
+		loot.call(&"spawn_bag", id, Transform3D(Basis(), at + Vector3(0, 0.3, 0)))
 	await _wait(func() -> bool: return _secured >= 2, "two bags secured", 300.0)
 	await _shot("host_secured", 5)
 	_log("end_heist(true) -> %s" % str(rt.end_heist(true, Net.human_slots(), &"")).left(120))
