@@ -37,6 +37,13 @@ LIBRARY: dict[str, tuple[str, str, float, float, float]] = {
     "tile": ("tile_ceramic_white", "#E4E2DC", 0.3, 0.0, 1.0),
     "asphalt": ("asphalt", "#4A4A48", 0.9, 0.0, 1.0),
     "brick": ("brick_red", "#8A4A3A", 0.85, 0.0, 1.0),
+    # weapon/gear library ids (tools/texgen, 1 m tiles: TILE_1M), used by the equipment props (D-111)
+    "polymer": ("polymer_black", "#2A2B2D", 0.7, 0.0, 1.0),
+    "polymer_olive": ("polymer_olive", "#4E5338", 0.7, 0.0, 1.0),
+    "steel_bare": ("steel_bare", "#8A8D90", 0.4, 1.0, 1.0),
+    "brass_case": ("brass_cartridge", "#B8913A", 0.3, 1.0, 1.0),
+    "alu_black": ("alu_anodized_black", "#2C2D30", 0.4, 1.0, 1.0),
+    "safety_orange": ("paint_safety_orange", "#D2611E", 0.6, 0.0, 1.0),
 }
 
 # Detail sources: neutral luminance textures derived from these library albedos.
@@ -110,6 +117,11 @@ TINTED: dict[str, dict] = {
     "car_black": {"source": "plastic_matte", "color": "#1F2023", "roughness": 0.4},
     "paint_halberd": {"source": "drywall_painted", "color": "#24463A", "roughness": 0.8},
     "steel_galv": {"source": "drywall_painted", "color": "#8E9497", "roughness": 0.7},
+    # equipment (D-111 deployables: ammo bag olive drab, medic patch red, armor-bag coyote carrier)
+    "bag_olive": {"source": "fabric_upholstery", "color": "#4B5136", "roughness": 1.0},
+    "bag_red": {"source": "fabric_upholstery", "color": "#8A2C27", "roughness": 1.0},
+    "bag_coyote": {"source": "fabric_upholstery", "color": "#7A6A4E", "roughness": 1.0},
+    "metal_rust": {"source": "metal_painted", "color": "#5E3A2A", "roughness": 1.0},
 }
 
 # Painted canvases (GN-C2): key -> albedo PNG from tools/texgen/paintings.py. The prop material is a plain
@@ -135,6 +147,9 @@ EMISSIVE: dict[str, dict] = {
     "emit_sodium": {"color": "#5A3414", "emission": "#FF9A3C", "energy": 4.0},
     "emit_mint": {"color": "#40564A", "emission": "#D8FFE8", "energy": 3.0},
     "emit_clock": {"color": "#8A8068", "emission": "#FFF1D2", "energy": 1.6},
+    # burn barrel (D-111): flame tongues and the ember bed / vent glow
+    "emit_fire": {"color": "#6A2A0A", "emission": "#FF7A22", "energy": 5.0},
+    "emit_ember": {"color": "#3A1206", "emission": "#FF3A0C", "energy": 3.0},
 }
 
 # Transparent variants of glass_clear (library albedo with alpha x colour).
@@ -175,11 +190,15 @@ def all_keys() -> list[str]:
 
 # Texture width (px) of every library id whose tile is 512 px over 2 m (style: low-detail surfaces).
 LIB_512 = {"chrome", "rubber_black", "plastic_matte", "glass_clear", "ceiling_tile"}
+# Weapon/gear library ids whose 1024 px texture tiles every 1 m (metadata/uv_tile_m = 1.0): at the prop
+# density (512 px/m) they need the same one-repeat-per-metre UVs as the 512 px tiles.
+TILE_1M = {"polymer_black", "polymer_olive", "steel_bare", "brass_cartridge", "alu_anodized_black",
+           "paint_safety_orange"}
 
 
 def texture_px(mat_id: str) -> float:
     """Albedo texture size behind a material id (library or prop) -> UV density choice."""
-    if mat_id in LIB_512:
+    if mat_id in LIB_512 or mat_id in TILE_1M:
         return 512.0
     if mat_id.startswith(PROP_PREFIX):
         key = mat_id[len(PROP_PREFIX):]

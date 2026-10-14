@@ -1,5 +1,7 @@
 """Harbor dressing for Night Deposit: quay mooring bollards, the Co-op launch (escape E2), the moored
-trawler (P3 sniper perch) and shipping containers for the crane yard.
+trawler (P3 sniper perch) and shipping containers for the crane yard. D-111: `prop_burn_barrel`, the Dockside
+Burn thermite burn point visual (`burn_point` prefab: a rusted open drum with a `Fire` node that BurnPoint shows
+while burning / lit: static emissive flame tongues over an ember bed and glowing draught holes; no particles).
 
 The two boats and the containers are site dressing instanced under the map's Geometry over their
 collision blocks (night_deposit_layout.gd BLOCKS). Floor-item pivots (props contract): boats = the keel
@@ -17,6 +19,7 @@ VARIANTS = {
                                                              "pin_only": True}},
     "veh_boat_launch": {"fn": "launch", "cat": {"kind": "boat", "group": "exterior"}},
     "veh_trawler": {"fn": "trawler", "cat": {"kind": "boat", "group": "exterior"}},
+    "prop_burn_barrel": {"fn": "burn_barrel", "cat": {"prefab": "burn_point", "kind": "burn_barrel", "surface": "metal"}},
     **{
         f"prop_container_{n}_{c}": {"fn": "container", "len": 12.19 if n == 40 else 6.06, "paint": f"container_{c}",
                                     "cat": {"kind": "container", "group": "exterior"}}
@@ -176,6 +179,63 @@ def _container(k: Kit, p: dict) -> None:
         d.rod((ln / 2 + 0.03, y, 0.18), (ln / 2 + 0.03, y, h - 0.15), 0.018, "metal_grey", segs=8)
         d.bx((ln / 2 + 0.006, y - 0.12, 1.15), (ln / 2 + 0.05, y + 0.02, 1.2), "metal_grey")
     o.build()
+
+
+def _burn_barrel(k: Kit, p: dict) -> None:
+    """Burn barrel: a rusted 205 l drum (0.58 m, 0.88 m tall) with its lid cut out, rolling hoops, a ring of
+    draught holes punched near the bottom, charred cardboard goods sticking out of the top, on three bricks.
+    `Fire` (shown by BurnPoint while burning): an ember bed at the rim, flame tongues rising 0.6 m above it
+    and glowing plugs in the draught holes."""
+    r, h, lift = 0.29, 0.88, 0.06
+    top = lift + h
+    o = k.obj("Body")
+    drum = o.part(bevel=0.0)
+    n = 32
+    # open drum: outer wall, inner wall (dark), bottom, a rolled rim
+    ring = [(r * math.cos(2 * math.pi * i / n), r * math.sin(2 * math.pi * i / n)) for i in range(n)]
+    hole = [(x * (r - 0.006) / r, y * (r - 0.006) / r) for x, y in ring]
+    drum.prism(ring, holes=[hole], axis="Z", start=lift, end=top, mat=drum.m("metal_rust"), cap_mat=drum.m("metal_dark"))
+    inner = o.part(bevel=0.0)
+    inner.cyl(r - 0.006, 0.01, (0.0, 0.0, lift + 0.005), "metal_dark", segs=n)
+    drum.torus(r, 0.008, (0.0, 0.0, top), "metal_rust", segs=n, rsegs=5)
+    drum.torus(r, 0.007, (0.0, 0.0, lift + 0.004), "metal_rust", segs=n, rsegs=4)
+    for z in (lift + h * 0.33, lift + h * 0.66):
+        drum.torus(r + 0.004, 0.011, (0.0, 0.0, z), "metal_rust", segs=n, rsegs=5)
+    # draught-hole rims (dark collars; the glowing plugs are in Fire)
+    holes = []
+    for i in range(8):
+        a = 2 * math.pi * (i + 0.5) / 8
+        c, s_ = math.cos(a), math.sin(a)
+        holes.append((c, s_))
+        drum.rod((c * (r - 0.004), s_ * (r - 0.004), lift + 0.12), (c * (r + 0.006), s_ * (r + 0.006), lift + 0.12), 0.03,
+                 "metal_dark", segs=10)
+    # bricks under it
+    b = o.part(bevel=0.006)
+    for i in range(3):
+        a = 2 * math.pi * i / 3 + math.pi / 2
+        cx, cy = math.cos(a) * 0.17, math.sin(a) * 0.17
+        b.cbox((cx, cy, lift / 2), (0.21, 0.1, lift), "brick")
+    # charred cardboard goods poking out of the top
+    g = o.part(bevel=0.004)
+    g.bx((-0.16, -0.12, top - 0.18), (0.06, 0.08, top + 0.04), "cardboard")
+    g.bx((0.02, -0.05, top - 0.2), (0.2, 0.15, top - 0.03), "metal_dark")
+    o.build()
+    fire = k.obj("Fire")
+    f = fire.part(bevel=0.0)
+    f.cyl(r - 0.012, 0.03, (0.0, 0.0, top - 0.05), "emit_ember", segs=n)
+    rng = k.ctx.rng
+    for i in range(9):
+        a = 2 * math.pi * i / 9 + rng.uniform(-0.2, 0.2)
+        d = 0.06 + 0.12 * (i % 3) / 2
+        cx, cy = math.cos(a) * d, math.sin(a) * d
+        hgt = 0.28 + rng.uniform(0.0, 0.32)
+        rad = 0.07 + rng.uniform(0.0, 0.04)
+        prof = [(rad, 0.0), (rad * 0.9, hgt * 0.25), (rad * 0.55, hgt * 0.6), (rad * 0.2, hgt * 0.88), (0.0, hgt)]
+        f.lathe(prof, "emit_fire" if i % 3 else "emit_amber", centre=(cx, cy, top - 0.04), segs=7)
+    for c, s_ in holes:
+        f.rod((c * (r - 0.002), s_ * (r - 0.002), lift + 0.12), (c * (r + 0.009), s_ * (r + 0.009), lift + 0.12), 0.022,
+              "emit_ember", segs=10)
+    fire.build()
 
 
 def build(ctx) -> None:
