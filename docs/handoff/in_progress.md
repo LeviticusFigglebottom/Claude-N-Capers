@@ -14,8 +14,8 @@ this file wins: the LEAD wrote it after checking trunk (see §0).
 | `env/b-content` | ec36e060 | **HELD**: 8 green commits (Jay roster, SMG fore-end grip, gore option, deployables + gating, throwables, GN string) | merge **together with D's SMG clip re-time**. f8f17c7a turns `d/test_arms` smg_idle/smg_ads_idle red until then |
 | `env/c-worlds` | 8a725315 | all on trunk (r200 D-113 VFX, r201 GH/ND wall tiles + handoff) | nothing to merge |
 | `wip/c-sldb-props` | d257bc58 | **WIP, ~45%**: D-111 SL/DB prop art (item 1 validated but tests not re-run; items 2-4 not imported, regenerated or validated) | C finishes it per env_c.md HANDOFF step list; never merge it directly |
-| `env/d-art` | 07542fe7+ | skirt seated fix not yet merged; grip rework in progress | see §D |
-| `env/p-play` | d9b3e6c4 | probes + notes cherry-picked; **035eee7f held** (per-set long-gun grip offsets) | merge 035eee7f **together with D's new `char_arms_fp`** |
+| `env/d-art` | 8ac1e97e | on trunk (r202: per-set long-gun grip + vertex clip test, skirt fix) | D still owes the SMG re-time (unblocks B) and shotgun/LMG/sniper grip captures |
+| `env/p-play` | fc0a3494 | on trunk (r202, merged with D's arms) | nothing to merge |
 
 Dependent merges: **B + D (SMG)** and **P 035eee7f + D (long-gun clip)**. Merging either half alone turns
 `d/test_arms` or `p/test_p_finger_clip` red. Run the FP set after each: `p test_po4_feel test_p1_01 test_p1_03
@@ -76,7 +76,13 @@ test_p_grip_offset test_p_finger_clip`, `d test_arms`, `a test_fp_viewmodel`, `b
 6. If A finds `Slot_orchard_calloway` unreachable: fix the nav/stairs to that gallery.
 
 ## D. ENV D: Characters and animation (session_01EZDt9WkE187YkB8ANEbuhb)
-1. **Long-gun support grip rework (PO's #2 complaint).** Spec, from the PO's reference photos of a proper rifle hold:
+1. **Long-gun support grip rework (PO's #2 complaint): 51a3ce84 on trunk (r202), not finished.** P's PFingerClip on
+   r202 (vertices inside the gun / deepest): Condor index 70 / **4.4 mm**, Bastion thumb 2 / 3.8 mm + index 15 /
+   1.9 mm, Corsair thumb 2 / 3.0 mm, Reaper thumb 11 / 1.9 mm, Brute 12 / 1.2 mm, Shrike 6 / 1.2 mm, Mule 2 / 0.3 mm,
+   Anvil 0. (It was 4–12 mm on every gun.) D's own hull test passes at 2 mm; P's per-vertex probe is stricter.
+   Next: D fixes Condor (sniper index) and Bastion/Corsair thumbs, then P turns the report into the assert. Also D
+   owes the shotgun / LMG / sniper Glasshouse captures (Corsair: `game/assets/characters/_review/grip_glasshouse_corsair_ar_*.png`).
+   Original spec: Spec, from the PO's reference photos of a proper rifle hold:
    * the support palm cradles the fore-end from **below and the left**, not the top;
    * the fingers wrap the far side, **below the top edge**;
    * the thumb runs along the near side;
