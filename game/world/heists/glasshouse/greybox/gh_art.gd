@@ -66,6 +66,10 @@ const CLASS_FACES: Dictionary = {
 	"asphalt": ["", "asphalt", "concrete"], "stair": ["", "terrazzo", "terrazzo"],
 	"none": ["", "", ""],
 }
+## PO-8: collision-only boxes whose finish is drawn elsewhere -> bullet surface id: glazing panes,
+## ceilings (tile / plaster) and the ground slab (terrazzo sales floor, tiled restrooms).
+const SURFACE_GROUPS: Array = [["Geometry/Building/Glazing", &"glass"], ["Geometry/Building/Ceilings", &"plaster"],
+	["Geometry/Building/Slabs/SlabGround", &"tile"]]
 const BASEBOARD_H: float = 0.125
 const BASEBOARD_D: float = 0.015
 const CORNICE_H: float = 0.25
@@ -152,6 +156,28 @@ func face_key(cls: String, f: int, n: Vector3, c: Vector3) -> String:
 	elif key == "@parapet":
 		key = "concrete" if c.y > 7.9 else ""
 	return key
+
+
+## PO-8: material key a bullet meets on face f of a class `cls` box (build_greybox._box): the drawn
+## face, or the room's floor finish on a floor's top (drawn separately by room_surfaces).
+func surface_face(f: int, n: Vector3, c: Vector3, cls: String) -> String:
+	if cls == "" or cls == "none":
+		return ""
+	if f == 3 and cls == "floor":
+		var r: String = room_at(c + n * 0.3)
+		return String((FINISH[r] as Array)[0]) if FINISH.has(r) else "concrete"
+	return face_key(cls, f, n, c)
+
+
+## PO-8: tags the bullet surface ids left after the build (collision-only groups whose finish is drawn
+## elsewhere, then SurfaceTags.tag_tree). Returns an error per body still untagged.
+func tag_surfaces(root: Node) -> PackedStringArray:
+	for g: Array in SURFACE_GROUPS:
+		SurfaceTags.tag_untagged(root, NodePath(String(g[0])), g[1])
+	var out: PackedStringArray = PackedStringArray()
+	for p: String in SurfaceTags.tag_tree(root):
+		out.append("no surface id for %s" % p)
+	return out
 
 
 func vis_box(group: String, mn: Vector3, mx: Vector3, cls: String) -> void:

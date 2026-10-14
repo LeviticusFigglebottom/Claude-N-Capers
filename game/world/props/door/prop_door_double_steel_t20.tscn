@@ -5,3 +5,8 @@
 [node name="PropDoorDoubleSteelT20" type="Node3D"]
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model/Frame"]
+metadata/surface = &"metal"
+
+[editable path="Model"]
