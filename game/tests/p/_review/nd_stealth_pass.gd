@@ -47,9 +47,21 @@ func note(msg: String) -> void:
 
 
 func shot(label: String) -> void:
+	_fast(false)
+	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
 	_shot += 1
 	get_viewport().get_texture().get_image().save_png("%s/%02d_%s.png" % [runner_out, _shot, label])
+	_fast(true)
+
+
+## Like A's po5_flow.set_fast: llvmpipe renders at ~1 fps, which caps game time, so the render loop (and the HUD
+## canvas work) is off between screenshots. Window, DisplayServer and input stay real.
+func _fast(on: bool) -> void:
+	RenderingServer.render_loop_enabled = not on
+	for n: Node in get_tree().root.get_children():
+		if n is CanvasLayer:
+			(n as CanvasLayer).visible = not on
 
 
 func wait_s(s: float) -> void:
@@ -99,6 +111,7 @@ func _run() -> void:
 	note("RESULT %s at t=%.0f, knifed %d, pagers %d, objectives %s" % [how, rt.heist_time_s, _knifed, _pagers,
 		rt.hud_model.objectives.map(func(o: Dictionary) -> String: return "%s:%d" % [o["id"], o["state"]])])
 	await shot("end")
+	RenderingServer.render_loop_enabled = true
 	get_tree().quit(0)
 
 
