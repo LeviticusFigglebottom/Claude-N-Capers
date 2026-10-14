@@ -6,6 +6,8 @@
 ##   (same with `client`). PNGs: <out_dir>/<role>_<NN>_<shot>_<w>x<h>.png; "COOP <role> ..." lines on stdout.
 ## A 4th argument `success` (both peers) secures two bags through the real loot path and ends the heist won;
 ## `success2` does that twice on one kept session (payday Continue -> crew lobby -> ready -> next heist, C11).
+## `fail`: the host ends the heist failed (all in custody); both get the failure payday, then the kept lobby.
+## A 5th argument names the heist (default glasshouse), e.g. `success night_deposit`.
 extends SceneTree
 ## Launcher only: the worker (uses autoloads) is loaded after the first frame.
 
