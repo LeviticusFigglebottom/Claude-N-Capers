@@ -136,3 +136,14 @@ func test_card_hides_while_paused() -> void:
 	MouseCapture.pop_release(&"pause")
 	await wait_frames(1)
 	assert_true(_card.visible, "back after resuming")
+
+
+func test_card_gives_way_to_a_toast() -> void:
+	_model.player_mode = &"casing"
+	await wait_frames(1)
+	assert_true(_card.visible)
+	_hud.toast(&"ui.hud.player_left", {"name": "Cole", "heister": "Sable"}, 0.2)
+	await wait_frames(1)
+	assert_false(_card.visible, "the toast crosses the card's title")
+	await wait_seconds(0.4)
+	assert_true(_card.visible, "back once the toast is gone")

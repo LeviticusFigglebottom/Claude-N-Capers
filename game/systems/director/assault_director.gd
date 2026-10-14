@@ -654,17 +654,32 @@ func _begin_retreat() -> void:
 	var points: Array[Node3D] = _retreat_points()
 	if points.is_empty():
 		return
+	var crew: Array[CrewController] = _active_crew()
 	for npc: NpcBase in alive_units():
 		var brain: PoliceBrain = npc.get_node_or_null(^"Brain") as PoliceBrain
 		if brain == null or (captain != null and (npc == captain.brandt or captain.shields.has(npc))):
 			continue
-		var best: Node3D = points[0]
-		for p: Node3D in points:
-			if p.global_position.distance_to(npc.global_position) < best.global_position.distance_to(npc.global_position):
-				best = p
-		brain.set_order_position(best.global_position)
-		npc.set_meta(&"retreat_to", best.global_position)
+		var best: Vector3 = _retreat_point_for(npc, points, crew, Vector3.INF)
+		brain.set_order_position(best)
+		npc.set_meta(&"retreat_to", best)
 		retreating.append(npc)
+
+
+## PD2: retreating units leave where the crew can't see them. The nearest retreat point out of every crew
+## member's sight (else the nearest at all), skipping `avoid` (a point the unit reached but is watched at).
+func _retreat_point_for(npc: NpcBase, points: Array[Node3D], crew: Array[CrewController], avoid: Vector3) -> Vector3:
+	var best: Vector3 = Vector3.INF
+	var best_seen: bool = true
+	for p: Node3D in points:
+		var pos: Vector3 = p.global_position
+		if avoid != Vector3.INF and _flat(pos - avoid).length() < 0.5:
+			continue
+		var seen: bool = _point_seen_by_crew(pos, crew)
+		var closer: bool = best == Vector3.INF or pos.distance_to(npc.global_position) < best.distance_to(npc.global_position)
+		if (best_seen and not seen) or (seen == best_seen and closer):
+			best = pos
+			best_seen = seen
+	return best if best != Vector3.INF else npc.global_position
 
 
 ## Despawn retreating units that reached their point unseen by the crew.
@@ -679,7 +694,15 @@ func _tick_retreat() -> void:
 			retreating.remove_at(i)
 			continue
 		var to: Vector3 = npc.get_meta(&"retreat_to", npc.global_position)
-		if _flat(to - npc.global_position).length() > tweak.retreat_arrive_m or _seen_by_crew(npc, crew):
+		if _flat(to - npc.global_position).length() > tweak.retreat_arrive_m:
+			continue
+		if _seen_by_crew(npc, crew):
+			# Arrived but watched: move on to another point out of sight (if there is one).
+			var other: Vector3 = _retreat_point_for(npc, _retreat_points(), crew, to)
+			var brain: PoliceBrain = npc.get_node_or_null(^"Brain") as PoliceBrain
+			if brain != null and _flat(other - to).length() > 0.5 and not _point_seen_by_crew(other, crew):
+				brain.set_order_position(other)
+				npc.set_meta(&"retreat_to", other)
 			continue
 		retreating.remove_at(i)
 		npc.get_parent().remove_child(npc)
@@ -737,6 +760,19 @@ func _retreat_points() -> Array[Node3D]:
 			if p != null and not (tags is Array and (tags as Array).has(BREACH_ONLY_TAG)):
 				out.append(p)
 	return out
+
+
+## A standing unit at `pos` would be in some crew member's line of sight.
+func _point_seen_by_crew(pos: Vector3, crew: Array[CrewController]) -> bool:
+	var space: PhysicsDirectSpaceState3D = _runtime.map.get_world_3d().direct_space_state
+	var probe: Vector3 = pos + Vector3(0.0, tweak.los_check_height_m, 0.0)
+	for c: CrewController in crew:
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(c.eye_position(), probe,
+			StealthDirector.VISION_MASK)
+		q.exclude = [c.get_rid()]
+		if space.intersect_ray(q).is_empty():
+			return true
+	return false
 
 
 func _seen_by_crew(npc: NpcBase, crew: Array[CrewController]) -> bool:

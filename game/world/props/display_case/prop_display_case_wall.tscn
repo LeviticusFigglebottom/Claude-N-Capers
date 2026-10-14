@@ -11,6 +11,7 @@ metadata/fixture = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 omni_range = 1.8
 omni_attenuation = 1.2
+layers = 1048577
 light_color = Color(1, 0.7059, 0.4196, 1)
 light_energy = 0.4
 light_size = 0.05

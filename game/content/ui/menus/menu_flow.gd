@@ -734,6 +734,13 @@ func _hand_heisters(options: Dictionary) -> void:
 		var l: Loadout = loadouts[slot] as Loadout
 		if l != null and l.heister != &"":
 			map[int(slot)] = l.heister
+	_set_heister_map(map)
+
+
+## The HUD crew rows / toasts and the payday name heisters from `map` (slot -> heister id).
+func _set_heister_map(map: Dictionary) -> void:
+	if not _hud is Hud:
+		return
 	(_hud as Hud).set_crew_heisters(map)
 	if _heist_payday != null and is_instance_valid(_heist_payday):
 		_heist_payday.crew_heisters = map
@@ -760,7 +767,7 @@ func _spawn_in_heist_ui() -> void:
 	pd.is_pro = is_pro
 	pd.profile_slot = profile_slot
 	pd.visible = false
-	pd.continue_pressed.connect(_leave_heist)
+	pd.continue_pressed.connect(_on_heist_payday_continue)
 	pd.retry_requested.connect(_retry_at_routine)
 	_in_heist.add_child(pd)
 	_heist_payday = pd
@@ -838,7 +845,16 @@ func _request_leave_heist() -> void:
 	_leave_heist()
 
 
-func _leave_heist() -> void:
+## C11 (lead ruling, PD2): a co-op payday's Continue takes every peer back to the crew lobby with the session
+## kept (ready flags cleared for the next job); only Leave (pause menu / lobby) ends the session.
+func _on_heist_payday_continue() -> void:
+	if is_coop():
+		_leave_heist(true)
+	else:
+		_leave_heist()
+
+
+func _leave_heist(keep_session: bool = false) -> void:
 	if Net.host_lost.is_connected(_on_client_host_lost):
 		Net.host_lost.disconnect(_on_client_host_lost)  # our own Net.leave() below is not the host leaving
 	if _heist_payday != null and is_instance_valid(_heist_payday):
@@ -861,8 +877,12 @@ func _leave_heist() -> void:
 		_in_heist.queue_free()
 		_in_heist = null
 		_hud = null
-	Net.leave()
 	visible = true
+	if keep_session and is_coop():
+		lobby.set_ready(false)
+		show_lobby()
+		return
+	Net.leave()
 	show_home()
 
 
@@ -1006,6 +1026,9 @@ func _begin_client_heist(info: Dictionary) -> void:
 	is_pro = bool(info["is_pro"])
 	visible = false
 	_spawn_in_heist_ui()
+	# Co-op pass: the client's rows read "Host / AI 2"; the lobby's assignment is the host's (same summaries).
+	if lobby != null and lobby.is_active():
+		_set_heister_map(lobby.state.heister_assignment())
 	if not Net.host_lost.is_connected(_on_client_host_lost):
 		Net.host_lost.connect(_on_client_host_lost)
 

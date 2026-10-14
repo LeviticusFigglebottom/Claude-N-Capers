@@ -14,6 +14,7 @@ transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.03, -0.31)
 spot_range = 7
 spot_angle = 60
 spot_angle_attenuation = 0.6
+layers = 1048577
 light_color = Color(1, 0.7725, 0.5608, 1)
 light_energy = 2
 light_size = 0.05

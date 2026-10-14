@@ -142,10 +142,11 @@ const ANCHORS: Array = [
 	["B9", "BoxesE2", "prop_deposit_boxes", Vector3(18.463, BASE, BOX_UNITS_Z[1]), 90.0, {}],
 	["B9", "BoxesE3", "prop_deposit_boxes", Vector3(18.463, BASE, BOX_UNITS_Z[2]), 90.0, {}],
 	["B9", "BoxesE4", "prop_deposit_boxes", Vector3(18.463, BASE, BOX_UNITS_Z[3]), 90.0, {}],
-	["G8", "TellerStool1", "prop_stool_teller", Vector3(4.6, 0.0, 8.15), 10.0, {}],
-	["G8", "TellerStool2", "prop_stool_teller", Vector3(9.2, 0.0, 8.15), -8.0, {}],
-	["G8", "TellerStool3", "prop_stool_teller", Vector3(12.4, 0.0, 8.15), 15.0, {}],
-	["G8", "TellerStool4", "prop_stool_teller", Vector3(17.6, 0.0, 8.15), -12.0, {}],
+	# PO-9: parked off the staff walkway, facing their counter (+Z; they faced the back wall)
+	["G8", "TellerStool1", "prop_stool_teller", Vector3(4.6, 0.0, 8.15), -170.0, {}],
+	["G8", "TellerStool2", "prop_stool_teller", Vector3(9.2, 0.0, 8.15), 172.0, {}],
+	["G8", "TellerStool3", "prop_stool_teller", Vector3(12.4, 0.0, 8.15), -165.0, {}],
+	["G8", "TellerStool4", "prop_stool_teller", Vector3(17.6, 0.0, 8.15), 168.0, {}],
 	["B14", "JanitorLight", "prop_fluorescent", Vector3(7.7, BASE_CEIL, 5.1), 90.0, {}],
 	["B9", "InspectionTable", "prop_vault_table", Vector3(11.4, BASE, 18.9), 0.0, {}],
 	# B11 count room: two back-to-back counting desks, the sealing bench on the east wall

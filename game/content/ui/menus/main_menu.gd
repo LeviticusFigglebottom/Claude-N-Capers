@@ -108,6 +108,12 @@ func refresh_profile(profile: PlayerProfile = null) -> void:
 	continue_button.visible = not job.is_empty()
 	if not job.is_empty():
 		continue_button.text = QuickPlay.label(job).to_upper()
+	# A hidden Continue must not stay in the up / down links (gate82 trap class, test_menu_reach).
+	var shown: Array[Control] = []
+	for c: Control in focus_chain:
+		if c.visible:
+			shown.append(c)
+	UiNav.chain_vertical(shown)
 	profile_label.text = "%s   ·   %s   ·   %s" % [
 		UiText.t(&"ui.menu.level", {"level": p.level}),
 		UiText.t(&"ui.menu.spending", {"amount": UiText.money(p.cash)}),

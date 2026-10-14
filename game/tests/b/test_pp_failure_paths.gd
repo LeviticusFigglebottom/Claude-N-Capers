@@ -94,6 +94,8 @@ func test_first_failure_offers_a_routine_retry() -> void:
 	assert_true(pd.retry_button.visible, "a first heist that failed: offer the retry")
 	await wait_frames(2)  # UiScreen focuses its default control deferred
 	assert_eq(get_viewport().gui_get_focus_owner(), pd.continue_button as Control, "Continue keeps the focus")
+	assert_eq(pd.continue_button.get_node_or_null(pd.continue_button.focus_neighbor_left), pd.retry_button as Node,
+		"Retry is one d-pad step left while offered")
 	pd.retry_button.pressed.emit()
 	var relaunched: Callable = func() -> bool:
 		return _flow.runtime != null and _flow.get(&"_heist_id") == &"glasshouse" \
@@ -113,5 +115,8 @@ func test_no_retry_once_a_heist_was_completed() -> void:
 	fail["success"] = false
 	pd.show_result(fail)
 	assert_false(pd.retry_button.visible, "experienced players just continue")
+	# gate82 guard: a hidden Retry must not stay Continue's left neighbour (it trapped d-pad focus).
+	assert_eq(pd.continue_button.focus_neighbor_left, NodePath(), "no neighbour link to a hidden Retry")
+	assert_false(pd.focus_chain.has(pd.retry_button), "nor a chain entry")
 	pd.queue_free()
 	await wait_frames(1)
