@@ -20,9 +20,18 @@ Newest entry first, keep the last 10.
 | PO-B-C5 | LEAD | core/log.gd `_write` calls multiplayer.get_unique_id() after the peer closed: an engine ERROR on every log line during a disconnect. | Reported |
 | PO-B-C6 | B | The lobby's crew cards scroll below the contract / chat block at 720p (mask row under the fold). | By design (PQ-B-11b scroll); can compact if wanted |
 
-- Not yet verified end to end: both peers in the same heist and payday on both. That needs PO-B-C1 first; the harness re-runs it.
+- Re-run after round 80 (ENet 15-60 s timeouts, threaded map load). Both peers are in the same heist (Net.crew {0 human, 1 human, 2 ai, 3 ai} on both). The client leaves, the host logs the drop and its HUD toasts it; the host leaves and gets a failure payday, then home.
+
+| Row | Owner | Finding | Status |
+|---|---|---|---|
+| PO-B-C1 | A / LEAD | Client connection dropped at heist start | FIXED round 80 |
+| PO-B-C7 | A | The client's LocalHudModel has 0 objectives for the whole run (host: 5). The HUD hides the objective panel and the pause job card has no OBJECTIVES. objective_updated [R] fires at the host's start, before the client's model listens; there is no catch-up. | Sent to A |
+| PO-B-C8 | B | Client crew rows read "Host / AI 2 / AI 3" (the heister map was only handed over on the host's launch). | FIXED ebe242ff (lobby assignment; test_lobby_flow) |
+| PO-B-C9 | B | The "left the game" toast crossed the onboarding card's title. | FIXED: the card gives way while a toast shows (test_onboarding_card) |
+| PO-B-C10 | LEAD (design) | A client who leaves mid-heist goes straight home, with no payday (PD2 does the same). The lead's pass said "payday on both". | Ruling needed: keep PD2 behaviour, or show the failure payday ("What you lost") to the leaver too |
+
 ### Next
-- Re-run the co-op pass once A's timeout fix lands. Gallery Night content when the lead sends the list.
+- Gallery Night content when the lead sends the list; C7 re-check when A lands it.
 
 ## 2026-10-14: PO-4 lead queue (round 68): pad pass, safety net, firing range restyle
 ### Done
