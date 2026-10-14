@@ -3,6 +3,63 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## HANDOFF 2026-10-14
+
+**Branch head:** `env/b-content` ec36e060: "[D-111] throwables: ENV C's models on all six ThrowableDefs". The working tree is clean, there are no stashes and no wip branches.
+
+**Done since last trunk merge (not yet on trunk):** trunk round 195 is merged into the branch, so these are the only B commits missing from trunk.
+
+| Commit | What | Green before push |
+|---|---|---|
+| 6c2b8a2f | Heister **Jay**: roster entry (cobalt accent, 6th in roster order), unlock = new achievement *Wheelman* (5 loud wins → `unlock.achievement.wheelman`), 22 voice lines (speaker `jay`), `crew.jay`; heister/voice tests cover 6 heisters; achievement count bound 35–50 | b heister 12, voice 11, voice_lines 10, achievement 21, strings 38, lobby 48, ui_loadout 5 |
+| f8f17c7a | **SMG grip:** LeftHandIK under the fore-end on hornet_9 / lancet_45 / tern_556 (x 0, 12 mm low, a third forward), glbs rebuilt. wasp_pdw keeps its vertical grip | b left_hand_ik, armory_batch3 13; p test_po4_feel 10, test_p1_01 12; a test_fp_viewmodel 15. **d test_arms is red on smg_idle/ads (palm 0.052 m from hornet) until D re-times** |
+| 26a9c15d | Weapon materials before/after sheet (`game/content/ui/_review/d111/weapon_materials_before_after_1280x720.png`): C's texture lift barely changes the FP gun (mean luminance ~13→15), so the FP weapon gets almost no light (handed to P) | n/a (review image) |
+| 04306eec | **D-113** Options → Gameplay "Blood & gore" `gameplay/gore` (full/reduced/off, default full), `GameSettings.gore()` + `GORE_*`; C's VFX read it by class name | b options 56, strings 38 |
+| 0696cd47 | **Deployables:** C's models on doctor/ammo/body-bag/armor bags; new `ecm` / `fak` / `trip_mine` defs (values = A's DeployableTweak fallbacks) | b deploy 5, loadout 50, strings 38, armory 39; a deploy 8, a ecm 14 |
+| 82fce830 | GN `objective.gallery_night.casing_last_call` = "Gala's over. Stay out of sight" (A's last-call relabel) | b strings 38 |
+| 53779680 | **Deployable gating** (lead ruling, PD2): ECM ← Jammer Jockey (`stealth.ecm_extra`), trip mine ← Extra Charges (`deploy.extra.trip_mine`), FAK ← Field Kit (`deploy.extra.fak`); picker shows "locked: skill <name>" (`DeployableGate.unlock_skill`) | b deploy 6 (new skill-gate test), loadout 50, strings 38, pp_lobby_720p 4 |
+| ec36e060 | **Throwables:** C's `prop_throwable_*` set as `model` on all six ThrowableDefs | b throwable 7, loadout 50, strings 38, deploy 6 |
+
+Earlier D-111 work (style.md §11 menu rules, menu declutter 1–4 for hub, loadout, payday, board, options, main menu, mask bench and workshop; range UI polish; the 8 masks; Marten) is already on trunk (rounds 177–188).
+
+**In progress:**
+- *SMG fore-end grip (f8f17c7a):* 100 % on B's side. It's held by the lead until D's smg clip re-time lands; the two merge together.
+- *Range with C's dressing:* C's `RangeDressing` + `range_environment.tres` are on trunk, and B's hooks are in (`FiringRange._dress` finds `RangeDressing` by class name, builds it, and applies `environment()`/the sun-off). C's tips are applied: 8 m lane-line segments, bench/line colours, brightness. Next step: a windowed `ui_audit_capture.gd -- <out> range` at 720p and 1080p, a look at the dressed range, then tweak values for any colour clashes. About 90 % done; nothing blocks it.
+- *Dark FP weapons:* B has nothing left to do here (diagnosis and the sheet are delivered). P owns the fix (FP weapon lighting / layers).
+
+**Queued next:**
+1. Range windowed review with the dressing (D-111 item 1: "out of experimental").
+2. Re-verify the hub, loadout and lobby with 6 heisters at 720p (portraits for marten/jay from D; P wires the FP arms and bodies).
+3. Optional: ask A to enforce `DeployableGate` at runtime (A's DeployableSystem only checks the armor bag, so a stale save with ECM/FAK/trip mine and no skill still gets units).
+
+**Cross-env dependencies:**
+- **env/b-content is HELD only on D's SMG re-time** (d/test_arms smg_idle/smg_ads_idle). Everything else on the branch is green, and the lead merges B and D together.
+- B waits on P: the FP weapon lighting fix (the material sheet shows lit albedo isn't the problem).
+- Others wait on B: nothing open. C has the gore key, A has the last-call string, D has the SMG marker positions (hornet Godot (0, 0.016, −0.150)).
+
+**How to validate your area:**
+- `gdlint <changed .gd>`; `python3 tools/ci/check_ownership.py b`; `python3 tools/ci/check_banned.py`.
+- Tests: `tools/ci/run_tests.sh b <filter>` (the first arg is the env letter). Common filters: `options`, `strings`, `heister`, `voice`, `achievement`, `deploy`, `throwable`, `loadout`, `test_hub`, `payday`, `board`, `test_range`, `range_d111`, `workshop`, `weapon_finishes`, `mask`, `briefing`, `gn_drafts`. For weapon models also run `p test_po4_feel`, `p test_p1_01`, `a test_fp_viewmodel`, `d test_arms`.
+- Run `godot --headless --path game --import` after merges, model rebuilds and strings.csv edits; the strings only update after an import.
+- Windowed (xvfb, `--resolution 1280x720` and `1920x1080`):
+  - `tests/b/render/ui_audit_capture.gd -- <out> menus|screens|range|heist|...`
+  - `briefing_capture.gd -- <out> [heist ...]`
+  - `gn_capture.gd`
+  - P's `tests/p/_review/vm_probe.tscn -- --out=<d> --primary=weapon.<id> [--heist=glasshouse]` for FP weapons.
+- Weapon models: `python3 tools/blender/build.py --category weapons --asset wpn_<id>` (Blender 4.5, deterministic; an unchanged rebuild is byte-identical).
+
+**Gotchas:**
+- llvmpipe is slow. A heist capture takes about 5 min per Glasshouse vm_probe run, and a full `menus` audit about 10 min per resolution. Run them sequentially, at most 2 windows, and in the background with long timeouts (a 30 min cap killed one run).
+- GH, ND and SL `*_def.tres` are **generator output** (C's build_greybox). Hand edits get re-serialised, so send values to C. GN's def is C's file but B owns the content values (agreed split).
+- Material library (`world/materials`, `assets/textures`) is C's. Weapon glbs map `M_<id>` slots onto it at import, so they need no rebuild for material changes.
+- `check_banned` rejects `res://world/...` paths in B `.gd`. Find C classes by name (`UiNav.global_class`) or use a contracts id. `.tres` may reference world paths, but only once those files are on trunk; otherwise loading breaks. Hold and stash until they are.
+- gdlint caps public methods at 20 per file, so put new tests in new files when a suite is full. Private vars go after public ones.
+- `pkill -f` / `pgrep -f` match their own shell. Kill by PID.
+- A parse error in any test file hangs the runner.
+- The first-person IK marker rule is x 0, 12 mm below the fore-end, a third forward of the receiver. Every move turns d/test_arms red until D re-times, so always merge with D.
+
+**Session:** ENV B, session_0159qCTRV9CsDQs465nGSW28. No helper lanes, background runs or worktrees are running.
+
 ## 2026-10-14 evening: round 118 lanes (GN capture, audit refresh, C6)
 ### Done
 - **Lane 1, Gallery Night windowed capture.** Harness gn_capture on env/b-gallery-night (094bef25). It runs on a scratch
