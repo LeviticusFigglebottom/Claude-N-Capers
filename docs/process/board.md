@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 17:00: **round 125 ON ORIGIN**: env/a-core 87fd9552 (VariantResolver honours rare-event top-level requires/excludes; draws unchanged; no existing heist uses it) + pilot harness commits. a a2_08 19/19, a3_10, drill_relock, b preplan_variants/p2_heist_content, readiness green.
 - 2026-10-14 16:45: **round 124 ON ORIGIN**: env/c-worlds ac4c3a3f (docs/levels/gallery_night/g1_rehearsal.md: skeleton + B drafts launch, contract_nodes pass when wired, resolver 0 mismatches over 300 seeds × 6 difficulties; C fixing F1/F2/F3/F5/F7 in the patch) + LEAD readiness exempts find_canvases (F6). Post-lift estimate: B ~0.5, C ~4-4.5, A ~4.5-6 sessions. Rare-event `requires` ignored by the resolver → A GN groundwork.
 - 2026-10-14 16:30: ND loud attempt 12 FAILED (pilot LOS ray blocked by bunched teammates; fixed to hitscan_mask). Attempt 13 running. t=322 stall appears only on PO-10 builds (attempts 9-12) → A profiles NpcMotor separation right after attempt 13; perf test < 1 ms/frame at 40 NPCs.
 - 2026-10-14 16:10: **rounds 121-123 ON ORIGIN**: P pistol hip framing + ADS dip; C SL/DB seating (61 SL seats); B (from the GN windowed capture) briefing playback scroll, HUD objective flash only for completed steps, preplan hint/markers fix. All targeted green. Ruling: HeistDef briefing_objectives subset (main stealth path + Secure/Escape, one 'if it goes loud' line, Optional sub-head).
