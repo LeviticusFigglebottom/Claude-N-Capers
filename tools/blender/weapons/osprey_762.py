@@ -123,7 +123,8 @@ def build(ctx) -> None:
     ctx.marker("SideRail", (o.HG_HW + 0.0057, o.SIDE_Y, o.BORE_Z))
     ctx.marker("StockMount", o.STOCK_MOUNT)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
-    ctx.marker("LeftHandIK", (-0.028, 0.330, o.BORE_Z - 0.018))
+    # Lead (ENV D, FP left-hand cup): under the Handguard (y 0.175-0.480, bottom z 0.032), x 0, 12 mm low, a third of the way forward.
+    ctx.marker("LeftHandIK", (0.0, 0.277, 0.020))
 
     stock_sight = ctx.marker("StockSight", (0.0, 0.0, 0.0), parent=sight_rail)
     o.build_scope(ctx, mats, eight=False, parent=stock_sight)

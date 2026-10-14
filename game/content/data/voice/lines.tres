@@ -3177,6 +3177,13 @@ lines = Array[Dictionary]([{
 }, {
 "cooldown_s": 0.0,
 "event": &"mission",
+"id": &"vo.mercer.gallery_night_lasers_sweep",
+"priority": 80,
+"speaker": &"mercer",
+"text_key": &"voice.vo.mercer.gallery_night_lasers_sweep"
+}, {
+"cooldown_s": 0.0,
+"event": &"mission",
 "id": &"vo.mercer.gallery_night_guests_gone",
 "priority": 90,
 "speaker": &"mercer",

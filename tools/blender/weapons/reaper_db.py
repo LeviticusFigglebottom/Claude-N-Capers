@@ -77,7 +77,8 @@ def _breech(ctx, mats):
     under = r.hinge_local((0.0, 0.200, r.BORE_Z - 0.022 - 0.0155))
     ctx.marker("Underbarrel", under, parent=breech)
     ctx.marker("SideRail", r.hinge_local((0.0220, 0.200, r.BORE_Z - 0.022)), parent=breech)
-    ctx.marker("LeftHandIK", r.hinge_local((-0.022, 0.200, r.BORE_Z - 0.020)), parent=breech)
+    # Lead (ENV D, FP left-hand cup): under the Breech fore-end (y 0.072-0.300, bottom z 0.017), x 0, 12 mm low, a third of the way forward.
+    ctx.marker("LeftHandIK", r.hinge_local((0.0, 0.148, 0.005)), parent=breech)
     ctx.marker("Eject", r.hinge_local((r.BARREL_X + r.BARREL_R, r.ACT_FRONT_Y + 0.004, r.BORE_Z)),
                rotation_euler=(0.0, 0.0, -math.pi / 2), parent=breech)
     return breech
