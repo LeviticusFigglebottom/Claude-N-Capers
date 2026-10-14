@@ -6,6 +6,8 @@
 extends RefCounted
 
 const LOOP_LIMIT_S: float = 1500.0
+## Downed teammates within this flat distance get revived first (m).
+const REVIVE_RANGE_M: float = 20.0
 
 var f: Node = null
 var p: Po5Pilot = null
@@ -56,6 +58,8 @@ func step() -> void:
 	if markers.is_empty():
 		_note_once(&"_none", "no objective markers (HUD shows %s)" % [_objective_ids()])
 		await p.hold_position(2.0)
+		return
+	if await _revive_teammate():
 		return
 	var m: Dictionary = _pick(markers)
 	var id: StringName = StringName(m["id"])
@@ -119,6 +123,29 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 			best = c
 			best_d = dd
 	return best
+
+
+## Like a player (L2.7): pick up a downed teammate within REVIVE_RANGE_M before anything else. True when it tried.
+func _revive_teammate() -> bool:
+	var best: InteractableComponent = null
+	var best_d: float = REVIVE_RANGE_M
+	for c: CrewController in rt.crew_members():
+		if c == p.crew or c.crew_state != Enums.CrewState.DOWNED:
+			continue
+		var rev: InteractableComponent = c.get_node_or_null(^"ReviveInteractable") as InteractableComponent
+		if rev == null or not rev.enabled or rev.availability(p.crew) != &"":
+			continue
+		var dd: float = p.flat_dist(p.crew.global_position, c.global_position)
+		if dd < best_d:
+			best = rev
+			best_d = dd
+	if best == null:
+		return false
+	var mate: CrewController = best.get_parent() as CrewController
+	f.note("revive slot %d at %.0f s (%.1f m)" % [mate.slot, rt.heist_time_s, best_d])
+	p.watch_point = Vector3.INF
+	await p.use(best, 20.0, func() -> bool: return not is_instance_valid(mate) or mate.crew_state != Enums.CrewState.DOWNED)
+	return true
 
 
 ## A bag source: a loose bag on the floor, else an enabled bag_loot spawn (closest).
