@@ -13,6 +13,24 @@ var hud_max_progress: float = 0.0
 var hud_prompt: StringName = &""
 ## Client: the HeistRuntime returned by `await HeistLauncher.launch_client()` (null with --join=auto).
 var launched_rt: HeistRuntime = null
+## PO-8: shot_fx / explosion_fx seen on this peer since the last "clear_fx" (compact dicts).
+var fx_shots: Array = []
+var fx_blasts: Array = []
+
+
+func _ready() -> void:
+	EventBus.shot_fx.connect(_on_shot_fx)
+	EventBus.explosion_fx.connect(_on_explosion_fx)
+
+
+func _on_shot_fx(origin: Vector3, end: Vector3, normal: Vector3, surface: StringName, weapon_class: StringName,
+		shooter: int, flags: int) -> void:
+	fx_shots.append({"origin": origin, "end": end, "normal": normal, "surface": surface, "class": weapon_class,
+		"shooter": shooter, "flags": flags})
+
+
+func _on_explosion_fx(pos: Vector3, radius: float, kind: StringName) -> void:
+	fx_blasts.append({"pos": pos, "radius": radius, "kind": kind})
 
 
 func _physics_process(_delta: float) -> void:
@@ -49,6 +67,10 @@ func _rpc_command(cmd: String, args: Dictionary) -> void:
 		"clear_intent":
 			if rt != null:
 				rt.clear_bot_intent(slot)
+			_rpc_report.rpc_id(1, "ack", {"cmd": cmd})
+		"clear_fx":
+			fx_shots.clear()
+			fx_blasts.clear()
 			_rpc_report.rpc_id(1, "ack", {"cmd": cmd})
 		"quit":
 			get_tree().quit(0)
@@ -98,6 +120,7 @@ func snapshot(args: Dictionary = {}) -> Dictionary:
 		"captain": rt.net_sync.captain_state(),
 		"hud_captain_present": rt.hud_model.captain_present if rt.hud_model != null else false,
 		"hud_captain_resistance": rt.hud_model.captain_resistance if rt.hud_model != null else -1.0,
+		"shot_fx": fx_shots.duplicate(), "explosion_fx": fx_blasts.duplicate(),
 	}
 
 
