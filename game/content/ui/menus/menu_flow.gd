@@ -839,6 +839,8 @@ func _request_leave_heist() -> void:
 
 
 func _leave_heist() -> void:
+	if Net.host_lost.is_connected(_on_client_host_lost):
+		Net.host_lost.disconnect(_on_client_host_lost)  # our own Net.leave() below is not the host leaving
 	if _heist_payday != null and is_instance_valid(_heist_payday):
 		_heist_payday.finish_card_pick()  # QB-PC1: leaving with an unpicked card auto-picks it
 	_heist_payday = null
@@ -1004,6 +1006,23 @@ func _begin_client_heist(info: Dictionary) -> void:
 	is_pro = bool(info["is_pro"])
 	visible = false
 	_spawn_in_heist_ui()
+	if not Net.host_lost.is_connected(_on_client_host_lost):
+		Net.host_lost.connect(_on_client_host_lost)
+
+
+## net.md / HeistNetSync.host_lost: the connection to the host dropped while this client's replica runs.
+## The app flow ends the heist here (teardown + Net.leave) and returns to the lobby's connect view with
+## the reason, instead of leaving the player alone in a dead replica (co-op windowed pass). A payday
+## already on screen (the heist ended, then the host closed) is left alone.
+func _on_client_host_lost() -> void:
+	if Net.host_lost.is_connected(_on_client_host_lost):
+		Net.host_lost.disconnect(_on_client_host_lost)
+	if _in_heist == null or (_heist_payday != null and is_instance_valid(_heist_payday) and _heist_payday.visible):
+		return
+	Log.warn(&"ui", "host lost during the heist; back to the lobby")
+	_leave_heist()
+	show_lobby()
+	lobby_screen.error_label.text = UiText.t(&"ui.dropin.failed.host_lost")
 
 
 ## Lobby "Drop in to a running heist" (B6-04): the compact loadout pick + progress screen bound to DropInFlow.

@@ -2,10 +2,16 @@
 ## The human crew member (slot 0) is driven only through PInputDriver (ENV P: InputMap actions + mouse look
 ## into PlayerInput; never set_bot_intent): from the player spawn it walks the navmesh path to every
 ## gameplay use point (doors, devices, loot, objectives), turning with turn_to_yaw at each path corner and
-## holding move_forward. A leg that makes no progress gets one `interact` tap (a closed door) and a retry; a
-## leg that still stalls is a STUCK row (position, target, corner) and the walk resumes from the target by a
-## setup teleport (logged). Setup shortcuts (outside movement, named): skip_casing, no AI teammates, every map
-## NPC despawned (isolate_npc), so a guard cannot end the walk. Rows: docs/levels/pp_c1.md.
+## holding move_forward. A leg that makes no progress in front of a closed door is handled like a player: mask
+## up (G hold) if the door needs it, aim at its handle, hold F for the door's time (lockpick 8 s), retry. A leg
+## that still stalls is a STUCK row (position, target, corner, why) and the walk resumes from the target by a
+## setup teleport (logged). Zero-length legs (already at the use point, e.g. after a teleport) are dropped.
+## A door a walk cannot open (VAULT / CODE / ELECTRONIC / BARRED, KEYCARD without a card) is a LOCKED row, not
+## STUCK; reaching such a door when it is the leg's own target is an ok leg plus an AT-LOCKED-DOOR row.
+## Setup shortcuts (outside movement, named): skip_casing, no AI teammates, every map
+## NPC despawned (isolate_npc), security cameras removed and the assault director stopped (the walker masks up
+## and does not dodge cameras; a camera alarm or a loud-only map would bring police that down it), so no NPC
+## can end the walk. Ladders on the path are climbed like a player (masked, face the ladder, hold forward). Rows: docs/levels/pp_c1.md.
 extends TestCase
 @warning_ignore_start("unsafe_method_access", "unsafe_property_access", "unsafe_call_argument", "untyped_declaration")
 
@@ -82,7 +88,7 @@ func test_salon_door_glasshouse() -> void:
 	_inp.capture_mouse()
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	assert_true(await wait_until(func() -> bool: return BotUtil.nav_ready(c), 10.0), "nav ready")
-	_rt.isolate_npc(null)
+	_quiet_map()
 	var door: Door = _rt.map.get_node("Gameplay/Doors/SalonDoor") as Door
 	door.call(&"unlock")
 	door.call(&"set_open", true)
@@ -127,7 +133,7 @@ func _walk_heist(heist: StringName, door_centres: bool = false) -> void:
 	_inp.capture_mouse()
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	assert_true(await wait_until(func() -> bool: return BotUtil.nav_ready(c), 10.0), "%s nav ready" % heist)
-	_rt.isolate_npc(null)
+	_quiet_map()
 	await wait_physics_frames(2)
 	var rid: RID = c.get_world_3d().navigation_map
 	var targets: Array[Array] = _targets(_rt.map)
@@ -136,34 +142,55 @@ func _walk_heist(heist: StringName, door_centres: bool = false) -> void:
 	var stuck: int = 0
 	var t0: int = Time.get_ticks_msec()
 	var walked: float = 0.0
+	var dropped: int = 0
+	var locked: int = 0
 	for tg: Array in targets:
+		_rt.isolate_npc(null)
 		var goal: Vector3 = NavigationServer3D.map_get_closest_point(rid, tg[1])
-		var path: PackedVector3Array = NavigationServer3D.map_get_path(rid, c.global_position, goal, true)
+		var path: PackedVector3Array = _dedupe(NavigationServer3D.map_get_path(rid, c.global_position, goal, true))
+		if path.size() >= 1 and _flat_len(path) < GOAL_M and absf(path[0].y - goal.y) < 0.5:
+			dropped += 1  # 0 m leg (already at the use point, e.g. right after a setup teleport): nothing to walk
+			continue
 		if path.size() < 2 or path[path.size() - 1].distance_to(goal) > 0.75:
 			_row(heist, "NAV", tg[0], c.global_position, "no navmesh path from the previous stop")
 			continue
 		legs += 1
-		var res: Dictionary = await _follow(c, _door_centred(path) if door_centres else path)
+		var res: Dictionary = await _follow(c, _door_centred(path) if door_centres else path,
+			_rt.map.get_node_or_null(NodePath(String(tg[0]))))
 		walked += float(res["walked"])
 		if bool(res["ok"]):
 			ok_legs += 1
+			if res.has("note"):  # reached its target door, which a walk cannot open (keycard / drill / vault)
+				_row(heist, "AT-LOCKED-DOOR", tg[0], res["at"], String(res["note"]))
 		else:
-			stuck += 1
-			_row(heist, "STUCK-" + ("DOOR" if door_centres else "AI"), tg[0], res["at"],
+			# LOCKED: behind a progression lock a walk cannot open (vault / keycard without the card / code / ...).
+			var locked_by: bool = bool(res.get("locked", false))
+			if locked_by:
+				locked += 1
+			else:
+				stuck += 1
+			_row(heist, ("LOCKED-" if locked_by else "STUCK-") + ("DOOR" if door_centres else "AI"), tg[0], res["at"],
 				"stalled before corner %s (%s)" % [res["corner"], res["why"]])
 			_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, goal + Vector3.UP * 0.05))  # setup reset (logged)
 			await wait_physics_frames(3)
 	var secs: float = float(Time.get_ticks_msec() - t0) / 1000.0
 	var mode: String = "doors" if door_centres else "corners"
-	print("[PP-C-1] %s (%s): %d targets, %d legs walked, %d ok, %d stuck, %.0f m in %.0f s wall" % [heist, mode,
-		targets.size(), legs, ok_legs, stuck, walked, secs])
+	print(("[PP-C-1] %s (%s): %d targets, %d legs walked, %d ok, %d stuck, %d behind progression locks, "
+		+ "%d 0 m legs dropped, %.0f m in %.0f s wall, ")
+		% [heist, mode, targets.size(), legs, ok_legs, stuck, locked, dropped, walked, secs]
+		+ "masked %s, phase %s" % [c.masked, Enums.HeistPhase.keys()[_rt.phase]])
 	assert_true(legs > 0, "%s: at least one leg walked" % heist)
-	_rows.append("| %s | summary (%s) | | %d/%d legs ok, %d stuck, %.0f m walked |" % [heist, mode, ok_legs, legs, stuck, walked])
+	_rows.append("| %s | summary (%s) | | %d/%d legs ok, %d stuck, %d locked, %.0f m walked |" % [heist, mode, ok_legs, legs,
+		stuck, locked, walked])
 
 
 ## Walk a nav path with real input. Returns {"ok", "at", "corner", "why", "walked"}.
-func _follow(c: CrewController, path: PackedVector3Array) -> Dictionary:
+## A stall in front of a closed door is handled like a player: mask up if the door needs it (G hold), aim at the
+## door's handle (mouse look), hold F for the door's own interaction time (open / lockpick / keycard), go on.
+## `target`: the leg's target prefab; stalling at that very door within reach of its handle reaches it (ok + "note").
+func _follow(c: CrewController, raw_path: PackedVector3Array, target: Node = null) -> Dictionary:
 	var walked: float = 0.0
+	var path: PackedVector3Array = _dedupe(raw_path)
 	for i: int in range(1, path.size()):
 		var corner: Vector3 = path[i]
 		var flat: Vector3 = corner - c.global_position
@@ -188,14 +215,180 @@ func _follow(c: CrewController, path: PackedVector3Array) -> Dictionary:
 			if reached:
 				break
 			tries += 1
-			if tries > 1:
+			var door: Door = _blocking_door(c, path, i)
+			var ladder: Ladder = _ladder_near(c, corner) if door == null else null
+			var why: String = ""
+			if door != null:
+				why = await _open_door(c, door)
+			elif ladder != null:
+				why = await _use_ladder(c, ladder)
+			var used: bool = door != null or ladder != null
+			if door != null and why != "" and door == target and _progression_locked(c, door):
+				return {"ok": true, "at": c.global_position, "corner": corner, "why": "", "walked": walked, "note": why}
+			if tries > 2 or (used and why != "") or (not used and tries > 1):
+				var tail: String = why
+				if tail == "":
+					tail = "no closed door or ladder in the way" if not used else "`%s` used but still blocked" % (
+						door.name if door != null else ladder.name)
 				return {"ok": false, "at": c.global_position, "corner": corner,
-					"why": "no progress after interact (%.1f m of %.1f m)" % [start.distance_to(c.global_position), dist],
-					"walked": walked}
-			# A closed door: a real player holds interact (opens an unlocked door, picks a LOCKPICK one).
-			await _inp.hold(&"interact", 10.0)
-			await wait_seconds(0.5)
+					"why": "no progress (%.1f m of %.1f m): %s" % [start.distance_to(c.global_position), dist, tail],
+					"walked": walked, "locked": door != null and why != "" and _progression_locked(c, door)}
+			await wait_seconds(0.3)
 	return {"ok": true, "at": c.global_position, "corner": Vector3.ZERO, "why": "", "walked": walked}
+
+
+## The closed door the walker is stuck at: the first closed doorway on the rest of the path (from the crew), else the
+## nearest closed door whose handle is within interaction reach.
+func _blocking_door(c: CrewController, path: PackedVector3Array, from_i: int) -> Door:
+	var rest: PackedVector3Array = PackedVector3Array([c.global_position])
+	rest.append_array(path.slice(from_i))
+	var hit: Dictionary = Door.first_closed_on_path(get_tree(), rest, 3.0)
+	if not hit.is_empty():
+		var hd: Door = hit["door"] as Door
+		if hd.interactable != null \
+				and c.eye_position().distance_to(hd.interactable.global_position) <= Tweak.interaction().reach_m + 0.35:
+			return hd
+	var best: Door = null
+	var best_d: float = 1.0  # flat m from the doorway centre: the walker is pressed against this leaf
+	for n: Node in get_tree().get_nodes_in_group(Door.GROUP):
+		var d: Door = n as Door
+		if d == null or d.is_open or d.interactable == null or not _rt.is_ancestor_of(d):
+			continue
+		var o: Vector3 = d.global_position - c.global_position
+		var dist: float = Vector2(o.x, o.z).length()
+		if dist < best_d and absf(o.y) < 1.0:
+			best = d
+			best_d = dist
+	return best
+
+
+## A locked door a walk cannot open: not LOCKPICK, and not a KEYCARD door the walker holds a card for.
+func _progression_locked(c: CrewController, door: Door) -> bool:
+	if not door.locked or door.lock == Door.Lock.LOCKPICK:
+		return false
+	return door.lock != Door.Lock.KEYCARD or c.item_count(Door.KEYCARD_ITEM) <= 0
+
+
+## Open `door` the way a player does. Returns "" when it is open, else why not (a genuine block).
+func _open_door(c: CrewController, door: Door) -> String:
+	var tag: String = "door `%s` (%s, %s)" % [door.name, Door.Lock.keys()[door.lock], "locked" if door.locked else "unlocked"]
+	var comp: InteractableComponent = door.interactable
+	var why: String = "has no Interactable"
+	if comp != null:
+		why = await _use_door(c, door, comp)
+	return "" if why == "" else "%s %s" % [tag, why]
+
+
+func _use_door(c: CrewController, door: Door, comp: InteractableComponent) -> String:
+	var reason: StringName = comp.availability(c)
+	if reason == InteractableComponent.BLOCK_CASING and not c.masked:
+		await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)  # G hold, as a player masks up
+		await wait_physics_frames(2)
+		reason = comp.availability(c)
+		if not c.masked:
+			reason = &"mask-up hold did not mask"
+	if reason != InteractableComponent.BLOCK_NONE:
+		return "not usable: %s" % reason
+	if not await _aim_at(c, comp.global_position):
+		return "could not aim at its handle"
+	if _rt.interaction.aimed_component(c) != comp:
+		return "handle not aimed (%.1f m from the eye)" % c.eye_position().distance_to(comp.global_position)
+	var hold_s: float = comp.duration_for(c) + 0.5
+	await _inp.hold(&"interact", hold_s)  # F hold for the door's own time (lockpick 8 s)
+	await wait_physics_frames(3)
+	await _aim_pitch(c, 0.0)
+	return "" if door.is_open else "still closed after a %.1f s interact hold" % hold_s
+
+
+## A ladder end the walker stands at (same height; within 1.5 m flat, or 3 m when the stalled corner is a floor
+## above / below, i.e. the nav path takes the ladder's link).
+func _ladder_near(c: CrewController, corner: Vector3) -> Ladder:
+	var reach: float = 3.0 if absf(corner.y - c.global_position.y) > 1.5 else 1.5
+	var best: Ladder = null
+	var best_d: float = reach
+	for n: Node in _rt.map.find_children("*", "Ladder", true, false):
+		var lad: Ladder = n as Ladder
+		for m: Vector3 in [lad.bottom_position(), lad.top_position()]:
+			var d: float = Vector2(m.x - c.global_position.x, m.z - c.global_position.z).length()
+			if d < best_d and absf(m.y - c.global_position.y) < Ladder.GRAB_HEIGHT_M:
+				best = lad
+				best_d = d
+	return best
+
+
+## Climb `lad` the way a player does: mask up if needed, step onto its end marker, face it, hold forward.
+## Returns "" once the climb is done, else why not.
+func _use_ladder(c: CrewController, lad: Ladder) -> String:
+	if not c.masked:
+		await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)
+		await wait_physics_frames(2)
+	var up: bool = absf(lad.bottom_position().y - c.global_position.y) < absf(lad.top_position().y - c.global_position.y)
+	var marker: Vector3 = lad.bottom_position() if up else lad.top_position()
+	var grab: float = Tweak.interaction().ladder_grab_radius_m
+	var to: Vector3 = marker - c.global_position
+	if Vector2(to.x, to.z).length() > grab * 0.7:
+		await _inp.turn_to_yaw(c, atan2(-to.x, -to.z), 0.05, 2.0)
+		await _inp.walk_until(&"move_forward", func() -> bool:
+			var d: Vector3 = marker - c.global_position
+			return Vector2(d.x, d.z).length() < grab * 0.6 or lad.is_climbing(c.slot), 3.0)
+	if not lad.is_climbing(c.slot):
+		var face: Vector3 = lad.global_position - c.global_position
+		await _inp.turn_to_yaw(c, atan2(-face.x, -face.z), 0.05, 2.0)
+		await _inp.walk_until(&"move_forward", func() -> bool: return lad.is_climbing(c.slot), 2.0)
+	if not lad.is_climbing(c.slot):
+		return "ladder `%s` (%s): no climb started from (%.1f, %.1f, %.1f), end marker (%.1f, %.1f, %.1f), masked %s" % [
+			lad.name, "up" if up else "down", c.global_position.x, c.global_position.y, c.global_position.z,
+			marker.x, marker.y, marker.z, c.masked]
+	await wait_until(func() -> bool: return not lad.is_climbing(c.slot), lad.climb_time() + 2.0)
+	await wait_physics_frames(3)
+	return ""
+
+
+## Setup only: no NPC, no camera, no assault (see header).
+func _quiet_map() -> void:
+	_rt.isolate_npc(null)
+	for cam: SecurityCamera in SecurityCamera.cameras_in(_rt):
+		cam.get_parent().remove_child(cam)
+		cam.queue_free()
+	var dir: Node = _rt.service(G.SVC_DIRECTOR)
+	if dir != null:
+		dir.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+## Mouse-look at `p` (yaw, then pitch).
+func _aim_at(c: CrewController, p: Vector3) -> bool:
+	var to: Vector3 = p - c.eye_position()
+	if not await _inp.turn_to_yaw(c, atan2(-to.x, -to.z), 0.02, 2.0):
+		return false
+	return await _aim_pitch(c, atan2(to.y, Vector2(to.x, to.z).length()))
+
+
+## Mouse-look (vertical) until the crew's pitch is within 0.02 rad of `pitch`.
+func _aim_pitch(c: CrewController, pitch: float) -> bool:
+	var rpp: float = _inp.mouse_radians_per_px()
+	for _i: int in 12:
+		var err: float = pitch - c.look_pitch
+		if absf(err) <= 0.02:
+			return true
+		_inp.look(0.0, -err / rpp)  # +y (mouse down) lowers the pitch
+		await wait_physics_frames(6)
+	return absf(pitch - c.look_pitch) <= 0.02
+
+
+## `path` without consecutive points at the same spot (a teleport or a nav corner on the start point).
+func _dedupe(path: PackedVector3Array) -> PackedVector3Array:
+	var out: PackedVector3Array = PackedVector3Array()
+	for p: Vector3 in path:
+		if out.is_empty() or out[out.size() - 1].distance_to(p) > 0.05:
+			out.append(p)
+	return out
+
+
+func _flat_len(path: PackedVector3Array) -> float:
+	var s: float = 0.0
+	for i: int in range(1, path.size()):
+		s += Vector2(path[i].x - path[i - 1].x, path[i].z - path[i - 1].z).length()
+	return s
 
 
 ## Use points of gameplay prefabs (+ zone centres), greedy nearest-first from the player spawn.

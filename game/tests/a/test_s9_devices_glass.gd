@@ -154,8 +154,12 @@ func test_s9_3_drill_place_jam_fix_finish_opens_safe() -> void:
 		assert_true(ok, "drill progresses")
 		if dp.device_state() == DeviceRunner.State.JAMMED:
 			assert_eq(dp.interactable.kind, &"fix_drill")
+			assert_eq(dp.interactable.prompt_key, &"ui.prompt.fix_drill")
+			var place_prompt: StringName = dp.get(&"_place_prompt")
 			await _use(dp, Tweak.interaction().drill_fix_s)
 			fixes += 1
+			if dp.device_state() == DeviceRunner.State.RUNNING:
+				assert_eq(dp.interactable.prompt_key, place_prompt, "no stale 'fix the drill' prompt while running")
 	Engine.time_scale = 1.0
 	assert_eq(_of(&"device_jammed").size(), jams, "every rolled jam happened")
 	assert_eq(fixes, jams, "each jam fixed by the crew")

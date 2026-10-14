@@ -313,6 +313,8 @@ func nav_closest(p: Vector3) -> Vector3:
 	return NavigationServer3D.map_get_closest_point(_nav_map(), p)
 
 
+## All navigation layers on purpose: reachability is crew reachability, and a masked unburdened player can
+## climb ladders (layer "ladder", Ladder.NAV_LAYER) and use vents. Bag / police routes use layer 1 only.
 func nav_path(a: Vector3, b: Vector3) -> PackedVector3Array:
 	return NavigationServer3D.map_get_path(_nav_map(), a, b, true, 0xFFFFFFFF)
 

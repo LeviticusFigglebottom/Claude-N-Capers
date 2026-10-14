@@ -298,12 +298,19 @@ func _workshop() -> String:
 		var err5: String = await _smash_camera(c5)
 		if err5 != "":
 			return err5
+	# The jeweler works at the bench with his back to the door: a knife from behind is silent and, unlike a
+	# shout (which also puts the counter staff and customers down through the wall), leaves nobody to babysit.
 	for c: NpcBase in _civilians():
-		if p.flat_dist(c.global_position, Vector3(7.75, 0.0, 2.25)) < 3.5 and _civ_brain(c).mode != CivilianBrain.Mode.TIED:
-			await p.goto(Vector3(7.5, 0.0, 3.6), 0.4, 10.0, false, false)
-			var err: String = await _subdue(c)
-			if err != "":
-				return err
+		var cb: CivilianBrain = _civ_brain(c)
+		if p.flat_dist(c.global_position, Vector3(7.75, 0.0, 2.25)) < 3.5 and c.global_position.y < 2.0 \
+				and cb.mode != CivilianBrain.Mode.TIED:
+			var behind: Vector3 = c.global_position - _flat(c.look_forward()) * 1.0
+			await p.goto(p.stand_point(behind), 0.35, 10.0, false, false)
+			if not await _knife(c, 0.0) and c.is_alive():
+				var err: String = await _subdue(c)
+				if err != "":
+					return err
+	await _close_door(door)
 	await f.shot("workshop_open")
 	return ""
 
@@ -560,6 +567,15 @@ func _hunt(g: NpcBase, timeout_s: float) -> String:
 		if d <= 1.45 and absf(g.global_position.y - crew.global_position.y) < 1.0:
 			await _knife(g, 0.0)
 			continue
+		if absf(g.global_position.y - crew.global_position.y) < 1.5 and not _civ_watchers(g.global_position).is_empty():
+			# A civilian can see him: the kill (or his arrest of us) would happen in their view. Wait unseen.
+			if _hook_need():
+				await _hook()
+			elif not _civ_watchers(crew.global_position).is_empty() and safe_spot != Vector3.INF:
+				await p.goto(safe_spot, 0.4, 2.0)
+			else:
+				await f.wait_s(0.4)
+			continue
 		var goal: Vector3 = _via_stair(g.global_position - _flat(g.look_forward()) * 0.9)
 		await _stealth_step(p.stand_point(goal), 0.6)
 	p.quiet = false
@@ -726,8 +742,9 @@ func _civ_threat() -> NpcBase:
 		var want: bool = false
 		match b.mode:
 			CivilianBrain.Mode.IDLE, CivilianBrain.Mode.WANDER:
-				# Noticing us, or about to: looking our way within shout range (a shout beats a 1.5 s spot).
-				want = st.detection_value(c, crew.slot) > 0.3 or (d < 10.0 and _civ_watchers(crew.global_position).has(c))
+				# Noticing us (a preemptive shout at every civilian looking our way put so many down, through
+				# walls, that renewing them all became the job).
+				want = st.detection_value(c, crew.slot) > 0.3
 			CivilianBrain.Mode.RUN_TO_CALL, CivilianBrain.Mode.CALLING:
 				want = true
 		if want and d < best_d and p.has_los(c.global_position + Vector3(0.0, 1.0, 0.0), c):
@@ -895,6 +912,12 @@ func _subdue(c: NpcBase) -> String:
 		var tie: InteractableComponent = c.get_node_or_null(^"TieInteractable") as InteractableComponent
 		if tie != null:
 			await p.use(tie, 5.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED)
+	if b.mode == CivilianBrain.Mode.DOWN and v.y < 2.0 and v.z < 6.0:
+		# Down in the back of house: knife it (silent) rather than babysit a 45 s timer; bag it if it lies in
+		# the corridor.
+		await p.goto(p.stand_point(c.global_position), 1.1, 6.0, false, false)
+		if await _knife(c, 0.0):
+			await _bag_if_seen(c)
 	if c.is_alive() and b.mode != CivilianBrain.Mode.TIED and not downed.has(c):
 		downed.append(c)
 	return ""
@@ -913,7 +936,9 @@ func _mask_up() -> bool:
 
 ## Face the NPC's chest and swing the knife (charged when `charge_s` > 0). True when it died.
 func _knife(npc: NpcBase, charge_s: float = 1.05) -> bool:
-	await p.face(npc.global_position + Vector3(0.0, 1.1, 0.0), 0.04, 1.0)
+	var cb: CivilianBrain = _civ_brain(npc) if npc.role == &"civilian" else null
+	var low: bool = cb != null and (cb.mode == CivilianBrain.Mode.DOWN or cb.mode == CivilianBrain.Mode.TIED)
+	await p.face(npc.global_position + Vector3(0.0, 0.35 if low else 1.1, 0.0), 0.04, 1.0)
 	var nd: float = p.flat_dist(npc.global_position, crew.global_position)
 	for c: NpcBase in _civilians():
 		var to_c: Vector3 = c.global_position - crew.global_position

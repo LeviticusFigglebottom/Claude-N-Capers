@@ -1384,7 +1384,7 @@ func _build_nav_links(nav: NavigationRegion3D) -> void:
 	var link: NavigationLink3D = NavigationLink3D.new()
 	link.name = "FireEscapeLadderLink"
 	link.bidirectional = true
-	link.navigation_layers = 1
+	link.navigation_layers = 8  # Ladder.NAV_LAYER: climbers only (gate 2); still anchors the prune
 	link.start_position = Vector3(1.45, 0.0, -2.4)
 	link.end_position = Vector3(1.45, L.UPPER, -0.9)
 	_add(nav, link)

@@ -5035,7 +5035,7 @@ shape = SubResource("gh_130")
 [node name="SlabRoof" type="StaticBody3D" parent="Geometry/Building/Slabs" unique_id=100589]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 7.7, 6)
 collision_mask = 0
-metadata/surface = &"concrete"
+metadata/surface = &"plaster"
 
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Slabs/SlabRoof" unique_id=100590]
 shape = SubResource("gh_131")
@@ -10166,6 +10166,7 @@ ambient_mode = 0
 navigation_mesh = SubResource("gh_462")
 
 [node name="FireEscapeLadderLink" type="NavigationLink3D" parent="Navigation" unique_id=101769]
+navigation_layers = 8
 start_position = Vector3(1.45, 0, -2.4)
 end_position = Vector3(1.45, 4.2, -0.9)
 
