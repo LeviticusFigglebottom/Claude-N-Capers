@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 04:30: **round 74 ON ORIGIN**: env/b-content (D-106 skill-boosted armory/loadout stats + With Skills/Base toggle). b targeted green. KNOWN RED since round 72: integration test_p3_loud test_01 crew wipe (deterministic, 3/3); bisecting.
 - 2026-10-14 04:15: **round 73 ON ORIGIN**: env/a-core (bulwark pierce recursion fix: PIERCED_KEY exclusion + MAX_PIERCES 3, stacked-shield regression test; auto_loud stops toggling doors near markers). l4_5/l3_4/po5_bulwark/l3_6 green.
 - 2026-10-14 04:00: **round 72 ON ORIGIN** (c49a3a08): env/a-core, env/c-worlds (surface ids on kits/props/maps, impact audio cues), env/b-content, env/p-play. a/c targeted green; b/p/int tail still running at push.
 - 2026-10-14 03:20: **round 71 ON ORIGIN**: env/a-core (QC-60 markers re-resolve on data updates; CrewWeapons.equip(redraw)), env/p-play (carry tilt -5°, re-equip on pickup, bag_can_jump removed), env/c-worlds (gallery_night_floors_ascii.py --check, camera_spine/screen validators, doc fixes). a/p/P1 slice green; slice_b + readiness still running at push.
