@@ -226,6 +226,7 @@ func _apply(from_slot: int, kind: StringName, data: Dictionary) -> bool:
 			if ok:
 				st["seed"] = int(data["seed"])
 				started = st
+				ready = {}  # C11: a Start spends every ready flag; the next heist needs a fresh Ready Up from each human
 		MSG_KICK:
 			var target: Variant = data.get("slot")
 			ok = _is_int(target) and is_human(int(target)) and int(target) != host_slot
@@ -281,7 +282,8 @@ static func settings_data(policy: StringName) -> Dictionary:
 
 ## C11: the crew is back in the kept lobby after a heist. Start is "once per heist", not once per session:
 ## clears the launch order and the previous job's plan votes; the contract, crew and summaries stay
-## (ready flags are cleared by each peer's own set_ready(false)).
+## (the ready flags were spent by the Start itself, so a peer still on its payday cannot be started into the
+## next heist; the 2-window two-heist run caught that).
 func end_round() -> void:
 	started = {}
 	vote_log = []
