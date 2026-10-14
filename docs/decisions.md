@@ -822,3 +822,16 @@ PD2 briefings stay short and the product owner's first complaint was UI clutter.
 behaviour), `briefing_loud_key` (one "If it goes loud: …" line) and `briefing_optional` (listed under an "Optional"
 sub-head). B builds the briefing side and sets Gallery Night's values; existing heists opt in where their lists are
 long (values sent to whoever owns each def).
+
+## D-110: Gallery Night build starts now; freeze lifted for new content (2026-10-14, LEAD; product owner)
+The product owner asked for the other environments to work on new content instead of waiting on gate 2 (ND
+`auto_loud`). Gates 1 (gh_loud) and 3 (gh_stealth) passed; gate 2 keeps running on ENV A's clean box at a fixed commit,
+so trunk merges cannot disturb it. Its failures since attempt 15 have been harness or crew-AI issues, now fixed (L6.1).
+From now on:
+- **Lifted:** Gallery Night work per next_heist.md §6 (GN-L1, GN-C1/C2, GN-D1, GN-A1, GN-B1, GN-P1) and the D-103 rulings;
+  `env/b-gallery-night` merged; C applies `docs/levels/gallery_night/g1_skeleton.patch` (GN-C1); ENV D is re-activated
+  for character/animation work (art-gap brief in docs/status/env_c.md §"Art gaps" items marked [D], plus GN cast needs).
+- **Still guarded:** changes that alter shipped-heist behaviour (GH/ND/DB/SL gameplay, AI, combat, net) keep the
+  pre-merge targeted tests and must not regress p3_loud / PO-5 flows; ND gate 2 result is still reported and any real
+  game bug it finds outranks GN work.
+- ENV A runs gate 2 in the background while starting the D-103 §6 system groundwork (each API with a unit test).
