@@ -19,7 +19,8 @@ const WEAPON: Array[String] = [
 const EMISSIVE: Array[String] = ["emissive_reticle_red", "emissive_pilot_flame"]
 ## PO-13: animated water, a ShaderMaterial on shaders/water.gdshader with one world-space ripple texture.
 const WATER: Array[String] = ["water_harbour_night"]
-## D-038: black polymers, rubber and black paint/anodize may sit at 0.02-0.04 linear albedo.
+## D-038, lifted by the lead's round 188 weapon ruling (FP read pure black): black polymers, rubber and black anodize
+## sit at 0.04-0.10 linear albedo: dark, but above the 0.02-0.035 band that read as a silhouette.
 const BLACKS: Array[String] = ["polymer_black", "polymer_stipple", "rubber_black", "alu_anodized_black"]
 const TRIM_TABLE: String = "res://assets/textures/trim_interior/trim_table.json"
 
@@ -193,7 +194,7 @@ func test_black_materials_read_black() -> void:
 		if mat == null:
 			continue
 		var lum: float = _mean_linear_luminance(mat.albedo_texture)
-		assert_true(lum >= 0.018 and lum <= 0.035, "%s mean albedo luminance %.4f not in black band" % [id, lum])
+		assert_true(lum >= 0.04 and lum <= 0.10, "%s mean albedo luminance %.4f not in the dark-readable band" % [id, lum])
 	var other: ORMMaterial3D = load(MATERIAL_DIR + "plastic_matte.tres") as ORMMaterial3D
 	if other != null:
 		assert_true(_mean_linear_luminance(other.albedo_texture) >= 0.038, "non-black materials keep the 0.04 floor")
