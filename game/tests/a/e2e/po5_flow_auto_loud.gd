@@ -20,6 +20,11 @@ const CARRY_LEG_S: float = 4.0
 ## Give up carrying one bag to the van after this long (s).
 const CARRY_LIMIT_S: float = 300.0
 
+## Objectives completed by walking near the marker (no interaction).
+const AREA_OBJECTIVES: Array[StringName] = [&"find_canvases"]
+## A marker with nothing usable for this long (s) yields to the other active markers.
+const STALL_SKIP_S: float = 30.0
+
 var f: Node = null
 var p: Po5Pilot = null
 var rt: HeistRuntime = null
@@ -103,11 +108,18 @@ func step() -> void:
 	await p.hold_position(3.0)
 
 
-## Prefer objectives that are not the generic secure/escape when something else is still active.
+## Prefer objectives that are not the generic secure/escape when something else is still active. Walk-near (area)
+## objectives (GN find_canvases) and markers that stalled STALL_SKIP_S with nothing usable come last, so the
+## flow moves on to what it can act on (GN probe: stuck at a found, already cut canvas).
 func _pick(markers: Array[Dictionary]) -> Dictionary:
 	for m: Dictionary in markers:
-		if not (StringName(m["id"]) in [&"secure", &"escape", &"casing"]):
+		var mid: StringName = StringName(m["id"])
+		if not (mid in [&"secure", &"escape", &"casing"] or mid in AREA_OBJECTIVES) \
+				and float(_stalls.get(mid, 0.0)) < STALL_SKIP_S:
 			return m
+	for m1: Dictionary in markers:
+		if not (StringName(m1["id"]) in [&"secure", &"escape", &"casing"]):
+			return m1
 	for m2: Dictionary in markers:
 		if StringName(m2["id"]) == &"escape":
 			return m2
