@@ -89,6 +89,13 @@ func lib_mat(id: String) -> Material:
 func _site_mat(id: String) -> Material:
 	if _site_cache.has(id):
 		return _site_cache[id]
+	if id == "river":
+		# PO-13: the Kestrel (160 m below, visual only) uses the library night water, duplicated per map.
+		# No glints: the river sits in the fog far below every viewpoint; the sheen and sky reflection carry it.
+		var w: ShaderMaterial = (load(MAT_DIR + "water_harbour_night.tres") as ShaderMaterial).duplicate() as ShaderMaterial
+		w.resource_name = "sl_river_water"
+		_site_cache[id] = w
+		return w
 	var m: StandardMaterial3D = StandardMaterial3D.new()
 	m.resource_name = "sl_grey_" + id
 	m.set_meta(&"greybox", true)
