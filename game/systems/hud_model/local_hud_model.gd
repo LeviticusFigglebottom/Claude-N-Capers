@@ -194,7 +194,7 @@ var body_bags: int = 0
 ## {} = none, else {"loot_id": StringName, "weight": int (Enums.LootWeight)}
 var carried_bag: Dictionary = {}
 # --- interaction_changed
-## {} = no prompt, else {"text_key": StringName, "args": Dictionary, "progress": float 0..1,
+## {} = no prompt, else {"text_key": StringName, "kind": StringName, "args": Dictionary, "progress": float 0..1,
 ## "blocked_reason": StringName (strings key or &"")}
 var interaction: Dictionary = {}
 # --- detection_changed
@@ -464,6 +464,7 @@ func _poll_interaction(c: CrewController, slot: int) -> void:
 	var prompt: StringName = &""
 	var args: Dictionary = {}
 	var prog: float = 0.0
+	var kind: StringName = &""
 	var blocked: StringName = &""
 	var isys: InteractionSystem = _runtime.interaction if _runtime != null else null
 	if isys == null and c != null:
@@ -480,6 +481,7 @@ func _poll_interaction(c: CrewController, slot: int) -> void:
 				blocked = comp.availability(c)
 		if comp != null and is_instance_valid(comp):
 			prompt = comp.prompt_key
+			kind = comp.kind  # P PO-pass #13: the panel names the verb for a generic prompt
 			var a: Variant = comp.get(&"prompt_args")
 			if a is Dictionary:
 				args = (a as Dictionary).duplicate(true)
@@ -495,7 +497,7 @@ func _poll_interaction(c: CrewController, slot: int) -> void:
 		blocked = SUSPICIOUS_PROMPT_KEY
 	var out: Dictionary = {}
 	if prompt != &"" or blocked != &"" or prog > 0.0:
-		out = {"text_key": prompt, "args": args, "progress": prog, "blocked_reason": blocked}
+		out = {"text_key": prompt, "kind": kind, "args": args, "progress": prog, "blocked_reason": blocked}
 	_assign(&"interaction", out)
 
 
