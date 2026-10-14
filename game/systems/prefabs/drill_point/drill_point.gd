@@ -14,6 +14,9 @@ enum Device { DRILL, THERMAL, SAW }
 
 ## PO-12: catalog drill device under G.PROPS_DIR.
 const DEFAULT_DEVICE: String = "drill/prop_drill_device.tscn"
+## Block reasons shown under the prompt (strings.csv, ENV B).
+const BLOCK_RUNNING: StringName = &"ui.blocked.device_running"
+const BLOCK_DONE: StringName = &"ui.blocked.device_done"
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/drill_point/drill_point_placeholder.tscn")
 
 @export var device: Device = Device.DRILL
@@ -127,10 +130,11 @@ func _exit_tree() -> void:
 		runner.shutdown()
 
 
+## P PO-pass #2: never the reasonless "Can't do that right now" (ui.blocked.state) while the device runs / is done.
 func _availability(_crew: Node) -> StringName:
 	if runner == null or runner.state == DeviceRunner.State.IDLE or runner.state == DeviceRunner.State.JAMMED:
 		return InteractableComponent.BLOCK_NONE
-	return InteractableComponent.BLOCK_STATE
+	return BLOCK_RUNNING if runner.state == DeviceRunner.State.RUNNING else BLOCK_DONE
 
 
 func _on_completed(crew: Node) -> void:

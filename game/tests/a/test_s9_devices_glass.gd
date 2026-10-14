@@ -97,6 +97,7 @@ func test_po12_drill_device_visible_spins_and_jams() -> void:
 	dp.runner.place(0, dp.effective_duration())
 	await wait_frames(2)
 	assert_true(dp.device_node != null and dp.device_node.is_visible_in_tree(), "placed: device visible")
+	assert_eq(dp.interactable.availability(null), DrillPoint.BLOCK_RUNNING, "running: a named reason, not ui.blocked.state")
 	var meshes: Array[Node] = dp.device_node.find_children("*", "MeshInstance3D", true, false) if dp.device_node else []
 	assert_true(meshes.size() >= 2, "device has visible meshes (%d)" % meshes.size())
 	var bit: Node3D = dp.device_node.find_child("Bit", true, false) as Node3D if dp.device_node else null
@@ -109,6 +110,7 @@ func test_po12_drill_device_visible_spins_and_jams() -> void:
 	dp.runner.jams.append(dp.runner.progress)
 	await wait_physics_frames(2)
 	assert_eq(dp.device_state(), DeviceRunner.State.JAMMED, "jammed")
+	assert_eq(dp.interactable.availability(null), InteractableComponent.BLOCK_NONE, "jammed: fixable")
 	var mark: Node3D = dp.device_node.find_child("JamMark", true, false) as Node3D if dp.device_node else null
 	assert_true(mark != null and mark.visible, "jam mark shows while jammed")
 	if bit != null:
@@ -121,6 +123,7 @@ func test_po12_drill_device_visible_spins_and_jams() -> void:
 	dp.runner.progress = 0.999
 	await wait_seconds(0.3)
 	assert_eq(dp.device_state(), DeviceRunner.State.DONE, "done")
+	assert_ne(dp.interactable.availability(null), InteractableComponent.BLOCK_STATE, "done: no reasonless block")
 	await wait_frames(2)
 	assert_true(dp.device_node == null, "device removed when done")
 	var plain: DrillPoint = _drill(Vector3(3, 1, -4), 30.0)
