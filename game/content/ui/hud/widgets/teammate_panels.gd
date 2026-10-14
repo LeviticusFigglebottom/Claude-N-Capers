@@ -13,6 +13,10 @@ var badges: Dictionary = {}
 ## slot -> heister id (Hud.set_crew_heisters); unknown slots use the model's name.
 var heisters: Dictionary = {}
 
+## Row key (slots + heisters) the rows were built for; slot -> {heister, name, armor, health, info, badge}.
+var _rows_key: String = "-"
+var _rows: Dictionary = {}
+
 
 func build() -> void:
 	list_box = UiBuild.vbox(6)
@@ -24,13 +28,26 @@ func watched_signals() -> Array[StringName]:
 
 
 func refresh() -> void:
-	for c: Node in list_box.get_children():
-		list_box.remove_child(c)
-		c.queue_free()
-	name_labels.clear()
-	badges.clear()
-	for m: Dictionary in prop(&"crew", []) as Array:
-		list_box.add_child(_panel(m))
+	var crew: Array = prop(&"crew", []) as Array
+	# Perf (lead, A's gh_stealth run): crew_changed fires whenever a teammate's health or bleedout ticks, so
+	# rows are rebuilt only when the crew's slots / heisters change and updated in place otherwise.
+	var sig: PackedStringArray = PackedStringArray()
+	for m: Dictionary in crew:
+		var slot: int = int(m.get("slot", -1))
+		sig.append("%d:%s" % [slot, heisters.get(slot, &"")])
+	var key: String = "%d|%s" % [tweak.get_instance_id() if tweak != null else 0, ",".join(sig)]  # a palette swap rebuilds
+	if key != _rows_key:
+		_rows_key = key
+		for c: Node in list_box.get_children():
+			list_box.remove_child(c)
+			c.queue_free()
+		name_labels.clear()
+		badges.clear()
+		_rows.clear()
+		for m: Dictionary in crew:
+			list_box.add_child(_panel(m))
+	for m: Dictionary in crew:
+		_update_row(m)
 
 
 ## PO-4 frameless row (lead note 1): the heister's colour as a thin edge, the heister's name (the model
@@ -48,16 +65,41 @@ func _panel(m: Dictionary) -> PanelContainer:
 	var v: VBoxContainer = UiBuild.vbox(3)
 	row.add_child(v)
 	var name_label: Label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD))
-	name_label.text = Heisters.display_name(heister) if heister != &"" else String(m.get("name", ""))
 	name_label.add_theme_font_size_override(&"font_size", INFO_FONT_SIZE)
 	v.add_child(name_label)
 	name_labels[slot] = name_label
 	var armor_bar: ProgressBar = UiBuild.bar(tweak.armor_color, Vector2(160, 3))
-	armor_bar.value = float(m.get("armor_frac", 0.0))
 	v.add_child(armor_bar)
 	var health_bar: ProgressBar = UiBuild.bar(tweak.health_color, Vector2(160, 5))
-	health_bar.value = float(m.get("health_frac", 0.0))
 	v.add_child(health_bar)
+	var info_label: Label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD))
+	# PQ-B-14: INFO_FONT_SIZE keeps >= 14 px at 720p; wraps instead of spilling out of the row.
+	info_label.add_theme_font_size_override(&"font_size", INFO_FONT_SIZE)
+	info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info_label.custom_minimum_size = Vector2(200, 0)
+	v.add_child(info_label)
+	var badge: CrewStateBadge = CrewStateBadge.new()
+	badge.danger_color = tweak.low_health_color
+	badge.ally_color = tweak.ally_color
+	row.add_child(badge)
+	badges[slot] = badge
+	var p: PanelContainer = UiBuild.panel(row, UiBuild.HUD_PANEL)
+	p.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	_rows[slot] = {"heister": heister, "name": name_label, "armor": armor_bar, "health": health_bar, "info": info_label,
+		"badge": badge}
+	return p
+
+
+## Writes crew entry `m` into its row (texts / values only change when they differ).
+func _update_row(m: Dictionary) -> void:
+	var slot: int = int(m.get("slot", -1))
+	var r: Dictionary = _rows.get(slot, {}) as Dictionary
+	if r.is_empty():
+		return
+	var heister: StringName = StringName(r["heister"])
+	_set_text(r["name"] as Label, Heisters.display_name(heister) if heister != &"" else String(m.get("name", "")))
+	(r["armor"] as ProgressBar).value = float(m.get("armor_frac", 0.0))
+	(r["health"] as ProgressBar).value = float(m.get("health_frac", 0.0))
 	var info: Array[String] = []
 	var downs: int = int(m.get("downs_left", 0))
 	var st: int = int(m.get("state", Enums.CrewState.NORMAL))
@@ -73,21 +115,15 @@ func _panel(m: Dictionary) -> PanelContainer:
 	var loot: StringName = StringName(m.get("carried_loot_id", &""))
 	if loot != &"":
 		info.append(UiText.t(&"ui.hud.carrying", {"loot": UiText.t(UiText.item_key(loot))}))
-	if not info.is_empty():
-		var info_label: Label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD))
-		info_label.text = "  ".join(info)
-		# PQ-B-14: INFO_FONT_SIZE keeps >= 14 px at 720p; wraps instead of spilling out of the row.
-		info_label.add_theme_font_size_override(&"font_size", INFO_FONT_SIZE)
-		info_label.add_theme_color_override(&"font_color", tweak.low_health_color if st != Enums.CrewState.NORMAL else UiTokens.PAPER_DIM)
-		info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		info_label.custom_minimum_size = Vector2(200, 0)
-		v.add_child(info_label)
-	var badge: CrewStateBadge = CrewStateBadge.new()
-	badge.danger_color = tweak.low_health_color
-	badge.ally_color = tweak.ally_color
-	badge.set_row(m)
-	row.add_child(badge)
-	badges[slot] = badge
-	var p: PanelContainer = UiBuild.panel(row, UiBuild.HUD_PANEL)
-	p.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	return p
+	var info_label: Label = r["info"] as Label
+	_set_text(info_label, "  ".join(info))
+	info_label.visible = not info.is_empty()
+	var col: Color = tweak.low_health_color if st != Enums.CrewState.NORMAL else UiTokens.PAPER_DIM
+	if info_label.get_theme_color(&"font_color") != col:
+		info_label.add_theme_color_override(&"font_color", col)
+	(r["badge"] as CrewStateBadge).set_row(m)
+
+
+static func _set_text(l: Label, t: String) -> void:
+	if l.text != t:
+		l.text = t
