@@ -116,6 +116,24 @@ static var _gen: int = 0
 @export var muzzle_light_color: Color = Color(1.0, 0.78, 0.45)
 @export var muzzle_light_suppressed_mult: float = 0.15
 
+@export_group("Sway / breathing (PO-13)")
+## PD2 vel_overshot (fpcameraplayerbase.lua _calculate_soft_velocity_overshot, playertweakdata stances.default):
+## the weapon lags behind look motion. Target = sign x (|look speed| / sway_full_dps)^1.5 x max (deg); the target
+## steps toward it at sway_target_rate_dps; the applied sway follows at lerp(3, 180, |diff| / 40) deg/s. Roll = -yaw.
+## Hip (standard) max yaw 6 / pitch 10, ADS (steelsight) 4 / 2. 0 max = off.
+@export var sway_yaw_max_deg: float = 6.0
+@export var sway_pitch_max_deg: float = 10.0
+@export var sway_ads_yaw_max_deg: float = 4.0
+@export var sway_ads_pitch_max_deg: float = 2.0
+## Look speed (deg/s) that reaches the full sway.
+@export var sway_full_dps: float = 300.0
+@export var sway_target_rate_dps: float = 120.0
+## PD2 stances.default shakers.breathing amplitude: hip 0.3, crouched 0.25, ADS 0.025 (deg); slow idle sway.
+@export var breathing_amp_deg: float = 0.3
+@export var breathing_crouched_amp_deg: float = 0.25
+@export var breathing_ads_amp_deg: float = 0.025
+@export var breathing_hz: float = 0.22
+
 @export_group("Weapon FX (D-105)")
 ## impact_fx.md §4 (ENV P): first-person muzzle burst, smoke, shells, tracer origin, per-shot viewmodel kick.
 ## ENV C's library scenes (game/world/vfx/) replace the built-in placeholders when set.
