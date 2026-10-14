@@ -79,6 +79,10 @@ const CORNICE_ROOMS: Array[String] = ["G5", "G6"]
 ## (gh_mesh.tile_groups: the Compatibility renderer's 8-lights-per-mesh limit). Visual only; colliders and navmesh unchanged.
 const SLAB_TILE: float = 6.0
 const TILED_GROUPS: Array[String] = ["Interior", "Shell", "Street"]
+## Wall faces longer than WALL_TILE_MIN_RUN of these groups go to 6 m x 2 m tiles per wall plane (gh_mesh.wall_tile_groups);
+## shorter ones (door reveals, jambs, ends) stay merged. GH stays under ~1,000 MeshInstances with every wall run tiled.
+const WALL_TILED_GROUPS: Array[String] = ["Interior", "Shell"]
+const WALL_TILE_MIN_RUN: float = 1.0
 
 var acc: RefCounted = M.new()
 var _mats: Dictionary = {}
@@ -89,6 +93,8 @@ var _walls: Array[Array] = []
 func setup() -> void:
 	for g: String in TILED_GROUPS:
 		acc.tile_groups[g] = SLAB_TILE
+	for g: String in WALL_TILED_GROUPS:
+		acc.wall_tile_groups[g] = WALL_TILE_MIN_RUN
 	for id: String in LIBRARY:
 		var m: Material = load(MAT_DIR + id + ".tres") as Material
 		_mats[id] = m
