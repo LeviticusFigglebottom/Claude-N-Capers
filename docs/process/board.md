@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 08:00: **round 87 ON ORIGIN**: env/p-play 11d47b5f (G1 traversal harness PTraversal: gap/throw_bag/ladder/carry, real input). p g1_traversal 5/5 green. Open (P): re-verify test_pp_p12_door_snag after door swing.
 - 2026-10-14 07:50: **round 86 ON ORIGIN**: env/c-worlds c3b64dc0 (GH break-room WindowLink removed: unpassable 0.9 m sill caused the U1 window stall). glasshouse map + validate_level green. QC-61 ruled (see Open questions).
 - 2026-10-14 07:40: gate 1 re-confirmed: gh_loud PASS on the door-swing build (seed 1791914030; PO-6 swing, PO-8 shot_fx+VfxDirector, surfaces, ladder layer, pierce fix; safe 182 s, bags 253/295, Payday → hub). ND loud attempt 5 started.
 - 2026-10-14 07:35: **round 85 ON ORIGIN**: env/p-play d1f6f732 (FP uses C's MuzzleFlash/tracer scenes with MIX materials; gunplay_capture tool: in-heist windowed check, no bit1 doubling) + LEAD G.VFX_DIR hotfix (banned hard paths). p d105, c vfx 20, a fp_viewmodel green. Six-class sheet pending (P). Real-GPU perf probe for impact_fx §3 1.5 ms still open.
