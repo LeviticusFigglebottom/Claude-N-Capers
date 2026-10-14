@@ -46,6 +46,9 @@ const HINT_CLIPS: Dictionary = {
 	&"desk_work": &"desk_work", &"phone_seated": &"phone_seated", &"sit_chair_watch": &"sit_chair_watch",
 	&"mop": &"mop", &"sit_bed_read": &"sit_bed_read", &"mug": &"mug_idle", &"idle_thug": &"idle_thug",
 	&"mug_walk": &"mug_idle",
+	# characters.md v1.9 (D-103, Gallery Night): inspect a hung work, cower standing / seated, walk texting.
+	&"curator_inspect": &"curator_inspect", &"inspect": &"curator_inspect", &"cower_stand": &"cower_stand",
+	&"cower_seated": &"cower_seated", &"text": &"phone_call", &"walk_text": &"phone_call",
 	# Brain / patrol-point aliases.
 	&"phone": &"phone_call", &"call": &"phone_call", &"sit": &"sit_chair",
 	&"queue": &"idle", &"lean": &"lean_wall", &"check_door": &"investigate_look", &"down": &"lie_down",
@@ -54,6 +57,7 @@ const HINT_CLIPS: Dictionary = {
 ## Clips that win over locomotion (the body holds a pose).
 const POSE_CLIPS: Array[StringName] = [
 	&"tied", &"kneel_cuffed", &"lie_down", &"cower", &"hands_up", &"surrender", &"downed", &"tased",
+	&"cower_stand", &"cower_seated",
 ]
 ## Special actions held while the hint lasts: they win over one-shots, locomotion and aim (the brain
 ## stands the body still for them).
@@ -74,6 +78,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"desk_work": &"desk_type", &"phone_seated": &"phone_call", &"sit_chair_watch": &"sit_chair", &"mop": &"browse",
 	&"sit_bed_read": &"sit_chair", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
 	&"rappel": &"climb_ladder", &"climb_ladder": &"idle",
+	&"curator_inspect": &"browse", &"cower_stand": &"cower", &"cower_seated": &"cower", &"walk_text": &"walk",
 }
 ## EnemyDef.params key: the unit's own walk clip (Bulwark shield_walk, Wrecker dozer_walk), played instead
 ## of walk while moving at walking speed (above it: run / sprint).
@@ -406,6 +411,8 @@ func _state_clip() -> StringName:
 			out = &"lie_down" if _npc.role == &"civilian" else &"hands_up"
 		Enums.AlertState.PANICKED:
 			out = &"cower" if horizontal_speed() <= AnimTweak.data().move_threshold_mps else &""
+			if out == &"cower" and CivilianBrain.SEATED_ACTIVITIES.has(StringName(_npc.spawn_info.get("idle_activity", ""))):
+				out = &"cower_seated"  # client approximation: a seated civilian that has not run
 	return out
 
 
@@ -447,6 +454,8 @@ func _special_locomotion(speed: float, tw: AnimTweak) -> StringName:
 			out = &"sprint"
 	elif _npc != null and _hint() == &"mug_walk":
 		out = &"mug_carry_walk"  # D-069: walking with a mug, speed_scale = v / 1.3
+	elif _npc != null and _hint() == &"walk_text":
+		out = &"walk_text"  # D-103: walking while texting (characters.md v1.9, 1.2 m/s)
 	elif _npc != null and _npc.role == &"civilian" and (
 			_npc.alert_state == Enums.AlertState.PANICKED or _hint() == &"run" or _hint() == &"flee"):
 		out = &"flee"

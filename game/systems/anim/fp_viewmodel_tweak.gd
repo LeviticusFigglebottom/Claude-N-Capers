@@ -48,7 +48,9 @@ static var _gen: int = 0
 @export_group("Left hand IK (D-069, characters.md v1.7)")
 ## The FP left hand IKs (TwoBoneIK3D upper_arm.L -> forearm.L -> hand.L) to the weapon model's `LeftHandIK`
 ## marker while the clip leaves the left hand on the gun (not during reload / swap, nor for these sets).
-@export var left_hand_ik_skip_sets: Array[StringName] = [&"bow", &"akimbo"]
+## Pistol / revolver (ENV D 2026-10-14): the clip's authored support grip wraps the gun; the IK onto the side point left
+## the fingers sticking out flat beside the slide.
+@export var left_hand_ik_skip_sets: Array[StringName] = [&"bow", &"akimbo", &"pistol", &"revolver"]
 ## Elbow pole in skeleton space, relative to upper_arm.L (outward / down) ◇.
 @export var left_hand_pole_offset: Vector3 = Vector3(-0.35, -0.45, 0.15)
 ## hand.L origin (wrist) relative to the LeftHandIK marker (palm contact), in marker space: measured from

@@ -3,6 +3,13 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14: seated deaths (D-110, lead-approved)
+- `death_seated_slump` (48 f, impact@22) and `death_seated_fall` (60 f, impact@34) in char_anim_humanoid, built in
+  `_anim_d304.py`; SOURCE `seated_deaths` + `death_end_poses`. Both start from desk_work frame 0 on the npc chair and the
+  root never moves. Slump: head and right forearm on the desk top, hips on the seat. Fall: tips off the chair's left side
+  onto the floor (hips 0.5 m, head 1.1 m left), clear of the desk top. test_anims `_check_seated_deaths` (in
+  test_d304_polish_set). Windowed Godot evidence: `_review/seated_deaths_windowed.png`. ENV A picks the clip (lead routed).
+
 ## 2026-10-14: skirt fix, FP pistol left hand
 - Skirt (`_npc.skirt`; bank_officer, npc_bank_teller, npc_bank_night_manager): the thigh weighting ramps in by
   mid-skirt (0.97 at the hem, was 0.85 reached only at the hem), centre mix 0.03, clearance 15 mm. No more thigh

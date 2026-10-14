@@ -10,6 +10,7 @@ clip_speeds = {
 &"run_r": 3.5,
 &"carry_bag_walk": 2.4,
 &"mug_carry_walk": 1.3,
+&"walk_text": 1.2,
 &"crouch_walk": 1.5,
 &"dozer_walk": 1.6,
 &"flee": 4.0,

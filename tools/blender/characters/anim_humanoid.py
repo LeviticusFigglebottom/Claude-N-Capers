@@ -160,6 +160,10 @@ CLIPS = {
     "death_back_b": {"frames": 60, "loop": False, "speed": 0.0, "priority": 6,
                      "events": {"step_r": 12, "step_l": 21, "impact": 44}},
     "death_side": {"frames": 60, "loop": False, "speed": 0.0, "priority": 6, "events": {"impact": 36}},
+    # seated deaths (D-110, Gallery Night): from desk_work's chair; slump = onto the desk top (`impact` = head on
+    # the desk, root and hips stay on the seat), fall = off the chair to the left onto the floor (`impact`)
+    "death_seated_slump": {"frames": 48, "loop": False, "speed": 0.0, "priority": 6, "events": {"impact": 22}},
+    "death_seated_fall": {"frames": 60, "loop": False, "speed": 0.0, "priority": 6, "events": {"impact": 34}},
     # prone bleed-out drag crawl, the root moving forward (-Z) at `speed`; Wrecker heavy stomp at the Wrecker's
     # advance speed (1.8 m/s on its 1.88 m body = 1.7 m/s native), a step every wrecker_step_interval_s (0.55 s)
     "downed_crawl": {"frames": 60, "loop": True, "speed": 0.3, "priority": 6},
