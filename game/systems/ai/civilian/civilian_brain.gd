@@ -2,7 +2,11 @@
 ## Rows: S3.1, S3.8, S6.4 (restrained stimulus), S7.1, S7.2, S7.4, S7.5, S11.2, D-016.
 ##
 ## CALM (Mode IDLE/WANDER): idle activity from `spawn_info.idle_activity` -> `anim_hint`; civilians
-##   whose activity allows it wander between civilian/staff PatrolPoints (stream &"civilians").
+##   whose activity allows it wander between civilian/staff PatrolPoints (stream &"civilians"):
+##   customers between public `civilian` points, staff between the `staff` points of their own area
+##   (PO-5, CivilianTargets.wander_options).
+## PO-5 stall: WANDER / RUN_TO_CALL that makes no progress (civilian_walk_stall_*) re-paths once, then gives
+##   the target up (wander: back to IDLE, that point skipped next time; call: next call point or flee).
 ## PANICKED: triggered by crew_spotted, a stimulus/noise whose civilian reaction is &"panic"
 ##   (StealthTweak.stimuli / noise_reactions), or going LOUD (S11.2).
 ##   Stealth: run to the cheapest of phone / alarm button / call point / alive guard
@@ -56,6 +60,14 @@ var _alerted_stimulus_id: int = 0
 var _restrained_stimulus_id: int = 0
 var _flee_stall_t: float = 0.0
 var _flee_stall_pos: Vector3 = Vector3.ZERO
+## PO-5 walk stall (WANDER / RUN_TO_CALL).
+var _walk_stall_t: float = 0.0
+var _walk_stall_pos: Vector3 = Vector3.ZERO
+var _walk_stalls: int = 0
+## PO-5: wander profile (CivilianTargets.wander_profile), computed on the first wander.
+var _wander_profile: Dictionary = {}
+## PO-5: the wander point / call target given up after a stall (skipped by the next pick).
+var _failed_target: Node = null
 
 
 func _ready() -> void:
@@ -250,11 +262,15 @@ func _pick_call_target() -> bool:
 	var best_cost: float = INF
 	if _targets != null:
 		for p: Dictionary in _targets.call_points():
+			if p["node"] == _failed_target:
+				continue
 			var c: float = _targets.path_cost(from, p["position"])
 			if c < best_cost:
 				best_cost = c
 				best = {"kind": KIND_POINT, "node": p["node"], "position": p["position"], "reason": p["reason"]}
 	for g: Node3D in _alertable_guards():
+		if g == _failed_target:
+			continue
 		var c: float = _targets.path_cost(from, g.global_position) if _targets != null else from.distance_to(g.global_position)
 		if c < best_cost:
 			best_cost = c
@@ -266,6 +282,7 @@ func _pick_call_target() -> bool:
 	mode = Mode.RUN_TO_CALL
 	anim_hint = &"run"
 	_retarget_timer = RETARGET_S
+	_reset_walk_stall()
 	if _motor != null:
 		_motor.go_to(best["position"], Tweak.stealth().civilian_run_speed)
 	return true
@@ -285,6 +302,12 @@ func _alertable_guards() -> Array[Node3D]:
 func _tick_run(delta: float) -> void:
 	var node: Node3D = call_target.get("node") as Node3D
 	if node == null or not is_instance_valid(node) or not node.is_inside_tree():
+		if not _pick_call_target():
+			_flee()
+		return
+	if _tick_walk_stall(delta, Tweak.stealth().civilian_run_speed):
+		_failed_target = node
+		call_target = {}
 		if not _pick_call_target():
 			_flee()
 		return
@@ -380,6 +403,37 @@ func _tick_flee_stall(delta: float) -> void:
 		_cower()
 
 
+func _reset_walk_stall() -> void:
+	_walk_stall_t = 0.0
+	_walk_stall_pos = _npc.global_position
+	_walk_stalls = 0
+
+
+## PO-5: true when the walk to the current target has stalled twice (it re-paths after the first stall:
+## blocked by a body, wedged on a corner). Holding at a door that is opening is not a stall.
+func _tick_walk_stall(delta: float, move_speed: float) -> bool:
+	if _motor == null or _motor.waiting_door != null:
+		_walk_stall_t = 0.0
+		_walk_stall_pos = _npc.global_position
+		return false
+	var tw: StealthTweak = Tweak.stealth()
+	_walk_stall_t += delta
+	if _walk_stall_t < tw.civilian_walk_stall_s:
+		return false
+	var moved: float = _npc.global_position.distance_to(_walk_stall_pos)
+	_walk_stall_t = 0.0
+	_walk_stall_pos = _npc.global_position
+	if moved >= tw.civilian_walk_stall_m:
+		_walk_stalls = 0
+		return false
+	_walk_stalls += 1
+	if _walk_stalls >= 2:
+		_walk_stalls = 0
+		return true
+	_motor.go_to(_motor.target, move_speed)  # re-path from where it stands
+	return false
+
+
 ## PO-5 (D-086 playability): only a civilian on its feet blocks the crew (crew mask includes the NPC
 ## layer). Cowering, intimidated (down) and tied civilians are on the floor: the crew walks past them
 ## instead of being pinned in a doorway. Hitboxes are separate areas, so shooting is unaffected.
@@ -426,12 +480,12 @@ func _tick_idle(delta: float) -> void:
 	if _wander_timer > 0.0:
 		return
 	_wander_timer = _roll_wander_delay()
-	var radius: float = Tweak.stealth().civilian_wander_radius_m
-	var options: Array[PatrolPoint] = []
-	for p: PatrolPoint in _targets.wander_points():
-		var d: float = _flat_distance(p.global_position)
-		if d > 1.0 and d <= radius:
-			options.append(p)
+	if _wander_profile.is_empty():
+		_wander_profile = _targets.wander_profile(_npc, _npc.global_position)
+	var options: Array[PatrolPoint] = _targets.wander_options(_npc.global_position, _wander_profile,
+		Tweak.stealth().civilian_wander_radius_m)
+	options.erase(_failed_target)
+	_failed_target = null
 	if options.is_empty():
 		return
 	var weights: PackedFloat32Array = PackedFloat32Array()
@@ -441,11 +495,18 @@ func _tick_idle(delta: float) -> void:
 	call_target = {"kind": KIND_POINT, "node": pick, "position": pick.global_position, "reason": &""}
 	mode = Mode.WANDER
 	anim_hint = &"mug_walk" if _idle_activity == &"mug" else &"walk"
+	_reset_walk_stall()
 	_motor.go_to(pick.global_position, Tweak.stealth().civilian_walk_speed)
 
 
-func _tick_wander() -> void:
+func _tick_wander(delta: float) -> void:
 	if _motor != null and not _motor.arrived:
+		if _tick_walk_stall(delta, Tweak.stealth().civilian_walk_speed):
+			_failed_target = call_target.get("node") as Node
+			call_target = {}
+			_motor.stop()
+			mode = Mode.IDLE
+			_set_idle_hint()
 		return
 	var p: PatrolPoint = call_target.get("node") as PatrolPoint
 	call_target = {}
@@ -468,7 +529,7 @@ func _physics_process(delta: float) -> void:
 		Mode.IDLE:
 			_tick_idle(delta)
 		Mode.WANDER:
-			_tick_wander()
+			_tick_wander(delta)
 		Mode.RUN_TO_CALL:
 			_tick_run(delta)
 		Mode.CALLING:
