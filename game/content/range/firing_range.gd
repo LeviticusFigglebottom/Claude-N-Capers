@@ -41,8 +41,8 @@ const DUMMIES_PATH: String = "res://content/data/range/range_dummies.tres"
 const TWEAK_PATH: String = "res://content/data/range/range_tweak.tres"
 ## D-111: ENV C's range dressing (lights, surfaces, props) and indoor Environment. Optional: until they exist
 ## the range keeps its greybox look and the sun.
-const DRESSING_PATH: String = "res://world/range/range_dressing.gd"
-const ENVIRONMENT_PATH: String = "res://world/range/range_environment.tres"
+const DRESSING_PATH: String = G.RANGE_DIR + "range_dressing.gd"
+const ENVIRONMENT_PATH: String = G.RANGE_DIR + "range_environment.tres"
 ## Re-run the readout when the shooter moved this far (m).
 const READOUT_MOVE_EPS_M: float = 0.1
 

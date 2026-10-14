@@ -53,3 +53,4 @@ const SVC_NAV: StringName = &"nav"
 const CHARACTERS_DIR: String = "res://world/characters/"
 const VFX_DIR: String = "res://world/vfx/"
 const PROPS_DIR: String = "res://world/props/"
+const RANGE_DIR: String = "res://world/range/"  ## ENV C range dressing + environment (D-111)
