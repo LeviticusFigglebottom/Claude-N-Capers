@@ -3,6 +3,20 @@
 Owner: ENV C. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14 ET: IN PROGRESS (ENV C, re-activated D-104)
+### Done
+- Merged trunk 8e02b62c into env/c-worlds (no conflicts), pushed.
+- gallery_night.md: "Build rulings" section (B1 rules, B2 door lock table, B3 no stealth-only fail, B4 §7 traversal,
+  B5 marker_tags, B6 validator hooks) + inline fixes (laser gaps 1.0 m / 1.30 m beam, pool ≤ 0.35 m, drop strip x 24–28,
+  QC-56 dropped). Draft for lead approval.
+### In progress (parallel lanes, worktrees)
+- validate_level `camera_spine` + `camera_screen`; `slopes` + `viewmodel_lit` (warn); PP-C-1 walk fix (mask up,
+  lockpick, drop 0 m legs); gallery_night_floors_ascii.py with `--check`.
+### Next
+- Integrate + push each lane; then G1 greybox prep (kit list, contract-node checklist) until FREEZE LIFTED.
+### Blockers
+- None.
+
 ## 2026-10-12 20:25 ET: IN PROGRESS (ENV C)
 ### Done
 - 4f4ee34a trunk db22c24c merged --no-ff. 811be4d6 public doors casing_allowed (GH MainEntrance, ND AtmStreetDoor)
