@@ -1135,7 +1135,7 @@ enabled when they open, with its UsePoint on the rear step. No interior navmesh 
     for the rear trucks.
   - **E3:** T1 → entrance → lift ≈ 40 m + 16 s; by the ramps ≈ 95 m.
 - **Crash stops** (the junction, ~(0, 0)): E1 ≈ 45 m, E2 ≈ 95 m, E3 ≈ 50 m + lift.
-- **Gold is HEAVY** (×0.75 speed, no sprint, 3 m throw): on the long routes, `carry_bag` orders and
+- **Gold is HEAVY** (×0.5 speed, no sprint, jump ×0.5, 2 m throw; D-102): on the long routes, `carry_bag` orders and
   the lift decide the run.
 - **Optional:**
   - the other trucks;
