@@ -44,6 +44,7 @@ func play(flow: Node) -> int:
 	crew = p.crew
 	st = rt.stealth
 	p.arrive_dy = 1.2
+	p.no_blind_press = true  # a blind F press is a shout: it once put the whole sales floor down at the workshop door
 	p.shout_blockers = false  # a shouted civilian gets up panicked 45 s later: never shout by accident
 	p.hook_need = _hook_need
 	p.hook = _hook
@@ -65,8 +66,11 @@ func play(flow: Node) -> int:
 func _setup() -> void:
 	EventBus.alarm_raised.connect(func(reason: StringName, src: int) -> void:
 		alarm = reason
-		f.note("EVENT alarm_raised %s by %s (t=%.0f) crew at %s" % [reason, _npc_name(src), rt.heist_time_s,
-			Po5Pilot._v(crew.global_position)]))
+		var src_n: Node = Ids.lookup(src)
+		var gb: GuardBrain = src_n.get_node_or_null(^"Brain") as GuardBrain if src_n != null else null
+		f.note("EVENT alarm_raised %s by %s cause %s focus %s (t=%.0f) crew at %s" % [reason, _npc_name(src),
+			gb.alarm_cause if gb != null else &"-", Po5Pilot._v(gb.focus_position) if gb != null else "-",
+			rt.heist_time_s, Po5Pilot._v(crew.global_position)]))
 	EventBus.objective_updated.connect(func(id: StringName, s: int, _d: Dictionary) -> void:
 		f.note("EVENT objective %s -> %d (t=%.0f)" % [id, s, rt.heist_time_s]))
 	EventBus.pager_started.connect(func(pid: int, gid: int) -> void:
@@ -241,6 +245,8 @@ func _keycard_masked() -> String:
 ## Civilians get stuck at the stair foot (game finding): coming down masked they would see us at once.
 ## From the stair top (another floor, no line of sight) the all-around shout still puts them down.
 func _clear_stair_foot() -> void:
+	if _floor_rule():
+		return  # the shout no longer reaches down the stair; NPCs climb / yield now (PO-5 civilian lane)
 	for c: NpcBase in _civilians():
 		var b: CivilianBrain = _civ_brain(c)
 		if c.global_position.y < 1.5 and p.flat_dist(c.global_position, Vector3(13.9, 0.0, 4.9)) < 2.5 \
@@ -761,10 +767,10 @@ func _down_soon() -> NpcBase:
 		var b: CivilianBrain = _civ_brain(c)
 		if b.mode != CivilianBrain.Mode.DOWN or b.intimidate_left > 40.0:
 			continue
-		# Leave in time: walking there (3.5 m/s) plus a margin.
-		var need: float = 8.0
-		if p.flat_dist(c.global_position, crew.global_position) > _shout_reach():
-			need += _path_len(_reshout_spot(c)) / 3.5
+		# Leave in time: walking there (~2.5 m/s with doors, stairs and sneaking) plus a margin.
+		var need: float = 12.0
+		if not _hears_here(c):
+			need += _path_len(_reshout_spot(c)) / 2.5
 		if b.intimidate_left < need and (best == null or b.intimidate_left < _civ_brain(best).intimidate_left):
 			best = c
 	return best
@@ -772,6 +778,38 @@ func _down_soon() -> NpcBase:
 
 func _shout_reach() -> float:
 	return Tweak.stealth().shout_all_within_m - 0.7
+
+
+## The all-round shout reaches only the shouter's floor and needs line of sight or a short walk
+## (ShoutSystem._hears_nearby, PO-5) when the tweak has shout_floor_dy_m; else it goes through everything.
+func _floor_rule() -> bool:
+	return &"shout_floor_dy_m" in Tweak.stealth()
+
+
+## Would an all-round shout from standing at `from` reach downed civilian `c`?
+func _hears_from(c: NpcBase, from: Vector3) -> bool:
+	if p.flat_dist(c.global_position, from) > _shout_reach():
+		return false
+	if not _floor_rule():
+		return true
+	if absf(c.global_position.y - from.y) > float(Tweak.stealth().get(&"shout_floor_dy_m")) - 0.5:
+		return false
+	var eye: Vector3 = from + Vector3(0.0, 1.6, 0.0)
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(eye, c.global_position + Vector3(0.0, 0.4, 0.0),
+		StealthDirector.VISION_MASK)
+	q.exclude = [c.get_rid(), crew.get_rid()]
+	if crew.get_world_3d().direct_space_state.intersect_ray(q).is_empty():
+		return true
+	var path: PackedVector3Array = NavigationServer3D.map_get_path(crew.get_world_3d().navigation_map, from,
+		c.global_position, true)
+	var n: float = 0.0
+	for i: int in range(1, path.size()):
+		n += path[i - 1].distance_to(path[i])
+	return not path.is_empty() and n <= Tweak.stealth().shout_all_within_m * 1.1
+
+
+func _hears_here(c: NpcBase) -> bool:
+	return _hears_from(c, crew.global_position)
 
 
 ## Inside the workshop while its door is still locked (the navmesh runs through doorways).
@@ -814,10 +852,15 @@ func _reshout_spot(c: NpcBase) -> Vector3:
 		p.stand_point(Vector3(clampf(cp.x, -2.0, 18.0), 0.0, 12.8)),
 		p.stand_point(Vector3(clampf(cp.x, -2.0, 16.0), 0.0, -1.0)),
 	]
+	# Same floor: a ring around them (inside the shout radius) gives spots with a view of them.
+	var fy: float = 0.0 if cp.y < 2.0 else UPPER_Y
+	for k: int in 8:
+		var a: float = TAU * float(k) / 8.0
+		cands.append(p.stand_point(Vector3(cp.x, fy, cp.z) + Vector3(cos(a), 0.0, sin(a)) * 3.5))
 	var best: Vector3 = cands[1]
 	var best_len: float = INF
 	for q: Vector3 in cands:
-		if p.flat_dist(q, cp) > _shout_reach() or _exposed(q) or _path_exposed(q) or _behind_locked(q):
+		if not _hears_from(c, q) or _exposed(q) or _path_exposed(q) or _behind_locked(q):
 			continue
 		var l: float = _path_len(q)
 		if l < best_len:
@@ -887,7 +930,7 @@ func _refresh_downs(min_left: float) -> void:
 ## reaches through walls and floors) and shout with nothing interactable in the aim.
 func _reshout(c: NpcBase) -> void:
 	var b: CivilianBrain = _civ_brain(c)
-	if p.flat_dist(c.global_position, crew.global_position) > _shout_reach():
+	if not _hears_here(c):
 		var spot: Vector3 = _reshout_spot(c)
 		f.note("re-shout %s (%.0f s left) from %s" % [c.name, b.intimidate_left, Po5Pilot._v(spot)])
 		await p.goto(spot, 0.5, maxf(b.intimidate_left - 1.0, 2.0))
