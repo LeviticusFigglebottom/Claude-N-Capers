@@ -133,6 +133,7 @@ func _strike() -> void:
 	var info: Dictionary = Damage.info(amount, Enums.DamageType.MELEE, Enums.HitZone.BODY,
 		def.id if def != null else &"melee.bash", center, fwd, _crew.net_id)
 	CombatSystem.deliver_hit(best, info, _crew.net_id)
+	ShotFx.melee_hit(_crew, eye, center, best)  # PO-8: shot_fx (&"melee") here + relayed (impact_fx.md)
 	_bloodthirst_kills = 0
 	hit_landed.emit(best)
 	_knock(best, def, tw)

@@ -149,7 +149,9 @@ func _fire(e: NpcBase) -> void:
 	var weapon_id: StringName = _npc.enemy_def.weapon if _npc.enemy_def != null else &""
 	shots += 1
 	EventBus.weapon_fired.emit(_npc.net_id, weapon_id, false, from)
-	if GameRng.stream(RNG_STREAM).randf() >= CustodyTweak.data().convert_hit_chance:
+	var hit: bool = GameRng.stream(RNG_STREAM).randf() < CustodyTweak.data().convert_hit_chance
+	ShotFx.npc_shot(_npc, from, aim, hit, e)  # PO-8: shot_fx here + relayed (impact_fx.md)
+	if not hit:
 		return
 	hits += 1
 	var info: Dictionary = Damage.info(_shot_damage(), Enums.DamageType.BULLET, Enums.HitZone.BODY,

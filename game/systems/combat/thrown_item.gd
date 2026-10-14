@@ -146,6 +146,7 @@ func _detonate(pos: Vector3) -> void:
 	var wid: StringName = StringName(params.get("throwable_id", &""))
 	_cue(CUE_CONCUSSION if kind() == KIND_CONCUSSION else CUE_FRAG, pos, attacker)
 	if kind() == KIND_CONCUSSION:
+		ShotFx.explosion(self, pos, radius, &"concussion")  # PO-8 (the frag path emits in Explosion.apply)
 		for t: Object in Explosion.targets_in_sphere(self, pos, radius, tw):
 			var npc: NpcBase = t as NpcBase
 			if npc == null or not npc.alive or not Explosion.blast_los(self, pos, CombatSystem.target_center(npc), npc, tw):

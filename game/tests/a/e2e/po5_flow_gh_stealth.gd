@@ -34,6 +34,7 @@ var answered_guards: Array[NpcBase] = []
 ## Last spot (masked) no calm civilian could see.
 var safe_spot: Vector3 = Vector3.INF
 var _last_meter_note: float = -10.0
+var _last_dash_note: float = -10.0
 
 
 func play(flow: Node) -> int:
@@ -158,8 +159,9 @@ func _counter_keycard() -> String:
 	var kc: InteractableComponent = _comp_tagged(&"keycard")
 	if not await p.goto(Vector3(11.25, 0.0, 10.8), 0.6, 60.0):
 		return "PO-5.stealth.counter: could not walk into the shop"
-	# Customer side of the counter, in front of the card (PUBLIC: nobody minds an unmasked customer).
-	if not await p.goto(Vector3(3.2, 0.0, 8.15), 0.35, 40.0, false, false):
+	# Customer side of the counter, by the card (PUBLIC: nobody minds an unmasked customer). The queue spot
+	# right in front is usually taken; the card is within reach from the counter's end too.
+	if not await p.goto(Vector3(4.2, 0.0, 8.2), 0.5, 25.0, false, false):
 		f.note("counter front spot not reached (at %s)" % Po5Pilot._v(crew.global_position))
 	var ok: bool = await p.use(kc, 6.0, func() -> bool: return not kc.enabled or _has_keycard(), false)
 	await f.shot("counter_keycard")
@@ -355,6 +357,7 @@ func _bags() -> String:
 		if alarm != &"":
 			return "PO-5.stealth.alarm: alarm raised (%s) while bagging" % alarm
 		if not _inside(zone.global_position):
+			await _refresh_downs(40.0)
 			await _via_fire_exit(true)
 			if zone.global_position.z < 0.0:
 				await p.goto(Vector3(17.5, 0.0, -2.8), 0.8, 60.0)
@@ -531,6 +534,7 @@ func _guard_matters(g: NpcBase) -> bool:
 func _hunt(g: NpcBase, timeout_s: float) -> String:
 	var gb: GuardBrain = g.get_node_or_null(^"Brain") as GuardBrain
 	f.note("hunt %s at %s (state %s)" % [g.name, Po5Pilot._v(g.global_position), gb.state_name()])
+	await _refresh_downs(40.0)
 	var t0: float = rt.heist_time_s
 	if g.global_position.z < 0.0 and _inside(crew.global_position):
 		await _to_alley()
@@ -548,6 +552,8 @@ func _hunt(g: NpcBase, timeout_s: float) -> String:
 			await _await_arrest(g)
 			continue
 		if _exposed(g.global_position):
+			if _hook_need():
+				await _hook()
 			await f.wait_s(0.5)  # on the sales floor / by the staff door (customers, cameras): wait in the back
 			continue
 		var d: float = p.flat_dist(g.global_position, crew.global_position)
@@ -555,20 +561,7 @@ func _hunt(g: NpcBase, timeout_s: float) -> String:
 			await _knife(g, 0.0)
 			continue
 		var goal: Vector3 = _via_stair(g.global_position - _flat(g.look_forward()) * 0.9)
-		if not _civ_watchers(crew.global_position).is_empty():
-			if safe_spot != Vector3.INF and p.flat_dist(safe_spot, crew.global_position) > 0.5:
-				f.note("seen by civilians %s at %s: back to %s" % [_civ_watchers(crew.global_position).map(func(c: NpcBase) -> String: return c.name),
-					Po5Pilot._v(crew.global_position), Po5Pilot._v(safe_spot)])
-				await p.goto(safe_spot, 0.4, 3.0)
-			else:
-				await f.wait_s(0.3)
-			continue
-		safe_spot = crew.global_position
-		var step: Vector3 = _path_step(goal, 1.5)
-		if not _civ_watchers(step).is_empty():
-			await f.wait_s(0.4)  # the next stretch is in a civilian's view: let them look away / walk on
-			continue
-		await p.goto(p.stand_point(goal), 0.6, 0.6)
+		await _stealth_step(p.stand_point(goal), 0.6)
 	p.quiet = false
 	f.note("%s down t=%.0f" % [g.name, rt.heist_time_s])
 	var err: String = await _answer_pager(g)
@@ -601,19 +594,41 @@ func _sneak_to(goal: Vector3, arrive_m: float = 0.6, timeout_s: float = 120.0) -
 		if p.flat_dist(crew.global_position, goal) <= arrive_m and absf(crew.global_position.y - goal.y) < 1.2:
 			p.quiet = false
 			return true
-		if not _civ_watchers(crew.global_position).is_empty():
-			if safe_spot != Vector3.INF and p.flat_dist(safe_spot, crew.global_position) > 0.5:
-				await p.goto(safe_spot, 0.4, 3.0)
-			else:
-				await f.wait_s(0.3)
-			continue
-		safe_spot = crew.global_position
-		if not _civ_watchers(_path_step(goal, 1.5)).is_empty():
-			await f.wait_s(0.4)
-			continue
-		await p.goto(_via_stair(goal), arrive_m, 0.8)
+		await _stealth_step(goal, arrive_m)
 	p.quiet = false
 	return p.flat_dist(crew.global_position, goal) <= arrive_m
+
+
+## One masked move toward `goal`: deal with the hook first (arrest, civilians), walk on when no calm civilian
+## would see us here or a step ahead, dash past watchers that are far and not noticing yet, else hold
+## (or back off to the last unseen spot).
+func _stealth_step(goal: Vector3, arrive_m: float) -> void:
+	if _hook_need():
+		await _hook()
+		return
+	var target: Vector3 = _via_stair(goal)
+	var here_w: Array[NpcBase] = _civ_watchers(crew.global_position)
+	var ws: Array[NpcBase] = here_w.duplicate()
+	ws.append_array(_civ_watchers(_path_step(target, 1.5)))
+	if here_w.is_empty():
+		safe_spot = crew.global_position
+	if ws.is_empty():
+		await p.goto(target, arrive_m, 0.8)
+		return
+	var far: bool = true
+	for c: NpcBase in ws:
+		if p.flat_dist(c.global_position, crew.global_position) < 9.0 or st.detection_value(c, crew.slot) > 0.15:
+			far = false
+	if far:
+		if rt.heist_time_s - _last_dash_note > 3.0:
+			_last_dash_note = rt.heist_time_s
+			f.note("dash past far civilians %s" % [ws.map(func(c: NpcBase) -> String: return String(c.name))])
+		await p.goto(target, arrive_m, 1.2, true)
+		return
+	if not here_w.is_empty() and safe_spot != Vector3.INF and p.flat_dist(safe_spot, crew.global_position) > 0.5:
+		await p.goto(safe_spot, 0.4, 2.0)
+	else:
+		await f.wait_s(0.3)
 
 
 ## Between floors the navmesh may route through the break-room window and the fire-escape ladder, which
@@ -657,8 +672,18 @@ func _await_arrest(g: NpcBase) -> void:
 	while g.is_alive() and t < 30.0 and alarm == &"":
 		var d: float = p.flat_dist(g.global_position, crew.global_position)
 		if d <= 1.7:
-			await _knife(g, 0.0)
+			if not await _knife(g, 0.0) and g.is_alive():
+				await p.inp.hold(&"move_left", 0.15)  # a downed civilian in the swing: shift a step (< 1.7 m)
 			t += 0.5
+			continue
+		var c: NpcBase = _civ_threat()
+		if c != null and d > 3.0:
+			# Pinned by the arrest (moving is the alarm): a shout does not move us.
+			f.note("arrest hold: civilian %s noticing us: shout in place" % c.name)
+			await p.face(c.global_position + Vector3(0.0, 1.3, 0.0), 0.05, 0.6)
+			await p.inp.tap(&"shout")
+			await p.inp.ticks(int(Tweak.stealth().shout_cooldown_s * Engine.physics_ticks_per_second) + 2)
+			t += 1.0
 			continue
 		await p.face(g.head_position() - Vector3(0.0, 0.5, 0.0), 0.05, 0.25)
 		await p.tick()
@@ -701,7 +726,8 @@ func _civ_threat() -> NpcBase:
 		var want: bool = false
 		match b.mode:
 			CivilianBrain.Mode.IDLE, CivilianBrain.Mode.WANDER:
-				want = st.detection_value(c, crew.slot) > 0.3
+				# Noticing us, or about to: looking our way within shout range (a shout beats a 1.5 s spot).
+				want = st.detection_value(c, crew.slot) > 0.3 or (d < 10.0 and _civ_watchers(crew.global_position).has(c))
 			CivilianBrain.Mode.RUN_TO_CALL, CivilianBrain.Mode.CALLING:
 				want = true
 		if want and d < best_d and p.has_los(c.global_position + Vector3(0.0, 1.0, 0.0), c):
@@ -771,6 +797,14 @@ func _hook() -> bool:
 	return false
 
 
+## Before something long (a hunt, a trip outside): renew every intimidation with less than `min_left` s.
+func _refresh_downs(min_left: float) -> void:
+	for c: NpcBase in _civilians():
+		var b: CivilianBrain = _civ_brain(c)
+		if b.mode == CivilianBrain.Mode.DOWN and b.intimidate_left < min_left:
+			await _reshout(c)
+
+
 ## Renew the intimidation of a downed civilian: get within shout_all_within_m (flat: the all-around shout
 ## reaches through walls and floors) and shout with nothing interactable in the aim.
 func _reshout(c: NpcBase) -> void:
@@ -832,8 +866,10 @@ func _knife(npc: NpcBase, charge_s: float = 1.05) -> bool:
 	await p.face(npc.global_position + Vector3(0.0, 1.1, 0.0), 0.04, 1.0)
 	var nd: float = p.flat_dist(npc.global_position, crew.global_position)
 	for c: NpcBase in _civilians():
-		if c != npc and absf(c.global_position.y - crew.global_position.y) < 1.2 \
-				and p.flat_dist(c.global_position, crew.global_position) < minf(nd + 0.2, 2.2):
+		var to_c: Vector3 = c.global_position - crew.global_position
+		var to_n: Vector3 = npc.global_position - crew.global_position
+		var in_cone: bool = Vector2(to_c.x, to_c.z).angle_to(Vector2(to_n.x, to_n.z)) < deg_to_rad(30.0)
+		if c != npc and in_cone and absf(to_c.y) < 1.2 and p.flat_dist(c.global_position, crew.global_position) < minf(nd + 0.2, 2.2):
 			f.note("knife held: civilian %s is in the way of %s" % [c.name, npc.name])
 			await f.wait_s(0.3)
 			return false

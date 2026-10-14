@@ -24,6 +24,9 @@ signal reload_finished(weapon_slot: int)
 signal equipped_changed(weapon_slot: int)
 signal ammo_changed(weapon_slot: int)
 
+## PO-8: server-side marker on a claim that arrived from its owning client (_rpc_hit_claim).
+const REMOTE_CLAIM_KEY: String = "_remote"
+
 ## Per-slot runtime state.
 class WeaponState:
 	extends RefCounted
@@ -82,6 +85,11 @@ var _last_server_seq: int = 0
 var _drawing: bool = false
 ## Minigun spinning up / flamethrower burning (cue edges).
 var _spinning_up: bool = false
+## PO-8 (impact_fx.md): per-shot pellet RNG (seeded from the claim's `fx_seed`, so every peer replays the
+## same pellets) and the last `_hitscan` ray: the hit dictionary ({} = miss) and thin walls passed.
+var _pellet_rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var _ray_hit: Dictionary = {}
+var _ray_walls: int = 0
 
 
 func _ready() -> void:
@@ -480,16 +488,65 @@ func _build_claim(s: WeaponState, intent: CrewIntent) -> Dictionary:
 		if right.length() > 0.001:
 			fwd = fwd.rotated(right.normalized(), deg_to_rad(involuntary_pitch_up_deg)).normalized()
 	var hits: Array[Dictionary] = []
+	var spread: float = _spread_deg(s, intent) * (involuntary_spread_mult if involuntary_fire else 1.0)
+	# PO-8: one seed per shot drives every pellet (no RNG draw without spread, as before).
+	var pellet_seed: int = GameRng.stream(&"spread").randi() if spread > 0.0001 else 0
+	_pellet_rng.seed = pellet_seed
+	var fx: bool = ShotFx.enabled()
+	var fx_origin: Vector3 = _fx_origin() if fx else origin
+	var fx_flags: int = _fx_flags(s)
+	var cls: StringName = ShotFx.weapon_class_id(s.def)
+	var max_range: float = tw.hitscan_max_range_m
 	# B4-18: flame / saw / projectile shots carry no hits (the server derives them).
 	for p: int in range(maxi(s.stats.pellets, 1) if s.kind == SpecialWeapons.KIND_HITSCAN else 0):
-		var dir: Vector3 = _spread_dir(fwd, _spread_deg(s, intent) * (involuntary_spread_mult if involuntary_fire else 1.0))
+		var dir: Vector3 = _spread_dir(fwd, spread, _pellet_rng)
 		var h: Dictionary = _hitscan(origin, dir, tw, s.stats.wall_pierce)
 		if not h.is_empty():
 			hits.append(h)
+		if fx:
+			ShotFx.emit_ray(fx_origin, _ray_hit, origin + dir * max_range, cls, _crew.net_id,
+				fx_flags | (ShotFx.FLAG_PENETRATED if _ray_walls > 0 else 0))
 	return {
 		"seq": _seq, "weapon_slot": equipped_slot, "weapon_id": s.id, "origin": origin, "direction": fwd,
 		"muzzle": _muzzle_position(), "hits": hits, "charge": charge if _drawing else 1.0,
+		"spread": spread, "fx_seed": pellet_seed,
 	}
+
+
+## PO-8: shot_fx origin on this peer: the first-person muzzle for the local human (ENV P draws its own
+## flash/tracer from the viewmodel), else the third-person weapon's `Muzzle`, else the eye.
+func _fx_origin() -> Vector3:
+	if _crew.is_local():
+		return _muzzle_position()
+	return ShotFx.tp_muzzle(_crew, _crew.eye_position())
+
+
+func _fx_flags(s: WeaponState) -> int:
+	var f: int = ShotFx.FLAG_SUPPRESSED if s.stats != null and s.stats.suppressed else 0
+	if _crew.is_local():
+		f |= ShotFx.FLAG_FIRST_PERSON
+	return f
+
+
+## PO-8, every peer that did not simulate the shot: replay a relayed crew shot (net hook called by
+## HeistNetSync._rpc_crew_shot on clients; server_commit_shot for a remote client's claim on the host):
+## the same seeded pellets, raycast against this peer's world, one shot_fx each. No gameplay effect.
+func _fx_replay(origin: Vector3, dir: Vector3, spread_deg: float, pellet_seed: int, ws: int) -> void:
+	var s: WeaponState = _states.get(ws)
+	if s == null or s.stats == null or s.kind != SpecialWeapons.KIND_HITSCAN or _crew == null \
+			or not _crew.is_inside_tree() or not ShotFx.enabled():
+		return
+	var tw: CombatTweak = CombatTweak.data()
+	var fwd: Vector3 = dir.normalized() if dir.length() > 0.0001 else _crew.aim_direction()
+	_pellet_rng.seed = pellet_seed
+	var fx_origin: Vector3 = _fx_origin()
+	var fx_flags: int = _fx_flags(s)
+	var cls: StringName = ShotFx.weapon_class_id(s.def)
+	for p: int in range(maxi(s.stats.pellets, 1)):
+		var d: Vector3 = _spread_dir(fwd, clampf(spread_deg, 0.0, tw.fx_max_replay_spread_deg), _pellet_rng)
+		_hitscan(origin, d, tw, s.stats.wall_pierce)
+		ShotFx.emit_ray(fx_origin, _ray_hit, origin + d * tw.hitscan_max_range_m, cls, _crew.net_id,
+			fx_flags | (ShotFx.FLAG_PENETRATED if _ray_walls > 0 else 0))
 
 
 ## Tracer / flash / noise origin: the outermost `Muzzle` marker of the crew's weapon visual
@@ -528,12 +585,14 @@ func _spread_deg(s: WeaponState, intent: CrewIntent) -> float:
 	return maxf(base * mult * Modifiers.mult(_crew.slot, &"weapon.spread_mult", s.qualifier), 0.0)
 
 
-## Direction inside a cone of half-angle `deg` around `fwd` (GameRng &"spread"). D-097 (PD2): the radius is
-## uniform in [0, max] (not area-uniform), so shots cluster toward the centre as in PD2.
-func _spread_dir(fwd: Vector3, deg: float) -> Vector3:
+## Direction inside a cone of half-angle `deg` around `fwd` (`rng`, default GameRng &"spread"; shots use the
+## per-shot seeded pellet RNG, PO-8). D-097 (PD2): the radius is uniform in [0, max] (not area-uniform), so
+## shots cluster toward the centre as in PD2.
+func _spread_dir(fwd: Vector3, deg: float, rng: RandomNumberGenerator = null) -> Vector3:
 	if deg <= 0.0001:
 		return fwd
-	var rng: RandomNumberGenerator = GameRng.stream(&"spread")
+	if rng == null:
+		rng = GameRng.stream(&"spread")
 	var r: float = tan(deg_to_rad(deg)) * rng.randf()
 	var phi: float = rng.randf() * TAU
 	var right: Vector3 = fwd.cross(Vector3.UP)
@@ -559,10 +618,14 @@ func _hitscan(origin: Vector3, dir: Vector3, tw: CombatTweak, wall_pierce: bool 
 	while not hit.is_empty() and _is_penetrable(hit.get("collider")):
 		walls += 1
 		if not wall_pierce or walls > tw.wall_pierce_max:
+			_ray_hit = hit  # PO-8: the ray stops at this wall
+			_ray_walls = walls - 1
 			return {}
 		ex.append(hit.get("rid") as RID)
 		q.exclude = ex
 		hit = _crew.get_world_3d().direct_space_state.intersect_ray(q)
+	_ray_hit = hit
+	_ray_walls = walls
 	if hit.is_empty():
 		return {}
 	var col: Object = hit.get("collider")
@@ -666,6 +729,29 @@ func server_commit_shot(claim: Dictionary) -> void:
 		rt.make_noise(origin, radius, &"gunshot", _crew.net_id)
 	ammo_changed.emit(ws)
 	_sync_ammo(ws)
+	_commit_shot_fx(claim, s, ws)
+
+
+## PO-8: presentation of an accepted gun shot on the peers that did not simulate it. A remote client's
+## claim (`_remote`) is replayed here on the host and relayed to every other client; a shot simulated on
+## the host (host human, AI bots, tased auto-fire) was presented in _build_claim and goes to all clients.
+func _commit_shot_fx(claim: Dictionary, s: WeaponState, ws: int) -> void:
+	var seed_v: Variant = claim.get("fx_seed")
+	var spread_v: Variant = claim.get("spread", 0.0)
+	if s.kind != SpecialWeapons.KIND_HITSCAN or not seed_v is int or not (spread_v is float or spread_v is int):
+		return  # also drops a malformed client claim (presentation only)
+	var o_v: Variant = claim.get("origin")
+	var d_v: Variant = claim.get("direction")
+	var origin: Vector3 = o_v as Vector3 if o_v is Vector3 else _crew.eye_position()
+	var dir: Vector3 = d_v as Vector3 if d_v is Vector3 else _crew.aim_direction()
+	var spread: float = float(spread_v)
+	var pellet_seed: int = int(seed_v)
+	var remote: bool = bool(claim.get(REMOTE_CLAIM_KEY, false))
+	if remote:
+		_fx_replay(origin, dir, spread, pellet_seed, ws)
+	var rt: HeistRuntime = HeistRuntime.of(_crew)
+	if rt != null and rt.net_sync != null:
+		rt.net_sync.relay_crew_shot(_crew.net_id, origin, dir, spread, pellet_seed, ws, _crew.peer_id if remote else 0)
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -675,6 +761,7 @@ func _rpc_hit_claim(claim: Dictionary) -> void:
 	if multiplayer.get_remote_sender_id() != _crew.peer_id:
 		Log.warn(&"net", "hit claim for slot %d from wrong peer %d" % [_crew.slot, multiplayer.get_remote_sender_id()])
 		return
+	claim[REMOTE_CLAIM_KEY] = true  # PO-8: presented on the owning client already (set here, never trusted)
 	var res: Dictionary = CombatSystem.validate_and_apply(claim, _crew)
 	if not bool(res["accepted"]):
 		_sync_ammo(int(claim.get("weapon_slot", equipped_slot)))
