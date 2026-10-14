@@ -142,10 +142,7 @@ func build_ui() -> void:
 	retry_button.visible = false
 	foot.add_child(retry_button)
 	foot.add_child(continue_button)
-	focus_chain.append(continue_button)  # Continue keeps the default focus; Retry is one step left
-	focus_chain.append(retry_button)
-	continue_button.focus_neighbor_left = continue_button.get_path_to(retry_button)
-	retry_button.focus_neighbor_right = retry_button.get_path_to(continue_button)
+	focus_chain.append(continue_button)  # Continue keeps the default focus; Retry joins via _wire_retry()
 	back_requested.connect(_on_continue)
 	# input_focus.md 1.1: the payday screen holds the cursor while shown (MouseCapture &"payday"), so the
 	# heist's still-live PlayerInput neither captures it nor eats the first click as a capture click.
@@ -332,8 +329,8 @@ func _set_stage(cards: bool) -> void:
 		continue_button.disabled = false
 		focus_chain.clear()
 		focus_chain.append(continue_button)
-		focus_chain.append(retry_button)
 		card_result_label.text = ""
+		_wire_retry()
 
 
 func _reveal() -> void:
@@ -460,6 +457,7 @@ func _render() -> void:
 		if a != null:
 			_content.add_child(UiBuild.label(&"ui.results.achievement_unlocked", UiBuild.SUBHEADER, {"name": UiText.t(a.name_key)}))
 	retry_button.visible = offer_retry()
+	_wire_retry()
 	focus_default()
 	animate_xp()
 
@@ -471,6 +469,19 @@ func _summary_key(success: bool) -> StringName:
 	if not success:
 		return &"ui.results.failure"
 	return &"ui.results.stealth" if bool(result.get("stealth", false)) else &"ui.results.loud"
+
+
+## Retry is one step left of Continue while it is offered. A hidden explicit neighbour traps d-pad focus
+## (gate82: gamepad-only players could not reach the cards / finish the payday), so the link and the
+## chain entry exist only while Retry shows.
+func _wire_retry() -> void:
+	var on: bool = retry_button.visible
+	continue_button.focus_neighbor_left = continue_button.get_path_to(retry_button) if on else NodePath()
+	retry_button.focus_neighbor_right = retry_button.get_path_to(continue_button) if on else NodePath()
+	if on and not focus_chain.has(retry_button):
+		focus_chain.append(retry_button)
+	elif not on:
+		focus_chain.erase(retry_button)
 
 
 ## First-heist safety net: a failed heist while the profile has never completed one, solo (the only
