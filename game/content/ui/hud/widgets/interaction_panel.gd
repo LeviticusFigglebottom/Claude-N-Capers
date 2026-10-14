@@ -13,6 +13,10 @@ const PAD_BUTTON_NAMES: Dictionary = {JOY_BUTTON_A: "A", JOY_BUTTON_B: "B", JOY_
 	JOY_BUTTON_RIGHT_STICK: "RS", JOY_BUTTON_BACK: "Back", JOY_BUTTON_START: "Start", JOY_BUTTON_DPAD_UP: "D-pad Up",
 	JOY_BUTTON_DPAD_DOWN: "D-pad Down", JOY_BUTTON_DPAD_LEFT: "D-pad Left", JOY_BUTTON_DPAD_RIGHT: "D-pad Right"}
 
+## Mouse-bound actions (fire, aim) on the keyboard / mouse device: short names for a key cap.
+const MOUSE_BUTTON_KEYS: Dictionary = {MOUSE_BUTTON_LEFT: &"ui.key.mouse_left",
+	MOUSE_BUTTON_RIGHT: &"ui.key.mouse_right", MOUSE_BUTTON_MIDDLE: &"ui.key.mouse_middle"}
+
 ## True after the player's last input came from a gamepad (see note_input).
 static var pad_active: bool = false
 
@@ -66,7 +70,6 @@ func refresh() -> void:
 	blocked_label.text = UiText.t(blocked, args) if blocked != &"" else ""
 
 
-## Display text of the first keyboard binding of an InputMap action ("F"), or "" when unbound.
 ## Name of the first binding of `action` for the device the player used last (pad button names while
 ## `pad_active`, else the keyboard key; falls back to the other device when one has no binding).
 static func action_key_text(action: StringName) -> String:
@@ -81,7 +84,10 @@ static func action_key_text(action: StringName) -> String:
 		if k != null:
 			var code: Key = k.physical_keycode if k.physical_keycode != KEY_NONE else k.keycode
 			return OS.get_keycode_string(code)
-	return ""
+	for ev: InputEvent in InputMap.action_get_events(action):
+		var mb: InputEventMouseButton = ev as InputEventMouseButton
+		if mb != null and MOUSE_BUTTON_KEYS.has(int(mb.button_index)):
+			return UiText.t(MOUSE_BUTTON_KEYS[int(mb.button_index)] as StringName)
 	return pad_text(action)
 
 

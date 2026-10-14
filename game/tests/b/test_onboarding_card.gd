@@ -124,3 +124,15 @@ func test_card_hides_while_the_scoreboard_is_up() -> void:
 	_hud.scoreboard.set_shown(false)
 	await wait_frames(1)
 	assert_true(_card.visible)
+
+
+func test_card_hides_while_paused() -> void:
+	_model.player_mode = &"casing"
+	await wait_frames(1)
+	assert_true(_card.visible)
+	MouseCapture.push_release(&"pause")
+	await wait_frames(1)
+	assert_false(_card.visible, "the pause menu's job card sits on the card's spot")
+	MouseCapture.pop_release(&"pause")
+	await wait_frames(1)
+	assert_true(_card.visible, "back after resuming")

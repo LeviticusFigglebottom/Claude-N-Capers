@@ -111,6 +111,11 @@ pure navmesh path queries): from each player spawn, path to every objective, loo
 zone, escape zone, and every interactable `UsePoint`; fail on any unreachable target or path
 longer than 3× straight-line distance (suspicious detour) unless whitelisted in the design doc.
 
+## 6b. Generator is the source (D-105)
+Every heist map `.tscn` is regenerated from its generator/builder scripts. Edits go into the generator, never by hand into
+the saved scene (a regen drops them). Generators tag every collision body with a surface id (impact_fx.md §1) and refuse to
+save an untagged body.
+
 ## 7. `validate_level` — the automated gate (spec; ENV C implements)
 
 Command: `tools/levelcheck/validate_all.sh` → for each heist runs

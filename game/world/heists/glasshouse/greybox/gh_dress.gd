@@ -232,6 +232,7 @@ func _finish_node(n: Node3D, asset: String, mode: String, mount: String, xf: Tra
 	body.collision_mask = 0
 	n.add_child(body)
 	body.owner = _root
+	SurfaceTags.tag(body, StringName(String((_cat[asset] as Dictionary).get("surface", ""))))  # PO-8
 	var cs: CollisionShape3D = CollisionShape3D.new()
 	cs.name = "Shape"
 	var shape: BoxShape3D = BoxShape3D.new()

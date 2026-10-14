@@ -105,3 +105,19 @@ func test_low_health_vignette_and_heartbeat() -> void:
 	_model.crew_state = Enums.CrewState.NORMAL
 	_model.health = 60.0
 	assert_false(v.visible)
+
+
+## D-106 (ui_hud 1.12): the reload indicator shows while reloading and follows reload_progress per frame.
+func test_reload_indicator_follows_progress() -> void:
+	var ap: AmmoPanel = _hud.ammo
+	assert_false(ap.reload_row.visible, "hidden when not reloading")
+	_model.reload_progress = 0.0
+	_model.reloading = true
+	assert_true(ap.reload_row.visible)
+	assert_near(ap.reload_bar.value, 0.0, 0.001)
+	_model.set(&"reload_progress", 0.5)  # assigned without relying on the signal: the bar polls while it runs
+	await wait_frames(2)
+	assert_near(ap.reload_bar.value, 0.5, 0.001)
+	_model.reloading = false
+	_model.reload_progress = -1.0
+	assert_false(ap.reload_row.visible, "gone once the reload ends")

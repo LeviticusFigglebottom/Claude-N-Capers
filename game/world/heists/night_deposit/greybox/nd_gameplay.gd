@@ -541,13 +541,15 @@ func _variants_loot_escape(variants: Node3D) -> void:
 				Vector3(24.4, 0.0, 15.3 - 0.24 + 0.16 * float(i)))
 	var esc: Node3D = _group(variants, "escape")
 	var e1: VariantSlot = _slot(esc, "escape", "esc_van_lot", 0.6, {"label": "E1"})
-	prefab(e1, "secure_zone", "VanSecureE1", Vector3(2.5, 0.0, -5.4), 180.0, {}, null, {"kind": "vehicle"})
+	prefab(e1, "secure_zone", "VanSecureE1", Vector3(2.5, 0.0, -5.4), 180.0, {"objective_tag": &"loot_secure"}, null,
+		{"kind": "vehicle"})
 	prefab(e1, "escape_zone", "VanEscapeE1", Vector3(3.5, 0.0, -1.5), 0.0,
 		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(5.0, 3.0, 2.2)})
 	var e2: VariantSlot = _slot(esc, "escape", "esc_boat_quay", 0.4, {"label": "E2"})
 	# Boat: SECURE_LOOT on the deck (deck-hatch visual, no van body), ESCAPE on the landing beside it.
 	prefab(e2, "secure_zone", "BoatSecureE2", Vector3(7.0, -1.0, 36.9), 0.0,
-		{"vehicle_collision": false, "zone_size_m": Vector3(4.0, 2.5, 2.4), "visual_scene": load(VIS_BOAT_HATCH)},
+		{"objective_tag": &"loot_secure", "vehicle_collision": false, "zone_size_m": Vector3(4.0, 2.5, 2.4),
+			"visual_scene": load(VIS_BOAT_HATCH)},
 		null, {"kind": "boat_hatch"}, false)
 	prefab(e2, "escape_zone", "BoatEscapeE2", Vector3(8.5, -1.2, 34.7), 0.0,
 		{"objective_tag": &"escape_boat", "escape_type": &"boat", "zone_size_m": Vector3(5.6, 3.0, 1.2)})
