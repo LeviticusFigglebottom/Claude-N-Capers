@@ -271,6 +271,32 @@ func test_s9_11_windows_break_and_open() -> void:
 	assert_true(sash.position.y > y0 + 0.3, "sash slid up")
 
 
+## QC-61: a `walkable` window has a layer-1 NavLink through the opening, enabled only while passable (sash
+## open or glass broken); a plain window has none.
+func test_qc61_walkable_window_nav_link() -> void:
+	var plain: WindowPrefab = ATestMaps.add_prefab(_rt, "window", Vector3(-4, 0.0, -4)) as WindowPrefab
+	var latched: WindowPrefab = ATestMaps.add_prefab(_rt, "window", Vector3(0, 0.0, -4), func(n: Node) -> void:
+		(n as WindowPrefab).walkable = true) as WindowPrefab
+	var sash: WindowPrefab = ATestMaps.add_prefab(_rt, "window", Vector3(4, 0.0, -4), func(n: Node) -> void:
+		(n as WindowPrefab).walkable = true
+		(n as WindowPrefab).openable = true) as WindowPrefab
+	await wait_physics_frames(2)
+	assert_true(plain.nav_link() == null, "a plain window has no NavLink")
+	for w: WindowPrefab in [latched, sash]:
+		assert_true(w.nav_link() != null, "walkable window builds a NavLink")
+		assert_eq(w.nav_link().navigation_layers, 1, "layer 1: every agent may use it when passable")
+		assert_false(w.nav_link().enabled, "shut window: link disabled")
+	latched.break_glass(0)
+	await wait_physics_frames(1)
+	assert_true(latched.nav_link().enabled, "broken glass: passable")
+	sash.set_open(true)
+	await wait_physics_frames(1)
+	assert_true(sash.nav_link().enabled, "open sash: passable")
+	sash.set_open(false)
+	await wait_physics_frames(1)
+	assert_false(sash.nav_link().enabled, "closed again: link off")
+
+
 func test_s9_6_keycard_reader_opens_targets() -> void:
 	var door: Door = ATestMaps.add_prefab(_rt, "door", Vector3(-4, 0, -6), func(n: Node) -> void:
 		(n as Door).lock = Door.Lock.ELECTRONIC) as Door

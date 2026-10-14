@@ -436,7 +436,7 @@ func _smash_camera(cam: SecurityCamera) -> String:
 	var spot: Vector3 = p.stand_point(mount + _flat(cam.look_forward()) * 0.6)
 	f.note("smash %s at %s from %s (fwd %s)" % [cam.name, Po5Pilot._v(cam.global_position), Po5Pilot._v(spot),
 		Po5Pilot._v(cam.look_forward())])
-	if not await p.goto(spot, 0.3, 90.0):
+	if not await _sneak_to(spot, 0.3, 90.0):
 		return "PO-5.stealth.camera: could not get under %s" % cam.name
 	if not await _mask_up():
 		return "PO-5.stealth.mask: could not mask up"
@@ -774,6 +774,13 @@ func _shout_reach() -> float:
 	return Tweak.stealth().shout_all_within_m - 0.7
 
 
+## Inside the workshop while its door is still locked (the navmesh runs through doorways).
+func _behind_locked(q: Vector3) -> bool:
+	var wd: InteractableComponent = _comp_tagged(&"workshop_door")
+	var door: Door = wd.owner_node() as Door if wd != null else null
+	return door != null and door.locked and q.y < 2.0 and q.x > 5.0 and q.x < 10.5 and q.z > 0.0 and q.z < 4.4
+
+
 ## The nav path to `to` crosses the sales floor / the staff-door end of G4 (masked there = seen).
 func _path_exposed(to: Vector3) -> bool:
 	if not crew.masked:
@@ -810,7 +817,7 @@ func _reshout_spot(c: NpcBase) -> Vector3:
 	var best: Vector3 = cands[1]
 	var best_len: float = INF
 	for q: Vector3 in cands:
-		if p.flat_dist(q, cp) > _shout_reach() or _exposed(q) or _path_exposed(q):
+		if p.flat_dist(q, cp) > _shout_reach() or _exposed(q) or _path_exposed(q) or _behind_locked(q):
 			continue
 		var l: float = _path_len(q)
 		if l < best_len:
