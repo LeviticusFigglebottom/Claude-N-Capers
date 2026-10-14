@@ -15,38 +15,20 @@ objectives = Array[StringName]([&"casing", &"find_canvases", &"keycard", &"serve
 preplanning = {
 "assets": {
 &"asset.ammo_bag_drop": {
-"point_ids": [&"pp_drop_mews", &"pp_drop_roof"],
-"tags": [&"loud"]
+"point_ids": [&"pp_drop_mews", &"pp_drop_roof"]
 },
 &"asset.body_bag_case_drop": {
 "point_ids": [&"pp_drop_court", &"pp_drop_mews", &"pp_drop_roof"]
 },
 &"asset.doctor_bag_drop": {
-"point_ids": [&"pp_drop_mews", &"pp_drop_roof"],
-"tags": [&"loud"]
+"point_ids": [&"pp_drop_mews", &"pp_drop_roof"]
 },
 &"asset.inside_keycard": {
-"cost": 1500,
-"favors": 1,
 "point_ids": [&"pp_insider_registrar"]
 },
-&"asset.intel_list": {
-"category": &"intel",
-"cost": 2000,
-"favors": 2,
-"reveals": [&"centrepiece", &"canvas_orchard", &"canvas_widow", &"canvas_saint"],
-"tags": [&"stealth"]
-},
-&"asset.intel_sensors": {
-"category": &"intel",
-"cost": 1200,
-"favors": 1,
-"reveals": [&"sensor_net"],
-"tags": [&"stealth"]
-},
+&"asset.intel_list": {},
+&"asset.intel_sensors": {},
 &"asset.propped_door": {
-"cost": 1000,
-"favors": 1,
 "max_count": 2,
 "point_ids": [&"pp_grate", &"pp_court_doors"]
 }

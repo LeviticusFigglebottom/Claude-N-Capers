@@ -1,0 +1,181 @@
+## GN-B1: Gallery Night content data (HeistDef + variant table drafted in content/_drafts/gallery_night until ENV A
+## moves them to world/heists/gallery_night). Pins the lead's rulings on the drafts:
+## one source of truth for pre-planning assets (the library holds the values, the def only references or re-points
+## them), guard counts per difficulty, Hazardous on the Brutal+ weights, kc_conservator only with cons_late.
+extends TestCase
+
+const HEIST: StringName = &"gallery_night"
+const DRAFT_DIR: String = "res://content/_drafts/gallery_night/"
+## guard_post picks (rovers + smoker, the hall post is fixed) by Enums.Difficulty, lead ruling 2.
+const GUARD_PICKS: Array[int] = [1, 1, 2, 3, 4, 4]
+const SEEDS: int = 200
+## Map slot ids per variant group (README "Map slot names"), stand-ins for the greybox's VariantSlots.
+const SLOTS: Dictionary = {
+	&"centrepiece": [&"cp_landing", &"cp_store", &"cp_treasury"],
+	&"canvas_orchard": [&"orchard_benefactors", &"orchard_calloway", &"orchard_quarantine"],
+	&"canvas_widow": [&"widow_conservation", &"widow_founders", &"widow_sallow"],
+	&"canvas_saint": [&"saint_harbour", &"saint_maritime", &"saint_store"],
+	&"sensor_net": [&"sensors_all", &"sensors_treasury", &"sensors_upper"],
+	&"conservator": [&"cons_gone", &"cons_late"],
+	&"keycard": [&"kc_conservator", &"kc_curator", &"kc_registrar", &"kc_security"],
+	&"code_note": [&"code_admin_postit", &"code_curator_planner", &"code_security_log"],
+	&"guard_post": [&"dock_smoker", &"rover_basement", &"rover_ground", &"rover_none", &"rover_upper"],
+	&"security_room_staffed": [&"sec_empty", &"sec_staffed"],
+	&"camera": [&"cam_a", &"cam_b", &"cam_c"],
+	&"laser_pattern": [&"lz_static", &"lz_sweep", &"lz_timed"],
+	&"curator_route": [&"curator_hall", &"curator_office"],
+	&"court_doors": [&"court_doors_locked", &"court_doors_open"],
+	&"areaway": [&"grate_loose", &"grate_padlocked"],
+	&"escape": [&"esc_mews", &"esc_parade"],
+	&"xl_crate": [&"xl_loan"],
+	&"admin_pa": [&"pa_late"],
+}
+## HeistDef.preplanning override key -> PreplanAssetDef property (PreplanAssetDef.with_overrides).
+const FIELD_OF: Dictionary = {"params": "drop_params"}
+
+var _def: HeistDef = null
+var _table: HeistVariantTable = null
+var _slots: Dictionary = {}
+var _nodes: Array[Node] = []
+
+
+func before_all() -> void:
+	_def = load(_path("%s_def.tres" % HEIST)) as HeistDef
+	_table = load(_path("%s_variants.tres" % HEIST)) as HeistVariantTable
+	for g: StringName in SLOTS:
+		_slots[g] = []
+		for sid: StringName in SLOTS[g]:
+			var vs: VariantSlot = VariantSlot.new()
+			vs.slot_group = g
+			vs.slot_id = sid
+			(_slots[g] as Array).append(vs)
+			_nodes.append(vs)
+
+
+func after_all() -> void:
+	for n: Node in _nodes:
+		n.free()
+	_nodes.clear()
+
+
+func test_drafts_load() -> void:
+	assert_true(_def != null, "HeistDef loads")
+	assert_true(_table != null, "variant table loads")
+	if _def != null:
+		assert_eq(_def.id, HEIST)
+		assert_eq(_def.base_payout, 105000)
+
+
+## Lead ruling 6: the library assets hold the values; a def entry only references them ({}) or changes what is
+## heist-specific (points, copies). Restating a library value is a duplicate and fails here.
+func test_def_preplanning_does_not_restate_library_values() -> void:
+	if _def == null:
+		fail("no def")
+		return
+	var lib: Dictionary = PreplanBoard.generic_assets()
+	var entries: Dictionary = _def.preplanning.get("assets", {}) as Dictionary
+	for id: Variant in entries:
+		var base: PreplanAssetDef = lib.get(StringName(id)) as PreplanAssetDef
+		assert_true(base != null, "%s is a library asset" % id)
+		if base == null:
+			continue
+		var entry: Dictionary = entries[id]
+		var errs: Array[String] = []
+		var merged: PreplanAssetDef = base.with_overrides(entry, errs)
+		assert_eq(errs, [] as Array[String], "%s overrides" % id)
+		for k: Variant in entry:
+			var prop: String = String(FIELD_OF.get(String(k), String(k)))
+			assert_ne(merged.get(prop), base.get(prop), "%s restates the library's %s" % [id, k])
+	for id: StringName in [&"asset.intel_list", &"asset.intel_sensors"]:
+		assert_eq(entries.get(id), {}, "%s is referenced by id only" % id)
+
+
+func test_def_preplanning_merges_cleanly() -> void:
+	if _def == null:
+		fail("no def")
+		return
+	var errs: Array[String] = []
+	var merged: Dictionary = PreplanBoard.merge(PreplanBoard.generic_assets(), _def.preplanning, errs)
+	for id: Variant in merged["assets"]:
+		errs.append_array((merged["assets"][id] as PreplanAssetDef).validate())
+	assert_eq(errs, [] as Array[String])
+	assert_eq(int(merged.get("favors", 0)), 5)
+
+
+## Lead ruling 2: 1 pick at Routine/Tense (rover_none ~20%), 2 at Hazardous, 3 at Brutal, 4 at Lethal+.
+func test_guard_post_picks_per_difficulty() -> void:
+	for d: int in range(GUARD_PICKS.size()):
+		var none: int = 0
+		for s: int in range(SEEDS):
+			var picked: Array = _roll(d, s).get(&"guard_post", [])
+			assert_eq(picked.size(), GUARD_PICKS[d], "difficulty %d seed %d picks" % [d, s])
+			if picked.has(&"rover_none"):
+				none += 1
+		if d >= Enums.Difficulty.HAZARDOUS:
+			assert_eq(none, 0, "no rover_none from Hazardous (difficulty %d)" % d)
+		else:
+			var share: float = float(none) / SEEDS
+			assert_true(share > 0.1 and share < 0.3, "rover_none ~20%% at difficulty %d (got %.2f)" % [d, share])
+
+
+## Lead ruling 1: Tense keeps the Routine (base) weights, Hazardous uses the Brutal+ weights.
+func test_hazardous_uses_brutal_weights_tense_routine() -> void:
+	if _table == null:
+		fail("no table")
+		return
+	var haz: int = Enums.Difficulty.HAZARDOUS
+	var bru: int = Enums.Difficulty.BRUTAL
+	for group: StringName in [&"sensor_net", &"laser_pattern"]:
+		var wbd: Dictionary = _rule(group).get("weights_by_difficulty", {})
+		assert_true(wbd.has(haz), "%s has Hazardous weights" % group)
+		assert_eq(wbd.get(haz), wbd.get(bru), "%s Hazardous = Brutal+" % group)
+		assert_false(wbd.has(Enums.Difficulty.TENSE), "%s Tense uses the base (Routine) weights" % group)
+	for id: StringName in [&"patrons", &"escape_eta_s"]:
+		var sc: Dictionary = _scalar(id)
+		var wbd: Dictionary = sc.get("weights_by_difficulty", {})
+		assert_true(wbd.has(haz), "%s has Hazardous weights" % id)
+		assert_eq(wbd.get(haz), wbd.get(bru), "%s Hazardous = Brutal+" % id)
+		assert_false(wbd.has(Enums.Difficulty.TENSE), "%s Tense uses the base (Routine) weights" % id)
+
+
+func test_keycards_and_rare_event_gates() -> void:
+	for d: int in range(GUARD_PICKS.size()):
+		for s: int in range(40):
+			var r: Dictionary = _roll(d, s)
+			var cards: Array = r.get(&"keycard", [])
+			assert_eq(cards.size(), 2, "two keycards")
+			if cards.has(&"kc_conservator"):
+				assert_has(r.get(&"conservator", []), &"cons_late", "kc_conservator needs cons_late")
+	var gates: Dictionary = {&"insurance_inspection": 2, &"vaultline_early": 2, &"argus_upgrade": 4}
+	for ev: Dictionary in _table.rare_events:
+		var id: StringName = StringName(ev["id"])
+		if gates.has(id):
+			assert_eq(int(ev.get("min_difficulty", -1)), int(gates[id]), "%s min_difficulty (top level)" % id)
+		assert_false((ev.get("effects", {}) as Dictionary).has("min_difficulty"), "%s: min_difficulty is top level" % id)
+
+
+# --- helpers ------------------------------------------------------------------------------
+
+## The registered def's folder once ENV A moves the files, else the drafts folder.
+func _path(file: String) -> String:
+	var world: String = HeistRegistry.def_path(HEIST).get_base_dir().path_join(file)
+	return world if ResourceLoader.exists(world) else DRAFT_DIR + file
+
+
+func _roll(difficulty: int, seed_i: int) -> Dictionary:
+	GameRng.begin_run(7000 + seed_i)
+	return VariantResolver.resolve(_table, _slots, difficulty)
+
+
+func _rule(group: StringName) -> Dictionary:
+	for r: Dictionary in _table.rules:
+		if StringName(r.get("group", &"")) == group:
+			return r
+	return {}
+
+
+func _scalar(id: StringName) -> Dictionary:
+	for sc: Dictionary in _table.scalars:
+		if StringName(sc.get("id", &"")) == id:
+			return sc
+	return {}

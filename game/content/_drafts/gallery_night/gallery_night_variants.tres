@@ -20,6 +20,11 @@ rules = Array[Dictionary]([{
 "group": &"sensor_net",
 "pick": Vector2i(1, 1),
 "weights_by_difficulty": {
+2: {
+&"sensors_all": 0.4,
+&"sensors_treasury": 0.2,
+&"sensors_upper": 0.4
+},
 3: {
 &"sensors_all": 0.4,
 &"sensors_treasury": 0.2,
@@ -96,6 +101,11 @@ rules = Array[Dictionary]([{
 "group": &"laser_pattern",
 "pick": Vector2i(1, 1),
 "weights_by_difficulty": {
+2: {
+&"lz_static": 0.2,
+&"lz_sweep": 0.4,
+&"lz_timed": 0.4
+},
 3: {
 &"lz_static": 0.2,
 &"lz_sweep": 0.4,
@@ -211,6 +221,7 @@ scalars = Array[Dictionary]([{
 "values": [3, 5, 7, 9],
 "weights": PackedFloat32Array(0.4, 0.4, 0.2, 0),
 "weights_by_difficulty": {
+2: PackedFloat32Array(0, 0.3, 0.4, 0.3),
 3: PackedFloat32Array(0, 0.3, 0.4, 0.3),
 4: PackedFloat32Array(0, 0.3, 0.4, 0.3),
 5: PackedFloat32Array(0, 0.3, 0.4, 0.3)
@@ -232,6 +243,7 @@ scalars = Array[Dictionary]([{
 "values": [90.0, 120.0, 150.0],
 "weights": PackedFloat32Array(0.4, 0.4, 0.2),
 "weights_by_difficulty": {
+2: PackedFloat32Array(0.2, 0.4, 0.4),
 3: PackedFloat32Array(0.2, 0.4, 0.4),
 4: PackedFloat32Array(0.2, 0.4, 0.4),
 5: PackedFloat32Array(0.2, 0.4, 0.4)

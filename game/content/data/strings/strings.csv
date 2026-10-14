@@ -3068,3 +3068,29 @@ voice.vo.mercer.gallery_night_van_eta,Van's {seconds} seconds out. Hold the dock
 voice.vo.mercer.gallery_night_limo_eta,Limo's {seconds} seconds out. Hold the hall.
 voice.vo.mercer.gallery_night_sniper_hotel,Sniper on the hotel roof. Stay out of the Mews mouth.
 voice.vo.mercer.gallery_night_escape,"Your ride's here. Canvases in, then you."
+voice.vo.vance.gallery_night_radio_casing,You've seen the rooms. Now forget the champagne and remember the walls.
+voice.vo.vance.gallery_night_radio_find_canvases,"All four on the list, found. My buyer will be thrilled, in his quiet way."
+voice.vo.vance.gallery_night_radio_keycard,"A keycard. Spend it wisely, darling, there aren't enough to go round."
+voice.vo.vance.gallery_night_radio_server_code,The Argus code. Someone at the Halberd writes things down. Bless them.
+voice.vo.vance.gallery_night_radio_hack,Argus is blind. The frames are just frames now.
+voice.vo.vance.gallery_night_radio_treasury,The Treasury is open. Mind the pretty red lines.
+voice.vo.vance.gallery_night_radio_art_store,"The art store. Everything they didn't think worth showing, which is rarely true."
+voice.vo.vance.gallery_night_radio_centrepiece,"The Lantern Bearer, off its stretcher. Now I can breathe."
+voice.vo.vance.gallery_night_radio_canvases_new,"One more from the list. Any of them, but do pick a nice one."
+voice.vo.vance.gallery_night_radio_canvases,"That's two from the list. The buyer's minimum, and mine."
+voice.vo.vance.gallery_night_radio_secure,"The Lantern Bearer and a companion, safely away. Anything more is a gift."
+voice.vo.vance.gallery_night_radio_extras,The whole list and the studies too. You spoil me.
+voice.vo.vance.gallery_night_radio_lockers,The consignment lockers. Friday's auction will be very short.
+voice.vo.vance.gallery_night_radio_curator_safe,Madame Sorell's safe. She'll blame the caterers.
+voice.vo.vance.gallery_night_radio_lockdown,"Shutters. How dramatic. Get them up again, darling."
+voice.vo.vance.gallery_night_radio_server_door,You're in with the machines. Make them behave.
+voice.vo.vance.gallery_night_radio_vault_drill_new,"Drill the vault door. Loudly, since we're past manners."
+voice.vo.vance.gallery_night_radio_vault_drill,The vault is through. Take what's on the racks.
+voice.vo.vance.gallery_night_radio_escape_wait_new,Your ride is coming. Hold the room and keep the canvases dry.
+voice.vo.vance.gallery_night_radio_escape_wait,Your ride has arrived. Do stop shooting and start leaving.
+voice.vo.vance.gallery_night_radio_escape_new,The Halberd has had enough of you. Find your way out.
+voice.vo.vance.gallery_night_radio_escape_available,"The exit is yours. Rolled canvases first, then you."
+voice.vo.vance.gallery_night_radio_escape,"Your car is waiting, darling. Don't crease anything."
+voice.vo.vance.gallery_night_radio_loot_lantern_bearer,The Lantern Bearer is mine. Ours. Mostly mine.
+voice.vo.vance.gallery_night_radio_loot_study,"A study. Not on the list, but I never refuse a sketch."
+voice.vo.vance.gallery_night_radio_loot,Another canvas off the Halberd's walls. Lovely.
