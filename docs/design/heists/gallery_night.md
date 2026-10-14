@@ -201,8 +201,8 @@ because Stair SS and the fire-escape ladder arrive on it.
 | Fire-escape ladder | 0.0 → 9.0 | caged fixed ladder on the north facade (x 10), from the Mews to the roof deck; the bottom 2.4 m is a counterweighted drop section (down by default) | — | `ladder` prefab `height_m 9.0`, masked only, no bags |
 
 **Stair core fit** (SS: 3.0 × 8.0 m centre lines, 0.3 m walls → 2.7 × 7.7 m clear): flights 1.2 +
-0.2 well + 1.2 = 2.6 ≤ 2.7 ✓. Along z, the longest storey (5.4 m, 3.92 m run) needs 1.30 floor
-landing + 3.92 + 1.30 half landing = 6.52 ≤ 7.70 ✓. Every up-flight starts at the same edge, so the
+0.2 well + 1.2 = 2.6 ≤ 2.7 ✓. Along z, the longest storey (5.4 m, 3.92 m run) needs 1.35 floor
+landing (it takes the whole 1.0 m stair door at z 6.5–7.5) + 3.92 + 1.30 half landing = 6.57 ≤ 7.70 ✓. Every up-flight starts at the same edge, so the
 shorter runs leave a deeper half landing. Headroom under each return flight ≥ 3.3 m ✓ (one storey).
 The stair door (1.0 m) is on the **east wall at the south floor landing** (x 3, z 6.5–7.5) on every
 level and opens onto a level landing, never a flight. Vision panel 0.15 × 0.6 m in each door.
@@ -394,11 +394,11 @@ and Wexley St with closed blinds. Vestibule, cloakroom and shop have shop-front 
 | QR | storage (quarantine) | 8 × 6 | 3.0 | `storage_quarantine` | Incoming loans acclimatise here in **crates** (humidity loggers). `orchard_quarantine` slot: The Salt Orchard back from a loan, in an opened travel crate (cut 4 s; the crate lid is off). |
 | BB | corridor (basement) | 29 × 2 | 3.0 | `corridor_service` | Spine; the vault door and its thermal-drill point; camera C12 (E end). |
 | PL | plant | 12 × 12 | 3.4 | `plant_climate` | Air-handling units, humidifiers, chillers, the inert-gas suppression cylinders (dressing). **Areaway ladder** `H^` to the court grate. BODY_HIDE (2, behind the AHU). |
-| AS | vault (art store) | 20 × 12 | 3.4 | `art_store` | **The vault.** Pull-out mesh painting racks (12 screens), plan chests, the consignment lockers (`deposit_box`). Studies on the screens (`loot_spawn` `loot.painting_study` × `store_paintings`). Slots `cp_store`, `saint_store`. Camera C14 (always live). Vault door W wall (x 21–22, z 8). |
+| AS | vault (art store) | 20 × 12 | 3.4 | `art_store` | **The vault.** Pull-out mesh painting racks (12 screens), plan chests, the consignment lockers (`deposit_box`). Studies on the screens (`loot_spawn` `loot.painting_study` × `store_paintings`). Slots `cp_store`, `saint_store`. Camera C14 (always live). Vault door on the N wall (x 21–22, z 8), off BB. |
 | SS-roof / HH | stair (head house) | 3 × 8 | 2.7 | — | Roof door LOCKPICK. |
 | BR | break_room (staff + caterers' servery) | 6 × 6 | 3.0 | `break_room` | Fridge, counter + sink, microwave, coffee, table with 6 chairs, bulletin board, the caterers' glass racks and ice tubs (gala). Window N (Mews). |
 | WC | restroom (staff) | 3 × 6 | 3.0 | `restroom_multi` | 2 cubicles, sink. |
-| SC | security_room | 6 × 6 | 3.0 | `security_office` | **`camera_station` with its monitor wall on the west wall** (WC partition); the operator sits at (13.5, 3.5) facing **west**. Door S (15, 6) is 121° off his facing (outside the 120° FOV). Key cabinet on the east wall (`kc_security`), the **guard log** on the NE counter (`code_security_log`), lockers, kettle, phone, `alarm_button` on the console. Window N (Mews, frosted). |
+| SC | security_room | 6 × 6 | 3.0 | `security_office` | **`camera_station` with its monitor wall on the west wall** (WC partition); the operator sits at (13.5, 3.5) facing **west**. Door S (16, 6) is ≈ 135° off his facing (outside the 120° FOV). Key cabinet on the east wall (`kc_security`), the **guard log** on the NE counter (`code_security_log`), lockers, kettle, phone, `alarm_button` on the console. Window N (Mews, frosted). |
 | RG | office (registrar) | 6 × 6 | 3.0 | `office_registrar` | Loans and shipping desk, condition reports, crate labels, `kc_registrar` (desk drawer), phone. Window N. |
 | J | janitor | 2 × 6 | 3.0 | `janitor_closet` | Mop sink, cleaner's cart, shelving. BODY_HIDE (1). |
 | E1 | electrical | 2 × 6 | 3.0 | `electrical_closet` | Sub-board, the Argus field panel (dressing), telecom. |
@@ -407,7 +407,7 @@ and Wexley St with closed blinds. Vestibule, cloakroom and shop have shop-front 
 | GH | atrium (Great Hall) | 20 × 18 | **9.8** (coffered laylight; 5.1 under the balconies) | `great_hall_gala` | **Landmark.** The imperial stair, the gala bar (1.1 m `counter_bar`, x 13–17), cocktail tables, a string-trio stage (dressing), the velvet rope, 2 benches. `cp_landing`. Under the half landing: the staff door. The ceiling median is 9.8 (the void is 252 of 360 m²). C2 (ceiling mount under the east balcony, 5.1 m). |
 | VE | lobby (vestibule) | 8 × 4 | 4.5 | `vestibule_bronze` | Bronze outer doors (4 leaves, open until last call, then locked), glass inner screen, the guest list lectern. C1 over the inner screen looking N. |
 | CK | reception (cloakroom) | 6 × 4 | 4.5 | `cloakroom` | 0.9 m service counter, coat rails, the **tip jar and cash box** (`small_loot`). An attendant until last call. |
-| GS | retail (gift shop) | 6 × 4 | 4.5 | `gift_shop` | Closed for the gala: shutter down on the VE side, door from VE (LOCKPICK). Till (`small_loot`), print racks, books. Shop-front glazing to the Parade. |
+| GS | retail (gift shop) | 6 × 4 | 4.5 | `gift_shop` | Closed for the gala: shutter down on the VE side (shop front, not a door); the door (28, 26) opens from GH (LOCKPICK). Till (`small_loot`), print racks, books. Shop-front glazing to the Parade. |
 | WG | gallery (Founders' Gallery) | 12 × 12 | 4.5 | `gallery_hang` | 19th-century portraits. French doors W to the Sculpture Court (`court_doors`), art-handling door N to BC (`DD`, LOCKPICK). `widow_founders` slot + 2 studies. C3. |
 | DC | gallery (Drawings Cabinet) | 7 × 10 | 4.5 | `gallery_cabinet` | Low-light room (50 lux) for works on paper: wall vitrines and 2 studies. Dead end **with a reason** (a cabinet room). |
 | PWW, PWM | restroom (public) | 5 × 5 each | 3.0 (dropped ceiling; 1.5 m void above, Lead rulings Q4) | `restroom_public` | 3 cubicles each, marble vanity. Doors to GH. |
@@ -430,7 +430,8 @@ and Wexley St with closed blinds. Vestibule, cloakroom and shop have shop-front 
 | X1 | exterior (Aldous Parade + portico) | 98 × 22 | — | `exterior_boulevard` | Red carpet, rope lines, lilac uplights, sodium-white street lamps, the median trees, parked limousines, the gala coach. |
 | X2 | exterior (Wexley St + Mews) | — | — | `exterior_mews` | Cobbles, the Mews bins (`body_container` ×2, BODY_HIDE), the fire-escape ladder, the caterers' van, the hotel canopy across Wexley St. |
 | X3 | exterior (Sculpture Court) | 14 × 30 | — | `exterior_court` | Gravel, 5 bronzes on plinths, a reflecting pool (rim + depth ≤ 0.35 m, a step, not OOB; Build rulings B4), benches, standing heaters and the smokers' ashtray stand (gala), the areaway grate, the gate. |
-| X4 | exterior (roof deck) | 25 × 8 | — | `exterior_roof` | AHUs, condensers, cable trays, the ladder top, the head house. |
+| X4 | exterior (roof deck) | 25 × 8 + 4 × 2 (S of LM) | — | `exterior_roof` | AHUs, condensers, cable trays, the ladder top, the head house. |
+| LM | plant (lift motor room, roof) | 4 × 6 | 2.7 | — | Locked, no door to the crew (BARRED, no interaction); dressing only. |
 
 Support-space check (level_standards §2.2):
 - restrooms: public PWW/PWM (ground), staff WC (ground), LK WCs (basement), UW (upper) ✓;
@@ -439,8 +440,9 @@ Support-space check (level_standards §2.2):
 - 3 floors + roof deck: Stair SS plus the **grand stair** (2 stair cores for > 2 floors; the
   basement's second egress is the areaway ladder, a plausible plant egress, as Night Deposit) ✓;
 - fire exits: the portico, the LD personnel door, the court French doors, the roof deck via the
-  fire-escape ladder. The longest travel to an exit is ≈ 28 m (UG2 SW corner → SL → grand stair →
-  portico) ✓.
+  fire-escape ladder. The longest travel to an exit is ≈ 50 m (UG2 SW corner → UG1 → the Calloway arch → BW →
+  grand stair → VE → portico; SL does not open onto the balconies, the plan has wall stubs at x 13–14 / 30–31) ✓
+  (no travel limit in level_standards; Stair SS → roof is the second upper egress).
 
 **NPC placement for ENV D's ambient clips (characters.md v1.9, lead note):**
 - `curator_inspect`: every listed-canvas slot and every study on a gallery wall hangs with its
