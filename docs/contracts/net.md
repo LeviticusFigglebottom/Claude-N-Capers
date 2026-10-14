@@ -41,3 +41,6 @@ API: `game/core/net.gd`. Architecture: architecture.md §3.
   `answer_join(peer_id, accept, reason := &"denied")`; `join_failed` reasons: denied, timeout, full, cancelled,
   host_lost, kicked, off (plus ENV B's client-side `unreachable`: no reply from the host before any request). The policy is a host preference (persisted in GameSettings) copied into each new session.
 * Lobby codes (ENV B): Crockford base32 + Luhn mod-32 over IPv4:port; IPv6 out of scope. No LAN discovery yet.
+
+## D-105 presentation facts (HeistNetSync, RELIABLE)
+`_rpc_crew_shot`, `_rpc_impact_fx`, `_rpc_explosion_fx`: see impact_fx.md 1.1 §2. Presentation only; gameplay stays server-authoritative (hit claims unchanged). Crew spread draws one GameRng `spread` seed per shot, then a per-shot RNG for pellets.

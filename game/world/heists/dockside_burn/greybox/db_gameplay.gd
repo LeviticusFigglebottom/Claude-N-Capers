@@ -485,16 +485,17 @@ func _variants_perch(variants: Node3D) -> void:
 func _variants_escape(variants: Node3D) -> void:
 	var esc: Node3D = _group(variants, "escape")
 	var e1: VariantSlot = _slot(esc, "escape", "esc_van_gate", 0.4, {"label": "E1", "holdout": "H4"})
-	prefab(e1, "secure_zone", "VanSecureE1", Vector3(34.0, 0.0, -23.0), 180.0, {}, null, {"kind": "vehicle"})
+	prefab(e1, "secure_zone", "VanSecureE1", Vector3(34.0, 0.0, -23.0), 180.0, {"objective_tag": &"loot_secure"}, null, {"kind": "vehicle"})
 	prefab(e1, "escape_zone", "VanEscapeE1", Vector3(34.0, 0.0, -18.8), 0.0,
 		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(5.0, 3.0, 2.4)})
 	var e2: VariantSlot = _slot(esc, "escape", "esc_van_lane", 0.3, {"label": "E2", "holdout": "lane"})
-	prefab(e2, "secure_zone", "VanSecureE2", Vector3(-5.0, 0.0, 1.0), 180.0, {}, null, {"kind": "vehicle"})
+	prefab(e2, "secure_zone", "VanSecureE2", Vector3(-5.0, 0.0, 1.0), 180.0, {"objective_tag": &"loot_secure"}, null, {"kind": "vehicle"})
 	prefab(e2, "escape_zone", "VanEscapeE2", Vector3(-5.0, 0.0, 5.0), 0.0,
 		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(3.6, 3.0, 2.4)})
 	var e3: VariantSlot = _slot(esc, "escape", "esc_boat", 0.3, {"label": "E3", "holdout": "H3"})
 	prefab(e3, "secure_zone", "BoatSecureE3", Vector3(22.5, -1.6, 55.6), 0.0,
-		{"vehicle_collision": false, "zone_size_m": Vector3(4.0, 2.5, 2.4), "visual_scene": load(BOAT_DROP_VISUAL)},
+		{"objective_tag": &"loot_secure", "vehicle_collision": false,
+			"zone_size_m": Vector3(4.0, 2.5, 2.4), "visual_scene": load(BOAT_DROP_VISUAL)},
 		null, {"kind": "boat_hatch"}, false)
 	prefab(e3, "escape_zone", "BoatEscapeE3", Vector3(24.0, L.LAND, 52.2), 0.0,
 		{"objective_tag": &"escape_boat", "escape_type": &"boat", "zone_size_m": Vector3(7.0, 3.0, 2.6)})
