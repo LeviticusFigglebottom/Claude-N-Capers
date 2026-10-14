@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only water_harbour_night --preset gsr
+module: tools/texgen/materials/water_harbour_night.py
+preset: tools/texgen/presets/gsr.py
+seed: 3378935000 (zlib.crc32('water_harbour_night'))
+size_px: 512
+tile_m: 8.0 (world-space: the shader samples world XZ / tile_m, mesh UVs unused)
+ripple: linear RGB, R/G = tangent normal X/Y (OpenGL Y+, 0.5 flat, +-slope_range), B = slick mask
+shader: res://world/materials/shaders/water.gdshader
+stats: {"slick_mean": 0.5662, "slope_clipped_frac": 0.0, "slope_rms": 0.0973}

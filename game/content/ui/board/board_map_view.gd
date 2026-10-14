@@ -14,6 +14,8 @@ var pins: Array[BoardPin] = []
 var exit_right: Control = null
 ## Pin disc centres in px after spreading (slot order).
 var pin_centers: Array[Vector2] = []
+## District name rects as last drawn (tests): {district id: Rect2}.
+var label_rects: Dictionary = {}
 var _contracts: Array[Dictionary] = []
 
 
@@ -187,13 +189,41 @@ func _draw() -> void:
 	for av: PackedVector2Array in city.avenues:
 		draw_polyline(_px(av), city.avenue_color, city.avenue_px, true)
 	var font: Font = get_theme_default_font()
+	var blockers: Array[Rect2] = []
+	for pin: BoardPin in pins:
+		if pin.visible:
+			blockers.append(pin.get_rect().grow(4.0))
+	label_rects.clear()
 	for id: StringName in city.district_ids():
 		var text: String = UiText.t(StringName("ui.board.district.%s" % id)).to_upper()
-		var at: Vector2 = to_px(city.district_center(id))
-		var w: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, city.label_font_px).x
-		draw_string(font, at - Vector2(w * 0.5, -city.label_font_px * 0.35), text, HORIZONTAL_ALIGNMENT_LEFT, -1,
+		var ts: Vector2 = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, city.label_font_px)
+		var box: Rect2 = label_box(to_px(city.district_center(id)), Vector2(ts.x, city.label_font_px), blockers)
+		label_rects[id] = box
+		draw_string(font, box.position + Vector2(0, city.label_font_px * 0.85), text, HORIZONTAL_ALIGNMENT_LEFT, -1,
 				city.label_font_px, city.label_color)
 	draw_rect(r, Color(1, 1, 1, 0.12), false, 2.0)
+
+
+## AU-5 (lane 2 audit): a district name sat under contract pins (HARBOR, DOCKS). The name keeps its centre
+## when that is clear, else moves up or down in label-height steps (then also sideways) to the nearest spot
+## clear of every pin.
+static func label_box(center: Vector2, label_size: Vector2, blockers: Array[Rect2]) -> Rect2:
+	var base: Rect2 = Rect2(center - label_size * 0.5, label_size)
+	var best: Rect2 = base
+	var best_overlap: float = INF
+	for dx: float in [0.0, -0.6, 0.6]:
+		for k: int in range(0, 9):
+			var dy: float = label_size.y * 1.2 * float((k + 1) / 2) * (1.0 if k % 2 == 1 else -1.0)
+			var r: Rect2 = Rect2(base.position + Vector2(dx * label_size.x, dy), base.size)
+			var overlap: float = 0.0
+			for b: Rect2 in blockers:
+				overlap += b.intersection(r).get_area() if b.intersects(r) else 0.0
+			if overlap <= 0.0:
+				return r
+			if overlap < best_overlap:
+				best_overlap = overlap
+				best = r
+	return best  # a district full of pins: the spot they cover least
 
 
 func _px(poly: PackedVector2Array) -> PackedVector2Array:

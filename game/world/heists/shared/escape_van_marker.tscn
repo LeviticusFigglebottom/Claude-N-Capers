@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[node name="EscapeVanMarker" type="Node3D"]
+metadata/escape_vehicle = &"secure_zone"
+
+[node name="Body" type="Node3D" parent="."]
+
+[node name="DoorL" type="Node3D" parent="."]
+
+[node name="DoorR" type="Node3D" parent="."]

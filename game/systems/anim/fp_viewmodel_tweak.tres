@@ -39,7 +39,7 @@ part_ramp_frames = 3.0
 left_hand_ik_skip_sets = Array[StringName]([&"bow", &"akimbo"])
 set_hip_offset = Dictionary[StringName, Vector3]({
 &"pistol": Vector3(0.02, 0.025, 0.05),
-&"rifle": Vector3(0.05, -0.01, -0.12),
+&"rifle": Vector3(0.05, -0.01, -0.135),
 &"flamethrower": Vector3(0.05, -0.01, -0.16),
 &"saw": Vector3(0.05, -0.01, -0.06),
 &"sniper": Vector3(0.05, -0.01, -0.17),

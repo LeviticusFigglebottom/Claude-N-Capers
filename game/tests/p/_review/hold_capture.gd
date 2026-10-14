@@ -105,8 +105,9 @@ func _sheet(rows: Array[Array]) -> void:
 	if rows.is_empty() or (rows[0] as Array).is_empty():
 		return
 	var cell: Image = (rows[0] as Array)[0]
-	var w: int = cell.get_width() / 2
-	var h: int = cell.get_height() / 2
+	var half: bool = cell.get_width() > 400  # full-size cells from a small window (--resolution 320x180)
+	var w: int = cell.get_width() / 2 if half else cell.get_width()
+	var h: int = cell.get_height() / 2 if half else cell.get_height()
 	var sheet: Image = Image.create(w * POSES.size(), h * rows.size(), false, Image.FORMAT_RGBA8)
 	for y: int in rows.size():
 		for x: int in (rows[y] as Array).size():

@@ -1,0 +1,29 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://world/materials/shaders/water.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" path="res://assets/textures/water_harbour_night/tex_water_harbour_night_ripple.png" id="2_ripple"]
+
+[resource]
+resource_name = "M_water_harbour_night"
+shader = ExtResource("1_shader")
+shader_parameter/deep_color = Color(0.1020, 0.1412, 0.1294, 1)
+shader_parameter/sheen_color = Color(0.2745, 0.3137, 0.3098, 1)
+shader_parameter/sheen = 0.35
+shader_parameter/ripple_tex = ExtResource("2_ripple")
+shader_parameter/tile_m = 8.0
+shader_parameter/ripple_scale_b = 2.7
+shader_parameter/slick_scale = 0.09
+shader_parameter/flow_a = Vector2(0.012, 0.007)
+shader_parameter/flow_b = Vector2(-0.009, 0.013)
+shader_parameter/flow_slick = Vector2(0.002, -0.001)
+shader_parameter/ripple_strength = 0.45
+shader_parameter/slick_calm = 0.25
+shader_parameter/far_fade_m = 70.0
+shader_parameter/roughness_calm = 0.04
+shader_parameter/roughness_rippled = 0.12
+shader_parameter/specular_f0 = 0.5
+shader_parameter/glint_strength = 2.0
+shader_parameter/glint_sharpness = 4000.0
+shader_parameter/glint_spread = 0.25
+shader_parameter/glint_fog = 0.004
+metadata/uv_tile_m = 8.0

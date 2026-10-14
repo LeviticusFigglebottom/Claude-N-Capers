@@ -147,3 +147,19 @@ func test_card_gives_way_to_a_toast() -> void:
 	assert_false(_card.visible, "the toast crosses the card's title")
 	await wait_seconds(0.4)
 	assert_true(_card.visible, "back once the toast is gone")
+
+
+## Lane 2 audit: the card sat over the downed screen (grey-out, countdown, "your crew can revive you").
+func test_card_hides_while_downed() -> void:
+	_model.player_mode = &"casing"
+	await wait_frames(1)
+	assert_true(_card.visible)
+	_model.crew_state = Enums.CrewState.DOWNED
+	_model.bleedout_s = 30.0
+	await wait_frames(2)
+	assert_true(_hud.downed.active, "the downed screen is up")
+	assert_false(_card.visible, "the card gives way to the downed screen")
+	_model.crew_state = Enums.CrewState.NORMAL
+	_model.bleedout_s = -1.0
+	await wait_frames(2)
+	assert_true(_card.visible, "back once revived")

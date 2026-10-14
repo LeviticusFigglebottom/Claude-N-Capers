@@ -169,6 +169,23 @@ PRESET = {
         "emissive_reticle_red": {
             "albedo": "#2A0605", "emission": "#FF1A10", "emission_energy": 1.0, "roughness": 0.5,
         },
+        # Night harbour water (kind "water", PO-13). Texture: ripple field sizes (cells per metre over the
+        # 8 m tile), heights and the slick mask. Shader: deep body colour (dark green-grey, below the
+        # albedo floor on purpose: water absorbs, its look is the reflection), Fresnel sheen toward the
+        # fog/horizon, two ripple layers drifting against each other and a large slow slick layer.
+        "water_harbour_night": {
+            "ripple_cells_per_m": 0.75, "ripple_mm": 80.0, "chop_cells_per_m": 2.5, "chop_mm": 14.0,
+            "warp": 0.035, "warp_cells_per_m": 0.25, "slope_range": 0.4, "slick_cells_per_m": 0.25,
+            "shader": {
+                "deep_color": "#1A2421", "sheen_color": "#46504F", "sheen": 0.35,
+                "ripple_scale_b": 2.7, "slick_scale": 0.09,
+                "flow_a": (0.012, 0.007), "flow_b": (-0.009, 0.013), "flow_slick": (0.002, -0.001),
+                "ripple_strength": 0.45, "slick_calm": 0.25, "far_fade_m": 70.0,
+                "roughness_calm": 0.04, "roughness_rippled": 0.12, "specular": 0.5,
+                "glint_strength": 2.0, "glint_sharpness": 4000.0, "glint_spread": 0.25,
+                "glint_fog": 0.004,
+            },
+        },
         # Trim sheet colour overrides (sources are library materials; see trim.py).
         "trim_interior": {"paint": "#E2DCD0", "paint_rough": 0.38, "wear": 0.15, "grime": 0.2},
     },

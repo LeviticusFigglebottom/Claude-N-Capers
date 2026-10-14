@@ -29,6 +29,12 @@ var show_all: bool = false:
 		if v != show_all:
 			show_all = v
 			refresh()
+## Canvas rect where marker text is not drawn (the Tab sheet while it shows; Hud sets it). Badges still draw.
+var avoid: Rect2 = Rect2():
+	set(v):
+		if v != avoid:
+			avoid = v
+			queue_redraw()
 var _font: Font
 var _pulse: float = 0.0
 var _last_current: StringName = &""
@@ -217,5 +223,10 @@ func _glyph(kind: StringName, c: Vector2, u: float, col: Color) -> void:
 func _text(center: Vector2, s: String, fs: int, col: Color) -> void:
 	var w: float = _font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 	var at: Vector2 = center - Vector2(w * 0.5, 0)
+	if avoid.has_area():
+		# Lane 2 audit: over the Tab sheet a label crossed its text (LOOT SECURED); there only the badge shows.
+		var local: Rect2 = get_global_transform_with_canvas().affine_inverse() * avoid
+		if local.intersects(Rect2(at - Vector2(0, fs), Vector2(w, fs + 4))):
+			return
 	draw_string_outline(_font, at, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 6, Color(0, 0, 0, 1))
 	draw_string(_font, at, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)

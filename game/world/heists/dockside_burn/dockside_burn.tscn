@@ -54,10 +54,13 @@
 [ext_resource type="Script" path="res://systems/prefabs/ladder/ladder.gd" id="52_db"]
 [ext_resource type="PackedScene" path="res://systems/prefabs/secure_zone/secure_zone.tscn" id="53_db"]
 [ext_resource type="Script" path="res://systems/prefabs/secure_zone/secure_zone.gd" id="54_db"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/escape_zone/escape_zone.tscn" id="55_db"]
-[ext_resource type="Script" path="res://systems/prefabs/escape_zone/escape_zone.gd" id="56_db"]
-[ext_resource type="PackedScene" path="res://world/heists/dockside_burn/greybox/boat_drop_visual.tscn" id="57_db"]
-[ext_resource type="Script" path="res://world/heists/dockside_burn/dockside_burn_mission.gd" id="58_db"]
+[ext_resource type="PackedScene" path="res://world/props/secure_zone/veh_van_secure.tscn" id="55_db"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/escape_zone/escape_zone.tscn" id="56_db"]
+[ext_resource type="Script" path="res://systems/prefabs/escape_zone/escape_zone.gd" id="57_db"]
+[ext_resource type="PackedScene" path="res://world/heists/shared/escape_van_marker.tscn" id="58_db"]
+[ext_resource type="PackedScene" path="res://world/heists/dockside_burn/greybox/boat_drop_visual.tscn" id="59_db"]
+[ext_resource type="PackedScene" path="res://world/heists/shared/escape_boat_marker.tscn" id="60_db"]
+[ext_resource type="Script" path="res://world/heists/dockside_burn/dockside_burn_mission.gd" id="61_db"]
 
 [sub_resource type="BoxShape3D" id="db_1"]
 size = Vector3(3.8, 3.6, 0.2)
@@ -17784,13 +17787,15 @@ params = {
 [node name="VanSecureE1" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_gate" unique_id=103266 instance=ExtResource("53_db")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 34, 0, -23)
 script = ExtResource("54_db")
+visual_scene = ExtResource("55_db")
 objective_tag = &"loot_secure"
 metadata/kind = "vehicle"
 
-[node name="VanEscapeE1" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_gate" unique_id=103267 instance=ExtResource("55_db")]
+[node name="VanEscapeE1" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_gate" unique_id=103267 instance=ExtResource("56_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 0, -18.8)
-script = ExtResource("56_db")
+script = ExtResource("57_db")
 zone_size_m = Vector3(5, 3, 2.4)
+visual_scene = ExtResource("58_db")
 objective_tag = &"escape_van"
 
 [node name="Slot_esc_van_lane" type="Node3D" parent="Variants/Group_escape" unique_id=103268]
@@ -17806,13 +17811,15 @@ params = {
 [node name="VanSecureE2" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_lane" unique_id=103269 instance=ExtResource("53_db")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5, 0, 1)
 script = ExtResource("54_db")
+visual_scene = ExtResource("55_db")
 objective_tag = &"loot_secure"
 metadata/kind = "vehicle"
 
-[node name="VanEscapeE2" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_lane" unique_id=103270 instance=ExtResource("55_db")]
+[node name="VanEscapeE2" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_lane" unique_id=103270 instance=ExtResource("56_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 5)
-script = ExtResource("56_db")
+script = ExtResource("57_db")
 zone_size_m = Vector3(3.6, 3, 2.4)
+visual_scene = ExtResource("58_db")
 objective_tag = &"escape_van"
 
 [node name="Slot_esc_boat" type="Node3D" parent="Variants/Group_escape" unique_id=103271]
@@ -17830,15 +17837,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, -1.6, 55.6)
 script = ExtResource("54_db")
 zone_size_m = Vector3(4, 2.5, 2.4)
 vehicle_collision = false
-visual_scene = ExtResource("57_db")
+visual_scene = ExtResource("59_db")
 objective_tag = &"loot_secure"
 metadata/kind = "boat_hatch"
 
-[node name="BoatEscapeE3" type="Node3D" parent="Variants/Group_escape/Slot_esc_boat" unique_id=103273 instance=ExtResource("55_db")]
+[node name="BoatEscapeE3" type="Node3D" parent="Variants/Group_escape/Slot_esc_boat" unique_id=103273 instance=ExtResource("56_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -1.8, 52.2)
-script = ExtResource("56_db")
+script = ExtResource("57_db")
 escape_type = &"boat"
 zone_size_m = Vector3(7, 3, 2.6)
+visual_scene = ExtResource("60_db")
 objective_tag = &"escape_boat"
 
 [node name="Group_night_shift" type="Node3D" parent="Variants" unique_id=103274]
@@ -17937,7 +17945,7 @@ slot_group = &"perch_trawler"
 slot_id = &"trawler_off"
 
 [node name="Mission" type="Node" parent="." unique_id=103292]
-script = ExtResource("58_db")
+script = ExtResource("61_db")
 
 [node name="Preplan" type="Node3D" parent="." unique_id=103293]
 
