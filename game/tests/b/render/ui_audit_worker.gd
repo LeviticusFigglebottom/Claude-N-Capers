@@ -28,7 +28,7 @@ func _shot(shot: String, frames: int = 12) -> void:
 	await RenderingServer.frame_post_draw
 	_n += 1
 	if _only != "" and _only != "heist" and _only != "menus" and _only != "screens" and _only != "fail" \
-			and not shot.begins_with(_only):
+			and _only != "range" and not shot.begins_with(_only):
 		return
 	var img: Image = get_viewport().get_texture().get_image()
 	var path: String = "%s/%02d_%s_%dx%d.png" % [_out, _n, shot, img.get_width(), img.get_height()]
@@ -48,9 +48,11 @@ func _run() -> void:
 		await _screens()
 	elif _only == "fail":
 		await _fail()
+	elif _only == "range":
+		await _range()
 	elif _only != "heist":
 		await _menus()
-	if _only != "menus" and _only != "screens" and _only != "fail":
+	if _only != "menus" and _only != "screens" and _only != "fail" and _only != "range":
 		await _heist()
 	SaveService.delete_profile(SLOT)
 	get_tree().quit(0)
@@ -172,6 +174,20 @@ func _fail() -> void:
 		if pd != null and is_instance_valid(pd):
 			pd.continue_button.pressed.emit()
 		await _shot("fail_home_" + String(reason), 20)
+
+
+## Lead queue (3) `range`: the firing range from the main menu, panel mode then aim mode.
+func _range() -> void:
+	_flow.show_home()
+	await _shot("range_main", 10)
+	_flow.main_menu.firing_range_requested.emit()
+	await _shot("range_panel", 90)
+	var ov: RangeOverlay = null
+	for n: Node in get_tree().root.find_children("*", "RangeOverlay", true, false):
+		ov = n as RangeOverlay
+	if ov != null:
+		ov.set_interactive(false)
+		await _shot("range_aim", 30)
 
 
 func _close_options() -> void:

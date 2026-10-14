@@ -57,7 +57,7 @@ func build() -> void:
 	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(v)
 	caption = UiBuild.float_text(UiBuild.caption(&"ui.hud.downed_title"))
-	caption.add_theme_color_override(&"font_color", UiTokens.ALERT)
+	caption.add_theme_color_override(&"font_color", tweak.low_health_color)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(caption)
 	timer_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD_BIG))
@@ -68,7 +68,7 @@ func build() -> void:
 	revive_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD))
 	revive_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(revive_label)
-	revive_bar = UiBuild.bar(UiTokens.OK, Vector2(320, 6))
+	revive_bar = UiBuild.bar(tweak.ally_color, Vector2(320, 6))
 	revive_bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	v.add_child(revive_bar)
 	visible = false
@@ -94,7 +94,7 @@ func refresh() -> void:
 	var bleed: float = float(prop(&"bleedout_s", -1.0))
 	timer_label.visible = bleed > 0.0
 	timer_label.text = UiText.t(&"ui.hud.bleedout_big", {"seconds": ceili(bleed)})
-	timer_label.add_theme_color_override(&"font_color", UiTokens.ALERT if bleed <= URGENT_S else UiTokens.PAPER)
+	timer_label.add_theme_color_override(&"font_color", tweak.low_health_color if bleed <= URGENT_S else UiTokens.PAPER)
 	var prog: float = float(prop(&"revive_progress", -1.0))
 	var slot: int = int(prop(&"reviver_slot", -1))
 	if prog >= 0.0 and slot >= 0:

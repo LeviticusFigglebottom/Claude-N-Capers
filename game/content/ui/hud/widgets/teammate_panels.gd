@@ -83,6 +83,8 @@ func _panel(m: Dictionary) -> PanelContainer:
 		info_label.custom_minimum_size = Vector2(200, 0)
 		v.add_child(info_label)
 	var badge: CrewStateBadge = CrewStateBadge.new()
+	badge.danger_color = tweak.low_health_color
+	badge.ally_color = tweak.ally_color
 	badge.set_row(m)
 	row.add_child(badge)
 	badges[slot] = badge

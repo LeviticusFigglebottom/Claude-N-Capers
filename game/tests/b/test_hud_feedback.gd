@@ -1,4 +1,4 @@
-## Lead round 62 gameplay feedback: hit marker kinds, only the local player's hits, damage-direction arcs
+## Lead round 62 gameplay feedback: hit marker kinds (headshot = palette armor role), only the local player's hits,
 ## and the low-health vignette + heartbeat.
 extends TestCase
 
