@@ -162,6 +162,9 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 	var recover: int = 0
 	var ok: bool = false
 	while t < timeout_s:
+		if combat and crew.crew_state != Enums.CrewState.NORMAL:
+			d.note("pilot: goto aborted, crew state %d (fight from the floor)" % crew.crew_state)
+			break  # ND attempt 14: walking on while downed meant never shooting, so police cuffed the pilot
 		if flat_dist(crew.global_position, target) <= arrive_m and absf(crew.global_position.y - target.y) <= arrive_dy:
 			ok = true
 			break
@@ -530,6 +533,9 @@ func secure_carried_bag(zone: Node3D) -> bool:
 	EventBus.loot_secured.connect(cb)
 	var target: Vector3 = zone.global_position
 	await goto(stand_point(target), 3.0, 120.0)
+	if crew.crew_state != Enums.CrewState.NORMAL:
+		EventBus.loot_secured.disconnect(cb)
+		return false  # downed on the way: the flow fights from the floor, then carries on
 	await face(target + Vector3(0, 0.8, 0), 0.05, 2.0)
 	var tries: int = 0
 	while crew.is_carrying_bag() and tries < 3:
