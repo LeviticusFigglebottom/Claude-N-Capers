@@ -146,6 +146,7 @@ func _approach() -> String:
 		# Back out the main entrance to the street.
 		if not await p.goto(Vector3(11.25, 0.0, 13.4), 0.6, 60.0):
 			return "PO-5.stealth.approach: could not leave the shop by the main entrance"
+		p.block_shout_after = 4
 	for wp: Vector3 in [Vector3(19.7, 0.0, 14.0), Vector3(19.6, 0.0, 2.6)]:
 		if not await p.goto(wp, 0.6, 60.0, false, false):
 			return "PO-5.stealth.approach: could not walk the street to %s" % Po5Pilot._v(wp)
@@ -153,6 +154,7 @@ func _approach() -> String:
 
 
 func _counter_keycard() -> String:
+	p.block_shout_after = 1000  # never shout on the sales floor: the whole floor goes down, then panics
 	var kc: InteractableComponent = _comp_tagged(&"keycard")
 	if not await p.goto(Vector3(11.25, 0.0, 10.8), 0.6, 60.0):
 		return "PO-5.stealth.counter: could not walk into the shop"
@@ -212,12 +214,27 @@ func _keycard_masked() -> String:
 
 
 ## Guards whose patrol reaches where we work (back of house, upstairs, the loot path) die by the knife.
+## Civilians get stuck at the stair foot (game finding): coming down masked they would see us at once.
+## From the stair top (another floor, no line of sight) the all-around shout still puts them down.
+func _clear_stair_foot() -> void:
+	for c: NpcBase in _civilians():
+		var b: CivilianBrain = _civ_brain(c)
+		if c.global_position.y < 1.5 and p.flat_dist(c.global_position, Vector3(13.9, 0.0, 4.9)) < 2.5 \
+				and (b.mode == CivilianBrain.Mode.IDLE or b.mode == CivilianBrain.Mode.WANDER):
+			f.note("civilian %s at the stair foot %s: shout from upstairs" % [c.name, Po5Pilot._v(c.global_position)])
+			if crew.global_position.y > 3.0:
+				await p.goto(Vector3(15.3, UPPER_Y, 5.25), 0.5, 30.0)
+			await _reshout(c)
+
+
 func _guards() -> String:
 	if not crew.masked:
 		# Stair landing: off every camera cone (C3 looks down G4, C6 down U4) and every room.
 		await p.goto(Vector3(14.5, 2.1, 0.8), 0.6, 60.0)
 	if not await _mask_up():
 		return "PO-5.stealth.mask: could not mask up"
+	if crew.global_position.y > 3.0:
+		await _clear_stair_foot()
 	for _round: int in 4:
 		var target: NpcBase = null
 		var best: float = INF
@@ -752,7 +769,11 @@ func _subdue(c: NpcBase) -> String:
 		return "" if b.mode == CivilianBrain.Mode.TIED else "PO-5.stealth.civilian: %s did not go down (mode %d)" % [c.name, b.mode]
 	var stationary: bool = [&"desk_work", &"sit", &"queue", &"phone"].has(StringName(c.spawn_info.get("idle_activity", &"")))
 	# Ties go to whoever stays in our way; the rest are kept down by re-shouts (_down_soon).
-	if crew.cable_ties > 0 and (stationary or crew.cable_ties > 1 or c.global_position.z < 6.0):
+	# A tied civilian is a `restrained` stimulus (guards radio, cameras alarm, civilians panic): tie only
+	# out of sight (workshop, receiving, upstairs rooms); in the corridor / on the floor keep them down.
+	var v: Vector3 = c.global_position
+	var hidden: bool = v.z < 4.3 or (v.y > 2.0 and (v.z < 4.4 or v.z > 6.1))
+	if crew.cable_ties > 0 and hidden and (stationary or crew.cable_ties > 1 or v.z < 6.0):
 		var tie: InteractableComponent = c.get_node_or_null(^"TieInteractable") as InteractableComponent
 		if tie != null:
 			await p.use(tie, 5.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED)

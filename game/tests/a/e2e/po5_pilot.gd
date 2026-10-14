@@ -31,6 +31,8 @@ var quiet: bool = false
 ## and lets them pass first, and shouts only after 4 tries (a shouted civilian gets up panicked when the
 ## intimidation runs out, so the stealth flow then has to keep them down).
 var shout_blockers: bool = true
+## With shout_blockers off: unstick tries before the pilot shouts at a civilian anyway.
+var block_shout_after: int = 4
 ## goto() also needs |dy| <= this to arrive (INF = horizontal distance only; stealth flows set it for stairs).
 var arrive_dy: float = INF
 var _in_hook: bool = false
@@ -268,7 +270,7 @@ func _log_stuck(corner: Vector3) -> void:
 func _unstick(attempt: int) -> void:
 	for i: int in crew.get_slide_collision_count():
 		var blocker: NpcBase = crew.get_slide_collision(i).get_collider() as NpcBase
-		if not shout_blockers and attempt < 4 and blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():
+		if not shout_blockers and attempt < block_shout_after and blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():
 			# Stealth: step back and sidestep away from the civilian instead of shouting.
 			var to_b: Vector3 = blocker.global_position - crew.global_position
 			var right: Vector3 = Vector3(cos(crew.look_yaw), 0.0, -sin(crew.look_yaw))
