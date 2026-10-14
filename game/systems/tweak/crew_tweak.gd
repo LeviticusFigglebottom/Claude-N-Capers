@@ -55,6 +55,11 @@ extends Resource
 @export var head_bob_sprint_mult: float = 1.6
 @export var head_bob_ads_mult: float = 0.15
 @export var head_bob_rate: float = 6.0
+## PO-4 (PD2 melee hit shaker): camera-only punch when the local human's melee hit lands: pitch down / roll kick
+## through a critically damped spring of melee_punch_hz (peak at 1/w s). 0 = off.
+@export var melee_punch_pitch_deg: float = 1.6
+@export var melee_punch_roll_deg: float = 1.0
+@export var melee_punch_hz: float = 4.0
 ## PO-4 (PD2): camera-only landing dip of the local human. A landing faster than land_dip_min_mps kicks the eye down
 ## by (impact - min) x land_dip_gain (m per m/s, capped at land_dip_max_m) through a critically damped spring of
 ## land_dip_hz, so it dips and recovers in ~0.3 s. 0 gain = off. Gameplay position is unaffected.

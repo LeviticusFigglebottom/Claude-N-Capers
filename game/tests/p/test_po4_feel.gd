@@ -251,3 +251,28 @@ func test_head_bob_subtle_while_walking() -> void:
 	await wait_seconds(1.0)
 	assert_near(head.position.x, 0.0, 1e-5, "no bob standing still")
 	assert_near(head.rotation.z, 0.0, 1e-5, "no roll standing still")
+
+
+## PO-4 (PD2 melee hit shaker): a landed melee hit punches the local camera (pitch down + roll) and it settles; the
+## gameplay look (look_pitch / yaw) is untouched. hit_landed is CrewMelee's own signal (emitted on a strike).
+func test_melee_hit_camera_punch() -> void:
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)
+	await wait_physics_frames(20)
+	assert_true(c.melee != null, "crew has CrewMelee")
+	if c.melee == null:
+		return
+	var head: Node3D = c.get_node(^"Head") as Node3D
+	var p0: float = c.look_pitch
+	c.melee.hit_landed.emit(null)
+	var lowest: float = 0.0
+	var max_roll: float = 0.0
+	for _i: int in 12:
+		await wait_physics_frames(1)
+		lowest = minf(lowest, head.rotation.x - c.look_pitch)
+		max_roll = maxf(max_roll, absf(head.rotation.z))
+	assert_true(lowest < -deg_to_rad(Tweak.crew().melee_punch_pitch_deg) * 0.5, "pitch punch (%.2f deg)" % rad_to_deg(lowest))
+	assert_true(max_roll > deg_to_rad(Tweak.crew().melee_punch_roll_deg) * 0.4, "roll punch")
+	assert_near(c.look_pitch, p0, 1e-6, "gameplay look untouched")
+	await wait_seconds(1.0)
+	assert_near(c.melee_punch.length(), 0.0, 1e-4, "settled")

@@ -90,6 +90,10 @@ var step_offset: float:
 var crouch_cam_offset: float:
 	get:
 		return _crouch_cam
+## PO-4 (read-only): the camera's melee-hit punch (pitch, roll; radians).
+var melee_punch: Vector2:
+	get:
+		return _punch
 ## PO-4 (read-only): the camera landing dip (m, negative while dipping).
 var land_dip: float:
 	get:
@@ -105,15 +109,20 @@ var _teleport_seq: int = 0
 var _send_accum: float = 0.0
 ## P1-01: camera-only vertical lag after step-ups / step-downs (m, decays at CrewTweak.step_smooth_rate).
 var _step_offset: float = 0.0
-## PO-4: landing dip spring (camera only, local human): offset (m) and its velocity (m/s).
+## PO-4: landing dip (camera only, local human): offset (m), depth, seconds since landing (-1 = idle).
 var _land_dip: float = 0.0
-var _land_dip_v: float = 0.0
+var _land_amp: float = 0.0
+var _land_t: float = -1.0
 ## PO-4: camera-only crouch / stand easing (m, eases to 0) and the stance it last saw.
 var _crouch_cam: float = 0.0
 var _cam_crouched: bool = false
 ## PO-4: camera head-bob phase (rad) and eased weight 0..~1.6.
 var _bob_phase: float = 0.0
 var _bob_w: float = 0.0
+## PO-4: melee-hit camera punch (pitch, roll; radians): current value, peak amplitude, seconds since the hit.
+var _punch: Vector2 = Vector2.ZERO
+var _punch_amp: Vector2 = Vector2.ZERO
+var _punch_t: float = -1.0
 
 ## Combat components (A1-08); null only for a scene without them.
 @onready var health: CrewHealth = get_node_or_null("Health") as CrewHealth
@@ -131,6 +140,8 @@ func _ready() -> void:
 	collision_layer = COLLISION_LAYER_PLAYERS
 	collision_mask = COLLISION_MASK_WORLD
 	_runtime = HeistRuntime.of(self)
+	if melee != null and not melee.hit_landed.is_connected(_on_melee_hit):
+		melee.hit_landed.connect(_on_melee_hit)
 	var gtw: CrewTweak = Tweak.crew()  # P1-01 ground handling (see _move_grounded)
 	floor_max_angle = deg_to_rad(gtw.max_slope_deg)
 	floor_snap_length = gtw.step_height_m
@@ -362,7 +373,7 @@ func teleport(xform: Transform3D) -> void:
 	velocity = Vector3.ZERO
 	_step_offset = 0.0  # P1-01: a hard move is not a step to smooth; airborne until it lands
 	_land_dip = 0.0
-	_land_dip_v = 0.0
+	_land_t = -1.0
 	_crouch_cam = 0.0
 	_cam_crouched = crouched
 	grounded = false
@@ -478,6 +489,7 @@ func _simulate(delta: float) -> void:
 	if _head != null:
 		_head.position.y = eye_height() + _step_offset + _land_dip + _crouch_cam
 		_apply_head_bob(delta, tw)
+		_tick_punch(delta, tw)
 
 
 ## P1-01: move_and_slide with PD2-like ground handling. Walks up lips up to CrewTweak.step_height_m, follows
@@ -514,9 +526,35 @@ func _on_landed(impact_mps: float, tw: CrewTweak) -> void:
 	if is_ai or not is_local() or tw.land_dip_gain <= 0.0 or impact_mps <= tw.land_dip_min_mps:
 		return
 	var depth: float = minf((impact_mps - tw.land_dip_min_mps) * tw.land_dip_gain, tw.land_dip_max_m)
-	# Critically damped spring from rest: an initial velocity v0 peaks at v0 / (w e) after 1/w s.
-	var w: float = TAU * tw.land_dip_hz
-	_land_dip_v = minf(_land_dip_v, -depth * w * exp(1.0))
+	if _land_t >= 0.0 and -_land_dip >= depth:
+		return  # a harder dip is still playing
+	_land_amp = -depth
+	_land_t = 0.0
+
+
+## PO-4: the local human's melee hit landed: kick the camera (presentation only; aim / look are untouched).
+func _on_melee_hit(_target: Object) -> void:
+	if is_ai or not is_local():
+		return
+	var tw: CrewTweak = Tweak.crew()
+	var side: float = -1.0 if (melee.swings % 2) == 0 else 1.0  # alternate the roll per swing
+	_punch_amp = Vector2(-deg_to_rad(tw.melee_punch_pitch_deg), side * deg_to_rad(tw.melee_punch_roll_deg))
+	_punch_t = 0.0
+
+
+## Critically damped impulse response in closed form, x(t) = A * wt * e^(1 - wt): peaks at A after 1/w s (explicit
+## integration at 60 Hz lost most of the 4 Hz peak).
+func _tick_punch(delta: float, tw: CrewTweak) -> void:
+	if _punch_t < 0.0:
+		return
+	_punch_t += delta
+	var wt: float = TAU * maxf(tw.melee_punch_hz, 0.01) * _punch_t
+	_punch = _punch_amp * wt * exp(1.0 - wt)
+	if wt > 12.0:
+		_punch = Vector2.ZERO
+		_punch_t = -1.0
+	_head.rotation.x += _punch.x
+	_head.rotation.z += _punch.y
 
 
 ## PO-4: subtle PD2 camera head bob (local human, grounded, moving; Options head_bob). Camera only.
@@ -557,15 +595,16 @@ func _tick_crouch_cam(delta: float, tw: CrewTweak) -> void:
 			_crouch_cam = 0.0
 
 
+## Closed-form critically damped dip, x(t) = A * wt * e^(1 - wt): the full depth A after 1/w s, settled by ~12/w.
 func _tick_land_dip(delta: float, tw: CrewTweak) -> void:
-	if _land_dip == 0.0 and _land_dip_v == 0.0:
+	if _land_t < 0.0:
 		return
-	var w: float = TAU * tw.land_dip_hz
-	_land_dip_v += (-w * w * _land_dip - 2.0 * w * _land_dip_v) * delta
-	_land_dip += _land_dip_v * delta
-	if absf(_land_dip) < 0.0002 and absf(_land_dip_v) < 0.002:
+	_land_t += delta
+	var wt: float = TAU * maxf(tw.land_dip_hz, 0.01) * _land_t
+	_land_dip = _land_amp * wt * exp(1.0 - wt)
+	if wt > 12.0:
 		_land_dip = 0.0
-		_land_dip_v = 0.0
+		_land_t = -1.0
 
 
 ## How far to raise the body onto a lip ahead (<= step_height_m, walkable top) before the horizontal move;
