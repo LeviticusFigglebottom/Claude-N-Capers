@@ -80,6 +80,7 @@ ui.hud.custody_trade,Waiting for a hostage trade
 ui.hud.custody_negotiation,Trade possible in {seconds}
 ui.hud.custody_trade_hint,Trade the marked hostage to free your crew
 ui.hud.ammo,{mag} / {reserve}
+ui.hud.reloading,Reloading
 ui.hud.cable_ties,Cable ties: {count}
 ui.hud.body_bags,Body bags: {count}
 ui.hud.cable_ties_name,Cable ties
