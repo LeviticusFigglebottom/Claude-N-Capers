@@ -436,7 +436,7 @@ func _smash_camera(cam: SecurityCamera) -> String:
 	var spot: Vector3 = p.stand_point(mount + _flat(cam.look_forward()) * 0.6)
 	f.note("smash %s at %s from %s (fwd %s)" % [cam.name, Po5Pilot._v(cam.global_position), Po5Pilot._v(spot),
 		Po5Pilot._v(cam.look_forward())])
-	if not await p.goto(spot, 0.3, 90.0):
+	if not await _sneak_to(spot, 0.3, 90.0):
 		return "PO-5.stealth.camera: could not get under %s" % cam.name
 	if not await _mask_up():
 		return "PO-5.stealth.mask: could not mask up"
