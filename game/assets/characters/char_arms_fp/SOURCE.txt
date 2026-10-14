@@ -151,9 +151,9 @@ check.pistol_ads_idle: reach_err=0.0mm step=0.0deg
 check.pistol_bash: reach_err=0.0mm step=34.7deg
 check.pistol_draw: reach_err=0.0mm step=20.1deg
 check.pistol_fire: reach_err=0.0mm step=9.1deg
-check.pistol_fire_ads: reach_err=0.0mm step=5.8deg
+check.pistol_fire_ads: reach_err=0.0mm step=10.1deg
 check.pistol_fire_auto: reach_err=0.0mm step=4.2deg
-check.pistol_fire_auto_ads: reach_err=0.0mm step=2.7deg
+check.pistol_fire_auto_ads: reach_err=0.0mm step=5.0deg
 check.pistol_holster: reach_err=0.0mm step=20.1deg
 check.pistol_idle: reach_err=0.0mm step=0.1deg
 check.pistol_reload: reach_err=0.0mm step=31.6deg
