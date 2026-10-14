@@ -72,7 +72,7 @@ func _draw() -> void:
 	var half: float = deg_to_rad(SPAN_DEG) * 0.5
 	for a: Dictionary in arcs:
 		var ang: float = screen_angle(cam.global_transform.basis, a["dir"] as Vector3) - PI * 0.5
-		var col: Color = UiTokens.ALERT if bool(a["health"]) else UiTokens.PAPER
+		var col: Color = tweak.low_health_color if bool(a["health"]) else tweak.armor_color  # palette roles
 		col.a = clampf(float(a["left"]) / FADE_S, 0.0, 1.0) * 0.9
 		draw_arc(c, RADIUS, ang - half, ang + half, 24, Color(0, 0, 0, col.a * 0.6), WIDTH + 3.0, true)
 		draw_arc(c, RADIUS, ang - half, ang + half, 24, col, WIDTH, true)

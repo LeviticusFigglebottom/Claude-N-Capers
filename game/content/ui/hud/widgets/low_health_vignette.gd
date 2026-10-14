@@ -30,7 +30,7 @@ func build() -> void:
 	rect.stretch_mode = TextureRect.STRETCH_SCALE
 	var g: Gradient = Gradient.new()
 	g.set_color(0, Color(UiTokens.ALERT_INK, 0.0))
-	g.set_color(1, Color(UiTokens.ALERT, 1.0))
+	g.set_color(1, Color(tweak.low_health_color, 1.0))  # palette: danger role
 	g.add_point(0.55, Color(UiTokens.ALERT_INK, 0.0))
 	g.add_point(0.85, Color(UiTokens.ALERT_INK, 0.75))
 	var tex: GradientTexture2D = GradientTexture2D.new()

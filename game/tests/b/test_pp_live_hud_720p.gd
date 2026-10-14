@@ -255,6 +255,17 @@ func test_live_heist_leave_with_pad() -> void:
 	await _pad(JOY_BUTTON_DPAD_LEFT)
 	assert_eq(pm.get_viewport().gui_get_focus_owner(), pm.confirm_button as Control)
 	await _pad(JOY_BUTTON_A)
+	# Lead failure pass: leaving solo is an abort, so the failure payday comes first; A on Continue goes home.
+	var pd: PaydayScreen = _flow.get(&"_heist_payday") as PaydayScreen
+	assert_true(await wait_until(func() -> bool: return pd != null and pd.visible, 10.0), "the failure payday shows")
+	if pd != null:
+		assert_eq((pd.value_labels[&"fail_reason"] as Label).text, UiText.t(&"ui.results.fail.abort"))
+		await wait_frames(30)  # the payday's input grace
+		for _i: int in range(3):
+			if not is_instance_valid(pd) or not pd.visible:
+				break
+			await _pad(JOY_BUTTON_A)
+			await wait_frames(5)
 	assert_true(await wait_until(func() -> bool: return _flow.current == (_flow.hub as Control) and _flow.visible, 10.0),
 			"Confirm leaves the heist to the hub")
 	assert_true(_flow.runtime == null, "heist torn down")

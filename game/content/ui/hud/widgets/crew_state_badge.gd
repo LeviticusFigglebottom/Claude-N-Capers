@@ -11,6 +11,9 @@ const BLEED_REF_S: float = 30.0
 var state: int = Enums.CrewState.NORMAL
 var bleedout_s: float = -1.0
 var revive_progress: float = -1.0
+## Palette roles handed in by TeammatePanels (its HudTweak): danger (bleedout, glyph) and ally (revive).
+var danger_color: Color = UiTokens.ALERT
+var ally_color: Color = UiTokens.OK
 
 
 func _init() -> void:
@@ -31,10 +34,10 @@ func set_row(row: Dictionary) -> void:
 ## Ring fill 0..1 and its colour: revive (green, filling) wins over bleedout (red, draining); -1 = none.
 func ring() -> Array:
 	if revive_progress >= 0.0:
-		return [clampf(revive_progress, 0.0, 1.0), UiTokens.OK]
+		return [clampf(revive_progress, 0.0, 1.0), ally_color]
 	if bleedout_s > 0.0:
-		return [clampf(bleedout_s / BLEED_REF_S, 0.0, 1.0), UiTokens.ALERT]
-	return [-1.0, UiTokens.ALERT]
+		return [clampf(bleedout_s / BLEED_REF_S, 0.0, 1.0), danger_color]
+	return [-1.0, danger_color]
 
 
 func _draw() -> void:
@@ -46,7 +49,7 @@ func _draw() -> void:
 		draw_arc(c, r, 0.0, TAU, 32, Color(1, 1, 1, 0.15), 3.0, true)
 		draw_arc(c, r, -PI * 0.5, -PI * 0.5 + TAU * float(rg[0]), 32, rg[1] as Color, 3.0, true)
 	var u: float = r * 0.55
-	var col: Color = UiTokens.ALERT if state != Enums.CrewState.CUSTODY else UiTokens.PAPER_DIM
+	var col: Color = danger_color if state != Enums.CrewState.CUSTODY else UiTokens.PAPER_DIM
 	var w: float = 2.5
 	match state:
 		Enums.CrewState.TASED:

@@ -151,8 +151,8 @@ func _draw() -> void:
 		var r: float = SIZE * 1.6
 		var grow: float = 1.0 + 0.35 * sin(clampf(_pulse / PULSE_S, 0.0, 1.0) * PI)  # pulse on a new step
 		draw_circle(c, r * grow, Color(UiTokens.INK_0, 0.85))
-		draw_arc(c, r * grow, 0.0, TAU, 28, UiTokens.BRASS_HI, 2.5, true)
-		_glyph(StringName(d.get("kind", &"")), c, r * 0.55 * grow, UiTokens.BRASS_HI)
+		draw_arc(c, r * grow, 0.0, TAU, 28, tweak.objective_color, 2.5, true)
+		_glyph(StringName(d.get("kind", &"")), c, r * 0.55 * grow, tweak.objective_color)
 		var dist: String = UiText.t(&"ui.hud.marker_distance", {"m": roundi(float(d["distance_m"]))})
 		_text(c + Vector2(0, r * grow + fs + 2), dist, fs, UiTokens.PAPER)
 		if not bool(d["clamped"]):
