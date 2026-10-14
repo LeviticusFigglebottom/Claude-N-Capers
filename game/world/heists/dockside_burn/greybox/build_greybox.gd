@@ -59,6 +59,7 @@ func _build() -> void:
 
 	_build_shell(n("Geometry"))
 	_build_site(n("Geometry"))
+	_build_skins(n("Geometry"))
 	_build_props(n("Props"))
 	_build_lighting(n("Lighting"))
 	_water_glints()
@@ -163,10 +164,10 @@ func _build_shell(geo: Node3D) -> void:
 		wall(iw, String(w2[0]), String(w2[1]), float(w2[2]), float(w2[3]), float(w2[4]), t, yr2, ops2, String(w2[8]))
 	var slabs: Node3D = add(bld, node3d("Slabs")) as Node3D
 	for s: Array in L.SLABS:
-		box_a(slabs, String(s[0]), s[1], String(s[2]))
+		box_a(slabs, String(s[0]), s[1], String(s[2]), true, SLAB_TILE)
 	var ceil_n: Node3D = add(bld, node3d("Ceilings")) as Node3D
 	for c: Array in L.CEILINGS:
-		box_a(ceil_n, String(c[0]), c[1], "ceiling")
+		box_a(ceil_n, String(c[0]), c[1], "ceiling", true, SLAB_TILE)
 	_build_core(bld)
 	_build_platform(bld)
 	var st: Node3D = add(bld, node3d("Stairs")) as Node3D
@@ -185,6 +186,25 @@ func _build_shell(geo: Node3D) -> void:
 	# PL culvert floor grate (Phantom vent exit; visual only, flush with the floor).
 	mesh_box(bld, "CulvertGrate", Vector3(1.4, 0.0, 14.4), Vector3(2.6, 0.015, 15.6), "grate")
 	_build_sheds(bld)
+
+
+## PO-13 slab skins (db_builder_base.slab_skins): the ground floor is one Pier 9 quay box and the
+## mezzanine / roof slabs and shed roofs span several rooms; each indoor room's floor and ceiling finish
+## (db_finishes ROOM_FINISH) goes over the parts of those boxes that carry another finish.
+func _build_skins(geo: Node3D) -> void:
+	var rooms: Array = []
+	for r: Array in L.ROOMS:
+		if String(r[1]) == "exterior" or not F.ROOM_FINISH.has(String(r[0])):
+			continue
+		var fin: Array = F.ROOM_FINISH[String(r[0])]
+		for b: Array in r[4]:
+			rooms.append([String(r[0]), float(b[0]), float(b[2]), float(b[3]), float(b[5]), float(b[1]), float(b[4]),
+				String(fin[0]), String(fin[2])])
+	var bld: Node3D = geo.get_node("Building") as Node3D
+	var sources: Array = [bld.get_node("Slabs"), bld.get_node("Ceilings"), geo.get_node("Site/Ground")]
+	for shed: Node in bld.get_node("Sheds").get_children():
+		sources.append(shed.get_node("Roof"))  # the roof box only (wall pieces may share a face height)
+	slab_skins(add(bld, node3d("Skins")) as Node3D, sources, rooms, "db_")
 
 
 ## Railing: full-panel collision (blocks players and the navmesh) with a ridged top (RT: nobody stands
@@ -302,7 +322,7 @@ func _build_sheds(bld: Node3D) -> void:
 			var ops: Array = _openings(String(sd[1]), float(sd[2]), float(sd[3]), float(sd[4]), y0, top, t)
 			wall(g, "Wall" + String(sd[0]), String(sd[1]), float(sd[2]), float(sd[3]), float(sd[4]), t, Vector2(y0, top), ops,
 				"wall_ext")
-		box(g, "Roof", Vector3(x0 - h, ceil_y, z0 - h), Vector3(x1 + h, top, z1 + h), "roof")
+		box(g, "Roof", Vector3(x0 - h, ceil_y, z0 - h), Vector3(x1 + h, top, z1 + h), "roof", true, SLAB_TILE)
 
 
 # --- Stairs -----------------------------------------------------------------------------------
@@ -494,7 +514,7 @@ func _build_site(geo: Node3D) -> void:
 	var site: Node3D = add(geo, node3d("Site")) as Node3D
 	var ground: Node3D = add(site, node3d("Ground")) as Node3D
 	for g: Array in L.GROUND:
-		var gb: Node3D = box_a(ground, String(g[0]), g[1], String(g[2]))
+		var gb: Node3D = box_a(ground, String(g[0]), g[1], String(g[2]), true, SLAB_TILE)
 		if String(g[2]) == "none":
 			SurfaceTags.tag(gb, &"water")  # shots into the harbour stop on the bed below the water
 			# Seabed / slip bed (collision only) must not grow a navmesh island under the water.

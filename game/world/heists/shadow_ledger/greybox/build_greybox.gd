@@ -69,6 +69,7 @@ func _build() -> void:
 
 	_build_shell(n("Geometry"))
 	_build_site(n("Geometry"))
+	_build_skins(n("Geometry/Building"))
 	_build_props(n("Props"))
 	_build_lighting(n("Lighting"))
 	_build_rooms(n("Rooms"))
@@ -423,14 +424,15 @@ func _build_slabs(parent: Node3D) -> void:
 		l40.append([x02 + L.STAIR_CLEAR.x, L.STAIR_Z_START, x02 + L.STAIR_CLEAR.y, L.STAIR_Z_S])
 	for i: int in range(l40.size()):
 		var r: Array = l40[i]
-		box(parent, "SlabL40_%d" % i, Vector3(float(r[0]), -0.3, float(r[1])), Vector3(float(r[2]), L.F40, float(r[3])), "floor")
+		box(parent, "SlabL40_%d" % i, Vector3(float(r[0]), -0.3, float(r[1])), Vector3(float(r[2]), L.F40, float(r[3])), "floor", true,
+			SLAB_TILE)
 	var plate: Array = [-0.2, -0.2, 36.2, 24.2]
 	_slab(parent, "SlabL41", plate, core_holes, L.TOP40, L.F41, "floor")
 	var void_hole: Array = [12.1, 0.2, 20.5, 4.0]
 	var riser: Array = L.RISER["inner"]
 	_slab(parent, "SlabL42", plate, core_holes + [void_hole, riser], L.TOP41, L.F42, "floor")
 	_slab(parent, "SlabRoof", [-0.2, -0.2, 36.2, 18.2], sa + [L.RISER["hatch"]], L.TOP42, L.FRF, "roof")
-	box(parent, "PlantBlockRoof", Vector3(11.85, L.TOPRF, 7.35), Vector3(24.15, L.PLANT_ROOF, 16.65), "roof")
+	box(parent, "PlantBlockRoof", Vector3(11.85, L.TOPRF, 7.35), Vector3(24.15, L.PLANT_ROOF, 16.65), "roof", true, SLAB_TILE)
 	# Riser grating at L42 (open over the lower ladder).
 	_slab(parent, "RiserGrating", riser, [L.RISER["lower_hole"]], L.F42 - 0.05, L.F42, "fence")
 
@@ -439,7 +441,8 @@ func _slab(parent: Node3D, nm: String, outer: Array, holes: Array, y0: float, y1
 	var rects: Array = _rects_minus(outer, holes)
 	for i: int in range(rects.size()):
 		var r: Array = rects[i]
-		box(parent, "%s_%02d" % [nm, i], Vector3(float(r[0]), y0, float(r[1])), Vector3(float(r[2]), y1, float(r[3])), mat)
+		box(parent, "%s_%02d" % [nm, i], Vector3(float(r[0]), y0, float(r[1])), Vector3(float(r[2]), y1, float(r[3])), mat, true,
+			SLAB_TILE)
 
 
 ## Ceilings (0.05 m, underside at the room's ceiling) where the room is lower than the slab above.
@@ -459,6 +462,26 @@ func _build_ceilings(parent: Node3D) -> void:
 			for i: int in range(rects.size()):
 				var q: Array = rects[i]
 				box(parent, "Ceil%s_%d" % [uid, i], Vector3(float(q[0]), cy, float(q[1])), Vector3(float(q[2]), cy + 0.05, float(q[3])), "ceiling")
+
+
+## PO-13 slab skins (sl_builder_base.slab_skins): per-room floor (sl_finishes ROOM_FLOOR) and ceiling
+## (ROOM_FINISH) finishes over the slab / ceiling boxes that carry another finish. Rooms without a ceiling
+## (stairs, shafts) and the service lift car get none.
+func _build_skins(bld: Node3D) -> void:
+	var rooms: Array = []
+	for lv: String in ["L40", "L41", "L42", "RF"]:
+		var ffl: float = float(L.LEVELS[lv][0])
+		for r: Array in _level_rooms(lv):
+			var uid: String = String(r[0])
+			var meta: Array = L.ROOM_META.get(uid, [])
+			if meta.is_empty() or float(meta[2]) <= 0.0 or uid == "SL":
+				continue
+			var ceil_key: String = String((F.ROOM_FINISH[uid] as Array)[1]) if F.ROOM_FINISH.has(uid) else ""
+			for q: Array in L.ROOM_RECTS.get(uid, [[r[1], r[2], r[3], r[4]]]):
+				rooms.append([uid, float(q[0]), float(q[1]), float(q[2]), float(q[3]), ffl,
+					ffl + float(meta[2]), String(F.ROOM_FLOOR.get(uid, "")), ceil_key])
+	var skins: Node3D = add(bld, node3d("Skins")) as Node3D
+	slab_skins(skins, [bld.get_node("Slabs"), bld.get_node("Ceilings")], rooms, "sl_")
 
 
 ## Railing: full-panel collision (blocks players and the navmesh) + top rail, posts; optional glass.
