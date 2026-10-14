@@ -49,6 +49,10 @@ const HINT_CLIPS: Dictionary = {
 	# characters.md v1.9 (D-103, Gallery Night): inspect a hung work, cower standing / seated, walk texting.
 	&"curator_inspect": &"curator_inspect", &"inspect": &"curator_inspect", &"cower_stand": &"cower_stand",
 	&"cower_seated": &"cower_seated", &"text": &"phone_call", &"walk_text": &"phone_call",
+	# D-111 ambient activities: bar staff, club door, dancers (dance_a/b/c picked per NPC), bank tellers.
+	&"bartender": &"bartender_wipe", &"bartender_wipe": &"bartender_wipe", &"bartender_pour": &"bartender_pour",
+	&"bouncer": &"bouncer_idle", &"teller": &"teller_count", &"dance_a": &"dance_a", &"dance_b": &"dance_b",
+	&"dance_c": &"dance_c",
 	# Brain / patrol-point aliases.
 	&"phone": &"phone_call", &"call": &"phone_call", &"sit": &"sit_chair",
 	&"queue": &"idle", &"lean": &"lean_wall", &"check_door": &"investigate_look", &"down": &"lie_down",
@@ -93,6 +97,10 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"desk_work": &"desk_type", &"phone_seated": &"phone_call", &"sit_chair_watch": &"sit_chair", &"mop": &"browse",
 	&"sit_bed_read": &"sit_chair", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
 	&"rappel": &"climb_ladder", &"climb_ladder": &"idle",
+	# D-111: drill / crawl / gala and club ambient clips (characters.md v1.9-v1.10).
+	&"drill_place": &"interact_mid", &"downed_crawl": &"downed", &"bartender_wipe": &"browse",
+	&"bartender_pour": &"browse", &"bouncer_idle": &"idle", &"teller_count": &"desk_type", &"dance_a": &"idle",
+	&"dance_b": &"idle", &"dance_c": &"idle",
 	# v1.10: 8-way, hit reacts, death variety (each falls back to the v1.3 set).
 	&"walk_fl": &"walk", &"walk_fr": &"walk", &"walk_bl": &"walk_back", &"walk_br": &"walk_back",
 	&"run_fl": &"run", &"run_fr": &"run", &"run_bl": &"run_b", &"run_br": &"run_b",
@@ -417,9 +425,16 @@ func refresh_weapon() -> void:
 
 # --- Selection helpers ---------------------------------------------------------------------
 
+func _crew_state_clip() -> StringName:
+	var sc: StringName = CREW_STATE_CLIPS.get(_crew.crew_state, &"")
+	if sc == &"downed" and horizontal_speed() > AnimTweak.data().move_threshold_mps:
+		return &"downed_crawl"  # v1.10: a downed body being moved (bleed-out drag)
+	return sc
+
+
 func _state_clip() -> StringName:
 	if _crew != null:
-		return CREW_STATE_CLIPS.get(_crew.crew_state, &"")
+		return _crew_state_clip()
 	if _npc == null:
 		return &""
 	if _npc.is_stunned():
@@ -504,6 +519,8 @@ func _unit_walk_clip(speed: float, tw: AnimTweak) -> StringName:
 func _interact_clip(tw: AnimTweak) -> StringName:
 	if _interact_kind == &"answer_pager":
 		return &"pager_answer"
+	if _interact_kind == &"place_drill" or _interact_kind == &"fix_drill":
+		return &"drill_place"  # D-111: setting / fixing a drill
 	if _interact_height < tw.interact_low_max_m:
 		return &"interact_low"
 	return &"interact_high" if _interact_height > tw.interact_high_min_m else &"interact_mid"
@@ -542,7 +559,14 @@ func _hint() -> StringName:
 	if b == null:
 		return &""
 	var h: Variant = b.get(&"anim_hint")
-	return _ambient_hint(h if h is StringName else &"")
+	return _ambient_hint(_dance_pick(h if h is StringName else &""))
+
+
+## D-111: `dance` is one of the three dance loops, stable per NPC name (every peer agrees).
+func _dance_pick(h: StringName) -> StringName:
+	if h != &"dance" or _npc == null:
+		return h
+	return [&"dance_a", &"dance_b", &"dance_c"][absi(hash(String(_npc.name))) % 3]
 
 
 ## D-069 per-NPC ambient substitutions: cleaners mop instead of browsing, Kessler reads in bed instead of
@@ -785,9 +809,17 @@ func _on_weapon_fired(shooter_net_id: int, _weapon_id: StringName, _suppressed: 
 ## A3-13: an NPC melee windup (`cue.npc_melee_swing` [R], source = this NPC) plays `melee` on every peer, so
 ## a client sees the windup in time to counter (defense.melee_counter).
 func _on_audio_cue(cue_id: StringName, _pos: Vector3, source_net_id: int) -> void:
-	if cue_id != NpcGunner.CUE_MELEE_SWING or player == null or source_net_id == 0 or source_net_id != _net_id():
+	if player == null or source_net_id == 0 or source_net_id != _net_id():
 		return
-	play_oneshot(&"melee", CombatTweak.data().npc_melee_windup_s + 0.3)
+	if cue_id == NpcGunner.CUE_MELEE_SWING:
+		play_oneshot(&"melee", CombatTweak.data().npc_melee_windup_s + 0.3)
+	elif _npc != null and (cue_id == NpcGunner.CUE_RELOAD_RIFLE or cue_id == NpcGunner.CUE_RELOAD_PISTOL):
+		# D-111: an NPC reload (the crew's own come from CrewWeapons.reload_started)
+		var g: NpcGunner = _npc.get_node_or_null(^"Gunner") as NpcGunner
+		var dur: float = g.reload_time() if g != null else CombatTweak.data().npc_reload_s
+		var clip_id: StringName = &"reload_pistol" if cue_id == NpcGunner.CUE_RELOAD_PISTOL else &"reload_rifle"
+		var done_s: float = float(AnimTweak.data().reload_done_s.get(&"pistol" if clip_id == &"reload_pistol" else &"rifle", 1.0))
+		play_oneshot(clip_id, dur, false, done_s / maxf(dur, 0.05))
 
 
 func _on_reload_started(_ws: int, duration: float) -> void:
