@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 07:05: **round 83 ON ORIGIN**: env/b-content a08dbc44 (PO-B-C2 MenuFlow handles host_lost → lobby + message; C3 joining focus; C4 join/leave HUD toasts; coop_capture harness) + LEAD log.gd (PO-B-C5: peer id only from a connected peer). PO-B-C1 already fixed r80. b coop_host_lost/hud_queue/lobby/ui_hud/menu, a3_07, coop green.
 - 2026-10-14 06:50: **round 82 ON ORIGIN**: env/a-core (HeistRuntime creates a VfxDirector on host + replicas, cleared on teardown; ShotFx.surface_of delegates to ImpactFx). Gunplay FX now end-to-end in heists (shot_fx emitted on every peer since r72). a po8/d105/a1_01/a3_07, c vfx 20, P1 slice green. Next: P windowed in-heist FX check.
 - 2026-10-14 06:35: **round 81 ON ORIGIN**: env/p-play b7026a82 (D-107 stamina/jump per PD2; QB-60 jump test rewritten under carve-out, A to review). p d107 5/5, a qb56_61 13/13, a1_02 8/8, b ui_hud 17/17 green.
 - 2026-10-14 06:20: **round 80 ON ORIGIN**: LEAD net.gd (ENet peer timeout 32/15 s/60 s on both sides; Log.warn when a human slot falls back to AI) + env/a-core (HeistLauncher loads the map on a worker thread). Fixes B's co-op finding: host bring-up stall (~40 s llvmpipe) dropped the client. a1_01/a3_07/coop/b lobby green. Remaining: HeistRuntime.start() one-frame stall (not split before freeze gates); B fixes MenuFlow host_lost.
