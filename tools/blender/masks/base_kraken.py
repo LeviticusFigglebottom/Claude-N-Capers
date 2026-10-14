@@ -84,8 +84,8 @@ def _lids(kit: mask.MaskKit) -> None:
     """A thick round lid ring round each eye."""
     for side in (1, -1):
         eye = mask.oriented(kit.shape.eye_hole(side), True)
-        outer = mask.offset_loop(eye, 0.0060)
-        inner = mask.offset_loop(eye, 0.0008)
+        outer = mask.offset_loop(eye, -0.0060)
+        inner = mask.offset_loop(eye, -0.0008)
         kit.plate(mask.resample(outer, 0.004), hi=0.0030, chamfer=0.0012, edge_res=0.004,
                   holes=[mask.oriented(mask.resample(inner, 0.004), False)])
 

@@ -66,7 +66,7 @@ def _weave(u: float, v: float) -> float:
 def _ring(kit: mask.MaskKit, hole: mask.Loop2) -> None:
     """A twisted rope ring round a hole: a band of short slanted plates."""
     loop = mask.oriented(hole, True)
-    outer = mask.resample(mask.offset_loop(loop, 0.0055), 0.0035)
+    outer = mask.resample(mask.offset_loop(loop, -0.0060), 0.0045)
     n = len(outer)
     c = (sum(p[0] for p in loop) / len(loop), sum(p[1] for p in loop) / len(loop))
     for k in range(0, n, 1):
