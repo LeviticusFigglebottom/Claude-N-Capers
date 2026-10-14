@@ -60,6 +60,11 @@ extends Resource
 @export var melee_punch_pitch_deg: float = 1.6
 @export var melee_punch_roll_deg: float = 1.0
 @export var melee_punch_hz: float = 4.0
+## D-102 lane (PD2 playercarry.lua target_tilt -5, fpcameraplayerbase.lua math.step 150 deg/s): carrying a bag
+## rolls the local human's camera by carry_tilt_deg, easing at carry_tilt_rate_dps, and back on drop. Camera only;
+## off with Reduce Motion. 0 = off.
+@export var carry_tilt_deg: float = -5.0
+@export var carry_tilt_rate_dps: float = 150.0
 ## PO-4 (PD2): camera-only landing dip of the local human. A landing faster than land_dip_min_mps kicks the eye down
 ## by (impact - min) x land_dip_gain (m per m/s, capped at land_dip_max_m) through a critically damped spring of
 ## land_dip_hz, so it dips and recovers in ~0.3 s. 0 gain = off. Gameplay position is unaffected.
