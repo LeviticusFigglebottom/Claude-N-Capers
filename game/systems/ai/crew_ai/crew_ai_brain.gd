@@ -432,18 +432,51 @@ func _follow_goal() -> Vector3:
 	if not seen:
 		_following = true
 		return leader.global_position
-	if _following and d <= tweak.follow_stop_m:
+	var loud: bool = _rt.went_loud
+	var stop_m: float = tweak.follow_stop_loud_m if loud else tweak.follow_stop_m
+	var max_m: float = tweak.follow_max_loud_m if loud else tweak.follow_max_m
+	var slot_pos: Vector3 = _formation_slot(leader)
+	if _following and d <= stop_m and _flat_dist(_crew.global_position, slot_pos) <= tweak.follow_slot_arrive_m:
 		_following = false
-	elif not _following and d > tweak.follow_max_m:
-		_following = true
+	elif not _following and (d > max_m or _stacked()):
+		_following = true  # too far, or standing inside another crew member (P PO-pass #3)
 	if not _following:
 		return Vector3.INF
-	# Aim for a point follow_min_m short of the leader, on our side, so AI never crowd the human.
-	var to_me: Vector3 = _crew.global_position - leader.global_position
-	to_me.y = 0.0
-	if to_me.length() < 0.01:
-		return Vector3.INF
-	return leader.global_position + to_me.normalized() * tweak.follow_min_m
+	return slot_pos
+
+
+## This AI's own spot near the leader: follow_min_m out on our side, fanned by its rank among the AI crew
+## (follow_spread_deg apart), so bots following the same leader never share a point.
+func _formation_slot(leader: CrewController) -> Vector3:
+	# One shared base direction (leader -> the AI group's centroid) so every bot's slot is stable and distinct.
+	var ais: Array[int] = []
+	var centroid: Vector3 = Vector3.ZERO
+	for c: CrewController in _rt.crew_members():
+		if c.is_ai and c.crew_state == Enums.CrewState.NORMAL:
+			ais.append(c.slot)
+			centroid += c.global_position
+	ais.sort()
+	var base: Vector3 = (centroid / float(maxi(ais.size(), 1))) - leader.global_position
+	base.y = 0.0
+	if base.length() < 0.01:
+		base = leader.global_basis.z  # behind the leader
+		base.y = 0.0
+	var rank: int = maxi(ais.find(_crew.slot), 0)
+	var centre: float = float(ais.size() - 1) * 0.5
+	var angle: float = deg_to_rad(tweak.follow_spread_deg) * (float(rank) - centre)
+	var dir: Vector3 = base.normalized().rotated(Vector3.UP, angle)
+	return leader.global_position + dir * tweak.follow_min_m
+
+
+## True while another crew member stands within unstack_m of this AI (horizontal, same floor).
+func _stacked() -> bool:
+	for c: CrewController in _rt.crew_members():
+		if c == _crew or c.crew_state == Enums.CrewState.CUSTODY:
+			continue
+		if absf(c.global_position.y - _crew.global_position.y) < 1.0 \
+				and _flat_dist(c.global_position, _crew.global_position) < tweak.unstack_m:
+			return true
+	return false
 
 
 ## The human who gave the last order (when not in custody), else the nearest alive human, else slot 0.
