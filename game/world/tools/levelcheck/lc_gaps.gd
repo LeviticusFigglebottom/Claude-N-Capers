@@ -78,7 +78,7 @@ static func is_shell(ctx: LcContext, src: Node) -> bool:
 	var p: LcProp = ctx.prop_of(src)
 	if p == null:
 		return true
-	if not (p.is_door or p.is_window or p.kind in LcContext.SHELL_KINDS):
+	if p.kind == LcContext.SHUTTER_KIND or not (p.is_door or p.is_window or p.kind in LcContext.SHELL_KINDS):
 		return false
 	var pf: GameplayPrefab = prefab_of(src, ctx.map)
 	if pf == null:

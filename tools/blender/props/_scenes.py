@@ -22,7 +22,8 @@ Catalog ``cat`` keys (all optional): ``kind``, ``prefab``, ``group``, ``place`` 
 backed to a wall | ``corner`` | ``floor`` free-standing | ``center`` | ``on`` on a host's top |
 ``seat`` in front of a host, facing it | ``wall_mount`` | ``above_door`` | ``ceiling`` |
 ``none``), ``mount``, ``support``, ``fixture``, ``light`` {type, color, energy, range, pos, angle},
-``z`` (wall_mount centre height), ``hosts`` (kinds), ``clear`` (front clearance m), ``weight``.
+``z`` (wall_mount centre height), ``hosts`` (kinds), ``clear`` (front clearance m), ``weight``,
+``leaf_script`` (a LEAF_SCRIPTS key: a visual-only script set on the glb's ``Leaf`` node, GN-C2 shutters).
 """
 
 from __future__ import annotations
@@ -44,6 +45,8 @@ PROPS_RES = "res://world/props"
 CATALOG = GAME / "world" / "props" / "prop_catalog.json"
 SURFACE_MAP = GAME / "world" / "materials" / "surface_map.json"
 COLLISION_SUFFIXES = ("-convcolonly", "-colonly", "-convcol", "-col")
+# Visual-only scripts a wrapper may put on the model's `Leaf` (cat ``leaf_script``).
+LEAF_SCRIPTS = {"shutter": "res://world/props/shutter_leaf.gd"}
 _SURFACES: dict = {}
 
 
@@ -274,8 +277,12 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
         # only used where a kit pins it (or a map anchors it): unpinned kit picks of its kind (and
         # their RNG draws) stay exactly as they were before it existed
         e["pin_only"] = True
-    lines = ['[gd_scene load_steps=2 format=3]', "",
-             f'[ext_resource type="PackedScene" path="{e["glb"]}" id="1_model"]', ""]
+    leaf_script = LEAF_SCRIPTS[cat["leaf_script"]] if "leaf_script" in cat else ""
+    lines = [f'[gd_scene load_steps={3 if leaf_script else 2} format=3]', "",
+             f'[ext_resource type="PackedScene" path="{e["glb"]}" id="1_model"]']
+    if leaf_script:
+        lines.append(f'[ext_resource type="Script" path="{leaf_script}" id="2_leaf"]')
+    lines.append("")
     # a visual that carries a light is its fixture (levelcheck `lights`: fixture ancestor)
     if prefab and "light" in cat:
         e["fixture"] = True
@@ -304,9 +311,11 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
     for cp in info["collisions"]:
         parent, _, leaf = ("Model/" + cp).rpartition("/")
         lines += ["", f'[node name="{leaf}" parent="{parent}"]', f'metadata/surface = &"{e["surface"]}"']
+    if leaf_script:
+        lines += ["", '[node name="Leaf" parent="Model"]', 'script = ExtResource("2_leaf")']
     if "light" in cat:
         lines += [""] + _light_node(cat["light"])
-    if vis > 0.0 or info["collisions"]:
+    if vis > 0.0 or info["collisions"] or leaf_script:
         lines += ["", '[editable path="Model"]']
     return e, "\n".join(lines) + "\n"
 

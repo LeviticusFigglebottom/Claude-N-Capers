@@ -162,6 +162,26 @@ def write_emissive(key: str, spec: dict) -> None:
     tio.write_text(MAT_DIR / f"{pid}.tres", "\n".join(lines) + "\n")
 
 
+def write_painting(key: str, tex_res: str) -> None:
+    """A painted canvas: the texgen image as albedo, matte oil (roughness 0.62), no ORM / normal maps."""
+    pid = _matlib.prop_id(key)
+    lines = [
+        '[gd_resource type="StandardMaterial3D" load_steps=2 format=3]',
+        "",
+        f'[ext_resource type="Texture2D" path="{tex_res}" id="1_albedo"]',
+        "",
+        "[resource]",
+        f'resource_name = "M_{pid}"',
+        "texture_filter = 5",
+        'albedo_texture = ExtResource("1_albedo")',
+        "roughness = 0.62",
+        "metadata/uv_tile_m = 2.0",
+        "metadata/untextured_ok = true",
+        "metadata/painting = true",
+    ]
+    tio.write_text(MAT_DIR / f"{pid}.tres", "\n".join(lines) + "\n")
+
+
 def _hex_srgb(hx: str) -> tuple[float, float, float]:
     h = hx.lstrip("#")
     return tuple(int(h[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
@@ -247,6 +267,8 @@ def main() -> int:
             write_emissive(key, spec)
         for key, spec in sorted(_matlib.GLASS.items()):
             write_glass(key, spec)
+        for key, tex in sorted(_matlib.PAINTINGS.items()):
+            write_painting(key, tex)
         print(f"materials: {len(_matlib.TINTED) + len(_matlib.EMISSIVE)} prop materials, "
               f"{len(_matlib.DETAIL_SOURCES)} detail textures")
     changed = sum(patch_import(g) for g in all_prop_glbs())
