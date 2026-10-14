@@ -32,12 +32,16 @@ func _ready() -> void:
 			"heist": _heist = StringName(v)
 			"closeup": _closeup = true
 	DirAccess.make_dir_recursive_absolute(_out)
+	# Like A's PO-5 fast mode: llvmpipe renders a lit heist at minutes per frame, so the render loop is off between
+	# shots (physics, animation and input stay real; _shot() renders the frame it saves).
+	RenderingServer.render_loop_enabled = false
 	var rows: Array[Array] = []
 	for wid: String in _weapons:
 		rows.append(await _weapon(StringName(wid)))
 	_sheet(rows)
 	if _closeup:
 		_sheet(_close_rows, "closeup_sheet.png")
+	RenderingServer.render_loop_enabled = true
 	print("[HOLD] RESULT DONE weapons=%d sheet=%s/hold_sheet.png" % [rows.size(), _out])
 	get_tree().quit(0)
 
@@ -105,9 +109,12 @@ func _weapon(wid: StringName) -> Array:
 
 
 func _shot(wid: StringName, pose: String) -> Image:
+	RenderingServer.render_loop_enabled = true
 	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
 	var img: Image = get_viewport().get_texture().get_image()
+	RenderingServer.render_loop_enabled = false
 	img.save_png("%s/%s_%s.png" % [_out, String(wid).trim_prefix("weapon."), pose])
 	return img
 

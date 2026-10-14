@@ -2,6 +2,22 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-14 19:45 UTC: support-hand clip probe, GN-P1 round 187 pass, Marten + Jay, per-set grip offset
+- Per-set left-hand grip offset (1738fe7e; A's line on trunk r192): D's PD2 long-gun wrist for 7 sets.
+- PFingerClip / test_p_finger_clip (190327b8): finger skin vs gun mesh in the real game pose (CPU skinning in
+  skeleton_updated, nearest face + 3-axis parity; self-check: grip 4.5 cm left -> 44 -> 262 inside). Trunk r192,
+  hip ~= ADS, inside vertices / depth: thumb Condor 58 / 12.1 mm, Mule 43 / 10.0, Anvil 24 / 10.6, Reaper 18 / 10.8,
+  Bastion 45 / 9.9 (index 33 / 6.4), Corsair 36 / 7.7, Brute 30 / 6.3 (index 8 / 5.9), Shrike 13 / 3.8; middle /
+  ring / pinky 0 everywhere. Thumb on the near side + index tip (D). Report-only until D is green, then an assert.
+- GN-P1 round 187 (gn_pass.tscn, real menus, seed 1792002290, 2 runs): last call works (warning subtitle,
+  Public -> RESTRICTED at 480 s, patrons out); a guest who stays is spotted (force mask) then guard_radio alarm
+  (D-075). Open: objective still "Case the gala" + no off-limits cue after last call (A/B); AI crew stacked
+  0.01 m apart at (22.2, 0, 30.5) for 300+ s loud (A); loud first objective "Find the listed canvases" (A?);
+  A's pilot cannot route round the barred ArtDoorEG (harness).
+- Marten (5d638e84) and Jay (d2386db1) wired (sleeves + bodies), test_p_roster_wiring reads B's roster.
+- nd_stealth_pass: render loop off between shots, intimidate + tie, weapon swap (D-111 coverage, not rerun yet).
+- Open: lit GH hold sheet + close-ups on trunk (hold_capture --closeup, rendering; llvmpipe minutes per frame).
+
 ## 2026-10-14 18:30 UTC: D-111 animation coverage, long-gun hold diagnosis
 Probe: tests/p/_review/anim_coverage.tscn (rides A's PO-5 flows) + nd_stealth_pass.tscn, `--anim-out=DIR`. Runs:
 GH stealth (676 s), GH loud (partial, to bag 1), ND loud (partial, ~390 s heist), ND stealth (direct launch). Bodies:
