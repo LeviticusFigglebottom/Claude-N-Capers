@@ -315,7 +315,13 @@ const ANCHORS: Array = [
 	["U1", "BreakLockers", "prop_lockers", Vector3(0.472, UPPER, 2.6), -90.0, {"support": true}],
 	["U1", "KitchenCounter", "prop_kitchen_counter", Vector3(5.063, UPPER, 1.42), 90.0, {}],
 	["U1", "Fridge", "prop_fridge", Vector3(5.018, UPPER, 3.0), 90.0, {}],
-	# U2 security office (camera_station prefab on the west wall; kc_security on the credenza)
+	# U2 security office (camera_station prefab on the west wall; kc_security on the credenza). PO-9: the
+	# operator's NPC seat at the console, on the CameraOperatorSeat spawn (D-063: seat 0.47 / desk 0.74). It
+	# fills the kit's required chair, so the guard desk and its chair are anchored where the kit put them.
+	["U2", "OperatorChair", "prop_chair_task", Vector3(6.85, UPPER, 2.0), 90.0,
+		{"faces_node": "Gameplay/Misc/CameraStation"}],
+	["U2", "GuardDesk", "prop_desk_office", Vector3(6.434, UPPER, 4.038), 0.0, {}],
+	["U2", "GuardDeskChair", "prop_chair_office", Vector3(6.5, UPPER, 3.26), 180.0, {"faces_anchor": "GuardDesk"}],
 	["U2", "KeyCredenza", "prop_credenza", Vector3(10.153, UPPER, 3.4), 90.0, {}],
 	["U2", "KeyCabinet", "prop_key_cabinet", Vector3(10.4, UPPER + 1.45, 3.4), 90.0, {}],
 	["U2", "GuardLockers", "prop_lockers", Vector3(9.0, UPPER, 0.472), 180.0, {}],
