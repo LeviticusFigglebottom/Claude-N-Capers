@@ -261,6 +261,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_crew_jay",
+			"id": "crew_jay",
+			"scene": "res://world/characters/crew_jay/crew_jay.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_crew_marten",
 			"id": "crew_marten",
 			"scene": "res://world/characters/crew_marten/crew_marten.tscn",
