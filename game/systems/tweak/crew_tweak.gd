@@ -123,8 +123,6 @@ extends Resource
 @export var bag_can_sprint: Array[bool] = [true, false, false, false]
 ## jump_modifier: jump velocity x this (playercarry.lua _perform_jump); jumping is never blocked by a bag.
 @export var bag_jump_mult: PackedFloat32Array = PackedFloat32Array([1.0, 1.0, 0.5, 0.25])
-## Deprecated by D-102 (bags never block a jump; see bag_jump_mult). Kept all-true until ENV A's S10 tests move.
-@export var bag_can_jump: Array[bool] = [true, true, true, true]
 ## throw_distance_multiplier 1 / 1 / 0.5 / 0.3 of a 4 m base.
 @export var bag_throw_distance_m: PackedFloat32Array = PackedFloat32Array([4.0, 4.0, 2.0, 1.2])
 
