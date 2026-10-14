@@ -161,10 +161,10 @@ const DOORS: Array = [
 	["ManagerDoor", "prop_door_single_walnut_t20", Vector3(10.5, UPPER, 6.0), 0.0, "NONE", "INWARD", "", {}],
 	["StockDoor", "prop_door_single_ivory_t20", Vector3(13.0, UPPER, 6.0), 0.0, "NONE", "INWARD", "", {}],
 	# Play-space closures: chained/barred gates the police open in loud (mission unlocks them).
-	["AlleyGate", "prop_door_double_steel_t20", Vector3(-14.0, 0.0, -3.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["HarlowWestGate", "prop_door_double_steel_t20", Vector3(-14.0, ROAD_Y, 23.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["HarlowEastGate", "prop_door_double_steel_t20", Vector3(32.5, ROAD_Y, 23.2), 90.0, "BARRED", "DOUBLE", "police_gate", {}],
-	["PellNorthGate", "prop_door_double_steel_t20", Vector3(23.2, ROAD_Y, -8.0), 180.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["AlleyGate", "prop_door_double_steel_t10", Vector3(-14.0, 0.0, -3.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["HarlowWestGate", "prop_door_double_steel_t10", Vector3(-14.0, ROAD_Y, 23.2), -90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["HarlowEastGate", "prop_door_double_steel_t10", Vector3(32.5, ROAD_Y, 23.2), 90.0, "BARRED", "DOUBLE", "police_gate", {}],
+	["PellNorthGate", "prop_door_double_steel_t10", Vector3(23.2, ROAD_Y, -8.0), 180.0, "BARRED", "DOUBLE", "police_gate", {}],
 ]
 
 # --- Site -----------------------------------------------------------------------------------
@@ -323,13 +323,22 @@ const ANCHORS: Array = [
 	# one task chair per desk (G2 review: the kit seated both chairs at the bookkeeping desk, so the
 	# sales-admin monitor had no chair to face)
 	["U5", "ChairBookkeeping", "prop_chair_office", Vector3(1.6, UPPER, 8.3), 180.0, {"faces_anchor": "DeskBookkeeping"}],
-	["U5", "ChairSalesAdmin", "prop_chair_office", Vector3(4.2, UPPER, 8.3), 180.0, {"faces_anchor": "DeskSalesAdmin"}],
+	# PO-9: pushed back from the desk (as if just stood up), out of the user spots of PhoneAdmin and the
+	# code_admin note (UsePoints x 4.6 / 3.7, z 8.15); it stood in the phone's
+	["U5", "ChairSalesAdmin", "prop_chair_office", Vector3(4.15, UPPER, 7.65), 180.0, {"faces_anchor": "DeskSalesAdmin"}],
 	["U5", "AppraisalBench", "prop_workbench", Vector3(5.8, UPPER, 11.39), 0.0, {}],
 	["U5", "FileCabinets", "prop_file_cabinet", Vector3(6.563, UPPER, 7.8), 90.0, {}],
 	# U6 manager
-	["U6", "ManagerDesk", "prop_desk_exec", Vector3(9.5, UPPER, 9.0), 0.0, {}],
+	# PO-9: turned 180 so the manager (knee hole = the drawer side) faces ManagerDoor (z 6.0), back to the windows
+	["U6", "ManagerDesk", "prop_desk_exec", Vector3(9.5, UPPER, 9.0), 180.0, {}],
 	["U6", "Credenza", "prop_credenza", Vector3(7.347, UPPER, 9.5), -90.0, {}],
-	["U6", "VisitorChair", "prop_chair_visitor", Vector3(10.15, UPPER, 8.0), 147.0, {"faces_anchor": "ManagerDesk"}],
+	# PO-9: the manager's chair on the knee-hole side, rolled out to the east end (the Manager NPC stands at
+	# the desk on the phone, 9.5 / 9.85); two visitor chairs across the desk (the modesty panel side,
+	# between desk and door) facing it, clear of the kc_manager UsePoint (9.2, 8.05). It was one visitor
+	# chair on the user side, facing the drawers.
+	["U6", "ManagerChair", "prop_chair_office", Vector3(10.15, UPPER, 9.95), 34.0, {"faces_anchor": "ManagerDesk"}],
+	["U6", "VisitorChairA", "prop_chair_visitor", Vector3(8.65, UPPER, 8.2), -150.0, {"faces_anchor": "ManagerDesk"}],
+	["U6", "VisitorChairB", "prop_chair_visitor", Vector3(10.35, UPPER, 8.2), 150.0, {"faces_anchor": "ManagerDesk"}],
 	["U6", "Bookshelf", "prop_bookshelf", Vector3(11.713, UPPER, 9.0), 90.0, {}],
 	# U7 stock / archive: two free-standing shelf rows (aisle between them)
 	["U7", "PackingBench", "prop_packing_bench", Vector3(15.4, UPPER, 6.492), 180.0, {}],

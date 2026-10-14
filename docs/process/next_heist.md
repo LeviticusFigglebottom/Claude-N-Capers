@@ -46,7 +46,7 @@ mission script, objective/VO/music strings, music track, blueprint; NpcVisualTwe
 3. **No stealth-only fail** on Gallery Night; fail reasons are custody and abort only; required canvases must always stay
    reachable (a Vaultline delivery to the art store moves the canvas, it never destroys it).
 4. **Every objective gets `marker_tags`**; key lights get `viewmodel_lit`; loud holdouts are re-checked per difficulty under
-   D-099 (Routine = SWAT + shields only); paintings are LIGHT under D-102 (×1.0, sprint, 4 m throw), body bags MEDIUM.
+   D-099 (Routine = SWAT + shields only); paintings are LIGHT under D-102 (×1.0, sprint, 4 m throw), body bags HEAVY (PD2 carry type `being`: ×0.5 speed, ×0.5 jump, no run, ×0.5 throw).
 5. **`painting_study` → $700** when the freeze lifts (B + its test).
 6. **System groundwork first (general, reused by Ostrander/Afterhours):** ENV A builds the engine APIs before the map:
    door relock/BAR (replicated), keycard_reader set_disabled, laser_grid set_enabled, loot alarm groups + `&"sensor"`
