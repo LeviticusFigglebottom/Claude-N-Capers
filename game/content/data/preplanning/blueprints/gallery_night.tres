@@ -1,0 +1,269 @@
+[gd_resource type="Resource" script_class="PreplanBlueprint" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_blueprint.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+heist_id = &"gallery_night"
+bounds = Rect2(-40, -12, 102, 66)
+grid_step_m = 2.0
+floor_names = Array[StringName]([&"ui.preplan.floor.basement", &"ui.preplan.floor.ground", &"ui.preplan.floor.upper", &"ui.preplan.floor.roof"])
+shapes = Array[Dictionary]([{
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.gallery_night.mews_houses",
+"rect": Rect2(-40, -12, 84, 4)
+}, {
+"kind": &"alley",
+"label": &"ui.preplan.bp.gallery_night.mews",
+"rect": Rect2(-40, -8, 84, 8)
+}, {
+"kind": &"street",
+"label": &"ui.preplan.bp.gallery_night.wexley",
+"rect": Rect2(44, -12, 14, 62)
+}, {
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.gallery_night.hotel",
+"rect": Rect2(58, -12, 4, 62)
+}, {
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.gallery_night.ostrander",
+"rect": Rect2(-40, 0, 24, 30)
+}, {
+"kind": &"alley",
+"label": &"ui.preplan.bp.gallery_night.court",
+"rect": Rect2(-16, 0, 16, 30)
+}, {
+"kind": &"sidewalk",
+"label": &"ui.preplan.bp.gallery_night.portico",
+"rect": Rect2(-40, 30, 84, 4)
+}, {
+"kind": &"street",
+"label": &"ui.preplan.bp.gallery_night.parade",
+"rect": Rect2(-40, 34, 98, 16)
+}, {
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.gallery_night.park",
+"rect": Rect2(-40, 50, 102, 4)
+}, {
+"floor": 0,
+"kind": &"building",
+"label": &"ui.preplan.bp.gallery_night.gallery",
+"rect": Rect2(0, 0, 32, 20)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.art_store",
+"rect": Rect2(12, 8, 20, 12)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.plant",
+"rect": Rect2(0, 8, 12, 12)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.quarantine",
+"rect": Rect2(20, 0, 8, 6)
+}, {
+"floor": 1,
+"kind": &"building",
+"label": &"ui.preplan.bp.gallery_night.gallery",
+"rect": Rect2(0, 0, 44, 30)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.great_hall",
+"rect": Rect2(12, 8, 20, 18)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.founders",
+"rect": Rect2(0, 8, 12, 12)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.drawings",
+"rect": Rect2(0, 20, 7, 10)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.harbour",
+"rect": Rect2(32, 12, 12, 12)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.benefactors",
+"rect": Rect2(32, 24, 12, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.loading",
+"rect": Rect2(32, 0, 12, 12)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.security",
+"rect": Rect2(12, 0, 6, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.vestibule",
+"rect": Rect2(18, 26, 8, 4)
+}, {
+"floor": 2,
+"kind": &"building",
+"label": &"ui.preplan.bp.gallery_night.gallery",
+"rect": Rect2(0, 0, 44, 30)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.calloway",
+"rect": Rect2(0, 8, 12, 12)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.sallow",
+"rect": Rect2(0, 20, 12, 10)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.maritime",
+"rect": Rect2(32, 12, 12, 12)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.treasury",
+"rect": Rect2(36, 24, 8, 6)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.conservation",
+"rect": Rect2(32, 0, 12, 12)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.server",
+"rect": Rect2(22, 0, 6, 6)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.gallery_night.curator",
+"rect": Rect2(3, 0, 7, 6)
+}, {
+"floor": 2,
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.gallery_night.hall_void",
+"rect": Rect2(15, 8, 14, 18)
+}, {
+"floor": 3,
+"kind": &"building",
+"label": &"ui.preplan.bp.gallery_night.roof_deck",
+"rect": Rect2(0, 0, 32, 8)
+}, {
+"floor": 3,
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.gallery_night.glass_roofs",
+"rect": Rect2(0, 8, 44, 22)
+}, {
+"floor": 3,
+"kind": &"neighbour",
+"label": &"",
+"rect": Rect2(32, 0, 12, 8)
+}])
+points = Array[Dictionary]([{
+"category": &"spawn",
+"floor": 1,
+"id": &"pp_spawn_portico",
+"label": &"ui.preplan.point.gallery_night.pp_spawn_portico",
+"params": {},
+"pos": Vector2(22, 36)
+}, {
+"category": &"spawn",
+"floor": 1,
+"id": &"pp_spawn_mews",
+"label": &"ui.preplan.point.gallery_night.pp_spawn_mews",
+"params": {
+"spawn_tag": &"preplan_spawn_mews"
+},
+"pos": Vector2(26, -5)
+}, {
+"category": &"spawn",
+"floor": 3,
+"id": &"pp_spawn_roof",
+"label": &"ui.preplan.point.gallery_night.pp_spawn_roof",
+"params": {
+"spawn_tag": &"preplan_spawn_roof"
+},
+"pos": Vector2(17, 6)
+}, {
+"category": &"drop_zone",
+"floor": 1,
+"id": &"pp_drop_court",
+"label": &"ui.preplan.point.gallery_night.pp_drop_court",
+"params": {},
+"pos": Vector2(-12, 24)
+}, {
+"category": &"drop_zone",
+"floor": 1,
+"id": &"pp_drop_mews",
+"label": &"ui.preplan.point.gallery_night.pp_drop_mews",
+"params": {},
+"pos": Vector2(16, -2)
+}, {
+"category": &"drop_zone",
+"floor": 3,
+"id": &"pp_drop_roof",
+"label": &"ui.preplan.point.gallery_night.pp_drop_roof",
+"params": {},
+"pos": Vector2(8, 3)
+}, {
+"category": &"escape",
+"floor": 1,
+"id": &"pp_escape_mews",
+"label": &"ui.preplan.point.gallery_night.pp_escape_mews",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_mews"
+},
+"pos": Vector2(37, -4)
+}, {
+"category": &"escape",
+"floor": 1,
+"id": &"pp_escape_parade",
+"label": &"ui.preplan.point.gallery_night.pp_escape_parade",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_parade"
+},
+"pos": Vector2(22, 34)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_insider_registrar",
+"label": &"ui.preplan.point.gallery_night.pp_insider_registrar",
+"params": {
+"variant_group": &"keycard",
+"variant_slot": &"kc_registrar"
+},
+"pos": Vector2(21, 3)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_grate",
+"label": &"ui.preplan.point.gallery_night.pp_grate",
+"params": {
+"variant_group": &"areaway",
+"variant_slot": &"grate_loose"
+},
+"pos": Vector2(-4, 14)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_court_doors",
+"label": &"ui.preplan.point.gallery_night.pp_court_doors",
+"params": {
+"variant_group": &"court_doors",
+"variant_slot": &"court_doors_open"
+},
+"pos": Vector2(-1, 12.5)
+}])

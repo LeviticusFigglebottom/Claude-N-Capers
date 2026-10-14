@@ -75,7 +75,7 @@ Building a map and its cast is ENV C / ENV D work (both dormant). Options:
   content data, P the player-facing verification; art passes wait.
 Recommendation: (a) for the map and cast; A/B/P keep their current lanes plus the Gallery Night systems/data work below.
 
-## 6. Work breakdown (draft; ids become roadmap rows when the freeze lifts)
+## 6. Work breakdown (ACTIVE since D-110, 2026-10-14)
 | Id | Owner | Task |
 |---|---|---|
 | GN-L1 | LEAD | Fold the §3 audit gaps into gallery_night.md (lead rulings), roadmap rows, gate test plan |
