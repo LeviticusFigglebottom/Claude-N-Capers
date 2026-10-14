@@ -270,6 +270,12 @@ func test_objective_markers_label_and_current() -> void:
 	assert_true(bool(d[0]["current"]) and not bool(d[1]["current"]), "the panel's step is current")
 	assert_false(String(d[1]["label"]).contains("{"), String(d[1]["label"]))
 	assert_true(String(d[1]["label"]).contains("1/2"), String(d[1]["label"]))
+	# Lane 2 audit: marker text stays off the sheet (a label crossed LOOT SECURED); off again once it closes.
+	assert_true(_hud.objective_markers.avoid.has_area(), "the sheet is avoided")
+	assert_eq(_hud.objective_markers.avoid, _hud.scoreboard.sheet.get_global_rect())
+	_hud.scoreboard.set_shown(false)
+	await wait_frames(2)
+	assert_false(_hud.objective_markers.avoid.has_area(), "nothing avoided without the sheet")
 	cam.queue_free()
 
 
