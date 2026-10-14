@@ -222,3 +222,39 @@ func test_failure_reason_and_loss() -> void:
 	var would: Dictionary = PaydayScreen.compute_payout(HeistCatalog.sample_result(), null, Net.local_slot())
 	assert_eq((_screen.value_labels[&"lost_total"] as Label).text, UiText.money(int(would["total"])))
 	assert_eq(PaydayScreen.fail_reason_key(&""), &"ui.results.fail.abort", "no reason reads as walking away")
+
+
+## Lane 2 audit: a full crew's stats table is on screen at 720p without scrolling (it was under the fold).
+func test_full_crew_table_on_screen_at_720p() -> void:
+	var saved: Vector2i = get_window().size
+	get_window().size = Vector2i(1280, 720)
+	var result: Dictionary = HeistCatalog.sample_result()
+	var crew: Array = []
+	for slot: int in range(4):
+		crew.append({"slot": slot, "is_ai": slot >= 2, "kills": 30 + slot, "specials_killed": slot, "downs": slot,
+			"civilians_killed": 1})
+	result["crew"] = crew
+	_screen.apply_to_profile = false
+	_screen.show_result(result)
+	await wait_frames(3)
+	var vis: Rect2 = get_viewport().get_visible_rect().grow(1.0)
+	var labels: Array[Node] = _screen.find_children("*", "Label", true, false)
+	var crew_name: String = _screen.call(&"_crew_name", 3, true) as String
+	var last: Label = null
+	for n: Node in labels:
+		if (n as Label).text == crew_name and (n as Label).is_visible_in_tree():
+			last = n as Label
+	assert_true(last != null, "the last crew row is built")
+	if last != null:
+		var row: Control = last.get_parent() as Control
+		var view: Rect2 = vis
+		var n: Node = row.get_parent()
+		while n != null:
+			if n is ScrollContainer:
+				(n as ScrollContainer).scroll_vertical = 0
+				view = view.intersection((n as Control).get_global_rect().grow(1.0))
+			n = n.get_parent()
+		await wait_frames(1)
+		assert_true(view.encloses(row.get_global_rect()), "crew table %s inside %s" % [row.get_global_rect(), view])
+	assert_true(vis.encloses(_screen.continue_button.get_global_rect()), "Continue on screen")
+	get_window().size = saved

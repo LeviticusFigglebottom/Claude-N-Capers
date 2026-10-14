@@ -129,7 +129,7 @@ func build_ui() -> void:
 	root.add_child(scroll)
 	_summary = scroll
 	_build_cards_stage(root)
-	_content = UiBuild.vbox(20)
+	_content = UiBuild.vbox(UiTokens.S2 + UiTokens.S1)  # lane 2 audit: 20 -> 12, the crew table fits at 720p
 	_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(_content)
 	continue_button = UiBuild.primary(UiBuild.button(&"ui.results.continue"))
@@ -449,8 +449,12 @@ func _render() -> void:
 	var cols: HBoxContainer = UiBuild.hbox(40)
 	_content.add_child(cols)
 	cols.add_child(UiBuild.panel(_build_cash() if success else _build_loss()))
-	cols.add_child(UiBuild.panel(_build_xp()))
-	_content.add_child(UiBuild.panel(_build_stats()))
+	# Lane 2 audit: the crew table sat under the fold at 720p beside an empty right third. It stacks under
+	# the experience panel now, next to the cash breakdown.
+	var right: VBoxContainer = UiBuild.vbox(UiTokens.S2)
+	cols.add_child(right)
+	right.add_child(UiBuild.panel(_build_xp()))
+	right.add_child(UiBuild.panel(_build_stats()))
 	_content.add_child(UiBuild.panel(_build_awards()))
 	for id: StringName in achievements_unlocked:
 		var a: AchievementDef = ContentDB.by_id(ContentDB.ACHIEVEMENTS, id) as AchievementDef
@@ -705,6 +709,7 @@ func _build_stats() -> VBoxContainer:
 	var grid: GridContainer = GridContainer.new()
 	grid.columns = 5
 	grid.add_theme_constant_override(&"h_separation", 36)
+	grid.add_theme_constant_override(&"v_separation", 0)
 	v.add_child(grid)
 	# PO-4 audit: a column that is 0 for the whole crew is noise (kills always show).
 	var crew: Array = result.get("crew", []) as Array
