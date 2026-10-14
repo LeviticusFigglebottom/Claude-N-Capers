@@ -11,6 +11,12 @@ const ROLLER_VISUAL: String = "res://world/heists/dockside_burn/greybox/roller_d
 const VAULT_VISUAL: String = "res://world/heists/dockside_burn/greybox/vault_door_visual.tscn"
 const LIFT_VISUAL: String = "res://world/heists/dockside_burn/greybox/goods_lift_visual.tscn"
 const BOAT_DROP_VISUAL: String = "res://world/heists/dockside_burn/greybox/boat_drop_visual.tscn"
+## PO-13: the escape vans are the catalog van (as on GH / ND), not the secure_zone placeholder.
+const VAN_VISUAL: String = "res://world/props/secure_zone/veh_van_secure.tscn"
+## PO-13: escape_zone visuals. Van / boat escapes show the vehicle already parked or moored there (the slot's
+## secure_zone van, the moored launch), so their visual only carries the contract nodes (no second vehicle).
+const ESCAPE_VAN_MARKER: String = "res://world/heists/shared/escape_van_marker.tscn"
+const ESCAPE_BOAT_MARKER: String = "res://world/heists/shared/escape_boat_marker.tscn"
 ## Leaf widths per custom door type (width_m must equal the visual leaf width; validator scale check).
 const CUSTOM_WIDTH: Dictionary = {"slide": 2.4, "roller": 3.6, "vault": 2.0}
 ## Containers K1-K6: [prop name, door x (the door end face), door side (+1 = doors face +x)].
@@ -487,20 +493,25 @@ func _variants_perch(variants: Node3D) -> void:
 func _variants_escape(variants: Node3D) -> void:
 	var esc: Node3D = _group(variants, "escape")
 	var e1: VariantSlot = _slot(esc, "escape", "esc_van_gate", 0.4, {"label": "E1", "holdout": "H4"})
-	prefab(e1, "secure_zone", "VanSecureE1", Vector3(34.0, 0.0, -23.0), 180.0, {"objective_tag": &"loot_secure"}, null, {"kind": "vehicle"})
+	prefab(e1, "secure_zone", "VanSecureE1", Vector3(34.0, 0.0, -23.0), 180.0,
+		{"objective_tag": &"loot_secure", "visual_scene": load(VAN_VISUAL)}, null, {"kind": "vehicle"})
 	prefab(e1, "escape_zone", "VanEscapeE1", Vector3(34.0, 0.0, -18.8), 0.0,
-		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(5.0, 3.0, 2.4)})
+		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(5.0, 3.0, 2.4),
+			"visual_scene": load(ESCAPE_VAN_MARKER)})
 	var e2: VariantSlot = _slot(esc, "escape", "esc_van_lane", 0.3, {"label": "E2", "holdout": "lane"})
-	prefab(e2, "secure_zone", "VanSecureE2", Vector3(-5.0, 0.0, 1.0), 180.0, {"objective_tag": &"loot_secure"}, null, {"kind": "vehicle"})
+	prefab(e2, "secure_zone", "VanSecureE2", Vector3(-5.0, 0.0, 1.0), 180.0,
+		{"objective_tag": &"loot_secure", "visual_scene": load(VAN_VISUAL)}, null, {"kind": "vehicle"})
 	prefab(e2, "escape_zone", "VanEscapeE2", Vector3(-5.0, 0.0, 5.0), 0.0,
-		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(3.6, 3.0, 2.4)})
+		{"objective_tag": &"escape_van", "escape_type": &"van", "zone_size_m": Vector3(3.6, 3.0, 2.4),
+			"visual_scene": load(ESCAPE_VAN_MARKER)})
 	var e3: VariantSlot = _slot(esc, "escape", "esc_boat", 0.3, {"label": "E3", "holdout": "H3"})
 	prefab(e3, "secure_zone", "BoatSecureE3", Vector3(22.5, -1.6, 55.6), 0.0,
 		{"objective_tag": &"loot_secure", "vehicle_collision": false,
 			"zone_size_m": Vector3(4.0, 2.5, 2.4), "visual_scene": load(BOAT_DROP_VISUAL)},
 		null, {"kind": "boat_hatch"}, false)
 	prefab(e3, "escape_zone", "BoatEscapeE3", Vector3(24.0, L.LAND, 52.2), 0.0,
-		{"objective_tag": &"escape_boat", "escape_type": &"boat", "zone_size_m": Vector3(7.0, 3.0, 2.6)})
+		{"objective_tag": &"escape_boat", "escape_type": &"boat", "zone_size_m": Vector3(7.0, 3.0, 2.6),
+			"visual_scene": load(ESCAPE_BOAT_MARKER)})
 
 
 ## Night shift (doc `night_shift` 1-3 workers; the hostages): a slot group (a scalar cannot add NPCs).

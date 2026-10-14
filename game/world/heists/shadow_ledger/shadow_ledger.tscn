@@ -60,11 +60,14 @@
 [ext_resource type="PackedScene" path="res://world/heists/shadow_ledger/greybox/secure_net_visual.tscn" id="58_sl"]
 [ext_resource type="PackedScene" path="res://systems/prefabs/escape_zone/escape_zone.tscn" id="59_sl"]
 [ext_resource type="Script" path="res://systems/prefabs/escape_zone/escape_zone.gd" id="60_sl"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/zipline/zipline.tscn" id="61_sl"]
-[ext_resource type="Script" path="res://systems/prefabs/zipline/zipline.gd" id="62_sl"]
-[ext_resource type="PackedScene" path="res://world/heists/shadow_ledger/greybox/secure_cart_visual.tscn" id="63_sl"]
-[ext_resource type="PackedScene" path="res://world/heists/shadow_ledger/greybox/secure_drop_marker.tscn" id="64_sl"]
-[ext_resource type="Script" path="res://world/heists/shadow_ledger/shadow_ledger_mission.gd" id="65_sl"]
+[ext_resource type="PackedScene" path="res://world/props/escape_zone/veh_heli_escape.tscn" id="61_sl"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/zipline/zipline.tscn" id="62_sl"]
+[ext_resource type="Script" path="res://systems/prefabs/zipline/zipline.gd" id="63_sl"]
+[ext_resource type="PackedScene" path="res://world/heists/shadow_ledger/greybox/secure_cart_visual.tscn" id="64_sl"]
+[ext_resource type="PackedScene" path="res://world/props/escape_zone/prop_escape_zipline_rig.tscn" id="65_sl"]
+[ext_resource type="PackedScene" path="res://world/heists/shadow_ledger/greybox/secure_drop_marker.tscn" id="66_sl"]
+[ext_resource type="PackedScene" path="res://world/props/escape_zone/prop_escape_lift_fitout.tscn" id="67_sl"]
+[ext_resource type="Script" path="res://world/heists/shadow_ledger/shadow_ledger_mission.gd" id="68_sl"]
 
 [sub_resource type="BoxShape3D" id="sl_1"]
 size = Vector3(3, 3.3, 0.3000002)
@@ -18735,6 +18738,7 @@ script = ExtResource("60_sl")
 escape_type = &"heli"
 zone_size_m = Vector3(3.6, 3, 6)
 arrival_delay_s = 45.0
+visual_scene = ExtResource("61_sl")
 objective_tag = &"escape_heli"
 
 [node name="Slot_esc_line" type="Node3D" parent="Variants/Group_escape" unique_id=103438]
@@ -18746,9 +18750,9 @@ params = {
 "label": "E2"
 }
 
-[node name="BagLineE2" parent="Variants/Group_escape/Slot_esc_line" unique_id=103439 instance=ExtResource("61_sl")]
+[node name="BagLineE2" parent="Variants/Group_escape/Slot_esc_line" unique_id=103439 instance=ExtResource("62_sl")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 34.9, 11.6, 16.5)
-script = ExtResource("62_sl")
+script = ExtResource("63_sl")
 end = NodePath("../LineEndVantage")
 objective_tag = &"bag_line"
 metadata/kind = "zipline_anchor"
@@ -18769,7 +18773,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.9, 11.6, 16.6)
 script = ExtResource("57_sl")
 zone_size_m = Vector3(2, 2.5, 2)
 vehicle_collision = false
-visual_scene = ExtResource("63_sl")
+visual_scene = ExtResource("64_sl")
 objective_tag = &"loot_secure"
 metadata/kind = "bag_cart"
 
@@ -18778,6 +18782,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.3, 11.6, 16.6)
 script = ExtResource("60_sl")
 escape_type = &"zipline"
 zone_size_m = Vector3(2.8, 3, 2)
+visual_scene = ExtResource("65_sl")
 objective_tag = &"escape_line"
 
 [node name="Slot_esc_service" type="Node3D" parent="Variants/Group_escape" unique_id=103443]
@@ -18794,7 +18799,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 9)
 script = ExtResource("57_sl")
 zone_size_m = Vector3(2.4, 2.4, 2.4)
 vehicle_collision = false
-visual_scene = ExtResource("64_sl")
+visual_scene = ExtResource("66_sl")
 objective_tag = &"loot_secure"
 
 [node name="LiftEscapeE3" type="Node3D" parent="Variants/Group_escape/Slot_esc_service" unique_id=103445 instance=ExtResource("59_sl")]
@@ -18802,10 +18807,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 9)
 script = ExtResource("60_sl")
 escape_type = &"lift"
 zone_size_m = Vector3(2.6, 2.4, 2.6)
+visual_scene = ExtResource("67_sl")
 objective_tag = &"escape_service"
 
 [node name="Mission" type="Node" parent="." unique_id=103446]
-script = ExtResource("65_sl")
+script = ExtResource("68_sl")
 
 [node name="Preplan" type="Node3D" parent="." unique_id=103447]
 
