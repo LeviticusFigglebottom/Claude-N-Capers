@@ -39,6 +39,9 @@ var net_id: int = 0
 var alert_state: Enums.AlertState = Enums.AlertState.CALM
 var health: float = 1.0
 var max_health: float = 1.0
+## Objective marker tag (HeistRuntime.find_by_tag, HUD markers): a mission points an objective at this NPC
+## (e.g. Night Deposit's night manager carrying the time-lock code).
+var objective_tag: StringName = &""
 var alive: bool = true
 ## Spawn info (SpawnPoint tags, idle_activity, patrol graph, spawn_point) for the brain.
 var spawn_info: Dictionary = {}

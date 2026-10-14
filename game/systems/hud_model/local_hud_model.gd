@@ -96,6 +96,8 @@ const WARNING_PHANTOM: StringName = &"phantom"
 const WARNING_STINGER: StringName = &"stinger"
 ## A3-02 (L4.9): Commander Brandt on the map (captain_arrived .. captain_retreated).
 const WARNING_CAPTAIN: StringName = &"captain"
+## An objective whose marker_tags resolve to nothing is retried (backing off) at most this many times.
+const MARKER_MAX_TRIES: int = 6
 ## Contract property -> its change signal (ui_hud.md v1.1 + v1.2 custody + v1.3 captain).
 const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"health": &"vitals_changed", &"max_health": &"vitals_changed", &"armor": &"vitals_changed",
@@ -262,6 +264,8 @@ var mask_progress: float = 0.0
 ## Enums.HeistPhase
 var heist_phase: int = Enums.HeistPhase.LOADING
 
+## Lookups walked by find_by_tag since the runtime was bound (tests / profiling).
+var marker_lookups: int = 0
 var _runtime: HeistRuntime = null
 var _accum: float = 0.0
 var _mission: HeistMission = null
@@ -280,9 +284,11 @@ var _event_objectives: Dictionary[StringName, Dictionary] = {}
 ## ui_hud v1.8 marker cache: objective id -> tagged map nodes; key = active marked objectives + tags.
 var _marker_nodes: Dictionary[StringName, Array] = {}
 var _reload_total: float = 0.0
-var _marker_key: String = ""
-var _marker_unresolved: bool = false
-var _marker_retry_left: int = 0
+## Per objective id: the args signature its markers were resolved for, and the retry state of an unresolved one
+## ({"next": poll index, "tries": int}). Resolved ids are never re-queried until their data changes.
+var _marker_sig: Dictionary[StringName, String] = {}
+var _marker_retry: Dictionary[StringName, Dictionary] = {}
+var _marker_poll: int = 0
 var _connections: Array[Array] = []
 
 
@@ -547,14 +553,14 @@ func _poll_objectives() -> void:
 
 
 ## ui_hud v1.8: markers for ACTIVE objectives with `marker_tags`. Tag lookups walk the map, so they are
-## cached per objective and redone when an active marked objective appears, goes or has its data updated
+## cached per objective and redone only for an objective that appears or has its data updated
 ## (update_objective_data: new marker_tags, or a node given a matching objective_tag at runtime, QC-60);
-## positions are read every poll (moving / freed nodes drop out).
+## an unresolved one retries with back-off up to MARKER_MAX_TRIES. Positions are read every poll.
 func _poll_markers(src: Array[Dictionary]) -> void:
 	if _runtime == null:
 		return  # objectives published before the runtime is bound: resolve on a later poll
 	var want: Dictionary[StringName, Array] = {}
-	var keys: PackedStringArray = PackedStringArray()
+	var sigs: Dictionary[StringName, String] = {}
 	for o: Dictionary in src:
 		var tags: Variant = (o.get("args", {}) as Dictionary).get("marker_tags", [])
 		if int(o["state"]) != Enums.ObjectiveState.ACTIVE or not (tags is Array) or (tags as Array).is_empty():
@@ -562,22 +568,39 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 		if bool((o.get("args", {}) as Dictionary).get("disabled", false)):
 			continue  # e.g. Night Deposit's code / server steps in a lockdown (the panel hides them too)
 		want[StringName(o["id"])] = tags as Array
-		keys.append("%s:%s" % [o["id"], o.get("args", {})])  # any data update re-resolves (QC-60: runtime tags)
-	var key: String = ",".join(keys)
-	_marker_retry_left -= 1
-	if key != _marker_key or (_marker_unresolved and _marker_retry_left <= 0):
-		_marker_key = key
-		_marker_unresolved = false
-		_marker_retry_left = int(maxf(poll_hz, 1.0))  # an unresolved tag (map not ready) retries ~1/s
-		_marker_nodes.clear()
-		for id: StringName in want:
-			var nodes: Array[Node3D] = []
-			for t: Variant in want[id]:
-				for n: Node in _runtime.find_by_tag(StringName(t)):
-					if n is Node3D:
-						nodes.append(n as Node3D)
-			_marker_nodes[id] = nodes
-			_marker_unresolved = _marker_unresolved or nodes.is_empty()
+		sigs[StringName(o["id"])] = str(o.get("args", {}))  # any data update re-resolves (QC-60: runtime tags)
+	_marker_poll += 1
+	for gone: StringName in _marker_nodes.keys():
+		if not want.has(gone):
+			_marker_nodes.erase(gone)
+			_marker_sig.erase(gone)
+			_marker_retry.erase(gone)
+	# P / lead (ND 1 Hz stutter): each find_by_tag walks the whole map, so only new / changed objectives are
+	# resolved, and an unresolved one retries with exponential back-off and gives up after MARKER_MAX_TRIES.
+	for id: StringName in want:
+		var changed: bool = _marker_sig.get(id, "") != sigs[id] or not _marker_nodes.has(id)
+		if not changed:
+			if not (_marker_nodes[id] as Array).is_empty():
+				continue
+			var r: Dictionary = _marker_retry.get(id, {})
+			if int(r.get("tries", 0)) >= MARKER_MAX_TRIES or _marker_poll < int(r.get("next", 0)):
+				continue
+		else:
+			_marker_retry.erase(id)
+		_marker_sig[id] = sigs[id]
+		var nodes: Array[Node3D] = []
+		for t: Variant in want[id]:
+			marker_lookups += 1
+			for n: Node in _runtime.find_by_tag(StringName(t)):
+				if n is Node3D:
+					nodes.append(n as Node3D)
+		_marker_nodes[id] = nodes
+		if nodes.is_empty():
+			var tries: int = int((_marker_retry.get(id, {}) as Dictionary).get("tries", 0)) + 1
+			var wait: int = int(maxf(poll_hz, 1.0)) * (1 << mini(tries - 1, 5))  # ~1 s, 2 s, 4 s ... (map not ready)
+			_marker_retry[id] = {"tries": tries, "next": _marker_poll + wait}
+		else:
+			_marker_retry.erase(id)
 	var out: Array[Dictionary] = []
 	for o2: Dictionary in src:
 		var oid: StringName = StringName(o2["id"])
