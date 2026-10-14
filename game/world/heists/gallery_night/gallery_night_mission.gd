@@ -8,7 +8,8 @@
 ## 1 listed canvas -> secure both at the active escape (studies never count) -> escape.
 ## Loud (alarm): lockdown (completes at once) -> hack (120 s) or the vault drill -> secure -> escape after
 ## `escape_eta_s`. Fail reasons: custody / abort only (B3; HeistRuntime ends the heist, this script never fails it).
-## Every `TODO(A §3b.6)` below needs an ENV A system API that does not exist yet.
+## GN-A1 (ENV A): last call (zones, guests out, relocks), the curator's carried card, frame sensors, the lockdown
+## (shutters BARRED, reader dead, loud hack), rare-event spawns, asset.intel_list and Mercer's sweep-laser hint.
 extends HeistMission
 
 const TAG_CASING: StringName = &"casing_hall"
@@ -40,6 +41,33 @@ const GUESTS_GONE_S: float = 60.0
 ## find_canvases: radius of the "walk within 4 m" check around each active list slot (doc §Objectives 2).
 const FIND_RADIUS_M: float = 4.0
 const RARE_CURATOR_TIPSY: StringName = &"curator_tipsy"
+const ASSET_INTEL_LIST: StringName = &"asset.intel_list"
+## Doors the mission relocks / opens: objective tag first (ENV C to tag them), else these map paths.
+const TAG_BRONZE: StringName = &"bronze_doors"
+const TAG_COURT: StringName = &"court_doors"
+const TAG_ART_DOOR: StringName = &"art_door"
+const TAG_VAULT_DOOR: StringName = &"art_store_vault_door"
+const TAG_TREASURY_LEAF: StringName = &"treasury_door_leaf"
+const PATHS_BRONZE: Array[String] = ["Gameplay/Doors/BronzeDoorsW", "Gameplay/Doors/BronzeDoorsE"]
+const PATHS_ART_DOOR: Array[String] = ["Gameplay/Doors/ArtDoorEG"]
+const PATHS_VAULT_DOOR: Array[String] = ["Gameplay/Doors/ArtStoreVaultDoor"]
+const PATHS_TREASURY_DOOR: Array[String] = ["Gameplay/Doors/TreasuryDoor"]
+const COURT_OPEN_SLOT: String = "Variants/Group_court_doors/Slot_court_doors_open"
+## Last call: guests out by the portico (stragglers stay), waitstaff by the dock at +WAITSTAFF_OUT_S.
+const EXIT_GUESTS: StringName = &"exit_guests"
+const EXIT_STAFF: StringName = &"exit_staff"
+const GUEST_TAGS: Array[StringName] = [&"civ_patron"]
+const WAITSTAFF_TAGS: Array[StringName] = [&"civ_waitstaff"]
+const WAITSTAFF_OUT_S: float = 120.0
+## Mercer's sweep-laser hint (B 778deea3): once, the first time a crew member comes within LASER_HINT_M of the TR grid
+## while the rolled laser_pattern is lz_sweep.
+const TAG_TR_LASERS: StringName = &"treasury_lasers"
+const LASER_SWEEP_SLOT: StringName = &"lz_sweep"
+const LASER_HINT_M: float = 4.0
+const VO_LASER_SWEEP: StringName = &"vo.mercer.gallery_night_lasers_sweep"
+## Rare-event timed spawns (QC-25): guards per spawn; `after` &"last_call" counts from last call.
+const TIMED_SPAWN_COUNT: int = 2
+const AFTER_LAST_CALL: StringName = &"last_call"
 
 var _escape: StringName = &"mews"
 var _lantern_secured: bool = false
@@ -48,6 +76,11 @@ var _escape_open: bool = false
 var _lockdown: bool = false
 var _found: Array[StringName] = []
 var _last_call: bool = false
+var _laser_hint_done: bool = false
+## argus_upgrade: extra hack interruptions (stealth and loud).
+var _extra_interruptions: int = 0
+## Rare timed spawns waiting for last call: [timer id, delay s, spawn tag].
+var _after_last_call: Array[Array] = []
 
 
 func _on_mission_start() -> void:
@@ -86,6 +119,8 @@ func _on_mission_start() -> void:
 	_apply_sensor_net()
 	_set_curtain(false)
 	_watch_canvases()
+	_apply_intel_list()
+	_watch_sweep_lasers()
 	_schedule_last_call()
 	_schedule_rare_events()
 
@@ -108,11 +143,13 @@ func _on_alarm(_reason: StringName) -> void:
 
 # --- Setup -------------------------------------------------------------------------------------
 
-## Scalars: keep the first `store_paintings` AS rack studies and `consignment_lockers` lockers (map order).
-## TODO(A §3b.6): the `patrons` / `stragglers` scalars need a civilian spawn-count hook (the map has 5 patron spawns).
+## Scalars: keep the first `store_paintings` AS rack studies and `consignment_lockers` lockers (map order), and the
+## first `patrons` patrons (thin_civilians; with fewer patron spawns than the roll, all of them stay). `stragglers`
+## patrons stay on after last call (_on_last_call).
 func _apply_scalars() -> void:
 	_keep_first(find_tagged(TAG_STORE_STUDY), int(_scalar(&"store_paintings", 8)))
 	_keep_first(find_tagged(TAG_LOCKERS), int(_scalar(&"consignment_lockers", 8)))
+	thin_civilians(GUEST_TAGS[0], int(_scalar(&"patrons", 5)))
 
 
 ## kc_curator is on Sorell's lanyard (QC-52: the map's `keycard` pickup carries `carrier_tag` civ_curator). The bar
@@ -124,9 +161,9 @@ func _apply_curator_card() -> void:
 		(k as Node3D).visible = false
 
 
-## GN-C1 step 2d (frame sensors, QC-54; A to review): the hung frames are LootSpawn `alarm_on_take` in one AlarmGroups
-## zone each (argus_treasury / argus_upper / argus_ground); the active sensor_net slot's params name the zones this
-## option leaves off, taken offline here. The prefab raises alarm_raised(&"sensor") on a live take.
+## GN-C1 step 2d (frame sensors, QC-54; through HeistMission.disable_alarm_group): the hung frames are LootSpawn
+## `alarm_on_take` in one AlarmGroups zone each (argus_treasury / argus_upper / argus_ground); the active sensor_net
+## slot's params name the zones this option leaves off, taken offline here. The prefab raises alarm_raised(&"sensor") on a live take.
 func _apply_sensor_net() -> void:
 	var rt: HeistRuntime = HeistRuntime.of(self)
 	var picked: Variant = variant(&"sensor_net")
@@ -136,11 +173,11 @@ func _apply_sensor_net() -> void:
 	for vs: Node in group.get_children():
 		if vs is VariantSlot and (picked as Array).has((vs as VariantSlot).slot_id):
 			for g: String in PackedStringArray((vs as VariantSlot).params.get("alarm_groups_off", [])):
-				AlarmGroups.disable(rt, StringName(g))
+				disable_alarm_group(StringName(g))
 
 
 ## find_canvases: an Area3D (FIND_RADIUS_M) per active list canvas; the first crew entry reveals the slot's own tag.
-## TODO(A §3b.6): `asset.intel_list` seeds the found list at start (preplan asset effect).
+## `asset.intel_list` seeds the found list at start (_apply_intel_list).
 func _watch_canvases() -> void:
 	for tag: StringName in [TAG_LANTERN] + LIST_TAGS:
 		for c: Node in find_tagged(tag):
@@ -169,6 +206,44 @@ func _on_find_area(body: Node, tag: StringName) -> void:
 		complete(&"find_canvases")
 
 
+## asset.intel_list: the crew knows where every listed canvas hangs before walking in (find_canvases seeded).
+func _apply_intel_list() -> void:
+	if not has_asset(ASSET_INTEL_LIST):
+		return
+	_found.assign([TAG_LANTERN] + LIST_TAGS)
+	update_objective_data(&"find_canvases", {"marker_tags": _found.duplicate(), "found": _found.size()})
+	complete(&"find_canvases")
+
+
+## Mercer's sweep-laser hint (B): an approach Area3D on the active lz_sweep Treasury grid.
+func _watch_sweep_lasers() -> void:
+	var picked: Variant = variant(&"laser_pattern")
+	if not (picked is Array and (picked as Array).has(LASER_SWEEP_SLOT)):
+		return
+	for g: Node in find_tagged(TAG_TR_LASERS):
+		if not String(g.get_path()).contains("Slot_%s" % LASER_SWEEP_SLOT):
+			continue
+		var area: Area3D = Area3D.new()
+		area.name = "HintArea"
+		area.collision_layer = 0
+		area.collision_mask = 0xFFFFFFFF
+		area.monitorable = false
+		var shape: CollisionShape3D = CollisionShape3D.new()
+		var sph: SphereShape3D = SphereShape3D.new()
+		sph.radius = LASER_HINT_M
+		shape.shape = sph
+		area.add_child(shape)
+		g.add_child(area)
+		area.body_entered.connect(_on_laser_hint_area)
+
+
+func _on_laser_hint_area(body: Node) -> void:
+	if _laser_hint_done or went_loud or not body.is_in_group(G.CREW):
+		return
+	_laser_hint_done = true
+	say(VO_LASER_SWEEP)
+
+
 ## Last call (`last_call_s`): Mercer's warning 60 s before, then the gala ends. Before the alarm only.
 func _schedule_last_call() -> void:
 	var t: float = float(_scalar(&"last_call_s", 600))
@@ -183,12 +258,23 @@ func _on_last_call() -> void:
 		return
 	_last_call = true
 	say(&"vo.mercer.gallery_night_last_call")
-	# TODO(A §3b.6, QC-51): guests path to the portico and despawn over GUESTS_GONE_S; flip the PUBLIC MapZones to
-	# RESTRICTED; the hall guard closes the bronze doors and the mission relocks them LOCKPICK from outside (relock API);
-	# court_doors_open relocks LOCKPICK; waitstaff leave by the LD personnel door at +120 s.
+	# QC-51: the gala's PUBLIC rooms become RESTRICTED; guests walk out by the portico (stragglers stay on); the
+	# bronze doors and an open court pair close and relock LOCKPICK; waitstaff leave by the dock later.
+	set_zone_kinds(MapZone.Kind.PUBLIC, MapZone.Kind.RESTRICTED)
+	civilians_leave(EXIT_GUESTS, GUEST_TAGS, int(_scalar(&"stragglers", 0)))
+	for d: Door in _doors(TAG_BRONZE, PATHS_BRONZE) + _court_doors():
+		d.relock(Door.Lock.LOCKPICK)
+	start_timer(&"waitstaff_out", WAITSTAFF_OUT_S, func() -> void:
+		if not went_loud:
+			civilians_leave(EXIT_STAFF, WAITSTAFF_TAGS))
+	for w: Array in _after_last_call:
+		_start_spawn_timer(StringName(w[0]), float(w[1]), StringName(w[2]))
 	_set_curtain(true)
 	if _rare(RARE_CURATOR_TIPSY):
-		# TODO(A §3b.6): free kc_curator's carried card (the lanyard is on the bar now, one card in all).
+		for k: Node in find_tagged(TAG_KEYCARD):  # her carried card goes: the lanyard is on the bar now (one card)
+			var kp: KeycardPickup = k as KeycardPickup
+			if kp != null and kp.carrier_tag != &"":
+				kp.discard()
 		for k: Node in find_tagged(TAG_KEYCARD_BAR):
 			_set_enabled(k, true)
 			(k as Node3D).visible = true
@@ -198,12 +284,37 @@ func _on_last_call() -> void:
 			say(&"vo.mercer.gallery_night_guests_gone"))
 
 
-## Rare events (B README effect keys). TODO(A §3b.6): insurance_inspection / vaultline_early timed spawns (QC-25:
-## spawn_guards(2, &"guard_inspection") at last call + 180 s; guard_vaultline at 720 s, void unless the centrepiece is
-## cp_landing / cp_treasury; the B3 G1 fallback moves the canvas to cp_store, TODO(QC-57)); argus_upgrade's extra hack
-## interruption; late_loan's studies are the xl_loan slot's.
+## Rare events (B README effect keys, read from the rolled events' effects): `timed_spawn` (QC-25:
+## insurance_inspection = guard_inspection at last call + delay_s; vaultline_early = guard_vaultline at at_s, rolled
+## only with the centrepiece on cp_landing / cp_treasury, VariantResolver `requires`) spawns TIMED_SPAWN_COUNT guards
+## at the tagged scripted spawns, before the alarm only; `extra_hack_interruptions` (argus_upgrade) adds to both hack
+## ranges. late_loan's studies are the xl_loan slot's own (force_active, no script).
 func _schedule_rare_events() -> void:
-	pass
+	var fx_by_event: Dictionary = rare_effects()
+	for ev: Variant in fx_by_event:
+		var fx: Dictionary = fx_by_event[ev]
+		_extra_interruptions += int(fx.get("extra_hack_interruptions", 0))
+		var ts: Variant = fx.get("timed_spawn")
+		if not ts is Dictionary:
+			continue
+		var d: Dictionary = ts as Dictionary
+		var id: StringName = StringName("rare_%s" % ev)
+		var tag: StringName = StringName(d.get("spawn_tag", &""))
+		if StringName(d.get("after", &"")) == AFTER_LAST_CALL:
+			_after_last_call.append([id, float(d.get("delay_s", 0.0)), tag])
+		else:
+			_start_spawn_timer(id, float(d.get("at_s", 0.0)), tag)
+	if _extra_interruptions > 0:
+		for h: Node in find_tagged(TAG_HACK):
+			var ht: HackTerminal = h as HackTerminal
+			if ht != null:
+				ht.reconfigure(ht.duration_s, ht.interruptions + Vector2i(_extra_interruptions, _extra_interruptions))
+
+
+func _start_spawn_timer(id: StringName, after_s: float, tag: StringName) -> void:
+	start_timer(id, maxf(after_s, 0.01), func() -> void:
+		if not went_loud and tag != &"":
+			spawn_guards(TIMED_SPAWN_COUNT, tag))
 
 
 # --- Stealth flow --------------------------------------------------------------------------------
@@ -228,12 +339,15 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 
 
 ## The Argus hack: stealth -> the frame sensors go offline (QC-54); loud -> every shutter up, the TR / LD art / AS vault
-## doors open with no card (B3). TODO(A §3b.6): shutter BAR / lift and the door relock API.
+## doors open with no card (B3).
 func _on_device_finished(device_net_id: int) -> void:
 	if _is_tagged(device_net_id, TAG_HACK):
 		_complete_once(&"hack")
 		_sensors_offline(device_net_id)
-		say(&"vo.mercer.gallery_night_sensors_off")
+		if went_loud:
+			_lift_lockdown()
+		else:
+			say(&"vo.mercer.gallery_night_sensors_off")
 	elif _is_tagged(device_net_id, TAG_VAULT_DRILL):
 		_complete_once(&"vault_drill")
 		_complete_once(&"art_store")
@@ -283,8 +397,8 @@ func _open_escape() -> void:
 # --- Loud flow ---------------------------------------------------------------------------------
 
 ## Lockdown: completes at once (it explains the shutters). The hack's loud label (B README ruling 7: same objective,
-## label key `…hack_loud`). TODO(A §3b.6): BAR the Calloway arch shutter, the TR shutter and the LD art door, kill the AS
-## keycard reader, retarget the hack terminal to HACK_LOUD_S / HACK_LOUD_INTERRUPTIONS (QC-55).
+## label key `…hack_loud`). The Calloway arch / TR / art-door shutters and the LD art door are BARRED, the AS keycard
+## reader dies, and the hack terminal retargets to HACK_LOUD_S / HACK_LOUD_INTERRUPTIONS (QC-55; progress kept).
 func _go_loud() -> void:
 	if _lockdown:
 		return
@@ -292,6 +406,17 @@ func _go_loud() -> void:
 	activate(&"lockdown")
 	complete(&"lockdown")
 	say(&"vo.mercer.gallery_night_lockdown")
+	for n: Node in find_tagged(TAG_SHUTTER):
+		_bar(n)
+	for d: Door in _doors(TAG_ART_DOOR, PATHS_ART_DOOR):
+		d.relock(Door.Lock.BARRED)
+	for r: Node in find_tagged(TAG_VAULT_READER):
+		if r is KeycardReader:
+			(r as KeycardReader).set_disabled(true)
+	var extra: Vector2i = Vector2i(_extra_interruptions, _extra_interruptions)
+	for h: Node in find_tagged(TAG_HACK):
+		if h is HackTerminal:
+			(h as HackTerminal).reconfigure(HACK_LOUD_S, HACK_LOUD_INTERRUPTIONS + extra)
 	if objective_state(&"hack") == Enums.ObjectiveState.ACTIVE:
 		add_objective(&"hack", &"objective.gallery_night.hack_loud", Enums.ObjectiveState.ACTIVE,
 			{"marker_tags": [TAG_HACK], "duration_s": HACK_LOUD_S, "interruptions": HACK_LOUD_INTERRUPTIONS})
@@ -303,7 +428,67 @@ func _go_loud() -> void:
 		_call_escape()
 
 
+## Loud hack done: every shutter up, the TR / LD art / AS vault doors open with no card (B3).
+func _lift_lockdown() -> void:
+	for n: Node in find_tagged(TAG_SHUTTER):
+		_lift(n)
+	for d: Door in _doors(TAG_ART_DOOR, PATHS_ART_DOOR) + _doors(TAG_TREASURY_LEAF, PATHS_TREASURY_DOOR) \
+			+ _doors(TAG_VAULT_DOOR, PATHS_VAULT_DOOR):
+		_lift(d)
+	for r: Node in find_tagged(TAG_VAULT_READER):
+		if r is KeycardReader:
+			(r as KeycardReader).set_disabled(false)
+	_complete_once(&"treasury")
+	_complete_once(&"art_store")
+
+
 # --- Helpers -----------------------------------------------------------------------------------
+
+## Shutters and doors: a Door (or any prefab with Door's relock / unlock / set_open, ENV C's shutter and grate
+## prefabs) is BARRED and closed; Markers (G1 stand-ins) are skipped.
+func _bar(n: Node) -> void:
+	if n.has_method(&"relock"):
+		n.call(&"relock", Door.Lock.BARRED, true)
+
+
+func _lift(n: Node) -> void:
+	if n.has_method(&"unlock"):
+		n.call(&"unlock")
+	if n.has_method(&"set_open"):
+		n.call(&"set_open", true)
+
+
+## Doors tagged `tag` in this map, else the ones at `paths` (relative to the map root).
+func _doors(tag: StringName, paths: Array[String]) -> Array[Door]:
+	var out: Array[Door] = []
+	for n: Node in find_tagged(tag):
+		if n is Door:
+			out.append(n as Door)
+	if out.is_empty():
+		var rt: HeistRuntime = HeistRuntime.of(self)
+		for p: String in paths:
+			var d: Door = rt.map.get_node_or_null(NodePath(p)) as Door if rt != null and rt.map != null else null
+			if d != null:
+				out.append(d)
+	return out
+
+
+## court_doors: the pair tagged court_doors, else the Doors under the court_doors_open slot (when rolled).
+func _court_doors() -> Array[Door]:
+	var out: Array[Door] = _doors(TAG_COURT, [])
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	var slot: Node = rt.map.get_node_or_null(NodePath(COURT_OPEN_SLOT)) if out.is_empty() and rt != null else null
+	if slot != null and _slot_rolled(&"court_doors", &"court_doors_open"):
+		for n: Node in slot.find_children("*", "", true, false):
+			if n is Door:
+				out.append(n as Door)
+	return out
+
+
+func _slot_rolled(group: StringName, slot_id: StringName) -> bool:
+	var v: Variant = variant(group)
+	return v is Array and (v as Array).has(slot_id)
+
 
 func _complete_once(id: StringName) -> void:
 	if objective_state(id) != Enums.ObjectiveState.COMPLETED:
@@ -320,14 +505,14 @@ func _set_curtain(on: bool) -> void:
 
 
 ## GN-C1 step 2d: the Argus hack clears its own `clears_alarm_group` (argus_treasury); the other zones it lists in its
-## meta `alarm_groups` go offline here (A to review; TODO(A §3b.6, QC-55): the loud reconfigure lives with A).
+## meta `alarm_groups` go offline here (or set them in HackTerminal.clears_alarm_groups and drop the meta).
 func _sensors_offline(device_net_id: int) -> void:
 	var rt: HeistRuntime = HeistRuntime.of(self)
 	for n: Node in find_tagged(TAG_HACK):
 		var nid: Variant = n.get(&"net_id")
 		if rt != null and nid != null and int(nid) == device_net_id:
 			for g: String in PackedStringArray(n.get_meta(&"alarm_groups", PackedStringArray())):
-				AlarmGroups.disable(rt, StringName(g))
+				disable_alarm_group(StringName(g))
 
 
 func _keep_first(nodes: Array[Node], count: int) -> void:

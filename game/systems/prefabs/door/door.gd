@@ -34,8 +34,9 @@
 ## the front (-Z, UsePoint) side: a crew member / NPC whose position in the door's local space has
 ## z < 0. From outside (z >= 0) the interaction is blocked (BLOCK_PUSH_BAR_OUTSIDE) and NPC doors
 ## logic treats it as locked from that side (`can_npc_open` false; the NavLink is one-way -Z -> +Z
-## while closed). Opening from inside still follows `lock`. Once open it is a normal door (either
-## side may close it); closed again, it is one-way again. Pair it with swing INWARD (opens away from
+## while closed), except for an NPC its `npc_authorized_tags` authorise (staff with the key; two-way link).
+## Opening from inside still follows `lock`. Once open it is a normal door (either side may close it);
+## closed again, it is one-way again. Pair it with swing INWARD (opens away from
 ## the pusher, toward +Z / outside).
 class_name Door
 extends GameplayPrefab
@@ -386,8 +387,8 @@ func passable_for(agent: Node) -> bool:
 func can_npc_open(agent: Node) -> bool:
 	if is_open:
 		return true
-	if push_bar and not is_inside(agent):
-		return false
+	if push_bar and not is_inside(agent) and not _staff_authorised(agent):
+		return false  # A2-08; an authorised NPC has the key side too (GN dock smoker back into LD, C's gap 2)
 	return not locked or _staff_authorised(agent) or _police_breach(agent)
 
 
@@ -556,7 +557,7 @@ func _update_nav_link() -> void:
 	_nav_link.enabled = is_open or not locked or breachable or (not npc_authorized_tags.is_empty() \
 		and lock != Lock.BARRED)
 	# A2-08: closed push-bar doors pass inside (-Z, start) -> outside (+Z, end) only.
-	_nav_link.bidirectional = is_open or not push_bar
+	_nav_link.bidirectional = is_open or not push_bar or not npc_authorized_tags.is_empty()
 
 
 ## S4.2: an open `suspicious_when_open` door is an `open_door` stimulus.

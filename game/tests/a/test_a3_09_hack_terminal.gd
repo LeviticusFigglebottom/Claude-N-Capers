@@ -246,10 +246,13 @@ func test_gn_finished_hack_disables_its_alarm_group() -> void:
 	var hack: HackTerminal = ATestMaps.add_prefab(_rt, "hack_terminal", Vector3(0, 0, -6), func(n: Node) -> void:
 		(n as HackTerminal).duration_s = 0.2
 		(n as HackTerminal).interruptions = Vector2i(0, 0)
-		(n as HackTerminal).clears_alarm_group = &"argus") as HackTerminal
+		(n as HackTerminal).clears_alarm_group = &"argus"
+		(n as HackTerminal).clears_alarm_groups = [&"argus_upper", &"argus_ground"] as Array[StringName]) as HackTerminal
 	await wait_physics_frames(2)
 	assert_true(AlarmGroups.is_live(_rt, &"argus"), "sensors live before the hack")
 	hack.start_hack(0)
 	var done: bool = await wait_until(func() -> bool: return hack.state == HackTerminal.State.DONE, 2.0)
 	assert_true(done, "hack finished")
 	assert_false(AlarmGroups.is_live(_rt, &"argus"), "the finished hack took the group offline")
+	assert_false(AlarmGroups.is_live(_rt, &"argus_upper") or AlarmGroups.is_live(_rt, &"argus_ground"),
+		"and every group in clears_alarm_groups (C's gap 6)")
