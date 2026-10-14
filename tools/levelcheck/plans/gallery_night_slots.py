@@ -111,7 +111,9 @@ SLOTS: List[Tuple[str, str, float, str, str, float, float, float, str]] = [
     ("areaway", "grate_padlocked", 1.0, "G", "X3", -4.0, 14.0, 0.0, "court grate: padlock (lockpick 8 s or saw)"),
     ("escape", "esc_mews", 0.55, "G", "X2", 37.0, -4.0, 0.0, "E1 van at the LD roller door"),
     ("escape", "esc_parade", 0.45, "G", "X1", 22.0, 34.0, 0.0, "E2 limo at the portico kerb"),
+    ("xl_crate", "xl_none", 1.0, "G", "LD", 38.0, 9.0, 0.0, "empty sibling (QC-62): no crate unless late_loan"),
     ("xl_crate", "xl_loan", 1.0, "G", "LD", 38.0, 9.0, 0.0, "late_loan crate (2 studies); pick 0, only the rare event"),
+    ("admin_pa", "pa_none", 1.0, "U", "AO", 15.0, 4.0, 0.0, "empty sibling (QC-62): no PA unless late_paperwork"),
     ("admin_pa", "pa_late", 1.0, "U", "AO", 15.0, 4.0, 0.0, "civ_admin at an AO desk; pick 0, only late_paperwork"),
 ]
 SCALARS = {"last_call_s": [480, 600, 720], "patrons": [3, 5, 7, 9], "stragglers": [0, 1, 2],
