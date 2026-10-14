@@ -5,7 +5,7 @@ extends LcTestBase
 
 func test_good_fixture_passes_final_all_variants() -> void:
 	var res: Dictionary = await _validate(GOOD, "final", Callable(), true)
-	assert_eq(res.size(), 20, "all 20 checks ran at final (barred_doors added, D-073)")
+	assert_eq(res.size(), 22, "all 22 checks ran at final (barred_doors D-073; slopes + viewmodel_lit, GN-C1)")
 	_expect_only(res, [])
 
 

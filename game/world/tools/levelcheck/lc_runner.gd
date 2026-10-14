@@ -8,10 +8,11 @@ static func all_checks() -> Array[LcCheck]:
 	var out: Array[LcCheck] = [
 		LcCheckContractNodes.new(), LcCheckCameras.new(), LcCheckSecureZones.new(), LcCheckFloating.new(),
 		LcCheckClipping.new(), LcCheckOrientation.new(),
-		LcCheckScale.new(), LcCheckNavmesh.new(), LcCheckBarredDoors.new(), LcCheckReachability.new(),
+		LcCheckScale.new(), LcCheckSlopes.new(), LcCheckNavmesh.new(), LcCheckBarredDoors.new(),
+		LcCheckReachability.new(),
 		LcCheckWalkthrough.new(),
 		LcCheckPatrols.new(), LcCheckLasers.new(), LcCheckCameraSpine.new(), LcCheckCameraScreen.new(),
-		LcCheckMaterials.new(), LcCheckZfight.new(), LcCheckLights.new(),
+		LcCheckMaterials.new(), LcCheckZfight.new(), LcCheckLights.new(), LcCheckViewmodelLit.new(),
 		LcCheckDensity.new(), LcCheckVariety.new(), LcCheckBounds.new(), LcCheckPerf.new(),
 	]
 	return out
