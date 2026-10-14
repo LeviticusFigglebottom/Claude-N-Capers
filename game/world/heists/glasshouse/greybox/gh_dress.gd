@@ -1,8 +1,9 @@
 ## Glasshouse G2 dressing (C1-08, ENV C): prop catalog access and the KitPlacer pass.
 ## Every room with a RoomVolume.dressing_kit is dressed by its kit (world/kits): the layout's
 ## ANCHORS go in first, every gameplay prefab, marker, door swing, window and walkway is a keep-out.
-## Placed floor props get a box collider (catalog AABB) and a navmesh obstruction; fixtures keep
-## the kit's lights, a few chosen ones cast shadows (<= 8 per view).
+## Placed floor props get a box collider (catalog AABB) and a navmesh obstruction, except the NPC
+## seats (prop_chair_task, D-063), which the seated NPC owns; fixtures keep the kit's lights, a few
+## chosen ones cast shadows (<= 8 per view).
 extends RefCounted
 
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
@@ -19,6 +20,8 @@ const NEON_RANGE: float = 4.5
 const NEON_ENERGY: float = 1.6
 ## Exit signs go above the frame head (catalog z 2.32 puts the sign's bottom inside the 2.27 m frame).
 const EXIT_SIGN_Z: float = 2.36
+## Seats an NPC sits in (no collider / obstruction: the spawn marker stays on the navmesh; as nd_dress).
+const NPC_SEATS: Array[String] = ["prop_chair_task"]
 
 ## Placement summary per kit room (printed by the builder): "id: n props, missing, warnings".
 var report: PackedStringArray = []
@@ -135,6 +138,8 @@ func _dress_room(room: KitRoom, world_box: AABB, id: String, kit_id: String, pro
 					var j: int = _anchor_index(anchor_rows, String(metas[k]))
 					if j >= 0:
 						nodes[i].set_meta(&"faces", NodePath("../" + String(nodes[j].name)))
+				elif String(k) == "faces_node":
+					nodes[i].set_meta(&"faces", NodePath("../../../" + String(metas[k])))
 				else:
 					nodes[i].set_meta(StringName(String(k)), metas[k])
 	_room_nodes[id] = nodes
@@ -216,7 +221,7 @@ func _finish_node(n: Node3D, asset: String, mode: String, mount: String, xf: Tra
 			lt.light_energy = NEON_ENERGY
 	if kind == "exit_sign" and mode == "above_door":
 		n.position.y += maxf(0.0, EXIT_SIGN_Z - float((_cat[asset] as Dictionary).get("z", EXIT_SIGN_Z)))
-	if mount != "" or mode == "on" or mode == "ceiling" or kind == "awning":
+	if mount != "" or mode == "on" or mode == "ceiling" or kind == "awning" or asset in NPC_SEATS:
 		return
 	var bb: AABB = aabb(asset)
 	var top: float = float((_cat[asset] as Dictionary).get("top", 0.0))
