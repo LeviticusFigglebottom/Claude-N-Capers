@@ -52,6 +52,9 @@ BOMBER = "char_crew_dutch_bomber"
 SHEARLING = "char_crew_shearling"
 TAN = "char_crew_glove_tan"
 VEST = "char_crew_wren_vest"
+PARKA = "char_crew_marten_parka"
+FUR = "char_crew_marten_fur"
+ORANGE = "char_crew_glove_orange"
 
 #: What the first-person arms should wear per heister (sleeve, cuff/under-sleeve, glove). Recorded in
 #: SOURCE.txt (``fp_sleeve``) for the per-heister FP arm variants (a later task).
@@ -61,6 +64,7 @@ FP_SLEEVES = {
     "dutch": {"sleeve": BOMBER, "cuff": "char_knit_graphite", "glove": TAN},
     "wren": {"sleeve": "char_shirt_blue", "cuff": "bare forearm (skin), sleeve rolled to the elbow",
              "glove": "char_tac_glove"},
+    "marten": {"sleeve": PARKA, "cuff": PARKA, "glove": ORANGE},
 }
 
 
@@ -210,7 +214,7 @@ def sable(kit: Kit) -> None:
 # Dutch: the bomber
 # =============================================================================================
 def bomber(kit: Kit, mat: str, rib_mat: str, collar_mat: str, bottom_z: float, v_z: float,
-           neck_w: float = 0.075) -> Mesh:
+           neck_w: float = 0.075, collar: bool = True) -> Mesh:
     """Leather flight jacket: a roomy torso + sleeve shell bloused over a ribbed waistband and cuffs,
     zipped up to ``v_z`` (open V above it, the shirt collar and tie show) with a thick turned-down
     shearling collar round the V and the back of the neck."""
@@ -259,6 +263,9 @@ def bomber(kit: Kit, mat: str, rib_mat: str, collar_mat: str, bottom_z: float, v
     pp = _front_hit(bh, 0.0, v_z - 0.006 * k, cy + 0.15 * k)
     kit.add_gear(pull.to_mesh(o.frame_from(pp, Vector((0.0, 1.0, 0.1))), anchor=pp))
     # shearling collar: wide lapels up the V edges and a turned-down band round the back
+    if not collar:          # Marten's parka: the lowered hood takes its place
+        _bomber_pockets(kit, mat, bottom_z)
+        return m
     col = Mesh()
     rows = 9
     for sx in (-1.0, 1.0):
@@ -275,7 +282,13 @@ def bomber(kit: Kit, mat: str, rib_mat: str, collar_mat: str, bottom_z: float, v
     o.strip(col, kit.hull(), back, 0.042 * k, 0.012 * k, collar_mat, side_hint=UP, segs_across=2,
             chamfer=0.005 * k, cast_back=0.06)
     kit.add_soft(col)
-    # patch pockets with snap flaps on the front
+    _bomber_pockets(kit, mat, bottom_z)
+    return m
+
+
+def _bomber_pockets(kit: Kit, mat: str, bottom_z: float) -> None:
+    """Patch pockets with snap flaps on the front."""
+    k = kit.k
     bh = kit.hull()
     pk = Mesh()
     for sx in (-1.0, 1.0):
@@ -283,7 +296,6 @@ def bomber(kit: Kit, mat: str, rib_mat: str, collar_mat: str, bottom_z: float, v
                 o.rounded_rect(0.13 * k, 0.05 * k, 0.008 * k, 2), 0.004 * k, mat,
                 cast_dir=Vector((0.3 * sx, -1, 0)), rings=2, chamfer=0.003 * k)
     kit.add_soft(pk)
-    return m
 
 
 #: Upper edge of Dutch's full beard, head-local (|x|, z) (``_body.HEAD_CENTRE`` frame, before height
@@ -554,4 +566,39 @@ def wren(kit: Kit) -> None:
                          "left hip, short tactical gloves")
 
 
-LOOKS = {"rook": rook, "sable": sable, "dutch": dutch, "wren": wren}
+# =============================================================================================
+# Marten (D-111): the field parka
+# =============================================================================================
+def marten(kit: Kit) -> None:
+    """A hip-length olive field parka zipped to the throat over a black roll-neck, the fur-trimmed hood
+    down behind the neck, big cargo pockets, dark trousers, black boots, burnt-orange gloves."""
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z, _tuck = _z(kit)
+    boots = g.shoes(fit, "char_shoe_black", "rubber_black", top_z=0.16, base=0.007, boot=True)
+    kit.add_soft(boots)
+    knit = g.knit_top(fit, kit.hull(), "char_knit_graphite", belt_z - 0.01 * k, neck="roll", base=0.006)
+    kit.add_soft(knit)
+    n.trousers(kit, "char_tac_charcoal", boots, belt_z + 0.022 * k, hem_r=0.062)
+    _gloves(kit, ORANGE, cuff_len=0.05, cuff_off=0.005)
+    n0 = len(kit.soft.f)
+    pk = bomber(kit, PARKA, PARKA, FUR, hips_z - 0.15 * k, 1.42 * k, neck_w=0.040, collar=False)
+    _cull_under(kit, n0, pk, "faces_hidden_by_parka")
+    n.hood_down(kit, PARKA)
+    _fur_trim(kit)
+    kit.notes["look"] = ("Marten: hip-length olive field parka zipped high, fur-trimmed hood down behind the neck, "
+                         "cargo pockets, black roll-neck, charcoal trousers, black boots, burnt-orange gloves")
+
+
+def _fur_trim(kit: Kit) -> None:
+    """A thick fur ruff along the edge of the lowered hood, round the back of the neck."""
+    fit, k = kit.fit, kit.k
+    nk = g.Neck(fit)
+    m = Mesh()
+    ths = [lerp(0.70, TAU - 0.70, i / 22) for i in range(23)]
+    path = [nk.point(th, 0.0, 0.060 * k) - Vector((0.0, 0.0, 0.004 * k)) for th in ths]
+    o.strip(m, kit.hull(), path, lambda t: k * lerp(0.010, 0.020, math.sin(math.pi * t) ** 0.6), 0.016 * k, FUR,
+            side_hint=UP, segs_across=3, chamfer=0.007 * k, cast_back=0.08)
+    kit.add_soft(m)
+
+
+LOOKS = {"rook": rook, "sable": sable, "dutch": dutch, "wren": wren, "marten": marten}

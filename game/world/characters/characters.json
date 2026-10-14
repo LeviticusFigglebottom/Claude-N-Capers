@@ -261,6 +261,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_crew_marten",
+			"id": "crew_marten",
+			"scene": "res://world/characters/crew_marten/crew_marten.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_crew_rook",
 			"id": "crew_rook",
 			"scene": "res://world/characters/crew_rook/crew_rook.tscn",
