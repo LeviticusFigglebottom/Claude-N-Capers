@@ -96,6 +96,10 @@ func _check_bring_up(snap: Dictionary) -> void:
 	assert_eq(snap["variants"], _rt.variants, "same resolved variants")
 	assert_eq(snap["active_slots"], PROBE.active_variant_slots(_rt), "same active variant slots in the map")
 	assert_eq(int(snap["missing"]), 0, "every map id resolved on the client")
+	var host_obj: Array = _rt.hud_model.objectives.map(func(o: Dictionary) -> String:
+		return "%s:%d" % [o["id"], int(o["state"])])
+	assert_true(not host_obj.is_empty(), "the host mission has objectives")
+	assert_eq(snap.get("hud_objectives", []), host_obj, "PO-B-C7: the client HUD has the host's objectives (bring-up)")
 	assert_eq(snap["map_ids"], _rt.net_sync.map_id_table(), "same map-placed net ids")
 	var npc_ids: Array[int] = []
 	for n: Node in _rt.npcs():

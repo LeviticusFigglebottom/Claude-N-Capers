@@ -910,6 +910,15 @@ func _on_ecm_ended(ecm_net_id: int) -> void:
 	_flush()
 
 
+## Client (PO-B-C7): seed the replicated objectives from the bring-up (HeistNetSync.objectives_state),
+## then later objective_updated facts update them.
+func seed_objectives(list: Array) -> void:
+	for e: Variant in list:
+		var a: Array = e as Array
+		if a != null and a.size() == 3:
+			_on_objective_updated(StringName(a[0]), int(a[1]), a[2] as Dictionary)
+
+
 func _on_objective_updated(objective_id: StringName, state: int, data: Dictionary) -> void:
 	var args: Dictionary = data.duplicate(true)
 	var text_key: StringName = StringName(args.get("text_key", StringName("obj.%s" % objective_id)))

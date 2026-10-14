@@ -252,6 +252,7 @@ func _start_replica(data: Dictionary, map_scene: PackedScene, p_options: Diction
 	went_loud = bool(data.get("went_loud", false))
 	phase = int(data.get("phase", Enums.HeistPhase.CASING)) as Enums.HeistPhase
 	net_sync.apply_snapshot(data.get("snapshot", {}) as Dictionary)
+	hud_model.seed_objectives(data.get("objectives", []) as Array)  # PO-B-C7
 	Log.info(&"heist", "replica of %s (seed %d) built: %d map ids, %d missing" % [
 		heist_id, run_seed, (data.get("map_ids", {}) as Dictionary).size(), replica_missing_ids.size()])
 	EventBus.heist_loaded.emit(heist_id, run_seed, variants)
