@@ -27,8 +27,8 @@ const SLOTS: Dictionary = {
 	&"court_doors": [&"court_doors_locked", &"court_doors_open"],
 	&"areaway": [&"grate_loose", &"grate_padlocked"],
 	&"escape": [&"esc_mews", &"esc_parade"],
-	&"xl_crate": [&"xl_loan"],
-	&"admin_pa": [&"pa_late"],
+	&"xl_crate": [&"xl_loan", &"xl_none"],  # QC-62: >= 2 slots per group (validate_level contract_nodes)
+	&"admin_pa": [&"pa_late", &"pa_none"],
 }
 ## HeistDef.preplanning override key -> PreplanAssetDef property (PreplanAssetDef.with_overrides).
 const FIELD_OF: Dictionary = {"params": "drop_params"}

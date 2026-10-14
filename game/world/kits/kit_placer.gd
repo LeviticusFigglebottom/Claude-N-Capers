@@ -134,6 +134,13 @@ static func overlaps(result: Dictionary, eps: float = 0.002) -> PackedStringArra
 	return out
 
 
+## Alphabetical order for dictionary keys. Kits key their items by StringName, and Array.sort() orders
+## StringNames by their interned pointer, not by text: the order (and so every rng draw after it) changed
+## between runs, so regenerated maps drifted (PO-9). Sort keys with this, never with sort().
+static func str_less(a: Variant, b: Variant) -> bool:
+	return str(a) < str(b)
+
+
 # --- internals ---------------------------------------------------------------------------
 
 class _State:
@@ -347,7 +354,7 @@ static func _try_wall(st: _State, asset: String, corner: bool, near: int, radius
 			u = half + GAP + EDGE if st.rng.randf() < 0.5 else ln - half - GAP - EDGE
 		else:
 			u = st.rng.randf_range(half + EDGE, ln - half - EDGE)
-		var lx: Transform3D = _wall_xf(st, asset, w, u)
+		var lx: Transform3D = _wall_xf(st, asset, w, u, 0.0, GAP + st.room.relief[w])
 		var box: AABB = _box_of(st, asset, lx)
 		if near >= 0 and _gap2d(box, (st.placed[near] as Dictionary)["box"]) > radius:
 			continue
@@ -487,15 +494,22 @@ static func _try_seat(st: _State, asset: String, near: int) -> bool:
 		var hl: Transform3D = h["local"]
 		var hb: AABB = PropCatalog.aabb(StringName(String(h["asset"])))
 		var around: bool = StringName(String(h["kind"])) in SEAT_KINDS_AROUND
-		var sides: Array[int] = [0]                   # 0 front (-Z), 1 back (+Z), 2 left (-X), 3 right (+X)
+		# 0 front (-Z, the user's knee hole), 1 back (+Z), 2 left (-X), 3 right (+X). Visitor chairs
+		# (seat_side "back") sit across a desk facing its user, never at its ends (PO-9: two visitors at
+		# the two ends face each other); around a table any side is a place setting.
+		var sides: Array[int] = [0]
 		if side_pref == "back":
-			sides = [1, 2, 3]
+			if around:
+				sides = [1, 2, 3]
+			else:
+				sides = [1]
 		elif around:
 			sides = [0, 1, 2, 3]
 		var side: int = sides[st.rng.randi_range(0, sides.size() - 1)]
 		var along: float = (hb.size.x if side < 2 else hb.size.z) * 0.5 - 0.3
 		if not around:
-			along = minf(along, 0.15)
+			# the desk chair stays at the knee hole; visitors spread along the far side
+			along = minf(along, 0.3 if side_pref == "back" else 0.15)
 		var off: float = st.rng.randf_range(-maxf(along, 0.0), maxf(along, 0.0))
 		var push: float = st.rng.randf_range(0.06, 0.18 + 0.012 * float(t))
 		var depth: float = -bb.position.z            # chair front half-depth from its pivot
@@ -663,7 +677,7 @@ static func _try_ceiling_one(st: _State, asset: String) -> bool:
 
 static func _place_ceiling(st: _State) -> void:
 	var keys: Array = st.kit.ceiling.keys()
-	keys.sort()
+	keys.sort_custom(str_less)
 	for k: Variant in keys:
 		var asset: String = String(k)
 		if not st.catalog.has(asset):
@@ -697,7 +711,7 @@ static func _place_anchor(st: _State, a: Dictionary) -> void:
 
 static func _place_optional(st: _State) -> void:
 	var kinds: Array = st.kit.optional_items.keys()
-	kinds.sort()
+	kinds.sort_custom(str_less)
 	var total: float = 0.0
 	for k: Variant in kinds:
 		total += maxf(0.0, float(st.kit.optional_items[k]))
@@ -732,7 +746,7 @@ static func _place_optional(st: _State) -> void:
 
 static func _place_clutter(st: _State) -> void:
 	var groups: Array = st.kit.clutter_groups.keys()
-	groups.sort()
+	groups.sort_custom(str_less)
 	for g: Variant in groups:
 		var spec: Dictionary = st.kit.clutter_groups[g]
 		var anchors: Array = spec.get("anchors", [])
@@ -740,7 +754,7 @@ static func _place_clutter(st: _State) -> void:
 		var count: Vector2i = spec.get("count", Vector2i(1, 2))
 		var radius: float = float(spec.get("radius", 1.0))
 		var item_kinds: Array = items.keys()
-		item_kinds.sort()
+		item_kinds.sort_custom(str_less)
 		var total: float = 0.0
 		for k: Variant in item_kinds:
 			total += float(items[k])
@@ -808,7 +822,7 @@ static func _clutter_generic(st: _State, kind: StringName, anchor: String, radiu
 			var u: float = float(o["u"]) + side * (float(o["width"]) * 0.5 + 0.2 + bb.size.x * 0.5 + st.rng.randf_range(0.0, radius))
 			if u - bb.size.x * 0.5 < EDGE or u + bb.size.x * 0.5 > st.room.wall_length(w) - EDGE:
 				continue
-			var lx: Transform3D = _wall_xf(st, asset, w, u)
+			var lx: Transform3D = _wall_xf(st, asset, w, u, 0.0, GAP + st.room.relief[w])
 			var box: AABB = _box_of(st, asset, lx)
 			if _wall_free(st, w, u - bb.size.x * 0.5, u + bb.size.x * 0.5, 0.0, bb.end.y) and _free(st, box, true):
 				_add(st, asset, lx, "wall")

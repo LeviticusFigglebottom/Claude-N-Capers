@@ -235,6 +235,7 @@ func _start_replica(data: Dictionary, map_scene: PackedScene, p_options: Diction
 	preplan.setup({"preplan": pp} if not pp.is_empty() else {}, map.heist_def, heist_id, difficulty)
 	var pending: Array = VariantResolver.apply(VariantResolver.collect_slots(map), variants)
 	_create_services()
+	net_sync.token = int(data.get("token", 0))  # C11: keys the heist_closed / heist_left notices
 	net_sync.replica_spawned.connect(_on_replica_spawned)
 	net_sync.phase_replicated.connect(_on_phase_replicated)
 	EventBus.heist_phase_changed.connect(_on_relayed_phase)  # the relayed fact lands before heist_ended
@@ -283,6 +284,12 @@ func _on_phase_replicated(new_phase: int, loud: bool) -> void:
 		var old: int = phase
 		phase = new_phase as Enums.HeistPhase
 		phase_changed.emit(old, new_phase)
+		if is_replica and phase == Enums.HeistPhase.ENDED:
+			# C11: the heist is over; the local crew stops predicting and sending intents, so none is still
+			# in flight when the host tears its heist down (payday Continue) and frees the crew node.
+			for c: CrewController in _crew.values():
+				if c != null and is_instance_valid(c) and c.is_local():
+					c.set_physics_process(false)
 
 
 ## Client: the relayed heist_phase_changed fact, so `phase` is ENDED before the relayed heist_ended
@@ -728,8 +735,13 @@ func detection_value(observer: Node, slot: int) -> float:
 	return 0.0
 
 
-## Frees everything: Services.clear(), Ids.reset().
+## Frees everything: Services.clear(), Ids.reset(). Never ends the Net session (ruling C11: after a co-op
+## payday every peer returns to the crew lobby on the same session; only Net.leave() ends it). On a live
+## session it tells the other side first (HeistNetSync.notify_teardown), and the host frees the
+## AI seats Net.fill_with_ai() took at launch so a newcomer can join the kept lobby (Net.clear_ai).
 func teardown() -> void:
+	if net_sync != null and is_instance_valid(net_sync):
+		net_sync.notify_teardown()
 	_disconnect_events()
 	if vfx != null and is_instance_valid(vfx):
 		vfx.clear()
@@ -742,6 +754,9 @@ func teardown() -> void:
 		get_parent().remove_child(self)
 	queue_free()
 	Ids.reset()
+	if not is_replica and Net.is_authority() and Net.multiplayer.has_multiplayer_peer() \
+			and not (Net.multiplayer.multiplayer_peer is OfflineMultiplayerPeer) and Net.has_method(&"clear_ai"):
+		Net.call(&"clear_ai")  # C11 (core/net.gd, LEAD): drop the AI seats; humans keep theirs
 
 
 func _physics_process(delta: float) -> void:

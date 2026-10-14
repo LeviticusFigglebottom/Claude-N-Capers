@@ -15,6 +15,11 @@
 ## `Net.lobby_send(HeistLauncher.BRING_UP_KIND, ...)` because the client has no runtime yet.
 ## RPC paths: the client's HeistRuntime must sit at the same node path as the host's
 ## (`bring_up.runtime_path`; launch both under the tree root, the default).
+## Ruling C11 (several heists on one kept Net session): HeistRuntime.teardown() tells the other side through
+## Net.lobby_send, keyed by the heist's `token` (bring-up "token") so a notice never touches the next heist:
+## the host sends KIND_CLOSED (the client replica freezes, `host_closed` fires, its local crew stops sending
+## intents to the host's freed nodes); a client sends KIND_LEFT (the host stops replicating to that peer, so
+## its state / transform RPCs do not hit the client's freed replica while the host is still on its payday).
 class_name HeistNetSync
 extends Node
 
@@ -30,6 +35,9 @@ signal captain_replicated(present: bool, resistance: float)
 ## HeistRuntime.teardown() and Net.leave(). `host_lost_at_s` keeps the heist time it happened.
 ## Driven by `Net.host_lost` (D-052), with multiplayer.server_disconnected as a fallback.
 signal host_lost()
+## Client (C11): the host tore its heist down (payday Continue, session kept). The replica is frozen
+## (process disabled): the app flow (ENV B) tears it down on its own Continue, like after heist_ended.
+signal host_closed()
 
 const SERVICE: StringName = &"net_sync"
 const NODE_NAME: String = "NetSync"
@@ -43,6 +51,9 @@ const SVC_RUNTIME: String = "rt"
 const SVC_STATS: String = "stats"
 ## ui_hud v1.3: {"present": bool, "resistance": float 0..1} of the director's AegisCaptain.
 const SVC_CAPTAIN: String = "captain"
+## C11 Net.lobby_message kinds, both {"token": int}: host -> clients / client -> host.
+const KIND_CLOSED: StringName = &"heist_closed"
+const KIND_LEFT: StringName = &"heist_left"
 
 ## Client: counters for tests and diagnostics.
 var spawns_applied: int = 0
@@ -50,6 +61,11 @@ var despawns_applied: int = 0
 var states_applied: int = 0
 ## Client: heist_time_s when host_lost fired (< 0 = never).
 var host_lost_at_s: float = -1.0
+## Client (C11): true once the host's KIND_CLOSED for this heist arrived (see host_closed).
+var host_closed_heist: bool = false
+## C11: this heist's id on the session, keying KIND_CLOSED / KIND_LEFT. Server: unique per runtime (set in
+## _ready); client: the bring-up's "token" (HeistRuntime._start_replica). 0 = unknown.
+var token: int = 0
 
 var _runtime: HeistRuntime = null
 var _begun: bool = false
@@ -63,6 +79,10 @@ var _last_services: Dictionary = {}
 var _accum: float = 0.0
 ## Client: last replicated captain state (see captain_state()).
 var _captain: Dictionary = {"present": false, "resistance": 0.0}
+## Server: peers holding a replica of this heist, the only ones replicated to: the peers connected at begin(),
+## a drop-in once its late_bring_up() went out (QB-B6-DROPIN: nothing reaches it before its replica exists),
+## minus a peer that tore its replica down (C11, KIND_LEFT).
+var _members: Dictionary[int, bool] = {}
 
 
 ## False while `node`'s networked heist has not sent its bring-up yet: clients have no replica of
@@ -77,15 +97,21 @@ static func can_rpc(node: Node) -> bool:
 
 func _ready() -> void:
 	_runtime = HeistRuntime.of(self)
+	if Net.is_authority():
+		token = get_instance_id()
 	if not Net.host_lost.is_connected(_on_server_disconnected):
 		Net.host_lost.connect(_on_server_disconnected)
 	if not multiplayer.server_disconnected.is_connected(_on_server_disconnected):
 		multiplayer.server_disconnected.connect(_on_server_disconnected)
+	if not Net.lobby_message.is_connected(_on_lobby_message):
+		Net.lobby_message.connect(_on_lobby_message)
 
 
 func _exit_tree() -> void:
 	if Net.host_lost.is_connected(_on_server_disconnected):
 		Net.host_lost.disconnect(_on_server_disconnected)
+	if Net.lobby_message.is_connected(_on_lobby_message):
+		Net.lobby_message.disconnect(_on_lobby_message)
 	if multiplayer != null and multiplayer.server_disconnected.is_connected(_on_server_disconnected):
 		multiplayer.server_disconnected.disconnect(_on_server_disconnected)
 
@@ -96,6 +122,39 @@ func _on_server_disconnected() -> void:
 	host_lost_at_s = _runtime.heist_time_s if _runtime != null else 0.0
 	Log.warn(&"net", "connection to the host lost")
 	host_lost.emit()
+
+
+## Server: true while `peer_id` gets this heist's replication (see _members).
+func replicates_to(peer_id: int) -> bool:
+	return _members.has(peer_id)
+
+
+## C11 (HeistRuntime.teardown, before the runtime leaves the tree): tell the other side this heist is gone
+## here. Server: KIND_CLOSED to the clients (once begin() ran, live session). Client: KIND_LEFT to the host
+## (while connected). No-op offline.
+func notify_teardown() -> void:
+	if not is_inside_tree() or token == 0:
+		return
+	if Net.is_authority():
+		if _begun and is_live():
+			Net.lobby_send(KIND_CLOSED, {"token": token})
+	elif host_lost_at_s < 0.0 and multiplayer.has_multiplayer_peer() and multiplayer.get_peers().has(1):
+		Net.lobby_send(KIND_LEFT, {"token": token})
+
+
+func _on_lobby_message(from_peer: int, kind: StringName, data: Dictionary) -> void:
+	if kind != KIND_CLOSED and kind != KIND_LEFT:
+		return
+	if token == 0 or int(data.get("token", 0)) != token or from_peer == Net.local_peer_id():
+		return
+	if kind == KIND_LEFT and Net.is_authority():
+		_members.erase(from_peer)
+	elif kind == KIND_CLOSED and not Net.is_authority() and from_peer == 1 and not host_closed_heist:
+		host_closed_heist = true
+		if _runtime != null and is_instance_valid(_runtime):
+			_runtime.process_mode = Node.PROCESS_MODE_DISABLED  # nothing of it may RPC the host's freed nodes
+		Log.info(&"net", "the host closed heist %s" % (_runtime.heist_id if _runtime != null else &"?"))
+		host_closed.emit()
 
 
 ## Server: true once begin() ran (clients have the heist replica).
@@ -137,6 +196,8 @@ func begin() -> Dictionary:
 	snap["states"] = states
 	_last_services = services_state()
 	snap["services"] = _last_services
+	for p: int in multiplayer.get_peers():
+		_members[p] = true
 	_begun = true
 	return snap
 
@@ -157,7 +218,7 @@ func bring_up() -> Dictionary:
 		"map_ids": map_ids, "crew_ids": crew_ids, "phase": int(rt.phase), "went_loud": rt.went_loud,
 		"heist_time_s": rt.heist_time_s, "preplan": rt.preplan.result.duplicate(true) if rt.preplan.is_active() else {},
 		"runtime_path": String(rt.get_path()), "snapshot": snap, "launch_options": public_options(rt.launch_options),
-		"objectives": objectives_state(),
+		"objectives": objectives_state(), "token": token,
 	}
 
 
@@ -166,6 +227,7 @@ func bring_up() -> Dictionary:
 ## diff baselines of the clients already in (their later diffs re-apply harmlessly on the newcomer).
 func late_bring_up(peer_id: int) -> Dictionary:
 	var rt: HeistRuntime = _runtime
+	_members[peer_id] = true  # its bring-up goes out right after: later RPCs are ordered behind it
 	var states: Dictionary = {}
 	var map_ids: Dictionary = map_id_table()
 	var spawns: Array = describe_dynamic()
@@ -182,7 +244,7 @@ func late_bring_up(peer_id: int) -> Dictionary:
 		"map_ids": map_ids, "crew_ids": crew_ids, "phase": int(rt.phase), "went_loud": rt.went_loud,
 		"heist_time_s": rt.heist_time_s, "preplan": rt.preplan.result.duplicate(true) if rt.preplan.is_active() else {},
 		"runtime_path": String(rt.get_path()), "launch_options": public_options(rt.launch_options),
-		"objectives": objectives_state(),
+		"objectives": objectives_state(), "token": token,
 		"snapshot": {"spawns": spawns, "states": states, "services": services_state()}, "for_peer": peer_id,
 	}
 
@@ -319,7 +381,7 @@ func _scan_spawns() -> void:
 		batch.append(NetEntityCodec.describe(c))
 		_last_state[id] = NetEntityCodec.state_of(c)
 	if not batch.is_empty():
-		_rpc_spawn.rpc(batch)
+		_send(&"_rpc_spawn", [batch])
 
 
 func _scan_despawns() -> void:
@@ -334,7 +396,7 @@ func _scan_despawns() -> void:
 		_tracked.erase(id)
 		_last_state.erase(id)
 		_last_xform.erase(id)
-	_rpc_despawn.rpc(gone)
+	_send(&"_rpc_despawn", [gone])
 
 
 func _send_state() -> void:
@@ -359,7 +421,7 @@ func _send_state() -> void:
 			svc_diff[k] = svc[k]
 	_last_services = svc
 	if not diffs.is_empty() or not svc_diff.is_empty():
-		_rpc_state.rpc(diffs, svc_diff)
+		_send(&"_rpc_state", [diffs, svc_diff])
 
 
 func _send_xforms() -> void:
@@ -376,7 +438,21 @@ func _send_xforms() -> void:
 		_last_xform[id] = x
 		out[id] = x
 	if not out.is_empty():
-		_rpc_xforms.rpc(out)
+		_send(&"_rpc_xforms", [out])
+
+
+## Server: an RPC of this node to every peer holding the replica (_members; a broadcast when that is everyone).
+func _send(method: StringName, args: Array) -> void:
+	var peers: PackedInt32Array = multiplayer.get_peers()
+	var targets: Array[int] = []
+	for p: int in peers:
+		if _members.has(p):
+			targets.append(p)
+	if targets.size() == peers.size():
+		callv(&"rpc", [method] + args)
+		return
+	for p: int in targets:
+		callv(&"rpc_id", [p, method] + args)
 
 
 # --- Client --------------------------------------------------------------------------------------
@@ -490,20 +566,20 @@ func relay_crew_shot(crew_net_id: int, origin: Vector3, dir: Vector3, spread_deg
 	if not _can_relay_fx():
 		return
 	for p: int in multiplayer.get_peers():
-		if p != exclude_peer:
+		if p != exclude_peer and _members.has(p):
 			_rpc_crew_shot.rpc_id(p, crew_net_id, origin, dir, spread_deg, pellet_seed, weapon_slot)
 
 
 ## Server: an NPC shot or a crew melee strike (ShotFx.MODE_*).
 func relay_impact_fx(shooter_id: int, from: Vector3, to: Vector3, target_id: int, mode: int) -> void:
 	if _can_relay_fx():
-		_rpc_impact_fx.rpc(shooter_id, from, to, target_id, mode)
+		_send(&"_rpc_impact_fx", [shooter_id, from, to, target_id, mode])
 
 
 ## Server: a blast (Explosion.apply, concussion grenades).
 func relay_explosion_fx(pos: Vector3, radius: float, kind: StringName) -> void:
 	if _can_relay_fx():
-		_rpc_explosion_fx.rpc(pos, radius, kind)
+		_send(&"_rpc_explosion_fx", [pos, radius, kind])
 
 
 @rpc("authority", "call_remote", "reliable")

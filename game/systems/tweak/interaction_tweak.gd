@@ -42,6 +42,8 @@ extends Resource
 @export var thermal_duration_s: float = 360.0
 @export var saw_duration_s: float = 180.0
 
+## PO-12: the placed device's `Bit` spin while running (deg/s, about its local Z); 0 = still.
+@export var device_bit_spin_dps: float = 900.0
 @export_group("Doors")
 ## Leaf rotation when open (degrees).
 @export var door_open_angle_deg: float = 90.0

@@ -138,14 +138,14 @@ func _build() -> void:
 	var ps: PackedScene = PackedScene.new()
 	err = ps.pack(_root)
 	if err == OK:
-		err = ResourceSaver.save(ps, SCENE_PATH)
+		err = ResourceSaver.save(ps, R.scene_out(SCENE_PATH))
 	_root.free()
 	if err != OK:
-		_fail("cannot save %s (%d)" % [SCENE_PATH, err])
+		_fail("cannot save %s (%d)" % [R.scene_out(SCENE_PATH), err])
 		return
-	R.strip_nested_overrides(SCENE_PATH)
-	R.normalize_scene(SCENE_PATH, old_scene_uid)
-	print("glasshouse: saved %s (navmesh polygons: %d)" % [SCENE_PATH, polys])
+	R.strip_nested_overrides(R.scene_out(SCENE_PATH))
+	R.normalize_scene(R.scene_out(SCENE_PATH), old_scene_uid)
+	print("glasshouse: saved %s (navmesh polygons: %d)" % [R.scene_out(SCENE_PATH), polys])
 	quit(0)
 
 
@@ -325,8 +325,9 @@ func _close_barred_doorways() -> void:
 		_obstruct(Transform3D(_yaw_basis(float(d[3])), d[2]), AABB(Vector3(-w * 0.5, -0.2, -0.3), Vector3(w, 2.8, 0.6)))
 
 
-## Records a projected navmesh obstruction for a box (local AABB under xform).
-func _obstruct(xform: Transform3D, box: AABB) -> void:
+## Records a projected navmesh obstruction for a box (local AABB under xform). `carve`: cut the
+## box exactly (no agent-radius growth).
+func _obstruct(xform: Transform3D, box: AABB, carve: bool = false) -> void:
 	var pts: PackedVector3Array = PackedVector3Array()
 	var lo: float = INF
 	var hi: float = -INF
@@ -337,7 +338,7 @@ func _obstruct(xform: Transform3D, box: AABB) -> void:
 		var w: Vector3 = xform * Vector3(box.position.x, cy, box.position.z)
 		lo = minf(lo, w.y)
 		hi = maxf(hi, w.y)
-	_obstructions.append([pts, lo, hi - lo])
+	_obstructions.append([pts, lo, hi - lo, carve])
 
 
 func _obstruct_circle(center: Vector3, radius: float, height: float) -> void:
@@ -424,8 +425,8 @@ func _railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3) -> void:
 
 
 ## U-stair: two straight flights (each its own `stairs` node, steps along local Z, solid stepped
-## collision) and the half landing (plain geometry). Each step box reaches SEAM under its higher
-## neighbour so no downward ray can slip through a seam between two boxes.
+## collision under an invisible ramp through the nosings, PO-5) and the half landing (plain geometry).
+## Each step box reaches SEAM under its higher neighbour so no downward ray slips through a seam.
 func _build_stair(bld: Node3D) -> void:
 	var st: Dictionary = L.STAIR
 	var rise: float = float(st["riser"])
@@ -452,6 +453,10 @@ func _build_stair(bld: Node3D) -> void:
 	# z [z_land + (k - 13) * tread, z_land + (k - 12) * tread] at height k * rise; over the janitor
 	# closet (z >= g9_z) the steps stop at the closet ceiling.
 	_art.acc.flush(up, _root, {}, ["StairUp"])
+	# Ramp: from one tread out over the corridor floor (y 0) to the landing nosing (validator convention (b)).
+	var z_low: float = z_land + float(n - 1) * tread
+	A.ramp(up, _root, float(ux[0]), float(ux[1]), [[Vector2(z_low + tread, 0.0), Vector2(z_land, rise * n), Vector2(z_land, 0.0)]],
+		up.get_child(0).get_meta(&"surface", &"tile"))
 	var ret: Node3D = _add(core, _node3d("FlightReturn")) as Node3D
 	_vis_group = "StairReturn"
 	ret.set_meta(&"kind", "stairs")
@@ -470,6 +475,11 @@ func _build_stair(bld: Node3D) -> void:
 			_box(ret, "Step%02dA" % k2, Vector3(float(rx[0]), 0.0, za), Vector3(float(rx[1]), top, g9_z), "stair")
 			_box(ret, "Step%02dB" % k2, Vector3(float(rx[0]), g9_top, g9_z), Vector3(float(rx[1]), top, zb), "stair")
 	_art.acc.flush(ret, _root, {}, ["StairReturn"])
+	# Ramp: one tread back over the half landing to the upper-floor nosing, 0.3 m thick (its underside
+	# stays above the janitor closet's ceiling top g9_top over z >= g9_z).
+	var y0: float = rise * n
+	A.ramp(ret, _root, float(rx[0]), float(rx[1]), [[Vector2(z_land - tread, y0), Vector2(z_low, y0 * 2.0),
+		Vector2(z_low, y0 * 2.0 - 0.3), Vector2(z_land - tread, y0 - 0.3)]], ret.get_child(0).get_meta(&"surface", &"tile"))
 	_vis_group = "Interior"
 	_stair_rails(core, rise, tread, z_land, n)
 
@@ -600,8 +610,10 @@ func _build_garage(parent: Node3D) -> void:
 
 
 ## Static (non-interactive) glazing: kit window visual + a glass blocker filling the opening.
-## Gameplay windows get the same blocker (see _build_windows) because the window prefab's
-## GlassBody is a fixed 1.0 x 1.2 m panel.
+## Gameplay windows get the same blocker (see _build_windows): the window prefab's GlassBody only
+## covers the visual's `Glass` (A2-08). Not the break-room door-window (its Glass fills the opening;
+## open / broken it passes crew and bags): a carved nav obstruction keeps the bake from joining landing
+## and room through it; the prefab's `walkable` NavLink does that while it is passable.
 func _build_static_windows(bld: Node3D) -> void:
 	var gl: Node3D = _add(bld, _node3d("Glazing")) as Node3D
 	for w: Array in L.WINDOWS:
@@ -620,7 +632,8 @@ func _build_static_windows(bld: Node3D) -> void:
 			vis.basis = _yaw_basis(yaw)
 			_add(gl, vis)
 	var bw: Dictionary = L.BREAKROOM_WINDOW
-	_glass_blocker(gl, "BreakRoomWindow", String(bw["kit"]), bw["pos"], float(bw["yaw"]))
+	_obstruct(Transform3D(_yaw_basis(float(bw["yaw"])), bw["pos"]), AABB(Vector3(-0.7, -0.1, -0.25), Vector3(1.4, 2.3, 0.5)),
+		true)
 
 
 func _glass_blocker(parent: Node3D, nm: String, piece: String, pos: Vector3, yaw: float) -> void:
@@ -1241,17 +1254,17 @@ func _variants_doors_windows(variants: Node3D) -> void:
 	var bw: Dictionary = L.BREAKROOM_WINDOW
 	var wpos: Vector3 = bw["pos"]
 	var kit: PackedScene = _dress.scene(String(bw["kit"]).replace("arch_", "prop_") + "_sash")
+	# PO-5 walk-through door-window: `walkable` = own layer-1 NavLink, live while open / broken.
+	var use: Vector3 = wpos + Vector3(0.0, 0.0, -0.7)
 	var open: VariantSlot = _slot(ow, "open_window", "ow_breakroom_open", 0.45)
 	_prefab(open, "window", "BreakRoomWindow", wpos, float(bw["yaw"]),
-		{"breakable": true, "openable": true, "visual_scene": kit, "objective_tag": &"breakroom_window"},
-		null, {"kind": "window"})
-	# No WindowLink: the sill is 0.9 m and the opening 1.2 m (no mantle), so nobody can walk through;
-	# a layer-1 link sent pathing players/AI to the window and stuck them (freeze gate 3, gh_stealth).
+		{"breakable": true, "openable": true, "walkable": true, "visual_scene": kit, "objective_tag": &"breakroom_window"},
+		use, {"kind": "window"})
 	var latched: VariantSlot = _slot(ow, "open_window", "ow_breakroom_latched", 0.55)
 	_prefab(latched, "window", "BreakRoomWindow", wpos, float(bw["yaw"]),
-		{"breakable": true, "openable": false, "visual_scene": _dress.scene(String(bw["kit"]).replace("arch_", "prop_")),
-			"objective_tag": &"breakroom_window"},
-		null, {"kind": "window"})
+		{"breakable": true, "openable": false, "walkable": true,
+			"visual_scene": _dress.scene(String(bw["kit"]).replace("arch_", "prop_")), "objective_tag": &"breakroom_window"},
+		use, {"kind": "window"})
 	var sal: Node3D = _group(variants, "salon")
 	var box: Array = [[13.1, -0.2, 6.1, 17.9, 3.2, 11.9]]
 	var so: VariantSlot = _slot(sal, "salon", "salon_open", 0.5, {"door": "Gameplay/Doors/SalonDoor", "locked": false})
@@ -1411,7 +1424,7 @@ func _prune_islands(nm: NavigationMesh) -> void:
 			var v: Vector3 = verts[vi]
 			var key: Vector3i = Vector3i(roundi(v.x * 20.0), roundi(v.y * 20.0), roundi(v.z * 20.0))
 			if owner_of.has(key):
-				_union(parent, pi, int(owner_of[key]))
+				A.uf_union(parent, pi, int(owner_of[key]))
 			else:
 				owner_of[key] = pi
 	var keep_roots: Dictionary = {}
@@ -1431,12 +1444,12 @@ func _prune_islands(nm: NavigationMesh) -> void:
 				best_d = d
 				best = pi2
 		if best >= 0:
-			keep_roots[_find(parent, best)] = true
+			keep_roots[A.uf_find(parent, best)] = true
 	var new_verts: PackedVector3Array = PackedVector3Array()
 	var remap: Dictionary = {}
 	var kept: Array[PackedInt32Array] = []
 	for pi3: int in range(polys.size()):
-		if not keep_roots.has(_find(parent, pi3)):
+		if not keep_roots.has(A.uf_find(parent, pi3)):
 			continue
 		var np: PackedInt32Array = PackedInt32Array()
 		for vi3: int in polys[pi3]:
@@ -1450,20 +1463,6 @@ func _prune_islands(nm: NavigationMesh) -> void:
 	for np2: PackedInt32Array in kept:
 		nm.add_polygon(np2)
 	print("glasshouse: navmesh %d -> %d polygons after island pruning" % [polys.size(), kept.size()])
-
-
-static func _find(parent: PackedInt32Array, i: int) -> int:
-	var r: int = i
-	while parent[r] != r:
-		r = parent[r]
-	return r
-
-
-static func _union(parent: PackedInt32Array, a: int, b: int) -> void:
-	var ra: int = _find(parent, a)
-	var rb: int = _find(parent, b)
-	if ra != rb:
-		parent[maxi(ra, rb)] = mini(ra, rb)
 
 
 ## Navmesh (heist_map.md §3: r 0.3, h 1.8, climb 0.3, slope 40, cell 0.1); props + BARRED gates (D-073) obstruct.
@@ -1486,7 +1485,7 @@ func _bake(nav: NavigationRegion3D) -> int:
 	var src: NavigationMeshSourceGeometryData3D = NavigationMeshSourceGeometryData3D.new()
 	NavigationServer3D.parse_source_geometry_data(nm, src, holder)
 	for o: Array in _obstructions:
-		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), false)
+		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), o.size() > 3 and bool(o[3]))
 	NavigationServer3D.bake_from_source_geometry_data(nm, src)
 	_prune_islands(nm)
 	holder.queue_free()

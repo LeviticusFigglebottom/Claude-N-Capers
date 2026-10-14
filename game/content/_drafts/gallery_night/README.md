@@ -68,8 +68,8 @@ order below.
 | 14 | `court_doors` | `court_doors_open` 1, `court_doors_locked` 1 | 1 |
 | 15 | `areaway` | `grate_loose` 1, `grate_padlocked` 1 | 1 |
 | 16 | `escape` | `esc_mews` 0.55, `esc_parade` 0.45 | 1 |
-| 17 | `xl_crate` | `xl_loan` (any weight; only `late_loan` turns it on) | 0 |
-| 18 | `admin_pa` | `pa_late` (any weight; only `late_paperwork` turns it on) | 0 |
+| 17 | `xl_crate` | `xl_loan` 1 (only `late_loan` turns it on), `xl_none` 1 (an empty slot; QC-62) | 0 |
+| 18 | `admin_pa` | `pa_late` 1 (only `late_paperwork` turns it on), `pa_none` 1 (an empty slot; QC-62) | 0 |
 
 **Scalars** (the mission/map read them from the resolved result; no slots): `last_call_s` 480/600/720,
 `patrons` 3/5/7/9, `stragglers` 0/1/2, `store_paintings` 4/6/8, `consignment_lockers` 4/6/8, `escape_eta_s`

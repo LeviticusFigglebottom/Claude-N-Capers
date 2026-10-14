@@ -767,7 +767,7 @@ func _spawn_in_heist_ui() -> void:
 	pd.is_pro = is_pro
 	pd.profile_slot = profile_slot
 	pd.visible = false
-	pd.continue_pressed.connect(_leave_heist)
+	pd.continue_pressed.connect(_on_heist_payday_continue)
 	pd.retry_requested.connect(_retry_at_routine)
 	_in_heist.add_child(pd)
 	_heist_payday = pd
@@ -845,7 +845,16 @@ func _request_leave_heist() -> void:
 	_leave_heist()
 
 
-func _leave_heist() -> void:
+## C11 (lead ruling, PD2): a co-op payday's Continue takes every peer back to the crew lobby with the session
+## kept (ready flags cleared for the next job); only Leave (pause menu / lobby) ends the session.
+func _on_heist_payday_continue() -> void:
+	if is_coop():
+		_leave_heist(true)
+	else:
+		_leave_heist()
+
+
+func _leave_heist(keep_session: bool = false) -> void:
 	if Net.host_lost.is_connected(_on_client_host_lost):
 		Net.host_lost.disconnect(_on_client_host_lost)  # our own Net.leave() below is not the host leaving
 	if _heist_payday != null and is_instance_valid(_heist_payday):
@@ -868,8 +877,12 @@ func _leave_heist() -> void:
 		_in_heist.queue_free()
 		_in_heist = null
 		_hud = null
-	Net.leave()
 	visible = true
+	if keep_session and is_coop():
+		lobby.set_ready(false)
+		show_lobby()
+		return
+	Net.leave()
 	show_home()
 
 
@@ -1000,6 +1013,7 @@ func _on_lobby_started(info: Dictionary) -> void:
 		if runtime == null:
 			_leave_heist()
 		else:
+			_watch_host_closed()
 			heist_launched.emit(runtime)
 		return
 	_show_stub(&"ui.lobby.client_launch_missing", false)
@@ -1018,6 +1032,24 @@ func _begin_client_heist(info: Dictionary) -> void:
 		_set_heister_map(lobby.state.heister_assignment())
 	if not Net.host_lost.is_connected(_on_client_host_lost):
 		Net.host_lost.connect(_on_client_host_lost)
+
+
+## C11: a client replica hears HeistNetSync.host_closed when the host tears its heist down (payday Continue).
+func _watch_host_closed() -> void:
+	var sync: Node = runtime.get(&"net_sync") as Node if runtime != null else null
+	if sync != null and sync.has_signal(&"host_closed") and not sync.is_connected(&"host_closed", _on_client_host_closed):
+		sync.connect(&"host_closed", _on_client_host_closed)
+
+
+## The host closed the heist. On the payday nothing happens (its Continue returns to the lobby); a client
+## still mid-heist (no payday reached it) goes back to the crew lobby with the session kept and says why.
+func _on_client_host_closed() -> void:
+	if _in_heist == null or (_heist_payday != null and is_instance_valid(_heist_payday) and _heist_payday.visible):
+		return
+	Log.info(&"ui", "host closed the heist; back to the crew lobby")
+	_leave_heist(true)
+	if lobby_screen != null:
+		lobby_screen.error_label.text = UiText.t(&"ui.lobby.host_closed")
 
 
 ## net.md / HeistNetSync.host_lost: the connection to the host dropped while this client's replica runs.
@@ -1069,6 +1101,7 @@ func _on_drop_in_joined(_slot: int) -> void:
 	_begin_client_heist(info)
 	runtime = info["runtime"] as Object
 	if runtime != null:
+		_watch_host_closed()
 		heist_launched.emit(runtime)
 
 

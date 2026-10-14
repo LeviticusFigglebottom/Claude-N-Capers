@@ -2,7 +2,7 @@
 ## make_lc_fixtures.gd bakes their navmesh and saves them as .tscn. Owner: ENV C (tests).
 ## Good: two 7.5 x 7.2 m offices joined by a door, everything per level_standards.
 ## Bad adds: FloatBox (0.1 m above floor), WallClipBox (0.1 m into the south wall), BareLight
-## (no fixture), NullMatMesh (null material), PlayerSpawn5 (sealed closet), LonelyPoint (no links).
+## (no fixture, no `viewmodel_lit` layer), NullMatMesh (null material), PlayerSpawn5 (sealed closet), LonelyPoint (no links).
 class_name LcFixtureBuilder
 extends RefCounted
 
@@ -323,6 +323,15 @@ static func build(bad: bool) -> HeistMap:
 	var frame: Node3D = Node3D.new()
 	frame.name = "Frame"
 	door.add_child(frame)
+	# PO-7 (seam_gaps): jambs + head fill the 1.0 x 2.2 m opening around the 0.9 x 2.1 m leaf.
+	for part: Array in [["JambA", Vector3(-0.025, 1.1, 0), Vector3(0.05, 2.2, 0.22)],
+			["JambB", Vector3(0.925, 1.1, 0), Vector3(0.05, 2.2, 0.22)],
+			["Head", Vector3(0.45, 2.15, 0), Vector3(0.9, 0.1, 0.22)]]:
+		var fm: MeshInstance3D = MeshInstance3D.new()
+		fm.name = String(part[0])
+		fm.position = part[1]
+		fm.mesh = _box_mesh(part[2], m_wood)
+		frame.add_child(fm)
 	var leaf: Node3D = Node3D.new()
 	leaf.name = "Leaf"
 	door.add_child(leaf)
@@ -416,6 +425,7 @@ static func _lamp(parent: Node, name: String, pos: Vector3, mat: Material, shado
 	l.light_energy = 1.6
 	l.light_color = Color(1.0, 0.88, 0.72)
 	l.shadow_enabled = shadow
+	l.layers |= 1 << 20  # render layer 21 `viewmodel_lit` (CrewView.VIEWMODEL_LIT_LAYER, D-095)
 	lamp.add_child(l)
 	return lamp
 

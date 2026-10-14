@@ -86,11 +86,11 @@ rare_events = Array[Dictionary]([{
 "chance": 0.1,
 "effects": {
 "extra_device_jams": 1,
-"max_device_jams": 4,
-"min_difficulty": 3
+"max_device_jams": 4
 },
 "good": false,
-"id": &"drill_relock"
+"id": &"drill_relock",
+"min_difficulty": 3
 }, {
 "chance": 0.05,
 "effects": {

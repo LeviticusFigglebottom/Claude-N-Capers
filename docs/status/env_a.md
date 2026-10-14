@@ -3,6 +3,35 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-14 05:00 UTC — PO-12 drills visible, C11, director retreat, ND/stealth gates in progress
+### Done (pushed; last 0f1bf19c)
+- PO-12: DrillPoint shows the catalog drill (G.PROPS_DIR + drill/prop_drill_device.tscn) while placed; Bit spins,
+  red jam mark, removed when done; per-point `device_scene` override.
+- C11: two co-op heists on one kept session (teardown notices, heist token, replication member set, Net.clear_ai).
+- PO-5: FADE retreat to unseen points; PO-B-C7 client objectives; QC-61 walkable windows + sash_travel_m;
+  Glasshouse drill_relock min difficulty; loud flows shoot while downed.
+### Needs (for the board / ENV D)
+- SAW device prop: saw DrillPoints have no default device visual yet (only the drill exists); ENV D to model
+  `prop_saw_device` with a spinning `Bit`/blade node, then DrillPoint uses it for Device.SAW.
+### In progress
+- ND loud attempt 8 (windowed); gh_stealth iteration (helper); PO-10 NPC separation + PO-11 casing civilians (helpers).
+
+## 2026-10-14 04:05 UTC — civilian fixes for the stealth gate (wander, stairs, shout, yield)
+### Done (pushed)
+- Civilian wander (PO-5 stealth finding 1): customers pick only public `civilian` PatrolPoints outside
+  RESTRICTED / NO_CIVILIAN zones; staff only `staff` points of their home area (staff_floor / staff_boh /
+  staff_upper); reach = navmesh path length within civilian_wander_radius_m (same-floor fallback).
+- NPC stairs (finding 2): NpcMotor step-up (step_height 0.35), wall_min_slide 0 deg, corner_reach 0.2 m (no
+  corner cutting into balustrade/wall ends): no NPC could climb the GH stair before. Walking civilians that
+  stall re-path, then give the target up (civilian_walk_stall_*). GH map issue logged for C (ramp colliders).
+- Calm NPCs yield (finding 5): a calm civilian/guard that a crew member presses into for 1.5 s steps 1 m
+  aside, then returns (StealthTweak npc_yield_*); never while alerted / dominated / tied.
+### For pd2_fidelity (lead to record)
+- Crew shout (all-round 6 m): affects only civilians on the shouter's floor (|dy| <= shout_floor_dy_m 2.5)
+  who can hear it: clear line of sight (other NPCs don't block) or a navmesh path <= 6 m x shout_path_mult
+  1.3. Walls and floors block it (PD2: you intimidate who hears/sees you). The cone beyond 6 m already
+  required line of sight.
+
 ## 2026-10-14 01:50 UTC — freeze gate 1 (gh_loud PASS), PO-8 shot_fx, ND loud, D-102/D-106
 ### Done (pushed; last bcebbad9)
 - GATE 1: gh_loud PASS end to end, windowed, real menus (seed 1791914030): drill jam fixed by the pilot, safe 182 s

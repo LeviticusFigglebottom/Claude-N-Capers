@@ -12,6 +12,8 @@ extends GameplayPrefab
 
 enum Device { DRILL, THERMAL, SAW }
 
+## PO-12: catalog drill device under G.PROPS_DIR.
+const DEFAULT_DEVICE: String = "drill/prop_drill_device.tscn"
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/drill_point/drill_point_placeholder.tscn")
 
 @export var device: Device = Device.DRILL
@@ -19,6 +21,9 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/drill_point/dril
 @export var duration_s: float = -1.0
 ## What this opens (Door, Safe, ...).
 @export var target: NodePath
+## PO-12: the device shown at this spot while it runs (needs a `Bit` node, spun while RUNNING). null = the
+## catalog drill (G.PROPS_DIR + DEFAULT_DEVICE) for drills and thermal drills; saws have no default yet.
+@export var device_scene: PackedScene
 @export_group("Interaction")
 ## -1 = InteractionTweak.drill_place_s.
 @export var interaction_time_s: float = -1.0
@@ -32,8 +37,13 @@ var runner: DeviceRunner = null
 ## QC-37: handheld saw progress (0..1, replicated).
 var saw_progress: float = 0.0
 
+## PO-12: the placed device visual (null while idle / done), its spinning `Bit` and the jam indicator.
+var device_node: Node3D = null
+
 var _place_time: float = 0.0
 var _place_prompt: StringName = &""
+var _bit: Node3D = null
+var _jam_mark: MeshInstance3D = null
 
 
 func _placeholder_scene() -> PackedScene:
@@ -135,6 +145,7 @@ func _on_completed(crew: Node) -> void:
 
 
 func _on_device_state(s: int) -> void:
+	_update_device_visual(s)
 	match s:
 		DeviceRunner.State.JAMMED:
 			interactable.kind = &"fix_drill"
@@ -171,3 +182,60 @@ static func open_target(t: Node, forced: bool = false) -> void:
 		t.call(&"set_open", true)
 	elif t.has_method(&"open"):
 		t.call(&"open")
+
+
+# --- PO-12 device visual ------------------------------------------------------------------------
+
+func _process(delta: float) -> void:
+	if _bit != null and runner != null and runner.state == DeviceRunner.State.RUNNING:
+		_bit.rotate_object_local(Vector3.FORWARD, deg_to_rad(Tweak.interaction().device_bit_spin_dps) * delta)
+
+
+## Shows the device while placed (RUNNING / JAMMED, a red jam mark while jammed), removes it when done.
+func _update_device_visual(s: int) -> void:
+	var placed: bool = s == DeviceRunner.State.RUNNING or s == DeviceRunner.State.JAMMED
+	if placed and device_node == null:
+		var scene: PackedScene = _device_scene()
+		if scene != null:
+			device_node = scene.instantiate() as Node3D
+			if device_node != null:
+				device_node.name = "Device"
+				add_child(device_node)
+				_bit = device_node.find_child("Bit", true, false) as Node3D
+	if not placed and device_node != null:
+		device_node.queue_free()
+		device_node = null
+		_bit = null
+		_jam_mark = null
+	if device_node != null:
+		_set_jam_mark(s == DeviceRunner.State.JAMMED)
+
+
+func _device_scene() -> PackedScene:
+	if device_scene != null:
+		return device_scene
+	if device == Device.SAW:
+		return null
+	var path: String = G.PROPS_DIR + DEFAULT_DEVICE
+	return load(path) as PackedScene if ResourceLoader.exists(path) else null
+
+
+## A small emissive red mark above the device while jammed (procedural: no art asset).
+func _set_jam_mark(on: bool) -> void:
+	if on and _jam_mark == null:
+		_jam_mark = MeshInstance3D.new()
+		_jam_mark.name = "JamMark"
+		var m: SphereMesh = SphereMesh.new()
+		m.radius = 0.04
+		m.height = 0.08
+		var mat: StandardMaterial3D = StandardMaterial3D.new()
+		mat.albedo_color = Color(1.0, 0.1, 0.05)
+		mat.emission_enabled = true
+		mat.emission = Color(1.0, 0.1, 0.05)
+		mat.emission_energy_multiplier = 3.0
+		m.material = mat
+		_jam_mark.mesh = m
+		_jam_mark.position = Vector3(0.0, 0.42, 0.3)
+		device_node.add_child(_jam_mark)
+	if _jam_mark != null:
+		_jam_mark.visible = on

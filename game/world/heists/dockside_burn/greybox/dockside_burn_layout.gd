@@ -98,15 +98,16 @@ const INT_WALLS: Array = [
 	# Stair core ST (0.3 m) up to the head-house roof.
 	["CoreX3", "z", 3.0, 0.2, 6.15, 0.0, HH_TOP, CORE_T, "wall", []],
 	["CoreZ6", "x", 6.0, 0.2, 2.85, 0.0, HH_TOP, CORE_T, "wall", []],
-	# Office ground floor.
-	["G_X9", "z", 9.0, 0.2, 5.85, 0.0, OFFICE_CEIL, INT_T, "wall", []],
+	# Office ground floor. PO-7: G_X9 / M_X9 run to the z 6 wall's face (5.9); 5.85 left a 5 cm
+	# see-through corner slit.
+	["G_X9", "z", 9.0, 0.2, 5.9, 0.0, OFFICE_CEIL, INT_T, "wall", []],
 	["G_Z6", "x", 6.0, 3.15, 17.85, 0.0, OFFICE_CEIL, INT_T, "wall", []],
 	# Goods lift shaft LF (x 15-18, z 0-3) to the mezzanine ceiling; west hatch at the mezzanine.
 	["ShaftX15", "z", 15.0, 0.2, 2.9, 0.0, MEZZ_CEIL, INT_T, "wall", [[0.9, 2.1, MEZZ + 0.45, MEZZ + 1.25]]],
 	["ShaftZ3", "x", 3.0, 14.9, 17.85, 0.0, MEZZ_CEIL, INT_T, "wall", []],
 	["G_X15S", "z", 15.0, 3.1, 5.9, 0.0, OFFICE_CEIL, INT_T, "wall", []],
 	# Mezzanine.
-	["M_X9", "z", 9.0, 0.2, 5.85, MEZZ, MEZZ_CEIL, INT_T, "wall", []],
+	["M_X9", "z", 9.0, 0.2, 5.9, MEZZ, MEZZ_CEIL, INT_T, "wall", []],
 	["M_X15S", "z", 15.0, 3.1, 5.9, MEZZ, MEZZ_CEIL, INT_T, "wall", []],
 	["M_Z6", "x", 6.0, 3.15, 17.85, MEZZ, MEZZ_CEIL, INT_T, "wall", []],
 	# West wing (walls up to the wing roof slab, 5.5).
@@ -477,7 +478,8 @@ const PROPS: Array = [
 	["BreakCounter", Vector3(4.4, MEZZ, 0.5), Vector3(2.2, 0.9, 0.6), 0.0, "counter_service", true, "counter"],
 	["Fridge", Vector3(8.4, MEZZ, 0.55), Vector3(0.7, 1.8, 0.7), 0.0, "fridge", false, "trim"],
 	# M1 count room
-	["CountingTable", Vector3(11.5, MEZZ, 2.6), Vector3(2.4, 0.9, 1.0), 0.0, "counter_service", true, "counter"],
+	# PO-9: 0.35 m east, clear of the CageCashA UsePoint (10.4, 2.1)
+	["CountingTable", Vector3(11.85, MEZZ, 2.6), Vector3(2.4, 0.9, 1.0), 0.0, "counter_service", true, "counter"],
 	# M3 restroom
 	["Toilet", Vector3(16.5, MEZZ, 3.45), Vector3(0.4, 0.8, 0.6), 0.0, "toilet", false, "prop"],
 	["Sink", Vector3(17.6, MEZZ, 4.6), Vector3(0.5, 0.85, 0.5), 0.0, "sink", false, "prop"],
@@ -578,7 +580,7 @@ const CHAIRS: Array = [
 	["BreakChairS", Vector3(6.0, MEZZ, 3.7), 0.0],
 	["BreakChairW", Vector3(4.75, MEZZ, 2.8), -90.0],
 	["BreakChairE", Vector3(7.25, MEZZ, 2.8), 90.0],
-	["CountChair", Vector3(11.5, MEZZ, 3.55), 0.0],
+	["CountChair", Vector3(11.85, MEZZ, 3.55), 0.0],
 	["ForemanChair", Vector3(19.4, MEZZ, 1.75), 0.0],
 ]
 

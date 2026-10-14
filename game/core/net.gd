@@ -133,6 +133,21 @@ func fill_with_ai() -> void:
 	_sync_crew()
 
 
+## Server: drop every AI seat (C11: a kept co-op lobby after a payday must take newcomers again).
+## Humans keep their slots. No-op on clients.
+func clear_ai() -> void:
+	if not is_authority():
+		return
+	var removed: bool = false
+	for slot: int in crew.keys():
+		if bool(crew[slot]["is_ai"]):
+			crew.erase(slot)
+			removed = true
+	if removed:
+		crew_changed.emit()
+		_sync_crew()
+
+
 ## Server: relay an EventBus fact to all clients (they re-emit locally).
 ## Args must be network-serializable (no Node references; use net_ids).
 func replicate_event(signal_name: StringName, args: Array) -> void:

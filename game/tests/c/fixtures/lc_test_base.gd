@@ -10,6 +10,8 @@ const BAD_EXPECT: Dictionary = {
 	"floating": ["FloatBox"],
 	"clipping": ["WallClipBox"],
 	"lights": ["BareLight"],
+	# PO-8: an untagged interior key light fails `viewmodel_lit` (no layer 21)
+	"viewmodel_lit": ["BareLight"],
 	"materials": ["NullMatMesh"],
 	"reachability": ["PlayerSpawn5"],
 	"walkthrough": ["PlayerSpawn5"],

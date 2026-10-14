@@ -195,3 +195,41 @@ func test_refusals_play_the_error_cue() -> void:
 	assert_eq(UiSfx.played.back(), UiSfx.ERROR, "a failed action buzzes")
 	assert_true(UiSfx.check(true))
 	b.queue_free()
+
+
+## Impact mix check (impact_fx §4): ENV C's impacts sit ~ -25 LUFS at the source and gunshots -14..-18, so the
+## hit markers must not fall back to the old -40 tick (masked by the shot it confirms). Levels come from
+## build_ui.py's measured mix; hit < headshot <= kill in importance, all non-positional on the UI bus.
+func test_hit_markers_sit_above_the_impact_bed() -> void:
+	var reg: AudioCueRegistry = _registry()
+	var vols: Dictionary = {}
+	for id: StringName in [&"cue.hud_hit", &"cue.hud_headshot", &"cue.hud_kill"]:
+		var c: AudioCueDef = reg.get_cue(id)
+		assert_true(c != null, String(id))
+		if c == null:
+			return
+		assert_eq(c.bus, &"UI", "%s on the UI bus" % id)
+		assert_false(c.positional, "%s is not spatial (feedback, not a world sound)" % id)
+		vols[id] = c.volume_db
+	assert_true(float(vols[&"cue.hud_hit"]) >= -6.0, "hit tick level %s dB (was -13: masked)" % vols[&"cue.hud_hit"])
+	assert_true(float(vols[&"cue.hud_kill"]) >= -6.0, "kill confirm level")
+	assert_true(float(vols[&"cue.hud_headshot"]) >= -9.0, "headshot level")
+
+
+## PO-12 "drills are loud" (mix_check.py): the looping device cues sit 8-10 dB under a gunshot at the source
+## (gunshots ~ -16 LUFS-M median; drill_loop measured -17.8 LUFS before its volume_db) and the drill fades out a
+## room or two away, so guards and callouts stay audible. jam / done stay punchy one-shots.
+func test_device_loops_sit_under_gunfire() -> void:
+	var reg: AudioCueRegistry = _registry()
+	var drill: AudioCueDef = reg.get_cue(&"cue.drill_loop")
+	assert_true(drill != null and drill.loop, "drill loop")
+	if drill == null:
+		return
+	assert_true(drill.volume_db <= -8.0, "drill_loop %s dB (was -3: the loudest sustained sound)" % drill.volume_db)
+	assert_true(drill.max_distance <= 25.0, "drill falls off within ~25 m (was 35)")
+	for id: StringName in [&"cue.weapon_saw_cut", &"cue.weapon_saw_rev"]:
+		var c: AudioCueDef = reg.get_cue(id)
+		assert_true(c != null and c.volume_db <= -6.0, "%s under gunfire" % id)
+	for id: StringName in [&"cue.drill_jam", &"cue.drill_done"]:
+		var c: AudioCueDef = reg.get_cue(id)
+		assert_true(c != null and c.volume_db >= -3.0, "%s stays punchy" % id)

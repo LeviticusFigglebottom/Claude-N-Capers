@@ -118,9 +118,22 @@ func _fire_at(wid: StringName, t: Dictionary) -> Array[Image]:
 	var vm: FpViewmodel = FpViewmodel.of(CrewView.of(_crew).camera())
 	var c_muzzles0: int = vfx.muzzles.set_count() if vfx != null else 0
 	var fp_tracers0: int = vm.fx.tracers_drawn if vm != null and vm.fx != null else 0
-	var shots0: int = _crew.weapons.shots_fired
+	var w: CrewWeapons = _crew.weapons
+	if w.mag(w.equipped_slot) <= 0 or w.reloading:  # a pump / small magazine runs dry between targets
+		if not w.reloading:
+			await _inp.tap(&"reload")
+		var end: int = Engine.get_physics_frames() + 600
+		while (w.reloading or w.mag(w.equipped_slot) <= 0) and Engine.get_physics_frames() < end:
+			await _ticks(5)
+	var shots0: int = w.shots_fired
 	_inp.press(&"fire")
-	await _crew.weapons.fired
+	var fire_end: int = Engine.get_physics_frames() + 180
+	while w.shots_fired == shots0 and Engine.get_physics_frames() < fire_end:
+		await _ticks(1)
+	if w.shots_fired == shots0:
+		_inp.release(&"fire")
+		print("[GUNPLAY] %s -> %s: NO SHOT (mag %d, reloading %s)" % [wid, t["surface"], w.mag(w.equipped_slot), w.reloading])
+		return []
 	var out: Array[Image] = []
 	var f: int = 0
 	var want: int = 0

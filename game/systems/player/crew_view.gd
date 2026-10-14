@@ -446,13 +446,23 @@ func set_mask_descriptor(d: Dictionary) -> void:
 	replicate_mask_descriptor()
 
 
-## Server: send this crew member's mask descriptor to every peer (reliable authority RPC).
+## Server: send this crew member's mask descriptor to every peer that replicates the heist (reliable authority RPC).
 func replicate_mask_descriptor() -> void:
 	if _crew == null or not Net.is_authority() or not is_inside_tree() or not multiplayer.has_multiplayer_peer():
 		return
 	if not HeistNetSync.can_rpc(_crew):
 		return  # A3-07: before the bring-up; clients get the descriptor with the crew's loadout
-	_rpc_mask_descriptor.rpc(_crew.loadout.mask_descriptor if _crew.loadout != null else {})
+	var d: Dictionary = _crew.loadout.mask_descriptor if _crew.loadout != null else {}
+	var rt: HeistRuntime = HeistRuntime.of(_crew)
+	var sync: Object = rt.net_sync if rt != null else null
+	if sync == null or not sync.has_method(&"replicates_to"):
+		_rpc_mask_descriptor.rpc(d)
+		return
+	# Only peers that already hold this crew's replica; a drop-in still loading gets the current descriptor with its
+	# late bring-up (an rpc before its replica exists errors "Node not found").
+	for p: int in multiplayer.get_peers():
+		if bool(sync.call(&"replicates_to", p)):
+			_rpc_mask_descriptor.rpc_id(p, d)
 
 
 @rpc("authority", "call_remote", "reliable")

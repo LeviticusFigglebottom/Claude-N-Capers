@@ -163,8 +163,8 @@ const DOORS: Array = [
 	# L41 north band.
 	["K1Door", "arch_door_single_t20", Vector3(5.5, F41, 6.0), 180.0, "NONE", "INWARD", "", {}],
 	["K2Door", "arch_door_single_t20", Vector3(9.5, F41, 6.0), 180.0, "NONE", "INWARD", "", {}],
-	["ReceptionGlassW", "arch_door_single_t20", Vector3(12.0, F41, 6.75), 90.0, "NONE", "INWARD", "", {}],
-	["ReceptionGlassE", "arch_door_single_t20", Vector3(24.0, F41, 6.75), -90.0, "NONE", "INWARD", "", {}],
+	["ReceptionGlassW", "arch_door_single_t20", Vector3(12.0, F41, 6.75), 90.0, "NONE", "INWARD", "", {"leaf_surface": "glass"}],
+	["ReceptionGlassE", "arch_door_single_t20", Vector3(24.0, F41, 6.75), -90.0, "NONE", "INWARD", "", {"leaf_surface": "glass"}],
 	["K4Door", "arch_door_single_t20", Vector3(26.5, F41, 6.0), 180.0, "NONE", "INWARD", "", {}],
 	["K5Door", "arch_door_single_t20", Vector3(30.5, F41, 6.0), 180.0, "NONE", "INWARD", "", {}],
 	["K1FacadeDoor", "arch_door_single_t40", Vector3(0.0, F41, 3.0), -90.0, "LOCKPICK", "OUTWARD", "gondola_west",
@@ -188,7 +188,7 @@ const DOORS: Array = [
 	["ElectricalL41", "arch_door_single_t20", Vector3(31.5, F41, 16.5), 180.0, "NONE", "INWARD", "", {}],
 	["CopyRoomDoor", "arch_door_single_t20", Vector3(34.0, F41, 16.5), 180.0, "NONE", "INWARD", "", {}],
 	["CageGate", "arch_door_single_t20", Vector3(28.6, F41, 10.5), 180.0, "ELECTRONIC", "OUTWARD", "cage_gate",
-		{"no_wall": true}],
+		{"no_wall": true, "leaf_surface": "metal"}],
 	# L41 south band (K16 -> rooms).
 	["ArchiveDoor", "arch_door_single_t20", Vector3(3.0, F41, 18.0), 0.0, "NONE", "INWARD", "", {}],
 	["BreakRoomDoor", "arch_door_single_t20", Vector3(9.0, F41, 18.0), 0.0, "NONE", "INWARD", "", {}],
@@ -200,7 +200,8 @@ const DOORS: Array = [
 	["InterviewDoor", "arch_door_single_t20", Vector3(33.0, F41, 18.0), 0.0, "NONE", "INWARD", "", {}],
 	# L42.
 	["ArtHallDoors", "arch_door_double_t20", Vector3(24.0, F42, 3.0), 90.0, "NONE", "DOUBLE", "", {"starts_open": true}],
-	["ArtHallStaffDoor", "arch_door_single_t20", Vector3(25.0, F42, 7.5), 180.0, "NONE", "INWARD", "", {}],
+	# PO-7: centred in the M10 corridor mouth (x 24.15-25.4); at x 25.0 its frame ran 0.1 m into the x 25.5 wall.
+	["ArtHallStaffDoor", "arch_door_single_t20", Vector3(24.8, F42, 7.5), 180.0, "NONE", "INWARD", "", {}],
 	["StudyDoor", "arch_door_single_t20", Vector3(29.0, F42, 3.5), 90.0, "LOCKPICK", "INWARD", "study_door",
 		{"npc_auth": true, "interaction_time_s": 8.0}],
 	["StudyFacadeDoor", "arch_door_single_t40", Vector3(33.0, F42, 0.0), 180.0, "LOCKPICK", "OUTWARD", "gondola_north",
@@ -222,11 +223,11 @@ const DOORS: Array = [
 	["BoardroomDoor", "arch_door_single_t20", Vector3(33.5, F42, 16.5), 180.0, "NONE", "INWARD", "", {}],
 	# Terrace sliders (lockpick 8 s from outside; the leaf opens onto the terrace).
 	["SliderDining", "arch_door_single_t40", Vector3(4.5, F42, 18.0), 180.0, "LOCKPICK", "OUTWARD", "terrace_slider",
-		{"npc_auth": true, "interaction_time_s": 8.0}],
+		{"npc_auth": true, "interaction_time_s": 8.0, "leaf_surface": "glass"}],
 	["SliderWest", "arch_door_single_t40", Vector3(14.5, F42, 18.0), 180.0, "LOCKPICK", "OUTWARD", "terrace_slider",
-		{"npc_auth": true, "interaction_time_s": 8.0}],
+		{"npc_auth": true, "interaction_time_s": 8.0, "leaf_surface": "glass"}],
 	["SliderEast", "arch_door_single_t40", Vector3(30.5, F42, 18.0), 180.0, "LOCKPICK", "OUTWARD", "terrace_slider",
-		{"npc_auth": true, "interaction_time_s": 8.0}],
+		{"npc_auth": true, "interaction_time_s": 8.0, "leaf_surface": "glass"}],
 	# Roof: head house (Stair A), riser bay, plant. The head house -> plant door sits on the floor
 	# landing (z 15.75) instead of the plan's z 12, which is over the stair void (G1 report).
 	["RoofDoor", "arch_door_single_t40", Vector3(12.0, FRF, 15.75), 90.0, "LOCKPICK", "INWARD", "roof_door",
@@ -298,8 +299,9 @@ const BALUSTRADES: Array = [
 
 # --- Gameplay placements (used by sl_gameplay.gd) ----------------------------------------------
 
-## Server cage K11 (mesh enclosure 2.4 m, gate on its south side at x 28.15-29.05).
-const CAGE: Dictionary = {"box": [27.0, 8.5, 30.5, 10.5], "h": 2.4, "gate": [28.1, 29.1]}
+## Server cage K11 (mesh enclosure 2.4 m, gate on its south side at x 28.15-29.05). PO-9: the north panel at
+## z 8.4 leaves the hack terminal room to stand clear of the gate's 1 m door zone.
+const CAGE: Dictionary = {"box": [27.0, 8.4, 30.5, 10.5], "h": 2.4, "gate": [28.1, 29.1]}
 ## Art hall laser plane (M3, x 26.5, full width between the curtain wall and the M3/M10 wall).
 const LASER_X: float = 26.5
 const LASER_Z: Vector2 = Vector2(0.2, 7.4)
@@ -494,6 +496,37 @@ const CHAIRS: Array = [
 	["KesslerChair", Vector3(3.0, F41, 1.3), 180.0, "KesslerDesk"],
 	["MoorChair", Vector3(32.5, F41, 1.3), 180.0, "MoorDesk"],
 	["StudyChair", Vector3(32.0, F42, 1.7), 180.0, "StudyDesk"],
+	# PO-9: seats round the tables, 0.225 m off the table edge, each facing its table. Door zones, patrol
+	# spots and the credenzas / sideboard behind them stay clear.
+	# K2 conference: three a side (the south end is the door's clear zone).
+	["ConfChairW1", Vector3(8.35, F41, 1.8), -90.0, "ConferenceTable"],
+	["ConfChairW2", Vector3(8.35, F41, 3.0), -90.0, "ConferenceTable"],
+	["ConfChairW3", Vector3(8.35, F41, 4.2), -90.0, "ConferenceTable"],
+	["ConfChairE1", Vector3(10.65, F41, 1.8), 90.0, "ConferenceTable"],
+	["ConfChairE2", Vector3(10.65, F41, 3.0), 90.0, "ConferenceTable"],
+	["ConfChairE3", Vector3(10.65, F41, 4.2), 90.0, "ConferenceTable"],
+	# K18 break room: two on the counter side and one at each end (the K18Break patrol spot is north).
+	["BreakChairS1", Vector3(8.6, F41, 21.95), 0.0, "BreakTable"],
+	["BreakChairS2", Vector3(9.4, F41, 21.95), 0.0, "BreakTable"],
+	["BreakChairW", Vector3(7.75, F41, 21.0), -90.0, "BreakTable"],
+	["BreakChairE", Vector3(10.25, F41, 21.0), 90.0, "BreakTable"],
+	# M8 dining: two a side and one at each end (the M8Dining patrol spot is south of the middle).
+	["DiningChairN1", Vector3(3.9, F42, 14.25), 180.0, "DiningTable"],
+	["DiningChairN2", Vector3(6.1, F42, 14.25), 180.0, "DiningTable"],
+	["DiningChairS1", Vector3(3.9, F42, 16.35), 0.0, "DiningTable"],
+	["DiningChairS2", Vector3(6.1, F42, 16.35), 0.0, "DiningTable"],
+	["DiningChairW", Vector3(2.75, F42, 15.3), -90.0, "DiningTable"],
+	["DiningChairE", Vector3(7.25, F42, 15.3), 90.0, "DiningTable"],
+	# M14 boardroom: four a side and the head at the north end (the south end is the door and patrol spot).
+	["BoardChairW1", Vector3(32.35, F42, 10.35), -90.0, "BoardroomTable"],
+	["BoardChairW2", Vector3(32.35, F42, 11.45), -90.0, "BoardroomTable"],
+	["BoardChairW3", Vector3(32.35, F42, 12.55), -90.0, "BoardroomTable"],
+	["BoardChairW4", Vector3(32.35, F42, 13.65), -90.0, "BoardroomTable"],
+	["BoardChairE1", Vector3(34.65, F42, 10.35), 90.0, "BoardroomTable"],
+	["BoardChairE2", Vector3(34.65, F42, 11.45), 90.0, "BoardroomTable"],
+	["BoardChairE3", Vector3(34.65, F42, 12.55), 90.0, "BoardroomTable"],
+	["BoardChairE4", Vector3(34.65, F42, 13.65), 90.0, "BoardroomTable"],
+	["BoardChairHead", Vector3(33.5, F42, 9.15), 180.0, "BoardroomTable"],
 ]
 ## Logo wall ("K&M", glass teal, landmark 2) on K3's east wall: visual box.
 const LOGO_WALL: Array = [23.87, F41 + 1.2, 2.6, 23.9, F41 + 2.6, 4.6]

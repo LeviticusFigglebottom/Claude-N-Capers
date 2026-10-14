@@ -104,9 +104,18 @@ func build_ui() -> void:
 	map_view.pin_pressed.connect(_on_pin_pressed)
 	map_col.add_child(map_view)
 	_build_legend(map_col)
+	# KR-8: a contract with a long subtitle / pro text grew the card + broker column past the screen and
+	# pushed the footer (Take Contract, Back) off it. The column scrolls; the footer stays pinned.
+	var side_scroll: ScrollContainer = ScrollContainer.new()
+	side_scroll.name = "SideScroll"
+	side_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	side_scroll.follow_focus = true
+	side_scroll.custom_minimum_size = Vector2(560, 0)
+	side_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(side_scroll)
 	var side: VBoxContainer = UiBuild.vbox(UiTokens.S3)
-	side.custom_minimum_size = Vector2(560, 0)
-	body.add_child(side)
+	side.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	side_scroll.add_child(side)
 	_build_card(side)
 	_build_broker(side)
 	# PO-4 footer: Back (ghost) left, Take Contract (the screen's one primary) right.
@@ -290,9 +299,9 @@ func select_slot(slot: int) -> void:
 	take_button.disabled = take_button.disabled or consumed_label.visible
 	if has:
 		_fill_card(c)
-		var pin_path: NodePath = take_button.get_path_to(map_view.pins[selected_slot])
+		var pin: Control = map_view.pins[selected_slot]
 		for n: Control in [broker_heist, broker_difficulty, buy_button, back_button]:
-			n.focus_neighbor_left = pin_path
+			n.focus_neighbor_left = n.get_path_to(pin)  # relative to each control (one shared path went stale)
 
 
 func selected_contract() -> Dictionary:

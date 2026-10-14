@@ -81,8 +81,8 @@ static func make_variants() -> HeistVariantTable:
 			"effects": {"force_active": {"group": &"safe_state", "slot": &"safe_open"}}},
 		{"id": &"estate_consignment", "chance": 0.06, "good": true,
 			"effects": {"force_active": {"group": &"estate", "slot": &"estate_bag"}}},
-		{"id": &"drill_relock", "chance": 0.10, "good": false,
-			"effects": {"extra_device_jams": 1, "max_device_jams": 4, "min_difficulty": Enums.Difficulty.BRUTAL}},
+		{"id": &"drill_relock", "chance": 0.10, "good": false, "min_difficulty": Enums.Difficulty.BRUTAL,
+			"effects": {"extra_device_jams": 1, "max_device_jams": 4}},
 		{"id": &"nervous_manager", "chance": 0.05, "good": false,
 			"effects": {"force_active": {"group": &"manager_present", "slot": &"mgr_in"}, "manager_alarm_direct": true}},
 	]
@@ -212,3 +212,12 @@ static func replace_refs(line: String, rx: RegEx, ids: Dictionary, prefix: Strin
 		out += line.substr(last, m.get_start() - last) + rep
 		last = m.get_end()
 	return out + line.substr(last)
+
+
+## Output scene: `default_path`, or `-- --out=<path>` (game/tests/c/test_generator_determinism.gd builds
+## the map twice into scratch files and compares them byte for byte; def / variants still go to their paths).
+static func scene_out(default_path: String) -> String:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--out="):
+			return a.trim_prefix("--out=")
+	return default_path

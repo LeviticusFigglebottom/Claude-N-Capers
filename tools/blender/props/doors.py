@@ -32,6 +32,11 @@ VARIANTS = {
                                     "cat": {"prefab": "door", "kind": "door", "service": False}},
     "prop_door_double_bronze_t40": {"kind": "double", "finish": "bronze", "wall_t": 0.4,
                                     "cat": {"prefab": "door", "kind": "door", "service": False}},
+    # PO-7: steel gates in 0.1 m fences / cages (a t20 frame's architraves stood 5 cm off the fence).
+    "prop_door_double_steel_t10": {"kind": "double", "finish": "steel", "wall_t": 0.1,
+                                   "cat": {"prefab": "door", "kind": "door", "service": False}},
+    "prop_door_single_steel_t10": {"kind": "single", "finish": "steel", "wall_t": 0.1,
+                                   "cat": {"prefab": "door", "kind": "door", "service": False}},
     # the ATM vestibule's interior glass door to the banking hall (casing view, doc §Sightlines)
     "prop_door_single_glass_t20": {"kind": "single", "finish": "glass", "wall_t": 0.2,
                                    "cat": {"prefab": "door", "kind": "door", "service": False}},
@@ -43,23 +48,26 @@ ARCH_W = 0.07     # architrave width
 ARCH_T = 0.018    # architrave projection
 
 
-def _frame(k: Kit, hw: float, wall_t: float, finish: str):
-    """Jamb lining (in the opening) and architraves on both wall faces; trimesh collision."""
+def _frame(k: Kit, hw: float, jamb: float, wall_t: float, finish: str):
+    """Jamb lining (in the opening) and architraves on both wall faces; trimesh collision.
+
+    The lining fills the whole jamb allowance, so the leaf closes 3 mm off it (PO-7: a 0.03 m
+    lining in the 0.05 / 0.10 m jamb left 2.3 / 7.3 cm slits beside the leaves)."""
     fr = k.obj("Frame")
     key = {"walnut": "walnut", "ivory": "paint_ivory", "steel": "metal_dark", "glass": "brass", "grille": "metal_dark",
            "bronze": "brass"}[finish]
     lin = fr.part(bevel=0.003)
     arch = fr.part(bevel=0.004, segments=2)
-    lining = 0.03
+    lining = jamb
     d = wall_t / 2 + 0.002
     lin.bx((-hw, -d, 0.0), (-hw + lining, d, OPEN_H), key)
     lin.bx((hw - lining, -d, 0.0), (hw, d, OPEN_H), key)
     head = LEAF_H + 0.004
     lin.bx((-hw, -d, head), (hw, d, OPEN_H), key)
     # door stop (thin strip the leaf closes against)
-    lin.bx((-hw + lining, 0.022, 0.0), (-hw + lining + 0.012, 0.035, head), key)
-    lin.bx((hw - lining - 0.012, 0.022, 0.0), (hw - lining, 0.035, head), key)
-    lin.bx((-hw + lining, 0.022, head - 0.012), (hw - lining, 0.035, head), key)
+    lin.bx((-hw + lining, 0.024, 0.0), (-hw + lining + 0.012, 0.035, head), key)
+    lin.bx((hw - lining - 0.012, 0.024, 0.0), (hw - lining, 0.035, head), key)
+    lin.bx((-hw + lining, 0.024, head - 0.012), (hw - lining, 0.035, head), key)
     cols = []
     for side in (-1, 1):
         y0, y1 = sorted((side * wall_t / 2, side * (wall_t / 2 + ARCH_T)))
@@ -198,7 +206,7 @@ def build(ctx) -> None:
     p = ctx.params
     leaf_w, jamb, leaves = _KINDS[p["kind"]]
     hw = leaf_w * leaves / 2 + jamb
-    _frame(k, hw, p["wall_t"], p["finish"])
+    _frame(k, hw, jamb, p["wall_t"], p["finish"])
     for i in range(leaves):
         sign = 1.0 if i == 0 else -1.0
         _leaf(k, "Leaf" if i == 0 else "Leaf2", -sign * (hw - jamb), sign, leaf_w, p["finish"], p["kind"])

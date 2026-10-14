@@ -6,6 +6,13 @@ set toward the outside, interior window board, stone exterior sill. `Sash` (Node
 holds `Glass`; the openable variant has a lower sash (Glass) and a fixed upper pane in the Frame.
 Opening sizes match the greybox wall kit (window 1.0 x 1.2, wide 3.0 x 1.2, shop 3.0 x 2.4) plus
 high 1.0 x 0.6 windows (barred: workshop; frosted: WC). No collision (the prefab owns GlassBody).
+Door-height 1.2 x 2.1 walk-through windows (PO-5, the Glasshouse fire-escape door-window; the prefab's
+`walkable`): no bottom rail and no sills, a flush threshold plate across the wall instead, so nothing
+is left across the opening once the sash is up or the glass is broken. `door` is fixed glazing;
+`door_sash` is one full-height sash. window.gd lifts `Sash` by InteractionTweak.window_sash_open_m
+(0.6 m) in its parent's space, so `Sash` hangs under a `SashTrack` scaled SASH_TRACK_SCALE in height
+(Sash counter-scaled, net identity): the 0.6 m lift becomes 2.16 m and the sash slides into the wall
+above the head (pocket sash), clearing the full opening.
 """
 
 from _pb import Kit
@@ -18,12 +25,15 @@ VARIANTS = {
     "prop_window_w100_h120_sash": {"w": 1.0, "h": 1.2, "style": "sash", "cat": {"prefab": "window", "kind": "window"}},
     "prop_window_w100_h60_barred": {"w": 1.0, "h": 0.6, "style": "barred", "cat": {"prefab": "window", "kind": "window"}},
     "prop_window_w100_h60_frosted": {"w": 1.0, "h": 0.6, "style": "frosted", "cat": {"prefab": "window", "kind": "window"}},
+    "prop_window_w120_h210": {"w": 1.2, "h": 2.1, "style": "door", "cat": {"prefab": "window", "kind": "window"}},
+    "prop_window_w120_h210_sash": {"w": 1.2, "h": 2.1, "style": "door_sash", "cat": {"prefab": "window", "kind": "window"}},
 }
 
 WALL_T = 0.4
 FW = 0.055          # frame face width
 FD = 0.08           # frame depth
 Y0 = -0.13          # frame outside face (towards Blender -Y)
+SASH_TRACK_SCALE = 3.6  # door_sash: 0.6 m tweak lift x 3.6 = 2.16 m >= the 2.1 m opening
 
 
 def build(ctx) -> None:
@@ -31,6 +41,9 @@ def build(ctx) -> None:
     p = ctx.params
     w, h, style = p["w"], p["h"], p["style"]
     hw = w / 2
+    if style in ("door", "door_sash"):
+        _build_door_window(k, w, h, style)
+        return
     fr = k.obj("Frame")
     alu = fr.part(bevel=0.002)
     board = fr.part(bevel=0.003, segments=2)
@@ -88,5 +101,48 @@ def build(ctx) -> None:
             x0 = -hw + FW + i * pw + (0.0 if i == 0 else FW * 0.4) - 0.005
             x1 = -hw + FW + (i + 1) * pw - (0.0 if i == panes - 1 else FW * 0.4) + 0.005
             gp.bx((x0, gy - 0.004, FW - 0.005), (x1, gy + 0.004, h - FW + 0.005), glass_key)
+        gl.build()
+    fr.build()
+
+
+def _build_door_window(k: Kit, w: float, h: float, style: str) -> None:
+    """Walk-through window: jambs + head, a flush threshold plate, glass down to the threshold."""
+    hw = w / 2
+    fr = k.obj("Frame")
+    alu = fr.part(bevel=0.002)
+    y1 = Y0 + FD
+    alu.bx((-hw, Y0, 0.0), (-hw + FW, y1, h), "metal_dark")
+    alu.bx((hw - FW, Y0, 0.0), (hw, y1, h), "metal_dark")
+    alu.bx((-hw, Y0, h - FW), (hw, y1, h), "metal_dark")
+    # threshold plate over the wall top (the walking surface stays the wall at the sill line)
+    alu.bx((-hw + FW, -WALL_T / 2, 0.0), (hw - FW, WALL_T / 2, 0.008), "steel")
+    track = k.empty("SashTrack", (0.0, 0.0, 0.0))
+    if style == "door_sash":
+        track.scale = (1.0, 1.0, SASH_TRACK_SCALE)
+    sash = k.empty("Sash", (0.0, 0.0, 0.0), parent=track)
+    if style == "door_sash":
+        sash.scale = (1.0, 1.0, 1.0 / SASH_TRACK_SCALE)
+        sf = k.obj("SashFrame", parent=sash)
+        sp = sf.part(bevel=0.002)
+        ys0, ys1 = Y0 + FD * 0.5, Y0 + FD * 0.95
+        z0, z1 = 0.008, h - FW
+        sp.bx((-hw + FW, ys0, z0), (-hw + FW + 0.05, ys1, z1), "metal_dark")
+        sp.bx((hw - FW - 0.05, ys0, z0), (hw - FW, ys1, z1), "metal_dark")
+        sp.bx((-hw + FW, ys0, z0), (hw - FW, ys1, z0 + 0.1), "metal_dark")
+        sp.bx((-hw + FW, ys0, z1 - 0.05), (hw - FW, ys1, z1), "metal_dark")
+        # lift handles on both faces of the bottom rail
+        for y_a, y_b in ((ys1, ys1 + 0.02), (ys0 - 0.02, ys0)):
+            sp.bx((-0.1, y_a, z0 + 0.03), (0.1, y_b, z0 + 0.06), "steel")
+        sf.build()
+        gl = k.obj("Glass", parent=sash)
+        gp = gl.part(bevel=0.0)
+        gc = (ys0 + ys1) / 2
+        gp.bx((-hw + FW + 0.04, gc - 0.003, z0 + 0.09), (hw - FW - 0.04, gc + 0.003, z1 - 0.04), "glass")
+        gl.build()
+    else:
+        gl = k.obj("Glass", parent=sash)
+        gp = gl.part(bevel=0.0)
+        gy = Y0 + FD * 0.5
+        gp.bx((-hw + FW - 0.005, gy - 0.004, 0.014), (hw - FW + 0.005, gy + 0.004, h - FW + 0.005), "glass")
         gl.build()
     fr.build()

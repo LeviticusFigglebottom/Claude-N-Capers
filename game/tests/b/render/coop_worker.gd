@@ -137,8 +137,14 @@ func _host_success() -> void:
 		_log("no loot service / secure zone")
 		return
 	EventBus.loot_secured.connect(func(_id: int, _loot: StringName, _value: int) -> void: _secured += 1)
+	var at: Vector3 = zone.global_position
+	for c: Node in zone.get_children():
+		if c is CollisionShape3D:
+			at = (c as CollisionShape3D).global_position  # the zone's volume, not its origin (ZoneUtil.contains)
+			break
+	_log("secure zone %s at %s" % [zone.name, at])
 	for id: StringName in [&"loot.jewelry", &"loot.cash"]:
-		loot.call(&"spawn_bag", id, Transform3D(Basis(), zone.global_position + Vector3(0, 0.4, 0)))
+		loot.call(&"spawn_bag", id, Transform3D(Basis(), at + Vector3(0, 0.3, 0)))
 	await _wait(func() -> bool: return _secured >= 2, "two bags secured", 300.0)
 	await _shot("host_secured", 5)
 	_log("end_heist(true) -> %s" % str(rt.end_heist(true, Net.human_slots(), &"")).left(120))
@@ -187,6 +193,12 @@ func _end_on_payday(timeout_s: float = 120.0) -> void:
 		var pd: PaydayScreen = _flow.get(&"_heist_payday") as PaydayScreen
 		_log("payday success=%s reason=%s" % [pd.payout.get("success"), pd.result.get("fail_reason", "")])
 		pd.continue_button.pressed.emit()
+		if pd.has_card_pick():  # a success payday: Continue opens the cards; pick one, then Continue home
+			await _seconds(1.0)
+			pd.tick(PaydayScreen.INPUT_GRACE_S + 0.01)
+			pd.pick(0)
+			await _shot("payday_card", 5)
+			pd.continue_button.pressed.emit()
 	await _seconds(3.0)
 	await _shot("after_leave")
 	_log("home visible=%s runtime=%s coop=%s" % [_flow.visible, _flow.runtime, _flow.is_coop()])

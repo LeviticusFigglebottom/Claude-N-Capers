@@ -171,6 +171,8 @@ func _build_doors(gp: Node3D) -> void:
 			props["starts_open"] = true
 		if extra.has("interaction_time_s"):
 			props["interaction_time_s"] = float(extra["interaction_time_s"])
+		if extra.has("leaf_surface"):  # D-105: glass / metal leaves on a greybox kit visual (reads as wood)
+			props["leaf_surface"] = StringName(String(extra["leaf_surface"]))
 		if String(d[1]).contains("double"):
 			props["width_m"] = 1.8
 		prefab(doors, "door", String(d[0]), d[2], float(d[3]), props, null, metas)
@@ -193,8 +195,9 @@ func _build_server(gp: Node3D) -> void:
 			"objective_tag": &"cage"}, null, {"kind": "safe"})
 	if cage == null:
 		return
-	# The ledger rack's drive-bay release (hack_terminal, a 0.6 x 2.0 x 1.0 rack, front south).
-	prefab(srv, "hack_terminal", "HackTerminal", Vector3(28.75, L.F41, 9.05), 180.0,
+	# The ledger rack's drive-bay release (hack_terminal, a 0.6 x 2.0 x 1.0 rack, front south), back to the
+	# cage's north panel and clear of the CageGate's 1 m door zone (PO-9).
+	prefab(srv, "hack_terminal", "HackTerminal", Vector3(28.75, L.F41, 8.95), 180.0,
 		{"duration_s": HACK_S, "interruptions": Vector2i(1, 2), "objective_tag": &"hack"}, null, {"kind": "hack_terminal"})
 	for i: int in range(3):
 		var x: float = [27.4, 29.45, 30.1][i]

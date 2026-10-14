@@ -7,6 +7,9 @@
 class_name Po5Pilot
 extends RefCounted
 
+## Ticks without an interaction session before use() presses interact again (interrupted hold).
+const REPRESS_TICKS: int = 20
+
 var d: Node = null  # po5_flow driver (note(), shot())
 var inp: PlayerInputDriver = null
 var crew: CrewController = null
@@ -35,6 +38,9 @@ var shout_blockers: bool = true
 var block_shout_after: int = 4
 ## goto() also needs |dy| <= this to arrive (INF = horizontal distance only; stealth flows set it for stairs).
 var arrive_dy: float = INF
+## Stealth: never press F unless the component is aimed (a press with nothing usable aimed is a shout,
+## S7.1: it puts every civilian within shout_all_within_m down, the sales floor through the wall).
+var no_blind_press: bool = false
 var _in_hook: bool = false
 var _last_engage: float = -1.0
 var _door_tries: Dictionary[Door, int] = {}
@@ -316,11 +322,15 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 			aimed.get_path() if aimed != null else ^"<none>", comp.get_path(), crew.eye_position().distance_to(target),
 			ang, comp.availability(crew), (hit["collider"] as Node).get_path() if not hit.is_empty() else ^"-",
 			_v(hit["position"]) if not hit.is_empty() else "-"])
+	if no_blind_press and not await _aim_on(comp, target):
+		d.note("pilot: use %s (%s) NOT PRESSED: not aimed (a blind F press is a shout)" % [comp.get_path(), comp.kind])
+		return done.is_valid() and bool(done.call())
 	var completed: Array[bool] = [false]
 	var cb: Callable = func(_c: Node) -> void: completed[0] = true
 	comp.completed.connect(cb)
 	inp.press(&"interact")
 	var t: float = 0.0
+	var idle_ticks: int = 0
 	while t < timeout_s and not completed[0] and is_instance_valid(comp) and not (done.is_valid() and bool(done.call())):
 		if crew.crew_state != Enums.CrewState.NORMAL:
 			break
@@ -333,10 +343,22 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 			inp.release(&"interact")
 			if await _run_hook():
 				await face(target, 0.03, 1.0)
+			if no_blind_press and not await _aim_on(comp, target):
+				break
 			inp.press(&"interact")
 		steer_at(target)
 		await tick()
 		t += dt()
+		# Interrupted (a hit, S9.1, or a block needing a release): press again like a player would, but only
+		# once no session has existed for REPRESS_TICKS (a fresh press needs a few ticks to start one).
+		idle_ticks = idle_ticks + 1 if isys.session(crew.slot).is_empty() else 0
+		if idle_ticks >= REPRESS_TICKS and not completed[0] and is_instance_valid(comp):
+			idle_ticks = 0
+			inp.release(&"interact")
+			await inp.ticks(2)
+			if no_blind_press and not await _aim_on(comp, target):
+				break
+			inp.press(&"interact")
 	inp.release(&"interact")
 	if is_instance_valid(comp) and comp.completed.is_connected(cb):
 		comp.completed.disconnect(cb)
@@ -346,6 +368,19 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 		d.note("pilot: use %s (%s) -> %s in %.1f s" % [comp.owner_node().name if comp.owner_node() else comp.name,
 			comp.kind, "OK" if ok else "FAILED", t])
 	return ok
+
+
+## True once `comp` is the aimed interactable (re-aims for up to ~1.5 s). Usable components only.
+func _aim_on(comp: InteractableComponent, target: Vector3) -> bool:
+	var isys: InteractionSystem = HeistRuntime.of(crew).interaction
+	for i: int in 5:
+		if not is_instance_valid(comp) or not comp.enabled:
+			return false
+		if isys.aimed_component(crew) == comp:
+			return true
+		await face(target + Vector3(0.0, 0.05 * float(i % 3 - 1), 0.0), 0.02, 0.3)
+		await tick()
+	return is_instance_valid(comp) and isys.aimed_component(crew) == comp
 
 
 ## A closed door within 1.8 m in front of the crew (the pilot opens it like a player: aim + hold F).

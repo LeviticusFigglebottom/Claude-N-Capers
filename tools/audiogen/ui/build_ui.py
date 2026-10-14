@@ -302,8 +302,11 @@ def hud_heartbeat(rng: np.random.Generator) -> np.ndarray:
 # shortest clicks well under it (see the build printout), so the levels below aim at the *played*
 # loudness: focus / hint / tab ~ -36..-40 LUFS, confirm / error / flip ~ -32, primary / chime ~ -29,
 # payday total ~ -26 (ENV C's ui_click sits at -10 dB, payday_tick at -8 dB). Gameplay feedback:
-# hit ~ -40 (ui_focus level: it repeats with automatic fire), headshot ~ -32, kill ~ -31, heartbeat
-# ~ -30 (K-weighting under-reads its 50-70 Hz energy; it peaks ~ -13 dBFS in the mix).
+# hit ~ -32, headshot ~ -28, kill ~ -27, heartbeat ~ -30 (K-weighting under-reads its 50-70 Hz energy; it
+# peaks ~ -13 dBFS in the mix). Impact mix check (impact_fx §4, 2026-10-14): ENV C's cue.impact_* sit at
+# ~ -25 LUFS at the source (World bus, positional) and gunshots at -14..-18; the hit tick was -40, under both
+# and masked by the shot it confirms, so the three markers moved up 4-8 dB, still 10+ dB under a gunshot
+# (the hit tick's 40 ms cooldown keeps automatic fire from stacking it).
 UI_CUES: list[UiCue] = [
     UiCue("ui_focus", ui_focus, -11.0, 0.04, 0.04),
     UiCue("ui_confirm", ui_confirm, -9.0, 0.05),
@@ -315,9 +318,9 @@ UI_CUES: list[UiCue] = [
     UiCue("hud_hint", hud_hint, -16.0, 0.5),
     UiCue("payday_total", payday_total, -7.0, 0.5),
     UiCue("card_flip", card_flip, -7.0, 0.06, 0.04),
-    UiCue("hud_hit", hud_hit, -13.0, 0.04, 0.03),
-    UiCue("hud_headshot", hud_headshot, -12.0, 0.05, 0.02),
-    UiCue("hud_kill", hud_kill, -9.0, 0.06, 0.02),
+    UiCue("hud_hit", hud_hit, -5.0, 0.04, 0.03),
+    UiCue("hud_headshot", hud_headshot, -8.0, 0.05, 0.02),
+    UiCue("hud_kill", hud_kill, -5.0, 0.06, 0.02),
     UiCue("hud_heartbeat", hud_heartbeat, -12.0, 0.3),
 ]
 
