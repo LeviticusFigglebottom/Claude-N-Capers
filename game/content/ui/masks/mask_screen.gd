@@ -43,6 +43,9 @@ var preview: MaskPreview
 
 
 ## Optional: inject a profile before the screen enters the tree (tests, MenuFlow).
+## Full focus order; focus_chain is its visible subset (hidden empty mask slots drop out, D-111).
+var _all_focus: Array[Control] = []
+
 func setup(p: PlayerProfile) -> void:
 	profile = p
 
@@ -83,6 +86,7 @@ func build_ui() -> void:
 		focus_chain.append(part_options[k] as Control)
 	for c: Control in [slot_option, save_button, equip_button, back_button]:
 		focus_chain.append(c)
+	_all_focus = focus_chain.duplicate()
 	var start: StringName = profile.loadout.mask
 	if not MaskLocker.is_equippable(profile, start) or start == &"":
 		var avail: Array[StringName] = MaskLocker.available_ids(profile)
@@ -278,15 +282,20 @@ func _sync_options() -> void:
 func _refresh() -> void:
 	var worn: StringName = profile.loadout.mask
 	equipped_label.text = MaskCatalog.display_name(worn) if worn != &"" else UiText.t(&"ui.masks.none")
+	var first_empty: int = _first_empty_slot()
 	for id: StringName in list_buttons:
 		var b: Button = list_buttons[id] as Button
 		var label: String = MaskCatalog.display_name(id)
+		b.visible = true
 		if MaskCatalog.is_custom_id(id) and MaskLocker.custom_composition(profile, MaskCatalog.custom_index(id)).is_empty():
-			label = UiText.t(&"ui.masks.empty_slot", {"n": MaskCatalog.custom_index(id) + 1})
+			# D-111 (style.md §11): one "New mask" row instead of every empty slot; the rest stay hidden.
+			label = UiText.t(&"ui.masks.new_mask")
+			b.visible = MaskCatalog.custom_index(id) == first_empty
 		elif id == worn:
 			label = UiText.t(&"ui.masks.equipped_tag", {"name": label})
 		b.text = label
 		b.set_pressed_no_signal(id == (selected_id if selected_id != &"" else MaskCatalog.custom_id(target_slot)))
+	_rechain_visible()
 	_refresh_slots()
 	if dirty:
 		name_label.text = MaskCatalog.display_name(MaskCatalog.custom_id(target_slot)) + " *"
@@ -357,3 +366,14 @@ func _on_part_selected(index: int, kind: String) -> void:
 func _on_slot_selected(index: int) -> void:
 	target_slot = index
 	_refresh()
+
+
+func _rechain_visible() -> void:
+	if _all_focus.is_empty():
+		return
+	focus_chain.clear()
+	for c: Control in _all_focus:
+		if c.visible:
+			focus_chain.append(c)
+	if is_inside_tree():
+		UiNav.chain_vertical(focus_chain)

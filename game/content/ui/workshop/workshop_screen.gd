@@ -35,6 +35,8 @@ var parts_list: ItemList
 ## ModType (int) -> its slot Button.
 var slot_buttons: Dictionary = {}
 var overview_button: Button
+## D-111 (style.md §11): the finish picker is a tab beside the mod slots (one list at a time, not two stacked).
+var finish_button: Button
 var buy_button: Button
 var equip_button: Button
 var back_button: Button
@@ -231,7 +233,8 @@ func _build_stage_column() -> Control:
 	stage.name = "Stage"
 	stage.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	box.add_child(stage)
-	var hint: Label = UiBuild.caption(&"ui.workshop.hint")
+	var hint: Label = UiBuild.caption(&"ui.workshop.hint_short")
+	hint.tooltip_text = UiText.t(&"ui.workshop.hint")  # D-111: one line on the stage, every control on hover
 	hint.uppercase = false
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -283,6 +286,7 @@ func _build_mod_column() -> Control:
 	finish_panel.build(profile, _item_list())
 	finish_panel.preview_changed.connect(_on_finish_preview)
 	finish_panel.finish_equipped.connect(_on_finish_equipped)
+	finish_panel.visible = false
 	v.add_child(finish_panel)
 	return scroll
 
@@ -417,6 +421,10 @@ func _rebuild_slots() -> void:
 		b.focus_entered.connect(_on_slot_focus.bind(t))
 		_slot_flow.add_child(b)
 		slot_buttons[t] = b
+	finish_button = UiBuild.tab(UiBuild.button(&"ui.workshop.finish_tab"))
+	finish_button.button_group = group
+	finish_button.pressed.connect(show_finish)
+	_slot_flow.add_child(finish_button)
 	overview_button = UiBuild.tab(UiBuild.button(&"ui.workshop.overview"))
 	overview_button.toggle_mode = false
 	overview_button.pressed.connect(_on_overview)
@@ -431,6 +439,7 @@ func _show_slot(t: int, focus_camera: bool) -> void:
 	selected_slot = t
 	for k: int in slot_buttons:
 		(slot_buttons[k] as Button).set_pressed_no_signal(k == t)
+	_set_finish_open(false)
 	_fill_parts()
 	if focus_camera:
 		stage.focus_slot(t)
@@ -654,7 +663,7 @@ func _wire_focus() -> void:
 	var slots: Array[Control] = []
 	for t: int in model.slots():
 		slots.append(slot_buttons[t] as Control)
-	slots.append(overview_button)
+	slots.append_array([finish_button, overview_button] as Array[Control])
 	UiNav.chain_horizontal(slots, false)
 	var first_slot: Control = slots[0]
 	slots[0].focus_neighbor_left = slots[0].get_path_to(weapon_list)
@@ -680,6 +689,7 @@ func _wire_focus() -> void:
 		b.focus_neighbor_top = b.get_path_to(fb)
 		b.focus_neighbor_bottom = b.get_path_to(b)
 	back_button.focus_neighbor_left = back_button.get_path_to(back_button)
+	_wire_panel_focus()
 
 
 func _on_weapon_row(row: int) -> void:
@@ -699,6 +709,43 @@ func _on_part_row(row: int) -> void:
 func _on_slot_focus(t: int) -> void:
 	if t != selected_slot or stage.focused_slot != t:
 		select_slot(t)
+
+
+## D-111: the Finish tab: the finish list replaces the parts list (mod slot tabs switch back).
+func show_finish() -> void:
+	for k: int in slot_buttons:
+		(slot_buttons[k] as Button).set_pressed_no_signal(false)
+	finish_button.set_pressed_no_signal(true)
+	_set_finish_open(true)
+
+
+func _set_finish_open(on: bool) -> void:
+	if finish_panel == null:
+		return
+	finish_panel.visible = on
+	for c: Control in [parts_list, part_status_label, part_desc_label]:
+		c.visible = not on
+	if finish_button != null and not on:
+		finish_button.set_pressed_no_signal(false)
+	if is_inside_tree() and finish_button != null:
+		_wire_panel_focus()
+
+
+## Down from the tabs and up from the footer go to whichever list is showing (parts or finishes).
+func _wire_panel_focus() -> void:
+	var on: bool = finish_panel.visible
+	var below: Control = finish_panel.list if on else parts_list
+	var tabs: Array[Control] = []
+	for t: int in model.slots():
+		tabs.append(slot_buttons[t] as Control)
+	tabs.append_array([finish_button, overview_button] as Array[Control])
+	for b: Control in tabs:
+		b.focus_neighbor_bottom = b.get_path_to(below)
+	var above_footer: Control = finish_panel.equip_button if on else parts_list
+	for b: Control in [back_button, stats_mode_button, buy_button, equip_button]:
+		b.focus_neighbor_top = b.get_path_to(above_footer)
+	parts_list.focus_neighbor_bottom = parts_list.get_path_to(equip_button)
+	finish_panel.list.focus_neighbor_top = finish_panel.list.get_path_to(finish_button)
 
 
 func _on_overview() -> void:

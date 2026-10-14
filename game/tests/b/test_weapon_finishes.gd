@@ -298,3 +298,22 @@ func test_loadout_and_lobby_summary_carry_the_finish() -> void:
 	else:
 		assert_false(WeaponFinishes.stamp(resolved, p), "no Loadout.weapon_finishes yet (contracts round 28)")
 		assert_eq(WeaponFinishes.from_loadout(resolved, CORSAIR), &"")
+
+
+## D-111 (style.md §11): the finish picker is a tab beside the mod slots; one list shows at a time.
+func test_finish_is_a_tab_beside_the_slots() -> void:
+	SaveService.delete_profile(0)
+	var screen: WorkshopScreen = (load(WORKSHOP) as PackedScene).instantiate() as WorkshopScreen
+	screen.setup(_profile())
+	add_child(screen)
+	_nodes.append(screen)
+	await wait_frames(2)
+	assert_false(screen.finish_panel.visible, "parts list first")
+	assert_true(screen.parts_list.visible)
+	screen.show_finish()
+	assert_true(screen.finish_panel.visible)
+	assert_false(screen.parts_list.visible)
+	assert_eq(screen.finish_button.get_node(screen.finish_button.focus_neighbor_bottom), screen.finish_panel.list as Node)
+	screen.select_slot(screen.model.slots()[0])
+	assert_false(screen.finish_panel.visible, "a slot tab switches back")
+	assert_true(screen.parts_list.visible)
