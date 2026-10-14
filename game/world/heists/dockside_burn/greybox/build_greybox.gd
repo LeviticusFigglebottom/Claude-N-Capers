@@ -61,6 +61,7 @@ func _build() -> void:
 	_build_site(n("Geometry"))
 	_build_props(n("Props"))
 	_build_lighting(n("Lighting"))
+	_water_glints()
 	_build_rooms(n("Rooms"))
 	_build_zones(n("Zones"))
 	_build_patrols(n("Patrols"))
@@ -502,7 +503,7 @@ func _build_site(geo: Node3D) -> void:
 	_quay_steps(ground)
 	_pontoon_ramp(ground)
 	for w: Array in L.WATER:
-		box_a(site, String(w[0]), w[1], "water", false)
+		box_a(site, String(w[0]), w[1], "water" if String(w[0]) == "HarbourWater" else "water_slip", false)
 		SurfaceTags.water_surface(site, map_root, String(w[0]) + "Surface", v3(w[1], 0), v3(w[1], 3))  # PO-8 bullets
 	var blocks: Node3D = add(site, node3d("Blocks")) as Node3D
 	for b: Array in L.BLOCKS:
@@ -702,6 +703,51 @@ func _build_lighting(lighting: Node3D) -> void:
 		bl.light_energy = 1.5
 		bl.omni_range = 10.0
 		add(fx, bl)
+
+
+## PO-13: reflected lamp glints on the harbour and slip water (the shader's MAX_GLINTS = 16): the
+## lights above the quay whose XZ distance to a water body is under GLINT_REACH, nearest first.
+## Lights inside the cold store (ceiling fixtures) never reach the water. Call after props + lighting.
+func _water_glints() -> void:
+	const GLINT_REACH: float = 14.0
+	const MAX_GLINTS: int = 16
+	var found: Array[Array] = []
+	for l: Node in map_root.find_children("*", "Light3D", true, false):
+		if not (l is OmniLight3D or l is SpotLight3D) or l.get_parent().get_meta(&"mount", "") == "ceiling":
+			continue
+		var light: Light3D = l as Light3D
+		var lp: Vector3 = _world_pos(light)
+		var d: float = INF
+		for w: Array in L.WATER:
+			var b: Array = w[1]
+			var dx: float = maxf(maxf(float(b[0]) - lp.x, lp.x - float(b[3])), 0.0)
+			var dz: float = maxf(maxf(float(b[2]) - lp.z, lp.z - float(b[5])), 0.0)
+			d = minf(d, Vector2(dx, dz).length())
+		if lp.y > L.WATER_Y + 1.5 and d < GLINT_REACH:
+			found.append([snappedf(d, 0.01), snappedf(lp.x, 0.01), lp, light.light_color, light.light_energy])
+	found.sort_custom(func(a: Array, b: Array) -> bool:
+		return a[0] < b[0] or (a[0] == b[0] and a[1] < b[1]))
+	var pos: PackedVector3Array = PackedVector3Array()
+	var col: PackedVector3Array = PackedVector3Array()
+	for f: Array in found.slice(0, MAX_GLINTS):
+		var c: Color = (f[3] as Color).srgb_to_linear() * (float(f[4]) / 7.0)
+		pos.append((f[2] as Vector3).snapped(Vector3.ONE * 0.01))
+		col.append(Vector3(c.r, c.g, c.b))
+	for id: String in ["water", "water_slip"]:
+		var m: ShaderMaterial = lib_mat(id) as ShaderMaterial
+		m.set_shader_parameter(&"glint_count", pos.size())
+		m.set_shader_parameter(&"glint_pos", pos)
+		m.set_shader_parameter(&"glint_color", col)
+
+
+static func _world_pos(nd: Node3D) -> Vector3:
+	var xf: Transform3D = Transform3D.IDENTITY
+	var cur: Node = nd
+	while cur != null:
+		if cur is Node3D:
+			xf = (cur as Node3D).transform * xf
+		cur = cur.get_parent()
+	return xf.origin
 
 
 ## Ceiling-mounted fixture: pivot at the ceiling surface (top-centre), panel just below, light under it.
