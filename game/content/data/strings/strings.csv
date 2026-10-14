@@ -194,6 +194,8 @@ ui.blocked.need_keycard,Requires a keycard
 ui.blocked.need_body_bag,No body bags left
 ui.blocked.need_cable_tie,No cable ties left
 ui.blocked.carrying_bag,Hands full
+ui.blocked.device_running,The drill is running
+ui.blocked.device_done,Already open
 ui.blocked.need_skill,Requires a skill
 ui.blocked.in_use,Someone is already on it
 ui.blocked.locked,Locked
