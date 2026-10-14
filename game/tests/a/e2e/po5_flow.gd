@@ -1,6 +1,9 @@
 ## PO-5 driver node (lives on the root, survives scene changes). See po5_runner.gd.
 extends Node
 
+## A frame whose physics + process time exceeds this prints a HITCH line with engine monitors (ms).
+const HITCH_MS: float = 1000.0
+
 var runner_out: String = "user://po5"
 var runner_flow: String = "smoke"
 var heist_name: String = "Glasshouse"
@@ -107,8 +110,28 @@ func enter_heist() -> bool:
 func _process(_delta: float) -> void:
 	var now: int = Time.get_ticks_usec()
 	if _last_frame_us != 0:
-		_worst_frame_ms = maxf(_worst_frame_ms, (now - _last_frame_us) / 1000.0)
+		var frame_ms: float = (now - _last_frame_us) / 1000.0
+		_worst_frame_ms = maxf(_worst_frame_ms, frame_ms)
+		# Screenshot frames are slow by design (render loop back on): only physics / process time counts.
+		var sim_ms: float = (Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS)
+			+ Performance.get_monitor(Performance.TIME_PROCESS)) * 1000.0
+		if sim_ms > HITCH_MS and rt != null and is_instance_valid(rt):
+			note("HITCH " + _hitch_snapshot(frame_ms))
 	_last_frame_us = now
+
+
+## Engine monitors for a frame over HITCH_MS of simulation (ND t=322 stall): which subsystem blew up.
+func _hitch_snapshot(frame_ms: float) -> String:
+	var m: Callable = func(id: Performance.Monitor) -> float: return Performance.get_monitor(id)
+	return ("frame=%.0fms t=%.1f phys=%.1fms proc=%.1fms nav=%.1fms nodes=%d active=%d pairs=%d islands=%d "
+		+ "nav_agents=%d nav_links=%d nav_obst=%d nav_regions=%d nav_polys=%d enemies=%d bags=%d") % [frame_ms,
+		rt.heist_time_s, m.call(Performance.TIME_PHYSICS_PROCESS) * 1000.0, m.call(Performance.TIME_PROCESS) * 1000.0,
+		m.call(Performance.TIME_NAVIGATION_PROCESS) * 1000.0, m.call(Performance.OBJECT_NODE_COUNT),
+		m.call(Performance.PHYSICS_3D_ACTIVE_OBJECTS), m.call(Performance.PHYSICS_3D_COLLISION_PAIRS),
+		m.call(Performance.PHYSICS_3D_ISLAND_COUNT), m.call(Performance.NAVIGATION_3D_AGENT_COUNT),
+		m.call(Performance.NAVIGATION_3D_LINK_COUNT), m.call(Performance.NAVIGATION_3D_OBSTACLE_COUNT),
+		m.call(Performance.NAVIGATION_3D_REGION_COUNT), m.call(Performance.NAVIGATION_3D_POLYGON_COUNT),
+		_alive_in(G.ENEMY), get_tree().get_nodes_in_group(G.LOOT_BAG).size()]
 
 
 ## Every 10 s of game time: frame cost, crew states/positions, enemy count.
