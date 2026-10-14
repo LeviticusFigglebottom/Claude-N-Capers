@@ -239,6 +239,11 @@ func die(info: Dictionary = {}, killer_net_id: int = 0) -> void:
 	var st: StealthDirector = HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector
 	if st != null and Net.is_authority():
 		corpse_stimulus_id = st.register_stimulus(self, &"corpse")
+	# D-113 (ENV C's blood pool / death splatter): where the body fell and the killing shot's direction.
+	info = info.duplicate()
+	info["position"] = global_position
+	var hd: Vector3 = info.get("direction", last_damage.get("direction", Vector3.ZERO))
+	info["hit_dir"] = hd.normalized() if hd.length() > 0.0001 else Vector3.ZERO
 	died.emit(info, killer_net_id)
 	if Net.is_authority():
 		EventBus.npc_killed.emit(net_id, killer_net_id, info)

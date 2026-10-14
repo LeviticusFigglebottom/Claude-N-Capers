@@ -226,3 +226,32 @@ func test_surface_lookup_rules() -> void:
 	assert_eq(ShotFx.npc_weapon_class(&"weapon.npc_rifle"), &"ar")
 	assert_eq(ShotFx.npc_weapon_class(&"weapon.npc_minigun"), &"lmg")
 	assert_eq(ShotFx.npc_weapon_class(&"weapon.npc_sniper"), &"sniper")
+
+
+## D-113 (ENV C's gore): STRONG (16) and PENETRATED (8) only on flesh; shotgun / sniper / LMG flesh hits are STRONG,
+## sniper rounds exit the body; a wall hit drops both.
+func test_d113_flesh_flags() -> void:
+	assert_eq(ShotFx.flesh_flags(0, &"flesh", &"shotgun") & ShotFx.FLAG_STRONG, ShotFx.FLAG_STRONG, "shotgun on flesh")
+	assert_eq(ShotFx.flesh_flags(0, &"flesh", &"sniper"), ShotFx.FLAG_STRONG | ShotFx.FLAG_PENETRATED, "sniper exits")
+	assert_eq(ShotFx.flesh_flags(0, &"flesh", &"pistol"), 0, "pistol: neither")
+	assert_eq(ShotFx.flesh_flags(ShotFx.FLAG_STRONG | ShotFx.FLAG_HEADSHOT, &"flesh", &"ar"),
+		ShotFx.FLAG_STRONG | ShotFx.FLAG_HEADSHOT, "a heavy round's STRONG survives on flesh")
+	assert_eq(ShotFx.flesh_flags(ShotFx.FLAG_STRONG | ShotFx.FLAG_PENETRATED, &"metal", &"sniper"), 0,
+		"not flesh: both cleared")
+
+
+## D-113: npc_killed info carries where the body fell and the killing shot's direction (blood pool / splatter).
+func test_d113_npc_killed_position_and_hit_dir() -> void:
+	await _launch(1)
+	var g: NpcBase = _rt.npcs(&"guard")[0] as NpcBase
+	var got: Array[Dictionary] = []
+	var cb: Callable = func(id: int, _k: int, info: Dictionary) -> void:
+		if id == g.net_id:
+			got.append(info)
+	EventBus.npc_killed.connect(cb)
+	g.take_hit({"amount": 9999.0, "direction": Vector3(0, 0, -2), "type": Enums.DamageType.BULLET})
+	EventBus.npc_killed.disconnect(cb)
+	assert_eq(got.size(), 1, "one npc_killed")
+	if got.size() == 1:
+		assert_true((got[0]["position"] as Vector3).distance_to(g.global_position) < 0.01, "position = the body")
+		assert_true((got[0]["hit_dir"] as Vector3).distance_to(Vector3(0, 0, -1)) < 0.01, "normalised killing direction")
