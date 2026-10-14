@@ -55,7 +55,7 @@ default_mods = {
 3: &"mod.saw_guide_notch",
 7: &"mod.saw_standard_blade"
 }
-fire_cue = &"cue.weapon_saw_fire"
+fire_cue = &"cue.weapon_saw_cut"
 fire_cue_suppressed = &""
 anim_set = &"saw"
 model = ExtResource("3")
