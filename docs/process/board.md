@@ -13,6 +13,7 @@ Read it at the start of every work session.
 | ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
 
 ## Trunk / merge rounds
+- 2026-10-14 04:00: **round 72 ON ORIGIN** (c49a3a08): env/a-core, env/c-worlds (surface ids on kits/props/maps, impact audio cues), env/b-content, env/p-play. a/c targeted green; b/p/int tail still running at push.
 - 2026-10-14 03:20: **round 71 ON ORIGIN**: env/a-core (QC-60 markers re-resolve on data updates; CrewWeapons.equip(redraw)), env/p-play (carry tilt -5°, re-equip on pickup, bag_can_jump removed), env/c-worlds (gallery_night_floors_ascii.py --check, camera_spine/screen validators, doc fixes). a/p/P1 slice green; slice_b + readiness still running at push.
 - 2026-10-14 03:00: **FREEZE GATE 1/3 PASSED: gh_loud** (A, windowed, real menus, seed 1791914030: Glasshouse loud → payday card → Continue → Safehouse hub, RESULT PASS). Gates left: gh_stealth win, ND loud (auto_loud running).
 - 2026-10-14 03:00: **round 70 ON ORIGIN**: env/a-core (SL/DB objective marker_tags; release-run harness fixes), env/c-worlds (gallery_night.md Build rulings, approved), EventBus SHOT_FX_* flag constants. test_heist_readiness: all 4 heists PASS (no pending). a/c targeted green.
