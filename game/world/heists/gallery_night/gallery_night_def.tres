@@ -7,7 +7,7 @@ script = ExtResource("1_gn7df")
 id = &"gallery_night"
 display_name = "Gallery Night"
 contact = &"contact.vance"
-briefing = "The Halberd Gallery, Aldous Parade at Wexley Street. The Calloway Unveiling gala is in its last hour. Odile Vance's buyer wants four canvases off a list, and The Lantern Bearer above all. Walk in as guests, case the rooms before last call, then cut the Lantern Bearer and one more listed canvas. Rolled, not framed. Out by the van in the Mews or the limo at the kerb."
+briefing = "heist.gallery_night.briefing"
 map_scene = "res://world/heists/gallery_night/gallery_night.tscn"
 base_payout = 105000
 loot = Array[StringName]([&"loot.painting_lantern_bearer", &"loot.painting_salt_orchard", &"loot.painting_widow_in_blue", &"loot.painting_tidewater_saint", &"loot.painting_study"])
@@ -39,6 +39,6 @@ preplanning = {
 "disable": Array[StringName]([]),
 "favors": 5
 }
-escape_options = Array[StringName]([&"van"])
+escape_options = Array[StringName]([&"van", &"limo"])
 music_track = &"gallery_night"
 start_mode = &"casing"
