@@ -29,6 +29,11 @@ API: `game/core/net.gd`. Architecture: architecture.md §3.
 * Bring-up (and drop-in `late_bring_up`) carries `"objectives"`: the host's `[id, state, data]` list at send time; the
   replica's HUD model seeds from it, because mission-start `objective_updated` [R] arrives before the replica exists
   (PO-B-C7). Additive key: `BRING_UP_VERSION` unchanged, older clients ignore it.
+* C11 (round 100, A): a co-op session survives a heist. Bring-up carries a per-heist `"token"`; the host replicates only
+  to its member set (peers at `begin()`, drop-ins after their late bring-up, minus leavers). Lobby kinds `heist_closed`
+  (host → clients: the replica freezes, `HeistNetSync.host_closed` fires) and `heist_left` (client → host). `launch()` on
+  a live session tears down any leftover runtime first. After teardown the host calls `Net.clear_ai()` (drops AI seats
+  so newcomers can join); the crew lobby also calls it when a human leaves while no heist runs.
 * ENet peer timeout (lead, round 80): `Net` sets (32, 15 000 ms, 60 000 ms) on every peer, both sides, so a host's
   bring-up stall does not drop clients. A human slot falling back to AI is logged (`Log.warn`, channel `net`).
 

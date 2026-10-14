@@ -86,6 +86,50 @@ func _drill(pos: Vector3, duration: float, target: NodePath = NodePath()) -> Dri
 		(n as DrillPoint).target = target) as DrillPoint
 
 
+## PO-12: a placed drill shows its device (the catalog drill: Body + Bit) while placed, spins the Bit while
+## running, shows a red jam mark while jammed and is removed when done.
+func test_po12_drill_device_visible_spins_and_jams() -> void:
+	var dp: DrillPoint = ATestMaps.add_prefab(_rt, "drill_point", Vector3(0, 1, -4), func(n: Node) -> void:
+		(n as DrillPoint).duration_s = 30.0
+		(n as DrillPoint).device_scene = load("res://world/props/drill/prop_drill_device.tscn") as PackedScene) as DrillPoint
+	await wait_physics_frames(1)
+	assert_true(dp.device_node == null, "no device before placing")
+	dp.runner.place(0, dp.effective_duration())
+	await wait_frames(2)
+	assert_true(dp.device_node != null and dp.device_node.is_visible_in_tree(), "placed: device visible")
+	var meshes: Array[Node] = dp.device_node.find_children("*", "MeshInstance3D", true, false) if dp.device_node else []
+	assert_true(meshes.size() >= 2, "device has visible meshes (%d)" % meshes.size())
+	var bit: Node3D = dp.device_node.find_child("Bit", true, false) as Node3D if dp.device_node else null
+	assert_true(bit != null, "device has a Bit")
+	if bit != null:
+		var b0: Basis = bit.basis
+		await wait_frames(10)
+		assert_true(not bit.basis.is_equal_approx(b0), "Bit spins while running")
+	dp.runner.jams.clear()
+	dp.runner.jams.append(dp.runner.progress)
+	await wait_physics_frames(2)
+	assert_eq(dp.device_state(), DeviceRunner.State.JAMMED, "jammed")
+	var mark: Node3D = dp.device_node.find_child("JamMark", true, false) as Node3D if dp.device_node else null
+	assert_true(mark != null and mark.visible, "jam mark shows while jammed")
+	if bit != null:
+		var b1: Basis = bit.basis
+		await wait_frames(10)
+		assert_true(bit.basis.is_equal_approx(b1), "Bit still while jammed")
+	dp.runner.fix(0)
+	await wait_physics_frames(1)
+	assert_false(mark != null and is_instance_valid(mark) and mark.visible, "jam mark hidden after the fix")
+	dp.runner.progress = 0.999
+	await wait_seconds(0.3)
+	assert_eq(dp.device_state(), DeviceRunner.State.DONE, "done")
+	await wait_frames(2)
+	assert_true(dp.device_node == null, "device removed when done")
+	var plain: DrillPoint = _drill(Vector3(3, 1, -4), 30.0)
+	await wait_physics_frames(1)
+	plain.runner.place(0, plain.effective_duration())
+	await wait_frames(2)
+	assert_true(plain.device_node != null, "default device from G.PROPS_DIR")
+
+
 func test_s9_3_jams_deterministic_per_seed() -> void:
 	var dp: DrillPoint = _drill(Vector3(0, 1, -4), 60.0)
 	await wait_physics_frames(1)
@@ -295,6 +339,14 @@ func test_qc61_walkable_window_nav_link() -> void:
 	sash.set_open(false)
 	await wait_physics_frames(1)
 	assert_false(sash.nav_link().enabled, "closed again: link off")
+	var tall: WindowPrefab = ATestMaps.add_prefab(_rt, "window", Vector3(8, 0.0, -4), func(n: Node) -> void:
+		(n as WindowPrefab).openable = true
+		(n as WindowPrefab).sash_travel_m = 1.8) as WindowPrefab
+	await wait_physics_frames(2)
+	var tsash: Node3D = tall.visual_node("Sash") as Node3D
+	var ty0: float = tsash.position.y
+	tall.set_open(true)
+	assert_near(tsash.position.y - ty0, 1.8, 0.001, "per-window sash_travel_m")
 
 
 func test_s9_6_keycard_reader_opens_targets() -> void:

@@ -69,6 +69,10 @@ static func launch(heist_id: StringName, seed: int, difficulty: Enums.Difficulty
 		if not Net.is_authority():
 			Log.error(&"heist", "launch() is server-only")
 			return null
+		var old: HeistRuntime = HeistRuntime.current()
+		if old != null:  # C11: a co-op heist left up would hold the node path the new heist's RPCs need
+			Log.warn(&"heist", "launch(): tearing down the previous heist %s first" % old.heist_id)
+			old.teardown()
 		Net.fill_with_ai()
 	else:
 		Net.start_solo("Player", int(options.get("ai_teammates", 3)))
