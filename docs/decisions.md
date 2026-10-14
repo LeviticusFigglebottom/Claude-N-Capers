@@ -754,3 +754,10 @@ ENV B writes `game/content/data/strings/strings.csv` (`keys,en`) with the defaul
   (docs/art/pipeline.md: deterministic Blender scripts, `--threads 1`, no third-party assets), arm-mesh topology unchanged,
   every arms set re-exported together, D's character tests (`game/tests/d/`) kept green.
 - Pistol-ADS framing via a per-set aimed viewmodel FOV was prototyped and withdrawn (27 % → 23 % coverage only).
+
+## D-102 — 2026-10-14 — Bag carry follows PD2 (S10.1)
+- Faithful PD2 carry values (carrytweakdata.lua, playercarry.lua, ENV P's cites) replace our estimates in pd2_fidelity S10.1:
+  speed mult light/medium/heavy/very_heavy = 1.0 / 0.75 / 0.5 / 0.25; sprint only with light bags; jump always allowed with
+  jump-velocity mult 1 / 1 / 0.5 / 0.25; throw distance 4 / 4 / 2 / 1.2 m; head-bob scales with the carry speed mult.
+- ENV P: CrewTweak + jump mult + head-bob; ENV A: S10 tests and any heist pacing that assumed the old speeds (escape timers,
+  objective time budgets in e2e flows). Skills that override carry speed (PD2 does this) stay data-driven.
